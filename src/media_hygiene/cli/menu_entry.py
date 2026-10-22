@@ -174,7 +174,9 @@ class Group:
     title: str  # translated
     steps: tuple[str, ...]  # their names, in order
     numbered: bool = False  # a guide, numbered on the page
-    extra: str = ""  # a panel the page adds: `folders`, `update`, `ai`, `about`
+    extra: str = (
+        ""  # a panel the page adds: `folders`, `update`, `ai`, `about`, `albums`
+    )
 
 
 @dataclass(frozen=True, slots=True)

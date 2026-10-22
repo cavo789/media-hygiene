@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+{# The albums on a phone at home (share/album_page.py, 0297), served in front of the home page: on
+   the PC, and on a phone paired by `mh --lan`'s code. The list of the albums, then one album as the
+   big photo apps show it: a cover (the sharpest photo of the first day), its dates and place, a
+   mosaic by day; a tap opens a photo full screen, a swipe goes to the next or the previous one, a
+   tap closes. Videos play in place when the phone plays them as they are (as on the TV, 0292).
+   A photo may be taken out of the album, or added to another one (0295 item 4): albums.json only,
+   no photo touched. Everything is drawn by album.js.j2 from GET list / album. #}
+{% set texts = {
+  "albums": _("Albums"),
+  "none": _("No album yet. On the PC, in search or browse, pick photos, then Add to the album."),
+  "photos": [ngettext("{n} photo or video", "{n} photos and videos", 1), ngettext("{n} photo or video", "{n} photos and videos", 2)],
+  "missing": [ngettext("{n} file missing: moved out of the folders analysed, or deleted.", "{n} files missing: moved out of the folders analysed, or deleted.", 1), ngettext("{n} file missing: moved out of the folders analysed, or deleted.", "{n} files missing: moved out of the folders analysed, or deleted.", 2)],
+  "undated": _("Without a date"),
+  "unplayable": _("This video does not play on a phone as it is ({format})."),
+  "offline": _("Media Hygiene does not answer: the albums show while mh runs on the PC, on the home Wi-Fi."),
+  "failed": _("The albums cannot be read (error {status})."),
+  "out": _("Take out of the album"),
+  "outAsk": _("Take this photo out of {name}? The photo itself stays where it is."),
+  "addTo": _("Add to an album"),
+  "addAsk": _("The album's name (a new name creates it):"),
+  "of": _("{at} of {total}"),
+} %}
+<html lang="{{ _('en') }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>{{ texts.albums }} — Media Hygiene</title>
+<link rel="icon" type="image/png" href="{{ paths.assets }}images/favicon.png">
+<style>
+{% include "theme.css.j2" %}
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 400 16px/1.5 var(--mk-font-text); }
+  header { position: sticky; top: 0; z-index: 2; display: flex; gap: 12px; align-items: center; padding: 10px 16px; background: var(--card); border-bottom: 1px solid var(--line); }
+  header h1 { flex: 1; margin: 0; font-size: 1.15rem; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  a.back, button { min-height: 44px; padding: 8px 14px; font: inherit; font-weight: 600; color: var(--accent); background: transparent; border: 1px solid var(--line); border-radius: 10px; text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; }
+  .note { margin: 12px 16px; color: var(--muted); font-size: .9rem; }
+  .note.error { color: var(--bad); font-weight: 600; }
+  .shelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; padding: 0 16px 24px; }
+  .shelf a { color: inherit; text-decoration: none; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .shelf img, .shelf .blank { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--chip); }
+  .shelf .blank { display: grid; place-items: center; font-size: 2.5rem; }
+  .shelf p { margin: 6px 10px; }
+  .shelf .name { font-weight: 700; }
+  .shelf .sub { margin-top: 0; color: var(--muted); font-size: .85rem; }
+  .cover { position: relative; margin: 0; }
+  .cover img { display: block; width: 100%; max-height: 70vh; object-fit: cover; background: var(--chip); cursor: pointer; }
+  .cover figcaption { position: absolute; inset: auto 0 0 0; padding: 48px 16px 14px; color: #fff; background: linear-gradient(transparent, rgba(0, 0, 0, .75)); }
+  .cover.bare figcaption { position: static; color: var(--text); background: none; padding: 16px; }
+  .cover h2 { margin: 0; font-size: 1.6rem; line-height: 1.2; }
+  .cover p { margin: 4px 0 0; }
+  .day h3 { margin: 18px 16px 8px; font-size: 1rem; }
+  .day h3::first-letter { text-transform: uppercase; }
+  .mosaic { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 3px; padding: 0 3px; }
+  .mosaic button { position: relative; padding: 0; min-height: 0; border: 0; border-radius: 0; aspect-ratio: 1; background: var(--chip); overflow: hidden; }
+  .mosaic img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .mosaic .film { display: grid; place-items: center; width: 100%; height: 100%; font-size: 2rem; color: var(--muted); }
+  .mosaic .film small { display: block; font-size: .7rem; }
+  .viewer { position: fixed; inset: 0; z-index: 5; display: flex; flex-direction: column; background: #000; color: #fff; touch-action: pan-y pinch-zoom; }
+  .viewer[hidden] { display: none; }
+  .stage { flex: 1; display: grid; place-items: center; min-height: 0; overflow: hidden; }
+  .stage img, .stage video { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .stage p { max-width: 30em; padding: 16px; text-align: center; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); background: rgba(0, 0, 0, .7); }
+  .bar span { flex: 1; font-size: .9rem; }
+  .bar button { color: #fff; border-color: rgba(255, 255, 255, .4); }
+  .toast { position: fixed; z-index: 6; inset: auto 16px 16px 16px; padding: 12px 16px; border-radius: 10px; color: #fff; background: rgba(0, 0, 0, .85); }
+  .toast[hidden] { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <a class="back" id="back" href="{{ paths.home }}">⌂</a>
+  <h1 id="title">{{ texts.albums }}</h1>
+</header>
+<p class="note">🔒 {{ _("On the home Wi-Fi only, while mh runs on the PC. Your photos are only read: taking a photo out of an album, or adding it to another one, changes the albums file alone.") }}</p>
+<p class="note error" id="problem" role="alert" hidden></p>
+<main id="main"></main>
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="{{ _('The photo, full screen') }}" hidden>
+  <div class="stage" id="stage"></div>
+  <div class="bar">
+    <span id="where"></span>
+    <button type="button" id="addTo">➕ {{ texts.addTo }}</button>
+    <button type="button" id="takeOut">➖ {{ texts.out }}</button>
+    <button type="button" id="close" aria-label="{{ _('Close') }}">✕</button>
+  </div>
+</div>
+<p class="toast" id="toast" role="status" hidden></p>
+<script>
+(() => {
+{% include "album.js.j2" %}
+})();
+</script>
+</body>
+</html>

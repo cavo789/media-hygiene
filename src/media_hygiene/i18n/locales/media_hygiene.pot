@@ -667,6 +667,9 @@ msgid ""
 "explanation; your values and comments are kept."
 msgstr ""
 
+msgid "Add to an album"
+msgstr ""
+
 msgid "Add to the album"
 msgstr ""
 
@@ -2580,7 +2583,9 @@ msgstr ""
 msgid "From the cache alone: no file is read again."
 msgstr ""
 
-msgid "From the phone: the audit and the reports. Run this step on the PC."
+msgid ""
+"From the phone: the audit, the reports and the albums. Run this step on "
+"the PC."
 msgstr ""
 
 msgid "From year"
@@ -3242,6 +3247,11 @@ msgid ""
 "the mh menu on that folder."
 msgstr ""
 
+msgid ""
+"Media Hygiene does not answer: the albums show while mh runs on the PC, "
+"on the home Wi-Fi."
+msgstr ""
+
 msgid "Media Hygiene in the Explorer's right-click"
 msgstr ""
 
@@ -3576,6 +3586,11 @@ msgstr ""
 msgid "No album named {name}. The albums: {names}."
 msgstr ""
 
+msgid ""
+"No album yet. On the PC, in search or browse, pick photos, then Add to "
+"the album."
+msgstr ""
+
 msgid "No album yet: type a name, pick photos, then Add to the album."
 msgstr ""
 
@@ -3687,6 +3702,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "No index in {folder}: nothing to tag yet."
+msgstr ""
+
+msgid "No index yet: the albums show the photos an audit has seen."
 msgstr ""
 
 #, python-brace-format
@@ -4201,6 +4219,12 @@ msgid ""
 "remote."
 msgstr ""
 
+msgid ""
+"On the home Wi-Fi only, while mh runs on the PC. Your photos are only "
+"read: taking a photo out of an album, or adding it to another one, "
+"changes the albums file alone."
+msgstr ""
+
 msgid "On the phone's remote, type the code of this TV:"
 msgstr ""
 
@@ -4339,6 +4363,9 @@ msgid ""
 msgstr ""
 
 msgid "Open index.html in the folder mounted on /reports: it lists every report."
+msgstr ""
+
+msgid "Open the albums"
 msgstr ""
 
 msgid "Open the map at 127.0.0.1 or localhost."
@@ -5130,6 +5157,9 @@ msgstr ""
 msgid "Run the Czkawka command again; it writes this file with -C."
 msgstr ""
 
+msgid "Run the audit first (Clean, step 1)."
+msgstr ""
+
 msgid "Run the same command again to continue: the files moved are skipped."
 msgstr ""
 
@@ -5866,6 +5896,10 @@ msgstr ""
 msgid "Take the batch back ({events})"
 msgstr ""
 
+#, python-brace-format
+msgid "Take this photo out of {name}? The photo itself stays where it is."
+msgstr ""
+
 msgid "Taken out of config.toml: its GPS decides again."
 msgstr ""
 
@@ -5911,10 +5945,17 @@ msgstr ""
 msgid "The album's name"
 msgstr ""
 
+msgid "The album's name (a new name creates it):"
+msgstr ""
+
 msgid "The album's name: the folder holding its links."
 msgstr ""
 
 msgid "The albums are saved in /reports: mount it, or they are lost."
+msgstr ""
+
+#, python-brace-format
+msgid "The albums cannot be read (error {status})."
 msgstr ""
 
 msgid "The audit counts them"
@@ -6393,6 +6434,9 @@ msgstr ""
 msgid "The phone's remote: on a phone on the same Wi-Fi, open"
 msgstr ""
 
+msgid "The photo, full screen"
+msgstr ""
+
 msgid ""
 "The photos have vectors, but the model of search by meaning is not in the"
 " cache: the words alone answer."
@@ -6853,6 +6897,10 @@ msgid "This shot lies in a protected folder: it is never moved."
 msgstr ""
 
 msgid "This step takes no words."
+msgstr ""
+
+#, python-brace-format
+msgid "This video does not play on a phone as it is ({format})."
 msgstr ""
 
 msgid "This workbook belongs to another classify run."
@@ -7356,6 +7404,9 @@ msgstr ""
 msgid "With Léa"
 msgstr ""
 
+msgid "Without a date"
+msgstr ""
+
 msgid "Words"
 msgstr ""
 
@@ -7438,6 +7489,14 @@ msgid ""
 "content is back, whatever its name now (a phone backup, a copy). 'clean' "
 "moves them to the quarantine again, with the rest of its plan. To keep "
 "one after all: 'undo' that clean, and it is no longer proposed."
+msgstr ""
+
+msgid "Your albums"
+msgstr ""
+
+msgid ""
+"Your albums as on a phone: a cover, the photos by day, full screen with a"
+" swipe. On a phone of the home Wi-Fi too, once paired with mh --lan."
 msgstr ""
 
 msgid "Your backups, compared, never changed:"
@@ -9335,6 +9394,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{at} of {total}"
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "{backup} (folders.backups) and {other} (folders.{key}) are one folder or "
 "one inside the other: a backup folder is only compared, give it no other "
@@ -10591,6 +10654,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} file missing: moved out of the folders analysed, or deleted."
+msgid_plural "{n} files missing: moved out of the folders analysed, or deleted."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid ""
 "{n} file of the album is missing (moved out of the folders analysed, or "
 "deleted): not included."
@@ -10661,6 +10730,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} photo could not be read: not included."
 msgid_plural "{n} photos could not be read: not included."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} photo or video"
+msgid_plural "{n} photos and videos"
 msgstr[0] ""
 msgstr[1] ""
 

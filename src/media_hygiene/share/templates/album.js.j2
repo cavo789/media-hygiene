@@ -1,0 +1,187 @@
+// The albums on a phone at home (0297): the list, then an album; drawn from GET P.list and
+// GET P.album + name. A tap on a photo opens it full screen; a swipe goes to the next or the
+// previous one, a tap closes it (the phone's Back button too). The next pictures are loaded
+// in advance. Changes go to POST P.change, read back from the disk by the server (0295).
+const P = {{ paths | tojson }};
+const T = {{ texts | tojson }};
+const LANG = document.documentElement.lang;
+const SWIPE_PX = 50; // a move shorter than this is a tap
+const PRELOADED = [1, -1, 2]; // the pictures loaded before they are asked for
+const $ = (id) => document.getElementById(id);
+const esc = (text) => String(text).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+const plural = (pair, n) => fill(pair[n === 1 ? 0 : 1], { n: n.toLocaleString(LANG) });
+const dateOf = (day) => new Date(`${day}T12:00:00`);
+let album = null; // the album shown, as the server sent it
+let items = []; // its photos and videos, in the order of the mosaic
+let at = 0; // the one shown full screen
+let pointer = null; // where a touch began
+
+function problem(text) {
+  $("problem").textContent = text || "";
+  $("problem").hidden = !text;
+}
+function toast(text) {
+  const box = $("toast");
+  box.textContent = text;
+  box.hidden = false;
+  window.clearTimeout(toast.timer);
+  toast.timer = window.setTimeout(() => { box.hidden = true; }, 6000);
+}
+async function ask(url, options) {
+  let response;
+  try {
+    response = await fetch(url, { cache: "no-store", ...options });
+  } catch {
+    problem(T.offline);
+    return null;
+  }
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    problem(body.error || fill(T.failed, { status: response.status }));
+    return null;
+  }
+  problem("");
+  return body;
+}
+function span(view) {
+  if (!view.first) return "";
+  const format = new Intl.DateTimeFormat(LANG, { day: "numeric", month: "long", year: "numeric" });
+  if (view.first === view.last) return format.format(dateOf(view.first));
+  return format.formatRange(dateOf(view.first), dateOf(view.last));
+}
+function dayLabel(day) {
+  if (!day) return T.undated;
+  return new Intl.DateTimeFormat(LANG, { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(dateOf(day));
+}
+const said = (parts) => parts.filter(Boolean).map(esc).join(" · ");
+
+async function showList() {
+  $("title").textContent = T.albums;
+  $("back").href = P.home;
+  const view = await ask(P.list);
+  if (!view) return;
+  if (!view.albums.length) {
+    $("main").innerHTML = `<p class="note">${esc(T.none)}</p>`;
+    return;
+  }
+  $("main").innerHTML = `<div class="shelf">${view.albums.map((each) => `<a href="#a/${encodeURIComponent(each.name)}">
+      ${each.cover ? `<img src="${esc(each.cover.thumb)}" alt="" loading="lazy">` : `<span class="blank" aria-hidden="true">🖼</span>`}
+      <p class="name">${esc(each.name)}</p>
+      <p class="sub">${said([plural(T.photos, each.count), span(each), each.place])}</p>
+    </a>`).join("")}</div>`;
+}
+async function showAlbum(name) {
+  $("back").href = "#";
+  const view = await ask(P.album + encodeURIComponent(name));
+  if (!view) return;
+  album = view;
+  items = view.days.flatMap((day) => day.items);
+  $("title").textContent = view.name;
+  const cover = view.cover ? `<img src="${esc(view.cover.photo)}" alt="" data-key="${view.cover.key}">` : "";
+  const missing = view.missing ? `<p class="note">${esc(plural(T.missing, view.missing))}</p>` : "";
+  let number = 0;
+  const days = view.days.map((day) => `<section class="day">
+      <h3>${said([dayLabel(day.day), day.place])}</h3>
+      <div class="mosaic">${day.items.map((item) => tile(item, number++)).join("")}</div>
+    </section>`).join("");
+  $("main").innerHTML = `<figure class="cover${cover ? "" : " bare"}">${cover}<figcaption>
+      <h2>${esc(view.name)}</h2><p>${said([span(view), view.place])}</p><p>${esc(plural(T.photos, view.count))}</p>
+    </figcaption></figure>${missing}${days}`;
+  window.scrollTo(0, 0);
+}
+function tile(item, number) {
+  const inside = item.thumb
+    ? `<img src="${esc(item.thumb)}" alt="" loading="lazy">`
+    : `<span class="film" aria-hidden="true"><span>▶${item.film ? "" : `<small>${esc(item.format)}</small>`}</span></span>`;
+  return `<button type="button" data-at="${number}" aria-label="${esc(fill(T.of, { at: number + 1, total: items.length }))}">${inside}</button>`;
+}
+function route() {
+  closeViewer(true);
+  const hash = location.hash.slice(1);
+  if (hash.startsWith("a/")) showAlbum(decodeURIComponent(hash.slice(2)));
+  else showList();
+}
+
+function openViewer(number) {
+  at = number;
+  $("viewer").hidden = false;
+  history.pushState({ viewer: true }, "");
+  draw();
+}
+function closeViewer(fromHistory) {
+  if ($("viewer").hidden) return;
+  $("stage").innerHTML = ""; // a video stops
+  $("viewer").hidden = true;
+  if (!fromHistory && history.state && history.state.viewer) history.back();
+}
+function draw() {
+  const item = items[at];
+  if (!item) { closeViewer(false); return; }
+  if (item.photo) $("stage").innerHTML = `<img src="${esc(item.photo)}" alt="">`;
+  else if (item.film) $("stage").innerHTML = `<video src="${esc(item.film)}" controls playsinline autoplay preload="metadata"></video>`;
+  else $("stage").innerHTML = `<p>${esc(fill(T.unplayable, { format: item.format || "?" }))}</p>`;
+  $("where").textContent = fill(T.of, { at: at + 1, total: items.length });
+  for (const step of PRELOADED) {
+    const next = items[at + step];
+    if (next && next.photo) new Image().src = next.photo;
+  }
+}
+function move(step) {
+  const next = at + step;
+  if (next < 0 || next >= items.length) return;
+  at = next;
+  draw();
+}
+
+async function change(action) {
+  const item = items[at];
+  if (!item || !album) return;
+  let name = album.name;
+  if (action === "remove" && !window.confirm(fill(T.outAsk, { name }))) return;
+  if (action === "add") {
+    name = (window.prompt(T.addAsk, "") || "").trim();
+    if (!name) return;
+  }
+  const body = JSON.stringify({ action, album: name, keys: [String(item.key)] });
+  const answer = await ask(P.change, { method: "POST", headers: { "Content-Type": "application/json" }, body });
+  if (!answer) return;
+  toast(answer.message);
+  if (action === "remove") {
+    closeViewer(false);
+    if (answer.albums.some((each) => each.name === album.name)) showAlbum(album.name);
+    else location.hash = "";
+  }
+}
+
+function wire() {
+  $("main").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-at]");
+    if (button) { openViewer(Number(button.dataset.at)); return; }
+    const cover = event.target.closest("[data-key]");
+    if (cover) openViewer(Math.max(0, items.findIndex((item) => String(item.key) === cover.dataset.key)));
+  });
+  const stage = $("stage");
+  stage.addEventListener("pointerdown", (event) => { pointer = { x: event.clientX, y: event.clientY }; });
+  stage.addEventListener("pointerup", (event) => {
+    if (!pointer) return;
+    const dx = event.clientX - pointer.x;
+    const dy = event.clientY - pointer.y;
+    pointer = null;
+    if (Math.abs(dx) > SWIPE_PX && Math.abs(dx) > Math.abs(dy)) move(dx < 0 ? 1 : -1);
+    else if (Math.abs(dx) < SWIPE_PX && Math.abs(dy) < SWIPE_PX && event.target.tagName !== "VIDEO") closeViewer(false);
+  });
+  $("close").addEventListener("click", () => closeViewer(false));
+  $("takeOut").addEventListener("click", () => change("remove"));
+  $("addTo").addEventListener("click", () => change("add"));
+  document.addEventListener("keydown", (event) => {
+    if ($("viewer").hidden) return;
+    if (event.key === "ArrowRight") move(1);
+    else if (event.key === "ArrowLeft") move(-1);
+    else if (event.key === "Escape") closeViewer(false);
+  });
+  window.addEventListener("popstate", () => closeViewer(true));
+  window.addEventListener("hashchange", route);
+}
+wire();
+route();

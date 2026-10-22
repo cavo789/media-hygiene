@@ -125,6 +125,12 @@
 #      timed, its lines; the originals unchanged; the copies' size per photo and the zip's; GPS
 #      in the originals and in the copies (System.Drawing); asks whether the Explorer opened on
 #      $HOME\media-hygiene\Shares; the test album removed from it at the end      (0296)
+#  33. an album on the phone at home: an album of the test folder's photos (and 2 videos of
+#      C:\Photos), then, in a new window, mh --lan by hand: the album list and an album timed
+#      from the PC (cold, warm), one phone-sized picture timed and weighed; on the phone: the
+#      albums opened from its home page, scroll smoothness, tap -> photo full screen timed,
+#      swipe, a video in place, a photo taken out and added to another album (albums.json read
+#      back), another photo's address refused                                  (0297)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -161,6 +167,7 @@
 #   .\mh-measure.ps1 -Only 30 -Count 30   (mh slideshow --lan: the photos on the TV, the phone as remote: 0291)
 #   .\mh-measure.ps1 -Only 31 -Count 10   (mh slideshow --lan plays the videos on the TV: 0292)
 #   .\mh-measure.ps1 -Only 32 -Count 60   (mh share: an album ready to send, sizes and GPS: 0296)
+#   .\mh-measure.ps1 -Only 33 -Count 120  (an album on the phone at home, mh --lan: 0297)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -2908,6 +2915,111 @@ if (Wanted 32) {
     Remove-Item -Recurse -Force -LiteralPath $shareFolder -ErrorAction SilentlyContinue
     Remove-Item -Force -LiteralPath $shareZip -ErrorAction SilentlyContinue
     Log "   32: the test album's folder and zip removed from $shares"
+    $ErrorActionPreference = $saved
+}
+
+# --- 33: an album on the phone at home (0297) -----------------------------------------------
+# A test mh audits the test folder (and 2 small videos of your photos copied into it); an album
+# of its photos is written into the test reports (albums.json, as in step 32). You open
+# mh --lan in a NEW window with this test mh: the album list, an album and a phone-sized picture
+# are timed from the PC (127.0.0.1), then the phone is asked. Your photos are only read.
+if (Wanted 33) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 33. an album on the phone at home (0297)"
+    $phoneTool = Join-Path $tool "album-phone"
+    New-Item -ItemType Directory -Force -Path $phoneTool, (Join-Path $tool "config") | Out-Null
+    $phoneFilms = Join-Path $data "album-videos"
+    New-Item -ItemType Directory -Force -Path $phoneFilms | Out-Null
+    $smallFilms = @(Get-ChildItem -Path $Photos -Recurse -File -ErrorAction SilentlyContinue |
+        Where-Object { $_.Extension -in '.mov', '.mp4' -and $_.Length -gt 1MB } |
+        Select-Object -First 40 | Sort-Object Length | Select-Object -First 2)
+    foreach ($film in $smallFilms) { Copy-Item -LiteralPath $film.FullName -Destination $phoneFilms }
+    $phoneFile = Join-Path $phoneTool "mh.ps1"
+    $phoneMounts = @(
+        "-v", "${volume}:/cache",
+        "-v", "$(Join-Path $tool 'config'):/config",
+        "-v", "$(Join-Path $tool 'journal'):/journal",
+        "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+        "-v", "$(Join-Path $tool 'reports'):/reports"
+    )
+    & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @phoneMounts $Image launcher --photos $data > $phoneFile
+    . $phoneFile
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    mh audit | Out-Null
+    $watch.Stop()
+    Log ("   33a. mh audit of the test folder: exit code {0}, {1:N1} s" -f $LASTEXITCODE, $watch.Elapsed.TotalSeconds)
+    $albumFiles = @(Get-ChildItem -Path (Join-Path $data "flat") -File | Sort-Object Name | Select-Object -First $Count) + @(Get-ChildItem -Path $phoneFilms -File)
+    $entries = @(foreach ($file in $albumFiles) {
+        [ordered]@{
+            path = $file.FullName
+            sha256 = (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash.ToLower()
+            size = $file.Length
+            added = "2026-10-22T00:00:00Z"
+        }
+    })
+    $phoneAlbum = "mh-measure phone"
+    $albums = [ordered]@{ version = 1; albums = @([ordered]@{ name = $phoneAlbum; entries = $entries }) }
+    $phoneAlbums = Join-Path $tool "reports\albums.json"
+    [IO.File]::WriteAllText($phoneAlbums, ($albums | ConvertTo-Json -Depth 6), [Text.UTF8Encoding]::new($false))
+    Log ("   33a. album of {0} files ({1} videos) written to {2}" -f $albumFiles.Count, $smallFilms.Count, $phoneAlbums)
+    $address = _mh_lan_address
+    if ($address) {
+        Write-Host "33: open a NEW Windows PowerShell window and type these two lines:"
+        Write-Host "        . '$phoneFile'"
+        Write-Host "        mh --lan"
+        $phonePort = Read-Host "33b. The port in the address on the PC's page, in 'On your phone' (Enter: 8088)"
+        if ($phonePort -eq "") { $phonePort = "8088" }
+        $base = "http://127.0.0.1:$phonePort"
+        $named = [Uri]::EscapeDataString($phoneAlbum)
+        try {
+            foreach ($round in 'cold', 'warm') {
+                $watch = [Diagnostics.Stopwatch]::StartNew()
+                $null = Invoke-WebRequest -Uri "$base/api/album-list" -UseBasicParsing -TimeoutSec 120
+                $listMs = $watch.Elapsed.TotalMilliseconds
+                $watch = [Diagnostics.Stopwatch]::StartNew()
+                $view = (Invoke-WebRequest -Uri "$base/api/album/$named" -UseBasicParsing -TimeoutSec 120).Content | ConvertFrom-Json
+                $albumMs = $watch.Elapsed.TotalMilliseconds
+                Log ("   33b. {0}: the album list {1:N0} ms, the album {2:N0} ms ({3} files, {4} days, place '{5}')" -f $round, $listMs, $albumMs, $view.count, @($view.days).Count, $view.place)
+            }
+            $firstPhoto = @($view.days | ForEach-Object { $_.items } | Where-Object { $_.photo } | Select-Object -First 1)
+            if ($firstPhoto.Count -eq 1) {
+                foreach ($round in 'cold', 'warm') {
+                    $watch = [Diagnostics.Stopwatch]::StartNew()
+                    $picture = Invoke-WebRequest -Uri "$base$($firstPhoto[0].photo)" -UseBasicParsing -TimeoutSec 120
+                    Log ("   33c. {0}: one phone-sized picture {1:N0} ms, {2:N0} KB" -f $round, $watch.Elapsed.TotalMilliseconds, ($picture.RawContentLength / 1KB))
+                }
+            }
+            $films = @($view.days | ForEach-Object { $_.items } | Where-Object { -not $_.photo } | ForEach-Object { if ($_.film) { 'plays ' + $_.film } else { 'labelled ' + $_.format } })
+            Log ("   33c. the videos as the page lists them: " + ($films -join ', '))
+        } catch {
+            Log ("   33b. the albums' routes failed: " + $_.Exception.Message)
+        }
+        Write-Host "    On the phone (same Wi-Fi): pair it with the QR code, then 'Open the albums' on its home page."
+        $listed = Read-Host "33d. The list shows the album, its cover, its dates and its count? (y / n: what)"
+        $scroll = Read-Host "33e. Open the album and scroll the mosaic quickly to the end: smooth? (y / j: jerky / b: blank tiles for long)"
+        Write-Host "    Tap a photo far down the mosaic; press Enter at the tap."
+        $null = Read-Host "    Enter as you tap"
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        $null = Read-Host "    ... Enter when the photo is sharp and whole, full screen"
+        $watch.Stop()
+        Log ("   33f. tap -> photo full screen: {0:N1} s" -f $watch.Elapsed.TotalSeconds)
+        $swipe = Read-Host "33g. Swipe left 5 times: each next photo at once (loaded in advance)? (y / n: seconds) ; a tap closes it? (y/n)"
+        $video = Read-Host "33h. Open a video of the album: it plays in place, with sound? (y / m: muted / n: what)"
+        $back = Read-Host "33i. Full screen, the phone's Back button closes the photo and stays in the album? (y / n: what)"
+        $before = (Get-Content -LiteralPath $phoneAlbums -Raw | ConvertFrom-Json).albums
+        $moved = Read-Host "33j. Full screen: Take out of the album (OK), then on another photo Add to an album, name 'Kids'. Said and saved? (y / n: what)"
+        $after = (Get-Content -LiteralPath $phoneAlbums -Raw | ConvertFrom-Json).albums
+        $counts = ($after | ForEach-Object { "$($_.name): $(@($_.entries).Count)" }) -join ', '
+        Log ("   33j. albums.json before: {0} files in 1 album; after: {1}" -f @($before[0].entries).Count, $counts)
+        $other = Read-Host "33k. In the phone's address bar, type http://${address}:$phonePort/original/1.jpg then /preview/1.jpg: refused both? (y / n: what shows)"
+        $mobile = Read-Host "33l. Wi-Fi off (mobile data), reload the album: the page cannot be reached? (y / n)"
+        Log "   33: list $listed, scroll $scroll, swipe $swipe, video $video, Back $back, changed $moved, another file refused $other, mobile data cut off $mobile"
+        Write-Host "    In the window of mh --lan: Quit on the PC's page (or Ctrl+C), then close it."
+    } else {
+        Log "   33: skipped the phone part: no private address found (mh --lan says the same)"
+    }
     $ErrorActionPreference = $saved
 }
 

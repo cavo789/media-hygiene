@@ -877,6 +877,9 @@ msgstr ""
 "Ajouter à votre config.toml les réglages de cette version, avec leur "
 "explication ; vos valeurs et commentaires sont gardés."
 
+msgid "Add to an album"
+msgstr "Ajouter à un album"
+
 msgid "Add to the album"
 msgstr "Ajouter à l'album"
 
@@ -3178,10 +3181,12 @@ msgstr "D'un élément à l'autre ; le premier mène directement au contenu."
 msgid "From the cache alone: no file is read again."
 msgstr "Depuis le cache seul : aucun fichier n'est relu."
 
-msgid "From the phone: the audit and the reports. Run this step on the PC."
+msgid ""
+"From the phone: the audit, the reports and the albums. Run this step on "
+"the PC."
 msgstr ""
-"Depuis le téléphone : l'audit et les rapports. Lancez cette étape sur le "
-"PC."
+"Depuis le téléphone : l'audit, les rapports et les albums. Lancez cette "
+"étape sur le PC."
 
 msgid "From year"
 msgstr "De l'année"
@@ -3952,6 +3957,13 @@ msgstr ""
 "dossier, ou dans l'espace vide d'un dossier ouvert, puis Media Hygiene "
 "pour ouvrir le menu de mh sur ce dossier."
 
+msgid ""
+"Media Hygiene does not answer: the albums show while mh runs on the PC, "
+"on the home Wi-Fi."
+msgstr ""
+"Media Hygiene ne répond pas : les albums s'affichent tant que mh tourne "
+"sur le PC, sur le Wi-Fi de la maison."
+
 msgid "Media Hygiene in the Explorer's right-click"
 msgstr "Media Hygiene dans le clic droit de l'Explorateur"
 
@@ -4348,6 +4360,13 @@ msgstr "Aucun album nommé {name}."
 msgid "No album named {name}. The albums: {names}."
 msgstr "Aucun album nommé {name}. Les albums : {names}."
 
+msgid ""
+"No album yet. On the PC, in search or browse, pick photos, then Add to "
+"the album."
+msgstr ""
+"Pas encore d'album. Sur le PC, dans search ou browse, choisissez des "
+"photos, puis Ajouter à l'album."
+
 msgid "No album yet: type a name, pick photos, then Add to the album."
 msgstr ""
 "Pas encore d'album : tapez un nom, choisissez des photos, puis Ajouter à "
@@ -4482,6 +4501,10 @@ msgstr "Aucun index dans {folder} : rien à chercher pour l'instant."
 #, python-brace-format
 msgid "No index in {folder}: nothing to tag yet."
 msgstr "Aucun index dans {folder} : rien à étiqueter pour l'instant."
+
+msgid "No index yet: the albums show the photos an audit has seen."
+msgstr ""
+"Pas encore d'index : les albums montrent les photos qu'un audit a vues."
 
 #, python-brace-format
 msgid "No journal found at {path}."
@@ -5087,6 +5110,15 @@ msgstr ""
 "télé) : ouvrez {screen} une fois et mettez-la en favori. Elle affiche un "
 "code : tapez-le sur la télécommande du téléphone."
 
+msgid ""
+"On the home Wi-Fi only, while mh runs on the PC. Your photos are only "
+"read: taking a photo out of an album, or adding it to another one, "
+"changes the albums file alone."
+msgstr ""
+"Sur le Wi-Fi de la maison seulement, tant que mh tourne sur le PC. Vos "
+"photos sont seulement lues : retirer une photo d'un album, ou l'ajouter à "
+"un autre, ne change que le fichier des albums."
+
 msgid "On the phone's remote, type the code of this TV:"
 msgstr "Sur la télécommande du téléphone, tapez le code de cette télé :"
 
@@ -5286,6 +5318,9 @@ msgid "Open index.html in the folder mounted on /reports: it lists every report.
 msgstr ""
 "Ouvrez index.html dans le dossier monté sur /reports : il liste tous les "
 "rapports."
+
+msgid "Open the albums"
+msgstr "Ouvrir les albums"
 
 msgid "Open the map at 127.0.0.1 or localhost."
 msgstr "Ouvrez la carte sur 127.0.0.1 ou localhost."
@@ -6218,6 +6253,9 @@ msgstr "Lancez docker avec -it, ou ajoutez --yes."
 msgid "Run the Czkawka command again; it writes this file with -C."
 msgstr "Relancez la commande Czkawka ; elle écrit ce fichier avec -C."
 
+msgid "Run the audit first (Clean, step 1)."
+msgstr "Lancez d'abord l'audit (Nettoyage, étape 1)."
+
 msgid "Run the same command again to continue: the files moved are skipped."
 msgstr ""
 "Relancez la même commande pour continuer : les fichiers déjà déplacés "
@@ -7086,6 +7124,10 @@ msgstr "Retirer de la mise de côté"
 msgid "Take the batch back ({events})"
 msgstr "Reprendre le lot ({events})"
 
+#, python-brace-format
+msgid "Take this photo out of {name}? The photo itself stays where it is."
+msgstr "Retirer cette photo de {name} ? La photo elle-même reste où elle est."
+
 msgid "Taken out of config.toml: its GPS decides again."
 msgstr "Retirée de config.toml : son GPS décide à nouveau."
 
@@ -7137,6 +7179,9 @@ msgstr "L'album {name} est vide : retiré de {place}."
 msgid "The album's name"
 msgstr "Nom de l'album"
 
+msgid "The album's name (a new name creates it):"
+msgstr "Le nom de l'album (un nouveau nom le crée) :"
+
 msgid "The album's name: the folder holding its links."
 msgstr "Le nom de l'album : le dossier qui contient ses liens."
 
@@ -7144,6 +7189,10 @@ msgid "The albums are saved in /reports: mount it, or they are lost."
 msgstr ""
 "Les albums sont enregistrés dans /reports : montez-le, sinon ils sont "
 "perdus."
+
+#, python-brace-format
+msgid "The albums cannot be read (error {status})."
+msgstr "Les albums n'ont pas pu être lus (erreur {status})."
 
 msgid "The audit counts them"
 msgstr "L'audit les compte"
@@ -7731,6 +7780,9 @@ msgstr "Le nom du téléphone, tel que Windows l'affiche."
 msgid "The phone's remote: on a phone on the same Wi-Fi, open"
 msgstr "La télécommande : sur un téléphone du même Wi-Fi, ouvrez"
 
+msgid "The photo, full screen"
+msgstr "La photo, en plein écran"
+
 msgid ""
 "The photos have vectors, but the model of search by meaning is not in the"
 " cache: the words alone answer."
@@ -8315,6 +8367,10 @@ msgstr "Cette photo est dans un dossier protégé : elle ne bouge jamais."
 
 msgid "This step takes no words."
 msgstr "Cette étape ne prend pas de mots."
+
+#, python-brace-format
+msgid "This video does not play on a phone as it is ({format})."
+msgstr "Cette vidéo ne se lit pas telle quelle sur un téléphone ({format})."
 
 msgid "This workbook belongs to another classify run."
 msgstr "Ce classeur appartient à une autre exécution de 'classify'."
@@ -8906,6 +8962,9 @@ msgstr ""
 msgid "With Léa"
 msgstr "Avec Léa"
 
+msgid "Without a date"
+msgstr "Sans date"
+
 msgid "Words"
 msgstr "Mots"
 
@@ -9013,6 +9072,17 @@ msgstr ""
 "sauvegarde de téléphone, une copie). 'clean' les remet en quarantaine, "
 "avec le reste de son plan. Pour en garder une finalement : 'undo' de ce "
 "nettoyage, et elle n'est plus proposée."
+
+msgid "Your albums"
+msgstr "Vos albums"
+
+msgid ""
+"Your albums as on a phone: a cover, the photos by day, full screen with a"
+" swipe. On a phone of the home Wi-Fi too, once paired with mh --lan."
+msgstr ""
+"Vos albums comme sur un téléphone : une couverture, les photos par jour, "
+"en plein écran d'un glissement. Sur un téléphone du Wi-Fi de la maison "
+"aussi, une fois appairé avec mh --lan."
 
 msgid "Your backups, compared, never changed:"
 msgstr "Vos sauvegardes, comparées, jamais modifiées :"
@@ -11121,6 +11191,10 @@ msgstr ""
 "reste sur ce PC seulement."
 
 #, python-brace-format
+msgid "{at} of {total}"
+msgstr "{at} sur {total}"
+
+#, python-brace-format
 msgid ""
 "{backup} (folders.backups) and {other} (folders.{key}) are one folder or "
 "one inside the other: a backup folder is only compared, give it no other "
@@ -12703,6 +12777,15 @@ msgstr[0] "{n} fichier trouvé."
 msgstr[1] "{n} fichiers trouvés."
 
 #, python-brace-format
+msgid "{n} file missing: moved out of the folders analysed, or deleted."
+msgid_plural "{n} files missing: moved out of the folders analysed, or deleted."
+msgstr[0] ""
+"{n} fichier manquant : déplacé hors des dossiers analysés, ou supprimé."
+msgstr[1] ""
+"{n} fichiers manquants : déplacés hors des dossiers analysés, ou "
+"supprimés."
+
+#, python-brace-format
 msgid ""
 "{n} file of the album is missing (moved out of the folders analysed, or "
 "deleted): not included."
@@ -12783,6 +12866,12 @@ msgid "{n} photo could not be read: not included."
 msgid_plural "{n} photos could not be read: not included."
 msgstr[0] "{n} photo n'a pas pu être lue : non incluse."
 msgstr[1] "{n} photos n'ont pas pu être lues : non incluses."
+
+#, python-brace-format
+msgid "{n} photo or video"
+msgid_plural "{n} photos and videos"
+msgstr[0] "{n} photo ou vidéo"
+msgstr[1] "{n} photos et vidéos"
 
 #, python-brace-format
 msgid "{n} photo ready to send ({size}), read back from {folder}."

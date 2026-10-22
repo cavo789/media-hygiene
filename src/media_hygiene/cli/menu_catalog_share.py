@@ -1,6 +1,7 @@
 """The share area, outside the cycle: the ways to show the photos to others (0294).
 
-The slideshow on the TV (0291), and an album made ready to send (0296).
+The albums on this PC or a paired phone (0297), the slideshow on the TV (0291), and
+an album made ready to send (0296).
 """
 
 from __future__ import annotations
@@ -78,7 +79,10 @@ def share_area() -> Area:
         _("Share your photos"),
         _("Your photos on the TV, or an album ready to send by mail."),
         "image",
-        (Group(_("The commands"), ("slideshow", "share")),),
+        (
+            Group(_("Your albums"), (), extra="albums"),  # on a phone too (0297)
+            Group(_("The commands"), ("slideshow", "share")),
+        ),
         Doc("commands/slideshow/"),
         _("mh slideshow"),
     )

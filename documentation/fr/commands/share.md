@@ -125,6 +125,7 @@ Dans `config.toml`, `[share]` :
 
 - [`search` : mettre des photos dans un album](search.md#mettre-des-photos-dans-un-album)
 - [`slideshow` : l'album sur la télé](slideshow.md)
+- [`home` : l'album sur votre téléphone, à la maison](home.md#vos-albums-sur-le-téléphone)
 
 ## L'aide intégrée
 

@@ -80,3 +80,7 @@ share a list.
   lists photos with keys it could add. The natural place is 0297 (the album pages on the phone,
   `review/lan_app.py`, which also lists the albums for a paired phone): add `ALBUMS_PATH` to what
   `LanApp._paired` lets through (`Origin` checked) with that page.
+
+## Status — DONE (2026-10-22)
+
+- Item 4 done with 0297: a paired phone adds a file of an album to an album or takes it out (`POST /api/albums` through `review/lan_app.py`, `Origin` checked, the keys limited to the albums' files: `share/album_page.py`, `services/album_pages.py`), read back from the disk; tested in `tests/integration/test_album_phone.py`. Nothing else remains (`docs_screenshots` to run afterwards).

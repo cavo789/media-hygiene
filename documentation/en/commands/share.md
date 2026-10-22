@@ -121,6 +121,7 @@ In `config.toml`, `[share]`:
 
 - [`search`: put photos in an album](search.md#put-photos-in-an-album)
 - [`slideshow`: the album on the TV](slideshow.md)
+- [`home`: the album on your phone, at home](home.md#your-albums-on-the-phone)
 
 ## The built-in help
 

@@ -40,7 +40,7 @@ docker run --rm -it `
 |---|---|
 | Your photos | 🔒 Never changed by the page: mount them `:ro`. The audit run from the page only reads them. |
 | Needs | The tool's folders (`/reports`, `/journal`, `/quarantine`, `/cache`), as `status` does; your folders for the audit; `-p 127.0.0.1:8088:8088` for the page. |
-| Writes | Nothing by itself; the audit run from the page writes its cache and its report, as `audit` does. |
+| Writes | Nothing by itself; the audit run from the page writes its cache and its report, as `audit` does; the [albums' page](#your-albums-on-the-phone) changes `albums.json` alone. |
 | Undo | Nothing to undo; each step keeps its own undo. |
 | With `mh` | `mh home`. |
 
@@ -145,7 +145,8 @@ In Windows PowerShell, `mh --lan` opens the home page as `mh` alone does, and le
 3. On the phone, scan the QR code, or open the address and type the code: the home page opens.
    The phone stays paired (a cookie) until `mh` stops, even after the steps run on the PC.
 
-From the phone: 🔒 the page, where you are, the reports and the **audit** run by the page.
+From the phone: 🔒 the page, where you are, the reports, the **audit** run by the page and
+[your albums](#your-albums-on-the-phone).
 Every other step stays on the PC (*Run this step on the PC*): its questions are asked in the
 window of `mh`, which nobody sees from the sofa. **Quit** is the PC's too.
 
@@ -161,6 +162,30 @@ the home network too: the phone already paired reloads its page and gets the sli
 
 The phone cannot open the page? Windows counts the network as **public** (`mh` says so): set
 it to private in *Settings › Network and Internet*. `mh --lan` is Windows PowerShell only for now.
+
+## Your albums, on the phone
+
+At home, show an album to the family **on your own phone**, without the TV: pair it once with
+`mh --lan` (above), then open **Open the albums** on its home page (or, on the PC, *Share ›
+Your albums*). The relatives look at your screen and pair nothing.
+
+- **The list**: each [album](search.md#put-photos-in-an-album), its cover, its dates, its
+  place and how many photos it holds.
+- **An album**, as the big photo apps show it: a **cover** (the sharpest photo of the first
+  day), the album's name, its dates and its place (named offline, from the photos' GPS), then
+  a **mosaic** grouped by day, *Monday 10 July 2023 · Heraklion*.
+- **A tap** opens the photo full screen; **a swipe** goes to the next or the previous one;
+  **a tap** (or the phone's *Back*) closes it. The next photos are loaded in advance.
+- **Videos** play in place, as on the TV: H.264 as it is; another format (HEVC, AVI) is
+  labelled, never converted.
+- **➖ Take out of the album**, **➕ Add to an album** (a new name creates it): only
+  `albums.json` changes, read back and said; no photo is copied, moved or touched.
+
+| | |
+|---|---|
+| Your photos | 🔒 Only read. The phone gets pictures sized for it (1440 pixels at most, kept in `/cache`), never an original. |
+| What the phone reaches | The albums and **their** files only: no other photo of your library, whatever address it types. |
+| Where | The home Wi-Fi only, while `mh` runs on the PC (said on the page). |
 
 ## The keyboard, the palette, the theme
 

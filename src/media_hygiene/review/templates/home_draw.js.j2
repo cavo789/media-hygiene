@@ -161,7 +161,7 @@ function viewHome() {
   const given = S.given.map((line) => `<p class="callout callout-info">${icon("folder")}<span>${esc(line)}</span></p>`).join("");
   return `${updateBanner()}
     <div class="page-head"><h1>${esc(T.whereYourPhotos)}</h1><p>${esc(T.readNow)}</p></div>
-    ${given}${hero()}
+    ${given}${hero()}${REMOTE ? EXTRAS.albums() : ""}
     <section class="block" aria-labelledby="cycleTitle">
       <div class="section-head"><h2 id="cycleTitle">${esc(T.cycle)}</h2><p class="section-note">${esc(T.cycleNote)}</p></div>
       <ol class="cycle">${STAGES.map(station).join("")}</ol>
@@ -231,6 +231,7 @@ function viewSpace(space) {
     ${planned}${top}${groups}`;
 }
 const EXTRAS = {
+  albums: () => `<div class="callout callout-info">${icon("image")}<div><p>${esc(T.albumsText)}</p><div class="callout-actions"><a class="btn btn-primary" href="${esc(P.albums)}">${icon("image")} ${esc(T.albumsOpen)}</a></div></div></div>`,
   undo: () => (S.undo
     ? `<div class="callout callout-info">${icon("undo")}<div><p><strong>${esc(fill(T.stillUndoable, { what: S.undo.text }))}</strong></p><div class="callout-actions"><button class="btn btn-primary" type="button" data-run="undo">${icon("undo")} ${esc(T.undoThis)}</button>${cmdChip(S.undo.command)}</div></div></div>`
     : `<div class="callout callout-note">${icon("info")}<p>${esc(T.nothingToUndo)}</p></div>`),
