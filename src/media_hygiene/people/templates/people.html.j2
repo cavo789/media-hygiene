@@ -4,8 +4,9 @@
    by the server into config.toml, read back and shown. Keyboard: arrows (or j/k) move
    between groups, Enter types a name, y confirms the attributed faces shown, x picks a
    group to name with others, i ignores a group; each person shows twice at most: the
-   faces the user confirmed (verified ✓) and those the tool gives them (attributed); a click on a face opens its photo, its × takes it
-   out of the group. *and N more faces* shows every face of a group: then, and only
+   faces the user confirmed (verified ✓) and those the tool gives them (attributed). A
+   click on a face opens its photo; its × marks it as someone else's (greyed, kept in
+   place: nothing moves) until the next button of its section saves the marks. *and N more faces* shows every face of a group: then, and only
    then, its photos can be set aside (in the decisions file, for `clean --decisions`;
    opened from the home page, *Apply now* runs it). #}
 {% set texts = {
@@ -34,7 +35,9 @@
   "save": _("Name"),
   "ignore": _("Ignore this group"),
   "pick": _("Name with others"),
-  "remove": _("Not this person: take this face out"),
+  "remove": _("Not this person: mark this face; the next button of the group saves it"),
+  "putBack": _("Put this face back"),
+  "rejectMarked": [ngettext("Not {name}: take out this face", "Not {name}: take out these {n} faces", 1), ngettext("Not {name}: take out this face", "Not {name}: take out these {n} faces", 2)],
   "picked": [ngettext("{n} group picked: the next name goes to it.", "{n} groups picked: the next name goes to all of them.", 1), ngettext("{n} group picked: the next name goes to it.", "{n} groups picked: the next name goes to all of them.", 2)],
   "saving": _("Saving…"),
   "readOnly": _("Names cannot be saved: mount a writable folder on /config."),
@@ -82,6 +85,7 @@
   .face { position: relative; }
   .face img { width: 96px; height: 96px; object-fit: cover; border-radius: 8px;
               background: var(--chip); cursor: pointer; display: block; }
+  .face.out img { opacity: .3; outline: 3px solid var(--bad); outline-offset: -3px; }
   .face button { position: absolute; top: 2px; right: 2px; width: 22px; height: 22px;
                  padding: 0; border: 0; border-radius: 50%; background: rgba(0, 0, 0, .6);
                  color: #fff; cursor: pointer; line-height: 22px; }
@@ -105,7 +109,7 @@
 <header>
   <p class="hint">{{ _("Each group holds faces that look alike: probably one person. Type a name to save it in config.toml; the photos are never changed and the faces stay on this computer.") }}</p>
   <p class="hint">{{ _("Naming confirms the faces shown: they become verified ✓. The other faces that look like them are attributed to the person, in a section of their own, until you confirm them, a page at a time.") }}</p>
-  <p class="hint">{{ _("↑ ↓ move, Enter names, y confirms the attributed faces shown, x names several groups at once, i ignores a group; × takes a face out.") }}</p>
+  <p class="hint">{{ _("↑ ↓ move, Enter names, y confirms the attributed faces shown, x names several groups at once, i ignores a group; × marks a face that is someone else's, the next button saves it.") }}</p>
   <p id="status" role="status"></p>
   {% include "apply_now.html.j2" %}
 </header>
@@ -183,7 +187,7 @@ async function expand(index) {
   }
   const faces = (await answer.json()).faces;
   for (const face of faces) whole.set(face.key, faces);
-  render();
+  render(true);
 }
 
 // After a change the groups are new: show again in full those that were.
@@ -220,6 +224,7 @@ async function send(body, path) {
     return;
   }
   picked.clear();
+  for (const key of [...(body.faces || []), ...(body.removed || [])]) removed.delete(key);
   show(result);
   say(result.saved || result.aside.message, "saved");
 }
@@ -232,14 +237,18 @@ function nameGroups(index, name) {
   if (faces.length) send({ action: "name", name, faces, removed: out });
 }
 
+// × marks a face as someone else's, or puts it back: nothing is sent, nothing moves;
+// the next button of the section saves the marks with what it does.
 function takeOut(index, key) {
-  const name = state.sections[index].name;
-  if (name && state.writable) {
-    send({ action: "reject", name, faces: [key] });
-    return;
-  }
-  removed.add(key);
-  render();
+  if (removed.has(key)) removed.delete(key); else removed.add(key);
+  const before = $("groups").children[index];
+  const after = group(state.sections[index], index);
+  after.querySelector("input").value = before.querySelector("input").value; // typed, not saved yet
+  before.replaceWith(after);
+}
+
+function marked(index) {
+  return displayed(state.sections[index]).map((item) => item.key).filter((key) => removed.has(key));
 }
 
 function face(item, index, verified) {
@@ -254,10 +263,12 @@ function face(item, index, verified) {
     $("viewerName").textContent = item.photo;
     $("viewer").classList.add("open");
   });
-  const out = element("button", "", "×");
-  out.title = TEXTS.remove;
-  out.setAttribute("aria-label", TEXTS.remove);
-  out.addEventListener("click", () => takeOut(index, item.key));
+  const isOut = removed.has(item.key);
+  box.classList.toggle("out", isOut);
+  const out = element("button", "", isOut ? "↺" : "×");
+  out.title = isOut ? TEXTS.putBack : TEXTS.remove;
+  out.setAttribute("aria-label", out.title);
+  out.addEventListener("click", (event) => { event.stopPropagation(); takeOut(index, item.key); });
   box.append(picture, out);
   if (verified) box.append(element("span", "check", "✓"));
   return box;
@@ -284,6 +295,12 @@ function tools(item, index) {
     bar.append(yes);
   }
   bar.append(input, save);
+  const out = marked(index);
+  if (item.name && out.length) {
+    const reject = element("button", "", fill(counted(TEXTS.rejectMarked, out.length), { name: item.name }));
+    reject.addEventListener("click", () => send({ action: "reject", name: item.name, faces: out }));
+    bar.append(reject);
+  }
   const pick = element("button", "", TEXTS.pick);
   pick.addEventListener("click", () => toggle(index));
   const ignore = element("button", "", TEXTS.ignore);
@@ -295,12 +312,16 @@ function tools(item, index) {
 }
 
 // The faces and photos a section still holds once those taken out here are left out;
-// photos are only known again with every face shown.
+// photos are exact with every face shown, close to it with the sample.
 function left(item) {
   const shown = displayed(item);
   const faces = shown.filter((face) => !removed.has(face.key));
-  const photos = complete(item) ? new Set(faces.map((face) => face.photo)).size : item.photos;
-  return { faces: item.faces - (shown.length - faces.length), photos };
+  const count = item.faces - (shown.length - faces.length);
+  if (complete(item)) return { faces: count, photos: new Set(faces.map((face) => face.photo)).size };
+  // Sample only: a photo of a face taken out goes when no face shown is left on it.
+  const kept = new Set(faces.map((face) => face.photo));
+  const gone = new Set(shown.filter((face) => removed.has(face.key) && !kept.has(face.photo)).map((face) => face.photo));
+  return { faces: count, photos: Math.min(item.photos - gone.size, count) };
 }
 
 function asideButton(item, index) {
@@ -327,7 +348,7 @@ function group(item, index) {
   title.append(element("small", "", fill(TEXTS.size, { faces: counted(TEXTS.faces, size.faces), photos: counted(TEXTS.photos, size.photos) })));
   const faces = element("div", "faces");
   const shown = displayed(item);
-  faces.append(...shown.filter((one) => !removed.has(one.key)).map((one) => face(one, index, item.verified)));
+  faces.append(...shown.map((one) => face(one, index, item.verified)));
   if (!complete(item)) {
     const more = element("button", "more", counted(TEXTS.more, item.faces - shown.length));
     more.title = TEXTS.showAll;
@@ -365,8 +386,11 @@ function ignoreGroup(index) {
   if (faces.length) send({ action: "ignore", faces });
 }
 
-function render() {
+// Draw the sections again; the same ones (no new state) keep the names typed in them.
+function render(sameSections) {
+  const typed = sameSections ? [...$("groups").querySelectorAll("section input")].map((input) => input.value) : [];
   $("groups").replaceChildren(...state.sections.map(group));
+  typed.forEach((value, index) => { $("groups").children[index].querySelector("input").value = value; });
 }
 
 function show(next) {

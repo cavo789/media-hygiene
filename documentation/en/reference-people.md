@@ -45,7 +45,7 @@ mounted, the page shows the groups and the names already given, and saves none.
 |---|---|
 | Type a name, then Enter | The faces shown (a few dozen, spread over the group) are confirmed as this person's: they show under **✓ verified**. The other faces of the group, and the faces that look like them, show under **attributed**. To check every face of a group before naming it, click **and N more faces**. The names already given are suggested as you type. A second group named like an existing person **adds** to their faces: a child at every age. |
 | Pick (`x`), then name | Name several groups at once: the same person split in two groups. |
-| × on a face | This face is not this person: it is taken out of the group, and never given this name again. |
+| × on a face | This face is someone else's: it is **marked**, greyed and framed in red, and stays in place (nothing moves; ↺ puts it back). The next button of the group saves the marks with what it does: the name, *Yes, these N faces are …*, or *Not … : take out these N faces*. A marked face is never given this name again. |
 | Ignore (`i`) | Strangers, posters, statues: the group is not shown again, nor the faces close to it. |
 | Yes, these N faces are … (`y`) | On an **attributed** section: the faces shown are this person's. They move to **✓ verified**, and the next ones show: take out the wrong ones with ×, confirm, again. An empty attributed section is not shown. |
 

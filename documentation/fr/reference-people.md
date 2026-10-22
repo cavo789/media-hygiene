@@ -47,7 +47,7 @@ déjà donnés, et n'en enregistre aucun.
 |---|---|
 | Taper un nom, puis Entrée | Les visages montrés (quelques dizaines, répartis dans le groupe) sont confirmés comme ceux de cette personne : ils s'affichent sous **✓ vérifié**. Les autres visages du groupe, et ceux qui leur ressemblent, s'affichent sous **attribué**. Pour vérifier chaque visage d'un groupe avant de le nommer, cliquez sur **et N visages de plus**. Les noms déjà donnés sont proposés pendant la frappe. Un deuxième groupe nommé comme une personne existante **s'ajoute** à ses visages : un enfant à tous les âges. |
 | Choisir (`x`), puis nommer | Nommer plusieurs groupes d'un coup : la même personne coupée en deux groupes. |
-| × sur un visage | Ce visage n'est pas cette personne : il est retiré du groupe, et ne reçoit plus jamais ce nom. |
+| × sur un visage | Ce visage est celui de quelqu'un d'autre : il est **marqué**, grisé et encadré de rouge, et reste à sa place (rien ne bouge ; ↺ le remet). Le prochain bouton du groupe enregistre les marques avec ce qu'il fait : le nom, *Oui, ces N visages sont …*, ou *Pas … : retirer ces N visages*. Un visage marqué ne reçoit plus jamais ce nom. |
 | Ignorer (`i`) | Des inconnus, des affiches, des statues : le groupe n'est plus montré, ni les visages qui lui ressemblent. |
 | Oui, ces N visages sont … (`y`) | Sur une section **attribué** : les visages affichés sont ceux de cette personne. Ils passent dans **✓ vérifié**, et les suivants s'affichent : retirez les mauvais avec ×, confirmez, recommencez. Une section attribué vide n'est pas affichée. |
 
