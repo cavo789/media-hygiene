@@ -128,7 +128,7 @@
 #  33. an album on the phone at home: an album of the test folder's photos (and 2 videos of
 #      C:\Photos), then, in a new window, mh --lan by hand: the album list and an album timed
 #      from the PC (cold, warm), one phone-sized picture timed and weighed; on the phone: the
-#      albums opened from its home page, scroll smoothness, tap -> photo full screen timed,
+#      albums opened from its home page, scroll smoothness, tap -> photo full screen (asked),
 #      swipe, a video in place, a photo taken out and added to another album (albums.json read
 #      back), another photo's address refused                                  (0297)
 #
@@ -2999,12 +2999,10 @@ if (Wanted 33) {
         Write-Host "    On the phone (same Wi-Fi): pair it with the QR code, then 'Open the albums' on its home page."
         $listed = Read-Host "33d. The list shows the album, its cover, its dates and its count? (y / n: what)"
         $scroll = Read-Host "33e. Open the album and scroll the mosaic quickly to the end: smooth? (y / j: jerky / b: blank tiles for long)"
-        Write-Host "    Tap a photo far down the mosaic; press Enter at the tap."
-        $null = Read-Host "    Enter as you tap"
-        $watch = [Diagnostics.Stopwatch]::StartNew()
-        $null = Read-Host "    ... Enter when the photo is sharp and whole, full screen"
-        $watch.Stop()
-        Log ("   33f. tap -> photo full screen: {0:N1} s" -f $watch.Elapsed.TotalSeconds)
+        # Asked, not timed: two Enter presses around a tap were misread (2026-10-22, 23.9 s logged
+        # for a photo shown at once); 33c times a phone-sized picture from the PC.
+        $tapped = Read-Host "33f. Tap a photo far down the mosaic: full screen at once, sharp and whole? (y / n: about how many seconds)"
+        Log "   33f. tap -> photo full screen at once: $tapped"
         $swipe = Read-Host "33g. Swipe left 5 times: each next photo at once (loaded in advance)? (y / n: seconds) ; a tap closes it? (y/n)"
         $video = Read-Host "33h. Open a video of the album: it plays in place, with sound? (y / m: muted / n: what)"
         $back = Read-Host "33i. Full screen, the phone's Back button closes the photo and stays in the album? (y / n: what)"

@@ -54,7 +54,7 @@ or creates the Facebook album and adds the folder by hand — fast, since the ph
 Item 1: videos are **left out and counted** ("3 videos not included"): only the resized photos
 are copied (one video alone can pass a mail's limit).
 
-## Status — PARTIAL (2026-10-22)
+## Status — DONE (2026-10-22)
 
 ### Done
 - `share --album "<name>"`: each photo upright, long side 2048, JPEG 85, GPS removed unless
@@ -69,8 +69,13 @@ are copied (one video alone can pass a mail's limit).
 - Tests: originals compared before/after, GPS read back removed/kept, launcher mounts, read-only run.
 - Size measured on synthetic 12 MP pictures: 0.27–0.83 MB per copy.
 
+### Measured on the maintainer's PC (2026-10-22, `mh-measure.ps1 -Only 32 -Count 60`)
+- 60 real photos ready in 1.7 s; 19.2 MB, 0.32 MB per copy against 0.64 MB per original
+  (−50 %); the zip read back (60 files); originals unchanged (size and date); the Explorer
+  opened on Shares, the folder and the zip side by side; copies upright, sharp, colours right.
+- GPS removal not seen on real photos: none of the 60 sampled originals had a position (the
+  tests on synthetic pictures cover it).
+
 ### Not done
-- Sizes on real photos and the Explorer opening on Windows: `.\mh-measure.ps1 -Only 32 -Count 60`.
-  **Reason:** only the maintainer's PC has the real photos and Windows.
 - `docs_screenshots` (new help, Share area, album bar; reference capture hand-edited).
   **Reason:** heavy (image build + browser), never run unasked.

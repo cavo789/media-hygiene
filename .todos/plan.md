@@ -32,5 +32,3 @@ Nothing to run unattended.
 | 0264 | `mh backup`: copy the photo folders into a NAS folder of their own, only what it lacks, at Windows's SMB speed | [PARTIAL_0264-backup-photo-folders-to-nas.md](PARTIAL/PARTIAL_0264-backup-photo-folders-to-nas.md) |
 | 0269 | Open the home page from a smartphone on the home network | [PARTIAL_0269-open-the-home-page-from-a-phone.md](PARTIAL/PARTIAL_0269-open-the-home-page-from-a-phone.md) |
 | 0292 | `slideshow` plays videos too | [PARTIAL_0292-slideshow-plays-videos.md](PARTIAL/PARTIAL_0292-slideshow-plays-videos.md) |
-| 0296 | Prepare an album for sending: resized copies without GPS, a folder and a zip | [PARTIAL_0296-prepare-an-album-for-sending.md](PARTIAL/PARTIAL_0296-prepare-an-album-for-sending.md) |
-| 0297 | An album on the phone at home: cover, mosaic by day, full screen | [PARTIAL_0297-album-on-the-phone-at-home.md](PARTIAL/PARTIAL_0297-album-on-the-phone-at-home.md) |

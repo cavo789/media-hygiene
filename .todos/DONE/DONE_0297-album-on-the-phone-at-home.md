@@ -43,7 +43,7 @@ there.
   unless already allowed by 0269).
 - The maintainer's measure on the phone (the mh-measure step).
 
-## Status — PARTIAL (2026-10-22)
+## Status — DONE (2026-10-22)
 
 ### Done
 - The albums' page, served in front of the home page (`share/album_page.py`, `share/album_shelf.py`, `services/album_pages.py`, `services/album_reader.py`, `share/templates/album.{html,js}.j2`): the list (cover, dates, place, count), an album (cover = sharpest photo of the first day, dates, offline place, mosaic by day named after its town), full screen with swipe, tap or Back to close, next pictures preloaded; videos in place as on the TV (H.264 as is, the others labelled).
@@ -52,9 +52,17 @@ there.
 - 0295 item 4: a paired phone takes a photo out of an album or adds it to another (`POST /api/albums`, `Origin` checked, keys limited to the albums' files), read back.
 - Docs en + fr (`commands/home.md` § Your albums, on the phone; `share.md` Go further), French catalogue; `mh-measure.ps1` step 33.
 
+### Measured on the maintainer's phone (2026-10-22, `mh-measure.ps1 -Only 33 -Count 120`)
+- From the PC: the album list 150 ms, an album 149 ms (122 files, 5 days); a phone-sized
+  picture 309 ms cold, 91 ms warm (189 KB).
+- On the phone: list, cover, dates, count right; the mosaic scrolls smoothly; a photo opens
+  full screen at once (the timed 23.9 s was a misread prompt, said by the maintainer; step 33f
+  now asks instead of timing); swipe immediate; Back closes; take out and add to an album
+  "Enfants" said and read back from `albums.json`; `/original/` and `/preview/` refused;
+  unreachable on mobile data. The sample's two videos were mjpeg: labelled, not played, as
+  designed (0292).
+
 ### Not done
-- The measure on the maintainer's phone (scroll smoothness, tap → full screen, swipe, a video, a change).
-  **Reason:** needs the maintainer's phone and Wi-Fi: `.\mh-measure.ps1 -Only 33 -Count 120`.
 - A cover chosen by the user (only the sharpest of the first day).
   **Reason:** needs a `cover` field in `albums.json` (schema change): asked in the feedback.
 - `docs_screenshots` afterwards (home page and new albums page); HTTPS stays a future idea (item 4).
