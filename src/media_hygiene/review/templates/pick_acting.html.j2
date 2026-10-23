@@ -1,0 +1,17 @@
+{# The first part of the one bar above the grid of a page of photos to pick (0305): where
+   you are (`#status`), or, once files are picked, what to do with them; then the line of
+   what is set aside (`#chosen`) and *Apply now*. `pickAll` (a search shows its first files
+   only) picks every file found. The page adds its own fields after it, in the bar; a
+   page where a pick means something else names its two actions (`pick_add`,
+   `pick_remove`). #}
+<span id="lead"><span id="status" role="status"></span></span>
+<span id="acting" hidden>
+  <button id="unpick" class="plain" type="button" title="{{ _('Pick none') }}" aria-label="{{ _('Pick none') }}">✕</button>
+  <strong id="picked"></strong>
+  <button id="pickAll" class="plain" type="button" hidden></button>
+  <button id="setAside" type="button">{{ pick_add | default(_("Set aside the picked files")) }}</button>
+  <button id="takeBack" class="plain" type="button" hidden>{{ pick_remove | default(_("Take out of the set aside")) }}</button>
+  <button id="invert" class="plain" type="button" title="{{ _('Pick the others: the ones picked are left (I)') }}">{{ _("Invert the picking") }}</button>
+</span>
+<span id="chosen" role="status"></span>
+{% include "apply_now.html.j2" %}

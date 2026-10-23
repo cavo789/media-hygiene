@@ -264,7 +264,10 @@ phone is only read: nothing on it is deleted, moved or renamed.
 
 ### Free the phone: `mh phone --free`
 
-After the import, a page opens in your browser with what the PC may hold, in three groups:
+After the import, a page opens in your browser with what the PC may hold, **grouped by the
+phone's folders** (`Camera`, `WhatsApp`, a folder you made…, in the order of their names; only
+the phone's `DCIM` is listed). A badge on each tile says why the PC holds it, explained at the top
+of the left column:
 
 - **📚 Already in your library** and **📥 Copied by `mh phone`** (now or before): ticked for you;
 - **⚠️ Set aside before, on purpose**: never ticked for you. While its quarantine is there, the
@@ -272,6 +275,25 @@ After the import, a page opens in your browser with what the PC may hold, in thr
   <date>, still recoverable with `mh undo <run>` until `mh purge`*; once purged, *Purged on
   <date>: it is nowhere else. Deleted from the phone, it is lost for good* (a purge older than
   this version gives no date: *purged since*).
+
+A ticked file carries a red *🗑️ leaves the phone* label. To change what is ticked, the page works
+as [`browse`](browse.md):
+
+- **Pick**: a click picks one file; the ☑ box of each thumbnail (or Ctrl+click) adds or removes
+  one; Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse
+  over the grid picks what it touches, over several rows (with Ctrl, it adds to the picking);
+  Ctrl+A every file of the page. **Invert the picking** (or I) picks the others. Then, in the bar,
+  **🗑️ Tick: leaves the phone** or **Untick: stays on the phone**. A file set aside before is
+  never ticked with others: the bar says *1 file set aside before was left unticked*; tick it
+  alone, after reading its warning.
+- **A whole folder**: the box beside its name ticks every file of it (not those set aside
+  before), or unticks them all; ▣ when only some are ticked. ▾ folds a long folder (kept for the
+  next visit in this browser); the list of the folders, on the left, leads to each one.
+- **Large view**: a double click or Enter, ← → the previous or next one, **Space ticks or
+  unticks the file shown**, F full screen, Esc closes. It shows the PC's copy; *Open the
+  original* opens it untouched.
+- There is no Delete key here: the only deletion is the red button. The keys are listed at the
+  bottom left (⌨ **Keyboard**, then *More keys*).
 
 Every tick is saved at once in `phone-decisions.json` (in your reports folder), read back from the
 disk and shown. **Nothing leaves the phone before you press *Delete N files from the phone***;

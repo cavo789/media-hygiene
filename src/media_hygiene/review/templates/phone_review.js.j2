@@ -1,149 +1,237 @@
-{# The script of phone_review.html.j2: three groups of tiles, each tick saved and read back. #}
-(() => {
-  const T = {{ texts | tojson }};
-  const statePath = {{ state_path | tojson }};
-  const decidePath = {{ decide_path | tojson }};
-  const filePath = {{ file_path | tojson }};
-  const freePath = {{ free_path | tojson }};
-  const stopPath = {{ stop_path | tojson }};
-  const lang = document.documentElement.lang;
-  const byId = (id) => document.getElementById(id);
-  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
-  const clock = (iso) => new Date(iso).toLocaleTimeString(lang);
-  const number = (value) => value.toLocaleString(lang);
-  const UNITS = ["B", "KB", "MB", "GB", "TB"];
-  const size = (bytes) => {
-    let value = bytes;
-    let unit = 0;
-    while (value >= 1024 && unit < UNITS.length - 1) {
-      value /= 1024;
-      unit += 1;
-    }
-    return value.toLocaleString(lang, { maximumFractionDigits: unit < 2 ? 0 : 1 }) + " " + UNITS[unit];
-  };
-  let tiles = [];
-  let groups = [];
-  let disk = new Set();  // the ranks ticked in the file, as read back from the disk
+{# The script of phone_review.html.j2, after the shared `pick_*` scripts: the files of the
+   phone by folder (0312), picked as on `browse`; the bar's two buttons and Space in the
+   large view tick or untick them (0314), the folder's box every file of the folder. Each
+   choice is one `POST /api/phone`, the page shows what the file read back holds. A file
+   set aside before is never ticked by a gesture on several files: only alone, after its
+   warning. #}
+const TEXTS = {{ texts | tojson }};
+const STATE_PATH = {{ state_path | tojson }};
+const DECIDE_PATH = {{ decide_path | tojson }};
+const FILE_PATH = {{ file_path | tojson }};
+const FREE_PATH = {{ free_path | tojson }};
+const STOP_PATH = {{ stop_path | tojson }};
+const FOLDED_KEY = "mh-phone-folded";
+const LANG = document.documentElement.lang;
+const UNITS = ["B", "KB", "MB", "GB", "TB"];
+let phone = "";
+let tiles = [];   // every file of the phone the PC holds, by rank: `GET /api/state`
+let groups = [];  // the phone's folders, in the order of their names
+let badges = {};  // why the PC holds a file, by case: the legend's badges
+let disk = new Set(); // the ranks ticked in the file, as read back from the disk
 
-  const setStatus = (text, kind) => {
-    byId("status").textContent = text;
-    byId("status").className = kind || "";
-  };
-  const line = (tag, text, css) => {
-    const element = document.createElement(tag);
-    element.textContent = text;
-    if (css) element.className = css;
-    return element;
-  };
-  const sum = (ranks) => ranks.reduce((total, rank) => total + tiles[rank].size, 0);
-  const tickedOf = (ranks) => ranks.filter((rank) => tiles[rank].ticked);
+const number = (value) => value.toLocaleString(LANG);
+const clock = (iso) => new Date(iso).toLocaleTimeString(LANG);
+function size(bytes) {
+  let value = bytes;
+  let unit = 0;
+  while (value >= 1024 && unit < UNITS.length - 1) {
+    value /= 1024;
+    unit += 1;
+  }
+  return value.toLocaleString(LANG, { maximumFractionDigits: unit < 2 ? 0 : 1 }) + " " + UNITS[unit];
+}
+const sum = (ranks) => ranks.reduce((total, rank) => total + tiles[rank].size, 0);
+const aside = (rank) => tiles[rank].case === "set_aside";
 
-  const tile = (rank) => {
-    const file = tiles[rank];
-    const figure = document.createElement("figure");
-    figure.className = "tile" + (file.ticked ? " ticked" : "");
-    const box = document.createElement("input");
+function folded() {
+  try { return new Set(JSON.parse(window.localStorage.getItem(FOLDED_KEY) || "[]")); } catch { return new Set(); }
+}
+
+function fold(folder, closed) {
+  const kept = folded();
+  if (closed) kept.add(folder); else kept.delete(folder);
+  try { window.localStorage.setItem(FOLDED_KEY, JSON.stringify([...kept])); } catch { /* private mode */ }
+}
+
+// What the shared grid picks: the files in the folders' order (Shift ranges, arrows).
+function listing() {
+  return groups.flatMap((group) => group.files.map((rank) => {
+    const tile = tiles[rank];
+    return {
+      key: String(rank), name: tile.name, preview: tile.preview, original: tile.original,
+      chosen: tile.ticked, date: tile.taken.slice(0, 10), size: tile.size_text, folder: tile.folder || "DCIM",
+    };
+  }));
+}
+
+function card(file, index) {
+  const tile = tiles[Number(file.key)];
+  const node = element("article");
+  let picture = element("div", "empty", "📷");
+  if (tile.preview) {
+    picture = element("img");
+    picture.loading = "lazy";
+    picture.draggable = false; // a drag draws a rectangle (`pick_band.js.j2`)
+    picture.alt = tile.name;
+    picture.src = tile.preview;
+    picture.addEventListener("error", () => picture.replaceWith(element("div", "empty", "📷")));
+  }
+  const meta = element("div", "meta");
+  meta.append(element("div", "name", tile.name), element("div", "muted", (badges[tile.case] || "") + " · " + tile.size_text));
+  if (tile.held) meta.append(element("div", "muted", TEXTS.pc + " " + tile.held));
+  if (tile.warning) meta.append(element("div", "warning", "⚠️ " + tile.warning));
+  node.append(picture, meta);
+  return wireCard(node, index);
+}
+
+// The cards in their folders: a line per folder (its box, its counts), then its grid.
+function placeCards(made) {
+  const closed = folded();
+  let next = 0;
+  $("grid").replaceChildren(...groups.map((group, rank) => {
+    const section = element("section", "folder" + (closed.has(group.folder) ? " folded" : ""));
+    section.id = "folder-" + rank;
+    const bar = element("div", "folderBar");
+    const toggle = element("button", "fold plain", "▾");
+    toggle.type = "button";
+    toggle.title = TEXTS.fold;
+    toggle.addEventListener("click", () => fold(group.folder, section.classList.toggle("folded")));
+    const box = element("input");
     box.type = "checkbox";
-    box.checked = file.ticked;
-    box.addEventListener("change", () => {
-      if (box.checked && file.warning && !window.confirm(fill(T.confirmAside, { warning: file.warning }))) {
-        box.checked = false;
-        return;
-      }
-      decide([[rank, box.checked]]);
-    });
-    const label = document.createElement("label");
-    label.append(box, line("span", file.name));
-    let picture;
-    if (file.preview) {
-      picture = document.createElement("img");
-      picture.src = file.preview;
-      picture.alt = file.name;
-      picture.loading = "lazy";
-      picture.addEventListener("error", () => picture.replaceWith(line("div", "📷", "none")));
-    } else picture = line("div", "📷", "none");
-    figure.append(label, picture, line("p", file.folder + " · " + file.size_text, "muted"));
-    if (file.held) figure.append(line("p", T.pc + " " + file.held, "muted"));
-    if (file.warning) figure.append(line("p", "⚠️ " + file.warning, "warning"));
-    return figure;
-  };
+    box.title = TEXTS.folderBox;
+    box.addEventListener("click", (event) => { event.preventDefault(); tickFolder(group); });
+    bar.append(toggle, box, element("h2", "", "📁 " + (group.folder || "DCIM")), element("span", "muted count"));
+    if (group.aside) bar.append(element("span", "warning", fill(TEXTS.asideKept, { n: number(group.aside) })));
+    const grid = element("div", "tiles");
+    grid.append(...made.slice(next, next + group.files.length));
+    next += group.files.length;
+    section.append(bar, grid);
+    return section;
+  }));
+}
 
-  const render = () => {
-    const all = tiles.map((file) => file.rank);
-    const ticked = tickedOf(all);
-    byId("totals").textContent = fill(T.totals, { ticked: number(ticked.length), total: number(all.length), size: size(sum(ticked)) });
-    const free = byId("free");
-    free.textContent = fill(T.delete, { ticked: number(disk.size), size: size(sum([...disk])) });
-    free.disabled = disk.size === 0;
-    byId("groups").replaceChildren(...groups.map((group) => {
-      const section = document.createElement("section");
-      const bar = document.createElement("div");
-      bar.className = "bar";
-      const chosen = tickedOf(group.files);
-      bar.append(line("h2", group.title), line("span", fill(T.group, { ticked: number(chosen.length), count: number(group.files.length), size: size(sum(chosen)) }), "muted"));
-      const grid = document.createElement("div");
-      grid.className = "tiles";
-      grid.append(...group.files.map(tile));
-      section.append(bar, line("p", group.help, "muted"), grid);
-      return section;
-    }));
-  };
+// The counts, the folders' boxes (☑ all, ☐ none, ▣ some) and the red button, after each save.
+function paint() {
+  const all = tiles.map((tile) => tile.rank);
+  const ticked = all.filter((rank) => tiles[rank].ticked);
+  $("phone").textContent = phone;
+  $("status").textContent = fill(TEXTS.status, { phone: phone, ticked: number(ticked.length), total: number(all.length), size: size(sum(ticked)) });
+  $("free").textContent = fill(TEXTS.delete, { ticked: number(disk.size), size: size(sum([...disk])) });
+  $("free").disabled = disk.size === 0;
+  const sections = $("grid").querySelectorAll(".folder");
+  $("folders").replaceChildren(...groups.map((group, rank) => {
+    const on = group.files.filter((file) => tiles[file].ticked);
+    const box = sections[rank].querySelector(".folderBar input");
+    const full = tickable(group).every((file) => tiles[file].ticked) && on.length > 0;
+    box.checked = full;
+    box.indeterminate = on.length > 0 && !full;
+    sections[rank].querySelector(".count").textContent = fill(TEXTS.group, { ticked: number(on.length), count: number(group.files.length), size: size(sum(on)) });
+    const item = element("li");
+    const link = element("a", "", "📁 " + (group.folder || "DCIM"));
+    link.href = "#folder-" + rank;
+    item.append(link, element("span", "muted", number(on.length) + " / " + number(group.files.length)));
+    return item;
+  }));
+}
 
-  const readBack = (file) => {
-    disk = new Set(file.ticked);
-  };
+// What the files shown are: the whole page, always.
+function scope() {
+  return {};
+}
 
-  // changes: [rank, ticked] pairs; the page shows what the file read back holds.
-  const decide = (changes) => {
-    setStatus(T.saving, "");
-    const body = { choices: changes.map(([rank, ticked]) => ({ file: rank, ticked: ticked })) };
-    fetch(decidePath, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
-      .then((response) => response.json().then((reply) => ({ ok: response.ok, status: response.status, body: reply })))
-      .then((reply) => {
-        if (!reply.ok) {
-          setStatus(reply.body.error || fill(T.failed, { status: reply.status }), "error");
-          render();
-          return;
-        }
-        readBack(reply.body.file);
-        for (const file of tiles) file.ticked = disk.has(file.rank);
-        setStatus(fill(T.proofOk, { time: clock(reply.body.file.modified), ticked: number(disk.size) }), "saved");
-        render();
-      })
-      .catch(() => setStatus(T.offline, "error"));
-  };
+function reopen(again) {
+  showFiles(listing(), again);
+  paint();
+}
 
-  const end = (path, text) => {
-    fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" })
-      .then((response) => response.json().then((reply) => ({ ok: response.ok, status: response.status, body: reply })))
-      .then((reply) => {
-        if (!reply.ok) {
-          setStatus(reply.body.error || fill(T.failed, { status: reply.status }), "error");
-          return;
-        }
-        byId("closedText").textContent = text;
-        byId("closed").style.display = "flex";
-      })
-      .catch(() => setStatus(T.offline, "error"));
-  };
+function say(text, kind) {
+  for (const id of ["chosen", "viewerSaid"]) {
+    $(id).className = kind || "";
+    $(id).textContent = text;
+  }
+  $("chosen").title = text;
+}
 
-  byId("free").addEventListener("click", () => {
-    const ranks = [...disk];
-    if (window.confirm(fill(T.confirm, { ticked: number(ranks.length), size: size(sum(ranks)) }))) end(freePath, T.freed);
+// changes: [rank, ticked] pairs, sent in one POST; the page shows what the file read back holds.
+async function decide(changes, left) {
+  say(TEXTS.saving, "");
+  const body = { choices: changes.map(([rank, on]) => ({ file: rank, ticked: on })) };
+  const answer = await ask(DECIDE_PATH, body);
+  if (!answer) { say(TEXTS.offline, "error"); return false; }
+  const reply = await answer.json().catch(() => ({}));
+  if (!answer.ok) { say(reply.error ? fill(TEXTS.notSaved, { error: reply.error }) : fill(TEXTS.failed, { status: answer.status }), "error"); return false; }
+  readBack(reply.file);
+  const proof = fill(TEXTS.proofOk, { time: clock(reply.file.modified), ticked: number(disk.size) });
+  say(left ? proof + " " + counted(TEXTS.asideLeft, left) : proof, "saved");
+  return true;
+}
+
+function readBack(file) {
+  disk = new Set(file.ticked);
+  for (const tile of tiles) tile.ticked = disk.has(tile.rank);
+}
+
+// The bar's buttons and Space in the large view: a set-aside file is ticked alone only, after its warning.
+saveChoice = async (action, keys) => {
+  const on = action === "add";
+  let ranks = keys.map(Number);
+  let left = 0;
+  const warned = ranks.filter((rank) => aside(rank) && !tiles[rank].ticked);
+  if (on && warned.length === 1 && ranks.length === 1) {
+    if (!window.confirm(fill(TEXTS.confirmAside, { warning: tiles[warned[0]].warning }))) { say("", ""); return false; }
+  } else if (on && warned.length) {
+    ranks = ranks.filter((rank) => !warned.includes(rank));
+    left = warned.length;
+  }
+  const changes = ranks.filter((rank) => tiles[rank].ticked !== on).map((rank) => [rank, on]);
+  if (!changes.length) { say(left ? counted(TEXTS.asideLeft, left) : "", ""); return true; }
+  return decide(changes, left);
+};
+deleteKeySets = false; // the only deletion is the red button
+
+// Every file of a folder the box ticks: never one set aside before.
+const tickable = (group) => group.files.filter((rank) => !aside(rank));
+
+// The folder's box: every file of the folder unticked when all it ticks are, else those ticked.
+async function tickFolder(group) {
+  const ticking = !tickable(group).every((rank) => tiles[rank].ticked);
+  const changes = group.files
+    .filter((rank) => (ticking ? !aside(rank) && !tiles[rank].ticked : tiles[rank].ticked))
+    .map((rank) => [rank, ticking]);
+  const left = ticking ? group.files.filter((rank) => aside(rank) && !tiles[rank].ticked).length : 0;
+  if (!changes.length) { say(left ? counted(TEXTS.asideLeft, left) : "", ""); return; }
+  if (await decide(changes, left)) reopen(true);
+}
+
+// The large view: Space ticks or unticks the file shown (no Delete, no album here).
+delete VIEWER_KEYS.Delete;
+delete VIEWER_KEYS.Backspace;
+delete VIEWER_KEYS.a;
+VIEWER_KEYS[" "] = async () => {
+  const file = files[current];
+  if (file && (await saveShown(file.chosen ? "remove" : "add"))) $("viewerAside").hidden = !files[current].chosen;
+};
+
+function end(path, text) {
+  ask(path, {}).then(async (answer) => {
+    if (!answer) { say(TEXTS.offline, "error"); return; }
+    const reply = await answer.json().catch(() => ({}));
+    if (!answer.ok) { say(reply.error || fill(TEXTS.failed, { status: answer.status }), "error"); return; }
+    $("closedText").textContent = text;
+    $("closed").style.display = "flex";
   });
-  byId("leave").addEventListener("click", () => end(stopPath, T.left));
+}
 
-  Promise.all([fetch(statePath).then((r) => r.json()), fetch(filePath).then((r) => r.json())])
-    .then(([state, file]) => {
-      tiles = state.tiles;
-      groups = state.groups;
-      byId("phone").textContent = state.phone;
-      if (file.error) setStatus(file.error, "error");
-      else {
-        readBack(file);
-        setStatus(fill(T.loaded, { time: clock(file.modified), ticked: number(disk.size) }), "saved");
-      }
-      render();
-    })
-    .catch(() => setStatus(T.offline, "error"));
-})();
+$("free").addEventListener("click", () => {
+  const ranks = [...disk];
+  if (window.confirm(fill(TEXTS.confirm, { ticked: number(ranks.length), size: size(sum(ranks)) }))) end(FREE_PATH, TEXTS.freed);
+});
+$("leave").addEventListener("click", () => end(STOP_PATH, TEXTS.left));
+
+Promise.all([ask(STATE_PATH), ask(FILE_PATH)])
+  .then(async ([state, file]) => {
+    if (!state || !file) { say(TEXTS.offline, "error"); return; }
+    const listed = await state.json();
+    const read = await file.json();
+    tiles = listed.tiles;
+    groups = listed.groups;
+    phone = listed.phone;
+    badges = Object.fromEntries(listed.reasons.map((reason) => [reason.case, reason.badge]));
+    $("legend").replaceChildren(...listed.reasons.flatMap((reason) => [element("dt", "", reason.badge), element("dd", "", reason.help)]));
+    if (read.error) say(read.error, "error");
+    else {
+      readBack(read);
+      say(fill(TEXTS.loaded, { time: clock(read.modified), ticked: number(disk.size) }), "saved");
+    }
+    reopen(false);
+  });

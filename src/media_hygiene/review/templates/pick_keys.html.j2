@@ -1,0 +1,43 @@
+{# The ⌨ panel at the bottom of the left column of a page of photos to pick (`browse`,
+   `search`): the same gestures and keys on every such page (`pick_grid.js.j2`), with the
+   line saying that nothing is deleted here. The page sets `pick_all` (what Ctrl+A picks)
+   and, for a page with a search field, `pick_search_key`. A page where a pick means
+   something else (the phone page) sets `pick_marks = false` (no Delete, ⌫), `pick_space_opened`
+   (what Space does in the large view) and `pick_safe` (its own 🔒 line). #}
+<section id="keys" aria-label="{{ _('Keyboard') }}">
+  <h2>⌨ {{ _("Keyboard") }}</h2>
+  <dl>
+    <dt><kbd>Shift</kbd>+{{ _("click") }}</dt><dd>{{ _("every file from the last one clicked") }}</dd>
+    <dt>☑ · <kbd>Ctrl</kbd>+{{ _("click") }}</dt><dd>{{ _("add or take out one file") }}</dd>
+    <dt>{{ _("drag") }}</dt><dd>{{ _("a rectangle: the files it touches (Ctrl adds them)") }}</dd>
+    <dt><kbd>Ctrl</kbd>+<kbd>A</kbd></dt><dd>{{ pick_all }}</dd>
+    <dt><kbd>I</kbd></dt><dd>{{ _("invert: the others instead") }}</dd>
+{% if pick_marks | default(true) %}
+    <dt><kbd>Delete</kbd></dt><dd>{{ _("set the picked files aside") }}</dd>
+{% endif %}
+  </dl>
+  <details id="moreKeys">
+  <summary>{{ _("More keys") }}</summary>
+  <dl>
+{% if pick_search_key | default(false) %}
+    <dt><kbd>/</kbd></dt><dd>{{ _("type a new search") }}</dd>
+{% endif %}
+    <dt><kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd></dt><dd>{{ _("move the frame") }}</dd>
+    <dt><kbd>␣</kbd></dt><dd>{{ _("pick or unpick the framed file") }}</dd>
+    <dt><kbd>Enter</kbd></dt><dd>{{ _("open it large (a double click too)") }}</dd>
+    <dt><kbd>Home</kbd> <kbd>End</kbd></dt><dd>{{ _("the first or last file") }}</dd>
+    <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>{{ _("opened: the previous or next one") }}</dd>
+{% if pick_marks | default(true) %}
+    <dt><kbd>Delete</kbd></dt><dd>{{ _("opened: set it aside, then the next one") }}</dd>
+    <dt><kbd>⌫</kbd></dt><dd>{{ _("opened: take it back out") }}</dd>
+{% endif %}
+{% if pick_space_opened is defined %}
+    <dt><kbd>␣</kbd></dt><dd>{{ pick_space_opened }}</dd>
+{% endif %}
+    <dt><kbd>F</kbd></dt><dd>{{ _("opened: full screen") }}</dd>
+    <dt><kbd>?</kbd></dt><dd>{{ _("opened: every key of the large view") }}</dd>
+    <dt><kbd>Esc</kbd></dt><dd>{{ _("close it") }}</dd>
+  </dl>
+  </details>
+  <p class="safe">🔒 {{ pick_safe | default(_("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.")) }}</p>
+</section>

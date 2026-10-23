@@ -50,10 +50,24 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene --locale fr search
 ```
 
-Ouvrez <http://127.0.0.1:8088/>. `/` relance une recherche, les flèches se déplacent, un clic ou
-Espace choisit une photo, Entrée ou un double clic la montre en grand (avec un lien vers
-l'original), Échap la ferme. Filtres : années, une partie du chemin, les mots d'une seule source.
-Ctrl+C, ou fermer son onglet, arrête la page.
+Ouvrez <http://127.0.0.1:8088/>. La page a l'aspect et le fonctionnement de
+[`browse`](browse.md) : le champ de recherche et ses filtres (années, une partie du chemin, les mots
+d'une seule source) dans la colonne de gauche, les touches ⌨ en dessous, une seule barre au-dessus
+de la grille, puis les photos trouvées. **📁 Dossiers** ouvre `browse`, le même serveur. Ctrl+C, ou
+fermer son onglet, arrête la page.
+
+- **Chercher** : tapez les mots, puis Entrée ; les touches vont alors à la grille, `/` revient au
+  champ. *Comment écrire une recherche* rappelle les expressions ("bord de mer"), les débuts de
+  mots (anniv\*) et les mots d'une seule source (place:durbuy).
+- **Choisir**, comme dans `browse` : un clic choisit un fichier ; la case ☑ (ou Ctrl+clic) en
+  ajoute ou en retire un ; Maj+clic choisit tous les fichiers depuis le dernier cliqué ; un
+  rectangle tracé à la souris choisit ce qu'il touche (avec Ctrl, il ajoute) ; Ctrl+A tous les
+  fichiers affichés, puis **Choisir les N fichiers trouvés** dans la barre prend tous les fichiers
+  que la recherche trouve, pas seulement les 240 affichés ; **Inverser la sélection** (ou I) choisit
+  les autres.
+- **Regarder** : Entrée ou un double clic montre la photo en grand (avec un lien vers
+  l'original) ; ← → la précédente ou la suivante, Suppr la met de côté puis montre la suivante, F
+  plein écran, ? toutes les touches, Échap la ferme.
 
 Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers
 fichiers en tableau.
@@ -63,9 +77,9 @@ fichiers en tableau.
 Pour retirer toutes les photos de quelqu'un, la page
 [`people`](people.md#retirer-toutes-les-photos-de-quelquun) le fait depuis son groupe de visages.
 Pour celles d'un évènement, ou tout autre choix : cherchez-les (`person:"Anne"`, une année, un
-mot), choisissez-les (un clic ou Espace sur chacune, ou **Choisir les N fichiers
-trouvés** : tous les fichiers que la recherche trouve, pas seulement les 240 affichés), puis
-**Mettre de côté les fichiers choisis**.
+mot), choisissez-les (Ctrl+A, puis **Choisir les N fichiers trouvés** : tous les fichiers que la
+recherche trouve, pas seulement les 240 affichés), puis Suppr ou **Mettre de côté les fichiers
+choisis**.
 
 - Rien n'est supprimé depuis la page. Le choix est enregistré aussitôt dans `decisions.json` de
   vos rapports, relu sur le disque et affiché avec son nombre et sa taille : *37 fichiers mis de
@@ -73,7 +87,8 @@ trouvés** : tous les fichiers que la recherche trouve, pas seulement les 240 af
   souvient : si l'un d'eux revient (une nouvelle copie depuis le téléphone), l'audit le propose à
   nouveau.* Les photos
   mises de côté portent une étiquette rouge *à mettre de côté*.
-- **Retirer de la mise de côté** en retire les fichiers choisis.
+- **Retirer de la mise de côté**, affiché dès qu'un fichier choisi est mis de côté, en retire les
+  fichiers choisis.
 - Quand vous arrêtez la page, `search` propose l'étape suivante : `mh clean --decisions`. Il
   demande d'abord combien de fichiers et d'octets partent (à part des doublons), les déplace en
   quarantaine, journalisé ; [`undo`](undo.md) les remet, [`purge`](purge.md) libère la place.

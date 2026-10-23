@@ -48,9 +48,22 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene search
 ```
 
-Open <http://127.0.0.1:8088/>. `/` searches again, the arrows move, a click or Space picks a
-photo, Enter or a double click shows it large (with a link to the original), Escape closes it.
-Filters: years, a part of the path, the words of one source only. Ctrl+C, or closing its tab, stops the page.
+Open <http://127.0.0.1:8088/>. The page looks and works like [`browse`](browse.md): the search
+field and its filters (years, a part of the path, the words of one source only) in the left
+column, the ⌨ keys under them, one bar above the grid, then the photos found. **📁 Folders**
+opens `browse`, the same server. Ctrl+C, or closing its tab, stops the page.
+
+- **Search**: type the words, then Enter; the keys then go to the grid, `/` comes back to the
+  field. *How to write a search* recalls the phrases ("bord de mer"), the starts of words
+  (anniv\*) and the words of one source (place:durbuy).
+- **Pick**, as in `browse`: a click picks one file; the ☑ box (or Ctrl+click) adds or removes one;
+  Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse picks
+  what it touches (with Ctrl, it adds); Ctrl+A every file shown, then **Pick all N files found**
+  in the bar takes every file the search finds, not only the 240 shown; **Invert the picking**
+  (or I) picks the others.
+- **Look**: Enter or a double click shows the photo large (with a link to the original); ← → the
+  previous or next one, Delete sets it aside then shows the next one, F full screen, ? every key,
+  Escape closes it.
 
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20 files
 as a table.
@@ -59,15 +72,16 @@ as a table.
 
 To remove every photo of someone, the [`people`](people.md#remove-every-photo-of-someone) page
 does it from their group of faces. To remove those of an event, or any other choice: search them
-(`person:"Ann"`, a year, a word), pick them (a click or Space on each, or **Pick all N files found**: every file the search finds,
-not only the 240 shown), then **Set aside the picked files**.
+(`person:"Ann"`, a year, a word), pick them (Ctrl+A, then **Pick all N files found**: every file
+the search finds, not only the 240 shown), then Delete or **Set aside the picked files**.
 
 - Nothing is deleted from the page. The choice is saved at once in `decisions.json` of your
   reports, read back from the disk and shown with its count and size: *37 files set aside
   (412 MB), saved in …: 'clean --decisions' moves them to the quarantine, and remembers them: if
   one comes back (a new copy from the phone), the audit proposes it again.* The photos set aside
   carry a red *marked to set aside* label.
-- **Take out of the set aside** takes the files picked back out of it.
+- **Take out of the set aside**, shown once a picked file is set aside, takes the files picked
+  back out of it.
 - When you stop the page, `search` proposes the next step: `mh clean --decisions`. It asks first
   how many files and how many bytes go (apart from the duplicates), moves them to the
   quarantine, journaled; [`undo`](undo.md) brings them back, [`purge`](purge.md) frees the

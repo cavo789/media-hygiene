@@ -1,0 +1,86 @@
+{# The script of the search page (`search.html.j2`): the search sent, the files found as
+   cards with their folder, date and words. The picking, the bar and the saving are
+   `pick_grid.js.j2`'s, the large view `pick_viewer.js.j2`'s, the albums
+   `album_bar.html.j2`'s. #}
+const TEXTS = {{ texts | tojson }};
+const SOURCES = {{ sources | tojson }};
+const SEARCH_PATH = {{ search_path | tojson }};
+const CHOSEN_PATH = {{ chosen_path | tojson }};
+let asked = {};        // the search shown
+
+function card(hit, index) {
+  const node = element("article");
+  const picture = element("img");
+  picture.loading = "lazy";
+  picture.draggable = false; // a drag draws a rectangle (`pick_band.js.j2`)
+  picture.alt = hit.name;
+  picture.src = hit.thumb;
+  picture.addEventListener("error", () => picture.replaceWith(element("div", "empty", TEXTS.noPreview)));
+  const meta = element("div", "meta");
+  meta.append(element("div", "name", hit.name), element("div", "muted folderLine", hit.folder));
+  if (hit.date) meta.append(element("div", "muted", hit.date));
+  if (hit.caption) meta.append(element("div", "muted caption", hit.caption));
+  const chips = element("div", "chips");
+  for (const [source, words] of Object.entries(hit.tags)) {
+    for (const word of words) {
+      const chip = element("span", "chip", word);
+      chip.title = SOURCES[source] || source;
+      chips.append(chip);
+    }
+  }
+  meta.append(chips);
+  node.append(picture, meta);
+  return wireCard(node, index);
+}
+
+// What the files shown are: the search, sent with each choice and each album change.
+function scope() {
+  return asked;
+}
+
+function reopen(again) {
+  return search(null, again);
+}
+
+function told(text, error) {
+  $("status").className = error ? "error" : "";
+  $("status").textContent = text;
+}
+
+async function search(event, again) {
+  if (event) event.preventDefault();
+  const year = (id) => ($(id).value ? Number($(id).value) : null);
+  const body = {
+    text: $("text").value, year_from: year("from"), year_to: year("to"),
+    folder: $("folder").value, source: $("source").value || null,
+  };
+  const answer = await ask(SEARCH_PATH, body);
+  if (!answer) { told(TEXTS.offline, true); return; }
+  if (!answer.ok) { told(fill(TEXTS.failed, { status: answer.status }), true); return; }
+  const found = await answer.json();
+  asked = body;
+  total = found.total;
+  showFiles(found.hits, again);
+  let text = counted(TEXTS.found, found.total);
+  if (!found.total) text = TEXTS.none;
+  else if (found.total > found.hits.length) text = fill(TEXTS.shown, { total: found.total, shown: found.hits.length });
+  told(found.note ? found.note + " " + text : text, false);
+  // Sent from the field: the keys go to the grid (Ctrl+A, the arrows); "/" comes back.
+  if (event && cards.length) document.activeElement.blur();
+}
+
+document.addEventListener("keydown", (event) => {
+  if ($("viewer").classList.contains("open")) return;
+  const typing = ["INPUT", "SELECT"].includes(document.activeElement.tagName);
+  if (event.key === "/" && !typing) {
+    event.preventDefault();
+    $("text").focus();
+  } else if (event.key === "ArrowDown" && document.activeElement === $("text") && cards.length) {
+    event.preventDefault();
+    focusOn(0);
+  }
+});
+$("form").addEventListener("submit", search);
+$("text").focus();
+search();
+loadChosen();

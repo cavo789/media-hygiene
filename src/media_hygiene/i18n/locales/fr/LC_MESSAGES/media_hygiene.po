@@ -72,13 +72,10 @@ msgstr ""
 
 msgid ""
 "\"bord de mer\" finds the phrase, anniv* every word starting so, "
-"place:durbuy the word among the places only. / types a search, the arrows"
-" move, a click or Space picks, Enter or a double click opens."
+"place:durbuy the word among the places only."
 msgstr ""
 "\"bord de mer\" trouve l'expression, anniv* chaque mot qui commence "
-"ainsi, place:durbuy le mot parmi les lieux seulement. / tape une "
-"recherche, les flèches se déplacent, un clic ou Espace choisit, Entrée ou"
-" un double clic ouvre."
+"ainsi, place:durbuy le mot parmi les lieux seulement."
 
 #, python-format
 msgid "%(gain)s freed; with the groups above: %(share)s %% of the space"
@@ -2700,10 +2697,6 @@ msgstr ""
 "Chaque étape des guides avec sa commande, la prochaine en premier : ce "
 "que montre 'mh' seul, Entrée la lance."
 
-#, python-format
-msgid "Every tick is saved at once in %(place)s."
-msgstr "Chaque coche est enregistrée aussitôt dans %(place)s."
-
 msgid ""
 "Everything 'clean --tier near-all' moves to the quarantine, group by "
 "group: the groups to check first, then, folded, the sure groups that "
@@ -2997,6 +2990,9 @@ msgstr "Flash"
 msgid "Focal length (mm)"
 msgstr "Focale (mm)"
 
+msgid "Fold or unfold this folder"
+msgstr "Replier ou déplier ce dossier"
+
 msgid "Folder"
 msgstr "Dossier"
 
@@ -3086,6 +3082,9 @@ msgstr "Dossiers fermés ; vos photos n'ont pas été modifiées."
 
 msgid "Folders named after a town, or placed"
 msgstr "Dossiers au nom d'une ville, ou placés"
+
+msgid "Folders of the phone"
+msgstr "Dossiers du téléphone"
 
 msgid "Folders removed"
 msgstr "Dossiers supprimés"
@@ -3554,6 +3553,9 @@ msgstr ""
 "Quantité de messages : \"error\", \"warning\", \"info\", \"verbose\" "
 "(info et tous les conseils, pas seulement les deux meilleurs) ou "
 "\"debug\"."
+
+msgid "How to write a search"
+msgstr "Comment écrire une recherche"
 
 msgid "ISO"
 msgstr "ISO"
@@ -5409,6 +5411,14 @@ msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
 msgstr ""
 "Seulement les fichiers de cette année, ou de ces années : 2016 ou "
 "2015-2017."
+
+msgid ""
+"Only the phone's DCIM folder is listed (the camera's photos and videos): "
+"a folder made by a gallery app elsewhere on the phone is not shown here."
+msgstr ""
+"Seul le dossier DCIM du téléphone est listé (les photos et vidéos de "
+"l'appareil photo) : un dossier créé ailleurs sur le téléphone par une "
+"application de galerie n'apparaît pas ici."
 
 msgid ""
 "Only the photos below this folder (host path, as you mounted it); repeat "
@@ -8634,12 +8644,24 @@ msgstr "Trois choses à savoir avant de commencer"
 msgid "Tick at least one photo."
 msgstr "Cochez au moins une photo."
 
+msgid "Tick or untick every file of this folder"
+msgstr "Cocher ou décocher tous les fichiers de ce dossier"
+
+msgid "Tick: leaves the phone"
+msgstr "Cocher : quitte le téléphone"
+
 msgid "Ticked: given to the place you choose above"
 msgstr "Cochée : donnée au lieu choisi au-dessus"
 
-#, python-brace-format
-msgid "Ticked: {ticked} of {total} files ({size})"
-msgstr "Cochés : {ticked} fichiers sur {total} ({size})"
+#, python-format
+msgid ""
+"Ticking deletes nothing: only the red button does, after a question, each"
+" file copied again and compared first. Every tick is saved at once in "
+"%(place)s."
+msgstr ""
+"Cocher ne supprime rien : seul le bouton rouge le fait, après une "
+"question, chaque fichier recopié et comparé d'abord. Chaque coche est "
+"enregistrée aussitôt dans %(place)s."
 
 #, python-brace-format
 msgid "Time per step: {steps}"
@@ -8920,6 +8942,9 @@ msgstr "Lieu ou groupe inconnu : rechargez la page."
 #, python-brace-format
 msgid "Unknown run {run_id}."
 msgstr "Exécution inconnue : {run_id}."
+
+msgid "Untick: stays on the phone"
+msgstr "Décocher : reste sur le téléphone"
 
 msgid "Until mh stops; never the internet."
 msgstr "Jusqu'à l'arrêt de mh ; jamais sur Internet."
@@ -10004,6 +10029,12 @@ msgstr "événements nommer fêtes vacances"
 msgid "every file from the last one clicked"
 msgstr "tous les fichiers depuis le dernier cliqué"
 
+msgid "every file of the page"
+msgstr "tous les fichiers de la page"
+
+msgid "every file shown"
+msgstr "tous les fichiers affichés"
+
 msgid "every key"
 msgstr "toutes les touches"
 
@@ -10302,6 +10333,9 @@ msgstr "laisser les photos sélectionnées où elles sont"
 
 msgid "leave the whole event where it is"
 msgstr "laisser tout l'événement où il est"
+
+msgid "leaves the phone"
+msgstr "quitte le téléphone"
 
 msgid "left as it is"
 msgstr "laissé tel quel"
@@ -10747,6 +10781,9 @@ msgstr "en grand : la reprendre"
 
 msgid "opened: the previous or next one"
 msgstr "ouverte : la précédente ou la suivante"
+
+msgid "opened: tick or untick it"
+msgstr "ouvert : le cocher ou le décocher"
 
 msgid "optional"
 msgstr "facultatif"
@@ -11352,6 +11389,9 @@ msgstr "cette liste, ou plus"
 msgid "this setting is required"
 msgstr "ce réglage est obligatoire"
 
+msgid "tick or untick it"
+msgstr "le cocher ou le décocher"
+
 #, python-brace-format
 msgid ""
 "timezone = \"Europe/Brussels\" in section [general] of {path} (times in "
@@ -11449,6 +11489,9 @@ msgstr "tapez d'abord un nom"
 
 msgid "type a name, e.g. Crete 2023"
 msgstr "tapez un nom, p. ex. Crète 2023"
+
+msgid "type a new search"
+msgstr "taper une nouvelle recherche"
 
 msgid "unanswered"
 msgstr "sans réponse"
@@ -13295,6 +13338,21 @@ msgstr[0] "{n} fichier choisi"
 msgstr[1] "{n} fichiers choisis"
 
 #, python-brace-format
+msgid ""
+"{n} file set aside before was left unticked: tick it in the large view or"
+" with its own ☑, after reading its warning."
+msgid_plural ""
+"{n} files set aside before were left unticked: tick each one in the large"
+" view or with its own ☑, after reading its warning."
+msgstr[0] ""
+"{n} fichier mis de côté auparavant est resté décoché : cochez-le dans la "
+"grande vue ou avec sa propre ☑, après avoir lu son avertissement."
+msgstr[1] ""
+"{n} fichiers mis de côté auparavant sont restés décochés : cochez-les un "
+"par un dans la grande vue ou avec leur propre ☑, après avoir lu leur "
+"avertissement."
+
+#, python-brace-format
 msgid "{n} file, {size}, {share} of your library"
 msgid_plural "{n} files, {size}, {share} of your library"
 msgstr[0] "{n} fichier, {size}, {share} de votre photothèque"
@@ -13379,6 +13437,10 @@ msgid "{n} series"
 msgid_plural "{n} series"
 msgstr[0] "{n} série"
 msgstr[1] "{n} séries"
+
+#, python-brace-format
+msgid "{n} set aside, not ticked"
+msgstr "{n} mis de côté, non coché(s)"
 
 #, python-brace-format
 msgid "{n} shot proposed aside"
@@ -13573,6 +13635,10 @@ msgstr "{path} : pas allégée : {reason}"
 #, python-brace-format
 msgid "{path}: this version cannot undo the action '{action}'."
 msgstr "{path} : cette version ne sait pas annuler l'action « {action} »."
+
+#, python-brace-format
+msgid "{phone}: {ticked} of {total} files ticked ({size})"
+msgstr "{phone} : {ticked} fichiers cochés sur {total} ({size})"
 
 #, python-brace-format
 msgid "{photos} and {videos}"

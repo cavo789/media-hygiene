@@ -345,7 +345,7 @@ def test_one_bar_above_the_grid_and_the_safety_line_under_the_keys(
     script = page.split("function showPicked()")[1].split("\n}\n")[0]
     assert '$("bar").classList.toggle("acting", some)' in script
     # *Take out of the set aside* shows only for a picked file already set aside.
-    assert "file.chosen && picked.has(file.key)" in script
+    assert "file.chosen && (everything || picked.has(file.key))" in script
 
 
 def test_a_save_keeps_the_cards_and_the_height_of_the_bar(

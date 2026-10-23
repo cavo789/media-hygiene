@@ -43,8 +43,7 @@ msgstr ""
 
 msgid ""
 "\"bord de mer\" finds the phrase, anniv* every word starting so, "
-"place:durbuy the word among the places only. / types a search, the arrows"
-" move, a click or Space picks, Enter or a double click opens."
+"place:durbuy the word among the places only."
 msgstr ""
 
 #, python-format
@@ -2186,10 +2185,6 @@ msgid ""
 "alone shows, Enter runs it."
 msgstr ""
 
-#, python-format
-msgid "Every tick is saved at once in %(place)s."
-msgstr ""
-
 msgid ""
 "Everything 'clean --tier near-all' moves to the quarantine, group by "
 "group: the groups to check first, then, folded, the sure groups that "
@@ -2436,6 +2431,9 @@ msgstr ""
 msgid "Focal length (mm)"
 msgstr ""
 
+msgid "Fold or unfold this folder"
+msgstr ""
+
 msgid "Folder"
 msgstr ""
 
@@ -2501,6 +2499,9 @@ msgid "Folders closed; your photos were not changed."
 msgstr ""
 
 msgid "Folders named after a town, or placed"
+msgstr ""
+
+msgid "Folders of the phone"
 msgstr ""
 
 msgid "Folders removed"
@@ -2889,6 +2890,9 @@ msgstr ""
 msgid ""
 "How much to log: \"error\", \"warning\", \"info\", \"verbose\" (info and "
 "every tip, not only the best two) or \"debug\"."
+msgstr ""
+
+msgid "How to write a search"
 msgstr ""
 
 msgid "ISO"
@@ -4440,6 +4444,11 @@ msgid ""
 msgstr ""
 
 msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
+msgstr ""
+
+msgid ""
+"Only the phone's DCIM folder is listed (the camera's photos and videos): "
+"a folder made by a gallery app elsewhere on the phone is not shown here."
 msgstr ""
 
 msgid ""
@@ -7110,11 +7119,20 @@ msgstr ""
 msgid "Tick at least one photo."
 msgstr ""
 
+msgid "Tick or untick every file of this folder"
+msgstr ""
+
+msgid "Tick: leaves the phone"
+msgstr ""
+
 msgid "Ticked: given to the place you choose above"
 msgstr ""
 
-#, python-brace-format
-msgid "Ticked: {ticked} of {total} files ({size})"
+#, python-format
+msgid ""
+"Ticking deletes nothing: only the red button does, after a question, each"
+" file copied again and compared first. Every tick is saved at once in "
+"%(place)s."
 msgstr ""
 
 #, python-brace-format
@@ -7351,6 +7369,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Unknown run {run_id}."
+msgstr ""
+
+msgid "Untick: stays on the phone"
 msgstr ""
 
 msgid "Until mh stops; never the internet."
@@ -8292,6 +8313,12 @@ msgstr ""
 msgid "every file from the last one clicked"
 msgstr ""
 
+msgid "every file of the page"
+msgstr ""
+
+msgid "every file shown"
+msgstr ""
+
 msgid "every key"
 msgstr ""
 
@@ -8569,6 +8596,9 @@ msgid "leave the selected photos where they are"
 msgstr ""
 
 msgid "leave the whole event where it is"
+msgstr ""
+
+msgid "leaves the phone"
 msgstr ""
 
 msgid "left as it is"
@@ -8971,6 +9001,9 @@ msgid "opened: take it back out"
 msgstr ""
 
 msgid "opened: the previous or next one"
+msgstr ""
+
+msgid "opened: tick or untick it"
 msgstr ""
 
 msgid "optional"
@@ -9524,6 +9557,9 @@ msgstr ""
 msgid "this setting is required"
 msgstr ""
 
+msgid "tick or untick it"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "timezone = \"Europe/Brussels\" in section [general] of {path} (times in "
@@ -9602,6 +9638,9 @@ msgid "type a name first"
 msgstr ""
 
 msgid "type a name, e.g. Crete 2023"
+msgstr ""
+
+msgid "type a new search"
 msgstr ""
 
 msgid "unanswered"
@@ -11086,6 +11125,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid ""
+"{n} file set aside before was left unticked: tick it in the large view or"
+" with its own ☑, after reading its warning."
+msgid_plural ""
+"{n} files set aside before were left unticked: tick each one in the large"
+" view or with its own ☑, after reading its warning."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} file, {size}, {share} of your library"
 msgid_plural "{n} files, {size}, {share} of your library"
 msgstr[0] ""
@@ -11170,6 +11219,10 @@ msgid "{n} series"
 msgid_plural "{n} series"
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} set aside, not ticked"
+msgstr ""
 
 #, python-brace-format
 msgid "{n} shot proposed aside"
@@ -11345,6 +11398,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{path}: this version cannot undo the action '{action}'."
+msgstr ""
+
+#, python-brace-format
+msgid "{phone}: {ticked} of {total} files ticked ({size})"
 msgstr ""
 
 #, python-brace-format

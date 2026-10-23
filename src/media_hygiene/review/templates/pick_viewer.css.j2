@@ -1,0 +1,18 @@
+{# The large view of a page of photos to pick (`pick_viewer.html.j2`), included by
+   `pick_grid.css.j2`. #}
+  #viewer { position: fixed; inset: 0; z-index: 2; display: none; flex-direction: column;
+            align-items: center; justify-content: center; gap: 8px; padding: 16px;
+            background: rgba(0, 0, 0, .88); color: #fff; }
+  #viewer.open { display: flex; }
+  #viewer img, #viewer video { max-width: 100%; max-height: calc(100vh - 90px); object-fit: contain; }
+  #viewer a { color: #9cd0ff; }
+  #viewer .asideMark { padding: 0 8px; border-radius: 10px; background: var(--bad); font-size: .8rem;
+                       font-weight: 600; }
+  #viewer .asideMark[hidden] { display: none; }
+  #viewer .viewerKeys, #viewerInfo { color: #ccc; }
+  #viewerSaid:empty, #viewerInfo[hidden], #viewerHelp[hidden] { display: none; }
+  #viewerSaid.error { color: #ff9b9b; font-weight: 600; }
+  #viewerHelp { display: grid; grid-template-columns: auto auto; gap: 4px 12px; margin: 0;
+                padding: 10px 14px; background: rgba(40, 40, 40, .95); border-radius: 8px; }
+  #viewerHelp dd { margin: 0; }
+  #viewer kbd { color: #fff; background: #333; border-color: #666; }

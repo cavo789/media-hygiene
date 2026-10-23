@@ -1,9 +1,11 @@
-"""The page freeing a phone (0248): its groups, its ticks read back, its end.
+"""The page freeing a phone (0248): its folders, its ticks read back, its end.
 
-Real files and a real server: the three groups and their defaults (a set-aside never
-ticked), every tick saved then read back from the disk, a forged choice refused, the
-preview of the PC's file, and "Delete from the phone" giving `mh` the files ticked as
-the file on the disk holds them — nothing when the page is left.
+Real files and a real server: one group per phone folder (0312) and the defaults
+(a set-aside never ticked), every tick saved then read back from the disk, a whole
+folder in one choice, a forged choice refused, the preview and the original of the
+PC's file, the shared picking of `browse` (0314), and "Delete from the phone" giving
+`mh` the files ticked as the file on the disk holds them — nothing when the page is
+left.
 """
 
 from __future__ import annotations
@@ -27,6 +29,7 @@ from media_hygiene.services.phone_free import read_ticked
 from media_hygiene.services.phone_plan import PHONE_REVIEW, PhoneCase
 from media_hygiene.services.phone_review import PhoneReview, serve_phone_review
 from tests.support.cli import point_mounts
+from tests.support.pick_pages import PICK_PARTS
 from tests.support.review import JSON_HEADERS, PAGE, Call, send_call, serve_app_and_call
 from tests.support.runtime import make_runtime
 from tests.support.scenes import Shot, write_shot
@@ -63,12 +66,12 @@ _PLAN: Final = (
 )
 
 
-def _session(locations: Locations) -> PhoneSession:
-    """The page on the plan above, its decisions file in /reports."""
+def _session(locations: Locations, plan: tuple[str, ...] = _PLAN) -> PhoneSession:
+    """The page on a plan (the one above), its decisions file in /reports."""
     write_shot(locations.data_dir / "c/Photos/2025/IMG_1.jpg", Shot(7))
     locations.reports_dir.mkdir(parents=True, exist_ok=True)
     runtime = make_runtime(locations)
-    files, _skipped = read_ticked(_PLAN)
+    files, _skipped = read_ticked(plan)
     target = locations.reports_dir / PHONE_DECISIONS
     place = DecisionsPlace(PHONE_DECISIONS, PHONE_DECISIONS)
     tiles = TileSource(runtime.mapper, locations.data_dir / "c/Photos/Phone/A72")
@@ -88,10 +91,15 @@ def _free() -> Call:
     return Call("POST", "/api/free", b"{}", JSON_HEADERS)
 
 
-def test_the_groups_tick_the_pc_s_files_never_a_set_aside(locations: Locations) -> None:
+def test_the_page_ticks_the_pc_s_files_never_a_set_aside(locations: Locations) -> None:
     """Library and import ticked for the user; set aside unticked, its warning shown."""
     state = _session(locations).state()
-    assert [group.case for group in state.groups] == [
+    assert [reason.case for reason in state.reasons] == [
+        PhoneCase.LIBRARY,
+        PhoneCase.DESTINATION,
+        PhoneCase.SET_ASIDE,
+    ]
+    assert [tile.case for tile in state.tiles] == [
         PhoneCase.LIBRARY,
         PhoneCase.DESTINATION,
         PhoneCase.SET_ASIDE,
@@ -106,6 +114,8 @@ def test_the_groups_tick_the_pc_s_files_never_a_set_aside(locations: Locations) 
     assert aside.preview == ""  # a generic tile
     assert state.tiles[0].held == _LIBRARY
     assert state.tiles[0].preview.startswith("/preview/")
+    assert state.tiles[0].original.endswith(".jpg")
+    assert aside.original == ""
     saved, _stamp = read_phone_decisions(locations.reports_dir / PHONE_DECISIONS)
     assert [(c.path, c.ticked) for c in saved.files] == [
         ("Camera/IMG_1.jpg", True),
@@ -292,3 +302,67 @@ def test_a_set_aside_tile_never_leaves_the_quarantine(
         == ""
     )
     assert _aside_session(locations, "").state().tiles[0].preview == ""
+
+
+_FOLDERS: Final = (
+    _line(PhoneCase.LIBRARY, "WhatsApp/a.jpg", _LIBRARY),
+    _line(PhoneCase.LIBRARY, "Camera/b.jpg", _LIBRARY),
+    _line(PhoneCase.SET_ASIDE, "surricate/c.jpg", "20260101-120000", "purged"),
+    _line(PhoneCase.LIBRARY, "surricate/d.jpg", _LIBRARY),
+    _line(PhoneCase.LIBRARY, "e.jpg", _LIBRARY),
+)
+
+
+def test_the_page_groups_the_files_by_the_phone_s_folders(locations: Locations) -> None:
+    """One group per folder, in name order (case aside); the set-aside counted apart."""
+    groups = _session(locations, _FOLDERS).state().groups
+    assert [(g.folder, g.files, g.aside) for g in groups] == [
+        ("", (4,), 0),  # DCIM itself
+        ("Camera", (1,), 0),
+        ("surricate", (2, 3), 1),
+        ("WhatsApp", (0,), 0),
+    ]
+
+
+def test_a_whole_folder_unticked_in_one_choice(locations: Locations) -> None:
+    """The folder's box (or a rectangle) sends every file of it at once, read back."""
+    session = _session(locations, _FOLDERS)
+    (ticked,) = serve_app_and_call(
+        lambda pool: PhoneApp(session, PAGE, pool), [_tick((2, False), (3, False))]
+    )
+    assert json.loads(ticked.body)["file"]["ticked"] == [0, 1, 4]
+    saved, _stamp = read_phone_decisions(locations.reports_dir / PHONE_DECISIONS)
+    assert [c.path for c in saved.files if c.ticked] == [
+        "WhatsApp/a.jpg",
+        "Camera/b.jpg",
+        "e.jpg",
+    ]
+
+
+def test_the_large_view_shows_the_pc_s_original(locations: Locations) -> None:
+    """`/original/` answers for a phone file's key: the PC's file, untouched."""
+    session = _session(locations)
+    tile = session.state().tiles[0]
+    (shown,) = serve_app_and_call(
+        lambda pool: PhoneApp(session, PAGE, pool), [Call("GET", tile.original)]
+    )
+    assert shown.status == 200
+    assert shown.body == (locations.data_dir / "c/Photos/2025/IMG_1.jpg").read_bytes()
+
+
+def test_the_page_picks_as_browse_does_without_a_delete_key(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The shared grid, once; its keys listed, but no Delete: the red button deletes."""
+    thread, port, _results = _serve(locations, monkeypatch)
+    page = asyncio.run(send_call(port, Call("GET", "/"))).body.decode()
+    asyncio.run(send_call(port, Call("POST", "/api/stop", b"{}", JSON_HEADERS)))
+    thread.join(timeout=10)
+    for part in PICK_PARTS:
+        assert page.count(part) == 1, part
+    assert page.count('"use strict";') == 1
+    keys = page.split('id="keys"')[1].split("</section>")[0]
+    assert "<kbd>Delete</kbd>" not in keys
+    assert "every file of the page" in keys
+    assert "deleteKeySets = false;" in page
+    assert "delete VIEWER_KEYS.Delete;" in page
