@@ -62,7 +62,8 @@ class QuietEnd:
             _frame: The frame interrupted.
         """
         for stream in (sys.stdout, sys.stderr):
-            with contextlib.suppress(OSError, ValueError, AttributeError):
+            # RuntimeError: the signal landed inside the stream's own flush (reentrant)
+            with contextlib.suppress(OSError, ValueError, AttributeError, RuntimeError):
                 stream.flush()
         os._exit(self.code)  # the threads left only read: nothing to save
 

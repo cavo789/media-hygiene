@@ -99,6 +99,29 @@ def test_quiet_end_flushes_then_exits_with_its_code(
     assert ended == [7]
 
 
+class _FlushingAlready:
+    """A stream the signal interrupted in the middle of its own flush."""
+
+    def flush(self) -> None:
+        """Refuse, as a buffered writer already flushing does.
+
+        Raises:
+            RuntimeError: Always.
+        """
+        raise RuntimeError
+
+
+def test_quiet_end_exits_when_the_signal_lands_inside_a_flush(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A reentrant flush is skipped: the code, never a traceback (CI, 2026-10-23)."""
+    ended: list[int] = []
+    monkeypatch.setattr(os, "_exit", ended.append)
+    monkeypatch.setattr(sys, "stdout", _FlushingAlready())
+    QuietEnd(3)(signal.SIGINT, None)
+    assert ended == [3]
+
+
 def _armed(monkeypatch: pytest.MonkeyPatch) -> dict[int, object]:
     """Record the handlers installed instead of installing them.
 
