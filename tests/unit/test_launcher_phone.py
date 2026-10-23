@@ -419,3 +419,24 @@ def test_bash_says_phone_is_for_windows_only(tmp_path: Path) -> None:
     done = run_bash(f"source {path}; mh phone; echo status=$?", env)
     assert done.stderr == "mh phone is for Windows only.\n"
     assert done.stdout == "status=2\n"
+
+
+def test_from_home_the_page_offers_its_way_back_in_the_home_tab() -> None:
+    """0332: the relay from the home loop; no second tab, the home one follows."""
+    page = _body(_script(), "phone_page")
+    assert (
+        "if ($global:MediaHygieneRelay) "
+        "{ $page += '-e', 'MEDIA_HYGIENE_LAUNCHER_STEPS=1' }"
+    ) in page
+    assert "if (-not $global:MediaHygieneTab) { $browser = Start-Job" in page
+    assert "if ($browser) { Remove-Job -Job $browser -Force }" in page
+
+
+def test_from_home_a_closed_tab_deletes_nothing_and_ends_the_loop() -> None:
+    """0332: the page's exit code kept for the loop of `mh`, nothing deleted said."""
+    clear = _body(_script(), "phone_clear")
+    closed = clear.index(
+        "if ($null -eq $ticked -and $LASTEXITCODE -eq 3) "
+        '{ Write-Host "Nothing was deleted from the phone."; return }'
+    )
+    assert closed < clear.index('if ($null -eq $ticked) { Write-Host "The check')

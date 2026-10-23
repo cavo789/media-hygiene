@@ -22,23 +22,30 @@
   window.setInterval(() => alive(false), ALIVE_MS);
   const closed = document.getElementById("homeClosed");
   const homeLink = document.getElementById("homeLink");
-  if (homeLink !== null) homeLink.addEventListener("click", (event) => {
+  // The server seen gone, then answering again: the home page is back, this tab shows it.
+  const awaitHome = () => {
+    let seenGone = false;
+    const poll = () => fetch("/", { cache: "no-store" })
+      .then((response) => {
+        if (response.ok && seenGone) window.location.replace("/" + section());
+        else window.setTimeout(poll, POLL_MS);
+      })
+      .catch(() => {
+        seenGone = true;
+        window.setTimeout(poll, POLL_MS);
+      });
+    window.setTimeout(poll, POLL_MS);
+  };
+  if (homeLink === null) return;
+  // A page ending another way (the phone's Delete or Leave, 0332) follows the home page too.
+  window.mhAwaitHome = awaitHome;
+  homeLink.addEventListener("click", (event) => {
     event.preventDefault();
     fetch("/api/stop", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" })
       .then(() => {
         closed.hidden = false;
         closed.style.display = "flex";
-        let seenGone = false;
-        const poll = () => fetch("/", { cache: "no-store" })
-          .then((response) => {
-            if (response.ok && seenGone) window.location.replace("/" + section());
-            else window.setTimeout(poll, POLL_MS);
-          })
-          .catch(() => {
-            seenGone = true;
-            window.setTimeout(poll, POLL_MS);
-          });
-        window.setTimeout(poll, POLL_MS);
+        awaitHome();
       })
       .catch(() => undefined);
   });

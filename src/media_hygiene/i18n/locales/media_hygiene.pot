@@ -958,11 +958,6 @@ msgstr ""
 msgid "Back on the map: taken out of config.toml."
 msgstr ""
 
-msgid ""
-"Back to the console: mh copies each file ticked again, proves it, then "
-"deletes it from the phone."
-msgstr ""
-
 msgid "Back to the home page"
 msgstr ""
 
@@ -1305,6 +1300,11 @@ msgid "Close"
 msgstr ""
 
 msgid "Close this page and go back to the home page: mh opens it again."
+msgstr ""
+
+msgid ""
+"Close this page and go back to the home page: nothing is deleted from the"
+" phone."
 msgstr ""
 
 msgid ""
@@ -6026,6 +6026,13 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"Switch to the PowerShell window: the files leave the phone one by one, "
+"each one copied again and compared with the PC's copy first (about "
+"{minutes} min)."
+msgstr ""
+
+#, python-brace-format
+msgid ""
 "Switch to {window} now (Alt+Tab, or its button in the taskbar): it may "
 "ask you something."
 msgstr ""
@@ -6568,6 +6575,11 @@ msgstr ""
 
 #, python-brace-format
 msgid "The page failed (error {status})."
+msgstr ""
+
+msgid ""
+"The page is not running any more: nothing more is saved here. Go back to "
+"the home page, then choose Make room on the phone again."
 msgstr ""
 
 msgid "The page is not running any more: start it again."

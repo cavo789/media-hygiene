@@ -6,7 +6,9 @@
    A page of photos to pick like `browse` (`pick_*` in review/templates, skill
    photo-picking-pages): the same gestures pick files, the bar ticks or unticks them
    (ticked = leaves the phone, 0314); one group per folder of the phone, each with its box
-   (0312). No Delete key: the only deletion is the page's red button. #}
+   (0312). No Delete key: the only deletion is the page's red button. Opened from the home page,
+   "Back to the home page" ends it as Leave everything (home_link.html.j2, whose pings keep its
+   server alive, 0332); a choice its server no longer answers says so, never a bare status (0331). #}
 {% set texts = {
   "status": _("{phone}: {ticked} of {total} files ticked ({size})"),
   "group": _("{ticked} of {count} ticked · {size}"),
@@ -21,7 +23,8 @@
   "failed": _("Not saved (error {status})."),
   "notSaved": _("Nothing was saved: {error}"),
   "offline": _("The page is not running any more: type mh phone again."),
-  "freed": _("Back to the console: mh copies each file ticked again, proves it, then deletes it from the phone."),
+  "goneHome": _("The page is not running any more: nothing more is saved here. Go back to the home page, then choose Make room on the phone again."),
+  "freed": _("Switch to the PowerShell window: the files leave the phone one by one, each one copied again and compared with the PC's copy first (about {minutes} min)."),
   "left": _("Nothing was deleted from the phone. You can close this page."),
   "noPreview": _("no preview"),
   "pc": _("On the PC:"),
@@ -32,6 +35,7 @@
   "fold": _("Fold or unfold this folder"),
 } %}
 {% set page_name = _("Free the phone") %}
+{% set home_title = _("Close this page and go back to the home page: nothing is deleted from the phone.") %}
 <html lang="{{ _('en') }}">
 <head>
 <meta charset="utf-8">
@@ -66,6 +70,7 @@
   button.danger { background: var(--bad); border-color: var(--bad); color: #fff; font-weight: 600; }
   #closed { position: fixed; inset: 0; z-index: 60; display: none; align-items: center; justify-content: center;
             padding: 16px; background: rgba(0, 0, 0, .55); }
+  #closed a { display: block; margin-top: 12px; color: var(--accent); }
   #closed p { max-width: 520px; padding: 20px 24px; border-radius: 12px; background: var(--card); }
 </style>
 </head>
@@ -103,12 +108,14 @@
 {% set pick_mark = "🗑️ " ~ _("leaves the phone") %}
 {% set pick_space = _("tick or untick it") %}
 {% include "pick_viewer.html.j2" %}
-<div id="closed" role="alertdialog" aria-live="assertive"><p id="closedText"></p></div>
+<div id="closed" role="alertdialog" aria-live="assertive"><p><span id="closedText"></span>
+  <a id="closedHome" href="/" hidden>⌂ {{ _("Back to the home page") }}</a></p></div>
 <script>
 {% include "pick_grid.js.j2" %}
 {% include "pick_viewer.js.j2" %}
 {% include "pick_band.js.j2" %}
 {% include "phone_review.js.j2" %}
 </script>
+{% include "home_link.html.j2" %}
 </body>
 </html>

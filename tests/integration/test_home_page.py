@@ -386,7 +386,6 @@ def test_every_page_template_includes_the_home_link() -> None:
         for page in source.glob("*/templates/*.html.j2")
         if page.parent.parent.name in {"review", "search", "places", "people"}
         and not page.name.startswith("pick_")  # parts of the pages of photos to pick
-        # The page freeing a phone ends into `mh phone`, never the home page (0248).
         and page.name
         not in {
             "home.html.j2",
@@ -394,7 +393,6 @@ def test_every_page_template_includes_the_home_link() -> None:
             "apply_now.html.j2",  # a fragment, like home_link (0288)
             "album_bar.html.j2",  # a fragment too (0295)
             "page_header.html.j2",
-            "phone_review.html.j2",
             "lan_pair.html.j2",  # a phone not paired yet: no home to go back to (0269)
         }
     ]

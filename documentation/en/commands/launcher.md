@@ -297,7 +297,13 @@ as [`browse`](browse.md):
 
 Every tick is saved at once in `phone-decisions.json` (in your reports folder), read back from the
 disk and shown. **Nothing leaves the phone before you press *Delete N files from the phone***;
-*Leave everything on the phone* ends it with nothing deleted. Then, for each file ticked:
+*Leave everything on the phone* ends it with nothing deleted. Opened from the home page (*Make
+room on the phone*), the page has **⌂ Back to the home page** at the top right, as every page:
+it ends the page in the same way, nothing deleted, and the home page comes back in the same tab;
+after *Delete*, the tab says to switch to the PowerShell window (with the time it takes), then
+shows the home page again once it is done. If the page stopped meanwhile (ended in another tab,
+the window of `mh` closed), a tick says so plainly — *The page is not running any more* — and the red
+button is refused: nothing more is saved there. Then, for each file ticked:
 
 1. it is **copied again** from the phone into an empty folder (`.mh-phone-<date>`);
 2. its **content is proven** (SHA-256) equal to a file of your library that is still there, to

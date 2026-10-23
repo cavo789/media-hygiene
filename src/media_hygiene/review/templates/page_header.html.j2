@@ -2,7 +2,7 @@
    avatar and the page's name (`page_name`, set by the page); its chapter of the documentation in the
    page's language and in the other one; "Back to the home page" when `mh` opened it from the home
    page: its click is handled by home_link.html.j2, which ends this page as Quit does and waits for
-   the home page to come back (0210). The theme the home page's switch chose is read first. #}
+   the home page to come back (0210); a page may say more on its title (`home_title`). The theme the home page's switch chose is read first. #}
 <script>
 {% include "theme_choice.js.j2" %}
 </script>
@@ -14,7 +14,7 @@
     <a class="mh-doc" href="{{ header.doc }}" target="_blank" rel="noopener">{{ _("Documentation") }}</a>
     <a class="mh-doc" href="{{ header.twin }}" target="_blank" rel="noopener" hreflang="{{ header.twin_lang }}" lang="{{ header.twin_lang }}">{{ header.twin_label }}</a>
 {% if header.home %}
-    <a class="mh-home" id="homeLink" href="#" title="{{ _('Close this page and go back to the home page: mh opens it again.') }}">⌂ {{ _("Back to the home page") }}</a>
+    <a class="mh-home" id="homeLink" href="#" title="{{ home_title | default(_('Close this page and go back to the home page: mh opens it again.')) }}">⌂ {{ _("Back to the home page") }}</a>
 {% endif %}
   </span>
 </nav>

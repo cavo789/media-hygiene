@@ -1211,13 +1211,6 @@ msgstr "Revenus après une mise de côté"
 msgid "Back on the map: taken out of config.toml."
 msgstr "De retour sur la carte : retiré de config.toml."
 
-msgid ""
-"Back to the console: mh copies each file ticked again, proves it, then "
-"deletes it from the phone."
-msgstr ""
-"Retour à la console : mh copie à nouveau chaque fichier coché, le prouve,"
-" puis le supprime du téléphone."
-
 msgid "Back to the home page"
 msgstr "Retour à l'accueil"
 
@@ -1612,6 +1605,13 @@ msgstr "Fermer"
 
 msgid "Close this page and go back to the home page: mh opens it again."
 msgstr "Fermer cette page et revenir à l'accueil : mh le rouvre."
+
+msgid ""
+"Close this page and go back to the home page: nothing is deleted from the"
+" phone."
+msgstr ""
+"Fermer cette page et revenir à l'accueil : rien n'est supprimé du "
+"téléphone."
 
 msgid ""
 "Close this page: mh moves the files set aside to the quarantine (it asks "
@@ -7289,6 +7289,16 @@ msgstr "Basculer entre la planche et une série à la fois (P)"
 
 #, python-brace-format
 msgid ""
+"Switch to the PowerShell window: the files leave the phone one by one, "
+"each one copied again and compared with the PC's copy first (about "
+"{minutes} min)."
+msgstr ""
+"Passez à la fenêtre PowerShell : les fichiers quittent le téléphone un à "
+"un, chacun d'abord copié à nouveau et comparé à la copie du PC (environ "
+"{minutes} min)."
+
+#, python-brace-format
+msgid ""
 "Switch to {window} now (Alt+Tab, or its button in the taskbar): it may "
 "ask you something."
 msgstr ""
@@ -7955,6 +7965,13 @@ msgstr ""
 #, python-brace-format
 msgid "The page failed (error {status})."
 msgstr "La page a échoué (erreur {status})."
+
+msgid ""
+"The page is not running any more: nothing more is saved here. Go back to "
+"the home page, then choose Make room on the phone again."
+msgstr ""
+"La page ne tourne plus : plus rien n'est enregistré ici. Revenez à "
+"l'accueil, puis choisissez à nouveau Faire de la place sur le téléphone."
 
 msgid "The page is not running any more: start it again."
 msgstr "La page ne tourne plus : relancez-la."
@@ -13440,7 +13457,7 @@ msgstr[1] "{n} séries"
 
 #, python-brace-format
 msgid "{n} set aside, not ticked"
-msgstr "{n} mis de côté, non coché(s)"
+msgstr "{n} mis de côté, sans coche"
 
 #, python-brace-format
 msgid "{n} shot proposed aside"

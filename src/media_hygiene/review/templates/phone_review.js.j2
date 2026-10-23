@@ -3,13 +3,18 @@
    large view tick or untick them (0314), the folder's box every file of the folder. Each
    choice is one `POST /api/phone`, the page shows what the file read back holds. A file
    set aside before is never ticked by a gesture on several files: only alone, after its
-   warning. #}
+   warning. The red button only while the ticks shown are those read back from the disk; a
+   server gone (no answer, or another page's server on the port: 404, 405) is said plainly
+   (0331). #}
 const TEXTS = {{ texts | tojson }};
 const STATE_PATH = {{ state_path | tojson }};
 const DECIDE_PATH = {{ decide_path | tojson }};
 const FILE_PATH = {{ file_path | tojson }};
 const FREE_PATH = {{ free_path | tojson }};
 const STOP_PATH = {{ stop_path | tojson }};
+const PHONE_MB_PER_SECOND = {{ phone_speed | tojson }}; // read twice: the proof's copy, then the move
+const GONE = new Set([404, 405]); // a route this page's server always answers: another server's
+const MB = 1024 * 1024;
 const FOLDED_KEY = "mh-phone-folded";
 const LANG = document.documentElement.lang;
 const UNITS = ["B", "KB", "MB", "GB", "TB"];
@@ -18,6 +23,7 @@ let tiles = [];   // every file of the phone the PC holds, by rank: `GET /api/st
 let groups = [];  // the phone's folders, in the order of their names
 let badges = {};  // why the PC holds a file, by case: the legend's badges
 let disk = new Set(); // the ranks ticked in the file, as read back from the disk
+let synced = false;   // the ticks shown are those read back: the red button may delete
 
 const number = (value) => value.toLocaleString(LANG);
 const clock = (iso) => new Date(iso).toLocaleTimeString(LANG);
@@ -107,7 +113,7 @@ function paint() {
   $("phone").textContent = phone;
   $("status").textContent = fill(TEXTS.status, { phone: phone, ticked: number(ticked.length), total: number(all.length), size: size(sum(ticked)) });
   $("free").textContent = fill(TEXTS.delete, { ticked: number(disk.size), size: size(sum([...disk])) });
-  $("free").disabled = disk.size === 0;
+  $("free").disabled = disk.size === 0 || !synced;
   const sections = $("grid").querySelectorAll(".folder");
   $("folders").replaceChildren(...groups.map((group, rank) => {
     const on = group.files.filter((file) => tiles[file].ticked);
@@ -142,14 +148,43 @@ function say(text, kind) {
   $("chosen").title = text;
 }
 
+// Its server is gone (ended, or the home page back on the port): said, nothing more is sent.
+function gone() {
+  synced = false;
+  $("free").disabled = true;
+  $("leave").disabled = true;
+  const home = Boolean(window.mhAwaitHome); // opened from the home page (home_link.html.j2)
+  const text = home ? TEXTS.goneHome : TEXTS.offline;
+  $("closedText").textContent = text;
+  $("closedHome").hidden = !home;
+  $("closed").style.display = "flex";
+  say(text, "error");
+}
+
+// A save refused: the ticks shown again as the file on the disk holds them.
+async function resync() {
+  const answer = await ask(FILE_PATH);
+  if (!answer || GONE.has(answer.status)) { gone(); return; }
+  const read = await answer.json().catch(() => ({}));
+  if (!answer.ok || read.error || !Array.isArray(read.ticked)) return;
+  readBack(read);
+  reopen(true);
+}
+
 // changes: [rank, ticked] pairs, sent in one POST; the page shows what the file read back holds.
 async function decide(changes, left) {
   say(TEXTS.saving, "");
+  synced = false;
+  $("free").disabled = true;
   const body = { choices: changes.map(([rank, on]) => ({ file: rank, ticked: on })) };
   const answer = await ask(DECIDE_PATH, body);
-  if (!answer) { say(TEXTS.offline, "error"); return false; }
+  if (!answer || GONE.has(answer.status)) { gone(); return false; }
   const reply = await answer.json().catch(() => ({}));
-  if (!answer.ok) { say(reply.error ? fill(TEXTS.notSaved, { error: reply.error }) : fill(TEXTS.failed, { status: answer.status }), "error"); return false; }
+  if (!answer.ok) {
+    await resync();
+    say(reply.error ? fill(TEXTS.notSaved, { error: reply.error }) : fill(TEXTS.failed, { status: answer.status }), "error");
+    return false;
+  }
   readBack(reply.file);
   const proof = fill(TEXTS.proofOk, { time: clock(reply.file.modified), ticked: number(disk.size) });
   say(left ? proof + " " + counted(TEXTS.asideLeft, left) : proof, "saved");
@@ -158,6 +193,7 @@ async function decide(changes, left) {
 
 function readBack(file) {
   disk = new Set(file.ticked);
+  synced = true;
   for (const tile of tiles) tile.ticked = disk.has(tile.rank);
 }
 
@@ -202,25 +238,29 @@ VIEWER_KEYS[" "] = async () => {
   if (file && (await saveShown(file.chosen ? "remove" : "add"))) $("viewerAside").hidden = !files[current].chosen;
 };
 
+// The page ends; opened from the home page, this tab shows it once mh opens it again (0332).
 function end(path, text) {
   ask(path, {}).then(async (answer) => {
-    if (!answer) { say(TEXTS.offline, "error"); return; }
+    if (!answer || GONE.has(answer.status)) { gone(); return; }
     const reply = await answer.json().catch(() => ({}));
     if (!answer.ok) { say(reply.error || fill(TEXTS.failed, { status: answer.status }), "error"); return; }
     $("closedText").textContent = text;
     $("closed").style.display = "flex";
+    if (window.mhAwaitHome) window.mhAwaitHome();
   });
 }
 
 $("free").addEventListener("click", () => {
   const ranks = [...disk];
-  if (window.confirm(fill(TEXTS.confirm, { ticked: number(ranks.length), size: size(sum(ranks)) }))) end(FREE_PATH, TEXTS.freed);
+  if (!synced || !ranks.length) return; // the ticks shown are not those on the disk
+  const minutes = Math.max(1, Math.ceil((2 * sum(ranks)) / MB / PHONE_MB_PER_SECOND / 60));
+  if (window.confirm(fill(TEXTS.confirm, { ticked: number(ranks.length), size: size(sum(ranks)) }))) end(FREE_PATH, fill(TEXTS.freed, { minutes: number(minutes) }));
 });
 $("leave").addEventListener("click", () => end(STOP_PATH, TEXTS.left));
 
 Promise.all([ask(STATE_PATH), ask(FILE_PATH)])
   .then(async ([state, file]) => {
-    if (!state || !file) { say(TEXTS.offline, "error"); return; }
+    if (!state || !file || GONE.has(state.status) || GONE.has(file.status)) { gone(); return; }
     const listed = await state.json();
     const read = await file.json();
     tiles = listed.tiles;

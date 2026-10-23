@@ -19,12 +19,16 @@ from typing import TYPE_CHECKING, Final
 from typer.testing import CliRunner
 
 from media_hygiene.cli.app import build_app
+from media_hygiene.errors import PageClosed
+from media_hygiene.review import presence
+from media_hygiene.review.ending import STOP_PATH
 from media_hygiene.review.phone_app import PhoneApp
 from media_hygiene.review.phone_file import PHONE_DECISIONS, read_phone_decisions
 from media_hygiene.review.phone_session import PhonePages, PhoneSession
 from media_hygiene.review.phone_tiles import TileSource
 from media_hygiene.review.place import DecisionsPlace
 from media_hygiene.services import phone_review
+from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 from media_hygiene.services.phone_free import read_ticked
 from media_hygiene.services.phone_plan import PHONE_REVIEW, PhoneCase
 from media_hygiene.services.phone_review import PhoneReview, serve_phone_review
@@ -366,3 +370,86 @@ def test_the_page_picks_as_browse_does_without_a_delete_key(
     assert "every file of the page" in keys
     assert "deleteKeySets = false;" in page
     assert "delete VIEWER_KEYS.Delete;" in page
+
+
+def test_a_tick_through_the_real_server_is_saved_and_read_back(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0331: `POST /api/phone` reaches the page through its door, never a 405."""
+    thread, port, results = _serve(locations, monkeypatch)
+    ticked = asyncio.run(send_call(port, _tick((0, False))))
+    held = asyncio.run(send_call(port, Call("GET", "/api/file")))
+    asyncio.run(send_call(port, Call("POST", "/api/stop", b"{}", JSON_HEADERS)))
+    thread.join(timeout=10)
+    assert ticked.status == 200
+    assert json.loads(ticked.body)["file"]["ticked"] == [1]
+    assert json.loads(held.body)["ticked"] == [1]
+    saved, _stamp = read_phone_decisions(locations.reports_dir / PHONE_DECISIONS)
+    assert [c.path for c in saved.files if c.ticked] == ["Camera/IMG_2.jpg"]
+    assert results == [()]
+
+
+def test_the_page_says_it_is_alive_or_its_server_ends_under_it(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0331's cause: a tab that left (the home page's, reloaded), then silence.
+
+    The server ends as Leave everything (nothing printed for `mh`): the page must
+    speak itself, through the fragment every page includes.
+    """
+    monkeypatch.setattr(presence, "LEAVING_GRACE_SECONDS", 0.05)
+    thread, port, results = _serve(locations, monkeypatch)
+    page = asyncio.run(send_call(port, Call("GET", "/"))).body.decode()
+    leaving = Call("POST", presence.PRESENCE_PATH, b'{"leaving": true}', JSON_HEADERS)
+    asyncio.run(send_call(port, leaving))
+    thread.join(timeout=10)
+    assert not thread.is_alive()
+    assert results == [()]
+    assert presence.PRESENCE_PATH in page
+    assert 'addEventListener("pagehide"' in page
+
+
+def test_from_home_the_way_back_ends_the_page_deleting_nothing(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0332: the link posts `/api/stop`, as Leave everything: nothing printed."""
+    monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, "1")
+    thread, port, results = _serve(locations, monkeypatch)
+    page = asyncio.run(send_call(port, Call("GET", "/"))).body.decode()
+    stopped = asyncio.run(send_call(port, Call("POST", STOP_PATH, b"{}", JSON_HEADERS)))
+    thread.join(timeout=10)
+    assert page.count('id="homeLink"') == 1
+    assert stopped.status == 200
+    assert results == [()]
+
+
+def test_from_home_a_closed_tab_ends_the_loop_of_mh(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0332: as on every page opened from home, never the home page again unseen."""
+    monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, "1")
+    monkeypatch.setattr(presence, "LEAVING_GRACE_SECONDS", 0.05)
+    write_shot(locations.data_dir / "c/Photos/2025/IMG_1.jpg", Shot(7))
+    runtime = make_runtime(locations)
+    ports: queue.Queue[int] = queue.Queue()
+
+    def told(port: int) -> str:
+        ports.put(port)
+        return ""
+
+    monkeypatch.setattr(phone_review, "page_url", told)
+    files, _skipped = read_ticked(_PLAN)
+    ended: list[BaseException] = []
+
+    def serve() -> None:
+        try:
+            serve_phone_review(runtime, PhoneReview(_PHONE, files, None, 0))
+        except PageClosed as closed:
+            ended.append(closed)
+
+    thread = threading.Thread(target=serve)
+    thread.start()
+    leaving = Call("POST", presence.PRESENCE_PATH, b'{"leaving": true}', JSON_HEADERS)
+    asyncio.run(send_call(ports.get(timeout=10), leaving))
+    thread.join(timeout=10)
+    assert len(ended) == 1

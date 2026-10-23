@@ -127,7 +127,7 @@ def test_each_page_wears_the_theme(template: str) -> None:
 
 
 @pytest.mark.usefixtures("from_home")
-@pytest.mark.parametrize("template", sorted(set(PAGE_STEPS) - {"phone_review.html.j2"}))
+@pytest.mark.parametrize("template", sorted(PAGE_STEPS))
 def test_opened_from_home_the_page_offers_the_way_back(template: str) -> None:
     """The way back, handled by the fragment every page includes."""
     page = _render(template)
@@ -139,9 +139,21 @@ def test_opened_from_home_the_page_offers_the_way_back(template: str) -> None:
 
 
 @pytest.mark.usefixtures("from_home")
-def test_the_phone_page_keeps_its_own_way_out() -> None:
-    """Its "Leave" button ends it: no second link."""
+def test_the_phone_page_offers_the_way_back_and_says_nothing_is_deleted() -> None:
+    """0332: the same link at the same place; it ends the page as Leave everything."""
+    assert page_header("phone_review.html.j2").home
+    page = _render("phone_review.html.j2")
+    assert "nothing is deleted from the phone" in page.split('id="homeLink"')[1]
+    assert "window.mhAwaitHome = awaitHome;" in page
+
+
+def test_from_the_console_the_phone_page_has_no_way_back(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """`mh phone --free` typed: no home page to go back to, as on the other pages."""
+    monkeypatch.delenv(LAUNCHER_STEPS_VARIABLE, raising=False)
     assert not page_header("phone_review.html.j2").home
+    assert 'id="homeLink"' not in _render("phone_review.html.j2")
 
 
 class _Refusing:

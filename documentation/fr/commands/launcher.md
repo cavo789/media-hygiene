@@ -316,7 +316,13 @@ la page fonctionne comme [`browse`](browse.md) :
 Chaque coche est enregistrée aussitôt dans `phone-decisions.json` (dans votre dossier des
 rapports), relue depuis le disque et affichée. **Rien ne quitte le téléphone avant que vous
 appuyiez sur *Supprimer N fichiers du téléphone*** ; *Tout laisser sur le téléphone* la termine
-sans rien supprimer. Ensuite, pour chaque fichier coché :
+sans rien supprimer. Ouverte depuis l'accueil (*Faire de la place sur le téléphone*), la page a
+**⌂ Retour à l'accueil** en haut à droite, comme toutes les pages : il la termine de la même
+façon, sans rien supprimer, et l'accueil revient dans le même onglet ; après *Supprimer*,
+l'onglet dit de passer à la fenêtre PowerShell (avec le temps que cela prend), puis montre à
+nouveau l'accueil une fois fini. Si la page s'est arrêtée entre-temps (terminée dans un autre onglet, la
+fenêtre de `mh` fermée), une coche le dit clairement — *La page ne tourne plus* — et le bouton
+rouge est refusé : plus rien n'y est enregistré. Ensuite, pour chaque fichier coché :
 
 1. il est **copié à nouveau** depuis le téléphone dans un dossier vide (`.mh-phone-<date>`) ;
 2. son **contenu est prouvé** (SHA-256) égal à un fichier de votre photothèque encore là, à la

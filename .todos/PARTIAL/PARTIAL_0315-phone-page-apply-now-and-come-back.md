@@ -53,3 +53,31 @@ the per-file speed in `launcher_phone_free.py`, to check).
 
 The launcher page's section on freeing the phone (both languages); `docs_screenshots` should
 run afterwards (not unasked).
+
+## Status — PARTIAL (2026-10-23)
+
+### Done
+- Point 4, the waiting state: after *Delete*, the tab says "Switch to the PowerShell window:
+  the files leave the phone one by one, each one copied again and compared with the PC's copy
+  first (about N min)", N from the console's own formula (2 reads, `PHONE_MB_PER_SECOND`,
+  rendered as `phone_speed`). Checked in headless Chromium (mocked API).
+- The groundwork 0332 laid: opened from the home page, the phone page's tab follows its
+  server back (`window.mhAwaitHome` of `home_link.html.j2`: seen gone, then answering → the
+  page shown again); the same mechanism a second round of this page needs on the same port.
+
+### Not done
+- Points 1–3: the loop of `_mh_phone_clear` (page → batches proved and moved → phone listed
+  again → `phone-plan` again → the page again on the same port), the round's summary read
+  from the journal, the two buttons (*Delete the ticked ones now* / *Done*), the ticks kept
+  across rounds in `phone-decisions.json` keyed by the phone's path.
+  **Reason:** the loop re-lists the phone over MTP between rounds (`_mh_phone_files`, now in
+  `_mh_phone` only, must move into a function both call) and changes how the page's end is read
+  (a code for "round" vs "done"): only PowerShell 5.1 with a real USB phone proves it; the
+  devcontainer can render the script as text only. Writing it unrun next to the
+  proof-before-delete steps was judged unsafe in an unattended lot. Needs a session with the
+  maintainer's phone, or one dedicated to it with a step in `tests/measure/mh-measure.ps1`
+  (two rounds of 20 files, the round trip timed).
+- The two-round integration test and the `test_launcher_phone.py` loop test: they follow the
+  loop.
+- The measure (round trip for 20 files): follows the loop; estimated from 24 MB/s × 2 reads
+  plus ≈ 2 s per container start and the re-listing (not measured).
