@@ -360,3 +360,33 @@ def test_a_save_keeps_the_cards_and_the_height_of_the_bar(
     chosen = page.split("  #chosen {")[1].split("}")[0]
     assert "white-space: nowrap" in chosen
     assert "text-overflow: ellipsis" in chosen
+
+
+def test_the_keys_of_the_large_view_and_their_list(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Each key of the large view does one thing, and `?` lists every one of them."""
+    answers, _ = _browse(cli, monkeypatch, [("GET /browse", None)])
+    page = answers[0].body.decode()
+    keys = page.split("const VIEWER_KEYS = {")[1].split("};")[0]
+    for wired in (
+        "Delete: asideShown",
+        "Backspace: takeBackShown",
+        '" ": playPause',
+        "f: fullScreen",
+        'i: () => toggle("viewerInfo")',
+        "a: albumShown",
+        '"?": () => toggle("viewerHelp")',
+        "Home:",
+        "End:",
+    ):
+        assert wired in keys
+    shown = page.split("async function saveShown(action) {")[1].split("\n}\n")[0]
+    assert "keys: [file.key]" in shown  # the file shown alone, never the picking
+    assert "await reopen(true);" in shown  # its label read back from the server
+    aside = page.split("async function asideShown() {")[1].split("\n}\n")[0]
+    assert "focusOn(Math.min(index + 1, files.length - 1));" in aside
+    help_list = page.split('<dl id="viewerHelp"')[1].split("</dl>")[0]
+    # Every key listed: ← → and Home End share a line each.
+    assert help_list.count("<dt>") == len(keys.strip().splitlines()) - 2
+    assert "window.mhAlbumAdd = (pick) =>" in page

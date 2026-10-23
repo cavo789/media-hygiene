@@ -26,6 +26,7 @@
   "tick": _("Pick this file"),
   "saving": _("Saving…"),
   "notSaved": _("Nothing was saved: {error}"),
+  "noAlbum": _("Type the album's name in the bar first: then A adds the file shown."),
 } %}
 {% set page_name = _("Your folders") %}
 <html lang="{{ _('en') }}">
@@ -113,6 +114,16 @@
   #viewer.open { display: flex; }
   #viewer img, #viewer video { max-width: 100%; max-height: calc(100vh - 90px); object-fit: contain; }
   #viewer a { color: #9cd0ff; }
+  #viewer .asideMark { padding: 0 8px; border-radius: 10px; background: var(--bad); font-size: .8rem;
+                       font-weight: 600; }
+  #viewer .asideMark[hidden] { display: none; }
+  #viewer .viewerKeys, #viewerInfo { color: #ccc; }
+  #viewerSaid:empty, #viewerInfo[hidden], #viewerHelp[hidden] { display: none; }
+  #viewerSaid.error { color: #ff9b9b; font-weight: 600; }
+  #viewerHelp { display: grid; grid-template-columns: auto auto; gap: 4px 12px; margin: 0;
+                padding: 10px 14px; background: rgba(40, 40, 40, .95); border-radius: 8px; }
+  #viewerHelp dd { margin: 0; }
+  #viewer kbd { color: #fff; background: #333; border-color: #666; }
 </style>
 </head>
 <body>
@@ -140,7 +151,12 @@
         <dt><kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd></dt><dd>{{ _("move the frame") }}</dd>
         <dt><kbd>␣</kbd></dt><dd>{{ _("pick or unpick the framed file") }}</dd>
         <dt><kbd>Enter</kbd></dt><dd>{{ _("open it large (a double click too)") }}</dd>
+        <dt><kbd>Home</kbd> <kbd>End</kbd></dt><dd>{{ _("the first or last file") }}</dd>
         <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>{{ _("opened: the previous or next one") }}</dd>
+        <dt><kbd>Delete</kbd></dt><dd>{{ _("opened: set it aside, then the next one") }}</dd>
+        <dt><kbd>⌫</kbd></dt><dd>{{ _("opened: take it back out") }}</dd>
+        <dt><kbd>F</kbd></dt><dd>{{ _("opened: full screen") }}</dd>
+        <dt><kbd>?</kbd></dt><dd>{{ _("opened: every key of the large view") }}</dd>
         <dt><kbd>Esc</kbd></dt><dd>{{ _("close it") }}</dd>
       </dl>
       </details>
@@ -182,7 +198,22 @@
 <div id="viewer" role="dialog" aria-modal="true">
   <img id="large" alt="">
   <video id="movie" controls hidden></video>
-  <div><span id="viewerName"></span> — <a id="originalLink" target="_blank" rel="noopener">{{ _("Open the original") }}</a></div>
+  <div><span id="viewerName"></span> <span id="viewerAside" class="asideMark" hidden>{{ _("marked to set aside") }}</span> — <a id="originalLink" target="_blank" rel="noopener">{{ _("Open the original") }}</a></div>
+  <div id="viewerInfo" class="stay" hidden></div>
+  <div id="viewerSaid" class="stay" role="status"></div>
+  <small class="viewerKeys stay"><kbd>←</kbd> <kbd>→</kbd> {{ _("previous, next") }} · <kbd>Delete</kbd> {{ _("set it aside, then the next one") }} · <kbd>F</kbd> {{ _("full screen") }} · <kbd>?</kbd> {{ _("every key") }}</small>
+  <dl id="viewerHelp" class="stay" hidden>
+    <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>{{ _("the previous or next one") }}</dd>
+    <dt><kbd>Home</kbd> <kbd>End</kbd></dt><dd>{{ _("the first or last one") }}</dd>
+    <dt><kbd>Delete</kbd></dt><dd>{{ _("set it aside, then the next one") }}</dd>
+    <dt><kbd>⌫</kbd></dt><dd>{{ _("take it back out of the set aside") }}</dd>
+    <dt><kbd>␣</kbd></dt><dd>{{ _("play or pause a video") }}</dd>
+    <dt><kbd>F</kbd></dt><dd>{{ _("full screen, or back") }}</dd>
+    <dt><kbd>I</kbd></dt><dd>{{ _("its date, size, folder") }}</dd>
+    <dt><kbd>A</kbd></dt><dd>{{ _("add it to the album named in the bar") }}</dd>
+    <dt><kbd>?</kbd></dt><dd>{{ _("this list, or not") }}</dd>
+    <dt><kbd>Esc</kbd></dt><dd>{{ _("close") }}</dd>
+  </dl>
 </div>
 <script>
 {% include "browse.js.j2" %}

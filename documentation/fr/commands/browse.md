@@ -69,6 +69,22 @@ Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`).
   touches marchent comme dans un dossier.
 - **Regarder** : Entrée ou un double clic montre une image en grand, une vidéo se lit ; ← et →
   passent à la précédente et à la suivante, comme dans l'application Photos ; Échap ferme.
+  **Suppr met de côté celle qui est montrée, puis la suivante s'ouvre** : triez un dossier sans
+  quitter la vue en grand. L'enregistrement est d'abord relu ; la photo montrée porte l'étiquette
+  rouge *à mettre de côté*. En grand, aussi :
+
+  | Touche | Ce qu'elle fait |
+  |---|---|
+  | Début, Fin | le premier ou le dernier fichier |
+  | Retour arrière | reprendre celle qui est montrée de ce qui est mis de côté |
+  | Espace | lire ou mettre en pause une vidéo |
+  | **F** | plein écran (F à nouveau, ou Échap, pour en sortir) |
+  | I | sa date, sa taille et son dossier, sous l'image (dans la grille, I inverse la sélection) |
+  | A | l'ajouter à l'album tapé dans **Album** |
+  | ? | toutes les touches de la vue en grand, sous l'image |
+
+  Une ligne sous l'image rappelle les touches principales ; le panneau sous l'arborescence les
+  liste toutes.
 - **Choisir** : un clic choisit un fichier ; la case ☑ de chaque vignette (ou Ctrl+clic) en
   ajoute ou en retire un ; Maj+clic choisit tous les fichiers depuis le dernier cliqué ; un
   rectangle tiré à la souris sur la grille choisit ce qu'il touche, sur plusieurs lignes (avec

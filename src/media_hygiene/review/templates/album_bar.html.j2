@@ -89,13 +89,13 @@
     buttons();
   };
 
-  const send = async (action) => {
+  const send = async (action, pick) => {
     const name = $("albumName").value.trim();
-    if (!name || !window.mhAlbumPick) return;
+    if (!name || !(pick || window.mhAlbumPick)) return false;
     try { window.localStorage.setItem(STORED, name); } catch { /* private mode */ }
     $("albumSaid").className = "";
     $("albumSaid").textContent = TEXTS.saving;
-    const body = Object.assign({ action: action, album: name }, window.mhAlbumPick());
+    const body = Object.assign({ action: action, album: name }, pick || window.mhAlbumPick());
     body.keys = (body.keys || []).map(String);
     let answer;
     try {
@@ -105,9 +105,10 @@
     } catch (error) {
       $("albumSaid").className = "error";
       $("albumSaid").textContent = TEXTS.offline;
-      return;
+      return true;
     }
     show(answer, await answer.json().catch(() => ({})));
+    return true;
   };
 
   const say = (text, command) => {
@@ -123,6 +124,9 @@
   };
 
   window.mhAlbumPicked = (count) => { pickedCount = count; buttons(); };
+  // One file into the album named, without picking it (browse's large view, key A);
+  // false when no album is named.
+  window.mhAlbumAdd = (pick) => send("add", pick);
   try { $("albumName").value = window.localStorage.getItem(STORED) || ""; } catch { /* private mode */ }
   $("albumName").addEventListener("input", buttons);
   $("albumAdd").addEventListener("click", () => send("add"));

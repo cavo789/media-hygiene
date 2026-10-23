@@ -7280,6 +7280,9 @@ msgstr ""
 msgid "Type mh backup in Windows PowerShell: it mounts it."
 msgstr ""
 
+msgid "Type the album's name in the bar first: then A adds the file shown."
+msgstr ""
+
 msgid ""
 "Type the code shown on the PC: on its page (in the sidebar of the home "
 "page, at the top of the slideshow's) and in the window of mh."
@@ -7951,6 +7954,9 @@ msgstr ""
 msgid "accept the proposal, next"
 msgstr ""
 
+msgid "add it to the album named in the bar"
+msgstr ""
+
 msgid "add or take out one file"
 msgstr ""
 
@@ -8146,6 +8152,9 @@ msgstr ""
 msgid "clock '{camera}': {reason}"
 msgstr ""
 
+msgid "close"
+msgstr ""
+
 msgid "close it"
 msgstr ""
 
@@ -8283,6 +8292,9 @@ msgstr ""
 msgid "every file from the last one clicked"
 msgstr ""
 
+msgid "every key"
+msgstr ""
+
 msgid "every photo has GPS"
 msgstr ""
 
@@ -8343,6 +8355,12 @@ msgid "found"
 msgstr ""
 
 msgid "freeing the room of the quarantine, once you checked it."
+msgstr ""
+
+msgid "full screen"
+msgstr ""
+
+msgid "full screen, or back"
 msgstr ""
 
 #, python-brace-format, python-format
@@ -8447,6 +8465,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "its copy {path} is gone"
+msgstr ""
+
+msgid "its date, size, folder"
 msgstr ""
 
 msgid "its files are gone"
@@ -8937,6 +8958,18 @@ msgstr ""
 msgid "open it large (a double click too)"
 msgstr ""
 
+msgid "opened: every key of the large view"
+msgstr ""
+
+msgid "opened: full screen"
+msgstr ""
+
+msgid "opened: set it aside, then the next one"
+msgstr ""
+
+msgid "opened: take it back out"
+msgstr ""
+
 msgid "opened: the previous or next one"
 msgstr ""
 
@@ -9010,6 +9043,9 @@ msgstr ""
 msgid "plan, start, prove, undo or undone."
 msgstr ""
 
+msgid "play or pause a video"
+msgstr ""
+
 #, python-brace-format
 msgid "plays, {seconds} s each"
 msgstr ""
@@ -9024,6 +9060,9 @@ msgid "previous pair"
 msgstr ""
 
 msgid "previous series (no choice: as shown)"
+msgstr ""
+
+msgid "previous, next"
 msgstr ""
 
 msgid "privacy faces forget delete gdpr"
@@ -9163,6 +9202,9 @@ msgstr ""
 msgid "set aside in 'search' or 'browse'"
 msgstr ""
 
+msgid "set it aside, then the next one"
+msgstr ""
+
 msgid "set the picked files aside"
 msgstr ""
 
@@ -9236,6 +9278,9 @@ msgstr ""
 msgid "take back the choice made here (of the selected photos, else of the event)"
 msgstr ""
 
+msgid "take it back out of the set aside"
+msgstr ""
+
 msgid "the PowerShell window of mh (in the taskbar)"
 msgstr ""
 
@@ -9293,6 +9338,12 @@ msgid "the file no longer exists"
 msgstr ""
 
 msgid "the files are no longer identical"
+msgstr ""
+
+msgid "the first or last file"
+msgstr ""
+
+msgid "the first or last one"
 msgstr ""
 
 msgid "the folder is gone already"
@@ -9365,6 +9416,9 @@ msgid "the oldest date"
 msgstr ""
 
 msgid "the other name looks like a copy"
+msgstr ""
+
+msgid "the previous or next one"
 msgstr ""
 
 #, python-brace-format
@@ -9462,6 +9516,9 @@ msgid "this disk does not support hard links (FAT, exFAT, a network share?)"
 msgstr ""
 
 msgid "this file has too many names already"
+msgstr ""
+
+msgid "this list, or not"
 msgstr ""
 
 msgid "this setting is required"

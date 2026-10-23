@@ -63,7 +63,21 @@ Your browser opens on the page (if not: `http://127.0.0.1:8088/`).
   MJPEG): the ones that gain the most once lightened. Set aside, the viewer and the keys work
   as in a folder.
 - **Look**: Enter or a double click shows a picture large, a video plays; ← and → go to the
-  previous and next ones, as in the Photos app; Escape closes.
+  previous and next ones, as in the Photos app; Escape closes. **Delete sets the one shown aside,
+  then the next one opens**: sort a folder without leaving the large view. The save is read back
+  first; the photo shown carries the red *marked to set aside* label. Opened large, too:
+
+  | Key | What it does |
+  |---|---|
+  | Home, End | the first or last file |
+  | Backspace | take the one shown back out of the set aside |
+  | Space | play or pause a video |
+  | **F** | full screen (F again, or Esc, to leave it) |
+  | I | its date, size and folder, under the picture (in the grid, I inverts the picking) |
+  | A | add it to the album typed in **Album** |
+  | ? | every key of the large view, under the picture |
+
+  A line under the picture recalls the main keys; the panel under the tree lists them all.
 - **Pick**: a click picks one file; the ☑ box of each thumbnail (or Ctrl+click) adds or removes
   one; Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse
   over the grid picks what it touches, over several rows (with Ctrl, it adds to the picking);

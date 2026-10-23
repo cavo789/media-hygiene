@@ -8833,6 +8833,11 @@ msgstr "Tapez mh backup --undo {run_id} dans Windows PowerShell."
 msgid "Type mh backup in Windows PowerShell: it mounts it."
 msgstr "Tapez mh backup dans Windows PowerShell : il le monte."
 
+msgid "Type the album's name in the bar first: then A adds the file shown."
+msgstr ""
+"Tapez d'abord le nom de l'album dans la barre : A y ajoute ensuite le "
+"fichier montré."
+
 msgid ""
 "Type the code shown on the PC: on its page (in the sidebar of the home "
 "page, at the top of the slideshow's) and in the window of mh."
@@ -9635,6 +9640,9 @@ msgstr "accepter le nom et la catégorie, puis l'événement suivant à décider
 msgid "accept the proposal, next"
 msgstr "accepter la proposition, puis suivante"
 
+msgid "add it to the album named in the bar"
+msgstr "l'ajouter à l'album nommé dans la barre"
+
 msgid "add or take out one file"
 msgstr "ajouter ou retirer un fichier"
 
@@ -9845,6 +9853,9 @@ msgstr "horloge « {camera} » : {first} et {second} se chevauchent"
 msgid "clock '{camera}': {reason}"
 msgstr "horloge « {camera} » : {reason}"
 
+msgid "close"
+msgstr "fermer"
+
 msgid "close it"
 msgstr "la fermer"
 
@@ -9992,6 +10003,9 @@ msgstr "événements nommer fêtes vacances"
 msgid "every file from the last one clicked"
 msgstr "tous les fichiers depuis le dernier cliqué"
 
+msgid "every key"
+msgstr "toutes les touches"
+
 msgid "every photo has GPS"
 msgstr "chaque photo a son GPS"
 
@@ -10057,6 +10071,12 @@ msgstr "présent"
 
 msgid "freeing the room of the quarantine, once you checked it."
 msgstr "libérer la place de la quarantaine, une fois que vous l'avez vérifiée."
+
+msgid "full screen"
+msgstr "plein écran"
+
+msgid "full screen, or back"
+msgstr "plein écran, ou retour"
 
 #, python-brace-format, python-format
 msgid "gap {gap} %%"
@@ -10167,6 +10187,9 @@ msgstr "son contenu a changé"
 #, python-brace-format
 msgid "its copy {path} is gone"
 msgstr "sa copie {path} a disparu"
+
+msgid "its date, size, folder"
+msgstr "sa date, sa taille, son dossier"
 
 msgid "its files are gone"
 msgstr "ses fichiers ont disparu"
@@ -10709,6 +10732,18 @@ msgstr "seulement la plus nette, puis suivante"
 msgid "open it large (a double click too)"
 msgstr "l'ouvrir en grand (un double clic aussi)"
 
+msgid "opened: every key of the large view"
+msgstr "en grand : toutes les touches de la vue en grand"
+
+msgid "opened: full screen"
+msgstr "en grand : plein écran"
+
+msgid "opened: set it aside, then the next one"
+msgstr "en grand : la mettre de côté, puis la suivante"
+
+msgid "opened: take it back out"
+msgstr "en grand : la reprendre"
+
 msgid "opened: the previous or next one"
 msgstr "ouverte : la précédente ou la suivante"
 
@@ -10790,6 +10825,9 @@ msgstr "vérification du plan"
 msgid "plan, start, prove, undo or undone."
 msgstr "plan, start, prove, undo ou undone."
 
+msgid "play or pause a video"
+msgstr "lire ou mettre en pause une vidéo"
+
 #, python-brace-format
 msgid "plays, {seconds} s each"
 msgstr "en lecture, {seconds} s chacune"
@@ -10805,6 +10843,9 @@ msgstr "paire précédente"
 
 msgid "previous series (no choice: as shown)"
 msgstr "série précédente (sans choix : comme affiché)"
+
+msgid "previous, next"
+msgstr "précédente, suivante"
 
 msgid "privacy faces forget delete gdpr"
 msgstr "vie privée visages oublier supprimer rgpd"
@@ -10955,6 +10996,9 @@ msgstr "remis de côté après son retour"
 msgid "set aside in 'search' or 'browse'"
 msgstr "mis de côté dans 'search' ou 'browse'"
 
+msgid "set it aside, then the next one"
+msgstr "la mettre de côté, puis la suivante"
+
 msgid "set the picked files aside"
 msgstr "mettre de côté les fichiers choisis"
 
@@ -11030,6 +11074,9 @@ msgstr ""
 "reprendre le choix fait ici (des photos sélectionnées, sinon de "
 "l'événement)"
 
+msgid "take it back out of the set aside"
+msgstr "la reprendre de ce qui est mis de côté"
+
 msgid "the PowerShell window of mh (in the taskbar)"
 msgstr "la fenêtre PowerShell de mh (dans la barre des tâches)"
 
@@ -11092,6 +11139,12 @@ msgstr "le fichier n'existe plus"
 
 msgid "the files are no longer identical"
 msgstr "les fichiers ne sont plus identiques"
+
+msgid "the first or last file"
+msgstr "le premier ou le dernier fichier"
+
+msgid "the first or last one"
+msgstr "la première ou la dernière"
 
 msgid "the folder is gone already"
 msgstr "le dossier a déjà disparu"
@@ -11168,6 +11221,9 @@ msgstr "la date la plus ancienne"
 
 msgid "the other name looks like a copy"
 msgstr "l'autre nom ressemble à une copie"
+
+msgid "the previous or next one"
+msgstr "la précédente ou la suivante"
 
 #, python-brace-format
 msgid ""
@@ -11288,6 +11344,9 @@ msgstr ""
 
 msgid "this file has too many names already"
 msgstr "ce fichier a déjà trop de noms"
+
+msgid "this list, or not"
+msgstr "cette liste, ou plus"
 
 msgid "this setting is required"
 msgstr "ce réglage est obligatoire"
