@@ -2,7 +2,7 @@
 
 - **Priority**: Low
 - **Batch**: review-ui
-- **Depends**: 0319
+- **Depends**: 0319, 0333
 - **Files**: `src/media_hygiene/review/templates/near_review.html.j2`, `src/media_hygiene/review/templates/gone_review.html.j2`, `src/media_hygiene/review/templates/pairs_review.html.j2`, `src/media_hygiene/review/templates/pick_viewer.js.j2`, `src/media_hygiene/review/templates/pick_viewer.html.j2`, `documentation/en/commands/review.md`, `documentation/fr/commands/review.md`
 
 ## Why

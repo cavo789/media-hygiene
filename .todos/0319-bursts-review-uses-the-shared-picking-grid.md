@@ -2,7 +2,7 @@
 
 - **Priority**: Medium
 - **Batch**: review-ui
-- **Depends**: —
+- **Depends**: 0333
 - **Files**: `src/media_hygiene/review/templates/review.html.j2`, `src/media_hygiene/review/templates/pick_grid.js.j2`, `src/media_hygiene/review/templates/pick_viewer.js.j2`, `src/media_hygiene/review/templates/pick_band.js.j2`, `src/media_hygiene/review/templates/pick_keys.html.j2`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `documentation/en/commands/review.md`, `documentation/fr/commands/review.md`, `tests/integration/tags/test_pick_pages.py`
 
 ## Why
