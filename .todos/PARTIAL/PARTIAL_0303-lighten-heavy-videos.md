@@ -185,3 +185,10 @@ phone import (it is remembered: done, tested).
 - Decided by the maintainer (2026-10-23): CRF 23 by default (`same_crf`), since CRF 18 gained
   only a third (close to `min_gain_percent`) with no visible difference; `--lighter` keeps
   CRF 23 and only fits the picture into 720 lines. One estimate now: `_BITS` 0.22.
+- Rerun after the fix (2026-10-23, `measures-20261023-1238`, image `sha256:9cf835f2…`): the
+  real `shrink --apply` on a copy of the 215 s clip ran in 55.4 s, 574.8 MB -> `P1050240.mp4`
+  167.5 MB (-71 %, 407.3 MB saved, as the line says), the original's modification time kept, no
+  temporary file left, the original in the quarantine: the link/copy move works on Docker
+  Desktop's mount (measured). The estimate now says 22.9 GB -> about 6.1 GB after, for 341
+  videos (the measured ratios, 26-29 %, give 6.0-6.6 GB). Plays in Windows and on the phone,
+  no visible difference (the maintainer's eyes).
