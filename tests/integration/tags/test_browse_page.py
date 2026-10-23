@@ -95,6 +95,48 @@ def test_a_folder_by_name_and_by_date(
     assert days == sorted(days)
 
 
+def test_a_folder_by_size_and_by_kind(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Largest first; videos only says what the folder holds; unknown values: 400."""
+    folder = _dcim(cli, monkeypatch)
+    answers = _browse(
+        cli,
+        monkeypatch,
+        [
+            ("POST /api/folder", {"folder": folder, "order": "size"}),
+            ("POST /api/folder", {"folder": folder, "kind": "videos"}),
+            ("POST /api/folder", {"folder": folder, "kind": "photos"}),
+            ("POST /api/folder", {"folder": folder, "kind": "music"}),
+            ("POST /api/folder", {"folder": folder, "order": "weight"}),
+        ],
+    )[0]
+    by_size = _body(answers[0])
+    assert by_size["files"], "the folder of the events holds photos"
+    videos = json.loads(answers[1].body)
+    assert videos["files"] == []
+    assert videos["holds"] == {"photos": len(by_size["files"]), "videos": 0}
+    assert len(_body(answers[2])["files"]) == len(by_size["files"])
+    assert [answer.status for answer in answers[3:]] == [400, 400]
+
+
+def test_a_file_set_aside_stays_marked_once_filtered(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Photos only, by size: the file set aside is still marked."""
+    folder = _dcim(cli, monkeypatch)
+    listed = _browse(cli, monkeypatch, [("POST /api/folder", {"folder": folder})])
+    first = _body(listed[0][0])["files"][0]
+    asked = {"action": "add", "keys": [first["key"]], "search": {"folder": folder}}
+    shown = {"folder": folder, "order": "size", "kind": "photos"}
+    answers = _browse(
+        cli, monkeypatch, [("POST /api/chosen", asked), ("POST /api/folder", shown)]
+    )[0]
+    marked = {f["key"]: f["chosen"] for f in _body(answers[1])["files"]}
+    assert marked[first["key"]] is True
+    assert sum(bool(value) for value in marked.values()) == 1
+
+
 def test_files_set_aside_are_read_back_then_cleaned(
     cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:

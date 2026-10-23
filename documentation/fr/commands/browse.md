@@ -49,12 +49,15 @@ Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`).
 ![La vue par dossiers : l'arbre des dossiers à gauche, les photos du dossier Anniversaire à droite dont deux marquées à mettre de côté, la ligne d'enregistrement et le bouton Appliquer maintenant](../images/browse.webp)
 
 - **La barre au-dessus de la grille** : le dossier affiché, combien de fichiers il contient et
-  ce qui est mis de côté, avec **Trier par** et le champ d'album. Dès qu'un fichier est choisi,
+  ce qui est mis de côté, avec **Trier par**, **Afficher** et le champ d'album. Dès qu'un fichier est choisi,
   elle montre quoi faire du choix : **✕** ne rien choisir, **Mettre de côté les fichiers
   choisis**, **Inverser la sélection**.
 - **L'arborescence** : vos dossiers montés, ouverts ; les dossiers en dessous, fermés (▸ en ouvre
-  un). Cliquez un dossier : ses photos et vidéos apparaissent, triées par nom ou par date
-  (**Trier par**).
+  un). Cliquez un dossier : ses photos et vidéos apparaissent, triées par nom, par date ou par
+  taille, la plus grande d'abord (**Trier par**). **Afficher** garde les photos ou les vidéos
+  seulement : les vidéos lourdes d'un dossier viennent en tête avec *Vidéos* et *taille*. Ctrl+A,
+  Maj+clic et ← → ne portent que sur les fichiers affichés. Les deux choix sont gardés, dans ce
+  navigateur, pour le dossier suivant.
 - **Regarder** : Entrée ou un double clic montre une image en grand, une vidéo se lit ; ← et →
   passent à la précédente et à la suivante, comme dans l'application Photos ; Échap ferme.
 - **Choisir** : un clic choisit un fichier ; la case ☑ de chaque vignette (ou Ctrl+clic) en

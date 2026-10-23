@@ -709,6 +709,9 @@ msgstr ""
 msgid "Albums"
 msgstr ""
 
+msgid "All"
+msgstr ""
+
 msgid "All clean"
 msgstr ""
 
@@ -3782,6 +3785,12 @@ msgstr ""
 msgid "No photo folder: type mh phone --to <folder>."
 msgstr ""
 
+#, python-brace-format
+msgid "No photo in this folder ({n} video)."
+msgid_plural "No photo in this folder ({n} videos)."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "No photo left to analyse: every one is in the cache."
 msgstr ""
 
@@ -3906,6 +3915,12 @@ msgstr ""
 
 msgid "No town of more than 1,000 inhabitants starts so."
 msgstr ""
+
+#, python-brace-format
+msgid "No video in this folder ({n} photo)."
+msgid_plural "No video in this folder ({n} photos)."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Nobody is named yet."
 msgstr ""
@@ -5610,6 +5625,9 @@ msgid ""
 "--decisions' moves them to the quarantine."
 msgstr ""
 
+msgid "Show"
+msgstr ""
+
 msgid "Show again"
 msgstr ""
 
@@ -7284,6 +7302,9 @@ msgid "Value"
 msgstr ""
 
 msgid "Video cannot be opened"
+msgstr ""
+
+msgid "Videos"
 msgstr ""
 
 msgid "Videos with a date in their tags"
@@ -9043,6 +9064,9 @@ msgid "sharpness"
 msgstr ""
 
 msgid "shortcut desktop icon start"
+msgstr ""
+
+msgid "size, largest first"
 msgstr ""
 
 msgid "slideshow tv television chromecast phone remote holidays"

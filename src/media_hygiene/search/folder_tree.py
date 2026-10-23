@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
 
-_PHOTOS = frozenset({MediaKind.IMAGE, MediaKind.RAW})
+PHOTOS = frozenset({MediaKind.IMAGE, MediaKind.RAW})
 
 
 @dataclass(slots=True)
@@ -57,7 +57,7 @@ def folder_counts(
         for above in (folder, *folder.parents):
             count = counts.setdefault(str(above), FolderCount())
             count.size += size
-            count.photos += kind in _PHOTOS
+            count.photos += kind in PHOTOS
             count.videos += kind is MediaKind.VIDEO
             if above == top:
                 break

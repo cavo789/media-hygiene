@@ -48,10 +48,13 @@ Your browser opens on the page (if not: `http://127.0.0.1:8088/`).
 ![The folder view: the tree of the folders on the left, the photos of the Birthday folder on the right with two marked to set aside, the saved line and the Apply now button](../images/browse.webp)
 
 - **The bar above the grid**: the folder shown, how many files it holds and what is set aside,
-  with **Sort by** and the album field. As soon as a file is picked, it shows what to do with
+  with **Sort by**, **Show** and the album field. As soon as a file is picked, it shows what to do with
   the picking: **✕** picks none, **Set aside the picked files**, **Invert the picking**.
 - **The tree**: your mounted folders, open; the folders below them, closed (▸ opens one). Click a
-  folder: its photos and videos appear, sorted by name or by date (**Sort by**).
+  folder: its photos and videos appear, sorted by name, by date or by size, the largest first
+  (**Sort by**). **Show** keeps the photos or the videos only: the heavy videos of a folder come
+  first with *Videos* and *size*. Ctrl+A, Shift+click and ← → work on the files shown only. Both
+  choices are kept, in this browser, for the next folder.
 - **Look**: Enter or a double click shows a picture large, a video plays; ← and → go to the
   previous and next ones, as in the Photos app; Escape closes.
 - **Pick**: a click picks one file; the ☑ box of each thumbnail (or Ctrl+click) adds or removes

@@ -153,9 +153,9 @@ async function openFolder(path, again) {
   for (const button of document.querySelectorAll(".folder")) {
     button.classList.toggle("open", button.dataset.path === path);
   }
-  const answer = await ask(FOLDER_PATH, { folder: path, order: $("order").value });
+  const answer = await ask(FOLDER_PATH, { folder: path, order: $("order").value, kind: $("kind").value });
   if (!answer || !answer.ok) { failed(answer); return; }
-  const listed = (await answer.json()).files;
+  const { files: listed, holds } = await answer.json();
   picked.clear();
   if (again && sameFiles(listed)) {
     files = listed;
@@ -168,8 +168,15 @@ async function openFolder(path, again) {
     $("grid").replaceChildren(...cards);
   }
   $("status").className = "";
-  $("status").textContent = files.length ? path + " — " + counted(TEXTS.files, files.length) : TEXTS.empty;
+  $("status").textContent = files.length ? path + " — " + counted(TEXTS.files, files.length) : hidden(holds);
   showPicked();
+}
+
+// An empty grid: the folder holds nothing, or only what the **Show** filter hides.
+function hidden(holds) {
+  if ($("kind").value === "videos" && holds.photos) return counted(TEXTS.noVideo, holds.photos);
+  if ($("kind").value === "photos" && holds.videos) return counted(TEXTS.noPhoto, holds.videos);
+  return TEXTS.empty;
 }
 
 function focusOn(index) {
@@ -310,7 +317,18 @@ document.addEventListener("keydown", (event) => {
 $("viewer").addEventListener("click", (event) => {
   if (!["A", "VIDEO"].includes(event.target.tagName)) close();
 });
-$("order").addEventListener("change", () => { if (folder) openFolder(folder); });
+// **Sort by** and **Show** are kept for this viewer only: another folder opens the same way.
+for (const id of ["order", "kind"]) {
+  const select = $(id);
+  try {
+    const kept = localStorage.getItem("mh-browse-" + id);
+    if ([...select.options].some((option) => option.value === kept)) select.value = kept;
+  } catch (error) { /* no storage (private window): the defaults */ }
+  select.addEventListener("change", () => {
+    try { localStorage.setItem("mh-browse-" + id, select.value); } catch (error) { /* not kept */ }
+    if (folder) openFolder(folder);
+  });
+}
 $("setAside").addEventListener("click", () => choose("add"));
 $("takeBack").addEventListener("click", () => choose("remove"));
 $("unpick").addEventListener("click", () => { picked.clear(); showPicked(); });

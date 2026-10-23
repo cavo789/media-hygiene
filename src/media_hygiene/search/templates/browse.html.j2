@@ -12,6 +12,8 @@
   "files": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
   "counts": _("{photos} photos · {videos} videos · {size}"),
   "empty": _("No photo or video directly in this folder: open a subfolder."),
+  "noVideo": [ngettext("No video in this folder ({n} photo).", "No video in this folder ({n} photos).", 1), ngettext("No video in this folder ({n} photo).", "No video in this folder ({n} photos).", 2)],
+  "noPhoto": [ngettext("No photo in this folder ({n} video).", "No photo in this folder ({n} videos).", 1), ngettext("No photo in this folder ({n} video).", "No photo in this folder ({n} videos).", 2)],
   "choose": _("Choose a folder on the left."),
   "offline": _("The page is not running any more: start it again."),
   "failed": _("The page failed (error {status})."),
@@ -155,6 +157,13 @@
       <select id="order">
         <option value="name">{{ _("name") }}</option>
         <option value="date">{{ _("date") }}</option>
+        <option value="size">{{ _("size, largest first") }}</option>
+      </select></label>
+    <label>{{ _("Show") }}
+      <select id="kind">
+        <option value="all">{{ _("All") }}</option>
+        <option value="photos">{{ _("Photos") }}</option>
+        <option value="videos">{{ _("Videos") }}</option>
       </select></label>
     {% set album_compact = true %}
     {% include "album_bar.html.j2" %}

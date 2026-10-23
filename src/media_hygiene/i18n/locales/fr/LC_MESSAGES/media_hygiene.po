@@ -915,6 +915,9 @@ msgstr "Album {name}"
 msgid "Albums"
 msgstr "Albums"
 
+msgid "All"
+msgstr "Tout"
+
 msgid "All clean"
 msgstr "Propre"
 
@@ -4599,6 +4602,12 @@ msgstr ""
 msgid "No photo folder: type mh phone --to <folder>."
 msgstr "Aucun dossier de photos : tapez mh phone --to <dossier>."
 
+#, python-brace-format
+msgid "No photo in this folder ({n} video)."
+msgid_plural "No photo in this folder ({n} videos)."
+msgstr[0] "Aucune photo dans ce dossier ({n} vidéo)."
+msgstr[1] "Aucune photo dans ce dossier ({n} vidéos)."
+
 msgid "No photo left to analyse: every one is in the cache."
 msgstr "Plus aucune photo à analyser : toutes sont dans le cache."
 
@@ -4742,6 +4751,12 @@ msgstr ""
 
 msgid "No town of more than 1,000 inhabitants starts so."
 msgstr "Aucune ville de plus de 1 000 habitants ne commence ainsi."
+
+#, python-brace-format
+msgid "No video in this folder ({n} photo)."
+msgid_plural "No video in this folder ({n} photos)."
+msgstr[0] "Aucune vidéo dans ce dossier ({n} photo)."
+msgstr[1] "Aucune vidéo dans ce dossier ({n} photos)."
 
 msgid "Nobody is named yet."
 msgstr "Personne n'est encore nommé."
@@ -4959,8 +4974,8 @@ msgid ""
 "Nothing left to apply: your decisions were applied by the clean {run_id} "
 "(archived as {archive}). Nothing was changed."
 msgstr ""
-"Plus rien à appliquer : vos décisions ont été appliquées par le nettoyage "
-"{run_id} (archivées sous {archive}). Rien n'a été modifié."
+"Plus rien à appliquer : vos décisions ont été appliquées par le nettoyage"
+" {run_id} (archivées sous {archive}). Rien n'a été modifié."
 
 msgid "Nothing left to check nor to sort."
 msgstr "Plus rien à vérifier ni à trier."
@@ -6790,6 +6805,9 @@ msgstr ""
 "touchent. La plus nette de chaque série est suggérée ; le choix vous "
 "appartient : 'media-hygiene review' montre les séries une à une pour "
 "écarter des photos, et 'clean --decisions' les déplace en quarantaine."
+
+msgid "Show"
+msgstr "Afficher"
 
 msgid "Show again"
 msgstr "Remontrer"
@@ -8829,6 +8847,9 @@ msgstr "Valeur"
 msgid "Video cannot be opened"
 msgstr "Vidéo impossible à ouvrir"
 
+msgid "Videos"
+msgstr "Vidéos"
+
 msgid "Videos with a date in their tags"
 msgstr "Vidéos datées par leurs balises"
 
@@ -10424,7 +10445,9 @@ msgstr "presque blanche"
 
 #, python-brace-format
 msgid "new choices first: '{verb}' writes a new decisions file."
-msgstr "de nouveaux choix d'abord : '{verb}' écrit un nouveau fichier de décisions."
+msgstr ""
+"de nouveaux choix d'abord : '{verb}' écrit un nouveau fichier de "
+"décisions."
 
 msgid "next event to decide"
 msgstr "événement suivant à décider"
@@ -10806,6 +10829,9 @@ msgstr "netteté"
 
 msgid "shortcut desktop icon start"
 msgstr "raccourci bureau icône démarrer"
+
+msgid "size, largest first"
+msgstr "taille, la plus grande d'abord"
 
 msgid "slideshow tv television chromecast phone remote holidays"
 msgstr "diaporama télé télévision chromecast téléphone télécommande vacances"

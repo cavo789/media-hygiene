@@ -1,8 +1,10 @@
 """The folder view of `browse`: the tree of the library, then the files of one folder.
 
 `GET /api/folders` answers the tree (host paths, counts, sizes), `POST /api/folder`
-the files of one folder, by name or by date, those set aside marked. Read from the
-index alone: a file the last audit did not see is not listed.
+the files of one folder, by name, date or size, all of them or the photos or videos
+only (`folder_order`), those set aside marked, with what the folder holds so that a
+filter that hides everything is said. Read from the index alone: a file the last audit
+did not see is not listed.
 """
 
 from __future__ import annotations
@@ -10,7 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from http import HTTPStatus
 from pathlib import Path
-from typing import TYPE_CHECKING, Final, Literal
+from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
@@ -21,7 +23,13 @@ from media_hygiene.review.serving import json_response
 from media_hygiene.review.videos import video_path
 from media_hygiene.scan.filters import media_kind
 from media_hygiene.search import statements as sql
-from media_hygiene.search.folder_tree import folder_counts
+from media_hygiene.search.folder_order import (  # pydantic reads them
+    Order,
+    Shown,
+    is_shown,
+    ordered,
+)
+from media_hygiene.search.folder_tree import PHOTOS, folder_counts
 from media_hygiene.search.views import (
     JPEG,
     ORIGINAL_PREFIX,
@@ -32,6 +40,7 @@ from media_hygiene.search.views import (
 if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.search.chosen_api import ChosenDesk
+    from media_hygiene.search.folder_order import FileRow
     from media_hygiene.search.fts import SearchIndex
 
 BROWSE_PATH: Final = "/browse"
@@ -42,12 +51,13 @@ _AFTER_SLASH: Final = "0"  # the character after `/`: ends the range of a folder
 
 
 class FolderAsked(BaseModel):
-    """`POST /api/folder`: a folder of the tree (host path), and the order."""
+    """`POST /api/folder`: a folder of the tree (host path), its order and kind."""
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
     folder: str = Field(min_length=1, max_length=_MAX_PATH)
-    order: Literal["name", "date"] = "name"
+    order: Order = "name"
+    kind: Shown = "all"
 
 
 @dataclass(frozen=True, slots=True)
@@ -106,17 +116,22 @@ class FolderDesk:
             for row in self.index.connection.execute(sql.FOLDER_FILES, bounds)
             if Path(row[1]).parent == folder
         ]
-        if asked.order == "date":
-            rows.sort(key=lambda row: (row[3] is None, row[3] or "", row[1].casefold()))
-        else:
-            rows.sort(key=lambda row: row[1].casefold())
+        kinds = [media_kind(Path(row[1])) for row in rows]
+        shown = [row for row in rows if is_shown(Path(row[1]), asked.kind)]
         chosen = self.chosen.paths()
-        files = [self._file(row, chosen) for row in rows]
-        return json_response(HTTPStatus.OK, {"folder": asked.folder, "files": files})
+        files = [self.file(row, chosen) for row in ordered(shown, asked.order)]
+        held = {
+            "photos": sum(kind in PHOTOS for kind in kinds),
+            "videos": sum(kind is MediaKind.VIDEO for kind in kinds),
+        }
+        answer: dict[str, object] = {
+            "folder": asked.folder,
+            "files": files,
+            "holds": held,
+        }
+        return json_response(HTTPStatus.OK, answer)
 
-    def _file(
-        self, row: tuple[int, str, int, str | None], chosen: frozenset[str]
-    ) -> dict[str, object]:
+    def file(self, row: FileRow, chosen: frozenset[str]) -> dict[str, object]:
         """Write one file of the folder for the page.
 
         Args:
