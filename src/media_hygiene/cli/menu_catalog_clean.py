@@ -147,6 +147,7 @@ def clean_area() -> Area:
         "review-junk",
         "review-gone",
         "crosscheck",
+        "shrink",
         "clean-delete",
     )
     return Area(

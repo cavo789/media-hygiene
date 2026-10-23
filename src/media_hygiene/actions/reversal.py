@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.actions.album_links import link_blocker, marker_blocker
 from media_hygiene.actions.copy_in_undo import copy_blocker
 from media_hygiene.actions.folder_undo import folder_blocker
-from media_hygiene.actions.kinds import ActionKind
+from media_hygiene.actions.kinds import MARKS, ActionKind
 from media_hygiene.actions.link_undo import separate_blocker
 from media_hygiene.actions.quarantine import QUARANTINED
 from media_hygiene.actions.xmp_undo import xmp_blocker
@@ -58,9 +58,10 @@ REVERSALS: Final[Mapping[ActionKind, Reversal]] = MappingProxyType(
         ActionKind.MARK_ALBUM: Reversal.REMOVE_MARKER,
         ActionKind.CREATE_XMP: Reversal.REMOVE_XMP,
         ActionKind.MERGE_XMP: Reversal.RESTORE_XMP,
-        ActionKind.MARK_GONE: Reversal.FORGET_MARK,
         ActionKind.COPY_IN: Reversal.REMOVE_COPY,
+        ActionKind.SHRUNK: Reversal.REMOVE_COPY,  # then its original comes back
     }
+    | dict.fromkeys(MARKS, Reversal.FORGET_MARK)
     | dict.fromkeys(QUARANTINED, Reversal.UNQUARANTINE)
 )
 _WITHOUT_SOURCE: Final = frozenset({Reversal.RECREATE_EMPTY, Reversal.RECREATE_FOLDER})

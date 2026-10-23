@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 from media_hygiene.cli.clean_confirm import confirm_clean
-from media_hygiene.config.settings import CleanSettings
+from media_hygiene.config.clean_settings import CleanSettings
 from media_hygiene.constants import BrokenReason, MediaKind
 from media_hygiene.errors import MountError
 from media_hygiene.paths.drives import Drives, QuarantineRoute

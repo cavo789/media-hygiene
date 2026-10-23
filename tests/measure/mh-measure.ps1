@@ -168,6 +168,7 @@
 #   .\mh-measure.ps1 -Only 31 -Count 10   (mh slideshow --lan plays the videos on the TV: 0292)
 #   .\mh-measure.ps1 -Only 32 -Count 60   (mh share: an album ready to send, sizes and GPS: 0296)
 #   .\mh-measure.ps1 -Only 33 -Count 120  (an album on the phone at home, mh --lan: 0297)
+#   .\mh-measure.ps1 -Only 34 -Count 1   (shrink: two of your videos re-encoded, timed, played: 0303)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -3018,6 +3019,96 @@ if (Wanted 33) {
     } else {
         Log "   33: skipped the phone part: no private address found (mh --lan says the same)"
     }
+    $ErrorActionPreference = $saved
+}
+
+# --- 34: shrink, heavy videos re-encoded in H.264 (0303) -----------------------------------
+# Two of your videos are copied into the test folder (yours are only read): the first MJPEG clip
+# `shrink` lists on C:\Photos (with your usual cache, read-only) and a phone's video. Each is
+# encoded by the image's ffmpeg at both levels, with the arguments of shrink/encode.py (keep them
+# in sync): time, size, seconds per minute of film. Then the real `shrink --apply` on a copy of
+# the MJPEG clip: the lighter video in place, the original in the test quarantine. You play the
+# results in Windows (Photos, Media Player) and on your phone.
+if (Wanted 34) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 34. shrink, heavy videos re-encoded in H.264 (0303)"
+    $shrinkData = Join-Path $Work "shrink"
+    $clips = Join-Path $shrinkData "clips"
+    $encoded = Join-Path $shrinkData "out"
+    $lighten = Join-Path $shrinkData "real"
+    New-Item -ItemType Directory -Force -Path $clips, $encoded, $lighten | Out-Null
+    $dash = [string][char]0x2014
+    $listed = @(& docker run --rm --env COLUMNS=400 @real $Image --locale en shrink 2>&1)
+    $summary = @($listed | Where-Object { "$_" -match 'worth lightening' } | Select-Object -First 1)
+    Log "   34a. shrink on $Photos (list only): $summary"
+    $mjpeg = $null
+    foreach ($line in $listed) {
+        $text = "$line".Trim()
+        if ($text -notmatch [regex]::Escape(" $dash mjpeg")) { continue }
+        $path = $text.Substring(0, $text.IndexOf(" $dash "))
+        if ((Test-Path -LiteralPath $path) -and (Get-Item -LiteralPath $path).Length -lt 600MB) { $mjpeg = Get-Item -LiteralPath $path; break }
+    }
+    $phone = @(Get-ChildItem -Path $Photos -Recurse -File -ErrorAction SilentlyContinue |
+        Where-Object { $_.Extension -in '.mp4', '.mov' -and $_.Length -gt 20MB -and $_.Length -lt 600MB } |
+        Select-Object -First 1)
+    $films = @()
+    if ($mjpeg) { $films += $mjpeg } else { Log "   34a. no MJPEG clip under 600 MB in the list of shrink" }
+    if ($phone.Count -eq 1) { $films += $phone[0] } else { Log "   34a. no phone video (.mp4/.mov, 20 to 600 MB) found" }
+    foreach ($film in $films) { Copy-Item -LiteralPath $film.FullName -Destination $clips }
+    $threads = [Math]::Max(1, [int]([Environment]::ProcessorCount / 2))
+    $fit = "scale='if(gt(iw,ih),-2,min(iw,720))':'if(gt(iw,ih),min(ih,720),-2)'"
+    foreach ($film in $films) {
+        $name = $film.Name
+        $probe = @(& docker run --rm --entrypoint ffprobe -v "${shrinkData}:/w:ro" $Image -v error -show_entries "format=duration:stream=codec_name,width,height" -of csv=p=0 "/w/clips/$name" 2>&1)
+        $seconds = 0.0
+        foreach ($line in $probe) { $number = 0.0; if ([double]::TryParse("$line".Trim(), [Globalization.NumberStyles]::Float, [Globalization.CultureInfo]::InvariantCulture, [ref]$number)) { $seconds = $number } }
+        Log ("   34b. {0}: {1:N1} MB, {2:N0} s, {3}" -f $name, ($film.Length / 1MB), $seconds, (($probe | Select-Object -First 2) -join ' / '))
+        foreach ($level in 'same', 'lighter') {
+            $quality = if ($level -eq 'same') { @("-crf", "18") } else { @("-crf", "23", "-vf", $fit) }
+            $target = "/w/out/$($film.BaseName)-$level.mp4"
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            $said = @(& docker run --rm --entrypoint ffmpeg -v "${shrinkData}:/w" $Image -nostdin -v error -y -i "/w/clips/$name" -map "0:v:0" -map "0:a?" -map_metadata 0 -c:v libx264 -pix_fmt yuv420p -preset medium @quality -c:a aac -b:a 160000 -threads $threads -movflags "+faststart+use_metadata_tags" -f mp4 $target 2>&1)
+            $watch.Stop()
+            $result = Join-Path $encoded "$($film.BaseName)-$level.mp4"
+            if (Test-Path -LiteralPath $result) {
+                $after = (Get-Item -LiteralPath $result).Length
+                $perMinute = if ($seconds -gt 0) { $watch.Elapsed.TotalSeconds / ($seconds / 60) } else { 0 }
+                Log ("   34b. {0} {1}: {2:N1} s, {3:N1} MB -> {4:N1} MB ({5:N0} % of the original), {6:N1} s per minute of film, {7} threads" -f $name, $level, $watch.Elapsed.TotalSeconds, ($film.Length / 1MB), ($after / 1MB), (100 * $after / $film.Length), $perMinute, $threads)
+            } else {
+                Log ("   34b. {0} {1}: no result after {2:N1} s: {3}" -f $name, $level, $watch.Elapsed.TotalSeconds, (($said | Select-Object -Last 2) -join ' '))
+            }
+        }
+    }
+    if ($mjpeg) {
+        Copy-Item -LiteralPath $mjpeg.FullName -Destination $lighten
+        $shrinkMounts = @(
+            "-v", "${lighten}:/data/c/shrink",
+            "-v", "${volume}:/cache",
+            "-v", "$(Join-Path $tool 'journal'):/journal",
+            "-v", "$(Join-Path $tool 'quarantine'):/quarantine",
+            "-v", "$(Join-Path $tool 'reports'):/reports"
+        )
+        & docker run --rm @shrinkMounts $Image --locale en audit | Out-Null
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        $said = @(& docker run --rm --env COLUMNS=200 @shrinkMounts $Image --locale en shrink --apply --yes 2>&1)
+        $watch.Stop()
+        Log ("   34c. shrink --apply on a copy of {0}: exit code {1}, {2:N1} s" -f $mjpeg.Name, $LASTEXITCODE, $watch.Elapsed.TotalSeconds)
+        foreach ($line in $said) {
+            $text = "$line".Trim()
+            if ($text -match 'lightened|not worth|left where|Stopped|cannot') { Log "   34c. $text" }
+        }
+        $now = @(Get-ChildItem -LiteralPath $lighten -File | ForEach-Object { "$($_.Name) $([Math]::Round($_.Length / 1MB, 1)) MB $($_.LastWriteTime)" }) -join '; '
+        Log "   34c. the folder now holds: $now (the original: $($mjpeg.Name), $($mjpeg.LastWriteTime))"
+    }
+    Write-Host "34: the encoded videos are in $encoded, the real shrink's result in $lighten."
+    $windows = Read-Host "34d. Play each one in Windows (Photos, Media Player): picture, sound, upright, smooth? (y / n: which, what)"
+    $look = Read-Host "34e. Next to its original: any visible difference at the same level 'same'? and 'lighter'? (say which)"
+    $phoneSays = Read-Host "34f. Copy one 'same' and one 'lighter' to your phone: do they play, with the right date in its gallery? (y / n: what)"
+    Log "   34d. plays in Windows: $windows"
+    Log "   34e. visible difference: $look"
+    Log "   34f. on the phone: $phoneSays"
     $ErrorActionPreference = $saved
 }
 

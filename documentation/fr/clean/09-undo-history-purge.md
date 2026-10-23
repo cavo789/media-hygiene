@@ -128,7 +128,8 @@ contenu.
 
 Où va le reste de la place ? **⚖ Fichiers les plus lourds** dans
 [`browse`](../commands/browse.md) liste les fichiers les plus lourds de toute la photothèque, les
-vidéos d'abord.
+vidéos d'abord ; [`shrink`](../commands/shrink.md) allège les vidéos des anciens appareils,
+plusieurs fois, les originaux en quarantaine.
 
 ## Où en suis-je ? `status`
 

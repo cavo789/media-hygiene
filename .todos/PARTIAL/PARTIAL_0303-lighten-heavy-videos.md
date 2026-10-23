@@ -108,3 +108,58 @@ the honest wording above.
 
 0302 (finding the heaviest videos), 0292 (which codecs the slideshow plays), Czkawka 12's Video
 Optimizer (proposal notes: SVT-AV1). Compare its choices before calibrating.
+
+## Status — PARTIAL (2026-10-23)
+
+Decisions taken with the maintainer on 2026-10-23: verb `shrink`, H.264 (libx264), the two
+levels as proposed (`same` CRF 18, `--lighter` CRF 23 at most 720 lines). Added by the
+maintainer during the run: an original set aside by `shrink` must never come back through a
+phone import (it is remembered: done, tested).
+
+### Done
+- `media-hygiene shrink` (`cli/cmd_shrink.py`, `services/shrink.py`, `shrink/`,
+  `actions/shrink.py`, `actions/shrink_sidecars.py`, `actions/not_worth.py`): the list from the
+  index alone (codecs of `[shrink] codecs`, or bits per pixel above `bits_per_pixel`; never a
+  protected, excluded or backup folder; `--folder`), the gain estimated and said as such;
+  `--apply` encodes beside the original under `.media-hygiene.tmp`, proves the result (length
+  ± 0.5 s, sound tracks, date and place, frames decode), keeps it only when at least
+  `min_gain_percent` % lighter (else a `mark-not-worth` journal mark: never tried again while
+  unchanged; `undo` forgets it), moves the original to its drive's quarantine
+  (`quarantine-shrunk`, in `REMEMBERED`), renames to `.mp4` with the original's mtime, then
+  moves a `clip.avi.xmp` sidecar to `clip.mp4.xmp`. `undo` removes the lighter video while its
+  SHA-256 matches, then brings the original back (an edited one is kept, the original comes back
+  beside it). The originals' index rows are parked like `clean`'s.
+- `[shrink]` settings (`config/shrink_settings.py`, `config.toml`); `CleanSettings` moved to
+  `config/clean_settings.py` (settings.py at its cap).
+- Dockerfile: x264 built from its `stable` branch pinned by commit, ffmpeg with `--enable-gpl`,
+  libx264, aac, mp4 muxer, swresample, the sound decoders of old cameras (PCM, ADPCM, MP3, AC-3,
+  WMA) and `dvvideo`. Measured: the `ffmpeg` stage builds; its binary encodes an MJPEG + ADPCM AVI
+  and an MJPEG + PCM MOV to H.264 + AAC; it grows from 5.7 MB to 8.9 MB (+3.2 MB, measured on the
+  binaries). README / README_FR licences updated (ffmpeg GPL with x264; the image was already
+  GPL as a whole through x265).
+- Phone import: `known_of` sees the original as set aside (tested); `clean` sets a copy that came
+  back aside again (tested).
+- Docs: `commands/shrink.md` (en, fr), `reference-commands.md`, mkdocs `nav`, `COMMANDS_TOO`, the
+  menu catalog (clean stage, "Go further", icon `film`), a pointer in `clean/09`.
+- `tests/measure/mh-measure.ps1` step 34: two of the maintainer's videos encoded at both
+  levels (time, size, seconds per minute of film), the real `shrink --apply` on a copy, and the
+  playback questions (Windows, phone).
+
+### Not done
+- The measurement on Windows + Docker Desktop (step 34 of `mh-measure.ps1`): encoding time per
+  minute of film, real sizes, playback in Windows Photos and on the phone.
+  **Reason:** only the maintainer's machine can run it; it calibrates `_SAME_BITS` /
+  `_LIGHTER_BITS` of `shrink/estimate.py` (estimated today) and maybe `same_crf`.
+- The lighter video is not indexed at once: the next audit reads it (its folder's listing is
+  forgotten so it is read again).
+  **Reason:** kept simple; indexing needs the audit's probe and fingerprint pipeline.
+- Paths stored elsewhere are not rewritten when `.avi` becomes `.mp4`: an album's entry, a
+  `decisions.json` choice, a classify `plan.json` row naming the original now name a file in the
+  quarantine (each feature already says "missing" for a file gone).
+  **Reason:** a follow-up worth its own TODO (rewrite or follow by `former_names`); measured
+  rarely relevant for old MJPEG clips (estimated: few are in albums).
+- A "to lighten" pick in 0302's heaviest view, and a dedicated clean-guide step: the command page
+  and a pointer in `clean/09` instead.
+  **Reason:** scope; the CLI's `--folder` covers the choice per folder.
+- `docs_screenshots` and `e2e` not run (image build, heavy): the `--help` captures of the new page
+  were written from the CLI by hand.

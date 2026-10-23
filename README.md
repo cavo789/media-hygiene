@@ -236,7 +236,8 @@ people's work, each under its own licence:
 |---|---|
 | [x265](https://github.com/Multicorewareinc/x265) (HEIC support, bundled by `pillow-heif`) | GPL-2.0-or-later |
 | [libheif](https://github.com/strukturag/libheif), [libde265](https://github.com/strukturag/libde265) (HEIC, bundled by `pillow-heif`) | LGPL-3.0-or-later |
-| [FFmpeg](https://ffmpeg.org/legal.html) (`ffprobe`, `ffmpeg`, built without `--enable-gpl`) | LGPL-2.1-or-later |
+| [FFmpeg](https://ffmpeg.org/legal.html) (`ffprobe`, built without `--enable-gpl`) | LGPL-2.1-or-later |
+| [FFmpeg](https://ffmpeg.org/legal.html) (`ffmpeg`, built with `--enable-gpl`) and [x264](https://code.videolan.org/videolan/x264) (the H.264 encoding of `shrink`) | GPL-2.0-or-later |
 | [LibRaw](https://www.libraw.org/) (RAW files, through `rawpy`) | LGPL-2.1 or CDDL-1.0 |
 | [Czkawka](https://github.com/qarmin/czkawka) (`czkawka_cli`, the second opinion of `crosscheck`) | MIT |
 | [GeoNames](https://www.geonames.org/) towns (`geo/data`, see its `ATTRIBUTION.txt`) | CC BY 4.0 |

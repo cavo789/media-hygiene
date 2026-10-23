@@ -65,6 +65,12 @@ class ActionKind(StrEnum):
     BACKUP_ASIDE = "backup-aside"
     BACKUP_REMOVE = "backup-remove"
     BACKUP_COPY = "backup-copy"
+    # Written by `shrink` (0303): a video re-encoded lighter (`path`, its SHA-256 once
+    # proven, from `keeper`), its original set aside (remembered: a phone's copy of it
+    # is never imported again), and a video not worth it (a mark: never tried again).
+    SHRUNK = "shrunk"
+    QUARANTINE_SHRUNK = "quarantine-shrunk"
+    MARK_NOT_WORTH = "mark-not-worth"
 
     @property
     def remembered(self) -> bool:
@@ -90,6 +96,7 @@ class Phase(StrEnum):
     PHONE = "phone"
     IMPORT = "import"
     BACKUP = "backup"
+    SHRINK = "shrink"
     UNDO = "undo"
 
 
@@ -110,6 +117,7 @@ ACTING_PHASES: Final = (
     Phase.PHONE,
     Phase.IMPORT,
     Phase.BACKUP,
+    Phase.SHRINK,
 )
 # Actions on folders (an album's marker included): nothing is deleted nor freed by them.
 FOLDER_ACTIONS: Final = frozenset(
@@ -132,13 +140,14 @@ REMEMBERED: Final = frozenset(
         ActionKind.QUARANTINE_CHOSEN,
         ActionKind.QUARANTINE_UNWANTED,
         ActionKind.QUARANTINE_RETURNED,
+        ActionKind.QUARANTINE_SHRUNK,
         ActionKind.MARK_GONE,
     }
 )
 # Hard links a run made: an album's (nothing freed), a copy's (its bytes freed).
 LINKS: Final = frozenset({ActionKind.LINK, ActionKind.LINK_DUPLICATE})
 # Journal marks: no file is deleted, moved nor freed by them (0224).
-MARKS: Final = frozenset({ActionKind.MARK_GONE})
+MARKS: Final = frozenset({ActionKind.MARK_GONE, ActionKind.MARK_NOT_WORTH})
 # Files deleted from a phone (0248): nothing on the PC is deleted, moved nor freed.
 PHONE_DELETIONS: Final = frozenset(
     {ActionKind.PHONE_LIBRARY, ActionKind.PHONE_IMPORTED, ActionKind.PHONE_SET_ASIDE}
@@ -158,9 +167,16 @@ BACKUP_ACTIONS: Final = frozenset(
 )
 # The files set aside in the target's `.removed`: `history` counts them as quarantined.
 BACKUP_SET_ASIDE: Final = frozenset({ActionKind.BACKUP_ASIDE, ActionKind.BACKUP_REMOVE})
+# The lighter videos `shrink` wrote (0303): their originals are counted as set aside.
+SHRUNK_VIDEOS: Final = frozenset({ActionKind.SHRUNK})
 # Actions after which the file is still on the PC: neither deleted nor freed.
 LEFT_IN_PLACE: Final = (
-    frozenset({ActionKind.MOVE}) | LINKS | XMP_ACTIONS | COPIES_IN | BACKUP_ACTIONS
+    frozenset({ActionKind.MOVE})
+    | LINKS
+    | XMP_ACTIONS
+    | COPIES_IN
+    | BACKUP_ACTIONS
+    | SHRUNK_VIDEOS
 )
 # Files moved: by `sort` on the PC, by `mh backup` on its target.
 MOVES: Final = frozenset({ActionKind.MOVE, ActionKind.BACKUP_MOVE})

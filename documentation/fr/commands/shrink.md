@@ -1,0 +1,156 @@
+# `shrink` : alléger les vidéos lourdes
+
+[Documentation](../README.md) › [Commandes](../reference-commands.md) › `shrink` · 🇬🇧 [English](../../en/commands/shrink.md)
+
+## En bref
+
+**Récupérer la place des clips des anciens appareils : plusieurs fois plus légers, l'image
+gardée.**
+
+Les anciens appareils enregistraient chaque image d'une vidéo comme un JPEG à part (MJPEG) : une
+minute prend une centaine de mégaoctets. `shrink` liste ces vidéos, d'après ce que le dernier
+[`audit`](audit.md) a appris, avec la place que chacune libérerait. Avec `--apply`, il les
+réencode en H.264, le format que lisent tous les ordinateurs, téléphones et télévisions, vérifie
+chaque résultat, et déplace l'original en [quarantaine](../reference-glossary.md#quarantaine).
+
+**Plus léger, même qualité visible, jamais « sans perte »** : un réencodage laisse toujours
+tomber des détails que l'œil ne voit pas. C'est pourquoi l'original part en quarantaine, pas à
+la corbeille : regardez-en quelques-unes, puis [`purge`](purge.md) libère la place, ou
+[`undo`](undo.md) ramène tout.
+
+**Quand** : après un [`clean`](clean.md), quand le disque est encore plein. **⚖ Fichiers les
+plus lourds** dans [`browse`](browse.md) montre où va la place.
+
+**Essayer** (liste seulement, ne change rien) :
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos:ro" `
+  -v media-hygiene-cache:/cache `
+  cavo789/media-hygiene --locale fr shrink
+```
+
+## D'un coup d'œil
+
+| | |
+|---|---|
+| Vos photos | ✋ Agit avec `--apply` seulement : chaque vidéo choisie est remplacée par un `.mp4` plus léger, son original déplacé en quarantaine. |
+| Il faut | `/cache` (ce que l'audit a appris) ; avec `--apply`, vos dossiers **sans** `:ro`, `/journal` et `/quarantine`. |
+| Écrit | Les vidéos allégées, le journal ; les originaux en quarantaine. |
+| Annuler | [`undo <exécution>`](undo.md) retire chaque vidéo allégée (tant qu'elle n'a pas changé) et ramène son original. |
+| Avec `mh` | `mh shrink`, puis `mh shrink --apply`. |
+
+## Le lancer
+
+D'abord la liste (les dossiers peuvent rester en `:ro`), puis ajoutez `--apply` :
+
+```powershell
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene --locale fr shrink --apply
+```
+
+La liste dit ce qu'est chaque vidéo et ce qu'elle pèserait après, une **estimation** : seul
+l'encodage le dira.
+
+```text
+3 vidéos à alléger : 1,9 Go aujourd'hui, environ 240 Mo après (estimé : seul l'encodage le dira).
+   C:\Photos\2009\Zoo\MVI_0042.AVI — mjpeg, 640×480, 4 min : 812 Mo → ~95 Mo
+```
+
+## Quelles vidéos
+
+- **Les codecs des anciens appareils et des années 2000** : MJPEG, DV, MPEG-4 partie 2 (DivX,
+  Xvid), Windows Media, MPEG-1 et 2 (`codecs` dans la section `[shrink]` de `config.toml`).
+- **Toute vidéo qui dépense bien trop de bits pour son image** : plus de `bits_per_pixel` (0,5)
+  bits par pixel et par image. Le H.264 d'un téléphone en dépense environ 0,1 à 0,3 : il est
+  **laissé tel quel**, car une seconde génération avec perte se voit et gagne peu.
+- Jamais une vidéo d'un dossier protégé, exclu ou de sauvegarde, ni une de moins d'une seconde.
+- **Pas rentable** : un résultat qui n'est pas au moins `min_gain_percent` (30) % plus léger est
+  jeté, l'original reste, et la vidéo n'est plus essayée tant qu'elle ne change pas.
+
+## Deux niveaux
+
+| | Ce qu'il fait | Pour |
+|---|---|---|
+| *(par défaut)* | Même taille et même cadence, x264 en CRF 18 : visuellement identique. | Tout ce qui mérite d'être gardé tel quel. |
+| `--lighter` | 720 lignes au plus sur le petit côté, CRF 23 : plus léger encore. | Les clips dont la qualité compte moins (les premières vidéos des enfants). Choisissez-les avec `--folder`. |
+
+## Ce qui est gardé, et vérifié
+
+- **Gardé** : la date de prise de vue (`creation_time`, et la date locale d'un iPhone), le lieu,
+  chaque piste son (en AAC), l'image remise droite, la date du fichier (sa date de
+  modification) : `classify` et `sort` trouvent la même date.
+- **Vérifié avant que l'original parte** : la vidéo allégée dure autant (à une demi-seconde
+  près), a autant de pistes son, dit la même date et le même lieu, et ses images se décodent.
+  Sinon elle est jetée et l'original n'est pas touché.
+- **Le nom** : `clip.avi` devient `clip.mp4` ; un fichier compagnon `clip.avi.xmp` suit en
+  `clip.mp4.xmp`. Un fichier déjà nommé `clip.mp4` à côté n'est jamais remplacé : cette vidéo
+  est sautée.
+- **Jamais réimporté** : l'original est retenu comme tout fichier que vous avez mis de côté. Si un
+  téléphone ou une sauvegarde le garde encore, `mh phone` ne l'importe pas à nouveau, et le
+  `clean` suivant remet de côté une copie revenue.
+
+## Options
+
+| Option | Ce qu'elle fait |
+|---|---|
+| `--folder CHEMIN` | Seulement les vidéos sous ce dossier (chemin de l'hôte) ; répétez-la pour plusieurs. |
+| `--lighter` | 720 lignes au plus, une compression plus forte. |
+| `--apply` | Les alléger ; sans elle, seulement les lister. |
+| `--yes`, `-y` | Ne pas demander d'abord. |
+
+## Bon à savoir
+
+- **Lent** : un réencodage prend à peu près la durée du film, ou plus sur un petit ordinateur ;
+  une vidéo à la fois, sur la moitié des processeurs (`threads`), pour que l'ordinateur reste
+  utilisable. Ctrl+C arrête après la vidéo en cours ; retapez la commande pour le reste.
+- **La place revient avec `purge`** : d'ici là, les originaux sont en quarantaine.
+- **Réglages** : la section `[shrink]` de `config.toml` (`codecs`, `bits_per_pixel`,
+  `min_gain_percent`, `same_crf`, `lighter_crf`, `lighter_lines`, `preset`, `threads`).
+- **Changer seulement le conteneur (`.mov` → `.mp4` sans réencoder) ne libère rien** : ce n'est
+  pas proposé.
+
+## Pour aller plus loin
+
+- [Nettoyer en bref](../clean/quick-guide.md)
+- [Annuler, historique et purge](../clean/09-undo-history-purge.md)
+
+## L'aide intégrée
+
+<details>
+<summary><code>shrink --help</code></summary>
+
+<!-- capture: help-shrink.txt -->
+```text
+
+ Utilisation : media-hygiene shrink [OPTIONS]
+
+ Lister les vidéos lourdes qui gagnent à être allégées (anciens appareils,
+ MJPEG) ; avec --apply, les réencoder en H.264, chacune vérifiée, l'original en
+ quarantaine (journalisé, annulable).
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --folder           <str>  Seulement les vidéos sous ce dossier (chemin de    │
+│                           l'hôte, tel que vous l'avez monté) ; répétez-la    │
+│                           pour plusieurs. Par défaut : tous les dossiers     │
+│                           montés.                                            │
+│ --lighter                 Plus léger encore : 720 lignes au plus             │
+│                           (lighter_lines dans config.toml), une compression  │
+│                           plus forte. Pour les clips dont la qualité compte  │
+│                           moins.                                             │
+│ --apply                   Les alléger ; sans cette option, seulement les     │
+│                           lister avec le gain attendu.                       │
+│ --yes      -y             Alléger sans demander d'abord.                     │
+│ --help     -h             Affiche ce message et quitte.                      │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+</details>
+
+---
+
+← [Toutes les commandes](../reference-commands.md) · [Documentation](../README.md)

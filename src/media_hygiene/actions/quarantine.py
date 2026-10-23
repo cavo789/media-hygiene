@@ -17,7 +17,7 @@ QUARANTINED: Final = frozenset(
     | {ActionKind.QUARANTINE_DUPLICATE, ActionKind.QUARANTINE_SIDECAR}
     | {ActionKind.QUARANTINE_BURST, ActionKind.QUARANTINE_JUNK}
     | {ActionKind.QUARANTINE_CHOSEN, ActionKind.QUARANTINE_UNWANTED}
-    | {ActionKind.QUARANTINE_RETURNED},
+    | {ActionKind.QUARANTINE_RETURNED, ActionKind.QUARANTINE_SHRUNK},
 )
 
 

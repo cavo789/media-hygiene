@@ -81,6 +81,21 @@ def clean_more_steps() -> tuple[Step, ...]:
             optional=True,
         ),
         Step(
+            "shrink",
+            space,
+            _("Lighten the heavy videos"),
+            _(
+                "Old camera clips re-encoded, several times lighter, the picture "
+                "kept; each original in the quarantine."
+            ),
+            "shrink",
+            Risk.UNDO,
+            icon="film",
+            keywords=_("videos heavy lighten compress space mjpeg"),
+            doc=Doc("commands/shrink/"),
+            optional=True,
+        ),
+        Step(
             "clean-delete",
             space,
             _("Delete the copies at once"),

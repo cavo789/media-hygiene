@@ -139,6 +139,7 @@ nav:
       - commands/review.md
       - commands/search.md
       - commands/share.md
+      - commands/shrink.md
       - commands/slideshow.md
       - commands/sort.md
       - commands/status.md

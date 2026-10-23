@@ -34,6 +34,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | send an album by mail or to a social network, resized and without the GPS position | [`share`](commands/share.md) |
 | see my words in digiKam, darktable, Lightroom or Immich | [`xmp`](commands/xmp.md) |
 | get back the photos only my NAS still has, not the ones I deleted | [`import`](commands/import.md) |
+| win back the space of my old camera videos, the picture kept | [`shrink`](commands/shrink.md) |
 | back up my photos to my NAS, only what it lacks | [`backup`](commands/backup.md) |
 | answer my own questions about my photos in Excel | [`inventory`](commands/inventory.md) |
 | type `mh audit` instead of a long `docker run` | [`launcher`](commands/launcher.md) |
@@ -80,6 +81,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`album NAME`](commands/album.md) | Make the folder of an album (saved in `search`, `browse` or the burst review) as hard links: nothing copied nor moved, no space used. `--category`, `--event`, `--rule`, `--rating` gather a selection of the `classify` plan instead. Shows the album; `--apply` makes the links. | [Sorting, 12](sort/12-albums.md) |
 | [`xmp`](commands/xmp.md) | Write the words of `tags` into `.xmp` sidecars next to the photos, for digiKam, darktable, Lightroom or Immich; never into a photo. Shows what it would write; `--apply` writes. | [Reference](reference-tags.md#carry-the-words-with-the-photos-xmp) |
 | [`import`](commands/import.md) | Copy into your photos what only a backup (a NAS) holds, never what you set aside or deleted before; near copies listed apart; each copy proven; the backup only read. | [Commands](commands/import.md) |
+| [`shrink`](commands/shrink.md) | List the heavy videos worth lightening (old cameras, MJPEG), with the space each would free; `--apply` re-encodes them in H.264, each one checked (length, sound, date, place), the original in the quarantine. | [Commands](commands/shrink.md) |
 | [`backup`](commands/backup.md) | Windows only (`mh backup`): copy your photo folders into a folder of their own on the NAS, only what it lacks; a photo moved is renamed there, a deletion by mistake never carried over; undo with `--undo`. | [Commands](commands/backup.md) |
 
 ## Options
@@ -222,6 +224,9 @@ command shows its own `--help`; here is the list of the commands:
 │              (journaled, undoable).                                          │
 │ purge        Erase the quarantine of a run for good: with 'clean --delete',  │
 │              the only way the tool removes content.                          │
+│ shrink       List the heavy videos worth lightening (old cameras, MJPEG);    │
+│              with --apply, re-encode them in H.264, each one checked, the    │
+│              original in the quarantine (journaled, undoable).               │
 │ sort         Move the photos and videos as the edited classify workbook says │
 │              (journaled, undoable).                                          │
 │ undo         Restore every file of a run, from the kept copy, the quarantine │

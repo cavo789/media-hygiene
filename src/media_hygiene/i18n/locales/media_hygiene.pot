@@ -15,6 +15,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "   {path} — {codec}, {pixels}, {minutes} min: {size} → ~{after}"
+msgstr ""
+
+#, python-brace-format
 msgid "   … and {count} more."
 msgid_plural "   … and {count} more."
 msgstr[0] ""
@@ -132,6 +136,17 @@ msgid ""
 "hygiene\\Shares: each photo upright, its long side fitted into "
 "long_side_px pixels, JPEG quality quality (30 to 95). Your photos are "
 "only read."
+msgstr ""
+
+msgid ""
+"'shrink' lightens heavy videos: re-encoded in H.264, the original in the "
+"quarantine ('undo' brings it back). A video is a candidate when its codec"
+" is in codecs (old cameras), or when it spends more than bits_per_pixel "
+"bits per pixel and per frame (a phone's video: about 0.1 to 0.3; old "
+"MJPEG: 0.5 to 2)."
+msgstr ""
+
+msgid "'shrink' moves each original to /quarantine: mount it."
 msgstr ""
 
 msgid ""
@@ -530,6 +545,11 @@ msgid ""
 msgstr ""
 
 msgid "A proposal to apply"
+msgstr ""
+
+msgid ""
+"A result less than min_gain_percent percent smaller is thrown away: the "
+"original stays, and the video is not tried again."
 msgstr ""
 
 msgid ""
@@ -1114,6 +1134,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "Changed your mind? 'media-hygiene undo {run_id}' removes the copies:"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Changed your mind? 'media-hygiene undo {run_id}' removes the lighter "
+"videos and brings the originals back:"
 msgstr ""
 
 #, python-brace-format
@@ -3154,6 +3180,26 @@ msgstr ""
 msgid "Light"
 msgstr ""
 
+msgid "Lighten the heavy videos"
+msgstr ""
+
+msgid "Lighten them; without it, only list them with the gain expected."
+msgstr ""
+
+msgid "Lighten them?"
+msgstr ""
+
+msgid "Lighten without asking first."
+msgstr ""
+
+msgid "Lightening"
+msgstr ""
+
+msgid ""
+"Lighter still: at most 720 lines (lighter_lines in config.toml), a "
+"stronger compression. For clips whose quality matters less."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Line {number} of {path} holds an action this version does not know: "
@@ -3174,6 +3220,12 @@ msgid "Links to make"
 msgstr ""
 
 msgid "List the HTML reports of previous audits and cleans."
+msgstr ""
+
+msgid ""
+"List the heavy videos worth lightening (old cameras, MJPEG); with "
+"--apply, re-encode them in H.264, each one checked, the original in the "
+"quarantine (journaled, undoable)."
 msgstr ""
 
 msgid "List the reports"
@@ -3625,6 +3677,9 @@ msgstr ""
 msgid "No audit yet."
 msgstr ""
 
+msgid "No audit yet: 'shrink' reads the videos the audit described."
+msgstr ""
+
 msgid "No backup folder to import from."
 msgstr ""
 
@@ -3924,6 +3979,9 @@ msgid "No video in this folder ({n} photo)."
 msgid_plural "No video in this folder ({n} photos)."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "No video worth lightening."
+msgstr ""
 
 msgid "Nobody is named yet."
 msgstr ""
@@ -4234,6 +4292,11 @@ msgstr ""
 msgid "Of which unwanted"
 msgstr ""
 
+msgid ""
+"Old camera clips re-encoded, several times lighter, the picture kept; "
+"each original in the quarantine."
+msgstr ""
+
 msgid "On a folder: the home page, on that folder."
 msgstr ""
 
@@ -4393,6 +4456,11 @@ msgid "Only the series still to see"
 msgstr ""
 
 msgid "Only the series to look at"
+msgstr ""
+
+msgid ""
+"Only the videos below this folder (host path, as you mounted it); repeat "
+"it for several. Default: every mounted folder."
 msgstr ""
 
 #, python-brace-format
@@ -4816,6 +4884,12 @@ msgstr ""
 msgid "Quality"
 msgstr ""
 
+msgid ""
+"Quality, x264's CRF (0: lossless, 51: worst): same_crf keeps the picture;"
+" lighter_crf, with at most lighter_lines lines, is for 'shrink "
+"--lighter'."
+msgstr ""
+
 msgid "Quarantine"
 msgstr ""
 
@@ -4871,6 +4945,9 @@ msgstr ""
 msgid ""
 "Re-encoded videos are in the HTML report; 'clean --tier near' moves the "
 "sure ones to the quarantine too."
+msgstr ""
+
+msgid "Re-encodes each video, then checks it before keeping it."
 msgstr ""
 
 #, python-brace-format
@@ -5157,6 +5234,9 @@ msgstr ""
 msgid ""
 "Run 'audit' first with the same /cache mount: the inventory lists what "
 "the audits learnt, without reading the files again."
+msgstr ""
+
+msgid "Run 'audit' first, then 'shrink' again."
 msgstr ""
 
 msgid "Run 'audit' on your folders: the inventory then says how fresh it is."
@@ -6923,6 +7003,9 @@ msgstr ""
 msgid "This build cannot search by meaning: {module} is not installed."
 msgstr ""
 
+msgid "This ffmpeg cannot encode H.264: nothing was changed."
+msgstr ""
+
 msgid ""
 "This folder is an album of media-hygiene: hard links, second names of "
 "photos kept elsewhere, which take no space. The audits skip it. 'media-"
@@ -7280,6 +7363,9 @@ msgid ""
 msgstr ""
 
 msgid "Update"
+msgstr ""
+
+msgid "Update the image: mh update."
 msgstr ""
 
 #, python-brace-format
@@ -8321,6 +8407,9 @@ msgstr ""
 msgid "it cannot start with '-'"
 msgstr ""
 
+msgid "it changed since the audit: audit again"
+msgstr ""
+
 msgid "it changed while the words were written: left as is"
 msgstr ""
 
@@ -8820,6 +8909,11 @@ msgstr ""
 msgid "once you have checked, 'purge' frees the space of the files set aside."
 msgstr ""
 
+msgid ""
+"once you have watched a few, 'purge' frees the space: the originals are "
+"still in the quarantine until then."
+msgstr ""
+
 #, python-brace-format
 msgid "one of {expected} is expected, not {value}"
 msgstr ""
@@ -9232,6 +9326,28 @@ msgstr ""
 msgid "the last audit found extra copies: 'clean' sets them aside."
 msgstr ""
 
+msgid "the lighter video cannot be read"
+msgstr ""
+
+msgid "the lighter video does not decode"
+msgstr ""
+
+#, python-brace-format
+msgid "the lighter video lasts {after} s, not {before} s"
+msgstr ""
+
+msgid "the lighter video lost a sound track"
+msgstr ""
+
+msgid "the lighter video lost its date or its place"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"the lighter video stays as {name} ({error}); the original is in the "
+"quarantine: 'undo' brings it back"
+msgstr ""
+
 #, python-brace-format
 msgid "the model will look at each of their {samples} photos."
 msgstr ""
@@ -9288,6 +9404,11 @@ msgstr ""
 msgid ""
 "the same 'clean' command with {option}; the shots set aside go to the "
 "quarantine, 'undo' brings them back."
+msgstr ""
+
+msgid ""
+"the same command with --apply re-encodes them, each original in the "
+"quarantine ('undo' brings it back)."
 msgstr ""
 
 msgid "the same search in your browser, with the pictures and filters."
@@ -9476,6 +9597,9 @@ msgstr ""
 msgid "video: open the original"
 msgstr ""
 
+msgid "videos heavy lighten compress space mjpeg"
+msgstr ""
+
 msgid ""
 "videos skipped: this TV's own browser shows photos only, open the show in"
 " the Chromecast's browser for them"
@@ -9512,6 +9636,11 @@ msgid "without a date"
 msgstr ""
 
 msgid "words tags labels ai"
+msgstr ""
+
+msgid ""
+"x264's speed against size (ultrafast to slower), and the processors one "
+"encoding uses (0: half of them, the computer stays usable)."
 msgstr ""
 
 msgid ""
@@ -10472,6 +10601,34 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} video lightened, {saved} saved; its original is in the quarantine."
+msgid_plural ""
+"{count} videos lightened, {saved} saved; their originals are in the "
+"quarantine."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} video not worth it (too little gain): left as it was, not tried "
+"again."
+msgid_plural ""
+"{count} videos not worth it (too little gain): left as they were, not "
+"tried again."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} video worth lightening: {before} today, about {after} after "
+"(estimated: only the encoding tells)."
+msgid_plural ""
+"{count} videos worth lightening: {before} today, about {after} after "
+"(estimated: only the encoding tells)."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{days} day {clock}"
 msgid_plural "{days} days {clock}"
 msgstr[0] ""
@@ -11106,6 +11263,10 @@ msgid "{path} was written but is still incomplete."
 msgstr ""
 
 #, python-brace-format
+msgid "{path}: left where it was: {reason}"
+msgstr ""
+
+#, python-brace-format
 msgid "{path}: longer than {count} characters."
 msgstr ""
 
@@ -11119,6 +11280,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{path}: not copied: {reason}"
+msgstr ""
+
+#, python-brace-format
+msgid "{path}: not lightened: {reason}"
 msgstr ""
 
 #, python-brace-format
@@ -11441,6 +11606,9 @@ msgid ""
 " each file is first proven on the PC by its content."
 msgstr ""
 
+msgid "🔒 Nothing was changed: this is only the list."
+msgstr ""
+
 msgid "🔒 Only read: your photos and the backup folder are not changed."
 msgstr ""
 
@@ -11488,6 +11656,12 @@ msgstr ""
 msgid ""
 "🛟 Each file is moved, never over another one nor deleted; the run is "
 "journaled: 'undo' puts everything back."
+msgstr ""
+
+msgid ""
+"🛟 Each video is re-encoded beside itself and checked (length, sound, "
+"date, place) before it replaces the original, which goes to the "
+"quarantine. Ctrl+C stops after the video being encoded."
 msgstr ""
 
 #, python-brace-format

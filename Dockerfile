@@ -20,6 +20,9 @@ ARG FFMPEG_SHA256=8c3850283eb25fa026482078a04051e0be17347b09ef81a0849bec15a96e00
 # Demuxers per video extension: mov (3g2 3gp m4v mov mp4), m4v (raw MPEG-4 video named .m4v),
 # matroska (mkv webm), avi, flv, mpegts (m2ts mts ts), mpegps and mpegvideo (mpeg mpg), asf (wmv).
 ARG VIDEO_DEMUXERS=mov,m4v,matroska,avi,flv,mpegts,mpegps,mpegvideo,asf
+# x264, the H.264 encoder of `shrink` (GPL-2.0-or-later): its `stable` branch, pinned by commit
+# (the hash is the checksum of the whole tree). Bump it by hand: no release tags.
+ARG X264_COMMIT=b35605ace3ddf7c1a5d67a2eb553f034aef41d55
 # Czkawka's command-line tool, the second opinion of `crosscheck`: the release binaries of its
 # own project (MIT), pinned by the SHA-256 of each platform's file. Renovate bumps the version
 # only: both checksums are set by hand (its PR says so).
@@ -63,27 +66,52 @@ RUN tar -xf /tmp/ffmpeg.tar.xz --strip-components=1 && \
     make -j"$(nproc)" ffprobe && \
     strip ffprobe
 
-# --- ffmpeg: only what scan/keyframes.py asks of it ---------------------------------------
+# --- x264: the static library ffmpeg links, for `shrink` (0303) ----------------------------
+FROM ffprobe AS x264
+
+ARG X264_COMMIT
+
+ADD https://code.videolan.org/videolan/x264.git#${X264_COMMIT} /tmp/x264
+WORKDIR /tmp/x264
+RUN ./configure --prefix=/opt/x264 --enable-static --enable-pic --disable-cli \
+        --disable-opencl --disable-lavf --disable-swscale --disable-ffms --disable-gpac \
+        --disable-lsmash && \
+    make -j"$(nproc)" && \
+    make install
+
+# --- ffmpeg: what scan/keyframes.py and shrink ask of it ---------------------------------
 # Decode one frame at a given moment, turn it upright, shrink it to a grayscale square and
 # write its raw pixels to a pipe. The same demuxers as ffprobe, the decoders of phone, camera
 # and older PC videos, the scale/format/rotation filters; assembly kept (decoding speed).
 # No AV1 (its decoder needs an external library): such a video is simply not fingerprinted.
+# `shrink` (0303) re-encodes a video: x264 (static, so `--enable-gpl`), AAC from the sound of
+# old cameras (PCM, ADPCM, MP3, AC-3, WMA: swresample converts it), the MP4 muxer.
 FROM ffprobe AS ffmpeg
 
 ARG VIDEO_DEMUXERS
 
-RUN make distclean && \
-    ./configure \
+COPY --from=x264 /opt/x264 /opt/x264
+WORKDIR /tmp/ffmpeg
+# hadolint ignore=DL3008
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update && apt-get install -y --no-install-recommends pkgconf && \
+    make distclean && \
+    PKG_CONFIG_PATH=/opt/x264/lib/pkgconfig ./configure \
         --disable-everything --disable-autodetect --disable-doc --disable-debug \
         --disable-network --disable-programs --enable-ffmpeg \
-        --disable-avdevice --disable-swresample \
+        --disable-avdevice --enable-gpl --enable-libx264 --pkg-config-flags=--static \
         --enable-small --enable-zlib --enable-protocol=file,pipe \
         --enable-demuxer="${VIDEO_DEMUXERS}" \
         --enable-decoder=h264,hevc,mpeg4,mpeg1video,mpeg2video,mjpeg,vp8,vp9,h263,flv \
-        --enable-decoder=msmpeg4v1,msmpeg4v2,msmpeg4v3,wmv1,wmv2,wmv3,vc1,prores \
+        --enable-decoder=msmpeg4v1,msmpeg4v2,msmpeg4v3,wmv1,wmv2,wmv3,vc1,prores,dvvideo \
+        --enable-decoder=aac,mp3,mp3float,mp2,ac3,wmav1,wmav2,adpcm_ima_wav,adpcm_ms \
+        --enable-decoder=pcm_s16le,pcm_s16be,pcm_s24le,pcm_u8,pcm_alaw,pcm_mulaw \
         --enable-parser=h264,hevc,mpeg4video,mpegvideo,mjpeg,vp8,vp9,h263,vc1 \
+        --enable-parser=aac,mpegaudio,ac3,dvaudio \
         --enable-filter=scale,format,transpose,hflip,vflip,null \
-        --enable-encoder=rawvideo --enable-muxer=rawvideo && \
+        --enable-filter=aresample,aformat,anull \
+        --enable-encoder=rawvideo,libx264,aac --enable-muxer=rawvideo,mp4 && \
     make -j"$(nproc)" ffmpeg && \
     strip ffmpeg
 

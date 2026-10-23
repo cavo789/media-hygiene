@@ -69,6 +69,15 @@ def action_commands(act: str) -> tuple[tuple[str, str, str], ...]:
             ),
         ),
         (
+            "shrink",
+            act,
+            _(
+                "List the heavy videos worth lightening (old cameras, MJPEG); with "
+                "--apply, re-encode them in H.264, each one checked, the original "
+                "in the quarantine (journaled, undoable)."
+            ),
+        ),
+        (
             "undo",
             act,
             _(

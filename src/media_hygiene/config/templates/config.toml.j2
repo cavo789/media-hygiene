@@ -168,6 +168,24 @@ quality = 85
 keep_gps = false
 
 
+[shrink]
+{{ comment(_("'shrink' lightens heavy videos: re-encoded in H.264, the original in the quarantine ('undo' brings it back). A video is a candidate when its codec is in codecs (old cameras), or when it spends more than bits_per_pixel bits per pixel and per frame (a phone's video: about 0.1 to 0.3; old MJPEG: 0.5 to 2).")) }}
+codecs = [
+    "mjpeg", "dvvideo", "mpeg4", "msmpeg4v1", "msmpeg4v2", "msmpeg4v3",
+    "wmv1", "wmv2", "wmv3", "mpeg1video", "mpeg2video", "h263",
+]
+bits_per_pixel = 0.5
+{{ comment(_("A result less than min_gain_percent percent smaller is thrown away: the original stays, and the video is not tried again.")) }}
+min_gain_percent = 30
+{{ comment(_("Quality, x264's CRF (0: lossless, 51: worst): same_crf keeps the picture; lighter_crf, with at most lighter_lines lines, is for 'shrink --lighter'.")) }}
+same_crf = 18
+lighter_crf = 23
+lighter_lines = 720
+{{ comment(_("x264's speed against size (ultrafast to slower), and the processors one encoding uses (0: half of them, the computer stays usable).")) }}
+preset = "medium"
+threads = 0
+
+
 [inventory]
 {{ comment(_("Labels of the 'inventory' export, computed when it is written: change a value and export again, nothing is scanned. A photo is blurry below blurry_below (sharpness), small below small_below pixels on its shorter side.")) }}
 blurry_below = 100.0
