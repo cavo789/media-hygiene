@@ -177,6 +177,15 @@ def test_the_template_renders_with_no_undefined_value(
     assert used <= set(texts)
 
 
+def test_the_sidebar_links_the_source_code_and_the_image() -> None:
+    """The informed user finds the code and the Docker image from any view."""
+    page = home.home_page(relays_steps=True).decode()
+    links = re.search(r'<p class="sig-links">(.*?)</p>', page)
+    assert links is not None
+    assert 'href="https://github.com/cavo789/media-hygiene"' in links[1]
+    assert 'href="https://hub.docker.com/r/cavo789/media-hygiene"' in links[1]
+
+
 def test_the_page_answers_without_reading_the_state(tmp_path: Path) -> None:
     """`GET /` never waits for the tool folders (0277); `GET /api/state` reads them."""
     runtime = make_runtime(make_locations(tmp_path), _NEVER_OLD)
