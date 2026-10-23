@@ -4,7 +4,7 @@
 
 ## En bref
 
-**Récupérer la place des clips des anciens appareils : plusieurs fois plus légers, l'image
+**Récupérer la place des clips des anciens appareils : environ quatre fois plus légers, l'image
 gardée.**
 
 Les anciens appareils enregistraient chaque image d'une vidéo comme un JPEG à part (MJPEG) : une
@@ -76,8 +76,16 @@ l'encodage le dira.
 
 | | Ce qu'il fait | Pour |
 |---|---|---|
-| *(par défaut)* | Même taille et même cadence, x264 en CRF 18 : visuellement identique. | Tout ce qui mérite d'être gardé tel quel. |
-| `--lighter` | 720 lignes au plus sur le petit côté, CRF 23 : plus léger encore. | Les clips dont la qualité compte moins (les premières vidéos des enfants). Choisissez-les avec `--folder`. |
+| *(par défaut)* | Même taille et même cadence, x264 en CRF 23 : visuellement identique. | Tout ce qui mérite d'être gardé tel quel. |
+| `--lighter` | 720 lignes au plus sur le petit côté : plus léger encore pour une image plus grande (un clip de 720 lignes reste comme par défaut). | Les clips dont la qualité compte moins (les premières vidéos des enfants). Choisissez-les avec `--folder`. |
+
+Mesuré sur deux clips MJPEG d'un appareil Panasonic (1280×720, 43 s et 3 min 35 s) : le CRF 23 a
+gardé 26 et 29 % de leur taille, le CRF 18 66 et 69 %, sans différence visible entre eux ni avec
+l'original ; les deux lus dans Windows et sur un téléphone, avec leur date. D'où le CRF 23 par
+défaut (`same_crf` dans `config.toml` : 18 pour l'image la plus fine).
+L'encodage a pris 8 à 11 secondes par minute de film sur un PC à 32 processeurs (16 utilisés).
+Autre appareil, autre sujet : autres chiffres ; la liste donne son estimation, et le gain réel
+est dit après chaque vidéo.
 
 ## Ce qui est gardé, et vérifié
 
@@ -138,10 +146,9 @@ l'encodage le dira.
 │                           l'hôte, tel que vous l'avez monté) ; répétez-la    │
 │                           pour plusieurs. Par défaut : tous les dossiers     │
 │                           montés.                                            │
-│ --lighter                 Plus léger encore : 720 lignes au plus             │
-│                           (lighter_lines dans config.toml), une compression  │
-│                           plus forte. Pour les clips dont la qualité compte  │
-│                           moins.                                             │
+│ --lighter                 Plus léger encore pour une grande image : 720      │
+│                           lignes au plus (lighter_lines dans config.toml).   │
+│                           Pour les clips dont la qualité compte moins.       │
 │ --apply                   Les alléger ; sans cette option, seulement les     │
 │                           lister avec le gain attendu.                       │
 │ --yes      -y             Alléger sans demander d'abord.                     │

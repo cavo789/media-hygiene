@@ -3066,7 +3066,7 @@ if (Wanted 34) {
         foreach ($line in $probe) { $number = 0.0; if ([double]::TryParse("$line".Trim(), [Globalization.NumberStyles]::Float, [Globalization.CultureInfo]::InvariantCulture, [ref]$number)) { $seconds = $number } }
         Log ("   34b. {0}: {1:N1} MB, {2:N0} s, {3}" -f $name, ($film.Length / 1MB), $seconds, (($probe | Select-Object -First 2) -join ' / '))
         foreach ($level in 'same', 'lighter') {
-            $quality = if ($level -eq 'same') { @("-crf", "18") } else { @("-crf", "23", "-vf", $fit) }
+            $quality = if ($level -eq 'same') { @("-crf", "23") } else { @("-crf", "23", "-vf", $fit) }
             $target = "/w/out/$($film.BaseName)-$level.mp4"
             $watch = [Diagnostics.Stopwatch]::StartNew()
             $said = @(& docker run --rm --entrypoint ffmpeg -v "${shrinkData}:/w" $Image -nostdin -v error -y -i "/w/clips/$name" -map "0:v:0" -map "0:a?" -map_metadata 0 -c:v libx264 -pix_fmt yuv420p -preset medium @quality -c:a aac -b:a 160000 -threads $threads -movflags "+faststart+use_metadata_tags" -f mp4 $target 2>&1)

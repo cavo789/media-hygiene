@@ -33,7 +33,7 @@ CODECS: Final = (
 )
 _BITS_PER_PIXEL: Final = 0.5
 _MIN_GAIN_PERCENT: Final = 30
-_SAME_CRF: Final = 18
+_SAME_CRF: Final = 23  # no visible difference from CRF 18 (maintainer, 2026-10-23)
 _LIGHTER_CRF: Final = 23
 _LIGHTER_LINES: Final = 720
 _WORST_CRF: Final = 51  # x264's scale: 0 lossless, 51 the worst

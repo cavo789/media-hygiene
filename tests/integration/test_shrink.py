@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING, Final
 import pytest
 from typer.testing import CliRunner
 
+from media_hygiene.actions import no_overwrite
 from media_hygiene.actions import shrink as shrink_actions
 from media_hygiene.actions.journal import read_journal
 from media_hygiene.actions.kinds import ActionKind
@@ -180,7 +181,22 @@ def test_an_original_copied_back_goes_back_to_the_quarantine(
     assert not back.exists()
 
 
-def test_a_rename_that_fails_is_said_and_undone(
+def test_a_mount_without_atomic_rename_is_lightened_all_the_same(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Docker Desktop refuses renameat2 (EINVAL, seen 2026-10-23): linked instead."""
+    monkeypatch.setattr(no_overwrite, "_libc_renameat2", lambda: None)
+    camera = locations.data_dir / _CAMERA
+    said = " ".join(_shrink(cli, "--apply", "--yes").output.split())
+    assert "1 video lightened" in said
+    assert "not lightened" not in said
+    light = camera.with_suffix(".mp4")
+    assert light.is_file()
+    assert light.with_name("clip.mp4.xmp").is_file()
+    assert not list(light.parent.glob("*.tmp"))
+
+
+def test_a_move_that_fails_is_said_and_undone(
     cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """The original already aside: the run says where both are; undo brings it back."""
@@ -191,9 +207,10 @@ def test_a_rename_that_fails_is_said_and_undone(
             raise PermissionError(13, "Permission denied")
         source.rename(target)
 
-    monkeypatch.setattr(shrink_actions, "rename_no_replace", refuse)
+    monkeypatch.setattr(shrink_actions, "move_no_replace", refuse)
     said = " ".join(_shrink(cli, "--apply", "--yes").output.split())
     assert "'undo' brings it back" in said
+    assert "0 videos lightened" in said
     assert not camera.exists()
     monkeypatch.undo()
     point_mounts(locations, monkeypatch)
@@ -234,3 +251,15 @@ def test_without_an_audit_it_says_to_audit_first(
     result = run(CliRunner(), "shrink")
     assert result.exit_code == 1
     assert "Run 'audit' first" in " ".join(result.output.split())
+
+
+def test_a_lighter_video_is_never_proposed_again(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """Even above bits_per_pixel: one more lossy generation would gain little."""
+    text = locations.config_file.read_text(encoding="utf-8")
+    locations.config_file.write_text(text + "[shrink]\nbits_per_pixel = 0.0001\n")
+    _shrink(cli, "--apply", "--yes")
+    assert run(cli, "audit").exit_code == 0
+    said = " ".join(_shrink(cli).output.split())
+    assert "clip.mp4" not in said

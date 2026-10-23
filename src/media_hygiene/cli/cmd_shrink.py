@@ -32,8 +32,8 @@ def shrink_command(  # pylint: disable=too-many-arguments
         typer.Option(
             "--lighter",
             help=_(
-                "Lighter still: at most 720 lines (lighter_lines in config.toml), "
-                "a stronger compression. For clips whose quality matters less."
+                "Lighter still for a large picture: at most 720 lines (lighter_lines "
+                "in config.toml). For clips whose quality matters less."
             ),
         ),
     ] = False,
@@ -114,7 +114,7 @@ def shrink_command(  # pylint: disable=too-many-arguments
         ).format(run_id=result.run_id),
         NextVerb(carried(runtime, f"undo {result.run_id}"), CHANGING),
     )
-    if result.outcome.quarantined:
+    if result.outcome.quarantined:  # an original aside, even one not replaced
         suggest(
             runtime,
             _(

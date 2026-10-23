@@ -3196,8 +3196,8 @@ msgid "Lightening"
 msgstr ""
 
 msgid ""
-"Lighter still: at most 720 lines (lighter_lines in config.toml), a "
-"stronger compression. For clips whose quality matters less."
+"Lighter still for a large picture: at most 720 lines (lighter_lines in "
+"config.toml). For clips whose quality matters less."
 msgstr ""
 
 #, python-brace-format
@@ -4293,7 +4293,7 @@ msgid "Of which unwanted"
 msgstr ""
 
 msgid ""
-"Old camera clips re-encoded, several times lighter, the picture kept; "
+"Old camera clips re-encoded, about four times lighter, the picture kept; "
 "each original in the quarantine."
 msgstr ""
 

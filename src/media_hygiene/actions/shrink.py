@@ -20,7 +20,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.actions.job_loop import JobLoop
 from media_hygiene.actions.journaled import JournaledChanges, Origin
 from media_hygiene.actions.kinds import ActionKind
-from media_hygiene.actions.no_overwrite import rename_no_replace
+from media_hygiene.actions.no_overwrite import move_no_replace
 from media_hygiene.actions.shrink_sidecars import follow_sidecars
 from media_hygiene.actions.sort_moves import file_of, target_exists
 from media_hygiene.i18n import _
@@ -58,6 +58,7 @@ class Recipe:
 class Gains:
     """What a run saved, and the videos not worth it."""
 
+    lightened: int = 0  # the videos replaced, their lighter version in place
     saved: int = 0
     not_worth: int = 0
 
@@ -124,6 +125,7 @@ class ShrinkExecutor:
         os.utime(temporary, ns=(file.mtime_ns, file.mtime_ns))
         self._changes.quarantine(file, ActionKind.QUARANTINE_SHRUNK, Origin(final))
         self._put(file, temporary, final)
+        self.gains.lightened += 1
         self.gains.saved += job.size - after
         follow_sidecars(self._changes, self._tally.skipped, (job.path, final))
 
@@ -169,7 +171,7 @@ class ShrinkExecutor:
         journal = self._context.journal
         journal.record(entry)
         try:
-            rename_no_replace(temporary, final)
+            move_no_replace(temporary, final)  # Docker Desktop: a link, or a copy
         except OSError as exc:
             message = _(
                 "the lighter video stays as {name} ({error}); the original is in "

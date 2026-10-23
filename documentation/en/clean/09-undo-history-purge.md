@@ -121,7 +121,7 @@ It is, with 'clean --delete', the only way the tool removes content.
 
 Where does the rest of the space go? **⚖ Heaviest files** in [`browse`](../commands/browse.md)
 lists the heaviest files of the whole library, the videos first; [`shrink`](../commands/shrink.md)
-lightens the videos of old cameras, several times, the originals in the quarantine.
+lightens the videos of old cameras, the originals in the quarantine.
 
 ## Where am I? `status`
 

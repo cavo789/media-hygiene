@@ -4,7 +4,7 @@
 
 ## In short
 
-**Win back the space of the old camera clips: several times lighter, the picture kept.**
+**Win back the space of the old camera clips: about four times lighter, the picture kept.**
 
 Old cameras stored every frame of a video as a separate JPEG (MJPEG): a minute takes about a
 hundred megabytes. `shrink` lists those videos, from what the last [`audit`](audit.md) learnt,
@@ -74,8 +74,15 @@ encoding tells.
 
 | | What it does | For |
 |---|---|---|
-| *(default)* | Same size and frame rate, x264 at CRF 18: visually the same. | Everything worth keeping as it is. |
-| `--lighter` | At most 720 lines on the short side, CRF 23: lighter still. | The clips whose quality matters less (the children's first videos). Choose them with `--folder`. |
+| *(default)* | Same size and frame rate, x264 at CRF 23: visually the same. | Everything worth keeping as it is. |
+| `--lighter` | At most 720 lines on the short side: lighter still for a larger picture (a 720-line clip stays as by default). | The clips whose quality matters less (the children's first videos). Choose them with `--folder`. |
+
+Measured on two MJPEG clips of a Panasonic camera (1280×720, 43 s and 3 min 35 s): CRF 23 kept
+26 and 29 % of their size, CRF 18 66 and 69 %, with no visible difference between them nor with
+the original; both played in Windows and on a phone, with their date. Hence CRF 23 by default
+(`same_crf` in `config.toml`: 18 for the finest picture). Encoding took 8 to 11 seconds
+per minute of film on a 32-processor PC (16 used). Another camera, another subject: other
+figures; the list says its estimate, and the real gain is said after each video.
 
 ## What is kept, and checked
 
@@ -134,8 +141,8 @@ encoding tells.
 │ --folder           <str>  Only the videos below this folder (host path, as   │
 │                           you mounted it); repeat it for several. Default:   │
 │                           every mounted folder.                              │
-│ --lighter                 Lighter still: at most 720 lines (lighter_lines in │
-│                           config.toml), a stronger compression. For clips    │
+│ --lighter                 Lighter still for a large picture: at most 720     │
+│                           lines (lighter_lines in config.toml). For clips    │
 │                           whose quality matters less.                        │
 │ --apply                   Lighten them; without it, only list them with the  │
 │                           gain expected.                                     │

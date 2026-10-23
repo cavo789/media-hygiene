@@ -163,3 +163,25 @@ phone import (it is remembered: done, tested).
   **Reason:** scope; the CLI's `--folder` covers the choice per folder.
 - `docs_screenshots` and `e2e` not run (image build, heavy): the `--help` captures of the new page
   were written from the CLI by hand.
+
+### Measured on the maintainer's PC (2026-10-23, `mh-measure.ps1` step 34)
+- `shrink` on C:\Photos lists 344 videos, 23.0 GB (the estimate then said 2.9 GB after: far too
+  optimistic, recalibrated below).
+- Two Panasonic MJPEG 1280x720 clips with PCM sound (215 s, 574.8 MB; 43 s, 117.5 MB): default
+  level 69 % and 66 % of their size, `--lighter` 29 % and 26 %; 10.5 and 8.1 s per minute of
+  film, 16 threads of 32 (the "default" was then CRF 18, "--lighter" CRF 23 on these
+  720-line clips). Plays in Windows and on the phone with its date; no visible difference at
+  either level (the maintainer's eyes).
+- Found and fixed: the final rename used `renameat2` alone, refused on Docker Desktop's mount
+  (EINVAL): the original went to the quarantine and the lighter video stayed under its
+  temporary name. Now `move_no_replace` (link, else proven copy), tested by a run without
+  `renameat2`. The result line counted the originals set aside, not the videos replaced: fixed.
+- At CRF 18 the result spends about 0.55 bit per pixel (30 fps assumed), above
+  `bits_per_pixel`: a video written by `shrink` is never a candidate again (journal `shrunk`
+  lines, like the not-worth marks).
+- Estimated for the 23.0 GB listed (the two clips' ratios applied to all): CRF 18 about
+  15.5 GB after (7.5 GB freed), CRF 23 about 6.2 GB after (16.8 GB freed); at 8 to 11 s
+  per minute of film, an estimated 147 min of film takes 20 to 26 min to encode.
+- Decided by the maintainer (2026-10-23): CRF 23 by default (`same_crf`), since CRF 18 gained
+  only a third (close to `min_gain_percent`) with no visible difference; `--lighter` keeps
+  CRF 23 and only fits the picture into 720 lines. One estimate now: `_BITS` 0.22.

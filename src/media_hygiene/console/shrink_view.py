@@ -78,8 +78,8 @@ def show_result(runtime: Runtime, result: ShrinkResult) -> None:
             "quarantine.",
             "{count} videos lightened, {saved} saved; their originals are in the "
             "quarantine.",
-            outcome.quarantined,
-        ).format(count=human_number(outcome.quarantined), saved=human_size(gains.saved))
+            gains.lightened,
+        ).format(count=human_number(gains.lightened), saved=human_size(gains.saved))
     )
     if gains.not_worth:
         output.info(

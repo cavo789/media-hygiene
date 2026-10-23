@@ -1,8 +1,10 @@
-"""The videos `shrink` found not worth lightening: never tried again while unchanged.
+"""The videos `shrink` never tries again while unchanged: not worth it, or its own.
 
-Every journal is read for its `mark-not-worth` lines (`done`); an `undo` of the run
-forgets them. A video is known by its path, size and modification time: edited or
-replaced, it is tried again.
+Every journal is read for its `mark-not-worth` lines and the lighter videos it wrote
+(`shrunk`), `done`: re-encoding one of those again would lose quality for little (with
+a lower `same_crf`, its H.264 may spend more than `bits_per_pixel`: about 0.55 at CRF
+18, measured on 2026-10-23). An `undo` of the run forgets them. A video is known by its
+path, size and modification time: edited or replaced, it is tried again.
 """
 
 from __future__ import annotations
@@ -18,12 +20,15 @@ if TYPE_CHECKING:
 
     from media_hygiene.shrink.candidates import FileKey
 
-_MARK: Final = f'"action":"{ActionKind.MARK_NOT_WORTH.value}"'
+_MARKS: Final = tuple(
+    f'"action":"{kind.value}"'
+    for kind in (ActionKind.MARK_NOT_WORTH, ActionKind.SHRUNK)
+)
 _DONE: Final = '"status":"done"'
 
 
 def not_worth(journal_dir: Path) -> frozenset[FileKey]:
-    """Read the videos found not worth it, and not undone since.
+    """Read the videos found not worth it or written by `shrink`, not undone since.
 
     Args:
         journal_dir: Journal mount point.
@@ -40,7 +45,7 @@ def not_worth(journal_dir: Path) -> frozenset[FileKey]:
         said += [
             word
             for line in lines
-            if _MARK in line and _DONE in line
+            if _DONE in line and any(mark in line for mark in _MARKS)
             for word in _word(line)
         ]
     kept: set[FileKey] = set()

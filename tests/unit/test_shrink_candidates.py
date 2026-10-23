@@ -63,12 +63,12 @@ def test_the_largest_gain_first() -> None:
 
 
 def test_estimate_smaller_when_lighter() -> None:
-    """At most 720 lines: 1080p is estimated lighter; 480p keeps its size."""
+    """At most 720 lines: 1080p is estimated lighter; 480p, the same as by default."""
     full = estimated_size(60.0, (1920, 1080, 30.0), None)
     lighter = estimated_size(60.0, (1920, 1080, 30.0), 720)
     assert lighter < full
     small = estimated_size(60.0, (640, 480, 30.0), 720)
-    assert small < estimated_size(60.0, (640, 480, 30.0), None)
+    assert small == estimated_size(60.0, (640, 480, 30.0), None)
 
 
 def test_the_command_keeps_tags_and_fits_only_when_lighter() -> None:

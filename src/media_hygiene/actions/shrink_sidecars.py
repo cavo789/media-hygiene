@@ -11,7 +11,7 @@ from functools import partial
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.kinds import ActionKind
-from media_hygiene.actions.no_overwrite import rename_no_replace
+from media_hygiene.actions.no_overwrite import move_no_replace
 from media_hygiene.actions.outcome import Incident, why
 from media_hygiene.actions.sort_moves import file_of
 
@@ -44,6 +44,6 @@ def follow_sidecars(
         entry = changes.entry(file_of(sidecar), ActionKind.MOVE)
         entry = entry.model_copy(update={"target": str(moved)})
         try:
-            changes.record(entry, partial(rename_no_replace, sidecar, moved))
+            changes.record(entry, partial(move_no_replace, sidecar, moved))
         except OSError as exc:
             skipped.append(Incident(sidecar, why(exc)))

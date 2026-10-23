@@ -85,8 +85,8 @@ def clean_more_steps() -> tuple[Step, ...]:
             space,
             _("Lighten the heavy videos"),
             _(
-                "Old camera clips re-encoded, several times lighter, the picture "
-                "kept; each original in the quarantine."
+                "Old camera clips re-encoded, about four times lighter, the "
+                "picture kept; each original in the quarantine."
             ),
             "shrink",
             Risk.UNDO,
