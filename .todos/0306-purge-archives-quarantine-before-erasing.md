@@ -86,6 +86,15 @@ covered: its desktop client's synced folder, no cloud API.
 5. `mh.sh` (Linux/WSL launcher): same steps with `cp -a` or `rsync` if `mh_backup.sh.j2` already
    does so; otherwise state the gap.
 
+## Decided (2026-10-23)
+
+By the maintainer, at the start of `/todo:iterate`:
+
+- **A `<drive>` level** in the target (`<target>\<run>\E\…`, step 1.2): yes, so a copy back
+  plus `undo` puts each file back in its own drive's quarantine.
+- **The target's free space is checked before copying**: a clear refusal at once ("12 GB
+  missing on \\NAS\…"), nothing copied, nothing erased — instead of robocopy failing midway.
+
 ## Questions left open
 
 - The `<drive>` level in the target (step 1.2): proposed yes.
