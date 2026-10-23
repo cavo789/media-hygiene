@@ -19,16 +19,18 @@ Any package's pages reach them (`i18n/templates.py`: the package's `templates/`,
 
 | Template | What it holds |
 |---|---|
-| `pick_grid.css.j2` | The whole look: left column (`review_side.css.j2`), the one bar, the tiles, ☑, rectangle, label; includes `pick_viewer.css.j2` |
+| `page_frame.html.j2` | **The layout of every page** (0333): the page `extends` it and fills its blocks — `style`, `side` (left column), `keys` / `more_keys` (the ⌨ panel's rows), `bar` (the one bar), `content` (`main`), `after` (dialogs, scripts); `keys_safe` (set at the top) is the panel's 🔒 line. Header, way home, favicon, theme: written there once |
+| `page_frame.css.j2` | The frame's look: body, the two columns (`review_side.css.j2`), the ⌨ panel and `kbd` (`keys.css.j2`), the sticky bar, its status on one line |
+| `pick_grid.css.j2` | The look of the tiles on top of the frame: the start of the bar, the tiles, ☑, rectangle, label; includes `pick_viewer.css.j2` |
 | `pick_views.html.j2` | The tabs on top of the left column (📁 Folders · 🔎 Words); `pick_view` names the page |
-| `pick_keys.html.j2` | The ⌨ panel at the bottom of the left column, its *More keys*, the 🔒 "nothing is deleted" line; `pick_all` says what Ctrl+A picks |
+| `pick_keys.html.j2`, `pick_keys_more.html.j2` | The rows of the ⌨ panel (the frame's `keys` and `more_keys` blocks); `pick_all` (set at the top of the page) says what Ctrl+A picks |
 | `pick_acting.html.j2` | The start of the bar: where you are, or once something is picked ✕, the count, *Pick all N found*, *Set aside*, *Take out*, *Invert*; the saved line; *Apply now* |
 | `pick_viewer.html.j2` | The large view and its `?` list of keys |
 | `pick_grid.js.j2` | State, gestures, the bar, the saving (`CHOSEN_PATH`), the grid's keys; starts the strict mode, so it is included **first** |
 | `pick_viewer.js.j2` | The large view's keys (`VIEWER_KEYS`) and its saves |
 | `pick_band.js.j2` | The mouse rectangle |
 
-A page includes them, then its own script (`browse.js.j2`, `search.js.j2`, `phone_review.js.j2`) that defines `TEXTS`,
+A page `extends "page_frame.html.j2"`, includes them in its blocks, then its own script (`browse.js.j2`, `search.js.j2`, `phone_review.js.j2`) that defines `TEXTS`,
 `CHOSEN_PATH`, `card(file, index)` (it builds the picture and text, then `return wireCard(node,
 index)`), `scope()` (what the files shown are, sent with every save) and `reopen(again)` (list them
 again; `showFiles(listed, again)` keeps the cards when the files are the same). `files[i]` carries
@@ -37,7 +39,8 @@ at least `key`, `name`, `preview`, `original`, `chosen`, optionally `video`, `da
 
 ## The contract
 
-**Layout.** `page_header.html.j2` on top. Left column: the tabs, then what leads to the photos (a
+**Layout** — the frame's (`page_frame.html.j2`; `tests/unit/test_page_frame.py` holds it for every
+page served). `page_header.html.j2` on top. Left column: the tabs, then what leads to the photos (a
 folder tree, a search form, a list of groups), then ⌨ keys. Right: **one** sticky bar, then the
 grid. Nothing else above the grid: no line of hints (they go in the keys panel or a
 `<details>`), no second header. The album field always has its own line in the bar, and both lines
@@ -89,7 +92,7 @@ opened from the home page.
 
 ## Checklist before declaring a page done
 
-1. It includes the `pick_*` templates; no copy of their code (`tests/integration/tags/test_pick_pages.py`
+1. It extends `page_frame.html.j2` and includes the `pick_*` templates; no copy of their code (`tests/integration/tags/test_pick_pages.py`
    counts each shared part once per page — add the new page there).
 2. Every gesture of the table works, checked in headless Chromium with a mocked API: the
    `mddoc-playwright` image (`docker create … python3 -u /w/drive.py`, `docker cp` the rendered page

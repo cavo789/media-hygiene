@@ -49,6 +49,11 @@ at*), then prints the address of the page: Ctrl+click it. Ctrl+C, or closing its
 
 ## The main keys
 
+The page: the event shown on the left (its dates, its folders, the proposal, what the workbook
+says), its name and category in the bar on top, its photos under them. The keys stay at the
+bottom left, under ⌨ **Keyboard** (the first ones always shown, the others under *More keys*),
+with the line saying where each choice is saved.
+
 | Key | What it does |
 |---|---|
 | `Enter` | Accept the name and category, then go to the next event still to decide. |

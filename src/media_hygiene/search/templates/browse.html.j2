@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+{% extends "page_frame.html.j2" %}
 {# The folder view of `media-hygiene browse` (the search's own server): the tree of the
    library's folders on the left, the photos and videos of the folder chosen on the
    right, or the heaviest files of the whole library (0302, *Heaviest files* above the
    folders). The photos are never changed: the files picked can be set aside, saved at
    once in the decisions file for `clean --decisions`. The keys are listed under the
-   tree, always in sight, as on the review pages (`review_side.css.j2`), with the line
-   saying that nothing is deleted here. Above the grid, one bar (0305): the folder shown,
+   tree, always in sight, as on every page of the frame (`page_frame.html.j2`), with the
+   line saying that nothing is deleted here. Above the grid, one bar (0305): the folder shown,
    or, once files are picked, what to do with them (set aside, albums). The grid, its
    keys, its bar and its large view are those of every page of photos to pick (`pick_*`
    in review/templates); this page's own script is `browse.js.j2`. Opened from the home page, *Apply now*
@@ -30,14 +30,9 @@
   "noAlbum": _("Type the album's name in the bar first: then A adds the file shown."),
 } %}
 {% set page_name = _("Your folders") %}
-<html lang="{{ _('en') }}">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ page_name }} — media-hygiene</title>
-<link rel="icon" type="image/png" href="/assets/images/favicon.png">
-<style>
-{% include "theme.css.j2" %}
+{% set pick_all = _("the whole folder") %}
+{% set keys_safe = _("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") %}
+{% block style %}
 {% include "pick_grid.css.j2" %}
   nav { overflow-wrap: anywhere; }
   nav ul { list-style: none; margin: 0; padding-left: 14px; }
@@ -51,20 +46,15 @@
   .where { overflow-wrap: anywhere; font-size: .75rem; }
   #moreLine { margin: 0 16px 16px; text-align: center; }
   .folder small { display: block; color: var(--muted); font-size: .75rem; }
-</style>
-</head>
-<body>
-{% include "page_header.html.j2" %}
-<div class="layout">
-  <aside id="side">
+{% endblock %}
+{% block side %}
     {% set pick_view = "folders" %}
     {% include "pick_views.html.j2" %}
     <nav id="toc" aria-label="{{ _('Your folders') }}"><div id="tree"></div></nav>
-    {% set pick_all = _("the whole folder") %}
-    {% include "pick_keys.html.j2" %}
-  </aside>
-  <div id="content">
-  <header id="bar">
+{% endblock %}
+{% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
+{% block more_keys %}{% include "pick_keys_more.html.j2" %}{% endblock %}
+{% block bar %}
     {% include "pick_acting.html.j2" %}
     <label>{{ _("Sort by") }}
       <select id="order">
@@ -81,11 +71,12 @@
       </select></label>
     {% set album_compact = true %}
     {% include "album_bar.html.j2" %}
-  </header>
+{% endblock %}
+{% block content %}
   <main id="grid"></main>
   <p id="moreLine"><button id="more" class="plain" type="button" hidden>{{ _("Show more") }}</button></p>
-  </div>
-</div>
+{% endblock %}
+{% block after %}
 {% include "pick_viewer.html.j2" %}
 <script>
 {% include "pick_grid.js.j2" %}
@@ -93,6 +84,4 @@
 {% include "pick_band.js.j2" %}
 {% include "browse.js.j2" %}
 </script>
-{% include "home_link.html.j2" %}
-</body>
-</html>
+{% endblock %}

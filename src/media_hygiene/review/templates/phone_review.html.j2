@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% extends "page_frame.html.j2" %}
 {# The page freeing a phone, served by `media-hygiene phone-review` for `mh phone` (0248).
    The page never touches a file: each tick is sent to the server, which saves
    phone-decisions.json and reads it back; "Delete from the phone" ends the page, then `mh`
@@ -36,14 +36,11 @@
 } %}
 {% set page_name = _("Free the phone") %}
 {% set home_title = _("Close this page and go back to the home page: nothing is deleted from the phone.") %}
-<html lang="{{ _('en') }}">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ page_name }} — media-hygiene</title>
-<link rel="icon" type="image/png" href="/assets/images/favicon.png">
-<style>
-{% include "theme.css.j2" %}
+{% set pick_all = _("every file of the page") %}
+{% set pick_marks = false %}
+{% set pick_space_opened = _("opened: tick or untick it") %}
+{% set keys_safe = _("Ticking deletes nothing: only the red button does, after a question, each file copied again and compared first. Every tick is saved at once in %(place)s.", place=place) %}
+{% block style %}
 {% include "pick_grid.css.j2" %}
   /* One group per folder of the phone, each its own grid of tiles (0312). */
   main#grid { display: block; }
@@ -72,12 +69,8 @@
             padding: 16px; background: rgba(0, 0, 0, .55); }
   #closed a { display: block; margin-top: 12px; color: var(--accent); }
   #closed p { max-width: 520px; padding: 20px 24px; border-radius: 12px; background: var(--card); }
-</style>
-</head>
-<body>
-{% include "page_header.html.j2" %}
-<div class="layout">
-  <aside id="side">
+{% endblock %}
+{% block side %}
     <section id="toc" aria-label="{{ page_name }}">
       <h2 id="phone"></h2>
       <p class="notice">{{ _("Nothing leaves the phone before you press Delete. Each file ticked is then copied again from the phone and compared, byte for byte (SHA-256), with the PC's copy: a file that differs stays on the phone. Deleted over USB, a file is gone for good from the phone: it has no trash, and undo cannot put it back.") }}</p>
@@ -86,14 +79,10 @@
       <h2>📁 {{ _("Folders of the phone") }}</h2>
       <ul id="folders"></ul>
     </section>
-    {% set pick_all = _("every file of the page") %}
-    {% set pick_marks = false %}
-    {% set pick_space_opened = _("opened: tick or untick it") %}
-    {% set pick_safe = _("Ticking deletes nothing: only the red button does, after a question, each file copied again and compared first. Every tick is saved at once in %(place)s.", place=place) %}
-    {% include "pick_keys.html.j2" %}
-  </aside>
-  <div id="content">
-  <header id="bar">
+{% endblock %}
+{% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
+{% block more_keys %}{% include "pick_keys_more.html.j2" %}{% endblock %}
+{% block bar %}
     {% set pick_add = "🗑️ " ~ _("Tick: leaves the phone") %}
     {% set pick_remove = _("Untick: stays on the phone") %}
     {% include "pick_acting.html.j2" %}
@@ -101,10 +90,11 @@
       <button id="free" class="danger" type="button" disabled></button>
       <button id="leave" class="plain" type="button">{{ _("Leave everything on the phone") }}</button>
     </p>
-  </header>
+{% endblock %}
+{% block content %}
   <main id="grid"></main>
-  </div>
-</div>
+{% endblock %}
+{% block after %}
 {% set pick_mark = "🗑️ " ~ _("leaves the phone") %}
 {% set pick_space = _("tick or untick it") %}
 {% include "pick_viewer.html.j2" %}
@@ -116,6 +106,4 @@
 {% include "pick_band.js.j2" %}
 {% include "phone_review.js.j2" %}
 </script>
-{% include "home_link.html.j2" %}
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,21 @@
+{# The look of the frame every page shares (`page_frame.html.j2`, 0333): the font and colours of
+   the theme on the body, the two columns (`review_side.css.j2`, with the ⌨ panel of
+   `keys.css.j2`), the one sticky bar on top of the right column, the content under it. A page
+   adds its own rules after these, in its `style` block. #}
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 400 15px/1.5 var(--mk-font-text); }
+  .muted { color: var(--muted); }
+{% include "review_side.css.j2" %}
+  /* One bar above the content (0305): where you are, or what to do with what is picked. */
+  #content { min-width: 0; }
+  #bar { position: sticky; top: 0; z-index: 1; display: flex; flex-wrap: wrap; gap: 6px 10px;
+         align-items: center; padding: 8px 16px; background: var(--card);
+         border-bottom: 1px solid var(--line); }
+  #bar.acting { background: color-mix(in srgb, var(--accent) 14%, var(--card)); }
+  #bar > p, #bar > details { flex-basis: 100%; margin: 0; }
+  #bar > p:empty { display: none; }
+  /* What the page says (saved, read back, an error) on one line: the bar keeps its height, the
+     content under it never moves when a choice is made. */
+  #bar > [role="status"] { flex: 1 1 220px; min-width: 0; min-height: 1.5em; white-space: nowrap;
+                           overflow: hidden; text-overflow: ellipsis; }

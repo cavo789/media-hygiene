@@ -1,0 +1,14 @@
+{# The ⌨ Keyboard panel at the bottom of the left column (0304), the same on every page with
+   shortcuts: its card, its rows, *More keys*, the 🔒 line; and the look of a key (`kbd`),
+   styled here only (the home page keeps its own, the large view darkens it). Included by
+   `review_side.css.j2`, so by every page of the frame (`page_frame.html.j2`). #}
+  kbd { display: inline-block; min-width: 1.6em; padding: 0 6px; font: inherit; text-align: center;
+        color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; }
+  #keys { flex: none; padding: 10px 12px; background: var(--card); border: 1px solid var(--line);
+          border-radius: 10px; font-size: .85rem; }
+  #keys h2 { font-size: 1rem; margin: 0 0 6px; }
+  #keys dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; margin: 0; }
+  #keys dt { float: none; margin: 0; font-weight: 400; white-space: nowrap; }
+  #keys dd { margin: 0; }
+  #moreKeys { margin-top: 6px; } #moreKeys summary { cursor: pointer; color: var(--muted); }
+  #keys .safe { margin: 8px 0 0; color: var(--muted); overflow-wrap: anywhere; }

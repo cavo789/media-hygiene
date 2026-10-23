@@ -94,3 +94,44 @@ pages describing a footer or a header line of a converted page, both languages.
 - The pickings of the review pages (0319, 0320) and their large view (0321).
 - The home page and the documentation's shell.
 - The HTML reports written to disk (`report/`).
+
+## Status — PARTIAL (2026-10-23)
+
+### Done
+- The frame: `review/templates/page_frame.html.j2` (a Jinja layout the page `extends`: blocks
+  `style`, `side`, `keys`, `more_keys`, `bar`, `content`, `after`; `keys_safe` is the panel's
+  🔒 line) and `page_frame.css.j2` (body, the columns of `review_side.css.j2`, the ⌨ panel and
+  `kbd` of `keys.css.j2` — 0304 —, the sticky bar, its status on one line with the whole text
+  on hover). `pick_keys.html.j2` became the panel's rows, `pick_keys_more.html.j2` its *More keys*.
+- `browse`, `search` and the phone page moved onto it with no visible change (bodies diffed
+  before/after: identical but the 🔒 line, now set by the page).
+- Converted: bursts and `--near` (header → bar, footer → the 🔒 line), `--gone`, `--junk`,
+  `--pairs` (`<aside>` → `#side`, their keys in the shared panel: 4 in sight, the rest under
+  *More keys*), `review-sort` (the event on the left, its name and category in the bar, the ⌨
+  panel instead of the line of 12 keys), `places` (the map fills the right column under the bar,
+  its lists in `#side`, a ⌨ panel for Esc, ← →, Enter, Esc in a filter box; the drawer's
+  `<header>` became a `div`), `slideshow` (controls in the bar, the TV's code and the LAN card on
+  the left; no keys, no panel).
+- Each converted page served for real (the integration helpers) and driven in headless Chromium
+  (`mddoc-playwright`, network shared with the devcontainer): no pageerror, the keys work, the
+  top of `main` the same before and after each choice (bursts, near, pairs, junk, gone, sort,
+  places, browse, slideshow).
+- `tests/unit/test_page_frame.py` holds the rule for every whole-page template, with the
+  exemptions and their reasons (home, doc, lan_pair, screen, report base, album, and people as
+  temporary); the home-link exclusion set of `test_home_page.py` moved into it;
+  `test_page_headers.py` renders through `tests/support/page_render.py`.
+- Item 4, `album`: reached from the home page's *Your albums*, served by the home page's own
+  server; its ⌂ link goes back without ending a server and its layout is a phone's: exempt,
+  reason written in the test.
+- The skill `photo-picking-pages` points to the frame.
+
+### Not done
+- *Apply now* on `--gone`, `--junk`, `--pairs`.
+  **Reason:** not layout: their `serve_*_review(runtime, session, port)` would take a
+  `ReviewStart`, the CLI (`review_modes.py`, `gone_review_flow.py`) pass `page_apply(runtime)`
+  and end on `end_on_applied`, each session give its "something decided" predicate, the JS call
+  `window.mhApplyNow`; and whether `status`'s APPLY step is offered after `--gone` answers alone
+  must be checked first (a step `None` would show a button that does nothing). A follow-up TODO.
+- `people` stays a named exemption ("until 0323-0329 are done"): another session reshapes the
+  page; whichever runs last converts it and removes the line of `EXEMPT` in `test_page_frame.py`.
+- One commit per page: the lot was asked as one commit.

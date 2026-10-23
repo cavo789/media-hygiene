@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% extends "page_frame.html.j2" %}
 {# The keyboard review of burst series, served by `media-hygiene review`. The page never
    touches a photo: each choice is sent to the server, which saves the decisions file;
    `clean --decisions` then moves the shots set aside, journaled. The left panel shows the
@@ -83,26 +83,11 @@
   "last": _("This is the last series: stop the review with Ctrl+C in the terminal."),
 } %}
 {% set page_name = _("Burst series review") %}
-<html lang="{{ _('en') }}">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ page_name }} — media-hygiene</title>
-<link rel="icon" type="image/png" href="/assets/images/favicon.png">
-<style>
-{% include "theme.css.j2" %}
-{% include "review_side.css.j2" %}
+{% set keys_safe = _("Every choice is saved at once in %(place)s. Done? Ctrl+C in the terminal stops the review; then run the same 'clean' command with %(option)s: the shots set aside go to the quarantine, and 'undo' brings them back.", place=place, option=clean_option) %}
+{% block style %}
 {% include "review_tree.css.j2" %}
 {% include "review_compare.css.j2" %}
 {% include "review_board.css.j2" %}
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text);
-         font: 400 15px/1.5 var(--mk-font-text); }
-  header, footer { position: sticky; z-index: 1; padding: 8px 16px; background: var(--card); }
-  header { top: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; align-items: baseline;
-           border-bottom: 1px solid var(--line); }
-  footer { bottom: 0; border-top: 1px solid var(--line); font-size: .85rem; color: var(--muted); }
-  .muted { color: var(--muted); }
   #status.error { color: var(--bad); font-weight: 600; } #status.saved { color: var(--ok); }
   #status.pending { color: var(--warn); font-weight: 600; }
   #pending { margin: 0 0 12px; padding: 8px 12px; font-weight: 600; color: var(--warn);
@@ -131,22 +116,8 @@
   .state { font-weight: 600; color: var(--ok); } .aside .state, .proposed .state { color: var(--bad); }
   .undecided .state { color: var(--muted); }
   .protected .state { color: var(--warn); }
-  kbd { display: inline-block; min-width: 1.6em; padding: 0 6px; font: inherit; text-align: center;
-        color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; }
-</style>
-</head>
-<body>
-{% include "page_header.html.j2" %}
-<header>
-  <button type="button" id="view" title="{{ _('Switch between the board and one series at a time (P)') }}"></button>
-  <strong id="position"></strong>
-  <span id="totals" class="muted"></span>
-  <span id="eta" class="muted"></span>
-  <span id="status" role="status" aria-live="polite"></span>
-  {% include "apply_now.html.j2" %}
-</header>
-<div class="layout">
-<aside id="side">
+{% endblock %}
+{% block side %}
   <section id="toc" aria-label="{{ _('Table of contents') }}">
     <h2 id="tocTitle"></h2>
     <progress id="tocBar" value="0" max="1"></progress>
@@ -165,17 +136,14 @@
     <button type="button" id="obvious" title="{{ _('Validate at once every series still to see whose proposal leaves nothing to judge (V)') }}"></button>
     <div id="tree"></div>
   </section>
-  <section id="keys" aria-label="{{ _('Keyboard') }}">
-    <h2>⌨ {{ _("Keyboard") }}</h2>
-    <dl>
+{% endblock %}
+{% block keys %}
       <dt><kbd>→</kbd></dt><dd>{{ _("accept the proposal, next") }}</dd>
       <dt><kbd>S</kbd></dt><dd>{{ _("only the sharpest, then next") }}</dd>
       <dt><kbd>A</kbd></dt><dd>{{ _("keep every shot") }}</dd>
       <dt><kbd>X</kbd></dt><dd>{{ _("none: the whole series aside, then next") }}</dd>
-    </dl>
-    <details id="moreKeys">
-    <summary>{{ _("More keys") }}</summary>
-    <dl>
+{% endblock %}
+{% block more_keys %}
       <dt><kbd>1</kbd>…<kbd>9</kbd></dt><dd>{{ _("set a shot aside, or take it back") }}</dd>
       <dt><kbd>←</kbd></dt><dd>{{ _("previous series (no choice: as shown)") }}</dd>
       <dt><kbd>N</kbd></dt><dd>{{ _("next series still to see") }}</dd>
@@ -184,10 +152,16 @@
       <dt><kbd>C</kbd></dt><dd>{{ _("compare the shots at 100 %%") }}</dd>
       <dt><kbd>P</kbd></dt><dd>{{ _("board ⇄ one series") }}</dd>
       <dt class="board-only"><kbd>␣</kbd></dt><dd class="board-only">{{ _("board: pin the large preview of the shot under the mouse") }}</dd>
-    </dl>
-    </details>
-  </section>
-</aside>
+{% endblock %}
+{% block bar %}
+  <button type="button" id="view" title="{{ _('Switch between the board and one series at a time (P)') }}"></button>
+  <strong id="position"></strong>
+  <span id="totals" class="muted"></span>
+  <span id="eta" class="muted"></span>
+  <span id="status" role="status" aria-live="polite"></span>
+  {% include "apply_now.html.j2" %}
+{% endblock %}
+{% block content %}
 <main>
   <div id="board">
     <div class="boardBar"><span class="boardInfo"></span><button type="button" class="boardNext">{{ _("Next page →") }}</button></div>
@@ -208,12 +182,10 @@
   </details>
   </div>
 </main>
-</div>
+{% endblock %}
+{% block after %}
 <div id="zoom" hidden></div>
 <div id="compare" role="dialog" aria-label="{{ _('Compare at 100 %%') }}" hidden></div>
-<footer>
-  {{ _("Every choice is saved at once in %(place)s. Done? Ctrl+C in the terminal stops the review; then run the same 'clean' command with %(option)s: the shots set aside go to the quarantine, and 'undo' brings them back.", place=place, option=clean_option) }}
-</footer>
 <script>
 (() => {
   const T = {{ texts | tojson }};
@@ -232,6 +204,7 @@
 
   const setStatus = (text, kind) => {
     byId("status").textContent = text;
+    byId("status").title = text; // the bar shows one line, the whole sentence on hover
     byId("status").className = kind || "";
   };
 
@@ -421,6 +394,4 @@
     .catch(() => setStatus(T.offline, "error"));
 })();
 </script>
-{% include "home_link.html.j2" %}
-</body>
-</html>
+{% endblock %}

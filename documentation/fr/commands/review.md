@@ -66,6 +66,13 @@ Ctrl+C, ou fermer son onglet, l'arrête.
 
 ## Les touches principales
 
+Chaque page de revue a la même disposition : à gauche, ce qui mène aux photos (la table des
+matières, les paires de dossiers, une courte explication), les touches en bas à gauche
+(⌨ **Clavier**, les premières toujours visibles, les autres sous *Plus de touches*) avec la ligne
+qui dit où chaque choix est enregistré ; à droite, une seule barre en haut (où vous en êtes, les
+totaux, le choix relu sur le disque ; *Appliquer maintenant* sur les rafales et les quasi-doublons
+quand la page d'accueil les a ouvertes), puis les photos.
+
 | Touche | Rafales (`review`) | Quasi-doublons (`review --near`) | Paires de dossiers (`review --pairs`) |
 |---|---|---|---|
 | `→` | Rafale suivante, telle que montrée | Comme prévu, puis le groupe suivant | Comme prévu, puis la paire suivante |

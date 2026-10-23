@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+{# The frame of every page served but the home page (0333): a page `extends` it and fills its
+   blocks; the layout, its parts and their place are written here once.
+   - on top, `page_header.html.j2` (the page's name, the theme, *Back to the home page*);
+   - on the left, `#side`: the `side` block (tabs, a list, a form: what leads to the content),
+     then the ⌨ panel (`#keys`) built from the `keys` block (the keys always in sight), the
+     `more_keys` block (*More keys*) and the 🔒 line (`keys_safe`, set by the page: what is
+     saved where, what nothing here deletes); no panel for a page without keys;
+   - on the right, `#content`: one sticky bar (`#bar`, the `bar` block: where you are, the line
+     read back from the disk, *Apply now*), then the `content` block (the page's `main`);
+   - after them, the `after` block (dialogs, the page's script), then `home_link.html.j2`.
+   Nothing else above the content: no second header, no footer; hints go in the keys panel or
+   a `<details>`. The page sets `page_name` (and its `texts`) before its blocks; the look is
+   `page_frame.css.j2`, the page's own rules go in the `style` block. #}
+<html lang="{{ _('en') }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page_name }} — media-hygiene</title>
+<link rel="icon" type="image/png" href="/assets/images/favicon.png">
+{% block head %}{% endblock %}
+<style>
+{% include "theme.css.j2" %}
+{% include "page_frame.css.j2" %}
+{% block style %}{% endblock %}
+</style>
+</head>
+<body>
+{% include "page_header.html.j2" %}
+<div class="layout">
+  <aside id="side">
+{% block side %}{% endblock %}
+{% if self.keys() | trim %}
+  <section id="keys" aria-label="{{ _('Keyboard') }}">
+    <h2>⌨ {{ _("Keyboard") }}</h2>
+    <dl>
+{% block keys %}{% endblock %}
+    </dl>
+{% if self.more_keys() | trim %}
+    <details id="moreKeys">
+    <summary>{{ _("More keys") }}</summary>
+    <dl>
+{% block more_keys %}{% endblock %}
+    </dl>
+    </details>
+{% endif %}
+{% if keys_safe is defined %}
+    <p class="safe">🔒 {{ keys_safe }}</p>
+{% endif %}
+  </section>
+{% endif %}
+  </aside>
+  <div id="content">
+  <header id="bar">
+{% block bar %}{% endblock %}
+  </header>
+{% block content %}{% endblock %}
+  </div>
+</div>
+{% block after %}{% endblock %}
+{% include "home_link.html.j2" %}
+</body>
+</html>

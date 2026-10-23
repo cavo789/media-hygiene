@@ -50,6 +50,11 @@ fois suivante, il reprend.
 
 ## Les touches principales
 
+La page : l'événement affiché à gauche (ses dates, ses dossiers, la proposition, ce que dit le
+classeur), son nom et sa catégorie dans la barre du haut, ses photos en dessous. Les touches
+restent en bas à gauche, sous ⌨ **Clavier** (les premières toujours visibles, les autres sous
+*Plus de touches*), avec la ligne qui dit où chaque choix est enregistré.
+
 | Touche | Rôle |
 |---|---|
 | `Entrée` | Accepter le nom et la catégorie, puis passer à l'événement suivant encore à décider. |

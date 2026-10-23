@@ -6332,6 +6332,9 @@ msgstr ""
 msgid "The earlier copies of this album were replaced."
 msgstr ""
 
+msgid "The event shown"
+msgstr ""
+
 msgid ""
 "The events of the Events sheet, in its order: naming the first ones "
 "covers most of the work."
@@ -8191,6 +8194,9 @@ msgstr ""
 msgid "close it"
 msgstr ""
 
+msgid "close the large photo, then the photos of the place"
+msgstr ""
+
 msgid "colours"
 msgstr ""
 
@@ -8433,10 +8439,16 @@ msgid ""
 "about 7 times faster than Docker."
 msgstr ""
 
+msgid "in a filter box: empty it"
+msgstr ""
+
 msgid "in folders never analysed (system, trash, thumbnails, excluded)"
 msgstr ""
 
 msgid "in the future: to check"
+msgstr ""
+
+msgid "in the search box: search OpenStreetMap"
 msgstr ""
 
 msgid "in your own home only: meals, games, children, sofa, garden"
@@ -9323,6 +9335,9 @@ msgstr ""
 msgid "take back the choice made here (of the selected photos, else of the event)"
 msgstr ""
 
+msgid "take back the last batch of sure proposals"
+msgstr ""
+
 msgid "take it back out of the set aside"
 msgstr ""
 
@@ -9653,6 +9668,9 @@ msgid "type a name, e.g. Crete 2023"
 msgstr ""
 
 msgid "type a new search"
+msgstr ""
+
+msgid "type the name, the category"
 msgstr ""
 
 msgid "unanswered"

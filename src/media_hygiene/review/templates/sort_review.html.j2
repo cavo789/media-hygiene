@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% extends "page_frame.html.j2" %}
 {# The keyboard review of a classify proposal, served by `media-hygiene review-sort`.
    The page never touches a photo nor the workbook: each choice is sent to the server,
    which saves sort-decisions.json; `sort` lays it over the workbook's edits. #}
@@ -39,21 +39,8 @@
   "nUndone": [ngettext("{n} choice of the batch taken back", "{n} choices of the batch taken back", 1), ngettext("{n} choice of the batch taken back", "{n} choices of the batch taken back", 2)],
 } %}
 {% set page_name = _("Sort review") %}
-<html lang="{{ _('en') }}">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ page_name }} — media-hygiene</title>
-<link rel="icon" type="image/png" href="/assets/images/favicon.png">
-<style>
-{% include "theme.css.j2" %}
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text);
-         font: 400 15px/1.5 var(--mk-font-text); }
-  header, footer { position: sticky; z-index: 1; padding: 8px 16px; background: var(--card); }
-  header { top: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; align-items: baseline;
-           border-bottom: 1px solid var(--line); }
-  footer { bottom: 0; border-top: 1px solid var(--line); font-size: .85rem; color: var(--muted); }
+{% set keys_safe = _("Every choice is saved at once in %(place)s; the workbook %(workbook)s is never changed. Done? Ctrl+C in the terminal stops the review; then 'sort' applies your choices on top of the workbook.", place=decisions, workbook=workbook) %}
+{% block style %}
   main { padding: 12px 16px 24px; }
   h2 { margin: 0 0 4px; font-size: 1.2rem; overflow-wrap: anywhere; }
   .muted { color: var(--muted); } dl { margin: 6px 0; } dt { font-weight: 600; float: left; margin-right: 6px; }
@@ -85,13 +72,41 @@
            border: 1px solid var(--line); border-radius: 6px; cursor: pointer; }
   button:disabled { color: var(--muted); cursor: default; } button[hidden] { display: none; }
   #sure:not(:disabled) { border-color: var(--ok); color: var(--ok); font-weight: 600; }
-  kbd { display: inline-block; padding: 0 6px; font: inherit; color: var(--text); background: var(--bg);
-        border: 1px solid var(--line); border-radius: 4px; }
-</style>
-</head>
-<body>
-{% include "page_header.html.j2" %}
-<header>
+  /* The event in the left column; its name and category in the bar, on a line of their own,
+     the same height whatever is chosen; its photos under them. */
+  #bar > .break { flex-basis: 100%; height: 0; }
+  #bar > form { margin: 0; }
+  #bar form label { flex-direction: row; align-items: center; gap: 6px; }
+  #bar form input { min-width: 10rem; }
+  .batch input[type=checkbox] { min-width: 0; }
+{% endblock %}
+{% block side %}
+  <section id="toc" aria-label="{{ _('The event shown') }}">
+    <h2 id="title"></h2>
+    <div id="summary" class="muted"></div>
+    <dl id="facts"></dl>
+    <p id="conflict" class="conflict" hidden></p>
+  </section>
+{% endblock %}
+{% block keys %}
+    <dt><kbd>Enter</kbd></dt><dd>{{ _("accept the name and category, then the next event to decide") }}</dd>
+    <dt><kbd>N</kbd> <kbd>P</kbd></dt><dd>{{ _("next or previous event") }}</dd>
+    <dt><kbd>U</kbd></dt><dd>{{ _("next event to decide") }}</dd>
+    <dt><kbd>E</kbd> <kbd>C</kbd></dt><dd>{{ _("type the name, the category") }}</dd>
+    <dt><kbd>␣</kbd></dt><dd>{{ _("select a photo") }}</dd>
+    <dt><kbd>O</kbd></dt><dd>{{ _("send the selected photos to another category") }}</dd>
+{% endblock %}
+{% block more_keys %}
+    <dt><kbd>V</kbd></dt><dd>{{ _("accept every sure proposal at once") }}</dd>
+    <dt><kbd>Shift</kbd>+<kbd>Z</kbd></dt><dd>{{ _("take back the last batch of sure proposals") }}</dd>
+    <dt><kbd>Shift</kbd>+<kbd>S</kbd></dt><dd>{{ _("leave the whole event where it is") }}</dd>
+    <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>{{ _("move between photos") }}</dd>
+    <dt><kbd>S</kbd></dt><dd>{{ _("leave the selected photos where they are") }}</dd>
+    <dt><kbd>Delete</kbd></dt><dd>{{ _("take back the choice made here (of the selected photos, else of the event)") }}</dd>
+    <dt><kbd>Z</kbd></dt><dd>{{ _("enlarge a photo") }}</dd>
+    <dt><kbd>Esc</kbd></dt><dd>{{ _("leave a field") }}</dd>
+{% endblock %}
+{% block bar %}
   <strong id="position"></strong>
   <span id="totals" class="muted"></span>
   <span id="status" role="status" aria-live="polite"></span>
@@ -100,12 +115,7 @@
     <button type="button" id="sure" title="{{ _('Accept at once every event still to decide whose proposal is sure (V)') }}"></button>
     <button type="button" id="sureUndo" title="{{ _('Take back the last batch of sure proposals (Shift+Z)') }}" hidden></button>
   </span>
-</header>
-<main>
-  <h2 id="title"></h2>
-  <div id="summary" class="muted"></div>
-  <dl id="facts"></dl>
-  <p id="conflict" class="conflict" hidden></p>
+  <span class="break"></span>
   <form id="choice" autocomplete="off">
     <label>{{ _("Name of the event") }} <kbd>E</kbd><input id="name" name="name"></label>
     <label>{{ _("Category") }} <kbd>C</kbd><input id="category" name="category" list="categories"></label>
@@ -114,24 +124,14 @@
     <label><span id="send-label"></span><input id="send-category" list="categories"></label>
   </form>
   <datalist id="categories"></datalist>
+{% endblock %}
+{% block content %}
+<main>
   <div id="photos" class="photos"></div>
   <div id="zoom" hidden><img alt=""></div>
 </main>
-<footer>
-  <kbd>Enter</kbd> {{ _("accept the name and category, then the next event to decide") }} ·
-  <kbd>N</kbd> <kbd>P</kbd> {{ _("next or previous event") }} ·
-  <kbd>U</kbd> {{ _("next event to decide") }} ·
-  <kbd>V</kbd> {{ _("accept every sure proposal at once") }} ·
-  <kbd>Shift</kbd>+<kbd>S</kbd> {{ _("leave the whole event where it is") }} ·
-  <kbd>←</kbd> <kbd>→</kbd> {{ _("move between photos") }} ·
-  <kbd>Space</kbd> {{ _("select a photo") }} ·
-  <kbd>O</kbd> {{ _("send the selected photos to another category") }} ·
-  <kbd>S</kbd> {{ _("leave the selected photos where they are") }} ·
-  <kbd>Delete</kbd> {{ _("take back the choice made here (of the selected photos, else of the event)") }} ·
-  <kbd>Z</kbd> {{ _("enlarge a photo") }} ·
-  <kbd>Esc</kbd> {{ _("leave a field") }}<br>
-  {{ _("Every choice is saved at once in %(place)s; the workbook %(workbook)s is never changed. Done? Ctrl+C in the terminal stops the review; then 'sort' applies your choices on top of the workbook.", place=decisions, workbook=workbook) }}
-</footer>
+{% endblock %}
+{% block after %}
 <script>
 (() => {
   const T = {{ texts | tojson }};
@@ -150,6 +150,7 @@
 
   const setStatus = (text, kind) => {
     byId("status").textContent = text;
+    byId("status").title = text; // the bar shows one line, the whole sentence on hover
     byId("status").className = kind || "";
   };
   const line = (tag, text, css) => {
@@ -368,6 +369,4 @@
     .catch(() => setStatus(T.offline, "error"));
 })();
 </script>
-{% include "home_link.html.j2" %}
-</body>
-</html>
+{% endblock %}

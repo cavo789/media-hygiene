@@ -65,6 +65,13 @@ Ctrl+click it. Leave the window open: the page runs as long as it does; Ctrl+C, 
 
 ## The main keys
 
+Every review page has the same layout: what leads to the photos on the left (the table of
+contents, the folder pairs, a short explanation), the keys at the bottom left (⌨ **Keyboard**, the
+first ones always shown, the others under *More keys*) with the line saying where each choice is
+saved; on the right, one bar on top (where you are, the totals, the choice read back from the
+disk; *Apply now* on the bursts and near duplicates when the home page opened them), then the
+photos.
+
 | Key | Bursts (`review`) | Near duplicates (`review --near`) | Folder pairs (`review --pairs`) |
 |---|---|---|---|
 | `→` | Next series, as shown | As planned, then the next group | As planned, then the next pair |

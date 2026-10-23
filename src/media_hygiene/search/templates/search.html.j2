@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% extends "page_frame.html.j2" %}
 {# The page of `media-hygiene search`: the field and its filters in the left column, above
    the keys, a grid of the files found with their folder, date and tags. The photos are
    never changed: files picked can be set aside, saved at once in the decisions file for
@@ -34,14 +34,10 @@
   "takeout": _("Google Photos description"),
 } %}
 {% set page_name = _("Search your photos") %}
-<html lang="{{ _('en') }}">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ page_name }} — media-hygiene</title>
-<link rel="icon" type="image/png" href="/assets/images/favicon.png">
-<style>
-{% include "theme.css.j2" %}
+{% set pick_all = _("every file shown") %}
+{% set pick_search_key = true %}
+{% set keys_safe = _("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") %}
+{% block style %}
 {% include "pick_grid.css.j2" %}
   /* The field and its filters, one under the other, in the left column. */
   #toc { flex: none; }
@@ -57,12 +53,8 @@
   .folderLine, .caption { overflow-wrap: anywhere; }
   .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
   .chip { padding: 0 6px; border-radius: 10px; background: var(--chip); }
-</style>
-</head>
-<body>
-{% include "page_header.html.j2" %}
-<div class="layout">
-  <aside id="side">
+{% endblock %}
+{% block side %}
     {% set pick_view = "words" %}
     {% include "pick_views.html.j2" %}
     <section id="toc" aria-label="{{ _('Search your photos') }}">
@@ -90,19 +82,18 @@
       <p>{{ _('"bord de mer" finds the phrase, anniv* every word starting so, place:durbuy the word among the places only.') }}</p>
     </details>
     </section>
-    {% set pick_all = _("every file shown") %}
-    {% set pick_search_key = true %}
-    {% include "pick_keys.html.j2" %}
-  </aside>
-  <div id="content">
-  <header id="bar">
+{% endblock %}
+{% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
+{% block more_keys %}{% include "pick_keys_more.html.j2" %}{% endblock %}
+{% block bar %}
     {% include "pick_acting.html.j2" %}
     {% set album_compact = true %}
     {% include "album_bar.html.j2" %}
-  </header>
+{% endblock %}
+{% block content %}
   <main id="grid"></main>
-  </div>
-</div>
+{% endblock %}
+{% block after %}
 {% include "pick_viewer.html.j2" %}
 <script>
 {% include "pick_grid.js.j2" %}
@@ -110,6 +101,4 @@
 {% include "pick_band.js.j2" %}
 {% include "search.js.j2" %}
 </script>
-{% include "home_link.html.j2" %}
-</body>
-</html>
+{% endblock %}

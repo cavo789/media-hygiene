@@ -7665,6 +7665,9 @@ msgstr "L'accueil de la documentation"
 msgid "The earlier copies of this album were replaced."
 msgstr "Les copies précédentes de cet album ont été remplacées."
 
+msgid "The event shown"
+msgstr "L'événement affiché"
+
 msgid ""
 "The events of the Events sheet, in its order: naming the first ones "
 "covers most of the work."
@@ -9902,6 +9905,9 @@ msgstr "fermer"
 msgid "close it"
 msgstr "la fermer"
 
+msgid "close the large photo, then the photos of the place"
+msgstr "fermer la photo en grand, puis les photos du lieu"
+
 msgid "colours"
 msgstr "couleurs"
 
@@ -10160,11 +10166,17 @@ msgstr ""
 "dans Windows PowerShell, tapez mh backup --to {target} : Windows copie, "
 "environ 7 fois plus vite que Docker."
 
+msgid "in a filter box: empty it"
+msgstr "dans une case de filtre : la vider"
+
 msgid "in folders never analysed (system, trash, thumbnails, excluded)"
 msgstr "dans des dossiers jamais analysés (système, corbeille, vignettes, exclus)"
 
 msgid "in the future: to check"
 msgstr "dans le futur : à vérifier"
+
+msgid "in the search box: search OpenStreetMap"
+msgstr "dans la case de recherche : chercher sur OpenStreetMap"
 
 msgid "in your own home only: meals, games, children, sofa, garden"
 msgstr "chez soi seulement : repas, jeux, enfants, canapé, jardin"
@@ -11129,6 +11141,9 @@ msgstr ""
 "reprendre le choix fait ici (des photos sélectionnées, sinon de "
 "l'événement)"
 
+msgid "take back the last batch of sure proposals"
+msgstr "reprendre le dernier lot de propositions sûres"
+
 msgid "take it back out of the set aside"
 msgstr "la reprendre de ce qui est mis de côté"
 
@@ -11509,6 +11524,9 @@ msgstr "tapez un nom, p. ex. Crète 2023"
 
 msgid "type a new search"
 msgstr "taper une nouvelle recherche"
+
+msgid "type the name, the category"
+msgstr "taper le nom, la catégorie"
 
 msgid "unanswered"
 msgstr "sans réponse"
