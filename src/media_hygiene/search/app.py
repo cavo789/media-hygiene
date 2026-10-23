@@ -8,9 +8,9 @@ aside, `POST /api/chosen` sets files aside or takes them out (the decisions file
 the reports folder, `chosen_api`); `GET`/`POST /api/albums` the albums, apart
 (`albums.json`, `share.album_api`); `POST /api/apply` ends the page on the home page's
 step that applies them, when opened from it (`apply_api`). The folder view asks for
-its tree, its folders and its videos (`folders`). Like `review` and `places`:
-loopback hosts only, JSON bodies only, from the page's own origin. The photos are
-never changed: `clean --decisions` moves what was set aside.
+its tree, its folders, the heaviest files and its videos (`folders`). Like `review`
+and `places`: loopback hosts only, JSON bodies only, from the page's own origin. The
+photos are never changed: `clean --decisions` moves what was set aside.
 """
 
 from __future__ import annotations
@@ -27,7 +27,7 @@ from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
 from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_response
 from media_hygiene.search.chosen_api import CHOSEN_PATH
-from media_hygiene.search.folders import BROWSE_PATH, FOLDER_PATH, FOLDERS_PATH
+from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS, FOLDERS_PATH
 from media_hygiene.search.people_words import unknown_people
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.search.views import SearchAsked, found_view
@@ -54,7 +54,7 @@ SEARCH_PATH: Final = "/api/search"
 PAGE_HITS: Final = 240
 _GET, _POST = "GET", "POST"
 _POSTED: Final = frozenset(
-    {SEARCH_PATH, CHOSEN_PATH, FOLDER_PATH, APPLY_PATH, ALBUMS_PATH}
+    {SEARCH_PATH, CHOSEN_PATH, *FOLDER_POSTS, APPLY_PATH, ALBUMS_PATH}
 )
 
 
@@ -136,8 +136,8 @@ class SearchApp:
             return await self.place.albums.answer(request.body)
         if request.path == CHOSEN_PATH:
             return self.place.chosen.answer(request.body)
-        if request.path == FOLDER_PATH:
-            return self.place.folders.listing(request.body)
+        if request.path in FOLDER_POSTS:
+            return self.place.folders.answer(request.path, request.body)
         return self._search(request)
 
     async def _get(self, request: Request) -> Response:

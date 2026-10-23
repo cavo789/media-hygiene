@@ -137,6 +137,30 @@ def test_a_file_set_aside_stays_marked_once_filtered(
     assert sum(bool(value) for value in marked.values()) == 1
 
 
+def test_the_heaviest_files_of_the_library(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Every photo, largest first, with its folder; the total said; bad bodies: 400."""
+    answers = _browse(
+        cli,
+        monkeypatch,
+        [
+            ("POST /api/heaviest", {"kind": "photos", "limit": 3}),
+            ("POST /api/heaviest", {}),
+            ("POST /api/heaviest", {"limit": 0}),
+            ("POST /api/heaviest", {"order": "name"}),
+        ],
+    )[0]
+    listed = json.loads(answers[0].body)
+    files = listed["files"]
+    assert len(files) == 3
+    assert all(str(file["where"]).startswith("C:\\") for file in files)
+    assert listed["total"].startswith("3 files, ")
+    assert listed["total"].endswith("% of your library")
+    assert json.loads(answers[1].body)["files"] == []  # videos by default: none here
+    assert [answer.status for answer in answers[2:]] == [400, 400]
+
+
 def test_files_set_aside_are_read_back_then_cleaned(
     cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -330,7 +354,7 @@ def test_a_save_keeps_the_cards_and_the_height_of_the_bar(
     """After *Set aside*, the cards stay (no flicker); the saved line keeps one line."""
     answers, _ = _browse(cli, monkeypatch, [("GET /browse", None)])
     page = answers[0].body.decode()
-    assert "await openFolder(folder, true)" in page
+    assert "await reopen(true)" in page
     assert "if (again && sameFiles(listed))" in page
     assert "function relabel()" in page
     chosen = page.split("  #chosen {")[1].split("}")[0]

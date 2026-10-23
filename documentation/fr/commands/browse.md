@@ -54,10 +54,19 @@ Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`).
   choisis**, **Inverser la sélection**.
 - **L'arborescence** : vos dossiers montés, ouverts ; les dossiers en dessous, fermés (▸ en ouvre
   un). Cliquez un dossier : ses photos et vidéos apparaissent, triées par nom, par date ou par
-  taille, la plus grande d'abord (**Trier par**). **Afficher** garde les photos ou les vidéos
+  taille, la plus grande d'abord (**Trier par** ; *débit* sert aux fichiers les plus lourds, ci-dessous :
+  un dossier se trie alors par taille). **Afficher** garde les photos ou les vidéos
   seulement : les vidéos lourdes d'un dossier viennent en tête avec *Vidéos* et *taille*. Ctrl+A,
   Maj+clic et ← → ne portent que sur les fichiers affichés. Les deux choix sont gardés, dans ce
   navigateur, pour le dossier suivant.
+- **⚖ Fichiers les plus lourds**, au-dessus des dossiers : les fichiers les plus lourds de tous
+  les dossiers montés, les vidéos d'abord (**Afficher** le change), 200 à la fois (**En montrer
+  plus** en ajoute autant). La barre dit ce que pèse la liste : *200 fichiers, 61,4 Go, 25 % de
+  votre photothèque*. Chaque vignette donne son dossier et, pour une vidéo, sa durée, son débit,
+  son codec et sa taille en pixels : `12 min · 12.7 Mb/s · mjpeg · 1280×720`. **Trier par**
+  *débit* met en tête les vidéos les moins bien compressées pour leur durée (anciens appareils,
+  MJPEG) : celles qui gagnent le plus une fois allégées. Mettre de côté, la visionneuse et les
+  touches marchent comme dans un dossier.
 - **Regarder** : Entrée ou un double clic montre une image en grand, une vidéo se lit ; ← et →
   passent à la précédente et à la suivante, comme dans l'application Photos ; Échap ferme.
 - **Choisir** : un clic choisit un fichier ; la case ☑ de chaque vignette (ou Ctrl+clic) en

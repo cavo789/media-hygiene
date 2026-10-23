@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 {# The folder view of `media-hygiene browse` (the search's own server): the tree of the
    library's folders on the left, the photos and videos of the folder chosen on the
-   right. The photos are never changed: the files picked can be set aside, saved at
+   right, or the heaviest files of the whole library (0302, *Heaviest files* above the
+   folders). The photos are never changed: the files picked can be set aside, saved at
    once in the decisions file for `clean --decisions`. The keys are listed under the
    tree, always in sight, as on the review pages (`review_side.css.j2`), with the line
    saying that nothing is deleted here. Above the grid, one bar (0305): the folder shown,
@@ -13,6 +14,8 @@
   "counts": _("{photos} photos · {videos} videos · {size}"),
   "empty": _("No photo or video directly in this folder: open a subfolder."),
   "noVideo": [ngettext("No video in this folder ({n} photo).", "No video in this folder ({n} photos).", 1), ngettext("No video in this folder ({n} photo).", "No video in this folder ({n} photos).", 2)],
+  "heaviest": _("Heaviest files"),
+  "heaviestHint": _("of every folder: where the space goes"),
   "noPhoto": [ngettext("No photo in this folder ({n} video).", "No photo in this folder ({n} videos).", 1), ngettext("No photo in this folder ({n} video).", "No photo in this folder ({n} videos).", 2)],
   "choose": _("Choose a folder on the left."),
   "offline": _("The page is not running any more: start it again."),
@@ -78,6 +81,9 @@
   .folder { flex: 1; padding: 2px 6px; text-align: left; color: var(--text); background: none;
             border: 1px solid transparent; border-radius: 6px; }
   .folder.open { border-color: var(--accent); }
+  .folder.heaviest { display: block; width: 100%; margin-bottom: 6px; font-weight: 600; }
+  .where { overflow-wrap: anywhere; font-size: .75rem; }
+  #moreLine { margin: 0 16px 16px; text-align: center; }
   .folder small { display: block; color: var(--muted); font-size: .75rem; }
   main { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
          gap: 10px; padding: 16px; align-content: start; }
@@ -158,6 +164,7 @@
         <option value="name">{{ _("name") }}</option>
         <option value="date">{{ _("date") }}</option>
         <option value="size">{{ _("size, largest first") }}</option>
+        <option value="rate" title="{{ _('The videos worst compressed for their length first: the best to lighten') }}">{{ _("bit rate (heaviest files)") }}</option>
       </select></label>
     <label>{{ _("Show") }}
       <select id="kind">
@@ -169,6 +176,7 @@
     {% include "album_bar.html.j2" %}
   </header>
   <main id="grid"></main>
+  <p id="moreLine"><button id="more" class="plain" type="button" hidden>{{ _("Show more") }}</button></p>
   </div>
 </div>
 <div id="viewer" role="dialog" aria-modal="true">

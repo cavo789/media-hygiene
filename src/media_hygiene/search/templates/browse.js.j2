@@ -5,10 +5,14 @@
 const TEXTS = {{ texts | tojson }};
 const FOLDERS_PATH = {{ folders_path | tojson }};
 const FOLDER_PATH = {{ folder_path | tojson }};
+const HEAVIEST_PATH = {{ heaviest_path | tojson }};
+const HEAVIEST_FIRST = {{ heaviest_first | tojson }};
 const CHOSEN_PATH = {{ chosen_path | tojson }};
 const $ = (id) => document.getElementById(id);
 const PLURAL = new Intl.PluralRules(document.documentElement.lang);
 let folder = "";       // the folder shown (host path)
+let heavy = false;     // the heaviest files of the library are shown instead
+let limit = HEAVIEST_FIRST; // how many of them; *Show more* adds as many
 let files = [];        // its files, as the server listed them
 let cards = [];
 let current = -1;      // the card with the focus
@@ -87,7 +91,16 @@ async function loadTree() {
   }
   const list = element("ul");
   list.append(...(children.get(null) || []).map((node) => branch(node, children)));
-  $("tree").replaceChildren(list);
+  // Above the folders: where the space goes, the videos first unless another kind is chosen.
+  const heaviest = element("button", "folder heaviest", "⚖ " + TEXTS.heaviest);
+  heaviest.type = "button";
+  heaviest.append(element("small", "", TEXTS.heaviestHint));
+  heaviest.addEventListener("click", () => {
+    if ($("kind").value === "all") $("kind").value = "videos";
+    limit = HEAVIEST_FIRST;
+    openHeaviest();
+  });
+  $("tree").replaceChildren(heaviest, list);
   $("status").textContent = TEXTS.choose;
 }
 
@@ -111,6 +124,8 @@ function card(file, index) {
   const meta = element("div", "meta");
   meta.append(element("div", "name", file.name),
               element("div", "muted", [file.date, file.size].filter(Boolean).join(" · ")));
+  if (file.facts) meta.append(element("div", "muted", file.facts));
+  if (file.where) meta.append(element("div", "muted where", file.where));
   // The box adds or takes out this file alone, without Ctrl (and on a touch screen).
   const tick = element("input", "tick");
   tick.type = "checkbox";
@@ -148,14 +163,11 @@ function relabel() {
   });
 }
 
-async function openFolder(path, again) {
-  folder = path;
+// The files listed take the grid: the same ones (after a save) keep their cards.
+function show(listed, again) {
   for (const button of document.querySelectorAll(".folder")) {
-    button.classList.toggle("open", button.dataset.path === path);
+    button.classList.toggle("open", heavy ? button.classList.contains("heaviest") : button.dataset.path === folder);
   }
-  const answer = await ask(FOLDER_PATH, { folder: path, order: $("order").value, kind: $("kind").value });
-  if (!answer || !answer.ok) { failed(answer); return; }
-  const { files: listed, holds } = await answer.json();
   picked.clear();
   if (again && sameFiles(listed)) {
     files = listed;
@@ -167,9 +179,37 @@ async function openFolder(path, again) {
     anchor = -1;
     $("grid").replaceChildren(...cards);
   }
+  $("more").hidden = true;
   $("status").className = "";
-  $("status").textContent = files.length ? path + " — " + counted(TEXTS.files, files.length) : hidden(holds);
   showPicked();
+}
+
+async function openFolder(path, again) {
+  heavy = false;
+  folder = path;
+  const order = $("order").value === "rate" ? "size" : $("order").value; // a rate: the heaviest only
+  const answer = await ask(FOLDER_PATH, { folder: path, order: order, kind: $("kind").value });
+  if (!answer || !answer.ok) { failed(answer); return; }
+  const { files: listed, holds } = await answer.json();
+  show(listed, again);
+  $("status").textContent = files.length ? path + " — " + counted(TEXTS.files, files.length) : hidden(holds);
+}
+
+// The heaviest files of every folder (0302): by size, or by bit rate for the videos.
+async function openHeaviest(again) {
+  heavy = true;
+  folder = "";
+  const order = $("order").value === "rate" ? "rate" : "size";
+  const answer = await ask(HEAVIEST_PATH, { kind: $("kind").value, order: order, limit: limit });
+  if (!answer || !answer.ok) { failed(answer); return; }
+  const { files: listed, total } = await answer.json();
+  show(listed, again);
+  $("status").textContent = TEXTS.heaviest + " — " + total;
+  $("more").hidden = listed.length < limit;
+}
+
+function reopen(again) {
+  return heavy ? openHeaviest(again) : openFolder(folder, again);
 }
 
 // An empty grid: the folder holds nothing, or only what the **Show** filter hides.
@@ -249,7 +289,7 @@ async function choose(action) {
   const answer = await ask(CHOSEN_PATH, body);
   if (!answer) { failed(null); return; }
   said(answer, await answer.json().catch(() => ({})));
-  if (answer.ok) await openFolder(folder, true);
+  if (answer.ok) await reopen(true);
 }
 
 function open() {
@@ -326,13 +366,14 @@ for (const id of ["order", "kind"]) {
   } catch (error) { /* no storage (private window): the defaults */ }
   select.addEventListener("change", () => {
     try { localStorage.setItem("mh-browse-" + id, select.value); } catch (error) { /* not kept */ }
-    if (folder) openFolder(folder);
+    if (folder || heavy) reopen();
   });
 }
 $("setAside").addEventListener("click", () => choose("add"));
 $("takeBack").addEventListener("click", () => choose("remove"));
 $("unpick").addEventListener("click", () => { picked.clear(); showPicked(); });
 $("invert").addEventListener("click", invert);
+$("more").addEventListener("click", () => { limit += HEAVIEST_FIRST; openHeaviest(); });
 
 async function loadChosen() {
   const answer = await ask(CHOSEN_PATH);

@@ -3,7 +3,8 @@
 `GET /api/folders` answers the tree (host paths, counts, sizes), `POST /api/folder`
 the files of one folder, by name, date or size, all of them or the photos or videos
 only (`folder_order`), those set aside marked, with what the folder holds so that a
-filter that hides everything is said. Read from the index alone: a file the last audit
+filter that hides everything is said; `POST /api/heaviest` the heaviest files of the
+whole library (`heaviest`). Read from the index alone: a file the last audit
 did not see is not listed.
 """
 
@@ -20,9 +21,9 @@ from media_hygiene.console.formatting import human_size
 from media_hygiene.constants import MediaKind
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
-from media_hygiene.review.videos import video_path
 from media_hygiene.scan.filters import media_kind
 from media_hygiene.search import statements as sql
+from media_hygiene.search.file_card import file_card
 from media_hygiene.search.folder_order import (  # pydantic reads them
     Order,
     Shown,
@@ -30,22 +31,23 @@ from media_hygiene.search.folder_order import (  # pydantic reads them
     ordered,
 )
 from media_hygiene.search.folder_tree import PHOTOS, folder_counts
-from media_hygiene.search.views import (
-    JPEG,
-    ORIGINAL_PREFIX,
-    PREVIEW_PREFIX,
-    THUMB_PREFIX,
+from media_hygiene.search.heaviest import (
+    HEAVIEST_PATH,
+    HeaviestAsked,
+    heaviest,
+    listed_total,
+    video_facts,
 )
 
 if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.search.chosen_api import ChosenDesk
-    from media_hygiene.search.folder_order import FileRow
     from media_hygiene.search.fts import SearchIndex
 
 BROWSE_PATH: Final = "/browse"
 FOLDERS_PATH: Final = "/api/folders"
 FOLDER_PATH: Final = "/api/folder"
+FOLDER_POSTS: Final = frozenset({FOLDER_PATH, HEAVIEST_PATH})
 _MAX_PATH: Final = 4096
 _AFTER_SLASH: Final = "0"  # the character after `/`: ends the range of a folder
 
@@ -96,6 +98,47 @@ class FolderDesk:
         ]
         return json_response(HTTPStatus.OK, {"folders": folders})
 
+    def answer(self, path: str, body: bytes) -> Response:
+        """Answer a `POST` of the folder view.
+
+        Args:
+            path: `FOLDER_PATH` or `HEAVIEST_PATH`.
+            body: The JSON the page sent.
+
+        Returns:
+            The files of a folder, or the heaviest of the library.
+        """
+        if path == HEAVIEST_PATH:
+            return self.heaviest(body)
+        return self.listing(body)
+
+    def heaviest(self, body: bytes) -> Response:
+        """`POST /api/heaviest`: the heaviest files of every mounted folder.
+
+        Args:
+            body: The JSON the page sent.
+
+        Returns:
+            The files, each with its folder and, for a video, what it is; the total
+            listed; 400 for a body that is not a request of the list.
+        """
+        try:
+            asked = HeaviestAsked.model_validate_json(body)
+        except ValidationError:
+            return Response(HTTPStatus.BAD_REQUEST)
+        found = heaviest(self.index.connection, asked, self.roots)
+        chosen = self.chosen.paths()
+        files = [
+            {
+                **file_card(row, self.mapper, chosen),
+                "where": self.mapper.to_host(Path(row[1]).parent),
+                "facts": video_facts(found.metadata.get(row[0], {})),
+            }
+            for row in found.rows
+        ]
+        answer = {"files": files, "total": listed_total(found), "more": asked.limit}
+        return json_response(HTTPStatus.OK, answer)
+
     def listing(self, body: bytes) -> Response:
         """`POST /api/folder`: the files lying directly in a folder.
 
@@ -119,7 +162,9 @@ class FolderDesk:
         kinds = [media_kind(Path(row[1])) for row in rows]
         shown = [row for row in rows if is_shown(Path(row[1]), asked.kind)]
         chosen = self.chosen.paths()
-        files = [self.file(row, chosen) for row in ordered(shown, asked.order)]
+        files = [
+            file_card(row, self.mapper, chosen) for row in ordered(shown, asked.order)
+        ]
         held = {
             "photos": sum(kind in PHOTOS for kind in kinds),
             "videos": sum(kind is MediaKind.VIDEO for kind in kinds),
@@ -130,28 +175,3 @@ class FolderDesk:
             "holds": held,
         }
         return json_response(HTTPStatus.OK, answer)
-
-    def file(self, row: FileRow, chosen: frozenset[str]) -> dict[str, object]:
-        """Write one file of the folder for the page.
-
-        Args:
-            row: Its key, path, size and day.
-            chosen: The host paths of the files set aside.
-
-        Returns:
-            The JSON object: name, day, size, addresses, and whether it is aside.
-        """
-        key, text, size, day = row
-        path = Path(text)
-        video = media_kind(path) is MediaKind.VIDEO
-        return {
-            "key": key,
-            "name": path.name,
-            "date": day,
-            "size": human_size(size),
-            "thumb": "" if video else f"{THUMB_PREFIX}{key}{JPEG}",
-            "preview": "" if video else f"{PREVIEW_PREFIX}{key}{JPEG}",
-            "video": video_path(str(key), path) if video else "",
-            "original": f"{ORIGINAL_PREFIX}{key}{path.suffix.lower()}",
-            "chosen": self.mapper.to_host(path) in chosen,
-        }

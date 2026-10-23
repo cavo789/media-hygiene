@@ -34,6 +34,7 @@ from media_hygiene.search.folders import (
     FOLDERS_PATH,
     FolderDesk,
 )
+from media_hygiene.search.heaviest import FIRST_SHOWN, HEAVIEST_PATH
 from media_hygiene.services.albums import album_desk
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
 from media_hygiene.services.reviewing import address_tip, page_url
@@ -92,6 +93,8 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> Serv
         "search_page": SEARCH_PAGE_PATH,
         "folders_path": FOLDERS_PATH,
         "folder_path": FOLDER_PATH,
+        "heaviest_path": HEAVIEST_PATH,
+        "heaviest_first": FIRST_SHOWN,
         "apply_path": APPLY_PATH,
         "albums_path": ALBUMS_PATH,
         "apply_offered": start.apply is not None,

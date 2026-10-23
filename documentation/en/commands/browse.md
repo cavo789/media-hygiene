@@ -52,9 +52,16 @@ Your browser opens on the page (if not: `http://127.0.0.1:8088/`).
   the picking: **✕** picks none, **Set aside the picked files**, **Invert the picking**.
 - **The tree**: your mounted folders, open; the folders below them, closed (▸ opens one). Click a
   folder: its photos and videos appear, sorted by name, by date or by size, the largest first
-  (**Sort by**). **Show** keeps the photos or the videos only: the heavy videos of a folder come
+  (**Sort by**; *bit rate* is for the heaviest files, below: a folder sorts by size then). **Show** keeps the photos or the videos only: the heavy videos of a folder come
   first with *Videos* and *size*. Ctrl+A, Shift+click and ← → work on the files shown only. Both
   choices are kept, in this browser, for the next folder.
+- **⚖ Heaviest files**, above the folders: the heaviest files of every mounted folder, the videos
+  first (**Show** changes it), 200 at a time (**Show more** adds as many). The bar says what the
+  list weighs: *200 files, 61.4 GB, 25 % of your library*. Each tile gives its folder and, for a
+  video, its length, bit rate, codec and size in pixels: `12 min · 12.7 Mb/s · mjpeg · 1280×720`.
+  **Sort by** *bit rate* puts first the videos worst compressed for their length (old cameras,
+  MJPEG): the ones that gain the most once lightened. Set aside, the viewer and the keys work
+  as in a folder.
 - **Look**: Enter or a double click shows a picture large, a video plays; ← and → go to the
   previous and next ones, as in the Photos app; Escape closes.
 - **Pick**: a click picks one file; the ☑ box of each thumbnail (or Ctrl+click) adds or removes

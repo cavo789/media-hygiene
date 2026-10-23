@@ -3370,6 +3370,9 @@ msgstr "Groupes de fichiers identiques"
 msgid "HTML report: {path}"
 msgstr "Rapport HTML : {path}"
 
+msgid "Heaviest files"
+msgstr "Fichiers les plus lourds"
+
 msgid "Height"
 msgstr "Hauteur"
 
@@ -6836,6 +6839,9 @@ msgstr "La voir"
 msgid "Show its photos"
 msgstr "Voir ses photos"
 
+msgid "Show more"
+msgstr "En montrer plus"
+
 msgid ""
 "Show photos on the TV, the phone choosing the next one: a folder, a "
 "search or an album."
@@ -8217,6 +8223,11 @@ msgid ""
 msgstr ""
 "La variable {name} n'existe pas dans la version {version} : une faute de "
 "frappe, ou un réglage d'une version plus récente ?"
+
+msgid "The videos worst compressed for their length first: the best to lighten"
+msgstr ""
+"Les vidéos les moins bien compressées pour leur durée d'abord : les "
+"meilleures à alléger"
 
 msgid "The whole plan as a spreadsheet (CSV): every group, every file"
 msgstr "Le plan complet en tableur (CSV) : chaque groupe, chaque fichier"
@@ -9605,6 +9616,9 @@ msgstr "sauvegarde nas destination"
 msgid "birthdays, Christmas, communions, weddings; not a costume alone"
 msgstr "anniversaires, Noël, communions, mariages ; pas un déguisement seul"
 
+msgid "bit rate (heaviest files)"
+msgstr "débit (fichiers les plus lourds)"
+
 msgid "blurry"
 msgstr "flou"
 
@@ -10533,6 +10547,9 @@ msgstr "rien"
 
 msgid "nothing: type mh backup again after your next import or sort."
 msgstr "rien : tapez mh backup à nouveau après votre prochain import ou tri."
+
+msgid "of every folder: where the space goes"
+msgstr "de tous les dossiers : où va la place"
 
 msgid "ok"
 msgstr "ok"
@@ -12842,6 +12859,10 @@ msgstr ""
 "service dans [places] nominatim_url."
 
 #, python-brace-format
+msgid "{h} h {m}"
+msgstr "{h} h {m}"
+
+#, python-brace-format
 msgid "{inner} is inside {outer}: give only {outer}."
 msgstr "{inner} est dans {outer} : ne donnez que {outer}."
 
@@ -12924,6 +12945,10 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{name}: {count} photos"
 msgstr "{name} : {count} photos"
+
+#, python-brace-format
+msgid "{n} Mb/s"
+msgstr "{n} Mb/s"
 
 #, python-brace-format
 msgid "{n} TV"
@@ -13010,6 +13035,12 @@ msgstr[0] "{n} fichier choisi"
 msgstr[1] "{n} fichiers choisis"
 
 #, python-brace-format
+msgid "{n} file, {size}, {share} of your library"
+msgid_plural "{n} files, {size}, {share} of your library"
+msgstr[0] "{n} fichier, {size}, {share} de votre photothèque"
+msgstr[1] "{n} fichiers, {size}, {share} de votre photothèque"
+
+#, python-brace-format
 msgid "{n} group picked: the next name goes to it."
 msgid_plural "{n} groups picked: the next name goes to all of them."
 msgstr[0] "{n} groupe choisi : le prochain nom lui est donné."
@@ -13026,6 +13057,10 @@ msgid "{n} ignored group is not shown."
 msgid_plural "{n} ignored groups are not shown."
 msgstr[0] "{n} groupe ignoré n'est pas affiché."
 msgstr[1] "{n} groupes ignorés ne sont pas affichés."
+
+#, python-brace-format
+msgid "{n} min"
+msgstr "{n} min"
 
 #, python-brace-format
 msgid "{n} obvious series"

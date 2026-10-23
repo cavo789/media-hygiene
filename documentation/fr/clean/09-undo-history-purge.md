@@ -126,6 +126,10 @@ contenu.
   côté du journal de l'exécution (`<exécution>.purged.json`, le journal lui-même n'est jamais
   réécrit) : `mh phone --free` la donne sur la vignette d'une photo mise de côté par celle-ci.
 
+Où va le reste de la place ? **⚖ Fichiers les plus lourds** dans
+[`browse`](../commands/browse.md) liste les fichiers les plus lourds de toute la photothèque, les
+vidéos d'abord.
+
 ## Où en suis-je ? `status`
 
 De retour après quelques jours, vous ne savez plus quelle exécution est en quarantaine, ni si un

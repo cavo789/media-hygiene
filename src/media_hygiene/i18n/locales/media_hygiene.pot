@@ -2748,6 +2748,9 @@ msgstr ""
 msgid "HTML report: {path}"
 msgstr ""
 
+msgid "Heaviest files"
+msgstr ""
+
 msgid "Height"
 msgstr ""
 
@@ -5649,6 +5652,9 @@ msgstr ""
 msgid "Show its photos"
 msgstr ""
 
+msgid "Show more"
+msgstr ""
+
 msgid ""
 "Show photos on the TV, the phone choosing the next one: a folder, a "
 "search or an album."
@@ -6773,6 +6779,9 @@ msgstr ""
 msgid ""
 "The variable {name} is unknown to version {version}: a typo, or a setting"
 " of a newer version?"
+msgstr ""
+
+msgid "The videos worst compressed for their length first: the best to lighten"
 msgstr ""
 
 msgid "The whole plan as a spreadsheet (CSV): every group, every file"
@@ -7943,6 +7952,9 @@ msgstr ""
 msgid "birthdays, Christmas, communions, weddings; not a costume alone"
 msgstr ""
 
+msgid "bit rate (heaviest files)"
+msgstr ""
+
 msgid "blurry"
 msgstr ""
 
@@ -8788,6 +8800,9 @@ msgid "nothing"
 msgstr ""
 
 msgid "nothing: type mh backup again after your next import or sort."
+msgstr ""
+
+msgid "of every folder: where the space goes"
 msgstr ""
 
 msgid "ok"
@@ -10699,6 +10714,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{h} h {m}"
+msgstr ""
+
+#, python-brace-format
 msgid "{inner} is inside {outer}: give only {outer}."
 msgstr ""
 
@@ -10772,6 +10791,10 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid "{name}: {count} photos"
+msgstr ""
+
+#, python-brace-format
+msgid "{n} Mb/s"
 msgstr ""
 
 #, python-brace-format
@@ -10849,6 +10872,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} file, {size}, {share} of your library"
+msgid_plural "{n} files, {size}, {share} of your library"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} group picked: the next name goes to it."
 msgid_plural "{n} groups picked: the next name goes to all of them."
 msgstr[0] ""
@@ -10865,6 +10894,10 @@ msgid "{n} ignored group is not shown."
 msgid_plural "{n} ignored groups are not shown."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} min"
+msgstr ""
 
 #, python-brace-format
 msgid "{n} obvious series"

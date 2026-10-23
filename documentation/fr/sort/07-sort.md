@@ -123,6 +123,10 @@ d'abord en quarantaine (la liste est `junk_files` dans `[sort]`). Un dossier qui
 chose reste, et `sort` dit combien restent et pourquoi. Vos dossiers montés, les dossiers protégés
 et exclus ne sont jamais supprimés. `--keep-empty-folders` les garde tous.
 
+Trié, et toujours à court de place ? **⚖ Fichiers les plus lourds** dans
+[`browse`](../commands/browse.md) liste les fichiers les plus lourds de toute la photothèque, les
+vidéos d'abord.
+
 ## Rien de perdu, preuve à l'appui
 
 Les fichiers des dossiers sources et de la cible sont comptés avant les déplacements puis après :

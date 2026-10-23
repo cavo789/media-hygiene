@@ -119,6 +119,9 @@ It is, with 'clean --delete', the only way the tool removes content.
   next to the run's journal (`<run>.purged.json`, the journal itself is never rewritten):
   `mh phone --free` says it on the tile of a photo set aside by that run.
 
+Where does the rest of the space go? **⚖ Heaviest files** in [`browse`](../commands/browse.md)
+lists the heaviest files of the whole library, the videos first.
+
 ## Where am I? `status`
 
 Back after a few days, you no longer remember which run is in the quarantine, nor whether a
