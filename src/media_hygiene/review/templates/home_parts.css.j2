@@ -503,6 +503,25 @@ dialog::backdrop { background: rgba(20, 8, 32, .58); backdrop-filter: blur(2px);
   .keys-list { grid-template-columns: minmax(0, 1fr); gap: 4px; }
   .keys-list dd { margin-bottom: 8px; }
 }
+/* ---- Short screens: the sidebar fits a browser window without its own scroll bar ------ */
+@media (max-height: 1040px) {
+  .sidebar { gap: 12px; padding-top: calc(env(safe-area-inset-top, 0px) + 12px); padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px); }
+  .nav { gap: 8px; }
+  .nav-label { margin-bottom: 3px; }
+  .nav-link { min-height: 36px; padding: 5px 10px; line-height: 1.25; }
+  .folders { padding-top: 8px; }
+  .folders summary { min-height: 36px; padding: 4px 10px; }
+  .signature { padding-top: 10px; }
+  .theme-switch { margin-top: 8px; }
+  .theme-switch button { min-height: 30px; }
+  .quit { margin-top: 6px; min-height: 34px; }
+}
+@media (max-height: 860px) {
+  .brand-logo { width: 34px; height: 34px; }
+  .nav-link { min-height: 32px; padding: 3px 10px; }
+  .signature { grid-template-columns: 44px minmax(0, 1fr); }
+  .signature img { width: 44px; }
+}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
