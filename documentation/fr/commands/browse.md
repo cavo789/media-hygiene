@@ -132,6 +132,10 @@ par cette version (`mh update` le réécrit).
 
 ## Bon à savoir
 
+- **Ouverte depuis la page d'accueil** (`mh` seul) : la page s'ouvre aussitôt, dans le même onglet,
+  servie par la page d'accueil elle-même : aucun autre conteneur ne démarre, l'index reste ouvert
+  pour la session. *⌂ Retour à l'accueil* est un simple lien (le bouton Précédent du navigateur
+  marche aussi). Tapée seule (`mh browse`), elle démarre toujours sa propre page.
 - Rien n'est supprimé depuis la page, et rien ne bouge avant `clean --decisions`. Un fichier
   modifié depuis votre choix est laissé en place et listé dans le rapport du nettoyage ; un
   fichier d'un dossier protégé fait refuser tout le fichier, comme partout.

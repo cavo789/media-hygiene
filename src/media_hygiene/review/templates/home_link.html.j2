@@ -43,6 +43,8 @@
   if (homeLink === null) return;
   // A page ending another way (the phone's Delete or Leave, 0332) follows the home page too.
   window.mhAwaitHome = awaitHome;
+  // Served by the home server itself (0356): a plain link, back to the section left.
+  if (homeLink.dataset.shared) { homeLink.href = "/" + section(); return; }
   homeLink.addEventListener("click", (event) => {
     event.preventDefault();
     fetch("/api/stop", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" })

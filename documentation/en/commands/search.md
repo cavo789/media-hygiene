@@ -170,6 +170,10 @@ second names (hard links), without a copy.
 
 ## Good to know
 
+- **Opened from the home page** (`mh` alone): the page opens at once, in the same tab, served by
+  the home page itself: no other container starts, the index stays open for the session.
+  *⌂ Back to the home page* is a plain link (the browser's Back works too). Typed alone
+  (`mh search`), it still starts its own page.
 - Without `/reports` (or with a folder the tool cannot write to), **Set aside the picked files** says why and
   saves nothing; the search itself works.
 - The search reads the cache only: run [`audit`](audit.md) then [`tags`](tags.md) again to find

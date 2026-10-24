@@ -92,8 +92,9 @@ opened the page:
   disk (the default), the page **stays open** while a step runs in that window: *mh clean runs
   in the PowerShell window of mh (in the taskbar): answer it if it asks something. This page
   stays open and shows the result at the end*; then *mh clean: done.* and the page shows its
-  new state, without reloading. Only a step that opens a page of its own (search, review…)
-  closes this one meanwhile: *Back to the home page* brings it back. A second step asked while
+  new state, without reloading. *search* and *browse* open at once in this very tab, served
+  by the home page itself; a step that opens another page of its own (review, people…) closes
+  this one meanwhile: *Back to the home page* brings it back. A second step asked while
   one runs waits: *A step is running in the window of mh: wait for its end.* Otherwise (reports
   in a named volume, an older `mh`) the page closes and comes back by itself after the step.
   In both cases the page says at once, in bold, *Switch to the

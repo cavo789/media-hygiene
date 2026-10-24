@@ -26,6 +26,7 @@ function launch(action, body, command) {
   post(P.step, body)
     .then((reply) => {
       $$("button").forEach((button) => { button.disabled = false; button.removeAttribute("aria-busy"); });
+      if (reply.ok && reply.body.page) { goTo(reply.body.page); return; }
       if (reply.ok) { openRun(action, reply.body.command, reply.run, reply.body.kept ? reply.body.id : null); return; }
       if (reply.body.command) copyBox(reply.body.command);
       toast(reply.body.error || fill(T.failed, { status: reply.status }));
@@ -110,6 +111,11 @@ function openRun(action, command, run, kept) {
   showDialog(dialog);
   if (kept) followStep(kept, command);
   else waitForComeBack(action.kind === "page", run);
+}
+// A page this very server serves (0356): a plain link, its Back comes to this section.
+function goTo(page) {
+  try { window.sessionStorage.setItem("mh-home-section", window.location.hash); } catch { /* private mode: the top of the page */ }
+  window.location.assign(page);
 }
 // The step's files, as mh writes them (`GET /api/step`): its end closes the dialog. The
 // server gone meanwhile (an older mh, a crash): wait for the next one, as before.

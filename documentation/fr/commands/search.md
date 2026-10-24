@@ -181,6 +181,10 @@ crée, en seconds noms (liens physiques), sans copie.
 
 ## Bon à savoir
 
+- **Ouverte depuis la page d'accueil** (`mh` seul) : la page s'ouvre aussitôt, dans le même onglet,
+  servie par la page d'accueil elle-même : aucun autre conteneur ne démarre, l'index reste ouvert
+  pour la session. *⌂ Retour à l'accueil* est un simple lien (le bouton Précédent du navigateur
+  marche aussi). Tapée seule (`mh search`), elle démarre toujours sa propre page.
 - Sans `/reports` (ou avec un dossier où l'outil ne peut pas écrire), **Mettre de côté les fichiers choisis** dit
   pourquoi et n'enregistre rien ; la recherche elle-même fonctionne.
 - La recherche ne lit que le cache : relancez [`audit`](audit.md) puis [`tags`](tags.md) pour

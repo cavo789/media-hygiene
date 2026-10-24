@@ -56,3 +56,35 @@ read-only, can serve them itself. One server, one index opened once, the names o
 
 A click on search or browse: 7.6–8.7 s (*measured*) → 0.3–0.5 s (*estimated*: the page and its
 first search, 2 ms once the table is built), about −95 %.
+
+## Status — PARTIAL (2026-10-24)
+
+### Done
+- No prefix needed for these two: read in the code, none of their paths is the home page's
+  but `/`. `services/home_pages.py`: the home page's own paths (`/`, `/api/state`,
+  `/api/step`, `/api/audit`, `/api/alive`, `/reports/…`) to `HomeApp`, every other one to the
+  app of search and browse (`services/search_app.py`, split out of `search_pages.py`), built at
+  the first request of either (the index opened once, on the server's thread; no index yet:
+  the home page answers as before). `/person` served too (`with_person`).
+- With an `mh` that keeps the server up (0355), a click on search or browse answers
+  `{"page": "/search"}` and the tab goes there (`home_run.js.j2`, `goTo`); nothing ends.
+- *⌂ Back to the home page* is a plain link back to the section left (`page_header`:
+  `shared`, `home_link.html.j2`); *Apply now* ends the home server on the step, as from a page
+  of its own (the loop of `mh` runs it, then the home page again).
+- Two tabs writing `decisions.json`: the handlers are synchronous on the server's one event
+  loop, so two saves never interleave; each still reads the file again first (`ChosenDesk`,
+  unchanged). No lock needed.
+- Tests: `tests/integration/tags/test_home_serves_search.py` (the step answers the path,
+  search answers, browse served, the link plain; the home page keeps its paths),
+  `test_step_watch.py`. Docs en + fr (search, browse, home).
+
+### Not done
+- `mh search` / `mh browse --folder X` typed in another window while the home server of this
+  `mh` runs: it still starts its own page (the port guard of 0250 then asks to close the other).
+  **Reason:** needs `mh` to find its own home server (its container label) and open the tab on
+  it; to do with 0359, which changes `mh`'s loop again.
+- `browse --folder X` from the home page (a step with options) still opens its own page:
+  `served_here` maps only the bare commands.
+- Measured on Windows: step 35 again (click → search, search → home).
+  **Reason:** Windows + Docker Desktop only. Command: build the image of branch
+  `iterate/2026-10-24`, `mh update`, then `.\mh-measure.ps1 -Only 35 -Count 1 -Image media-hygiene`.

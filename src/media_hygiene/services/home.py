@@ -1,12 +1,9 @@
 """Serve the home page until Ctrl+C, or until the user chooses a step.
 
-A step chosen ends the server with `STEP_EXIT_BASE + n`: the command exits with that
-code and `mh` runs step `n` in the terminal, mounted as that command needs; only when
-`mh` set `MEDIA_HYGIENE_LAUNCHER_STEPS`, else the page copies the command and keeps
-running.
-The page only reads the tool folders: the photos stay mounted read-only. Its Quit
-button, or its tab closed (0261, `review.presence`), ends it with 0: `mh` gives the
-prompt back.
+A step chosen is run by `mh` in the terminal, mounted as the command needs (`home_step`,
+`step_watch`); only when `mh` set `MEDIA_HYGIENE_LAUNCHER_STEPS`, else the page copies
+the command. It serves `search` and `browse` too (`home_pages`). The photos stay mounted
+read-only. Quit, or its tab closed (0261), ends it with 0: `mh` gives the prompt back.
 """
 
 from __future__ import annotations
@@ -20,6 +17,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.console.formatting import separators
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
+from media_hygiene.person.door import with_person
 from media_hygiene.review.ending import (
     STOP_PATH,
     STOPPED,
@@ -39,6 +37,7 @@ from media_hygiene.review.step_watch import WATCH, keeps_server
 from media_hygiene.services.album_pages import album_pages
 from media_hygiene.services.home_audit import HomeAudit
 from media_hygiene.services.home_lan import say_lan
+from media_hygiene.services.home_pages import HomeServer, home_with_pages
 from media_hygiene.services.launcher_host import windows_menu
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 from media_hygiene.services.reviewing import address_tip, page_url
@@ -48,6 +47,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from media_hygiene.console.page_progress import PageProgress
+    from media_hygiene.review.apply_api import ApplyStep
     from media_hygiene.review.ending import Handling
     from media_hygiene.review.home_views import HomeState
     from media_hygiene.services.home_audit import AuditResult
@@ -126,6 +126,7 @@ class HomeSources:
 
     state: Callable[[], HomeState]
     audit: Callable[[PageProgress], AuditResult]
+    apply: Callable[[], ApplyStep | None] | None = None  # browse's *Apply now* (0356)
 
 
 def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
@@ -179,11 +180,17 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
     lan = lan_access(port) if port else None  # `mh --lan`: a phone may open it
     code = STOPPED
     try:
-        with contextlib.suppress(KeyboardInterrupt), runtime.executor_factory() as pool:
-            handler: Handling = album_pages(runtime, app, pool)  # `/albums` (0297)
+        with (
+            contextlib.suppress(KeyboardInterrupt),
+            runtime.executor_factory() as pool,
+            home_with_pages(
+                runtime, app, HomeServer(sources.apply, ending, pool)
+            ) as both,
+        ):
+            handler: Handling = album_pages(runtime, both, pool)  # `/albums` (0297)
             if lan is not None:
                 handler = LanApp(handler, lan, home_page(remote=True))
-            door = EndingDoor(handler, ending)
+            door = with_person(EndingDoor(handler, ending), runtime, pool)
             code = asyncio.run(serve_until_ended(door, port, ready))
     finally:
         audit.stop()  # between two files: the index keeps what it committed

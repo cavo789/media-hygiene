@@ -36,6 +36,7 @@ def home_command(
     Raises:
         Exit: With `STEP_EXIT_BASE + n` when step `n` was chosen on the page.
     """
+    from media_hygiene.cli.apply_step import page_apply
     from media_hygiene.cli.home_audit import page_audit
     from media_hygiene.cli.home_state import home_state
     from media_hygiene.review.home_views import STEP_EXIT_BASE
@@ -45,7 +46,8 @@ def home_command(
     port = review_options.page_port(runtime, port)
     output = runtime.output
     state = partial(home_state, runtime)
-    code = serve_home(runtime, HomeSources(state, page_audit(runtime)), port)
+    sources = HomeSources(state, page_audit(runtime), page_apply(runtime))
+    code = serve_home(runtime, sources, port)
     output.blank()
     if code < STEP_EXIT_BASE:
         output.success(_("Home page closed; your photos were not changed."))

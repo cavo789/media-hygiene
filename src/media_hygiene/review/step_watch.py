@@ -18,11 +18,14 @@ import os
 import secrets
 from dataclasses import dataclass
 from http import HTTPStatus
+from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.safety import PAGE_COMMANDS
 from media_hygiene.i18n import _
 from media_hygiene.review.serving import json_response
+from media_hygiene.search.app import SEARCH_PAGE_PATH
+from media_hygiene.search.folders import BROWSE_PATH
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 
 if TYPE_CHECKING:
@@ -48,6 +51,10 @@ class WatchFiles:
 
 
 WATCH: Final = WatchFiles()
+# The pages the home server serves itself (0356): a click on them is a plain link.
+SERVED_HERE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
+    {("search",): SEARCH_PAGE_PATH, ("browse",): BROWSE_PATH}
+)
 _ID_BYTES: Final = 6
 
 
@@ -67,6 +74,18 @@ def keeps_server() -> bool:
         True when `MEDIA_HYGIENE_LAUNCHER_STEPS` is `3`.
     """
     return os.environ.get(LAUNCHER_STEPS_VARIABLE) == WATCH.kept
+
+
+def served_here(words: tuple[str, ...]) -> str | None:
+    """The path of a page the home server serves itself, for a step's words.
+
+    Args:
+        words: The command's words, without `mh`.
+
+    Returns:
+        `/search` or `/browse`; None for any other step (with options, too).
+    """
+    return SERVED_HERE.get(words)
 
 
 def runs_beside(words: tuple[str, ...]) -> bool:

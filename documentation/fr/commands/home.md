@@ -99,8 +99,9 @@ qui a ouvert la page :
   étape tourne dans cette fenêtre : *mh clean s'exécute dans la fenêtre PowerShell de mh (dans
   la barre des tâches) : répondez-y s'il vous demande quelque chose. Cette page reste ouverte
   et montre le résultat à la fin* ; puis *mh clean : terminée.* et la page montre son nouvel
-  état, sans se recharger. Seule une étape qui ouvre sa propre page (search, review…) ferme
-  celle-ci entre-temps : *Retour à l'accueil* la ramène. Une deuxième étape demandée pendant
+  état, sans se recharger. *search* et *browse* s'ouvrent aussitôt dans ce même onglet,
+  servies par la page d'accueil elle-même ; une étape qui ouvre une autre page à elle (review,
+  people…) ferme celle-ci entre-temps : *Retour à l'accueil* la ramène. Une deuxième étape demandée pendant
   qu'une autre tourne attend : *Une étape tourne dans la fenêtre de mh : attendez sa fin.*
   Sinon (rapports dans un volume nommé, un `mh` plus ancien), la page se ferme et revient
   d'elle-même après l'étape. Dans les deux cas, la page dit aussitôt, en gras, *Passez maintenant à la fenêtre PowerShell de mh (dans la barre des

@@ -26,7 +26,12 @@ from media_hygiene.review.home_fields import FieldError, checked_words, write_st
 from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response, refused_post
-from media_hygiene.review.step_watch import busy, keep_step, runs_beside
+from media_hygiene.review.step_watch import (
+    busy,
+    keep_step,
+    runs_beside,
+    served_here,
+)
 from media_hygiene.services.next_command import LAUNCHER_FUNCTION
 
 if TYPE_CHECKING:
@@ -109,6 +114,9 @@ async def _numbered(door: StepDoor, chosen: _Chosen) -> Response:
     words = tuple(command.split())  # as `mh` splits `mh menu`'s line
     if words[:1] == (LAUNCHER_FUNCTION,):
         words = words[1:]
+    page = served_here(words) if door.keeps else None
+    if page is not None:  # served by this very server (0356): the tab goes there
+        return json_response(HTTPStatus.OK, {"page": page, "command": command})
     if door.keeps and runs_beside(words):
         return await keep_step(door.reports_dir, words, command)
     door.ending.end(STEP_EXIT_BASE + await _handed(door, number, words))
