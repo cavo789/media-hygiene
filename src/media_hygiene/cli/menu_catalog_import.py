@@ -65,6 +65,16 @@ def import_steps() -> tuple[Step, ...]:
             ),
             optional=True,
             windows=True,
+            # Start opens a page; only its own button erases, file by file (0311).
+            confirm=(
+                _("Make room on the phone: launching erases nothing"),
+                _(
+                    "A page opens with the files the PC already holds, all ticked: "
+                    "untick those you keep. Nothing leaves the phone before that "
+                    "page's \u201cDelete \u2026 from the phone\u201d button, and each "
+                    "file is compared with the PC's copy once more just before."
+                ),
+            ),
         ),
         Step(
             "nas-add",

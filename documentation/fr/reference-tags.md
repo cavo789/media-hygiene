@@ -151,7 +151,8 @@ la grille sont gardés dans `/cache`.
 
 Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers
 fichiers en tableau (`--limit N` pour plus). La recherche ne lit que le cache : relancez `tags`
-après un audit pour retrouver les nouvelles photos.
+après un audit pour retrouver les nouvelles photos. Rien trouvé ? Voyez
+[Conseils pour retrouver une photo](commands/search.md#conseils-pour-retrouver-une-photo).
 
 ## Retrouver une photo par ce qu'elle montre : `--meaning`
 

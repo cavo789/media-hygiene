@@ -82,6 +82,8 @@ def _action(line: MenuStep) -> HomeAction:
         ai=step.ai,
         windows=step.windows,
         planned=step.planned,
+        confirm_title=step.confirm[0] if step.confirm else "",
+        confirm_text=step.confirm[1] if step.confirm else "",
         fields=tuple(
             HomeField(
                 name=field.name,

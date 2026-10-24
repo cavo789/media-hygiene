@@ -124,6 +124,10 @@ writes it again).
 
 ## Good to know
 
+- **Opened from the home page** (`mh` alone): the page opens at once, in the same tab, served by
+  the home page itself: no other container starts, the index stays open for the session.
+  *⌂ Back to the home page* is a plain link (the browser's Back works too). Typed alone
+  (`mh browse`), it still starts its own page.
 - Nothing is deleted from the page, and nothing moves until `clean --decisions`. A file changed
   since you picked it is left where it is and listed in the clean report; a file of a protected
   folder refuses the whole file, as everywhere.

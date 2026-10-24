@@ -92,6 +92,9 @@ function global:{{ function }} {
     $marks = @($shared.labels)
     $nas = {% if script.nas %}_{{ function }}_nas_mount $command{% else %}@{ mounts = @(); backups = @(); volumes = @() }{% endif %}  # 0245
     $tty = @(if ($command -notin @({{ listed(script.commands.data) }})) { '-it' })
+    # The home page in the background, its id in this file (`_{{ function }}_watch`, 0355).
+    $detach = "$global:MediaHygieneDetach"
+    if ($detach) { $tty = @('-d', '--cidfile', $detach) }
     $long = $command -in @({{ listed(script.commands.long) }})
     $photos = @(foreach ($volume in $given) { '-v'; "$volume$mode" })
     # The backups: mounted read-only below, whatever the command; given to those taking them (0205).
@@ -99,6 +102,7 @@ function global:{{ function }} {
     # Only the loop of `{{ function }}` alone reads the step chosen on the home page (0210),
     # or on a page it opened (browse's Apply now, 0243).
     $relay = @(if ($global:MediaHygieneRelay -and $command -in @({{ listed(relayed) }})) { '-e', '{{ relay }}={{ relay_fields if host.step_file else 1 }}' })
+    if ($detach) { $relay = @('-e', '{{ relay }}={{ watch.kept }}') }
     # The page names the folders given with --photos, a right-click's folder (0258).
     if ($relay -and $typed) { $relay += '-e', ('{{ photos }}=' + (@(for ($i = 1; $i -lt $typed.Count; $i += 2) { $typed[$i] }) -join '|')) }
 {% if script.folders %}
@@ -165,9 +169,14 @@ function global:{{ function }} {
         $status = $LASTEXITCODE
     } finally {
         try { [Console]::OutputEncoding = $console } catch { }
-        if ($browser) { Remove-Job -Job $browser -Force }
-        if ($shared.mounted) { _{{ function }}_unmount $shared.mounted }
-        if ($nas.volumes) { _{{ function }}_nas_release $nas.volumes }
+        if ($detach) {
+            # The server runs on: its tab, its stick and its NAS are released once it ended.
+            $global:MediaHygieneHeld = @{ browser = $browser; shared = $shared; nas = $nas }
+        } else {
+            if ($browser) { Remove-Job -Job $browser -Force }
+            if ($shared.mounted) { _{{ function }}_unmount $shared.mounted }
+            if ($nas.volumes) { _{{ function }}_nas_release $nas.volumes }
+        }
         if ($long) {
             # ES_CONTINUOUS alone: the computer may sleep again, Ctrl+C included.
             $null = [MediaHygiene.Power]::SetThreadExecutionState([uint32]2147483648)

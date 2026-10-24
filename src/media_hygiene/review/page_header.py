@@ -19,6 +19,7 @@ from media_hygiene.constants import Locale
 from media_hygiene.docs.served import served_url
 from media_hygiene.i18n import active_locale
 from media_hygiene.review.home_assets import ASSETS_PREFIX
+from media_hygiene.review.step_watch import keeps_server
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 
 if TYPE_CHECKING:
@@ -60,6 +61,7 @@ class PageHeader:
     twin_locale: Locale
     twin_label: str
     home: bool  # opened from the home page: the way back is offered
+    shared: bool = False  # served by the home server itself (0356): a plain link back
     assets: str = ASSETS_PREFIX
 
     @property
@@ -95,6 +97,7 @@ def page_header(template: str) -> PageHeader:
         twin_locale=twin,
         twin_label=_TWIN_LABELS[twin],
         home=bool(os.environ.get(LAUNCHER_STEPS_VARIABLE)),
+        shared=keeps_server(),
     )
 
 

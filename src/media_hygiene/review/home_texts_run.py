@@ -45,6 +45,13 @@ def _dialogs() -> dict[str, str]:
         "termComment": _(
             "mh keeps the hand until the end, then opens the home page again"
         ),
+        "termKept": _("this page stays open meanwhile"),
+        "runsKept": _(
+            "{command} runs in {window}: answer it if it asks something. This page "
+            "stays open and shows the result at the end."
+        ),
+        "stepDone": _("{command}: done."),
+        "stepFailed": _("{command}: stopped (code {code}): see the window of mh."),
         "switchNow": _(
             "Switch to {window} now (Alt+Tab, or its button in the taskbar): it may "
             "ask you something."

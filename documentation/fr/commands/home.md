@@ -93,11 +93,18 @@ La page ne modifie jamais vos photos elle-même. Ce que fait le bouton d'une ét
 qui a ouvert la page :
 
 - **`mh` seul** (et donc le raccourci du Bureau et le clic droit d'un dossier) lance les étapes
-  de la page : **Lancer** (ou le gros bouton) ferme la page et confie l'étape à `mh`, dans la
-  fenêtre où `mh` tourne (PowerShell sous Windows), avec les dossiers dont l'étape a besoin. La
-  page dit où : *mh clean s'exécute dans la fenêtre PowerShell de mh (dans la barre des
-  tâches) : répondez-y s'il vous demande quelque chose, puis cette page revient d'elle-même*,
-  et aussitôt, en gras, *Passez maintenant à la fenêtre PowerShell de mh (dans la barre des
+  de la page : **Lancer** (ou le gros bouton) confie l'étape à `mh`, dans la fenêtre où `mh`
+  tourne (PowerShell sous Windows), avec les dossiers dont l'étape a besoin. Avec les rapports
+  dans un dossier de votre disque (le cas par défaut), la page **reste ouverte** pendant qu'une
+  étape tourne dans cette fenêtre : *mh clean s'exécute dans la fenêtre PowerShell de mh (dans
+  la barre des tâches) : répondez-y s'il vous demande quelque chose. Cette page reste ouverte
+  et montre le résultat à la fin* ; puis *mh clean : terminée.* et la page montre son nouvel
+  état, sans se recharger. *search* et *browse* s'ouvrent aussitôt dans ce même onglet,
+  servies par la page d'accueil elle-même ; une étape qui ouvre une autre page à elle (review,
+  people…) ferme celle-ci entre-temps : *Retour à l'accueil* la ramène. Une deuxième étape demandée pendant
+  qu'une autre tourne attend : *Une étape tourne dans la fenêtre de mh : attendez sa fin.*
+  Sinon (rapports dans un volume nommé, un `mh` plus ancien), la page se ferme et revient
+  d'elle-même après l'étape. Dans les deux cas, la page dit aussitôt, en gras, *Passez maintenant à la fenêtre PowerShell de mh (dans la barre des
   tâches) (Alt+Tab, ou son bouton dans la barre des tâches) : mh peut vous y demander quelque
   chose*. `mh` fait aussi sonner la cloche du terminal et joue le son de Windows, souvent
   inaudible (haut-parleurs coupés). Ce qui se voit : Windows Terminal fait clignoter son bouton
@@ -107,8 +114,11 @@ qui a ouvert la page :
   classique, `mh` ramène aussi sa fenêtre au premier plan quand Windows le permet (une fenêtre
   réduite reste réduite). Après 30
   secondes elle ajoute *Rien ne bouge ? Regardez la fenêtre PowerShell de mh (dans la
-  barre des tâches) (Alt+Tab)*. L'étape choisie est le code de sortie de la commande, `20 + n`
-  pour l'étape `n` de `mh menu` : c'est ainsi que `mh` sait quoi lancer. Ctrl+C pendant une
+  barre des tâches) (Alt+Tab)*. L'étape choisie arrive à `mh` par `.mh-step.json` de votre dossier
+  des rapports, comme les mots d'un formulaire ci-dessous : `mh` les lance aussitôt (il lançait
+  d'abord `mh menu` dans un conteneur à lui, 2 s par clic). Avec des rapports dans un volume
+  nommé, c'est le code de sortie de la commande, `20 + n` pour l'étape `n` de `mh menu`.
+  L'onglet montre la page suivante dès que son serveur répond. Ctrl+C pendant une
   étape (ou sur une page qu'elle a ouverte) rend l'invite : la page d'accueil ne revient pas,
   et aucune autre étape ne se lance.
 - **Une étape qui prend des mots** (le nom d'un album, le dossier de votre NAS,

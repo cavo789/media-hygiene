@@ -21,8 +21,12 @@ from media_hygiene.search.query import SearchQuery, Term, term_expression
 from media_hygiene.tags.models import TagSource
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
+    from pathlib import Path
+
     from media_hygiene.index.descriptions import PhotoVersion
     from media_hygiene.search.meaning import MeaningSource
+    from media_hygiene.search.names_soon import NamesKept
 
 NARROWING: Final = (TagSource.PERSON, TagSource.PLACE)
 _COLUMNS: Final = "{" + " ".join(source.value for source in NARROWING) + "}"
@@ -33,6 +37,57 @@ class MeaningIndex(SearchIndex):
 
     _meaning: Meaning | None = None
     _read_at: int | None = None  # the data version the vectors were read at
+    _names: NamesKept | None = None  # the names of the people, read in a thread (0354)
+    _named_at: int | None = None  # the data version their faces were checked at
+
+    def name_people_soon(self, names: NamesKept) -> None:
+        """Give the photos the names being read meanwhile, then again as they change.
+
+        Args:
+            names: The names, read in a thread (`names_soon`).
+        """
+        self._names = names
+
+    @override
+    def name_people(self, words: Mapping[Path, tuple[str, ...]]) -> None:
+        """Give the photos these names, from now on; those being read are older.
+
+        Args:
+            words: The names on each photo.
+        """
+        self._names = None
+        super().name_people(words)
+
+    @property
+    def tagged(self) -> bool:
+        """Tell whether a file has a tag, at once: without the names being read.
+
+        Returns:
+            True when the table of tags has a row.
+        """
+        has_rows = self.has_tags and self._connection.execute(sql.ANY_TAG).fetchone()
+        return bool(has_rows)
+
+    @override
+    def _fresh(self) -> None:
+        """Take the names read meanwhile (the first ones waited for), then the table."""
+        names = self._names
+        version = int(self._connection.execute(sql.DATA_VERSION).fetchone()[0])
+        if names is not None and (names.pending or version != self._named_at):
+            self._named_at = version
+            words = names.fresh(self._connection)
+            if words is not None:
+                super().name_people(words)
+        super()._fresh()
+
+    @property
+    def understands(self) -> bool:
+        """Tell whether search by meaning is on: vectors and their model are there.
+
+        Returns:
+            True once `understand` was called.
+        """
+        return self._meaning is not None
 
     def understand(self, source: MeaningSource) -> None:
         """Rank by meaning from now on.

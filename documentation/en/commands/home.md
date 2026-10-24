@@ -87,10 +87,17 @@ The page never changes your photos itself. What a step's button does depends on 
 opened the page:
 
 - **`mh` alone** (and so the Desktop shortcut and the right-click of a folder) runs the steps of
-  the page: **Start** (or the big button) closes the page and hands the step to `mh`, in the
-  window where `mh` runs (PowerShell on Windows), with the folders that step needs. The page
-  says where: *mh clean runs in the PowerShell window of mh (in the taskbar): answer it if it
-  asks something, then this page comes back by itself*, and at once, in bold, *Switch to the
+  the page: **Start** (or the big button) hands the step to `mh`, in the window where `mh` runs
+  (PowerShell on Windows), with the folders that step needs. With reports in a folder of your
+  disk (the default), the page **stays open** while a step runs in that window: *mh clean runs
+  in the PowerShell window of mh (in the taskbar): answer it if it asks something. This page
+  stays open and shows the result at the end*; then *mh clean: done.* and the page shows its
+  new state, without reloading. *search* and *browse* open at once in this very tab, served
+  by the home page itself; a step that opens another page of its own (review, people…) closes
+  this one meanwhile: *Back to the home page* brings it back. A second step asked while
+  one runs waits: *A step is running in the window of mh: wait for its end.* Otherwise (reports
+  in a named volume, an older `mh`) the page closes and comes back by itself after the step.
+  In both cases the page says at once, in bold, *Switch to the
   PowerShell window of mh (in the taskbar) now (Alt+Tab, or its button in the taskbar): it may
   ask you something*. `mh` also rings the terminal's bell and plays Windows' sound, often
   unheard (speakers off). What you can see: Windows Terminal makes its taskbar button flash on
@@ -99,8 +106,10 @@ opened the page:
   keep the sound). With the classic console, `mh` also brings its window forward when Windows
   allows it (a minimised window stays minimised). After 30 seconds the page adds
   *Nothing moves? Look at the PowerShell window of mh (in the taskbar) (Alt+Tab)*. The step
-  chosen is the
-  command's exit code, `20 + n` for step `n` of `mh menu`: that is how `mh` knows what to run.
+  chosen reaches `mh` through `.mh-step.json` of your reports folder, as the words of a form
+  below: `mh` runs them at once (it used to start `mh menu` in a container of its own first,
+  2 s per click). With reports in a named volume it is the command's exit code, `20 + n` for
+  step `n` of `mh menu`. The tab shows the next page as soon as its server answers.
   Ctrl+C during a step (or on a page it opened) gives the prompt back: the home page does not
   come back, and no other step runs.
 - **A step that takes words** (an album's name, your NAS's folder, a folder to
