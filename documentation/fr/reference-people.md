@@ -102,6 +102,17 @@ seulement (la casse et les accents ne comptent pas) ; `person:"Mamie Jeanne"` es
 mots. Un nom que personne ne porte encore est signalé en une ligne : nommez d'abord le groupe
 dans la page.
 
+Dans la page de recherche, un clic sur un nom sous une photo dit **pourquoi** la photo le porte :
+*confirmé par vous* (un visage que vous avez nommé dans la page des personnes, un visage de
+référence), ou *proche d'un visage que vous avez confirmé* : le visage de la photo et cette
+référence sont alors montrés côte à côte, avec le score, par exemple *ressemblance 0,41, un nom
+est donné à partir de 0,36 (`[people] similarity`)*. Le score est la ressemblance des deux
+visages (cosinus, de 0 à 1) : plus il est haut, plus c'est sûr. Un visage juste au-dessus du
+seuil est celui à vérifier ; quand une autre personne est proche aussi, le panneau le dit.
+**Oui, c'est …** confirme le visage (il devient une référence lui aussi), **Pas …** lui retire
+le nom, comme la ×. Quand beaucoup de noms juste au-dessus du seuil sont faux, montez un peu
+`similarity` (`0.40`, puis `0.45`) : moins de visages reçoivent un nom, et moins de faux.
+
 ## Les ranger : une règle `person`
 
 Une fois nommées, les personnes peuvent aussi ranger les photos : une règle `person` de
@@ -198,8 +209,11 @@ l'hôte, tel que vous l'avez monté) ; à répéter pour plusieurs dossiers.
 | `with_audit` | `false` | `true` : chaque `audit` cherche aussi les visages, après avoir demandé, comme `audit --people`. |
 | `ignored`, `[[people.person]]` | aucun | Écrits par la page : les visages ignorés, et pour chaque personne son nom, ses visages confirmés (`faces`) et ceux qui lui ont été retirés (`rejected`). |
 
-Ils choisissent seulement quels visages sont regroupés, et comment : les changer ne fait rien
-analyser à nouveau. Pour essayer une autre valeur une fois :
+Ils choisissent quels visages sont regroupés, et comment : les changer ne fait rien analyser à
+nouveau. `min_face` et `min_sharpness` décident quels visages comptent **tout court**, pas
+seulement lesquels sont regroupés : un visage laissé hors de la page n'est le visage de personne
+(dans `search`, `classify`, l'inventaire, les fichiers XMP), aucun nom n'est donc donné que vous ne
+puissiez voir et corriger ; un visage que vous avez confirmé garde son nom. Pour essayer une autre valeur une fois :
 `-e MEDIA_HYGIENE_PEOPLE__SIMILARITY=0.45`.
 
 ## Pas encore là

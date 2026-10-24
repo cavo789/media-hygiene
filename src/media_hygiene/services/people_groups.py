@@ -9,6 +9,7 @@ import numpy as np
 
 from media_hygiene.faces.cluster import Linkage, group_faces
 from media_hygiene.faces.models import EMBEDDING_SIZE, vector_of
+from media_hygiene.people.recognisable import Thresholds
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -54,9 +55,9 @@ def group_people(faces: Sequence[StoredFace], settings: PeopleSettings) -> Peopl
     Returns:
         The groups and what was left out.
     """
-    small = [face for face in faces if face.box.side < settings.min_face]
-    sized = [face for face in faces if face.box.side >= settings.min_face]
-    kept = [face for face in sized if face.sharpness >= settings.min_sharpness]
+    thresholds = Thresholds.of(settings)
+    small = sum(1 for face in faces if thresholds.small(face))
+    kept = [face for face in faces if thresholds.recognisable(face)]
     vectors = (
         np.stack([vector_of(face.embedding) for face in kept])
         if kept
@@ -65,6 +66,6 @@ def group_people(faces: Sequence[StoredFace], settings: PeopleSettings) -> Peopl
     rows = group_faces(vectors, Linkage(settings.similarity))
     return PeopleGroups(
         groups=tuple(tuple(kept[row] for row in group) for group in rows),
-        too_small=len(small),
-        too_blurry=len(sized) - len(kept),
+        too_small=small,
+        too_blurry=len(faces) - small - len(kept),
     )

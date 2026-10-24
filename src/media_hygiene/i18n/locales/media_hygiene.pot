@@ -1312,6 +1312,12 @@ msgid ""
 "first), then opens the home page again."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Close to a face you confirmed: resemblance {score}, a name is given from "
+"{threshold} ([people] similarity)."
+msgstr ""
+
 msgid "Closes what is open."
 msgstr ""
 
@@ -1369,6 +1375,9 @@ msgid "Configured folder {path} is not mounted: it is ignored."
 msgstr ""
 
 msgid "Confirm the files to check"
+msgstr ""
+
+msgid "Confirmed by you on the people page: it is a face of reference."
 msgstr ""
 
 msgid "Contents"
@@ -2251,7 +2260,8 @@ msgstr ""
 
 msgid ""
 "Faces blurrier than this sharpness (variance of the Laplacian of the "
-"face) are left out."
+"face) are left out: never grouped, never named, unless you confirmed "
+"them."
 msgstr ""
 
 msgid ""
@@ -2273,7 +2283,7 @@ msgstr ""
 
 msgid ""
 "Faces smaller than this many pixels (shorter side of their box) are left "
-"out."
+"out: never grouped, never named, unless you confirmed them."
 msgstr ""
 
 msgid "Faces that look alike are grouped; they stay in the cache."
@@ -2432,6 +2442,9 @@ msgid "Focal length (mm)"
 msgstr ""
 
 msgid "Fold or unfold this folder"
+msgstr ""
+
+msgid "Fold this section (o)"
 msgstr ""
 
 msgid "Folder"
@@ -2784,6 +2797,9 @@ msgstr ""
 msgid ""
 "Hidden from the map and from the lists; 'classify' reads them as before "
 "(a cluster stays unnamed)."
+msgstr ""
+
+msgid "Hide"
 msgstr ""
 
 msgid "History and undo"
@@ -3815,6 +3831,10 @@ msgstr ""
 msgid "No journal mount: without a journal, 'undo' would be impossible."
 msgstr ""
 
+#, python-brace-format
+msgid "No name any more: resemblance {score}, below {threshold}."
+msgstr ""
+
 msgid "No near duplicates: nothing to review."
 msgstr ""
 
@@ -4081,6 +4101,10 @@ msgstr ""
 msgid "Not saved (error {status})."
 msgstr ""
 
+#, python-brace-format
+msgid "Not saved: config.toml still says this is not {name}."
+msgstr ""
+
 msgid "Not saved: config.toml, read back, does not say so."
 msgstr ""
 
@@ -4103,10 +4127,18 @@ msgid "Not this person: mark this face; the next button of the group saves it"
 msgstr ""
 
 #, python-brace-format
+msgid "Not {name}"
+msgstr ""
+
+#, python-brace-format
 msgid "Not {name}: take out this face"
 msgid_plural "Not {name}: take out these {n} faces"
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "Not {name}: take this name off the photo (saved in config.toml)"
+msgstr ""
 
 msgid "Notes"
 msgstr ""
@@ -4527,6 +4559,9 @@ msgstr ""
 msgid "Open the slideshow at 127.0.0.1, or from the TV with mh --lan."
 msgstr ""
 
+msgid "Open this section (o)"
+msgstr ""
+
 msgid "OpenStreetMap contributors"
 msgstr ""
 
@@ -4869,6 +4904,9 @@ msgstr ""
 msgid ""
 "Purged on {date}: it is nowhere else. Deleted from the phone, it is lost "
 "for good."
+msgstr ""
+
+msgid "Put back"
 msgstr ""
 
 msgid "Put back a copy of it, or move it away to start new albums."
@@ -5423,6 +5461,18 @@ msgid "Saved in config.toml, read back: {count} face ignored."
 msgid_plural "Saved in config.toml, read back: {count} faces ignored."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "Saved in config.toml, read back: {count} face of this photo is not {name}."
+msgid_plural ""
+"Saved in config.toml, read back: {count} faces of this photo are not "
+"{name}."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "Saved in config.toml, read back: {name} is on this photo again."
+msgstr ""
 
 #, python-brace-format
 msgid "Saved in config.toml, read back: {name}, {count} confirmed face."
@@ -6068,6 +6118,9 @@ msgstr ""
 msgid "Take the batch back ({events})"
 msgstr ""
 
+msgid "Take this photo out of the set aside"
+msgstr ""
+
 #, python-brace-format
 msgid "Take this photo out of {name}? The photo itself stays where it is."
 msgstr ""
@@ -6338,6 +6391,9 @@ msgstr ""
 msgid ""
 "The events of the Events sheet, in its order: naming the first ones "
 "covers most of the work."
+msgstr ""
+
+msgid "The face of reference that gave the name:"
 msgstr ""
 
 msgid ""
@@ -7562,6 +7618,14 @@ msgstr ""
 msgid "Why this folder keeps them: {reasons}"
 msgstr ""
 
+#, python-brace-format
+msgid "Why {name}?"
+msgstr ""
+
+#, python-brace-format
+msgid "Why {name}? Click to see the face that gave this name"
+msgstr ""
+
 msgid "Width"
 msgstr ""
 
@@ -7699,6 +7763,10 @@ msgid "Year"
 msgstr ""
 
 msgid "Years"
+msgstr ""
+
+#, python-brace-format
+msgid "Yes, it is {name}"
 msgstr ""
 
 #, python-brace-format
@@ -8929,6 +8997,10 @@ msgstr ""
 msgid "no shot kept from its series is left"
 msgstr ""
 
+#, python-brace-format
+msgid "nobody named {name} on this photo"
+msgstr ""
+
 msgid "none: the whole group aside, then next"
 msgstr ""
 
@@ -8961,6 +9033,9 @@ msgid "not sorted yet."
 msgstr ""
 
 msgid "nothing"
+msgstr ""
+
+msgid "nothing to put back"
 msgstr ""
 
 msgid "nothing: type mh backup again after your next import or sort."
@@ -9028,6 +9103,9 @@ msgid "opened: the previous or next one"
 msgstr ""
 
 msgid "opened: tick or untick it"
+msgstr ""
+
+msgid "opened: why this person's name (the face, its reference)"
 msgstr ""
 
 msgid "optional"
@@ -11029,6 +11107,10 @@ msgid "{name} ({count} faces)"
 msgstr ""
 
 #, python-brace-format
+msgid "{name} comes close too: resemblance {score}."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "{name} is a built-in category, it cannot be redefined: choose another "
 "name, e.g. my_{name}"
@@ -11205,12 +11287,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{n} of these photos is set aside."
-msgid_plural "{n} of these photos are set aside."
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
 msgid "{n} of {count} set aside"
 msgid_plural "{n} of {count} set aside"
 msgstr[0] ""
@@ -11237,6 +11313,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} photo ready to send ({size}), read back from {folder}."
 msgid_plural "{n} photos ready to send ({size}), read back from {folder}."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} photo set aside, hidden"
+msgid_plural "{n} photos set aside, hidden"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -11672,9 +11754,9 @@ msgid "… and {count} more."
 msgstr ""
 
 msgid ""
-"↑ ↓ move, Enter names, y confirms the attributed faces shown, x names "
-"several groups at once, i ignores a group; × marks a face that is someone"
-" else's, the next button saves it."
+"↑ ↓ move, o folds or opens, Enter names, y confirms the attributed faces "
+"shown, x names several groups at once, i ignores a group; × marks a face "
+"that is someone else's, the next button saves it."
 msgstr ""
 
 #, python-brace-format

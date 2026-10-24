@@ -55,3 +55,30 @@ Whether `similarity = 0.363` (SFace's figure for comparing *two* faces) is too l
 of thousands of references is kept (3,615 on the maintainer's index, measured 2026-10-23):
 measure the wrong names per threshold on real photos before changing the default
 (skill `measure-before-ranking`).
+
+## Status — PARTIAL (2026-10-24)
+
+### Done
+- `people/why.py` (`why_named`): for one face, confirmed or the nearest reference id, the score,
+  the threshold, and the next person within 0.03 (only for a face named); unit-tested.
+- `POST /api/people/why` (`search/people_why.py`, `{key, name}`): per face of the photo giving
+  the name, its crop (`GET /api/people/face/<n>.jpg`, cut in the worker pool, never written),
+  how, the sentence with the figures, the reference (crop, host path, its `/preview/` link),
+  the runner. Computed on demand for one photo (`search/people_seen.py`, loaded at the first ×
+  or panel, then kept up to date).
+- The panel on the search page: a click on a person chip (not its ×), or `W` in the large view;
+  **Yes, it is …** (`action: confirm`, one face → `faces`) and **Not …** (`action: reject`, one
+  face → `rejected`), saved, read back, said with *Put back*; Esc closes the panel only.
+  Integration tests (route, confirm read back, crop JPEG), headless check (mocked API).
+- Docs en + fr (`commands/search.md`, `reference-people.md`: the score, when to raise
+  `similarity`).
+
+### Not done
+- The face's box outlined on the whole photo when it holds several faces.
+  **Reason:** needs the upright photo's size next to the box to scale it on the preview; the
+  crop with its margin already shows which face it is. Small follow-up.
+- The reference's link opens its preview in a new tab, not the page's large view.
+  **Reason:** the reference photo is usually not among the hits shown; the large view only
+  walks the files listed.
+- `GET /api/people/why?face=<id>` became `POST /api/people/why {key, name}` (the page never sees
+  face ids or paths; the same JSON-only, loopback protections as every POST). Deliberate.

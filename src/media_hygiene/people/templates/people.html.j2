@@ -8,7 +8,11 @@
    click on a face opens its photo; its × marks it as someone else's (greyed, kept in
    place: nothing moves) until the next button of its section saves the marks. *and N more faces* shows every face of a group: then, and only
    then, its photos can be set aside (in the decisions file, for `clean --decisions`;
-   opened from the home page, *Apply now* runs it). #}
+   opened from the home page, *Apply now* runs it). The faces of photos set aside (any page)
+   are not shown: a line says how many, *Show* draws them dimmed to take one back (0327). Each
+   title folds or unfolds its section (o); verified ones come folded, as a strip of a few
+   faces, their sample asked for on opening (0323); what is folded is remembered in this
+   browser, by person and kind. #}
 {% set texts = {
   "group": _("Group {number}"),
   "size": _("{faces} in {photos}"),
@@ -19,8 +23,13 @@
   "aside": [ngettext("Set aside their {n} photo", "Set aside their {n} photos", 1), ngettext("Set aside their {n} photo", "Set aside their {n} photos", 2)],
   "asideHint": _("Every photo this person is on, with others or not. Nothing is deleted here: 'clean --decisions' moves them to the quarantine, 'undo' brings them back."),
   "allFirst": _("Show every face of the group first, to take out those of someone else."),
-  "asideSome": [ngettext("{n} of these photos is set aside.", "{n} of these photos are set aside.", 1), ngettext("{n} of these photos is set aside.", "{n} of these photos are set aside.", 2)],
+  "hiddenSome": [ngettext("{n} photo set aside, hidden", "{n} photos set aside, hidden", 1), ngettext("{n} photo set aside, hidden", "{n} photos set aside, hidden", 2)],
+  "showHidden": _("Show"),
+  "hideHidden": _("Hide"),
   "takeBack": _("Take out of the set aside"),
+  "takeBackOne": _("Take this photo out of the set aside"),
+  "fold": _("Fold this section (o)"),
+  "unfold": _("Open this section (o)"),
   "alone": [ngettext("{n} face looks like no other: it is not shown.", "{n} faces look like no other: they are not shown.", 1), ngettext("{n} face looks like no other: it is not shown.", "{n} faces look like no other: they are not shown.", 2)],
   "ignoredGroups": [ngettext("{n} ignored group is not shown.", "{n} ignored groups are not shown.", 1), ngettext("{n} ignored group is not shown.", "{n} ignored groups are not shown.", 2)],
   "none": _("No group yet: no two faces look alike enough."),
@@ -65,6 +74,11 @@
   section.current { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
   section.picked { background: var(--chip); }
   h2 { font-size: 1rem; margin: 0 0 8px; }
+  h2 .fold { padding: 0 6px 0 0; font: inherit; border: 0; background: transparent;
+             color: var(--text); cursor: pointer; }
+  section.folded h2 { margin: 0 0 4px; }
+  .strip .face img { width: 48px; height: 48px; }
+  .face.hidden img { opacity: .35; filter: grayscale(1); }
   h2 small { color: var(--muted); font-weight: normal; }
   .badge { display: inline-block; margin: 0 6px 0 0; padding: 0 8px; border-radius: 999px;
            font-size: .75rem; font-weight: 600; vertical-align: middle; }
@@ -109,7 +123,7 @@
 <header>
   <p class="hint">{{ _("Each group holds faces that look alike: probably one person. Type a name to save it in config.toml; the photos are never changed and the faces stay on this computer.") }}</p>
   <p class="hint">{{ _("Naming confirms the faces shown: they become verified ✓. The other faces that look like them are attributed to the person, in a section of their own, until you confirm them, a page at a time.") }}</p>
-  <p class="hint">{{ _("↑ ↓ move, Enter names, y confirms the attributed faces shown, x names several groups at once, i ignores a group; × marks a face that is someone else's, the next button saves it.") }}</p>
+  <p class="hint">{{ _("↑ ↓ move, o folds or opens, Enter names, y confirms the attributed faces shown, x names several groups at once, i ignores a group; × marks a face that is someone else's, the next button saves it.") }}</p>
   <p id="status" role="status"></p>
   {% include "apply_now.html.j2" %}
 </header>
@@ -124,6 +138,9 @@
 const TEXTS = {{ texts | tojson }};
 const GROUPS_PATH = {{ groups_path | tojson }};
 const SECTION = {{ section_prefix | tojson }};
+const SAMPLE = {{ sample_prefix | tojson }};
+const FOLDED_KEY = "mh-people-folded";
+const STRIP = {{ strip | tojson }};
 const CHANGE_PATH = {{ change_path | tojson }};
 const ASIDE_PATH = {{ aside_path | tojson }};
 const FACE = {{ face_prefix | tojson }};
@@ -134,6 +151,61 @@ let current = 0;
 const picked = new Set();
 const removed = new Set();
 const whole = new Map(); // face number → every face of its group, once shown in full
+const showing = new Set(); // sections whose hidden faces are drawn, by `sectionKey`
+let foldedSaved = {}; // `sectionKey` → folded, for the named sections (this browser only)
+try { foldedSaved = JSON.parse(localStorage.getItem(FOLDED_KEY) || "{}") || {}; } catch (error) { foldedSaved = {}; }
+
+// A section's key across changes: a person and a kind, or a group by one of its faces.
+function sectionKey(item) {
+  if (item.name) return item.name + (item.verified ? "|verified" : "|attributed");
+  const first = item.shown[0] || item.hidden[0];
+  return "#" + (first ? first.key : "");
+}
+
+function isFolded(item) {
+  const key = sectionKey(item);
+  return key in foldedSaved ? foldedSaved[key] : item.verified;
+}
+
+function fold(index) {
+  const item = state.sections[index];
+  foldedSaved[sectionKey(item)] = !isFolded(item);
+  try { localStorage.setItem(FOLDED_KEY, JSON.stringify(foldedSaved)); } catch (error) { /* kept for this visit */ }
+  if (!isFolded(item) && item.strip) return sample(index);
+  redraw(index);
+  return Promise.resolve();
+}
+
+// A folded section came as a strip: its sample is asked for when it opens.
+async function sample(index) {
+  const item = state.sections[index];
+  if (!item.shown.length) { item.strip = false; redraw(index); return; }
+  let answer;
+  try {
+    answer = await fetch(SAMPLE + item.shown[0].key);
+  } catch (error) {
+    say(TEXTS.offline, "error");
+    return;
+  }
+  if (!answer.ok) {
+    say(fill(TEXTS.failed, { status: answer.status }), "error");
+    return;
+  }
+  if (state.sections[index] !== item) return; // a change came meanwhile
+  item.shown = (await answer.json()).shown;
+  item.strip = false;
+  redraw(index);
+}
+
+// Draw one section again, keeping the name typed in it.
+function redraw(index) {
+  const before = $("groups").children[index];
+  const after = group(state.sections[index], index);
+  const typed = before && before.querySelector("input");
+  const field = after.querySelector("input");
+  if (typed && field) field.value = typed.value; // typed, not saved yet
+  if (before) before.replaceWith(after);
+}
 
 function fill(template, values) {
   return template.replace(/\{(\w+)\}/g, (all, name) => (name in values ? values[name] : all));
@@ -199,6 +271,10 @@ function expandAgain() {
   });
 }
 
+function takeBack(keys) {
+  if (keys.length) send({ action: "remove", faces: keys }, ASIDE_PATH);
+}
+
 async function setAside(index, action) {
   const item = state.sections[index];
   if (!complete(item)) await expand(index); // every photo of the group, not only the sample
@@ -241,18 +317,17 @@ function nameGroups(index, name) {
 // the next button of the section saves the marks with what it does.
 function takeOut(index, key) {
   if (removed.has(key)) removed.delete(key); else removed.add(key);
-  const before = $("groups").children[index];
-  const after = group(state.sections[index], index);
-  after.querySelector("input").value = before.querySelector("input").value; // typed, not saved yet
-  before.replaceWith(after);
+  redraw(index);
 }
 
 function marked(index) {
   return displayed(state.sections[index]).map((item) => item.key).filter((key) => removed.has(key));
 }
 
-function face(item, index, verified) {
-  const box = element("div", "face");
+// A face: `kind` is "strip" (a folded section: no ×), "hidden" (its photo set aside:
+// dimmed, ↺ takes it back) or empty.
+function face(item, index, verified, kind) {
+  const box = element("div", "face" + (kind ? " " + kind : ""));
   const picture = element("img");
   picture.loading = "lazy";
   picture.src = FACE + item.key + ".jpg";
@@ -263,6 +338,15 @@ function face(item, index, verified) {
     $("viewerName").textContent = item.photo;
     $("viewer").classList.add("open");
   });
+  if (kind === "strip") { box.append(picture); return box; }
+  if (kind === "hidden") {
+    const back = element("button", "", "↺");
+    back.title = TEXTS.takeBackOne;
+    back.setAttribute("aria-label", back.title);
+    back.addEventListener("click", (event) => { event.stopPropagation(); takeBack([item.key]); });
+    box.append(picture, back);
+    return box;
+  }
   const isOut = removed.has(item.key);
   box.classList.toggle("out", isOut);
   const out = element("button", "", isOut ? "↺" : "×");
@@ -335,9 +419,16 @@ function asideButton(item, index) {
 
 function group(item, index) {
   const node = element("section");
+  const closed = isFolded(item);
   node.classList.toggle("current", index === current);
   node.classList.toggle("picked", picked.has(index));
-  const title = element("h2", "", (item.name || fill(TEXTS.group, { number: index + 1 })) + " ");
+  node.classList.toggle("folded", closed);
+  const title = element("h2");
+  const toggler = element("button", "fold", (closed ? "▸ " : "▾ ") + (item.name || fill(TEXTS.group, { number: index + 1 })));
+  toggler.title = closed ? TEXTS.unfold : TEXTS.fold;
+  toggler.setAttribute("aria-expanded", String(!closed));
+  toggler.addEventListener("click", (event) => { event.stopPropagation(); current = index; mark(); fold(index); });
+  title.append(toggler, " ");
   if (item.name) {
     const kind = item.verified ? "verified" : "attributed";
     const badge = element("span", "badge " + kind, (item.verified ? "✓ " : "") + TEXTS[kind]);
@@ -346,26 +437,43 @@ function group(item, index) {
   }
   const size = left(item);
   title.append(element("small", "", fill(TEXTS.size, { faces: counted(TEXTS.faces, size.faces), photos: counted(TEXTS.photos, size.photos) })));
+  node.addEventListener("click", () => { current = index; mark(); });
+  if (closed) { // one line: the title and a strip of faces, no tiles to load
+    const strip = element("div", "faces strip");
+    strip.append(...item.shown.slice(0, STRIP).map((one) => face(one, index, item.verified, "strip")));
+    node.append(title, strip);
+    return node;
+  }
   const faces = element("div", "faces");
-  const shown = displayed(item);
+  const shown = item.strip ? [] : displayed(item);
   faces.append(...shown.map((one) => face(one, index, item.verified)));
-  if (!complete(item)) {
+  if (showing.has(sectionKey(item))) faces.append(...item.hidden.map((one) => face(one, index, item.verified, "hidden")));
+  if (!item.strip && !complete(item)) {
     const more = element("button", "more", counted(TEXTS.more, item.faces - shown.length));
     more.title = TEXTS.showAll;
     more.addEventListener("click", (event) => { event.stopPropagation(); expand(index); });
     faces.append(more);
   }
   node.append(title, tools(item, index));
-  if (item.aside) {
-    const line = element("p", "aside", counted(TEXTS.asideSome, item.aside));
-    const back = element("button", "", TEXTS.takeBack);
-    back.addEventListener("click", () => setAside(index, "remove"));
-    line.append(back);
-    node.append(line);
-  }
+  if (item.aside) node.append(hiddenLine(item, index));
   node.append(faces);
-  node.addEventListener("click", () => { current = index; mark(); });
   return node;
+}
+
+// "n photos set aside, hidden — Show / Take back": they wait for 'clean --decisions'.
+function hiddenLine(item, index) {
+  const line = element("p", "aside", counted(TEXTS.hiddenSome, item.aside) + " — ");
+  const key = sectionKey(item);
+  const show = element("button", "", showing.has(key) ? TEXTS.hideHidden : TEXTS.showHidden);
+  show.addEventListener("click", (event) => {
+    event.stopPropagation();
+    if (showing.has(key)) showing.delete(key); else showing.add(key);
+    redraw(index);
+  });
+  const back = element("button", "", TEXTS.takeBack);
+  back.addEventListener("click", (event) => { event.stopPropagation(); takeBack(item.hidden.map((one) => one.key)); });
+  line.append(show, back);
+  return line;
 }
 
 function mark() {
@@ -388,13 +496,17 @@ function ignoreGroup(index) {
 
 // Draw the sections again; the same ones (no new state) keep the names typed in them.
 function render(sameSections) {
-  const typed = sameSections ? [...$("groups").querySelectorAll("section input")].map((input) => input.value) : [];
+  const typed = sameSections ? [...$("groups").children].map((node) => { const field = node.querySelector("input"); return field ? field.value : ""; }) : [];
   $("groups").replaceChildren(...state.sections.map(group));
-  typed.forEach((value, index) => { $("groups").children[index].querySelector("input").value = value; });
+  typed.forEach((value, index) => {
+    const field = $("groups").children[index] && $("groups").children[index].querySelector("input");
+    if (field && value) field.value = value;
+  });
 }
 
 function show(next) {
   state = next;
+  for (const item of state.sections) item.strip = item.folded; // its sample comes on opening
   current = Math.min(current, Math.max(0, state.sections.length - 1));
   $("names").replaceChildren(...state.people.map((name) => { const option = element("option"); option.value = name; return option; }));
   render();
@@ -405,6 +517,7 @@ function show(next) {
   if (!state.writable) notes.push(TEXTS.readOnly);
   say(notes.join(" "));
   if (window.mhApplyNow) window.mhApplyNow(state.chosen > 0); // apply_now.html.j2, opened from home
+  state.sections.forEach((item, index) => { if (item.strip && !isFolded(item)) sample(index); });
   expandAgain();
 }
 
@@ -423,6 +536,14 @@ async function load() {
   show(await answer.json());
 }
 
+// Enter opens a folded section first, then goes to its name field.
+async function typeName(index) {
+  const item = state.sections[index];
+  if (isFolded(item)) await fold(index);
+  const field = $("groups").children[index].querySelector("input");
+  if (field) field.focus();
+}
+
 function move(step) {
   if (!state.sections.length) return;
   current = Math.max(0, Math.min(state.sections.length - 1, current + step));
@@ -436,7 +557,8 @@ document.addEventListener("keydown", (event) => {
   const item = state.sections[current];
   if (event.key === "ArrowDown" || event.key === "j") move(1);
   else if (event.key === "ArrowUp" || event.key === "k") move(-1);
-  else if (event.key === "Enter" || event.key === "n") $("groups").children[current].querySelector("input").focus();
+  else if (event.key === "o") fold(current);
+  else if (event.key === "Enter" || event.key === "n") typeName(current);
   else if (event.key === "y" && item.name && !item.verified && state.writable) nameGroups(current, item.name);
   else if (event.key === "x" && state.writable) toggle(current);
   else if (event.key === "i" && state.writable) ignoreGroup(current);

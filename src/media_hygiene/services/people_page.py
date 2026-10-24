@@ -23,15 +23,16 @@ from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.paths.mounts import is_writable
 from media_hygiene.people.app import (
     CHANGE_PATH,
-    FACE_PREFIX,
     GROUPS_PATH,
-    PHOTO_PREFIX,
+    SAMPLE_PREFIX,
     SECTION_PREFIX,
     PeopleApp,
 )
 from media_hygiene.people.aside import ASIDE_PATH, AsideDesk
 from media_hygiene.people.board import PeopleBoard
+from media_hygiene.people.pictures import FACE_PREFIX, PHOTO_PREFIX
 from media_hygiene.people.roster import NamesFile, Roster
+from media_hygiene.people.views import STRIP
 from media_hygiene.review.apply_api import APPLY_PATH, ApplyOffer, applying_door
 from media_hygiene.review.ending import serve_until_ended
 from media_hygiene.review.page_header import page_header
@@ -85,6 +86,8 @@ def serve_people(
         header=page_header(_PAGE_TEMPLATE),
         groups_path=GROUPS_PATH,
         section_prefix=SECTION_PREFIX,
+        sample_prefix=SAMPLE_PREFIX,
+        strip=STRIP,
         change_path=CHANGE_PATH,
         aside_path=ASIDE_PATH,
         face_prefix=FACE_PREFIX,
@@ -108,6 +111,21 @@ def serve_people(
     return PeopleServed(len(aside.paths()), code)
 
 
+def names_file(runtime: Runtime) -> Path | None:
+    """The `config.toml` the names go to; None when it cannot be written.
+
+    Args:
+        runtime: Mount points.
+
+    Returns:
+        The file, or None.
+    """
+    config = runtime.locations.config_file
+    if runtime.persistent(MountKind.CONFIG) and is_writable(config.parent):
+        return config
+    return None
+
+
 def _names_file(runtime: Runtime) -> Path | None:
     """The `config.toml` the names go to; None when it cannot be written.
 
@@ -117,8 +135,8 @@ def _names_file(runtime: Runtime) -> Path | None:
     Returns:
         The file, or None after saying why names cannot be saved.
     """
-    config = runtime.locations.config_file
-    if runtime.persistent(MountKind.CONFIG) and is_writable(config.parent):
+    config = names_file(runtime)
+    if config is not None:
         return config
     runtime.output.info(
         _(

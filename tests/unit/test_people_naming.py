@@ -9,8 +9,10 @@ import numpy as np
 from media_hygiene.config.people_settings import PeopleSettings, Person
 from media_hygiene.faces.models import EMBEDDING_SIZE, FaceBox, embedding_bytes
 from media_hygiene.index.face_rows import StoredFace
-from media_hygiene.people.naming import NOBODY, FaceName, How, Known, face_id, name_all
+from media_hygiene.people.known import Known
+from media_hygiene.people.naming import NOBODY, FaceName, How, face_id, name_all
 from media_hygiene.people.sections import sections_of
+from media_hygiene.people.why import CLOSE, why_named
 from media_hygiene.services.people_names import named_photos
 
 
@@ -117,3 +119,65 @@ def test_sections_leave_out_the_faces_taken_out_of_their_person() -> None:
         ("Chloé", True, (0, 1)),
         ("", False, (5, 6)),
     ]
+
+
+def small(name: str, side: float, sharpness: float = 80.0) -> StoredFace:
+    """Chloé's face again, on another photo, at this size and sharpness."""
+    vector = np.zeros(EMBEDDING_SIZE, dtype=np.float32)
+    vector[:2] = (0.95, 0.2)
+    box = FaceBox(0, 0, side, side)
+    path = Path(f"/data/{name}.jpg")
+    return StoredFace(path, 0, box, 0.9, sharpness, embedding_bytes(vector))
+
+
+def test_a_face_the_page_never_shows_gets_no_name_unless_confirmed() -> None:
+    """30 px or blurry: not named; confirmed: named; sharp 60 px: named (0316)."""
+    tiny, blurry, sharp = small("tiny", 30), small("blurry", 60, 5.0), small("ok", 60)
+    every = (CHLOE, tiny, blurry, sharp)
+    names = name_all(every, Known.of(every, settings()))
+    assert names[1:] == (NOBODY, NOBODY, FaceName("Chloé", How.ASSIGNED))
+    confirmed = (face_id(CHLOE.path, 0), face_id(tiny.path, 0))
+    named = settings().model_copy(
+        update={"person": (Person(name="Chloé", faces=confirmed),)}
+    )
+    assert name_all((tiny,), Known.of(every, named)) == (
+        FaceName("Chloé", How.CONFIRMED),
+    )
+    anything = settings().model_copy(update={"min_face": 0, "min_sharpness": 0})
+    assert all(n.named for n in name_all(every, Known.of(every, anything)))
+    assert named_photos(every, Known.of(every, settings())) == (("Chloé", 2),)
+
+
+def test_why_names_the_reference_the_score_and_a_close_runner() -> None:
+    """Assigned: the nearest reference and the likeness; confirmed: no score (0318)."""
+    manon = face("manon", (0.9, 0.35))
+    between = face("between", (0.98, 0.19))
+    every = (CHLOE, manon, between, STRANGER)
+    both = settings().model_copy(
+        update={
+            "person": (
+                *settings().person,
+                Person(name="Manon", faces=(face_id(manon.path, 0),)),
+            )
+        }
+    )
+    known = Known.of(every, both)
+    assigned = why_named(between, known)
+    assert assigned.how is How.ASSIGNED
+    assert assigned.threshold == both.similarity
+    nearest = name_all((between,), known)[0].name
+    reference = CHLOE if nearest == "Chloé" else manon
+    assert assigned.reference == face_id(reference.path, 0)
+    assert assigned.score > both.similarity
+    assert assigned.runner is not None
+    assert assigned.score - assigned.runner.score <= CLOSE
+    assert assigned.runner.name != nearest
+    confirmed = why_named(CHLOE, known)
+    assert (confirmed.how, confirmed.score, confirmed.reference) == (
+        How.CONFIRMED,
+        0,
+        "",
+    )
+    alone = why_named(STRANGER, known)
+    assert alone.how is None
+    assert alone.runner is None

@@ -87,6 +87,12 @@ updated the next time the page saves a name.
 Each name is a `[[people.person]]` entry of `config.toml`. Details:
 [People](../reference-people.md#name-the-groups).
 
+Each title folds or unfolds its section (click it, or `o`). The **verified** sections, already
+done, come folded: one line with the name, ✓, the counts and a strip of a few faces, so that the
+work left stands first; their faces are loaded only when you open them. The page remembers in
+this browser what you folded, person by person; Enter on a folded section opens it, then goes
+to its name field.
+
 ## Remove every photo of someone
 
 To forget someone (a former partner, say), remove the photos they are on from the group itself:
@@ -96,8 +102,11 @@ To forget someone (a former partner, say), remove the photos they are on from th
 2. Click **Set aside their N photos**. The button waits until every face is shown. Every photo
    this person is on goes, with others or not. Nothing is deleted from the page: the choice is
    saved at once in `decisions.json` of your reports (`/reports`, mounted by `mh`), read back and
-   shown with its count and size; the group then says how many of its photos are set aside, and
-   **Take out of the set aside** takes them back.
+   shown with its count and size. The photos set aside then leave the page: not shown, not
+   counted, never confirmed with the others. Their section says *N photos set aside, hidden*:
+   **Show** draws them again, dimmed, each with ↺ to take that one back; **Take out of the set
+   aside** takes them all back. The same goes for photos set aside on any other page
+   ([`search`](search.md), [`browse`](browse.md)), until `clean --decisions` moves them.
 3. Opened from the home page (`mh`), **Apply now** closes the page and runs
    [`clean --decisions`](clean.md), which asks first. Otherwise, the command proposes it when you
    stop the page. It moves the photos to the quarantine, journaled; [`undo`](undo.md) puts them
@@ -125,8 +134,9 @@ models from OpenCV Zoo, checked by their SHA-256: it sends nothing about your ph
 
 ## Good to know
 
-- The settings `[people]` (`similarity`, `min_face`, `min_sharpness`) only change the grouping:
-  nothing is analysed again.
+- The settings `[people]` (`similarity`, `min_face`, `min_sharpness`) change the grouping, and
+  the faces too small or too blurry for the page are named by nobody anywhere (`search`,
+  `classify`, XMP), unless you confirmed them: nothing is analysed again.
 - `audit --people` looks for the faces right after an audit, once you agreed to the time it
   takes; `with_audit = true` in `[people]` does it at every audit.
 - Videos are not analysed yet.

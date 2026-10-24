@@ -91,6 +91,28 @@ the search finds, not only the 240 shown), then Delete or **Set aside the picked
 - The same `decisions.json` holds what [`review`](review.md) decided: both are kept, and one
   `clean --decisions` applies them all.
 
+## A wrong name under a photo
+
+A person's name under a photo has a **×**: click it when that person is not on the photo. The
+faces of the photo that gave the name go into the person's `rejected` list (in their file under
+`/config/people/`, linked from `config.toml`), exactly as the × of the [`people`](people.md) page
+does; a face you had confirmed leaves their `faces` too. The file is read back and the bar says
+what it holds now (*Saved in config.toml, read back: 1 face of this photo is not Chloé.*), with
+**Put back** to undo it. The × never picks the photo, and the card stays where it is. The large
+view shows the same names, with the same ×, under its facts (`I`).
+
+A click on the name itself (or `W` in the large view) opens **Why this name?**: the face of the
+photo cut out, how it got the name (*confirmed by you*, or *close to a face you confirmed*, with
+that face, its file, and the score against `[people] similarity`), and the next person when they
+come close too. **Yes, it is …** confirms that face, **Not …** takes the name off that face
+only; both are saved, read back and said the same way. Esc closes the panel and leaves the large
+view open. How to read the score: [People](../reference-people.md#find-them-search).
+
+Only this photo loses the name in this search. Other photos named because they look like a face
+you just took out keep theirs until you take it off them too; `classify`, the inventory and the
+XMP sidecars read the names again at their next run. Without a writable `/config`, nothing is
+saved and the bar says why.
+
 ## Put photos in an album
 
 To show photos to others (on the TV with [`slideshow`](slideshow.md)), gather them in an

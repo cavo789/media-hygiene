@@ -16,13 +16,17 @@ from media_hygiene.i18n import _
 from media_hygiene.index.face_rows import FaceStore
 from media_hygiene.index.moves import load_moves
 from media_hygiene.people.folding import folded
-from media_hygiene.people.naming import Known, name_all
+from media_hygiene.people.known import Known
+from media_hygiene.people.naming import id_of, name_all
 from media_hygiene.tags.models import TagSource
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping, Sequence
     from pathlib import Path
 
     from media_hygiene.config.people_settings import PeopleSettings
+    from media_hygiene.index.face_rows import StoredFace
+    from media_hygiene.people.naming import FaceName
     from media_hygiene.search.query import SearchQuery
 
 
@@ -39,24 +43,69 @@ def people_words(
         Each photo with someone named on it, and their names in the file's order;
         nothing without names, or with an index older than faces.
     """
+    return words_of(people_faces(connection, settings), settings)
+
+
+def people_faces(
+    connection: sqlite3.Connection, settings: PeopleSettings
+) -> dict[Path, dict[str, tuple[str, ...]]]:
+    """Which faces give each photo each name: `<path>#<n>` ids (TODO 0317).
+
+    Args:
+        connection: The index, read-only.
+        settings: `[people]`, with the names.
+
+    Returns:
+        Each photo with someone named on it, each name with the ids of its faces
+        there (a photo may have two faces given the same person).
+    """
     if not settings.person:
         return {}
     try:
         faces = FaceStore(connection, FACE_MODEL).faces()
     except sqlite3.OperationalError:  # no `faces` table: `people` never ran
         return {}
-    order = {person.name: rank for rank, person in enumerate(settings.person)}
-    found: dict[Path, set[str]] = {}
-    for face, name in zip(
-        faces,
-        name_all(faces, Known.of(faces, settings, load_moves(connection))),
-        strict=True,
-    ):
+    known = Known.of(faces, settings, load_moves(connection))
+    return faces_named(faces, name_all(faces, known))
+
+
+def faces_named(
+    faces: Sequence[StoredFace], names: Sequence[FaceName]
+) -> dict[Path, dict[str, tuple[str, ...]]]:
+    """Gather the faces named by photo, then by name.
+
+    Args:
+        faces: The faces.
+        names: The name of each.
+
+    Returns:
+        Each photo with someone named on it, each name with the ids of its faces.
+    """
+    found: dict[Path, dict[str, tuple[str, ...]]] = {}
+    for face, name in zip(faces, names, strict=True):
         if name.named:
-            found.setdefault(face.path, set()).add(name.name)
+            named = found.setdefault(face.path, {})
+            named[name.name] = (*named.get(name.name, ()), id_of(face))
+    return found
+
+
+def words_of(
+    faces: Mapping[Path, Mapping[str, tuple[str, ...]]], settings: PeopleSettings
+) -> dict[Path, tuple[str, ...]]:
+    """The names on each photo, in the order of the file.
+
+    Args:
+        faces: The faces of each name on each photo.
+        settings: `[people]`, with the names in order.
+
+    Returns:
+        Each photo with at least one name, and its names.
+    """
+    order = {person.name: rank for rank, person in enumerate(settings.person)}
     return {
         path: tuple(sorted(names, key=lambda name: order.get(name, len(order))))
-        for path, names in found.items()
+        for path, names in faces.items()
+        if names
     }
 
 

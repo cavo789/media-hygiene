@@ -16,6 +16,7 @@ photos are never changed: `clean --decisions` moves what was set aside.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import partial
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
@@ -28,6 +29,13 @@ from media_hygiene.review.serving import json_response, refused_post, serve_conn
 from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_response
 from media_hygiene.search.chosen_api import CHOSEN_PATH
 from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS, FOLDERS_PATH
+from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH
+from media_hygiene.search.people_why import (
+    FACE_CROP_PREFIX,
+    PEOPLE_WHY_PATH,
+    crop_answer,
+    why_answer,
+)
 from media_hygiene.search.people_words import unknown_people
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.search.views import SearchAsked, found_view
@@ -35,17 +43,11 @@ from media_hygiene.share.album_api import ALBUMS_PATH
 
 if TYPE_CHECKING:
     import asyncio
+    from collections.abc import Callable
     from concurrent.futures import Executor
-    from pathlib import Path
 
-    from media_hygiene.config.people_settings import PeopleSettings
-    from media_hygiene.paths.host_paths import HostPathMapper
-    from media_hygiene.review.apply_api import ApplyDesk
     from media_hygiene.review.http import Request
-    from media_hygiene.search.chosen_api import ChosenDesk
-    from media_hygiene.search.folders import FolderDesk
-    from media_hygiene.search.fts import SearchIndex
-    from media_hygiene.share.album_api import AlbumDesk
+    from media_hygiene.search.place import SearchPlace
 
 PAGE_PATH: Final = "/"
 SEARCH_PAGE_PATH: Final = "/search"
@@ -53,23 +55,8 @@ SEARCH_PATH: Final = "/api/search"
 # The page shows this many files at most; the total says how many match.
 PAGE_HITS: Final = 240
 _GET, _POST = "GET", "POST"
-_POSTED: Final = frozenset(
-    {SEARCH_PATH, CHOSEN_PATH, *FOLDER_POSTS, APPLY_PATH, ALBUMS_PATH}
-)
-
-
-@dataclass(frozen=True, slots=True)
-class SearchPlace:  # pylint: disable=too-many-instance-attributes
-    """Where the search reads, and how it writes paths: index, mapper, previews."""
-
-    index: SearchIndex
-    mapper: HostPathMapper
-    previews: Path | None  # the cache folder of previews, if any
-    people: PeopleSettings  # the names, to say when a `person:` word names nobody
-    chosen: ChosenDesk  # the files set aside
-    folders: FolderDesk  # the folder view
-    apply: ApplyDesk  # *Apply now*, opened from the home page
-    albums: AlbumDesk  # the albums, never the files set aside
+_POSTED: Final = frozenset({SEARCH_PATH, CHOSEN_PATH, *FOLDER_POSTS, APPLY_PATH})
+_POSTED_TOO: Final = frozenset({ALBUMS_PATH, PEOPLE_REJECT_PATH, PEOPLE_WHY_PATH})
 
 
 @dataclass(frozen=True, slots=True)
@@ -114,7 +101,7 @@ class SearchApp:
             return Response(HTTPStatus.FORBIDDEN, message.encode())
         if request.method == _GET:
             return await self._get(request)
-        if request.method != _POST or request.path not in _POSTED:
+        if request.method != _POST or request.path not in _POSTED | _POSTED_TOO:
             return Response(HTTPStatus.METHOD_NOT_ALLOWED)
         refused = refused_post(request)
         if refused is not None:
@@ -134,8 +121,13 @@ class SearchApp:
             return await self.place.apply.answer()
         if request.path == ALBUMS_PATH:
             return await self.place.albums.answer(request.body)
-        if request.path == CHOSEN_PATH:
-            return self.place.chosen.answer(request.body)
+        answers: dict[str, Callable[[bytes], Response]] = {
+            CHOSEN_PATH: self.place.chosen.answer,
+            PEOPLE_REJECT_PATH: self.place.names.answer,
+            PEOPLE_WHY_PATH: partial(why_answer, self.place.names),
+        }
+        if request.path in answers:
+            return answers[request.path](request.body)
         if request.path in FOLDER_POSTS:
             return self.place.folders.answer(request.path, request.body)
         return self._search(request)
@@ -164,6 +156,8 @@ class SearchApp:
         }
         if path in states:
             return states[path]()
+        if path.startswith(FACE_CROP_PREFIX):
+            return await crop_answer(self.place.names, path, self.executor)
         pictures = Pictures(self.place.index, self.place.previews, self.executor)
         if path.startswith(VIDEO_PREFIX):
             return await video_response(request, pictures.source)

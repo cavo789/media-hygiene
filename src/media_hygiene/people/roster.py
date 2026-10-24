@@ -14,19 +14,20 @@ from media_hygiene.i18n import _
 from media_hygiene.people.changes import Naming, give_name, ignore_faces, reject_faces
 from media_hygiene.people.config_file import read_people, save_people
 from media_hygiene.people.followed import follow_ids
-from media_hygiene.people.naming import Known, id_of, name_all
+from media_hygiene.people.hidden import Named, page_sections
+from media_hygiene.people.known import Known
+from media_hygiene.people.naming import id_of, name_all
 from media_hygiene.people.proof import followed_line, proof_line
-from media_hygiene.people.sections import sections_of
-from media_hygiene.people.views import faces_view, section_view
+from media_hygiene.people.views import section_view
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Mapping
+    from collections.abc import Mapping
     from pathlib import Path
 
     from media_hygiene.config.people_settings import PeopleSettings
     from media_hygiene.index.face_rows import StoredFace
     from media_hygiene.people.board import PeopleBoard
-    from media_hygiene.people.naming import FaceName
+    from media_hygiene.people.sections import Section, Sections
     from media_hygiene.people.views import PageView
 
 
@@ -65,7 +66,7 @@ class Roster:
         self._file = names.config_file
         self._settings = names.settings
         self._moves = names.moves
-        self._names, self._ruled_out = self._named()
+        self._named = self._name()
 
     @property
     def writable(self) -> bool:
@@ -85,7 +86,7 @@ class Roster:
         Returns:
             The sections, the names known, the counts.
         """
-        sections = sections_of(self.board.groups, self._names, self._ruled_out)
+        sections = self.sections(view)
         board = self.board
         return {
             "alone": self.board.alone,
@@ -128,58 +129,52 @@ class Roster:
         self._settings = self._settings.model_copy(
             update={"person": back.person, "ignored": back.ignored}
         )
-        self._names, self._ruled_out = self._named()
+        self._named = self._name()
         return proof_line(back, change) + followed_line(original, written)
 
-    def _named(self) -> tuple[tuple[FaceName, ...], dict[int, frozenset[str]]]:
+    def _name(self) -> Named:
         """Name every face, and note who each one was taken out of.
+
+        The ids of moved photos are followed (TODO 0146).
 
         Returns:
             The name of each face, and the names each face is not, by number.
         """
-        known = self._known()
+        known = Known.of(self._every, self._settings, self._moves)
         ruled_out = {
             key: names
             for key, face in enumerate(self.board.faces)
             if (names := known.rejected.get(id_of(face)))
         }
-        return name_all(self.board.faces, known), ruled_out
+        return Named(name_all(self.board.faces, known), ruled_out)
 
-    def _known(self) -> Known:
-        """The faces of reference, ids of moved photos followed (TODO 0146).
+    def sections(self, view: PageView) -> Sections:
+        """The sections, the faces of the photos set aside apart (TODO 0327).
+
+        Args:
+            view: Host paths, and the files set aside.
 
         Returns:
-            The references.
+            The sections the page shows.
         """
-        return Known.of(self._every, self._settings, self._moves)
+        hidden = frozenset(
+            key
+            for key, face in enumerate(self.board.faces)
+            if view.aside and view.host(face.path) in view.aside
+        )
+        return page_sections(self.board.groups, self._named, hidden)
 
-    def whole(self, key: str, host: Callable[[Path], str]) -> list[dict[str, object]]:
-        """Every face of the section a face is in, to check each one.
+    def section(self, key: str, view: PageView) -> Section | None:
+        """The section shown that holds a face.
 
         Args:
             key: The number of one of its faces, from the page.
-            host: Container path → host path.
+            view: Host paths, and the files set aside.
 
         Returns:
-            Its faces; none for a number no section holds.
+            It; None for a number no section shows.
         """
         if not key.isdigit():
-            return []
-        shown = sections_of(self.board.groups, self._names, self._ruled_out).shown
-        found = next((one for one in shown if int(key) in one.faces), None)
-        return [] if found is None else faces_view(self.board, found.faces, host)
-
-    def ids(self, keys: tuple[int, ...]) -> tuple[str, ...]:
-        """The ids of faces of the board.
-
-        Args:
-            keys: Their numbers.
-
-        Returns:
-            Their ids; unknown numbers are left out.
-        """
-        return tuple(
-            id_of(face)
-            for key in keys
-            if (face := self.board.face(str(key))) is not None
-        )
+            return None
+        shown = self.sections(view).shown
+        return next((one for one in shown if int(key) in one.faces), None)

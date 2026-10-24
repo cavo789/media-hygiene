@@ -97,6 +97,16 @@ town, what the vision model saw); `person:chloe` looks among the people only (ca
 do not matter); `person:"Mamie Jeanne"` is a name of two words. A name nobody has yet is said in
 one line: name the group on the page first.
 
+On the search page, a click on a name under a photo says **why** the photo has it: *confirmed by
+you* (a face you named on the people page, a face of reference), or *close to a face you
+confirmed*: then the face of the photo and that reference are shown side by side, with the
+score, e.g. *resemblance 0.41, a name is given from 0.36 (`[people] similarity`)*. The score is
+the likeness of the two faces (cosine, 0 to 1): the higher, the surer. A face just above the
+threshold is the one to check; when another person comes close too, the panel says so. **Yes, it
+is …** confirms the face (it becomes a reference too), **Not …** takes the name off it, as the ×
+does. When many names just above the threshold are wrong, raise `similarity` a little (`0.40`,
+then `0.45`): fewer faces get a name, and fewer wrong ones.
+
 ## File them: a `person` rule
 
 Once named, people can also sort the photos: a `person` rule of `classify`
@@ -188,7 +198,10 @@ you mounted it); repeat it for several folders.
 | `with_audit` | `false` | `true`: every `audit` looks for faces too, after asking, as `audit --people` does. |
 | `ignored`, `[[people.person]]` | none | Written by the page: the faces ignored, and each person's name, confirmed faces (`faces`) and faces taken out (`rejected`). |
 
-They only choose which faces are grouped, and how: changing them analyses nothing again. To try
+They choose which faces are grouped, and how: changing them analyses nothing again. `min_face`
+and `min_sharpness` decide which faces count **at all**, not only which are grouped: a face left
+out of the page is named by nobody (in `search`, `classify`, the inventory, the XMP sidecars), so
+no name is ever given that you cannot see and correct; a face you confirmed keeps its name. To try
 another value once: `-e MEDIA_HYGIENE_PEOPLE__SIMILARITY=0.45`.
 
 ## Not there yet

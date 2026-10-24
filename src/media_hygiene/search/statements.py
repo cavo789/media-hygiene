@@ -38,6 +38,7 @@ CREATE_PEOPLE: Final = (
     " (path TEXT NOT NULL, value TEXT NOT NULL)"
 )
 PUT_PERSON: Final = "INSERT INTO temp.person_words (path, value) VALUES (?, ?)"
+CLEAR_PEOPLE: Final = "DELETE FROM temp.person_words"  # named again: one name less
 _TAG_ROWS: Final = "SELECT path, size, mtime_ns, source, value FROM tags"
 _PERSON_ROWS: Final = (
     "SELECT p.path AS path, w.size AS size, w.mtime_ns AS mtime_ns,"  # noqa: S608

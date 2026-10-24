@@ -1,7 +1,8 @@
 """`[people]` — the faces of `media-hygiene people`: which ones count, who is who.
 
 The faces are found once and kept in the cache with their size and sharpness: these
-settings only choose which ones are grouped, so changing them costs no new analysis.
+settings only choose which ones count (grouped, then named: `people.recognisable`), so
+changing them costs no new analysis.
 The names live here too (`[[people.person]]`), written by the people page: each one
 lists the faces the user confirmed, by photo and face number, never a face vector. The
 lists are kept in a file of each person's, under `/config/people/` (`file`), read back

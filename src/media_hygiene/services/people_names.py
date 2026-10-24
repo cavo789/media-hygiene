@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.index.face_rows import FaceTally, StoredFace
-    from media_hygiene.people.naming import Known
+    from media_hygiene.people.known import Known
     from media_hygiene.services.people_groups import PeopleGroups
 
 

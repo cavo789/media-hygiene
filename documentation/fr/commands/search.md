@@ -98,6 +98,30 @@ choisis**.
 - Le même `decisions.json` garde ce que [`review`](review.md) a décidé : les deux sont gardés, et
   un seul `clean --decisions` applique tout.
 
+## Un mauvais nom sous une photo
+
+Le nom d'une personne sous une photo porte une **×** : cliquez-la quand cette personne n'est pas
+sur la photo. Les visages de la photo qui ont donné ce nom vont dans la liste `rejected` de la
+personne (dans son fichier sous `/config/people/`, relié depuis `config.toml`), exactement comme
+la × de la page [`people`](people.md) ; un visage que vous aviez confirmé quitte aussi ses
+`faces`. Le fichier est relu et la barre dit ce qu'il contient maintenant (*Enregistré dans
+config.toml, relu : 1 visage de cette photo n'est pas Chloé.*), avec **Remettre** pour annuler.
+La × ne choisit jamais la photo, et la carte reste à sa place. La grande vue montre les mêmes
+noms, avec la même ×, sous ses informations (`I`).
+
+Un clic sur le nom lui-même (ou `W` dans la grande vue) ouvre **Pourquoi ce nom ?** : le visage
+de la photo découpé, comment il a reçu le nom (*confirmé par vous*, ou *proche d'un visage que
+vous avez confirmé*, avec ce visage, son fichier et le score face à `[people] similarity`), et la
+personne suivante quand elle est proche aussi. **Oui, c'est …** confirme ce visage, **Pas …**
+retire le nom de ce visage seulement ; les deux sont enregistrés, relus et dits de la même façon.
+Échap ferme le panneau et laisse la grande vue ouverte. Comment lire le score :
+[Les personnes](../reference-people.md#les-retrouver--search).
+
+Seule cette photo perd le nom dans cette recherche. Les autres photos nommées parce qu'elles
+ressemblent à un visage que vous venez de retirer gardent le leur jusqu'à ce que vous le leur
+retiriez aussi ; `classify`, l'inventaire et les fichiers XMP relisent les noms à leur prochaine
+exécution. Sans `/config` accessible en écriture, rien n'est enregistré et la barre dit pourquoi.
+
 ## Mettre des photos dans un album
 
 Pour montrer des photos à d'autres (sur la télé avec [`slideshow`](slideshow.md)), rassemblez-les

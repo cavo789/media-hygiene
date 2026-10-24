@@ -78,6 +78,7 @@ function open() {
   $("viewerName").textContent = file.name;
   $("viewerAside").hidden = !file.chosen;
   $("viewerInfo").textContent = [file.date, file.size, file.facts, file.where || file.folder || scope().folder].filter(Boolean).join(" · ");
+  if (typeof infoExtra === "function") $("viewerInfo").append(...infoExtra(file)); // a page's own facts
   $("viewerSaid").textContent = "";
   $("originalLink").href = file.original;
   $("viewer").classList.add("open");

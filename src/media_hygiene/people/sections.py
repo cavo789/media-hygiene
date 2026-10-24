@@ -32,6 +32,7 @@ class Section:
     faces: tuple[int, ...]  # numbers of the board
     name: str = ""  # the person; empty for a group nobody is given
     verified: bool = False  # True: faces the user confirmed
+    hidden: tuple[int, ...] = ()  # its faces on photos set aside: not shown (0327)
 
 
 @dataclass(frozen=True, slots=True)

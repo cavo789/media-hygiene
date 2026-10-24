@@ -22,6 +22,13 @@
   "noAlbum": _("Type the album's name in the bar first: then A adds the file shown."),
   "saving": _("Saving…"),
   "notSaved": _("Nothing was saved: {error}"),
+  "unname": _("Not {name}: take this name off the photo (saved in config.toml)"),
+  "putBack": _("Put back"),
+  "why": _("Why {name}? Click to see the face that gave this name"),
+  "whyTitle": _("Why {name}?"),
+  "reference": _("The face of reference that gave the name:"),
+  "yes": _("Yes, it is {name}"),
+  "not": _("Not {name}"),
 } %}
 {% set sources = {
   "vision": _("seen by the model"),
@@ -53,6 +60,26 @@
   .folderLine, .caption { overflow-wrap: anywhere; }
   .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
   .chip { padding: 0 6px; border-radius: 10px; background: var(--chip); }
+  .chip .unname { margin-left: 4px; padding: 0 4px; border: 0; border-radius: 50%; font: inherit;
+                  line-height: 1.2; background: transparent; color: var(--muted); cursor: pointer; }
+  .chip .unname:hover { background: var(--bad); color: #fff; }
+  .putBack { margin-left: 6px; }
+  #viewerInfo .chips { justify-content: center; }
+  .chip.person { cursor: help; }
+  #why { position: fixed; inset: 0; z-index: 5; display: flex; align-items: center;
+         justify-content: center; padding: 16px; background: rgba(0, 0, 0, .5); }
+  #why[hidden] { display: none; }
+  #why .box { max-width: 40rem; max-height: calc(100vh - 32px); overflow: auto; padding: 12px 16px;
+              border-radius: 10px; background: var(--card); color: var(--text); }
+  #why h2 { margin: 0 0 8px; font-size: 1.05rem; }
+  #why .face { display: flex; gap: 12px; align-items: flex-start; margin: 8px 0;
+               padding: 8px 0; border-top: 1px solid var(--line); }
+  #why img { width: 120px; height: 120px; object-fit: cover; border-radius: 8px;
+             background: var(--chip); }
+  #why .reference img { width: 72px; height: 72px; }
+  #why .reference { display: flex; gap: 8px; align-items: center; overflow-wrap: anywhere; }
+  #why .buttons { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  #whySaid { color: var(--muted); }
 {% endblock %}
 {% block side %}
     {% set pick_view = "words" %}
@@ -84,7 +111,9 @@
     </section>
 {% endblock %}
 {% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
-{% block more_keys %}{% include "pick_keys_more.html.j2" %}{% endblock %}
+{% block more_keys %}{% include "pick_keys_more.html.j2" %}
+    <dt><kbd>W</kbd></dt><dd>{{ _("opened: why this person's name (the face, its reference)") }}</dd>
+{% endblock %}
 {% block bar %}
     {% include "pick_acting.html.j2" %}
     {% set album_compact = true %}
@@ -95,6 +124,14 @@
 {% endblock %}
 {% block after %}
 {% include "pick_viewer.html.j2" %}
+<div id="why" role="dialog" aria-modal="true" aria-labelledby="whyTitle" hidden>
+  <div class="box">
+    <h2 id="whyTitle"></h2>
+    <div id="whyFaces"></div>
+    <p id="whySaid" role="status"></p>
+    <button id="whyClose" type="button">{{ _("Close") }} (Esc)</button>
+  </div>
+</div>
 <script>
 {% include "pick_grid.js.j2" %}
 {% include "pick_viewer.js.j2" %}

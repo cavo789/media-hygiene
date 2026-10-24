@@ -15,7 +15,8 @@ from media_hygiene.index.repository import FactsRepository
 from media_hygiene.people.board import PeopleBoard
 from media_hygiene.people.changes import Naming
 from media_hygiene.people.config_file import read_people, save_people
-from media_hygiene.people.naming import Known, face_id
+from media_hygiene.people.known import Known
+from media_hygiene.people.naming import face_id
 from media_hygiene.people.roster import Change, NamesFile, Roster
 from media_hygiene.services.people_groups import PeopleGroups
 

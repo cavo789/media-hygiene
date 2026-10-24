@@ -112,6 +112,31 @@ def reject_faces(section: PeopleSettings, naming: Naming) -> PeopleSettings:
     return _kept(section, people, section.ignored)
 
 
+def put_back(
+    section: PeopleSettings, naming: Naming, confirmed: tuple[str, ...]
+) -> PeopleSettings:
+    """Undo `reject_faces`: the faces leave `rejected`, those confirmed before return.
+
+    Args:
+        section: `[people]` as written.
+        naming: The name, and the faces rejected.
+        confirmed: Those of them the user had confirmed: back in `faces`.
+
+    Returns:
+        The section to write.
+    """
+    if confirmed:
+        section = give_name(section, Naming(naming.name, confirmed))
+    people = list(section.person)
+    found = _find(people, naming.name.strip())
+    if found is None:
+        return section
+    taken = frozenset(naming.faces)
+    rejected = tuple(key for key in people[found].rejected if key not in taken)
+    people[found] = people[found].model_copy(update={"rejected": rejected})
+    return _kept(section, people, section.ignored)
+
+
 def _find(people: list[Person], name: str) -> int | None:
     """The rank of a person, by name in any case.
 
