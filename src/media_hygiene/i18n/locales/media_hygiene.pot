@@ -593,6 +593,9 @@ msgid ""
 " Low values only catch repeats of the same frame. 0 disables the rule."
 msgstr ""
 
+msgid "A step is running in the window of mh: wait for its end."
+msgstr ""
+
 #, python-brace-format
 msgid "A step to type yourself takes words only you know: {url}"
 msgstr ""
@@ -9884,6 +9887,9 @@ msgstr ""
 msgid "this list, or not"
 msgstr ""
 
+msgid "this page stays open meanwhile"
+msgstr ""
+
 msgid "this person"
 msgstr ""
 
@@ -10184,6 +10190,12 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{command} runs in {window}: answer it if it asks something. This page "
+"stays open and shows the result at the end."
+msgstr ""
+
+#, python-brace-format
 msgid "{command} works in Windows PowerShell only, for now."
 msgstr ""
 
@@ -10192,7 +10204,15 @@ msgid "{command}: done"
 msgstr ""
 
 #, python-brace-format
+msgid "{command}: done."
+msgstr ""
+
+#, python-brace-format
 msgid "{command}: failed"
+msgstr ""
+
+#, python-brace-format
+msgid "{command}: stopped (code {code}): see the window of mh."
 msgstr ""
 
 #, python-brace-format

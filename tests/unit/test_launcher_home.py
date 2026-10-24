@@ -24,6 +24,7 @@ from media_hygiene.review.home_views import (
     SIGNAL_EXIT_BASE,
     STEP_EXIT_BASE,
 )
+from media_hygiene.review.step_watch import WATCH
 from media_hygiene.services.launcher import (
     LauncherCommands,
     launcher_script,
@@ -46,11 +47,34 @@ _COMMANDS: Final = LauncherCommands(
 )
 # The reports are in a host folder: `mh` also reads the one-shot file of a form (0266).
 _RELAY: Final = f"{LAUNCHER_STEPS_VARIABLE}={RELAY_FIELDS}"
+# The home server kept up in the background, the steps run beside it (0355).
+_KEPT: Final = f"{LAUNCHER_STEPS_VARIABLE}={WATCH.kept}"
 # `menu` prints its steps; `home` exits with the next code of $CODES (then 0) and
 # says whether it was told to relay; any other command says it ran.
 _FAKE_DOCKER: Final = r"""
+said() { echo "$1" >> "$HOME/said"; }  # what the fake image did, in order
 docker() {
     if [[ "$1" == version ]]; then return 0; fi
+    if [[ "$1" == stop ]]; then said "stopped:$2"; return 0; fi
+    if [[ "$1" == wait ]]; then
+        # The page asks the console steps of $HOME/asks one by one (0355), each once
+        # the last is done; then the server ends with the code `run -d` kept.
+        local asked step=0 tries
+        if [[ -s "$HOME/asks" ]]; then
+            while IFS= read -r asked; do
+                step=$((step + 1))
+                printf '{\n"id": "s%d",\n"words": [\n"%s"\n]\n}\n' \
+                    "$step" "$asked" > "$MH_NOW"
+                for tries in $(seq 50); do
+                    if grep -qs "\"s$step\"" "$MH_DONE"; then break; fi
+                    sleep 0.1
+                done
+            done < "$HOME/asks"
+        fi
+        sleep 0.2
+        cat "$HOME/home-code"
+        return 0
+    fi
     if [[ " $* " == *" menu "* ]]; then
         echo menu >> "$HOME/menus"  # each `mh menu` container (0354)
         printf '0\taudit\n1\taudit\n2\tclean --tier near\n3\thistory\n'
@@ -61,9 +85,9 @@ docker() {
     if [[ " $* " == *" review "* ]]; then
         sleep 0.3  # a page serves a while: its tab, if any, is opened meanwhile
         if [[ " $* " == *" -e RELAY "* ]]; then
-            echo "review:relayed"
+            said "review:relayed"
         else
-            echo "review:alone"
+            said "review:alone"
         fi
         return 0
     fi
@@ -71,33 +95,45 @@ docker() {
         local ended=0
         if [[ -s "$HOME/browse" ]]; then read -r ended < "$HOME/browse"; fi
         if [[ " $* " == *" -e RELAY "* ]]; then
-            echo "browse:relayed"
+            said "browse:relayed"
         else
-            echo "browse:alone"
+            said "browse:alone"
         fi
         return "$ended"
     fi
     if [[ " $* " == *" home "* ]]; then
-        local code=0 rest
+        local code=0 rest arg prev=""
         if [[ -s "$HOME/codes" ]]; then
             read -r code rest < "$HOME/codes"
             printf '%s\n' "$rest" > "$HOME/codes"
         fi
+        if [[ " $* " == *" -d "* ]]; then
+            # In the background (0355): its id in --cidfile, its code for `docker wait`.
+            for arg in "$@"; do
+                if [[ "$prev" == --cidfile ]]; then echo "home1" > "$arg"; fi
+                prev="$arg"
+            done
+            echo "${code:-0}" > "$HOME/home-code"
+            echo "home1"
+            if [[ " $* " == *" -e KEPT "* ]]; then said "home:relayed"; return 0; fi
+            said "home:alone"
+            return 0
+        fi
         sleep 0.3  # a page serves a while: its tab, if any, is opened meanwhile
         if [[ " $* " == *" -e RELAY "* ]]; then
-            echo "home:relayed"
+            said "home:relayed"
         else
-            echo "home:alone"
+            said "home:alone"
         fi
         return "${code:-0}"
     fi
     local words=() seen=""
     for arg in "$@"; do
-        if [[ "$arg" == history || "$arg" == clean ]]; then echo "ran:$arg"; fi
+        if [[ "$arg" == history || "$arg" == clean ]]; then said "ran:$arg"; fi
         if [[ "$arg" == album ]]; then seen=1; fi
         if [[ -n "$seen" ]]; then words+=("$arg"); fi
     done
-    if [[ -n "$seen" ]]; then (IFS='|'; echo "ran:${words[*]}"); fi
+    if [[ -n "$seen" ]]; then (IFS='|'; said "ran:${words[*]}"); fi
     local ended=0  # a step ends with the code of `ran` (Ctrl+C during it: 130)
     if [[ -s "$HOME/ran" ]]; then read -r ended < "$HOME/ran"; fi
     return "$ended"
@@ -120,11 +156,23 @@ def _bash(
     script.write_text(render_script(launcher_script(runtime, Shell.BASH, _COMMANDS)))
     (tmp_path / "codes").write_text(f"{codes}\n")
     (tmp_path / "browse").write_text(f"{browse}\n")
-    fake = _FAKE_DOCKER.replace("RELAY", _RELAY)
+    fake = _FAKE_DOCKER.replace("RELAY", _RELAY).replace("KEPT", _KEPT)
     # Each tab mh opens is one line of `tabs` (0280), instead of a browser.
     tab = '_mh_browse() { echo tab >> "$HOME/tabs"; }'
-    code = f"{fake}\nsource {script}; {tab}; {line}; echo status=$?"
-    return run_bash(code, {"HOME": str(tmp_path), "PATH": "/usr/bin:/bin"})
+    said = tmp_path / "said"
+    said.unlink(missing_ok=True)
+    code = (
+        f"{fake}\nsource {script}; {tab}; {line}; s=$?; "
+        f'cat "{said}" 2>/dev/null; echo status=$s'
+    )
+    reports = Path(_step_path(script).replace("$HOME", str(tmp_path))).parent
+    steps = {
+        "HOME": str(tmp_path),
+        "PATH": "/usr/bin:/bin",
+        "MH_NOW": str(reports / WATCH.now),
+        "MH_DONE": str(reports / WATCH.done),
+    }
+    return run_bash(code, steps)
 
 
 def _code(*numbers: int) -> str:
@@ -246,7 +294,7 @@ def test_powershell_holds_the_same_loop_in_ascii() -> None:
     assert text.index("        _mh_home @typed", alone) < text.index("docker run --rm")
     assert "function global:_mh_home {" in text
     assert (
-        "            try { mh home @typed } finally { "
+        "            try { _mh_watch @typed } finally { "
         "$global:MediaHygieneRelay = $null; $global:MediaHygieneTab = $null }" in text
     )
     assert (
@@ -271,7 +319,8 @@ def test_powershell_holds_the_same_loop_in_ascii() -> None:
     assert bell < forward.index("AppActivate")
     assert "Add-Type" not in forward
     assert text.count('\n        _mh_forward "$($words[0])"') == 1  # a menu step
-    assert text.count('\n            _mh_forward "$($words[0])"') == 1  # a form's step
+    # A form's step, and a console step the server kept up for (0355).
+    assert text.count('\n            _mh_forward "$($words[0])"') == 2
     # 0280: one tab, opened by the first page of the loop; later pages show in it.
     assert "        if ($page -and -not $global:MediaHygieneTab) {" in text
     assert "            $tab = $true" in text
@@ -301,12 +350,16 @@ def test_the_powershell_loop_ends_on_a_closed_page(tmp_path: Path) -> None:
     assert text.index(closed) < text.index(f"if ($status -le {STEP_EXIT_BASE}) {{")
 
 
+def _step_path(script: Path) -> str:
+    """The one-shot file's path as the bash `mh` names it, `$HOME` unexpanded."""
+    found = re.search(r'-f "([^"]+\.mh-step\.json)"', script.read_text())
+    assert found
+    return found[1]
+
+
 def _step_file(tmp_path: Path) -> Path:
     """Where the bash `mh` of `_bash` reads the words of a form (the reports folder)."""
-    script = (tmp_path / "mh.sh").read_text()
-    found = re.search(r'-f "([^"]+\.mh-step\.json)"', script)
-    assert found
-    return Path(found[1].replace("$HOME", str(tmp_path)))
+    return Path(_step_path(tmp_path / "mh.sh").replace("$HOME", str(tmp_path)))
 
 
 def test_a_form_s_words_run_once_then_the_file_is_gone(tmp_path: Path) -> None:
@@ -412,3 +465,47 @@ def test_the_powershell_loop_ends_on_a_signal_s_code(tmp_path: Path) -> None:
     )
     assert text.index(ended) < text.index(f"if ($status -le {STEP_EXIT_BASE}) {{")
     assert text.index(ended) < text.index("$steps = @(mh @color menu)")
+
+
+def test_a_console_step_runs_while_the_server_stays_up(tmp_path: Path) -> None:
+    """0355: the page asks `history`: it runs here, the server not started again."""
+    (tmp_path / "asks").write_text("history\n")
+    done = _bash(tmp_path, "mh", "0")
+    assert _lines(done) == ["home:relayed", "ran:history", "status=0"]
+    reports = _step_file(tmp_path).parent
+    assert (reports / WATCH.done).read_text() == '{"id": "s1", "code": 0}\n'
+    assert not (reports / WATCH.running).exists()
+    assert not (reports / WATCH.now).exists()
+    assert not (tmp_path / "menus").exists()
+
+
+def test_a_page_step_still_ends_the_server_kept_up(tmp_path: Path) -> None:
+    """0355: a page needs the port: the server ends, the page runs, then home again."""
+    _bash(tmp_path, "true", "0")
+    step = _step_file(tmp_path)
+    step.parent.mkdir(parents=True, exist_ok=True)
+    write_step(step.parent, ("browse",))
+    done = _bash(tmp_path, "mh", str(STEP_EXIT_BASE + FIELDS_STEP))
+    assert _lines(done) == [
+        "home:relayed",
+        "browse:relayed",
+        "home:relayed",
+        "status=0",
+    ]
+
+
+def test_powershell_watches_the_server_in_the_background(tmp_path: Path) -> None:
+    """0355: started detached, its end seen without a docker call per poll, stopped."""
+    runtime = make_runtime(make_locations(tmp_path))
+    text = render_script(launcher_script(runtime, Shell.POWERSHELL, _COMMANDS))
+    start = text.index("function global:_mh_watch {")
+    watch = text[start : text.index("\n}\n", start)]
+    assert "$global:MediaHygieneDetach = $cid" in watch
+    assert "Start-Process -FilePath docker -ArgumentList 'wait', $id" in watch
+    assert "while (-not $waiter.HasExited) {" in watch
+    assert "Start-Sleep -Milliseconds 250" in watch
+    assert watch.count("docker ") == 2  # wait, then stop on Ctrl+C: never per poll
+    assert "if (-not $ended) { $null = docker stop $id" in watch
+    assert "[IO.File]::WriteAllText($done," in watch  # no byte order mark
+    assert "if ($detach) { $tty = @('-d', '--cidfile', $detach) }" in text
+    assert f"if ($detach) {{ $relay = @('-e', '{_KEPT}') }}" in text

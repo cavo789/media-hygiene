@@ -87,10 +87,16 @@ The page never changes your photos itself. What a step's button does depends on 
 opened the page:
 
 - **`mh` alone** (and so the Desktop shortcut and the right-click of a folder) runs the steps of
-  the page: **Start** (or the big button) closes the page and hands the step to `mh`, in the
-  window where `mh` runs (PowerShell on Windows), with the folders that step needs. The page
-  says where: *mh clean runs in the PowerShell window of mh (in the taskbar): answer it if it
-  asks something, then this page comes back by itself*, and at once, in bold, *Switch to the
+  the page: **Start** (or the big button) hands the step to `mh`, in the window where `mh` runs
+  (PowerShell on Windows), with the folders that step needs. With reports in a folder of your
+  disk (the default), the page **stays open** while a step runs in that window: *mh clean runs
+  in the PowerShell window of mh (in the taskbar): answer it if it asks something. This page
+  stays open and shows the result at the end*; then *mh clean: done.* and the page shows its
+  new state, without reloading. Only a step that opens a page of its own (search, review…)
+  closes this one meanwhile: *Back to the home page* brings it back. A second step asked while
+  one runs waits: *A step is running in the window of mh: wait for its end.* Otherwise (reports
+  in a named volume, an older `mh`) the page closes and comes back by itself after the step.
+  In both cases the page says at once, in bold, *Switch to the
   PowerShell window of mh (in the taskbar) now (Alt+Tab, or its button in the taskbar): it may
   ask you something*. `mh` also rings the terminal's bell and plays Windows' sound, often
   unheard (speakers off). What you can see: Windows Terminal makes its taskbar button flash on

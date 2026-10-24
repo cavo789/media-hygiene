@@ -775,6 +775,9 @@ msgstr ""
 "moins de bits que cette valeur (0 à 64). Une petite valeur ne repère que "
 "les répétitions de la même image. 0 désactive la règle."
 
+msgid "A step is running in the window of mh: wait for its end."
+msgstr "Une étape tourne dans la fenêtre de mh : attendez sa fin."
+
 #, python-brace-format
 msgid "A step to type yourself takes words only you know: {url}"
 msgstr ""
@@ -11773,6 +11776,9 @@ msgstr "ce fichier a déjà trop de noms"
 msgid "this list, or not"
 msgstr "cette liste, ou plus"
 
+msgid "this page stays open meanwhile"
+msgstr "cette page reste ouverte pendant ce temps"
+
 msgid "this person"
 msgstr "cette personne"
 
@@ -12115,6 +12121,14 @@ msgstr ""
 "chose, puis cette page revient d'elle-même."
 
 #, python-brace-format
+msgid ""
+"{command} runs in {window}: answer it if it asks something. This page "
+"stays open and shows the result at the end."
+msgstr ""
+"{command} s'exécute dans {window} : répondez-y s'il vous demande quelque "
+"chose. Cette page reste ouverte et montre le résultat à la fin."
+
+#, python-brace-format
 msgid "{command} works in Windows PowerShell only, for now."
 msgstr "{command} ne fonctionne que dans Windows PowerShell, pour l'instant."
 
@@ -12123,8 +12137,16 @@ msgid "{command}: done"
 msgstr "{command} : terminé"
 
 #, python-brace-format
+msgid "{command}: done."
+msgstr "{command} : terminée."
+
+#, python-brace-format
 msgid "{command}: failed"
 msgstr "{command} : échec"
+
+#, python-brace-format
+msgid "{command}: stopped (code {code}): see the window of mh."
+msgstr "{command} : arrêtée (code {code}) : voyez la fenêtre de mh."
 
 #, python-brace-format
 msgid ""

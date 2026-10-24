@@ -35,6 +35,7 @@ from media_hygiene.review.lan import lan_access
 from media_hygiene.review.lan_app import LAN_PATH, LanApp
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.presence import ALIVE_SECONDS, PRESENCE_PATH, Presence
+from media_hygiene.review.step_watch import WATCH, keeps_server
 from media_hygiene.services.album_pages import album_pages
 from media_hygiene.services.home_audit import HomeAudit
 from media_hygiene.services.home_lan import say_lan
@@ -106,7 +107,7 @@ def launcher_relays_fields() -> bool:
         True when `MEDIA_HYGIENE_LAUNCHER_STEPS` says so: `mh` reads the one-shot
         file of the reports folder (`review/home_fields.py`).
     """
-    return os.environ.get(LAUNCHER_STEPS_VARIABLE) == RELAY_FIELDS
+    return os.environ.get(LAUNCHER_STEPS_VARIABLE) in {RELAY_FIELDS, WATCH.kept}
 
 
 def launcher_relays_steps() -> bool:
@@ -151,6 +152,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         presence,
         relays_steps=relays,
         relays_fields=relays and launcher_relays_fields(),
+        keeps=relays and keeps_server(),
     )
 
     def ready(port: int) -> None:

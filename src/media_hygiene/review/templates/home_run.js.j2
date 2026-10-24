@@ -26,7 +26,7 @@ function launch(action, body, command) {
   post(P.step, body)
     .then((reply) => {
       $$("button").forEach((button) => { button.disabled = false; button.removeAttribute("aria-busy"); });
-      if (reply.ok) { openRun(action, reply.body.command, reply.run); return; }
+      if (reply.ok) { openRun(action, reply.body.command, reply.run, reply.body.kept ? reply.body.id : null); return; }
       if (reply.body.command) copyBox(reply.body.command);
       toast(reply.body.error || fill(T.failed, { status: reply.status }));
       if (reply.status === 409 && !reply.body.command) reload();
@@ -65,7 +65,7 @@ function openForm(action) {
       .then((reply) => {
         if (reply.status === 422) { error.textContent = reply.body.error; error.hidden = false; return; }
         dialog.close();
-        if (reply.ok) { openRun(action, reply.body.command, reply.run); return; }
+        if (reply.ok) { openRun(action, reply.body.command, reply.run, reply.body.kept ? reply.body.id : null); return; }
         if (reply.body.command) copyBox(reply.body.command);
         toast(reply.body.error || fill(T.failed, { status: reply.status }));
       })
@@ -91,22 +91,40 @@ function openConfirm(action, body, command) {
 // in this very tab (mh opens no other); its "Back to the home page" comes back to this section,
 // kept for this tab in sessionStorage (home_link.html.j2, apply_now.html.j2 read it). A console
 // step says at once to switch to the window of mh, which mh tries to bring forward (0285).
-function openRun(action, command, run) {
-  presence.away = true;
+// A console step `mh` runs beside this server (`kept`, its id; 0355): the page stays and
+// follows it, then reads its state again.
+function openRun(action, command, run, kept) {
+  if (!kept) presence.away = true;
   try { window.sessionStorage.setItem("mh-home-section", window.location.hash); } catch { /* private mode: the top of the page */ }
   const dialog = $("#runDlg");
   const where = fill(action.kind === "page" ? T.runsPage : T.runsConsole, { command: command, window: WINDOW });
   dialog.innerHTML = `<div class="dlg">
     <div class="dlg-head"><div><p class="eyebrow">${icon("play")} ${esc(T.stepStarted)}</p><h2 id="runTitle">${esc(action.title)}</h2></div></div>
     <div class="term" aria-hidden="true"><div class="term-head"><span class="term-dots"><i></i><i></i><i></i></span>${esc(WINDOW)}</div><pre class="term-body"><span class="p">PS&gt;</span> ${esc(command)}<span class="cursor"></span>
-<span class="c"># ${esc(T.termComment)}</span></pre></div>
-    <p class="dlg-text" role="status">${esc(where)}</p>
+<span class="c"># ${esc(kept ? T.termKept : T.termComment)}</span></pre></div>
+    <p class="dlg-text" role="status">${esc(kept ? fill(T.runsKept, { command: command, window: WINDOW }) : where)}</p>
     ${action.kind === "page" ? "" : `<p class="dlg-alert" role="alert">${icon("keyboard")} ${esc(fill(T.switchNow, { window: WINDOW }))}</p>`}
     <p class="dlg-hint" id="runHint" hidden>${icon("info")} ${esc(fill(T.nothingMoves, { window: WINDOW }))}</p>
     <p class="muted small">${esc(T.notOpenedByMh)}</p>
   </div>`;
   showDialog(dialog);
-  waitForComeBack(action.kind === "page", run);
+  if (kept) followStep(kept, command);
+  else waitForComeBack(action.kind === "page", run);
+}
+// The step's files, as mh writes them (`GET /api/step`): its end closes the dialog. The
+// server gone meanwhile (an older mh, a crash): wait for the next one, as before.
+function followStep(id, command) {
+  const poll = () => fetch(P.step, { cache: "no-store" })
+    .then((response) => response.json())
+    .then((step) => {
+      if (step.state !== "done" || step.id !== id) { window.setTimeout(poll, POLL_MS); return; }
+      $("#runDlg").close();
+      const ok = step.code === 0;
+      toast(fill(ok ? T.stepDone : T.stepFailed, { command: command, code: step.code }), ok ? "ok" : "info");
+      reload();
+    })
+    .catch(() => { presence.away = true; waitForComeBack(false, null); });
+  window.setTimeout(poll, POLL_MS);
 }
 // "/" and not the state: any page answers it, the step's page as well as the home page.
 function waitForComeBack(page, run) {

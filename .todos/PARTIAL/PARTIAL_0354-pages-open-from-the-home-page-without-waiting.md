@@ -124,3 +124,13 @@ Today: several seconds per click (felt, not timed), of which ≈ 1 s for `mh men
 container (*estimated* from 0277's 0.6 s). After the two quick cuts: about 1.3 s less per click
 (*estimated*); with one server: under 0.2 s (*estimated*: the page's own requests only). The
 maintainer clicks dozens of times per session.
+
+## Status — PARTIAL (2026-10-24)
+
+### Done
+- The three cuts listed under *Done* above (commit `aabd24c`); the single server chosen by the
+  maintainer and split into 0355–0361.
+
+### Not done
+- Step 35 run again on the maintainer's PC (image rebuilt) to write before → after here.
+  **Reason:** a measurement only Windows + Docker Desktop gives.

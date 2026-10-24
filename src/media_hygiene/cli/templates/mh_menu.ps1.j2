@@ -20,7 +20,11 @@ function global:_{{ function }}_home {
             $after = $false
             $global:MediaHygieneRelay = $true
             $global:MediaHygieneTab = $tab
+{% if host.step_file %}
+            try { _{{ function }}_watch @typed } finally { $global:MediaHygieneRelay = $null; $global:MediaHygieneTab = $null }  # 0355
+{% else %}
             try { {{ function }} home @typed } finally { $global:MediaHygieneRelay = $null; $global:MediaHygieneTab = $null }
+{% endif %}
             $status = $LASTEXITCODE
             if ($status -le {{ step_base }} -or $status -ge {{ signal_base }}) { return }
             $tab = $true
@@ -64,6 +68,57 @@ function global:_{{ function }}_home {
     }
 }
 
+{% if host.step_file %}
+# The home page in the background (0355): each console step its page asks for, in
+# {{ watch.now }}, runs here while the page stays up ({{ watch.running }}, then {{ watch.done }}
+# with its exit code); the server's own code once it ended. Its end is seen at no cost
+# (docker wait in a process of its own, HasExited); Ctrl+C stops it, the prompt back.
+function global:_{{ function }}_watch {
+    $folder = Split-Path -Parent "{{ host.step_file }}"
+    $now = Join-Path $folder '{{ watch.now }}'
+    $running = Join-Path $folder '{{ watch.running }}'
+    $done = Join-Path $folder '{{ watch.done }}'
+    $cid = Join-Path $folder '{{ watch.cid }}'
+    $code = Join-Path $folder '{{ watch.code }}'
+    Remove-Item -LiteralPath $cid, $code, $now, $running -Force -ErrorAction SilentlyContinue
+    $global:MediaHygieneHeld = $null
+    $global:MediaHygieneDetach = $cid
+    try { $null = {{ function }} home @args } finally { $global:MediaHygieneDetach = $null }
+    if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $cid)) { return }
+    $id = "$(Get-Content -LiteralPath $cid -TotalCount 1)".Trim()
+    $held = $global:MediaHygieneHeld
+    $global:MediaHygieneHeld = $null
+    $waiter = Start-Process -FilePath docker -ArgumentList 'wait', $id -NoNewWindow -PassThru -RedirectStandardOutput $code
+    $ended = $false
+    try {
+        while (-not $waiter.HasExited) {
+            if (-not (Test-Path -LiteralPath $now)) { Start-Sleep -Milliseconds 250; continue }
+            $step = Get-Content -LiteralPath $now -Raw -Encoding UTF8 | ConvertFrom-Json
+            Remove-Item -LiteralPath $now -Force -ErrorAction SilentlyContinue
+            # Without a byte order mark: the server reads it as JSON.
+            [IO.File]::WriteAllText($running, '{"id": "' + $step.id + '"}')
+            $words = @($step.words)
+            $chosen = @($words | ForEach-Object { if ("$_" -match '[\s\\]') { '"' + $_ + '"' } else { $_ } }) -join ' '
+            Write-Host "{{ texts.direct }}"
+            _{{ function }}_forward "$($words[0])"
+            $global:LASTEXITCODE = 0
+            {{ function }} @words @args
+            $result = [int]$LASTEXITCODE
+            [IO.File]::WriteAllText($done, '{"id": "' + $step.id + '", "code": ' + $result + '}')
+            Remove-Item -LiteralPath $running -Force -ErrorAction SilentlyContinue
+        }
+        $ended = $true
+    } finally {
+        if (-not $ended) { $null = docker stop $id 2>$null; $global:LASTEXITCODE = {{ signal_base + 2 }} }
+        if ($held -and $held.browser) { Remove-Job -Job $held.browser -Force }
+        if ($held -and $held.shared -and $held.shared.mounted) { _{{ function }}_unmount $held.shared.mounted }
+        if ($held -and $held.nas -and $held.nas.volumes) { _{{ function }}_nas_release $held.nas.volumes }
+    }
+    $said = "$(Get-Content -LiteralPath $code -TotalCount 1 -ErrorAction SilentlyContinue)".Trim()
+    $global:LASTEXITCODE = if ($said -match '^\d+$') { [int]$said } else { 1 }
+}
+
+{% endif %}
 # A console step chosen on the home page: the bell (BEL: Windows Terminal flashes its taskbar
 # button when its bellStyle holds "taskbar") and Windows' sound, heard whatever the terminal;
 # then this window brought forward when Windows allows it: the classic console only, measured

@@ -93,11 +93,17 @@ La page ne modifie jamais vos photos elle-même. Ce que fait le bouton d'une ét
 qui a ouvert la page :
 
 - **`mh` seul** (et donc le raccourci du Bureau et le clic droit d'un dossier) lance les étapes
-  de la page : **Lancer** (ou le gros bouton) ferme la page et confie l'étape à `mh`, dans la
-  fenêtre où `mh` tourne (PowerShell sous Windows), avec les dossiers dont l'étape a besoin. La
-  page dit où : *mh clean s'exécute dans la fenêtre PowerShell de mh (dans la barre des
-  tâches) : répondez-y s'il vous demande quelque chose, puis cette page revient d'elle-même*,
-  et aussitôt, en gras, *Passez maintenant à la fenêtre PowerShell de mh (dans la barre des
+  de la page : **Lancer** (ou le gros bouton) confie l'étape à `mh`, dans la fenêtre où `mh`
+  tourne (PowerShell sous Windows), avec les dossiers dont l'étape a besoin. Avec les rapports
+  dans un dossier de votre disque (le cas par défaut), la page **reste ouverte** pendant qu'une
+  étape tourne dans cette fenêtre : *mh clean s'exécute dans la fenêtre PowerShell de mh (dans
+  la barre des tâches) : répondez-y s'il vous demande quelque chose. Cette page reste ouverte
+  et montre le résultat à la fin* ; puis *mh clean : terminée.* et la page montre son nouvel
+  état, sans se recharger. Seule une étape qui ouvre sa propre page (search, review…) ferme
+  celle-ci entre-temps : *Retour à l'accueil* la ramène. Une deuxième étape demandée pendant
+  qu'une autre tourne attend : *Une étape tourne dans la fenêtre de mh : attendez sa fin.*
+  Sinon (rapports dans un volume nommé, un `mh` plus ancien), la page se ferme et revient
+  d'elle-même après l'étape. Dans les deux cas, la page dit aussitôt, en gras, *Passez maintenant à la fenêtre PowerShell de mh (dans la barre des
   tâches) (Alt+Tab, ou son bouton dans la barre des tâches) : mh peut vous y demander quelque
   chose*. `mh` fait aussi sonner la cloche du terminal et joue le son de Windows, souvent
   inaudible (haut-parleurs coupés). Ce qui se voit : Windows Terminal fait clignoter son bouton

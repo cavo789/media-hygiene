@@ -67,3 +67,35 @@ control all of Docker Desktop).
 
 Back on the home page after a console step: 4.8–5.6 s → under 0.5 s (*estimated*); the base for
 0356 (pages served by the same server) and 0361 (pages that write).
+
+## Status — PARTIAL (2026-10-24)
+
+### Done
+- `MEDIA_HYGIENE_LAUNCHER_STEPS=3` (`review/step_watch.py`, `WATCH`): a console step chosen on
+  the page (numbered or with fields) is written into `.mh-step-now.json` with an id and the
+  server keeps serving; a page step still ends it (`.mh-step.json`, 0354); any step asked while
+  one waits or runs: 409 *A step is running in the window of mh*. `GET /api/step`: idle /
+  waiting / running / done (id, exit code; a byte order mark accepted).
+- `mh.ps1` / `mh.sh`: `_mh_watch` starts the home page with `docker run -d --cidfile`, sees its
+  end through `docker wait` in a process of its own (PowerShell: `Start-Process -PassThru`,
+  `HasExited`; bash: a background job), polls the file every 250 ms with no docker call, runs
+  the step in its window, writes the running then done files (no byte order mark), stops the
+  server on Ctrl+C (`finally` / `trap INT`), releases the tab job, the USB stick and the NAS
+  volumes once the server ended. Older `mh` scripts keep today's protocol (values 1 and 2).
+- The page (`home_run.js.j2`): a kept step shows *runs in the window of mh … This page stays
+  open*, follows `GET /api/step`, then *done* / *stopped (code n)* and its state read again
+  without reload; beats go on (not *away*).
+- Tests: the bash loop with a fake docker that runs detached and asks console steps
+  (`test_launcher_home.py`), the PowerShell blocks as text, the server's protocol
+  (`test_step_watch.py`). Step 36 of `mh-measure.ps1`; docs en + fr (`commands/home.md`).
+
+### Not done
+- A crash of the server restarted once by `mh` (item 1 of *What to do*).
+  **Reason:** an exit code that is not a step's, 0 or a signal's is today returned to the
+  prompt; telling a crash from an exit of the tool (1 for a user error) needs a code of its own
+  from the server — left for 0356, which changes how the server starts.
+- The run on Windows: step 36 of `mh-measure.ps1` (PowerShell 5.1 cannot run in the
+  devcontainer). Command: build the image of branch `iterate/2026-10-24`, then
+  `.\mh-measure.ps1 -Only 36 -Count 1 -Image media-hygiene` (the script fetched by the commit
+  of this branch, `mh update` first).
+  **Reason:** only the maintainer's PC runs Windows PowerShell and Docker Desktop.

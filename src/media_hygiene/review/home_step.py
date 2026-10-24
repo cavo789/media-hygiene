@@ -5,7 +5,9 @@ gives that command: its words go into the one-shot file when `mh` reads it (0354
 the server ends as for a step with fields; else it ends with `STEP_EXIT_BASE + n`, and
 `mh` reads step `n` from `mh menu`, a container of its own. A step with fields
 is sent as its name and its values: they are checked, written into the one-shot file
-(`home_fields`), and the server ends with `STEP_EXIT_BASE + FIELDS_STEP`. Each needs
+(`home_fields`), and the server ends with `STEP_EXIT_BASE + FIELDS_STEP`. With an `mh`
+that keeps the server up, a console step is handed over without ending (`step_watch`,
+0355). Each needs
 a JSON body: a page of another site cannot send one without the browser asking first.
 """
 
@@ -24,6 +26,7 @@ from media_hygiene.review.home_fields import FieldError, checked_words, write_st
 from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response, refused_post
+from media_hygiene.review.step_watch import busy, keep_step, runs_beside
 from media_hygiene.services.next_command import LAUNCHER_FUNCTION
 
 if TYPE_CHECKING:
@@ -55,6 +58,7 @@ class StepDoor:
     reports_dir: Path
     relays_steps: bool = False  # `mh` runs the step `STEP_EXIT_BASE + n` names
     relays_fields: bool = False  # `mh` also runs the words of the one-shot file
+    keeps: bool = False  # `mh` keeps the server up and runs a console step beside it
 
 
 async def step_response(door: StepDoor, request: Request) -> Response:
@@ -78,19 +82,40 @@ async def step_response(door: StepDoor, request: Request) -> Response:
         chosen = _Chosen.model_validate_json(request.body)
     except ValidationError:
         return Response(HTTPStatus.BAD_REQUEST)
+    pending = busy(door.reports_dir) if door.keeps else None
+    if pending is not None:
+        return pending
     if chosen.name:
         return await _with_fields(door, chosen)
+    return await _numbered(door, chosen)
+
+
+async def _numbered(door: StepDoor, chosen: _Chosen) -> Response:
+    """Hand over a step of `mh menu`, when the menu still gives that command.
+
+    Args:
+        door: The state, the end, the reports folder, what `mh` relays.
+        chosen: The step's number and command.
+
+    Returns:
+        The step about to run, or kept beside the server; 409 when the steps changed.
+    """
     state = await asyncio.to_thread(door.state)
     number = chosen.number or 0
     command = state.command_of(number)
     if not number or command is None or command != chosen.command:
         message = _("The steps changed since the page was shown: here they are.")
         return json_response(HTTPStatus.CONFLICT, {"error": message})
-    door.ending.end(STEP_EXIT_BASE + await _handed(door, number, command))
+    words = tuple(command.split())  # as `mh` splits `mh menu`'s line
+    if words[:1] == (LAUNCHER_FUNCTION,):
+        words = words[1:]
+    if door.keeps and runs_beside(words):
+        return await keep_step(door.reports_dir, words, command)
+    door.ending.end(STEP_EXIT_BASE + await _handed(door, number, words))
     return json_response(HTTPStatus.OK, {"number": number, "command": command})
 
 
-async def _handed(door: StepDoor, number: int, command: str) -> int:
+async def _handed(door: StepDoor, number: int, words: tuple[str, ...]) -> int:
     """Hand a step of the menu to `mh`: its words in the one-shot file when it reads it.
 
     `mh` then runs them at once, without running `mh menu` in a container of its own
@@ -100,16 +125,13 @@ async def _handed(door: StepDoor, number: int, command: str) -> int:
     Args:
         door: The reports folder, what `mh` relays.
         number: The step's number in `mh menu`.
-        command: Its command as the page shows it, `mh audit`.
+        words: Its words, without `mh`.
 
     Returns:
         The code to end with, less `STEP_EXIT_BASE`.
     """
     if not door.relays_fields:
         return number
-    words = tuple(command.split())  # as `mh` splits `mh menu`'s line
-    if words[:1] == (LAUNCHER_FUNCTION,):
-        words = words[1:]
     try:
         await asyncio.to_thread(write_step, door.reports_dir, words)
     except OSError:
@@ -141,6 +163,8 @@ async def _with_fields(door: StepDoor, chosen: _Chosen) -> Response:
         return json_response(
             HTTPStatus.CONFLICT, {"error": message, "command": command}
         )
+    if door.keeps and runs_beside(words):
+        return await keep_step(door.reports_dir, words, command)
     try:
         await asyncio.to_thread(write_step, door.reports_dir, words)
     except OSError:
