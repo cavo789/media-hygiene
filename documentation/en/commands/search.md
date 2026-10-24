@@ -63,7 +63,8 @@ opens `browse`, the same server. Ctrl+C, or closing its tab, stops the page.
   (or I) picks the others.
 - **Look**: Enter or a double click shows the photo large (with a link to the original); ← → the
   previous or next one, Delete sets it aside then shows the next one, F full screen, ? every key,
-  Escape closes it.
+  Escape closes it. **👤 Set a person aside** finds every photo of someone on the one shown
+  ([`people`](people.md#from-any-page-set-a-person-aside)).
 
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20 files
 as a table.

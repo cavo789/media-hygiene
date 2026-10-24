@@ -533,6 +533,9 @@ msgid ""
 "folder (done anyway for those listed {days} days ago)."
 msgstr ""
 
+msgid "A photo of this person: its path"
+msgstr ""
+
 msgid ""
 "A photo or RAW file up to this size, in MB, is read once into memory: it "
 "is checked and its fingerprint computed from that one reading. Each "
@@ -1299,6 +1302,9 @@ msgid "Clean {run_id}"
 msgstr ""
 
 msgid "Cleaning"
+msgstr ""
+
+msgid "Click the face of the person to set aside."
 msgstr ""
 
 msgid ""
@@ -2437,6 +2443,9 @@ msgid ""
 "disks. Start with 'audit' (read-only), then 'clean'."
 msgstr ""
 
+msgid "Find every photo of a person on this one, to set them aside"
+msgstr ""
+
 msgid "Find exact duplicates and broken files."
 msgstr ""
 
@@ -2460,6 +2469,9 @@ msgstr ""
 msgid ""
 "Find the faces in the photos, group those alike and name them in your "
 "browser. Faces kept in the cache, never sent anywhere."
+msgstr ""
+
+msgid "Find their photos"
 msgstr ""
 
 msgid "Finding faces"
@@ -3334,6 +3346,12 @@ msgstr ""
 msgid "Look again at the photos gone"
 msgstr ""
 
+msgid "Look again, slower: the photo turned, less strict"
+msgstr ""
+
+msgid "Looking at the photo turned, one angle after the other…"
+msgstr ""
+
 msgid "Looking at the photos"
 msgstr ""
 
@@ -3812,7 +3830,15 @@ msgstr ""
 msgid "No event left to decide after this one."
 msgstr ""
 
+msgid "No face found, even turned: set this photo aside on its own."
+msgstr ""
+
 msgid "No face looked for: 'people', or the next 'audit --people', does it later."
+msgstr ""
+
+msgid ""
+"No face was found on this photo when its faces were analysed: look again,"
+" slower."
 msgstr ""
 
 msgid "No file has words yet: nothing can be found."
@@ -4746,6 +4772,9 @@ msgid ""
 "written)."
 msgstr ""
 
+msgid "Paste the path of a photo of this person on the left."
+msgstr ""
+
 msgid "Path"
 msgstr ""
 
@@ -4760,6 +4789,10 @@ msgid "Per photo: {describe:.1f} s to describe, {map:.1f} s to map."
 msgstr ""
 
 msgid "Person"
+msgstr ""
+
+#, python-brace-format
+msgid "Person of {name}"
 msgstr ""
 
 msgid "Personal place"
@@ -5741,6 +5774,9 @@ msgid ""
 "photos show: they are sent to its url, and only there."
 msgstr ""
 
+msgid "Set a person aside"
+msgstr ""
+
 msgid "Set album.root in config.toml to a folder outside it."
 msgstr ""
 
@@ -5808,6 +5844,15 @@ msgstr ""
 
 msgid "Set this cluster aside"
 msgstr ""
+
+msgid "Set this photo aside (Delete)"
+msgstr ""
+
+#, python-brace-format
+msgid "Set this photo aside too"
+msgid_plural "Set these {n} photos aside too"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Setting"
 msgstr ""
@@ -5894,6 +5939,11 @@ msgid "Show this message and exit."
 msgstr ""
 
 msgid "Show your photos on the TV"
+msgstr ""
+
+msgid ""
+"Shown for you to check, never set aside on their own: take out with × the"
+" faces of someone else, then set the others aside too."
 msgstr ""
 
 msgid "Sidecar"
@@ -6201,6 +6251,9 @@ msgstr ""
 msgid "Take the batch back ({events})"
 msgstr ""
 
+msgid "Take this photo back (Backspace)"
+msgstr ""
+
 msgid "Take this photo out of the set aside"
 msgstr ""
 
@@ -6482,6 +6535,9 @@ msgid ""
 "covers most of the work."
 msgstr ""
 
+msgid "The face models are not in the cache yet: run 'audit --people' once."
+msgstr ""
+
 msgid "The face of reference that gave the name:"
 msgstr ""
 
@@ -6493,6 +6549,11 @@ msgid ""
 msgstr ""
 
 msgid "The faces ignored on the people page; config.toml links this file."
+msgstr ""
+
+msgid ""
+"The faces of this photo were never looked for: run 'audit --people', or "
+"look again, slower."
 msgstr ""
 
 #, python-brace-format
@@ -7113,8 +7174,23 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Their face is remembered: the people page shows the photos that look like"
+" them, to check."
+msgstr ""
+
+msgid ""
+"Their face is remembered: the photos that look like them will be shown at"
+" the top of this page, to check."
+msgstr ""
+
+msgid ""
 "Their folders, their name, their date, their place, and what a local AI "
 "sees in them if you have one."
+msgstr ""
+
+msgid ""
+"Their photos are found by their face; you check them before setting them "
+"aside."
 msgstr ""
 
 msgid ""
@@ -9700,6 +9776,10 @@ msgstr ""
 msgid "the other name looks like a copy"
 msgstr ""
 
+#, python-brace-format
+msgid "the person set aside on {date}"
+msgstr ""
+
 msgid "the previous or next one"
 msgstr ""
 
@@ -9802,6 +9882,9 @@ msgid "this file has too many names already"
 msgstr ""
 
 msgid "this list, or not"
+msgstr ""
+
+msgid "this person"
 msgstr ""
 
 msgid "this setting is required"
@@ -10143,6 +10226,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} burst series seen before the last clean stays seen."
+msgid_plural "{count} burst series seen before the last clean stay seen."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid ""
 "{count} burst series: optional, ~{effort} in 'review'; a series not "
 "reviewed is kept whole."
@@ -10225,12 +10314,6 @@ msgid ""
 "{count} edit carried over from the workbook saved on {day} {month} {year}"
 " at {time}: {path}"
 msgid_plural ""
-#, python-brace-format
-msgid "{count} burst series seen before the last clean stays seen."
-msgid_plural "{count} burst series seen before the last clean stay seen."
-msgstr[0] ""
-msgstr[1] ""
-
 "{count} edits carried over from the workbook saved on {day} {month} "
 "{year} at {time}: {path}"
 msgstr[0] ""
@@ -11448,6 +11531,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} other photo looks like the person you set aside on {date}"
+msgid_plural "{n} other photos look like the person you set aside on {date}"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} photo"
 msgid_plural "{n} photos"
 msgstr[0] ""
@@ -11456,6 +11545,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} photo could not be read: not included."
 msgid_plural "{n} photos could not be read: not included."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} photo of this person"
+msgid_plural "{n} photos of this person"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -11595,6 +11690,10 @@ msgstr ""
 msgid ""
 "{path} is not a mounted folder: files moved there would vanish with the "
 "container."
+msgstr ""
+
+#, python-brace-format
+msgid "{path} is not a photo of the folders this page shows."
 msgstr ""
 
 #, python-brace-format

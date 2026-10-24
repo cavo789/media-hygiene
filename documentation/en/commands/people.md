@@ -112,9 +112,51 @@ To forget someone (a former partner, say), remove the photos they are on from th
    stop the page. It moves the photos to the quarantine, journaled; [`undo`](undo.md) puts them
    back, [`purge`](purge.md) frees the space.
 
+**The page remembers the person.** Setting aside the photos of a group keeps their faces in the
+cache, without a name and without the photos (nothing goes into `config.toml`). Each time the
+page opens, the photos that look like that person come first, in a section of their own: *N
+other photos look like the person you set aside on <date>*, the faces of no group included (too
+small, too blurry, seen once). They are shown for you to check, never set aside on their own:
+take out with × the faces of someone else, then **Set these N photos aside too**. A photo added
+later shows there at the next opening. The faces are kept after `clean` and `purge`; taking the
+photos back (↺, **Take out of the set aside**, or `undo`) forgets them, and `people --forget`
+forgets them with every other face.
+
+**One photo at a time.** A face the tool cannot see (in profile, blurred, a tilted photo) leaves
+its photo in someone else's section. Click the face: the large view shows the photo with **Set
+this photo aside** (or the Delete key); Backspace takes it back.
+
 The same `decisions.json` keeps what [`search`](search.md#set-photos-aside) and
 [`review`](review.md) set aside: one `clean --decisions` applies everything. A photo changed
 since you chose it is left in place.
+
+## From any page: set a person aside
+
+A photo shows someone you never want to see again, on any page (`review`, `browse`, `search`):
+**👤 this person** under a shot of `review`, or **👤 Set a person aside** in the large view of
+`browse` and `search`, opens the page *Set a person aside* in a new tab, on that photo. You can
+also open it yourself at `/person` on the address of any of these pages and paste the path of a
+photo (`C:\Photos\…\IMG_1234.jpg`).
+
+1. The page shows the faces found on that photo by `audit --people`; click the right one (one
+   face alone is taken at once).
+2. On the right, the photos of that person, the closest first, as a grid to pick like in
+   [`browse`](browse.md): click, Ctrl, Shift, rectangle, Ctrl+A, I, Delete, the large view and
+   its keys. If they look like someone you set aside before, the bar says so (*the person set
+   aside on <date>*): what you set aside now joins that person.
+3. Delete (or **Set aside the picked files**) saves them at once in `decisions.json`, read back
+   and shown, and remembers the face, as [above](#remove-every-photo-of-someone): the people
+   page will show the photos that look like it. Opened from a page `mh` opened from the home
+   page, **Apply now** in the bar runs `clean --decisions` like on that page.
+4. A photo of the grid shows the person from another angle? Its **👤** (next to its name, or in
+   its large view) opens the page again on that photo, in a new tab.
+
+**No face on the photo?** A face tilted, lying on its side or blurred is often missed by the
+audit, which looks at each photo upright. **Look again, slower** looks at that one photo turned
+(up to 90° each way) and less strictly; what it finds is shown to choose from, never stored.
+Measured on 9 real photos of one person missed by the audit: 6 found, 1 just at the limit, 2
+not (very blurred). When nothing is found, set the photo aside on its own (Delete in its large
+view).
 
 ## Options
 

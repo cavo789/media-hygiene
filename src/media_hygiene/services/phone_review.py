@@ -20,6 +20,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.person.door import with_person
 from media_hygiene.review.ending import (
     STOP_PATH,
     STOPPED,
@@ -114,6 +115,7 @@ def serve_phone_review(runtime: Runtime, review: PhoneReview) -> tuple[str, ...]
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         app = PhoneApp(session, _page(place, header), executor, runtime.previews_dir)
         door = EndingDoor(app, app.ending, Presence(app.ending, closed))
+        door = with_person(door, runtime, executor)
         asyncio.run(serve_until_ended(door, review.port, ready))
     return session.ticked_lines() if session.freeing else ()
 

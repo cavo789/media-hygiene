@@ -31,6 +31,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.paths.host_paths import HostPathMapper
+    from media_hygiene.people.alike import AlikeFinder
     from media_hygiene.people.aside import AsideDesk
     from media_hygiene.people.roster import Roster
     from media_hygiene.review.http import Request
@@ -53,6 +54,7 @@ class PeopleApp:
     executor: Executor
     previews: Path | None = None  # the cache folder of previews, if any
     aside: AsideDesk | None = None  # None: no reports folder to set photos aside in
+    alike: AlikeFinder | None = None  # None: no cache remembering who was set aside
 
     async def connection(
         self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter
@@ -147,15 +149,16 @@ class PeopleApp:
         return json_response(HTTPStatus.OK, {**self._state(), "aside": said})
 
     def _state(self) -> dict[str, object]:
-        """The groups, each with how many of its photos are set aside.
+        """The groups, how many of their photos are set aside, the faces like theirs.
 
         Returns:
             The state the page reads.
         """
         view = self._view()
         state = self.roster.state(view)
-        chosen = len(view.aside)
-        return {**state, "can_aside": self.aside is not None, "chosen": chosen}
+        alike = [] if self.alike is None else self.alike.view(view)
+        can = self.aside is not None
+        return {**state, "can_aside": can, "chosen": len(view.aside), "alike": alike}
 
     def _view(self) -> PageView:
         """Host paths, and the files set aside as the decisions file holds them.

@@ -59,19 +59,20 @@ def letterbox(picture: Image.Image) -> Letterbox:
     return Letterbox(canvas.transpose(2, 0, 1)[np.newaxis].copy(), scale)
 
 
-def decode(outputs: Outputs, scale: float) -> Rows:
+def decode(outputs: Outputs, scale: float, least: float = MIN_SCORE) -> Rows:
     """Read the detector's answer as faces, in the picture's pixels.
 
     Args:
         outputs: Output name (`cls_8`, `obj_8`, `bbox_8`, `kps_8`, ...) → values.
         scale: The scale of the letterbox.
+        least: The lowest score kept (`MIN_SCORE`, lower for a second look).
 
     Returns:
         One row per face kept (see `BOX`, `LANDMARKS`, `SCORE`), best first.
     """
     rows = [_stride_rows(outputs, stride) for stride in STRIDES]
     found = np.concatenate(rows) if rows else np.empty((0, _ROW))
-    found = found[found[:, SCORE] >= MIN_SCORE]
+    found = found[found[:, SCORE] >= least]
     found[:, :SCORE] /= scale
     return suppress(found)
 

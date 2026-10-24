@@ -119,9 +119,56 @@ lui-même :
    arrêtez la page. Il déplace les photos en quarantaine, journalisé ; [`undo`](undo.md) les
    remet, [`purge`](purge.md) libère la place.
 
+**La page se souvient de la personne.** Mettre de côté les photos d'un groupe garde leurs
+visages dans le cache, sans nom et sans les photos (rien ne va dans `config.toml`). À chaque
+ouverture de la page, les photos qui ressemblent à cette personne viennent en premier, dans une
+section à part : *N autres photos ressemblent à la personne mise de côté le <date>*, y compris
+les visages d'aucun groupe (trop petits, trop flous, vus une seule fois). Elles sont montrées
+pour que vous vérifiiez, jamais mises de côté toutes seules : retirez avec × les visages de
+quelqu'un d'autre, puis **Mettre aussi ces N photos de côté**. Une photo ajoutée plus tard y
+apparaît à l'ouverture suivante. Les visages restent après `clean` et `purge` ; reprendre les
+photos (↺, **Retirer de la mise de côté**, ou `undo`) les oublie, et `people --forget` les
+oublie avec tous les autres visages.
+
+**Une photo à la fois.** Un visage que l'outil ne voit pas (de profil, flou, une photo penchée)
+laisse sa photo dans la section de quelqu'un d'autre. Cliquez sur le visage : la grande vue
+montre la photo avec **Mettre cette photo de côté** (ou la touche Suppr) ; Retour arrière la
+reprend.
+
 Le même `decisions.json` garde ce que [`search`](search.md#mettre-des-photos-de-côté) et
 [`review`](review.md) ont mis de côté : un seul `clean --decisions` applique tout. Une photo
 modifiée depuis votre choix reste en place.
+
+## Depuis n'importe quelle page : mettre une personne de côté
+
+Une photo montre quelqu'un que vous ne voulez plus voir, sur n'importe quelle page (`review`,
+`browse`, `search`) : **👤 cette personne** sous une photo de `review`, ou **👤 Mettre une
+personne de côté** dans la grande vue de `browse` et `search`, ouvre la page *Mettre une
+personne de côté* dans un nouvel onglet, sur cette photo. Vous pouvez aussi l'ouvrir vous-même à
+`/person` sur l'adresse de l'une de ces pages et y coller le chemin d'une photo
+(`C:\Photos\…\IMG_1234.jpg`).
+
+1. La page montre les visages trouvés sur cette photo par `audit --people` ; cliquez sur le bon
+   (un visage seul est pris d'office).
+2. À droite, les photos de cette personne, les plus ressemblantes d'abord, en grille à choisir
+   comme dans [`browse`](browse.md) : clic, Ctrl, Maj, rectangle, Ctrl+A, I, Suppr, la grande vue
+   et ses touches. Si elles ressemblent à quelqu'un mis de côté avant, la barre le dit (*la
+   personne mise de côté le <date>*) : ce que vous mettez de côté maintenant rejoint cette
+   personne.
+3. Suppr (ou **Mettre de côté les fichiers choisis**) les enregistre aussitôt dans
+   `decisions.json`, relu et affiché, et retient le visage, comme
+   [plus haut](#retirer-toutes-les-photos-de-quelquun) : la page people montrera les photos qui
+   lui ressemblent. Si la page qui la sert a été ouverte par `mh` depuis l'accueil,
+   **Appliquer maintenant** dans la barre lance `clean --decisions` comme sur cette page.
+4. Une photo de la grille montre la personne sous un autre angle ? Son **👤** (à côté de son nom,
+   ou dans sa grande vue) rouvre la page sur cette photo, dans un nouvel onglet.
+
+**Pas de visage sur la photo ?** Un visage penché, couché ou flou échappe souvent à l'audit, qui
+regarde chaque photo droite. **Regarder encore, plus lentement** regarde cette seule photo
+tournée (jusqu'à 90° de chaque côté) et moins exigeante ; ce qu'elle trouve est montré pour
+choisir, jamais enregistré. Mesuré sur 9 vraies photos d'une même personne manquées par
+l'audit : 6 retrouvées, 1 tout juste à la limite, 2 non (très floues). Quand rien n'est trouvé,
+mettez la photo de côté toute seule (Suppr dans sa grande vue).
 
 ## Options
 

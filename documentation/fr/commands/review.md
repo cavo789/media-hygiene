@@ -125,6 +125,9 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
   d'abord), puis l'accueil revient. Ouvertes par `mh review` seul : pas de bouton, tapez la
   commande `clean`.
 - Une photo d'un **dossier protégé** n'est jamais proposée ni écartée.
+- **👤 cette personne**, sous chaque photo, ouvre dans un nouvel onglet toutes les photos de
+  quelqu'un présent sur cette photo, pour les mettre toutes de côté : voir
+  [`people`](people.md#depuis-nimporte-quelle-page--mettre-une-personne-de-côté).
 - Le tri des rafales a aussi un champ **Album** : **➕ Ajouter à l'album** met dans cet album les
   photos de la série affichée qui ne sont pas écartées, à part de vos décisions. Voir
   [Mettre des photos dans un album](search.md#mettre-des-photos-dans-un-album).

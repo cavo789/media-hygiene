@@ -78,6 +78,8 @@ Your browser opens on the page (if not: `http://127.0.0.1:8088/`).
   | ? | every key of the large view, under the picture |
 
   A line under the picture recalls the main keys; the panel under the tree lists them all.
+  **👤 Set a person aside**, next to the link to the original, finds every photo of someone on
+  the one shown: see [`people`](people.md#from-any-page-set-a-person-aside).
 - **Pick**: a click picks one file; the ☑ box of each thumbnail (or Ctrl+click) adds or removes
   one; Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse
   over the grid picks what it touches, over several rows (with Ctrl, it adds to the picking);

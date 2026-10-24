@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import ExitCode
 from media_hygiene.i18n.templates import translated_environment
+from media_hygiene.person.door import with_person
 from media_hygiene.review.apply_api import APPLY_PATH, ApplyDesk, ApplyOffer
 from media_hygiene.review.ending import Ending, EndingDoor, serve_until_ended
 from media_hygiene.review.page_header import headed_page
@@ -127,6 +128,7 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> Serv
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         closing = Presence(ending, ExitCode.PAGE_CLOSED)  # its tab closed (0262)
         door = EndingDoor(SearchApp(place, pages, executor), ending, closing)
+        door = with_person(door, runtime, executor)
         ready = partial(_announce, runtime, start)
         code = asyncio.run(serve_until_ended(door, start.port, ready))
     return Served(len(chosen.paths()), code)

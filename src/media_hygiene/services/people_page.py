@@ -21,6 +21,7 @@ from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.paths.mounts import is_writable
+from media_hygiene.people.alike import AlikeFinder
 from media_hygiene.people.app import (
     CHANGE_PATH,
     GROUPS_PATH,
@@ -31,8 +32,10 @@ from media_hygiene.people.app import (
 from media_hygiene.people.aside import ASIDE_PATH, AsideDesk
 from media_hygiene.people.board import PeopleBoard
 from media_hygiene.people.pictures import FACE_PREFIX, PHOTO_PREFIX
+from media_hygiene.people.remembered import AsideMemory
 from media_hygiene.people.roster import NamesFile, Roster
 from media_hygiene.people.views import STRIP
+from media_hygiene.person.door import with_person
 from media_hygiene.review.apply_api import APPLY_PATH, ApplyOffer, applying_door
 from media_hygiene.review.ending import serve_until_ended
 from media_hygiene.review.page_header import page_header
@@ -96,19 +99,45 @@ def serve_people(
         apply_offered=start.apply is not None,
     )
     names = NamesFile(_names_file(runtime), runtime.settings.people, result.moves)
-    roster = Roster(PeopleBoard.of(result.groups), result.every, names)
-    aside = AsideDesk(chosen_store(runtime), partial(reports_ready, runtime))
+    board = PeopleBoard.of(result.groups, result.every)
+    roster = Roster(board, result.every, names)
+    aside, alike = _aside_desks(runtime, board)
     offer = ApplyOffer(start.apply, lambda: bool(aside.paths()))
     code = 0
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         app = PeopleApp(
-            roster, runtime.mapper, page.encode(), executor, runtime.previews_dir, aside
+            roster,
+            runtime.mapper,
+            page.encode(),
+            executor,
+            runtime.previews_dir,
+            aside,
+            alike,
         )
-        ready = partial(_announce, runtime, roster)
+        door = with_person(applying_door(app, offer), runtime, executor)
         code = asyncio.run(
-            serve_until_ended(applying_door(app, offer), start.port, ready)
+            serve_until_ended(door, start.port, partial(_announce, runtime, roster))
         )
     return PeopleServed(len(aside.paths()), code)
+
+
+def _aside_desks(
+    runtime: Runtime, board: PeopleBoard
+) -> tuple[AsideDesk, AlikeFinder | None]:
+    """Where the photos set aside go, and who looks like the people set aside.
+
+    Args:
+        runtime: Mount points.
+        board: Every face of the page.
+
+    Returns:
+        The desk saving the photos and remembering the faces; the finder of the
+        faces like theirs, None without a persistent cache.
+    """
+    memory = AsideMemory.of(runtime)
+    ready = partial(reports_ready, runtime)
+    aside = AsideDesk(chosen_store(runtime), ready, memory)
+    return aside, None if memory is None else AlikeFinder(board, memory)
 
 
 def names_file(runtime: Runtime) -> Path | None:

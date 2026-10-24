@@ -684,6 +684,9 @@ msgstr ""
 "relit tous les dossiers (c'est fait de toute façon pour ceux listés il y "
 "a {days} jours)."
 
+msgid "A photo of this person: its path"
+msgstr "Une photo de cette personne : son chemin"
+
 msgid ""
 "A photo or RAW file up to this size, in MB, is read once into memory: it "
 "is checked and its fingerprint computed from that one reading. Each "
@@ -1598,6 +1601,9 @@ msgstr "Nettoyage {run_id}"
 
 msgid "Cleaning"
 msgstr "Nettoyage"
+
+msgid "Click the face of the person to set aside."
+msgstr "Cliquez sur le visage de la personne à mettre de côté."
 
 msgid ""
 "Click the map or drag the pin where these photos were taken, then save: "
@@ -3003,6 +3009,11 @@ msgstr ""
 " dossiers et disques. Commencez par 'audit' (lecture seule), puis "
 "'clean'."
 
+msgid "Find every photo of a person on this one, to set them aside"
+msgstr ""
+"Trouver toutes les photos d'une personne de celle-ci, pour les mettre de "
+"côté"
+
 msgid "Find exact duplicates and broken files."
 msgstr "Trouver les doublons exacts et les fichiers cassés."
 
@@ -3035,6 +3046,9 @@ msgstr ""
 "Trouver les visages des photos, regrouper ceux qui se ressemblent et les "
 "nommer dans votre navigateur. Visages gardés dans le cache, jamais "
 "envoyés nulle part."
+
+msgid "Find their photos"
+msgstr "Trouver ses photos"
 
 msgid "Finding faces"
 msgstr "Recherche des visages"
@@ -4065,6 +4079,12 @@ msgstr "Longitude"
 msgid "Look again at the photos gone"
 msgstr "Revoir les photos disparues"
 
+msgid "Look again, slower: the photo turned, less strict"
+msgstr "Regarder encore, plus lentement : la photo tournée, moins exigeant"
+
+msgid "Looking at the photo turned, one angle after the other…"
+msgstr "La photo est regardée tournée, un angle après l'autre…"
+
 msgid "Looking at the photos"
 msgstr "Regard sur les photos"
 
@@ -4638,10 +4658,22 @@ msgstr "Aucun événement dans cette proposition : rien à revoir."
 msgid "No event left to decide after this one."
 msgstr "Plus aucun événement à décider après celui-ci."
 
+msgid "No face found, even turned: set this photo aside on its own."
+msgstr ""
+"Aucun visage trouvé, même en tournant la photo : mettez-la de côté toute "
+"seule."
+
 msgid "No face looked for: 'people', or the next 'audit --people', does it later."
 msgstr ""
 "Aucun visage cherché : 'people', ou le prochain 'audit --people', s'en "
 "chargera plus tard."
+
+msgid ""
+"No face was found on this photo when its faces were analysed: look again,"
+" slower."
+msgstr ""
+"Aucun visage n'a été trouvé sur cette photo quand ses visages ont été "
+"analysés : regardez encore, plus lentement."
 
 msgid "No file has words yet: nothing can be found."
 msgstr "Aucun fichier n'a encore de mots : rien ne peut être trouvé."
@@ -5757,6 +5789,9 @@ msgstr ""
 "Collez-la dans le terminal où vous avez lancé l'audit (PowerShell ou "
 "bash, tel qu'écrit)."
 
+msgid "Paste the path of a photo of this person on the left."
+msgstr "Collez à gauche le chemin d'une photo de cette personne."
+
 msgid "Path"
 msgstr "Chemin"
 
@@ -5774,6 +5809,10 @@ msgstr ""
 
 msgid "Person"
 msgstr "Personne"
+
+#, python-brace-format
+msgid "Person of {name}"
+msgstr "Personne de {name}"
 
 msgid "Personal place"
 msgstr "Lieu personnel"
@@ -6957,6 +6996,9 @@ msgstr ""
 " ajouter ce que montrent les photos : elles sont envoyées à son url, et "
 "seulement là."
 
+msgid "Set a person aside"
+msgstr "Mettre une personne de côté"
+
 msgid "Set album.root in config.toml to a folder outside it."
 msgstr "Réglez album.root dans config.toml sur un dossier en dehors de celui-ci."
 
@@ -7032,6 +7074,15 @@ msgstr "Écarter les photos ratées"
 
 msgid "Set this cluster aside"
 msgstr "Écarter ce groupe"
+
+msgid "Set this photo aside (Delete)"
+msgstr "Mettre cette photo de côté (Suppr)"
+
+#, python-brace-format
+msgid "Set this photo aside too"
+msgid_plural "Set these {n} photos aside too"
+msgstr[0] "Mettre aussi cette photo de côté"
+msgstr[1] "Mettre aussi ces {n} photos de côté"
 
 msgid "Setting"
 msgstr "Réglage"
@@ -7138,6 +7189,14 @@ msgstr "Affiche ce message et quitte."
 
 msgid "Show your photos on the TV"
 msgstr "Montrer vos photos sur la télé"
+
+msgid ""
+"Shown for you to check, never set aside on their own: take out with × the"
+" faces of someone else, then set the others aside too."
+msgstr ""
+"Montrées pour que vous vérifiiez, jamais mises de côté toutes seules : "
+"retirez avec × les visages de quelqu'un d'autre, puis mettez aussi les "
+"autres de côté."
 
 msgid "Sidecar"
 msgstr "Fichier compagnon"
@@ -7495,6 +7554,9 @@ msgstr "Retirer de la mise de côté"
 msgid "Take the batch back ({events})"
 msgstr "Reprendre le lot ({events})"
 
+msgid "Take this photo back (Backspace)"
+msgstr "Reprendre cette photo (Retour arrière)"
+
 msgid "Take this photo out of the set aside"
 msgstr "Retirer cette photo de la mise de côté"
 
@@ -7844,6 +7906,11 @@ msgstr ""
 "Les événements de la feuille Événements, dans son ordre : nommer les "
 "premiers couvre l'essentiel du travail."
 
+msgid "The face models are not in the cache yet: run 'audit --people' once."
+msgstr ""
+"Les modèles de visages ne sont pas encore dans le cache : lancez une fois"
+" 'audit --people'."
+
 msgid "The face of reference that gave the name:"
 msgstr "Le visage de référence qui a donné le nom :"
 
@@ -7863,6 +7930,13 @@ msgid "The faces ignored on the people page; config.toml links this file."
 msgstr ""
 "Les visages ignorés dans la page des personnes ; config.toml renvoie à ce"
 " fichier."
+
+msgid ""
+"The faces of this photo were never looked for: run 'audit --people', or "
+"look again, slower."
+msgstr ""
+"Les visages de cette photo n'ont jamais été cherchés : lancez 'audit "
+"--people', ou regardez encore, plus lentement."
 
 #, python-brace-format
 msgid ""
@@ -8644,11 +8718,32 @@ msgstr ""
 "soient maintenant (retrouvées par leur contenu)."
 
 msgid ""
+"Their face is remembered: the people page shows the photos that look like"
+" them, to check."
+msgstr ""
+"Son visage est retenu : la page people montre les photos qui lui "
+"ressemblent, à vérifier."
+
+msgid ""
+"Their face is remembered: the photos that look like them will be shown at"
+" the top of this page, to check."
+msgstr ""
+"Son visage est retenu : les photos qui lui ressemblent seront montrées en"
+" haut de cette page, à vérifier."
+
+msgid ""
 "Their folders, their name, their date, their place, and what a local AI "
 "sees in them if you have one."
 msgstr ""
 "Leurs dossiers, leur nom, leur date, leur lieu, et ce qu'y voit une IA "
 "locale si vous en avez une."
+
+msgid ""
+"Their photos are found by their face; you check them before setting them "
+"aside."
+msgstr ""
+"Ses photos sont trouvées par son visage ; vous les vérifiez avant de les "
+"mettre de côté."
 
 msgid ""
 "Then look for faces in the photos not looked at yet (as 'people' does), "
@@ -11546,6 +11641,10 @@ msgstr "la date la plus ancienne"
 msgid "the other name looks like a copy"
 msgstr "l'autre nom ressemble à une copie"
 
+#, python-brace-format
+msgid "the person set aside on {date}"
+msgstr "la personne mise de côté le {date}"
+
 msgid "the previous or next one"
 msgstr "la précédente ou la suivante"
 
@@ -11673,6 +11772,9 @@ msgstr "ce fichier a déjà trop de noms"
 
 msgid "this list, or not"
 msgstr "cette liste, ou plus"
+
+msgid "this person"
+msgstr "cette personne"
 
 msgid "this setting is required"
 msgstr "ce réglage est obligatoire"
@@ -12057,6 +12159,12 @@ msgstr[0] "{count} rafale pas encore vue : ses photos restent."
 msgstr[1] "{count} rafales pas encore vues : leurs photos restent."
 
 #, python-brace-format
+msgid "{count} burst series seen before the last clean stays seen."
+msgid_plural "{count} burst series seen before the last clean stay seen."
+msgstr[0] "{count} rafale déjà vue avant le dernier clean le reste."
+msgstr[1] "{count} rafales déjà vues avant le dernier clean le restent."
+
+#, python-brace-format
 msgid ""
 "{count} burst series: optional, ~{effort} in 'review'; a series not "
 "reviewed is kept whole."
@@ -12158,12 +12266,6 @@ msgid ""
 "since: shown in red, choose again."
 msgid_plural ""
 "{count} earlier choices of the page were edited otherwise in the workbook"
-#, python-brace-format
-msgid "{count} burst series seen before the last clean stays seen."
-msgid_plural "{count} burst series seen before the last clean stay seen."
-msgstr[0] "{count} rafale déjà vue avant le dernier clean le reste."
-msgstr[1] "{count} rafales déjà vues avant le dernier clean le restent."
-
 " since: shown in red, choose again."
 msgstr[0] ""
 "{count} choix précédent de la page a été modifié autrement dans le "
@@ -13704,6 +13806,12 @@ msgstr[0] "{n} écartée sur {count}"
 msgstr[1] "{n} écartées sur {count}"
 
 #, python-brace-format
+msgid "{n} other photo looks like the person you set aside on {date}"
+msgid_plural "{n} other photos look like the person you set aside on {date}"
+msgstr[0] "{n} autre photo ressemble à la personne mise de côté le {date}"
+msgstr[1] "{n} autres photos ressemblent à la personne mise de côté le {date}"
+
+#, python-brace-format
 msgid "{n} photo"
 msgid_plural "{n} photos"
 msgstr[0] "{n} photo"
@@ -13714,6 +13822,12 @@ msgid "{n} photo could not be read: not included."
 msgid_plural "{n} photos could not be read: not included."
 msgstr[0] "{n} photo n'a pas pu être lue : non incluse."
 msgstr[1] "{n} photos n'ont pas pu être lues : non incluses."
+
+#, python-brace-format
+msgid "{n} photo of this person"
+msgid_plural "{n} photos of this person"
+msgstr[0] "{n} photo de cette personne"
+msgstr[1] "{n} photos de cette personne"
 
 #, python-brace-format
 msgid "{n} photo or video"
@@ -13864,6 +13978,10 @@ msgid ""
 msgstr ""
 "{path} n'est pas un dossier monté : les fichiers déplacés là "
 "disparaîtraient avec le conteneur."
+
+#, python-brace-format
+msgid "{path} is not a photo of the folders this page shows."
+msgstr "{path} n'est pas une photo des dossiers que montre cette page."
 
 #, python-brace-format
 msgid "{path} is not a valid albums file."

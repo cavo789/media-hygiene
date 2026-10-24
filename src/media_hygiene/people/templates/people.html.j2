@@ -12,7 +12,9 @@
    are not shown: a line says how many, *Show* draws them dimmed to take one back (0327). Each
    title folds or unfolds its section (o); verified ones come folded, as a strip of a few
    faces, their sample asked for on opening (0323); what is folded is remembered in this
-   browser, by person and kind. #}
+   browser, by person and kind. A group set aside is remembered (0328): the faces that look
+   like it come first, in a section of their own, to check and set aside too. The large view
+   sets its one photo aside (Delete) or takes it back (Backspace) (0329). #}
 {% set texts = {
   "group": _("Group {number}"),
   "size": _("{faces} in {photos}"),
@@ -50,6 +52,12 @@
   "picked": [ngettext("{n} group picked: the next name goes to it.", "{n} groups picked: the next name goes to all of them.", 1), ngettext("{n} group picked: the next name goes to it.", "{n} groups picked: the next name goes to all of them.", 2)],
   "saving": _("Saving…"),
   "readOnly": _("Names cannot be saved: mount a writable folder on /config."),
+  "alikeTitle": [ngettext("{n} other photo looks like the person you set aside on {date}", "{n} other photos look like the person you set aside on {date}", 1), ngettext("{n} other photo looks like the person you set aside on {date}", "{n} other photos look like the person you set aside on {date}", 2)],
+  "alikeHint": _("Shown for you to check, never set aside on their own: take out with × the faces of someone else, then set the others aside too."),
+  "alikeAside": [ngettext("Set this photo aside too", "Set these {n} photos aside too", 1), ngettext("Set this photo aside too", "Set these {n} photos aside too", 2)],
+  "remembered": _("Their face is remembered: the photos that look like them will be shown at the top of this page, to check."),
+  "photoAside": _("Set this photo aside (Delete)"),
+  "photoBack": _("Take this photo back (Backspace)"),
 } %}
 {% set page_name = _("People") %}
 <html lang="{{ _('en') }}">
@@ -115,7 +123,11 @@
             align-items: center; justify-content: center; gap: 8px; padding: 16px;
             background: rgba(0, 0, 0, .88); color: #fff; }
   #viewer.open { display: flex; }
-  #viewer img { max-width: 100%; max-height: calc(100vh - 90px); object-fit: contain; }
+  #viewer img { max-width: 100%; max-height: calc(100vh - 130px); object-fit: contain; }
+  #viewer button { padding: 4px 12px; font: inherit; border: 1px solid var(--line);
+                   border-radius: 6px; background: var(--chip); color: var(--text); cursor: pointer; }
+  #viewerSaid { min-height: 1.5em; font-size: .85rem; }
+  section.alike { border-color: var(--bad); }
 </style>
 </head>
 <body>
@@ -127,11 +139,14 @@
   <p id="status" role="status"></p>
   {% include "apply_now.html.j2" %}
 </header>
+<div id="alike"></div>
 <main id="groups"></main>
 <datalist id="names"></datalist>
 <div id="viewer" role="dialog" aria-modal="true">
   <img id="large" alt="">
   <div id="viewerName"></div>
+  <button id="viewerAside" type="button" hidden></button>
+  <div id="viewerSaid" role="status"></div>
 </div>
 <script>
 "use strict";
@@ -152,6 +167,8 @@ const picked = new Set();
 const removed = new Set();
 const whole = new Map(); // face number → every face of its group, once shown in full
 const showing = new Set(); // sections whose hidden faces are drawn, by `sectionKey`
+const outAlike = new Set(); // faces taken out of the look-alike sections by ×
+let viewing = null; // the face whose photo the large view shows, and whether it is set aside
 let foldedSaved = {}; // `sectionKey` → folded, for the named sections (this browser only)
 try { foldedSaved = JSON.parse(localStorage.getItem(FOLDED_KEY) || "{}") || {}; } catch (error) { foldedSaved = {}; }
 
@@ -300,9 +317,11 @@ async function send(body, path) {
     return;
   }
   picked.clear();
-  for (const key of [...(body.faces || []), ...(body.removed || [])]) removed.delete(key);
+  for (const key of [...(body.faces || []), ...(body.removed || [])]) { removed.delete(key); outAlike.delete(key); }
   show(result);
-  say(result.saved || result.aside.message, "saved");
+  const remembered = result.aside && result.aside.remembered ? " " + TEXTS.remembered : "";
+  say((result.saved || result.aside.message) + remembered, "saved");
+  return result;
 }
 
 function nameGroups(index, name) {
@@ -333,11 +352,7 @@ function face(item, index, verified, kind) {
   picture.src = FACE + item.key + ".jpg";
   picture.alt = item.photo;
   picture.title = item.photo;
-  picture.addEventListener("click", () => {
-    $("large").src = PHOTO + item.key + ".jpg";
-    $("viewerName").textContent = item.photo;
-    $("viewer").classList.add("open");
-  });
+  picture.addEventListener("click", () => openViewer(item, kind === "hidden"));
   if (kind === "strip") { box.append(picture); return box; }
   if (kind === "hidden") {
     const back = element("button", "", "↺");
@@ -356,6 +371,78 @@ function face(item, index, verified, kind) {
   box.append(picture, out);
   if (verified) box.append(element("span", "check", "✓"));
   return box;
+}
+
+// The large view: the photo of a face, its path, and its one photo set aside or back.
+function openViewer(item, isAside) {
+  viewing = { item: item, aside: isAside };
+  $("large").src = PHOTO + item.key + ".jpg";
+  $("viewerName").textContent = item.photo;
+  $("viewerSaid").textContent = "";
+  viewerButton();
+  $("viewer").classList.add("open");
+}
+
+function viewerButton() {
+  const button = $("viewerAside");
+  button.hidden = !state.can_aside || !viewing;
+  if (viewing) button.textContent = viewing.aside ? TEXTS.photoBack : TEXTS.photoAside;
+}
+
+// One photo, its faces not someone's to remember: set aside, or taken back.
+async function viewerChoice(action) {
+  if (!viewing || !state.can_aside || viewing.aside === (action === "add")) return;
+  const body = { action: action, faces: [viewing.item.key], remember: false };
+  const result = await send(body, ASIDE_PATH);
+  if (!result) return;
+  viewing.aside = action === "add";
+  viewerButton();
+  $("viewerSaid").textContent = result.aside.message;
+}
+
+// A face that looks like someone set aside: × leaves it out of what is set aside.
+function alikeFace(item) {
+  const box = element("div", "face");
+  const picture = element("img");
+  picture.loading = "lazy";
+  picture.src = FACE + item.key + ".jpg";
+  picture.alt = picture.title = item.photo;
+  picture.addEventListener("click", () => openViewer(item, false));
+  const isOut = outAlike.has(item.key);
+  box.classList.toggle("out", isOut);
+  const out = element("button", "", isOut ? "↺" : "×");
+  out.title = isOut ? TEXTS.putBack : TEXTS.remove;
+  out.setAttribute("aria-label", out.title);
+  out.addEventListener("click", (event) => {
+    event.stopPropagation();
+    if (outAlike.has(item.key)) outAlike.delete(item.key); else outAlike.add(item.key);
+    drawAlike();
+  });
+  box.append(picture, out);
+  return box;
+}
+
+// "n other photos look like the person you set aside on <date>": checked, then set aside.
+function alikeSection(person) {
+  const node = element("section", "alike");
+  const title = element("h2", "", fill(counted(TEXTS.alikeTitle, person.photos), { date: person.date }));
+  if (person.label) title.append(" ", element("small", "", person.label));
+  const kept = person.faces.filter((item) => !outAlike.has(item.key));
+  const bar = element("div", "tools");
+  if (state.can_aside) {
+    const button = element("button", "main", counted(TEXTS.alikeAside, new Set(kept.map((item) => item.photo)).size));
+    button.disabled = !kept.length;
+    button.addEventListener("click", () => send({ action: "add", faces: kept.map((item) => item.key), label: person.label, into: person.aside }, ASIDE_PATH));
+    bar.append(button);
+  }
+  const faces = element("div", "faces");
+  faces.append(...person.faces.map(alikeFace));
+  node.append(title, element("p", "hint", TEXTS.alikeHint), bar, faces);
+  return node;
+}
+
+function drawAlike() {
+  $("alike").replaceChildren(...(state.alike || []).map(alikeSection));
 }
 
 function tools(item, index) {
@@ -510,6 +597,7 @@ function show(next) {
   current = Math.min(current, Math.max(0, state.sections.length - 1));
   $("names").replaceChildren(...state.people.map((name) => { const option = element("option"); option.value = name; return option; }));
   render();
+  drawAlike();
   const notes = [];
   if (!state.sections.length) notes.push(TEXTS.none);
   if (state.alone) notes.push(counted(TEXTS.alone, state.alone));
@@ -553,6 +641,13 @@ function move(step) {
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") { $("viewer").classList.remove("open"); return; }
+  if ($("viewer").classList.contains("open")) {
+    if (event.key === "Delete") viewerChoice("add");
+    else if (event.key === "Backspace") viewerChoice("remove");
+    else return;
+    event.preventDefault();
+    return;
+  }
   if (!state.sections.length || event.ctrlKey || event.metaKey || event.altKey) return;
   const item = state.sections[current];
   if (event.key === "ArrowDown" || event.key === "j") move(1);
@@ -566,6 +661,10 @@ document.addEventListener("keydown", (event) => {
   event.preventDefault();
 });
 $("viewer").addEventListener("click", () => $("viewer").classList.remove("open"));
+$("viewerAside").addEventListener("click", (event) => {
+  event.stopPropagation();
+  viewerChoice(viewing && viewing.aside ? "remove" : "add");
+});
 load();
 </script>
 {% include "home_link.html.j2" %}

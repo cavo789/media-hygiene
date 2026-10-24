@@ -67,7 +67,9 @@ fermer son onglet, arrête la page.
   les autres.
 - **Regarder** : Entrée ou un double clic montre la photo en grand (avec un lien vers
   l'original) ; ← → la précédente ou la suivante, Suppr la met de côté puis montre la suivante, F
-  plein écran, ? toutes les touches, Échap la ferme.
+  plein écran, ? toutes les touches, Échap la ferme. **👤 Mettre une personne de côté** trouve
+  toutes les photos de quelqu'un depuis celle qui est montrée
+  ([`people`](people.md#depuis-nimporte-quelle-page--mettre-une-personne-de-côté)).
 
 Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers
 fichiers en tableau.

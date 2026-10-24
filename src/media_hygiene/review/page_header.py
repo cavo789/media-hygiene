@@ -40,6 +40,7 @@ PAGE_STEPS: Final = MappingProxyType(
         "browse.html.j2": "browse",
         "places.html.j2": "places",
         "people.html.j2": "people",
+        "person.html.j2": "people",
         "slideshow.html.j2": "slideshow",
         "shrink.html.j2": "shrink",
     }

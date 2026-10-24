@@ -2,39 +2,22 @@
 
 from __future__ import annotations
 
-import asyncio
 import json
 from http import HTTPStatus
+from pathlib import PureWindowsPath
 from typing import TYPE_CHECKING
 
 from media_hygiene.people.app import PeopleApp
 from media_hygiene.report.decisions import read_decisions
-from media_hygiene.review.http import Request
 from tests.support.cli import run
+from tests.support.faces import coloured
+from tests.support.json_calls import answer, call
 
 if TYPE_CHECKING:
     import pytest
     from typer.testing import CliRunner
 
     from media_hygiene.paths.locations import Locations
-    from media_hygiene.review.http import Response
-
-JSON = {"host": "127.0.0.1:8766", "content-type": "application/json"}
-
-
-def call(app: object, route: str, body: object = None) -> Response:
-    """Send one request to the page app."""
-    assert isinstance(app, PeopleApp)
-    method, path = route.split()
-    data = b"" if body is None else json.dumps(body).encode()
-    return asyncio.run(app.handle(Request(method, path, JSON, data)))
-
-
-def answer(app: object, route: str, body: object = None) -> dict[str, object]:
-    """The JSON answer of one request."""
-    result = json.loads(call(app, route, body).body)
-    assert isinstance(result, dict)
-    return result
 
 
 def largest(app: object) -> dict[str, object]:
@@ -173,3 +156,119 @@ def test_a_section_whose_photos_are_all_set_aside_still_offers_them_back(
     assert isinstance(sections, list)
     empty = next(one for one in sections if one["hidden"])
     assert (empty["faces"], empty["shown"], empty["aside"]) == (0, [], 4)
+
+
+def alike(app: object) -> list[dict[str, object]]:
+    """The look-alike sections of the page (TODO 0328)."""
+    found = answer(app, "GET /api/groups")["alike"]
+    assert isinstance(found, list)
+    return found
+
+
+def alike_photos(app: object) -> set[str]:
+    """The photos of every look-alike section."""
+    return {
+        str(face["photo"])
+        for person in alike(app)
+        for face in person["faces"]  # type: ignore[attr-defined]
+    }
+
+
+def new_photo(cli: CliRunner, locations: Locations, person: int) -> str:
+    """A photo of someone added later, audited: its name."""
+    later = locations.data_dir / "c" / "Later" / f"NEW_{person}.png"
+    coloured(later, person, (80, 60))  # not a copy of an older photo
+    assert run(cli, "audit").exit_code == 0
+    return f"NEW_{person}.png"
+
+
+def test_a_group_set_aside_is_remembered_and_photos_like_it_are_shown(
+    cli: CliRunner, apps: list[object], locations: Locations
+) -> None:
+    """Its faces are kept; a new photo of that person shows on top, another not."""
+    assert run(cli, "people").exit_code == 0
+    app = apps[-1]
+    faces = every_face(app, largest(app))
+    added = answer(
+        app, "POST /api/aside", {"action": "add", "faces": faces, "label": "Ex"}
+    )
+    # The fake gives one vector per person: kept once, as copies of a photo are.
+    assert added["aside"]["remembered"] == 1  # type: ignore[index]
+    assert alike(app) == []  # every photo like them is set aside already
+    name = new_photo(cli, locations, 0)
+    new_photo(cli, locations, 1)
+    assert run(cli, "people").exit_code == 0
+    shown = alike(apps[-1])
+    assert len(shown) == 1
+    assert (shown[0]["label"], shown[0]["photos"]) == ("Ex", 1)
+    assert [PureWindowsPath(photo).name for photo in alike_photos(apps[-1])] == [name]
+
+
+def test_faces_set_aside_too_join_the_person_and_taking_back_forgets_them(
+    cli: CliRunner, apps: list[object], locations: Locations
+) -> None:
+    """`into` adds to the same person; taken back, the faces are forgotten."""
+    assert run(cli, "people").exit_code == 0
+    faces = every_face(apps[-1], largest(apps[-1]))
+    answer(apps[-1], "POST /api/aside", {"action": "add", "faces": faces})
+    new_photo(cli, locations, 0)
+    assert run(cli, "people").exit_code == 0
+    app = apps[-1]
+    person = alike(app)[0]
+    keys = [face["key"] for face in person["faces"]]  # type: ignore[attr-defined]
+    body = {"action": "add", "faces": keys, "into": person["aside"]}
+    joined = answer(app, "POST /api/aside", body)
+    assert joined["aside"]["remembered"] == 1  # type: ignore[index]
+    assert joined["alike"] == []
+    every = [*faces, *keys]
+    answer(app, "POST /api/aside", {"action": "remove", "faces": every})
+    assert alike(app) == []  # nobody remembered any more: nothing looks like them
+
+
+def test_clean_and_purge_keep_the_faces_of_the_person_set_aside(
+    cli: CliRunner, apps: list[object], locations: Locations
+) -> None:
+    """The photos go, then are erased: their faces still find a new photo."""
+    assert run(cli, "people").exit_code == 0
+    faces = every_face(apps[-1], largest(apps[-1]))
+    answer(apps[-1], "POST /api/aside", {"action": "add", "faces": faces})
+    cleaned = run(cli, "clean", "--yes", "--decisions", "decisions.json")
+    assert cleaned.exit_code == 0, cleaned.output
+    assert run(cli, "purge", "--yes").exit_code == 0
+    for size in ((70, 50), (60, 40)):  # a group left for the page to show
+        coloured(locations.data_dir / "c" / "Later" / f"P1_{size[0]}.png", 1, size)
+    name = new_photo(cli, locations, 0)
+    assert run(cli, "people").exit_code == 0
+    assert [PureWindowsPath(photo).name for photo in alike_photos(apps[-1])] == [name]
+
+
+def test_undo_forgets_the_faces_of_the_photos_it_brings_back(
+    cli: CliRunner, apps: list[object], locations: Locations
+) -> None:
+    """Moved by `clean`, back by `undo`: that person is not remembered any more."""
+    assert run(cli, "people").exit_code == 0
+    faces = every_face(apps[-1], largest(apps[-1]))
+    answer(apps[-1], "POST /api/aside", {"action": "add", "faces": faces})
+    assert run(cli, "clean", "--yes", "--decisions", "decisions.json").exit_code == 0
+    assert run(cli, "undo").exit_code == 0
+    new_photo(cli, locations, 0)
+    assert run(cli, "people").exit_code == 0
+    assert alike(apps[-1]) == []
+
+
+def test_one_photo_set_aside_from_the_large_view_leaves_its_section(
+    cli: CliRunner, apps: list[object], locations: Locations
+) -> None:
+    """TODO 0329: in `chosen`, hidden from its section, its face not remembered."""
+    assert run(cli, "people").exit_code == 0
+    app = apps[-1]
+    first = every_face(app, largest(app))[0]
+    body = {"action": "add", "faces": [first], "remember": False}
+    said = answer(app, "POST /api/aside", body)["aside"]
+    assert isinstance(said, dict)
+    assert said["count"] == 1
+    assert "remembered" not in said
+    assert len(read_decisions(locations.reports_dir / "decisions.json").chosen) == 1
+    section = largest(app)
+    assert [face["key"] for face in section["hidden"]] == [first]  # type: ignore[attr-defined]
+    assert alike(app) == []

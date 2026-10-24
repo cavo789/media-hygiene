@@ -100,4 +100,9 @@ opened from the home page.
    no `pageerror`, the grid's top the same before and after a pick.
 3. Its documentation page describes the gestures in the words of `documentation/*/commands/browse.md`,
    both languages; say that `docs_screenshots` should run.
-4. When filing a TODO for a page of tiles, name this skill and the gestures it must offer.
+4. Opened from the home page, *Apply now* shows in the bar once something is set aside: the
+   server renders `apply_offered` and `apply_path` (`apply_now.html.j2` shows nothing without
+   them — the template alone proves nothing), and a test asks the page served for
+   `id="applyNow"`. A page served under another page's server (`/person`) takes that page's
+   step (`person/door.py`, `host_apply`). Missed on `/person`, 2026-10-24.
+5. When filing a TODO for a page of tiles, name this skill and the gestures it must offer.

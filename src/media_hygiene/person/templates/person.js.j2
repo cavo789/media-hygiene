@@ -1,0 +1,127 @@
+{# The script of `/person` (`person.html.j2`): a photo's faces, then the photos of the face
+   chosen. The picking, the bar and the large view are `pick_grid.js.j2`'s and
+   `pick_viewer.js.j2`'s; the saving is this page's (`saveChoice`): it sends the faces, so
+   that the server remembers the person (`into`: the same person at each save). #}
+const TEXTS = {{ texts | tojson }};
+const ROUTES = {{ paths | tojson }}; // photo, look, like, aside
+let photo = "";        // the photo of the person, as the user knows it
+let seed = null;       // the number of the face chosen
+let known = null;      // the person set aside before that face looks like, if any
+let into = "";         // the person this page set aside, once saved: later saves join them
+
+function sideSay(text) {
+  $("sideSaid").textContent = text;
+}
+
+function card(file, index) {
+  const node = element("article");
+  const picture = element("img");
+  picture.loading = "lazy";
+  picture.draggable = false; // a drag draws a rectangle (`pick_band.js.j2`)
+  picture.alt = file.name;
+  picture.src = file.thumb;
+  picture.addEventListener("error", () => picture.replaceWith(element("div", "empty", TEXTS.noPreview)));
+  const meta = element("div", "meta");
+  const again = element("a", "again", "👤");
+  again.href = "/person?path=" + encodeURIComponent(file.path);
+  again.target = "_blank";
+  again.rel = "noopener";
+  again.title = TEXTS.again;
+  again.addEventListener("click", (event) => event.stopPropagation()); // opens, never picks
+  const name = element("div", "name", file.name + " ");
+  name.append(again);
+  meta.append(name, element("div", "muted where", file.where));
+  node.append(picture, meta);
+  return wireCard(node, index);
+}
+
+function scope() {
+  return {};
+}
+
+async function post(path, body) {
+  const answer = await ask(path, body);
+  if (!answer || !answer.ok) { failed(answer); return null; }
+  return answer.json();
+}
+
+// The faces of the photo, to choose the person's: one alone is chosen at once.
+function showFaces(faces) {
+  $("faces").replaceChildren(...faces.map((face) => {
+    const picture = element("img");
+    picture.src = face.face;
+    picture.alt = TEXTS.chooseFace;
+    picture.dataset.key = face.key;
+    picture.addEventListener("click", () => chooseFace(face.key));
+    return picture;
+  }));
+  if (faces.length === 1) chooseFace(faces[0].key);
+  else if (faces.length) sideSay(TEXTS.chooseFace);
+}
+
+async function find(typed) {
+  const result = await post(ROUTES.photo, { path: typed });
+  if (!result) return;
+  seed = null;
+  showFiles([]);
+  $("status").textContent = TEXTS.start;
+  if (result.said) { sideSay(result.said); $("faces").replaceChildren(); $("lookAgain").hidden = true; return; }
+  photo = result.photo;
+  if (window.mhApplyNow) window.mhApplyNow(result.chosen > 0); // apply_now.html.j2, opened from home
+  $("lookAgain").hidden = false;
+  sideSay(result.faces.length ? "" : (result.scanned ? TEXTS.noFace : TEXTS.notScanned));
+  showFaces(result.faces);
+}
+
+async function lookAgain() {
+  sideSay(TEXTS.looking);
+  $("lookAgain").disabled = true;
+  const result = await post(ROUTES.look, { path: photo });
+  $("lookAgain").disabled = false;
+  if (!result) return;
+  sideSay(result.said || "");
+  showFaces(result.faces);
+}
+
+async function chooseFace(key) {
+  seed = key;
+  for (const picture of $("faces").children) picture.classList.toggle("chosen", Number(picture.dataset.key) === key);
+  await reopen(false);
+}
+
+// The photos of the face chosen, the closest first; the same ones keep their cards.
+async function reopen(again) {
+  if (seed === null) return;
+  const result = await post(ROUTES.like, { key: seed });
+  if (!result) return;
+  known = result.known;
+  showFiles(result.files, again);
+  const line = counted(TEXTS.photos, files.length);
+  $("status").textContent = known ? line + " — " + fill(TEXTS.known, { date: known.date }) : line;
+}
+
+// Set aside (or take back) the photos picked by their faces: the server remembers them.
+saveChoice = async (action, keys) => {
+  const name = photo.split(/[\\/]/).pop();
+  const label = known ? known.label : fill(TEXTS.label, { name: name });
+  const body = { action: action, faces: keys.map(Number), label: label, into: known ? known.aside : into };
+  const answer = await ask(ROUTES.aside, body);
+  if (!answer) { failed(null); return false; }
+  const state = await answer.json().catch(() => ({}));
+  if (!answer.ok) { said(answer, state); return false; }
+  const aside = state.aside;
+  if (aside.person) into = aside.person;
+  said(answer, { ...aside, message: aside.message + (aside.remembered ? " " + TEXTS.remembered : "") });
+  return true;
+};
+delete VIEWER_KEYS.a; // no album on this page
+
+$("find").addEventListener("submit", (event) => {
+  event.preventDefault();
+  $("path").blur(); // the keys go to the grid again
+  if ($("path").value.trim()) find($("path").value.trim());
+});
+$("lookAgain").addEventListener("click", lookAgain);
+const asked = new URLSearchParams(window.location.search).get("path");
+$("status").textContent = TEXTS.start;
+if (asked) { $("path").value = asked; find(asked); }

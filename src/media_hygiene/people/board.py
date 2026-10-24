@@ -2,7 +2,8 @@
 
 A face is known to the page by its number in this run only: the page never sees a
 path it could ask for, only numbers the board hands out. The host path of each photo
-is shown as text, to find it again.
+is shown as text, to find it again. The faces of no group come after those of the
+groups: a face like someone set aside may be one of them (TODO 0328).
 """
 
 from __future__ import annotations
@@ -13,6 +14,8 @@ from typing import TYPE_CHECKING
 from media_hygiene.people.naming import id_of
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from media_hygiene.index.face_rows import StoredFace
     from media_hygiene.services.people_groups import PeopleGroups
 
@@ -26,11 +29,12 @@ class PeopleBoard:
     alone: int
 
     @classmethod
-    def of(cls, grouped: PeopleGroups) -> PeopleBoard:
-        """Number the faces of the groups of at least two.
+    def of(cls, grouped: PeopleGroups, every: Iterable[StoredFace] = ()) -> PeopleBoard:
+        """Number the faces of the groups of at least two, then the others.
 
         Args:
             grouped: The groups.
+            every: Every face of the index: those of no group are numbered after.
 
         Returns:
             The board.
@@ -41,6 +45,8 @@ class PeopleBoard:
             start = len(faces)
             faces.extend(group)
             groups.append(tuple(range(start, len(faces))))
+        numbered = {(face.path, face.number) for face in faces}
+        faces.extend(face for face in every if (face.path, face.number) not in numbered)
         return cls(tuple(faces), tuple(groups), grouped.alone)
 
     def face(self, key: str) -> StoredFace | None:

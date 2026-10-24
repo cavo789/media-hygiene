@@ -24,6 +24,7 @@ _PACKAGES: Final = {
     "browse.html.j2": "media_hygiene.search",
     "places.html.j2": "media_hygiene.places",
     "people.html.j2": "media_hygiene.people",
+    "person.html.j2": "media_hygiene.person",
     "slideshow.html.j2": "media_hygiene.slideshow",
 }
 

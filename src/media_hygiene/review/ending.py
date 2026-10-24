@@ -5,8 +5,8 @@ theme's `/assets/`: the server ends with code 0, and `mh` opens the home page ag
 The home page ends with `STEP_EXIT_BASE + n` when the user chooses step `n`, which `mh`
 then runs with the mounts it needs. A page whose tab was closed (`presence`,
 `POST /api/alive`) ends with `ExitCode.PAGE_CLOSED`, raised as `PageClosed` for its
-command to say so (0262). The server listens on every interface of the container: Docker
-publishes the port on the host's loopback only, under the same number.
+command to say so (0262). Given one, it answers `/person` too (0351). The server listens
+on every interface of the container: Docker publishes the port on the host's loopback.
 """
 
 from __future__ import annotations
@@ -32,9 +32,7 @@ if TYPE_CHECKING:
 # Every interface of the container: Docker forwards the published port to it.
 LISTEN_HOST: Final = "0.0.0.0"  # noqa: S104
 STOP_PATH: Final = "/api/stop"
-STOPPED: Final = (
-    0  # the exit code of a page closed from its "Back to the home page" link
-)
+STOPPED: Final = 0  # the exit code of a page closed by its "Back to the home page"
 _POST: Final = "POST"
 
 
@@ -102,6 +100,7 @@ class EndingDoor:
     app: Handling
     ending: Ending
     presence: Presence | None = None
+    person: Handling | None = None  # `/person` (0351)
 
     async def connection(
         self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter
@@ -126,14 +125,14 @@ class EndingDoor:
         if request.path == PRESENCE_PATH and self.presence is not None:
             return await self._alive(request)
         if request.path != STOP_PATH:
-            return await asset_or_page(request, self.app.handle)
+            person = None if self.person is None else self.person.handle
+            return await asset_or_page(request, self.app.handle, person)
         if not is_local(request):
             message = _("Open the review at 127.0.0.1 or localhost.")
             return Response(HTTPStatus.FORBIDDEN, message.encode())
         if request.method != _POST:
             return Response(HTTPStatus.METHOD_NOT_ALLOWED)
-        refused = refused_post(request)
-        if refused is not None:
+        if (refused := refused_post(request)) is not None:
             return refused
         self.ending.end(STOPPED)
         return json_response(HTTPStatus.OK, {"stopped": True})

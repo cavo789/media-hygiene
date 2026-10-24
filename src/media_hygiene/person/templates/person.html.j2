@@ -1,0 +1,76 @@
+{% extends "page_frame.html.j2" %}
+{# `/person` (0351), served by every page that shows photos: on the left, the path of a photo
+   of someone (pasted, or sent by a page's 👤 link, `?path=`) and the faces of that photo; a
+   click on one shows, on the right, the photos of that person, the closest first, to pick
+   and set aside like on every page of photos to pick (`pick_*` in review/templates). A photo
+   without a face in the index can be looked at again, slower: turned, less strict
+   (`second_look.py`). What is set aside goes to the decisions file, read back; the face is
+   remembered, so that the people page shows the photos that look like it later (0328). Each
+   photo's 👤 (and the large view's) opens the page again on that photo, in a new tab. Opened
+   from the home page, *Apply now* is in the bar like on the page serving it. The page's own
+   script is `person.js.j2`. #}
+{% set texts = {
+  "offline": _("The page is not running any more: start it again."),
+  "failed": _("The page failed (error {status})."),
+  "noPreview": _("No preview"),
+  "picked": [ngettext("{n} file picked", "{n} files picked", 1), ngettext("{n} file picked", "{n} files picked", 2)],
+  "aside": _("marked to set aside"),
+  "tick": _("Pick this file"),
+  "saving": _("Saving…"),
+  "notSaved": _("Nothing was saved: {error}"),
+  "noAlbum": _("Type the album's name in the bar first: then A adds the file shown."),
+  "chooseFace": _("Click the face of the person to set aside."),
+  "noFace": _("No face was found on this photo when its faces were analysed: look again, slower."),
+  "notScanned": _("The faces of this photo were never looked for: run 'audit --people', or look again, slower."),
+  "looking": _("Looking at the photo turned, one angle after the other…"),
+  "photos": [ngettext("{n} photo of this person", "{n} photos of this person", 1), ngettext("{n} photo of this person", "{n} photos of this person", 2)],
+  "known": _("the person set aside on {date}"),
+  "label": _("Person of {name}"),
+  "remembered": _("Their face is remembered: the people page shows the photos that look like them, to check."),
+  "start": _("Paste the path of a photo of this person on the left."),
+  "again": _("Find every photo of a person on this one, to set them aside"),
+} %}
+{% set page_name = _("Set a person aside") %}
+{% set pick_all = _("every file shown") %}
+{% set pick_album = false %}
+{% set keys_safe = _("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") %}
+{% block style %}
+{% include "pick_grid.css.j2" %}
+  #find { display: flex; flex-direction: column; gap: 6px; }
+  #find input { width: 100%; padding: 4px 8px; font: inherit; border: 1px solid var(--line);
+                border-radius: 6px; background: var(--bg); color: var(--text); }
+  #faces { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  #faces img { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; cursor: pointer;
+               border: 3px solid transparent; }
+  #faces img.chosen { border-color: var(--accent); }
+  #sideSaid { color: var(--muted); font-size: .85rem; overflow-wrap: anywhere; }
+  .where { overflow-wrap: anywhere; font-size: .75rem; }
+  .again { text-decoration: none; }
+{% endblock %}
+{% block side %}
+    <form id="find">
+      <label for="path">{{ _("A photo of this person: its path") }}</label>
+      <input id="path" type="text" placeholder="C:\Photos\…\IMG_1234.jpg" autocomplete="off" spellcheck="false">
+      <button type="submit">{{ _("Find their photos") }}</button>
+    </form>
+    <p id="sideSaid">{{ _("Their photos are found by their face; you check them before setting them aside.") }}</p>
+    <div id="faces"></div>
+    <button id="lookAgain" class="plain" type="button" hidden>{{ _("Look again, slower: the photo turned, less strict") }}</button>
+{% endblock %}
+{% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
+{% block more_keys %}{% include "pick_keys_more.html.j2" %}{% endblock %}
+{% block bar %}
+    {% include "pick_acting.html.j2" %}
+{% endblock %}
+{% block content %}
+  <main id="grid"></main>
+{% endblock %}
+{% block after %}
+{% include "pick_viewer.html.j2" %}
+<script>
+{% include "pick_grid.js.j2" %}
+{% include "pick_viewer.js.j2" %}
+{% include "pick_band.js.j2" %}
+{% include "person.js.j2" %}
+</script>
+{% endblock %}

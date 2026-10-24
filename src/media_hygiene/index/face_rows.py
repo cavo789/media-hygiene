@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.faces.models import FaceBox
+from media_hygiene.index.aside_faces import FORGET_ALL
 
 if TYPE_CHECKING:
     import sqlite3
@@ -49,6 +50,7 @@ _FORGET: Final = (
     "PRAGMA secure_delete = ON",
     "DELETE FROM faces",
     "DELETE FROM face_scans",
+    FORGET_ALL,  # the faces of the people set aside (0328)
 )
 _COUNT_FACES: Final = "SELECT COUNT(*) FROM faces"
 _SEPARATOR: Final = ","

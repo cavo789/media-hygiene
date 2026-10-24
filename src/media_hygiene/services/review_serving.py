@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
+from media_hygiene.person.door import with_person
 from media_hygiene.review.apply_api import ApplyOffer, applying_door
 from media_hygiene.review.ending import serve_until_ended
 from media_hygiene.services.review_file import review_page
@@ -72,6 +73,7 @@ def serve_review_page(runtime: Runtime, review: ReviewPage, port: int) -> int:
     code = 0
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         door = applying_door(review.app(page, executor, runtime.previews_dir), offer)
+        door = with_person(door, runtime, executor)
         code = asyncio.run(serve_until_ended(door, port, ready))
     return code
 

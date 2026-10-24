@@ -78,7 +78,7 @@ def found_view(
     """
     hits = [_hit_view(hit, mapper) for hit in found.hits]
     for hit in hits:
-        hit["chosen"] = hit.pop("path") in chosen
+        hit["chosen"] = hit["path"] in chosen  # the path stays: `/person` (0351)
     return {"total": found.total, "hits": hits}
 
 
@@ -91,7 +91,7 @@ def _hit_view(hit: Hit, mapper: HostPathMapper) -> dict[str, object]:
 
     Returns:
         The JSON object: name, folder, date, sentence, words, its addresses, and
-        its host path (`path`, taken out by `found_view`).
+        its host path (`path`, for `/person`).
     """
     path = hit.photo.path
     caption = hit.tags.get(TagSource.CAPTION, ())

@@ -16,6 +16,8 @@ from media_hygiene.scan.image_check import prepare_image_worker
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from PIL import Image
+
     from media_hygiene.faces.models import FaceBox
 
 CROP_EDGE: Final = 160
@@ -47,7 +49,19 @@ def face_crop(job: CropJob) -> bytes | None:
         picture = upright_picture(job.path)
     except unreadable_errors():
         return None
-    box = job.box
+    return crop_jpeg(picture, job.box)
+
+
+def crop_jpeg(picture: Image.Image, box: FaceBox) -> bytes:
+    """Cut a face out of a picture, with some of its surroundings, as a small JPEG.
+
+    Args:
+        picture: The picture the box is in.
+        box: The face.
+
+    Returns:
+        The JPEG bytes, a square of `CROP_EDGE` pixels at most.
+    """
     side = max(box.width, box.height) * (1 + 2 * _MARGIN)
     left = box.x + box.width / 2 - side / 2
     top = box.y + box.height / 2 - side / 2

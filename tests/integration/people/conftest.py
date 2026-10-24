@@ -24,11 +24,12 @@ PEOPLE = (0, 0, 0, 0, 1, 1, 1, 2, -1, -1)
 PORT = 8766
 
 
-def served(groups: list[object]) -> Callable[..., object]:
+def served(groups: list[object], doors: list[EndingDoor]) -> Callable[..., object]:
     """A server that keeps the app it was given, says it is ready, then gets Ctrl+C.
 
     Args:
         groups: Receives the page's app, behind *Apply now*.
+        doors: Receives the page's door (its `/person` too).
 
     Returns:
         The fake `serve_until_ended`.
@@ -37,6 +38,7 @@ def served(groups: list[object]) -> Callable[..., object]:
     async def serve(door: EndingDoor, _port: int, ready: Callable[[int], None]) -> None:
         assert isinstance(door.app, ApplyingApp)
         groups.append(door.app.app)
+        doors.append(door)
         ready(PORT)
         raise KeyboardInterrupt
 
@@ -44,17 +46,28 @@ def served(groups: list[object]) -> Callable[..., object]:
 
 
 @pytest.fixture
-def apps(monkeypatch: pytest.MonkeyPatch) -> list[object]:
+def doors() -> list[EndingDoor]:
+    """The doors of the pages served, in order.
+
+    Returns:
+        An empty list, filled by `apps`.
+    """
+    return []
+
+
+@pytest.fixture
+def apps(monkeypatch: pytest.MonkeyPatch, doors: list[EndingDoor]) -> list[object]:
     """The page apps served, the faces found by the fake finder.
 
     Args:
         monkeypatch: Pytest monkeypatch fixture.
+        doors: Receives the doors of the pages served.
 
     Returns:
         The apps the command served, in order.
     """
     found: list[object] = []
-    monkeypatch.setattr(people_page, "serve_until_ended", served(found))
+    monkeypatch.setattr(people_page, "serve_until_ended", served(found, doors))
     monkeypatch.setattr(people_service, "face_recipe", lambda _runtime: FakeRecipe())
     return found
 

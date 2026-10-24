@@ -37,6 +37,8 @@
   "pendingProposed": "⏳ " ~ _("No choice yet: moving on (→, ← or N) accepts the proposal, the shots in red dashes set aside and the others kept. A keeps every shot; a digit takes a shot back."),
   "original": "↗ " ~ _("original"),
   "originalTitle": _("Open the original in a new tab: the file as it lies on the disk"),
+  "person": "👤 " ~ _("this person"),
+  "personTitle": _("Find every photo of a person on this one, to set them aside"),
   "saving": _("Saving…"),
   "proofOk": "✔ " ~ _("Saved, then read back from the disk at {time}: {file} holds your choice.").replace("{file}", file),
   "loaded": "📄 " ~ _("{file} read from the disk at {time}.").replace("{file}", file),
@@ -272,6 +274,18 @@
     return link;
   };
 
+  // `/person` (0351): every photo of someone on this shot, in a new tab.
+  const personLink = (shot) => {
+    const link = line("a", T.person, "original");
+    const separator = shot.folder.includes("\\") ? "\\" : "/";
+    link.href = "/person?path=" + encodeURIComponent(shot.folder + separator + shot.name);
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.title = T.personTitle;
+    link.addEventListener("click", (event) => event.stopPropagation());
+    return link;
+  };
+
   const scoreBadge = (shot) => {
     // The figure the proposals compare (faces' when they decide); the sharpest one stands out.
     if (!shot.score) return document.createComment("no score");
@@ -298,7 +312,7 @@
       line("div", shot.folder, "muted"),
       line("div", shot.details, "muted"),
     );
-    caption.children[1].append(name, originalLink(shot));
+    caption.children[1].append(name, originalLink(shot), personLink(shot));
     figure.append(line("span", position < 9 ? String(position + 1) : "·", "key"), scoreBadge(shot), image, caption);
     figure.addEventListener("click", () => toggle(position));
     return figure;

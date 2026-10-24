@@ -84,7 +84,9 @@ Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`).
   | ? | toutes les touches de la vue en grand, sous l'image |
 
   Une ligne sous l'image rappelle les touches principales ; le panneau sous l'arborescence les
-  liste toutes.
+  liste toutes. **👤 Mettre une personne de côté**, à côté du lien vers l'original, trouve toutes
+  les photos de quelqu'un depuis celle qui est montrée : voir
+  [`people`](people.md#depuis-nimporte-quelle-page--mettre-une-personne-de-côté).
 - **Choisir** : un clic choisit un fichier ; la case ☑ de chaque vignette (ou Ctrl+clic) en
   ajoute ou en retire un ; Maj+clic choisit tous les fichiers depuis le dernier cliqué ; un
   rectangle tiré à la souris sur la grille choisit ce qu'il touche, sur plusieurs lignes (avec

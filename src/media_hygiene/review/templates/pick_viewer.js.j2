@@ -81,6 +81,8 @@ function open() {
   if (typeof infoExtra === "function") $("viewerInfo").append(...infoExtra(file)); // a page's own facts
   $("viewerSaid").textContent = "";
   $("originalLink").href = file.original;
+  $("personLink").hidden = !file.path; // `/person`, served by every page (0351)
+  if (file.path) $("personLink").href = "/person?path=" + encodeURIComponent(file.path);
   $("viewer").classList.add("open");
 }
 

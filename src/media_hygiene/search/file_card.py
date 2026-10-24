@@ -47,4 +47,5 @@ def file_card(
         "video": video_path(str(key), path) if video else "",
         "original": f"{ORIGINAL_PREFIX}{key}{path.suffix.lower()}",
         "chosen": mapper.to_host(path) in chosen,
+        "path": mapper.to_host(path),  # the 👤 link of the large view (0351)
     }

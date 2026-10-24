@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.person.door import with_person
 from media_hygiene.review.app import DECIDE_PATH, FILE_PATH, ReviewApp
 from media_hygiene.review.apply_api import ApplyOffer, applying_door
 from media_hygiene.review.ending import serve_until_ended
@@ -120,7 +121,7 @@ def serve_review(runtime: Runtime, session: ReviewSession, start: ReviewStart) -
     code = 0
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         app = ReviewApp(session, page, executor, runtime.previews_dir, albums)
-        door = applying_door(app, offer)
+        door = with_person(applying_door(app, offer), runtime, executor)
         ready = partial(_announce, runtime, session)
         code = asyncio.run(serve_until_ended(door, start.port, ready))
     return code

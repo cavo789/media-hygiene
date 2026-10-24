@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from functools import cache
 from typing import TYPE_CHECKING, Protocol, override
 
+from media_hygiene.faces.detect import MIN_SCORE
 from media_hygiene.faces.engine import FaceEngine
 from media_hygiene.faces.models import PhotoFaces
 from media_hygiene.faces.onnx_runner import onnx_runner
@@ -41,6 +42,7 @@ class OnnxRecipe:
 
     detector: Path
     embedder: Path
+    least: float = MIN_SCORE  # the lowest score of a face kept (lower: a second look)
 
     def build(self) -> FaceFinder:
         """Load both model files.
@@ -48,7 +50,8 @@ class OnnxRecipe:
         Returns:
             The engine.
         """
-        return FaceEngine(onnx_runner(self.detector), onnx_runner(self.embedder))
+        detector, embedder = onnx_runner(self.detector), onnx_runner(self.embedder)
+        return FaceEngine(detector, embedder, self.least)
 
 
 @dataclass(frozen=True, slots=True)
@@ -71,7 +74,7 @@ def find_faces(job: FaceJob) -> PhotoFaces | None:
         Its faces and the time taken (decoding included); None when undecodable.
     """
     prepare_image_worker()
-    finder = _finder(job.recipe)
+    finder = finder_of(job.recipe)
     started = time.monotonic()
     try:
         picture = upright_picture(job.path)
@@ -83,7 +86,7 @@ def find_faces(job: FaceJob) -> PhotoFaces | None:
 
 
 @cache
-def _finder(recipe: FinderRecipe) -> FaceFinder:
+def finder_of(recipe: FinderRecipe) -> FaceFinder:
     """Build the finder of a recipe once per process.
 
     Args:

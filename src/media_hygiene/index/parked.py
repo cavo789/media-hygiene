@@ -3,7 +3,8 @@
 A file moved to the quarantine leaves every table (no reader of the index sees it
 any more), but its rows are parked here, one JSON document per file, under its run.
 `undo` puts them back at the original path: the restored file is not checked,
-fingerprinted, described nor analysed for faces again. `purge` drops them with the
+fingerprinted, described nor analysed for faces again, and its faces are no longer
+those of someone set aside (`aside_faces`). `purge` drops them with the
 quarantine of the run. Version 12 of the index.
 """
 
@@ -11,8 +12,9 @@ from __future__ import annotations
 
 import base64
 import json
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Any, Final
 
+from media_hygiene.index.aside_faces import forget
 from media_hygiene.index.schema_tables import FORGET, PATH_TABLES
 
 if TYPE_CHECKING:
@@ -27,6 +29,7 @@ CREATE TABLE IF NOT EXISTS parked (
 )
 """
 _BYTES: Final = "base64:"  # a BLOB (a face's vector) in the JSON document
+_FACES, _VECTOR = "faces", "embedding"
 _PARK: Final = "INSERT OR REPLACE INTO parked (path, run, rows) VALUES (?, ?, ?)"
 _PARKED: Final = "SELECT rows FROM parked WHERE path = ?"
 _UNPARK: Final = "DELETE FROM parked WHERE path = ?"
@@ -74,7 +77,8 @@ def unpark(connection: sqlite3.Connection, moves: Sequence[tuple[str, str]]) -> 
         found = connection.execute(_PARKED, (quarantined,)).fetchone()
         if found is None:
             continue
-        for table, rows in json.loads(found[0]).items():
+        document = json.loads(found[0])
+        for table, rows in document.items():
             if table not in PATH_TABLES:
                 continue
             for row in rows:
@@ -87,9 +91,21 @@ def unpark(connection: sqlite3.Connection, moves: Sequence[tuple[str, str]]) -> 
                     f" VALUES ({marks})"
                 )
                 connection.execute(insert, tuple(values.values()))
+        _forget_faces(connection, document)
         connection.execute(_UNPARK, (quarantined,))
         restored += 1
     return restored
+
+
+def _forget_faces(connection: sqlite3.Connection, document: dict[str, Any]) -> None:
+    """The faces of a file brought back are no one's set aside any more (0328).
+
+    Args:
+        connection: The index.
+        document: The parked rows of the file.
+    """
+    vectors = (_in(face[_VECTOR]) for face in document.get(_FACES, []))
+    forget(connection, [vector for vector in vectors if isinstance(vector, bytes)])
 
 
 def forget_runs(connection: sqlite3.Connection, runs: Sequence[str]) -> None:
