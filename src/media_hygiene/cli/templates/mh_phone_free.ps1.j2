@@ -29,6 +29,8 @@ function global:_{{ f }}_phone_clear($shell, [string]$name, $items, $plan, $resu
     }
     if ($offered.Count -eq 0) { Write-Host "{{ t.none }}"; return }
     $ticked = _{{ f }}_phone_page $offered $destination $name
+    # Its tab closed, opened from the home page: nothing deleted, the loop of mh ends (0332).
+    if ($null -eq $ticked -and $LASTEXITCODE -eq {{ page_closed }}) { Write-Host "{{ t.nothing }}"; return }
     if ($null -eq $ticked) { Write-Host "{{ t.failed }}"; return }
     $chosen = @(foreach ($line in $ticked) {
         $fields = "$line" -split "`t"
@@ -120,21 +122,25 @@ function global:_{{ f }}_phone_clear($shell, [string]$name, $items, $plan, $resu
 # The page where the files to delete are ticked ({{ c.review }}): the port published on the loopback
 # only, the browser opened as soon as it answers. The files ticked come back as the container
 # read them from phone-decisions.json; an empty list when none; $null when it failed.
+# From the home page (0332): its way back offered, and no second tab, the home page's tab
+# follows the page as for any step (0280).
 function global:_{{ f }}_phone_page($lines, [string]$destination, [string]$name) {
     if (-not (_{{ f }}_page_free)) { return $null }
     $page = @('-p', '127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}', '--label', "{{ guards.label }}=powershell-$PID")
-    $browser = Start-Job -ArgumentList 'http://127.0.0.1:{{ script.commands.port }}/', {{ script.commands.browse_wait }} -ScriptBlock {
+    if ($global:MediaHygieneRelay) { $page += '-e', '{{ relay }}=1' }
+    $browser = $null
+    if (-not $global:MediaHygieneTab) { $browser = Start-Job -ArgumentList 'http://127.0.0.1:{{ script.commands.port }}/', {{ script.commands.browse_wait }} -ScriptBlock {
         param($url, $wait)
         for ($i = 0; $i -lt $wait; $i++) {
             try { $null = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 1 -ErrorAction Stop; break } catch { Start-Sleep -Seconds 1 }
         }
         if ($i -lt $wait) { Start-Process $url }
-    }
+    } }
     try {
         $out = _{{ f }}_phone_docker $lines $destination $page @('{{ c.review }}', '--phone', $name, '--destination', $destination, '--port', '{{ script.commands.port }}')
         return ,$out
     } finally {
-        Remove-Job -Job $browser -Force
+        if ($browser) { Remove-Job -Job $browser -Force }
     }
 }
 

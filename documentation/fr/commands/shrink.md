@@ -38,7 +38,7 @@ docker run --rm -it `
 | Il faut | `/cache` (ce que l'audit a appris) ; avec `--apply`, vos dossiers **sans** `:ro`, `/journal` et `/quarantine`. |
 | Écrit | Les vidéos allégées, le journal ; les originaux en quarantaine. |
 | Annuler | [`undo <exécution>`](undo.md) retire chaque vidéo allégée (tant qu'elle n'a pas changé) et ramène son original. |
-| Avec `mh` | `mh shrink`, puis `mh shrink --apply`. |
+| Avec `mh` | `mh shrink`, puis `mh shrink --try` (l'action de la page d'accueil) ou `mh shrink --apply`. |
 
 ## Le lancer
 
@@ -61,6 +61,47 @@ l'encodage le dira.
    C:\Photos\2009\Zoo\MVI_0042.AVI — mjpeg, 640×480, 4 min : 812 Mo → ~95 Mo
 ```
 
+## Essayer d'abord : avant et après dans le navigateur
+
+`--try` encode les `try_count` premières vidéos de la liste (10 par défaut, les plus gros gains
+d'abord ; ou celles sous `--folder`) en **brouillons**, une à la fois en arrière-plan, avec les
+mêmes réglages que `--apply`, et ouvre une page qui montre chacune dès qu'elle est prête :
+
+- **B, le brouillon**, se lit dans la page, avec sa taille, son gain en % et son temps
+  d'encodage ;
+- **A, l'original** : le MJPEG et le PCM des anciens appareils ne se lisent dans aucun
+  navigateur, la page montre donc des images de l'original et du brouillon prises aux mêmes
+  instants (10, 50 et 90 % du film), à 100 % ; la touche `B` inverse A et B. `←` / `→` passent
+  d'une vidéo à l'autre.
+- **Alléger celle-ci** (`L`) ou **Choisir tous les brouillons affichés** (`A`) : chaque choix
+  est enregistré dans `shrink-decisions.json` et montré tel que relu sur le disque. **Alléger
+  maintenant celles choisies** (`Entrée`) passe la main au terminal, qui pose la question
+  habituelle, puis les allège comme `--apply` (originaux en quarantaine, journalisé,
+  annulable), **en réutilisant chaque brouillon** : rien n'est encodé deux fois. Une vidéo
+  déplacée, renommée ou modifiée depuis la page est sautée, avec une ligne.
+
+```powershell
+docker run --rm -it -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene shrink --try
+```
+
+**Les brouillons sont toujours supprimés** : ils ne sont écrits que dans `/cache/shrink-try/`
+(le volume du cache, jamais à côté de vos photos), et supprimés quand la page se ferme, sur
+Ctrl+C ou quand le conteneur est arrêté. Si l'ordinateur a été éteint en cours de route, le
+`shrink` suivant les supprime et le dit en une ligne. Sans montage de `/cache`, `--try` refuse
+(avec la ligne à ajouter) ; un seul `--try` à la fois. Avant chaque brouillon, `/cache` doit
+avoir deux fois sa taille estimée de libre, sinon les brouillons s'arrêtent là : un brouillon
+pèse environ 29 % de son original (mesuré sur un clip Panasonic), les 10 clips les plus lourds
+d'une grande collection peuvent donc prendre 1 à 2 Go un moment.
+
+Temps estimé : environ 8 s d'encodage par minute de film sur un PC à 32 processeurs, donc
+environ 30 s pour un clip de 3 minutes, et 5 minutes pour 10 d'entre eux : le premier brouillon
+s'affiche bien avant le dernier.
+
 ## Quelles vidéos
 
 - **Les codecs des anciens appareils et des années 2000** : MJPEG, DV, MPEG-4 partie 2 (DivX,
@@ -69,6 +110,10 @@ l'encodage le dira.
   bits par pixel et par image. Le H.264 d'un téléphone en dépense environ 0,1 à 0,3 : il est
   **laissé tel quel**, car une seconde génération avec perte se voit et gagne peu.
 - Jamais une vidéo d'un dossier protégé, exclu ou de sauvegarde, ni une de moins d'une seconde.
+- **Jamais une vidéo qu'il a déjà allégée** : chaque vidéo allégée porte une marque dans le
+  fichier (l'étiquette `media_hygiene`, `media-hygiene shrink crf=23` ; le commentaire de
+  l'appareil reste). Renommée, déplacée par `sort` ou dans l'Explorateur, copiée ailleurs, même
+  sans les journaux : elle n'est plus jamais proposée.
 - **Pas rentable** : un résultat qui n'est pas au moins `min_gain_percent` (30) % plus léger est
   jeté, l'original reste, et la vidéo n'est plus essayée tant qu'elle ne change pas.
 
@@ -108,6 +153,7 @@ est dit après chaque vidéo.
 |---|---|
 | `--folder CHEMIN` | Seulement les vidéos sous ce dossier (chemin de l'hôte) ; répétez-la pour plusieurs. |
 | `--lighter` | 720 lignes au plus, une compression plus forte. |
+| `--try` | Des brouillons des `try_count` premières, comparés dans le navigateur ; alléger depuis la page. |
 | `--apply` | Les alléger ; sans elle, seulement les lister. |
 | `--yes`, `-y` | Ne pas demander d'abord. |
 
@@ -118,7 +164,8 @@ est dit après chaque vidéo.
   utilisable. Ctrl+C arrête après la vidéo en cours ; retapez la commande pour le reste.
 - **La place revient avec `purge`** : d'ici là, les originaux sont en quarantaine.
 - **Réglages** : la section `[shrink]` de `config.toml` (`codecs`, `bits_per_pixel`,
-  `min_gain_percent`, `same_crf`, `lighter_crf`, `lighter_lines`, `preset`, `threads`).
+  `min_gain_percent`, `same_crf`, `lighter_crf`, `lighter_lines`, `preset`, `threads`,
+  `try_count` : les brouillons de `--try`, 10 par défaut).
 - **Changer seulement le conteneur (`.mov` → `.mp4` sans réencoder) ne libère rien** : ce n'est
   pas proposé.
 

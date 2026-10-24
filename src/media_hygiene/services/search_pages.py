@@ -25,7 +25,6 @@ from media_hygiene.search.app import (
     SEARCH_PATH,
     SearchApp,
     SearchPages,
-    SearchPlace,
 )
 from media_hygiene.search.chosen_api import CHOSEN_PATH, ChosenDesk
 from media_hygiene.search.folders import (
@@ -35,8 +34,12 @@ from media_hygiene.search.folders import (
     FolderDesk,
 )
 from media_hygiene.search.heaviest import FIRST_SHOWN, HEAVIEST_PATH
+from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH, NamesPlace, PeopleDesk
+from media_hygiene.search.people_why import PEOPLE_WHY_PATH
+from media_hygiene.search.place import SearchPlace
 from media_hygiene.services.albums import album_desk
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
+from media_hygiene.services.people_page import names_file
 from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.share.album_api import ALBUMS_PATH
 from media_hygiene.share.album_pickers import SearchPicker
@@ -97,6 +100,8 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> Serv
         "heaviest_first": FIRST_SHOWN,
         "apply_path": APPLY_PATH,
         "albums_path": ALBUMS_PATH,
+        "people_reject_path": PEOPLE_REJECT_PATH,
+        "people_why_path": PEOPLE_WHY_PATH,
         "apply_offered": start.apply is not None,
     }
     pages = SearchPages(
@@ -116,6 +121,7 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> Serv
         folders,
         ApplyDesk(ApplyOffer(start.apply, lambda: bool(chosen.paths())), ending),
         album_desk(runtime, SearchPicker(search).files),
+        PeopleDesk(search, names_place(runtime)),
     )
     code = 0
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
@@ -124,6 +130,18 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> Serv
         ready = partial(_announce, runtime, start)
         code = asyncio.run(serve_until_ended(door, start.port, ready))
     return Served(len(chosen.paths()), code)
+
+
+def names_place(runtime: Runtime) -> NamesPlace:
+    """Where the page saves the names it corrects, and `[people]` at the start.
+
+    Args:
+        runtime: Settings, mount points and output.
+
+    Returns:
+        The place; no file when `/config` cannot be written.
+    """
+    return NamesPlace(names_file(runtime), runtime.settings.people, runtime.mapper)
 
 
 def chosen_desk(runtime: Runtime, search: SearchIndex) -> ChosenDesk:

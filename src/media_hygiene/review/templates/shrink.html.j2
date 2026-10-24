@@ -1,0 +1,94 @@
+{% extends "page_frame.html.j2" %}
+{# The page of `media-hygiene shrink --try` (0307): each draft as it lands, its original's
+   frames beside its own at the same instants (old cameras' originals play in no browser),
+   one key to swap A and B at 100 %. A choice is saved in shrink-decisions.json and shown
+   as read back from the disk; "Lighten the chosen now" ends the page: the terminal asks,
+   then lightens them, reusing their drafts. The drafts never leave /cache. #}
+{% set texts = {
+  "position": _("Video {number} of {total}"),
+  "mb": _("MB"),
+  "waiting": "⏳ " ~ _("Waiting: the drafts are encoded one at a time."),
+  "encoding": "⚙️ " ~ _("Encoding this draft…"),
+  "failed": "⚠️ " ~ _("No draft: {reason}"),
+  "no_room": "⚠️ " ~ _("Not enough room left in /cache: the drafts stop here."),
+  "ready": "✔ " ~ _("Draft ready: {before} → {after}, {gain} %% lighter, encoded in {seconds} s."),
+  "facts": _("{codec}, {picture}, {duration} s · estimated after: {estimated}"),
+  "side_a": "A · " ~ _("original"),
+  "side_b": "B · " ~ _("lightened"),
+  "at": _("at {seconds} s"),
+  "chosen": "✔ " ~ _("chosen"),
+  "notChosen": _("not chosen"),
+  "choose": _("Lighten this one"),
+  "unchoose": _("Do not lighten this one"),
+  "lighten": _("Lighten the {count} chosen now"),
+  "saving": _("Saving…"),
+  "proof": "✔ " ~ _("Saved, then read back from the disk at {time}: {file} holds {count} chosen."),
+  "noFile": _("Nothing chosen yet."),
+  "handed": "👉 " ~ _("The terminal takes over: answer its question there. This page closes."),
+  "nothingReady": _("No draft ready yet."),
+  "failedSave": _("Not saved (error {status})."),
+  "offline": _("The page is not running any more: start 'shrink --try' again."),
+} %}
+{% set page_name = _("Lighten videos: try") %}
+{% set keys_safe = _("The drafts are only in /cache/shrink-try and are removed when this page closes. Nothing changes until you lighten: each original then goes to the quarantine, and 'undo' brings it back.") %}
+{% block style %}
+  main h2 { font-size: 1rem; margin: 0 0 4px; overflow-wrap: anywhere; }
+  #status.error { color: var(--bad); font-weight: 600; } #status.saved { color: var(--ok); }
+  #state { margin: 8px 0 12px; padding: 8px 12px; font-weight: 600; background: var(--card);
+           border: 2px dashed var(--warn); border-radius: 10px; color: var(--warn); }
+  #state.ready { border-style: solid; border-color: var(--ok); color: var(--ok); }
+  #videos { list-style: none; margin: 0 0 12px; padding: 0; }
+  #videos li { padding: 4px 6px; border-radius: 6px; cursor: pointer; overflow-wrap: anywhere; font-size: .9rem; }
+  #videos li.here { outline: 2px solid var(--accent); }
+  #player { display: block; width: 100%; max-height: 60vh; background: #000; border-radius: 8px; }
+  #player[hidden] { display: none; }
+  .instants { display: grid; gap: 12px; margin-top: 12px; }
+  .instant { margin: 0; padding: 6px; background: var(--card); border: 2px solid var(--line); border-radius: 10px; }
+  .instant .zoom { overflow: auto; max-height: 70vh; }
+  .instant img { display: block; max-width: none; }
+  .instant.b { border-color: var(--ok); }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  button { padding: 6px 14px; font: inherit; color: var(--on-accent); background: var(--accent);
+           border: 1px solid var(--accent); border-radius: 6px; cursor: pointer; }
+  button.plain { color: var(--accent); background: transparent; }
+  button:disabled { opacity: .45; cursor: default; }
+{% endblock %}
+{% block side %}
+  <section id="toc" aria-label="{{ page_name }}">
+    <ol id="videos"></ol>
+    <p class="muted">{{ _("B, the draft, plays here; A, the original, shows as frames taken at the same instants: these old formats play in no browser.") }}</p>
+  </section>
+{% endblock %}
+{% block keys %}
+      <dt><kbd>→</kbd> <kbd>←</kbd></dt><dd>{{ _("next, previous video") }}</dd>
+      <dt><kbd>B</kbd></dt><dd>{{ _("swap A (original) and B (lightened) at 100 %%") }}</dd>
+      <dt><kbd>L</kbd></dt><dd>{{ _("lighten this one, or not") }}</dd>
+{% endblock %}
+{% block more_keys %}
+      <dt><kbd>A</kbd></dt><dd>{{ _("choose every draft shown") }}</dd>
+      <dt><kbd>Enter</kbd></dt><dd>{{ _("lighten the chosen now (the terminal asks first)") }}</dd>
+{% endblock %}
+{% block bar %}
+  <strong id="position"></strong>
+  <span id="status" role="status" aria-live="polite"></span>
+  <button id="lighten" type="button" disabled></button>
+{% endblock %}
+{% block content %}
+<main>
+  <h2 id="title"></h2>
+  <p id="facts" class="muted"></p>
+  <p id="state" role="status"></p>
+  <video id="player" controls preload="metadata" hidden></video>
+  <div class="actions">
+    <button id="choose" type="button" disabled></button>
+    <button id="swap" class="plain" type="button" disabled>{{ _("Swap A / B") }}</button>
+    <button id="all" class="plain" type="button" disabled>{{ _("Choose every draft shown") }}</button>
+  </div>
+  <div id="instants" class="instants"></div>
+</main>
+{% endblock %}
+{% block after %}
+<script>
+{% include "shrink.js.j2" %}
+</script>
+{% endblock %}

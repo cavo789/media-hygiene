@@ -1,8 +1,8 @@
-{# The rectangle of the folder view (`browse.html.j2`), as in Explorer: pressed on the
-   grid and dragged, it picks every file it touches, over several rows and columns; with
+{# The rectangle of a page of photos to pick (`browse`, `search`), as in Explorer: pressed
+   on the grid and dragged, it picks every file it touches, over several rows and columns; with
    Ctrl, what was picked stays. It starts only past a few pixels, so a click stays a
    click; near the top or bottom of the window the page scrolls. Mouse only: a finger
-   scrolls. Shares the state of `browse.js.j2`, included just before. #}
+   scrolls. Shares the state of `pick_grid.js.j2`, included before. #}
 const BAND_START = 6; // pixels before a press becomes a rectangle
 const BAND_EDGE = 40; // pixels from the edge of the window where the page scrolls
 const BAND_STEP = 14; // pixels scrolled per frame there
@@ -21,6 +21,7 @@ function drawBand() {
     width: box.right - box.left + "px", height: box.bottom - box.top + "px",
   });
   picked.clear();
+  everything = false;
   for (const key of band.kept) picked.add(key);
   cards.forEach((node, index) => {
     const card = node.getBoundingClientRect();

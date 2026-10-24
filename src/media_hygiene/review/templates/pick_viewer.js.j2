@@ -1,0 +1,111 @@
+{# The large view of a page of photos to pick (`pick_viewer.html.j2`): Enter or a double
+   click opens the file framed; its keys (`VIEWER_KEYS`, read by `pick_grid.js.j2`) move,
+   set aside, take back, add to the album, go full screen. Shares the state of
+   `pick_grid.js.j2`, included just before. #}
+let saving = false;    // Delete in the viewer: one save at a time (a key held repeats)
+
+// Opened large: the file shown alone is set aside (Delete) or taken back (Backspace), the
+// save read back from the server (its label too). One save at a time: a key held repeats.
+async function saveShown(action) {
+  const file = files[current];
+  if (!file || saving) return false;
+  if ((action === "add") === Boolean(file.chosen)) return true; // so already
+  saving = true;
+  $("viewerSaid").className = "";
+  $("viewerSaid").textContent = TEXTS.saving;
+  if (saveChoice) {
+    const saved = await saveChoice(action, [file.key]);
+    saving = false;
+    if (saved) await reopen(true);
+    return saved;
+  }
+  const answer = await ask(CHOSEN_PATH, { action: action, keys: [file.key], search: scope() });
+  saving = false;
+  if (!answer) { failed(null); $("viewerSaid").textContent = TEXTS.offline; return false; }
+  said(answer, await answer.json().catch(() => ({})));
+  if (!answer.ok) return false;
+  await reopen(true);
+  return true;
+}
+
+// Delete: set aside, then the next one opens; the last one stays, marked.
+async function asideShown() {
+  const index = current;
+  if (!(await saveShown("add"))) return;
+  focusOn(Math.min(index + 1, files.length - 1));
+  open();
+}
+
+// Backspace: taken back out of the set aside; the file stays shown (a video keeps playing).
+async function takeBackShown() {
+  if (await saveShown("remove")) $("viewerAside").hidden = !files[current].chosen;
+}
+
+// A: the file shown goes into the album named in the bar (`album_bar.html.j2`).
+async function albumShown() {
+  const file = files[current];
+  if (!file || !window.mhAlbumAdd) return;
+  const sent = await window.mhAlbumAdd({ keys: [file.key], search: scope() });
+  $("viewerSaid").className = $("albumSaid").className;
+  $("viewerSaid").textContent = sent ? $("albumSaid").textContent : TEXTS.noAlbum;
+}
+
+function playPause() {
+  const movie = $("movie");
+  if (movie.hidden) return;
+  if (movie.paused) movie.play().catch(() => undefined); else movie.pause();
+}
+
+// F: the large view on the whole screen; Esc (the browser's) leaves it first.
+function fullScreen() {
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
+  else $("viewer").requestFullscreen().catch(() => undefined);
+}
+
+function toggle(id) {
+  $(id).hidden = !$(id).hidden;
+}
+
+function open() {
+  const file = files[current];
+  if (!file) return;
+  const movie = $("movie");
+  const large = $("large");
+  movie.hidden = !file.video;
+  large.hidden = Boolean(file.video);
+  if (file.video) { movie.src = file.video; } else { movie.removeAttribute("src"); large.src = file.preview; }
+  large.alt = file.name;
+  $("viewerName").textContent = file.name;
+  $("viewerAside").hidden = !file.chosen;
+  $("viewerInfo").textContent = [file.date, file.size, file.facts, file.where || file.folder || scope().folder].filter(Boolean).join(" · ");
+  if (typeof infoExtra === "function") $("viewerInfo").append(...infoExtra(file)); // a page's own facts
+  $("viewerSaid").textContent = "";
+  $("originalLink").href = file.original;
+  $("viewer").classList.add("open");
+}
+
+function close() {
+  $("movie").pause();
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
+  $("viewer").classList.remove("open");
+}
+
+// The keys of the large view: listed under it with `?` (`pick_viewer.html.j2`, `viewerHelp`).
+const VIEWER_KEYS = {
+  Escape: close,
+  ArrowRight: () => { jump(current + 1); open(); },
+  ArrowLeft: () => { jump(current - 1); open(); },
+  Home: () => { jump(0); open(); },
+  End: () => { jump(files.length - 1); open(); },
+  Delete: asideShown,
+  Backspace: takeBackShown,
+  " ": playPause,
+  f: fullScreen,
+  i: () => toggle("viewerInfo"),
+  a: albumShown,
+  "?": () => toggle("viewerHelp"),
+};
+
+$("viewer").addEventListener("click", (event) => {
+  if (!event.target.closest("a, video, .stay")) close(); // the lists under it stay open
+});

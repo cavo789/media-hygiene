@@ -2,7 +2,8 @@
 
 All of it comes from the probe that already checks the video can be opened: only its
 `-show_entries` list is wider. Tag names differ between Apple, Android and cameras, and
-in case: they are compared case-insensitively. A malformed value is ignored.
+in case: they are compared case-insensitively. A malformed value is ignored. A video
+`shrink` lightened carries its mark (`SHRUNK_TAG`): it is never proposed again (0308).
 """
 
 from __future__ import annotations
@@ -28,6 +29,8 @@ _LOCATION_TAGS: Final = (
     "location-eng",
 )
 _LOCAL_DATE_TAG: Final = "com.apple.quicktime.creationdate"
+# Written by `shrink` (`shrink.encode`), read back by the audit: in lower case.
+SHRUNK_TAG: Final = "media_hygiene"
 # Devices without a clock write the epoch of their format: not a date.
 _NO_DATE: Final = ("0000", "1904-01-01T00:00:00", "1970-01-01T00:00:00")
 # ffprobe joins the values of a tag found twice with ";".
@@ -62,6 +65,7 @@ def video_metadata(probe: Mapping[str, object]) -> MediaMetadata:
         "height": _whole(video.get("height")),
         "frame_rate": text(video.get("r_frame_rate")),
         "rotation": _rotation(video),
+        "shrunk": text(tags.get(SHRUNK_TAG)),
     }
     return MediaMetadata.model_validate(
         fields | position_fields(iso6709_position(location))

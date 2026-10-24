@@ -4,8 +4,10 @@ The picture: x264 at the CRF of the level asked, 4:2:0 (what every player reads)
 upright as it is shown, at most `lighter_lines` lines on its short side with
 `--lighter`. The sound: every track, in AAC. The tags: the date (`creation_time`), the
 local date and the place Apple writes, the place (`location`), copied as they are
-(`-map_metadata 0`, `use_metadata_tags`). Written into an MP4 under a temporary name; a
-time limit ten times the length of the film, at least `_LEAST_SECONDS`.
+(`-map_metadata 0`, `use_metadata_tags`), and the mark of `shrink` (`SHRUNK_TAG`, its
+own key: the camera's `comment` stays), so that the audit never proposes it again,
+moved or renamed (0308). Written into an MP4 under a temporary name; a time limit ten
+times the length of the film, at least `_LEAST_SECONDS`.
 """
 
 from __future__ import annotations
@@ -16,6 +18,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.scan.tool_run import run_tool
+from media_hygiene.scan.video_meta import SHRUNK_TAG
 from media_hygiene.shrink.estimate import AUDIO_RATE
 
 if TYPE_CHECKING:
@@ -34,6 +37,7 @@ _FIT: Final = (
 )
 _SLOWER_THAN_FILM: Final = 10
 _LEAST_SECONDS: Final = 600
+_MARK: Final = "media-hygiene shrink crf={crf}"
 
 
 @dataclass(frozen=True, slots=True)
@@ -81,6 +85,7 @@ def ffmpeg_command(
     quality = ("-preset", encoding.preset, "-crf", str(encoding.crf))
     fit = () if encoding.lines is None else ("-vf", _FIT.format(lines=encoding.lines))
     threads = ("-threads", str(encoding.threads))
+    mark = ("-metadata", f"{SHRUNK_TAG}={mark_of(encoding)}")
     return (
         ffmpeg,
         *_BEFORE_INPUT,
@@ -92,9 +97,23 @@ def ffmpeg_command(
         *fit,
         *_SOUND,
         *threads,
+        *mark,
         *_CONTAINER,
         str(target),
     )
+
+
+def mark_of(encoding: Encoding) -> str:
+    """Write the mark a lighter video carries.
+
+    Args:
+        encoding: Its quality and size.
+
+    Returns:
+        `media-hygiene shrink crf=23`, with ` lines=720` for a smaller picture.
+    """
+    lines = "" if encoding.lines is None else f" lines={encoding.lines}"
+    return _MARK.format(crf=encoding.crf) + lines
 
 
 def encode(command: tuple[str, ...], duration: float) -> str | None:

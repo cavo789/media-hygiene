@@ -109,12 +109,13 @@ class SearchIndex:
         return self._connection
 
     def name_people(self, words: Mapping[Path, tuple[str, ...]]) -> None:
-        """Give the photos the names of the people on them, for this search only.
+        """Give the photos the names of the people on them (again), for this search.
 
         Args:
             words: The names on each photo.
         """
         self._people = dict(words)
+        self._connection.execute(sql.CLEAR_PEOPLE)
         self._connection.executemany(
             sql.PUT_PERSON,
             [(str(path), name) for path, names in words.items() for name in names],

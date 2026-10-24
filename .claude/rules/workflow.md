@@ -64,6 +64,9 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
 - The maintainer's reviews often turn a constant into a `config.toml` setting
   (`[cache] previews_max_gb`, `[classify] folder_town_ignore`): propose it in the feedback
   instead of waiting for the review.
+- A page where photos are shown as tiles and picked (browse, search, phone, reviews): load the
+  `photo-picking-pages` skill first — one layout, one way to pick, the same keys, from the shared
+  `review/templates/pick_*` templates; a page that differs is a bug.
 - Product rules the reviews keep checking: a save is proven by reading it back from disk and
   showing it (never "Saved" from memory); the shipped image never shows a traceback; the CLI
   teaches in one-liners (read-only 🔒, the undo line); documentation and captures are

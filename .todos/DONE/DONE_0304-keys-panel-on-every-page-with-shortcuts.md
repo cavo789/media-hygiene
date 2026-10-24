@@ -1,6 +1,6 @@
 # 0304 — The keyboard panel at the bottom left, on every page that has shortcuts
 
-- **Priority**: Medium
+- **Priority**: Critical
 - **Batch**: review-ui
 - **Depends**: —
 - **Files**: `src/media_hygiene/review/templates/review_side.css.j2`, `src/media_hygiene/review/templates/keys.css.j2` (new), `src/media_hygiene/review/templates/sort_review.html.j2`, `src/media_hygiene/search/templates/search.html.j2`, `src/media_hygiene/review/templates/review.html.j2`, `src/media_hygiene/review/templates/near_review.html.j2`, `src/media_hygiene/review/templates/unwanted_review.html.j2`, `src/media_hygiene/review/templates/pairs_review.html.j2`, `src/media_hygiene/review/templates/gone_review.html.j2`, `src/media_hygiene/search/templates/browse.html.j2`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `documentation/en/commands/`, `documentation/fr/commands/`

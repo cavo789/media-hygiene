@@ -10,6 +10,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from media_hygiene.people.naming import id_of
+
 if TYPE_CHECKING:
     from media_hygiene.index.face_rows import StoredFace
     from media_hygiene.services.people_groups import PeopleGroups
@@ -53,3 +55,16 @@ class PeopleBoard:
         if not key.isdigit() or int(key) >= len(self.faces):
             return None
         return self.faces[int(key)]
+
+    def ids(self, keys: tuple[int, ...]) -> tuple[str, ...]:
+        """The ids of faces of the board.
+
+        Args:
+            keys: Their numbers.
+
+        Returns:
+            Their ids; unknown numbers are left out.
+        """
+        return tuple(
+            id_of(face) for key in keys if (face := self.face(str(key))) is not None
+        )

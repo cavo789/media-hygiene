@@ -1,14 +1,17 @@
-r"""What the page freeing a phone receives: three groups of tiles, ticked or not (0248).
+r"""What the page freeing a phone receives: its tiles, ticked or not, by phone folder.
 
-Already in the library and imported by `mh phone`: ticked for the user. Set aside
-before on purpose: never ticked for the user, its warning on each tile, dated once
-its quarantine is purged (0256). What a tile shows: `phone_tiles`.
+One group per folder of the phone (0312), in the order of their names: the user sorted
+the phone into folders and thinks in them. Why the PC holds a file is a badge on its
+tile, explained once in a legend (0248): already in the library and imported by `mh
+phone`, ticked for the user; set aside before on purpose, never ticked for the user,
+its warning on each tile, dated once its quarantine is purged (0256). What a tile
+shows: `phone_tiles`.
 """
 
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Final
+from typing import Final
 
 from pydantic import BaseModel, ConfigDict
 
@@ -16,14 +19,11 @@ from media_hygiene.i18n import _
 from media_hygiene.services.phone_plan import AsideState, PhoneCase
 from media_hygiene.services.phone_proof import AsideWhen, aside_warning
 
-if TYPE_CHECKING:
-    from media_hygiene.services.phone_proof import Ticked
-
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 _ASIDE_FIELDS: Final = 3  # run, state, date (then the kind, where, the purge date)
 _PURGED: Final = 5  # the purge date's field in the reason
-# The groups, in the page's order.
-GROUPS: Final = (PhoneCase.LIBRARY, PhoneCase.DESTINATION, PhoneCase.SET_ASIDE)
+# Why the PC holds a file, in the legend's order.
+REASONS: Final = (PhoneCase.LIBRARY, PhoneCase.DESTINATION, PhoneCase.SET_ASIDE)
 
 
 class PhoneTile(BaseModel):
@@ -32,6 +32,7 @@ class PhoneTile(BaseModel):
     model_config = _FROZEN
 
     rank: int
+    case: PhoneCase  # why the PC holds it: its badge
     name: str
     folder: str  # below DCIM
     size: int
@@ -40,18 +41,28 @@ class PhoneTile(BaseModel):
     held: str  # the PC's file, the import's copy, or the run that set it aside
     warning: str = ""  # a file set aside before: recoverable, or lost for good
     preview: str = ""  # empty: a generic tile
+    original: str = ""  # the PC's file untouched, for the large view
     ticked: bool = False
 
 
-class PhoneGroup(BaseModel):
-    """One group of the page: its case, title, explanation and files."""
+class PhoneReason(BaseModel):
+    """One line of the legend: why the PC holds a file, its badge and explanation."""
 
     model_config = _FROZEN
 
     case: PhoneCase
-    title: str
+    badge: str
     help: str
+
+
+class PhoneGroup(BaseModel):
+    """One folder of the phone: its files, and how many of them were set aside."""
+
+    model_config = _FROZEN
+
+    folder: str  # below DCIM; empty: DCIM itself
     files: tuple[int, ...]
+    aside: int  # never ticked by the folder's box
 
 
 class PhoneReviewState(BaseModel):
@@ -63,6 +74,7 @@ class PhoneReviewState(BaseModel):
     decisions_place: str
     tiles: tuple[PhoneTile, ...]
     groups: tuple[PhoneGroup, ...]
+    reasons: tuple[PhoneReason, ...]
 
 
 def set_aside_warning(reason: tuple[str, ...]) -> str:
@@ -100,14 +112,38 @@ def _moment(text: str) -> datetime | None:
         return None
 
 
-def phone_groups(files: tuple[Ticked, ...]) -> tuple[PhoneGroup, ...]:
-    """Put the files in their groups, the empty groups left out.
+def phone_groups(tiles: tuple[PhoneTile, ...]) -> tuple[PhoneGroup, ...]:
+    """Put the files in the phone's folders, in the order of their names.
 
     Args:
-        files: The files of the page, in rank order.
+        tiles: The files of the page, in rank order.
 
     Returns:
-        The groups, in the page's order.
+        One group per folder holding files.
+    """
+    folders: dict[str, list[PhoneTile]] = {}
+    for tile in tiles:
+        folders.setdefault(tile.folder, []).append(tile)
+    return tuple(
+        PhoneGroup(
+            folder=folder,
+            files=tuple(tile.rank for tile in shown),
+            aside=sum(tile.case is PhoneCase.SET_ASIDE for tile in shown),
+        )
+        for folder, shown in sorted(
+            folders.items(), key=lambda item: item[0].casefold()
+        )
+    )
+
+
+def phone_reasons(tiles: tuple[PhoneTile, ...]) -> tuple[PhoneReason, ...]:
+    """The legend: why the PC holds the files, for the reasons the page shows.
+
+    Args:
+        tiles: The files of the page.
+
+    Returns:
+        One line per reason shown, in the legend's order.
     """
     texts = {
         PhoneCase.LIBRARY: (
@@ -126,12 +162,31 @@ def phone_groups(files: tuple[Ticked, ...]) -> tuple[PhoneGroup, ...]:
             ),
         ),
     }
-    groups = []
-    for case in GROUPS:
-        ranks = tuple(r for r, ticked in enumerate(files) if ticked.case is case)
-        if ranks:
-            title, help_text = texts[case]
-            groups.append(
-                PhoneGroup(case=case, title=title, help=help_text, files=ranks)
-            )
-    return tuple(groups)
+    shown = {tile.case for tile in tiles}
+    return tuple(
+        PhoneReason(case=case, badge=texts[case][0], help=texts[case][1])
+        for case in REASONS
+        if case in shown
+    )
+
+
+def phone_state(
+    phone: str, place: str, tiles: tuple[PhoneTile, ...]
+) -> PhoneReviewState:
+    """Everything the page needs: the tiles, the phone's folders, the legend.
+
+    Args:
+        phone: The phone's name.
+        place: The decisions file, on the host.
+        tiles: The files of the page, ticked or not, in rank order.
+
+    Returns:
+        The state.
+    """
+    return PhoneReviewState(
+        phone=phone,
+        decisions_place=place,
+        tiles=tiles,
+        groups=phone_groups(tiles),
+        reasons=phone_reasons(tiles),
+    )

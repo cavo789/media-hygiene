@@ -18,6 +18,7 @@
 
   const setStatus = (text, kind) => {
     byId("status").textContent = text;
+    byId("status").title = text; // the bar shows one line, the whole sentence on hover
     byId("status").className = kind || "";
   };
   const line = (tag, text, css) => {

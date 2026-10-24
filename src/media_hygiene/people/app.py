@@ -1,15 +1,15 @@
 """The routes of the people page: the page, the groups, the faces, the photos, names.
 
-`GET /api/groups` the groups, `/api/section/<n>` every face of face `n`'s group,
-`/face/<n>.jpg` a face, `/photo/<n>.jpg` its photo; `POST /api/people` names, ignores
-or takes faces from someone, in `config.toml`; `POST /api/aside` sets aside the photos
-of a group, in the decisions file (`aside.py`). Nothing else is written. Like `review`:
+`GET /api/groups` the groups, `/api/section/<n>` every face of face `n`'s section,
+`/api/sample/<n>` its sample (a folded section opened), `/face/<n>.jpg` a face and
+`/photo/<n>.jpg` its photo (`pictures.py`); `POST /api/people` names, ignores or takes
+faces from someone, in `config.toml`; `POST /api/aside` sets aside the photos of a
+group, in the decisions file (`aside.py`). Nothing else is written. Like `review`:
 loopback hosts only, JSON bodies only, from the page's own origin.
 """
 
 from __future__ import annotations
 
-import asyncio
 from dataclasses import dataclass
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
@@ -17,17 +17,16 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.i18n import _
 from media_hygiene.people.aside import ASIDE_PATH
 from media_hygiene.people.changes import NamesAsked, Naming
-from media_hygiene.people.crops import CropJob, face_crop
+from media_hygiene.people.hidden import not_aside
+from media_hygiene.people.pictures import JPEG, FacePictures
 from media_hygiene.people.roster import Change
-from media_hygiene.people.views import PageView
-from media_hygiene.report.preview_cache import PreviewPool
-from media_hygiene.report.thumbnails import REVIEW_EDGE
+from media_hygiene.people.views import PageView, faces_view, sample_view
 from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.http import ContentType, Response, is_local
-from media_hygiene.review.local_app import jpeg_response
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
 
 if TYPE_CHECKING:
+    import asyncio
     from concurrent.futures import Executor
     from pathlib import Path
 
@@ -39,10 +38,8 @@ if TYPE_CHECKING:
 PAGE_PATH: Final = "/"
 GROUPS_PATH: Final = "/api/groups"
 SECTION_PREFIX: Final = "/api/section/"
-FACE_PREFIX: Final = "/face/"
-PHOTO_PREFIX: Final = "/photo/"
+SAMPLE_PREFIX: Final = "/api/sample/"
 CHANGE_PATH: Final = "/api/people"
-JPEG: Final = ".jpg"
 _GET, _POST = "GET", "POST"
 
 
@@ -102,41 +99,12 @@ class PeopleApp:
             return Response(HTTPStatus.OK, self.page, ContentType.HTML)
         if path == GROUPS_PATH:
             return json_response(HTTPStatus.OK, self._state())
-        if path.startswith(SECTION_PREFIX):
-            key = path.removeprefix(SECTION_PREFIX)
-            faces = self.roster.whole(key, self.mapper.to_host)
-            return json_response(HTTPStatus.OK, {"faces": faces})
+        for prefix, key in ((SECTION_PREFIX, "faces"), (SAMPLE_PREFIX, "shown")):
+            if path.startswith(prefix):
+                return json_response(HTTPStatus.OK, {key: self._faces(path, prefix)})
         if path.endswith(JPEG):
-            return await self._picture(path)
-        return Response(HTTPStatus.NOT_FOUND)
-
-    async def _picture(self, path: str) -> Response:
-        """Render a face or a whole photo in the worker pool.
-
-        Args:
-            path: `/face/<n>.jpg` or `/photo/<n>.jpg`.
-
-        Returns:
-            The JPEG, or 404 for an unknown number or an undecodable photo.
-        """
-        for prefix in (FACE_PREFIX, PHOTO_PREFIX):
-            if not path.startswith(prefix):
-                continue
-            face = self.roster.board.face(path.removeprefix(prefix).removesuffix(JPEG))
-            if face is None:
-                break
-            if prefix == PHOTO_PREFIX:
-                return await jpeg_response(
-                    self.executor,
-                    PreviewPool(self.executor, self.previews).renderer(REVIEW_EDGE),
-                    face.path,
-                )
-            loop = asyncio.get_running_loop()
-            job = CropJob(face.path, face.box)
-            image = await loop.run_in_executor(self.executor, face_crop, job)
-            if image is None:
-                break
-            return Response(HTTPStatus.OK, image, ContentType.JPEG, cacheable=True)
+            board = self.roster.board
+            return await FacePictures(board, self.executor, self.previews).answer(path)
         return Response(HTTPStatus.NOT_FOUND)
 
     def _change(self, request: Request) -> Response:
@@ -152,11 +120,12 @@ class PeopleApp:
             asked = NamesAsked.model_validate_json(request.body)
             if asked.action != "ignore" and not asked.name.strip():
                 raise ValueError(_("type a name first"))  # noqa: TRY301
-            roster = self.roster
-            naming = Naming(
-                asked.name, roster.ids(asked.faces), roster.ids(asked.removed)
-            )
-            saved = roster.change(Change(asked.action, naming))
+            board = self.roster.board
+            faces = asked.faces
+            if asked.action == "name":  # never confirm a face of a photo set aside
+                faces = not_aside(board, faces, self._view())
+            naming = Naming(asked.name, board.ids(faces), board.ids(asked.removed))
+            saved = self.roster.change(Change(asked.action, naming))
         except (ValueError, TypeError, OSError) as exc:  # ValidationError included
             return save_refused(exc)
         return json_response(HTTPStatus.OK, {**self._state(), "saved": saved})
@@ -183,6 +152,34 @@ class PeopleApp:
         Returns:
             The state the page reads.
         """
+        view = self._view()
+        state = self.roster.state(view)
+        chosen = len(view.aside)
+        return {**state, "can_aside": self.aside is not None, "chosen": chosen}
+
+    def _view(self) -> PageView:
+        """Host paths, and the files set aside as the decisions file holds them.
+
+        Returns:
+            The view of the page.
+        """
         aside = frozenset() if self.aside is None else self.aside.paths()
-        state = self.roster.state(PageView(self.mapper.to_host, aside))
-        return {**state, "can_aside": self.aside is not None, "chosen": len(aside)}
+        return PageView(self.mapper.to_host, aside)
+
+    def _faces(self, path: str, prefix: str) -> list[dict[str, object]]:
+        """Every face, or the sample, of the section holding face `n`.
+
+        Args:
+            path: `<prefix><n>`.
+            prefix: `SECTION_PREFIX` (every face) or `SAMPLE_PREFIX`.
+
+        Returns:
+            Them; none for a number no section shows.
+        """
+        found = self.roster.section(path.removeprefix(prefix), self._view())
+        if found is None:
+            return []
+        host, board = self.mapper.to_host, self.roster.board
+        if prefix == SAMPLE_PREFIX:
+            return sample_view(board, found, host)
+        return faces_view(board, found.faces, host)

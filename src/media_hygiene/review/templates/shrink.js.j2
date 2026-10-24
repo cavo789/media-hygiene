@@ -1,0 +1,145 @@
+{# The script of shrink.html.j2: the drafts as they land, A/B, each choice read back. #}
+(() => {
+  const T = {{ texts | tojson }};
+  const statePath = {{ state_path | tojson }};
+  const choosePath = {{ choose_path | tojson }};
+  const lightenPath = {{ lighten_path | tojson }};
+  const POLL_MS = 2000;
+  const lang = document.documentElement.lang;
+  const byId = (id) => document.getElementById(id);
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  const size = (bytes) => (bytes / 1e6).toLocaleString(lang, { maximumFractionDigits: 1 }) + " " + T.mb;
+  let state = { drafts: [], busy: true, file: null };
+  let at = 0;  // the video shown
+  let side = "b";  // the frames shown: a, the original; b, the draft
+  let shown = "";  // the draft the player holds
+  let handed = false;  // the page asked the terminal to lighten
+
+  const setStatus = (text, kind) => {
+    byId("status").textContent = text;
+    byId("status").title = text;
+    byId("status").className = kind || "";
+  };
+  const proof = () => {
+    const file = state.file;
+    if (!file) return setStatus(T.noFile, "");
+    setStatus(fill(T.proof, { time: file.read_at, file: file.path, count: file.chosen.length }), "saved");
+  };
+  const ready = () => state.drafts.filter((draft) => draft.state === "ready");
+
+  const list = () => {
+    const videos = byId("videos");
+    videos.replaceChildren(...state.drafts.map((draft, index) => {
+      const item = document.createElement("li");
+      const mark = { waiting: "⏳", encoding: "⚙️", ready: draft.chosen ? "✔" : "▶", failed: "⚠️", no_room: "⚠️" }[draft.state];
+      item.textContent = mark + " " + draft.name;
+      if (index === at) item.className = "here";
+      item.addEventListener("click", () => { at = index; render(); });
+      return item;
+    }));
+  };
+
+  const instants = (draft) => {
+    byId("instants").replaceChildren(...draft.frames.map((frame) => {
+      const figure = document.createElement("figure");
+      figure.className = "instant " + side;
+      const caption = document.createElement("figcaption");
+      caption.textContent = (side === "a" ? T.side_a : T.side_b) + " · " + fill(T.at, { seconds: frame.at.toLocaleString(lang) });
+      const zoom = document.createElement("div");
+      zoom.className = "zoom";
+      const image = document.createElement("img");
+      image.src = side === "a" ? frame.before : frame.after;
+      image.alt = caption.textContent;
+      zoom.append(image);
+      figure.append(caption, zoom);
+      return figure;
+    }));
+  };
+
+  const render = () => {
+    list();
+    const count = state.file ? state.file.chosen.length : 0;
+    const lighten = byId("lighten");
+    lighten.textContent = fill(T.lighten, { count: count });
+    lighten.disabled = handed || count === 0;
+    byId("all").disabled = handed || ready().length === 0;
+    const draft = state.drafts[at];
+    if (!draft) return;
+    byId("position").textContent = fill(T.position, { number: at + 1, total: state.drafts.length });
+    byId("title").textContent = draft.name + " — " + draft.folder;
+    byId("facts").textContent = fill(T.facts, { codec: draft.codec, picture: draft.picture, duration: draft.duration.toLocaleString(lang), estimated: size(draft.estimated) });
+    const isReady = draft.state === "ready";
+    const message = isReady
+      ? fill(T.ready, { before: size(draft.before), after: size(draft.after), gain: draft.gain, seconds: draft.seconds.toLocaleString(lang) }) + " · " + (draft.chosen ? T.chosen : T.notChosen)
+      : fill(T[draft.state], { reason: draft.reason });
+    byId("state").textContent = message;
+    byId("state").className = isReady ? "ready" : "";
+    const player = byId("player");
+    player.hidden = !isReady;
+    if (isReady && shown !== draft.video) { player.src = draft.video; shown = draft.video; }
+    if (!isReady && shown) { player.removeAttribute("src"); player.load(); shown = ""; }
+    const choose = byId("choose");
+    choose.textContent = draft.chosen ? T.unchoose : T.choose;
+    choose.disabled = handed || !isReady;
+    byId("swap").disabled = !isReady;
+    if (isReady) instants(draft); else byId("instants").replaceChildren();
+  };
+
+  const load = () => fetch(statePath, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+    .then((value) => {
+      state = value;
+      if (at >= state.drafts.length) at = 0;
+      render();
+      if (!byId("status").textContent || byId("status").className !== "error") proof();
+      if (state.busy && !handed) window.setTimeout(load, POLL_MS);
+    })
+    .catch(() => setStatus(T.offline, "error"));
+
+  const post = (path, body) => fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const choose = (numbers, chosen) => {
+    if (handed || numbers.length === 0) return;
+    setStatus(T.saving, "");
+    post(choosePath, { drafts: numbers, chosen: chosen })
+      .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+      .then((value) => { state = value; render(); proof(); })
+      .catch((status) => setStatus(fill(T.failedSave, { status: status }), "error"));
+  };
+  const toggle = () => {
+    const draft = state.drafts[at];
+    if (draft && draft.state === "ready") choose([draft.number], !draft.chosen);
+  };
+  const all = () => {
+    const numbers = ready().map((draft) => draft.number);
+    if (numbers.length === 0) return setStatus(T.nothingReady, "");
+    choose(numbers, true);
+  };
+  const lighten = () => {
+    if (handed || !state.file || state.file.chosen.length === 0) return;
+    post(lightenPath, {})
+      .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+      .then(() => { handed = true; render(); setStatus(T.handed, "saved"); })
+      .catch((status) => setStatus(fill(T.failedSave, { status: status }), "error"));
+  };
+  const swap = () => { side = side === "a" ? "b" : "a"; render(); };
+  const move = (step) => {
+    if (state.drafts.length === 0) return;
+    at = (at + step + state.drafts.length) % state.drafts.length;
+    render();
+  };
+
+  byId("choose").addEventListener("click", toggle);
+  byId("swap").addEventListener("click", swap);
+  byId("all").addEventListener("click", all);
+  byId("lighten").addEventListener("click", lighten);
+  document.addEventListener("keydown", (event) => {
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.target instanceof HTMLElement && ["INPUT", "TEXTAREA", "SELECT"].includes(event.target.tagName)) return;
+    const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+    const actions = { ArrowRight: () => move(1), ArrowLeft: () => move(-1), b: swap, l: toggle, a: all, Enter: lighten };
+    if (!(key in actions)) return;
+    event.preventDefault();
+    actions[key]();
+  });
+  load();
+})();

@@ -85,11 +85,13 @@ def clean_more_steps() -> tuple[Step, ...]:
             space,
             _("Lighten the heavy videos"),
             _(
-                "Old camera clips re-encoded, about four times lighter, the "
-                "picture kept; each original in the quarantine."
+                "Old camera clips re-encoded, about four times lighter: compare "
+                "before and after in the browser, then lighten; each original in "
+                "the quarantine."
             ),
-            "shrink",
+            "shrink --try",
             Risk.UNDO,
+            Kind.PAGE,
             icon="film",
             keywords=_("videos heavy lighten compress space mjpeg"),
             doc=Doc("commands/shrink/"),

@@ -43,8 +43,7 @@ msgstr ""
 
 msgid ""
 "\"bord de mer\" finds the phrase, anniv* every word starting so, "
-"place:durbuy the word among the places only. / types a search, the arrows"
-" move, a click or Space picks, Enter or a double click opens."
+"place:durbuy the word among the places only."
 msgstr ""
 
 #, python-format
@@ -136,6 +135,15 @@ msgid ""
 "hygiene\\Shares: each photo upright, its long side fitted into "
 "long_side_px pixels, JPEG quality quality (30 to 95). Your photos are "
 "only read."
+msgstr ""
+
+msgid ""
+"'shrink --try' encodes this many videos (the largest gains first), one at"
+" a time, as drafts to compare before and after in the browser; the drafts"
+" are removed when the page closes."
+msgstr ""
+
+msgid "'shrink --try' writes its drafts in /cache only: mount it."
 msgstr ""
 
 msgid ""
@@ -841,6 +849,9 @@ msgstr ""
 msgid "Animals"
 msgstr ""
 
+msgid "Another 'shrink --try' is running: one at a time."
+msgstr ""
+
 msgid ""
 "Another folder? mh folders add <folder>. A new version? mh update. Both "
 "rewrite this file."
@@ -953,15 +964,15 @@ msgstr ""
 msgid "B"
 msgstr ""
 
+msgid ""
+"B, the draft, plays here; A, the original, shows as frames taken at the "
+"same instants: these old formats play in no browser."
+msgstr ""
+
 msgid "Back after being set aside"
 msgstr ""
 
 msgid "Back on the map: taken out of config.toml."
-msgstr ""
-
-msgid ""
-"Back to the console: mh copies each file ticked again, proves it, then "
-"deletes it from the phone."
 msgstr ""
 
 msgid "Back to the home page"
@@ -1230,6 +1241,9 @@ msgid ""
 "workbook."
 msgstr ""
 
+msgid "Choose every draft shown"
+msgstr ""
+
 msgid ""
 "Choose other folders (shorter names) in the workbook, save it, and run "
 "'sort' again."
@@ -1305,12 +1319,26 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+msgid "Close its page first, then try again."
+msgstr ""
+
 msgid "Close this page and go back to the home page: mh opens it again."
+msgstr ""
+
+msgid ""
+"Close this page and go back to the home page: nothing is deleted from the"
+" phone."
 msgstr ""
 
 msgid ""
 "Close this page: mh moves the files set aside to the quarantine (it asks "
 "first), then opens the home page again."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Close to a face you confirmed: resemblance {score}, a name is given from "
+"{threshold} ([people] similarity)."
 msgstr ""
 
 msgid "Closes what is open."
@@ -1370,6 +1398,9 @@ msgid "Configured folder {path} is not mounted: it is ignored."
 msgstr ""
 
 msgid "Confirm the files to check"
+msgstr ""
+
+msgid "Confirmed by you on the people page: it is a face of reference."
 msgstr ""
 
 msgid "Contents"
@@ -1759,6 +1790,9 @@ msgid ""
 "(overrides sort.confirm)."
 msgstr ""
 
+msgid "Do not lighten this one"
+msgstr ""
+
 msgid ""
 "Do not run Czkawka here: print the command that runs it in its own image,"
 " then compare the results it wrote in /reports (czkawka.json)."
@@ -1853,6 +1887,12 @@ msgid ""
 msgstr ""
 
 msgid "Downloads the image, then writes mh again with the same folders."
+msgstr ""
+
+#, python-brace-format, python-format
+msgid ""
+"Draft ready: {before} → {after}, {gain} %% lighter, encoded in {seconds} "
+"s."
 msgstr ""
 
 msgid ""
@@ -1990,6 +2030,15 @@ msgid ""
 msgstr ""
 
 msgid "Empty, or a disk unplugged"
+msgstr ""
+
+msgid ""
+"Encode the first ones (try_count in config.toml) as drafts, in /cache "
+"only, and compare before and after in the browser; lighten from the page."
+" The drafts are removed when the page closes."
+msgstr ""
+
+msgid "Encoding this draft…"
 msgstr ""
 
 msgid "Enter"
@@ -2186,10 +2235,6 @@ msgid ""
 "alone shows, Enter runs it."
 msgstr ""
 
-#, python-format
-msgid "Every tick is saved at once in %(place)s."
-msgstr ""
-
 msgid ""
 "Everything 'clean --tier near-all' moves to the quarantine, group by "
 "group: the groups to check first, then, folded, the sure groups that "
@@ -2256,7 +2301,8 @@ msgstr ""
 
 msgid ""
 "Faces blurrier than this sharpness (variance of the Laplacian of the "
-"face) are left out."
+"face) are left out: never grouped, never named, unless you confirmed "
+"them."
 msgstr ""
 
 msgid ""
@@ -2278,7 +2324,7 @@ msgstr ""
 
 msgid ""
 "Faces smaller than this many pixels (shorter side of their box) are left "
-"out."
+"out: never grouped, never named, unless you confirmed them."
 msgstr ""
 
 msgid "Faces that look alike are grouped; they stay in the cache."
@@ -2436,6 +2482,12 @@ msgstr ""
 msgid "Focal length (mm)"
 msgstr ""
 
+msgid "Fold or unfold this folder"
+msgstr ""
+
+msgid "Fold this section (o)"
+msgstr ""
+
 msgid "Folder"
 msgstr ""
 
@@ -2501,6 +2553,9 @@ msgid "Folders closed; your photos were not changed."
 msgstr ""
 
 msgid "Folders named after a town, or placed"
+msgstr ""
+
+msgid "Folders of the phone"
 msgstr ""
 
 msgid "Folders removed"
@@ -2785,6 +2840,9 @@ msgid ""
 "(a cluster stays unnamed)."
 msgstr ""
 
+msgid "Hide"
+msgstr ""
+
 msgid "History and undo"
 msgstr ""
 
@@ -2889,6 +2947,9 @@ msgstr ""
 msgid ""
 "How much to log: \"error\", \"warning\", \"info\", \"verbose\" (info and "
 "every tip, not only the best two) or \"debug\"."
+msgstr ""
+
+msgid "How to write a search"
 msgstr ""
 
 msgid "ISO"
@@ -3183,10 +3244,20 @@ msgstr ""
 msgid "Lighten the heavy videos"
 msgstr ""
 
+#, python-brace-format
+msgid "Lighten the {count} chosen now"
+msgstr ""
+
 msgid "Lighten them; without it, only list them with the gain expected."
 msgstr ""
 
 msgid "Lighten them?"
+msgstr ""
+
+msgid "Lighten this one"
+msgstr ""
+
+msgid "Lighten videos: try"
 msgstr ""
 
 msgid "Lighten without asking first."
@@ -3728,6 +3799,13 @@ msgstr ""
 msgid "No decisions file of 'review --near' in {folder}."
 msgstr ""
 
+msgid "No draft ready yet."
+msgstr ""
+
+#, python-brace-format
+msgid "No draft: {reason}"
+msgstr ""
+
 msgid "No event in this proposal: nothing to review."
 msgstr ""
 
@@ -3809,6 +3887,10 @@ msgid "No journal mount: there is nothing to undo."
 msgstr ""
 
 msgid "No journal mount: without a journal, 'undo' would be impossible."
+msgstr ""
+
+#, python-brace-format
+msgid "No name any more: resemblance {score}, below {threshold}."
 msgstr ""
 
 msgid "No near duplicates: nothing to review."
@@ -3980,6 +4062,9 @@ msgid_plural "No video in this folder ({n} photos)."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "No video left to lighten: nothing was changed."
+msgstr ""
+
 msgid "No video worth lightening."
 msgstr ""
 
@@ -4009,6 +4094,9 @@ msgstr ""
 msgid ""
 "Not compared, as media-hygiene does not look at them (nothing to do): "
 "{details}."
+msgstr ""
+
+msgid "Not enough room left in /cache: the drafts stop here."
 msgstr ""
 
 #, python-brace-format
@@ -4077,6 +4165,10 @@ msgstr ""
 msgid "Not saved (error {status})."
 msgstr ""
 
+#, python-brace-format
+msgid "Not saved: config.toml still says this is not {name}."
+msgstr ""
+
 msgid "Not saved: config.toml, read back, does not say so."
 msgstr ""
 
@@ -4099,16 +4191,30 @@ msgid "Not this person: mark this face; the next button of the group saves it"
 msgstr ""
 
 #, python-brace-format
+msgid "Not {name}"
+msgstr ""
+
+#, python-brace-format
 msgid "Not {name}: take out this face"
 msgid_plural "Not {name}: take out these {n} faces"
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "Not {name}: take this name off the photo (saved in config.toml)"
+msgstr ""
 
 msgid "Notes"
 msgstr ""
 
 #, python-brace-format
 msgid "Notes carried over too: {count}."
+msgstr ""
+
+msgid "Nothing chosen yet."
+msgstr ""
+
+msgid "Nothing chosen."
 msgstr ""
 
 msgid ""
@@ -4293,8 +4399,8 @@ msgid "Of which unwanted"
 msgstr ""
 
 msgid ""
-"Old camera clips re-encoded, about four times lighter, the picture kept; "
-"each original in the quarantine."
+"Old camera clips re-encoded, about four times lighter: compare before and"
+" after in the browser, then lighten; each original in the quarantine."
 msgstr ""
 
 msgid "On a folder: the home page, on that folder."
@@ -4443,6 +4549,11 @@ msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
 msgstr ""
 
 msgid ""
+"Only the phone's DCIM folder is listed (the camera's photos and videos): "
+"a folder made by a gallery app elsewhere on the phone is not shown here."
+msgstr ""
+
+msgid ""
 "Only the photos below this folder (host path, as you mounted it); repeat "
 "it for several. Default: every file of the index."
 msgstr ""
@@ -4516,6 +4627,9 @@ msgid "Open the search at 127.0.0.1 or localhost."
 msgstr ""
 
 msgid "Open the slideshow at 127.0.0.1, or from the TV with mh --lan."
+msgstr ""
+
+msgid "Open this section (o)"
 msgstr ""
 
 msgid "OpenStreetMap contributors"
@@ -4820,6 +4934,10 @@ msgstr ""
 msgid "Previous and next pages"
 msgstr ""
 
+#, python-brace-format
+msgid "Previous drafts removed: {size} MB."
+msgstr ""
+
 msgid "Previous guess, already in place"
 msgstr ""
 
@@ -4860,6 +4978,9 @@ msgstr ""
 msgid ""
 "Purged on {date}: it is nowhere else. Deleted from the phone, it is lost "
 "for good."
+msgstr ""
+
+msgid "Put back"
 msgstr ""
 
 msgid "Put back a copy of it, or move it away to start new albums."
@@ -5416,6 +5537,18 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "Saved in config.toml, read back: {count} face of this photo is not {name}."
+msgid_plural ""
+"Saved in config.toml, read back: {count} faces of this photo are not "
+"{name}."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "Saved in config.toml, read back: {name} is on this photo again."
+msgstr ""
+
+#, python-brace-format
 msgid "Saved in config.toml, read back: {name}, {count} confirmed face."
 msgid_plural "Saved in config.toml, read back: {name}, {count} confirmed faces."
 msgstr[0] ""
@@ -5433,6 +5566,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "Saved, then read back from the disk at {time}: {file} holds your choice."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Saved, then read back from the disk at {time}: {file} holds {count} "
+"chosen."
 msgstr ""
 
 #, python-brace-format
@@ -6009,10 +6148,20 @@ msgstr ""
 msgid "Sure: the very picture and sound, only the metadata differ."
 msgstr ""
 
+msgid "Swap A / B"
+msgstr ""
+
 msgid "Swap the folders"
 msgstr ""
 
 msgid "Switch between the board and one series at a time (P)"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Switch to the PowerShell window: the files leave the phone one by one, "
+"each one copied again and compared with the PC's copy first (about "
+"{minutes} min)."
 msgstr ""
 
 #, python-brace-format
@@ -6050,6 +6199,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Take the batch back ({events})"
+msgstr ""
+
+msgid "Take this photo out of the set aside"
 msgstr ""
 
 #, python-brace-format
@@ -6313,12 +6465,24 @@ msgstr ""
 msgid "The documentation's home"
 msgstr ""
 
+msgid ""
+"The drafts are only in /cache/shrink-try and are removed when this page "
+"closes. Nothing changes until you lighten: each original then goes to the"
+" quarantine, and 'undo' brings it back."
+msgstr ""
+
 msgid "The earlier copies of this album were replaced."
+msgstr ""
+
+msgid "The event shown"
 msgstr ""
 
 msgid ""
 "The events of the Events sheet, in its order: naming the first ones "
 "covers most of the work."
+msgstr ""
+
+msgid "The face of reference that gave the name:"
 msgstr ""
 
 msgid ""
@@ -6559,6 +6723,14 @@ msgstr ""
 
 #, python-brace-format
 msgid "The page failed (error {status})."
+msgstr ""
+
+msgid ""
+"The page is not running any more: nothing more is saved here. Go back to "
+"the home page, then choose Make room on the phone again."
+msgstr ""
+
+msgid "The page is not running any more: start 'shrink --try' again."
 msgstr ""
 
 msgid "The page is not running any more: start it again."
@@ -6844,6 +7016,9 @@ msgstr ""
 msgid "The target {path} is not mounted."
 msgstr ""
 
+msgid "The terminal takes over: answer its question there. This page closes."
+msgstr ""
+
 msgid "The tool only sees the folders you give it with -v."
 msgstr ""
 
@@ -7110,11 +7285,20 @@ msgstr ""
 msgid "Tick at least one photo."
 msgstr ""
 
+msgid "Tick or untick every file of this folder"
+msgstr ""
+
+msgid "Tick: leaves the phone"
+msgstr ""
+
 msgid "Ticked: given to the place you choose above"
 msgstr ""
 
-#, python-brace-format
-msgid "Ticked: {ticked} of {total} files ({size})"
+#, python-format
+msgid ""
+"Ticking deletes nothing: only the red button does, after a question, each"
+" file copied again and compared first. Every tick is saved at once in "
+"%(place)s."
 msgstr ""
 
 #, python-brace-format
@@ -7253,6 +7437,15 @@ msgstr ""
 msgid "Try [blue]'{command_path} {help_option}'[/] for help."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Try ready, open {url} in your browser: each draft shows there as soon as "
+"it is encoded. Ctrl+C stops the try; its drafts are removed."
+msgstr ""
+
+msgid "Try stopped: its drafts are removed, nothing was changed."
+msgstr ""
+
 msgid ""
 "Two faces this similar (cosine, 0 to 1) may be the same person: higher "
 "splits more groups, lower mixes people."
@@ -7353,6 +7546,9 @@ msgstr ""
 msgid "Unknown run {run_id}."
 msgstr ""
 
+msgid "Untick: stays on the phone"
+msgstr ""
+
 msgid "Until mh stops; never the internet."
 msgstr ""
 
@@ -7402,10 +7598,17 @@ msgstr ""
 msgid "Video cannot be opened"
 msgstr ""
 
+#, python-brace-format
+msgid "Video {number} of {total}"
+msgstr ""
+
 msgid "Videos"
 msgstr ""
 
 msgid "Videos with a date in their tags"
+msgstr ""
+
+msgid "Waiting: the drafts are encoded one at a time."
 msgstr ""
 
 msgid "Walk through your folders"
@@ -7524,6 +7727,14 @@ msgstr ""
 
 #, python-brace-format
 msgid "Why this folder keeps them: {reasons}"
+msgstr ""
+
+#, python-brace-format
+msgid "Why {name}?"
+msgstr ""
+
+#, python-brace-format
+msgid "Why {name}? Click to see the face that gave this name"
 msgstr ""
 
 msgid "Width"
@@ -7663,6 +7874,10 @@ msgid "Year"
 msgstr ""
 
 msgid "Years"
+msgstr ""
+
+#, python-brace-format
+msgid "Yes, it is {name}"
 msgstr ""
 
 #, python-brace-format
@@ -8015,6 +8230,10 @@ msgid "as planned, then next"
 msgstr ""
 
 #, python-brace-format
+msgid "at {seconds} s"
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "attach {zip} to a mail, or add the photos of {folder} to an album on your"
 " social network."
@@ -8111,6 +8330,12 @@ msgstr ""
 msgid "choose"
 msgstr ""
 
+msgid "choose every draft shown"
+msgstr ""
+
+msgid "chosen"
+msgstr ""
+
 msgid ""
 "chosen in the review page, then edited otherwise in the workbook, whose "
 "value was carried over"
@@ -8156,6 +8381,9 @@ msgid "close"
 msgstr ""
 
 msgid "close it"
+msgstr ""
+
+msgid "close the large photo, then the photos of the place"
 msgstr ""
 
 msgid "colours"
@@ -8292,6 +8520,12 @@ msgstr ""
 msgid "every file from the last one clicked"
 msgstr ""
 
+msgid "every file of the page"
+msgstr ""
+
+msgid "every file shown"
+msgstr ""
+
 msgid "every key"
 msgstr ""
 
@@ -8394,10 +8628,16 @@ msgid ""
 "about 7 times faster than Docker."
 msgstr ""
 
+msgid "in a filter box: empty it"
+msgstr ""
+
 msgid "in folders never analysed (system, trash, thumbnails, excluded)"
 msgstr ""
 
 msgid "in the future: to check"
+msgstr ""
+
+msgid "in the search box: search OpenStreetMap"
 msgstr ""
 
 msgid "in your own home only: meals, games, children, sofa, garden"
@@ -8571,6 +8811,9 @@ msgstr ""
 msgid "leave the whole event where it is"
 msgstr ""
 
+msgid "leaves the phone"
+msgstr ""
+
 msgid "left as it is"
 msgstr ""
 
@@ -8579,6 +8822,15 @@ msgstr ""
 
 #, python-brace-format
 msgid "less than {limit} is expected, not {value}"
+msgstr ""
+
+msgid "lighten the chosen now (the terminal asks first)"
+msgstr ""
+
+msgid "lighten this one, or not"
+msgstr ""
+
+msgid "lightened"
 msgstr ""
 
 msgid "link to the kept file"
@@ -8851,6 +9103,9 @@ msgstr ""
 msgid "next, previous group"
 msgstr ""
 
+msgid "next, previous video"
+msgstr ""
+
 msgid "no"
 msgstr ""
 
@@ -8866,6 +9121,10 @@ msgstr ""
 msgid "no double quote"
 msgstr ""
 
+#, python-brace-format
+msgid "no frame: {error}"
+msgstr ""
+
 msgid "no preview"
 msgstr ""
 
@@ -8873,6 +9132,10 @@ msgid "no preview kept"
 msgstr ""
 
 msgid "no shot kept from its series is left"
+msgstr ""
+
+#, python-brace-format
+msgid "nobody named {name} on this photo"
 msgstr ""
 
 msgid "none: the whole group aside, then next"
@@ -8891,6 +9154,9 @@ msgstr ""
 msgid "not checked"
 msgstr ""
 
+msgid "not chosen"
+msgstr ""
+
 msgid "not created yet: the first clean creates it"
 msgstr ""
 
@@ -8907,6 +9173,9 @@ msgid "not sorted yet."
 msgstr ""
 
 msgid "nothing"
+msgstr ""
+
+msgid "nothing to put back"
 msgstr ""
 
 msgid "nothing: type mh backup again after your next import or sort."
@@ -8971,6 +9240,12 @@ msgid "opened: take it back out"
 msgstr ""
 
 msgid "opened: the previous or next one"
+msgstr ""
+
+msgid "opened: tick or untick it"
+msgstr ""
+
+msgid "opened: why this person's name (the face, its reference)"
 msgstr ""
 
 msgid "optional"
@@ -9269,6 +9544,10 @@ msgstr ""
 msgid "sure: V accepts it with the other sure proposals"
 msgstr ""
 
+#, python-format
+msgid "swap A (original) and B (lightened) at 100 %%"
+msgstr ""
+
 msgid "swap the folders, then next"
 msgstr ""
 
@@ -9276,6 +9555,9 @@ msgid "tags gives them some"
 msgstr ""
 
 msgid "take back the choice made here (of the selected photos, else of the event)"
+msgstr ""
+
+msgid "take back the last batch of sure proposals"
 msgstr ""
 
 msgid "take it back out of the set aside"
@@ -9461,7 +9743,8 @@ msgid ""
 msgstr ""
 
 msgid ""
-"the same command with --apply re-encodes them, each original in the "
+"the same command with --try compares a few before and after in the "
+"browser; with --apply, it re-encodes them, each original in the "
 "quarantine ('undo' brings it back)."
 msgstr ""
 
@@ -9522,6 +9805,9 @@ msgid "this list, or not"
 msgstr ""
 
 msgid "this setting is required"
+msgstr ""
+
+msgid "tick or untick it"
 msgstr ""
 
 #, python-brace-format
@@ -9602,6 +9888,12 @@ msgid "type a name first"
 msgstr ""
 
 msgid "type a name, e.g. Crete 2023"
+msgstr ""
+
+msgid "type a new search"
+msgstr ""
+
+msgid "type the name, the category"
 msgstr ""
 
 msgid "unanswered"
@@ -9780,6 +10072,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{cell}: the row {key} appears twice."
+msgstr ""
+
+#, python-brace-format
+msgid "{codec}, {picture}, {duration} s · estimated after: {estimated}"
 msgstr ""
 
 #, python-brace-format
@@ -10960,6 +11256,10 @@ msgid "{name} ({count} faces)"
 msgstr ""
 
 #, python-brace-format
+msgid "{name} comes close too: resemblance {score}."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "{name} is a built-in category, it cannot be redefined: choose another "
 "name, e.g. my_{name}"
@@ -11086,6 +11386,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid ""
+"{n} file set aside before was left unticked: tick it in the large view or"
+" with its own ☑, after reading its warning."
+msgid_plural ""
+"{n} files set aside before were left unticked: tick each one in the large"
+" view or with its own ☑, after reading its warning."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} file, {size}, {share} of your library"
 msgid_plural "{n} files, {size}, {share} of your library"
 msgstr[0] ""
@@ -11126,12 +11436,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "{n} of these photos is set aside."
-msgid_plural "{n} of these photos are set aside."
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
 msgid "{n} of {count} set aside"
 msgid_plural "{n} of {count} set aside"
 msgstr[0] ""
@@ -11162,6 +11466,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} photo set aside, hidden"
+msgid_plural "{n} photos set aside, hidden"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} s"
 msgstr ""
 
@@ -11170,6 +11480,10 @@ msgid "{n} series"
 msgid_plural "{n} series"
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} set aside, not ticked"
+msgstr ""
 
 #, python-brace-format
 msgid "{n} shot proposed aside"
@@ -11328,6 +11642,10 @@ msgid "{path}: longer than {count} characters."
 msgstr ""
 
 #, python-brace-format
+msgid "{path}: moved, renamed or changed since the page: skipped."
+msgstr ""
+
+#, python-brace-format
 msgid "{path}: no sheet of a classify workbook was found."
 msgstr ""
 
@@ -11345,6 +11663,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{path}: this version cannot undo the action '{action}'."
+msgstr ""
+
+#, python-brace-format
+msgid "{phone}: {ticked} of {total} files ticked ({size})"
 msgstr ""
 
 #, python-brace-format
@@ -11585,9 +11907,9 @@ msgid "… and {count} more."
 msgstr ""
 
 msgid ""
-"↑ ↓ move, Enter names, y confirms the attributed faces shown, x names "
-"several groups at once, i ignores a group; × marks a face that is someone"
-" else's, the next button saves it."
+"↑ ↓ move, o folds or opens, Enter names, y confirms the attributed faces "
+"shown, x names several groups at once, i ignores a group; × marks a face "
+"that is someone else's, the next button saves it."
 msgstr ""
 
 #, python-brace-format
@@ -11657,6 +11979,14 @@ msgid ""
 "🔒 Faces are personal data: they stay in the cache (/cache), nothing is "
 "sent anywhere. 'people --forget' deletes them all."
 msgstr ""
+
+#, python-brace-format
+msgid "🔒 Nothing changes now: {count} draft, encoded in /cache only."
+msgid_plural ""
+"🔒 Nothing changes now: {count} drafts, encoded one at a time in /cache "
+"only."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid ""
 "🔒 Nothing leaves the phone before you tick it on a page and press Delete;"

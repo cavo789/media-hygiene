@@ -6,13 +6,11 @@ import asyncio
 import json
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
 import typer
 
-import media_hygiene
 from media_hygiene.cli.context import user_errors
 from media_hygiene.cli.home_audit import page_audit
 from media_hygiene.cli.home_state import home_state
@@ -376,30 +374,6 @@ def test_home_typed_alone_does_not_say_it(
     said = _home_said(cli, monkeypatch)
     assert "Home page ready" in said
     assert _KEEP_OPEN not in said
-
-
-def test_every_page_template_includes_the_home_link() -> None:
-    """Each page served but the home page itself includes the way-home fragment."""
-    source = Path(media_hygiene.__file__).parent
-    pages = [
-        page
-        for page in source.glob("*/templates/*.html.j2")
-        if page.parent.parent.name in {"review", "search", "places", "people"}
-        # The page freeing a phone ends into `mh phone`, never the home page (0248).
-        and page.name
-        not in {
-            "home.html.j2",
-            "home_link.html.j2",
-            "apply_now.html.j2",  # a fragment, like home_link (0288)
-            "album_bar.html.j2",  # a fragment too (0295)
-            "page_header.html.j2",
-            "phone_review.html.j2",
-            "lan_pair.html.j2",  # a phone not paired yet: no home to go back to (0269)
-        }
-    ]
-    assert len(pages) >= 9
-    for page in pages:
-        assert 'include "home_link.html.j2"' in page.read_text("utf-8"), page.name
 
 
 def test_a_closed_tab_or_quit_ends_home_with_0(

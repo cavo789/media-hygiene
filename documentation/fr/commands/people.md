@@ -90,6 +90,12 @@ prochaine fois que la page enregistre un nom. Chaque nom est une entrée
 `[[people.person]]` de `config.toml`. Détails :
 [Les personnes](../reference-people.md#nommer-les-groupes).
 
+Chaque titre replie ou déplie sa section (cliquez-le, ou `o`). Les sections **vérifiées**, déjà
+faites, arrivent repliées : une ligne avec le nom, ✓, les nombres et une bande de quelques
+visages, pour que le travail restant vienne en premier ; leurs visages ne sont chargés que quand
+vous les ouvrez. La page retient dans ce navigateur ce que vous avez replié, personne par
+personne ; Entrée sur une section repliée l'ouvre, puis va à son champ de nom.
+
 ## Retirer toutes les photos de quelqu'un
 
 Pour oublier quelqu'un (un ex, par exemple), retirez les photos où il apparaît depuis le groupe
@@ -102,8 +108,12 @@ lui-même :
    affichés. Chaque photo où cette personne apparaît part, avec d'autres ou non. Rien n'est
    supprimé depuis la page : le choix est enregistré aussitôt dans `decisions.json` de vos
    rapports (`/reports`, monté par `mh`), relu sur le disque et affiché avec son nombre et sa
-   taille ; le groupe dit ensuite combien de ses photos sont mises de côté, et **Retirer de la
-   mise de côté** les reprend.
+   taille. Les photos mises de côté quittent alors la page : ni affichées, ni comptées, jamais
+   confirmées avec les autres. Leur section dit *N photos mises de côté, masquées* :
+   **Afficher** les remontre, estompées, chacune avec ↺ pour reprendre celle-là ; **Retirer de
+   la mise de côté** les reprend toutes. Il en va de même des photos mises de côté depuis une
+   autre page ([`search`](search.md), [`browse`](browse.md)), jusqu'à ce que `clean --decisions`
+   les déplace.
 3. Ouverte depuis la page d'accueil (`mh`), **Appliquer maintenant** ferme la page et lance
    [`clean --decisions`](clean.md), qui demande d'abord. Sinon, la commande le propose quand vous
    arrêtez la page. Il déplace les photos en quarantaine, journalisé ; [`undo`](undo.md) les
@@ -132,8 +142,9 @@ SHA-256 : il n'envoie rien sur vos photos.
 
 ## Bon à savoir
 
-- Les réglages `[people]` (`similarity`, `min_face`, `min_sharpness`) ne changent que le
-  regroupement : rien n'est analysé à nouveau.
+- Les réglages `[people]` (`similarity`, `min_face`, `min_sharpness`) changent le regroupement,
+  et les visages trop petits ou trop flous pour la page ne sont nommés nulle part (`search`,
+  `classify`, XMP), sauf si vous les avez confirmés : rien n'est analysé à nouveau.
 - `audit --people` cherche les visages juste après un audit, une fois que vous avez accepté le
   temps que ça prend ; `with_audit = true` dans `[people]` le fait à chaque audit.
 - Les vidéos ne sont pas encore analysées.

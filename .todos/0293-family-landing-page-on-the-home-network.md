@@ -4,7 +4,6 @@
 - **Batch**: home
 - **Depends**: 0269, 0291, 0297
 - **Files**: `src/media_hygiene/search/app.py`, `src/media_hygiene/search/views.py`, `src/media_hygiene/search/days.py`, `src/media_hygiene/search/templates/`, `src/media_hygiene/review/home_app.py`, `src/media_hygiene/config/`, `documentation/en/`, `documentation/fr/`
-- **Needs maintainer**: the decisions below (who sees this page, what it shows)
 
 ## Context
 
@@ -52,13 +51,26 @@ Every block of Gemini's page shows invented figures; kept only where the index g
 3. **The title.** A setting (`[home] family_title`, empty by default: "Our photos" /
    "Nos photos"), never a name in the repository.
 
+## Decided (2026-10-23)
+
+By the maintainer, at the start of `/todo:iterate`:
+
+1. **One page**: the home page itself, its acting stages (import, clean, sort, back up and the
+   tools that change files) hidden from a paired phone — not a second page. The PC keeps the
+   whole cycle.
+2. **What the family sees**: all four entrances — *On this day*, *Slideshow on the TV*,
+   *Search*, *Map* and *Latest additions*.
+3. **The title**: the setting as proposed (`[home] family_title`, empty by default: "Our
+   photos" / "Nos photos"), never a name in the repository.
+
 ## Acceptance
 
 To write once decided. At least: a phone paired by 0269 opens the page and sees today's
 memories from the index, every figure on the page comes from the index (no placeholder), the
 page holds no external resource and no endless animation.
 
-## Decided (2026-10-22, by the maintainer, `/todo:iterate`)
+## Decided (2026-10-22, by the maintainer, `/todo:iterate`) — moved to 0334
 
-Kept waiting, for later: 0297 shows an album on a **paired** phone; this TODO becomes the link
-that opens one album only, for other people's phones (no pairing). It now depends on 0297.
+The link that opens one album only, for other people's phones (no pairing), is now its own TODO,
+0334 (decided 2026-10-23: both ideas kept, in two TODOs). This TODO is the home page for a
+**paired** phone, as decided on 2026-10-23 above.

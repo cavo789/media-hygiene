@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% extends "page_frame.html.j2" %}
 {# The keyboard review of the files gone since an audit, served by `media-hygiene review --gone`.
    The page never touches a file: each answer is sent to the server, which saves the `gone`
    key of the decisions file; `clean --decisions` then writes a journal mark per file deleted
@@ -24,27 +24,9 @@
   "offline": _("The review is not running any more: start it again."),
 } %}
 {% set page_name = _("Files gone review") %}
-<html lang="{{ _('en') }}">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ page_name }} — media-hygiene</title>
-<link rel="icon" type="image/png" href="/assets/images/favicon.png">
-<style>
-{% include "theme.css.j2" %}
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text);
-         font: 400 15px/1.5 var(--mk-font-text); }
-  header, footer { position: sticky; z-index: 1; padding: 8px 16px; background: var(--card); }
-  header { top: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; align-items: baseline;
-           border-bottom: 1px solid var(--line); }
-  footer { bottom: 0; border-top: 1px solid var(--line); font-size: .85rem; color: var(--muted); }
-  .layout { display: grid; grid-template-columns: minmax(220px, 300px) 1fr; gap: 16px; padding: 12px 16px 24px; }
-  @media (max-width: 760px) { .layout { grid-template-columns: 1fr; } }
-  aside section { margin-bottom: 16px; }
-  aside h2 { font-size: .95rem; margin: 0 0 6px; }
+{% set keys_safe = _("Every answer is saved at once in %(place)s. Done? Ctrl+C in the terminal stops the review; then run the same 'clean' command with %(option)s: the files deleted on purpose are remembered, and 'undo' forgets them.", place=place, option=clean_option) %}
+{% block style %}
   main h2 { font-size: 1rem; margin: 0 0 8px; }
-  .muted { color: var(--muted); }
   #status.error { color: var(--bad); font-weight: 600; } #status.saved { color: var(--ok); }
   #state { margin: 0 0 12px; padding: 8px 12px; font-weight: 600; background: var(--card);
            border: 2px dashed var(--warn); border-radius: 10px; color: var(--warn); }
@@ -60,38 +42,32 @@
   figcaption { margin-top: 4px; font-size: .8rem; overflow-wrap: anywhere; }
   figcaption .original { margin-left: 6px; color: var(--accent); }
   .tag { font-weight: 600; }
-  kbd { display: inline-block; min-width: 1.6em; padding: 0 6px; font: inherit; text-align: center;
-        background: var(--bg); border: 1px solid var(--line); border-radius: 4px; }
-  dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; margin: 0; font-size: .9rem; }
-  dd { margin: 0; }
-</style>
-</head>
-<body>
-{% include "page_header.html.j2" %}
-<header>
-  <strong id="position"></strong>
-  <span id="totals" class="muted"></span>
-  <span id="status" role="status" aria-live="polite"></span>
-</header>
-<div class="layout">
-<aside>
-  <section>
-    <h2>⌨ {{ _("Keyboard") }}</h2>
-    <dl>
+  main dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; margin: 0; font-size: .9rem; }
+  main dd { margin: 0; }
+{% endblock %}
+{% block side %}
+  <section id="toc" aria-label="{{ page_name }}">
+    <p class="muted">{{ _("A file gone is a file the last audits no longer found where it was, nor elsewhere: deleted, or moved to a disk not plugged in. Only the files deleted on purpose are remembered; nothing ever moves.") }}</p>
+    <p class="muted">{{ _("A click on a file moves the cursor to it.") }}</p>
+  </section>
+{% endblock %}
+{% block keys %}
       <dt><kbd>D</kbd></dt><dd>{{ _("deleted on purpose: remembered, set aside if it comes back") }}</dd>
       <dt><kbd>M</kbd></dt><dd>{{ _("moved elsewhere (a disk not plugged in): forgotten") }}</dd>
       <dt><kbd>G</kbd></dt><dd>{{ _("the whole group deleted on purpose, then next") }}</dd>
       <dt><kbd>U</kbd></dt><dd>{{ _("the group back to unanswered") }}</dd>
+{% endblock %}
+{% block more_keys %}
       <dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>{{ _("move the cursor") }}</dd>
       <dt><kbd>→</kbd> <kbd>←</kbd></dt><dd>{{ _("next, previous group") }}</dd>
       <dt><kbd>N</kbd></dt><dd>{{ _("next group not answered") }}</dd>
-    </dl>
-    <p class="muted">{{ _("A click on a file moves the cursor to it.") }}</p>
-  </section>
-  <section>
-    <p class="muted">{{ _("A file gone is a file the last audits no longer found where it was, nor elsewhere: deleted, or moved to a disk not plugged in. Only the files deleted on purpose are remembered; nothing ever moves.") }}</p>
-  </section>
-</aside>
+{% endblock %}
+{% block bar %}
+  <strong id="position"></strong>
+  <span id="totals" class="muted"></span>
+  <span id="status" role="status" aria-live="polite"></span>
+{% endblock %}
+{% block content %}
 <main>
   <h2 id="title"></h2>
   <p id="state" role="status"></p>
@@ -101,13 +77,9 @@
     <div id="diskBody"></div>
   </details>
 </main>
-</div>
-<footer>
-  {{ _("Every answer is saved at once in %(place)s. Done? Ctrl+C in the terminal stops the review; then run the same 'clean' command with %(option)s: the files deleted on purpose are remembered, and 'undo' forgets them.", place=place, option=clean_option) }}
-</footer>
+{% endblock %}
+{% block after %}
 <script>
 {% include "gone_review.js.j2" %}
 </script>
-{% include "home_link.html.j2" %}
-</body>
-</html>
+{% endblock %}

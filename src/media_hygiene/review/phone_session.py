@@ -20,7 +20,7 @@ from media_hygiene.review.phone_file import (
     write_phone_decisions,
 )
 from media_hygiene.review.phone_tiles import TileSource, preview_key
-from media_hygiene.review.phone_views import PhoneReviewState, phone_groups
+from media_hygiene.review.phone_views import phone_state
 from media_hygiene.services.phone_plan import PhoneCase, Verdict
 
 if TYPE_CHECKING:
@@ -28,6 +28,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.review.phone_file import PhoneProof
+    from media_hygiene.review.phone_views import PhoneReviewState
     from media_hygiene.review.place import DecisionsPlace
     from media_hygiene.services.phone_proof import Ticked
 
@@ -92,18 +93,14 @@ class PhoneSession:
         Returns:
             The state.
         """
-        tiles = self._source.tiles
-        return PhoneReviewState(
-            phone=self._source.phone,
-            decisions_place=self.place.host,
-            tiles=tuple(
-                tiles.tile(rank, ticked).model_copy(update={"ticked": on})
-                for rank, (ticked, on) in enumerate(
-                    zip(self._source.files, self._ticked, strict=True)
-                )
-            ),
-            groups=phone_groups(self._source.files),
+        source = self._source.tiles
+        tiles = tuple(
+            source.tile(rank, ticked).model_copy(update={"ticked": on})
+            for rank, (ticked, on) in enumerate(
+                zip(self._source.files, self._ticked, strict=True)
+            )
         )
+        return phone_state(self._source.phone, self.place.host, tiles)
 
     def preview_source(self, key: str) -> Path | None:
         """Find the PC file a tile shows.

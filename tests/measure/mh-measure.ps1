@@ -2,7 +2,8 @@
 #
 # Runs, one after the other, the measurements the PARTIAL TODOs wait for, and writes the lines
 # that matter to one text file Claude reads afterwards (from the devcontainer, through a
-# read-only mount of C:\). Windows PowerShell 5.1, ASCII only (an accented byte breaks the
+# read-only mount of C:\): %TEMP%\mh-measure-results\measures-<stamp>.txt, the 30 latest kept.
+# Nothing of the script's own is left in $HOME\media-hygiene: it holds only what mh keeps. Windows PowerShell 5.1, ASCII only (an accented byte breaks the
 # console code page, TODO 0098).
 #
 #   1. a first audit of a test folder with duplicates, fresh cache   (0148: checks, fingerprints;
@@ -193,8 +194,11 @@ $ErrorActionPreference = "Stop"
 # console code page, which garbles them.
 [Console]::OutputEncoding = [Text.Encoding]::UTF8
 $stamp = Get-Date -Format "yyyyMMdd-HHmm"
-$outDir = Join-Path $HOME "media-hygiene"
+# Next to -Work, not in it: each run empties -Work. $HOME\media-hygiene is mh's, never ours.
+$outDir = Join-Path $env:TEMP "mh-measure-results"
+$mhHome = Join-Path $HOME "media-hygiene"
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+Get-ChildItem -LiteralPath $outDir -File -Filter "measures-*.txt" | Sort-Object Name -Descending | Select-Object -Skip 29 | Remove-Item -Force
 $out = Join-Path $outDir "measures-$stamp.txt"
 $wanted = 'Time per step|Duration|Report written|moved or renamed|unchanged folder|Reading 128 KB|copies|Error|first time|Next audit|No new or changed|per photo|A full run|faces in|Left out|Source folders removed|will be copied|Not enough room|not mounted|by what|to look at|Downloading the model|files found'
 
@@ -1677,9 +1681,9 @@ if (Wanted 19) {
 
 # --- 20: image embeddings, a bench on photos of C:\Photos (0220, for 0221) ------------------
 # Downloads the bench (tests/measure/embeddings of the -Branch) under -Work; the models once
-# into $HOME\media-hygiene\embeddings-models (2.5 GB, kept for the next runs: delete that
-# folder to get the room back); the pages into $HOME\media-hygiene\embeddings-<stamp>. The
-# searches come from $HOME\media-hygiene\embeddings-queries.txt: the first time, the step
+# into %TEMP%\mh-measure-results\embeddings-models (2.5 GB, kept for the next runs: delete that
+# folder to get the room back); the pages into %TEMP%\mh-measure-results\embeddings-<stamp>. The
+# searches come from %TEMP%\mh-measure-results\embeddings-queries.txt: the first time, the step
 # writes it with examples and stops, so you write your 20 searches (UTF-8, one per line).
 # C:\Photos and the index (-Cache) are mounted read-only; -Sample photos drawn at random.
 $benchFiles = @(
@@ -2191,7 +2195,7 @@ else:
             foreach ($line in $said) { Log ("   21h. mh audit: " + $line) }
             Log ("   21h. mh audit with the NAS: {0:N1} s, exit code {1}" -f $watch.Elapsed.TotalSeconds, $LASTEXITCODE)
             Log ("   21h. Docker volumes of the NAS left after it (none expected): " + ((@(& docker volume ls -q --filter name=mh-nas-) -join ' / ') -replace '^$', 'none'))
-            $kept = Join-Path $outDir ('nas-' + (("$Nas-$NasShare") -replace '[^A-Za-z0-9._-]+', '-').Trim('-') + '.xml')
+            $kept = Join-Path $mhHome ('nas-' + (("$Nas-$NasShare") -replace '[^A-Za-z0-9._-]+', '-').Trim('-') + '.xml')
             Log "   21h. password kept by mh: $(Test-Path -LiteralPath $kept)"
             $null = @(mh folders remove $unc 6>&1)
             Log "   21h. after mh folders remove: password file left: $(Test-Path -LiteralPath $kept)"
@@ -2429,7 +2433,7 @@ if (Wanted 25) {
 if (Wanted 26) {
     Log ""
     Log "== 26. the shortcut's window minimised, a console step brought forward (0284, 0285)"
-    $own = Join-Path $HOME "media-hygiene\mh.ps1"
+    $own = Join-Path $mhHome "mh.ps1"
     $fresh = (Test-Path -LiteralPath $own) -and (Select-String -LiteralPath $own -Pattern '_mh_forward' -SimpleMatch -Quiet)
     if ((Test-Path -LiteralPath $own) -and -not $fresh) {
         . $own
@@ -2529,7 +2533,7 @@ if (Wanted 27) {
             & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $sample > $mhFile
             . $mhFile
             # mh keeps its target next to yours: yours is put back at the end.
-            $keptTarget = Join-Path $outDir "backup-target.txt"
+            $keptTarget = Join-Path $mhHome "backup-target.txt"
             $yours = if (Test-Path -LiteralPath $keptTarget) { Get-Content -LiteralPath $keptTarget -Raw } else { $null }
             $target = Join-Path $test "mh"
             foreach ($round in "first", "second") {
@@ -2873,7 +2877,7 @@ if (Wanted 32) {
     $originalMb = ($albumPhotos | Measure-Object -Property Length -Sum).Sum / 1MB
     Log ("   32a. album of {0} photos ({1:N1} MB) written to {2}" -f $albumPhotos.Count, $originalMb, $albumsFile)
     $before = @($albumPhotos | ForEach-Object { "$($_.Name) $($_.Length) $($_.LastWriteTimeUtc.Ticks)" }) -join '|'
-    $shares = Join-Path $HOME "media-hygiene\Shares"
+    $shares = Join-Path $mhHome "Shares"
     $watch = [Diagnostics.Stopwatch]::StartNew()
     $said = @(mh share --album $albumName 2>&1)
     $status = $LASTEXITCODE

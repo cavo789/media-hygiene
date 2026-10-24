@@ -18,7 +18,7 @@ from media_hygiene.i18n import _
 from media_hygiene.index.face_rows import FaceStore, FaceTally
 from media_hygiene.index.moves import load_moves
 from media_hygiene.index.repository import FactsRepository
-from media_hygiene.people.naming import Known
+from media_hygiene.people.known import Known
 from media_hygiene.scan.progress import Step
 from media_hygiene.services.people_files import people_photos, present_photos
 from media_hygiene.services.people_find import FindDeps, FindOutcome, find_all

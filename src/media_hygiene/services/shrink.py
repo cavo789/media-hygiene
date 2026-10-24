@@ -9,10 +9,9 @@ or with an `ffmpeg` that cannot encode H.264.
 
 from __future__ import annotations
 
-import shutil
-import subprocess  # a fixed command: ffmpeg's list of encoders
 from contextlib import closing
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
+from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.journal import journal_file, read_journal
@@ -20,7 +19,6 @@ from media_hygiene.actions.kinds import Phase
 from media_hygiene.actions.not_worth import not_worth
 from media_hygiene.actions.outcome import Tally
 from media_hygiene.actions.shrink import Gains, Recipe, ShrinkExecutor
-from media_hygiene.constants import FFMPEG_BINARY, FFPROBE_BINARY
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.index.read_only import connect_read_only
@@ -32,22 +30,21 @@ from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.quarantine_space import quarantine_route
 from media_hygiene.services.search_pages import shown_roots
 from media_hygiene.services.shrink_index import park_originals
+from media_hygiene.services.shrink_tools import encoding_tools
 from media_hygiene.shrink.candidates import FILES, Selection, candidates
-from media_hygiene.shrink.check import Tools
 from media_hygiene.shrink.encode import encoding_of
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Mapping
     from pathlib import Path
 
     from media_hygiene.actions.outcome import Outcome
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.services.runtime import Runtime
-    from media_hygiene.shrink.candidates import Candidate
+    from media_hygiene.shrink.candidates import Candidate, FileKey
+    from media_hygiene.shrink.check import Tools
 
 COMMAND: Final = "shrink"
-_ENCODER: Final = "libx264"
-_ENCODERS_SECONDS: Final = 30
 
 
 @dataclass(frozen=True, slots=True)
@@ -65,6 +62,8 @@ class ShrinkJobs:
     videos: tuple[Candidate, ...]
     tools: Tools
     lighter: bool = False
+    # The drafts of `shrink --try` to reuse, by the version they were made from.
+    drafts: Mapping[FileKey, Path] = field(default_factory=lambda: MappingProxyType({}))
 
 
 @dataclass(frozen=True, slots=True)
@@ -138,13 +137,7 @@ class ShrinkService:
             message = _("'shrink' moves each original to /quarantine: mount it.")
             raise missing_mount(runtime, message, again)
         ensure_can_act(runtime, COMMAND)
-        ffmpeg, ffprobe = shutil.which(FFMPEG_BINARY), shutil.which(FFPROBE_BINARY)
-        if ffmpeg is None or ffprobe is None or not _encodes(ffmpeg):
-            raise MountError(
-                _("This ffmpeg cannot encode H.264: nothing was changed."),
-                _("Update the image: mh update."),
-            )
-        return Tools(ffmpeg, ffprobe)
+        return encoding_tools()
 
     def execute(self, jobs: ShrinkJobs, stop: Callable[[], bool]) -> ShrinkResult:
         """Lighten the videos under a new run identifier.
@@ -159,7 +152,7 @@ class ShrinkService:
         runtime = self._runtime
         settings = runtime.settings.shrink
         encoding = encoding_of(settings, lighter=jobs.lighter)
-        recipe = Recipe(encoding, jobs.tools, settings.min_gain_percent)
+        recipe = Recipe(encoding, jobs.tools, settings.min_gain_percent, jobs.drafts)
         tally = Tally()
         with new_run(runtime, self._progress, Phase.SHRINK) as opened:
             context = replace(opened, route=quarantine_route(runtime))
@@ -169,24 +162,3 @@ class ShrinkService:
         journal = journal_file(runtime.locations.journal_dir, run_id)
         park_originals(runtime, run_id, read_journal(journal))
         return ShrinkResult(run_id, tally.freeze(), executor.gains, interrupted)
-
-
-def _encodes(ffmpeg: str) -> bool:
-    """Tell whether an `ffmpeg` can encode H.264 (the image's, since 0303).
-
-    Args:
-        ffmpeg: The executable.
-
-    Returns:
-        True when it lists `libx264` among its encoders.
-    """
-    try:
-        listed = subprocess.run(  # noqa: S603  # a fixed command, no user input
-            (ffmpeg, "-hide_banner", "-encoders"),
-            capture_output=True,
-            check=False,
-            timeout=_ENCODERS_SECONDS,
-        )
-    except OSError, subprocess.TimeoutExpired:
-        return False
-    return _ENCODER in listed.stdout.decode(errors="replace")

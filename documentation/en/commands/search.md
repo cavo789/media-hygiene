@@ -48,9 +48,22 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene search
 ```
 
-Open <http://127.0.0.1:8088/>. `/` searches again, the arrows move, a click or Space picks a
-photo, Enter or a double click shows it large (with a link to the original), Escape closes it.
-Filters: years, a part of the path, the words of one source only. Ctrl+C, or closing its tab, stops the page.
+Open <http://127.0.0.1:8088/>. The page looks and works like [`browse`](browse.md): the search
+field and its filters (years, a part of the path, the words of one source only) in the left
+column, the ⌨ keys under them, one bar above the grid, then the photos found. **📁 Folders**
+opens `browse`, the same server. Ctrl+C, or closing its tab, stops the page.
+
+- **Search**: type the words, then Enter; the keys then go to the grid, `/` comes back to the
+  field. *How to write a search* recalls the phrases ("bord de mer"), the starts of words
+  (anniv\*) and the words of one source (place:durbuy).
+- **Pick**, as in `browse`: a click picks one file; the ☑ box (or Ctrl+click) adds or removes one;
+  Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse picks
+  what it touches (with Ctrl, it adds); Ctrl+A every file shown, then **Pick all N files found**
+  in the bar takes every file the search finds, not only the 240 shown; **Invert the picking**
+  (or I) picks the others.
+- **Look**: Enter or a double click shows the photo large (with a link to the original); ← → the
+  previous or next one, Delete sets it aside then shows the next one, F full screen, ? every key,
+  Escape closes it.
 
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20 files
 as a table.
@@ -59,15 +72,16 @@ as a table.
 
 To remove every photo of someone, the [`people`](people.md#remove-every-photo-of-someone) page
 does it from their group of faces. To remove those of an event, or any other choice: search them
-(`person:"Ann"`, a year, a word), pick them (a click or Space on each, or **Pick all N files found**: every file the search finds,
-not only the 240 shown), then **Set aside the picked files**.
+(`person:"Ann"`, a year, a word), pick them (Ctrl+A, then **Pick all N files found**: every file
+the search finds, not only the 240 shown), then Delete or **Set aside the picked files**.
 
 - Nothing is deleted from the page. The choice is saved at once in `decisions.json` of your
   reports, read back from the disk and shown with its count and size: *37 files set aside
   (412 MB), saved in …: 'clean --decisions' moves them to the quarantine, and remembers them: if
   one comes back (a new copy from the phone), the audit proposes it again.* The photos set aside
   carry a red *marked to set aside* label.
-- **Take out of the set aside** takes the files picked back out of it.
+- **Take out of the set aside**, shown once a picked file is set aside, takes the files picked
+  back out of it.
 - When you stop the page, `search` proposes the next step: `mh clean --decisions`. It asks first
   how many files and how many bytes go (apart from the duplicates), moves them to the
   quarantine, journaled; [`undo`](undo.md) brings them back, [`purge`](purge.md) frees the
@@ -76,6 +90,28 @@ not only the 240 shown), then **Set aside the picked files**.
   clean report; a file of a protected folder refuses the whole file, as everywhere.
 - The same `decisions.json` holds what [`review`](review.md) decided: both are kept, and one
   `clean --decisions` applies them all.
+
+## A wrong name under a photo
+
+A person's name under a photo has a **×**: click it when that person is not on the photo. The
+faces of the photo that gave the name go into the person's `rejected` list (in their file under
+`/config/people/`, linked from `config.toml`), exactly as the × of the [`people`](people.md) page
+does; a face you had confirmed leaves their `faces` too. The file is read back and the bar says
+what it holds now (*Saved in config.toml, read back: 1 face of this photo is not Chloé.*), with
+**Put back** to undo it. The × never picks the photo, and the card stays where it is. The large
+view shows the same names, with the same ×, under its facts (`I`).
+
+A click on the name itself (or `W` in the large view) opens **Why this name?**: the face of the
+photo cut out, how it got the name (*confirmed by you*, or *close to a face you confirmed*, with
+that face, its file, and the score against `[people] similarity`), and the next person when they
+come close too. **Yes, it is …** confirms that face, **Not …** takes the name off that face
+only; both are saved, read back and said the same way. Esc closes the panel and leaves the large
+view open. How to read the score: [People](../reference-people.md#find-them-search).
+
+Only this photo loses the name in this search. Other photos named because they look like a face
+you just took out keep theirs until you take it off them too; `classify`, the inventory and the
+XMP sidecars read the names again at their next run. Without a writable `/config`, nothing is
+saved and the bar says why.
 
 ## Put photos in an album
 

@@ -1,57 +1,15 @@
-{# The script of the folder view (`browse.html.j2`): the tree, the files of a folder,
-   the picking as in Explorer, the viewer, and the saving of what is set aside; the
-   albums are `album_bar.html.j2`'s. #}
-"use strict";
+{# The script of the folder view (`browse.html.j2`): the tree, the files of a folder or
+   the heaviest ones. The picking, the bar and the saving are `pick_grid.js.j2`'s, the
+   large view `pick_viewer.js.j2`'s, the albums `album_bar.html.j2`'s. #}
 const TEXTS = {{ texts | tojson }};
 const FOLDERS_PATH = {{ folders_path | tojson }};
 const FOLDER_PATH = {{ folder_path | tojson }};
 const HEAVIEST_PATH = {{ heaviest_path | tojson }};
 const HEAVIEST_FIRST = {{ heaviest_first | tojson }};
 const CHOSEN_PATH = {{ chosen_path | tojson }};
-const $ = (id) => document.getElementById(id);
-const PLURAL = new Intl.PluralRules(document.documentElement.lang);
 let folder = "";       // the folder shown (host path)
 let heavy = false;     // the heaviest files of the library are shown instead
 let limit = HEAVIEST_FIRST; // how many of them; *Show more* adds as many
-let files = [];        // its files, as the server listed them
-let cards = [];
-let current = -1;      // the card with the focus
-let anchor = -1;       // where a Shift+click range starts
-const picked = new Set(); // the keys of the files picked
-let bandDrawn = false; // a rectangle just ended: the click that follows picks nothing
-let saving = false;    // Delete in the viewer: one save at a time (a key held repeats)
-
-function fill(template, values) {
-  return template.replace(/\{(\w+)\}/g, (all, name) => (name in values ? values[name] : all));
-}
-
-function counted(forms, n) {
-  return fill(forms[PLURAL.select(n) === "one" ? 0 : 1], { n: n });
-}
-
-function element(tag, className, text) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
-  return node;
-}
-
-// Said in the line the bar always shows, whether files are picked or not.
-function failed(answer) {
-  $("chosen").className = "error";
-  $("chosen").textContent = answer ? fill(TEXTS.failed, { status: answer.status }) : TEXTS.offline;
-}
-
-async function ask(path, body) {
-  const options = body === undefined ? {} : {
-    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
-  };
-  try {
-    return await fetch(path, options);
-  } catch (error) {
-    return null;
-  }
-}
 
 // The tree: the mounted folders open, every folder below them closed.
 function branch(node, children) {
@@ -106,8 +64,7 @@ async function loadTree() {
 }
 
 function card(file, index) {
-  const node = element("article", "file");
-  node.tabIndex = 0;
+  const node = element("article");
   let picture;
   if (file.video) {
     picture = element("video");
@@ -117,7 +74,7 @@ function card(file, index) {
   } else if (file.thumb) {
     picture = element("img");
     picture.loading = "lazy";
-    picture.draggable = false; // a drag draws a rectangle (`browse_band.js.j2`)
+    picture.draggable = false; // a drag draws a rectangle (`pick_band.js.j2`)
     picture.alt = file.name;
     picture.src = file.thumb;
     picture.addEventListener("error", () => picture.replaceWith(element("div", "empty", TEXTS.noPreview)));
@@ -127,62 +84,18 @@ function card(file, index) {
               element("div", "muted", [file.date, file.size].filter(Boolean).join(" · ")));
   if (file.facts) meta.append(element("div", "muted", file.facts));
   if (file.where) meta.append(element("div", "muted where", file.where));
-  // The box adds or takes out this file alone, without Ctrl (and on a touch screen).
-  const tick = element("input", "tick");
-  tick.type = "checkbox";
-  tick.tabIndex = -1;
-  tick.setAttribute("aria-label", TEXTS.tick);
-  tick.addEventListener("click", (event) => {
-    event.stopPropagation();
-    focusOn(index);
-    pick(index, { ctrlKey: true });
-  });
-  node.append(picture, meta, tick);
-  if (file.chosen) node.append(element("span", "badge", TEXTS.aside));
-  node.addEventListener("click", (event) => {
-    if (bandDrawn) return; // the end of a rectangle, not a pick
-    focusOn(index);
-    pick(index, event);
-  });
-  node.addEventListener("dblclick", () => { focusOn(index); open(); });
-  node.addEventListener("focus", () => focusOn(index));
-  return node;
+  node.append(picture, meta);
+  return wireCard(node, index);
 }
 
-// The same files in the same order: the cards shown can stay, only their labels change.
-function sameFiles(listed) {
-  return listed.length === files.length && listed.every((file, index) => file.key === files[index].key);
-}
-
-// After a save, the cards stay in place (no reload of the previews, no jump of the
-// scrolling): only the *marked to set aside* label follows what the server read back.
-function relabel() {
-  cards.forEach((node, index) => {
-    const badge = node.querySelector(".badge");
-    if (files[index].chosen && !badge) node.append(element("span", "badge", TEXTS.aside));
-    if (!files[index].chosen && badge) badge.remove();
-  });
-}
-
-// The files listed take the grid: the same ones (after a save) keep their cards.
+// The files listed take the grid; the tree marks where they come from.
 function show(listed, again) {
   for (const button of document.querySelectorAll(".folder")) {
     button.classList.toggle("open", heavy ? button.classList.contains("heaviest") : button.dataset.path === folder);
   }
-  picked.clear();
-  if (again && sameFiles(listed)) {
-    files = listed;
-    relabel();
-  } else {
-    files = listed;
-    cards = files.map(card);
-    current = -1;
-    anchor = -1;
-    $("grid").replaceChildren(...cards);
-  }
+  showFiles(listed, again);
   $("more").hidden = true;
   $("status").className = "";
-  showPicked();
 }
 
 async function openFolder(path, again) {
@@ -213,6 +126,11 @@ function reopen(again) {
   return heavy ? openHeaviest(again) : openFolder(folder, again);
 }
 
+// What the files shown are, sent with each choice and each album change.
+function scope() {
+  return { folder: folder };
+}
+
 // An empty grid: the folder holds nothing, or only what the **Show** filter hides.
 function hidden(holds) {
   if ($("kind").value === "videos" && holds.photos) return counted(TEXTS.noVideo, holds.photos);
@@ -220,228 +138,6 @@ function hidden(holds) {
   return TEXTS.empty;
 }
 
-function focusOn(index) {
-  if (index < 0 || index >= cards.length) return;
-  if (current >= 0 && cards[current]) cards[current].classList.remove("current");
-  current = index;
-  cards[current].classList.add("current");
-  if (document.activeElement !== cards[current]) cards[current].focus();
-}
-
-// As in Explorer: a click picks one file, Ctrl adds or removes, Shift a range.
-function pick(index, event) {
-  const key = files[index].key;
-  if (event && event.shiftKey && anchor >= 0) {
-    if (!event.ctrlKey) picked.clear();
-    const [from, to] = [Math.min(anchor, index), Math.max(anchor, index)];
-    for (let rank = from; rank <= to; rank += 1) picked.add(files[rank].key);
-  } else if (event && (event.ctrlKey || event.metaKey || event.type === "keydown")) {
-    if (picked.has(key)) picked.delete(key); else picked.add(key);
-    anchor = index;
-  } else {
-    const only = picked.size === 1 && picked.has(key);
-    picked.clear();
-    if (!only) picked.add(key);
-    anchor = index;
-  }
-  showPicked();
-}
-
-// The files not picked instead: quicker when a folder holds more to set aside than to keep.
-function invert() {
-  for (const file of files) {
-    if (picked.has(file.key)) picked.delete(file.key); else picked.add(file.key);
-  }
-  showPicked();
-}
-
-function showPicked() {
-  cards.forEach((node, index) => {
-    const on = picked.has(files[index].key);
-    node.classList.toggle("picked", on);
-    node.querySelector(".tick").checked = on;
-  });
-  // The bar shows where you are, or, once a file is picked, what to do with the picking.
-  const some = picked.size > 0;
-  $("bar").classList.toggle("acting", some);
-  $("lead").hidden = some;
-  $("acting").hidden = !some;
-  $("picked").textContent = some ? counted(TEXTS.picked, picked.size) : "";
-  $("takeBack").hidden = !files.some((file) => file.chosen && picked.has(file.key));
-  if (window.mhAlbumPicked) window.mhAlbumPicked(picked.size); // album_bar.html.j2
-}
-
-// What *Add to the album* adds: the files picked in the folder shown.
-window.mhAlbumPick = () => ({ keys: [...picked], search: { folder: folder } });
-
-function said(answer, state) {
-  const line = $("chosen");
-  line.className = answer.ok ? "" : "error";
-  line.textContent = answer.ok ? state.message : fill(TEXTS.notSaved, { error: state.error || answer.status });
-  line.title = line.textContent; // one line in the bar: the whole sentence on hover
-  $("viewerSaid").className = line.className;
-  $("viewerSaid").textContent = line.textContent; // the bar is behind the large view
-  if (window.mhApplyNow) window.mhApplyNow(answer.ok && state.count > 0); // apply_now.html.j2
-}
-
-async function choose(action) {
-  if (!picked.size) return;
-  $("chosen").className = "";
-  $("chosen").textContent = TEXTS.saving;
-  const body = { action: action, keys: [...picked], search: { folder: folder } };
-  const answer = await ask(CHOSEN_PATH, body);
-  if (!answer) { failed(null); return; }
-  said(answer, await answer.json().catch(() => ({})));
-  if (answer.ok) await reopen(true);
-}
-
-// Opened large: the file shown alone is set aside (Delete) or taken back (Backspace), the
-// save read back from the server (its label too). One save at a time: a key held repeats.
-async function saveShown(action) {
-  const file = files[current];
-  if (!file || saving) return false;
-  if ((action === "add") === Boolean(file.chosen)) return true; // so already
-  saving = true;
-  $("viewerSaid").className = "";
-  $("viewerSaid").textContent = TEXTS.saving;
-  const answer = await ask(CHOSEN_PATH, { action: action, keys: [file.key], search: { folder: folder } });
-  saving = false;
-  if (!answer) { failed(null); $("viewerSaid").textContent = TEXTS.offline; return false; }
-  said(answer, await answer.json().catch(() => ({})));
-  if (!answer.ok) return false;
-  await reopen(true);
-  return true;
-}
-
-// Delete: set aside, then the next one opens; the last one stays, marked.
-async function asideShown() {
-  const index = current;
-  if (!(await saveShown("add"))) return;
-  focusOn(Math.min(index + 1, files.length - 1));
-  open();
-}
-
-// Backspace: taken back out of the set aside; the file stays shown (a video keeps playing).
-async function takeBackShown() {
-  if (await saveShown("remove")) $("viewerAside").hidden = !files[current].chosen;
-}
-
-// A: the file shown goes into the album named in the bar (`album_bar.html.j2`).
-async function albumShown() {
-  const file = files[current];
-  if (!file || !window.mhAlbumAdd) return;
-  const sent = await window.mhAlbumAdd({ keys: [file.key], search: { folder: folder } });
-  $("viewerSaid").className = $("albumSaid").className;
-  $("viewerSaid").textContent = sent ? $("albumSaid").textContent : TEXTS.noAlbum;
-}
-
-function playPause() {
-  const movie = $("movie");
-  if (movie.hidden) return;
-  if (movie.paused) movie.play().catch(() => undefined); else movie.pause();
-}
-
-// F: the large view on the whole screen; Esc (the browser's) leaves it first.
-function fullScreen() {
-  if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
-  else $("viewer").requestFullscreen().catch(() => undefined);
-}
-
-function toggle(id) {
-  $(id).hidden = !$(id).hidden;
-}
-
-function jump(index) {
-  focusOn(Math.max(0, Math.min(index, files.length - 1)));
-}
-
-function open() {
-  const file = files[current];
-  if (!file) return;
-  const movie = $("movie");
-  const large = $("large");
-  movie.hidden = !file.video;
-  large.hidden = Boolean(file.video);
-  if (file.video) { movie.src = file.video; } else { movie.removeAttribute("src"); large.src = file.preview; }
-  large.alt = file.name;
-  $("viewerName").textContent = file.name;
-  $("viewerAside").hidden = !file.chosen;
-  $("viewerInfo").textContent = [file.date, file.size, file.facts, file.where || folder].filter(Boolean).join(" · ");
-  $("viewerSaid").textContent = "";
-  $("originalLink").href = file.original;
-  $("viewer").classList.add("open");
-}
-
-function close() {
-  $("movie").pause();
-  if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
-  $("viewer").classList.remove("open");
-}
-
-// The keys of the large view: listed under it with `?` (`browse.html.j2`, `viewerHelp`).
-const VIEWER_KEYS = {
-  Escape: close,
-  ArrowRight: () => { jump(current + 1); open(); },
-  ArrowLeft: () => { jump(current - 1); open(); },
-  Home: () => { jump(0); open(); },
-  End: () => { jump(files.length - 1); open(); },
-  Delete: asideShown,
-  Backspace: takeBackShown,
-  " ": playPause,
-  f: fullScreen,
-  i: () => toggle("viewerInfo"),
-  a: albumShown,
-  "?": () => toggle("viewerHelp"),
-};
-
-function columns() {
-  if (cards.length < 2) return 1;
-  const top = cards[0].offsetTop;
-  const count = cards.findIndex((node) => node.offsetTop !== top);
-  return count < 0 ? cards.length : count;
-}
-
-document.addEventListener("keydown", (event) => {
-  if ($("viewer").classList.contains("open")) {
-    const key = event.key.length === 1 && event.key !== "?" ? event.key.toLowerCase() : event.key;
-    if (event.ctrlKey || event.metaKey || event.altKey || !(key in VIEWER_KEYS)) return;
-    event.preventDefault();
-    VIEWER_KEYS[key]();
-    return;
-  }
-  if (["SELECT", "INPUT"].includes(document.activeElement.tagName)) return; // an album's name
-  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "a") {
-    event.preventDefault();
-    for (const file of files) picked.add(file.key);
-    showPicked();
-    return;
-  }
-  if (event.key.toLowerCase() === "i" && !event.ctrlKey && !event.metaKey && !event.altKey) {
-    event.preventDefault();
-    invert();
-    return;
-  }
-  const moves = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: columns(), ArrowUp: -columns() };
-  if ((event.key === "Home" || event.key === "End") && cards.length) {
-    event.preventDefault();
-    jump(event.key === "Home" ? 0 : cards.length - 1);
-  } else if (event.key in moves && cards.length) {
-    event.preventDefault();
-    focusOn(current < 0 ? 0 : current + moves[event.key]);
-  } else if (event.key === "Enter" && current >= 0 && document.activeElement.classList.contains("file")) {
-    event.preventDefault();
-    open();
-  } else if (event.key === " " && current >= 0 && document.activeElement.classList.contains("file")) {
-    event.preventDefault();
-    pick(current, event);
-  } else if (event.key === "Delete") {
-    event.preventDefault();
-    choose("add");
-  }
-});
-$("viewer").addEventListener("click", (event) => {
-  if (!event.target.closest("a, video, .stay")) close(); // the lists under it stay open
-});
 // **Sort by** and **Show** are kept for this viewer only: another folder opens the same way.
 for (const id of ["order", "kind"]) {
   const select = $(id);
@@ -454,16 +150,7 @@ for (const id of ["order", "kind"]) {
     if (folder || heavy) reopen();
   });
 }
-$("setAside").addEventListener("click", () => choose("add"));
-$("takeBack").addEventListener("click", () => choose("remove"));
-$("unpick").addEventListener("click", () => { picked.clear(); showPicked(); });
-$("invert").addEventListener("click", invert);
 $("more").addEventListener("click", () => { limit += HEAVIEST_FIRST; openHeaviest(); });
-
-async function loadChosen() {
-  const answer = await ask(CHOSEN_PATH);
-  if (answer) said(answer, await answer.json().catch(() => ({})));
-}
 
 loadTree();
 loadChosen();

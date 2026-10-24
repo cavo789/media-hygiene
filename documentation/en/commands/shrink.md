@@ -36,7 +36,7 @@ docker run --rm -it `
 | Needs | `/cache` (the audit's facts); with `--apply`, your folders **without** `:ro`, `/journal` and `/quarantine`. |
 | Writes | The lighter videos, the journal; the originals in the quarantine. |
 | Undo | [`undo <run>`](undo.md) removes each lighter video (while it is unchanged) and brings its original back. |
-| With `mh` | `mh shrink`, then `mh shrink --apply`. |
+| With `mh` | `mh shrink`, then `mh shrink --try` (the home page's action) or `mh shrink --apply`. |
 
 ## Run it
 
@@ -59,6 +59,43 @@ encoding tells.
    C:\Photos\2009\Zoo\MVI_0042.AVI — mjpeg, 640×480, 4 min: 812 MB → ~95 MB
 ```
 
+## Try first: before and after in the browser
+
+`--try` encodes the first `try_count` videos of the list (10 by default, the largest gains
+first; or those below `--folder`) as **drafts**, one at a time in the background, with the
+same settings as `--apply`, and opens a page that shows each one as soon as it is ready:
+
+- **B, the draft**, plays in the page, with its size, its gain in % and its encoding time;
+- **A, the original**: the MJPEG and PCM of old cameras play in no browser, so the page shows
+  frames of the original and of the draft taken at the same instants (10, 50 and 90 % of the
+  film), at 100 %; the `B` key swaps A and B. `←` / `→` move between the videos.
+- **Lighten this one** (`L`) or **Choose every draft shown** (`A`): each choice is saved in
+  `shrink-decisions.json` and shown as read back from the disk. **Lighten the chosen now**
+  (`Enter`) hands over to the terminal, which asks the usual question, then lightens them as
+  `--apply` does (originals in the quarantine, journaled, undoable), **reusing each draft**:
+  nothing is encoded twice. A video moved, renamed or changed since the page is skipped, with a
+  line.
+
+```powershell
+docker run --rm -it -p 127.0.0.1:8088:8088 `
+  -v "C:\Photos:/data/c/Photos" `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene shrink --try
+```
+
+**The drafts are always removed**: they are written only in `/cache/shrink-try/` (the cache
+volume, never next to your photos), and removed when the page closes, on Ctrl+C or when the
+container is stopped. If the computer was switched off in the middle, the next `shrink` removes
+them and says so in one line. Without a `/cache` mount, `--try` refuses (with the line to add);
+one `--try` at a time. Before each draft, `/cache` must have twice its estimated size free, or
+the drafts stop there: a draft weighs about 29 % of its original (measured on a Panasonic
+clip), so the 10 heaviest clips of a large collection may take 1 to 2 GB for a while.
+
+Estimated time: about 8 s of encoding per minute of film on a 32-processor PC, so about 30 s
+for a 3-minute clip, and 5 minutes for 10 of them: the first draft shows long before the last.
+
 ## Which videos
 
 - **The codecs of old cameras and of the 2000s**: MJPEG, DV, MPEG-4 part 2 (DivX, Xvid),
@@ -67,6 +104,10 @@ encoding tells.
   bits per pixel and per frame. A phone's H.264 spends about 0.1 to 0.3: it is **left alone**,
   since a second lossy generation shows and gains little.
 - Never one in a protected, excluded or backup folder, nor one shorter than a second.
+- **Never one it lightened itself**: each lighter video carries a mark inside the file (the tag
+  `media_hygiene`, `media-hygiene shrink crf=23`; the camera's comment stays). Renamed, moved
+  by `sort` or in the Explorer, copied elsewhere, even with the journals gone: it is never
+  offered again.
 - **Not worth it**: a result that is not at least `min_gain_percent` (30) % lighter is thrown
   away, the original stays, and the video is not tried again while it is unchanged.
 
@@ -104,6 +145,7 @@ figures; the list says its estimate, and the real gain is said after each video.
 |---|---|
 | `--folder PATH` | Only the videos below this folder (host path); repeat it for several. |
 | `--lighter` | At most 720 lines, a stronger compression. |
+| `--try` | Drafts of the first `try_count` ones, compared in the browser; lighten from the page. |
 | `--apply` | Lighten them; without it, only list them. |
 | `--yes`, `-y` | Do not ask first. |
 
@@ -114,7 +156,8 @@ figures; the list says its estimate, and the real gain is said after each video.
   Ctrl+C stops after the video being encoded; type the command again for the rest.
 - **The space comes back with `purge`**: until then, the originals are in the quarantine.
 - **Settings**: the `[shrink]` section of `config.toml` (`codecs`, `bits_per_pixel`,
-  `min_gain_percent`, `same_crf`, `lighter_crf`, `lighter_lines`, `preset`, `threads`).
+  `min_gain_percent`, `same_crf`, `lighter_crf`, `lighter_lines`, `preset`, `threads`,
+  `try_count`: the drafts of `--try`, 10 by default).
 - **A container change alone (`.mov` → `.mp4` without re-encoding) frees nothing**: it is not
   offered.
 

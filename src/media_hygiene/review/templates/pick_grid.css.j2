@@ -1,0 +1,50 @@
+{# The look of a page of photos to pick (`browse`, `search`, the phone page), on top of the
+   frame's (`page_frame.css.j2`: the columns, the keys, the one bar): the views, the start of
+   the bar (0305), the tiles with their ☑ box, the rectangle, the *marked to set aside* label.
+   Included in the page's `style` block; the large view is `pick_viewer.css.j2`. #}
+  label { font-size: .85rem; color: var(--muted); }
+  input, select { padding: 4px 6px; font: inherit; color: var(--text); background: var(--bg);
+                  border: 1px solid var(--line); border-radius: 6px; }
+  button { padding: 6px 14px; font: inherit; color: var(--on-accent); background: var(--accent);
+           border: 1px solid var(--accent); border-radius: 6px; cursor: pointer; }
+  button.plain { color: var(--accent); background: transparent; }
+  button:disabled { opacity: .45; cursor: default; }
+  /* As tall as a button: the line says where you are, then what to do, at the same height. */
+  #lead, #acting { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center;
+                   min-height: calc(1.5em + 14px); }
+  #lead[hidden], #acting[hidden], #takeBack[hidden], #pickAll[hidden] { display: none; }
+  #status { font-weight: 600; overflow-wrap: anywhere; }
+  /* One line whatever it says, so the grid never moves when a save is said (the count and
+     size come first; the whole sentence on hover). */
+  #chosen { flex: 1 1 220px; min-width: 0; font-size: .85rem; white-space: nowrap;
+            overflow: hidden; text-overflow: ellipsis; }
+  /* The albums on a line of their own: the bar keeps its height whether files are picked or
+     not, so the grid never jumps under the mouse when a rectangle starts. */
+  #bar #albumBar { flex-basis: 100%; margin: 0; }
+  #bar #albumBar input { width: 17em; }
+  #views { display: flex; gap: 6px; flex: none; }
+  #views > * { flex: 1; padding: 6px; text-align: center; background: var(--card);
+               border: 1px solid var(--line); border-radius: 8px; }
+  #views [aria-current] { font-weight: 600; border-color: var(--accent); }
+  #views a { color: var(--accent); text-decoration: none; }
+  #chosen.error, #status.error { color: var(--bad); font-weight: 600; }
+  main { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+         gap: 10px; padding: 16px; align-content: start; }
+  .file { position: relative; background: var(--card); border: 2px solid var(--line);
+          border-radius: 10px; overflow: hidden; cursor: pointer; outline: none;
+          user-select: none; }
+  .tick { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; margin: 0;
+          accent-color: var(--accent); cursor: pointer; }
+  .band { position: absolute; z-index: 1; pointer-events: none; border: 1px solid var(--accent);
+          background: color-mix(in srgb, var(--accent) 18%, transparent); }
+  .file:focus, .file.current { border-color: var(--accent); }
+  .file.picked { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent); }
+  .file img, .file video, .file .empty { display: block; width: 100%; aspect-ratio: 4 / 3;
+                                         object-fit: cover; background: var(--chip); }
+  .file .empty { display: flex; align-items: center; justify-content: center;
+                 color: var(--muted); font-size: .85rem; }
+  .meta { padding: 4px 8px; font-size: .8rem; }
+  .name { font-weight: 600; overflow-wrap: anywhere; }
+  .badge { position: absolute; top: 6px; left: 6px; padding: 0 8px; border-radius: 10px;
+           color: #fff; background: var(--bad); font-size: .75rem; font-weight: 600; }
+{% include "pick_viewer.css.j2" %}

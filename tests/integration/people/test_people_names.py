@@ -11,6 +11,7 @@ import pytest
 from media_hygiene.people.app import PeopleApp
 from media_hygiene.review.http import Request
 from tests.support.cli import run
+from tests.support.faces import coloured
 
 if TYPE_CHECKING:
     from typer.testing import CliRunner
@@ -165,3 +166,43 @@ def test_forget_asks_before_deleting_the_names(
         gone = flat(run(cli, "people", "--forget").output)
     assert "Read back from config.toml: 0 names, 0 faces ignored." in gone
     assert "Chloé" not in (locations.config_dir / "config.toml").read_text()
+
+
+def test_a_face_too_small_for_the_page_is_named_by_nobody(
+    cli: CliRunner, apps: list[object], locations: Locations
+) -> None:
+    """Page, `people` counts and `search` agree: a 30 px face is no one's (0316)."""
+    coloured(locations.data_dir / "c" / "Holidays" / "tiny.png", 0, (30, 30))
+    assert run(cli, "audit").exit_code == 0
+    saved = name_largest(cli, apps)
+    verified = saved["sections"][0]  # type: ignore[index]
+    assert (verified["name"], verified["photos"]) == ("Chloé", 4)
+    assert "Chloé: 4 photos" in flat(run(cli, "people").output)
+    assert run(cli, "tags").exit_code == 0
+    found = flat(run(cli, "search", "person:chloe").output)
+    assert "4 files found." in found
+    assert "tiny.png" not in found
+
+
+def test_a_verified_section_comes_folded_as_a_strip_its_sample_on_opening(
+    cli: CliRunner, apps: list[object], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Verified: a strip of a few faces; `/api/sample/<n>` sends the sample (0323)."""
+    monkeypatch.setattr("media_hygiene.people.views.STRIP", 2)
+    saved = name_largest(cli, apps)
+    verified, other = saved["sections"][:2]  # type: ignore[index]
+    assert (verified["verified"], verified["folded"], verified["faces"]) == (
+        True,
+        True,
+        4,
+    )
+    assert len(keys(verified)) == 2
+    assert other["folded"] is False
+    app = apps[-1]
+    assert isinstance(app, PeopleApp)
+    first = keys(verified)[0]
+    request = Request("GET", f"/api/sample/{first}", JSON)
+    sample = json.loads(asyncio.run(app.handle(request)).body)["shown"]
+    assert len(sample) == 4
+    unknown = Request("GET", "/api/sample/x", JSON)
+    assert json.loads(asyncio.run(app.handle(unknown)).body) == {"shown": []}

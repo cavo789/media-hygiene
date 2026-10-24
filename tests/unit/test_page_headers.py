@@ -15,60 +15,19 @@ from pathlib import Path
 from typing import Final
 
 import pytest
-from jinja2 import Environment, meta
 
 from media_hygiene.constants import DOC_PAGES, Locale
 from media_hygiene.i18n import using
-from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.places.app import PAGE_POLICY
 from media_hygiene.review.ending import Ending, EndingDoor
 from media_hygiene.review.http import ContentType, Request, Response
 from media_hygiene.review.page_header import PAGE_STEPS, page_header
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
+from tests.support.page_render import FRAME_EXTENDS, render_page
 from tests.unit.test_documentation import DOCUMENTATION, anchors
 
-_PACKAGES: Final = {
-    "search.html.j2": "media_hygiene.search",
-    "browse.html.j2": "media_hygiene.search",
-    "places.html.j2": "media_hygiene.places",
-    "people.html.j2": "media_hygiene.people",
-    "slideshow.html.j2": "media_hygiene.slideshow",
-}
 _SRC: Final = Path(__file__).resolve().parents[2] / "src" / "media_hygiene"
 _LINK: Final = re.compile(r'<a class="mh-doc" href="(?P<url>[^"]+)"')
-
-
-class _AnyPath(dict[str, str]):
-    """A page's `paths`: any route it names."""
-
-    def __missing__(self, key: str) -> str:
-        return f"/{key}"
-
-
-def _names(environment: Environment, template: str, seen: set[str]) -> set[str]:
-    """Every value a template and the fragments it includes name."""
-    if template in seen:
-        return set()
-    seen.add(template)
-    source = environment.loader.get_source(environment, template)[0]  # type: ignore[union-attr]
-    tree = environment.parse(source)
-    found = set(meta.find_undeclared_variables(tree))
-    for included in meta.find_referenced_templates(tree):
-        if included is not None:
-            found |= _names(environment, included, seen)
-    return found
-
-
-def _render(template: str) -> str:
-    """A page, every route it names given a placeholder."""
-    package = _PACKAGES.get(template, "media_hygiene.review")
-    environment = translated_environment(package, escaped=("html", "j2"))
-    values: dict[str, object] = dict.fromkeys(
-        _names(environment, template, set()), "/x"
-    )
-    values["paths"] = _AnyPath()
-    values["header"] = page_header(template)
-    return environment.get_template(template).render(**values)
 
 
 def _chapter(url: str) -> tuple[Path, str]:
@@ -93,7 +52,7 @@ def test_each_page_shows_its_bar_and_its_chapter(
     """The bar, and its two doc links: the page's chapter, in both languages."""
     monkeypatch.delenv(LAUNCHER_STEPS_VARIABLE, raising=False)
     with using(locale):
-        page = _render(template)
+        page = render_page(template)
     assert page.count('class="mh-bar"') == 1
     assert "Media Hygiene" in page
     assert 'id="homeLink"' not in page
@@ -109,7 +68,7 @@ def test_each_page_shows_its_bar_and_its_chapter(
 @pytest.mark.parametrize("template", sorted(PAGE_STEPS))
 def test_each_page_has_one_h1_and_it_is_the_bars(template: str) -> None:
     """0282: the board's own title is gone; the bar's page name is the page's `<h1>`."""
-    page = _render(template)
+    page = render_page(template)
     headings = re.findall(r"<h1\b[^>]*>(.*?)</h1>", page, re.DOTALL)
     assert len(headings) == 1
     assert '<h1 class="mh-page">' in page
@@ -119,7 +78,7 @@ def test_each_page_has_one_h1_and_it_is_the_bars(template: str) -> None:
 @pytest.mark.parametrize("template", sorted(PAGE_STEPS))
 def test_each_page_wears_the_theme(template: str) -> None:
     """The theme's tokens and fonts, no colours of its own any more."""
-    page = _render(template)
+    page = render_page(template)
     assert "--mk-bg:" in page
     assert page.count("/assets/fonts/") == 4
     assert "mh-home-theme" in page  # the switch of the home page is read
@@ -127,10 +86,10 @@ def test_each_page_wears_the_theme(template: str) -> None:
 
 
 @pytest.mark.usefixtures("from_home")
-@pytest.mark.parametrize("template", sorted(set(PAGE_STEPS) - {"phone_review.html.j2"}))
+@pytest.mark.parametrize("template", sorted(PAGE_STEPS))
 def test_opened_from_home_the_page_offers_the_way_back(template: str) -> None:
     """The way back, handled by the fragment every page includes."""
-    page = _render(template)
+    page = render_page(template)
     assert page.count('id="homeLink"') == 1
     assert 'getElementById("homeLink")' in page
     # 0280: back on the section of the home page this tab was left from.
@@ -139,9 +98,21 @@ def test_opened_from_home_the_page_offers_the_way_back(template: str) -> None:
 
 
 @pytest.mark.usefixtures("from_home")
-def test_the_phone_page_keeps_its_own_way_out() -> None:
-    """Its "Leave" button ends it: no second link."""
+def test_the_phone_page_offers_the_way_back_and_says_nothing_is_deleted() -> None:
+    """0332: the same link at the same place; it ends the page as Leave everything."""
+    assert page_header("phone_review.html.j2").home
+    page = render_page("phone_review.html.j2")
+    assert "nothing is deleted from the phone" in page.split('id="homeLink"')[1]
+    assert "window.mhAwaitHome = awaitHome;" in page
+
+
+def test_from_the_console_the_phone_page_has_no_way_back(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """`mh phone --free` typed: no home page to go back to, as on the other pages."""
+    monkeypatch.delenv(LAUNCHER_STEPS_VARIABLE, raising=False)
     assert not page_header("phone_review.html.j2").home
+    assert 'id="homeLink"' not in render_page("phone_review.html.j2")
 
 
 class _Refusing:
@@ -185,15 +156,16 @@ def test_the_places_policy_lets_the_fonts_in_and_names_the_tiles_only() -> None:
 
 
 def test_every_page_template_includes_the_theme_and_the_bar() -> None:
-    """The twelve pages, counted from their templates."""
+    """The thirteen pages, from their templates: the frame's parts, or their own."""
     pages = [
         path for path in _SRC.glob("*/templates/*.html.j2") if path.name in PAGE_STEPS
     ]
-    assert len(pages) == len(PAGE_STEPS) == 12
+    assert len(pages) == len(PAGE_STEPS) == 13
     for path in pages:
         text = path.read_text("utf-8")
-        assert 'include "theme.css.j2"' in text, path.name
-        assert 'include "page_header.html.j2"' in text, path.name
+        framed = text.startswith(FRAME_EXTENDS)
+        assert framed or 'include "theme.css.j2"' in text, path.name
+        assert framed or 'include "page_header.html.j2"' in text, path.name
 
 
 def test_every_door_answers_the_favicon_browsers_ask_for() -> None:
@@ -206,19 +178,15 @@ def test_every_door_answers_the_favicon_browsers_ask_for() -> None:
 
 
 def test_every_served_page_declares_the_favicon_its_policy_allows() -> None:
-    """Each served template links the icon; places allows images of `self`."""
-    root = Path(__file__).resolve().parents[2] / "src" / "media_hygiene"
+    """Each served page links the icon; places allows images of `self`."""
     link = 'rel="icon" type="image/png" href="/assets/images/favicon.png"'
-    templates = [
-        *(root / "review" / "templates").glob("*_review.html.j2"),
-        root / "review" / "templates" / "home.html.j2",
-        root / "docs" / "templates" / "doc.html.j2",
-        root / "places" / "templates" / "places.html.j2",
-        root / "search" / "templates" / "search.html.j2",
-        root / "search" / "templates" / "browse.html.j2",
-        root / "people" / "templates" / "people.html.j2",
-        root / "review" / "templates" / "review.html.j2",
-    ]
-    missing = [t.name for t in templates if link not in t.read_text("utf-8")]
+    missing = [page for page in sorted(PAGE_STEPS) if link not in render_page(page)]
     assert missing == []
+    shells = (
+        _SRC / "review" / "templates" / "home.html.j2",
+        _SRC / "docs" / "templates" / "doc.html.j2",
+    )
+    assert [
+        shell.name for shell in shells if link not in shell.read_text("utf-8")
+    ] == []
     assert "img-src 'self'" in PAGE_POLICY

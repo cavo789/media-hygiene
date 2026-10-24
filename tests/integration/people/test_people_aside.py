@@ -132,3 +132,44 @@ def test_clean_moves_the_photos_set_aside_and_undo_brings_them_back(
     assert not aside & left  # their duplicates may go too: the same clean
     assert run(cli, "undo").exit_code == 0
     assert set(locations.data_dir.rglob("IMG_*.png")) == photos
+
+
+def test_photos_set_aside_are_hidden_from_their_section_until_taken_back(
+    cli: CliRunner, apps: list[object]
+) -> None:
+    """Not drawn, not counted, never confirmed; listed apart; back once taken back."""
+    assert run(cli, "people").exit_code == 0
+    app = apps[-1]
+    faces = every_face(app, largest(app))
+    aside, kept = faces[:2], faces[2:]
+    answer(app, "POST /api/aside", {"action": "add", "faces": aside, "label": "Ex"})
+    section = largest(app)
+    assert [face["key"] for face in section["shown"]] == kept  # type: ignore[attr-defined]
+    assert (section["faces"], section["photos"], section["aside"]) == (2, 2, 2)
+    assert [face["key"] for face in section["hidden"]] == aside  # type: ignore[attr-defined]
+    assert every_face(app, section) == kept
+    named = answer(
+        app, "POST /api/people", {"action": "name", "name": "Chloé", "faces": faces}
+    )
+    assert (
+        named["saved"] == "Saved in config.toml, read back: Chloé, 2 confirmed faces."
+    )
+    answer(app, "POST /api/aside", {"action": "remove", "faces": aside})
+    back = largest(app)
+    assert (back["faces"], back["aside"], back["hidden"]) == (2, 0, [])
+    attributed = answer(app, "GET /api/groups")["sections"][1]  # type: ignore[index]
+    assert sorted(face["key"] for face in attributed["shown"]) == aside
+
+
+def test_a_section_whose_photos_are_all_set_aside_still_offers_them_back(
+    cli: CliRunner, apps: list[object]
+) -> None:
+    """Every face hidden: the section stays, empty, its faces listed to take back."""
+    assert run(cli, "people").exit_code == 0
+    app = apps[-1]
+    faces = every_face(app, largest(app))
+    answer(app, "POST /api/aside", {"action": "add", "faces": faces})
+    sections = answer(app, "GET /api/groups")["sections"]
+    assert isinstance(sections, list)
+    empty = next(one for one in sections if one["hidden"])
+    assert (empty["faces"], empty["shown"], empty["aside"]) == (0, [], 4)

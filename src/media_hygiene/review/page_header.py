@@ -3,8 +3,8 @@
 "Media Hygiene", the avatar and the page's name; its chapter of the documentation in the
 page's language and in the other one (the catalog's `doc` of the action that opens the
 page); "Back to the home page" only when `mh` opened the page from the home page (it
-sets `MEDIA_HYGIENE_LAUNCHER_STEPS` for those runs alone): elsewhere, ending the page
-would bring nothing back.
+sets `MEDIA_HYGIENE_LAUNCHER_STEPS` for those runs alone, the phone's page too, 0332):
+elsewhere, ending the page would bring nothing back.
 """
 
 from __future__ import annotations
@@ -41,10 +41,9 @@ PAGE_STEPS: Final = MappingProxyType(
         "places.html.j2": "places",
         "people.html.j2": "people",
         "slideshow.html.j2": "slideshow",
+        "shrink.html.j2": "shrink",
     }
 )
-# The pages whose own button ends them ("Leave" on the phone's): no second way back.
-_OWN_WAY_BACK: Final = frozenset({"phone_review.html.j2"})
 # The other language's link, written in that language: never translated.
 _TWIN_LABELS: Final = MappingProxyType(
     {Locale.EN: "In English", Locale.FR: "En français"}
@@ -94,8 +93,7 @@ def page_header(template: str) -> PageHeader:
         twin=served_url(doc, twin),
         twin_locale=twin,
         twin_label=_TWIN_LABELS[twin],
-        home=bool(os.environ.get(LAUNCHER_STEPS_VARIABLE))
-        and template not in _OWN_WAY_BACK,
+        home=bool(os.environ.get(LAUNCHER_STEPS_VARIABLE)),
     )
 
 

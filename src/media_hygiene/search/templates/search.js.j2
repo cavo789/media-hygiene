@@ -1,0 +1,233 @@
+{# The script of the search page (`search.html.j2`): the search sent, the files found as
+   cards with their folder, date and words. The picking, the bar and the saving are
+   `pick_grid.js.j2`'s, the large view `pick_viewer.js.j2`'s, the albums
+   `album_bar.html.j2`'s. The × of a `person` chip takes the name off the photo (the
+   person's `rejected` list, read back, *Put back* in the line said): it never picks
+   the card (0317). A click on the chip itself (or W in the large view) opens *Why this
+   name?*: the face cut out, how it got the name, its reference and the score, then
+   *Yes, it is …* or *Not …* for that face (0318); Esc closes it, the picking untouched. #}
+const TEXTS = {{ texts | tojson }};
+const SOURCES = {{ sources | tojson }};
+const SEARCH_PATH = {{ search_path | tojson }};
+const CHOSEN_PATH = {{ chosen_path | tojson }};
+const PEOPLE_REJECT_PATH = {{ people_reject_path | tojson }};
+const PEOPLE_WHY_PATH = {{ people_why_path | tojson }};
+let whyAsked = null; // the photo and the name the panel explains
+let asked = {};        // the search shown
+
+function card(hit, index) {
+  const node = element("article");
+  const picture = element("img");
+  picture.loading = "lazy";
+  picture.draggable = false; // a drag draws a rectangle (`pick_band.js.j2`)
+  picture.alt = hit.name;
+  picture.src = hit.thumb;
+  picture.addEventListener("error", () => picture.replaceWith(element("div", "empty", TEXTS.noPreview)));
+  const meta = element("div", "meta");
+  meta.append(element("div", "name", hit.name), element("div", "muted folderLine", hit.folder));
+  if (hit.date) meta.append(element("div", "muted", hit.date));
+  if (hit.caption) meta.append(element("div", "muted caption", hit.caption));
+  meta.append(chipsOf(hit));
+  node.append(picture, meta);
+  return wireCard(node, index);
+}
+
+// The words of a file as chips; a person's chip has a × that takes the name off.
+function chipsOf(hit) {
+  const chips = element("div", "chips");
+  for (const [source, words] of Object.entries(hit.tags)) {
+    for (const word of words) {
+      const chip = element("span", "chip", word);
+      chip.title = SOURCES[source] || source;
+      if (source === "person") {
+        chip.classList.add("person");
+        chip.title = fill(TEXTS.why, { name: word });
+        for (const kind of ["pointerdown", "mousedown", "dblclick"]) chip.addEventListener(kind, (event) => event.stopPropagation());
+        chip.addEventListener("click", (event) => { event.stopPropagation(); why(hit.key, word); });
+        chip.append(unnameButton(hit, word));
+      }
+      chips.append(chip);
+    }
+  }
+  return chips;
+}
+
+// The large view's facts (I): the same chips, the same ×.
+function infoExtra(file) {
+  return file.tags && file.tags.person ? [chipsOf({ tags: { person: file.tags.person }, key: file.key })] : [];
+}
+
+function unnameButton(hit, name) {
+  const button = element("button", "unname", "×");
+  button.type = "button";
+  button.title = fill(TEXTS.unname, { name });
+  button.setAttribute("aria-label", button.title);
+  // Never a pick, a rectangle nor the large view: the grid's gestures stay as they are.
+  for (const kind of ["pointerdown", "mousedown", "dblclick"]) button.addEventListener(kind, (event) => event.stopPropagation());
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    unname(hit.key, name, "reject");
+  });
+  return button;
+}
+
+// Take a name off a photo (or put it back), read back from the disk, said in the bar.
+async function unname(key, name, action, face) {
+  const body = { action, key, name };
+  if (face !== undefined) body.face = face; // one face, from *Why this name?*
+  const answer = await ask(PEOPLE_REJECT_PATH, body);
+  if (!answer) { failed(null); return; }
+  const result = await answer.json().catch(() => ({}));
+  const index = answer.ok ? files.findIndex((file) => file.key === key) : -1;
+  if (index >= 0) {
+    const tags = { ...files[index].tags };
+    if (result.names.length) tags.person = result.names; else delete tags.person;
+    files[index].tags = tags;
+    const chips = cards[index].querySelector(".chips");
+    if (chips) chips.replaceWith(chipsOf(files[index])); // the card stays where it is
+    if ($("viewer").classList.contains("open") && index === current) open();
+  }
+  const line = $("chosen");
+  line.className = answer.ok ? "" : "error";
+  line.textContent = answer.ok ? result.saved : fill(TEXTS.notSaved, { error: result.error || answer.status });
+  line.title = line.textContent;
+  $("viewerSaid").className = line.className;
+  $("viewerSaid").textContent = line.textContent; // the bar is behind the large view
+  $("whySaid").className = line.className;
+  $("whySaid").textContent = line.textContent; // and both behind the panel
+  if (!answer.ok || action !== "reject") return;
+  for (const place of [line, $("viewerSaid"), $("whySaid")]) {
+    const back = element("button", "putBack", TEXTS.putBack);
+    back.type = "button";
+    back.addEventListener("click", (event) => { event.stopPropagation(); unname(key, name, "back"); });
+    place.append(" ", back);
+  }
+}
+
+// *Why this name?*: each face of the photo that gives it, how, and its reference.
+async function why(key, name) {
+  const answer = await ask(PEOPLE_WHY_PATH, { key, name });
+  if (!answer) { failed(null); return; }
+  const result = await answer.json().catch(() => ({}));
+  if (!answer.ok) { told(result.error || fill(TEXTS.failed, { status: answer.status }), true); return; }
+  whyAsked = { key, name };
+  $("whyTitle").textContent = fill(TEXTS.whyTitle, { name });
+  $("whyFaces").replaceChildren(...result.faces.map((face) => whyFace(key, name, face)));
+  $("whySaid").textContent = "";
+  $("why").hidden = false;
+  $("whyClose").focus();
+}
+
+function whyFace(key, name, face) {
+  const row = element("div", "face");
+  const picture = element("img");
+  picture.src = face.crop;
+  picture.alt = name;
+  const text = element("div");
+  text.append(element("p", "", face.said));
+  if (face.reference) {
+    const reference = element("div", "reference");
+    const crop = element("img");
+    crop.src = face.reference.crop;
+    crop.alt = face.reference.file;
+    const where = element("a", "", face.reference.where);
+    if (face.reference.preview) { where.href = face.reference.preview; where.target = "_blank"; where.rel = "noopener"; }
+    reference.append(crop, where);
+    text.append(element("p", "muted", TEXTS.reference), reference);
+  }
+  if (face.runner) text.append(element("p", "muted", face.runner));
+  const buttons = element("div", "buttons");
+  if (face.how !== "confirmed") {
+    const yes = element("button", "", fill(TEXTS.yes, { name }));
+    yes.type = "button";
+    yes.addEventListener("click", () => unname(key, name, "confirm", face.face));
+    buttons.append(yes);
+  }
+  const no = element("button", "", fill(TEXTS.not, { name }));
+  no.type = "button";
+  no.addEventListener("click", () => unname(key, name, "reject", face.face));
+  buttons.append(no);
+  text.append(buttons);
+  row.append(picture, text);
+  return row;
+}
+
+function closeWhy() {
+  $("why").hidden = true;
+  whyAsked = null;
+}
+
+// The panel keeps its keys (Tab, Enter on a button); Esc closes it, not the large view.
+$("why").addEventListener("keydown", (event) => {
+  if (event.key === "Escape") { event.preventDefault(); closeWhy(); }
+  event.stopPropagation();
+});
+$("why").addEventListener("click", (event) => { if (event.target === $("why")) closeWhy(); });
+$("whyClose").addEventListener("click", closeWhy);
+document.addEventListener("keydown", (event) => {
+  if (!$("why").hidden) { // focus outside the panel: nothing behind it moves
+    if (event.key === "Escape") closeWhy();
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    return;
+  }
+  const names = $("viewer").classList.contains("open") && files[current] && files[current].tags.person;
+  if ((event.key === "w" || event.key === "W") && names && names.length) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    why(files[current].key, names[0]);
+  }
+}, true);
+
+// What the files shown are: the search, sent with each choice and each album change.
+function scope() {
+  return asked;
+}
+
+function reopen(again) {
+  return search(null, again);
+}
+
+function told(text, error) {
+  $("status").className = error ? "error" : "";
+  $("status").textContent = text;
+}
+
+async function search(event, again) {
+  if (event) event.preventDefault();
+  const year = (id) => ($(id).value ? Number($(id).value) : null);
+  const body = {
+    text: $("text").value, year_from: year("from"), year_to: year("to"),
+    folder: $("folder").value, source: $("source").value || null,
+  };
+  const answer = await ask(SEARCH_PATH, body);
+  if (!answer) { told(TEXTS.offline, true); return; }
+  if (!answer.ok) { told(fill(TEXTS.failed, { status: answer.status }), true); return; }
+  const found = await answer.json();
+  asked = body;
+  total = found.total;
+  showFiles(found.hits, again);
+  let text = counted(TEXTS.found, found.total);
+  if (!found.total) text = TEXTS.none;
+  else if (found.total > found.hits.length) text = fill(TEXTS.shown, { total: found.total, shown: found.hits.length });
+  told(found.note ? found.note + " " + text : text, false);
+  // Sent from the field: the keys go to the grid (Ctrl+A, the arrows); "/" comes back.
+  if (event && cards.length) document.activeElement.blur();
+}
+
+document.addEventListener("keydown", (event) => {
+  if ($("viewer").classList.contains("open")) return;
+  const typing = ["INPUT", "SELECT"].includes(document.activeElement.tagName);
+  if (event.key === "/" && !typing) {
+    event.preventDefault();
+    $("text").focus();
+  } else if (event.key === "ArrowDown" && document.activeElement === $("text") && cards.length) {
+    event.preventDefault();
+    focusOn(0);
+  }
+});
+$("form").addEventListener("submit", search);
+$("text").focus();
+search();
+loadChosen();

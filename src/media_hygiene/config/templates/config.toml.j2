@@ -184,6 +184,8 @@ lighter_lines = 720
 {{ comment(_("x264's speed against size (ultrafast to slower), and the processors one encoding uses (0: half of them, the computer stays usable).")) }}
 preset = "medium"
 threads = 0
+{{ comment(_("'shrink --try' encodes this many videos (the largest gains first), one at a time, as drafts to compare before and after in the browser; the drafts are removed when the page closes.")) }}
+try_count = 10
 
 
 [inventory]
@@ -247,9 +249,9 @@ meaning_results = 200
 {{ comment(_("The faces 'people' finds and groups. They are personal data: kept in the cache (/cache) only, never sent anywhere; 'people --forget' deletes them all. These settings choose which faces are grouped: changing them analyses nothing again.")) }}
 {{ comment(_("Two faces this similar (cosine, 0 to 1) may be the same person: higher splits more groups, lower mixes people.")) }}
 similarity = 0.363
-{{ comment(_("Faces smaller than this many pixels (shorter side of their box) are left out.")) }}
+{{ comment(_("Faces smaller than this many pixels (shorter side of their box) are left out: never grouped, never named, unless you confirmed them.")) }}
 min_face = 40
-{{ comment(_("Faces blurrier than this sharpness (variance of the Laplacian of the face) are left out.")) }}
+{{ comment(_("Faces blurrier than this sharpness (variance of the Laplacian of the face) are left out: never grouped, never named, unless you confirmed them.")) }}
 min_sharpness = 30.0
 {{ comment(_("true: every 'audit' then looks for faces in the photos not looked at yet, after saying how long it takes and asking, as 'audit --people' does."), "--people") }}
 with_audit = false

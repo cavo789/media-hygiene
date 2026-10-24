@@ -52,6 +52,9 @@ Ctrl+clic sur l'adresse qu'il affiche, `http://127.0.0.1:8088/`. Ctrl+C, ou ferm
 
 ## Sur la carte
 
+Les listes à gauche, les touches en dessous (⌨ **Clavier** : Échap, ← →, Entrée dans la case de
+recherche), la carte à droite sous une barre qui dit ce qui a été enregistré.
+
 - **Les cercles** sont vos photos avec une position GPS, regroupées par 200 mètres environ. La
   liste de gauche donne d'abord les plus gros groupes sans nom : la maison est en général le
   premier.

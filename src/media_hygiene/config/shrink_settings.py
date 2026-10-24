@@ -9,6 +9,7 @@ most `lighter_lines` lines makes it lighter still, asked for with `--lighter`. A
 result less than `min_gain_percent` percent smaller is thrown away and the video
 remembered as not worth it. `preset`: x264's speed against size; `threads`: the
 processors one encoding uses, 0 for half of them (the computer stays usable).
+`try_count`: the videos `shrink --try` encodes as drafts to compare in the browser.
 """
 
 from __future__ import annotations
@@ -40,6 +41,7 @@ _WORST_CRF: Final = 51  # x264's scale: 0 lossless, 51 the worst
 _FEWEST_LINES: Final = 240
 _MOST_LINES: Final = 4320  # 8K
 _MOST_THREADS: Final = 256
+_TRY_COUNT: Final = 10  # about 5 min for the largest clips (0307, estimated)
 type Preset = Literal[
     "ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower"
 ]
@@ -58,3 +60,4 @@ class ShrinkSettings(BaseModel):
     lighter_lines: int = Field(default=_LIGHTER_LINES, ge=_FEWEST_LINES, le=_MOST_LINES)
     preset: Preset = "medium"
     threads: int = Field(default=0, ge=0, le=_MOST_THREADS)
+    try_count: int = Field(default=_TRY_COUNT, ge=1)

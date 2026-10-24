@@ -1,0 +1,265 @@
+{# The picking of a page of photos to pick (`browse`, `search`), the same on every such
+   page: a click picks one file, Ctrl (or the ☑ box) adds or takes out one, Shift a range,
+   Ctrl+A every file shown, I inverts, the arrows and Space, Home/End, Delete sets aside;
+   the one bar above the grid (`pick_acting.html.j2`) and the saving of what is set aside
+   (`CHOSEN_PATH`). The rectangle is `pick_band.js.j2`, the large view `pick_viewer.js.j2`.
+   The page defines, before or after this script: `TEXTS` (`picked`, `aside`, `tick`,
+   `saving`, `notSaved`, `offline`, `failed`, and `allFound`/`allPicked` with `pickAll`),
+   `CHOSEN_PATH`, `card(file, index)` (its node, finished by `wireCard`), `scope()` (what
+   the files shown are, sent with each choice) and `reopen(again)` (list them again).
+   A page where a pick means something else (the phone page: ticked = leaves the phone)
+   sets `saveChoice(action, keys)` (it saves, reads back and says; true once saved),
+   may set `placeCards(cards)` (the cards in groups) and `deleteKeySets = false`.
+   Included first in the page's script: the strict mode starts here. #}
+"use strict";
+const $ = (id) => document.getElementById(id);
+const PLURAL = new Intl.PluralRules(document.documentElement.lang);
+let files = [];        // the files shown, as the server listed them
+let cards = [];
+let current = -1;      // the card with the focus
+let anchor = -1;       // where a Shift+click range starts
+let total = 0;         // every file found, when the page shows the first ones only
+let everything = false; // every file found is picked, not only those shown (*pickAll*)
+const picked = new Set(); // the keys of the files picked
+let bandDrawn = false; // a rectangle just ended: the click that follows picks nothing
+let saveChoice = null; // the page's own saving of a choice, instead of `CHOSEN_PATH`'s
+let deleteKeySets = true; // the Delete key sets the picked files aside
+
+function fill(template, values) {
+  return template.replace(/\{(\w+)\}/g, (all, name) => (name in values ? values[name] : all));
+}
+
+function counted(forms, n) {
+  return fill(forms[PLURAL.select(n) === "one" ? 0 : 1], { n: n });
+}
+
+function element(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+// Said in the line the bar always shows, whether files are picked or not.
+function failed(answer) {
+  $("chosen").className = "error";
+  $("chosen").textContent = answer ? fill(TEXTS.failed, { status: answer.status }) : TEXTS.offline;
+}
+
+async function ask(path, body) {
+  const options = body === undefined ? {} : {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+  };
+  try {
+    return await fetch(path, options);
+  } catch (error) {
+    return null;
+  }
+}
+
+// The end of every card: its ☑ box (one file without Ctrl, and on a touch screen), its
+// label once set aside, and the gestures.
+function wireCard(node, index) {
+  node.classList.add("file");
+  node.tabIndex = 0;
+  const tick = element("input", "tick");
+  tick.type = "checkbox";
+  tick.tabIndex = -1;
+  tick.setAttribute("aria-label", TEXTS.tick);
+  tick.addEventListener("click", (event) => {
+    event.stopPropagation();
+    focusOn(index);
+    pick(index, { ctrlKey: true });
+  });
+  node.append(tick);
+  if (files[index].chosen) node.append(element("span", "badge", TEXTS.aside));
+  node.addEventListener("click", (event) => {
+    if (bandDrawn) return; // the end of a rectangle, not a pick
+    focusOn(index);
+    pick(index, event);
+  });
+  node.addEventListener("dblclick", () => { focusOn(index); open(); });
+  node.addEventListener("focus", () => focusOn(index));
+  return node;
+}
+
+// The same files in the same order: the cards shown can stay, only their labels change.
+function sameFiles(listed) {
+  return listed.length === files.length && listed.every((file, index) => file.key === files[index].key);
+}
+
+// After a save, the cards stay in place (no reload of the previews, no jump of the
+// scrolling): only the *marked to set aside* label follows what the server read back.
+function relabel() {
+  cards.forEach((node, index) => {
+    const badge = node.querySelector(".badge");
+    if (files[index].chosen && !badge) node.append(element("span", "badge", TEXTS.aside));
+    if (!files[index].chosen && badge) badge.remove();
+  });
+}
+
+// The files listed take the grid, nothing picked: the same ones (after a save) keep their cards.
+function showFiles(listed, again) {
+  picked.clear();
+  everything = false;
+  if (again && sameFiles(listed)) {
+    files = listed;
+    relabel();
+  } else {
+    files = listed;
+    cards = files.map(card);
+    current = -1;
+    anchor = -1;
+    if (typeof placeCards === "function") placeCards(cards); else $("grid").replaceChildren(...cards);
+  }
+  showPicked();
+}
+
+function focusOn(index) {
+  if (index < 0 || index >= cards.length) return;
+  if (current >= 0 && cards[current]) cards[current].classList.remove("current");
+  current = index;
+  cards[current].classList.add("current");
+  if (document.activeElement !== cards[current]) cards[current].focus();
+}
+
+// As in Explorer: a click picks one file, Ctrl adds or removes, Shift a range.
+function pick(index, event) {
+  const key = files[index].key;
+  everything = false;
+  if (event && event.shiftKey && anchor >= 0) {
+    if (!event.ctrlKey) picked.clear();
+    const [from, to] = [Math.min(anchor, index), Math.max(anchor, index)];
+    for (let rank = from; rank <= to; rank += 1) picked.add(files[rank].key);
+  } else if (event && (event.ctrlKey || event.metaKey || event.type === "keydown")) {
+    if (picked.has(key)) picked.delete(key); else picked.add(key);
+    anchor = index;
+  } else {
+    const only = picked.size === 1 && picked.has(key);
+    picked.clear();
+    if (!only) picked.add(key);
+    anchor = index;
+  }
+  showPicked();
+}
+
+// The files not picked instead: quicker when a folder holds more to set aside than to keep.
+function invert() {
+  everything = false;
+  for (const file of files) {
+    if (picked.has(file.key)) picked.delete(file.key); else picked.add(file.key);
+  }
+  showPicked();
+}
+
+function showPicked() {
+  cards.forEach((node, index) => {
+    const on = everything || picked.has(files[index].key);
+    node.classList.toggle("picked", on);
+    node.querySelector(".tick").checked = on;
+  });
+  // The bar shows where you are, or, once a file is picked, what to do with the picking.
+  const count = everything ? total : picked.size;
+  const some = count > 0;
+  $("bar").classList.toggle("acting", some);
+  $("lead").hidden = some;
+  $("acting").hidden = !some;
+  $("picked").textContent = some ? counted(TEXTS.picked, count) : "";
+  $("takeBack").hidden = !files.some((file) => file.chosen && (everything || picked.has(file.key)));
+  // A search shows its first files only: every file it finds, once those shown are picked.
+  $("pickAll").hidden = !(everything || (total > files.length && picked.size === files.length));
+  $("pickAll").disabled = everything;
+  if (TEXTS.allFound) $("pickAll").textContent = fill(everything ? TEXTS.allPicked : TEXTS.allFound, { total: total });
+  if (window.mhAlbumPicked) window.mhAlbumPicked(count); // album_bar.html.j2
+}
+
+// What *Set aside* and *Add to the album* take: the files picked, or every file found.
+function picking() {
+  return { keys: [...picked], all: everything, search: scope() };
+}
+window.mhAlbumPick = picking;
+
+function said(answer, state) {
+  const line = $("chosen");
+  line.className = answer.ok ? "" : "error";
+  line.textContent = answer.ok ? state.message : fill(TEXTS.notSaved, { error: state.error || answer.status });
+  line.title = line.textContent; // one line in the bar: the whole sentence on hover
+  $("viewerSaid").className = line.className;
+  $("viewerSaid").textContent = line.textContent; // the bar is behind the large view
+  if (window.mhApplyNow) window.mhApplyNow(answer.ok && state.count > 0); // apply_now.html.j2
+}
+
+async function choose(action) {
+  if (!picked.size && !everything) return;
+  $("chosen").className = "";
+  $("chosen").textContent = TEXTS.saving;
+  if (saveChoice) {
+    if (await saveChoice(action, [...picked])) await reopen(true);
+    return;
+  }
+  const answer = await ask(CHOSEN_PATH, { action: action, ...picking() });
+  if (!answer) { failed(null); return; }
+  said(answer, await answer.json().catch(() => ({})));
+  if (answer.ok) await reopen(true);
+}
+
+async function loadChosen() {
+  const answer = await ask(CHOSEN_PATH);
+  if (answer) said(answer, await answer.json().catch(() => ({})));
+}
+
+function columns() {
+  if (cards.length < 2) return 1;
+  const top = cards[0].offsetTop;
+  const count = cards.findIndex((node) => node.offsetTop !== top);
+  return count < 0 ? cards.length : count;
+}
+
+function jump(index) {
+  focusOn(Math.max(0, Math.min(index, files.length - 1)));
+}
+
+document.addEventListener("keydown", (event) => {
+  if ($("viewer").classList.contains("open")) {
+    const key = event.key.length === 1 && event.key !== "?" ? event.key.toLowerCase() : event.key;
+    if (event.ctrlKey || event.metaKey || event.altKey || !(key in VIEWER_KEYS)) return;
+    event.preventDefault();
+    VIEWER_KEYS[key]();
+    return;
+  }
+  if (["SELECT", "INPUT"].includes(document.activeElement.tagName)) return; // a field typed in
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "a") {
+    event.preventDefault();
+    everything = false;
+    for (const file of files) picked.add(file.key);
+    showPicked();
+    return;
+  }
+  if (event.key.toLowerCase() === "i" && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    event.preventDefault();
+    invert();
+    return;
+  }
+  const moves = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: columns(), ArrowUp: -columns() };
+  if ((event.key === "Home" || event.key === "End") && cards.length) {
+    event.preventDefault();
+    jump(event.key === "Home" ? 0 : cards.length - 1);
+  } else if (event.key in moves && cards.length) {
+    event.preventDefault();
+    focusOn(current < 0 ? 0 : current + moves[event.key]);
+  } else if (event.key === "Enter" && current >= 0 && document.activeElement.classList.contains("file")) {
+    event.preventDefault();
+    open();
+  } else if (event.key === " " && current >= 0 && document.activeElement.classList.contains("file")) {
+    event.preventDefault();
+    pick(current, event);
+  } else if (event.key === "Delete" && deleteKeySets) {
+    event.preventDefault();
+    choose("add");
+  }
+});
+$("setAside").addEventListener("click", () => choose("add"));
+$("takeBack").addEventListener("click", () => choose("remove"));
+$("unpick").addEventListener("click", () => { picked.clear(); everything = false; showPicked(); });
+$("invert").addEventListener("click", invert);
+$("pickAll").addEventListener("click", () => { everything = true; showPicked(); });

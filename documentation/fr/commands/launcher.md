@@ -279,8 +279,10 @@ Il termine par ce qu'il a relu dans le dossier : *Nouvelles photos et vidéos co
 
 ### Libérer le téléphone : `mh phone --free`
 
-Après l'import, une page s'ouvre dans votre navigateur avec ce que le PC peut détenir, en trois
-groupes :
+Après l'import, une page s'ouvre dans votre navigateur avec ce que le PC peut détenir, **groupé
+par dossier du téléphone** (`Camera`, `WhatsApp`, un dossier que vous avez créé…, dans l'ordre de
+leurs noms ; seul le `DCIM` du téléphone est listé). Un badge sur chaque vignette dit pourquoi le
+PC le détient, expliqué en haut de la colonne de gauche :
 
 - **📚 Déjà dans votre photothèque** et **📥 Copiés par `mh phone`** (maintenant ou avant) : cochés
   pour vous ;
@@ -290,10 +292,37 @@ groupes :
   le <date> : il n'est nulle part ailleurs. Supprimé du téléphone, il est perdu pour de bon* (une
   purge plus ancienne que cette version ne donne pas de date : *purgé depuis*).
 
+Un fichier coché porte une étiquette rouge *🗑️ quitte le téléphone*. Pour changer ce qui est coché,
+la page fonctionne comme [`browse`](browse.md) :
+
+- **Choisir** : un clic choisit un fichier ; la case ☑ de chaque vignette (ou Ctrl+clic) en
+  ajoute ou en retire un ; Maj+clic choisit tous les fichiers depuis le dernier cliqué ; un
+  rectangle tiré à la souris sur la grille choisit ce qu'il touche, sur plusieurs lignes (avec
+  Ctrl, il s'ajoute au choix) ; Ctrl+A tous les fichiers de la page. **Inverser la sélection** (ou
+  I) choisit les autres. Puis, dans la barre, **🗑️ Cocher : quitte le téléphone** ou **Décocher :
+  reste sur le téléphone**. Un fichier mis de côté avant n'est jamais coché avec d'autres : la
+  barre dit *1 fichier mis de côté auparavant est resté décoché* ; cochez-le seul, après avoir lu
+  son avertissement.
+- **Un dossier entier** : la case à côté de son nom coche tous ses fichiers (pas ceux mis de côté
+  avant), ou les décoche tous ; ▣ quand seuls certains sont cochés. ▾ replie un long dossier
+  (retenu pour la prochaine visite dans ce navigateur) ; la liste des dossiers, à gauche, mène à
+  chacun.
+- **Vue en grand** : un double clic ou Entrée, ← → le précédent ou le suivant, **Espace coche ou
+  décoche le fichier affiché**, F plein écran, Échap ferme. Elle montre la copie du PC ; *Ouvrir
+  l'original* l'ouvre tel quel.
+- Pas de touche Suppr ici : la seule suppression est le bouton rouge. Les touches sont listées en
+  bas à gauche (⌨ **Clavier**, puis *Plus de touches*).
+
 Chaque coche est enregistrée aussitôt dans `phone-decisions.json` (dans votre dossier des
 rapports), relue depuis le disque et affichée. **Rien ne quitte le téléphone avant que vous
 appuyiez sur *Supprimer N fichiers du téléphone*** ; *Tout laisser sur le téléphone* la termine
-sans rien supprimer. Ensuite, pour chaque fichier coché :
+sans rien supprimer. Ouverte depuis l'accueil (*Faire de la place sur le téléphone*), la page a
+**⌂ Retour à l'accueil** en haut à droite, comme toutes les pages : il la termine de la même
+façon, sans rien supprimer, et l'accueil revient dans le même onglet ; après *Supprimer*,
+l'onglet dit de passer à la fenêtre PowerShell (avec le temps que cela prend), puis montre à
+nouveau l'accueil une fois fini. Si la page s'est arrêtée entre-temps (terminée dans un autre onglet, la
+fenêtre de `mh` fermée), une coche le dit clairement — *La page ne tourne plus* — et le bouton
+rouge est refusé : plus rien n'y est enregistré. Ensuite, pour chaque fichier coché :
 
 1. il est **copié à nouveau** depuis le téléphone dans un dossier vide (`.mh-phone-<date>`) ;
 2. son **contenu est prouvé** (SHA-256) égal à un fichier de votre photothèque encore là, à la

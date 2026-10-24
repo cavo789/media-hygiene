@@ -1,11 +1,19 @@
-<!DOCTYPE html>
+{% extends "page_frame.html.j2" %}
 {# The page freeing a phone, served by `media-hygiene phone-review` for `mh phone` (0248).
    The page never touches a file: each tick is sent to the server, which saves
    phone-decisions.json and reads it back; "Delete from the phone" ends the page, then `mh`
-   copies each file ticked again, proves it by its content, and only then removes it. #}
+   copies each file ticked again, proves it by its content, and only then removes it.
+   A page of photos to pick like `browse` (`pick_*` in review/templates, skill
+   photo-picking-pages): the same gestures pick files, the bar ticks or unticks them
+   (ticked = leaves the phone, 0314); one group per folder of the phone, each with its box
+   (0312). No Delete key: the only deletion is the page's red button. Opened from the home page,
+   "Back to the home page" ends it as Leave everything (home_link.html.j2, whose pings keep its
+   server alive, 0332); a choice its server no longer answers says so, never a bare status (0331). #}
 {% set texts = {
-  "totals": _("Ticked: {ticked} of {total} files ({size})"),
+  "status": _("{phone}: {ticked} of {total} files ticked ({size})"),
   "group": _("{ticked} of {count} ticked · {size}"),
+  "asideKept": _("{n} set aside, not ticked"),
+  "asideLeft": [ngettext("{n} file set aside before was left unticked: tick it in the large view or with its own ☑, after reading its warning.", "{n} files set aside before were left unticked: tick each one in the large view or with its own ☑, after reading its warning.", 1), ngettext("{n} file set aside before was left unticked: tick it in the large view or with its own ☑, after reading its warning.", "{n} files set aside before were left unticked: tick each one in the large view or with its own ☑, after reading its warning.", 2)],
   "delete": "🗑️ " ~ _("Delete {ticked} files ({size}) from the phone"),
   "confirm": _("Delete {ticked} files ({size}) from the phone? Each one is first copied again and compared with the PC's copy: one that differs stays on the phone. Deleted over USB, a file is gone for good from the phone: it has no trash."),
   "confirmAside": _("This photo is not in your library: {warning} Tick it anyway?"),
@@ -13,74 +21,89 @@
   "proofOk": "✔ " ~ _("Saved, then read back from the disk at {time}: {ticked} files ticked in {file}.").replace("{file}", place),
   "loaded": "📄 " ~ _("{file} read from the disk at {time}: {ticked} files ticked.").replace("{file}", place),
   "failed": _("Not saved (error {status})."),
+  "notSaved": _("Nothing was saved: {error}"),
   "offline": _("The page is not running any more: type mh phone again."),
-  "freed": _("Back to the console: mh copies each file ticked again, proves it, then deletes it from the phone."),
+  "goneHome": _("The page is not running any more: nothing more is saved here. Go back to the home page, then choose Make room on the phone again."),
+  "freed": _("Switch to the PowerShell window: the files leave the phone one by one, each one copied again and compared with the PC's copy first (about {minutes} min)."),
   "left": _("Nothing was deleted from the phone. You can close this page."),
   "noPreview": _("no preview"),
   "pc": _("On the PC:"),
+  "picked": [ngettext("{n} file picked", "{n} files picked", 1), ngettext("{n} file picked", "{n} files picked", 2)],
+  "aside": "🗑️ " ~ _("leaves the phone"),
+  "tick": _("Pick this file"),
+  "folderBox": _("Tick or untick every file of this folder"),
+  "fold": _("Fold or unfold this folder"),
 } %}
 {% set page_name = _("Free the phone") %}
-<html lang="{{ _('en') }}">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ page_name }} — media-hygiene</title>
-<link rel="icon" type="image/png" href="/assets/images/favicon.png">
-<style>
-{% include "theme.css.j2" %}
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text);
-         font: 400 15px/1.5 var(--mk-font-text); }
-  header, footer { position: sticky; z-index: 1; padding: 8px 16px; background: var(--card); }
-  header { top: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; align-items: baseline;
-           border-bottom: 1px solid var(--line); }
-  footer { bottom: 0; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center;
-           border-top: 1px solid var(--line); }
-  main { padding: 12px 16px 24px; }
-  .muted { color: var(--muted); }
-  .notice { margin: 0 0 16px; padding: 8px 12px; background: var(--card); border: 2px solid var(--warn);
-            border-radius: 10px; }
-  #status.error { color: var(--bad); font-weight: 600; } #status.saved { color: var(--ok); }
-  section { margin-bottom: 20px; }
-  section h2 { font-size: 1rem; margin: 0; }
-  .bar { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; margin-bottom: 8px; }
-  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
-  .tile { margin: 0; padding: 6px; background: var(--card); border: 3px solid var(--line); border-radius: 10px; }
-  .tile.ticked { border: 3px dashed var(--bad); }
-  .tile label { display: flex; gap: 6px; align-items: center; font-weight: 600; cursor: pointer; }
-  .tile img, .tile .none { display: block; width: 100%; height: 140px; object-fit: contain; border-radius: 6px;
-                           background: var(--bg); }
-  .tile .none { display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 2rem; }
-  .tile p { margin: 4px 0 0; font-size: .8rem; overflow-wrap: anywhere; }
-  .tile .warning { color: var(--warn); font-weight: 600; }
-  button { font: inherit; padding: 4px 12px; border-radius: 8px; border: 1px solid var(--line);
-           background: var(--card); color: var(--text); cursor: pointer; }
+{% set home_title = _("Close this page and go back to the home page: nothing is deleted from the phone.") %}
+{% set pick_all = _("every file of the page") %}
+{% set pick_marks = false %}
+{% set pick_space_opened = _("opened: tick or untick it") %}
+{% set keys_safe = _("Ticking deletes nothing: only the red button does, after a question, each file copied again and compared first. Every tick is saved at once in %(place)s.", place=place) %}
+{% block style %}
+{% include "pick_grid.css.j2" %}
+  /* One group per folder of the phone, each its own grid of tiles (0312). */
+  main#grid { display: block; }
+  .folder { margin-bottom: 18px; scroll-margin-top: 110px; }
+  .folderBar { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; margin-bottom: 8px; }
+  .folderBar h2 { margin: 0; font-size: 1rem; }
+  .folderBar input { width: 20px; height: 20px; margin: 0; accent-color: var(--bad); cursor: pointer; }
+  .fold { padding: 0 6px; }
+  .folder.folded .tiles { display: none; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+  .file .empty { font-size: 2rem; }
+  /* Ticked: leaves the phone once Delete is pressed. */
+  .file:has(.badge) { border-style: dashed; border-color: var(--bad); }
+  .file.picked:has(.badge) { border-color: var(--accent); }
+  .warning { color: var(--warn); font-weight: 600; }
+  #chosen.saved { color: var(--ok); }
+  #legend { display: grid; grid-template-columns: auto; gap: 2px; margin: 8px 0; }
+  #legend dt { font-weight: 600; } #legend dd { margin: 0 0 4px; color: var(--muted); }
+  #folders { margin: 6px 0 0; padding: 0; list-style: none; }
+  #folders li { display: flex; justify-content: space-between; gap: 8px; }
+  #folders a { color: var(--accent); text-decoration: none; overflow-wrap: anywhere; }
+  #toc .notice { margin: 0 0 8px; padding: 6px 8px; border: 2px solid var(--warn); border-radius: 8px; }
+  #ending { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; }
   button.danger { background: var(--bad); border-color: var(--bad); color: #fff; font-weight: 600; }
-  button:disabled { opacity: .5; cursor: default; }
   #closed { position: fixed; inset: 0; z-index: 60; display: none; align-items: center; justify-content: center;
             padding: 16px; background: rgba(0, 0, 0, .55); }
+  #closed a { display: block; margin-top: 12px; color: var(--accent); }
   #closed p { max-width: 520px; padding: 20px 24px; border-radius: 12px; background: var(--card); }
-</style>
-</head>
-<body>
-{% include "page_header.html.j2" %}
-<header>
-  <strong id="phone"></strong>
-  <span id="totals" class="muted"></span>
-  <span id="status" role="status" aria-live="polite"></span>
-</header>
-<main>
-  <p class="notice">{{ _("Nothing leaves the phone before you press Delete. Each file ticked is then copied again from the phone and compared, byte for byte (SHA-256), with the PC's copy: a file that differs stays on the phone. Deleted over USB, a file is gone for good from the phone: it has no trash, and undo cannot put it back.") }}</p>
-  <div id="groups"></div>
-</main>
-<footer>
-  <button id="free" class="danger" type="button" disabled></button>
-  <button id="leave" type="button">{{ _("Leave everything on the phone") }}</button>
-  <span class="muted">{{ _("Every tick is saved at once in %(place)s.", place=place) }}</span>
-</footer>
-<div id="closed" role="alertdialog" aria-live="assertive"><p id="closedText"></p></div>
+{% endblock %}
+{% block side %}
+    <section id="toc" aria-label="{{ page_name }}">
+      <h2 id="phone"></h2>
+      <p class="notice">{{ _("Nothing leaves the phone before you press Delete. Each file ticked is then copied again from the phone and compared, byte for byte (SHA-256), with the PC's copy: a file that differs stays on the phone. Deleted over USB, a file is gone for good from the phone: it has no trash, and undo cannot put it back.") }}</p>
+      <dl id="legend"></dl>
+      <p class="muted">{{ _("Only the phone's DCIM folder is listed (the camera's photos and videos): a folder made by a gallery app elsewhere on the phone is not shown here.") }}</p>
+      <h2>📁 {{ _("Folders of the phone") }}</h2>
+      <ul id="folders"></ul>
+    </section>
+{% endblock %}
+{% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
+{% block more_keys %}{% include "pick_keys_more.html.j2" %}{% endblock %}
+{% block bar %}
+    {% set pick_add = "🗑️ " ~ _("Tick: leaves the phone") %}
+    {% set pick_remove = _("Untick: stays on the phone") %}
+    {% include "pick_acting.html.j2" %}
+    <p id="ending">
+      <button id="free" class="danger" type="button" disabled></button>
+      <button id="leave" class="plain" type="button">{{ _("Leave everything on the phone") }}</button>
+    </p>
+{% endblock %}
+{% block content %}
+  <main id="grid"></main>
+{% endblock %}
+{% block after %}
+{% set pick_mark = "🗑️ " ~ _("leaves the phone") %}
+{% set pick_space = _("tick or untick it") %}
+{% include "pick_viewer.html.j2" %}
+<div id="closed" role="alertdialog" aria-live="assertive"><p><span id="closedText"></span>
+  <a id="closedHome" href="/" hidden>⌂ {{ _("Back to the home page") }}</a></p></div>
 <script>
+{% include "pick_grid.js.j2" %}
+{% include "pick_viewer.js.j2" %}
+{% include "pick_band.js.j2" %}
 {% include "phone_review.js.j2" %}
 </script>
-</body>
-</html>
+{% endblock %}

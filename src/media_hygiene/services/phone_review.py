@@ -4,7 +4,8 @@ r"""`phone-review`: the page where the user ticks what leaves the phone (0248).
 `destination`); the files the PC may hold are shown in three groups, the decisions
 file is saved in `/reports` at once and after every choice. The page ends on "Delete
 from the phone" (the files ticked, read back from the disk, are then printed for `mh`)
-or on "Leave everything" and Ctrl+C (nothing printed: nothing deleted).
+or on "Leave everything", "Back to the home page" and Ctrl+C (nothing printed:
+nothing deleted, 0332).
 """
 
 from __future__ import annotations
@@ -14,6 +15,7 @@ import contextlib
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.constants import ExitCode
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
@@ -33,6 +35,7 @@ from media_hygiene.review.phone_session import PhonePages, PhoneSession
 from media_hygiene.review.phone_tiles import TileSource
 from media_hygiene.review.place import decisions_place
 from media_hygiene.review.presence import Presence
+from media_hygiene.services.launcher_phone_free import PHONE_MB_PER_SECOND
 from media_hygiene.services.quarantines import mounted_quarantines
 from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.services.writable import ensure_writable
@@ -40,6 +43,7 @@ from media_hygiene.services.writable import ensure_writable
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from media_hygiene.review.page_header import PageHeader
     from media_hygiene.review.place import DecisionsPlace
     from media_hygiene.services.phone_proof import Ticked
     from media_hygiene.services.runtime import Runtime
@@ -71,6 +75,8 @@ def serve_phone_review(runtime: Runtime, review: PhoneReview) -> tuple[str, ...]
 
     Raises:
         MountError: The reports folder is not mounted: the choices would be lost.
+        PageClosed: Opened from the home page, its tab was closed (0332): the loop of
+            `mh` ends, as after any page; from the console, nothing is printed.
     """
     if not runtime.persistent(MountKind.REPORTS):
         raise MountError(
@@ -101,19 +107,23 @@ def serve_phone_review(runtime: Runtime, review: PhoneReview) -> tuple[str, ...]
         )
         address_tip(runtime.output, port)
 
+    header = page_header(_TEMPLATE)
+    # Its tab closed: as Stop, nothing deleted; mh reads the page's lines (0262). From
+    # the home page, the loop of mh ends instead, as after any page's tab (0332).
+    closed = ExitCode.PAGE_CLOSED if header.home else STOPPED
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        app = PhoneApp(session, _page(place), executor, runtime.previews_dir)
-        # Its tab closed: as Stop, nothing deleted; mh reads the page's lines (0262).
-        door = EndingDoor(app, app.ending, Presence(app.ending, STOPPED))
+        app = PhoneApp(session, _page(place, header), executor, runtime.previews_dir)
+        door = EndingDoor(app, app.ending, Presence(app.ending, closed))
         asyncio.run(serve_until_ended(door, review.port, ready))
     return session.ticked_lines() if session.freeing else ()
 
 
-def _page(place: DecisionsPlace) -> bytes:
+def _page(place: DecisionsPlace, header: PageHeader) -> bytes:
     """Render the page.
 
     Args:
         place: The decisions file it writes.
+        header: Its bar.
 
     Returns:
         The page.
@@ -122,13 +132,14 @@ def _page(place: DecisionsPlace) -> bytes:
     return (
         environment.get_template(_TEMPLATE)
         .render(
-            header=page_header(_TEMPLATE),
+            header=header,
             state_path=STATE_PATH,
             decide_path=PHONE_DECIDE_PATH,
             file_path=FILE_PATH,
             free_path=FREE_PATH,
             stop_path=STOP_PATH,
             place=place.host,
+            phone_speed=PHONE_MB_PER_SECOND,
         )
         .encode()
     )

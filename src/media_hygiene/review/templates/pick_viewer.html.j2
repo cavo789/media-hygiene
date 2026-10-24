@@ -1,0 +1,28 @@
+{# The large view of a page of photos to pick (`pick_viewer.js.j2`): the file framed in
+   the grid, a photo or a video, its keys under it and all of them with `?`. The page's
+   `pick_marks`, `pick_space` and `pick_mark` as in `pick_keys.html.j2`. #}
+{% set marks = pick_marks | default(true) %}
+<div id="viewer" role="dialog" aria-modal="true">
+  <img id="large" alt="">
+  <video id="movie" controls hidden></video>
+  <div><span id="viewerName"></span> <span id="viewerAside" class="asideMark" hidden>{{ pick_mark | default(_("marked to set aside")) }}</span> — <a id="originalLink" target="_blank" rel="noopener">{{ _("Open the original") }}</a></div>
+  <div id="viewerInfo" class="stay" hidden></div>
+  <div id="viewerSaid" class="stay" role="status"></div>
+  <small class="viewerKeys stay"><kbd>←</kbd> <kbd>→</kbd> {{ _("previous, next") }} · {% if marks %}<kbd>Delete</kbd> {{ _("set it aside, then the next one") }}{% else %}<kbd>␣</kbd> {{ pick_space }}{% endif %} · <kbd>F</kbd> {{ _("full screen") }} · <kbd>?</kbd> {{ _("every key") }}</small>
+  <dl id="viewerHelp" class="stay" hidden>
+    <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>{{ _("the previous or next one") }}</dd>
+    <dt><kbd>Home</kbd> <kbd>End</kbd></dt><dd>{{ _("the first or last one") }}</dd>
+{% if marks %}
+    <dt><kbd>Delete</kbd></dt><dd>{{ _("set it aside, then the next one") }}</dd>
+    <dt><kbd>⌫</kbd></dt><dd>{{ _("take it back out of the set aside") }}</dd>
+{% endif %}
+    <dt><kbd>␣</kbd></dt><dd>{{ pick_space | default(_("play or pause a video")) }}</dd>
+    <dt><kbd>F</kbd></dt><dd>{{ _("full screen, or back") }}</dd>
+    <dt><kbd>I</kbd></dt><dd>{{ _("its date, size, folder") }}</dd>
+{% if marks %}
+    <dt><kbd>A</kbd></dt><dd>{{ _("add it to the album named in the bar") }}</dd>
+{% endif %}
+    <dt><kbd>?</kbd></dt><dd>{{ _("this list, or not") }}</dd>
+    <dt><kbd>Esc</kbd></dt><dd>{{ _("close") }}</dd>
+  </dl>
+</div>
