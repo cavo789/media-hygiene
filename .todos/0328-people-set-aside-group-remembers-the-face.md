@@ -40,6 +40,21 @@ next photos with.
 - What happens when files move: the remembered vectors carry no path; the faces compared are
   the cache's current ones (`sort`, `undo`, a folder renamed: the index follows its rows).
 
+## Decided (2026-10-24)
+
+By the maintainer, during `/todo:iterate`: **yes**, the faces stored for the photos set aside on
+2026-10-23 (still in the index until `mh purge`) may be read, **read-only**, to choose the
+threshold. How (as before, memory *Local photos and Ollama*): the host Docker volume
+`media-hygiene-cache` mounted `readonly` into a throwaway container, SQLite opened with
+`?mode=ro&immutable=1`; nothing written, no copy of a face or a path into the repository; the
+figures only (distances of the escaped faces to the set-aside group, measured) go into the
+TODO's outcome and the private feedback file. If the volume is not reachable from the
+devcontainer, a read-only step in `tests/measure/mh-measure.ps1` instead.
+
+No new setting for the threshold unless the measure shows it must vary between collections
+(the maintainer, 2026-10-24: "à force de créer des réglages, on va en avoir des centaines"):
+a constant, named and explained, is the default choice.
+
 ## Tests
 
 - Integration: set aside a group → its vectors are stored; a close face elsewhere shows in the
