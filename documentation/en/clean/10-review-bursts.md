@@ -333,7 +333,9 @@ could rebuild them. `undo` puts them back; `purge` deletes them for good
 
 Once the clean is done, `decisions.json` has served: it is **archived**, never deleted, renamed
 `decisions.applied-<run>.json` next to itself (`<run>` is the clean's number, the one `undo`
-takes). The next `review` starts from a fresh file. Changed your mind and ran `undo`? The
+takes). The next `review` starts from a fresh file, but the series already seen stay seen: a
+series kept whole (**A**), or what is left of one once its shots set aside went to the
+quarantine, is not shown again. Changed your mind and ran `undo`? The
 archive applies the same choices again: `clean --decisions decisions.applied-<run>.json`.
 
 ## Good to know

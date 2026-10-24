@@ -22,15 +22,12 @@ from media_hygiene.review.place import decisions_place
 from media_hygiene.review.session import ReviewSession, ReviewSource
 from media_hygiene.review.views import StateBuilder
 from media_hygiene.services.albums import album_desk
+from media_hygiene.services.burst_carry import resume_bursts
 from media_hygiene.services.missing_mount import missing_mount, typed_again
 from media_hygiene.services.next_command import LAUNCHER_VARIABLE, NextVerb
 from media_hygiene.services.policy import keep_policy, proposal_limits
 from media_hygiene.services.review import decisions_path
-from media_hygiene.services.review_file import (
-    first_save,
-    resume_decisions,
-    review_page,
-)
+from media_hygiene.services.review_file import first_save, review_page
 from media_hygiene.services.writable import ensure_writable
 from media_hygiene.share.album_pickers import KeyPicker
 
@@ -100,7 +97,7 @@ def open_review(
     )
     place = decisions_place(mapper, runtime.locations.reports_dir, target)
     source = ReviewSource(findings.similar.bursts, builder, target, place)
-    session = ReviewSession(source, resume_decisions(runtime, findings, target))
+    session = ReviewSession(source, resume_bursts(runtime, findings, target))
     first_save(session.save)
     return session
 

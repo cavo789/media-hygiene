@@ -10225,6 +10225,12 @@ msgid ""
 "{count} edit carried over from the workbook saved on {day} {month} {year}"
 " at {time}: {path}"
 msgid_plural ""
+#, python-brace-format
+msgid "{count} burst series seen before the last clean stays seen."
+msgid_plural "{count} burst series seen before the last clean stay seen."
+msgstr[0] ""
+msgstr[1] ""
+
 "{count} edits carried over from the workbook saved on {day} {month} "
 "{year} at {time}: {path}"
 msgstr[0] ""

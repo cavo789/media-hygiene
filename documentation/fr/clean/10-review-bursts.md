@@ -347,7 +347,9 @@ de bon ([étape 9](09-undo-history-purge.md)).
 
 Une fois le nettoyage fait, `decisions.json` a servi : il est **archivé**, jamais supprimé,
 renommé `decisions.applied-<run>.json` à côté de lui-même (`<run>` est le numéro du nettoyage,
-celui que prend `undo`). Le `review` suivant repart d'un fichier neuf. Vous avez changé d'avis
+celui que prend `undo`). Le `review` suivant repart d'un fichier neuf, mais les séries déjà vues
+le restent : une série gardée entière (**A**), ou ce qu'il en reste une fois ses photos écartées
+parties en quarantaine, ne vous est plus montrée. Vous avez changé d'avis
 et lancé `undo` ? L'archive applique à nouveau les mêmes choix :
 `clean --decisions decisions.applied-<run>.json`.
 

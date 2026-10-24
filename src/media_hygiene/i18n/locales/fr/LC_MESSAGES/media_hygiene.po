@@ -12158,6 +12158,12 @@ msgid ""
 "since: shown in red, choose again."
 msgid_plural ""
 "{count} earlier choices of the page were edited otherwise in the workbook"
+#, python-brace-format
+msgid "{count} burst series seen before the last clean stays seen."
+msgid_plural "{count} burst series seen before the last clean stay seen."
+msgstr[0] "{count} rafale déjà vue avant le dernier clean le reste."
+msgstr[1] "{count} rafales déjà vues avant le dernier clean le restent."
+
 " since: shown in red, choose again."
 msgstr[0] ""
 "{count} choix précédent de la page a été modifié autrement dans le "

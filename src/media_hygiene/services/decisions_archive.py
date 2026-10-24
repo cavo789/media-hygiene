@@ -59,8 +59,6 @@ def archive_decisions(runtime: Runtime, source: Path, run_id: str) -> None:
 def applied_before(runtime: Runtime, source: Path) -> Path | None:
     """Find the archive of a decisions file that is gone because a clean applied it.
 
-    Run IDs are timestamps: the last archive by name is the newest.
-
     Args:
         runtime: Settings, mount points and output.
         source: `--decisions` value.
@@ -69,8 +67,20 @@ def applied_before(runtime: Runtime, source: Path) -> Path | None:
         The newest archive, or None when the file is there or was never applied.
     """
     target = decisions_path(runtime, source)
-    if target.exists():
-        return None
+    return None if target.exists() else newest_archive(target)
+
+
+def newest_archive(target: Path) -> Path | None:
+    """Find the newest archive of a decisions file, whether the file is there or not.
+
+    Run IDs are timestamps: the last archive by name is the newest.
+
+    Args:
+        target: The decisions file, in the container.
+
+    Returns:
+        The newest archive, or None when it was never applied.
+    """
     archives = sorted(target.parent.glob(f"{target.stem}{_APPLIED}*{target.suffix}"))
     return archives[-1] if archives else None
 
