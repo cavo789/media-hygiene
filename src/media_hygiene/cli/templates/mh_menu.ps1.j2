@@ -26,7 +26,8 @@ function global:_{{ function }}_home {
             $tab = $true
         }
 {% if host.step_file %}
-        # A step with fields (0266): the page wrote its words, read once, then removed.
+        # A step with fields (0266), or any step since 0354 (no `{{ function }} menu` container to
+        # read it): the page wrote its words, read once, then removed.
         $file = "{{ host.step_file }}"
         if ($status -eq {{ fields_code }} -and (Test-Path -LiteralPath $file)) {
             $words = @((Get-Content -LiteralPath $file -Raw -Encoding UTF8 | ConvertFrom-Json).words)

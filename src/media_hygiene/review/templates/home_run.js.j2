@@ -26,7 +26,7 @@ function launch(action, body, command) {
   post(P.step, body)
     .then((reply) => {
       $$("button").forEach((button) => { button.disabled = false; button.removeAttribute("aria-busy"); });
-      if (reply.ok) { openRun(action, reply.body.command); return; }
+      if (reply.ok) { openRun(action, reply.body.command, reply.run); return; }
       if (reply.body.command) copyBox(reply.body.command);
       toast(reply.body.error || fill(T.failed, { status: reply.status }));
       if (reply.status === 409 && !reply.body.command) reload();
@@ -34,7 +34,7 @@ function launch(action, body, command) {
     .catch(() => stopped());
 }
 const post = (path, body) => fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
-  .then((response) => response.json().catch(() => ({})).then((answer) => ({ ok: response.ok, status: response.status, body: answer })));
+  .then((response) => response.json().catch(() => ({})).then((answer) => ({ ok: response.ok, status: response.status, body: answer, run: response.headers.get(RUN_HEADER) })));
 function showDialog(dialog) {
   dialog.opener = document.activeElement;
   dialog.showModal();
@@ -65,7 +65,7 @@ function openForm(action) {
       .then((reply) => {
         if (reply.status === 422) { error.textContent = reply.body.error; error.hidden = false; return; }
         dialog.close();
-        if (reply.ok) { openRun(action, reply.body.command); return; }
+        if (reply.ok) { openRun(action, reply.body.command, reply.run); return; }
         if (reply.body.command) copyBox(reply.body.command);
         toast(reply.body.error || fill(T.failed, { status: reply.status }));
       })
@@ -86,11 +86,12 @@ function openConfirm(action, body, command) {
   showDialog(dialog);
 }
 // The server ended: mh runs the step, then opens the page again on the same port. The page
-// reloads once it saw the server gone, then answering again. One tab (0280): a page step shows
+// reloads once another server answers: another run id (`run`, of the server that took the
+// click), or seen gone then answering again. One tab (0280): a page step shows
 // in this very tab (mh opens no other); its "Back to the home page" comes back to this section,
 // kept for this tab in sessionStorage (home_link.html.j2, apply_now.html.j2 read it). A console
 // step says at once to switch to the window of mh, which mh tries to bring forward (0285).
-function openRun(action, command) {
+function openRun(action, command, run) {
   presence.away = true;
   try { window.sessionStorage.setItem("mh-home-section", window.location.hash); } catch { /* private mode: the top of the page */ }
   const dialog = $("#runDlg");
@@ -105,22 +106,24 @@ function openRun(action, command) {
     <p class="muted small">${esc(T.notOpenedByMh)}</p>
   </div>`;
   showDialog(dialog);
-  waitForComeBack(action.kind === "page");
+  waitForComeBack(action.kind === "page", run);
 }
 // "/" and not the state: any page answers it, the step's page as well as the home page.
-function waitForComeBack(page) {
+function waitForComeBack(page, run) {
   let seenGone = false;
   window.setTimeout(() => { const hint = $("#runHint"); if (hint) hint.hidden = false; }, HINT_MS);
   const poll = () => {
     fetch("/", { cache: "no-store" })
       .then((response) => {
-        if (!response.ok || !seenGone) window.setTimeout(poll, POLL_MS);
+        const now = response.headers.get(RUN_HEADER);
+        const another = seenGone || Boolean(run && now && now !== run);
+        if (!response.ok || !another) window.setTimeout(poll, COMEBACK_MS);
         else if (page) window.location.replace("/");
         else window.location.reload();
       })
-      .catch(() => { seenGone = true; window.setTimeout(poll, POLL_MS); });
+      .catch(() => { seenGone = true; window.setTimeout(poll, COMEBACK_MS); });
   };
-  window.setTimeout(poll, POLL_MS);
+  window.setTimeout(poll, COMEBACK_MS);
 }
 // The command is copied, or selected for Ctrl+C when the browser refuses (an address other
 // than localhost is not a secure context); the server keeps running.

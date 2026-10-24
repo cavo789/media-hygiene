@@ -22,7 +22,12 @@ if TYPE_CHECKING:
     from media_hygiene.review.http import FilePart, Response
 
 CHUNK: Final = 256 * 1024
-RUN_TAG: Final = f'"{secrets.token_hex(8)}"'  # the ETag of every cacheable answer
+_RUN: Final = secrets.token_hex(8)  # drawn anew at each run of the server
+RUN_TAG: Final = f'"{_RUN}"'  # the ETag of every cacheable answer
+# On every answer: a tab waiting for the next page reloads once this changes (0354). The
+# next server may answer 0.5 s after this one ended (measured on Windows), before any
+# poll saw it gone. Read by `home_link.html.j2`, `home_run.js.j2`, `apply_now.html.j2`.
+RUN_HEADER: Final = "X-Media-Hygiene-Run"
 
 
 async def write_response(writer: asyncio.StreamWriter, response: Response) -> None:
@@ -49,6 +54,7 @@ async def write_response(writer: asyncio.StreamWriter, response: Response) -> No
         f"Cache-Control: {cache[0]}",
         *cache[1:],
         "Connection: close",
+        f"{RUN_HEADER}: {_RUN}",
         "X-Content-Type-Options: nosniff",
         f"Referrer-Policy: {response.referrer}",
         f"Content-Security-Policy: {response.policy}",

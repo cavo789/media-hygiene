@@ -52,6 +52,7 @@ _FAKE_DOCKER: Final = r"""
 docker() {
     if [[ "$1" == version ]]; then return 0; fi
     if [[ " $* " == *" menu "* ]]; then
+        echo menu >> "$HOME/menus"  # each `mh menu` container (0354)
         printf '0\taudit\n1\taudit\n2\tclean --tier near\n3\thistory\n'
         printf '4\tbrowse\n5\treview\n'
         printf '110\thistory\n'  # 20 + 110 = 130: Ctrl+C must never run it (0287)
@@ -323,6 +324,37 @@ def test_a_form_s_words_run_once_then_the_file_is_gone(tmp_path: Path) -> None:
         "status=0",
     ]
     assert not step.exists()
+
+
+def test_a_page_chosen_runs_from_the_file_without_mh_menu_nor_bell(
+    tmp_path: Path,
+) -> None:
+    """0354: a step from the file: no `mh menu` container; a page rings no bell."""
+    _bash(tmp_path, "true", "0")
+    step = _step_file(tmp_path)
+    step.parent.mkdir(parents=True, exist_ok=True)
+    write_step(step.parent, ("browse",))
+    done = _bash(tmp_path, "mh", str(STEP_EXIT_BASE + FIELDS_STEP))
+    assert _lines(done) == [
+        "home:relayed",
+        "browse:relayed",
+        "home:relayed",
+        "status=0",
+    ]
+    assert not (tmp_path / "menus").exists()
+    assert "\a" not in done.stderr
+    assert not step.exists()
+
+
+def test_a_console_step_from_the_file_rings_the_bell(tmp_path: Path) -> None:
+    """0285 kept: a step that asks in the terminal rings it, as from `mh menu`."""
+    _bash(tmp_path, "true", "0")
+    step = _step_file(tmp_path)
+    step.parent.mkdir(parents=True, exist_ok=True)
+    write_step(step.parent, ("history",))
+    done = _bash(tmp_path, "mh", str(STEP_EXIT_BASE + FIELDS_STEP))
+    assert "ran:history" in _lines(done)
+    assert "\a" in done.stderr
 
 
 def test_a_file_left_behind_never_runs_for_a_numbered_step(tmp_path: Path) -> None:

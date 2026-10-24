@@ -175,7 +175,8 @@ _{{ function }}_home() {
             _{{ function }}_tab=1
         fi
 {% if host.step_file %}
-        # A step with fields (0266): the page wrote its words, one per line, read once.
+        # A step with fields (0266), or any step since 0354 (no `{{ function }} menu` to read
+        # it): the page wrote its words, one per line, read once.
         if [[ "$status" -eq {{ fields_code }} && -f "{{ host.step_file }}" ]]; then
             words=()
             while IFS= read -r line; do
@@ -185,7 +186,9 @@ _{{ function }}_home() {
             done < "{{ host.step_file }}"
             rm -f -- "{{ host.step_file }}"
             chosen="${words[*]}"
-            printf '%s\n\a' "{{ texts.direct }}" >&2  # a form's step asks in this terminal (0285)
+            printf '%s\n' "{{ texts.direct }}" >&2
+            # A console step asks in this terminal (0285); a page shows in the tab.
+            if [[ " {{ script.commands.pages | join(" ") }} " != *" ${words[0]} "* ]]; then printf '\a' >&2; fi
             status=0
             after=1
             {{ function }} "${words[@]}" "$@" || status=$?

@@ -246,7 +246,7 @@ function end(path, text) {
     if (!answer.ok) { say(reply.error || fill(TEXTS.failed, { status: answer.status }), "error"); return; }
     $("closedText").textContent = text;
     $("closed").style.display = "flex";
-    if (window.mhAwaitHome) window.mhAwaitHome();
+    if (window.mhAwaitHome) window.mhAwaitHome(answer.headers.get("X-Media-Hygiene-Run"));  // RUN_HEADER, 0354
   });
 }
 

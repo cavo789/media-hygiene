@@ -29,7 +29,8 @@ from media_hygiene.review.ending import (
     serve_until_ended,
 )
 from media_hygiene.review.home_app import STEP_PATH, HomeApp
-from media_hygiene.review.home_views import STEP_EXIT_BASE
+from media_hygiene.review.home_fields import STEP_FILE_NAME
+from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
 from media_hygiene.review.presence import Presence
 from media_hygiene.services import home
 from media_hygiene.services.home import home_page, launcher_relays_steps
@@ -98,7 +99,7 @@ def step(number: int, command: str, headers: tuple[str, ...] = JSON_HEADERS) -> 
 
 
 def home_app(
-    runtime: Runtime, *, relays_steps: bool = True
+    runtime: Runtime, *, relays_steps: bool = True, relays_fields: bool = False
 ) -> Callable[[Ending], HomeApp]:
     """Build the home page's app on a runtime, its launcher running steps or not."""
     state = partial(home_state, runtime)
@@ -111,6 +112,7 @@ def home_app(
         audit,
         Presence(ending, STOPPED),
         relays_steps=relays_steps,
+        relays_fields=relays_fields,
     )
 
 
@@ -163,6 +165,46 @@ def test_a_step_ends_the_server_with_100_plus_its_number(
     assert "changed" in str(stale.json())
     assert chosen.status == 200
     assert chosen.json() == {"number": proposed.number, "command": proposed.command}
+    assert code == STEP_EXIT_BASE + proposed.number
+
+
+def test_an_mh_reading_the_one_shot_file_gets_the_step_s_words(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """No `mh menu` container after a click (0354): the words in the file, fields code.
+
+    The `mh` that reads the file runs them at once; before, it ran `mh menu` in a
+    container of its own to learn step `n`: 2.1 to 2.5 s per click on Windows.
+    """
+    runtime = audited(cli, locations)
+    proposed = home_state(runtime).proposed
+    assert proposed is not None
+    replies, code = serve(
+        home_app(runtime, relays_fields=True),
+        [step(proposed.number, proposed.command)],
+    )
+    assert replies[0].json() == {
+        "number": proposed.number,
+        "command": proposed.command,
+    }
+    assert code == STEP_EXIT_BASE + FIELDS_STEP
+    written = json.loads((locations.reports_dir / STEP_FILE_NAME).read_text("utf-8"))
+    assert written == {"words": proposed.command.split()[1:]}
+
+
+def test_a_reports_folder_not_writable_falls_back_on_the_step_s_number(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """The file cannot be written: the server ends with `STEP_EXIT_BASE + n`."""
+    runtime = audited(cli, locations)
+    proposed = home_state(runtime).proposed
+    assert proposed is not None
+    (locations.reports_dir / STEP_FILE_NAME).mkdir()  # a folder in the file's place
+    replies, code = serve(
+        home_app(runtime, relays_fields=True),
+        [step(proposed.number, proposed.command)],
+    )
+    assert replies[0].status == 200
     assert code == STEP_EXIT_BASE + proposed.number
 
 

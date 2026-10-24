@@ -1,7 +1,9 @@
 """`POST /api/step`: end the home server so that `mh` runs the step chosen.
 
-A step of `mh menu` is sent as its number and command: the server ends with
-`STEP_EXIT_BASE + n`, only when the menu still gives that command. A step with fields
+A step of `mh menu` is sent as its number and command, run only when the menu still
+gives that command: its words go into the one-shot file when `mh` reads it (0354), and
+the server ends as for a step with fields; else it ends with `STEP_EXIT_BASE + n`, and
+`mh` reads step `n` from `mh menu`, a container of its own. A step with fields
 is sent as its name and its values: they are checked, written into the one-shot file
 (`home_fields`), and the server ends with `STEP_EXIT_BASE + FIELDS_STEP`. Each needs
 a JSON body: a page of another site cannot send one without the browser asking first.
@@ -84,8 +86,35 @@ async def step_response(door: StepDoor, request: Request) -> Response:
     if not number or command is None or command != chosen.command:
         message = _("The steps changed since the page was shown: here they are.")
         return json_response(HTTPStatus.CONFLICT, {"error": message})
-    door.ending.end(STEP_EXIT_BASE + number)
+    door.ending.end(STEP_EXIT_BASE + await _handed(door, number, command))
     return json_response(HTTPStatus.OK, {"number": number, "command": command})
+
+
+async def _handed(door: StepDoor, number: int, command: str) -> int:
+    """Hand a step of the menu to `mh`: its words in the one-shot file when it reads it.
+
+    `mh` then runs them at once, without running `mh menu` in a container of its own
+    to learn which command step `n` is: 2.1 to 2.5 s per click (measured on Windows,
+    0354). Else, or when the file cannot be written, its number, as before.
+
+    Args:
+        door: The reports folder, what `mh` relays.
+        number: The step's number in `mh menu`.
+        command: Its command as the page shows it, `mh audit`.
+
+    Returns:
+        The code to end with, less `STEP_EXIT_BASE`.
+    """
+    if not door.relays_fields:
+        return number
+    words = tuple(command.split())  # as `mh` splits `mh menu`'s line
+    if words[:1] == (LAUNCHER_FUNCTION,):
+        words = words[1:]
+    try:
+        await asyncio.to_thread(write_step, door.reports_dir, words)
+    except OSError:
+        return number
+    return FIELDS_STEP
 
 
 async def _with_fields(door: StepDoor, chosen: _Chosen) -> Response:

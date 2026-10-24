@@ -107,8 +107,11 @@ qui a ouvert la page :
   classique, `mh` ramène aussi sa fenêtre au premier plan quand Windows le permet (une fenêtre
   réduite reste réduite). Après 30
   secondes elle ajoute *Rien ne bouge ? Regardez la fenêtre PowerShell de mh (dans la
-  barre des tâches) (Alt+Tab)*. L'étape choisie est le code de sortie de la commande, `20 + n`
-  pour l'étape `n` de `mh menu` : c'est ainsi que `mh` sait quoi lancer. Ctrl+C pendant une
+  barre des tâches) (Alt+Tab)*. L'étape choisie arrive à `mh` par `.mh-step.json` de votre dossier
+  des rapports, comme les mots d'un formulaire ci-dessous : `mh` les lance aussitôt (il lançait
+  d'abord `mh menu` dans un conteneur à lui, 2 s par clic). Avec des rapports dans un volume
+  nommé, c'est le code de sortie de la commande, `20 + n` pour l'étape `n` de `mh menu`.
+  L'onglet montre la page suivante dès que son serveur répond. Ctrl+C pendant une
   étape (ou sur une page qu'elle a ouverte) rend l'invite : la page d'accueil ne revient pas,
   et aucune autre étape ne se lance.
 - **Une étape qui prend des mots** (le nom d'un album, le dossier de votre NAS,

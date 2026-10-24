@@ -99,8 +99,10 @@ opened the page:
   keep the sound). With the classic console, `mh` also brings its window forward when Windows
   allows it (a minimised window stays minimised). After 30 seconds the page adds
   *Nothing moves? Look at the PowerShell window of mh (in the taskbar) (Alt+Tab)*. The step
-  chosen is the
-  command's exit code, `20 + n` for step `n` of `mh menu`: that is how `mh` knows what to run.
+  chosen reaches `mh` through `.mh-step.json` of your reports folder, as the words of a form
+  below: `mh` runs them at once (it used to start `mh menu` in a container of its own first,
+  2 s per click). With reports in a named volume it is the command's exit code, `20 + n` for
+  step `n` of `mh menu`. The tab shows the next page as soon as its server answers.
   Ctrl+C during a step (or on a page it opened) gives the prompt back: the home page does not
   come back, and no other step runs.
 - **A step that takes words** (an album's name, your NAS's folder, a folder to
