@@ -160,6 +160,41 @@ second names (hard links), without a copy.
 | `un chat sur un canapé` | After [`tags --meaning`](tags.md): the photos that show it first, even without any of these words ([search by meaning](../reference-tags.md#find-a-photo-by-what-it-shows---meaning)). |
 | `Chloé cuisine` | After `tags --meaning`: the photos of Chloé only, the kitchens first. |
 
+## Where each word comes from
+
+The *Words of* menu narrows a search to one source; typing its prefix does the same
+(`place:durbuy`). A source without any word yet says *— none yet* in the menu and in *How to
+write a search*.
+
+| Words of | Prefix | What it holds |
+|---|---|---|
+| every source | | Any of them (the default). |
+| seen by the model | `vision:` | The words the vision model gave to what the photo shows (🤖 [`tags`](tags.md)). |
+| the model's sentence | `caption:` | Its whole sentence: for a phrase in quotes. |
+| folder | `folder:` | The meaningful words of the folders' names. |
+| file name | `name:` | The words of a name someone chose (none for `IMG_1234`). |
+| name of a removed copy | `former:` | The folders and name a duplicate had before [`clean`](clean.md) removed it, kept on the copy that stayed. |
+| date | `date:` | The year, month, season and holidays of the date taken. |
+| place | `place:` | The town and your own places where the photo was taken. |
+| person | `person:` | The names given to the faces on the [`people`](people.md) page. |
+| Google Photos description | `takeout:` | The description typed in Google Photos (a Takeout export). |
+
+## Tips for finding a photo
+
+While hardly any photo is described, a line under the field says it: *What the photos show is
+not known yet: 0 of 44,488 files described…*, with the step that fills it (🤖 `tags`). Before
+`tags`, a search finds the words of the folders, names, dates, places and people only.
+
+| Searched | Finds nothing because | Try instead |
+|---|---|---|
+| `an old man` | **Every word must be found**: `an` and `old` and `man`; a small word counts too. | `man`, then fewer words. |
+| `old man`, `grandmother`, `woman` | **The model never writes an age, a sex or a relationship**: for people it writes *adult*, *child*, *baby* or *group* only. | `person:` and the person's name (named on the [`people`](people.md) page), or `adult`. |
+| `an old man in a garden` | **A whole sentence needs search by meaning** (`tags --meaning`); without it, words only. | `garden`; or run 🤖 `tags --meaning` once: then sentences work. |
+| `beach` during a `tags` run | **The model's words reach the search at the end of the run** (or after one Ctrl+C, which writes those of the photos described so far). | Wait for the end of `tags`, or Ctrl+C once. |
+
+Nothing found? Fewer words, the start of a word (`anniv*`), another source in *Words of*, or
+search by meaning. The page keeps these tips short, in *How to write a search*.
+
 ## Options
 
 | Option | What it does |

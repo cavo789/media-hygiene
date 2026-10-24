@@ -36,6 +36,9 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
+msgid " — none yet"
+msgstr ""
+
 msgid ""
 "\"Other\" means: sure that nothing above matches. Without it, such files "
 "go to \"to sort\", which means: we do not know."
@@ -566,6 +569,11 @@ msgstr ""
 msgid ""
 "A screenshot or a document, as 'classify' tells them: a screenshot name, "
 "or a PNG or tiny image without any camera trace."
+msgstr ""
+
+msgid ""
+"A sentence (an old man in a garden) needs search by meaning: 🤖 mh tags "
+"--meaning."
 msgstr ""
 
 msgid ""
@@ -2245,6 +2253,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Every word must be found: type one to three words (beach, cake candles), "
+"not a sentence."
+msgstr ""
+
+msgid ""
 "Everything 'clean --tier near-all' moves to the quarantine, group by "
 "group: the groups to check first, then, folded, the sure groups that "
 "'clean --tier near' moves on its own; each list the largest space first, "
@@ -2632,6 +2645,11 @@ msgstr ""
 msgid ""
 "For the TV and your phone: {command} (Windows PowerShell). The show then "
 "opens to the home network, never to the internet."
+msgstr ""
+
+msgid ""
+"For the model, people are adult, child, baby or group: find someone by "
+"their name."
 msgstr ""
 
 msgid "Forget every face"
@@ -5738,6 +5756,9 @@ msgstr ""
 msgid "Sent: the step starts in {window}…"
 msgstr ""
 
+msgid "Sentences work too: search by meaning is on."
+msgstr ""
+
 msgid "September"
 msgstr ""
 
@@ -7341,6 +7362,9 @@ msgstr ""
 msgid "This video does not play on a phone as it is ({format})."
 msgstr ""
 
+msgid "This word may only come from what the photos show: not described yet."
+msgstr ""
+
 msgid "This workbook belongs to another classify run."
 msgstr ""
 
@@ -7726,6 +7750,14 @@ msgid "What the last audit found"
 msgstr ""
 
 msgid "What the last clean left"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"What the photos show is not known yet: {described} of {files} files "
+"described. The words found today come from folders, names, dates, places "
+"and people. 👉 Describe the photos: 🤖 mh tags (or its step on the home "
+"page)."
 msgstr ""
 
 msgid "What was already done is in the journal: 'undo' puts it back."
@@ -8298,6 +8330,9 @@ msgid "another program is using it"
 msgstr ""
 
 msgid "answers"
+msgstr ""
+
+msgid "any of them (the default)."
 msgstr ""
 
 msgid "apply decisions choices set aside"
@@ -9680,6 +9715,9 @@ msgstr ""
 msgid "the copy was never proven (the run stopped): kept"
 msgstr ""
 
+msgid "the description typed in Google Photos (a Takeout export)."
+msgstr ""
+
 msgid "the disk could not be read or written (input/output error)"
 msgstr ""
 
@@ -9718,6 +9756,11 @@ msgid "the folder is mounted read-only (:ro)"
 msgstr ""
 
 msgid "the folder is not empty"
+msgstr ""
+
+msgid ""
+"the folders and name a duplicate had before clean removed it, kept on the"
+" copy that stayed."
 msgstr ""
 
 msgid "the group as marked, then next"
@@ -9764,6 +9807,9 @@ msgid ""
 "quarantine: 'undo' brings it back"
 msgstr ""
 
+msgid "the meaningful words of the folders' names."
+msgstr ""
+
 #, python-brace-format
 msgid "the model will look at each of their {samples} photos."
 msgstr ""
@@ -9775,6 +9821,12 @@ msgid ""
 msgstr ""
 
 msgid "the model's sentence"
+msgstr ""
+
+msgid "the model's whole sentence: for a phrase in quotes."
+msgstr ""
+
+msgid "the names given to the faces on the people page."
 msgstr ""
 
 msgid "the oldest date"
@@ -9853,6 +9905,9 @@ msgstr ""
 msgid "the terminal where mh runs"
 msgstr ""
 
+msgid "the town and your own places where the photo was taken."
+msgstr ""
+
 msgid ""
 "the two folders are on two disks or two mounts: a hard link cannot cross "
 "them"
@@ -9874,6 +9929,15 @@ msgid "the whole folder pair as planned"
 msgstr ""
 
 msgid "the whole group deleted on purpose, then next"
+msgstr ""
+
+msgid "the words of a name someone chose (none for IMG_1234)."
+msgstr ""
+
+msgid "the words the vision model gave to what the photo shows (🤖 tags)."
+msgstr ""
+
+msgid "the year, month, season and holidays of the date taken."
 msgstr ""
 
 msgid "this category is no longer proposed"

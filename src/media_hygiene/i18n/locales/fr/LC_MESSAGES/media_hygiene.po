@@ -62,6 +62,9 @@ msgstr[1] ""
 " {count} autres fichiers sont des fichiers que vous avez mis de côté ou "
 "supprimés avant : pas proposés."
 
+msgid " — none yet"
+msgstr " — aucun pour l'instant"
+
 msgid ""
 "\"Other\" means: sure that nothing above matches. Without it, such files "
 "go to \"to sort\", which means: we do not know."
@@ -735,6 +738,13 @@ msgstr ""
 "Une capture d'écran ou un document, comme 'classify' les reconnaît : un "
 "nom de capture d'écran, ou une image PNG ou minuscule sans aucune trace "
 "d'appareil photo."
+
+msgid ""
+"A sentence (an old man in a garden) needs search by meaning: 🤖 mh tags "
+"--meaning."
+msgstr ""
+"Une phrase (un vieil homme dans un jardin) demande la recherche par le sens "
+": 🤖 mh tags --meaning."
 
 msgid ""
 "A series whose proposal leaves only the sharpest shot (and those of "
@@ -2772,6 +2782,13 @@ msgstr ""
 "que montre 'mh' seul, Entrée la lance."
 
 msgid ""
+"Every word must be found: type one to three words (beach, cake candles), "
+"not a sentence."
+msgstr ""
+"Chaque mot doit être trouvé : tapez un à trois mots (plage, gâteau bougie), "
+"pas une phrase."
+
+msgid ""
 "Everything 'clean --tier near-all' moves to the quarantine, group by "
 "group: the groups to check first, then, folded, the sure groups that "
 "'clean --tier near' moves on its own; each list the largest space first, "
@@ -3247,6 +3264,13 @@ msgid ""
 msgstr ""
 "Pour la télé et votre téléphone : {command} (Windows PowerShell). Le "
 "diaporama s'ouvre alors au réseau de la maison, jamais à Internet."
+
+msgid ""
+"For the model, people are adult, child, baby or group: find someone by "
+"their name."
+msgstr ""
+"Pour le modèle, les personnes sont adulte, enfant, bébé ou groupe : trouvez "
+"quelqu'un par son nom."
 
 msgid "Forget every face"
 msgstr "Oublier tous les visages"
@@ -6953,6 +6977,9 @@ msgstr "Envoyer les photos ({count}) dans la catégorie :"
 msgid "Sent: the step starts in {window}…"
 msgstr "Envoyé : l'étape démarre dans {window}…"
 
+msgid "Sentences work too: search by meaning is on."
+msgstr "Les phrases marchent aussi : la recherche par le sens est active."
+
 msgid "September"
 msgstr "septembre"
 
@@ -8545,8 +8572,8 @@ msgstr ""
 #, python-brace-format
 msgid "The settings changed but cannot be read; the last good ones stay: {error}"
 msgstr ""
-"Les réglages ont changé mais ne se lisent pas ; les derniers bons restent : "
-"{error}"
+"Les réglages ont changé mais ne se lisent pas ; les derniers bons restent"
+" : {error}"
 
 #, python-brace-format
 msgid "The sheet '{name}' was renamed or deleted."
@@ -8914,6 +8941,11 @@ msgstr "Cette étape ne prend pas de mots."
 #, python-brace-format
 msgid "This video does not play on a phone as it is ({format})."
 msgstr "Cette vidéo ne se lit pas telle quelle sur un téléphone ({format})."
+
+msgid "This word may only come from what the photos show: not described yet."
+msgstr ""
+"Ce mot ne peut venir que de ce que montrent les photos : pas encore "
+"décrites."
 
 msgid "This workbook belongs to another classify run."
 msgstr "Ce classeur appartient à une autre exécution de 'classify'."
@@ -9367,6 +9399,18 @@ msgstr "Ce que le dernier audit a trouvé"
 
 msgid "What the last clean left"
 msgstr "Ce que le dernier nettoyage a laissé"
+
+#, python-brace-format
+msgid ""
+"What the photos show is not known yet: {described} of {files} files "
+"described. The words found today come from folders, names, dates, places "
+"and people. 👉 Describe the photos: 🤖 mh tags (or its step on the home "
+"page)."
+msgstr ""
+"Ce que montrent les photos n'est pas encore connu : {described} fichiers "
+"décrits sur {files}. Les mots trouvés aujourd'hui viennent des dossiers, "
+"des noms, des dates, des lieux et des personnes. 👉 Décrivez les photos : 🤖 "
+"mh tags (ou son étape sur la page d'accueil)."
 
 msgid "What was already done is in the journal: 'undo' puts it back."
 msgstr "Ce qui a déjà été fait est dans le journal : 'undo' le remet en place."
@@ -10050,6 +10094,9 @@ msgstr "un autre programme l'utilise"
 
 msgid "answers"
 msgstr "répond"
+
+msgid "any of them (the default)."
+msgstr "n'importe laquelle (par défaut)."
 
 msgid "apply decisions choices set aside"
 msgstr "appliquer décisions choix écartés"
@@ -11543,6 +11590,9 @@ msgstr "la copie du fichier compagnon précédent ne lui correspond pas"
 msgid "the copy was never proven (the run stopped): kept"
 msgstr "la copie n'a jamais été prouvée (l'exécution s'est arrêtée) : gardée"
 
+msgid "the description typed in Google Photos (a Takeout export)."
+msgstr "la description tapée dans Google Photos (un export Takeout)."
+
 msgid "the disk could not be read or written (input/output error)"
 msgstr "le disque n'a pas pu être lu ou écrit (erreur d'entrée/sortie)"
 
@@ -11582,6 +11632,13 @@ msgstr "le dossier est monté en lecture seule (:ro)"
 
 msgid "the folder is not empty"
 msgstr "le dossier n'est pas vide"
+
+msgid ""
+"the folders and name a duplicate had before clean removed it, kept on the"
+" copy that stayed."
+msgstr ""
+"les dossiers et le nom qu'avait un doublon avant que clean ne le retire, "
+"gardés sur la copie restée."
 
 msgid "the group as marked, then next"
 msgstr "le groupe tel que marqué, puis suivant"
@@ -11629,6 +11686,9 @@ msgstr ""
 "la vidéo allégée reste sous {name} ({error}) ; l'original est en "
 "quarantaine : 'undo' le ramène"
 
+msgid "the meaningful words of the folders' names."
+msgstr "les mots parlants des noms des dossiers."
+
 #, python-brace-format
 msgid "the model will look at each of their {samples} photos."
 msgstr "le modèle regardera chacune de leurs {samples} photos."
@@ -11643,6 +11703,12 @@ msgstr ""
 
 msgid "the model's sentence"
 msgstr "la phrase du modèle"
+
+msgid "the model's whole sentence: for a phrase in quotes."
+msgstr "la phrase entière du modèle : pour une expression entre guillemets."
+
+msgid "the names given to the faces on the people page."
+msgstr "les noms donnés aux visages sur la page people."
 
 msgid "the oldest date"
 msgstr "la date la plus ancienne"
@@ -11738,6 +11804,9 @@ msgstr "la cible existe"
 msgid "the terminal where mh runs"
 msgstr "le terminal où mh tourne"
 
+msgid "the town and your own places where the photo was taken."
+msgstr "la ville et vos propres lieux où la photo a été prise."
+
 msgid ""
 "the two folders are on two disks or two mounts: a hard link cannot cross "
 "them"
@@ -11764,6 +11833,16 @@ msgstr "toute la paire de dossiers comme prévu"
 
 msgid "the whole group deleted on purpose, then next"
 msgstr "tout le groupe supprimé exprès, puis le suivant"
+
+msgid "the words of a name someone chose (none for IMG_1234)."
+msgstr "les mots d'un nom choisi par quelqu'un (aucun pour IMG_1234)."
+
+msgid "the words the vision model gave to what the photo shows (🤖 tags)."
+msgstr ""
+"les mots que le modèle de vision a donnés à ce que montre la photo (🤖 tags)."
+
+msgid "the year, month, season and holidays of the date taken."
+msgstr "l'année, le mois, la saison et les fêtes de la date de prise de vue."
 
 msgid "this category is no longer proposed"
 msgstr "cette catégorie n'est plus proposée"

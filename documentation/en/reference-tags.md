@@ -147,7 +147,8 @@ the small previews of the grid are kept in `/cache`.
 
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20
 files as a table (`--limit N` for more). The search reads the cache only: run `tags` again after
-an audit to find the new photos.
+an audit to find the new photos. Nothing found? See
+[Tips for finding a photo](commands/search.md#tips-for-finding-a-photo).
 
 ## Find a photo by what it shows: `--meaning`
 

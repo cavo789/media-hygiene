@@ -80,6 +80,15 @@ class MeaningIndex(SearchIndex):
                 super().name_people(words)
         super()._fresh()
 
+    @property
+    def understands(self) -> bool:
+        """Tell whether search by meaning is on: vectors and their model are there.
+
+        Returns:
+            True once `understand` was called.
+        """
+        return self._meaning is not None
+
     def understand(self, source: MeaningSource) -> None:
         """Rank by meaning from now on.
 

@@ -29,6 +29,9 @@
   "reference": _("The face of reference that gave the name:"),
   "yes": _("Yes, it is {name}"),
   "not": _("Not {name}"),
+  "notDescribed": _("What the photos show is not known yet: {described} of {files} files described. The words found today come from folders, names, dates, places and people. 👉 Describe the photos: 🤖 mh tags (or its step on the home page)."),
+  "noneWhy": _("This word may only come from what the photos show: not described yet."),
+  "noneYet": _(" — none yet"),
 } %}
 {% set sources = {
   "vision": _("seen by the model"),
@@ -39,6 +42,18 @@
   "place": _("place"),
   "person": _("person"),
   "takeout": _("Google Photos description"),
+} %}
+{# What each source of "Words of" holds, where it comes from (0346). #}
+{% set explained = {
+  "vision": _("the words the vision model gave to what the photo shows (🤖 tags)."),
+  "caption": _("the model's whole sentence: for a phrase in quotes."),
+  "folder": _("the meaningful words of the folders' names."),
+  "name": _("the words of a name someone chose (none for IMG_1234)."),
+  "former": _("the folders and name a duplicate had before clean removed it, kept on the copy that stayed."),
+  "date": _("the year, month, season and holidays of the date taken."),
+  "place": _("the town and your own places where the photo was taken."),
+  "person": _("the names given to the faces on the people page."),
+  "takeout": _("the description typed in Google Photos (a Takeout export)."),
 } %}
 {% set page_name = _("Search your photos") %}
 {% set pick_all = _("every file shown") %}
@@ -55,6 +70,10 @@
   .years { display: flex; gap: 8px; }
   .years label { flex: 1; }
   #syntax { margin-top: 6px; color: var(--muted); }
+  #syntax ul { margin: 4px 0; padding-left: 18px; }
+  #syntax dt { margin-top: 4px; color: var(--text); }
+  #syntax dd { margin: 0 0 0 12px; }
+  #coverage { margin: 6px 0 0; color: var(--muted); }
   #syntax summary { cursor: pointer; }
   #syntax p { margin: 4px 0 0; }
   .folderLine, .caption { overflow-wrap: anywhere; }
@@ -104,9 +123,22 @@
         </select></label>
       <button type="submit">{{ _("Search") }}</button>
     </form>
+    <p id="coverage" role="status" hidden></p>
     <details id="syntax">
       <summary>{{ _("How to write a search") }}</summary>
+      <ul>
+        <li>{{ _("Every word must be found: type one to three words (beach, cake candles), not a sentence.") }}</li>
+        <li>{{ _("For the model, people are adult, child, baby or group: find someone by their name.") }}</li>
+        <li id="tipSentence">{{ _("A sentence (an old man in a garden) needs search by meaning: 🤖 mh tags --meaning.") }}</li>
+        <li id="tipMeaning" hidden>{{ _("Sentences work too: search by meaning is on.") }}</li>
+      </ul>
       <p>{{ _('"bord de mer" finds the phrase, anniv* every word starting so, place:durbuy the word among the places only.') }}</p>
+      <dl id="sourceList">
+        <dt>{{ _("every source") }}</dt><dd>{{ _("any of them (the default).") }}</dd>
+        {% for value, text in explained.items() %}
+        <dt data-source="{{ value }}">{{ sources.get(value, _("the model's sentence")) }} <code>{{ value }}:</code><span class="none" hidden>{{ texts.noneYet }}</span></dt><dd>{{ text }}</dd>
+        {% endfor %}
+      </dl>
     </details>
     </section>
 {% endblock %}

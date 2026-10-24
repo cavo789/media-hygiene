@@ -15,7 +15,7 @@ photos are never changed: `clean --decisions` moves what was set aside.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import partial
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
@@ -28,6 +28,7 @@ from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
 from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_response
 from media_hygiene.search.chosen_api import CHOSEN_PATH
+from media_hygiene.search.coverage import CoverageKept
 from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS, FOLDERS_PATH
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH
 from media_hygiene.search.people_why import (
@@ -75,6 +76,7 @@ class SearchApp:
     place: SearchPlace
     pages: SearchPages
     executor: Executor
+    coverage: CoverageKept = field(default_factory=CoverageKept)  # 0344
 
     async def connection(
         self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter
@@ -186,4 +188,5 @@ class SearchApp:
         )
         unknown = unknown_people(query, self.place.people)
         note = {} if unknown is None else {"note": unknown}
-        return json_response(HTTPStatus.OK, {**found, **note})
+        coverage = {"coverage": self.coverage.of(self.place.index)}
+        return json_response(HTTPStatus.OK, {**found, **note, **coverage})
