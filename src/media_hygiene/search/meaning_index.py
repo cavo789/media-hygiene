@@ -22,12 +22,11 @@ from media_hygiene.tags.models import TagSource
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
-    from concurrent.futures import Future
     from pathlib import Path
 
     from media_hygiene.index.descriptions import PhotoVersion
     from media_hygiene.search.meaning import MeaningSource
-    from media_hygiene.search.names_soon import Names
+    from media_hygiene.search.names_soon import NamesKept
 
 NARROWING: Final = (TagSource.PERSON, TagSource.PLACE)
 _COLUMNS: Final = "{" + " ".join(source.value for source in NARROWING) + "}"
@@ -38,24 +37,25 @@ class MeaningIndex(SearchIndex):
 
     _meaning: Meaning | None = None
     _read_at: int | None = None  # the data version the vectors were read at
-    _later: Future[Names] | None = None  # the names of the people, being read (0354)
+    _names: NamesKept | None = None  # the names of the people, read in a thread (0354)
+    _named_at: int | None = None  # the data version their faces were checked at
 
-    def name_people_soon(self, later: Future[Names]) -> None:
-        """Give the photos the names being read meanwhile, at the first search.
+    def name_people_soon(self, names: NamesKept) -> None:
+        """Give the photos the names being read meanwhile, then again as they change.
 
         Args:
-            later: The names, read in a thread (`names_soon`).
+            names: The names, read in a thread (`names_soon`).
         """
-        self._later = later
+        self._names = names
 
     @override
     def name_people(self, words: Mapping[Path, tuple[str, ...]]) -> None:
-        """Give the photos these names; those still being read are dropped, older.
+        """Give the photos these names, from now on; those being read are older.
 
         Args:
             words: The names on each photo.
         """
-        self._later = None
+        self._names = None
         super().name_people(words)
 
     @property
@@ -70,10 +70,14 @@ class MeaningIndex(SearchIndex):
 
     @override
     def _fresh(self) -> None:
-        """Take the names read meanwhile (waiting for them), then build the table."""
-        later = self._later
-        if later is not None:
-            self.name_people(later.result())
+        """Take the names read meanwhile (the first ones waited for), then the table."""
+        names = self._names
+        version = int(self._connection.execute(sql.DATA_VERSION).fetchone()[0])
+        if names is not None and (names.pending or version != self._named_at):
+            self._named_at = version
+            words = names.fresh(self._connection)
+            if words is not None:
+                super().name_people(words)
         super()._fresh()
 
     def understand(self, source: MeaningSource) -> None:

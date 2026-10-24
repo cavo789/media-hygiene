@@ -7042,6 +7042,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "The settings changed but cannot be read; the last good ones stay: {error}"
+msgstr ""
+
+#, python-brace-format
 msgid "The sheet '{name}' was renamed or deleted."
 msgstr ""
 

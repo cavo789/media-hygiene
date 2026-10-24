@@ -4,8 +4,9 @@ A click on either from the home page used to stop the home server, start a conta
 for the page and wait for it: 7.6 to 8.7 s (measured on Windows, step 35 of
 `mh-measure.ps1`). Now the home server answers them too: its own paths stay its own,
 every other one goes to the app of `search` and `browse` (`search_app`), built at the
-first request of either, the index opened once for the session. No path of theirs is
-one of the home page's but `/` (read in the code): no prefix is needed for these two.
+first request of either, the index opened once for the session; built again once the
+settings changed (`FreshRuntime`, 0358). No path of theirs is one of the home page's
+but `/` (read in the code): no prefix is needed for these two.
 """
 
 from __future__ import annotations
@@ -20,6 +21,7 @@ from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH
 from media_hygiene.review.presence import PRESENCE_PATH
 from media_hygiene.search.app import SEARCH_PAGE_PATH
+from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.search import open_search
 from media_hygiene.services.search_app import SearchBuild, search_app
 
@@ -55,33 +57,34 @@ class SearchHere:
         """Remember how to build it.
 
         Args:
-            runtime: Settings, mount points and output.
+            runtime: Settings, mount points and output, at the server's start.
             server: The home server's *Apply now*, end and pool.
         """
-        self._runtime = runtime
+        self._fresh = FreshRuntime(runtime)
         self._server = server
-        self._stack = ExitStack()
+        self._stack = ExitStack()  # every index opened, closed with the server
         self._app: SearchApp | None = None
-        self._missing = False  # no index yet: answered by the home page, as before
+        self._built_for: Runtime | None = None
 
     def app(self) -> SearchApp | None:
-        """The app, the index opened on the server's own thread the first time.
+        """The app, the index opened on the server's own thread: again on new settings.
 
         Returns:
-            It; None when the cache holds no index yet.
+            It; None while the cache holds no index (an audit makes one).
         """
-        if self._app is not None or self._missing:
+        runtime = self._fresh.runtime()
+        if self._app is not None and runtime is self._built_for:
             return self._app
         try:
-            search = self._stack.enter_context(open_search(self._runtime, words=False))
+            search = self._stack.enter_context(open_search(runtime, words=False))
         except MountError:
-            self._missing = True
             return None
         server = self._server
         build = SearchBuild(
             SEARCH_PAGE_PATH, server.apply, server.ending, server.executor
         )
-        self._app = search_app(self._runtime, search, build)
+        self._app = search_app(runtime, search, build)
+        self._built_for = runtime
         return self._app
 
     def close(self) -> None:

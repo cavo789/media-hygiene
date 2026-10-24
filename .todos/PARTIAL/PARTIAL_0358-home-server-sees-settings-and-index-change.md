@@ -43,3 +43,38 @@ settings and stale results.
 ## Gain
 
 No stale page in a session of hours (correctness); no restart of `mh` after a settings change.
+
+## Status — PARTIAL (2026-10-24)
+
+### Done
+- `services/fresh_runtime.py`: `FreshRuntime` compares a SHA-256 of `config.toml` and every
+  file of `/config/people/` (names and bytes) at most once a second (`CHECK_SECONDS`); changed
+  → `load_settings` again, a new `Runtime` (`dataclasses.replace`); a file that no longer loads
+  keeps the last good settings, said once in the console (not tried again until it changes).
+  Used by the home page's state (`cmd_home`) and by the search app of the home server
+  (`SearchHere`: built again on new settings; no index yet: tried again at each request).
+- The names of the people (`search/names_soon.py`, `NamesKept`): read again in a thread when
+  a digest of the index's `faces` (rowid, path, number) and `moves` changes — a `sort` moves a
+  face's path in place (`UPDATE OR REPLACE`, `index/schema.py`), so counts alone would miss it;
+  checked only when `PRAGMA data_version` changed; the searches meanwhile keep the names they
+  had (waited for only the first time).
+- Already fresh, read in the code: the full-text table and the meaning vectors
+  (`data_version`), the folder tree (read at each request, no cache).
+- Locks: `sqlite3.connect` waits 5 s on a lock by default (`connect_read_only` keeps it), so a
+  reader meets `database is locked` only after 5 s; no setting added.
+- Tests, one per event: atomic save, edit in place, copy keeping the mtime, removal, a file
+  that no longer loads, a people file added/renamed/removed, once a second
+  (`test_fresh_runtime.py`); names read again on a move, never waited for after the first, a
+  face moved changes the mark (`test_search_meaning.py`); the app built again
+  (`test_home_pages.py`).
+
+### Not done
+- The home page's own audit (`page_audit`) keeps the settings of the start.
+  **Reason:** its settings (exclusions, workers) are read when it starts; rarely changed
+  during a session — to do with 0357 if the maintainer asks.
+- *A file that no longer loads* is said in the console of the server, which runs in the
+  background since 0355 (docker logs): the page does not say it yet.
+  **Reason:** needs a field in the home page's state and its line on the page; small, left
+  for 0357 with the people/places pages, which are the ones writing these files.
+- The cost per request on Windows (a step of `mh-measure.ps1`).
+  **Reason:** Docker Desktop's file sharing only on the maintainer's PC.

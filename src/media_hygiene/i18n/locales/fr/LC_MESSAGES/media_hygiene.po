@@ -8543,6 +8543,12 @@ msgstr ""
 "supprimées depuis. Il est ignoré ; le nettoyage n'en a pas besoin."
 
 #, python-brace-format
+msgid "The settings changed but cannot be read; the last good ones stay: {error}"
+msgstr ""
+"Les réglages ont changé mais ne se lisent pas ; les derniers bons restent : "
+"{error}"
+
+#, python-brace-format
 msgid "The sheet '{name}' was renamed or deleted."
 msgstr "La feuille « {name} » a été renommée ou supprimée."
 

@@ -13,13 +13,20 @@ Without it, the button copies the command and the page keeps running.
 from __future__ import annotations
 
 from functools import partial
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 import typer
 
 from media_hygiene.cli import review_options
 from media_hygiene.cli.context import runtime_of
 from media_hygiene.i18n import _
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from media_hygiene.review.home_views import HomeState
+    from media_hygiene.services.fresh_runtime import FreshRuntime
+    from media_hygiene.services.runtime import Runtime
 
 
 def home_command(
@@ -40,14 +47,17 @@ def home_command(
     from media_hygiene.cli.home_audit import page_audit
     from media_hygiene.cli.home_state import home_state
     from media_hygiene.review.home_views import STEP_EXIT_BASE
+    from media_hygiene.services.fresh_runtime import FreshRuntime
     from media_hygiene.services.home import HomeSources, serve_home
 
     runtime = runtime_of(ctx)
     port = review_options.page_port(runtime, port)
     output = runtime.output
-    state = partial(home_state, runtime)
-    sources = HomeSources(state, page_audit(runtime), page_apply(runtime))
-    code = serve_home(runtime, sources, port)
+    # The session long: the settings read again as their files change (0358).
+    state = partial(_state_now, home_state, FreshRuntime(runtime))
+    code = serve_home(
+        runtime, HomeSources(state, page_audit(runtime), page_apply(runtime)), port
+    )
     output.blank()
     if code < STEP_EXIT_BASE:
         output.success(_("Home page closed; your photos were not changed."))
@@ -60,3 +70,16 @@ def home_command(
         )
     )
     raise typer.Exit(code)
+
+
+def _state_now(read: Callable[[Runtime], HomeState], fresh: FreshRuntime) -> HomeState:
+    """The home page's state, with the settings the files hold now.
+
+    Args:
+        read: Reads the state (`home_state`).
+        fresh: The runtime, its settings read again when changed.
+
+    Returns:
+        The state.
+    """
+    return read(fresh.runtime())

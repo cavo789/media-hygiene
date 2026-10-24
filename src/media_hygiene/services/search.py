@@ -18,7 +18,7 @@ from media_hygiene.i18n import _
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.folders import BROWSE_PATH
 from media_hygiene.search.meaning_index import MeaningIndex
-from media_hygiene.search.names_soon import names_soon
+from media_hygiene.search.names_soon import NamesKept
 from media_hygiene.search.people_words import unknown_people
 from media_hygiene.search.query import SearchQuery, parse_terms
 from media_hygiene.services.data_checks import unreadable_index
@@ -67,7 +67,7 @@ def open_search(runtime: Runtime, *, words: bool = True) -> SearchIndex:
     try:
         search = MeaningIndex.open(index)
         # Read meanwhile (0354): the page answers without waiting for them.
-        search.name_people_soon(names_soon(index, runtime.settings.people))
+        search.name_people_soon(NamesKept(index, runtime.settings.people))
         # A file with a tag is a file with words: no need to wait for the names then.
         empty = (
             words and not search.tagged and search.find(SearchQuery(()), 1).total == 0
