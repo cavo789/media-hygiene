@@ -4,7 +4,10 @@ Every journal is read for its `mark-not-worth` lines and the lighter videos it w
 (`shrunk`), `done`: re-encoding one of those again would lose quality for little (with
 a lower `same_crf`, its H.264 may spend more than `bits_per_pixel`: about 0.55 at CRF
 18, measured on 2026-10-23). An `undo` of the run forgets them. A video is known by its
-path, size and modification time: edited or replaced, it is tried again.
+path, size and modification time: edited or replaced, it is tried again. A lighter
+video also carries the mark of `shrink` inside it (`shrink.encode`): moved, renamed or
+its journal gone, the audit still knows it (0308); the not-worth marks have no file to
+tag, hence these lines.
 """
 
 from __future__ import annotations

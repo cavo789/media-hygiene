@@ -41,6 +41,7 @@ PAGE_STEPS: Final = MappingProxyType(
         "places.html.j2": "places",
         "people.html.j2": "people",
         "slideshow.html.j2": "slideshow",
+        "shrink.html.j2": "shrink",
     }
 )
 # The other language's link, written in that language: never translated.

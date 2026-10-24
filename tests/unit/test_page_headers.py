@@ -156,11 +156,11 @@ def test_the_places_policy_lets_the_fonts_in_and_names_the_tiles_only() -> None:
 
 
 def test_every_page_template_includes_the_theme_and_the_bar() -> None:
-    """The twelve pages, from their templates: the frame's parts, or their own."""
+    """The thirteen pages, from their templates: the frame's parts, or their own."""
     pages = [
         path for path in _SRC.glob("*/templates/*.html.j2") if path.name in PAGE_STEPS
     ]
-    assert len(pages) == len(PAGE_STEPS) == 12
+    assert len(pages) == len(PAGE_STEPS) == 13
     for path in pages:
         text = path.read_text("utf-8")
         framed = text.startswith(FRAME_EXTENDS)

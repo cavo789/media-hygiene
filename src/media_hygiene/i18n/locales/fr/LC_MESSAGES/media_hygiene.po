@@ -191,6 +191,18 @@ msgstr ""
 "sont seulement lues."
 
 msgid ""
+"'shrink --try' encodes this many videos (the largest gains first), one at"
+" a time, as drafts to compare before and after in the browser; the drafts"
+" are removed when the page closes."
+msgstr ""
+"'shrink --try' encode ce nombre de vidéos (les plus gros gains d'abord), "
+"une à la fois, en brouillons à comparer avant et après dans le navigateur"
+" ; les brouillons sont supprimés quand la page se ferme."
+
+msgid "'shrink --try' writes its drafts in /cache only: mount it."
+msgstr "'shrink --try' écrit ses brouillons dans /cache seulement : montez-le."
+
+msgid ""
 "'shrink' lightens heavy videos: re-encoded in H.264, the original in the "
 "quarantine ('undo' brings it back). A video is a candidate when its codec"
 " is in codecs (old cameras), or when it spends more than bits_per_pixel "
@@ -1068,6 +1080,9 @@ msgstr "Et refaire la page qui les rassemble tous."
 msgid "Animals"
 msgstr "Animaux"
 
+msgid "Another 'shrink --try' is running: one at a time."
+msgstr "Un autre 'shrink --try' tourne : un seul à la fois."
+
 msgid ""
 "Another folder? mh folders add <folder>. A new version? mh update. Both "
 "rewrite this file."
@@ -1204,6 +1219,14 @@ msgstr "Auto"
 
 msgid "B"
 msgstr "o"
+
+msgid ""
+"B, the draft, plays here; A, the original, shows as frames taken at the "
+"same instants: these old formats play in no browser."
+msgstr ""
+"B, le brouillon, se lit ici ; A, l'original, se montre en images prises "
+"aux mêmes instants : ces anciens formats ne se lisent dans aucun "
+"navigateur."
 
 msgid "Back after being set aside"
 msgstr "Revenus après une mise de côté"
@@ -1512,6 +1535,9 @@ msgstr ""
 "Choisissez une autre cible avec 'classify --target', puis modifiez son "
 "nouveau classeur."
 
+msgid "Choose every draft shown"
+msgstr "Choisir tous les brouillons affichés"
+
 msgid ""
 "Choose other folders (shorter names) in the workbook, save it, and run "
 "'sort' again."
@@ -1602,6 +1628,9 @@ msgstr ""
 
 msgid "Close"
 msgstr "Fermer"
+
+msgid "Close its page first, then try again."
+msgstr "Fermez d'abord sa page, puis réessayez."
 
 msgid "Close this page and go back to the home page: mh opens it again."
 msgstr "Fermer cette page et revenir à l'accueil : mh le rouvre."
@@ -2150,6 +2179,9 @@ msgstr ""
 "Ne pas demander de confirmation avant d'annuler plusieurs passages d'un "
 "tri (remplace sort.confirm)."
 
+msgid "Do not lighten this one"
+msgstr "Ne pas alléger celle-ci"
+
 msgid ""
 "Do not run Czkawka here: print the command that runs it in its own image,"
 " then compare the results it wrote in /reports (czkawka.json)."
@@ -2276,6 +2308,14 @@ msgstr ""
 
 msgid "Downloads the image, then writes mh again with the same folders."
 msgstr "Télécharge l'image, puis réécrit mh avec les mêmes dossiers."
+
+#, python-brace-format, python-format
+msgid ""
+"Draft ready: {before} → {after}, {gain} %% lighter, encoded in {seconds} "
+"s."
+msgstr ""
+"Brouillon prêt : {before} → {after}, {gain} %% plus léger, encodé en "
+"{seconds} s."
 
 msgid ""
 "Drag the pin where these photos were taken, then save: 'xmp' writes that "
@@ -2460,6 +2500,18 @@ msgstr ""
 
 msgid "Empty, or a disk unplugged"
 msgstr "Vide, ou un disque débranché"
+
+msgid ""
+"Encode the first ones (try_count in config.toml) as drafts, in /cache "
+"only, and compare before and after in the browser; lighten from the page."
+" The drafts are removed when the page closes."
+msgstr ""
+"Encoder les premières (try_count dans config.toml) en brouillons, dans "
+"/cache seulement, et comparer avant et après dans le navigateur ; alléger"
+" depuis la page. Les brouillons sont supprimés quand la page se ferme."
+
+msgid "Encoding this draft…"
+msgstr "Encodage de ce brouillon…"
 
 msgid "Enter"
 msgstr "Entrée"
@@ -3911,6 +3963,10 @@ msgstr "Clair"
 msgid "Lighten the heavy videos"
 msgstr "Alléger les vidéos lourdes"
 
+#, python-brace-format
+msgid "Lighten the {count} chosen now"
+msgstr "Alléger maintenant les {count} choisies"
+
 msgid "Lighten them; without it, only list them with the gain expected."
 msgstr ""
 "Les alléger ; sans cette option, seulement les lister avec le gain "
@@ -3918,6 +3974,12 @@ msgstr ""
 
 msgid "Lighten them?"
 msgstr "Les alléger ?"
+
+msgid "Lighten this one"
+msgstr "Alléger celle-ci"
+
+msgid "Lighten videos: try"
+msgstr "Alléger les vidéos : essai"
 
 msgid "Lighten without asking first."
 msgstr "Alléger sans demander d'abord."
@@ -4563,6 +4625,13 @@ msgstr "Aucune décision dans le fichier : le --tier décide."
 msgid "No decisions file of 'review --near' in {folder}."
 msgstr "Aucun fichier de décisions de 'review --near' dans {folder}."
 
+msgid "No draft ready yet."
+msgstr "Aucun brouillon prêt pour l'instant."
+
+#, python-brace-format
+msgid "No draft: {reason}"
+msgstr "Pas de brouillon : {reason}"
+
 msgid "No event in this proposal: nothing to review."
 msgstr "Aucun événement dans cette proposition : rien à revoir."
 
@@ -4861,6 +4930,9 @@ msgid_plural "No video in this folder ({n} photos)."
 msgstr[0] "Aucune vidéo dans ce dossier ({n} photo)."
 msgstr[1] "Aucune vidéo dans ce dossier ({n} photos)."
 
+msgid "No video left to lighten: nothing was changed."
+msgstr "Plus aucune vidéo à alléger : rien n'a changé."
+
 msgid "No video worth lightening."
 msgstr "Aucune vidéo à alléger."
 
@@ -4895,6 +4967,9 @@ msgid ""
 msgstr ""
 "Non comparés, car media-hygiene ne les regarde pas (rien à faire) : "
 "{details}."
+
+msgid "Not enough room left in /cache: the drafts stop here."
+msgstr "Plus assez de place dans /cache : les brouillons s'arrêtent ici."
 
 #, python-brace-format
 msgid ""
@@ -5026,6 +5101,12 @@ msgstr "Notes"
 #, python-brace-format
 msgid "Notes carried over too: {count}."
 msgstr "Notes reprises aussi : {count}."
+
+msgid "Nothing chosen yet."
+msgstr "Rien de choisi pour l'instant."
+
+msgid "Nothing chosen."
+msgstr "Rien de choisi."
 
 msgid ""
 "Nothing described: the cache only. Measure first with --sample 50, or "
@@ -5239,11 +5320,12 @@ msgid "Of which unwanted"
 msgstr "Dont indésirables"
 
 msgid ""
-"Old camera clips re-encoded, about four times lighter, the picture kept; "
-"each original in the quarantine."
+"Old camera clips re-encoded, about four times lighter: compare before and"
+" after in the browser, then lighten; each original in the quarantine."
 msgstr ""
 "Les clips des anciens appareils réencodés, environ quatre fois plus "
-"légers, l'image gardée ; chaque original en quarantaine."
+"légers : comparez avant et après dans le navigateur, puis allégez ; "
+"chaque original en quarantaine."
 
 msgid "On a folder: the home page, on that folder."
 msgstr "Sur un dossier : la page d'accueil, sur ce dossier."
@@ -5901,6 +5983,10 @@ msgstr "Précédente"
 
 msgid "Previous and next pages"
 msgstr "Pages précédente et suivante"
+
+#, python-brace-format
+msgid "Previous drafts removed: {size} MB."
+msgstr "Brouillons précédents supprimés : {size} Mo."
 
 msgid "Previous guess, already in place"
 msgstr "Supposition précédente, déjà en place"
@@ -6662,6 +6748,14 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"Saved, then read back from the disk at {time}: {file} holds {count} "
+"chosen."
+msgstr ""
+"Enregistré, puis relu sur le disque à {time} : {file} contient {count} "
+"choix."
+
+#, python-brace-format
+msgid ""
 "Saved, then read back from the disk at {time}: {ticked} files ticked in "
 "{file}."
 msgstr ""
@@ -7341,6 +7435,9 @@ msgstr "Sûr : empreintes identiques, du même appareil."
 msgid "Sure: the very picture and sound, only the metadata differ."
 msgstr "Sûr : la même image et le même son, seules les métadonnées diffèrent."
 
+msgid "Swap A / B"
+msgstr "Inverser A / B"
+
 msgid "Swap the folders"
 msgstr "Inverser les dossiers"
 
@@ -7725,6 +7822,15 @@ msgstr ""
 msgid "The documentation's home"
 msgstr "L'accueil de la documentation"
 
+msgid ""
+"The drafts are only in /cache/shrink-try and are removed when this page "
+"closes. Nothing changes until you lighten: each original then goes to the"
+" quarantine, and 'undo' brings it back."
+msgstr ""
+"Les brouillons sont seulement dans /cache/shrink-try et sont supprimés "
+"quand cette page se ferme. Rien ne change tant que vous n'allégez pas : "
+"chaque original part alors en quarantaine, et 'undo' le ramène."
+
 msgid "The earlier copies of this album were replaced."
 msgstr "Les copies précédentes de cet album ont été remplacées."
 
@@ -8041,6 +8147,9 @@ msgid ""
 msgstr ""
 "La page ne tourne plus : plus rien n'est enregistré ici. Revenez à "
 "l'accueil, puis choisissez à nouveau Faire de la place sur le téléphone."
+
+msgid "The page is not running any more: start 'shrink --try' again."
+msgstr "La page ne tourne plus : relancez 'shrink --try'."
 
 msgid "The page is not running any more: start it again."
 msgstr "La page ne tourne plus : relancez-la."
@@ -8403,6 +8512,11 @@ msgstr ""
 #, python-brace-format
 msgid "The target {path} is not mounted."
 msgstr "La cible {path} n'est pas montée."
+
+msgid "The terminal takes over: answer its question there. This page closes."
+msgstr ""
+"Le terminal prend le relais : répondez-y à sa question. Cette page se "
+"ferme."
 
 msgid "The tool only sees the folders you give it with -v."
 msgstr "L'outil ne voit que les dossiers que vous lui donnez avec -v."
@@ -8912,6 +9026,18 @@ msgstr ""
 msgid "Try [blue]'{command_path} {help_option}'[/] for help."
 msgstr "Essayez [blue]'{command_path} {help_option}'[/] pour l'aide."
 
+#, python-brace-format
+msgid ""
+"Try ready, open {url} in your browser: each draft shows there as soon as "
+"it is encoded. Ctrl+C stops the try; its drafts are removed."
+msgstr ""
+"Essai prêt, ouvrez {url} dans votre navigateur : chaque brouillon s'y "
+"montre dès qu'il est encodé. Ctrl+C arrête l'essai ; ses brouillons sont "
+"supprimés."
+
+msgid "Try stopped: its drafts are removed, nothing was changed."
+msgstr "Essai arrêté : ses brouillons sont supprimés, rien n'a changé."
+
 msgid ""
 "Two faces this similar (cosine, 0 to 1) may be the same person: higher "
 "splits more groups, lower mixes people."
@@ -9085,11 +9211,18 @@ msgstr "Valeur"
 msgid "Video cannot be opened"
 msgstr "Vidéo impossible à ouvrir"
 
+#, python-brace-format
+msgid "Video {number} of {total}"
+msgstr "Vidéo {number} sur {total}"
+
 msgid "Videos"
 msgstr "Vidéos"
 
 msgid "Videos with a date in their tags"
 msgstr "Vidéos datées par leurs balises"
+
+msgid "Waiting: the drafts are encoded one at a time."
+msgstr "En attente : les brouillons sont encodés un à la fois."
 
 msgid "Walk through your folders"
 msgstr "Parcourir vos dossiers"
@@ -9827,6 +9960,10 @@ msgid "as planned, then next"
 msgstr "comme prévu, puis suivant"
 
 #, python-brace-format
+msgid "at {seconds} s"
+msgstr "à {seconds} s"
+
+#, python-brace-format
 msgid ""
 "attach {zip} to a mail, or add the photos of {folder} to an album on your"
 " social network."
@@ -9928,6 +10065,12 @@ msgstr "vérifications"
 
 msgid "choose"
 msgstr "choisir"
+
+msgid "choose every draft shown"
+msgstr "choisir tous les brouillons affichés"
+
+msgid "chosen"
+msgstr "choisie"
 
 msgid ""
 "chosen in the review page, then edited otherwise in the workbook, whose "
@@ -10454,6 +10597,15 @@ msgstr "moins d'une minute"
 msgid "less than {limit} is expected, not {value}"
 msgstr "une valeur inférieure à {limit} est attendue, pas {value}"
 
+msgid "lighten the chosen now (the terminal asks first)"
+msgstr "alléger maintenant celles choisies (le terminal demande d'abord)"
+
+msgid "lighten this one, or not"
+msgstr "alléger celle-ci, ou non"
+
+msgid "lightened"
+msgstr "allégé"
+
 msgid "link to the kept file"
 msgstr "lien vers le fichier gardé"
 
@@ -10765,6 +10917,9 @@ msgstr "paire suivante non décidée"
 msgid "next, previous group"
 msgstr "groupe suivant, précédent"
 
+msgid "next, previous video"
+msgstr "vidéo suivante, précédente"
+
 msgid "no"
 msgstr "non"
 
@@ -10779,6 +10934,10 @@ msgstr "sans date"
 
 msgid "no double quote"
 msgstr "pas de guillemet double"
+
+#, python-brace-format
+msgid "no frame: {error}"
+msgstr "pas d'image : {error}"
 
 msgid "no preview"
 msgstr "pas d'aperçu"
@@ -10808,6 +10967,9 @@ msgstr "non autorisé (le propriétaire ou les permissions du fichier)"
 
 msgid "not checked"
 msgstr "non vérifié"
+
+msgid "not chosen"
+msgstr "non choisie"
 
 msgid "not created yet: the first clean creates it"
 msgstr "pas encore créée : le premier clean la crée"
@@ -11218,6 +11380,10 @@ msgstr "suggestion"
 msgid "sure: V accepts it with the other sure proposals"
 msgstr "sûre : V l’accepte avec les autres propositions sûres"
 
+#, python-format
+msgid "swap A (original) and B (lightened) at 100 %%"
+msgstr "inverser A (original) et B (allégé) à 100 %%"
+
 msgid "swap the folders, then next"
 msgstr "inverser les dossiers, puis suivante"
 
@@ -11436,10 +11602,12 @@ msgstr ""
 "quarantaine, 'undo' les ramène."
 
 msgid ""
-"the same command with --apply re-encodes them, each original in the "
+"the same command with --try compares a few before and after in the "
+"browser; with --apply, it re-encodes them, each original in the "
 "quarantine ('undo' brings it back)."
 msgstr ""
-"la même commande avec --apply les réencode, chaque original en "
+"la même commande avec --try en compare quelques-unes avant et après dans "
+"le navigateur ; avec --apply, elle les réencode, chaque original en "
 "quarantaine ('undo' le ramène)."
 
 msgid "the same search in your browser, with the pictures and filters."
@@ -11811,6 +11979,10 @@ msgstr "{cell} : attendu « {expected} », trouvé « {found} »."
 #, python-brace-format
 msgid "{cell}: the row {key} appears twice."
 msgstr "{cell} : la ligne {key} apparaît deux fois."
+
+#, python-brace-format
+msgid "{codec}, {picture}, {duration} s · estimated after: {estimated}"
+msgstr "{codec}, {picture}, {duration} s · estimé après : {estimated}"
 
 #, python-brace-format
 msgid ""
@@ -13742,6 +13914,10 @@ msgid "{path}: longer than {count} characters."
 msgstr "{path} : plus de {count} caractères."
 
 #, python-brace-format
+msgid "{path}: moved, renamed or changed since the page: skipped."
+msgstr "{path} : déplacée, renommée ou modifiée depuis la page : sautée."
+
+#, python-brace-format
 msgid "{path}: no sheet of a classify workbook was found."
 msgstr "{path} : aucune feuille d'un classeur de 'classify' n'a été trouvée."
 
@@ -14147,6 +14323,18 @@ msgstr ""
 "🔒 Les visages sont des données personnelles : ils restent dans le cache "
 "(/cache), rien n'est envoyé nulle part. 'people --forget' les supprime "
 "tous."
+
+#, python-brace-format
+msgid "🔒 Nothing changes now: {count} draft, encoded in /cache only."
+msgid_plural ""
+"🔒 Nothing changes now: {count} drafts, encoded one at a time in /cache "
+"only."
+msgstr[0] ""
+"🔒 Rien ne change maintenant : {count} brouillon, encodé dans /cache "
+"seulement."
+msgstr[1] ""
+"🔒 Rien ne change maintenant : {count} brouillons, encodés un à la fois "
+"dans /cache seulement."
 
 msgid ""
 "🔒 Nothing leaves the phone before you tick it on a page and press Delete;"

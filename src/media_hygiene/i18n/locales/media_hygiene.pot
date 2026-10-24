@@ -138,6 +138,15 @@ msgid ""
 msgstr ""
 
 msgid ""
+"'shrink --try' encodes this many videos (the largest gains first), one at"
+" a time, as drafts to compare before and after in the browser; the drafts"
+" are removed when the page closes."
+msgstr ""
+
+msgid "'shrink --try' writes its drafts in /cache only: mount it."
+msgstr ""
+
+msgid ""
 "'shrink' lightens heavy videos: re-encoded in H.264, the original in the "
 "quarantine ('undo' brings it back). A video is a candidate when its codec"
 " is in codecs (old cameras), or when it spends more than bits_per_pixel "
@@ -840,6 +849,9 @@ msgstr ""
 msgid "Animals"
 msgstr ""
 
+msgid "Another 'shrink --try' is running: one at a time."
+msgstr ""
+
 msgid ""
 "Another folder? mh folders add <folder>. A new version? mh update. Both "
 "rewrite this file."
@@ -950,6 +962,11 @@ msgid "Auto"
 msgstr ""
 
 msgid "B"
+msgstr ""
+
+msgid ""
+"B, the draft, plays here; A, the original, shows as frames taken at the "
+"same instants: these old formats play in no browser."
 msgstr ""
 
 msgid "Back after being set aside"
@@ -1224,6 +1241,9 @@ msgid ""
 "workbook."
 msgstr ""
 
+msgid "Choose every draft shown"
+msgstr ""
+
 msgid ""
 "Choose other folders (shorter names) in the workbook, save it, and run "
 "'sort' again."
@@ -1297,6 +1317,9 @@ msgid ""
 msgstr ""
 
 msgid "Close"
+msgstr ""
+
+msgid "Close its page first, then try again."
 msgstr ""
 
 msgid "Close this page and go back to the home page: mh opens it again."
@@ -1767,6 +1790,9 @@ msgid ""
 "(overrides sort.confirm)."
 msgstr ""
 
+msgid "Do not lighten this one"
+msgstr ""
+
 msgid ""
 "Do not run Czkawka here: print the command that runs it in its own image,"
 " then compare the results it wrote in /reports (czkawka.json)."
@@ -1861,6 +1887,12 @@ msgid ""
 msgstr ""
 
 msgid "Downloads the image, then writes mh again with the same folders."
+msgstr ""
+
+#, python-brace-format, python-format
+msgid ""
+"Draft ready: {before} → {after}, {gain} %% lighter, encoded in {seconds} "
+"s."
 msgstr ""
 
 msgid ""
@@ -1998,6 +2030,15 @@ msgid ""
 msgstr ""
 
 msgid "Empty, or a disk unplugged"
+msgstr ""
+
+msgid ""
+"Encode the first ones (try_count in config.toml) as drafts, in /cache "
+"only, and compare before and after in the browser; lighten from the page."
+" The drafts are removed when the page closes."
+msgstr ""
+
+msgid "Encoding this draft…"
 msgstr ""
 
 msgid "Enter"
@@ -3203,10 +3244,20 @@ msgstr ""
 msgid "Lighten the heavy videos"
 msgstr ""
 
+#, python-brace-format
+msgid "Lighten the {count} chosen now"
+msgstr ""
+
 msgid "Lighten them; without it, only list them with the gain expected."
 msgstr ""
 
 msgid "Lighten them?"
+msgstr ""
+
+msgid "Lighten this one"
+msgstr ""
+
+msgid "Lighten videos: try"
 msgstr ""
 
 msgid "Lighten without asking first."
@@ -3748,6 +3799,13 @@ msgstr ""
 msgid "No decisions file of 'review --near' in {folder}."
 msgstr ""
 
+msgid "No draft ready yet."
+msgstr ""
+
+#, python-brace-format
+msgid "No draft: {reason}"
+msgstr ""
+
 msgid "No event in this proposal: nothing to review."
 msgstr ""
 
@@ -4004,6 +4062,9 @@ msgid_plural "No video in this folder ({n} photos)."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "No video left to lighten: nothing was changed."
+msgstr ""
+
 msgid "No video worth lightening."
 msgstr ""
 
@@ -4033,6 +4094,9 @@ msgstr ""
 msgid ""
 "Not compared, as media-hygiene does not look at them (nothing to do): "
 "{details}."
+msgstr ""
+
+msgid "Not enough room left in /cache: the drafts stop here."
 msgstr ""
 
 #, python-brace-format
@@ -4145,6 +4209,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "Notes carried over too: {count}."
+msgstr ""
+
+msgid "Nothing chosen yet."
+msgstr ""
+
+msgid "Nothing chosen."
 msgstr ""
 
 msgid ""
@@ -4329,8 +4399,8 @@ msgid "Of which unwanted"
 msgstr ""
 
 msgid ""
-"Old camera clips re-encoded, about four times lighter, the picture kept; "
-"each original in the quarantine."
+"Old camera clips re-encoded, about four times lighter: compare before and"
+" after in the browser, then lighten; each original in the quarantine."
 msgstr ""
 
 msgid "On a folder: the home page, on that folder."
@@ -4862,6 +4932,10 @@ msgid "Previous"
 msgstr ""
 
 msgid "Previous and next pages"
+msgstr ""
+
+#, python-brace-format
+msgid "Previous drafts removed: {size} MB."
 msgstr ""
 
 msgid "Previous guess, already in place"
@@ -5496,6 +5570,12 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"Saved, then read back from the disk at {time}: {file} holds {count} "
+"chosen."
+msgstr ""
+
+#, python-brace-format
+msgid ""
 "Saved, then read back from the disk at {time}: {ticked} files ticked in "
 "{file}."
 msgstr ""
@@ -6068,6 +6148,9 @@ msgstr ""
 msgid "Sure: the very picture and sound, only the metadata differ."
 msgstr ""
 
+msgid "Swap A / B"
+msgstr ""
+
 msgid "Swap the folders"
 msgstr ""
 
@@ -6382,6 +6465,12 @@ msgstr ""
 msgid "The documentation's home"
 msgstr ""
 
+msgid ""
+"The drafts are only in /cache/shrink-try and are removed when this page "
+"closes. Nothing changes until you lighten: each original then goes to the"
+" quarantine, and 'undo' brings it back."
+msgstr ""
+
 msgid "The earlier copies of this album were replaced."
 msgstr ""
 
@@ -6639,6 +6728,9 @@ msgstr ""
 msgid ""
 "The page is not running any more: nothing more is saved here. Go back to "
 "the home page, then choose Make room on the phone again."
+msgstr ""
+
+msgid "The page is not running any more: start 'shrink --try' again."
 msgstr ""
 
 msgid "The page is not running any more: start it again."
@@ -6922,6 +7014,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "The target {path} is not mounted."
+msgstr ""
+
+msgid "The terminal takes over: answer its question there. This page closes."
 msgstr ""
 
 msgid "The tool only sees the folders you give it with -v."
@@ -7342,6 +7437,15 @@ msgstr ""
 msgid "Try [blue]'{command_path} {help_option}'[/] for help."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Try ready, open {url} in your browser: each draft shows there as soon as "
+"it is encoded. Ctrl+C stops the try; its drafts are removed."
+msgstr ""
+
+msgid "Try stopped: its drafts are removed, nothing was changed."
+msgstr ""
+
 msgid ""
 "Two faces this similar (cosine, 0 to 1) may be the same person: higher "
 "splits more groups, lower mixes people."
@@ -7494,10 +7598,17 @@ msgstr ""
 msgid "Video cannot be opened"
 msgstr ""
 
+#, python-brace-format
+msgid "Video {number} of {total}"
+msgstr ""
+
 msgid "Videos"
 msgstr ""
 
 msgid "Videos with a date in their tags"
+msgstr ""
+
+msgid "Waiting: the drafts are encoded one at a time."
 msgstr ""
 
 msgid "Walk through your folders"
@@ -8119,6 +8230,10 @@ msgid "as planned, then next"
 msgstr ""
 
 #, python-brace-format
+msgid "at {seconds} s"
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "attach {zip} to a mail, or add the photos of {folder} to an album on your"
 " social network."
@@ -8213,6 +8328,12 @@ msgid "checks"
 msgstr ""
 
 msgid "choose"
+msgstr ""
+
+msgid "choose every draft shown"
+msgstr ""
+
+msgid "chosen"
 msgstr ""
 
 msgid ""
@@ -8703,6 +8824,15 @@ msgstr ""
 msgid "less than {limit} is expected, not {value}"
 msgstr ""
 
+msgid "lighten the chosen now (the terminal asks first)"
+msgstr ""
+
+msgid "lighten this one, or not"
+msgstr ""
+
+msgid "lightened"
+msgstr ""
+
 msgid "link to the kept file"
 msgstr ""
 
@@ -8973,6 +9103,9 @@ msgstr ""
 msgid "next, previous group"
 msgstr ""
 
+msgid "next, previous video"
+msgstr ""
+
 msgid "no"
 msgstr ""
 
@@ -8986,6 +9119,10 @@ msgid "no date"
 msgstr ""
 
 msgid "no double quote"
+msgstr ""
+
+#, python-brace-format
+msgid "no frame: {error}"
 msgstr ""
 
 msgid "no preview"
@@ -9015,6 +9152,9 @@ msgid "not allowed (the owner or the permissions of the file)"
 msgstr ""
 
 msgid "not checked"
+msgstr ""
+
+msgid "not chosen"
 msgstr ""
 
 msgid "not created yet: the first clean creates it"
@@ -9404,6 +9544,10 @@ msgstr ""
 msgid "sure: V accepts it with the other sure proposals"
 msgstr ""
 
+#, python-format
+msgid "swap A (original) and B (lightened) at 100 %%"
+msgstr ""
+
 msgid "swap the folders, then next"
 msgstr ""
 
@@ -9599,7 +9743,8 @@ msgid ""
 msgstr ""
 
 msgid ""
-"the same command with --apply re-encodes them, each original in the "
+"the same command with --try compares a few before and after in the "
+"browser; with --apply, it re-encodes them, each original in the "
 "quarantine ('undo' brings it back)."
 msgstr ""
 
@@ -9927,6 +10072,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{cell}: the row {key} appears twice."
+msgstr ""
+
+#, python-brace-format
+msgid "{codec}, {picture}, {duration} s · estimated after: {estimated}"
 msgstr ""
 
 #, python-brace-format
@@ -11493,6 +11642,10 @@ msgid "{path}: longer than {count} characters."
 msgstr ""
 
 #, python-brace-format
+msgid "{path}: moved, renamed or changed since the page: skipped."
+msgstr ""
+
+#, python-brace-format
 msgid "{path}: no sheet of a classify workbook was found."
 msgstr ""
 
@@ -11826,6 +11979,14 @@ msgid ""
 "🔒 Faces are personal data: they stay in the cache (/cache), nothing is "
 "sent anywhere. 'people --forget' deletes them all."
 msgstr ""
+
+#, python-brace-format
+msgid "🔒 Nothing changes now: {count} draft, encoded in /cache only."
+msgid_plural ""
+"🔒 Nothing changes now: {count} drafts, encoded one at a time in /cache "
+"only."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid ""
 "🔒 Nothing leaves the phone before you tick it on a page and press Delete;"

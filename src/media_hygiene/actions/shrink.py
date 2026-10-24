@@ -1,42 +1,42 @@
 """Lighten videos one at a time: encode beside, prove, set the original aside, rename.
 
-Each video is re-encoded under a temporary name next to it (same drive), proven
-(`shrink.check`), and kept only when it is at least `min_gain_percent` percent lighter;
-otherwise it is thrown away and the original remembered as not worth it (a journal
-mark). A kept one: the original goes to its drive's quarantine (journaled, remembered:
-a phone's copy of it is never imported again), the lighter video takes the name with
-`.mp4` and the original's modification time, then a sidecar named after the whole
-file follows (`shrink_sidecars`). `undo` removes it while it holds what was
+Each video is re-encoded under a temporary name next to it (same drive), or its draft
+of `shrink --try` moved there (`shrink_draft`), proven (`shrink.check`), and kept only
+when it is at least `min_gain_percent` percent lighter; otherwise it is thrown away and
+the original remembered as not worth it (a journal mark). A kept one: the original goes
+to its drive's quarantine (journaled, remembered: a phone's copy of it is never
+imported again), the lighter video takes the name with `.mp4` and the original's
+modification time, then a sidecar named after the whole file follows
+(`shrink_sidecars`). `undo` removes it while it holds what was
 written, then brings the original back.
 """
 
 from __future__ import annotations
 
-import contextlib
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.job_loop import JobLoop
 from media_hygiene.actions.journaled import JournaledChanges, Origin
 from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.no_overwrite import move_no_replace
+from media_hygiene.actions.shrink_draft import lighter_video
 from media_hygiene.actions.shrink_sidecars import follow_sidecars
 from media_hygiene.actions.sort_moves import file_of, target_exists
 from media_hygiene.i18n import _
 from media_hygiene.scan.hashing import full_digest
 from media_hygiene.scan.progress import Step
-from media_hygiene.shrink.check import flaw, refuse
-from media_hygiene.shrink.encode import encode, ffmpeg_command
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Sequence
+    from collections.abc import Callable, Mapping, Sequence
     from pathlib import Path
 
     from media_hygiene.actions.journaled import CleanContext
     from media_hygiene.actions.outcome import Tally
     from media_hygiene.scan.models import MediaFile
-    from media_hygiene.shrink.candidates import Candidate
+    from media_hygiene.shrink.candidates import Candidate, FileKey
     from media_hygiene.shrink.check import Tools
     from media_hygiene.shrink.encode import Encoding
 
@@ -52,6 +52,8 @@ class Recipe:
     encoding: Encoding
     tools: Tools
     min_gain_percent: int
+    # The drafts of `shrink --try`, by the version of the original they were made from.
+    drafts: Mapping[FileKey, Path] = field(default_factory=lambda: MappingProxyType({}))
 
 
 @dataclass(slots=True)
@@ -115,7 +117,7 @@ class ShrinkExecutor:
             raise target_exists(final)
         temporary = final.with_name(final.name + _TEMPORARY)
         self._context.progress.current(job.path.name)
-        after = self._encoded(job, temporary)
+        after = lighter_video(job, temporary, self._recipe)
         if after > job.size * (_PERCENT - self._recipe.min_gain_percent) / _PERCENT:
             temporary.unlink()
             entry = self._changes.entry(file, ActionKind.MARK_NOT_WORTH)
@@ -128,34 +130,6 @@ class ShrinkExecutor:
         self.gains.lightened += 1
         self.gains.saved += job.size - after
         follow_sidecars(self._changes, self._tally.skipped, (job.path, final))
-
-    def _encoded(self, job: Candidate, temporary: Path) -> int:
-        """Encode under the temporary name and prove the result.
-
-        Args:
-            job: The video.
-            temporary: Where the result is written.
-
-        Returns:
-            The size of the result.
-
-        Raises:
-            ValueError: The encoding failed or the result lost something (removed).
-        """
-        recipe = self._recipe
-        command = ffmpeg_command(
-            recipe.tools.ffmpeg, (job.path, temporary), recipe.encoding
-        )
-        try:
-            refuse(
-                encode(command, job.duration)
-                or flaw((job.path, temporary), recipe.tools)
-            )
-            return temporary.stat().st_size
-        except OSError, ValueError:
-            with contextlib.suppress(OSError):
-                temporary.unlink()
-            raise
 
     def _put(self, original: MediaFile, temporary: Path, final: Path) -> None:
         """Give the lighter video its name, journaled with its SHA-256.

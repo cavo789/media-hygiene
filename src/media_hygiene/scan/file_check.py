@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING, Final, Protocol
 
 from media_hygiene.constants import BrokenReason, MediaKind
 from media_hygiene.scan.image_check import inspect_image, read_image_metadata
-from media_hygiene.scan.metadata import METADATA_VERSION
+from media_hygiene.scan.metadata import IMAGE_METADATA_VERSION, METADATA_VERSION
 from media_hygiene.scan.raw_check import inspect_raw
 from media_hygiene.scan.read_errors import ReadFailedError, is_stored_read_error
 from media_hygiene.scan.video_check import probe_video
@@ -82,9 +82,12 @@ def need_of(file: MediaFile, facts: FileFacts) -> Need:
         return Need.CHECK  # an older version took a failed read for a broken file
     if facts.broken_reason is not None or file.kind is MediaKind.RAW:
         return Need.NOTHING  # a broken file has nothing more to tell
-    if facts.metadata_version == METADATA_VERSION:
+    image = file.kind is MediaKind.IMAGE
+    if facts.metadata_version >= (
+        IMAGE_METADATA_VERSION if image else METADATA_VERSION
+    ):
         return Need.NOTHING
-    return Need.METADATA if file.kind is MediaKind.IMAGE else Need.CHECK
+    return Need.METADATA if image else Need.CHECK
 
 
 class FileChecker:

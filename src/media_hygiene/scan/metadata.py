@@ -4,7 +4,8 @@ Facts only, never judgments: "sharp", "well exposed" or "a good photo" are compu
 where they are needed, from these raw measures and configurable thresholds. Everything
 is optional: most files hold only a part of it. Stored as JSON in the index, so that a
 new field needs no schema change; bump `METADATA_VERSION` when one is added, and the
-files already indexed are read again once.
+files already indexed are read again once: videos only when the new field is a video's
+(`IMAGE_METADATA_VERSION` stays), so that no photo header is read again for nothing.
 """
 
 from __future__ import annotations
@@ -13,7 +14,8 @@ from typing import Final
 
 from pydantic import BaseModel, ConfigDict
 
-METADATA_VERSION: Final = 1
+METADATA_VERSION: Final = 2  # 2: `shrunk`, the mark of a video `shrink` wrote (0308)
+IMAGE_METADATA_VERSION: Final = 1  # the last version that added a field of a photo
 
 
 class MediaMetadata(BaseModel):
@@ -62,6 +64,8 @@ class MediaMetadata(BaseModel):
     frame_rate: str | None = None
     rotation: int | None = None
     location: str | None = None
+    # The mark `shrink` writes into a video it lightened (`media_hygiene` tag).
+    shrunk: str | None = None
 
     @property
     def recorded_at(self) -> str | None:

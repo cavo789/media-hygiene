@@ -3,7 +3,8 @@
 A video is a candidate when the audit described it (codec, size in pixels, length) and
 its codec is one of `[shrink] codecs`, or it spends more than `bits_per_pixel` bits per
 pixel and per frame. Never one in a protected, excluded or backup folder, one outside
-the folders asked, nor one remembered as not worth it (same path, size and date). The
+the folders asked, one remembered as not worth it (same path, size and date), nor one
+carrying the mark of `shrink` (`shrunk`: lightened already, wherever it is now). The
 size after is an estimate (`estimate`): only the encoding tells.
 """
 
@@ -124,7 +125,7 @@ def _candidate(
     if metadata is None or not _eligible(Path(text), (text, size, mtime_ns), selection):
         return None
     facts = json.loads(metadata)
-    look = _look(facts)
+    look = None if facts.get("shrunk") else _look(facts)
     if look is None:
         return None
     codec = str(facts.get("codec") or "")

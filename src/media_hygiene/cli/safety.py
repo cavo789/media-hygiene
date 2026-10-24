@@ -40,7 +40,7 @@ PHOTO_READERS: Final = frozenset(
 # The commands serving a page in the browser, on the port published by `-p`.
 PAGE_COMMANDS: Final = frozenset(
     {"review", "review-sort", "places", "search", "browse", "people", "home"}
-    | {"slideshow"}
+    | {"slideshow", "shrink"}
 )
 # The commands whose output stream is data (a script, the steps of the menu): every
 # message goes to stderr, and the launcher runs them without a terminal (`-t`) and

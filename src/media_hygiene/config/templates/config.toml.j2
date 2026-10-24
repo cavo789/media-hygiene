@@ -184,6 +184,8 @@ lighter_lines = 720
 {{ comment(_("x264's speed against size (ultrafast to slower), and the processors one encoding uses (0: half of them, the computer stays usable).")) }}
 preset = "medium"
 threads = 0
+{{ comment(_("'shrink --try' encodes this many videos (the largest gains first), one at a time, as drafts to compare before and after in the browser; the drafts are removed when the page closes.")) }}
+try_count = 10
 
 
 [inventory]

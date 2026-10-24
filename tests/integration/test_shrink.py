@@ -6,9 +6,11 @@ and a phone's H.264, never a real video.
 
 from __future__ import annotations
 
+import json
 import os
 import shutil
-import subprocess
+import sqlite3
+from contextlib import closing
 from pathlib import Path, PurePosixPath
 from typing import TYPE_CHECKING, Final
 
@@ -20,64 +22,30 @@ from media_hygiene.actions import shrink as shrink_actions
 from media_hygiene.actions.journal import read_journal
 from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.not_worth import not_worth
-from media_hygiene.services import shrink as shrink_service
+from media_hygiene.services import shrink_tools
 from media_hygiene.services.phone_known import PhoneQuery, known_of
 from media_hygiene.services.phone_plan import AsideState, PhoneFile
 from tests.support.cli import point_mounts, run
 from tests.support.runtime import make_runtime
+from tests.support.shrink_clips import CAMERA, MTIME, NEEDS_X264, audited
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from typer.testing import Result
 
     from media_hygiene.paths.locations import Locations
 
-FFMPEG: Final = shutil.which("ffmpeg") or "ffmpeg"
-_TAGS: Final = (
-    "-metadata",
-    "creation_time=2015-07-14T10:00:00Z",
-    "-metadata",
-    "location=+50.8466+004.3528/",
-)
-_MTIME: Final = 1_436_868_000_000_000_000  # 2015-07-14
-_CAMERA: Final = "c/Videos/Camera/clip.avi"
-_PHONE: Final = "c/Videos/Phone/phone.mp4"
-_KEPT: Final = "c/Videos/Kept/kept.avi"
+_MTIME: Final = MTIME
+_CAMERA: Final = CAMERA
 
-pytestmark = pytest.mark.skipif(
-    subprocess.run(  # noqa: S603  # a fixed command
-        (FFMPEG, "-hide_banner", "-encoders"), capture_output=True, check=False
-    ).stdout.find(b"libx264")
-    < 0,
-    reason="this ffmpeg cannot encode H.264",
-)
-
-
-def _clip(path: Path, codec: tuple[str, ...], tone: int = 440) -> Path:
-    """Encode a 3 s clip with sound and a camera's tags, dated 2015."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    picture = ("-f", "lavfi", "-i", "testsrc2=size=320x240:rate=25:duration=3")
-    sound = ("-f", "lavfi", "-i", f"sine=frequency={tone}:duration=3")
-    command = (FFMPEG, "-v", "error", "-y", *picture, *sound, *codec, *_TAGS, str(path))
-    subprocess.run(command, check=True)  # noqa: S603  # fixed arguments
-    os.utime(path, ns=(_MTIME, _MTIME))
-    return path
+pytestmark = NEEDS_X264
 
 
 @pytest.fixture
 def cli(locations: Locations, monkeypatch: pytest.MonkeyPatch) -> CliRunner:
     """A camera's MJPEG clip with its sidecar, a phone's H.264, one protected clip."""
-    point_mounts(locations, monkeypatch)
-    mjpeg = ("-c:v", "mjpeg", "-q:v", "2", "-c:a", "pcm_s16le")
-    camera = _clip(locations.data_dir / _CAMERA, mjpeg)
-    camera.with_name("clip.avi.xmp").write_text("<x:xmpmeta/>")
-    _clip(locations.data_dir / _KEPT, mjpeg, tone=880)  # not a copy of the camera's
-    _clip(locations.data_dir / _PHONE, ("-c:v", "libx264", "-c:a", "aac"))
-    locations.config_file.write_text(
-        "[folders]\nprotected = ['C:\\Videos\\Kept']\n", encoding="utf-8"
-    )
-    runner = CliRunner()
-    assert run(runner, "audit").exit_code == 0
-    return runner
+    return audited(locations, monkeypatch)
 
 
 def _shrink(cli: CliRunner, *args: str) -> Result:
@@ -94,7 +62,8 @@ def test_the_list_changes_nothing(cli: CliRunner, locations: Locations) -> None:
     assert "clip.avi" in said
     assert "phone.mp4" not in said
     assert "kept.avi" not in said
-    assert "shrink --apply" in said
+    assert "shrink --try" in said
+    assert "--apply" in said
     assert (locations.data_dir / _CAMERA).is_file()
 
 
@@ -235,7 +204,7 @@ def test_an_ffmpeg_without_h264_changes_nothing(
     cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Refused before anything moves, with the line that updates the image."""
-    monkeypatch.setattr(shrink_service, "_encodes", lambda _ffmpeg: False)
+    monkeypatch.setattr(shrink_tools, "encodes", lambda _ffmpeg: False)
     result = run(cli, "shrink", "--apply", "--yes")
     assert result.exit_code == 1
     assert "cannot encode H.264" in result.output
@@ -261,5 +230,89 @@ def test_a_lighter_video_is_never_proposed_again(
     locations.config_file.write_text(text + "[shrink]\nbits_per_pixel = 0.0001\n")
     _shrink(cli, "--apply", "--yes")
     assert run(cli, "audit").exit_code == 0
+    said = " ".join(_shrink(cli).output.split())
+    assert "clip.mp4" not in said
+
+
+def _renamed(light: Path) -> Path:
+    """Renamed in the Explorer."""
+    return light.rename(light.with_name("renamed.mp4"))
+
+
+def _moved(light: Path) -> Path:
+    """Moved to another folder, as `sort` or the Explorer does."""
+    target = light.parent.parent / "Sorted" / "2015" / light.name
+    target.parent.mkdir(parents=True)
+    return light.rename(target)
+
+
+def _copied(light: Path) -> Path:
+    """Copied elsewhere, its modification time kept (a backup tool)."""
+    target = light.parent.parent / "Copy" / light.name
+    target.parent.mkdir(parents=True)
+    return Path(shutil.copy2(light, target))
+
+
+def _touched(light: Path) -> Path:
+    """Its modification time changed (`touch`)."""
+    os.utime(light, ns=(_MTIME * 2, _MTIME * 2))
+    return light
+
+
+def _saved_atomically(light: Path) -> Path:
+    """Saved again by a tool writing a new file over it (a new inode)."""
+    fresh = light.with_name("fresh.tmp")
+    fresh.write_bytes(light.read_bytes())
+    fresh.replace(light)
+    return light
+
+
+def _written_in_place(light: Path) -> Path:
+    """Written in place: bytes added at its end, its size changed."""
+    with light.open("ab") as file:
+        file.write(b"\0" * 1024)
+    return light
+
+
+@pytest.mark.parametrize(
+    "event",
+    [_renamed, _moved, _copied, _touched, _saved_atomically, _written_in_place],
+)
+def test_a_lighter_video_carries_its_mark_wherever_it_goes(
+    cli: CliRunner, locations: Locations, event: Callable[[Path], Path]
+) -> None:
+    """Journals gone, any bit rate: the mark alone keeps it out of the list (0308)."""
+    _shrink(cli, "--apply", "--yes")
+    for journal in locations.journal_dir.glob("*.jsonl"):
+        journal.unlink()
+    now = event((locations.data_dir / _CAMERA).with_suffix(".mp4"))
+    text = locations.config_file.read_text(encoding="utf-8")
+    locations.config_file.write_text(text + "[shrink]\nbits_per_pixel = 0.0001\n")
+    assert run(cli, "audit").exit_code == 0
+    said = " ".join(_shrink(cli).output.split())
+    assert "phone.mp4" in said  # an H.264 without the mark is listed: the rule bites
+    assert now.name not in said
+    assert "clip.mp4" not in said
+
+
+def test_a_lighter_video_at_crf_18_is_never_proposed_again(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """`same_crf = 18` spends more bits; journals gone: the index holds its mark."""
+    text = locations.config_file.read_text(encoding="utf-8")
+    locations.config_file.write_text(text + "[shrink]\nsame_crf = 18\n")
+    _shrink(cli, "--apply", "--yes")
+    for journal in locations.journal_dir.glob("*.jsonl"):
+        journal.unlink()
+    locations.config_file.write_text(
+        text + "[shrink]\nsame_crf = 18\nbits_per_pixel = 0.0001\n"
+    )
+    assert run(cli, "audit").exit_code == 0
+    light = (locations.data_dir / _CAMERA).with_suffix(".mp4")
+    with closing(sqlite3.connect(locations.index_file)) as index:
+        (metadata,) = index.execute(
+            "SELECT metadata FROM files WHERE path = ?", (str(light),)
+        ).fetchone()
+    assert json.loads(metadata)["shrunk"] == "media-hygiene shrink crf=18"
     said = " ".join(_shrink(cli).output.split())
     assert "clip.mp4" not in said
