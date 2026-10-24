@@ -116,6 +116,7 @@ class Step:  # pylint: disable=too-many-instance-attributes  # one per catalog c
     ai: bool = False  # may ask the local model of `[classify.ai]` 🤖
     windows: bool = False  # Windows PowerShell only: not in the bash `mh`
     planned: bool = False  # shown, not runnable yet
+    confirm: tuple[str, str] | None = None  # its own confirmation: title, text (0311)
 
     @property
     def verb(self) -> str:

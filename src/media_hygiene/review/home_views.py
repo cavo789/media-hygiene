@@ -67,6 +67,10 @@ class HomeAction(Frozen):  # one field per thing the page draws
     planned: bool = False
     fields: tuple[HomeField, ...] = ()
     doc: HomeLink | None = None
+    confirm_title: str = (
+        ""  # its own confirmation (0311); empty: the page's generic one
+    )
+    confirm_text: str = ""
 
 
 class HomeGroup(Frozen):

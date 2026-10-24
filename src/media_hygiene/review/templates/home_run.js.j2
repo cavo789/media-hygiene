@@ -9,7 +9,8 @@ function onRun(name) {
   if (action.fields.length) { openForm(action); return; }
   proceed(action, { number: action.number, command: action.command }, action.command);
 }
-// Only what may be lost for good asks first, in the page; mh asks again before acting.
+// Only what may be lost for good asks first, in the page; mh asks again before acting. A step
+// whose erasing happens later, on its own page, says so instead (`confirm_title`, 0311).
 const confirms = (action) => action.risk === "final";
 function proceed(action, body, command) {
   if (confirms(action)) { openConfirm(action, body, command); return; }
@@ -77,10 +78,10 @@ function openForm(action) {
 function openConfirm(action, body, command) {
   const dialog = $("#confirmDlg");
   dialog.innerHTML = `<div class="dlg">
-    <div class="dlg-head"><div><p class="eyebrow is-danger">${icon("alert")} ${esc(T.riskFinal)}</p><h2 id="confirmTitle">${esc(fill(T.confirmTitle, { title: action.title }))}</h2></div>${closeButton()}</div>
-    <p class="dlg-text">${esc(action.text)}</p>
+    <div class="dlg-head"><div><p class="eyebrow is-danger">${icon("alert")} ${esc(T.riskFinal)}</p><h2 id="confirmTitle">${esc(action.confirm_title || fill(T.confirmTitle, { title: action.title }))}</h2></div>${closeButton()}</div>
+    <p class="dlg-text">${esc(action.confirm_text || action.text)}</p>
     ${cmdChip(command)}
-    <p class="muted small">${esc(fill(T.asksAgain, { window: WINDOW }))}</p>
+    ${action.confirm_title ? "" : `<p class="muted small">${esc(fill(T.asksAgain, { window: WINDOW }))}</p>`}
     <div class="dlg-foot"><button class="btn" type="button" data-close autofocus>${esc(T.keep)}</button><button class="btn btn-danger" type="button" id="confirmGo">${esc(verbOf(action, statusOf(action)))}</button></div>
   </div>`;
   $("#confirmGo", dialog).addEventListener("click", () => { dialog.close(); launch(action, body, command); });

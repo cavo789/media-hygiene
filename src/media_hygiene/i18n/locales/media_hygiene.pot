@@ -530,6 +530,13 @@ msgstr ""
 msgid "A newer version wrote this journal: update media-hygiene to undo it."
 msgstr ""
 
+msgid ""
+"A page opens with the files the PC already holds, all ticked: untick "
+"those you keep. Nothing leaves the phone before that page's “Delete … "
+"from the phone” button, and each file is compared with the PC's copy once"
+" more just before."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "A photo changed in place by another program? 'audit --full' reads every "
@@ -3395,6 +3402,9 @@ msgid ""
 msgstr ""
 
 msgid "Make room on the phone"
+msgstr ""
+
+msgid "Make room on the phone: launching erases nothing"
 msgstr ""
 
 msgid "Make the links; without it, only show what the album gathers."
