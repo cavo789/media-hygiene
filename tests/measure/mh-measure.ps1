@@ -132,6 +132,11 @@
 #      albums opened from its home page, scroll smoothness, tap -> photo full screen (asked),
 #      swipe, a video in place, a photo taken out and added to another album (albums.json read
 #      back), another photo's address refused                                  (0297)
+#  34. shrink: two of your videos re-encoded by the image's ffmpeg, timed, played    (0303)
+#  35. the pages opened from the home page: an empty container, mh menu, what mh search does
+#      before its page answers (your cache and config, read-only), then your clicks on the
+#      home page timed with Docker's own events (which containers stop and start); nothing
+#      written                                                                  (0354)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -170,6 +175,7 @@
 #   .\mh-measure.ps1 -Only 32 -Count 60   (mh share: an album ready to send, sizes and GPS: 0296)
 #   .\mh-measure.ps1 -Only 33 -Count 120  (an album on the phone at home, mh --lan: 0297)
 #   .\mh-measure.ps1 -Only 34 -Count 1   (shrink: two of your videos re-encoded, timed, played: 0303)
+#   .\mh-measure.ps1 -Only 35 -Count 1   (the pages opened from the home page, each phase timed: 0354)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -3113,6 +3119,145 @@ if (Wanted 34) {
     Log "   34d. plays in Windows: $windows"
     Log "   34e. visible difference: $look"
     Log "   34f. on the phone: $phoneSays"
+    $ErrorActionPreference = $saved
+}
+
+# --- 35: the pages opened from the home page, each phase timed (0354) -----------------------
+# Your own mh and your usual cache, read-only: nothing is written. 35a-35c run alone. In 35d you
+# click on the home page in your usual window; Docker's own events then say which containers
+# stopped and started between your two Enters, two marker volumes giving both Enters in
+# Docker's clock (created and removed at once). A "page" container carries mh's page label
+# (the home page, search...), a "step" one does not (mh menu, a console step).
+if (Wanted 35) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 35. pages opened from the home page, each phase timed (0354)"
+    foreach ($try in 1, 2, 3) {
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        & docker run --rm --entrypoint python $Image -c "pass" 2>&1 | Out-Null
+        $watch.Stop()
+        $bare = $watch.Elapsed.TotalSeconds
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        & docker run --rm $Image --version 2>&1 | Out-Null
+        $watch.Stop()
+        Log ("   35a. try {0}: a container running python -c pass {1:N2} s, media-hygiene --version {2:N2} s" -f $try, $bare, $watch.Elapsed.TotalSeconds)
+    }
+    # Your own mh: the one of your profile, else the file mh writes in your home.
+    MhRestore
+    $own = Join-Path $mhHome "mh.ps1"
+    if (-not (Get-Command mh -ErrorAction SilentlyContinue) -and (Test-Path -LiteralPath $own)) { . $own }
+    if (Get-Command mh -ErrorAction SilentlyContinue) {
+        foreach ($try in 1, 2, 3) {
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            $listed = @(mh --color never menu 2>$null)
+            $watch.Stop()
+            Log ("   35b. mh menu (run after each click, to read the step chosen), try {0}: {1:N2} s, {2} lines" -f $try, $watch.Elapsed.TotalSeconds, $listed.Count)
+        }
+    } else {
+        Log "   35b. no mh in this console nor in ${own}: skipped"
+    }
+    # Inside a container: what mh search does before its page answers, phase by phase.
+    $code = @'
+import time
+start = time.perf_counter()
+last = start
+def mark(name, said=''):
+    global last
+    now = time.perf_counter()
+    print(f'35c. {name}: {(now - last) * 1000:.0f} ms{said}')
+    last = now
+from media_hygiene.i18n import install
+from media_hygiene.i18n.bootstrap import resolve_locale
+install(resolve_locale([]))
+mark('locale')
+from media_hygiene.cli.app import build_app
+build_app()
+mark('the CLI built (every command, as mh search starts)')
+import media_hygiene.services.search_pages
+import media_hygiene.services.search
+mark('the code of search and its pages loaded')
+from media_hygiene.cli.context import build_runtime
+runtime = build_runtime({})
+mark('settings and mounts read')
+from media_hygiene.search.meaning_index import MeaningIndex
+from media_hygiene.search.people_words import people_words
+from media_hygiene.search.query import SearchQuery, parse_terms
+from media_hygiene.services.search_meaning import with_meaning
+index = MeaningIndex.open(runtime.index_file)
+mark('index opened', f' ({runtime.index_file.stat().st_size / 1e6:.0f} MB)')
+names = people_words(index.connection, runtime.settings.people)
+index.name_people(names)
+mark('names of the people read', f' ({len(names)} photos named)')
+with_meaning(runtime, index)
+mark('search by meaning prepared')
+for text in ('plage', 'plage', 'neige 2008'):
+    found = index.find(SearchQuery(parse_terms(text)), 60)
+    mark(f'search "{text}"', f' ({found.total} found)')
+print(f'35c. total inside the container: {(time.perf_counter() - start) * 1000:.0f} ms')
+'@
+    $encoded = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($code))
+    $phaseMounts = @("-v", "${Cache}:/cache:ro")
+    $config = Join-Path $mhHome "config"
+    if (Test-Path -LiteralPath $config) { $phaseMounts += "-v", "${config}:/config:ro" }
+    foreach ($try in 1, 2) {
+        Log "   35c. try $try (the second one with the index in Docker's memory)"
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        $lines = & docker run --rm @phaseMounts --entrypoint python $Image -c "import base64; exec(base64.b64decode('$encoded'))" 2>&1
+        $watch.Stop()
+        foreach ($line in $lines) { Log ("   " + "$line".Trim()) }
+        Log ("   35c. the whole docker run: {0:N2} s" -f $watch.Elapsed.TotalSeconds)
+    }
+    # By hand: each click between two Enters, the containers of that time read from Docker.
+    Write-Host "35d: in your usual Windows PowerShell window, type mh: the home page opens in the browser."
+    $null = Read-Host "    When the home page is shown with its steps, press Enter here"
+    $invariant = [Globalization.CultureInfo]::InvariantCulture
+    $clicks = @(
+        @("search", "click 'search' (find a photo by its words) on the home page", "the search page is shown"),
+        @("home", "click 'Back to the home page' on the search page", "the home page is shown with its steps")
+    )
+    $other = Read-Host "35e. Also time another page of the home page, once (its name as the page shows it; empty: none)"
+    if ($other) { $clicks += , @($other, "click '$other' on the home page", "that page is shown") }
+    foreach ($round in 1, 2, 3) {
+        foreach ($click in $clicks) {
+            if ($click[0] -eq $other -and $round -gt 1) { continue }
+            $null = Read-Host "    35d. $($click[0]) ${round}/3: press Enter here, THEN $($click[1])"
+            $since = [DateTimeOffset]::UtcNow.AddSeconds(-1)
+            $mark = "mh-measure-mark-$PID"
+            & docker volume create "$mark-a" | Out-Null
+            & docker volume rm "$mark-a" | Out-Null
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            $null = Read-Host "    ... press Enter as soon as $($click[2])"
+            $watch.Stop()
+            & docker volume create "$mark-b" | Out-Null
+            & docker volume rm "$mark-b" | Out-Null
+            $until = [DateTimeOffset]::UtcNow.AddSeconds(1)
+            $from = ($since.ToUnixTimeMilliseconds() / 1000).ToString("F3", $invariant)
+            $to = ($until.ToUnixTimeMilliseconds() / 1000).ToString("F3", $invariant)
+            $events = @(& docker events --since $from --until $to --filter type=container --filter type=volume --filter event=create --filter event=start --filter event=die --format '{{.TimeNano}} {{.Type}} {{.Action}} {{.Actor.ID}} {{json .Actor.Attributes}}' 2>&1)
+            $zero = $null
+            foreach ($line in $events) { $fields = "$line" -split ' ', 5; if ($fields.Count -ge 4 -and $fields[3] -eq "$mark-a") { $zero = [decimal]$fields[0] } }
+            $timeline = @()
+            foreach ($line in $events) {
+                $fields = "$line" -split ' ', 5
+                if ($fields.Count -lt 4 -or $null -eq $zero -or $fields[3] -eq "$mark-a") { continue }
+                $at = ([decimal]$fields[0] - $zero) / 1000000000
+                if ($fields[3] -eq "$mark-b") { $what = "you saw it" }
+                elseif ($fields[1] -eq "volume") { continue }
+                else {
+                    # The home page and the pages carry the label of mh's page containers.
+                    $kind = if ($fields.Count -gt 4 -and $fields[4] -match '"media-hygiene\.page"') { "page" } else { "step" }
+                    $what = "$($fields[2]) $kind $($fields[3].Substring(0, 6))"
+                }
+                $timeline += ("+{0} s {1}" -f $at.ToString("F2", $invariant), $what)
+            }
+            Log ("   35d. {0} {1}/3: {2:N2} s between your Enters; Docker: {3}" -f $click[0], $round, $watch.Elapsed.TotalSeconds, ($timeline -join '; '))
+            if ($click[0] -eq $other) { $null = Read-Host "    Come back to the home page, then press Enter" }
+        }
+    }
+    $felt = Read-Host "35f. Which wait bothers you most (a page opened, the home page back, a console step, other)?"
+    Log "   35f. what bothers you most: $felt"
+    Write-Host "35: you may quit the home page now (Quit on the page, or Ctrl+C in its window)."
     $ErrorActionPreference = $saved
 }
 
