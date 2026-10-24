@@ -79,12 +79,11 @@ first search, 2 ms once the table is built), about −95 %.
   `test_step_watch.py`. Docs en + fr (search, browse, home).
 
 ### Not done
-- `mh search` / `mh browse --folder X` typed in another window while the home server of this
-  `mh` runs: it still starts its own page (the port guard of 0250 then asks to close the other).
+- `mh search` / `mh browse` typed in another window while the home server of this `mh` runs:
+  it still starts its own page (the port guard of 0250 then asks to close the other). `browse`
+  has no `--folder` option (an error of this TODO, read in `cmd_browse.py`); 0362 hides it.
   **Reason:** needs `mh` to find its own home server (its container label) and open the tab on
   it; to do with 0359, which changes `mh`'s loop again.
-- `browse --folder X` from the home page (a step with options) still opens its own page:
-  `served_here` maps only the bare commands.
 - Measured on Windows: step 35 again (click → search, search → home).
   **Reason:** Windows + Docker Desktop only. Command: build the image of branch
   `iterate/2026-10-24`, `mh update`, then `.\mh-measure.ps1 -Only 35 -Count 1 -Image media-hygiene`.
