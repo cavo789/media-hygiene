@@ -140,6 +140,8 @@
   #rulesDlg tbody { display: block; max-height: 55vh; overflow: auto; } #rulesDlg thead, #rulesDlg tbody tr { display: table; width: 100%; table-layout: fixed; }
   #rulesDlg td, #rulesDlg th { padding: 3px 6px; text-align: left; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
   #rulesDlg tr.dead td:nth-child(3) { color: var(--bad); font-weight: 600; }
+  #rulesDlg tr.group th { padding-top: 10px; color: var(--accent); }
+  #rulesDlg .sortBy { padding: 0; border: 0; font: inherit; font-weight: 600; background: none; color: inherit; cursor: pointer; }
   #sendDlg input { min-width: 24rem; }
   .goes { color: var(--accent); overflow-wrap: anywhere; font-size: .85rem; }
   #goList { max-height: 50vh; overflow: auto; padding-left: 1.2rem; } #goList li { overflow-wrap: anywhere; margin: 2px 0; }
@@ -222,9 +224,10 @@
 <dialog id="rulesDlg" aria-labelledby="rulesTitle">
   <h2 id="rulesTitle">📌 {{ _("Your rules") }}</h2>
   <p id="rulesRun" class="muted"></p>
+  <p class="muted">{{ _("Shown by kind and date, the latest first; config.toml keeps its own order, which decides. Click Rule or Files to sort by it, again to reverse.") }}</p>
   <p id="rulesSaid" role="status"></p>
   <table id="rulesTable">
-    <thead><tr><th>{{ _("Rule") }}</th><th>{{ _("Match") }}</th><th>{{ _("Files") }}</th><th>{{ _("Days") }}</th><th></th></tr></thead>
+    <thead><tr><th><button type="button" class="sortBy plain" data-by="name">{{ _("Rule") }}</button></th><th>{{ _("Match") }}</th><th><button type="button" class="sortBy plain" data-by="files">{{ _("Files") }}</button></th><th>{{ _("Days") }}</th><th></th></tr></thead>
     <tbody></tbody>
   </table>
   <menu><button type="button" id="rulesRemoveAll" class="plain" hidden></button><button type="button" id="rulesClose">{{ _("Close") }}</button></menu>

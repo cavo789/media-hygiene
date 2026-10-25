@@ -58,6 +58,27 @@ def test_the_view_counts_what_each_rule_decided(locations: Locations) -> None:
     assert found["Existing folders"]["built_in"]
 
 
+def test_the_view_is_shown_by_kind_the_file_keeps_its_order(
+    locations: Locations,
+) -> None:
+    """0395: the dialog's order is its own; config.toml is not touched by opening it."""
+    with_rules(locations)
+    runtime, _workbook = classified(locations)
+    before = locations.config_file.read_bytes()
+    answer = asyncio.run(call(reopened(runtime), "GET /api/rules"))
+    shown = json.loads(answer.body)["rules"]
+    assert locations.config_file.read_bytes() == before
+    names = [rule.name for rule in read_rules(locations.config_file)]
+    assert sorted(line["position"] for line in shown) == list(range(len(names)))
+    assert [names[line["position"]] for line in shown] == [
+        line["name"] for line in shown
+    ]
+    paths = [line["name"] for line in shown if line["match"] == "path"]
+    assert paths[0] == "Kermesse"  # it decided files; the two dead ones after it
+    assert shown[-1]["built_in"]
+    assert all(line["group"] for line in shown)
+
+
 def test_dead_rules_are_removed_their_neighbours_comments_kept(
     locations: Locations,
 ) -> None:

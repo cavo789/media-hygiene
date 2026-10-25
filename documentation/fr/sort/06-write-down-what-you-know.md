@@ -307,9 +307,14 @@ expression régulière, une mauvaise année, ou simplement rien de ce genre dans
 
 **Garder la liste vivante : *Vos règles*.** Sur la page des événements
 ([`review-sort`](../commands/review-sort.md)), **📌 Vos règles** liste chaque règle de
-`config.toml` dans son ordre, avec les fichiers qu'elle a décidés lors du `classify` que montre
-la page et, pour une règle sur un nom de dossier, les jours de l'événement qui contient la plupart
-de ses fichiers :
+`config.toml`, avec les fichiers qu'elle a décidés lors du `classify` que montre la page et, pour
+une règle sur un nom de dossier, les jours de l'événement qui contient la plupart de ses
+fichiers. Elles sont affichées par type (*Dates*, *Noms de dossiers et de fichiers*, *Jours de
+chaque année*… vos propres dossiers en dernier), chaque type sous son titre avec son nombre, puis
+par période, la plus récente d'abord ; une règle qui n'a rien décidé vient en dernier dans son
+type. Un clic sur *Règle* ou *Fichiers* trie selon cette colonne, un deuxième inverse, un
+troisième revient. `config.toml` garde son propre ordre, qui décide : la boîte ne le change
+jamais.
 
 - une règle qui n'a rien décidé est affichée en rouge, avec **Supprimer** (ou *Supprimer les N
   règles qui n'ont rien décidé*, après une question) : elle est retirée de `config.toml`, vos

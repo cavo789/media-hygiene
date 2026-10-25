@@ -1385,6 +1385,9 @@ msgstr "Abîmés sur le PC : la copie de la sauvegarde est gardée"
 msgid "Brought up to date, read back from {path}: it starts this mh."
 msgstr "Mis à jour, relu depuis {path} : il lance ce mh."
 
+msgid "Built in: your own folders"
+msgstr "Intégrées : vos propres dossiers"
+
 #, python-brace-format
 msgid "Burst review: {count} series still to see."
 msgid_plural "Burst review: {count} series still to see."
@@ -1410,6 +1413,9 @@ msgstr "COMMANDE [ARGS]..."
 
 msgid "Camera"
 msgstr "Appareil"
+
+msgid "Cameras"
+msgstr "Appareils"
 
 msgid "Cancel"
 msgstr "Annuler"
@@ -2778,10 +2784,10 @@ msgid ""
 "workbook."
 msgstr ""
 "Chaque choix est enregistré aussitôt dans %(place)s ; le classeur "
-"%(workbook)s n'est jamais modifié. Rien ne bouge sans votre GO (Trier cet "
-"événement maintenant) ; chaque déplacement est journalisé : 'undo' le remet."
-" Terminé ? Ctrl+C dans le terminal arrête la revue ; ensuite 'sort' applique"
-" vos choix par-dessus le classeur."
+"%(workbook)s n'est jamais modifié. Rien ne bouge sans votre GO (Trier cet"
+" événement maintenant) ; chaque déplacement est journalisé : 'undo' le "
+"remet. Terminé ? Ctrl+C dans le terminal arrête la revue ; ensuite 'sort'"
+" applique vos choix par-dessus le classeur."
 
 msgid "Every cluster lies in a place of yours."
 msgstr "Chaque groupe est dans un de vos lieux."
@@ -2891,6 +2897,9 @@ msgstr ""
 " espace d'abord, avec un total cumulé. Dans chaque groupe, la version "
 "gardée d'abord, encadrée en vert. Les rafales ne sont pas ici : --tier "
 "near n'y touche jamais."
+
+msgid "Everything else"
+msgstr "Tout le reste"
 
 msgid "Everything is applied"
 msgstr "Tout est appliqué"
@@ -3190,6 +3199,9 @@ msgstr "Replier cette section (o)"
 
 msgid "Folder"
 msgstr "Dossier"
+
+msgid "Folder and file names"
+msgstr "Noms de dossiers et de fichiers"
 
 msgid ""
 "Folder name never analysed, wherever it is, case ignored; * and ? "
@@ -4033,6 +4045,9 @@ msgstr "Type"
 
 msgid "Kind of file"
 msgstr "Genre de fichier"
+
+msgid "Kinds of files"
+msgstr "Types de fichiers"
 
 msgid ""
 "Labels of the 'inventory' export, computed when it is written: change a "
@@ -5425,9 +5440,9 @@ msgid ""
 "back. The files set aside go to the quarantine at the next 'clean "
 "--decisions'."
 msgstr ""
-"Rien ne bouge sans votre GO ; chaque déplacement est journalisé : 'undo' le "
-"remet. Les fichiers mis de côté vont en quarantaine au prochain 'clean "
-"--decisions'."
+"Rien ne bouge sans votre GO ; chaque déplacement est journalisé : 'undo' "
+"le remet. Les fichiers mis de côté vont en quarantaine au prochain 'clean"
+" --decisions'."
 
 #, python-brace-format
 msgid "Nothing moves? Look at {window} (Alt+Tab)."
@@ -7478,6 +7493,15 @@ msgid "Show your photos on the TV"
 msgstr "Montrer vos photos sur la télé"
 
 msgid ""
+"Shown by kind and date, the latest first; config.toml keeps its own "
+"order, which decides. Click Rule or Files to sort by it, again to "
+"reverse."
+msgstr ""
+"Affichées par type et par date, la plus récente d'abord ; config.toml garde "
+"son propre ordre, qui décide. Cliquez sur Règle ou Fichiers pour trier selon"
+" cette colonne, encore pour inverser."
+
+msgid ""
 "Shown for you to check, never set aside on their own: take out with × the"
 " faces of someone else, then set the others aside too."
 msgstr ""
@@ -7588,8 +7612,8 @@ msgid ""
 "Sort these {n} files now? {folders}. They are moved at once, journaled: "
 "'undo' puts them back."
 msgstr ""
-"Trier ces {n} fichiers maintenant ? {folders}. Ils sont déplacés aussitôt, "
-"journalisés : 'undo' les remet."
+"Trier ces {n} fichiers maintenant ? {folders}. Ils sont déplacés "
+"aussitôt, journalisés : 'undo' les remet."
 
 msgid "Sort this event now"
 msgstr "Trier cet événement maintenant"
@@ -9465,6 +9489,9 @@ msgstr "Durée totale des vidéos"
 msgid "Town of the folder"
 msgstr "Ville du dossier"
 
+msgid "Towns in folder names"
+msgstr "Villes dans les noms de dossiers"
+
 msgid "Towns of the folders"
 msgstr "Villes des dossiers"
 
@@ -9739,6 +9766,9 @@ msgstr "Ce que le dernier audit a trouvé"
 
 msgid "What the last clean left"
 msgstr "Ce que le dernier nettoyage a laissé"
+
+msgid "What the photos show"
+msgstr "Ce que montrent les photos"
 
 #, python-brace-format
 msgid ""
@@ -14143,8 +14173,8 @@ msgid ""
 "{moved} moved, {verified} checked at their new place (run {run}, at "
 "{time}): 'mh undo {run}' puts them back."
 msgstr ""
-"{moved} déplacés, {verified} vérifiés à leur nouvelle place (passage {run}, "
-"à {time}) : 'mh undo {run}' les remet."
+"{moved} déplacés, {verified} vérifiés à leur nouvelle place (passage "
+"{run}, à {time}) : 'mh undo {run}' les remet."
 
 #, python-brace-format
 msgid ""

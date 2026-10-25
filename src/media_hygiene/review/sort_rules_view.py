@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING
 from pydantic import BaseModel, ConfigDict
 
 from media_hygiene.classify.rules.kinds import BUILT_IN, RuleMatch
+from media_hygiene.review.sort_rules_order import group_of, shown_order
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -39,6 +40,8 @@ class RuleLine(BaseModel):
     event: str  # the event holding most of its files; empty: none
     first: str  # that event's first and last day, for *Turn into dates*
     last: str
+    position: int = 0  # its place in `config.toml`, which decides (0395)
+    group: str = ""  # the heading of its kind, in the user's words (0395)
 
 
 class RulesView(BaseModel):
@@ -61,7 +64,7 @@ def rules_view(
         run: The classify run's folder name.
 
     Returns:
-        The view.
+        The view: by kind, then the latest period first (`sort_rules_order`).
     """
     decided = Counter(row.rule for row in plan.rows if row.rule)
     by_event: dict[str, Counter[str]] = {}
@@ -70,7 +73,7 @@ def rules_view(
             by_event.setdefault(row.rule, Counter())[row.event_id] += 1
     days = {event.id: (event.start[:10], event.end[:10]) for event in plan.events}
     lines = []
-    for rule in rules:
+    for position, rule in enumerate(rules):
         held = by_event.get(rule.name, Counter()).most_common(1)
         event = held[0][0] if held else ""
         first, last = days.get(event, ("", ""))
@@ -85,6 +88,8 @@ def rules_view(
                 event=event,
                 first=first,
                 last=last,
+                position=position,
             )
         )
-    return RulesView(run=run, rules=tuple(lines))
+    shown = [line.model_copy(update={"group": group_of(line)}) for line in lines]
+    return RulesView(run=run, rules=tuple(shown_order(shown)))

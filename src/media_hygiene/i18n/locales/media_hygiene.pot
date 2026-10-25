@@ -1108,6 +1108,9 @@ msgstr ""
 msgid "Brought up to date, read back from {path}: it starts this mh."
 msgstr ""
 
+msgid "Built in: your own folders"
+msgstr ""
+
 #, python-brace-format
 msgid "Burst review: {count} series still to see."
 msgid_plural "Burst review: {count} series still to see."
@@ -1130,6 +1133,9 @@ msgid "COMMAND [ARGS]..."
 msgstr ""
 
 msgid "Camera"
+msgstr ""
+
+msgid "Cameras"
 msgstr ""
 
 msgid "Cancel"
@@ -2334,6 +2340,9 @@ msgid ""
 "green. Burst series are not here: --tier near never touches them."
 msgstr ""
 
+msgid "Everything else"
+msgstr ""
+
 msgid "Everything is applied"
 msgstr ""
 
@@ -2586,6 +2595,9 @@ msgid "Fold this section (o)"
 msgstr ""
 
 msgid "Folder"
+msgstr ""
+
+msgid "Folder and file names"
 msgstr ""
 
 msgid ""
@@ -3288,6 +3300,9 @@ msgid "Kind"
 msgstr ""
 
 msgid "Kind of file"
+msgstr ""
+
+msgid "Kinds of files"
 msgstr ""
 
 msgid ""
@@ -6172,6 +6187,12 @@ msgid "Show your photos on the TV"
 msgstr ""
 
 msgid ""
+"Shown by kind and date, the latest first; config.toml keeps its own "
+"order, which decides. Click Rule or Files to sort by it, again to "
+"reverse."
+msgstr ""
+
+msgid ""
 "Shown for you to check, never set aside on their own: take out with × the"
 " faces of someone else, then set the others aside too."
 msgstr ""
@@ -7789,6 +7810,9 @@ msgstr ""
 msgid "Town of the folder"
 msgstr ""
 
+msgid "Towns in folder names"
+msgstr ""
+
 msgid "Towns of the folders"
 msgstr ""
 
@@ -8025,6 +8049,9 @@ msgid "What the last audit found"
 msgstr ""
 
 msgid "What the last clean left"
+msgstr ""
+
+msgid "What the photos show"
 msgstr ""
 
 #, python-brace-format

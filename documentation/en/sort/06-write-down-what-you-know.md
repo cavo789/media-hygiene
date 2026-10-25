@@ -293,8 +293,13 @@ wrong year, or simply nothing of that kind in your folders.
 
 **Keep the list alive: *Your rules*.** On the page of the events
 ([`review-sort`](../commands/review-sort.md)), **📌 Your rules** lists every rule of
-`config.toml` in its order, with the files it decided at the `classify` run the page shows
-and, for a folder-name rule, the days of the event holding most of its files:
+`config.toml`, with the files it decided at the `classify` run the page shows and, for a
+folder-name rule, the days of the event holding most of its files. They are shown by kind
+(*Dates*, *Folder and file names*, *Days of every year*… your own folders last), each kind
+under its heading with its count, then by period, the latest first; a rule that decided
+nothing comes last in its kind. A click on *Rule* or *Files* sorts by that column, a second
+click reverses, a third goes back. `config.toml` keeps its own order, which decides: the
+dialog never changes it.
 
 - a rule that decided nothing is shown in red, with **Remove** (or *Remove the N rules that
   decided nothing*, after a question): it is removed from `config.toml`, your comments kept,
