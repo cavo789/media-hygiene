@@ -147,7 +147,7 @@ class LanApp:
         if request.method == _GET and path == PAGE_PATH:
             return Response(HTTPStatus.OK, self.phone_page, ContentType.HTML)
         local = f"{HOST_LOOPBACK}:{self.lan.port}"
-        headers = {**request.headers, "host": local}
+        headers = {**request.headers, "host": local, albums.PHONE_HEADER: "1"}
         if origin is not None:
             headers["origin"] = f"http://{local}"
         passed = Request(request.method, path, headers, request.body)
