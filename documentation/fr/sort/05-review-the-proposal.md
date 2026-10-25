@@ -37,9 +37,9 @@ La fin de l'affichage dit où sont les fichiers :
 <!-- capture: classify.txt|Classeur à modifier| -->
 ```text
 ✅ Classeur à modifier :
-C:\Users\you\media-hygiene\reports\20261025-083849-classify\classify.xlsx
+C:\Users\you\media-hygiene\reports\20261025-084855-classify\classify.xlsx
 ✅ Rapport avec les photos :
-C:\Users\you\media-hygiene\reports\20261025-083849-classify\report.html
+C:\Users\you\media-hygiene\reports\20261025-084855-classify\report.html
 👉 Et maintenant : modifiez les cellules jaunes et enregistrez ; rien ne bouge
 avant 'sort'.
 docker run --rm -it `

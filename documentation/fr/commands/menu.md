@@ -68,7 +68,7 @@ menu s'affiche quand même, en dernier, sous *Autres commandes*.
 <!-- capture: menu.txt -->
 ```text
 ─────────────────────── media-hygiene — où vous en êtes ────────────────────────
-Dernier audit: 2026-10-25 08:38 (aujourd'hui) — 10 fichiers, 4 copies en trop
+Dernier audit: 2026-10-25 08:48 (aujourd'hui) — 10 fichiers, 4 copies en trop
 (5,9 Mo), 1 illisibles.
 Quarantaine : vide.
 

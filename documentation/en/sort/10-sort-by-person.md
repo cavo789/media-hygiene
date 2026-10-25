@@ -43,7 +43,7 @@ On the demo library of this guide, 10 photos measured:
 
 <!-- capture: people-sample.txt|re:^✅|. -->
 ```text
-✅ 10 photos analysed: 3 faces, 0.04 s per photo.
+✅ 10 photos analysed: 5 faces, 0.04 s per photo.
 ```
 
 It ends with the estimate of the full run (`A full run would analyse 20,000 more photos: about
@@ -98,7 +98,7 @@ group) and prints the address of the page, `http://127.0.0.1:8088/`: Ctrl+click 
 
 <!-- capture: people.txt|re:^✅| -->
 ```text
-✅ 37 photos analysed: 14 faces, 0.04 s per photo.
+✅ 37 photos analysed: 12 faces, 0.04 s per photo.
 ✅ 17 faces in 47 photos: 3 groups of faces alike, the largest 7, 5, 4; 1 seen
 once.
 ✅ Faces ready, open http://127.0.0.1:8088/ in your browser to name them; each

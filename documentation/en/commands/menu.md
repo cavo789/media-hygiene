@@ -65,7 +65,7 @@ A command that has no place in the menu yet still shows, last, under *Other comm
 <!-- capture: menu.txt -->
 ```text
 ──────────────────────── media-hygiene — where you are ─────────────────────────
-Last audit: 2026-10-25 08:36 (today) — 10 files, 4 extra copies (5.9 MB), 1
+Last audit: 2026-10-25 08:46 (today) — 10 files, 4 extra copies (5.9 MB), 1
 broken.
 Quarantine: empty.
 

@@ -41,8 +41,8 @@ Avant de déplacer quoi que ce soit, `sort` dit ce qu'il a lu et ce qu'il va fai
 ```text
 ───────────────────────────────────── Tri ──────────────────────────────────────
 Classeur :
-C:\Users\you\media-hygiene\reports\20261025-084016-classify\classify.xlsx
-0 modification lue ; classeur enregistré le 25 octobre 2026 à 08:40.
+C:\Users\you\media-hygiene\reports\20261025-085021-classify\classify.xlsx
+0 modification lue ; classeur enregistré le 25 octobre 2026 à 08:50.
 Tri
 ┌────────────────────────────────┬────────┐
 │ Fichiers à déplacer            │      8 │
@@ -135,7 +135,7 @@ cible, même taille, même SHA-256 quand il a changé de disque) :
 
 <!-- capture: sort.txt|re:^Tri \d| -->
 ```text
-Tri 20261025-084017
+Tri 20261025-085022
 ┌───────────────────────────┬────────┐
 │ Fichiers traités          │      8 │
 │ Taille                    │ 6,6 Mo │
@@ -147,8 +147,8 @@ Dossiers sources supprimés : 3.
 ✅ Rien de perdu : 50 fichiers (18,3 Mo) avant et après ; 8 déplacements
 vérifiés sur 8.
 Manifeste :
-C:\Users\you\media-hygiene\reports\20261025-084017-sort\manifest.json
-💡 Vous changez d'avis ? 'media-hygiene undo 20261025-084017' remet tout en
+C:\Users\you\media-hygiene\reports\20261025-085022-sort\manifest.json
+💡 Vous changez d'avis ? 'media-hygiene undo 20261025-085022' remet tout en
 place :
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
@@ -158,7 +158,7 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene --locale fr undo 20261025-084017
+  cavo789/media-hygiene --locale fr undo 20261025-085022
 ```
 
 La preuve est écrite dans `/reports/<passage>-sort/manifest.json`.
@@ -194,12 +194,12 @@ reviennent, les dossiers supprimés reviennent, les dossiers créés par le tri 
 
 <!-- capture: undo-sort.txt -->
 ```text
-──────────────── Annulation de l'exécution sort 20261025-084017 ────────────────
+──────────────── Annulation de l'exécution sort 20261025-085022 ────────────────
 🛟 Chaque fichier revient où il était, jamais par-dessus un autre ; ce qui ne
 peut pas revenir intact est laissé tel quel, et signalé.
 
 Annulation de l'exécution sort
-20261025-084017
+20261025-085022
 ┌───────────────────────────┬────────┐
 │ Fichiers traités          │      8 │
 │ Taille                    │ 6,6 Mo │

@@ -177,7 +177,7 @@ Ce que vous pouvez faire
 gardées entières.
 
 ✅ Rapport HTML :
-C:\Users\you\media-hygiene\reports\20261025-083838-audit\report.html
+C:\Users\you\media-hygiene\reports\20261025-084844-audit\report.html
 👉 Et maintenant : lancez 'clean' pour mettre 3,4 Mo de copies de côté.
 mh clean
 💡 Tapez mh open : votre navigateur montre tous les rapports.

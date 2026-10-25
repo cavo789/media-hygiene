@@ -140,8 +140,8 @@ français) :
 <!-- capture: plan-csv.txt -->
 ```text
 Groupe;SHA-256;Taille (octets);Action;Fichier;Dossier;Modifié (UTC);Détail;Niveau du quasi-doublon
-1;91bc8b31188ca6292c832b144f0d1bba48af3fb7bc752555c76a1459b3d9823e;3009124;garder;C:\Photos\Vidéos\Anniversaire.mp4;C:\Photos\Vidéos;2022-05-21 16:35:00;la date la plus ancienne;
-1;91bc8b31188ca6292c832b144f0d1bba48af3fb7bc752555c76a1459b3d9823e;3009124;déplacer en quarantaine;D:\Ancien disque\Vidéos\Anniversaire.mp4;D:\Ancien disque\Vidéos;2024-01-15 20:30:00;;
+1;b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93;3009124;garder;C:\Photos\Vidéos\Anniversaire.mp4;C:\Photos\Vidéos;2022-05-21 16:35:00;la date la plus ancienne;
+1;b5b448906b96309b77624c6a2833c38e4f03c50b4aa7fbfd706938748e1fbf93;3009124;déplacer en quarantaine;D:\Ancien disque\Vidéos\Anniversaire.mp4;D:\Ancien disque\Vidéos;2024-01-15 20:30:00;;
 2;e0aa94df83c7edc7252a61e2d4ab4b275596554ddffdc109623b8492e3154a84;1073000;garder;C:\Photos\Téléphone\IMG_4242.HEIC;C:\Photos\Téléphone;2024-04-06 11:00:00;la date la plus ancienne;
 2;e0aa94df83c7edc7252a61e2d4ab4b275596554ddffdc109623b8492e3154a84;1073000;déplacer en quarantaine;D:\Ancien disque\Téléphone\IMG_4242.HEIC;D:\Ancien disque\Téléphone;2024-08-02 20:30:00;;
 3;9b999fe90fc44acf6f2c5fb9d89e830321cabb631ae2ea1ad97449e4b78324c8;1041095;garder;C:\Photos\Téléphone\IMG_4244.HEIC;C:\Photos\Téléphone;2024-04-06 12:22:00;la date la plus ancienne;
@@ -171,16 +171,16 @@ Rapports (du plus récent au plus ancien)
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Dossier               ┃ Type      ┃ Fichiers ┃ Doublons ┃ Espace  ┃ Cassés ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ 20261025-083933-clean │ nettoyage │ 89       │ 32       │ 16,4 Mo │ 3      │
-│ 20261025-083932-audit │ audit     │ 89       │ 32       │ 14,0 Mo │ 3      │
-│ 20261025-083930-clean │ nettoyage │ 89       │ 32       │ 15,6 Mo │ 3      │
-│ 20261025-083927-audit │ audit     │ 89       │ 32       │ 14,0 Mo │ 3      │
-│ 20261025-083856-audit │ audit     │ 89       │ 32       │ 14,0 Mo │ 3      │
-│ 20261025-083852-audit │ audit     │ 89       │ 32       │ 14,0 Mo │ 3      │
-│ 20261025-083848-audit │ audit     │ 10       │ 4        │ 5,9 Mo  │ 1      │
-│ 20261025-083847-audit │ audit     │ 65       │ 12       │ 3,4 Mo  │ 0      │
-│ 20261025-083846-audit │ audit     │ 89       │ 32       │ 14,0 Mo │ 3      │
-│ 20261025-083844-audit │ audit     │ 89       │ 32       │ 14,0 Mo │ 3      │
+│ 20261025-084938-clean │ nettoyage │ 89       │ 32       │ 16,4 Mo │ 3      │
+│ 20261025-084938-audit │ audit     │ 89       │ 32       │ 14,0 Mo │ 3      │
+│ 20261025-084936-clean │ nettoyage │ 89       │ 32       │ 15,6 Mo │ 3      │
+│ 20261025-084932-audit │ audit     │ 89       │ 32       │ 14,0 Mo │ 3      │
+│ 20261025-084902-audit │ audit     │ 89       │ 32       │ 14,0 Mo │ 3      │
+│ 20261025-084858-audit │ audit     │ 89       │ 32       │ 14,0 Mo │ 3      │
+│ 20261025-084853-audit │ audit     │ 10       │ 4        │ 5,9 Mo  │ 1      │
+│ 20261025-084852-audit │ audit     │ 65       │ 12       │ 3,4 Mo  │ 0      │
+│ 20261025-084851-audit │ audit     │ 89       │ 32       │ 14,0 Mo │ 3      │
+│ 20261025-084850-audit │ audit     │ 89       │ 32       │ 14,0 Mo │ 3      │
 └───────────────────────┴───────────┴──────────┴──────────┴─────────┴────────┘
 💡 Double-cliquez sur index.html dans le dossier monté sur /reports.
 ```
