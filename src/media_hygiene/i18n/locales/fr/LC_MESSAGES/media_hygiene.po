@@ -685,9 +685,9 @@ msgid ""
 " more just before."
 msgstr ""
 "Une page s'ouvre avec les fichiers que le PC détient déjà, tous cochés : "
-"décochez ceux que vous gardez. Rien ne quitte le téléphone avant le bouton "
-"« Supprimer … du téléphone » de cette page, et chaque fichier est encore "
-"comparé à la copie du PC juste avant."
+"décochez ceux que vous gardez. Rien ne quitte le téléphone avant le "
+"bouton « Supprimer … du téléphone » de cette page, et chaque fichier est "
+"encore comparé à la copie du PC juste avant."
 
 #, python-brace-format
 msgid ""
@@ -7193,6 +7193,9 @@ msgid "Show every face of the group, to take out those of someone else"
 msgstr ""
 "Afficher tous les visages du groupe, pour retirer ceux d'une autre "
 "personne"
+
+msgid "Show every place of the photos"
+msgstr "Montrer tous les lieux des photos"
 
 msgid "Show every setting, where it comes from, and the mount points."
 msgstr "Affiche chaque réglage, son origine, et les points de montage."

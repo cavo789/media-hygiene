@@ -37,3 +37,20 @@ first, likely candidates:
 - [ ] Clusters in three countries: on arrival, the three are on screen, none hidden by the column.
 - [ ] A `0, 0` cluster does not zoom the map out to the world.
 - [ ] Docs `commands/places.md` (en + fr) say it; `docs_screenshots` to run (the capture changes).
+
+## Status — PARTIAL (2026-10-25)
+
+### Done
+- `places.html.j2`: `frame()` fits the map on the clusters, the places **and the folders placed
+  by hand** (`folder.saved`), padded for the drawer (`paddingBottomRight: [hidden(), 0]`), after
+  `map.invalidateSize()`; called once the state answers, then again once the folders answer
+  (`loadFolders().then(frame)`). Points at exactly `0, 0` are drawn but left out of the box.
+- A ⤢ button under the zoom buttons (*Show every place of the photos*) brings that framing
+  back. Docs en + fr (`commands/places.md`); the page's script checked as text
+  (`test_places_command.py`).
+
+### Not done
+- Item 1, reproduce in a browser (three countries plus a `0, 0` cluster) and the acceptance's
+  visual check. **Reason:** no browser in this session; the four candidate causes listed above
+  are all addressed, which one the maintainer met is not known. `docs_screenshots` to run (the
+  capture of the page changes).

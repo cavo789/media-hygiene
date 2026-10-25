@@ -52,7 +52,10 @@ Ctrl+click the address it prints, `http://127.0.0.1:8088/`. Ctrl+C, or closing i
 ## On the map
 
 The lists on the left, the keys under them (⌨ **Keyboard**: Esc, ← →, Enter in the search box),
-the map on the right under one bar that says what was saved.
+the map on the right under one bar that says what was saved. The map opens framed on every
+place your photos were taken (the circles, your places, the folders placed by hand); ⤢ under
+the zoom buttons brings that view back. A photo whose camera wrote an empty position (0, 0) is
+drawn but left out of that view.
 
 - **The circles** are your photos with a GPS position, grouped by about 200 metres. The list on
   the left gives the largest clusters without a name first: home is usually the first one.

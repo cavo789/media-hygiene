@@ -5941,6 +5941,9 @@ msgstr ""
 msgid "Show every face of the group, to take out those of someone else"
 msgstr ""
 
+msgid "Show every place of the photos"
+msgstr ""
+
 msgid "Show every setting, where it comes from, and the mount points."
 msgstr ""
 
