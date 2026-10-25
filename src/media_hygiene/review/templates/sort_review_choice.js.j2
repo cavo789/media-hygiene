@@ -19,6 +19,7 @@
   const stateText = (card) => {
     if (choiceDirty()) return [T.dirty, "dirty"];
     if (card.sorted) return [T.sortedState, "saved"];
+    if (inPlace(card)) return [T.inPlace, "saved"];
     if (card.conflict) return [fill(T.inWorkbook, { value: card.workbook.text }), "conflict"];
     if (card.page) {
       const time = card.saved ? new Date(card.saved).toLocaleTimeString() : "";
@@ -175,6 +176,7 @@
     if (!answer.run_id) setStatus(T.sortedNothing, "saved");
     else if (!answer.intact) setStatus(fill(T.sortedNotIntact, { run: answer.run_id }), "error");
     else setStatus(fill(T.sortedNow, { moved: counted(T.nFiles, answer.moved), verified: answer.verified, run: answer.run_id, time: time }), "saved");
+    showProgress();  // read again from the plan and the journal (0398)
     if (index !== current) return;
     showPhotos(answer.view.photos, false);
     showEvent(answer.view.card);

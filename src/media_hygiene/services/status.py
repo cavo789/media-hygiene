@@ -8,7 +8,7 @@ reported as not looked at: the command never fails for it.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime
 from typing import TYPE_CHECKING, Final
 
@@ -137,7 +137,10 @@ def read_status(runtime: Runtime) -> Status:
         if MountKind.QUARANTINE in mounted
         else QuarantineState(()),
         review=review_state(locations.reports_dir) if reports else ReviewState(),
-        sort=sort_state(locations.reports_dir, _last_sort(runs))
+        sort=replace(
+            sort_state(locations.reports_dir, _last_sort(runs)),
+            journal=locations.journal_dir if MountKind.JOURNAL in mounted else None,
+        )
         if reports
         else SortState(),
         missing=tuple(kind for kind in LOOKED_AT if kind not in mounted),

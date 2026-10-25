@@ -170,6 +170,23 @@ photos out, pick them and press <kbd>S</kbd> first. Start with a small event: yo
 tool does, file by file, before trusting it with more. A period or a rule can be sorted the same
 way from the search page ([`search`](../commands/search.md#make-a-period-a-rule)).
 
+## Follow the progress
+
+Sorting one event at a time, the left column says where you stand, from the plan and the
+journal: *Sorted: 23 events, 1,840 files (10.8 %) · already in place: 35,000 files · left:
+1,114 events, 15,216 files to move* — read again after each GO. Each event says its state:
+*sorted* (its files moved), *in place* (nothing to move), *validated here* (chosen, not
+sorted yet) or *proposed by classify* (to decide). **Only the events not sorted yet**, beside
+the two other filters (one at a time), keeps those with files still to move: <kbd>N</kbd>,
+<kbd>P</kbd> and <kbd>U</kbd> then walk them only.
+
+*The sort runs of this plan*, under it, lists each run, the latest first: *25/10 14:32 ·
+Mariage d'Hervé et Magda · 14 files · undo 20261025-143212*; a run taken back by `undo` is
+crossed out. Nothing is moved to follow the progress: no *To sort* folder to empty, your own
+folders stay as they are until you decide.
+
+The home page's *Sort* space shows the same figures for the latest `classify` run.
+
 ## Where your choices go
 
 Each choice is saved at once in `sort-decisions.json`, **next to `plan.json`** in the folder of

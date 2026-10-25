@@ -6,8 +6,9 @@
 
   const onlyToDecide = () => byId("onlyDecide").checked;
   const onlySure = () => byId("onlySure").checked;
+  const onlyUnsorted = () => byId("onlyUnsorted").checked;  // 0398
   const toDecide = (card) => isOpen(card) && !card.sure;
-  const visible = (card) => (!onlyToDecide() || toDecide(card)) && (!onlySure() || (card.sure && isOpen(card)));
+  const visible = (card) => (!onlyToDecide() || toDecide(card)) && (!onlySure() || (card.sure && isOpen(card))) && (!onlyUnsorted() || unsorted(card));
   const sureTodo = () => events.filter((card) => card.sure && isOpen(card));
   const filesIn = (cards) => cards.reduce((count, card) => count + card.files, 0);
 

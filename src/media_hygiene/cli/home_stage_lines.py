@@ -10,6 +10,7 @@ from media_hygiene.cli.status_view import ago
 from media_hygiene.console.formatting import human_number, human_size
 from media_hygiene.constants import RunKind
 from media_hygiene.i18n import _
+from media_hygiene.services.sort_figures import sort_figures
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -149,6 +150,13 @@ def _sort_line(status: Status) -> str:
     Returns:
         Its line.
     """
+    figures = sort_figures(status.sort.plan, status.sort.journal)
+    if figures is not None and (figures.sorted_files or status.sort.sorted):
+        return _("Sorted {sorted} · in place {in_place} · left {left} files").format(
+            sorted=human_number(figures.sorted_files),
+            in_place=human_number(figures.in_place),
+            left=human_number(figures.left_files),
+        )
     if status.sort.sorted:
         return _("Sorted")
     if status.sort.proposed is not None:

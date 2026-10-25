@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict
 
+from media_hygiene.actions.sort_resume import plan_runs
 from media_hygiene.classify.page_values import EventValue
 from media_hygiene.classify.rules_edit import remove_rules, replace_rule
 from media_hygiene.classify.rules_file import add_rule, read_rules
@@ -15,6 +16,7 @@ from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
 from media_hygiene.review.sort_destination import Destination, destination
 from media_hygiene.review.sort_files import RuleBook, file_decisions, movable_rows
+from media_hygiene.review.sort_progress import ProgressView, run_lines, sort_progress
 from media_hygiene.review.sort_rule import RuleIn, RulePreview, preview
 from media_hygiene.review.sort_rules_view import RulesView, rules_view
 from media_hygiene.review.sort_session import SortSession
@@ -136,6 +138,25 @@ class SortChoosing(SortSession):
             category=held.category,
             modified=datetime.fromtimestamp(written, tz=UTC).isoformat(),
             view=view,
+        )
+
+    def progress_view(self) -> ProgressView:
+        """What is sorted, in place and left, and the runs of the plan (0398).
+
+        Returns:
+            The counts and the history, read again from the journal.
+        """
+        self.refresh_moved()
+        source = self._source
+        journal = source.journal
+        runs = (
+            plan_runs(journal, source.plan.plan_id)
+            if journal is not None and journal.is_dir()
+            else ()
+        )
+        return ProgressView(
+            progress=sort_progress(source.plan, self._moved),
+            runs=run_lines(source.plan, runs),
         )
 
     def rules_view(self) -> RulesView:

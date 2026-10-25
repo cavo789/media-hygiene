@@ -179,6 +179,24 @@ ces N fichiers** est le GO. Pour laisser des photos de côté, choisissez-les et
 fichier, avant de lui en confier plus. Une période ou une règle se trie de la même façon depuis
 la page de recherche ([`search`](../commands/search.md#faire-dune-période-une-règle)).
 
+## Suivre l'avancement
+
+En triant un événement à la fois, la colonne de gauche dit où vous en êtes, d'après le plan et le
+journal : *Triés : 23 événements, 1 840 fichiers (10,8 %) · déjà en place : 35 000 fichiers ·
+restent : 1 114 événements, 15 216 fichiers à déplacer* — relu après chaque GO. Chaque
+événement dit son état : *trié* (ses fichiers ont bougé), *en place* (rien à déplacer), *validé
+ici* (choisi, pas encore trié) ou *proposé par classify* (à décider). **Seulement les événements
+pas encore triés**, à côté des deux autres filtres (un seul à la fois), garde ceux qui ont encore
+des fichiers à déplacer : <kbd>N</kbd>, <kbd>P</kbd> et <kbd>U</kbd> ne parcourent alors
+qu'eux.
+
+*Les tris de ce plan*, en dessous, liste chaque tri, le plus récent d'abord : *25/10 14:32 ·
+Mariage d'Hervé et Magda · 14 fichiers · undo 20261025-143212* ; un tri repris par `undo` est
+barré. Rien n'est déplacé pour suivre l'avancement : pas de dossier *À trier* à vider, vos propres
+dossiers restent tels quels jusqu'à ce que vous décidiez.
+
+L'espace *Trier* de la page d'accueil montre les mêmes chiffres pour le dernier `classify`.
+
 ## Où vont vos choix
 
 Chaque choix est enregistré aussitôt dans `sort-decisions.json`, **à côté de `plan.json`**, dans

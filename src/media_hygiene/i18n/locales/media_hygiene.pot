@@ -3733,6 +3733,11 @@ msgstr ""
 msgid "N, P and U skip the events already chosen and those whose proposal is sure"
 msgstr ""
 
+msgid ""
+"N, P and U walk only the events with files still to move: neither sorted "
+"nor in place"
+msgstr ""
+
 msgid "Name"
 msgstr ""
 
@@ -3987,6 +3992,9 @@ msgid "No event in this proposal: nothing to review."
 msgstr ""
 
 msgid "No event left to decide after this one."
+msgstr ""
+
+msgid "No event left to sort after this one."
 msgstr ""
 
 msgid "No face found, even turned: set this photo aside on its own."
@@ -4732,6 +4740,9 @@ msgid ""
 "nothing with it goes to the category flat. A date rule never takes the "
 "files a kind rule recognises (screenshots, received pictures, downloads),"
 " wherever that rule is listed."
+msgstr ""
+
+msgid "Only the events not sorted yet"
 msgstr ""
 
 msgid "Only the events to decide"
@@ -6298,6 +6309,16 @@ msgstr ""
 msgid "Sorted"
 msgstr ""
 
+#, python-brace-format
+msgid "Sorted {sorted} · in place {in_place} · left {left} files"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Sorted: {events} events, {files} files ({share}) · already in place: "
+"{inPlace} files · left: {leftEvents} events, {leftFiles} files to move"
+msgstr ""
+
 msgid "Sorting"
 msgstr ""
 
@@ -7356,6 +7377,9 @@ msgid "The slideshow failed (error {status})."
 msgstr ""
 
 msgid "The slideshow is not running any more: start it again on the PC."
+msgstr ""
+
+msgid "The sort runs of this plan"
 msgstr ""
 
 #, python-brace-format
@@ -8634,6 +8658,10 @@ msgid "and {count} more"
 msgstr ""
 
 #, python-brace-format
+msgid "and {n} more"
+msgstr ""
+
+#, python-brace-format
 msgid "and {n} more face"
 msgid_plural "and {n} more faces"
 msgstr[0] ""
@@ -9096,6 +9124,9 @@ msgid "in a filter box: empty it"
 msgstr ""
 
 msgid "in folders never analysed (system, trash, thumbnails, excluded)"
+msgstr ""
+
+msgid "in place: nothing to move"
 msgstr ""
 
 msgid "in the future: to check"
@@ -12532,6 +12563,14 @@ msgstr ""
 
 #, python-brace-format
 msgid "{version} available"
+msgstr ""
+
+#, python-brace-format
+msgid "{when} · {events} · {files} files · undo {run}"
+msgstr ""
+
+#, python-brace-format
+msgid "{when} · {events} · {files} files · undone"
 msgstr ""
 
 msgid "— a new rule —"

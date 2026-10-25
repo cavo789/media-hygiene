@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -56,6 +57,42 @@ def moved_targets(journal_dir: Path, plan_id: str) -> dict[str, Path]:
             if entry.row and seq not in undone and _moved(entry, plan_id)
         }
     return targets
+
+
+@dataclass(frozen=True, slots=True)
+class PlanRun:
+    """One `sort` run of a plan: the rows it moved, whether `undo` took them back."""
+
+    run_id: str
+    rows: tuple[str, ...]
+    undone: bool
+
+
+def plan_runs(journal_dir: Path, plan_id: str) -> tuple[PlanRun, ...]:
+    """The `sort` runs of a plan, the latest first (0398).
+
+    Args:
+        journal_dir: Journal mount point.
+        plan_id: The classify plan.
+
+    Returns:
+        Each run that moved rows of the plan; `undone` when every move was undone.
+    """
+    found: list[PlanRun] = []
+    for run_id in sorted(list_run_ids(journal_dir), reverse=True):
+        entries = read_journal(journal_file(journal_dir, run_id))
+        if run_phase(entries) is not Phase.SORT:
+            continue
+        undone = {entry.seq for entry in done_states(entries, Phase.UNDO)}
+        moved = {
+            seq: entry.row
+            for seq, entry in latest_states(entries, Phase.SORT).items()
+            if entry.row and _moved(entry, plan_id)
+        }
+        if moved:
+            rows = tuple(moved.values())
+            found.append(PlanRun(run_id, rows, undone=set(moved) <= undone))
+    return tuple(found)
 
 
 def _moved(entry: JournalEntry, plan_id: str) -> bool:

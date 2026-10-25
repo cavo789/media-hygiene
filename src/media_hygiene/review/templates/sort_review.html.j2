@@ -47,6 +47,12 @@
   "sortedNothing": _("Every file of this event is already in its folder: nothing to move."),
   "sortedNotIntact": _("The run {run} ended, but its manifest does not check out: look at it before going on."),
   "sortedState": _("sorted: its files are in their folders"),
+  "inPlace": _("in place: nothing to move"),
+  "progressLine": _("Sorted: {events} events, {files} files ({share}) · already in place: {inPlace} files · left: {leftEvents} events, {leftFiles} files to move"),
+  "runLine": _("{when} · {events} · {files} files · undo {run}"),
+  "runUndone": _("{when} · {events} · {files} files · undone"),
+  "runMore": _("and {n} more"),
+  "noUnsorted": _("No event left to sort after this one."),
   "ruleFact": _("Rule:"),
   "rulePreview": _("This rule would take {files}: {mine} of this event, {others} of other events or folders on the same days."),
   "ruleFolders": _("Elsewhere: {folders}."),
@@ -143,6 +149,7 @@
   #rulesDlg tr.group th { padding-top: 10px; color: var(--accent); }
   #rulesDlg .sortBy { padding: 0; border: 0; font: inherit; font-weight: 600; background: none; color: inherit; cursor: pointer; }
   #sendDlg input { min-width: 24rem; }
+  #runList { margin: 4px 0; padding-left: 1.2rem; font-size: .85rem; } #runList li { overflow-wrap: anywhere; } #runList .undone { color: var(--muted); text-decoration: line-through; }
   .goes { color: var(--accent); overflow-wrap: anywhere; font-size: .85rem; }
   #goList { max-height: 50vh; overflow: auto; padding-left: 1.2rem; } #goList li { overflow-wrap: anywhere; margin: 2px 0; }
 {% include "rule_dialog.css.j2" %}
@@ -154,6 +161,8 @@
     <dl id="facts"></dl>
     <p id="conflict" class="conflict" hidden></p>
     <p><button type="button" id="rulesOpen" class="plain">📌 {{ _("Your rules") }}</button></p>
+    <p id="progress" class="muted" role="status"></p>
+    <details id="runs" hidden><summary>{{ _("The sort runs of this plan") }}</summary><ol id="runList"></ol></details>
   </section>
 {% endblock %}
 {% block keys %}
@@ -189,6 +198,7 @@
   <span class="batch">
     <label class="filter" title="{{ _('N, P and U skip the events already chosen and those whose proposal is sure') }}"><input type="checkbox" id="onlyDecide"> {{ _("Only the events to decide") }}</label>
     <label class="filter" title="{{ _('N and P walk only the events to decide whose proposal is sure, one by one, before accepting them') }}"><input type="checkbox" id="onlySure"> {{ _("Only the sure proposals") }}</label>
+    <label class="filter" title="{{ _('N, P and U walk only the events with files still to move: neither sorted nor in place') }}"><input type="checkbox" id="onlyUnsorted"> {{ _("Only the events not sorted yet") }}</label>
     <button type="button" id="sure" title="{{ _('Accept at once every event still to decide whose proposal is sure (V)') }}"></button>
     <button type="button" id="sureUndo" title="{{ _('Take back the last batch of sure proposals (Shift+Z)') }}" hidden></button>
   </span>
@@ -278,6 +288,9 @@ for (const key of ["Delete", "Backspace", "a"]) delete VIEWER_KEYS[key];
     return element;
   };
   const isOpen = (card) => card.undecided > 0 && !card.page && !card.workbook.text && !card.sorted;
+  // 0398: an event in place has nothing to move; one not sorted yet still has files to move.
+  const inPlace = (card) => !card.sorted && card.moves === 0 && !card.page && !card.workbook.text;
+  const unsorted = (card) => !card.sorted && !inPlace(card);
 
   const showTotals = () => {
     const chosen = events.filter((card) => card.page).length;
@@ -380,6 +393,7 @@ for (const key of ["Delete", "Backspace", "a"]) delete VIEWER_KEYS[key];
 {% include "sort_review_choice.js.j2" %}
 {% include "rule_dialog.js.j2" %}
 {% include "sort_review_rule.js.j2" %}
+{% include "sort_review_progress.js.j2" %}
 
   const go = (step) => {
     if (!mayLeave(() => go(step))) return;
@@ -392,8 +406,9 @@ for (const key of ["Delete", "Backspace", "a"]) delete VIEWER_KEYS[key];
   };
   const goOpen = () => {
     if (!mayLeave(goOpen)) return;
-    const next = events.findIndex((card, index) => index > current && isOpen(card) && visible(card));
-    if (next < 0) { setStatus(T.noOpen); showEvent(events[current]); showTotals(); return; }
+    const wanted = onlyUnsorted() ? unsorted : isOpen;
+    const next = events.findIndex((card, index) => index > current && wanted(card) && visible(card));
+    if (next < 0) { setStatus(onlyUnsorted() ? T.noUnsorted : T.noOpen); showEvent(events[current]); showTotals(); return; }
     load(next);
     window.scrollTo(0, 0);
   };
@@ -491,7 +506,7 @@ for (const key of ["Delete", "Backspace", "a"]) delete VIEWER_KEYS[key];
   byId("sortNow").addEventListener("click", sortNow);
   byId("sureUndo").addEventListener("click", undoSure);
   // Two filters, one at a time: the events to decide, or the sure proposals (0388).
-  const filters = { onlyDecide: positionKey + ":only-to-decide", onlySure: positionKey + ":only-sure" };
+  const filters = { onlyDecide: positionKey + ":only-to-decide", onlySure: positionKey + ":only-sure", onlyUnsorted: positionKey + ":only-unsorted" };
   for (const [box, key] of Object.entries(filters)) {
     try { byId(box).checked = window.localStorage.getItem(key) === "1"; } catch (error) { /* private browsing */ }
     byId(box).addEventListener("change", (event) => {
@@ -502,7 +517,8 @@ for (const key of ["Delete", "Backspace", "a"]) delete VIEWER_KEYS[key];
       event.target.blur();  // the keys work again
     });
   }
-  if (byId("onlyDecide").checked && byId("onlySure").checked) byId("onlySure").checked = false;
+  if (byId("onlyDecide").checked) byId("onlySure").checked = byId("onlyUnsorted").checked = false;
+  if (byId("onlySure").checked) byId("onlyUnsorted").checked = false;
 
   fetch(P.state)
     .then((response) => response.json())
@@ -514,6 +530,7 @@ for (const key of ["Delete", "Backspace", "a"]) delete VIEWER_KEYS[key];
       const resumed = events.findIndex((card) => card.id === saved);
       const first = events.findIndex(isOpen);
       showSure();
+      showProgress();
       if (events.length) load(resumed >= 0 ? resumed : Math.max(first, 0));
     })
     .catch(() => setStatus(T.offline, "error"));

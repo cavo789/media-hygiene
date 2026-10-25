@@ -34,6 +34,7 @@ from media_hygiene.review.sort_choices import (
 from media_hygiene.review.sort_files import RuleBook, SortSource
 from media_hygiene.review.sort_now import SORT_NOW_PATH
 from media_hygiene.review.sort_rule_choices import (
+    PROGRESS_PATH,
     RULE_PATH,
     RULE_PREVIEW_PATH,
     RULES_PATH,
@@ -128,6 +129,7 @@ def sort_page(session: SortBatchSession) -> str:
             "sure": SURE_PATH,
             "destination": DESTINATION_PATH,
             "sortNow": SORT_NOW_PATH,
+            "progress": PROGRESS_PATH,
             "rulePreview": RULE_PREVIEW_PATH,
             "rule": RULE_PATH,
             "rules": RULES_PATH,

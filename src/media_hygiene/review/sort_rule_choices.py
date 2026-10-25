@@ -26,6 +26,7 @@ RULE_PREVIEW_PATH: Final = "/api/rule/preview"
 RULE_PATH: Final = "/api/rule"
 RULES_PATH: Final = "/api/rules"  # GET: *Your rules* (0393)
 RULES_REMOVE_PATH: Final = "/api/rules/remove"
+PROGRESS_PATH: Final = "/api/progress"  # GET: sorted, in place, left; the runs (0398)
 
 
 class _RemoveIn(BaseModel):

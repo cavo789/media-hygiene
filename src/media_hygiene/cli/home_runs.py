@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from media_hygiene.actions.run_stamps import run_started
 from media_hygiene.cli.status_view import ago, when
 from media_hygiene.console.formatting import human_number, human_size
 from media_hygiene.i18n import _
 from media_hygiene.review.home_parts import HomeQuarantine, HomeUndo, HomeUpdate
 from media_hygiene.services.launcher_host import UPDATE
 from media_hygiene.services.next_command import LAUNCHER_FUNCTION
-from media_hygiene.services.status_parts import run_started
 from media_hygiene.services.update_check import newer_version
 
 if TYPE_CHECKING:
