@@ -17,6 +17,7 @@ SCRIPTS: Final = Path(__file__).parent  # the .js files lie next to this one
 SHOTS: Final = Path("/shots")
 SERVED: Final = "http://127.0.0.1:8088/"
 SHOTS_SHOWN_JS: Final = (SCRIPTS / "shots_shown.js").read_text(encoding="utf-8")
+EAGER_JS: Final = (SCRIPTS / "eager_images.js").read_text(encoding="utf-8")
 # A frame of each video drawn, not a black box: seek a little, wait for the picture.
 VIDEO_SEEK_JS: Final = (
     "() => document.querySelectorAll('#shots video')"
@@ -27,7 +28,7 @@ VIDEO_SHOWN_JS: Final = (
     ".every((video) => video.readyState >= 2 && !video.seeking)"
 )
 HITS_SHOWN_JS: Final = (
-    "() => document.querySelectorAll('#grid .hit').length > 0 && "
+    "() => document.querySelectorAll('#grid article').length > 0 && "
     "[...document.querySelectorAll('#grid img')].every((image) => image.complete)"
 )
 FACES_SHOWN_JS: Final = (
@@ -41,7 +42,7 @@ TILES_SHOWN_JS: Final = (
     "tiles.every((tile) => tile.classList.contains('leaflet-tile-loaded')); }"
 )
 PREVIEWS_SHOWN_JS: Final = (
-    "() => [...document.querySelectorAll('#previews img')]"
+    "() => [...document.querySelectorAll('.thumbs img')]"
     ".every((image) => image.complete)"
 )
 AUDIT_MS: Final = 300_000
@@ -126,14 +127,18 @@ def junk(page: Page) -> None:
 def home(page: Page) -> None:
     """The home page after its own audit: the steps with their times, the next step."""
     page.goto(SERVED)
-    page.wait_for_selector("#guides *")
+    page.wait_for_selector("#auditStart")
     page.click("#auditStart")
     page.wait_for_selector("#auditEnd a", timeout=AUDIT_MS)  # link to the new report
-    page.wait_for_selector("#previews img", timeout=AUDIT_MS)
+    page.wait_for_selector(".thumbs img", timeout=AUDIT_MS)
+    page.evaluate(EAGER_JS)  # lazy thumbnails: a full-page shot shows them all
     page.wait_for_function(PREVIEWS_SHOWN_JS)
+    # The fixed sidebar and top bar drawn once, at the top: no scroll, no skip link.
+    page.evaluate("() => { document.activeElement.blur(); window.scrollTo(0, 0); }")
+    _fit(page)
     page.mouse.move(5, 5)
     page.wait_for_timeout(PAUSE_MS)
-    page.screenshot(path=SHOTS / "home.png", full_page=True)
+    page.screenshot(path=SHOTS / "home.png")
 
 
 def browse(page: Page, name: str) -> None:
@@ -151,7 +156,7 @@ def browse(page: Page, name: str) -> None:
     )
     page.locator(f'.folder[data-path$="{name}"]').first.click()
     page.wait_for_selector("#grid article")
-    page.wait_for_function(HITS_SHOWN_JS.replace("#grid .hit", "#grid article"))
+    page.wait_for_function(HITS_SHOWN_JS)
     page.locator("#grid article").nth(1).click()
     page.locator("#grid article").nth(2).click(modifiers=["Control"])
     page.click("#setAside")
