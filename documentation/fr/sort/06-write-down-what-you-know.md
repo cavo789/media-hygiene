@@ -37,6 +37,8 @@ category = "Fêtes/Noël"
 - `category` : où vont les fichiers, par le `{category}` du modèle. Sans catégorie, les fichiers
   que la règle reconnaît **restent où ils sont**.
 - `score` (facultatif) : à quel point la règle est sûre, de 0 à 100 (plus bas).
+- `keep_folders = true` (facultatif) : les dossiers que vous avez nommés restent sous la
+  catégorie (plus bas).
 
 > 💡 Les règles se lisent dans `config.toml` seulement : contrairement aux autres réglages,
 > aucune variable d'environnement `MEDIA_HYGIENE_*` ne les remplace.
@@ -74,6 +76,24 @@ de ses photos tombent sur ses jours. Un réveillon qui se termine à 3 heures du
 entier ; une semaine de ski qui contient un anniversaire reste une semaine de ski. Deux règles
 `date_range` qui partagent un jour donnent un avertissement : ces jours-là, la première de la
 liste l'emporte.
+
+**Un voyage déjà trié dans vos dossiers.** Une règle de dates au-dessus de *Dossiers existants*
+prend toutes les photos de ses jours, celles de vos propres dossiers aussi : écrite seule, elle
+mettrait `2019/Montenegro/Budva` et `2019/Montenegro/Cetinje` à plat dans sa catégorie. Avec
+`keep_folders = true`, la catégorie devient leur parent et vos dossiers restent dessous :
+
+```toml
+[[classify.rules]]
+name = "Monténégro"
+match = "date_range"
+dates = "2019-07-12..2019-07-19"
+category = "Vacances et sorties/Monténégro"
+keep_folders = true
+```
+
+donne `2019/Vacances et sorties/Monténégro/Budva` et `…/Monténégro/Cetinje` ; les photos du
+dossier d'une personne prises les mêmes jours suivent le dossier de leur moment
+([plus bas](#les-dossiers-de-votre-famille)), les autres vont dans `…/Monténégro`.
 
 ### Les genres de fichiers
 

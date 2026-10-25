@@ -6,11 +6,19 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import TYPE_CHECKING
+
+import pytest
 
 from media_hygiene.classify.engine import Scope, classify
 from media_hygiene.classify.models import Band, MediaInput, SortReason
+from media_hygiene.classify.rules.kinds import RuleMatch
+from media_hygiene.config.classify_rules import ClassifyRule
 from media_hygiene.config.classify_settings import ClassifySettings
 from tests.unit.test_classify_engine import ROOT, by_name, shot
+
+if TYPE_CHECKING:
+    from media_hygiene.classify.models import Proposal
 
 SETTINGS = ClassifySettings()
 CHLOE = Scope(people=("Chloé",))
@@ -124,3 +132,77 @@ def test_a_trip_folder_is_never_a_generic_one() -> None:
     found = by_name(classify(files, SETTINGS, CHLOE).proposals)
     assert found["c.jpg"].reason is SortReason.PERSON_FOLDER
     assert found["c.jpg"].target == ROOT / "2019" / "Photos Chloé"
+
+
+# 0391: a rule's category becomes the parent of the folders the user named.
+TRIP_RULE = ClassifyRule(
+    name="Montenegro",
+    match=RuleMatch.DATE_RANGE,
+    dates="2019-07-12..2019-07-14",
+    category="Vacances et sorties/Montenegro",
+    keep_folders=True,
+)
+
+
+def with_rule(rule: ClassifyRule) -> ClassifySettings:
+    """The default settings, a rule written above them."""
+    return ClassifySettings(rules=(rule, *ClassifySettings().rules))
+
+
+def categories(found: dict[str, Proposal], names: tuple[str, ...]) -> list[str]:
+    """The category proposed for each file named."""
+    return [found[name].values.category for name in names]  # type: ignore[union-attr]
+
+
+def test_a_rule_keeping_folders_puts_them_below_its_category() -> None:
+    """Budva, Cetinje stay below the rule's folder; the daughters' photos follow."""
+    chloe = day("2019/Photos Chloé", (12, 11, 13, 23))
+    run = classify([*trip(), *chloe], with_rule(TRIP_RULE), CHLOE)
+    found = by_name(run.proposals)
+    trip_folder = "Vacances et sorties/Montenegro"
+    assert categories(
+        found, ("Budva-12-10.jpg", "Cetinje-13-9.jpg", "Lovcen-14-8.jpg")
+    ) == [
+        f"{trip_folder}/Budva",
+        f"{trip_folder}/Cetinje",
+        f"{trip_folder}/Lovcen",
+    ]
+    assert categories(found, ("Photos Chloé-12-11.jpg",)) == [f"{trip_folder}/Budva"]
+    assert categories(found, ("Photos Chloé-13-23.jpg",)) == [trip_folder]
+    assert found["Budva-12-10.jpg"].rule == "Montenegro"
+    assert found["Budva-12-10.jpg"].band is Band.SURE
+    assert found["Budva-12-10.jpg"].target == (
+        ROOT / "2019" / "Vacances et sorties" / "Montenegro" / "Budva"
+    )
+
+
+def test_without_keep_folders_the_rule_puts_the_trip_flat() -> None:
+    """Today's rule: every photo of the dates in its one folder."""
+    flat = TRIP_RULE.model_copy(update={"keep_folders": False})
+    found = by_name(classify(trip(), with_rule(flat), Scope()).proposals)
+    assert set(categories(found, ("Budva-12-10.jpg", "Cetinje-13-9.jpg"))) == {
+        "Vacances et sorties/Montenegro"
+    }
+
+
+def test_one_named_folder_becomes_the_rule_category() -> None:
+    """No `Montenegro/Budva` below: the one folder is the rule's category."""
+    files = [
+        *day("2019/Montenegro/Budva", (12, 10, 12, 12, 12, 14, 12, 16)),
+        shot("DCIM/loose.jpg", datetime(2019, 7, 12, 11)),
+    ]
+    found = by_name(classify(files, with_rule(TRIP_RULE), Scope()).proposals)
+    assert set(categories(found, ("Budva-12-10.jpg", "loose.jpg"))) == {
+        "Vacances et sorties/Montenegro"
+    }
+
+
+def test_keep_folders_needs_a_category() -> None:
+    """Nothing to keep the folders below: refused, the rule named."""
+    with pytest.raises(ValueError, match="Montenegro"):
+        ClassifyRule(
+            name="Montenegro",
+            match=RuleMatch.DATE_RANGE,
+            dates="2019-07-12..2019-07-14",
+            keep_folders=True,
+        )

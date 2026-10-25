@@ -10831,6 +10831,20 @@ msgstr "garder ou mettre de côté la photo sous le curseur"
 msgid "keep the other version, then next"
 msgstr "garder l'autre version, puis suivant"
 
+msgid ""
+"keep_folders = true: the folders you named stay below the rule's category"
+" (a trip you sorted into 2019/Montenegro/Budva and .../Cetinje: Holidays "
+"and outings/Montenegro/Budva, .../Cetinje), instead of all its photos "
+"flat in it."
+msgstr ""
+"keep_folders = true : les dossiers que vous avez nommés restent sous la "
+"catégorie de la règle (un voyage trié dans 2019/Montenegro/Budva et "
+".../Cetinje : Vacances et sorties/Montenegro/Budva, .../Cetinje), au lieu"
+" de toutes ses photos à plat dedans."
+
+msgid "keep_folders needs a category to keep the folders below"
+msgstr "keep_folders demande une catégorie sous laquelle garder les dossiers"
+
 msgid "keeps its copies"
 msgstr "garde ses copies"
 

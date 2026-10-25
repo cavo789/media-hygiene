@@ -37,6 +37,7 @@ category = "Parties/Christmas"
 - `category`: where the files go, through the `{category}` of the layout. Without a category,
   the files the rule matches **stay where they are**.
 - `score` (optional): how sure the rule is, from 0 to 100 (below).
+- `keep_folders = true` (optional): the folders you named stay below the category (below).
 
 > 💡 The rules are read from `config.toml` only: unlike the other settings, no
 > `MEDIA_HYGIENE_*` environment variable overrides them.
@@ -73,6 +74,24 @@ an event goes to the rule when at least half of its photos fall on its days. A N
 party that ends at 3 in the morning stays whole; a week of skiing that holds a birthday stays a
 week of skiing. Two `date_range` rules sharing a day are a warning: on those days, the first
 one listed wins.
+
+**A trip you already sorted into folders.** A date rule above *Existing folders* takes every
+photo of its days, those of your own folders too: written alone, it would put
+`2019/Montenegro/Budva` and `2019/Montenegro/Cetinje` flat in its category. With
+`keep_folders = true`, the category becomes their parent and your folders stay below it:
+
+```toml
+[[classify.rules]]
+name = "Montenegro"
+match = "date_range"
+dates = "2019-07-12..2019-07-19"
+category = "Holidays and outings/Montenegro"
+keep_folders = true
+```
+
+gives `2019/Holidays and outings/Montenegro/Budva` and `…/Montenegro/Cetinje`; the photos of a
+person's folder taken the same days follow the folder of their moment
+([below](#your-familys-folders)), the others go to `…/Montenegro`.
 
 ### Kinds of files
 

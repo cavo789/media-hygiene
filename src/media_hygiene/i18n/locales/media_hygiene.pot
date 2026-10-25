@@ -8995,6 +8995,16 @@ msgstr ""
 msgid "keep the other version, then next"
 msgstr ""
 
+msgid ""
+"keep_folders = true: the folders you named stay below the rule's category"
+" (a trip you sorted into 2019/Montenegro/Budva and .../Cetinje: Holidays "
+"and outings/Montenegro/Budva, .../Cetinje), instead of all its photos "
+"flat in it."
+msgstr ""
+
+msgid "keep_folders needs a category to keep the folders below"
+msgstr ""
+
 msgid "keeps its copies"
 msgstr ""
 

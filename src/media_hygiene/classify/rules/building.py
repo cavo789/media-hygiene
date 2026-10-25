@@ -65,6 +65,8 @@ class RuleFacts:
     where: Whereabouts = field(
         default_factory=Whereabouts
     )  # personal places and trips, from the GPS
+    # Event id → the folders the user named in it (`keep_folders`, 0391).
+    named: Mapping[str, tuple[str, ...]] = field(default_factory=dict)
 
 
 def build_test(rule: ClassifyRule, facts: RuleFacts) -> Test:
