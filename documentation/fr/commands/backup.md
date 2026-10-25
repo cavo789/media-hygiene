@@ -43,7 +43,9 @@ refuse un tel dossier et nomme les deux. Chaque dossier de photos va dessous par
 chemin, le lecteur comme dossier : `C:\Photos` dans `\\NAS\backup_photos\C\Photos`, pour que
 deux dossiers du même nom ne se rencontrent jamais. Le dossier donné avec `--to` est retenu
 (`%USERPROFILE%\media-hygiene\backup-target.txt`), relu et affiché ; le mot de passe du NAS est
-celui que `mh folders add --backup` a gardé, sinon demandé une fois.
+celui que `mh folders add --backup` a gardé, sinon demandé une fois. Si Windows ne peut pas
+encore ouvrir le partage, il reçoit une lettre de lecteur libre (`Z:` d'abord) le temps du
+passage, retirée ensuite.
 
 ## Ce que fait un passage
 

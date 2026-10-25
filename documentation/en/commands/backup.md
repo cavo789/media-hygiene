@@ -42,7 +42,9 @@ which no command changes), never a photo folder, never inside one: `mh` refuses 
 and names both. Each photo folder goes below it by its own path, the drive as a folder:
 `C:\Photos` into `\\NAS\backup_photos\C\Photos`, so two folders of the same name never meet.
 The folder given with `--to` is kept (`%USERPROFILE%\media-hygiene\backup-target.txt`), read back
-and said; the NAS's password is the one `mh folders add --backup` kept, else asked once.
+and said; the NAS's password is the one `mh folders add --backup` kept, else asked once. When
+Windows cannot open the share yet, it gets a free drive letter (`Z:` first) for the time of the
+run, removed after.
 
 ## What a run does
 

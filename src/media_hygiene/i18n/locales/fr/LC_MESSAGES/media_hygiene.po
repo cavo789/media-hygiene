@@ -3816,6 +3816,14 @@ msgstr ""
 "Ses messages sont juste au-dessus. Relancez 'crosscheck', ou 'crosscheck "
 "--print-command' pour lancer Czkawka vous-même."
 
+#, python-brace-format
+msgid "Its share of the sharpest faces' sharpness; its faces' score: {score}"
+msgstr "Sa part de la netteté des visages les plus nets ; score de ses visages : {score}"
+
+#, python-brace-format
+msgid "Its share of the sharpest shot's sharpness; its own score: {score}"
+msgstr "Sa part de la netteté de la plus nette ; son score : {score}"
+
 msgid ""
 "Its window was closed (or Ctrl+C was pressed in it). You can close this "
 "tab. To open it again: type mh in PowerShell, or double-click the Desktop"
@@ -7151,14 +7159,6 @@ msgstr "Partager vos photos"
 
 msgid "Sharpness"
 msgstr "Netteté"
-
-msgid "Sharpness of the faces in the shot, and its share of the sharpest faces'"
-msgstr ""
-"Netteté des visages de la photo, et sa part de celle des visages les plus"
-" nets"
-
-msgid "Sharpness of the shot, and its share of the sharpest one's"
-msgstr "Netteté de la photo, et sa part de celle de la plus nette"
 
 msgid ""
 "Shots of one camera, taken seconds apart. This is not duplication: "

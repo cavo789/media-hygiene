@@ -164,8 +164,9 @@ function global:_{{ f }}_backup_move([string]$from, [string]$to, [string]$root) 
 
 # The target, read-only for the container: a share of the NAS in a Docker volume (SMB3,
 # the password kept for that NAS, else asked), a drive's folder as a folder. Windows itself
-# must open it too: a share it cannot open yet gets the same user name and password for this
-# window only (New-PSDrive, removed after). $null when the target cannot be reached.
+# must open it too: a share it cannot open yet gets the same user name and password on a free
+# drive letter (New-PSDrive -Persist: robocopy needs a real SMB session; removed after).
+# $null when the target cannot be reached.
 function global:_{{ f }}_backup_mount([string]$to) {
     $made = @{ mounts = @(); volumes = @(); drive = '' }
     $target = $to
@@ -186,8 +187,8 @@ function global:_{{ f }}_backup_mount([string]$to) {
         $made.volumes += $volume
         $made.mounts += '-v', ("${volume}:{{ script.data_dir.as_posix() }}/{{ b.unc }}/$address/${share}:ro")
         if (-not (Test-Path -LiteralPath $unc)) {
-            $name = 'mhbackup' + $PID
-            try { $null = New-PSDrive -Name $name -PSProvider FileSystem -Root $unc -Credential $credential -Scope Global -ErrorAction Stop; $made.drive = $name } catch { }
+            $name = @(foreach ($l in 'Z', 'Y', 'X', 'W', 'V', 'U', 'T', 'S', 'R', 'Q', 'P') { if (-not (Test-Path -LiteralPath "${l}:\")) { $l } })[0]
+            if ($name) { try { $null = New-PSDrive -Name $name -PSProvider FileSystem -Root $unc -Credential $credential -Persist -Scope Global -ErrorAction Stop; $made.drive = $name } catch { } }
         }
         if ($fresh -and (Read-Host "{{ nas.keep }}") -match '^[yYoO]') {
             $null = New-Item -ItemType Directory -Force -Path (Split-Path -Parent $own)

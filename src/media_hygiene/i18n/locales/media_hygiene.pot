@@ -3110,6 +3110,14 @@ msgid ""
 "command' to run Czkawka yourself."
 msgstr ""
 
+#, python-brace-format
+msgid "Its share of the sharpest faces' sharpness; its faces' score: {score}"
+msgstr ""
+
+#, python-brace-format
+msgid "Its share of the sharpest shot's sharpness; its own score: {score}"
+msgstr ""
+
 msgid ""
 "Its window was closed (or Ctrl+C was pressed in it). You can close this "
 "tab. To open it again: type mh in PowerShell, or double-click the Desktop"
@@ -5910,12 +5918,6 @@ msgid "Share your photos"
 msgstr ""
 
 msgid "Sharpness"
-msgstr ""
-
-msgid "Sharpness of the faces in the shot, and its share of the sharpest faces'"
-msgstr ""
-
-msgid "Sharpness of the shot, and its share of the sharpest one's"
 msgstr ""
 
 msgid ""

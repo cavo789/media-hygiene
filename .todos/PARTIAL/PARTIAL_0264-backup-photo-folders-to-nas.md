@@ -218,3 +218,10 @@ PowerShell command in it, the exit code; the `commands/backup.md` page (en + fr)
   move) and a first real `mh backup` of `C:\Photos`, then a second that copies nothing.
   **Reason:** Windows + Docker Desktop + the DS216j only; the PowerShell never ran here.
   `docs_screenshots` to run (help capture, history, home).
+
+## Decided (2026-10-25, review of the feedback of 2026-10-21)
+
+Windows opens the share on a **mapped drive letter** at once (`New-PSDrive -Persist`, the first
+free of Z…P, removed after: the pattern of `mh-measure.ps1` step 21d, which worked on the
+maintainer's PC), no longer a letter-less drive. Done in `mh_backup.ps1.j2`; step 27a still
+says whether the letter-less one would have sufficed (for the record only).

@@ -16,8 +16,8 @@
   "kept": "✅ " ~ _("kept"),
   "aside": "📦 " ~ _("set aside"),
   "protected": "🔒 " ~ _("protected folder, kept"),
-  "scoreTitle": _("Sharpness of the shot, and its share of the sharpest one's"),
-  "scoreFacesTitle": _("Sharpness of the faces in the shot, and its share of the sharpest faces'"),
+  "scoreTitle": _("Its share of the sharpest shot's sharpness; its own score: {score}"),
+  "scoreFacesTitle": _("Its share of the sharpest faces' sharpness; its faces' score: {score}"),
   "sharpest": "⭐ " ~ _("sharpest"),
   "sharpestFaces": "⭐ " ~ _("faces sharpest"),
   "suggested": _("suggestion"),
@@ -287,11 +287,11 @@
   };
 
   const scoreBadge = (shot) => {
-    // The figure the proposals compare (faces' when they decide); the sharpest one stands out.
+    // The share of the figure the proposals compare (faces' when they decide); the score in the tooltip.
     if (!shot.score) return document.createComment("no score");
-    const text = shot.best ? "⭐ " + shot.score : "🔍 " + shot.score + " · " + Math.round(shot.share * 100) + " %";
-    const badge = line("span", text, shot.best ? "score best" : "score");
-    badge.title = shot.faces ? T.scoreFacesTitle : T.scoreTitle;
+    const share = Math.round((shot.best ? 1 : shot.share) * 100) + " %";
+    const badge = line("span", (shot.best ? "⭐ " : "🔍 ") + share, shot.best ? "score best" : "score");
+    badge.title = (shot.faces ? T.scoreFacesTitle : T.scoreTitle).replace("{score}", shot.score);
     return badge;
   };
 
