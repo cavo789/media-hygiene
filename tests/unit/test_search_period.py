@@ -10,7 +10,8 @@ from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.config.classify_rules import ClassifyRule
 from media_hygiene.index.descriptions import PhotoVersion
 from media_hygiene.search.models import Hit
-from media_hygiene.search.rule_models import PeriodRuleIn, Tried, dated_rules, wider
+from media_hygiene.search.rule_models import PeriodRuleIn, Tried, dated_rules
+from media_hygiene.search.rule_shown import reaches, wider
 from media_hygiene.search.views import SearchAsked
 from media_hygiene.services.rule_trial import tried_rules
 
@@ -91,3 +92,15 @@ def test_an_event_mostly_outside_the_days_is_offered_whole() -> None:
         {"first": "2005-06-07", "last": "2005-06-09", "files": 46, "here": 3}
     ]
     assert wider(hits, tried, parse_one_off("2005-06-07..2005-06-09")) == []
+    later = Hit(9, PhotoVersion(Path("/data/c/9.jpg"), 1, 1), "2005-06-09", {})
+    with_later = {**tried, later.photo.path: left}
+    assert wider([*hits, later], with_later, window)[0]["here"] == len(hits)
+
+
+def test_an_event_reaching_the_edge_read_asks_for_more_days() -> None:
+    """The trial reads further while an event starts or ends on a day at the edge."""
+    days = (date(2005, 6, 6), date(2005, 6, 8))
+    cut = Tried("x", "r", taken=False, event=("2005-06-07", "2005-06-08", 38))
+    whole = Tried("x", "r", taken=False, event=("2005-06-07", "2005-06-07", 14))
+    assert reaches([cut], days)
+    assert not reaches([whole, Tried("x", "r", taken=False)], days)

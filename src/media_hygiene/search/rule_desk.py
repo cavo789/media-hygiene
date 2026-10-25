@@ -34,10 +34,8 @@ from media_hygiene.search.rule_models import (
     dated_rules,
     line,
     refused_rule,
-    shown_in,
-    where_of,
-    wider,
 )
+from media_hygiene.search.rule_shown import reaches, shown_in, where_of, wider
 from media_hygiene.search.views import found_view
 
 if TYPE_CHECKING:
@@ -56,6 +54,7 @@ PERIOD_RULES_PATH: Final = "/api/period-rules"
 RULE_POSTS: Final = frozenset({RULE_TRIAL_PATH, RULE_SAVE_PATH})
 # An evening ending after midnight stays one event: the day before and after are read.
 _MARGIN: Final = timedelta(days=1)
+_WIDEST: Final = timedelta(days=7)  # an event longer than a week is cut there
 _TRIED_MAX: Final = 3000  # files tried at most: a few days hold a few hundred
 _NANOSECONDS: Final = 1_000_000_000
 
@@ -74,7 +73,11 @@ class RuleDesk:
     def run_trial(
         self, asked: PeriodRuleIn, rule: ClassifyRule
     ) -> tuple[Found, Mapping[Path, Tried]]:
-        """Try a rule on the files of its days, and the day before and after.
+        """Try a rule on the files of its days, and of the whole events they belong to.
+
+        The days around are read too, one more at a time while an event reaches the
+        edge of what was read (at most `_WIDEST` more): each event is then whole, as
+        `classify` will see it.
 
         Args:
             asked: The rule typed, the rule it replaces.
@@ -84,10 +87,15 @@ class RuleDesk:
             The files read, and where each one would go.
         """
         window = parse_one_off(rule.dates)
-        days = (window.start - _MARGIN, window.end + _MARGIN)
-        found = self.index.find(SearchQuery((), Filters(days=days)), _TRIED_MAX)
-        files = [hit.photo for hit in found.hits]
-        return found, self.trial(RuleTry(rule, asked.replaces, files))
+        margin = _MARGIN
+        while True:
+            days = (window.start - margin, window.end + margin)
+            found = self.index.find(SearchQuery((), Filters(days=days)), _TRIED_MAX)
+            files = [hit.photo for hit in found.hits]
+            tried = self.trial(RuleTry(rule, asked.replaces, files))
+            if margin >= _WIDEST or not reaches(tried.values(), days):
+                return found, tried
+            margin += _MARGIN
 
     def posts(self) -> dict[str, Callable[[bytes], Response]]:
         """The answers to the page's JSON bodies, by path.

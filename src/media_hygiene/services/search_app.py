@@ -99,6 +99,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "rule_save_path": RULE_SAVE_PATH,
         "period_rules_path": PERIOD_RULES_PATH,
         "rule_go_path": RULE_GO_PATH,
+        "event_gap_hours": event_gap_hours(runtime),
         "apply_offered": build.apply is not None,
     }
     pages = SearchPages(
@@ -121,6 +122,19 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         rule_desk(runtime, search),
     )
     return SearchApp(place, pages, build.executor)
+
+
+def event_gap_hours(runtime: Runtime) -> float:
+    """The longest gap between two photos of one event, as `classify` groups them.
+
+    Args:
+        runtime: Settings.
+
+    Returns:
+        Hours: the larger of `session_gap_hours` and `merge_gap_hours`.
+    """
+    classify = runtime.settings.classify
+    return max(classify.session_gap_hours, classify.merge_gap_hours)
 
 
 def rule_desk(runtime: Runtime, search: SearchIndex) -> RuleDesk:

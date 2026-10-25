@@ -12,6 +12,7 @@ const RULE_TRIAL_PATH = {{ rule_trial_path | tojson }};
 const RULE_SAVE_PATH = {{ rule_save_path | tojson }};
 const PERIOD_RULES_PATH = {{ period_rules_path | tojson }};
 const RULE_GO_PATH = {{ rule_go_path | tojson }};
+const EVENT_GAP_HOURS = {{ event_gap_hours | tojson }};
 let ruleReplaces = "";    // the name of the rule *Update a rule…* chose
 let ruleTrial = 0;        // the trial shown: an older answer is dropped
 let dated = [];           // the date rules of config.toml, the latest first
@@ -37,13 +38,18 @@ async function tryRule() {
   if (!response.ok) { ruleSay(answer.error || fill(TEXTS.failed, { status: response.status }), true); return; }
   total = answer.hits.length;
   tried = answer;
-  showFiles(answer.hits.map((hit) => (leftHere.has(hit.key) ? { ...hit, left: true } : hit)), false);
+  // A photo of the same event taken on another day than the rule's: said on its card.
+  const first = ruleEl("ruleFirst").value;
+  const last = ruleEl("ruleLast").value || first;
+  const marked = answer.hits.map((hit) => ({ ...hit, otherDay: !hit.taken && Boolean(hit.date) && (hit.date < first || hit.date > last) }));
+  showFiles(marked.map((hit) => (leftHere.has(hit.key) ? { ...hit, left: true } : hit)), false);
   showGo();
   const folders = answer.folders.map((one) => one.files + " → " + (one.folder || TEXTS.stays)).join(" · ");
   const parts = [fill(TEXTS.ruleTook, { files: counted(TEXTS.nFiles, answer.taken), folders: folders || "—" })];
   if (answer.left) parts.push(fill(TEXTS.ruleLeft, { n: answer.left }));
   // An event most of whose files fall outside the days is left whole: say it, offer to widen.
   for (const event of answer.wider) parts.push(fill(TEXTS.ruleWider, event));
+  if (answer.wider.length) parts.push(fill(TEXTS.ruleEvent, { hours: EVENT_GAP_HOURS }));
   showWiden(answer.wider);
   if (answer.overlaps.length) parts.push(fill(TEXTS.ruleOverlaps, { rules: answer.overlaps.join(", ") }));
   if (answer.cut) parts.push(TEXTS.ruleCut);

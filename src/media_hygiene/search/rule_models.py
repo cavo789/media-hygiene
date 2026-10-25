@@ -20,13 +20,10 @@ if TYPE_CHECKING:
 
     from pydantic import ValidationError
 
-    from media_hygiene.classify.rules.calendar import OneOff
     from media_hygiene.index.descriptions import PhotoVersion
     from media_hygiene.review.http import Response
-    from media_hygiene.search.models import Hit
 
 SEPARATOR: Final = "/"
-WINDOWS: Final = "\\"
 
 
 @dataclass(frozen=True, slots=True)
@@ -115,74 +112,6 @@ def line(rule: ClassifyRule) -> dict[str, object]:
         "category": rule.category,
         "keep_folders": rule.keep_folders,
     }
-
-
-def shown_in(hit: Hit, tried: Mapping[Path, Tried], window: OneOff) -> bool:
-    """Tell whether a file is shown: the rule takes it, or it is of its days.
-
-    Args:
-        hit: The file.
-        tried: Where each file would go.
-        window: The rule's days.
-
-    Returns:
-        True when it is.
-    """
-    where = tried.get(hit.photo.path)
-    if where is not None and where.taken:
-        return True
-    return hit.date is not None and window.contains(date.fromisoformat(hit.date))
-
-
-def where_of(tried: Tried | None) -> dict[str, object]:
-    """Where one file would go, for its card.
-
-    Args:
-        tried: What the trial said of it; None: not classified (not a media file).
-
-    Returns:
-        `to` (the folder, as Windows writes it; empty: it stays), `by` (the rule that
-        decides), `taken`.
-    """
-    if tried is None:
-        return {"to": "", "by": "", "taken": False}
-    folder = (tried.folder or "").replace(SEPARATOR, WINDOWS)
-    return {"to": folder, "by": tried.rule, "taken": tried.taken}
-
-
-def wider(
-    hits: Sequence[Hit], tried: Mapping[Path, Tried], window: OneOff
-) -> list[dict[str, object]]:
-    """The events the rule leaves because most of their files fall outside its days.
-
-    A date rule takes an event when at least half of its files fall on its days: an
-    evening shot on two days, typed as one, is left whole. The page then offers to
-    widen the period to the event's days.
-
-    Args:
-        hits: The files shown.
-        tried: Where each file would go, and its event.
-        window: The rule's days.
-
-    Returns:
-        Each such event's first and last day, its files, and how many of them are on
-        the rule's days.
-    """
-    events: dict[tuple[str, str, int], int] = {}
-    for hit in hits:
-        where = tried.get(hit.photo.path)
-        if where is None or where.taken or where.event is None:
-            continue
-        first, last, _files = where.event
-        inside = window.contains(date.fromisoformat(first)) and window.contains(
-            date.fromisoformat(last)
-        )
-        if not inside:
-            events[where.event] = events.get(where.event, 0) + 1
-    return [
-        {"first": first, "last": last, "files": files, "here": here}
-        for (first, last, files), here in events.items()
-    ]
 
 
 def refused_rule(error: ValidationError) -> Response:

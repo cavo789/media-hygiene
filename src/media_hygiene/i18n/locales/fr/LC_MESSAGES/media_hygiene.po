@@ -1092,6 +1092,16 @@ msgstr ""
 "identique octet par octet à celle conservée ; 'clean' les compare encore "
 "juste avant de supprimer."
 
+#, python-brace-format
+msgid ""
+"An event: photos taken less than {hours} hours apart (merge_gap_hours in "
+"config.toml), as classify groups them; its photos of the other days are "
+"shown too, greyed."
+msgstr ""
+"Un événement : des photos prises à moins de {hours} heures d'écart "
+"(merge_gap_hours dans config.toml), comme classify les regroupe ; ses photos"
+" des autres jours sont montrées aussi, grisées."
+
 msgid "An icon on the Desktop and in the Start menu"
 msgstr "Une icône sur le Bureau et dans le menu Démarrer"
 
@@ -11921,6 +11931,10 @@ msgstr "exécution"
 msgid "run 'clean' to set {size} of copies aside."
 msgstr "lancez 'clean' pour mettre {size} de copies de côté."
 
+#, python-brace-format
+msgid "same event, another day ({date}): {rule}"
+msgstr "même événement, autre jour ({date}) : {rule}"
+
 msgid "same streams"
 msgstr "mêmes flux"
 
@@ -14169,9 +14183,9 @@ msgid ""
 "({files} files): a date rule takes an event only when at least half of "
 "its files fall on its days."
 msgstr ""
-"{here} fichiers de ces jours font partie d'un événement du {first} au {last}"
-" ({files} fichiers) : une règle de dates ne prend un événement que si au "
-"moins la moitié de ses fichiers tombent sur ses jours."
+"{here} fichiers de ces jours font partie d'un événement du {first} au "
+"{last} ({files} fichiers) : une règle de dates ne prend un événement que "
+"si au moins la moitié de ses fichiers tombent sur ses jours."
 
 #, python-brace-format
 msgid "{host} answered something that is not a search result."

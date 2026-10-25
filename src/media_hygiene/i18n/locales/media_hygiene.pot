@@ -857,6 +857,13 @@ msgid ""
 "deleting."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"An event: photos taken less than {hours} hours apart (merge_gap_hours in "
+"config.toml), as classify groups them; its photos of the other days are "
+"shown too, greyed."
+msgstr ""
+
 msgid "An icon on the Desktop and in the Start menu"
 msgstr ""
 
@@ -9965,6 +9972,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "run 'clean' to set {size} of copies aside."
+msgstr ""
+
+#, python-brace-format
+msgid "same event, another day ({date}): {rule}"
 msgstr ""
 
 msgid "same streams"
