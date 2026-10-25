@@ -6546,6 +6546,10 @@ msgstr ""
 msgid "Take the batch back ({events})"
 msgstr ""
 
+#, python-brace-format
+msgid "Take the whole event: {first} to {last}"
+msgstr ""
+
 msgid "Take this photo back (Backspace)"
 msgstr ""
 
@@ -11801,6 +11805,13 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid "{found} photos and videos found: the first {shown} by date are shown."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{here} files of these days belong to an event from {first} to {last} "
+"({files} files): a date rule takes an event only when at least half of "
+"its files fall on its days."
 msgstr ""
 
 #, python-brace-format

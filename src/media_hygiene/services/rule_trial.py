@@ -58,8 +58,21 @@ def try_rule(
     scope = with_people(run_scope(runtime, None), runtime)
     found = classify(files, settings.model_copy(update={"rules": rules}), scope)
     name = asked.rule.name
+    spans = {
+        event.event_id: (
+            event.start.date().isoformat(),
+            event.end.date().isoformat(),
+            len(event.paths),
+        )
+        for event in found.events
+    }
     return {
-        proposal.file.path: Tried(proposal.folder, proposal.rule, proposal.rule == name)
+        proposal.file.path: Tried(
+            proposal.folder,
+            proposal.rule,
+            proposal.rule == name,
+            spans.get(proposal.event_id),
+        )
         for proposal in found.proposals
     }
 

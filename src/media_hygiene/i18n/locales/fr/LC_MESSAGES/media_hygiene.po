@@ -7647,9 +7647,9 @@ msgid ""
 "Sorted: {events} events, {files} files ({share}) · already in place: "
 "{inPlace} files · left: {leftEvents} events, {leftFiles} files to move"
 msgstr ""
-"Triés : {events} événements, {files} fichiers ({share}) · déjà en place : "
-"{inPlace} fichiers · restent : {leftEvents} événements, {leftFiles} fichiers"
-" à déplacer"
+"Triés : {events} événements, {files} fichiers ({share}) · déjà en place :"
+" {inPlace} fichiers · restent : {leftEvents} événements, {leftFiles} "
+"fichiers à déplacer"
 
 msgid "Sorting"
 msgstr "Tri"
@@ -7917,6 +7917,10 @@ msgstr "Retirer de la mise de côté"
 #, python-brace-format
 msgid "Take the batch back ({events})"
 msgstr "Reprendre le lot ({events})"
+
+#, python-brace-format
+msgid "Take the whole event: {first} to {last}"
+msgstr "Prendre tout l'événement : du {first} au {last}"
 
 msgid "Take this photo back (Backspace)"
 msgstr "Reprendre cette photo (Retour arrière)"
@@ -14158,6 +14162,16 @@ msgid "{found} photos and videos found: the first {shown} by date are shown."
 msgstr ""
 "{found} photos et vidéos trouvées : les {shown} premières par date sont "
 "montrées."
+
+#, python-brace-format
+msgid ""
+"{here} files of these days belong to an event from {first} to {last} "
+"({files} files): a date rule takes an event only when at least half of "
+"its files fall on its days."
+msgstr ""
+"{here} fichiers de ces jours font partie d'un événement du {first} au {last}"
+" ({files} fichiers) : une règle de dates ne prend un événement que si au "
+"moins la moitié de ses fichiers tombent sur ses jours."
 
 #, python-brace-format
 msgid "{host} answered something that is not a search result."

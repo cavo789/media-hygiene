@@ -33,8 +33,10 @@ from media_hygiene.search.rule_models import (
     RuleTry,
     dated_rules,
     line,
+    refused_rule,
     shown_in,
     where_of,
+    wider,
 )
 from media_hygiene.search.views import found_view
 
@@ -127,7 +129,7 @@ class RuleDesk:
             for hit, view in zip(shown, views, strict=True)  # type: ignore[call-overload]
         ]
         taken = sorted((v for v in hits if v["taken"]), key=lambda v: str(v["to"]))
-        written = self.rules()
+        written = self.rules()  # read now: the page may have saved one since
         return json_response(
             HTTPStatus.OK,
             {
@@ -147,6 +149,7 @@ class RuleDesk:
                     if other.name != asked.replaces
                 ),
                 "cut": found.total > _TRIED_MAX,
+                "wider": wider(shown, tried, window),  # events mostly outside
             },
         )
 
@@ -184,16 +187,3 @@ class RuleDesk:
                 "rules": dated_rules(self.rules()),
             },
         )
-
-
-def refused_rule(error: ValidationError) -> Response:
-    """Answer that the rule typed cannot be written, and why.
-
-    Args:
-        error: What pydantic said.
-
-    Returns:
-        400, with the first message.
-    """
-    said = error.errors()[0]["msg"] if error.errors() else str(error)
-    return json_response(HTTPStatus.BAD_REQUEST, {"error": said})

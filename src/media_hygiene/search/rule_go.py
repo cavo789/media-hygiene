@@ -18,8 +18,7 @@ from pydantic import ValidationError
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.review.serving import json_response
-from media_hygiene.search.rule_desk import refused_rule
-from media_hygiene.search.rule_models import PeriodRuleIn
+from media_hygiene.search.rule_models import PeriodRuleIn, refused_rule
 
 if TYPE_CHECKING:
     from pathlib import Path

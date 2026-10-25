@@ -18,6 +18,7 @@
     <label class="filter"><input type="checkbox" id="ruleKeep" checked> {{ _("Keep my folders below it (keep_folders)") }}</label>
     <p id="rulePreview" class="muted" role="status"></p>
     {% if rule_go %}
+    <p id="ruleWiden" class="ruleGo" hidden></p>
     <p class="ruleGo"><button type="button" id="ruleLeave" class="plain" disabled>{{ _("Leave the picked files where they are") }}</button>
       <button type="button" id="ruleGo" disabled>{{ _("Check, then sort") }}</button></p>
     {% endif %}

@@ -29,6 +29,7 @@ async function tryRule() {
   ruleEl("ruleYes").disabled = true;
   tried = null;
   showGo();  // never a GO on files being computed
+  showWiden([]);
   const sent = await rulePost(RULE_TRIAL_PATH, { ...ruleValues(), replaces: ruleReplaces });
   if (asking !== ruleTrial) return;
   if (!sent) { ruleSay(TEXTS.offline, true); return; }
@@ -39,8 +40,11 @@ async function tryRule() {
   showFiles(answer.hits.map((hit) => (leftHere.has(hit.key) ? { ...hit, left: true } : hit)), false);
   showGo();
   const folders = answer.folders.map((one) => one.files + " → " + (one.folder || TEXTS.stays)).join(" · ");
-  const parts = [fill(TEXTS.ruleTook, { files: counted(TEXTS.found, answer.taken), folders: folders || "—" })];
+  const parts = [fill(TEXTS.ruleTook, { files: counted(TEXTS.nFiles, answer.taken), folders: folders || "—" })];
   if (answer.left) parts.push(fill(TEXTS.ruleLeft, { n: answer.left }));
+  // An event most of whose files fall outside the days is left whole: say it, offer to widen.
+  for (const event of answer.wider) parts.push(fill(TEXTS.ruleWider, event));
+  showWiden(answer.wider);
   if (answer.overlaps.length) parts.push(fill(TEXTS.ruleOverlaps, { rules: answer.overlaps.join(", ") }));
   if (answer.cut) parts.push(TEXTS.ruleCut);
   if (answer.name_taken) parts.push(TEXTS.ruleTaken);
@@ -87,6 +91,23 @@ ruleEl("ruleGo").addEventListener("click", async () => {
   ruleSay(said, false);
   ruleEl("rulePreview").className = "saved";
 });
+
+function showWiden(events) {
+  const place = ruleEl("ruleWiden");
+  place.hidden = !events.length;
+  place.replaceChildren(...events.map((event) => {
+    const first = [ruleEl("ruleFirst").value, event.first].filter(Boolean).sort()[0];
+    const last = [ruleEl("ruleLast").value, event.last].filter(Boolean).sort().pop();
+    const button = element("button", "plain", fill(TEXTS.ruleWiden, { first: first, last: last }));
+    button.type = "button";
+    button.addEventListener("click", () => {
+      ruleEl("ruleFirst").value = first;
+      ruleEl("ruleLast").value = last;
+      tryRule();
+    });
+    return button;
+  }));
+}
 
 function fillDated(rules) {
   dated = rules;

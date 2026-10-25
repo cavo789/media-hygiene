@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 from datetime import date
+from pathlib import Path
 
+from media_hygiene.classify.rules.calendar import parse_one_off
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.config.classify_rules import ClassifyRule
-from media_hygiene.search.rule_models import PeriodRuleIn, dated_rules
+from media_hygiene.index.descriptions import PhotoVersion
+from media_hygiene.search.models import Hit
+from media_hygiene.search.rule_models import PeriodRuleIn, Tried, dated_rules, wider
 from media_hygiene.search.views import SearchAsked
 from media_hygiene.services.rule_trial import tried_rules
 
@@ -71,3 +75,19 @@ def test_the_rule_tried_goes_where_saving_puts_it() -> None:
     renamed = _dated("Old", "2006-01-01..2006-01-02")
     assert tried_rules((old, EXISTING), renamed, "") == (renamed, EXISTING)
     assert tried_rules((old,), new, "") == (old, new)
+
+
+def test_an_event_mostly_outside_the_days_is_offered_whole() -> None:
+    """A birth on 7 June, an event of 7 to 9 June: the rule of the 7th says so."""
+    span = ("2005-06-07", "2005-06-09", 46)
+    hits = [
+        Hit(index, PhotoVersion(Path(f"/data/c/{index}.jpg"), 1, 1), "2005-06-07", {})
+        for index in range(3)
+    ]
+    left = Tried("2005/X", "Existing folders", taken=False, event=span)
+    tried = {hit.photo.path: left for hit in hits}
+    window = parse_one_off("2005-06-07..2005-06-07")
+    assert wider(hits, tried, window) == [
+        {"first": "2005-06-07", "last": "2005-06-09", "files": 46, "here": 3}
+    ]
+    assert wider(hits, tried, parse_one_off("2005-06-07..2005-06-09")) == []

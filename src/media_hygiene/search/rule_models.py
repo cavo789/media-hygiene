@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date
+from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict
@@ -11,13 +12,17 @@ from pydantic import BaseModel, ConfigDict
 from media_hygiene.classify.rules.calendar import parse_one_off
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.config.classify_rules import ClassifyRule
+from media_hygiene.review.serving import json_response
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping, Sequence
     from pathlib import Path
 
+    from pydantic import ValidationError
+
     from media_hygiene.classify.rules.calendar import OneOff
     from media_hygiene.index.descriptions import PhotoVersion
+    from media_hygiene.review.http import Response
     from media_hygiene.search.models import Hit
 
 SEPARATOR: Final = "/"
@@ -40,6 +45,8 @@ class Tried:
     folder: str | None  # below the target root, `/`-separated; None: it stays
     rule: str  # the rule that decides; empty: none
     taken: bool  # the rule tried decides
+    # Its event: first and last day (ISO), files; None: a file of no event.
+    event: tuple[str, str, int] | None = None
 
 
 type Trial = Callable[[RuleTry], Mapping[Path, Tried]]
@@ -141,3 +148,51 @@ def where_of(tried: Tried | None) -> dict[str, object]:
         return {"to": "", "by": "", "taken": False}
     folder = (tried.folder or "").replace(SEPARATOR, WINDOWS)
     return {"to": folder, "by": tried.rule, "taken": tried.taken}
+
+
+def wider(
+    hits: Sequence[Hit], tried: Mapping[Path, Tried], window: OneOff
+) -> list[dict[str, object]]:
+    """The events the rule leaves because most of their files fall outside its days.
+
+    A date rule takes an event when at least half of its files fall on its days: an
+    evening shot on two days, typed as one, is left whole. The page then offers to
+    widen the period to the event's days.
+
+    Args:
+        hits: The files shown.
+        tried: Where each file would go, and its event.
+        window: The rule's days.
+
+    Returns:
+        Each such event's first and last day, its files, and how many of them are on
+        the rule's days.
+    """
+    events: dict[tuple[str, str, int], int] = {}
+    for hit in hits:
+        where = tried.get(hit.photo.path)
+        if where is None or where.taken or where.event is None:
+            continue
+        first, last, _files = where.event
+        inside = window.contains(date.fromisoformat(first)) and window.contains(
+            date.fromisoformat(last)
+        )
+        if not inside:
+            events[where.event] = events.get(where.event, 0) + 1
+    return [
+        {"first": first, "last": last, "files": files, "here": here}
+        for (first, last, files), here in events.items()
+    ]
+
+
+def refused_rule(error: ValidationError) -> Response:
+    """Answer that the rule typed cannot be written, and why.
+
+    Args:
+        error: What pydantic said.
+
+    Returns:
+        400, with the first message.
+    """
+    said = error.errors()[0]["msg"] if error.errors() else str(error)
+    return json_response(HTTPStatus.BAD_REQUEST, {"error": said})
