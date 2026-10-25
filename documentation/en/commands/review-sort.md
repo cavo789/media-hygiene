@@ -4,16 +4,17 @@
 
 ## In short
 
-**Name your events while looking at their photos, one event at a time, with the keyboard, rather
-than in a spreadsheet.**
+**Give a name to each outing, party or trip of your photos while looking at them: that name
+becomes their folder when [`sort`](sort.md) tidies your collection.**
 
-The [workbook](../reference-glossary.md#workbook) of [`classify`](classify.md) is good for renaming in bulk, not for *looking* at
-photos. `review-sort` shows **one event at a time** in your browser, with its photos, its
-proposal and a field to name it. Your choices are saved next to the proposal; [`sort`](sort.md)
-applies them on top of the workbook.
+`review-sort` shows **one [event](../reference-glossary.md#event) at a time** in your browser,
+with its photos, the proposal of [`classify`](classify.md) and a field to name it, with the
+keyboard. Nothing moves here: your choices are saved next to the proposal, and `sort` is what
+moves the files.
 
-**When**: optional, between `classify` and `sort`, when there are many events to name. The
-workbook alone is enough, and both can be used together.
+**When**: optional, between `classify` and `sort`. The Events sheet of the
+[workbook](../reference-glossary.md#workbook) does the same work, without the photos in front of
+you; both can be used together.
 
 **Try it**:
 
@@ -24,6 +25,47 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene review-sort
 ```
+
+## What it is for
+
+**An event is a moment of your life seen through your photos**: a school fair, a weekend at the
+seaside, a Christmas. `classify` finds them on its own: photos and videos taken without a break of
+more than 6 hours (a night does not cut a weekend in two), at least 5 files, **from one folder or
+phone to another**. The photos of the fair taken with your phone, Julie's and the camera make one
+event, even when they sit in three folders.
+
+What `classify` does not know is **what to call it**. Without a hint (a folder you had already
+named, a [rule](../sort/06-write-down-what-you-know.md)), it can only file it under its dates, in
+`2016/To sort/2016-07-14`. Name it `Kermesse`, and `sort` puts all its files **in one folder**,
+`2016/Kermesse`:
+
+```text
+Before, three folders:
+  C:\Photos\DCIM\100APPLE\IMG_4012.HEIC
+  C:\Photos\Julie's phone\20160714_153201.jpg
+  C:\Photos\Import 2016\DSC_0815.JPG
+
+After sort, one:
+  C:\Photos\2016\Kermesse\IMG_4012.HEIC
+  C:\Photos\2016\Kermesse\20160714_153201.jpg
+  C:\Photos\2016\Kermesse\DSC_0815.JPG
+```
+
+So yes, it is a tree of folders on your disk: **each photo is moved into one folder only**, its
+event's (on the same disk, a mere rename, and [`undo`](undo.md) puts everything back). For a photo
+to show up elsewhere too ("every Christmas", "Grandma"), without a copy: the
+[albums](../sort/12-albums.md).
+
+- **Name or category?** The **name** is enough: it becomes the folder (`2016/Kermesse`). The
+  **category** gathers several events in one folder: the fair and a birthday both in `Parties` go
+  to `2016/Parties`. For both levels (`2016/Parties/Kermesse`), choose the layout
+  `{year}/{category}/{event}` ([sorting, step 4](../sort/04-classify.md#your-own-structure)).
+- **Not every event needs a name.** An event whose photos already sit in a named folder
+  (`Seaside holidays`) has a proposal marked **sure**. Still look where it leads before accepting
+  it: an event that spans several of your folders (a trip, `Budva`, `Cetinje`…) gathers them all
+  in the proposed folder, with <kbd>V</kbd> too.
+- **An event you do not name** is not lost: it goes to `year/To sort/<its dates>`, where you find
+  it again.
 
 ## At a glance
 

@@ -2,6 +2,12 @@
 
 [Documentation](../README.md) › Trier, étape 11 · 🇬🇧 [English](../../en/sort/11-name-events-in-the-browser.md)
 
+**Pourquoi nommer un événement ?** Un [événement](../reference-glossary.md#événement), ce sont les
+photos d'un même moment (une kermesse, un week-end), réunies par `classify` d'un dossier ou d'un
+téléphone à l'autre. Son nom devient **le dossier où `sort` range toutes ses photos** : nommé
+`Kermesse`, il va dans `2016/Kermesse` ; sans nom, dans `2016/À trier/2016-07-14`. Ce qui bouge
+sur le disque, nom ou catégorie : [`review-sort`, à quoi ça sert](../commands/review-sort.md#à-quoi-ça-sert).
+
 Le classeur de l'[étape 5](05-review-the-proposal.md) est fait pour renommer en masse, pas pour
 *regarder* les photos : nommer un événement, c'est lire le rapport dans une fenêtre et taper dans
 l'autre. Avec des centaines d'événements, cela fait des centaines d'allers-retours.

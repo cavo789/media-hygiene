@@ -4,16 +4,17 @@
 
 ## En bref
 
-**Nommer vos événements en regardant leurs photos, un événement à la fois, au clavier, plutôt
-que dans un tableur.**
+**Donner un nom à chaque sortie, fête ou voyage de vos photos, en les regardant : ce nom devient
+leur dossier quand [`sort`](sort.md) range votre collection.**
 
-Le [classeur](../reference-glossary.md#classeur) de [`classify`](classify.md) est fait pour renommer en masse, pas pour *regarder*
-des photos. `review-sort` montre **un événement à la fois** dans votre navigateur, avec ses
-photos, sa proposition et un champ pour le nommer. Vos choix sont enregistrés à côté de la
-proposition ; [`sort`](sort.md) les applique par-dessus le classeur.
+`review-sort` montre **un [événement](../reference-glossary.md#événement) à la fois** dans votre
+navigateur, avec ses photos, la proposition de [`classify`](classify.md) et un champ pour le
+nommer, au clavier. Rien ne bouge ici : vos choix sont enregistrés à côté de la proposition, et
+c'est `sort` qui déplace les fichiers.
 
-**Quand** : facultatif, entre `classify` et `sort`, quand il y a beaucoup d'événements à nommer.
-Le classeur seul suffit, et les deux peuvent servir ensemble.
+**Quand** : facultatif, entre `classify` et `sort`. La feuille Événements du
+[classeur](../reference-glossary.md#classeur) fait le même travail, sans les photos sous les yeux ;
+les deux peuvent servir ensemble.
 
 **Essayer** :
 
@@ -24,6 +25,47 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   cavo789/media-hygiene --locale fr review-sort
 ```
+
+## À quoi ça sert
+
+**Un événement, c'est un moment de votre vie vu par vos photos** : une kermesse, un week-end à la
+mer, un Noël. `classify` les retrouve seul : des photos et des vidéos prises sans pause de plus de
+6 heures (une nuit ne coupe pas un week-end en deux), au moins 5 fichiers, **d'un dossier ou d'un
+téléphone à l'autre**. Les photos de la kermesse prises avec votre téléphone, celui de Julie et
+l'appareil photo forment un seul événement, même si elles dorment dans trois dossiers.
+
+Ce que `classify` ne sait pas, c'est **comment l'appeler**. Sans indice (un dossier que vous aviez
+déjà nommé, une [règle](../sort/06-write-down-what-you-know.md)), il ne peut que le ranger sous
+ses dates, dans `2016/À trier/2016-07-14`. Nommez-le `Kermesse`, et `sort` met tous ses fichiers
+**dans un seul dossier**, `2016/Kermesse` :
+
+```text
+Avant, trois dossiers :
+  C:\Photos\DCIM\100APPLE\IMG_4012.HEIC
+  C:\Photos\Téléphone Julie\20160714_153201.jpg
+  C:\Photos\Import 2016\DSC_0815.JPG
+
+Après sort, un seul :
+  C:\Photos\2016\Kermesse\IMG_4012.HEIC
+  C:\Photos\2016\Kermesse\20160714_153201.jpg
+  C:\Photos\2016\Kermesse\DSC_0815.JPG
+```
+
+C'est donc bien une arborescence de dossiers sur votre disque : **chaque photo est déplacée dans
+un seul dossier**, celui de son événement (sur le même disque, un simple renommage, et
+[`undo`](undo.md) remet tout en place). Pour qu'une photo apparaisse aussi ailleurs (« tous les
+Noëls », « Grand-mère »), sans copie : les [albums](../sort/12-albums.md).
+
+- **Nom ou catégorie ?** Le **nom** suffit : il devient le dossier (`2016/Kermesse`). La
+  **catégorie** réunit plusieurs événements dans un même dossier : la kermesse et un anniversaire
+  en `Fêtes` vont tous deux dans `2016/Fêtes`. Pour avoir les deux niveaux (`2016/Fêtes/Kermesse`),
+  choisissez la disposition `{year}/{category}/{event}` ([trier, étape 4](../sort/04-classify.md#votre-propre-structure)).
+- **Tous ne demandent pas un nom.** Un événement dont les photos sont déjà dans un dossier nommé
+  (`Vacances à la mer`) a une proposition marquée **sûre**. Regardez quand même où elle mène
+  avant de la valider : un événement qui réunit plusieurs de vos dossiers (un voyage, `Budva`,
+  `Cetinje`…) les rassemble tous dans le dossier proposé, y compris avec <kbd>V</kbd>.
+- **Un événement que vous ne nommez pas** n'est pas perdu : il va dans `année/À trier/<ses dates>`,
+  où vous le retrouvez.
 
 ## D'un coup d'œil
 

@@ -48,6 +48,14 @@ The tool packed with everything it needs, downloaded once (`cavo789/media-hygien
 `docker run` starts a [container](#container) from it.
 [Install Docker](start/00-install-docker.md)
 
+### Event
+
+A moment of your life seen through your photos (a school fair, a weekend at the seaside, a
+Christmas): `classify` gathers the photos and videos taken without a break of more than 6 hours,
+from one folder or phone to another. The name you give it becomes its folder when `sort` tidies
+the collection.
+[`review-sort`: what it is for](commands/review-sort.md#what-it-is-for)
+
 ### Excluded folder
 
 A folder the tool never reads (`--exclude`). A backup you want checked is a

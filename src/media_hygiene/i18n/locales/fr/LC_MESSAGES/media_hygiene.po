@@ -2443,6 +2443,9 @@ msgstr ""
 "Chacun a d'abord été prouvé sur le PC par son contenu : dans votre "
 "photothèque, dans le dossier de l'import, ou mis de côté avant."
 
+msgid "Each outing or party gets its folder: name it while seeing its photos."
+msgstr "Chaque sortie ou fête aura son dossier : nommez-la en voyant ses photos."
+
 msgid "Each photo"
 msgstr "Chaque photo"
 
@@ -5509,9 +5512,6 @@ msgstr ""
 "Une seule fois, après une mise à jour : dates, lieux et appareils "
 "enregistrés dans les fichiers. Les images ne sont pas décodées à nouveau,"
 " seul leur en-tête est lu."
-
-msgid "One by one, with their photos, in the browser."
-msgstr "Un par un, avec leurs photos, dans le navigateur."
 
 msgid "One series"
 msgstr "Une série"

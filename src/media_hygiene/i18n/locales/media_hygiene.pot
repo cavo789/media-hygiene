@@ -1994,6 +1994,9 @@ msgid ""
 "the folder of the import, or set aside before."
 msgstr ""
 
+msgid "Each outing or party gets its folder: name it while seeing its photos."
+msgstr ""
+
 msgid "Each photo"
 msgstr ""
 
@@ -4538,9 +4541,6 @@ msgstr ""
 msgid ""
 "Once, after an update: dates, places and devices recorded in the files. "
 "Images are not decoded again, only their header is read."
-msgstr ""
-
-msgid "One by one, with their photos, in the browser."
 msgstr ""
 
 msgid "One series"

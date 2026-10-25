@@ -2,6 +2,12 @@
 
 [Documentation](../README.md) › Sorting, step 11 · 🇫🇷 [Français](../../fr/sort/11-name-events-in-the-browser.md)
 
+**Why name an event?** An [event](../reference-glossary.md#event) is the photos of one moment (a
+school fair, a weekend), gathered by `classify` from one folder or phone to another. Its name
+becomes **the folder where `sort` puts all its photos**: named `Kermesse`, it goes to
+`2016/Kermesse`; without a name, to `2016/To sort/2016-07-14`. What moves on the disk, name or
+category: [`review-sort`, what it is for](../commands/review-sort.md#what-it-is-for).
+
 The workbook of [step 5](05-review-the-proposal.md) is good for renaming in bulk, not for
 *looking* at photos: naming an event means reading the report in one window and typing in the
 other. With hundreds of events, that is hundreds of back-and-forths. `review-sort` puts both in

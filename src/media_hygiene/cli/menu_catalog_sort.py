@@ -40,7 +40,7 @@ def sort_steps() -> tuple[Step, ...]:
             "review-sort",
             space,
             _("Name the events"),
-            _("One by one, with their photos, in the browser."),
+            _("Each outing or party gets its folder: name it while seeing its photos."),
             "review-sort",
             Risk.SAFE,
             Kind.PAGE,
