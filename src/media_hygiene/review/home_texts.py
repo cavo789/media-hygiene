@@ -43,8 +43,6 @@ def _shell() -> dict[str, str]:
         "themeAuto": _("Auto"),
         "themeLight": _("Light"),
         "themeDark": _("Dark"),
-        "quit": _("Quit Media Hygiene"),
-        "quitTitle": _("Stops this page; closing its tab does too."),
         "openMenu": _("Open the menu"),
         "whatToDo": _("What do you want to do?"),
         "yourFolders": _("Your folders ({count})"),

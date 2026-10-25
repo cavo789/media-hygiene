@@ -141,7 +141,7 @@ def test_the_page_says_the_stop_within_a_beat_never_during_a_step() -> None:
     assert 'document.addEventListener("visibilitychange"' in text[wire:]
     # A step the server stays up for (0355) keeps the beats: the page is not leaving.
     assert "if (!kept) presence.away = true;" in text[text.index("function openRun(") :]
-    assert "quit: () => { presence.away = true;" in text
+    assert 'data-act="quit"' not in text
     assert _texts(home_page(relays_steps=True))["stoppedText"].startswith(
         "Its window was closed (or Ctrl+C was pressed in it)."
     )

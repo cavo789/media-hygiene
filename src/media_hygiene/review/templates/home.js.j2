@@ -186,8 +186,7 @@ function wire() {
 // The page shows at once, its meerkat waiting for the state: reading the tool folders can be
 // slow through Docker Desktop (0277). The tab says it is there from the start (0261).
 function start() {
-  if (REMOTE) $(".quit").hidden = true;
-  else { wirePresence(); showLan(); }
+  if (!REMOTE) { wirePresence(); showLan(); }
   const slow = window.setTimeout(() => { $("#loadingSlow").hidden = false; }, LOADING_SLOW_MS);
   const shown = () => { window.clearTimeout(slow); $("#loading").hidden = true; };
   fetch(P.state, { cache: "no-store" })

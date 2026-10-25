@@ -51,8 +51,7 @@ docker run --rm -it `
 - **Le menu de gauche** : les cinq étapes du cycle, **Partager** (un but, pas une étape : sans numéro) et les outils, chacun avec son compte (*9*
   copies à mettre de côté, *214* fichiers que seul le NAS garde), *Vos dossiers* (chacun trouvé
   ou non), la version (*0.5.0 disponible* quand une plus récente est publiée,
-  [`mh update`](launcher.md#une-nouvelle-version--mh-update)), le choix du thème et **Quitter
-  Media Hygiene**.
+  [`mh update`](launcher.md#une-nouvelle-version--mh-update)) et le choix du thème.
 - **La barre du haut** : *Que voulez-vous faire ?* (la palette), **Annuler la dernière
   exécution** tant qu'une exécution est annulable, et **Documentation** : le chapitre de la page
   où vous êtes, et son jumeau anglais.
@@ -172,7 +171,7 @@ téléphone **du même Wi-Fi** l'ouvrir aussi, jusqu'à l'arrêt de `mh` :
 Depuis le téléphone : 🔒 la page, où vous en êtes, les rapports, l'**audit** lancé par la page et
 [vos albums](#vos-albums-sur-le-téléphone).
 Toute autre étape reste sur le PC (*Lancez cette étape sur le PC*) : ses questions sont posées
-dans la fenêtre de `mh`, que personne ne voit depuis le canapé. **Quitter** reste aussi au PC.
+dans la fenêtre de `mh`, que personne ne voit depuis le canapé.
 
 L'étape *Montrer vos photos sur la télé*, choisie sur le PC, ouvre aussi le [diaporama](slideshow.md)
 au réseau de la maison : le téléphone déjà appairé recharge sa page et obtient la télécommande du
@@ -249,7 +248,7 @@ aucun autre site.
 - La page ne répond qu'à `127.0.0.1` ou `localhost` (et, sous `mh --lan`, à l'adresse du PC pour
   un téléphone appairé), et seulement à ses propres boutons : un autre site ne peut pas choisir
   une étape à votre place.
-- **Quitter Media Hygiene** (en bas du menu de gauche), fermer l'onglet de la page, ou Ctrl+C dans le terminal arrête la
+- Fermer l'onglet de la page, ou Ctrl+C dans le terminal arrête la
   page et rend l'invite ; un audit en cours s'arrête entre deux fichiers. Un onglet fermé est vu
   une dizaine de secondes plus tard (*L'onglet de la page d'accueil a été fermé : la page d'accueil
   s'est arrêtée.*) ; un rechargement, ou un onglet laissé en arrière-plan, ne l'arrête jamais.

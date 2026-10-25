@@ -5104,9 +5104,6 @@ msgstr[1] ""
 msgid "Quarantined"
 msgstr ""
 
-msgid "Quit Media Hygiene"
-msgstr ""
-
 msgid "RAW"
 msgstr ""
 
@@ -6203,9 +6200,6 @@ msgid_plural ""
 "halfway…"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Stops this page; closing its tab does too."
-msgstr ""
 
 msgid "Subject"
 msgstr ""

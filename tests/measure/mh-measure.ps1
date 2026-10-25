@@ -2657,7 +2657,7 @@ if (Wanted 29) {
         $kept = Read-Host "29h. After the step, the phone's page answered again without the code? (y/n)"
         Write-Host "    On the phone: Wi-Fi off (mobile data on), reload the page."
         $outside = Read-Host "29i. From mobile data the page did NOT open? (y/n)"
-        Write-Host "    On the PC's page: Quit Media Hygiene."
+        Write-Host "    On the PC: close the home page's tab."
         Log "   29: card $card, by QR $qr, by code $typed, audit $audit, step refused $refused, paired after a step $kept, unreachable from mobile data $outside"
     } else {
         Log "   29: skipped the phone part: no private address found (mh --lan says the same)"

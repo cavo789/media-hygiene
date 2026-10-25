@@ -3,7 +3,7 @@
 A step chosen is run by `mh` in the terminal, mounted as the command needs (`home_step`,
 `step_watch`); only when `mh` set `MEDIA_HYGIENE_LAUNCHER_STEPS`, else the page copies
 the command. It serves `search` and `browse` too (`home_pages`). The photos stay mounted
-read-only. Quit, or its tab closed (0261), ends it with 0: `mh` gives the prompt back.
+read-only. Its tab closed (0261) ends it: `mh` gives the prompt back.
 """
 
 from __future__ import annotations

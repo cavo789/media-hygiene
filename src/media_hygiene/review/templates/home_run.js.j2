@@ -338,7 +338,7 @@ function openKeys() {
   showDialog(dialog);
 }
 
-// ---- Presence and Quit: a tab still shows the page; leaving, it says so (0261) ----------
+// ---- Presence: a tab still shows the page; leaving, it says so (0261) ----------
 // A beat that finds nobody (the window of mh closed, Ctrl+C) shows the stop within ALIVE_MS,
 // and at once when the tab is shown again (a hidden tab's timers run once a minute), never
 // while a step runs: the server is gone on purpose then (0284).
@@ -357,5 +357,4 @@ const ACTS = {
   "dismiss-update": () => { store.set("dismissed", S.update ? S.update.version : ""); render(); },
   "open-palette": openPalette,
   "open-keys": openKeys,
-  quit: () => { presence.away = true; fetch(P.stop, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }).then(stopped, stopped); },
 };

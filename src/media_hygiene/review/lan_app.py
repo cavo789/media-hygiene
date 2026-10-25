@@ -10,7 +10,7 @@ page; never to the network). A request naming the PC's address on the home netwo
 - with it, only the reads (`READ_PATHS`, `READ_PREFIXES`: the page, its state, the
   reports, the theme, the docs, the albums and their files, 0297), the audit of the
   page (`POST /api/audit`) and a change of an album (`POST /api/albums`, 0295): none
-  changes a photo. A step, Quit or the presence stay the PC's: 403, said on each
+  changes a photo. A step, a stop or the presence stay the PC's: 403, said on each
   step's button (decided 2026-10-21). What passes is handed on as from the loopback,
   its `Origin` checked; any other `Host` (DNS rebinding) is refused as before.
 """

@@ -6183,9 +6183,6 @@ msgstr[1] ""
 msgid "Quarantined"
 msgstr "En quarantaine"
 
-msgid "Quit Media Hygiene"
-msgstr "Quitter Media Hygiene"
-
 msgid "RAW"
 msgstr "RAW"
 
@@ -7501,9 +7498,6 @@ msgstr[0] ""
 msgstr[1] ""
 "Arrêt : les {count} fichiers en cours se terminent d'abord, pour que rien"
 " ne reste à moitié fait…"
-
-msgid "Stops this page; closing its tab does too."
-msgstr "Arrête cette page ; fermer son onglet le fait aussi."
 
 msgid "Subject"
 msgstr "Sujet"

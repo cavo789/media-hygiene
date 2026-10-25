@@ -49,7 +49,7 @@ docker run --rm -it `
 - **The sidebar**: the five stages of the cycle, **Share** (a goal, not a stage: no number) and the tools, each with its count (*9* extra
   copies to set aside, *214* files only the NAS keeps), *Your folders* (each found or not), the
   version (*0.5.0 available* when a newer one is published, [`mh update`](launcher.md#a-new-version-mh-update)),
-  the theme switch and **Quit Media Hygiene**.
+  and the theme switch.
 - **The top bar**: *What do you want to do?* (the palette), **Undo the last run** while a run is
   undoable, and **Documentation**: the chapter of the page you are on, and its English twin.
 - **The next step**: why, what it risks in words (*Undoable*), the button that runs it and its
@@ -157,7 +157,7 @@ In Windows PowerShell, `mh --lan` opens the home page as `mh` alone does, and le
 From the phone: 🔒 the page, where you are, the reports, the **audit** run by the page and
 [your albums](#your-albums-on-the-phone).
 Every other step stays on the PC (*Run this step on the PC*): its questions are asked in the
-window of `mh`, which nobody sees from the sofa. **Quit** is the PC's too.
+window of `mh`, which nobody sees from the sofa.
 
 The *Show your photos on the TV* step, chosen on the PC, opens the [slideshow](slideshow.md) to
 the home network too: the phone already paired reloads its page and gets the slideshow's remote.
@@ -226,7 +226,7 @@ fonts and pictures come from the image itself: the page asks nothing of any othe
 
 - The page answers only at `127.0.0.1` or `localhost` (and, under `mh --lan`, at the PC's address
   to a paired phone), and only to its own buttons: another site cannot choose a step for you.
-- **Quit Media Hygiene** (bottom of the sidebar), closing the page's browser tab, or Ctrl+C in the terminal stops the page
+- Closing the page's browser tab, or Ctrl+C in the terminal stops the page
   and gives the prompt back; an audit running stops between two files. A closed tab is noticed
   about 10 seconds later (*The home page's tab was closed: the home page stopped.*); a reload, or
   a tab left in the background, never stops it.

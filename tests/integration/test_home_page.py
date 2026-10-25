@@ -418,14 +418,14 @@ def test_home_typed_alone_does_not_say_it(
     assert _KEEP_OPEN not in said
 
 
-def test_a_closed_tab_or_quit_ends_home_with_0(
+def test_a_closed_tab_or_a_stop_ends_home_with_0(
     cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """The tab said it leaves and none came back, or Quit: home ends with 0 (0261)."""
+    """The tab said it leaves and none came back, or a stop: home ends with 0 (0261)."""
     monkeypatch.setattr(presence, "LEAVING_GRACE_SECONDS", 0.05)
     runtime = audited(cli, locations)
     page = home_page(relays_steps=True).decode()
-    assert 'data-act="quit"' in page
+    assert 'data-act="quit"' not in page
     assert presence.PRESENCE_PATH in page
     assert STOP_PATH in page
     leaving = Call("POST", presence.PRESENCE_PATH, b'{"leaving": true}', JSON_HEADERS)
