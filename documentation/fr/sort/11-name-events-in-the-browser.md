@@ -114,7 +114,9 @@ vérifier ou à trier proposent la même catégorie, ou aucune. Un tel événeme
 après sa proposition ; un coup d'œil suffit.
 
 Le bouton **✔ Accepter N propositions sûres (M fichiers)** en haut (ou <kbd>V</kbd>) les
-accepte toutes, après une confirmation qui donne les chiffres. Chacune est enregistrée exactement
+accepte toutes, après une confirmation qui donne les chiffres et **liste les événements** :
+chacun avec les fichiers qui bougent et son dossier ; un clic sur l'un d'eux l'affiche dans la
+page, pour regarder avant d'accepter. Chacune est enregistrée exactement
 comme <kbd>Entrée</kbd> l'enregistrerait sur cet événement laissé tel quel (sa catégorie
 proposée, sans nom), avec ce qu'en disait le classeur, comme tout autre choix. La confirmation
 compte les fichiers qui bougent, et ceux qui gardent un dossier que vous aviez nommé : ceux-là ne
@@ -129,8 +131,9 @@ choisi à nouveau depuis garde votre nouveau choix).
 
 Cochez **Seulement les événements à décider** pour que <kbd>N</kbd>, <kbd>P</kbd> et <kbd>U</kbd>
 sautent les événements déjà choisis et ceux dont la proposition est sûre : il ne reste que ceux
-qui ont besoin de vous.
-Le navigateur se souvient de la case pour la prochaine ouverture de la page.
+qui ont besoin de vous. Cochez plutôt **Seulement les propositions sûres** pour parcourir les
+sûres une par une avant de les accepter. Une case à la fois ; le navigateur s'en souvient pour la
+prochaine ouverture de la page.
 
 ## Où vont vos choix
 

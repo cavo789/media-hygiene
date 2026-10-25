@@ -204,3 +204,19 @@ def test_the_batch_moves_only_the_loose_files_of_a_trip() -> None:
         "chloe2": "2016/Photos Chloé",
         "loose": "2016/Photos Chloé",
     }
+
+
+def test_the_confirmation_lists_the_sure_events_and_what_moves(tmp_path: Path) -> None:
+    """0388: the cards the dialog lists are those of `sure_value`, with their moves."""
+    session = session_in(tmp_path)
+    cards = {card.id: card for card in session.state().events}
+    for item in work_list(make_plan()):
+        card = cards[item.event.id]
+        assert card.sure is (sure_value(item) is not None)
+        assert (card.moves, card.kept) == (reach(item).moves, reach(item).kept)
+    listed = [
+        card.id
+        for card in cards.values()
+        if card.sure and card.undecided and not card.page and not card.workbook.text
+    ]
+    assert listed == ["sure"]

@@ -635,6 +635,9 @@ msgstr ""
 msgid "Accept at once every event still to decide whose proposal is sure (V)"
 msgstr ""
 
+msgid "Accept them"
+msgstr ""
+
 #, python-brace-format
 msgid "Accept {sure} ({files})"
 msgstr ""
@@ -2142,9 +2145,10 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Events to decide with a sure proposal: {count}. Each one gets its "
-"proposed category, as Enter would give it, saved in one write: {moves} "
+"proposed folder, as Enter would give it, saved in one write: {moves} "
 "move, {kept} keep the folder you named. Events to decide left to look at:"
-" {left}. Accept them? The ↶ button takes the whole batch back."
+" {left}. Click an event to look at it first; the ↶ button takes the whole"
+" batch back."
 msgstr ""
 
 msgid ""
@@ -3615,6 +3619,11 @@ msgstr ""
 msgid "My places"
 msgstr ""
 
+msgid ""
+"N and P walk only the events to decide whose proposal is sure, one by "
+"one, before accepting them"
+msgstr ""
+
 msgid "N, P and U skip the events already chosen and those whose proposal is sure"
 msgstr ""
 
@@ -4631,6 +4640,9 @@ msgid "Only the series still to see"
 msgstr ""
 
 msgid "Only the series to look at"
+msgstr ""
+
+msgid "Only the sure proposals"
 msgstr ""
 
 msgid ""

@@ -110,7 +110,9 @@ strong rule (band *Sure*), and the few still to check or to sort propose the sam
 none. Such an event shows `✔ sure` after its proposal; it only needs a glance.
 
 The button **✔ Accept N sure proposals (M files)** at the top (or <kbd>V</kbd>) accepts
-them all, after a confirmation that gives the figures. Each one is recorded exactly as
+them all, after a confirmation that gives the figures and **lists the events**: each one with
+the files that move and its folder, and a click on one shows it on the page, to look before
+accepting. Each one is recorded exactly as
 <kbd>Enter</kbd> would record it on that event untouched (its proposed category, no name), with
 what the workbook said of it, like any other choice. The confirmation counts the files that move,
 and those that keep a folder you had named: these are never flattened into the proposed folder.
@@ -125,7 +127,8 @@ since keeps your new choice).
 
 Tick **Only the events to decide** to make <kbd>N</kbd>, <kbd>P</kbd> and <kbd>U</kbd> skip the
 events already chosen and those whose proposal is sure: only the ones that need you remain.
-The browser remembers the box for the next opening of the page.
+Tick **Only the sure proposals** instead to walk the sure ones one by one before accepting them.
+One box at a time; the browser remembers it for the next opening of the page.
 
 ## Where your choices go
 

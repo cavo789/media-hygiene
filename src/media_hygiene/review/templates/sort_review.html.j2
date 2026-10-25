@@ -32,7 +32,9 @@
   "sureMark": "✔ " ~ _("sure: V accepts it with the other sure proposals"),
   "sure": "✔ " ~ _("Accept {sure} ({files})"),
   "sureNone": _("No sure proposal left to accept."),
-  "sureAsk": _("Events to decide with a sure proposal: {count}. Each one gets its proposed category, as Enter would give it, saved in one write: {moves} move, {kept} keep the folder you named. Events to decide left to look at: {left}. Accept them? The ↶ button takes the whole batch back."),
+  "sureAsk": _("Events to decide with a sure proposal: {count}. Each one gets its proposed folder, as Enter would give it, saved in one write: {moves} move, {kept} keep the folder you named. Events to decide left to look at: {left}. Click an event to look at it first; the ↶ button takes the whole batch back."),
+  "sureAccept": _("Accept them"),
+  "cancel": _("Cancel"),
   "ownFolder": _("its own folder"),
   "sureDone": _("{done}, read back from the disk at {time}: the ↶ button takes the whole batch back."),
   "sureUndo": "↶ " ~ _("Take the batch back ({events})"),
@@ -96,6 +98,13 @@
   #destination.error { color: var(--bad); }
   .dirty { color: var(--warn, var(--bad)); font-weight: 600; }
   .batch input[type=checkbox] { min-width: 0; }
+  #sureDlg { max-width: min(56rem, 94vw); color: var(--text); background: var(--card);
+             border: 1px solid var(--line); border-radius: 10px; }
+  #sureDlg::backdrop { background: rgb(0 0 0 / 50%); }
+  #sureDlg ol { max-height: 55vh; overflow: auto; padding-left: 1.6rem; }
+  #sureDlg li { margin: 2px 0; overflow-wrap: anywhere; }
+  #sureDlg li button { border: 0; padding: 0; color: var(--accent); background: none; text-decoration: underline; }
+  #sureDlg menu { display: flex; gap: 8px; justify-content: end; padding: 0; }
 {% endblock %}
 {% block side %}
   <section id="toc" aria-label="{{ _('The event shown') }}">
@@ -130,6 +139,7 @@
   <span id="status" role="status" aria-live="polite"></span>
   <span class="batch">
     <label class="filter" title="{{ _('N, P and U skip the events already chosen and those whose proposal is sure') }}"><input type="checkbox" id="onlyDecide"> {{ _("Only the events to decide") }}</label>
+    <label class="filter" title="{{ _('N and P walk only the events to decide whose proposal is sure, one by one, before accepting them') }}"><input type="checkbox" id="onlySure"> {{ _("Only the sure proposals") }}</label>
     <button type="button" id="sure" title="{{ _('Accept at once every event still to decide whose proposal is sure (V)') }}"></button>
     <button type="button" id="sureUndo" title="{{ _('Take back the last batch of sure proposals (Shift+Z)') }}" hidden></button>
   </span>
@@ -148,6 +158,11 @@
 <main>
   <div id="photos" class="photos"></div>
   <div id="zoom" hidden><img alt=""></div>
+  <dialog id="sureDlg" aria-labelledby="sureAsk">
+    <p id="sureAsk"></p>
+    <ol id="sureList"></ol>
+    <menu><button type="button" id="sureNo"></button><button type="button" id="sureYes"></button></menu>
+  </dialog>
 </main>
 {% endblock %}
 {% block after %}
@@ -330,6 +345,7 @@
     send(P.files, { event: id(), rows: chosenRows(), category: category });
   });
   document.addEventListener("keydown", (event) => {
+    if (byId("sureDlg").open) return;  // the dialog's own keys: Tab, Enter, Esc
     const zoom = byId("zoom");
     if (event.key === "Escape") {
       zoom.hidden = true;
@@ -367,12 +383,19 @@
   byId("zoom").addEventListener("click", () => { byId("zoom").hidden = true; });
   byId("sure").addEventListener("click", acceptSure);
   byId("sureUndo").addEventListener("click", undoSure);
-  const filterKey = positionKey + ":only-to-decide";
-  try { byId("onlyDecide").checked = window.localStorage.getItem(filterKey) === "1"; } catch (error) { /* private browsing */ }
-  byId("onlyDecide").addEventListener("change", (event) => {
-    try { window.localStorage.setItem(filterKey, event.target.checked ? "1" : "0"); } catch (error) { /* private browsing */ }
-    event.target.blur();  // the keys work again
-  });
+  // Two filters, one at a time: the events to decide, or the sure proposals (0388).
+  const filters = { onlyDecide: positionKey + ":only-to-decide", onlySure: positionKey + ":only-sure" };
+  for (const [box, key] of Object.entries(filters)) {
+    try { byId(box).checked = window.localStorage.getItem(key) === "1"; } catch (error) { /* private browsing */ }
+    byId(box).addEventListener("change", (event) => {
+      for (const [other, otherKey] of Object.entries(filters)) {
+        if (other !== box && event.target.checked) byId(other).checked = false;
+        try { window.localStorage.setItem(otherKey, byId(other).checked ? "1" : "0"); } catch (error) { /* private browsing */ }
+      }
+      event.target.blur();  // the keys work again
+    });
+  }
+  if (byId("onlyDecide").checked && byId("onlySure").checked) byId("onlySure").checked = false;
 
   fetch(P.state)
     .then((response) => response.json())
