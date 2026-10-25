@@ -99,3 +99,11 @@ Back on the home page after a console step: 4.8–5.6 s → under 0.5 s (*estima
   `.\mh-measure.ps1 -Only 36 -Count 1 -Image media-hygiene` (the script fetched by the commit
   of this branch, `mh update` first).
   **Reason:** only the maintainer's PC runs Windows PowerShell and Docker Desktop.
+
+## Validated on Windows (2026-10-25, maintainer, by hand)
+
+The image of `iterate/2026-10-24` and its `mh.ps1` (`mh update`): `mh` alone opens the home page;
+search shows at once and the way back needs no F5 (step 35's timing by two Enters dropped as
+meaningless now: real timings in the browser test of 0366); a console step chosen on the page
+(*See what each run did*, `mh history`) runs in the PowerShell window while the home page stays
+open; Quit, then `mh` again, works. The crash restart left by 0355 is TODO 0365.

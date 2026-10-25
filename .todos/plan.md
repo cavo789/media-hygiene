@@ -155,7 +155,5 @@ One `/todo:run NNNN` each, highest priority first.
 | 0329 | People page: the large view sets one photo aside | [PARTIAL_0329-people-large-view-sets-one-photo-aside.md](PARTIAL/PARTIAL_0329-people-large-view-sets-one-photo-aside.md) |
 | 0333 | One page frame for every page of the tool: the pages that still differ, converted | [PARTIAL_0333-one-page-frame-for-every-page.md](PARTIAL/PARTIAL_0333-one-page-frame-for-every-page.md) |
 | 0339 | Places: the map opens framed on every place the photos were taken | [PARTIAL_0339-places-map-opens-on-every-place.md](PARTIAL/PARTIAL_0339-places-map-opens-on-every-place.md) |
-| 0354 | Pages opened from the home page in under a second: measure each phase, then cut | [PARTIAL_0354-pages-open-from-the-home-page-without-waiting.md](PARTIAL/PARTIAL_0354-pages-open-from-the-home-page-without-waiting.md) |
-| 0355 | The home server stays up while `mh` runs the steps asked on its page | [PARTIAL_0355-home-server-stays-up-while-mh-runs-the-steps.md](PARTIAL/PARTIAL_0355-home-server-stays-up-while-mh-runs-the-steps.md) |
 | 0356 | `search` and `browse` served by the home server: a click opens them at once | [PARTIAL_0356-search-and-browse-served-by-the-home-server.md](PARTIAL/PARTIAL_0356-search-and-browse-served-by-the-home-server.md) |
 | 0358 | The home server sees its settings and the index change, and follows them by itself | [PARTIAL_0358-home-server-sees-settings-and-index-change.md](PARTIAL/PARTIAL_0358-home-server-sees-settings-and-index-change.md) |
