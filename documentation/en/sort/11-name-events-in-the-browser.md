@@ -106,7 +106,9 @@ none. Such an event shows `✔ sure` after its proposal; it only needs a glance.
 The button **✔ Accept N sure proposals (M files)** at the top (or <kbd>V</kbd>) accepts
 them all, after a confirmation that gives the figures. Each one is recorded exactly as
 <kbd>Enter</kbd> would record it on that event untouched (its proposed category, no name), with
-what the workbook said of it, like any other choice. Nothing is imposed: an event you already
+what the workbook said of it, like any other choice. The confirmation counts the files that move,
+and those that keep a folder you had named: these are never flattened into the proposed folder.
+Nothing is imposed: an event you already
 chose, here or in the workbook, is left alone, and a later workbook edit of the same event is
 still a conflict, never settled silently.
 

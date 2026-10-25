@@ -14,6 +14,8 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.classify.models import Band
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from media_hygiene.classify.plan_file import ClassifyPlan, PlanEvent, PlanRow
 
 WORK_BANDS: Final = frozenset({Band.UNSURE, Band.MANUAL})
@@ -45,9 +47,21 @@ class WorkItem:
         Returns:
             That row.
         """
-        folders = Counter(row.folder for row in self.rows)
-        common = folders.most_common(1)[0][0]
-        return next(row for row in self.rows if row.folder == common)
+        return proposed_row(self.rows)
+
+
+def proposed_row(rows: Sequence[PlanRow]) -> PlanRow:
+    """The row whose folder most of an event's files get.
+
+    Args:
+        rows: The rows of one event, not empty.
+
+    Returns:
+        That row.
+    """
+    folders = Counter(row.folder for row in rows)
+    common = folders.most_common(1)[0][0]
+    return next(row for row in rows if row.folder == common)
 
 
 def work_list(plan: ClassifyPlan) -> tuple[WorkItem, ...]:

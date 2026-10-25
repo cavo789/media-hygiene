@@ -1,7 +1,8 @@
 """What the user changed in the workbook, and the folder it gives each file.
 
 Precedence: file > event > category. A human edit counts as sure: the file leaves the
-"to check" band. Files left as they are (protected, `leave`) ignore every edit. Each
+"to check" band. An event edit never flattens a folder the user named (`own_folders`).
+Files left as they are (protected, `leave`) ignore every edit. Each
 decision says where it comes from, so that `sort` can let a file edit on any companion
 (a Live Photo's video, a RAW twin) decide for the whole group.
 """
@@ -14,6 +15,11 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.classify.layout import render
 from media_hygiene.classify.models import Band
+from media_hygiene.classify.workbook.own_folders import (
+    OwnFolders,
+    own_folders,
+    owns_folder,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -85,20 +91,30 @@ def resolve(plan: ClassifyPlan, edits: Edits) -> tuple[Decision, ...]:
     Returns:
         One decision per row, in the plan's order.
     """
-    return tuple(_decide(row, plan, edits) for row in plan.rows)
+    context = _Context(plan, edits, own_folders(plan, edits.events.keys()))
+    return tuple(_decide(row, context) for row in plan.rows)
 
 
-def _decide(row: PlanRow, plan: ClassifyPlan, edits: Edits) -> Decision:
+@dataclass(frozen=True, slots=True)
+class _Context:
+    """The plan, every edit, and the user-named folders of the events edited."""
+
+    plan: ClassifyPlan
+    edits: Edits
+    owned: Mapping[str, OwnFolders]
+
+
+def _decide(row: PlanRow, context: _Context) -> Decision:
     """The folder of one row: its file edit, else its event's, else its category's.
 
     Args:
         row: A row.
-        plan: The plan (its layouts).
-        edits: What the user changed.
+        context: The plan (its layouts), the edits, the user-named folders.
 
     Returns:
         Its decision.
     """
+    plan, edits = context.plan, context.edits
     unchanged = Decision(row, row.folder, row.band)
     if row.band is Band.STAY or row.values is None:
         return unchanged
@@ -109,31 +125,40 @@ def _decide(row: PlanRow, plan: ClassifyPlan, edits: Edits) -> Decision:
         return Decision(row, folder, Band.SURE, Source.FILE, cell)
     event = edits.events.get(row.event_id)
     if event is not None and (event.name or event.category):
-        return _by_event(row, event, (plan, edits))
+        decided = _by_event(row, event, context)
+        if decided is not None:
+            return decided
     category = edits.categories.get(row.category)
     decided = None if category is None else _by_category(row, category, plan)
     return unchanged if decided is None else replace(decided, source=Source.GROUP)
 
 
-def _by_event(
-    row: PlanRow, event: EventEdit, context: tuple[ClassifyPlan, Edits]
-) -> Decision:
+def _by_event(row: PlanRow, event: EventEdit, context: _Context) -> Decision | None:
     """The folder an event edit gives: its name is the category when none is given.
+
+    A file in a folder the user named keeps it when the event is accepted as proposed,
+    and goes below the event's destination otherwise.
 
     Args:
         row: A row of the event.
         event: The edit of its event.
-        context: The plan and every edit (a renamed category applies too).
+        context: The plan, every edit (a renamed category applies too), the
+            user-named folders.
 
     Returns:
-        Its decision, sure.
+        Its decision, sure; None when the file keeps the folder the user named.
     """
-    plan, edits = context
+    plan, edits = context.plan, context.edits
     if event.category is Stay.STAY or row.values is None:
         return Decision(row, None, Band.SURE, Source.GROUP)
     renamed = edits.categories.get(row.category)
     current = renamed.rename if renamed and isinstance(renamed.rename, str) else ""
     category = event.category or event.name or current or row.category
+    owned = context.owned.get(row.event_id)
+    if owned is not None and owns_folder(row):
+        if owned.accepts(category):
+            return None
+        category = owned.under(row.category, category)
     values = replace(
         row.values.as_values(), category=category, event=event.name or row.values.event
     )

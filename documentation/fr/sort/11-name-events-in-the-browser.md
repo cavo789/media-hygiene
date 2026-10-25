@@ -109,8 +109,9 @@ après sa proposition ; un coup d'œil suffit.
 Le bouton **✔ Accepter N propositions sûres (M fichiers)** en haut (ou <kbd>V</kbd>) les
 accepte toutes, après une confirmation qui donne les chiffres. Chacune est enregistrée exactement
 comme <kbd>Entrée</kbd> l'enregistrerait sur cet événement laissé tel quel (sa catégorie
-proposée, sans nom), avec ce qu'en disait le classeur, comme tout autre choix. Rien n'est
-imposé : un événement déjà choisi, ici ou dans le classeur, n'est pas touché, et une
+proposée, sans nom), avec ce qu'en disait le classeur, comme tout autre choix. La confirmation
+compte les fichiers qui bougent, et ceux qui gardent un dossier que vous aviez nommé : ceux-là ne
+sont jamais aplatis dans le dossier proposé. Rien n'est imposé : un événement déjà choisi, ici ou dans le classeur, n'est pas touché, et une
 modification ultérieure du même événement dans le classeur reste un conflit, jamais réglé en
 silence.
 

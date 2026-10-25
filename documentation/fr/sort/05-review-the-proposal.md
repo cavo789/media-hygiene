@@ -107,6 +107,12 @@ Quelques règles :
 
 - **La modification la plus précise l'emporte** : le dossier final d'un fichier, sinon celui de
   son événement, sinon celui de sa catégorie.
+- **Un événement n'aplatit jamais vos propres dossiers** : son nom ou sa catégorie déplace ses
+  fichiers épars ; les fichiers d'un dossier que vous aviez nommé (`2019/Montenegro/Budva`) le
+  gardent, sous le dossier de l'événement quand vous lui en donnez un autre (`2019/Vacances au
+  Monténégro/Budva`). Pour fusionner deux de vos dossiers (« Noël chez Mamy » et « Noël 2020 »),
+  renommez une catégorie en l'autre dans la feuille Catégories, ou tapez le dossier final dans la
+  feuille Fichiers.
 - **Les compagnons suivent un seul dossier** : une Live Photo (`IMG_1.HEIC` + `IMG_1.MOV`) ou un
   fichier RAW et son JPEG ont une ligne chacun, mais se déplacent ensemble. Un dossier final tapé
   sur **n'importe laquelle** de leurs lignes décide pour tous ; deux de leurs lignes avec des

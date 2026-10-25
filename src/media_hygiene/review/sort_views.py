@@ -16,7 +16,8 @@ from media_hygiene.classify.models import Band
 from media_hygiene.classify.names import band_name
 from media_hygiene.classify.page_overlay import Verdict, value_text, verdict
 from media_hygiene.classify.page_values import EventValue, FileValue
-from media_hygiene.review.sort_sure import sure_value
+from media_hygiene.classify.workbook.own_folders import owns_folder
+from media_hygiene.review.sort_sure import reach, sure_value
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -62,6 +63,9 @@ class EventCard(BaseModel):
     band: str
     why: str
     sure: bool  # one click may accept its proposal: `sort_sure`
+    moves: int  # files accepting the proposal moves
+    kept: int  # files that keep a folder the user named
+    kept_folders: tuple[str, ...]  # those folders, their last part
     workbook: Side
     page: Side | None
     conflict: bool
@@ -81,6 +85,7 @@ class PhotoCard(BaseModel):
     thumb: str
     preview: str
     movable: bool  # files left as they are ignore every choice
+    own: bool  # in a folder the user named: an event choice never flattens it
     workbook: str
     page: str
     conflict: bool
@@ -123,6 +128,7 @@ class CardMaker:
         event, head = item.event, item.proposal
         now = EventValue.of(self.workbook.events.get(event.id))
         chosen = self.events.get(event.id)
+        effect = reach(item)
         return EventCard(
             id=event.id,
             title=event.label or event.span,
@@ -136,6 +142,9 @@ class CardMaker:
             band=band_name(head.band),
             why=head.why,
             sure=sure_value(item) is not None,
+            moves=effect.moves,
+            kept=effect.kept,
+            kept_folders=effect.folders,
             workbook=event_side(now),
             page=None if chosen is None else event_side(chosen.value),
             conflict=chosen is not None
@@ -163,6 +172,7 @@ class CardMaker:
             thumb=f"{THUMB_PREFIX}{row.id}{JPEG_SUFFIX}",
             preview=f"{PREVIEW_PREFIX}{row.id}{JPEG_SUFFIX}",
             movable=row.values is not None and row.band is not Band.STAY,
+            own=owns_folder(row),
             workbook=value_text(now),
             page="" if chosen is None else value_text(chosen.value),
             conflict=chosen is not None

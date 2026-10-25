@@ -62,8 +62,13 @@ to show up elsewhere too ("every Christmas", "Grandma"), without a copy: the
   `{year}/{category}/{event}` ([sorting, step 4](../sort/04-classify.md#your-own-structure)).
 - **Not every event needs a name.** An event whose photos already sit in a named folder
   (`Seaside holidays`) has a proposal marked **sure**. Still look where it leads before accepting
-  it: an event that spans several of your folders (a trip, `Budva`, `Cetinje`…) gathers them all
-  in the proposed folder, with <kbd>V</kbd> too.
+  it: only its loose files (a phone's `DCIM`, files to check or to sort) go to the proposed folder.
+- **Your own folders are never flattened.** An event that spans several folders you had named (a
+  trip: `Montenegro/Budva`, `Montenegro/Cetinje`…) keeps them: accepted as proposed (with
+  <kbd>Enter</kbd> or <kbd>V</kbd>), each file stays in its folder; given another folder
+  (`Holidays in Montenegro`), that folder becomes their parent: `2019/Holidays in
+  Montenegro/Budva`, `2019/Holidays in Montenegro/Cetinje`. The page says it: "3 files keep their
+  own folder (Budva, Cetinje)".
 - **An event you do not name** is not lost: it goes to `year/To sort/<its dates>`, where you find
   it again.
 

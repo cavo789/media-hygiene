@@ -2632,15 +2632,16 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"Events to decide with a sure proposal: {count} ({files}). Each one gets "
-"its proposed category, as Enter would give it, saved in one write. Events"
-" to decide left to look at: {left}. Accept them? The ↶ button takes the "
-"whole batch back."
+"Events to decide with a sure proposal: {count}. Each one gets its "
+"proposed category, as Enter would give it, saved in one write: {moves} "
+"move, {kept} keep the folder you named. Events to decide left to look at:"
+" {left}. Accept them? The ↶ button takes the whole batch back."
 msgstr ""
-"Événements à décider avec une proposition sûre : {count} ({files}). "
-"Chacun reçoit sa catégorie proposée, comme Entrée la lui donnerait, "
-"enregistré en une seule écriture. Événements à décider qui restent à "
-"regarder : {left}. Les accepter ? Le bouton ↶ reprend tout le lot."
+"Événements à décider avec une proposition sûre : {count}. Chacun reçoit "
+"sa catégorie proposée, comme Entrée la lui donnerait, enregistré en une "
+"seule écriture : {moves} bougent, {kept} gardent le dossier que vous avez "
+"nommé. Événements à décider qui restent à regarder : {left}. Les "
+"accepter ? Le bouton ↶ reprend tout le lot."
 
 msgid ""
 "Events: photos taken less than merge_gap_hours apart belong together; "
@@ -9831,6 +9832,9 @@ msgstr ""
 msgid "Your folders, the update, Windows and the advanced settings."
 msgstr "Vos dossiers, la mise à jour, Windows et les réglages avancés."
 
+msgid "Your folders:"
+msgstr "Vos dossiers :"
+
 #, python-brace-format
 msgid ""
 "Your names for the towns: the towns are named after GeoNames, in English "
@@ -10646,6 +10650,9 @@ msgid ""
 msgstr ""
 "son original {path} n'est plus là (déplacé ou renommé depuis ?) : gardé, "
 "c'est peut-être le dernier nom de la photo"
+
+msgid "its own folder"
+msgstr "son propre dossier"
 
 msgid "its previous content is no longer in the quarantine: kept"
 msgstr "son contenu précédent n'est plus dans la quarantaine : gardé"
@@ -13818,6 +13825,12 @@ msgid "{n} file found."
 msgid_plural "{n} files found."
 msgstr[0] "{n} fichier trouvé."
 msgstr[1] "{n} fichiers trouvés."
+
+#, python-brace-format
+msgid "{n} file keeps its own folder"
+msgid_plural "{n} files keep their own folder"
+msgstr[0] "{n} fichier garde son propre dossier"
+msgstr[1] "{n} fichiers gardent leur propre dossier"
 
 #, python-brace-format
 msgid "{n} file missing: moved out of the folders analysed, or deleted."

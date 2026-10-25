@@ -40,7 +40,9 @@
     const todo = sureTodo();
     if (todo.length === 0) { setStatus(T.sureNone); return; }
     const left = events.filter(isOpen).length - todo.length;
-    if (!window.confirm(fill(T.sureAsk, { count: todo.length, files: counted(T.nFiles, filesIn(todo)), left: left }))) return;
+    const moves = todo.reduce((count, card) => count + card.moves, 0);
+    const kept = todo.reduce((count, card) => count + card.kept, 0);
+    if (!window.confirm(fill(T.sureAsk, { count: todo.length, moves: counted(T.nFiles, moves), kept: counted(T.nFiles, kept), left: left }))) return;
     const answer = await sendBatch(todo.map((card) => card.id), false);
     if (!answer) return;
     lastBatch = answer.events.map((card) => card.id);

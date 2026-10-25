@@ -62,8 +62,14 @@ Noëls », « Grand-mère »), sans copie : les [albums](../sort/12-albums.md).
   choisissez la disposition `{year}/{category}/{event}` ([trier, étape 4](../sort/04-classify.md#votre-propre-structure)).
 - **Tous ne demandent pas un nom.** Un événement dont les photos sont déjà dans un dossier nommé
   (`Vacances à la mer`) a une proposition marquée **sûre**. Regardez quand même où elle mène
-  avant de la valider : un événement qui réunit plusieurs de vos dossiers (un voyage, `Budva`,
-  `Cetinje`…) les rassemble tous dans le dossier proposé, y compris avec <kbd>V</kbd>.
+  avant de la valider : seuls ses fichiers épars (le `DCIM` d'un téléphone, les fichiers à vérifier
+  ou à trier) vont dans le dossier proposé.
+- **Vos propres dossiers ne sont jamais aplatis.** Un événement qui réunit plusieurs dossiers que
+  vous aviez nommés (un voyage : `Montenegro/Budva`, `Montenegro/Cetinje`…) les garde : accepté tel
+  que proposé (avec <kbd>Entrée</kbd> ou <kbd>V</kbd>), chaque fichier reste dans son dossier ;
+  avec un autre dossier (`Vacances au Monténégro`), celui-ci devient leur parent : `2019/Vacances
+  au Monténégro/Budva`, `2019/Vacances au Monténégro/Cetinje`. La page le dit : « 3 fichiers
+  gardent leur propre dossier (Budva, Cetinje) ».
 - **Un événement que vous ne nommez pas** n'est pas perdu : il va dans `année/À trier/<ses dates>`,
   où vous le retrouvez.
 

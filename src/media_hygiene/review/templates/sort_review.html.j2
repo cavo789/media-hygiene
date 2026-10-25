@@ -27,13 +27,16 @@
   "sureMark": "✔ " ~ _("sure: V accepts it with the other sure proposals"),
   "sure": "✔ " ~ _("Accept {sure} ({files})"),
   "sureNone": _("No sure proposal left to accept."),
-  "sureAsk": _("Events to decide with a sure proposal: {count} ({files}). Each one gets its proposed category, as Enter would give it, saved in one write. Events to decide left to look at: {left}. Accept them? The ↶ button takes the whole batch back."),
+  "sureAsk": _("Events to decide with a sure proposal: {count}. Each one gets its proposed category, as Enter would give it, saved in one write: {moves} move, {kept} keep the folder you named. Events to decide left to look at: {left}. Accept them? The ↶ button takes the whole batch back."),
+  "kept": _("Your folders:"),
+  "ownFolder": _("its own folder"),
   "sureDone": _("{done}, read back from the disk at {time}: the ↶ button takes the whole batch back."),
   "sureUndo": "↶ " ~ _("Take the batch back ({events})"),
   "sureUndone": _("{undone}, read back from the disk at {time}."),
   "nothingToUndo": _("Nothing to undo."),
   "nFiles": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
   "nEvents": [ngettext("{n} event", "{n} events", 1), ngettext("{n} event", "{n} events", 2)],
+  "nKept": [ngettext("{n} file keeps its own folder", "{n} files keep their own folder", 1), ngettext("{n} file keeps its own folder", "{n} files keep their own folder", 2)],
   "nSure": [ngettext("{n} sure proposal", "{n} sure proposals", 1), ngettext("{n} sure proposal", "{n} sure proposals", 2)],
   "nSureDone": [ngettext("{n} sure proposal accepted", "{n} sure proposals accepted", 1), ngettext("{n} sure proposal accepted", "{n} sure proposals accepted", 2)],
   "nUndone": [ngettext("{n} choice of the batch taken back", "{n} choices of the batch taken back", 1), ngettext("{n} choice of the batch taken back", "{n} choices of the batch taken back", 2)],
@@ -169,6 +172,12 @@
   };
 
   const fact = (term, text) => [line("dt", term), line("dd", text || T.nothing)];
+  // The files an event choice leaves in the folders the user named (0385): "3 files keep
+  // their own folder (Budva, Cetinje…)".
+  const keptText = (card) => {
+    const names = card.kept_folders.slice(0, 3).join(", ") + (card.kept_folders.length > 3 ? "…" : "");
+    return counted(T.nKept, card.kept) + " (" + names + ")";
+  };
 
   const showEvent = (card) => {
     byId("position").textContent = fill(T.position, { number: current + 1, total: events.length });
@@ -181,6 +190,7 @@
       ...fact(T.proposal, proposal),
       ...fact(T.workbook, card.workbook.text),
       ...fact(T.page, card.page ? card.page.text : ""),
+      ...(card.kept ? fact(T.kept, keptText(card)) : []),
     );
     byId("conflict").hidden = !card.conflict;
     byId("conflict").textContent = T.conflict;
@@ -201,7 +211,7 @@
     image.addEventListener("error", () => image.replaceWith(line("div", "🎞️ " + T.noPreview, "none")));
     const badge = !photo.movable ? T.left : photo.page ? "✅ " + photo.page : photo.workbook ? "📒 " + photo.workbook : "";
     element.append(image, line("figcaption", photo.name), line("div", photo.date, "muted"));
-    if (photo.proposed !== events[current].folder) element.append(line("div", "→ " + (photo.proposed || T.stay), "muted"));
+    if (photo.proposed !== events[current].folder) element.append(line("div", "→ " + (photo.proposed || T.stay) + (photo.own ? " · " + T.ownFolder : ""), "muted"));
     if (badge) element.append(line("div", badge, "badge"));
     element.addEventListener("click", () => { cursor = rank; toggle(); });
     return element;

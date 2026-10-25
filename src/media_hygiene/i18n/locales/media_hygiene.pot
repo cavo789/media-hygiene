@@ -2142,10 +2142,10 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"Events to decide with a sure proposal: {count} ({files}). Each one gets "
-"its proposed category, as Enter would give it, saved in one write. Events"
-" to decide left to look at: {left}. Accept them? The ↶ button takes the "
-"whole batch back."
+"Events to decide with a sure proposal: {count}. Each one gets its "
+"proposed category, as Enter would give it, saved in one write: {moves} "
+"move, {kept} keep the folder you named. Events to decide left to look at:"
+" {left}. Accept them? The ↶ button takes the whole batch back."
 msgstr ""
 
 msgid ""
@@ -8102,6 +8102,9 @@ msgstr ""
 msgid "Your folders, the update, Windows and the advanced settings."
 msgstr ""
 
+msgid "Your folders:"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Your names for the towns: the towns are named after GeoNames, in English "
@@ -8843,6 +8846,9 @@ msgstr ""
 msgid ""
 "its original {path} is no longer there (moved or renamed since?): kept, "
 "it may be the last name of the photo"
+msgstr ""
+
+msgid "its own folder"
 msgstr ""
 
 msgid "its previous content is no longer in the quarantine: kept"
@@ -11532,6 +11538,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} file found."
 msgid_plural "{n} files found."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} file keeps its own folder"
+msgid_plural "{n} files keep their own folder"
 msgstr[0] ""
 msgstr[1] ""
 
