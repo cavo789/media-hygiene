@@ -121,6 +121,22 @@ Run by hand (`docker run … media-hygiene backup --to …`), the command only s
  Windows only, as mh backup: copy your photo folders into a folder of their own
  on the NAS, only what it lacks; a photo moved is renamed there, a deletion by
  mistake never carried over. Run here, it shows the plan.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ *  --to              <str>  The backup folder, as Windows writes it          │
+│                             (\\NAS\backup_photos): a folder of its own,      │
+│                             never a photo folder nor a backup compared.      │
+│                             [required]                                       │
+│    --anyway                 Go on even when more than stop_above_percent     │
+│                             (config.toml) of the backup would be set aside   │
+│                             or replaced.                                     │
+│    --help    -h             Show this message and exit.                      │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
+│ --backup        <str>  A backup or an old disk, mounted read-only: never     │
+│                        changed, and not refused for being read-only (mh      │
+│                        passes your backups). Repeatable.                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>

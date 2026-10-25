@@ -79,9 +79,9 @@ New Year.
 To check or to sort: 5 files in 1 event.
 💡 Nothing was changed: 'classify' only proposes.
 ✅ Workbook to edit:
-C:\Users\you\media-hygiene\reports\20261020-110055-classify\classify.xlsx
+C:\Users\you\media-hygiene\reports\20261025-083644-classify\classify.xlsx
 ✅ Report with the photos:
-C:\Users\you\media-hygiene\reports\20261020-110055-classify\report.html
+C:\Users\you\media-hygiene\reports\20261025-083644-classify\report.html
 👉 What next: edit the yellow cells and save; nothing moves until 'sort'.
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `

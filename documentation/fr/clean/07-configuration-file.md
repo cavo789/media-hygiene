@@ -47,6 +47,7 @@ Réglages effectifs
 │ general.timezone            │                            │ défaut            │
 │ general.verbosity           │ info                       │ défaut            │
 │ general.color               │ never                      │ ligne de commande │
+│ general.check_updates       │ True                       │ défaut            │
 │ folders.preferred           │ []                         │ défaut            │
 │ folders.protected           │ []                         │ défaut            │
 │ folders.excluded            │ []                         │ défaut            │
@@ -325,6 +326,7 @@ Réglages effectifs
 │                             │ etmap.org                  │                   │
 │ places.folders              │ []                         │ défaut            │
 │ places.ignored              │ []                         │ défaut            │
+│ places.town_hint_km         │ 10.0                       │ défaut            │
 │ album.root                  │                            │ défaut            │
 │ tags.language               │                            │ défaut            │
 │ tags.stop_words             │ ['sol', 'mur', 'murs',     │ défaut            │
@@ -344,12 +346,38 @@ Réglages effectifs
 │ tags.town_km                │ 20.0                       │ défaut            │
 │ tags.xmp_sources            │ ['vision', 'place']        │ défaut            │
 │ tags.xmp_folder_gps         │ False                      │ défaut            │
+│ tags.meaning                │ False                      │ défaut            │
+│ tags.meaning_threads        │ 4                          │ défaut            │
+│ tags.meaning_results        │ 200                        │ défaut            │
 │ people.similarity           │ 0.363                      │ défaut            │
 │ people.min_face             │ 40                         │ défaut            │
 │ people.min_sharpness        │ 30.0                       │ défaut            │
 │ people.with_audit           │ False                      │ défaut            │
 │ people.ignored              │ 0 visages                  │ défaut            │
+│ people.ignored_file         │                            │ défaut            │
 │ people.person               │                            │ défaut            │
+│ backup.keep_removed_days    │ 90                         │ défaut            │
+│ backup.stop_above_percent   │ 20                         │ défaut            │
+│ backup.threads              │ 8                          │ défaut            │
+│ slideshow.screen_px         │ 1920                       │ défaut            │
+│ slideshow.interval_seconds  │ 8                          │ défaut            │
+│ share.long_side_px          │ 2048                       │ défaut            │
+│ share.quality               │ 85                         │ défaut            │
+│ share.keep_gps              │ False                      │ défaut            │
+│ shrink.codecs               │ ['mjpeg', 'dvvideo',       │ défaut            │
+│                             │ 'mpeg4', 'msmpeg4v1',      │                   │
+│                             │ 'msmpeg4v2', 'msmpeg4v3',  │                   │
+│                             │ 'wmv1', 'wmv2', 'wmv3',    │                   │
+│                             │ 'mpeg1video',              │                   │
+│                             │ 'mpeg2video', 'h263']      │                   │
+│ shrink.bits_per_pixel       │ 0.5                        │ défaut            │
+│ shrink.min_gain_percent     │ 30                         │ défaut            │
+│ shrink.same_crf             │ 23                         │ défaut            │
+│ shrink.lighter_crf          │ 23                         │ défaut            │
+│ shrink.lighter_lines        │ 720                        │ défaut            │
+│ shrink.preset               │ medium                     │ défaut            │
+│ shrink.threads              │ 0                          │ défaut            │
+│ shrink.try_count            │ 10                         │ défaut            │
 └─────────────────────────────┴────────────────────────────┴───────────────────┘
 
 Catégories d'extensions (--ext)
@@ -568,6 +596,7 @@ Réglages effectifs
 │ general.timezone            │                            │ config.toml       │
 │ general.verbosity           │ info                       │ config.toml       │
 │ general.color               │ never                      │ ligne de commande │
+│ general.check_updates       │ True                       │ config.toml       │
 │ folders.preferred           │ []                         │ config.toml       │
 │ folders.protected           │ []                         │ config.toml       │
 │ folders.excluded            │ []                         │ config.toml       │
@@ -857,6 +886,7 @@ Réglages effectifs
 │                             │ etmap.org                  │                   │
 │ places.folders              │ []                         │ défaut            │
 │ places.ignored              │ []                         │ défaut            │
+│ places.town_hint_km         │ 10.0                       │ config.toml       │
 │ album.root                  │                            │ config.toml       │
 │ tags.language               │                            │ config.toml       │
 │ tags.stop_words             │ ['sol', 'mur', 'murs',     │ défaut            │
@@ -876,12 +906,38 @@ Réglages effectifs
 │ tags.town_km                │ 20.0                       │ config.toml       │
 │ tags.xmp_sources            │ ['vision', 'place']        │ config.toml       │
 │ tags.xmp_folder_gps         │ False                      │ config.toml       │
+│ tags.meaning                │ False                      │ config.toml       │
+│ tags.meaning_threads        │ 4                          │ config.toml       │
+│ tags.meaning_results        │ 200                        │ config.toml       │
 │ people.similarity           │ 0.363                      │ config.toml       │
 │ people.min_face             │ 40                         │ config.toml       │
 │ people.min_sharpness        │ 30.0                       │ config.toml       │
 │ people.with_audit           │ False                      │ config.toml       │
 │ people.ignored              │ 0 visages                  │ défaut            │
+│ people.ignored_file         │                            │ défaut            │
 │ people.person               │                            │ défaut            │
+│ backup.keep_removed_days    │ 90                         │ config.toml       │
+│ backup.stop_above_percent   │ 20                         │ config.toml       │
+│ backup.threads              │ 8                          │ config.toml       │
+│ slideshow.screen_px         │ 1920                       │ config.toml       │
+│ slideshow.interval_seconds  │ 8                          │ config.toml       │
+│ share.long_side_px          │ 2048                       │ config.toml       │
+│ share.quality               │ 85                         │ config.toml       │
+│ share.keep_gps              │ False                      │ config.toml       │
+│ shrink.codecs               │ ['mjpeg', 'dvvideo',       │ config.toml       │
+│                             │ 'mpeg4', 'msmpeg4v1',      │                   │
+│                             │ 'msmpeg4v2', 'msmpeg4v3',  │                   │
+│                             │ 'wmv1', 'wmv2', 'wmv3',    │                   │
+│                             │ 'mpeg1video',              │                   │
+│                             │ 'mpeg2video', 'h263']      │                   │
+│ shrink.bits_per_pixel       │ 0.5                        │ config.toml       │
+│ shrink.min_gain_percent     │ 30                         │ config.toml       │
+│ shrink.same_crf             │ 23                         │ config.toml       │
+│ shrink.lighter_crf          │ 23                         │ config.toml       │
+│ shrink.lighter_lines        │ 720                        │ config.toml       │
+│ shrink.preset               │ medium                     │ config.toml       │
+│ shrink.threads              │ 0                          │ config.toml       │
+│ shrink.try_count            │ 10                         │ config.toml       │
 └─────────────────────────────┴────────────────────────────┴───────────────────┘
 
 Catégories d'extensions (--ext)

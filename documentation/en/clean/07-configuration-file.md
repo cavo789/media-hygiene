@@ -45,6 +45,7 @@ Effective settings
 │ general.timezone              │                               │ default      │
 │ general.verbosity             │ info                          │ default      │
 │ general.color                 │ never                         │ command line │
+│ general.check_updates         │ True                          │ default      │
 │ folders.preferred             │ []                            │ default      │
 │ folders.protected             │ []                            │ default      │
 │ folders.excluded              │ []                            │ default      │
@@ -299,6 +300,7 @@ Effective settings
 │                               │ ap.org                        │              │
 │ places.folders                │ []                            │ default      │
 │ places.ignored                │ []                            │ default      │
+│ places.town_hint_km           │ 10.0                          │ default      │
 │ album.root                    │                               │ default      │
 │ tags.language                 │                               │ default      │
 │ tags.stop_words               │ ['sol', 'mur', 'murs',        │ default      │
@@ -316,12 +318,37 @@ Effective settings
 │ tags.town_km                  │ 20.0                          │ default      │
 │ tags.xmp_sources              │ ['vision', 'place']           │ default      │
 │ tags.xmp_folder_gps           │ False                         │ default      │
+│ tags.meaning                  │ False                         │ default      │
+│ tags.meaning_threads          │ 4                             │ default      │
+│ tags.meaning_results          │ 200                           │ default      │
 │ people.similarity             │ 0.363                         │ default      │
 │ people.min_face               │ 40                            │ default      │
 │ people.min_sharpness          │ 30.0                          │ default      │
 │ people.with_audit             │ False                         │ default      │
 │ people.ignored                │ 0 faces                       │ default      │
+│ people.ignored_file           │                               │ default      │
 │ people.person                 │                               │ default      │
+│ backup.keep_removed_days      │ 90                            │ default      │
+│ backup.stop_above_percent     │ 20                            │ default      │
+│ backup.threads                │ 8                             │ default      │
+│ slideshow.screen_px           │ 1920                          │ default      │
+│ slideshow.interval_seconds    │ 8                             │ default      │
+│ share.long_side_px            │ 2048                          │ default      │
+│ share.quality                 │ 85                            │ default      │
+│ share.keep_gps                │ False                         │ default      │
+│ shrink.codecs                 │ ['mjpeg', 'dvvideo', 'mpeg4', │ default      │
+│                               │ 'msmpeg4v1', 'msmpeg4v2',     │              │
+│                               │ 'msmpeg4v3', 'wmv1', 'wmv2',  │              │
+│                               │ 'wmv3', 'mpeg1video',         │              │
+│                               │ 'mpeg2video', 'h263']         │              │
+│ shrink.bits_per_pixel         │ 0.5                           │ default      │
+│ shrink.min_gain_percent       │ 30                            │ default      │
+│ shrink.same_crf               │ 23                            │ default      │
+│ shrink.lighter_crf            │ 23                            │ default      │
+│ shrink.lighter_lines          │ 720                           │ default      │
+│ shrink.preset                 │ medium                        │ default      │
+│ shrink.threads                │ 0                             │ default      │
+│ shrink.try_count              │ 10                            │ default      │
 └───────────────────────────────┴───────────────────────────────┴──────────────┘
 
 Extension categories (--ext)
@@ -524,6 +551,7 @@ Effective settings
 │ general.timezone              │                               │ config.toml  │
 │ general.verbosity             │ info                          │ config.toml  │
 │ general.color                 │ never                         │ command line │
+│ general.check_updates         │ True                          │ config.toml  │
 │ folders.preferred             │ []                            │ config.toml  │
 │ folders.protected             │ []                            │ config.toml  │
 │ folders.excluded              │ []                            │ config.toml  │
@@ -778,6 +806,7 @@ Effective settings
 │                               │ ap.org                        │              │
 │ places.folders                │ []                            │ default      │
 │ places.ignored                │ []                            │ default      │
+│ places.town_hint_km           │ 10.0                          │ config.toml  │
 │ album.root                    │                               │ config.toml  │
 │ tags.language                 │                               │ config.toml  │
 │ tags.stop_words               │ ['sol', 'mur', 'murs',        │ default      │
@@ -795,12 +824,37 @@ Effective settings
 │ tags.town_km                  │ 20.0                          │ config.toml  │
 │ tags.xmp_sources              │ ['vision', 'place']           │ config.toml  │
 │ tags.xmp_folder_gps           │ False                         │ config.toml  │
+│ tags.meaning                  │ False                         │ config.toml  │
+│ tags.meaning_threads          │ 4                             │ config.toml  │
+│ tags.meaning_results          │ 200                           │ config.toml  │
 │ people.similarity             │ 0.363                         │ config.toml  │
 │ people.min_face               │ 40                            │ config.toml  │
 │ people.min_sharpness          │ 30.0                          │ config.toml  │
 │ people.with_audit             │ False                         │ config.toml  │
 │ people.ignored                │ 0 faces                       │ default      │
+│ people.ignored_file           │                               │ default      │
 │ people.person                 │                               │ default      │
+│ backup.keep_removed_days      │ 90                            │ config.toml  │
+│ backup.stop_above_percent     │ 20                            │ config.toml  │
+│ backup.threads                │ 8                             │ config.toml  │
+│ slideshow.screen_px           │ 1920                          │ config.toml  │
+│ slideshow.interval_seconds    │ 8                             │ config.toml  │
+│ share.long_side_px            │ 2048                          │ config.toml  │
+│ share.quality                 │ 85                            │ config.toml  │
+│ share.keep_gps                │ False                         │ config.toml  │
+│ shrink.codecs                 │ ['mjpeg', 'dvvideo', 'mpeg4', │ config.toml  │
+│                               │ 'msmpeg4v1', 'msmpeg4v2',     │              │
+│                               │ 'msmpeg4v3', 'wmv1', 'wmv2',  │              │
+│                               │ 'wmv3', 'mpeg1video',         │              │
+│                               │ 'mpeg2video', 'h263']         │              │
+│ shrink.bits_per_pixel         │ 0.5                           │ config.toml  │
+│ shrink.min_gain_percent       │ 30                            │ config.toml  │
+│ shrink.same_crf               │ 23                            │ config.toml  │
+│ shrink.lighter_crf            │ 23                            │ config.toml  │
+│ shrink.lighter_lines          │ 720                           │ config.toml  │
+│ shrink.preset                 │ medium                        │ config.toml  │
+│ shrink.threads                │ 0                             │ config.toml  │
+│ shrink.try_count              │ 10                            │ config.toml  │
 └───────────────────────────────┴───────────────────────────────┴──────────────┘
 
 Extension categories (--ext)

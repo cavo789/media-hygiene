@@ -181,7 +181,6 @@ est dit après chaque vidéo.
 
 <!-- capture: help-shrink.txt -->
 ```text
-
  Utilisation : media-hygiene shrink [OPTIONS]
 
  Lister les vidéos lourdes qui gagnent à être allégées (anciens appareils,
@@ -198,6 +197,11 @@ est dit après chaque vidéo.
 │                           Pour les clips dont la qualité compte moins.       │
 │ --apply                   Les alléger ; sans cette option, seulement les     │
 │                           lister avec le gain attendu.                       │
+│ --try                     Encoder les premières (try_count dans config.toml) │
+│                           en brouillons, dans /cache seulement, et comparer  │
+│                           avant et après dans le navigateur ; alléger depuis │
+│                           la page. Les brouillons sont supprimés quand la    │
+│                           page se ferme.                                     │
 │ --yes      -y             Alléger sans demander d'abord.                     │
 │ --help     -h             Affiche ce message et quitte.                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯

@@ -173,7 +173,6 @@ figures; the list says its estimate, and the real gain is said after each video.
 
 <!-- capture: help-shrink.txt -->
 ```text
-
  Usage: media-hygiene shrink [OPTIONS]
 
  List the heavy videos worth lightening (old cameras, MJPEG); with --apply,
@@ -189,6 +188,10 @@ figures; the list says its estimate, and the real gain is said after each video.
 │                           whose quality matters less.                        │
 │ --apply                   Lighten them; without it, only list them with the  │
 │                           gain expected.                                     │
+│ --try                     Encode the first ones (try_count in config.toml)   │
+│                           as drafts, in /cache only, and compare before and  │
+│                           after in the browser; lighten from the page. The   │
+│                           drafts are removed when the page closes.           │
 │ --yes      -y             Lighten without asking first.                      │
 │ --help     -h             Show this message and exit.                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯

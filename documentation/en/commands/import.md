@@ -101,6 +101,19 @@ counts as in your photos. It stays on the NAS: nothing is lost.
 
  Copy into your photos what only a backup (a NAS) holds, never what you set
  aside or deleted before; each copy proven (journaled, undoable).
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --to            <str>  Folder receiving the copies (host path); default:     │
+│                        'From NAS' in your first photo folder, the folders of │
+│                        the backup kept below it.                             │
+│ --yes   -y             Copy without asking first.                            │
+│ --help  -h             Show this message and exit.                           │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
+│ --backup        <str>  A backup or an old disk: compared, never changed.     │
+│                        Says what it lacks and what only it holds.            │
+│                        Repeatable.                                           │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>

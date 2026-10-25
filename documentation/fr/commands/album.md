@@ -116,16 +116,18 @@ Plus : [Trier, étape 12](../sort/12-albums.md#choisir-ce-que-lalbum-rassemble).
 ```text
  Utilisation : media-hygiene album [OPTIONS] {name}
 
- Rassemble une sélection du plan de classify dans un dossier de liens physiques
- : rien n'est copié ni déplacé (journalisé, annulable).
+ Crée le dossier d'un album sur le disque, en liens physiques : rien n'est
+ copié ni déplacé (journalisé, annulable).
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│ *    name      <str>  Le nom de l'album : le dossier qui contient ses liens. │
+│ *    name      <str>  Le nom de l'album, tel que search et browse l'ont      │
+│                       enregistré : le dossier qui contient ses liens.        │
 │                       [required]                                             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --category          <str>  Les fichiers de cette catégorie, d'après le       │
-│                            classeur modifié.                                 │
+│ --category          <str>  Au lieu d'un album enregistré : les fichiers de   │
+│                            cette catégorie, d'après le classeur de classify  │
+│                            modifié.                                          │
 │ --event             <str>  Les fichiers de cet événement : son identifiant   │
 │                            ou son nom.                                       │
 │ --apply                    Crée les liens ; sans cette option, montre        │

@@ -102,10 +102,25 @@ le milieu diffère compte comme présent dans vos photos. Il reste sur le NAS : 
 
 <!-- capture: help-import.txt -->
 ```text
- Usage: media-hygiene import [OPTIONS]
+ Utilisation : media-hygiene import [OPTIONS]
 
- Copy into your photos what only a backup (a NAS) holds, never what you set
- aside or deleted before; each copy proven (journaled, undoable).
+ Copie dans vos photos ce qu'une sauvegarde (un NAS) est seule à contenir,
+ jamais ce que vous avez mis de côté ou supprimé avant ; chaque copie prouvée
+ (journalisé, annulable).
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --to            <str>  Dossier qui reçoit les copies (chemin de l'hôte) ;    │
+│                        par défaut : « From NAS » dans votre premier dossier  │
+│                        de photos, les dossiers de la sauvegarde gardés en    │
+│                        dessous.                                              │
+│ --yes   -y             Copier sans demander d'abord.                         │
+│ --help  -h             Affiche ce message et quitte.                         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
+│ --backup        <str>  Une sauvegarde ou un ancien disque : comparé, jamais  │
+│                        modifié. Dit ce qui lui manque et ce que lui seul     │
+│                        contient. Répétable.                                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>

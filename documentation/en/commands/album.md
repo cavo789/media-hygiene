@@ -115,16 +115,17 @@ plan **instead of** `albums.json`; given together, every option must match: `--c
 ```text
  Usage: media-hygiene album [OPTIONS] {name}
 
- Gather a selection of the classify plan into a folder of hard links: nothing
- is copied nor moved (journaled, undoable).
+ Make an album's folder on the disk, as hard links: nothing is copied nor moved
+ (journaled, undoable).
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│ *    name      <str>  The album's name: the folder holding its links.        │
+│ *    name      <str>  The album's name, as search and browse saved it: the   │
+│                       folder holding its links.                              │
 │                       [required]                                             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --category          <str>  The files of this category, as the edited         │
-│                            workbook says.                                    │
+│ --category          <str>  Instead of a saved album: the files of this       │
+│                            category, as the edited classify workbook says.   │
 │ --event             <str>  The files of this event: its id or its name.      │
 │ --apply                    Make the links; without it, only show what the    │
 │                            album gathers.                                    │

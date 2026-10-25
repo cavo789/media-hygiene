@@ -202,7 +202,7 @@ command shows its own `--help`; here is the list of the commands:
 │ share        Prepare an album for sending: resized copies without the GPS    │
 │              position, a folder and a zip, for a mail or a social network.   │
 │ slideshow    Show photos on the TV, the phone choosing the next one: a       │
-│              folder, a search or the files set aside.                        │
+│              folder, a search or an album.                                   │
 │ status       Where am I? The last audit, the quarantine, what is left: no    │
 │              scan.                                                           │
 │ tags         Give every photo words to find it by, kept in the cache, never  │
@@ -210,8 +210,8 @@ command shows its own `--help`; here is the list of the commands:
 │              shows with an optional local AI 🤖                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Act: moves, writes or deletes files ────────────────────────────────────────╮
-│ album        Gather a selection of the classify plan into a folder of hard   │
-│              links: nothing is copied nor moved (journaled, undoable).       │
+│ album        Make an album's folder on the disk, as hard links: nothing is   │
+│              copied nor moved (journaled, undoable).                         │
 │ backup       Windows only, as mh backup: copy your photo folders into a      │
 │              folder of their own on the NAS, only what it lacks; a photo     │
 │              moved is renamed there, a deletion by mistake never carried     │

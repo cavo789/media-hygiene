@@ -105,10 +105,14 @@ names, dates and places.*
  what it shows with an optional local AI 🤖
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --path          <str>  Only the photos below this folder (host path, as you  │
-│                        mounted it); repeat it for several. Default: every    │
-│                        file of the index.                                    │
-│ --help  -h             Show this message and exit.                           │
+│ --path             <str>  Only the photos below this folder (host path, as   │
+│                           you mounted it); repeat it for several. Default:   │
+│                           every file of the index.                           │
+│ --meaning                 Also let a model look at each photo on this        │
+│                           computer's processor (CLIP, once, about 1 minute   │
+│                           per 1,000 photos), so that 'search' finds what a   │
+│                           photo shows. Default:  meaning.                    │
+│ --help     -h             Show this message and exit.                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ 🤖 Local AI (Ollama), optional: a model set in config.toml ─────────────────╮
 │ --sample               <int range> [x>=0]  Describe this many random photos  │

@@ -65,65 +65,175 @@ A command that has no place in the menu yet still shows, last, under *Other comm
 <!-- capture: menu.txt -->
 ```text
 ──────────────────────── media-hygiene — where you are ─────────────────────────
-Last audit: 2026-10-20 11:00 (today) — 10 files, 4 extra copies (5.9 MB), 1
+Last audit: 2026-10-25 08:36 (today) — 10 files, 4 extra copies (5.9 MB), 1
 broken.
 Quarantine: empty.
 
+      Import photos
+      From a phone
+    1 mh phone                                        Copy the new   🔒
+                                                      photos of the
+                                                      phone
+    2 mh phone --free                                 Make room on   ⚠️ optional
+                                                      the phone
+      From your NAS or an old disk
+      mh folders add --backup "\\NAS\Photos"          Plug in your   🔒
+                                                      NAS or an old
+                                                      disk (type it
+                                                      yourself)
+      mh import                                       Get back what  ↩️
+                                                      only the NAS
+                                                      holds (nothing
+                                                      to do yet)
+      Go further
+    3 mh folders add                                  Add a photo    🔒
+                                                      folder
       Clean the duplicates
-✅  1 mh audit                          Find the duplicates and the  🔒
-                                        broken files
-    2 mh open                           Read the reports in your     🔒
-                                        browser
-👉  3 mh clean                          Set the extra copies aside   ↩️
-                                        (asks first)
-    4 mh history                        What each run did            🔒
-      mh undo                           Put back the files of the    ↩️
-                                        last run (nothing to do yet)
-    5 mh review                         Choose the best shots of     🔒 optional
-                                        each burst, in your browser
-    6 mh clean --tier near --decisions  Apply your choices: what you ↩️ optional
-                                        set aside goes to the
-                                        quarantine
-      mh purge                          Free the space of the        ⚠️
-                                        quarantine, for good
-                                        (nothing to do yet)
+      The guide
+✅  4 mh audit                                        Find the       🔒
+                                                      duplicates and
+                                                      the broken
+                                                      files
+    5 mh open                                         Read the       🔒
+                                                      reports in
+                                                      your browser
+👉  6 mh clean                                        Set the extra  ↩️
+                                                      copies aside
+    7 mh history                                      See what each  🔒
+                                                      run did
+      mh undo                                         Put back the   ↩️
+                                                      files of the
+                                                      last run
+                                                      (nothing to do
+                                                      yet)
+    8 mh review                                       Choose the     🔒 optional
+                                                      best shots of
+                                                      each burst
+    9 mh clean --tier near --decisions                Apply your     ↩️ optional
+                                                      choices
+      mh purge                                        Free the room  ⚠️
+                                                      of the
+                                                      quarantine
+                                                      (nothing to do
+                                                      yet)
+      Go further
+   10 mh review --near                                Settle the     🔒 optional
+                                                      near
+                                                      duplicates
+   11 mh review --pairs                               Decide folder  🔒 optional
+                                                      by folder
+   12 mh review --junk                                Set the failed 🔒 optional
+                                                      photos aside
+   13 mh review --gone                                Look again at  🔒 optional
+                                                      the photos
+                                                      gone
+   14 mh crosscheck                                   Ask for a      🔒 optional
+                                                      second opinion
+   15 mh shrink --try                                 Lighten the    ↩️ optional
+                                                      heavy videos
+   16 mh clean --delete                               Delete the     ⚠️ optional
+                                                      copies at once
       Sort the photos
-✅  7 mh classify                       Propose a tidy tree, in a    🔒
-                                        workbook you correct
-    8 mh review-sort                    Name the events in your      🔒 optional
-                                        browser
-    9 mh places                         Name your places on a map    🔒 optional
-   10 mh people                         Name the faces               🔒 optional
-   11 mh sort                           Move the photos as the       ↩️
-                                        workbook says
-      mh album "Christmas" --category … Gather a selection into an   ↩️ optional
-                                        album of links (type it
-                                        yourself)
+✅ 17 mh classify                                     Propose a tidy 🔒
+                                                      tree
+   18 mh review-sort                                  Name the       🔒 optional
+                                                      events
+   19 mh places                                       Name your      🔒 optional
+                                                      places on a
+                                                      map
+   20 mh people                                       Name the faces 🔒 optional
+   21 mh sort                                         Move the       ↩️
+                                                      photos as the
+                                                      workbook says
       Find a photo
-   12 mh tags                           Give your photos words       🔒
-   13 mh search                         Find a photo by its words,   🔒
-                                        in your browser
-   14 mh browse                         Walk through your folders,   🔒 optional
-                                        set photos aside
-   15 mh xmp                            Carry the words into other   ↩️ optional
-                                        photo software
-   16 mh inventory                      Every photo and video in an  🔒 optional
-                                        Excel workbook
-      Reach mh without typing (Windows)
-   17 mh shortcut                       An icon on the Desktop and   🔒 optional
-                                        in the Start menu opens the
-                                        home page
-   18 mh explorer                       Right-click a folder in      🔒 optional
-                                        Explorer: the home page, on
-                                        that folder
+      The guide
+   22 mh tags                                         Give your      🔒
+                                                      photos words
+   23 mh search                                       Find a photo   🔒
+                                                      by its words
+      Go further
+   24 mh browse                                       Walk through   🔒 optional
+                                                      your folders
+   25 mh xmp                                          Carry the      ↩️ optional
+                                                      words into
+                                                      other photo
+                                                      software
+   26 mh inventory                                    All your       🔒 optional
+                                                      photos in
+                                                      Excel
+      Back up to the NAS
+      The guide
+      mh backup --to "\\NAS\backup_photos"            Choose the     🔒
+                                                      backup folder
+                                                      on the NAS
+                                                      (type it
+                                                      yourself)
+   27 mh backup                                       Back up what   ↩️
+                                                      the NAS lacks
+      Share your photos
+      The commands
+      mh slideshow --folder "C:\Photos\2026 Holidays" Show your      🔒 optional
+                                                      photos on the
+                                                      TV (type it
+                                                      yourself)
+      mh share --album "Crete 2023"                   Prepare an     🔒 optional
+                                                      album for
+                                                      sending (type
+                                                      it yourself)
+      mh album "Crete 2023"                           A folder of    ↩️ optional
+                                                      links on the
+                                                      disk (type it
+                                                      yourself)
+      Reports
+   28 mh reports                                      List the       🔒
+                                                      reports
+      mh reports --prune 10                           Keep only the  🔒 optional
+                                                      recent reports
+                                                      (type it
+                                                      yourself)
+      Settings
+      Your folders
+   29 mh folders                                      See your       🔒
+                                                      folders
+      mh folders remove "E:\Archives"                 Remove a       🔒 optional
+                                                      folder (type
+                                                      it yourself)
+      Update
+   30 mh update                                       Install the    🔒
+                                                      new version
+      Windows
+   31 mh shortcut                                     An icon on the 🔒 optional
+                                                      Desktop and in
+                                                      the Start menu
+   32 mh explorer                                     Media Hygiene  🔒 optional
+                                                      in the
+                                                      Explorer's
+                                                      right-click
+   33 mh explorer --remove                            Remove Media   🔒 optional
+                                                      Hygiene from
+                                                      the
+                                                      right-click
+      Privacy
+   34 mh people --forget                              Forget every   🔒 optional
+                                                      face
+      Advanced
+   35 mh config                                       See each       🔒
+                                                      setting and
+                                                      where it comes
+                                                      from
+   36 mh status                                       Where am I, in 🔒 optional
+                                                      the console
+   37 mh menu                                         The menu in    🔒 optional
+                                                      the console
+   38 mh launcher                                     Write mh again 🔒 optional
+   39 mh home                                         The home page  🔒 optional
 
 🔒 your photos are not touched · ↩️ can be undone · ⚠️ for good
 🤖 classify and tags can also ask a local AI model: set [classify.ai] model in
 config.toml (mh config).
 A step to type yourself takes words only you know:
-https://cavo789.github.io/media-hygiene/sort/quick-guide/
-Your folders: mh folders. A new version: mh update.
-Enter runs step 3 (mh clean). Another number runs that step. Ctrl+C leaves.
+https://cavo789.github.io/media-hygiene/reference-commands/
+Enter runs step 6 (mh clean). Another number runs that step. Ctrl+C leaves.
 ⚠️  The menu runs its steps through mh: write it once with 'launcher' (step 0 of
 the guides), then type mh menu.
 ```

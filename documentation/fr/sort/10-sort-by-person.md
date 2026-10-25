@@ -46,7 +46,7 @@ Sur la bibliothèque de démonstration de ce guide, 10 photos mesurées :
 
 <!-- capture: people-sample.txt|re:^✅|. -->
 ```text
-✅ 10 photos analysées : 5 visages, 0,04 s par photo.
+✅ 10 photos analysées : 4 visages, 0,05 s par photo.
 ```
 
 Elle se termine par l'estimation de l'exécution complète (`Une exécution complète analyserait
@@ -103,7 +103,7 @@ Ctrl+clic dessus.
 
 <!-- capture: people.txt|re:^✅| -->
 ```text
-✅ 37 photos analysées : 12 visages, 0,03 s par photo.
+✅ 37 photos analysées : 13 visages, 0,04 s par photo.
 ✅ 17 visages dans 47 photos : 3 groupes de visages semblables, les plus grands
 7, 5, 4 ; 1 vus une seule fois.
 ✅ Visages prêts, ouvrez http://127.0.0.1:8088/ dans votre navigateur pour les

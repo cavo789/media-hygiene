@@ -211,8 +211,7 @@ commande montre son propre `--help` ; voici la liste des commandes :
 │              position GPS, un dossier et un zip, pour un mail ou un réseau   │
 │              social.                                                         │
 │ slideshow    Montrer des photos sur la télé, le téléphone choisissant la     │
-│              suivante : un dossier, une recherche ou les fichiers mis de     │
-│              côté.                                                           │
+│              suivante : un dossier, une recherche ou un album.               │
 │ status       Où en suis-je ? Le dernier audit, la quarantaine, ce qu'il      │
 │              reste : sans analyse.                                           │
 │ tags         Donner à chaque photo des mots pour la retrouver, gardés dans   │
@@ -221,9 +220,8 @@ commande montre son propre `--help` ; voici la liste des commandes :
 │              facultative 🤖                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Agir : déplace, écrit ou supprime des fichiers ─────────────────────────────╮
-│ album        Rassemble une sélection du plan de classify dans un dossier de  │
-│              liens physiques : rien n'est copié ni déplacé (journalisé,      │
-│              annulable).                                                     │
+│ album        Crée le dossier d'un album sur le disque, en liens physiques :  │
+│              rien n'est copié ni déplacé (journalisé, annulable).            │
 │ backup       Windows seulement, en mh backup : copier vos dossiers de photos │
 │              dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui  │
 │              manque ; une photo déplacée y est renommée, une suppression par │

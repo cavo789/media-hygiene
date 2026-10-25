@@ -35,12 +35,12 @@ docker run --rm -it `
 
 <!-- capture: undo.txt -->
 ```text
-─────────────── Annulation de l'exécution clean 20261020-110322 ────────────────
+─────────────── Annulation de l'exécution clean 20261025-083930 ────────────────
 🛟 Chaque fichier revient où il était, jamais par-dessus un autre ; ce qui ne
 peut pas revenir intact est laissé tel quel, et signalé.
 
 Annulation de l'exécution clean
-20261020-110322
+20261025-083930
 ┌───────────────────────────┬─────────┐
 │ Fichiers traités          │      36 │
 │ Taille                    │ 15,6 Mo │
@@ -84,8 +84,8 @@ Exécutions (les plus récentes d'abord)
 ┃                 ┃         ┃          ┃        ┃      En ┃ Dossiers ┃         ┃
 ┃ Exécution       ┃ Comman… ┃ Supprim… ┃ Libéré ┃ quaran… ┃ supprim… ┃ Restau… ┃
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━┩
-│ 20261020-110324 │ clean   │        1 │      0 │      41 │        9 │       0 │
-│ 20261020-110322 │ clean   │        1 │      0 │      35 │        7 │      43 │
+│ 20261025-083933 │ clean   │        1 │      0 │      41 │        9 │       0 │
+│ 20261025-083930 │ clean   │        1 │      0 │      35 │        7 │      43 │
 └─────────────────┴─────────┴──────────┴────────┴─────────┴──────────┴─────────┘
 💡 'media-hygiene undo <run>' restaure les fichiers d'une exécution.
 ```
@@ -114,7 +114,7 @@ mh purge
 ⚠️  'purge' efface pour de bon : ces fichiers ne pourront pas revenir, même avec
 'undo'. C'est, avec 'clean --delete', la seule façon dont l'outil supprime du
 contenu.
-❓ Effacer la quarantaine de 20261020-110324 (41 fichiers, 16,4 Mo) ? [o/N] o
+❓ Effacer la quarantaine de 20261025-083933 (41 fichiers, 16,4 Mo) ? [o/N] o
 ✅ Quarantaine vidée : 16,4 Mo libérés.
 💡 'undo' ne pourra plus restaurer ces fichiers.
 ```

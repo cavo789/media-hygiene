@@ -123,11 +123,28 @@ plan.
 
 <!-- capture: help-backup.txt -->
 ```text
- Usage: media-hygiene backup [OPTIONS]
+ Utilisation : media-hygiene backup [OPTIONS]
 
- Windows only, as mh backup: copy your photo folders into a folder of their own
- on the NAS, only what it lacks; a photo moved is renamed there, a deletion by
- mistake never carried over. Run here, it shows the plan.
+ Windows seulement, en mh backup : copier vos dossiers de photos dans un
+ dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; une photo
+ déplacée y est renommée, une suppression par erreur n'y est jamais reportée.
+ Lancée ici, elle montre le plan.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ *  --to              <str>  The backup folder, as Windows writes it          │
+│                             (\\NAS\backup_photos): a folder of its own,      │
+│                             never a photo folder nor a backup compared.      │
+│                             [required]                                       │
+│    --anyway                 Go on even when more than stop_above_percent     │
+│                             (config.toml) of the backup would be set aside   │
+│                             or replaced.                                     │
+│    --help    -h             Affiche ce message et quitte.                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
+│ --backup        <str>  Une sauvegarde ou un ancien disque, monté en lecture  │
+│                        seule : jamais modifié, et jamais refusé pour cela    │
+│                        (mh passe vos sauvegardes). Répétable.                │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>

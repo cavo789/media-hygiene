@@ -68,80 +68,216 @@ menu s'affiche quand même, en dernier, sous *Autres commandes*.
 <!-- capture: menu.txt -->
 ```text
 ─────────────────────── media-hygiene — où vous en êtes ────────────────────────
-Dernier audit: 2026-10-20 11:02 (aujourd'hui) — 10 fichiers, 4 copies en trop
+Dernier audit: 2026-10-25 08:38 (aujourd'hui) — 10 fichiers, 4 copies en trop
 (5,9 Mo), 1 illisibles.
 Quarantaine : vide.
 
+      Importer des photos
+      Depuis un téléphone
+    1 mh phone                                        Copier les   🔒
+                                                      nouvelles
+                                                      photos du
+                                                      téléphone
+    2 mh phone --free                                 Faire de la  ⚠️ facultatif
+                                                      place sur le
+                                                      téléphone
+      Depuis votre NAS ou un ancien disque
+      mh folders add --backup "\\NAS\Photos"          Brancher     🔒
+                                                      votre NAS ou
+                                                      un ancien
+                                                      disque (à
+                                                      taper
+                                                      vous-même)
+      mh import                                       Récupérer ce ↩️
+                                                      que seul le
+                                                      NAS contient
+                                                      (rien à
+                                                      faire pour
+                                                      l'instant)
+      Pour aller plus loin
+    3 mh folders add                                  Ajouter un   🔒
+                                                      dossier de
+                                                      photos
       Nettoyer les doublons
-✅  1 mh audit                            Trouver les doublons et  🔒
-                                          les fichiers abîmés
-    2 mh open                             Lire les rapports dans   🔒
-                                          votre navigateur
-👉  3 mh clean                            Mettre les copies en     ↩️
-                                          trop de côté (demande
-                                          d'abord)
-    4 mh history                          Ce qu'a fait chaque      🔒
-                                          exécution
-      mh undo                             Remettre les fichiers de ↩️
-                                          la dernière exécution
-                                          (rien à faire pour
-                                          l'instant)
-    5 mh review                           Choisir les meilleures   🔒 facultatif
-                                          photos de chaque rafale,
-                                          dans le navigateur
-    6 mh clean --tier near --decisions    Appliquer vos choix : ce ↩️ facultatif
-                                          que vous avez écarté va
-                                          en quarantaine
-      mh purge                            Libérer la place de la   ⚠️
-                                          quarantaine,
-                                          définitivement (rien à
-                                          faire pour l'instant)
+      Le parcours
+✅  4 mh audit                                        Trouver les  🔒
+                                                      doublons et
+                                                      les fichiers
+                                                      abîmés
+    5 mh open                                         Lire les     🔒
+                                                      rapports
+                                                      dans votre
+                                                      navigateur
+👉  6 mh clean                                        Mettre les   ↩️
+                                                      copies en
+                                                      trop de côté
+    7 mh history                                      Voir ce qu'a 🔒
+                                                      fait chaque
+                                                      exécution
+      mh undo                                         Remettre les ↩️
+                                                      fichiers de
+                                                      la dernière
+                                                      exécution
+                                                      (rien à
+                                                      faire pour
+                                                      l'instant)
+    8 mh review                                       Choisir les  🔒 facultatif
+                                                      meilleures
+                                                      photos de
+                                                      chaque
+                                                      rafale
+    9 mh clean --tier near --decisions                Appliquer    ↩️ facultatif
+                                                      vos choix
+      mh purge                                        Libérer la   ⚠️
+                                                      place de la
+                                                      quarantaine
+                                                      (rien à
+                                                      faire pour
+                                                      l'instant)
+      Pour aller plus loin
+   10 mh review --near                                Trancher les 🔒 facultatif
+                                                      quasi-doubl…
+   11 mh review --pairs                               Décider      🔒 facultatif
+                                                      dossier par
+                                                      dossier
+   12 mh review --junk                                Écarter les  🔒 facultatif
+                                                      photos
+                                                      ratées
+   13 mh review --gone                                Revoir les   🔒 facultatif
+                                                      photos
+                                                      disparues
+   14 mh crosscheck                                   Demander un  🔒 facultatif
+                                                      second avis
+   15 mh shrink --try                                 Alléger les  ↩️ facultatif
+                                                      vidéos
+                                                      lourdes
+   16 mh clean --delete                               Supprimer    ⚠️ facultatif
+                                                      les copies
+                                                      tout de
+                                                      suite
       Trier les photos
-✅  7 mh classify                         Proposer une             🔒
-                                          arborescence rangée,
-                                          dans un classeur que
-                                          vous corrigez
-    8 mh review-sort                      Nommer les événements    🔒 facultatif
-                                          dans le navigateur
-    9 mh places                           Nommer vos lieux sur une 🔒 facultatif
-                                          carte
-   10 mh people                           Nommer les visages       🔒 facultatif
-   11 mh sort                             Déplacer les photos      ↩️
-                                          comme le dit le classeur
-      mh album "Christmas" --category …   Réunir une sélection     ↩️ facultatif
-                                          dans un album de liens
-                                          (à taper vous-même)
+✅ 17 mh classify                                     Proposer une 🔒
+                                                      arborescence
+                                                      rangée
+   18 mh review-sort                                  Nommer les   🔒 facultatif
+                                                      événements
+   19 mh places                                       Nommer vos   🔒 facultatif
+                                                      lieux sur
+                                                      une carte
+   20 mh people                                       Nommer les   🔒 facultatif
+                                                      visages
+   21 mh sort                                         Déplacer les ↩️
+                                                      photos comme
+                                                      le dit le
+                                                      classeur
       Retrouver une photo
-   12 mh tags                             Donner des mots à vos    🔒
-                                          photos
-   13 mh search                           Retrouver une photo par  🔒
-                                          ses mots, dans le
-                                          navigateur
-   14 mh browse                           Parcourir vos dossiers,  🔒 facultatif
-                                          mettre des photos de
-                                          côté
-   15 mh xmp                              Emporter les mots dans   ↩️ facultatif
-                                          d'autres logiciels photo
-   16 mh inventory                        Toutes les photos et     🔒 facultatif
-                                          vidéos dans un classeur
-                                          Excel
-      Ouvrir mh sans rien taper (Windows)
-   17 mh shortcut                         Une icône sur le Bureau  🔒 facultatif
-                                          et dans le menu Démarrer
-                                          ouvre la page d'accueil
-   18 mh explorer                         Clic droit sur un        🔒 facultatif
-                                          dossier dans
-                                          l'Explorateur : la page
-                                          d'accueil, sur ce
-                                          dossier
+      Le parcours
+   22 mh tags                                         Donner des   🔒
+                                                      mots à vos
+                                                      photos
+   23 mh search                                       Retrouver    🔒
+                                                      une photo
+                                                      par ses mots
+      Pour aller plus loin
+   24 mh browse                                       Parcourir    🔒 facultatif
+                                                      vos dossiers
+   25 mh xmp                                          Emporter les ↩️ facultatif
+                                                      mots dans
+                                                      d'autres
+                                                      logiciels
+                                                      photo
+   26 mh inventory                                    Toutes vos   🔒 facultatif
+                                                      photos dans
+                                                      Excel
+      Sauvegarder sur le NAS
+      Le parcours
+      mh backup --to "\\NAS\backup_photos"            Choisir le   🔒
+                                                      dossier de
+                                                      sauvegarde
+                                                      sur le NAS
+                                                      (à taper
+                                                      vous-même)
+   27 mh backup                                       Sauvegarder  ↩️
+                                                      ce qui
+                                                      manque au
+                                                      NAS
+      Partager vos photos
+      Les commandes
+      mh slideshow --folder "C:\Photos\2026 Holidays" Montrer vos  🔒 facultatif
+                                                      photos sur
+                                                      la télé (à
+                                                      taper
+                                                      vous-même)
+      mh share --album "Crète 2023"                   Préparer un  🔒 facultatif
+                                                      album pour
+                                                      l'envoyer (à
+                                                      taper
+                                                      vous-même)
+      mh album "Crète 2023"                           Un dossier   ↩️ facultatif
+                                                      de liens sur
+                                                      le disque (à
+                                                      taper
+                                                      vous-même)
+      Rapports
+   28 mh reports                                      Lister les   🔒
+                                                      rapports
+      mh reports --prune 10                           Ne garder    🔒 facultatif
+                                                      que les
+                                                      rapports
+                                                      récents (à
+                                                      taper
+                                                      vous-même)
+      Réglages
+      Vos dossiers
+   29 mh folders                                      Voir vos     🔒
+                                                      dossiers
+      mh folders remove "E:\Archives"                 Retirer un   🔒 facultatif
+                                                      dossier (à
+                                                      taper
+                                                      vous-même)
+      Mise à jour
+   30 mh update                                       Installer la 🔒
+                                                      nouvelle
+                                                      version
+      Windows
+   31 mh shortcut                                     Une icône    🔒 facultatif
+                                                      sur le
+                                                      Bureau et
+                                                      dans le menu
+                                                      Démarrer
+   32 mh explorer                                     Media        🔒 facultatif
+                                                      Hygiene dans
+                                                      le clic
+                                                      droit de
+                                                      l'Explorate…
+   33 mh explorer --remove                            Retirer      🔒 facultatif
+                                                      Media
+                                                      Hygiene du
+                                                      clic droit
+      Vie privée
+   34 mh people --forget                              Oublier tous 🔒 facultatif
+                                                      les visages
+      Avancé
+   35 mh config                                       Voir chaque  🔒
+                                                      réglage et
+                                                      d'où il
+                                                      vient
+   36 mh status                                       Où en        🔒 facultatif
+                                                      suis-je,
+                                                      dans la
+                                                      console
+   37 mh menu                                         Le menu dans 🔒 facultatif
+                                                      la console
+   38 mh launcher                                     Réécrire mh  🔒 facultatif
+   39 mh home                                         La page      🔒 facultatif
+                                                      d'accueil
 
 🔒 vos photos ne sont pas touchées · ↩️ peut être annulé · ⚠️ définitif
 🤖 classify et tags peuvent aussi interroger un modèle d'IA local : indiquez
 [classify.ai] model dans config.toml (mh config).
 Une étape à taper vous-même demande des mots que vous seul connaissez :
-https://cavo789.github.io/media-hygiene/fr/sort/quick-guide/
-Vos dossiers : mh folders. Une nouvelle version : mh update.
-Entrée lance l'étape 3 (mh clean). Un autre numéro lance cette étape. Ctrl+C
+https://cavo789.github.io/media-hygiene/fr/reference-commands/
+Entrée lance l'étape 6 (mh clean). Un autre numéro lance cette étape. Ctrl+C
 pour quitter.
 ⚠️  Le menu lance ses étapes par mh : écrivez-le une fois avec 'launcher' (étape
 0 des guides), puis tapez mh menu.
