@@ -112,6 +112,10 @@ nouvelle place, dit tel que relu sur le disque (*14 déplacés, 14 vérifiés à
 photo que le dernier `classify` ne connaît pas (ajoutée depuis) est laissée en place et comptée :
 relancez `classify`. Rien ne bouge sans ce GO.
 
+*Ces dossiers sont montés en lecture seule* : votre `mh` a été écrit avant que les pages puissent
+trier (il les monte en `:ro`). Tapez une fois `mh update` : il réécrit `mh`, depuis votre image,
+avec les mêmes dossiers.
+
 ## Mettre des photos de côté
 
 Pour retirer toutes les photos de quelqu'un, la page

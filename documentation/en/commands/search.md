@@ -104,6 +104,10 @@ place, said as read back from the disk (*14 moved, 14 checked at their new place
 `classify` run does not know (added since) is left where it is and counted: run `classify`
 again. Nothing moves without that GO.
 
+*These folders are mounted read-only*: your `mh` was written before the pages could sort (it
+mounts them `:ro`). Type `mh update` once: it writes `mh` again, from your image, with the same
+folders.
+
 ## Set photos aside
 
 To remove every photo of someone, the [`people`](people.md#remove-every-photo-of-someone) page
