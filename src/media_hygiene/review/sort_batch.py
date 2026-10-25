@@ -155,7 +155,7 @@ class SortBatchSession(SortChoosing):
             raise DecisionsError(message.format(path=target.name, count=len(missing)))
         written = target.stat()
         modified = datetime.fromtimestamp(written.st_mtime_ns / _NANOSECONDS, tz=UTC)
-        cards = CardMaker(self._source.workbook, held, self._files)
+        cards = CardMaker(self._source.workbook, held, self._files, self._moved)
         return BatchAnswer(
             changed=len(changed),
             size=written.st_size,

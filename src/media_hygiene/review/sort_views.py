@@ -17,10 +17,11 @@ from media_hygiene.classify.names import band_name
 from media_hygiene.classify.page_overlay import Verdict, value_text, verdict
 from media_hygiene.classify.page_values import EventValue, FileValue
 from media_hygiene.classify.workbook.own_folders import owns_folder
+from media_hygiene.review.sort_sides import Side, event_side
 from media_hygiene.review.sort_sure import reach, sure_value
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Collection, Mapping
 
     from media_hygiene.classify.page_decisions import EventDecision, FileDecision
     from media_hygiene.classify.plan_file import PlanRow
@@ -33,17 +34,6 @@ _PERCENT: Final = 100
 THUMB_PREFIX: Final = "/thumb/"
 PREVIEW_PREFIX: Final = "/preview/"
 JPEG_SUFFIX: Final = ".jpg"
-
-
-class Side(BaseModel):
-    """A value as the page shows it: its text, and its parts to fill the fields."""
-
-    model_config = _FROZEN
-
-    text: str = ""
-    name: str = ""
-    category: str = ""
-    stay: bool = False
 
 
 class EventCard(BaseModel):
@@ -70,6 +60,7 @@ class EventCard(BaseModel):
     workbook: Side
     page: Side | None
     saved: str  # when the page's choice was saved, as read back: ISO 8601, UTC
+    sorted: bool  # an earlier `sort` (this page's included) moved its files
     conflict: bool
 
 
@@ -93,23 +84,6 @@ class PhotoCard(BaseModel):
     conflict: bool
 
 
-def event_side(value: EventValue) -> Side:
-    """Show an event's value.
-
-    Args:
-        value: The workbook's or the page's.
-
-    Returns:
-        Its text and parts.
-    """
-    return Side(
-        text=value_text(value),
-        name=value.name,
-        category=value.category,
-        stay=value.stay,
-    )
-
-
 @dataclass(frozen=True, slots=True)
 class CardMaker:
     """Describes events and photos with the workbook's edits and the page's choices."""
@@ -117,6 +91,7 @@ class CardMaker:
     workbook: Edits
     events: Mapping[str, EventDecision]
     files: Mapping[str, FileDecision]
+    moved: Collection[str] = ()  # the rows earlier `sort` runs of the plan moved
 
     def event(self, item: WorkItem) -> EventCard:
         """Describe one event.
@@ -151,6 +126,7 @@ class CardMaker:
             workbook=event_side(now),
             page=None if chosen is None else event_side(chosen.value),
             saved="" if chosen is None else chosen.saved,
+            sorted=any(row.id in self.moved for row in item.rows),
             conflict=chosen is not None
             and verdict(now, chosen.value, chosen.base) is Verdict.CONFLICT,
         )

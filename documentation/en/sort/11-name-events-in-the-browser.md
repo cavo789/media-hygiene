@@ -130,6 +130,17 @@ events already chosen and those whose proposal is sure: only the ones that need 
 Tick **Only the sure proposals** instead to walk the sure ones one by one before accepting them.
 One box at a time; the browser remembers it for the next opening of the page.
 
+## Sort one event now
+
+**Sort this event now** (or <kbd>M</kbd>) tidies the collection event by event: it saves the
+folder if needed, shows where the files go (the line under the field) and asks, then moves the
+files of this event only, as [`sort --event`](../commands/sort.md) does: journaled, each run with
+its own `undo`. The status line gives what the disk holds after the run: the files moved and
+checked at their new place. The event then shows *sorted*, and <kbd>U</kbd> and *Only the events
+to decide* skip it; a later `sort` of the whole workbook skips its files. The photos must be
+mounted without `:ro`, with a `/journal`: otherwise the page says what is missing, and nothing
+moves.
+
 ## Where your choices go
 
 Each choice is saved at once in `sort-decisions.json`, **next to `plan.json`** in the folder of

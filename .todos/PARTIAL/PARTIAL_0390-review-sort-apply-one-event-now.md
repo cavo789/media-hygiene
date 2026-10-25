@@ -38,3 +38,36 @@ running `sort` early applies proposals never looked at (the trip of 0385).
 `sort --event` moves only that event's files, journals them, `undo` puts them back; the page's
 endpoint refuses without `/journal` with a sentence; the event shown as sorted afterwards; a
 second event then sorted in turn (two runs, two undos).
+
+## Status — PARTIAL (2026-10-25)
+
+### Done
+- `sort --event <id>` (`services/sort_event.py`, `only_event`): the plan cut to one event's
+  rows; same guards, journal, `undo`, manifest, index following; a later whole `sort` skips
+  those rows (`moved_rows`). Unknown id: a `WorkbookError` with the tip (first column of the
+  Events sheet).
+- The page: **Sort this event now** button and key `M` (⌨ panel): saves the folder if
+  needed, asks with the Destination line of 0387, then `POST /api/sort-now` runs `sort_event`
+  in a thread (`review/sort_now.py`, `sorter_of`); the answer is the run read back
+  (moved, verified at the new place, manifest intact) and the event again, shown **sorted**
+  (`EventCard.sorted`, from `moved_targets` of the journal), skipped by U and *Only the events
+  to decide*; its previews follow the moved files. Refusals (no `/journal`, `:ro`) come back
+  as the guard's sentence, nothing moves.
+- Tests: `tests/integration/test_sort_event.py` (two events, two runs, two undos; the page
+  sorts and shows sorted; refused without a journal; no sorter → the terminal sentence).
+- Docs: `sort` (`--event`, "One event at a time"), `review-sort` (At a glance, Good to know),
+  sort step 11 ("Sort one event now"), en + fr.
+
+### Not done
+- `mh review-sort` still mounts the photos `:ro` and no `/journal` (`review-sort` is in
+  `READ_ONLY_COMMANDS`, `cli/safety.py`, which `mh.ps1.j2` reads to choose `:ro`). Through
+  `mh`, the button therefore answers "Folders are mounted read-only…" until `mh` mounts them
+  writable with a journal.
+  **Reason:** changing the mounts of a command the maintainer made read-only (the 🔒 marker,
+  "review-sort never changes your photos") is a design decision: drop `review-sort` from
+  `READ_ONLY_COMMANDS` (writable + `/journal`, loses the 🔒 line), or a second mode
+  (`mh review-sort --apply`?), or go through the home page's *Apply now* step (needs a way to
+  pass the event id to the step). Needs maintainer.
+- Path-keyed files after the move (people, albums, decisions): as for a whole `sort`, left to
+  0382 (same code path, nothing specific to one event).
+  **Reason:** 0382 is its own TODO.

@@ -4,7 +4,8 @@
 of one event, `GET /thumb/<row>.jpg` and `/preview/<row>.jpg` a small and a large
 preview (rendered in the worker pool). `POST /api/event` names an event, `/api/files`
 sends photos elsewhere, `/api/forget` takes a choice back, `/api/sure` accepts (or
-takes back) the sure proposals in one write; each is saved at once. Like
+takes back) the sure proposals in one write; each is saved at once. `/api/sort-now`
+moves one event's files (`sort_now`). Like
 `review`: loopback hosts only, JSON bodies only, from the page's own origin.
 """
 
@@ -31,6 +32,7 @@ from media_hygiene.review.local_app import (
 )
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.sort_choices import CHOICES, EVENT_PATH
+from media_hygiene.review.sort_now import SORT_NOW_PATH, sort_now
 from media_hygiene.review.sort_views import JPEG_SUFFIX, PREVIEW_PREFIX, THUMB_PREFIX
 
 if TYPE_CHECKING:
@@ -41,6 +43,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.review.http import Request
     from media_hygiene.review.sort_batch import SortBatchSession
+    from media_hygiene.review.sort_now import Sorter
 
 __all__ = ["PAGE_PATH", "STATE_PATH", "SortReviewApp"]
 
@@ -56,6 +59,7 @@ class SortReviewApp(LocalApp):
     page: bytes
     executor: Executor
     previews: Path | None = None  # the cache folder of previews, if any
+    sorter: Sorter | None = None  # *Sort this event now*; None: the page cannot move
 
     @override
     async def answer(self, request: Request) -> Response:
@@ -69,6 +73,8 @@ class SortReviewApp(LocalApp):
         """
         if request.method == "GET":
             return await self._get(request.path)
+        if request.method == "POST" and request.path == SORT_NOW_PATH:
+            return await sort_now(self.sorter, request)
         if request.method != "POST" or request.path not in CHOICES:
             return Response(HTTPStatus.METHOD_NOT_ALLOWED)
         return self._choose(request)

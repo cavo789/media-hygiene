@@ -1555,6 +1555,9 @@ msgstr ""
 "Choisissez à nouveau dans 'review-sort' (elle montre les deux), ou "
 "remettez les cellules du classeur comme avant, puis relancez 'sort'."
 
+msgid "Choose an event."
+msgstr "Choisissez un événement."
+
 msgid "Choose another decision for this pair, or leave it as planned."
 msgstr "Choisissez une autre décision pour cette paire, ou laissez-la comme prévu."
 
@@ -1815,6 +1818,11 @@ msgstr ""
 
 msgid "Copy it (Ctrl+C):"
 msgstr "Copiez-la (Ctrl+C) :"
+
+msgid "Copy its id from the first column of the Events sheet."
+msgstr ""
+"Copiez son identifiant depuis la première colonne de la feuille "
+"Événements."
 
 msgid "Copy the command"
 msgstr "Copier la commande"
@@ -2736,6 +2744,11 @@ msgstr "Chaque groupe est dans un de vos lieux."
 
 msgid "Every copy"
 msgstr "Toutes les copies"
+
+msgid "Every file of this event is already in its folder: nothing to move."
+msgstr ""
+"Chaque fichier de cet événement est déjà dans son dossier : rien à "
+"déplacer."
 
 msgid "Every file of your photos is in this backup."
 msgstr "Chaque fichier de vos photos est dans cette sauvegarde."
@@ -6811,6 +6824,13 @@ msgstr ""
 msgid "Save it, close it, then run 'sort' again."
 msgstr "Enregistrez-le, fermez-le, puis relancez 'sort'."
 
+msgid ""
+"Save the folder, then move the files of this event only, journaled: undo "
+"puts them back (M)"
+msgstr ""
+"Enregistrer le dossier, puis déplacer les fichiers de cet événement "
+"seulement, notés au journal : undo les remet en place (M)"
+
 msgid "Save this position"
 msgstr "Enregistrer cette position"
 
@@ -7359,6 +7379,13 @@ msgstr "Trier par"
 msgid "Sort in short"
 msgstr "Trier en bref"
 
+msgid ""
+"Sort only the files of this event (its id: the first column of the Events"
+" sheet); the rest of the workbook is left for later."
+msgstr ""
+"Trier seulement les fichiers de cet événement (son identifiant : la "
+"première colonne de la feuille Événements) ; le reste du classeur attend."
+
 msgid "Sort out"
 msgstr "Trier"
 
@@ -7367,6 +7394,18 @@ msgstr "Revue du tri"
 
 msgid "Sort the photos"
 msgstr "Trier les photos"
+
+msgid "Sort this event now"
+msgstr "Trier cet événement maintenant"
+
+#, python-brace-format
+msgid ""
+"Sort this event now? {destination}. Its files are moved at once, "
+"journaled: 'undo' puts them back. The other events are left for later."
+msgstr ""
+"Trier cet événement maintenant ? {destination}. Ses fichiers sont "
+"déplacés tout de suite, notés au journal : 'undo' les remet en place. Les"
+" autres événements attendent."
 
 #, python-brace-format
 msgid "Sort {run_id}"
@@ -7377,6 +7416,9 @@ msgstr "Rangé"
 
 msgid "Sorting"
 msgstr "Tri"
+
+msgid "Sorting the files of this event…"
+msgstr "Tri des fichiers de cet événement…"
 
 msgid "Source folders removed"
 msgstr "Dossiers sources supprimés"
@@ -8387,6 +8429,10 @@ msgid "The places of {file} are invalid: {reason}."
 msgstr "Les lieux de {file} ne sont pas valables : {reason}."
 
 #, python-brace-format
+msgid "The plan has no event {event}."
+msgstr "Le plan n'a pas d'événement {event}."
+
+#, python-brace-format
 msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
 msgstr "Le plan.json de ce classeur ({plan_id}) n'est pas dans /reports."
 
@@ -8545,6 +8591,14 @@ msgstr[1] ""
 #, python-brace-format
 msgid "The run {run_id} was started already."
 msgstr "Le passage {run_id} a déjà été commencé."
+
+#, python-brace-format
+msgid ""
+"The run {run} ended, but its manifest does not check out: look at it "
+"before going on."
+msgstr ""
+"L'exécution {run} est terminée, mais son manifeste ne se vérifie pas : "
+"regardez-le avant de continuer."
 
 msgid "The run, for undo and undone."
 msgstr "Le passage, pour undo et undone."
@@ -8972,6 +9026,11 @@ msgstr "Ce mh ne prend pas les mots d'un formulaire : copiez la commande."
 #, python-brace-format
 msgid "This page also analyses: {folder}"
 msgstr "Cette page analyse aussi : {folder}"
+
+msgid "This page cannot move files: run 'sort --event' in the terminal."
+msgstr ""
+"Cette page ne peut pas déplacer de fichiers : lancez 'sort --event' dans "
+"le terminal."
 
 msgid "This page is closed. The home page comes back here when mh opens it."
 msgstr "Cette page est fermée. L'accueil revient ici quand mh l'ouvre."
@@ -11563,8 +11622,16 @@ msgstr "trier déplacer ranger appliquer classeur"
 msgid "sort the burst series with the keyboard, in 'review'."
 msgstr "triez les rafales au clavier, dans 'review'."
 
+msgid "sort this event now: move its files, the others left for later"
+msgstr ""
+"trier cet événement maintenant : déplacer ses fichiers, les autres "
+"attendent"
+
 msgid "sorted since."
 msgstr "triée depuis."
+
+msgid "sorted: its files are in their folders"
+msgstr "trié : ses fichiers sont dans leurs dossiers"
 
 msgid "space freed, largest first"
 msgstr "espace libéré, le plus grand d'abord"
@@ -13772,6 +13839,14 @@ msgstr "au plus {limit} est attendu, pas {value}"
 #, python-brace-format
 msgid "{limit} or more is expected, not {value}"
 msgstr "au moins {limit} est attendu, pas {value}"
+
+#, python-brace-format
+msgid ""
+"{moved} moved, {verified} checked at their new place (run {run}, at "
+"{time}): 'undo {run}' puts them back."
+msgstr ""
+"{moved} déplacés, {verified} vérifiés à leur nouvelle place (exécution "
+"{run}, à {time}) : 'undo {run}' les remet en place."
 
 #, python-brace-format
 msgid "{name} ({count} faces)"

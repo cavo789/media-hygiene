@@ -135,6 +135,18 @@ qui ont besoin de vous. Cochez plutôt **Seulement les propositions sûres** pou
 sûres une par une avant de les accepter. Une case à la fois ; le navigateur s'en souvient pour la
 prochaine ouverture de la page.
 
+## Trier un événement maintenant
+
+**Trier cet événement maintenant** (ou <kbd>M</kbd>) range la collection événement par
+événement : il enregistre le dossier au besoin, montre où vont les fichiers (la ligne sous le
+champ) et demande, puis déplace les fichiers de cet événement seulement, comme le fait
+[`sort --event`](../commands/sort.md) : notés au journal, chaque exécution avec son propre
+`undo`. La ligne d'état donne ce que contient le disque après l'exécution : les fichiers
+déplacés et vérifiés à leur nouvelle place. L'événement s'affiche ensuite *trié*, et <kbd>U</kbd>
+et *Seulement les événements à décider* le sautent ; un `sort` ultérieur de tout le classeur
+saute ses fichiers. Les photos doivent être montées sans `:ro`, avec un `/journal` : sinon la
+page dit ce qui manque, et rien ne bouge.
+
 ## Où vont vos choix
 
 Chaque choix est enregistré aussitôt dans `sort-decisions.json`, **à côté de `plan.json`**, dans

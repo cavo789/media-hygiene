@@ -72,6 +72,7 @@ fichiers déjà à leur place et les dossiers sources qu'il va supprimer, puis d
 | `CLASSEUR` | Le classeur modifié à appliquer (dans un dossier monté) ; celui du dernier `classify` par défaut. |
 | `--yes`, `-y` | Ne pas demander (ou `confirm = false` dans `[sort]`). |
 | `--keep-empty-folders` | Garder les dossiers sources que le tri laisse vides. |
+| `--event ID` | Trier seulement les fichiers de cet événement (son identifiant : la première colonne de la feuille Événements) ; le reste du classeur attend. |
 
 ## Bon à savoir
 
@@ -84,6 +85,9 @@ fichiers déjà à leur place et les dossiers sources qu'il va supprimer, puis d
   comme faits. `undo` annule alors d'un coup toutes les exécutions de ce classeur.
 - **Rien de perdu, preuve à l'appui** : les fichiers et tailles des dossiers sources et cibles
   sont comptés avant et après, et doivent correspondre.
+- **Un événement à la fois** : `--event` (ou *Trier cet événement maintenant* dans
+  [`review-sort`](review-sort.md)) trie un seul événement ; un `sort` ultérieur de tout le classeur
+  saute ses fichiers, déjà déplacés. Chaque exécution a son propre `undo`.
 
 ## Pour aller plus loin
 

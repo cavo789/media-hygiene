@@ -1257,6 +1257,9 @@ msgid ""
 "back, then run 'sort' again."
 msgstr ""
 
+msgid "Choose an event."
+msgstr ""
+
 msgid "Choose another decision for this pair, or leave it as planned."
 msgstr ""
 
@@ -1476,6 +1479,9 @@ msgid ""
 msgstr ""
 
 msgid "Copy it (Ctrl+C):"
+msgstr ""
+
+msgid "Copy its id from the first column of the Events sheet."
 msgstr ""
 
 msgid "Copy the command"
@@ -2209,6 +2215,9 @@ msgid "Every cluster lies in a place of yours."
 msgstr ""
 
 msgid "Every copy"
+msgstr ""
+
+msgid "Every file of this event is already in its folder: nothing to move."
 msgstr ""
 
 msgid "Every file of your photos is in this backup."
@@ -5610,6 +5619,11 @@ msgstr ""
 msgid "Save it, close it, then run 'sort' again."
 msgstr ""
 
+msgid ""
+"Save the folder, then move the files of this event only, journaled: undo "
+"puts them back (M)"
+msgstr ""
+
 msgid "Save this position"
 msgstr ""
 
@@ -6075,6 +6089,11 @@ msgstr ""
 msgid "Sort in short"
 msgstr ""
 
+msgid ""
+"Sort only the files of this event (its id: the first column of the Events"
+" sheet); the rest of the workbook is left for later."
+msgstr ""
+
 msgid "Sort out"
 msgstr ""
 
@@ -6082,6 +6101,15 @@ msgid "Sort review"
 msgstr ""
 
 msgid "Sort the photos"
+msgstr ""
+
+msgid "Sort this event now"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Sort this event now? {destination}. Its files are moved at once, "
+"journaled: 'undo' puts them back. The other events are left for later."
 msgstr ""
 
 #, python-brace-format
@@ -6092,6 +6120,9 @@ msgid "Sorted"
 msgstr ""
 
 msgid "Sorting"
+msgstr ""
+
+msgid "Sorting the files of this event…"
 msgstr ""
 
 msgid "Source folders removed"
@@ -6923,6 +6954,10 @@ msgid "The places of {file} are invalid: {reason}."
 msgstr ""
 
 #, python-brace-format
+msgid "The plan has no event {event}."
+msgstr ""
+
+#, python-brace-format
 msgid "The plan.json of this workbook ({plan_id}) is not in /reports."
 msgstr ""
 
@@ -7044,6 +7079,12 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid "The run {run_id} was started already."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The run {run} ended, but its manifest does not check out: look at it "
+"before going on."
 msgstr ""
 
 msgid "The run, for undo and undone."
@@ -7376,6 +7417,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "This page also analyses: {folder}"
+msgstr ""
+
+msgid "This page cannot move files: run 'sort --event' in the terminal."
 msgstr ""
 
 msgid "This page is closed. The home page comes back here when mh opens it."
@@ -9677,7 +9721,13 @@ msgstr ""
 msgid "sort the burst series with the keyboard, in 'review'."
 msgstr ""
 
+msgid "sort this event now: move its files, the others left for later"
+msgstr ""
+
 msgid "sorted since."
+msgstr ""
+
+msgid "sorted: its files are in their folders"
 msgstr ""
 
 msgid "space freed, largest first"
@@ -11482,6 +11532,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "{limit} or more is expected, not {value}"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{moved} moved, {verified} checked at their new place (run {run}, at "
+"{time}): 'undo {run}' puts them back."
 msgstr ""
 
 #, python-brace-format

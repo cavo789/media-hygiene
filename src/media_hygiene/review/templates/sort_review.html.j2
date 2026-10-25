@@ -34,6 +34,12 @@
   "sureNone": _("No sure proposal left to accept."),
   "sureAsk": _("Events to decide with a sure proposal: {count}. Each one gets its proposed folder, as Enter would give it, saved in one write: {moves} move, {kept} keep the folder you named. Events to decide left to look at: {left}. Click an event to look at it first; the ↶ button takes the whole batch back."),
   "sureAccept": _("Accept them"),
+  "sortAsk": _("Sort this event now? {destination}. Its files are moved at once, journaled: 'undo' puts them back. The other events are left for later."),
+  "sorting": _("Sorting the files of this event…"),
+  "sortedNow": _("{moved} moved, {verified} checked at their new place (run {run}, at {time}): 'undo {run}' puts them back."),
+  "sortedNothing": _("Every file of this event is already in its folder: nothing to move."),
+  "sortedNotIntact": _("The run {run} ended, but its manifest does not check out: look at it before going on."),
+  "sortedState": _("sorted: its files are in their folders"),
   "cancel": _("Cancel"),
   "ownFolder": _("its own folder"),
   "sureDone": _("{done}, read back from the disk at {time}: the ↶ button takes the whole batch back."),
@@ -97,6 +103,7 @@
   #destination { flex-basis: 100%; overflow-wrap: anywhere; }
   #destination.error { color: var(--bad); }
   .dirty { color: var(--warn, var(--bad)); font-weight: 600; }
+  #sortNow { margin-left: auto; }
   .batch input[type=checkbox] { min-width: 0; }
   #sureDlg { max-width: min(56rem, 94vw); color: var(--text); background: var(--card);
              border: 1px solid var(--line); border-radius: 10px; }
@@ -122,6 +129,7 @@
     <dt><kbd>E</kbd></dt><dd>{{ _("change the name of the event (by default, the last folder)") }}</dd>
     <dt><kbd>␣</kbd></dt><dd>{{ _("select a photo") }}</dd>
     <dt><kbd>O</kbd></dt><dd>{{ _("send the selected photos to another category") }}</dd>
+    <dt><kbd>M</kbd></dt><dd>{{ _("sort this event now: move its files, the others left for later") }}</dd>
 {% endblock %}
 {% block more_keys %}
     <dt><kbd>V</kbd></dt><dd>{{ _("accept every sure proposal at once") }}</dd>
@@ -149,6 +157,7 @@
     <details id="naming"><summary>{{ _("Name of the event") }} <kbd>E</kbd></summary><input id="name" name="name"></details>
   </form>
   <span id="destination" class="muted" role="status" aria-live="polite"></span>
+  <button type="button" id="sortNow" title="{{ _('Save the folder, then move the files of this event only, journaled: undo puts them back (M)') }}">{{ _("Sort this event now") }}</button>
   <form id="send" autocomplete="off" hidden>
     <label><span id="send-label"></span><input id="send-category" list="categories"></label>
   </form>
@@ -193,7 +202,7 @@
     if (css) element.className = css;
     return element;
   };
-  const isOpen = (card) => card.undecided > 0 && !card.page && !card.workbook.text;
+  const isOpen = (card) => card.undecided > 0 && !card.page && !card.workbook.text && !card.sorted;
 
   const showTotals = () => {
     const chosen = events.filter((card) => card.page).length;
@@ -280,15 +289,16 @@
     let response;
     try {
       response = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-    } catch (error) { setStatus(T.offline, "error"); return; }
+    } catch (error) { setStatus(T.offline, "error"); return false; }
     const answer = await response.json().catch(() => ({}));
-    if (!response.ok) { setStatus(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
+    if (!response.ok) { setStatus(answer.error || fill(T.failed, { status: response.status }), "error"); return false; }
     events[index] = answer.card;
-    if (index !== current) return;
+    if (index !== current) return true;
     photos = answer.photos;
     selected = new Set();
     setStatus(T.saved, "saved");
     if (then) then(); else { showEvent(answer.card); showTotals(); showPhotos(); }
+    return true;
   };
 
 {% include "sort_review_sure.js.j2" %}
@@ -365,6 +375,7 @@
     else if (key === "S") stayEvent();
     else if (key === "s") send(P.files, { event: id(), rows: chosenRows(), stay: true });
     else if (key === "o" || key === "O") openSend();
+    else if (key === "m" || key === "M") sortNow();
     else if (key === "Delete" || key === "Backspace") send(P.forget, { event: id(), rows: [...selected] });
     else if (key === "ArrowRight" || key === "ArrowLeft") {
       cursor = Math.max(0, Math.min(photos.length - 1, cursor + (key === "ArrowRight" ? 1 : -1)));
@@ -382,6 +393,7 @@
   });
   byId("zoom").addEventListener("click", () => { byId("zoom").hidden = true; });
   byId("sure").addEventListener("click", acceptSure);
+  byId("sortNow").addEventListener("click", sortNow);
   byId("sureUndo").addEventListener("click", undoSure);
   // Two filters, one at a time: the events to decide, or the sure proposals (0388).
   const filters = { onlyDecide: positionKey + ":only-to-decide", onlySure: positionKey + ":only-sure" };

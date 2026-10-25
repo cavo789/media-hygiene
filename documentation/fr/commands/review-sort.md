@@ -78,7 +78,7 @@ Noëls », « Grand-mère »), sans copie : les [albums](../sort/12-albums.md).
 
 | | |
 |---|---|
-| Vos photos | 🔒 Jamais modifiées, ni le classeur : montez les photos en `:ro`. |
+| Vos photos | 🔒 Jamais modifiées, ni le classeur : montez les photos en `:ro`. Seul *Trier cet événement maintenant* déplace des fichiers : il les veut accessibles en écriture, avec un `/journal`. |
 | Il faut | `/reports` (l'exécution de `classify`), vos dossiers (pour montrer les photos), et `-p 127.0.0.1:8088:8088`. |
 | Écrit | `sort-decisions.json`, à côté de `plan.json` dans le dossier de l'exécution de `classify`. |
 | Annuler | `Suppr` dans la page reprend un choix ; le classeur décide alors à nouveau. |
@@ -125,6 +125,10 @@ restent en bas à gauche, sous ⌨ **Clavier** (les premières toujours visibles
 
 ## Bon à savoir
 
+- **Trier cet événement maintenant** (<kbd>M</kbd>) déplace les fichiers de l'événement affiché,
+  et eux seuls, comme `sort --event` : notés au journal, remis en place par `undo`. Il faut les
+  photos montées sans `:ro` et un montage `/journal` ; sinon la page dit ce qui manque et rien ne
+  bouge. L'événement s'affiche ensuite *trié*, et <kbd>U</kbd> le saute.
 - **Le classeur n'est jamais modifié** (Excel l'a peut-être ouvert). Vous pouvez continuer à le
   modifier : chaque choix de la page retient ce que disait le classeur au moment où vous l'avez fait.
 - **Un conflit n'est jamais réglé en silence** : si le classeur a été changé depuis, sur le même

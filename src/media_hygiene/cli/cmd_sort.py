@@ -47,6 +47,16 @@ def sort_command(  # pylint: disable=too-many-arguments
             help=_("Keep the source folders the sort leaves empty."),
         ),
     ] = False,
+    event: Annotated[
+        str,
+        typer.Option(
+            "--event",
+            help=_(
+                "Sort only the files of this event (its id: the first column of the "
+                "Events sheet); the rest of the workbook is left for later."
+            ),
+        ),
+    ] = "",
     backup: Annotated[list[str] | None, folder_options.kept_backup()] = None,
 ) -> None:
     """Check the workbook, confirm, then move the files into their folders.
@@ -57,6 +67,7 @@ def sort_command(  # pylint: disable=too-many-arguments
         workbook: The workbook (host or container path), or None for the latest.
         yes: `--yes`, skip the confirmation.
         keep_empty_folders: `--keep-empty-folders`, no folder is removed.
+        event: `--event`, only the files of this event.
 
     Raises:
         typer.Exit: The user declined.
@@ -71,6 +82,7 @@ def sort_command(  # pylint: disable=too-many-arguments
     from media_hygiene.scan.progress import NullProgress
     from media_hygiene.services.interrupt import StopRequest
     from media_hygiene.services.sort import SortService
+    from media_hygiene.services.sort_event import only_event
     from media_hygiene.services.sort_inputs import find_workbook, load_inputs
 
     runtime = runtime_of(ctx).with_overrides(folder_options.backup_layer(backup))
@@ -79,6 +91,8 @@ def sort_command(  # pylint: disable=too-many-arguments
         service = SortService(runtime, NullProgress())
         service.ensure_ready()
         inputs = load_inputs(runtime, find_workbook(runtime, workbook))
+        if event:
+            inputs = only_event(inputs, event)
         output.title(_("Sort"))
         show_inputs(runtime, inputs)
         prepared = service.prepare(inputs, keep_empty=keep_empty_folders)

@@ -77,7 +77,7 @@ to show up elsewhere too ("every Christmas", "Grandma"), without a copy: the
 
 | | |
 |---|---|
-| Your photos | 🔒 Never changed, nor the workbook: mount the photos `:ro`. |
+| Your photos | 🔒 Never changed, nor the workbook: mount the photos `:ro`. Only *Sort this event now* moves files: it needs them writable and a `/journal`. |
 | Needs | `/reports` (the `classify` run), your folders (to show the photos), and `-p 127.0.0.1:8088:8088`. |
 | Writes | `sort-decisions.json`, next to `plan.json` in the folder of the `classify` run. |
 | Undo | `Delete` in the page takes a choice back; the workbook then decides again. |
@@ -122,6 +122,10 @@ with the line saying where each choice is saved.
 
 ## Good to know
 
+- **Sort this event now** (<kbd>M</kbd>) moves the files of the event shown, and only them, as
+  `sort --event` does: journaled, undone by `undo`. It needs the photos mounted without `:ro`
+  and a `/journal` mount; otherwise the page says what is missing and nothing moves. The event
+  then shows *sorted*, and <kbd>U</kbd> skips it.
 - **The workbook is never changed** (Excel may have it open). You may keep editing it: each
   choice of the page remembers what the workbook said when you made it.
 - **A conflict is never settled silently**: if the workbook was changed since, on the same event

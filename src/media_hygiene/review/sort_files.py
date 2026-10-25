@@ -35,6 +35,7 @@ class SortSource:
     target: Path  # `sort-decisions.json`, in the container
     hosts: tuple[str, str]  # the workbook and the decisions file, on the host
     mapper: HostPathMapper
+    journal: Path | None = None  # where `sort` runs are journaled: the rows moved
 
 
 @dataclass(frozen=True, slots=True)

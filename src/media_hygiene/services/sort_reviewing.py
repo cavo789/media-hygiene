@@ -32,8 +32,10 @@ from media_hygiene.review.sort_choices import (
     SURE_PATH,
 )
 from media_hygiene.review.sort_files import SortSource
+from media_hygiene.review.sort_now import SORT_NOW_PATH
 from media_hygiene.services.page_choices import page_decisions, page_file
 from media_hygiene.services.reviewing import address_tip, page_url
+from media_hygiene.services.sort_event import sorter_of
 from media_hygiene.services.sort_inputs import find_workbook, open_elsewhere, plan_of
 from media_hygiene.services.writable import writable_tip
 
@@ -87,7 +89,12 @@ def open_sort_review(runtime: Runtime, given: str | None) -> SortBatchSession:
         )
         output.warning(message.format(count=human_number(len(conflicts))))
     source = SortSource(
-        plan, edits, target, (host(workbook), host(target)), runtime.mapper
+        plan,
+        edits,
+        target,
+        (host(workbook), host(target)),
+        runtime.mapper,
+        runtime.locations.journal_dir,
     )
     return SortBatchSession(source, base)
 
@@ -112,12 +119,19 @@ def serve_sort_review(runtime: Runtime, session: SortBatchSession, port: int) ->
             "forget": FORGET_PATH,
             "sure": SURE_PATH,
             "destination": DESTINATION_PATH,
+            "sortNow": SORT_NOW_PATH,
         },
         workbook=workbook,
         decisions=decisions,
     )
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        app = SortReviewApp(session, page.encode(), executor, runtime.previews_dir)
+        app = SortReviewApp(
+            session,
+            page.encode(),
+            executor,
+            runtime.previews_dir,
+            sorter_of(runtime, session),
+        )
         asyncio.run(run_server(app, port, partial(_announce, runtime, session)))
 
 

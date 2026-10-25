@@ -10,6 +10,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
+from media_hygiene.actions.sort_resume import moved_targets
 from media_hygiene.classify.page_decisions import (
     EventDecision,
     PageDecisions,
@@ -46,6 +47,8 @@ class SortSession:
         self._events = {item.event: item for item in base.events}
         self._files = {item.row: item for item in base.files}
         self.hosts = source.hosts  # the workbook and the decisions file, on the host
+        self._moved: dict[str, Path] = {}  # row → where an earlier `sort` put it
+        self.refresh_moved()
 
     @property
     def event_count(self) -> int:
@@ -61,6 +64,12 @@ class SortSession:
         """
         return len(self._events), len(self._files)
 
+    def refresh_moved(self) -> None:
+        """Read again from the journal which rows `sort` runs of the plan moved."""
+        journal = self._source.journal
+        if journal is not None and journal.is_dir():
+            self._moved = moved_targets(journal, self._source.plan.plan_id)
+
     def state(self) -> SortState:
         """Describe every event, for the page.
 
@@ -68,7 +77,7 @@ class SortSession:
             The state.
         """
         source = self._source
-        cards = CardMaker(source.workbook, self._events, self._files)
+        cards = CardMaker(source.workbook, self._events, self._files, self._moved)
         workbook, decisions = self.hosts
         return SortState(
             workbook=workbook,
@@ -89,7 +98,8 @@ class SortSession:
             Its card and its photos, in date order.
         """
         item = self._item(event_id)
-        cards = CardMaker(self._source.workbook, self._events, self._files)
+        source = self._source
+        cards = CardMaker(source.workbook, self._events, self._files, self._moved)
         photos = tuple(cards.photo(row) for row in item.rows)
         return EventView(card=cards.event(item), photos=photos)
 
@@ -103,7 +113,9 @@ class SortSession:
             It, in the container; None for an unknown row.
         """
         row = self._rows.get(row_id)
-        return None if row is None else self._source.mapper.to_container(row.path)
+        if row is None:
+            return None
+        return self._moved.get(row_id) or self._source.mapper.to_container(row.path)
 
     def choose_event(self, event_id: str, value: EventValue) -> EventView:
         """Name an event, give it a category, or leave it where it is; then save.

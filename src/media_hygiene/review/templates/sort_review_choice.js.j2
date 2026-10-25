@@ -17,6 +17,7 @@
 
   const stateText = (card) => {
     if (choiceDirty()) return [T.dirty, "dirty"];
+    if (card.sorted) return [T.sortedState, "saved"];
     if (card.conflict) return [fill(T.inWorkbook, { value: card.workbook.text }), "conflict"];
     if (card.page) {
       const time = card.saved ? new Date(card.saved).toLocaleTimeString() : "";
@@ -99,3 +100,36 @@
     event.preventDefault();
     event.returnValue = "";
   });
+
+  // *Sort this event now* (0390): save what is typed, show where the files go, ask, then
+  // the server runs `sort` cut to this event and answers with the run read back.
+  const sortNow = async () => {
+    if (!events.length) return;
+    const body = choiceBody();
+    const unsaved = choiceDirty() || (!events[current].page && !events[current].workbook.text);
+    if (unsaved) {
+      markSaved();
+      if (!(await send(P.event, body))) return;
+    }
+    if (!window.confirm(fill(T.sortAsk, { destination: byId("destination").textContent }))) return;
+    const index = current;
+    setStatus(T.sorting);
+    byId("sortNow").disabled = true;
+    let response;
+    try {
+      response = await fetch(P.sortNow, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ event: id() }) });
+    } catch (error) { setStatus(T.offline, "error"); byId("sortNow").disabled = false; return; }
+    byId("sortNow").disabled = false;
+    const answer = await response.json().catch(() => ({}));
+    if (!response.ok) { setStatus(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
+    events[index] = answer.view.card;
+    const time = new Date().toLocaleTimeString();
+    if (!answer.run_id) setStatus(T.sortedNothing, "saved");
+    else if (!answer.intact) setStatus(fill(T.sortedNotIntact, { run: answer.run_id }), "error");
+    else setStatus(fill(T.sortedNow, { moved: counted(T.nFiles, answer.moved), verified: answer.verified, run: answer.run_id, time: time }), "saved");
+    if (index !== current) return;
+    photos = answer.view.photos;
+    showEvent(answer.view.card);
+    showTotals();
+    showPhotos();
+  };
