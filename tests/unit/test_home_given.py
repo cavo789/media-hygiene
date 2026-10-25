@@ -110,7 +110,7 @@ def test_run_says_which_window_then_a_hint_after_30_s(
     text = page.decode()
     assert f"const WINDOW = {json.dumps(window)};" in text
     assert "const HINT_MS = 30000;" in text
-    wait = text.index("function waitForComeBack(page) {")
+    wait = text.index("function waitForComeBack(page, run) {")
     shown = text.index("hint.hidden = false; }, HINT_MS);", wait)
     assert wait < shown < text.index("const poll = () => {", wait)
 
@@ -123,7 +123,7 @@ def test_a_console_step_says_at_once_to_switch_to_the_window() -> None:
         "ask you something."
     )
     text = page.decode()
-    run = text.index("function openRun(action, command) {")
+    run = text.index("function openRun(action, command, run, kept) {")
     alert = text.index(
         '${action.kind === "page" ? "" : `<p class="dlg-alert" role="alert">', run
     )
@@ -139,7 +139,8 @@ def test_the_page_says_the_stop_within_a_beat_never_during_a_step() -> None:
         ".catch(() => { if (!leaving && !presence.away) stopped(); });", wire
     )
     assert 'document.addEventListener("visibilitychange"' in text[wire:]
-    assert "presence.away = true;" in text[text.index("function openRun(") :]
+    # A step the server stays up for (0355) keeps the beats: the page is not leaving.
+    assert "if (!kept) presence.away = true;" in text[text.index("function openRun(") :]
     assert "quit: () => { presence.away = true;" in text
     assert _texts(home_page(relays_steps=True))["stoppedText"].startswith(
         "Its window was closed (or Ctrl+C was pressed in it)."
@@ -154,12 +155,12 @@ def test_a_page_step_shows_in_this_tab_and_comes_back_to_this_section() -> None:
         "brings you back to this very place."
     )
     text = page.decode()
-    run = text.index("function openRun(action, command) {")
+    run = text.index("function openRun(action, command, run, kept) {")
     kept = text.index(
         'sessionStorage.setItem("mh-home-section", window.location.hash)', run
     )
-    assert kept < text.index('waitForComeBack(action.kind === "page");', run)
-    wait = text.index("function waitForComeBack(page) {")
+    assert kept < text.index('waitForComeBack(action.kind === "page", run);', run)
+    wait = text.index("function waitForComeBack(page, run) {")
     assert text.index('fetch("/", { cache: "no-store" })', wait) < text.index(
         'else if (page) window.location.replace("/");', wait
     )

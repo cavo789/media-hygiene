@@ -31,6 +31,7 @@ from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH, LocalApp
 from media_hygiene.review.presence import PRESENCE_PATH, presence_response
 from media_hygiene.review.report_files import report_response
 from media_hygiene.review.serving import json_response, refused_post
+from media_hygiene.review.step_watch import step_state
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -74,6 +75,7 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
     presence: Presence
     relays_steps: bool = False  # the launcher runs the step `STEP_EXIT_BASE + n` names
     relays_fields: bool = False  # and the words of a form (`home_fields`)
+    keeps: bool = False  # and runs a console step with the server up (`step_watch`)
 
     @override
     async def answer(self, request: Request) -> Response:
@@ -95,6 +97,7 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
                 self.reports_dir,
                 relays_steps=self.relays_steps,
                 relays_fields=self.relays_fields,
+                keeps=self.keeps,
             )
             return await step_response(door, request)
         if path == AUDIT_PATH and request.method == _POST:
@@ -116,6 +119,8 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
             return Response(HTTPStatus.OK, self.page, ContentType.HTML)
         if path.startswith(REPORTS_PREFIX):
             return await report_response(self.reports_dir, path)
+        if path == STEP_PATH:
+            return await step_state(self.reports_dir)
         if path == STATE_PATH:
             state: BaseModel = await asyncio.to_thread(self.state)
         elif path == AUDIT_PATH:

@@ -12,6 +12,7 @@ from media_hygiene.actions.journal import journal_file
 from media_hygiene.actions.kinds import ActionKind, Phase
 from media_hygiene.cli.app import build_app
 from media_hygiene.cli.command_help import command_help
+from media_hygiene.cli.home_actions import home_actions
 from media_hygiene.cli.menu_entry import Space
 from media_hygiene.cli.menu_steps import build_menu, choice_lines
 from media_hygiene.cli.menu_view import show_menu
@@ -316,3 +317,19 @@ def test_on_a_terminal_the_menu_is_shown_without_choices(
     assert "\t" not in result.stdout
     assert "mh audit" in result.stderr
     assert "then type mh menu" in result.stderr
+
+
+def test_phone_free_says_launching_erases_nothing(tmp_path: Path) -> None:
+    """0311: its own confirmation; `purge` and `clean --delete` keep the generic one."""
+    status = read_status(make_runtime(make_locations(tmp_path)))
+    actions = {
+        action.name: action
+        for action in home_actions(build_menu(status, _HINT, windows=True))
+    }
+    phone = actions["phone-free"]
+    assert phone.risk == "final"  # the end of the path is final: the badge stays
+    assert phone.confirm_title == "Make room on the phone: launching erases nothing"
+    assert phone.confirm_text.startswith("A page opens with the files the PC")
+    assert "compared with the PC's copy once more" in phone.confirm_text
+    assert not actions["purge"].confirm_title
+    assert not actions["clean-delete"].confirm_title

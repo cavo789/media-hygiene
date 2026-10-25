@@ -1,9 +1,8 @@
-"""The pages of `search` and `browse`, one server: the search, the folder view.
+"""The pages of `search` and `browse`, one server of their own.
 
-Both read the index; the files set aside on either are written into `decisions.json`
-of the reports folder, checked writable before each save, for `clean --decisions`.
-The server runs until Ctrl+C, or until *Apply now* (`browse` opened from the home
-page) ends it on the step that applies the decisions.
+The app itself (`search_app`) is the one the home server serves too (0356). This server
+runs until Ctrl+C, or until *Apply now* (`browse` opened from the home page) ends it on
+the step that applies the decisions.
 """
 
 from __future__ import annotations
@@ -12,50 +11,21 @@ import asyncio
 import contextlib
 from dataclasses import dataclass
 from functools import partial
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.constants import ExitCode
-from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.person.door import with_person
-from media_hygiene.review.apply_api import APPLY_PATH, ApplyDesk, ApplyOffer
 from media_hygiene.review.ending import Ending, EndingDoor, serve_until_ended
-from media_hygiene.review.page_header import headed_page
 from media_hygiene.review.presence import Presence
-from media_hygiene.search.app import (
-    SEARCH_PAGE_PATH,
-    SEARCH_PATH,
-    SearchApp,
-    SearchPages,
-)
-from media_hygiene.search.chosen_api import CHOSEN_PATH, ChosenDesk
-from media_hygiene.search.folders import (
-    BROWSE_PATH,
-    FOLDER_PATH,
-    FOLDERS_PATH,
-    FolderDesk,
-)
-from media_hygiene.search.heaviest import FIRST_SHOWN, HEAVIEST_PATH
-from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH, NamesPlace, PeopleDesk
-from media_hygiene.search.people_why import PEOPLE_WHY_PATH
-from media_hygiene.search.place import SearchPlace
-from media_hygiene.services.albums import album_desk
-from media_hygiene.services.chosen_place import chosen_store, reports_ready
-from media_hygiene.services.people_page import names_file
 from media_hygiene.services.reviewing import address_tip, page_url
-from media_hygiene.share.album_api import ALBUMS_PATH
-from media_hygiene.share.album_pickers import SearchPicker
+from media_hygiene.services.search_app import SearchBuild, search_app
 
 if TYPE_CHECKING:
     from collections.abc import Callable
-    from pathlib import Path
 
     from media_hygiene.review.apply_api import ApplyStep
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.services.runtime import Runtime
-
-_PACKAGE: Final = "media_hygiene.search"
-_SEARCH_TEMPLATE: Final = "search.html.j2"
-_BROWSE_TEMPLATE: Final = "browse.html.j2"
 
 
 @dataclass(frozen=True, slots=True)
@@ -89,90 +59,18 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> Serv
         How many files are set aside when the pages stop, read from the disk, and
         the exit code a page asked for.
     """
-    environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
-    paths = {
-        "search_path": SEARCH_PATH,
-        "chosen_path": CHOSEN_PATH,
-        "browse_path": BROWSE_PATH,
-        "search_page": SEARCH_PAGE_PATH,
-        "folders_path": FOLDERS_PATH,
-        "folder_path": FOLDER_PATH,
-        "heaviest_path": HEAVIEST_PATH,
-        "heaviest_first": FIRST_SHOWN,
-        "apply_path": APPLY_PATH,
-        "albums_path": ALBUMS_PATH,
-        "people_reject_path": PEOPLE_REJECT_PATH,
-        "people_why_path": PEOPLE_WHY_PATH,
-        "apply_offered": start.apply is not None,
-    }
-    pages = SearchPages(
-        headed_page(environment, _SEARCH_TEMPLATE, paths),
-        headed_page(environment, _BROWSE_TEMPLATE, paths),
-        start.path,
-    )
-    chosen = chosen_desk(runtime, search)
-    folders = FolderDesk(search, runtime.mapper, shown_roots(runtime), chosen)
     ending = Ending()
-    place = SearchPlace(
-        search,
-        runtime.mapper,
-        runtime.previews_dir,
-        runtime.settings.people,
-        chosen,
-        folders,
-        ApplyDesk(ApplyOffer(start.apply, lambda: bool(chosen.paths())), ending),
-        album_desk(runtime, SearchPicker(search).files),
-        PeopleDesk(search, names_place(runtime)),
-    )
     code = 0
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
+        app = search_app(
+            runtime, search, SearchBuild(start.path, start.apply, ending, executor)
+        )
         closing = Presence(ending, ExitCode.PAGE_CLOSED)  # its tab closed (0262)
-        door = EndingDoor(SearchApp(place, pages, executor), ending, closing)
+        door = EndingDoor(app, ending, closing)
         door = with_person(door, runtime, executor)
         ready = partial(_announce, runtime, start)
         code = asyncio.run(serve_until_ended(door, start.port, ready))
-    return Served(len(chosen.paths()), code)
-
-
-def names_place(runtime: Runtime) -> NamesPlace:
-    """Where the page saves the names it corrects, and `[people]` at the start.
-
-    Args:
-        runtime: Settings, mount points and output.
-
-    Returns:
-        The place; no file when `/config` cannot be written.
-    """
-    return NamesPlace(names_file(runtime), runtime.settings.people, runtime.mapper)
-
-
-def chosen_desk(runtime: Runtime, search: SearchIndex) -> ChosenDesk:
-    """The files set aside from the pages: `decisions.json` in the reports folder.
-
-    Args:
-        runtime: Settings, mount points and output.
-        search: The open index.
-
-    Returns:
-        The desk answering the pages about them.
-    """
-    return ChosenDesk(chosen_store(runtime), search, partial(reports_ready, runtime))
-
-
-def shown_roots(runtime: Runtime) -> tuple[Path, ...]:
-    """The top folders of the tree: the mounted ones, or the drives of `/data`.
-
-    Args:
-        runtime: Settings, mount points and output.
-
-    Returns:
-        Them, in the container.
-    """
-    data_dir = runtime.locations.data_dir
-    roots = runtime.mounts.data_roots(data_dir)
-    if roots == (data_dir,) and data_dir.is_dir():
-        return tuple(sorted(child for child in data_dir.iterdir() if child.is_dir()))
-    return roots
+    return Served(len(app.place.chosen.paths()), code)
 
 
 def _announce(runtime: Runtime, start: PageStart, port: int) -> None:

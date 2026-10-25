@@ -171,6 +171,43 @@ crée, en seconds noms (liens physiques), sans copie.
 | `un chat sur un canapé` | Après [`tags --meaning`](tags.md) : les photos qui le montrent d'abord, même sans aucun de ces mots ([recherche par le sens](../reference-tags.md#retrouver-une-photo-par-ce-quelle-montre----meaning)). |
 | `Chloé cuisine` | Après `tags --meaning` : les photos de Chloé seulement, les cuisines d'abord. |
 
+## D'où vient chaque mot
+
+Le menu *Mots de* limite une recherche à une source ; taper son préfixe fait la même chose
+(`place:durbuy`). Une source qui n'a encore aucun mot affiche *— aucun pour l'instant* dans le
+menu et dans *Comment écrire une recherche*.
+
+| Mots de | Préfixe | Ce qu'elle contient |
+|---|---|---|
+| toutes les sources | | N'importe laquelle (par défaut). |
+| vus par le modèle | `vision:` | Les mots que le modèle de vision a donnés à ce que montre la photo (🤖 [`tags`](tags.md)). |
+| la phrase du modèle | `caption:` | Sa phrase entière : pour une expression entre guillemets. |
+| dossier | `folder:` | Les mots parlants des noms des dossiers. |
+| nom du fichier | `name:` | Les mots d'un nom choisi par quelqu'un (aucun pour `IMG_1234`). |
+| nom d'une copie retirée | `former:` | Les dossiers et le nom qu'avait un doublon avant que [`clean`](clean.md) ne le retire, gardés sur la copie restée. |
+| date | `date:` | L'année, le mois, la saison et les fêtes de la date de prise de vue. |
+| lieu | `place:` | La ville et vos propres lieux où la photo a été prise. |
+| personne | `person:` | Les noms donnés aux visages sur la page [`people`](people.md). |
+| description Google Photos | `takeout:` | La description tapée dans Google Photos (un export Takeout). |
+
+## Conseils pour retrouver une photo
+
+Tant que presque aucune photo n'est décrite, une ligne sous le champ le dit : *Ce que montrent
+les photos n'est pas encore connu : 0 fichiers décrits sur 44 488…*, avec l'étape qui y remédie
+(🤖 `tags`). Avant `tags`, une recherche ne trouve que les mots des dossiers, des noms, des
+dates, des lieux et des personnes.
+
+| Recherché | Ne trouve rien parce que | Essayez plutôt |
+|---|---|---|
+| `un vieil homme` | **Chaque mot doit être trouvé** : `un` et `vieil` et `homme` ; un petit mot compte aussi. | `homme`, puis moins de mots. |
+| `vieil homme`, `grand-mère`, `femme` | **Le modèle n'écrit jamais d'âge, de sexe ni de lien de parenté** : pour les personnes, il n'écrit que *adulte*, *enfant*, *bébé* ou *groupe*. | `person:` et le nom de la personne (nommée sur la page [`people`](people.md)), ou `adulte`. |
+| `un vieil homme dans un jardin` | **Une phrase entière demande la recherche par le sens** (`tags --meaning`) ; sans elle, des mots seulement. | `jardin` ; ou lancez une fois 🤖 `tags --meaning` : les phrases marchent alors. |
+| `plage` pendant un `tags` | **Les mots du modèle arrivent dans la recherche à la fin du run** (ou après un seul Ctrl+C, qui écrit ceux des photos déjà décrites). | Attendez la fin de `tags`, ou un Ctrl+C. |
+
+Rien trouvé ? Moins de mots, le début d'un mot (`anniv*`), une autre source dans *Mots de*, ou
+la recherche par le sens. La page garde ces conseils courts, dans *Comment écrire une
+recherche*.
+
 ## Options
 
 | Option | Rôle |
@@ -181,6 +218,10 @@ crée, en seconds noms (liens physiques), sans copie.
 
 ## Bon à savoir
 
+- **Ouverte depuis la page d'accueil** (`mh` seul) : la page s'ouvre aussitôt, dans le même onglet,
+  servie par la page d'accueil elle-même : aucun autre conteneur ne démarre, l'index reste ouvert
+  pour la session. *⌂ Retour à l'accueil* est un simple lien (le bouton Précédent du navigateur
+  marche aussi). Tapée seule (`mh search`), elle démarre toujours sa propre page.
 - Sans `/reports` (ou avec un dossier où l'outil ne peut pas écrire), **Mettre de côté les fichiers choisis** dit
   pourquoi et n'enregistre rien ; la recherche elle-même fonctionne.
 - La recherche ne lit que le cache : relancez [`audit`](audit.md) puis [`tags`](tags.md) pour

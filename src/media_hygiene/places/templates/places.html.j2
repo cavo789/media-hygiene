@@ -55,6 +55,7 @@
   "nameIgnored": _("{name}: never a town again (config.toml)."),
   "nameRestored": _("{name}: read as a town again (config.toml)."),
   "notSaved": _("Not saved: config.toml, read back, does not say so."),
+  "showAll": _("Show every place of the photos"),
   "giveTo": _("Give these photos to…"),
   "giveDistance": _("{place} — {km} km"),
   "giveConfirm": _("Give {files} to {place}? Their GPS is then ignored for this place; the photos stay where they are."),
@@ -115,6 +116,9 @@
   .leaflet-bar a, .leaflet-control-attribution, .leaflet-control-layers { color: var(--text); background: var(--card); border-color: var(--line); }
   .leaflet-bar a:hover, .leaflet-bar a:focus { background: var(--chip); }
   .leaflet-control-attribution a { color: var(--accent); }
+  .leaflet-bar button.show-all { width: 34px; height: 34px; border: 0; font-size: 1.1rem; cursor: pointer;
+                                 color: var(--text); background: var(--card); }
+  .leaflet-bar button.show-all:hover, .leaflet-bar button.show-all:focus { background: var(--chip); }
   .leaflet-popup-content-wrapper, .leaflet-popup-tip, .leaflet-tooltip { color: var(--text); background: var(--card); }
   .leaflet-tooltip.place-name { font-weight: 600; }
   #osm { margin-top: 8px; }
@@ -627,6 +631,32 @@
   byId("folderFilter").addEventListener("keydown", (event) => {
     if (event.key === "Escape" && byId("folderFilter").value) { event.stopPropagation(); byId("folderFilter").value = ""; drawFolders(); }
   });
+  // Every place the photos were taken on screen (0339): the clusters, the places, the folders
+  // placed by hand, beside the drawer; a point at exactly 0, 0 (a camera writing an empty GPS
+  // as zeros) is drawn but left out, or the world would show. ⤢ brings it back.
+  const unknownSpot = ([lat, lon]) => Math.abs(lat) < 1e-9 && Math.abs(lon) < 1e-9;
+  function frame() {
+    const points = [
+      ...state.clusters.map((c) => [c[0], c[1]]),
+      ...state.places.map((p) => [p.latitude, p.longitude]),
+      ...folders.filter((folder) => folder.saved).map((folder) => [folder.latitude, folder.longitude]),
+    ].filter((point) => !unknownSpot(point));
+    map.invalidateSize();
+    if (points.length) map.fitBounds(L.latLngBounds(points).pad(0.1), { maxZoom: NAMED_ZOOM, paddingBottomRight: [hidden(), 0] });
+  }
+  const ShowAll = L.Control.extend({
+    options: { position: "topleft" },
+    onAdd() {
+      const bar = L.DomUtil.create("div", "leaflet-bar");
+      const button = L.DomUtil.create("button", "show-all", bar);
+      button.type = "button"; button.textContent = "⤢"; button.title = T.showAll;
+      button.setAttribute("aria-label", T.showAll);
+      L.DomEvent.disableClickPropagation(bar);
+      button.addEventListener("click", frame);
+      return bar;
+    },
+  });
+  new ShowAll().addTo(map);
   async function loadFolders() {
     const response = await fetch(paths.folders).catch(() => null);
     if (!response || !response.ok) return;
@@ -1001,9 +1031,8 @@
     byId("placedFold").open = folds.placedFold ?? false;
     byId("treeFold").open = folds.treeFold ?? false;
     byId("asideFold").open = folds.asideFold ?? false;
-    draw(); loadFolders();
-    const points = [...state.clusters.map((c) => [c[0], c[1]]), ...state.places.map((p) => [p.latitude, p.longitude])];
-    if (points.length) map.fitBounds(L.latLngBounds(points).pad(0.1), { maxZoom: NAMED_ZOOM });
+    draw(); frame();
+    loadFolders().then(frame);  // the folders placed by hand (📌) count too
   }).catch(() => status(T.offline, "error"));
 })();
 </script>

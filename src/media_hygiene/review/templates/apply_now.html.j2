@@ -14,7 +14,10 @@
 <script>
 (() => {
   const APPLY_PATH = {{ apply_path | tojson }};
-  const APPLY_POLL_MS = 1000;
+  // The next server may answer 0.5 s after this one ended (0354): asked often, and known by
+  // its run id (`RUN_HEADER` of review/respond.py), not only by being seen gone.
+  const APPLY_POLL_MS = 250;
+  const RUN_HEADER = "X-Media-Hygiene-Run";
   const TEXTS = {{ {
     "applying": _("Running in the window where mh runs: {command}. The home page comes back here when it ends."),
     "failed": _("The page failed (error {status})."),
@@ -25,11 +28,13 @@
 
   window.mhApplyNow = (pending) => { if (!button.disabled) button.hidden = !pending; };
 
-  const waitForHome = () => {
+  const waitForHome = (run) => {
     let seenGone = false;
     const poll = () => fetch("/", { cache: "no-store" })
       .then((response) => {
-        if (!response.ok || !seenGone) { window.setTimeout(poll, APPLY_POLL_MS); return; }
+        const now = response.headers.get(RUN_HEADER);
+        const another = seenGone || Boolean(run && now && now !== run);
+        if (!response.ok || !another) { window.setTimeout(poll, APPLY_POLL_MS); return; }
         let section = "";
         try { section = window.sessionStorage.getItem("mh-home-section") || ""; } catch { /* private mode */ }
         window.location.replace("/" + section);
@@ -56,7 +61,7 @@
     said.textContent = fill(TEXTS.applying, { command: state.command });
     button.hidden = true;
     button.disabled = true;
-    waitForHome();
+    waitForHome(answer.headers.get(RUN_HEADER));
   });
 })();
 </script>

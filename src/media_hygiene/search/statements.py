@@ -56,6 +56,7 @@ FILL: Final = _FILL.format(rows=f"{_TAG_ROWS} UNION ALL {_PERSON_ROWS}")
 FILL_PEOPLE: Final = _FILL.format(rows=_PERSON_ROWS)  # an index without tags yet
 DATA_VERSION: Final = "PRAGMA data_version"
 HAS_TAGS: Final = "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'tags'"
+ANY_TAG: Final = "SELECT 1 FROM tags LIMIT 1"  # at least one file has a word
 _FROM: Final = f" FROM temp.{TABLE} JOIN files ON files.rowid = {TABLE}.rowid"
 HITS: Final = (
     "SELECT files.rowid, files.path, files.size, files.mtime_ns,"

@@ -31,6 +31,53 @@ Known figures:
   devcontainer, the code of step 35c, 2026-10-24); on a real index: unknown.
 - Total felt by the maintainer: "several seconds" per click (not timed).
 
+## Measured (step 35, maintainer's PC, image `media-hygiene` local build, 2026-10-24)
+
+Click "search" on the home page → search page shown: **7.6 s and 8.7 s** (rounds 1 and 2, from
+the home container's `die` to the maintainer's Enter; round 3 got no Docker events). Round 2:
+
+| Phase | Time | Share |
+|---|---|---|
+| home container stops after the click | 0.2 s | 2 % |
+| `mh menu` container, only to read the step chosen (35b alone: 2.1–2.3 s) | 2.5 s | 28 % |
+| guards of `mh.ps1` before `docker run` (between the two containers) | 0.5 s | 6 % |
+| search container start → page shown | 5.4 s | 62 % |
+
+Inside the search container (35c, twice, same figures): **2.8 s**, of which
+**names of the people read 1.8 s** (`people_words`, 11,457 photos named), locale 0.28 s, CLI 0.09 s,
+code 0.17 s, settings 0.08 s, index opened 0 s (226 MB), first search 0.37 s (the full-text
+table built), next ones 2 ms. A bare container: python 0.3 s, `--version` 0.58 s (35a). The rest
+of the 5.4 s (≈ 2.6 s) is the tab's wait for the new server (polled every 1 s,
+`home_link.html.j2`), the page's first requests and the maintainer's reaction (*estimated*).
+
+"Back to the home page" → home page shown: 4.8 s and 5.6 s once it worked (rounds 2, 3); new home
+container started 0.5–0.65 s after the search one died; start → shown 3.4–4.1 s. **Round 1: the
+tab stayed on the search page, F5 needed (26 s)** — the bug below.
+
+**Bug, read in the code**: `awaitHome` (`review/templates/home_link.html.j2`, and
+`waitForComeBack` in `home_run.js.j2`) polls `/` every 1 s and reloads only after one poll
+*failed* (`seenGone`). The gap between the old server's end and the new one's start is 0.5–0.65 s
+(*measured* above), shorter than the poll: when no poll falls into it, the tab never sees the
+server gone and waits forever. Fix: each server answers its own start id (a header or a field of
+`/`); the tab reloads when the id differs from the one it was served, polling every 250 ms.
+
+## Done (2026-10-24, not yet measured on Windows)
+
+- No `mh menu` container after a click: `home_step._handed` writes the step's words into
+  `.mh-step.json` and ends with the fields code, which every `mh.ps1` / `mh.sh` since 0266
+  already runs (no `mh update` needed); reports in a named volume, or the file not writable:
+  the number, as before. `mh.sh` rings its bell for a console step only, as from `mh menu`.
+  *Apply now* (browse, reviews) still ends on its number: rare, and its pages do not know the
+  reports folder.
+- The tab waiting for the next server: `X-Media-Hygiene-Run` on every answer
+  (`review/respond.py`), compared with the run that took the click, polled every 250 ms
+  (`home_run.js.j2`, `home_link.html.j2`, `apply_now.html.j2`, `phone_review.js.j2`).
+- `search` / `browse` / `slideshow`: the names of the people read in a thread
+  (`search/names_soon.py`), taken at the first search (`MeaningIndex._fresh`); the start's
+  "no file has words" check reads one tag row instead of a search. Gain *estimated* at
+  0.3–1 s only: the page searches as soon as it loads, so it waits for the rest.
+- To do: run step 35 again on the maintainer's PC (image rebuilt), before → after here.
+
 ## What to do
 
 1. **Measure first** — step 35 of `tests/measure/mh-measure.ps1` (written with this TODO, nothing
@@ -77,3 +124,21 @@ Today: several seconds per click (felt, not timed), of which ≈ 1 s for `mh men
 container (*estimated* from 0277's 0.6 s). After the two quick cuts: about 1.3 s less per click
 (*estimated*); with one server: under 0.2 s (*estimated*: the page's own requests only). The
 maintainer clicks dozens of times per session.
+
+## Status — PARTIAL (2026-10-24)
+
+### Done
+- The three cuts listed under *Done* above (commit `aabd24c`); the single server chosen by the
+  maintainer and split into 0355–0361.
+
+### Not done
+- Step 35 run again on the maintainer's PC (image rebuilt) to write before → after here.
+  **Reason:** a measurement only Windows + Docker Desktop gives.
+
+## Validated on Windows (2026-10-25, maintainer, by hand)
+
+The image of `iterate/2026-10-24` and its `mh.ps1` (`mh update`): `mh` alone opens the home page;
+search shows at once and the way back needs no F5 (step 35's timing by two Enters dropped as
+meaningless now: real timings in the browser test of 0366); a console step chosen on the page
+(*See what each run did*, `mh history`) runs in the PowerShell window while the home page stays
+open; Quit, then `mh` again, works. The crash restart left by 0355 is TODO 0365.

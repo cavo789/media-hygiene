@@ -62,6 +62,13 @@ def test_the_map_shows_the_clusters_and_saves_a_place(
     assert b"leaflet.js" in page.body
     assert seen["leaflet"].body.startswith(b"/* @preserve")
     assert seen["leaflet"].cacheable
+    # 0339: framed on every point but 0, 0, the folders placed too, beside the drawer.
+    body = page.body.decode()
+    assert "folders.filter((folder) => folder.saved)" in body
+    assert ".filter((point) => !unknownSpot(point))" in body
+    assert "paddingBottomRight: [hidden(), 0] });\n  }" in body
+    assert "loadFolders().then(frame)" in body
+    assert "Show every place of the photos" in body
 
 
 def test_the_town_search_is_offline(

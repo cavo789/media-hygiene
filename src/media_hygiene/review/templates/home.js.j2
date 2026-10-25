@@ -12,6 +12,10 @@ const WINDOW = {{ window | tojson }};
 const ALIVE_MS = {{ alive_ms | tojson }};
 const THOUSANDS = {{ thousands | tojson }};
 const POLL_MS = 1000;
+// The next server may answer 0.5 s after this one ended (measured, 0354): asked often, and
+// known by the run id each server sends (`RUN_HEADER` of review/respond.py).
+const COMEBACK_MS = 250;
+const RUN_HEADER = "X-Media-Hygiene-Run";
 const HINT_MS = 30000;
 const TOAST_MS = 6500;
 const LOADING_SLOW_MS = 5000;

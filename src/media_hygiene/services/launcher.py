@@ -24,6 +24,7 @@ from media_hygiene.review.home_views import (
     SIGNAL_EXIT_BASE,
     STEP_EXIT_BASE,
 )
+from media_hygiene.review.step_watch import WATCH
 from media_hygiene.services.launcher_ascii import ascii_powershell
 from media_hygiene.services.launcher_backup import backup_command
 from media_hygiene.services.launcher_cloud import cloud_check
@@ -186,6 +187,7 @@ def render_script(script: LauncherScript) -> str:
         zone=WINDOWS_ZONE_VARIABLE,
         relay=LAUNCHER_STEPS_VARIABLE,
         relay_fields=RELAY_FIELDS,
+        watch=WATCH,
         photos=LAUNCHER_PHOTOS_VARIABLE,
         relayed=tuple(dict.fromkeys((*_RELAYED, *script.commands.pages))),
         step_base=STEP_EXIT_BASE,

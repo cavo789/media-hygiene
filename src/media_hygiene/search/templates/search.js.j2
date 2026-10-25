@@ -189,6 +189,28 @@ function reopen(again) {
   return search(null, again);
 }
 
+// What the index can be found by (0344, 0346): the line under the field when the photos are
+// hardly described, the tip about sentences, "none yet" on each source without words.
+const FEW = 10; // under one file in FEW described: the line shows
+const hardlyDescribed = (seen) => Boolean(seen) && (seen.sources.vision || 0) * FEW < seen.files;
+function covered(seen) {
+  if (!seen) return;
+  const line = $("coverage");
+  line.hidden = !hardlyDescribed(seen);
+  line.textContent = fill(TEXTS.notDescribed, { described: (seen.sources.vision || 0).toLocaleString(), files: seen.files.toLocaleString() });
+  $("tipSentence").hidden = seen.meaning;
+  $("tipMeaning").hidden = !seen.meaning;
+  const none = (value) => !(seen.sources[value] || 0);
+  for (const term of document.querySelectorAll("#sourceList [data-source]")) {
+    term.querySelector(".none").hidden = !none(term.dataset.source);
+  }
+  for (const option of $("source").options) {
+    if (!option.value) continue;
+    if (!option.dataset.label) option.dataset.label = option.textContent;
+    option.textContent = option.dataset.label + (none(option.value) ? TEXTS.noneYet : "");
+  }
+}
+
 function told(text, error) {
   $("status").className = error ? "error" : "";
   $("status").textContent = text;
@@ -208,8 +230,9 @@ async function search(event, again) {
   asked = body;
   total = found.total;
   showFiles(found.hits, again);
+  covered(found.coverage);
   let text = counted(TEXTS.found, found.total);
-  if (!found.total) text = TEXTS.none;
+  if (!found.total) text = TEXTS.none + (body.text.trim() && hardlyDescribed(found.coverage) ? " " + TEXTS.noneWhy : "");
   else if (found.total > found.hits.length) text = fill(TEXTS.shown, { total: found.total, shown: found.hits.length });
   told(found.note ? found.note + " " + text : text, false);
   // Sent from the field: the keys go to the grid (Ctrl+A, the arrows); "/" comes back.

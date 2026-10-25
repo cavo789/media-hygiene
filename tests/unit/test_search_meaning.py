@@ -2,18 +2,25 @@
 
 from __future__ import annotations
 
+import sqlite3
+import threading
+from concurrent.futures import Future
+from contextlib import closing
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
 
+from media_hygiene.config.people_settings import PeopleSettings, Person
 from media_hygiene.errors import FaceModelError
 from media_hygiene.index.descriptions import PhotoVersion
 from media_hygiene.index.meaning_rows import MeaningStore
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.meaning.clip import MODEL
+from media_hygiene.search import names_soon as names_module
 from media_hygiene.search.meaning import RRF_K, Meaning, MeaningSource, fused
 from media_hygiene.search.meaning_index import MeaningIndex
+from media_hygiene.search.names_soon import NamesKept, faces_mark, names_soon
 from media_hygiene.search.query import Filters, SearchQuery, parse_terms
 from media_hygiene.tags.models import TagSource
 from tests.support.meaning import COLOURS, ColourWords, colour_vector
@@ -194,3 +201,93 @@ def test_no_words_no_meaning(tmp_path: Path, text: str) -> None:
     """A search without words lists the newest first, as before."""
     with _open(tmp_path) as search:
         assert len(_names(search, text)) == len(_PHOTOS)
+
+
+def _people() -> dict[Path, tuple[str, ...]]:
+    """The names of `_PEOPLE`, by path."""
+    return {Path(f"{_ROOT}/{name}"): names for name, names in _PEOPLE.items()}
+
+
+def _kept(
+    monkeypatch: pytest.MonkeyPatch, *reads: Future[dict[Path, tuple[str, ...]]]
+) -> NamesKept:
+    """Names kept whose reads are `reads`, in turn, instead of a thread on the index."""
+    pending = list(reads)
+    monkeypatch.setattr(names_module, "names_soon", lambda *_: pending.pop(0))
+    return NamesKept(Path("unused"), PeopleSettings())
+
+
+def test_names_read_meanwhile_reach_the_first_search(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0354: the page answers at once; its first search waits for the names left."""
+    later: Future[dict[Path, tuple[str, ...]]] = Future()
+    with MeaningIndex.open(_index(tmp_path)) as search:
+        search.name_people_soon(_kept(monkeypatch, later))
+        threading.Timer(0.1, later.set_result, args=(_people(),)).start()
+        assert _names(search, "person:Bob") == ["kitchen_bob.jpg", "snow_bob.jpg"]
+
+
+def test_names_given_after_win_over_those_still_read(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A face renamed on the page names again: the names read at the start are older."""
+    later: Future[dict[Path, tuple[str, ...]]] = Future()
+    later.set_result(_people())
+    with MeaningIndex.open(_index(tmp_path)) as search:
+        search.name_people_soon(_kept(monkeypatch, later))
+        search.name_people({Path(f"{_ROOT}/beach_none.jpg"): ("Bob",)})
+        assert _names(search, "person:Bob") == ["beach_none.jpg"]
+
+
+def test_names_are_read_again_once_the_faces_change(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0358: `sort` (another container) moves a file: read again, never waited for."""
+    first: Future[dict[Path, tuple[str, ...]]] = Future()
+    first.set_result(_people())
+    second: Future[dict[Path, tuple[str, ...]]] = Future()
+    index = _index(tmp_path)
+    with MeaningIndex.open(index) as search:
+        search.name_people_soon(_kept(monkeypatch, first, second))
+        assert _names(search, "person:Bob") == ["kitchen_bob.jpg", "snow_bob.jpg"]
+        with closing(sqlite3.connect(index)) as writer:
+            writer.execute(
+                "CREATE TABLE IF NOT EXISTS moves (old TEXT PRIMARY KEY, new TEXT)"
+            )
+            writer.execute("INSERT INTO moves VALUES ('/x.jpg', '/y.jpg')")
+            writer.commit()
+        # Still being read: the search answers with the names it had.
+        assert _names(search, "person:Bob") == ["kitchen_bob.jpg", "snow_bob.jpg"]
+        second.set_result({Path(f"{_ROOT}/beach_none.jpg"): ("Bob",)})
+        assert _names(search, "person:Bob") == ["beach_none.jpg"]
+
+
+def test_a_sort_moving_a_face_changes_the_mark() -> None:
+    """A face's path changes in place (`UPDATE OR REPLACE`): another mark."""
+    with closing(sqlite3.connect(":memory:")) as index:
+        assert faces_mark(index) == faces_mark(index)  # no table: no error
+        index.execute("CREATE TABLE faces (path TEXT, number INTEGER)")
+        index.execute("CREATE TABLE moves (old TEXT, new TEXT)")
+        index.execute("INSERT INTO faces VALUES ('/a/x.jpg', 0)")
+        before = faces_mark(index)
+        index.execute("UPDATE faces SET path = '/b/x.jpg'")
+        assert faces_mark(index) != before
+
+
+def test_names_soon_reads_the_index_in_its_own_thread(tmp_path: Path) -> None:
+    """No face in the index: no name, read on the thread's own connection."""
+    named = PeopleSettings(person=(Person(name="Bob", faces=("/a#0",)),))
+    assert names_soon(_index(tmp_path), named).result(timeout=10) == {}
+
+
+def test_tagged_says_at_once_whether_a_file_has_a_word(tmp_path: Path) -> None:
+    """The start of `search` checks it without waiting for the names (0354)."""
+    with MeaningIndex.open(_index(tmp_path)) as search:
+        assert search.tagged
+    empty = tmp_path / "empty"
+    empty.mkdir()
+    with FactsRepository.open(empty / "index.sqlite"):
+        pass
+    with MeaningIndex.open(empty / "index.sqlite") as search:
+        assert not search.tagged

@@ -9,7 +9,8 @@ function onRun(name) {
   if (action.fields.length) { openForm(action); return; }
   proceed(action, { number: action.number, command: action.command }, action.command);
 }
-// Only what may be lost for good asks first, in the page; mh asks again before acting.
+// Only what may be lost for good asks first, in the page; mh asks again before acting. A step
+// whose erasing happens later, on its own page, says so instead (`confirm_title`, 0311).
 const confirms = (action) => action.risk === "final";
 function proceed(action, body, command) {
   if (confirms(action)) { openConfirm(action, body, command); return; }
@@ -26,7 +27,8 @@ function launch(action, body, command) {
   post(P.step, body)
     .then((reply) => {
       $$("button").forEach((button) => { button.disabled = false; button.removeAttribute("aria-busy"); });
-      if (reply.ok) { openRun(action, reply.body.command); return; }
+      if (reply.ok && reply.body.page) { goTo(reply.body.page); return; }
+      if (reply.ok) { openRun(action, reply.body.command, reply.run, reply.body.kept ? reply.body.id : null); return; }
       if (reply.body.command) copyBox(reply.body.command);
       toast(reply.body.error || fill(T.failed, { status: reply.status }));
       if (reply.status === 409 && !reply.body.command) reload();
@@ -34,7 +36,7 @@ function launch(action, body, command) {
     .catch(() => stopped());
 }
 const post = (path, body) => fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
-  .then((response) => response.json().catch(() => ({})).then((answer) => ({ ok: response.ok, status: response.status, body: answer })));
+  .then((response) => response.json().catch(() => ({})).then((answer) => ({ ok: response.ok, status: response.status, body: answer, run: response.headers.get(RUN_HEADER) })));
 function showDialog(dialog) {
   dialog.opener = document.activeElement;
   dialog.showModal();
@@ -65,7 +67,7 @@ function openForm(action) {
       .then((reply) => {
         if (reply.status === 422) { error.textContent = reply.body.error; error.hidden = false; return; }
         dialog.close();
-        if (reply.ok) { openRun(action, reply.body.command); return; }
+        if (reply.ok) { openRun(action, reply.body.command, reply.run, reply.body.kept ? reply.body.id : null); return; }
         if (reply.body.command) copyBox(reply.body.command);
         toast(reply.body.error || fill(T.failed, { status: reply.status }));
       })
@@ -76,51 +78,77 @@ function openForm(action) {
 function openConfirm(action, body, command) {
   const dialog = $("#confirmDlg");
   dialog.innerHTML = `<div class="dlg">
-    <div class="dlg-head"><div><p class="eyebrow is-danger">${icon("alert")} ${esc(T.riskFinal)}</p><h2 id="confirmTitle">${esc(fill(T.confirmTitle, { title: action.title }))}</h2></div>${closeButton()}</div>
-    <p class="dlg-text">${esc(action.text)}</p>
+    <div class="dlg-head"><div><p class="eyebrow is-danger">${icon("alert")} ${esc(T.riskFinal)}</p><h2 id="confirmTitle">${esc(action.confirm_title || fill(T.confirmTitle, { title: action.title }))}</h2></div>${closeButton()}</div>
+    <p class="dlg-text">${esc(action.confirm_text || action.text)}</p>
     ${cmdChip(command)}
-    <p class="muted small">${esc(fill(T.asksAgain, { window: WINDOW }))}</p>
+    ${action.confirm_title ? "" : `<p class="muted small">${esc(fill(T.asksAgain, { window: WINDOW }))}</p>`}
     <div class="dlg-foot"><button class="btn" type="button" data-close autofocus>${esc(T.keep)}</button><button class="btn btn-danger" type="button" id="confirmGo">${esc(verbOf(action, statusOf(action)))}</button></div>
   </div>`;
   $("#confirmGo", dialog).addEventListener("click", () => { dialog.close(); launch(action, body, command); });
   showDialog(dialog);
 }
 // The server ended: mh runs the step, then opens the page again on the same port. The page
-// reloads once it saw the server gone, then answering again. One tab (0280): a page step shows
+// reloads once another server answers: another run id (`run`, of the server that took the
+// click), or seen gone then answering again. One tab (0280): a page step shows
 // in this very tab (mh opens no other); its "Back to the home page" comes back to this section,
 // kept for this tab in sessionStorage (home_link.html.j2, apply_now.html.j2 read it). A console
 // step says at once to switch to the window of mh, which mh tries to bring forward (0285).
-function openRun(action, command) {
-  presence.away = true;
+// A console step `mh` runs beside this server (`kept`, its id; 0355): the page stays and
+// follows it, then reads its state again.
+function openRun(action, command, run, kept) {
+  if (!kept) presence.away = true;
   try { window.sessionStorage.setItem("mh-home-section", window.location.hash); } catch { /* private mode: the top of the page */ }
   const dialog = $("#runDlg");
   const where = fill(action.kind === "page" ? T.runsPage : T.runsConsole, { command: command, window: WINDOW });
   dialog.innerHTML = `<div class="dlg">
     <div class="dlg-head"><div><p class="eyebrow">${icon("play")} ${esc(T.stepStarted)}</p><h2 id="runTitle">${esc(action.title)}</h2></div></div>
     <div class="term" aria-hidden="true"><div class="term-head"><span class="term-dots"><i></i><i></i><i></i></span>${esc(WINDOW)}</div><pre class="term-body"><span class="p">PS&gt;</span> ${esc(command)}<span class="cursor"></span>
-<span class="c"># ${esc(T.termComment)}</span></pre></div>
-    <p class="dlg-text" role="status">${esc(where)}</p>
+<span class="c"># ${esc(kept ? T.termKept : T.termComment)}</span></pre></div>
+    <p class="dlg-text" role="status">${esc(kept ? fill(T.runsKept, { command: command, window: WINDOW }) : where)}</p>
     ${action.kind === "page" ? "" : `<p class="dlg-alert" role="alert">${icon("keyboard")} ${esc(fill(T.switchNow, { window: WINDOW }))}</p>`}
     <p class="dlg-hint" id="runHint" hidden>${icon("info")} ${esc(fill(T.nothingMoves, { window: WINDOW }))}</p>
     <p class="muted small">${esc(T.notOpenedByMh)}</p>
   </div>`;
   showDialog(dialog);
-  waitForComeBack(action.kind === "page");
+  if (kept) followStep(kept, command);
+  else waitForComeBack(action.kind === "page", run);
+}
+// A page this very server serves (0356): a plain link, its Back comes to this section.
+function goTo(page) {
+  try { window.sessionStorage.setItem("mh-home-section", window.location.hash); } catch { /* private mode: the top of the page */ }
+  window.location.assign(page);
+}
+// The step's files, as mh writes them (`GET /api/step`): its end closes the dialog. The
+// server gone meanwhile (an older mh, a crash): wait for the next one, as before.
+function followStep(id, command) {
+  const poll = () => fetch(P.step, { cache: "no-store" })
+    .then((response) => response.json())
+    .then((step) => {
+      if (step.state !== "done" || step.id !== id) { window.setTimeout(poll, POLL_MS); return; }
+      $("#runDlg").close();
+      const ok = step.code === 0;
+      toast(fill(ok ? T.stepDone : T.stepFailed, { command: command, code: step.code }), ok ? "ok" : "info");
+      reload();
+    })
+    .catch(() => { presence.away = true; waitForComeBack(false, null); });
+  window.setTimeout(poll, POLL_MS);
 }
 // "/" and not the state: any page answers it, the step's page as well as the home page.
-function waitForComeBack(page) {
+function waitForComeBack(page, run) {
   let seenGone = false;
   window.setTimeout(() => { const hint = $("#runHint"); if (hint) hint.hidden = false; }, HINT_MS);
   const poll = () => {
     fetch("/", { cache: "no-store" })
       .then((response) => {
-        if (!response.ok || !seenGone) window.setTimeout(poll, POLL_MS);
+        const now = response.headers.get(RUN_HEADER);
+        const another = seenGone || Boolean(run && now && now !== run);
+        if (!response.ok || !another) window.setTimeout(poll, COMEBACK_MS);
         else if (page) window.location.replace("/");
         else window.location.reload();
       })
-      .catch(() => { seenGone = true; window.setTimeout(poll, POLL_MS); });
+      .catch(() => { seenGone = true; window.setTimeout(poll, COMEBACK_MS); });
   };
-  window.setTimeout(poll, POLL_MS);
+  window.setTimeout(poll, COMEBACK_MS);
 }
 // The command is copied, or selected for Ctrl+C when the browser refuses (an address other
 // than localhost is not a secure context); the server keeps running.
