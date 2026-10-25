@@ -21,7 +21,8 @@ from media_hygiene.classify.page_decisions import (
 from media_hygiene.classify.page_values import EventValue
 from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
-from media_hygiene.review.sort_session import SortSession
+from media_hygiene.review.sort_choosing import SortChoosing
+from media_hygiene.review.sort_session import now
 from media_hygiene.review.sort_sure import sure_value
 from media_hygiene.review.sort_views import CardMaker, EventCard
 
@@ -52,7 +53,7 @@ class BatchAnswer(BaseModel):
     events: tuple[EventCard, ...]  # the events of the batch, as chosen now
 
 
-class SortBatchSession(SortSession):
+class SortBatchSession(SortChoosing):
     """The sort review, and the batch of its sure proposals."""
 
     def open_and_sure(self) -> tuple[int, int]:
@@ -93,7 +94,9 @@ class SortBatchSession(SortSession):
             if request.undo and _accepted(events.get(event_id), value):
                 changed[event_id] = events.pop(event_id)
             elif not request.undo and self._open(event_id):
-                decision = EventDecision(event=event_id, value=value, base=EventValue())
+                decision = EventDecision(
+                    event=event_id, value=value, base=EventValue(), saved=now()
+                )
                 changed[event_id] = events[event_id] = decision
         if not changed:
             raise DecisionsError(

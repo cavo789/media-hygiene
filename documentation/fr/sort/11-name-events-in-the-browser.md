@@ -66,27 +66,34 @@ vous vous étiez arrêté). Pour chaque événement :
 - **en haut** : son nom (ou ses dates), son nombre de fichiers et combien restent à vérifier ou à
   trier, et la part du travail que couvre le fait de nommer les événements jusqu'à celui-ci ;
 - **Depuis** : les dossiers d'où viennent ses photos ;
-- **Proposé** : le dossier que propose `classify`, sa bande et pourquoi ;
-- **Classeur** : ce qu'en dit la feuille Événements, si vous y avez tapé quelque chose ;
-- **Choisi ici** : votre choix dans la page ;
+- **État** : une ligne : « proposé par classify (sa bande, pourquoi), pas encore validé »,
+  « modifié, pas encore enregistré : Entrée l'enregistre, Échap l'abandonne », « validé ici à
+  14:32 » (l'heure que contient `sort-decisions.json`, relue sur le disque), ou ce qu'a décidé le
+  classeur (en rouge quand il dit autre chose que la page) ;
 - **les photos**, par date, chacune avec sa date. Une photo dont le dossier proposé diffère de
   celui de l'événement l'affiche (→ …) ; une photo envoyée ailleurs est encadrée en vert ; 🔒
   marque un fichier laissé tel quel (dossier protégé ou `leave`), qu'aucun choix ne déplace.
 
-Le champ **Nom** est le nom de l'événement, comme dans la feuille Événements : il devient son
-dossier, sauf si vous donnez une **Catégorie**. Le champ catégorie est rempli avec la proposition
-et se complète avec les catégories déjà utilisées.
+Le champ **Dossier** contient le dossier de l'événement sous son année (`2011/`, affiché devant
+le champ) : `Fêtes/Communions/Communion de Manon` donne `2011/Fêtes/Communions/Communion de
+Manon`. Il est rempli avec la proposition et se complète avec les dossiers déjà utilisés. La
+ligne en dessous dit, pendant que vous tapez, où vont les fichiers, calculé comme le fera
+`sort` : « → 212 fichiers vont dans C:\Photos\2011\Fêtes\Communions\Communion de Manon · 40
+fichiers gardent leur propre dossier (Budva…) ». Le **nom** de l'événement (les albums
+l'utilisent) est le dernier dossier ; changez-le sous *Nom de l'événement* (<kbd>E</kbd>). Un
+dossier tapé et non enregistré n'est jamais perdu en silence : passer à un autre événement
+demande s'il faut l'enregistrer, fermer l'onglet prévient.
 
 ## Les touches
 
 | Touche | Ce qu'elle fait |
 |---|---|
-| <kbd>Entrée</kbd> | Accepter le nom et la catégorie, puis passer à l'événement suivant à décider. |
+| <kbd>Entrée</kbd> | Enregistrer le dossier, puis passer à l'événement suivant à décider. |
 | <kbd>N</kbd> / <kbd>P</kbd> (ou Page suivante / Page précédente) | Événement suivant ou précédent, sans décider. |
 | <kbd>U</kbd> | Événement suivant à décider. |
 | <kbd>V</kbd> | Accepter d'un coup toutes les propositions sûres (voir plus bas). |
 | <kbd>Maj</kbd>+<kbd>Z</kbd> | Reprendre ce lot. |
-| <kbd>E</kbd> / <kbd>C</kbd> | Taper dans le champ nom / catégorie ; <kbd>Échap</kbd> en sort. |
+| <kbd>F</kbd> / <kbd>E</kbd> | Taper le dossier / changer le nom de l'événement ; <kbd>Échap</kbd> abandonne ce qui est tapé et non enregistré. |
 | <kbd>Maj</kbd>+<kbd>S</kbd> | Laisser tout l'événement où il est (« (rester où il est) »). |
 | <kbd>←</kbd> <kbd>→</kbd> | Passer d'une photo à l'autre. |
 | <kbd>Espace</kbd> | Sélectionner la photo (ou cliquer dessus). |

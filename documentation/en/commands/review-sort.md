@@ -56,10 +56,11 @@ event's (on the same disk, a mere rename, and [`undo`](undo.md) puts everything 
 to show up elsewhere too ("every Christmas", "Grandma"), without a copy: the
 [albums](../sort/12-albums.md).
 
-- **Name or category?** The **name** is enough: it becomes the folder (`2016/Kermesse`). The
-  **category** gathers several events in one folder: the fair and a birthday both in `Parties` go
-  to `2016/Parties`. For both levels (`2016/Parties/Kermesse`), choose the layout
-  `{year}/{category}/{event}` ([sorting, step 4](../sort/04-classify.md#your-own-structure)).
+- **One field, the folder.** Type the folder under the year: `Kermesse` gives `2016/Kermesse`,
+  `Parties/Kermesse` gives `2016/Parties/Kermesse` (the fair and a birthday both under
+  `Parties`). The line under the field says, as you type, where the files go: "→ 212 files go to
+  C:\Photos\2016\Parties\Kermesse". The event's name (for the albums) is the last folder; change
+  it under *Name of the event* if needed.
 - **Not every event needs a name.** An event whose photos already sit in a named folder
   (`Seaside holidays`) has a proposal marked **sure**. Still look where it leads before accepting
   it: only its loose files (a phone's `DCIM`, files to check or to sort) go to the proposed folder.
@@ -97,16 +98,16 @@ at*), then prints the address of the page: Ctrl+click it. Ctrl+C, or closing its
 ## The main keys
 
 The page: the event shown on the left (its dates, its folders, the proposal, what the workbook
-says), its name and category in the bar on top, its photos under them. The keys stay at the
+says), its folder and where its files go in the bar on top, its photos under them. The keys stay at the
 bottom left, under ⌨ **Keyboard** (the first ones always shown, the others under *More keys*),
 with the line saying where each choice is saved.
 
 | Key | What it does |
 |---|---|
-| `Enter` | Accept the name and category, then go to the next event still to decide. |
+| `Enter` | Save the folder, then go to the next event still to decide. |
 | `N` / `P` | Next or previous event, without deciding. `U`: next event still to decide. |
 | `V` | Accept every sure proposal at once; `Shift`+`Z` takes that batch back. |
-| `E` / `C` | Type in the name / the category field; `Esc` leaves it. |
+| `F` / `E` | Type the folder / change the event's name; `Esc` drops what is typed and not saved. |
 | `Shift`+`S` | Leave the whole event where it is. |
 | `Space`, `O`, `S` | Select photos, send them to another category, or leave them where they are. |
 | `Delete` | Take back the choice made here. |

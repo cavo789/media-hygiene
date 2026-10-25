@@ -7,18 +7,19 @@ edit of the same event or file. Reopened on the same plan, the review resumes.
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.page_decisions import (
     EventDecision,
     PageDecisions,
+    read_page_decisions,
     write_page_decisions,
 )
 from media_hygiene.classify.page_values import EventValue
 from media_hygiene.classify.worklist import work_list
 from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
-from media_hygiene.review.sort_files import file_decisions, movable_rows
 from media_hygiene.review.sort_state import EventView, SortState, categories_used
 from media_hygiene.review.sort_views import CardMaker
 
@@ -26,7 +27,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.classify.worklist import WorkItem
-    from media_hygiene.review.sort_files import SendFiles, SortSource
+    from media_hygiene.review.sort_files import SortSource
 
 
 class SortSession:
@@ -121,38 +122,9 @@ class SortSession:
         if value.empty:
             raise DecisionsError(_("Type a name or a category, or leave it in place."))
         base = EventValue.of(self._source.workbook.events.get(event_id))
-        self._events[event_id] = EventDecision(event=event_id, value=value, base=base)
-        return self._saved(event_id)
-
-    def send(self, request: SendFiles) -> EventView:
-        """Send photos of an event to another category, or leave them; then save.
-
-        Args:
-            request: The photos and where they go.
-
-        Returns:
-            The event, as chosen.
-        """
-        rows = movable_rows(self._item(request.event), request)
-        for decision in file_decisions(self._source, rows, request):
-            self._files[decision.row] = decision
-        return self._saved(request.event)
-
-    def forget(self, event_id: str, rows: tuple[str, ...]) -> EventView:
-        """Forget the page's choice of photos, or of the event: the workbook decides.
-
-        Args:
-            event_id: The event.
-            rows: Its photos to forget; none: the event's own choice.
-
-        Returns:
-            The event, as chosen now.
-        """
-        members = {row.id for row in self._item(event_id).rows}
-        for row_id in members.intersection(rows):
-            self._files.pop(row_id, None)
-        if not rows:
-            self._events.pop(event_id, None)
+        self._events[event_id] = EventDecision(
+            event=event_id, value=value, base=base, saved=now()
+        )
         return self._saved(event_id)
 
     def decisions(self) -> PageDecisions:
@@ -168,15 +140,19 @@ class SortSession:
         )
 
     def _saved(self, event_id: str) -> EventView:
-        """Save the decisions file, then describe the event.
+        """Save the decisions file, read it back, then describe the event from it.
 
         Args:
             event_id: The event just chosen.
 
         Returns:
-            Its card and photos.
+            Its card and photos, as the disk holds them.
         """
-        write_page_decisions(self._source.target, self.decisions())
+        source = self._source
+        write_page_decisions(source.target, self.decisions())
+        disk = read_page_decisions(source.target, source.plan.plan_id)
+        self._events = {item.event: item for item in disk.events}
+        self._files = {item.row: item for item in disk.files}
         return self.event(event_id)
 
     def _item(self, event_id: str) -> WorkItem:
@@ -195,3 +171,12 @@ class SortSession:
         if item is None:
             raise DecisionsError(_("There is no such event."))
         return item
+
+
+def now() -> str:
+    """The time of a save, as the decisions file holds it.
+
+    Returns:
+        ISO 8601, UTC, to the second.
+    """
+    return datetime.now(tz=UTC).isoformat(timespec="seconds")

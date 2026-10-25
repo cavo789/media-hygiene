@@ -1591,9 +1591,6 @@ msgstr ""
 msgid "Choosing categories"
 msgstr "Choix des catégories"
 
-msgid "Chosen here:"
-msgstr "Choisi ici :"
-
 #, python-brace-format
 msgid "Chosen here: {chosen} · still to decide: {open}"
 msgstr "Choisis ici : {chosen} · encore à décider : {open}"
@@ -2472,20 +2469,19 @@ msgstr ""
 "événement rejoignent son seul dossier nommé), same_moment (les photos du "
 "dossier d'une personne, ou isolées, rejoignent votre dossier nommé de la "
 "même séance, sinon le parent commun de vos dossiers de l'événement), "
-"calendar (des jours de "
-"chaque année, dates = \"12-24..12-26\" ; \"12-31..01-01\" passe le Nouvel"
-" An), date_range (des jours qui n'arrivent qu'une fois, dates = "
-"\"2023-07-01..2023-07-15\"), kind (kind = \"screenshot\", \"received\" ou"
-" \"download\"), path (une expression régulière cherchée dans le chemin "
-"sur votre ordinateur, pattern = \"(?i)kermesse\"), camera (une expression"
-" régulière cherchée dans la marque et le modèle, pattern = \"(?i)dji\"), "
-"subject (ce que voit un modèle de vision local, categories = [...], voir "
-"[classify.ai]), place (la position GPS est dans un de vos lieux, voir "
-"[[classify.places]]), trip (un événement loin de chez vous, nommé d'après"
-" son pays et sa ville sans aller sur Internet), folder_town (un dossier "
-"qui porte le nom d'une ville, 2017/Durbuy : ses photos vont dans "
-"pays/ville, à vérifier), other_category (les fichiers qu'aucune règle au-"
-"dessus n'a reconnus)."
+"calendar (des jours de chaque année, dates = \"12-24..12-26\" ; "
+"\"12-31..01-01\" passe le Nouvel An), date_range (des jours qui "
+"n'arrivent qu'une fois, dates = \"2023-07-01..2023-07-15\"), kind (kind ="
+" \"screenshot\", \"received\" ou \"download\"), path (une expression "
+"régulière cherchée dans le chemin sur votre ordinateur, pattern = "
+"\"(?i)kermesse\"), camera (une expression régulière cherchée dans la "
+"marque et le modèle, pattern = \"(?i)dji\"), subject (ce que voit un "
+"modèle de vision local, categories = [...], voir [classify.ai]), place "
+"(la position GPS est dans un de vos lieux, voir [[classify.places]]), "
+"trip (un événement loin de chez vous, nommé d'après son pays et sa ville "
+"sans aller sur Internet), folder_town (un dossier qui porte le nom d'une "
+"ville, 2017/Durbuy : ses photos vont dans pays/ville, à vérifier), "
+"other_category (les fichiers qu'aucune règle au-dessus n'a reconnus)."
 
 msgid "Each run is written in the journal: what it did, and how to undo it."
 msgstr ""
@@ -5865,8 +5861,8 @@ msgid ""
 "person's. Case and accents do not matter. Their photos join your own "
 "folder of the same moment (the rule same_moment)."
 msgstr ""
-"Les personnes dont des dossiers contiennent les photos (\"Photos Chloé\", "
-"\"iPhone Manon\"), en plus de celles nommées sur la page des personnes, "
+"Les personnes dont des dossiers contiennent les photos (\"Photos Chloé\","
+" \"iPhone Manon\"), en plus de celles nommées sur la page des personnes, "
 "par ex. [\"Chloé\", \"Manon\"] : un dossier qui contient un de ces noms, "
 "comme un mot, est celui de cette personne. Majuscules et accents ne "
 "comptent pas. Ses photos rejoignent votre propre dossier du même moment "
@@ -6129,9 +6125,6 @@ msgstr "Arborescence proposée"
 #, python-brace-format
 msgid "Proposed {when}"
 msgstr "Proposé {when}"
-
-msgid "Proposed:"
-msgstr "Proposé :"
 
 msgid "Proving identity (full SHA-256)"
 msgstr "Preuve d'identité (SHA-256 complet)"
@@ -7430,6 +7423,9 @@ msgstr "Lancé le"
 msgid "State"
 msgstr "État"
 
+msgid "Status:"
+msgstr "État :"
+
 msgid "Staying where they are"
 msgstr "Restent où ils sont"
 
@@ -8098,6 +8094,13 @@ msgstr "Dossier à retirer"
 
 msgid "The folder to show, as the Explorer shows it"
 msgstr "Le dossier à montrer, tel que l'Explorateur le montre"
+
+msgid ""
+"The folder typed for this event is not saved. Save it before leaving? "
+"(Cancel: stay on this event)"
+msgstr ""
+"Le dossier tapé pour cet événement n'est pas enregistré. L'enregistrer "
+"avant de partir ? (Annuler : rester sur cet événement)"
 
 #, python-brace-format
 msgid "The folder {path} is not mounted."
@@ -9673,9 +9676,6 @@ msgstr ""
 "Classeur dont les modifications sont reprises ; celui du dernier classify"
 " par défaut."
 
-msgid "Workbook:"
-msgstr "Classeur :"
-
 #, python-brace-format
 msgid "Workbook: {path}"
 msgstr "Classeur : {path}"
@@ -9856,9 +9856,6 @@ msgstr ""
 
 msgid "Your folders, the update, Windows and the advanced settings."
 msgstr "Vos dossiers, la mise à jour, Windows et les réglages avancés."
-
-msgid "Your folders:"
-msgstr "Vos dossiers :"
 
 #, python-brace-format
 msgid ""
@@ -10077,9 +10074,6 @@ msgstr "environ {time} restantes à votre rythme"
 msgid "accept every sure proposal at once"
 msgstr "accepter d’un coup toutes les propositions sûres"
 
-msgid "accept the name and category, then the next event to decide"
-msgstr "accepter le nom et la catégorie, puis l'événement suivant à décider"
-
 msgid "accept the proposal, next"
 msgstr "accepter la proposition, puis suivante"
 
@@ -10249,6 +10243,12 @@ msgstr ""
 "catégorie {name} : une catégorie liste des extensions, pas des catégories"
 " ; pour l'extension, écrivez .{value}"
 
+msgid "change the name of the event (by default, the last folder)"
+msgstr "changer le nom de l'événement (par défaut, le dernier dossier)"
+
+msgid "changed, not saved yet: Enter saves it, Esc drops it"
+msgstr "modifié, pas encore enregistré : Entrée l'enregistre, Échap l'abandonne"
+
 msgid "checks"
 msgstr "vérifications"
 
@@ -10372,6 +10372,10 @@ msgstr "date"
 
 msgid "date on the disk"
 msgstr "date sur le disque"
+
+#, python-brace-format
+msgid "decided in the workbook: {value}"
+msgstr "décidé dans le classeur : {value}"
 
 msgid "decisions.json cannot be read: 'review' will say why."
 msgstr "decisions.json est illisible : 'review' dira pourquoi."
@@ -10761,8 +10765,8 @@ msgstr "launcher script mh ps1 réécrire"
 msgid "launcher: write your folders once"
 msgstr "launcher : écrire vos dossiers une fois"
 
-msgid "leave a field"
-msgstr "quitter un champ"
+msgid "leave a field; drop the folder typed and not saved"
+msgstr "quitter un champ ; abandonner le dossier tapé et non enregistré"
 
 msgid "leave the group alone, then next"
 msgstr "laisser le groupe tel quel, puis suivant"
@@ -11382,6 +11386,10 @@ msgstr "proposée à l'écart : netteté à {share} %% de la meilleure"
 msgid "proposed aside: underexposed next to the others"
 msgstr "proposée à l'écart : sous-exposée à côté des autres"
 
+#, python-brace-format
+msgid "proposed by classify ({why}), not validated yet"
+msgstr "proposé par classify ({why}), pas encore validé"
+
 msgid "protected folder"
 msgstr "dossier protégé"
 
@@ -11472,6 +11480,9 @@ msgstr "lancez 'clean' pour mettre {size} de copies de côté."
 
 msgid "same streams"
 msgstr "mêmes flux"
+
+msgid "save the folder, then the next event to decide"
+msgstr "enregistrer le dossier, puis l'événement suivant à décider"
 
 msgid "screenshot or document"
 msgstr "capture d'écran ou document"
@@ -12016,8 +12027,8 @@ msgstr "tapez un nom, p. ex. Crète 2023"
 msgid "type a new search"
 msgstr "taper une nouvelle recherche"
 
-msgid "type the name, the category"
-msgstr "taper le nom, la catégorie"
+msgid "type the folder of the event"
+msgstr "taper le dossier de l'événement"
 
 msgid "unanswered"
 msgstr "sans réponse"
@@ -12058,6 +12069,13 @@ msgstr "valider"
 
 msgid "validate every obvious series at once"
 msgstr "valider d'un coup toutes les séries évidentes"
+
+msgid "validated here"
+msgstr "validé ici"
+
+#, python-brace-format
+msgid "validated here at {time}"
+msgstr "validé ici à {time}"
 
 msgid "verified"
 msgstr "vérifié"
@@ -13816,6 +13834,10 @@ msgstr[0] "{n} télé"
 msgstr[1] "{n} télés"
 
 #, python-brace-format
+msgid "{n} already there"
+msgstr "{n} déjà en place"
+
+#, python-brace-format
 msgid "{n} choice of the batch taken back"
 msgid_plural "{n} choices of the batch taken back"
 msgstr[0] "{n} choix du lot repris"
@@ -13850,6 +13872,12 @@ msgid "{n} file found."
 msgid_plural "{n} files found."
 msgstr[0] "{n} fichier trouvé."
 msgstr[1] "{n} fichiers trouvés."
+
+#, python-brace-format
+msgid "{n} file goes to"
+msgid_plural "{n} files go to"
+msgstr[0] "{n} fichier va dans"
+msgstr[1] "{n} fichiers vont dans"
 
 #, python-brace-format
 msgid "{n} file keeps its own folder"
@@ -13900,6 +13928,12 @@ msgstr[0] "{n} fichier choisi"
 msgstr[1] "{n} fichiers choisis"
 
 #, python-brace-format
+msgid "{n} file sent elsewhere, one by one"
+msgid_plural "{n} files sent elsewhere, one by one"
+msgstr[0] "{n} fichier envoyé ailleurs, un par un"
+msgstr[1] "{n} fichiers envoyés ailleurs, un par un"
+
+#, python-brace-format
 msgid ""
 "{n} file set aside before was left unticked: tick it in the large view or"
 " with its own ☑, after reading its warning."
@@ -13913,6 +13947,12 @@ msgstr[1] ""
 "{n} fichiers mis de côté auparavant sont restés décochés : cochez-les un "
 "par un dans la grande vue ou avec leur propre ☑, après avoir lu leur "
 "avertissement."
+
+#, python-brace-format
+msgid "{n} file stays where it is"
+msgid_plural "{n} files stay where they are"
+msgstr[0] "{n} fichier reste où il est"
+msgstr[1] "{n} fichiers restent où ils sont"
 
 #, python-brace-format
 msgid "{n} file, {size}, {share} of your library"

@@ -16,6 +16,8 @@ if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
 
     from media_hygiene.review.sort_batch import BatchAnswer, SortBatchSession
+    from media_hygiene.review.sort_choosing import SortChoosing
+    from media_hygiene.review.sort_destination import Destination
     from media_hygiene.review.sort_session import SortSession
     from media_hygiene.review.sort_state import EventView
 
@@ -23,6 +25,7 @@ EVENT_PATH: Final = "/api/event"
 FILES_PATH: Final = "/api/files"
 FORGET_PATH: Final = "/api/forget"
 SURE_PATH: Final = "/api/sure"
+DESTINATION_PATH: Final = "/api/destination"
 
 
 class _Frozen(BaseModel):
@@ -47,6 +50,14 @@ class _FilesIn(_Frozen):
     rows: tuple[str, ...]
     category: str = ""
     stay: bool = False
+
+
+class _DestinationIn(_Frozen):
+    """`POST /api/destination`: the folder and the name typed for an event."""
+
+    event: str
+    folder: str = ""
+    name: str = ""
 
 
 class _ForgetIn(_Frozen):
@@ -75,7 +86,7 @@ def _event(session: SortSession, body: bytes) -> EventView:
     return session.choose_event(asked.event, value)
 
 
-def _files(session: SortSession, body: bytes) -> EventView:
+def _files(session: SortChoosing, body: bytes) -> EventView:
     """Send photos of an event to another category, or leave them in place.
 
     Args:
@@ -90,7 +101,7 @@ def _files(session: SortSession, body: bytes) -> EventView:
     return session.send(SendFiles(asked.event, asked.rows, category, asked.stay))
 
 
-def _forget(session: SortSession, body: bytes) -> EventView:
+def _forget(session: SortChoosing, body: bytes) -> EventView:
     """Take back the page's choice of photos, or of the event.
 
     Args:
@@ -102,6 +113,23 @@ def _forget(session: SortSession, body: bytes) -> EventView:
     """
     asked = _ForgetIn.model_validate_json(body)
     return session.forget(asked.event, asked.rows)
+
+
+def _destination(session: SortBatchSession, body: bytes) -> Destination:
+    """Tell where an event's files go with what is typed; nothing is saved.
+
+    Args:
+        session: The review.
+        body: The JSON body.
+
+    Returns:
+        Where its files go.
+    """
+    asked = _DestinationIn.model_validate_json(body)
+    value = EventValue(
+        name=folder_of(asked.name.strip()), category=folder_of(asked.folder.strip())
+    )
+    return session.destination(asked.event, value)
 
 
 def _sure(session: SortBatchSession, body: bytes) -> BatchAnswer:
@@ -117,7 +145,7 @@ def _sure(session: SortBatchSession, body: bytes) -> BatchAnswer:
     return session.batch(SureBatch.model_validate_json(body))
 
 
-type Choice = Callable[[SortBatchSession, bytes], EventView | BatchAnswer]
+type Choice = Callable[[SortBatchSession, bytes], EventView | BatchAnswer | Destination]
 
 CHOICES: Final[Mapping[str, Choice]] = MappingProxyType(
     {
@@ -125,5 +153,6 @@ CHOICES: Final[Mapping[str, Choice]] = MappingProxyType(
         FILES_PATH: _files,
         FORGET_PATH: _forget,
         SURE_PATH: _sure,
+        DESTINATION_PATH: _destination,
     }
 )

@@ -56,10 +56,11 @@ un seul dossier**, celui de son événement (sur le même disque, un simple reno
 [`undo`](undo.md) remet tout en place). Pour qu'une photo apparaisse aussi ailleurs (« tous les
 Noëls », « Grand-mère »), sans copie : les [albums](../sort/12-albums.md).
 
-- **Nom ou catégorie ?** Le **nom** suffit : il devient le dossier (`2016/Kermesse`). La
-  **catégorie** réunit plusieurs événements dans un même dossier : la kermesse et un anniversaire
-  en `Fêtes` vont tous deux dans `2016/Fêtes`. Pour avoir les deux niveaux (`2016/Fêtes/Kermesse`),
-  choisissez la disposition `{year}/{category}/{event}` ([trier, étape 4](../sort/04-classify.md#votre-propre-structure)).
+- **Un seul champ, le dossier.** Tapez le dossier sous l'année : `Kermesse` donne
+  `2016/Kermesse`, `Fêtes/Kermesse` donne `2016/Fêtes/Kermesse` (la kermesse et un anniversaire
+  tous deux sous `Fêtes`). La ligne sous le champ dit, pendant que vous tapez, où vont les
+  fichiers : « → 212 fichiers vont dans C:\Photos\2016\Fêtes\Kermesse ». Le nom de l'événement
+  (pour les albums) est le dernier dossier ; changez-le sous *Nom de l'événement* au besoin.
 - **Tous ne demandent pas un nom.** Un événement dont les photos sont déjà dans un dossier nommé
   (`Vacances à la mer`) a une proposition marquée **sûre**. Regardez quand même où elle mène
   avant de la valider : seuls ses fichiers épars (le `DCIM` d'un téléphone, les fichiers à vérifier
@@ -99,16 +100,17 @@ fois suivante, il reprend.
 ## Les touches principales
 
 La page : l'événement affiché à gauche (ses dates, ses dossiers, la proposition, ce que dit le
-classeur), son nom et sa catégorie dans la barre du haut, ses photos en dessous. Les touches
+classeur), son dossier et l'endroit où vont ses fichiers dans la barre du haut, ses photos en
+dessous. Les touches
 restent en bas à gauche, sous ⌨ **Clavier** (les premières toujours visibles, les autres sous
 *Plus de touches*), avec la ligne qui dit où chaque choix est enregistré.
 
 | Touche | Rôle |
 |---|---|
-| `Entrée` | Accepter le nom et la catégorie, puis passer à l'événement suivant encore à décider. |
+| `Entrée` | Enregistrer le dossier, puis passer à l'événement suivant encore à décider. |
 | `N` / `P` | Événement suivant ou précédent, sans décider. `U` : événement suivant encore à décider. |
 | `V` | Accepter d'un coup toutes les propositions sûres ; `Maj`+`Z` reprend ce lot. |
-| `E` / `C` | Écrire dans le champ du nom / de la catégorie ; `Échap` en sort. |
+| `F` / `E` | Taper le dossier / changer le nom de l'événement ; `Échap` abandonne ce qui est tapé et non enregistré. |
 | `Maj`+`S` | Laisser tout l'événement où il est. |
 | `Espace`, `O`, `S` | Sélectionner des photos, les envoyer vers une autre catégorie, ou les laisser où elles sont. |
 | `Suppr` | Reprendre le choix fait ici. |

@@ -65,27 +65,33 @@ first. The page opens on the first one still to decide (or where you stopped). F
 - **at the top**: its name (or its dates), its number of files and how many are still to check or
   to sort, and the share of the work naming the events up to this one covers;
 - **From**: the folders its photos come from;
-- **Proposed**: the folder `classify` proposes, its band and why;
-- **Workbook**: what the Events sheet says of it, if you typed something there;
-- **Chosen here**: your choice in the page;
+- **Status**: one line: "proposed by classify (its band, why), not validated yet", "changed, not
+  saved yet: Enter saves it, Esc drops it", "validated here at 14:32" (the time
+  `sort-decisions.json` holds, read back from the disk), or what the workbook decided (in red when
+  it says something else than the page);
 - **the photos**, in date order, each with its date. A photo whose proposed folder differs from
   the event's shows it (→ …); one you sent elsewhere is framed in green; 🔒 marks a file left as
   it is (protected or `leave` folder), which no choice moves.
 
-The **Name** field is the event's name, as in the Events sheet: it becomes its folder unless you
-give a **Category**. The category field is filled with the proposal and completes from the
-categories already used.
+The **Folder** field holds the folder of the event under its year (`2011/`, shown before the
+field): `Parties/Communions/Manon's communion` gives `2011/Parties/Communions/Manon's communion`.
+It is filled with the proposal and completes from the folders already used. The line under it
+says, as you type, where the files go, computed as `sort` will: "→ 212 files go to
+C:\Photos\2011\Parties\Communions\Manon's communion · 40 files keep their own folder (Budva…)".
+The event's **name** (the albums use it) is the last folder; change it under *Name of the event*
+(<kbd>E</kbd>). A folder typed and not saved is never lost silently: moving to another event asks
+whether to save it, closing the tab warns.
 
 ## The keys
 
 | Key | What it does |
 |---|---|
-| <kbd>Enter</kbd> | Accept the name and category, then go to the next event still to decide. |
+| <kbd>Enter</kbd> | Save the folder, then go to the next event still to decide. |
 | <kbd>N</kbd> / <kbd>P</kbd> (or Page Down / Page Up) | Next or previous event, without deciding. |
 | <kbd>U</kbd> | Next event still to decide. |
 | <kbd>V</kbd> | Accept every sure proposal at once (see below). |
 | <kbd>Shift</kbd>+<kbd>Z</kbd> | Take that batch back. |
-| <kbd>E</kbd> / <kbd>C</kbd> | Type in the name / the category field; <kbd>Esc</kbd> leaves it. |
+| <kbd>F</kbd> / <kbd>E</kbd> | Type the folder / change the event's name; <kbd>Esc</kbd> drops what is typed and not saved. |
 | <kbd>Shift</kbd>+<kbd>S</kbd> | Leave the whole event where it is ("(stay where it is)"). |
 | <kbd>←</kbd> <kbd>→</kbd> | Move between the photos. |
 | <kbd>Space</kbd> | Select the photo (or click it). |

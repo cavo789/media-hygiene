@@ -25,6 +25,7 @@ from media_hygiene.review.page_header import page_header
 from media_hygiene.review.sort_app import PAGE_PATH, STATE_PATH, SortReviewApp
 from media_hygiene.review.sort_batch import SortBatchSession
 from media_hygiene.review.sort_choices import (
+    DESTINATION_PATH,
     EVENT_PATH,
     FILES_PATH,
     FORGET_PATH,
@@ -110,6 +111,7 @@ def serve_sort_review(runtime: Runtime, session: SortBatchSession, port: int) ->
             "files": FILES_PATH,
             "forget": FORGET_PATH,
             "sure": SURE_PATH,
+            "destination": DESTINATION_PATH,
         },
         workbook=workbook,
         decisions=decisions,

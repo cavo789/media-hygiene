@@ -8,9 +8,14 @@
   "files": _("{files}, {undecided} to check or to sort"),
   "share": _("naming the events up to this one covers {share}%% of the work"),
   "from": _("From:"),
-  "proposal": _("Proposed:"),
-  "workbook": _("Workbook:"),
-  "page": _("Chosen here:"),
+  "state": _("Status:"),
+  "proposed": _("proposed by classify ({why}), not validated yet"),
+  "dirty": _("changed, not saved yet: Enter saves it, Esc drops it"),
+  "validated": _("validated here at {time}"),
+  "validatedEarlier": _("validated here"),
+  "inWorkbook": _("decided in the workbook: {value}"),
+  "leave": _("The folder typed for this event is not saved. Save it before leaving? (Cancel: stay on this event)"),
+  "already": _("{n} already there"),
   "nothing": _("nothing"),
   "stay": _("(stay where it is)"),
   "conflict": _("The workbook was edited otherwise since this choice: choose again here, or press Delete to let the workbook decide."),
@@ -28,7 +33,6 @@
   "sure": "✔ " ~ _("Accept {sure} ({files})"),
   "sureNone": _("No sure proposal left to accept."),
   "sureAsk": _("Events to decide with a sure proposal: {count}. Each one gets its proposed category, as Enter would give it, saved in one write: {moves} move, {kept} keep the folder you named. Events to decide left to look at: {left}. Accept them? The ↶ button takes the whole batch back."),
-  "kept": _("Your folders:"),
   "ownFolder": _("its own folder"),
   "sureDone": _("{done}, read back from the disk at {time}: the ↶ button takes the whole batch back."),
   "sureUndo": "↶ " ~ _("Take the batch back ({events})"),
@@ -36,6 +40,9 @@
   "nothingToUndo": _("Nothing to undo."),
   "nFiles": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
   "nEvents": [ngettext("{n} event", "{n} events", 1), ngettext("{n} event", "{n} events", 2)],
+  "nGo": [ngettext("{n} file goes to", "{n} files go to", 1), ngettext("{n} file goes to", "{n} files go to", 2)],
+  "nStay": [ngettext("{n} file stays where it is", "{n} files stay where they are", 1), ngettext("{n} file stays where it is", "{n} files stay where they are", 2)],
+  "nElsewhere": [ngettext("{n} file sent elsewhere, one by one", "{n} files sent elsewhere, one by one", 1), ngettext("{n} file sent elsewhere, one by one", "{n} files sent elsewhere, one by one", 2)],
   "nKept": [ngettext("{n} file keeps its own folder", "{n} files keep their own folder", 1), ngettext("{n} file keeps its own folder", "{n} files keep their own folder", 2)],
   "nSure": [ngettext("{n} sure proposal", "{n} sure proposals", 1), ngettext("{n} sure proposal", "{n} sure proposals", 2)],
   "nSureDone": [ngettext("{n} sure proposal accepted", "{n} sure proposals accepted", 1), ngettext("{n} sure proposal accepted", "{n} sure proposals accepted", 2)],
@@ -75,12 +82,19 @@
            border: 1px solid var(--line); border-radius: 6px; cursor: pointer; }
   button:disabled { color: var(--muted); cursor: default; } button[hidden] { display: none; }
   #sure:not(:disabled) { border-color: var(--ok); color: var(--ok); font-weight: 600; }
-  /* The event in the left column; its name and category in the bar, on a line of their own,
+  /* The event in the left column; its folder and destination in the bar, on lines of their own,
      the same height whatever is chosen; its photos under them. */
   #bar > .break { flex-basis: 100%; height: 0; }
   #bar > form { margin: 0; }
   #bar form label { flex-direction: row; align-items: center; gap: 6px; }
   #bar form input { min-width: 10rem; }
+  #bar label.folder { flex: 1 1 32rem; }
+  #bar .path { display: flex; flex: 1; align-items: center; gap: 2px; }
+  #bar .path input { flex: 1; min-width: 16rem; }
+  #naming summary { cursor: pointer; color: var(--muted); font-size: .85rem; }
+  #destination { flex-basis: 100%; overflow-wrap: anywhere; }
+  #destination.error { color: var(--bad); }
+  .dirty { color: var(--warn, var(--bad)); font-weight: 600; }
   .batch input[type=checkbox] { min-width: 0; }
 {% endblock %}
 {% block side %}
@@ -92,10 +106,11 @@
   </section>
 {% endblock %}
 {% block keys %}
-    <dt><kbd>Enter</kbd></dt><dd>{{ _("accept the name and category, then the next event to decide") }}</dd>
+    <dt><kbd>Enter</kbd></dt><dd>{{ _("save the folder, then the next event to decide") }}</dd>
     <dt><kbd>N</kbd> <kbd>P</kbd></dt><dd>{{ _("next or previous event") }}</dd>
     <dt><kbd>U</kbd></dt><dd>{{ _("next event to decide") }}</dd>
-    <dt><kbd>E</kbd> <kbd>C</kbd></dt><dd>{{ _("type the name, the category") }}</dd>
+    <dt><kbd>F</kbd></dt><dd>{{ _("type the folder of the event") }}</dd>
+    <dt><kbd>E</kbd></dt><dd>{{ _("change the name of the event (by default, the last folder)") }}</dd>
     <dt><kbd>␣</kbd></dt><dd>{{ _("select a photo") }}</dd>
     <dt><kbd>O</kbd></dt><dd>{{ _("send the selected photos to another category") }}</dd>
 {% endblock %}
@@ -107,7 +122,7 @@
     <dt><kbd>S</kbd></dt><dd>{{ _("leave the selected photos where they are") }}</dd>
     <dt><kbd>Delete</kbd></dt><dd>{{ _("take back the choice made here (of the selected photos, else of the event)") }}</dd>
     <dt><kbd>Z</kbd></dt><dd>{{ _("enlarge a photo") }}</dd>
-    <dt><kbd>Esc</kbd></dt><dd>{{ _("leave a field") }}</dd>
+    <dt><kbd>Esc</kbd></dt><dd>{{ _("leave a field; drop the folder typed and not saved") }}</dd>
 {% endblock %}
 {% block bar %}
   <strong id="position"></strong>
@@ -120,9 +135,10 @@
   </span>
   <span class="break"></span>
   <form id="choice" autocomplete="off">
-    <label>{{ _("Name of the event") }} <kbd>E</kbd><input id="name" name="name"></label>
-    <label>{{ _("Category") }} <kbd>C</kbd><input id="category" name="category" list="categories"></label>
+    <label class="folder">{{ _("Folder") }} <kbd>F</kbd><span class="path"><span id="prefix" class="muted"></span><input id="folder" name="folder" list="categories"></span></label>
+    <details id="naming"><summary>{{ _("Name of the event") }} <kbd>E</kbd></summary><input id="name" name="name"></details>
   </form>
+  <span id="destination" class="muted" role="status" aria-live="polite"></span>
   <form id="send" autocomplete="off" hidden>
     <label><span id="send-label"></span><input id="send-category" list="categories"></label>
   </form>
@@ -172,32 +188,20 @@
   };
 
   const fact = (term, text) => [line("dt", term), line("dd", text || T.nothing)];
-  // The files an event choice leaves in the folders the user named (0385): "3 files keep
-  // their own folder (Budva, Cetinje…)".
-  const keptText = (card) => {
-    const names = card.kept_folders.slice(0, 3).join(", ") + (card.kept_folders.length > 3 ? "…" : "");
-    return counted(T.nKept, card.kept) + " (" + names + ")";
+  // "3 files keep their own folder (Budva, Cetinje…)" (0385).
+  const keptText = (count, folders) => {
+    const names = folders.slice(0, 3).join(", ") + (folders.length > 3 ? "…" : "");
+    return counted(T.nKept, count) + " (" + names + ")";
   };
 
   const showEvent = (card) => {
     byId("position").textContent = fill(T.position, { number: current + 1, total: events.length });
     byId("title").textContent = card.title;
     byId("summary").textContent = [card.span, fill(T.files, { files: counted(T.nFiles, card.files), undecided: card.undecided }), fill(T.share, { share: card.share })].join(" · ");
-    const sure = card.sure && isOpen(card) ? T.sureMark : "";
-    const proposal = [card.folder || T.stay, card.band, card.why, sure].filter(Boolean).join(" · ");
-    byId("facts").replaceChildren(
-      ...fact(T.from, card.folders.join(" · ")),
-      ...fact(T.proposal, proposal),
-      ...fact(T.workbook, card.workbook.text),
-      ...fact(T.page, card.page ? card.page.text : ""),
-      ...(card.kept ? fact(T.kept, keptText(card)) : []),
-    );
+    byId("facts").replaceChildren(...fact(T.from, card.folders.join(" · ")), ...fact(T.state, ""));
     byId("conflict").hidden = !card.conflict;
     byId("conflict").textContent = T.conflict;
-    const chosen = card.page || (card.workbook.text ? card.workbook : null);
-    byId("name").value = chosen ? chosen.name : "";
-    byId("name").placeholder = card.title;
-    byId("category").value = chosen ? (chosen.stay ? "" : chosen.category) : card.category;
+    fillChoice(card);
   };
 
   const figure = (photo, rank) => {
@@ -256,6 +260,7 @@
   };
 
   const send = async (path, body, then) => {
+    const index = current;
     setStatus(T.saving);
     let response;
     try {
@@ -263,7 +268,8 @@
     } catch (error) { setStatus(T.offline, "error"); return; }
     const answer = await response.json().catch(() => ({}));
     if (!response.ok) { setStatus(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
-    events[current] = answer.card;
+    events[index] = answer.card;
+    if (index !== current) return;
     photos = answer.photos;
     selected = new Set();
     setStatus(T.saved, "saved");
@@ -271,8 +277,10 @@
   };
 
 {% include "sort_review_sure.js.j2" %}
+{% include "sort_review_choice.js.j2" %}
 
   const go = (step) => {
+    if (!mayLeave(() => go(step))) return;
     let next = current + step;
     while (next >= 0 && next < events.length && !visible(events[next])) next += step;
     if (next < 0 || next >= events.length) { setStatus(next < 0 ? T.first : T.last); return; }
@@ -281,6 +289,7 @@
     window.scrollTo(0, 0);
   };
   const goOpen = () => {
+    if (!mayLeave(goOpen)) return;
     const next = events.findIndex((card, index) => index > current && isOpen(card) && visible(card));
     if (next < 0) { setStatus(T.noOpen); showEvent(events[current]); showTotals(); showPhotos(); return; }
     load(next);
@@ -289,7 +298,7 @@
 
   const id = () => events[current].id;
   const chosenRows = () => (selected.size ? [...selected] : photos[cursor] ? [photos[cursor].row] : []);
-  const accept = () => send(P.event, { event: id(), name: byId("name").value, category: byId("category").value }, goOpen);
+  const accept = () => { const body = choiceBody(); markSaved(); send(P.event, body, goOpen); };
   const stayEvent = () => send(P.event, { event: id(), stay: true }, goOpen);
   const toggle = () => {
     const photo = photos[cursor];
@@ -325,6 +334,7 @@
     if (event.key === "Escape") {
       zoom.hidden = true;
       closeSend();
+      if (choiceDirty()) dropChoice();
       document.activeElement.blur();
       return;
     }
@@ -345,8 +355,8 @@
       showPhotos();
       zoomAhead();
     } else if (key === " ") toggle();
-    else if (key === "e" || key === "E") byId("name").focus();
-    else if (key === "c" || key === "C") byId("category").focus();
+    else if (key === "e" || key === "E") { byId("naming").open = true; byId("name").focus(); }
+    else if (key === "f" || key === "F" || key === "c" || key === "C") byId("folder").focus();
     else if (key === "Z" && event.shiftKey) undoSure();
     else if ((key === "z" || key === "Z") && photos[cursor]) {
       zoom.firstElementChild.src = photos[cursor].preview;

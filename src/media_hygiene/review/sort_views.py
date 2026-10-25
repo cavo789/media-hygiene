@@ -60,6 +60,7 @@ class EventCard(BaseModel):
     folders: tuple[str, ...]  # where its files come from, the fullest first
     category: str  # proposed
     folder: str  # proposed, relative to the target; empty: stays
+    prefix: str  # the part of the proposed folder before its category: `2011/`
     band: str
     why: str
     sure: bool  # one click may accept its proposal: `sort_sure`
@@ -68,6 +69,7 @@ class EventCard(BaseModel):
     kept_folders: tuple[str, ...]  # those folders, their last part
     workbook: Side
     page: Side | None
+    saved: str  # when the page's choice was saved, as read back: ISO 8601, UTC
     conflict: bool
 
 
@@ -139,6 +141,7 @@ class CardMaker:
             folders=item.folders[:_SHOWN_FOLDERS],
             category=head.category,
             folder=head.folder or "",
+            prefix=_prefix(head.folder or "", head.category),
             band=band_name(head.band),
             why=head.why,
             sure=sure_value(item) is not None,
@@ -147,6 +150,7 @@ class CardMaker:
             kept_folders=effect.folders,
             workbook=event_side(now),
             page=None if chosen is None else event_side(chosen.value),
+            saved="" if chosen is None else chosen.saved,
             conflict=chosen is not None
             and verdict(now, chosen.value, chosen.base) is Verdict.CONFLICT,
         )
@@ -178,3 +182,18 @@ class CardMaker:
             conflict=chosen is not None
             and verdict(now, chosen.value, chosen.base) is Verdict.CONFLICT,
         )
+
+
+def _prefix(folder: str, category: str) -> str:
+    """The part of a proposed folder the layout writes before its category.
+
+    Args:
+        folder: The proposed folder (`2011/Fêtes`).
+        category: Its category (`Fêtes`).
+
+    Returns:
+        `2011/`; empty when the folder does not end with the category.
+    """
+    if not category or not folder.endswith(category):
+        return ""
+    return folder.removesuffix(category)

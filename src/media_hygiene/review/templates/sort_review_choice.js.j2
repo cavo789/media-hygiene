@@ -1,0 +1,101 @@
+{# Included in the script of sort_review.html.j2: the Folder field of the event (0387),
+   the Destination line under it (computed by the server as `sort` will, while the user
+   types), the state line of the left column, and what is typed but not saved: Enter
+   saves it, Esc drops it, moving away asks. #}
+  let loaded = { folder: "", name: "" };  // what the fields held when the event was shown
+  let asking = 0;  // the last destination asked for: older answers are ignored
+
+  const lastFolder = (path) => path.split("/").filter(Boolean).pop() || "";
+  const choiceDirty = () => byId("folder").value !== loaded.folder || byId("name").value !== loaded.name;
+  const markSaved = () => { loaded = { folder: byId("folder").value, name: byId("name").value }; };
+
+  // The name is the last folder unless the user typed another one.
+  const choiceBody = () => {
+    const folder = byId("folder").value.trim();
+    return { event: id(), category: folder, name: byId("name").value.trim() || lastFolder(folder) };
+  };
+
+  const stateText = (card) => {
+    if (choiceDirty()) return [T.dirty, "dirty"];
+    if (card.conflict) return [fill(T.inWorkbook, { value: card.workbook.text }), "conflict"];
+    if (card.page) {
+      const time = card.saved ? new Date(card.saved).toLocaleTimeString() : "";
+      return [time ? fill(T.validated, { time: time }) : T.validatedEarlier, ""];
+    }
+    if (card.workbook.text) return [fill(T.inWorkbook, { value: card.workbook.text }), ""];
+    const why = [card.band, card.why, card.sure && isOpen(card) ? T.sureMark : ""].filter(Boolean).join(" · ");
+    return [fill(T.proposed, { why: why }), "muted"];
+  };
+  const showState = () => {
+    const card = events[current];
+    const term = byId("facts").lastElementChild;
+    if (!card || !term) return;
+    const [text, css] = stateText(card);
+    term.textContent = text;
+    term.className = css;
+  };
+
+  const showDestination = (answer) => {
+    const parts = [];
+    if (answer.going) parts.push("→ " + counted(T.nGo, answer.going) + " " + answer.target + (answer.already ? " (" + fill(T.already, { n: answer.already }) + ")" : ""));
+    if (answer.kept) parts.push(keptText(answer.kept, answer.kept_folders));
+    if (answer.elsewhere) parts.push(counted(T.nElsewhere, answer.elsewhere));
+    if (answer.stay) parts.push(counted(T.nStay, answer.stay));
+    byId("destination").textContent = parts.join(" · ");
+    byId("destination").className = "muted";
+  };
+  const askDestination = async () => {
+    const number = ++asking;
+    const body = choiceBody();
+    let response;
+    try {
+      response = await fetch(P.destination, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ event: body.event, folder: body.category, name: body.name }) });
+    } catch (error) { return; }
+    const answer = await response.json().catch(() => ({}));
+    if (number !== asking) return;
+    if (!response.ok) {
+      byId("destination").textContent = answer.error || fill(T.failed, { status: response.status });
+      byId("destination").className = "error";
+      return;
+    }
+    showDestination(answer);
+  };
+  let typingTimer = 0;
+  const typed = () => {
+    showState();
+    window.clearTimeout(typingTimer);
+    typingTimer = window.setTimeout(askDestination, 250);
+  };
+
+  const fillChoice = (card) => {
+    const chosen = card.page || (card.workbook.text ? card.workbook : null);
+    const folder = chosen ? (chosen.stay ? "" : chosen.category) : card.category;
+    byId("prefix").textContent = card.prefix;
+    byId("folder").value = folder;
+    // A name equal to the last folder is the default one: the field stays empty.
+    byId("name").value = chosen && chosen.name !== lastFolder(folder) ? chosen.name : "";
+    byId("naming").open = byId("name").value !== "";
+    markSaved();
+    byId("name").placeholder = lastFolder(folder) || card.title;
+    showState();
+    askDestination();
+  };
+  const dropChoice = () => { fillChoice(events[current]); };
+
+  // Typed and not saved: moving to another event asks first; OK saves, then moves.
+  const mayLeave = (then) => {
+    if (!events.length || !choiceDirty()) return true;
+    if (!window.confirm(T.leave)) return false;
+    const body = choiceBody();
+    markSaved();
+    send(P.event, body, then);
+    return false;
+  };
+
+  byId("folder").addEventListener("input", () => { byId("name").placeholder = lastFolder(byId("folder").value); typed(); });
+  byId("name").addEventListener("input", typed);
+  window.addEventListener("beforeunload", (event) => {
+    if (!choiceDirty()) return;
+    event.preventDefault();
+    event.returnValue = "";
+  });
