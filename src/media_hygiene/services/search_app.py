@@ -30,9 +30,16 @@ from media_hygiene.search.heaviest import FIRST_SHOWN, HEAVIEST_PATH
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH, NamesPlace, PeopleDesk
 from media_hygiene.search.people_why import PEOPLE_WHY_PATH
 from media_hygiene.search.place import SearchPlace
+from media_hygiene.search.rule_desk import (
+    PERIOD_RULES_PATH,
+    RULE_SAVE_PATH,
+    RULE_TRIAL_PATH,
+    RuleDesk,
+)
 from media_hygiene.services.albums import album_desk
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
 from media_hygiene.services.people_page import names_file
+from media_hygiene.services.rule_trial import try_rule, written_rules
 from media_hygiene.share.album_api import ALBUMS_PATH
 from media_hygiene.share.album_pickers import SearchPicker
 
@@ -86,6 +93,9 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "albums_path": ALBUMS_PATH,
         "people_reject_path": PEOPLE_REJECT_PATH,
         "people_why_path": PEOPLE_WHY_PATH,
+        "rule_trial_path": RULE_TRIAL_PATH,
+        "rule_save_path": RULE_SAVE_PATH,
+        "period_rules_path": PERIOD_RULES_PATH,
         "apply_offered": build.apply is not None,
     }
     pages = SearchPages(
@@ -105,8 +115,28 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         ApplyDesk(ApplyOffer(build.apply, lambda: bool(chosen.paths())), build.ending),
         album_desk(runtime, SearchPicker(search).files),
         PeopleDesk(search, names_place(runtime)),
+        rule_desk(runtime, search),
     )
     return SearchApp(place, pages, build.executor)
+
+
+def rule_desk(runtime: Runtime, search: SearchIndex) -> RuleDesk:
+    """*Make it a rule* (0396): the date rules of `config.toml`, tried on the index.
+
+    Args:
+        runtime: Settings, mount points and output.
+        search: The open index.
+
+    Returns:
+        The desk.
+    """
+    return RuleDesk(
+        search,
+        runtime.mapper,
+        runtime.locations.config_file,
+        partial(written_rules, runtime),
+        partial(try_rule, runtime, search.connection),
+    )
 
 
 def names_place(runtime: Runtime) -> NamesPlace:

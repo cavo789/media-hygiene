@@ -98,6 +98,24 @@ def walked_roots(connection: sqlite3.Connection) -> tuple[WalkedRoot, ...]:
     )
 
 
+def deepest_first(connection: sqlite3.Connection) -> tuple[Path, ...]:
+    """The folders an audit walked, deepest first: a file's root is the first of them.
+
+    Args:
+        connection: An open index.
+
+    Returns:
+        Their paths.
+    """
+    return tuple(
+        sorted(
+            (root.path for root in walked_roots(connection)),
+            key=lambda path: len(path.parts),
+            reverse=True,
+        )
+    )
+
+
 def shared_digests(connection: sqlite3.Connection) -> dict[str, SharedDigest]:
     """Number the SHA-256 digests shared by several files.
 

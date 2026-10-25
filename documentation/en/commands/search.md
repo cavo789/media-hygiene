@@ -49,7 +49,7 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 ```
 
 Open <http://127.0.0.1:8088/>. The page looks and works like [`browse`](browse.md): the search
-field and its filters (years, a part of the path, the words of one source only) in the left
+field and its filters (a period, a part of the path, the words of one source only) in the left
 column, the ⌨ keys under them, one bar above the grid, then the photos found. **📁 Folders**
 opens `browse`, the same server. Ctrl+C, or closing its tab, stops the page.
 
@@ -69,8 +69,30 @@ opens `browse`, the same server. Ctrl+C, or closing its tab, stops the page.
   Escape closes it. **👤 Set a person aside** finds every photo of someone on the one shown
   ([`people`](people.md#from-any-page-set-a-person-aside)).
 
+- **A period**: *From* and *To* are calendars, a day each, both included; one alone is a period
+  of one day. The day is the one the photo was taken, as `classify` dates it.
+
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20 files
 as a table.
+
+## Make a period a rule
+
+Once a period is searched, **📌 Make it a rule** opens, beside the grid, the dialog of
+[`review-sort`](review-sort.md)'s *Remember as a rule*, filled with the period: type its name
+and its folder (*keep my folders below it* is on). As you type, the grid shows **the photos the
+rule would take, each with where it would go** (*→ 2017\Parties\Weddings\Hervé and Magda's
+wedding*), computed by the `classify` engine with your rules and the one typed (nothing is
+written, nothing moves); then the photos of those days it leaves to another rule (a screenshot,
+a photo of another event), greyed, with the rule that keeps them. Seeing them, correct the days
+(only 5 August) or the folder, then **Save the rule**: it is written into `config.toml`, above
+*Existing folders*, read back from the disk and said. The next `classify` applies it.
+
+**Update a rule…** in the same dialog lists the date rules of `config.toml`, the latest first:
+one chosen fills the dialog, and saving replaces it in place (its place in the list, which
+decides, is kept). Escape or *Cancel* closes the dialog and shows the search again.
+
+A file the search does not know yet (no words at all: run `mh tags --no-describe` once) is
+missing from the grid.
 
 ## Set photos aside
 

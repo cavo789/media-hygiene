@@ -746,6 +746,13 @@ msgstr ""
 msgid "A rule is already named '{name}' in config.toml."
 msgstr "Une règle s'appelle déjà '{name}' dans config.toml."
 
+msgid ""
+"A rule is already named so: choose another name, or pick it in Update a "
+"rule…"
+msgstr ""
+"Une règle porte déjà ce nom : choisissez-en un autre, ou prenez-la dans "
+"Mettre à jour une règle…"
+
 msgid "A rule is already named so: choose another name."
 msgstr "Une règle porte déjà ce nom : choisissez-en un autre."
 
@@ -1769,6 +1776,9 @@ msgstr "Comparaison de la sauvegarde avec vos photos"
 #, python-brace-format
 msgid "Completing {path} would change a setting: nothing was written."
 msgstr "Compléter {path} changerait un réglage : rien n'a été écrit."
+
+msgid "Computing what the rule would take…"
+msgstr "Calcul de ce que la règle prendrait…"
 
 #, python-brace-format
 msgid "Configured folder {path} is not mounted: it is ignored."
@@ -3415,9 +3425,6 @@ msgstr ""
 "Depuis le téléphone : l'audit, les rapports et les albums. Lancez cette "
 "étape sur le PC."
 
-msgid "From year"
-msgstr "De l'année"
-
 msgid "From your NAS or an old disk"
 msgstr "Depuis votre NAS ou un ancien disque"
 
@@ -4232,6 +4239,9 @@ msgid ""
 msgstr ""
 "Crée le dossier d'un album sur le disque, en liens physiques : rien n'est"
 " copié ni déplacé (journalisé, annulable)."
+
+msgid "Make it a rule"
+msgstr "En faire une règle"
 
 msgid "Make room on the phone"
 msgstr "Faire de la place sur le téléphone"
@@ -5713,6 +5723,13 @@ msgstr ""
 "2015-2017."
 
 msgid ""
+"Only the first files of these days were tried: a shorter period shows "
+"them all."
+msgstr ""
+"Seuls les premiers fichiers de ces jours ont été essayés : une période plus "
+"courte les montre tous."
+
+msgid ""
 "Only the phone's DCIM folder is listed (the camera's photos and videos): "
 "a folder made by a gallery app elsewhere on the phone is not shown here."
 msgstr ""
@@ -6653,6 +6670,14 @@ msgstr "Racine"
 
 msgid "Rule"
 msgstr "Règle"
+
+#, python-brace-format
+msgid ""
+"Rule '{name}' ({dates}) saved in config.toml, read back at {time}: the "
+"next classify applies it."
+msgstr ""
+"Règle « {name} » ({dates}) enregistrée dans config.toml, relue à {time} : le"
+" prochain classify l'applique."
 
 #, python-brace-format
 msgid ""
@@ -8650,6 +8675,10 @@ msgstr "Les copies redimensionnées ou recompressées, groupe par groupe."
 msgid "The review is not running any more: start it again."
 msgstr "Le tri ne tourne plus : relancez-le."
 
+#, python-brace-format
+msgid "The rule would take {files}, shown first: {folders}."
+msgstr "La règle prendrait {files}, montrés en premier : {folders}."
+
 msgid "The run to go on with, for the next files; none: a new run."
 msgstr ""
 "Le passage à poursuivre, pour les fichiers suivants ; aucun : un nouveau "
@@ -9356,9 +9385,6 @@ msgstr "À trier"
 msgid "To sort by place and by trip; no position leaves the PC."
 msgstr "Pour trier par lieu et par voyage ; aucune position ne quitte le PC."
 
-msgid "To year"
-msgstr "À l'année"
-
 msgid ""
 "Too many wrong codes: pairing a TV is closed. Stop the slideshow (Ctrl+C "
 "on the PC), then start it again."
@@ -9567,6 +9593,9 @@ msgstr ""
 
 msgid "Update"
 msgstr "Mise à jour"
+
+msgid "Update a rule…"
+msgstr "Mettre à jour une règle…"
 
 msgid "Update the image: mh update."
 msgstr "Mettez l'image à jour : mh update."
@@ -9933,6 +9962,13 @@ msgid ""
 msgstr ""
 "Écrire cet événement comme une règle de config.toml : ses jours, son "
 "dossier ; les prochains classify l'appliquent (R)"
+
+msgid ""
+"Write this period down as a date rule of config.toml, after seeing the "
+"photos it would take and where each one would go"
+msgstr ""
+"Écrire cette période comme règle de dates de config.toml, après avoir vu les"
+" photos qu'elle prendrait et où chacune irait"
 
 msgid "Writes the words into the .xmp sidecars."
 msgstr "Écrit les mots dans les fichiers compagnons .xmp."
@@ -11054,6 +11090,10 @@ msgstr "quitte le téléphone"
 msgid "left as it is"
 msgstr "laissé tel quel"
 
+#, python-brace-format
+msgid "left to the rule {rule}"
+msgstr "laissé à la règle {rule}"
+
 msgid "less than a minute"
 msgstr "moins d'une minute"
 
@@ -11841,6 +11881,9 @@ msgstr "fr/start/01-first-audit/"
 
 msgid "status state summary"
 msgstr "statut état résumé"
+
+msgid "stays where it is"
+msgstr "reste où il est"
 
 #, python-brace-format
 msgid "step {index} of {count}"
@@ -14245,6 +14288,12 @@ msgstr[0] "{n} fichier, {size}, {share} de votre photothèque"
 msgstr[1] "{n} fichiers, {size}, {share} de votre photothèque"
 
 #, python-brace-format
+msgid "{n} files of these days stay with another rule: shown after, marked."
+msgstr ""
+"{n} fichiers de ces jours restent à une autre règle : montrés après, "
+"marqués."
+
+#, python-brace-format
 msgid "{n} files the old rule decided are not taken any more."
 msgstr "{n} fichiers que décidait l'ancienne règle ne sont plus pris."
 
@@ -14807,6 +14856,9 @@ msgstr "{version} (construction {build})"
 msgid "{version} available"
 msgstr "{version} disponible"
 
+msgid "— a new rule —"
+msgstr "— une nouvelle règle —"
+
 msgid ""
 "“Keep both names (link)”, offered when both folders are on one drive: "
 "each copy becomes a hard link to the kept file, so both folders still "
@@ -14862,6 +14914,10 @@ msgid ""
 msgstr ""
 "→ valide comme affichées les séries encore à voir ici ({series}, "
 "{aside}), puis ouvre la page suivante."
+
+#, python-brace-format
+msgid "→ {folder}"
+msgstr "→ {folder}"
 
 #, python-brace-format
 msgid ""

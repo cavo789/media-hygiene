@@ -577,6 +577,11 @@ msgstr ""
 msgid "A rule is already named '{name}' in config.toml."
 msgstr ""
 
+msgid ""
+"A rule is already named so: choose another name, or pick it in Update a "
+"rule…"
+msgstr ""
+
 msgid "A rule is already named so: choose another name."
 msgstr ""
 
@@ -1434,6 +1439,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Completing {path} would change a setting: nothing was written."
+msgstr ""
+
+msgid "Computing what the rule would take…"
 msgstr ""
 
 #, python-brace-format
@@ -2767,9 +2775,6 @@ msgid ""
 "the PC."
 msgstr ""
 
-msgid "From year"
-msgstr ""
-
 msgid "From your NAS or an old disk"
 msgstr ""
 
@@ -3466,6 +3471,9 @@ msgstr ""
 msgid ""
 "Make an album's folder on the disk, as hard links: nothing is copied nor "
 "moved (journaled, undoable)."
+msgstr ""
+
+msgid "Make it a rule"
 msgstr ""
 
 msgid "Make room on the phone"
@@ -4689,6 +4697,11 @@ msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
 msgstr ""
 
 msgid ""
+"Only the first files of these days were tried: a shorter period shows "
+"them all."
+msgstr ""
+
+msgid ""
 "Only the phone's DCIM folder is listed (the camera's photos and videos): "
 "a folder made by a gallery app elsewhere on the phone is not shown here."
 msgstr ""
@@ -5482,6 +5495,12 @@ msgid "Root"
 msgstr ""
 
 msgid "Rule"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Rule '{name}' ({dates}) saved in config.toml, read back at {time}: the "
+"next classify applies it."
 msgstr ""
 
 #, python-brace-format
@@ -7142,6 +7161,10 @@ msgstr ""
 msgid "The review is not running any more: start it again."
 msgstr ""
 
+#, python-brace-format
+msgid "The rule would take {files}, shown first: {folders}."
+msgstr ""
+
 msgid "The run to go on with, for the next files; none: a new run."
 msgstr ""
 
@@ -7699,9 +7722,6 @@ msgstr ""
 msgid "To sort by place and by trip; no position leaves the PC."
 msgstr ""
 
-msgid "To year"
-msgstr ""
-
 msgid ""
 "Too many wrong codes: pairing a TV is closed. Stop the slideshow (Ctrl+C "
 "on the PC), then start it again."
@@ -7876,6 +7896,9 @@ msgid ""
 msgstr ""
 
 msgid "Update"
+msgstr ""
+
+msgid "Update a rule…"
 msgstr ""
 
 msgid "Update the image: mh update."
@@ -8179,6 +8202,11 @@ msgstr ""
 msgid ""
 "Write this event down as a rule of config.toml: its days, its folder; the"
 " next classify runs apply it (R)"
+msgstr ""
+
+msgid ""
+"Write this period down as a date rule of config.toml, after seeing the "
+"photos it would take and where each one would go"
 msgstr ""
 
 msgid "Writes the words into the .xmp sidecars."
@@ -9188,6 +9216,10 @@ msgstr ""
 msgid "left as it is"
 msgstr ""
 
+#, python-brace-format
+msgid "left to the rule {rule}"
+msgstr ""
+
 msgid "less than a minute"
 msgstr ""
 
@@ -9907,6 +9939,9 @@ msgid "start/01-first-audit/"
 msgstr ""
 
 msgid "status state summary"
+msgstr ""
+
+msgid "stays where it is"
 msgstr ""
 
 #, python-brace-format
@@ -11886,6 +11921,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} files of these days stay with another rule: shown after, marked."
+msgstr ""
+
+#, python-brace-format
 msgid "{n} files the old rule decided are not taken any more."
 msgstr ""
 
@@ -12397,6 +12436,9 @@ msgstr ""
 msgid "{version} available"
 msgstr ""
 
+msgid "— a new rule —"
+msgstr ""
+
 msgid ""
 "“Keep both names (link)”, offered when both folders are on one drive: "
 "each copy becomes a hard link to the kept file, so both folders still "
@@ -12436,6 +12478,10 @@ msgstr ""
 msgid ""
 "→ validates the series still to see here as shown ({series}, {aside}), "
 "then opens the next page."
+msgstr ""
+
+#, python-brace-format
+msgid "→ {folder}"
 msgstr ""
 
 #, python-brace-format

@@ -8,9 +8,9 @@ aside, `POST /api/chosen` sets files aside or takes them out (the decisions file
 the reports folder, `chosen_api`); `GET`/`POST /api/albums` the albums, apart
 (`albums.json`, `share.album_api`); `POST /api/apply` ends the page on the home page's
 step that applies them, when opened from it (`apply_api`). The folder view asks for
-its tree, its folders, the heaviest files and its videos (`folders`). Like `review`
-and `places`: loopback hosts only, JSON bodies only, from the page's own origin. The
-photos are never changed: `clean --decisions` moves what was set aside.
+its tree, its folders, the heaviest files and its videos (`folders`); `/api/period-…`
+write the rule of a period (`rule_desk`, 0396). Like `review` and `places`: loopback
+hosts only, JSON bodies only, from the page's own origin.
 """
 
 from __future__ import annotations
@@ -39,6 +39,7 @@ from media_hygiene.search.people_why import (
 )
 from media_hygiene.search.people_words import unknown_people
 from media_hygiene.search.pictures import Pictures
+from media_hygiene.search.rule_desk import PERIOD_RULES_PATH, RULE_POSTS
 from media_hygiene.search.views import SearchAsked, found_view
 from media_hygiene.share.album_api import ALBUMS_PATH
 
@@ -103,7 +104,10 @@ class SearchApp:
             return Response(HTTPStatus.FORBIDDEN, message.encode())
         if request.method == _GET:
             return await self._get(request)
-        if request.method != _POST or request.path not in _POSTED | _POSTED_TOO:
+        if (
+            request.method != _POST
+            or request.path not in _POSTED | _POSTED_TOO | RULE_POSTS
+        ):
             return Response(HTTPStatus.METHOD_NOT_ALLOWED)
         refused = refused_post(request)
         if refused is not None:
@@ -127,6 +131,7 @@ class SearchApp:
             CHOSEN_PATH: self.place.chosen.answer,
             PEOPLE_REJECT_PATH: self.place.names.answer,
             PEOPLE_WHY_PATH: partial(why_answer, self.place.names),
+            **self.place.rules.posts(),
         }
         if request.path in answers:
             return answers[request.path](request.body)
@@ -155,6 +160,7 @@ class SearchApp:
             CHOSEN_PATH: self.place.chosen.state,
             ALBUMS_PATH: self.place.albums.state,
             FOLDERS_PATH: self.place.folders.tree,
+            PERIOD_RULES_PATH: self.place.rules.state,
         }
         if path in states:
             return states[path]()

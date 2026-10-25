@@ -132,14 +132,14 @@
   #sureDlg li { margin: 2px 0; overflow-wrap: anywhere; }
   #sureDlg li button { border: 0; padding: 0; color: var(--accent); background: none; text-decoration: underline; }
   dialog menu { display: flex; gap: 8px; justify-content: end; padding: 0; }
-  #sendDlg label, #ruleDlg label { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; color: var(--text); }
-  #ruleDlg label.filter { flex-direction: row; } #ruleDlg h2 { margin: 0 0 6px; }
-  #rulePreview.error, #rulesSaid.error { color: var(--bad); } #rulesSaid.saved { color: var(--ok); }
+  #sendDlg label { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; color: var(--text); }
+  #rulesSaid.error { color: var(--bad); } #rulesSaid.saved { color: var(--ok); }
   #rulesDlg { width: min(60rem, 94vw); } #rulesDlg table { width: 100%; border-collapse: collapse; font-size: .85rem; }
   #rulesDlg tbody { display: block; max-height: 55vh; overflow: auto; } #rulesDlg thead, #rulesDlg tbody tr { display: table; width: 100%; table-layout: fixed; }
   #rulesDlg td, #rulesDlg th { padding: 3px 6px; text-align: left; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
   #rulesDlg tr.dead td:nth-child(3) { color: var(--bad); font-weight: 600; }
   #sendDlg input { min-width: 24rem; }
+{% include "rule_dialog.css.j2" %}
 {% endblock %}
 {% block side %}
   <section id="toc" aria-label="{{ _('The event shown') }}">
@@ -207,19 +207,7 @@
   <ol id="sureList"></ol>
   <menu><button type="button" id="sureNo" class="plain"></button><button type="button" id="sureYes"></button></menu>
 </dialog>
-<dialog id="ruleDlg" aria-labelledby="ruleTitle">
-  <form id="ruleForm" method="dialog" autocomplete="off">
-    <h2 id="ruleTitle">📌 {{ _("Remember as a rule") }}</h2>
-    <p class="muted">{{ _("Written into config.toml, above Existing folders: every classify run applies it, to the photos added later too.") }}</p>
-    <label>{{ _("Name") }} <input id="ruleName" required></label>
-    <label>{{ _("From") }} <input id="ruleFirst" type="date" required></label>
-    <label>{{ _("To") }} <input id="ruleLast" type="date" required></label>
-    <label>{{ _("Folder, under the year") }} <input id="ruleCategory" list="categories" required></label>
-    <label class="filter"><input type="checkbox" id="ruleKeep" checked> {{ _("Keep my folders below it (keep_folders)") }}</label>
-    <p id="rulePreview" class="muted" role="status"></p>
-    <menu><button type="button" id="ruleNo" class="plain">{{ _("Cancel") }}</button><button type="submit" id="ruleYes">{{ _("Save the rule") }}</button></menu>
-  </form>
-</dialog>
+{% include "rule_dialog.html.j2" %}
 <dialog id="rulesDlg" aria-labelledby="rulesTitle">
   <h2 id="rulesTitle">📌 {{ _("Your rules") }}</h2>
   <p id="rulesRun" class="muted"></p>
@@ -375,6 +363,7 @@ for (const key of ["Delete", "Backspace", "a"]) delete VIEWER_KEYS[key];
 
 {% include "sort_review_sure.js.j2" %}
 {% include "sort_review_choice.js.j2" %}
+{% include "rule_dialog.js.j2" %}
 {% include "sort_review_rule.js.j2" %}
 
   const go = (step) => {

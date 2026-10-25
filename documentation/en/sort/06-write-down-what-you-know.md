@@ -79,6 +79,12 @@ one listed wins.
 rule for the event shown, after saying what it would take
 ([step 11](11-name-events-in-the-browser.md#remember-an-event-as-a-rule)).
 
+**Seen before it is written.** On the search page, two calendars give a period to the day;
+*📌 Make it a rule* then shows the photos the rule would take, each with where it would go, and
+those of the same days it leaves to another rule: correct the days or the folder while seeing
+them, then save ([`search`](../commands/search.md#make-a-period-a-rule)). *Update a rule…* does
+the same for a date rule already written.
+
 **A trip you already sorted into folders.** A date rule above *Existing folders* takes every
 photo of its days, those of your own folders too: written alone, it would put
 `2019/Montenegro/Budva` and `2019/Montenegro/Cetinje` flat in its category. With

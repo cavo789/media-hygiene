@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from media_hygiene.search.folders import FolderDesk
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.search.people_desk import PeopleDesk
+    from media_hygiene.search.rule_desk import RuleDesk
     from media_hygiene.share.album_api import AlbumDesk
 
 
@@ -31,3 +32,4 @@ class SearchPlace:  # pylint: disable=too-many-instance-attributes
     apply: ApplyDesk  # *Apply now*, opened from the home page
     albums: AlbumDesk  # the albums, never the files set aside
     names: PeopleDesk  # a name taken off a photo (its cross), put back
+    rules: RuleDesk  # *Make it a rule* of a period (0396)

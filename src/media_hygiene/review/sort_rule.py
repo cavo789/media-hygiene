@@ -102,7 +102,7 @@ def preview(
         this_event=mine,
         others=len(others),
         folders=tuple(f"{name} ({count})" for name, count in folders),
-        overlaps=tuple(_overlapping(window, written)),
+        overlaps=tuple(overlapping(window, written)),
         taken=any(
             other.name.casefold() == rule.name.casefold()
             for other in written
@@ -164,7 +164,7 @@ def _in(row: PlanRow, window: OneOff) -> bool:
     return row.date is not None and window.contains(date.fromisoformat(row.date[:10]))
 
 
-def _overlapping(window: OneOff, rules: Iterable[ClassifyRule]) -> list[str]:
+def overlapping(window: OneOff, rules: Iterable[ClassifyRule]) -> list[str]:
     """The `date_range` rules sharing a day with a window: the first listed wins there.
 
     Args:

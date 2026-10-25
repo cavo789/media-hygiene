@@ -81,6 +81,13 @@ liste l'emporte.
 telle règle pour l'événement affiché, après avoir dit ce qu'elle prendrait
 ([étape 11](11-name-events-in-the-browser.md#retenir-un-événement-comme-règle)).
 
+**Vue avant d'être écrite.** Sur la page de recherche, deux calendriers donnent une période au
+jour près ; *📌 En faire une règle* montre alors les photos que la règle prendrait, chacune avec
+l'endroit où elle irait, et celles des mêmes jours qu'elle laisse à une autre règle : corrigez les
+jours ou le dossier en les voyant, puis enregistrez
+([`search`](../commands/search.md#faire-dune-période-une-règle)). *Mettre à jour une règle…* fait de
+même pour une règle de dates déjà écrite.
+
 **Un voyage déjà trié dans vos dossiers.** Une règle de dates au-dessus de *Dossiers existants*
 prend toutes les photos de ses jours, celles de vos propres dossiers aussi : écrite seule, elle
 mettrait `2019/Montenegro/Budva` et `2019/Montenegro/Cetinje` à plat dans sa catégorie. Avec

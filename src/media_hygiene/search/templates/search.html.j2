@@ -6,7 +6,9 @@
    its keys and the large view are those of `browse` (`pick_*` in review/templates), so
    both pages work the same; this page's own script is `search.js.j2`. "/" goes back to
    the field. Opened from the home page, *Apply now* ends the page on the home step that
-   applies the decisions (`apply_now.html.j2`). #}
+   applies the decisions (`apply_now.html.j2`). A period to the day (two calendars) can
+   become a date rule of config.toml: `search_rule.js.j2`, the dialog of review-sort
+   (`rule_dialog.*`, 0396). #}
 {% set texts = {
   "found": [ngettext("{n} file found.", "{n} files found.", 1), ngettext("{n} file found.", "{n} files found.", 2)],
   "shown": _("{total} files found; the first {shown} are shown."),
@@ -32,6 +34,16 @@
   "notDescribed": _("What the photos show is not known yet: {described} of {files} files described. The words found today come from folders, names, dates, places and people. 👉 Describe the photos: 🤖 mh tags (or its step on the home page)."),
   "noneWhy": _("This word may only come from what the photos show: not described yet."),
   "noneYet": _(" — none yet"),
+  "ruleTrying": _("Computing what the rule would take…"),
+  "ruleTook": _("The rule would take {files}, shown first: {folders}."),
+  "ruleLeft": _("{n} files of these days stay with another rule: shown after, marked."),
+  "ruleCut": _("Only the first files of these days were tried: a shorter period shows them all."),
+  "ruleTaken": _("A rule is already named so: choose another name, or pick it in Update a rule…"),
+  "ruleOverlaps": _("It shares days with {rules}: the first listed in config.toml wins on those days."),
+  "ruleSaved": _("Rule '{name}' ({dates}) saved in config.toml, read back at {time}: the next classify applies it."),
+  "goesTo": _("→ {folder}"),
+  "stays": _("stays where it is"),
+  "leftTo": _("left to the rule {rule}"),
 } %}
 {% set sources = {
   "vision": _("seen by the model"),
@@ -56,6 +68,8 @@
   "takeout": _("the description typed in Google Photos (a Takeout export)."),
 } %}
 {% set page_name = _("Search your photos") %}
+{% set rule_title = _("Make it a rule") %}
+{% set rule_update = true %}
 {% set pick_all = _("every file shown") %}
 {% set pick_search_key = true %}
 {% set keys_safe = _("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") %}
@@ -67,8 +81,8 @@
   form label { display: flex; flex-direction: column; }
   form input, form select { width: 100%; }
   #text { font-size: 1.05rem; }
-  .years { display: flex; gap: 8px; }
-  .years label { flex: 1; }
+  .years { display: flex; flex-wrap: wrap; gap: 8px; }
+  .years label { flex: 1 1 8rem; }
   #syntax { margin-top: 6px; color: var(--muted); }
   #syntax ul { margin: 4px 0; padding-left: 18px; }
   #syntax dt { margin-top: 4px; color: var(--text); }
@@ -99,6 +113,11 @@
   #why .reference { display: flex; gap: 8px; align-items: center; overflow-wrap: anywhere; }
   #why .buttons { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
   #whySaid { color: var(--muted); }
+  #ruleOpen { margin-top: 6px; width: 100%; }
+  .goes { color: var(--accent); overflow-wrap: anywhere; }
+  article.notTaken img { opacity: .45; }
+  article.notTaken .goes { color: var(--muted); }
+{% include "rule_dialog.css.j2" %}
 {% endblock %}
 {% block side %}
     {% set pick_view = "words" %}
@@ -109,8 +128,8 @@
         <input id="text" type="search" autocomplete="off"
                placeholder="{{ _('e.g. Durbuy bear, birthday cake, snow 2008') }}"></label>
       <div class="years">
-        <label>{{ _("From year") }}<input id="from" type="number" min="1800" max="2200"></label>
-        <label>{{ _("To year") }}<input id="to" type="number" min="1800" max="2200"></label>
+        <label>{{ _("From") }}<input id="from" type="date" min="1800-01-01" max="2200-12-31"></label>
+        <label>{{ _("To") }}<input id="to" type="date" min="1800-01-01" max="2200-12-31"></label>
       </div>
       <label>{{ _("Path contains") }}<input id="folder" type="text"></label>
       <label>{{ _("Words of") }}
@@ -123,6 +142,7 @@
         </select></label>
       <button type="submit">{{ _("Search") }}</button>
     </form>
+    <button type="button" id="ruleOpen" class="plain" hidden title="{{ _('Write this period down as a date rule of config.toml, after seeing the photos it would take and where each one would go') }}">📌 {{ _("Make it a rule") }}</button>
     <p id="coverage" role="status" hidden></p>
     <details id="syntax">
       <summary>{{ _("How to write a search") }}</summary>
@@ -156,6 +176,7 @@
 {% endblock %}
 {% block after %}
 {% include "pick_viewer.html.j2" %}
+{% include "rule_dialog.html.j2" %}
 <div id="why" role="dialog" aria-modal="true" aria-labelledby="whyTitle" hidden>
   <div class="box">
     <h2 id="whyTitle"></h2>
@@ -169,5 +190,7 @@
 {% include "pick_viewer.js.j2" %}
 {% include "pick_band.js.j2" %}
 {% include "search.js.j2" %}
+{% include "rule_dialog.js.j2" %}
+{% include "search_rule.js.j2" %}
 </script>
 {% endblock %}

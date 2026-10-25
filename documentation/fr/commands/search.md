@@ -51,7 +51,7 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 ```
 
 Ouvrez <http://127.0.0.1:8088/>. La page a l'aspect et le fonctionnement de
-[`browse`](browse.md) : le champ de recherche et ses filtres (années, une partie du chemin, les mots
+[`browse`](browse.md) : le champ de recherche et ses filtres (une période, une partie du chemin, les mots
 d'une seule source) dans la colonne de gauche, les touches ⌨ en dessous, une seule barre au-dessus
 de la grille, puis les photos trouvées. **📁 Dossiers** ouvre `browse`, le même serveur. Ctrl+C, ou
 fermer son onglet, arrête la page.
@@ -74,8 +74,32 @@ fermer son onglet, arrête la page.
   toutes les photos de quelqu'un depuis celle qui est montrée
   ([`people`](people.md#depuis-nimporte-quelle-page--mettre-une-personne-de-côté)).
 
+- **Une période** : *Du* et *Au* sont des calendriers, un jour chacun, inclus ; un seul est une
+  période d'un jour. Le jour est celui de la prise de vue, tel que `classify` le date.
+
 Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers
 fichiers en tableau.
+
+## Faire d'une période une règle
+
+Une fois une période cherchée, **📌 En faire une règle** ouvre, à côté de la grille, la boîte de
+*Retenir comme règle* de [`review-sort`](review-sort.md), remplie avec la période : tapez son nom
+et son dossier (*Garder mes dossiers en dessous* est coché). Pendant que vous tapez, la grille montre
+**les photos que la règle prendrait, chacune avec l'endroit où elle irait**
+(*→ 2017\Fêtes\Mariages\Mariage d'Hervé et Magda*), calculé par le moteur de `classify` avec vos
+règles et celle tapée (rien n'est écrit, rien ne bouge) ; puis les photos de ces jours qu'elle
+laisse à une autre règle (une capture d'écran, une photo d'un autre événement), grisées, avec la
+règle qui les garde. En les voyant, corrigez les jours (seulement le 5 août) ou le dossier, puis
+**Enregistrer la règle** : elle est écrite dans `config.toml`, au-dessus de *Dossiers existants*,
+relue sur le disque et affichée. Le prochain `classify` l'applique.
+
+**Mettre à jour une règle…**, dans la même boîte, liste les règles de dates de `config.toml`, la
+plus récente d'abord : en choisir une remplit la boîte, et l'enregistrer la remplace sur place (sa
+place dans la liste, qui décide, est gardée). Échap ou *Annuler* ferme la boîte et remontre la
+recherche.
+
+Un fichier que la recherche ne connaît pas encore (aucun mot : lancez une fois
+`mh tags --no-describe`) manque à la grille.
 
 ## Mettre des photos de côté
 

@@ -1,0 +1,98 @@
+{# *📌 Make it a rule* (0396), after the dialog's shared script (`rule_dialog.js.j2`): a
+   period searched becomes a date rule of config.toml. The dialog opens beside the grid,
+   filled with the period; as it changes, the server tries the rule with the classify
+   engine (nothing written) and the grid shows the files it would take, each with where it
+   would go, then those of the days it leaves to another rule (a screenshot, 0394), marked.
+   *Update a rule…* lists the date rules, the latest first: one chosen fills the dialog and
+   is replaced in place. Saved, the rule is read back from config.toml and said; closed,
+   the grid shows the search again. #}
+const RULE_TRIAL_PATH = {{ rule_trial_path | tojson }};
+const RULE_SAVE_PATH = {{ rule_save_path | tojson }};
+const PERIOD_RULES_PATH = {{ period_rules_path | tojson }};
+let ruleReplaces = "";    // the name of the rule *Update a rule…* chose
+let ruleTrial = 0;        // the trial shown: an older answer is dropped
+let dated = [];           // the date rules of config.toml, the latest first
+
+// The button shows once a period is searched.
+function offerRule() {
+  $("ruleOpen").hidden = !(asked.day_from || asked.day_to);
+}
+
+async function tryRule() {
+  const asking = ++ruleTrial;
+  ruleSay(TEXTS.ruleTrying, false);
+  ruleEl("ruleYes").disabled = true;
+  const sent = await rulePost(RULE_TRIAL_PATH, { ...ruleValues(), replaces: ruleReplaces });
+  if (asking !== ruleTrial) return;
+  if (!sent) { ruleSay(TEXTS.offline, true); return; }
+  const { response, answer } = sent;
+  if (!response.ok) { ruleSay(answer.error || fill(TEXTS.failed, { status: response.status }), true); return; }
+  total = answer.hits.length;
+  showFiles(answer.hits, false);
+  const folders = answer.folders.map((one) => one.files + " → " + (one.folder || TEXTS.stays)).join(" · ");
+  const parts = [fill(TEXTS.ruleTook, { files: counted(TEXTS.found, answer.taken), folders: folders || "—" })];
+  if (answer.left) parts.push(fill(TEXTS.ruleLeft, { n: answer.left }));
+  if (answer.overlaps.length) parts.push(fill(TEXTS.ruleOverlaps, { rules: answer.overlaps.join(", ") }));
+  if (answer.cut) parts.push(TEXTS.ruleCut);
+  if (answer.name_taken) parts.push(TEXTS.ruleTaken);
+  ruleSay(parts.join(" "), answer.name_taken);
+  ruleEl("ruleYes").disabled = answer.name_taken || !answer.taken;
+  told(parts[0], false);
+}
+
+function fillDated(rules) {
+  dated = rules;
+  const list = ruleEl("ruleUpdate");
+  list.replaceChildren(list.options[0], ...rules.map((rule) => {
+    const option = element("option", "", rule.name + " (" + rule.dates + ")");
+    option.value = rule.name;
+    return option;
+  }));
+  list.value = ruleReplaces;
+}
+
+async function loadDated() {
+  try {
+    const response = await fetch(PERIOD_RULES_PATH, { cache: "no-store" });
+    if (response.ok) fillDated((await response.json()).rules);
+  } catch (error) { /* the list stays as it was: the dialog still works */ }
+}
+
+function openRule() {
+  ruleReplaces = "";
+  const first = asked.day_from || asked.day_to;
+  ruleFill({ first: first, last: asked.day_to || first, category: "" });
+  ruleEl("ruleDlg").classList.add("aside");
+  ruleEl("ruleDlg").show();
+  ruleEl("ruleName").focus();
+  loadDated();
+  tryRule();
+}
+
+ruleEl("ruleUpdate").addEventListener("change", () => {
+  ruleReplaces = ruleEl("ruleUpdate").value;
+  const chosen = dated.find((rule) => rule.name === ruleReplaces);
+  if (chosen) ruleFill(chosen);
+  tryRule();
+});
+ruleOnChange(tryRule);
+$("ruleOpen").addEventListener("click", openRule);
+ruleEl("ruleDlg").addEventListener("close", () => { ruleTrial++; search(null); });
+// The dialog's keys stay its own: Esc closes it, the grid's keys never fire behind it.
+ruleEl("ruleDlg").addEventListener("keydown", (event) => {
+  if (event.key === "Escape") { event.preventDefault(); ruleEl("ruleDlg").close(); }
+  event.stopPropagation();
+});
+ruleEl("ruleForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const sent = await rulePost(RULE_SAVE_PATH, { ...ruleValues(), replaces: ruleReplaces });
+  if (!sent) { ruleSay(TEXTS.offline, true); return; }
+  const { response, answer } = sent;
+  if (!response.ok) { ruleSay(answer.error || fill(TEXTS.failed, { status: response.status }), true); return; }
+  ruleReplaces = answer.name;  // saved again: the same rule, replaced
+  fillDated(answer.rules);
+  const said = fill(TEXTS.ruleSaved, { name: answer.name, dates: answer.dates, time: new Date(answer.modified).toLocaleTimeString() });
+  ruleSay(said, false);
+  ruleEl("rulePreview").className = "saved";
+  told(said, false);
+});

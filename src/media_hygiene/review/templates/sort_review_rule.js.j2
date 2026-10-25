@@ -1,21 +1,13 @@
-{# Included in the script of sort_review.html.j2: *Remember as a rule* (0392). The dialog is
+{# Included in the script of sort_review.html.j2, after the dialog's shared script
+   (`rule_dialog.js.j2`): *Remember as a rule* (0392). The dialog is
    filled from the event shown (its days, the folder typed, its last folder as the name);
    the server says, as the user changes it, what the rule would take on the plan shown;
    saved, the rule is read back from config.toml and the event's folder chosen with it.
    *Your rules* (0393): what each rule decided, the dead ones removed, a folder-name rule
    turned into dates in its place through the same dialog. #}
-  let rulePreviewTimer = 0;
   let ruleTarget = { event: "", replaces: "" };  // the event the rule is for, the rule it replaces
-  const ruleBody = () => ({
-    event: ruleTarget.event, replaces: ruleTarget.replaces, name: byId("ruleName").value, first: byId("ruleFirst").value,
-    last: byId("ruleLast").value, category: byId("ruleCategory").value, keep_folders: byId("ruleKeep").checked,
-  });
-  const postRule = async (path) => {
-    try {
-      const response = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(ruleBody()) });
-      return { response: response, answer: await response.json().catch(() => ({})) };
-    } catch (error) { return null; }
-  };
+  const ruleBody = () => ({ event: ruleTarget.event, replaces: ruleTarget.replaces, ...ruleValues() });
+  const postRule = (path) => rulePost(path, ruleBody());
   const showRulePreview = async () => {
     const said = byId("rulePreview");
     const sent = await postRule(P.rulePreview);
@@ -31,27 +23,17 @@
     said.className = answer.taken ? "error" : "muted";
     byId("ruleYes").disabled = answer.taken;
   };
-  const ruleChanged = () => {
-    window.clearTimeout(rulePreviewTimer);
-    rulePreviewTimer = window.setTimeout(showRulePreview, 250);
-  };
   const openRule = () => {
     if (!events.length) return;
     const card = events[current];
     ruleTarget = { event: card.id, replaces: "" };
     const folder = byId("folder").value.trim() || card.category;
-    byId("ruleName").value = byId("name").value.trim() || lastFolder(folder) || card.title;
-    byId("ruleFirst").value = card.first_day;
-    byId("ruleLast").value = card.last_day;
-    byId("ruleCategory").value = folder;
-    byId("ruleKeep").checked = true;
-    byId("rulePreview").textContent = "";
-    byId("ruleYes").disabled = false;
+    const name = byId("name").value.trim() || lastFolder(folder) || card.title;
+    ruleFill({ name: name, first: card.first_day, last: card.last_day, category: folder });
     byId("ruleDlg").showModal();
     showRulePreview();
   };
-  for (const field of ["ruleName", "ruleFirst", "ruleLast", "ruleCategory", "ruleKeep"]) byId(field).addEventListener("input", ruleChanged);
-  byId("ruleNo").addEventListener("click", () => byId("ruleDlg").close());
+  ruleOnChange(showRulePreview);
   byId("ruleOpen").addEventListener("click", openRule);
   byId("ruleForm").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -87,13 +69,7 @@
   };
   const openConvert = (rule) => {
     ruleTarget = { event: rule.event, replaces: rule.name };
-    byId("ruleName").value = rule.name;
-    byId("ruleFirst").value = rule.first;
-    byId("ruleLast").value = rule.last;
-    byId("ruleCategory").value = rule.category;
-    byId("ruleKeep").checked = true;
-    byId("rulePreview").textContent = "";
-    byId("ruleYes").disabled = false;
+    ruleFill(rule);
     byId("ruleDlg").showModal();
     showRulePreview();
   };

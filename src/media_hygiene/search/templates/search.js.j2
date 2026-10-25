@@ -27,6 +27,10 @@ function card(hit, index) {
   const meta = element("div", "meta");
   meta.append(element("div", "name", hit.name), element("div", "muted folderLine", hit.folder));
   if (hit.date) meta.append(element("div", "muted", hit.date));
+  if (hit.to !== undefined) { // a rule tried (0396): where the file would go
+    meta.append(element("div", "goes", hit.taken ? fill(TEXTS.goesTo, { folder: hit.to || TEXTS.stays }) : fill(TEXTS.leftTo, { rule: hit.by || "—" })));
+    if (!hit.taken) node.classList.add("notTaken");
+  }
   if (hit.caption) meta.append(element("div", "muted caption", hit.caption));
   meta.append(chipsOf(hit));
   node.append(picture, meta);
@@ -225,9 +229,8 @@ function told(text, error) {
 
 async function search(event, again) {
   if (event) event.preventDefault();
-  const year = (id) => ($(id).value ? Number($(id).value) : null);
   const body = {
-    text: $("text").value, year_from: year("from"), year_to: year("to"),
+    text: $("text").value, day_from: $("from").value || null, day_to: $("to").value || null,
     folder: $("folder").value, source: $("source").value || null,
   };
   const answer = await ask(SEARCH_PATH, body);
@@ -235,6 +238,7 @@ async function search(event, again) {
   if (!answer.ok) { told(fill(TEXTS.failed, { status: answer.status }), true); return; }
   const found = await answer.json();
   asked = body;
+  offerRule();
   total = found.total;
   showFiles(found.hits, again);
   covered(found.coverage);

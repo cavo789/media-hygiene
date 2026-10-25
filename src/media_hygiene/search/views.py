@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import date
 from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -19,6 +20,7 @@ ORIGINAL_PREFIX: Final = "/original/"
 JPEG: Final = ".jpg"
 _MAX_TEXT: Final = 500
 _FIRST_YEAR, _LAST_YEAR = 1800, 2200
+_DECEMBER, _LAST_DAY = 12, 31
 # The sentence is shown under the picture; the words of the others as chips.
 _SHOWN: Final = tuple(source for source in TagSource if source is not TagSource.CAPTION)
 
@@ -31,6 +33,8 @@ class SearchAsked(BaseModel):
     text: str = Field(default="", max_length=_MAX_TEXT)
     year_from: int | None = Field(default=None, ge=_FIRST_YEAR, le=_LAST_YEAR)
     year_to: int | None = Field(default=None, ge=_FIRST_YEAR, le=_LAST_YEAR)
+    day_from: date | None = None  # the calendars of the page (0396)
+    day_to: date | None = None
     folder: str = Field(default="", max_length=_MAX_TEXT)
     source: TagSource | None = None
 
@@ -38,29 +42,73 @@ class SearchAsked(BaseModel):
         """Make the search of what the page sent.
 
         Returns:
-            The query; one year alone is a range of one year, reversed years are
-            put back in order.
+            The query; one year or one day alone is a range of one, reversed bounds
+            are put back in order.
         """
-        bounds = [year for year in (self.year_from, self.year_to) if year is not None]
-        years = (min(bounds), max(bounds)) if bounds else None
-        filters = Filters(years, self.folder, self.source)
+        filters = Filters(
+            _range(self.year_from, self.year_to),
+            self.folder,
+            self.source,
+            days=_range(self.day_from, self.day_to),
+        )
         return SearchQuery(parse_terms(self.text), filters)
+
+    def period(self) -> tuple[date, date] | None:
+        """The days asked for: the calendars, else the years (1 January to 31 December).
+
+        Returns:
+            The first and last day; None without either.
+        """
+        days = _range(self.day_from, self.day_to)
+        years = _range(self.year_from, self.year_to)
+        if days is None and years is not None:
+            days = (date(years[0], 1, 1), date(years[1], _DECEMBER, _LAST_DAY))
+        return days
 
     def found_by(self) -> str:
         """Name the search in the decisions file, for the user's eyes.
 
         Returns:
-            Its words and filters, e.g. `person:"Ann" · 2004-2006`; empty for none.
+            Its words and filters, e.g. `person:"Ann" · 2004-2006` or
+            `2017-08-05..2017-08-06`; empty for none.
         """
         query = self.query()
-        years = query.filters.years
+        years, days = query.filters.years, query.filters.days
         parts = (
             str.strip(self.text),
             f"{years[0]}-{years[1]}" if years else "",
+            _days_named(days) if days else "",
             str.strip(self.folder),
             query.filters.source.value if query.filters.source else "",
         )
         return " · ".join(part for part in parts if part)
+
+
+def _range[T: (int, date)](first: T | None, last: T | None) -> tuple[T, T] | None:
+    """Two bounds put in order; one alone is a range of one.
+
+    Args:
+        first: The first bound typed, if any.
+        last: The last bound typed, if any.
+
+    Returns:
+        The range; None without either.
+    """
+    bounds = [bound for bound in (first, last) if bound is not None]
+    return (min(bounds), max(bounds)) if bounds else None
+
+
+def _days_named(days: tuple[date, date]) -> str:
+    """Write a period as a `date_range` rule does.
+
+    Args:
+        days: The first and last day.
+
+    Returns:
+        `2017-08-05..2017-08-06`, or `2017-08-05` for one day.
+    """
+    first, last = (day.isoformat() for day in days)
+    return first if first == last else f"{first}..{last}"
 
 
 def found_view(

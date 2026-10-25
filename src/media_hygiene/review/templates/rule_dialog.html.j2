@@ -1,0 +1,21 @@
+{# The dialog of a date rule, shared by review-sort's *Remember as a rule* (0392) and the
+   search page's *Make it a rule* (0396); its script is `rule_dialog.js.j2`, its look
+   `rule_dialog.css.j2`. `rule_update` (the search page) adds *Update a rule…*: the date
+   rules of config.toml, the latest first, one chosen fills the dialog and is replaced in
+   place when saved. #}
+<dialog id="ruleDlg" aria-labelledby="ruleTitle">
+  <form id="ruleForm" method="dialog" autocomplete="off">
+    <h2 id="ruleTitle">📌 {{ rule_title | default(_("Remember as a rule")) }}</h2>
+    <p class="muted">{{ _("Written into config.toml, above Existing folders: every classify run applies it, to the photos added later too.") }}</p>
+    {% if rule_update %}
+    <label>{{ _("Update a rule…") }} <select id="ruleUpdate"><option value="">{{ _("— a new rule —") }}</option></select></label>
+    {% endif %}
+    <label>{{ _("Name") }} <input id="ruleName" required></label>
+    <label>{{ _("From") }} <input id="ruleFirst" type="date" required></label>
+    <label>{{ _("To") }} <input id="ruleLast" type="date" required></label>
+    <label>{{ _("Folder, under the year") }} <input id="ruleCategory" list="categories" required></label>
+    <label class="filter"><input type="checkbox" id="ruleKeep" checked> {{ _("Keep my folders below it (keep_folders)") }}</label>
+    <p id="rulePreview" class="muted" role="status"></p>
+    <menu><button type="button" id="ruleNo" class="plain">{{ _("Cancel") }}</button><button type="submit" id="ruleYes">{{ _("Save the rule") }}</button></menu>
+  </form>
+</dialog>

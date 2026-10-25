@@ -11,11 +11,14 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import Locale
 from media_hygiene.tags.models import TagSource
 from media_hygiene.tags.plurals import singular
+
+if TYPE_CHECKING:
+    from datetime import date
 
 _TOKEN: Final = re.compile(
     r'(?:(?P<source>\w+):)?(?:"(?P<phrase>[^"]*)"?|(?P<word>[^\s"]+))'
@@ -39,11 +42,12 @@ class Term:
 
 @dataclass(frozen=True, slots=True)
 class Filters:
-    """What narrows a search beyond its words: years, a folder, one source."""
+    """What narrows a search beyond its words: years or days, a folder, one source."""
 
     years: tuple[int, int] | None = None  # first and last year, both included
     folder: str = ""  # a part of the path, any case
     source: TagSource | None = None  # every word among this source only
+    days: tuple[date, date] | None = None  # first and last day, both included (0396)
 
 
 @dataclass(frozen=True, slots=True)

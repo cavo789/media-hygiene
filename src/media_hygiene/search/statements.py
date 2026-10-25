@@ -66,6 +66,7 @@ COUNT: Final = "SELECT COUNT(*)" + _FROM
 MATCHES: Final = f"{TABLE} MATCH ?"
 # `media_day` reads every form a date is written in (`search/days.py`).
 YEARS: Final = f"CAST(substr({DAY}(files.media_date), 1, 4) AS INTEGER) BETWEEN ? AND ?"
+DAYS: Final = f"{DAY}(files.media_date) BETWEEN ? AND ?"  # ISO days compare as text
 # `fold` is Python's `casefold`: SQLite's `lower` knows ASCII only.
 FOLD: Final = "fold"
 FOLDER: Final = f"instr({FOLD}(files.path), ?) > 0"
@@ -115,6 +116,9 @@ def conditions(query: SearchQuery) -> tuple[list[str], list[object]]:
     if filters.years is not None:
         chosen.append(YEARS)
         parameters.extend(filters.years)
+    if filters.days is not None:
+        chosen.append(DAYS)
+        parameters.extend(day.isoformat() for day in filters.days)
     folder = filters.folder.strip().replace("\\", "/").casefold()
     if folder:
         chosen.append(FOLDER)

@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.index.former_names import former_copies
-from media_hygiene.index.listing import indexed_files, walked_roots
+from media_hygiene.index.listing import deepest_first, indexed_files
 from media_hygiene.index.takeout_rows import takeout_facts
 from media_hygiene.paths.host_paths import is_within
 from media_hygiene.scan.filters import media_kind
@@ -68,13 +68,7 @@ def tag_files(
     Returns:
         The files, in path order.
     """
-    roots = tuple(
-        sorted(
-            (root.path for root in walked_roots(connection)),
-            key=lambda path: len(path.parts),
-            reverse=True,
-        )
-    )
+    roots = deepest_first(connection)
     found: list[MediaInput] = []
     takeout = takeout_facts(connection)
     former = former_copies(connection)
