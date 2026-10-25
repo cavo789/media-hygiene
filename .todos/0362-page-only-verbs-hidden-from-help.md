@@ -4,7 +4,6 @@
 - **Batch**: home
 - **Depends**: 0356
 - **Files**: `src/media_hygiene/cli/app.py`, `src/media_hygiene/cli/menu_catalog_*.py`, `src/media_hygiene/cli/safety.py`, `src/media_hygiene/console/advice.py`, `tests/support/docs/scenario.py`, `tests/unit/test_docs_commands.py`, `documentation/en/reference-commands.md`, `documentation/fr/reference-commands.md`, `documentation/en/commands/`, `documentation/fr/commands/`
-- **Needs maintainer**: the decision for `review`, `review-sort` and `slideshow` (below)
 
 ## Context
 
@@ -27,9 +26,16 @@ What each page command does in the console (read in the code, 2026-10-24):
 | `browse` | `--port` only: opens the page | **hidden** |
 | `places` | `--port` only: opens the map | **hidden** |
 | `home` | run by `mh` alone, never typed | **hidden** |
-| `review` | opens a page; its options choose what to review (`--near`, `--pairs`, `--junk`, `--gone`, `--decisions`) and its filters (`--prefer`, `--protect`, `--exclude`, `--backup`, `--ext`) | **maintainer** |
-| `review-sort` | `--workbook` (which workbook), then the page | **maintainer** (rather hidden) |
-| `slideshow` | `--album`, `--folder`, `--search`, `--chosen`; `mh slideshow --lan` starts the show on the TV | **maintainer** |
+| `review` | opens a page; its options choose what to review (`--near`, `--pairs`, `--junk`, `--gone`, `--decisions`) and its filters (`--prefer`, `--protect`, `--exclude`, `--backup`, `--ext`) | **stays visible** (decided) |
+| `review-sort` | `--workbook` (which workbook), then the page | **hidden** (decided) |
+| `slideshow` | `--album`, `--folder`, `--search`, `--chosen`; `mh slideshow --lan` starts the show on the TV | **stays visible** (decided) |
+
+## Decided (2026-10-25, maintainer, review of the feedback of 2026-10-24)
+
+- `review` stays visible: a filter for one run (`--protect "D:\Archives"`) only the command line
+  gives, without touching `config.toml`.
+- `review-sort` hidden.
+- `slideshow` stays visible: `mh slideshow --lan` is typed in the console for the TV.
 
 ## What to do
 
@@ -52,5 +58,5 @@ What each page command does in the console (read in the code, 2026-10-24):
 
 ## Gain
 
-A shorter `mh --help` (3 to 6 verbs fewer, depending on the decisions), each verb listed doing
-something in the console; the pages reached from the home page, as the maintainer uses them.
+A shorter `mh --help` (4 verbs fewer: `browse`, `places`, `home`, `review-sort`), each verb
+listed doing something in the console; the pages reached from the home page, as the maintainer uses them.
