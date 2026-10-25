@@ -36,8 +36,10 @@ from media_hygiene.search.rule_desk import (
     RULE_TRIAL_PATH,
     RuleDesk,
 )
+from media_hygiene.search.rule_go import RULE_GO_PATH
 from media_hygiene.services.albums import album_desk
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
+from media_hygiene.services.group_sort import sorted_group
 from media_hygiene.services.people_page import names_file
 from media_hygiene.services.rule_trial import try_rule, written_rules
 from media_hygiene.share.album_api import ALBUMS_PATH
@@ -96,6 +98,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "rule_trial_path": RULE_TRIAL_PATH,
         "rule_save_path": RULE_SAVE_PATH,
         "period_rules_path": PERIOD_RULES_PATH,
+        "rule_go_path": RULE_GO_PATH,
         "apply_offered": build.apply is not None,
     }
     pages = SearchPages(
@@ -136,6 +139,7 @@ def rule_desk(runtime: Runtime, search: SearchIndex) -> RuleDesk:
         runtime.locations.config_file,
         partial(written_rules, runtime),
         partial(try_rule, runtime, search.connection),
+        partial(sorted_group, runtime),
     )
 
 

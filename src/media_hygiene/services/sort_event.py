@@ -1,9 +1,10 @@
 """`sort --event <id>`, *Sort this event now*: one event sorted, the rest left.
 
-The plan is cut to the rows of one event; everything else is the whole `sort`: the same
-guards (a persistent `/journal`, no `:ro` data mount), the same journal, `undo` and
-manifest, the index following the moves. Those rows then count as moved for the plan:
-a later `sort` of the whole workbook skips them.
+The plan is cut to the rows of one event (or of a group checked on a page, 0397);
+everything else is the whole `sort`: the same guards (a persistent `/journal`, no `:ro`
+data mount), the same journal, `undo` and manifest, the index following the moves.
+Those rows then count as moved for the plan: a later `sort` of the whole workbook skips
+them.
 """
 
 from __future__ import annotations
@@ -39,11 +40,25 @@ def only_event(inputs: SortInputs, event_id: str) -> SortInputs:
     Raises:
         WorkbookError: The plan has no such event.
     """
-    rows = tuple(row for row in inputs.plan.rows if row.event_id == event_id)
-    if not event_id or not rows:
+    ids = frozenset(row.id for row in inputs.plan.rows if row.event_id == event_id)
+    if not event_id or not ids:
         message = _("The plan has no event {event}.").format(event=event_id)
         tip = _("Copy its id from the first column of the Events sheet.")
         raise WorkbookError(message, tip)
+    return only_rows(inputs, ids)
+
+
+def only_rows(inputs: SortInputs, ids: frozenset[str]) -> SortInputs:
+    """Cut the plan to some of its rows: the files of a group checked on a page (0397).
+
+    Args:
+        inputs: The plan and its edits.
+        ids: The rows kept.
+
+    Returns:
+        The same inputs, the plan holding only those rows.
+    """
+    rows = tuple(row for row in inputs.plan.rows if row.id in ids)
     return replace(inputs, plan=inputs.plan.model_copy(update={"rows": rows}))
 
 

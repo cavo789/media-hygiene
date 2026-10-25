@@ -5,13 +5,18 @@
    would go, then those of the days it leaves to another rule (a screenshot, 0394), marked.
    *Update a rule…* lists the date rules, the latest first: one chosen fills the dialog and
    is replaced in place. Saved, the rule is read back from config.toml and said; closed,
-   the grid shows the search again. #}
+   the grid shows the search again. *Leave the picked files where they are*, then *I
+   checked: sort these N files* (0397): asked once, the server sorts exactly those, read
+   back; the tiles then show their new place. #}
 const RULE_TRIAL_PATH = {{ rule_trial_path | tojson }};
 const RULE_SAVE_PATH = {{ rule_save_path | tojson }};
 const PERIOD_RULES_PATH = {{ period_rules_path | tojson }};
+const RULE_GO_PATH = {{ rule_go_path | tojson }};
 let ruleReplaces = "";    // the name of the rule *Update a rule…* chose
 let ruleTrial = 0;        // the trial shown: an older answer is dropped
 let dated = [];           // the date rules of config.toml, the latest first
+let tried = null;         // the last trial answered: the files, where each one goes
+const leftHere = new Set(); // keys of the files the user leaves where they are (0397)
 
 // The button shows once a period is searched.
 function offerRule() {
@@ -22,13 +27,17 @@ async function tryRule() {
   const asking = ++ruleTrial;
   ruleSay(TEXTS.ruleTrying, false);
   ruleEl("ruleYes").disabled = true;
+  tried = null;
+  showGo();  // never a GO on files being computed
   const sent = await rulePost(RULE_TRIAL_PATH, { ...ruleValues(), replaces: ruleReplaces });
   if (asking !== ruleTrial) return;
   if (!sent) { ruleSay(TEXTS.offline, true); return; }
   const { response, answer } = sent;
   if (!response.ok) { ruleSay(answer.error || fill(TEXTS.failed, { status: response.status }), true); return; }
   total = answer.hits.length;
-  showFiles(answer.hits, false);
+  tried = answer;
+  showFiles(answer.hits.map((hit) => (leftHere.has(hit.key) ? { ...hit, left: true } : hit)), false);
+  showGo();
   const folders = answer.folders.map((one) => one.files + " → " + (one.folder || TEXTS.stays)).join(" · ");
   const parts = [fill(TEXTS.ruleTook, { files: counted(TEXTS.found, answer.taken), folders: folders || "—" })];
   if (answer.left) parts.push(fill(TEXTS.ruleLeft, { n: answer.left }));
@@ -39,6 +48,45 @@ async function tryRule() {
   ruleEl("ruleYes").disabled = answer.name_taken || !answer.taken;
   told(parts[0], false);
 }
+
+// The GO (0397): the files taken, but those left where they are.
+const toSort = () => (tried ? tried.hits.filter((hit) => hit.taken && !leftHere.has(hit.key)) : []);
+function showGo() {
+  const going = toSort();
+  ruleEl("ruleGo").textContent = counted(TEXTS.goSort, going.length);
+  ruleEl("ruleGo").disabled = !going.length;
+  ruleEl("ruleLeave").disabled = !tried;
+}
+
+ruleEl("ruleLeave").addEventListener("click", () => {
+  const keys = picked.size ? [...picked].map((index) => files[index].key) : current >= 0 ? [files[current].key] : [];
+  for (const key of keys) leftHere.add(key);
+  showFiles(files.map((file) => (leftHere.has(file.key) ? { ...file, left: true } : file)), false);
+  showGo();
+});
+
+ruleEl("ruleGo").addEventListener("click", async () => {
+  const going = toSort();
+  const groups = new Map();
+  for (const hit of going) groups.set(hit.to, (groups.get(hit.to) || 0) + 1);
+  const folders = [...groups].map(([folder, n]) => n + " → " + folder).join(" · ");
+  if (!window.confirm(fill(TEXTS.goAsk, { n: going.length, folders: folders }))) return;
+  ruleEl("ruleGo").disabled = true;
+  told(TEXTS.goRunning, false);
+  const sent = await rulePost(RULE_GO_PATH, { ...ruleValues(), replaces: ruleReplaces, keys: going.map((hit) => hit.key) });
+  if (!sent) { told(TEXTS.offline, true); showGo(); return; }
+  const { response, answer } = sent;
+  if (!response.ok) { told(answer.error || fill(TEXTS.failed, { status: response.status }), true); showGo(); return; }
+  const parts = [!answer.run_id ? TEXTS.goNothing : !answer.intact ? fill(TEXTS.goBroken, { run: answer.run_id })
+    : fill(TEXTS.goDone, { moved: answer.moved, verified: answer.verified, run: answer.run_id, time: new Date().toLocaleTimeString() })];
+  if (answer.unknown) parts.push(fill(TEXTS.goUnknown, { n: answer.unknown }));
+  if (answer.fixed) parts.push(fill(TEXTS.goFixed, { n: answer.fixed }));
+  const said = parts.join(" ");
+  await tryRule();  // the tiles at their new place, read from the index
+  told(said, Boolean(answer.run_id) && !answer.intact);
+  ruleSay(said, false);
+  ruleEl("rulePreview").className = "saved";
+});
 
 function fillDated(rules) {
   dated = rules;
@@ -60,6 +108,7 @@ async function loadDated() {
 
 function openRule() {
   ruleReplaces = "";
+  leftHere.clear();
   const first = asked.day_from || asked.day_to;
   ruleFill({ first: first, last: asked.day_to || first, category: "" });
   ruleEl("ruleDlg").classList.add("aside");

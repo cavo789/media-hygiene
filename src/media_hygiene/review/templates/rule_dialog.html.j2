@@ -2,7 +2,8 @@
    search page's *Make it a rule* (0396); its script is `rule_dialog.js.j2`, its look
    `rule_dialog.css.j2`. `rule_update` (the search page) adds *Update a rule…*: the date
    rules of config.toml, the latest first, one chosen fills the dialog and is replaced in
-   place when saved. #}
+   place when saved. `rule_go` (the search page, 0397) adds the GO: the files the rule
+   takes, but those left where they are, sorted now, journaled. #}
 <dialog id="ruleDlg" aria-labelledby="ruleTitle">
   <form id="ruleForm" method="dialog" autocomplete="off">
     <h2 id="ruleTitle">📌 {{ rule_title | default(_("Remember as a rule")) }}</h2>
@@ -16,6 +17,10 @@
     <label>{{ _("Folder, under the year") }} <input id="ruleCategory" list="categories" required></label>
     <label class="filter"><input type="checkbox" id="ruleKeep" checked> {{ _("Keep my folders below it (keep_folders)") }}</label>
     <p id="rulePreview" class="muted" role="status"></p>
+    {% if rule_go %}
+    <p class="ruleGo"><button type="button" id="ruleLeave" class="plain" disabled>{{ _("Leave the picked files where they are") }}</button>
+      <button type="button" id="ruleGo" disabled>{{ _("Check, then sort") }}</button></p>
+    {% endif %}
     <menu><button type="button" id="ruleNo" class="plain">{{ _("Cancel") }}</button><button type="submit" id="ruleYes">{{ _("Save the rule") }}</button></menu>
   </form>
 </dialog>

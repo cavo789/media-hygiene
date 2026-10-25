@@ -52,6 +52,10 @@ def test_the_destination_is_where_sort_will_put_the_files(locations: Locations) 
     answer = json.loads(typed.body)
     assert answer["target"] == host_folder(first.row.root, first.folder)
     assert (answer["going"], answer["already"], answer["kept"]) == (PARTY_SHOTS, 0, 0)
+    # 0397: each tile, before → after: every file of the event, its folder to be.
+    rows = {d.row.id for d in decided if d.row.event_id == event}
+    assert set(answer["files"]) == rows
+    assert set(answer["files"].values()) == {answer["target"]}
     assert json.loads(named.body)["target"].endswith(EVENT_NAME)
     assert refused.status is HTTPStatus.UNPROCESSABLE_ENTITY
     assert json.loads(refused.body)["error"]

@@ -43,6 +43,9 @@ class Tried:
 
 
 type Trial = Callable[[RuleTry], Mapping[Path, Tried]]
+# Sorts a group: container path → its folder below its root, the rule's category;
+# answers the run read back (0397).
+type Sorter = Callable[[Mapping[Path, str], str], Mapping[str, object]]
 
 
 class PeriodRuleIn(BaseModel):

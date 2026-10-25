@@ -39,14 +39,14 @@ from media_hygiene.search.rule_models import (
 from media_hygiene.search.views import found_view
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Sequence
+    from collections.abc import Callable, Mapping, Sequence
     from pathlib import Path
 
     from media_hygiene.config.classify_rules import ClassifyRule
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.review.http import Response
     from media_hygiene.search.fts import SearchIndex
-    from media_hygiene.search.rule_models import Trial
+    from media_hygiene.search.rule_models import Sorter, Trial, Tried
 
 RULE_TRIAL_PATH: Final = "/api/period-rule/trial"
 RULE_SAVE_PATH: Final = "/api/period-rule"
@@ -67,6 +67,25 @@ class RuleDesk:
     config: Path | None  # `config.toml`; None: the page cannot write it
     rules: Callable[[], Sequence[ClassifyRule]]  # those of `config.toml`, read now
     trial: Trial
+    sorter: Sorter | None = None  # sorts a group checked on the page (0397)
+
+    def run_trial(
+        self, asked: PeriodRuleIn, rule: ClassifyRule
+    ) -> tuple[Found, Mapping[Path, Tried]]:
+        """Try a rule on the files of its days, and the day before and after.
+
+        Args:
+            asked: The rule typed, the rule it replaces.
+            rule: It, checked.
+
+        Returns:
+            The files read, and where each one would go.
+        """
+        window = parse_one_off(rule.dates)
+        days = (window.start - _MARGIN, window.end + _MARGIN)
+        found = self.index.find(SearchQuery((), Filters(days=days)), _TRIED_MAX)
+        files = [hit.photo for hit in found.hits]
+        return found, self.trial(RuleTry(rule, asked.replaces, files))
 
     def posts(self) -> dict[str, Callable[[bytes], Response]]:
         """The answers to the page's JSON bodies, by path.
@@ -98,22 +117,16 @@ class RuleDesk:
             asked = PeriodRuleIn.model_validate_json(body)
             rule = asked.rule()
         except ValidationError as exc:
-            return _refused(exc)
+            return refused_rule(exc)
         window = parse_one_off(rule.dates)
-        query = SearchQuery(
-            (), Filters(days=(window.start - _MARGIN, window.end + _MARGIN))
-        )
-        found = self.index.find(query, _TRIED_MAX)
-        tried = self.trial(
-            RuleTry(rule, asked.replaces, [hit.photo for hit in found.hits])
-        )
+        found, tried = self.run_trial(asked, rule)
         shown = [hit for hit in found.hits if shown_in(hit, tried, window)]
         views = found_view(Found(len(shown), tuple(shown)), self.mapper)["hits"]
         hits: list[dict[str, object]] = [
             {**view, **where_of(tried.get(hit.photo.path))}
             for hit, view in zip(shown, views, strict=True)  # type: ignore[call-overload]
         ]
-        taken = [view for view in hits if view["taken"]]
+        taken = sorted((v for v in hits if v["taken"]), key=lambda v: str(v["to"]))
         written = self.rules()
         return json_response(
             HTTPStatus.OK,
@@ -151,7 +164,7 @@ class RuleDesk:
             asked = PeriodRuleIn.model_validate_json(body)
             rule = asked.rule()
         except ValidationError as exc:
-            return _refused(exc)
+            return refused_rule(exc)
         if self.config is None or not self.config.is_file():
             return chosen_refused(ConfigError(_("This page cannot write config.toml.")))
         try:
@@ -173,7 +186,7 @@ class RuleDesk:
         )
 
 
-def _refused(error: ValidationError) -> Response:
+def refused_rule(error: ValidationError) -> Response:
     """Answer that the rule typed cannot be written, and why.
 
     Args:

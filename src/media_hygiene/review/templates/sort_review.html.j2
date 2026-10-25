@@ -39,7 +39,9 @@
   "sureNone": _("No sure proposal left to accept."),
   "sureAsk": _("Events to decide with a sure proposal: {count}. Each one gets its proposed folder, as Enter would give it, saved in one write: {moves} move, {kept} keep the folder you named. Events to decide left to look at: {left}. Click an event to look at it first; the ↶ button takes the whole batch back."),
   "sureAccept": _("Accept them"),
-  "sortAsk": _("Sort this event now? {destination}. Its files are moved at once, journaled: 'undo' puts them back. The other events are left for later."),
+  "goSort": [ngettext("I checked: sort this file", "I checked: sort these {n} files", 1), ngettext("I checked: sort this file", "I checked: sort these {n} files", 2)],
+  "goGroup": _("{n} → {folder}"),
+  "goNothing": _("Every file of this event is already where it goes, or stays: nothing to move."),
   "sorting": _("Sorting the files of this event…"),
   "sortedNow": _("{moved} moved, {verified} checked at their new place (run {run}, at {time}): 'undo {run}' puts them back."),
   "sortedNothing": _("Every file of this event is already in its folder: nothing to move."),
@@ -90,7 +92,7 @@
 {% set pick_all = _("every photo of the event") %}
 {% set pick_marks = false %}
 {% set pick_album = false %}
-{% set keys_safe = _("Every choice is saved at once in %(place)s; the workbook %(workbook)s is never changed. Done? Ctrl+C in the terminal stops the review; then 'sort' applies your choices on top of the workbook.", place=decisions, workbook=workbook) %}
+{% set keys_safe = _("Every choice is saved at once in %(place)s; the workbook %(workbook)s is never changed. Nothing moves without your GO (Sort this event now); every move is journaled: 'undo' puts it back. Done? Ctrl+C in the terminal stops the review; then 'sort' applies your choices on top of the workbook.", place=decisions, workbook=workbook) %}
 {% block style %}
 {% include "pick_grid.css.j2" %}
   h2 { margin: 0 0 4px; font-size: 1.2rem; overflow-wrap: anywhere; }
@@ -139,6 +141,8 @@
   #rulesDlg td, #rulesDlg th { padding: 3px 6px; text-align: left; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
   #rulesDlg tr.dead td:nth-child(3) { color: var(--bad); font-weight: 600; }
   #sendDlg input { min-width: 24rem; }
+  .goes { color: var(--accent); overflow-wrap: anywhere; font-size: .85rem; }
+  #goList { max-height: 50vh; overflow: auto; padding-left: 1.2rem; } #goList li { overflow-wrap: anywhere; margin: 2px 0; }
 {% include "rule_dialog.css.j2" %}
 {% endblock %}
 {% block side %}
@@ -208,6 +212,13 @@
   <menu><button type="button" id="sureNo" class="plain"></button><button type="button" id="sureYes"></button></menu>
 </dialog>
 {% include "rule_dialog.html.j2" %}
+<dialog id="goDlg" aria-labelledby="goTitle">
+  <h2 id="goTitle">{{ _("Check, then sort") }}</h2>
+  <p class="muted">{{ _("Where the files of this event go, as 'sort' will move them:") }}</p>
+  <ul id="goList"></ul>
+  <p class="muted">{{ _("Moved at once, journaled: 'undo' puts them back. The other events are left for later.") }}</p>
+  <menu><button type="button" id="goNo" class="plain">{{ _("Cancel") }}</button><button type="button" id="goYes"></button></menu>
+</dialog>
 <dialog id="rulesDlg" aria-labelledby="rulesTitle">
   <h2 id="rulesTitle">📌 {{ _("Your rules") }}</h2>
   <p id="rulesRun" class="muted"></p>
@@ -312,7 +323,8 @@ for (const key of ["Delete", "Backspace", "a"]) delete VIEWER_KEYS[key];
     image.addEventListener("error", () => image.replaceWith(element("div", "empty", "🎞️ " + T.noPreview)));
     const meta = element("div", "meta");
     meta.append(element("div", "name", photo.name), element("div", "muted", photo.date));
-    if (photo.proposed !== events[current].folder) meta.append(element("div", "proposed", "→ " + (photo.proposed || T.stay) + (photo.own ? " · " + T.ownFolder : "")));
+    meta.append(element("div", "goes", goesText(photo.row)));  // before → after (0397)
+    if (photo.own) meta.append(element("div", "muted", T.ownFolder));
     const note = !photo.movable ? T.left : photo.page ? "✅ " + photo.page : photo.workbook ? "📒 " + photo.workbook : "";
     if (note) meta.append(element("div", "muted", note));
     node.append(image, meta);
@@ -442,7 +454,7 @@ for (const key of ["Delete", "Backspace", "a"]) delete VIEWER_KEYS[key];
   // After the shared grid's keys (pick_grid.js.j2): what it took (arrows, Space, Enter on a
   // framed photo, Ctrl+A, I, the large view's keys) is not this page's.
   document.addEventListener("keydown", (event) => {
-    if (["sureDlg", "sendDlg", "ruleDlg", "rulesDlg"].some((dialog) => byId(dialog).open)) return;  // the dialog's own keys
+    if (["sureDlg", "sendDlg", "ruleDlg", "rulesDlg", "goDlg"].some((dialog) => byId(dialog).open)) return;  // the dialog's own keys
     if (event.defaultPrevented || byId("viewer").classList.contains("open")) return;
     if (event.key === "Escape") {
       if (choiceDirty()) dropChoice();

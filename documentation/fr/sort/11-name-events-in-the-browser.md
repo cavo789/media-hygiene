@@ -168,8 +168,16 @@ champ) et demande, puis déplace les fichiers de cet événement seulement, comm
 `undo`. La ligne d'état donne ce que contient le disque après l'exécution : les fichiers
 déplacés et vérifiés à leur nouvelle place. L'événement s'affiche ensuite *trié*, et <kbd>U</kbd>
 et *Seulement les événements à décider* le sautent ; un `sort` ultérieur de tout le classeur
-saute ses fichiers. Les photos doivent être montées sans `:ro`, avec un `/journal` : sinon la
-page dit ce qui manque, et rien ne bouge.
+saute ses fichiers. Les photos doivent être montées sans `:ro`, avec un `/journal`
+(`mh review-sort` le fait) : sinon la page dit ce qui manque, et rien ne bouge.
+
+**Vérifier d'abord, puis GO.** Chaque photo de l'événement dit où elle est et où elle va, tel
+que `sort` la déplacera. Avant de déplacer, *Vérifier, puis trier* les liste par dossier
+(*14 → …\Mariage d'Hervé et Magda*, à part les fichiers qui restent) ; **J'ai vérifié : trier
+ces N fichiers** est le GO. Pour laisser des photos de côté, choisissez-les et appuyez d'abord sur
+<kbd>S</kbd>. Commencez par un petit événement : vous voyez ce que fait l'outil, fichier par
+fichier, avant de lui en confier plus. Une période ou une règle se trie de la même façon depuis
+la page de recherche ([`search`](../commands/search.md#faire-dune-période-une-règle)).
 
 ## Où vont vos choix
 

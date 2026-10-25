@@ -31,7 +31,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
-| Your photos | 🔒 Never changed: mount them `:ro`. |
+| Your photos | 🔒 Nothing moves without your GO: *I checked: sort these N files* moves the files of a rule checked on the page, journaled; `undo` puts them back. `mh search` mounts them writable, with `/journal`; mounted `:ro`, the page stays read-only and the GO is refused. |
 | Needs | `/cache` (the words of `tags`), your folders (to show the photos), and `-p 127.0.0.1:8088:8088` for the page; `/reports` to set photos aside. |
 | Writes | The small previews of the grid, in the cache; the photos you set aside, in `decisions.json` of the reports; your albums, in `albums.json` next to it. |
 | Undo | Nothing to undo on the page: [`clean --decisions`](clean.md) moves the photos set aside, [`undo`](undo.md) brings them back. |
@@ -93,6 +93,16 @@ decides, is kept). Escape or *Cancel* closes the dialog and shows the search aga
 
 A file the search does not know yet (no words at all: run `mh tags --no-describe` once) is
 missing from the grid.
+
+**Sort them now, little by little.** Once you checked them, **I checked: sort these N files**
+moves exactly the photos the rule takes, each to the folder shown. To leave some out, pick them
+and press **Leave the picked files where they are** (greyed, crossed out). It asks once (the
+count, the folders, the undo line), then writes them as your choices of the latest `classify`
+run (`sort-decisions.json`) and runs `sort` cut to those files: journaled, checked at their new
+place, said as read back from the disk (*14 moved, 14 checked at their new place (run …):
+'mh undo …' puts them back*); the tiles then show their new place. A photo the latest
+`classify` run does not know (added since) is left where it is and counted: run `classify`
+again. Nothing moves without that GO.
 
 ## Set photos aside
 

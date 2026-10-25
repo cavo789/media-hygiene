@@ -42,6 +42,8 @@ class Destination(BaseModel):
     kept_folders: tuple[str, ...]  # those folders, their last part
     stay: int  # files left where they are
     elsewhere: int  # files sent to another folder, one by one
+    # Row → the host folder it goes to (empty: it stays): tiles before → after (0397).
+    files: dict[str, str] = {}
 
 
 def destination(
@@ -69,7 +71,12 @@ def destination(
         for d in decisions
         if d.folder is not None and not owns_folder(d.row)
     )
-    return _tally(decisions, placed.most_common(1)[0][0] if placed else None)
+    tally = _tally(decisions, placed.most_common(1)[0][0] if placed else None)
+    going = {
+        d.row.id: "" if d.folder is None else host_folder(d.row.root, d.folder)
+        for d in decisions
+    }
+    return tally.model_copy(update={"files": going})
 
 
 def _tally(decisions: Sequence[Decision], main: tuple[str, str] | None) -> Destination:

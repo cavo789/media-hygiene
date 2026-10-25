@@ -78,7 +78,7 @@ Noëls », « Grand-mère »), sans copie : les [albums](../sort/12-albums.md).
 
 | | |
 |---|---|
-| Vos photos | 🔒 Jamais modifiées, ni le classeur : montez les photos en `:ro`. Seul *Trier cet événement maintenant* déplace des fichiers : il les veut accessibles en écriture, avec un `/journal`. |
+| Vos photos | 🔒 Rien ne bouge sans votre GO, et le classeur n'est jamais modifié. Seul *Trier cet événement maintenant* déplace des fichiers, après *Vérifier, puis trier* : notés au journal, `undo` les remet. `mh review-sort` monte les photos accessibles en écriture, avec `/journal` ; montées en `:ro`, la page reste en lecture seule. |
 | Il faut | `/reports` (l'exécution de `classify`), vos dossiers (pour montrer les photos), et `-p 127.0.0.1:8088:8088`. |
 | Écrit | `sort-decisions.json`, à côté de `plan.json` dans le dossier de l'exécution de `classify`. |
 | Annuler | `Suppr` dans la page reprend un choix ; le classeur décide alors à nouveau. |
@@ -129,6 +129,14 @@ restent en bas à gauche, sous ⌨ **Clavier** (les premières toujours visibles
   et eux seuls, comme `sort --event` : notés au journal, remis en place par `undo`. Il faut les
   photos montées sans `:ro` et un montage `/journal` ; sinon la page dit ce qui manque et rien ne
   bouge. L'événement s'affiche ensuite *trié*, et <kbd>U</kbd> le saute.
+- **Vérifier, puis trier** : chaque photo dit où elle est et où elle va
+  (*C:\Photos\2017\Août 2017\Mariage → C:\Photos\2017\Fêtes\Mariages\Mariage d'Hervé et
+  Magda*), tel que `sort` la déplacera, recalculé pendant que vous tapez le dossier. *Trier cet
+  événement maintenant* les liste d'abord par dossier (*14 → …*, à part les fichiers qui restent),
+  puis **J'ai vérifié : trier ces N fichiers** est le GO ; le bouton attend pendant le calcul de
+  la destination. Pour en laisser de côté, choisissez-les et appuyez sur <kbd>S</kbd> (laissées
+  où elles sont). La réponse est relue sur le disque : *14 déplacés, 14 vérifiés à leur nouvelle
+  place (passage …) : 'undo …' les remet*.
 - **Règles** : *📌 Retenir comme règle* (<kbd>R</kbd>) écrit l'événement affiché comme une règle
   `date_range` de `config.toml` ; *📌 Vos règles* liste ce que chaque règle a décidé, supprime
   celles qui n'ont rien décidé et convertit une règle sur un nom de dossier en dates

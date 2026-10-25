@@ -1530,6 +1530,9 @@ msgstr ""
 "fichiers ({after_size}) après ; {verified} déplacements vérifiés sur "
 "{moved}."
 
+msgid "Check, then sort"
+msgstr "Vérifier, puis trier"
+
 #, python-brace-format
 msgid ""
 "Checked on Docker Hub once a day at most; {setting} in config.toml turns "
@@ -2769,13 +2772,16 @@ msgstr ""
 #, python-format
 msgid ""
 "Every choice is saved at once in %(place)s; the workbook %(workbook)s is "
-"never changed. Done? Ctrl+C in the terminal stops the review; then 'sort'"
-" applies your choices on top of the workbook."
+"never changed. Nothing moves without your GO (Sort this event now); every"
+" move is journaled: 'undo' puts it back. Done? Ctrl+C in the terminal "
+"stops the review; then 'sort' applies your choices on top of the "
+"workbook."
 msgstr ""
 "Chaque choix est enregistré aussitôt dans %(place)s ; le classeur "
-"%(workbook)s n'est jamais modifié. Terminé ? Ctrl+C dans le terminal "
-"arrête la revue ; 'sort' applique ensuite vos choix par-dessus le "
-"classeur."
+"%(workbook)s n'est jamais modifié. Rien ne bouge sans votre GO (Trier cet "
+"événement maintenant) ; chaque déplacement est journalisé : 'undo' le remet."
+" Terminé ? Ctrl+C dans le terminal arrête la revue ; ensuite 'sort' applique"
+" vos choix par-dessus le classeur."
 
 msgid "Every cluster lies in a place of yours."
 msgstr "Chaque groupe est dans un de vos lieux."
@@ -2783,9 +2789,19 @@ msgstr "Chaque groupe est dans un de vos lieux."
 msgid "Every copy"
 msgstr "Toutes les copies"
 
+msgid "Every file is already where it goes: nothing moved."
+msgstr "Chaque fichier est déjà là où il va : rien n'a bougé."
+
 msgid "Every file of this event is already in its folder: nothing to move."
 msgstr ""
 "Chaque fichier de cet événement est déjà dans son dossier : rien à "
+"déplacer."
+
+msgid ""
+"Every file of this event is already where it goes, or stays: nothing to "
+"move."
+msgstr ""
+"Chaque fichier de cet événement est déjà là où il va, ou reste : rien à "
 "déplacer."
 
 msgid "Every file of your photos is in this backup."
@@ -3749,6 +3765,12 @@ msgstr ""
 msgid "How to write a search"
 msgstr "Comment écrire une recherche"
 
+#, python-brace-format
+msgid "I checked: sort this file"
+msgid_plural "I checked: sort these {n} files"
+msgstr[0] "J'ai vérifié : trier ce fichier"
+msgstr[1] "J'ai vérifié : trier ces {n} fichiers"
+
 msgid "ISO"
 msgstr "ISO"
 
@@ -4078,6 +4100,9 @@ msgstr "Ne pas toucher"
 
 msgid "Leave everything on the phone"
 msgstr "Tout laisser sur le téléphone"
+
+msgid "Leave the picked files where they are"
+msgstr "Laisser les fichiers choisis où ils sont"
 
 msgid "Leave where they are (S)"
 msgstr "Laisser où elles sont (S)"
@@ -4427,6 +4452,13 @@ msgstr "Déplacer {count} fichiers dans {folders} dossiers ?"
 
 msgid "Moved"
 msgstr "Déplacés"
+
+msgid ""
+"Moved at once, journaled: 'undo' puts them back. The other events are "
+"left for later."
+msgstr ""
+"Déplacés aussitôt, journalisés : 'undo' les remet. Les autres événements "
+"restent pour plus tard."
 
 msgid "Moved by an earlier run"
 msgstr "Déplacés par un passage précédent"
@@ -5124,6 +5156,9 @@ msgstr ""
 "Personne ne s'appelle encore {names} : nommez d'abord son groupe sur la "
 "page de 'people'."
 
+msgid "None of these files is taken by the rule: nothing to sort."
+msgstr "Aucun de ces fichiers n'est pris par la règle : rien à trier."
+
 msgid "None: it is clean"
 msgstr "Aucune : c'est propre"
 
@@ -5384,6 +5419,15 @@ msgstr "Rien ne correspond. Essayez doublons, téléphone, NAS ou annuler."
 
 msgid "Nothing moves without you."
 msgstr "Rien ne bouge sans vous."
+
+msgid ""
+"Nothing moves without your GO; every move is journaled: 'undo' puts it "
+"back. The files set aside go to the quarantine at the next 'clean "
+"--decisions'."
+msgstr ""
+"Rien ne bouge sans votre GO ; chaque déplacement est journalisé : 'undo' le "
+"remet. Les fichiers mis de côté vont en quarantaine au prochain 'clean "
+"--decisions'."
 
 #, python-brace-format
 msgid "Nothing moves? Look at {window} (Alt+Tab)."
@@ -5726,8 +5770,8 @@ msgid ""
 "Only the first files of these days were tried: a shorter period shows "
 "them all."
 msgstr ""
-"Seuls les premiers fichiers de ces jours ont été essayés : une période plus "
-"courte les montre tous."
+"Seuls les premiers fichiers de ces jours ont été essayés : une période "
+"plus courte les montre tous."
 
 msgid ""
 "Only the phone's DCIM folder is listed (the camera's photos and videos): "
@@ -6676,8 +6720,8 @@ msgid ""
 "Rule '{name}' ({dates}) saved in config.toml, read back at {time}: the "
 "next classify applies it."
 msgstr ""
-"Règle « {name} » ({dates}) enregistrée dans config.toml, relue à {time} : le"
-" prochain classify l'applique."
+"Règle « {name} » ({dates}) enregistrée dans config.toml, relue à {time} :"
+" le prochain classify l'applique."
 
 #, python-brace-format
 msgid ""
@@ -7539,17 +7583,16 @@ msgstr "Revue du tri"
 msgid "Sort the photos"
 msgstr "Trier les photos"
 
-msgid "Sort this event now"
-msgstr "Trier cet événement maintenant"
-
 #, python-brace-format
 msgid ""
-"Sort this event now? {destination}. Its files are moved at once, "
-"journaled: 'undo' puts them back. The other events are left for later."
+"Sort these {n} files now? {folders}. They are moved at once, journaled: "
+"'undo' puts them back."
 msgstr ""
-"Trier cet événement maintenant ? {destination}. Ses fichiers sont "
-"déplacés tout de suite, notés au journal : 'undo' les remet en place. Les"
-" autres événements attendent."
+"Trier ces {n} fichiers maintenant ? {folders}. Ils sont déplacés aussitôt, "
+"journalisés : 'undo' les remet."
+
+msgid "Sort this event now"
+msgstr "Trier cet événement maintenant"
 
 #, python-brace-format
 msgid "Sort {run_id}"
@@ -7560,6 +7603,9 @@ msgstr "Rangé"
 
 msgid "Sorting"
 msgstr "Tri"
+
+msgid "Sorting the files of the rule…"
+msgstr "Tri des fichiers de la règle…"
 
 msgid "Sorting the files of this event…"
 msgstr "Tri des fichiers de cet événement…"
@@ -8019,6 +8065,9 @@ msgstr ""
 
 msgid "The check of the phone failed: nothing more was deleted."
 msgstr "La vérification du téléphone a échoué : rien de plus n'a été supprimé."
+
+msgid "The choices did not read back as written: nothing moved."
+msgstr "Les choix ne se relisent pas tels qu'écrits : rien n'a bougé."
 
 msgid ""
 "The circles are your photos with a GPS position, larger where there are "
@@ -9186,6 +9235,11 @@ msgstr ""
 "Cette page ne peut pas déplacer de fichiers : lancez 'sort --event' dans "
 "le terminal."
 
+msgid "This page cannot move files: run 'sort' in the terminal."
+msgstr ""
+"Cette page ne peut pas déplacer de fichiers : lancez 'sort' dans le "
+"terminal."
+
 msgid "This page cannot write config.toml."
 msgstr "Cette page ne peut pas écrire config.toml."
 
@@ -9767,6 +9821,9 @@ msgstr ""
 "disque des photos (un déplacement, pas une copie). Par défaut : le "
 "dossier quarantine de votre dossier personnel."
 
+msgid "Where the files of this event go, as 'sort' will move them:"
+msgstr "Où vont les fichiers de cet événement, tels que 'sort' les déplacera :"
+
 msgid "Where to start"
 msgstr "Par où commencer"
 
@@ -9967,8 +10024,8 @@ msgid ""
 "Write this period down as a date rule of config.toml, after seeing the "
 "photos it would take and where each one would go"
 msgstr ""
-"Écrire cette période comme règle de dates de config.toml, après avoir vu les"
-" photos qu'elle prendrait et où chacune irait"
+"Écrire cette période comme règle de dates de config.toml, après avoir vu "
+"les photos qu'elle prendrait et où chacune irait"
 
 msgid "Writes the words into the .xmp sidecars."
 msgstr "Écrit les mots dans les fichiers compagnons .xmp."
@@ -11093,6 +11150,9 @@ msgstr "laissé tel quel"
 #, python-brace-format
 msgid "left to the rule {rule}"
 msgstr "laissé à la règle {rule}"
+
+msgid "left where it is: not sorted with the others"
+msgstr "laissé où il est : pas trié avec les autres"
 
 msgid "less than a minute"
 msgstr "moins d'une minute"
@@ -14081,6 +14141,14 @@ msgstr "au moins {limit} est attendu, pas {value}"
 #, python-brace-format
 msgid ""
 "{moved} moved, {verified} checked at their new place (run {run}, at "
+"{time}): 'mh undo {run}' puts them back."
+msgstr ""
+"{moved} déplacés, {verified} vérifiés à leur nouvelle place (passage {run}, "
+"à {time}) : 'mh undo {run}' les remet."
+
+#, python-brace-format
+msgid ""
+"{moved} moved, {verified} checked at their new place (run {run}, at "
 "{time}): 'undo {run}' puts them back."
 msgstr ""
 "{moved} déplacés, {verified} vérifiés à leur nouvelle place (exécution "
@@ -14288,6 +14356,18 @@ msgstr[0] "{n} fichier, {size}, {share} de votre photothèque"
 msgstr[1] "{n} fichiers, {size}, {share} de votre photothèque"
 
 #, python-brace-format
+msgid "{n} files are left as they are by the plan."
+msgstr "{n} fichiers sont laissés tels quels par le plan."
+
+#, python-brace-format
+msgid ""
+"{n} files are not in the latest classify run: run classify again to sort "
+"them."
+msgstr ""
+"{n} fichiers ne sont pas dans le dernier passage de classify : relancez "
+"classify pour les trier."
+
+#, python-brace-format
 msgid "{n} files of these days stay with another rule: shown after, marked."
 msgstr ""
 "{n} fichiers de ces jours restent à une autre règle : montrés après, "
@@ -14448,6 +14528,10 @@ msgstr[0] ""
 msgstr[1] ""
 "{n} vidéos non incluses : seules les photos sont copiées (une vidéo seule"
 " peut dépasser la limite d'un mail)."
+
+#, python-brace-format
+msgid "{n} → {folder}"
+msgstr "{n} → {folder}"
 
 #, python-brace-format
 msgid "{others} follows {lead}: companions go to one folder."
@@ -15022,6 +15106,13 @@ msgstr ""
 "🔒 Rien ne quitte le téléphone avant que vous le cochiez sur une page et "
 "appuyiez sur Supprimer ; chaque fichier est d'abord prouvé sur le PC par "
 "son contenu."
+
+msgid ""
+"🔒 Nothing moves without your GO on the page; every move is journaled: "
+"'undo' puts it back."
+msgstr ""
+"🔒 Rien ne bouge sans votre GO sur la page ; chaque déplacement est "
+"journalisé : 'undo' le remet."
 
 msgid "🔒 Nothing was changed: this is only the list."
 msgstr "🔒 Rien n'a été modifié : ce n'est que la liste."

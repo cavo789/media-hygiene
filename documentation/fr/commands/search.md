@@ -33,7 +33,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
-| Vos photos | 🔒 Jamais modifiées : montez-les en `:ro`. |
+| Vos photos | 🔒 Rien ne bouge sans votre GO : *J'ai vérifié : trier ces N fichiers* déplace les fichiers d'une règle vérifiés sur la page, notés au journal ; `undo` les remet. `mh search` les monte accessibles en écriture, avec `/journal` ; montées en `:ro`, la page reste en lecture seule et le GO est refusé. |
 | Il faut | `/cache` (les mots de `tags`), vos dossiers (pour montrer les photos), et `-p 127.0.0.1:8088:8088` pour la page ; `/reports` pour mettre des photos de côté. |
 | Écrit | Les petits aperçus de la grille, dans le cache ; les photos mises de côté, dans `decisions.json` des rapports ; vos albums, dans `albums.json` à côté. |
 | Annuler | Rien à annuler dans la page : [`clean --decisions`](clean.md) déplace les photos mises de côté, [`undo`](undo.md) les remet. |
@@ -100,6 +100,17 @@ recherche.
 
 Un fichier que la recherche ne connaît pas encore (aucun mot : lancez une fois
 `mh tags --no-describe`) manque à la grille.
+
+**Les trier maintenant, petit à petit.** Une fois vérifiées, **J'ai vérifié : trier ces N
+fichiers** déplace exactement les photos que la règle prend, chacune vers le dossier affiché.
+Pour en laisser de côté, choisissez-les et appuyez sur **Laisser les fichiers choisis où ils
+sont** (grisées, barrées). La page demande une fois (le nombre, les dossiers, la ligne
+d'annulation), puis les écrit comme vos choix du dernier passage de `classify`
+(`sort-decisions.json`) et lance `sort` limité à ces fichiers : noté au journal, vérifié à leur
+nouvelle place, dit tel que relu sur le disque (*14 déplacés, 14 vérifiés à leur nouvelle place
+(passage …) : 'mh undo …' les remet*) ; les vignettes montrent ensuite leur nouvelle place. Une
+photo que le dernier `classify` ne connaît pas (ajoutée depuis) est laissée en place et comptée :
+relancez `classify`. Rien ne bouge sans ce GO.
 
 ## Mettre des photos de côté
 

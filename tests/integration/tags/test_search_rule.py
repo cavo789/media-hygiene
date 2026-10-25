@@ -139,3 +139,25 @@ def test_a_rule_without_config_is_refused_said(
     assert [answer.status for answer in answers] == [409, 400]
     assert json.loads(answers[0].body)["error"]
     assert "Christmas" not in (locations.config_dir / "config.toml").read_text()
+
+
+def test_a_group_without_a_classify_run_is_refused_said(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0397: GO before any classify run: 409 with the command; nothing moves."""
+    assert run(cli, "tags", "--no-describe").exit_code == 0
+    photos = sorted(path.name for path in locations.data_dir.rglob("*.jpg"))
+    trial = _serve(cli, monkeypatch, [("POST /api/period-rule/trial", _RULE)])[0]
+    keys = [hit["key"] for hit in json.loads(trial.body)["hits"] if hit["taken"]]
+    answers = _serve(
+        cli,
+        monkeypatch,
+        [
+            ("POST /api/period-rule/go", {**_RULE, "keys": keys}),
+            ("POST /api/period-rule/go", {**_RULE, "keys": []}),
+        ],
+    )
+    assert [answer.status for answer in answers] == [409, 409]
+    assert "classify" in json.loads(answers[0].body)["error"]
+    assert "nothing to sort" in json.loads(answers[1].body)["error"]
+    assert sorted(path.name for path in locations.data_dir.rglob("*.jpg")) == photos

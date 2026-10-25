@@ -160,8 +160,15 @@ files of this event only, as [`sort --event`](../commands/sort.md) does: journal
 its own `undo`. The status line gives what the disk holds after the run: the files moved and
 checked at their new place. The event then shows *sorted*, and <kbd>U</kbd> and *Only the events
 to decide* skip it; a later `sort` of the whole workbook skips its files. The photos must be
-mounted without `:ro`, with a `/journal`: otherwise the page says what is missing, and nothing
-moves.
+mounted without `:ro`, with a `/journal` (`mh review-sort` does it): otherwise the page says
+what is missing, and nothing moves.
+
+**Check first, then GO.** Each photo of the event says where it is and where it goes, as `sort`
+will move it. Before moving, *Check, then sort* lists them by folder (*14 → …\Mariage d'Hervé
+et Magda*, the files that stay apart); **I checked: sort these N files** is the GO. To leave
+photos out, pick them and press <kbd>S</kbd> first. Start with a small event: you see what the
+tool does, file by file, before trusting it with more. A period or a rule can be sorted the same
+way from the search page ([`search`](../commands/search.md#make-a-period-a-rule)).
 
 ## Where your choices go
 

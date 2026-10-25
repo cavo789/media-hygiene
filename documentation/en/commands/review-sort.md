@@ -77,7 +77,7 @@ to show up elsewhere too ("every Christmas", "Grandma"), without a copy: the
 
 | | |
 |---|---|
-| Your photos | 🔒 Never changed, nor the workbook: mount the photos `:ro`. Only *Sort this event now* moves files: it needs them writable and a `/journal`. |
+| Your photos | 🔒 Nothing moves without your GO, and the workbook never changes. Only *Sort this event now* moves files, after *Check, then sort*: journaled, `undo` puts them back. `mh review-sort` mounts the photos writable, with `/journal`; mounted `:ro`, the page stays read-only. |
 | Needs | `/reports` (the `classify` run), your folders (to show the photos), and `-p 127.0.0.1:8088:8088`. |
 | Writes | `sort-decisions.json`, next to `plan.json` in the folder of the `classify` run. |
 | Undo | `Delete` in the page takes a choice back; the workbook then decides again. |
@@ -126,6 +126,13 @@ with the line saying where each choice is saved.
   `sort --event` does: journaled, undone by `undo`. It needs the photos mounted without `:ro`
   and a `/journal` mount; otherwise the page says what is missing and nothing moves. The event
   then shows *sorted*, and <kbd>U</kbd> skips it.
+- **Check, then sort**: each photo says where it is and where it goes (*C:\Photos\2017\Août
+  2017\Mariage → C:\Photos\2017\Fêtes\Mariages\Mariage d'Hervé et Magda*), as `sort` will
+  move it, recomputed as you type the folder. *Sort this event now* first lists them by folder
+  (*14 → …*, the files that stay apart), then **I checked: sort these N files** is the GO;
+  the button waits while the destination is computed. To leave some photos out, pick them and
+  press <kbd>S</kbd> (left where they are). The answer is read back from the disk: *14 moved,
+  14 checked at their new place (run …): 'undo …' puts them back*.
 - **Rules**: *📌 Remember as a rule* (<kbd>R</kbd>) writes the event shown as a `date_range`
   rule of `config.toml`; *📌 Your rules* lists what each rule decided, removes those that
   decided nothing and turns a folder-name rule into dates

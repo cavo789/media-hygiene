@@ -1,16 +1,14 @@
 """The routes of the search page and the folder view, one server.
 
 `GET /` serves the page the command opens (`/search` or `/browse`). `POST /api/search`
-answers the files matching the words and filters sent in JSON, `GET /thumb/<key>.jpg`
-a small preview (kept in the cache folder), `GET /preview/<key>.jpg` a large one,
-`GET /original/<key>.<ext>` the file untouched. `GET /api/chosen` says what is set
-aside, `POST /api/chosen` sets files aside or takes them out (the decisions file in
-the reports folder, `chosen_api`); `GET`/`POST /api/albums` the albums, apart
-(`albums.json`, `share.album_api`); `POST /api/apply` ends the page on the home page's
-step that applies them, when opened from it (`apply_api`). The folder view asks for
-its tree, its folders, the heaviest files and its videos (`folders`); `/api/period-…`
-write the rule of a period (`rule_desk`, 0396). Like `review` and `places`: loopback
-hosts only, JSON bodies only, from the page's own origin.
+answers the files matching the words and filters sent in JSON, `/thumb/<key>.jpg` a
+small preview (in the cache), `/preview/<key>.jpg` a large one, `/original/<key>.<ext>`
+the file untouched. `/api/chosen`: what is set aside (the decisions file of the
+reports, `chosen_api`); `/api/albums` the albums (`share.album_api`); `/api/apply` ends
+the page on the home page's step that applies them (`apply_api`). The folder view asks
+for its tree, folders, heaviest files and videos (`folders`); `/api/period-…` try,
+write and sort the rule of a period (`rule_desk`, `rule_go`, 0396, 0397). Like `review`
+and `places`: loopback hosts only, JSON bodies only, from the page's own origin.
 """
 
 from __future__ import annotations
@@ -40,6 +38,7 @@ from media_hygiene.search.people_why import (
 from media_hygiene.search.people_words import unknown_people
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.search.rule_desk import PERIOD_RULES_PATH, RULE_POSTS
+from media_hygiene.search.rule_go import RULE_GO_PATH, go_answer
 from media_hygiene.search.views import SearchAsked, found_view
 from media_hygiene.share.album_api import ALBUMS_PATH
 
@@ -106,7 +105,7 @@ class SearchApp:
             return await self._get(request)
         if (
             request.method != _POST
-            or request.path not in _POSTED | _POSTED_TOO | RULE_POSTS
+            or request.path not in _POSTED | _POSTED_TOO | RULE_POSTS | {RULE_GO_PATH}
         ):
             return Response(HTTPStatus.METHOD_NOT_ALLOWED)
         refused = refused_post(request)
@@ -127,6 +126,8 @@ class SearchApp:
             return await self.place.apply.answer()
         if request.path == ALBUMS_PATH:
             return await self.place.albums.answer(request.body)
+        if request.path == RULE_GO_PATH:
+            return await go_answer(self.place.rules, request.body)
         answers: dict[str, Callable[[bytes], Response]] = {
             CHOSEN_PATH: self.place.chosen.answer,
             PEOPLE_REJECT_PATH: self.place.names.answer,

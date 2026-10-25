@@ -4,6 +4,7 @@
    saves it, Esc drops it, moving away asks. #}
   let loaded = { folder: "", name: "" };  // what the fields held when the event was shown
   let asking = 0;  // the last destination asked for: older answers are ignored
+  let going = null;  // the last destination answered: where each file goes (0397)
 
   const lastFolder = (path) => path.split("/").filter(Boolean).pop() || "";
   const choiceDirty = () => byId("folder").value !== loaded.folder || byId("name").value !== loaded.name;
@@ -36,7 +37,22 @@
     term.className = css;
   };
 
+  // A tile's before → after: its folder now, the one `sort` would move it to.
+  const goesText = (row) => {
+    const photo = photoOf[row];
+    if (!going || !photo || !(row in going.files)) return "";
+    const to = going.files[row];
+    return photo.folder + " → " + (!to ? T.stay : to === photo.folder ? fill(T.already, { n: 1 }) : to);
+  };
+  const showGoing = () => {
+    cards.forEach((node, index) => {
+      const line = node.querySelector(".goes");
+      if (line && files[index]) line.textContent = goesText(files[index].key);
+    });
+  };
   const showDestination = (answer) => {
+    going = answer;
+    showGoing();
     const parts = [];
     if (answer.going) parts.push("→ " + counted(T.nGo, answer.going) + " " + answer.target + (answer.already ? " (" + fill(T.already, { n: answer.already }) + ")" : ""));
     if (answer.kept) parts.push(keptText(answer.kept, answer.kept_folders));
@@ -48,12 +64,15 @@
   const askDestination = async () => {
     const number = ++asking;
     const body = choiceBody();
+    going = null;
+    byId("sortNow").disabled = true;  // never a GO on a destination being computed
     let response;
     try {
       response = await fetch(P.destination, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ event: body.event, folder: body.category, name: body.name }) });
     } catch (error) { return; }
     const answer = await response.json().catch(() => ({}));
     if (number !== asking) return;
+    byId("sortNow").disabled = !response.ok;
     if (!response.ok) {
       byId("destination").textContent = answer.error || fill(T.failed, { status: response.status });
       byId("destination").className = "error";
@@ -101,6 +120,35 @@
     event.returnValue = "";
   });
 
+  // *Check, then sort* (0397): where the files go, grouped by folder, then one GO.
+  const checkThenSort = async () => {
+    if (!going) await askDestination();  // just saved: the destination is asked again
+    if (!going) return false;
+    return new Promise((resolve) => {
+    const groups = new Map();
+    let moving = 0;
+    for (const photo of Object.values(photoOf)) {
+      const to = going.files[photo.row];
+      if (to === undefined) continue;
+      const key = !to || to === photo.folder ? "" : to;
+      if (key) moving += 1;
+      groups.set(key, (groups.get(key) || 0) + 1);
+    }
+    const lines = [...groups].filter(([key]) => key).sort((a, b) => b[1] - a[1]).map(([key, n]) => fill(T.goGroup, { n: n, folder: key }));
+    if (groups.get("")) lines.push(counted(T.nStay, groups.get("")));
+    byId("goList").replaceChildren(...lines.map((text) => line("li", text)));
+    if (!moving) byId("goList").append(line("li", T.goNothing));
+    byId("goYes").textContent = counted(T.goSort, moving);
+    byId("goYes").disabled = !moving;
+    const done = (answer) => { byId("goDlg").close(); resolve(answer); };
+    byId("goYes").onclick = () => done(true);
+    byId("goNo").onclick = () => done(false);
+    byId("goDlg").oncancel = () => resolve(false);
+    byId("goDlg").showModal();
+    byId("goYes").focus();
+    });
+  };
+
   // *Sort this event now* (0390): save what is typed, show where the files go, ask, then
   // the server runs `sort` cut to this event and answers with the run read back.
   const sortNow = async () => {
@@ -111,7 +159,7 @@
       markSaved();
       if (!(await send(P.event, body))) return;
     }
-    if (!window.confirm(fill(T.sortAsk, { destination: byId("destination").textContent }))) return;
+    if (!(await checkThenSort())) return;
     const index = current;
     setStatus(T.sorting);
     byId("sortNow").disabled = true;

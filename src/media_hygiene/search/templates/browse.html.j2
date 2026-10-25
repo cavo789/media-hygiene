@@ -31,7 +31,7 @@
 } %}
 {% set page_name = _("Your folders") %}
 {% set pick_all = _("the whole folder") %}
-{% set keys_safe = _("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") %}
+{% set keys_safe = _("Nothing moves without your GO; every move is journaled: 'undo' puts it back. The files set aside go to the quarantine at the next 'clean --decisions'.") %}
 {% block style %}
 {% include "pick_grid.css.j2" %}
   nav { overflow-wrap: anywhere; }

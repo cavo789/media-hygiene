@@ -338,7 +338,7 @@ def test_one_bar_above_the_grid_and_the_safety_line_under_the_keys(
     # The compact album field says how to start.
     assert "type a name, e.g. Crete 2023" in header
     keys = page.split('id="keys"')[1].split("</section>")[0]
-    assert "🔒 Nothing is deleted from this page" in keys
+    assert "🔒 Nothing moves without your GO" in keys
     views = page.split('id="views"')[1].split("</div>")[0]
     assert 'aria-current="page"' in views
     assert 'href="/search"' in views

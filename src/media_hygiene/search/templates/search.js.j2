@@ -28,8 +28,10 @@ function card(hit, index) {
   meta.append(element("div", "name", hit.name), element("div", "muted folderLine", hit.folder));
   if (hit.date) meta.append(element("div", "muted", hit.date));
   if (hit.to !== undefined) { // a rule tried (0396): where the file would go
-    meta.append(element("div", "goes", hit.taken ? fill(TEXTS.goesTo, { folder: hit.to || TEXTS.stays }) : fill(TEXTS.leftTo, { rule: hit.by || "—" })));
+    const goes = hit.left ? TEXTS.leftHere : hit.taken ? fill(TEXTS.goesTo, { folder: hit.to || TEXTS.stays }) : fill(TEXTS.leftTo, { rule: hit.by || "—" });
+    meta.append(element("div", "goes", goes));
     if (!hit.taken) node.classList.add("notTaken");
+    if (hit.left) node.classList.add("leftHere");
   }
   if (hit.caption) meta.append(element("div", "muted caption", hit.caption));
   meta.append(chipsOf(hit));
