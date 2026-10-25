@@ -2266,9 +2266,6 @@ msgstr ""
 msgid "Every copy"
 msgstr ""
 
-msgid "Every file is already where it goes: nothing moved."
-msgstr ""
-
 msgid "Every file of this event is already in its folder: nothing to move."
 msgstr ""
 
@@ -4540,6 +4537,9 @@ msgstr ""
 msgid "Nothing to move: every file is where the plan puts it."
 msgstr ""
 
+msgid "Nothing to move: no run was made."
+msgstr ""
+
 msgid "Nothing to put back."
 msgstr ""
 
@@ -6329,7 +6329,9 @@ msgstr ""
 msgid "Sorting"
 msgstr ""
 
-msgid "Sorting the files of the rule…"
+msgid ""
+"Sorting the files of the rule: the plan of classify is read, the files "
+"moved, then checked at their new place…"
 msgstr ""
 
 msgid "Sorting the files of this event…"
@@ -12073,6 +12075,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{n} files the old rule decided are not taken any more."
+msgstr ""
+
+#, python-brace-format
+msgid "{n} files were sorted already by an earlier run: left where they are."
 msgstr ""
 
 #, python-brace-format

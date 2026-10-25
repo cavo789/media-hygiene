@@ -7,6 +7,7 @@ those rows: only them move; two groups are two runs, two undos.
 
 from __future__ import annotations
 
+import json
 import sqlite3
 from contextlib import closing
 from typing import TYPE_CHECKING
@@ -100,3 +101,31 @@ def test_without_a_journal_nothing_is_written_nor_moved(
         sort_group(runtime, spring, "Fêtes/Groupe")
     assert snapshot(data) == before
     assert not (workbook.parent / PAGE_DECISIONS_FILE_NAME).exists()
+
+
+def test_a_group_sorted_twice_moves_nothing_and_makes_no_run(
+    locations: Locations,
+) -> None:
+    """The files at their new place are known as sorted: no 'run classify', no run."""
+    runtime, _workbook, _sizes = two_events(locations)
+    data = locations.data_dir
+    spring = _folders(runtime, data / SPRING, "2017-05-01..2017-05-01")
+    first = sort_group(runtime, spring, "Fêtes/Groupe")
+    runs = sorted(locations.journal_dir.glob("*.jsonl"))
+    moved_to = data / "c" / "2017" / "Fêtes" / "Groupe"  # the drive is the root here
+    again = _folders(runtime, moved_to, "2017-05-01..2017-05-01")
+    assert len(again) == SPRING_SHOTS, again
+    second = sort_group(runtime, again, "Fêtes/Groupe")
+    assert first.moved == SPRING_SHOTS
+    assert (second.run_id, second.already, second.unknown) == ("", SPRING_SHOTS, 0)
+    assert sorted(locations.journal_dir.glob("*.jsonl")) == runs
+
+
+def test_a_group_sort_counts_only_the_folders_it_touches(locations: Locations) -> None:
+    """The manifest's census covers the source and target folders, not the tree."""
+    runtime, _workbook, _sizes = two_events(locations)
+    spring = _folders(runtime, locations.data_dir / SPRING, "2017-05-01..2017-05-01")
+    done = sort_group(runtime, spring, "Fêtes/Groupe")
+    manifest = next(locations.reports_dir.glob(f"{done.run_id}-sort/manifest.json"))
+    roots = json.loads(manifest.read_text("utf-8"))["roots"]
+    assert all("Mai 2017" in root or "Groupe" in root for root in roots), roots

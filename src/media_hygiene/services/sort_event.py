@@ -59,7 +59,8 @@ def only_rows(inputs: SortInputs, ids: frozenset[str]) -> SortInputs:
         The same inputs, the plan holding only those rows.
     """
     rows = tuple(row for row in inputs.plan.rows if row.id in ids)
-    return replace(inputs, plan=inputs.plan.model_copy(update={"rows": rows}))
+    plan = inputs.plan.model_copy(update={"rows": rows})
+    return replace(inputs, plan=plan, cut=True)
 
 
 def sort_event(runtime: Runtime, workbook: str, event_id: str) -> SortResult | None:

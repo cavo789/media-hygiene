@@ -14,7 +14,12 @@ from typing import TYPE_CHECKING
 from media_hygiene.actions.journal import JournalWriter, journal_file
 from media_hygiene.actions.journaled import CleanContext
 from media_hygiene.actions.kinds import Phase
-from media_hygiene.actions.manifest import Manifest, census, verify_moves
+from media_hygiene.actions.manifest import (
+    Manifest,
+    census,
+    touched_folders,
+    verify_moves,
+)
 from media_hygiene.actions.outcome import Tally
 from media_hygiene.actions.runs import new_run_id
 from media_hygiene.actions.sort import SortExecutor
@@ -107,7 +112,11 @@ class SortService:
         watch.record(Stage.PREPARE, prepared.seconds)
         runtime.locations.journal_dir.mkdir(parents=True, exist_ok=True)
         run_id = new_run_id(runtime.locations.journal_dir)
-        roots = (*source_roots(runtime, prepared.plan), *prepared.plan.roots)
+        roots = (
+            touched_folders(prepared.plan)  # a few folders, not the whole collection
+            if prepared.inputs.cut
+            else (*source_roots(runtime, prepared.plan), *prepared.plan.roots)
+        )
         with watch.timing(Stage.COUNTS):
             before = census(roots, prepared.rules.junk)
         with watch.timing(Stage.MOVES):

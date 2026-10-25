@@ -89,6 +89,7 @@ ruleEl("ruleGo").addEventListener("click", async () => {
   if (!response.ok) { told(answer.error || fill(TEXTS.failed, { status: response.status }), true); showGo(); return; }
   const parts = [!answer.run_id ? TEXTS.goNothing : !answer.intact ? fill(TEXTS.goBroken, { run: answer.run_id })
     : fill(TEXTS.goDone, { moved: answer.moved, verified: answer.verified, run: answer.run_id, time: new Date().toLocaleTimeString() })];
+  if (answer.already) parts.push(fill(TEXTS.goAlready, { n: answer.already }));
   if (answer.unknown) parts.push(fill(TEXTS.goUnknown, { n: answer.unknown }));
   if (answer.fixed) parts.push(fill(TEXTS.goFixed, { n: answer.fixed }));
   const said = parts.join(" ");

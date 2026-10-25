@@ -1099,8 +1099,8 @@ msgid ""
 "shown too, greyed."
 msgstr ""
 "Un événement : des photos prises à moins de {hours} heures d'écart "
-"(merge_gap_hours dans config.toml), comme classify les regroupe ; ses photos"
-" des autres jours sont montrées aussi, grisées."
+"(merge_gap_hours dans config.toml), comme classify les regroupe ; ses "
+"photos des autres jours sont montrées aussi, grisées."
 
 msgid "An icon on the Desktop and in the Start menu"
 msgstr "Une icône sur le Bureau et dans le menu Démarrer"
@@ -2804,9 +2804,6 @@ msgstr "Chaque groupe est dans un de vos lieux."
 
 msgid "Every copy"
 msgstr "Toutes les copies"
-
-msgid "Every file is already where it goes: nothing moved."
-msgstr "Chaque fichier est déjà là où il va : rien n'a bougé."
 
 msgid "Every file of this event is already in its folder: nothing to move."
 msgstr ""
@@ -5504,6 +5501,9 @@ msgstr "Rien à importer : chaque fichier de la sauvegarde est déjà traité."
 msgid "Nothing to move: every file is where the plan puts it."
 msgstr "Rien à déplacer : chaque fichier est là où le plan le met."
 
+msgid "Nothing to move: no run was made."
+msgstr "Rien à déplacer : aucun passage n'a été fait."
+
 msgid "Nothing to put back."
 msgstr "Rien à remettre."
 
@@ -7664,8 +7664,12 @@ msgstr ""
 msgid "Sorting"
 msgstr "Tri"
 
-msgid "Sorting the files of the rule…"
-msgstr "Tri des fichiers de la règle…"
+msgid ""
+"Sorting the files of the rule: the plan of classify is read, the files "
+"moved, then checked at their new place…"
+msgstr ""
+"Tri des fichiers de la règle : lecture du plan de classify, déplacement des "
+"fichiers, puis vérification à leur nouvelle place…"
 
 msgid "Sorting the files of this event…"
 msgstr "Tri des fichiers de cet événement…"
@@ -14470,6 +14474,12 @@ msgstr ""
 #, python-brace-format
 msgid "{n} files the old rule decided are not taken any more."
 msgstr "{n} fichiers que décidait l'ancienne règle ne sont plus pris."
+
+#, python-brace-format
+msgid "{n} files were sorted already by an earlier run: left where they are."
+msgstr ""
+"{n} fichiers avaient déjà été triés par un passage précédent : laissés où "
+"ils sont."
 
 #, python-brace-format
 msgid "{n} group picked: the next name goes to it."
