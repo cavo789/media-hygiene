@@ -18,7 +18,7 @@ progress bar, and a Stop button — for `tags` and every long step.
   polled from a page sink (`console/page_progress.py`), one run at a time, a Stop.
 - `tags` commits each answer at once: a stop keeps what is described, the next run goes on
   (`services/tag_describe.py` docstring) — so a Stop costs nothing.
-- Steps that **write photos** (`clean`, `undo`, `purge`, `sort`) are 0289's design note: not here.
+- Steps that **write photos** (`clean`, `undo`, `purge`, `sort`) are 0361 (0289 closed, superseded): not here.
 
 ## To do
 

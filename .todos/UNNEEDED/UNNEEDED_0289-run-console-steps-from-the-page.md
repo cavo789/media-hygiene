@@ -47,3 +47,10 @@ By the maintainer (`/todo:iterate`): an unattended run writes the design note on
 the follow-up TODOs are filed.
 
 Design note written (2026-10-21): .claude/plans/0289-console-steps-from-the-page.md
+
+## Closed — superseded (2026-10-25, review of the feedback of 2026-10-21)
+
+The six questions of the design note are answered by the single-server work: the server never
+has the photos read-write, a page's write runs as a step of `mh` in its window, followed live
+(0355, 0361, 0363); what is final is confirmed in the window of `mh` (0361 point 3); the phone
+acts through 0360. The note stays in `.claude/plans/0289-console-steps-from-the-page.md`.

@@ -135,3 +135,9 @@ pages describing a footer or a header line of a converted page, both languages.
 - `people` stays a named exemption ("until 0323-0329 are done"): another session reshapes the
   page; whichever runs last converts it and removes the line of `EXEMPT` in `test_page_frame.py`.
 - One commit per page: the lot was asked as one commit.
+
+## Decided (2026-10-25, review of the feedback of 2026-10-21)
+
+The 🔒 read-only marker that 0282 took off the people page (it lived in its h1) comes back as
+the page's 🔒 line of the ⌨ panel (`keys_safe`) when `people` joins the frame — never in the
+bar (one place on every page). `places` has it already.

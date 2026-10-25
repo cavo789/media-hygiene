@@ -81,3 +81,8 @@ run afterwards (not unasked).
   loop.
 - The measure (round trip for 20 files): follows the loop; estimated from 24 MB/s × 2 reads
   plus ≈ 2 s per container start and the re-listing (not measured).
+
+## Decided (2026-10-25, review of the feedback of 2026-10-23)
+
+The next round keeps the ticks of the previous one **by phone path** (the TODO's choice); a
+file whose folder was renamed on the phone falls back to the defaults.
