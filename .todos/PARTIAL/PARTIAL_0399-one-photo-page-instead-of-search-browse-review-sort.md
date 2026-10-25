@@ -55,3 +55,42 @@ the group checked before → after and sorted with *GO*.
 
 `test_page_frame.py` and `test_pick_pages.py` for the one page; the old routes redirect; the
 menu catalog and `COMMANDS_TOO` follow what is decided; say that `docs_screenshots` should run.
+
+## Status — PARTIAL (2026-10-25)
+
+### Done
+- The differences, read from the templates and routes after 0394–0398 (2026-10-25):
+  - **search and browse are already one server and one page family**: the same app
+    (`search/app.py`), the tabs 🔎 Words · 📁 Folders (`pick_views`), the same `pick_*` grid,
+    keys, large view and bar, the same set-aside (`decisions.json`) and albums. What differs:
+    the left column (words + period + path + source vs the folder tree), *Sort by* / *Show*
+    (browse only: 0347), the people's *Why this name?* (W) and the rule of a period with its GO
+    (search only, 0396/0397), the heaviest files and videos (browse only). Merging them is 0348.
+  - **review-sort is another server** (`review/sort_app.py`, its own session on the latest
+    classify plan and workbook), opened alone by `mh review-sort` (the home page launches it as
+    a step, not as a tab). Its own: the event list with 3 filters and the progress (0398), the
+    Folder / Name fields and their live destination, O / S (send / leave picked photos), V and
+    Shift+Z (sure proposals), M (sort now, 0397), R and *Your rules* (0392–0395), the workbook
+    overlay and its conflicts. It has no set-aside, no albums, no people.
+  - **One key would have two meanings**: Delete sets photos aside on search/browse, but takes
+    back a choice on review-sort — the skill `photo-picking-pages` forbids a key with another
+    meaning on another view.
+- A proposal, cheapest first (estimated from the sizes: review-sort is ~15 modules and
+  ~1,400 template lines, with ~10 integration test files):
+  1. **search + browse → one page** (0348): `/search` with the tree as a filter of the left
+     column; `mh browse` opens it on the Folders view. Nothing lost; ~1 session.
+  2. **review-sort as a third view of that page** (🗂 Events): one server holding the index
+     *and* the sort session; the bar shows Folder / Name / destination / GO when an event is
+     shown. Lost or to decide: Delete's meaning, the workbook conflicts' banner, the server
+     needing a classify run only for that view. ~3–5 sessions.
+  3. Alternative to 2, without merging the servers: the same tabs on review-sort's page
+     (🔎 · 📁 · 🗂) opening the other page on the same port when it is served by the home
+     page — the user sees one page with three views; nothing is lost. ~1–2 sessions.
+
+### Not done
+- The merge itself (items 1, 2 or 3 above), the old routes' redirects, the menu catalog,
+  `COMMANDS_TOO`, the docs of the three commands.
+  **Reason:** the TODO's own *Needs maintainer*: which level of merge (1 only, 1 + 2, or
+  1 + 3), what Delete means on the Events view, and whether `mh browse` / `mh review-sort`
+  stay as entry points or go (memory "CLI only if useful in console"). Removing pages and
+  commands the maintainer chose is a design change: listed here, asked, not guessed.
