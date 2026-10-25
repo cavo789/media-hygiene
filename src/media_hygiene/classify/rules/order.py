@@ -4,8 +4,9 @@ Each file is read against the rules, in order. The first match whose score reach
 `sure` wins; otherwise the best match (the earliest on a tie) is a guess to check.
 `other_category` takes the files no rule above it matched. A score of 0 turns a rule
 off. A date rule reads the event: when at least half of an event's files fall in its
-dates, the whole event takes it. A `subject` rule is sure only when the samples of the
-event agree; otherwise it is "to check". A rule with `keep_folders` keeps the folders
+dates, the whole event takes it, but never a file a `kind` rule matches (0394). A
+`subject` rule is sure only when the samples of the event agree; otherwise it is "to
+check". A rule with `keep_folders` keeps the folders
 the user named below its category (`kept`, 0391).
 """
 
@@ -17,14 +18,16 @@ from typing import TYPE_CHECKING
 from media_hygiene.classify.layout import Values, render
 from media_hygiene.classify.models import SortReason
 from media_hygiene.classify.rules.building import build_test
-from media_hygiene.classify.rules.kept import kept_below, named_folders
+from media_hygiene.classify.rules.kept import Kept, kept_below, named_folders
 from media_hygiene.classify.rules.kinds import (
     BUILT_IN,
+    DATED,
     GEO_CATEGORIES,
     NEIGHBOURS,
     REASONS,
     RuleMatch,
 )
+from media_hygiene.classify.rules.matchers import kind_taken
 from media_hygiene.classify.signals import NO_SIGNAL, Signal
 from media_hygiene.classify.whereabouts import with_place
 
@@ -52,8 +55,11 @@ def decide(
     Returns:
         The signal of each file: its category, reason, rule and score.
     """
+    if any(rule.match in DATED for rule in settings.rules):
+        aside = kind_taken(files, settings.rules)
+        facts = replace(facts, kept=Kept(aside=aside))
     if any(rule.keep_folders for rule in settings.rules):
-        facts = replace(facts, named=named_folders(facts))
+        facts = replace(facts, kept=replace(facts.kept, named=named_folders(facts)))
     rules = tuple((rule, build_test(rule, facts)) for rule in settings.rules)
     return {file.path: _first(file, rules, (settings, facts)) for file in files}
 

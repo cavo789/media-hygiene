@@ -320,6 +320,7 @@ concurrency = 1
 {{ comment(_("A date rule takes a whole event when at least half of its photos fall on its days: a trip over Christmas stays a trip if its date range is listed above Christmas.")) }}
 {{ comment(_("A category may use {year}, {month}, {month_name}, {day}, {event} and {event_start}: those of the event's start. Without a category, the files a rule matches stay where they are. 'score = 0' turns a rule off; without a score, the rule takes the one of its match (a date range is sure).")) }}
 {{ comment(_("keep_folders = true: the folders you named stay below the rule's category (a trip you sorted into 2019/Montenegro/Budva and .../Cetinje: Holidays and outings/Montenegro/Budva, .../Cetinje), instead of all its photos flat in it.")) }}
+{{ comment(_("Only the event's main folder (the one holding most of its photos) and the folders sharing a parent with it are kept below; a folder sharing nothing with it goes to the category flat. A date rule never takes the files a kind rule recognises (screenshots, received pictures, downloads), wherever that rule is listed.")) }}
 {{ comment(_('The categories below are an example to replace with your own, e.g. Parties, Holidays and outings, School, Sport and leisure, At home, Animals, Nature and landscapes, Documents and screenshots, Other. Avoid a "Family" or "Portraits" category: in a family collection, it swallows most photos.')) }}
 
 [[classify.rules]]

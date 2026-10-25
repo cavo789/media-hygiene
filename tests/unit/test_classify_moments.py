@@ -206,3 +206,66 @@ def test_keep_folders_needs_a_category() -> None:
             dates="2019-07-12..2019-07-14",
             keep_folders=True,
         )
+
+
+# 0394: the main folder is the rule's folder; screenshots are never a date rule's.
+WEDDING_RULE = ClassifyRule(
+    name="Mariage d'Hervé et Magda",
+    match=RuleMatch.DATE_RANGE,
+    dates="2017-08-05..2017-08-06",
+    category="Fêtes/Mariages/Mariage d'Hervé et Magda",
+    keep_folders=True,
+)
+WEDDING = "Fêtes/Mariages/Mariage d'Hervé et Magda"
+
+
+def wedding() -> list[MediaInput]:
+    """14 in the wedding's folder, 3 of Manon, 2 screenshots, 1 in an unrelated one."""
+    folder = "2017/Août 2017/Mariage Hervé et Magda"
+    return [
+        *(
+            shot(f"{folder}/w{index}.jpg", datetime(2017, 8, 5, 15 + index // 2))
+            for index in range(14)
+        ),
+        *(
+            shot(f"Manon/2017/m{hour}.jpg", datetime(2017, 8, 5, hour, 30))
+            for hour in (16, 18, 20)
+        ),
+        shot("Screenpresso/s1.png", datetime(2017, 8, 6, 10, 32), camera=None),
+        shot("Screenpresso/Thumbnails/s2.png", datetime(2017, 8, 6, 16, 57), None),
+        shot("2017/Développement Sep/d.jpg", datetime(2017, 8, 5, 19, 10)),
+    ]
+
+
+def test_the_main_folder_is_the_rules_folder() -> None:
+    """The wedding in the category itself; Manon's joins it; screenshots stay apart."""
+    settings = with_rule(WEDDING_RULE).model_copy(update={"person_folders": ("Manon",)})
+    found = by_name(classify(wedding(), settings, Scope()).proposals)
+    assert set(categories(found, ("w0.jpg", "w13.jpg", "m16.jpg", "m20.jpg"))) == {
+        WEDDING
+    }
+    assert found["w0.jpg"].target == ROOT / "2017" / "Fêtes" / "Mariages" / (
+        "Mariage d'Hervé et Magda"
+    )
+    assert categories(found, ("d.jpg",)) == [WEDDING]
+    alone = by_name(classify(wedding(), SETTINGS, Scope()).proposals)
+    for name in ("s1.png", "s2.png"):
+        assert found[name].rule == alone[name].rule != WEDDING_RULE.name, name
+        assert found[name].target == alone[name].target, name
+
+
+def test_an_unrelated_folder_goes_to_the_category_flat() -> None:
+    """Without `person_folders`, Manon's folder is no sub-folder of the wedding."""
+    found = by_name(classify(wedding(), with_rule(WEDDING_RULE), Scope()).proposals)
+    assert set(categories(found, ("w0.jpg", "m16.jpg", "d.jpg"))) == {WEDDING}
+    assert found["s1.png"].rule != WEDDING_RULE.name
+
+
+def test_a_screenshot_is_never_taken_by_a_date_rule_listed_first() -> None:
+    """The `kind` rule listed below the date rule still keeps its screenshots."""
+    flat = WEDDING_RULE.model_copy(update={"keep_folders": False})
+    loose = [shot("DCIM/Screenshot_20170806.png", datetime(2017, 8, 6, 9), None)]
+    files = [*wedding(), *loose]
+    found = by_name(classify(files, with_rule(flat), Scope()).proposals)
+    assert found["w0.jpg"].rule == flat.name
+    assert found["Screenshot_20170806.png"].rule == "Screenshots and documents"

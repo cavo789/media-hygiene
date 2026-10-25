@@ -97,6 +97,18 @@ gives `2019/Holidays and outings/Montenegro/Budva` and `…/Montenegro/Cetinje`;
 person's folder taken the same days follow the folder of their moment
 ([below](#your-familys-folders)), the others go to `…/Montenegro`.
 
+Only the event's **main folder** (the one holding most of its photos) and the folders sharing
+a parent with it are kept: a wedding sorted into `2017/August 2017/Hervé and Magda's wedding`
+becomes the category itself, never `…/Hervé and Magda's wedding/Hervé and Magda's wedding`; a
+folder sharing nothing with it (`2017/Development Sep`) goes to the category flat, never below
+it. A person's folder taken the same evening (`Manon\…`) is such an unrelated folder: list
+the name in `person_folders` ([below](#your-familys-folders)) and its photos join the wedding
+by their moment.
+
+**A date rule never takes a screenshot.** The files a `kind` rule recognises (screenshots,
+received pictures, downloads) are not memories of the day, wherever that rule is listed: they
+keep the rule they would have without the date rule.
+
 ### Folder and file names
 
 A `path` rule searches its pattern in the whole path, as Windows writes it

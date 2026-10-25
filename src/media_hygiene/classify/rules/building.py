@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.models import DateSource, SortReason
 from media_hygiene.classify.rules.calendar import parse_one_off, parse_recurring
+from media_hygiene.classify.rules.kept import Kept
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.classify.rules.matchers import KIND_TESTS, camera_test, path_test
 from media_hygiene.classify.rules.people import person_test
@@ -65,8 +66,7 @@ class RuleFacts:
     where: Whereabouts = field(
         default_factory=Whereabouts
     )  # personal places and trips, from the GPS
-    # Event id → the folders the user named in it (`keep_folders`, 0391).
-    named: Mapping[str, tuple[str, ...]] = field(default_factory=dict)
+    kept: Kept = field(default_factory=Kept)  # `keep_folders`, `kind` files aside
 
 
 def build_test(rule: ClassifyRule, facts: RuleFacts) -> Test:
@@ -134,8 +134,11 @@ def _dated(window: Recurring | OneOff, facts: RuleFacts) -> Test:
             file: The file.
 
         Returns:
-            True for a file of a matching event, or a lone file dated in it.
+            True for a file of a matching event, or a lone file dated in it; never
+            a file a `kind` rule takes.
         """
+        if file.path in facts.kept.aside:
+            return False
         event = facts.event_of.get(file.path)
         if event is not None:
             return event.event_id in taken

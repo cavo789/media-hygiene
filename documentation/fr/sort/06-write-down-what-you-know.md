@@ -99,6 +99,20 @@ donne `2019/Vacances et sorties/Monténégro/Budva` et `…/Monténégro/Cetinje
 dossier d'une personne prises les mêmes jours suivent le dossier de leur moment
 ([plus bas](#les-dossiers-de-votre-famille)), les autres vont dans `…/Monténégro`.
 
+Seuls le **dossier principal** de l'événement (celui qui en contient le plus de photos) et les
+dossiers qui partagent un parent avec lui sont gardés : un mariage trié dans
+`2017/Août 2017/Mariage Hervé et Magda` devient la catégorie elle-même, jamais
+`…/Mariage d'Hervé et Magda/Mariage Hervé et Magda` ; un dossier qui ne partage rien avec lui
+(`2017/Développement Sep`) va dans la catégorie à plat, jamais dessous. Le dossier d'une
+personne pris le même soir (`Manon\…`) est un tel dossier sans lien : écrivez son nom dans
+`person_folders` ([plus bas](#les-dossiers-de-votre-famille)) et ses photos rejoignent le
+mariage par leur moment.
+
+**Une règle de dates ne prend jamais une capture d'écran.** Les fichiers qu'une règle `kind`
+reconnaît (captures d'écran, images reçues, téléchargements) ne sont pas des souvenirs du jour,
+où que cette règle soit dans la liste : ils gardent la règle qu'ils auraient sans la règle de
+dates.
+
 ### Les noms de dossiers et de fichiers
 
 Une règle `path` cherche son motif dans tout le chemin, tel que Windows l'écrit
