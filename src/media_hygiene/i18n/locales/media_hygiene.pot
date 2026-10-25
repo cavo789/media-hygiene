@@ -7857,10 +7857,6 @@ msgstr ""
 msgid "Why {name}?"
 msgstr ""
 
-#, python-brace-format
-msgid "Why {name}? Click to see the face that gave this name"
-msgstr ""
-
 msgid "Width"
 msgstr ""
 
@@ -11981,6 +11977,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{size} · no risk: one command, undoable."
+msgstr ""
+
+#, python-brace-format
+msgid "{source}: click to search every photo with “{word}”"
 msgstr ""
 
 #, python-brace-format

@@ -56,6 +56,9 @@ opens `browse`, the same server. Ctrl+C, or closing its tab, stops the page.
 - **Search**: type the words, then Enter; the keys then go to the grid, `/` comes back to the
   field. *How to write a search* recalls the phrases ("bord de mer"), the starts of words
   (anniv\*) and the words of one source (place:durbuy).
+- **Follow a word**: a click on a word under a photo (*Mechelen*, *2026*, a person's name)
+  searches it as a phrase in every source, the filters emptied: from one photo to all the others
+  with that word. It never picks the photo.
 - **Pick**, as in `browse`: a click picks one file; the ☑ box (or Ctrl+click) adds or removes one;
   Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse picks
   what it touches (with Ctrl, it adds); Ctrl+A every file shown, then **Pick all N files found**
@@ -102,7 +105,7 @@ what it holds now (*Saved in config.toml, read back: 1 face of this photo is not
 **Put back** to undo it. The × never picks the photo, and the card stays where it is. The large
 view shows the same names, with the same ×, under its facts (`I`).
 
-A click on the name itself (or `W` in the large view) opens **Why this name?**: the face of the
+`W` in the large view opens **Why this name?**: the face of the
 photo cut out, how it got the name (*confirmed by you*, or *close to a face you confirmed*, with
 that face, its file, and the score against `[people] similarity`), and the next person when they
 come close too. **Yes, it is …** confirms that face, **Not …** takes the name off that face

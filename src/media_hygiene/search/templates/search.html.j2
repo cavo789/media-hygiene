@@ -24,7 +24,7 @@
   "notSaved": _("Nothing was saved: {error}"),
   "unname": _("Not {name}: take this name off the photo (saved in config.toml)"),
   "putBack": _("Put back"),
-  "why": _("Why {name}? Click to see the face that gave this name"),
+  "lookFor": _("{source}: click to search every photo with “{word}”"),
   "whyTitle": _("Why {name}?"),
   "reference": _("The face of reference that gave the name:"),
   "yes": _("Yes, it is {name}"),
@@ -78,13 +78,13 @@
   #syntax p { margin: 4px 0 0; }
   .folderLine, .caption { overflow-wrap: anywhere; }
   .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
-  .chip { padding: 0 6px; border-radius: 10px; background: var(--chip); }
+  .chip { padding: 0 6px; border-radius: 10px; background: var(--chip); cursor: pointer; }
+  .chip:hover { background: var(--line); }
   .chip .unname { margin-left: 4px; padding: 0 4px; border: 0; border-radius: 50%; font: inherit;
                   line-height: 1.2; background: transparent; color: var(--muted); cursor: pointer; }
   .chip .unname:hover { background: var(--bad); color: #fff; }
   .putBack { margin-left: 6px; }
   #viewerInfo .chips { justify-content: center; }
-  .chip.person { cursor: help; }
   #why { position: fixed; inset: 0; z-index: 5; display: flex; align-items: center;
          justify-content: center; padding: 16px; background: rgba(0, 0, 0, .5); }
   #why[hidden] { display: none; }

@@ -59,6 +59,9 @@ fermer son onglet, arrête la page.
 - **Chercher** : tapez les mots, puis Entrée ; les touches vont alors à la grille, `/` revient au
   champ. *Comment écrire une recherche* rappelle les expressions ("bord de mer"), les débuts de
   mots (anniv\*) et les mots d'une seule source (place:durbuy).
+- **Suivre un mot** : un clic sur un mot sous une photo (*Mechelen*, *2026*, le nom d'une
+  personne) le cherche comme expression dans toutes les sources, les filtres vidés : d'une photo à
+  toutes les autres qui ont ce mot. Il ne choisit jamais la photo.
 - **Choisir**, comme dans `browse` : un clic choisit un fichier ; la case ☑ (ou Ctrl+clic) en
   ajoute ou en retire un ; Maj+clic choisit tous les fichiers depuis le dernier cliqué ; un
   rectangle tracé à la souris choisit ce qu'il touche (avec Ctrl, il ajoute) ; Ctrl+A tous les
@@ -111,7 +114,7 @@ config.toml, relu : 1 visage de cette photo n'est pas Chloé.*), avec **Remettre
 La × ne choisit jamais la photo, et la carte reste à sa place. La grande vue montre les mêmes
 noms, avec la même ×, sous ses informations (`I`).
 
-Un clic sur le nom lui-même (ou `W` dans la grande vue) ouvre **Pourquoi ce nom ?** : le visage
+`W` dans la grande vue ouvre **Pourquoi ce nom ?** : le visage
 de la photo découpé, comment il a reçu le nom (*confirmé par vous*, ou *proche d'un visage que
 vous avez confirmé*, avec ce visage, son fichier et le score face à `[people] similarity`), et la
 personne suivante quand elle est proche aussi. **Oui, c'est …** confirme ce visage, **Pas …**

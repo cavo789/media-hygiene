@@ -3,9 +3,10 @@
    `pick_grid.js.j2`'s, the large view `pick_viewer.js.j2`'s, the albums
    `album_bar.html.j2`'s. The × of a `person` chip takes the name off the photo (the
    person's `rejected` list, read back, *Put back* in the line said): it never picks
-   the card (0317). A click on the chip itself (or W in the large view) opens *Why this
-   name?*: the face cut out, how it got the name, its reference and the score, then
-   *Yes, it is …* or *Not …* for that face (0318); Esc closes it, the picking untouched. #}
+   the card (0317). A click on any chip, a person's too, searches its word in every source,
+   the filters emptied. W in the large view opens *Why this name?*: the face cut
+   out, how it got the name, its reference and the score, then *Yes, it is …* or *Not …*
+   for that face (0318); Esc closes it, the picking untouched. #}
 const TEXTS = {{ texts | tojson }};
 const SOURCES = {{ sources | tojson }};
 const SEARCH_PATH = {{ search_path | tojson }};
@@ -32,24 +33,30 @@ function card(hit, index) {
   return wireCard(node, index);
 }
 
-// The words of a file as chips; a person's chip has a × that takes the name off.
+// The words of a file as chips: a click searches the word; a person's has a × too.
 function chipsOf(hit) {
   const chips = element("div", "chips");
   for (const [source, words] of Object.entries(hit.tags)) {
     for (const word of words) {
       const chip = element("span", "chip", word);
-      chip.title = SOURCES[source] || source;
-      if (source === "person") {
-        chip.classList.add("person");
-        chip.title = fill(TEXTS.why, { name: word });
-        for (const kind of ["pointerdown", "mousedown", "dblclick"]) chip.addEventListener(kind, (event) => event.stopPropagation());
-        chip.addEventListener("click", (event) => { event.stopPropagation(); why(hit.key, word); });
-        chip.append(unnameButton(hit, word));
-      }
+      chip.title = fill(TEXTS.lookFor, { word, source: SOURCES[source] || source });
+      // Never a pick, a rectangle nor the large view: only the search.
+      for (const kind of ["pointerdown", "mousedown", "dblclick"]) chip.addEventListener(kind, (event) => event.stopPropagation());
+      chip.addEventListener("click", (event) => { event.stopPropagation(); lookFor(word); });
+      if (source === "person") chip.append(unnameButton(hit, word));
       chips.append(chip);
     }
   }
   return chips;
+}
+
+// A chip's word as the new search: the phrase in every source, the filters emptied.
+function lookFor(word) {
+  $("text").value = '"' + word.replaceAll('"', "") + '"';
+  for (const id of ["from", "to", "folder", "source"]) $(id).value = "";
+  if ($("viewer").classList.contains("open")) close();
+  window.scrollTo(0, 0);
+  search(null);
 }
 
 // The large view's facts (I): the same chips, the same ×.
