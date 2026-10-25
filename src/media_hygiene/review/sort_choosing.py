@@ -9,12 +9,14 @@ from typing import TYPE_CHECKING, Final
 from pydantic import BaseModel, ConfigDict
 
 from media_hygiene.classify.page_values import EventValue
+from media_hygiene.classify.rules_edit import remove_rules, replace_rule
 from media_hygiene.classify.rules_file import add_rule, read_rules
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
 from media_hygiene.review.sort_destination import Destination, destination
 from media_hygiene.review.sort_files import RuleBook, file_decisions, movable_rows
 from media_hygiene.review.sort_rule import RuleIn, RulePreview, preview
+from media_hygiene.review.sort_rules_view import RulesView, rules_view
 from media_hygiene.review.sort_session import SortSession
 from media_hygiene.review.sort_state import EventView
 
@@ -93,9 +95,7 @@ class SortChoosing(SortSession):
             Its counts.
         """
         self._item(asked.event)
-        return preview(
-            self._source.plan, asked.event, (asked.rule(), self._source.book.rules)
-        )
+        return preview(self._source.plan, asked, self._source.book.rules)
 
     def save_rule(self, asked: RuleIn) -> RuleSaved:
         """Write a rule into `config.toml`, read it back, and choose the event's folder.
@@ -114,11 +114,21 @@ class SortChoosing(SortSession):
         config = self._source.book.config
         if config is None:
             raise ConfigError(_("This page cannot write config.toml."))
-        held = add_rule(config, asked.rule())
+        rule = asked.rule()
+        held = (
+            replace_rule(config, asked.replaces, rule)
+            if asked.replaces
+            else add_rule(config, rule)
+        )
         book = RuleBook(config, read_rules(config))
         self._source = replace(self._source, book=book)
         value = EventValue(name=held.name, category=held.category)
-        view = self.choose_event(asked.event, value)
+        # A rule turned into dates (0393) only replaces it: no event is chosen with it.
+        view = (
+            self.event(asked.event)
+            if asked.replaces
+            else self.choose_event(asked.event, value)
+        )
         written = config.stat().st_mtime_ns / _NANOSECONDS
         return RuleSaved(
             name=held.name,
@@ -127,3 +137,31 @@ class SortChoosing(SortSession):
             modified=datetime.fromtimestamp(written, tz=UTC).isoformat(),
             view=view,
         )
+
+    def rules_view(self) -> RulesView:
+        """What each rule of `config.toml` decided on the plan shown.
+
+        Returns:
+            The rules, in the file's order.
+        """
+        source = self._source
+        return rules_view(source.plan, source.book.rules, source.target.parent.name)
+
+    def remove_rules(self, names: tuple[str, ...]) -> RulesView:
+        """Remove rules from `config.toml`, then describe the list read back.
+
+        Args:
+            names: The rules to remove.
+
+        Returns:
+            The rules the file holds now.
+
+        Raises:
+            ConfigError: The page was opened without `config.toml`, or the file refused.
+        """
+        config = self._source.book.config
+        if config is None:
+            raise ConfigError(_("This page cannot write config.toml."))
+        book = RuleBook(config, remove_rules(config, names))
+        self._source = replace(self._source, book=book)
+        return self.rules_view()

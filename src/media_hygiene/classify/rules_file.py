@@ -66,8 +66,8 @@ def add_rule(config_file: Path, rule: ClassifyRule) -> ClassifyRule:
             rule read back is not the one written.
     """
     document = document_of(config_file)
-    rules = _rules_of(document)
-    if any(_named(item, rule.name) for item in rules):
+    rules = rules_of(document)
+    if any(named(item, rule.name) for item in rules):
         message = _("A rule is already named '{name}' in config.toml.")
         raise ConfigError(message.format(name=rule.name))
     at = next(
@@ -78,15 +78,15 @@ def add_rule(config_file: Path, rule: ClassifyRule) -> ClassifyRule:
         ),
         0,
     )
-    table = _table_of(rule)
+    table = rule_table(rule)
     if at > 0:
         _move_tail(rules[at - 1], table)
     rules.insert(at, table)
     write_document(config_file, document)
-    return _read_back(config_file, rule)
+    return read_back(config_file, rule)
 
 
-def _rules_of(document: TOMLDocument) -> AoT:
+def rules_of(document: TOMLDocument) -> AoT:
     """The list of rules of the document.
 
     Args:
@@ -106,7 +106,7 @@ def _rules_of(document: TOMLDocument) -> AoT:
     return found
 
 
-def _named(item: Table, name: str) -> bool:
+def named(item: Table, name: str) -> bool:
     """Tell whether a rule of the file carries a name, case ignored.
 
     Args:
@@ -119,7 +119,7 @@ def _named(item: Table, name: str) -> bool:
     return str(item.get("name", "")).casefold() == name.casefold()
 
 
-def _table_of(rule: ClassifyRule) -> Table:
+def rule_table(rule: ClassifyRule) -> Table:
     """A rule as a TOML table: its fields set, in the model's order.
 
     Args:
@@ -155,7 +155,7 @@ def _move_tail(before: Table, table: Table) -> None:
     table.value.body.extend(tail)
 
 
-def _read_back(config_file: Path, rule: ClassifyRule) -> ClassifyRule:
+def read_back(config_file: Path, rule: ClassifyRule) -> ClassifyRule:
     """Find the rule in the file just written.
 
     Args:

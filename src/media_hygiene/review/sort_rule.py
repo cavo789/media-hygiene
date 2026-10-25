@@ -41,6 +41,9 @@ class RuleIn(BaseModel):
     last: str
     category: str
     keep_folders: bool = True
+    replaces: str = (
+        ""  # *Turn into dates* (0393): the folder-name rule replaced in place
+    )
 
     def rule(self) -> ClassifyRule:
         """The rule, checked as `config.toml` is.
@@ -67,28 +70,30 @@ class RulePreview(BaseModel):
     others: int  # files of other events, or of no event, on the same days
     folders: tuple[str, ...]  # where those others are: `Photos Chloé (230)`
     overlaps: tuple[str, ...]  # the `date_range` rules sharing a day with it
-    taken: bool  # a rule of the same name exists
+    taken: bool  # another rule has the same name
+    lost: int = 0  # files the rule replaced decided, which this one does not take
 
 
 def preview(
     plan: ClassifyPlan,
-    event_id: str,
-    rules: tuple[ClassifyRule, Sequence[ClassifyRule]],
+    asked: RuleIn,
+    written: Sequence[ClassifyRule],
 ) -> RulePreview:
     """Count what a rule would take, as `classify` reads a date rule.
 
     Args:
         plan: The plan the page shows.
-        event_id: The event shown.
-        rules: The rule asked for, and the rules of `config.toml`.
+        asked: The rule asked for, its event, the rule it replaces if any.
+        written: The rules of `config.toml`.
 
     Returns:
         The counts.
     """
-    rule, written = rules
+    rule, event_id, replaces = asked.rule(), asked.event, asked.replaces
     window = parse_one_off(rule.dates)
     events = _events_taken(plan.rows, window)
     taken = [row for row in plan.rows if _takes(row, events, window)]
+    kept = {row.id for row in taken}
     mine = sum(1 for row in taken if row.event_id == event_id)
     others = [row for row in taken if row.event_id != event_id]
     folders = Counter(_last(row.parent) for row in others).most_common(_SHOWN_FOLDERS)
@@ -98,7 +103,14 @@ def preview(
         others=len(others),
         folders=tuple(f"{name} ({count})" for name, count in folders),
         overlaps=tuple(_overlapping(window, written)),
-        taken=any(other.name.casefold() == rule.name.casefold() for other in written),
+        taken=any(
+            other.name.casefold() == rule.name.casefold()
+            for other in written
+            if other.name != replaces
+        ),
+        lost=sum(1 for row in plan.rows if row.rule == replaces and row.id not in kept)
+        if replaces
+        else 0,
     )
 
 

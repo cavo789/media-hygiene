@@ -97,6 +97,26 @@ gives `2019/Holidays and outings/Montenegro/Budva` and `…/Montenegro/Cetinje`;
 person's folder taken the same days follow the folder of their moment
 ([below](#your-familys-folders)), the others go to `…/Montenegro`.
 
+### Folder and file names
+
+A `path` rule searches its pattern in the whole path, as Windows writes it
+(`C:\Photos\Chris & Fred\foto020601214749_957.jpg`): a folder name, a file name, or both.
+`(?i)` ignores case. An old camera named its photos `foto` + date + time
+(`foto020601214749_957`: 1 June 2002, 21:47:49); all those of that day start with
+`foto020601`:
+
+```toml
+[[classify.rules]]
+name = "Chris and Fred's wedding"
+match = "path"
+pattern = '(?i)chris ?& ?fred|\bfoto020601'
+category = "Parties/Weddings/Chris and Fred's wedding 2002"
+```
+
+`|` means "or": the folder `Chris & Fred` or a name starting with `foto020601`. `\b` marks
+the start of a word, so `myfoto020601…` does not match. Write the pattern between single
+quotes: a backslash then stays as typed.
+
 ### Kinds of files
 
 Told from the name and the metadata only:
@@ -251,7 +271,26 @@ New Year.
 ```
 
 The rules that decided nothing are named after the table: a typo in a regular expression, a
-wrong year, or simply nothing of that kind in your folders. A rule that cannot work stops the
+wrong year, or simply nothing of that kind in your folders.
+
+**Keep the list alive: *Your rules*.** On the page of the events
+([`review-sort`](../commands/review-sort.md)), **📌 Your rules** lists every rule of
+`config.toml` in its order, with the files it decided at the `classify` run the page shows
+and, for a folder-name rule, the days of the event holding most of its files:
+
+- a rule that decided nothing is shown in red, with **Remove** (or *Remove the N rules that
+  decided nothing*, after a question): it is removed from `config.toml`, your comments kept,
+  and the list is read back from the disk;
+- a folder-name rule (`path`) serves once: after `sort` moved its files into
+  `Holidays and outings/Turin 2018`, the old folder name it looks for is gone. **Turn into
+  dates** replaces it, in its place in the list, by a `date_range` rule with the days of that
+  event and `keep_folders = true`; the dialog says what changes first ("450 files: 92 of this
+  event, 358 of other folders on the same days. Elsewhere: Photos Chloé (358)", and the files
+  the old rule decided that the new one would not take). One rule at a time: the days are those
+  of the event holding most of its files, never its extreme dates (a pattern also catches
+  badly dated photos).
+
+The counts are those of the last `classify`: run it again to see the rules you changed at work. A rule that cannot work stops the
 run before anything is read, and names itself (rules are counted from the top of the file):
 
 ```text

@@ -35,7 +35,11 @@ def show_unused_rules(output: Output, classification: Classification) -> None:
                 _("Rules that decided nothing: {names}.").format(names=names)
             )
             output.tip(
-                _("Check their dates, their patterns and their order in config.toml.")
+                _(
+                    "Check their dates, their patterns and their order in config.toml; "
+                    "review-sort lists them under Your rules, with a button to remove "
+                    "those that match nothing any more."
+                )
             )
         return
     span = str(years[0]) if years[0] == years[1] else f"{years[0]}-{years[1]}"

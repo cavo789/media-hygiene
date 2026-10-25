@@ -29,12 +29,16 @@ from media_hygiene.review.sort_choices import (
     EVENT_PATH,
     FILES_PATH,
     FORGET_PATH,
-    RULE_PATH,
-    RULE_PREVIEW_PATH,
     SURE_PATH,
 )
 from media_hygiene.review.sort_files import RuleBook, SortSource
 from media_hygiene.review.sort_now import SORT_NOW_PATH
+from media_hygiene.review.sort_rule_choices import (
+    RULE_PATH,
+    RULE_PREVIEW_PATH,
+    RULES_PATH,
+    RULES_REMOVE_PATH,
+)
 from media_hygiene.services.page_choices import page_decisions, page_file
 from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.services.sort_event import sorter_of
@@ -126,6 +130,8 @@ def sort_page(session: SortBatchSession) -> str:
             "sortNow": SORT_NOW_PATH,
             "rulePreview": RULE_PREVIEW_PATH,
             "rule": RULE_PATH,
+            "rules": RULES_PATH,
+            "rulesRemove": RULES_REMOVE_PATH,
         },
         workbook=workbook,
         decisions=decisions,

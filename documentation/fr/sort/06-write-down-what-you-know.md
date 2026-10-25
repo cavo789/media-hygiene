@@ -99,6 +99,26 @@ donne `2019/Vacances et sorties/Monténégro/Budva` et `…/Monténégro/Cetinje
 dossier d'une personne prises les mêmes jours suivent le dossier de leur moment
 ([plus bas](#les-dossiers-de-votre-famille)), les autres vont dans `…/Monténégro`.
 
+### Les noms de dossiers et de fichiers
+
+Une règle `path` cherche son motif dans tout le chemin, tel que Windows l'écrit
+(`C:\Photos\Chris & Fred\foto020601214749_957.jpg`) : un nom de dossier, un nom de fichier,
+ou les deux. `(?i)` ignore les majuscules. Un vieil appareil nommait ses photos `foto` + date
++ heure (`foto020601214749_957` : le 1er juin 2002, 21:47:49) ; toutes celles de ce jour
+commencent par `foto020601` :
+
+```toml
+[[classify.rules]]
+name = "Mariage de Chris et Fred"
+match = "path"
+pattern = '(?i)chris ?& ?fred|\bfoto020601'
+category = "Fêtes/Mariages/Mariage de Chris et Fred 2002"
+```
+
+`|` veut dire « ou » : le dossier `Chris & Fred` ou un nom qui commence par `foto020601`.
+`\b` marque le début d'un mot : `mafoto020601…` ne convient pas. Écrivez le motif entre
+apostrophes : une barre oblique inverse reste alors telle quelle.
+
 ### Les genres de fichiers
 
 Reconnus par le nom et les métadonnées seulement :
@@ -262,7 +282,29 @@ Nouvel An, Saint-Nicolas.
 ```
 
 Les règles qui n'ont rien décidé sont nommées après le tableau : une faute de frappe dans une
-expression régulière, une mauvaise année, ou simplement rien de ce genre dans vos dossiers. Une
+expression régulière, une mauvaise année, ou simplement rien de ce genre dans vos dossiers.
+
+**Garder la liste vivante : *Vos règles*.** Sur la page des événements
+([`review-sort`](../commands/review-sort.md)), **📌 Vos règles** liste chaque règle de
+`config.toml` dans son ordre, avec les fichiers qu'elle a décidés lors du `classify` que montre
+la page et, pour une règle sur un nom de dossier, les jours de l'événement qui contient la plupart
+de ses fichiers :
+
+- une règle qui n'a rien décidé est affichée en rouge, avec **Supprimer** (ou *Supprimer les N
+  règles qui n'ont rien décidé*, après une question) : elle est retirée de `config.toml`, vos
+  commentaires conservés, et la liste est relue sur le disque ;
+- une règle sur un nom de dossier (`path`) ne sert qu'une fois : une fois que `sort` a rangé ses
+  fichiers dans `Vacances et sorties/Turin 2018`, l'ancien nom de dossier qu'elle cherche a
+  disparu. **Convertir en dates** la remplace, à sa place dans la liste, par une règle
+  `date_range` avec les jours de cet événement et `keep_folders = true` ; la boîte dit d'abord ce
+  qui change (« 450 fichiers : 92 de cet événement, 358 d'autres dossiers les mêmes jours.
+  Ailleurs : Photos Chloé (358) », et les fichiers que décidait l'ancienne règle et que la
+  nouvelle ne prendrait pas). Une règle à la fois : les jours sont ceux de l'événement qui
+  contient la plupart de ses fichiers, jamais ses dates extrêmes (un motif attrape aussi des
+  photos mal datées).
+
+Les nombres sont ceux du dernier `classify` : relancez-le pour voir à l'œuvre les règles que vous
+avez changées. Une
 règle qui ne peut pas fonctionner arrête l'exécution avant toute lecture, et se nomme
 (les règles sont comptées depuis le haut du fichier) :
 

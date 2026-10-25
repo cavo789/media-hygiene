@@ -50,6 +50,16 @@
   "ruleFolders": _("Elsewhere: {folders}."),
   "ruleOverlaps": _("It shares days with {rules}: the first listed in config.toml wins on those days."),
   "ruleTaken": _("A rule is already named so: choose another name."),
+  "rulesRun": _("As decided by the classify run {run}: run classify again to see the rules you changed at work."),
+  "nDead": [ngettext("{n} rule decided nothing.", "{n} rules decided nothing.", 1), ngettext("{n} rule decided nothing.", "{n} rules decided nothing.", 2)],
+  "rulesNone": _("Every rule decided something."),
+  "rulesRemoveAll": _("Remove the {count} rules that decided nothing"),
+  "rulesRemoveAsk": _("Remove these rules from config.toml? {names}"),
+  "rulesRemoved": _("Removed from config.toml, read back at {time}: {names}."),
+  "rulesRemove": _("Remove"),
+  "rulesConvert": _("Turn into dates"),
+  "rulesBuiltIn": _("built in: its folder names the category"),
+  "rulesLost": _("{n} files the old rule decided are not taken any more."),
   "ruleSaved": _("Rule '{name}' ({dates}) saved in config.toml, read back at {time}: the next classify applies it; this event's folder is chosen too."),
   "cancel": _("Cancel"),
   "ownFolder": _("its own folder"),
@@ -124,7 +134,11 @@
   dialog menu { display: flex; gap: 8px; justify-content: end; padding: 0; }
   #sendDlg label, #ruleDlg label { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; color: var(--text); }
   #ruleDlg label.filter { flex-direction: row; } #ruleDlg h2 { margin: 0 0 6px; }
-  #rulePreview.error { color: var(--bad); }
+  #rulePreview.error, #rulesSaid.error { color: var(--bad); } #rulesSaid.saved { color: var(--ok); }
+  #rulesDlg { width: min(60rem, 94vw); } #rulesDlg table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  #rulesDlg tbody { display: block; max-height: 55vh; overflow: auto; } #rulesDlg thead, #rulesDlg tbody tr { display: table; width: 100%; table-layout: fixed; }
+  #rulesDlg td, #rulesDlg th { padding: 3px 6px; text-align: left; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+  #rulesDlg tr.dead td:nth-child(3) { color: var(--bad); font-weight: 600; }
   #sendDlg input { min-width: 24rem; }
 {% endblock %}
 {% block side %}
@@ -133,6 +147,7 @@
     <div id="summary" class="muted"></div>
     <dl id="facts"></dl>
     <p id="conflict" class="conflict" hidden></p>
+    <p><button type="button" id="rulesOpen" class="plain">📌 {{ _("Your rules") }}</button></p>
   </section>
 {% endblock %}
 {% block keys %}
@@ -204,6 +219,16 @@
     <p id="rulePreview" class="muted" role="status"></p>
     <menu><button type="button" id="ruleNo" class="plain">{{ _("Cancel") }}</button><button type="submit" id="ruleYes">{{ _("Save the rule") }}</button></menu>
   </form>
+</dialog>
+<dialog id="rulesDlg" aria-labelledby="rulesTitle">
+  <h2 id="rulesTitle">📌 {{ _("Your rules") }}</h2>
+  <p id="rulesRun" class="muted"></p>
+  <p id="rulesSaid" role="status"></p>
+  <table id="rulesTable">
+    <thead><tr><th>{{ _("Rule") }}</th><th>{{ _("Match") }}</th><th>{{ _("Files") }}</th><th>{{ _("Days") }}</th><th></th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <menu><button type="button" id="rulesRemoveAll" class="plain" hidden></button><button type="button" id="rulesClose">{{ _("Close") }}</button></menu>
 </dialog>
 <dialog id="sendDlg">
   <form id="send" method="dialog" autocomplete="off">
@@ -428,7 +453,7 @@ for (const key of ["Delete", "Backspace", "a"]) delete VIEWER_KEYS[key];
   // After the shared grid's keys (pick_grid.js.j2): what it took (arrows, Space, Enter on a
   // framed photo, Ctrl+A, I, the large view's keys) is not this page's.
   document.addEventListener("keydown", (event) => {
-    if (byId("sureDlg").open || byId("sendDlg").open || byId("ruleDlg").open) return;  // the dialog's own keys
+    if (["sureDlg", "sendDlg", "ruleDlg", "rulesDlg"].some((dialog) => byId(dialog).open)) return;  // the dialog's own keys
     if (event.defaultPrevented || byId("viewer").classList.contains("open")) return;
     if (event.key === "Escape") {
       if (choiceDirty()) dropChoice();

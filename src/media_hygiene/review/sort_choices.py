@@ -11,15 +11,14 @@ from media_hygiene.classify.page_values import EventValue
 from media_hygiene.classify.workbook.validation import folder_of
 from media_hygiene.review.sort_batch import SureBatch
 from media_hygiene.review.sort_files import SendFiles
-from media_hygiene.review.sort_rule import RuleIn
+from media_hygiene.review.sort_rule_choices import RULE_CHOICES
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
 
     from media_hygiene.review.sort_batch import BatchAnswer, SortBatchSession
-    from media_hygiene.review.sort_choosing import RuleSaved, SortChoosing
+    from media_hygiene.review.sort_choosing import SortChoosing
     from media_hygiene.review.sort_destination import Destination
-    from media_hygiene.review.sort_rule import RulePreview
     from media_hygiene.review.sort_session import SortSession
     from media_hygiene.review.sort_state import EventView
 
@@ -28,8 +27,6 @@ FILES_PATH: Final = "/api/files"
 FORGET_PATH: Final = "/api/forget"
 SURE_PATH: Final = "/api/sure"
 DESTINATION_PATH: Final = "/api/destination"
-RULE_PREVIEW_PATH: Final = "/api/rule/preview"
-RULE_PATH: Final = "/api/rule"
 
 
 class _Frozen(BaseModel):
@@ -136,32 +133,6 @@ def _destination(session: SortBatchSession, body: bytes) -> Destination:
     return session.destination(asked.event, value)
 
 
-def _rule_preview(session: SortBatchSession, body: bytes) -> RulePreview:
-    """Tell what a rule for an event would take; nothing is saved.
-
-    Args:
-        session: The review.
-        body: The JSON body.
-
-    Returns:
-        Its counts.
-    """
-    return session.rule_preview(RuleIn.model_validate_json(body))
-
-
-def _rule(session: SortBatchSession, body: bytes) -> RuleSaved:
-    """Write a rule for an event into `config.toml`, and choose the event's folder.
-
-    Args:
-        session: The review.
-        body: The JSON body.
-
-    Returns:
-        The rule read back, and the event.
-    """
-    return session.save_rule(RuleIn.model_validate_json(body))
-
-
 def _sure(session: SortBatchSession, body: bytes) -> BatchAnswer:
     """Accept the sure proposals of events still open, or take them back, at once.
 
@@ -184,7 +155,6 @@ CHOICES: Final[Mapping[str, Choice]] = MappingProxyType(
         FORGET_PATH: _forget,
         SURE_PATH: _sure,
         DESTINATION_PATH: _destination,
-        RULE_PREVIEW_PATH: _rule_preview,
-        RULE_PATH: _rule,
+        **RULE_CHOICES,
     }
 )

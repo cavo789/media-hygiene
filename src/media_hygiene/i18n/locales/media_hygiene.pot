@@ -921,6 +921,12 @@ msgstr ""
 msgid "April"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"As decided by the classify run {run}: run classify again to see the rules"
+" you changed at work."
+msgstr ""
+
 msgid "As in the Explorer, full size with ← and →; set photos aside."
 msgstr ""
 
@@ -1211,7 +1217,10 @@ msgid ""
 "folders; a search needs 'tags' first."
 msgstr ""
 
-msgid "Check their dates, their patterns and their order in config.toml."
+msgid ""
+"Check their dates, their patterns and their order in config.toml; review-"
+"sort lists them under Your rules, with a button to remove those that "
+"match nothing any more."
 msgstr ""
 
 #, python-brace-format
@@ -1630,6 +1639,9 @@ msgid "Dates"
 msgstr ""
 
 msgid "Dates from"
+msgstr ""
+
+msgid "Days"
 msgstr ""
 
 msgid "Days of every year"
@@ -2263,6 +2275,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Every report is listed in {path} (Ctrl+click opens it)."
+msgstr ""
+
+msgid "Every rule decided something."
 msgstr ""
 
 msgid "Every series has been seen."
@@ -3476,6 +3491,9 @@ msgid "Map stopped; your places are in config.toml."
 msgstr ""
 
 msgid "March"
+msgstr ""
+
+msgid "Match"
 msgstr ""
 
 msgid "May"
@@ -5284,6 +5302,9 @@ msgstr ""
 msgid "Remember as a rule"
 msgstr ""
 
+msgid "Remove"
+msgstr ""
+
 msgid "Remove ':ro' from its -v option: the tool writes there."
 msgid_plural "Remove ':ro' from their -v options: the tool writes there."
 msgstr[0] ""
@@ -5297,6 +5318,18 @@ msgid "Remove Media Hygiene from the right-click"
 msgstr ""
 
 msgid "Remove a folder"
+msgstr ""
+
+#, python-brace-format
+msgid "Remove the {count} rules that decided nothing"
+msgstr ""
+
+#, python-brace-format
+msgid "Remove these rules from config.toml? {names}"
+msgstr ""
+
+#, python-brace-format
+msgid "Removed from config.toml, read back at {time}: {names}."
 msgstr ""
 
 #, python-brace-format
@@ -5438,6 +5471,9 @@ msgid "Room"
 msgstr ""
 
 msgid "Root"
+msgstr ""
+
+msgid "Rule"
 msgstr ""
 
 #, python-brace-format
@@ -7713,6 +7749,9 @@ msgstr ""
 msgid "Try stopped: its drafts are removed, nothing was changed."
 msgstr ""
 
+msgid "Turn into dates"
+msgstr ""
+
 msgid ""
 "Two faces this similar (cosine, 0 to 1) may be the same person: higher "
 "splits more groups, lower mixes people."
@@ -8302,6 +8341,9 @@ msgstr ""
 msgid "Your places"
 msgstr ""
 
+msgid "Your rules"
+msgstr ""
+
 msgid ""
 "Your time zone, for the dates and the names of reports and runs, e.g. "
 "\"Europe/Brussels\" or \"America/Montreal\" (list: "
@@ -8562,6 +8604,9 @@ msgstr ""
 msgid "browse explore folders gallery"
 msgstr ""
 
+msgid "built in: its folder names the category"
+msgstr ""
+
 msgid "built-in"
 msgstr ""
 
@@ -8690,7 +8735,17 @@ msgid "config.toml holds no [[classify.rules]]: write one first."
 msgstr ""
 
 #, python-brace-format
+msgid "config.toml holds no rule named '{name}'."
+msgstr ""
+
+msgid "config.toml holds no rule of one of these names."
+msgstr ""
+
+#, python-brace-format
 msgid "config.toml read back does not hold the rule '{name}'."
+msgstr ""
+
+msgid "config.toml read back still holds a rule removed."
 msgstr ""
 
 #, python-brace-format
@@ -11823,6 +11878,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} files the old rule decided are not taken any more."
+msgstr ""
+
+#, python-brace-format
 msgid "{n} group picked: the next name goes to it."
 msgid_plural "{n} groups picked: the next name goes to all of them."
 msgstr[0] ""
@@ -11907,6 +11966,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} photo set aside, hidden"
 msgid_plural "{n} photos set aside, hidden"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} rule decided nothing."
+msgid_plural "{n} rules decided nothing."
 msgstr[0] ""
 msgstr[1] ""
 

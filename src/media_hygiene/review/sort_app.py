@@ -33,6 +33,7 @@ from media_hygiene.review.local_app import (
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.sort_choices import CHOICES, EVENT_PATH
 from media_hygiene.review.sort_now import SORT_NOW_PATH, sort_now
+from media_hygiene.review.sort_rule_choices import RULES_PATH
 from media_hygiene.review.sort_views import JPEG_SUFFIX, PREVIEW_PREFIX, THUMB_PREFIX
 
 if TYPE_CHECKING:
@@ -88,6 +89,8 @@ class SortReviewApp(LocalApp):
         Returns:
             The response; 404 for anything else.
         """
+        if path == RULES_PATH:  # *Your rules* (0393)
+            return _json(self.session.rules_view())
         if path in {PAGE_PATH, STATE_PATH}:
             return page_or_state(path, self.page, self.session.state)
         prefix = f"{EVENT_PATH}/"

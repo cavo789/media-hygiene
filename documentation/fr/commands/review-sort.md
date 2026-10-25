@@ -129,6 +129,10 @@ restent en bas à gauche, sous ⌨ **Clavier** (les premières toujours visibles
   et eux seuls, comme `sort --event` : notés au journal, remis en place par `undo`. Il faut les
   photos montées sans `:ro` et un montage `/journal` ; sinon la page dit ce qui manque et rien ne
   bouge. L'événement s'affiche ensuite *trié*, et <kbd>U</kbd> le saute.
+- **Règles** : *📌 Retenir comme règle* (<kbd>R</kbd>) écrit l'événement affiché comme une règle
+  `date_range` de `config.toml` ; *📌 Vos règles* liste ce que chaque règle a décidé, supprime
+  celles qui n'ont rien décidé et convertit une règle sur un nom de dossier en dates
+  ([trier, étape 6](../sort/06-write-down-what-you-know.md#voir-ce-que-chaque-règle-a-fait)).
 - **Le classeur n'est jamais modifié** (Excel l'a peut-être ouvert). Vous pouvez continuer à le
   modifier : chaque choix de la page retient ce que disait le classeur au moment où vous l'avez fait.
 - **Un conflit n'est jamais réglé en silence** : si le classeur a été changé depuis, sur le même
