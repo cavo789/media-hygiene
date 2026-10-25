@@ -3,6 +3,8 @@
 A session ends after `session_gap_hours` without a shot; sessions closer than
 `merge_gap_hours` make one event, so that a night does not cut an outing in two. Groups
 smaller than `min_event_size` are not events: their files fall back to their month.
+Each event keeps its sessions: the photos of a person's folder join the user's folder of
+the same session (`moments`).
 """
 
 from __future__ import annotations
@@ -68,7 +70,7 @@ def find_events(
     """
     ordered = sorted(dated, key=lambda item: (item[1], str(item[0])))
     # Without positions, sessions closer than the merge gap are one event: the two
-    # levels meet in one gap. Sessions matter alone for sampling and trips.
+    # levels meet in one gap. Each event keeps its sessions, for `moments`.
     gap = max(rules.session_gap, rules.merge_gap)
     groups: list[list[tuple[Path, datetime]]] = []
     for item in ordered:
@@ -77,20 +79,31 @@ def find_events(
         else:
             groups.append([item])
     return tuple(
-        _event(group, labels) for group in groups if len(group) >= rules.min_size
+        _event(group, labels, rules.session_gap)
+        for group in groups
+        if len(group) >= rules.min_size
     )
 
 
-def _event(group: list[tuple[Path, datetime]], labels: Mapping[Path, str]) -> Event:
+def _event(
+    group: list[tuple[Path, datetime]], labels: Mapping[Path, str], gap: timedelta
+) -> Event:
     """Describe one group of files as an event.
 
     Args:
         group: Its files and dates, in date order.
         labels: Meaningful folder labels.
+        gap: The gap ending a session.
 
     Returns:
-        The event, with a stable id and its dominant label.
+        The event, with a stable id, its dominant label and its sessions.
     """
+    sessions: list[list[Path]] = []
+    for index, (path, when) in enumerate(group):
+        if index and when - group[index - 1][1] <= gap:
+            sessions[-1].append(path)
+        else:
+            sessions.append([path])
     first_path, start = group[0]
     seed = f"{first_path}|{start.isoformat()}".encode()
     found = Counter(labels[path] for path, _when in group if path in labels)
@@ -101,6 +114,7 @@ def _event(group: list[tuple[Path, datetime]], labels: Mapping[Path, str]) -> Ev
         end=group[-1][1],
         paths=tuple(path for path, _when in group),
         label=label,
+        sessions=tuple(tuple(session) for session in sessions),
     )
 
 

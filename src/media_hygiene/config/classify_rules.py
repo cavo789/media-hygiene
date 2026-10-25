@@ -177,6 +177,7 @@ DEFAULT_RULES = (
         category="Documents and screenshots",
     ),
     ClassifyRule(name="Event neighbours", match=RuleMatch.EVENT_NEIGHBOUR),
+    ClassifyRule(name="Same moment", match=RuleMatch.SAME_MOMENT),
     ClassifyRule(
         name="Christmas",
         match=RuleMatch.CALENDAR,

@@ -132,6 +132,11 @@ copies retirées dans des dossiers qui ne s'accordent pas (`Mariage Julie`, `No�
 n'est utilisé, et la photo vous attend dans *À trier*. Le *pourquoi* du classeur dit d'où vient
 l'indice : `(le dossier d'une copie retirée : D:\Backup\Mariage Julie 2015)`.
 
+**Les photos de votre famille d'un voyage que vous avez trié.** Les photos du dossier d'une
+personne (`2019/Photos Chloé`) prises pendant que vos propres dossiers de l'événement ont des
+photos les rejoignent, à vérifier : la règle `same_moment` ([étape
+6](06-write-down-what-you-know.md#les-dossiers-de-votre-famille)).
+
 ## D'où viennent les dates
 
 La première source fiable l'emporte : la date écrite par l'appareil (EXIF), les balises d'une

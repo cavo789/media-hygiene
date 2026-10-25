@@ -47,6 +47,7 @@ category = "Fêtes/Noël"
 |---|---|---|
 | `existing_folder` | Un nom de dossier que vous avez choisi (`2019/Vacances à la mer`, `Mars 2005 - Travaux maison`). | — |
 | `event_neighbour` | Les fichiers isolés d'un événement rejoignent le seul dossier que vous avez nommé pour lui. | — |
+| `same_moment` | Les photos du dossier d'une personne, ou isolées, rejoignent votre dossier du même moment (plus bas). | — |
 | `calendar` | Des jours qui reviennent chaque année, `dates = "MM-JJ..MM-JJ"`. | `dates = "12-24..12-26"` |
 | `date_range` | Des jours qui n'arrivent qu'une fois, `dates = "AAAA-MM-JJ..AAAA-MM-JJ"`. | `dates = "2023-07-01..2023-07-15"` |
 | `kind` | Un genre de fichier, `kind = "screenshot"`, `"received"` ou `"download"`. | `kind = "screenshot"` |
@@ -58,8 +59,8 @@ category = "Fêtes/Noël"
 | `trip` | Un événement loin de la maison, nommé d'après son pays et sa ville, hors ligne ([étape 9](09-places-from-gps.md)). | — |
 | `other_category` | Les fichiers qu'aucune règle au-dessus n'a reconnus. | `category = "Autres"` |
 
-`existing_folder` et `event_neighbour` donnent comme catégorie le nom du dossier lui-même : ils
-ne prennent pas de `category`. Une règle absente de la liste ne s'applique pas : une liste vide,
+`existing_folder`, `event_neighbour` et `same_moment` donnent comme catégorie le nom du dossier
+lui-même : ils ne prennent pas de `category`. Une règle absente de la liste ne s'applique pas : une liste vide,
 `rules = []`, trie par dates seulement.
 
 ### Les dates
@@ -86,6 +87,30 @@ Reconnus par le nom et les métadonnées seulement :
 - `download` : une vidéo dont le nom contient une saison, une résolution ou un codec (`S01E05`,
   `1080p`, `x264`) : un film ou une série téléchargés. Ce ne sont pas des souvenirs : la liste
   d'exemples ne leur donne pas de catégorie, ils restent donc où ils sont.
+
+### Les dossiers de votre famille
+
+Vous avez trié un voyage vous-même, `2019/Montenegro/Budva`, `…/Cetinje` ; les photos de vos
+filles des mêmes jours sont dans `2019/Photos Chloé` et `Manon 2023/dcim`. Un dossier est
+**celui d'une personne** quand le nom de quelqu'un s'y trouve, comme un mot, sans tenir compte
+des majuscules ni des accents (`Photos Chloé`, `Backup Manon`, `iPhone Manon` ; pas
+`Chloéville`). Les noms sont ceux de la page [`people`](../reference-people.md), plus une liste
+pour les personnes qui n'y sont pas nommées :
+
+```toml
+[classify]
+person_folders = ["Chloé", "Manon"]
+```
+
+Avec une règle `same_moment` (dans la liste d'exemples), chaque photo du dossier d'une personne,
+et chaque photo isolée (`DCIM`), prise pendant une **séance** (des photos sans pause de 6 heures,
+`session_gap_hours`) où vos propres dossiers ont des photos rejoint votre dossier : `Photos
+Chloé` du 12 va dans `2019/À vérifier/Montenegro/Budva`, celle du 13 dans `…/Cetinje`. Deux de
+vos dossiers dans la même séance : celui dont une photo est la plus proche dans le temps. Une
+photo d'aucune de ces séances va dans le dossier du voyage, le parent commun de vos dossiers
+(`Montenegro`), sauf s'ils n'en ont aucun (ou seulement une année). Elles sont **à vérifier** :
+regardez-les dans le rapport. Une photo d'un dossier que vous avez nommé vous-même ne bouge
+jamais. `score = 0` sur la règle la désactive.
 
 ### Les personnes
 
@@ -168,12 +193,12 @@ Chaque `match` a un score par défaut, qu'une règle peut changer par son propre
 | `match` | Score |
 |---|---|
 | `date_range` | 95 : vous l'avez écrite, elle est sûre |
-| `existing_folder` | 90 (85 pour le dossier d'une personne, `Papa/2018/…`) |
+| `existing_folder` | 90 (85 pour le dossier d'une personne, `Papa/2018/…`, `Photos Chloé`) |
 | `path`, `camera` | 90 |
 | `calendar`, `kind`, `other_category` | 85 |
 | `subject` | 85 quand les échantillons de l'événement sont d'accord ; sinon « à vérifier » |
 | `person` | 85 |
-| `event_neighbour` | 70 : à vérifier |
+| `event_neighbour`, `same_moment` | 70 : à vérifier |
 
 La table `[classify] scores` fixe ces valeurs par défaut pour toutes les règles d'un même
 `match`. Une photo dont la date est douteuse (son dossier dit une autre année) reste « à

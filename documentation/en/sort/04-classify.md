@@ -127,6 +127,10 @@ first. Two removed copies in folders that disagree (`Mariage Julie`, `Noël`): n
 and the photo waits for you in *To sort*. The workbook's *why* says where the hint came from:
 `(the folder of a removed copy: D:\Backup\Mariage Julie 2015)`.
 
+**Your family's photos of a trip you sorted.** The photos of a person's folder (`2019/Photos
+Chloé`) taken while your own folders of the event hold photos join them, to check: the
+`same_moment` rule ([step 6](06-write-down-what-you-know.md#your-familys-folders)).
+
 ## Where the dates come from
 
 The first reliable source wins: the date the camera wrote (EXIF), the tags of a video (its UTC

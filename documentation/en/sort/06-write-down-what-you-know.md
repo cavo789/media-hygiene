@@ -47,6 +47,7 @@ category = "Parties/Christmas"
 |---|---|---|
 | `existing_folder` | A folder name you chose (`2019/Seaside holidays`, `Mars 2005 - Travaux maison`). | — |
 | `event_neighbour` | The loose files of an event join the one folder you named for it. | — |
+| `same_moment` | The photos of a person's folder, or loose, join your folder of the same moment (below). | — |
 | `calendar` | Days that come back every year, `dates = "MM-DD..MM-DD"`. | `dates = "12-24..12-26"` |
 | `date_range` | Days that happen once, `dates = "YYYY-MM-DD..YYYY-MM-DD"`. | `dates = "2023-07-01..2023-07-15"` |
 | `kind` | A kind of file, `kind = "screenshot"`, `"received"` or `"download"`. | `kind = "screenshot"` |
@@ -58,8 +59,8 @@ category = "Parties/Christmas"
 | `trip` | An event far from home, named after its country and town, offline ([step 9](09-places-from-gps.md)). | — |
 | `other_category` | The files no rule above it matched. | `category = "Other"` |
 
-`existing_folder` and `event_neighbour` give the folder's own name as the category: they take
-no `category`. A rule left out of the list is not applied: an empty list, `rules = []`, sorts by
+`existing_folder`, `event_neighbour` and `same_moment` give the folder's own name as the
+category: they take no `category`. A rule left out of the list is not applied: an empty list, `rules = []`, sorts by
 dates only.
 
 ### Dates
@@ -85,6 +86,28 @@ Told from the name and the metadata only:
 - `download`: a video whose name holds a season, a resolution or a codec (`S01E05`, `1080p`,
   `x264`): a downloaded film or series. They are not memories: the example list gives them no
   category, so they stay where they are.
+
+### Your family's folders
+
+You sorted a trip yourself, `2019/Montenegro/Budva`, `…/Cetinje`; your daughters' photos of the
+same days sit in `2019/Photos Chloé` and `Manon 2023/dcim`. A folder is **a person's** when the
+name of someone is found in it, as a word, case and accents ignored (`Photos Chloé`, `Backup
+Manon`, `iPhone Manon`; not `Chloéville`). The names are those of the
+[`people`](../reference-people.md) page, plus a list for the people not named there:
+
+```toml
+[classify]
+person_folders = ["Chloé", "Manon"]
+```
+
+With a `same_moment` rule (in the example list), each photo of a person's folder, and each loose
+photo (`DCIM`), taken during a **session** (photos without a 6-hour break,
+`session_gap_hours`) where your own folders hold photos joins your folder: `Photos Chloé` of the
+12th goes to `2019/To check/Montenegro/Budva`, that of the 13th to `…/Cetinje`. Two of your
+folders in the same session: the one whose photo is nearest in time. A photo of no such session
+goes to the trip's folder, the common parent of your folders (`Montenegro`), unless they share
+none (or only a year). They are **to check**: look at them in the report. A photo of a folder
+you named yourself never moves. `score = 0` on the rule turns it off.
 
 ### People
 
@@ -160,12 +183,12 @@ turns a rule off:
 | `match` | Score |
 |---|---|
 | `date_range` | 95: you wrote it, it is sure |
-| `existing_folder` | 90 (85 for a person's folder, `Dad/2018/…`) |
+| `existing_folder` | 90 (85 for a person's folder, `Dad/2018/…`, `Photos Chloé`) |
 | `path`, `camera` | 90 |
 | `calendar`, `kind`, `other_category` | 85 |
 | `subject` | 85 when the samples of the event agree; otherwise "to check" |
 | `person` | 85 |
-| `event_neighbour` | 70: to check |
+| `event_neighbour`, `same_moment` | 70: to check |
 
 The scores of the `[classify] scores` table set these defaults for every rule of a kind. A
 photo whose date is doubtful (its folder says another year) stays "to check" whatever its

@@ -85,6 +85,9 @@ def build_test(rule: ClassifyRule, facts: RuleFacts) -> Test:
         RuleMatch.EVENT_NEIGHBOUR: lambda: (
             lambda file: folders[file.path].reason is SortReason.EVENT_NEIGHBOUR
         ),
+        RuleMatch.SAME_MOMENT: lambda: (
+            lambda file: folders[file.path].reason is SortReason.SAME_MOMENT
+        ),
         RuleMatch.CALENDAR: lambda: _dated(parse_recurring(rule.dates), facts),
         RuleMatch.DATE_RANGE: lambda: _dated(parse_one_off(rule.dates), facts),
         RuleMatch.KIND: lambda: KIND_TESTS[rule.kind] if rule.kind else _never,

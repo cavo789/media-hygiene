@@ -29,18 +29,21 @@ if TYPE_CHECKING:
 
 
 def with_people(scope: Scope, runtime: Runtime) -> Scope:
-    """Add who is on each photo to the scope, when a `person` rule needs it.
+    """Add the people named, and who is on each photo when a `person` rule needs it.
 
     Args:
         scope: The scope of the run.
         runtime: Settings, mount points.
 
     Returns:
-        The scope, with the names on each photo of the index.
+        The scope, with the names of `[[people.person]]` (their folders are theirs)
+        and the names on each photo of the index.
 
     Raises:
         MountError: The index cannot be read.
     """
+    named = tuple(person.name for person in runtime.settings.people.person)
+    scope = replace(scope, people=named)
     if not check_people(runtime.settings):
         return scope
     index = runtime.index_file

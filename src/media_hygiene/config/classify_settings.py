@@ -70,6 +70,8 @@ class ClassifySettings(BaseModel):
     town_names: dict[_TownName, _TownName] = {}
     folder_town_min_population: int = Field(default=5000, ge=0)
     folder_town_ignore: tuple[str, ...] = ()  # folder names that are never towns
+    # People whose folders (`Photos Chloé`) are theirs, besides `[[people.person]]`.
+    person_folders: tuple[str, ...] = ()
 
     @field_validator(
         "layout", "unsure_layout", "manual_layout", "undated_layout", "received_layout"

@@ -36,6 +36,7 @@ class SortReason(StrEnum):
     EXISTING_FOLDER = "existing-folder"
     PERSON_FOLDER = "person-folder"
     EVENT_NEIGHBOUR = "event-neighbour"
+    SAME_MOMENT = "same-moment"  # a person's photo, taken while the user's were (0386)
     CALENDAR = "calendar"
     DATE_RANGE = "date-range"
     KIND = "kind"
@@ -109,6 +110,8 @@ class Event:
     end: datetime
     paths: tuple[Path, ...]
     label: str = ""
+    # Its sessions: files with no gap of `session_gap_hours`; empty: one session.
+    sessions: tuple[tuple[Path, ...], ...] = ()
 
     @property
     def span(self) -> str:

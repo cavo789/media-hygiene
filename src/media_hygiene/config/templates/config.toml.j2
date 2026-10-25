@@ -292,6 +292,8 @@ trip_merge_max_km = 120
 folder_town_min_population = 5000
 {{ comment(_('Folder names that are never towns, e.g. a first name that is also a town somewhere: ["Martin", "Victoria"]. Case and accents do not matter.')) }}
 folder_town_ignore = []
+{{ comment(_('People whose folders hold their photos ("Photos Chloé", "iPhone Manon"), besides those named on the people page, e.g. ["Chloé", "Manon"]: a folder holding one of these names, as a word, is that person\'s. Case and accents do not matter. Their photos join your own folder of the same moment (the rule same_moment).')) }}
+person_folders = []
 
 [classify.ai]
 {{ comment(_("A local vision model (Ollama) names the subject of the photos no other rule decides. Off until a 'subject' rule is written below and a model is set here. The photos are sent to url, and only there: keep that server on your own computer.")) }}
@@ -314,7 +316,7 @@ concurrency = 1
 # shift = "+1h"
 
 {{ comment(_("Rules: what you know, written once, applied at every run. They are read in order, and the first one whose score reaches 'sure' decides; its name shows as the reason in the summary and in the workbook. These lists of tables are read from this file only: no environment variable overrides them.")) }}
-{{ comment(_('Each rule has a name and a "match": existing_folder (a folder name you chose), event_neighbour (the loose files of an event join its one named folder), calendar (days of every year, dates = "12-24..12-26"; "12-31..01-01" crosses New Year), date_range (days that happen once, dates = "2023-07-01..2023-07-15"), kind (kind = "screenshot", "received" or "download"), path (a regular expression searched in the host path, pattern = "(?i)kermesse"), camera (a regular expression searched in the make and model, pattern = "(?i)dji"), subject (what a local vision model sees, categories = [...], see [classify.ai]), place (the GPS position lies in one of your places, see [[classify.places]]), trip (an event far from home, named after its country and town without going online), folder_town (a folder named after a town, 2017/Durbuy: its photos go to country/town, to check), other_category (the files no rule above matched).')) }}
+{{ comment(_('Each rule has a name and a "match": existing_folder (a folder name you chose), event_neighbour (the loose files of an event join its one named folder), same_moment (the photos of a person\'s folder, or loose, join your named folder of the same session, else the common parent of your folders of the event), calendar (days of every year, dates = "12-24..12-26"; "12-31..01-01" crosses New Year), date_range (days that happen once, dates = "2023-07-01..2023-07-15"), kind (kind = "screenshot", "received" or "download"), path (a regular expression searched in the host path, pattern = "(?i)kermesse"), camera (a regular expression searched in the make and model, pattern = "(?i)dji"), subject (what a local vision model sees, categories = [...], see [classify.ai]), place (the GPS position lies in one of your places, see [[classify.places]]), trip (an event far from home, named after its country and town without going online), folder_town (a folder named after a town, 2017/Durbuy: its photos go to country/town, to check), other_category (the files no rule above matched).')) }}
 {{ comment(_("A date rule takes a whole event when at least half of its photos fall on its days: a trip over Christmas stays a trip if its date range is listed above Christmas.")) }}
 {{ comment(_("A category may use {year}, {month}, {month_name}, {day}, {event} and {event_start}: those of the event's start. Without a category, the files a rule matches stay where they are. 'score = 0' turns a rule off; without a score, the rule takes the one of its match (a date range is sure).")) }}
 {{ comment(_('The categories below are an example to replace with your own, e.g. Parties, Holidays and outings, School, Sport and leisure, At home, Animals, Nature and landscapes, Documents and screenshots, Other. Avoid a "Family" or "Portraits" category: in a family collection, it swallows most photos.')) }}
@@ -382,6 +384,10 @@ category = "{{ _("Documents and screenshots") }}"
 [[classify.rules]]
 name = "{{ _("Event neighbours") }}"
 match = "event_neighbour"
+
+[[classify.rules]]
+name = "{{ _("Same moment") }}"
+match = "same_moment"
 
 [[classify.rules]]
 name = "{{ _("Christmas") }}"

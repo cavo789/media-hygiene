@@ -1,7 +1,6 @@
 """From the files and what the index knows of them, one proposal per file.
 
-Read-only: nothing here touches a file. Dates, folders and events give the facts; the
-ordered rules of `[[classify.rules]]` decide from them.
+Read-only. Dates, folders and events give the facts; `[[classify.rules]]` decide.
 """
 
 from __future__ import annotations
@@ -20,9 +19,10 @@ from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.guesses import keep_guess
 from media_hygiene.classify.layout import Values, render
 from media_hygiene.classify.models import Band, Proposal, SortReason, Verdict
+from media_hygiene.classify.moments import Moments, joined_signals
 from media_hygiene.classify.rules.building import RuleFacts, Seen
 from media_hygiene.classify.rules.order import decide
-from media_hygiene.classify.signals import folder_signal, with_neighbours
+from media_hygiene.classify.signals import folder_signal
 from media_hygiene.classify.trips import find_whereabouts
 from media_hygiene.classify.whereabouts import with_place
 from media_hygiene.classify.years import below, in_years, year_folders
@@ -53,6 +53,7 @@ class Scope:  # pylint: disable=too-many-instance-attributes  # one field per op
     seen: Seen = field(default_factory=Seen)  # the model's answers, the people
     towns: Gazetteer | None = None  # read only when a `trip` rule is on
     within: tuple[Path, ...] = ()  # `--path`: only the files below them get a proposal
+    people: tuple[str, ...] = ()  # `[[people.person]]` names: their folders are theirs
 
 
 @dataclass(frozen=True, slots=True)
@@ -81,7 +82,7 @@ def classify(
     """
     rules = FolderRules.build(
         (*scope.generic, *settings.generic_folders), band_folders(settings)
-    )
+    ).with_people((*scope.people, *settings.person_folders))
     context = DatingContext(
         rules,
         compile_patterns(settings.name_dates),
@@ -99,10 +100,9 @@ def classify(
     event_of = {path: event for event in events for path in event.paths}
     signals = without_event_folders(files, (signals, event_of), rules)
     where = find_whereabouts(files, (events, datings), (settings, scope.towns))
+    signals = joined_signals(signals, events, Moments(datings, rules, settings))
     # Every `path` rule asks for the host path of every file: computed once each.
-    facts = RuleFacts(
-        datings, with_neighbours(signals, events), event_of, cache(scope.host)
-    )
+    facts = RuleFacts(datings, signals, event_of, cache(scope.host))
     facts = replace(facts, seen=scope.seen, where=where)
     signals = decide(files, settings, facts)
     years = year_folders(files, datings, (signals, event_of, settings.event_year))
