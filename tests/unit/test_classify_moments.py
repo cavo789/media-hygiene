@@ -14,13 +14,14 @@ from media_hygiene.classify.engine import Scope, classify
 from media_hygiene.classify.models import Band, MediaInput, SortReason
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.config.classify_rules import ClassifyRule
-from media_hygiene.config.classify_settings import ClassifySettings
+from tests.support.layouts import legacy
 from tests.unit.test_classify_engine import ROOT, by_name, shot
 
 if TYPE_CHECKING:
     from media_hygiene.classify.models import Proposal
+    from media_hygiene.config.classify_settings import ClassifySettings
 
-SETTINGS = ClassifySettings()
+SETTINGS = legacy()
 CHLOE = Scope(people=("Chloé",))
 
 
@@ -99,7 +100,7 @@ def test_one_named_folder_works_as_event_neighbours_do() -> None:
 
 def test_the_rule_turned_off_gives_todays_proposals() -> None:
     """`same-moment = 0`: the person's folder is its own category again."""
-    settings = ClassifySettings(scores={"same-moment": 0})
+    settings = legacy(scores={"same-moment": 0})
     chloe = day("2019/Photos Chloé", (12, 11))
     found = by_name(classify([*trip(), *chloe], settings, CHLOE).proposals)
     proposal = found["Photos Chloé-12-11.jpg"]
@@ -110,7 +111,7 @@ def test_the_rule_turned_off_gives_todays_proposals() -> None:
 
 def test_a_folder_is_a_persons_when_it_holds_their_name() -> None:
     """`person_folders`, as a word, case and accents ignored; not a part of a word."""
-    settings = ClassifySettings(person_folders=("chloe",))
+    settings = legacy(person_folders=("chloe",))
     files = [
         shot("2019/PHOTOS CHLOÉ/a.jpg", datetime(2019, 3, 1, 10)),
         shot("2019/Chloéville/b.jpg", datetime(2019, 4, 1, 10)),
@@ -146,7 +147,7 @@ TRIP_RULE = ClassifyRule(
 
 def with_rule(rule: ClassifyRule) -> ClassifySettings:
     """The default settings, a rule written above them."""
-    return ClassifySettings(rules=(rule, *ClassifySettings().rules))
+    return legacy(rules=(rule, *legacy().rules))
 
 
 def categories(found: dict[str, Proposal], names: tuple[str, ...]) -> list[str]:

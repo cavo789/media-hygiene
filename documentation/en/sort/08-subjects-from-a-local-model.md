@@ -105,8 +105,8 @@ The **confidence** comes from the samples, never from what the model says of its
 
 | Samples | Proposal |
 |---|---|
-| All agree (3 of 3) | Sure: `year/category` |
-| A majority (2 of 3), or one photo alone | To check: `year/To check/category` |
+| All agree (3 of 3) | Sure: `year/year-month/category` |
+| A majority (2 of 3), or one photo alone | To check: stays until you confirm it |
 | Most fit no category | No subject: the other rules decide |
 
 `per_photo = true` on the rule describes **every** photo instead, each with its own category:

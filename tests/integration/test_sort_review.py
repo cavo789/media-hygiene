@@ -57,7 +57,9 @@ def test_the_state_an_event_its_previews_and_a_choice(locations: Locations) -> N
     [event] = saved.events
     assert (event.value.name, event.base.empty) == (EVENT_NAME, True)
     result = sort(runtime)
-    assert (locations.data_dir / "c/2016" / EVENT_NAME / "IMG_0000.jpg").is_file()
+    assert (
+        locations.data_dir / "c/2016/2016-07" / EVENT_NAME / "IMG_0000.jpg"
+    ).is_file()
     assert result.manifest.intact
 
 
@@ -75,10 +77,10 @@ def test_photos_sent_elsewhere_or_left_in_place(locations: Locations) -> None:
 
     photos = json.loads(asyncio.run(choose()).body)["photos"]
     chosen = [photo["page"] for photo in photos[:2]]
-    assert chosen == ["2016/Best of", "(stay where it is)"]
+    assert chosen == ["2016/2016-07/Best of", "(stay where it is)"]
     sort(runtime)
     data = locations.data_dir
-    assert (data / "c/2016/Best of/IMG_0000.jpg").is_file()
+    assert (data / "c/2016/2016-07/Best of/IMG_0000.jpg").is_file()
     assert (data / PARTY / "IMG_0001.jpg").is_file()
 
 

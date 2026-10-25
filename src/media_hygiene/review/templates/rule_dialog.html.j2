@@ -14,7 +14,8 @@
     <label>{{ _("Name") }} <input id="ruleName" required></label>
     <label>{{ _("From") }} <input id="ruleFirst" type="date" required></label>
     <label>{{ _("To") }} <input id="ruleLast" type="date" required></label>
-    <label>{{ _("Folder, under the year") }} <input id="ruleCategory" list="categories" required></label>
+    <label>{{ _("Name of the event's folder") }} <input id="ruleCategory" list="categories" required pattern="[^\/\\]+" title="{{ _('One name, without / nor \\') }}"></label>
+    <p id="ruleWhere" class="muted"></p>
     <label class="filter"><input type="checkbox" id="ruleKeep" checked> {{ _("Keep my folders below it (keep_folders)") }}</label>
     <p id="rulePreview" class="muted" role="status"></p>
     {% if rule_go %}

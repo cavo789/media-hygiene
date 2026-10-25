@@ -12,13 +12,14 @@ from __future__ import annotations
 
 from collections import Counter
 from datetime import date
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Annotated, Final
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import AfterValidator, BaseModel, ConfigDict
 
 from media_hygiene.classify.rules.calendar import parse_one_off
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.config.classify_rules import ClassifyRule
+from media_hygiene.config.rule_checks import one_name
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
@@ -39,7 +40,7 @@ class RuleIn(BaseModel):
     name: str
     first: str  # ISO day
     last: str
-    category: str
+    category: Annotated[str, AfterValidator(one_name)]  # a name (0401)
     keep_folders: bool = True
     replaces: str = (
         ""  # *Turn into dates* (0393): the folder-name rule replaced in place

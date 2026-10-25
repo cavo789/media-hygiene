@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from media_hygiene.paths.locations import Locations
     from media_hygiene.review.http import Response
 
-FOLDER = "Fêtes/Kermesse"
+FOLDER = "Kermesse"
 
 
 def rule_of(event: str, name: str = "Kermesse") -> dict[str, object]:
@@ -88,4 +88,4 @@ def test_a_rule_saved_is_read_back_and_applied_by_the_next_classify(
     )
     party = [row for row in plan.rows if row.date and row.date.startswith("2016-07-14")]
     assert {row.rule for row in party} == {"Kermesse"}
-    assert {row.folder for row in party} == {f"2016/{FOLDER}"}
+    assert {row.folder for row in party} == {f"2016/2016-07/{FOLDER}"}

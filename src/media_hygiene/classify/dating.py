@@ -6,25 +6,31 @@ from dataclasses import dataclass, field, replace
 from datetime import date, datetime
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.classify.clocks import doubt_future, shifted
+from media_hygiene.classify.clocks import clocks_of, doubt_future, shifted
 from media_hygiene.classify.dates import (
     CONFIDENCE,
     DOUBTED,
+    clock_not_set,
     exif_date,
     folder_dating,
     name_date,
     takeout_date,
     video_date,
+    zone_of,
 )
 from media_hygiene.classify.models import DateSource, Dating
+from media_hygiene.plan.name_rules import compile_patterns
 
 if TYPE_CHECKING:
     import re
+    from collections.abc import Sequence
     from datetime import tzinfo
+    from pathlib import Path
 
     from media_hygiene.classify.clocks import Clock
     from media_hygiene.classify.folders import FolderRules
     from media_hygiene.classify.models import MediaInput
+    from media_hygiene.config.classify_settings import ClassifySettings
 
 _NS: Final = 1_000_000_000
 
@@ -126,3 +132,26 @@ def has_camera_trace(file: MediaInput) -> bool:
     return metadata is not None and bool(
         metadata.make or metadata.model or metadata.located
     )
+
+
+def datings_of(
+    files: Sequence[MediaInput], settings: ClassifySettings, rules: FolderRules
+) -> dict[Path, Dating]:
+    """The date of each file, from its EXIF, its name, its folders or the disk.
+
+    Args:
+        files: Every file.
+        settings: `[classify]`: name patterns, zone, clocks.
+        rules: What folder names say.
+
+    Returns:
+        Each file's date.
+    """
+    context = DatingContext(
+        rules,
+        compile_patterns(settings.name_dates),
+        zone_of(settings.timezone),
+        clock_not_set(files, rules),
+        clocks_of(settings.clocks),
+    )
+    return {file.path: dating_of(file, context) for file in files}

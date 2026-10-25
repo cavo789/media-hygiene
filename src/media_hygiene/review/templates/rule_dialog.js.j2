@@ -18,6 +18,7 @@ function ruleFill(values) {
   ruleEl("ruleCategory").value = values.category || "";
   ruleEl("ruleKeep").checked = values.keep_folders !== false;
   ruleSay("", false);
+  ruleWhere();
   ruleEl("ruleYes").disabled = false;
 }
 // Send a rule; null when the page's server cannot be reached.
@@ -27,6 +28,13 @@ async function rulePost(path, body) {
     return { response: response, answer: await response.json().catch(() => ({})) };
   } catch (error) { return null; }
 }
+// The folder `sort` will make, as Explorer shows it: `2009\2009-11\<name>` (0400, 0401).
+function ruleWhere() {
+  const first = ruleEl("ruleFirst").value, name = ruleEl("ruleCategory").value.trim();
+  const shown = first && name ? `→ ${first.slice(0, 4)}\\${first.slice(0, 7)}\\${name}` : "";
+  ruleEl("ruleWhere").textContent = shown;
+}
+for (const field of ["ruleFirst", "ruleCategory"]) ruleEl(field).addEventListener("input", ruleWhere);
 function ruleSay(text, error) {
   const said = ruleEl("rulePreview");
   said.textContent = text;

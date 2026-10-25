@@ -164,7 +164,7 @@ person_folders = ["Chloé", "Manon"]
 With a `same_moment` rule (in the example list), each photo of a person's folder, and each loose
 photo (`DCIM`), taken during a **session** (photos without a 6-hour break,
 `session_gap_hours`) where your own folders hold photos joins your folder: `Photos Chloé` of the
-12th goes to `2019/To check/Montenegro/Budva`, that of the 13th to `…/Cetinje`. Two of your
+12th would go to `2019/2019-07/Montenegro/Budva`, that of the 13th to `…/Cetinje`. Two of your
 folders in the same session: the one whose photo is nearest in time. A photo of no such session
 goes to the trip's folder, the common parent of your folders (`Montenegro`), unless they share
 none (or only a year). They are **to check**: look at them in the report. A photo of a folder
@@ -198,7 +198,7 @@ your events takes most of them, like a "Family" category would.
 ### Categories
 
 A category may use `{year}`, `{month}`, `{month_name}`, `{day}`, `{event}` and `{event_start}`,
-taken from the start of the event: `category = "Parties/Christmas {year}"`; the GPS rules add
+taken from the start of the event (the month is `00` when only the year is known): `category = "Parties/Christmas {year}"`; the GPS rules add
 `{place}`, `{country}`, `{region}` and `{city}` ([step 9](09-places-from-gps.md#write-the-rules)).
 Characters Windows refuses in a folder name are refused.
 
@@ -234,9 +234,9 @@ contradicts does.
 ## Which rule wins
 
 The rules are read **in order**, and the first one whose score reaches `sure` (80 by default)
-decides. When none does, the best one found is a guess, gathered in `year/To check/category`.
-When no rule matches, the file goes to `year/To sort/<event>`: "to sort" means "we do not
-know", while `other_category` means "sure that nothing above matches".
+decides. When none does, the best one found is a guess: the file stays where it is until you
+confirm it. When no rule matches, the file stays too: "to sort" means "we do not know", while
+`other_category` means "sure that nothing above matches".
 
 Each `match` has a default score, which a rule may change with its own `score`; `score = 0`
 turns a rule off:

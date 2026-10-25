@@ -35,9 +35,8 @@ phone to another**. The photos of the fair taken with your phone, Julie's and th
 event, even when they sit in three folders.
 
 What `classify` does not know is **what to call it**. Without a hint (a folder you had already
-named, a [rule](../sort/06-write-down-what-you-know.md)), it can only file it under its dates, in
-`2016/To sort/2016-07-14`. Name it `Kermesse`, and `sort` puts all its files **in one folder**,
-`2016/Kermesse`:
+named, a [rule](../sort/06-write-down-what-you-know.md)), it leaves its files where they are.
+Name it `Kermesse`, and `sort` puts all its files **in one folder**, `2016/2016-07/Kermesse`:
 
 ```text
 Before, three folders:
@@ -46,9 +45,9 @@ Before, three folders:
   C:\Photos\Import 2016\DSC_0815.JPG
 
 After sort, one:
-  C:\Photos\2016\Kermesse\IMG_4012.HEIC
-  C:\Photos\2016\Kermesse\20160714_153201.jpg
-  C:\Photos\2016\Kermesse\DSC_0815.JPG
+  C:\Photos\2016\2016-07\Kermesse\IMG_4012.HEIC
+  C:\Photos\2016\2016-07\Kermesse\20160714_153201.jpg
+  C:\Photos\2016\2016-07\Kermesse\DSC_0815.JPG
 ```
 
 So yes, it is a tree of folders on your disk: **each photo is moved into one folder only**, its
@@ -56,11 +55,11 @@ event's (on the same disk, a mere rename, and [`undo`](undo.md) puts everything 
 to show up elsewhere too ("every Christmas", "Grandma"), without a copy: the
 [albums](../sort/12-albums.md).
 
-- **One field, the folder.** Type the folder under the year: `Kermesse` gives `2016/Kermesse`,
-  `Parties/Kermesse` gives `2016/Parties/Kermesse` (the fair and a birthday both under
-  `Parties`). The line under the field says, as you type, where the files go: "→ 212 files go to
-  C:\Photos\2016\Parties\Kermesse". The event's name (for the albums) is the last folder; change
-  it under *Name of the event* if needed.
+- **One field, the folder.** Type the event's name: `Kermesse` gives `2016/2016-07/Kermesse`
+  ([the convention](../sort/04-classify.md#the-convention-year-month-event)). The line under the
+  field says, as you type, where the files go: "→ 212 files go to
+  C:\Photos\2016\2016-07\Kermesse". The event's name (for the albums) is the last folder;
+  change it under *Name of the event* if needed.
 - **Not every event needs a name.** An event whose photos already sit in a named folder
   (`Seaside holidays`) has a proposal marked **sure**. Still look where it leads before accepting
   it: only its loose files (a phone's `DCIM`, files to check or to sort) go to the proposed folder.
@@ -70,8 +69,8 @@ to show up elsewhere too ("every Christmas", "Grandma"), without a copy: the
   (`Holidays in Montenegro`), that folder becomes their parent: `2019/Holidays in
   Montenegro/Budva`, `2019/Holidays in Montenegro/Cetinje`. The page says it: "3 files keep their
   own folder (Budva, Cetinje)".
-- **An event you do not name** is not lost: it goes to `year/To sort/<its dates>`, where you find
-  it again.
+- **An event you do not name** stays where it is, and in the list, until you name it: nothing
+  undecided moves.
 
 ## At a glance
 

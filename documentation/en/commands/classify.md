@@ -7,8 +7,9 @@
 **Get a tidy tree proposed for all your photos, by year, event, place or person, and correct it
 before anything moves.**
 
-`classify` proposes a place for every photo and video, `year/category` by default: `2019/Seaside
-holidays`, `2016/To sort/2016-07-14`. It **only proposes**: nothing moves. You correct the
+`classify` proposes a place for every photo and video, `year/year-month/event` by default:
+`2019/2019-08/Seaside holidays` ([the convention](../sort/04-classify.md#the-convention-year-month-event)).
+What is not decided stays where it is. It **only proposes**: nothing moves. You correct the
 proposal in a [workbook](../reference-glossary.md#workbook), then [`sort`](sort.md) applies it.
 
 **When**: after cleaning the duplicates (otherwise both copies are sorted); again after new
@@ -49,10 +50,12 @@ docker run --rm -it `
 ## Read the result
 
 - **Already in place**: the files already where the proposal wants them.
-- **Proposal**, by band: **sure** (a folder you named, a reliable date), **to check** (a guess,
-  gathered in `year/To check/category`), **to sort** (nothing tells: one folder per event, in
-  `year/To sort/<event>`), **undated** (`To sort/Undated`), **left as they are** (protected and
-  `--leave` folders).
+- **Proposal**, by band: **sure** (a folder you named, a rule: `year/year-month/event`), **to
+  check** (a guess: stays until you confirm it), **to sort** (nothing tells: stays, grouped by
+  event for you to name), **undated** (stays), **left as they are** (protected and `--leave`
+  folders, files directly in their `year/year-month` folder).
+- A `config.toml` sorting otherwise than the convention, or a rule whose category has several
+  folder levels, is said in one line.
 - **Why**: the rule or reason of each proposal, then the categories found most.
 - The end gives the path of the workbook and of the report.
 
@@ -62,7 +65,7 @@ docker run --rm -it `
 |---|---|
 | `--path FOLDER` | Only the files below this folder (host path, as you mounted it), repeatable: `--path "C:\Photos\2015"`. Events stay whole: built from every file, only those below the folder get a proposal. With `--year`: both. |
 | `--year YEAR[-YEAR]` | Only the files of this year or these years: `2016`, `2015-2017`. One evening at a time. Files only the disk dates (copies, downloads) are left out and counted: a run without `--year` proposes them. The rules written for other years are counted in one line, not named. |
-| `--layout LAYOUT` | Where sure files go: `{year}/{month}`, `{year}/{category}`… Also `{quarter}`, `{month_name}`, `{day}`, `{event}`, `{event_start}`, `{place}`, `{country}`, `{region}`, `{city}`. |
+| `--layout LAYOUT` | Where sure files go: `{year}/{year_month}/{category}` by default, `{year}/{month}`… Also `{year_month}` (`2009-11`; `1985-00` when only the year is known), `{quarter}`, `{month_name}`, `{day}`, `{event}`, `{event_start}`, `{place}`, `{country}`, `{region}`, `{city}`. |
 | `--target PATH` | Host folder receiving the tree (it must be mounted); each mounted folder, in place, by default. |
 | `--leave PATH` | Host folder never sorted, still analysed and cleaned. |
 | `--carry-over WORKBOOK` | Carry over the edits of this workbook; the latest `classify` run's by default. |

@@ -22,6 +22,7 @@ from media_hygiene.config.classify_rules import ClassifyRule
 from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.layers import read_env_layer
 from media_hygiene.scan.models import VisualFacts
+from tests.support.layouts import legacy
 
 if TYPE_CHECKING:
     from media_hygiene.classify.models import Proposal
@@ -78,7 +79,7 @@ def proposals(subject: Subject, *rules: ClassifyRule) -> list[Proposal]:
     """Classify one event whose files all got this subject."""
     files = event("DCIM")
     subjects = {"Subject": {file.path: subject for file in files}}
-    settings = ClassifySettings(rules=rules or (SUBJECT,))
+    settings = legacy(rules=rules or (SUBJECT,))
     return list(
         classify(files, settings, Scope(seen=Seen(subjects=subjects))).proposals
     )

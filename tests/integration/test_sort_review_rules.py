@@ -22,7 +22,7 @@ PARTY_RULE = ClassifyRule(
     name="Kermesse",
     match=RuleMatch.PATH,
     pattern="(?i)juillet 2016",
-    category="Fêtes/Kermesse",
+    category="Kermesse",
 )
 DEAD_RULES = tuple(
     ClassifyRule(name=name, match=RuleMatch.PATH, pattern=pattern, category="X")

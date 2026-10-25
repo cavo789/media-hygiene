@@ -88,6 +88,14 @@ fichiers déjà à leur place et les dossiers sources qu'il va supprimer, puis d
 - **Un événement à la fois** : `--event` (ou *Trier cet événement maintenant* dans
   [`review-sort`](review-sort.md)) trie un seul événement ; un `sort` ultérieur de tout le classeur
   saute ses fichiers, déjà déplacés. Chaque exécution a son propre `undo`.
+- **Tout reste lié** : juste après les déplacements, `sort` réécrit chacun de vos fichiers qui
+  nomment des photos par leur chemin — les noms donnés aux visages (`people\*.toml`),
+  `albums.json`, `decisions.json` (rafales, fichiers choisis dans `search` ; une paire de dossiers
+  dont un dossier a disparu est retirée) et les vidéos choisies dans `shrink --try` — puis les
+  relit et le dit en une ligne. Ils ne dépendent plus du cache : vous pouvez le supprimer. `undo`
+  remet les anciens chemins de la même façon. Un dossier de `config.toml` (`[folders] preferred`,
+  un dossier placé sur la carte) que l'exécution a vidé est nommé, pour que vous l'orientiez vers
+  le nouveau dossier.
 
 ## Pour aller plus loin
 

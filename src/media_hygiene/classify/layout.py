@@ -1,6 +1,8 @@
 """Layouts: where a file goes, written with placeholders, checked for Windows.
 
-`{year}/{category}` becomes `2016/Vacances`. An empty layout means "stay where it is".
+`{year}/{year_month}/{category}` becomes `2016/2016-07/Vacances`. An empty layout means
+"stay where it is". The month of an event is the month it starts; a month unknown (a
+folder that gives only the year) is `00`, a digit in every language (0400).
 Folder names are NFC-normalised; characters Windows refuses become `_`.
 """
 
@@ -16,7 +18,7 @@ from typing import Final
 from media_hygiene.i18n import _
 
 PLACEHOLDERS: Final = frozenset(
-    {"year", "quarter", "month", "month_name", "day", "category", "event"}
+    {"year", "year_month", "quarter", "month", "month_name", "day", "category", "event"}
     | {"event_start", "place", "country", "region", "city"}
 )
 _FORBIDDEN: Final = re.compile(r'[<>:"|?*\\\x00-\x1f]')
@@ -88,11 +90,13 @@ def render(layout: str, values: Values) -> str | None:
     """
     if not layout.strip():
         return None
+    month = f"{values.month:02d}"  # `00`: only the year is known
     filled = layout.format(
         year=f"{values.year:04d}",
-        quarter=(values.month - 1) // _MONTHS_PER_QUARTER + 1,
-        month=f"{values.month:02d}",
-        month_name=month_name(values.month),
+        year_month=f"{values.year:04d}-{month}",
+        quarter=(values.month + _MONTHS_PER_QUARTER - 1) // _MONTHS_PER_QUARTER,
+        month=month,
+        month_name=month_name(values.month) if values.month else month,
         day=f"{values.day:02d}",
         category=values.category,
         event=values.event,

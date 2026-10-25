@@ -89,7 +89,7 @@ def test_a_year_run_keeps_the_other_years_for_later(locations: Locations) -> Non
     assert rows["A0.jpg"] == "2017/Early"
     assert rows["M0.jpg"] == "2018/Kept"
     assert rows["D0.jpg"] == "Scans"
-    assert rows["M2.jpg"] == "2018/Wedding"
+    assert rows["M2.jpg"] == "2018/2018-06/Wedding"
     assert plan_of(full).deferred is None
 
 
@@ -108,7 +108,7 @@ def test_a_path_run_keeps_the_other_folders_and_a_second_narrow_run_too(
     assert again.carried.deferred == 2
     rows = folders(run_classify(runtime))
     assert rows["M0.jpg"] == "2018/Kept"
-    assert rows["M2.jpg"] == "2018/Wedding"
+    assert rows["M2.jpg"] == "2018/2018-06/Wedding"
 
 
 def test_a_file_deleted_is_still_gone(locations: Locations) -> None:

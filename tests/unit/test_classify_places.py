@@ -12,7 +12,7 @@ from media_hygiene.classify.plan_file import RowValues
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.config.classify_places import PersonalPlace
 from media_hygiene.config.classify_rules import ClassifyRule
-from media_hygiene.config.classify_settings import ClassifySettings
+from tests.support.layouts import legacy
 from tests.support.located import (
     GRANDPA,
     HOME,
@@ -38,7 +38,7 @@ def test_a_photo_within_the_radius_takes_the_place() -> None:
         SortReason.PLACE,
         "Places",
     )
-    assert proposal.folder == "2023/Home"
+    assert proposal.folder == "2023/2023-07/Home"
 
 
 def test_a_photo_outside_every_radius_takes_no_place() -> None:
@@ -88,7 +88,7 @@ def test_a_rule_category_can_hold_the_place() -> None:
 def test_overlapping_places_the_closest_wins() -> None:
     """Two circles: the photo goes to the one whose centre is closer."""
     garden = PersonalPlace(name="Garden", latitude=50.3015, longitude=5.1, radius_m=500)
-    settings = ClassifySettings(rules=(PLACE_RULE,), places=(HOME, garden))
+    settings = legacy(rules=(PLACE_RULE,), places=(HOME, garden))
     photo = located("a.jpg", start_of(1), (50.3014, 5.1))  # 156 m from home's centre
     (proposal,) = classify([photo], settings, Scope()).proposals
     assert proposal.category == "Garden"
@@ -101,9 +101,9 @@ def test_place_names_are_folder_names_and_unique() -> None:
     with pytest.raises(ValidationError, match="braces"):
         PersonalPlace(name="{year}", latitude=0, longitude=0)
     with pytest.raises(ValidationError, match="two places"):
-        ClassifySettings(places=(HOME, HOME))
+        legacy(places=(HOME, HOME))
     with pytest.raises(ValidationError, match="only one place can be home"):
-        ClassifySettings(places=(HOME, GRANDPA.model_copy(update={"home": True})))
+        legacy(places=(HOME, GRANDPA.model_copy(update={"home": True})))
     with pytest.raises(ValidationError, match="latitude"):
         PersonalPlace(name="Pole", latitude=91, longitude=0)
 
@@ -111,7 +111,7 @@ def test_place_names_are_folder_names_and_unique() -> None:
 def test_a_trip_rule_needs_a_home() -> None:
     """Without home, there is nothing to be far from."""
     with pytest.raises(ValidationError, match="home = true"):
-        ClassifySettings(rules=(TRIP_RULE,), places=(GRANDPA,))
+        legacy(rules=(TRIP_RULE,), places=(GRANDPA,))
 
 
 def test_the_plan_file_keeps_the_place_values() -> None:

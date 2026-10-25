@@ -31,3 +31,14 @@ class Dating:
     # The `[[classify.clocks]]` rule that set the camera's clock right: (shift, camera).
     clock: tuple[str, str] | None = None
     future: bool = False  # after the day of the run: doubted, to check
+    # False when only the year is known (folder `1985`): `{month}` renders `00` (0400).
+    month_known: bool = True
+
+    @property
+    def month(self) -> int:
+        """The month a layout shows.
+
+        Returns:
+            1 to 12, or 0 when only the year is known.
+        """
+        return self.when.month if self.month_known else 0

@@ -16,12 +16,12 @@ from media_hygiene.classify.models import Band, MediaInput, Proposal, SortReason
 from media_hygiene.classify.rules.building import Seen
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.config.classify_rules import ClassifyRule
-from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.people_settings import PeopleSettings, Person
 from media_hygiene.config.settings import Settings
 from media_hygiene.errors import ConfigError, MountError
 from media_hygiene.scan.models import VisualFacts
 from media_hygiene.services.classify_people import check_people, with_people
+from tests.support.layouts import legacy
 from tests.support.runtime import make_runtime
 
 if TYPE_CHECKING:
@@ -65,7 +65,7 @@ def run(
 ) -> dict[str, Proposal]:
     """Classify with these rules and these people on the photos, by file name."""
     found: Classification = classify(
-        files, ClassifySettings(rules=rules), Scope(seen=Seen(people=people))
+        files, legacy(rules=rules), Scope(seen=Seen(people=people))
     )
     return {p.file.path.name: p for p in found.proposals}
 
@@ -129,7 +129,7 @@ def test_a_rule_naming_nobody_is_refused_with_its_name(
 ) -> None:
     """The rule and the unknown name are said, with who is named."""
     settings = Settings(
-        classify=ClassifySettings(rules=(rule("Manon"),)),
+        classify=legacy(rules=(rule("Manon"),)),
         people=PeopleSettings(person=people),
     )
     with pytest.raises(ConfigError) as refused:
@@ -142,7 +142,7 @@ def test_a_rule_naming_nobody_is_refused_with_its_name(
 def test_names_are_checked_without_case_nor_accents() -> None:
     """`CHLOE` is Chloé; without a person rule, nothing is checked nor read."""
     named = PeopleSettings(person=(Person(name="Chloé", faces=("/a#0",)),))
-    settings = Settings(classify=ClassifySettings(rules=(rule("CHLOE"),)), people=named)
+    settings = Settings(classify=legacy(rules=(rule("CHLOE"),)), people=named)
     assert check_people(settings)
     assert not check_people(Settings())
 

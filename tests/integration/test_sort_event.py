@@ -18,6 +18,7 @@ from media_hygiene.services.runtime import Runtime
 from media_hygiene.services.sort_event import only_event, sort_event, sorter_of
 from media_hygiene.services.sort_inputs import find_workbook, load_inputs
 from media_hygiene.services.sort_reviewing import open_sort_review
+from tests.support.layouts import LEGACY_LAYOUTS
 from tests.support.runtime import make_runtime, thread_pool
 from tests.support.scenes import Shot, write_shot
 from tests.support.sort_review import PAGE, call
@@ -42,7 +43,8 @@ def two_events(locations: Locations) -> tuple[Runtime, Path, dict[str, int]]:
     for index in range(SPRING_SHOTS):
         shot = Shot(70 + index, taken_at=f"2017:05:01 1{index}:00:00")
         write_shot(locations.data_dir / SPRING / f"P_{index:04d}.jpg", shot)
-    runtime = make_runtime(locations)
+    # Events unnamed move only to a "to sort" folder: the layouts of before 0402.
+    runtime = make_runtime(locations, {"classify": dict(LEGACY_LAYOUTS)})
     AuditService(runtime, NullProgress()).run()
     workbook = classify(runtime)
     plan = ClassifyPlan.model_validate_json(

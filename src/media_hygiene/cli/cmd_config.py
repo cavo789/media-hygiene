@@ -57,7 +57,7 @@ def _shown(section: str, key: str, value: object) -> str:
     )
 
 
-def config_command(
+def config_command(  # pylint: disable=too-many-arguments  # one per option
     ctx: typer.Context,
     *,
     upgrade: Annotated[
@@ -70,11 +70,23 @@ def config_command(
             ),
         ),
     ] = False,
+    convention: Annotated[
+        bool,
+        typer.Option(
+            "--convention",
+            help=_(
+                "Move the [classify] layouts of your config.toml to the sort "
+                "convention year/year-month/event: shows each change, asks, writes."
+            ),
+        ),
+    ] = False,
     dry_run: Annotated[
         bool,
         typer.Option(
             "--dry-run",
-            help=_("With --upgrade: list the settings it would add, write nothing."),
+            help=_(
+                "With --upgrade or --convention: list what would change, write nothing."
+            ),
         ),
     ] = False,
 ) -> None:
@@ -83,6 +95,7 @@ def config_command(
     Args:
         ctx: Typer context holding the runtime.
         upgrade: `--upgrade`.
+        convention: `--convention`.
         dry_run: `--dry-run`.
     """
     from rich.table import Table
@@ -93,6 +106,11 @@ def config_command(
     from media_hygiene.scan.skipped_dirs import SYSTEM_DIR_NAMES
 
     runtime = runtime_of(ctx)
+    if convention:
+        from media_hygiene.cli.config_convention_flow import show_convention
+
+        show_convention(runtime, dry_run=dry_run)
+        return
     if upgrade or dry_run:
         show_upgrade(runtime, dry_run=dry_run)
         return

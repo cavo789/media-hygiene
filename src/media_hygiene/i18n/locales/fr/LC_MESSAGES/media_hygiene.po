@@ -67,11 +67,11 @@ msgstr " — aucun pour l'instant"
 
 msgid ""
 "\"Other\" means: sure that nothing above matches. Without it, such files "
-"go to \"to sort\", which means: we do not know."
+"stay where they are until you decide: we do not know."
 msgstr ""
 "« Autres » veut dire : sûr que rien au-dessus ne correspond. Sans cette "
-"règle, ces fichiers vont dans « à trier », qui veut dire : on ne sait "
-"pas."
+"règle, ces fichiers restent où ils sont jusqu'à ce que vous décidiez : on"
+" ne sait pas."
 
 msgid ""
 "\"bord de mer\" finds the phrase, anniv* every word starting so, "
@@ -272,6 +272,12 @@ msgid "'{name}' cannot be a folder name."
 msgstr "« {name} » ne peut pas être un nom de dossier."
 
 #, python-brace-format
+msgid "'{name}' holds a / or a \\: write one name, the event's folder"
+msgstr ""
+"'{name}' contient un / ou un \\ : écrivez un seul nom, le dossier de "
+"l'événement"
+
+#, python-brace-format
 msgid "'{name}' is longer than {count} characters."
 msgstr "« {name} » dépasse {count} caractères."
 
@@ -344,6 +350,9 @@ msgstr "(toujours ignorés)"
 
 msgid "(empty)"
 msgstr "(vide)"
+
+msgid "(empty: the files stay where they are until you decide)"
+msgstr "(vide : les fichiers restent où ils sont jusqu'à ce que vous décidiez)"
 
 msgid "(nothing to do yet)"
 msgstr "(rien à faire pour l'instant)"
@@ -537,6 +546,20 @@ msgstr ""
 "modifié, et jamais la raison du départ d'une copie ailleurs. L'audit dit "
 "ce qui lui manque et ce que lui seul contient (à copier avant d'effacer "
 "ce disque). Pas aussi préféré, protégé ou exclu."
+
+msgid ""
+"A category is the name of the event folder, one name without \"/\" "
+"(2009/2009-11/Tom's birthday); a trip may keep one stage below it "
+"(2019/2019-07/Montenegro/Budva). The rules below are an example to "
+"replace with your own. Avoid a \"Family\" or \"Portraits\" category: in a"
+" family collection, it swallows most photos."
+msgstr ""
+"Une catégorie est le nom du dossier de l'événement, un seul nom sans « / "
+"» (2009/2009-11/Anniversaire de Tom) ; un voyage peut garder une étape en"
+" dessous (2019/2019-07/Monténégro/Budva). Les règles ci-dessous sont un "
+"exemple à remplacer par les vôtres. Évitez une catégorie « Famille » ou «"
+" Portraits » : dans une collection familiale, elle avale la plupart des "
+"photos."
 
 #, python-brace-format
 msgid ""
@@ -1355,9 +1378,6 @@ msgstr ""
 " et Paul.jpg) est gardé plutôt qu'un nom généré par un appareil photo ou "
 "une application (DCIM\\IMG_1234.jpg), et un dossier nommé par quelqu'un "
 "plutôt qu'un dossier générique (DCIM, Camera, Nouveau dossier)."
-
-msgid "Birthdays"
-msgstr "Anniversaires"
 
 msgid "Bit rate"
 msgstr "Débit binaire"
@@ -3285,9 +3305,6 @@ msgstr ""
 "Dossier dont les copies sont conservées en priorité. Répétable ; l'ordre "
 "compte."
 
-msgid "Folder, under the year"
-msgstr "Dossier, sous l'année"
-
 msgid "Folders"
 msgstr "Dossiers"
 
@@ -4205,6 +4222,10 @@ msgstr "Liens"
 msgid "Links to make"
 msgstr "Liens à créer"
 
+#, python-brace-format
+msgid "Links updated, read back from the disk: {parts}."
+msgstr "Liens mis à jour, relus sur le disque : {parts}."
+
 msgid "List the HTML reports of previous audits and cleans."
 msgstr "Liste les rapports HTML des audits et nettoyages précédents."
 
@@ -4256,6 +4277,9 @@ msgstr "Revoir les photos disparues"
 
 msgid "Look again, slower: the photo turned, less strict"
 msgstr "Regarder encore, plus lentement : la photo tournée, moins exigeant"
+
+msgid "Looked at: nothing special that month"
+msgstr "Vu : rien de spécial ce mois-là"
 
 msgid "Looking at the photo turned, one angle after the other…"
 msgstr "La photo est regardée tournée, un angle après l'autre…"
@@ -4459,6 +4483,14 @@ msgstr ""
 "hygiene\\config:/config\"."
 
 msgid ""
+"Move the [classify] layouts of your config.toml to the sort convention "
+"year/year-month/event: shows each change, asks, writes."
+msgstr ""
+"Passer les rangements [classify] de votre config.toml à la convention de "
+"tri année/année-mois/événement : montre chaque changement, demande, "
+"écrit."
+
+msgid ""
 "Move the photos and videos as the edited classify workbook says "
 "(journaled, undoable)."
 msgstr ""
@@ -4569,6 +4601,9 @@ msgstr "Indiquez un autre fichier avec --decisions, ou montez les mêmes dossier
 
 msgid "Name of the event"
 msgstr "Nom de l'événement"
+
+msgid "Name of the event's folder"
+msgstr "Nom du dossier de l'événement"
 
 msgid "Name the events"
 msgstr "Nommer les événements"
@@ -4814,6 +4849,15 @@ msgid ""
 msgstr ""
 "Pas de catégorie : les films et séries téléchargés ne sont pas des "
 "souvenirs, ils restent où ils sont."
+
+msgid ""
+"No category: screenshots, tickets and receipts stay where they are, out "
+"of the years. To gather them in a folder of yours, give a category and a "
+"layout of their own, e.g.:"
+msgstr ""
+"Sans catégorie : captures d'écran, billets et tickets restent où ils "
+"sont, hors des années. Pour les rassembler dans un dossier à vous, donnez"
+" une catégorie et un rangement à eux, par exemple :"
 
 msgid ""
 "No choice yet: moving on (→, ← or N) accepts the proposal, the shots in "
@@ -5558,8 +5602,14 @@ msgstr "Rien n'a été enregistré : {error}"
 msgid "Nothing was written: run 'config --upgrade' to add them."
 msgstr "Rien n'a été écrit : lancez 'config --upgrade' pour les ajouter."
 
+msgid "Nothing written (--dry-run)."
+msgstr "Rien n'a été écrit (--dry-run)."
+
 msgid "Nothing written: the launcher goes into a file, not on the screen."
 msgstr "Rien n'a été écrit : le lanceur va dans un fichier, pas à l'écran."
+
+msgid "Nothing written: your layouts stay as they are."
+msgstr "Rien n'a été écrit : vos rangements restent tels quels."
 
 msgid "November"
 msgstr "novembre"
@@ -5684,6 +5734,9 @@ msgstr ""
 "Une seule fois, après une mise à jour : dates, lieux et appareils "
 "enregistrés dans les fichiers. Les images ne sont pas décodées à nouveau,"
 " seul leur en-tête est lu."
+
+msgid "One name, without / nor \\"
+msgstr "Un seul nom, sans / ni \\"
 
 msgid "One series"
 msgstr "Une série"
@@ -6515,9 +6568,6 @@ msgstr ""
 msgid "Received"
 msgstr "Reçues"
 
-msgid "Received and downloaded"
-msgstr "Reçues et téléchargées"
-
 msgid "Recent reports"
 msgstr "Rapports récents"
 
@@ -7143,11 +7193,12 @@ msgstr "Kermesse"
 
 msgid ""
 "Scores from 0 to 100: 'sure' and above goes to the layout, 'unsure' and "
-"above to the 'to check' layout, the rest to the 'to sort' one."
+"above is a guess (unsure_layout), the rest is left to you "
+"(manual_layout)."
 msgstr ""
 "Scores de 0 à 100 : à partir de 'sure', le fichier suit 'layout' ; à "
-"partir de 'unsure', le rangement « à vérifier » ; en dessous, le "
-"rangement « à trier »."
+"partir de 'unsure', c'est une supposition (unsure_layout) ; en dessous, "
+"c'est à vous de décider (manual_layout)."
 
 msgid "Screenshots and documents"
 msgstr "Captures d'écran et documents"
@@ -7668,8 +7719,8 @@ msgid ""
 "Sorting the files of the rule: the plan of classify is read, the files "
 "moved, then checked at their new place…"
 msgstr ""
-"Tri des fichiers de la règle : lecture du plan de classify, déplacement des "
-"fichiers, puis vérification à leur nouvelle place…"
+"Tri des fichiers de la règle : lecture du plan de classify, déplacement "
+"des fichiers, puis vérification à leur nouvelle place…"
 
 msgid "Sorting the files of this event…"
 msgstr "Tri des fichiers de cet événement…"
@@ -8118,19 +8169,6 @@ msgstr ""
 "Le cache ne connaît encore aucune photo : tapez d'abord mh audit, sinon "
 "toutes les photos du téléphone sont prises pour nouvelles."
 
-msgid ""
-"The categories below are an example to replace with your own, e.g. "
-"Parties, Holidays and outings, School, Sport and leisure, At home, "
-"Animals, Nature and landscapes, Documents and screenshots, Other. Avoid a"
-" \"Family\" or \"Portraits\" category: in a family collection, it "
-"swallows most photos."
-msgstr ""
-"Les catégories ci-dessous sont un exemple à remplacer par les vôtres, par"
-" exemple Fêtes, Vacances et sorties, École, Sport et loisirs, À la "
-"maison, Animaux, Nature et paysages, Documents et captures, Autres. "
-"Évitez une catégorie « Famille » ou « Portraits » : dans une collection "
-"familiale, elle avale la plupart des photos."
-
 msgid "The check of the phone failed: nothing more was deleted."
 msgstr "La vérification du téléphone a échoué : rien de plus n'a été supprimé."
 
@@ -8433,6 +8471,17 @@ msgstr "Les dossiers que mh connaît"
 msgid "The groups could not be read (error {status})."
 msgstr "Les groupes n'ont pas pu être lus (erreur {status})."
 
+msgid ""
+"The guesses, the files no rule decides, the undated and the received "
+"ones: an empty layout leaves them where they are until you decide in "
+"'review-sort' or 'search', so the tool never writes a folder name of its "
+"own."
+msgstr ""
+"Les suppositions, les fichiers qu'aucune règle ne décide, les non datés "
+"et les reçus : un rangement vide les laisse où ils sont jusqu'à ce que "
+"vous décidiez dans 'review-sort' ou 'search' ; l'outil n'écrit ainsi "
+"jamais un nom de dossier à lui."
+
 msgid "The guide"
 msgstr "Le parcours"
 
@@ -8489,6 +8538,18 @@ msgstr ""
 
 msgid "The largest clusters without a name"
 msgstr "Les plus grands groupes sans nom"
+
+#, python-brace-format
+msgid "The layouts of {path} follow the sort convention."
+msgstr "Les rangements de {path} suivent la convention de tri."
+
+#, python-brace-format
+msgid ""
+"The layouts of {path} that differ from the sort convention (year/year-"
+"month/event):"
+msgstr ""
+"Les rangements de {path} qui diffèrent de la convention de tri (année"
+"/année-mois/événement) :"
 
 msgid "The local model of [classify.ai] also describes the photos"
 msgstr "Le modèle local de [classify.ai] décrit aussi les photos"
@@ -8791,6 +8852,16 @@ msgstr "Les copies redimensionnées ou recompressées, groupe par groupe."
 
 msgid "The review is not running any more: start it again."
 msgstr "Le tri ne tourne plus : relancez-le."
+
+#, python-brace-format
+msgid ""
+"The rule '{name}' gives the category '{category}', several folder levels:"
+" the convention wants one name (2009/2009-11/<name>). Write one name in "
+"its category in config.toml."
+msgstr ""
+"La règle '{name}' donne la catégorie '{category}', sur plusieurs niveaux "
+"de dossiers : la convention veut un seul nom (2009/2009-11/<nom>). "
+"Écrivez un seul nom dans sa catégorie, dans config.toml."
 
 #, python-brace-format
 msgid "The rule would take {files}, shown first: {folders}."
@@ -9874,21 +9945,24 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"Where files go, by how sure the proposal is. Placeholders: {year}, "
-"{quarter}, {month}, {month_name}, {day}, {category}, {event}, "
-"{event_start}, {place}, {country}, {region}, {city}. An empty layout "
-"leaves the files where they are; '{year}/{month}' needs no category at "
-"all."
+"Where files go. The convention: year, then year-month, then the event's "
+"name (2009/2009-11/Tom's birthday), the month of the event's start, 00 "
+"when only the year is known. A file directly in a year-month folder was "
+"looked at: nothing special that month. Placeholders: {year}, "
+"{year_month}, {quarter}, {month}, {month_name}, {day}, {category}, "
+"{event}, {event_start}, {place}, {country}, {region}, {city}."
 msgstr ""
-"Où vont les fichiers, selon la sûreté de la proposition. Champs : {year},"
-" {quarter}, {month}, {month_name}, {day}, {category}, {event}, "
-"{event_start}, {place}, {country}, {region}, {city}. Un modèle vide "
-"laisse les fichiers où ils sont ; '{year}/{month}' n'a besoin d'aucune "
-"catégorie."
+"Où vont les fichiers. La convention : l'année, puis l'année-mois, puis le"
+" nom de l'événement (2009/2009-11/Anniversaire de Tom), le mois du début "
+"de l'événement, 00 quand seule l'année est connue. Un fichier posé "
+"directement dans un dossier année-mois a été vu : rien de spécial ce "
+"mois-là. Variables : {year}, {year_month}, {quarter}, {month}, "
+"{month_name}, {day}, {category}, {event}, {event_start}, {place}, "
+"{country}, {region}, {city}."
 
 #, python-brace-format
-msgid "Where sure files go, e.g. '{year}/{month} - {month_name}'."
-msgstr "Où vont les fichiers sûrs, par exemple '{year}/{month} - {month_name}'."
+msgid "Where sure files go, e.g. '{year}/{year_month}/{category}'."
+msgstr "Où vont les fichiers sûrs, par exemple '{year}/{year_month}/{category}'."
 
 msgid ""
 "Where the copies set aside go, once: best on the photos' disk (a move, "
@@ -10005,8 +10079,10 @@ msgstr ""
 msgid "With --people: do not ask, go on."
 msgstr "Avec --people : ne pas demander, continuer."
 
-msgid "With --upgrade: list the settings it would add, write nothing."
-msgstr "Avec --upgrade : lister les réglages qu'il ajouterait, sans rien écrire."
+msgid "With --upgrade or --convention: list what would change, write nothing."
+msgstr ""
+"Avec --upgrade ou --convention : lister ce qui changerait, sans rien "
+"écrire."
 
 msgid ""
 "With -v media-hygiene-cache:/cache, Czkawka remembers its work: the next "
@@ -10089,6 +10165,10 @@ msgstr ""
 "Écrire les mots de 'tags' dans des fichiers compagnons .xmp à côté des "
 "photos, pour digiKam, darktable, Lightroom ou Immich ; jamais dans une "
 "photo (journalisé, annulable)."
+
+#, python-brace-format
+msgid "Write these layouts into {path}?"
+msgstr "Écrire ces rangements dans {path} ?"
 
 msgid ""
 "Write this event down as a rule of config.toml: its days, its folder; the"
@@ -10184,6 +10264,15 @@ msgstr "Votre navigateur s'ouvre sur {url} ; sinon, ouvrez cette adresse."
 #, python-brace-format
 msgid "Your choices are in {place}."
 msgstr "Vos choix sont dans {place}."
+
+msgid ""
+"Your config.toml sorts otherwise than the convention year/year-"
+"month/event (2009/2009-11/Tom's birthday): this shows the change and asks"
+" before writing it:"
+msgstr ""
+"Votre config.toml range autrement que la convention année/année-"
+"mois/événement (2009/2009-11/Anniversaire de Tom) : ceci montre le "
+"changement et demande avant de l'écrire :"
 
 msgid "Your decision"
 msgstr "Votre décision"
@@ -10742,6 +10831,10 @@ msgstr "comparer les photos à 100 %%"
 
 msgid "config.toml"
 msgstr "config.toml"
+
+#, python-brace-format
+msgid "config.toml could not be updated: {reason}"
+msgstr "config.toml n'a pas pu être mis à jour : {reason}"
 
 msgid "config.toml holds no [[classify.rules]]: write one first."
 msgstr ""
@@ -12769,6 +12862,12 @@ msgstr ""
 "câble vers une box) : la page reste sur ce PC."
 
 #, python-brace-format
+msgid "{count} album photo"
+msgid_plural "{count} album photos"
+msgstr[0] "{count} photo d'album"
+msgstr[1] "{count} photos d'album"
+
+#, python-brace-format
 msgid "{count} album, saved in {place}."
 msgid_plural "{count} albums, saved in {place}."
 msgstr[0] "{count} album, enregistré dans {place}."
@@ -12875,6 +12974,12 @@ msgid "{count} day ago"
 msgid_plural "{count} days ago"
 msgstr[0] "il y a {count} jour"
 msgstr[1] "il y a {count} jours"
+
+#, python-brace-format
+msgid "{count} decided file"
+msgid_plural "{count} decided files"
+msgstr[0] "{count} fichier décidé"
+msgstr[1] "{count} fichiers décidés"
 
 #, python-brace-format
 msgid "{count} decided folder pair no longer exists, e.g. {kept} -> {removed}."
@@ -13316,6 +13421,12 @@ msgstr[0] "{count} dossier laissé vide a été supprimé."
 msgstr[1] "{count} dossiers laissés vides ont été supprimés."
 
 #, python-brace-format
+msgid "{count} folder pair whose folder is gone dropped"
+msgid_plural "{count} folder pairs whose folder is gone dropped"
+msgstr[0] "{count} paire de dossiers retirée, son dossier a disparu"
+msgstr[1] "{count} paires de dossiers retirées, leur dossier a disparu"
+
+#, python-brace-format
 msgid ""
 "{count} folder pair, the most space freed first: {decided} decided "
 "already."
@@ -13416,6 +13527,12 @@ msgstr[0] "{count} copie identique, {size} : sans risque, une commande."
 msgstr[1] "{count} copies identiques, {size} : sans risque, une commande."
 
 #, python-brace-format
+msgid "{count} layout written to {path}, read back from the disk:"
+msgid_plural "{count} layouts written to {path}, read back from the disk:"
+msgstr[0] "{count} rangement écrit dans {path}, relu sur le disque :"
+msgstr[1] "{count} rangements écrits dans {path}, relus sur le disque :"
+
+#, python-brace-format
 msgid "{count} line of the files ticked could not be read: skipped."
 msgid_plural "{count} lines of the files ticked could not be read: skipped."
 msgstr[0] "{count} ligne des fichiers cochés n'a pas pu être lue : ignorée."
@@ -13436,6 +13553,12 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} liens créés : aucune photo n'a été copiée ni déplacée, aucune "
 "place n'est prise."
+
+#, python-brace-format
+msgid "{count} named face"
+msgid_plural "{count} named faces"
+msgstr[0] "{count} visage nommé"
+msgstr[1] "{count} visages nommés"
 
 #, python-brace-format
 msgid ""
@@ -13870,6 +13993,12 @@ msgstr[0] "{count} vidéo"
 msgstr[1] "{count} vidéos"
 
 #, python-brace-format
+msgid "{count} video chosen to lighten"
+msgid_plural "{count} videos chosen to lighten"
+msgstr[0] "{count} vidéo choisie à alléger"
+msgstr[1] "{count} vidéos choisies à alléger"
+
+#, python-brace-format
 msgid "{count} video lightened, {saved} saved; its original is in the quarantine."
 msgid_plural ""
 "{count} videos lightened, {saved} saved; their originals are in the "
@@ -14044,6 +14173,14 @@ msgstr "{file} lu sur le disque à {time}."
 #, python-brace-format
 msgid "{file} read from the disk at {time}: {ticked} files ticked."
 msgstr "{file} lu depuis le disque à {time} : {ticked} fichiers cochés."
+
+#, python-brace-format
+msgid ""
+"{file} was not updated ({reason}): its links follow the moves through the"
+" cache only."
+msgstr ""
+"{file} n'a pas été mis à jour ({reason}) : ses liens ne suivent les "
+"déplacements que par le cache."
 
 #, python-brace-format
 msgid "{file}, in the folder mounted on {mount}"
@@ -14478,8 +14615,8 @@ msgstr "{n} fichiers que décidait l'ancienne règle ne sont plus pris."
 #, python-brace-format
 msgid "{n} files were sorted already by an earlier run: left where they are."
 msgstr ""
-"{n} fichiers avaient déjà été triés par un passage précédent : laissés où "
-"ils sont."
+"{n} fichiers avaient déjà été triés par un passage précédent : laissés où"
+" ils sont."
 
 #, python-brace-format
 msgid "{n} group picked: the next name goes to it."
@@ -14878,6 +15015,14 @@ msgstr ""
 "{series} : seule la photo la plus nette (et celles des dossiers protégés)"
 " resterait, {aside}, enregistré en une seule écriture. Séries à regarder,"
 " encore à voir : {left}. Les valider ? Z annule tout le lot."
+
+#, python-brace-format
+msgid ""
+"{setting} names {folder}, which this run emptied: point it to the photos'"
+" new folder in config.toml, or remove it."
+msgstr ""
+"{setting} nomme {folder}, que cette exécution a vidé : orientez-le vers "
+"le nouveau dossier des photos dans config.toml, ou retirez-le."
 
 #, python-brace-format
 msgid ""

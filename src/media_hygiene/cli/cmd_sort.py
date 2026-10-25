@@ -150,6 +150,7 @@ def _show_result(runtime: Runtime, result: SortResult) -> None:
     """
     from media_hygiene.cli.next_steps import carried, safety
     from media_hygiene.console.incidents_view import show_failed, show_skipped
+    from media_hygiene.console.links_view import show_links
     from media_hygiene.console.sort_view import show_kept_folders, show_manifest
     from media_hygiene.console.stage_times import stages_line
     from media_hygiene.console.tables import outcome_table
@@ -167,6 +168,7 @@ def _show_result(runtime: Runtime, result: SortResult) -> None:
             _("Source folders removed: {count}.").format(count=result.folders.removed)
         )
     show_kept_folders(runtime, result.folders, done=True)
+    show_links(output, result.links)
     show_manifest(output, result.manifest)
     timed = stages_line(result.stages)
     if timed is not None and output.verbose:  # where the time goes, to paste

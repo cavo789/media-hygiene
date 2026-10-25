@@ -89,7 +89,7 @@ def test_a_destination_in_a_protected_folder_is_refused(locations: Locations) ->
     build_library(locations.data_dir)
     before = snapshot(locations.data_dir)
     runtime = make_runtime(
-        locations, {"folders": {"protected": [f"C:\\2016\\{EVENT_NAME}"]}}
+        locations, {"folders": {"protected": [f"C:\\2016\\2016-07\\{EVENT_NAME}"]}}
     )
     name_first_event(classify(runtime))
     with pytest.raises(WorkbookError, match="protected or excluded"):

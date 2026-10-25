@@ -35,7 +35,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
 
-    from media_hygiene.classify.models import MediaInput
+    from media_hygiene.classify.models import MediaInput, Proposal
     from media_hygiene.classify.rules.building import RuleFacts
     from media_hygiene.classify.rules.matchers import Test
     from media_hygiene.config.classify_rules import ClassifyRule
@@ -167,12 +167,27 @@ def _category(template: str, file: MediaInput, facts: RuleFacts) -> str:
         The category, folder-safe; empty when the rule gives none.
     """
     event = facts.event_of.get(file.path)
-    when = event.start if event else facts.datings[file.path].when
+    dating = facts.datings[file.path]
+    when = event.start if event else dating.when
     values = Values(
         year=when.year,
-        month=when.month,
+        month=when.month if event else dating.month,  # 0: only the year is known
         day=when.day,
         event=(event.label or event.span) if event else "",
         event_start=event.start.date().isoformat() if event else "",
     )
     return render(template, with_place(values, facts.where.values(file.path))) or ""
+
+
+def unused(settings: ClassifySettings, kept: Sequence[Proposal]) -> tuple[str, ...]:
+    """The rules that decided no file of the run.
+
+    Args:
+        settings: `[classify]`: the rules.
+        kept: The proposals of the run.
+
+    Returns:
+        Their names, in order.
+    """
+    used = {proposal.rule for proposal in kept}
+    return tuple(rule.name for rule in settings.rules if rule.name not in used)

@@ -27,7 +27,7 @@ _RULE: Final = {
     "name": "Christmas 2022",
     "first": "2022-12-25",
     "last": "2022-12-25",
-    "category": "Parties/Christmas",
+    "category": "Christmas",
     "keep_folders": True,
 }
 _EXISTING: Final = (
@@ -82,10 +82,10 @@ def test_a_rule_tried_shows_where_each_photo_goes(
     tried = json.loads(answer.body)
     assert tried["taken"] > 0
     taken = [hit for hit in tried["hits"] if hit["taken"]]
-    assert {hit["to"] for hit in taken} == {"2022\\Parties\\Christmas"}
+    assert {hit["to"] for hit in taken} == {"2022\\2022-12\\Christmas"}
     assert {hit["name"] for hit in taken} >= {"IMG_0.jpg", "IMG_1.jpg"}
     assert tried["folders"] == [
-        {"folder": "2022\\Parties\\Christmas", "files": tried["taken"]}
+        {"folder": "2022\\2022-12\\Christmas", "files": tried["taken"]}
     ]
     assert not tried["name_taken"]
 

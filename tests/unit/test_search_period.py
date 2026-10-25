@@ -32,18 +32,18 @@ def test_the_days_name_the_search_as_a_rule_does() -> None:
 
 
 def test_a_period_rule_is_a_date_range_rule() -> None:
-    """The days put in order, the folder's slashes trimmed."""
+    """The days put in order, the folder name trimmed."""
     asked = PeriodRuleIn(
         name=" Wedding ",
         first=date(2017, 8, 6),
         last=date(2017, 8, 5),
-        category="/Parties/Weddings/",
+        category=" Weddings ",
     )
     rule = asked.rule()
     assert (rule.name, rule.dates, rule.category) == (
         "Wedding",
         "2017-08-05..2017-08-06",
-        "Parties/Weddings",
+        "Weddings",
     )
     assert rule.keep_folders
 

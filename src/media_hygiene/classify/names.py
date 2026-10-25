@@ -57,6 +57,7 @@ def reason_name(reason: SortReason) -> str:
         SortReason.NO_SIGNAL: _("No signal"),
         SortReason.UNDATED: _("Undated"),
         SortReason.LEFT_AS_IS: _("Left as it is"),
+        SortReason.NOTHING_SPECIAL: _("Looked at: nothing special that month"),
         SortReason.CARRIED_OVER: _("Edit carried over from the workbook"),
         SortReason.PREVIOUS_GUESS: _("Previous guess, already in place"),
     }

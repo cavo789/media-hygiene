@@ -86,7 +86,7 @@ def _row(proposal: Proposal, row_id: str, mapper: HostPathMapper) -> PlanRow:
     """
     file, dating = proposal.file, proposal.dating
     folder, hint = proposal.folder, proposal.verdict.hint
-    root = file.root
+    root = proposal.root or file.root  # named later, it goes below the sort root
     if proposal.target is not None and folder is not None:
         root = proposal.target
         for _segment in folder.split("/"):

@@ -1,6 +1,6 @@
-"""The year folder of each file, and the proposals a `--year` or `--path` run keeps.
+"""The year and month of each file, and the proposals a `--year` or `--path` run keeps.
 
-One event or one meaningful folder, one year.
+One event or one meaningful folder, one year and one month.
 """
 
 from __future__ import annotations
@@ -22,11 +22,12 @@ def year_folders(
     files: Sequence[MediaInput],
     datings: Mapping[Path, Dating],
     grouping: tuple[Mapping[Path, Signal], Mapping[Path, Event], str],
-) -> dict[Path, int]:
-    """The year folder of each file.
+) -> dict[Path, tuple[int, int]]:
+    """The year and month folders of each file, both from the same date (0400).
 
-    With `event_year = "start"`, an event takes the year of its start (a New Year's Eve
-    party stays whole), and so does a meaningful folder, from its oldest file.
+    With `event_year = "start"`, an event takes the year and month of its start (a New
+    Year's Eve party stays whole, in December), and so does a meaningful folder, from
+    its oldest file. The month is 0 when only the year is known (a folder `1985`).
 
     Args:
         files: Every file.
@@ -34,24 +35,28 @@ def year_folders(
         grouping: Their signals, their events, and `[classify] event_year`.
 
     Returns:
-        The year of each file.
+        The year and month of each file.
     """
     signals, event_of, mode = grouping
-    years = {file.path: datings[file.path].when.year for file in files}
+    moments = {
+        file.path: (datings[file.path].when.year, datings[file.path].month)
+        for file in files
+    }
     if mode != "start":
-        return years
-    oldest: dict[Path, int] = {}
+        return moments
+    oldest: dict[Path, Dating] = {}
     for file in files:
         if signals[file.path].reason is SortReason.EXISTING_FOLDER:
-            folder = file.path.parent
-            oldest[folder] = min(oldest.get(folder, years[file.path]), years[file.path])
+            folder, dating = file.path.parent, datings[file.path]
+            if folder not in oldest or dating.when < oldest[folder].when:
+                oldest[folder] = dating
     for file in files:
         event = event_of.get(file.path)
         if event is not None:
-            years[file.path] = event.start.year
-        elif file.path.parent in oldest:
-            years[file.path] = oldest[file.path.parent]
-    return years
+            moments[file.path] = (event.start.year, event.start.month)
+        elif (first := oldest.get(file.path.parent)) is not None:
+            moments[file.path] = (first.when.year, first.month)
+    return moments
 
 
 def in_years(

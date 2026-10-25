@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.ai.categories import names as names_of
 from media_hygiene.classify.layout import check_layout
 from media_hygiene.i18n import _
+
+_SEPARATORS: Final = ("/", "\\")  # a folder path, where a name is asked
 
 if TYPE_CHECKING:
     from media_hygiene.config.classify_rules import ClassifyRule
@@ -47,3 +49,25 @@ def check_categories(categories: tuple[str, ...], names: tuple[str, ...]) -> Non
             message = message.format(category=category)
             raise ValueError(message)
         check_layout(category)
+
+
+def one_name(category: str) -> str:
+    r"""Refuse a folder path where the sort convention wants a name (0401).
+
+    The dialogs of the pages ask for the name of the event folder; `sort` makes
+    `2009/2009-11/<name>` from it.
+
+    Args:
+        category: As typed.
+
+    Returns:
+        It, trimmed.
+
+    Raises:
+        ValueError: It holds a `/` or a `\`.
+    """
+    name = category.strip()
+    if any(separator in name for separator in _SEPARATORS):
+        message = _("'{name}' holds a / or a \\: write one name, the event's folder")
+        raise ValueError(message.format(name=name))
+    return name

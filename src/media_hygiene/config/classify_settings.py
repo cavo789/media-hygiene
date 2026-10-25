@@ -44,11 +44,13 @@ class ClassifySettings(BaseModel):
     target: str = ""
     leave: tuple[str, ...] = ()
     timezone: str = ""
-    layout: str = "{year}/{category}"
-    unsure_layout: str = "{year}/To check/{category}"
-    manual_layout: str = "{year}/To sort/{event}"
-    undated_layout: str = "To sort/Undated"
-    received_layout: str = "To sort/Received and downloaded"
+    # The sort convention (0401, 0402): `2009/2009-11/<event>`, readable without the
+    # tool; a guess, an unknown or undated file stays where it is until decided.
+    layout: str = "{year}/{year_month}/{category}"
+    unsure_layout: str = ""
+    manual_layout: str = ""
+    undated_layout: str = ""
+    received_layout: str = ""
     session_gap_hours: float = 6
     merge_gap_hours: float = 18
     min_event_size: int = 5

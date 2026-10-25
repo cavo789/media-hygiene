@@ -3,9 +3,39 @@
 [Documentation](../README.md) › Trier, étape 4 · 🇬🇧 [English](../../en/sort/04-classify.md)
 
 Les étapes 1 à 3 ont montré ce que contiennent vos dossiers. `classify` va un pas plus loin :
-pour chaque photo et chaque vidéo, il propose une place dans une arborescence rangée,
-`année/catégorie` par défaut. Il **ne fait que proposer** : rien ne bouge, et les dossiers montés
-en `:ro` conviennent.
+pour chaque photo et chaque vidéo, il propose une place dans une arborescence rangée. Il **ne
+fait que proposer** : rien ne bouge, et les dossiers montés en `:ro` conviennent.
+
+## La convention : année, mois, événement
+
+Chaque fichier trié va dans `année/année-mois/événement`, une arborescence qui se lit dans
+l'Explorateur **sans media-hygiene**, le jour où l'outil n'existe plus :
+
+```text
+2009\
+  2009-11\
+    Anniversaire de Tom\      ← un événement que vous avez nommé
+    IMG_4410.jpg              ← vu : rien de spécial ce mois-là
+  2009-12\
+    Saint Nicolas 2009\
+2019\
+  2019-07\
+    Monténégro\
+      Budva\                  ← une étape d'un voyage, un niveau en dessous
+1985\
+  1985-00\                    ← seule l'année est connue (un scan)
+```
+
+`2009-11`, pas `11` : un dossier de mois copié seul, ou vu dans les résultats de recherche de
+l'Explorateur, dit encore son année. Le mois est celui du **début** de l'événement, `00` quand
+seule l'année est connue. L'outil n'écrit **aucun mot à lui** dans l'arborescence : seulement
+des chiffres et les noms que vous avez tapés. **Un fichier ne bouge qu'une fois, vers sa vraie
+place** : ce qui n'est pas décidé reste où il est jusqu'à ce que vous décidiez (dans
+[`review-sort`](../commands/review-sort.md) ou [`search`](../commands/search.md)).
+
+> 💡 Un `config.toml` écrit par une version plus ancienne range autrement (`{year}/{category}`,
+> dossiers *À vérifier* et *À trier*) : `classify` le dit en une ligne, et
+> `mh config --convention` montre le changement et demande avant de l'écrire.
 
 > 💡 Nettoyez d'abord les doublons ([le guide Nettoyer](../README.md#nettoyer-les-doublons)) :
 > sinon les deux copies d'une photo sont triées, et l'une d'elles est renommée.
@@ -105,21 +135,31 @@ quelques tris, c'est l'avancement de votre collection.
 
 *Proposition* donne les fichiers de chaque bande, et combien seraient déplacés :
 
-- **Sûrs** : un nom de dossier que vous avez choisi (`2019/Vacances à la mer` reste
-  `2019/Vacances à la mer`), ou une date fiable quand le modèle n'a pas besoin de catégorie. Ils
-  vont dans `année/catégorie`.
-- **À vérifier** : une supposition dont l'outil n'est pas sûr, par exemple une photo dont la date
-  contredit son dossier. Elles sont regroupées dans `année/À vérifier/catégorie` : regardez-les
-  dans le rapport, et confirmez-les dans le classeur ([étape 5](05-review-the-proposal.md)).
-- **À trier** : rien ne dit où elles vont. Elles sont regroupées dans `année/À trier/<événement>`,
-  un dossier par événement (des photos prises à peu d'intervalle, d'un dossier ou d'un téléphone
-  à l'autre), pour que vous nommiez un événement une seule fois : dans le classeur, nommez
-  l'événement `2016-07-14` `Kermesse`, et ses fichiers vont dans `2016/Kermesse`.
+- **Sûrs** : un nom de dossier que vous avez choisi (`2019/Vacances à la mer` devient
+  `2019/2019-08/Vacances à la mer`), ou une règle à vous. Ils vont dans `année/année-mois/événement`.
+- **À vérifier** : une supposition dont l'outil n'est pas sûr, par exemple les photos isolées
+  d'un événement dont les autres photos sont dans un dossier que vous avez nommé. Elles **restent
+  où elles sont** ; la page de revue montre où elles iraient, et les confirmer les y déplace
+  ([étape 5](05-review-the-proposal.md)).
+- **À trier** : rien ne dit où elles vont. Elles restent où elles sont, regroupées par événement
+  (des photos prises à peu d'intervalle, d'un dossier ou d'un téléphone à l'autre), pour que vous
+  nommiez un événement une seule fois : nommez l'événement `2016-07-14` `Kermesse`, et ses
+  fichiers vont dans `2016/2016-07/Kermesse`.
 - **Sans date** : seule la date du fichier sur le disque est connue, qui dit quand il a été copié,
-  pas quand la photo a été prise. Ils vont dans `À trier/Sans date`, ou dans
-  `À trier/Reçues et téléchargées` quand aucun appareil ne les a prises (des images reçues dans
-  une messagerie).
-- **Laissés tels quels** : vos dossiers protégés et ceux que vous avez demandé de ne pas trier.
+  pas quand la photo a été prise. Ils restent où ils sont.
+- **Laissés tels quels** : vos dossiers protégés, ceux que vous avez demandé de ne pas trier, et
+  les fichiers posés directement dans leur dossier `année/année-mois` (rien de spécial ce
+  mois-là).
+
+| Ce que l'outil sait | Où va le fichier |
+|---|---|
+| décidé (un dossier que vous avez nommé, une règle, votre choix sur une page) | `année/année-mois/événement` |
+| une supposition, rien, pas de date | reste où il est jusqu'à ce que vous décidiez |
+| une image reçue (WhatsApp…) | une supposition : l'événement du jour où elle a été reçue, à confirmer |
+| une capture d'écran, un ticket | reste, ou va dans le dossier d'une règle `kind` à vous |
+
+> 💡 Beaucoup d'images reçues sont des copies réduites de photos que vous avez en original :
+> lancez d'abord [`clean --tier near`](../clean/11-near-duplicates.md).
 
 *Pourquoi* donne la règle (ou la raison) de chaque proposition, puis les catégories les plus trouvées.
 
@@ -129,7 +169,7 @@ cette copie. Une photo dont les dossiers ne disent rien (`DCIM`, `Camera`) lit c
 si elle s'y trouvait : sa copie dans `Mariage Julie 2015` la range dans `Mariage Julie 2015`,
 une copie dans `2017/Durbuy` nomme la ville. Ses propres dossiers passent toujours d'abord. Deux
 copies retirées dans des dossiers qui ne s'accordent pas (`Mariage Julie`, `Noël`) : aucun
-n'est utilisé, et la photo vous attend dans *À trier*. Le *pourquoi* du classeur dit d'où vient
+n'est utilisé, et la photo vous attend là où elle est. Le *pourquoi* du classeur dit d'où vient
 l'indice : `(le dossier d'une copie retirée : D:\Backup\Mariage Julie 2015)`.
 
 **Les photos de votre famille d'un voyage que vous avez trié.** Les photos du dossier d'une
@@ -157,12 +197,17 @@ Tout est dans la section `[classify]` de `config.toml`
 - `--target 'D:\Photos triées'` : construire l'arborescence ailleurs (le dossier doit être
   monté) ; par défaut, chaque dossier monté est réorganisé sur place.
 - `--year 2016`, ou `--year 2015-2017` : une année à la fois, une soirée à la fois. Les
-  fichiers datés seulement par le disque attendent un classify sans `--year` : ils vont dans
-  `À trier/Sans date` quelle que soit leur année.
+  fichiers datés seulement par le disque attendent un classify sans `--year`.
 - `--leave 'C:\Photos\Albums'` : un dossier jamais trié, toujours analysé et nettoyé.
 
-Les modèles acceptent `{year}`, `{quarter}`, `{month}`, `{month_name}`, `{day}`, `{category}`,
-`{event}` et `{event_start}`. Un modèle vide laisse les fichiers où ils sont.
+Les modèles acceptent `{year}`, `{year_month}`, `{quarter}`, `{month}`, `{month_name}`, `{day}`,
+`{category}`, `{event}` et `{event_start}`. Un modèle vide laisse les fichiers où ils sont.
+L'année et le mois viennent de la même date : **le début de l'événement**. Un voyage du 28 août
+au 5 septembre va en entier dans `2009/2009-08`, un réveillon dans `2009/2009-12` ; un dossier que
+vous avez nommé prend le mois de son plus ancien fichier. Quand seule l'année est connue (un
+dossier `1985`, un scan), le mois est **`00`** : `1985/1985-00`, un chiffre qui se lit pareil
+dans toutes les langues et se range avant janvier. `event_year = "per_file"` date plutôt chaque
+fichier pour lui-même.
 
 Les catégories viennent de règles que vous ordonnez et complétez : vos dossiers, vos voyages, vos
 anniversaires, Noël, les captures d'écran ([étape 6](06-write-down-what-you-know.md)).

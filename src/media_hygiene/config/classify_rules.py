@@ -12,6 +12,7 @@ from typing import Self
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from media_hygiene.classify.layout import check_layout
 from media_hygiene.classify.rules.calendar import parse_one_off, parse_recurring
 from media_hygiene.classify.rules.kinds import BUILT_IN, FileKind, RuleMatch
 from media_hygiene.config.rule_checks import check_categories, check_category
@@ -58,6 +59,8 @@ class ClassifyRule(BaseModel):
     min_share: int | None = Field(default=None, ge=1, le=100)
     score: int | None = Field(default=None, ge=0, le=100)  # None: `[classify] scores`
     keep_folders: bool = False  # the folders the user named stay below the category
+    # Its own layout, not `[classify] layout` (0402): screenshots out of the years.
+    layout: str = ""
 
     @model_validator(mode="after")
     def _coherent(self) -> Self:
@@ -104,6 +107,8 @@ def _check(rule: ClassifyRule) -> None:
         re.compile(rule.pattern)
     check_category(rule)
     check_categories(rule.categories, rule.names)
+    if rule.layout:
+        check_layout(rule.layout)
 
 
 def _uses(match: RuleMatch, field: str) -> bool:
@@ -147,11 +152,9 @@ def unique_names(rules: tuple[ClassifyRule, ...]) -> tuple[ClassifyRule, ...]:
 DEFAULT_RULES = (
     ClassifyRule(name="Films and series", match=RuleMatch.KIND, kind=FileKind.DOWNLOAD),
     ClassifyRule(name="Existing folders", match=RuleMatch.EXISTING_FOLDER),
+    # No category: screenshots stay where they are, out of the years (0402).
     ClassifyRule(
-        name="Screenshots and documents",
-        match=RuleMatch.KIND,
-        kind=FileKind.SCREENSHOT,
-        category="Documents and screenshots",
+        name="Screenshots and documents", match=RuleMatch.KIND, kind=FileKind.SCREENSHOT
     ),
     ClassifyRule(name="Event neighbours", match=RuleMatch.EVENT_NEIGHBOUR),
     ClassifyRule(name="Same moment", match=RuleMatch.SAME_MOMENT),
@@ -159,12 +162,12 @@ DEFAULT_RULES = (
         name="Christmas",
         match=RuleMatch.CALENDAR,
         dates="12-24..12-26",
-        category="Parties/Christmas",
+        category="Christmas",
     ),
     ClassifyRule(
         name="New Year",
         match=RuleMatch.CALENDAR,
         dates="12-31..01-01",
-        category="Parties/New Year",
+        category="New Year",
     ),
 )

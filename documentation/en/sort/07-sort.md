@@ -75,7 +75,7 @@ their order, the header rows, the rows (each id exactly once) and every locked c
 difference refuses the whole file, naming the cell, the value expected and the value found:
 
 ```text
-❌ Files!J2: expected '2016/To sort/2016-07-14', found 'Elsewhere'.
+❌ Files!J2: expected '2016/2016-07/Kermesse', found 'Elsewhere'.
 💡 Undo the change in Excel (Ctrl+Z), restore a copy of the workbook, or run
 'classify' again: your edits are carried over to its new workbook.
 ```
@@ -155,16 +155,17 @@ The proof is written to `/reports/<run>-sort/manifest.json`.
 ## Classify again after a sort
 
 Run `classify` again after a sort (new photos, a rule changed): the files already sorted are in
-place and are not proposed elsewhere. The **"to check" files you did not confirm** stay in their
-`<year>/To check/<category>` folder, still to check, with the reason `previous-guess`: their
-folder is the tool's own guess, so a new run does not guess again and `sort` does not move them
-back and forth. They leave it when you decide: confirm or rename the category, or give the file
-or its event a folder, in the new workbook. A rule of [step 6](06-write-down-what-you-know.md)
-that is sure of them (a date range, a path, a camera) moves them too.
+place and are not proposed elsewhere. With the
+[convention](04-classify.md#the-convention-year-month-event), the tree says it by itself: a file
+in `year/year-month/<name>` is in place, whatever moved it there (a rule, a page, Explorer), and
+so is a file directly in its `year/year-month` folder (nothing special that month). The guesses
+and the files nobody decided never moved: they wait where they were, until you decide.
 
-The same goes for the **"to sort" files** of an event the tool named after a folder
-(`2019/To sort/Seaside holidays`): that name is the tool's own, not a folder you chose, so the
-files stay there, still to sort. Give the event a name in the workbook to move them.
+With the layouts of an older `config.toml` (*To check* and *To sort* folders), the **"to
+check" files you did not confirm** stay in their `<year>/To check/<category>` folder, with the
+reason `previous-guess`, and the **"to sort" files** of an event named after a folder stay in
+`<year>/To sort/<name>`: those names are the tool's own, so a new run does not move them back
+and forth. Give them a folder in the workbook, or a page, to move them.
 
 ## Stopped in the middle
 

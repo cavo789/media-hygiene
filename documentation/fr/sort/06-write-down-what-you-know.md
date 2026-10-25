@@ -170,7 +170,7 @@ person_folders = ["Chloé", "Manon"]
 Avec une règle `same_moment` (dans la liste d'exemples), chaque photo du dossier d'une personne,
 et chaque photo isolée (`DCIM`), prise pendant une **séance** (des photos sans pause de 6 heures,
 `session_gap_hours`) où vos propres dossiers ont des photos rejoint votre dossier : `Photos
-Chloé` du 12 va dans `2019/À vérifier/Montenegro/Budva`, celle du 13 dans `…/Cetinje`. Deux de
+Chloé` du 12 irait dans `2019/2019-07/Montenegro/Budva`, celle du 13 dans `…/Cetinje`. Deux de
 vos dossiers dans la même séance : celui dont une photo est la plus proche dans le temps. Une
 photo d'aucune de ces séances va dans le dossier du voyage, le parent commun de vos dossiers
 (`Montenegro`), sauf s'ils n'en ont aucun (ou seulement une année). Elles sont **à vérifier** :
@@ -209,7 +209,8 @@ présent sur la plupart de vos événements les prend presque tous, comme le fer
 ### Les catégories
 
 Une catégorie peut utiliser `{year}`, `{month}`, `{month_name}`, `{day}`, `{event}` et
-`{event_start}`, pris au début de l'événement : `category = "Fêtes/Noël {year}"` ; les règles
+`{event_start}`, pris au début de l'événement (le mois vaut `00` quand seule l'année est
+connue) : `category = "Fêtes/Noël {year}"` ; les règles
 GPS y ajoutent `{place}`, `{country}`, `{region}` et `{city}`
 ([étape 9](09-places-from-gps.md#écrire-les-règles)). Les caractères que Windows refuse dans un
 nom de dossier sont refusés.
@@ -247,10 +248,10 @@ réglée. Le fichier va dans « à vérifier » (**Date tirée de** se termine p
 ## Quelle règle l'emporte
 
 Les règles sont lues **dans l'ordre**, et la première dont le score atteint `sure` (80 par
-défaut) décide. Quand aucune ne l'atteint, la meilleure trouvée est une supposition, rassemblée
-dans `année/À vérifier/catégorie`. Quand aucune règle ne reconnaît le fichier, il va dans
-`année/À trier/<événement>` : « à trier » veut dire « on ne sait pas », alors
-qu'`other_category` veut dire « sûr que rien au-dessus ne correspond ».
+défaut) décide. Quand aucune ne l'atteint, la meilleure trouvée est une supposition : le fichier
+reste où il est jusqu'à ce que vous la confirmiez. Quand aucune règle ne reconnaît le fichier, il
+reste aussi : « à trier » veut dire « on ne sait pas », alors qu'`other_category` veut dire
+« sûr que rien au-dessus ne correspond ».
 
 Chaque `match` a un score par défaut, qu'une règle peut changer par son propre `score` ;
 `score = 0` désactive une règle :

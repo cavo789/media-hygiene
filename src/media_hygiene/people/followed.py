@@ -3,16 +3,19 @@
 `config.toml` keeps each face as `<photo path>#<number>`. A photo that `sort` or
 `undo` moved has its faces at a new path: an id whose path is no longer among the
 faces of the index follows the moves the index recorded (`index.moves`), A → B → C,
-to the path its faces have now. The file itself is rewritten the next time the
-`people` page saves a name.
+to the path its faces have now. `sort` and `undo` rewrite the files themselves right
+after moving (`follow_people`, 0382): the names no longer depend on the index.
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.people.config_file import read_people, save_people
+
 if TYPE_CHECKING:
     from collections.abc import Container, Mapping
+    from pathlib import Path
 
     from media_hygiene.config.people_settings import PeopleSettings
 
@@ -75,3 +78,33 @@ def _followed(key: str, moves: Mapping[str, str], present: Container[str]) -> st
     while path not in present and (path := moves.get(path, path)) not in seen:
         seen.add(path)
     return f"{path}{separator}{number}"
+
+
+def follow_people(config_file: Path, moves: Mapping[str, str]) -> int:
+    """Rewrite the face ids of the photos a run moved, in the people's files.
+
+    Args:
+        config_file: `config.toml`; missing: nothing to do.
+        moves: New container path by old one, for this run only.
+
+    Returns:
+        The ids renamed, counted on the files read back.
+
+    Raises:
+        ValueError: The file is not TOML, or its `[people]` is invalid.
+        OSError: A file cannot be written.
+    """
+    if not config_file.is_file():
+        return 0
+    before = read_people(config_file)
+    after = follow_ids(before, moves, frozenset())
+    if after == before:
+        return 0
+    save_people(config_file, after)
+    back = read_people(config_file)
+    targets = set(moves.values())
+    keys = (
+        *back.ignored,
+        *(key for person in back.person for key in (*person.faces, *person.rejected)),
+    )
+    return sum(1 for key in keys if key.rpartition(_SEPARATOR)[0] in targets)

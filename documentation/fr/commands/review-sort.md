@@ -35,9 +35,9 @@ téléphone à l'autre**. Les photos de la kermesse prises avec votre téléphon
 l'appareil photo forment un seul événement, même si elles dorment dans trois dossiers.
 
 Ce que `classify` ne sait pas, c'est **comment l'appeler**. Sans indice (un dossier que vous aviez
-déjà nommé, une [règle](../sort/06-write-down-what-you-know.md)), il ne peut que le ranger sous
-ses dates, dans `2016/À trier/2016-07-14`. Nommez-le `Kermesse`, et `sort` met tous ses fichiers
-**dans un seul dossier**, `2016/Kermesse` :
+déjà nommé, une [règle](../sort/06-write-down-what-you-know.md)), il laisse ses fichiers où ils
+sont. Nommez-le `Kermesse`, et `sort` met tous ses fichiers **dans un seul dossier**,
+`2016/2016-07/Kermesse` :
 
 ```text
 Avant, trois dossiers :
@@ -46,9 +46,9 @@ Avant, trois dossiers :
   C:\Photos\Import 2016\DSC_0815.JPG
 
 Après sort, un seul :
-  C:\Photos\2016\Kermesse\IMG_4012.HEIC
-  C:\Photos\2016\Kermesse\20160714_153201.jpg
-  C:\Photos\2016\Kermesse\DSC_0815.JPG
+  C:\Photos\2016\2016-07\Kermesse\IMG_4012.HEIC
+  C:\Photos\2016\2016-07\Kermesse\20160714_153201.jpg
+  C:\Photos\2016\2016-07\Kermesse\DSC_0815.JPG
 ```
 
 C'est donc bien une arborescence de dossiers sur votre disque : **chaque photo est déplacée dans
@@ -56,11 +56,11 @@ un seul dossier**, celui de son événement (sur le même disque, un simple reno
 [`undo`](undo.md) remet tout en place). Pour qu'une photo apparaisse aussi ailleurs (« tous les
 Noëls », « Grand-mère »), sans copie : les [albums](../sort/12-albums.md).
 
-- **Un seul champ, le dossier.** Tapez le dossier sous l'année : `Kermesse` donne
-  `2016/Kermesse`, `Fêtes/Kermesse` donne `2016/Fêtes/Kermesse` (la kermesse et un anniversaire
-  tous deux sous `Fêtes`). La ligne sous le champ dit, pendant que vous tapez, où vont les
-  fichiers : « → 212 fichiers vont dans C:\Photos\2016\Fêtes\Kermesse ». Le nom de l'événement
-  (pour les albums) est le dernier dossier ; changez-le sous *Nom de l'événement* au besoin.
+- **Un seul champ, le dossier.** Tapez le nom de l'événement : `Kermesse` donne
+  `2016/2016-07/Kermesse` ([la convention](../sort/04-classify.md#la-convention--année-mois-événement)).
+  La ligne sous le champ dit, pendant que vous tapez, où vont les fichiers : « → 212 fichiers vont
+  dans C:\Photos\2016\2016-07\Kermesse ». Le nom de l'événement (pour les albums) est le dernier
+  dossier ; changez-le sous *Nom de l'événement* au besoin.
 - **Tous ne demandent pas un nom.** Un événement dont les photos sont déjà dans un dossier nommé
   (`Vacances à la mer`) a une proposition marquée **sûre**. Regardez quand même où elle mène
   avant de la valider : seuls ses fichiers épars (le `DCIM` d'un téléphone, les fichiers à vérifier
@@ -71,8 +71,8 @@ Noëls », « Grand-mère »), sans copie : les [albums](../sort/12-albums.md).
   avec un autre dossier (`Vacances au Monténégro`), celui-ci devient leur parent : `2019/Vacances
   au Monténégro/Budva`, `2019/Vacances au Monténégro/Cetinje`. La page le dit : « 3 fichiers
   gardent leur propre dossier (Budva, Cetinje) ».
-- **Un événement que vous ne nommez pas** n'est pas perdu : il va dans `année/À trier/<ses dates>`,
-  où vous le retrouvez.
+- **Un événement que vous ne nommez pas** reste où il est, et dans la liste, jusqu'à ce que vous
+  le nommiez : rien de non décidé ne bouge.
 
 ## D'un coup d'œil
 

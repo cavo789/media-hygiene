@@ -5,13 +5,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import date
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Annotated, Final
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import AfterValidator, BaseModel, ConfigDict
 
 from media_hygiene.classify.rules.calendar import parse_one_off
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.config.classify_rules import ClassifyRule
+from media_hygiene.config.rule_checks import one_name
 from media_hygiene.review.serving import json_response
 
 if TYPE_CHECKING:
@@ -60,7 +61,7 @@ class PeriodRuleIn(BaseModel):
     name: str
     first: date
     last: date
-    category: str
+    category: Annotated[str, AfterValidator(one_name)]  # a name (0401)
     keep_folders: bool = True
     replaces: str = ""  # *Update a rule…*: the name of the rule replaced in place
 

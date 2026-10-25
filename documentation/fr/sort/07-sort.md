@@ -78,7 +78,7 @@ verrouillée. La première différence refuse tout le fichier, en nommant la cel
 attendue et la valeur trouvée :
 
 ```text
-❌ Fichiers!J2 : attendu « 2016/À trier/2016-07-14 », trouvé « Ailleurs ».
+❌ Fichiers!J2 : attendu « 2016/2016-07/Kermesse », trouvé « Ailleurs ».
 💡 Annulez la modification dans Excel (Ctrl+Z), restaurez une copie du classeur,
 ou relancez 'classify' : vos modifications sont reprises dans son nouveau
 classeur.
@@ -166,19 +166,19 @@ La preuve est écrite dans `/reports/<passage>-sort/manifest.json`.
 ## Relancer classify après un tri
 
 Relancez `classify` après un tri (nouvelles photos, une règle changée) : les fichiers déjà triés
-sont à leur place et ne sont pas proposés ailleurs. Les **fichiers « à vérifier » que vous n'avez
-pas confirmés** restent dans leur dossier `<année>/À vérifier/<catégorie>`, toujours à vérifier,
-avec la raison `previous-guess` : leur dossier est la supposition de l'outil lui-même, donc une
-nouvelle exécution ne suppose pas à nouveau et `sort` ne les déplace pas dans un sens puis dans
-l'autre. Ils en sortent quand vous le décidez : confirmez ou renommez la catégorie, ou donnez un
-dossier au fichier ou à son événement, dans le nouveau classeur. Une règle de
-l'[étape 6](06-write-down-what-you-know.md) qui en est sûre (une période, un chemin, un appareil)
-les déplace aussi.
+sont à leur place et ne sont pas proposés ailleurs. Avec la
+[convention](04-classify.md#la-convention--année-mois-événement), l'arborescence le dit d'elle-même :
+un fichier dans `année/année-mois/<nom>` est à sa place, quoi qui l'y ait mis (une règle, une
+page, l'Explorateur), et un fichier posé directement dans son dossier `année/année-mois` aussi
+(rien de spécial ce mois-là). Les suppositions et les fichiers que personne n'a décidés n'ont
+jamais bougé : ils attendent là où ils étaient, jusqu'à ce que vous décidiez.
 
-Il en va de même des **fichiers « à trier »** d'un événement que l'outil a nommé d'après un
-dossier (`2019/À trier/Vacances à la mer`) : ce nom est celui de l'outil, pas un dossier que vous
-avez choisi, donc les fichiers y restent, toujours à trier. Donnez un nom à l'événement dans le
-classeur pour les déplacer.
+Avec les dispositions d'un `config.toml` plus ancien (dossiers *À vérifier* et *À trier*), les
+**fichiers « à vérifier » que vous n'avez pas confirmés** restent dans leur dossier
+`<année>/À vérifier/<catégorie>`, avec la raison `previous-guess`, et les **fichiers « à trier »**
+d'un événement nommé d'après un dossier restent dans `<année>/À trier/<nom>` : ces noms sont ceux
+de l'outil, donc une nouvelle exécution ne les déplace pas dans un sens puis dans l'autre.
+Donnez-leur un dossier dans le classeur, ou sur une page, pour les déplacer.
 
 ## Arrêté en plein milieu
 

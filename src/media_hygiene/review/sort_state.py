@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, ConfigDict
 
-from media_hygiene.review.sort_views import EventCard, PhotoCard
+from media_hygiene.review.sort_cards import EventCard, PhotoCard
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

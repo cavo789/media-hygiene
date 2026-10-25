@@ -58,8 +58,8 @@ def test_edits_land_on_the_new_plan_after_a_setting_changed(
     rows = {row.name: row for row in plan.rows}
     assert rows["M0.jpg"].folder == "2018/Wedding day"
     assert rows["M0.jpg"].reason is SortReason.CARRIED_OVER
-    assert rows["M2.jpg"].folder == "2018/Wedding"
-    assert {rows[f"A{i}.jpg"].folder for i in range(5)} == {"2017/Fair"}
+    assert rows["M2.jpg"].folder == "2018/2018-06/Wedding"
+    assert {rows[f"A{i}.jpg"].folder for i in range(5)} == {"2017/2017-05/Fair"}
     assert all(row.band is Band.SURE for row in plan.rows)
     decided = {d.row.name: d.folder for d in resolve(plan, edits)}
     assert decided == {row.name: row.folder for row in plan.rows}
@@ -77,7 +77,7 @@ def test_two_named_events_merged_keep_the_larger_one(locations: Locations) -> No
     second = run_classify(runtime)
     assert second.carried is not None
     names = {row.folder for row in plan_of(second).rows if row.event_id}
-    assert names == {"2017/Afternoon"}
+    assert names == {"2017/2017-05/Afternoon"}
     lost = second.carried.lost
     assert [(item.value, item.why) for item in lost] == [("Morning", LostWhy.MERGED)]
 

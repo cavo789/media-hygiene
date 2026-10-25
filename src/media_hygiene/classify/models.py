@@ -54,6 +54,7 @@ class SortReason(StrEnum):
     NO_SIGNAL = "no-signal"
     UNDATED = "undated"
     LEFT_AS_IS = "left-as-is"
+    NOTHING_SPECIAL = "nothing-special"  # directly in its `YYYY/YYYY-MM` folder (0402)
     CARRIED_OVER = "carried-over"  # an edit of the previous workbook, carried over
     PREVIOUS_GUESS = "previous-guess"  # already in the "to check" folder of its guess
 
@@ -139,7 +140,7 @@ class Verdict:
 
 
 @dataclass(frozen=True, slots=True)
-class Proposal:
+class Proposal:  # pylint: disable=too-many-instance-attributes
     """Where one file should go, and why."""
 
     file: MediaInput
@@ -149,6 +150,7 @@ class Proposal:
     event_id: str = ""
     folder: str | None = None  # relative to the target root; None: stay where it is
     target: Path | None = None  # the target folder, absolute (container path)
+    root: Path | None = None  # the sort root (`--target`, or its own), kept if it stays
 
     @property
     def band(self) -> Band:

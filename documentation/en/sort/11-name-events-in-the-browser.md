@@ -5,7 +5,7 @@
 **Why name an event?** An [event](../reference-glossary.md#event) is the photos of one moment (a
 school fair, a weekend), gathered by `classify` from one folder or phone to another. Its name
 becomes **the folder where `sort` puts all its photos**: named `Kermesse`, it goes to
-`2016/Kermesse`; without a name, to `2016/To sort/2016-07-14`. What moves on the disk, name or
+`2016/2016-07/Kermesse`; without a name, its files stay where they are. What moves on the disk, name or
 category: [`review-sort`, what it is for](../commands/review-sort.md#what-it-is-for).
 
 The workbook of [step 5](05-review-the-proposal.md) is good for renaming in bulk, not for
@@ -108,7 +108,7 @@ choice made here** when one of them was chosen here. A photo chosen here carries
 here* label.
 
 A photo sent to another folder gets the folder the layout gives it, as if you had typed it in its
-**Final folder** cell: `2016/Best of` with `layout = "{year}/{category}"`.
+**Final folder** cell: `2016/2016-07/Best of` with the default layout.
 
 ## Accept the sure proposals at once
 

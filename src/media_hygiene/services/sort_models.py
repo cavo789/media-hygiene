@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
+
+from media_hygiene.services.sort_links import LinksFollowed
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -39,3 +41,6 @@ class SortResult:
     manifest: Manifest
     manifest_file: Path | MountError | None  # None: no /reports mount
     stages: tuple[StageTime, ...] = ()  # where the time went (`--verbosity verbose`)
+    links: LinksFollowed = field(
+        default_factory=LinksFollowed
+    )  # the user's files naming photos (0382)

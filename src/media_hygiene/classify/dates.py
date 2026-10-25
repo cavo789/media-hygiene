@@ -195,5 +195,6 @@ def folder_dating(file: MediaInput, rules: FolderRules) -> Dating | None:
     if found is None:
         return None
     year, month = found
-    when = datetime(year, month or 7, 1)  # noqa: DTZ001 - naive local
-    return Dating(when, DateSource.FOLDER, CONFIDENCE[DateSource.FOLDER])
+    when = datetime(year, month or 7, 1)  # noqa: DTZ001 - naive local; July: for order
+    confidence = CONFIDENCE[DateSource.FOLDER]
+    return Dating(when, DateSource.FOLDER, confidence, month_known=bool(month))

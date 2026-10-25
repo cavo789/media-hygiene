@@ -65,7 +65,7 @@ def test_the_destination_is_where_sort_will_put_the_files(locations: Locations) 
 def test_a_typed_name_over_the_proposed_folder_keeps_the_folder(
     locations: Locations,
 ) -> None:
-    """With `{year}/{category}`, the name names the event, not its folder."""
+    """With `{category}` in the layout, the name names the event, not its folder."""
     runtime, workbook = classified(locations)
     app = reopened(runtime)
 
@@ -79,7 +79,7 @@ def test_a_typed_name_over_the_proposed_folder_keeps_the_folder(
     answer = json.loads(asyncio.run(ask()).body)
     assert "Autre nom" not in answer["target"]
     assert answer["going"] == PARTY_SHOTS
-    assert plan_beside(workbook).layout == "{year}/{category}"
+    assert plan_beside(workbook).layout == "{year}/{year_month}/{category}"
 
 
 def test_a_choice_shows_the_time_read_back_from_the_disk(locations: Locations) -> None:

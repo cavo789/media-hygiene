@@ -43,7 +43,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         str | None,
         typer.Option(
             "--layout",
-            help=_("Where sure files go, e.g. '{year}/{month} - {month_name}'."),
+            help=_("Where sure files go, e.g. '{year}/{year_month}/{category}'."),
         ),
     ] = None,
     target: Annotated[
@@ -141,6 +141,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         warn_overlaps,
         write_output,
     )
+    from media_hygiene.cli.convention_notes import note_convention
     from media_hygiene.console.classify_view import show_classification
     from media_hygiene.console.progress import RichProgress
     from media_hygiene.services.carry import CarryRequest, carry_source
@@ -159,6 +160,7 @@ def classify_command(  # pylint: disable=too-many-arguments,too-many-locals
         refuse_empty_data(runtime, "classify")
         runtime.output.title(_("Classify"))
         warn_overlaps(runtime)
+        note_convention(runtime)
         source = (
             None
             if sample

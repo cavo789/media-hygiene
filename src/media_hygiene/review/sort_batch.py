@@ -21,10 +21,11 @@ from media_hygiene.classify.page_decisions import (
 from media_hygiene.classify.page_values import EventValue
 from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
+from media_hygiene.review.sort_cards import EventCard
 from media_hygiene.review.sort_choosing import SortChoosing
 from media_hygiene.review.sort_session import now
 from media_hygiene.review.sort_sure import sure_value
-from media_hygiene.review.sort_views import CardMaker, EventCard
+from media_hygiene.review.sort_views import CardMaker
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -156,9 +157,7 @@ class SortBatchSession(SortChoosing):
         written = target.stat()
         modified = datetime.fromtimestamp(written.st_mtime_ns / _NANOSECONDS, tz=UTC)
         source = self._source
-        cards = CardMaker(
-            source.workbook, held, self._files, self._moved, source.book.days
-        )
+        cards = CardMaker.of(source, (held, self._files), self._moved)
         return BatchAnswer(
             changed=len(changed),
             size=written.st_size,
