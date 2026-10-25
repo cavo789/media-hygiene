@@ -45,21 +45,37 @@ ENV TZ=${TZ} \
     PATH=/home/${DEV_USER}/.venv/bin:${PATH}
 
 # Dev image: unpinned OS packages are acceptable (see devcontainer-dockerfile-best-practices).
+# Measurement and inspection tools the sessions kept reaching for (counted in the Claude Code
+# transcripts, 2026-10-24): time (GNU, peak memory with -f %M), bc, hyperfine (repeated timings
+# with warm-up and spread), file, unzip/zip/xz-utils (inventory.xlsx is a zip, GeoNames dumps),
+# jq (summary.json, plan.json), bsdextrautils (column), iproute2 (ss: who holds a page's port),
+# rsync (copy a test tree keeping mtimes).
 # hadolint ignore=DL3008
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     rm -f /etc/apt/apt.conf.d/docker-clean && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
+    bc \
+    bsdextrautils \
     ca-certificates \
     curl \
+    file \
     git \
+    hyperfine \
+    iproute2 \
+    jq \
     less \
     libimage-exiftool-perl \
     openssh-client \
     procps \
+    rsync \
     sqlite3 \
-    sudo
+    sudo \
+    time \
+    unzip \
+    xz-utils \
+    zip
 
 COPY --from=uv /uv /uvx /usr/local/bin/
 COPY --from=ffmpeg /ffmpeg /ffprobe /usr/local/bin/

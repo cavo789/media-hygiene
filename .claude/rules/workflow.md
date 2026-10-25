@@ -52,7 +52,10 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
 - Devcontainer facts: no `pytest -n` here (xdist is installed for CI only: the PC suffers under load); a foreground `sleep` is refused (use a
   background run or a check loop); `ProcessPoolExecutor` in `python -c` needs the `fork`
   context; the scratchpad is invisible to the host Docker daemon (`docker cp`, or
-  `-c "$(cat script.py)"`); heavy steps one at a time, `nice -n 19`, `PYTHON_CPU_COUNT=4`.
+  `-c "$(cat script.py)"`); heavy steps one at a time, `nice -n 19`, `PYTHON_CPU_COUNT=4`
+  (the container itself is capped by `runArgs --cpus`, `MH_DEV_CPUS` on the host). Measuring:
+  `/usr/bin/time -f '%e s %M KB'` (peak memory), `hyperfine` (repeated runs, spread),
+  `py-spy record -o /tmp/x.svg -- <command>` (where the time goes); `jq`, `bc`, `file`, `unzip`.
 - Measurements only the maintainer can run (Windows + Docker Desktop): add a step to
   `tests/measure/mh-measure.ps1` (PowerShell 5.1, ASCII) instead of a list of commands to type;
   its results file is read back from the devcontainer through a read-only mount of `C:\`.

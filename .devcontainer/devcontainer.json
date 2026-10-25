@@ -11,6 +11,11 @@
     }
   },
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  // A ceiling on the whole container, whatever command forgets the helpers' gentle mode: long
+  // runs at full load crashed the WSL VM, once the whole PC. Set MH_DEV_CPUS on the host to
+  // change it; it must not exceed the processors Docker sees (8 fails on a 4-core machine).
+  // Containers started from here (e2e, docs_screenshots) run beside it, capped by the helpers.
+  "runArgs": ["--cpus=${localEnv:MH_DEV_CPUS:8}"],
   "features": {
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
       "moby": false,
