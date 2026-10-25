@@ -15,6 +15,9 @@
 <script>
 (() => {
   const POLL_MS = 250;
+  // A poll answered by nobody (Docker Desktop's port proxy may hold a connection made in the
+  // gap between two servers, forever): dropped, then asked again on a new connection.
+  const ANSWER_MS = 2000;
   const RUN_HEADER = "X-Media-Hygiene-Run";
   const section = () => { try { return window.sessionStorage.getItem("mh-home-section") || ""; } catch { return ""; } };
   const ALIVE_MS = 10000;
@@ -28,14 +31,14 @@
   // then answering again): the home page is back, this tab shows it.
   const awaitHome = (run) => {
     let seenGone = false;
-    const poll = () => fetch("/", { cache: "no-store" })
+    const poll = () => fetch("/", { cache: "no-store", signal: AbortSignal.timeout(ANSWER_MS) })
       .then((response) => {
         const now = response.headers.get(RUN_HEADER);
         if (response.ok && (seenGone || (run && now && now !== run))) window.location.replace("/" + section());
         else window.setTimeout(poll, POLL_MS);
       })
-      .catch(() => {
-        seenGone = true;
+      .catch((error) => {
+        if (error.name !== "TimeoutError") seenGone = true; // refused: the server is gone
         window.setTimeout(poll, POLL_MS);
       });
     window.setTimeout(poll, POLL_MS);

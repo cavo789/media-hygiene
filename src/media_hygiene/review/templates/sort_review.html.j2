@@ -87,6 +87,9 @@
   input:focus { outline: 2px solid var(--accent); }
   .file .meta .proposed { color: var(--muted); overflow-wrap: anywhere; }
   .file.conflicting { border-color: var(--bad); }
+  /* The event above, its keys below: the keys never take the whole column (they scroll). */
+  #toc { min-height: 40%; }
+  #keys { flex: 0 1 auto; min-height: 0; overflow: auto; }
   .file .badge { background: var(--ok); } /* chosen here: no file is set aside on this page */
   #eventNav { display: flex; gap: 6px; align-items: center; }
   #eventNav button { padding: 2px 10px; }
@@ -125,17 +128,17 @@
   </section>
 {% endblock %}
 {% block keys %}
+    <dt><kbd>Enter</kbd></dt><dd>{{ _("save the folder, then the next event") }}</dd>
+{% include "pick_keys.html.j2" %}
+    <dt><kbd>O</kbd> <kbd>S</kbd></dt><dd>{{ _("the picked photos: to another folder, or left where they are") }}</dd>
+{% endblock %}
+{% block more_keys %}
     <dt><kbd>Enter</kbd></dt><dd>{{ _("no photo framed: save the folder, then the next event to decide") }}</dd>
     <dt><kbd>N</kbd> <kbd>P</kbd></dt><dd>{{ _("next or previous event (the ← → buttons of the bar)") }}</dd>
     <dt><kbd>U</kbd></dt><dd>{{ _("next event to decide") }}</dd>
     <dt><kbd>F</kbd></dt><dd>{{ _("type the folder of the event") }}</dd>
     <dt><kbd>E</kbd></dt><dd>{{ _("change the name of the event (by default, the last folder)") }}</dd>
-{% include "pick_keys.html.j2" %}
-    <dt><kbd>O</kbd></dt><dd>{{ _("send the picked photos to another folder") }}</dd>
-    <dt><kbd>S</kbd></dt><dd>{{ _("leave the picked photos where they are") }}</dd>
     <dt><kbd>M</kbd></dt><dd>{{ _("sort this event now: move its files, the others left for later") }}</dd>
-{% endblock %}
-{% block more_keys %}
     <dt><kbd>V</kbd></dt><dd>{{ _("accept every sure proposal at once") }}</dd>
     <dt><kbd>Shift</kbd>+<kbd>Z</kbd></dt><dd>{{ _("take back the last batch of sure proposals") }}</dd>
     <dt><kbd>Shift</kbd>+<kbd>S</kbd></dt><dd>{{ _("leave the whole event where it is") }}</dd>

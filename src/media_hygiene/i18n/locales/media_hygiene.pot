@@ -9036,9 +9036,6 @@ msgstr ""
 msgid "leave the pair alone, then next"
 msgstr ""
 
-msgid "leave the picked photos where they are"
-msgstr ""
-
 msgid "leave the whole event where it is"
 msgstr ""
 
@@ -9682,6 +9679,9 @@ msgstr ""
 msgid "same streams"
 msgstr ""
 
+msgid "save the folder, then the next event"
+msgstr ""
+
 msgid "screenshot or document"
 msgstr ""
 
@@ -9692,9 +9692,6 @@ msgid "seen by the model"
 msgstr ""
 
 msgid "send mail email attach zip facebook social network album gps"
-msgstr ""
-
-msgid "send the picked photos to another folder"
 msgstr ""
 
 msgid "set a shot aside, or take it back"
@@ -9957,6 +9954,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "the person set aside on {date}"
+msgstr ""
+
+msgid "the picked photos: to another folder, or left where they are"
 msgstr ""
 
 msgid "the previous or next one"

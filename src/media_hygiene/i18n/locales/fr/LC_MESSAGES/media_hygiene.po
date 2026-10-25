@@ -10874,9 +10874,6 @@ msgstr "laisser le groupe tel quel, puis suivant"
 msgid "leave the pair alone, then next"
 msgstr "ne pas toucher à la paire, puis suivante"
 
-msgid "leave the picked photos where they are"
-msgstr "laisser les photos choisies où elles sont"
-
 msgid "leave the whole event where it is"
 msgstr "laisser tout l'événement où il est"
 
@@ -11583,6 +11580,9 @@ msgstr "lancez 'clean' pour mettre {size} de copies de côté."
 msgid "same streams"
 msgstr "mêmes flux"
 
+msgid "save the folder, then the next event"
+msgstr "enregistrer le dossier, puis l'événement suivant"
+
 msgid "screenshot or document"
 msgstr "capture d'écran ou document"
 
@@ -11596,9 +11596,6 @@ msgid "send mail email attach zip facebook social network album gps"
 msgstr ""
 "envoyer mail courriel e-mail pièce jointe zip facebook réseau social "
 "album gps"
-
-msgid "send the picked photos to another folder"
-msgstr "envoyer les photos choisies dans un autre dossier"
 
 msgid "set a shot aside, or take it back"
 msgstr "écarter une photo, ou la reprendre"
@@ -11873,6 +11870,9 @@ msgstr "l'autre nom ressemble à une copie"
 #, python-brace-format
 msgid "the person set aside on {date}"
 msgstr "la personne mise de côté le {date}"
+
+msgid "the picked photos: to another folder, or left where they are"
+msgstr "les photos choisies : dans un autre dossier, ou laissées où elles sont"
 
 msgid "the previous or next one"
 msgstr "la précédente ou la suivante"

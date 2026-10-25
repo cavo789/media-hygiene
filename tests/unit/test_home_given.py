@@ -161,7 +161,8 @@ def test_a_page_step_shows_in_this_tab_and_comes_back_to_this_section() -> None:
     )
     assert kept < text.index('waitForComeBack(action.kind === "page", run);', run)
     wait = text.index("function waitForComeBack(page, run) {")
-    assert text.index('fetch("/", { cache: "no-store" })', wait) < text.index(
+    polled = 'fetch("/", { cache: "no-store", signal: AbortSignal.timeout(ANSWER_MS) })'
+    assert text.index(polled, wait) < text.index(
         'else if (page) window.location.replace("/");', wait
     )
 
