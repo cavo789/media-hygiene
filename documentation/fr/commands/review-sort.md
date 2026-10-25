@@ -107,14 +107,14 @@ restent en bas à gauche, sous ⌨ **Clavier** (les premières toujours visibles
 
 | Touche | Rôle |
 |---|---|
-| `Entrée` | Enregistrer le dossier, puis passer à l'événement suivant encore à décider. |
-| `N` / `P` | Événement suivant ou précédent, sans décider. `U` : événement suivant encore à décider. |
+| `Entrée` | Aucune photo encadrée : enregistrer le dossier, puis passer à l'événement suivant encore à décider. |
+| `N` / `P` | Événement suivant ou précédent, sans décider (les boutons ← → de la barre). `U` : événement suivant encore à décider. |
 | `V` | Accepter d'un coup toutes les propositions sûres ; `Maj`+`Z` reprend ce lot. |
 | `F` / `E` | Taper le dossier / changer le nom de l'événement ; `Échap` abandonne ce qui est tapé et non enregistré. |
 | `Maj`+`S` | Laisser tout l'événement où il est. |
-| `Espace`, `O`, `S` | Sélectionner des photos, les envoyer vers une autre catégorie, ou les laisser où elles sont. |
+| clic, Ctrl, Maj, rectangle, `Ctrl`+`A`, `I` | Choisir des photos comme dans [`browse`](browse.md) ; puis `O` les envoie dans un autre dossier, `S` les laisse où elles sont. |
 | `Suppr` | Reprendre le choix fait ici. |
-| `Z` | Agrandir la photo. |
+| `Entrée` sur une photo, double clic | La grande vue. |
 
 ## Options
 

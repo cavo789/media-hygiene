@@ -49,7 +49,7 @@ def test_the_page_is_served_and_the_choices_counted(
     assert b"sort-decisions.json" in pages[0]
     # The next event's thumbnails and the zoom around the cursor are asked ahead.
     assert b"new Image().src = photo.thumb" in pages[0]
-    assert b"new Image().src = photos[rank].preview" in pages[0]
+    assert b"new Image().src = files[near].preview" in pages[0]
     assert thumbs == [200]
     assert any((locations.cache_dir / "previews").iterdir())  # kept for next time
     sorted_out = run(cli, "sort", "--yes")

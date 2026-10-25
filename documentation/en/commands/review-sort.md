@@ -104,14 +104,14 @@ with the line saying where each choice is saved.
 
 | Key | What it does |
 |---|---|
-| `Enter` | Save the folder, then go to the next event still to decide. |
-| `N` / `P` | Next or previous event, without deciding. `U`: next event still to decide. |
+| `Enter` | No photo framed: save the folder, then go to the next event still to decide. |
+| `N` / `P` | Next or previous event, without deciding (the ← → buttons of the bar). `U`: next event still to decide. |
 | `V` | Accept every sure proposal at once; `Shift`+`Z` takes that batch back. |
 | `F` / `E` | Type the folder / change the event's name; `Esc` drops what is typed and not saved. |
 | `Shift`+`S` | Leave the whole event where it is. |
-| `Space`, `O`, `S` | Select photos, send them to another category, or leave them where they are. |
+| click, Ctrl, Shift, rectangle, `Ctrl`+`A`, `I` | Pick photos as in [`browse`](browse.md); then `O` sends them to another folder, `S` leaves them where they are. |
 | `Delete` | Take back the choice made here. |
-| `Z` | Enlarge the photo. |
+| `Enter` on a photo, double click | The large view. |
 
 ## Options
 

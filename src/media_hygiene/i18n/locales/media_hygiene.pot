@@ -3286,6 +3286,9 @@ msgstr ""
 msgid "Leave everything on the phone"
 msgstr ""
 
+msgid "Leave where they are (S)"
+msgstr ""
+
 msgid "Left as it is"
 msgstr ""
 
@@ -3778,6 +3781,9 @@ msgid "Next"
 msgstr ""
 
 msgid "Next audit: a few seconds, the files checked are taken from the cache."
+msgstr ""
+
+msgid "Next event (N)"
 msgstr ""
 
 msgid "Next page →"
@@ -4942,6 +4948,9 @@ msgstr ""
 msgid "Pick this file"
 msgstr ""
 
+msgid "Pick this photo"
+msgstr ""
+
 msgid "Pictures received through a messaging app, if you want them apart:"
 msgstr ""
 
@@ -5036,6 +5045,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Previous drafts removed: {size} MB."
+msgstr ""
+
+msgid "Previous event (P)"
 msgstr ""
 
 msgid "Previous guess, already in place"
@@ -5799,8 +5811,14 @@ msgstr ""
 msgid "Select {text} and press Ctrl+C."
 msgstr ""
 
+msgid "Send"
+msgstr ""
+
 #, python-brace-format
-msgid "Send the photos ({count}) to the category:"
+msgid "Send the photos ({count}) to the folder, under the year:"
+msgstr ""
+
+msgid "Send to another folder (O)"
 msgstr ""
 
 #, python-brace-format
@@ -6322,6 +6340,9 @@ msgstr ""
 msgid ""
 "Tags: {files} files have words, {seen} of them from the vision model; "
 "'search' finds them."
+msgstr ""
+
+msgid "Take back the choice made here"
 msgstr ""
 
 msgid "Take back the last batch of sure proposals (Shift+Z)"
@@ -7350,6 +7371,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "These folders are mounted read-only: {folders}."
+msgstr ""
+
+msgid "These photos are left as they are: no choice applies to them."
 msgstr ""
 
 msgid "This browser cannot play this video: open the original."
@@ -8533,6 +8557,9 @@ msgstr ""
 msgid "chosen"
 msgstr ""
 
+msgid "chosen here"
+msgstr ""
+
 msgid ""
 "chosen in the review page, then edited otherwise in the workbook, whose "
 "value was carried over"
@@ -8706,9 +8733,6 @@ msgstr ""
 msgid "en"
 msgstr ""
 
-msgid "enlarge a photo"
-msgstr ""
-
 msgid "entirely a copy: holds nothing else"
 msgstr ""
 
@@ -8731,6 +8755,9 @@ msgid "every key"
 msgstr ""
 
 msgid "every photo has GPS"
+msgstr ""
+
+msgid "every photo of the event"
 msgstr ""
 
 msgid "every source"
@@ -9009,7 +9036,7 @@ msgstr ""
 msgid "leave the pair alone, then next"
 msgstr ""
 
-msgid "leave the selected photos where they are"
+msgid "leave the picked photos where they are"
 msgstr ""
 
 msgid "leave the whole event where it is"
@@ -9163,9 +9190,6 @@ msgstr ""
 msgid "more than {limit} is expected, not {value}"
 msgstr ""
 
-msgid "move between photos"
-msgstr ""
-
 msgid "move checks"
 msgstr ""
 
@@ -9292,7 +9316,7 @@ msgstr ""
 msgid "next group to check, undecided"
 msgstr ""
 
-msgid "next or previous event"
+msgid "next or previous event (the ← → buttons of the bar)"
 msgstr ""
 
 msgid "next series still to see"
@@ -9327,6 +9351,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "no frame: {error}"
+msgstr ""
+
+msgid "no photo framed: save the folder, then the next event to decide"
 msgstr ""
 
 msgid "no preview"
@@ -9655,9 +9682,6 @@ msgstr ""
 msgid "same streams"
 msgstr ""
 
-msgid "save the folder, then the next event to decide"
-msgstr ""
-
 msgid "screenshot or document"
 msgstr ""
 
@@ -9667,13 +9691,10 @@ msgstr ""
 msgid "seen by the model"
 msgstr ""
 
-msgid "select a photo"
-msgstr ""
-
 msgid "send mail email attach zip facebook social network album gps"
 msgstr ""
 
-msgid "send the selected photos to another category"
+msgid "send the picked photos to another folder"
 msgstr ""
 
 msgid "set a shot aside, or take it back"
@@ -9771,7 +9792,7 @@ msgstr ""
 msgid "tags gives them some"
 msgstr ""
 
-msgid "take back the choice made here (of the selected photos, else of the event)"
+msgid "take back the choice made here (of the picked photos, else of the event)"
 msgstr ""
 
 msgid "take back the last batch of sure proposals"
@@ -11785,6 +11806,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} photo or video"
 msgid_plural "{n} photos and videos"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} photo picked"
+msgid_plural "{n} photos picked"
 msgstr[0] ""
 msgstr[1] ""
 

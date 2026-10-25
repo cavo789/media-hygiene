@@ -99,17 +99,18 @@ def open_sort_review(runtime: Runtime, given: str | None) -> SortBatchSession:
     return SortBatchSession(source, base)
 
 
-def serve_sort_review(runtime: Runtime, session: SortBatchSession, port: int) -> None:
-    """Serve the page until Ctrl+C; every choice is saved as it is made.
+def sort_page(session: SortBatchSession) -> str:
+    """Render the page of a review: its paths, the workbook and the decisions file.
 
     Args:
-        runtime: Settings, mount points and output.
         session: The review.
-        port: The port to listen on, inside the container (0: any free one).
+
+    Returns:
+        The page, as HTML.
     """
     environment = translated_environment(_TEMPLATES_PACKAGE, escaped=("html", "j2"))
     workbook, decisions = session.hosts
-    page = environment.get_template(_PAGE_TEMPLATE).render(
+    return environment.get_template(_PAGE_TEMPLATE).render(
         header=page_header(_PAGE_TEMPLATE),
         paths={
             "page": PAGE_PATH,
@@ -124,6 +125,17 @@ def serve_sort_review(runtime: Runtime, session: SortBatchSession, port: int) ->
         workbook=workbook,
         decisions=decisions,
     )
+
+
+def serve_sort_review(runtime: Runtime, session: SortBatchSession, port: int) -> None:
+    """Serve the page until Ctrl+C; every choice is saved as it is made.
+
+    Args:
+        runtime: Settings, mount points and output.
+        session: The review.
+        port: The port to listen on, inside the container (0: any free one).
+    """
+    page = sort_page(session)
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         app = SortReviewApp(
             session,

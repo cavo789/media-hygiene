@@ -86,22 +86,29 @@ whether to save it, closing the tab warns.
 
 | Key | What it does |
 |---|---|
-| <kbd>Enter</kbd> | Save the folder, then go to the next event still to decide. |
-| <kbd>N</kbd> / <kbd>P</kbd> (or Page Down / Page Up) | Next or previous event, without deciding. |
+| <kbd>Enter</kbd> | No photo framed: save the folder, then go to the next event still to decide. |
+| <kbd>N</kbd> / <kbd>P</kbd> (or Page Down / Page Up) | Next or previous event, without deciding: the ← → buttons around *Event 1 of 1137* in the bar. |
 | <kbd>U</kbd> | Next event still to decide. |
 | <kbd>V</kbd> | Accept every sure proposal at once (see below). |
 | <kbd>Shift</kbd>+<kbd>Z</kbd> | Take that batch back. |
 | <kbd>F</kbd> / <kbd>E</kbd> | Type the folder / change the event's name; <kbd>Esc</kbd> drops what is typed and not saved. |
 | <kbd>Shift</kbd>+<kbd>S</kbd> | Leave the whole event where it is ("(stay where it is)"). |
-| <kbd>←</kbd> <kbd>→</kbd> | Move between the photos. |
-| <kbd>Space</kbd> | Select the photo (or click it). |
-| <kbd>O</kbd> | Send the selected photos (else the current one) to another category: type it, <kbd>Enter</kbd>. |
-| <kbd>S</kbd> | Leave the selected photos (else the current one) where they are. |
-| <kbd>Delete</kbd> | Take back the choice made here: of the selected photos, else of the event. The workbook decides again. |
-| <kbd>Z</kbd> | Enlarge the current photo; <kbd>Esc</kbd> closes it. |
+| <kbd>O</kbd> | Send the picked photos (else the framed one) to another folder: type it, <kbd>Enter</kbd>. |
+| <kbd>S</kbd> | Leave the picked photos (else the framed one) where they are. |
+| <kbd>Delete</kbd> | Take back the choice made here: of the picked photos, else of the event. The workbook decides again. |
 
-A photo sent to another category gets the folder the layout gives that category, as if you had
-typed it in its **Final folder** cell: `2016/Best of` with `layout = "{year}/{category}"`.
+The photos are picked as in [`browse`](../commands/browse.md): a click picks one photo; the ☑ box
+of each thumbnail (or Ctrl+click) adds or removes one; Shift+click picks every photo from the last
+one clicked; a rectangle dragged with the mouse over the grid picks what it touches (with Ctrl, it
+adds to the picking); Ctrl+A every photo of the event. **Invert the picking** (or I) picks the
+others. The arrows move the frame, Space picks the framed photo, Enter (or a double click) opens it
+large: ← → there go from one photo to the next, F full screen, Esc closes. Once photos are picked,
+the bar offers **Send to another folder (O)**, **Leave where they are (S)**, and **Take back the
+choice made here** when one of them was chosen here. A photo chosen here carries a green *chosen
+here* label.
+
+A photo sent to another folder gets the folder the layout gives it, as if you had typed it in its
+**Final folder** cell: `2016/Best of` with `layout = "{year}/{category}"`.
 
 ## Accept the sure proposals at once
 

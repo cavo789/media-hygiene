@@ -128,8 +128,7 @@
     else if (!answer.intact) setStatus(fill(T.sortedNotIntact, { run: answer.run_id }), "error");
     else setStatus(fill(T.sortedNow, { moved: counted(T.nFiles, answer.moved), verified: answer.verified, run: answer.run_id, time: time }), "saved");
     if (index !== current) return;
-    photos = answer.view.photos;
+    showPhotos(answer.view.photos, false);
     showEvent(answer.view.card);
     showTotals();
-    showPhotos();
   };

@@ -4,12 +4,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from media_hygiene.services.sort_reviewing import open_sort_review, sort_page
 from tests.integration.tags.test_search_albums import _serve
 from tests.support.pick_pages import PICK_PARTS
+from tests.support.sort_review import classified
 
 if TYPE_CHECKING:
     import pytest
     from typer.testing import CliRunner
+
+    from media_hygiene.paths.locations import Locations
 
 # The shared parts, as each one shows in the page served (review/templates/pick_*).
 _SHARED = (
@@ -63,3 +67,23 @@ def test_a_search_sent_hands_the_keys_to_the_grid(
     assert "showFiles(found.hits, again)" in sent  # a save keeps the cards
     assert "function scope() {\n  return asked;" in search
     assert "function scope() {\n  return { folder: folder };" in browse
+
+
+def test_the_sort_review_is_built_from_the_same_parts(locations: Locations) -> None:
+    """0389: review-sort's photos are the shared grid; no Delete to set aside there."""
+    runtime, _workbook = classified(locations)
+    page = sort_page(open_sort_review(runtime, None))
+    for part in PICK_PARTS:
+        assert page.count(part) == 1, part
+    assert page.count('"use strict";') == 1
+    top = page.split('<header id="bar">')[1].split("</header>")[0]
+    assert (
+        top.index('id="prevEvent"')
+        < top.index('id="position"')
+        < top.index('id="nextEvent"')
+    )
+    assert 'id="invert"' in top
+    keys = page.split('id="keys"')[1].split("</section>")[0]
+    assert "every photo of the event" in keys  # Ctrl+A
+    assert "set the picked files aside" not in keys  # Delete takes back a choice here
+    assert 'id="zoom"' not in page  # the large view replaced Z

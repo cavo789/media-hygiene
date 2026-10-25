@@ -88,22 +88,29 @@ demande s'il faut l'enregistrer, fermer l'onglet prévient.
 
 | Touche | Ce qu'elle fait |
 |---|---|
-| <kbd>Entrée</kbd> | Enregistrer le dossier, puis passer à l'événement suivant à décider. |
-| <kbd>N</kbd> / <kbd>P</kbd> (ou Page suivante / Page précédente) | Événement suivant ou précédent, sans décider. |
+| <kbd>Entrée</kbd> | Aucune photo encadrée : enregistrer le dossier, puis passer à l'événement suivant à décider. |
+| <kbd>N</kbd> / <kbd>P</kbd> (ou Page suivante / Page précédente) | Événement suivant ou précédent, sans décider : les boutons ← → autour de *Événement 1 sur 1137* dans la barre. |
 | <kbd>U</kbd> | Événement suivant à décider. |
 | <kbd>V</kbd> | Accepter d'un coup toutes les propositions sûres (voir plus bas). |
 | <kbd>Maj</kbd>+<kbd>Z</kbd> | Reprendre ce lot. |
 | <kbd>F</kbd> / <kbd>E</kbd> | Taper le dossier / changer le nom de l'événement ; <kbd>Échap</kbd> abandonne ce qui est tapé et non enregistré. |
 | <kbd>Maj</kbd>+<kbd>S</kbd> | Laisser tout l'événement où il est (« (rester où il est) »). |
-| <kbd>←</kbd> <kbd>→</kbd> | Passer d'une photo à l'autre. |
-| <kbd>Espace</kbd> | Sélectionner la photo (ou cliquer dessus). |
-| <kbd>O</kbd> | Envoyer les photos sélectionnées (sinon la photo courante) dans une autre catégorie : tapez-la, <kbd>Entrée</kbd>. |
-| <kbd>S</kbd> | Laisser les photos sélectionnées (sinon la photo courante) où elles sont. |
-| <kbd>Suppr</kbd> | Reprendre le choix fait ici : des photos sélectionnées, sinon de l'événement. Le classeur décide à nouveau. |
-| <kbd>Z</kbd> | Agrandir la photo courante ; <kbd>Échap</kbd> la referme. |
+| <kbd>O</kbd> | Envoyer les photos choisies (sinon celle encadrée) dans un autre dossier : tapez-le, <kbd>Entrée</kbd>. |
+| <kbd>S</kbd> | Laisser les photos choisies (sinon celle encadrée) où elles sont. |
+| <kbd>Suppr</kbd> | Reprendre le choix fait ici : des photos choisies, sinon de l'événement. Le classeur décide à nouveau. |
 
-Une photo envoyée dans une autre catégorie reçoit le dossier que la disposition donne à cette
-catégorie, comme si vous l'aviez tapé dans sa cellule **Dossier final** : `2016/Best of` avec
+Les photos se choisissent comme dans [`browse`](../commands/browse.md) : un clic choisit une
+photo ; la case ☑ de chaque vignette (ou Ctrl+clic) en ajoute ou en retire une ; Maj+clic choisit
+toutes les photos depuis la dernière cliquée ; un rectangle tiré à la souris sur la grille choisit
+ce qu'il touche (avec Ctrl, il s'ajoute au choix) ; Ctrl+A toutes les photos de l'événement.
+**Inverser la sélection** (ou I) choisit les autres. Les flèches déplacent le cadre, Espace
+choisit la photo encadrée, Entrée (ou un double clic) l'ouvre en grand : ← → y passent d'une photo
+à l'autre, F plein écran, Échap referme. Une fois des photos choisies, la barre propose **Envoyer
+dans un autre dossier (O)**, **Laisser où elles sont (S)**, et **Reprendre le choix fait ici**
+quand l'une d'elles a été choisie ici. Une photo choisie ici porte l'étiquette verte *choisi ici*.
+
+Une photo envoyée dans un autre dossier reçoit le dossier que la disposition lui donne, comme si
+vous l'aviez tapé dans sa cellule **Dossier final** : `2016/Best of` avec
 `layout = "{year}/{category}"`.
 
 ## Accepter d'un coup les propositions sûres

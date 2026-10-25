@@ -4024,6 +4024,9 @@ msgstr "Ne pas toucher"
 msgid "Leave everything on the phone"
 msgstr "Tout laisser sur le téléphone"
 
+msgid "Leave where they are (S)"
+msgstr "Laisser où elles sont (S)"
+
 msgid "Left as it is"
 msgstr "Laissé tel quel"
 
@@ -4612,6 +4615,9 @@ msgid "Next audit: a few seconds, the files checked are taken from the cache."
 msgstr ""
 "Prochain audit : quelques secondes, les fichiers vérifiés sont repris du "
 "cache."
+
+msgid "Next event (N)"
+msgstr "Événement suivant (N)"
 
 msgid "Next page →"
 msgstr "Page suivante →"
@@ -6010,6 +6016,9 @@ msgstr "Choisir les autres : ceux choisis sont laissés (I)"
 msgid "Pick this file"
 msgstr "Choisir ce fichier"
 
+msgid "Pick this photo"
+msgstr "Choisir cette photo"
+
 msgid "Pictures received through a messaging app, if you want them apart:"
 msgstr "Les images reçues par une messagerie, si vous les voulez à part :"
 
@@ -6120,6 +6129,9 @@ msgstr "Pages précédente et suivante"
 #, python-brace-format
 msgid "Previous drafts removed: {size} MB."
 msgstr "Brouillons précédents supprimés : {size} Mo."
+
+msgid "Previous event (P)"
+msgstr "Événement précédent (P)"
 
 msgid "Previous guess, already in place"
 msgstr "Supposition précédente, déjà en place"
@@ -7043,9 +7055,15 @@ msgstr "Vue."
 msgid "Select {text} and press Ctrl+C."
 msgstr "Sélectionnez {text} et faites Ctrl+C."
 
+msgid "Send"
+msgstr "Envoyer"
+
 #, python-brace-format
-msgid "Send the photos ({count}) to the category:"
-msgstr "Envoyer les photos ({count}) dans la catégorie :"
+msgid "Send the photos ({count}) to the folder, under the year:"
+msgstr "Envoyer les photos ({count}) dans le dossier, sous l'année :"
+
+msgid "Send to another folder (O)"
+msgstr "Envoyer dans un autre dossier (O)"
 
 #, python-brace-format
 msgid "Sent: the step starts in {window}…"
@@ -7658,6 +7676,9 @@ msgid ""
 msgstr ""
 "Tags : {files} fichiers ont des mots, dont {seen} du modèle de vision ; "
 "'search' les retrouve."
+
+msgid "Take back the choice made here"
+msgstr "Reprendre le choix fait ici"
 
 msgid "Take back the last batch of sure proposals (Shift+Z)"
 msgstr "Reprendre le dernier lot de propositions sûres (Maj+Z)"
@@ -8947,6 +8968,9 @@ msgstr ""
 #, python-brace-format
 msgid "These folders are mounted read-only: {folders}."
 msgstr "Ces dossiers sont montés en lecture seule : {folders}."
+
+msgid "These photos are left as they are: no choice applies to them."
+msgstr "Ces photos sont laissées telles quelles : aucun choix ne s'y applique."
 
 msgid "This browser cannot play this video: open the original."
 msgstr "Ce navigateur ne sait pas lire cette vidéo : ouvrez l'original."
@@ -10334,6 +10358,9 @@ msgstr "choisir tous les brouillons affichés"
 msgid "chosen"
 msgstr "choisie"
 
+msgid "chosen here"
+msgstr "choisi ici"
+
 msgid ""
 "chosen in the review page, then edited otherwise in the workbook, whose "
 "value was carried over"
@@ -10524,9 +10551,6 @@ msgstr "écoulé {time}"
 msgid "en"
 msgstr "fr"
 
-msgid "enlarge a photo"
-msgstr "agrandir une photo"
-
 msgid "entirely a copy: holds nothing else"
 msgstr "entièrement une copie : ne contient rien d'autre"
 
@@ -10550,6 +10574,9 @@ msgstr "toutes les touches"
 
 msgid "every photo has GPS"
 msgstr "chaque photo a son GPS"
+
+msgid "every photo of the event"
+msgstr "toutes les photos de l'événement"
 
 msgid "every source"
 msgstr "toutes les sources"
@@ -10847,8 +10874,8 @@ msgstr "laisser le groupe tel quel, puis suivant"
 msgid "leave the pair alone, then next"
 msgstr "ne pas toucher à la paire, puis suivante"
 
-msgid "leave the selected photos where they are"
-msgstr "laisser les photos sélectionnées où elles sont"
+msgid "leave the picked photos where they are"
+msgstr "laisser les photos choisies où elles sont"
 
 msgid "leave the whole event where it is"
 msgstr "laisser tout l'événement où il est"
@@ -11026,9 +11053,6 @@ msgstr ""
 msgid "more than {limit} is expected, not {value}"
 msgstr "une valeur supérieure à {limit} est attendue, pas {value}"
 
-msgid "move between photos"
-msgstr "passer d'une photo à l'autre"
-
 msgid "move checks"
 msgstr "vérification des déplacements"
 
@@ -11171,8 +11195,8 @@ msgstr "groupe suivant sans réponse"
 msgid "next group to check, undecided"
 msgstr "groupe suivant à vérifier, non décidé"
 
-msgid "next or previous event"
-msgstr "événement suivant ou précédent"
+msgid "next or previous event (the ← → buttons of the bar)"
+msgstr "événement suivant ou précédent (les boutons ← → de la barre)"
 
 msgid "next series still to see"
 msgstr "série suivante à voir"
@@ -11207,6 +11231,11 @@ msgstr "pas de guillemet double"
 #, python-brace-format
 msgid "no frame: {error}"
 msgstr "pas d'image : {error}"
+
+msgid "no photo framed: save the folder, then the next event to decide"
+msgstr ""
+"aucune photo encadrée : enregistrer le dossier, puis l'événement suivant "
+"à décider"
 
 msgid "no preview"
 msgstr "pas d'aperçu"
@@ -11554,9 +11583,6 @@ msgstr "lancez 'clean' pour mettre {size} de copies de côté."
 msgid "same streams"
 msgstr "mêmes flux"
 
-msgid "save the folder, then the next event to decide"
-msgstr "enregistrer le dossier, puis l'événement suivant à décider"
-
 msgid "screenshot or document"
 msgstr "capture d'écran ou document"
 
@@ -11566,16 +11592,13 @@ msgstr "chercher rechercher trouver retrouver photo"
 msgid "seen by the model"
 msgstr "vu par le modèle"
 
-msgid "select a photo"
-msgstr "sélectionner une photo"
-
 msgid "send mail email attach zip facebook social network album gps"
 msgstr ""
 "envoyer mail courriel e-mail pièce jointe zip facebook réseau social "
 "album gps"
 
-msgid "send the selected photos to another category"
-msgstr "envoyer les photos sélectionnées dans une autre catégorie"
+msgid "send the picked photos to another folder"
+msgstr "envoyer les photos choisies dans un autre dossier"
 
 msgid "set a shot aside, or take it back"
 msgstr "écarter une photo, ou la reprendre"
@@ -11674,10 +11697,8 @@ msgstr "inverser les dossiers, puis suivante"
 msgid "tags gives them some"
 msgstr "tags leur en donne"
 
-msgid "take back the choice made here (of the selected photos, else of the event)"
-msgstr ""
-"reprendre le choix fait ici (des photos sélectionnées, sinon de "
-"l'événement)"
+msgid "take back the choice made here (of the picked photos, else of the event)"
+msgstr "reprendre le choix fait ici (des photos choisies, sinon de l'événement)"
 
 msgid "take back the last batch of sure proposals"
 msgstr "reprendre le dernier lot de propositions sûres"
@@ -14118,6 +14139,12 @@ msgid "{n} photo or video"
 msgid_plural "{n} photos and videos"
 msgstr[0] "{n} photo ou vidéo"
 msgstr[1] "{n} photos et vidéos"
+
+#, python-brace-format
+msgid "{n} photo picked"
+msgid_plural "{n} photos picked"
+msgstr[0] "{n} photo choisie"
+msgstr[1] "{n} photos choisies"
 
 #, python-brace-format
 msgid "{n} photo ready to send ({size}), read back from {folder}."
