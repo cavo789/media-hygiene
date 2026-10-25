@@ -77,7 +77,9 @@ class SortSession:
             The state.
         """
         source = self._source
-        cards = CardMaker(source.workbook, self._events, self._files, self._moved)
+        cards = CardMaker(
+            source.workbook, self._events, self._files, self._moved, source.book.days
+        )
         workbook, decisions = self.hosts
         return SortState(
             workbook=workbook,
@@ -99,7 +101,9 @@ class SortSession:
         """
         item = self._item(event_id)
         source = self._source
-        cards = CardMaker(source.workbook, self._events, self._files, self._moved)
+        cards = CardMaker(
+            source.workbook, self._events, self._files, self._moved, source.book.days
+        )
         photos = tuple(cards.photo(row) for row in item.rows)
         return EventView(card=cards.event(item), photos=photos)
 

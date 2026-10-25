@@ -573,6 +573,13 @@ msgid ""
 "original stays, and the video is not tried again."
 msgstr ""
 
+#, python-brace-format
+msgid "A rule is already named '{name}' in config.toml."
+msgstr ""
+
+msgid "A rule is already named so: choose another name."
+msgstr ""
+
 msgid ""
 "A screenshot or a document, as 'classify' tells them: a screenshot name, "
 "or a PNG or tiny image without any camera trace."
@@ -2053,6 +2060,10 @@ msgstr ""
 msgid "Effective settings"
 msgstr ""
 
+#, python-brace-format
+msgid "Elsewhere: {folders}."
+msgstr ""
+
 msgid "Empty"
 msgstr ""
 
@@ -2593,6 +2604,9 @@ msgstr ""
 msgid "Folder whose copies are kept first. Repeat it; the order matters."
 msgstr ""
 
+msgid "Folder, under the year"
+msgstr ""
+
 msgid "Folders"
 msgstr ""
 
@@ -2716,6 +2730,9 @@ msgid ""
 msgstr ""
 
 msgid "Freed"
+msgstr ""
+
+msgid "From"
 msgstr ""
 
 msgid "From WSL or Linux, mount the share yourself, then give its folder."
@@ -3102,6 +3119,12 @@ msgstr ""
 msgid "It changes nothing in your photos"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"It shares days with {rules}: the first listed in config.toml wins on "
+"those days."
+msgstr ""
+
 msgid "It was then:"
 msgstr ""
 
@@ -3161,6 +3184,9 @@ msgid "Keep both names (link)"
 msgstr ""
 
 msgid "Keep it, encrypted for your Windows account only, on this PC? (y/n)"
+msgstr ""
+
+msgid "Keep my folders below it (keep_folders)"
 msgstr ""
 
 msgid "Keep one of them: the other is a copy."
@@ -5255,6 +5281,9 @@ msgid ""
 "disables the rule."
 msgstr ""
 
+msgid "Remember as a rule"
+msgstr ""
+
 msgid "Remove ':ro' from its -v option: the tool writes there."
 msgid_plural "Remove ':ro' from their -v options: the tool writes there."
 msgstr[0] ""
@@ -5412,6 +5441,12 @@ msgid "Root"
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"Rule '{name}' ({dates}) saved in config.toml, read back at {time}: the "
+"next classify applies it; this event's folder is chosen too."
+msgstr ""
+
+#, python-brace-format
 msgid "Rule '{rule}': nobody is named {names} in [[people.person]]."
 msgstr ""
 
@@ -5420,6 +5455,9 @@ msgid "Rule '{rule}': {count} file sorted by what the model saw"
 msgid_plural "Rule '{rule}': {count} files sorted by what the model saw"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Rule:"
+msgstr ""
 
 msgid "Rules and reasons"
 msgstr ""
@@ -5634,6 +5672,9 @@ msgstr ""
 msgid ""
 "Save the folder, then move the files of this event only, journaled: undo "
 "puts them back (M)"
+msgstr ""
+
+msgid "Save the rule"
 msgstr ""
 
 msgid "Save this position"
@@ -7446,6 +7487,9 @@ msgstr ""
 msgid "This page cannot move files: run 'sort --event' in the terminal."
 msgstr ""
 
+msgid "This page cannot write config.toml."
+msgstr ""
+
 msgid "This page is closed. The home page comes back here when mh opens it."
 msgstr ""
 
@@ -7454,6 +7498,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "This photo is not in your library: {warning} Tick it anyway?"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"This rule would take {files}: {mine} of this event, {others} of other "
+"events or folders on the same days."
 msgstr ""
 
 msgid "This series is not in the file yet."
@@ -7526,6 +7576,9 @@ msgid ""
 "Tiny: below this many megapixels (width times height divided by a "
 "million): 0.16 is 400 x 400 pixels, icons and thumbnails. 0 disables the "
 "reason."
+msgstr ""
+
+msgid "To"
 msgstr ""
 
 msgid "To apply"
@@ -8076,6 +8129,11 @@ msgid ""
 "undoable)."
 msgstr ""
 
+msgid ""
+"Write this event down as a rule of config.toml: its days, its folder; the"
+" next classify runs apply it (R)"
+msgstr ""
+
 msgid "Writes the words into the .xmp sidecars."
 msgstr ""
 
@@ -8083,6 +8141,11 @@ msgid "Writing"
 msgstr ""
 
 msgid "Writing the HTML report and its previews…"
+msgstr ""
+
+msgid ""
+"Written into config.toml, above Existing folders: every classify run "
+"applies it, to the photos added later too."
 msgstr ""
 
 msgid "Year"
@@ -8621,6 +8684,13 @@ msgid "compare the shots at 100 %%"
 msgstr ""
 
 msgid "config.toml"
+msgstr ""
+
+msgid "config.toml holds no [[classify.rules]]: write one first."
+msgstr ""
+
+#, python-brace-format
+msgid "config.toml read back does not hold the rule '{name}'."
 msgstr ""
 
 #, python-brace-format
@@ -9625,6 +9695,9 @@ msgid "reference-commands/"
 msgstr ""
 
 msgid "reference-safety/"
+msgstr ""
+
+msgid "remember this event as a rule of config.toml"
 msgstr ""
 
 msgid "remove folder forget"

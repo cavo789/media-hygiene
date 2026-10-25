@@ -1,17 +1,39 @@
-"""The sort review's choices of photos, and the destination of what is being typed."""
+"""The sort review's choices of photos, the destination typed, the rules remembered."""
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from dataclasses import replace
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING, Final
 
+from pydantic import BaseModel, ConfigDict
+
+from media_hygiene.classify.page_values import EventValue
+from media_hygiene.classify.rules_file import add_rule, read_rules
+from media_hygiene.errors import ConfigError
+from media_hygiene.i18n import _
 from media_hygiene.review.sort_destination import Destination, destination
-from media_hygiene.review.sort_files import file_decisions, movable_rows
+from media_hygiene.review.sort_files import RuleBook, file_decisions, movable_rows
+from media_hygiene.review.sort_rule import RuleIn, RulePreview, preview
 from media_hygiene.review.sort_session import SortSession
+from media_hygiene.review.sort_state import EventView
 
 if TYPE_CHECKING:
-    from media_hygiene.classify.page_values import EventValue
     from media_hygiene.review.sort_files import SendFiles
-    from media_hygiene.review.sort_state import EventView
+
+_NANOSECONDS: Final = 1_000_000_000
+
+
+class RuleSaved(BaseModel):
+    """A rule written into `config.toml`, as read back, and the event chosen with it."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    name: str
+    dates: str
+    category: str
+    modified: str  # of `config.toml`, ISO 8601, UTC: the page shows it in local time
+    view: EventView
 
 
 class SortChoosing(SortSession):
@@ -60,3 +82,48 @@ class SortChoosing(SortSession):
         """
         item = self._item(event_id)
         return destination(self._source, item, (self.decisions(), value))
+
+    def rule_preview(self, asked: RuleIn) -> RulePreview:
+        """What a rule for an event would take on the plan shown; nothing is saved.
+
+        Args:
+            asked: The rule, as validated in the page's dialog.
+
+        Returns:
+            Its counts.
+        """
+        self._item(asked.event)
+        return preview(
+            self._source.plan, asked.event, (asked.rule(), self._source.book.rules)
+        )
+
+    def save_rule(self, asked: RuleIn) -> RuleSaved:
+        """Write a rule into `config.toml`, read it back, and choose the event's folder.
+
+        Args:
+            asked: The rule, as validated in the page's dialog.
+
+        Returns:
+            The rule as the file holds it, and the event as chosen.
+
+        Raises:
+            ConfigError: The page was opened without `config.toml`, or the file refused
+                the rule (a name taken, no list of rules).
+        """
+        self._item(asked.event)
+        config = self._source.book.config
+        if config is None:
+            raise ConfigError(_("This page cannot write config.toml."))
+        held = add_rule(config, asked.rule())
+        book = RuleBook(config, read_rules(config))
+        self._source = replace(self._source, book=book)
+        value = EventValue(name=held.name, category=held.category)
+        view = self.choose_event(asked.event, value)
+        written = config.stat().st_mtime_ns / _NANOSECONDS
+        return RuleSaved(
+            name=held.name,
+            dates=held.dates,
+            category=held.category,
+            modified=datetime.fromtimestamp(written, tz=UTC).isoformat(),
+            view=view,
+        )

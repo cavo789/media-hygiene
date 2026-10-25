@@ -77,6 +77,10 @@ entier ; une semaine de ski qui contient un anniversaire reste une semaine de sk
 `date_range` qui partagent un jour donnent un avertissement : ces jours-là, la première de la
 liste l'emporte.
 
+**Écrite depuis le navigateur.** Sur la page des événements, *📌 Retenir comme règle* écrit une
+telle règle pour l'événement affiché, après avoir dit ce qu'elle prendrait
+([étape 11](11-name-events-in-the-browser.md#retenir-un-événement-comme-règle)).
+
 **Un voyage déjà trié dans vos dossiers.** Une règle de dates au-dessus de *Dossiers existants*
 prend toutes les photos de ses jours, celles de vos propres dossiers aussi : écrite seule, elle
 mettrait `2019/Montenegro/Budva` et `2019/Montenegro/Cetinje` à plat dans sa catégorie. Avec

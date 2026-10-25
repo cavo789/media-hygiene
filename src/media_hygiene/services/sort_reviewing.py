@@ -29,9 +29,11 @@ from media_hygiene.review.sort_choices import (
     EVENT_PATH,
     FILES_PATH,
     FORGET_PATH,
+    RULE_PATH,
+    RULE_PREVIEW_PATH,
     SURE_PATH,
 )
-from media_hygiene.review.sort_files import SortSource
+from media_hygiene.review.sort_files import RuleBook, SortSource
 from media_hygiene.review.sort_now import SORT_NOW_PATH
 from media_hygiene.services.page_choices import page_decisions, page_file
 from media_hygiene.services.reviewing import address_tip, page_url
@@ -95,6 +97,7 @@ def open_sort_review(runtime: Runtime, given: str | None) -> SortBatchSession:
         (host(workbook), host(target)),
         runtime.mapper,
         runtime.locations.journal_dir,
+        RuleBook(runtime.locations.config_file, runtime.settings.classify.rules),
     )
     return SortBatchSession(source, base)
 
@@ -121,6 +124,8 @@ def sort_page(session: SortBatchSession) -> str:
             "sure": SURE_PATH,
             "destination": DESTINATION_PATH,
             "sortNow": SORT_NOW_PATH,
+            "rulePreview": RULE_PREVIEW_PATH,
+            "rule": RULE_PATH,
         },
         workbook=workbook,
         decisions=decisions,

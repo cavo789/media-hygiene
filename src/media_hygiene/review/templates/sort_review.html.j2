@@ -45,6 +45,12 @@
   "sortedNothing": _("Every file of this event is already in its folder: nothing to move."),
   "sortedNotIntact": _("The run {run} ended, but its manifest does not check out: look at it before going on."),
   "sortedState": _("sorted: its files are in their folders"),
+  "ruleFact": _("Rule:"),
+  "rulePreview": _("This rule would take {files}: {mine} of this event, {others} of other events or folders on the same days."),
+  "ruleFolders": _("Elsewhere: {folders}."),
+  "ruleOverlaps": _("It shares days with {rules}: the first listed in config.toml wins on those days."),
+  "ruleTaken": _("A rule is already named so: choose another name."),
+  "ruleSaved": _("Rule '{name}' ({dates}) saved in config.toml, read back at {time}: the next classify applies it; this event's folder is chosen too."),
   "cancel": _("Cancel"),
   "ownFolder": _("its own folder"),
   "sureDone": _("{done}, read back from the disk at {time}: the ↶ button takes the whole batch back."),
@@ -116,7 +122,9 @@
   #sureDlg li { margin: 2px 0; overflow-wrap: anywhere; }
   #sureDlg li button { border: 0; padding: 0; color: var(--accent); background: none; text-decoration: underline; }
   dialog menu { display: flex; gap: 8px; justify-content: end; padding: 0; }
-  #sendDlg label { display: flex; flex-direction: column; gap: 6px; color: var(--text); }
+  #sendDlg label, #ruleDlg label { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; color: var(--text); }
+  #ruleDlg label.filter { flex-direction: row; } #ruleDlg h2 { margin: 0 0 6px; }
+  #rulePreview.error { color: var(--bad); }
   #sendDlg input { min-width: 24rem; }
 {% endblock %}
 {% block side %}
@@ -139,6 +147,7 @@
     <dt><kbd>F</kbd></dt><dd>{{ _("type the folder of the event") }}</dd>
     <dt><kbd>E</kbd></dt><dd>{{ _("change the name of the event (by default, the last folder)") }}</dd>
     <dt><kbd>M</kbd></dt><dd>{{ _("sort this event now: move its files, the others left for later") }}</dd>
+    <dt><kbd>R</kbd></dt><dd>{{ _("remember this event as a rule of config.toml") }}</dd>
     <dt><kbd>V</kbd></dt><dd>{{ _("accept every sure proposal at once") }}</dd>
     <dt><kbd>Shift</kbd>+<kbd>Z</kbd></dt><dd>{{ _("take back the last batch of sure proposals") }}</dd>
     <dt><kbd>Shift</kbd>+<kbd>S</kbd></dt><dd>{{ _("leave the whole event where it is") }}</dd>
@@ -168,6 +177,7 @@
     <details id="naming"><summary>{{ _("Name of the event") }} <kbd>E</kbd></summary><input id="name" name="name"></details>
   </form>
   <span id="destination" class="muted" role="status" aria-live="polite"></span>
+  <button type="button" id="ruleOpen" class="plain" title="{{ _('Write this event down as a rule of config.toml: its days, its folder; the next classify runs apply it (R)') }}">📌 {{ _("Remember as a rule") }}</button>
   <button type="button" id="sortNow" title="{{ _('Save the folder, then move the files of this event only, journaled: undo puts them back (M)') }}">{{ _("Sort this event now") }}</button>
   <datalist id="categories"></datalist>
 {% endblock %}
@@ -181,6 +191,19 @@
   <p id="sureAsk"></p>
   <ol id="sureList"></ol>
   <menu><button type="button" id="sureNo" class="plain"></button><button type="button" id="sureYes"></button></menu>
+</dialog>
+<dialog id="ruleDlg" aria-labelledby="ruleTitle">
+  <form id="ruleForm" method="dialog" autocomplete="off">
+    <h2 id="ruleTitle">📌 {{ _("Remember as a rule") }}</h2>
+    <p class="muted">{{ _("Written into config.toml, above Existing folders: every classify run applies it, to the photos added later too.") }}</p>
+    <label>{{ _("Name") }} <input id="ruleName" required></label>
+    <label>{{ _("From") }} <input id="ruleFirst" type="date" required></label>
+    <label>{{ _("To") }} <input id="ruleLast" type="date" required></label>
+    <label>{{ _("Folder, under the year") }} <input id="ruleCategory" list="categories" required></label>
+    <label class="filter"><input type="checkbox" id="ruleKeep" checked> {{ _("Keep my folders below it (keep_folders)") }}</label>
+    <p id="rulePreview" class="muted" role="status"></p>
+    <menu><button type="button" id="ruleNo" class="plain">{{ _("Cancel") }}</button><button type="submit" id="ruleYes">{{ _("Save the rule") }}</button></menu>
+  </form>
 </dialog>
 <dialog id="sendDlg">
   <form id="send" method="dialog" autocomplete="off">
@@ -247,7 +270,8 @@ for (const key of ["Delete", "Backspace", "a"]) delete VIEWER_KEYS[key];
     byId("position").textContent = fill(T.position, { number: current + 1, total: events.length });
     byId("title").textContent = card.title;
     byId("summary").textContent = [card.span, fill(T.files, { files: counted(T.nFiles, card.files), undecided: card.undecided }), fill(T.share, { share: card.share })].join(" · ");
-    byId("facts").replaceChildren(...fact(T.from, card.folders.join(" · ")), ...fact(T.state, ""));
+    const rule = card.rule ? card.rule + (card.rule_days ? " (" + card.rule_days + ")" : "") : "";
+    byId("facts").replaceChildren(...fact(T.from, card.folders.join(" · ")), ...(rule ? fact(T.ruleFact, rule) : []), ...fact(T.state, ""));
     byId("conflict").hidden = !card.conflict;
     byId("conflict").textContent = T.conflict;
     fillChoice(card);
@@ -326,6 +350,7 @@ for (const key of ["Delete", "Backspace", "a"]) delete VIEWER_KEYS[key];
 
 {% include "sort_review_sure.js.j2" %}
 {% include "sort_review_choice.js.j2" %}
+{% include "sort_review_rule.js.j2" %}
 
   const go = (step) => {
     if (!mayLeave(() => go(step))) return;
@@ -403,7 +428,7 @@ for (const key of ["Delete", "Backspace", "a"]) delete VIEWER_KEYS[key];
   // After the shared grid's keys (pick_grid.js.j2): what it took (arrows, Space, Enter on a
   // framed photo, Ctrl+A, I, the large view's keys) is not this page's.
   document.addEventListener("keydown", (event) => {
-    if (byId("sureDlg").open || byId("sendDlg").open) return;  // the dialog's own keys
+    if (byId("sureDlg").open || byId("sendDlg").open || byId("ruleDlg").open) return;  // the dialog's own keys
     if (event.defaultPrevented || byId("viewer").classList.contains("open")) return;
     if (event.key === "Escape") {
       if (choiceDirty()) dropChoice();
@@ -422,6 +447,7 @@ for (const key of ["Delete", "Backspace", "a"]) delete VIEWER_KEYS[key];
     else if (key === "s") leavePicked();
     else if (key === "o" || key === "O") openSend();
     else if (key === "m" || key === "M") sortNow();
+    else if (key === "r" || key === "R") openRule();
     else if (key === "Delete") send(P.forget, { event: id(), rows: [...picked] });
     else if (key === "e" || key === "E") { byId("naming").open = true; byId("name").focus(); }
     else if (key === "f" || key === "F" || key === "c" || key === "C") byId("folder").focus();

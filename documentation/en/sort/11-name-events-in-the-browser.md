@@ -137,6 +137,21 @@ events already chosen and those whose proposal is sure: only the ones that need 
 Tick **Only the sure proposals** instead to walk the sure ones one by one before accepting them.
 One box at a time; the browser remembers it for the next opening of the page.
 
+## Remember an event as a rule
+
+A choice made here holds for this proposal; a **rule** holds for every later `classify`, the
+photos added later included (a new copy from the phone, a person's folder of the same days).
+**📌 Remember as a rule** (or <kbd>R</kbd>) writes the event shown as a `date_range` rule
+([step 6](06-write-down-what-you-know.md#dates)): its name (the last folder), its days (those
+of the event, which you can widen), its folder, and `keep_folders = true` so that your own
+folders stay below it. Before saving, the dialog says what the rule would take on this
+proposal: "236 files: 6 of this event, 230 of other events or folders on the same days.
+Elsewhere: Photos Chloé (230)", and the rules whose days it shares (the first listed wins on
+those days). Saved, the rule is written into `config.toml` just above *Existing folders*, your
+comments kept, read back from the disk and said with its time; the event's folder is chosen at
+the same time, so *Sort this event now* works at once. The left column then names the rule
+that decides the event's files: *Rule: Montenegro (2019-07-12..2019-07-19)*.
+
 ## Sort one event now
 
 **Sort this event now** (or <kbd>M</kbd>) tidies the collection event by event: it saves the

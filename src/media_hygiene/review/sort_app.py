@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING, Final, override
 
 from pydantic import ValidationError
 
-from media_hygiene.errors import DecisionsError
+from media_hygiene.errors import DecisionsError, MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.report.preview_cache import PreviewPool
 from media_hygiene.report.thumbnails import REVIEW_EDGE
@@ -129,7 +129,7 @@ class SortReviewApp(LocalApp):
             )
             message = _("Not saved: {reason}.").format(reason=reasons)
             return json_response(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": message})
-        except (DecisionsError, OSError) as exc:
+        except (MediaHygieneError, OSError) as exc:
             return choice_failed(exc)
         return _json(view)
 

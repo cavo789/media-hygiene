@@ -142,6 +142,23 @@ qui ont besoin de vous. Cochez plutôt **Seulement les propositions sûres** pou
 sûres une par une avant de les accepter. Une case à la fois ; le navigateur s'en souvient pour la
 prochaine ouverture de la page.
 
+## Retenir un événement comme règle
+
+Un choix fait ici vaut pour cette proposition ; une **règle** vaut pour chaque `classify`
+suivant, les photos ajoutées plus tard comprises (une nouvelle copie du téléphone, le dossier
+d'une personne des mêmes jours). **📌 Retenir comme règle** (ou <kbd>R</kbd>) écrit l'événement
+affiché comme une règle `date_range` ([étape 6](06-write-down-what-you-know.md#les-dates)) : son
+nom (le dernier dossier), ses jours (ceux de l'événement, que vous pouvez élargir), son dossier,
+et `keep_folders = true` pour que vos propres dossiers restent en dessous. Avant
+d'enregistrer, la boîte dit ce que la règle prendrait sur cette proposition : « 236 fichiers : 6
+de cet événement, 230 d'autres événements ou dossiers les mêmes jours. Ailleurs : Photos Chloé
+(230) », et les règles dont elle partage des jours (la première listée l'emporte ces jours-là).
+Enregistrée, la règle est écrite dans `config.toml` juste au-dessus de *Dossiers existants*,
+vos commentaires conservés, relue sur le disque et annoncée avec son heure ; le dossier de
+l'événement est choisi en même temps, si bien que *Trier cet événement maintenant* marche tout
+de suite. La colonne de gauche nomme ensuite la règle qui décide les fichiers de l'événement :
+*Règle : Montenegro (2019-07-12..2019-07-19)*.
+
 ## Trier un événement maintenant
 
 **Trier cet événement maintenant** (ou <kbd>M</kbd>) range la collection événement par

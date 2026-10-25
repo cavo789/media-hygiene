@@ -7,7 +7,8 @@ Each event and photo shows the workbook's value and the page's choice side by si
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from collections import Counter
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict
@@ -61,6 +62,10 @@ class EventCard(BaseModel):
     page: Side | None
     saved: str  # when the page's choice was saved, as read back: ISO 8601, UTC
     sorted: bool  # an earlier `sort` (this page's included) moved its files
+    first_day: str  # ISO: what *Remember as a rule* proposes (0392)
+    last_day: str
+    rule: str  # the rule deciding most of its files; empty: none
+    rule_days: str  # its days, for a `date_range` rule
     conflict: bool
 
 
@@ -92,6 +97,7 @@ class CardMaker:
     events: Mapping[str, EventDecision]
     files: Mapping[str, FileDecision]
     moved: Collection[str] = ()  # the rows earlier `sort` runs of the plan moved
+    rule_days: Mapping[str, str] = field(default_factory=dict)  # `date_range` rules
 
     def event(self, item: WorkItem) -> EventCard:
         """Describe one event.
@@ -106,6 +112,8 @@ class CardMaker:
         now = EventValue.of(self.workbook.events.get(event.id))
         chosen = self.events.get(event.id)
         effect = reach(item)
+        ruled = Counter(row.rule for row in item.rows if row.rule).most_common(1)
+        rule = ruled[0][0] if ruled else ""
         return EventCard(
             id=event.id,
             title=event.label or event.span,
@@ -127,6 +135,10 @@ class CardMaker:
             page=None if chosen is None else event_side(chosen.value),
             saved="" if chosen is None else chosen.saved,
             sorted=any(row.id in self.moved for row in item.rows),
+            first_day=event.start[:10],
+            last_day=event.end[:10],
+            rule=rule,
+            rule_days=self.rule_days.get(rule, ""),
             conflict=chosen is not None
             and verdict(now, chosen.value, chosen.base) is Verdict.CONFLICT,
         )

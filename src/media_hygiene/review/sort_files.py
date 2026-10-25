@@ -23,7 +23,25 @@ if TYPE_CHECKING:
     from media_hygiene.classify.plan_file import ClassifyPlan, PlanRow
     from media_hygiene.classify.workbook.edits import Edits
     from media_hygiene.classify.worklist import WorkItem
+    from media_hygiene.config.classify_rules import ClassifyRule
     from media_hygiene.paths.host_paths import HostPathMapper
+
+
+@dataclass(frozen=True, slots=True)
+class RuleBook:
+    """`config.toml`, where *Remember as a rule* writes (0392), and its rules."""
+
+    config: Path | None = None
+    rules: tuple[ClassifyRule, ...] = ()  # as read when the review started, or since
+
+    @property
+    def days(self) -> dict[str, str]:
+        """The days of each `date_range` rule, by name: shown on the events they decide.
+
+        Returns:
+            Name → `2019-07-12..2019-07-19`.
+        """
+        return {rule.name: rule.dates for rule in self.rules if rule.dates}
 
 
 @dataclass(frozen=True, slots=True)
@@ -36,6 +54,7 @@ class SortSource:
     hosts: tuple[str, str]  # the workbook and the decisions file, on the host
     mapper: HostPathMapper
     journal: Path | None = None  # where `sort` runs are journaled: the rows moved
+    book: RuleBook = RuleBook()  # `config.toml` and its rules
 
 
 @dataclass(frozen=True, slots=True)

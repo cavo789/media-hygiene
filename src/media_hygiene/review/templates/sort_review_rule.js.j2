@@ -1,0 +1,65 @@
+{# Included in the script of sort_review.html.j2: *Remember as a rule* (0392). The dialog is
+   filled from the event shown (its days, the folder typed, its last folder as the name);
+   the server says, as the user changes it, what the rule would take on the plan shown;
+   saved, the rule is read back from config.toml and the event's folder chosen with it. #}
+  let rulePreviewTimer = 0;
+  const ruleBody = () => ({
+    event: id(), name: byId("ruleName").value, first: byId("ruleFirst").value,
+    last: byId("ruleLast").value, category: byId("ruleCategory").value, keep_folders: byId("ruleKeep").checked,
+  });
+  const postRule = async (path) => {
+    try {
+      const response = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(ruleBody()) });
+      return { response: response, answer: await response.json().catch(() => ({})) };
+    } catch (error) { return null; }
+  };
+  const showRulePreview = async () => {
+    const said = byId("rulePreview");
+    const sent = await postRule(P.rulePreview);
+    if (!sent) { said.textContent = T.offline; said.className = "error"; return; }
+    const { response, answer } = sent;
+    if (!response.ok) { said.textContent = answer.error || fill(T.failed, { status: response.status }); said.className = "error"; return; }
+    const parts = [fill(T.rulePreview, { files: counted(T.nFiles, answer.files), mine: answer.this_event, others: answer.others })];
+    if (answer.folders.length) parts.push(fill(T.ruleFolders, { folders: answer.folders.join(", ") }));
+    if (answer.overlaps.length) parts.push(fill(T.ruleOverlaps, { rules: answer.overlaps.join(", ") }));
+    if (answer.taken) parts.push(T.ruleTaken);
+    said.textContent = parts.join(" ");
+    said.className = answer.taken ? "error" : "muted";
+    byId("ruleYes").disabled = answer.taken;
+  };
+  const ruleChanged = () => {
+    window.clearTimeout(rulePreviewTimer);
+    rulePreviewTimer = window.setTimeout(showRulePreview, 250);
+  };
+  const openRule = () => {
+    if (!events.length) return;
+    const card = events[current];
+    const folder = byId("folder").value.trim() || card.category;
+    byId("ruleName").value = byId("name").value.trim() || lastFolder(folder) || card.title;
+    byId("ruleFirst").value = card.first_day;
+    byId("ruleLast").value = card.last_day;
+    byId("ruleCategory").value = folder;
+    byId("ruleKeep").checked = true;
+    byId("rulePreview").textContent = "";
+    byId("ruleYes").disabled = false;
+    byId("ruleDlg").showModal();
+    showRulePreview();
+  };
+  for (const field of ["ruleName", "ruleFirst", "ruleLast", "ruleCategory", "ruleKeep"]) byId(field).addEventListener("input", ruleChanged);
+  byId("ruleNo").addEventListener("click", () => byId("ruleDlg").close());
+  byId("ruleOpen").addEventListener("click", openRule);
+  byId("ruleForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const index = current;
+    const sent = await postRule(P.rule);
+    if (!sent) { byId("rulePreview").textContent = T.offline; byId("rulePreview").className = "error"; return; }
+    const { response, answer } = sent;
+    if (!response.ok) { byId("rulePreview").textContent = answer.error || fill(T.failed, { status: response.status }); byId("rulePreview").className = "error"; return; }
+    byId("ruleDlg").close();
+    events[index] = answer.view.card;
+    setStatus(fill(T.ruleSaved, { name: answer.name, dates: answer.dates, time: new Date(answer.modified).toLocaleTimeString() }), "saved");
+    if (index !== current) return;
+    showPhotos(answer.view.photos, true);
+    showEvent(answer.view.card);
+    showTotals();
+  });

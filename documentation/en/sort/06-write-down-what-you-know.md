@@ -75,6 +75,10 @@ party that ends at 3 in the morning stays whole; a week of skiing that holds a b
 week of skiing. Two `date_range` rules sharing a day are a warning: on those days, the first
 one listed wins.
 
+**Written from the browser.** On the page of the events, *📌 Remember as a rule* writes such a
+rule for the event shown, after saying what it would take
+([step 11](11-name-events-in-the-browser.md#remember-an-event-as-a-rule)).
+
 **A trip you already sorted into folders.** A date rule above *Existing folders* takes every
 photo of its days, those of your own folders too: written alone, it would put
 `2019/Montenegro/Budva` and `2019/Montenegro/Cetinje` flat in its category. With
