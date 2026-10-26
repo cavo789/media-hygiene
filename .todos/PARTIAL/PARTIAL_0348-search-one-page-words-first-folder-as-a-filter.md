@@ -51,3 +51,5 @@ The maintainer answered the question on 2026-10-26: the search page is to replac
   **Reason:** it would lose *Heaviest files* and the *bit rate* order, which only the folder view
   has; bringing them into the search first, then retiring `browse` (and `review-sort`), is an
   order of work for the maintainer to choose at the review.
+
+Follow-up (2026-10-26, maintainer: yes, bring them first): TODO 0408.

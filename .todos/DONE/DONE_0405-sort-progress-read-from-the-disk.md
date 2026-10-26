@@ -57,3 +57,8 @@ says it, without plan or journal, and it still says it the day media-hygiene is 
 - Every folder left listed **on a page** (only the first ten in `mh status`).
   **Reason:** the search page's *Not sorted yet* filter (0407) and `--folder` give the way to
   work through them; a dedicated list on the home page is a design choice for the maintainer.
+
+## Closed (maintainer, 2026-10-26)
+
+The list of every folder left is the search page with *Sorted: not sorted yet* (0407): no other
+page is needed. DONE.
