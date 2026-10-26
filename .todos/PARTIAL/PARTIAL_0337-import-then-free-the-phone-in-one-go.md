@@ -57,3 +57,19 @@ tried on one test file copied there for it (never a photo), and the time of `Cop
 
 - *Apply now* rounds on the free page (0315).
 - Folders outside `DCIM` (0322).
+
+## Status — PARTIAL (2026-10-26)
+
+Done: the design note `.claude/plans/0337-import-then-free.md` (private) answers points 1–5
+with figures marked measured (0219, 0247/0248) or estimated: no dialog-free delete over MTP
+(InvokeVerb/InvokeVerbEx ask, measured 0248; IFileOperation needs Add-Type, refused for Avast),
+so MoveHere stays; files imported in the same session skip the proof's CopyHere when the phone
+lists the same size and date and the library copy re-hashes equal and passes the image check;
+the moved copy is compared to the import's digest, a differing one kept in the quarantine
+(`--free` reads per file 2 → 1, about half its time, estimated). Step 19r of `mh-measure.ps1`:
+20 synthetic test files (4 MB random bytes) written to `DCIM\mh-measure-speed`, CopyHere vs
+MoveHere back, SHA-256 against the originals, DCIM counted before and after.
+
+Left (maintainer): read the note, answer its questions ("move, then compare" accepted?
+`keep_folders` per phone or one list?), run `.\mh-measure.ps1 -Only 19 -Count 1` with `y` at
+19r; then file the four implementation TODOs the note lists. No code deletes anything new yet.

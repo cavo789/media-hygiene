@@ -163,6 +163,7 @@
 #                                         (19l-19o write ONE test file to the phone, after a y, then delete it)
 #                                         (19p: mh phone --free on 3 test files written to the phone, after a y)
 #                                         (19q: the phone locked then unlocked: what Windows shows of it, read only)
+#                                         (19r: 20 test files written to the phone, CopyHere vs MoveHere back, after a y)
 #   .\mh-measure.ps1 -Only 20 -Count 1 -Sample 1000 -Cpus 4 -Branch iterate/2026-10-17   (image embeddings)
 #   .\mh-measure.ps1 -Only 21 -Count 1 -Nas 192.168.1.2 -NasShare photo -NasUser me   (the NAS, read-only)
 #   .\mh-measure.ps1 -Only 22 -Count 3   (a pair keeping both names: hard links, 0213)
@@ -1705,6 +1706,84 @@ if (Wanted 19) {
         }
     } else {
         Log "   19q. a locked phone: skipped"
+    }
+    # 19r: one read instead of two (0337). 20 synthetic test files (4 MB of random bytes each,
+    # never a photo) written to DCIM\mh-measure-speed, then read back twice: CopyHere into one PC
+    # folder (the proof's copy of today), then MoveHere into another (today's deletion). Both
+    # copies hashed against the originals; DCIM counted before and after.
+    $answer = if ($phone) { Read-Host "19r. Next: 20 test files (80 MB, random bytes) written to the phone (DCIM\mh-measure-speed), copied back, then moved back to the PC; no other file of the phone is touched. Go on? (y/n)" } else { 'n' }
+    $device = $null
+    if ($answer -eq 'y') {
+        foreach ($entry in $shell.Namespace(17).Items()) {
+            if (-not $entry.IsFileSystem -and $entry.Name -eq $phone.Name) { $device = $entry }
+        }
+        if (-not $device) { Log "   19r. the phone '$($phone.Name)' is not seen any more: 19r skipped" }
+    } else {
+        Log "   19r. CopyHere vs MoveHere on 20 test files: skipped"
+    }
+    $dcimSpeed = if ($device) { PhoneFindDcim $device.GetFolder 0 } else { $null }
+    if ($dcimSpeed) {
+        $speedLocal = Join-Path $Work "phone-speed-local"
+        $speedCopied = Join-Path $Work "phone-speed-copied"
+        $speedMoved = Join-Path $Work "phone-speed-moved"
+        foreach ($folder in $speedLocal, $speedCopied, $speedMoved) {
+            if (Test-Path -LiteralPath $folder) { Remove-Item -Recurse -Force -LiteralPath $folder }
+            New-Item -ItemType Directory -Force -Path $folder | Out-Null
+        }
+        $dcimFolder = $dcimSpeed.GetFolder
+        $countBefore = @(PhoneFiles $dcimFolder 0).Count
+        Log "   19r. DCIM before: $countBefore files"
+        $dcimFolder.NewFolder('mh-measure-speed')
+        $speedItem = $null
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        while (-not $speedItem -and $watch.Elapsed.TotalSeconds -lt 30) {
+            foreach ($entry in $dcimFolder.Items()) { if ($entry.Name -eq 'mh-measure-speed') { $speedItem = $entry } }
+            if (-not $speedItem) { Start-Sleep -Milliseconds 300 }
+        }
+        if (-not $speedItem) { Log "   19r. DCIM\mh-measure-speed NOT seen on the phone within 30 s: 19r stops here" }
+    }
+    if ($dcimSpeed -and $speedItem) {
+        $speedFolder = $speedItem.GetFolder
+        $random = New-Object Random
+        $originals = @{}
+        foreach ($number in 1..20) {
+            $name = "mh-speed-$stamp-$number.bin"
+            $bytes = New-Object byte[] (4MB)
+            $random.NextBytes($bytes)
+            $local = Join-Path $speedLocal $name
+            [IO.File]::WriteAllBytes($local, $bytes)
+            $originals[$name] = (Get-FileHash -LiteralPath $local -Algorithm SHA256).Hash
+            $speedFolder.CopyHere($local, 4 + 16 + 1024)
+        }
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        while (@($speedFolder.Items()).Count -lt 20 -and $watch.Elapsed.TotalSeconds -lt 120) { Start-Sleep -Milliseconds 500 }
+        Start-Sleep -Seconds 3
+        Log ("   19r. test files on the phone: {0} of 20 after {1:N1} s" -f @($speedFolder.Items()).Count, $watch.Elapsed.TotalSeconds)
+        foreach ($way in 'CopyHere', 'MoveHere') {
+            $into = if ($way -eq 'CopyHere') { $speedCopied } else { $speedMoved }
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            foreach ($entry in @($speedFolder.Items())) {
+                if ($way -eq 'CopyHere') { $shell.Namespace($into).CopyHere($entry, 4 + 16 + 1024) }
+                else { $shell.Namespace($into).MoveHere($entry, 4 + 16 + 1024) }
+            }
+            while (@(Get-ChildItem -LiteralPath $into -File).Count -lt 20 -and $watch.Elapsed.TotalSeconds -lt 300) { Start-Sleep -Milliseconds 300 }
+            $seconds = $watch.Elapsed.TotalSeconds
+            $same = 0
+            foreach ($copy in @(Get-ChildItem -LiteralPath $into -File)) {
+                if ($originals[$copy.Name] -eq (Get-FileHash -LiteralPath $copy.FullName -Algorithm SHA256).Hash) { $same++ }
+            }
+            Log ("   19r. {0}: 20 files (80 MB) on the PC after {1:N1} s = {2:N1} MB/s; {3} of 20 equal to their original (SHA-256)" -f $way, $seconds, (80 / $seconds), $same)
+        }
+        Start-Sleep -Seconds 2
+        Log ("   19r. test files left on the phone after MoveHere: {0} (0 expected)" -f @($speedFolder.Items()).Count)
+        $dialog = Read-Host "19r. Did Windows show any window or question (look with Alt+Tab)? (n or what it said)"
+        Log "   19r. a window during 19r (none expected): $dialog"
+        foreach ($entry in @($dcimFolder.Items())) { if ($entry.Name -eq 'mh-measure-speed') { $shell.Namespace($speedMoved).MoveHere($entry, 4 + 16 + 1024) } }
+        Start-Sleep -Seconds 2
+        $countAfter = @(PhoneFiles $dcimFolder 0).Count
+        Log ("   19r. DCIM after: {0} files, before: {1} ({2})" -f $countAfter, $countBefore, $(if ($countAfter -eq $countBefore) { 'the same: no other file touched' } else { 'DIFFERENT' }))
+        foreach ($folder in $speedLocal, $speedCopied, $speedMoved) { Remove-Item -Recurse -Force -LiteralPath $folder -ErrorAction SilentlyContinue }
+        Log "   19r. the PC's temporary folders of 19r removed"
     }
 }
 
