@@ -248,17 +248,23 @@ def test_the_main_folder_is_the_rules_folder() -> None:
     assert found["w0.jpg"].target == ROOT / "2017" / "Fêtes" / "Mariages" / (
         "Mariage d'Hervé et Magda"
     )
-    assert categories(found, ("d.jpg",)) == [WEDDING]
+    assert categories(found, ("d.jpg",)) == ["Développement Sep"]  # another moment's
     alone = by_name(classify(wedding(), SETTINGS, Scope()).proposals)
     for name in ("s1.png", "s2.png"):
         assert found[name].rule == alone[name].rule != WEDDING_RULE.name, name
         assert found[name].target == alone[name].target, name
 
 
-def test_an_unrelated_folder_goes_to_the_category_flat() -> None:
-    """Without `person_folders`, Manon's folder is no sub-folder of the wedding."""
+def test_a_folder_named_after_another_moment_is_not_taken() -> None:
+    """Manon's photos join the wedding; `Développement Sep` (named, one moment) stays.
+
+    0404, decided with the maintainer (2026-10-25): a date rule takes no file of a
+    folder the user named after another event; the event's main folder is the rule's.
+    """
     found = by_name(classify(wedding(), with_rule(WEDDING_RULE), Scope()).proposals)
-    assert set(categories(found, ("w0.jpg", "m16.jpg", "d.jpg"))) == {WEDDING}
+    assert set(categories(found, ("w0.jpg", "m16.jpg"))) == {WEDDING}
+    assert found["d.jpg"].rule == "Existing folders"
+    assert categories(found, ("d.jpg",)) == ["Développement Sep"]
     assert found["s1.png"].rule != WEDDING_RULE.name
 
 

@@ -27,6 +27,9 @@ if TYPE_CHECKING:
 
 _YEAR: Final = re.compile(r"\d{4}")
 _YEAR_MONTH: Final = re.compile(r"(?P<year>\d{4})-(?P<month>0\d|1[0-2])")
+# A year folder followed by its own month folder, anywhere in a path (`place_of_path`).
+_PAIR_IN_PATH: Final = re.compile(r"/(\d{4})/\1-(?:0\d|1[0-2])/")
+_SEPARATOR: Final = "/"
 
 
 class Place(StrEnum):
@@ -101,3 +104,22 @@ def looked_at(path: Path, root: Path, dating: Dating) -> bool:
     shape = shape_of(path.parent.relative_to(root).parts)
     moment = (dating.when.year, dating.month)
     return shape.place is Place.NOTHING_SPECIAL and (shape.year, shape.month) == moment
+
+
+def place_of_path(path: str) -> str:
+    """The state a container path says, as the search's SQL filter reads it (0407).
+
+    One regular expression instead of `shape_in` on the folders: the same answer, run
+    for every row of a search (70,000 rows; measured 180 ms with `shape_in`).
+
+    Args:
+        path: A file's container path (`/`-separated).
+
+    Returns:
+        A `Place` value.
+    """
+    found = _PAIR_IN_PATH.search(path)
+    if found is None:
+        return Place.LEFT.value
+    below = path[found.end() :]
+    return (Place.EVENT if _SEPARATOR in below else Place.NOTHING_SPECIAL).value

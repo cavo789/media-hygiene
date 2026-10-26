@@ -234,7 +234,7 @@ async function search(event, again) {
   if (event) event.preventDefault();
   const body = {
     text: $("text").value, day_from: $("from").value || null, day_to: $("to").value || null,
-    folder: $("folder").value, source: $("source").value || null,
+    folder: $("folder").value, source: $("source").value || null, sorting: $("sorting").value,
   };
   const answer = await ask(SEARCH_PATH, body);
   if (!answer) { told(TEXTS.offline, true); return; }
@@ -265,6 +265,7 @@ document.addEventListener("keydown", (event) => {
   }
 });
 $("form").addEventListener("submit", search);
+$("sorting").addEventListener("change", () => search(null));  // what is left to sort (0407)
 $("text").focus();
 // `mh search --folder <folder>` (0405): the page opens on a folder left to sort.
 const openedOn = new URLSearchParams(window.location.search).get({{ folder_query | tojson }});

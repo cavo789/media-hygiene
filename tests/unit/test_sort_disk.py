@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from media_hygiene.classify.convention import Place, shape_in
+from media_hygiene.classify.convention import Place, place_of_path, shape_in
 from media_hygiene.services.sort_disk import count_paths
 
 
@@ -24,8 +24,12 @@ from media_hygiene.services.sort_disk import count_paths
     ],
 )
 def test_the_shape_is_read_anywhere_in_the_path(path: str, place: Place) -> None:
-    """No root to know: the first year folder followed by its month decides."""
+    """No root to know: the first year folder followed by its month decides.
+
+    The search's SQL filter (0407) reads the same with one regular expression.
+    """
     assert shape_in(Path(path).parent.parts).place is place
+    assert place_of_path(path) == place.value
 
 
 def test_counts_with_kept_folders_apart_and_the_folders_left() -> None:

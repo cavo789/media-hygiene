@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from media_hygiene.search.query import Filters, SearchQuery, parse_terms
+from media_hygiene.search.query import Filters, SearchQuery, Sorting, parse_terms
 from media_hygiene.tags.models import TagSource
 
 if TYPE_CHECKING:
@@ -37,6 +37,7 @@ class SearchAsked(BaseModel):
     day_to: date | None = None
     folder: str = Field(default="", max_length=_MAX_TEXT)
     source: TagSource | None = None
+    sorting: Sorting = Sorting.ALL  # the sort convention's filter (0407)
 
     def query(self) -> SearchQuery:
         """Make the search of what the page sent.
@@ -50,6 +51,7 @@ class SearchAsked(BaseModel):
             self.folder,
             self.source,
             days=_range(self.day_from, self.day_to),
+            sorting=self.sorting,
         )
         return SearchQuery(parse_terms(self.text), filters)
 
@@ -80,6 +82,7 @@ class SearchAsked(BaseModel):
             _days_named(days) if days else "",
             str.strip(self.folder),
             query.filters.source.value if query.filters.source else "",
+            "" if self.sorting is Sorting.ALL else self.sorting.value,
         )
         return " · ".join(part for part in parts if part)
 

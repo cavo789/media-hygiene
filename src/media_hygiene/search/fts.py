@@ -13,6 +13,7 @@ from contextlib import closing
 from pathlib import Path
 from typing import TYPE_CHECKING, Self
 
+from media_hygiene.classify.convention import place_of_path
 from media_hygiene.index.descriptions import PhotoVersion
 from media_hygiene.index.read_only import connect_read_only
 from media_hygiene.index.tag_rows import TagStore
@@ -44,6 +45,7 @@ class SearchIndex:
         self._people: dict[Path, tuple[str, ...]] = {}
         connection.create_function(sql.FOLD, 1, str.casefold, deterministic=True)
         connection.create_function(DAY, 1, media_day, deterministic=True)
+        connection.create_function(sql.PLACE, 1, place_of_path, deterministic=True)
         connection.execute(sql.CREATE_PEOPLE)
 
     @classmethod

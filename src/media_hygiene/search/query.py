@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from enum import StrEnum
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import Locale
@@ -40,6 +41,14 @@ class Term:
     phrase: bool = False
 
 
+class Sorting(StrEnum):
+    """The search's filter on the sort convention (0407): every file, or one side."""
+
+    ALL = "all"
+    LEFT = "left"  # not in `YYYY/YYYY-MM` yet: still to sort
+    SORTED = "sorted"  # in an event of `YYYY/YYYY-MM`, or directly in its month
+
+
 @dataclass(frozen=True, slots=True)
 class Filters:
     """What narrows a search beyond its words: years or days, a folder, one source."""
@@ -48,6 +57,7 @@ class Filters:
     folder: str = ""  # a part of the path, any case
     source: TagSource | None = None  # every word among this source only
     days: tuple[date, date] | None = None  # first and last day, both included (0396)
+    sorting: Sorting = Sorting.ALL
 
 
 @dataclass(frozen=True, slots=True)

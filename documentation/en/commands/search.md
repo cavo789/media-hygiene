@@ -71,6 +71,11 @@ opens `browse`, the same server. Ctrl+C, or closing its tab, stops the page.
 
 - **A period**: *From* and *To* are calendars, a day each, both included; one alone is a period
   of one day. The day is the one the photo was taken, as `classify` dates it.
+- **Sorted**: *every photo*, *not sorted yet* or *sorted (year, then year-month)*, read from the
+  folders alone ([the convention](../sort/04-classify.md#the-convention-year-month-event)): a
+  photo in `2009\2009-11\…` is sorted, wherever that pair of folders lies and whoever put it
+  there. *Not sorted yet*, then pick and **📂 Move to an event…**: the page becomes the way to sort
+  what is left, folder after folder.
 
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20 files
 as a table.

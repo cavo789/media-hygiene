@@ -6402,6 +6402,11 @@ msgstr ""
 msgid "Sorted {sorted} · in place {in_place} · left {left} files"
 msgstr ""
 
+msgid ""
+"Sorted: in a year-month folder (2009/2009-11/…), as the sort convention "
+"puts them"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Sorted: {events} events, {files} files ({share}) · already in place: "
@@ -9162,6 +9167,9 @@ msgstr ""
 msgid "every key"
 msgstr ""
 
+msgid "every photo"
+msgstr ""
+
 msgid "every photo has GPS"
 msgstr ""
 
@@ -9825,6 +9833,9 @@ msgstr ""
 msgid "not found: is its disk plugged in?"
 msgstr ""
 
+msgid "not sorted yet"
+msgstr ""
+
 msgid "not sorted yet."
 msgstr ""
 
@@ -10175,6 +10186,9 @@ msgid "sort the burst series with the keyboard, in 'review'."
 msgstr ""
 
 msgid "sort this event now: move its files, the others left for later"
+msgstr ""
+
+msgid "sorted (year, then year-month)"
 msgstr ""
 
 msgid "sorted since."

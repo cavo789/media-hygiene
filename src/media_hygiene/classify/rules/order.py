@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.classify.layout import Values, render
 from media_hygiene.classify.models import SortReason
+from media_hygiene.classify.own_events import own_folders, spared
 from media_hygiene.classify.rules.building import build_test
 from media_hygiene.classify.rules.kept import Kept, kept_below, named_folders
 from media_hygiene.classify.rules.kinds import (
@@ -56,11 +57,15 @@ def decide(
         The signal of each file: its category, reason, rule and score.
     """
     if any(rule.match in DATED for rule in settings.rules):
-        aside = kind_taken(files, settings.rules)
-        facts = replace(facts, kept=Kept(aside=aside))
+        own = own_folders(facts, settings.merge_gap_hours)
+        facts = replace(
+            facts, kept=Kept(aside=kind_taken(files, settings.rules), own=own)
+        )
     if any(rule.keep_folders for rule in settings.rules):
         facts = replace(facts, kept=replace(facts.kept, named=named_folders(facts)))
-    rules = tuple((rule, build_test(rule, facts)) for rule in settings.rules)
+    rules = tuple(
+        (r, spared(r, build_test(r, facts), facts.kept.own)) for r in settings.rules
+    )
     return {file.path: _first(file, rules, (settings, facts)) for file in files}
 
 

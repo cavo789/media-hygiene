@@ -18,7 +18,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.classify.convention import Place, shape_in
+from media_hygiene.classify.convention import Place, place_of_path
 from media_hygiene.index.listing import every_path
 from media_hygiene.index.read_only import connect_read_only
 
@@ -118,7 +118,7 @@ def count_paths(paths: Iterable[str], kept: tuple[Path, ...]) -> DiskProgress:
         if folder in folders_kept or text.startswith(prefixes):
             kept_files += 1
             continue
-        place = shape_in(folder.split(_SEPARATOR)).place
+        place = Place(place_of_path(text))
         states[place] += 1
         if place is Place.LEFT:
             left[folder] += 1

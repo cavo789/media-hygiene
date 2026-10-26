@@ -40,10 +40,13 @@ class Kept:
 
     `named`: event id → the main folder the user named in it and its relatives (0391).
     `aside`: the files a `kind` rule takes, never a date rule's (0394).
+    `own`: the files of a folder the user named after one event, and that name: a date
+    rule of another name never takes them (0404).
     """
 
     named: Mapping[str, tuple[str, ...]] = field(default_factory=dict)
     aside: frozenset[Path] = frozenset()
+    own: Mapping[Path, str] = field(default_factory=dict)
 
 
 def named_folders(facts: RuleFacts) -> dict[str, tuple[str, ...]]:

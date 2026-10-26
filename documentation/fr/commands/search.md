@@ -76,6 +76,11 @@ fermer son onglet, arrête la page.
 
 - **Une période** : *Du* et *Au* sont des calendriers, un jour chacun, inclus ; un seul est une
   période d'un jour. Le jour est celui de la prise de vue, tel que `classify` le date.
+- **Triées** : *toutes les photos*, *pas encore triées* ou *triées (année, puis année-mois)*, lu
+  dans les dossiers seuls ([la convention](../sort/04-classify.md#la-convention--année-mois-événement)) :
+  une photo dans `2009\2009-11\…` est triée, où que soit cette paire de dossiers et quoi qui l'y
+  ait mise. *Pas encore triées*, puis choisir et **📂 Déplacer vers un événement…** : la page
+  devient le moyen de trier ce qui reste, dossier après dossier.
 
 Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers
 fichiers en tableau.

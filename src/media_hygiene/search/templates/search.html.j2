@@ -155,6 +155,12 @@
         <label>{{ _("To") }}<input id="to" type="date" min="1800-01-01" max="2200-12-31"></label>
       </div>
       <label>{{ _("Path contains") }}<input id="folder" type="text"></label>
+      <label>{{ _("Sorted") }}
+        <select id="sorting" title="{{ _('Sorted: in a year-month folder (2009/2009-11/…), as the sort convention puts them') }}">
+          <option value="all">{{ _("every photo") }}</option>
+          <option value="left">{{ _("not sorted yet") }}</option>
+          <option value="sorted">{{ _("sorted (year, then year-month)") }}</option>
+        </select></label>
       <label>{{ _("Words of") }}
         <select id="source">
           <option value="">{{ _("every source") }}</option>

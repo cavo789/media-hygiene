@@ -7755,6 +7755,13 @@ msgstr "Trié {sorted} % · rien de spécial {nothing} % · reste {left} fichier
 msgid "Sorted {sorted} · in place {in_place} · left {left} files"
 msgstr "Triés {sorted} · en place {in_place} · restent {left} fichiers"
 
+msgid ""
+"Sorted: in a year-month folder (2009/2009-11/…), as the sort convention "
+"puts them"
+msgstr ""
+"Triées : dans un dossier année-mois (2009/2009-11/…), comme la convention"
+" de tri les range"
+
 #, python-brace-format
 msgid ""
 "Sorted: {events} events, {files} files ({share}) · already in place: "
@@ -11072,6 +11079,9 @@ msgstr "tous les fichiers affichés"
 msgid "every key"
 msgstr "toutes les touches"
 
+msgid "every photo"
+msgstr "toutes les photos"
+
 msgid "every photo has GPS"
 msgstr "chaque photo a son GPS"
 
@@ -11802,6 +11812,9 @@ msgstr "introuvable là où le plan ou un tri l'a mis"
 msgid "not found: is its disk plugged in?"
 msgstr "introuvable : son disque est-il branché ?"
 
+msgid "not sorted yet"
+msgstr "pas encore triées"
+
 msgid "not sorted yet."
 msgstr "pas encore triée."
 
@@ -12177,6 +12190,9 @@ msgid "sort this event now: move its files, the others left for later"
 msgstr ""
 "trier cet événement maintenant : déplacer ses fichiers, les autres "
 "attendent"
+
+msgid "sorted (year, then year-month)"
+msgstr "triées (année, puis année-mois)"
 
 msgid "sorted since."
 msgstr "triée depuis."

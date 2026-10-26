@@ -71,3 +71,29 @@ def test_the_page_opens_on_a_folder_given(
     assert result.exit_code == 0, result.output
     assert "/?folder=Prints+jan10" in "".join(result.output.split())
     assert 'URLSearchParams(window.location.search).get("folder")' in pages[0]
+
+
+def test_the_photos_not_sorted_yet_or_the_sorted_ones(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0407: both sides add up to every photo; a folder moved by hand changes side."""
+    sorted_to = locations.data_dir / "c" / "2022" / "2022-12" / "Noël"
+    moved = next(locations.data_dir.rglob("*.jpg"))
+    sorted_to.mkdir(parents=True)
+    moved.rename(sorted_to / moved.name)
+    assert run(cli, "audit").exit_code == 0  # the index follows the hand move
+    assert run(cli, "tags", "--no-describe").exit_code == 0
+    every, left, done = (
+        json.loads(answer.body)
+        for answer in serve_search(
+            cli,
+            monkeypatch,
+            [
+                ("POST /api/search", {"text": "", "sorting": sorting})
+                for sorting in ("all", "left", "sorted")
+            ],
+        )
+    )
+    assert left["total"] + done["total"] == every["total"]
+    assert [hit["name"] for hit in done["hits"]] == [moved.name]
+    assert moved.name not in [hit["name"] for hit in left["hits"]]
