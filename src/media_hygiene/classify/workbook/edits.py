@@ -2,7 +2,8 @@
 
 Precedence: file > event > category. A human edit counts as sure: the file leaves the
 "to check" band. An event edit never flattens a folder the user named (`own_folders`).
-Files left as they are (protected, `leave`) ignore every edit. Each
+Files left as they are (protected, `leave`) ignore every edit; another file that stays
+(a folder the user named, one looked at) moves only by a file edit of its own. Each
 decision says where it comes from, so that `sort` can let a file edit on any companion
 (a Live Photo's video, a RAW twin) decide for the whole group.
 """
@@ -14,7 +15,7 @@ from enum import Enum, IntEnum
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.layout import render
-from media_hygiene.classify.models import Band
+from media_hygiene.classify.models import Band, SortReason
 from media_hygiene.classify.workbook.own_folders import (
     OwnFolders,
     own_folders,
@@ -116,13 +117,15 @@ def _decide(row: PlanRow, context: _Context) -> Decision:
     """
     plan, edits = context.plan, context.edits
     unchanged = Decision(row, row.folder, row.band)
-    if row.band is Band.STAY or row.values is None:
+    if row.reason is SortReason.LEFT_AS_IS:  # protected, `leave`: never moved
         return unchanged
     if row.id in edits.files:
         choice = edits.files[row.id]
         folder = None if choice is Stay.STAY else choice
         cell = edits.file_cells.get(row.id, "")
         return Decision(row, folder, Band.SURE, Source.FILE, cell)
+    if row.band is Band.STAY or row.values is None:
+        return unchanged
     event = edits.events.get(row.event_id)
     if event is not None and (event.name or event.category):
         decided = _by_event(row, event, context)

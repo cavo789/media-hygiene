@@ -509,3 +509,29 @@ def test_powershell_watches_the_server_in_the_background(tmp_path: Path) -> None
     assert "[IO.File]::WriteAllText($done," in watch  # no byte order mark
     assert "if ($detach) { $tty = @('-d', '--cidfile', $detach) }" in text
     assert f"if ($detach) {{ $relay = @('-e', '{_KEPT}') }}" in text
+
+
+def test_an_audit_asking_for_the_gone_review_opens_it(tmp_path: Path) -> None:
+    """The audit ends with GONE_REVIEW: a success, then `mh review --gone`."""
+    (tmp_path / "ran").write_text(f"{int(ExitCode.GONE_REVIEW)}\n")
+    done = _bash(tmp_path, "mh audit", "0")
+    assert _lines(done) == ["review:alone", "status=0"]
+    assert _tabs(tmp_path) == 1
+
+
+def test_another_command_ending_with_that_code_opens_nothing(tmp_path: Path) -> None:
+    """Only `audit` asks for the review: any other command keeps its code."""
+    (tmp_path / "ran").write_text(f"{int(ExitCode.GONE_REVIEW)}\n")
+    done = _bash(tmp_path, "mh history", "0")
+    assert _lines(done) == ["ran:history", f"status={int(ExitCode.GONE_REVIEW)}"]
+
+
+def test_powershell_opens_the_gone_review_after_the_audit(tmp_path: Path) -> None:
+    """The same rule in mh.ps1: the audit's code made a success, then the page."""
+    runtime = replace(
+        make_runtime(make_locations(tmp_path)), mounts=MountTable(frozenset())
+    )
+    text = render_script(launcher_script(runtime, Shell.POWERSHELL, _COMMANDS))
+    code = int(ExitCode.GONE_REVIEW)
+    asked = f"$follow = $command -eq 'audit' -and $status -eq {code}"
+    assert text.index(asked) < text.index("if ($follow) { mh review --gone @typed }")

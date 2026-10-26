@@ -7,8 +7,9 @@ rows: the same guards (a persistent `/journal`, no `:ro` data mount), journal, m
 and `undo` as `sort --event`. The plan and the workbook are read once (measured on the
 maintainer's run of 52,056 rows: 1.1 s and 4.3 s). A file an earlier run of the plan
 moved is recognised at its new place and counted as sorted; one the run does not know
-(added since), or that the plan leaves as it is, is left and counted. Nothing to move:
-no run at all.
+(added since), or in a protected or `leave` folder, is left and counted; one the plan
+leaves for another reason (a folder the user named) moves: the user picked it. Nothing
+to move: no run at all.
 """
 
 from __future__ import annotations
@@ -17,7 +18,7 @@ from dataclasses import asdict
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.sort_resume import moved_targets
-from media_hygiene.classify.models import Band
+from media_hygiene.classify.models import SortReason
 from media_hygiene.classify.page_decisions import (
     FileDecision,
     PageDecisions,
@@ -130,7 +131,7 @@ def _match(
         row = by_host.get(host)
         if row is None:
             continue
-        if row.values is None or row.band is Band.STAY:
+        if row.reason is SortReason.LEFT_AS_IS:  # protected, `leave`: never moved
             fixed += 1
         else:
             rows[row.id] = folder

@@ -18,7 +18,12 @@ PLAN = plan_of(
         row("sure", Band.SURE, ("Mer", "")),
         row("check", Band.UNSURE, ("Mer", "")),
         row("loose", Band.MANUAL, ("", "e1")),
-        row("kept", Band.STAY, ("Mer", "e1")),
+        row("kept", Band.STAY, ("Mer", "e1")).model_copy(
+            update={"reason": SortReason.LEFT_AS_IS}
+        ),
+        row("seen", Band.STAY, ("Mer", "e1")).model_copy(
+            update={"reason": SortReason.NOTHING_SPECIAL, "values": None}
+        ),
     )
 )
 
@@ -68,6 +73,7 @@ def test_a_file_edit_wins_over_its_category() -> None:
         "check": Source.GROUP,
         "loose": Source.PROPOSAL,
         "kept": Source.PROPOSAL,
+        "seen": Source.PROPOSAL,
     }
 
 
@@ -79,6 +85,13 @@ def test_protected_files_ignore_every_edit() -> None:
         categories={"Mer": CategoryEdit("Autre")},
     )
     assert folders(edits)["kept"] is None
+
+
+def test_a_file_the_plan_leaves_moves_by_its_own_edit_only() -> None:
+    """Looked at (not protected): its file edit moves it; an event edit does not."""
+    edits = Edits(files={"seen": "2016/2016-07/Danse"}, events={"e1": EventEdit("X")})
+    assert folders(edits)["seen"] == "2016/2016-07/Danse"
+    assert folders(Edits(events={"e1": EventEdit("X")}))["seen"] is None
 
 
 # 0385: an event choice never flattens the folders the user named.

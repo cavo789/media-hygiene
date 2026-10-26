@@ -93,6 +93,7 @@ moveEl("moveOpen").addEventListener("click", () => {
   moveEl("moveSources").replaceChildren();
   moveEl("moveDlg").showModal();
   moveEl("moveName").focus();
+  moveEl("moveNo").textContent = moveEl("moveNo").dataset.cancel;
   moveMonth = null;
   moveEl("moveNames").replaceChildren();
   askMove("");
@@ -113,10 +114,11 @@ moveEl("moveForm").addEventListener("submit", async (event) => {
     : fill(TEXTS.goDone, { moved: answer.moved, verified: answer.verified, run: answer.run_id, time: new Date().toLocaleTimeString() })];
   if (answer.already) parts.push(fill(TEXTS.goAlready, { n: answer.already }));
   if (answer.unknown) parts.push(fill(TEXTS.goUnknown, { n: answer.unknown }));
-  if (answer.fixed) parts.push(fill(TEXTS.goFixed, { n: answer.fixed }));
+  if (answer.fixed) parts.push(counted(TEXTS.goFixed, answer.fixed));
   parts.push(...(answer.links || []));  // names, albums, decisions rewritten (0406)
   const said = parts.join(" ");
   moveSay(said, answer.run_id && !answer.intact ? "error" : "saved");
+  if (answer.run_id) moveEl("moveNo").textContent = moveEl("moveNo").dataset.close;  // nothing left to cancel
   told(said, Boolean(answer.run_id) && !answer.intact);
   search(null);  // the tiles at their new place, read from the index
 });

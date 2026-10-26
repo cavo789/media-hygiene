@@ -115,6 +115,7 @@ function global:{{ function }} {
         $share = @('-v', "{{ share.host }}:{{ share.point }}")
     }
     $status = 1
+    $follow = $false
     $browser = $null
     $console = [Console]::OutputEncoding
     try {
@@ -167,6 +168,9 @@ function global:{{ function }} {
             @marks `
             {{ image }} @rest @backups @($nas.backups)
         $status = $LASTEXITCODE
+        # The audit asked to review the files gone at once: a success, then that page.
+        $follow = $command -eq 'audit' -and $status -eq {{ gone_review }}
+        if ($follow) { $status = 0 }
     } finally {
         try { [Console]::OutputEncoding = $console } catch { }
         if ($detach) {
@@ -199,6 +203,7 @@ function global:{{ function }} {
         if ($LASTEXITCODE -ne 0 -and (_{{ function }}_desktop_start)) { Write-Host "{{ texts.ready }}" }
         $global:LASTEXITCODE = $status
     }
+    if ($follow) { {{ function }} review --gone @typed }
 }
 
 # `{{ function }} open`: the catalogue of every report in the default browser (0175).

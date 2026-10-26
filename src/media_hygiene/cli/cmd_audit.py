@@ -146,6 +146,7 @@ def _next_step(ctx: typer.Context, runtime: Runtime, findings: AuditFindings) ->
         runtime: Settings, mount points and output.
         findings: What the audit found.
     """
+    from media_hygiene.cli.audit_gone import offer_gone_review
     from media_hygiene.cli.next_steps import carried, suggest
     from media_hygiene.console.formatting import human_size
     from media_hygiene.services.next_command import CHANGING, NextVerb
@@ -167,3 +168,16 @@ def _next_step(ctx: typer.Context, runtime: Runtime, findings: AuditFindings) ->
                 carried(runtime, "review", ctx), port=runtime.settings.review.port
             ),
         )
+    elif findings.gone:  # nothing else to do: lead to the files deleted outside
+        suggest(
+            runtime,
+            _(
+                "say in 'review --gone' which vanished files you deleted on "
+                "purpose: they will be set aside if they come back."
+            ),
+            NextVerb(
+                carried(runtime, "review --gone", ctx),
+                port=runtime.settings.review.port,
+            ),
+        )
+        offer_gone_review(runtime)

@@ -18,6 +18,7 @@ from media_hygiene.constants import Locale
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.classify import ClassifyService
+from media_hygiene.services.selection_models import Picked
 from media_hygiene.services.selection_move import SelectionMover
 from media_hygiene.services.sort_disk import disk_progress
 from media_hygiene.services.sort_event import sort_event
@@ -104,7 +105,9 @@ def test_3_moved_from_the_search_page_stays(locations: Locations) -> None:
     runtime = audited_library(locations)
     classify(runtime)
     party = dict(enumerate(sorted((locations.data_dir / PARTY).glob("*.jpg"))))
-    assert SelectionMover(runtime).move(party, "Kermesse")["moved"] == len(party)
+    assert SelectionMover(runtime).move(Picked(party), "Kermesse")["moved"] == len(
+        party
+    )
     assert not _moving(runtime)
 
 

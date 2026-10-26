@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -183,3 +184,18 @@ def test_a_preview_kept_in_the_cache_is_shown(locations: Locations) -> None:
     )
     assert (shown.status, shown.body) == (200, b"\xff\xd8 a jpeg")
     assert missing.status == 404
+
+
+def test_an_audit_with_files_gone_leads_to_the_review(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """Nothing else to do: the next step is `review --gone`, with its command."""
+    shutil.rmtree(locations.data_dir)  # no demo tree: no copy, no burst
+    two_deleted(locations.data_dir)
+    assert run(cli, "audit").exit_code == 0
+    for photo in locations.data_dir.joinpath(*FOLDER).iterdir():
+        photo.unlink()
+    result = run(cli, "audit")
+    advice = " ".join(result.output[result.output.index("👉 What next") :].split())
+    assert advice.startswith("👉 What next: say in 'review --gone'")
+    assert "review --gone" in advice.split("purpose", 1)[1]

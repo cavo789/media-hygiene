@@ -58,7 +58,7 @@
   "goNothing": _("Nothing to move: no run was made."),
   "goBroken": _("The run {run} ended, but its manifest does not check out: look at it before going on."),
   "goUnknown": _("{n} files are not in the latest classify run: run classify again to sort them."),
-  "goFixed": _("{n} files are left as they are by the plan."),
+  "goFixed": [ngettext("{n} file lies in a protected or 'leave' folder: never moved.", "{n} files lie in a protected or 'leave' folder: never moved.", 1), ngettext("{n} file lies in a protected or 'leave' folder: never moved.", "{n} files lie in a protected or 'leave' folder: never moved.", 2)],
   "counts": _("{photos} photos · {videos} videos · {size}"),
   "moveNamed": _("(your folder of another event, {name}: unticked)"),
   "moveNow": [ngettext("Move this file now", "Move these {n} files now", 1), ngettext("Move this file now", "Move these {n} files now", 2)],

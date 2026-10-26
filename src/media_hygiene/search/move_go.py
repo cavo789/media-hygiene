@@ -15,12 +15,16 @@ from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
+from media_hygiene.classify.dates import exif_datetime
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.review.serving import json_response
+from media_hygiene.search import statements as sql
 from media_hygiene.search.rule_models import refused_rule
+from media_hygiene.services.selection_models import Picked
 
 if TYPE_CHECKING:
+    from datetime import datetime
     from pathlib import Path
 
     from media_hygiene.review.http import Response
@@ -59,9 +63,7 @@ async def move_answer(desk: RuleDesk, path: str, body: bytes) -> Response:
         return refused_rule(exc)
     if desk.mover is None:
         return _conflict(_("This page cannot move files: run 'sort' in the terminal."))
-    chosen: dict[int, Path] = {
-        key: found.path for key in asked.keys if (found := desk.index.source_of(key))
-    }
+    chosen = _picked(desk, asked.keys)
     try:
         if path == MOVE_VIEW_PATH:
             view = await asyncio.to_thread(desk.mover.view, chosen, asked.name)
@@ -74,6 +76,29 @@ async def move_answer(desk: RuleDesk, path: str, body: bytes) -> Response:
     except MediaHygieneError as exc:
         return _conflict(" ".join(filter(None, (exc.message, exc.tip))))
     return json_response(HTTPStatus.OK, answer)
+
+
+def _picked(desk: RuleDesk, keys: tuple[int, ...]) -> Picked:
+    """The files of the keys picked, and when each was taken as the index reads it.
+
+    Args:
+        desk: The rule's desk: the index.
+        keys: The keys, from the page.
+
+    Returns:
+        Them: a photo the classify plan lacks still has its month.
+    """
+    connection = desk.index.connection
+    paths: dict[int, Path] = {}
+    days: dict[Path, datetime] = {}
+    for key in keys:
+        if (found := desk.index.source_of(key)) is None:
+            continue
+        paths[key] = found.path
+        row = connection.execute(sql.DATE_OF, (key,)).fetchone()
+        if when := exif_datetime(row[0] if row else None):
+            days[found.path] = when
+    return Picked(paths, days)
 
 
 def _conflict(said: str) -> Response:

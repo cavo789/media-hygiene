@@ -177,6 +177,11 @@ disk not plugged in? Only you can tell, so the audit asks:
 🗑️ 312 photos and videos have disappeared since the last audit (deleted in the Explorer?): say which ones you deleted on purpose, so that media-hygiene sets them aside if they come back.
 ```
 
+When there is no copy to set aside and no burst to sort, the audit ends by leading you there:
+*👉 What next: say in 'review --gone' which vanished files you deleted on purpose*, with the
+full command. Run by `mh`, the audit also asks *Open the review of the vanished files now?*:
+answer `y` and the page opens.
+
 `mh review --gone` shows them by folder and by day, each with its preview when the cache still
 holds one (else its name, date, size and camera): `D` deleted on purpose, `M` moved elsewhere,
 `G` the whole group deleted on purpose. Your answers are saved in `decisions.json`; the next

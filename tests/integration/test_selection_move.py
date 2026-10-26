@@ -11,7 +11,9 @@ from typing import TYPE_CHECKING
 from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.own_events import named_event, one_moment
 from media_hygiene.classify.rules_file import read_rules
-from media_hygiene.services.selection_move import SelectionMover, event_path
+from media_hygiene.services.selection_models import Picked, event_path
+from media_hygiene.services.selection_move import SelectionMover
+from tests.support.scenes import Shot, write_shot
 from tests.support.sorting import (
     PARTY,
     WEDDING,
@@ -63,7 +65,7 @@ def test_the_view_unticks_a_folder_named_after_another_event(
     """`Mariage` (one day, a name) unticked for `Kermesse`; the dated folder ticked."""
     runtime, picked = _ready(locations)
     mover = SelectionMover(runtime)
-    view = mover.view(picked, "Kermesse")
+    view = mover.view(Picked(picked), "Kermesse")
     sources = {s.folder.rsplit("\\", 1)[-1]: s for s in view.sources}
     assert sources["Juillet 2016"].ticked
     assert not sources["Mariage"].ticked
@@ -71,7 +73,7 @@ def test_the_view_unticks_a_folder_named_after_another_event(
     assert view.proposed == "Mariage"  # the user's named folder holding most of them
     assert view.target.endswith("2016\\2016-07\\Kermesse")  # the earliest's month
     assert view.month == "2016/2016-07"  # its event folders are the ones offered
-    assert all(s.ticked for s in mover.view(picked, "Mariage").sources)
+    assert all(s.ticked for s in mover.view(Picked(picked), "Mariage").sources)
 
 
 def test_the_move_goes_to_year_month_name_and_undo_puts_it_back(
@@ -82,7 +84,7 @@ def test_the_move_goes_to_year_month_name_and_undo_puts_it_back(
     before = snapshot(locations.data_dir)
     rules = read_rules(locations.config_file)
     party = {key: path for key, path in picked.items() if PARTY in str(path)}
-    done = SelectionMover(runtime).move(party, "Kermesse")
+    done = SelectionMover(runtime).move(Picked(party), "Kermesse")
     assert done["moved"] == len(party), done
     assert done["intact"]
     moved_to = locations.data_dir / "c/2016/2016-07/Kermesse"  # the drive is the root
@@ -100,10 +102,10 @@ def test_an_event_name_may_hold_sub_folders(locations: Locations) -> None:
     runtime, picked = _ready(locations)
     party = {key: path for key, path in picked.items() if PARTY in str(path)}
     mover = SelectionMover(runtime)
-    assert mover.view(party, "France\\Morzine").target.endswith(
+    assert mover.view(Picked(party), "France\\Morzine").target.endswith(
         "2016\\2016-07\\France\\Morzine"
     )
-    done = mover.move(party, " France\\\\Morzine/ ")
+    done = mover.move(Picked(party), " France\\\\Morzine/ ")
     assert done["moved"] == len(party), done
     moved_to = locations.data_dir / "c/2016/2016-07/France/Morzine"
     assert len(list(moved_to.glob("*.jpg"))) == len(party)
@@ -113,3 +115,27 @@ def test_the_event_path_makes_each_folder_safe() -> None:
     """Each folder is made safe for Windows; the separators are kept between them."""
     assert event_path("France/Mor:zine") == "France/Mor_zine"
     assert event_path(" / ") == ""
+
+
+def test_a_photo_the_plan_lacks_takes_its_month_from_the_index(
+    locations: Locations,
+) -> None:
+    """Not in the classify plan, dated in the index: its month, not *no date*."""
+    runtime, picked = _ready(locations)
+    lost = {
+        path.with_name("not-planned.jpg"): datetime(2009, 9, 1, 10)
+        for path in picked.values()
+    }
+    view = SelectionMover(runtime).view(Picked(dict(enumerate(lost)), lost), "School")
+    assert view.month == "2009/2009-09"
+
+
+def test_a_photo_the_plan_leaves_moves_when_picked(locations: Locations) -> None:
+    """Looked at (in its own month folder), the plan leaves it; picked, it moves."""
+    seen = locations.data_dir / "c/2019/2019-03/IMG_9100.jpg"
+    write_shot(seen, Shot(60, taken_at="2019:03:02 10:00:00"))
+    runtime = audited_library(locations)
+    classify(runtime)
+    done = SelectionMover(runtime).move(Picked({0: seen}), "Danse")
+    assert done["moved"] == 1, done
+    assert (locations.data_dir / "c/2019/2019-03/Danse/IMG_9100.jpg").is_file()

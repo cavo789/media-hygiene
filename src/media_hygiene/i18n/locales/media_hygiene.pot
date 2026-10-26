@@ -4933,6 +4933,9 @@ msgstr ""
 msgid "Open the review at 127.0.0.1 or localhost."
 msgstr ""
 
+msgid "Open the review of the vanished files now?"
+msgstr ""
+
 msgid "Open the search at 127.0.0.1 or localhost."
 msgstr ""
 
@@ -10152,6 +10155,11 @@ msgstr ""
 msgid "save the folder, then the next event"
 msgstr ""
 
+msgid ""
+"say in 'review --gone' which vanished files you deleted on purpose: they "
+"will be set aside if they come back."
+msgstr ""
+
 msgid "screenshot or document"
 msgstr ""
 
@@ -12221,6 +12229,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} file lies in a protected or 'leave' folder: never moved."
+msgid_plural "{n} files lie in a protected or 'leave' folder: never moved."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} file missing: moved out of the folders analysed, or deleted."
 msgid_plural "{n} files missing: moved out of the folders analysed, or deleted."
 msgstr[0] ""
@@ -12279,10 +12293,6 @@ msgid "{n} file, {size}, {share} of your library"
 msgid_plural "{n} files, {size}, {share} of your library"
 msgstr[0] ""
 msgstr[1] ""
-
-#, python-brace-format
-msgid "{n} files are left as they are by the plan."
-msgstr ""
 
 #, python-brace-format
 msgid ""

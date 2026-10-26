@@ -17,7 +17,6 @@ from dataclasses import dataclass, field
 from pathlib import Path, PureWindowsPath
 from typing import TYPE_CHECKING
 
-from media_hygiene.classify.layout import safe_name
 from media_hygiene.classify.own_events import folder_rules, named_event
 from media_hygiene.i18n import _
 from media_hygiene.services.group_sort import sorted_group
@@ -27,26 +26,18 @@ from media_hygiene.services.plan_rows_index import (
     plan_rows,
     taken_at,
 )
-from media_hygiene.services.selection_models import MoveView, SourceFolder
+from media_hygiene.services.selection_models import (
+    MoveView,
+    Picked,
+    SourceFolder,
+    event_path,
+)
 from media_hygiene.services.sort_inputs import find_workbook, plan_of
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
     from media_hygiene.services.runtime import Runtime
-
-
-def event_path(name: str) -> str:
-    r"""The event's folder below the month: one name, or sub-folders (`France\Morzine`).
-
-    Args:
-        name: As typed, `\` or `/` between the folders.
-
-    Returns:
-        `France/Morzine`, each folder made safe, the empty ones dropped.
-    """
-    parts = (safe_name(part) for part in name.replace("\\", "/").split("/"))
-    return "/".join(part for part in parts if part)
 
 
 @dataclass(frozen=True, slots=True)
@@ -57,7 +48,7 @@ class SelectionMover:
     # The rows of the plan read, by (workbook, its mtime): one plan at a time.
     read: dict[tuple[Path, int], PlanRows] = field(default_factory=dict)
 
-    def view(self, chosen: Mapping[int, Path], name: str) -> MoveView:
+    def view(self, chosen: Picked, name: str) -> MoveView:
         """Where the picked photos would go, grouped by source folder.
 
         Args:
@@ -73,7 +64,7 @@ class SelectionMover:
         rows = self._rows()
         groups: dict[str, list[int]] = defaultdict(list)
         names: dict[str, str] = {}
-        for key, path in sorted(chosen.items()):
+        for key, path in sorted(chosen.paths.items()):
             folder = parent_of(self.runtime.mapper.to_host(path))
             groups[folder].append(key)
             names[folder] = path.parent.name
@@ -119,7 +110,7 @@ class SelectionMover:
                 named[folder] = label
         return named
 
-    def move(self, chosen: Mapping[int, Path], name: str) -> dict[str, object]:
+    def move(self, chosen: Picked, name: str) -> dict[str, object]:
         """Move the photos ticked to the event's folder, journaled, read back.
 
         Args:
@@ -136,9 +127,11 @@ class SelectionMover:
         if not typed:
             raise ValueError(_("Type the event's name first."))
         folder = self._month(self._rows(), chosen) + "/" + typed
-        return sorted_group(self.runtime, dict.fromkeys(chosen.values(), folder), typed)
+        return sorted_group(
+            self.runtime, dict.fromkeys(chosen.paths.values(), folder), typed
+        )
 
-    def _target(self, rows: PlanRows, chosen: Mapping[int, Path], name: str) -> str:
+    def _target(self, rows: PlanRows, chosen: Picked, name: str) -> str:
         r"""The destination as the user will see it in Explorer.
 
         Args:
@@ -153,15 +146,15 @@ class SelectionMover:
             return ""
         roots = Counter(
             row.root
-            for path in chosen.values()
+            for path in chosen.paths.values()
             if (row := rows.by_path.get(self.runtime.mapper.to_host(path)))
         ).most_common(1)
         month = self._month(rows, chosen).split("/")
         relative = PureWindowsPath(*month, *name.split("/"))
         return str(PureWindowsPath(roots[0][0]) / relative) if roots else str(relative)
 
-    def _month(self, rows: PlanRows, chosen: Mapping[int, Path]) -> str:
-        """`YYYY/YYYY-MM` of the earliest dated photo picked.
+    def _month(self, rows: PlanRows, chosen: Picked) -> str:
+        """`YYYY/YYYY-MM` of the earliest photo picked: plan's date, else the index's.
 
         Args:
             rows: The plan's rows.
@@ -175,8 +168,9 @@ class SelectionMover:
         """
         dates = [
             when
-            for path in chosen.values()
+            for path in chosen.paths.values()
             if (when := taken_at(rows.by_path.get(self.runtime.mapper.to_host(path))))
+            or (when := chosen.days.get(path))
         ]
         if not dates:
             raise ValueError(

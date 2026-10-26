@@ -6018,6 +6018,9 @@ msgstr "Ouvrir le rapport"
 msgid "Open the review at 127.0.0.1 or localhost."
 msgstr "Ouvrez le tri sur 127.0.0.1 ou localhost."
 
+msgid "Open the review of the vanished files now?"
+msgstr "Ouvrir maintenant la revue des fichiers disparus ?"
+
 msgid "Open the search at 127.0.0.1 or localhost."
 msgstr "Ouvrez la recherche sur 127.0.0.1 ou localhost."
 
@@ -12154,6 +12157,13 @@ msgstr "mêmes flux"
 msgid "save the folder, then the next event"
 msgstr "enregistrer le dossier, puis l'événement suivant"
 
+msgid ""
+"say in 'review --gone' which vanished files you deleted on purpose: they "
+"will be set aside if they come back."
+msgstr ""
+"dites dans 'review --gone' quels fichiers disparus vous avez supprimés "
+"exprès : ils seront mis de côté s'ils reviennent."
+
 msgid "screenshot or document"
 msgstr "capture d'écran ou document"
 
@@ -14645,6 +14655,12 @@ msgstr[0] "{n} fichier garde son propre dossier"
 msgstr[1] "{n} fichiers gardent leur propre dossier"
 
 #, python-brace-format
+msgid "{n} file lies in a protected or 'leave' folder: never moved."
+msgid_plural "{n} files lie in a protected or 'leave' folder: never moved."
+msgstr[0] "{n} fichier est dans un dossier protégé ou « leave » : jamais déplacé."
+msgstr[1] "{n} fichiers sont dans un dossier protégé ou « leave » : jamais déplacés."
+
+#, python-brace-format
 msgid "{n} file missing: moved out of the folders analysed, or deleted."
 msgid_plural "{n} files missing: moved out of the folders analysed, or deleted."
 msgstr[0] "{n} fichier manquant : déplacé hors des dossiers analysés, ou supprimé."
@@ -14718,10 +14734,6 @@ msgid "{n} file, {size}, {share} of your library"
 msgid_plural "{n} files, {size}, {share} of your library"
 msgstr[0] "{n} fichier, {size}, {share} de votre photothèque"
 msgstr[1] "{n} fichiers, {size}, {share} de votre photothèque"
-
-#, python-brace-format
-msgid "{n} files are left as they are by the plan."
-msgstr "{n} fichiers sont laissés tels quels par le plan."
 
 #, python-brace-format
 msgid ""

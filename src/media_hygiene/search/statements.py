@@ -97,6 +97,7 @@ LIMIT: Final = " LIMIT ?"
 WHERE: Final = " WHERE "
 AND: Final = " AND "
 SOURCE_OF: Final = "SELECT path, size, mtime_ns FROM files WHERE rowid = ?"
+DATE_OF: Final = "SELECT media_date FROM files WHERE rowid = ?"  # as the file writes it
 VERSIONS: Final = "SELECT files.path, files.size, files.mtime_ns" + _FROM
 # Search by meaning (`search.meaning_index`): the rows of the files a search matches,
 # those of every file (filters only), one file as a hit, and a probe of one term.
