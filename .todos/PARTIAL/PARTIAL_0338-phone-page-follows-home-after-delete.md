@@ -56,3 +56,15 @@ script was not, so the page took itself for a console run and kept waiting.
 
 The launcher page's section on freeing the phone (both languages): what the tab does after
 *Delete*; `docs_screenshots` should run afterwards (not unasked).
+
+## Status — PARTIAL (2026-10-26)
+
+Done: after *Delete* or *Leave* accepted, `follow()` (phone_review.js.j2) always watches the
+address (1 s poll, 2 s answer limit, as home_link's): seen gone then answering, or another run
+id, the tab goes to `/`, with or without `mhAwaitHome` (an older `mh`). The waiting line counts
+the minutes against the estimate (*2 min gone by, of about 4*); once the server is gone it adds
+that the PowerShell window says when it is done. Docs both languages.
+
+Left: item 3 (the stale-`mh` ⚠️ line on the page: the build stamp is not passed to the page's
+server today; the home page could offer `mh update` — not built); item 4 (headless Chromium
+test: no browser test harness in the repo; the rendered script is checked as text instead).

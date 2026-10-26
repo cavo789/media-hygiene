@@ -27,6 +27,8 @@ from media_hygiene.services.launcher_phone import (
     FAST_POLL_MILLISECONDS,
     POLL_MILLISECONDS,
     STALL_SECONDS,
+    WAKE_EVERY_SECONDS,
+    WAKE_FOR_SECONDS,
     phone_command,
 )
 from media_hygiene.services.launcher_phone_free import (
@@ -440,3 +442,27 @@ def test_from_home_a_closed_tab_deletes_nothing_and_ends_the_loop() -> None:
         '{ Write-Host "Nothing was deleted from the phone."; return }'
     )
     assert closed < clear.index('if ($null -eq $ticked) { Write-Host "The check')
+
+
+def test_a_phone_with_no_storage_is_waited_for_not_said_without_dcim() -> None:
+    """0336: asleep or locked, the phone shows nothing: unlock it, a bounded wait."""
+    script = _script()
+    awake = _body(script, "phone_awake(")
+    texts = phone_command().texts
+    assert "@($phone.GetFolder.Items()).Count -eq 0" in awake
+    assert f"-ge {WAKE_FOR_SECONDS})" in awake
+    assert f"Start-Sleep -Seconds {WAKE_EVERY_SECONDS}" in awake
+    assert texts.asleep in awake
+    assert texts.none in awake
+    assert texts.no_dcim not in awake
+    assert "unlock it" in texts.asleep
+    main = _body(script, "phone {")
+    assert main.index("_mh_phone_awake $phone") < main.index(texts.no_dcim)
+
+
+def test_a_phone_asleep_during_a_copy_is_said() -> None:
+    """0336: keep it unlocked, said up front and when it stops answering."""
+    texts = phone_command().texts
+    assert "keep the phone unlocked" in texts.copying
+    assert "asleep" in texts.unplugged
+    assert "asleep" in phone_command().free.texts.stopped

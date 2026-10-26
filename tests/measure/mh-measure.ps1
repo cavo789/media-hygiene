@@ -162,6 +162,7 @@
 #   .\mh-measure.ps1 -Only 19 -Count 1   (a phone plugged in over USB; -Count 1: the test folder is not used)
 #                                         (19l-19o write ONE test file to the phone, after a y, then delete it)
 #                                         (19p: mh phone --free on 3 test files written to the phone, after a y)
+#                                         (19q: the phone locked then unlocked: what Windows shows of it, read only)
 #   .\mh-measure.ps1 -Only 20 -Count 1 -Sample 1000 -Cpus 4 -Branch iterate/2026-10-17   (image embeddings)
 #   .\mh-measure.ps1 -Only 21 -Count 1 -Nas 192.168.1.2 -NasShare photo -NasUser me   (the NAS, read-only)
 #   .\mh-measure.ps1 -Only 22 -Count 3   (a pair keeping both names: hard links, 0213)
@@ -1685,6 +1686,25 @@ if (Wanted 19) {
         Log ("   19p. DCIM after: {0} files, before: {1} ({2})" -f $countAfter, $countBefore, $(if ($countAfter -eq $countBefore) { 'the same: no other file touched' } else { 'DIFFERENT' }))
         foreach ($folder in $freeLocal, $freeTo, $freeAside) { Remove-Item -Recurse -Force -LiteralPath $folder -ErrorAction SilentlyContinue }
         Log "   19p. the PC's temporary folders of 19p removed"
+    }
+    # 19q: what Shell.Application shows of a LOCKED phone (0336): Windows lists it by name, but
+    # does it show no storage (no item), or an empty storage? Read only, then once unlocked.
+    $answer = if ($phone) { Read-Host "19q. Next: lock the phone (screen off), keep it plugged in, wait 10 s, then type y (n skips)" } else { 'n' }
+    if ($answer -eq 'y') {
+        foreach ($state in 'locked', 'unlocked') {
+            if ($state -eq 'unlocked') { $null = Read-Host "19q. Now unlock the phone (File transfer if asked), wait 10 s, then press Enter" }
+            $device = $null
+            foreach ($entry in $shell.Namespace(17).Items()) {
+                if (-not $entry.IsFileSystem -and $entry.Name -eq $phone.Name) { $device = $entry }
+            }
+            if (-not $device) { Log "   19q. $state`: the phone '$($phone.Name)' is NOT listed in This PC"; continue }
+            $tops = @($device.GetFolder.Items())
+            Log ("   19q. {0}: listed; {1} top item(s): {2}" -f $state, $tops.Count, (($tops | ForEach-Object { "'$($_.Name)' ($(@($_.GetFolder.Items()).Count) inside)" }) -join ', '))
+            $found = PhoneFindDcim $device.GetFolder 0
+            Log ("   19q. {0}: DCIM {1}" -f $state, $(if ($found) { 'found' } else { 'NOT found' }))
+        }
+    } else {
+        Log "   19q. a locked phone: skipped"
     }
 }
 

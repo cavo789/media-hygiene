@@ -4802,10 +4802,12 @@ msgstr ""
 "relu dans {destination}."
 
 #, python-brace-format
-msgid "New photos and videos to copy: {count} ({size} GB) into {destination}…"
+msgid ""
+"New photos and videos to copy: {count} ({size} GB) into {destination}; "
+"keep the phone unlocked, screen on…"
 msgstr ""
 "Nouvelles photos et vidéos à copier : {count} ({size} Go) dans "
-"{destination}…"
+"{destination} ; gardez le téléphone déverrouillé, écran allumé…"
 
 #, python-brace-format
 msgid "New photos? The cycle starts again at {stage}."
@@ -8049,15 +8051,14 @@ msgstr "Inverser les dossiers"
 msgid "Switch between the board and one series at a time (P)"
 msgstr "Basculer entre la planche et une série à la fois (P)"
 
-#, python-brace-format
 msgid ""
 "Switch to the PowerShell window: the files leave the phone one by one, "
-"each one copied again and compared with the PC's copy first (about "
-"{minutes} min)."
+"each one copied again and compared with the PC's copy first. Keep the "
+"phone unlocked, screen on."
 msgstr ""
-"Passez à la fenêtre PowerShell : les fichiers quittent le téléphone un à "
-"un, chacun d'abord copié à nouveau et comparé à la copie du PC (environ "
-"{minutes} min)."
+"Passez à la fenêtre PowerShell : les fichiers quittent le téléphone un "
+"par un, chacun d'abord recopié et comparé à la copie du PC. Gardez le "
+"téléphone déverrouillé, écran allumé."
 
 #, python-brace-format
 msgid ""
@@ -8864,19 +8865,23 @@ msgid "The password of {share} is kept: mh folders remove forgets it."
 msgstr "Le mot de passe de {share} est gardé : mh folders remove l'oublie."
 
 msgid ""
-"The phone no longer answers (unplugged?): what is counted above was "
-"deleted, the rest is still on it. Type mh phone --free again."
+"The phone no longer answers (unplugged, or asleep: keep it unlocked, "
+"screen on): what is counted above was deleted, the rest is still on it. "
+"Type mh phone --free again."
 msgstr ""
-"Le téléphone ne répond plus (débranché ?) : ce qui est compté ci-dessus a"
-" été supprimé, le reste y est encore. Tapez à nouveau mh phone --free."
+"Le téléphone ne répond plus (débranché, ou en veille : gardez-le "
+"déverrouillé, écran allumé) : ce qui est compté ci-dessus a été supprimé,"
+" le reste y est encore. Tapez à nouveau mh phone --free."
 
 #, python-brace-format
 msgid ""
-"The phone no longer answers (unplugged?): {count} files copied so far. "
-"Type mh phone again: what is already copied is skipped."
+"The phone no longer answers (unplugged, or asleep: keep it unlocked, "
+"screen on, during the copy): {count} files copied so far. Type mh phone "
+"again: what is already copied is skipped."
 msgstr ""
-"Le téléphone ne répond plus (débranché ?) : {count} fichiers copiés "
-"jusqu'ici. Tapez de nouveau mh phone : ce qui est déjà copié est passé."
+"Le téléphone ne répond plus (débranché, ou en veille : gardez-le "
+"déverrouillé, écran allumé, pendant la copie) : {count} fichiers copiés "
+"jusqu'ici. Tapez à nouveau mh phone : ce qui est déjà copié est passé."
 
 msgid "The phone run the files were proven in."
 msgstr "Le passage du téléphone où les fichiers ont été prouvés."
@@ -9584,6 +9589,13 @@ msgstr "Cette photo est dans un dossier protégé : elle ne bouge jamais."
 
 msgid "This step takes no words."
 msgstr "Cette étape ne prend pas de mots."
+
+msgid ""
+"This tab shows the home page by itself when mh brings it back; otherwise,"
+" the PowerShell window says when it is done."
+msgstr ""
+"Cet onglet affiche l'accueil tout seul quand mh le rouvre ; sinon, la "
+"fenêtre PowerShell dit quand c'est fini."
 
 #, python-brace-format
 msgid "This video does not play on a phone as it is ({format})."
@@ -14333,6 +14345,10 @@ msgstr ""
 "l'utilise."
 
 #, python-brace-format
+msgid "{elapsed} min gone by, of about {minutes}."
+msgstr "{elapsed} min écoulées, sur environ {minutes}."
+
+#, python-brace-format
 msgid ""
 "{faces} faces in {photos} photos: no two of them look alike enough to be "
 "grouped."
@@ -14660,6 +14676,16 @@ msgstr ""
 #, python-brace-format
 msgid "{name} ({count} faces)"
 msgstr "{name} ({count} visages)"
+
+#, python-brace-format
+msgid ""
+"{name} answers but shows no storage: wake it up and unlock it, then "
+"choose File transfer in the USB notification (iPhone: Trust this "
+"computer). Waiting for it…"
+msgstr ""
+"{name} répond mais ne montre aucun stockage : réveillez-le et "
+"déverrouillez-le, puis choisissez Transfert de fichiers dans la "
+"notification USB (iPhone : Faire confiance à cet ordinateur). En attente…"
 
 #, python-brace-format
 msgid "{name} comes close too: resemblance {score}."

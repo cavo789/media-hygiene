@@ -43,6 +43,10 @@ LISTED_EVERY: Final = 500
 DEFAULT_FOLDER: Final = "Phone"
 # `CopyHere` options: no progress window (4), yes to all (16), no error window (1024).
 COPY_FLAGS: Final = 4 + 16 + 1024
+# A phone seen with no storage (asleep, locked): asked again this often, this
+# long (0336).
+WAKE_EVERY_SECONDS: Final = 2
+WAKE_FOR_SECONDS: Final = 60
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,6 +60,7 @@ class PhoneTexts:  # pylint: disable=too-many-instance-attributes  # one per mes
     none: str
     pick: str  # holds `${count}`
     no_dcim: str  # holds `${name}`
+    asleep: str  # holds `${name}`
     listing: str  # holds `${name}`
     listed: str  # holds `${count}`
     no_plan: str
@@ -90,6 +95,8 @@ class PhoneCommand:  # pylint: disable=too-many-instance-attributes  # one per v
     fast_for: int = FAST_FOR_MILLISECONDS
     poll: int = POLL_MILLISECONDS
     every: int = LISTED_EVERY
+    wake_every: int = WAKE_EVERY_SECONDS
+    wake_for: int = WAKE_FOR_SECONDS
 
 
 def phone_command() -> PhoneCommand:
@@ -129,6 +136,14 @@ def _texts() -> PhoneTexts:
         ),
         pick=say(_("Number of the phone (1 to {count})"), "count"),
         no_dcim=say(_("No DCIM folder on {name}: no photo to copy."), "name"),
+        asleep=say(
+            _(
+                "{name} answers but shows no storage: wake it up and unlock it, then "
+                "choose File transfer in the USB notification (iPhone: Trust this "
+                "computer). Waiting for it…"
+            ),
+            "name",
+        ),
         listing=say(
             _(
                 "Listing the photos and videos of {name}: about 30 seconds per "
@@ -139,7 +154,10 @@ def _texts() -> PhoneTexts:
         listed=say(_("{count} files listed…"), "count"),
         no_plan=say(_("The comparison with your library failed: nothing was copied.")),
         copying=say(
-            _("New photos and videos to copy: {count} ({size} GB) into {destination}…"),
+            _(
+                "New photos and videos to copy: {count} ({size} GB) into "
+                "{destination}; keep the phone unlocked, screen on…"
+            ),
             "count",
             "size",
             "destination",
@@ -147,7 +165,8 @@ def _texts() -> PhoneTexts:
         renamed=say(_("{name} was already there: copied as {final}."), "name", "final"),
         unplugged=say(
             _(
-                "The phone no longer answers (unplugged?): {count} files copied so "
+                "The phone no longer answers (unplugged, or asleep: keep it unlocked, "
+                "screen on, during the copy): {count} files copied so "
                 "far. Type mh phone again: what is already copied is skipped."
             ),
             "count",

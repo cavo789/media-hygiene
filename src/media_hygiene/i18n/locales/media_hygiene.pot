@@ -3940,7 +3940,9 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
-msgid "New photos and videos to copy: {count} ({size} GB) into {destination}…"
+msgid ""
+"New photos and videos to copy: {count} ({size} GB) into {destination}; "
+"keep the phone unlocked, screen on…"
 msgstr ""
 
 #, python-brace-format
@@ -6651,11 +6653,10 @@ msgstr ""
 msgid "Switch between the board and one series at a time (P)"
 msgstr ""
 
-#, python-brace-format
 msgid ""
 "Switch to the PowerShell window: the files leave the phone one by one, "
-"each one copied again and compared with the PC's copy first (about "
-"{minutes} min)."
+"each one copied again and compared with the PC's copy first. Keep the "
+"phone unlocked, screen on."
 msgstr ""
 
 #, python-brace-format
@@ -7317,14 +7318,16 @@ msgid "The password of {share} is kept: mh folders remove forgets it."
 msgstr ""
 
 msgid ""
-"The phone no longer answers (unplugged?): what is counted above was "
-"deleted, the rest is still on it. Type mh phone --free again."
+"The phone no longer answers (unplugged, or asleep: keep it unlocked, "
+"screen on): what is counted above was deleted, the rest is still on it. "
+"Type mh phone --free again."
 msgstr ""
 
 #, python-brace-format
 msgid ""
-"The phone no longer answers (unplugged?): {count} files copied so far. "
-"Type mh phone again: what is already copied is skipped."
+"The phone no longer answers (unplugged, or asleep: keep it unlocked, "
+"screen on, during the copy): {count} files copied so far. Type mh phone "
+"again: what is already copied is skipped."
 msgstr ""
 
 msgid "The phone run the files were proven in."
@@ -7879,6 +7882,11 @@ msgid "This shot lies in a protected folder: it is never moved."
 msgstr ""
 
 msgid "This step takes no words."
+msgstr ""
+
+msgid ""
+"This tab shows the home page by itself when mh brings it back; otherwise,"
+" the PowerShell window says when it is done."
 msgstr ""
 
 #, python-brace-format
@@ -11943,6 +11951,10 @@ msgid "{drive}: stays shared with Docker Desktop: another mh window uses it."
 msgstr ""
 
 #, python-brace-format
+msgid "{elapsed} min gone by, of about {minutes}."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "{faces} faces in {photos} photos: no two of them look alike enough to be "
 "grouped."
@@ -12217,6 +12229,13 @@ msgstr ""
 
 #, python-brace-format
 msgid "{name} ({count} faces)"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{name} answers but shows no storage: wake it up and unlock it, then "
+"choose File transfer in the USB notification (iPhone: Trust this "
+"computer). Waiting for it…"
 msgstr ""
 
 #, python-brace-format

@@ -50,3 +50,17 @@ the no-storage branch does not print `no_dcim`. The real behaviour of a locked p
 
 The launcher page's `mh phone` section, both languages: "keep the phone unlocked, screen on,
 File transfer" among the first steps, and the new message.
+
+## Status — PARTIAL (2026-10-26)
+
+Done: `_mh_phone_awake` (mh_phone.ps1.j2) tells "no storage at all" (no top item under the
+phone) from "a storage without DCIM"; the first says *answers but shows no storage: wake it
+up and unlock it…* and asks again every 2 s for up to 60 s (`WAKE_EVERY_SECONDS`,
+`WAKE_FOR_SECONDS`, constants), then ends with the "No phone seen" line; `no_dcim` only for a
+storage really without DCIM. "keep the phone unlocked, screen on" in the copy line, "or asleep"
+in the copy's and the deletion's "no longer answers" lines. Step 19q of `mh-measure.ps1`
+(locked then unlocked: listed? top items? DCIM?). Docs both languages.
+
+Left: run step 19q on the maintainer's phone (`.\mh-measure.ps1 -Only 19 -Count 1`, answer y
+at 19q); if a locked phone shows an empty "Internal storage" instead of no item, the check
+must look one level down (a top folder with nothing inside).

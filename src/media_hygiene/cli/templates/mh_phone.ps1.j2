@@ -33,7 +33,8 @@ function global:_{{ f }}_phone {
     $phone = _{{ f }}_phone_pick $shell
     if (-not $phone) { return }
     $name = "$($phone.Name)"
-    $dcim = _{{ f }}_phone_dcim $phone.GetFolder 0
+    $dcim = _{{ f }}_phone_awake $phone
+    if ($null -eq $dcim) { return }
     if (-not $dcim) { Write-Host "{{ t.no_dcim }}"; return }
     # One folder per phone, named after it, without what Windows refuses in a name.
     $own = ($name -replace '[\\/:*?"<>|]', '_').Trim().TrimEnd('.')
@@ -129,6 +130,23 @@ function global:_{{ f }}_phone_there($shell, [string]$name) {
     foreach ($entry in $shell.Namespace(17).Items()) {
         if ("$($entry.Name)" -eq $name -and -not $entry.IsFileSystem) { return $true }
     }
+    return $false
+}
+
+# DCIM once the phone shows a storage (0336): asleep, locked or on Charging only, Windows lists
+# the phone by name but shows nothing inside it. Then said, and asked again every
+# {{ p.wake_every }} s for up to {{ p.wake_for }} s. Returns DCIM, $false (a storage without it), or
+# $null (no storage seen in time: said as no phone).
+function global:_{{ f }}_phone_awake($phone) {
+    $waited = 0
+    while (@($phone.GetFolder.Items()).Count -eq 0) {
+        if ($waited -ge {{ p.wake_for }}) { Write-Host "{{ t.none }}"; return $null }
+        if ($waited -eq 0) { Write-Host "{{ t.asleep }}" }
+        Start-Sleep -Seconds {{ p.wake_every }}
+        $waited += {{ p.wake_every }}
+    }
+    $dcim = _{{ f }}_phone_dcim $phone.GetFolder 0
+    if ($dcim) { return $dcim }
     return $false
 }
 

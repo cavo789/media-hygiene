@@ -245,7 +245,10 @@ mh phone --free                       # puis libérer le téléphone : plus bas
 ```
 
 Branchez le téléphone en USB, déverrouillez-le et choisissez *Transfert de fichiers* (iPhone :
-*Faire confiance à cet ordinateur*). `mh phone` le trouve (plusieurs téléphones : il demande
+*Faire confiance à cet ordinateur*), et **gardez-le déverrouillé, écran allumé** jusqu'à la fin
+de `mh` : en veille ou verrouillé, un téléphone ne montre aucun stockage à Windows. `mh phone`
+dit alors *répond mais ne montre aucun stockage : réveillez-le et déverrouillez-le…* et
+l'attend, jusqu'à une minute. Il trouve le téléphone (plusieurs téléphones : il demande
 lequel), liste son dossier `DCIM` (environ 30 secondes par tranche de 1 000 fichiers), puis copie
 **uniquement** ce que votre photothèque n'a pas encore :
 
@@ -319,8 +322,10 @@ appuyiez sur *Supprimer N fichiers du téléphone*** ; *Tout laisser sur le tél
 sans rien supprimer. Ouverte depuis l'accueil (*Faire de la place sur le téléphone*), la page a
 **⌂ Retour à l'accueil** en haut à droite, comme toutes les pages : il la termine de la même
 façon, sans rien supprimer, et l'accueil revient dans le même onglet ; après *Supprimer*,
-l'onglet dit de passer à la fenêtre PowerShell (avec le temps que cela prend), puis montre à
-nouveau l'accueil une fois fini. Si la page s'est arrêtée entre-temps (terminée dans un autre onglet, la
+l'onglet dit de passer à la fenêtre PowerShell et compte les minutes écoulées face à
+l'estimation (*2 min écoulées, sur environ 4*), puis montre l'accueil tout seul quand `mh` le
+rouvre, même si `mh.ps1` a été écrit par une image plus ancienne ; tapé dans une console, il dit
+que la fenêtre PowerShell indique quand c'est fini. Si la page s'est arrêtée entre-temps (terminée dans un autre onglet, la
 fenêtre de `mh` fermée), une coche le dit clairement — *La page ne tourne plus* — et le bouton
 rouge est refusé : plus rien n'y est enregistré. Ensuite, pour chaque fichier coché :
 
