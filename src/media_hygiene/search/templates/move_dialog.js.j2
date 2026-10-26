@@ -1,7 +1,8 @@
 {# *Move to an event…* (0403), after the grid's scripts: the photos picked, by source
    folder, then moved. `showSources` is shared with the rule dialog's GO
    (`search_rule.js.j2`): one tick box per source folder, a folder named after another
-   event unticked; `MOVE_PATHS.view` answers them. #}
+   event unticked; `MOVE_PATHS.view` answers them. The names offered come from the
+   folder tree (`FOLDERS_PATH`, `search_folders.js.j2`). #}
 const MOVE_PATHS = {{ move_paths | tojson }};
 const moveEl = (id) => document.getElementById(id);
 let moveView = null;     // the last view answered: its source folders
@@ -57,6 +58,22 @@ async function askMove(name) {
   moveButton();
 }
 
+// The event folders already sorted, below a `YYYY/YYYY-MM` (container paths of the tree):
+// offered to the name, sub-folders as Windows writes them. Read at each opening: a move adds some.
+const MONTH_EVENT = /\/(\d{4})\/\1-(?:0[1-9]|1[0-2])\/(.+)$/;
+async function moveNames() {
+  const answer = await ask(FOLDERS_PATH);
+  if (!answer || !answer.ok) return;  // a new name can still be typed
+  const { folders } = await answer.json();
+  const names = new Map();
+  for (const folder of folders) {
+    const found = MONTH_EVENT.exec(folder.inside);
+    if (found) names.set(found[2].toLowerCase(), found[2].replaceAll("/", "\\"));
+  }
+  const sorted = [...names.values()].sort((a, b) => a.localeCompare(b));
+  moveEl("moveNames").replaceChildren(...sorted.map((name) => Object.assign(document.createElement("option"), { value: name })));
+}
+
 let moveTimer = 0;
 moveEl("moveName").addEventListener("input", () => {
   window.clearTimeout(moveTimer);
@@ -72,6 +89,7 @@ moveEl("moveOpen").addEventListener("click", () => {
   moveEl("moveDlg").showModal();
   moveEl("moveName").focus();
   askMove("");
+  moveNames();
 });
 moveEl("moveNo").addEventListener("click", () => moveEl("moveDlg").close());
 // The dialog's keys stay its own: the grid's keys never fire behind it.

@@ -639,6 +639,9 @@ msgstr ""
 "\"C:\\Photos\" (ou /mnt/c/Photos sous WSL). Répétez-la pour plusieurs "
 "dossiers. Pas besoin de -v."
 
+msgid "A folder of yours, or a new name; \\ between sub-folders"
+msgstr "Un de vos dossiers, ou un nouveau nom ; \\ entre les sous-dossiers"
+
 msgid "A folder on the big screen; the phone chooses the next photo."
 msgstr "Un dossier sur le grand écran ; le téléphone choisit la photo suivante."
 

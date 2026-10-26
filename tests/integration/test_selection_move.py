@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.own_events import named_event, one_moment
 from media_hygiene.classify.rules_file import read_rules
-from media_hygiene.services.selection_move import SelectionMover
+from media_hygiene.services.selection_move import SelectionMover, event_path
 from tests.support.sorting import (
     PARTY,
     WEDDING,
@@ -92,3 +92,23 @@ def test_the_move_goes_to_year_month_name_and_undo_puts_it_back(
     assert {p: f for p, f in after.items() if p.endswith(".jpg")} == {
         p: f for p, f in before.items() if p.endswith(".jpg")
     }
+
+
+def test_an_event_name_may_hold_sub_folders(locations: Locations) -> None:
+    r"""`France\Morzine` goes to `2016/2016-07/France/Morzine`; empty parts dropped."""
+    runtime, picked = _ready(locations)
+    party = {key: path for key, path in picked.items() if PARTY in str(path)}
+    mover = SelectionMover(runtime)
+    assert mover.view(party, "France\\Morzine").target.endswith(
+        "2016\\2016-07\\France\\Morzine"
+    )
+    done = mover.move(party, " France\\\\Morzine/ ")
+    assert done["moved"] == len(party), done
+    moved_to = locations.data_dir / "c/2016/2016-07/France/Morzine"
+    assert len(list(moved_to.glob("*.jpg"))) == len(party)
+
+
+def test_the_event_path_makes_each_folder_safe() -> None:
+    """Each folder is made safe for Windows; the separators are kept between them."""
+    assert event_path("France/Mor:zine") == "France/Mor_zine"
+    assert event_path(" / ") == ""

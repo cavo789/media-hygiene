@@ -15,7 +15,6 @@ from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from media_hygiene.config.rule_checks import one_name
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.review.serving import json_response
@@ -68,8 +67,7 @@ async def move_answer(desk: RuleDesk, path: str, body: bytes) -> Response:
             view = await asyncio.to_thread(desk.mover.view, chosen, asked.name)
             answer: dict[str, object] = view.model_dump()
         else:
-            name = one_name(asked.name)
-            answer = await asyncio.to_thread(desk.mover.move, chosen, name)
+            answer = await asyncio.to_thread(desk.mover.move, chosen, asked.name)
             desk.index.built = None  # this page moved files: its next search reads them
     except ValueError as exc:
         return _conflict(str(exc))

@@ -37,6 +37,19 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 
+def event_path(name: str) -> str:
+    r"""The event's folder below the month: one name, or sub-folders (`France\Morzine`).
+
+    Args:
+        name: As typed, `\` or `/` between the folders.
+
+    Returns:
+        `France/Morzine`, each folder made safe, the empty ones dropped.
+    """
+    parts = (safe_name(part) for part in name.replace("\\", "/").split("/"))
+    return "/".join(part for part in parts if part)
+
+
 @dataclass(frozen=True, slots=True)
 class SelectionMover:
     """Shows, then moves, a selection of photos to an event's folder."""
@@ -68,7 +81,7 @@ class SelectionMover:
         named = self._named(names, rows)
         largest = Counter({f: len(groups[f]) for f in named}).most_common(1)
         proposed = named[largest[0][0]] if largest else ""
-        typed = safe_name(name or proposed)
+        typed = event_path(name or proposed)
         return MoveView(
             proposed=proposed,
             name=typed,
@@ -119,7 +132,7 @@ class SelectionMover:
         Raises:
             ValueError: No name, or no photo with a date.
         """
-        typed = safe_name(name)
+        typed = event_path(name)
         if not typed:
             raise ValueError(_("Type the event's name first."))
         folder = self._month(self._rows(), chosen) + "/" + typed
@@ -143,7 +156,8 @@ class SelectionMover:
             for path in chosen.values()
             if (row := rows.by_path.get(self.runtime.mapper.to_host(path)))
         ).most_common(1)
-        relative = PureWindowsPath(*self._month(rows, chosen).split("/"), name)
+        month = self._month(rows, chosen).split("/")
+        relative = PureWindowsPath(*month, *name.split("/"))
         return str(PureWindowsPath(roots[0][0]) / relative) if roots else str(relative)
 
     def _month(self, rows: PlanRows, chosen: Mapping[int, Path]) -> str:

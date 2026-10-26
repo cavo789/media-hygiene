@@ -38,7 +38,7 @@ def test_the_photos_picked_are_shown_then_moved_without_a_rule(
         monkeypatch,
         [
             ("POST /api/move/view", {"keys": keys, "name": "Noël"}),
-            ("POST /api/move", {"keys": keys, "name": "Fêtes/Noël"}),
+            ("POST /api/move", {"keys": keys, "name": " / "}),
             ("POST /api/move", {"keys": keys, "name": "Noël"}),
         ],
     )
@@ -46,7 +46,7 @@ def test_the_photos_picked_are_shown_then_moved_without_a_rule(
     view = json.loads(answers[0].body)
     assert view["target"].endswith("2022\\2022-12\\Noël")
     assert sum(source["files"] for source in view["sources"]) == len(keys)
-    assert "one name" in json.loads(answers[1].body)["error"]
+    assert "name" in json.loads(answers[1].body)["error"]  # no folder named
     done = json.loads(answers[2].body)
     assert done["moved"] + done["already"] + done["fixed"] + done["unknown"] == len(
         keys
