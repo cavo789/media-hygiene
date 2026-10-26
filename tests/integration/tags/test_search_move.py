@@ -96,7 +96,9 @@ def test_the_photos_not_sorted_yet_or_the_sorted_ones(
     )
     assert left["total"] + done["total"] == every["total"]
     assert [hit["name"] for hit in done["hits"]] == [moved.name]
-    assert moved.name not in [hit["name"] for hit in left["hits"]]
+    # By folder too: another photo may share the name (rglob's order differs in the CI).
+    assert all(not hit["folder"].endswith("Noël") for hit in left["hits"])
+    assert [hit["folder"].endswith("Noël") for hit in done["hits"]] == [True]
 
 
 def test_sort_by_and_show_are_applied_before_the_limit(

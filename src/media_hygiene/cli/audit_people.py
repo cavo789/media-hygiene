@@ -38,12 +38,15 @@ SAMPLE_SECONDS: Final = 5.0  # at most
 TYPICAL_SECONDS: Final = 0.2
 
 
-def audit_people(runtime: Runtime, yes: bool) -> None:  # noqa: FBT001
+def audit_people(runtime: Runtime, yes: bool) -> bool:  # noqa: FBT001
     """Count, measure, ask, then find the faces of the photos of the audit.
 
     Args:
         runtime: Settings, mount points and output.
         yes: `--yes`: no question.
+
+    Returns:
+        Whether naming the faces was suggested as the next step.
     """
     output = runtime.output
     output.blank()
@@ -51,20 +54,20 @@ def audit_people(runtime: Runtime, yes: bool) -> None:  # noqa: FBT001
         output.warning(
             _("--people keeps the faces in the cache: mount /cache to look for them.")
         )
-        return
+        return False
     within = runtime.mounts.data_roots(runtime.locations.data_dir)
     with PeopleStep(runtime) as step:
         work = step.plan(within)
         if not work.missing:
             output.info(_("Faces: every photo of the audit was looked at already."))
-            return
+            return False
         show_privacy(output)
         line = _estimate(runtime, step, work)
         work = step.plan(within)
         if work.missing:
             output.info(line)
             if not _agreed(runtime, yes):
-                return
+                return False
             find_shown(runtime, step, work.missing)
         result = step.result(work)
         show_groups(output, result.groups, (result.tally, runtime.settings.people))
@@ -77,6 +80,7 @@ def audit_people(runtime: Runtime, yes: bool) -> None:  # noqa: FBT001
             _("name the groups of faces in your browser, with 'people'."),
             NextVerb(carried(runtime, "people"), port=runtime.settings.review.port),
         )
+    return bool(result.groups.people)
 
 
 def _estimate(runtime: Runtime, step: PeopleStep, work: PeopleWork) -> str:
