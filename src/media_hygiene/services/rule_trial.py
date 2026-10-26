@@ -141,3 +141,16 @@ def _inputs(
         item = replace(item, former=former_of(connection, file.path))
         found.append(with_takeout(item, takeout_of(connection, file.path)))
     return tuple(found)
+
+
+def event_gap_hours(runtime: Runtime) -> float:
+    """The longest gap between two photos of one event, as `classify` groups them.
+
+    Args:
+        runtime: Settings.
+
+    Returns:
+        Hours: the larger of `session_gap_hours` and `merge_gap_hours`.
+    """
+    settings = runtime.settings.classify
+    return max(settings.session_gap_hours, settings.merge_gap_hours)

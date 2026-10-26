@@ -302,6 +302,10 @@ msgid "(type it yourself)"
 msgstr ""
 
 #, python-brace-format
+msgid "(your folder of another event, {name}: unticked)"
+msgstr ""
+
+#, python-brace-format
 msgid "({count} more tip: add --verbosity verbose to see it.)"
 msgid_plural "({count} more tips: add --verbosity verbose to see them.)"
 msgstr[0] ""
@@ -3685,6 +3689,26 @@ msgstr ""
 msgid "Move the photos as the workbook says"
 msgstr ""
 
+msgid ""
+"Move the photos picked to an event folder, year then year-month, without "
+"writing a rule"
+msgstr ""
+
+msgid "Move them now"
+msgstr ""
+
+#, python-brace-format
+msgid "Move this file now"
+msgid_plural "Move these {n} files now"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Move to an event"
+msgstr ""
+
+msgid "Move to an event…"
+msgstr ""
+
 #, python-brace-format
 msgid "Move {count} files into {folders} folders?"
 msgstr ""
@@ -4303,6 +4327,9 @@ msgid "Nobody is named {names} yet: name their group on the 'people' page first.
 msgstr ""
 
 msgid "None of these files is taken by the rule: nothing to sort."
+msgstr ""
+
+msgid "None of these photos has a date: no month to put them in."
 msgstr ""
 
 msgid "None: it is clean"
@@ -5376,6 +5403,9 @@ msgid "Reading the metadata of files already in the cache"
 msgstr ""
 
 msgid "Reading the tool folders…"
+msgstr ""
+
+msgid "Reading where the photos picked lie…"
 msgstr ""
 
 msgid "Reading where you are…"
@@ -7217,6 +7247,11 @@ msgstr ""
 msgid "The photos of the show: tap one to show it on the TV"
 msgstr ""
 
+msgid ""
+"The photos picked go to the event's folder, under their year and month, "
+"journaled: 'undo' puts them back. No rule is written."
+msgstr ""
+
 #, python-brace-format
 msgid "The places of {file} are invalid: {reason}."
 msgstr ""
@@ -7974,6 +8009,9 @@ msgid ""
 "page, at the top of the slideshow's) and in the window of mh."
 msgstr ""
 
+msgid "Type the event's name first."
+msgstr ""
+
 #, python-brace-format
 msgid "Type {command}: your browser shows every report."
 msgstr ""
@@ -8418,6 +8456,12 @@ msgid ""
 "content is back, whatever its name now (a phone backup, a copy). 'clean' "
 "moves them to the quarantine again, with the rest of its plan. To keep "
 "one after all: 'undo' that clean, and it is no longer proposed."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"You left {n} files aside: this is a move, not a rule. Sort them with the "
+"button below; the rule cannot say it."
 msgstr ""
 
 msgid "Your albums"
@@ -12280,6 +12324,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} photos of these days stay with the rule '{rule}'."
+msgstr ""
+
+#, python-brace-format
 msgid "{n} rule decided nothing."
 msgid_plural "{n} rules decided nothing."
 msgstr[0] ""
@@ -12308,6 +12356,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} shot set aside"
 msgid_plural "{n} shots set aside"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} source folder unticked: its files stay where they are."
+msgid_plural "{n} source folders unticked: their files stay where they are."
 msgstr[0] ""
 msgstr[1] ""
 

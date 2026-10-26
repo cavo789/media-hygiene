@@ -20,6 +20,8 @@
     <p id="rulePreview" class="muted" role="status"></p>
     {% if rule_go %}
     <p id="ruleWiden" class="ruleGo" hidden></p>
+    <ul id="ruleSources" class="sources" hidden></ul>
+    <p id="ruleLeft" class="ruleGo muted" role="status"></p>
     <p class="ruleGo"><button type="button" id="ruleLeave" class="plain" disabled>{{ _("Leave the picked files where they are") }}</button>
       <button type="button" id="ruleGo" disabled>{{ _("Check, then sort") }}</button></p>
     {% endif %}

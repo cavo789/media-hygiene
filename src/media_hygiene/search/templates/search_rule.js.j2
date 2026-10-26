@@ -47,6 +47,10 @@ async function tryRule() {
   const folders = answer.folders.map((one) => one.files + " → " + (one.folder || TEXTS.stays)).join(" · ");
   const parts = [fill(TEXTS.ruleTook, { files: counted(TEXTS.nFiles, answer.taken), folders: folders || "—" })];
   if (answer.left) parts.push(fill(TEXTS.ruleLeft, { n: answer.left }));
+  // The photos of these days another rule keeps: said in words, not only greyed (0403).
+  const keptBy = new Map();
+  for (const hit of answer.hits) if (!hit.taken && hit.by && !hit.otherDay) keptBy.set(hit.by, (keptBy.get(hit.by) || 0) + 1);
+  for (const [rule, n] of keptBy) parts.push(fill(TEXTS.ruleKept, { n: n, rule: rule }));
   // An event most of whose files fall outside the days is left whole: say it, offer to widen.
   for (const event of answer.wider) parts.push(fill(TEXTS.ruleWider, event));
   if (answer.wider.length) parts.push(fill(TEXTS.ruleEvent, { hours: EVENT_GAP_HOURS }));
@@ -57,6 +61,28 @@ async function tryRule() {
   ruleSay(parts.join(" "), answer.name_taken);
   ruleEl("ruleYes").disabled = answer.name_taken || !answer.taken;
   told(parts[0], false);
+  ruleSources(asking);
+}
+
+// The files taken, by source folder, one tick box each (0403): a folder you named after
+// another event is unticked, its files left where they are.
+async function ruleSources(asking) {
+  const list = ruleEl("ruleSources");
+  const taken = tried ? tried.hits.filter((hit) => hit.taken) : [];
+  list.hidden = true;
+  if (!taken.length) return;
+  const sent = await rulePost(MOVE_PATHS.view, { keys: taken.map((hit) => hit.key), name: ruleEl("ruleCategory").value });
+  if (asking !== ruleTrial || !sent || !sent.response.ok) return;
+  const sources = sent.answer.sources;
+  for (const source of sources) if (!source.ticked) for (const key of source.keys) leftHere.add(key);
+  list.hidden = sources.length < 2 && sources.every((source) => source.ticked);
+  showSources(list, sources, (source, ticked) => {
+    for (const key of source.keys) if (ticked) leftHere.delete(key); else leftHere.add(key);
+    showFiles(files.map((file) => ({ ...file, left: leftHere.has(file.key) })), false);
+    showGo();
+  });
+  showFiles(files.map((file) => ({ ...file, left: leftHere.has(file.key) })), false);
+  showGo();
 }
 
 // The GO (0397): the files taken, but those left where they are.
@@ -66,6 +92,11 @@ function showGo() {
   ruleEl("ruleGo").textContent = counted(TEXTS.goSort, going.length);
   ruleEl("ruleGo").disabled = !going.length;
   ruleEl("ruleLeave").disabled = !tried;
+  // A selection with exceptions is a move, not a rule (0403): saved, it would take them again.
+  const left = tried ? tried.hits.filter((hit) => hit.taken && leftHere.has(hit.key)).length : 0;
+  if (left) { ruleEl("ruleYes").disabled = true; ruleEl("ruleYes").title = fill(TEXTS.ruleMove, { n: left }); }
+  else { ruleEl("ruleYes").title = ""; if (tried) ruleEl("ruleYes").disabled = tried.name_taken || !tried.taken; }
+  ruleEl("ruleLeft").textContent = left ? fill(TEXTS.ruleMove, { n: left }) : "";
 }
 
 ruleEl("ruleLeave").addEventListener("click", () => {

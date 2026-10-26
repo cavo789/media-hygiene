@@ -375,6 +375,10 @@ msgid "(type it yourself)"
 msgstr "(à taper vous-même)"
 
 #, python-brace-format
+msgid "(your folder of another event, {name}: unticked)"
+msgstr "(votre dossier d'un autre événement, {name} : décoché)"
+
+#, python-brace-format
 msgid "({count} more tip: add --verbosity verbose to see it.)"
 msgid_plural "({count} more tips: add --verbosity verbose to see them.)"
 msgstr[0] "({count} autre conseil : ajoutez --verbosity verbose pour le voir.)"
@@ -4500,6 +4504,28 @@ msgstr ""
 msgid "Move the photos as the workbook says"
 msgstr "Déplacer les photos comme le dit le classeur"
 
+msgid ""
+"Move the photos picked to an event folder, year then year-month, without "
+"writing a rule"
+msgstr ""
+"Déplacer les photos choisies dans le dossier d'un événement, année puis "
+"année-mois, sans écrire de règle"
+
+msgid "Move them now"
+msgstr "Les déplacer maintenant"
+
+#, python-brace-format
+msgid "Move this file now"
+msgid_plural "Move these {n} files now"
+msgstr[0] "Déplacer ce fichier maintenant"
+msgstr[1] "Déplacer ces {n} fichiers maintenant"
+
+msgid "Move to an event"
+msgstr "Déplacer vers un événement"
+
+msgid "Move to an event…"
+msgstr "Déplacer vers un événement…"
+
 #, python-brace-format
 msgid "Move {count} files into {folders} folders?"
 msgstr "Déplacer {count} fichiers dans {folders} dossiers ?"
@@ -5234,6 +5260,9 @@ msgstr ""
 
 msgid "None of these files is taken by the rule: nothing to sort."
 msgstr "Aucun de ces fichiers n'est pris par la règle : rien à trier."
+
+msgid "None of these photos has a date: no month to put them in."
+msgstr "Aucune de ces photos n'a de date : pas de mois où les mettre."
 
 msgid "None: it is clean"
 msgstr "Aucune : c'est propre"
@@ -6523,6 +6552,9 @@ msgstr "Lecture des métadonnées des fichiers déjà en cache"
 
 msgid "Reading the tool folders…"
 msgstr "Lecture des dossiers de l'outil…"
+
+msgid "Reading where the photos picked lie…"
+msgstr "Lecture de l'emplacement des photos choisies…"
 
 msgid "Reading where you are…"
 msgstr "Lecture de là où vous en êtes…"
@@ -8749,6 +8781,14 @@ msgstr ""
 msgid "The photos of the show: tap one to show it on the TV"
 msgstr "Les photos du diaporama : touchez-en une pour la montrer sur la télé"
 
+msgid ""
+"The photos picked go to the event's folder, under their year and month, "
+"journaled: 'undo' puts them back. No rule is written."
+msgstr ""
+"Les photos choisies vont dans le dossier de l'événement, sous leur année "
+"et leur mois, noté au journal : 'undo' les remet. Aucune règle n'est "
+"écrite."
+
 #, python-brace-format
 msgid "The places of {file} are invalid: {reason}."
 msgstr "Les lieux de {file} ne sont pas valables : {reason}."
@@ -9699,6 +9739,9 @@ msgstr ""
 "la page d'accueil, en haut de celle du diaporama) et dans la fenêtre de "
 "mh."
 
+msgid "Type the event's name first."
+msgstr "Tapez d'abord le nom de l'événement."
+
 #, python-brace-format
 msgid "Type {command}: your browser shows every report."
 msgstr "Tapez {command} : votre navigateur montre tous les rapports."
@@ -10232,6 +10275,15 @@ msgstr ""
 "sauvegarde de téléphone, une copie). 'clean' les remet en quarantaine, "
 "avec le reste de son plan. Pour en garder une finalement : 'undo' de ce "
 "nettoyage, et elle n'est plus proposée."
+
+#, python-brace-format
+msgid ""
+"You left {n} files aside: this is a move, not a rule. Sort them with the "
+"button below; the rule cannot say it."
+msgstr ""
+"Vous avez laissé {n} fichiers de côté : c'est un déplacement, pas une "
+"règle. Triez-les avec le bouton ci-dessous ; la règle ne peut pas le "
+"dire."
 
 msgid "Your albums"
 msgstr "Vos albums"
@@ -14707,6 +14759,10 @@ msgstr[0] "{n} photo mise de côté, masquée"
 msgstr[1] "{n} photos mises de côté, masquées"
 
 #, python-brace-format
+msgid "{n} photos of these days stay with the rule '{rule}'."
+msgstr "{n} photos de ces jours restent avec la règle '{rule}'."
+
+#, python-brace-format
 msgid "{n} rule decided nothing."
 msgid_plural "{n} rules decided nothing."
 msgstr[0] "{n} règle n'a rien décidé."
@@ -14737,6 +14793,12 @@ msgid "{n} shot set aside"
 msgid_plural "{n} shots set aside"
 msgstr[0] "{n} photo écartée"
 msgstr[1] "{n} photos écartées"
+
+#, python-brace-format
+msgid "{n} source folder unticked: its files stay where they are."
+msgid_plural "{n} source folders unticked: their files stay where they are."
+msgstr[0] "{n} dossier source décoché : ses fichiers restent où ils sont."
+msgstr[1] "{n} dossiers sources décochés : leurs fichiers restent où ils sont."
 
 #, python-brace-format
 msgid "{n} sure proposal"

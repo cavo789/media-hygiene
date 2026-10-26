@@ -1,0 +1,104 @@
+{# *Move to an event…* (0403), after the grid's scripts: the photos picked, by source
+   folder, then moved. `showSources` is shared with the rule dialog's GO
+   (`search_rule.js.j2`): one tick box per source folder, a folder named after another
+   event unticked; `MOVE_PATHS.view` answers them. #}
+const MOVE_PATHS = {{ move_paths | tojson }};
+const moveEl = (id) => document.getElementById(id);
+let moveView = null;     // the last view answered: its source folders
+let moveAsking = 0;      // an older answer is dropped
+const moveLeft = new Set(); // the source folders unticked
+
+// One tick box per source folder; `changed(folder, ticked)` is called on each change.
+function showSources(list, sources, changed) {
+  list.replaceChildren(...sources.map((source) => {
+    const item = element("li", "", "");
+    const label = element("label", "", "");
+    const box = document.createElement("input");
+    box.type = "checkbox";
+    box.checked = source.ticked;
+    box.addEventListener("change", () => changed(source, box.checked));
+    const why = source.named ? element("span", "why", " " + fill(TEXTS.moveNamed, { name: source.named })) : null;
+    label.append(box, " " + counted(TEXTS.nFiles, source.files) + " — " + source.folder, ...(why ? [why] : []));
+    item.append(label);
+    return item;
+  }));
+}
+
+function moveSay(text, kind) {
+  moveEl("moveSaid").textContent = text;
+  moveEl("moveSaid").className = kind || "muted";
+}
+
+const moveKeys = () => (moveView ? moveView.sources.filter((s) => !moveLeft.has(s.folder)).flatMap((s) => s.keys) : []);
+function moveButton() {
+  const keys = moveKeys();
+  moveEl("moveGo").disabled = !keys.length || !moveEl("moveName").value.trim() || !moveEl("moveName").checkValidity();
+  moveEl("moveGo").textContent = counted(TEXTS.moveNow, keys.length);
+}
+
+async function askMove(name) {
+  const asking = ++moveAsking;
+  moveSay(TEXTS.moveReading, "");
+  const sent = await rulePost(MOVE_PATHS.view, { keys: [...picked], name: name });
+  if (asking !== moveAsking) return;
+  if (!sent) { moveSay(TEXTS.offline, "error"); return; }
+  const { response, answer } = sent;
+  if (!response.ok) { moveView = null; moveSay(answer.error || fill(TEXTS.failed, { status: response.status }), "error"); moveButton(); return; }
+  moveView = answer;
+  moveLeft.clear();
+  for (const source of answer.sources) if (!source.ticked) moveLeft.add(source.folder);
+  if (!moveEl("moveName").value) moveEl("moveName").value = answer.proposed;
+  moveEl("moveWhere").textContent = answer.target ? "→ " + answer.target : "";
+  showSources(moveEl("moveSources"), answer.sources, (source, ticked) => {
+    if (ticked) moveLeft.delete(source.folder); else moveLeft.add(source.folder);
+    moveButton();
+  });
+  moveSay(moveLeft.size ? counted(TEXTS.moveUnticked, moveLeft.size) : "", "");
+  moveButton();
+}
+
+let moveTimer = 0;
+moveEl("moveName").addEventListener("input", () => {
+  window.clearTimeout(moveTimer);
+  moveButton();
+  moveTimer = window.setTimeout(() => askMove(moveEl("moveName").value.trim()), 250);
+});
+moveEl("moveOpen").addEventListener("click", () => {
+  if (!picked.size) return;
+  moveView = null;
+  moveEl("moveName").value = "";
+  moveEl("moveWhere").textContent = "";
+  moveEl("moveSources").replaceChildren();
+  moveEl("moveDlg").showModal();
+  moveEl("moveName").focus();
+  askMove("");
+});
+moveEl("moveNo").addEventListener("click", () => moveEl("moveDlg").close());
+// The dialog's keys stay its own: the grid's keys never fire behind it.
+moveEl("moveDlg").addEventListener("keydown", (event) => event.stopPropagation());
+moveEl("moveForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const keys = moveKeys();
+  moveEl("moveGo").disabled = true;
+  moveSay(TEXTS.goRunning, "");
+  const sent = await rulePost(MOVE_PATHS.move, { keys: keys, name: moveEl("moveName").value.trim() });
+  if (!sent) { moveSay(TEXTS.offline, "error"); moveButton(); return; }
+  const { response, answer } = sent;
+  if (!response.ok) { moveSay(answer.error || fill(TEXTS.failed, { status: response.status }), "error"); moveButton(); return; }
+  const parts = [!answer.run_id ? TEXTS.goNothing : !answer.intact ? fill(TEXTS.goBroken, { run: answer.run_id })
+    : fill(TEXTS.goDone, { moved: answer.moved, verified: answer.verified, run: answer.run_id, time: new Date().toLocaleTimeString() })];
+  if (answer.already) parts.push(fill(TEXTS.goAlready, { n: answer.already }));
+  if (answer.unknown) parts.push(fill(TEXTS.goUnknown, { n: answer.unknown }));
+  if (answer.fixed) parts.push(fill(TEXTS.goFixed, { n: answer.fixed }));
+  const said = parts.join(" ");
+  moveSay(said, answer.run_id && !answer.intact ? "error" : "saved");
+  told(said, Boolean(answer.run_id) && !answer.intact);
+  search(null);  // the tiles at their new place, read from the index
+});
+
+// The button follows the picking (`pick_grid.js.j2` calls this hook, as for the albums).
+const albumPickedBefore = window.mhAlbumPicked;
+window.mhAlbumPicked = (count) => {
+  if (albumPickedBefore) albumPickedBefore(count);
+  moveEl("moveOpen").disabled = !picked.size || everything;
+};

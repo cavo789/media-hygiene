@@ -59,6 +59,12 @@
   "goBroken": _("The run {run} ended, but its manifest does not check out: look at it before going on."),
   "goUnknown": _("{n} files are not in the latest classify run: run classify again to sort them."),
   "goFixed": _("{n} files are left as they are by the plan."),
+  "moveNamed": _("(your folder of another event, {name}: unticked)"),
+  "moveNow": [ngettext("Move this file now", "Move these {n} files now", 1), ngettext("Move this file now", "Move these {n} files now", 2)],
+  "moveReading": _("Reading where the photos picked lie…"),
+  "moveUnticked": [ngettext("{n} source folder unticked: its files stay where they are.", "{n} source folders unticked: their files stay where they are.", 1), ngettext("{n} source folder unticked: its files stay where they are.", "{n} source folders unticked: their files stay where they are.", 2)],
+  "ruleMove": _("You left {n} files aside: this is a move, not a rule. Sort them with the button below; the rule cannot say it."),
+  "ruleKept": _("{n} photos of these days stay with the rule '{rule}'."),
 } %}
 {% set sources = {
   "vision": _("seen by the model"),
@@ -187,6 +193,7 @@
     {% include "pick_acting.html.j2" %}
     {% set album_compact = true %}
     {% include "album_bar.html.j2" %}
+    <p id="moveBar"><button type="button" id="moveOpen" disabled title="{{ _('Move the photos picked to an event folder, year then year-month, without writing a rule') }}">📂 {{ _("Move to an event…") }}</button></p>
 {% endblock %}
 {% block content %}
   <main id="grid"></main>
@@ -194,6 +201,7 @@
 {% block after %}
 {% include "pick_viewer.html.j2" %}
 {% include "rule_dialog.html.j2" %}
+{% include "move_dialog.html.j2" %}
 <div id="why" role="dialog" aria-modal="true" aria-labelledby="whyTitle" hidden>
   <div class="box">
     <h2 id="whyTitle"></h2>
@@ -208,6 +216,7 @@
 {% include "pick_band.js.j2" %}
 {% include "search.js.j2" %}
 {% include "rule_dialog.js.j2" %}
+{% include "move_dialog.js.j2" %}
 {% include "search_rule.js.j2" %}
 </script>
 {% endblock %}

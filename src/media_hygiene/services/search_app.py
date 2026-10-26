@@ -27,6 +27,7 @@ from media_hygiene.search.folders import (
     FolderDesk,
 )
 from media_hygiene.search.heaviest import FIRST_SHOWN, HEAVIEST_PATH
+from media_hygiene.search.move_go import MOVE_PATH, MOVE_VIEW_PATH
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH, NamesPlace, PeopleDesk
 from media_hygiene.search.people_why import PEOPLE_WHY_PATH
 from media_hygiene.search.place import SearchPlace
@@ -41,7 +42,8 @@ from media_hygiene.services.albums import album_desk
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
 from media_hygiene.services.group_sort import sorted_group
 from media_hygiene.services.people_page import names_file
-from media_hygiene.services.rule_trial import try_rule, written_rules
+from media_hygiene.services.rule_trial import event_gap_hours, try_rule, written_rules
+from media_hygiene.services.selection_move import SelectionMover
 from media_hygiene.share.album_api import ALBUMS_PATH
 from media_hygiene.share.album_pickers import SearchPicker
 
@@ -99,6 +101,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "rule_save_path": RULE_SAVE_PATH,
         "period_rules_path": PERIOD_RULES_PATH,
         "rule_go_path": RULE_GO_PATH,
+        "move_paths": {"view": MOVE_VIEW_PATH, "move": MOVE_PATH},
         "event_gap_hours": event_gap_hours(runtime),
         "apply_offered": build.apply is not None,
     }
@@ -124,19 +127,6 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
     return SearchApp(place, pages, build.executor)
 
 
-def event_gap_hours(runtime: Runtime) -> float:
-    """The longest gap between two photos of one event, as `classify` groups them.
-
-    Args:
-        runtime: Settings.
-
-    Returns:
-        Hours: the larger of `session_gap_hours` and `merge_gap_hours`.
-    """
-    classify = runtime.settings.classify
-    return max(classify.session_gap_hours, classify.merge_gap_hours)
-
-
 def rule_desk(runtime: Runtime, search: SearchIndex) -> RuleDesk:
     """*Make it a rule* (0396): the date rules of `config.toml`, tried on the index.
 
@@ -154,6 +144,7 @@ def rule_desk(runtime: Runtime, search: SearchIndex) -> RuleDesk:
         partial(written_rules, runtime),
         partial(try_rule, runtime, search.connection),
         partial(sorted_group, runtime),
+        SelectionMover(runtime),
     )
 
 

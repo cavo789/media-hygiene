@@ -18,6 +18,7 @@ from pydantic import ValidationError
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.review.serving import json_response
+from media_hygiene.search.move_go import MOVE_PATH, MOVE_VIEW_PATH, move_answer
 from media_hygiene.search.rule_models import PeriodRuleIn, refused_rule
 
 if TYPE_CHECKING:
@@ -28,6 +29,8 @@ if TYPE_CHECKING:
     from media_hygiene.search.rule_desk import RuleDesk
 
 RULE_GO_PATH: Final = "/api/period-rule/go"
+# The posts that sort (in a thread): the rule's GO, and the move of a selection (0403).
+GO_PATHS: Final = frozenset({RULE_GO_PATH, MOVE_VIEW_PATH, MOVE_PATH})
 
 
 class PeriodGoIn(PeriodRuleIn):
@@ -36,17 +39,20 @@ class PeriodGoIn(PeriodRuleIn):
     keys: tuple[int, ...]
 
 
-async def go_answer(desk: RuleDesk, body: bytes) -> Response:
-    """Sort the files kept of what the rule takes.
+async def go_answer(desk: RuleDesk, path: str, body: bytes) -> Response:
+    """Sort the files kept of what the rule takes, or answer a move (0403).
 
     Args:
         desk: The rule's desk: its trial and its sorter.
-        body: The rule and the keys.
+        path: One of `GO_PATHS`.
+        body: The rule and the keys, or the keys and the name of a move.
 
     Returns:
         The run read back; 400 for a rule that cannot be written, 409 with the
         sentence to show when nothing can move.
     """
+    if path != RULE_GO_PATH:
+        return await move_answer(desk, path, body)
     try:
         asked = PeriodGoIn.model_validate_json(body)
         rule = asked.rule()

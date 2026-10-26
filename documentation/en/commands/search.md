@@ -75,6 +75,24 @@ opens `browse`, the same server. Ctrl+C, or closing its tab, stops the page.
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20 files
 as a table.
 
+## Move photos to an event, without a rule
+
+For a one-off event, a rule is not needed: search its days (or words), **pick** the photos (as
+everywhere: click, Ctrl, Shift, a rectangle, Ctrl+A), then **📂 Move to an event…** in the bar.
+Type the event's name, one name without `/`: the line under it shows the folder made, as
+Explorer will show it, under the year and month of the earliest photo picked
+(*→ C:\Photos\2009\2009-11\Anniversaire de Tom*,
+[the convention](../sort/04-classify.md#the-convention-year-month-event)). The name proposed is
+that of **your folder holding most of the photos picked**: its photos go to the folder of the
+same name under the convention, never to a second one beside it.
+
+Before the move, the photos are listed **by source folder**, one tick box each, with their
+count. A folder you named after **another** event (`Saint Nicolas 2009`: a name, one evening) is
+**unticked**: its photos stay where they are, unless you tick it. A folder of dates, a family
+member's folder, a phone's `DCIM` are ticked. **Move these N files now** moves exactly the ticked
+ones, journaled, checked at their new place, said as read back (*'mh undo …' puts them back*).
+No rule is written: the next `classify` finds them in place.
+
 ## Make a period a rule
 
 Once a period is searched, **📌 Make it a rule** opens, beside the grid, the dialog of
@@ -83,7 +101,8 @@ and its folder (*keep my folders below it* is on). As you type, the grid shows *
 rule would take, each with where it would go** (*→ 2017\Parties\Weddings\Hervé and Magda's
 wedding*), computed by the `classify` engine with your rules and the one typed (nothing is
 written, nothing moves); then the photos of those days it leaves to another rule (a screenshot,
-a photo of another event), greyed, with the rule that keeps them. Seeing them, correct the days
+a photo of another event), greyed, and said in words above the grid (*30 photos of these days
+stay with the rule 'Anniversaire de Tom 2009'*). Seeing them, correct the days
 (only 5 August) or the folder, then **Save the rule**: it is written into `config.toml`, above
 *Existing folders*, read back from the disk and said. The next `classify` applies it.
 
@@ -96,7 +115,11 @@ missing from the grid.
 
 **Sort them now, little by little.** Once you checked them, **I checked: sort these N files**
 moves exactly the photos the rule takes, each to the folder shown. To leave some out, pick them
-and press **Leave the picked files where they are** (greyed, crossed out). It asks once (the
+and press **Leave the picked files where they are** (greyed, crossed out). When the photos come
+from several folders, they are listed by source folder, one tick box each, a folder you named
+after another event unticked. **Once a photo is left out, *Save the rule* is off**: a selection
+with exceptions is a move, not a rule (saved, the rule would take them again at every
+`classify`); the dialog says how many were left. It asks once (the
 count, the folders, the undo line), then writes them as your choices of the latest `classify`
 run (`sort-decisions.json`) and runs `sort` cut to those files: journaled, checked at their new
 place, said as read back from the disk (*14 moved, 14 checked at their new place (run …):

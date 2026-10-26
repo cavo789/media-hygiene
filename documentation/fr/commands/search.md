@@ -80,6 +80,25 @@ fermer son onglet, arrête la page.
 Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers
 fichiers en tableau.
 
+## Déplacer des photos vers un événement, sans règle
+
+Pour un événement unique, une règle n'est pas nécessaire : cherchez ses jours (ou des mots),
+**choisissez** les photos (comme partout : clic, Ctrl, Maj, un rectangle, Ctrl+A), puis
+**📂 Déplacer vers un événement…** dans la barre. Tapez le nom de l'événement, un seul nom sans
+`/` : la ligne en dessous montre le dossier créé, tel que l'Explorateur le montrera, sous l'année
+et le mois de la plus ancienne photo choisie (*→ C:\Photos\2009\2009-11\Anniversaire de Tom*,
+[la convention](../sort/04-classify.md#la-convention--année-mois-événement)). Le nom proposé est
+celui de **votre dossier qui contient le plus de photos choisies** : ses photos vont dans le
+dossier du même nom sous la convention, jamais dans un second à côté.
+
+Avant le déplacement, les photos sont listées **par dossier source**, une case chacun, avec leur
+nombre. Un dossier que vous avez nommé d'après un **autre** événement (`Saint Nicolas 2009` : un
+nom, une soirée) est **décoché** : ses photos restent où elles sont, sauf si vous le cochez. Un
+dossier de dates, le dossier d'un membre de la famille, le `DCIM` d'un téléphone sont cochés.
+**Déplacer ces N fichiers maintenant** déplace exactement ceux cochés, noté au journal, vérifié à
+leur nouvelle place, dit tel que relu (*'mh undo …' les remet*). Aucune règle n'est écrite : le
+prochain `classify` les trouve à leur place.
+
 ## Faire d'une période une règle
 
 Une fois une période cherchée, **📌 En faire une règle** ouvre, à côté de la grille, la boîte de
@@ -88,8 +107,9 @@ et son dossier (*Garder mes dossiers en dessous* est coché). Pendant que vous t
 **les photos que la règle prendrait, chacune avec l'endroit où elle irait**
 (*→ 2017\Fêtes\Mariages\Mariage d'Hervé et Magda*), calculé par le moteur de `classify` avec vos
 règles et celle tapée (rien n'est écrit, rien ne bouge) ; puis les photos de ces jours qu'elle
-laisse à une autre règle (une capture d'écran, une photo d'un autre événement), grisées, avec la
-règle qui les garde. En les voyant, corrigez les jours (seulement le 5 août) ou le dossier, puis
+laisse à une autre règle (une capture d'écran, une photo d'un autre événement), grisées, et dites
+en mots au-dessus de la grille (*30 photos de ces jours restent avec la règle 'Anniversaire de Tom
+2009'*). En les voyant, corrigez les jours (seulement le 5 août) ou le dossier, puis
 **Enregistrer la règle** : elle est écrite dans `config.toml`, au-dessus de *Dossiers existants*,
 relue sur le disque et affichée. Le prochain `classify` l'applique.
 
@@ -104,7 +124,11 @@ Un fichier que la recherche ne connaît pas encore (aucun mot : lancez une fois
 **Les trier maintenant, petit à petit.** Une fois vérifiées, **J'ai vérifié : trier ces N
 fichiers** déplace exactement les photos que la règle prend, chacune vers le dossier affiché.
 Pour en laisser de côté, choisissez-les et appuyez sur **Laisser les fichiers choisis où ils
-sont** (grisées, barrées). La page demande une fois (le nombre, les dossiers, la ligne
+sont** (grisées, barrées). Quand les photos viennent de plusieurs dossiers, elles sont listées par
+dossier source, une case chacun, un dossier que vous avez nommé d'après un autre événement
+décoché. **Dès qu'une photo est laissée de côté, *Enregistrer la règle* est désactivé** : une
+sélection avec des exceptions est un déplacement, pas une règle (enregistrée, la règle les
+reprendrait à chaque `classify`) ; la boîte dit combien ont été laissées. La page demande une fois (le nombre, les dossiers, la ligne
 d'annulation), puis les écrit comme vos choix du dernier passage de `classify`
 (`sort-decisions.json`) et lance `sort` limité à ces fichiers : noté au journal, vérifié à leur
 nouvelle place, dit tel que relu sur le disque (*14 déplacés, 14 vérifiés à leur nouvelle place

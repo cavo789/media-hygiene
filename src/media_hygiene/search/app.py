@@ -38,7 +38,7 @@ from media_hygiene.search.people_why import (
 from media_hygiene.search.people_words import unknown_people
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.search.rule_desk import PERIOD_RULES_PATH, RULE_POSTS
-from media_hygiene.search.rule_go import RULE_GO_PATH, go_answer
+from media_hygiene.search.rule_go import GO_PATHS, go_answer
 from media_hygiene.search.views import SearchAsked, found_view
 from media_hygiene.share.album_api import ALBUMS_PATH
 
@@ -105,7 +105,7 @@ class SearchApp:
             return await self._get(request)
         if (
             request.method != _POST
-            or request.path not in _POSTED | _POSTED_TOO | RULE_POSTS | {RULE_GO_PATH}
+            or request.path not in _POSTED | _POSTED_TOO | RULE_POSTS | GO_PATHS
         ):
             return Response(HTTPStatus.METHOD_NOT_ALLOWED)
         refused = refused_post(request)
@@ -126,8 +126,8 @@ class SearchApp:
             return await self.place.apply.answer()
         if request.path == ALBUMS_PATH:
             return await self.place.albums.answer(request.body)
-        if request.path == RULE_GO_PATH:
-            return await go_answer(self.place.rules, request.body)
+        if request.path in GO_PATHS:
+            return await go_answer(self.place.rules, request.path, request.body)
         answers: dict[str, Callable[[bytes], Response]] = {
             CHOSEN_PATH: self.place.chosen.answer,
             PEOPLE_REJECT_PATH: self.place.names.answer,

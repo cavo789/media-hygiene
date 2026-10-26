@@ -47,6 +47,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.http import Response
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.search.rule_models import Sorter, Trial, Tried
+    from media_hygiene.services.selection_move import SelectionMover
 
 RULE_TRIAL_PATH: Final = "/api/period-rule/trial"
 RULE_SAVE_PATH: Final = "/api/period-rule"
@@ -69,6 +70,7 @@ class RuleDesk:
     rules: Callable[[], Sequence[ClassifyRule]]  # those of `config.toml`, read now
     trial: Trial
     sorter: Sorter | None = None  # sorts a group checked on the page (0397)
+    mover: SelectionMover | None = None  # *Move to an event…* (0403)
 
     def run_trial(
         self, asked: PeriodRuleIn, rule: ClassifyRule
