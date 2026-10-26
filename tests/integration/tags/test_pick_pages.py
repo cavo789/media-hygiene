@@ -17,7 +17,6 @@ if TYPE_CHECKING:
 
 # The shared parts, as each one shows in the page served (review/templates/pick_*).
 _SHARED = (
-    'id="views"',  # pick_views.html.j2
     *PICK_PARTS,
     "#bar #albumBar { flex-basis: 100%",  # pick_grid.css.j2: the bar keeps its height
     '<select id="order">',  # pick_order.html.j2: Sort by (0347)
@@ -46,11 +45,17 @@ def test_both_pages_are_built_from_the_same_parts(
 def test_the_search_keeps_its_field_on_the_left_and_one_bar_above(
     cli: CliRunner, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """The form under the views, the keys below it; the bar holds the picking."""
-    search, _ = _pages(cli, monkeypatch)
+    """The form, the folders under it, the keys below; the bar holds the picking.
+
+    0408: one page, no tabs; `/browse` is the same page, its folders open.
+    """
+    search, browse = _pages(cli, monkeypatch)
+    assert browse == search
     side = search.split('<aside id="side">')[1].split("</aside>")[0]
-    assert side.index('id="views"') < side.index('id="form"') < side.index('id="keys"')
-    assert 'href="/browse"' in side.split('id="views"')[1].split("</div>")[0]
+    assert 'id="views"' not in side
+    assert (
+        side.index('id="form"') < side.index('id="folders"') < side.index('id="keys"')
+    )
     keys = side.split('id="keys"')[1].split("</section>")[0]
     assert "every file shown" in keys  # Ctrl+A
     assert "<kbd>/</kbd>" in keys
@@ -65,12 +70,11 @@ def test_a_search_sent_hands_the_keys_to_the_grid(
     cli: CliRunner, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """After Enter in the field, Ctrl+A picks the files instead of the field's text."""
-    search, browse = _pages(cli, monkeypatch)
+    search, _browse = _pages(cli, monkeypatch)
     sent = search.split("async function search(event, again) {")[1].split("\n}\n")[0]
     assert "document.activeElement.blur()" in sent
     assert "showFiles(found.hits, again)" in sent  # a save keeps the cards
     assert "function scope() {\n  return asked;" in search
-    assert "function scope() {\n  return { folder: folder };" in browse
 
 
 def test_the_sort_review_is_built_from_the_same_parts(locations: Locations) -> None:

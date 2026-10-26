@@ -56,6 +56,11 @@ d'une seule source) dans la colonne de gauche, les touches ⌨ en dessous, une s
 de la grille, puis les photos trouvées. **🔎 Mots** vient d'abord, **📁 Dossiers** ensuite : il
 ouvre `browse`, le même serveur. Ctrl+C, ou fermer son onglet, arrête la page.
 
+- **⚖ Fichiers les plus lourds** (au-dessus des dossiers) : tous les dossiers, sans mot, les
+  vidéos d'abord sauf si **Afficher** dit autre chose, les plus grosses d'abord — ou **Trier par :
+  débit**, les vidéos les moins bien compressées pour leur durée (les meilleures à alléger avec
+  [`shrink`](shrink.md)). La vignette d'une vidéo dit sa durée, son débit et son codec. **En
+  montrer plus**, sous la grille, en ajoute autant.
 - **Dans un dossier** : sous le formulaire, l'arbre de vos dossiers, comme sur la vue des dossiers
   (ouvert à la demande). Un clic limite la recherche à ce dossier et en dessous, **sans taper de
   mot** : des mots vides listent tout le dossier ; ✕ à côté de son nom recherche à nouveau dans

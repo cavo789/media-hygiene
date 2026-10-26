@@ -21,6 +21,8 @@ PREVIEW_PREFIX: Final = "/preview/"
 ORIGINAL_PREFIX: Final = "/original/"
 JPEG: Final = ".jpg"
 _MAX_TEXT: Final = 500
+FIRST_HITS: Final = 240  # the files a search shows first
+_MOST: Final = 20_000  # files shown at most, *Show more* after *Show more*
 _FIRST_YEAR, _LAST_YEAR = 1800, 2200
 _DECEMBER, _LAST_DAY = 12, 31
 # The sentence is shown under the picture; the words of the others as chips.
@@ -43,6 +45,16 @@ class SearchAsked(BaseModel):
     kind: Shown = "all"  # **Show** (0347)
     order: Order = Order.BEST  # **Sort by** (0347)
     within: str = Field(default="", max_length=_MAX_TEXT)  # a folder of the tree (0348)
+    more: int = Field(default=0, ge=0, le=_MOST)  # *Show more* (0408)
+
+    @property
+    def shown(self) -> int:
+        """How many files the page shows: the first ones, and as many more as asked.
+
+        Returns:
+            The limit of the search.
+        """
+        return FIRST_HITS + self.more
 
     def query(self) -> SearchQuery:
         """Make the search of what the page sent.
@@ -161,6 +173,7 @@ def _hit_view(hit: Hit, mapper: HostPathMapper) -> dict[str, object]:
         "date": hit.date,
         "size": human_size(hit.photo.size),  # shown as the folder view does (0347)
         "bytes": hit.photo.size,
+        "facts": hit.facts,  # a video's length, bit rate, codec (0408)
         "caption": caption[0] if caption else "",
         "tags": {
             source.value: list(hit.tags[source])

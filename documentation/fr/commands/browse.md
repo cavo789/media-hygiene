@@ -13,6 +13,11 @@ choisi à droite. Choisissez-en et mettez-les de côté : le prochain
 [`clean --decisions`](clean.md) les déplace en quarantaine, journalisé et annulable. Supprimer
 dans l'Explorateur ne laisse aucune trace ; ici, chaque retrait peut être annulé.
 
+> **Une seule page désormais** : `browse` ouvre [`search`](search.md) avec ses dossiers ouverts
+> (`/browse` est la même page). Tout ce qui suit s'y trouve : l'arbre sous *Dans un dossier* (un
+> clic liste le dossier et ses sous-dossiers), *⚖ Fichiers les plus lourds*, **Trier par**
+> (*débit* compris) et **Afficher**.
+
 **Quand** : après un [`audit`](audit.md) : la page montre ce que l'audit a lu. Pas besoin de
 [`tags`](tags.md).
 

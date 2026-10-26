@@ -146,10 +146,10 @@
   #folders summary { cursor: pointer; margin: 8px 0 4px; }
   #withinLine { display: flex; gap: 6px; align-items: baseline; overflow-wrap: anywhere; }
   #withinLine[hidden] { display: none; }
+  #heaviest { width: 100%; margin-top: 6px; }
+  #moreLine { margin: 0 16px 16px; text-align: center; }
 {% endblock %}
 {% block side %}
-    {% set pick_view = "words" %}
-    {% include "pick_views.html.j2" %}
     <section id="toc" aria-label="{{ _('Search your photos') }}">
     <form id="form">
       <label>{{ _("Words") }}
@@ -178,6 +178,7 @@
         <button type="button" id="withinClear" class="plain" title="{{ _('Search every folder again') }}">✕</button></p>
       <button type="submit">{{ _("Search") }}</button>
     </form>
+    <button type="button" id="heaviest" class="plain" title="{{ _('The heaviest files of every folder: where the space goes') }}">⚖ {{ _("Heaviest files") }}</button>
     <details id="folders">
       <summary>📁 {{ _("In a folder") }}</summary>
       <div id="tree" aria-label="{{ _('Your folders') }}"></div>
@@ -210,6 +211,7 @@
 {% block bar %}
     {% include "pick_acting.html.j2" %}
     {% set order_best = true %}
+    {% set order_rate = true %}
     {% include "pick_order.html.j2" %}
     {% set album_compact = true %}
     {% include "album_bar.html.j2" %}
@@ -217,6 +219,7 @@
 {% endblock %}
 {% block content %}
   <main id="grid"></main>
+  <p id="moreLine"><button id="more" class="plain" type="button" hidden>{{ _("Show more") }}</button></p>
 {% endblock %}
 {% block after %}
 {% include "pick_viewer.html.j2" %}

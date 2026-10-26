@@ -28,6 +28,7 @@ from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_respons
 from media_hygiene.search.chosen_api import CHOSEN_PATH
 from media_hygiene.search.coverage import CoverageKept
 from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS, FOLDERS_PATH
+from media_hygiene.search.hits import with_facts
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH
 from media_hygiene.search.people_why import (
     FACE_CROP_PREFIX,
@@ -54,7 +55,6 @@ PAGE_PATH: Final = "/"
 SEARCH_PAGE_PATH: Final = "/search"
 SEARCH_PATH: Final = "/api/search"
 # The page shows this many files at most; the total says how many match.
-PAGE_HITS: Final = 240
 _GET, _POST = "GET", "POST"
 _POSTED: Final = frozenset({SEARCH_PATH, CHOSEN_PATH, *FOLDER_POSTS, APPLY_PATH})
 _POSTED_TOO: Final = frozenset({ALBUMS_PATH, PEOPLE_REJECT_PATH, PEOPLE_WHY_PATH})
@@ -151,11 +151,10 @@ class SearchApp:
             cannot be shown.
         """
         path = self.pages.first if request.path == PAGE_PATH else request.path
-        if path == SEARCH_PAGE_PATH:
-            return Response(HTTPStatus.OK, self.pages.search, ContentType.HTML)
-        if path == BROWSE_PATH:  # it shows the videos: `media-src` too
+        # One page (0408): `/browse` is the search, folders open; videos: `media-src`.
+        if path in {SEARCH_PAGE_PATH, BROWSE_PATH}:
             return Response(
-                HTTPStatus.OK, self.pages.browse, ContentType.HTML, policy=NEAR_POLICY
+                HTTPStatus.OK, self.pages.search, ContentType.HTML, policy=NEAR_POLICY
             )
         states = {
             CHOSEN_PATH: self.place.chosen.state,
@@ -189,7 +188,7 @@ class SearchApp:
             return Response(HTTPStatus.BAD_REQUEST)
         query = read_query(self.place.index, asked.query())
         found = found_view(
-            self.place.index.find(query, PAGE_HITS),
+            with_facts(self.place.index, self.place.index.find(query, asked.shown)),
             self.place.mapper,
             self.place.chosen.paths(),
         )

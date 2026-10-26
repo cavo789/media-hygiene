@@ -16,6 +16,7 @@ const PEOPLE_WHY_PATH = {{ people_why_path | tojson }};
 let whyAsked = null; // the photo and the name the panel explains
 let asked = {};        // the search shown
 let within = null;     // the folder of the tree the search is narrowed to (0348)
+let more = 0;          // the files asked past the first ones (*Show more*, 0408)
 
 function card(hit, index) {
   const node = element("article");
@@ -29,6 +30,7 @@ function card(hit, index) {
   meta.append(element("div", "name", hit.name), element("div", "muted folderLine", hit.folder));
   const when = [hit.date, hit.size].filter(Boolean).join(" · ");  // as the folder view says it
   if (when) meta.append(element("div", "muted", when));
+  if (hit.facts) meta.append(element("div", "muted", hit.facts));  // a video (0408)
   if (hit.to !== undefined) { // a rule tried (0396): where the file would go
     const goes = hit.left ? TEXTS.leftHere : hit.taken ? fill(TEXTS.goesTo, { folder: hit.to || TEXTS.stays })
       : hit.otherDay ? fill(TEXTS.otherDay, { date: hit.date, rule: fill(TEXTS.leftTo, { rule: hit.by || "—" }) }) : fill(TEXTS.leftTo, { rule: hit.by || "—" });
@@ -234,10 +236,12 @@ function told(text, error) {
 
 async function search(event, again) {
   if (event) event.preventDefault();
+  if (!again) more = 0;
   const body = {
     text: $("text").value, day_from: $("from").value || null, day_to: $("to").value || null,
     folder: $("folder").value, source: $("source").value || null, sorting: $("sorting").value,
     order: $("order").value, kind: $("kind").value, within: within ? within.inside : "",
+    more: more,
   };
   const answer = await ask(SEARCH_PATH, body);
   if (!answer) { told(TEXTS.offline, true); return; }
@@ -247,6 +251,7 @@ async function search(event, again) {
   offerRule();
   total = found.total;
   showFiles(found.hits, again);
+  $("more").hidden = found.total <= found.hits.length;
   covered(found.coverage);
   let text = counted(TEXTS.found, found.total);
   if (!found.total) text = TEXTS.none + (body.text.trim() && hardlyDescribed(found.coverage) ? " " + TEXTS.noneWhy : "");

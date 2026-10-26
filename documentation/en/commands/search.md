@@ -54,6 +54,10 @@ column, the ⌨ keys under them, one bar above the grid, then the photos found. 
 first, **📁 Folders** second: it opens `browse`, the same server. Ctrl+C, or closing its tab,
 stops the page.
 
+- **⚖ Heaviest files** (above the folders): every folder, no word, the videos first unless
+  **Show** says otherwise, the largest first — or **Sort by: bit rate**, the videos worst
+  compressed for their length (the best to lighten with [`shrink`](shrink.md)). A video's tile
+  says its length, bit rate and codec. **Show more**, under the grid, adds as many files again.
 - **In a folder**: under the form, the tree of your folders, as on the folder view (opened on
   demand). A click narrows the search to that folder and below, **without typing any word**:
   empty words list the whole folder; ✕ next to its name searches every folder again.

@@ -146,6 +146,24 @@ def test_a_folder_of_the_tree_narrows_the_search_with_or_without_words(
     assert 0 < found["total"] < json.loads(answers[1].body)["total"]
     assert all(hit["folder"].startswith(inner["path"]) for hit in found["hits"])
     page = answers[2].body.decode()
-    views = page.split('id="views"')[1].split("</div>")[0]
-    assert views.index("Words") < views.index("Folders")  # words first (0348)
+    assert 'id="views"' not in page  # one page, no tabs (0408)
     assert 'id="tree"' in page
+
+
+def test_the_heaviest_files_are_those_of_the_folder_view(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0408: no word, *Show: all*, *Sort by: size*: the order of `/api/heaviest`."""
+    assert run(cli, "tags", "--no-describe").exit_code == 0
+    answers = serve_search(
+        cli,
+        monkeypatch,
+        [
+            ("POST /api/heaviest", {"kind": "all", "order": "size", "limit": 10}),
+            ("POST /api/search", {"text": "", "kind": "all", "order": "size"}),
+        ],
+    )
+    heavy, found = answers[0], answers[1]
+    first = [card["key"] for card in json.loads(heavy.body)["files"]]
+    assert first
+    assert [hit["key"] for hit in json.loads(found.body)["hits"]][: len(first)] == first

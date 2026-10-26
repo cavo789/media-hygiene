@@ -39,6 +39,7 @@ from media_hygiene.search.rule_desk import (
     RuleDesk,
 )
 from media_hygiene.search.rule_go import RULE_GO_PATH
+from media_hygiene.search.views import FIRST_HITS
 from media_hygiene.services.albums import album_desk
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
 from media_hygiene.services.group_sort import sorted_group
@@ -104,6 +105,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "rule_go_path": RULE_GO_PATH,
         "move_paths": {"view": MOVE_VIEW_PATH, "move": MOVE_PATH},
         "folder_query": FOLDER_QUERY,
+        "first_hits": FIRST_HITS,
         "event_gap_hours": event_gap_hours(runtime),
         "apply_offered": build.apply is not None,
     }

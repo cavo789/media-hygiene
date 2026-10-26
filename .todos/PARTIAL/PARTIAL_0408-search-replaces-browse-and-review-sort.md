@@ -29,3 +29,20 @@ Decided by the maintainer on 2026-10-26 (0348 follow-up): the search page replac
 - Heaviest files and bit rate on the search give the same first files as on the folder view
   (equivalence on the same index).
 - `mh browse` still works (alias); no link to `/browse` left in pages, docs, menu catalog.
+
+## Status — PARTIAL (2026-10-26)
+
+### Done
+- Heaviest files, *Sort by: bit rate*, *Show more* and the video facts on the search page;
+  equivalence test with the folder view's heaviest list.
+- `browse` an alias: `/browse` is the search page with its folders open; tabs gone; help and menu
+  texts; docs (both languages).
+
+### Not done
+- Removing the dead folder-view code (`browse.html.j2`, `browse.js.j2`, `/api/folder`,
+  `/api/heaviest`, their tests) and updating the docs-screenshot scenario (`tests/support/docs/`).
+  **Reason:** the scenario needs a `docs_screenshots` run to be checked, not run in this session.
+- Retiring `review-sort`.
+  **Reason:** the maintainer decides which of its features (events one at a time, the event card,
+  *Sort this event now*, *Remember as a rule*, the plan's progress and runs, the workbook overlay)
+  must come to the search first.

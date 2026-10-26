@@ -2,6 +2,7 @@
    *In a folder*; a folder clicked narrows the search to it and below, words or none (empty
    words list the whole folder); ✕ searches every folder again. Read once, when opened. #}
 const FOLDERS_PATH = {{ folders_path | tojson }};
+const FIRST_SHOWN = {{ first_hits | tojson }};  // *Show more* asks as many again
 
 function showWithin() {
   $("withinLine").hidden = !within;
@@ -21,3 +22,18 @@ async function loadFolders() {
 
 $("folders").addEventListener("toggle", () => { if ($("folders").open && !$("tree").children.length) loadFolders(); });
 $("withinClear").addEventListener("click", () => { within = null; showWithin(); search(null); });
+
+// *⚖ Heaviest files* (0408, as the folder view had it): every folder, no word, the videos
+// first unless *Show* says otherwise, the largest first unless *bit rate* is chosen.
+$("heaviest").addEventListener("click", () => {
+  within = null;
+  showWithin();
+  $("text").value = "";
+  if ($("kind").value === "all") $("kind").value = "videos";
+  if (!["size", "rate"].includes($("order").value)) $("order").value = "size";
+  search(null);
+});
+$("more").addEventListener("click", () => { more += FIRST_SHOWN; search(null, true); });
+
+// `mh browse` and old links to `/browse` (0408): the search, its folders open.
+if (window.location.pathname === {{ browse_path | tojson }}) $("folders").open = true;

@@ -1232,11 +1232,6 @@ msgstr ""
 "Tel que décidé par l'exécution de classify {run} : relancez classify pour"
 " voir à l'œuvre les règles que vous avez changées."
 
-msgid "As in the Explorer, full size with ← and →; set photos aside."
-msgstr ""
-"Comme dans l'Explorateur, en grand avec ← et → ; mettez des photos de "
-"côté."
-
 msgid "As planned"
 msgstr "Comme prévu"
 
@@ -8569,6 +8564,9 @@ msgstr ""
 msgid "The guide"
 msgstr "Le parcours"
 
+msgid "The heaviest files of every folder: where the space goes"
+msgstr "Les fichiers les plus lourds de tous les dossiers : où va la place"
+
 msgid "The home page"
 msgstr "La page d'accueil"
 
@@ -9099,6 +9097,18 @@ msgstr "La recherche a échoué (erreur {status})."
 
 msgid "The search is not running any more: start it again."
 msgstr "La recherche ne tourne plus : relancez-la."
+
+msgid ""
+"The search page opened on your folders: walk through them, set photos "
+"aside; 'clean --decisions' then moves them."
+msgstr ""
+"La page de recherche ouverte sur vos dossiers : parcourez-les, mettez des"
+" photos de côté ; 'clean --decisions' les déplace ensuite."
+
+msgid "The search, opened on your folders; the heaviest files; set photos aside."
+msgstr ""
+"La recherche, ouverte sur vos dossiers ; les fichiers les plus lourds ; "
+"mettre des photos de côté."
 
 #, python-brace-format
 msgid ""
@@ -9942,13 +9952,6 @@ msgstr "En attente : les brouillons sont encodés un à la fois."
 
 msgid "Walk through your folders"
 msgstr "Parcourir vos dossiers"
-
-msgid ""
-"Walk through your folders in your browser, as in Explorer, and set photos"
-" aside; 'clean --decisions' then moves them."
-msgstr ""
-"Parcourir vos dossiers dans votre navigateur, comme dans l'Explorateur, "
-"et mettre des photos de côté ; 'clean --decisions' les déplace ensuite."
 
 msgid ""
 "Walks through every folder; photos and videos are recognised by their "

@@ -20,6 +20,7 @@ class Hit:
     photo: PhotoVersion
     date: str | None  # `YYYY-MM-DD`, when the file says when it was taken
     tags: Mapping[TagSource, tuple[str, ...]]
+    facts: str = ""  # a video: `12 min · 12.7 Mb/s · mjpeg` and its size (0408)
 
 
 @dataclass(frozen=True, slots=True)

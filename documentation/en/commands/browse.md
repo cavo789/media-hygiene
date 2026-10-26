@@ -12,6 +12,10 @@ right. Pick some and set them aside: the next [`clean --decisions`](clean.md) mo
 quarantine, journaled and undoable. Deleting in Explorer leaves no trace; here, every removal can
 be undone.
 
+> **One page now**: `browse` opens [`search`](search.md) with its folders open (`/browse` is the
+> same page). Everything below is on that page: the tree under *In a folder* (a click lists the
+> folder and its subfolders), *⚖ Heaviest files*, **Sort by** (*bit rate* included) and **Show**.
+
 **When**: after an [`audit`](audit.md): the page shows what the audit has read. No
 [`tags`](tags.md) needed.
 

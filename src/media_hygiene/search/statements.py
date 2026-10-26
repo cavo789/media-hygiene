@@ -76,6 +76,7 @@ KIND: Final = "mh_kind"  # `photos`, `videos` (`folder_order.kind_of_path`, 0347
 SHOWN: Final = f"{KIND}(files.path) = ?"
 # A folder of the tree and below (0348): `/` sorts just before `0` in the paths.
 WITHIN: Final = "files.path > ? AND files.path < ?"
+_RATE: Final = "json_extract(files.metadata, '$.bit_rate')"  # unknown last (0408)
 # **Sort by** (0347), as the folder view sorts: ties by path, undated last.
 BY_ORDER: Final = {
     Order.NAME: f" ORDER BY {FOLD}(files.path)",
@@ -84,6 +85,9 @@ BY_ORDER: Final = {
         f" {FOLD}(files.path)"
     ),
     Order.SIZE: f" ORDER BY files.size DESC, {FOLD}(files.path)",
+    Order.RATE: (
+        f" ORDER BY {_RATE} IS NULL, {_RATE} DESC, files.size DESC, {FOLD}(files.path)"
+    ),
 }
 BEST_FIRST: Final = f" ORDER BY {TABLE}.rank"
 # EXIF writes `2019:07:14` or `14/07/2019`, videos `2019-07-14T…`: one day each;

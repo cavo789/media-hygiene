@@ -966,9 +966,6 @@ msgid ""
 " you changed at work."
 msgstr ""
 
-msgid "As in the Explorer, full size with ← and →; set photos aside."
-msgstr ""
-
 msgid "As planned"
 msgstr ""
 
@@ -7069,6 +7066,9 @@ msgstr ""
 msgid "The guide"
 msgstr ""
 
+msgid "The heaviest files of every folder: where the space goes"
+msgstr ""
+
 msgid "The home page"
 msgstr ""
 
@@ -7489,6 +7489,14 @@ msgid "The search failed (error {status})."
 msgstr ""
 
 msgid "The search is not running any more: start it again."
+msgstr ""
+
+msgid ""
+"The search page opened on your folders: walk through them, set photos "
+"aside; 'clean --decisions' then moves them."
+msgstr ""
+
+msgid "The search, opened on your folders; the heaviest files; set photos aside."
 msgstr ""
 
 #, python-brace-format
@@ -8188,11 +8196,6 @@ msgid "Waiting: the drafts are encoded one at a time."
 msgstr ""
 
 msgid "Walk through your folders"
-msgstr ""
-
-msgid ""
-"Walk through your folders in your browser, as in Explorer, and set photos"
-" aside; 'clean --decisions' then moves them."
 msgstr ""
 
 msgid ""
