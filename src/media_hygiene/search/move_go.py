@@ -70,6 +70,7 @@ async def move_answer(desk: RuleDesk, path: str, body: bytes) -> Response:
         else:
             name = one_name(asked.name)
             answer = await asyncio.to_thread(desk.mover.move, chosen, name)
+            desk.index.built = None  # this page moved files: its next search reads them
     except ValueError as exc:
         return _conflict(str(exc))
     except MediaHygieneError as exc:

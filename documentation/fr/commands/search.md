@@ -302,6 +302,9 @@ recherche*.
 
 ## Bon à savoir
 
+- **Pendant un `tags`**, une photo décrite il y a un instant apparaît à une recherche une
+  vingtaine de secondes plus tard (la page relit les nouveaux mots au plus aussi souvent pendant
+  que le modèle écrit ; un déplacement fait depuis la page elle-même apparaît aussitôt).
 - **Ouverte depuis la page d'accueil** (`mh` seul) : la page s'ouvre aussitôt, dans le même onglet,
   servie par la page d'accueil elle-même : aucun autre conteneur ne démarre, l'index reste ouvert
   pour la session. *⌂ Retour à l'accueil* est un simple lien (le bouton Précédent du navigateur

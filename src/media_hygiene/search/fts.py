@@ -1,17 +1,17 @@
 """The index, searched by words: read-only, its full-text table rebuilt when stale.
 
-The index file is opened read-only (it works on a `:ro` cache, and the search never
-changes it). The full-text table is built in memory from the tags at the first search,
-and again whenever another program (`tags`, `audit`) committed a change since:
-`PRAGMA data_version` says so at no cost. It is never the source of truth.
+Opened read-only (a `:ro` cache works). The full-text table is built in memory at the
+first search, and again when another program committed a change (`PRAGMA data_version`,
+free) — at most every `REBUILD_EVERY` seconds: `tags` commits each answer (0353).
 """
 
 from __future__ import annotations
 
 import sqlite3
+import time
 from contextlib import closing
 from pathlib import Path
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING, Final, Self
 
 from media_hygiene.classify.convention import place_of_path
 from media_hygiene.index.descriptions import PhotoVersion
@@ -30,6 +30,8 @@ if TYPE_CHECKING:
     from types import TracebackType
 
     from media_hygiene.search.query import SearchQuery
+# Measured (0353, synthetic, 100,000 files): a rebuild takes ~650 ms, a search ~30 ms.
+REBUILD_EVERY: Final = 20.0  # seconds a search may show the words of a run in progress
 
 
 class SearchIndex:
@@ -42,7 +44,8 @@ class SearchIndex:
             connection: The index, owned by the search from now on.
         """
         self._connection = connection
-        self._built: int | None = None  # the data version the table was built at
+        self.built: int | None = None  # its data version; None: rebuild at next search
+        self._built_at = 0.0  # when (monotonic seconds)
         self._people: dict[Path, tuple[str, ...]] = {}
         self.stop_words: frozenset[str] = frozenset()  # `[tags]`, folded (0345)
         connection.create_function(sql.FOLD, 1, str.casefold, deterministic=True)
@@ -125,7 +128,7 @@ class SearchIndex:
             sql.PUT_PERSON,
             [(str(path), name) for path, names in words.items() for name in names],
         )
-        self._built = None
+        self.built = None
 
     def find(self, query: SearchQuery, limit: int) -> Found:
         """Find the files matching a search.
@@ -185,11 +188,12 @@ class SearchIndex:
     def _fresh(self) -> None:
         """Build the full-text table, again when the index changed since."""
         version = int(self._connection.execute(sql.DATA_VERSION).fetchone()[0])
-        if version == self._built:
+        recent = time.monotonic() - self._built_at < REBUILD_EVERY
+        if version == self.built or (self.built is not None and recent):
             return
         with closing(self._connection.cursor()) as cursor:
             cursor.execute(sql.DROP)
             cursor.execute(sql.CREATE)
             cursor.execute(sql.FILL if self.has_tags else sql.FILL_PEOPLE)
         self._connection.commit()
-        self._built = version
+        self.built, self._built_at = version, time.monotonic()

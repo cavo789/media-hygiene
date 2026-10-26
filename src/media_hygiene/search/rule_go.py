@@ -69,6 +69,8 @@ async def go_answer(desk: RuleDesk, path: str, body: bytes) -> Response:
         done = await asyncio.to_thread(desk.sorter, folders, rule.category)
     except MediaHygieneError as exc:
         return _conflict(" ".join(filter(None, (exc.message, exc.tip))))
+    finally:
+        desk.index.built = None  # this page moved files: its next search reads them
     return json_response(HTTPStatus.OK, dict(done))
 
 

@@ -72,6 +72,10 @@ leurs dossiers, noms, dates et lieux.*
 
 ## Bon à savoir
 
+- **Cherchable pendant le passage** : chaque photo décrite écrit ses mots aussitôt, avec ceux de
+  ses copies identiques, de sa rafale et de son groupe de quasi-doublons. Une recherche ouverte
+  pendant un passage de plusieurs heures les trouve (en une vingtaine de secondes) ; un passage
+  arrêté, ou une fenêtre fermée, ne perd aucun mot déjà écrit.
 - **Le modèle de vision** est celui de `[classify.ai]` (`model`, `url`) : chaque photo y est
   envoyée, en JPEG de 768 pixels, et seulement là. Gardez ce serveur sur votre propre ordinateur.
   Sans `model`, rien n'est jamais envoyé.

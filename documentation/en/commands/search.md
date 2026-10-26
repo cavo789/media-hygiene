@@ -284,6 +284,9 @@ search by meaning. The page keeps these tips short, in *How to write a search*.
 
 ## Good to know
 
+- **During a `tags` run**, a photo described a moment ago shows at a search about 20 seconds later
+  (the page reads the new words at most that often while the model writes; a move made from the
+  page itself shows at once).
 - **Opened from the home page** (`mh` alone): the page opens at once, in the same tab, served by
   the home page itself: no other container starts, the index stays open for the session.
   *⌂ Back to the home page* is a plain link (the browser's Back works too). Typed alone
