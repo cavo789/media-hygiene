@@ -37,3 +37,22 @@ the slideshow, anything `home_app.py` routes besides `/`).
 - [ ] Home → Share → Open the albums: the server keeps running while the tab shows the albums.
 - [ ] Closing PowerShell (or Ctrl+C) while a page is open: within ~20 s the page says it stopped.
 - [ ] fr strings translated (`i18n_update`).
+
+## Status
+
+**PARTIAL** (2026-10-26).
+
+Done:
+- `review/templates/presence.html.j2`: the one presence script (pings `/api/alive` every 10 s,
+  `leaving` on pagehide) plus the overlay *Media Hygiene has stopped…*, shown after two failed
+  pings in a row (~20 s); `window.mhEnded()` silences it when a page ends its server on purpose.
+- `home_link.html.j2` includes it (every framed page and `people`); its ⌂ calls `mhEnded()`.
+- `album.html.j2` includes it: home → Share → Open the albums keeps the home server alive.
+- Tests in `tests/integration/test_share_album.py`; fr translated.
+
+Left:
+- A phone (`mh --lan`) does not keep the PC's server alive: `lan_app` refuses its
+  `POST /api/alive` (not a network failure, so no overlay). Decide whether it should.
+- The home page itself (`home_run.js.j2`, own pings), the slideshow and the TV page do not show the
+  overlay yet; nor does a failed page fetch (only the pings).
+- A browser test that the overlay appears once the server is gone (only the markup is tested).

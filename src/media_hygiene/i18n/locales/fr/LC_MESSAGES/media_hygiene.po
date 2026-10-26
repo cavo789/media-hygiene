@@ -4392,6 +4392,13 @@ msgstr ""
 "Media Hygiene ne répond pas : les albums s'affichent tant que mh tourne "
 "sur le PC, sur le Wi-Fi de la maison."
 
+msgid ""
+"Media Hygiene has stopped: this page no longer answers. Open it again "
+"from the desktop shortcut, or with mh."
+msgstr ""
+"Media Hygiene s'est arrêté : cette page ne répond plus. Rouvrez-la depuis "
+"le raccourci du bureau, ou avec mh."
+
 msgid "Media Hygiene in the Explorer's right-click"
 msgstr "Media Hygiene dans le clic droit de l'Explorateur"
 

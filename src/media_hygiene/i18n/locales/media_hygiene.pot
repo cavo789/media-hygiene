@@ -3601,6 +3601,11 @@ msgid ""
 "on the home Wi-Fi."
 msgstr ""
 
+msgid ""
+"Media Hygiene has stopped: this page no longer answers. Open it again "
+"from the desktop shortcut, or with mh."
+msgstr ""
+
 msgid "Media Hygiene in the Explorer's right-click"
 msgstr ""
 

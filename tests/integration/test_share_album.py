@@ -6,7 +6,11 @@ and the zip are read back from the disk; the videos are left out and counted.
 
 from __future__ import annotations
 
+import asyncio
 import zipfile
+from concurrent.futures import ThreadPoolExecutor
+from http import HTTPStatus
+from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 import pytest
@@ -14,6 +18,9 @@ from PIL import ExifTags, Image
 
 from media_hygiene.errors import MountError
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.review.http import Request, Response
+from media_hygiene.review.presence import PRESENCE_PATH
+from media_hygiene.services.album_pages import album_page, album_pages
 from media_hygiene.services.albums import album_store
 from media_hygiene.services.share_album import SendRequest, prepare_album
 from media_hygiene.share.album_store import AlbumChange
@@ -23,8 +30,6 @@ from tests.support.runtime import make_locations, make_runtime
 from tests.unit.test_share_sent_photo import gps_photo
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from typer.testing import CliRunner
 
     from media_hygiene.services.runtime import Runtime
@@ -140,3 +145,42 @@ def test_the_command_says_what_was_read_back(
     unknown = run(cli, "share", "--album", "Nowhere")
     assert unknown.exit_code != 0
     assert "No album named Nowhere" in " ".join(unknown.output.split())
+
+
+class _Home:
+    """The home page behind the albums: records what reaches it."""
+
+    def __init__(self) -> None:
+        """Nothing asked yet."""
+        self.paths: list[str] = []
+
+    async def handle(self, request: Request) -> Response:
+        """Record the path; answer 200."""
+        self.paths.append(request.path)
+        return Response(HTTPStatus.OK)
+
+
+def test_the_albums_page_keeps_the_home_server_alive(tmp_path: Path) -> None:
+    """0341: the page pings `/api/alive`, which reaches the home page's presence."""
+    page = album_page().decode()
+    assert PRESENCE_PATH in page
+    assert 'id="mhStopped"' in page
+    assert "Media Hygiene has stopped" in page
+    runtime = make_runtime(make_locations(tmp_path))
+    home = _Home()
+    headers = {"host": "127.0.0.1:8088", "content-type": "application/json"}
+    alive = Request("POST", PRESENCE_PATH, headers, b"{}")
+    with ThreadPoolExecutor(1) as executor:
+        pages = album_pages(runtime, home, executor)
+        reply = asyncio.run(pages.handle(alive))
+    assert (reply.status, home.paths) == (HTTPStatus.OK, [PRESENCE_PATH])
+
+
+def test_every_framed_page_says_when_media_hygiene_stopped() -> None:
+    """0341: the shared presence, overlay included, is on the pages' home link."""
+    link = (
+        Path(__file__).resolve().parents[2]
+        / "src/media_hygiene/review/templates/home_link.html.j2"
+    ).read_text("utf-8")
+    assert '{% include "presence.html.j2" %}' in link
+    assert "window.mhEnded()" in link

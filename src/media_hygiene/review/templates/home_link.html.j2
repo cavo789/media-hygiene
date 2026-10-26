@@ -4,8 +4,8 @@
    `RUN_HEADER` of review/respond.py, 0354: the next one may answer 0.5 s after this one ended,
    before any poll saw it gone), on the section it was left from (0280: the home page keeps it for this tab in
    sessionStorage). Included by each page, from any package.
-   The page also says it is alive, and that it leaves on pagehide: its server ends once no
-   tab shows it (0262, review/presence.py; 10 s is its ALIVE_SECONDS). #}
+   The page's presence, and its "Media Hygiene has stopped" overlay: presence.html.j2 (0341). #}
+{% include "presence.html.j2" %}
 <div id="homeClosed" hidden role="alertdialog" aria-live="assertive"
      style="position: fixed; inset: 0; z-index: 60; align-items: center; justify-content: center;
             padding: 16px; background: rgba(0, 0, 0, .55); font: 16px/1.5 var(--mk-font-text);">
@@ -20,16 +20,12 @@
   const ANSWER_MS = 2000;
   const RUN_HEADER = "X-Media-Hygiene-Run";
   const section = () => { try { return window.sessionStorage.getItem("mh-home-section") || ""; } catch { return ""; } };
-  const ALIVE_MS = 10000;
-  const alive = (leaving) => fetch("/api/alive", { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ leaving: leaving }) }).catch(() => undefined);
-  window.addEventListener("pageshow", () => alive(false));
-  window.addEventListener("pagehide", () => alive(true));
-  window.setInterval(() => alive(false), ALIVE_MS);
   const closed = document.getElementById("homeClosed");
   const homeLink = document.getElementById("homeLink");
   // Another server answering (another run id than `run`, the one that ended, or seen gone
   // then answering again): the home page is back, this tab shows it.
   const awaitHome = (run) => {
+    window.mhEnded();
     let seenGone = false;
     const poll = () => fetch("/", { cache: "no-store", signal: AbortSignal.timeout(ANSWER_MS) })
       .then((response) => {
