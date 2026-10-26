@@ -45,3 +45,14 @@ left by the PARTIAL TODOs:
 
 A crash no longer ends the session (today: type `mh` again, 4.8–5.6 s plus the user noticing,
 *measured* 35d / *estimated*); no stale settings in the page's audit.
+
+## Status — PARTIAL (2026-10-26)
+
+Done: `ExitCode.CRASHED` (5, `home` only, from `cli/unexpected.py`) and `ExitCode.KILLED`
+(137); `mh.sh` / `mh.ps1` restart the server once, a second crash within `CRASH_WINDOW` (60 s)
+ends the loop with its line; Ctrl+C (130) unchanged; the page's audit reads the settings of now
+(`page_audit(FreshRuntime)`); tests (bash fake docker, PowerShell text, audit exclusion, exit
+code); docs en + fr.
+
+Left: item 5, the `mh-measure.ps1` step (`docker kill` the home container, timed with Docker's
+events) — Windows only, for the maintainer.

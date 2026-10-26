@@ -35,3 +35,13 @@ on with the old settings silently.
 ## Gain
 
 No silent stale settings after a typo (correctness), said where the user looks.
+
+## Status — PARTIAL (2026-10-26)
+
+Done: `FreshRuntime.error` (translated line, `config.toml` as Explorer shows it, cleared once
+the files load), `HomeState.settings_error`, the warning line at the top of the home view,
+tests (`test_fresh_runtime.py`), docs en + fr (*Good to know*).
+
+Left: item 3, the same line in the bar of search and browse served by the home server (the
+shared `pick_*` bar: load the `photo-picking-pages` skill). `docs_screenshots` not needed (the
+line shows only on an unreadable file).

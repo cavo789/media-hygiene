@@ -31,7 +31,7 @@ def _failing_app() -> typer.Typer:
     def _exit() -> None:
         raise typer.Exit(ExitCode.USAGE)
 
-    for name in ("inventory", "clean", "purge"):
+    for name in ("inventory", "clean", "purge", "home"):
         app.command(name=name)(_bug)
     app.command(name="done")(_exit)
     return app
@@ -94,3 +94,10 @@ def test_exits_and_usage_errors_are_untouched() -> None:
     usage = CliRunner().invoke(build_app(), ["audit", "--no-such-option"])
     assert usage.exit_code == ExitCode.USAGE
     assert "Unexpected error" not in usage.output
+
+
+def test_a_bug_in_the_home_server_ends_with_its_own_code() -> None:
+    """0365: `home` alone ends with `CRASHED`, so that `mh` starts it again."""
+    result = CliRunner().invoke(_failing_app(), ["home"])
+    assert result.exit_code == ExitCode.CRASHED
+    assert ISSUES in _flat(result.output)

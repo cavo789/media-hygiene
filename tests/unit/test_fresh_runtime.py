@@ -9,9 +9,13 @@ from __future__ import annotations
 
 import os
 import shutil
+from importlib.resources import files
 from typing import TYPE_CHECKING
 
+from media_hygiene.cli.cmd_home import _state_now
 from media_hygiene.config.people_files import FOLDER
+from media_hygiene.review.home_parts import HomeLink
+from media_hygiene.review.home_views import HomeState
 from media_hygiene.services.fresh_runtime import FreshRuntime, settings_mark
 from tests.support.runtime import make_locations, make_runtime
 
@@ -119,3 +123,31 @@ def test_the_files_are_read_at_most_once_a_second(tmp_path: Path) -> None:
     fresh = FreshRuntime(make_runtime(locations))
     locations.config_file.write_text(_port("8106"), "utf-8")
     assert fresh.runtime().settings.review.port == 8101  # within the second
+
+
+def test_a_file_that_no_longer_loads_is_said_until_fixed(tmp_path: Path) -> None:
+    """0364: the error names `config.toml` while it lasts, then goes."""
+    fresh, locations = _fresh(tmp_path)
+    assert not fresh.error
+    locations.config_file.write_text(_port("not a number"), "utf-8")
+    fresh.runtime()
+    assert "config.toml" in fresh.error
+    assert "last good settings" in fresh.error
+    locations.config_file.write_text(_port("8107"), "utf-8")
+    fresh.runtime()
+    assert not fresh.error
+
+
+def test_the_home_page_carries_and_draws_the_error(tmp_path: Path) -> None:
+    """The state carries the line, the page draws it at the top."""
+    fresh, locations = _fresh(tmp_path)
+    locations.config_file.write_text(_port("not a number"), "utf-8")
+    state = _state_now(lambda _runtime: _EMPTY, fresh)
+    assert "config.toml" in state.settings_error
+    draw = files("media_hygiene.review") / "templates" / "home_draw.js.j2"
+    assert "S.settings_error" in draw.read_text("utf-8")
+
+
+_EMPTY = HomeState(
+    version="0", lines=(), spaces=(), actions=(), docs=HomeLink(url="/", url_en="/")
+)

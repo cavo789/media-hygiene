@@ -49,7 +49,7 @@ def stop_on_error(ctx: Context, error: Exception) -> NoReturn:
         error: The unexpected exception.
 
     Raises:
-        typer.Exit: Always, with the failure code.
+        typer.Exit: Always, with the failure code; `home`'s own (`CRASHED`).
     """
     output = output_of(ctx)
     command = ctx.invoked_subcommand or APP_NAME
@@ -68,4 +68,6 @@ def stop_on_error(ctx: Context, error: Exception) -> NoReturn:
     typed = shlex.join([APP_NAME, *sys.argv[1:]])
     found = {"url": ISSUES, "version": version(_DISTRIBUTION), "typed": typed}
     output.tip(escape(tip.format(variable=DEBUG_VARIABLE, **found)))
-    raise typer.Exit(ExitCode.FAILURE) from error
+    # The home server runs the whole session: `mh` starts it again once (0365).
+    code = ExitCode.CRASHED if command == "home" else ExitCode.FAILURE
+    raise typer.Exit(code) from error

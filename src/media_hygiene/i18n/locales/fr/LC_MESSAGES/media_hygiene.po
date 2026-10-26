@@ -8588,6 +8588,16 @@ msgstr ""
 "La page d'accueil s'ouvre aussi aux téléphones du réseau de la maison, à "
 "{address}, jusqu'à l'arrêt de mh. Jamais sur Internet."
 
+msgid ""
+"The home page stopped unexpectedly twice in a row: type mh to start it "
+"again."
+msgstr ""
+"La page d'accueil s'est arrêtée de façon inattendue deux fois de suite : "
+"tapez mh pour la relancer."
+
+msgid "The home page stopped unexpectedly: started again."
+msgstr "La page d'accueil s'est arrêtée de façon inattendue : relancée."
+
 msgid "The home page's tab was closed: the home page stopped."
 msgstr ""
 "L'onglet de la page d'accueil a été fermé : la page d'accueil s'est "
@@ -14288,6 +14298,14 @@ msgstr "{files} sans GPS"
 #, python-brace-format
 msgid "{files}, {undecided} to check or to sort"
 msgstr "{files}, {undecided} à vérifier ou à trier"
+
+#, python-brace-format
+msgid ""
+"{file} cannot be read: {error}. The last good settings stay until it is "
+"fixed."
+msgstr ""
+"{file} ne peut pas être lu : {error}. Les derniers bons réglages restent "
+"jusqu'à sa correction."
 
 #, python-brace-format
 msgid ""

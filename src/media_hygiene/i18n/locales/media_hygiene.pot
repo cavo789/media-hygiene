@@ -7086,6 +7086,14 @@ msgid ""
 "until mh stops. Never the internet."
 msgstr ""
 
+msgid ""
+"The home page stopped unexpectedly twice in a row: type mh to start it "
+"again."
+msgstr ""
+
+msgid "The home page stopped unexpectedly: started again."
+msgstr ""
+
 msgid "The home page's tab was closed: the home page stopped."
 msgstr ""
 
@@ -11907,6 +11915,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "{files}, {undecided} to check or to sort"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{file} cannot be read: {error}. The last good settings stay until it is "
+"fixed."
 msgstr ""
 
 #, python-brace-format

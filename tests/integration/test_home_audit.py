@@ -27,6 +27,7 @@ from media_hygiene.review.presence import Presence
 from media_hygiene.scan import stopwatch
 from media_hygiene.scan.progress import NullProgress, Step
 from media_hygiene.services.audit import AuditService
+from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.home import home_page
 from media_hygiene.services.home_audit import AuditResult, HomeAudit
 from tests.integration.test_home_page import serve
@@ -38,6 +39,7 @@ if TYPE_CHECKING:
     from typer.testing import CliRunner
 
     from media_hygiene.paths.locations import Locations
+    from media_hygiene.services.runtime import Runtime
 
 _LISTING = "Listing media files"
 
@@ -224,3 +226,26 @@ def test_the_audit_routes(locations: Locations) -> None:
     assert stop.json()["phase"] == "stopped"  # type: ignore[index]
     assert after.json()["phase"] == "stopped"  # type: ignore[index]
     assert started.is_set()
+
+
+class _SeenError(Exception):
+    """Ends the audit at its first step, the runtime it was given in hand."""
+
+
+def test_the_page_audit_reads_the_settings_of_now(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0365: an exclusion added to `config.toml` after the start: the audit uses it."""
+    seen: list[tuple[str, ...]] = []
+
+    def first_step(runtime: Runtime, _verb: str) -> None:
+        seen.append(runtime.settings.scan.excluded_names)
+        raise _SeenError
+
+    monkeypatch.setattr("media_hygiene.cli.home_audit.refuse_empty_data", first_step)
+    locations.config_dir.mkdir(parents=True, exist_ok=True)
+    fresh = FreshRuntime(make_runtime(locations), every=0)
+    locations.config_file.write_text('[scan]\nexcluded_names = ["Old"]\n', "utf-8")
+    with pytest.raises(_SeenError):
+        page_audit(fresh)(PageProgress())
+    assert seen == [("Old",)]

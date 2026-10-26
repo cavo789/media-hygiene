@@ -1,8 +1,9 @@
 """The audit the home page runs: the same checks, settings and report as `audit`.
 
 Started from the page, the audit sees the folders and the settings of the `home`
-command (those of `mh audit`); its report and what it lets the user do are those
-`audit` would write and print.
+command (those of `mh audit`), as the files hold them when it starts (0365: an
+exclusion added during the session counts); its report and what it lets the user do
+are those `audit` would write and print.
 """
 
 from __future__ import annotations
@@ -19,6 +20,7 @@ from media_hygiene.report.views import ReportRecord
 from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.data_checks import refuse_empty_data
+from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.home_audit import AuditResult
 from media_hygiene.services.reporting import write_report
 from media_hygiene.services.status import read_status
@@ -31,29 +33,33 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 
-def page_audit(runtime: Runtime) -> Callable[[PageProgress], AuditResult]:
+def page_audit(
+    source: Runtime | FreshRuntime,
+) -> Callable[[PageProgress], AuditResult]:
     """The audit of the home page, on the folders and settings of `home`.
 
     Args:
-        runtime: Settings, mount points and output.
+        source: Settings, mount points and output; read again at each audit when
+            fresh (the settings the files hold then).
 
     Returns:
         Runs it, reporting to the progress given.
     """
-    return partial(_audit, runtime)
+    return partial(_audit, source)
 
 
-def _audit(runtime: Runtime, progress: PageProgress) -> AuditResult:
+def _audit(source: Runtime | FreshRuntime, progress: PageProgress) -> AuditResult:
     """Audit, write the report, then say what was found and what to do.
 
     Args:
-        runtime: Settings, mount points and output.
+        source: Settings, mount points and output, or where to read them now.
         progress: Where each step reports.
 
     Returns:
         The first line of `status` (the audit's figures), the actions, the report,
         and the time of each step, as the console's `Time per step` line.
     """
+    runtime = source.runtime() if isinstance(source, FreshRuntime) else source
     refuse_empty_data(runtime, "audit")
     ensure_writable(runtime, MountKind.CACHE, MountKind.REPORTS)
     service = AuditService(runtime, progress)

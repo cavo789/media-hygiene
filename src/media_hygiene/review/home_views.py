@@ -134,6 +134,7 @@ class HomeState(Frozen):  # one field per part of the page
     update: HomeUpdate | None = None  # a newer version, from Docker Hub (0267)
     windows: bool = True  # the Windows actions are offered
     ai: bool = False  # a local model is set
+    settings_error: str = ""  # config.toml does not load: the line the page shows
 
     def command_of(self, number: int) -> str | None:
         """The command of a runnable step.

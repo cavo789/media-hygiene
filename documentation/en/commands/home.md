@@ -233,6 +233,12 @@ fonts and pictures come from the image itself: the page asks nothing of any othe
 - The steps are read again from the tool's folders each time the page loads: what another
   window did shows at the next reload. A button of a page drawn before such a change is refused
   (*The steps changed since the page was shown*) and the page shows the steps again.
+- `config.toml` is read again when you change it, the next audit run from the page included. A
+  typo that makes it unreadable is said at the top of the page (*…config.toml cannot be read: …
+  The last good settings stay until it is fixed.*); the line goes once the file is fixed.
+- If the page stops unexpectedly (a bug, Docker out of memory), `mh` starts it again by itself
+  (*The home page stopped unexpectedly: started again.*); a second stop within a minute gives the
+  prompt back.
 
 ## Go further
 

@@ -256,6 +256,13 @@ aucun autre site.
   qu'une autre fenêtre a fait apparaît au rechargement suivant. Un bouton d'une page dessinée
   avant un tel changement est refusé (*Les étapes ont changé depuis l'affichage de la page*) et
   la page remontre les étapes.
+- `config.toml` est relu quand vous le modifiez, y compris pour le prochain audit lancé depuis la
+  page. Une faute de frappe qui le rend illisible est signalée en haut de la page (*…config.toml
+  ne peut pas être lu : … Les derniers bons réglages restent jusqu'à sa correction.*) ; la ligne
+  disparaît une fois le fichier corrigé.
+- Si la page s'arrête de façon inattendue (un bug, Docker à court de mémoire), `mh` la relance
+  tout seul (*La page d'accueil s'est arrêtée de façon inattendue : relancée.*) ; un second arrêt
+  dans la minute rend l'invite.
 
 ## Aller plus loin
 

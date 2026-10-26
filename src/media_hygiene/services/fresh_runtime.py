@@ -6,7 +6,8 @@ few minutes. The home server lives the whole session (0355, 0356) while the user
 of its own: without this it would show stale settings until `mh` starts again (0358).
 The files are compared by content (a few KB, SHA-256): a copy keeping the old mtime,
 an atomic save (another inode), an edit in place or a removal are all seen alike. A
-file that no longer loads keeps the last good settings, said once in the console.
+file that no longer loads keeps the last good settings, said once in the console and,
+until it loads again, on the pages (`error`, 0364): the server runs in the background.
 """
 
 from __future__ import annotations
@@ -20,6 +21,8 @@ from media_hygiene.config.loader import load_settings
 from media_hygiene.config.people_files import FOLDER
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
+from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.services.next_command import tool_host
 
 if TYPE_CHECKING:
     from media_hygiene.paths.locations import Locations
@@ -64,6 +67,17 @@ class FreshRuntime:
         self._mark = settings_mark(runtime.locations)
         self._every = every
         self._checked = time.monotonic()
+        self._error = ""
+
+    @property
+    def error(self) -> str:
+        """What the pages say while a settings file does not load.
+
+        Returns:
+            One translated line naming the file as Explorer shows it; empty once the
+            files load.
+        """
+        return self._error
 
     def runtime(self) -> Runtime:
         """The runtime with the settings the files hold now.
@@ -89,6 +103,25 @@ class FreshRuntime:
                     "{error}"
                 ).format(error=error.message)
             )
+            self._error = _(
+                "{file} cannot be read: {error}. The last good settings stay until it "
+                "is fixed."
+            ).format(file=_shown(self._runtime), error=error.message)
             return self._runtime
+        self._error = ""
         self._runtime = replace(self._runtime, loaded=loaded)
         return self._runtime
+
+
+def _shown(runtime: Runtime) -> str:
+    """`config.toml` as Explorer shows it, when the mount table tells.
+
+    Args:
+        runtime: Settings, mount points and output.
+
+    Returns:
+        Its Windows path, else its path in the container.
+    """
+    file = runtime.locations.config_file
+    host = tool_host(runtime, MountKind.CONFIG)
+    return f"{host.rstrip(chr(92))}\\{file.name}" if host else str(file)

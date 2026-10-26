@@ -159,9 +159,10 @@ function auditPanel() {
 }
 function viewHome() {
   const given = S.given.map((line) => `<p class="callout callout-info">${icon("folder")}<span>${esc(line)}</span></p>`).join("");
+  const broken = S.settings_error ? `<p class="callout callout-warn" id="settingsError" role="alert">${icon("info")}<span>${esc(S.settings_error)}</span></p>` : "";
   return `${updateBanner()}
     <div class="page-head"><h1>${esc(T.whereYourPhotos)}</h1><p>${esc(T.readNow)}</p></div>
-    ${given}${hero()}${REMOTE ? EXTRAS.albums() : ""}
+    ${broken}${given}${hero()}${REMOTE ? EXTRAS.albums() : ""}
     <section class="block" aria-labelledby="cycleTitle">
       <div class="section-head"><h2 id="cycleTitle">${esc(T.cycle)}</h2><p class="section-note">${esc(T.cycleNote)}</p></div>
       <ol class="cycle">${STAGES.map(station).join("")}</ol>
