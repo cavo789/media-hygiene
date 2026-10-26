@@ -2,16 +2,18 @@
 
 `2017/Juillet 2017` says nothing but a date; `Mars 2005 - Travaux maison` says
 `Travaux maison`; `2017/Janvier 2017/Bruges` says `Bruges`. The tool's own band folders
-(`To check`, `À trier`…) never count as a meaning, in both languages.
+(`To check`, `À trier`…) never count as a meaning, in both languages. A folder holding
+the name of a person (`Photos Chloé`, `iPhone Manon`) is that person's (0386).
 """
 
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.date_names import DATE_FOLDERS, MONTH, MONTHS, YEAR
+from media_hygiene.people import folding
 from media_hygiene.plan.name_rules import compile_patterns
 
 if TYPE_CHECKING:
@@ -39,6 +41,7 @@ class FolderRules:
     dates: tuple[re.Pattern[str], ...]
     bands: frozenset[str] = BAND_FOLDERS
     unsure: frozenset[str] = UNSURE_FOLDERS  # the "to check" band folders
+    people: tuple[re.Pattern[str], ...] = ()  # a person's name, as a word, folded
 
     @classmethod
     def build(
@@ -60,6 +63,31 @@ class FolderRules:
         return cls(
             compile_patterns(generic), compile_patterns(DATE_FOLDERS), folded, checked
         )
+
+    def with_people(self, names: Iterable[str]) -> FolderRules:
+        """The same rules, telling the folders of these people.
+
+        Args:
+            names: The people named on the people page and in `person_folders`.
+
+        Returns:
+            A copy.
+        """
+        words = dict.fromkeys(folding.folded(name) for name in names if name.strip())
+        found = tuple(re.compile(rf"(?<!\w){re.escape(word)}(?!\w)") for word in words)
+        return replace(self, people=found)
+
+    def of_person(self, labels: Iterable[str]) -> bool:
+        """Tell whether a folder's labels name a person, case and accents ignored.
+
+        Args:
+            labels: The meaningful names of a folder.
+
+        Returns:
+            True when one of them holds a person's name as a word.
+        """
+        names = [folding.folded(label) for label in labels]
+        return any(word.search(name) for word in self.people for name in names)
 
     def label(self, name: str) -> str | None:
         """The meaning of one folder name.

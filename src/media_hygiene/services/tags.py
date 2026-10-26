@@ -19,6 +19,7 @@ from media_hygiene.i18n import active_locale
 from media_hygiene.index.descriptions import DescriptionStore
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.index.tag_rows import TagStore
+from media_hygiene.services.tag_derive import model_rows
 from media_hygiene.services.tag_files import tag_files
 from media_hygiene.services.tag_near import near_search
 from media_hygiene.services.tag_work import TagWork, stills_of, version_of
@@ -28,7 +29,7 @@ from media_hygiene.tags.near_share import near_shared
 from media_hygiene.tags.normalize import WordRules
 from media_hygiene.tags.producers import cheap_tags
 from media_hygiene.tags.selection import STILLS, WITH_VIDEOS, vision_plan
-from media_hygiene.tags.vision import prompt_version, vision_tags
+from media_hygiene.tags.vision import prompt_version
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -171,19 +172,18 @@ class TagStep:
         """
         if not self.vision_on:
             return 0
-        store = self._open()[1]
-        asked = {file.path: version_of(file) for file in work.vision.asked}
-        rows: list[FileTags] = []
-        for file in work.files:
-            leader = work.vision.answered_by.get(file.path)
-            if leader is None:
-                continue
-            found = store.get(version_of(file)) or store.get(asked[leader])
-            if found is not None:
-                tags = vision_tags(found, self._rules, self._ai.model)
-                rows.append(FileTags(version_of(file), tags))
+        rows = model_rows(work, self._open()[1], self.sight)
         TagStore(self._open()[0].connection).replace(MODEL_SOURCES, rows)
         return len(rows)
+
+    @property
+    def sight(self) -> tuple[WordRules, str]:
+        """What turns an answer into words: the rules of `[tags]`, the model.
+
+        Returns:
+            Both.
+        """
+        return self._rules, self._ai.model
 
     def _open(self) -> tuple[FactsRepository, DescriptionStore]:
         """The open index and descriptions.

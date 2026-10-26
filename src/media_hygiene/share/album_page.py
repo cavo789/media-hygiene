@@ -6,8 +6,9 @@ Served by the home page's server, in front of it, to the PC and to a phone paire
 - `GET /albums`: the page; `GET /api/album-list`: every album, its cover, dates and
   place; `GET /api/album/<name>`: one album, its photos and videos by day;
 - `GET /thumb/<key>.jpg`, `/tv/<key>.jpg` (the picture sized for a phone) and
-  `/film/<key>.<ext>`: the files **of an album** only, never another file of the
-  library, nor an original;
+  `/film/<key>.<ext>`: the files **of an album** only to a phone, never another file
+  of the library, nor an original; the PC's request of another key goes on to the
+  pages behind (`search` and `browse` share `/thumb/`, 0356);
 - `POST /api/albums`: a file of an album added to an album or taken out (0295 item 4:
   a phone's only write besides the audit; no photo touched).
 """
@@ -42,6 +43,8 @@ ALBUM_PREFIX: Final = "/api/album/"
 PHONE_READS: Final = frozenset({ALBUMS_PAGE, ALBUM_LIST_PATH})
 PHONE_READ_PREFIXES: Final = (ALBUM_PREFIX, TV_PREFIX, THUMB_PREFIX, FILM_PREFIX)
 PHONE_WRITES: Final = frozenset({ALBUMS_PATH})
+# Set by `review.lan_app` on what it passes on from a phone, whose `Host` it rewrites.
+PHONE_HEADER: Final = "x-media-hygiene-phone"
 _PICTURE_PREFIXES: Final = (TV_PREFIX, THUMB_PREFIX, FILM_PREFIX)
 _GET, _POST = "GET", "POST"
 
@@ -89,7 +92,8 @@ class AlbumPages:
             request: The request.
 
         Returns:
-            The response; None for a path of the home page.
+            The response; None for a path of the home page, or the PC's picture of
+            a file in no album.
         """
         path = request.path
         if path == ALBUMS_PAGE:
@@ -128,19 +132,24 @@ class AlbumPages:
         shown.keys = keys if name is None else shown.keys | keys
         return json_response(HTTPStatus.OK, view)
 
-    async def _picture(self, request: Request) -> Response:
+    async def _picture(self, request: Request) -> Response | None:
         """A thumbnail, a picture or a video of an album's file; 404 for any other.
 
         Args:
             request: The request.
 
         Returns:
-            The JPEG or the video; 404 for a file in no album.
+            The JPEG or the video; 404 for a file in no album, asked by a phone;
+            None when the PC asks for it (the search's thumbnail).
         """
         key = request.path.rsplit("/", 1)[-1].split(".", 1)[0]
         shown = self.parts.shown
         if key.isdigit() and int(key) not in shown.keys:
             await self._read(None)  # an album changed since: its files, read again
+        if PHONE_HEADER not in request.headers and not (
+            key.isdigit() and int(key) in shown.keys
+        ):
+            return None
         try:
             with self.parts.shelf.pictures(shown.keys) as pictures:
                 answer = await pictures.answer(request)

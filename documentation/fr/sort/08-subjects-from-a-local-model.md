@@ -115,8 +115,8 @@ La **confiance** vient des échantillons, jamais de ce que le modèle dit de lui
 
 | Échantillons | Proposition |
 |---|---|
-| Tous d'accord (3 sur 3) | Sûre : `année/catégorie` |
-| Une majorité (2 sur 3), ou une seule photo | À vérifier : `année/À vérifier/catégorie` |
+| Tous d'accord (3 sur 3) | Sûre : `année/année-mois/catégorie` |
+| Une majorité (2 sur 3), ou une seule photo | À vérifier : reste jusqu'à ce que vous la confirmiez |
 | La plupart n'entrent dans aucune catégorie | Pas de sujet : les autres règles décident |
 
 `per_photo = true` sur la règle décrit **chaque** photo à la place, chacune avec sa propre

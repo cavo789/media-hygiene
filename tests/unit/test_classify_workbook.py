@@ -25,16 +25,16 @@ from media_hygiene.classify.workbook.sheets import (
 )
 from media_hygiene.classify.workbook.writer import write_workbook
 from media_hygiene.classify.worklist import work_list
-from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.errors import WorkbookError
 from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.scan.models import VisualFacts
+from tests.support.layouts import legacy
 
 if TYPE_CHECKING:
     from media_hygiene.classify.plan_file import ClassifyPlan
 
 ROOT = Path("/data/c/Photos")
-SETTINGS = ClassifySettings()
+SETTINGS = legacy()
 
 
 def shot(relative: str, when: datetime) -> MediaInput:

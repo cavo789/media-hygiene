@@ -157,7 +157,7 @@ def test_forget_asks_before_deleting_the_names(
     name_largest(cli, apps)
     kept = flat(run(cli, "people", "--forget").output)
     assert "The names stay in config.toml" in kept
-    assert "Chloé" in (locations.config_dir / "config.toml").read_text()
+    assert 'name = "Chloé"' in (locations.config_dir / "config.toml").read_text()
     name_largest(cli, apps)
     with pytest.MonkeyPatch.context() as patch:
         patch.setattr(
@@ -165,7 +165,8 @@ def test_forget_asks_before_deleting_the_names(
         )
         gone = flat(run(cli, "people", "--forget").output)
     assert "Read back from config.toml: 0 names, 0 faces ignored." in gone
-    assert "Chloé" not in (locations.config_dir / "config.toml").read_text()
+    # The default file's comments hold "Chloé" as an example: only the entry is gone.
+    assert 'name = "Chloé"' not in (locations.config_dir / "config.toml").read_text()
 
 
 def test_a_face_too_small_for_the_page_is_named_by_nobody(

@@ -161,6 +161,23 @@ def test_a_phone_never_reaches_a_file_of_no_album(
     assert unpaired.status == HTTPStatus.UNAUTHORIZED
 
 
+def test_the_pc_gets_the_search_thumbnail_of_a_file_of_no_album(
+    phone_door: tuple[LanApp, _Home, Runtime],
+) -> None:
+    """`search` and `browse` share `/thumb/`: another key goes on to them (0356)."""
+    door, home, runtime = phone_door
+    shown = set(_keys(_album(door)))
+    other = next(key for key, _path in _photos(runtime) if key not in shown)
+    local = {"host": f"127.0.0.1:{_PORT}"}
+    reply = _ask(door, Request("GET", f"/thumb/{other}{_JPEG}", local))
+    assert (reply.status, reply.body) == (HTTPStatus.OK, b"home")
+    assert home.seen == [f"/thumb/{other}{_JPEG}"]
+    kept = next(iter(shown))
+    reply = _ask(door, Request("GET", f"/thumb/{kept}{_JPEG}", local))
+    assert reply.body.startswith(b"\xff\xd8")
+    assert len(home.seen) == 1  # an album's file: still the albums' own
+
+
 def test_a_paired_phone_changes_an_album_and_nothing_else(
     phone_door: tuple[LanApp, _Home, Runtime],
 ) -> None:

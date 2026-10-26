@@ -123,6 +123,9 @@
 {% endfor %}
         "${share[@]}" "${page[@]}" \
         {{ image }} "$@" "${backups[@]}" || status=$?
+    # The audit asked to review the files gone at once: a success, then that page.
+    local follow=""
+    if [[ "$command" == audit && "$status" -eq {{ gone_review }} ]]; then status=0 follow=1; fi
     # In the background, the server answers later: its tab opens then, by itself.
     if [[ -n "$browser" && -z "${_{{ function }}_detach:-}" ]]; then kill "$browser" 2>/dev/null; fi
     if [[ -n "$long" ]]; then
@@ -136,6 +139,7 @@
     if [[ "$status" -ne 0 ]] && ! docker version >/dev/null 2>&1; then
         printf '%s\n' "{{ texts.daemon }}" >&2
     fi
+    if [[ -n "$follow" ]]; then {{ function }} review --gone "${typed[@]}"; return; fi
     return "$status"
 }
 

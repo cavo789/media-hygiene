@@ -27,6 +27,7 @@ SCORES: Final = {
     "existing-folder": 90,
     "person-folder": 85,
     "event-neighbour": 70,
+    "same-moment": 70,  # a person's photo taken while the user's were: to check
     "calendar": 85,
     "date-range": 95,  # a trip the user wrote down: sure
     "kind": 85,

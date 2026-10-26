@@ -80,7 +80,9 @@ def test_a_page_choice_after_a_workbook_edit_wins(locations: Locations) -> None:
     inputs = load_inputs(runtime, find_workbook(runtime, None))
     assert (inputs.page.applied, inputs.page.replaced, inputs.edit_count) == (1, 1, 1)
     sort(runtime)
-    assert (locations.data_dir / "c/2016" / EVENT_NAME / "IMG_0000.jpg").is_file()
+    assert (
+        locations.data_dir / "c/2016/2016-07" / EVENT_NAME / "IMG_0000.jpg"
+    ).is_file()
 
 
 def test_a_workbook_edit_after_a_page_choice_is_a_conflict(
@@ -105,7 +107,7 @@ def test_a_workbook_edit_after_a_page_choice_is_a_conflict(
 
     asyncio.run(take_back())
     sort(runtime)
-    assert (locations.data_dir / "c/2016" / LATER / "IMG_0000.jpg").is_file()
+    assert (locations.data_dir / "c/2016/2016-07" / LATER / "IMG_0000.jpg").is_file()
 
 
 def test_the_same_choice_in_both_places_agrees(locations: Locations) -> None:

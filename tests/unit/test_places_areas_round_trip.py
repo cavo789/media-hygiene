@@ -8,10 +8,10 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.classify.engine import Scope, classify
 from media_hygiene.classify.models import SortReason
 from media_hygiene.config.classify_places import PersonalPlace
-from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.loader import write_default_config
 from media_hygiene.constants import Locale
 from media_hygiene.places.config_file import PlaceEdit, read_places, save_places
+from tests.support.layouts import legacy
 from tests.support.located import PLACE_RULE, located, start_of
 
 if TYPE_CHECKING:
@@ -63,7 +63,7 @@ def test_the_photos_inside_the_area_take_its_name(tmp_path: Path) -> None:
         located("corner.jpg", start_of(5), CORNER),
         located("pond.jpg", start_of(9), POND),
     ]
-    settings = ClassifySettings(rules=(PLACE_RULE,), places=places)
+    settings = legacy(rules=(PLACE_RULE,), places=places)
     found = {
         proposal.file.path.name: proposal
         for proposal in classify(files, settings, Scope()).proposals

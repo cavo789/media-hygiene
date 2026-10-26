@@ -4,24 +4,31 @@ Each file is read against the rules, in order. The first match whose score reach
 `sure` wins; otherwise the best match (the earliest on a tie) is a guess to check.
 `other_category` takes the files no rule above it matched. A score of 0 turns a rule
 off. A date rule reads the event: when at least half of an event's files fall in its
-dates, the whole event takes it. A `subject` rule is sure only when the samples of the
-event agree; otherwise it is "to check".
+dates, the whole event takes it, but never a file a `kind` rule matches (0394). A
+`subject` rule is sure only when the samples of the event agree; otherwise it is "to
+check". A rule with `keep_folders` keeps the folders
+the user named below its category (`kept`, 0391).
 """
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.layout import Values, render
 from media_hygiene.classify.models import SortReason
+from media_hygiene.classify.own_events import own_folders, spared
 from media_hygiene.classify.rules.building import build_test
+from media_hygiene.classify.rules.kept import Kept, kept_below, named_folders
 from media_hygiene.classify.rules.kinds import (
     BUILT_IN,
+    DATED,
     GEO_CATEGORIES,
     NEIGHBOURS,
     REASONS,
     RuleMatch,
 )
+from media_hygiene.classify.rules.matchers import kind_taken
 from media_hygiene.classify.signals import NO_SIGNAL, Signal
 from media_hygiene.classify.whereabouts import with_place
 
@@ -29,7 +36,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
 
-    from media_hygiene.classify.models import MediaInput
+    from media_hygiene.classify.models import MediaInput, Proposal
     from media_hygiene.classify.rules.building import RuleFacts
     from media_hygiene.classify.rules.matchers import Test
     from media_hygiene.config.classify_rules import ClassifyRule
@@ -49,7 +56,16 @@ def decide(
     Returns:
         The signal of each file: its category, reason, rule and score.
     """
-    rules = tuple((rule, build_test(rule, facts)) for rule in settings.rules)
+    if any(rule.match in DATED for rule in settings.rules):
+        own = own_folders(facts, settings.merge_gap_hours)
+        facts = replace(
+            facts, kept=Kept(aside=kind_taken(files, settings.rules), own=own)
+        )
+    if any(rule.keep_folders for rule in settings.rules):
+        facts = replace(facts, kept=replace(facts.kept, named=named_folders(facts)))
+    rules = tuple(
+        (r, spared(r, build_test(r, facts), facts.kept.own)) for r in settings.rules
+    )
     return {file.path: _first(file, rules, (settings, facts)) for file in files}
 
 
@@ -114,6 +130,8 @@ def _signal(
         template = rule.category or GEO_CATEGORIES.get(rule.match, "")
         reason, stay = _reason(rule.match, file, facts), not template
         category = _category(template, file, facts)
+        if rule.keep_folders and category:
+            category = kept_below(category, file, facts)
         if rule.match is RuleMatch.FOLDER_TOWN:
             hint = facts.where.folder_towns[file.path].hint
     score = rule.score
@@ -154,12 +172,27 @@ def _category(template: str, file: MediaInput, facts: RuleFacts) -> str:
         The category, folder-safe; empty when the rule gives none.
     """
     event = facts.event_of.get(file.path)
-    when = event.start if event else facts.datings[file.path].when
+    dating = facts.datings[file.path]
+    when = event.start if event else dating.when
     values = Values(
         year=when.year,
-        month=when.month,
+        month=when.month if event else dating.month,  # 0: only the year is known
         day=when.day,
         event=(event.label or event.span) if event else "",
         event_start=event.start.date().isoformat() if event else "",
     )
     return render(template, with_place(values, facts.where.values(file.path))) or ""
+
+
+def unused(settings: ClassifySettings, kept: Sequence[Proposal]) -> tuple[str, ...]:
+    """The rules that decided no file of the run.
+
+    Args:
+        settings: `[classify]`: the rules.
+        kept: The proposals of the run.
+
+    Returns:
+        Their names, in order.
+    """
+    used = {proposal.rule for proposal in kept}
+    return tuple(rule.name for rule in settings.rules if rule.name not in used)

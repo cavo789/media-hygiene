@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     from media_hygiene.index.facts import FileFacts
 
 _COUNT: Final = "SELECT COUNT(*) FROM files"
+_PATHS: Final = "SELECT path FROM files"
 _ROOTS: Final = "SELECT path, walked_at FROM roots ORDER BY path"
 # Digests shared by several files: the duplicate groups, numbered by their first path.
 _SHARED: Final = (
@@ -69,6 +70,19 @@ def count_files(connection: sqlite3.Connection) -> int:
     return int(row[0]) if row else 0
 
 
+def every_path(connection: sqlite3.Connection) -> Iterator[str]:
+    """The path of every file of the index, streamed (container paths).
+
+    Args:
+        connection: The index.
+
+    Yields:
+        Each path.
+    """
+    for (path,) in connection.execute(_PATHS):
+        yield str(path)
+
+
 def indexed_files(connection: sqlite3.Connection) -> Iterator[IndexedFile]:
     """Stream every file of the index, in path order.
 
@@ -95,6 +109,24 @@ def walked_roots(connection: sqlite3.Connection) -> tuple[WalkedRoot, ...]:
     return tuple(
         WalkedRoot(Path(path), datetime.fromisoformat(walked_at))
         for path, walked_at in connection.execute(_ROOTS)
+    )
+
+
+def deepest_first(connection: sqlite3.Connection) -> tuple[Path, ...]:
+    """The folders an audit walked, deepest first: a file's root is the first of them.
+
+    Args:
+        connection: An open index.
+
+    Returns:
+        Their paths.
+    """
+    return tuple(
+        sorted(
+            (root.path for root in walked_roots(connection)),
+            key=lambda path: len(path.parts),
+            reverse=True,
+        )
     )
 
 

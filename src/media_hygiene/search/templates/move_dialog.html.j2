@@ -1,0 +1,30 @@
+{# *Move to an event…* (0403): the photos picked go to `YYYY\YYYY-MM\<name>`, no rule
+   written. The name proposed is that of your folder holding most of them; the files are
+   shown by source folder, one tick box each (a folder you named after another event is
+   unticked). The names offered are the event folders already in the month they go to,
+   sub-folders written `France\Morzine`; a new name is typed as before. Its script is
+   `move_dialog.js.j2`; the dialog's look is the rule dialog's. #}
+<style>
+  #moveDlg { max-width: min(32rem, 94vw); color: var(--text); background: var(--card);
+             border: 1px solid var(--line); border-radius: 10px; }
+  #moveDlg::backdrop { background: rgb(0 0 0 / 50%); }
+  #moveDlg label { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; }
+  #moveDlg h2 { margin: 0 0 6px; } #moveDlg menu { display: flex; gap: 8px; justify-content: end; padding: 0; }
+  .sources { list-style: none; padding: 0; margin: 6px 0; max-height: 40vh; overflow: auto; }
+  .sources label { display: block !important; overflow-wrap: anywhere; }  /* one line: box, then text */
+  .sources .why { color: var(--muted); font-size: .85rem; }
+  #moveSaid.error { color: var(--bad); } #moveSaid.saved { color: var(--ok); }
+  #moveBar { margin: 6px 0 0; }
+</style>
+<dialog id="moveDlg" aria-labelledby="moveTitle">
+  <form id="moveForm" method="dialog" autocomplete="off">
+    <h2 id="moveTitle">📂 {{ _("Move to an event") }}</h2>
+    <p class="muted">{{ _("The photos picked go to the event's folder, under their year and month, journaled: 'undo' puts them back. No rule is written.") }}</p>
+    <label>{{ _("Name of the event's folder") }} <input id="moveName" list="moveNames" required title="{{ _('A folder of yours, or a new name; \\ between sub-folders') }}"></label>
+    <datalist id="moveNames"></datalist>
+    <p id="moveWhere" class="muted"></p>
+    <ul id="moveSources" class="sources"></ul>
+    <p id="moveSaid" class="muted" role="status"></p>
+    <menu><button type="button" id="moveNo" class="plain" data-cancel="{{ _('Cancel') }}" data-close="{{ _('Close') }}">{{ _("Cancel") }}</button><button type="submit" id="moveGo" disabled>{{ _("Move them now") }}</button></menu>
+  </form>
+</dialog>

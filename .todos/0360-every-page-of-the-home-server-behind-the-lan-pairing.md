@@ -2,7 +2,7 @@
 
 - **Priority**: Medium
 - **Batch**: home
-- **Depends**: 0356
+- **Depends**: 0356, 0384
 - **Files**: `src/media_hygiene/review/http.py`, `src/media_hygiene/review/home_app.py`, `src/media_hygiene/services/launcher_lan.py`, `src/media_hygiene/review/lan*.py`, `src/media_hygiene/search/app.py`, `tests/unit/test_home_lan.py`, `documentation/en/commands/home.md`, `documentation/fr/commands/home.md`
 
 ## Context

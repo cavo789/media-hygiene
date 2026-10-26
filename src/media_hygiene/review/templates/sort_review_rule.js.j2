@@ -1,0 +1,143 @@
+{# Included in the script of sort_review.html.j2, after the dialog's shared script
+   (`rule_dialog.js.j2`): *Remember as a rule* (0392). The dialog is
+   filled from the event shown (its days, the folder typed, its last folder as the name);
+   the server says, as the user changes it, what the rule would take on the plan shown;
+   saved, the rule is read back from config.toml and the event's folder chosen with it.
+   *Your rules* (0393): what each rule decided, the dead ones removed, a folder-name rule
+   turned into dates in its place through the same dialog. #}
+  let ruleTarget = { event: "", replaces: "" };  // the event the rule is for, the rule it replaces
+  const ruleBody = () => ({ event: ruleTarget.event, replaces: ruleTarget.replaces, ...ruleValues() });
+  const postRule = (path) => rulePost(path, ruleBody());
+  const showRulePreview = async () => {
+    const said = byId("rulePreview");
+    const sent = await postRule(P.rulePreview);
+    if (!sent) { said.textContent = T.offline; said.className = "error"; return; }
+    const { response, answer } = sent;
+    if (!response.ok) { said.textContent = answer.error || fill(T.failed, { status: response.status }); said.className = "error"; return; }
+    const parts = [fill(T.rulePreview, { files: counted(T.nFiles, answer.files), mine: answer.this_event, others: answer.others })];
+    if (answer.folders.length) parts.push(fill(T.ruleFolders, { folders: answer.folders.join(", ") }));
+    if (answer.overlaps.length) parts.push(fill(T.ruleOverlaps, { rules: answer.overlaps.join(", ") }));
+    if (answer.taken) parts.push(T.ruleTaken);
+    if (answer.lost) parts.push(fill(T.rulesLost, { n: answer.lost }));
+    said.textContent = parts.join(" ");
+    said.className = answer.taken ? "error" : "muted";
+    byId("ruleYes").disabled = answer.taken;
+  };
+  const openRule = () => {
+    if (!events.length) return;
+    const card = events[current];
+    ruleTarget = { event: card.id, replaces: "" };
+    const folder = byId("folder").value.trim() || card.category;
+    const name = byId("name").value.trim() || lastFolder(folder) || card.title;
+    ruleFill({ name: name, first: card.first_day, last: card.last_day, category: folder });
+    byId("ruleDlg").showModal();
+    showRulePreview();
+  };
+  ruleOnChange(showRulePreview);
+  byId("ruleOpen").addEventListener("click", openRule);
+  byId("ruleForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const index = current;
+    const sent = await postRule(P.rule);
+    if (!sent) { byId("rulePreview").textContent = T.offline; byId("rulePreview").className = "error"; return; }
+    const { response, answer } = sent;
+    if (!response.ok) { byId("rulePreview").textContent = answer.error || fill(T.failed, { status: response.status }); byId("rulePreview").className = "error"; return; }
+    byId("ruleDlg").close();
+    const shown = events.findIndex((other) => other.id === answer.view.card.id);
+    if (shown >= 0) events[shown] = answer.view.card;
+    if (byId("rulesDlg").open) showRules();
+    setStatus(fill(T.ruleSaved, { name: answer.name, dates: answer.dates, time: new Date(answer.modified).toLocaleTimeString() }), "saved");
+    if (index !== current || shown !== current) return;
+    showPhotos(answer.view.photos, true);
+    showEvent(answer.view.card);
+    showTotals();
+  });
+
+  // *Your rules* (0393): one line per rule of config.toml, in its order.
+  const removeRules = async (names) => {
+    if (!window.confirm(fill(T.rulesRemoveAsk, { names: names.join(", ") }))) return;
+    const said = byId("rulesSaid");
+    let response;
+    try {
+      response = await fetch(P.rulesRemove, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ names: names }) });
+    } catch (error) { said.textContent = T.offline; said.className = "error"; return; }
+    const answer = await response.json().catch(() => ({}));
+    if (!response.ok) { said.textContent = answer.error || fill(T.failed, { status: response.status }); said.className = "error"; return; }
+    fillRules(answer);
+    said.textContent = fill(T.rulesRemoved, { time: new Date().toLocaleTimeString(), names: names.join(", ") });
+    said.className = "saved";
+  };
+  const openConvert = (rule) => {
+    ruleTarget = { event: rule.event, replaces: rule.name };
+    ruleFill(rule);
+    byId("ruleDlg").showModal();
+    showRulePreview();
+  };
+  const fillRules = (view) => {
+    byId("rulesRun").textContent = fill(T.rulesRun, { run: view.run });
+    const dead = view.rules.filter((rule) => !rule.built_in && rule.files === 0);
+    byId("rulesRemoveAll").hidden = dead.length < 2;
+    byId("rulesRemoveAll").textContent = fill(T.rulesRemoveAll, { count: dead.length });
+    byId("rulesRemoveAll").onclick = () => removeRules(dead.map((rule) => rule.name));
+    byId("rulesSaid").textContent = dead.length ? counted(T.nDead, dead.length) : T.rulesNone;
+    byId("rulesSaid").className = dead.length ? "error" : "saved";
+    rulesShown = view.rules;
+    drawRules();
+  };
+  // 0395: by kind, then the latest period first (the server's order), a heading per kind;
+  // a click on Rule or Files sorts by it, a second click reverses, a third goes back.
+  let rulesShown = [];
+  let rulesBy = { key: "", up: true };
+  const ruleRow = (rule) => {
+    const row = document.createElement("tr");
+    if (!rule.built_in && rule.files === 0) row.className = "dead";
+    const days = rule.dates || (rule.first ? rule.first + ".." + rule.last : "");
+    for (const text of [rule.name, rule.built_in ? rule.match + " · " + T.rulesBuiltIn : rule.match, String(rule.files), days]) row.append(line("td", text));
+    const act = document.createElement("td");
+    const button = (text, action) => { const node = line("button", text, "plain"); node.type = "button"; node.addEventListener("click", action); act.append(node); };
+    if (!rule.built_in && rule.files === 0) button(T.rulesRemove, () => removeRules([rule.name]));
+    else if (rule.match === "path" && rule.event) button(T.rulesConvert, () => openConvert(rule));
+    row.append(act);
+    return row;
+  };
+  const drawRules = () => {
+    const rows = [];
+    if (!rulesBy.key) {
+      const count = {};
+      for (const rule of rulesShown) count[rule.group] = (count[rule.group] || 0) + 1;
+      let group = null;
+      for (const rule of rulesShown) {
+        if (rule.group !== group) {
+          group = rule.group;
+          const head = document.createElement("tr");
+          head.className = "group";
+          const cell = line("th", group + " (" + count[group] + ")");
+          cell.colSpan = 5;
+          head.append(cell);
+          rows.push(head);
+        }
+        rows.push(ruleRow(rule));
+      }
+    } else {
+      const sign = rulesBy.up ? 1 : -1;
+      const sorted = [...rulesShown].sort((a, b) => sign * (rulesBy.key === "files" ? a.files - b.files : a.name.localeCompare(b.name)));
+      rows.push(...sorted.map(ruleRow));
+    }
+    byId("rulesTable").tBodies[0].replaceChildren(...rows);
+  };
+  for (const head of document.querySelectorAll("#rulesTable .sortBy")) head.addEventListener("click", () => {
+    const key = head.dataset.by;
+    if (rulesBy.key !== key) rulesBy = { key: key, up: key === "name" };
+    else if (rulesBy.up === (key === "name")) rulesBy = { key: key, up: !rulesBy.up };
+    else rulesBy = { key: "", up: true };
+    drawRules();
+  });
+  const showRules = async () => {
+    let response;
+    try { response = await fetch(P.rules, { cache: "no-store" }); } catch (error) { setStatus(T.offline, "error"); return; }
+    if (!response.ok) { setStatus(fill(T.failed, { status: response.status }), "error"); return; }
+    fillRules(await response.json());
+    if (!byId("rulesDlg").open) byId("rulesDlg").showModal();
+  };
+  byId("rulesOpen").addEventListener("click", showRules);
+  byId("rulesClose").addEventListener("click", () => byId("rulesDlg").close());

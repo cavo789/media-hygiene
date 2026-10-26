@@ -10,11 +10,11 @@ from pathlib import Path
 
 from media_hygiene.classify.engine import Scope, classify
 from media_hygiene.classify.models import Band, MediaInput, Proposal, SortReason
-from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.scan.models import VisualFacts
+from tests.support.layouts import legacy
 
 ROOT = Path("/data/c/Photos")
-SETTINGS = ClassifySettings()
+SETTINGS = legacy()
 
 
 def shot(
@@ -68,7 +68,7 @@ def test_loose_files_go_to_sort_and_stay_there_the_next_time() -> None:
 
 def test_without_category_in_the_layout_a_date_is_enough() -> None:
     """`{year}/{month}` sorts loose files for sure, with no taxonomy."""
-    settings = ClassifySettings(layout="{year}/{month}")
+    settings = legacy(layout="{year}/{month}")
     (proposal,) = classify(
         [shot("DCIM/a.jpg", datetime(2019, 7, 1))], settings, Scope()
     ).proposals
@@ -96,7 +96,7 @@ def test_a_new_year_party_stays_in_one_year() -> None:
     """The event takes the year of its start, and the New Year rule."""
     party = series("DCIM", datetime(2016, 12, 31, 22), 5)
     folders = {p.folder for p in classify(party, SETTINGS, Scope()).proposals}
-    assert folders == {"2016/Parties/New Year"}  # the default calendar rule
+    assert folders == {"2016/New Year"}  # the default calendar rule
 
 
 def test_loose_files_of_an_event_join_its_meaningful_folder() -> None:
@@ -133,7 +133,7 @@ def test_kept_folders_and_empty_layouts_stay_where_they_are() -> None:
         shot("Albums/a.jpg", datetime(2019, 7, 1)),
         shot("DCIM/b.jpg", datetime(2019, 7, 1)),
     ]
-    settings = ClassifySettings(manual_layout="")
+    settings = legacy(manual_layout="")
     found = by_name(classify(files, settings, Scope(kept=(ROOT / "Albums",))).proposals)
     assert found["a.jpg"].band is Band.STAY
     assert found["b.jpg"].folder is None

@@ -12,7 +12,7 @@ from media_hygiene.report.decisions import (
     read_decisions,
     write_decisions,
 )
-from media_hygiene.search import app as search_app
+from media_hygiene.search import views as search_views
 from media_hygiene.services import search_pages as search_service
 from tests.integration.tags.test_search_command import _call, fake_server
 from tests.support.cli import run
@@ -63,7 +63,7 @@ def test_picked_files_and_every_file_found_are_saved_and_read_back(
         decisions,
         DecisionsFile(version=1, report="r1", roots=("C:\\",), bursts=(todo,)),
     )
-    monkeypatch.setattr(search_app, "PAGE_HITS", 1)  # the page shows one file
+    monkeypatch.setattr(search_views, "FIRST_HITS", 1)  # the page shows one file
     first, _console = _serve(cli, monkeypatch, [("POST /api/search", _DURBUY)])
     key = _hits(first[0])[0]["key"]
     answers = _serve(

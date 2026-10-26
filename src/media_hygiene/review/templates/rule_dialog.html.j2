@@ -1,0 +1,30 @@
+{# The dialog of a date rule, shared by review-sort's *Remember as a rule* (0392) and the
+   search page's *Make it a rule* (0396); its script is `rule_dialog.js.j2`, its look
+   `rule_dialog.css.j2`. `rule_update` (the search page) adds *Update a rule…*: the date
+   rules of config.toml, the latest first, one chosen fills the dialog and is replaced in
+   place when saved. `rule_go` (the search page, 0397) adds the GO: the files the rule
+   takes, but those left where they are, sorted now, journaled. #}
+<dialog id="ruleDlg" aria-labelledby="ruleTitle">
+  <form id="ruleForm" method="dialog" autocomplete="off">
+    <h2 id="ruleTitle">📌 {{ rule_title | default(_("Remember as a rule")) }}</h2>
+    <p class="muted">{{ _("Written into config.toml, above Existing folders: every classify run applies it, to the photos added later too.") }}</p>
+    {% if rule_update %}
+    <label>{{ _("Update a rule…") }} <select id="ruleUpdate"><option value="">{{ _("— a new rule —") }}</option></select></label>
+    {% endif %}
+    <label>{{ _("Name") }} <input id="ruleName" required></label>
+    <label>{{ _("From") }} <input id="ruleFirst" type="date" required></label>
+    <label>{{ _("To") }} <input id="ruleLast" type="date" required></label>
+    <label>{{ _("Name of the event's folder") }} <input id="ruleCategory" list="categories" required pattern="[^\/\\]+" title="{{ _('One name, without / nor \\') }}"></label>
+    <p id="ruleWhere" class="muted"></p>
+    <label class="filter"><input type="checkbox" id="ruleKeep" checked> {{ _("Keep my folders below it (keep_folders)") }}</label>
+    <p id="rulePreview" class="muted" role="status"></p>
+    {% if rule_go %}
+    <p id="ruleWiden" class="ruleGo" hidden></p>
+    <ul id="ruleSources" class="sources" hidden></ul>
+    <p id="ruleLeft" class="ruleGo muted" role="status"></p>
+    <p class="ruleGo"><button type="button" id="ruleLeave" class="plain" disabled>{{ _("Leave the picked files where they are") }}</button>
+      <button type="button" id="ruleGo" disabled>{{ _("Check, then sort") }}</button></p>
+    {% endif %}
+    <menu><button type="button" id="ruleNo" class="plain">{{ _("Cancel") }}</button><button type="submit" id="ruleYes">{{ _("Save the rule") }}</button></menu>
+  </form>
+</dialog>

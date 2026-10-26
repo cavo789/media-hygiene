@@ -14,7 +14,12 @@ from typing import TYPE_CHECKING
 from media_hygiene.actions.journal import JournalWriter, journal_file
 from media_hygiene.actions.journaled import CleanContext
 from media_hygiene.actions.kinds import Phase
-from media_hygiene.actions.manifest import Manifest, census, verify_moves
+from media_hygiene.actions.manifest import (
+    Manifest,
+    census,
+    touched_folders,
+    verify_moves,
+)
 from media_hygiene.actions.outcome import Tally
 from media_hygiene.actions.runs import new_run_id
 from media_hygiene.actions.sort import SortExecutor
@@ -30,6 +35,7 @@ from media_hygiene.services.acting import ensure_can_act
 from media_hygiene.services.quarantine_space import quarantine_route
 from media_hygiene.services.run_listings import forget_run_listings
 from media_hygiene.services.sort_guards import check_companions, check_destinations
+from media_hygiene.services.sort_links import follow_links
 from media_hygiene.services.sort_models import Prepared, SortResult
 from media_hygiene.services.sort_report import (
     folder_rules,
@@ -45,6 +51,7 @@ if TYPE_CHECKING:
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.services.sort_inputs import SortInputs
+    from media_hygiene.services.sort_links import LinksFollowed
 
 
 class SortService:
@@ -107,16 +114,20 @@ class SortService:
         watch.record(Stage.PREPARE, prepared.seconds)
         runtime.locations.journal_dir.mkdir(parents=True, exist_ok=True)
         run_id = new_run_id(runtime.locations.journal_dir)
-        roots = (*source_roots(runtime, prepared.plan), *prepared.plan.roots)
+        roots = (
+            touched_folders(prepared.plan)  # a few folders, not the whole collection
+            if prepared.inputs.cut
+            else (*source_roots(runtime, prepared.plan), *prepared.plan.roots)
+        )
         with watch.timing(Stage.COUNTS):
             before = census(roots, prepared.rules.junk)
         with watch.timing(Stage.MOVES):
             moves, folders = self._act(prepared, run_id, stop)
         with watch.timing(Stage.FOLLOW):
-            self._follow(moves.moved)
             forget_run_listings(runtime, run_id, Phase.SORT)
+            links = self._follow(moves.moved)
         with watch.timing(Stage.VERIFY):
-            verified, problems = verify_moves(moves.moved, runtime.mapper.to_host)
+            checked = verify_moves(moves.moved, runtime.mapper.to_host)
         with watch.timing(Stage.COUNTS):
             after = census(roots, prepared.rules.junk)
         manifest = Manifest(
@@ -126,12 +137,14 @@ class SortService:
             before=before,
             after=after,
             moved=len(moves.moved),
-            verified=verified,
-            problems=problems,
+            verified=checked[0],
+            problems=checked[1],
         )
         with watch.timing(Stage.MANIFEST):
             written = manifest_or_error(runtime, manifest)
-        return SortResult(run_id, moves, folders, manifest, written, watch.times())
+        return SortResult(
+            run_id, moves, folders, manifest, written, watch.times(), links
+        )
 
     def _act(
         self, prepared: Prepared, run_id: str, stop: Callable[[], bool]
@@ -166,14 +179,21 @@ class SortService:
                 folders = cleaner.run(list(prepared.candidates), prepared.rules)
         return replace(moves, outcome=tally.freeze()), folders
 
-    def _follow(self, moved: tuple[JournalEntry, ...]) -> None:
-        """Update the index: the files moved keep their digests and facts.
+    def _follow(self, moved: tuple[JournalEntry, ...]) -> LinksFollowed:
+        """Update the index, then every file of the user naming the photos moved.
+
+        The files moved keep their digests and facts; the names, albums and
+        decisions name their new paths, read back from the disk (0382).
 
         Args:
             moved: The moves done.
+
+        Returns:
+            What the user's files say now.
         """
+        pairs = [(entry.path, entry.target or entry.path) for entry in moved]
         index = self._runtime.index_file
-        if index is None or not moved:
-            return
-        with FactsRepository.open(index) as repository:
-            repository.move((entry.path, entry.target or entry.path) for entry in moved)
+        if index is not None and moved:
+            with FactsRepository.open(index) as repository:
+                repository.move(pairs)
+        return follow_links(self._runtime, pairs)

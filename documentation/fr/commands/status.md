@@ -57,6 +57,15 @@ Sous le titre *Où vous en êtes* :
 - **les exécutions que `undo` peut encore restaurer**, avec la commande `undo` complète ;
 - **les rafales encore à voir** et les décisions de `review` pas encore appliquées ;
 - **la dernière proposition de `classify`**, et si `sort` l'a appliquée ;
+- **où en est le tri, lu dans l'arborescence elle-même**
+  ([la convention](../sort/04-classify.md#la-convention--année-mois-événement)) : *Trié : 62 % ·
+  rien de spécial : 9 % · reste : 16 400 fichiers dans 214 dossiers.* Un fichier dans
+  `année/année-mois/<nom>` est trié, un fichier posé directement dans `année/année-mois` a été vu
+  (rien de spécial), tout le reste est à faire — quoi qui l'y ait mis, un déplacement dans
+  l'Explorateur compris (après le prochain audit). Vos dossiers protégés et vos sauvegardes sont
+  comptés à part. Puis **les dix plus gros dossiers restants**, avec
+  `mh search --folder "<dossier>"` pour en ouvrir un dans la page de recherche, choisir, puis
+  *Déplacer vers un événement…* ;
 
 puis **une** étape suivante, en commande complète prête à coller. Une quarantaine de plus de
 30 jours est la première chose qu'il propose de vider avec [`purge`](purge.md).

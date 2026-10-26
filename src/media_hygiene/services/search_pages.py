@@ -37,6 +37,7 @@ class PageStart:
     ready: str  # translated, with `{url}`
     # Opened from the home page: the step *Apply now* ends on (None: no button).
     apply: Callable[[], ApplyStep | None] | None = None
+    query: str = ""  # added to the address said: `?folder=…` opens on a folder (0405)
 
 
 @dataclass(frozen=True, slots=True)
@@ -81,5 +82,5 @@ def _announce(runtime: Runtime, start: PageStart, port: int) -> None:
         start: The page announced, and how.
         port: The port listened on, inside the container.
     """
-    runtime.output.success(start.ready.format(url=page_url(port)))
+    runtime.output.success(start.ready.format(url=page_url(port) + start.query))
     address_tip(runtime.output, port)

@@ -38,7 +38,7 @@ def test_a_file_edited_otherwise_in_both_places(locations: Locations) -> None:
     edit(workbook, final("IMG_0000.jpg", "2016/Other"))
     with pytest.raises(WorkbookError) as refused:
         sort(runtime)
-    assert "IMG_0000.jpg: page '2016/Best of', workbook '2016/Other'" in (
+    assert "IMG_0000.jpg: page '2016/2016-07/Best of', workbook '2016/Other'" in (
         refused.value.message
     )
     app = reopened(runtime)

@@ -13,6 +13,11 @@ choisi à droite. Choisissez-en et mettez-les de côté : le prochain
 [`clean --decisions`](clean.md) les déplace en quarantaine, journalisé et annulable. Supprimer
 dans l'Explorateur ne laisse aucune trace ; ici, chaque retrait peut être annulé.
 
+> **Une seule page désormais** : `browse` ouvre [`search`](search.md) avec ses dossiers ouverts
+> (`/browse` est la même page). Tout ce qui suit s'y trouve : l'arbre sous *Dans un dossier* (un
+> clic liste le dossier et ses sous-dossiers), *⚖ Fichiers les plus lourds*, **Trier par**
+> (*débit* compris) et **Afficher**.
+
 **Quand** : après un [`audit`](audit.md) : la page montre ce que l'audit a lu. Pas besoin de
 [`tags`](tags.md).
 
@@ -32,7 +37,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
-| Vos photos | 🔒 Jamais modifiées par la page : montez-les en `:ro`. |
+| Vos photos | 🔒 Rien ne bouge sans votre GO (l'onglet 🔎 trie les fichiers d'une règle vérifiés là, [`search`](search.md#faire-dune-période-une-règle)), noté au journal : `undo` les remet. `mh browse` les monte accessibles en écriture ; montées en `:ro`, la page reste en lecture seule. |
 | Il faut | `/cache` (les fichiers du dernier audit), vos dossiers (pour montrer les photos), `/reports` (pour garder ce que vous mettez de côté), et `-p 127.0.0.1:8088:8088` pour la page. |
 | Écrit | Les petits aperçus de la grille, dans le cache ; les photos mises de côté, dans `decisions.json` des rapports ; vos albums, dans `albums.json` à côté. |
 | Annuler | Rien à annuler dans la page : [`clean --decisions`](clean.md) déplace les photos mises de côté, [`undo`](undo.md) les remet. |
@@ -93,7 +98,7 @@ Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`).
   Ctrl, il s'ajoute au choix) ; Ctrl+A tout le dossier. **Inverser la sélection** (ou I) choisit
   les autres : quand un dossier contient surtout des ratés, choisissez les bonnes, inversez,
   puis Suppr. Les touches sont rappelées sous l'arborescence, toujours visibles, avec la ligne
-  🔒 qui rappelle que rien n'est supprimé depuis cette page.
+  🔒 qui rappelle que rien ne bouge sans votre GO.
 - **Mettre de côté** : Suppr, ou **Mettre de côté les fichiers choisis**. Le choix est enregistré
   aussitôt dans `decisions.json` de vos rapports, relu sur le disque et affiché avec son nombre et
   sa taille : *37 fichiers mis de côté (412 Mo), enregistrés dans … : 'clean --decisions' les

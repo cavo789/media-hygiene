@@ -1,0 +1,51 @@
+{# The script of the dialog of a date rule (`rule_dialog.html.j2`), shared by review-sort
+   (0392, 0393) and the search page (0396): its values, filled, sent; what the page does
+   with the answers is the page's own (`sort_review_rule.js.j2`, `search_rule.js.j2`). #}
+const ruleEl = (id) => document.getElementById(id);
+const RULE_FIELDS = ["ruleName", "ruleFirst", "ruleLast", "ruleCategory", "ruleKeep"];
+// What the dialog holds, as the server reads a rule.
+function ruleValues() {
+  return {
+    name: ruleEl("ruleName").value, first: ruleEl("ruleFirst").value, last: ruleEl("ruleLast").value,
+    category: ruleEl("ruleCategory").value, keep_folders: ruleEl("ruleKeep").checked,
+  };
+}
+// Fill the dialog: its fields, nothing said yet, the button on.
+function ruleFill(values) {
+  ruleEl("ruleName").value = values.name || "";
+  ruleEl("ruleFirst").value = values.first || "";
+  ruleEl("ruleLast").value = values.last || values.first || "";
+  ruleEl("ruleCategory").value = values.category || "";
+  ruleEl("ruleKeep").checked = values.keep_folders !== false;
+  ruleSay("", false);
+  ruleWhere();
+  ruleEl("ruleYes").disabled = false;
+}
+// Send a rule; null when the page's server cannot be reached.
+async function rulePost(path, body) {
+  try {
+    const response = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    return { response: response, answer: await response.json().catch(() => ({})) };
+  } catch (error) { return null; }
+}
+// The folder `sort` will make, as Explorer shows it: `2009\2009-11\<name>` (0400, 0401).
+function ruleWhere() {
+  const first = ruleEl("ruleFirst").value, name = ruleEl("ruleCategory").value.trim();
+  const shown = first && name ? `→ ${first.slice(0, 4)}\\${first.slice(0, 7)}\\${name}` : "";
+  ruleEl("ruleWhere").textContent = shown;
+}
+for (const field of ["ruleFirst", "ruleCategory"]) ruleEl(field).addEventListener("input", ruleWhere);
+function ruleSay(text, error) {
+  const said = ruleEl("rulePreview");
+  said.textContent = text;
+  said.className = error ? "error" : "muted";
+}
+// Call back a moment after the user stopped typing in the dialog.
+function ruleOnChange(callback) {
+  let timer = 0;
+  for (const field of RULE_FIELDS) ruleEl(field).addEventListener("input", () => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(callback, 250);
+  });
+}
+ruleEl("ruleNo").addEventListener("click", () => ruleEl("ruleDlg").close());

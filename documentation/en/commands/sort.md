@@ -71,6 +71,7 @@ the source folders it will remove, then asks.
 | `WORKBOOK` | The edited workbook to apply (in a mounted folder); the latest `classify` run's by default. |
 | `--yes`, `-y` | Do not ask (or `confirm = false` in `[sort]`). |
 | `--keep-empty-folders` | Keep the source folders the sort leaves empty. |
+| `--event ID` | Sort only the files of this event (its id: the first column of the Events sheet); the rest of the workbook is left for later. |
 
 ## Good to know
 
@@ -82,6 +83,16 @@ the source folders it will remove, then asks.
   `undo` then undoes all the runs of that workbook at once.
 - **Nothing lost, proven**: the files and sizes of the source and target folders are counted
   before and after, and must match.
+- **One event at a time**: `--event` (or *Sort this event now* in
+  [`review-sort`](review-sort.md)) sorts one event; a later `sort` of the whole workbook skips
+  its files, already moved. Each run has its own `undo`.
+- **Everything stays linked**: right after moving, `sort` rewrites every file of yours that names
+  photos by path — the names given to faces (`people\*.toml`), `albums.json`, `decisions.json`
+  (burst series, files chosen in `search`; a folder pair whose folder is gone is dropped) and the
+  videos chosen in `shrink --try` — then reads them back and says so in one line. They no longer
+  depend on the cache: you can delete it. `undo` puts the old paths back the same way.
+  A folder of `config.toml` (`[folders] preferred`, a folder placed on the map) that the run
+  emptied is named, so that you can point it to the new folder.
 
 ## Go further
 

@@ -3,9 +3,10 @@
    `pick_grid.js.j2`'s, the large view `pick_viewer.js.j2`'s, the albums
    `album_bar.html.j2`'s. The × of a `person` chip takes the name off the photo (the
    person's `rejected` list, read back, *Put back* in the line said): it never picks
-   the card (0317). A click on the chip itself (or W in the large view) opens *Why this
-   name?*: the face cut out, how it got the name, its reference and the score, then
-   *Yes, it is …* or *Not …* for that face (0318); Esc closes it, the picking untouched. #}
+   the card (0317). A click on any chip, a person's too, searches its word in every source,
+   the filters emptied. W in the large view opens *Why this name?*: the face cut
+   out, how it got the name, its reference and the score, then *Yes, it is …* or *Not …*
+   for that face (0318); Esc closes it, the picking untouched. #}
 const TEXTS = {{ texts | tojson }};
 const SOURCES = {{ sources | tojson }};
 const SEARCH_PATH = {{ search_path | tojson }};
@@ -14,6 +15,8 @@ const PEOPLE_REJECT_PATH = {{ people_reject_path | tojson }};
 const PEOPLE_WHY_PATH = {{ people_why_path | tojson }};
 let whyAsked = null; // the photo and the name the panel explains
 let asked = {};        // the search shown
+let within = null;     // the folder of the tree the search is narrowed to (0348)
+let more = 0;          // the files asked past the first ones (*Show more*, 0408)
 
 function card(hit, index) {
   const node = element("article");
@@ -25,31 +28,46 @@ function card(hit, index) {
   picture.addEventListener("error", () => picture.replaceWith(element("div", "empty", TEXTS.noPreview)));
   const meta = element("div", "meta");
   meta.append(element("div", "name", hit.name), element("div", "muted folderLine", hit.folder));
-  if (hit.date) meta.append(element("div", "muted", hit.date));
+  const when = [hit.date, hit.size].filter(Boolean).join(" · ");  // as the folder view says it
+  if (when) meta.append(element("div", "muted", when));
+  if (hit.facts) meta.append(element("div", "muted", hit.facts));  // a video (0408)
+  if (hit.to !== undefined) { // a rule tried (0396): where the file would go
+    const goes = hit.left ? TEXTS.leftHere : hit.taken ? fill(TEXTS.goesTo, { folder: hit.to || TEXTS.stays })
+      : hit.otherDay ? fill(TEXTS.otherDay, { date: hit.date, rule: fill(TEXTS.leftTo, { rule: hit.by || "—" }) }) : fill(TEXTS.leftTo, { rule: hit.by || "—" });
+    meta.append(element("div", "goes", goes));
+    if (!hit.taken) node.classList.add("notTaken");
+    if (hit.left) node.classList.add("leftHere");
+  }
   if (hit.caption) meta.append(element("div", "muted caption", hit.caption));
   meta.append(chipsOf(hit));
   node.append(picture, meta);
   return wireCard(node, index);
 }
 
-// The words of a file as chips; a person's chip has a × that takes the name off.
+// The words of a file as chips: a click searches the word; a person's has a × too.
 function chipsOf(hit) {
   const chips = element("div", "chips");
   for (const [source, words] of Object.entries(hit.tags)) {
     for (const word of words) {
       const chip = element("span", "chip", word);
-      chip.title = SOURCES[source] || source;
-      if (source === "person") {
-        chip.classList.add("person");
-        chip.title = fill(TEXTS.why, { name: word });
-        for (const kind of ["pointerdown", "mousedown", "dblclick"]) chip.addEventListener(kind, (event) => event.stopPropagation());
-        chip.addEventListener("click", (event) => { event.stopPropagation(); why(hit.key, word); });
-        chip.append(unnameButton(hit, word));
-      }
+      chip.title = fill(TEXTS.lookFor, { word, source: SOURCES[source] || source });
+      // Never a pick, a rectangle nor the large view: only the search.
+      for (const kind of ["pointerdown", "mousedown", "dblclick"]) chip.addEventListener(kind, (event) => event.stopPropagation());
+      chip.addEventListener("click", (event) => { event.stopPropagation(); lookFor(word); });
+      if (source === "person") chip.append(unnameButton(hit, word));
       chips.append(chip);
     }
   }
   return chips;
+}
+
+// A chip's word as the new search: the phrase in every source, the filters emptied.
+function lookFor(word) {
+  $("text").value = '"' + word.replaceAll('"', "") + '"';
+  for (const id of ["from", "to", "folder", "source"]) $(id).value = "";
+  if ($("viewer").classList.contains("open")) close();
+  window.scrollTo(0, 0);
+  search(null);
 }
 
 // The large view's facts (I): the same chips, the same ×.
@@ -218,18 +236,22 @@ function told(text, error) {
 
 async function search(event, again) {
   if (event) event.preventDefault();
-  const year = (id) => ($(id).value ? Number($(id).value) : null);
+  if (!again) more = 0;
   const body = {
-    text: $("text").value, year_from: year("from"), year_to: year("to"),
-    folder: $("folder").value, source: $("source").value || null,
+    text: $("text").value, day_from: $("from").value || null, day_to: $("to").value || null,
+    folder: $("folder").value, source: $("source").value || null, sorting: $("sorting").value,
+    order: $("order").value, kind: $("kind").value, within: within ? within.inside : "",
+    more: more,
   };
   const answer = await ask(SEARCH_PATH, body);
   if (!answer) { told(TEXTS.offline, true); return; }
   if (!answer.ok) { told(fill(TEXTS.failed, { status: answer.status }), true); return; }
   const found = await answer.json();
   asked = body;
+  offerRule();
   total = found.total;
   showFiles(found.hits, again);
+  $("more").hidden = found.total <= found.hits.length;
   covered(found.coverage);
   let text = counted(TEXTS.found, found.total);
   if (!found.total) text = TEXTS.none + (body.text.trim() && hardlyDescribed(found.coverage) ? " " + TEXTS.noneWhy : "");
@@ -251,6 +273,23 @@ document.addEventListener("keydown", (event) => {
   }
 });
 $("form").addEventListener("submit", search);
+$("sorting").addEventListener("change", () => search(null));  // what is left to sort (0407)
+// **Sort by** and **Show** (0347): the server sorts and filters, so the first files shown
+// are the right ones; kept for this viewer, as on the folder view.
+for (const id of ["order", "kind"]) {
+  const select = $(id);
+  try {
+    const kept = localStorage.getItem("mh-search-" + id);
+    if ([...select.options].some((option) => option.value === kept)) select.value = kept;
+  } catch (error) { /* no storage (private window): the defaults */ }
+  select.addEventListener("change", () => {
+    try { localStorage.setItem("mh-search-" + id, select.value); } catch (error) { /* not kept */ }
+    search(null);
+  });
+}
 $("text").focus();
+// `mh search --folder <folder>` (0405): the page opens on a folder left to sort.
+const openedOn = new URLSearchParams(window.location.search).get({{ folder_query | tojson }});
+if (openedOn) $("folder").value = openedOn;
 search();
 loadChosen();

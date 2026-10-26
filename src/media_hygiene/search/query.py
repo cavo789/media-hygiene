@@ -11,11 +11,17 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Final
+from enum import StrEnum
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import Locale
 from media_hygiene.tags.models import TagSource
 from media_hygiene.tags.plurals import singular
+
+if TYPE_CHECKING:
+    from datetime import date
+
+    from media_hygiene.search.folder_order import Shown
 
 _TOKEN: Final = re.compile(
     r'(?:(?P<source>\w+):)?(?:"(?P<phrase>[^"]*)"?|(?P<word>[^\s"]+))'
@@ -37,13 +43,36 @@ class Term:
     phrase: bool = False
 
 
+class Order(StrEnum):
+    """How a search's files come (0347): the best match first, or as the folders do."""
+
+    BEST = "best"  # the best match first; the newest first without words
+    NAME = "name"
+    DATE = "date"  # the oldest first, undated last
+    SIZE = "size"  # the largest first
+    RATE = "rate"  # the videos worst compressed for their length first (0408)
+
+
+class Sorting(StrEnum):
+    """The search's filter on the sort convention (0407): every file, or one side."""
+
+    ALL = "all"
+    LEFT = "left"  # not in `YYYY/YYYY-MM` yet: still to sort
+    SORTED = "sorted"  # in an event of `YYYY/YYYY-MM`, or directly in its month
+
+
 @dataclass(frozen=True, slots=True)
-class Filters:
-    """What narrows a search beyond its words: years, a folder, one source."""
+class Filters:  # pylint: disable=too-many-instance-attributes  # one per page filter
+    """What narrows a search beyond its words: years or days, a folder, one source."""
 
     years: tuple[int, int] | None = None  # first and last year, both included
     folder: str = ""  # a part of the path, any case
     source: TagSource | None = None  # every word among this source only
+    days: tuple[date, date] | None = None  # first and last day, both included (0396)
+    sorting: Sorting = Sorting.ALL
+    kind: Shown = "all"  # **Show**: every file, the photos or the videos (0347)
+    order: Order = Order.BEST
+    within: str = ""  # a folder of the tree (container path), its subfolders included
 
 
 @dataclass(frozen=True, slots=True)

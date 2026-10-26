@@ -1,7 +1,8 @@
 """What the folders say about each file: its category and why, before any rule.
 
 A meaningful folder is kept as is (`existing-folder`); a person or device folder at the
-top (`Léa/2018/…`) gives its name (`person-folder`); the loose files of an event whose
+top (`Léa/2018/…`) or a folder holding a person's name (`2019/Photos Chloé`) gives its
+name (`person-folder`); the loose files of an event whose
 other files sit in one meaningful folder join it (`event-neighbour`). A file whose own
 folders say nothing reads those of the copies `clean` removed (0208), as if it lay
 there: when they give one meaning; when they give several, none is used.
@@ -92,6 +93,8 @@ def _own_signal(file: MediaInput, rules: FolderRules) -> Signal:
         and rules.label(relative[1]) is None
     ):
         return Signal(SortReason.PERSON_FOLDER, labels[0])
+    if rules.of_person(labels):
+        return Signal(SortReason.PERSON_FOLDER, "/".join(labels))
     return Signal(SortReason.EXISTING_FOLDER, "/".join(labels))
 
 

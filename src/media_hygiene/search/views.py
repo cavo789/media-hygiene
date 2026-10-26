@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+from datetime import date
 from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from media_hygiene.search.query import Filters, SearchQuery, parse_terms
+from media_hygiene.console.formatting import human_size
+from media_hygiene.search.folder_order import Shown
+from media_hygiene.search.query import Filters, Order, SearchQuery, Sorting, parse_terms
 from media_hygiene.tags.models import TagSource
 
 if TYPE_CHECKING:
@@ -18,7 +21,10 @@ PREVIEW_PREFIX: Final = "/preview/"
 ORIGINAL_PREFIX: Final = "/original/"
 JPEG: Final = ".jpg"
 _MAX_TEXT: Final = 500
+FIRST_HITS: Final = 240  # the files a search shows first
+_MOST: Final = 20_000  # files shown at most, *Show more* after *Show more*
 _FIRST_YEAR, _LAST_YEAR = 1800, 2200
+_DECEMBER, _LAST_DAY = 12, 31
 # The sentence is shown under the picture; the words of the others as chips.
 _SHOWN: Final = tuple(source for source in TagSource if source is not TagSource.CAPTION)
 
@@ -31,36 +37,101 @@ class SearchAsked(BaseModel):
     text: str = Field(default="", max_length=_MAX_TEXT)
     year_from: int | None = Field(default=None, ge=_FIRST_YEAR, le=_LAST_YEAR)
     year_to: int | None = Field(default=None, ge=_FIRST_YEAR, le=_LAST_YEAR)
+    day_from: date | None = None  # the calendars of the page (0396)
+    day_to: date | None = None
     folder: str = Field(default="", max_length=_MAX_TEXT)
     source: TagSource | None = None
+    sorting: Sorting = Sorting.ALL  # the sort convention's filter (0407)
+    kind: Shown = "all"  # **Show** (0347)
+    order: Order = Order.BEST  # **Sort by** (0347)
+    within: str = Field(default="", max_length=_MAX_TEXT)  # a folder of the tree (0348)
+    more: int = Field(default=0, ge=0, le=_MOST)  # *Show more* (0408)
+
+    @property
+    def shown(self) -> int:
+        """How many files the page shows: the first ones, and as many more as asked.
+
+        Returns:
+            The limit of the search.
+        """
+        return FIRST_HITS + self.more
 
     def query(self) -> SearchQuery:
         """Make the search of what the page sent.
 
         Returns:
-            The query; one year alone is a range of one year, reversed years are
-            put back in order.
+            The query; one year or one day alone is a range of one, reversed bounds
+            are put back in order.
         """
-        bounds = [year for year in (self.year_from, self.year_to) if year is not None]
-        years = (min(bounds), max(bounds)) if bounds else None
-        filters = Filters(years, self.folder, self.source)
+        filters = Filters(
+            _range(self.year_from, self.year_to),
+            self.folder,
+            self.source,
+            days=_range(self.day_from, self.day_to),
+            sorting=self.sorting,
+            kind=self.kind,
+            order=self.order,
+            within=self.within.rstrip("/"),
+        )
         return SearchQuery(parse_terms(self.text), filters)
+
+    def period(self) -> tuple[date, date] | None:
+        """The days asked for: the calendars, else the years (1 January to 31 December).
+
+        Returns:
+            The first and last day; None without either.
+        """
+        days = _range(self.day_from, self.day_to)
+        years = _range(self.year_from, self.year_to)
+        if days is None and years is not None:
+            days = (date(years[0], 1, 1), date(years[1], _DECEMBER, _LAST_DAY))
+        return days
 
     def found_by(self) -> str:
         """Name the search in the decisions file, for the user's eyes.
 
         Returns:
-            Its words and filters, e.g. `person:"Ann" · 2004-2006`; empty for none.
+            Its words and filters, e.g. `person:"Ann" · 2004-2006` or
+            `2017-08-05..2017-08-06`; empty for none.
         """
         query = self.query()
-        years = query.filters.years
+        years, days = query.filters.years, query.filters.days
         parts = (
             str.strip(self.text),
             f"{years[0]}-{years[1]}" if years else "",
+            _days_named(days) if days else "",
             str.strip(self.folder),
             query.filters.source.value if query.filters.source else "",
+            "" if self.sorting is Sorting.ALL else self.sorting.value,
         )
         return " · ".join(part for part in parts if part)
+
+
+def _range[T: (int, date)](first: T | None, last: T | None) -> tuple[T, T] | None:
+    """Two bounds put in order; one alone is a range of one.
+
+    Args:
+        first: The first bound typed, if any.
+        last: The last bound typed, if any.
+
+    Returns:
+        The range; None without either.
+    """
+    bounds = [bound for bound in (first, last) if bound is not None]
+    return (min(bounds), max(bounds)) if bounds else None
+
+
+def _days_named(days: tuple[date, date]) -> str:
+    """Write a period as a `date_range` rule does.
+
+    Args:
+        days: The first and last day.
+
+    Returns:
+        `2017-08-05..2017-08-06`, or `2017-08-05` for one day.
+    """
+    first, last = (day.isoformat() for day in days)
+    return first if first == last else f"{first}..{last}"
 
 
 def found_view(
@@ -90,8 +161,8 @@ def _hit_view(hit: Hit, mapper: HostPathMapper) -> dict[str, object]:
         mapper: Writes its path as the user knows it.
 
     Returns:
-        The JSON object: name, folder, date, sentence, words, its addresses, and
-        its host path (`path`, for `/person`).
+        The JSON object: name, folder, date, size, sentence, words, its addresses,
+        and its host path (`path`, for `/person`).
     """
     path = hit.photo.path
     caption = hit.tags.get(TagSource.CAPTION, ())
@@ -100,6 +171,9 @@ def _hit_view(hit: Hit, mapper: HostPathMapper) -> dict[str, object]:
         "name": path.name,
         "folder": mapper.to_host(path.parent),
         "date": hit.date,
+        "size": human_size(hit.photo.size),  # shown as the folder view does (0347)
+        "bytes": hit.photo.size,
+        "facts": hit.facts,  # a video's length, bit rate, codec (0408)
         "caption": caption[0] if caption else "",
         "tags": {
             source.value: list(hit.tags[source])

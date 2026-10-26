@@ -28,7 +28,7 @@ docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygien
 | Vos photos | 🔒 Jamais modifiées. |
 | Il faut | Rien. |
 | Conseillé | `/config`, et les mêmes options `-v` que votre commande habituelle, pour voir leur état. |
-| Écrit | Un `config.toml` commenté dans `/config`, la première fois seulement ; avec `--upgrade`, les réglages qui lui manquent. |
+| Écrit | Un `config.toml` commenté dans `/config`, la première fois seulement ; avec `--upgrade`, les réglages qui lui manquent ; avec `--convention`, les dispositions de la convention de tri, une fois votre oui donné. |
 | Annuler | Supprimez `config.toml` pour revenir aux valeurs par défaut. |
 | Avec `mh` | `mh config`. |
 
@@ -77,6 +77,24 @@ Le fichier est relu sur le disque et la console liste ce qu'il contient désorma
 monté avec `:ro` est refusé (`--dry-run` fonctionne toujours) ; aucune sauvegarde n'est laissée
 dans `/config`.
 
+## La convention de tri : `--convention`
+
+`config.toml` est écrit en entier au premier lancement : une nouvelle disposition par défaut ne
+l'atteint donc jamais. Un fichier écrit avant la
+[convention de tri](../sort/04-classify.md#la-convention--année-mois-événement) garde
+`{year}/{category}` et ses dossiers *À vérifier* / *À trier* ; `classify` le dit en une ligne.
+`config --convention` liste chaque disposition qui diffère, ancienne → nouvelle, **demande**,
+puis les écrit (commentaires gardés) et relit le fichier :
+
+```powershell
+mh config --convention --dry-run   # lister seulement
+mh config --convention             # lister, demander, écrire
+```
+
+Rien n'est réécrit sans votre oui. Vos règles ne sont pas touchées : une règle dont la catégorie
+a plusieurs niveaux de dossiers (`Fêtes/Noël`) est nommée par `classify`, pour que vous la
+raccourcissiez.
+
 ## Qui l'emporte ?
 
 De la plus faible à la plus forte : la valeur par défaut, `config.toml`, une variable
@@ -85,8 +103,8 @@ d'environnement (`-e MEDIA_HYGIENE_<SECTION>__<CLÉ>=…`, comme
 
 ## Bon à savoir
 
-- `config` a deux options à lui, `--upgrade` et `--dry-run` ; les options globales s'appliquent
-  aussi (`--locale`, `--verbosity`).
+- `config` a trois options à lui, `--upgrade`, `--convention` et `--dry-run` ; les options
+  globales s'appliquent aussi (`--locale`, `--verbosity`).
 - `/config` contient `config.toml` **seulement** : n'y mettez jamais rien d'autre.
 - Un réglage inconnu de cette version est signalé, avec sa ligne : voir le
   [dépannage](../reference-troubleshooting.md#un-réglage-de-configtoml-est-inconnu-de-cette-version).

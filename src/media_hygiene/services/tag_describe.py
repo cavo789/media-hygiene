@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.classify.ai.client import OllamaClient
 from media_hygiene.services.describing import DescribeJob, describe_checked
+from media_hygiene.services.tag_derive import TaggingStore
 from media_hygiene.tags.normalize import normalize
 from media_hygiene.tags.vision import tags_question
 
@@ -73,7 +74,9 @@ def describe_photos(
     """
     client = OllamaClient(step.runtime.settings.classify.ai)
     question = tags_question(step.rules.language)
-    job = DescribeJob(client, step.store, answering, question, work.stills)
+    # Each answer writes its words at once: searchable while the run goes (0353).
+    store = TaggingStore(step.store, work, step.sight)
+    job = DescribeJob(client, store, answering, question, work.stills)
     return describe_checked(step.runtime, work.missing, job)
 
 

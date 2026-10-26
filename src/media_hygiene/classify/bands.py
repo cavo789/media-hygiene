@@ -46,17 +46,22 @@ def verdict(signal: Signal, dating: Dating, settings: ClassifySettings) -> Verdi
     return Verdict(Band.MANUAL, reason, score, signal.rule, signal.hint)
 
 
-def layout_of(band: Band, settings: ClassifySettings, *, camera: bool) -> str:
-    """The layout of a band.
+def layout_of(judged: Verdict, settings: ClassifySettings, *, camera: bool) -> str:
+    """The layout of a verdict: its band's, or the sure rule's own (0402).
 
     Args:
-        band: The band.
-        settings: The layouts.
+        judged: The band, and the rule that decided.
+        settings: The layouts and the rules.
         camera: For undated files: whether a camera took it (else received).
 
     Returns:
         The layout; empty means "stay where it is".
     """
+    band = judged.band
+    if band is Band.SURE and judged.rule:
+        own = next((r.layout for r in settings.rules if r.name == judged.rule), "")
+        if own:
+            return own
     layouts = {
         Band.SURE: settings.layout,
         Band.UNSURE: settings.unsure_layout,

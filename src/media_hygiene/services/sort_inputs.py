@@ -48,6 +48,7 @@ class SortInputs:
     page: Overlaid
     saved_at: datetime
     open_elsewhere: bool  # Excel or LibreOffice still has it open
+    cut: bool = False  # some rows only (an event, a group): only their folders counted
 
     @property
     def edits(self) -> Edits:
@@ -122,7 +123,27 @@ def load_inputs(runtime: Runtime, workbook: Path) -> SortInputs:
         WorkbookError: The page and the workbook disagree on an event or a file.
     """
     plan_file, plan = plan_of(runtime, workbook)
-    page = overlay(read_edits(workbook, plan), page_decisions(plan_file, plan))
+    return inputs_of(
+        workbook,
+        plan,
+        overlay(read_edits(workbook, plan), page_decisions(plan_file, plan)),
+    )
+
+
+def inputs_of(workbook: Path, plan: ClassifyPlan, page: Overlaid) -> SortInputs:
+    """What `sort` applies, from a plan and its edits already read.
+
+    Args:
+        workbook: The workbook (container path).
+        plan: Its plan.
+        page: The workbook's edits, the page's choices laid over them.
+
+    Returns:
+        The inputs.
+
+    Raises:
+        WorkbookError: The page and the workbook disagree on an event or a file.
+    """
     if page.conflicts:
         raise conflict_error(plan, page.conflicts)
     return SortInputs(

@@ -1,0 +1,41 @@
+{# The tree of the library's folders, the same on the folder view and the search (0348):
+   the mounted folders open, every folder below them closed, each with what it holds.
+   `folderTree(folders, chosen)` builds it from `GET /api/folders`; `chosen(node)` is called
+   when a folder is clicked (the folder view opens it, the search filters on it). #}
+function folderBranch(node, children, chosen) {
+  const item = element("li");
+  const line = element("div", "node");
+  const below = children.get(node.path) || [];
+  const toggle = element("button", "toggle", below.length ? "▸" : "");
+  toggle.type = "button";
+  const button = element("button", "folder", node.name);
+  button.type = "button";
+  button.dataset.path = node.path;
+  button.append(element("small", "", fill(TEXTS.counts, node)));
+  line.append(toggle, button);
+  item.append(line);
+  if (below.length) {
+    const list = element("ul");
+    list.append(...below.map((child) => folderBranch(child, children, chosen)));
+    list.hidden = node.parent !== null;
+    toggle.textContent = list.hidden ? "▸" : "▾";
+    toggle.addEventListener("click", () => {
+      list.hidden = !list.hidden;
+      toggle.textContent = list.hidden ? "▸" : "▾";
+    });
+    item.append(list);
+  }
+  button.addEventListener("click", () => chosen(node));
+  return item;
+}
+
+function folderTree(folders, chosen) {
+  const children = new Map();
+  for (const node of folders) {
+    if (!children.has(node.parent)) children.set(node.parent, []);
+    children.get(node.parent).push(node);
+  }
+  const list = element("ul");
+  list.append(...(children.get(null) || []).map((node) => folderBranch(node, children, chosen)));
+  return list;
+}

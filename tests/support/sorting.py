@@ -14,11 +14,13 @@ from openpyxl import load_workbook
 
 from media_hygiene.classify.workbook.sheets import EventColumn
 from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.audit import AuditService
 from media_hygiene.services.classify import ClassifyService
 from media_hygiene.services.classify_output import write_classify_output
 from media_hygiene.services.sort import SortService
 from media_hygiene.services.sort_inputs import find_workbook, load_inputs
 from media_hygiene.services.undo import undo_run
+from tests.support.runtime import make_runtime
 from tests.support.scenes import Shot, write_shot
 
 if TYPE_CHECKING:
@@ -26,6 +28,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.actions.outcome import Outcome
+    from media_hygiene.paths.locations import Locations
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.services.sort_models import SortResult
 
@@ -58,6 +61,21 @@ def build_library(data_dir: Path) -> None:
         data_dir / MIXED / "IMG_9000.jpg", Shot(50, taken_at="2019:03:01 09:00:00")
     )
     (data_dir / MIXED / "notes.txt").write_text("to keep", encoding="utf-8")
+
+
+def audited_library(locations: Locations) -> Runtime:
+    """The library written below the data folder, then audited.
+
+    Args:
+        locations: Mount points.
+
+    Returns:
+        The runtime.
+    """
+    build_library(locations.data_dir)
+    runtime = make_runtime(locations)
+    AuditService(runtime, NullProgress()).run()
+    return runtime
 
 
 def snapshot(root: Path) -> Snapshot:

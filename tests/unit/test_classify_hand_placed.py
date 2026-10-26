@@ -18,9 +18,9 @@ from pydantic import ValidationError
 from media_hygiene.classify.engine import Scope, classify
 from media_hygiene.classify.hand_placed import Candidate, hand_placed, placed_by_hand
 from media_hygiene.classify.models import SortReason
-from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.place_photos import HandPhoto, PlacePhotos
 from media_hygiene.geo.gazetteer import Gazetteer
+from tests.support.layouts import legacy
 from tests.support.located import (
     GRANDPA,
     HOME,
@@ -105,7 +105,7 @@ def _photo(where: tuple[float, float], name: str = "a.jpg") -> MediaInput:
 
 def test_classify_puts_a_photo_given_by_hand_in_its_place() -> None:
     """Sure, as a GPS inside the place would be: its own GPS is ignored."""
-    settings = ClassifySettings(
+    settings = legacy(
         rules=(PLACE_RULE,), places=(HOME, GRANDPA), place_photos=(_given(),)
     )
     [proposal] = classify([_photo(WRONG_GPS)], settings, Scope()).proposals
@@ -121,7 +121,7 @@ def test_classify_puts_a_photo_given_by_hand_in_its_place() -> None:
 def test_a_trip_is_measured_from_the_place_given(tmp_path: Path) -> None:
     """A photo whose GPS says Milan, given to home, is no trip: it is home."""
     towns = Gazetteer.load(write_towns(tmp_path))
-    settings = ClassifySettings(
+    settings = legacy(
         rules=(TRIP_RULE, PLACE_RULE),
         places=(HOME, GRANDPA),
         place_photos=(_given(place="home"),),  # any case
@@ -133,4 +133,4 @@ def test_a_trip_is_measured_from_the_place_given(tmp_path: Path) -> None:
 def test_photos_given_to_no_place_are_refused() -> None:
     """Never an entry naming nothing: the map deletes them with their place."""
     with pytest.raises(ValidationError, match="Geer"):
-        ClassifySettings(places=(HOME,), place_photos=(_given(place="Geer"),))
+        legacy(places=(HOME,), place_photos=(_given(place="Geer"),))

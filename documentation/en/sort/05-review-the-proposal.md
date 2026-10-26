@@ -100,6 +100,11 @@ named, files already in place) come last.
 A few rules:
 
 - **The most precise edit wins**: a file's final folder, else its event's, else its category's.
+- **An event never flattens your own folders**: its name or category moves its loose files; the
+  files of a folder you had named (`2019/Montenegro/Budva`) keep it, under the event's folder when
+  you give it another one (`2019/Holidays in Montenegro/Budva`). To merge two of your folders
+  ("Christmas at Grandma's" and "Christmas 2020"), rename one category to the other on the
+  Categories sheet, or type the final folder on the Files sheet.
 - **Companions follow one folder**: a Live Photo (`IMG_1.HEIC` + `IMG_1.MOV`) or a RAW file and
   its JPEG have one row each, but move together. A final folder typed on **any** of their rows
   decides for all of them; two of their rows with different final folders are refused by `sort`,

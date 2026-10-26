@@ -11,16 +11,18 @@ from __future__ import annotations
 import sqlite3
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
+from urllib.parse import urlencode
 
 from media_hygiene.console.search_view import show_found
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.search.app import SEARCH_PAGE_PATH
-from media_hygiene.search.folders import BROWSE_PATH
+from media_hygiene.search.folders import BROWSE_PATH, FOLDER_QUERY
 from media_hygiene.search.meaning_index import MeaningIndex
 from media_hygiene.search.names_soon import NamesKept
 from media_hygiene.search.people_words import unknown_people
 from media_hygiene.search.query import SearchQuery, parse_terms
+from media_hygiene.search.reading import read_query
 from media_hygiene.services.data_checks import unreadable_index
 from media_hygiene.services.search_meaning import with_meaning
 from media_hygiene.services.search_pages import PageStart, Served, serve_pages
@@ -68,6 +70,8 @@ def open_search(runtime: Runtime, *, words: bool = True) -> SearchIndex:
         search = MeaningIndex.open(index)
         # Read meanwhile (0354): the page answers without waiting for them.
         search.name_people_soon(NamesKept(index, runtime.settings.people))
+        stop = runtime.settings.tags.stop_words
+        search.stop_words = frozenset(word.casefold() for word in stop)
         # A file with a tag is a file with words: no need to wait for the names then.
         empty = (
             words and not search.tagged and search.find(SearchQuery(()), 1).total == 0
@@ -97,7 +101,7 @@ def print_found(runtime: Runtime, search: SearchIndex, printed: Printed) -> int:
     Returns:
         How many files match.
     """
-    query = SearchQuery(parse_terms(printed.text))
+    query = read_query(search, SearchQuery(parse_terms(printed.text)))
     unknown = unknown_people(query, runtime.settings.people)
     if unknown is not None:
         runtime.output.warning(unknown)
@@ -106,13 +110,14 @@ def print_found(runtime: Runtime, search: SearchIndex, printed: Printed) -> int:
     return found.total
 
 
-def serve_search(runtime: Runtime, search: SearchIndex, port: int) -> int:
+def serve_search(runtime: Runtime, search: SearchIndex, opened: SearchOpen) -> int:
     """Serve the search page until Ctrl+C.
 
     Args:
         runtime: Settings, mount points and output.
         search: The open index.
-        port: The port to listen on, inside the container (0: any free one).
+        opened: The port (inside the container, 0: any free one), and the folder the
+            page opens on.
 
     Returns:
         How many files are set aside when the page stops, read from the disk.
@@ -121,8 +126,17 @@ def serve_search(runtime: Runtime, search: SearchIndex, port: int) -> int:
         "Search ready, open {url} in your browser. Ctrl+C stops it; your photos "
         "are not changed."
     )
-    start = PageStart(port, SEARCH_PAGE_PATH, ready)
+    query = "?" + urlencode({FOLDER_QUERY: opened.folder}) if opened.folder else ""
+    start = PageStart(opened.port, SEARCH_PAGE_PATH, ready, query=query)
     return serve_pages(runtime, search, start).chosen
+
+
+@dataclass(frozen=True, slots=True)
+class SearchOpen:
+    """`search` without words: its port, and the folder the page opens on (0405)."""
+
+    port: int
+    folder: str = ""  # a part of the path, as *Path contains* takes it
 
 
 @dataclass(frozen=True, slots=True)

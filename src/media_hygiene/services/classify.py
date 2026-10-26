@@ -10,10 +10,8 @@ import asyncio
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
-from media_hygiene.classify.engine import Scope, classify
-from media_hygiene.classify.whereabouts import load_towns
+from media_hygiene.classify.engine import classify
 from media_hygiene.constants import MediaKind
-from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.index.pruning import WalkCoverage, forget_missing
 from media_hygiene.index.repository import FactsRepository
@@ -26,10 +24,10 @@ from media_hygiene.services.classify_inputs import (
     ClassifyInputs,
     duplicates,
     media_input,
-    mounted,
     root_of,
 )
 from media_hygiene.services.classify_people import with_people
+from media_hygiene.services.classify_scope import run_scope
 from media_hygiene.services.data_checks import refuse_empty_data
 from media_hygiene.services.listing import list_media, tell_followed
 from media_hygiene.services.policy import scan_filters
@@ -96,7 +94,7 @@ class ClassifyService:
         refuse_empty_data(runtime, "classify")
         data_dir = runtime.locations.data_dir
         roots = runtime.mounts.data_roots(data_dir)
-        scope = with_people(self._scope(years), runtime)
+        scope = with_people(run_scope(runtime, years), runtime)
         # A file already in the target reads its folders from there: a target inside
         # a mounted folder (`C:\\Photos\\Tri`) never becomes a category of its own.
         files = self._inputs(roots, (scope.target,) if scope.target else ())
@@ -121,40 +119,6 @@ class ClassifyService:
         return ClassifyResult(
             classify(files, self._runtime.settings.classify, scope),
             duplicates(files),
-        )
-
-    def _scope(self, years: tuple[int, int] | None) -> Scope:
-        """Target root, folders never moved, years.
-
-        Args:
-            years: The years asked for.
-
-        Returns:
-            The scope, in container paths.
-
-        Raises:
-            MountError: The target is outside the mounted folders.
-        """
-        runtime = self._runtime
-        settings, mapper = runtime.settings, runtime.mapper
-        target = None
-        if settings.classify.target:
-            target = mapper.to_container(settings.classify.target)
-            if not mounted(target, runtime.locations.data_dir):
-                raise MountError(
-                    _("The target {path} is not mounted.").format(
-                        path=settings.classify.target
-                    ),
-                    _('Mount it under /data, e.g. -v "C:\\Photos triées:/data/c/Tri".'),
-                )
-        kept = (*settings.folders.untouched, *settings.classify.leave)
-        return Scope(
-            target,
-            tuple(mapper.to_container(p) for p in kept),
-            years,
-            settings.keep.generic_folders,
-            mapper.to_host,
-            towns=load_towns(settings.classify),
         )
 
     def _inputs(

@@ -42,12 +42,9 @@ RUNS: tuple[tuple[str, ...], ...] = (
     ("audit",),
     ("crosscheck",),
     ("classify",),
-    ("review-sort",),
     ("review",),
     ("places",),
     ("tags",),
-    ("search",),
-    ("browse",),
     ("slideshow", "--folder", "."),  # `.`: the whole data folder
     ("share", "--album", "Demo"),  # its copies go to /shares, never next to the photos
     ("people",),
@@ -58,7 +55,6 @@ RUNS: tuple[tuple[str, ...], ...] = (
     ("status",),
     ("launcher",),
     ("menu",),
-    ("home",),
     ("phone-plan",),  # plumbing of `mh phone` (0219): an empty listing on stdin
 )
 

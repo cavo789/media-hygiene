@@ -37,7 +37,7 @@ def command_table(analyse: str, act: str) -> tuple[tuple[str, str, str], ...]:
         ),
         (
             "home",
-            analyse,
+            act,
             _(
                 "The home page in your browser: where you are, the next step as a "
                 "button, every step of the guides, the reports."
@@ -61,7 +61,7 @@ def command_table(analyse: str, act: str) -> tuple[tuple[str, str, str], ...]:
         ),
         (
             "review-sort",
-            analyse,
+            act,
             _("Name the events of the classify proposal one by one in your browser."),
         ),
         (
@@ -92,7 +92,7 @@ def command_table(analyse: str, act: str) -> tuple[tuple[str, str, str], ...]:
         ),
         (
             "search",
-            analyse,
+            act,
             _(
                 "Find photos by their words in your browser (or as a table): "
                 "the words 'tags' gave them."
@@ -100,10 +100,10 @@ def command_table(analyse: str, act: str) -> tuple[tuple[str, str, str], ...]:
         ),
         (
             "browse",
-            analyse,
+            act,
             _(
-                "Walk through your folders in your browser, as in Explorer, and set "
-                "photos aside; 'clean --decisions' then moves them."
+                "The search page opened on your folders: walk "
+                "through them, set photos aside; 'clean --decisions' then moves them."
             ),
         ),
         (

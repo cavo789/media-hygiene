@@ -39,6 +39,7 @@ def reason_name(reason: SortReason) -> str:
         SortReason.EXISTING_FOLDER: _("Existing folder"),
         SortReason.PERSON_FOLDER: _("Folder of a person"),
         SortReason.EVENT_NEIGHBOUR: _("Event of a named folder"),
+        SortReason.SAME_MOMENT: _("Same moment as a named folder"),
         SortReason.CALENDAR: _("Days of every year"),
         SortReason.DATE_RANGE: _("Date range"),
         SortReason.KIND: _("Kind of file"),
@@ -56,6 +57,7 @@ def reason_name(reason: SortReason) -> str:
         SortReason.NO_SIGNAL: _("No signal"),
         SortReason.UNDATED: _("Undated"),
         SortReason.LEFT_AS_IS: _("Left as it is"),
+        SortReason.NOTHING_SPECIAL: _("Looked at: nothing special that month"),
         SortReason.CARRIED_OVER: _("Edit carried over from the workbook"),
         SortReason.PREVIOUS_GUESS: _("Previous guess, already in place"),
     }

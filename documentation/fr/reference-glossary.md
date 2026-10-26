@@ -61,6 +61,14 @@ Un long code calculé à partir de chaque octet d'un fichier. Deux fichiers à l
 sont identiques, octet par octet : c'est ainsi que l'outil prouve qu'une copie est une copie.
 [Qu'est-ce qu'un doublon ?](reference-safety.md#quest-ce-quun-doublon-)
 
+### Événement
+
+Un moment de votre vie vu par vos photos (une kermesse, un week-end à la mer, un Noël) :
+`classify` réunit les photos et vidéos prises sans pause de plus de 6 heures, d'un dossier ou d'un
+téléphone à l'autre. Le nom que vous lui donnez devient son dossier quand `sort` range la
+collection.
+[`review-sort` : à quoi ça sert](commands/review-sort.md#à-quoi-ça-sert)
+
 ### Exécution
 
 Un lancement d'une commande, nommé par sa date et son heure (`20261011-204239`). `history` les

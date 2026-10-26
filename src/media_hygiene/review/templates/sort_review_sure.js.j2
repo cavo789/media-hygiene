@@ -5,8 +5,10 @@
   let lastBatch = [];  // the events the last batch accepted: the undo button takes them back
 
   const onlyToDecide = () => byId("onlyDecide").checked;
+  const onlySure = () => byId("onlySure").checked;
+  const onlyUnsorted = () => byId("onlyUnsorted").checked;  // 0398
   const toDecide = (card) => isOpen(card) && !card.sure;
-  const visible = (card) => !onlyToDecide() || toDecide(card);
+  const visible = (card) => (!onlyToDecide() || toDecide(card)) && (!onlySure() || (card.sure && isOpen(card))) && (!onlyUnsorted() || unsorted(card));
   const sureTodo = () => events.filter((card) => card.sure && isOpen(card));
   const filesIn = (cards) => cards.reduce((count, card) => count + card.files, 0);
 
@@ -36,17 +38,44 @@
     return answer;
   };
 
-  const acceptSure = async () => {
+  // The confirmation lists the events, each one a link that shows it on the page (0388).
+  const sureLine = (card) => {
+    const item = document.createElement("li");
+    const link = line("button", card.title);
+    link.type = "button";
+    link.addEventListener("click", () => {
+      byId("sureDlg").close();
+      const index = events.findIndex((other) => other.id === card.id);
+      if (index >= 0) load(index);
+    });
+    const moves = counted(T.nFiles, card.moves);
+    item.append(link, document.createTextNode(" · " + moves + " → " + (card.folder || T.stay)));
+    return item;
+  };
+  const acceptSure = () => {
     const todo = sureTodo();
     if (todo.length === 0) { setStatus(T.sureNone); return; }
     const left = events.filter(isOpen).length - todo.length;
-    if (!window.confirm(fill(T.sureAsk, { count: todo.length, files: counted(T.nFiles, filesIn(todo)), left: left }))) return;
+    const moves = todo.reduce((count, card) => count + card.moves, 0);
+    const kept = todo.reduce((count, card) => count + card.kept, 0);
+    byId("sureAsk").textContent = fill(T.sureAsk, { count: todo.length, moves: counted(T.nFiles, moves), kept: counted(T.nFiles, kept), left: left });
+    byId("sureList").replaceChildren(...todo.map(sureLine));
+    byId("sureDlg").showModal();
+  };
+  const sendSure = async () => {
+    byId("sureDlg").close();
+    const todo = sureTodo();
+    if (todo.length === 0) return;
     const answer = await sendBatch(todo.map((card) => card.id), false);
     if (!answer) return;
     lastBatch = answer.events.map((card) => card.id);
     showSure();
     setStatus(fill(T.sureDone, { done: counted(T.nSureDone, answer.changed), time: new Date(answer.modified).toLocaleTimeString() }), "saved");
   };
+  byId("sureNo").textContent = T.cancel;
+  byId("sureYes").textContent = T.sureAccept;
+  byId("sureNo").addEventListener("click", () => byId("sureDlg").close());
+  byId("sureYes").addEventListener("click", sendSure);
 
   const undoSure = async () => {
     if (lastBatch.length === 0) { setStatus(T.nothingToUndo); return; }

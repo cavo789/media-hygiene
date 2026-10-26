@@ -57,7 +57,10 @@ def find_steps() -> tuple[Step, ...]:
             "browse",
             space,
             _("Walk through your folders"),
-            _("As in the Explorer, full size with ← and →; set photos aside."),
+            _(
+                "The search, opened on your folders; the heaviest files; set photos "
+                "aside."
+            ),
             "browse",
             Risk.SAFE,
             Kind.PAGE,

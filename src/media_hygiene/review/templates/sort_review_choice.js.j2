@@ -1,0 +1,184 @@
+{# Included in the script of sort_review.html.j2: the Folder field of the event (0387),
+   the Destination line under it (computed by the server as `sort` will, while the user
+   types), the state line of the left column, and what is typed but not saved: Enter
+   saves it, Esc drops it, moving away asks. #}
+  let loaded = { folder: "", name: "" };  // what the fields held when the event was shown
+  let asking = 0;  // the last destination asked for: older answers are ignored
+  let going = null;  // the last destination answered: where each file goes (0397)
+
+  const lastFolder = (path) => path.split("/").filter(Boolean).pop() || "";
+  const choiceDirty = () => byId("folder").value !== loaded.folder || byId("name").value !== loaded.name;
+  const markSaved = () => { loaded = { folder: byId("folder").value, name: byId("name").value }; };
+
+  // The name is the last folder unless the user typed another one.
+  const choiceBody = () => {
+    const folder = byId("folder").value.trim();
+    return { event: id(), category: folder, name: byId("name").value.trim() || lastFolder(folder) };
+  };
+
+  const stateText = (card) => {
+    if (choiceDirty()) return [T.dirty, "dirty"];
+    if (card.sorted) return [T.sortedState, "saved"];
+    if (inPlace(card)) return [T.inPlace, "saved"];
+    if (card.conflict) return [fill(T.inWorkbook, { value: card.workbook.text }), "conflict"];
+    if (card.page) {
+      const time = card.saved ? new Date(card.saved).toLocaleTimeString() : "";
+      return [time ? fill(T.validated, { time: time }) : T.validatedEarlier, ""];
+    }
+    if (card.workbook.text) return [fill(T.inWorkbook, { value: card.workbook.text }), ""];
+    const why = [card.band, card.why, card.sure && isOpen(card) ? T.sureMark : ""].filter(Boolean).join(" · ");
+    return [fill(T.proposed, { why: why }), "muted"];
+  };
+  const showState = () => {
+    const card = events[current];
+    const term = byId("facts").lastElementChild;
+    if (!card || !term) return;
+    const [text, css] = stateText(card);
+    term.textContent = text;
+    term.className = css;
+  };
+
+  // A tile's before → after: its folder now, the one `sort` would move it to.
+  const goesText = (row) => {
+    const photo = photoOf[row];
+    if (!going || !photo || !(row in going.files)) return "";
+    const to = going.files[row];
+    return photo.folder + " → " + (!to ? T.stay : to === photo.folder ? fill(T.already, { n: 1 }) : to);
+  };
+  const showGoing = () => {
+    cards.forEach((node, index) => {
+      const line = node.querySelector(".goes");
+      if (line && files[index]) line.textContent = goesText(files[index].key);
+    });
+  };
+  const showDestination = (answer) => {
+    going = answer;
+    showGoing();
+    const parts = [];
+    if (answer.going) parts.push("→ " + counted(T.nGo, answer.going) + " " + answer.target + (answer.already ? " (" + fill(T.already, { n: answer.already }) + ")" : ""));
+    if (answer.kept) parts.push(keptText(answer.kept, answer.kept_folders));
+    if (answer.elsewhere) parts.push(counted(T.nElsewhere, answer.elsewhere));
+    if (answer.stay) parts.push(counted(T.nStay, answer.stay));
+    byId("destination").textContent = parts.join(" · ");
+    byId("destination").className = "muted";
+  };
+  const askDestination = async () => {
+    const number = ++asking;
+    const body = choiceBody();
+    going = null;
+    byId("sortNow").disabled = true;  // never a GO on a destination being computed
+    let response;
+    try {
+      response = await fetch(P.destination, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ event: body.event, folder: body.category, name: body.name }) });
+    } catch (error) { return; }
+    const answer = await response.json().catch(() => ({}));
+    if (number !== asking) return;
+    byId("sortNow").disabled = !response.ok;
+    if (!response.ok) {
+      byId("destination").textContent = answer.error || fill(T.failed, { status: response.status });
+      byId("destination").className = "error";
+      return;
+    }
+    showDestination(answer);
+  };
+  let typingTimer = 0;
+  const typed = () => {
+    showState();
+    window.clearTimeout(typingTimer);
+    typingTimer = window.setTimeout(askDestination, 250);
+  };
+
+  const fillChoice = (card) => {
+    const chosen = card.page || (card.workbook.text ? card.workbook : null);
+    const folder = chosen ? (chosen.stay ? "" : chosen.category) : card.category;
+    byId("prefix").textContent = card.prefix;
+    byId("folder").value = folder;
+    // A name equal to the last folder is the default one: the field stays empty.
+    byId("name").value = chosen && chosen.name !== lastFolder(folder) ? chosen.name : "";
+    byId("naming").open = byId("name").value !== "";
+    markSaved();
+    byId("name").placeholder = lastFolder(folder) || card.title;
+    showState();
+    askDestination();
+  };
+  const dropChoice = () => { fillChoice(events[current]); };
+
+  // Typed and not saved: moving to another event asks first; OK saves, then moves.
+  const mayLeave = (then) => {
+    if (!events.length || !choiceDirty()) return true;
+    if (!window.confirm(T.leave)) return false;
+    const body = choiceBody();
+    markSaved();
+    send(P.event, body, then);
+    return false;
+  };
+
+  byId("folder").addEventListener("input", () => { byId("name").placeholder = lastFolder(byId("folder").value); typed(); });
+  byId("name").addEventListener("input", typed);
+  window.addEventListener("beforeunload", (event) => {
+    if (!choiceDirty()) return;
+    event.preventDefault();
+    event.returnValue = "";
+  });
+
+  // *Check, then sort* (0397): where the files go, grouped by folder, then one GO.
+  const checkThenSort = async () => {
+    if (!going) await askDestination();  // just saved: the destination is asked again
+    if (!going) return false;
+    return new Promise((resolve) => {
+    const groups = new Map();
+    let moving = 0;
+    for (const photo of Object.values(photoOf)) {
+      const to = going.files[photo.row];
+      if (to === undefined) continue;
+      const key = !to || to === photo.folder ? "" : to;
+      if (key) moving += 1;
+      groups.set(key, (groups.get(key) || 0) + 1);
+    }
+    const lines = [...groups].filter(([key]) => key).sort((a, b) => b[1] - a[1]).map(([key, n]) => fill(T.goGroup, { n: n, folder: key }));
+    if (groups.get("")) lines.push(counted(T.nStay, groups.get("")));
+    byId("goList").replaceChildren(...lines.map((text) => line("li", text)));
+    if (!moving) byId("goList").append(line("li", T.goNothing));
+    byId("goYes").textContent = counted(T.goSort, moving);
+    byId("goYes").disabled = !moving;
+    const done = (answer) => { byId("goDlg").close(); resolve(answer); };
+    byId("goYes").onclick = () => done(true);
+    byId("goNo").onclick = () => done(false);
+    byId("goDlg").oncancel = () => resolve(false);
+    byId("goDlg").showModal();
+    byId("goYes").focus();
+    });
+  };
+
+  // *Sort this event now* (0390): save what is typed, show where the files go, ask, then
+  // the server runs `sort` cut to this event and answers with the run read back.
+  const sortNow = async () => {
+    if (!events.length) return;
+    const body = choiceBody();
+    const unsaved = choiceDirty() || (!events[current].page && !events[current].workbook.text);
+    if (unsaved) {
+      markSaved();
+      if (!(await send(P.event, body))) return;
+    }
+    if (!(await checkThenSort())) return;
+    const index = current;
+    setStatus(T.sorting);
+    byId("sortNow").disabled = true;
+    let response;
+    try {
+      response = await fetch(P.sortNow, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ event: id() }) });
+    } catch (error) { setStatus(T.offline, "error"); byId("sortNow").disabled = false; return; }
+    byId("sortNow").disabled = false;
+    const answer = await response.json().catch(() => ({}));
+    if (!response.ok) { setStatus(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
+    events[index] = answer.view.card;
+    const time = new Date().toLocaleTimeString();
+    if (!answer.run_id) setStatus(T.sortedNothing, "saved");
+    else if (!answer.intact) setStatus(fill(T.sortedNotIntact, { run: answer.run_id }), "error");
+    else setStatus([fill(T.sortedNow, { moved: counted(T.nFiles, answer.moved), verified: answer.verified, run: answer.run_id, time: time }), ...(answer.links || [])].join(" "), "saved");
+    showProgress();  // read again from the plan and the journal (0398)
+    if (index !== current) return;
+    showPhotos(answer.view.photos, false);
+    showEvent(answer.view.card);
+    showTotals();
+  };

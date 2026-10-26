@@ -65,7 +65,7 @@ def test_an_outing_far_from_home_is_a_trip_named_offline(towns: Gazetteer) -> No
         SortReason.TRIP,
         "Trips",
     )
-    assert first.folder == "2023/Italy/Turin"
+    assert first.folder == "2023/2023-07/Italy/Turin"
 
 
 def test_country_names_in_french(towns: Gazetteer) -> None:

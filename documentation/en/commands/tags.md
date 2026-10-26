@@ -71,6 +71,10 @@ names, dates and places.*
 
 ## Good to know
 
+- **Searchable as the run goes**: each photo described writes its words at once, with those of
+  its identical copies, its burst series and its near group. A search open during a run of hours
+  finds them (within about 20 seconds); a run stopped, or a window closed, loses no word already
+  written.
 - **The vision model** is the one of `[classify.ai]` (`model`, `url`): each photo is sent there,
   as a 768-pixel JPEG, and only there. Keep that server on your own computer. Without a `model`,
   nothing is ever sent.

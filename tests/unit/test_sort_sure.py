@@ -21,7 +21,7 @@ from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.review import sort_batch
 from media_hygiene.review.sort_batch import SortBatchSession, SureBatch
 from media_hygiene.review.sort_files import SortSource
-from media_hygiene.review.sort_sure import sure_value
+from media_hygiene.review.sort_sure import reach, sure_value
 from tests.support.plans import plan_of, row
 from tests.support.sort_review import app_of, call
 
@@ -176,3 +176,47 @@ def test_a_file_that_does_not_hold_the_batch_is_said(
     )
     with pytest.raises(DecisionsError, match="does not hold the 1 choices"):
         session.batch(SureBatch(events=("sure",)))
+
+
+def test_the_batch_moves_only_the_loose_files_of_a_trip() -> None:
+    """0385: the user's folders keep their files; the page counts what moves."""
+    rows = [
+        row("budva", Band.SURE, ("Montenegro/Budva", "trip")),
+        *(
+            row(name, Band.SURE, ("Photos Chloé", "trip")).model_copy(
+                update={"path": f"C:\\Photos\\2016\\Photos Chloé\\{name}.jpg"}
+            )
+            for name in ("chloe", "chloe2")
+        ),
+        row("loose", Band.MANUAL, ("", "trip")),
+    ]
+    plan = plan_of(rows, (event("trip", rows),))
+    item = work_list(plan)[0]
+    value = sure_value(item)
+    assert value == EventValue(category="Photos Chloé")
+    effect = reach(item)
+    assert (effect.moves, effect.kept, effect.folders) == (1, 1, ("Budva",))
+    accepted = Edits(events={"trip": EventEdit("", value.category)})
+    found = {d.row.id: d.folder for d in resolve(plan, accepted)}
+    assert found == {
+        "budva": "2016/Montenegro/Budva",
+        "chloe": "2016/Photos Chloé",
+        "chloe2": "2016/Photos Chloé",
+        "loose": "2016/Photos Chloé",
+    }
+
+
+def test_the_confirmation_lists_the_sure_events_and_what_moves(tmp_path: Path) -> None:
+    """0388: the cards the dialog lists are those of `sure_value`, with their moves."""
+    session = session_in(tmp_path)
+    cards = {card.id: card for card in session.state().events}
+    for item in work_list(make_plan()):
+        card = cards[item.event.id]
+        assert card.sure is (sure_value(item) is not None)
+        assert (card.moves, card.kept) == (reach(item).moves, reach(item).kept)
+    listed = [
+        card.id
+        for card in cards.values()
+        if card.sure and card.undecided and not card.page and not card.workbook.text
+    ]
+    assert listed == ["sure"]

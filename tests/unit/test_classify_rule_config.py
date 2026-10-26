@@ -109,5 +109,5 @@ def test_the_french_template_adds_saint_nicolas(locations: Locations) -> None:
     names = [rule.name for rule in rules]
     assert names[-3:] == ["Noël", "Nouvel An", "Saint-Nicolas"]
     christmas = rules[-3]
-    assert (christmas.dates, christmas.category) == ("12-24..12-26", "Fêtes/Noël")
+    assert (christmas.dates, christmas.category) == ("12-24..12-26", "Noël")
     assert rules[0].category == ""  # films and series stay where they are

@@ -130,21 +130,28 @@ def audit_command(  # pylint: disable=too-many-arguments
                 ),
             )
         )
+    faces_next = False
     if people or runtime.settings.people.with_audit:
         with user_errors(output):
-            audit_people(runtime, yes)
+            faces_next = audit_people(runtime, yes)
     second_opinion(runtime, plan)
     setup_tips(runtime)
-    _next_step(ctx, runtime, findings)
+    if not _next_step(ctx, runtime, findings) and findings.gone and not faces_next:
+        from media_hygiene.cli.audit_gone import gone_step
+
+        gone_step(ctx, runtime)
 
 
-def _next_step(ctx: typer.Context, runtime: Runtime, findings: AuditFindings) -> None:
+def _next_step(ctx: typer.Context, runtime: Runtime, findings: AuditFindings) -> bool:
     """Close with the step that logically follows: the copies first, then the bursts.
 
     Args:
         ctx: Typer context of the audit, whose options the next command keeps.
         runtime: Settings, mount points and output.
         findings: What the audit found.
+
+    Returns:
+        Whether a next step was suggested.
     """
     from media_hygiene.cli.next_steps import carried, suggest
     from media_hygiene.console.formatting import human_size
@@ -167,3 +174,6 @@ def _next_step(ctx: typer.Context, runtime: Runtime, findings: AuditFindings) ->
                 carried(runtime, "review", ctx), port=runtime.settings.review.port
             ),
         )
+    else:
+        return False
+    return True

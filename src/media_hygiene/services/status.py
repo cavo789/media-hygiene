@@ -8,7 +8,7 @@ reported as not looked at: the command never fails for it.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime
 from typing import TYPE_CHECKING, Final
 
@@ -21,6 +21,7 @@ from media_hygiene.index.walks import last_walk
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.index_page import load_summaries
 from media_hygiene.services.quarantines import mounted_quarantines
+from media_hygiene.services.sort_disk import DiskProgress, disk_progress
 from media_hygiene.services.status_parts import (
     QuarantineState,
     ReviewState,
@@ -79,6 +80,7 @@ class Status:  # pylint: disable=too-many-instance-attributes
     faces: tuple[int, int] | None = None
     imported: str | None = None  # the newest `import` run (0265)
     backed_up: datetime | None = None  # when the newest `mh backup` ran (0264)
+    disk: DiskProgress | None = None  # what the tree says of the sorting (0405)
 
     @property
     def blank(self) -> bool:
@@ -137,7 +139,10 @@ def read_status(runtime: Runtime) -> Status:
         if MountKind.QUARANTINE in mounted
         else QuarantineState(()),
         review=review_state(locations.reports_dir) if reports else ReviewState(),
-        sort=sort_state(locations.reports_dir, _last_sort(runs))
+        sort=replace(
+            sort_state(locations.reports_dir, _last_sort(runs)),
+            journal=locations.journal_dir if MountKind.JOURNAL in mounted else None,
+        )
         if reports
         else SortState(),
         missing=tuple(kind for kind in LOOKED_AT if kind not in mounted),
@@ -147,6 +152,7 @@ def read_status(runtime: Runtime) -> Status:
         backed_up=_started(
             next((r.run_id for r in runs if r.kind is Phase.BACKUP), "")
         ),
+        disk=disk_progress(runtime),
     )
 
 

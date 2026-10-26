@@ -31,7 +31,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
-| Your photos | 🔒 Never changed: mount them `:ro`. |
+| Your photos | 🔒 Nothing moves without your GO: *I checked: sort these N files* moves the files of a rule checked on the page, journaled; `undo` puts them back. `mh search` mounts them writable, with `/journal`; mounted `:ro`, the page stays read-only and the GO is refused. |
 | Needs | `/cache` (the words of `tags`), your folders (to show the photos), and `-p 127.0.0.1:8088:8088` for the page; `/reports` to set photos aside. |
 | Writes | The small previews of the grid, in the cache; the photos you set aside, in `decisions.json` of the reports; your albums, in `albums.json` next to it. |
 | Undo | Nothing to undo on the page: [`clean --decisions`](clean.md) moves the photos set aside, [`undo`](undo.md) brings them back. |
@@ -49,13 +49,25 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 ```
 
 Open <http://127.0.0.1:8088/>. The page looks and works like [`browse`](browse.md): the search
-field and its filters (years, a part of the path, the words of one source only) in the left
-column, the ⌨ keys under them, one bar above the grid, then the photos found. **📁 Folders**
-opens `browse`, the same server. Ctrl+C, or closing its tab, stops the page.
+field and its filters (a period, a part of the path, the words of one source only) in the left
+column, the ⌨ keys under them, one bar above the grid, then the photos found. **🔎 Words** comes
+first, **📁 Folders** second: it opens `browse`, the same server. Ctrl+C, or closing its tab,
+stops the page.
+
+- **⚖ Heaviest files** (above the folders): every folder, no word, the videos first unless
+  **Show** says otherwise, the largest first — or **Sort by: bit rate**, the videos worst
+  compressed for their length (the best to lighten with [`shrink`](shrink.md)). A video's tile
+  says its length, bit rate and codec. **Show more**, under the grid, adds as many files again.
+- **In a folder**: under the form, the tree of your folders, as on the folder view (opened on
+  demand). A click narrows the search to that folder and below, **without typing any word**:
+  empty words list the whole folder; ✕ next to its name searches every folder again.
 
 - **Search**: type the words, then Enter; the keys then go to the grid, `/` comes back to the
   field. *How to write a search* recalls the phrases ("bord de mer"), the starts of words
   (anniv\*) and the words of one source (place:durbuy).
+- **Follow a word**: a click on a word under a photo (*Mechelen*, *2026*, a person's name)
+  searches it as a phrase in every source, the filters emptied: from one photo to all the others
+  with that word. It never picks the photo.
 - **Pick**, as in `browse`: a click picks one file; the ☑ box (or Ctrl+click) adds or removes one;
   Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse picks
   what it touches (with Ctrl, it adds); Ctrl+A every file shown, then **Pick all N files found**
@@ -66,8 +78,79 @@ opens `browse`, the same server. Ctrl+C, or closing its tab, stops the page.
   Escape closes it. **👤 Set a person aside** finds every photo of someone on the one shown
   ([`people`](people.md#from-any-page-set-a-person-aside)).
 
+- **A period**: *From* and *To* are calendars, a day each, both included; one alone is a period
+  of one day. The day is the one the photo was taken, as `classify` dates it.
+- **Sort by** and **Show**, in the bar as on the [folder view](browse.md): *best match* (the
+  default; the newest first without words), *name*, *date* (the oldest first) or *size* (the
+  largest first); **Show** keeps the photos or the videos only. The search sorts and filters
+  before it shows its first files: *Show: videos*, *Sort by: size* gives the largest videos found.
+  Each tile says its date and size.
+- **Sorted**: *every photo*, *not sorted yet* or *sorted (year, then year-month)*, read from the
+  folders alone ([the convention](../sort/04-classify.md#the-convention-year-month-event)): a
+  photo in `2009\2009-11\…` is sorted, wherever that pair of folders lies and whoever put it
+  there. *Not sorted yet*, then pick and **📂 Move to an event…**: the page becomes the way to sort
+  what is left, folder after folder.
+
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20 files
 as a table.
+
+## Move photos to an event, without a rule
+
+For a one-off event, a rule is not needed: search its days (or words), **pick** the photos (as
+everywhere: click, Ctrl, Shift, a rectangle, Ctrl+A), then **📂 Move to an event…** in the bar.
+Type the event's name, or pick one of your event folders the field lists (those already in the
+month the photos go to, sub-folders written `France\Morzine`); `\` makes sub-folders of a new name too.
+The line under it shows the folder made, as
+Explorer will show it, under the year and month of the earliest photo picked
+(*→ C:\Photos\2009\2009-11\Anniversaire de Tom*,
+[the convention](../sort/04-classify.md#the-convention-year-month-event)). The name proposed is
+that of **your folder holding most of the photos picked**: its photos go to the folder of the
+same name under the convention, never to a second one beside it.
+
+Before the move, the photos are listed **by source folder**, one tick box each, with their
+count. A folder you named after **another** event (`Saint Nicolas 2009`: a name, one evening) is
+**unticked**: its photos stay where they are, unless you tick it. A folder of dates, a family
+member's folder, a phone's `DCIM` are ticked. **Move these N files now** moves exactly the ticked
+ones, journaled, checked at their new place, said as read back (*'mh undo …' puts them back*).
+No rule is written: the next `classify` finds them in place.
+
+## Make a period a rule
+
+Once a period is searched, **📌 Make it a rule** opens, beside the grid, the dialog of
+[`review-sort`](review-sort.md)'s *Remember as a rule*, filled with the period: type its name
+and its folder (*keep my folders below it* is on). As you type, the grid shows **the photos the
+rule would take, each with where it would go** (*→ 2017\Parties\Weddings\Hervé and Magda's
+wedding*), computed by the `classify` engine with your rules and the one typed (nothing is
+written, nothing moves); then the photos of those days it leaves to another rule (a screenshot,
+a photo of another event), greyed, and said in words above the grid (*30 photos of these days
+stay with the rule 'Anniversaire de Tom 2009'*). Seeing them, correct the days
+(only 5 August) or the folder, then **Save the rule**: it is written into `config.toml`, above
+*Existing folders*, read back from the disk and said. The next `classify` applies it.
+
+**Update a rule…** in the same dialog lists the date rules of `config.toml`, the latest first:
+one chosen fills the dialog, and saving replaces it in place (its place in the list, which
+decides, is kept). Escape or *Cancel* closes the dialog and shows the search again.
+
+A file the search does not know yet (no words at all: run `mh tags --no-describe` once) is
+missing from the grid.
+
+**Sort them now, little by little.** Once you checked them, **I checked: sort these N files**
+moves exactly the photos the rule takes, each to the folder shown. To leave some out, pick them
+and press **Leave the picked files where they are** (greyed, crossed out). When the photos come
+from several folders, they are listed by source folder, one tick box each, a folder you named
+after another event unticked. **Once a photo is left out, *Save the rule* is off**: a selection
+with exceptions is a move, not a rule (saved, the rule would take them again at every
+`classify`); the dialog says how many were left. It asks once (the
+count, the folders, the undo line), then writes them as your choices of the latest `classify`
+run (`sort-decisions.json`) and runs `sort` cut to those files: journaled, checked at their new
+place, said as read back from the disk (*14 moved, 14 checked at their new place (run …):
+'mh undo …' puts them back*); the tiles then show their new place. A photo the latest
+`classify` run does not know (added since) is left where it is and counted: run `classify`
+again. Nothing moves without that GO.
+
+*These folders are mounted read-only*: your `mh` was written before the pages could sort (it
+mounts them `:ro`). Type `mh update` once: it writes `mh` again, from your image, with the same
+folders.
 
 ## Set photos aside
 
@@ -102,7 +185,7 @@ what it holds now (*Saved in config.toml, read back: 1 face of this photo is not
 **Put back** to undo it. The × never picks the photo, and the card stays where it is. The large
 view shows the same names, with the same ×, under its facts (`I`).
 
-A click on the name itself (or `W` in the large view) opens **Why this name?**: the face of the
+`W` in the large view opens **Why this name?**: the face of the
 photo cut out, how it got the name (*confirmed by you*, or *close to a face you confirmed*, with
 that face, its file, and the score against `[people] similarity`), and the next person when they
 come close too. **Yes, it is …** confirms that face, **Not …** takes the name off that face
@@ -155,6 +238,7 @@ second names (hard links), without a copy.
 | `place:durbuy` | The word among the places only; also `vision`, `caption`, `folder`, `name` (the file name), `date`, `person`. |
 | `anniversaire` | Also `Anniversaire Léa.mp4`: the words of a file name you chose count too (`IMG_1234` gives none). |
 | `neige 2008` | The year is a word of the date: the snow of 2008. |
+| `Papy dans le jardin` | A sentence: the little words go (`dans`, `le`, the stop words of `[tags]`, as in the index), and a name someone has on a photo is looked for among the people: read as `Papy (person) + jardin`, said under the search. A phrase in quotes is kept as typed. |
 | `Chloé montagne` | The photos of Chloé with "montagne" from any source, once her group is named in [`people`](people.md). |
 | `person:chloe`, `person:"Mamie Jeanne"` | The name among the people only. A name nobody has yet is said in one line. |
 | `un chat sur un canapé` | After [`tags --meaning`](tags.md): the photos that show it first, even without any of these words ([search by meaning](../reference-tags.md#find-a-photo-by-what-it-shows---meaning)). |
@@ -201,10 +285,14 @@ search by meaning. The page keeps these tips short, in *How to write a search*.
 |---|---|
 | `WORDS` | Words to find, printed as a table instead of opening the page. |
 | `--limit N` | With words: how many files the table lists at most (20 by default). |
+| `--folder FOLDER` | Without words: the page opens on this folder, as *Path contains* takes it (a folder `status` lists as left to sort). |
 | `--port PORT` | Port of the page, 8088 by default; publish the same one. |
 
 ## Good to know
 
+- **During a `tags` run**, a photo described a moment ago shows at a search about 20 seconds later
+  (the page reads the new words at most that often while the model writes; a move made from the
+  page itself shows at once).
 - **Opened from the home page** (`mh` alone): the page opens at once, in the same tab, served by
   the home page itself: no other container starts, the index stays open for the session.
   *⌂ Back to the home page* is a plain link (the browser's Back works too). Typed alone

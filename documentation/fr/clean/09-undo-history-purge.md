@@ -189,6 +189,11 @@ demande :
 🗑️ 312 photos et vidéos ont disparu depuis le dernier audit (supprimées dans l'Explorateur ?) : dites lesquelles vous avez supprimées exprès, pour que media-hygiene les mette de côté si elles reviennent.
 ```
 
+Quand il n'y a ni copie à mettre de côté ni rafale à trier, l'audit se termine en vous
+menant là : *👉 Et maintenant : dites dans 'review --gone' quels fichiers disparus vous avez
+supprimés exprès*, avec la commande complète. Lancé par `mh`, l'audit vous demande en plus
+*Ouvrir maintenant la revue des fichiers disparus ?* : répondez `o` et la page s'ouvre.
+
 `mh review --gone` les montre par dossier et par jour, chacune avec son aperçu quand le cache en
 garde un (sinon son nom, sa date, sa taille et son appareil) : `D` supprimé exprès, `M` déplacé
 ailleurs, `G` tout le groupe supprimé exprès. Vos réponses sont enregistrées dans

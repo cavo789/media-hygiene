@@ -1,7 +1,8 @@
 """What each command may do to the photos, said where the user looks: help and console.
 
 The commands of `READ_ONLY_COMMANDS` never write, move nor delete anything in the
-folders to analyse: they only write the tool's own files (reports, cache, journal
+folders to analyse (the pages of `GO_PAGES` move the files of a group only on the
+user's GO, journaled): they only write the tool's own files (reports, cache, journal
 reading, `config.toml`, a decisions file). They all work with the photo folders mounted
 read-only (`:ro`), where the operating system itself forbids any change. A test pins
 this list to the help marker and runs these commands on read-only folders.
@@ -27,16 +28,19 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 READ_ONLY_COMMANDS: Final = frozenset(
-    {"audit", "crosscheck", "classify", "review-sort", "places", "review"}
+    {"audit", "crosscheck", "classify", "places", "review"}
     | {"inventory", "history", "reports", "config", "status", "launcher", "tags"}
-    | {"search", "browse", "people", "menu", "home", PHONE_PLAN, "slideshow"}
+    | {"people", "menu", PHONE_PLAN, "slideshow"}
     | {"share"}
 )
 # The read-only commands that read the photos themselves: they say so when they start.
 PHOTO_READERS: Final = frozenset(
-    {"audit", "crosscheck", "classify", "review-sort", "places", "review", "tags"}
-    | {"search", "browse", "people", "slideshow", "share"}
+    {"audit", "crosscheck", "classify", "places", "review", "tags"}
+    | {"people", "slideshow", "share"}
 )
+# The pages that sort the files of a group checked on them (0397): mounted writable,
+# with `/journal`; nothing moves without the user's GO, every move is journaled.
+GO_PAGES: Final = frozenset({"review-sort", "search", "browse", "home"})
 # The commands serving a page in the browser, on the port published by `-p`.
 PAGE_COMMANDS: Final = frozenset(
     {"review", "review-sort", "places", "search", "browse", "people", "home"}
@@ -66,6 +70,18 @@ def read_only_marker() -> str:
     return _("🔒 Read-only: never changes your photos.")
 
 
+def go_line() -> str:
+    """The line of the pages that move files only on the user's GO (0397).
+
+    Returns:
+        The translated sentence.
+    """
+    return _(
+        "🔒 Nothing moves without your GO on the page; every move is journaled: "
+        "'undo' puts it back."
+    )
+
+
 def safety_doc() -> str:
     """The page of the documentation on safety, in the user's language.
 
@@ -93,6 +109,8 @@ def help_of(name: str, text: str) -> str:
 def announce_read_only(runtime: Runtime, command: str | None) -> None:
     """Say, in one line, that a command reading the photos does not touch them.
 
+    A page of `GO_PAGES` says instead that nothing moves without the user's GO.
+
     When a photo folder is mounted writable, one tip tells how to let the operating
     system guarantee it (`:ro`). Without any folder, nothing is said: the command's
     own error (no folder to analyse) must be the first line the user reads.
@@ -101,9 +119,12 @@ def announce_read_only(runtime: Runtime, command: str | None) -> None:
         runtime: Settings, mount points and output.
         command: The command about to run.
     """
-    if command not in PHOTO_READERS or nothing_mounted(runtime):
+    if command not in PHOTO_READERS | GO_PAGES or nothing_mounted(runtime):
         return
     output = runtime.output
+    if command in GO_PAGES:
+        output.info(go_line())
+        return
     output.info(_("🔒 Read-only: your photos and videos are not touched."))
     roots = runtime.mounts.data_roots(runtime.locations.data_dir)
     if any(root.is_dir() and not is_read_only(root) for root in roots):

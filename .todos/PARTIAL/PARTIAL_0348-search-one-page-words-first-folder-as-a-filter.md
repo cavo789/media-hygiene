@@ -34,3 +34,22 @@ opened with a folder, the command kept as an alias. Decide at review.
 
 - [ ] *Words* is the first button.
 - [ ] Item 2 per the maintainer's choice; docs, menu catalog and nav kept consistent.
+
+## Status — PARTIAL (2026-10-26)
+
+The maintainer answered the question on 2026-10-26: the search page is to replace `browse` and
+`review-sort`.
+
+### Done
+- *Words* first, *Folders* second on both pages.
+- The search's left column: *In a folder*, the folder view's tree (one shared template); a click
+  narrows the search to the folder and below, empty words list it whole; ✕ clears it.
+
+### Not done
+- `browse` merged into the search (the command an alias, its links moved: home page, menu
+  catalog, docs, nav).
+  **Reason:** it would lose *Heaviest files* and the *bit rate* order, which only the folder view
+  has; bringing them into the search first, then retiring `browse` (and `review-sort`), is an
+  order of work for the maintainer to choose at the review.
+
+Follow-up (2026-10-26, maintainer: yes, bring them first): TODO 0408.

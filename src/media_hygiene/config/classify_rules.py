@@ -12,10 +12,10 @@ from typing import Self
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from media_hygiene.classify.ai.categories import names as names_of
 from media_hygiene.classify.layout import check_layout
 from media_hygiene.classify.rules.calendar import parse_one_off, parse_recurring
 from media_hygiene.classify.rules.kinds import BUILT_IN, FileKind, RuleMatch
+from media_hygiene.config.rule_checks import check_categories, check_category
 from media_hygiene.i18n import _
 
 _NEEDS = {
@@ -58,6 +58,9 @@ class ClassifyRule(BaseModel):
     # `person`: the percentage of an event's photos the people must be on; None: 10.
     min_share: int | None = Field(default=None, ge=1, le=100)
     score: int | None = Field(default=None, ge=0, le=100)  # None: `[classify] scores`
+    keep_folders: bool = False  # the folders the user named stay below the category
+    # Its own layout, not `[classify] layout` (0402): screenshots out of the years.
+    layout: str = ""
 
     @model_validator(mode="after")
     def _coherent(self) -> Self:
@@ -102,31 +105,10 @@ def _check(rule: ClassifyRule) -> None:
         parse_one_off(rule.dates)
     if rule.pattern:
         re.compile(rule.pattern)
-    if "{category}" in rule.category:
-        message = _("{category} cannot be used in a category")
-        raise ValueError(message)
-    check_layout(rule.category)
-    _check_categories(rule.categories, rule.names)
-
-
-def _check_categories(categories: tuple[str, ...], names: tuple[str, ...]) -> None:
-    """Check the categories a `subject` rule offers the model, the names of a `person`.
-
-    Args:
-        categories: The rule's `categories`.
-        names: The rule's `names`.
-
-    Raises:
-        ValueError: One is empty, holds a placeholder, or is no folder name.
-    """
-    if any(not name.strip() for name in names):
-        raise ValueError(_("a name in names is empty"))
-    for category in names_of(categories):  # `Name = definition`: the name is the folder
-        if not category or "{" in category:
-            message = _("'{category}' is not a category: no placeholder, not empty")
-            message = message.format(category=category)
-            raise ValueError(message)
-        check_layout(category)
+    check_category(rule)
+    check_categories(rule.categories, rule.names)
+    if rule.layout:
+        check_layout(rule.layout)
 
 
 def _uses(match: RuleMatch, field: str) -> bool:
@@ -170,23 +152,22 @@ def unique_names(rules: tuple[ClassifyRule, ...]) -> tuple[ClassifyRule, ...]:
 DEFAULT_RULES = (
     ClassifyRule(name="Films and series", match=RuleMatch.KIND, kind=FileKind.DOWNLOAD),
     ClassifyRule(name="Existing folders", match=RuleMatch.EXISTING_FOLDER),
+    # No category: screenshots stay where they are, out of the years (0402).
     ClassifyRule(
-        name="Screenshots and documents",
-        match=RuleMatch.KIND,
-        kind=FileKind.SCREENSHOT,
-        category="Documents and screenshots",
+        name="Screenshots and documents", match=RuleMatch.KIND, kind=FileKind.SCREENSHOT
     ),
     ClassifyRule(name="Event neighbours", match=RuleMatch.EVENT_NEIGHBOUR),
+    ClassifyRule(name="Same moment", match=RuleMatch.SAME_MOMENT),
     ClassifyRule(
         name="Christmas",
         match=RuleMatch.CALENDAR,
         dates="12-24..12-26",
-        category="Parties/Christmas",
+        category="Christmas",
     ),
     ClassifyRule(
         name="New Year",
         match=RuleMatch.CALENDAR,
         dates="12-31..01-01",
-        category="Parties/New Year",
+        category="New Year",
     ),
 )

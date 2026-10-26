@@ -104,7 +104,7 @@ _MAIN_KEY: Final = {
     "gone_review.html.j2": "deleted on purpose: remembered",
     "unwanted_review.html.j2": "the group as marked, then next",
     "pairs_review.html.j2": "swap the folders, then next",
-    "sort_review.html.j2": "accept the name and category",
+    "sort_review.html.j2": "save the folder, then the next event",
     "places.html.j2": "close the large photo, then the photos of the place",
     "browse.html.j2": "every file from the last one clicked",
     "search.html.j2": "every file from the last one clicked",

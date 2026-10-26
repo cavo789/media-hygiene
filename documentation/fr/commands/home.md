@@ -40,7 +40,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
-| Vos photos | 🔒 Jamais modifiées par la page : montez-les en `:ro`. L'audit lancé depuis la page ne fait que les lire. |
+| Vos photos | 🔒 Rien ne bouge sans votre GO sur une page (review-sort, search), noté au journal : `undo` le remet. `mh home` les monte accessibles en écriture, avec `/journal` ; l'audit lancé depuis la page ne fait que les lire. |
 | Il faut | Les dossiers de l'outil (`/reports`, `/journal`, `/quarantine`, `/cache`), comme pour `status` ; vos dossiers pour l'audit ; `-p 127.0.0.1:8088:8088` pour la page. |
 | Écrit | Rien par elle-même ; l'audit lancé depuis la page écrit son cache et son rapport, comme `audit` ; la [page des albums](#vos-albums-sur-le-téléphone) ne change que `albums.json`. |
 | Annuler | Rien à annuler ; chaque étape garde sa propre annulation. |

@@ -106,8 +106,9 @@ def test_french_template_keeps_the_next_runs_in_french(locations: Locations) -> 
     text = locations.config_file.read_text()
     assert "Langue de l'interface" in text
     settings = load_settings(locations).settings
-    # The band folders of the layouts are written in French too.
-    assert settings.classify.unsure_layout == "{year}/À vérifier/{category}"
+    # The convention writes no word of its own: the same layouts in every language.
+    assert settings.classify.layout == "{year}/{year_month}/{category}"
+    assert settings.classify.unsure_layout == ""
     as_default = settings.model_copy(update={"classify": ClassifySettings()})
     assert as_default == Settings(general=GeneralSettings(locale=Locale.FR))
 

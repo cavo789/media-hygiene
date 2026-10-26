@@ -38,7 +38,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
-| Your photos | 🔒 Never changed by the page: mount them `:ro`. The audit run from the page only reads them. |
+| Your photos | 🔒 Nothing moves without your GO on a page (review-sort, search), journaled: `undo` puts it back. `mh home` mounts them writable, with `/journal`; the audit run from the page only reads them. |
 | Needs | The tool's folders (`/reports`, `/journal`, `/quarantine`, `/cache`), as `status` does; your folders for the audit; `-p 127.0.0.1:8088:8088` for the page. |
 | Writes | Nothing by itself; the audit run from the page writes its cache and its report, as `audit` does; the [albums' page](#your-albums-on-the-phone) changes `albums.json` alone. |
 | Undo | Nothing to undo; each step keeps its own undo. |

@@ -196,7 +196,7 @@ def test_files_set_aside_are_read_back_then_cleaned(
 def test_the_pages_refuse_other_hosts_and_serve_both_pages(
     cli: CliRunner, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Loopback only; `/browse` and `/` link to each other; a folder body is checked."""
+    """Loopback only; `/browse`, `/`, `/search`: one page (0408); a body checked."""
     answers: list[Response] = []
 
     async def attack(app: SearchApp) -> None:
@@ -217,10 +217,9 @@ def test_the_pages_refuse_other_hosts_and_serve_both_pages(
     browse = answers[1]
     assert [answer.status for answer in answers] == [403, 200, 200, 200, 400, 404]
     assert b"/api/folders" in browse.body
-    assert b'href="/search"' in browse.body
-    assert answers[3].body == browse.body  # `browse` opens on the folders
+    assert answers[2].body == browse.body == answers[3].body  # one page, folders open
     assert "media-src 'self'" in browse.policy
-    assert b'href="/browse"' in answers[2].body
+    assert b'id="views"' not in browse.body  # no tabs left
 
 
 def _opened(
@@ -338,10 +337,7 @@ def test_one_bar_above_the_grid_and_the_safety_line_under_the_keys(
     # The compact album field says how to start.
     assert "type a name, e.g. Crete 2023" in header
     keys = page.split('id="keys"')[1].split("</section>")[0]
-    assert "🔒 Nothing is deleted from this page" in keys
-    views = page.split('id="views"')[1].split("</div>")[0]
-    assert 'aria-current="page"' in views
-    assert 'href="/search"' in views
+    assert "🔒 Nothing moves without your GO" in keys
     script = page.split("function showPicked()")[1].split("\n}\n")[0]
     assert '$("bar").classList.toggle("acting", some)' in script
     # *Take out of the set aside* shows only for a picked file already set aside.

@@ -13,12 +13,12 @@ from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.models import Band, SortReason
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.config.classify_rules import ClassifyRule
-from media_hygiene.config.classify_settings import ClassifySettings
+from tests.support.layouts import legacy
 from tests.unit.test_classify_engine import ROOT, by_name, shot
 
 SUMMER = datetime(2019, 7, 3, 10)
 GUESSED = "2019/To check/Vacances"
-SETTINGS = ClassifySettings()
+SETTINGS = legacy()
 
 
 def test_a_guess_sorted_to_check_stays_there_to_check() -> None:
@@ -41,7 +41,7 @@ def test_a_sure_rule_still_takes_a_file_out_of_to_check() -> None:
     rule = ClassifyRule(
         name="Holidays", match=RuleMatch.PATH, pattern="Vacances", category="Holidays"
     )
-    settings = ClassifySettings(rules=(rule,))
+    settings = legacy(rules=(rule,))
     (proposal,) = classify(
         [shot(f"{GUESSED}/a.jpg", SUMMER)], settings, Scope()
     ).proposals
@@ -51,7 +51,7 @@ def test_a_sure_rule_still_takes_a_file_out_of_to_check() -> None:
 
 def test_the_to_check_folder_of_a_custom_layout_is_a_guess_too() -> None:
     """`unsure_layout = "{year}/Unsure/{category}"`: `Unsure` holds guesses."""
-    settings = ClassifySettings(unsure_layout="{year}/Unsure/{category}")
+    settings = legacy(unsure_layout="{year}/Unsure/{category}")
     every, unsure = band_folders(settings)
     assert "Unsure" in every
     assert unsure == ("Unsure",)

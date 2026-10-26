@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.actions.purge import folder_census, run_folders, runs_in
+from media_hygiene.actions.run_stamps import run_started
 from media_hygiene.constants import CLASSIFY_PLAN_FILE_NAME
 from media_hygiene.errors import DecisionsError
 from media_hygiene.report.burst_decisions import BurstStatus
@@ -17,22 +18,6 @@ from media_hygiene.services.quarantine_ledger import journal_census
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
-
-_RUN_STAMP: Final = "%Y%m%d-%H%M%S"
-_STAMP_LENGTH: Final = len("20260925-183015")
-
-
-def run_started(run_id: str) -> datetime:
-    """When a run started, from its identifier (local time, as it was named).
-
-    Args:
-        run_id: E.g. `20260925-183015` or `20260925-183015-2`.
-
-    Returns:
-        An aware moment.
-    """
-    naive = datetime.strptime(run_id[:_STAMP_LENGTH], _RUN_STAMP)  # noqa: DTZ007
-    return naive.astimezone()
 
 
 @dataclass(frozen=True, slots=True)
@@ -154,6 +139,7 @@ class SortState:
     plan: Path | None = None
     proposed: datetime | None = None
     sorted: bool = False
+    journal: Path | None = None  # where the runs of the plan are read (0398)
 
 
 def sort_state(reports_dir: Path, last_sort: str | None) -> SortState:

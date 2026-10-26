@@ -33,7 +33,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
-| Vos photos | 🔒 Jamais modifiées : montez-les en `:ro`. |
+| Vos photos | 🔒 Rien ne bouge sans votre GO : *J'ai vérifié : trier ces N fichiers* déplace les fichiers d'une règle vérifiés sur la page, notés au journal ; `undo` les remet. `mh search` les monte accessibles en écriture, avec `/journal` ; montées en `:ro`, la page reste en lecture seule et le GO est refusé. |
 | Il faut | `/cache` (les mots de `tags`), vos dossiers (pour montrer les photos), et `-p 127.0.0.1:8088:8088` pour la page ; `/reports` pour mettre des photos de côté. |
 | Écrit | Les petits aperçus de la grille, dans le cache ; les photos mises de côté, dans `decisions.json` des rapports ; vos albums, dans `albums.json` à côté. |
 | Annuler | Rien à annuler dans la page : [`clean --decisions`](clean.md) déplace les photos mises de côté, [`undo`](undo.md) les remet. |
@@ -51,14 +51,27 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 ```
 
 Ouvrez <http://127.0.0.1:8088/>. La page a l'aspect et le fonctionnement de
-[`browse`](browse.md) : le champ de recherche et ses filtres (années, une partie du chemin, les mots
+[`browse`](browse.md) : le champ de recherche et ses filtres (une période, une partie du chemin, les mots
 d'une seule source) dans la colonne de gauche, les touches ⌨ en dessous, une seule barre au-dessus
-de la grille, puis les photos trouvées. **📁 Dossiers** ouvre `browse`, le même serveur. Ctrl+C, ou
-fermer son onglet, arrête la page.
+de la grille, puis les photos trouvées. **🔎 Mots** vient d'abord, **📁 Dossiers** ensuite : il
+ouvre `browse`, le même serveur. Ctrl+C, ou fermer son onglet, arrête la page.
+
+- **⚖ Fichiers les plus lourds** (au-dessus des dossiers) : tous les dossiers, sans mot, les
+  vidéos d'abord sauf si **Afficher** dit autre chose, les plus grosses d'abord — ou **Trier par :
+  débit**, les vidéos les moins bien compressées pour leur durée (les meilleures à alléger avec
+  [`shrink`](shrink.md)). La vignette d'une vidéo dit sa durée, son débit et son codec. **En
+  montrer plus**, sous la grille, en ajoute autant.
+- **Dans un dossier** : sous le formulaire, l'arbre de vos dossiers, comme sur la vue des dossiers
+  (ouvert à la demande). Un clic limite la recherche à ce dossier et en dessous, **sans taper de
+  mot** : des mots vides listent tout le dossier ; ✕ à côté de son nom recherche à nouveau dans
+  tous les dossiers.
 
 - **Chercher** : tapez les mots, puis Entrée ; les touches vont alors à la grille, `/` revient au
   champ. *Comment écrire une recherche* rappelle les expressions ("bord de mer"), les débuts de
   mots (anniv\*) et les mots d'une seule source (place:durbuy).
+- **Suivre un mot** : un clic sur un mot sous une photo (*Mechelen*, *2026*, le nom d'une
+  personne) le cherche comme expression dans toutes les sources, les filtres vidés : d'une photo à
+  toutes les autres qui ont ce mot. Il ne choisit jamais la photo.
 - **Choisir**, comme dans `browse` : un clic choisit un fichier ; la case ☑ (ou Ctrl+clic) en
   ajoute ou en retire un ; Maj+clic choisit tous les fichiers depuis le dernier cliqué ; un
   rectangle tracé à la souris choisit ce qu'il touche (avec Ctrl, il ajoute) ; Ctrl+A tous les
@@ -71,8 +84,84 @@ fermer son onglet, arrête la page.
   toutes les photos de quelqu'un depuis celle qui est montrée
   ([`people`](people.md#depuis-nimporte-quelle-page--mettre-une-personne-de-côté)).
 
+- **Une période** : *Du* et *Au* sont des calendriers, un jour chacun, inclus ; un seul est une
+  période d'un jour. Le jour est celui de la prise de vue, tel que `classify` le date.
+- **Trier par** et **Afficher**, dans la barre comme sur la [vue des dossiers](browse.md) :
+  *meilleure correspondance* (par défaut ; la plus récente d'abord sans mots), *nom*, *date* (la
+  plus ancienne d'abord) ou *taille* (la plus grande d'abord) ; **Afficher** garde les photos ou
+  les vidéos seulement. La recherche trie et filtre avant de montrer ses premiers fichiers :
+  *Afficher : vidéos*, *Trier par : taille* donne les plus grosses vidéos trouvées. Chaque vignette
+  dit sa date et sa taille.
+- **Triées** : *toutes les photos*, *pas encore triées* ou *triées (année, puis année-mois)*, lu
+  dans les dossiers seuls ([la convention](../sort/04-classify.md#la-convention--année-mois-événement)) :
+  une photo dans `2009\2009-11\…` est triée, où que soit cette paire de dossiers et quoi qui l'y
+  ait mise. *Pas encore triées*, puis choisir et **📂 Déplacer vers un événement…** : la page
+  devient le moyen de trier ce qui reste, dossier après dossier.
+
 Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers
 fichiers en tableau.
+
+## Déplacer des photos vers un événement, sans règle
+
+Pour un événement unique, une règle n'est pas nécessaire : cherchez ses jours (ou des mots),
+**choisissez** les photos (comme partout : clic, Ctrl, Maj, un rectangle, Ctrl+A), puis
+**📂 Déplacer vers un événement…** dans la barre. Tapez le nom de l'événement, ou choisissez un
+de vos dossiers d'événement que le champ liste (ceux déjà dans le mois où vont les photos,
+les sous-dossiers écrits `France\Morzine`) ; `\` crée aussi des sous-dossiers d'un nouveau nom. La
+ligne en dessous montre le dossier créé, tel que l'Explorateur le montrera, sous l'année
+et le mois de la plus ancienne photo choisie (*→ C:\Photos\2009\2009-11\Anniversaire de Tom*,
+[la convention](../sort/04-classify.md#la-convention--année-mois-événement)). Le nom proposé est
+celui de **votre dossier qui contient le plus de photos choisies** : ses photos vont dans le
+dossier du même nom sous la convention, jamais dans un second à côté.
+
+Avant le déplacement, les photos sont listées **par dossier source**, une case chacun, avec leur
+nombre. Un dossier que vous avez nommé d'après un **autre** événement (`Saint Nicolas 2009` : un
+nom, une soirée) est **décoché** : ses photos restent où elles sont, sauf si vous le cochez. Un
+dossier de dates, le dossier d'un membre de la famille, le `DCIM` d'un téléphone sont cochés.
+**Déplacer ces N fichiers maintenant** déplace exactement ceux cochés, noté au journal, vérifié à
+leur nouvelle place, dit tel que relu (*'mh undo …' les remet*). Aucune règle n'est écrite : le
+prochain `classify` les trouve à leur place.
+
+## Faire d'une période une règle
+
+Une fois une période cherchée, **📌 En faire une règle** ouvre, à côté de la grille, la boîte de
+*Retenir comme règle* de [`review-sort`](review-sort.md), remplie avec la période : tapez son nom
+et son dossier (*Garder mes dossiers en dessous* est coché). Pendant que vous tapez, la grille montre
+**les photos que la règle prendrait, chacune avec l'endroit où elle irait**
+(*→ 2017\Fêtes\Mariages\Mariage d'Hervé et Magda*), calculé par le moteur de `classify` avec vos
+règles et celle tapée (rien n'est écrit, rien ne bouge) ; puis les photos de ces jours qu'elle
+laisse à une autre règle (une capture d'écran, une photo d'un autre événement), grisées, et dites
+en mots au-dessus de la grille (*30 photos de ces jours restent avec la règle 'Anniversaire de Tom
+2009'*). En les voyant, corrigez les jours (seulement le 5 août) ou le dossier, puis
+**Enregistrer la règle** : elle est écrite dans `config.toml`, au-dessus de *Dossiers existants*,
+relue sur le disque et affichée. Le prochain `classify` l'applique.
+
+**Mettre à jour une règle…**, dans la même boîte, liste les règles de dates de `config.toml`, la
+plus récente d'abord : en choisir une remplit la boîte, et l'enregistrer la remplace sur place (sa
+place dans la liste, qui décide, est gardée). Échap ou *Annuler* ferme la boîte et remontre la
+recherche.
+
+Un fichier que la recherche ne connaît pas encore (aucun mot : lancez une fois
+`mh tags --no-describe`) manque à la grille.
+
+**Les trier maintenant, petit à petit.** Une fois vérifiées, **J'ai vérifié : trier ces N
+fichiers** déplace exactement les photos que la règle prend, chacune vers le dossier affiché.
+Pour en laisser de côté, choisissez-les et appuyez sur **Laisser les fichiers choisis où ils
+sont** (grisées, barrées). Quand les photos viennent de plusieurs dossiers, elles sont listées par
+dossier source, une case chacun, un dossier que vous avez nommé d'après un autre événement
+décoché. **Dès qu'une photo est laissée de côté, *Enregistrer la règle* est désactivé** : une
+sélection avec des exceptions est un déplacement, pas une règle (enregistrée, la règle les
+reprendrait à chaque `classify`) ; la boîte dit combien ont été laissées. La page demande une fois (le nombre, les dossiers, la ligne
+d'annulation), puis les écrit comme vos choix du dernier passage de `classify`
+(`sort-decisions.json`) et lance `sort` limité à ces fichiers : noté au journal, vérifié à leur
+nouvelle place, dit tel que relu sur le disque (*14 déplacés, 14 vérifiés à leur nouvelle place
+(passage …) : 'mh undo …' les remet*) ; les vignettes montrent ensuite leur nouvelle place. Une
+photo que le dernier `classify` ne connaît pas (ajoutée depuis) est laissée en place et comptée :
+relancez `classify`. Rien ne bouge sans ce GO.
+
+*Ces dossiers sont montés en lecture seule* : votre `mh` a été écrit avant que les pages puissent
+trier (il les monte en `:ro`). Tapez une fois `mh update` : il réécrit `mh`, depuis votre image,
+avec les mêmes dossiers.
 
 ## Mettre des photos de côté
 
@@ -111,7 +200,7 @@ config.toml, relu : 1 visage de cette photo n'est pas Chloé.*), avec **Remettre
 La × ne choisit jamais la photo, et la carte reste à sa place. La grande vue montre les mêmes
 noms, avec la même ×, sous ses informations (`I`).
 
-Un clic sur le nom lui-même (ou `W` dans la grande vue) ouvre **Pourquoi ce nom ?** : le visage
+`W` dans la grande vue ouvre **Pourquoi ce nom ?** : le visage
 de la photo découpé, comment il a reçu le nom (*confirmé par vous*, ou *proche d'un visage que
 vous avez confirmé*, avec ce visage, son fichier et le score face à `[people] similarity`), et la
 personne suivante quand elle est proche aussi. **Oui, c'est …** confirme ce visage, **Pas …**
@@ -166,6 +255,7 @@ crée, en seconds noms (liens physiques), sans copie.
 | `place:durbuy` | Le mot parmi les lieux seulement ; aussi `vision`, `caption`, `folder`, `name` (le nom du fichier), `date`, `person`. |
 | `anniversaire` | Aussi `Anniversaire Léa.mp4` : les mots d'un nom de fichier choisi comptent aussi (`IMG_1234` n'en donne aucun). |
 | `neige 2008` | L'année est un mot de la date : la neige de 2008. |
+| `Papy dans le jardin` | Une phrase : les petits mots s'en vont (`dans`, `le`, les mots vides de `[tags]`, comme dans l'index), et un nom qu'une personne porte sur une photo est cherché parmi les personnes : lu `Papy (personne) + jardin`, dit sous la recherche. Une expression entre guillemets est gardée telle quelle. |
 | `Chloé montagne` | Les photos de Chloé avec « montagne » venu de n'importe quelle source, une fois son groupe nommé dans [`people`](people.md). |
 | `person:chloe`, `person:"Mamie Jeanne"` | Le nom parmi les personnes seulement. Un nom que personne ne porte encore est signalé en une ligne. |
 | `un chat sur un canapé` | Après [`tags --meaning`](tags.md) : les photos qui le montrent d'abord, même sans aucun de ces mots ([recherche par le sens](../reference-tags.md#retrouver-une-photo-par-ce-quelle-montre----meaning)). |
@@ -214,10 +304,14 @@ recherche*.
 |---|---|
 | `MOTS` | Les mots à trouver, affichés en tableau au lieu d'ouvrir la page. |
 | `--limit N` | Avec des mots : combien de fichiers le tableau liste au plus (20 par défaut). |
+| `--folder DOSSIER` | Sans mots : la page s'ouvre sur ce dossier, comme *Chemin contient* le prend (un dossier que `status` liste comme restant à trier). |
 | `--port PORT` | Port de la page, 8088 par défaut ; publiez le même. |
 
 ## Bon à savoir
 
+- **Pendant un `tags`**, une photo décrite il y a un instant apparaît à une recherche une
+  vingtaine de secondes plus tard (la page relit les nouveaux mots au plus aussi souvent pendant
+  que le modèle écrit ; un déplacement fait depuis la page elle-même apparaît aussitôt).
 - **Ouverte depuis la page d'accueil** (`mh` seul) : la page s'ouvre aussitôt, dans le même onglet,
   servie par la page d'accueil elle-même : aucun autre conteneur ne démarre, l'index reste ouvert
   pour la session. *⌂ Retour à l'accueil* est un simple lien (le bouton Précédent du navigateur

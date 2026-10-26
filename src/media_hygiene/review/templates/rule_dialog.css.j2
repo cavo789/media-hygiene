@@ -1,0 +1,12 @@
+  /* The dialog of a date rule (`rule_dialog.html.j2`). */
+  #ruleDlg { max-width: min(30rem, 94vw); color: var(--text); background: var(--card);
+             border: 1px solid var(--line); border-radius: 10px; }
+  #ruleDlg::backdrop { background: rgb(0 0 0 / 50%); }
+  #ruleDlg label { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; color: var(--text); }
+  #ruleDlg label.filter { flex-direction: row; } #ruleDlg h2 { margin: 0 0 6px; }
+  #ruleDlg menu { display: flex; gap: 8px; justify-content: end; padding: 0; }
+  #rulePreview.error { color: var(--bad); } #rulePreview.saved { color: var(--ok); }
+  /* Beside the grid (the search page): the photos it would take stay in sight. */
+  #ruleDlg.aside { position: fixed; inset: auto 16px 16px auto; margin: 0; z-index: 4;
+                   max-height: calc(100vh - 32px); overflow: auto; box-shadow: 0 4px 24px rgb(0 0 0 / 35%); }
+  #ruleDlg .ruleGo { display: flex; flex-wrap: wrap; gap: 8px; justify-content: end; }

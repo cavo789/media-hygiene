@@ -266,12 +266,13 @@ target = ''
 {{ comment(_("Host folders never sorted: analysed and cleaned as usual, left where they are."), "--leave") }}
 leave = []
 
-{{ comment(_("Where files go, by how sure the proposal is. Placeholders: {year}, {quarter}, {month}, {month_name}, {day}, {category}, {event}, {event_start}, {place}, {country}, {region}, {city}. An empty layout leaves the files where they are; '{year}/{month}' needs no category at all."), "--layout") }}
-layout = "{year}/{category}"
-unsure_layout = "{year}/{{ _("To check") }}/{category}"
-manual_layout = "{year}/{{ _("To sort") }}/{event}"
-undated_layout = "{{ _("To sort") }}/{{ _("Undated") }}"
-received_layout = "{{ _("To sort") }}/{{ _("Received and downloaded") }}"
+{{ comment(_("Where files go. The convention: year, then year-month, then the event's name (2009/2009-11/Tom's birthday), the month of the event's start, 00 when only the year is known. A file directly in a year-month folder was looked at: nothing special that month. Placeholders: {year}, {year_month}, {quarter}, {month}, {month_name}, {day}, {category}, {event}, {event_start}, {place}, {country}, {region}, {city}."), "--layout") }}
+layout = "{year}/{year_month}/{category}"
+{{ comment(_("The guesses, the files no rule decides, the undated and the received ones: an empty layout leaves them where they are until you decide in 'review-sort' or 'search', so the tool never writes a folder name of its own.")) }}
+unsure_layout = ""
+manual_layout = ""
+undated_layout = ""
+received_layout = ""
 
 {{ comment(_("Events: photos taken less than merge_gap_hours apart belong together; fewer than min_event_size photos are not an event, and fall back to their month.")) }}
 merge_gap_hours = 18
@@ -280,7 +281,7 @@ min_event_size = 5
 {{ comment(_('Zone of the videos\' UTC times, e.g. "Europe/Brussels". Empty: [general] timezone.')) }}
 timezone = ""
 
-{{ comment(_("Scores from 0 to 100: 'sure' and above goes to the layout, 'unsure' and above to the 'to check' layout, the rest to the 'to sort' one.")) }}
+{{ comment(_("Scores from 0 to 100: 'sure' and above goes to the layout, 'unsure' and above is a guess (unsure_layout), the rest is left to you (manual_layout).")) }}
 sure = 80
 unsure = 50
 
@@ -292,6 +293,8 @@ trip_merge_max_km = 120
 folder_town_min_population = 5000
 {{ comment(_('Folder names that are never towns, e.g. a first name that is also a town somewhere: ["Martin", "Victoria"]. Case and accents do not matter.')) }}
 folder_town_ignore = []
+{{ comment(_('People whose folders hold their photos ("Photos Chloé", "iPhone Manon"), besides those named on the people page, e.g. ["Chloé", "Manon"]: a folder holding one of these names, as a word, is that person\'s. Case and accents do not matter. Their photos join your own folder of the same moment (the rule same_moment).')) }}
+person_folders = []
 
 [classify.ai]
 {{ comment(_("A local vision model (Ollama) names the subject of the photos no other rule decides. Off until a 'subject' rule is written below and a model is set here. The photos are sent to url, and only there: keep that server on your own computer.")) }}
@@ -314,10 +317,12 @@ concurrency = 1
 # shift = "+1h"
 
 {{ comment(_("Rules: what you know, written once, applied at every run. They are read in order, and the first one whose score reaches 'sure' decides; its name shows as the reason in the summary and in the workbook. These lists of tables are read from this file only: no environment variable overrides them.")) }}
-{{ comment(_('Each rule has a name and a "match": existing_folder (a folder name you chose), event_neighbour (the loose files of an event join its one named folder), calendar (days of every year, dates = "12-24..12-26"; "12-31..01-01" crosses New Year), date_range (days that happen once, dates = "2023-07-01..2023-07-15"), kind (kind = "screenshot", "received" or "download"), path (a regular expression searched in the host path, pattern = "(?i)kermesse"), camera (a regular expression searched in the make and model, pattern = "(?i)dji"), subject (what a local vision model sees, categories = [...], see [classify.ai]), place (the GPS position lies in one of your places, see [[classify.places]]), trip (an event far from home, named after its country and town without going online), folder_town (a folder named after a town, 2017/Durbuy: its photos go to country/town, to check), other_category (the files no rule above matched).')) }}
+{{ comment(_('Each rule has a name and a "match": existing_folder (a folder name you chose), event_neighbour (the loose files of an event join its one named folder), same_moment (the photos of a person\'s folder, or loose, join your named folder of the same session, else the common parent of your folders of the event), calendar (days of every year, dates = "12-24..12-26"; "12-31..01-01" crosses New Year), date_range (days that happen once, dates = "2023-07-01..2023-07-15"), kind (kind = "screenshot", "received" or "download"), path (a regular expression searched in the host path, pattern = "(?i)kermesse"), camera (a regular expression searched in the make and model, pattern = "(?i)dji"), subject (what a local vision model sees, categories = [...], see [classify.ai]), place (the GPS position lies in one of your places, see [[classify.places]]), trip (an event far from home, named after its country and town without going online), folder_town (a folder named after a town, 2017/Durbuy: its photos go to country/town, to check), other_category (the files no rule above matched).')) }}
 {{ comment(_("A date rule takes a whole event when at least half of its photos fall on its days: a trip over Christmas stays a trip if its date range is listed above Christmas.")) }}
 {{ comment(_("A category may use {year}, {month}, {month_name}, {day}, {event} and {event_start}: those of the event's start. Without a category, the files a rule matches stay where they are. 'score = 0' turns a rule off; without a score, the rule takes the one of its match (a date range is sure).")) }}
-{{ comment(_('The categories below are an example to replace with your own, e.g. Parties, Holidays and outings, School, Sport and leisure, At home, Animals, Nature and landscapes, Documents and screenshots, Other. Avoid a "Family" or "Portraits" category: in a family collection, it swallows most photos.')) }}
+{{ comment(_("keep_folders = true: the folders you named stay below the rule's category (a trip you sorted into 2019/Montenegro/Budva and .../Cetinje: Holidays and outings/Montenegro/Budva, .../Cetinje), instead of all its photos flat in it.")) }}
+{{ comment(_("Only the event's main folder (the one holding most of its photos) and the folders sharing a parent with it are kept below; a folder sharing nothing with it goes to the category flat. A date rule never takes the files a kind rule recognises (screenshots, received pictures, downloads), wherever that rule is listed.")) }}
+{{ comment(_('A category is the name of the event folder, one name without "/" (2009/2009-11/Tom\'s birthday); a trip may keep one stage below it (2019/2019-07/Montenegro/Budva). The rules below are an example to replace with your own. Avoid a "Family" or "Portraits" category: in a family collection, it swallows most photos.')) }}
 
 [[classify.rules]]
 name = "{{ _("Films and series") }}"
@@ -342,32 +347,32 @@ kind = "download"
 # name = "{{ _("Italy 2023") }}"
 # match = "date_range"
 # dates = "2023-07-01..2023-07-15"
-# category = "{{ _("Holidays and outings") }}/{{ _("Italy 2023") }}"
+# category = "{{ _("Italy 2023") }}"
 #
 # [[classify.rules]]
 # name = "{{ _("Grandma's birthday") }}"
 # match = "calendar"
 # dates = "03-12"
-# category = "{{ _("Parties") }}/{{ _("Birthdays") }}"
+# category = "{{ _("Grandma's birthday") }}"
 #
 # [[classify.rules]]
 # name = "{{ _("School fair") }}"
 # match = "path"
 # pattern = '(?i)kermesse'
-# category = "{{ _("School") }}/{{ _("School fair") }}"
+# category = "{{ _("School fair") }}"
 #
 # [[classify.rules]]
 # name = "{{ _("Drone") }}"
 # match = "camera"
 # pattern = '(?i)dji|fc\d{4}'
-# category = "{{ _("Nature and landscapes") }}/{{ _("Drone") }}"
+# category = "{{ _("Drone") }}"
 
 {{ comment(_("person: the events where someone named on the 'people' page shows on at least min_share percent of the photos (10 by default), and the lone photos showing them. names = [...] matches any of them; all = true needs every one. A name nobody has in [[people.person]] stops classify.")) }}
 # [[classify.rules]]
 # name = "{{ _("With Léa") }}"
 # match = "person"
 # names = ["Léa"]
-# category = "{{ _("People") }}/Léa"
+# category = "Léa"
 
 [[classify.rules]]
 name = "{{ _("Existing folders") }}"
@@ -377,30 +382,36 @@ match = "existing_folder"
 name = "{{ _("Screenshots and documents") }}"
 match = "kind"
 kind = "screenshot"
-category = "{{ _("Documents and screenshots") }}"
+{{ comment(_("No category: screenshots, tickets and receipts stay where they are, out of the years. To gather them in a folder of yours, give a category and a layout of their own, e.g.:")) }}
+# category = "{{ _("Documents and screenshots") }}"
+# layout = "{category}/{year}"
 
 [[classify.rules]]
 name = "{{ _("Event neighbours") }}"
 match = "event_neighbour"
 
 [[classify.rules]]
+name = "{{ _("Same moment") }}"
+match = "same_moment"
+
+[[classify.rules]]
 name = "{{ _("Christmas") }}"
 match = "calendar"
 dates = "12-24..12-26"
-category = "{{ _("Parties") }}/{{ _("Christmas") }}"
+category = "{{ _("Christmas") }}"
 
 [[classify.rules]]
 name = "{{ _("New Year") }}"
 match = "calendar"
 dates = "12-31..01-01"
-category = "{{ _("Parties") }}/{{ _("New Year") }}"
+category = "{{ _("New Year") }}"
 {% if locale == "fr" %}
 
 [[classify.rules]]
 name = "Saint-Nicolas"
 match = "calendar"
 dates = "12-05..12-06"
-category = "{{ _("Parties") }}/Saint-Nicolas"
+category = "Saint-Nicolas"
 {% endif %}
 
 {{ comment(_("Pictures received through a messaging app, if you want them apart:")) }}
@@ -425,7 +436,7 @@ category = "{{ _("Parties") }}/Saint-Nicolas"
 #     "{{ _("Nature and landscapes") }} = {{ _("landscapes, plants and sky, no one as the main subject") }}",
 # ]
 
-{{ comment(_('"Other" means: sure that nothing above matches. Without it, such files go to "to sort", which means: we do not know.')) }}
+{{ comment(_('"Other" means: sure that nothing above matches. Without it, such files stay where they are until you decide: we do not know.')) }}
 # [[classify.rules]]
 # name = "{{ _("Other") }}"
 # match = "other_category"

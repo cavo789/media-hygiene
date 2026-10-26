@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Final
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
     from pathlib import Path
 
     from media_hygiene.shrink.candidates import FileKey
@@ -84,3 +85,32 @@ def read_choices(target: Path) -> TryChoices | None:
         return TryChoices.model_validate_json(target.read_bytes())
     except OSError, ValidationError:
         return None
+
+
+def follow_choices(target: Path, moves: Mapping[str, str]) -> int:
+    """Give the videos chosen that a run moved their new path (0382).
+
+    Size and date are kept by a move: the choice still matches the file.
+
+    Args:
+        target: The decisions file; missing: nothing to do.
+        moves: New container path by old one.
+
+    Returns:
+        The choices renamed, counted on the file read back.
+
+    Raises:
+        OSError: The file could not be written.
+    """
+    before = read_choices(target)
+    if before is None:
+        return 0
+    chosen = tuple(
+        choice.model_copy(update={"path": moves.get(choice.path, choice.path)})
+        for choice in before.chosen
+    )
+    if chosen == before.chosen:
+        return 0
+    back = save_choices(target, before.model_copy(update={"chosen": chosen}))
+    targets = set(moves.values())
+    return 0 if back is None else sum(1 for c in back.chosen if c.path in targets)

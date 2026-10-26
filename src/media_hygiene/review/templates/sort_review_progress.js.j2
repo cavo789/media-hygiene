@@ -1,0 +1,27 @@
+{# Included in the script of sort_review.html.j2 (0398): the progress line (sorted, in
+   place, left, from the plan and the journal) and the sort runs of this plan, the latest
+   first, each with its undo line; read again after each GO. Nothing is moved to follow
+   the progress: no staging folder. #}
+  const showProgress = async () => {
+    let view;
+    try {
+      const response = await fetch(P.progress, { cache: "no-store" });
+      if (!response.ok) return;
+      view = await response.json();
+    } catch (error) { return; }
+    const done = view.progress;
+    const moving = done.sorted_files + done.left_files;
+    const share = moving ? Math.round((1000 * done.sorted_files) / moving) / 10 : 100;
+    const number = (n) => n.toLocaleString();
+    byId("progress").textContent = fill(T.progressLine, {
+      events: number(done.sorted_events), files: number(done.sorted_files), share: share.toLocaleString() + " %",
+      inPlace: number(done.in_place), leftEvents: number(done.left_events), leftFiles: number(done.left_files),
+    });
+    byId("runs").hidden = !view.runs.length;
+    byId("runList").replaceChildren(...view.runs.map((run) => {
+      const started = new Date(run.started);
+      const when = started.toLocaleDateString(undefined, { day: "2-digit", month: "2-digit" }) + " " + started.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+      const names = run.events.join(", ") + (run.more ? " " + fill(T.runMore, { n: run.more }) : "");
+      return line("li", fill(run.undone ? T.runUndone : T.runLine, { when: when, events: names, files: run.files, run: run.run_id }), run.undone ? "undone" : "");
+    }));
+  };

@@ -17,6 +17,7 @@
   // The next server may answer 0.5 s after this one ended (0354): asked often, and known by
   // its run id (`RUN_HEADER` of review/respond.py), not only by being seen gone.
   const APPLY_POLL_MS = 250;
+  const ANSWER_MS = 2000; // a poll nobody answers (a connection held in the gap): asked again
   const RUN_HEADER = "X-Media-Hygiene-Run";
   const TEXTS = {{ {
     "applying": _("Running in the window where mh runs: {command}. The home page comes back here when it ends."),
@@ -30,7 +31,7 @@
 
   const waitForHome = (run) => {
     let seenGone = false;
-    const poll = () => fetch("/", { cache: "no-store" })
+    const poll = () => fetch("/", { cache: "no-store", signal: AbortSignal.timeout(ANSWER_MS) })
       .then((response) => {
         const now = response.headers.get(RUN_HEADER);
         const another = seenGone || Boolean(run && now && now !== run);
@@ -39,8 +40,8 @@
         try { section = window.sessionStorage.getItem("mh-home-section") || ""; } catch { /* private mode */ }
         window.location.replace("/" + section);
       })
-      .catch(() => {
-        seenGone = true;
+      .catch((error) => {
+        if (error.name !== "TimeoutError") seenGone = true; // refused: the server is gone
         window.setTimeout(poll, APPLY_POLL_MS);
       });
     window.setTimeout(poll, APPLY_POLL_MS);

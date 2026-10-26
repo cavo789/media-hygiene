@@ -133,6 +133,7 @@ class ExitCode(IntEnum):
     FAILURE = 1
     USAGE = 2
     PAGE_CLOSED = 3  # a page's tab was closed: mh does not open home again (0262)
+    GONE_REVIEW = 4  # the audit done, its user asked mh to open `review --gone`
     INTERRUPTED = 130  # 128 + SIGINT, as shells report Ctrl+C
 
 

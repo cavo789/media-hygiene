@@ -11,7 +11,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.search.days import NAME as DAY
-from media_hygiene.search.query import match_expression
+from media_hygiene.search.query import Order, Sorting, match_expression
 from media_hygiene.tags.models import TagSource
 
 if TYPE_CHECKING:
@@ -66,9 +66,29 @@ COUNT: Final = "SELECT COUNT(*)" + _FROM
 MATCHES: Final = f"{TABLE} MATCH ?"
 # `media_day` reads every form a date is written in (`search/days.py`).
 YEARS: Final = f"CAST(substr({DAY}(files.media_date), 1, 4) AS INTEGER) BETWEEN ? AND ?"
+DAYS: Final = f"{DAY}(files.media_date) BETWEEN ? AND ?"  # ISO days compare as text
 # `fold` is Python's `casefold`: SQLite's `lower` knows ASCII only.
 FOLD: Final = "fold"
 FOLDER: Final = f"instr({FOLD}(files.path), ?) > 0"
+PLACE: Final = "mh_place"  # the state a path says (`convention.place_of_path`, 0407)
+LEFT_OR_NOT: Final = f"({PLACE}(files.path) = 'left') = ?"  # 1: left only, 0: sorted
+KIND: Final = "mh_kind"  # `photos`, `videos` (`folder_order.kind_of_path`, 0347)
+SHOWN: Final = f"{KIND}(files.path) = ?"
+# A folder of the tree and below (0348): `/` sorts just before `0` in the paths.
+WITHIN: Final = "files.path > ? AND files.path < ?"
+_RATE: Final = "json_extract(files.metadata, '$.bit_rate')"  # unknown last (0408)
+# **Sort by** (0347), as the folder view sorts: ties by path, undated last.
+BY_ORDER: Final = {
+    Order.NAME: f" ORDER BY {FOLD}(files.path)",
+    Order.DATE: (
+        f" ORDER BY {DAY}(files.media_date) IS NULL, {DAY}(files.media_date),"
+        f" {FOLD}(files.path)"
+    ),
+    Order.SIZE: f" ORDER BY files.size DESC, {FOLD}(files.path)",
+    Order.RATE: (
+        f" ORDER BY {_RATE} IS NULL, {_RATE} DESC, files.size DESC, {FOLD}(files.path)"
+    ),
+}
 BEST_FIRST: Final = f" ORDER BY {TABLE}.rank"
 # EXIF writes `2019:07:14` or `14/07/2019`, videos `2019-07-14T…`: one day each;
 # undated files (NULL) come last.
@@ -77,6 +97,7 @@ LIMIT: Final = " LIMIT ?"
 WHERE: Final = " WHERE "
 AND: Final = " AND "
 SOURCE_OF: Final = "SELECT path, size, mtime_ns FROM files WHERE rowid = ?"
+DATE_OF: Final = "SELECT media_date FROM files WHERE rowid = ?"  # as the file writes it
 VERSIONS: Final = "SELECT files.path, files.size, files.mtime_ns" + _FROM
 # Search by meaning (`search.meaning_index`): the rows of the files a search matches,
 # those of every file (filters only), one file as a hit, and a probe of one term.
@@ -115,6 +136,18 @@ def conditions(query: SearchQuery) -> tuple[list[str], list[object]]:
     if filters.years is not None:
         chosen.append(YEARS)
         parameters.extend(filters.years)
+    if filters.days is not None:
+        chosen.append(DAYS)
+        parameters.extend(day.isoformat() for day in filters.days)
+    if filters.within:
+        chosen.append(WITHIN)
+        parameters.extend((filters.within + "/", filters.within + "0"))
+    if filters.kind != "all":
+        chosen.append(SHOWN)
+        parameters.append(filters.kind)
+    if filters.sorting is not Sorting.ALL:
+        chosen.append(LEFT_OR_NOT)
+        parameters.append(int(filters.sorting is Sorting.LEFT))
     folder = filters.folder.strip().replace("\\", "/").casefold()
     if folder:
         chosen.append(FOLDER)

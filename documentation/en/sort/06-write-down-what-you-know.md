@@ -37,6 +37,7 @@ category = "Parties/Christmas"
 - `category`: where the files go, through the `{category}` of the layout. Without a category,
   the files the rule matches **stay where they are**.
 - `score` (optional): how sure the rule is, from 0 to 100 (below).
+- `keep_folders = true` (optional): the folders you named stay below the category (below).
 
 > 💡 The rules are read from `config.toml` only: unlike the other settings, no
 > `MEDIA_HYGIENE_*` environment variable overrides them.
@@ -47,6 +48,7 @@ category = "Parties/Christmas"
 |---|---|---|
 | `existing_folder` | A folder name you chose (`2019/Seaside holidays`, `Mars 2005 - Travaux maison`). | — |
 | `event_neighbour` | The loose files of an event join the one folder you named for it. | — |
+| `same_moment` | The photos of a person's folder, or loose, join your folder of the same moment (below). | — |
 | `calendar` | Days that come back every year, `dates = "MM-DD..MM-DD"`. | `dates = "12-24..12-26"` |
 | `date_range` | Days that happen once, `dates = "YYYY-MM-DD..YYYY-MM-DD"`. | `dates = "2023-07-01..2023-07-15"` |
 | `kind` | A kind of file, `kind = "screenshot"`, `"received"` or `"download"`. | `kind = "screenshot"` |
@@ -58,8 +60,8 @@ category = "Parties/Christmas"
 | `trip` | An event far from home, named after its country and town, offline ([step 9](09-places-from-gps.md)). | — |
 | `other_category` | The files no rule above it matched. | `category = "Other"` |
 
-`existing_folder` and `event_neighbour` give the folder's own name as the category: they take
-no `category`. A rule left out of the list is not applied: an empty list, `rules = []`, sorts by
+`existing_folder`, `event_neighbour` and `same_moment` give the folder's own name as the
+category: they take no `category`. A rule left out of the list is not applied: an empty list, `rules = []`, sorts by
 dates only.
 
 ### Dates
@@ -73,6 +75,66 @@ party that ends at 3 in the morning stays whole; a week of skiing that holds a b
 week of skiing. Two `date_range` rules sharing a day are a warning: on those days, the first
 one listed wins.
 
+**Written from the browser.** On the page of the events, *📌 Remember as a rule* writes such a
+rule for the event shown, after saying what it would take
+([step 11](11-name-events-in-the-browser.md#remember-an-event-as-a-rule)).
+
+**Seen before it is written.** On the search page, two calendars give a period to the day;
+*📌 Make it a rule* then shows the photos the rule would take, each with where it would go, and
+those of the same days it leaves to another rule: correct the days or the folder while seeing
+them, then save ([`search`](../commands/search.md#make-a-period-a-rule)). *Update a rule…* does
+the same for a date rule already written.
+
+**A trip you already sorted into folders.** A date rule above *Existing folders* takes every
+photo of its days, those of your own folders too: written alone, it would put
+`2019/Montenegro/Budva` and `2019/Montenegro/Cetinje` flat in its category. With
+`keep_folders = true`, the category becomes their parent and your folders stay below it:
+
+```toml
+[[classify.rules]]
+name = "Montenegro"
+match = "date_range"
+dates = "2019-07-12..2019-07-19"
+category = "Holidays and outings/Montenegro"
+keep_folders = true
+```
+
+gives `2019/Holidays and outings/Montenegro/Budva` and `…/Montenegro/Cetinje`; the photos of a
+person's folder taken the same days follow the folder of their moment
+([below](#your-familys-folders)), the others go to `…/Montenegro`.
+
+Only the event's **main folder** (the one holding most of its photos) and the folders sharing
+a parent with it are kept: a wedding sorted into `2017/August 2017/Hervé and Magda's wedding`
+becomes the category itself, never `…/Hervé and Magda's wedding/Hervé and Magda's wedding`; a
+folder sharing nothing with it (`2017/Development Sep`) goes to the category flat, never below
+it. A person's folder taken the same evening (`Manon\…`) is such an unrelated folder: list
+the name in `person_folders` ([below](#your-familys-folders)) and its photos join the wedding
+by their moment.
+
+**A date rule never takes a screenshot.** The files a `kind` rule recognises (screenshots,
+received pictures, downloads) are not memories of the day, wherever that rule is listed: they
+keep the rule they would have without the date rule.
+
+### Folder and file names
+
+A `path` rule searches its pattern in the whole path, as Windows writes it
+(`C:\Photos\Chris & Fred\foto020601214749_957.jpg`): a folder name, a file name, or both.
+`(?i)` ignores case. An old camera named its photos `foto` + date + time
+(`foto020601214749_957`: 1 June 2002, 21:47:49); all those of that day start with
+`foto020601`:
+
+```toml
+[[classify.rules]]
+name = "Chris and Fred's wedding"
+match = "path"
+pattern = '(?i)chris ?& ?fred|\bfoto020601'
+category = "Parties/Weddings/Chris and Fred's wedding 2002"
+```
+
+`|` means "or": the folder `Chris & Fred` or a name starting with `foto020601`. `\b` marks
+the start of a word, so `myfoto020601…` does not match. Write the pattern between single
+quotes: a backslash then stays as typed.
+
 ### Kinds of files
 
 Told from the name and the metadata only:
@@ -85,6 +147,28 @@ Told from the name and the metadata only:
 - `download`: a video whose name holds a season, a resolution or a codec (`S01E05`, `1080p`,
   `x264`): a downloaded film or series. They are not memories: the example list gives them no
   category, so they stay where they are.
+
+### Your family's folders
+
+You sorted a trip yourself, `2019/Montenegro/Budva`, `…/Cetinje`; your daughters' photos of the
+same days sit in `2019/Photos Chloé` and `Manon 2023/dcim`. A folder is **a person's** when the
+name of someone is found in it, as a word, case and accents ignored (`Photos Chloé`, `Backup
+Manon`, `iPhone Manon`; not `Chloéville`). The names are those of the
+[`people`](../reference-people.md) page, plus a list for the people not named there:
+
+```toml
+[classify]
+person_folders = ["Chloé", "Manon"]
+```
+
+With a `same_moment` rule (in the example list), each photo of a person's folder, and each loose
+photo (`DCIM`), taken during a **session** (photos without a 6-hour break,
+`session_gap_hours`) where your own folders hold photos joins your folder: `Photos Chloé` of the
+12th would go to `2019/2019-07/Montenegro/Budva`, that of the 13th to `…/Cetinje`. Two of your
+folders in the same session: the one whose photo is nearest in time. A photo of no such session
+goes to the trip's folder, the common parent of your folders (`Montenegro`), unless they share
+none (or only a year). They are **to check**: look at them in the report. A photo of a folder
+you named yourself never moves. `score = 0` on the rule turns it off.
 
 ### People
 
@@ -114,7 +198,7 @@ your events takes most of them, like a "Family" category would.
 ### Categories
 
 A category may use `{year}`, `{month}`, `{month_name}`, `{day}`, `{event}` and `{event_start}`,
-taken from the start of the event: `category = "Parties/Christmas {year}"`; the GPS rules add
+taken from the start of the event (the month is `00` when only the year is known): `category = "Parties/Christmas {year}"`; the GPS rules add
 `{place}`, `{country}`, `{region}` and `{city}` ([step 9](09-places-from-gps.md#write-the-rules)).
 Characters Windows refuses in a folder name are refused.
 
@@ -150,9 +234,9 @@ contradicts does.
 ## Which rule wins
 
 The rules are read **in order**, and the first one whose score reaches `sure` (80 by default)
-decides. When none does, the best one found is a guess, gathered in `year/To check/category`.
-When no rule matches, the file goes to `year/To sort/<event>`: "to sort" means "we do not
-know", while `other_category` means "sure that nothing above matches".
+decides. When none does, the best one found is a guess: the file stays where it is until you
+confirm it. When no rule matches, the file stays too: "to sort" means "we do not know", while
+`other_category` means "sure that nothing above matches".
 
 Each `match` has a default score, which a rule may change with its own `score`; `score = 0`
 turns a rule off:
@@ -160,12 +244,12 @@ turns a rule off:
 | `match` | Score |
 |---|---|
 | `date_range` | 95: you wrote it, it is sure |
-| `existing_folder` | 90 (85 for a person's folder, `Dad/2018/…`) |
+| `existing_folder` | 90 (85 for a person's folder, `Dad/2018/…`, `Photos Chloé`) |
 | `path`, `camera` | 90 |
 | `calendar`, `kind`, `other_category` | 85 |
 | `subject` | 85 when the samples of the event agree; otherwise "to check" |
 | `person` | 85 |
-| `event_neighbour` | 70: to check |
+| `event_neighbour`, `same_moment` | 70: to check |
 
 The scores of the `[classify] scores` table set these defaults for every rule of a kind. A
 photo whose date is doubtful (its folder says another year) stays "to check" whatever its
@@ -205,7 +289,31 @@ New Year.
 ```
 
 The rules that decided nothing are named after the table: a typo in a regular expression, a
-wrong year, or simply nothing of that kind in your folders. A rule that cannot work stops the
+wrong year, or simply nothing of that kind in your folders.
+
+**Keep the list alive: *Your rules*.** On the page of the events
+([`review-sort`](../commands/review-sort.md)), **📌 Your rules** lists every rule of
+`config.toml`, with the files it decided at the `classify` run the page shows and, for a
+folder-name rule, the days of the event holding most of its files. They are shown by kind
+(*Dates*, *Folder and file names*, *Days of every year*… your own folders last), each kind
+under its heading with its count, then by period, the latest first; a rule that decided
+nothing comes last in its kind. A click on *Rule* or *Files* sorts by that column, a second
+click reverses, a third goes back. `config.toml` keeps its own order, which decides: the
+dialog never changes it.
+
+- a rule that decided nothing is shown in red, with **Remove** (or *Remove the N rules that
+  decided nothing*, after a question): it is removed from `config.toml`, your comments kept,
+  and the list is read back from the disk;
+- a folder-name rule (`path`) serves once: after `sort` moved its files into
+  `Holidays and outings/Turin 2018`, the old folder name it looks for is gone. **Turn into
+  dates** replaces it, in its place in the list, by a `date_range` rule with the days of that
+  event and `keep_folders = true`; the dialog says what changes first ("450 files: 92 of this
+  event, 358 of other folders on the same days. Elsewhere: Photos Chloé (358)", and the files
+  the old rule decided that the new one would not take). One rule at a time: the days are those
+  of the event holding most of its files, never its extreme dates (a pattern also catches
+  badly dated photos).
+
+The counts are those of the last `classify`: run it again to see the rules you changed at work. A rule that cannot work stops the
 run before anything is read, and names itself (rules are counted from the top of the file):
 
 ```text

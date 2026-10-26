@@ -37,6 +37,8 @@ category = "Fêtes/Noël"
 - `category` : où vont les fichiers, par le `{category}` du modèle. Sans catégorie, les fichiers
   que la règle reconnaît **restent où ils sont**.
 - `score` (facultatif) : à quel point la règle est sûre, de 0 à 100 (plus bas).
+- `keep_folders = true` (facultatif) : les dossiers que vous avez nommés restent sous la
+  catégorie (plus bas).
 
 > 💡 Les règles se lisent dans `config.toml` seulement : contrairement aux autres réglages,
 > aucune variable d'environnement `MEDIA_HYGIENE_*` ne les remplace.
@@ -47,6 +49,7 @@ category = "Fêtes/Noël"
 |---|---|---|
 | `existing_folder` | Un nom de dossier que vous avez choisi (`2019/Vacances à la mer`, `Mars 2005 - Travaux maison`). | — |
 | `event_neighbour` | Les fichiers isolés d'un événement rejoignent le seul dossier que vous avez nommé pour lui. | — |
+| `same_moment` | Les photos du dossier d'une personne, ou isolées, rejoignent votre dossier du même moment (plus bas). | — |
 | `calendar` | Des jours qui reviennent chaque année, `dates = "MM-JJ..MM-JJ"`. | `dates = "12-24..12-26"` |
 | `date_range` | Des jours qui n'arrivent qu'une fois, `dates = "AAAA-MM-JJ..AAAA-MM-JJ"`. | `dates = "2023-07-01..2023-07-15"` |
 | `kind` | Un genre de fichier, `kind = "screenshot"`, `"received"` ou `"download"`. | `kind = "screenshot"` |
@@ -58,8 +61,8 @@ category = "Fêtes/Noël"
 | `trip` | Un événement loin de la maison, nommé d'après son pays et sa ville, hors ligne ([étape 9](09-places-from-gps.md)). | — |
 | `other_category` | Les fichiers qu'aucune règle au-dessus n'a reconnus. | `category = "Autres"` |
 
-`existing_folder` et `event_neighbour` donnent comme catégorie le nom du dossier lui-même : ils
-ne prennent pas de `category`. Une règle absente de la liste ne s'applique pas : une liste vide,
+`existing_folder`, `event_neighbour` et `same_moment` donnent comme catégorie le nom du dossier
+lui-même : ils ne prennent pas de `category`. Une règle absente de la liste ne s'applique pas : une liste vide,
 `rules = []`, trie par dates seulement.
 
 ### Les dates
@@ -74,6 +77,69 @@ entier ; une semaine de ski qui contient un anniversaire reste une semaine de sk
 `date_range` qui partagent un jour donnent un avertissement : ces jours-là, la première de la
 liste l'emporte.
 
+**Écrite depuis le navigateur.** Sur la page des événements, *📌 Retenir comme règle* écrit une
+telle règle pour l'événement affiché, après avoir dit ce qu'elle prendrait
+([étape 11](11-name-events-in-the-browser.md#retenir-un-événement-comme-règle)).
+
+**Vue avant d'être écrite.** Sur la page de recherche, deux calendriers donnent une période au
+jour près ; *📌 En faire une règle* montre alors les photos que la règle prendrait, chacune avec
+l'endroit où elle irait, et celles des mêmes jours qu'elle laisse à une autre règle : corrigez les
+jours ou le dossier en les voyant, puis enregistrez
+([`search`](../commands/search.md#faire-dune-période-une-règle)). *Mettre à jour une règle…* fait de
+même pour une règle de dates déjà écrite.
+
+**Un voyage déjà trié dans vos dossiers.** Une règle de dates au-dessus de *Dossiers existants*
+prend toutes les photos de ses jours, celles de vos propres dossiers aussi : écrite seule, elle
+mettrait `2019/Montenegro/Budva` et `2019/Montenegro/Cetinje` à plat dans sa catégorie. Avec
+`keep_folders = true`, la catégorie devient leur parent et vos dossiers restent dessous :
+
+```toml
+[[classify.rules]]
+name = "Monténégro"
+match = "date_range"
+dates = "2019-07-12..2019-07-19"
+category = "Vacances et sorties/Monténégro"
+keep_folders = true
+```
+
+donne `2019/Vacances et sorties/Monténégro/Budva` et `…/Monténégro/Cetinje` ; les photos du
+dossier d'une personne prises les mêmes jours suivent le dossier de leur moment
+([plus bas](#les-dossiers-de-votre-famille)), les autres vont dans `…/Monténégro`.
+
+Seuls le **dossier principal** de l'événement (celui qui en contient le plus de photos) et les
+dossiers qui partagent un parent avec lui sont gardés : un mariage trié dans
+`2017/Août 2017/Mariage Hervé et Magda` devient la catégorie elle-même, jamais
+`…/Mariage d'Hervé et Magda/Mariage Hervé et Magda` ; un dossier qui ne partage rien avec lui
+(`2017/Développement Sep`) va dans la catégorie à plat, jamais dessous. Le dossier d'une
+personne pris le même soir (`Manon\…`) est un tel dossier sans lien : écrivez son nom dans
+`person_folders` ([plus bas](#les-dossiers-de-votre-famille)) et ses photos rejoignent le
+mariage par leur moment.
+
+**Une règle de dates ne prend jamais une capture d'écran.** Les fichiers qu'une règle `kind`
+reconnaît (captures d'écran, images reçues, téléchargements) ne sont pas des souvenirs du jour,
+où que cette règle soit dans la liste : ils gardent la règle qu'ils auraient sans la règle de
+dates.
+
+### Les noms de dossiers et de fichiers
+
+Une règle `path` cherche son motif dans tout le chemin, tel que Windows l'écrit
+(`C:\Photos\Chris & Fred\foto020601214749_957.jpg`) : un nom de dossier, un nom de fichier,
+ou les deux. `(?i)` ignore les majuscules. Un vieil appareil nommait ses photos `foto` + date
++ heure (`foto020601214749_957` : le 1er juin 2002, 21:47:49) ; toutes celles de ce jour
+commencent par `foto020601` :
+
+```toml
+[[classify.rules]]
+name = "Mariage de Chris et Fred"
+match = "path"
+pattern = '(?i)chris ?& ?fred|\bfoto020601'
+category = "Fêtes/Mariages/Mariage de Chris et Fred 2002"
+```
+
+`|` veut dire « ou » : le dossier `Chris & Fred` ou un nom qui commence par `foto020601`.
+`\b` marque le début d'un mot : `mafoto020601…` ne convient pas. Écrivez le motif entre
+apostrophes : une barre oblique inverse reste alors telle quelle.
+
 ### Les genres de fichiers
 
 Reconnus par le nom et les métadonnées seulement :
@@ -86,6 +152,30 @@ Reconnus par le nom et les métadonnées seulement :
 - `download` : une vidéo dont le nom contient une saison, une résolution ou un codec (`S01E05`,
   `1080p`, `x264`) : un film ou une série téléchargés. Ce ne sont pas des souvenirs : la liste
   d'exemples ne leur donne pas de catégorie, ils restent donc où ils sont.
+
+### Les dossiers de votre famille
+
+Vous avez trié un voyage vous-même, `2019/Montenegro/Budva`, `…/Cetinje` ; les photos de vos
+filles des mêmes jours sont dans `2019/Photos Chloé` et `Manon 2023/dcim`. Un dossier est
+**celui d'une personne** quand le nom de quelqu'un s'y trouve, comme un mot, sans tenir compte
+des majuscules ni des accents (`Photos Chloé`, `Backup Manon`, `iPhone Manon` ; pas
+`Chloéville`). Les noms sont ceux de la page [`people`](../reference-people.md), plus une liste
+pour les personnes qui n'y sont pas nommées :
+
+```toml
+[classify]
+person_folders = ["Chloé", "Manon"]
+```
+
+Avec une règle `same_moment` (dans la liste d'exemples), chaque photo du dossier d'une personne,
+et chaque photo isolée (`DCIM`), prise pendant une **séance** (des photos sans pause de 6 heures,
+`session_gap_hours`) où vos propres dossiers ont des photos rejoint votre dossier : `Photos
+Chloé` du 12 irait dans `2019/2019-07/Montenegro/Budva`, celle du 13 dans `…/Cetinje`. Deux de
+vos dossiers dans la même séance : celui dont une photo est la plus proche dans le temps. Une
+photo d'aucune de ces séances va dans le dossier du voyage, le parent commun de vos dossiers
+(`Montenegro`), sauf s'ils n'en ont aucun (ou seulement une année). Elles sont **à vérifier** :
+regardez-les dans le rapport. Une photo d'un dossier que vous avez nommé vous-même ne bouge
+jamais. `score = 0` sur la règle la désactive.
 
 ### Les personnes
 
@@ -119,7 +209,8 @@ présent sur la plupart de vos événements les prend presque tous, comme le fer
 ### Les catégories
 
 Une catégorie peut utiliser `{year}`, `{month}`, `{month_name}`, `{day}`, `{event}` et
-`{event_start}`, pris au début de l'événement : `category = "Fêtes/Noël {year}"` ; les règles
+`{event_start}`, pris au début de l'événement (le mois vaut `00` quand seule l'année est
+connue) : `category = "Fêtes/Noël {year}"` ; les règles
 GPS y ajoutent `{place}`, `{country}`, `{region}` et `{city}`
 ([étape 9](09-places-from-gps.md#écrire-les-règles)). Les caractères que Windows refuse dans un
 nom de dossier sont refusés.
@@ -157,10 +248,10 @@ réglée. Le fichier va dans « à vérifier » (**Date tirée de** se termine p
 ## Quelle règle l'emporte
 
 Les règles sont lues **dans l'ordre**, et la première dont le score atteint `sure` (80 par
-défaut) décide. Quand aucune ne l'atteint, la meilleure trouvée est une supposition, rassemblée
-dans `année/À vérifier/catégorie`. Quand aucune règle ne reconnaît le fichier, il va dans
-`année/À trier/<événement>` : « à trier » veut dire « on ne sait pas », alors
-qu'`other_category` veut dire « sûr que rien au-dessus ne correspond ».
+défaut) décide. Quand aucune ne l'atteint, la meilleure trouvée est une supposition : le fichier
+reste où il est jusqu'à ce que vous la confirmiez. Quand aucune règle ne reconnaît le fichier, il
+reste aussi : « à trier » veut dire « on ne sait pas », alors qu'`other_category` veut dire
+« sûr que rien au-dessus ne correspond ».
 
 Chaque `match` a un score par défaut, qu'une règle peut changer par son propre `score` ;
 `score = 0` désactive une règle :
@@ -168,12 +259,12 @@ Chaque `match` a un score par défaut, qu'une règle peut changer par son propre
 | `match` | Score |
 |---|---|
 | `date_range` | 95 : vous l'avez écrite, elle est sûre |
-| `existing_folder` | 90 (85 pour le dossier d'une personne, `Papa/2018/…`) |
+| `existing_folder` | 90 (85 pour le dossier d'une personne, `Papa/2018/…`, `Photos Chloé`) |
 | `path`, `camera` | 90 |
 | `calendar`, `kind`, `other_category` | 85 |
 | `subject` | 85 quand les échantillons de l'événement sont d'accord ; sinon « à vérifier » |
 | `person` | 85 |
-| `event_neighbour` | 70 : à vérifier |
+| `event_neighbour`, `same_moment` | 70 : à vérifier |
 
 La table `[classify] scores` fixe ces valeurs par défaut pour toutes les règles d'un même
 `match`. Une photo dont la date est douteuse (son dossier dit une autre année) reste « à
@@ -213,7 +304,34 @@ Nouvel An, Saint-Nicolas.
 ```
 
 Les règles qui n'ont rien décidé sont nommées après le tableau : une faute de frappe dans une
-expression régulière, une mauvaise année, ou simplement rien de ce genre dans vos dossiers. Une
+expression régulière, une mauvaise année, ou simplement rien de ce genre dans vos dossiers.
+
+**Garder la liste vivante : *Vos règles*.** Sur la page des événements
+([`review-sort`](../commands/review-sort.md)), **📌 Vos règles** liste chaque règle de
+`config.toml`, avec les fichiers qu'elle a décidés lors du `classify` que montre la page et, pour
+une règle sur un nom de dossier, les jours de l'événement qui contient la plupart de ses
+fichiers. Elles sont affichées par type (*Dates*, *Noms de dossiers et de fichiers*, *Jours de
+chaque année*… vos propres dossiers en dernier), chaque type sous son titre avec son nombre, puis
+par période, la plus récente d'abord ; une règle qui n'a rien décidé vient en dernier dans son
+type. Un clic sur *Règle* ou *Fichiers* trie selon cette colonne, un deuxième inverse, un
+troisième revient. `config.toml` garde son propre ordre, qui décide : la boîte ne le change
+jamais.
+
+- une règle qui n'a rien décidé est affichée en rouge, avec **Supprimer** (ou *Supprimer les N
+  règles qui n'ont rien décidé*, après une question) : elle est retirée de `config.toml`, vos
+  commentaires conservés, et la liste est relue sur le disque ;
+- une règle sur un nom de dossier (`path`) ne sert qu'une fois : une fois que `sort` a rangé ses
+  fichiers dans `Vacances et sorties/Turin 2018`, l'ancien nom de dossier qu'elle cherche a
+  disparu. **Convertir en dates** la remplace, à sa place dans la liste, par une règle
+  `date_range` avec les jours de cet événement et `keep_folders = true` ; la boîte dit d'abord ce
+  qui change (« 450 fichiers : 92 de cet événement, 358 d'autres dossiers les mêmes jours.
+  Ailleurs : Photos Chloé (358) », et les fichiers que décidait l'ancienne règle et que la
+  nouvelle ne prendrait pas). Une règle à la fois : les jours sont ceux de l'événement qui
+  contient la plupart de ses fichiers, jamais ses dates extrêmes (un motif attrape aussi des
+  photos mal datées).
+
+Les nombres sont ceux du dernier `classify` : relancez-le pour voir à l'œuvre les règles que vous
+avez changées. Une
 règle qui ne peut pas fonctionner arrête l'exécution avant toute lecture, et se nomme
 (les règles sont comptées depuis le haut du fichier) :
 

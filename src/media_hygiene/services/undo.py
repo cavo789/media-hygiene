@@ -16,6 +16,7 @@ from media_hygiene.actions.outcome import combine
 from media_hygiene.actions.plan_runs import runs_of_plan
 from media_hygiene.actions.runs import list_run_ids, run_phase
 from media_hygiene.actions.undo import UndoExecutor
+from media_hygiene.console.links_view import show_links
 from media_hygiene.errors import JournalError, MountError
 from media_hygiene.i18n import _
 from media_hygiene.index.former_names import forget_former
@@ -25,6 +26,7 @@ from media_hygiene.index.touched_folders import forget_listings
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.drive_letter import found_line, relocate, tidy
 from media_hygiene.services.quarantines import letter_changes
+from media_hygiene.services.sort_links import follow_links
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -139,13 +141,14 @@ def undo_run(runtime: Runtime, run_id: str, progress: ProgressSink) -> Outcome:
         outcome = executor.run(entries)
     for change in changes:
         tidy(change, run_id)
-    _follow_moves_back(runtime, (file, run_id), changes)
+    back = _follow_moves_back(runtime, (file, run_id), changes)
+    show_links(runtime.output, follow_links(runtime, back))
     return replace(outcome, skipped=(*outcome.skipped, *refused))
 
 
 def _follow_moves_back(
     runtime: Runtime, run: tuple[Path, str], changes: Sequence[LetterChange]
-) -> None:
+) -> list[tuple[str, str]]:
     """Update the index: files moved back by `undo` keep their facts.
 
     The index knows them by the paths of the run, under the drive's old letter. A
@@ -155,6 +158,9 @@ def _follow_moves_back(
         runtime: Settings, mount points and output.
         run: The journal of the run, and the run.
         changes: The drives of the run that changed letter since.
+
+    Returns:
+        The files moved back: where the run had put them, where they are now.
     """
     index = runtime.index_file
     done = done_states(read_journal(run[0]), Phase.UNDO)
@@ -163,21 +169,18 @@ def _follow_moves_back(
         for entry in done
         if entry.action is ActionKind.MOVE and entry.target
     ]
-    restored = [
-        (_known(entry.quarantine, changes), entry.path)
-        for entry in done
-        if entry.quarantine
-    ]
+    restored = [(_known(e.quarantine, changes), e.path) for e in done if e.quarantine]
     copies = [
         _known(entry.path, changes) for entry in done if entry.action in REMOVED_COPIES
     ]
     if index is None or not done:
-        return
+        return back
     with FactsRepository.open(index) as repository:
         repository.move(back)
         unpark(repository.connection, restored)  # set aside by a clean (0156)
         forget_former(repository.connection, run[1], copies)
         forget_listings(repository.connection, done)  # the folders read again
+    return back
 
 
 def _known(path: str, changes: Sequence[LetterChange]) -> str:

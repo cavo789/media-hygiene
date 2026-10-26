@@ -28,7 +28,7 @@ docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygien
 | Your photos | 🔒 Never changed. |
 | Needs | Nothing. |
 | Recommended | `/config`, and the same `-v` options as your usual command, to see their state. |
-| Writes | A commented `config.toml` in `/config`, the first time only; with `--upgrade`, the settings it lacks. |
+| Writes | A commented `config.toml` in `/config`, the first time only; with `--upgrade`, the settings it lacks; with `--convention`, the layouts of the sort convention, once you say yes. |
 | Undo | Delete `config.toml` to get the defaults back. |
 | With `mh` | `mh config`. |
 
@@ -74,6 +74,22 @@ moved or removed, and the comments added are in the language of your file. The f
 from the disk and the console lists what it now holds. `/config` mounted with `:ro` is refused
 (`--dry-run` still works); no backup is left in `/config`.
 
+## The sort convention: `--convention`
+
+`config.toml` is written whole on the first run, so a newer default layout never reaches it. A
+file written before the [sort convention](../sort/04-classify.md#the-convention-year-month-event)
+keeps `{year}/{category}` and its *To check* / *To sort* folders; `classify` says so in one line.
+`config --convention` lists each layout that differs, old → new, **asks**, then writes them
+(comments kept) and reads the file back:
+
+```powershell
+mh config --convention --dry-run   # list only
+mh config --convention             # list, ask, write
+```
+
+Nothing is rewritten without your yes. Your rules are not touched: a rule whose category has
+several folder levels (`Parties/Christmas`) is named by `classify`, for you to shorten.
+
 ## Who wins?
 
 From the weakest to the strongest: the built-in default, `config.toml`, an environment variable
@@ -82,7 +98,8 @@ the option of the command line.
 
 ## Good to know
 
-- `config` has two options of its own, `--upgrade` and `--dry-run`; the global ones apply too
+- `config` has three options of its own, `--upgrade`, `--convention` and `--dry-run`; the global
+  ones apply too
   (`--locale`, `--verbosity`).
 - `/config` holds `config.toml` **only**: never put anything else there.
 - A setting unknown to this version is said, with its line: see

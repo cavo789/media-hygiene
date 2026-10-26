@@ -37,6 +37,7 @@ class EventDecision(Frozen):
     event: str
     value: EventValue
     base: EventValue = EventValue()
+    saved: str = ""  # when the page saved it: ISO 8601, UTC; the page shows it
 
 
 class FileDecision(Frozen):

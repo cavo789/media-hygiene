@@ -7,9 +7,9 @@
 **Obtenir une arborescence bien rangée pour toutes vos photos, par année, événement, lieu ou
 personne, et la corriger avant que rien ne bouge.**
 
-`classify` propose une place à chaque photo et vidéo, `année/catégorie` par défaut :
-`2019/Vacances à la mer`, `2016/À trier/2016-07-14`. Il **ne fait que proposer** : rien ne
-bouge. Vous corrigez la proposition dans un [classeur](../reference-glossary.md#classeur), puis [`sort`](sort.md) l'applique.
+`classify` propose une place à chaque photo et vidéo, `année/année-mois/événement` par défaut :
+`2019/2019-08/Vacances à la mer` ([la convention](../sort/04-classify.md#la-convention--année-mois-événement)).
+Ce qui n'est pas décidé reste où il est. Il **ne fait que proposer** : rien ne bouge. Vous corrigez la proposition dans un [classeur](../reference-glossary.md#classeur), puis [`sort`](sort.md) l'applique.
 
 **Quand** : après avoir nettoyé les doublons (sinon les deux copies sont triées) ; à nouveau
 après de nouvelles photos ou une règle modifiée : vos modifications du classeur précédent sont
@@ -50,10 +50,13 @@ docker run --rm -it `
 ## Lire le résultat
 
 - **Déjà à leur place** : les fichiers déjà là où la proposition les veut.
-- **Proposition**, par bande : **sûrs** (un dossier que vous avez nommé, une date fiable), **à
-  vérifier** (une supposition, regroupée dans `année/À vérifier/catégorie`), **à trier** (rien ne
-  le dit : un dossier par événement, dans `année/À trier/<événement>`), **sans date**
-  (`À trier/Sans date`), **laissés tels quels** (dossiers protégés et `--leave`).
+- **Proposition**, par bande : **sûrs** (un dossier que vous avez nommé, une règle :
+  `année/année-mois/événement`), **à vérifier** (une supposition : reste jusqu'à ce que vous la
+  confirmiez), **à trier** (rien ne le dit : reste, regroupé par événement pour que vous le
+  nommiez), **sans date** (reste), **laissés tels quels** (dossiers protégés et `--leave`,
+  fichiers posés directement dans leur dossier `année/année-mois`).
+- Un `config.toml` qui range autrement que la convention, ou une règle dont la catégorie a
+  plusieurs niveaux de dossiers, est signalé en une ligne.
 - **Pourquoi** : la règle ou la raison de chaque proposition, puis les catégories les plus trouvées.
 - La fin donne le chemin du classeur et du rapport.
 
@@ -63,7 +66,7 @@ docker run --rm -it `
 |---|---|
 | `--path DOSSIER` | Seulement les fichiers sous ce dossier (chemin de l'hôte, tel que monté), répétable : `--path "C:\Photos\2015"`. Les événements restent entiers : formés à partir de tous les fichiers, seuls ceux sous le dossier reçoivent une proposition. Avec `--year` : les deux. |
 | `--year ANNÉE[-ANNÉE]` | Seulement les fichiers de cette année ou de ces années : `2016`, `2015-2017`. Une soirée à la fois. Les fichiers datés seulement par le disque (copies, téléchargements) sont mis de côté et comptés : un classify sans `--year` les propose. Les règles écrites pour d'autres années sont comptées en une ligne, sans leurs noms. |
-| `--layout DISPOSITION` | Où vont les fichiers sûrs : `{year}/{month}`, `{year}/{category}`… Aussi `{quarter}`, `{month_name}`, `{day}`, `{event}`, `{event_start}`, `{place}`, `{country}`, `{region}`, `{city}`. |
+| `--layout DISPOSITION` | Où vont les fichiers sûrs : `{year}/{year_month}/{category}` par défaut, `{year}/{month}`… Aussi `{year_month}` (`2009-11` ; `1985-00` quand seule l'année est connue), `{quarter}`, `{month_name}`, `{day}`, `{event}`, `{event_start}`, `{place}`, `{country}`, `{region}`, `{city}`. |
 | `--target CHEMIN` | Dossier de l'hôte qui reçoit l'arborescence (il doit être monté) ; chaque dossier monté, sur place, par défaut. |
 | `--leave CHEMIN` | Dossier de l'hôte jamais trié, toujours analysé et nettoyé. |
 | `--carry-over CLASSEUR` | Reprendre les modifications de ce classeur ; celui du dernier `classify` par défaut. |

@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.errors import DecisionsError
+from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, serve_connection
@@ -110,7 +110,7 @@ async def jpeg_response(
     return Response(HTTPStatus.OK, image, ContentType.JPEG, cacheable=True)
 
 
-def choice_failed(exc: DecisionsError | OSError) -> Response:
+def choice_failed(exc: MediaHygieneError | OSError) -> Response:
     """Answer a choice that was refused, or could not be saved.
 
     Args:
@@ -119,7 +119,7 @@ def choice_failed(exc: DecisionsError | OSError) -> Response:
     Returns:
         422 with the reason, or 500 when the decisions file could not be written.
     """
-    if isinstance(exc, DecisionsError):
+    if isinstance(exc, MediaHygieneError):  # a choice refused, a config.toml edit too
         return json_response(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": exc.message})
     message = _("Cannot save the decisions file: {error}.")
     error = message.format(error=exc.strerror or exc)

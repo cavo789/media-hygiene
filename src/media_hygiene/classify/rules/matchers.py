@@ -12,14 +12,15 @@ import re
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.dating import has_camera_trace
-from media_hygiene.classify.rules.kinds import FileKind
+from media_hygiene.classify.rules.kinds import FileKind, RuleMatch
 from media_hygiene.constants import VIDEO_EXTENSIONS
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Sequence
     from pathlib import Path
 
     from media_hygiene.classify.models import MediaInput
+    from media_hygiene.config.classify_rules import ClassifyRule
 
 type Test = Callable[[MediaInput], bool]
 
@@ -141,3 +142,23 @@ def camera_test(pattern: str) -> Test:
         return bool(compiled.search(" ".join(name for name in names if name)))
 
     return test
+
+
+def kind_taken(
+    files: Sequence[MediaInput], rules: Sequence[ClassifyRule]
+) -> frozenset[Path]:
+    """The files a `kind` rule (on) matches, wherever it is listed (0394).
+
+    Args:
+        files: The files.
+        rules: The rules.
+
+    Returns:
+        Their paths: screenshots, received pictures, downloads.
+    """
+    tests = tuple(
+        KIND_TESTS[rule.kind]
+        for rule in rules
+        if rule.match is RuleMatch.KIND and rule.kind and rule.score != 0
+    )
+    return frozenset(file.path for file in files if any(test(file) for test in tests))

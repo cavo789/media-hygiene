@@ -12,8 +12,8 @@ from media_hygiene.classify.engine import Classification, Scope, classify
 from media_hygiene.classify.models import Band, MediaInput, Proposal, SortReason
 from media_hygiene.classify.rules.kinds import FileKind, RuleMatch
 from media_hygiene.config.classify_rules import ClassifyRule
-from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.scan.models import VisualFacts
+from tests.support.layouts import legacy
 
 ROOT = Path("/data/c/Photos")
 ITALY = ClassifyRule(
@@ -49,7 +49,7 @@ def series(folder: str, start: datetime, count: int) -> list[MediaInput]:
 
 def run(files: list[MediaInput], *rules: ClassifyRule) -> Classification:
     """Classify with these rules only, host paths as Windows writes them."""
-    settings = ClassifySettings(rules=rules)
+    settings = legacy(rules=rules)
     host = Scope(host=lambda path: str(PureWindowsPath("C:/", *path.parts[3:])))
     return classify(files, settings, host)
 
@@ -151,7 +151,7 @@ def test_each_kind_is_told_from_its_name_and_metadata() -> None:
 def test_a_rule_without_category_leaves_its_files_where_they_are() -> None:
     """The default list leaves downloaded films alone, even undated ones."""
     film = shot("Films/Movie.2019.1080p.WEB-DL.mp4", None, camera=None)
-    (proposal,) = classify([film], ClassifySettings(), Scope()).proposals
+    (proposal,) = classify([film], legacy(), Scope()).proposals
     assert (proposal.band, proposal.rule, proposal.folder) == (
         Band.STAY,
         "Films and series",

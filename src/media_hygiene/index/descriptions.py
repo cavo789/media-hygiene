@@ -58,6 +58,24 @@ class DescriptionStore:
         self._connection = connection
         self._model, self._prompt = asked
 
+    @property
+    def connection(self) -> sqlite3.Connection:
+        """The index connection: the words of an answer are written beside it (0353).
+
+        Returns:
+            It.
+        """
+        return self._connection
+
+    @property
+    def asked(self) -> tuple[str, str]:
+        """The vision model and the prompt version the store is bound to.
+
+        Returns:
+            Both.
+        """
+        return self._model, self._prompt
+
     def get(self, photo: PhotoVersion) -> Description | None:
         """The description of this version of a photo.
 

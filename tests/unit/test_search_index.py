@@ -7,6 +7,7 @@ from contextlib import closing
 from typing import TYPE_CHECKING
 
 from media_hygiene.index.schema import prepare
+from media_hygiene.search import fts
 from media_hygiene.search.fts import SearchIndex
 from media_hygiene.search.query import Filters, SearchQuery, parse_terms
 from media_hygiene.tags.models import TagSource
@@ -14,6 +15,8 @@ from media_hygiene.tags.models import TagSource
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
+
+    import pytest
 
 _FILES = (
     ("/data/c/Photos/2008/Neige/IMG_1.jpg", "2008:01:05 10:00:00"),
@@ -93,8 +96,14 @@ def test_filters_and_the_newest_first_without_words(tmp_path: Path) -> None:
         assert search.source_of(999) is None
 
 
-def test_rebuilt_when_another_program_changed_the_tags(tmp_path: Path) -> None:
-    """A tag written by `tags` while the page is open is found at the next search."""
+def test_rebuilt_when_another_program_changed_the_tags(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A tag written by `tags` while the page is open is found once its time came.
+
+    0353: at most every `REBUILD_EVERY` seconds (`test_search_rebuild.py`); none here.
+    """
+    monkeypatch.setattr(fts, "REBUILD_EVERY", 0.0)
     index = _index(tmp_path)
     with SearchIndex.open(index) as search:
         assert _names(search, "plage") == []

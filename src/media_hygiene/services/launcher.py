@@ -175,10 +175,7 @@ def render_script(script: LauncherScript) -> str:
         stamp=launcher_stamp(),
         host=host_commands(script),
         launch=launch_texts(),
-        checked=(
-            *checked_folders(script),
-            *(volume.host for volume in script.backups),
-        ),
+        checked=(*checked_folders(script), *(v.host for v in script.backups)),
         cloud=cloud_check(script.commands.names),
         phone=phone_command(),
         backup=backup_command(),
@@ -194,6 +191,7 @@ def render_script(script: LauncherScript) -> str:
         fields_code=STEP_EXIT_BASE + FIELDS_STEP,
         signal_base=SIGNAL_EXIT_BASE,
         page_closed=int(ExitCode.PAGE_CLOSED),
+        gone_review=int(ExitCode.GONE_REVIEW),
         nas=nas_texts(),
         smb=SMB_OPTIONS,
     )

@@ -19,6 +19,7 @@ from media_hygiene.i18n import _, ngettext
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
 from media_hygiene.search.chosen import Selection, chosen_size
+from media_hygiene.search.reading import read_query
 from media_hygiene.search.views import SearchAsked
 
 if TYPE_CHECKING:
@@ -86,7 +87,7 @@ class ChosenDesk:
         except ValidationError:
             return Response(HTTPStatus.BAD_REQUEST)
         if asked.all:
-            photos = self.index.versions(asked.search.query())
+            photos = self.index.versions(read_query(self.index, asked.search.query()))
         else:
             found = (self.index.source_of(key) for key in asked.keys)
             photos = tuple(photo for photo in found if photo is not None)

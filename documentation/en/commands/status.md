@@ -55,6 +55,13 @@ Under the title *Where you are*:
 - **the runs `undo` can still restore**, with the full `undo` command;
 - **the burst series still to see** and the decisions of `review` not applied yet;
 - **the last `classify` proposal**, and whether `sort` applied it;
+- **how far the sorting is, read from the tree itself**
+  ([the convention](../sort/04-classify.md#the-convention-year-month-event)): *Sorted: 62 % ·
+  nothing special: 9 % · left: 16,400 files in 214 folders.* A file in `year/year-month/<name>`
+  is sorted, one directly in `year/year-month` was looked at (nothing special), anything else is
+  left — whoever put it there, a move in Explorer included (after the next audit). Your
+  protected folders and backups are counted apart. Then **the ten largest folders left**, with
+  `mh search --folder "<folder>"` to open one in the search page, pick, and *Move to an event…*;
 
 then **one** next step, as a full command ready to paste. A quarantine older than 30 days is the
 first thing it suggests to [`purge`](purge.md).

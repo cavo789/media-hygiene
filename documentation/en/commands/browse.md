@@ -12,6 +12,10 @@ right. Pick some and set them aside: the next [`clean --decisions`](clean.md) mo
 quarantine, journaled and undoable. Deleting in Explorer leaves no trace; here, every removal can
 be undone.
 
+> **One page now**: `browse` opens [`search`](search.md) with its folders open (`/browse` is the
+> same page). Everything below is on that page: the tree under *In a folder* (a click lists the
+> folder and its subfolders), *⚖ Heaviest files*, **Sort by** (*bit rate* included) and **Show**.
+
 **When**: after an [`audit`](audit.md): the page shows what the audit has read. No
 [`tags`](tags.md) needed.
 
@@ -31,7 +35,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
-| Your photos | 🔒 Never changed by the page: mount them `:ro`. |
+| Your photos | 🔒 Nothing moves without your GO (the 🔎 tab sorts the files of a rule checked there, [`search`](search.md#make-a-period-a-rule)), journaled: `undo` puts them back. `mh browse` mounts them writable; mounted `:ro`, the page stays read-only. |
 | Needs | `/cache` (the files of the last audit), your folders (to show the photos), `/reports` (to keep what you set aside), and `-p 127.0.0.1:8088:8088` for the page. |
 | Writes | The small previews of the grid, in the cache; the photos you set aside, in `decisions.json` of the reports; your albums, in `albums.json` next to it. |
 | Undo | Nothing to undo on the page: [`clean --decisions`](clean.md) moves the photos set aside, [`undo`](undo.md) brings them back. |
@@ -85,7 +89,7 @@ Your browser opens on the page (if not: `http://127.0.0.1:8088/`).
   over the grid picks what it touches, over several rows (with Ctrl, it adds to the picking);
   Ctrl+A the whole folder. **Invert the picking** (or I) picks the others: when a folder holds
   mostly failed shots, pick the good ones, invert, then Delete. The keys are listed under the
-  tree, always in sight, with the 🔒 line reminding that nothing is deleted from this page.
+  tree, always in sight, with the 🔒 line reminding that nothing moves without your GO.
 - **Set aside**: Delete, or **Set aside the picked files**. The choice is saved at once in
   `decisions.json` of your reports, read back from the disk and shown with its count and size:
   *37 files set aside (412 MB), saved in …: 'clean --decisions' moves them to the quarantine,

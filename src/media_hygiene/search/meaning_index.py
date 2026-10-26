@@ -150,9 +150,9 @@ class MeaningIndex(SearchIndex):
         if meaning is None or not query.terms or query.filters.source is not None:
             return None
         self._fresh()
-        if self._read_at != self._built:
+        if self._read_at != self.built:
             meaning.read(self._connection)
-            self._read_at = self._built
+            self._read_at = self.built
         narrow = tuple(term for term in query.terms if self._narrows(term))
         rest = [term.text for term in query.terms if term not in narrow]
         if not rest:

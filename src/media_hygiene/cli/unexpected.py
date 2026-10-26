@@ -18,7 +18,7 @@ import typer
 from rich.markup import escape
 
 from media_hygiene.cli.interrupted import output_of, untouched
-from media_hygiene.cli.safety import READ_ONLY_COMMANDS
+from media_hygiene.cli.safety import GO_PAGES, READ_ONLY_COMMANDS
 from media_hygiene.constants import APP_NAME, HOME_PAGE, ExitCode
 from media_hygiene.i18n import _
 
@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 DEBUG_VARIABLE: Final = "MEDIA_HYGIENE_DEBUG"
 ISSUES: Final = f"{HOME_PAGE}/issues"
 # The commands whose changes the journal holds: `undo` puts them back.
-UNDOABLE: Final = frozenset({"clean", "sort"})
+UNDOABLE: Final = frozenset({"clean", "sort"} | GO_PAGES)
 _DISTRIBUTION: Final = "media-hygiene"
 
 

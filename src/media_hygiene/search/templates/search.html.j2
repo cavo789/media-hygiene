@@ -6,7 +6,9 @@
    its keys and the large view are those of `browse` (`pick_*` in review/templates), so
    both pages work the same; this page's own script is `search.js.j2`. "/" goes back to
    the field. Opened from the home page, *Apply now* ends the page on the home step that
-   applies the decisions (`apply_now.html.j2`). #}
+   applies the decisions (`apply_now.html.j2`). A period to the day (two calendars) can
+   become a date rule of config.toml: `search_rule.js.j2`, the dialog of review-sort
+   (`rule_dialog.*`, 0396). #}
 {% set texts = {
   "found": [ngettext("{n} file found.", "{n} files found.", 1), ngettext("{n} file found.", "{n} files found.", 2)],
   "shown": _("{total} files found; the first {shown} are shown."),
@@ -24,7 +26,7 @@
   "notSaved": _("Nothing was saved: {error}"),
   "unname": _("Not {name}: take this name off the photo (saved in config.toml)"),
   "putBack": _("Put back"),
-  "why": _("Why {name}? Click to see the face that gave this name"),
+  "lookFor": _("{source}: click to search every photo with “{word}”"),
   "whyTitle": _("Why {name}?"),
   "reference": _("The face of reference that gave the name:"),
   "yes": _("Yes, it is {name}"),
@@ -32,6 +34,38 @@
   "notDescribed": _("What the photos show is not known yet: {described} of {files} files described. The words found today come from folders, names, dates, places and people. 👉 Describe the photos: 🤖 mh tags (or its step on the home page)."),
   "noneWhy": _("This word may only come from what the photos show: not described yet."),
   "noneYet": _(" — none yet"),
+  "ruleTrying": _("Computing what the rule would take…"),
+  "ruleTook": _("The rule would take {files}, shown first: {folders}."),
+  "nFiles": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
+  "ruleWider": _("{here} files of these days belong to an event from {first} to {last} ({files} files): a date rule takes an event only when at least half of its files fall on its days."),
+  "ruleEvent": _("An event: photos taken less than {hours} hours apart (merge_gap_hours in config.toml), as classify groups them; its photos of the other days are shown too, greyed."),
+  "otherDay": _("same event, another day ({date}): {rule}"),
+  "ruleWiden": _("Take the whole event: {first} to {last}"),
+  "ruleLeft": _("{n} files of these days stay with another rule: shown after, marked."),
+  "ruleCut": _("Only the first files of these days were tried: a shorter period shows them all."),
+  "ruleTaken": _("A rule is already named so: choose another name, or pick it in Update a rule…"),
+  "ruleOverlaps": _("It shares days with {rules}: the first listed in config.toml wins on those days."),
+  "ruleSaved": _("Rule '{name}' ({dates}) saved in config.toml, read back at {time}: the next classify applies it."),
+  "goesTo": _("→ {folder}"),
+  "stays": _("stays where it is"),
+  "leftTo": _("left to the rule {rule}"),
+  "leftHere": _("left where it is: not sorted with the others"),
+  "goSort": [ngettext("I checked: sort this file", "I checked: sort these {n} files", 1), ngettext("I checked: sort this file", "I checked: sort these {n} files", 2)],
+  "goAsk": _("Sort these {n} files now? {folders}. They are moved at once, journaled: 'undo' puts them back."),
+  "goRunning": _("Sorting the files of the rule: the plan of classify is read, the files moved, then checked at their new place…"),
+  "goAlready": _("{n} files were sorted already by an earlier run: left where they are."),
+  "goDone": _("{moved} moved, {verified} checked at their new place (run {run}, at {time}): 'mh undo {run}' puts them back."),
+  "goNothing": _("Nothing to move: no run was made."),
+  "goBroken": _("The run {run} ended, but its manifest does not check out: look at it before going on."),
+  "goUnknown": _("{n} files are not in the latest classify run: run classify again to sort them."),
+  "goFixed": [ngettext("{n} file lies in a protected or 'leave' folder: never moved.", "{n} files lie in a protected or 'leave' folder: never moved.", 1), ngettext("{n} file lies in a protected or 'leave' folder: never moved.", "{n} files lie in a protected or 'leave' folder: never moved.", 2)],
+  "counts": _("{photos} photos · {videos} videos · {size}"),
+  "moveNamed": _("(your folder of another event, {name}: unticked)"),
+  "moveNow": [ngettext("Move this file now", "Move these {n} files now", 1), ngettext("Move this file now", "Move these {n} files now", 2)],
+  "moveReading": _("Reading where the photos picked lie…"),
+  "moveUnticked": [ngettext("{n} source folder unticked: its files stay where they are.", "{n} source folders unticked: their files stay where they are.", 1), ngettext("{n} source folder unticked: its files stay where they are.", "{n} source folders unticked: their files stay where they are.", 2)],
+  "ruleMove": _("You left {n} files aside: this is a move, not a rule. Sort them with the button below; the rule cannot say it."),
+  "ruleKept": _("{n} photos of these days stay with the rule '{rule}'."),
 } %}
 {% set sources = {
   "vision": _("seen by the model"),
@@ -56,9 +90,12 @@
   "takeout": _("the description typed in Google Photos (a Takeout export)."),
 } %}
 {% set page_name = _("Search your photos") %}
+{% set rule_title = _("Make it a rule") %}
+{% set rule_update = true %}
+{% set rule_go = true %}
 {% set pick_all = _("every file shown") %}
 {% set pick_search_key = true %}
-{% set keys_safe = _("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") %}
+{% set keys_safe = _("Nothing moves without your GO; every move is journaled: 'undo' puts it back. The files set aside go to the quarantine at the next 'clean --decisions'.") %}
 {% block style %}
 {% include "pick_grid.css.j2" %}
   /* The field and its filters, one under the other, in the left column. */
@@ -67,8 +104,8 @@
   form label { display: flex; flex-direction: column; }
   form input, form select { width: 100%; }
   #text { font-size: 1.05rem; }
-  .years { display: flex; gap: 8px; }
-  .years label { flex: 1; }
+  .years { display: flex; flex-wrap: wrap; gap: 8px; }
+  .years label { flex: 1 1 8rem; }
   #syntax { margin-top: 6px; color: var(--muted); }
   #syntax ul { margin: 4px 0; padding-left: 18px; }
   #syntax dt { margin-top: 4px; color: var(--text); }
@@ -78,13 +115,13 @@
   #syntax p { margin: 4px 0 0; }
   .folderLine, .caption { overflow-wrap: anywhere; }
   .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
-  .chip { padding: 0 6px; border-radius: 10px; background: var(--chip); }
+  .chip { padding: 0 6px; border-radius: 10px; background: var(--chip); cursor: pointer; }
+  .chip:hover { background: var(--line); }
   .chip .unname { margin-left: 4px; padding: 0 4px; border: 0; border-radius: 50%; font: inherit;
                   line-height: 1.2; background: transparent; color: var(--muted); cursor: pointer; }
   .chip .unname:hover { background: var(--bad); color: #fff; }
   .putBack { margin-left: 6px; }
   #viewerInfo .chips { justify-content: center; }
-  .chip.person { cursor: help; }
   #why { position: fixed; inset: 0; z-index: 5; display: flex; align-items: center;
          justify-content: center; padding: 16px; background: rgba(0, 0, 0, .5); }
   #why[hidden] { display: none; }
@@ -99,20 +136,36 @@
   #why .reference { display: flex; gap: 8px; align-items: center; overflow-wrap: anywhere; }
   #why .buttons { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
   #whySaid { color: var(--muted); }
+  #ruleOpen { margin-top: 6px; width: 100%; }
+  .goes { color: var(--accent); overflow-wrap: anywhere; }
+  article.notTaken img { opacity: .45; }
+  article.notTaken .goes { color: var(--muted); }
+  article.leftHere img { opacity: .45; } article.leftHere .goes { color: var(--muted); text-decoration: line-through; }
+{% include "rule_dialog.css.j2" %}
+{% include "folder_tree.css.j2" %}
+  #folders summary { cursor: pointer; margin: 8px 0 4px; }
+  #withinLine { display: flex; gap: 6px; align-items: baseline; overflow-wrap: anywhere; }
+  #withinLine[hidden] { display: none; }
+  #heaviest { width: 100%; margin-top: 6px; }
+  #moreLine { margin: 0 16px 16px; text-align: center; }
 {% endblock %}
 {% block side %}
-    {% set pick_view = "words" %}
-    {% include "pick_views.html.j2" %}
     <section id="toc" aria-label="{{ _('Search your photos') }}">
     <form id="form">
       <label>{{ _("Words") }}
         <input id="text" type="search" autocomplete="off"
                placeholder="{{ _('e.g. Durbuy bear, birthday cake, snow 2008') }}"></label>
       <div class="years">
-        <label>{{ _("From year") }}<input id="from" type="number" min="1800" max="2200"></label>
-        <label>{{ _("To year") }}<input id="to" type="number" min="1800" max="2200"></label>
+        <label>{{ _("From") }}<input id="from" type="date" min="1800-01-01" max="2200-12-31"></label>
+        <label>{{ _("To") }}<input id="to" type="date" min="1800-01-01" max="2200-12-31"></label>
       </div>
       <label>{{ _("Path contains") }}<input id="folder" type="text"></label>
+      <label>{{ _("Sorted") }}
+        <select id="sorting" title="{{ _('Sorted: in a year-month folder (2009/2009-11/…), as the sort convention puts them') }}">
+          <option value="all">{{ _("every photo") }}</option>
+          <option value="left">{{ _("not sorted yet") }}</option>
+          <option value="sorted">{{ _("sorted (year, then year-month)") }}</option>
+        </select></label>
       <label>{{ _("Words of") }}
         <select id="source">
           <option value="">{{ _("every source") }}</option>
@@ -121,14 +174,23 @@
           {% endfor %}
           <option value="caption">{{ _("the model's sentence") }}</option>
         </select></label>
+      <p id="withinLine" hidden>📁 <span id="withinName"></span>
+        <button type="button" id="withinClear" class="plain" title="{{ _('Search every folder again') }}">✕</button></p>
       <button type="submit">{{ _("Search") }}</button>
     </form>
+    <button type="button" id="heaviest" class="plain" title="{{ _('The heaviest files of every folder: where the space goes') }}">⚖ {{ _("Heaviest files") }}</button>
+    <details id="folders">
+      <summary>📁 {{ _("In a folder") }}</summary>
+      <div id="tree" aria-label="{{ _('Your folders') }}"></div>
+    </details>
+    <button type="button" id="ruleOpen" class="plain" hidden title="{{ _('Write this period down as a date rule of config.toml, after seeing the photos it would take and where each one would go') }}">📌 {{ _("Make it a rule") }}</button>
     <p id="coverage" role="status" hidden></p>
     <details id="syntax">
       <summary>{{ _("How to write a search") }}</summary>
       <ul>
         <li>{{ _("Every word must be found: type one to three words (beach, cake candles), not a sentence.") }}</li>
         <li>{{ _("For the model, people are adult, child, baby or group: find someone by their name.") }}</li>
+        <li>{{ _("A sentence works too: Papy dans le jardin is read as Papy (a person named on the people page) and jardin; the little words go, as in the index.") }}</li>
         <li id="tipSentence">{{ _("A sentence (an old man in a garden) needs search by meaning: 🤖 mh tags --meaning.") }}</li>
         <li id="tipMeaning" hidden>{{ _("Sentences work too: search by meaning is on.") }}</li>
       </ul>
@@ -148,14 +210,21 @@
 {% endblock %}
 {% block bar %}
     {% include "pick_acting.html.j2" %}
+    {% set order_best = true %}
+    {% set order_rate = true %}
+    {% include "pick_order.html.j2" %}
     {% set album_compact = true %}
     {% include "album_bar.html.j2" %}
+    <p id="moveBar"><button type="button" id="moveOpen" disabled title="{{ _('Move the photos picked to an event folder, year then year-month, without writing a rule') }}">📂 {{ _("Move to an event…") }}</button></p>
 {% endblock %}
 {% block content %}
   <main id="grid"></main>
+  <p id="moreLine"><button id="more" class="plain" type="button" hidden>{{ _("Show more") }}</button></p>
 {% endblock %}
 {% block after %}
 {% include "pick_viewer.html.j2" %}
+{% include "rule_dialog.html.j2" %}
+{% include "move_dialog.html.j2" %}
 <div id="why" role="dialog" aria-modal="true" aria-labelledby="whyTitle" hidden>
   <div class="box">
     <h2 id="whyTitle"></h2>
@@ -168,6 +237,11 @@
 {% include "pick_grid.js.j2" %}
 {% include "pick_viewer.js.j2" %}
 {% include "pick_band.js.j2" %}
+{% include "folder_tree.js.j2" %}
 {% include "search.js.j2" %}
+{% include "search_folders.js.j2" %}
+{% include "rule_dialog.js.j2" %}
+{% include "move_dialog.js.j2" %}
+{% include "search_rule.js.j2" %}
 </script>
 {% endblock %}
