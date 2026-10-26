@@ -53,8 +53,13 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 Ouvrez <http://127.0.0.1:8088/>. La page a l'aspect et le fonctionnement de
 [`browse`](browse.md) : le champ de recherche et ses filtres (une période, une partie du chemin, les mots
 d'une seule source) dans la colonne de gauche, les touches ⌨ en dessous, une seule barre au-dessus
-de la grille, puis les photos trouvées. **📁 Dossiers** ouvre `browse`, le même serveur. Ctrl+C, ou
-fermer son onglet, arrête la page.
+de la grille, puis les photos trouvées. **🔎 Mots** vient d'abord, **📁 Dossiers** ensuite : il
+ouvre `browse`, le même serveur. Ctrl+C, ou fermer son onglet, arrête la page.
+
+- **Dans un dossier** : sous le formulaire, l'arbre de vos dossiers, comme sur la vue des dossiers
+  (ouvert à la demande). Un clic limite la recherche à ce dossier et en dessous, **sans taper de
+  mot** : des mots vides listent tout le dossier ; ✕ à côté de son nom recherche à nouveau dans
+  tous les dossiers.
 
 - **Chercher** : tapez les mots, puis Entrée ; les touches vont alors à la grille, `/` revient au
   champ. *Comment écrire une recherche* rappelle les expressions ("bord de mer"), les débuts de

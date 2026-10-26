@@ -1,4 +1,4 @@
-"""*Move to an event…* on the search page (0403): seen by source folder, then moved."""
+"""*Move to an event…* on the search page (0403), its filters (0347, 0348, 0407)."""
 
 from __future__ import annotations
 
@@ -122,3 +122,30 @@ def test_sort_by_and_show_are_applied_before_the_limit(
     assert all(
         not hit["name"].lower().endswith((".mp4", ".mov")) for hit in photos["hits"]
     )
+
+
+def test_a_folder_of_the_tree_narrows_the_search_with_or_without_words(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0348: the tree's folder, empty words: every file of it and below, only them."""
+    assert run(cli, "tags", "--no-describe").exit_code == 0
+    calls: list[tuple[str, object]] = [
+        ("GET /api/folders", None),
+        ("POST /api/search", {"text": ""}),
+        ("GET /search", None),
+    ]
+    answers = serve_search(cli, monkeypatch, calls)
+    folders = json.loads(answers[0].body)["folders"]
+    inner = next(
+        node for node in folders if node["parent"] is not None and node["files"]
+    )
+    asked = {"text": "", "within": inner["inside"]}
+    found = json.loads(
+        serve_search(cli, monkeypatch, [("POST /api/search", asked)])[0].body
+    )
+    assert 0 < found["total"] < json.loads(answers[1].body)["total"]
+    assert all(hit["folder"].startswith(inner["path"]) for hit in found["hits"])
+    page = answers[2].body.decode()
+    views = page.split('id="views"')[1].split("</div>")[0]
+    assert views.index("Words") < views.index("Folders")  # words first (0348)
+    assert 'id="tree"' in page

@@ -61,7 +61,7 @@ class Sorting(StrEnum):
 
 
 @dataclass(frozen=True, slots=True)
-class Filters:
+class Filters:  # pylint: disable=too-many-instance-attributes  # one per page filter
     """What narrows a search beyond its words: years or days, a folder, one source."""
 
     years: tuple[int, int] | None = None  # first and last year, both included
@@ -71,6 +71,7 @@ class Filters:
     sorting: Sorting = Sorting.ALL
     kind: Shown = "all"  # **Show**: every file, the photos or the videos (0347)
     order: Order = Order.BEST
+    within: str = ""  # a folder of the tree (container path), its subfolders included
 
 
 @dataclass(frozen=True, slots=True)

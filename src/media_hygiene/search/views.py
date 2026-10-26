@@ -42,6 +42,7 @@ class SearchAsked(BaseModel):
     sorting: Sorting = Sorting.ALL  # the sort convention's filter (0407)
     kind: Shown = "all"  # **Show** (0347)
     order: Order = Order.BEST  # **Sort by** (0347)
+    within: str = Field(default="", max_length=_MAX_TEXT)  # a folder of the tree (0348)
 
     def query(self) -> SearchQuery:
         """Make the search of what the page sent.
@@ -58,6 +59,7 @@ class SearchAsked(BaseModel):
             sorting=self.sorting,
             kind=self.kind,
             order=self.order,
+            within=self.within.rstrip("/"),
         )
         return SearchQuery(parse_terms(self.text), filters)
 

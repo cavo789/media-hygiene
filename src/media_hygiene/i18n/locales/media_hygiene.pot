@@ -3113,6 +3113,9 @@ msgstr ""
 msgid "Import photos"
 msgstr ""
 
+msgid "In a folder"
+msgstr ""
+
 msgid "In the album already"
 msgstr ""
 
@@ -6007,6 +6010,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Search by words"
+msgstr ""
+
+msgid "Search every folder again"
 msgstr ""
 
 #, python-brace-format

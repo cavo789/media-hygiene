@@ -50,8 +50,13 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 
 Open <http://127.0.0.1:8088/>. The page looks and works like [`browse`](browse.md): the search
 field and its filters (a period, a part of the path, the words of one source only) in the left
-column, the ⌨ keys under them, one bar above the grid, then the photos found. **📁 Folders**
-opens `browse`, the same server. Ctrl+C, or closing its tab, stops the page.
+column, the ⌨ keys under them, one bar above the grid, then the photos found. **🔎 Words** comes
+first, **📁 Folders** second: it opens `browse`, the same server. Ctrl+C, or closing its tab,
+stops the page.
+
+- **In a folder**: under the form, the tree of your folders, as on the folder view (opened on
+  demand). A click narrows the search to that folder and below, **without typing any word**:
+  empty words list the whole folder; ✕ next to its name searches every folder again.
 
 - **Search**: type the words, then Enter; the keys then go to the grid, `/` comes back to the
   field. *How to write a search* recalls the phrases ("bord de mer"), the starts of words

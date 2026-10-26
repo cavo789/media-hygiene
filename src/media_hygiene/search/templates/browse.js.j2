@@ -11,45 +11,11 @@ let folder = "";       // the folder shown (host path)
 let heavy = false;     // the heaviest files of the library are shown instead
 let limit = HEAVIEST_FIRST; // how many of them; *Show more* adds as many
 
-// The tree: the mounted folders open, every folder below them closed.
-function branch(node, children) {
-  const item = element("li");
-  const line = element("div", "node");
-  const below = children.get(node.path) || [];
-  const toggle = element("button", "toggle", below.length ? "▸" : "");
-  toggle.type = "button";
-  const button = element("button", "folder", node.name);
-  button.type = "button";
-  button.dataset.path = node.path;
-  button.append(element("small", "", fill(TEXTS.counts, node)));
-  line.append(toggle, button);
-  item.append(line);
-  if (below.length) {
-    const list = element("ul");
-    list.append(...below.map((child) => branch(child, children)));
-    list.hidden = node.parent !== null;
-    toggle.textContent = list.hidden ? "▸" : "▾";
-    toggle.addEventListener("click", () => {
-      list.hidden = !list.hidden;
-      toggle.textContent = list.hidden ? "▸" : "▾";
-    });
-    item.append(list);
-  }
-  button.addEventListener("click", () => openFolder(node.path));
-  return item;
-}
-
 async function loadTree() {
   const answer = await ask(FOLDERS_PATH);
   if (!answer || !answer.ok) { failed(answer); return; }
   const { folders } = await answer.json();
-  const children = new Map();
-  for (const node of folders) {
-    if (!children.has(node.parent)) children.set(node.parent, []);
-    children.get(node.parent).push(node);
-  }
-  const list = element("ul");
-  list.append(...(children.get(null) || []).map((node) => branch(node, children)));
+  const list = folderTree(folders, (node) => openFolder(node.path));  // folder_tree.js.j2
   // Above the folders: where the space goes, the videos first unless another kind is chosen.
   const heaviest = element("button", "folder heaviest", "⚖ " + TEXTS.heaviest);
   heaviest.type = "button";

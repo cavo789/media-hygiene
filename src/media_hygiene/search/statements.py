@@ -74,6 +74,8 @@ PLACE: Final = "mh_place"  # the state a path says (`convention.place_of_path`, 
 LEFT_OR_NOT: Final = f"({PLACE}(files.path) = 'left') = ?"  # 1: left only, 0: sorted
 KIND: Final = "mh_kind"  # `photos`, `videos` (`folder_order.kind_of_path`, 0347)
 SHOWN: Final = f"{KIND}(files.path) = ?"
+# A folder of the tree and below (0348): `/` sorts just before `0` in the paths.
+WITHIN: Final = "files.path > ? AND files.path < ?"
 # **Sort by** (0347), as the folder view sorts: ties by path, undated last.
 BY_ORDER: Final = {
     Order.NAME: f" ORDER BY {FOLD}(files.path)",
@@ -132,6 +134,9 @@ def conditions(query: SearchQuery) -> tuple[list[str], list[object]]:
     if filters.days is not None:
         chosen.append(DAYS)
         parameters.extend(day.isoformat() for day in filters.days)
+    if filters.within:
+        chosen.append(WITHIN)
+        parameters.extend((filters.within + "/", filters.within + "0"))
     if filters.kind != "all":
         chosen.append(SHOWN)
         parameters.append(filters.kind)

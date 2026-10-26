@@ -84,6 +84,7 @@ class FolderDesk:
         folders = [
             {
                 "path": self.mapper.to_host(Path(folder)),
+                "inside": folder,  # container path: the search filters on it (0348)
                 "parent": None
                 if folder in tops
                 else self.mapper.to_host(Path(folder).parent),

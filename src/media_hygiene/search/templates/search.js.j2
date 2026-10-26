@@ -15,6 +15,7 @@ const PEOPLE_REJECT_PATH = {{ people_reject_path | tojson }};
 const PEOPLE_WHY_PATH = {{ people_why_path | tojson }};
 let whyAsked = null; // the photo and the name the panel explains
 let asked = {};        // the search shown
+let within = null;     // the folder of the tree the search is narrowed to (0348)
 
 function card(hit, index) {
   const node = element("article");
@@ -236,7 +237,7 @@ async function search(event, again) {
   const body = {
     text: $("text").value, day_from: $("from").value || null, day_to: $("to").value || null,
     folder: $("folder").value, source: $("source").value || null, sorting: $("sorting").value,
-    order: $("order").value, kind: $("kind").value,
+    order: $("order").value, kind: $("kind").value, within: within ? within.inside : "",
   };
   const answer = await ask(SEARCH_PATH, body);
   if (!answer) { told(TEXTS.offline, true); return; }

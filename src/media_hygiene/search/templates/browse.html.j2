@@ -34,18 +34,10 @@
 {% set keys_safe = _("Nothing moves without your GO; every move is journaled: 'undo' puts it back. The files set aside go to the quarantine at the next 'clean --decisions'.") %}
 {% block style %}
 {% include "pick_grid.css.j2" %}
-  nav { overflow-wrap: anywhere; }
-  nav ul { list-style: none; margin: 0; padding-left: 14px; }
-  nav > ul { padding-left: 0; }
-  .node { display: flex; gap: 4px; align-items: baseline; }
-  .toggle { width: 1.2em; padding: 0; border: 0; color: var(--muted); background: none; }
-  .folder { flex: 1; padding: 2px 6px; text-align: left; color: var(--text); background: none;
-            border: 1px solid transparent; border-radius: 6px; }
-  .folder.open { border-color: var(--accent); }
+{% include "folder_tree.css.j2" %}
   .folder.heaviest { display: block; width: 100%; margin-bottom: 6px; font-weight: 600; }
   .where { overflow-wrap: anywhere; font-size: .75rem; }
   #moreLine { margin: 0 16px 16px; text-align: center; }
-  .folder small { display: block; color: var(--muted); font-size: .75rem; }
 {% endblock %}
 {% block side %}
     {% set pick_view = "folders" %}
@@ -71,6 +63,7 @@
 {% include "pick_grid.js.j2" %}
 {% include "pick_viewer.js.j2" %}
 {% include "pick_band.js.j2" %}
+{% include "folder_tree.js.j2" %}
 {% include "browse.js.j2" %}
 </script>
 {% endblock %}

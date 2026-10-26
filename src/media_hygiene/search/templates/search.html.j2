@@ -59,6 +59,7 @@
   "goBroken": _("The run {run} ended, but its manifest does not check out: look at it before going on."),
   "goUnknown": _("{n} files are not in the latest classify run: run classify again to sort them."),
   "goFixed": _("{n} files are left as they are by the plan."),
+  "counts": _("{photos} photos · {videos} videos · {size}"),
   "moveNamed": _("(your folder of another event, {name}: unticked)"),
   "moveNow": [ngettext("Move this file now", "Move these {n} files now", 1), ngettext("Move this file now", "Move these {n} files now", 2)],
   "moveReading": _("Reading where the photos picked lie…"),
@@ -141,6 +142,10 @@
   article.notTaken .goes { color: var(--muted); }
   article.leftHere img { opacity: .45; } article.leftHere .goes { color: var(--muted); text-decoration: line-through; }
 {% include "rule_dialog.css.j2" %}
+{% include "folder_tree.css.j2" %}
+  #folders summary { cursor: pointer; margin: 8px 0 4px; }
+  #withinLine { display: flex; gap: 6px; align-items: baseline; overflow-wrap: anywhere; }
+  #withinLine[hidden] { display: none; }
 {% endblock %}
 {% block side %}
     {% set pick_view = "words" %}
@@ -169,8 +174,14 @@
           {% endfor %}
           <option value="caption">{{ _("the model's sentence") }}</option>
         </select></label>
+      <p id="withinLine" hidden>📁 <span id="withinName"></span>
+        <button type="button" id="withinClear" class="plain" title="{{ _('Search every folder again') }}">✕</button></p>
       <button type="submit">{{ _("Search") }}</button>
     </form>
+    <details id="folders">
+      <summary>📁 {{ _("In a folder") }}</summary>
+      <div id="tree" aria-label="{{ _('Your folders') }}"></div>
+    </details>
     <button type="button" id="ruleOpen" class="plain" hidden title="{{ _('Write this period down as a date rule of config.toml, after seeing the photos it would take and where each one would go') }}">📌 {{ _("Make it a rule") }}</button>
     <p id="coverage" role="status" hidden></p>
     <details id="syntax">
@@ -222,7 +233,9 @@
 {% include "pick_grid.js.j2" %}
 {% include "pick_viewer.js.j2" %}
 {% include "pick_band.js.j2" %}
+{% include "folder_tree.js.j2" %}
 {% include "search.js.j2" %}
+{% include "search_folders.js.j2" %}
 {% include "rule_dialog.js.j2" %}
 {% include "move_dialog.js.j2" %}
 {% include "search_rule.js.j2" %}

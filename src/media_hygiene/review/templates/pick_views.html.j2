@@ -1,11 +1,12 @@
 {# The two ways to reach the photos to pick, on top of the left column of `browse` and
-   `search`: the folders or the words; `pick_view` names the page shown. #}
+   `search`: the words first (used most, 0348), then the folders; `pick_view` names the
+   page shown. #}
 <div id="views">
 {% if pick_view == "folders" %}
-  <span aria-current="page">📁 {{ _("Folders") }}</span>
   <a href="{{ search_page }}" title="{{ _('Search by words') }}">🔎 {{ _("Words") }}</a>
+  <span aria-current="page">📁 {{ _("Folders") }}</span>
 {% else %}
-  <a href="{{ browse_path }}" title="{{ _('Your folders') }}">📁 {{ _("Folders") }}</a>
   <span aria-current="page">🔎 {{ _("Words") }}</span>
+  <a href="{{ browse_path }}" title="{{ _('Your folders') }}">📁 {{ _("Folders") }}</a>
 {% endif %}
 </div>
