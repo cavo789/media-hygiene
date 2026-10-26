@@ -4,7 +4,6 @@
 - **Batch**: scan
 - **Depends**: 0409
 - **Files**: `src/media_hygiene/scan/walker.py`, `src/media_hygiene/scan/listing.py`, `src/media_hygiene/services/audit.py`, `src/media_hygiene/report/`, `src/media_hygiene/services/clean.py`, `src/media_hygiene/cli/cmd_clean.py`, `documentation/en/clean/`, `documentation/fr/clean/`
-- **Needs maintainer**: the shape of the picking step (CLI options by extension/folder, or a page) — see Questions
 
 ## Why
 
@@ -40,3 +39,12 @@ code: the counts come from listings already in memory or in the index).
   tiles)?
 - Should the sidecar/companion list be a setting? Proposed: a constant (few-settings rule),
   unless a collection needs its own.
+
+## Decided (2026-10-26)
+
+By the maintainer, at the start of `/todo:iterate`:
+
+- Picking: a page listing the intruders by extension and by folder, with checkboxes (no tiles:
+  skill `photo-picking-pages` does not apply); the shape of the page frame stays the shared one.
+- Companions/sidecars: a `config.toml` setting (`[scan] companions = [...]`), with today's list
+  as its default.
