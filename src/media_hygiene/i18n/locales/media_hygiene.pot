@@ -615,6 +615,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"A sentence works too: Papy dans le jardin is read as Papy (a person named"
+" on the people page) and jardin; the little words go, as in the index."
+msgstr ""
+
+msgid ""
 "A series whose proposal leaves only the sharpest shot (and those of "
 "protected folders) is obvious: the review page validates every obvious "
 "series at once, with one confirmation."
@@ -5389,6 +5394,10 @@ msgid ""
 msgstr ""
 
 msgid "Re-encodes each video, then checks it before keeping it."
+msgstr ""
+
+#, python-brace-format
+msgid "Read as: {words}."
 msgstr ""
 
 #, python-brace-format

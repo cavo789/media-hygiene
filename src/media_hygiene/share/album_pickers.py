@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from media_hygiene.search.reading import read_query
+
 if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
@@ -30,7 +32,10 @@ class SearchPicker:
         """
         if asked.all:
             return tuple(
-                photo.path for photo in self.index.versions(asked.search.query())
+                photo.path
+                for photo in self.index.versions(
+                    read_query(self.index, asked.search.query())
+                )
             )
         found = (self.index.source_of(int(key)) for key in asked.keys if key.isdigit())
         return tuple(photo.path for photo in found if photo is not None)

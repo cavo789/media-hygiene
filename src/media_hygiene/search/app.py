@@ -35,8 +35,8 @@ from media_hygiene.search.people_why import (
     crop_answer,
     why_answer,
 )
-from media_hygiene.search.people_words import unknown_people
 from media_hygiene.search.pictures import Pictures
+from media_hygiene.search.reading import read_query, search_note
 from media_hygiene.search.rule_desk import PERIOD_RULES_PATH, RULE_POSTS
 from media_hygiene.search.rule_go import GO_PATHS, go_answer
 from media_hygiene.search.views import SearchAsked, found_view
@@ -187,13 +187,13 @@ class SearchApp:
             asked = SearchAsked.model_validate_json(request.body)
         except ValidationError:
             return Response(HTTPStatus.BAD_REQUEST)
-        query = asked.query()
+        query = read_query(self.place.index, asked.query())
         found = found_view(
             self.place.index.find(query, PAGE_HITS),
             self.place.mapper,
             self.place.chosen.paths(),
         )
-        unknown = unknown_people(query, self.place.people)
+        unknown = search_note(asked.query(), query, self.place.people)
         note = {} if unknown is None else {"note": unknown}
         coverage = {"coverage": self.coverage.of(self.place.index)}
         return json_response(HTTPStatus.OK, {**found, **note, **coverage})

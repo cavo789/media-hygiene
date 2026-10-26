@@ -799,6 +799,14 @@ msgstr ""
 "sens : 🤖 mh tags --meaning."
 
 msgid ""
+"A sentence works too: Papy dans le jardin is read as Papy (a person named"
+" on the people page) and jardin; the little words go, as in the index."
+msgstr ""
+"Une phrase marche aussi : Papy dans le jardin se lit Papy (une personne "
+"nommée sur la page des personnes) et jardin ; les petits mots s'en vont, "
+"comme dans l'index."
+
+msgid ""
 "A series whose proposal leaves only the sharpest shot (and those of "
 "protected folders) is obvious: the review page validates every obvious "
 "series at once, with one confirmation."
@@ -6539,6 +6547,10 @@ msgstr ""
 
 msgid "Re-encodes each video, then checks it before keeping it."
 msgstr "Réencode chaque vidéo, puis la vérifie avant de la garder."
+
+#, python-brace-format
+msgid "Read as: {words}."
+msgstr "Lu ainsi : {words}."
 
 #, python-brace-format
 msgid "Read back from config.toml: {names} names, {ignored} faces ignored."

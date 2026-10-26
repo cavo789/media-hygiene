@@ -44,6 +44,7 @@ class SearchIndex:
         self._connection = connection
         self._built: int | None = None  # the data version the table was built at
         self._people: dict[Path, tuple[str, ...]] = {}
+        self.stop_words: frozenset[str] = frozenset()  # `[tags]`, folded (0345)
         connection.create_function(sql.FOLD, 1, str.casefold, deterministic=True)
         connection.create_function(DAY, 1, media_day, deterministic=True)
         connection.create_function(sql.PLACE, 1, place_of_path, deterministic=True)

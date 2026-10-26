@@ -232,6 +232,7 @@ second names (hard links), without a copy.
 | `place:durbuy` | The word among the places only; also `vision`, `caption`, `folder`, `name` (the file name), `date`, `person`. |
 | `anniversaire` | Also `Anniversaire Léa.mp4`: the words of a file name you chose count too (`IMG_1234` gives none). |
 | `neige 2008` | The year is a word of the date: the snow of 2008. |
+| `Papy dans le jardin` | A sentence: the little words go (`dans`, `le`, the stop words of `[tags]`, as in the index), and a name someone has on a photo is looked for among the people: read as `Papy (person) + jardin`, said under the search. A phrase in quotes is kept as typed. |
 | `Chloé montagne` | The photos of Chloé with "montagne" from any source, once her group is named in [`people`](people.md). |
 | `person:chloe`, `person:"Mamie Jeanne"` | The name among the people only. A name nobody has yet is said in one line. |
 | `un chat sur un canapé` | After [`tags --meaning`](tags.md): the photos that show it first, even without any of these words ([search by meaning](../reference-tags.md#find-a-photo-by-what-it-shows---meaning)). |

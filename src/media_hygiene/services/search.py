@@ -22,6 +22,7 @@ from media_hygiene.search.meaning_index import MeaningIndex
 from media_hygiene.search.names_soon import NamesKept
 from media_hygiene.search.people_words import unknown_people
 from media_hygiene.search.query import SearchQuery, parse_terms
+from media_hygiene.search.reading import read_query
 from media_hygiene.services.data_checks import unreadable_index
 from media_hygiene.services.search_meaning import with_meaning
 from media_hygiene.services.search_pages import PageStart, Served, serve_pages
@@ -69,6 +70,8 @@ def open_search(runtime: Runtime, *, words: bool = True) -> SearchIndex:
         search = MeaningIndex.open(index)
         # Read meanwhile (0354): the page answers without waiting for them.
         search.name_people_soon(NamesKept(index, runtime.settings.people))
+        stop = runtime.settings.tags.stop_words
+        search.stop_words = frozenset(word.casefold() for word in stop)
         # A file with a tag is a file with words: no need to wait for the names then.
         empty = (
             words and not search.tagged and search.find(SearchQuery(()), 1).total == 0
@@ -98,7 +101,7 @@ def print_found(runtime: Runtime, search: SearchIndex, printed: Printed) -> int:
     Returns:
         How many files match.
     """
-    query = SearchQuery(parse_terms(printed.text))
+    query = read_query(search, SearchQuery(parse_terms(printed.text)))
     unknown = unknown_people(query, runtime.settings.people)
     if unknown is not None:
         runtime.output.warning(unknown)
