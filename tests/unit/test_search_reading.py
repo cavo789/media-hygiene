@@ -21,7 +21,8 @@ def _index() -> SearchIndex:
 
 def _read(text: str) -> SearchQuery:
     """Read a search typed."""
-    return read_query(_index(), SearchQuery(parse_terms(text)))
+    with _index() as index:
+        return read_query(index, SearchQuery(parse_terms(text)))
 
 
 def test_a_sentence_is_a_person_and_words() -> None:
@@ -47,6 +48,7 @@ def test_a_phrase_a_source_a_prefix_and_a_year_are_kept() -> None:
 def test_only_little_words_are_left_as_typed() -> None:
     """Nothing to drop to: the search is read as typed, and nothing is said."""
     typed = SearchQuery(parse_terms("le la"))
-    read = read_query(_index(), typed)
+    with _index() as index:
+        read = read_query(index, typed)
     assert read == typed
     assert read_line(typed, read) is None
