@@ -70,6 +70,7 @@ def test_the_view_unticks_a_folder_named_after_another_event(
     assert sources["Mariage"].named == "Mariage"
     assert view.proposed == "Mariage"  # the user's named folder holding most of them
     assert view.target.endswith("2016\\2016-07\\Kermesse")  # the earliest's month
+    assert view.month == "2016/2016-07"  # its event folders are the ones offered
     assert all(s.ticked for s in mover.view(picked, "Mariage").sources)
 
 

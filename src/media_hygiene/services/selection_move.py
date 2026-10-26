@@ -6,9 +6,8 @@ the earliest one, 0400), below their sort root. Before the GO the page shows the
 source folder, one tick box each: a folder the user named after **another** event
 (`own_events.named_event`: a meaningful name, one moment) is unticked by default; a
 generic folder, another family member's, loose files are ticked. The proposed name is
-that of the user's named folder holding most of the picked photos: its files go to
-the folder of the same name under the convention, never to a second one beside it.
-The move is the journaled sort of a group (`group_sort`), read back.
+that of the user's named folder holding most of the picked photos: its files go to the
+same name under the convention. The move is the journaled sort of a group, read back.
 """
 
 from __future__ import annotations
@@ -84,6 +83,7 @@ class SelectionMover:
         typed = event_path(name or proposed)
         return MoveView(
             proposed=proposed,
+            month=self._month(rows, chosen),
             name=typed,
             target=self._target(rows, chosen, typed),
             sources=tuple(

@@ -98,8 +98,8 @@ as a table.
 
 For a one-off event, a rule is not needed: search its days (or words), **pick** the photos (as
 everywhere: click, Ctrl, Shift, a rectangle, Ctrl+A), then **📂 Move to an event…** in the bar.
-Type the event's name, or pick one of your event folders the field lists (those already under a
-year and month, sub-folders written `France\Morzine`); `\` makes sub-folders of a new name too.
+Type the event's name, or pick one of your event folders the field lists (those already in the
+month the photos go to, sub-folders written `France\Morzine`); `\` makes sub-folders of a new name too.
 The line under it shows the folder made, as
 Explorer will show it, under the year and month of the earliest photo picked
 (*→ C:\Photos\2009\2009-11\Anniversaire de Tom*,

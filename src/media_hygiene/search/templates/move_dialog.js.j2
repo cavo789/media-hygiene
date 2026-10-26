@@ -49,6 +49,7 @@ async function askMove(name) {
   moveLeft.clear();
   for (const source of answer.sources) if (!source.ticked) moveLeft.add(source.folder);
   if (!moveEl("moveName").value) moveEl("moveName").value = answer.proposed;
+  if (answer.month !== moveMonth) { moveMonth = answer.month; moveNames(moveMonth); }
   moveEl("moveWhere").textContent = answer.target ? "→ " + answer.target : "";
   showSources(moveEl("moveSources"), answer.sources, (source, ticked) => {
     if (ticked) moveLeft.delete(source.folder); else moveLeft.add(source.folder);
@@ -58,17 +59,21 @@ async function askMove(name) {
   moveButton();
 }
 
-// The event folders already sorted, below a `YYYY/YYYY-MM` (container paths of the tree):
-// offered to the name, sub-folders as Windows writes them. Read at each opening: a move adds some.
-const MONTH_EVENT = /\/(\d{4})\/\1-(?:0[1-9]|1[0-2])\/(.+)$/;
-async function moveNames() {
+// The event folders already in the month the photos go to (`answer.month`, that of the
+// earliest one), from the tree's container paths: offered to the name, sub-folders as
+// Windows writes them. Read again at each opening: a move adds some.
+let moveMonth = null;
+async function moveNames(month) {
   const answer = await ask(FOLDERS_PATH);
-  if (!answer || !answer.ok) return;  // a new name can still be typed
+  if (!answer || !answer.ok || month !== moveMonth) return;  // a new name can still be typed
   const { folders } = await answer.json();
+  const below = "/" + month + "/";
   const names = new Map();
   for (const folder of folders) {
-    const found = MONTH_EVENT.exec(folder.inside);
-    if (found) names.set(found[2].toLowerCase(), found[2].replaceAll("/", "\\"));
+    const at = folder.inside.indexOf(below);
+    if (at < 0) continue;
+    const name = folder.inside.slice(at + below.length);
+    if (name) names.set(name.toLowerCase(), name.replaceAll("/", "\\"));
   }
   const sorted = [...names.values()].sort((a, b) => a.localeCompare(b));
   moveEl("moveNames").replaceChildren(...sorted.map((name) => Object.assign(document.createElement("option"), { value: name })));
@@ -88,8 +93,9 @@ moveEl("moveOpen").addEventListener("click", () => {
   moveEl("moveSources").replaceChildren();
   moveEl("moveDlg").showModal();
   moveEl("moveName").focus();
+  moveMonth = null;
+  moveEl("moveNames").replaceChildren();
   askMove("");
-  moveNames();
 });
 moveEl("moveNo").addEventListener("click", () => moveEl("moveDlg").close());
 // The dialog's keys stay its own: the grid's keys never fire behind it.

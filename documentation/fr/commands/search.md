@@ -106,8 +106,8 @@ fichiers en tableau.
 Pour un événement unique, une règle n'est pas nécessaire : cherchez ses jours (ou des mots),
 **choisissez** les photos (comme partout : clic, Ctrl, Maj, un rectangle, Ctrl+A), puis
 **📂 Déplacer vers un événement…** dans la barre. Tapez le nom de l'événement, ou choisissez un
-de vos dossiers d'événement que le champ liste (ceux déjà sous une année et un mois, les
-sous-dossiers écrits `France\Morzine`) ; `\` crée aussi des sous-dossiers d'un nouveau nom. La
+de vos dossiers d'événement que le champ liste (ceux déjà dans le mois où vont les photos,
+les sous-dossiers écrits `France\Morzine`) ; `\` crée aussi des sous-dossiers d'un nouveau nom. La
 ligne en dessous montre le dossier créé, tel que l'Explorateur le montrera, sous l'année
 et le mois de la plus ancienne photo choisie (*→ C:\Photos\2009\2009-11\Anniversaire de Tom*,
 [la convention](../sort/04-classify.md#la-convention--année-mois-événement)). Le nom proposé est

@@ -24,5 +24,6 @@ class MoveView(BaseModel):
 
     proposed: str  # the name of the user's folder holding most of them; empty: none
     name: str  # the name kept, folder-safe
+    month: str  # `YYYY/YYYY-MM` of the earliest photo: its event folders are offered
     target: str  # the destination, as Windows writes it; empty without a name
     sources: tuple[SourceFolder, ...]
