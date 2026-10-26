@@ -155,8 +155,8 @@ les rapports HTML ouverts depuis le disque, mènent toujours au
 
 ## Depuis un téléphone du Wi-Fi de la maison : `mh --lan`
 
-Dans Windows PowerShell, `mh --lan` ouvre la page d'accueil comme `mh` seul, et laisse un
-téléphone **du même Wi-Fi** l'ouvrir aussi, jusqu'à l'arrêt de `mh` :
+Sous Windows, `mh` (ou son raccourci du bureau) ouvre la page d'accueil à un téléphone **du même
+Wi-Fi** aussi, par défaut, jusqu'à l'arrêt de `mh` ; `mh --lan` fait de même :
 
 1. `mh` trouve l'adresse du PC sur le réseau de la maison (*192.168.1.20*) et dit *La page
    d'accueil s'ouvre aussi aux téléphones du réseau de la maison*. Windows peut demander si
@@ -184,9 +184,15 @@ diaporama.
 | Comment | HTTP simple sur le réseau de la maison, comme décidé : aucun avertissement de certificat sur le téléphone ; le code et le cookie circulent en clair sur votre Wi-Fi, pour cette fois seulement. |
 | La fois suivante | Un nouveau `mh --lan`, un nouveau code : l'ancien téléphone doit s'appairer à nouveau. |
 
-Le téléphone n'ouvre pas la page ? Windows considère le réseau comme **public** (`mh` le dit) :
-passez-le en privé dans *Paramètres › Réseau et Internet*. `mh --lan` ne fonctionne que dans
-Windows PowerShell pour l'instant.
+Le téléphone n'ouvre pas la page ? La carte *Sur votre téléphone* dit pourquoi : *Aucun réseau
+domestique trouvé* (la page s'ouvre pour le PC seul, rien n'échoue), ou Windows considère le
+Wi-Fi comme **public** : passez-le en privé dans *Paramètres › Réseau et Internet › Wi-Fi ›
+Réseau privé*. La première fois, Windows peut poser une fois la question pour Docker Desktop :
+cochez **Réseaux privés**, puis **Autoriser**.
+
+PC de bureau, réseau partagé : `lan = false` sous `[review]` dans `config.toml`, puis
+`mh update` : la page d'accueil reste sur le PC, sans carte (`mh --lan` l'ouvre quand même
+s'il est tapé). Windows PowerShell seulement pour l'instant.
 
 ## Vos albums, sur le téléphone
 

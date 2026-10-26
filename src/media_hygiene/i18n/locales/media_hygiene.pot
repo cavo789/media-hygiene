@@ -3105,6 +3105,9 @@ msgstr ""
 msgid "Id"
 msgstr ""
 
+msgid "If Windows asks about Docker Desktop: tick Private networks, then Allow."
+msgstr ""
+
 msgid "Ignore this group"
 msgstr ""
 
@@ -4102,6 +4105,9 @@ msgid "No folder to analyse under {path}."
 msgstr ""
 
 msgid "No group yet: no two faces look alike enough."
+msgstr ""
+
+msgid "No home network found: the phone cannot open this page."
 msgstr ""
 
 msgid "No identical copy"
@@ -7094,6 +7100,13 @@ msgid ""
 msgstr ""
 
 msgid ""
+"The home page opens to the phones of your home Wi-Fi too, while mh runs: "
+"scan its QR code, type nothing more. A phone needs the code of this run; "
+"never the internet. false keeps the page on this PC only (an office PC, a"
+" shared network); then type mh update."
+msgstr ""
+
+msgid ""
 "The home page stopped unexpectedly twice in a row: type mh to start it "
 "again."
 msgstr ""
@@ -8373,6 +8386,11 @@ msgstr ""
 msgid ""
 "Windows cannot open {target}: is the NAS on, the shared folder created, "
 "the password right? Nothing was changed."
+msgstr ""
+
+msgid ""
+"Windows counts this Wi-Fi as public: its firewall blocks the phone. "
+"Settings > Network & Internet > Wi-Fi > Private network."
 msgstr ""
 
 msgid ""

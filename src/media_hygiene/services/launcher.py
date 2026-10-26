@@ -78,6 +78,7 @@ class LauncherCommands:  # pylint: disable=too-many-instance-attributes  # one p
     port: int
     long: tuple[str, ...] = ()  # the computer kept awake, the end told (0179, 0185)
     backups: tuple[str, ...] = ()  # they take `--backup`: given each backup (0205)
+    lan: bool = True  # `mh` alone opens the home page to the home network (0367)
     browse_wait: int = BROWSE_WAIT  # seconds `mh` waits for a page before giving up
 
 

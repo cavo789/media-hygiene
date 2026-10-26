@@ -1,9 +1,8 @@
 """Serve the home page until Ctrl+C, or until the user chooses a step.
 
 A step chosen is run by `mh` in the terminal, mounted as the command needs (`home_step`,
-`step_watch`); only when `mh` set `MEDIA_HYGIENE_LAUNCHER_STEPS`, else the page copies
-the command. It serves `search` and `browse` too (`home_pages`). The photos stay mounted
-read-only. Its tab closed (0261) ends it: `mh` gives the prompt back.
+`step_watch`) when `mh` set `MEDIA_HYGIENE_LAUNCHER_STEPS`, else the page copies the
+command. It serves `search` and `browse` too. Photos read-only; its tab closed ends it.
 """
 
 from __future__ import annotations
@@ -31,6 +30,7 @@ from media_hygiene.review.home_fields import RELAY_FIELDS
 from media_hygiene.review.home_texts import home_texts
 from media_hygiene.review.lan import lan_access
 from media_hygiene.review.lan_app import LAN_PATH, LanApp
+from media_hygiene.review.lan_problem import with_problem
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.presence import ALIVE_SECONDS, PRESENCE_PATH, Presence
 from media_hygiene.review.step_watch import STEP_PATH, WATCH, keeps_server
@@ -177,7 +177,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         address_tip(runtime.output, port)
         say_lan(runtime.output, lan)
 
-    lan = lan_access(port) if port else None  # `mh --lan`: a phone may open it
+    lan = lan_access(port) if port else None  # a phone may open it (0269, 0367)
     code = STOPPED
     try:
         with (
@@ -190,6 +190,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
             handler: Handling = album_pages(runtime, both, pool)  # `/albums` (0297)
             if lan is not None:
                 handler = LanApp(handler, lan, home_page(remote=True))
+            handler = with_problem(handler)
             door = with_person(EndingDoor(handler, ending), runtime, pool)
             code = asyncio.run(serve_until_ended(door, port, ready))
     finally:

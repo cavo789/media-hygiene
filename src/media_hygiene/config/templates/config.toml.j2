@@ -110,6 +110,9 @@ clipped_gap = 0.25
 {{ comment(_("The port of every page (review, home, places, people, search): inside the container and on your computer under the same number. Change it only when another program holds 8088 and cannot be closed; then type mh update, which writes the new port into mh.")) }}
 port = 8088
 
+{{ comment(_("The home page opens to the phones of your home Wi-Fi too, while mh runs: scan its QR code, type nothing more. A phone needs the code of this run; never the internet. false keeps the page on this PC only (an office PC, a shared network); then type mh update.")) }}
+lan = true
+
 [review.unwanted]
 {{ comment(_("'review --junk' shows the photos most likely unwanted, one group per reason; nothing is set aside until you say so, and 'clean --decisions' moves only what you set aside to the quarantine. A photo of a protected folder, a burst shot, a near or exact duplicate is never listed.")) }}
 

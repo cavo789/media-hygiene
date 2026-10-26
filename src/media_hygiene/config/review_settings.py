@@ -10,6 +10,9 @@ validates every obvious series at once.
 `port`: the port of every page (`review`, `home`, `places`…), published by `mh` under
 the same number on the host; another number for whoever cannot free 8088 (0260).
 
+`lan`: `mh` opens the home page to the phones of the home Wi-Fi too (0367); off for an
+office PC or a shared network.
+
 `[review.unwanted]`: what `review --junk` lists as most likely unwanted, never set
 aside without you. Each threshold at 0 disables its reason.
 """
@@ -77,4 +80,7 @@ class ReviewSettings(BaseModel):
     # The port of the pages, inside the container and on the host (`mh update` after a
     # change: it writes the port into `mh`).
     port: int = Field(default=PAGE_PORT, ge=1, le=_LAST_PORT)
+    # The home page open to the phones of the home network too, for the run (0367);
+    # false: the PC alone. Written into `mh` by `mh update`, like `port`.
+    lan: bool = True
     unwanted: UnwantedSettings = UnwantedSettings()

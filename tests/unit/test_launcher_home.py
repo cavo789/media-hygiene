@@ -291,7 +291,7 @@ def test_powershell_holds_the_same_loop_in_ascii() -> None:
         text = render_script(launcher_script(accented_runtime(), None, _COMMANDS))
     assert text.isascii()
     alone = text.index("    if ($rest.Count -eq 0) {")
-    assert text.index("        _mh_home @typed", alone) < text.index("docker run --rm")
+    assert text.index("        _mh_lan @typed", alone) < text.index("docker run --rm")
     assert "function global:_mh_home {" in text
     assert (
         "            try { _mh_watch @typed } finally { "

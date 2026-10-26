@@ -73,6 +73,7 @@ def cli_commands(ctx: typer.Context) -> LauncherCommands:
         data=tuple(name for name in names if name in DATA_COMMANDS),
         long=tuple(name for name in names if name in LONG_COMMANDS),
         port=runtime_of(ctx).settings.review.port,
+        lan=runtime_of(ctx).settings.review.lan,
         backups=tuple(
             name for name in names if _takes_backup(group.get_command(root, name))
         ),

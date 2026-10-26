@@ -58,6 +58,14 @@ def _shell() -> dict[str, str]:
         "lanOpen": _("Same Wi-Fi, open:"),
         "lanCode": _("Code:"),
         "lanNote": _("Until mh stops; never the internet."),
+        "lanNone": _("No home network found: the phone cannot open this page."),
+        "lanPublic": _(
+            "Windows counts this Wi-Fi as public: its firewall blocks the phone. "
+            "Settings > Network & Internet > Wi-Fi > Private network."
+        ),
+        "lanFirewall": _(
+            "If Windows asks about Docker Desktop: tick Private networks, then Allow."
+        ),
         "onThePc": _(
             "From the phone: the audit, the reports and the albums. Run this step on "
             "the PC."

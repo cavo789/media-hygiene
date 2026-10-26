@@ -72,3 +72,21 @@ The maintainer's reading of what opening by default loses (decided 2026-10-25):
 Before: the phone needs `mh --lan` typed in PowerShell (JohnDoe: never). After: the QR code on
 every home page started by the shortcut, one scan (estimated: from 0 % of shortcut users reaching
 the phone pairing to every user whose Wi-Fi Windows counts as private).
+
+## Status (2026-10-26) — PARTIAL
+
+Done: `[review] lan = true` (written into `mh.ps1` at `launcher`/`mh update`; default
+`config.toml` explains it); `mh` alone / the shortcut open the home page to the home network;
+`mh --lan` opens it whatever the setting; no private address → the page opens for the PC alone
+(`MEDIA_HYGIENE_LAUNCHER_LAN_PROBLEM=none`), a public network → `=public`, both said on the
+card (`review/lan_problem.py`), with the firewall line; tests in `tests/unit/test_home_lan.py`;
+docs en + fr (`home.md`, `launcher.md`); `mh-measure.ps1` step 29 starts `mh` alone and asks
+29j (the prompt again on a second start; Docker block rules readable without admin).
+
+Left:
+- A firewall rule **blocking** Docker Desktop on the card: waits for step 29j's answer
+  (`Get-NetFirewallRule` without admin rights) on the maintainer's PC.
+- Acceptance on Windows (step 29, maintainer): the shortcut, the QR code, the phone.
+- Doc captures of the home page are stale: `docs_screenshots`.
+- Security: 0384 (forged `Host`) now concerns every Windows user by default, not only
+  `mh --lan`: do 0384 before the next release.

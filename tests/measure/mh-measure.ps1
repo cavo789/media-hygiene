@@ -104,7 +104,7 @@
 #  28. an mh.ps1 older than its image: a test mh written by -Image, its stamp changed, then
 #      removed: mh history says the line naming mh update (expected), mh update of the local
 #      build writes it again without a pull, folders read back, the line gone      (0290)
-#  29. mh --lan, the home page on a phone of the home Wi-Fi: the address mh finds (timed) and
+#  29. mh alone (0367; was mh --lan), the home page on a phone of the home Wi-Fi: the address mh finds (timed) and
 #      Windows' category of that network; then, in a new window, mh --lan by hand: Windows'
 #      firewall prompt, the ports Docker publishes, the QR code and the code on the PC's page,
 #      the phone paired by the QR code then by the code, the audit run from the phone, a step
@@ -2630,8 +2630,9 @@ if (Wanted 29) {
     Set-Content -LiteralPath $copy -Value $lines -Encoding Ascii
     . $copy
     $watch = [Diagnostics.Stopwatch]::StartNew()
-    $address = _mh_lan_address
+    $found = _mh_lan_address  # @{ address; problem } since 0367
     $watch.Stop()
+    $address = if ($found) { $found.address } else { $null }
     Log ("   29a. address found = {0}, in {1:N2} s" -f $address, $watch.Elapsed.TotalSeconds)
     foreach ($network in @(Get-NetConnectionProfile -ErrorAction SilentlyContinue)) {
         Log ("   29a. network {0} on {1}: category {2}" -f $network.Name, $network.InterfaceAlias, $network.NetworkCategory)
@@ -2639,7 +2640,8 @@ if (Wanted 29) {
     if ($address) {
         Write-Host "29: open a NEW Windows PowerShell window and type these two lines:"
         Write-Host "        . '$copy'"
-        Write-Host "        mh --lan"
+        Write-Host "        mh"
+        Write-Host "    (mh alone, as the desktop shortcut runs it: open to the home Wi-Fi by default, 0367.)"
         Write-Host "    Wait for the home page in the browser."
         $firewall = Read-Host "29b. Did Windows ask whether Docker Desktop may accept connections? (n / p: allowed on private / b: both ticked)"
         $ports = @(docker ps --format '{{.Ports}}' 2>$null) -join ' | '
@@ -2657,6 +2659,11 @@ if (Wanted 29) {
         $kept = Read-Host "29h. After the step, the phone's page answered again without the code? (y/n)"
         Write-Host "    On the phone: Wi-Fi off (mobile data on), reload the page."
         $outside = Read-Host "29i. From mobile data the page did NOT open? (y/n)"
+        Write-Host "    On the PC: close the home page's tab."
+        Write-Host "    Start it a second time in the same way (. '$copy' then mh), wait for the home page."
+        $again = Read-Host "29j. The second time, did Windows ask about Docker Desktop again? (y/n)"
+        $blocked = @(Get-NetFirewallRule -Action Block -Enabled True -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -match 'Docker' }).Count
+        Log "   29j. firewall prompt again $again; enabled Docker block rules readable without admin: $blocked"
         Write-Host "    On the PC: close the home page's tab."
         Log "   29: card $card, by QR $qr, by code $typed, audit $audit, step refused $refused, paired after a step $kept, unreachable from mobile data $outside"
     } else {

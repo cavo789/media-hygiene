@@ -33,7 +33,7 @@ function global:{{ function }} {
         $given += "${full}:/data/" + $full.Substring(0, 1).ToLower() + ($full.Substring(2) -replace '\\', '/')
     }
     if ($rest.Count -eq 1 -and $rest[0] -eq '{{ lan.flag }}') {
-        # `{{ function }} {{ lan.flag }}`: the same, a phone of the home network may open the page (0269).
+        # `{{ function }} {{ lan.flag }}`: a phone of the home network may open the page (0269), whatever [review] lan.
         if (-not (_{{ function }}_desktop)) { return }
         _{{ function }}_lan @typed
         return
@@ -49,7 +49,11 @@ function global:{{ function }} {
         # Alone: the home page, the steps chosen there run here (0210); with --photos,
         # the step chosen gets them too (0181). Docker Desktop started first (0200).
         if (-not (_{{ function }}_desktop)) { return }
-        _{{ function }}_home @typed
+{% if script.commands.lan %}
+        _{{ function }}_lan @typed  # open to the home network too: [review] lan (0367)
+{% else %}
+        _{{ function }}_home @typed  # [review] lan = false: this PC only (0367)
+{% endif %}
         return
     }
     if ($rest.Count -eq 1 -and $rest[0] -eq 'menu') {

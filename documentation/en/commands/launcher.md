@@ -116,7 +116,7 @@ So `--help` of the image does not list them; this page and the `mh` menu do.
 | `mh update` | Downloads the new version of the image, then writes `mh` again with the same folders: [below](#a-new-version-mh-update). |
 | `mh phone` | Windows: copies only the **new** photos and videos of a phone plugged in over USB; with `--free`, then deletes from the phone what the PC holds, proven by its content: [below](#a-phone-copy-only-its-new-photos-mh-phone). |
 | `mh backup` | Windows: copies your photo folders into a folder of their own on the NAS, only what it lacks; Windows writes it (robocopy), the container decides: [`backup`](backup.md). |
-| `mh --lan` | Windows: the home page, as `mh` alone, that a phone of the same Wi-Fi may open too with a code (or its QR code), until `mh` stops; from the phone, the audit and the reports only: [`home`](home.md#from-a-phone-on-the-home-wi-fi-mh---lan). |
+| `mh --lan` | Windows: the same as `mh` alone (open to the home Wi-Fi by default; typed, even with `[review] lan = false`): the home page that a phone of the same Wi-Fi may open too with a code (or its QR code), until `mh` stops; from the phone, the audit and the reports only: [`home`](home.md#from-a-phone-on-the-home-wi-fi-mh---lan). |
 | `mh slideshow --folder "C:\…" --lan` | Windows: the [slideshow](slideshow.md) opened to the TV and the phones of the home network, for this run; the TV is paired by a code it shows, typed on the phone. |
 
 `mh shortcut` and `mh explorer` read back what they wrote (the `.lnk` files, the registry keys

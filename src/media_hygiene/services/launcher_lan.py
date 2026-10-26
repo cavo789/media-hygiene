@@ -16,6 +16,7 @@ from typing import Final
 
 from media_hygiene.i18n import _
 from media_hygiene.review.lan import LAN_ADDRESS_VARIABLE, LAN_SECRET_VARIABLE
+from media_hygiene.review.lan_problem import LAN_PROBLEM_VARIABLE, LanProblem
 from media_hygiene.services.launcher_phone_say import say
 from media_hygiene.services.next_command import LAUNCHER_FUNCTION
 
@@ -49,6 +50,8 @@ class LanCommand:  # pylint: disable=too-many-instance-attributes  # one per tem
     shows: tuple[str, ...]  # `mh <command> --lan`; their page and home's published
     address: str  # the variable naming the PC's address
     secret: str  # the variable holding the run's secret
+    problem: str  # the variable naming what keeps a phone away (0367)
+    problems: type[LanProblem]
     secret_bytes: int
     private: str
     public: str
@@ -67,6 +70,8 @@ def lan_command() -> LanCommand:
         shows=LAN_SHOWS,
         address=LAN_ADDRESS_VARIABLE,
         secret=LAN_SECRET_VARIABLE,
+        problem=LAN_PROBLEM_VARIABLE,
+        problems=LanProblem,
         secret_bytes=SECRET_BYTES,
         private=PRIVATE_IPV4,
         public=PUBLIC_CATEGORY,

@@ -8,28 +8,38 @@
 # (a private IPv4 address of the adapter reaching the router), never on every interface; a
 # secret drawn for the run gives the pairing code and the phone's token (the same until the
 # loop ends, the home page restarting after each step). RandomNumberGenerator, never Add-Type.
+# Never stopped by the network (0367): without a home network, the page opens for the PC
+# alone and its card says why the phone cannot come.
 function global:_{{ f }}_lan {
-    if (-not (_{{ f }}_lan_open)) { return }
+    $null = _{{ f }}_lan_open $true
     try { _{{ f }}_home @args } finally { $global:MediaHygieneLan = $null }
 }
 
 # The address on the home network and the run's secret, kept in $global:MediaHygieneLan for
 # the pages `{{ f }}` runs until the caller clears it (the home loop, or `{{ f }} slideshow {{ l.flag }}`, 0291).
-function global:_{{ f }}_lan_open {
-    $address = _{{ f }}_lan_address
-    if (-not $address) { Write-Host "{{ t.none }}"; $global:LASTEXITCODE = 1; return $false }
+# With $soft, no address is not a failure; the page is told (`{{ l.problem }}`, 0367).
+function global:_{{ f }}_lan_open($soft) {
+    $found = _{{ f }}_lan_address
+    if (-not $found) {
+        Write-Host "{{ t.none }}"
+        if ($soft) { $global:MediaHygieneLan = @{ problem = '{{ l.problems.NONE.value }}' }; return $true }
+        $global:LASTEXITCODE = 1
+        return $false
+    }
+    $address = $found.address
     $bytes = New-Object byte[] {{ l.secret_bytes }}
     $random = [Security.Cryptography.RandomNumberGenerator]::Create()
     try { $random.GetBytes($bytes) } finally { $random.Dispose() }
     $secret = -join ($bytes | ForEach-Object { $_.ToString('x2') })
     Write-Host "{{ t.opening }}"
     Write-Host "{{ t.firewall }}"
-    $global:MediaHygieneLan = @{ address = $address; secret = $secret }
+    $global:MediaHygieneLan = @{ address = $address; secret = $secret; problem = $found.problem }
     return $true
 }
 
 # The address of the first adapter up with a default gateway, when it is private; the
-# network counted as public by Windows is said (its firewall then blocks the phone).
+# network counted as public by Windows is said (its firewall then blocks the phone), here
+# and on the page's card.
 function global:_{{ f }}_lan_address {
     $configs = @(Get-NetIPConfiguration -ErrorAction SilentlyContinue | Where-Object { $_.IPv4DefaultGateway -and $_.NetAdapter.Status -eq 'Up' })
     foreach ($config in $configs) {
@@ -37,8 +47,9 @@ function global:_{{ f }}_lan_address {
             $text = "$($ip.IPAddress)"
             if ($text -notmatch '{{ l.private }}') { continue }
             $network = Get-NetConnectionProfile -InterfaceIndex $config.InterfaceIndex -ErrorAction SilentlyContinue
-            if ($network -and "$($network.NetworkCategory)" -eq '{{ l.public }}') { Write-Host "{{ t.public }}" }
-            return $text
+            $problem = ''
+            if ($network -and "$($network.NetworkCategory)" -eq '{{ l.public }}') { Write-Host "{{ t.public }}"; $problem = '{{ l.problems.PUBLIC.value }}' }
+            return @{ address = $text; problem = $problem }
         }
     }
     return $null
@@ -49,6 +60,9 @@ function global:_{{ f }}_lan_address {
 function global:_{{ f }}_lan_page($command) {
     $lan = $global:MediaHygieneLan
     if (-not $lan -or $command -notin @('home'{% for name in l.shows %}, '{{ name }}'{% endfor %})) { return @() }
+    $options = @()
+    if ($lan.problem) { $options += '-e', "{{ l.problem }}=$($lan.problem)" }
+    if (-not $lan.address) { return $options }
     $port = {{ script.commands.port }}
-    return @('-p', "$($lan.address):${port}:${port}", '-e', "{{ l.address }}=$($lan.address)", '-e', "{{ l.secret }}=$($lan.secret)")
+    return $options + @('-p', "$($lan.address):${port}:${port}", '-e', "{{ l.address }}=$($lan.address)", '-e', "{{ l.secret }}=$($lan.secret)")
 }
