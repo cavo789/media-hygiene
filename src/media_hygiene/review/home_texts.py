@@ -10,6 +10,7 @@ from __future__ import annotations
 from media_hygiene.i18n import _
 from media_hygiene.review.home_texts_marked import marked_texts
 from media_hygiene.review.home_texts_run import run_texts
+from media_hygiene.review.home_texts_tags import tags_texts
 
 
 def home_texts() -> dict[str, str]:
@@ -18,7 +19,14 @@ def home_texts() -> dict[str, str]:
     Returns:
         By key.
     """
-    return {**_shell(), **_home(), **_spaces(), **marked_texts(), **run_texts()}
+    return {
+        **_shell(),
+        **_home(),
+        **_spaces(),
+        **marked_texts(),
+        **run_texts(),
+        **tags_texts(),
+    }
 
 
 def _shell() -> dict[str, str]:

@@ -2245,6 +2245,12 @@ msgstr "Suppression d'une copie en double : {path}"
 msgid "Deleting an empty file (0 bytes): {path}"
 msgstr "Suppression d'un fichier vide (0 octet) : {path}"
 
+msgid "Describe for 1 h"
+msgstr "Décrire pendant 1 h"
+
+msgid "Describe now"
+msgstr "Décrire maintenant"
+
 msgid "Describe the photos without asking, however many."
 msgstr "Décrire les photos sans demander, quel que soit leur nombre."
 
@@ -2262,6 +2268,9 @@ msgstr "Décrire {count} photos maintenant, environ {duration} ?"
 
 msgid "Describing photos"
 msgstr "Description des photos"
+
+msgid "Describing…"
+msgstr "Description en cours…"
 
 msgid "Description"
 msgstr "Description"
@@ -5008,7 +5017,8 @@ msgstr ""
 
 msgid "No home network found: the phone cannot open this page."
 msgstr ""
-"Aucun réseau domestique trouvé : le téléphone ne peut pas ouvrir cette page."
+"Aucun réseau domestique trouvé : le téléphone ne peut pas ouvrir cette "
+"page."
 
 msgid "No identical copy"
 msgstr "Aucune copie identique"
@@ -5125,6 +5135,9 @@ msgstr "Aucune photo ne semble indésirable : rien à passer en revue."
 
 msgid "No photo nor video has disappeared: nothing to review."
 msgstr "Aucune photo ni vidéo n'a disparu : rien à passer en revue."
+
+msgid "No photo nor video in the cache: run the audit first."
+msgstr "Aucune photo ni vidéo dans le cache : lancez d’abord l’audit."
 
 msgid "No photo nor video of the index below these folders."
 msgstr "Aucune photo ni vidéo de l'index sous ces dossiers."
@@ -5368,6 +5381,9 @@ msgstr "Non consulté (non monté) : {points}."
 
 msgid "Not looked for yet"
 msgstr "Pas encore cherchés"
+
+msgid "Not now"
+msgstr "Pas maintenant"
 
 #, python-brace-format
 msgid "Not on the TV: its format ({format}) does not play there."
@@ -6584,6 +6600,9 @@ msgstr "Lire les rapports dans votre navigateur"
 
 msgid "Reading 128 KB of each file already in the cache, once"
 msgstr "Lecture de 128 Ko de chaque fichier déjà en cache, une seule fois"
+
+msgid "Reading the index"
+msgstr "Lecture de l’index"
 
 msgid "Reading the metadata of files already in the cache"
 msgstr "Lecture des métadonnées des fichiers déjà en cache"
@@ -7922,6 +7941,9 @@ msgstr ""
 msgid "Still undoable: {what}"
 msgstr "Encore annulable : {what}"
 
+msgid "Stop after this photo"
+msgstr "Arrêter après cette photo"
+
 msgid "Stop the audit"
 msgstr "Arrêter l'audit"
 
@@ -8053,6 +8075,12 @@ msgstr "Sommaire"
 
 msgid "Tags"
 msgstr "Tags"
+
+msgid "Tags already run: wait for the end, or stop them."
+msgstr "Les mots-clés tournent déjà : attendez la fin, ou arrêtez-les."
+
+msgid "Tags failed: the window where mh runs says why."
+msgstr "Les mots-clés ont échoué : la fenêtre où tourne mh dit pourquoi."
 
 #, python-brace-format
 msgid ""
@@ -8610,10 +8638,11 @@ msgid ""
 "never the internet. false keeps the page on this PC only (an office PC, a"
 " shared network); then type mh update."
 msgstr ""
-"La page d'accueil s'ouvre aussi aux téléphones de votre Wi-Fi, tant que mh "
-"tourne : scannez son QR code, rien de plus à taper. Un téléphone a besoin "
-"du code de cette session ; jamais Internet. false garde la page sur ce PC "
-"seulement (PC de bureau, réseau partagé) ; tapez ensuite mh update."
+"La page d'accueil s'ouvre aussi aux téléphones de votre Wi-Fi, tant que "
+"mh tourne : scannez son QR code, rien de plus à taper. Un téléphone a "
+"besoin du code de cette session ; jamais Internet. false garde la page "
+"sur ce PC seulement (PC de bureau, réseau partagé) ; tapez ensuite mh "
+"update."
 
 msgid ""
 "The home page stopped unexpectedly twice in a row: type mh to start it "
@@ -10182,8 +10211,8 @@ msgid ""
 "Windows counts this Wi-Fi as public: its firewall blocks the phone. "
 "Settings > Network & Internet > Wi-Fi > Private network."
 msgstr ""
-"Windows considère ce Wi-Fi comme public : son pare-feu bloque le téléphone."
-" Paramètres > Réseau et Internet > Wi-Fi > Réseau privé."
+"Windows considère ce Wi-Fi comme public : son pare-feu bloque le "
+"téléphone. Paramètres > Réseau et Internet > Wi-Fi > Réseau privé."
 
 msgid ""
 "Windows counts this network as public: its firewall blocks the phone. On "
@@ -10246,6 +10275,15 @@ msgid "Words"
 msgstr "Mots"
 
 msgid ""
+"Words from folders, names, dates and places first (seconds), then what "
+"the local AI sees. Only the cache is written: your photos are not "
+"changed."
+msgstr ""
+"D’abord les mots des dossiers, des noms, des dates et des lieux (quelques"
+" secondes), puis ce que voit l’IA locale. Seul le cache est écrit : vos "
+"photos ne sont pas modifiées."
+
+msgid ""
 "Words left out because they describe nearly every photo. Written here, "
 "the list replaces the built-in one (French and English)."
 msgstr ""
@@ -10255,6 +10293,12 @@ msgstr ""
 msgid "Words of"
 msgstr "Mots de"
 
+msgid "Words of folders, names, dates and places"
+msgstr "Mots des dossiers, des noms, des dates et des lieux"
+
+msgid "Words of folders, names, dates and places…"
+msgstr "Mots des dossiers, des noms, des dates et des lieux…"
+
 msgid ""
 "Words to find, printed as a table instead of opening the page: \"bord de "
 "mer\" a phrase, anniv* a start of word, place:durbuy among the places "
@@ -10263,6 +10307,16 @@ msgstr ""
 "Mots à trouver, affichés en tableau au lieu d'ouvrir la page : \"bord de "
 "mer\" une expression, anniv* un début de mot, place:durbuy parmi les "
 "lieux seulement (aussi vision, caption, folder, name, date, person)."
+
+msgid ""
+"Words written. Set [classify.ai] model to a local vision model (Ollama) "
+"to add what the photos show."
+msgstr ""
+"Mots écrits. Indiquez dans [classify.ai] model un modèle de vision local "
+"(Ollama) pour ajouter ce que montrent les photos."
+
+msgid "Words written; the AI has already described every photo."
+msgstr "Mots écrits ; l’IA a déjà décrit toutes les photos."
 
 #, python-brace-format
 msgid "Workbook to edit: {path}"
@@ -14011,6 +14065,14 @@ msgstr ""
 "ensemble de fichiers identiques et par rafale."
 
 #, python-brace-format
+msgid ""
+"{count} photos to describe with {model}, about {time}. Each answer is "
+"kept at once: a stop loses nothing, the next run goes on."
+msgstr ""
+"{count} photos à décrire avec {model}, environ {time}. Chaque réponse est"
+" gardée aussitôt : un arrêt ne perd rien, le passage suivant continue."
+
+#, python-brace-format
 msgid "{count} report deleted."
 msgid_plural "{count} reports deleted."
 msgstr[0] "{count} rapport supprimé."
@@ -14544,6 +14606,10 @@ msgstr ""
 "service dans [places] nominatim_url."
 
 #, python-brace-format
+msgid "{h} h {min} min"
+msgstr "{h} h {min} min"
+
+#, python-brace-format
 msgid "{h} h {m}"
 msgstr "{h} h {m}"
 
@@ -14570,6 +14636,10 @@ msgstr "au plus {limit} est attendu, pas {value}"
 #, python-brace-format
 msgid "{limit} or more is expected, not {value}"
 msgstr "au moins {limit} est attendu, pas {value}"
+
+#, python-brace-format
+msgid "{min} min"
+msgstr "{min} min"
 
 #, python-brace-format
 msgid ""
@@ -15187,6 +15257,10 @@ msgstr ""
 #, python-brace-format
 msgid "{place}: {reason}"
 msgstr "{place} : {reason}"
+
+#, python-brace-format
+msgid "{rate} photos a minute, about {time} left."
+msgstr "{rate} photos par minute, environ {time} restant."
 
 #, python-brace-format
 msgid "{reason}: {first} to {last} of {total}"

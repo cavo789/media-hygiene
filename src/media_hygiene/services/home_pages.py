@@ -18,6 +18,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.errors import MountError
 from media_hygiene.review.apply_relay import home_relay
 from media_hygiene.review.home_app import AUDIT_PATH
+from media_hygiene.review.home_tags_api import TAGS_PATH
 from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH
 from media_hygiene.review.presence import PRESENCE_PATH
@@ -39,7 +40,7 @@ if TYPE_CHECKING:
 
 # The home page's own paths (`HomeApp`); `/reports/…` too.
 _HOME_PATHS: Final = frozenset(
-    {PAGE_PATH, STATE_PATH, STEP_PATH, AUDIT_PATH, PRESENCE_PATH}
+    {PAGE_PATH, STATE_PATH, STEP_PATH, AUDIT_PATH, TAGS_PATH, PRESENCE_PATH}
 )
 
 

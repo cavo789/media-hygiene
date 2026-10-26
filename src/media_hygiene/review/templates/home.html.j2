@@ -133,6 +133,7 @@
 <dialog id="confirmDlg" aria-labelledby="confirmTitle"></dialog>
 <dialog id="runDlg" aria-labelledby="runTitle"></dialog>
 <dialog id="keysDlg" aria-labelledby="keysTitle"></dialog>
+<dialog id="tagsDlg" aria-labelledby="tagsTitle"></dialog>
 <dialog id="stoppedDlg" class="stopped-dlg" aria-labelledby="stoppedTitle">
   <div class="dlg">
     <img src="{{ paths.assets }}images/meerkat-asleep.webp" alt="" width="400" height="387">
@@ -155,6 +156,7 @@
 {% include "home.js.j2" %}
 {% include "home_draw.js.j2" %}
 {% include "home_run.js.j2" %}
+{% include "home_tags.js.j2" %}
   start();
 })();
 </script>

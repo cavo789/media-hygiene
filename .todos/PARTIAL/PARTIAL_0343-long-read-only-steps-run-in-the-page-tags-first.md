@@ -39,3 +39,23 @@ progress bar, and a Stop button — for `tags` and every long step.
       next run continues where it stopped (test with a fake Ollama client).
 - [ ] The console only prints that the page runs it (the 🔒 / 🤖 lines kept).
 - [ ] Docs en + fr; `docs_screenshots` to run.
+
+## Status — PARTIAL (2026-10-26)
+
+- **Done:** `tags` runs in the home server (`services/home_tags.py`, `home_tags_models.py`,
+  `cli/home_tags.py`, route `/api/tags` in `review/home_tags_api.py`): the cheap words first, then
+  a dialog with the console's figures (photos to describe, model, estimated time) and *Describe
+  now* / *Describe for 1 h* / *Not now*; progress (described / total, rate, time left), *Stop
+  after this photo*, the run shown again when the page is reopened; Ollama absent: one line.
+  Tests with the fake Ollama: figures without a model call, Stop keeps two answers, the next run
+  finishes (`tests/integration/tags/test_tags_home_page.py`). Docs en + fr (`commands/tags.md`).
+- **Not done:**
+  - Item 3, the survey of the other long read-only steps (`people` face scan, `meaning`,
+    `inventory`, phone import) and one follow-up per step. **Reason:** scope of one run.
+  - The last photo's words in the progress (describe_all reports counts only). **Reason:** needs a
+    hook in `TaggingStore`; small follow-up.
+  - Acceptance "the console only prints that the page runs it": the home window prints nothing
+    for a page run yet. **Reason:** kept out to avoid output from a worker thread; to decide.
+  - `[tags] max_minutes` not added: *Describe for 1 h* is a constant (memory *Few settings*);
+    propose a setting if the maintainer wants another length.
+  - The JS was not run in a browser here (no node in the devcontainer); `docs_screenshots` to run.

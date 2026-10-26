@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-import os
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
@@ -26,20 +25,24 @@ from media_hygiene.review.ending import (
 )
 from media_hygiene.review.home_app import AUDIT_PATH, HomeApp
 from media_hygiene.review.home_assets import ASSETS_PREFIX
-from media_hygiene.review.home_fields import RELAY_FIELDS
+from media_hygiene.review.home_tags_api import TAGS_PATH
 from media_hygiene.review.home_texts import home_texts
 from media_hygiene.review.lan import lan_access
 from media_hygiene.review.lan_app import LAN_PATH, LanApp
 from media_hygiene.review.lan_problem import with_problem
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.presence import ALIVE_SECONDS, PRESENCE_PATH, Presence
-from media_hygiene.review.step_watch import STEP_PATH, WATCH, keeps_server
+from media_hygiene.review.step_watch import STEP_PATH, keeps_server
 from media_hygiene.services.album_pages import album_pages
 from media_hygiene.services.home_audit import HomeAudit
 from media_hygiene.services.home_lan import say_lan
+from media_hygiene.services.home_launch import (
+    launcher_relays_fields,
+    launcher_relays_steps,
+)
 from media_hygiene.services.home_pages import HomeServer, home_with_pages
+from media_hygiene.services.home_tags import HomeTags
 from media_hygiene.services.launcher_host import windows_menu
-from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.share.album_page import ALBUMS_PAGE
 
@@ -51,6 +54,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.ending import Handling
     from media_hygiene.review.home_views import HomeState
     from media_hygiene.services.home_audit import AuditResult
+    from media_hygiene.services.home_tags_models import TagsRunner
     from media_hygiene.services.runtime import Runtime
 
 _PACKAGE: Final = "media_hygiene.review"
@@ -75,6 +79,7 @@ def home_page(*, relays_steps: bool = False, remote: bool = False) -> bytes:
             "state": STATE_PATH,
             "step": STEP_PATH,
             "audit": AUDIT_PATH,
+            "tags": TAGS_PATH,
             "alive": PRESENCE_PATH,
             "stop": STOP_PATH,
             "assets": ASSETS_PREFIX,
@@ -100,26 +105,6 @@ def _mh_window() -> str:
     return _("the terminal where mh runs")
 
 
-def launcher_relays_fields() -> bool:
-    """Tell whether `mh` also runs the words of a step's form (0266).
-
-    Returns:
-        True when `MEDIA_HYGIENE_LAUNCHER_STEPS` says so: `mh` reads the one-shot
-        file of the reports folder (`review/home_fields.py`).
-    """
-    return os.environ.get(LAUNCHER_STEPS_VARIABLE) in {RELAY_FIELDS, WATCH.kept}
-
-
-def launcher_relays_steps() -> bool:
-    """Tell whether `mh` runs the step a button chose (TODO 0210 sets the variable).
-
-    Returns:
-        True when `MEDIA_HYGIENE_LAUNCHER_STEPS` is set: ending the server with
-        `STEP_EXIT_BASE + n` then runs step `n`; else the code would be lost.
-    """
-    return bool(os.environ.get(LAUNCHER_STEPS_VARIABLE))
-
-
 @dataclass(frozen=True, slots=True)
 class HomeSources:
     """Where the home page's content comes from: the tool folders, and its audit."""
@@ -127,6 +112,7 @@ class HomeSources:
     state: Callable[[], HomeState]
     audit: Callable[[PageProgress], AuditResult]
     apply: Callable[[], ApplyStep | None] | None = None  # browse's *Apply now* (0356)
+    tags: TagsRunner | None = None  # `tags` in the page (0343)
 
 
 def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
@@ -154,6 +140,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         relays_steps=relays,
         relays_fields=relays and launcher_relays_fields(),
         keeps=relays and keeps_server(),
+        tags=None if sources.tags is None else HomeTags(sources.tags),
     )
 
     def ready(port: int) -> None:
@@ -195,6 +182,8 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
             code = asyncio.run(serve_until_ended(door, port, ready))
     finally:
         audit.stop()  # between two files: the index keeps what it committed
+        if app.tags is not None:
+            app.tags.stop()  # after the photo in flight: the cache keeps each answer
     if presence.closed:
         runtime.output.info(_("The home page's tab was closed: the home page stopped."))
     return code

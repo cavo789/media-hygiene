@@ -1836,6 +1836,12 @@ msgstr ""
 msgid "Deleting an empty file (0 bytes): {path}"
 msgstr ""
 
+msgid "Describe for 1 h"
+msgstr ""
+
+msgid "Describe now"
+msgstr ""
+
 msgid "Describe the photos without asking, however many."
 msgstr ""
 
@@ -1849,6 +1855,9 @@ msgid "Describe {count} photos now, about {duration}?"
 msgstr ""
 
 msgid "Describing photos"
+msgstr ""
+
+msgid "Describing…"
 msgstr ""
 
 msgid "Description"
@@ -4213,6 +4222,9 @@ msgstr ""
 msgid "No photo nor video has disappeared: nothing to review."
 msgstr ""
 
+msgid "No photo nor video in the cache: run the audit first."
+msgstr ""
+
 msgid "No photo nor video of the index below these folders."
 msgstr ""
 
@@ -4416,6 +4428,9 @@ msgid "Not looked at (not mounted): {points}."
 msgstr ""
 
 msgid "Not looked for yet"
+msgstr ""
+
+msgid "Not now"
 msgstr ""
 
 #, python-brace-format
@@ -5428,6 +5443,9 @@ msgid "Read the reports in your browser"
 msgstr ""
 
 msgid "Reading 128 KB of each file already in the cache, once"
+msgstr ""
+
+msgid "Reading the index"
 msgstr ""
 
 msgid "Reading the metadata of files already in the cache"
@@ -6546,6 +6564,9 @@ msgstr ""
 msgid "Still undoable: {what}"
 msgstr ""
 
+msgid "Stop after this photo"
+msgstr ""
+
 msgid "Stop the audit"
 msgstr ""
 
@@ -6650,6 +6671,12 @@ msgid "Table of contents"
 msgstr ""
 
 msgid "Tags"
+msgstr ""
+
+msgid "Tags already run: wait for the end, or stop them."
+msgstr ""
+
+msgid "Tags failed: the window where mh runs says why."
 msgstr ""
 
 #, python-brace-format
@@ -8437,6 +8464,12 @@ msgid "Words"
 msgstr ""
 
 msgid ""
+"Words from folders, names, dates and places first (seconds), then what "
+"the local AI sees. Only the cache is written: your photos are not "
+"changed."
+msgstr ""
+
+msgid ""
 "Words left out because they describe nearly every photo. Written here, "
 "the list replaces the built-in one (French and English)."
 msgstr ""
@@ -8444,10 +8477,24 @@ msgstr ""
 msgid "Words of"
 msgstr ""
 
+msgid "Words of folders, names, dates and places"
+msgstr ""
+
+msgid "Words of folders, names, dates and places…"
+msgstr ""
+
 msgid ""
 "Words to find, printed as a table instead of opening the page: \"bord de "
 "mer\" a phrase, anniv* a start of word, place:durbuy among the places "
 "only (also vision, caption, folder, name, date, person)."
+msgstr ""
+
+msgid ""
+"Words written. Set [classify.ai] model to a local vision model (Ollama) "
+"to add what the photos show."
+msgstr ""
+
+msgid "Words written; the AI has already described every photo."
 msgstr ""
 
 #, python-brace-format
@@ -11676,6 +11723,12 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{count} photos to describe with {model}, about {time}. Each answer is "
+"kept at once: a stop loses nothing, the next run goes on."
+msgstr ""
+
+#, python-brace-format
 msgid "{count} report deleted."
 msgid_plural "{count} reports deleted."
 msgstr[0] ""
@@ -12115,6 +12168,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{h} h {min} min"
+msgstr ""
+
+#, python-brace-format
 msgid "{h} h {m}"
 msgstr ""
 
@@ -12140,6 +12197,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{limit} or more is expected, not {value}"
+msgstr ""
+
+#, python-brace-format
+msgid "{min} min"
 msgstr ""
 
 #, python-brace-format
@@ -12702,6 +12763,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{place}: {reason}"
+msgstr ""
+
+#, python-brace-format
+msgid "{rate} photos a minute, about {time} left."
 msgstr ""
 
 #, python-brace-format

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import threading
-from functools import partial
 from types import SimpleNamespace
 from typing import TYPE_CHECKING
 
@@ -21,17 +20,15 @@ from media_hygiene.console.page_progress import (
 from media_hygiene.constants import Locale
 from media_hygiene.i18n import install
 from media_hygiene.report.index_page import load_summaries
-from media_hygiene.review.ending import STOPPED
-from media_hygiene.review.home_app import AUDIT_PATH, HomeApp
-from media_hygiene.review.presence import Presence
+from media_hygiene.review.home_app import AUDIT_PATH
 from media_hygiene.scan import stopwatch
 from media_hygiene.scan.progress import NullProgress, Step
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.fresh_runtime import FreshRuntime
-from media_hygiene.services.home import home_page
 from media_hygiene.services.home_audit import AuditResult, HomeAudit
 from tests.integration.test_home_page import serve
 from tests.support.cli import run
+from tests.support.home_app import home_app_of
 from tests.support.review import JSON_HEADERS, Call
 from tests.support.runtime import make_runtime
 
@@ -199,14 +196,7 @@ def test_the_audit_routes(locations: Locations) -> None:
     audit = HomeAudit(endless)
     form = ("Host: 127.0.0.1", "Content-Type: application/x-www-form-urlencoded")
     replies, code = serve(
-        lambda ending: HomeApp(
-            home_page(),
-            partial(home_state, runtime),
-            runtime.locations.reports_dir,
-            ending,
-            audit,
-            Presence(ending, STOPPED),
-        ),
+        home_app_of(runtime, audit),
         [
             Call("GET", AUDIT_PATH),
             ask("start"),
