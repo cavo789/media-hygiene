@@ -11,8 +11,13 @@ from media_hygiene.services.group_sort import sort_group
 from media_hygiene.services.sort_disk import disk_progress
 from media_hygiene.share.albums import ALBUMS_FILE
 from tests.support.cli import run
-from tests.support.runtime import make_runtime
-from tests.support.sorting import MIXED, PARTY, build_library, classify
+from tests.support.sorting import (
+    MIXED,
+    PARTY,
+    audited_library,
+    build_library,
+    classify,
+)
 
 if TYPE_CHECKING:
     from typer.testing import CliRunner
@@ -25,9 +30,7 @@ def test_a_folder_moved_in_explorer_counts_as_sorted_after_the_next_audit(
 ) -> None:
     """Left at first; moved by hand into `2016/2016-07/Kermesse`: sorted."""
     data = locations.data_dir
-    build_library(data)
-    runtime = make_runtime(locations)
-    AuditService(runtime, NullProgress()).run()
+    runtime = audited_library(locations)
     before = disk_progress(runtime)
     assert before is not None
     assert before.sorted == 0
@@ -57,9 +60,7 @@ def test_a_group_sorted_from_a_page_says_a_file_not_rewritten(
     locations: Locations,
 ) -> None:
     """0406: the page's answer holds the line of a file that could not be rewritten."""
-    build_library(locations.data_dir)
-    runtime = make_runtime(locations)
-    AuditService(runtime, NullProgress()).run()
+    runtime = audited_library(locations)
     classify(runtime)
     locations.reports_dir.mkdir(parents=True, exist_ok=True)
     (locations.reports_dir / ALBUMS_FILE).write_text("not json", encoding="utf-8")

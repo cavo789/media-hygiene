@@ -19,8 +19,6 @@ from media_hygiene.report.decisions import (
     write_decisions,
 )
 from media_hygiene.review.place import DEFAULT_DECISIONS
-from media_hygiene.scan.progress import NullProgress
-from media_hygiene.services.audit import AuditService
 from media_hygiene.share.albums import (
     ALBUMS_FILE,
     Album,
@@ -37,11 +35,10 @@ from media_hygiene.shrink.try_choices import (
     read_choices,
     save_choices,
 )
-from tests.support.runtime import make_runtime
 from tests.support.sorting import (
     MIXED,
     PARTY,
-    build_library,
+    audited_library,
     classify,
     name_first_event,
     sort,
@@ -64,9 +61,7 @@ def _ready(locations: Locations) -> Runtime:
     Returns:
         The runtime.
     """
-    build_library(locations.data_dir)
-    runtime = make_runtime(locations)
-    AuditService(runtime, NullProgress()).run()
+    runtime = audited_library(locations)
     name_first_event(classify(runtime))
     return runtime
 

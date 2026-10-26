@@ -11,14 +11,11 @@ from typing import TYPE_CHECKING
 from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.own_events import named_event, one_moment
 from media_hygiene.classify.rules_file import read_rules
-from media_hygiene.scan.progress import NullProgress
-from media_hygiene.services.audit import AuditService
 from media_hygiene.services.selection_move import SelectionMover
-from tests.support.runtime import make_runtime
 from tests.support.sorting import (
     PARTY,
     WEDDING,
-    build_library,
+    audited_library,
     classify,
     snapshot,
     undo,
@@ -53,9 +50,7 @@ def test_a_named_event_is_a_meaning_of_one_moment_not_a_person() -> None:
 
 def _ready(locations: Locations) -> tuple[Runtime, dict[int, Path]]:
     """The library of `sorting`, audited and classified; its photos by a key."""
-    build_library(locations.data_dir)
-    runtime = make_runtime(locations)
-    AuditService(runtime, NullProgress()).run()
+    runtime = audited_library(locations)
     classify(runtime)
     photos = sorted((locations.data_dir / PARTY).glob("*.jpg"))
     photos += sorted((locations.data_dir / WEDDING).glob("*.jpg"))
