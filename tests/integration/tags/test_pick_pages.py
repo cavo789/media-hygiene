@@ -5,8 +5,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.services.sort_reviewing import open_sort_review, sort_page
-from tests.integration.tags.test_search_albums import _serve
 from tests.support.pick_pages import PICK_PARTS
+from tests.support.search_page import serve_search
 from tests.support.sort_review import classified
 
 if TYPE_CHECKING:
@@ -25,7 +25,9 @@ _SHARED = (
 
 def _pages(cli: CliRunner, monkeypatch: pytest.MonkeyPatch) -> tuple[str, str]:
     """The search page and the folder view, as served."""
-    answers = _serve(cli, monkeypatch, [("GET /search", None), ("GET /browse", None)])
+    answers = serve_search(
+        cli, monkeypatch, [("GET /search", None), ("GET /browse", None)]
+    )
     return answers[0].body.decode(), answers[1].body.decode()
 
 

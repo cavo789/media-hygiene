@@ -11,17 +11,14 @@ import json
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.rules_file import read_rules
-from media_hygiene.services import search_pages as search_service
-from tests.integration.tags.test_search_command import _call, fake_server
 from tests.support.cli import run
+from tests.support.search_page import serve_search
 
 if TYPE_CHECKING:
     import pytest
     from typer.testing import CliRunner
 
     from media_hygiene.paths.locations import Locations
-    from media_hygiene.review.http import Response
-    from media_hygiene.search.app import SearchApp
 
 _RULE: Final = {
     "name": "Christmas 2022",
@@ -35,28 +32,12 @@ _EXISTING: Final = (
 )
 
 
-def _serve(
-    cli: CliRunner, monkeypatch: pytest.MonkeyPatch, calls: list[tuple[str, object]]
-) -> list[Response]:
-    """Open the search page, send the calls in order, stop it; the answers."""
-    answers: list[Response] = []
-
-    async def page(app: SearchApp) -> None:
-        for route, body in calls:
-            answers.append(await _call(app, route, body))
-
-    monkeypatch.setattr(search_service, "serve_until_ended", fake_server(page))
-    result = run(cli, "search")
-    assert result.exit_code == 0, result.output
-    return answers
-
-
 def test_a_day_alone_finds_the_files_of_that_day(
     cli: CliRunner, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Both bounds included, one day alone, a year alone: as the calendars send."""
     assert run(cli, "tags", "--no-describe").exit_code == 0
-    answers = _serve(
+    answers = serve_search(
         cli,
         monkeypatch,
         [
@@ -77,7 +58,7 @@ def test_a_rule_tried_shows_where_each_photo_goes(
 ) -> None:
     """The series of the day goes to the rule's folder itself; nothing is written."""
     assert run(cli, "tags", "--no-describe").exit_code == 0
-    answer = _serve(cli, monkeypatch, [("POST /api/period-rule/trial", _RULE)])[0]
+    answer = serve_search(cli, monkeypatch, [("POST /api/period-rule/trial", _RULE)])[0]
     assert answer.status == 200
     tried = json.loads(answer.body)
     assert tried["taken"] > 0
@@ -98,7 +79,7 @@ def test_a_rule_saved_then_updated_in_place(
     text = config.read_text().replace("\n[tags]", _EXISTING + "\n[tags]")
     config.write_text(text, encoding="utf-8")
     updated = {**_RULE, "last": "2022-12-26", "replaces": "Christmas 2022"}
-    answers = _serve(
+    answers = serve_search(
         cli,
         monkeypatch,
         [
@@ -128,7 +109,7 @@ def test_a_rule_without_config_is_refused_said(
     cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """No list of rules to write into: 409 and why; a bad rule: 400."""
-    answers = _serve(
+    answers = serve_search(
         cli,
         monkeypatch,
         [
@@ -147,9 +128,9 @@ def test_a_group_without_a_classify_run_is_refused_said(
     """0397: GO before any classify run: 409 with the command; nothing moves."""
     assert run(cli, "tags", "--no-describe").exit_code == 0
     photos = sorted(path.name for path in locations.data_dir.rglob("*.jpg"))
-    trial = _serve(cli, monkeypatch, [("POST /api/period-rule/trial", _RULE)])[0]
+    trial = serve_search(cli, monkeypatch, [("POST /api/period-rule/trial", _RULE)])[0]
     keys = [hit["key"] for hit in json.loads(trial.body)["hits"] if hit["taken"]]
-    answers = _serve(
+    answers = serve_search(
         cli,
         monkeypatch,
         [
