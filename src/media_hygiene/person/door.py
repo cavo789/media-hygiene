@@ -95,7 +95,7 @@ def person_app(
     apply = None
     if host is not None and host.offered:
         offer = dataclasses.replace(host.offer, pending=lambda: bool(aside.paths()))
-        apply = ApplyDesk(offer, host.ending)
+        apply = dataclasses.replace(host, offer=offer)
     environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
     page = environment.get_template(_PAGE_TEMPLATE).render(
         header=page_header(_PAGE_TEMPLATE),

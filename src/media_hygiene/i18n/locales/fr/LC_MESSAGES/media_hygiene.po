@@ -1752,13 +1752,6 @@ msgstr ""
 "Fermer cette page et revenir à l'accueil : rien n'est supprimé du "
 "téléphone."
 
-msgid ""
-"Close this page: mh moves the files set aside to the quarantine (it asks "
-"first), then opens the home page again."
-msgstr ""
-"Ferme cette page : mh déplace en quarantaine les fichiers mis de côté (il"
-" demande d'abord), puis rouvre l'accueil."
-
 #, python-brace-format
 msgid ""
 "Close to a face you confirmed: resemblance {score}, a name is given from "
@@ -2389,6 +2382,10 @@ msgstr "Documents et captures d'écran"
 
 msgid "Done"
 msgstr "Fait"
+
+#, python-brace-format
+msgid "Done: {command}."
+msgstr "Terminé : {command}."
 
 msgid ""
 "Done? Ctrl+C in the terminal stops the map. Then add a 'place' rule (and "
@@ -7097,6 +7094,11 @@ msgstr ""
 "En cours dans la fenêtre où mh tourne : {command}. L'accueil revient ici "
 "quand c'est fini."
 
+#, python-brace-format
+msgid "Running in the window where mh runs: {command}. This page stays open."
+msgstr ""
+"En cours dans la fenêtre où mh tourne : {command}. Cette page reste ouverte."
+
 msgid "Runs (newest first)"
 msgstr "Exécutions (les plus récentes d'abord)"
 
@@ -7922,6 +7924,10 @@ msgstr ""
 
 msgid "Stopped (Ctrl+C)."
 msgstr "Arrêté (Ctrl+C)."
+
+#, python-brace-format
+msgid "Stopped (code {code}): {command}."
+msgstr "Arrêté (code {code}) : {command}."
 
 msgid "Stopped before the end, as asked."
 msgstr "Arrêté avant la fin, comme demandé."
@@ -11580,6 +11586,13 @@ msgid ""
 msgstr ""
 "mh le monte pour share ; avec docker run, ajoutez -v \"$HOME\\media-"
 "hygiene\\Shares:/shares\"."
+
+msgid ""
+"mh moves the files set aside to the quarantine in its window (it asks "
+"first)."
+msgstr ""
+"mh déplace en quarantaine les fichiers mis de côté, dans sa fenêtre (il "
+"demande d'abord)."
 
 msgid ""
 "mh needs at least one photo folder: add the new one first, then remove "

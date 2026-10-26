@@ -1415,11 +1415,6 @@ msgid ""
 " phone."
 msgstr ""
 
-msgid ""
-"Close this page: mh moves the files set aside to the quarantine (it asks "
-"first), then opens the home page again."
-msgstr ""
-
 #, python-brace-format
 msgid ""
 "Close to a face you confirmed: resemblance {score}, a name is given from "
@@ -1952,6 +1947,10 @@ msgid "Documents and screenshots"
 msgstr ""
 
 msgid "Done"
+msgstr ""
+
+#, python-brace-format
+msgid "Done: {command}."
 msgstr ""
 
 msgid ""
@@ -5844,6 +5843,10 @@ msgid ""
 "here when it ends."
 msgstr ""
 
+#, python-brace-format
+msgid "Running in the window where mh runs: {command}. This page stays open."
+msgstr ""
+
 msgid "Runs (newest first)"
 msgstr ""
 
@@ -6546,6 +6549,10 @@ msgid ""
 msgstr ""
 
 msgid "Stopped (Ctrl+C)."
+msgstr ""
+
+#, python-brace-format
+msgid "Stopped (code {code}): {command}."
 msgstr ""
 
 msgid "Stopped before the end, as asked."
@@ -9623,6 +9630,11 @@ msgstr ""
 msgid ""
 "mh mounts it for share; with docker run, add -v \"$HOME\\media-"
 "hygiene\\Shares:/shares\"."
+msgstr ""
+
+msgid ""
+"mh moves the files set aside to the quarantine in its window (it asks "
+"first)."
 msgstr ""
 
 msgid ""

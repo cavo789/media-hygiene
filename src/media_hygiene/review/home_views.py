@@ -33,6 +33,8 @@ FIELDS_STEP: Final = 99
 # A code from here on is a signal's (128 + n): `mh` ends its loop, never runs a step.
 SIGNAL_EXIT_BASE: Final = 128
 REPORTS_PREFIX: Final = "/reports/"
+# *Apply now* of browse and the reviews (`apply_api`): here, a leaf `search.app` reads.
+APPLY_PATH: Final = "/api/apply"
 
 
 class HomeField(Frozen):

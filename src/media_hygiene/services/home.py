@@ -25,7 +25,7 @@ from media_hygiene.review.ending import (
     EndingDoor,
     serve_until_ended,
 )
-from media_hygiene.review.home_app import AUDIT_PATH, STEP_PATH, HomeApp
+from media_hygiene.review.home_app import AUDIT_PATH, HomeApp
 from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.review.home_fields import RELAY_FIELDS
 from media_hygiene.review.home_texts import home_texts
@@ -33,7 +33,7 @@ from media_hygiene.review.lan import lan_access
 from media_hygiene.review.lan_app import LAN_PATH, LanApp
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.presence import ALIVE_SECONDS, PRESENCE_PATH, Presence
-from media_hygiene.review.step_watch import WATCH, keeps_server
+from media_hygiene.review.step_watch import STEP_PATH, WATCH, keeps_server
 from media_hygiene.services.album_pages import album_pages
 from media_hygiene.services.home_audit import HomeAudit
 from media_hygiene.services.home_lan import say_lan

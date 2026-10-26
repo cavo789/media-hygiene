@@ -51,6 +51,7 @@ class WatchFiles:
 
 
 WATCH: Final = WatchFiles()
+STEP_PATH: Final = "/api/step"  # `POST` a step (`home_step`), `GET` where it is
 # The pages the home server serves itself (0356): a click on them is a plain link.
 SERVED_HERE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
     {("search",): SEARCH_PAGE_PATH, ("browse",): BROWSE_PATH}
@@ -137,7 +138,7 @@ async def keep_step(folder: Path, words: tuple[str, ...], command: str) -> Respo
     except OSError:
         message = _("The reports folder cannot be written: copy the command.")
         return json_response(HTTPStatus.CONFLICT, {"error": message})
-    answer = {"id": step, "command": command, "kept": True}
+    answer = {"id": step, "command": command, "kept": True, "follow": STEP_PATH}
     return json_response(HTTPStatus.OK, answer)
 
 

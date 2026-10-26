@@ -9,7 +9,8 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.cli.home_state import home_state
 from media_hygiene.report.decisions import read_decisions
-from media_hygiene.review.home_views import STEP_EXIT_BASE
+from media_hygiene.review.home_fields import STEP_FILE_NAME
+from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
 from media_hygiene.review.http import Request
 from media_hygiene.services import search_pages
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
@@ -273,6 +274,24 @@ def test_apply_now_from_home_ends_on_the_clean_step(
         result.output.split()
     )
     assert "What next" not in result.output  # mh runs the step: no line to type
+
+
+def test_apply_now_hands_clean_decisions_in_the_one_shot_file(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0363: browse on a server of its own: the words, no `mh menu` to learn step n."""
+    _one_set_aside(cli, monkeypatch)
+    monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, "2")
+    answers, result = _opened(
+        cli, monkeypatch, [("GET /browse", None), ("POST /api/apply", {})]
+    )
+    assert b"followStep" in answers[0].body  # a step kept beside the home server
+    assert answers[1].status == 200, answers[1].body
+    assert result.exit_code == STEP_EXIT_BASE + FIELDS_STEP, result.output
+    written = json.loads((locations.reports_dir / STEP_FILE_NAME).read_text("utf-8"))
+    step = json.loads(answers[1].body)
+    assert written == {"words": step["command"].split()[1:]}
+    assert "--decisions" in written["words"]
 
 
 def test_apply_now_refused_when_opened_directly(

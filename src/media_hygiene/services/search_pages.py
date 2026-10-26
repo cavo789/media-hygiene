@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.constants import ExitCode
 from media_hygiene.person.door import with_person
+from media_hygiene.review.apply_relay import ApplyRelay
 from media_hygiene.review.ending import Ending, EndingDoor, serve_until_ended
 from media_hygiene.review.presence import Presence
 from media_hygiene.services.reviewing import address_tip, page_url
@@ -63,9 +64,9 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> Serv
     ending = Ending()
     code = 0
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        app = search_app(
-            runtime, search, SearchBuild(start.path, start.apply, ending, executor)
-        )
+        relay = ApplyRelay(runtime.locations.reports_dir)  # its words, for `mh`
+        build = SearchBuild(start.path, start.apply, ending, executor, relay)
+        app = search_app(runtime, search, build)
         closing = Presence(ending, ExitCode.PAGE_CLOSED)  # its tab closed (0262)
         door = EndingDoor(app, ending, closing)
         door = with_person(door, runtime, executor)

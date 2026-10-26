@@ -41,3 +41,13 @@ since 0356 — the whole home server ends too.
 
 *Apply now*: 2.1–2.5 s of `mh menu` less (*measured*, 35b), and on browse no restart of the home
 server (4.8–5.6 s, *measured*, 35d).
+
+## Outcome (2026-10-26)
+
+DONE. `review/apply_relay.py`: browse on the home server with `mh` keeping it up
+(`3`) → `keep_step` (`.mh-step-now.json`, `clean --decisions`), the page follows
+`GET /api/step` (`follow` in the answer), says *Done* / *Stopped (code n)*, reloads; a
+page of its own (reviews, people, `mh browse`) with `2`/`3` → `.mh-step.json` + fields
+code; older `mh` or unwritable folder → the number. `APPLY_PATH` moved to `home_views`,
+`STEP_PATH` to `step_watch` (import cycles). Acceptance on Windows (step 36 of
+`mh-measure.ps1`, Docker events) still waits for the maintainer.

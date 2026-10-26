@@ -55,6 +55,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.review.apply_api import ApplyStep
+    from media_hygiene.review.apply_relay import ApplyRelay
     from media_hygiene.review.ending import Ending
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.services.runtime import Runtime
@@ -72,6 +73,7 @@ class SearchBuild:
     apply: Callable[[], ApplyStep | None] | None  # None: no *Apply now*
     ending: Ending
     executor: Executor
+    relay: ApplyRelay | None = None  # where *Apply now* hands its step (0363)
 
 
 def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> SearchApp:
@@ -123,7 +125,11 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         runtime.settings.people,
         chosen,
         folders,
-        ApplyDesk(ApplyOffer(build.apply, lambda: bool(chosen.paths())), build.ending),
+        ApplyDesk(
+            ApplyOffer(build.apply, lambda: bool(chosen.paths())),
+            build.ending,
+            build.relay,
+        ),
         album_desk(runtime, SearchPicker(search).files),
         PeopleDesk(search, names_place(runtime)),
         rule_desk(runtime, search),

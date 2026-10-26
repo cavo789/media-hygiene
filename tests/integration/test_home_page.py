@@ -28,10 +28,11 @@ from media_hygiene.review.ending import (
     run_server,
     serve_until_ended,
 )
-from media_hygiene.review.home_app import STEP_PATH, HomeApp
+from media_hygiene.review.home_app import HomeApp
 from media_hygiene.review.home_fields import STEP_FILE_NAME
 from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
 from media_hygiene.review.presence import Presence
+from media_hygiene.review.step_watch import STEP_PATH
 from media_hygiene.services import home
 from media_hygiene.services.home import home_page, launcher_relays_steps
 from media_hygiene.services.home_audit import HomeAudit

@@ -9,7 +9,8 @@ from typing import TYPE_CHECKING
 import pytest
 
 from media_hygiene.cli.home_state import home_state
-from media_hygiene.review.home_views import STEP_EXIT_BASE
+from media_hygiene.review.home_fields import STEP_FILE_NAME
+from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
 from media_hygiene.review.http import Request
 from media_hygiene.services import review_serving, reviewing
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
@@ -49,6 +50,7 @@ class Visit:
     mode: Mode
     calls: tuple[Call, ...]
     home: bool = True
+    launcher: str = "1"  # `MEDIA_HYGIENE_LAUNCHER_STEPS` of the `mh` opening it
 
 
 BURSTS = Mode(
@@ -87,7 +89,7 @@ def opened(
             return door.ending.asked
 
         if seen.home:
-            monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, "1")
+            monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, seen.launcher)
         else:
             monkeypatch.delenv(LAUNCHER_STEPS_VARIABLE, raising=False)
         monkeypatch.setattr(seen.mode.module, "serve_until_ended", serve)
@@ -147,3 +149,24 @@ def test_apply_answers_only_a_post_from_the_page(
     answers, result = opened(Visit(BURSTS, (BURSTS.choice, ("GET /api/apply", None))))
     assert answers[1].status == 405
     assert result.exit_code == 0, result.output
+
+
+@pytest.mark.parametrize(
+    "visit",
+    [
+        Visit(mode, (mode.choice, APPLY), launcher=launcher)
+        for mode in (BURSTS, NEAR)
+        for launcher in ("2", "3")
+    ],
+    ids=["bursts-2", "bursts-3", "near-2", "near-3"],
+)
+def test_apply_now_hands_its_words_without_mh_menu(
+    opened: Callable[[Visit], Answers], locations: Locations, visit: Visit
+) -> None:
+    """0363: a review of its own ends with `clean --decisions` in the one-shot file."""
+    answers, result = opened(visit)
+    assert answers[1].status == 200, answers[1].body
+    assert result.exit_code == STEP_EXIT_BASE + FIELDS_STEP, result.output
+    written = json.loads((locations.reports_dir / STEP_FILE_NAME).read_text("utf-8"))
+    assert written["words"][0] == "clean"
+    assert "--decisions" in written["words"]

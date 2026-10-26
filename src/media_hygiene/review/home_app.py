@@ -31,7 +31,7 @@ from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH, LocalApp
 from media_hygiene.review.presence import PRESENCE_PATH, presence_response
 from media_hygiene.review.report_files import report_response
 from media_hygiene.review.serving import json_response, refused_post
-from media_hygiene.review.step_watch import step_state
+from media_hygiene.review.step_watch import STEP_PATH, step_state
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -43,7 +43,6 @@ if TYPE_CHECKING:
     from media_hygiene.review.presence import Presence
     from media_hygiene.services.home_audit import HomeAudit
 
-STEP_PATH: Final = "/api/step"
 AUDIT_PATH: Final = "/api/audit"
 _GET, _POST = "GET", "POST"
 

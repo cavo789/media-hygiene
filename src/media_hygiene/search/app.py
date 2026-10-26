@@ -21,7 +21,7 @@ from typing import TYPE_CHECKING, Final
 from pydantic import ValidationError
 
 from media_hygiene.i18n import _
-from media_hygiene.review.apply_api import APPLY_PATH
+from media_hygiene.review.home_views import APPLY_PATH
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
 from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_response

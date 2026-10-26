@@ -113,10 +113,11 @@ It says how many files and bytes go (apart from the duplicates), asks, then move
 quarantine, journaled: `mh undo` brings them back, `mh purge` frees the space.
 
 **Opened from the [home page](home.md)** (`mh` alone, then the *Walk through your folders* step):
-once something is set aside, an **Apply now** button appears in the bar, next to the saved line. It closes
-the page and `mh` runs the home page's step that applies your choices (`mh clean --decisions`,
+once something is set aside, an **Apply now** button appears in the bar, next to the saved line. `mh` runs
+the home page's step that applies your choices (`mh clean --decisions`,
 with `--tier near` when you also reviewed near duplicates), with its usual question, in the
-window where `mh` runs (PowerShell on Windows); then the home page comes back. Opened by `mh browse` alone, there is no
+window where `mh` runs (PowerShell on Windows); the page stays open, then says *Done* (or the
+code it stopped on) and shows the folder again without the files moved away. Opened by `mh browse` alone, there is no
 button: type the command above. The button needs an `mh` written by this version (`mh update`
 writes it again).
 
