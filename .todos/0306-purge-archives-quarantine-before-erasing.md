@@ -125,3 +125,13 @@ afterwards (not unasked).
 Before: emptying the quarantine erased it for good (only `undo` before the purge could help).
 After: the PC's space comes back just the same (100 % of the quarantine freed, as today) and
 0 file is erased while `archive_to` is set; a run stays recoverable by one folder copy + `undo`.
+
+## Decided (2026-10-26)
+
+By the maintainer, at the start of `/todo:iterate`:
+
+- The target keeps a `<drive>` level (`<target>\C\…`, `<target>\D\…`): two quarantines never mix.
+- Free space on the target is checked before the copy (quarantine size vs free space): refused
+  early, with a clear message.
+- The cloud note ("as safe as your sync") goes in the docs; OneDrive's Files On-Demand behaviour
+  stays to check by the maintainer.
