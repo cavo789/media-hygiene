@@ -23,6 +23,7 @@ from media_hygiene.search.chosen_api import CHOSEN_PATH, ChosenDesk
 from media_hygiene.search.folders import (
     BROWSE_PATH,
     FOLDER_PATH,
+    FOLDER_QUERY,
     FOLDERS_PATH,
     FolderDesk,
 )
@@ -102,6 +103,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "period_rules_path": PERIOD_RULES_PATH,
         "rule_go_path": RULE_GO_PATH,
         "move_paths": {"view": MOVE_VIEW_PATH, "move": MOVE_PATH},
+        "folder_query": FOLDER_QUERY,
         "event_gap_hours": event_gap_hours(runtime),
         "apply_offered": build.apply is not None,
     }

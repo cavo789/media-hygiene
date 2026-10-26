@@ -185,7 +185,10 @@ Mariage d'Hervé et Magda · 14 files · undo 20261025-143212*; a run taken back
 crossed out. Nothing is moved to follow the progress: no *To sort* folder to empty, your own
 folders stay as they are until you decide.
 
-The home page's *Sort* space shows the same figures for the latest `classify` run.
+This page counts the work of the current plan. **What is sorted for good** is read from the
+tree itself, without plan nor journal, by `mh status` and the home page's *Sort* space: *Sorted
+62 % · nothing special 9 % · left 16,400 files* — a file in `year/year-month/<name>` is sorted,
+whoever moved it ([`status`](../commands/status.md)).
 
 ## Where your choices go
 

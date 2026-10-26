@@ -263,6 +263,7 @@ search by meaning. The page keeps these tips short, in *How to write a search*.
 |---|---|
 | `WORDS` | Words to find, printed as a table instead of opening the page. |
 | `--limit N` | With words: how many files the table lists at most (20 by default). |
+| `--folder FOLDER` | Without words: the page opens on this folder, as *Path contains* takes it (a folder `status` lists as left to sort). |
 | `--port PORT` | Port of the page, 8088 by default; publish the same one. |
 
 ## Good to know

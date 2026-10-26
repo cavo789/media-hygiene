@@ -64,6 +64,25 @@ def shape_of(parts: Sequence[str]) -> Shape:
     return Shape(place, int(found["year"]), int(found["month"]))
 
 
+def shape_in(parts: Sequence[str]) -> Shape:
+    r"""Read the convention anywhere in a file's folders, without knowing its root.
+
+    `C:\Photos\2009\2009-11\Tom` and `D:\Tri\2009\2009-11\Tom` read the same: the
+    first pair of a year folder and its `YYYY-MM` folder decides (0405, 0407).
+
+    Args:
+        parts: The folder names, outermost first (the file's name left out).
+
+    Returns:
+        Its shape; `LEFT` without such a pair.
+    """
+    for index in range(len(parts) - 1):
+        shape = shape_of(parts[index:])
+        if shape.place is not Place.LEFT:
+            return shape
+    return Shape(Place.LEFT)
+
+
 def looked_at(path: Path, root: Path, dating: Dating) -> bool:
     """Tell a file put directly in the month folder its date gives: nothing special.
 

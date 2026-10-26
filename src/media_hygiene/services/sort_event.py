@@ -121,6 +121,7 @@ def sorter_of(runtime: Runtime, session: SortBatchSession) -> Sorter:
             verified=manifest.verified,
             intact=manifest.intact,
             view=view,
+            links=(*result.links.lines, *result.links.problems),
         )
 
     return run

@@ -90,6 +90,7 @@ moveEl("moveForm").addEventListener("submit", async (event) => {
   if (answer.already) parts.push(fill(TEXTS.goAlready, { n: answer.already }));
   if (answer.unknown) parts.push(fill(TEXTS.goUnknown, { n: answer.unknown }));
   if (answer.fixed) parts.push(fill(TEXTS.goFixed, { n: answer.fixed }));
+  parts.push(...(answer.links || []));  // names, albums, decisions rewritten (0406)
   const said = parts.join(" ");
   moveSay(said, answer.run_id && !answer.intact ? "error" : "saved");
   told(said, Boolean(answer.run_id) && !answer.intact);

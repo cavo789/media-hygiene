@@ -280,6 +280,7 @@ recherche*.
 |---|---|
 | `MOTS` | Les mots à trouver, affichés en tableau au lieu d'ouvrir la page. |
 | `--limit N` | Avec des mots : combien de fichiers le tableau liste au plus (20 par défaut). |
+| `--folder DOSSIER` | Sans mots : la page s'ouvre sur ce dossier, comme *Chemin contient* le prend (un dossier que `status` liste comme restant à trier). |
 | `--port PORT` | Port de la page, 8088 par défaut ; publiez le même. |
 
 ## Bon à savoir

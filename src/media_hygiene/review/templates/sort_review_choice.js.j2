@@ -175,7 +175,7 @@
     const time = new Date().toLocaleTimeString();
     if (!answer.run_id) setStatus(T.sortedNothing, "saved");
     else if (!answer.intact) setStatus(fill(T.sortedNotIntact, { run: answer.run_id }), "error");
-    else setStatus(fill(T.sortedNow, { moved: counted(T.nFiles, answer.moved), verified: answer.verified, run: answer.run_id, time: time }), "saved");
+    else setStatus([fill(T.sortedNow, { moved: counted(T.nFiles, answer.moved), verified: answer.verified, run: answer.run_id, time: time }), ...(answer.links || [])].join(" "), "saved");
     showProgress();  // read again from the plan and the journal (0398)
     if (index !== current) return;
     showPhotos(answer.view.photos, false);

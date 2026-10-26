@@ -45,6 +45,7 @@ if TYPE_CHECKING:
     from media_hygiene.search.fts import SearchIndex
 
 BROWSE_PATH: Final = "/browse"
+FOLDER_QUERY: Final = "folder"  # `/search?folder=…`: the page opens on it (0405)
 FOLDERS_PATH: Final = "/api/folders"
 FOLDER_PATH: Final = "/api/folder"
 FOLDER_POSTS: Final = frozenset({FOLDER_PATH, HEAVIEST_PATH})

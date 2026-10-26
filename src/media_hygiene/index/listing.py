@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     from media_hygiene.index.facts import FileFacts
 
 _COUNT: Final = "SELECT COUNT(*) FROM files"
+_PATHS: Final = "SELECT path FROM files"
 _ROOTS: Final = "SELECT path, walked_at FROM roots ORDER BY path"
 # Digests shared by several files: the duplicate groups, numbered by their first path.
 _SHARED: Final = (
@@ -67,6 +68,19 @@ def count_files(connection: sqlite3.Connection) -> int:
     """
     row = connection.execute(_COUNT).fetchone()
     return int(row[0]) if row else 0
+
+
+def every_path(connection: sqlite3.Connection) -> Iterator[str]:
+    """The path of every file of the index, streamed (container paths).
+
+    Args:
+        connection: The index.
+
+    Yields:
+        Each path.
+    """
+    for (path,) in connection.execute(_PATHS):
+        yield str(path)
 
 
 def indexed_files(connection: sqlite3.Connection) -> Iterator[IndexedFile]:

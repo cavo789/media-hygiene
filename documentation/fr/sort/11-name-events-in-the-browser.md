@@ -195,7 +195,10 @@ Mariage d'Hervé et Magda · 14 fichiers · undo 20261025-143212* ; un tri repri
 barré. Rien n'est déplacé pour suivre l'avancement : pas de dossier *À trier* à vider, vos propres
 dossiers restent tels quels jusqu'à ce que vous décidiez.
 
-L'espace *Trier* de la page d'accueil montre les mêmes chiffres pour le dernier `classify`.
+Cette page compte le travail du plan en cours. **Ce qui est trié pour de bon** se lit dans
+l'arborescence elle-même, sans plan ni journal, par `mh status` et l'espace *Trier* de la page
+d'accueil : *Trié 62 % · rien de spécial 9 % · reste 16 400 fichiers* — un fichier dans
+`année/année-mois/<nom>` est trié, quoi qui l'ait déplacé ([`status`](../commands/status.md)).
 
 ## Où vont vos choix
 

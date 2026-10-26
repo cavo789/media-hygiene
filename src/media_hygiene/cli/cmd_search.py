@@ -19,7 +19,7 @@ _PRINTED: Final = 20
 
 
 # The options are parameters: the documented exception for Typer commands.
-def search_command(  # pylint: disable=too-many-arguments
+def search_command(  # pylint: disable=too-many-arguments,too-many-locals
     ctx: typer.Context,
     words: Annotated[
         list[str] | None,
@@ -45,6 +45,17 @@ def search_command(  # pylint: disable=too-many-arguments
             show_default=False,
         ),
     ] = _PRINTED,
+    folder: Annotated[
+        str | None,
+        typer.Option(
+            "--folder",
+            help=_(
+                "Open the page on this folder (a part of its path, as 'Path contains' "
+                "takes it), e.g. a folder 'status' lists as left to sort."
+            ),
+            show_default=False,
+        ),
+    ] = None,
     port: Annotated[int | None, review_options.port()] = None,
 ) -> None:
     """Search the words of the photos: the page until Ctrl+C, or a table.
@@ -53,12 +64,14 @@ def search_command(  # pylint: disable=too-many-arguments
         ctx: Typer context holding the runtime.
         words: The words; none serves the page.
         limit: `--limit`, rows of the table.
+        folder: `--folder`, the folder the page opens on.
         port: `--port`, inside the container.
     """
     from media_hygiene.cli.next_steps import carried, suggest
     from media_hygiene.services.next_command import NextVerb
     from media_hygiene.services.search import (
         Printed,
+        SearchOpen,
         open_search,
         print_found,
         serve_search,
@@ -79,7 +92,7 @@ def search_command(  # pylint: disable=too-many-arguments
                     NextVerb(carried(runtime, "search"), port=port),
                 )
             return
-        chosen = serve_search(runtime, search, port)
+        chosen = serve_search(runtime, search, SearchOpen(port, folder or ""))
         output.blank()
         output.success(_("Search stopped; your photos were not changed."))
         if chosen:

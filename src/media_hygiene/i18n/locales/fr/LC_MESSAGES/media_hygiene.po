@@ -3318,6 +3318,9 @@ msgstr "Dossiers analysés :"
 msgid "Folders closed; your photos were not changed."
 msgstr "Dossiers fermés ; vos photos n'ont pas été modifiées."
 
+msgid "Folders left, the largest first:"
+msgstr "Dossiers restants, les plus gros d'abord :"
+
 msgid "Folders named after a town, or placed"
 msgstr "Dossiers au nom d'une ville, ou placés"
 
@@ -5956,6 +5959,11 @@ msgstr ""
 "Seulement ce que le PC détient déjà, prouvé fichier par fichier, et que "
 "vous cochez sur une page."
 
+msgid "Open a folder left in the search page, pick, then Move to an event…:"
+msgstr ""
+"Ouvrez un dossier restant dans la page de recherche, choisissez, puis "
+"Déplacer vers un événement… :"
+
 msgid "Open index.html in the folder mounted on /reports: it lists every report."
 msgstr ""
 "Ouvrez index.html dans le dossier monté sur /reports : il liste tous les "
@@ -5986,6 +5994,14 @@ msgstr "Ouvrir la page"
 
 msgid "Open the page at 127.0.0.1 or localhost."
 msgstr "Ouvrez la page sur 127.0.0.1 ou localhost."
+
+msgid ""
+"Open the page on this folder (a part of its path, as 'Path contains' "
+"takes it), e.g. a folder 'status' lists as left to sort."
+msgstr ""
+"Ouvrir la page sur ce dossier (une partie de son chemin, comme 'Chemin "
+"contient' le prend), par exemple un dossier que 'status' liste comme "
+"restant à trier."
 
 msgid "Open the report"
 msgstr "Ouvrir le rapport"
@@ -7732,6 +7748,10 @@ msgid "Sorted"
 msgstr "Rangé"
 
 #, python-brace-format
+msgid "Sorted {sorted} % · nothing special {nothing} % · left {left} files"
+msgstr "Trié {sorted} % · rien de spécial {nothing} % · reste {left} fichiers"
+
+#, python-brace-format
 msgid "Sorted {sorted} · in place {in_place} · left {left} files"
 msgstr "Triés {sorted} · en place {in_place} · restent {left} fichiers"
 
@@ -7743,6 +7763,10 @@ msgstr ""
 "Triés : {events} événements, {files} fichiers ({share}) · déjà en place :"
 " {inPlace} fichiers · restent : {leftEvents} événements, {leftFiles} "
 "fichiers à déplacer"
+
+#, python-brace-format
+msgid "Sorted: {sorted} % · nothing special: {nothing} % · left: {left}."
+msgstr "Trié : {sorted} % · rien de spécial : {nothing} % · reste : {left}."
 
 msgid "Sorting"
 msgstr "Tri"
@@ -14171,6 +14195,16 @@ msgstr "{faces} dans {photos}"
 #, python-brace-format
 msgid "{field} is not used by match = '{match}'"
 msgstr "{field} ne sert pas avec match = '{match}'"
+
+#, python-brace-format
+msgid "{files} file in {folders} folders"
+msgid_plural "{files} files in {folders} folders"
+msgstr[0] "{files} fichier dans {folders} dossiers"
+msgstr[1] "{files} fichiers dans {folders} dossiers"
+
+#, python-brace-format
+msgid "{files} files of protected or left folders apart."
+msgstr "{files} fichiers de dossiers protégés ou laissés à part."
 
 #, python-brace-format
 msgid "{files} files, {copies} extra copies ({size}), {broken} broken."

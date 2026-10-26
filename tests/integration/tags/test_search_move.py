@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.services import search_pages as search_service
+from tests.integration.tags.test_search_command import _call, fake_server
 from tests.support.cli import run
 from tests.support.search_page import serve_search
 
@@ -13,6 +15,7 @@ if TYPE_CHECKING:
     from typer.testing import CliRunner
 
     from media_hygiene.paths.locations import Locations
+    from media_hygiene.search.app import SearchApp
 
 _DAY: Final = {"text": "", "day_from": "2022-12-25", "day_to": "2022-12-25"}
 
@@ -51,3 +54,20 @@ def test_the_photos_picked_are_shown_then_moved_without_a_rule(
     moved = list(locations.data_dir.rglob("2022/2022-12/Noël/*"))
     assert len(moved) >= done["moved"] > 0
     assert locations.config_file.read_text(encoding="utf-8") == config  # no rule
+
+
+def test_the_page_opens_on_a_folder_given(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0405: `search --folder` says the address with the folder; the page reads it."""
+    assert run(cli, "tags", "--no-describe").exit_code == 0
+    pages: list[str] = []
+
+    async def page(app: SearchApp) -> None:
+        pages.append((await _call(app, "GET /search")).body.decode())
+
+    monkeypatch.setattr(search_service, "serve_until_ended", fake_server(page))
+    result = run(cli, "search", "--folder", "Prints jan10")
+    assert result.exit_code == 0, result.output
+    assert "/?folder=Prints+jan10" in "".join(result.output.split())
+    assert 'URLSearchParams(window.location.search).get("folder")' in pages[0]

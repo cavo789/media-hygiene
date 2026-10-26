@@ -2681,6 +2681,9 @@ msgstr ""
 msgid "Folders closed; your photos were not changed."
 msgstr ""
 
+msgid "Folders left, the largest first:"
+msgstr ""
+
 msgid "Folders named after a town, or placed"
 msgstr ""
 
@@ -4881,6 +4884,9 @@ msgid ""
 " a page."
 msgstr ""
 
+msgid "Open a folder left in the search page, pick, then Move to an event…:"
+msgstr ""
+
 msgid "Open index.html in the folder mounted on /reports: it lists every report."
 msgstr ""
 
@@ -4906,6 +4912,11 @@ msgid "Open the page"
 msgstr ""
 
 msgid "Open the page at 127.0.0.1 or localhost."
+msgstr ""
+
+msgid ""
+"Open the page on this folder (a part of its path, as 'Path contains' "
+"takes it), e.g. a folder 'status' lists as left to sort."
 msgstr ""
 
 msgid "Open the report"
@@ -6384,6 +6395,10 @@ msgid "Sorted"
 msgstr ""
 
 #, python-brace-format
+msgid "Sorted {sorted} % · nothing special {nothing} % · left {left} files"
+msgstr ""
+
+#, python-brace-format
 msgid "Sorted {sorted} · in place {in_place} · left {left} files"
 msgstr ""
 
@@ -6391,6 +6406,10 @@ msgstr ""
 msgid ""
 "Sorted: {events} events, {files} files ({share}) · already in place: "
 "{inPlace} files · left: {leftEvents} events, {leftFiles} files to move"
+msgstr ""
+
+#, python-brace-format
+msgid "Sorted: {sorted} % · nothing special: {nothing} % · left: {left}."
 msgstr ""
 
 msgid "Sorting"
@@ -11808,6 +11827,16 @@ msgstr ""
 
 #, python-brace-format
 msgid "{field} is not used by match = '{match}'"
+msgstr ""
+
+#, python-brace-format
+msgid "{files} file in {folders} folders"
+msgid_plural "{files} files in {folders} folders"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{files} files of protected or left folders apart."
 msgstr ""
 
 #, python-brace-format

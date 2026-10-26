@@ -13,7 +13,7 @@ no run at all.
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.sort_resume import moved_targets
@@ -30,6 +30,7 @@ from media_hygiene.classify.workbook.reader import read_edits
 from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.group_sort_models import Counted, GroupSorted, Matched
 from media_hygiene.services.page_choices import page_decisions, page_file
 from media_hygiene.services.sort import SortService
 from media_hygiene.services.sort_event import only_rows
@@ -42,29 +43,6 @@ if TYPE_CHECKING:
     from media_hygiene.classify.plan_file import ClassifyPlan
     from media_hygiene.classify.workbook.edits import Edits
     from media_hygiene.services.runtime import Runtime
-
-
-@dataclass(frozen=True, slots=True)
-class GroupSorted:
-    """What the run did, read back; the files it could not take, counted."""
-
-    run_id: str  # empty: nothing to move, no run
-    moved: int
-    verified: int  # moves checked at their new place after the run
-    intact: bool
-    unknown: int = 0  # files the classify run does not know: run classify again
-    fixed: int = 0  # files the plan leaves as they are
-    already: int = 0  # files an earlier run of the plan moved already
-
-
-@dataclass(frozen=True, slots=True)
-class _Matched:
-    """The files of a group, sorted out against the plan."""
-
-    rows: dict[str, str]  # row id → its folder: to move now
-    already: int
-    fixed: int
-    unknown: int
 
 
 def sort_group(
@@ -85,7 +63,11 @@ def sort_group(
     workbook = find_workbook(runtime, None)
     plan_file, plan = plan_of(runtime, workbook)
     found = _match(runtime, plan, folders)
-    counted = {"unknown": found.unknown, "fixed": found.fixed, "already": found.already}
+    counted: Counted = {
+        "unknown": found.unknown,
+        "fixed": found.fixed,
+        "already": found.already,
+    }
     if not found.rows:
         return GroupSorted("", 0, 0, intact=True, **counted)
     edits = read_edits(workbook, plan)
@@ -97,7 +79,12 @@ def sort_group(
     result = service.execute(prepared, lambda: False)
     done = result.manifest
     return GroupSorted(
-        result.run_id, done.moved, done.verified, intact=done.intact, **counted
+        result.run_id,
+        done.moved,
+        done.verified,
+        done.intact,
+        **counted,
+        links=(*result.links.lines, *result.links.problems),
     )
 
 
@@ -119,7 +106,7 @@ def sorted_group(
 
 def _match(
     runtime: Runtime, plan: ClassifyPlan, folders: Mapping[Path, str]
-) -> _Matched:
+) -> Matched:
     """Find the plan's row of each file of the group, where it is now.
 
     Args:
@@ -148,7 +135,7 @@ def _match(
         else:
             rows[row.id] = folder
     unknown = len(folders) - len(rows) - already - fixed
-    return _Matched(rows, already, fixed, unknown)
+    return Matched(rows, already, fixed, unknown)
 
 
 def _choose(

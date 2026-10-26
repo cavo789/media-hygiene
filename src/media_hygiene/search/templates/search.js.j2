@@ -266,5 +266,8 @@ document.addEventListener("keydown", (event) => {
 });
 $("form").addEventListener("submit", search);
 $("text").focus();
+// `mh search --folder <folder>` (0405): the page opens on a folder left to sort.
+const openedOn = new URLSearchParams(window.location.search).get({{ folder_query | tojson }});
+if (openedOn) $("folder").value = openedOn;
 search();
 loadChosen();

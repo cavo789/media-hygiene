@@ -42,3 +42,18 @@ says it, without plan or journal, and it still says it the day media-hygiene is 
   folder (`2009/2010-01`: left), a stage below the event.
 - Counts from a synthetic index; kept and protected folders apart.
 - A file moved in Explorer into the convention counts as sorted after the next audit.
+
+## Status — PARTIAL (2026-10-26)
+
+### Done
+- The pure shape function (`classify/convention.shape_in`, read anywhere in the path) and its tests.
+- Counts from the index alone (`services/sort_disk.py`), protected/backups/`leave` apart, cached
+  per index version; measured 0.20 s for 70,000 paths.
+- `mh status`: the line, the ten largest folders left, `mh search --folder "<folder>"` (new option).
+- The home page's *Sort* space shows the disk figures; review-sort keeps its plan-based line.
+- Docs (both languages): `status`, step 11, `search --folder`.
+
+### Not done
+- Every folder left listed **on a page** (only the first ten in `mh status`).
+  **Reason:** the search page's *Not sorted yet* filter (0407) and `--folder` give the way to
+  work through them; a dedicated list on the home page is a design choice for the maintainer.

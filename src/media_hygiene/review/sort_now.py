@@ -47,6 +47,7 @@ class SortedNow(BaseModel):
     verified: int  # moves checked at their new place after the run
     intact: bool  # as many files after as before, every move checked
     view: EventView
+    links: tuple[str, ...] = ()  # the user's files naming photos, rewritten (0406)
 
 
 type Sorter = Callable[[str], SortedNow]
