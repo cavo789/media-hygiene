@@ -21,6 +21,8 @@ from media_hygiene.tags.plurals import singular
 if TYPE_CHECKING:
     from datetime import date
 
+    from media_hygiene.search.folder_order import Shown
+
 _TOKEN: Final = re.compile(
     r'(?:(?P<source>\w+):)?(?:"(?P<phrase>[^"]*)"?|(?P<word>[^\s"]+))'
 )
@@ -41,6 +43,15 @@ class Term:
     phrase: bool = False
 
 
+class Order(StrEnum):
+    """How a search's files come (0347): the best match first, or as the folders do."""
+
+    BEST = "best"  # the best match first; the newest first without words
+    NAME = "name"
+    DATE = "date"  # the oldest first, undated last
+    SIZE = "size"  # the largest first
+
+
 class Sorting(StrEnum):
     """The search's filter on the sort convention (0407): every file, or one side."""
 
@@ -58,6 +69,8 @@ class Filters:
     source: TagSource | None = None  # every word among this source only
     days: tuple[date, date] | None = None  # first and last day, both included (0396)
     sorting: Sorting = Sorting.ALL
+    kind: Shown = "all"  # **Show**: every file, the photos or the videos (0347)
+    order: Order = Order.BEST
 
 
 @dataclass(frozen=True, slots=True)

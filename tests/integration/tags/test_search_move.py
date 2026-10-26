@@ -97,3 +97,28 @@ def test_the_photos_not_sorted_yet_or_the_sorted_ones(
     assert left["total"] + done["total"] == every["total"]
     assert [hit["name"] for hit in done["hits"]] == [moved.name]
     assert moved.name not in [hit["name"] for hit in left["hits"]]
+
+
+def test_sort_by_and_show_are_applied_before_the_limit(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0347: *Show: photos*, *Sort by: size*: the largest photos first, server side."""
+    assert run(cli, "tags", "--no-describe").exit_code == 0
+    every, photos, small = (
+        json.loads(answer.body)
+        for answer in serve_search(
+            cli,
+            monkeypatch,
+            [
+                ("POST /api/search", {"text": ""}),
+                ("POST /api/search", {"text": "", "kind": "photos", "order": "size"}),
+                ("POST /api/search", {"text": "", "kind": "videos"}),
+            ],
+        )
+    )
+    assert photos["total"] + small["total"] <= every["total"]
+    sizes = [hit["bytes"] for hit in photos["hits"]]
+    assert sizes == sorted(sizes, reverse=True)
+    assert all(
+        not hit["name"].lower().endswith((".mp4", ".mov")) for hit in photos["hits"]
+    )

@@ -56,19 +56,8 @@
 {% block more_keys %}{% include "pick_keys_more.html.j2" %}{% endblock %}
 {% block bar %}
     {% include "pick_acting.html.j2" %}
-    <label>{{ _("Sort by") }}
-      <select id="order">
-        <option value="name">{{ _("name") }}</option>
-        <option value="date">{{ _("date") }}</option>
-        <option value="size">{{ _("size, largest first") }}</option>
-        <option value="rate" title="{{ _('The videos worst compressed for their length first: the best to lighten') }}">{{ _("bit rate (heaviest files)") }}</option>
-      </select></label>
-    <label>{{ _("Show") }}
-      <select id="kind">
-        <option value="all">{{ _("All") }}</option>
-        <option value="photos">{{ _("Photos") }}</option>
-        <option value="videos">{{ _("Videos") }}</option>
-      </select></label>
+    {% set order_rate = true %}
+    {% include "pick_order.html.j2" %}
     {% set album_compact = true %}
     {% include "album_bar.html.j2" %}
 {% endblock %}

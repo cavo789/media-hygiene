@@ -20,6 +20,8 @@ _SHARED = (
     'id="views"',  # pick_views.html.j2
     *PICK_PARTS,
     "#bar #albumBar { flex-basis: 100%",  # pick_grid.css.j2: the bar keeps its height
+    '<select id="order">',  # pick_order.html.j2: Sort by (0347)
+    '<select id="kind">',  # and Show
 )
 
 

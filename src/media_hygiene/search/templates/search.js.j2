@@ -26,7 +26,8 @@ function card(hit, index) {
   picture.addEventListener("error", () => picture.replaceWith(element("div", "empty", TEXTS.noPreview)));
   const meta = element("div", "meta");
   meta.append(element("div", "name", hit.name), element("div", "muted folderLine", hit.folder));
-  if (hit.date) meta.append(element("div", "muted", hit.date));
+  const when = [hit.date, hit.size].filter(Boolean).join(" · ");  // as the folder view says it
+  if (when) meta.append(element("div", "muted", when));
   if (hit.to !== undefined) { // a rule tried (0396): where the file would go
     const goes = hit.left ? TEXTS.leftHere : hit.taken ? fill(TEXTS.goesTo, { folder: hit.to || TEXTS.stays })
       : hit.otherDay ? fill(TEXTS.otherDay, { date: hit.date, rule: fill(TEXTS.leftTo, { rule: hit.by || "—" }) }) : fill(TEXTS.leftTo, { rule: hit.by || "—" });
@@ -235,6 +236,7 @@ async function search(event, again) {
   const body = {
     text: $("text").value, day_from: $("from").value || null, day_to: $("to").value || null,
     folder: $("folder").value, source: $("source").value || null, sorting: $("sorting").value,
+    order: $("order").value, kind: $("kind").value,
   };
   const answer = await ask(SEARCH_PATH, body);
   if (!answer) { told(TEXTS.offline, true); return; }
@@ -266,6 +268,19 @@ document.addEventListener("keydown", (event) => {
 });
 $("form").addEventListener("submit", search);
 $("sorting").addEventListener("change", () => search(null));  // what is left to sort (0407)
+// **Sort by** and **Show** (0347): the server sorts and filters, so the first files shown
+// are the right ones; kept for this viewer, as on the folder view.
+for (const id of ["order", "kind"]) {
+  const select = $(id);
+  try {
+    const kept = localStorage.getItem("mh-search-" + id);
+    if ([...select.options].some((option) => option.value === kept)) select.value = kept;
+  } catch (error) { /* no storage (private window): the defaults */ }
+  select.addEventListener("change", () => {
+    try { localStorage.setItem("mh-search-" + id, select.value); } catch (error) { /* not kept */ }
+    search(null);
+  });
+}
 $("text").focus();
 // `mh search --folder <folder>` (0405): the page opens on a folder left to sort.
 const openedOn = new URLSearchParams(window.location.search).get({{ folder_query | tojson }});

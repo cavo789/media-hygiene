@@ -1,12 +1,9 @@
 """A folder the user named after one event of theirs, told by its dates (0403, 0404).
 
-`Saint Nicolas 2009` holds the photos of one evening: the user named that moment, and
-a rule or a move about another event of the same days must not take its files. `Prints
-jan10` or `Scans sep10` hold the photos of many moments, printed or scanned together: a
-batch, whose files may go elsewhere. Decided with the maintainer (2026-10-25): **by the
-dates, no word list**. A folder is an event of the user's when its name means something
-(not a date, a device, nor a person's folder) and its dated files leave no gap longer
-than `merge_gap_hours`: one event, as `classify` groups them.
+`Saint Nicolas 2009` holds one evening: a rule or a move about another event of the
+same days must not take its files; `Prints jan10` holds many moments (a batch). Decided
+with the maintainer (2026-10-25), **by the dates**: a meaningful name (not a date, a
+device, a person's) whose dated files leave no gap longer than `merge_gap_hours`.
 """
 
 from __future__ import annotations
@@ -17,6 +14,7 @@ from itertools import pairwise
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.bands import band_folders
+from media_hygiene.classify.convention import Place, shape_in
 from media_hygiene.classify.dating_models import DateSource
 from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.models import SortReason
@@ -89,7 +87,11 @@ def named_event(
 
 
 def own_folders(facts: RuleFacts, gap_hours: float) -> dict[Path, str]:
-    """The files of the folders the user named after one event, and that name (0404).
+    """The files a date rule leaves to the folder the user named, and that name (0404).
+
+    A file already sorted (`YYYY/YYYY-MM/<name>`): its event folder's name. A file of a
+    folder named after one moment, inside an event whose main named folder is another
+    (`Saint Nicolas 2009` beside `Anniversaire Tom`): that folder's name.
 
     Args:
         facts: The folder signals (`existing-folder`: a meaningful name) and the dates.
@@ -99,19 +101,24 @@ def own_folders(facts: RuleFacts, gap_hours: float) -> dict[Path, str]:
         The name of its folder, by file.
     """
     by_folder: dict[Path, list[Path]] = defaultdict(list)
+    own: dict[Path, str] = {}
     for path, signal in facts.folders.items():
-        # One name alone: a stage below a named trip (`Montenegro/Budva`) is the trip's.
-        named = signal.reason is SortReason.EXISTING_FOLDER and signal.category
-        if named and _LEVEL not in signal.category:
+        if signal.reason is not SortReason.EXISTING_FOLDER or not signal.category:
+            continue
+        if shape_in(path.parent.parts).place is Place.EVENT:  # sorted already
+            own[path] = signal.category.split(_LEVEL, 1)[0]
+        elif _LEVEL not in signal.category and path in facts.event_of:
+            # One name alone: a stage below a named trip (`Montenegro/Budva`) is the
+            # trip's; a folder of no event has no main folder to give way to.
             by_folder[path.parent].append(path)
     moments = {
         folder: paths
         for folder, paths in by_folder.items()
         if one_moment(_dates(paths, facts), gap_hours)
     }
-    own: dict[Path, str] = {}
+    main = _main_folders(moments, facts)
     for folder, paths in moments.items():
-        if folder not in _main_folders(moments, facts):
+        if folder not in main:
             own.update(dict.fromkeys(paths, facts.folders[paths[0]].category))
     return own
 

@@ -71,6 +71,11 @@ opens `browse`, the same server. Ctrl+C, or closing its tab, stops the page.
 
 - **A period**: *From* and *To* are calendars, a day each, both included; one alone is a period
   of one day. The day is the one the photo was taken, as `classify` dates it.
+- **Sort by** and **Show**, in the bar as on the [folder view](browse.md): *best match* (the
+  default; the newest first without words), *name*, *date* (the oldest first) or *size* (the
+  largest first); **Show** keeps the photos or the videos only. The search sorts and filters
+  before it shows its first files: *Show: videos*, *Sort by: size* gives the largest videos found.
+  Each tile says its date and size.
 - **Sorted**: *every photo*, *not sorted yet* or *sorted (year, then year-month)*, read from the
   folders alone ([the convention](../sort/04-classify.md#the-convention-year-month-event)): a
   photo in `2009\2009-11\…` is sorted, wherever that pair of folders lies and whoever put it

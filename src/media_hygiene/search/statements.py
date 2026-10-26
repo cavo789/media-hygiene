@@ -11,7 +11,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.search.days import NAME as DAY
-from media_hygiene.search.query import Sorting, match_expression
+from media_hygiene.search.query import Order, Sorting, match_expression
 from media_hygiene.tags.models import TagSource
 
 if TYPE_CHECKING:
@@ -72,6 +72,17 @@ FOLD: Final = "fold"
 FOLDER: Final = f"instr({FOLD}(files.path), ?) > 0"
 PLACE: Final = "mh_place"  # the state a path says (`convention.place_of_path`, 0407)
 LEFT_OR_NOT: Final = f"({PLACE}(files.path) = 'left') = ?"  # 1: left only, 0: sorted
+KIND: Final = "mh_kind"  # `photos`, `videos` (`folder_order.kind_of_path`, 0347)
+SHOWN: Final = f"{KIND}(files.path) = ?"
+# **Sort by** (0347), as the folder view sorts: ties by path, undated last.
+BY_ORDER: Final = {
+    Order.NAME: f" ORDER BY {FOLD}(files.path)",
+    Order.DATE: (
+        f" ORDER BY {DAY}(files.media_date) IS NULL, {DAY}(files.media_date),"
+        f" {FOLD}(files.path)"
+    ),
+    Order.SIZE: f" ORDER BY files.size DESC, {FOLD}(files.path)",
+}
 BEST_FIRST: Final = f" ORDER BY {TABLE}.rank"
 # EXIF writes `2019:07:14` or `14/07/2019`, videos `2019-07-14T…`: one day each;
 # undated files (NULL) come last.
@@ -121,6 +132,9 @@ def conditions(query: SearchQuery) -> tuple[list[str], list[object]]:
     if filters.days is not None:
         chosen.append(DAYS)
         parameters.extend(day.isoformat() for day in filters.days)
+    if filters.kind != "all":
+        chosen.append(SHOWN)
+        parameters.append(filters.kind)
     if filters.sorting is not Sorting.ALL:
         chosen.append(LEFT_OR_NOT)
         parameters.append(int(filters.sorting is Sorting.LEFT))

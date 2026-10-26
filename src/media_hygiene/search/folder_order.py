@@ -6,6 +6,7 @@ sorted on the byte count, never on the text the page shows; ties go by name.
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import TYPE_CHECKING, Literal
 
 from media_hygiene.constants import MediaKind
@@ -14,7 +15,6 @@ from media_hygiene.search.folder_tree import PHOTOS
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
-    from pathlib import Path
 
 type Order = Literal["name", "date", "size"]
 type Shown = Literal["all", "photos", "videos"]  # the page's **Show**
@@ -64,3 +64,18 @@ def _name(row: FileRow) -> str:
         Its path, casefolded.
     """
     return row[1].casefold()
+
+
+def kind_of_path(path: str) -> str:
+    """What the page's **Show** calls a file, for the search's SQL filter (0347).
+
+    Args:
+        path: A container path.
+
+    Returns:
+        `photos`, `videos`, or empty for another kind.
+    """
+    kind = media_kind(Path(path))
+    if kind in PHOTOS:
+        return "photos"
+    return "videos" if kind is MediaKind.VIDEO else ""

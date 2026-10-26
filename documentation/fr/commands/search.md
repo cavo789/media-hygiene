@@ -76,6 +76,12 @@ fermer son onglet, arrête la page.
 
 - **Une période** : *Du* et *Au* sont des calendriers, un jour chacun, inclus ; un seul est une
   période d'un jour. Le jour est celui de la prise de vue, tel que `classify` le date.
+- **Trier par** et **Afficher**, dans la barre comme sur la [vue des dossiers](browse.md) :
+  *meilleure correspondance* (par défaut ; la plus récente d'abord sans mots), *nom*, *date* (la
+  plus ancienne d'abord) ou *taille* (la plus grande d'abord) ; **Afficher** garde les photos ou
+  les vidéos seulement. La recherche trie et filtre avant de montrer ses premiers fichiers :
+  *Afficher : vidéos*, *Trier par : taille* donne les plus grosses vidéos trouvées. Chaque vignette
+  dit sa date et sa taille.
 - **Triées** : *toutes les photos*, *pas encore triées* ou *triées (année, puis année-mois)*, lu
   dans les dossiers seuls ([la convention](../sort/04-classify.md#la-convention--année-mois-événement)) :
   une photo dans `2009\2009-11\…` est triée, où que soit cette paire de dossiers et quoi qui l'y

@@ -153,34 +153,27 @@ def test_7_a_stage_below_the_event_stays(locations: Locations) -> None:
 def test_8_a_date_rule_written_later_leaves_a_folder_named_otherwise(
     locations: Locations,
 ) -> None:
-    """A rule of 2 June 2018 named `Garden party`: `Mariage` (one day) is not taken.
+    """The wedding sorted into `2018/2018-06/Mariage`; then a rule of that day.
 
-    Decided with the maintainer (2026-10-25): in the engine, by the dates. The
-    wedding's own folder is one moment with a name: a date rule of another name takes
-    none of its files; the rule's own name would.
+    Decided with the maintainer (2026-10-25), in the engine: a date rule of another
+    name takes none of the files sorted already; the rule's own name would.
     """
     runtime = _with_config(locations)
+    sorted_to = locations.data_dir / "c/2018/2018-06/Mariage"
+    shutil.move(locations.data_dir / WEDDING, sorted_to)
+    AuditService(runtime, NullProgress()).run()
     for name, category in (("Garden", "Garden party"), ("Wedding", "Mariage")):
-        add_rule(
-            locations.config_file,
-            ClassifyRule(
-                name=name,
-                match=RuleMatch.DATE_RANGE,
-                dates="2018-06-02..2018-06-02",
-                category=category,
-            ),
+        rule = ClassifyRule(
+            name=name,
+            match=RuleMatch.DATE_RANGE,
+            dates="2018-06-02..2018-06-02",
+            category=category,
         )
+        add_rule(locations.config_file, rule)
         runtime = make_runtime(locations)
         found = ClassifyService(runtime, NullProgress()).run().classification.proposals
-        wedding = [
-            p
-            for p in found
-            if WEDDING in str(p.file.path) and p.file.path.suffix == ".jpg"
-        ]
+        wedding = [p for p in found if p.file.path.is_relative_to(sorted_to)]
         assert wedding
-        rules = {p.rule for p in wedding}
-        assert rules == (
-            {"Existing folders"}
-            if name == "Garden"
-            else {"Garden", "Wedding"} - {"Garden"}
-        ), rules
+        expected = {"Existing folders"} if name == "Garden" else {"Wedding"}
+        assert {p.rule for p in wedding} == expected
+        assert all(p.in_place for p in wedding)

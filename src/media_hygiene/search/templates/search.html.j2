@@ -197,6 +197,8 @@
 {% endblock %}
 {% block bar %}
     {% include "pick_acting.html.j2" %}
+    {% set order_best = true %}
+    {% include "pick_order.html.j2" %}
     {% set album_compact = true %}
     {% include "album_bar.html.j2" %}
     <p id="moveBar"><button type="button" id="moveOpen" disabled title="{{ _('Move the photos picked to an event folder, year then year-month, without writing a rule') }}">📂 {{ _("Move to an event…") }}</button></p>

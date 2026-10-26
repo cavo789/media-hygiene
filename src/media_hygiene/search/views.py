@@ -7,7 +7,9 @@ from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from media_hygiene.search.query import Filters, SearchQuery, Sorting, parse_terms
+from media_hygiene.console.formatting import human_size
+from media_hygiene.search.folder_order import Shown
+from media_hygiene.search.query import Filters, Order, SearchQuery, Sorting, parse_terms
 from media_hygiene.tags.models import TagSource
 
 if TYPE_CHECKING:
@@ -38,6 +40,8 @@ class SearchAsked(BaseModel):
     folder: str = Field(default="", max_length=_MAX_TEXT)
     source: TagSource | None = None
     sorting: Sorting = Sorting.ALL  # the sort convention's filter (0407)
+    kind: Shown = "all"  # **Show** (0347)
+    order: Order = Order.BEST  # **Sort by** (0347)
 
     def query(self) -> SearchQuery:
         """Make the search of what the page sent.
@@ -52,6 +56,8 @@ class SearchAsked(BaseModel):
             self.source,
             days=_range(self.day_from, self.day_to),
             sorting=self.sorting,
+            kind=self.kind,
+            order=self.order,
         )
         return SearchQuery(parse_terms(self.text), filters)
 
@@ -141,8 +147,8 @@ def _hit_view(hit: Hit, mapper: HostPathMapper) -> dict[str, object]:
         mapper: Writes its path as the user knows it.
 
     Returns:
-        The JSON object: name, folder, date, sentence, words, its addresses, and
-        its host path (`path`, for `/person`).
+        The JSON object: name, folder, date, size, sentence, words, its addresses,
+        and its host path (`path`, for `/person`).
     """
     path = hit.photo.path
     caption = hit.tags.get(TagSource.CAPTION, ())
@@ -151,6 +157,8 @@ def _hit_view(hit: Hit, mapper: HostPathMapper) -> dict[str, object]:
         "name": path.name,
         "folder": mapper.to_host(path.parent),
         "date": hit.date,
+        "size": human_size(hit.photo.size),  # shown as the folder view does (0347)
+        "bytes": hit.photo.size,
         "caption": caption[0] if caption else "",
         "tags": {
             source.value: list(hit.tags[source])

@@ -20,6 +20,7 @@ from media_hygiene.index.tag_rows import TagStore
 from media_hygiene.search import statements as sql
 from media_hygiene.search.days import NAME as DAY
 from media_hygiene.search.days import media_day
+from media_hygiene.search.folder_order import kind_of_path
 from media_hygiene.search.hits import hit_of
 from media_hygiene.search.models import Found
 from media_hygiene.search.query import match_expression
@@ -46,6 +47,7 @@ class SearchIndex:
         connection.create_function(sql.FOLD, 1, str.casefold, deterministic=True)
         connection.create_function(DAY, 1, media_day, deterministic=True)
         connection.create_function(sql.PLACE, 1, place_of_path, deterministic=True)
+        connection.create_function(sql.KIND, 1, kind_of_path, deterministic=True)
         connection.execute(sql.CREATE_PEOPLE)
 
     @classmethod
@@ -139,6 +141,7 @@ class SearchIndex:
         conditions, parameters = sql.conditions(query)
         where = sql.WHERE + sql.AND.join(conditions) if conditions else ""
         order = sql.BEST_FIRST if match_expression(query) else sql.NEWEST_FIRST
+        order = sql.BY_ORDER.get(query.filters.order, order)
         total = self._connection.execute(sql.COUNT + where, parameters).fetchone()[0]
         rows = self._connection.execute(
             sql.HITS + where + order + sql.LIMIT, (*parameters, limit)

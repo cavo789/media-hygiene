@@ -10753,6 +10753,9 @@ msgstr "sauvegarder sauvegarde nas copier robocopy"
 msgid "backup nas destination"
 msgstr "sauvegarde nas destination"
 
+msgid "best match"
+msgstr "meilleure correspondance"
+
 msgid "birthdays, Christmas, communions, weddings; not a costume alone"
 msgstr "anniversaires, Noël, communions, mariages ; pas un déguisement seul"
 
