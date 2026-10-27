@@ -854,6 +854,11 @@ msgid "After an undo, 'media-hygiene clean {flag}' applies it again."
 msgstr ""
 
 msgid ""
+"After an update of Media Hygiene, type mh config --upgrade: it adds the "
+"new settings, each explained, and keeps every value you wrote here."
+msgstr ""
+
+msgid ""
 "After how many days 'status' suggests emptying the quarantine with "
 "'purge' (the files set aside still take their space until then)."
 msgstr ""
