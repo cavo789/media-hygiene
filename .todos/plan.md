@@ -10,7 +10,7 @@
 
 | # | Lot | Priority | TODOs | Prompt |
 |---|---|---|---|---|
-| 1 | home | Medium | 5 | `/todo:run 0359 0417 0426 0361 0424` |
+| 1 | home | Medium | 5 | `/todo:run 0359 0417 0427 0361 0424` |
 | 2 | review-ui | Medium | 4 | `/todo:run 0319 0320 0335 0321` |
 | 3 | people | Medium | 4 | `/todo:run 0324 0325 0326 0420` |
 | 4 | import | Medium | 3 | `/todo:run 0377 0378 0379` |
@@ -29,7 +29,7 @@
 |---|---|---|---|---|
 | 1 | 0359 | Medium | The home server follows a USB stick plugged in later and the NAS switched on later | 0355 |
 | 2 | 0417 | Medium | The reviews, people, places and the slideshow served by the home server | — |
-| 3 | 0426 | Medium | A paired phone may download originals and set photos aside, behind a setting | — |
+| 3 | 0427 | Medium | A paired phone may download originals and set photos aside, behind a setting | — |
 | 4 | 0361 | Low | Pages that change photos on the home server: their writes run as steps, followed live | 0355, 0357 |
 | 5 | 0424 | Low | The face scan of `people` runs in the home page, as `tags` does | — |
 
@@ -132,7 +132,7 @@ One `/todo:run NNNN` each, highest priority first.
 | 0415 | High | search: an *🗂 Events* view takes in review-sort, then retire it | search |
 | 0306 | Medium | `mh purge --to <folder>`: copy the quarantine elsewhere (NAS, disk, cloud), check the copy, then empty it | actions |
 | 0330 | Medium | "Make room on the phone": filed under Clean, still step 2 of "From a phone" | menu |
-| 0426 | Medium | Search: "Path contains" accepts wildcards like *mov | unassigned |
+| 0426 | Medium | Search: "Path contains" accepts wildcards and regex | unassigned |
 | 0369 | Low | Slideshow of an album started from the home page, by the PC or a paired phone | slideshow |
 | 0380 | Low | Tags: more default stop words, and the short plurals inside phrases | tags |
 | 0412 | Low | The clean report links the latest audit report of the same folders | report |

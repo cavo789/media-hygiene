@@ -1,4 +1,4 @@
-# 0426 — A paired phone may download originals and set photos aside, behind a setting
+# 0427 — A paired phone may download originals and set photos aside, behind a setting
 
 - **Priority**: Medium
 - **Batch**: home
