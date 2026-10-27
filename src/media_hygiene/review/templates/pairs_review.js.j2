@@ -77,7 +77,12 @@
     byId("files").textContent = counted(T.files, pair.files, { size: size(pair.size) });
     byId("why").textContent = pair.reasons.length ? fill(T.why, { reasons: pair.reasons.join("; ") }) : "";
     byId("complete").textContent = pair.complete ? T.complete : "";
-    byId("shots").replaceChildren(...(pair.samples.length ? pair.samples.map(sample) : [line("p", T.noSamples, "muted")]));
+    const nodes = pair.samples.map(sample);
+    byId("shots").replaceChildren(...(nodes.length ? nodes : [line("p", T.noSamples, "muted")]));
+    // Seen large on a double click or Enter (pick_large.html.j2).
+    showLarge(pair.samples.map((shot, index) => ({
+      key: String(index), name: shot.name, preview: shot.preview, original: shot.original,
+    })), nodes);
     const entry = disk.get(at);
     byId("diskTitle").textContent = T.diskTitle;
     byId("diskBody").replaceChildren(line("p", entry ? fill(T.diskEntry, { action: entry.action }) : T.diskNone));
@@ -125,6 +130,7 @@
   };
 
   document.addEventListener("keydown", (event) => {
+    if (event.defaultPrevented || byId("viewer").classList.contains("open")) return; // the large view's keys
     if (event.ctrlKey || event.metaKey || event.altKey || pairs.length === 0) return;
     const key = event.key.toLowerCase();
     if (event.key === "ArrowRight") decide("planned", () => go(1));

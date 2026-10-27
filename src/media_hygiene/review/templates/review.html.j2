@@ -3,7 +3,10 @@
    touches a photo: each choice is sent to the server, which saves the decisions file;
    `clean --decisions` then moves the shots set aside, journaled. The left panel shows the
    decisions file as read back from the disk after every choice: the proof it was saved.
-   Opened from the home page, *Apply now* ends the page on the step that applies them. #}
+   Opened from the home page, *Apply now* ends the page on the step that applies them.
+   The shots of the series shown are a page of photos to pick like `browse` (`pick_*`, skill
+   photo-picking-pages, 0319): ←/→/Space still change the series, so the frame moves with ↑/↓
+   (`pick_moves = false`); Delete sets the picked shots aside, the large view adds to the album. #}
 {% set texts = {
   "position": _("Series {number} of {total}"),
   "totals": _("Series seen: {seen} · with shots set aside: {series} · shots set aside: {shots}"),
@@ -33,8 +36,8 @@
   "obviousDone": _("{done}: Z takes the whole batch back."),
   "undoneMany": "↶ " ~ _("Choices on {count} series undone."),
   "welcome": "💡 " ~ _("The proposal is already made: → is enough when it suits you."),
-  "pending": "⏳ " ~ _("No choice yet: moving on (→, ← or N) keeps every shot of this series. S keeps only the sharpest, X sets the whole series aside, 1…9 sets one shot aside."),
-  "pendingProposed": "⏳ " ~ _("No choice yet: moving on (→, ← or N) accepts the proposal, the shots in red dashes set aside and the others kept. A keeps every shot; a digit takes a shot back."),
+  "pending": "⏳ " ~ _("No choice yet: moving on (→, ← or N) keeps every shot of this series. S keeps only the sharpest, X sets the whole series aside, Delete sets the picked shots aside."),
+  "pendingProposed": "⏳ " ~ _("No choice yet: moving on (→, ← or N) accepts the proposal, the shots in red dashes set aside and the others kept. *Keep every shot* keeps them all; Backspace in the large view takes a shot back."),
   "original": "↗ " ~ _("original"),
   "originalTitle": _("Open the original in a new tab: the file as it lies on the disk"),
   "person": "👤 " ~ _("this person"),
@@ -80,13 +83,29 @@
   "protectedShot": _("This shot lies in a protected folder: it is never moved."),
   "keepOne": _("To set every shot aside, press X: the whole series goes to the quarantine."),
   "allProtected": _("Every shot of this series lies in a protected folder: none is ever moved."),
-  "whole": "📦 " ~ _("Whole series set aside: its shots go to the quarantine at 'clean --decisions'. A or X keeps them all again."),
+  "whole": "📦 " ~ _("Whole series set aside: its shots go to the quarantine at 'clean --decisions'. *Keep every shot* or X keeps them all again."),
   "first": _("This is the first series."),
   "last": _("This is the last series: stop the review with Ctrl+C in the terminal."),
 } %}
+{% set pick_texts = {
+  "picked": [ngettext("{n} shot picked", "{n} shots picked", 1), ngettext("{n} shot picked", "{n} shots picked", 2)],
+  "aside": texts.aside,
+  "tick": _("Pick this shot"),
+  "saving": texts.saving,
+  "notSaved": _("Nothing was saved: {error}"),
+  "offline": texts.offline,
+  "failed": texts.failed,
+  "noAlbum": _("Type an album's name in the bar first."),
+} %}
+{% set pick_all = _("every shot of the series") %}
+{% set pick_moves = false %}
 {% set page_name = _("Burst series review") %}
 {% set keys_safe = _("Every choice is saved at once in %(place)s. Done? Ctrl+C in the terminal stops the review; then run the same 'clean' command with %(option)s: the shots set aside go to the quarantine, and 'undo' brings them back.", place=place, option=clean_option) %}
 {% block style %}
+{% include "pick_grid.css.j2" %}
+  main#grid { display: block; }
+  /* Where you are on its own line, then the picking: the grid never moves when a pick starts. */
+  #bar #lead, #bar #acting { flex-basis: 100%; }
 {% include "review_tree.css.j2" %}
 {% include "review_compare.css.j2" %}
 {% include "review_board.css.j2" %}
@@ -102,15 +121,12 @@
   .shot { position: relative; margin: 0; padding: 8px; background: var(--card); cursor: pointer;
           border: 3px solid var(--line); border-radius: 10px; }
   .shot.kept, .shot.suggested { border-color: var(--ok); }
-  .shot img { display: block; width: 100%; height: auto; max-height: 62vh; object-fit: contain;
+  .shot img, .file.shot img { display: block; aspect-ratio: auto; object-fit: contain; width: 100%; height: auto; max-height: 62vh; object-fit: contain;
               border-radius: 6px; background: var(--bg); }
   .shot.aside { border-color: var(--bad); } .shot.aside img { opacity: .3; }
   .shot.proposed { border: 3px dashed var(--bad); } .shot.proposed img { opacity: .55; }
   .shot.protected { cursor: not-allowed; border-color: var(--warn); }
-  .shot .key { position: absolute; top: 14px; left: 14px; min-width: 30px; padding: 2px 8px;
-               text-align: center; font-weight: 650; background: var(--card);
-               border: 1px solid var(--line); border-radius: 6px; }
-  .shot .score { position: absolute; top: 14px; left: 58px; padding: 2px 8px; font-weight: 600;
+  .shot .score { position: absolute; top: 14px; left: 14px; padding: 2px 8px; font-weight: 600;
                  background: var(--card); border: 1px solid var(--line); border-radius: 6px; }
   .shot .score.best { color: var(--ok); border-color: var(--ok); font-weight: 750; }
   figcaption { margin-top: 6px; font-size: .85rem; overflow-wrap: anywhere; }
@@ -142,11 +158,10 @@
 {% block keys %}
       <dt><kbd>→</kbd></dt><dd>{{ _("accept the proposal, next") }}</dd>
       <dt><kbd>S</kbd></dt><dd>{{ _("only the sharpest, then next") }}</dd>
-      <dt><kbd>A</kbd></dt><dd>{{ _("keep every shot") }}</dd>
       <dt><kbd>X</kbd></dt><dd>{{ _("none: the whole series aside, then next") }}</dd>
+{% include "pick_keys.html.j2" %}
 {% endblock %}
 {% block more_keys %}
-      <dt><kbd>1</kbd>…<kbd>9</kbd></dt><dd>{{ _("set a shot aside, or take it back") }}</dd>
       <dt><kbd>←</kbd></dt><dd>{{ _("previous series (no choice: as shown)") }}</dd>
       <dt><kbd>N</kbd></dt><dd>{{ _("next series still to see") }}</dd>
       <dt><kbd>V</kbd></dt><dd>{{ _("validate every obvious series at once") }}</dd>
@@ -154,17 +169,18 @@
       <dt><kbd>C</kbd></dt><dd>{{ _("compare the shots at 100 %%") }}</dd>
       <dt><kbd>P</kbd></dt><dd>{{ _("board ⇄ one series") }}</dd>
       <dt class="board-only"><kbd>␣</kbd></dt><dd class="board-only">{{ _("board: pin the large preview of the shot under the mouse") }}</dd>
+{% include "pick_keys_more.html.j2" %}
 {% endblock %}
 {% block bar %}
   <button type="button" id="view" title="{{ _('Switch between the board and one series at a time (P)') }}"></button>
   <strong id="position"></strong>
   <span id="totals" class="muted"></span>
   <span id="eta" class="muted"></span>
-  <span id="status" role="status" aria-live="polite"></span>
-  {% include "apply_now.html.j2" %}
+  {% include "pick_acting.html.j2" %}
+  {% include "album_bar.html.j2" %}
 {% endblock %}
 {% block content %}
-<main>
+<main id="grid">
   <div id="board">
     <div class="boardBar"><span class="boardInfo"></span><button type="button" class="boardNext">{{ _("Next page →") }}</button></div>
     <div id="boardRows"></div>
@@ -172,11 +188,10 @@
   </div>
   <p id="welcome" role="status" hidden></p>
   <div id="single">
-  <p id="series" class="muted"></p>
+  <p class="muted"><span id="series"></span> <button type="button" id="keepAll" class="plain">{{ _("Keep every shot") }}</button></p>
   <p id="pending" role="status" hidden></p>
   <p id="whole" role="status" hidden></p>
-  {% include "album_bar.html.j2" %}
-  <div id="shots" class="shots"></div>
+ <div id="shots" class="shots"></div>
   <details id="disk" open>
     <summary id="diskTitle"></summary>
     <div id="diskBody"></div>
@@ -188,7 +203,23 @@
 {% block after %}
 <div id="zoom" hidden></div>
 <div id="compare" role="dialog" aria-label="{{ _('Compare at 100 %%') }}" hidden></div>
+{% include "pick_viewer.html.j2" %}
 <script>
+{% include "pick_grid.js.j2" %}
+{% include "pick_viewer.js.j2" %}
+{% include "pick_band.js.j2" %}
+// The hooks of the shared grid (pick_grid.js.j2), set by the page's script below.
+const TEXTS = {{ pick_texts | tojson }};
+const CHOSEN_PATH = ""; // unused: `saveChoice` saves the choices of this page
+let card = null;        // (file, index) → its tile
+let reopen = null;      // (again) → the shots of the series shown again
+function scope() {
+  return {};
+}
+function placeCards(nodes) { // the grid of shots under the series' lines
+  document.getElementById("shots").replaceChildren(...nodes);
+}
+pickMoves = false;      // ←/→/Space change the series, ↑/↓ move the frame
 (() => {
   const T = {{ texts | tojson }};
   const statePath = {{ state_path | tojson }};
@@ -295,7 +326,7 @@
     return badge;
   };
 
-  const card = (item, rank, position) => {
+  const shotCard = (item, rank, index) => {
     const shot = item.shots[rank];
     const state = shotState(item, shot, rank);
     const figure = document.createElement("figure");
@@ -303,6 +334,7 @@
     const image = document.createElement("img");
     image.src = shot.preview;
     image.alt = shot.name;
+    image.draggable = false; // a drag draws a rectangle (pick_band.js.j2)
     const text = shot.best && state.css !== "suggested" ? state.text + " · " + sharpestOf(shot) : state.text;
     const name = line("strong", shot.name);
     const caption = document.createElement("figcaption");
@@ -313,10 +345,42 @@
       line("div", shot.details, "muted"),
     );
     caption.children[1].append(name, originalLink(shot), personLink(shot));
-    figure.append(line("span", position < 9 ? String(position + 1) : "·", "key"), scoreBadge(shot), image, caption);
-    figure.addEventListener("click", () => toggle(position));
-    return figure;
+    figure.append(scoreBadge(shot), image, caption);
+    return wireCard(figure, index);
   };
+  card = (file, index) => shotCard(series[current], file.rank, index);
+
+  // The preview's name is the key the albums know (album_bar.html.j2).
+  const keyOf = (shot) => shot.preview.replace(/^\/preview\/|\.jpg$/g, "");
+
+  // The shots of the series shown, as the shared grid lists them (the large view reads them).
+  const listed = (item) => shown(item).map((rank) => {
+    const shot = item.shots[rank];
+    const separator = shot.folder.includes("\\") ? "\\" : "/";
+    return {
+      key: keyOf(shot), rank: rank, name: shot.name, preview: shot.preview, original: shot.original,
+      folder: shot.folder, facts: shot.details, path: shot.folder + separator + shot.name,
+      chosen: shotState(item, shot, rank).css === "aside" || shotState(item, shot, rank).css === "proposed",
+    };
+  });
+
+  // Delete, the bar's buttons and the large view (pick_grid.js.j2): the picked shots set
+  // aside ("add") or taken back ("remove"), in one write; not seen yet, the proposal corrected.
+  saveChoice = async (action, keys) => {
+    const item = series[current];
+    const ranks = files.filter((file) => keys.includes(file.key)).map((file) => file.rank);
+    const movable = ranks.filter((rank) => !item.shots[rank].protected);
+    if (movable.length < ranks.length) setStatus(T.protectedShot, "error");
+    const aside = new Set(item.reviewed ? item.discarded : proposal(item));
+    for (const rank of movable) if (action === "add") aside.add(rank); else aside.delete(rank);
+    let saved = false;
+    if (aside.size === item.shots.length) setStatus(T.keepOne, "error");
+    else if (movable.length > 0) saved = await decide(current, [...aside]);
+    $("viewerSaid").className = byId("status").className;
+    $("viewerSaid").textContent = byId("status").textContent;
+    return saved;
+  };
+  reopen = async () => undefined; // a choice saved renders the series again (review_choices.js.j2)
 
   const prefetch = () => {
     for (const index of [current + 1, current + 2, current + 3]) {
@@ -331,6 +395,7 @@
     showCompare();
     if (board) {
       byId("position").textContent = fill(T.position, { number: positions.get(current) + 1, total: series.length });
+      showFiles([], false);
       renderBoard();
       return;
     }
@@ -341,35 +406,23 @@
     byId("whole").textContent = T.whole;
     byId("pending").hidden = item.reviewed;
     byId("pending").textContent = proposal(item).length > 0 ? T.pendingProposed : T.pending;
-    byId("shots").replaceChildren(...shown(item).map((rank, position) => card(item, rank, position)));
-    if (window.mhAlbumPicked) window.mhAlbumPicked(keptKeys().length); // album_bar.html.j2
+    showFiles(listed(item), false);
     showDisk();
     prefetch();
   };
 
-  // The shots of the series shown that are not set aside: what *Add to the album* adds.
-  const keptKeys = () => {
-    const item = series[current];
-    if (!item) return [];
-    return item.shots
-      .filter((shot, rank) => !item.discarded.includes(rank))
-      .map((shot) => shot.preview.replace(/^\/preview\/|\.jpg$/g, ""));
-  };
-  window.mhAlbumPick = () => ({ keys: keptKeys() });
-
+  // After the shared grid's keys (pick_grid.js.j2): what it took (↑/↓, Enter, Ctrl+A, I,
+  // Delete, the large view's keys) is not this page's.
   document.addEventListener("keydown", (event) => {
+    if (event.defaultPrevented || byId("viewer").classList.contains("open")) return;
     if (event.ctrlKey || event.metaKey || event.altKey || series.length === 0) return;
     if (event.target instanceof HTMLSelectElement) return;  // the order list takes its keys
     if (event.target instanceof HTMLInputElement && event.target.type !== "checkbox") return;  // an album's name
-    // Digits by physical key: on an AZERTY keyboard the top row gives "&", "é"... without Shift.
-    const digit = /^(?:Digit|Numpad)([1-9])$/.exec(event.code);
     const key = event.key.toLowerCase();
-    if (digit) toggle(Number(digit[1]) - 1);
-    else if (event.key === " " && board) pinZoom();
+    if (event.key === " " && board) pinZoom();
     else if (event.key === "ArrowRight" || event.key === " ") go(1);
     else if (event.key === "ArrowLeft") go(-1);
     else if (key === "s") keepSharpest();
-    else if (key === "a") decide(current, []);
     else if (key === "x") setWholeAside();
     else if (key === "n") nextToSee();
     else if (key === "v") validateObvious();
@@ -398,6 +451,7 @@
       byId("onlyTodo").addEventListener("change", (event) => byId("tree").classList.toggle("only-todo", event.target.checked));
       byId("onlyLook").addEventListener("change", (event) => byId("tree").classList.toggle("only-look", event.target.checked));
       byId("obvious").addEventListener("click", validateObvious);
+      byId("keepAll").addEventListener("click", () => decide(current, []));
       welcome();
       arrange(savedOrder());
       setBoard(savedBoard());

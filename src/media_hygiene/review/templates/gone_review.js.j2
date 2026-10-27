@@ -43,9 +43,9 @@
     const caption = document.createElement("figcaption");
     caption.append(line("div", T[role(rank)], "tag"), line("strong", file.name), line("div", file.folder, "muted"), line("div", file.details, "muted"));
     figure.append(picture, caption);
-    figure.addEventListener("click", () => {
+    figure.addEventListener("click", () => { // the cursor moves; the tiles stay (a double click opens large)
       cursor = position;
-      render();
+      for (const [index, node] of [...byId("shots").children].entries()) node.classList.toggle("cursor", index === cursor);
     });
     return figure;
   };
@@ -61,7 +61,13 @@
     const state = byId("state");
     state.textContent = decided(group) ? T.decided : T.pending;
     state.className = decided(group) ? "decided" : "";
-    byId("shots").replaceChildren(...group.files.map(card));
+    const nodes = group.files.map(card);
+    byId("shots").replaceChildren(...nodes);
+    // Seen large on a double click or Enter (pick_large.html.j2): the files with a preview.
+    const large = group.files.map((rank, index) => [files[rank], nodes[index]]).filter(([file]) => file.preview);
+    showLarge(large.map(([file], index) => ({
+      key: String(index), name: file.name, preview: file.preview, original: file.preview, folder: file.folder, facts: file.details,
+    })), large.map(([, node]) => node));
     const counts = { deleted: 0, moved: 0, none: 0 };
     for (const rank of group.files) {
       if (!disk.has(rank)) counts.none += 1;
@@ -138,6 +144,7 @@
   };
 
   document.addEventListener("keydown", (event) => {
+    if (event.defaultPrevented || byId("viewer").classList.contains("open")) return; // the large view's keys
     if (event.ctrlKey || event.metaKey || event.altKey || groups.length === 0) return;
     const key = event.key.toLowerCase();
     if (key === "d") answer(true);

@@ -650,9 +650,6 @@ msgstr ""
 msgid "A click on a file moves the cursor to it."
 msgstr "Un clic sur un fichier y place le curseur."
 
-msgid "A click on a photo keeps it or sets it aside too."
-msgstr "Un clic sur une photo la garde ou la met de côté, aussi."
-
 #, python-brace-format
 msgid "A commented configuration file was created: {path}."
 msgstr "Un fichier de configuration commenté a été créé : {path}."
@@ -4223,6 +4220,9 @@ msgstr "Garder"
 msgid "Keep both names (link)"
 msgstr "Garder les deux noms (lien)"
 
+msgid "Keep every shot"
+msgstr "Garder toutes les photos"
+
 msgid "Keep it, encrypted for your Windows account only, on this PC? (y/n)"
 msgstr "Le garder, chiffré pour votre seul compte Windows, sur ce PC ? (o/n)"
 
@@ -4257,6 +4257,9 @@ msgid ""
 msgstr ""
 "Garder la position GPS dans les copies ; retirée par défaut, une photo "
 "envoyée ne doit pas dire où est la maison."
+
+msgid "Keep the picked photos"
+msgstr "Garder les photos choisies"
 
 msgid "Keep the source folders the sort leaves empty."
 msgstr "Garder les dossiers sources que le tri laisse vides."
@@ -5160,21 +5163,15 @@ msgstr ""
 
 msgid ""
 "No choice yet: moving on (→, ← or N) accepts the proposal, the shots in "
-"red dashes set aside and the others kept. A keeps every shot; a digit "
-"takes a shot back."
-msgstr ""
-"Pas encore de choix : passer à la suite (→, ← ou N) accepte la "
-"proposition, les photos en pointillés rouges écartées et les autres "
-"gardées. A garde toutes les photos ; un chiffre reprend une photo."
+"red dashes set aside and the others kept. *Keep every shot* keeps them "
+"all; Backspace in the large view takes a shot back."
+msgstr "Pas encore de choix : passer à la suite (→, ← ou N) accepte la proposition, les photos en pointillés rouges écartées et les autres gardées. *Garder toutes les photos* les garde toutes ; Retour arrière dans la vue en grand reprend une photo."
 
 msgid ""
 "No choice yet: moving on (→, ← or N) keeps every shot of this series. S "
-"keeps only the sharpest, X sets the whole series aside, 1…9 sets one shot"
-" aside."
-msgstr ""
-"Pas encore de choix : passer à la suite (→, ← ou N) garde toutes les "
-"photos de cette série. S ne garde que la plus nette, X écarte toute la "
-"série, 1…9 écarte une photo."
+"keeps only the sharpest, X sets the whole series aside, Delete sets the "
+"picked shots aside."
+msgstr "Pas encore de choix : passer à la suite (→, ← ou N) garde toutes les photos de cette série. S ne garde que la plus nette, X écarte toute la série, Suppr écarte les photos choisies."
 
 msgid "No choice yet: nothing will be moved."
 msgstr "Pas encore de choix : rien ne sera déplacé."
@@ -6619,6 +6616,9 @@ msgid "Pick this file"
 msgstr "Choisir ce fichier"
 
 msgid "Pick this photo"
+msgstr "Choisir cette photo"
+
+msgid "Pick this shot"
 msgstr "Choisir cette photo"
 
 msgid "Pictures received through a messaging app, if you want them apart:"
@@ -9324,8 +9324,8 @@ msgid ""
 "The phone is read-only: the reports, the albums, the search and browse. "
 "Open this page or run this step on the PC."
 msgstr ""
-"Le téléphone ne fait que lire : les rapports, les albums, la recherche et "
-"le parcours. Ouvrez cette page ou lancez cette étape sur le PC."
+"Le téléphone ne fait que lire : les rapports, les albums, la recherche et"
+" le parcours. Ouvrez cette page ou lancez cette étape sur le PC."
 
 msgid ""
 "The phone no longer answers (unplugged, or asleep: keep it unlocked, "
@@ -10388,6 +10388,9 @@ msgstr "Tapez un nom ou une catégorie, ou laissez-le où il est."
 msgid "Type a name to filter the folders"
 msgstr "Tapez un nom pour filtrer les dossiers"
 
+msgid "Type an album's name in the bar first."
+msgstr "Tapez d'abord le nom d'un album dans la barre."
+
 #, python-brace-format
 msgid "Type mh push --undo {run_id} in Windows PowerShell."
 msgstr "Tapez mh push --undo {run_id} dans Windows PowerShell."
@@ -10713,10 +10716,8 @@ msgstr "Qui est-ce ? Tapez un nom, puis Entrée"
 
 msgid ""
 "Whole series set aside: its shots go to the quarantine at 'clean "
-"--decisions'. A or X keeps them all again."
-msgstr ""
-"Rafale entière écartée : ses photos partent en quarantaine au 'clean "
-"--decisions'. A ou X les garde toutes à nouveau."
+"--decisions'. *Keep every shot* or X keeps them all again."
+msgstr "Série entière écartée : ses photos vont en quarantaine au 'clean --decisions'. *Garder toutes les photos* ou X les garde à nouveau toutes."
 
 msgid "Why"
 msgstr "Pourquoi"
@@ -11728,6 +11729,9 @@ msgstr "docker pull a échoué : mh n'a pas changé."
 msgid "does not answer (powered off?)"
 msgstr "ne répond pas (éteint ?)"
 
+msgid "double click"
+msgstr "double clic"
+
 msgid "drag"
 msgstr "glisser"
 
@@ -11785,6 +11789,12 @@ msgstr "chaque photo a son GPS"
 
 msgid "every photo of the event"
 msgstr "toutes les photos de l'événement"
+
+msgid "every photo of the group"
+msgstr "toutes les photos du groupe"
+
+msgid "every shot of the series"
+msgstr "toutes les photos de la série"
 
 msgid "every source"
 msgstr "toutes les sources"
@@ -12036,14 +12046,11 @@ msgstr "tout garder"
 msgid "keep both names (links, one drive), then next"
 msgstr "garder les deux noms (liens, un même lecteur), puis suivante"
 
-msgid "keep every shot"
-msgstr "garder toutes les photos"
-
 msgid "keep nothing"
 msgstr "ne rien garder"
 
-msgid "keep or set aside the photo under the cursor"
-msgstr "garder ou mettre de côté la photo sous le curseur"
+msgid "keep or set aside the framed photo"
+msgstr "garder ou mettre de côté la photo encadrée"
 
 msgid "keep the other version, then next"
 msgstr "garder l'autre version, puis suivant"
@@ -12606,6 +12613,9 @@ msgstr "l'ouvrir"
 msgid "open it large (a double click too)"
 msgstr "l'ouvrir en grand (un double clic aussi)"
 
+msgid "open the photo large"
+msgstr "ouvrir la photo en grand"
+
 msgid "opened: every key of the large view"
 msgstr "en grand : toutes les touches de la vue en grand"
 
@@ -12878,9 +12888,6 @@ msgid "send mail email attach zip facebook social network album gps"
 msgstr ""
 "envoyer mail courriel e-mail pièce jointe zip facebook réseau social "
 "album gps"
-
-msgid "set a shot aside, or take it back"
-msgstr "écarter une photo, ou la reprendre"
 
 msgid "set aside"
 msgstr "écartée"
@@ -13400,10 +13407,10 @@ msgid ""
 "anything: setting aside, moving, cleaning stay the PC's."
 msgstr ""
 "true : un téléphone appairé peut télécharger les originaux des photos et "
-"des vidéos (pleine taille, position GPS comprise). false (par défaut) : un "
-"téléphone les voit à la taille d'aperçu seulement. Quoi qu'il en soit, un "
-"téléphone ne change jamais rien : mettre de côté, déplacer, nettoyer restent "
-"au PC."
+"des vidéos (pleine taille, position GPS comprise). false (par défaut) : "
+"un téléphone les voit à la taille d'aperçu seulement. Quoi qu'il en soit,"
+" un téléphone ne change jamais rien : mettre de côté, déplacer, nettoyer "
+"restent au PC."
 
 msgid ""
 "true: a photo without GPS in a folder named after a town "
@@ -15655,6 +15662,12 @@ msgstr[1] "{n} séries"
 #, python-brace-format
 msgid "{n} set aside, not ticked"
 msgstr "{n} mis de côté, sans coche"
+
+#, python-brace-format
+msgid "{n} shot picked"
+msgid_plural "{n} shots picked"
+msgstr[0] "{n} photo choisie"
+msgstr[1] "{n} photos choisies"
 
 #, python-brace-format
 msgid "{n} shot proposed aside"

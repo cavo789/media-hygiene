@@ -522,9 +522,6 @@ msgstr ""
 msgid "A click on a file moves the cursor to it."
 msgstr ""
 
-msgid "A click on a photo keeps it or sets it aside too."
-msgstr ""
-
 #, python-brace-format
 msgid "A commented configuration file was created: {path}."
 msgstr ""
@@ -3454,6 +3451,9 @@ msgstr ""
 msgid "Keep both names (link)"
 msgstr ""
 
+msgid "Keep every shot"
+msgstr ""
+
 msgid "Keep it, encrypted for your Windows account only, on this PC? (y/n)"
 msgstr ""
 
@@ -3479,6 +3479,9 @@ msgstr ""
 msgid ""
 "Keep the GPS position in the copies; removed by default, a photo sent "
 "must not say where the house is."
+msgstr ""
+
+msgid "Keep the picked photos"
 msgstr ""
 
 msgid "Keep the source folders the sort leaves empty."
@@ -4244,14 +4247,14 @@ msgstr ""
 
 msgid ""
 "No choice yet: moving on (→, ← or N) accepts the proposal, the shots in "
-"red dashes set aside and the others kept. A keeps every shot; a digit "
-"takes a shot back."
+"red dashes set aside and the others kept. *Keep every shot* keeps them "
+"all; Backspace in the large view takes a shot back."
 msgstr ""
 
 msgid ""
 "No choice yet: moving on (→, ← or N) keeps every shot of this series. S "
-"keeps only the sharpest, X sets the whole series aside, 1…9 sets one shot"
-" aside."
+"keeps only the sharpest, X sets the whole series aside, Delete sets the "
+"picked shots aside."
 msgstr ""
 
 msgid "No choice yet: nothing will be moved."
@@ -5454,6 +5457,9 @@ msgid "Pick this file"
 msgstr ""
 
 msgid "Pick this photo"
+msgstr ""
+
+msgid "Pick this shot"
 msgstr ""
 
 msgid "Pictures received through a messaging app, if you want them apart:"
@@ -8559,6 +8565,9 @@ msgstr ""
 msgid "Type a name to filter the folders"
 msgstr ""
 
+msgid "Type an album's name in the bar first."
+msgstr ""
+
 #, python-brace-format
 msgid "Type mh push --undo {run_id} in Windows PowerShell."
 msgstr ""
@@ -8844,7 +8853,7 @@ msgstr ""
 
 msgid ""
 "Whole series set aside: its shots go to the quarantine at 'clean "
-"--decisions'. A or X keeps them all again."
+"--decisions'. *Keep every shot* or X keeps them all again."
 msgstr ""
 
 msgid "Why"
@@ -9712,6 +9721,9 @@ msgstr ""
 msgid "does not answer (powered off?)"
 msgstr ""
 
+msgid "double click"
+msgstr ""
+
 msgid "drag"
 msgstr ""
 
@@ -9768,6 +9780,12 @@ msgid "every photo has GPS"
 msgstr ""
 
 msgid "every photo of the event"
+msgstr ""
+
+msgid "every photo of the group"
+msgstr ""
+
+msgid "every shot of the series"
 msgstr ""
 
 msgid "every source"
@@ -10002,13 +10020,10 @@ msgstr ""
 msgid "keep both names (links, one drive), then next"
 msgstr ""
 
-msgid "keep every shot"
-msgstr ""
-
 msgid "keep nothing"
 msgstr ""
 
-msgid "keep or set aside the photo under the cursor"
+msgid "keep or set aside the framed photo"
 msgstr ""
 
 msgid "keep the other version, then next"
@@ -10515,6 +10530,9 @@ msgstr ""
 msgid "open it large (a double click too)"
 msgstr ""
 
+msgid "open the photo large"
+msgstr ""
+
 msgid "opened: every key of the large view"
 msgstr ""
 
@@ -10764,9 +10782,6 @@ msgid "seen by the model"
 msgstr ""
 
 msgid "send mail email attach zip facebook social network album gps"
-msgstr ""
-
-msgid "set a shot aside, or take it back"
 msgstr ""
 
 msgid "set aside"
@@ -13094,6 +13109,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} set aside, not ticked"
 msgstr ""
+
+#, python-brace-format
+msgid "{n} shot picked"
+msgid_plural "{n} shots picked"
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{n} shot proposed aside"

@@ -1,4 +1,6 @@
-{# The script of unwanted_review.html.j2: one group at a time, each choice saved and read back. #}
+{# The script of unwanted_review.html.j2: one group at a time, each choice saved and read back.
+   Its photos are the shared grid's files (`card`, `saveChoice`, `reopen`): the frame is the
+   grid's `current`. #}
 (() => {
   const T = {{ texts | tojson }};
   const statePath = {{ state_path | tojson }};
@@ -13,7 +15,6 @@
   let groups = [];
   let reasons = {};
   let at = 0;  // the group shown
-  let cursor = 0;  // position of the cursor in that group
   const disk = new Map();  // photo rank -> set aside (true) or kept, as read back from the disk
 
   const setStatus = (text, kind) => {
@@ -32,14 +33,16 @@
   // A photo's role: undecided ones are proposed aside.
   const role = (rank) => photos[rank].decision || "proposed";
 
-  const card = (rank, position) => {
+  card = (file, index) => {
+    const rank = file.rank;
     const photo = photos[rank];
     const figure = document.createElement("figure");
-    figure.className = "shot " + role(rank) + (position === cursor ? " cursor" : "");
+    figure.className = "shot " + role(rank);
     const image = document.createElement("img");
     image.src = photo.preview;
     image.alt = photo.name;
     image.loading = "lazy";
+    image.draggable = false; // a drag draws a rectangle (pick_band.js.j2)
     const link = line("a", T.original, "original");
     link.href = photo.original;
     link.target = "_blank";
@@ -51,12 +54,15 @@
     const caption = document.createElement("figcaption");
     caption.append(line("div", T[role(rank)], "tag"), name, line("div", reasons[photo.reason], "muted"), line("div", photo.folder, "muted"), line("div", photo.details, "muted"));
     figure.append(image, caption);
-    figure.addEventListener("click", () => {
-      cursor = position;
-      toggle();
-    });
-    return figure;
+    return wireCard(figure, index);
   };
+
+  // The photos of the group, as the shared grid lists them (the large view reads them too).
+  const listed = (group) => group.photos.map((rank) => ({
+    key: String(rank), rank: rank, name: photos[rank].name, preview: photos[rank].preview,
+    original: photos[rank].original, folder: photos[rank].folder, facts: photos[rank].details,
+    chosen: photos[rank].decision === "aside",
+  }));
 
   const render = () => {
     if (groups.length === 0) return;
@@ -70,7 +76,7 @@
     const state = byId("state");
     state.textContent = decided(group) ? T.decided : T.pending;
     state.className = decided(group) ? "decided" : "";
-    byId("shots").replaceChildren(...group.photos.map(card));
+    showFiles(listed(group), false);
     const counts = { aside: 0, kept: 0, none: 0 };
     for (const rank of group.photos) {
       if (!disk.has(rank)) counts.none += 1;
@@ -87,7 +93,6 @@
     else if (next >= groups.length) setStatus(T.last, "");
     else {
       at = next;
-      cursor = 0;
       render();
     }
   };
@@ -98,21 +103,20 @@
     if (found < 0) setStatus(T.allDecided, "saved");
     else {
       at = found;
-      cursor = 0;
       render();
     }
   };
 
-  // choices: photo rank -> true (aside), false (kept) or null (undecided).
+  // choices: photo rank -> true (aside), false (kept) or null (undecided). True once saved.
   const decide = (choices, then) => {
     setStatus(T.saving, "");
     const body = { choices: [...choices].map(([photo, aside]) => ({ photo: photo, aside: aside })) };
-    fetch(decidePath, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+    return fetch(decidePath, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
       .then((response) => response.json().then((reply) => ({ ok: response.ok, status: response.status, body: reply })))
       .then((reply) => {
         if (!reply.ok) {
           setStatus(reply.body.error || fill(T.failed, { status: reply.status }), "error");
-          return;
+          return false;
         }
         for (const [rank, aside] of choices) {
           photos[rank].decision = aside === null ? "" : (aside ? "aside" : "kept");
@@ -122,14 +126,28 @@
         setStatus(fill(T.proofOk, { time: clock(reply.body.file.modified) }), "saved");
         if (then) then();
         else render();
+        return true;
       })
-      .catch(() => setStatus(T.offline, "error"));
+      .catch(() => { setStatus(T.offline, "error"); return false; });
   };
 
-  const toggle = () => {
-    const rank = groups[at].photos[cursor];
-    decide(new Map([[rank, photos[rank].decision === "kept"]]));
+  // Space: the framed photo kept or set aside, the frame kept on it.
+  const toggle = async () => {
+    if (current < 0) return;
+    const framed = current;
+    const rank = files[framed].rank;
+    if (await decide(new Map([[rank, photos[rank].decision === "kept"]]))) focusOn(framed);
   };
+
+  // The bar's buttons, Delete and the large view (pick_grid.js.j2): the picked photos set
+  // aside ("add") or kept ("remove"); said in the bar and under the large view.
+  saveChoice = async (action, keys) => {
+    const saved = await decide(new Map(keys.map((key) => [Number(key), action === "add"])), () => undefined);
+    $("viewerSaid").className = byId("status").className;
+    $("viewerSaid").textContent = byId("status").textContent;
+    return saved;
+  };
+  reopen = async () => render();
 
   const asMarked = () => {
     const undecided = groups[at].photos.filter((rank) => photos[rank].decision === "");
@@ -137,22 +155,16 @@
     else decide(new Map(undecided.map((rank) => [rank, true])), () => go(1));
   };
 
-  const moveCursor = (step) => {
-    const size = groups[at].photos.length;
-    cursor = Math.min(Math.max(cursor + step, 0), size - 1);
-    render();
-    const shown = byId("shots").children[cursor];
-    if (shown) shown.scrollIntoView({ block: "nearest" });
-  };
-
+  // After the shared grid's keys (pick_grid.js.j2): what it took (↑/↓, Enter, Ctrl+A, I,
+  // Delete, the large view's keys) is not this page's.
   document.addEventListener("keydown", (event) => {
+    if (event.defaultPrevented || byId("viewer").classList.contains("open")) return;
     if (event.ctrlKey || event.metaKey || event.altKey || groups.length === 0) return;
+    if (["SELECT", "INPUT"].includes(document.activeElement.tagName)) return;
     const key = event.key.toLowerCase();
     if (event.key === "ArrowRight") asMarked();
     else if (event.key === " ") toggle();
     else if (event.key === "ArrowLeft") go(-1);
-    else if (event.key === "ArrowDown") moveCursor(1);
-    else if (event.key === "ArrowUp") moveCursor(-1);
     else if (key === "n") nextUndecided();
     else if (key === "u" || event.key === "Backspace") decide(new Map(groups[at].photos.map((rank) => [rank, null])));
     else return;

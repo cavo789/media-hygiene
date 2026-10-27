@@ -115,8 +115,8 @@ seconde d'intervalle.
   🗑 *série entière écartée* (rouge). Une barre montre combien de séries vous avez vues ; un
   clic sur une série l'ouvre, *Seulement les séries à voir* masque les autres, et *Seulement
   les séries à regarder* masque les [évidentes](#toutes-les-séries-évidentes-en-un-clic).
-- **En dessous, le clavier** : les quatre touches qui font l'essentiel du travail (`→`, `S`,
-  `A`, `X`), toujours en vue ; *Plus de touches* déplie les autres.
+- **En dessous, le clavier** : les touches qui font l'essentiel du travail (`→`, `S`,
+  `X`, `Suppr`), toujours en vue ; *Plus de touches* déplie les autres.
 - **Sous les photos** : *Ce que contient decisions.json pour cette série*, les noms gardés et
   écartés (et, replié, le JSON brut).
 
@@ -149,15 +149,17 @@ y a trouvé. Si le fichier ne contient pas votre choix, un message rouge le dit.
 | `←` | Série précédente (sans choix : comme affiché) |
 | `N` | Série suivante à voir |
 | `V` | Valider d'un coup toutes les séries évidentes (voir plus bas) |
-| `1` … `9` | Écarter cette photo, ou la reprendre |
+| `Suppr` | Écarter les photos choisies (un clic en choisit une, comme dans [`browse`](../commands/browse.md)) |
 | `S` | Ne garder que la plus nette, puis passer à la série suivante |
-| `A` | Garder toutes les photos de la série |
+| *Garder toutes les photos* (bouton) | Garder toutes les photos de la série |
 | `X` | Écarter toute la rafale, puis passer à la série suivante (`X` à nouveau les garde toutes) |
 | `Z` ou ← Retour arrière | Annuler le dernier choix, et revenir à sa série |
 | `C` | Comparer les photos à 100 % (`C` ou `Échap` ferme) |
 | `P` | Planche ⇄ une série à la fois |
 
-Sur un clavier AZERTY, les chiffres de la rangée du haut fonctionnent **sans** Maj.
+Les photos se choisissent comme dans [`browse`](../commands/browse.md) : Ctrl+clic, Maj+clic,
+un rectangle, Ctrl+A, I pour inverser ; `↑` / `↓` déplacent le cadre, Entrée ou un double clic
+montre la photo en grand (`Suppr` l'y écarte, `⌫` la reprend, `A` l'ajoute à l'album).
 
 ### Toutes les séries évidentes en un clic
 
@@ -191,7 +193,7 @@ décident d'une ligne entière. Survoler une image l'affiche en grand ; `Espace`
 souris s'en va (`Espace` à nouveau le ferme). Puis `→` (ou **Page suivante →**) valide les
 séries encore à voir de la page comme affichées, en une écriture, et ouvre la page suivante ;
 `←` revient de la même façon, `N` ouvre la prochaine page qui contient une série à voir. Les
-touches d'une série (`A`, `S`, `X`, chiffres, `C`, `Z`) agissent sur la ligne encadrée en
+touches d'une série (`S`, `X`, `C`, `Z`) agissent sur la ligne encadrée en
 bleu : cliquez une ligne pour la choisir. **🖼 Une série** revient, sur la même série ; le
 navigateur retient votre choix.
 

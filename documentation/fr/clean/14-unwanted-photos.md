@@ -73,8 +73,10 @@ rouges) tant que vous ne décidez pas ; la raison est écrite sous chacune.
 | Touche | Ce qu'elle fait |
 |---|---|
 | `→` | Le groupe tel que marqué : les photos encore proposées partent à l'écart, puis le groupe suivant |
-| `Espace` (ou un clic) | Garder, ou mettre de côté, la photo sous le curseur |
-| `↑` / `↓` | Déplacer le curseur |
+| `Espace` | Garder, ou mettre de côté, la photo encadrée |
+| `↑` / `↓` | Déplacer le cadre |
+| `Suppr` | Mettre de côté les photos choisies : un clic en choisit une, Ctrl+clic, Maj+clic, un rectangle, Ctrl+A, I comme dans [`browse`](../commands/browse.md) |
+| Entrée ou un double clic | Voir la photo en grand (`Suppr` l'y met de côté, `⌫` la reprend) |
 | `←` / `N` | Groupe précédent / groupe suivant non décidé |
 | `U` | Tout le groupe revient à « non décidé » |
 

@@ -72,8 +72,10 @@ you decide; the reason is written under each one.
 | Key | What it does |
 |---|---|
 | `→` | The group as marked: the photos still proposed go aside, then the next group |
-| `Space` (or a click) | Keep, or set aside, the photo under the cursor |
-| `↑` / `↓` | Move the cursor |
+| `Space` | Keep, or set aside, the framed photo |
+| `↑` / `↓` | Move the frame |
+| `Delete` | Set the picked photos aside: a click picks one, Ctrl+click, Shift+click, a rectangle, Ctrl+A, I as in [`browse`](../commands/browse.md) |
+| Enter or a double click | See the photo large (`Delete` there sets it aside, `⌫` takes it back) |
 | `←` / `N` | Previous group / next undecided group |
 | `U` | The whole group back to undecided |
 

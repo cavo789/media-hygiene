@@ -43,6 +43,7 @@
 {% set page_name = _("Near duplicates review") %}
 {% set keys_safe = _("Every choice is saved at once in %(place)s. Done? Ctrl+C in the terminal stops the review; then run the same 'clean' command with --tier near %(option)s: the sure groups and the groups you decided go to the quarantine, and 'undo' brings them back.", place=place, option=clean_option) %}
 {% block style %}
+{% include "pick_viewer.css.j2" %}
   #toc label { display: flex; gap: 6px; align-items: center; }
   #toc select { flex: 1; min-width: 0; font: inherit; }
   #toc h3 { font-size: .9rem; margin: 12px 0 6px; }
@@ -93,6 +94,7 @@
       <dt><kbd>U</kbd></dt><dd>{{ _("back to undecided") }}</dd>
       <dt><kbd>G</kbd></dt><dd>{{ _("the whole folder pair as planned") }}</dd>
       <dt><kbd>␣</kbd> <kbd>←</kbd> <kbd>→</kbd></dt><dd>{{ _("on a video you clicked: play, seek; Esc gives the keys back") }}</dd>
+{% include "pick_large_keys.html.j2" %}
 {% endblock %}
 {% block bar %}
   <strong id="position"></strong>
@@ -112,6 +114,7 @@
 </main>
 {% endblock %}
 {% block after %}
+{% include "pick_large.html.j2" %}
 <script>
 {% include "near_review.js.j2" %}
 </script>

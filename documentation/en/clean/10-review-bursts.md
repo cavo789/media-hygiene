@@ -108,7 +108,7 @@ The first series appears. Here, the second one, a birthday: five shots taken one
   🗑 *whole series set aside* (red). A bar shows how many series you have seen; a click on a
   series opens it, *Only the series still to see* hides the others, and *Only the series to
   look at* hides the [obvious ones](#every-obvious-series-in-one-click).
-- **Below it, the keyboard**: the four keys that do most of the work (`→`, `S`, `A`, `X`),
+- **Below it, the keyboard**: the keys that do most of the work (`→`, `S`, `X`, `Delete`),
   always in sight; *More keys* unfolds the others.
 - **Under the shots**: *What decisions.json holds for this series*, the names kept and set
   aside (and, folded, the raw JSON).
@@ -141,15 +141,17 @@ show what it found there. If the file does not hold your choice, a red message s
 | `←` | Previous series (no choice: as shown) |
 | `N` | Next series still to see |
 | `V` | Validate every obvious series at once (see below) |
-| `1` … `9` | Set that shot aside, or take it back |
+| `Delete` | Set the picked shots aside (a click picks one, as in [`browse`](../commands/browse.md)) |
 | `S` | Keep only the sharpest shot, then go to the next series |
-| `A` | Keep every shot of the series |
+| *Keep every shot* (button) | Keep every shot of the series |
 | `X` | Set the whole series aside, then go to the next series (`X` again keeps them all) |
 | `Z` or ← Backspace | Undo the last choice, and go back to its series |
 | `C` | Compare the shots at 100 % (`C` or `Esc` closes) |
 | `P` | Board ⇄ one series at a time |
 
-On an AZERTY keyboard, the digits of the top row work **without** Shift.
+The shots are picked as in [`browse`](../commands/browse.md): Ctrl+click, Shift+click, a
+rectangle, Ctrl+A, I to invert; `↑` / `↓` move the frame, Enter or a double click shows the
+shot large (`Delete` there sets it aside, `⌫` takes it back, `A` adds it to the album).
 
 ### Every obvious series in one click
 
@@ -180,7 +182,7 @@ once), *✅ keep all*, *⭐ only the sharpest* or *🗑 keep nothing* decide a w
 large; `Space` pins that preview, so that it stays while the mouse moves on (`Space` again
 closes it). Then `→` (or **Next page →**) validates the series still to see of the page as shown,
 in one write, and opens the next page; `←` goes back the same way, `N` opens the next page
-with a series still to see. The keys of one series (`A`, `S`, `X`, digits, `C`, `Z`) act on
+with a series still to see. The keys of one series (`S`, `X`, `C`, `Z`) act on
 the row framed in blue: click a row to choose it. **🖼 One series** comes back, on the same
 series; the browser remembers your choice.
 

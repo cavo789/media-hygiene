@@ -78,14 +78,29 @@ quand la page d'accueil l'a ouvert), puis les photos.
 | `→` | Rafale suivante, telle que montrée | Comme prévu, puis le groupe suivant | Comme prévu, puis la paire suivante |
 | `←` | Rafale précédente | Groupe précédent | Paire précédente |
 | `N` | Rafale suivante encore à voir | Groupe suivant encore indécis | Paire suivante encore indécise |
-| `1` … `9` | Écarter cette photo, ou la reprendre | — | — |
-| `S` / `A` / `X` | Garder seulement la plus nette / tout garder / écarter toute la rafale | — | — |
+| `Suppr` | Écarter les photos choisies | — | — |
+| `S` / `X` | Garder seulement la plus nette / écarter toute la rafale (*Garder toutes les photos* : un bouton) | — | — |
 | `W` / `L` / `U` | — | Garder l'autre version / laisser tel quel / revenir à indécis | Inverser les dossiers / ne pas toucher / revenir à indécise |
 | `V` / `G` | Valider d'un coup toutes les rafales évidentes | `G` : toute la paire de dossiers comme prévu | — |
 | `Z` | Annuler le dernier choix | — | — |
 
 `review --junk` : `→` le groupe tel que marqué, puis le suivant ; `Espace` garde ou met de côté
-la photo sous le curseur (`↑` / `↓`) ; `←`, `N`, `U` comme pour les autres tris.
+la photo encadrée ; `Suppr` met de côté les photos choisies ; `←`, `N`, `U` comme pour les autres
+tris.
+
+**Choisissez les photos comme dans [`browse`](browse.md)** (`review` et `review --junk`) : un
+clic choisit une photo ; la case ☑ (ou Ctrl+clic) en ajoute ou en retire une ; Maj+clic choisit
+toutes les photos depuis la dernière cliquée ; un rectangle tracé à la souris choisit ce qu'il
+touche (avec Ctrl, il ajoute) ; Ctrl+A toute la rafale ou tout le groupe ; **Inverser la sélection**
+(ou I) choisit les autres. `Suppr` ou le bouton de la barre écarte les photos choisies, *Retirer
+de la mise de côté* les reprend. Comme `←`, `→` et Espace changent de rafale ici, le cadre se
+déplace avec `↑` / `↓`.
+
+**Voir une photo en grand** sur chaque tri : Entrée ou un double clic ; `←` / `→` la précédente
+ou la suivante, `F` plein écran, `?` toutes les touches, `Échap` ferme. Sur `review` et
+`review --junk`, `Suppr` écarte la photo affichée et `⌫` la reprend ; sur `review`, `A` l'ajoute
+à l'album nommé dans la barre. Sur `--near`, `--gone` et `--pairs`, la grande vue montre
+seulement (rien à choisir).
 
 `review --gone` : `D` supprimé exprès, `M` déplacé ailleurs (le fichier sous le curseur, puis le
 suivant), `G` tout le groupe supprimé exprès, `U` le groupe redevient sans réponse ; `→`, `←`,
@@ -135,7 +150,7 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
   quelqu'un présent sur cette photo, pour les mettre toutes de côté : voir
   [`people`](people.md#depuis-nimporte-quelle-page--mettre-une-personne-de-côté).
 - Le tri des rafales a aussi un champ **Album** : **➕ Ajouter à l'album** met dans cet album les
-  photos de la série affichée qui ne sont pas écartées, à part de vos décisions. Voir
+  photos choisies, comme dans `browse`, à part de vos décisions. Voir
   [Mettre des photos dans un album](search.md#mettre-des-photos-dans-un-album).
 - *port is already allocated* ? Un autre programme utilise 8088 : `-p 127.0.0.1:9000:9000` et
   `review --port 9000`.

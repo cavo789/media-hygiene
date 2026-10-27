@@ -150,6 +150,14 @@
     group.copies.forEach((version, index) => cards.push(card(version, role.pending ? "move" : role.copyRole(index))));
     for (const version of group.protected) cards.push(card(version, "lock"));
     byId("shots").replaceChildren(...cards);
+    // Seen large on a double click or Enter (pick_large.html.j2): the versions with a picture.
+    const large = [group.kept, ...group.copies, ...group.protected]
+      .map((version, index) => [version, cards[index]])
+      .filter(([version]) => version.preview || version.video);
+    showLarge(large.map(([version], index) => ({
+      key: String(index), name: version.name, preview: version.preview, video: version.preview ? "" : version.video,
+      original: version.video || version.original, folder: version.folder, facts: version.details,
+    })), large.map(([, node]) => node));
     showDisk();
     for (const rank of order.slice(at + 1, at + 3)) {
       for (const version of [groups[rank].kept, ...groups[rank].copies]) if (version.preview) new Image().src = version.preview;
@@ -205,6 +213,7 @@
   };
 
   document.addEventListener("keydown", (event) => {
+    if (event.defaultPrevented || byId("viewer").classList.contains("open")) return; // the large view's keys
     if (event.ctrlKey || event.metaKey || event.altKey || groups.length === 0) return;
     if (event.target instanceof HTMLSelectElement) return;
     if (event.target instanceof HTMLVideoElement) {
