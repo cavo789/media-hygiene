@@ -47,7 +47,7 @@ def import_steps() -> tuple[Step, ...]:
         ),
         Step(
             "phone-free",
-            space,
+            Space.CLEAN,  # erases for good: filed under Clean, step 2 of "From a phone"
             _("Make room on the phone"),
             _(
                 "Only what the PC already holds, proven file by file, and that you "
