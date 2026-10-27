@@ -11,10 +11,12 @@ from __future__ import annotations
 
 import asyncio
 import json
+import re
 import ssl
 from dataclasses import replace
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Final
+from pathlib import Path
+from typing import Final
 
 import pytest
 
@@ -25,7 +27,7 @@ from media_hygiene.review.http import Request
 from media_hygiene.review.lan import LAN_SECRET_VARIABLE, LanAccess, lan_access
 from media_hygiene.review.lan_address import LAN_ADDRESS_VARIABLE
 from media_hygiene.review.lan_ca_page import CA_DOWNLOAD, CaDoor
-from media_hygiene.review.lan_card import lan_response
+from media_hygiene.review.lan_card import CA_DOC, lan_response
 from media_hygiene.review.lan_pairing import Pairing
 from media_hygiene.review.lan_tls import (
     CA_CERT,
@@ -42,9 +44,6 @@ from media_hygiene.services.launcher import (
     render_script,
 )
 from tests.support.runtime import make_locations, make_runtime
-
-if TYPE_CHECKING:
-    from pathlib import Path
 
 _ADDRESS: Final = "192.168.1.20"
 _OTHER: Final = "192.168.1.42"
@@ -171,6 +170,23 @@ def test_the_cookie_and_the_card_follow_https(*, secure: bool) -> None:
     assert cookie.endswith("; Secure") is secure
     card = json.loads(lan_response(lan).body)
     assert card.get("ca") == (f"http://{_ADDRESS}:{LAN_CA_PORT}/" if secure else None)
+    assert ("caHelp" in card) is secure
+
+
+@pytest.mark.parametrize(
+    ("language", "heading"),
+    [
+        ("en", "### Once per phone: install the certificate"),
+        ("fr", "### Une fois par téléphone : installer le certificat"),
+    ],
+)
+def test_the_card_links_the_steps_of_the_docs(language: str, heading: str) -> None:
+    """The anchor of `CA_DOC` is the heading of each language (GitHub's slug)."""
+    page = Path("documentation", language, "commands", "home.md").read_text("utf-8")
+    assert heading in page
+    title = heading.removeprefix("### ").lower()
+    slug = "#" + re.sub(r"[^\w\- ]", "", title).replace(" ", "-")
+    assert slug == (CA_DOC.en if language == "en" else CA_DOC.fr)
 
 
 def test_mh_lan_mounts_the_certificates_for_the_home_page_only(

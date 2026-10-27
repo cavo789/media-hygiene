@@ -1696,6 +1696,11 @@ msgstr ""
 msgid "Check, then sort"
 msgstr "Vérifier, puis trier"
 
+msgid ""
+"Check: Trusted credentials > User shows Media Hygiene (this PC). The "
+"address bar then shows https without a red cross."
+msgstr "Vérifiez : Identifiants de confiance > Utilisateur montre Media Hygiene (this PC). La barre d'adresse montre alors https sans croix rouge."
+
 #, python-brace-format
 msgid ""
 "Checked on Docker Hub once a day at most; {setting} in config.toml turns "
@@ -2557,6 +2562,11 @@ msgstr ""
 
 msgid "Download the certificate"
 msgstr "Télécharger le certificat"
+
+msgid ""
+"Downloading it is not enough: install it as a CA certificate, below. Not "
+"as a VPN and app certificate, nor as a Wi-Fi one."
+msgstr "Le télécharger ne suffit pas : installez-le comme certificat CA, ci-dessous. Ni comme certificat VPN et appli, ni comme certificat Wi-Fi."
 
 #, python-brace-format
 msgid ""
@@ -3982,6 +3992,9 @@ msgstr ""
 msgid "How to write a search"
 msgstr "Comment écrire une recherche"
 
+msgid "How?"
+msgstr "Comment ?"
+
 #, python-brace-format
 msgid "I checked: sort this file"
 msgid_plural "I checked: sort these {n} files"
@@ -4594,7 +4607,10 @@ msgstr "Média Hygiène dort"
 msgid ""
 "Media Hygiene is running: its page opens in your browser. Keep this "
 "window open (minimised is fine): closing it stops Media Hygiene."
-msgstr "Média Hygiène tourne : sa page s'ouvre dans votre navigateur. Gardez cette fenêtre ouverte (réduite, c'est bien) : la fermer arrête Média Hygiène."
+msgstr ""
+"Média Hygiène tourne : sa page s'ouvre dans votre navigateur. Gardez "
+"cette fenêtre ouverte (réduite, c'est bien) : la fermer arrête Média "
+"Hygiène."
 
 msgid "Media Hygiene is stopped"
 msgstr "Media Hygiene est arrêté"

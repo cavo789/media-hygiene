@@ -69,6 +69,7 @@ def _shell() -> dict[str, str]:
         "lanCode": _("Code:"),
         "lanNote": _("Until mh stops; never the internet."),
         "lanCa": _("First time on this phone? Install the certificate first:"),
+        "lanCaHow": _("How?"),
         "lanPhones": _("Phones paired for good"),
         "lanForget": _("Forget this phone"),
         "addToHome": _(

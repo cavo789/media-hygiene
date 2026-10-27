@@ -219,6 +219,7 @@ function showLan() {
       // HTTPS (0430): a phone installs the PC's certificate first, once.
       $("#lanCaLine").hidden = !lan.ca;
       $("#lanCa").textContent = lan.ca || "";
+      if (lan.caHelp) $("#lanCaHow").href = lan.caHelp;  // the steps per phone, in the docs
       // Phones paired for good (0431): listed, each forgotten on demand.
       if (lan.phones) fetch(lan.phones, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).then((answer) => answer && showPhones(answer, lan.forget));
       $("#lanCard").hidden = false;

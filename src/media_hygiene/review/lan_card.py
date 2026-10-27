@@ -11,6 +11,8 @@ from typing import TYPE_CHECKING, Final
 
 import segno
 
+from media_hygiene.cli.menu_entry import Doc
+from media_hygiene.docs.served import served_url
 from media_hygiene.review.doors import LAN_CA_PORT
 from media_hygiene.review.lan_phones_api import FORGET_PATH, PHONES_PATH
 from media_hygiene.review.local_app import PAGE_PATH
@@ -22,6 +24,12 @@ if TYPE_CHECKING:
 
 _QR_SCALE: Final = 5
 _QR_BORDER: Final = 2
+# The steps to install the certificate on each phone, in the docs (0430).
+CA_DOC: Final = Doc(
+    "commands/home/",
+    "#once-per-phone-install-the-certificate",
+    "#une-fois-par-téléphone--installer-le-certificat",
+)
 
 
 def lan_response(lan: LanAccess, *, phones: bool = False) -> Response:
@@ -43,6 +51,7 @@ def lan_response(lan: LanAccess, *, phones: bool = False) -> Response:
     card: dict[str, object] = {"url": url, "code": lan.shown_code, "qr": qr}
     if lan.secure:
         card["ca"] = f"http://{lan.address}:{LAN_CA_PORT}/"
+        card["caHelp"] = served_url(CA_DOC)
     if phones:
         card |= {"phones": PHONES_PATH, "forget": FORGET_PATH}
     return json_response(HTTPStatus.OK, card)

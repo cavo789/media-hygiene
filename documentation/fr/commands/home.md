@@ -211,7 +211,10 @@ puis :
 - **Android** : *Paramètres › Sécurité (ou Sécurité et confidentialité) › Autres paramètres ›
   Chiffrement et identifiants › Installer un certificat › Certificat CA*, choisissez
   `media-hygiene-ca.crt` dans *Téléchargements* (Android prévient que le réseau peut être
-  surveillé : c'est votre propre PC).
+  surveillé : c'est votre propre PC). Le télécharger ne suffit pas, et **Certificat CA** compte
+  (ni *VPN et appli*, ni *Wi-Fi*). Vérifiez : *Identifiants de confiance › Utilisateur* montre
+  *Media Hygiene (this PC)*, et Chrome affiche `https` sans croix rouge ; sinon *Installer*
+  échoue (*Impossible d'installer cette appli*).
 - **iPhone, iPad** (dans Safari) : autorisez le profil, installez-le dans *Réglages › Général ›
   VPN et gestion de l'appareil*, puis activez **Media Hygiene** dans *Réglages › Général ›
   Informations › Réglages des certificats*.

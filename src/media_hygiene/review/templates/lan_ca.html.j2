@@ -17,6 +17,7 @@ h2 { margin: 16px 0 4px; font-size: 1.05rem; }
 p, li { color: var(--muted); }
 p { margin: 0 0 12px; }
 ol { margin: 0 0 12px; padding-left: 1.3em; }
+.warn { margin-top: 12px; color: var(--ink); font-weight: 600; }
 .button { display: block; box-sizing: border-box; width: 100%; margin-top: 12px; padding: 12px; border-radius: 10px; background: var(--accent); color: #fff; font: 600 1.1rem/1.2 system-ui, sans-serif; text-align: center; text-decoration: none; }
 </style>
 </head>
@@ -25,10 +26,12 @@ ol { margin: 0 0 12px; padding-left: 1.3em; }
   <h1>{{ _("Media Hygiene on this phone") }}</h1>
   <p>{{ _("Once per phone: install the certificate of Media Hygiene on this PC. The phone then trusts the page of your PC, and only it. Nothing goes to the internet.") }}</p>
   <a class="button" href="{{ download }}" download>{{ _("Download the certificate") }}</a>
+  <p class="warn">{{ _("Downloading it is not enough: install it as a CA certificate, below. Not as a VPN and app certificate, nor as a Wi-Fi one.") }}</p>
   <h2>{{ _("Android") }}</h2>
   <ol>
     <li>{{ _("Settings > Security (or Security and privacy) > More settings > Encryption and credentials > Install a certificate > CA certificate.") }}</li>
     <li>{{ _("Choose media-hygiene-ca.crt in Downloads.") }}</li>
+    <li>{{ _("Check: Trusted credentials > User shows Media Hygiene (this PC). The address bar then shows https without a red cross.") }}</li>
   </ol>
   <h2>{{ _("iPhone, iPad") }}</h2>
   <ol>

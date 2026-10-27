@@ -1372,6 +1372,11 @@ msgstr ""
 msgid "Check, then sort"
 msgstr ""
 
+msgid ""
+"Check: Trusted credentials > User shows Media Hygiene (this PC). The "
+"address bar then shows https without a red cross."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Checked on Docker Hub once a day at most; {setting} in config.toml turns "
@@ -2097,6 +2102,11 @@ msgid "Download it again from the report, next to it on /reports."
 msgstr ""
 
 msgid "Download the certificate"
+msgstr ""
+
+msgid ""
+"Downloading it is not enough: install it as a CA certificate, below. Not "
+"as a VPN and app certificate, nor as a Wi-Fi one."
 msgstr ""
 
 #, python-brace-format
@@ -3244,6 +3254,9 @@ msgid ""
 msgstr ""
 
 msgid "How to write a search"
+msgstr ""
+
+msgid "How?"
 msgstr ""
 
 #, python-brace-format

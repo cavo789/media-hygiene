@@ -193,6 +193,9 @@ The PC's card says *First time on this phone? Install the certificate first:*
 - **Android**: *Settings › Security (or Security and privacy) › More settings › Encryption and
   credentials › Install a certificate › CA certificate*, choose `media-hygiene-ca.crt` in
   *Downloads* (Android warns that the network may be monitored: it is your own PC).
+  Downloading is not enough, and **CA certificate** matters (not *VPN and app*, not *Wi-Fi*).
+  Check: *Trusted credentials › User* shows *Media Hygiene (this PC)*, and Chrome shows `https`
+  without a red cross; otherwise *Install* fails (*This app cannot be installed*).
 - **iPhone, iPad** (in Safari): allow the profile, install it in *Settings › General › VPN and
   device management*, then turn **Media Hygiene** on in *Settings › General › About ›
   Certificate trust settings*.
