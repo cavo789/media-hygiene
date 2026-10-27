@@ -1,4 +1,4 @@
-"""0288: *Apply now* on the burst and near duplicates reviews, opened from home."""
+"""0288, 0335: *Apply now* on the reviews that move files, opened from home."""
 
 from __future__ import annotations
 
@@ -14,12 +14,14 @@ from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
 from media_hygiene.review.http import Request
 from media_hygiene.services import review_serving, reviewing
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
+from tests.integration.test_unwanted_review import add_unwanted
 from tests.support.cli import run
 from tests.support.places_map import JSON
 from tests.support.runtime import make_runtime
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+    from pathlib import Path
 
     from typer.testing import CliRunner, Result
 
@@ -41,6 +43,7 @@ class Mode:
     arguments: tuple[str, ...]
     module: object
     choice: Call
+    prepare: Callable[[Path], None] | None = None  # adds files to the data tree
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,12 +66,25 @@ NEAR = Mode(
     review_serving,
     ("POST /api/near", {"choices": [{"group": 0, "action": "planned"}]}),
 )
-MODES = pytest.mark.parametrize("mode", [BURSTS, NEAR], ids=["bursts", "near"])
+PAIRS = Mode(
+    ("review", "--pairs"),
+    review_serving,
+    ("POST /api/pairs", {"pair": 0, "action": "swap"}),
+)
+JUNK = Mode(
+    ("review", "--junk"),
+    review_serving,
+    ("POST /api/junk", {"choices": [{"photo": 0, "aside": True}]}),
+    add_unwanted,
+)
+MODES = pytest.mark.parametrize(
+    "mode", [BURSTS, NEAR, PAIRS, JUNK], ids=["bursts", "near", "pairs", "junk"]
+)
 
 
 @pytest.fixture
 def opened(
-    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> Callable[[Visit], Answers]:
     """Opens a review, sends the calls as its page does, stops it: answers, result."""
 
@@ -88,6 +104,8 @@ def opened(
                 raise KeyboardInterrupt
             return door.ending.asked
 
+        if seen.mode.prepare is not None:
+            seen.mode.prepare(locations.data_dir)
         if seen.home:
             monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, seen.launcher)
         else:

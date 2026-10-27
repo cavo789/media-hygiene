@@ -17,6 +17,7 @@ from media_hygiene.plan.unwanted import (
     UnwantedSource,
     unwanted_photos,
 )
+from media_hygiene.review.apply_api import ApplyOffer
 from media_hygiene.review.place import decisions_place
 from media_hygiene.review.unwanted_app import (
     JUNK_DECIDE_PATH,
@@ -35,6 +36,7 @@ if TYPE_CHECKING:
     from media_hygiene.config.review_settings import UnwantedSettings
     from media_hygiene.plan.models import AuditFindings
     from media_hygiene.plan.unwanted import UnwantedPhoto
+    from media_hygiene.review.apply_api import ReviewStart
     from media_hygiene.scan.models import MediaFile
     from media_hygiene.services.runtime import Runtime
 
@@ -138,15 +140,23 @@ def open_unwanted_review(
 
 
 def serve_unwanted_review(
-    runtime: Runtime, session: UnwantedSession, port: int
-) -> None:
+    runtime: Runtime, session: UnwantedSession, start: ReviewStart
+) -> int:
     """Serve the page until Ctrl+C; every decision is saved as it is made.
 
     Args:
         runtime: Settings, mount points and output.
         session: The review.
-        port: The port to listen on, inside the container (0: any free one).
+        start: The port to listen on, inside the container (0: any free one), and
+            the step *Apply now* ends on.
+
+    Returns:
+        `STEP_EXIT_BASE + n` when *Apply now* chose step `n`; 0 otherwise.
     """
     api = (JUNK_DECIDE_PATH, JUNK_FILE_PATH)
-    page = ReviewPage(_PAGE_TEMPLATE, session.place, api, partial(UnwantedApp, session))
-    serve_review_page(runtime, page, port)
+    # Only the photos set aside move: a photo kept leaves nothing to apply.
+    offer = ApplyOffer(start.apply, lambda: session.decided[1] > 0)
+    page = ReviewPage(
+        _PAGE_TEMPLATE, session.place, api, partial(UnwantedApp, session), offer
+    )
+    return serve_review_page(runtime, page, start.port)

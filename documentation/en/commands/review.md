@@ -69,7 +69,7 @@ Every review page has the same layout: what leads to the photos on the left (the
 contents, the folder pairs, a short explanation), the keys at the bottom left (⌨ **Keyboard**, the
 first ones always shown, the others under *More keys*) with the line saying where each choice is
 saved; on the right, one bar on top (where you are, the totals, the choice read back from the
-disk; *Apply now* on the bursts and near duplicates when the home page opened them), then the
+disk; *Apply now* on every review that moves files when the home page opened it), then the
 photos.
 
 | Key | Bursts (`review`) | Near duplicates (`review --near`) | Folder pairs (`review --pairs`) |
@@ -120,8 +120,9 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
 - **One file for everything**: `decisions.json` holds the burst shots (`bursts`), the near
   duplicates (`near`), the folder pairs (`pairs`, from `review --pairs` or the report's
   download) and the unwanted photos (`unwanted`); each review keeps the others.
-- **Opened from the [home page](home.md)**, the burst and near duplicates reviews show an
-  **Apply now** button once something is set aside or decided: the page closes and `mh` runs
+- **Opened from the [home page](home.md)**, the reviews of bursts, near duplicates, folder
+  pairs and unwanted photos show an **Apply now** button once something is set aside or
+  decided (`--gone` has none: its answers move no file): the page closes and `mh` runs
   the home page's step that applies your choices (its usual question first), then the home
   page comes back. Opened by `mh review` alone: no button, type the `clean` command.
 - A shot of a **protected folder** is never proposed nor set aside.

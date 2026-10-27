@@ -65,6 +65,7 @@
     const decided = pairs.filter((item) => item.action !== "").length;
     byId("position").textContent = fill(T.position, { number: at + 1, total: pairs.length });
     byId("totals").textContent = fill(T.totals, { decided: decided, total: pairs.length });
+    if (window.mhApplyNow) window.mhApplyNow(decided > 0); // apply_now.html.j2, opened from home
     const state = byId("state");
     state.textContent = pair.action ? T[pair.action] : T.pending;
     state.className = pair.action ? "decided" : "";

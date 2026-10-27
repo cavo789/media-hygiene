@@ -129,7 +129,8 @@ def _run_pairs(run: ReviewRun, findings: AuditFindings) -> None:
         return
     session = pairs_reviewing.open_pairs_review(runtime, findings, run.target)
     tell_pairs_opened(runtime, session)
-    pairs_reviewing.serve_pairs_review(runtime, session, run.port)
+    start = ReviewStart(run.port, page_apply(runtime))
+    end_on_applied(runtime, pairs_reviewing.serve_pairs_review(runtime, session, start))
     tell_pairs_stopped(run.ctx, runtime, session)
 
 
@@ -146,5 +147,7 @@ def _run_junk(run: ReviewRun, findings: AuditFindings) -> None:
         return
     session = unwanted_reviewing.open_unwanted_review(runtime, findings, run.target)
     tell_unwanted_opened(runtime, session)
-    unwanted_reviewing.serve_unwanted_review(runtime, session, run.port)
+    start = ReviewStart(run.port, page_apply(runtime))
+    served = unwanted_reviewing.serve_unwanted_review(runtime, session, start)
+    end_on_applied(runtime, served)
     tell_unwanted_stopped(run.ctx, runtime, session)
