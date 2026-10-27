@@ -142,3 +142,7 @@ measured). With a backup: a restore in seconds to minutes, the time of copying `
 - Acceptance on a real Docker volume (`docker volume rm` then `mh restore`): e2e test.
 - `docs_screenshots` to run (`help-backup.txt`, `help-restore.txt`, the command list capture of
   `reference-commands.md`).
+
+## Inbox (2026-10-27)
+
+- `--to`/`--from` (USB stick, NAS) and the default in `<push target>\\.mh-backups` when `mh push` is set up → yes, 0419 with the guard against another running `mh` container and the moved-rows check; the e2e on a real volume goes with it. Closed to DONE (maintainer, 2026-10-27).

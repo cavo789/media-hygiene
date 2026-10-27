@@ -87,3 +87,7 @@ first search, 2 ms once the table is built), about −95 %.
 - Measured on Windows: step 35 again (click → search, search → home).
   **Reason:** Windows + Docker Desktop only. Command: build the image of branch
   `iterate/2026-10-24`, `mh update`, then `.\mh-measure.ps1 -Only 35 -Count 1 -Image media-hygiene`.
+
+## Inbox (2026-10-27)
+
+- `mh search` in another window reuses the home server → folded into 0359 (same loop of `mh`); step 35 stays in the measure script. Closed to DONE (maintainer, 2026-10-27).

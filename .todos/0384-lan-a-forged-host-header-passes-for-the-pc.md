@@ -4,7 +4,7 @@
 - **Batch**: home
 - **Depends**: —
 - **Files**: `src/media_hygiene/review/http.py`, `src/media_hygiene/review/serving.py`, `src/media_hygiene/review/lan_app.py`, `src/media_hygiene/review/lan.py`, `src/media_hygiene/services/launcher_lan.py`, `src/media_hygiene/cli/templates/mh.ps1.j2`, `tests/unit/test_home_lan.py`, `tests/integration/test_album_phone.py`, `tests/measure/mh-measure.ps1`
-- **Needs maintainer**: one check on Windows + Docker Desktop that the hole is real, and the same check passing after the fix (a step of `mh-measure.ps1`)
+- **Measure (after)**: a step of `tests/measure/mh-measure.ps1` written by the implementation (the forged `Host` refused on Windows + Docker Desktop), run by the maintainer afterwards (decided 2026-10-27)
 
 ## Context
 

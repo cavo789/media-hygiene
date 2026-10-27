@@ -94,3 +94,7 @@ menu catalog and `COMMANDS_TOO` follow what is decided; say that `docs_screensho
   1 + 3), what Delete means on the Events view, and whether `mh browse` / `mh review-sort`
   stay as entry points or go (memory "CLI only if useful in console"). Removing pages and
   commands the maintainer chose is a design change: listed here, asked, not guessed.
+
+## Inbox (2026-10-27)
+
+- Superseded by the decision of 2026-10-26 (0408): the search replaces `browse` and `review-sort` (level 1 + 2, review-sort as the *🗂 Events* view). Closed to UNNEEDED (2026-10-27).

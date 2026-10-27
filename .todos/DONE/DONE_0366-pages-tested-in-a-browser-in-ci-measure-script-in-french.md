@@ -84,3 +84,7 @@ script the maintainer understands.
   `BY_ID`) read from the templates, may need a fix there.
 - The rest of `mh-measure.ps1` (steps 1–35, ~230 questions and lines) still in English.
   **Reason:** scope; mechanical, a TODO of its own (keep ASCII, `[char]` for accents).
+
+## Inbox (2026-10-27)
+
+- The rest of `mh-measure.ps1` in French → 0422. The browser test's first run is the CI's. Closed to DONE (maintainer, 2026-10-27).

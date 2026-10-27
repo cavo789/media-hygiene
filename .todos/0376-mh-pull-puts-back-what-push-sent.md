@@ -4,7 +4,7 @@
 - **Batch**: launcher
 - **Depends**: 0375
 - **Files**: `src/media_hygiene/cli/templates/mh.ps1.j2`, `src/media_hygiene/cli/templates/mh.sh.j2`, `src/media_hygiene/cli/templates/mh_pull.ps1.j2`, `src/media_hygiene/cli/cmd_pull.py`, `src/media_hygiene/services/launcher_pull.py`, `src/media_hygiene/services/pull_plan.py`, `src/media_hygiene/actions/kinds.py`, `src/media_hygiene/cli/menu_catalog_*.py`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/support/docs/scenario.py`, `tests/measure/mh-measure.ps1`, `.config/mkdocs/mkdocs.yml`, `documentation/en/commands/pull.md`, `documentation/fr/commands/pull.md`, `documentation/en/reference-commands.md`, `documentation/fr/reference-commands.md`
-- **Needs maintainer**: a crash rehearsal on Windows (a test folder pushed, emptied, pulled back), step of `mh-measure.ps1`
+- **Measure (after)**: a crash rehearsal step in `tests/measure/mh-measure.ps1` written by the implementation (a test folder pushed, emptied, pulled back), run by the maintainer afterwards (decided 2026-10-27)
 
 ## Why
 

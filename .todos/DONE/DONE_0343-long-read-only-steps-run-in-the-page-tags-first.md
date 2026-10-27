@@ -59,3 +59,7 @@ progress bar, and a Stop button — for `tags` and every long step.
   - `[tags] max_minutes` not added: *Describe for 1 h* is a constant (memory *Few settings*);
     propose a setting if the maintainer wants another length.
   - The JS was not run in a browser here (no node in the devcontainer); `docs_screenshots` to run.
+
+## Inbox (2026-10-27)
+
+- The survey of the other long read-only steps and the last photo's words → 0421; the silent console and the 1 h constant: kept. Closed to DONE (maintainer, 2026-10-27).

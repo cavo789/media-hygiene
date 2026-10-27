@@ -65,3 +65,7 @@ Each review, people, places and slideshow page: from about 5.5 s (*estimated* af
   (memory measurement, freeing idle pages). **Reason:** scope; memory needs a real collection.
 - Acceptance (< 1 s from the home page): Windows only. The page's first byte waits for an
   audit from the cache: measure step 35 with `review --near` added.
+
+## Inbox (2026-10-27)
+
+- The other pages on the home server, item 2 and item 6 → 0417 (with 0358's two leftovers). Closed to DONE (maintainer, 2026-10-27).

@@ -141,3 +141,7 @@ pages describing a footer or a header line of a converted page, both languages.
 The 🔒 read-only marker that 0282 took off the people page (it lived in its h1) comes back as
 the page's 🔒 line of the ⌨ panel (`keys_safe`) when `people` joins the frame — never in the
 bar (one place on every page). `places` has it already.
+
+## Inbox (2026-10-27)
+
+- *Apply now* on `--gone`/`--junk`/`--pairs` → 0335 (already filed); the `people` exemption stays until 0323–0329; one commit per page dropped. Closed to DONE (maintainer, 2026-10-27).

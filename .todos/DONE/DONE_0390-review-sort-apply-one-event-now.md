@@ -71,3 +71,7 @@ second event then sorted in turn (two runs, two undos).
 - Path-keyed files after the move (people, albums, decisions): as for a whole `sort`, left to
   0382 (same code path, nothing specific to one event).
   **Reason:** 0382 is its own TODO.
+
+## Inbox (2026-10-27)
+
+- The mounts item is stale: 0397 put `review-sort` in `GO_PAGES` (`cli/safety.py`: writable + `/journal`, nothing moves without GO). Path-keyed files stay 0382. Closed to DONE (2026-10-27).

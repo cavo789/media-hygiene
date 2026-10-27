@@ -4,7 +4,7 @@
 - **Batch**: home
 - **Depends**: 0355
 - **Files**: `src/media_hygiene/cli/templates/mh_menu.ps1.j2`, `src/media_hygiene/cli/templates/mh.ps1.j2`, `src/media_hygiene/cli/templates/mh_nas.ps1.j2`, `src/media_hygiene/cli/templates/mh_guards.ps1.j2`, `src/media_hygiene/cli/templates/mh.sh.j2`, `src/media_hygiene/review/templates/home*.j2`, `tests/unit/test_launcher_home.py`, `tests/measure/mh-measure.ps1`, `documentation/en/commands/home.md`, `documentation/fr/commands/home.md`
-- **Needs maintainer**: a measure run with the USB stick plugged in, then removed, during a session (Windows only)
+- **Measure (after)**: a step of `tests/measure/mh-measure.ps1` written by the implementation (USB stick plugged in, then removed, during a session; Windows only), run by the maintainer afterwards (decided 2026-10-27)
 
 ## Context
 
@@ -50,3 +50,9 @@ Today (read in the code, 2026-10-24):
 
 The stick and the NAS usable in a session started without them (today: the session must be
 started again, and a missing folder refuses every command).
+
+## Also (inbox, 2026-10-27, from 0356)
+
+`mh search` / `mh browse` typed in another window while this `mh`'s home server runs: open the
+tab on that server (found by its container label) instead of starting a second page and asking
+to close one (the port guard of 0250).

@@ -49,3 +49,7 @@ be set aside: the large view (`#viewer`) shows the photo and its path, nothing t
   missed one by a second look (the photo turned), and joins the person set aside before by
   likeness (*the person set aside on <date>*). Close this item unless the maintainer still
   wants it on the people page (then: choose among the faces of the photo, not the one clicked).
+
+## Inbox (2026-10-27)
+
+- Covered by 0351 (`/person`): the item is dropped. Closed to DONE (maintainer, 2026-10-27).

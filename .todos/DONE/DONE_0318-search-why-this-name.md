@@ -82,3 +82,7 @@ measure the wrong names per threshold on real photos before changing the default
   walks the files listed.
 - `GET /api/people/why?face=<id>` became `POST /api/people/why {key, name}` (the page never sees
   face ids or paths; the same JSON-only, loopback protections as every POST). Deliberate.
+
+## Inbox (2026-10-27)
+
+- The face's box on the whole photo → 0420; the reference opening in a new tab and the POST route: kept. Closed to DONE (maintainer, 2026-10-27).

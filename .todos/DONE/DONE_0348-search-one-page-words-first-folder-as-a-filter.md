@@ -53,3 +53,7 @@ The maintainer answered the question on 2026-10-26: the search page is to replac
   order of work for the maintainer to choose at the review.
 
 Follow-up (2026-10-26, maintainer: yes, bring them first): TODO 0408.
+
+## Inbox (2026-10-27)
+
+- Answered 2026-10-26; the rest is 0408 and its follow-up. Closed to DONE (2026-10-27).

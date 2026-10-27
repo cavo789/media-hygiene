@@ -56,3 +56,7 @@ Left:
 - The home page itself (`home_run.js.j2`, own pings), the slideshow and the TV page do not show the
   overlay yet; nor does a failed page fetch (only the pings).
 - A browser test that the overlay appears once the server is gone (only the markup is tested).
+
+## Inbox (2026-10-27)
+
+- A phone (`mh --lan`) keeps the PC's server alive → yes, once the pairing is safe (0384, 0360): its `POST /api/alive` accepted then; with the overlay on the home page, slideshow and TV page, 0416. Closed to DONE (maintainer, 2026-10-27).

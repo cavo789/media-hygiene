@@ -78,3 +78,7 @@ No stale page in a session of hours (correctness); no restart of `mh` after a se
   for 0357 with the people/places pages, which are the ones writing these files.
 - The cost per request on Windows (a step of `mh-measure.ps1`).
   **Reason:** Docker Desktop's file sharing only on the maintainer's PC.
+
+## Inbox (2026-10-27)
+
+- `page_audit` settings and the page's line for a file that no longer loads → moved into 0417; the Windows cost per request stays a measure. Closed to DONE (maintainer, 2026-10-27).

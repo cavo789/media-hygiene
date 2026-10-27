@@ -46,3 +46,7 @@ Decided by the maintainer on 2026-10-26 (0348 follow-up): the search page replac
   **Reason:** the maintainer decides which of its features (events one at a time, the event card,
   *Sort this event now*, *Remember as a rule*, the plan's progress and runs, the workbook overlay)
   must come to the search first.
+
+## Inbox (2026-10-27)
+
+- Retiring `review-sort`: everything comes to the search first, as a third view *🗂 Events* (events one at a time with filters and progress, the event card Folder / Name / destination, *Sort this event now* M, *Remember as a rule* R, the workbook overlay and its conflicts); `mh review-sort` then an alias of that view, as `browse`. Lost: Delete taking back a choice (it sets aside everywhere). The dead folder-view code goes in the same follow-up. → 0415; closed to DONE (maintainer, 2026-10-27).

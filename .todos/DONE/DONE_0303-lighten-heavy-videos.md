@@ -192,3 +192,7 @@ phone import (it is remembered: done, tested).
   Desktop's mount (measured). The estimate now says 22.9 GB -> about 6.1 GB after, for 341
   videos (the measured ratios, 26-29 %, give 6.0-6.6 GB). Plays in Windows and on the phone,
   no visible difference (the maintainer's eyes).
+
+## Inbox (2026-10-27)
+
+- Paths stored elsewhere when `.avi` becomes `.mp4` → 0418 reusing the rewrite of 0382 (done for sort/undo). The not-indexed-at-once item, the *to lighten* pick and the clean-guide step: kept as they are. The measure is done (step 34, 2026-10-23); `docs_screenshots` remains to run. Closed to DONE (maintainer, 2026-10-27).
