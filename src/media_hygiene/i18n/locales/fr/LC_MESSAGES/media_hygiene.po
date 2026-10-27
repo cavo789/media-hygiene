@@ -143,6 +143,26 @@ msgstr[0] "%(num)s fichier"
 msgstr[1] "%(num)s fichiers"
 
 #, python-format
+msgid ""
+"%(num)s file of your photo folders is not a photo or a video (%(size)s): "
+"a zip, a document, a spreadsheet… Nothing is moved: a document may "
+"matter. intruders.csv, next to this page, lists every file."
+msgid_plural ""
+"%(num)s files of your photo folders are not photos or videos (%(size)s): "
+"zips, documents, spreadsheets… Nothing is moved: a document may matter. "
+"intruders.csv, next to this page, lists every file."
+msgstr[0] ""
+"%(num)s fichier de vos dossiers de photos n'est ni une photo ni une vidéo"
+" (%(size)s) : un zip, un document, un tableur… Rien n'est déplacé : un "
+"document peut compter. intruders.csv, à côté de cette page, liste chaque "
+"fichier."
+msgstr[1] ""
+"%(num)s fichiers de vos dossiers de photos ne sont ni des photos ni des "
+"vidéos (%(size)s) : des zip, des documents, des tableurs… Rien n'est "
+"déplacé : un document peut compter. intruders.csv, à côté de cette page, "
+"liste chaque fichier."
+
+#, python-format
 msgid "%(num)s group of near duplicates"
 msgid_plural "%(num)s groups of near duplicates"
 msgstr[0] "%(num)s groupe de quasi-doublons"
@@ -1954,11 +1974,6 @@ msgstr ""
 msgid "Copies not found when read back: {count}. Type mh phone again."
 msgstr "Copies introuvables à la relecture : {count}. Tapez de nouveau mh phone."
 
-msgid "Copies of other files than media go to /quarantine: mount it."
-msgstr ""
-"Les copies des fichiers autres que des médias vont dans /quarantine : "
-"montez-le."
-
 msgid "Copies, previewed"
 msgstr "Des copies, en aperçu"
 
@@ -2320,12 +2335,6 @@ msgstr ""
 msgid "Deleted on purpose: {deleted} · answered: {decided} of {total}"
 msgstr "Supprimés exprès : {deleted} · répondu : {decided} sur {total}"
 
-msgid "Deleted or moved to the quarantine"
-msgstr "Supprimés ou déplacés en quarantaine"
-
-msgid "Deleted or moved to the quarantine from"
-msgstr "Supprimées ou déplacées en quarantaine depuis"
-
 msgid ""
 "Deletes them from the cache and shows that none is left; your photos do "
 "not change."
@@ -2602,14 +2611,6 @@ msgstr ""
 
 msgid "Each group of near duplicates is described through the version kept."
 msgstr "Chaque groupe de quasi-doublons est décrit par la version conservée."
-
-msgid ""
-"Each line: the file kept, and the byte-for-byte identical file deleted "
-"(📦: moved to the quarantine, not a media file)."
-msgstr ""
-"Chaque ligne : le fichier gardé, et le fichier identique octet par octet "
-"qui est supprimé (📦 : déplacé en quarantaine, ce n'est pas une photo ni "
-"une vidéo)."
 
 msgid "Each line: the file kept, and the byte-for-byte identical file deleted."
 msgstr ""
@@ -3085,6 +3086,9 @@ msgstr ""
 "Exposition : sombre sous dark_below ou claire au-dessus de bright_above "
 "(luminosité moyenne, de 0 à 255), ou quand plus de clipped_above des "
 "pixels (de 0 à 1) sont noir pur ou blanc pur."
+
+msgid "Extension"
+msgstr "Extension"
 
 msgid "Extension categories (--ext)"
 msgstr "Catégories d'extensions (--ext)"
@@ -3779,6 +3783,9 @@ msgstr "Rapport HTML : {path}"
 msgid "Heaviest files"
 msgstr "Fichiers les plus lourds"
 
+msgid "Heaviest folders"
+msgstr "Dossiers les plus lourds"
+
 msgid "Height"
 msgstr "Hauteur"
 
@@ -4026,6 +4033,9 @@ msgstr "Langue de l'interface : \"en\" ou \"fr\"."
 
 msgid "Into folders"
 msgstr "Dans des dossiers"
+
+msgid "Intruder files"
+msgstr "Fichiers intrus"
 
 #, python-brace-format
 msgid "Invalid value for {option}: {reason}"
@@ -4834,6 +4844,15 @@ msgid "Named: {people}."
 msgstr "Nommés : {people}."
 
 msgid ""
+"Names and extensions (with their dot) that follow photos: never counted "
+"as intruder files, the files of your photo folders that are not photos or"
+" videos. Case ignored."
+msgstr ""
+"Noms et extensions (avec leur point) qui accompagnent les photos : jamais"
+" comptés comme fichiers intrus, les fichiers de vos dossiers de photos "
+"qui ne sont ni des photos ni des vidéos. Sans tenir compte de la casse."
+
+msgid ""
 "Names are saved in config.toml: mount a writable folder of yours on "
 "/config to name the groups. The page shows them meanwhile."
 msgstr ""
@@ -5534,14 +5553,6 @@ msgstr "Pas sur la télé : son format ({format}) n'y est pas lu."
 msgid "Not opened by mh? Type the command yourself; this page is closed."
 msgstr "Pas ouverte par mh ? Tapez la commande vous-même ; cette page est fermée."
 
-#, python-brace-format
-msgid ""
-"Not photos or videos: {extensions}. These files are only compared byte "
-"for byte, and their copies are moved to the quarantine."
-msgstr ""
-"Ni photos ni vidéos : {extensions}. Ces fichiers sont seulement comparés "
-"octet par octet, et leurs copies sont déplacées en quarantaine."
-
 msgid "Not readable"
 msgstr "Illisible"
 
@@ -5976,33 +5987,29 @@ msgstr "Un zip hors du cache de Docker : une remise à zéro de Docker ne perd r
 msgid ""
 "Only analyse these categories or extensions, e.g. --ext photo,video or "
 "--ext png,webp (repeatable). Categories: {categories} and those of "
-"scan.categories in config.toml. Other types too, such as --ext pdf,docx: "
-"their copies are moved to the quarantine. Default: media (every photo, "
-"RAW and video)."
+"scan.categories in config.toml. Photo, RAW and video extensions only. "
+"Default: media (every photo, RAW and video)."
 msgstr ""
-"N'analyse que ces catégories ou extensions, p. ex. --ext photo,video ou "
-"--ext png,webp (répétable). Catégories : {categories} et celles de "
-"scan.categories dans config.toml. D'autres types aussi, comme --ext "
-"pdf,docx : leurs copies sont déplacées en quarantaine. Par défaut : media"
-" (toutes les photos, RAW et vidéos)."
+"N'analyser que ces catégories ou extensions, par exemple --ext "
+"photo,video ou --ext png,webp (répétable). Catégories : {categories} et "
+"celles de scan.categories dans config.toml. Extensions de photos, RAW et "
+"vidéos seulement. Par défaut : media (toutes les photos, RAW et vidéos)."
 
 msgid ""
 "Only analyse these categories or extensions, e.g. [\"photo\", \"video\"] "
 "or [\"png\", \"webp\"]. Built-in categories: photo, raw, video and media "
 "(the three); yours are defined below. Empty: media, every photo, RAW and "
-"video extension. Other types are allowed, such as [\"pdf\", \"docx\"]: "
-"their copies are moved to the quarantine, never deleted. A name without a"
-" dot is a category when one has that name, otherwise an extension: write "
-"\".raw\" for the extension."
+"video extension. Only photo, RAW and video extensions: the audit lists "
+"the other files (intruder files). A name without a dot is a category when"
+" one has that name, otherwise an extension."
 msgstr ""
-"N'analyser que ces catégories ou extensions, p. ex. [\"photo\", "
+"N'analyser que ces catégories ou extensions, par exemple [\"photo\", "
 "\"video\"] ou [\"png\", \"webp\"]. Catégories intégrées : photo, raw, "
 "video et media (les trois) ; les vôtres se définissent plus bas. Vide : "
-"media, toutes les extensions de photos, RAW et vidéos. D'autres types "
-"sont permis, comme [\"pdf\", \"docx\"] : leurs copies sont déplacées en "
-"quarantaine, jamais supprimées. Un nom sans point est une catégorie quand"
-" l'une porte ce nom, sinon une extension : écrivez \".raw\" pour "
-"l'extension."
+"media, toutes les extensions de photos, RAW et vidéos. Extensions de "
+"photos, RAW et vidéos seulement : l'audit liste les autres fichiers "
+"(fichiers intrus). Un nom sans point est une catégorie quand l'une porte "
+"ce nom, sinon une extension."
 
 #, python-brace-format
 msgid "Only analysed: {scope}."
@@ -6380,6 +6387,9 @@ msgstr ""
 "comme un mot, est celui de cette personne. Majuscules et accents ne "
 "comptent pas. Ses photos rejoignent votre propre dossier du même moment "
 "(la règle same_moment)."
+
+msgid "Per extension"
+msgstr "Par extension"
 
 #, python-brace-format
 msgid "Per photo: {describe:.1f} s to describe, {map:.1f} s to map."
@@ -7959,14 +7969,6 @@ msgstr ""
 
 msgid "Software"
 msgstr "Logiciel"
-
-msgid ""
-"Software folders (.git, node_modules, AppData, Program Files, ...) are "
-"skipped: there, where a file lies makes a program work."
-msgstr ""
-"Les dossiers de logiciels (.git, node_modules, AppData, Program Files, "
-"...) sont ignorés : là, c'est l'endroit où se trouve un fichier qui fait "
-"fonctionner un programme."
 
 msgid "Some destinations cannot be used; nothing was moved:"
 msgstr "Certaines destinations sont inutilisables ; rien n'a été déplacé :"
@@ -10543,12 +10545,6 @@ msgstr "Sera supprimé"
 msgid "Will be deleted from"
 msgstr "Seront supprimées de"
 
-msgid "Will be deleted or moved to the quarantine"
-msgstr "Sera supprimé ou déplacé en quarantaine"
-
-msgid "Will be deleted or moved to the quarantine from"
-msgstr "Seront supprimées ou déplacées en quarantaine depuis"
-
 msgid "Will be moved to the quarantine"
 msgstr "Sera déplacé en quarantaine"
 
@@ -11717,16 +11713,16 @@ msgstr "chez soi seulement : repas, jeux, enfants, canapé, jardin"
 #, python-brace-format
 msgid ""
 "invalid category name '{name}': letters, digits, '-' and '_' only, such "
-"as documents"
+"as phone"
 msgstr ""
 "nom de catégorie « {name} » invalide : lettres, chiffres, « - » et « _ » "
-"seulement, par exemple documents"
+"seulement, par exemple phone"
 
 #, python-brace-format
-msgid "invalid extension {values}: letters, digits, '-' and '_' only, such as pdf"
+msgid "invalid extension {values}: letters, digits, '-' and '_' only, such as jpg"
 msgstr ""
 "extension {values} invalide : lettres, chiffres, « - » et « _ » "
-"seulement, par exemple pdf"
+"seulement, par exemple jpg"
 
 msgid "invert: the others instead"
 msgstr "inverser : les autres à la place"
@@ -12434,9 +12430,6 @@ msgstr "original"
 
 msgid "other file types"
 msgstr "autres types de fichiers"
-
-msgid "other files than media moved to the quarantine"
-msgstr "fichiers autres que photos et vidéos déplacés en quarantaine"
 
 msgid "outside the mounted folders"
 msgstr "hors des dossiers montés"
@@ -13611,20 +13604,6 @@ msgid "{count} copies to set aside"
 msgstr "{count} copies à mettre de côté"
 
 #, python-brace-format
-msgid ""
-"{count} copy of another file than a media will be moved to the "
-"quarantine, not deleted."
-msgid_plural ""
-"{count} copies of other files than media will be moved to the quarantine,"
-" not deleted."
-msgstr[0] ""
-"{count} copie d'un fichier autre qu'un média sera déplacée en "
-"quarantaine, pas supprimée."
-msgstr[1] ""
-"{count} copies de fichiers autres que des médias seront déplacées en "
-"quarantaine, pas supprimées."
-
-#, python-brace-format
 msgid "{count} day ago"
 msgid_plural "{count} days ago"
 msgstr[0] "il y a {count} jour"
@@ -13869,22 +13848,6 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} fichiers sont à la fois dans {kept} (gardés) et dans {removed} "
 "(des copies que 'clean' supprime), {size} à libérer."
-
-#, python-brace-format
-msgid ""
-"{count} file is both in {kept} (kept) and in {removed} (a copy 'clean' "
-"deletes, or moves to the quarantine if not a media file), {size} to free."
-msgid_plural ""
-"{count} files are both in {kept} (kept) and in {removed} (copies 'clean' "
-"deletes, or moves to the quarantine if not a media file), {size} to free."
-msgstr[0] ""
-"{count} fichier est à la fois dans {kept} (gardé) et dans {removed} (une "
-"copie que 'clean' supprime, ou déplace en quarantaine si ce n'est pas une"
-" photo ni une vidéo), {size} à libérer."
-msgstr[1] ""
-"{count} fichiers sont à la fois dans {kept} (gardés) et dans {removed} "
-"(des copies que 'clean' supprime, ou déplace en quarantaine si ce ne sont"
-" pas des photos ni des vidéos), {size} à libérer."
 
 #, python-brace-format
 msgid ""
@@ -15117,10 +15080,10 @@ msgid "{name} must be a JSON array, e.g. [\"C:\\\\Photos\"]"
 msgstr "{name} doit être un tableau JSON, p. ex. [\"C:\\\\Photos\"]"
 
 #, python-brace-format
-msgid "{name} must be a JSON object, e.g. {{\"documents\": [\"pdf\", \"docx\"]}}"
+msgid "{name} must be a JSON object, e.g. {{\"phone\": [\"jpg\", \"heic\"]}}"
 msgstr ""
-"{name} doit contenir un objet JSON, p. ex. {{\"documents\": [\"pdf\", "
-"\"docx\"]}}"
+"{name} doit être un objet JSON, par exemple {{\"phone\": [\"jpg\", "
+"\"heic\"]}}"
 
 #, python-brace-format
 msgid "{name} was already there: copied as {final}."
@@ -15924,6 +15887,14 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid ""
+"{values}: media-hygiene only handles photos and videos; the audit lists "
+"the other files of your photo folders (intruder files)"
+msgstr ""
+"{values} : media-hygiene ne traite que les photos et les vidéos ; l'audit"
+" liste les autres fichiers de vos dossiers de photos (fichiers intrus)"
+
+#, python-brace-format
+msgid ""
 "{values}: sidecars follow the photo of the same name, they are not "
 "analysed on their own"
 msgstr ""
@@ -16283,4 +16254,20 @@ msgid ""
 msgstr ""
 "🤖 classify et tags peuvent aussi interroger un modèle d'IA local : "
 "indiquez [classify.ai] model dans config.toml (mh config)."
+
+#, python-brace-format
+msgid ""
+"🧹 {count} file that is not a photo or a video ({extensions}) takes {size}"
+" in your photo folders: see 'Intruder files' in the report."
+msgid_plural ""
+"🧹 {count} files that are not photos or videos ({extensions}) take {size} "
+"in your photo folders: see 'Intruder files' in the report."
+msgstr[0] ""
+"🧹 {count} fichier qui n'est ni une photo ni une vidéo ({extensions}) "
+"occupe {size} dans vos dossiers de photos : voyez « Fichiers intrus » "
+"dans le rapport."
+msgstr[1] ""
+"🧹 {count} fichiers qui ne sont ni des photos ni des vidéos ({extensions})"
+" occupent {size} dans vos dossiers de photos : voyez « Fichiers intrus » "
+"dans le rapport."
 

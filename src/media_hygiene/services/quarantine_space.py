@@ -82,8 +82,9 @@ def set_aside(plan: CleanPlan) -> Iterator[MediaFile]:
         burst shots and files set aside, the files back after being set aside,
         unreadable files and orphan sidecars.
     """
-    for decision in plan.decisions:
-        yield from (file for file in decision.removable if plan.to_quarantine(file))
+    if plan.to_quarantine:
+        for decision in plan.decisions:
+            yield from decision.removable
     for near in plan.near:
         yield from near.removable
     for choice in plan.bursts:

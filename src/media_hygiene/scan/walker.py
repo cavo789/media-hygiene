@@ -29,6 +29,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.scan.filters import ScanFilters
     from media_hygiene.scan.folder_cache import CachedEntry, FolderListing, WalkSetup
+    from media_hygiene.scan.intruders import Intruder
     from media_hygiene.scan.models import MediaFile
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.scan.sidecars import Sidecar
@@ -54,6 +55,7 @@ class Walk:
     )
     visited: frozenset[Path] = frozenset()
     reused: int = 0
+    intruders: tuple[Intruder, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -94,9 +96,7 @@ async def walk(
     Returns:
         Every media file and sidecar found, what could not be read, the new listings.
     """
-    files: list[MediaFile] = []
-    sidecars: list[Sidecar] = []
-    unreadable: list[Path] = []
+    seen: list[Listing] = []
     listings: dict[Path, FolderListing] = {}
     visited: list[Path] = []
     reused = 0
@@ -109,22 +109,27 @@ async def walk(
             nonlocal reused
             async with slots:
                 read = await asyncio.to_thread(_read, folder, setup)
-            seen = read.done or await _fresh(folder, read, (setup, now, slots))
-            listing = seen.listing
-            files.extend(listing.files)
-            sidecars.extend(listing.sidecars)
-            unreadable.extend(listing.unreadable)
+            read_one = read.done or await _fresh(folder, read, (setup, now, slots))
+            listing = read_one.listing
+            seen.append(listing)
             visited.append(folder)
-            reused += seen.reused
-            if seen.fresh is not None:
-                listings[folder] = seen.fresh
+            reused += read_one.reused
+            if read_one.fresh is not None:
+                listings[folder] = read_one.fresh
             for _file in listing.files:
                 progress.advance()
             visits.extend(group.create_task(visit(sub)) for sub in listing.folders)
 
         visits.extend(group.create_task(visit(root)) for root in roots)
-    found = (tuple(files), tuple(sidecars), tuple(unreadable))
-    return Walk(*found, MappingProxyType(listings), frozenset(visited), reused)
+    return Walk(
+        files=tuple(file for listing in seen for file in listing.files),
+        sidecars=tuple(item for listing in seen for item in listing.sidecars),
+        unreadable=tuple(path for listing in seen for path in listing.unreadable),
+        listings=MappingProxyType(listings),
+        visited=frozenset(visited),
+        reused=reused,
+        intruders=tuple(item for listing in seen for item in listing.intruders),
+    )
 
 
 def _read(folder: Path, setup: WalkSetup) -> _Read:

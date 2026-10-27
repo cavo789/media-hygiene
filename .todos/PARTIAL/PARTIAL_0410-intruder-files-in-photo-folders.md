@@ -48,3 +48,15 @@ By the maintainer, at the start of `/todo:iterate`:
   skill `photo-picking-pages` does not apply); the shape of the page frame stays the shared one.
 - Companions/sidecars: a `config.toml` setting (`[scan] companions = [...]`), with today's list
   as its default.
+
+## Status — PARTIAL (2026-10-27)
+
+- **Done:** 1. count (`scan/intruders.py`, `sort_entries`, fresh = index-reused, tested);
+  `[scan] companions` setting; 2. the audit's 🧹 line; 3. the report section + `intruders.csv`;
+  4. the clean side: `services/intruder_pick.set_intruders_aside` saves the files picked (by
+  extension and/or folder, protected and backups left out) into the `chosen` key, and
+  `clean --decisions` quarantines them per drive, journaled, `undo`-able, skipping a file
+  moved since (tested on real files); 5. docs EN + FR (step 6 section), `i18n_update`.
+- **Not done:** the checkbox page that calls it, and the 👉 line leading to it.
+  **Reason:** a page on the shared frame is a lot on its own; filed as **0428 — intruders
+  picking page**.

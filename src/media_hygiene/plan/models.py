@@ -6,7 +6,6 @@ from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from media_hygiene.constants import MediaKind
 from media_hygiene.plan.keep_decision import KeepDecision
 from media_hygiene.plan.similar_models import SimilarFindings
 from media_hygiene.scan.inventory import Inventory
@@ -19,6 +18,7 @@ if TYPE_CHECKING:
     from media_hygiene.plan.gone import GoneAnswer
     from media_hygiene.plan.returned import ReturnedFile
     from media_hygiene.plan.similar_models import BurstChoice, NearDecision
+    from media_hygiene.scan.intruders import Intruder
     from media_hygiene.scan.models import BrokenFile, DuplicateGroup, MediaFile
     from media_hygiene.scan.read_errors import UnreadFile
     from media_hygiene.scan.sidecars import Sidecar
@@ -58,25 +58,18 @@ class CleanPlan:  # pylint: disable=too-many-instance-attributes
         """Number of exact copies moved to the quarantine rather than deleted.
 
         Returns:
-            Every copy by default; with `--delete`, the copies of other files (not
-            media) only.
+            Every copy by default; none with `--delete`.
         """
-        return sum(
-            self.to_quarantine(file)
-            for decision in self.decisions
-            for file in decision.removable
-        )
+        return 0 if self.delete_copies else self.removable_count
 
-    def to_quarantine(self, file: MediaFile) -> bool:
-        """Tell whether `clean` moves a duplicate copy to the quarantine.
-
-        Args:
-            file: A copy to remove.
+    @property
+    def to_quarantine(self) -> bool:
+        """Tell whether `clean` moves the duplicate copies to the quarantine.
 
         Returns:
-            True unless `--delete` deletes it (a media copy); another file always goes.
+            True unless `--delete` deletes them.
         """
-        return file.kind is MediaKind.OTHER or not self.delete_copies
+        return not self.delete_copies
 
     @property
     def reclaimable(self) -> int:
@@ -174,6 +167,7 @@ class AuditFindings:  # pylint: disable=too-many-instance-attributes
     unread: tuple[UnreadFile, ...] = ()  # read again next time, never in the plan
     gone: int = 0  # files gone since, waiting for `review --gone` (0224)
     backups: tuple[BackupCoverage, ...] = ()  # each backup folder compared (0204)
+    intruders: tuple[Intruder, ...] = ()  # neither media nor companion (0410)
 
     @property
     def files_scanned(self) -> int:

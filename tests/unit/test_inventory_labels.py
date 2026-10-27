@@ -101,7 +101,6 @@ def test_small_labels() -> None:
     """Flash bit 0, kinds, formats from the extension, integrity states."""
     assert (flash_label(None), flash_label(16), flash_label(25)) == (None, "no", "yes")
     assert kind_label(MediaKind.RAW) == "RAW"
-    assert kind_label(MediaKind.OTHER) == "other"
     assert format_of(entry("v.mp4")) == "MP4"
     assert integrity_label(entry()) == "not checked"
     assert integrity_label(entry(facts=FileFacts().with_integrity(None, ""))) == (
@@ -110,7 +109,7 @@ def test_small_labels() -> None:
 
 
 def test_other_files_are_not_listed() -> None:
-    """A PDF asked for with `--ext` is not a media file of the inventory."""
+    """A PDF is not a media file of the inventory."""
     file = IndexedFile(Path("/data/c/doc.pdf"), 1, 0, FileFacts())
     assert entry_of(file, CONTEXT) is None
 

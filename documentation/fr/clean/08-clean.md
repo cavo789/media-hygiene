@@ -202,8 +202,7 @@ intacts, s'il y en a. Il dit ce qui a été fait, en deux blocs :
 `clean --delete` supprime pour de bon les copies en trop au lieu de les déplacer, après la même
 comparaison octet par octet avec la copie gardée. La copie gardée reste : `undo` reconstruit
 chaque copie supprimée à partir d'elle. C'est, avec `purge`, la seule façon dont l'outil supprime
-du contenu, et il le dit avant de demander. Les copies d'autres fichiers que des médias (`--ext`)
-vont toujours en quarantaine.
+du contenu, et il le dit avant de demander.
 
 ## Bon à savoir
 

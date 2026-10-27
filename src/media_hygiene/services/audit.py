@@ -22,6 +22,7 @@ from media_hygiene.scan.broken import BrokenFileFinder
 from media_hygiene.scan.colour import ColourTools
 from media_hygiene.scan.deps import ScanDeps
 from media_hygiene.scan.exact import ExactDuplicateFinder
+from media_hygiene.scan.intruders import outside
 from media_hygiene.scan.inventory import take_inventory
 from media_hygiene.scan.sidecars import accompanied
 from media_hygiene.scan.stopwatch import Stage, Stopwatch
@@ -124,6 +125,7 @@ class AuditService:
             unread=integrity.unread,
             gone=back.gone,
             backups=compared.folders,
+            intruders=outside(library.intruders, policy.protected),
         )
 
     def _analyse_files(

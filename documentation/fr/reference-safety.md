@@ -103,8 +103,8 @@ probable qu'une erreur de disque.
   avec `--tier near` (les groupes sûrs et ceux que vous avez décidés) ou `--tier near-all`, et
   alors il la déplace seulement en quarantaine.
 - **Seuls les photos, fichiers RAW et vidéos** sont analysés, reconnus par leur extension. Les
-  autres fichiers seulement si vous [les demandez](clean/06-file-types.md#autres-types-de-fichiers) avec
-  `--ext`, et leurs copies sont alors déplacées en quarantaine, jamais supprimées.
+  autres fichiers de vos dossiers de photos sont seulement [comptés et listés](clean/06-file-types.md#fichiers-qui-ne-sont-ni-des-photos-ni-des-vidéos)
+  par l'audit : jamais déplacés.
 
 ## Chaque garantie, étape par étape
 

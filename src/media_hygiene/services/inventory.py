@@ -113,7 +113,7 @@ def _entries(runtime: Runtime, connection: sqlite3.Connection) -> Iterator[Entry
         connection: The open index.
 
     Yields:
-        One entry per media file; other files (`--ext pdf`) are left out.
+        One entry per media file; other files are left out.
     """
     settings = runtime.settings
     context = InventoryContext(

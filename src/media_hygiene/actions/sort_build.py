@@ -150,7 +150,7 @@ def _lead_order(member: tuple[Decision, Path]) -> tuple[int, str]:
         The sort key.
     """
     path = member[1]
-    return (_LEAD.get(media_kind(path) or MediaKind.OTHER, len(_LEAD)), path.name)
+    return (_LEAD.get(media_kind(path) or MediaKind.SIDECAR, len(_LEAD)), path.name)
 
 
 def _same_folder(folder: Path, other: Path) -> bool:

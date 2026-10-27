@@ -116,7 +116,7 @@ def warn_about_aliases(runtime: Runtime, aliases: Sequence[Alias]) -> None:
 
 
 def warn_about_scope(runtime: Runtime) -> None:
-    """Warn about the scope: unmounted folders, extensions, folder names, other files.
+    """Warn about the scope: unmounted folders, extensions, folder names.
 
     Args:
         runtime: Settings, mount points and output.
@@ -137,19 +137,6 @@ def warn_about_scope(runtime: Runtime) -> None:
             _("Folders skipped by name, wherever they are: {names}.").format(
                 names=", ".join(scan.excluded_names)
             ),
-        )
-    if scan.other_files:
-        runtime.output.warning(
-            _(
-                "Not photos or videos: {extensions}. These files are only compared "
-                "byte for byte, and their copies are moved to the quarantine."
-            ).format(extensions=", ".join(scan.other_files)),
-        )
-        runtime.output.tip(
-            _(
-                "Software folders (.git, node_modules, AppData, Program Files, ...) "
-                "are skipped: there, where a file lies makes a program work."
-            )
         )
 
 

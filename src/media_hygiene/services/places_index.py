@@ -70,7 +70,7 @@ def located_files(inputs: IndexedInputs) -> list[Located]:
                 file.path,
                 file.size,
                 file.mtime_ns,
-                media_kind(file.path) or MediaKind.OTHER,
+                media_kind(file.path) or MediaKind.SIDECAR,
             ),
         )
         for file in inputs.files

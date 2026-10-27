@@ -37,8 +37,8 @@ class PairEvidence:
     """What reassures about a folder pair.
 
     Why its copies are kept, sample previews, whether the folder losing its copies
-    is entirely a copy of the other one, and whether those copies are deleted, moved
-    to the quarantine (other files than media), or both.
+    is entirely a copy of the other one, and whether those copies are deleted or moved
+    to the quarantine.
     """
 
     complete: bool = False
@@ -96,7 +96,7 @@ class ProofView:
 
 @dataclass(frozen=True, slots=True)
 class RemovedView:
-    """A copy `clean` removes: deleted, or moved to the quarantine (not a media)."""
+    """A copy `clean` removes: deleted, or moved to the quarantine."""
 
     path: str
     moved: bool = False

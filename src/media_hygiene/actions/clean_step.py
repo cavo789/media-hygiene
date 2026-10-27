@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from media_hygiene.constants import BrokenReason, MediaKind
+from media_hygiene.constants import BrokenReason
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import Step
 
@@ -24,7 +24,6 @@ class CleanLabels:  # pylint: disable=too-many-instance-attributes
     """What the line under the bar says about the file being handled (`{path}`)."""
 
     copy: str
-    kept_aside: str
     linked: str
     near: str
     burst: str
@@ -34,17 +33,6 @@ class CleanLabels:  # pylint: disable=too-many-instance-attributes
     unreadable: str
     empty: str
     orphan: str
-
-    def of_copy(self, file: MediaFile) -> str:
-        """The label of a duplicate copy: another file than a media is never deleted.
-
-        Args:
-            file: The copy.
-
-        Returns:
-            Its label.
-        """
-        return self.kept_aside if file.kind is MediaKind.OTHER else self.copy
 
     def of_broken(self, item: BrokenFile) -> str:
         """The label of a broken file: an empty one is deleted, others set aside.
@@ -65,12 +53,11 @@ def clean_labels(*, delete_copies: bool) -> CleanLabels:
         delete_copies: `clean --delete`: copies of media are deleted for good.
 
     Returns:
-        The labels; `kept_aside` is for copies of other files, never deleted.
+        The labels.
     """
     kept_aside = _("Moving a duplicate copy to the quarantine: {path}")
     return CleanLabels(
         copy=_("Deleting a duplicate copy: {path}") if delete_copies else kept_aside,
-        kept_aside=kept_aside,
         linked=_("Replacing a duplicate copy by a link to the kept file: {path}"),
         near=_("Moving a near duplicate to the quarantine: {path}"),
         burst=_("Moving a burst shot set aside to the quarantine: {path}"),

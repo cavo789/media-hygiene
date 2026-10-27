@@ -70,7 +70,7 @@ d'Excel.
   page [`people`](reference-people.md) ; vide quand personne n'est nommé.
 
 Les fichiers RAW n'ont que leur taille, leurs dates et leur empreinte : leur contenu n'est pas
-décodé. Les fichiers autres que photos et vidéos (`--ext pdf`, [étape 6 du nettoyage](clean/06-file-types.md))
+décodé. Les fichiers autres que photos et vidéos ([étape 6 du nettoyage](clean/06-file-types.md))
 sont laissés de côté.
 
 ## La feuille Résumé

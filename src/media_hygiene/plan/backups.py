@@ -18,6 +18,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.paths.host_paths import is_within
 from media_hygiene.plan.backup_import import DealtWith, proposed
+from media_hygiene.scan.intruders import outside
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping, Sequence
@@ -136,6 +137,7 @@ class BackupFolders:
             sidecars=tuple(
                 s for s in walk.sidecars if self.holding(s.file.path) is None
             ),
+            intruders=outside(walk.intruders, self.folders),
         )
 
     def compare(

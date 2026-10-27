@@ -142,15 +142,6 @@ def _announce(runtime: Runtime, plan: CleanPlan) -> None:
                 "with the kept copy; 'undo' rebuilds them from it."
             )
         )
-        if plan.moved_copies:
-            moved = ngettext(
-                "{count} copy of another file than a media will be moved to the "
-                "quarantine, not deleted.",
-                "{count} copies of other files than media will be moved to the "
-                "quarantine, not deleted.",
-                plan.moved_copies,
-            )
-            output.info(moved.format(count=human_number(plan.moved_copies)))
     else:
         output.info(_safe_line(runtime, plan))
     tell_returned(output, plan)

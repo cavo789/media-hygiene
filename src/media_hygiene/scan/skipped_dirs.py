@@ -32,11 +32,6 @@ SYSTEM_DIR_NAMES: Final = (
     ".trashes",
     ".thumbnails",
 )
-# Software folders, skipped when other files than media are analysed (paths matter).
-APP_DIR_NAMES: Final = frozenset(
-    {".git", ".hg", ".svn", ".venv", "venv", "node_modules", "site-packages", "windows"}
-    | {"__pycache__", "appdata", "programdata", "program files", "program files (x86)"},
-)
 
 
 def matches_any(name: str, patterns: Iterable[str]) -> bool:

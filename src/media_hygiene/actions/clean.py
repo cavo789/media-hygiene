@@ -28,7 +28,6 @@ from media_hygiene.actions.parallel import (
 )
 from media_hygiene.actions.sort_cleanup import FolderCleaner
 from media_hygiene.actions.verify import checked_removal
-from media_hygiene.constants import MediaKind
 from media_hygiene.plan.pair_links import linked_count
 
 if TYPE_CHECKING:
@@ -113,7 +112,7 @@ class CleanExecutor:
         for decision in plan.decisions:
             for file in decision.removable:
                 action = partial(self._delete_copy, decision, file)
-                yield file, self._labels.of_copy(file), action
+                yield file, self._labels.copy, action
             for file in decision.linked:  # a pair keeping both names (0213)
                 action = partial(self._linker.link, decision, file)
                 yield file, self._labels.linked, action
@@ -125,8 +124,7 @@ class CleanExecutor:
     def _delete_copy(self, decision: KeepDecision, file: MediaFile) -> None:
         """Set aside one duplicate copy after a byte-for-byte check against the keeper.
 
-        It goes to the quarantine; with `--delete`, a media copy is deleted for good
-        (a copy of another file than a media always goes to the quarantine).
+        It goes to the quarantine; with `--delete`, it is deleted for good.
 
         Args:
             decision: The group decision, holding the keeper.
@@ -137,7 +135,7 @@ class CleanExecutor:
         if removal.reason is not None:
             self._tally.skipped.append(Incident(file.path, removal.reason))
             return
-        if file.kind is MediaKind.OTHER or not self._context.delete_copies:
+        if not self._context.delete_copies:
             origin = Origin(keeper, removal.sha256)
             self._changes.quarantine(file, ActionKind.QUARANTINE_DUPLICATE, origin)
             return

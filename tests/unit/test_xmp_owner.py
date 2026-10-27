@@ -28,7 +28,7 @@ def _sidecar(photo: MediaFile, text: bytes) -> Sidecar:
     """Its sidecar `<name>.xmp`, written."""
     path = photo.path.with_name(photo.path.name + ".xmp")
     path.write_bytes(text)
-    file = MediaFile(path, len(text), 0, MediaKind.OTHER)
+    file = MediaFile(path, len(text), 0, MediaKind.SIDECAR)
     return Sidecar(file, frozenset({photo.path.name}))
 
 

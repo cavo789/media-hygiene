@@ -42,9 +42,8 @@ def extensions() -> OptionInfo:
             help=_(
                 "Only analyse these categories or extensions, e.g. --ext photo,video "
                 "or --ext png,webp (repeatable). Categories: {categories} and those "
-                "of scan.categories in config.toml. Other types too, such as --ext "
-                "pdf,docx: their copies are moved to the quarantine. Default: media "
-                "(every photo, RAW and video)."
+                "of scan.categories in config.toml. Photo, RAW and video extensions "
+                "only. Default: media (every photo, RAW and video)."
             ).format(categories=", ".join(BUILTIN_CATEGORIES)),
             rich_help_panel=_panel_scan(),
             show_default=False,

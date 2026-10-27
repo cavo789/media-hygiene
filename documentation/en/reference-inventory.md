@@ -66,7 +66,7 @@ are dates, so sorting and filtering work whatever the language of Excel.
   [`people`](reference-people.md) page; empty when nobody is named.
 
 RAW files only have their size, dates and fingerprint: their content is not decoded. Files other
-than photos and videos (`--ext pdf`, [cleaning, step 6](clean/06-file-types.md)) are left out.
+than photos and videos ([cleaning, step 6](clean/06-file-types.md)) are left out.
 
 ## The Summary sheet
 

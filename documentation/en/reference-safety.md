@@ -94,8 +94,8 @@ error.
   leaves it alone unless you ask with `--tier near` (the sure groups and those you decided) or
   `--tier near-all`, and then only moves it to the quarantine.
 - **Only photos, RAW files and videos** are analysed, recognised by their extension. Other files
-  only when you [ask for them](clean/06-file-types.md#other-file-types) with `--ext`, and then their
-  copies are moved to the quarantine, never deleted.
+  of your photo folders are only [counted and listed](clean/06-file-types.md#files-that-are-not-photos-or-videos)
+  by the audit: never moved.
 
 ## Every guarantee, step by step
 

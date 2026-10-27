@@ -7,8 +7,8 @@ from typing import Final
 from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
 
 from media_hygiene.config.categories import expanded, requested, valid_categories
-from media_hygiene.constants import MEDIA_EXTENSIONS
 from media_hygiene.i18n import _
+from media_hygiene.scan.intruders import DEFAULT_COMPANIONS
 from media_hygiene.scan.whole_read import MEBIBYTE, WHOLE_READ_MB
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
@@ -18,9 +18,9 @@ _SEPARATORS: Final = ("/", "\\")
 class ScanSettings(BaseModel):
     """`[scan]` — which files are analysed: photos, RAW and videos, or those asked for.
 
-    Any extension may be asked for (`pdf`, `docx`): such files are only compared byte
-    for byte, never decoded, and their copies are moved to the quarantine. Categories
-    name lists of extensions: `photo`, `raw`, `video`, `media` and the user's own.
+    Only media extensions may be asked for (a subset, e.g. `.jpg` only); other files
+    are intruders, listed by the audit. Categories name lists of extensions: `photo`,
+    `raw`, `video`, `media` and the user's own.
     `excluded_names` are folder names (globs, case ignored) skipped wherever they are,
     on top of the system ones.
     """
@@ -35,6 +35,24 @@ class ScanSettings(BaseModel):
     full_check_days: int = Field(default=7, ge=0)  # 0: every folder, every time
     # A picture up to this size is read once into memory: decoded and hashed from it.
     read_whole_mb: int = Field(default=WHOLE_READ_MB, ge=0)  # 0: read twice, as before
+    # Names and extensions that follow photos: never listed as intruder files (0410).
+    companions: tuple[str, ...] = DEFAULT_COMPANIONS
+
+    @field_validator("companions")
+    @classmethod
+    def _valid_companions(cls, companions: tuple[str, ...]) -> tuple[str, ...]:
+        """Lowercase and trim the companions, drop empty ones and duplicates.
+
+        Args:
+            companions: Names (`Thumbs.db`) and extensions with their dot (`.xmp`).
+
+        Returns:
+            Them, lowercase, in the configured order.
+        """
+        parts = (
+            part.strip().casefold() for item in companions for part in item.split(",")
+        )
+        return tuple(dict.fromkeys(part for part in parts if part))
 
     @field_validator("categories")
     @classmethod
@@ -112,12 +130,3 @@ class ScanSettings(BaseModel):
             Extensions with their dot; empty when nothing was asked for.
         """
         return expanded(self.extensions, self.categories)
-
-    @property
-    def other_files(self) -> tuple[str, ...]:
-        """The extensions asked for that are not photos, RAW files or videos.
-
-        Returns:
-            Those extensions, in the configured order.
-        """
-        return tuple(ext for ext in self.resolved if ext not in MEDIA_EXTENSIONS)

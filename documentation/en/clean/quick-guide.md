@@ -165,7 +165,7 @@ and for all (step 5).
 <span class="mh-badge mh-optional">Optional</span> <span class="mh-badge mh-safe">🔒 Photos untouched</span>
 
 By default, the audit looks at photos, RAW images and videos. `--ext` narrows the analysis to a
-few types, or widens it to other files:
+few types:
 
 ```powershell
 mh audit --ext heic,video
@@ -173,7 +173,8 @@ mh audit --ext heic,video
 
 ??? info "Details"
 
-    `--ext video` looks at the videos only; `--ext pdf` also looks for duplicate PDFs. Your own
+    `--ext video` looks at the videos only; the other files of your photo folders (zip, pdf…) are
+    counted by the audit and listed in the report. Your own
     lists of types are named in `[scan.categories]` of `config.toml`. More: [only some file
     types](06-file-types.md).
 

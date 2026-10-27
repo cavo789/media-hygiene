@@ -109,25 +109,9 @@ def test_the_summary_counts_the_groups() -> None:
     assert "Groups of identical files" in buffer.getvalue()
 
 
-def other(path: str) -> MediaFile:
-    """A tiny document at `path`, asked for with `--ext`."""
-    return MediaFile(Path(path), 1, 0, MediaKind.OTHER)
-
-
-def test_documents_are_moved_not_deleted() -> None:
-    """A pair of documents says where its copies go."""
+def test_copies_are_moved_by_default() -> None:
+    """A pair says where its copies go."""
     decision = KeepDecision(
-        "d", 1, other("/data/c/A/x.pdf"), (other("/data/c/B/x.pdf"),)
+        "d", 1, media("/data/c/A/x.jpg"), (media("/data/c/B/x.jpg"),)
     )
     assert "C:\\B (a copy 'clean' moves to the quarantine)" in rendered(decision)
-
-
-def test_a_pair_of_documents_and_photos_says_both() -> None:
-    """A pair holding a document and a photo copy names both outcomes."""
-    decisions = (
-        KeepDecision("d", 1, other("/data/c/A/x.pdf"), (other("/data/c/B/x.pdf"),)),
-        KeepDecision("e", 1, media("/data/c/A/y.jpg"), (media("/data/c/B/y.jpg"),)),
-    )
-    assert "(copies 'clean' deletes, or moves to the quarantine if not a media" in (
-        rendered(*decisions, delete=True)
-    )

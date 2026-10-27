@@ -143,12 +143,12 @@ def _parse_json_table(name: str, raw: str) -> dict[str, object]:
         raw: Its value.
 
     Returns:
-        The table, e.g. `{"documents": ["pdf", "docx"]}`.
+        The table, e.g. `{"phone": ["jpg", "heic"]}`.
 
     Raises:
         ConfigError: The value is not a JSON object.
     """
-    message = _('{name} must be a JSON object, e.g. {{"documents": ["pdf", "docx"]}}')
+    message = _('{name} must be a JSON object, e.g. {{"phone": ["jpg", "heic"]}}')
     try:
         value = json.loads(raw)
     except json.JSONDecodeError as exc:

@@ -9,90 +9,31 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Protocol
+from typing import TYPE_CHECKING
 
 from media_hygiene.constants import MediaKind
+from media_hygiene.scan.intruders import Intruder
 from media_hygiene.scan.models import FileIdentity, MediaFile
 from media_hygiene.scan.sidecars import Sidecar, companions_of, is_sidecar_of
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
+    from media_hygiene.scan.entry_like import EntryLike
     from media_hygiene.scan.filters import ScanFilters
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class StatLike(Protocol):
-    """The `stat` fields the walk reads."""
-
-    @property
-    def st_size(self) -> int:
-        """Size in bytes."""
-
-    @property
-    def st_mtime_ns(self) -> int:
-        """Modification time, in nanoseconds."""
-
-    @property
-    def st_dev(self) -> int:
-        """Device of the file system."""
-
-    @property
-    def st_ino(self) -> int:
-        """Inode: with the device, the file's identity."""
-
-
-class EntryLike(Protocol):
-    """A folder entry: an `os.DirEntry`, or one the index kept."""
-
-    @property
-    def path(self) -> str:
-        """The entry's path."""
-
-    @property
-    def name(self) -> str:
-        """The entry's name."""
-
-    def is_dir(self, *, follow_symlinks: bool = True) -> bool:
-        """Tell whether it is a folder.
-
-        Args:
-            follow_symlinks: Whether to follow a link (the walk never does).
-
-        Returns:
-            True for a folder.
-        """
-
-    def is_file(self, *, follow_symlinks: bool = True) -> bool:
-        """Tell whether it is a regular file.
-
-        Args:
-            follow_symlinks: Whether to follow a link (the walk never does).
-
-        Returns:
-            True for a regular file.
-        """
-
-    def stat(self, *, follow_symlinks: bool = True) -> StatLike:
-        """Its size, time and identity.
-
-        Args:
-            follow_symlinks: Whether to follow a link (the walk never does).
-
-        Returns:
-            The `stat` fields.
-        """
-
-
 @dataclass(frozen=True, slots=True)
 class Listing:
-    """What one folder holds: its media files, its sidecars, the subfolders to visit."""
+    """What one folder holds: media files, sidecars, subfolders to visit, intruders."""
 
     files: tuple[MediaFile, ...] = ()
     folders: tuple[Path, ...] = ()
     sidecars: tuple[Sidecar, ...] = ()
     unreadable: tuple[Path, ...] = ()
+    intruders: tuple[Intruder, ...] = ()
 
 
 def sort_entries(items: Sequence[EntryLike], filters: ScanFilters) -> Listing:
@@ -105,7 +46,7 @@ def sort_entries(items: Sequence[EntryLike], filters: ScanFilters) -> Listing:
     Returns:
         What the folder holds, and the files that could not be `stat`ed.
     """
-    files: list[MediaFile] = []
+    described: list[MediaFile | Intruder | None] = []
     folders: list[Path] = []
     sidecars: list[EntryLike] = []
     unreadable: list[Path] = []
@@ -120,16 +61,41 @@ def sort_entries(items: Sequence[EntryLike], filters: ScanFilters) -> Listing:
             sidecars.append(entry)
             continue
         try:
-            media = _describe(entry, filters.kind_of(path))
+            described.append(_file(entry, path, filters))
         except OSError as exc:
             _LOGGER.warning("Cannot read %s: %s", path, exc.strerror)
             unreadable.append(path)
-            continue
-        if media is not None:
-            files.append(media)
     return Listing(
-        tuple(files), tuple(folders), _sidecars(sidecars, names), tuple(unreadable)
+        files=tuple(item for item in described if isinstance(item, MediaFile)),
+        folders=tuple(folders),
+        sidecars=_sidecars(sidecars, names),
+        unreadable=tuple(unreadable),
+        intruders=tuple(item for item in described if isinstance(item, Intruder)),
     )
+
+
+def _file(
+    entry: EntryLike, path: Path, filters: ScanFilters
+) -> MediaFile | Intruder | None:
+    """Describe a file that is not a sidecar: a media file kept, or an intruder.
+
+    Args:
+        entry: Its directory entry.
+        path: Its path.
+        filters: The extensions kept, the companions.
+
+    Returns:
+        The media file, the intruder, or None (a link, a media left out by `--ext`,
+        a companion).
+
+    Raises:
+        OSError: The file cannot be `stat`ed.
+    """
+    if not filters.is_intruder(path):
+        return _describe(entry, filters.kind_of(path))
+    # An intruder is described like a sidecar: only its size and date matter.
+    file = _describe(entry, MediaKind.SIDECAR)
+    return None if file is None else Intruder(file.path, file.size, file.mtime_ns)
 
 
 def _sidecars(

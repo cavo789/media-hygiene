@@ -27,20 +27,14 @@ if TYPE_CHECKING:
     import pytest
     from typer.testing import CliRunner
 
-    from media_hygiene.config.layers import Layer
     from media_hygiene.paths.locations import Locations
 
 QUARANTINE_ENV = "MEDIA_HYGIENE_QUARANTINE_DIR"
-OTHER_FILES: Layer = {"scan": {"extensions": ["pdf", "jpg"]}}
 
 
 def without_quarantine(monkeypatch: pytest.MonkeyPatch) -> None:
-    """The command line runs with no `/quarantine` mounted, other files asked for.
-
-    Asking for other files than media (`pdf`) makes `clean` require the quarantine.
-    """
+    """The command line runs with no `/quarantine` mounted."""
     monkeypatch.delenv(QUARANTINE_ENV)
-    monkeypatch.setenv("MEDIA_HYGIENE_SCAN__EXTENSIONS", '["pdf", "jpg"]')
 
 
 def test_read_only_folders_name_undo(
@@ -59,7 +53,7 @@ def test_read_only_folders_name_undo(
 def test_a_sort_run_needs_no_quarantine(
     cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Other files asked for, no `/quarantine`: the sort run is undone all the same."""
+    """No `/quarantine`: the sort run is undone all the same."""
     sort_run = SortRun(locations.data_dir / "photos", locations.journal_dir)
     without_quarantine(monkeypatch)
     result = run(cli, "undo", "--yes")
@@ -90,8 +84,7 @@ def test_deletions_alone_are_undone_without_quarantine(tmp_path: Path) -> None:
     before = manifest(locations.data_dir)
     run_id = clean(make_runtime(locations), delete=True)
     assert manifest(locations.data_dir) != before
-    runtime = make_runtime(locations, OTHER_FILES)
-    assert runtime.settings.scan.other_files
+    runtime = make_runtime(locations)
     assert quarantined_count(runtime, run_id) == 0
     ensure_undo_ready(runtime, [run_id])
     outcome = undo_run(runtime, run_id, NullProgress())

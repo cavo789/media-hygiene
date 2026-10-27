@@ -195,8 +195,7 @@ done, in two blocks:
 
 `clean --delete` deletes the extra copies for good instead of moving them, after the same byte
 comparison with the kept copy. The copy kept stays: `undo` rebuilds each deleted copy from it.
-It is, with `purge`, the only way the tool removes content, and it says so before asking. Copies
-of other files than media (`--ext`) still go to the quarantine.
+It is, with `purge`, the only way the tool removes content, and it says so before asking.
 
 ## Good to know
 

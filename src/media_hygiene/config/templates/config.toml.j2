@@ -53,7 +53,7 @@ backups = []
 
 
 [scan]
-{{ comment(_('Only analyse these categories or extensions, e.g. ["photo", "video"] or ["png", "webp"]. Built-in categories: photo, raw, video and media (the three); yours are defined below. Empty: media, every photo, RAW and video extension. Other types are allowed, such as ["pdf", "docx"]: their copies are moved to the quarantine, never deleted. A name without a dot is a category when one has that name, otherwise an extension: write ".raw" for the extension.'), "--ext") }}
+{{ comment(_('Only analyse these categories or extensions, e.g. ["photo", "video"] or ["png", "webp"]. Built-in categories: photo, raw, video and media (the three); yours are defined below. Empty: media, every photo, RAW and video extension. Only photo, RAW and video extensions: the audit lists the other files (intruder files). A name without a dot is a category when one has that name, otherwise an extension.'), "--ext") }}
 extensions = []
 
 {{ comment(_("Folder names never analysed, wherever they are, on every disk: they add to the system and trash folders always skipped ('media-hygiene config' lists them). Globs matching the whole name, case ignored: * stands for any characters, ? for one, e.g. [\"Thumbnails\", \".Trash-*\", \"*.lrdata\"]. Globs, not regular expressions as in [keep]: folder names hold dots and dollars ($RECYCLE.BIN), which a regular expression reads as operators. A comma separates names: write ? in its place. For one precise folder, use excluded in [folders]."), "--exclude-name") }}
@@ -65,9 +65,15 @@ full_check_days = 7
 {{ comment(_("A photo or RAW file up to this size, in MB, is read once into memory: it is checked and its fingerprint computed from that one reading. Each worker holds one such file at a time: with 16 workers, up to 16 x this size at worst. Lower it when Docker has little memory (Docker Desktop: Settings > Resources); 0 reads every file twice.")) }}
 read_whole_mb = 128
 
+{{ comment(_("Names and extensions (with their dot) that follow photos: never counted as intruder files, the files of your photo folders that are not photos or videos. Case ignored.")) }}
+companions = [
+    ".xmp", ".aae", ".thm", ".json", "thumbs.db", "desktop.ini", ".ds_store",
+    ".picasa.ini", "picasa.ini", ".nomedia",
+]
+
 {{ comment(_("Your own categories: a name, then its extensions (not other categories). The built-in ones cannot be redefined. Variable: MEDIA_HYGIENE_SCAN__CATEGORIES holds a JSON object that replaces this whole table.")) }}
 [scan.categories]
-# documents = ["pdf", "docx", "txt"]
+# phone = ["jpg", "heic", "mp4", "mov"]
 
 
 [keep]

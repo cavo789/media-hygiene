@@ -157,16 +157,6 @@ def _between_folders(pair: FolderPair) -> str:
                 " 'clean' moves to the quarantine), {size} to free with 'purge'.",
                 pair.files,
             )
-        case Disposal.MIXED:
-            return ngettext(
-                "{count} file is both in {kept} (kept) and in {removed} (a copy"
-                " 'clean' deletes, or moves to the quarantine if not a media file),"
-                " {size} to free.",
-                "{count} files are both in {kept} (kept) and in {removed} (copies"
-                " 'clean' deletes, or moves to the quarantine if not a media file),"
-                " {size} to free.",
-                pair.files,
-            )
         case _:
             return ngettext(
                 "{count} file is both in {kept} (kept) and in {removed} (a copy"

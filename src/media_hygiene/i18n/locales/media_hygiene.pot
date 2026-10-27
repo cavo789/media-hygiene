@@ -106,6 +106,18 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-format
+msgid ""
+"%(num)s file of your photo folders is not a photo or a video (%(size)s): "
+"a zip, a document, a spreadsheet… Nothing is moved: a document may "
+"matter. intruders.csv, next to this page, lists every file."
+msgid_plural ""
+"%(num)s files of your photo folders are not photos or videos (%(size)s): "
+"zips, documents, spreadsheets… Nothing is moved: a document may matter. "
+"intruders.csv, next to this page, lists every file."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
 msgid "%(num)s group of near duplicates"
 msgid_plural "%(num)s groups of near duplicates"
 msgstr[0] ""
@@ -1596,9 +1608,6 @@ msgstr ""
 msgid "Copies not found when read back: {count}. Type mh phone again."
 msgstr ""
 
-msgid "Copies of other files than media go to /quarantine: mount it."
-msgstr ""
-
 msgid "Copies, previewed"
 msgstr ""
 
@@ -1903,12 +1912,6 @@ msgstr ""
 msgid "Deleted on purpose: {deleted} · answered: {decided} of {total}"
 msgstr ""
 
-msgid "Deleted or moved to the quarantine"
-msgstr ""
-
-msgid "Deleted or moved to the quarantine from"
-msgstr ""
-
 msgid ""
 "Deletes them from the cache and shows that none is left; your photos do "
 "not change."
@@ -2132,11 +2135,6 @@ msgid ""
 msgstr ""
 
 msgid "Each group of near duplicates is described through the version kept."
-msgstr ""
-
-msgid ""
-"Each line: the file kept, and the byte-for-byte identical file deleted "
-"(📦: moved to the quarantine, not a media file)."
 msgstr ""
 
 msgid "Each line: the file kept, and the byte-for-byte identical file deleted."
@@ -2501,6 +2499,9 @@ msgid ""
 "Exposure: dark below dark_below or bright above bright_above (mean "
 "brightness, 0 to 255), or when more than clipped_above of the pixels (0 "
 "to 1) are pure black or pure white."
+msgstr ""
+
+msgid "Extension"
 msgstr ""
 
 msgid "Extension categories (--ext)"
@@ -3083,6 +3084,9 @@ msgstr ""
 msgid "Heaviest files"
 msgstr ""
 
+msgid "Heaviest folders"
+msgstr ""
+
 msgid "Height"
 msgstr ""
 
@@ -3286,6 +3290,9 @@ msgid "Interface language: \"en\" or \"fr\"."
 msgstr ""
 
 msgid "Into folders"
+msgstr ""
+
+msgid "Intruder files"
 msgstr ""
 
 #, python-brace-format
@@ -3983,6 +3990,12 @@ msgid "Named: {people}."
 msgstr ""
 
 msgid ""
+"Names and extensions (with their dot) that follow photos: never counted "
+"as intruder files, the files of your photo folders that are not photos or"
+" videos. Case ignored."
+msgstr ""
+
+msgid ""
 "Names are saved in config.toml: mount a writable folder of yours on "
 "/config to name the groups. The page shows them meanwhile."
 msgstr ""
@@ -4567,12 +4580,6 @@ msgstr ""
 msgid "Not opened by mh? Type the command yourself; this page is closed."
 msgstr ""
 
-#, python-brace-format
-msgid ""
-"Not photos or videos: {extensions}. These files are only compared byte "
-"for byte, and their copies are moved to the quarantine."
-msgstr ""
-
 msgid "Not readable"
 msgstr ""
 
@@ -4939,19 +4946,17 @@ msgstr ""
 msgid ""
 "Only analyse these categories or extensions, e.g. --ext photo,video or "
 "--ext png,webp (repeatable). Categories: {categories} and those of "
-"scan.categories in config.toml. Other types too, such as --ext pdf,docx: "
-"their copies are moved to the quarantine. Default: media (every photo, "
-"RAW and video)."
+"scan.categories in config.toml. Photo, RAW and video extensions only. "
+"Default: media (every photo, RAW and video)."
 msgstr ""
 
 msgid ""
 "Only analyse these categories or extensions, e.g. [\"photo\", \"video\"] "
 "or [\"png\", \"webp\"]. Built-in categories: photo, raw, video and media "
 "(the three); yours are defined below. Empty: media, every photo, RAW and "
-"video extension. Other types are allowed, such as [\"pdf\", \"docx\"]: "
-"their copies are moved to the quarantine, never deleted. A name without a"
-" dot is a category when one has that name, otherwise an extension: write "
-"\".raw\" for the extension."
+"video extension. Only photo, RAW and video extensions: the audit lists "
+"the other files (intruder files). A name without a dot is a category when"
+" one has that name, otherwise an extension."
 msgstr ""
 
 #, python-brace-format
@@ -5261,6 +5266,9 @@ msgid ""
 "\"Manon\"]: a folder holding one of these names, as a word, is that "
 "person's. Case and accents do not matter. Their photos join your own "
 "folder of the same moment (the rule same_moment)."
+msgstr ""
+
+msgid "Per extension"
 msgstr ""
 
 #, python-brace-format
@@ -6581,11 +6589,6 @@ msgid ""
 msgstr ""
 
 msgid "Software"
-msgstr ""
-
-msgid ""
-"Software folders (.git, node_modules, AppData, Program Files, ...) are "
-"skipped: there, where a file lies makes a program work."
 msgstr ""
 
 msgid "Some destinations cannot be used; nothing was moved:"
@@ -8709,12 +8712,6 @@ msgstr ""
 msgid "Will be deleted from"
 msgstr ""
 
-msgid "Will be deleted or moved to the quarantine"
-msgstr ""
-
-msgid "Will be deleted or moved to the quarantine from"
-msgstr ""
-
 msgid "Will be moved to the quarantine"
 msgstr ""
 
@@ -9734,11 +9731,11 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "invalid category name '{name}': letters, digits, '-' and '_' only, such "
-"as documents"
+"as phone"
 msgstr ""
 
 #, python-brace-format
-msgid "invalid extension {values}: letters, digits, '-' and '_' only, such as pdf"
+msgid "invalid extension {values}: letters, digits, '-' and '_' only, such as jpg"
 msgstr ""
 
 msgid "invert: the others instead"
@@ -10381,9 +10378,6 @@ msgid "original"
 msgstr ""
 
 msgid "other file types"
-msgstr ""
-
-msgid "other files than media moved to the quarantine"
 msgstr ""
 
 msgid "outside the mounted folders"
@@ -11430,16 +11424,6 @@ msgid "{count} copies to set aside"
 msgstr ""
 
 #, python-brace-format
-msgid ""
-"{count} copy of another file than a media will be moved to the "
-"quarantine, not deleted."
-msgid_plural ""
-"{count} copies of other files than media will be moved to the quarantine,"
-" not deleted."
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
 msgid "{count} day ago"
 msgid_plural "{count} days ago"
 msgstr[0] ""
@@ -11618,16 +11602,6 @@ msgid ""
 msgid_plural ""
 "{count} files are both in {kept} (kept) and in {removed} (copies 'clean' "
 "deletes), {size} to free."
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
-msgid ""
-"{count} file is both in {kept} (kept) and in {removed} (a copy 'clean' "
-"deletes, or moves to the quarantine if not a media file), {size} to free."
-msgid_plural ""
-"{count} files are both in {kept} (kept) and in {removed} (copies 'clean' "
-"deletes, or moves to the quarantine if not a media file), {size} to free."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -12617,7 +12591,7 @@ msgid "{name} must be a JSON array, e.g. [\"C:\\\\Photos\"]"
 msgstr ""
 
 #, python-brace-format
-msgid "{name} must be a JSON object, e.g. {{\"documents\": [\"pdf\", \"docx\"]}}"
+msgid "{name} must be a JSON object, e.g. {{\"phone\": [\"jpg\", \"heic\"]}}"
 msgstr ""
 
 #, python-brace-format
@@ -13348,6 +13322,12 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid ""
+"{values}: media-hygiene only handles photos and videos; the audit lists "
+"the other files of your photo folders (intruder files)"
+msgstr ""
+
+#, python-brace-format
+msgid ""
 "{values}: sidecars follow the photo of the same name, they are not "
 "analysed on their own"
 msgstr ""
@@ -13618,4 +13598,14 @@ msgid ""
 "🤖 classify and tags can also ask a local AI model: set [classify.ai] "
 "model in config.toml (mh config)."
 msgstr ""
+
+#, python-brace-format
+msgid ""
+"🧹 {count} file that is not a photo or a video ({extensions}) takes {size}"
+" in your photo folders: see 'Intruder files' in the report."
+msgid_plural ""
+"🧹 {count} files that are not photos or videos ({extensions}) take {size} "
+"in your photo folders: see 'Intruder files' in the report."
+msgstr[0] ""
+msgstr[1] ""
 
