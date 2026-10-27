@@ -7853,6 +7853,9 @@ msgstr "En montrer plus"
 msgid "Show only this person (Esc)"
 msgstr "Montrer seulement cette personne (Échap)"
 
+msgid "Show or hide its folders: each one can be placed alone"
+msgstr "Montrer ou cacher ses dossiers : chacun peut être placé seul"
+
 msgid ""
 "Show photos on the TV, the phone choosing the next one: a folder, a "
 "search or an album."
@@ -11052,6 +11055,12 @@ msgstr "un dossier tel que l'Explorateur le montre, par exemple {example}"
 
 msgid "a folder not found"
 msgstr "un dossier introuvable"
+
+msgid "a folder opened: save its position"
+msgstr "un dossier ouvert : enregistrer sa position"
+
+msgid "a folder opened: the next or previous one of its list (← → too)"
+msgstr "un dossier ouvert : le suivant ou le précédent de sa liste (← → aussi)"
 
 msgid "a folder someone named (the other one is generic)"
 msgstr "un dossier nommé par quelqu'un (l'autre est générique)"
@@ -15312,6 +15321,12 @@ msgstr ""
 " ils sont."
 
 #, python-brace-format
+msgid "{n} folder"
+msgid_plural "{n} folders"
+msgstr[0] "{n} dossier"
+msgstr[1] "{n} dossiers"
+
+#, python-brace-format
 msgid "{n} group ignored"
 msgid_plural "{n} groups ignored"
 msgstr[0] "{n} groupe ignoré"
@@ -15414,6 +15429,12 @@ msgstr[1] "{n} photos mises de côté, masquées"
 #, python-brace-format
 msgid "{n} photos of these days stay with the rule '{rule}'."
 msgstr "{n} photos de ces jours restent avec la règle '{rule}'."
+
+#, python-brace-format
+msgid "{n} position"
+msgid_plural "{n} positions"
+msgstr[0] "{n} position"
+msgstr[1] "{n} positions"
 
 #, python-brace-format
 msgid "{n} rule decided nothing."
@@ -15730,6 +15751,16 @@ msgid ""
 msgstr ""
 "{safe} vos photos ne sont pas touchées · {undo} peut être annulé · "
 "{final} définitif"
+
+#, python-brace-format
+msgid "{said} Next: {name} ({n} left)."
+msgid_plural "{said} Next: {name} ({n} left)."
+msgstr[0] "{said} Suivant : {name} ({n} restant)."
+msgstr[1] "{said} Suivant : {name} ({n} restants)."
+
+#, python-brace-format
+msgid "{said} Nothing left to place."
+msgstr "{said} Plus rien à placer."
 
 #, python-brace-format
 msgid "{seconds} s"

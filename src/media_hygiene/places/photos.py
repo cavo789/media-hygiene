@@ -2,7 +2,8 @@
 
 `GET /api/cluster/<rank>` lists the first photos of a cluster, `GET /api/folders` the
 folders named after a town or placed (0231), `GET /api/folder/<rank>` the photos
-without GPS of one, `GET /api/tree/<rank>` those below any folder of the index (0242);
+without GPS of one, `GET /api/tree/<rank>` those below any folder of the index (0242),
+`GET /api/group/<rank>` those of a town's folders (0383);
 `GET /preview/<key>.jpg` renders one in the worker pool for the
 drawer's grid, `GET /large/<key>.jpg` larger for its viewer (0233), both kept in the
 cache folder like `review`'s. The photo folders are mounted read-only: nothing is
@@ -34,6 +35,7 @@ CLUSTER_PREFIX: Final = "/api/cluster/"
 FOLDERS_PATH: Final = "/api/folders"
 FOLDER_PREFIX: Final = "/api/folder/"
 TREE_PREFIX: Final = "/api/tree/"
+GROUP_PREFIX: Final = "/api/group/"  # the photos of a town's folders (0383)
 
 
 @dataclass(frozen=True, slots=True)
@@ -83,6 +85,7 @@ async def photo_response(
         (CLUSTER_PREFIX, sources.board.photos),
         (FOLDER_PREFIX, folders.photos if folders is not None else None),
         (TREE_PREFIX, folders.tree_photos if folders is not None else None),
+        (GROUP_PREFIX, folders.group_photos if folders is not None else None),
     ):
         if path.startswith(prefix):
             rank = path.removeprefix(prefix)

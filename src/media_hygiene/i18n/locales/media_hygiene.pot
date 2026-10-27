@@ -6496,6 +6496,9 @@ msgstr ""
 msgid "Show only this person (Esc)"
 msgstr ""
 
+msgid "Show or hide its folders: each one can be placed alone"
+msgstr ""
+
 msgid ""
 "Show photos on the TV, the phone choosing the next one: a folder, a "
 "search or an album."
@@ -9107,6 +9110,12 @@ msgid "a folder as the Explorer shows it, e.g. {example}"
 msgstr ""
 
 msgid "a folder not found"
+msgstr ""
+
+msgid "a folder opened: save its position"
+msgstr ""
+
+msgid "a folder opened: the next or previous one of its list (← → too)"
 msgstr ""
 
 msgid "a folder someone named (the other one is generic)"
@@ -12787,6 +12796,12 @@ msgid "{n} files were sorted already by an earlier run: left where they are."
 msgstr ""
 
 #, python-brace-format
+msgid "{n} folder"
+msgid_plural "{n} folders"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} group ignored"
 msgid_plural "{n} groups ignored"
 msgstr[0] ""
@@ -12889,6 +12904,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} photos of these days stay with the rule '{rule}'."
 msgstr ""
+
+#, python-brace-format
+msgid "{n} position"
+msgid_plural "{n} positions"
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{n} rule decided nothing."
@@ -13178,6 +13199,16 @@ msgstr[1] ""
 msgid ""
 "{safe} your photos are not touched · {undo} can be undone · {final} for "
 "good"
+msgstr ""
+
+#, python-brace-format
+msgid "{said} Next: {name} ({n} left)."
+msgid_plural "{said} Next: {name} ({n} left)."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{said} Nothing left to place."
 msgstr ""
 
 #, python-brace-format

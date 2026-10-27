@@ -27,6 +27,6 @@ in *Placed* (`folderFlash`), unfolding it: the reader's eye is sent away from *T
 
 ## Acceptance
 
-- [ ] Saving five folders in a row needs no scroll and no click in the list.
-- [ ] The filter typed is kept: *next* is the next one matching it.
-- [ ] Docs en + fr; `docs_screenshots` to run.
+- [x] Saving five folders in a row needs no scroll and no click in the list.
+- [x] The filter typed is kept: *next* is the next one matching it.
+- [x] Docs en + fr; `docs_screenshots` to run (not run).

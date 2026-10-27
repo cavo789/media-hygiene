@@ -89,11 +89,24 @@ placés à la main) ; ⤢ sous les boutons de zoom ramène cette vue. Une photo 
   Slovaquie). Un dossier enregistré, renommé ou déplacé depuis, affiche ⚠ *introuvable* :
   rendez-lui son nom, ou oubliez sa position.
 
+  **Les dossiers d'une même ville tiennent sur une ligne** : une collection triée par année a
+  `2019\Turin` et `2023\Turin`, listés une fois, *📁 Turin — 126 photos sans GPS · 3 dossiers*.
+  L'ouvrir montre les photos de tous ses dossiers et un seul repère ; **Enregistrer cette
+  position** l'écrit pour tous en une fois (toujours une entrée `[[places.folders]]` par dossier),
+  **Oublier sa position** les oublie tous. Des dossiers d'une ville enregistrés à des endroits
+  différents le disent (*· 2 positions*) : le repère part de celui qui a le plus de photos, et un
+  enregistrement les aligne. Le ▸ devant la ligne déplie ses dossiers, chacun s'ouvre et
+  s'enregistre encore seul (l'aéroport et la ville). Un dossier placé à la main sans ville, ou
+  introuvable (⚠), reste une ligne à part.
+
   La liste a deux sous-listes, chacune avec son nombre : **À placer** (📁, ouverte) et **Placés**
   (📌, repliée ; les dossiers introuvables, ⚠, en tête). Chacune est triée par le nom affiché,
   sans tenir compte des majuscules ni des accents (*Écluse* parmi les E) ; enregistrer une
-  position fait passer la ligne de l'une à l'autre et la fait clignoter, **Oublier sa position**
-  la ramène. Les dossiers écartés comme *pas une ville* ne sont dans aucune. **Tapez un nom** dans
+  position fait passer la ligne de l'une à l'autre et **ouvre aussitôt le dossier suivant à
+  placer** (même filtre, sa ligne amenée à l'écran ; la barre dit *Suivant : Ciney (12 restants)*) :
+  toute une liste se place sans remonter, glisser, **Entrée**, glisser, **Entrée**. **N** / **→**
+  et **P** / **←** ouvrent le dossier suivant ou précédent de la liste sans enregistrer.
+  **Oublier sa position** la ramène. Les dossiers écartés comme *pas une ville* ne sont dans aucune. **Tapez un nom** dans
   la zone en haut de la liste pour filtrer les deux sous-listes au fil de la frappe (le nom
   affiché et le chemin du dossier ; les nombres se lisent *3 / 41*) ; Échap vide la zone.
 - **N'importe quel dossier**, replié sous les dossiers au nom d'une ville, liste chaque dossier
