@@ -11,16 +11,17 @@ which still writes the files whose answer came from the cache.
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, Final, override
 
+from media_hygiene.i18n import _
 from media_hygiene.index.descriptions import DescriptionStore
 from media_hygiene.index.tag_rows import TagStore
 from media_hygiene.services.tag_work import version_of
-from media_hygiene.tags.models import MODEL_SOURCES, FileTags
+from media_hygiene.tags.models import MODEL_SOURCES, FileTags, TagSource
 from media_hygiene.tags.vision import vision_tags
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping, Sequence
+    from collections.abc import Callable, Mapping, Sequence
     from pathlib import Path
 
     from media_hygiene.classify.ai.models import Description
@@ -57,6 +58,14 @@ def model_rows(
     return rows
 
 
+# Of the last photo's words, those the progress line shows (0421).
+_SHOWN_WORDS: Final = 6
+
+
+def _ignored(_text: str) -> None:
+    """Say nothing: no progress listens."""
+
+
 class TaggingStore(DescriptionStore):
     """The cache of answers that also writes the words of each answer at once."""
 
@@ -73,6 +82,15 @@ class TaggingStore(DescriptionStore):
         super().__init__(base.connection, base.asked)
         self._answered = answered_for(work.files, work.vision.answered_by)
         self._sight = sight
+        self._tell: Callable[[str], None] = _ignored
+
+    def telling(self, tell: Callable[[str], None]) -> None:
+        """Say the words of each photo described, e.g. on the progress's line (0421).
+
+        Args:
+            tell: Receives `name: word, word, ...`, translated.
+        """
+        self._tell = tell
 
     @override
     def put(self, photo: PhotoVersion, description: Description) -> None:
@@ -92,6 +110,13 @@ class TaggingStore(DescriptionStore):
             if file.path == photo.path or self.get(version_of(file)) is None
         ]
         TagStore(self.connection).replace(MODEL_SOURCES, rows)
+        words = [tag.value for tag in tags if tag.source is TagSource.VISION]
+        if words:
+            self._tell(
+                _("{name}: {words}").format(
+                    name=photo.path.name, words=", ".join(words[:_SHOWN_WORDS])
+                )
+            )
 
 
 def answered_for(

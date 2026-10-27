@@ -5147,6 +5147,9 @@ msgstr ""
 msgid "Other commands"
 msgstr ""
 
+msgid "Our photos"
+msgstr ""
+
 msgid "Output (override general.* of config.toml)"
 msgstr ""
 
@@ -6196,6 +6199,9 @@ msgid "Search stopped; your photos were not changed."
 msgstr ""
 
 msgid "Search your photos"
+msgstr ""
+
+msgid "Search, browse and the albums of this home: nothing here changes a photo."
 msgstr ""
 
 msgid "Searching OpenStreetMap…"
@@ -12555,6 +12561,10 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid "{name}: {count} photos"
+msgstr ""
+
+#, python-brace-format
+msgid "{name}: {words}"
 msgstr ""
 
 #, python-brace-format

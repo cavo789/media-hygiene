@@ -52,6 +52,9 @@ docker run --rm -it `
   copies to set aside, *214* files only the NAS keeps), *Your folders* (each found or not), the
   version (*0.5.0 available* when a newer one is published, [`mh update`](launcher.md#a-new-version-mh-update)),
   and the theme switch.
+- **A banner when `mh` is older than its image** (a new image pulled or built, `mh` not
+  written again): the line the console says, and an **Update** button that runs
+  [`mh update`](launcher.md#a-new-version-mh-update); gone once `mh` is written again.
 - **The top bar**: *What do you want to do?* (the palette), **Undo the last run** while a run is
   undoable, and **Documentation**: the chapter of the page you are on, and its English twin.
 - **The next step**: why, what it risks in words (*Undoable*), the button that runs it and its
@@ -156,6 +159,10 @@ desktop shortcut do the same (off by default for now):
    and its **QR code** (the window of `mh` says the same address and code).
 3. On the phone, scan the QR code, or open the address and type the code: the home page opens.
    The phone stays paired (a cookie) until `mh` stops, even after the steps run on the PC.
+
+On the phone, the home page is the family's door, **Our photos**: *Find a photo* (search and
+browse), the albums and where you are; the stages that change photos (import, clean, sort, back
+up) and the tools are not shown there, the PC keeps the whole cycle.
 
 From the phone: 🔒 the page, where you are, the reports, the **audit** run by the page,
 [your albums](#your-albums-on-the-phone), and **search** and **browse** (their photos opened at

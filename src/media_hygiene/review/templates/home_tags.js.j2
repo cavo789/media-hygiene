@@ -32,6 +32,7 @@ function tagsBody(state) {
       const rate = step.done / state.elapsed;
       parts.push(`<p class="pcurrent" aria-live="polite">${esc(fillIn(T.tagsRate, { rate: (rate * 60).toFixed(1), time: duration((step.total - step.done) / rate) }))}</p>`);
     } else parts.push(`<p class="pcurrent">${esc(T.tagsRunning)}</p>`);
+    if (state.current) parts.push(`<p class="pcurrent muted">${esc(state.current)}</p>`);
     parts.push(`<div class="audit-controls"><button class="btn btn-ghost" type="button" data-act="tags-stop">${esc(T.tagsStop)}</button></div>`);
   }
   if (state.phase === "stopped") parts.push(`<p>${esc(T.tagsStopped)}</p>`);

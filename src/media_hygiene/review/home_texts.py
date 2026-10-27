@@ -8,6 +8,7 @@ the steps run, of the dialogs and of the palette.
 from __future__ import annotations
 
 from media_hygiene.i18n import _
+from media_hygiene.review.home_texts_family import family_texts
 from media_hygiene.review.home_texts_marked import marked_texts
 from media_hygiene.review.home_texts_run import run_texts
 from media_hygiene.review.home_texts_tags import tags_texts
@@ -26,6 +27,7 @@ def home_texts() -> dict[str, str]:
         **marked_texts(),
         **run_texts(),
         **tags_texts(),
+        **family_texts(),
     }
 
 

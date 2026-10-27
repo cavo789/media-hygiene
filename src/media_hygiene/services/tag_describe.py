@@ -76,6 +76,7 @@ def describe_photos(
     question = tags_question(step.rules.language)
     # Each answer writes its words at once: searchable while the run goes (0353).
     store = TaggingStore(step.store, work, step.sight)
+    store.telling(answering.progress.current)  # the last photo's words (0421)
     job = DescribeJob(client, store, answering, question, work.stills)
     return describe_checked(step.runtime, work.missing, job)
 

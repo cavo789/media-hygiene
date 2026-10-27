@@ -74,3 +74,20 @@ page holds no external resource and no endless animation.
 The link that opens one album only, for other people's phones (no pairing), is now its own TODO,
 0334 (decided 2026-10-23: both ideas kept, in two TODOs). This TODO is the home page for a
 **paired** phone, as decided on 2026-10-23 above.
+
+## Status — PARTIAL (2026-10-27)
+
+### Done
+
+- One page (decision 1): a paired phone's home page is the family view *Our photos* / *Nos
+  photos*: *Find a photo* (search and browse buttons), the albums, where you are; no next step,
+  cycle, findings or banners; the sidebar keeps Find and Share only (`home.js.j2`,
+  `home_draw.js.j2` `familyHome`, `review/home_texts_family.py`). Tests:
+  `tests/unit/test_home_family.py`. Docs en + fr (`commands/home.md`).
+
+### Not done
+
+- *On this day* (photos of today's date in earlier years: a month-day query over the index,
+  an API in the phone's list, thumbnails), *Latest additions*, the *Slideshow on the TV* and
+  *Map* entrances.
+- `[home] family_title` (the title is the fixed translated text for now).

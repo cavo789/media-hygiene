@@ -71,6 +71,11 @@ function updateBanner() {
   if (!S.update || store.get("dismissed", "") === S.update.version) return "";
   return `<div class="banner" role="status">${icon("cloud-down")}<p class="grow"><strong>${esc(fill(T.newVersion, { version: S.update.version }))}</strong> · ${esc(fill(T.youHave, { version: S.version }))}</p><a class="btn btn-ghost" href="${esc(S.update.notes)}" target="_blank" rel="noopener">${icon("external")} ${esc(T.whatChanges)}</a><button class="btn btn-primary" type="button" data-run="update">${icon("refresh")} ${esc(T.updateNow)}</button><button class="btn btn-ghost icon-btn" type="button" data-act="dismiss-update" aria-label="${esc(T.later)}">${icon("x")}</button></div>`;
 }
+// `mh` older than its image (0368): the console's line, `mh update` as a button.
+function staleBanner() {
+  if (!S.stale) return "";
+  return `<div class="banner" role="status" id="staleBanner">${icon("refresh")}<p class="grow">${esc(S.stale)}</p><button class="btn btn-primary" type="button" data-run="update">${icon("refresh")} ${esc(T.updateNow)}</button></div>`;
+}
 function hero() {
   const action = proposedAction();
   const pose = !action ? "party" : ACTION_POSE[action.name] || POSE[stageOf(action.name)] || "lookout";
@@ -158,10 +163,26 @@ function auditPanel() {
     <div id="auditEnd"></div>
   </section>`;
 }
+// A paired phone's home (0293): the family's door, read-only, the photos first.
+function familyHome() {
+  const finds = S.actions.filter((action) => PHONE_PAGES[action.command]);
+  const buttons = finds.map((action) => `<button class="btn btn-primary" type="button" data-run="${esc(action.name)}">${icon(action.icon)} ${esc(action.title)}</button>`).join("");
+  return `<div class="page-head"><h1>${esc(T.familyTitle)}</h1><p>${esc(T.familyNote)}</p></div>
+    <section class="block" aria-labelledby="familyFind">
+      <div class="section-head"><h2 id="familyFind">${esc(T.familyFind)}</h2></div>
+      <div class="audit-controls">${buttons}</div>
+    </section>
+    ${EXTRAS.albums()}
+    <section class="block" aria-labelledby="whereTitle">
+      <div class="section-head"><h2 id="whereTitle">${esc(T.whereYouAre)}</h2></div>
+      <div class="tiles">${S.tiles.map(tile).join("")}</div>
+    </section>`;
+}
 function viewHome() {
+  if (REMOTE) return familyHome();
   const given = S.given.map((line) => `<p class="callout callout-info">${icon("folder")}<span>${esc(line)}</span></p>`).join("");
   const broken = S.settings_error ? `<p class="callout callout-warn" id="settingsError" role="alert">${icon("info")}<span>${esc(S.settings_error)}</span></p>` : "";
-  return `${updateBanner()}
+  return `${staleBanner()}${updateBanner()}
     <div class="page-head"><h1>${esc(T.whereYourPhotos)}</h1><p>${esc(T.readNow)}</p></div>
     ${broken}${given}${hero()}${REMOTE ? EXTRAS.albums() : ""}
     <section class="block" aria-labelledby="cycleTitle">
