@@ -134,7 +134,7 @@ qui a ouvert la page :
   votre dossier des rapports et s'arrête avec `199`. `mh` lit ce fichier une fois, le retire, et
   lance ces mots : `Noël 2025` reste un seul mot. Avec des rapports dans un volume nommé, ou un
   `mh` plus ancien, la page donne la commande à copier à la place.
-- **⚠️ Définitif** (`purge`, `clean --delete`, `phone --free`) : la page demande d'abord ; `mh`
+- **⚠️ Définitif** (`purge`, `clean --delete`, `import --phone --free`) : la page demande d'abord ; `mh`
   redemande dans sa fenêtre avant de toucher quoi que ce soit.
 - **Sinon** (`mh home` tapé, un `mh` plus ancien, ou `docker run` seul) : le bouton copie la
   commande (*Commande copiée*) et la page continue ; arrêtez-la avec Ctrl+C dans la fenêtre où

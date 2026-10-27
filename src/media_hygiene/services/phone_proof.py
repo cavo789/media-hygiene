@@ -6,7 +6,7 @@ is then compared, in this order, with:
 
 1. a file of the library still there now (the index's digest while its size and
    date are unchanged, else computed now);
-2. the import's own copy (`mh phone` copied it, now or before): the phone's size and
+2. the import's own copy (by `import --phone`, now or before): the phone's size and
    the same SHA-256 — a second, independent read of the phone, so a truncated copy
    never frees its original;
 3. a content the journals remember as set aside on purpose (full SHA-256, else the
@@ -45,7 +45,7 @@ class Proven(StrEnum):
     """Where the PC holds the content of a phone file: the case of its deletion."""
 
     LIBRARY = "library"  # case 1: a file of the library
-    IMPORTED = "imported"  # case 2: the copy `mh phone` made
+    IMPORTED = "imported"  # case 2: the copy `mh import --phone` made
     SET_ASIDE = "set-aside"  # case 3: set aside on purpose before (with a warning)
 
 

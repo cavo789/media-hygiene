@@ -1,4 +1,4 @@
-"""`phone-plan`: which files of a phone `mh phone` copies, why not the others (0219).
+"""`phone-plan`: which files of a phone `import --phone` copies, why not others (0219).
 
 A listing on stdin against an index, journals and a destination: each reason to skip,
 names compared without case, ties broken by path, the output format.
@@ -188,7 +188,7 @@ def test_the_latest_set_aside_of_a_name_and_size_is_said(
 def test_a_file_already_at_the_destination_is_not_copied_again(
     runner: CliRunner, locations: Locations
 ) -> None:
-    """A second `mh phone`: the destination holds it; staging never counts."""
+    """A second `mh import --phone`: the destination holds it; staging never counts."""
     destination = locations.data_dir / "c" / "Photos" / "Phone" / "A72"
     (destination / "Camera").mkdir(parents=True)
     (destination / "Camera" / "IMG_9.jpg").write_bytes(b"x" * 30)

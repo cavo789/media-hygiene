@@ -87,27 +87,33 @@ def build_app() -> typer.Typer:
             rich_help_panel=panel,
             hidden=name in PAGE_ONLY,
         )(function)
-    # Plumbing for `mh phone` and `mh push` only (0219, 0248, 0264): hidden from
+    # Plumbing for `import --phone` and `push` only (0219, 0248, 0264): hidden from
     # `--help`, no page.
     plumbing = (
         (
             PHONE_PLAN,
-            _("For mh phone: which files of a phone are new, from its listing."),
+            _(
+                "For mh import --phone: which files of a phone are new, from its "
+                "listing."
+            ),
             phone_plan_command,
         ),
         (
             PHONE_REVIEW,
-            _("For mh phone: the page where you tick what leaves the phone."),
+            _("For mh import --phone: the page where you tick what leaves the phone."),
             phone_review_command,
         ),
         (
             PHONE_PROVE,
-            _("For mh phone: prove by their content the files ticked to delete."),
+            _(
+                "For mh import --phone: prove by their content the files ticked to "
+                "delete."
+            ),
             phone_prove_command,
         ),
         (
             PHONE_DONE,
-            _("For mh phone: journal the files gone from the phone."),
+            _("For mh import --phone: journal the files gone from the phone."),
             phone_done_command,
         ),
         (

@@ -124,7 +124,7 @@ opened the page:
   the words into `.mh-step.json` of your reports folder and ends with `199`. `mh` reads that file
   once, removes it, and runs those words: `Christmas 2025` stays one word. With reports in a
   named volume, or an older `mh`, the page gives the command to copy instead.
-- **⚠️ For good** (`purge`, `clean --delete`, `phone --free`): the page asks first; `mh` asks
+- **⚠️ For good** (`purge`, `clean --delete`, `import --phone --free`): the page asks first; `mh` asks
   again in its window before touching anything.
 - **Otherwise** (`mh home` typed, an older `mh`, or `docker run` alone): the button copies the
   command (*Command copied*) and the page keeps running; stop it with Ctrl+C in the window where

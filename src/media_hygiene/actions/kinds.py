@@ -47,7 +47,7 @@ class ActionKind(StrEnum):
     # Written by `clean --decisions`: a file deleted outside the tool (the Explorer),
     # confirmed deleted on purpose in `review --gone` (0224). Nothing moves.
     MARK_GONE = "mark-gone"
-    # Written by `mh phone` (0248): a file deleted from the phone, its content proven
+    # By `import --phone` (0248): a file deleted from the phone, its content proven
     # on the PC — in the library (`keeper`), in the import's copy (`keeper`), or set
     # aside before on purpose. `undo` cannot put a file back on a phone.
     PHONE_LIBRARY = "phone-library"

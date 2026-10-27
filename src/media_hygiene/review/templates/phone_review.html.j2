@@ -1,5 +1,5 @@
 {% extends "page_frame.html.j2" %}
-{# The page freeing a phone, served by `media-hygiene phone-review` for `mh phone` (0248).
+{# The page freeing a phone, served by `media-hygiene phone-review` for `mh import --phone` (0248).
    The page never touches a file: each tick is sent to the server, which saves
    phone-decisions.json and reads it back; "Delete from the phone" ends the page, then `mh`
    copies each file ticked again, proves it by its content, and only then removes it.
@@ -22,7 +22,7 @@
   "loaded": "📄 " ~ _("{file} read from the disk at {time}: {ticked} files ticked.").replace("{file}", place),
   "failed": _("Not saved (error {status})."),
   "notSaved": _("Nothing was saved: {error}"),
-  "offline": _("The page is not running any more: type mh phone again."),
+  "offline": _("The page is not running any more: type mh import --phone again."),
   "goneHome": _("The page is not running any more: nothing more is saved here. Go back to the home page, then choose Make room on the phone again."),
   "freed": _("Switch to the PowerShell window: the files leave the phone one by one, each one copied again and compared with the PC's copy first. Keep the phone unlocked, screen on."),
   "elapsed": _("{elapsed} min gone by, of about {minutes}."),

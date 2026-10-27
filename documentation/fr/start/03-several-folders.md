@@ -165,21 +165,21 @@ côté, dans `.removed`. Les fois suivantes, `mh push` seul. Windows PowerShell 
 ## Un téléphone ? Copiez seulement ses nouvelles photos
 
 Brancher un téléphone et tout copier à chaque fois ramène toutes les photos que vous avez déjà, et
-le nettoyage qui suit. Sous Windows, `mh phone` copie uniquement les photos et vidéos que votre
+le nettoyage qui suit. Sous Windows, `mh import --phone` copie uniquement les photos et vidéos que votre
 photothèque n'a pas encore, ni celles que vous avez écartées volontairement auparavant :
 
 ```powershell
-mh phone
+mh import --phone
 mh audit
 ```
 
 Elles arrivent dans `<votre premier dossier de photos>\Phone\<nom du téléphone>` (`--to` choisit
 un autre dossier) ; le téléphone lui-même est seulement lu. Comment il décide, et que faire si le
-câble se débranche : [`mh phone`](../commands/launcher.md#un-téléphone--copiez-seulement-ses-nouvelles-photos--mh-phone).
+câble se débranche : [`mh import --phone`](../commands/import.md#depuis-un-téléphone--mh-import---phone).
 
-Pour faire aussi de la place sur le téléphone, `mh phone --free` montre ensuite sur une page ce que
+Pour faire aussi de la place sur le téléphone, `mh import --phone --free` montre ensuite sur une page ce que
 le PC détient, et ne supprime du téléphone que ce que vous cochez, chaque fichier d'abord prouvé
-sur le PC par son contenu : [libérer le téléphone](../commands/launcher.md#libérer-le-téléphone--mh-phone---free).
+sur le PC par son contenu : [libérer le téléphone](../commands/import.md#libérer-le-téléphone--mh-import---phone---free).
 
 ## Bon à savoir
 

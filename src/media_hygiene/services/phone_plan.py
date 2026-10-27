@@ -1,4 +1,4 @@
-r"""Which files of a phone `mh phone` copies, and why it leaves the others (0219).
+r"""Which files of a phone `import --phone` copies, and why it leaves the others (0219).
 
 A phone plugged in over USB has no drive letter: Docker cannot see it, `mh.ps1` can.
 `mh` lists the phone's `DCIM` (relative path, size, modified date in UTC), pipes the
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 # A file of the phone: its name, case folded, and its size.
 type NameKey = tuple[str, int]
 
-# The hidden command `mh phone` pipes the listing to: plumbing, no page (0219).
+# The hidden command `mh import --phone` pipes the listing to: plumbing, no page (0219).
 PHONE_PLAN: Final = "phone-plan"
 # Freeing the phone (0248): its page, the proof and its journal.
 PHONE_REVIEW, PHONE_PROVE, PHONE_DONE = "phone-review", "phone-prove", "phone-done"
@@ -36,7 +36,7 @@ _SPACE: Final = " "
 
 
 class PhoneCase(StrEnum):
-    """What `mh phone` does with a file of the phone, the first word of its line."""
+    """What `import --phone` does with a phone's file, the first word of its line."""
 
     NEW = "new"  # copied
     LIBRARY = "library"  # the library holds a file of that name and size

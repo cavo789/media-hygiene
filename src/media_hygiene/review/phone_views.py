@@ -154,7 +154,7 @@ def phone_reasons(tiles: tuple[PhoneTile, ...]) -> tuple[PhoneReason, ...]:
             _("A file of your library has the same name and size."),
         ),
         PhoneCase.DESTINATION: (
-            "📥 " + _("Copied by mh phone"),
+            "📥 " + _("Copied by mh import --phone"),
             _("The copy of the import has the same name and size."),
         ),
         PhoneCase.SET_ASIDE: (

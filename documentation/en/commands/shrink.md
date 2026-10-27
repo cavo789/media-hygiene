@@ -136,7 +136,7 @@ figures; the list says its estimate, and the real gain is said after each video.
 - **The name**: `clip.avi` becomes `clip.mp4`; a sidecar `clip.avi.xmp` follows as `clip.mp4.xmp`.
   A file already named `clip.mp4` next to it is never replaced: that video is skipped.
 - **Never imported again**: the original is remembered like any file you set aside. If a phone
-  or a backup still holds it, `mh phone` does not import it again, and the next `clean` sets a
+  or a backup still holds it, `mh import --phone` does not import it again, and the next `clean` sets a
   copy that came back aside.
 
 ## Options

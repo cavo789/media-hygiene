@@ -153,21 +153,21 @@ The next times, `mh push` alone. Windows PowerShell only: [`push`](../commands/p
 ## A phone? Copy only its new photos
 
 Plugging a phone in and copying everything each time brings back every photo you already have,
-and the cleaning that follows. On Windows, `mh phone` copies only the photos and videos your
+and the cleaning that follows. On Windows, `mh import --phone` copies only the photos and videos your
 library does not hold yet, nor the ones you set aside on purpose before:
 
 ```powershell
-mh phone
+mh import --phone
 mh audit
 ```
 
 They land in `<your first photo folder>\Phone\<the phone's name>` (`--to` chooses another
 folder); the phone itself is only read. How it decides, and what to do when the cable comes
-out: [`mh phone`](../commands/launcher.md#a-phone-copy-only-its-new-photos-mh-phone).
+out: [`mh import --phone`](../commands/import.md#from-a-phone-mh-import---phone).
 
-To make room on the phone too, `mh phone --free` then shows on a page what the PC holds, and
+To make room on the phone too, `mh import --phone --free` then shows on a page what the PC holds, and
 deletes from the phone only what you tick, each file proven on the PC by its content first:
-[free the phone](../commands/launcher.md#free-the-phone-mh-phone---free).
+[free the phone](../commands/import.md#free-the-phone-mh-import---phone---free).
 
 ## Good to know
 

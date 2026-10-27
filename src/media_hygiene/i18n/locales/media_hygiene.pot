@@ -623,6 +623,11 @@ msgid ""
 " more just before."
 msgstr ""
 
+msgid ""
+"A phone over USB instead of a folder: Windows only, the mh of PowerShell "
+"copies its new photos itself; --free then makes room on it."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "A photo changed in place by another program? 'audit --full' reads every "
@@ -899,7 +904,7 @@ msgid "All {total} files found are picked"
 msgstr ""
 
 #, python-brace-format
-msgid "Already copied by an earlier mh phone: {count}."
+msgid "Already copied by an earlier mh import --phone: {count}."
 msgstr ""
 
 msgid "Already in place"
@@ -1616,7 +1621,7 @@ msgstr ""
 msgid "Copied"
 msgstr ""
 
-msgid "Copied by mh phone"
+msgid "Copied by mh import --phone"
 msgstr ""
 
 #, python-brace-format
@@ -1637,7 +1642,7 @@ msgid "Copies found in these folders are kept first, in this order."
 msgstr ""
 
 #, python-brace-format
-msgid "Copies not found when read back: {count}. Type mh phone again."
+msgid "Copies not found when read back: {count}. Type mh import --phone again."
 msgstr ""
 
 msgid "Copies, previewed"
@@ -2913,16 +2918,16 @@ msgstr ""
 msgid "For good, once the quarantine is checked."
 msgstr ""
 
-msgid "For mh phone: journal the files gone from the phone."
+msgid "For mh import --phone: journal the files gone from the phone."
 msgstr ""
 
-msgid "For mh phone: prove by their content the files ticked to delete."
+msgid "For mh import --phone: prove by their content the files ticked to delete."
 msgstr ""
 
-msgid "For mh phone: the page where you tick what leaves the phone."
+msgid "For mh import --phone: the page where you tick what leaves the phone."
 msgstr ""
 
-msgid "For mh phone: which files of a phone are new, from its listing."
+msgid "For mh import --phone: which files of a phone are new, from its listing."
 msgstr ""
 
 msgid "For mh push: one step of a backup, its lines on stdin and stdout."
@@ -4451,7 +4456,7 @@ msgstr ""
 
 msgid ""
 "No phone seen: plug it in, unlock it, choose File transfer (iPhone: Trust"
-" this computer), then type mh phone again."
+" this computer), then type mh import --phone again."
 msgstr ""
 
 msgid "No photo folder to copy into: only backup folders are mounted."
@@ -4462,7 +4467,7 @@ msgid ""
 " again."
 msgstr ""
 
-msgid "No photo folder: type mh phone --to <folder>."
+msgid "No photo folder: type mh import --phone --to <folder>."
 msgstr ""
 
 msgid "No photo in the cache: run the audit first."
@@ -6946,7 +6951,9 @@ msgid "Step-by-step guide and every command: {url}"
 msgstr ""
 
 #, python-brace-format
-msgid "Still on the phone after the move: {count}. Type mh phone --free again."
+msgid ""
+"Still on the phone after the move: {count}. Type mh import --phone --free"
+" again."
 msgstr ""
 
 msgid ""
@@ -7762,7 +7769,7 @@ msgstr ""
 msgid "The page is not running any more: start people again."
 msgstr ""
 
-msgid "The page is not running any more: type mh phone again."
+msgid "The page is not running any more: type mh import --phone again."
 msgstr ""
 
 msgid "The page of the tool this server shows"
@@ -7794,14 +7801,14 @@ msgstr ""
 msgid ""
 "The phone no longer answers (unplugged, or asleep: keep it unlocked, "
 "screen on): what is counted above was deleted, the rest is still on it. "
-"Type mh phone --free again."
+"Type mh import --phone --free again."
 msgstr ""
 
 #, python-brace-format
 msgid ""
 "The phone no longer answers (unplugged, or asleep: keep it unlocked, "
-"screen on, during the copy): {count} files copied so far. Type mh phone "
-"again: what is already copied is skipped."
+"screen on, during the copy): {count} files copied so far. Type mh import "
+"--phone again: what is already copied is skipped."
 msgstr ""
 
 msgid "The phone run the files were proven in."
@@ -10255,6 +10262,18 @@ msgstr ""
 msgid "mh forgets it; its photos do not move."
 msgstr ""
 
+msgid ""
+"mh import --phone copies only the new photos and videos of a phone "
+"plugged in over USB; --to <folder> chooses where, --only <folder of DCIM>"
+" takes that folder only (Camera), --free then offers to delete from the "
+"phone what the PC holds."
+msgstr ""
+
+msgid ""
+"mh import --phone is for Windows only: type it in Windows PowerShell, "
+"where mh reads the phone itself."
+msgstr ""
+
 msgid "mh is unchanged: launcher refused it (see above)."
 msgstr ""
 
@@ -10279,13 +10298,6 @@ msgstr ""
 msgid ""
 "mh needs at least one photo folder: add the new one first, then remove "
 "this one."
-msgstr ""
-
-msgid ""
-"mh phone copies only the new photos and videos of a phone plugged in over"
-" USB; --to <folder> chooses where, --only <folder of DCIM> takes that "
-"folder only (Camera), --free then offers to delete from the phone what "
-"the PC holds."
 msgstr ""
 
 msgid "mh push"

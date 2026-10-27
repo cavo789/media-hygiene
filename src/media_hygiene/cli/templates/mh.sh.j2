@@ -30,6 +30,12 @@
         return
     fi
     # The commands of the host itself, without the container (0175, 0180, 0181).
+    if [[ "$1" == import && " ${*:2} " == *" {{ host.phone }} "* ]]; then
+        # `{{ function }} import {{ host.phone }}` reads a phone over USB: mh.ps1 only (0219, 0379).
+        set -- "import {{ host.phone }}"
+        printf '%s\n' "{{ host.texts.windows }}" >&2
+        return 2
+    fi
     case "$1" in
 {% for name in host.names %}
         {{ name }}) _{{ function }}_{{ name }} "${@:2}"; return ;;

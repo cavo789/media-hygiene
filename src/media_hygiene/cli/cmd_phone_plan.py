@@ -1,4 +1,4 @@
-r"""`media-hygiene phone-plan`: which files of a phone `mh phone` copies (0219).
+r"""`media-hygiene phone-plan`: which files of a phone `import --phone` copies (0219).
 
 Plumbing for `mh` only, hidden from `--help`: `mh.ps1` lists the phone's `DCIM` and
 pipes one `path<TAB>size<TAB>date` line per file; the plan comes back on stdout, one

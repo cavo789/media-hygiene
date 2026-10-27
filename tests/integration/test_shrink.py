@@ -119,7 +119,7 @@ def test_an_edited_lighter_video_is_kept_by_undo(
 def test_the_phone_s_copy_of_an_original_is_never_imported_again(
     cli: CliRunner, locations: Locations
 ) -> None:
-    """The phone still holds the original: `mh phone` sees it set aside, not new."""
+    """The phone still holds the original: `import --phone` sees it aside, not new."""
     camera = locations.data_dir / _CAMERA
     size = camera.stat().st_size
     _shrink(cli, "--apply", "--yes")

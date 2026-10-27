@@ -748,7 +748,10 @@ msgid ""
 "A local model looks at each photo on this computer's processor, so that "
 "search finds photos by what they show. Nothing is sent; only the cache is"
 " written."
-msgstr "Un modèle local regarde chaque photo sur le processeur de cet ordinateur, pour que la recherche trouve les photos par ce qu'elles montrent. Rien n'est envoyé ; seul le cache est écrit."
+msgstr ""
+"Un modèle local regarde chaque photo sur le processeur de cet ordinateur,"
+" pour que la recherche trouve les photos par ce qu'elles montrent. Rien "
+"n'est envoyé ; seul le cache est écrit."
 
 msgid ""
 "A local vision model (Ollama) names the subject of the photos no other "
@@ -790,6 +793,14 @@ msgstr ""
 "décochez ceux que vous gardez. Rien ne quitte le téléphone avant le "
 "bouton « Supprimer … du téléphone » de cette page, et chaque fichier est "
 "encore comparé à la copie du PC juste avant."
+
+msgid ""
+"A phone over USB instead of a folder: Windows only, the mh of PowerShell "
+"copies its new photos itself; --free then makes room on it."
+msgstr ""
+"Un téléphone en USB au lieu d'un dossier : Windows seulement, le mh de "
+"PowerShell copie lui-même ses nouvelles photos ; --free fait ensuite de "
+"la place dessus."
 
 #, python-brace-format
 msgid ""
@@ -1147,8 +1158,8 @@ msgid "All {total} files found are picked"
 msgstr "Les {total} fichiers trouvés sont choisis"
 
 #, python-brace-format
-msgid "Already copied by an earlier mh phone: {count}."
-msgstr "Déjà copiés par un mh phone précédent : {count}."
+msgid "Already copied by an earlier mh import --phone: {count}."
+msgstr "Déjà copiés par un mh import --phone précédent : {count}."
 
 msgid "Already in place"
 msgstr "Déjà à leur place"
@@ -1985,8 +1996,8 @@ msgstr "Continuer ? ({yes}/N)"
 msgid "Copied"
 msgstr "Copiée"
 
-msgid "Copied by mh phone"
-msgstr "Copiés par mh phone"
+msgid "Copied by mh import --phone"
+msgstr "Copiés par mh import --phone"
 
 #, python-brace-format
 msgid "Copied: {count} files ({size}, {speed} MB/s), read back from {target}."
@@ -2008,8 +2019,10 @@ msgstr ""
 "ordre."
 
 #, python-brace-format
-msgid "Copies not found when read back: {count}. Type mh phone again."
-msgstr "Copies introuvables à la relecture : {count}. Tapez de nouveau mh phone."
+msgid "Copies not found when read back: {count}. Type mh import --phone again."
+msgstr ""
+"Copies introuvables à la relecture : {count}. Tapez de nouveau mh import "
+"--phone."
 
 msgid "Copies, previewed"
 msgstr "Des copies, en aperçu"
@@ -2100,11 +2113,9 @@ msgstr "Impossible de supprimer {key}."
 msgid "Could not write {path}."
 msgstr "Impossible d'écrire {path}."
 
-#
 msgid "Counting the photos to look at…"
 msgstr "Décompte des photos à regarder…"
 
-#
 msgid "Counting the photos to scan…"
 msgstr "Décompte des photos à analyser…"
 
@@ -3047,12 +3058,13 @@ msgstr "Chaque groupe à vérifier a été décidé."
 msgid "Every pair has been decided."
 msgstr "Toutes les paires ont été décidées."
 
-#
 msgid "Every photo is looked at already."
 msgstr "Toutes les photos sont déjà regardées."
 
 msgid "Every photo is scanned already: the people page shows the faces."
-msgstr "Toutes les photos sont déjà analysées : la page des personnes montre les visages."
+msgstr ""
+"Toutes les photos sont déjà analysées : la page des personnes montre les "
+"visages."
 
 msgid ""
 "Every photo this person is on, with others or not. Nothing is deleted "
@@ -3392,7 +3404,6 @@ msgstr ""
 "nommer dans votre navigateur. Visages gardés dans le cache, jamais "
 "envoyés nulle part."
 
-#
 msgid "Find the faces in your photos"
 msgstr "Trouver les visages de vos photos"
 
@@ -3402,7 +3413,6 @@ msgstr "Trouver ses photos"
 msgid "Finding faces"
 msgstr "Recherche des visages"
 
-#
 msgid "Finding faces…"
 msgstr "Recherche des visages…"
 
@@ -3588,19 +3598,25 @@ msgstr "Définitif"
 msgid "For good, once the quarantine is checked."
 msgstr "Pour de bon, une fois la quarantaine vérifiée."
 
-msgid "For mh phone: journal the files gone from the phone."
-msgstr "Pour mh phone : inscrit au journal les fichiers partis du téléphone."
-
-msgid "For mh phone: prove by their content the files ticked to delete."
-msgstr "Pour mh phone : prouve par leur contenu les fichiers cochés à supprimer."
-
-msgid "For mh phone: the page where you tick what leaves the phone."
-msgstr "Pour mh phone : la page où vous cochez ce qui quitte le téléphone."
-
-msgid "For mh phone: which files of a phone are new, from its listing."
+msgid "For mh import --phone: journal the files gone from the phone."
 msgstr ""
-"Pour mh phone : quels fichiers d'un téléphone sont nouveaux, d'après sa "
-"liste."
+"Pour mh import --phone : inscrit au journal les fichiers partis du "
+"téléphone."
+
+msgid "For mh import --phone: prove by their content the files ticked to delete."
+msgstr ""
+"Pour mh import --phone : prouve par leur contenu les fichiers cochés à "
+"supprimer."
+
+msgid "For mh import --phone: the page where you tick what leaves the phone."
+msgstr ""
+"Pour mh import --phone : la page où vous cochez ce qui quitte le "
+"téléphone."
+
+msgid "For mh import --phone: which files of a phone are new, from its listing."
+msgstr ""
+"Pour mh import --phone : quels fichiers d'un téléphone sont nouveaux, "
+"d'après sa liste."
 
 msgid "For mh push: one step of a backup, its lines on stdin and stdout."
 msgstr "Pour mh push : une étape d'une sauvegarde, ses lignes sur stdin et stdout."
@@ -4166,7 +4182,6 @@ msgstr ""
 msgid "It changes nothing in your photos"
 msgstr "Il ne change rien à vos photos"
 
-#
 msgid "It failed: the window where mh runs says why."
 msgstr "Échec : la fenêtre où tourne mh dit pourquoi."
 
@@ -4558,11 +4573,9 @@ msgstr "Revoir les photos disparues"
 msgid "Look again, slower: the photo turned, less strict"
 msgstr "Regarder encore, plus lentement : la photo tournée, moins exigeant"
 
-#
 msgid "Look for 1 h"
 msgstr "Regarder pendant 1 h"
 
-#
 msgid "Look now"
 msgstr "Regarder maintenant"
 
@@ -4575,7 +4588,6 @@ msgstr "La photo est regardée tournée, un angle après l'autre…"
 msgid "Looking at the photos"
 msgstr "Regard sur les photos"
 
-#
 msgid "Looking at the photos…"
 msgstr "Les photos sont regardées…"
 
@@ -5405,11 +5417,11 @@ msgstr "Plus aucune série évidente à valider."
 
 msgid ""
 "No phone seen: plug it in, unlock it, choose File transfer (iPhone: Trust"
-" this computer), then type mh phone again."
+" this computer), then type mh import --phone again."
 msgstr ""
 "Aucun téléphone vu : branchez-le, déverrouillez-le, choisissez Transfert "
 "de fichiers (iPhone : Faire confiance à cet ordinateur), puis tapez de "
-"nouveau mh phone."
+"nouveau mh import --phone."
 
 msgid "No photo folder to copy into: only backup folders are mounted."
 msgstr ""
@@ -5423,10 +5435,9 @@ msgstr ""
 "Aucun dossier de photos : ajoutez --photos \"C:\\Photos\" pour chaque "
 "dossier, puis relancez."
 
-msgid "No photo folder: type mh phone --to <folder>."
-msgstr "Aucun dossier de photos : tapez mh phone --to <dossier>."
+msgid "No photo folder: type mh import --phone --to <folder>."
+msgstr "Aucun dossier de photos : tapez mh import --phone --to <dossier>."
 
-#
 msgid "No photo in the cache: run the audit first."
 msgstr "Aucune photo dans le cache : lancez d'abord l'audit."
 
@@ -7697,11 +7708,9 @@ msgstr ""
 "Dites quoi montrer, au choix : --folder \"C:\\Photos\\Vacances\", "
 "--search \"mots\", ou --album \"Crète 2023\"."
 
-#
 msgid "Scan for 1 h"
 msgstr "Analyser pendant 1 h"
 
-#
 msgid "Scan now"
 msgstr "Analyser maintenant"
 
@@ -7743,12 +7752,13 @@ msgstr ""
 "(une recherche par seconde au plus). Une autre instance, ou vide pour ne "
 "chercher que hors ligne."
 
-#
 msgid "Search by meaning"
 msgstr "Recherche par le sens"
 
 msgid "Search by meaning is off: set meaning = true under [tags] first."
-msgstr "La recherche par le sens est désactivée : mettez d'abord meaning = true sous [tags]."
+msgstr ""
+"La recherche par le sens est désactivée : mettez d'abord meaning = true "
+"sous [tags]."
 
 msgid "Search by meaning: every photo is looked at already."
 msgstr "Recherche par le sens : chaque photo a déjà été regardée."
@@ -8392,10 +8402,12 @@ msgid "Step-by-step guide and every command: {url}"
 msgstr "Guide pas à pas et toutes les commandes : {url}"
 
 #, python-brace-format
-msgid "Still on the phone after the move: {count}. Type mh phone --free again."
+msgid ""
+"Still on the phone after the move: {count}. Type mh import --phone --free"
+" again."
 msgstr ""
 "Encore sur le téléphone après le déplacement : {count}. Tapez à nouveau "
-"mh phone --free."
+"mh import --phone --free."
 
 msgid ""
 "Still reading the tool folders: the first time after a start, it can take"
@@ -8454,11 +8466,9 @@ msgstr ""
 "Arrêté : la prochaine exécution de people reprend là où celle-ci s'est "
 "arrêtée."
 
-#
 msgid "Stopped: the next run goes on where this one stopped."
 msgstr "Arrêté : la prochaine exécution reprend là où celle-ci s'est arrêtée."
 
-#
 msgid "Stopped: the next scan goes on where this one stopped."
 msgstr "Arrêté : la prochaine analyse reprend là où celle-ci s'est arrêtée."
 
@@ -9163,8 +9173,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "The home page has {count} photo scanned for faces: Stop is on the page."
 msgid_plural "The home page has {count} photos scanned for faces: Stop is on the page."
-msgstr[0] "La page d'accueil fait analyser {count} photo pour les visages : Arrêter est sur la page."
-msgstr[1] "La page d'accueil fait analyser {count} photos pour les visages : Arrêter est sur la page."
+msgstr[0] ""
+"La page d'accueil fait analyser {count} photo pour les visages : Arrêter "
+"est sur la page."
+msgstr[1] ""
+"La page d'accueil fait analyser {count} photos pour les visages : Arrêter"
+" est sur la page."
 
 msgid ""
 "The home page in your browser: where you are, the next step as a button, "
@@ -9383,8 +9397,8 @@ msgstr "La page ne tourne plus : relancez-la."
 msgid "The page is not running any more: start people again."
 msgstr "La page ne tourne plus : relancez people."
 
-msgid "The page is not running any more: type mh phone again."
-msgstr "La page ne tourne plus : tapez à nouveau mh phone."
+msgid "The page is not running any more: type mh import --phone again."
+msgstr "La page ne tourne plus : tapez à nouveau mh import --phone."
 
 msgid "The page of the tool this server shows"
 msgstr "La page de l'outil que ce serveur affiche"
@@ -9421,21 +9435,22 @@ msgstr ""
 msgid ""
 "The phone no longer answers (unplugged, or asleep: keep it unlocked, "
 "screen on): what is counted above was deleted, the rest is still on it. "
-"Type mh phone --free again."
+"Type mh import --phone --free again."
 msgstr ""
 "Le téléphone ne répond plus (débranché, ou en veille : gardez-le "
 "déverrouillé, écran allumé) : ce qui est compté ci-dessus a été supprimé,"
-" le reste y est encore. Tapez à nouveau mh phone --free."
+" le reste y est encore. Tapez à nouveau mh import --phone --free."
 
 #, python-brace-format
 msgid ""
 "The phone no longer answers (unplugged, or asleep: keep it unlocked, "
-"screen on, during the copy): {count} files copied so far. Type mh phone "
-"again: what is already copied is skipped."
+"screen on, during the copy): {count} files copied so far. Type mh import "
+"--phone again: what is already copied is skipped."
 msgstr ""
 "Le téléphone ne répond plus (débranché, ou en veille : gardez-le "
 "déverrouillé, écran allumé, pendant la copie) : {count} fichiers copiés "
-"jusqu'ici. Tapez à nouveau mh phone : ce qui est déjà copié est passé."
+"jusqu'ici. Tapez à nouveau mh import --phone : ce qui est déjà copié est "
+"passé."
 
 msgid "The phone run the files were proven in."
 msgstr "Le passage du téléphone où les fichiers ont été prouvés."
@@ -10186,7 +10201,6 @@ msgstr "Cette série n'est pas encore dans le fichier."
 msgid "This shot lies in a protected folder: it is never moved."
 msgstr "Cette photo est dans un dossier protégé : elle ne bouge jamais."
 
-#
 msgid "This step already runs: wait for its end, or stop it."
 msgstr "Cette étape tourne déjà : attendez sa fin, ou arrêtez-la."
 
@@ -10471,7 +10485,10 @@ msgstr ""
 msgid ""
 "Two small local models find the faces, on this computer: nothing is sent."
 " Only the cache is written: your photos are not changed."
-msgstr "Deux petits modèles locaux trouvent les visages, sur cet ordinateur : rien n'est envoyé. Seul le cache est écrit : vos photos ne sont pas modifiées."
+msgstr ""
+"Deux petits modèles locaux trouvent les visages, sur cet ordinateur : "
+"rien n'est envoyé. Seul le cache est écrit : vos photos ne sont pas "
+"modifiées."
 
 msgid "Type"
 msgstr "Type"
@@ -12318,6 +12335,24 @@ msgstr ""
 msgid "mh forgets it; its photos do not move."
 msgstr "mh l'oublie ; ses photos ne bougent pas."
 
+msgid ""
+"mh import --phone copies only the new photos and videos of a phone "
+"plugged in over USB; --to <folder> chooses where, --only <folder of DCIM>"
+" takes that folder only (Camera), --free then offers to delete from the "
+"phone what the PC holds."
+msgstr ""
+"mh import --phone copie seulement les nouvelles photos et vidéos d'un "
+"téléphone branché en USB ; --to <dossier> choisit où, --only <dossier de "
+"DCIM> prend ce dossier seulement (Camera), --free propose ensuite de "
+"supprimer du téléphone ce que le PC détient."
+
+msgid ""
+"mh import --phone is for Windows only: type it in Windows PowerShell, "
+"where mh reads the phone itself."
+msgstr ""
+"mh import --phone est pour Windows seulement : tapez-le dans Windows "
+"PowerShell, où mh lit lui-même le téléphone."
+
 msgid "mh is unchanged: launcher refused it (see above)."
 msgstr "mh n'a pas changé : launcher l'a refusé (voir plus haut)."
 
@@ -12351,17 +12386,6 @@ msgid ""
 msgstr ""
 "mh a besoin d'au moins un dossier de photos : ajoutez d'abord le nouveau,"
 " puis retirez celui-ci."
-
-msgid ""
-"mh phone copies only the new photos and videos of a phone plugged in over"
-" USB; --to <folder> chooses where, --only <folder of DCIM> takes that "
-"folder only (Camera), --free then offers to delete from the phone what "
-"the PC holds."
-msgstr ""
-"mh phone copie seulement les nouvelles photos et vidéos d'un téléphone "
-"branché en USB ; --to <dossier> choisit où, --only <dossier de DCIM> "
-"prend ce dossier seulement (Camera), --free propose ensuite de supprimer "
-"du téléphone ce que le PC détient."
 
 msgid "mh push"
 msgstr "mh push"
@@ -14422,8 +14446,12 @@ msgstr[1] "{count} groupes décidés plus tôt ont changé depuis : à décider 
 #, python-brace-format
 msgid "{count} group of faces on the people page; {left} photos left."
 msgid_plural "{count} groups of faces on the people page; {left} photos left."
-msgstr[0] "{count} groupe de visages sur la page des personnes ; {left} photos restantes."
-msgstr[1] "{count} groupes de visages sur la page des personnes ; {left} photos restantes."
+msgstr[0] ""
+"{count} groupe de visages sur la page des personnes ; {left} photos "
+"restantes."
+msgstr[1] ""
+"{count} groupes de visages sur la page des personnes ; {left} photos "
+"restantes."
 
 #, python-brace-format
 msgid ""
@@ -14588,8 +14616,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} photo can now be found by what it shows; {left} left."
 msgid_plural "{count} photos can now be found by what they show; {left} left."
-msgstr[0] "{count} photo peut maintenant être trouvée par ce qu'elle montre ; {left} restantes."
-msgstr[1] "{count} photos peuvent maintenant être trouvées par ce qu'elles montrent ; {left} restantes."
+msgstr[0] ""
+"{count} photo peut maintenant être trouvée par ce qu'elle montre ; {left}"
+" restantes."
+msgstr[1] ""
+"{count} photos peuvent maintenant être trouvées par ce qu'elles montrent "
+"; {left} restantes."
 
 #, python-brace-format
 msgid "{count} photo could not be decoded."
@@ -14811,13 +14843,18 @@ msgstr ""
 msgid ""
 "{count} photos to look at with {model}, about {time}. Each one is kept at"
 " once: a stop loses nothing, the next run goes on."
-msgstr "{count} photos à regarder avec {model}, environ {time}. Chacune est gardée aussitôt : un arrêt ne perd rien, la prochaine exécution continue."
+msgstr ""
+"{count} photos à regarder avec {model}, environ {time}. Chacune est "
+"gardée aussitôt : un arrêt ne perd rien, la prochaine exécution continue."
 
 #, python-brace-format
 msgid ""
 "{count} photos to scan for faces, about {time}. Each photo's faces are "
 "kept at once: a stop loses nothing, the next run goes on."
-msgstr "{count} photos où chercher des visages, environ {time}. Les visages de chaque photo sont gardés aussitôt : un arrêt ne perd rien, la prochaine exécution continue."
+msgstr ""
+"{count} photos où chercher des visages, environ {time}. Les visages de "
+"chaque photo sont gardés aussitôt : un arrêt ne perd rien, la prochaine "
+"exécution continue."
 
 #, python-brace-format
 msgid "{count} report deleted."

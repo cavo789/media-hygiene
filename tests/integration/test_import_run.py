@@ -179,3 +179,14 @@ def test_the_command_takes_a_folder_instead_of_the_backups(
     assert result.exit_code == 0, result.output
     assert (locations.data_dir / from_folder("E") / "IMG_0008.jpg").is_file()
     assert (card / "IMG_0008.jpg").is_file()
+
+
+def test_the_phone_reaching_the_container_is_refused(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0379: `import --phone` is the mh.ps1's; in the container one line, status 2."""
+    point_mounts(locations, monkeypatch)
+    result = run(CliRunner(), "import", "--phone")
+    assert result.exit_code == 2, result.output
+    assert "mh import --phone is for Windows only" in result.output
+    assert not (locations.data_dir / from_folder("E")).exists()

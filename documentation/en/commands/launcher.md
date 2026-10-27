@@ -114,7 +114,7 @@ So `--help` of the image does not list them; this page and the `mh` menu do.
 | `mh explorer` | Windows: adds *Media Hygiene* to the right-click menu of every folder in Explorer, and of the empty space inside an open folder: the home page opens on that folder. Your account only, no administrator. `mh explorer --remove` takes both away. On Windows 11, it may sit under *Show more options*. |
 | `mh folders` | Lists your photo folders and the quarantines, each *found* or *not found* (a disk not plugged in); a quarantine not created yet is said so: the first `clean` creates it. `add` and `remove` change them: [below](#change-your-folders-mh-folders). |
 | `mh update` | Downloads the new version of the image, then writes `mh` again with the same folders: [below](#a-new-version-mh-update). |
-| `mh phone` | Windows: copies only the **new** photos and videos of a phone plugged in over USB; with `--free`, then deletes from the phone what the PC holds, proven by its content: [below](#a-phone-copy-only-its-new-photos-mh-phone). |
+| `mh import --phone` | Windows: copies only the **new** photos and videos of a phone plugged in over USB; with `--free`, then deletes from the phone what the PC holds, proven by its content: [`import`](import.md#from-a-phone-mh-import---phone). |
 | `mh push` | Windows: copies your photo folders into a folder of their own on the NAS, only what it lacks; Windows writes it (robocopy), the container decides: [`push`](push.md). |
 | `mh --lan` | Windows: the home page open to the home Wi-Fi for this run, also with `[review] lan = false` ([kept on this PC](home.md#keep-the-page-on-this-pc-only)): the home page that a phone of the same Wi-Fi may open too with a code (or its QR code), until `mh` stops; from the phone, the audit and the reports only: [`home`](home.md#from-a-phone-on-the-home-wi-fi-mh---lan). |
 | `mh slideshow --folder "C:\…" --lan` | Windows: the [slideshow](slideshow.md) opened to the TV and the phones of the home network, for this run; the TV is paired by a code it shows, typed on the phone. |
@@ -127,7 +127,7 @@ Windows restarts. Both show the *Media Hygiene* icon: Docker copies it from the 
 `media-hygiene.ico`, next to `mh.ps1`; if it cannot, they say so in one line and keep
 PowerShell's icon. From WSL, Linux or macOS,
 `mh open` uses `wslview`, `explorer.exe`, `xdg-open` or `open`; `mh shortcut`, `mh explorer` and
-`mh phone` say they are for Windows; `mh push` says why (Windows writes to the NAS 7 times faster)
+`mh import --phone` say they are for Windows; `mh push` says why (Windows writes to the NAS 7 times faster)
 and the command to type in Windows PowerShell.
 
 **What the icon and the right-click start**: Windows PowerShell, `-NoExit -Command`, loading
@@ -222,113 +222,6 @@ older image* (this also covers a `mh.ps1` that no longer understands the home pa
 with an image you built yourself, the `mh update` of a `mh` that old only says *nothing to
 pull*: run the `launcher` line once more. After `mh update`, the line is gone. Re-pulling `latest` while nothing changed keeps the same
 build: nothing is said.
-
-## A phone? Copy only its new photos: `mh phone`
-
-```powershell
-mh phone                       # into <your first photo folder>\Phone\<the phone's name>
-mh phone --to "D:\From phones" # elsewhere, then a folder per phone
-mh phone --only Camera         # only the folder DCIM\Camera of the phone
-mh phone --free                # then free the phone: below
-```
-
-Plug the phone in over USB, unlock it and choose *File transfer* (iPhone: *Trust this
-computer*), and **keep it unlocked, screen on** until `mh` is done: asleep or locked, a phone
-shows Windows no storage at all. Then `mh phone` says *answers but shows no storage: wake it up
-and unlock it…* and waits for it, up to a minute. It finds the phone (several phones: it asks
-which one), lists its `DCIM` folder
-(about 30 seconds per 1,000 files), then copies **only** what your library does not hold yet:
-
-- **already in your library**: a file of the same name (case ignored) and the same size that an
-  audit has seen, on any of your disks, plugged in or not;
-- **set aside on purpose before**: a burst shot, a near copy, a photo you chose to remove
-  ([cleaning, step 9](../clean/09-undo-history-purge.md#what-you-set-aside-stays-set-aside)),
-  whether its quarantine is still there or purged;
-- **already copied** into that folder by an earlier `mh phone`.
-
-It ends with what it read back from the folder: *New photos and videos copied: 212 (1.40 GB,
-18.5 MB/s)*, then each count left out, and *👉 What next: `mh audit`*. 🔒 Without `--free`, the
-phone is only read: nothing on it is deleted, moved or renamed.
-
-- **Run `mh audit` once first**: the library is what the cache knows. Without an audit, every
-  photo of the phone is new (it says so).
-- **The phone only gives a name and a size**, not its content. A different photo that happens to
-  have the name and size of one of yours stays on the phone, not copied; a photo copied twice
-  under another name is found by the next audit as an identical copy, which `clean` handles.
-- **Unplugged in the middle?** The file being copied is removed, the import stops and says how
-  many were copied. Type `mh phone` again: what is already copied is skipped.
-- **Never a Windows question**: each file is copied into an empty folder
-  (`.mh-phone-<date>`), then moved to its place; a name already taken gets `_1`, said on screen.
-  That folder is removed at the end.
-- The phone's folders below `DCIM` are kept (`Camera`, `Screenshots`). Other folders of the phone
-  (WhatsApp) are not read. With `--to` outside your photo folders, `mh folders add` it for the
-  audits to see it.
-- Windows only: from WSL, Linux or macOS, Docker and bash cannot reach a phone over USB.
-
-### Free the phone: `mh phone --free`
-
-After the import, a page opens in your browser with what the PC may hold, **grouped by the
-phone's folders** (`Camera`, `WhatsApp`, a folder you made…, in the order of their names; only
-the phone's `DCIM` is listed). A badge on each tile says why the PC holds it, explained at the top
-of the left column:
-
-- **📚 Already in your library** and **📥 Copied by `mh phone`** (now or before): ticked for you;
-- **⚠️ Set aside before, on purpose**: never ticked for you. While its quarantine is there, the
-  tile shows the photo itself (its copy in the quarantine, only read) and says *Set aside on
-  <date>, still recoverable with `mh undo <run>` until `mh purge`*; once purged, *Purged on
-  <date>: it is nowhere else. Deleted from the phone, it is lost for good* (a purge older than
-  this version gives no date: *purged since*).
-
-A ticked file carries a red *🗑️ leaves the phone* label. To change what is ticked, the page works
-as [`browse`](browse.md):
-
-- **Pick**: a click picks one file; the ☑ box of each thumbnail (or Ctrl+click) adds or removes
-  one; Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse
-  over the grid picks what it touches, over several rows (with Ctrl, it adds to the picking);
-  Ctrl+A every file of the page. **Invert the picking** (or I) picks the others. Then, in the bar,
-  **🗑️ Tick: leaves the phone** or **Untick: stays on the phone**. A file set aside before is
-  never ticked with others: the bar says *1 file set aside before was left unticked*; tick it
-  alone, after reading its warning.
-- **A whole folder**: the box beside its name ticks every file of it (not those set aside
-  before), or unticks them all; ▣ when only some are ticked. ▾ folds a long folder (kept for the
-  next visit in this browser); the list of the folders, on the left, leads to each one.
-- **Large view**: a double click or Enter, ← → the previous or next one, **Space ticks or
-  unticks the file shown**, F full screen, Esc closes. It shows the PC's copy; *Open the
-  original* opens it untouched.
-- There is no Delete key here: the only deletion is the red button. The keys are listed at the
-  bottom left (⌨ **Keyboard**, then *More keys*).
-
-Every tick is saved at once in `phone-decisions.json` (in your reports folder), read back from the
-disk and shown. **Nothing leaves the phone before you press *Delete N files from the phone***;
-*Leave everything on the phone* ends it with nothing deleted. Opened from the home page (*Make
-room on the phone*), the page has **⌂ Back to the home page** at the top right, as every page:
-it ends the page in the same way, nothing deleted, and the home page comes back in the same tab;
-after *Delete*, the tab says to switch to the PowerShell window and counts the minutes gone by
-against the estimate (*2 min gone by, of about 4*), then shows the home page by itself once `mh`
-brings it back, even when `mh.ps1` was written by an older image; typed in a console, it says that
-the PowerShell window tells when it is done. If the page stopped meanwhile (ended in another tab,
-the window of `mh` closed), a tick says so plainly — *The page is not running any more* — and the red
-button is refused: nothing more is saved there. Then, for each file ticked:
-
-1. it is **copied again** from the phone into an empty folder (`.mh-phone-<date>`);
-2. its **content is proven** (SHA-256) equal to a file of your library that is still there, to
-   the import's own copy, or to what you set aside before; **otherwise it stays on the phone**,
-   with its reason (*Not the same content as `2025\07\IMG_0001.jpg`*). A name and a size are
-   never enough;
-3. only then is it **moved off the phone** into a PC folder (`.mh-moved-<date>`), the phone's
-   folder listed again to see it gone, and that moved copy dropped once equal to the proven one
-   (one that differs is kept there, said on screen).
-
-It says the time first (each file is read twice from the phone, about 24 MB/s: *about 6 min for
-4.2 GB*), and ends with what it saw gone: *Phone freed: 4,980 files deleted (21.3 GB)*, then the
-files kept on the phone and why. Each deletion is written in the journal before and after it
-happens (a run of kind `phone` in `mh history`).
-
-- ⚠️ **Deleted over USB, a file is gone for good from the phone**: the phone's gallery has no
-  trash for it, and `undo` cannot put a file back on a phone (it says so). Its content is on the
-  PC: that is what was proven.
-- **Unplugged in the middle?** It stops and says what was deleted; the rest is still on the
-  phone. Type `mh phone --free` again: it starts over from a fresh listing.
 
 ## Options
 

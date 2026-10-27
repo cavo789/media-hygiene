@@ -1,6 +1,6 @@
-r"""What `mh phone` needs: its waits, its folders and its messages (0219).
+r"""What `mh import --phone` needs: its waits, its folders and its messages (0219).
 
-`mh phone [--to <folder>]` is a host command of `mh.ps1` (`mh_phone.ps1.j2`): a
+`mh import --phone [--to <folder>]` is a host command of `mh.ps1` (`mh_phone.ps1.j2`): a
 phone over USB (MTP) has no drive letter, Docker cannot see it, Windows PowerShell
 can, through `Shell.Application` (a COM object of Windows: no `Add-Type`). It lists
 the phone's `DCIM`, pipes the list to `phone-plan` in the container, then copies the
@@ -51,7 +51,7 @@ WAKE_FOR_SECONDS: Final = 60
 
 @dataclass(frozen=True, slots=True)
 class PhoneTexts:  # pylint: disable=too-many-instance-attributes  # one per message
-    """The messages of `mh phone`, ready to sit inside double quotes."""
+    """The messages of `mh import --phone`, ready to sit inside double quotes."""
 
     usage: str
     bad_folder: str  # holds `${to}`
@@ -78,7 +78,7 @@ class PhoneTexts:  # pylint: disable=too-many-instance-attributes  # one per mes
 
 @dataclass(frozen=True, slots=True)
 class PhoneCommand:  # pylint: disable=too-many-instance-attributes  # one per value
-    """What the script needs to run `mh phone`."""
+    """What the script needs to run `mh import --phone`."""
 
     texts: PhoneTexts
     free: PhoneFreeCommand  # `--free` (0248)
@@ -100,7 +100,7 @@ class PhoneCommand:  # pylint: disable=too-many-instance-attributes  # one per v
 
 
 def phone_command() -> PhoneCommand:
-    """Gather the values and the translated messages of `mh phone`.
+    """Gather the values and the translated messages of `mh import --phone`.
 
     Returns:
         Them, the messages safe inside double quotes.
@@ -109,7 +109,7 @@ def phone_command() -> PhoneCommand:
 
 
 def _texts() -> PhoneTexts:
-    """Translate the messages of `mh phone`.
+    """Translate the messages of `mh import --phone`.
 
     Returns:
         The messages.
@@ -117,21 +117,22 @@ def _texts() -> PhoneTexts:
     return PhoneTexts(
         usage=say(
             _(
-                "mh phone copies only the new photos and videos of a phone plugged "
+                "mh import --phone copies only the new photos and videos of a phone "
+                "plugged "
                 "in over USB; --to <folder> chooses where, --only <folder of DCIM> "
                 "takes that folder only (Camera), --free then offers to delete from "
                 "the phone what the PC holds."
             )
         ),
         bad_folder=say(_("{to} is not a folder on a drive letter."), "to"),
-        no_folder=say(_("No photo folder: type mh phone --to <folder>.")),
+        no_folder=say(_("No photo folder: type mh import --phone --to <folder>.")),
         read_only=say(
             _("🔒 The phone is only read: nothing on it is deleted, moved or renamed.")
         ),
         none=say(
             _(
                 "No phone seen: plug it in, unlock it, choose File transfer (iPhone: "
-                "Trust this computer), then type mh phone again."
+                "Trust this computer), then type mh import --phone again."
             )
         ),
         pick=say(_("Number of the phone (1 to {count})"), "count"),
@@ -167,7 +168,7 @@ def _texts() -> PhoneTexts:
             _(
                 "The phone no longer answers (unplugged, or asleep: keep it unlocked, "
                 "screen on, during the copy): {count} files copied so "
-                "far. Type mh phone again: what is already copied is skipped."
+                "far. Type mh import --phone again: what is already copied is skipped."
             ),
             "count",
         ),
@@ -182,12 +183,17 @@ def _texts() -> PhoneTexts:
             "destination",
         ),
         missing=say(
-            _("Copies not found when read back: {count}. Type mh phone again."),
+            _(
+                "Copies not found when read back: {count}. Type mh import --phone "
+                "again."
+            ),
             "count",
         ),
         library=say(_("Already in your library, not copied: {count}."), "count"),
         aside=say(_("Set aside before on purpose, not copied: {count}."), "count"),
-        here=say(_("Already copied by an earlier mh phone: {count}."), "count"),
+        here=say(
+            _("Already copied by an earlier mh import --phone: {count}."), "count"
+        ),
         nothing=say(_("Nothing new on the phone: nothing to copy.")),
         next=say(_("👉 What next: mh audit (the new files join your library).")),
     )

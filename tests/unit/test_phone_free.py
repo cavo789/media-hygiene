@@ -227,7 +227,7 @@ def test_a_candidate_without_a_digest_or_changed_since_is_hashed_now(
 def test_the_imports_own_copy_proves_case_2_only_when_whole_and_equal(
     runner: CliRunner, locations: Locations
 ) -> None:
-    """Case 2: the copy `mh phone` made, the phone's size and the same SHA-256."""
+    """Case 2: the copy `import --phone` made, the phone's size and the same SHA-256."""
     _put(locations, "c/Photos/Phone/A72/Camera/IMG_2.jpg", _PHOTO)
     _put(locations, "c/Photos/Phone/A72/Camera/IMG_3.jpg", _PHOTO[:-3])  # truncated
     _stage(locations, "Camera/IMG_2.jpg", _PHOTO)

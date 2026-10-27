@@ -109,7 +109,7 @@ def test_the_phone_page_offers_the_way_back_and_says_nothing_is_deleted() -> Non
 def test_from_the_console_the_phone_page_has_no_way_back(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """`mh phone --free` typed: no home page to go back to, as on the other pages."""
+    """`import --phone --free` typed: no home page to go back to, as elsewhere."""
     monkeypatch.delenv(LAUNCHER_STEPS_VARIABLE, raising=False)
     assert not page_header("phone_review.html.j2").home
     assert 'id="homeLink"' not in render_page("phone_review.html.j2")
