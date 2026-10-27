@@ -8846,7 +8846,8 @@ msgstr ""
 
 msgid ""
 "Words left out because they describe nearly every photo. Written here, "
-"the list replaces the built-in one (French and English)."
+"the list replaces the built-in one (French and English): this is the "
+"whole built-in list, edit it rather than starting from a few words."
 msgstr ""
 
 msgid "Words of"

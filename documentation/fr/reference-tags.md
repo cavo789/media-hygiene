@@ -253,7 +253,12 @@ rester en `:ro`). Avec, les dossiers doivent être modifiables et `/journal` mon
 ```toml
 [tags]
 language = ""   # "en", "fr", ou vide pour la langue de l'interface
-# stop_words = ["sol", "mur", "intérieur", "floor", "wall", "indoor"]
+# stop_words = ["sol", "mur", "murs", "intérieur", "extérieur", "plafond", "photo",
+#    "image", "personne", "personnes", "chose", "objet", "fond", "scène", "vue",
+#    "floor", "wall", "indoor", "indoors", "outdoor", "outdoors", "ceiling", "picture",
+#    "person", "people", "thing", "object", "background", "scene", "view",
+#    "photo floue", "flou", "photographie", "ambiance", "blurry photo", "photograph",
+#    "blur"]
 town_km = 20
 xmp_sources = ["vision", "place"]   # les mots écrits dans les fichiers compagnons .xmp
 meaning = false        # true : tags donne aussi à chaque photo son vecteur (recherche par le sens)
@@ -261,7 +266,7 @@ meaning_threads = 4    # fils d'exécution du processeur pour le modèle
 meaning_results = 200  # combien de photos une recherche par le sens trouve au plus
 ```
 
-Une liste `stop_words` écrite ici remplace celle intégrée. Le modèle lui-même se règle dans
+Une liste `stop_words` écrite ici remplace celle intégrée ; la ligne commentée ci-dessus est toute la liste intégrée, partez d'elle. `adulte` n'y figure pas, exprès : il permet à une recherche de distinguer un enfant d'un adulte. Le modèle lui-même se règle dans
 `[classify.ai]` (model, url, `min_edge`, `confirm_above`).
 
 ## Pourquoi pas dans les photos

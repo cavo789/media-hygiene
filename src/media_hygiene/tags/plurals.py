@@ -21,6 +21,8 @@ _FR_SAME: Final = frozenset(
     | {"épais", "gras", "gros", "clos", "dos", "jus", "express", "succès"}
     | {"anglais", "français", "chinois", "japonais"}
 )
+# Adjective plurals under four letters inside a phrase: `arbres nus` -> `arbre nu`.
+_FR_SHORT: Final = {"nus": "nu"}
 _FR_EUX: Final = frozenset(
     {"jeux", "feux", "cheveux", "lieux", "neveux", "vœux", "voeux", "essieux"}
 )
@@ -45,6 +47,8 @@ def singular(word: str, language: Locale) -> str:
     Returns:
         The singular, or the word unchanged.
     """
+    if language is Locale.FR and word in _FR_SHORT:
+        return _FR_SHORT[word]
     if len(word) < _MIN_LENGTH:
         return word
     if language is Locale.FR:
