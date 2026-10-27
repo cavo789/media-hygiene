@@ -196,7 +196,7 @@ _{{ function }}_{{ name }}() {
 _{{ function }}_home() {
     local _{{ function }}_relay=1 _{{ function }}_tab='' status=0 after=0 crashed=-{{ texts.crash.window }} steps number line chosen words=() color=(--color never)
     if [[ -t 2 ]]; then color=(--color always); fi
-    echo "{{ texts.running }}"  # once: the page runs in the background (0355)
+    echo "{{ texts.running }}" >&2  # once: the page runs in the background (0355)
     while true; do
         if [[ "$status" -eq {{ page_closed }} ]]; then return 0; fi  # its tab closed (0262)
         if [[ "$status" -ge {{ signal_base }} ]]; then return "$status"; fi
