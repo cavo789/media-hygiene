@@ -1,6 +1,6 @@
 # 13. A second opinion
 
-[Documentation](../README.md) › Cleaning, step 13 of 14 · 🇫🇷 [Français](../../fr/clean/13-second-opinion.md)
+[Documentation](../README.md) › Cleaning, step 13 of 15 · 🇫🇷 [Français](../../fr/clean/13-second-opinion.md)
 
 Before deleting family photos, a second opinion is reassuring.
 [Czkawka](https://github.com/qarmin/czkawka) is an independent, open-source duplicate finder,

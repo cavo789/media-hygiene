@@ -35,7 +35,7 @@ docker run --rm -it `
 | Recommended | `/cache` (the audit it starts with takes seconds), `/config`. |
 | Writes | `decisions.json` in `/reports`, the cache. |
 | Undo | Change your choices in the page, or delete `decisions.json`. |
-| With `mh` | `mh review`, `mh review --near`, `mh review --pairs`, `mh review --junk`, `mh review --gone`: the port is published for you. |
+| With `mh` | `mh review`, `mh review --near`, `mh review --pairs`, `mh review --junk`, `mh review --gone`, `mh review --intruders`: the port is published for you. |
 
 ## Five kinds of review
 
@@ -46,6 +46,7 @@ docker run --rm -it `
 | `review --pairs` | **Folder pairs** of identical files, the most space freed first: as planned (`→`), swap the folders (`W`), leave alone (`L`). | `clean --decisions` |
 | `review --junk` | **Photos most likely unwanted** (tiny, screenshots, nearly black or white, the blurriest), group by group: each one kept or set aside by you. | `clean --decisions` |
 | `review --gone` | **Photos and videos gone since an audit** (deleted in the Explorer?), by folder and day: deleted on purpose (`D`, remembered, set aside if they come back) or moved elsewhere (`M`, forgotten). [Cleaning, step 9](../clean/09-undo-history-purge.md#deleted-in-the-explorer) | `clean --decisions` |
+| `review --intruders` | **Intruder files** (zip, docx, pdf… in the photo folders), per extension and per folder: tick those to set aside; no tiles, nothing to look at. [Cleaning, step 15](../clean/15-intruder-files.md) | `clean --decisions` |
 
 ## Run it
 
@@ -114,7 +115,8 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
 | `--near` | Review the near duplicates and re-encoded videos instead of the burst series. |
 | `--pairs` | Review the folder pairs of the identical files instead of the burst series. |
 | `--junk` | Review the photos most likely unwanted instead of the burst series; thresholds in `[review.unwanted]`. |
-| `--gone` | Review the photos and videos gone since an audit instead of the burst series. One of `--near`, `--pairs`, `--junk`, `--gone` per run. |
+| `--gone` | Review the photos and videos gone since an audit instead of the burst series. |
+| `--intruders` | Pick the intruder files to set aside, per extension and per folder, instead of the burst series. One of `--near`, `--pairs`, `--junk`, `--gone`, `--intruders` per run. |
 | `--decisions FILE` | The file the choices are saved in, and resumed from; `decisions.json` of `/reports` by default. |
 | `--port PORT` | Port of the page, 8088 by default; publish the same one: `-p 127.0.0.1:9000:9000` for `--port 9000`. |
 | `--prefer`, `--protect`, `--exclude` | As for [`audit`](audit.md#options): give `review` the same ones as `clean`. |

@@ -139,10 +139,10 @@ def audit_command(  # pylint: disable=too-many-arguments
             faces_next = audit_people(runtime, yes)
     second_opinion(runtime, plan)
     setup_tips(runtime)
-    if not _next_step(ctx, runtime, findings) and findings.gone and not faces_next:
-        from media_hygiene.cli.audit_gone import gone_step
+    if not _next_step(ctx, runtime, findings) and not faces_next:
+        from media_hygiene.cli.audit_intruders import quiet_end_step
 
-        gone_step(ctx, runtime)
+        quiet_end_step(ctx, runtime, findings)
 
 
 def _next_step(ctx: typer.Context, runtime: Runtime, findings: AuditFindings) -> bool:

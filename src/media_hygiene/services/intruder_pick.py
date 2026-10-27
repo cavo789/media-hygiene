@@ -98,3 +98,41 @@ def set_intruders_aside(runtime: Runtime, pick: IntruderPick) -> tuple[ChosenFil
         if pick.takes(item)
     )
     return chosen_store(runtime).add(Selection(picked, FOUND_BY))
+
+
+def intruders_set_aside(runtime: Runtime) -> tuple[ChosenFile, ...]:
+    """The intruder files set aside, as the decisions file holds them now.
+
+    Args:
+        runtime: Settings, mount points, the index.
+
+    Returns:
+        Them, read from the disk; none without a decisions file.
+
+    Raises:
+        DecisionsError: The file is not a decisions file.
+    """
+    return tuple(
+        file for file in chosen_store(runtime).on_disk() if file.found_by == FOUND_BY
+    )
+
+
+def put_intruders_back(runtime: Runtime) -> tuple[ChosenFile, ...]:
+    """Take every intruder file out of the decisions file: nothing of them moves.
+
+    Args:
+        runtime: Settings, mount points, the index.
+
+    Returns:
+        Every file still set aside (by the other pages), as read back.
+
+    Raises:
+        MountError: The reports folder cannot keep the decisions file.
+    """
+    reports_ready(runtime)
+    mapper = runtime.mapper
+    back = tuple(
+        PhotoVersion(mapper.to_container(file.path), file.size, file.mtime_ns)
+        for file in intruders_set_aside(runtime)
+    )
+    return chosen_store(runtime).remove(back)

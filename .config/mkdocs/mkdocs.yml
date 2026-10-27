@@ -105,6 +105,7 @@ nav:
       - clean/12-decide-pair-by-pair.md
       - clean/13-second-opinion.md
       - clean/14-unwanted-photos.md
+      - clean/15-intruder-files.md
   - Sort the photos:
       - sort/04-classify.md
       - sort/05-review-the-proposal.md

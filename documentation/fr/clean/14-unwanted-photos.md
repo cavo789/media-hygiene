@@ -1,6 +1,6 @@
 # 14. Les photos indésirables
 
-[Documentation](../README.md) › Nettoyer, étape 14 sur 14 · 🇬🇧 [English](../../en/clean/14-unwanted-photos.md)
+[Documentation](../README.md) › Nettoyer, étape 14 sur 15 · 🇬🇧 [English](../../en/clean/14-unwanted-photos.md)
 
 Au-delà des doublons, une collection garde des photos dont personne ne veut : icônes et
 vignettes, captures d'écran, une photo prise dans la poche (toute noire), une photo bougée.
@@ -102,4 +102,4 @@ Le même `decisions.json` contient les choix des autres tris : `review --junk` l
 
 ---
 
-← [13. Un second avis](13-second-opinion.md) · [Documentation](../README.md)
+← [13. Un second avis](13-second-opinion.md) · [Documentation](../README.md) · Suivant : **[15. Les fichiers intrus](15-intruder-files.md)** →

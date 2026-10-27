@@ -1,0 +1,76 @@
+{# The script of intruders_review.html.j2: the tallies with checkboxes, each pick saved and read back. #}
+(() => {
+  const T = {{ texts | tojson }};
+  const statePath = {{ state_path | tojson }};
+  const decidePath = {{ decide_path | tojson }};
+  const lang = document.documentElement.lang;
+  const byId = (id) => document.getElementById(id);
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  const number = (value) => value.toLocaleString(lang);
+  const clock = () => new Date().toLocaleTimeString(lang);
+
+  const setStatus = (text, kind) => {
+    byId("status").textContent = text;
+    byId("status").title = text;
+    byId("status").className = kind || "";
+  };
+  const cell = (text, css) => {
+    const td = document.createElement("td");
+    td.textContent = text;
+    if (css) td.className = css;
+    return td;
+  };
+  const rows = (id, items) => {
+    byId(id).replaceChildren(...items.map((item) => {
+      const tr = document.createElement("tr");
+      const box = document.createElement("input");
+      box.type = "checkbox";
+      box.value = item.key;
+      box.setAttribute("aria-label", item.key);
+      const first = document.createElement("td");
+      first.append(box);
+      tr.append(first, cell(item.key), cell(number(item.count), "num"), cell(item.size, "num"));
+      tr.addEventListener("click", (event) => { if (event.target !== box) box.checked = !box.checked; });
+      return tr;
+    }));
+  };
+  const ticked = (id) => [...byId(id).querySelectorAll("input:checked")].map((box) => box.value);
+  const showAside = (files) => {
+    byId("asideTitle").textContent = T.setAsideTitle;
+    if (files.length === 0) byId("aside").replaceChildren(Object.assign(document.createElement("li"), { textContent: T.emptyAside }));
+    else byId("aside").replaceChildren(...files.map((file) => Object.assign(document.createElement("li"), { textContent: file.path })));
+  };
+
+  const send = (body) => {
+    setStatus(T.saving, "");
+    fetch(decidePath, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      .then((response) => response.json().catch(() => ({})).then((reply) => ({ ok: response.ok, status: response.status, body: reply })))
+      .then((reply) => {
+        if (!reply.ok) {
+          setStatus(reply.body.error || fill(T.failed, { status: reply.status }), "error");
+          return;
+        }
+        showAside(reply.body.set_aside);
+        setStatus(fill(T.proofOk, { time: clock(), count: number(reply.body.set_aside.length) }), "saved");
+      })
+      .catch(() => setStatus(T.offline, "error"));
+  };
+
+  byId("pick").addEventListener("click", () => {
+    const extensions = ticked("extensions");
+    const folders = ticked("folders");
+    if (extensions.length === 0 && folders.length === 0) setStatus(T.nothingTicked, "error");
+    else send({ extensions: extensions, folders: folders });
+  });
+  byId("back").addEventListener("click", () => send({ back: true }));
+
+  fetch(statePath)
+    .then((response) => response.json())
+    .then((state) => {
+      byId("summary").textContent = state.total === 0 ? T.none : fill(T.summary, { count: number(state.total), size: state.size });
+      rows("extensions", state.extensions);
+      rows("folders", state.folders);
+      showAside(state.set_aside);
+    })
+    .catch(() => setStatus(T.offline, "error"));
+})();

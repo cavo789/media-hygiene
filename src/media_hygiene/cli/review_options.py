@@ -147,3 +147,22 @@ def gone() -> OptionInfo:
             ),
         ),
     )
+
+
+def intruders() -> OptionInfo:
+    """`--intruders`: pick the intruder files to set aside instead.
+
+    Returns:
+        The option definition.
+    """
+    return cast(
+        "OptionInfo",
+        typer.Option(
+            "--intruders",
+            help=_(
+                "Pick the intruder files (zip, docx, pdf… in your photo folders) to "
+                "set aside, per extension and per folder, instead of the burst "
+                "series; 'clean --decisions' moves them to the quarantine."
+            ),
+        ),
+    )

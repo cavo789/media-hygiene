@@ -35,7 +35,7 @@ docker run --rm -it `
 | Conseillé | `/cache` (l'audit par lequel il commence prend quelques secondes), `/config`. |
 | Écrit | `decisions.json` dans `/reports`, le cache. |
 | Annuler | Changez vos choix dans la page, ou supprimez `decisions.json`. |
-| Avec `mh` | `mh review`, `mh review --near`, `mh review --pairs`, `mh review --junk`, `mh review --gone` : le port est publié pour vous. |
+| Avec `mh` | `mh review`, `mh review --near`, `mh review --pairs`, `mh review --junk`, `mh review --gone`, `mh review --intruders` : le port est publié pour vous. |
 
 ## Cinq sortes de tri
 
@@ -46,6 +46,7 @@ docker run --rm -it `
 | `review --pairs` | **Les paires de dossiers** de fichiers identiques, la plus grande place libérée d'abord : comme prévu (`→`), inverser les dossiers (`W`), ne pas toucher (`L`). | `clean --decisions` |
 | `review --junk` | **Les photos le plus probablement indésirables** (minuscules, captures d'écran, presque noires ou blanches, les plus floues), groupe par groupe : chacune gardée ou mise de côté par vous. | `clean --decisions` |
 | `review --gone` | **Les photos et vidéos disparues depuis un audit** (supprimées dans l'Explorateur ?), par dossier et par jour : supprimées exprès (`D`, retenues, mises de côté si elles reviennent) ou déplacées ailleurs (`M`, oubliées). [Étape 9 du nettoyage](../clean/09-undo-history-purge.md#supprimés-dans-lexplorateur-) | `clean --decisions` |
+| `review --intruders` | **Les fichiers intrus** (zip, docx, pdf… dans les dossiers photos), par extension et par dossier : cochez ceux à mettre de côté ; pas de vignettes, rien à regarder. [Étape 15 du nettoyage](../clean/15-intruder-files.md) | `clean --decisions` |
 
 ## Lancer
 
@@ -118,7 +119,8 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
 | `--near` | Trier les quasi-doublons et vidéos réencodées au lieu des rafales. |
 | `--pairs` | Trier les paires de dossiers de fichiers identiques au lieu des rafales. |
 | `--junk` | Trier les photos le plus probablement indésirables au lieu des rafales ; seuils dans `[review.unwanted]`. |
-| `--gone` | Trier les photos et vidéos disparues depuis un audit au lieu des rafales. Un seul de `--near`, `--pairs`, `--junk`, `--gone` par lancement. |
+| `--gone` | Trier les photos et vidéos disparues depuis un audit au lieu des rafales. |
+| `--intruders` | Choisir les fichiers intrus à mettre de côté, par extension et par dossier, au lieu des rafales. Un seul de `--near`, `--pairs`, `--junk`, `--gone`, `--intruders` par lancement. |
 | `--decisions FICHIER` | Le fichier où les choix sont enregistrés, et repris ; `decisions.json` de `/reports` par défaut. |
 | `--port PORT` | Port de la page, 8088 par défaut ; publiez le même : `-p 127.0.0.1:9000:9000` pour `--port 9000`. |
 | `--prefer`, `--protect`, `--exclude` | Comme pour [`audit`](audit.md#options) : donnez à `review` les mêmes qu'à `clean`. |

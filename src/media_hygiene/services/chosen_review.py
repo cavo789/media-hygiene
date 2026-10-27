@@ -14,6 +14,7 @@ from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.scan.filters import media_kind
 from media_hygiene.scan.models import MediaFile
+from media_hygiene.services.intruder_pick import FOUND_BY as _INTRUDER
 from media_hygiene.services.policy import backup_folders, keep_policy
 
 if TYPE_CHECKING:
@@ -90,11 +91,20 @@ def chosen_files(
         DecisionsError: One of them lies in a protected folder.
     """
     files = named_files(runtime, chosen)
-    if files:
+    intruders = min(len(files), sum(1 for f in chosen if f.found_by == _INTRUDER))
+    searched = len(files) - intruders
+    if searched:
         said = ngettext(
             "Your decisions — {count} file chosen in 'search' is set aside.",
             "Your decisions — {count} files chosen in 'search' are set aside.",
-            len(files),
+            searched,
         )
-        runtime.output.info(said.format(count=len(files)))
+        runtime.output.info(said.format(count=searched))
+    if intruders:
+        said = ngettext(
+            "Your decisions — {count} intruder file is set aside.",
+            "Your decisions — {count} intruder files are set aside.",
+            intruders,
+        )
+        runtime.output.info(said.format(count=intruders))
     return files

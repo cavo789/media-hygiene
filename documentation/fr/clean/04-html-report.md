@@ -1,6 +1,6 @@
 # 4. Le rapport HTML
 
-[Documentation](../README.md) › Nettoyer, étape 4 sur 14 · 🇬🇧 [English](../../en/clean/04-html-report.md)
+[Documentation](../README.md) › Nettoyer, étape 4 sur 15 · 🇬🇧 [English](../../en/clean/04-html-report.md)
 
 Le terminal donne les totaux et les paires de dossiers. Le rapport montre le reste : les images
 elles-mêmes, chaque copie ligne par ligne, et la preuve qu'elles sont identiques. C'est une page

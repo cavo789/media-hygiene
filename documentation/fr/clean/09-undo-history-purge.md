@@ -1,6 +1,6 @@
 # 9. Annuler, historique, purge
 
-[Documentation](../README.md) › Nettoyer, étape 9 sur 14 · 🇬🇧 [English](../../en/clean/09-undo-history-purge.md)
+[Documentation](../README.md) › Nettoyer, étape 9 sur 15 · 🇬🇧 [English](../../en/clean/09-undo-history-purge.md)
 
 Un nettoyage n'est pas définitif. Le journal retient chaque action : vous pouvez tout remettre en
 place, voir ce que chaque nettoyage a fait et, une fois sûr·e, vider la quarantaine pour de bon.

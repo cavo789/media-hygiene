@@ -91,6 +91,8 @@ Libérer la place des copies en trop, en toute sécurité, et garder les meilleu
 13. [Un second avis](clean/13-second-opinion.md) : comparer avec Czkawka, un outil indépendant.
 14. [Les photos indésirables](clean/14-unwanted-photos.md) : images minuscules, captures d'écran,
     photos noires ou floues, mises de côté par vous seul (`review --junk`).
+15. [Les fichiers intrus](clean/15-intruder-files.md) : zip, docx, pdf dans vos dossiers photos,
+    cochés par extension ou par dossier (`review --intruders`).
 
 ## Trier les photos
 

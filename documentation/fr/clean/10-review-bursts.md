@@ -1,6 +1,6 @@
 # 10. Trier les rafales dans le navigateur
 
-[Documentation](../README.md) › Nettoyer, étape 10 sur 14 · 🇬🇧 [English](../../en/clean/10-review-bursts.md)
+[Documentation](../README.md) › Nettoyer, étape 10 sur 15 · 🇬🇧 [English](../../en/clean/10-review-bursts.md)
 
 Les téléphones et appareils photo prennent des rafales : cinq, dix, vingt photos en quelques
 secondes. La plupart se ressemblent, quelques-unes sont floues, une ou deux sont réussies. Les

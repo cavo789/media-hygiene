@@ -479,10 +479,10 @@ msgstr ""
 "octet par octet avec la copie gardée ; 'undo' les reconstruit à partir "
 "d'elle."
 
-msgid "--near, --pairs, --junk and --gone are separate reviews: one per run."
-msgstr ""
-"--near, --pairs, --junk et --gone sont des revues distinctes : une par "
-"lancement."
+msgid ""
+"--near, --pairs, --junk, --gone and --intruders are separate reviews: one"
+" per run."
+msgstr "--near, --pairs, --junk, --gone et --intruders sont des tris séparés : un par lancement."
 
 msgid "--people keeps the faces in the cache: mount /cache to look for them."
 msgstr ""
@@ -1257,6 +1257,13 @@ msgstr ""
 
 msgid "An icon on the Desktop and in the Start menu"
 msgstr "Une icône sur le Bureau et dans le menu Démarrer"
+
+msgid ""
+"An intruder file is a file of your photo folders that is neither a photo,"
+" a video nor one of their companions (sidecar, Thumbs.db…): a zip, a "
+"docx, a pdf copied there. A docx may matter: nothing is set aside without"
+" you."
+msgstr "Un fichier intrus est un fichier de vos dossiers photos qui n'est ni une photo, ni une vidéo, ni l'un de leurs compagnons (fichier annexe, Thumbs.db…) : un zip, un docx, un pdf copié là. Un docx peut compter : rien n'est mis de côté sans vous."
 
 msgid ""
 "An mh page is open in another window: close it there (Ctrl+C), then type "
@@ -2733,6 +2740,14 @@ msgstr "Chaque sortie ou fête aura son dossier : nommez-la en voyant ses photos
 
 msgid "Each photo"
 msgstr "Chaque photo"
+
+#, python-format
+msgid ""
+"Each pick is saved at once in %(place)s; nothing moves here. Done? Ctrl+C"
+" in the terminal stops the page; then run the same 'clean' command with "
+"%(option)s: the files set aside go to the quarantine, and 'undo' brings "
+"them back."
+msgstr "Chaque choix est enregistré aussitôt dans %(place)s ; rien ne bouge ici. Terminé ? Ctrl+C dans le terminal arrête la page ; lancez ensuite la même commande 'clean' avec %(option)s : les fichiers mis de côté vont en quarantaine, et 'undo' les ramène."
 
 msgid ""
 "Each rule has a name and a \"match\": existing_folder (a folder name you "
@@ -5372,6 +5387,17 @@ msgstr "Aucun index dans {folder} : rien à étiqueter pour l'instant."
 msgid "No index yet: the albums show the photos an audit has seen."
 msgstr "Pas encore d'index : les albums montrent les photos qu'un audit a vues."
 
+msgid "No intruder file set aside yet."
+msgstr "Aucun fichier intrus mis de côté pour l'instant."
+
+msgid "No intruder file: nothing to pick."
+msgstr "Aucun fichier intrus : rien à choisir."
+
+msgid ""
+"No intruder file: your photo folders hold only photos, videos and their "
+"companions."
+msgstr "Aucun fichier intrus : vos dossiers photos ne contiennent que des photos, des vidéos et leurs compagnons."
+
 #, python-brace-format
 msgid "No journal found at {path}."
 msgstr "Aucun journal trouvé à {path}."
@@ -6505,6 +6531,12 @@ msgstr ""
 "enregistré aussitôt dans {place}. Rien ne quitte le téléphone avant que "
 "vous appuyiez sur Supprimer."
 
+#, python-brace-format
+msgid "Page stopped — {count} intruder file set aside."
+msgid_plural "Page stopped — {count} intruder files set aside."
+msgstr[0] "Page arrêtée — {count} fichier intrus mis de côté."
+msgstr[1] "Page arrêtée — {count} fichiers intrus mis de côté."
+
 msgid "Page stopped; nothing was changed."
 msgstr "Page arrêtée ; rien n'a été modifié."
 
@@ -6583,6 +6615,9 @@ msgstr ""
 
 msgid "Per extension"
 msgstr "Par extension"
+
+msgid "Per folder"
+msgstr "Par dossier"
 
 #, python-brace-format
 msgid "Per photo: {describe:.1f} s to describe, {map:.1f} s to map."
@@ -6695,6 +6730,12 @@ msgstr "Choisir les {total} fichiers trouvés"
 
 msgid "Pick none"
 msgstr "Ne rien choisir"
+
+msgid ""
+"Pick the intruder files (zip, docx, pdf… in your photo folders) to set "
+"aside, per extension and per folder, instead of the burst series; 'clean "
+"--decisions' moves them to the quarantine."
+msgstr "Choisir les fichiers intrus (zip, docx, pdf… dans vos dossiers photos) à mettre de côté, par extension et par dossier, au lieu des rafales ; 'clean --decisions' les déplace en quarantaine."
 
 msgid "Pick the others: the ones picked are left (I)"
 msgstr "Choisir les autres : ceux choisis sont laissés (I)"
@@ -6888,6 +6929,9 @@ msgstr[1] "Remis dans la sauvegarde : {count} fichiers, relus."
 
 msgid "Put back the files of the last run"
 msgstr "Remettre les fichiers de la dernière exécution"
+
+msgid "Put every intruder file back"
+msgstr "Remettre tous les fichiers intrus"
 
 msgid "Put this face back"
 msgstr "Remettre ce visage"
@@ -7685,6 +7729,12 @@ msgid "Saved, read back from {path}:"
 msgstr "Enregistré, relu depuis {path} :"
 
 #, python-brace-format
+msgid ""
+"Saved, then read back from the disk at {time}: {count} intruder files set"
+" aside in {file}."
+msgstr "Enregistré, puis relu sur le disque à {time} : {count} fichiers intrus mis de côté dans {file}."
+
+#, python-brace-format
 msgid "Saved, then read back from the disk at {time}: {file} holds your choice."
 msgstr ""
 "Enregistré, puis relu sur le disque à {time} : {file} contient votre "
@@ -7966,6 +8016,10 @@ msgstr "Écartés de la carte"
 msgid "Set aside in config.toml: hidden from the map."
 msgstr "Écarté dans config.toml : caché de la carte."
 
+#, python-brace-format
+msgid "Set aside in {file}, as read from the disk"
+msgstr "Mis de côté dans {file}, tel que relu sur le disque"
+
 msgid "Set aside on"
 msgstr "Mis de côté le"
 
@@ -8008,6 +8062,12 @@ msgstr "Mettre les copies en trop de côté"
 
 msgid "Set the failed photos aside"
 msgstr "Écarter les photos ratées"
+
+msgid "Set the files ticked aside"
+msgstr "Mettre de côté les fichiers cochés"
+
+msgid "Set the intruder files aside"
+msgstr "Mettre de côté les fichiers intrus"
 
 msgid "Set this cluster aside"
 msgstr "Écarter ce groupe"
@@ -10264,8 +10324,17 @@ msgstr "Celles effacées dans l'Explorateur depuis un audit : voulu, ou perdu ?"
 msgid "Three things to know before you start"
 msgstr "Trois choses à savoir avant de commencer"
 
+msgid "Tick an extension or a folder first."
+msgstr "Cochez d'abord une extension ou un dossier."
+
 msgid "Tick at least one photo."
 msgstr "Cochez au moins une photo."
+
+msgid ""
+"Tick extensions, folders, or both: with both, a file must match one "
+"ticked extension and lie in one ticked folder. Protected and backup "
+"folders are left out: they are never changed."
+msgstr "Cochez des extensions, des dossiers, ou les deux : avec les deux, un fichier doit avoir une extension cochée et se trouver dans un dossier coché. Les dossiers protégés et de sauvegarde sont laissés de côté : ils ne sont jamais modifiés."
 
 msgid "Tick or untick every file of this folder"
 msgstr "Cocher ou décocher tous les fichiers de ce dossier"
@@ -11209,6 +11278,12 @@ msgstr[0] "Vos décisions — {count} fichier choisi dans 'search' est mis de c�
 msgstr[1] "Vos décisions — {count} fichiers choisis dans 'search' sont mis de côté."
 
 #, python-brace-format
+msgid "Your decisions — {count} intruder file is set aside."
+msgid_plural "Your decisions — {count} intruder files are set aside."
+msgstr[0] "Vos décisions — {count} fichier intrus est mis de côté."
+msgstr[1] "Vos décisions — {count} fichiers intrus sont mis de côté."
+
+#, python-brace-format
 msgid "Your decisions — {count} unwanted photo set aside in 'review --junk'."
 msgid_plural "Your decisions — {count} unwanted photos set aside in 'review --junk'."
 msgstr[0] ""
@@ -11327,6 +11402,9 @@ msgstr ""
 
 msgid "Yours to decide"
 msgstr "À vous de décider"
+
+msgid "Zip, docx, pdf in the photo folders: tick them per type or folder."
+msgstr "Zip, docx, pdf dans les dossiers photos : cochez-les par type ou par dossier."
 
 msgid ""
 "Zone of the videos' UTC times, e.g. \"Europe/Brussels\". Empty: [general]"
@@ -12054,6 +12132,9 @@ msgstr "dans la case de recherche : chercher sur OpenStreetMap"
 
 msgid "in your own home only: meals, games, children, sofa, garden"
 msgstr "chez soi seulement : repas, jeux, enfants, canapé, jardin"
+
+msgid "intruder zip pdf docx documents not photos"
+msgstr "intrus zip pdf docx documents pas des photos"
 
 #, python-brace-format
 msgid ""
@@ -13353,6 +13434,12 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"the same 'clean' command with {option}; the intruder files set aside go "
+"to the quarantine, 'undo' brings them back."
+msgstr "la même commande 'clean' avec {option} ; les fichiers intrus mis de côté vont en quarantaine, 'undo' les ramène."
+
+#, python-brace-format
+msgid ""
 "the same 'clean' command with {option}; the photos set aside go to the "
 "quarantine, 'undo' brings them back."
 msgstr ""
@@ -13465,6 +13552,11 @@ msgstr "cette personne"
 
 msgid "this setting is required"
 msgstr "ce réglage est obligatoire"
+
+msgid ""
+"tick in 'review --intruders' the intruder files to set aside, per "
+"extension or per folder."
+msgstr "cochez dans 'review --intruders' les fichiers intrus à mettre de côté, par extension ou par dossier."
 
 msgid "tick or untick it"
 msgstr "le cocher ou le décocher"
@@ -14524,6 +14616,10 @@ msgid "{count} identical copy, {size}: no risk, one command."
 msgid_plural "{count} identical copies, {size}: no risk, one command."
 msgstr[0] "{count} copie identique, {size} : sans risque, une commande."
 msgstr[1] "{count} copies identiques, {size} : sans risque, une commande."
+
+#, python-brace-format
+msgid "{count} intruder files, {size} in all."
+msgstr "{count} fichiers intrus, {size} en tout."
 
 #, python-brace-format
 msgid "{count} layout written to {path}, read back from the disk:"
@@ -16688,16 +16784,12 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "🧹 {count} file that is not a photo or a video ({extensions}) takes {size}"
-" in your photo folders: see 'Intruder files' in the report."
+" in your photo folders: see 'Intruder files' in the report; 'review "
+"--intruders' picks those to set aside."
 msgid_plural ""
 "🧹 {count} files that are not photos or videos ({extensions}) take {size} "
-"in your photo folders: see 'Intruder files' in the report."
-msgstr[0] ""
-"🧹 {count} fichier qui n'est ni une photo ni une vidéo ({extensions}) "
-"occupe {size} dans vos dossiers de photos : voyez « Fichiers intrus » "
-"dans le rapport."
-msgstr[1] ""
-"🧹 {count} fichiers qui ne sont ni des photos ni des vidéos ({extensions})"
-" occupent {size} dans vos dossiers de photos : voyez « Fichiers intrus » "
-"dans le rapport."
+"in your photo folders: see 'Intruder files' in the report; 'review "
+"--intruders' picks those to set aside."
+msgstr[0] "🧹 {count} fichier qui n'est ni une photo ni une vidéo ({extensions}) occupe {size} dans vos dossiers photos : voir « Fichiers intrus » dans le rapport ; 'review --intruders' choisit ceux à mettre de côté."
+msgstr[1] "🧹 {count} fichiers qui ne sont ni des photos ni des vidéos ({extensions}) occupent {size} dans vos dossiers photos : voir « Fichiers intrus » dans le rapport ; 'review --intruders' choisit ceux à mettre de côté."
 

@@ -1,6 +1,6 @@
 # 14. Unwanted photos
 
-[Documentation](../README.md) › Cleaning, step 14 of 14 · 🇫🇷 [Français](../../fr/clean/14-unwanted-photos.md)
+[Documentation](../README.md) › Cleaning, step 14 of 15 · 🇫🇷 [Français](../../fr/clean/14-unwanted-photos.md)
 
 Beyond duplicates, a collection keeps photos nobody wants: icons and thumbnails, screenshots,
 a shot taken in the pocket (all black), a shaken one. `review --junk` shows you those most
@@ -99,4 +99,4 @@ The same `decisions.json` holds the choices of the other reviews: `review --junk
 
 ---
 
-← [13. A second opinion](13-second-opinion.md) · [Documentation](../README.md)
+← [13. A second opinion](13-second-opinion.md) · [Documentation](../README.md) · Next: **[15. Intruder files](15-intruder-files.md)** →

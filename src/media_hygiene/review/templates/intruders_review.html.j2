@@ -1,0 +1,61 @@
+{% extends "page_frame.html.j2" %}
+{# The page of `media-hygiene review --intruders` (0428): the files that are neither photos nor
+   videos in the photo folders, tallied per extension and per folder, with checkboxes (no tiles:
+   nothing to look at). The page never touches a file: the boxes ticked are sent to the server,
+   which saves the `chosen` key of the decisions file; `clean --decisions` then moves those
+   files to the quarantine. The list below shows the file as read back from the disk. #}
+{% set texts = {
+  "summary": _("{count} intruder files, {size} in all."),
+  "none": _("No intruder file: your photo folders hold only photos, videos and their companions."),
+  "nothingTicked": _("Tick an extension or a folder first."),
+  "saving": _("Saving…"),
+  "proofOk": "✔ " ~ _("Saved, then read back from the disk at {time}: {count} intruder files set aside in {file}.").replace("{file}", file),
+  "setAsideTitle": _("Set aside in {file}, as read from the disk").replace("{file}", file),
+  "emptyAside": _("No intruder file set aside yet."),
+  "failed": _("Not saved (error {status})."),
+  "offline": _("The page is not running any more: start it again."),
+} %}
+{% set page_name = _("Intruder files") %}
+{% block style %}
+  main h2 { font-size: 1rem; margin: 16px 0 8px; }
+  #status.error { color: var(--bad); font-weight: 600; } #status.saved { color: var(--ok); }
+  table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+  td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); text-align: left; overflow-wrap: anywhere; }
+  td.num, th.num { text-align: right; white-space: nowrap; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .actions button { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: inherit; cursor: pointer; }
+  .actions button.main { border-color: var(--accent); font-weight: 600; }
+  #aside li { overflow-wrap: anywhere; }
+{% endblock %}
+{% block side %}
+  <section id="toc" aria-label="{{ page_name }}">
+    <p class="muted">{{ _("An intruder file is a file of your photo folders that is neither a photo, a video nor one of their companions (sidecar, Thumbs.db…): a zip, a docx, a pdf copied there. A docx may matter: nothing is set aside without you.") }}</p>
+    <p class="muted">{{ _("Tick extensions, folders, or both: with both, a file must match one ticked extension and lie in one ticked folder. Protected and backup folders are left out: they are never changed.") }}</p>
+    <p class="safe">🔒 {{ _("Each pick is saved at once in %(place)s; nothing moves here. Done? Ctrl+C in the terminal stops the page; then run the same 'clean' command with %(option)s: the files set aside go to the quarantine, and 'undo' brings them back.", place=place, option=clean_option) }}</p>
+  </section>
+{% endblock %}
+{% block bar %}
+  <strong id="summary"></strong>
+  <span id="status" role="status" aria-live="polite"></span>
+{% endblock %}
+{% block content %}
+<main>
+  <h2>{{ _("Per extension") }}</h2>
+  <table><thead><tr><th></th><th>{{ _("Extension") }}</th><th class="num">{{ _("Files") }}</th><th class="num">{{ _("Size") }}</th></tr></thead><tbody id="extensions"></tbody></table>
+  <h2>{{ _("Per folder") }}</h2>
+  <table><thead><tr><th></th><th>{{ _("Folder") }}</th><th class="num">{{ _("Files") }}</th><th class="num">{{ _("Size") }}</th></tr></thead><tbody id="folders"></tbody></table>
+  <div class="actions">
+    <button type="button" id="pick" class="main">{{ _("Set the files ticked aside") }}</button>
+    <button type="button" id="back">{{ _("Put every intruder file back") }}</button>
+  </div>
+  <details id="disk" open>
+    <summary id="asideTitle"></summary>
+    <ul id="aside"></ul>
+  </details>
+</main>
+{% endblock %}
+{% block after %}
+<script>
+{% include "intruders_review.js.j2" %}
+</script>
+{% endblock %}

@@ -86,6 +86,8 @@ Free the space the extra copies take, safely, and keep the best shots.
 13. [A second opinion](clean/13-second-opinion.md): compare with Czkawka, an independent tool.
 14. [Unwanted photos](clean/14-unwanted-photos.md): tiny images, screenshots, black or blurred photos,
     set aside only by you (`review --junk`).
+15. [Intruder files](clean/15-intruder-files.md): zip, docx, pdf in your photo folders, ticked per
+    extension or folder (`review --intruders`).
 
 ## Sort the photos
 
