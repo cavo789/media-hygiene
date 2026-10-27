@@ -15,6 +15,7 @@ from dataclasses import dataclass
 from typing import Final
 
 from media_hygiene.i18n import _
+from media_hygiene.review.doors import LAN_DOOR_PORT, LAN_DOOR_VARIABLE
 from media_hygiene.review.lan import LAN_ADDRESS_VARIABLE, LAN_SECRET_VARIABLE
 from media_hygiene.review.lan_problem import LAN_PROBLEM_VARIABLE, LanProblem
 from media_hygiene.services.launcher_phone_say import say
@@ -50,6 +51,8 @@ class LanCommand:  # pylint: disable=too-many-instance-attributes  # one per tem
     shows: tuple[str, ...]  # `mh <command> --lan`; their page and home's published
     address: str  # the variable naming the PC's address
     secret: str  # the variable holding the run's secret
+    door: str  # the variable naming the home network's door in the container (0384)
+    door_port: int  # that door: the home network publish reaches it, never the PC's
     problem: str  # the variable naming what keeps a phone away (0367)
     problems: type[LanProblem]
     secret_bytes: int
@@ -70,6 +73,8 @@ def lan_command() -> LanCommand:
         shows=LAN_SHOWS,
         address=LAN_ADDRESS_VARIABLE,
         secret=LAN_SECRET_VARIABLE,
+        door=LAN_DOOR_VARIABLE,
+        door_port=LAN_DOOR_PORT,
         problem=LAN_PROBLEM_VARIABLE,
         problems=LanProblem,
         secret_bytes=SECRET_BYTES,

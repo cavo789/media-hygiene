@@ -60,3 +60,17 @@ Desktop's port forwarding probably makes every connection arrive from the same i
 
 `mh --lan` stops handing the PC's rights — up to moving files to the quarantine — to any device of
 the home network. 0360 (every page behind pairing) relies on this check: do 0384 first.
+
+## Done (2026-10-27)
+
+- `review/doors.py` (`Door.PC | Door.LAN`, `LAN_DOOR_PORT` 48088 inside the container) and
+  `review/listen.py`: under `mh --lan` the container listens on a second port, reached by the
+  home network publish only (`-p <address>:<port>:48088`, `mh_lan.ps1.j2`); its requests are
+  marked `Door.LAN` by the socket. `is_local` needs the PC's door **and** a loopback `Host`.
+- `LanApp`: a LAN-door request is never handed on as the PC's; its `Host` must name the PC's
+  address, else 403. The slideshow (`slideshow/door.py`) gets the same through `is_local`.
+- Tests: a forged loopback `Host` by the LAN door on 16 routes × GET/POST → 401/403, nothing
+  reaches the page; both sockets listened on and marked; the paired phone and the PC unchanged.
+- Measure step `29j` of `tests/measure/mh-measure.ps1` (curl.exe, forged `Host`): for the maintainer.
+- Not done: `PHONE_HEADER` (`share/album_page.py`) kept: it is now set only by `LanApp` on what
+  it hands on (a phone's own header is overwritten), so it cannot be forged from the LAN.

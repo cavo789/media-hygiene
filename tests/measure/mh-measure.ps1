@@ -2757,6 +2757,12 @@ if (Wanted 29) {
         $kept = Read-Host "29h. After the step, the phone's page answered again without the code? (y/n)"
         Write-Host "    On the phone: Wi-Fi off (mobile data on), reload the page."
         $outside = Read-Host "29i. From mobile data the page did NOT open? (y/n)"
+        # 0384: a device of the Wi-Fi forging the PC's Host header must get the pairing, never the PC's rights.
+        # curl.exe (Windows 10 1803+): Invoke-WebRequest of PowerShell 5.1 refuses to set Host.
+        $port = 8088
+        $forged = & curl.exe -s -o NUL -w '%{http_code}' -H "Host: 127.0.0.1:$port" "http://${address}:$port/api/state" 2>$null
+        $plain = & curl.exe -s -o NUL -w '%{http_code}' "http://127.0.0.1:$port/api/state" 2>$null
+        Log "   29j. forged Host by the home network address: HTTP $forged (401/403 expected, 200 = hole); the PC by 127.0.0.1: HTTP $plain (200 expected)"
         Write-Host "    On the PC: close the home page's tab."
         Write-Host "    Start it a second time in the same way (. '$copy' then mh), wait for the home page."
         $again = Read-Host "29j. The second time, did Windows ask about Docker Desktop again? (y/n)"

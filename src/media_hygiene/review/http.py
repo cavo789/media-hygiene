@@ -1,9 +1,8 @@
 """A minimal HTTP/1.1 exchange on asyncio streams: one request, one response, closed.
 
 Enough for one local page: GET, and POST with a small body; no keep-alive, no chunked
-body. Requests must name a loopback host (`localhost`, `127.0.0.1`): Docker publishes
-the port on 127.0.0.1, and a page of another site reaching it through its own domain
-name (DNS rebinding) is refused.
+body. A request is the PC's when it came in by the PC's door (`doors`, 0384) and names
+a loopback host: a page of another site through its own name (DNS rebinding) is refused.
 """
 
 from __future__ import annotations
@@ -14,6 +13,8 @@ from dataclasses import dataclass
 from enum import StrEnum
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
+
+from media_hygiene.review.doors import Door
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -74,6 +75,7 @@ class Request:
     path: str
     headers: Mapping[str, str]
     body: bytes = b""
+    door: Door = Door.PC  # the socket it came in by, never a header (0384)
 
 
 @dataclass(frozen=True, slots=True)
@@ -132,18 +134,18 @@ async def read_request(reader: asyncio.StreamReader) -> Request:
 
 
 def is_local(request: Request) -> bool:
-    """Tell whether the request names a loopback host.
+    """Tell whether the request came in by the PC's door and names a loopback host.
 
     Args:
         request: The request.
 
     Returns:
-        True for `localhost`, `127.0.0.1`, `[::1]`, with any port.
+        True for `localhost`, `127.0.0.1`, `[::1]`, any port; never by the LAN door.
     """
     host = request.headers.get("host", "")
     name = host[1:].partition("]")[0] if host.startswith("[") else host.split(":")[0]
-    if name == _LOCALHOST:
-        return True
+    if request.door is not Door.PC or name == _LOCALHOST:
+        return request.door is Door.PC
     try:
         return ipaddress.ip_address(name).is_loopback
     except ValueError:

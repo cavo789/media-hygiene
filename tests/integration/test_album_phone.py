@@ -18,6 +18,7 @@ from urllib.parse import quote
 
 import pytest
 
+from media_hygiene.review.doors import Door
 from media_hygiene.review.ending import Ending, EndingDoor
 from media_hygiene.review.http import ContentType, Request, Response
 from media_hygiene.review.lan import COOKIE_NAME, LanAccess
@@ -98,9 +99,9 @@ def _phone(path: str, body: object = None, *, paired: bool = True) -> Request:
     if paired:
         headers["cookie"] = f"{COOKIE_NAME}={_ACCESS.token}"
     if body is None:
-        return Request("GET", path, headers)
+        return Request("GET", path, headers, door=Door.LAN)
     headers |= {"content-type": ContentType.JSON, "origin": _ORIGIN}
-    return Request("POST", path, headers, json.dumps(body).encode())
+    return Request("POST", path, headers, json.dumps(body).encode(), Door.LAN)
 
 
 def _json(reply: Response) -> dict[str, object]:

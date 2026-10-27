@@ -1,8 +1,9 @@
 """The home page's door to the home network: pairing, then what a phone may do (0269).
 
-In front of the home page under `mh --lan`. A request from the loopback goes through
-as before, plus `GET /api/lan` (the address, the code and its QR code for the PC's
-page; never to the network). A request naming the PC's address on the home network:
+In front of the home page under `mh --lan`. A request of the PC's door goes through as
+before, plus `GET /api/lan` (the code and its QR code for the PC's page). A request of
+the home network's door (`doors`, 0384: never passed on as the PC's, whatever its
+`Host`) must name the PC's address on the home network, then:
 
 - `GET /pair/<code>`: the right code sets the phone's cookie and opens the home page;
   `MAX_FAILURES` wrong ones close the pairing until the server stops;
@@ -11,8 +12,7 @@ page; never to the network). A request naming the PC's address on the home netwo
   reports, the theme, the docs, the albums and their files, 0297), the audit of the
   page (`POST /api/audit`) and a change of an album (`POST /api/albums`, 0295): none
   changes a photo. A step, a stop or the presence stay the PC's: 403, said on each
-  step's button (decided 2026-10-21). What passes is handed on as from the loopback,
-  its `Origin` checked; any other `Host` (DNS rebinding) is refused as before.
+  step's button (decided 2026-10-21). What passes goes on as the PC's, `Origin` checked.
 """
 
 from __future__ import annotations
@@ -26,6 +26,7 @@ import segno
 from media_hygiene.docs.pages import DOCS_PREFIX
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
+from media_hygiene.review.doors import Door
 from media_hygiene.review.home_app import AUDIT_PATH
 from media_hygiene.review.home_assets import ASSETS_PREFIX, FAVICON_PATH
 from media_hygiene.review.home_views import REPORTS_PREFIX
@@ -111,10 +112,11 @@ class LanApp:
         Returns:
             The response.
         """
-        if is_local(request) and request.path == LAN_PATH:
-            return lan_response(self.lan)
-        if is_local(request) or not self.lan.names_me(request):
-            return await self.home.handle(request)  # another host: refused there
+        if request.door is Door.PC:  # the loopback publish: refused there if not local
+            card = is_local(request) and request.path == LAN_PATH
+            return lan_response(self.lan) if card else await self.home.handle(request)
+        if not self.lan.names_me(request):  # whatever `Host` it forged (0384)
+            return Response(HTTPStatus.FORBIDDEN)
         if request.path.startswith(PAIR_PREFIX) and request.method == _GET:
             return self.pairing.check(self.lan, request.path.removeprefix(PAIR_PREFIX))
         if not self.lan.is_paired(request):

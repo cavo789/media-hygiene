@@ -64,5 +64,7 @@ function global:_{{ f }}_lan_page($command) {
     if ($lan.problem) { $options += '-e', "{{ l.problem }}=$($lan.problem)" }
     if (-not $lan.address) { return $options }
     $port = {{ script.commands.port }}
-    return $options + @('-p', "$($lan.address):${port}:${port}", '-e', "{{ l.address }}=$($lan.address)", '-e', "{{ l.secret }}=$($lan.secret)")
+    # The home network reaches another port of the container than the PC's loopback: the page
+    # tells a phone from the PC by the socket, never by a Host header a device could forge (0384).
+    return $options + @('-p', "$($lan.address):${port}:{{ l.door_port }}", '-e', "{{ l.door }}={{ l.door_port }}", '-e', "{{ l.address }}=$($lan.address)", '-e', "{{ l.secret }}=$($lan.secret)")
 }

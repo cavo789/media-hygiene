@@ -19,8 +19,14 @@ from media_hygiene.cli.menu_catalog_share import share_area
 from media_hygiene.config.review_settings import ReviewSettings
 from media_hygiene.paths.docker_run import Shell
 from media_hygiene.paths.mounts import MountTable
+from media_hygiene.review.doors import (
+    LAN_DOOR_PORT,
+    LAN_DOOR_VARIABLE,
+    Door,
+    lan_door_port,
+)
 from media_hygiene.review.ending import STOP_PATH, Ending, EndingDoor
-from media_hygiene.review.http import ContentType, Request, Response
+from media_hygiene.review.http import ContentType, Request, Response, is_local
 from media_hygiene.review.lan import (
     COOKIE_NAME,
     LAN_ADDRESS_VARIABLE,
@@ -37,6 +43,7 @@ from media_hygiene.review.lan_problem import (
     lan_problem,
     with_problem,
 )
+from media_hygiene.review.listen import lan_handle, listening
 from media_hygiene.review.local_app import LocalApp
 from media_hygiene.services import home
 from media_hygiene.services.home_lan import say_lan
@@ -99,7 +106,8 @@ def _phone(path: str, *, paired: bool = True, method: str = "GET") -> Request:
         headers["cookie"] = f"theme=dark; {COOKIE_NAME}={_access().token}"
     if method == "POST":
         headers |= {"content-type": _JSON, "origin": _LAN_ORIGIN}
-    return Request(method, path, headers, b"{}" if method == "POST" else b"")
+    body = b"{}" if method == "POST" else b""
+    return Request(method, path, headers, body, Door.LAN)
 
 
 @pytest.mark.parametrize(
@@ -187,7 +195,7 @@ def test_another_host_is_refused_as_before() -> None:
     """A name of another site (DNS rebinding), or the address on another port."""
     app, fake = _app()
     for host in ("evil.example:8765", f"{_ADDRESS}:9999", _ADDRESS):
-        request = Request("GET", "/api/state", {"host": host})
+        request = Request("GET", "/api/state", {"host": host}, door=Door.LAN)
         assert _ask(app, request).status == HTTPStatus.FORBIDDEN, host
     assert not fake.seen
 
@@ -336,7 +344,8 @@ def test_powershell_publishes_the_home_page_on_the_lan_address_only(
     assert "Add-Type" not in script[script.index("function global:_mh_lan {") :]
     assert f"'{lan.private}'" in script
     assert "$command -notin @('home', 'slideshow')" in script
-    assert '"$($lan.address):${port}:${port}"' in script
+    assert f'"$($lan.address):${{port}}:{lan.door_port}"' in script
+    assert f"{lan.door}={lan.door_port}" in script
     assert f"{lan.address}=$($lan.address)" in script
     assert f"{lan.secret}=$($lan.secret)" in script
     assert "$page += @(_mh_lan_page $command)" in script
@@ -414,7 +423,10 @@ def test_no_home_network_still_answers_the_card(
     assert json.loads(reply.body) == {"problem": "none"}
     assert _ask(app, Request("GET", "/api/state", _LOCAL)).body == b"home"
     assert (
-        b"problem" not in _ask(app, Request("GET", LAN_PATH, {"host": _LAN_HOST})).body
+        b"problem"
+        not in _ask(
+            app, Request("GET", LAN_PATH, {"host": _LAN_HOST}, door=Door.LAN)
+        ).body
     )
 
 
@@ -476,3 +488,81 @@ def test_the_setting_reaches_the_launcher() -> None:
     """`[review] lan` defaults to off until 0384 is fixed, the launcher's too."""
     assert ReviewSettings().lan is False
     assert _COMMANDS.lan is False
+
+
+_FORGED: Final = ("127.0.0.1:8765", "localhost:8765", "[::1]:8765", _LAN_HOST)
+
+
+@pytest.mark.parametrize("host", _FORGED)
+@pytest.mark.parametrize("method", ["GET", "POST"])
+def test_a_forged_host_by_the_lan_door_never_passes_for_the_pc(
+    host: str, method: str
+) -> None:
+    """0384: whatever `Host` it writes, an unpaired device of the Wi-Fi gets nothing.
+
+    Every route the home page, the reviews and the stop answer is walked.
+    """
+    app, fake = _app()
+    paths = (
+        "/", "/api/state", LAN_PATH, STOP_PATH, "/api/alive", "/api/audit",
+        "/api/step", "/search", "/browse", "/thumb/x", "/file/x", "/albums",
+        "/reports/x", "/preview/x", "/assets/x", "/person",
+    )  # fmt: skip
+    for path in paths:
+        headers = {"host": host, "content-type": _JSON}
+        request = Request(method, path, headers, b"{}", Door.LAN)
+        reply = _ask(app, request)
+        assert reply.status in {HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN}, path
+    assert not fake.seen
+
+
+def test_is_local_needs_the_pcs_door() -> None:
+    """The loopback `Host` alone is not enough: the socket says the PC (0384)."""
+    local = {"host": "127.0.0.1:8765"}
+    assert is_local(Request("GET", "/", local))
+    assert not is_local(Request("GET", "/", local, door=Door.LAN))
+
+
+def test_the_lan_door_marks_its_requests(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Only the socket of the home network's door marks a request `Door.LAN`."""
+    seen: list[Door] = []
+
+    async def handle(request: Request) -> Response:
+        seen.append(request.door)
+        return Response(HTTPStatus.OK)
+
+    asyncio.run(lan_handle(handle)(Request("GET", "/", {})))
+    assert seen == [Door.LAN]
+    monkeypatch.setenv(LAN_DOOR_VARIABLE, "48088")
+    assert lan_door_port() == LAN_DOOR_PORT
+    monkeypatch.setenv(LAN_DOOR_VARIABLE, "x")
+    assert lan_door_port() is None
+
+
+def test_both_doors_listen_under_mh_lan(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A request on the second socket reaches the page as `Door.LAN`; the first: PC."""
+    seen: list[Door] = []
+
+    async def handle(request: Request) -> Response:
+        seen.append(request.door)
+        return Response(HTTPStatus.OK)
+
+    async def ask(port: int) -> None:
+        reader, writer = await asyncio.open_connection("127.0.0.1", port)
+        writer.write(b"GET / HTTP/1.1\r\nHost: 127.0.0.1\r\n\r\n")
+        await writer.drain()
+        await reader.read()
+        writer.close()
+
+    async def run() -> None:
+        probe = await asyncio.start_server(lambda _r, _w: None, "127.0.0.1", 0)
+        free = probe.sockets[0].getsockname()[1]
+        probe.close()
+        await probe.wait_closed()
+        monkeypatch.setenv(LAN_DOOR_VARIABLE, str(free))
+        async with listening(handle, 0) as server:
+            await ask(server.sockets[0].getsockname()[1])
+            await ask(free)
+
+    asyncio.run(run())
+    assert seen == [Door.PC, Door.LAN]
