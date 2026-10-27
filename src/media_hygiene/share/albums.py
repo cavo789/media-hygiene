@@ -5,6 +5,8 @@ the reports folder next to `decisions.json`, never in the index (a cache, safe t
 delete): an album is the user's choice. Each entry keeps the file's host path, its
 SHA-256 and its size, so a file moved since (by `sort`, `undo`, or the user) is found
 again by its content. Saved at once (a draft, then renamed), read back by the caller.
+Schema 2 (0371): an album may name its cover, by content (SHA-256 and size), so the
+cover follows its file wherever the entry does; schema 1 is still read.
 """
 
 from __future__ import annotations
@@ -43,6 +45,21 @@ class AlbumEntry(BaseModel):
     added: dt.datetime
 
 
+class AlbumCover(BaseModel):
+    """The photo the user chose as an album's cover: its entry's path and content.
+
+    The path tells two identical copies of the album apart; the content finds the
+    photo once its path is stale (the entry followed after a move).
+    """
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    path: str  # as its entry, when chosen
+
+    sha256: str = Field(pattern=_SHA256)
+    size: int = Field(ge=0)
+
+
 class Album(BaseModel):
     """A named album; its files in the order they were added."""
 
@@ -50,6 +67,24 @@ class Album(BaseModel):
 
     name: str = Field(min_length=1, max_length=MAX_NAME, pattern=NAME_PATTERN)
     entries: tuple[AlbumEntry, ...] = ()
+    cover: AlbumCover | None = None  # None: the tool's choice (0371)
+
+    def cover_entry(self) -> AlbumEntry | None:
+        """The entry the chosen cover names, if it is still in the album.
+
+        Returns:
+            It; None without a cover, or once taken out.
+        """
+        cover = self.cover
+        if cover is None:
+            return None
+        same = [
+            entry
+            for entry in self.entries
+            if (entry.sha256, entry.size) == (cover.sha256, cover.size)
+        ]
+        here = [entry for entry in same if entry.path == cover.path]
+        return next(iter(here or same), None)
 
 
 class AlbumsFile(BaseModel):
@@ -57,7 +92,7 @@ class AlbumsFile(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    version: Literal[1] = 1
+    version: Literal[1, 2] = 2  # 1: before the chosen covers (0371), still read
     albums: tuple[Album, ...] = ()
 
     @field_validator("albums")

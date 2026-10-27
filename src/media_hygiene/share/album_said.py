@@ -67,6 +67,22 @@ def album_message(shelf: Shelf, name: str, place: str) -> str:
     ).format(name=album.name, count=human_number(count), place=place)
 
 
+def cover_message(shelf: Shelf, name: str) -> str:
+    """Say which cover an album shows now, as read back from the disk (0371).
+
+    Args:
+        shelf: The albums, read back from the disk.
+        name: The album.
+
+    Returns:
+        The sentence.
+    """
+    album = shelf.albums.named(name)
+    if album is None or album.cover_entry() is None:
+        return _("The cover of {name} could not be saved.").format(name=name)
+    return _("This photo is now the cover of {name}.").format(name=album.name)
+
+
 def _list_message(count: int, place: str) -> str:
     """Say how many albums there are.
 

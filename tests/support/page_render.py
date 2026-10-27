@@ -26,6 +26,7 @@ _PACKAGES: Final = {
     "people.html.j2": "media_hygiene.people",
     "person.html.j2": "media_hygiene.person",
     "slideshow.html.j2": "media_hygiene.slideshow",
+    "album.html.j2": "media_hygiene.share",
 }
 
 

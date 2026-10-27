@@ -6,7 +6,8 @@ in the worker pool (`share.sent_photo`); the videos are left out and counted: on
 video alone may pass a mail's limit. The sentence and the words of `tags` go into
 the copies when the user agrees (`share.sent_words`, 0381), read in this process. The
 photos are only read: the copies go to the shares folder, which must be mounted and
-writable before anything is made.
+writable before anything is made. The copies are numbered by the day each photo was
+taken (`share.sent_order`, 0370), so a recipient's sort by name follows the days.
 """
 
 from __future__ import annotations
@@ -24,6 +25,7 @@ from media_hygiene.scan.filters import media_kind
 from media_hygiene.services.slideshow_pick import album_paths
 from media_hygiene.services.writable import ensure_writable
 from media_hygiene.share.prepare import Delivery
+from media_hygiene.share.sent_order import numbered_stems
 from media_hygiene.share.sent_photo import SendJob, sent_jpeg
 from media_hygiene.share.sent_words import (
     NO_WORDS,
@@ -86,6 +88,8 @@ def prepare_album(runtime: Runtime, request: SendRequest) -> Prepared:
             _("No photo to prepare in the album {name}.").format(name=request.album),
             _("Add photos to it in search or browse; the videos are never copied."),
         )
+    stems = dict(numbered_stems(runtime.index_file, photos))  # by date (0370)
+    photos = list(stems)
     words = _words(runtime, request, photos)
     delivery = Delivery(shares, request.album)
     unreadable = len(sources) - len(photos) - videos  # neither a photo nor a video
@@ -94,7 +98,7 @@ def prepare_album(runtime: Runtime, request: SendRequest) -> Prepared:
             if data is None:
                 unreadable += 1
             else:
-                delivery.add(source.stem, data)
+                delivery.add(stems[source], data)
         sent = delivery.finish()
     finally:
         delivery.discard()  # Ctrl+C or a full disk: the earlier folder stays

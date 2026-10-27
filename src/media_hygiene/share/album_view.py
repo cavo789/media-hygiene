@@ -1,7 +1,8 @@
 """What an album's page shows on a phone (0297): its cover, dates, place and days.
 
 Read from the index alone: each photo's sharpness (the audit's Laplacian) and its GPS
-position (named offline, `geo/`). The cover is the sharpest photo of the first day; each
+position (named offline, `geo/`). The cover is the one the user chose (0371), else the
+sharpest photo of the first day; each
 day is named after the town most of its photos were taken in. A video keeps its
 address only when the phone's browser plays it as it is (`slideshow.films`), else its
 format is said, as on the TV (0292).
@@ -48,6 +49,7 @@ class AlbumSeen:
 
     name: str
     picked: Picked
+    cover: int | None = None  # the key of the cover the user chose (0371)
 
 
 def facts_of(connection: sqlite3.Connection, key: int) -> Facts:
@@ -106,7 +108,9 @@ def album_view(
         "first": dated[0] if dated else "",
         "last": dated[-1] if dated else "",
         "place": Counter(shown).most_common(1)[0][0] if shown else "",
-        "cover": _cover(days[0][1] if days else (), facts) or _cover(slides, facts),
+        "cover": _chosen(seen.cover, slides)
+        or _cover(days[0][1] if days else (), facts)
+        or _cover(slides, facts),
         "days": [
             {"day": day, "place": town or "", "items": [_item(s) for s in group]}
             for (day, group), town in zip(days, towns, strict=True)
@@ -150,6 +154,21 @@ def _cover(
         return None
     best = max(photos, key=lambda slide: facts[slide.key].sharpness or 0.0)
     return {"key": best.key, "thumb": thumb_path(best.key), "photo": tv_path(best.key)}
+
+
+def _chosen(key: int | None, slides: tuple[Slide, ...]) -> dict[str, object] | None:
+    """The cover the user chose, when it is a photo of the album shown.
+
+    Args:
+        key: Its key; None when none was chosen or found.
+        slides: The album's photos and videos.
+
+    Returns:
+        Its key, thumbnail and picture addresses; None otherwise.
+    """
+    if key is None or not any(s.key == key and s.film is None for s in slides):
+        return None
+    return {"key": key, "thumb": thumb_path(key), "photo": tv_path(key)}
 
 
 def _commonest(town_of: TownOf, points: Iterable[Point | None]) -> str | None:

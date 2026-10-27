@@ -129,8 +129,10 @@ In `config.toml`, `[share]`:
 
 ## Good to know
 
-- The copies are named after the photos (`IMG_1234.jpg`); two photos of the same name from two
-  folders become `IMG_1234.jpg` and `IMG_1234_1.jpg`. A HEIC or a RAW photo gives a JPEG (a RAW
+- The copies are numbered in the order the photos were taken, with their day:
+  `001_2023-07-10.jpg`, `002_2023-07-10.jpg`… (the date the camera wrote, else the file's date;
+  four digits from 1,000 photos). Sorted by name on the recipient's PC or phone, two cameras'
+  photos follow the days instead of mixing. A HEIC or a RAW photo gives a JPEG (a RAW
   file, the preview it holds, without its EXIF).
 - The folder is always `<your home>\media-hygiene\Shares`: no folder to type, and no photo
   folder is ever opened for writing. Delete what you sent once it is sent: the album itself

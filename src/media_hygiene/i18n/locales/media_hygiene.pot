@@ -4065,6 +4065,9 @@ msgstr ""
 msgid "New Year"
 msgstr ""
 
+msgid "New album…"
+msgstr ""
+
 msgid "New name"
 msgstr ""
 
@@ -4940,6 +4943,9 @@ msgid "One thing only is for good:"
 msgstr ""
 
 msgid "One zip outside Docker's cache: a Docker reset loses nothing."
+msgstr ""
+
+msgid "Only a photo of the album can be its cover."
 msgstr ""
 
 #, python-brace-format
@@ -6967,9 +6973,6 @@ msgstr ""
 msgid "The album's name"
 msgstr ""
 
-msgid "The album's name (a new name creates it):"
-msgstr ""
-
 msgid ""
 "The album's name, as search and browse saved it: the folder holding its "
 "links."
@@ -7167,6 +7170,10 @@ msgstr ""
 msgid ""
 "The copy to {other} failed: the archive stays on this PC only, in the "
 "folder backups of mh."
+msgstr ""
+
+#, python-brace-format
+msgid "The cover of {name} could not be saved."
 msgstr ""
 
 msgid "The current folder (PowerShell, or bash on WSL, Linux, macOS):"
@@ -8161,6 +8168,10 @@ msgid "This photo is not in your library: {warning} Tick it anyway?"
 msgstr ""
 
 #, python-brace-format
+msgid "This photo is now the cover of {name}."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "This rule would take {files}: {mine} of this event, {others} of other "
 "events or folders on the same days."
@@ -8523,6 +8534,9 @@ msgid "Updated: {before} → {after}. What changed: {notes}"
 msgstr ""
 
 msgid "Usage:"
+msgstr ""
+
+msgid "Use as cover"
 msgstr ""
 
 msgid "Use the published image, or install the dependencies again: uv sync."

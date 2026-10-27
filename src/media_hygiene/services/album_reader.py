@@ -22,6 +22,7 @@ from media_hygiene.search.pictures import Pictures
 from media_hygiene.services.albums import album_store
 from media_hygiene.services.data_checks import unreadable_index
 from media_hygiene.services.slideshow_pick import Pick, picked_slides
+from media_hygiene.share.album_cover import cover_key
 from media_hygiene.share.album_view import AlbumSeen, album_view
 from media_hygiene.slideshow.pictures import ShowPictures
 from media_hygiene.slideshow.screen_jpeg import SQUARE, ScreenJob
@@ -34,6 +35,7 @@ if TYPE_CHECKING:
     from media_hygiene.geo.distance import Point
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.share.album_shelf import Keyed
+    from media_hygiene.share.albums import Album
 
 # The longest side of a phone's picture: a 1080-pixel-wide phone shows an upright photo
 # at its full width (3:4 → 1080 x 1440). A setting if a phone asks for more.
@@ -61,13 +63,13 @@ class AlbumReader:
         Returns:
             `{"albums": [...]}` and the keys.
         """
-        names = [a.name for a in album_store(self._runtime).on_disk().albums.albums]
+        albums = album_store(self._runtime).on_disk().albums.albums
         with self._index() as search:
-            seen = [self._seen(search, name) for name in names]
+            seen = [self._seen(search, album) for album in albums]
             views = [album_view(each, search.connection, self._town) for each in seen]
         keys = frozenset(slide.key for each in seen for slide in each.picked.slides)
-        albums = [{k: v for k, v in view.items() if k != _DROPPED} for view in views]
-        return {"albums": albums}, keys
+        shown = [{k: v for k, v in view.items() if k != _DROPPED} for view in views]
+        return {"albums": shown}, keys
 
     def album(self, name: str) -> Keyed | None:
         """One album, its photos by day, and the keys of its files.
@@ -82,7 +84,7 @@ class AlbumReader:
         if album is None:
             return None
         with self._index() as search:
-            seen = self._seen(search, album.name)
+            seen = self._seen(search, album)
             view = album_view(seen, search.connection, self._town)
         return view, frozenset(slide.key for slide in seen.picked.slides)
 
@@ -118,17 +120,19 @@ class AlbumReader:
             photo = search.source_of(key)
         return None if photo is None else photo.path
 
-    def _seen(self, search: SearchIndex, name: str) -> AlbumSeen:
-        """An album's photos, oldest first, and how many are missing.
+    def _seen(self, search: SearchIndex, album: Album) -> AlbumSeen:
+        """An album's photos, oldest first, how many are missing, its chosen cover.
 
         Args:
             search: The open index.
-            name: The album's name, as saved.
+            album: The album, as saved.
 
         Returns:
             The album as the page shows it.
         """
-        return AlbumSeen(name, picked_slides(self._runtime, search, Pick(album=name)))
+        picked = picked_slides(self._runtime, search, Pick(album=album.name))
+        cover = cover_key(search.connection, album, self._runtime.mapper)
+        return AlbumSeen(album.name, picked, cover)
 
     def _town(self, point: Point) -> str | None:
         """The town a photo was taken in, near enough to be named (`[tags] town_km`).

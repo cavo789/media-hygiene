@@ -32,7 +32,12 @@ full screen.
 From the page, on the PC or on a phone, you can:
 
 - **➖ Take out of the album** a photo: it leaves the list, the file stays where it is;
-- **➕ Add to an album** a photo, to another album (a new name creates it).
+- **➕ Add to an album** a photo, to another album: pick it in the list of your albums (the most
+  recent first), or type a new name under it to create one; a name typed in another case is the
+  same album;
+- **🖼 Use as cover** a photo: the list of albums shows it from now on, after a restart too. The
+  cover follows its photo when the file moves; taken out of the album, the cover goes back to
+  the one `mh` picks (the sharpest photo of the first day).
 
 Only `albums.json` changes. Nothing else can be done there: no file is deleted, moved or sent.
 

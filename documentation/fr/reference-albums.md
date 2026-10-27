@@ -34,7 +34,12 @@ jour, et une photo s'ouvre en plein écran.
 Depuis la page, sur le PC ou sur un téléphone, vous pouvez :
 
 - **➖ Retirer de l'album** une photo : elle sort de la liste, le fichier reste où il est ;
-- **➕ Ajouter à un album** une photo, à un autre album (un nouveau nom le crée).
+- **➕ Ajouter à un album** une photo, à un autre album : choisissez-le dans la liste de vos
+  albums (le plus récent en premier), ou tapez un nouveau nom en dessous pour en créer un ; un nom
+  tapé avec d'autres majuscules est le même album ;
+- **🖼 Utiliser comme couverture** une photo : la liste des albums la montre désormais, après un
+  redémarrage aussi. La couverture suit sa photo quand le fichier est déplacé ; retirée de
+  l'album, la couverture redevient celle que `mh` choisit (la photo la plus nette du premier jour).
 
 Seul `albums.json` change. Rien d'autre n'est possible ici : aucun fichier n'est supprimé, déplacé
 ni envoyé.

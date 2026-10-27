@@ -4946,6 +4946,9 @@ msgstr ""
 msgid "New Year"
 msgstr "Nouvel An"
 
+msgid "New album…"
+msgstr "Nouvel album…"
+
 msgid "New name"
 msgstr "Nouveau nom"
 
@@ -5982,6 +5985,9 @@ msgstr "Une seule chose est définitive :"
 
 msgid "One zip outside Docker's cache: a Docker reset loses nothing."
 msgstr "Un zip hors du cache de Docker : une remise à zéro de Docker ne perd rien."
+
+msgid "Only a photo of the album can be its cover."
+msgstr "Seule une photo de l'album peut en être la couverture."
 
 #, python-brace-format
 msgid ""
@@ -8405,9 +8411,6 @@ msgstr "L'album {name} est vide : retiré de {place}."
 msgid "The album's name"
 msgstr "Nom de l'album"
 
-msgid "The album's name (a new name creates it):"
-msgstr "Le nom de l'album (un nouveau nom le crée) :"
-
 msgid ""
 "The album's name, as search and browse saved it: the folder holding its "
 "links."
@@ -8651,6 +8654,10 @@ msgid ""
 msgstr ""
 "La copie vers {other} a échoué : l'archive reste sur ce PC seulement, "
 "dans le dossier backups de mh."
+
+#, python-brace-format
+msgid "The cover of {name} could not be saved."
+msgstr "La couverture de {name} n'a pas pu être enregistrée."
 
 msgid "The current folder (PowerShell, or bash on WSL, Linux, macOS):"
 msgstr "Le dossier courant (PowerShell, ou bash sous WSL, Linux, macOS) :"
@@ -9904,6 +9911,10 @@ msgstr ""
 "même ?"
 
 #, python-brace-format
+msgid "This photo is now the cover of {name}."
+msgstr "Cette photo est désormais la couverture de {name}."
+
+#, python-brace-format
 msgid ""
 "This rule would take {files}: {mine} of this event, {others} of other "
 "events or folders on the same days."
@@ -10331,6 +10342,9 @@ msgstr "Mis à jour : {before} → {after}. Ce qui a changé : {notes}"
 
 msgid "Usage:"
 msgstr "Utilisation :"
+
+msgid "Use as cover"
+msgstr "Utiliser comme couverture"
 
 msgid "Use the published image, or install the dependencies again: uv sync."
 msgstr "Utilisez l'image publiée, ou réinstallez les dépendances : uv sync."
