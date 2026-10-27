@@ -51,3 +51,30 @@ not.
 
 One place to fix a rule instead of two; the gap found in point 1 fixed (*to check*: the
 `review --gone` case above). No speed change expected (*estimated*: the same reads).
+
+## Status — PARTIAL (2026-10-27)
+
+Done:
+
+- Reasons table (from the code, before the change):
+
+  | Reason | `import` (folder) | `phone` |
+  |---|---|---|
+  | set aside by a choice, in quarantine / purged | journals (`remembered_of`) | journals (`remembered_of`) |
+  | deleted in the Explorer, confirmed | journals (`mark-gone`, partial) | journals (`mark-gone`, partial) |
+  | deleted in the Explorer, waiting for `review --gone` | index `gone_files` | **missing** (proposed again) |
+  | run undone since | no reason | no reason |
+
+- `services/dealt_with.py`: `dealt_reasons` (journals + the deletions waiting), read by
+  `backup_dealt.gone_finder` (import) and `phone_aside.set_aside_of` (phone, keyed by name and
+  size); the phone now leaves out a file waiting for `review --gone` (`AsideState.WAITING`),
+  with the warning `waiting_warning`. Test: `tests/integration/test_backup_dealt.py` (the same
+  three files through both commands).
+- `phone --free` deliberately still proves nothing from a waiting deletion: the file stays on
+  the phone (its only copy).
+
+Left:
+
+- Point 4, the same words: `import` only counts what it leaves out ("set aside or deleted
+  before"), it names no reason per file; when its report lists them, use one `_()` string per
+  reason shared with the phone page (`waiting_warning`, `aside_warning`).

@@ -33,7 +33,7 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 | montrer les photos des vacances sur la télé, en choisissant la suivante depuis mon téléphone | [`slideshow`](commands/slideshow.md) |
 | envoyer un album par mail ou sur un réseau social, réduit et sans la position GPS | [`share`](commands/share.md) |
 | voir mes mots dans digiKam, darktable, Lightroom ou Immich | [`xmp`](commands/xmp.md) |
-| récupérer les photos que seul mon NAS a encore, pas celles que j'ai supprimées | [`import`](commands/import.md) |
+| récupérer les photos que seul mon NAS, un disque USB ou une carte SD a, pas celles que j'ai supprimées | [`import`](commands/import.md) |
 | récupérer la place des vidéos de mes anciens appareils, l'image gardée | [`shrink`](commands/shrink.md) |
 | sauvegarder mes photos sur mon NAS, seulement ce qui lui manque | [`push`](commands/push.md) |
 | garder l'index et mes réglages à l'abri d'une remise à zéro de Docker, et les remettre | [`backup`](commands/backup.md), [`restore`](commands/restore.md) |
@@ -78,7 +78,7 @@ exemples et son `--help`.
 | [`sort [CLASSEUR]`](commands/sort.md) | Vérifie le classeur modifié de `classify`, demande confirmation, puis déplace les fichiers là où il le dit ; journalisé, annulable, prouvé. | [Trier, 7](sort/07-sort.md) |
 | [`album NOM`](commands/album.md) | Crée le dossier d'un album (enregistré dans `search`, `browse` ou la revue des rafales) en liens physiques : rien de copié ni de déplacé, aucune place prise. `--category`, `--event`, `--rule`, `--rating` rassemblent plutôt une sélection du plan de `classify`. Montre l'album ; `--apply` crée les liens. | [Trier, 12](sort/12-albums.md) |
 | [`xmp`](commands/xmp.md) | Écrit les mots de `tags` dans des fichiers compagnons `.xmp` à côté des photos, pour digiKam, darktable, Lightroom ou Immich ; jamais dans une photo. Montre ce qu'il écrirait ; `--apply` écrit. | [Référence](reference-tags.md#emporter-les-mots-avec-les-photos--xmp) |
-| [`import`](commands/import.md) | Copie dans vos photos ce qu'une sauvegarde (un NAS) est seule à contenir, jamais ce que vous avez mis de côté ou supprimé avant ; les quasi-copies listées à part ; chaque copie prouvée ; la sauvegarde seulement lue. | [Commandes](commands/import.md) |
+| [`import`](commands/import.md) | Copie dans vos photos ce qu'un dossier (votre NAS, un disque USB, une carte SD) est seul à contenir, jamais ce que vous avez mis de côté ou supprimé avant ; les quasi-copies listées à part ; chaque copie prouvée ; la sauvegarde seulement lue. | [Commandes](commands/import.md) |
 | [`shrink`](commands/shrink.md) | Liste les vidéos lourdes qui gagnent à être allégées (anciens appareils, MJPEG), avec la place que chacune libérerait ; `--apply` les réencode en H.264, chacune vérifiée (durée, son, date, lieu), l'original en quarantaine. | [Commandes](commands/shrink.md) |
 | [`push`](commands/push.md) | Windows seulement (`mh push`) : copier vos dossiers de photos dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; une photo déplacée y est renommée, une suppression par erreur n'y est jamais reportée ; annuler avec `--undo`. | [Commandes](commands/push.md) |
 | [`backup`](commands/backup.md) | Écrit l'index (ce que les audits, `tags` et `people` ont appris) et les réglages dans un zip de `media-hygiene\backups`, relu ; les 3 plus récents gardés. Ne lit jamais vos photos. | [Commandes](commands/backup.md) |

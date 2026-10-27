@@ -74,6 +74,17 @@ function global:{{ function }} {
         if (-not (Test-Path -LiteralPath $folder)) { Write-Host "{{ texts.missing }}"; $global:LASTEXITCODE = 2; return }
     }
     $command = $rest | Where-Object { $_ -in @({{ listed(script.commands.names) }}) } | Select-Object -First 1
+    # `{{ function }} import <folder>`: that folder only, read-only, for this run; never added (0378).
+    $source = @()
+    $at = if ($command -eq 'import') { [array]::IndexOf($rest, 'import') + 1 } else { 0 }
+    if ($at -gt 0 -and $at -lt $rest.Count -and -not "$($rest[$at])".StartsWith('-')) {
+        $folder = $rest[$at]
+        $found = Resolve-Path -LiteralPath $folder -ErrorAction SilentlyContinue
+        if (-not $found -or $found.ProviderPath -notmatch '^[A-Za-z]:') { Write-Host "{{ texts.missing }}"; $global:LASTEXITCODE = 2; return }
+        $rest[$at] = $found.ProviderPath
+        $full = $found.ProviderPath.TrimEnd('\')
+        $source = @("${full}:/data/" + $full.Substring(0, 1).ToLower() + ($full.Substring(2) -replace '\\', '/'))
+    }
     if ($command -in @({{ listed(cloud.readers) }})) {
         # Photos in OneDrive's cloud only: said, and asked, before anything reads them (0199).
         $read = @({{ quoted(checked) }}) + @(for ($i = 1; $i -lt $typed.Count; $i += 2) { $typed[$i] })
@@ -90,7 +101,7 @@ function global:{{ function }} {
     }
     # A removable drive is shared with Docker Desktop first, or the command stops; the
     # drives this run mounted are unmounted after it, in finally (0252).
-    $hosts = @({{ quoted((script.data + script.backups + script.tools + script.drives) | map(attribute='host') | list) }}) + @(foreach ($volume in $given) { $volume })
+    $hosts = @({{ quoted((script.data + script.backups + script.tools + script.drives) | map(attribute='host') | list) }}) + @(foreach ($volume in $given) { $volume }) + $source
     $shared = _{{ function }}_removable $hosts
     if ($null -eq $shared) { $global:LASTEXITCODE = 1; return }
     $marks = @($shared.labels)
@@ -102,7 +113,7 @@ function global:{{ function }} {
     $long = $command -in @({{ listed(script.commands.long) }})
     $photos = @(foreach ($volume in $given) { '-v'; "$volume$mode" })
     # The backups: mounted read-only below, whatever the command; given to those taking them (0205).
-    $backups = @({% if script.backups %}if ($command -in @({{ listed(script.commands.backups) }})) { {% for volume in script.backups %}'--backup', "{{ volume.host }}"{{ ", " if not loop.last }}{% endfor %} }{% endif %})
+    $backups = @({% if script.backups %}if ($command -in @({{ listed(script.commands.backups) }}) -and -not $source) { {% for volume in script.backups %}'--backup', "{{ volume.host }}"{{ ", " if not loop.last }}{% endfor %} }{% endif %})
     # Only the loop of `{{ function }}` alone reads the step chosen on the home page (0210),
     # or on a page it opened (browse's Apply now, 0243).
     $relay = @(if ($global:MediaHygieneRelay -and $command -in @({{ listed(relayed) }})) { '-e', '{{ relay }}={{ relay_fields if host.step_file else 1 }}' })
@@ -173,6 +184,7 @@ function global:{{ function }} {
             -v "{{ volume.host }}:{{ volume.point.as_posix() }}:ro" `
 {% endfor %}
             @($nas.mounts) `
+            @(foreach ($volume in $source) { '-v'; "${volume}:ro" }) `
 {% for volume in script.tools + script.drives %}
             -v "{{ volume.host }}:{{ volume.point.as_posix() }}" `
 {% endfor %}

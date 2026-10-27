@@ -4,13 +4,13 @@ The audit compares the backup folders with the library (0204) and leaves out wha
 user already dealt with (`backup_dealt`). Of the rest, an image whose near copy is in
 the library (a HEIC on the NAS, its JPG in the photos) is listed apart, not proposed;
 identical files of a backup are copied once (the first by path). Each copy goes to
-`<first photo folder>/From NAS/<its folders in the backup>` (0245).
+`<first photo folder>/From <source>/<its folders in the source>` (0245, 0378).
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.actions.copy_in import CopyJob
 from media_hygiene.constants import MediaKind
@@ -20,17 +20,15 @@ from media_hygiene.index.repository import FactsRepository
 from media_hygiene.index.visual_listing import library_visuals
 from media_hygiene.plan.backup_near import near_present
 from media_hygiene.scan.image_check import inspect_image
+from media_hygiene.services.import_source import destinations
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable, Sequence
+    from collections.abc import Iterable, Mapping, Sequence
     from pathlib import Path
 
     from media_hygiene.plan.backups import BackupCoverage
     from media_hygiene.scan.models import MediaFile, VisualFacts
     from media_hygiene.services.runtime import Runtime
-
-# The folder of the copies, below the first photo folder (maintainer, 2026-10-20).
-FROM_BACKUP: Final = "From NAS"
 
 type Candidate = tuple[BackupCoverage, MediaFile]
 
@@ -62,8 +60,8 @@ def plan_copies(
     Args:
         runtime: Settings, mount points and output (the index).
         backups: Each backup folder compared with the library.
-        to: The folder receiving the copies (container path); None: `From NAS` in
-            the first photo folder.
+        to: The folder receiving the copies (container path); None: `From <source>`
+            in the first photo folder.
 
     Returns:
         The plan.
@@ -72,19 +70,35 @@ def plan_copies(
         [(backup, file) for backup in backups for file in backup.to_import], runtime
     )
     near = near_paths(runtime, [file for _backup, file in candidates])
-    base = to or first_library_folder(runtime, backups) / FROM_BACKUP
-    several = len(backups) > 1
+    bases = _bases(runtime, backups, to)
     jobs = tuple(
-        CopyJob(
-            file.path,
-            (base / backup.folder.name if several else base)
-            / file.path.relative_to(backup.folder),
-        )
+        CopyJob(file.path, bases[backup.folder] / file.path.relative_to(backup.folder))
         for backup, file in candidates
         if file.path not in near
     )
     apart = tuple(file for _backup, file in candidates if file.path in near)
     return ImportPlan(jobs, backups, apart, twins)
+
+
+def _bases(
+    runtime: Runtime, backups: Sequence[BackupCoverage], to: Path | None
+) -> Mapping[Path, Path]:
+    """The folder receiving each source's copies.
+
+    Args:
+        runtime: Settings, mount points and output.
+        backups: The sources.
+        to: `--to` (container path), or None: `From <source>` (0378).
+
+    Returns:
+        The folder of each source.
+    """
+    folders = [backup.folder for backup in backups]
+    if to is None:
+        library = first_library_folder(runtime, backups)
+        return destinations(library, runtime.locations.data_dir, folders)
+    several = len(folders) > 1
+    return {folder: to / folder.name if several else to for folder in folders}
 
 
 def near_paths(runtime: Runtime, files: Iterable[MediaFile]) -> frozenset[Path]:

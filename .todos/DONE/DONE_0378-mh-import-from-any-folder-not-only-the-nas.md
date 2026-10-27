@@ -48,3 +48,13 @@ not possible.
 `import` usable for an SD card or a USB disk in one command (today: `folders add --backup`,
 `audit`, `import`, then remove the backup: 4 steps, *counted* from the docs), and words that do
 not mislead.
+
+## Status — DONE (2026-10-27)
+
+`mh import <folder>` (positional; the launchers mount it `:ro` for this run and pass no
+`--backup`), `From <source>` (`services/import_source.py`: `From NAS` for a share, `From <letter>`
+for a disk; two sources of one name keep their folder name), words of help, menu (new step
+`import-folder`) and docs en + fr. Not done: the volume label (`From <label>`, to design in
+`mh.ps1`); a network folder typed positionally (`\\NAS\x`) is refused by `mh.ps1` (drive letter
+only): add the NAS with `folders add --backup`. `docs_screenshots` to run (the `import --help`
+capture is stale).

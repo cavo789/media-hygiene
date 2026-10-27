@@ -4,9 +4,8 @@ A phone plugged in over USB has no drive letter: Docker cannot see it, `mh.ps1` 
 `mh` lists the phone's `DCIM` (relative path, size, modified date in UTC), pipes the
 list to `phone-plan`, which compares it with what only the container knows: the
 index (the library), the journals (what the user set aside on purpose) and the
-destination folder. The phone gives no content to hash: a file is matched by its
-name (case ignored) and its size, never more. Each file gets a case and its reason,
-one line each, so that a later step (freeing the phone, 0248) reuses the same plan.
+destination folder. Matched by name (case ignored) and size only (no content to hash);
+each file gets a case and its reason, one line each, reused to free the phone (0248).
 """
 
 from __future__ import annotations
@@ -46,10 +45,11 @@ class PhoneCase(StrEnum):
 
 
 class AsideState(StrEnum):
-    """Where a file set aside is now: its run's quarantine still there, or purged."""
+    """Where it is now: in a quarantine, purged, or deleted (`review --gone`, 0377)."""
 
     QUARANTINE = "quarantine"
     PURGED = "purged"
+    WAITING = "waiting"
 
 
 @dataclass(frozen=True, slots=True)

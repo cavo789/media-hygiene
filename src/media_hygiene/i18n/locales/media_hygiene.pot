@@ -771,11 +771,6 @@ msgid "Add a photo folder"
 msgstr ""
 
 msgid ""
-"Add one first: mh folders add --backup <folder>, or --backup <folder> on "
-"this command."
-msgstr ""
-
-msgid ""
 "Add or remove a photo folder: mh folders add (a window to choose it) or "
 "mh folders add <folder>, mh folders remove <folder>. A backup, compared, "
 "never changed: mh folders add --backup <folder>."
@@ -1611,8 +1606,9 @@ msgid "Copy and paste this command to run it again."
 msgstr ""
 
 msgid ""
-"Copy into your photos what only a backup (a NAS) holds, never what you "
-"set aside or deleted before; each copy proven (journaled, undoable)."
+"Copy into your photos what only a folder holds (your NAS, a USB disk, an "
+"SD card), never what you set aside or deleted before; each copy proven "
+"(journaled, undoable)."
 msgstr ""
 
 msgid "Copy it (Ctrl+C):"
@@ -1895,6 +1891,12 @@ msgid "Deleted from"
 msgstr ""
 
 msgid "Deleted in the Explorer"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Deleted in the Explorer (found gone on {date}), not confirmed yet in mh "
+"review --gone: not proposed again."
 msgstr ""
 
 #, python-brace-format
@@ -2765,8 +2767,13 @@ msgid "Folder pairs review"
 msgstr ""
 
 msgid ""
-"Folder receiving the copies (host path); default: 'From NAS' in your "
-"first photo folder, the folders of the backup kept below it."
+"Folder receiving the copies (host path); default: 'From <source>' in your"
+" first photo folder (From NAS, From E), its folders kept below it."
+msgstr ""
+
+msgid ""
+"Folder to import from (host path): your NAS, a USB disk, an SD card, an "
+"old disk; only read. Default: your backup folders."
 msgstr ""
 
 msgid "Folder whose copies are kept first. Repeat it; the order matters."
@@ -2933,8 +2940,9 @@ msgid "GB"
 msgstr ""
 
 msgid ""
-"Gather your photos on the PC: those of the phone, and those only your NAS"
-" still keeps. Nothing leaves the phone or the NAS without your say."
+"Gather your photos on the PC: those of the phone, and those only a folder"
+" keeps (your NAS, a USB disk, an SD card). Nothing leaves them without "
+"your say."
 msgstr ""
 
 msgid ""
@@ -2942,7 +2950,7 @@ msgid ""
 "apply it. Nothing moves before you agree."
 msgstr ""
 
-msgid "Get back what only the NAS holds"
+msgid "Get back what only the NAS or the disk holds"
 msgstr ""
 
 msgid "Ghent"
@@ -3217,6 +3225,9 @@ msgid "Image cannot be decoded"
 msgstr ""
 
 msgid "Import"
+msgstr ""
+
+msgid "Import a USB disk, an SD card or any folder"
 msgstr ""
 
 msgid "Import photos"
@@ -3930,6 +3941,11 @@ msgstr ""
 msgid "Name of the event's folder"
 msgstr ""
 
+msgid ""
+"Name one: mh import <folder> (a USB disk, an SD card), or add your NAS "
+"once: mh folders add --backup <folder>."
+msgstr ""
+
 msgid "Name the events"
 msgstr ""
 
@@ -4118,9 +4134,6 @@ msgstr ""
 msgid "No audit yet: 'shrink' reads the videos the audit described."
 msgstr ""
 
-msgid "No backup folder to import from."
-msgstr ""
-
 msgid ""
 "No backup folder yet: type mh push --to <the NAS folder>, a shared folder"
 " of its own such as backup_photos."
@@ -4222,6 +4235,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "No folder to analyse under {path}."
+msgstr ""
+
+msgid "No folder to import from."
 msgstr ""
 
 msgid "No group yet: no two faces look alike enough."
@@ -4739,7 +4755,7 @@ msgstr ""
 msgid "Nothing to get back: the PC already has what the NAS keeps."
 msgstr ""
 
-msgid "Nothing to import: every file of the backup is dealt with."
+msgid "Nothing to import: every file of the folder is dealt with."
 msgstr ""
 
 msgid "Nothing to move: every file is where the plan puts it."
@@ -5040,6 +5056,11 @@ msgstr ""
 msgid ""
 "Only what the PC already holds, proven file by file, and that you tick on"
 " a page."
+msgstr ""
+
+msgid ""
+"Only what your photos lack, by content; the folder is only read, never "
+"added to mh."
 msgstr ""
 
 msgid "Open a folder left in the search page, pick, then Move to an event…:"
@@ -7298,6 +7319,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "The folder {path} is not mounted."
+msgstr ""
+
+msgid "The folder, as the Explorer shows it"
 msgstr ""
 
 msgid "The folders mh knows"
@@ -10133,7 +10157,7 @@ msgstr ""
 msgid "naming the events up to this one covers {share}%% of the work"
 msgstr ""
 
-msgid "nas get back restore backup copy missing"
+msgid "nas get back restore backup copy missing usb disk"
 msgstr ""
 
 msgid "nas synology backup old disk share network smb"
@@ -11089,6 +11113,9 @@ msgid "update version new upgrade docker"
 msgstr ""
 
 msgid "usage policy"
+msgstr ""
+
+msgid "usb disk card sd camera folder import copy"
 msgstr ""
 
 msgid "validate"
@@ -13538,7 +13565,7 @@ msgid ""
 msgstr ""
 
 msgid ""
-"🛟 The backup is only read: each file is copied, compared with its source,"
+"🛟 The folder is only read: each file is copied, compared with its source,"
 " journaled; 'undo' removes the copies."
 msgstr ""
 

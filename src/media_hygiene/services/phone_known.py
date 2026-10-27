@@ -12,24 +12,19 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
-from itertools import chain
-from pathlib import Path, PurePosixPath, PureWindowsPath
+from pathlib import Path, PurePosixPath
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.actions.purge import runs_in
-from media_hygiene.actions.purged import purge_dates
 from media_hygiene.i18n import _
 from media_hygiene.index.repository import FactsRepository
-from media_hygiene.services.phone_plan import AsideState, Known, SetAside
-from media_hygiene.services.quarantines import mounted_quarantines
-from media_hygiene.services.returned import remembered_of
+from media_hygiene.services.phone_aside import set_aside_of
+from media_hygiene.services.phone_plan import Known
 
 if TYPE_CHECKING:
     import sqlite3
     from collections.abc import Iterable
 
-    from media_hygiene.plan.returned import Remembered
     from media_hygiene.services.phone_plan import NameKey, PhoneFile
     from media_hygiene.services.runtime import Runtime
 
@@ -81,7 +76,7 @@ def known_of(runtime: Runtime, query: PhoneQuery) -> Known:
     with FactsRepository.open(runtime.index_file) as repository:
         connection = repository.connection
         library = _library(runtime, connection, wanted)
-        aside = _set_aside(runtime, connection, wanted)
+        aside = set_aside_of(runtime, connection, wanted)
     destination = query.destination
     return Known(
         library=MappingProxyType(library),
@@ -123,46 +118,6 @@ def _library(
             )
         )
     return {key: runtime.mapper.to_host(Path(path)) for key, path in found.items()}
-
-
-def _set_aside(
-    runtime: Runtime, connection: sqlite3.Connection, wanted: frozenset[NameKey]
-) -> dict[NameKey, SetAside]:
-    """Find the files set aside by a choice named like the phone's, of the same size.
-
-    Args:
-        runtime: Settings, mount points and the journal.
-        connection: The index, keeping what each journal said.
-        wanted: The names and sizes of the phone.
-
-    Returns:
-        The latest set-aside of each, with its run's quarantine state and, once
-        purged, when (0256).
-    """
-    remembered = remembered_of(runtime, connection)
-    held = frozenset(runs_in(mounted_quarantines(runtime).folders))
-    found: dict[NameKey, Remembered] = {}
-    pairs = chain(remembered.by_digest.items(), remembered.by_partial.items())
-    for (size, _digest), said in pairs:
-        key = (PureWindowsPath(said.host_path).name.casefold(), size)
-        if key not in wanted:
-            continue
-        last = found.get(key)
-        if last is None or (said.at, said.run_id) > (last.at, last.run_id):
-            found[key] = said
-    gone = {said.run_id for said in found.values()} - held
-    purged = purge_dates(runtime.locations.journal_dir, gone)
-    return {
-        key: SetAside(
-            said.run_id,
-            said.at,
-            said.action.value,
-            AsideState.QUARANTINE if said.run_id in held else AsideState.PURGED,
-            said.host_path,
-            purged.get(said.run_id),
-        )
-        for key, said in found.items()
-    }
 
 
 def _in_folder(folder: Path, wanted: frozenset[NameKey]) -> dict[NameKey, str]:

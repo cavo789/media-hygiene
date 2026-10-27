@@ -33,7 +33,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | show the holiday photos on the TV, choosing the next one from my phone | [`slideshow`](commands/slideshow.md) |
 | send an album by mail or to a social network, resized and without the GPS position | [`share`](commands/share.md) |
 | see my words in digiKam, darktable, Lightroom or Immich | [`xmp`](commands/xmp.md) |
-| get back the photos only my NAS still has, not the ones I deleted | [`import`](commands/import.md) |
+| get back the photos only my NAS, a USB disk or an SD card has, not the ones I deleted | [`import`](commands/import.md) |
 | win back the space of my old camera videos, the picture kept | [`shrink`](commands/shrink.md) |
 | back up my photos to my NAS, only what it lacks | [`push`](commands/push.md) |
 | keep the index and my settings safe from a Docker reset, and put them back | [`backup`](commands/backup.md), [`restore`](commands/restore.md) |
@@ -77,7 +77,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`sort [WORKBOOK]`](commands/sort.md) | Check the edited workbook of `classify`, confirm, then move the files where it says; journaled, undoable, proven. | [Sorting, 7](sort/07-sort.md) |
 | [`album NAME`](commands/album.md) | Make the folder of an album (saved in `search`, `browse` or the burst review) as hard links: nothing copied nor moved, no space used. `--category`, `--event`, `--rule`, `--rating` gather a selection of the `classify` plan instead. Shows the album; `--apply` makes the links. | [Sorting, 12](sort/12-albums.md) |
 | [`xmp`](commands/xmp.md) | Write the words of `tags` into `.xmp` sidecars next to the photos, for digiKam, darktable, Lightroom or Immich; never into a photo. Shows what it would write; `--apply` writes. | [Reference](reference-tags.md#carry-the-words-with-the-photos-xmp) |
-| [`import`](commands/import.md) | Copy into your photos what only a backup (a NAS) holds, never what you set aside or deleted before; near copies listed apart; each copy proven; the backup only read. | [Commands](commands/import.md) |
+| [`import`](commands/import.md) | Copy into your photos what only a folder holds (your NAS, a USB disk, an SD card), never what you set aside or deleted before; near copies listed apart; each copy proven; the backup only read. | [Commands](commands/import.md) |
 | [`shrink`](commands/shrink.md) | List the heavy videos worth lightening (old cameras, MJPEG), with the space each would free; `--apply` re-encodes them in H.264, each one checked (length, sound, date, place), the original in the quarantine. | [Commands](commands/shrink.md) |
 | [`push`](commands/push.md) | Windows only (`mh push`): copy your photo folders into a folder of their own on the NAS, only what it lacks; a photo moved is renamed there, a deletion by mistake never carried over; undo with `--undo`. | [Commands](commands/push.md) |
 | [`backup`](commands/backup.md) | Write the index (what the audits, `tags` and `people` learnt) and the settings into one zip in `media-hygiene\backups`, read back; the 3 most recent kept. Never reads your photos. | [Commands](commands/backup.md) |
@@ -227,7 +227,7 @@ command shows its own `--help`; here is the list of the commands:
 │ clean        Audit, confirm, then move the duplicate copies to the           │
 │              quarantine, after a byte comparison (journaled, undoable);      │
 │              --delete deletes them for good.                                 │
-│ import       Copy into your photos what only a backup (a NAS) holds, never   │
+│ import       Copy into your photos what only a folder holds (your NAS, a USB disk, an SD card), never   │
 │              what you set aside or deleted before; each copy proven          │
 │              (journaled, undoable).                                          │
 │ purge        Erase the quarantine of a run for good: with 'clean --delete',  │

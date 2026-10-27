@@ -987,13 +987,6 @@ msgid "Add a photo folder"
 msgstr "Ajouter un dossier de photos"
 
 msgid ""
-"Add one first: mh folders add --backup <folder>, or --backup <folder> on "
-"this command."
-msgstr ""
-"Ajoutez-en d'abord un : mh folders add --backup <dossier>, ou --backup "
-"<dossier> sur cette commande."
-
-msgid ""
 "Add or remove a photo folder: mh folders add (a window to choose it) or "
 "mh folders add <folder>, mh folders remove <folder>. A backup, compared, "
 "never changed: mh folders add --backup <folder>."
@@ -1973,12 +1966,13 @@ msgid "Copy and paste this command to run it again."
 msgstr "Copiez-collez cette commande pour relancer."
 
 msgid ""
-"Copy into your photos what only a backup (a NAS) holds, never what you "
-"set aside or deleted before; each copy proven (journaled, undoable)."
+"Copy into your photos what only a folder holds (your NAS, a USB disk, an "
+"SD card), never what you set aside or deleted before; each copy proven "
+"(journaled, undoable)."
 msgstr ""
-"Copie dans vos photos ce qu'une sauvegarde (un NAS) est seule à contenir,"
-" jamais ce que vous avez mis de côté ou supprimé avant ; chaque copie "
-"prouvée (journalisé, annulable)."
+"Copie dans vos photos ce qu'un dossier est seul à contenir (votre NAS, un"
+" disque USB, une carte SD), jamais ce que vous avez mis de côté ou "
+"supprimé avant ; chaque copie prouvée (journalisée, annulable)."
 
 msgid "Copy it (Ctrl+C):"
 msgstr "Copiez-la (Ctrl+C) :"
@@ -2313,6 +2307,14 @@ msgstr "Supprimées de"
 
 msgid "Deleted in the Explorer"
 msgstr "Supprimés dans l'Explorateur"
+
+#, python-brace-format
+msgid ""
+"Deleted in the Explorer (found gone on {date}), not confirmed yet in mh "
+"review --gone: not proposed again."
+msgstr ""
+"Supprimé dans l'Explorateur (constaté disparu le {date}), pas encore "
+"confirmé dans mh review --gone : pas proposé à nouveau."
 
 #, python-brace-format
 msgid "Deleted on purpose: {deleted} · answered: {decided} of {total}"
@@ -3021,7 +3023,6 @@ msgstr ""
 "Chaque mot doit être trouvé : tapez un à trois mots (plage, gâteau "
 "bougie), pas une phrase."
 
-#
 msgid "Everything"
 msgstr "Tout"
 
@@ -3407,12 +3408,20 @@ msgid "Folder pairs review"
 msgstr "Revue des paires de dossiers"
 
 msgid ""
-"Folder receiving the copies (host path); default: 'From NAS' in your "
-"first photo folder, the folders of the backup kept below it."
+"Folder receiving the copies (host path); default: 'From <source>' in your"
+" first photo folder (From NAS, From E), its folders kept below it."
 msgstr ""
 "Dossier qui reçoit les copies (chemin de l'hôte) ; par défaut : « From "
-"NAS » dans votre premier dossier de photos, les dossiers de la sauvegarde"
-" gardés en dessous."
+"<source> » dans votre premier dossier de photos (From NAS, From E), ses "
+"dossiers gardés en dessous."
+
+msgid ""
+"Folder to import from (host path): your NAS, a USB disk, an SD card, an "
+"old disk; only read. Default: your backup folders."
+msgstr ""
+"Dossier d'où importer (chemin de l'hôte) : votre NAS, un disque USB, une "
+"carte SD, un ancien disque ; seulement lu. Par défaut : vos dossiers de "
+"sauvegarde."
 
 msgid "Folder whose copies are kept first. Repeat it; the order matters."
 msgstr ""
@@ -3605,12 +3614,13 @@ msgid "GB"
 msgstr "Go"
 
 msgid ""
-"Gather your photos on the PC: those of the phone, and those only your NAS"
-" still keeps. Nothing leaves the phone or the NAS without your say."
+"Gather your photos on the PC: those of the phone, and those only a folder"
+" keeps (your NAS, a USB disk, an SD card). Nothing leaves them without "
+"your say."
 msgstr ""
-"Rassemblez vos photos sur le PC : celles du téléphone, et celles que seul"
-" votre NAS garde encore. Rien n'est effacé du téléphone ni du NAS sans "
-"votre accord."
+"Rassemblez vos photos sur le PC : celles du téléphone, et celles qu'un "
+"dossier est seul à garder (votre NAS, un disque USB, une carte SD). Rien "
+"n'en part sans votre accord."
 
 msgid ""
 "Get a proposed tree, correct it in a workbook or in the browser, then "
@@ -3619,8 +3629,8 @@ msgstr ""
 "Recevez une proposition d'arborescence, corrigez-la dans un classeur ou "
 "dans le navigateur, puis appliquez-la. Rien ne bouge avant votre accord."
 
-msgid "Get back what only the NAS holds"
-msgstr "Récupérer ce que seul le NAS contient"
+msgid "Get back what only the NAS or the disk holds"
+msgstr "Récupérer ce que seul le NAS ou le disque contient"
 
 msgid "Ghent"
 msgstr "Gand"
@@ -3708,7 +3718,6 @@ msgstr "Aller à"
 msgid "Go to Share"
 msgstr "Aller à Partager"
 
-#
 msgid "Go to a person (/)"
 msgstr "Aller à une personne (/)"
 
@@ -3948,6 +3957,9 @@ msgstr "Image impossible à décoder"
 
 msgid "Import"
 msgstr "Importer"
+
+msgid "Import a USB disk, an SD card or any folder"
+msgstr "Importer un disque USB, une carte SD ou n'importe quel dossier"
 
 msgid "Import photos"
 msgstr "Importer des photos"
@@ -4772,6 +4784,13 @@ msgstr "Nom de l'événement"
 msgid "Name of the event's folder"
 msgstr "Nom du dossier de l'événement"
 
+msgid ""
+"Name one: mh import <folder> (a USB disk, an SD card), or add your NAS "
+"once: mh folders add --backup <folder>."
+msgstr ""
+"Nommez-en un : mh import <dossier> (un disque USB, une carte SD), ou "
+"ajoutez votre NAS une fois : mh folders add --backup <dossier>."
+
 msgid "Name the events"
 msgstr "Nommer les événements"
 
@@ -4958,7 +4977,6 @@ msgstr "Étape suivante"
 msgid "Next time, type it directly: {command}"
 msgstr "La prochaine fois, tapez-la directement : {command}"
 
-#
 msgid "Next to do (g)"
 msgstr "Prochain à faire (g)"
 
@@ -5002,9 +5020,6 @@ msgstr "Pas encore d'audit."
 
 msgid "No audit yet: 'shrink' reads the videos the audit described."
 msgstr "Pas encore d'audit : 'shrink' lit les vidéos que l'audit a décrites."
-
-msgid "No backup folder to import from."
-msgstr "Aucun dossier de sauvegarde d'où importer."
 
 msgid ""
 "No backup folder yet: type mh push --to <the NAS folder>, a shared folder"
@@ -5133,6 +5148,9 @@ msgstr "Aucune paire de dossiers : rien à passer en revue."
 #, python-brace-format
 msgid "No folder to analyse under {path}."
 msgstr "Aucun dossier à analyser sous {path}."
+
+msgid "No folder to import from."
+msgstr "Aucun dossier d'où importer."
 
 msgid "No group yet: no two faces look alike enough."
 msgstr ""
@@ -5662,7 +5680,6 @@ msgstr ""
 msgid "Nothing left to check nor to sort."
 msgstr "Plus rien à vérifier ni à trier."
 
-#
 msgid "Nothing left to do: every face shown is verified or ignored."
 msgstr "Plus rien à faire : chaque visage montré est vérifié ou ignoré."
 
@@ -5736,8 +5753,8 @@ msgstr "Rien à récupérer."
 msgid "Nothing to get back: the PC already has what the NAS keeps."
 msgstr "Rien à récupérer : le PC a déjà tout ce que garde le NAS."
 
-msgid "Nothing to import: every file of the backup is dealt with."
-msgstr "Rien à importer : chaque fichier de la sauvegarde est déjà traité."
+msgid "Nothing to import: every file of the folder is dealt with."
+msgstr "Rien à importer : chaque fichier du dossier est déjà traité."
 
 msgid "Nothing to move: every file is where the plan puts it."
 msgstr "Rien à déplacer : chaque fichier est là où le plan le met."
@@ -6134,6 +6151,13 @@ msgstr ""
 "Seulement ce que le PC détient déjà, prouvé fichier par fichier, et que "
 "vous cochez sur une page."
 
+msgid ""
+"Only what your photos lack, by content; the folder is only read, never "
+"added to mh."
+msgstr ""
+"Seulement ce qui manque à vos photos, d'après le contenu ; le dossier est"
+" seulement lu, jamais ajouté à mh."
+
 msgid "Open a folder left in the search page, pick, then Move to an event…:"
 msgstr ""
 "Ouvrez un dossier restant dans la page de recherche, choisissez, puis "
@@ -6338,7 +6362,10 @@ msgid ""
 "People come in alphabetical order, then the unnamed groups, largest "
 "first: each name given there names the most faces. g goes to the next "
 "section to do, / to the people list."
-msgstr "Les personnes viennent par ordre alphabétique, puis les groupes sans nom, les plus grands d'abord : chaque nom donné là nomme le plus de visages. g va à la prochaine section à faire, / à la liste des personnes."
+msgstr ""
+"Les personnes viennent par ordre alphabétique, puis les groupes sans nom,"
+" les plus grands d'abord : chaque nom donné là nomme le plus de visages. "
+"g va à la prochaine section à faire, / à la liste des personnes."
 
 msgid ""
 "People whose folders hold their photos (\"Photos Chloé\", \"iPhone "
@@ -7823,7 +7850,6 @@ msgstr "Voir ses photos"
 msgid "Show more"
 msgstr "En montrer plus"
 
-#, python-brace-format
 msgid "Show only this person (Esc)"
 msgstr "Montrer seulement cette personne (Échap)"
 
@@ -8823,6 +8849,9 @@ msgstr ""
 msgid "The folder {path} is not mounted."
 msgstr "Le dossier {path} n'est pas monté."
 
+msgid "The folder, as the Explorer shows it"
+msgstr "Le dossier, tel que l'Explorateur le montre"
+
 msgid "The folders mh knows"
 msgstr "Les dossiers que mh connaît"
 
@@ -9778,11 +9807,12 @@ msgstr ""
 "Les audits l'ignorent. 'media-hygiene undo' le supprime ; le supprimer à "
 "la main est sans danger aussi."
 
-#
 msgid ""
 "This group looks like the faces you confirmed as this person's: a click "
 "names it so (y)."
-msgstr "Ce groupe ressemble aux visages que vous avez confirmés pour cette personne : un clic le nomme ainsi (y)."
+msgstr ""
+"Ce groupe ressemble aux visages que vous avez confirmés pour cette "
+"personne : un clic le nomme ainsi (y)."
 
 msgid "This help."
 msgstr "Cette aide."
@@ -10000,7 +10030,6 @@ msgstr "À copier, en tout : {size}"
 msgid "To do"
 msgstr "À faire"
 
-#
 msgid "To do:"
 msgstr "À faire :"
 
@@ -12172,8 +12201,8 @@ msgstr ""
 msgid "naming the events up to this one covers {share}%% of the work"
 msgstr "nommer les événements jusqu'à celui-ci couvre {share} %% du travail"
 
-msgid "nas get back restore backup copy missing"
-msgstr "nas récupérer restaurer sauvegarde copier manquantes"
+msgid "nas get back restore backup copy missing usb disk"
+msgstr "nas récupérer restaurer sauvegarde copier manquant usb disque"
 
 msgid "nas synology backup old disk share network smb"
 msgstr "nas synology sauvegarde ancien disque partage réseau smb"
@@ -13220,6 +13249,9 @@ msgstr "mise à jour version nouvelle update docker"
 
 msgid "usage policy"
 msgstr "conditions d'utilisation"
+
+msgid "usb disk card sd camera folder import copy"
+msgstr "usb disque carte sd appareil dossier importer copier"
 
 msgid "validate"
 msgstr "valider"
@@ -15931,13 +15963,17 @@ msgstr "… et %(count)s de plus."
 msgid "… and {count} more."
 msgstr "… et {count} de plus."
 
-#
 msgid ""
 "↑ ↓ move, o folds or opens, Enter names, y confirms the attributed faces "
 "shown (or names a group as the person it looks like), x names several "
 "groups at once, i ignores a group; × marks a face that is someone else's,"
 " the next button saves it."
-msgstr "↑ ↓ se déplacent, o replie ou ouvre, Entrée nomme, y confirme les visages attribués montrés (ou nomme un groupe comme la personne à qui il ressemble), x nomme plusieurs groupes à la fois, i ignore un groupe ; × marque un visage qui est celui de quelqu'un d'autre, le bouton suivant l'enregistre."
+msgstr ""
+"↑ ↓ se déplacent, o replie ou ouvre, Entrée nomme, y confirme les visages"
+" attribués montrés (ou nomme un groupe comme la personne à qui il "
+"ressemble), x nomme plusieurs groupes à la fois, i ignore un groupe ; × "
+"marque un visage qui est celui de quelqu'un d'autre, le bouton suivant "
+"l'enregistre."
 
 #, python-brace-format
 msgid ""
@@ -16188,11 +16224,11 @@ msgstr ""
 "chacun est journalisé et 'undo' le reprend."
 
 msgid ""
-"🛟 The backup is only read: each file is copied, compared with its source,"
+"🛟 The folder is only read: each file is copied, compared with its source,"
 " journaled; 'undo' removes the copies."
 msgstr ""
-"🛟 La sauvegarde est seulement lue : chaque fichier est copié, comparé à "
-"sa source, journalisé ; 'undo' retire les copies."
+"🛟 Le dossier est seulement lu : chaque fichier est copié, comparé à sa "
+"source, journalisé ; « undo » retire les copies."
 
 msgid "🤖 Local AI (Ollama), optional: a model set in config.toml"
 msgstr "🤖 IA locale (Ollama), facultative : un modèle indiqué dans config.toml"

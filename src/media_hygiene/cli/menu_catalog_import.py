@@ -1,4 +1,4 @@
-r"""Stage 1, import: the photos of a phone, then what only the NAS still holds."""
+r"""Stage 1, import: the photos of a phone, then what only a folder (a NAS) holds."""
 
 from __future__ import annotations
 
@@ -106,14 +106,36 @@ def import_steps() -> tuple[Step, ...]:
         Step(
             "import",
             space,
-            _("Get back what only the NAS holds"),
+            _("Get back what only the NAS or the disk holds"),
             _("Never what you set aside or deleted on purpose; each copy is checked."),
             "import",
             Risk.UNDO,
             icon="import",
-            keywords=_("nas get back restore backup copy missing"),
+            keywords=_("nas get back restore backup copy missing usb disk"),
             doc=Doc("commands/import/"),
             slot=Slot.IMPORT,
+        ),
+        Step(
+            "import-folder",
+            space,
+            _("Import a USB disk, an SD card or any folder"),
+            _(
+                "Only what your photos lack, by content; the folder is only read, "
+                "never added to mh."
+            ),
+            "import {path}",
+            Risk.UNDO,
+            icon="import",
+            keywords=_("usb disk card sd camera folder import copy"),
+            doc=Doc("commands/import/"),
+            fields=(
+                Field(
+                    "path",
+                    _("The folder, as the Explorer shows it"),
+                    r"E:\DCIM",
+                    kind=FieldKind.FOLDER,
+                ),
+            ),
         ),
         Step(
             "folders-add",
@@ -145,8 +167,9 @@ def import_area() -> Area:
         _("Import"),
         _("Import photos"),
         _(
-            "Gather your photos on the PC: those of the phone, and those only your "
-            "NAS still keeps. Nothing leaves the phone or the NAS without your say."
+            "Gather your photos on the PC: those of the phone, and those only a "
+            "folder keeps (your NAS, a USB disk, an SD card). Nothing leaves them "
+            "without your say."
         ),
         "import",
         (
@@ -154,7 +177,7 @@ def import_area() -> Area:
             Group(
                 _("From your NAS or an old disk"), ("nas-add", "import"), numbered=True
             ),
-            Group(_("Go further"), ("folders-add",)),
+            Group(_("Go further"), ("import-folder", "folders-add")),
         ),
         Doc(FOLDERS_PAGE),
         _("3. Several folders and disks"),

@@ -1,4 +1,4 @@
-"""`media-hygiene import`: copy into the photos what only a backup (a NAS) holds."""
+"""`media-hygiene import`: copy into the photos what only a folder holds (NAS, disk)."""
 
 # pylint: disable=import-outside-toplevel,too-many-locals  # lazy: a command imports
 # the code it runs when it runs; those imports count as local variables.
@@ -16,14 +16,24 @@ from media_hygiene.i18n import _
 
 def import_command(  # pylint: disable=too-many-arguments
     ctx: typer.Context,
+    folder: Annotated[
+        str | None,
+        typer.Argument(
+            help=_(
+                "Folder to import from (host path): your NAS, a USB disk, an SD card, "
+                "an old disk; only read. Default: your backup folders."
+            ),
+            show_default=False,
+        ),
+    ] = None,
     *,
     to: Annotated[
         str | None,
         typer.Option(
             "--to",
             help=_(
-                "Folder receiving the copies (host path); default: 'From NAS' in your "
-                "first photo folder, the folders of the backup kept below it."
+                "Folder receiving the copies (host path); default: 'From <source>' in "
+                "your first photo folder (From NAS, From E), its folders kept below it."
             ),
             show_default=False,
         ),
@@ -34,10 +44,11 @@ def import_command(  # pylint: disable=too-many-arguments
     ] = False,
     backup: Annotated[list[str] | None, folder_options.backup()] = None,
 ) -> None:
-    """Copy what only a backup holds, never what you set aside or deleted before.
+    """Copy what only a folder holds, never what you set aside or deleted before.
 
     Args:
         ctx: Typer context holding the runtime.
+        folder: The folder to import from, instead of the backup folders.
         to: `--to`, the folder receiving the copies.
         yes: `--yes`, no question.
         backup: `--backup` folders, compared and never changed.
@@ -53,7 +64,8 @@ def import_command(  # pylint: disable=too-many-arguments
     from media_hygiene.services.interrupt import StopRequest
     from media_hygiene.services.next_command import CHANGING, NextVerb
 
-    runtime = runtime_of(ctx).with_overrides(folder_options.backup_layer(backup))
+    sources = [folder] if folder else backup
+    runtime = runtime_of(ctx).with_overrides(folder_options.backup_layer(sources))
     output = runtime.output
     with user_errors(output):
         ImportService(runtime, NullProgress()).ensure_ready()
@@ -63,13 +75,13 @@ def import_command(  # pylint: disable=too-many-arguments
             )
     show_plan(runtime, plan)
     if not plan.jobs:
-        output.success(_("Nothing to import: every file of the backup is dealt with."))
+        output.success(_("Nothing to import: every file of the folder is dealt with."))
         return
     if not yes and not typer.confirm(_("Copy them into your photos?"), default=True):
         raise typer.Exit
     output.info(
         _(
-            "🛟 The backup is only read: each file is copied, compared with its "
+            "🛟 The folder is only read: each file is copied, compared with its "
             "source, journaled; 'undo' removes the copies."
         )
     )

@@ -11,22 +11,28 @@ import shutil
 from dataclasses import replace
 from typing import TYPE_CHECKING, Final
 
+from typer.testing import CliRunner
+
 from media_hygiene.paths.mounts import MountTable
 from media_hygiene.scan.progress import NullProgress
-from media_hygiene.services.import_plan import FROM_BACKUP
 from media_hygiene.services.import_run import ImportService
+from media_hygiene.services.import_source import from_folder
 from media_hygiene.services.undo import undo_run
+from tests.support.cli import point_mounts, run
 from tests.support.runtime import make_runtime
 from tests.support.scenes import scene
 
 if TYPE_CHECKING:
     from pathlib import Path
 
+    import pytest
+
     from media_hygiene.config.layers import Layer
     from media_hygiene.paths.locations import Locations
     from media_hygiene.services.runtime import Runtime
 
 _BACKUP: Final[Layer] = {"folders": {"backups": ["D:\\backup"]}}
+FROM_D: Final = from_folder("D")  # a backup on drive D: (0378)
 
 
 def library_and_nas(locations: Locations) -> tuple[Path, Path]:
@@ -61,13 +67,13 @@ def import_once(runtime: Runtime) -> tuple[ImportService, str, tuple[Path, ...]]
 
 
 def test_only_the_nas_photo_is_copied_and_proven(locations: Locations) -> None:
-    """Copied below `From NAS`, the NAS's folders kept, same bytes and time."""
+    """Copied below `From D`, the backup's folders kept, same bytes and time."""
     photos, nas = library_and_nas(locations)
     before = {path: path.read_bytes() for path in nas.rglob("*") if path.is_file()}
     runtime = mounted(locations)
     _service, _run, copied = import_once(runtime)
     source = nas / "2019" / "Été" / "IMG_0007.jpg"
-    target = photos / FROM_BACKUP / "2019" / "Été" / "IMG_0007.jpg"
+    target = photos / FROM_D / "2019" / "Été" / "IMG_0007.jpg"
     assert copied == (target,)
     assert target.read_bytes() == source.read_bytes()
     assert target.stat().st_mtime_ns == source.stat().st_mtime_ns
@@ -91,7 +97,7 @@ def test_undo_removes_the_copies_and_their_folders(locations: Locations) -> None
     outcome = undo_run(runtime, run_id, NullProgress())
     assert outcome.done >= 1
     assert not any(path.exists() for path in copied)
-    assert not (photos / FROM_BACKUP).exists()
+    assert not (photos / FROM_D).exists()
     assert (nas / "2019" / "Été" / "IMG_0007.jpg").is_file()
 
 
@@ -129,3 +135,47 @@ def test_a_near_copy_in_the_library_is_listed_apart(locations: Locations) -> Non
     plan = ImportService(runtime, NullProgress()).prepare()
     assert [file.path.name for file in plan.near] == ["IMG_0005.jpg"]
     assert all(job.source.name != "IMG_0005.jpg" for job in plan.jobs)
+
+
+def test_an_earlier_from_nas_folder_is_not_imported_again(
+    locations: Locations,
+) -> None:
+    """0378: copies made under `From NAS` before the rename are held: nothing new."""
+    photos, nas = library_and_nas(locations)
+    earlier = photos / "From NAS" / "2019" / "Été" / "IMG_0007.jpg"
+    earlier.parent.mkdir(parents=True)
+    shutil.copy2(nas / "2019" / "Été" / "IMG_0007.jpg", earlier)
+    plan = ImportService(mounted(locations), NullProgress()).prepare()
+    assert not plan.jobs
+    assert not (photos / FROM_D).exists()
+
+
+def test_a_folder_never_declared_is_imported_and_only_read(
+    locations: Locations,
+) -> None:
+    r"""0378: `mh import E:\DCIM`, no backup in the settings: `From E`, E: unchanged."""
+    photos, _nas = library_and_nas(locations)
+    card = locations.data_dir / "e" / "DCIM"
+    (card / "100CANON").mkdir(parents=True)
+    scene(8).save(card / "100CANON" / "IMG_0008.jpg", quality=90)
+    before = {p: p.read_bytes() for p in card.rglob("*") if p.is_file()}
+    runtime = make_runtime(locations, {"folders": {"backups": ["E:\\DCIM"]}})
+    folders = frozenset({photos, card})
+    runtime = replace(runtime, mounts=MountTable(folders, (), ()))
+    _service, _run, copied = import_once(runtime)
+    assert copied == (photos / from_folder("E") / "100CANON" / "IMG_0008.jpg",)
+    assert {p: p.read_bytes() for p in card.rglob("*") if p.is_file()} == before
+
+
+def test_the_command_takes_a_folder_instead_of_the_backups(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    r"""0378: `import E:\DCIM --yes`, no backup declared: that folder is read."""
+    point_mounts(locations, monkeypatch)
+    card = locations.data_dir / "e" / "DCIM"
+    card.mkdir(parents=True)
+    scene(8).save(card / "IMG_0008.jpg", quality=90)
+    result = run(CliRunner(), "import", "E:\\DCIM", "--yes")
+    assert result.exit_code == 0, result.output
+    assert (locations.data_dir / from_folder("E") / "IMG_0008.jpg").is_file()
+    assert (card / "IMG_0008.jpg").is_file()

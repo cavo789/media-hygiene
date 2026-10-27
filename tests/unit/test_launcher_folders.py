@@ -344,7 +344,7 @@ def test_powershell_mounts_a_backup_read_only_for_every_command() -> None:
     assert '            -v "E:\\Backup:/data/e/Backup:ro" `\n' in text
     assert "E:\\Backup:/data/e/Backup${mode}" not in text
     assert (
-        "    $backups = @(if ($command -in @('audit', 'clean')) "
+        "    $backups = @(if ($command -in @('audit', 'clean') -and -not $source) "
         "{ '--backup', \"E:\\Backup\" })\n"
     ) in text
     assert " @rest @backups @($nas.backups)\n" in text
