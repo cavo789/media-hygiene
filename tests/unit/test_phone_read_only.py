@@ -185,3 +185,10 @@ def test_the_pcs_door_is_published_on_the_loopback_only(
     for host in published:
         assert host.startswith(("127.0.0.1:", "$($lan.address)")), host
     assert "0.0.0.0" not in script  # noqa: S104  # never every interface
+
+
+def test_a_phones_spaces_list_only_the_pages_it_opens() -> None:
+    """A phone's *Find* lists search and browse, never Excel nor a PC step."""
+    phone = home.home_page(remote=True).decode()
+    assert "(!REMOTE || PHONE_PAGES[BY_ID[name].command])" in phone
+    assert '"mh search"' in phone
