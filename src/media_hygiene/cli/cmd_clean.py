@@ -16,6 +16,7 @@ from media_hygiene.cli.folder_options import FolderOptions
 from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.constants import CleanTier, ExitCode, RunKind
 from media_hygiene.i18n import _
+from media_hygiene.report.clean_done import CleanAsked
 
 if TYPE_CHECKING:
     from media_hygiene.actions.outcome import Outcome
@@ -124,6 +125,7 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
                 outcome,
                 run_id,
                 crosscheck=verdict,
+                asked=CleanAsked(tier is not CleanTier.EXACT, bursts),
             ),
         )
     _after_clean_tips(runtime, run_id, outcome)

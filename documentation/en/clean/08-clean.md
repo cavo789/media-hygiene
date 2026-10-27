@@ -178,7 +178,16 @@ a copy, the photo kept remembers the folder and the name that copy had (`Mariage
 ## The clean report
 
 Each clean writes its own report, listed in `index.html` next to the audits: what was freed, the
-folder pairs as they were cleaned, and the files left untouched, if any.
+folder pairs as they were cleaned, and the files left untouched, if any. It tells what was
+done, in two blocks:
+
+- **✅ What this clean did**: the exact copies removed, the near duplicates moved (only with
+  `--tier near`), the burst shots set aside (only with `--decisions`), the broken files handled,
+  and the `mh undo` line that puts it all back. The near duplicates shown below it are the ones
+  this clean moved, nothing else.
+- **⏸️ Not touched by this clean**: one line per kind left for later (near duplicates, burst
+  series) with the command that decides them (`mh review --near`, `mh review`); the audit report
+  shows them.
 
 ![The top of a clean report: 85 media files scanned, 32 duplicate copies in 20 groups, 16.4 MB removed from your folders, 3 broken files, then the folder pairs that were cleaned](../images/clean-report.webp)
 

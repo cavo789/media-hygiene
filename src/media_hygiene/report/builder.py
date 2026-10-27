@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from media_hygiene.constants import PLAN_CSV_FILE_NAME, RunKind, Sizes
+from media_hygiene.report.clean_done import clean_done, shown_similar
 from media_hygiene.report.group_views import (
     GroupRenderer,
     largest_groups,
@@ -62,7 +63,7 @@ class ReportBuilder:
             for file in (
                 *(decision.keeper for decision in groups),
                 *sampled_files(report_pairs(record)),
-                *similar_files(record.findings.similar),
+                *similar_files(shown_similar(record)),
                 *(item.file for item in plan.broken),
                 *(item.file for item in plan.returned),
             )
@@ -124,9 +125,8 @@ class ReportBuilder:
                 for index, pair in enumerate(report_pairs(record), start=1)
             ),
             returned=returned_section(plan, self.mapper, names),
-            similar=SimilarRenderer(self.mapper, names).section(
-                record.findings.similar
-            ),
+            similar=SimilarRenderer(self.mapper, names).section(shown_similar(record)),
+            done=clean_done(record),
             groups=GroupsSection(
                 sample=tuple(groups.group(d) for d in sample_groups(plan)),
                 largest=tuple(groups.group(d) for d in largest_groups(plan)),

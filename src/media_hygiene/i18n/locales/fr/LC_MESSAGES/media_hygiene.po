@@ -85,6 +85,24 @@ msgid "%(gain)s freed; with the groups above: %(share)s %% of the space"
 msgstr "%(gain)s libérés ; avec les groupes au-dessus : %(share)s %% de l'espace"
 
 #, python-format
+msgid "%(num)s broken file handled"
+msgid_plural "%(num)s broken files handled"
+msgstr[0] "%(num)s fichier abîmé traité"
+msgstr[1] "%(num)s fichiers abîmés traités"
+
+#, python-format
+msgid "%(num)s burst series"
+msgid_plural "%(num)s burst series"
+msgstr[0] "%(num)s rafale"
+msgstr[1] "%(num)s rafales"
+
+#, python-format
+msgid "%(num)s burst shot set aside"
+msgid_plural "%(num)s burst shots set aside"
+msgstr[0] "%(num)s photo de rafale mise de côté"
+msgstr[1] "%(num)s photos de rafale mises de côté"
+
+#, python-format
 msgid "%(num)s copy"
 msgid_plural "%(num)s copies"
 msgstr[0] "%(num)s copie"
@@ -113,10 +131,28 @@ msgstr[1] ""
 " --path) gardées pour un passage suivant."
 
 #, python-format
+msgid "%(num)s exact copy removed"
+msgid_plural "%(num)s exact copies removed"
+msgstr[0] "%(num)s copie exacte retirée"
+msgstr[1] "%(num)s copies exactes retirées"
+
+#, python-format
 msgid "%(num)s file"
 msgid_plural "%(num)s files"
 msgstr[0] "%(num)s fichier"
 msgstr[1] "%(num)s fichiers"
+
+#, python-format
+msgid "%(num)s group of near duplicates"
+msgid_plural "%(num)s groups of near duplicates"
+msgstr[0] "%(num)s groupe de quasi-doublons"
+msgstr[1] "%(num)s groupes de quasi-doublons"
+
+#, python-brace-format, python-format
+msgid "%(num)s near duplicate moved to the quarantine"
+msgid_plural "%(num)s near duplicates moved to the quarantine"
+msgstr[0] "%(num)s quasi-doublon déplacé en quarantaine"
+msgstr[1] "%(num)s quasi-doublons déplacés en quarantaine"
 
 #, python-format
 msgid "%(num)s shot"
@@ -5459,6 +5495,13 @@ msgstr ""
 "Pas cette personne : marquer ce visage ; le prochain bouton du groupe "
 "l'enregistre"
 
+msgid "Not touched by this clean"
+msgstr "Laissé par ce nettoyage"
+
+#
+msgid "Not touched by this clean (decide later, if you want)"
+msgstr "Laissé par ce nettoyage (à décider plus tard, si vous voulez)"
+
 #, python-brace-format
 msgid "Not {name}"
 msgstr "Pas {name}"
@@ -8271,6 +8314,9 @@ msgstr ""
 "L'audit lit vos dossiers et écrit un rapport ; vos photos ne sont pas "
 "touchées."
 
+msgid "The audit report of these folders shows them: see All reports."
+msgstr "Le rapport d'audit de ces dossiers les montre : voir Tous les rapports."
+
 msgid ""
 "The backup folder, as Windows writes it (\\\\NAS\\backup_photos): a "
 "folder of its own, never a photo folder nor a backup compared."
@@ -9582,6 +9628,13 @@ msgstr ""
 "installé."
 
 msgid ""
+"This clean moved these copies to the quarantine: 'undo' puts them back. "
+"The version kept is shown first."
+msgstr ""
+"Ce nettoyage a déplacé ces copies en quarantaine : 'undo' les remet en "
+"place. La version gardée est montrée en premier."
+
+msgid ""
 "This copy is on the same disk as Docker: it protects from a wrong move, "
 "not from a disk failure; copy it to a USB stick or the NAS too."
 msgstr ""
@@ -9874,6 +9927,10 @@ msgstr "À trier"
 
 msgid "To sort by place and by trip; no position leaves the PC."
 msgstr "Pour trier par lieu et par voyage ; aucune position ne quitte le PC."
+
+#
+msgid "To undo it all:"
+msgstr "Pour tout annuler :"
 
 msgid ""
 "Too many wrong codes: pairing a TV is closed. Stop the slideshow (Ctrl+C "
@@ -10189,6 +10246,10 @@ msgstr ""
 "décrits sur {files}. Les mots trouvés aujourd'hui viennent des dossiers, "
 "des noms, des dates, des lieux et des personnes. 👉 Décrivez les photos : "
 "🤖 mh tags (ou son étape sur la page d'accueil)."
+
+#
+msgid "What this clean did"
+msgstr "Ce que ce nettoyage a fait"
 
 msgid "What was already done is in the journal: 'undo' puts it back."
 msgstr "Ce qui a déjà été fait est dans le journal : 'undo' le remet en place."

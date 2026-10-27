@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from media_hygiene.crosscheck.compare import CrossCheckResult
     from media_hygiene.plan.models import AuditFindings
     from media_hygiene.report.actions import AuditAction
+    from media_hygiene.report.clean_done import CleanAsked, CleanDone
     from media_hygiene.report.similar_views import SimilarSection
     from media_hygiene.report.summary import ReportSummary
 
@@ -28,6 +29,7 @@ class ReportRecord:
     run_id: str | None = None
     crosscheck: CrossCheckResult | None = None
     actions: tuple[AuditAction, ...] = ()  # what the audit lets the user do
+    asked: CleanAsked | None = None  # a clean's options (0309)
 
 
 @dataclass(frozen=True, slots=True)
@@ -141,10 +143,7 @@ class UnreadView:
 
 @dataclass(frozen=True, slots=True)
 class BrokenSection:
-    """Broken files `clean` handles or leaves (protected), and the files unread.
-
-    `unread`: the files that could not be read this time: never broken, read again.
-    """
+    """Broken files `clean` handles or leaves (protected), and those unread now."""
 
     handled: tuple[BrokenView, ...]
     protected: tuple[BrokenView, ...]
@@ -197,3 +196,4 @@ class ReportView:  # pylint: disable=too-many-instance-attributes
     incidents: IncidentsSection
     orphans: OrphansSection = field(default_factory=OrphansSection)
     returned: ReturnedSection = field(default_factory=ReturnedSection)
+    done: CleanDone | None = None  # a clean: what it did, what it left (0309)

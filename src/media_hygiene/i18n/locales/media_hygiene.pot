@@ -54,6 +54,24 @@ msgid "%(gain)s freed; with the groups above: %(share)s %% of the space"
 msgstr ""
 
 #, python-format
+msgid "%(num)s broken file handled"
+msgid_plural "%(num)s broken files handled"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)s burst series"
+msgid_plural "%(num)s burst series"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)s burst shot set aside"
+msgid_plural "%(num)s burst shots set aside"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
 msgid "%(num)s copy"
 msgid_plural "%(num)s copies"
 msgstr[0] ""
@@ -76,8 +94,26 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-format
+msgid "%(num)s exact copy removed"
+msgid_plural "%(num)s exact copies removed"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
 msgid "%(num)s file"
 msgid_plural "%(num)s files"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)s group of near duplicates"
+msgid_plural "%(num)s groups of near duplicates"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)s near duplicate moved to the quarantine"
+msgid_plural "%(num)s near duplicates moved to the quarantine"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -4501,6 +4537,12 @@ msgstr ""
 msgid "Not this person: mark this face; the next button of the group saves it"
 msgstr ""
 
+msgid "Not touched by this clean"
+msgstr ""
+
+msgid "Not touched by this clean (decide later, if you want)"
+msgstr ""
+
 #, python-brace-format
 msgid "Not {name}"
 msgstr ""
@@ -6846,6 +6888,9 @@ msgid ""
 "touched."
 msgstr ""
 
+msgid "The audit report of these folders shows them: see All reports."
+msgstr ""
+
 msgid ""
 "The backup folder, as Windows writes it (\\\\NAS\\backup_photos): a "
 "folder of its own, never a photo folder nor a backup compared."
@@ -7884,6 +7929,11 @@ msgid "This build cannot search by meaning: {module} is not installed."
 msgstr ""
 
 msgid ""
+"This clean moved these copies to the quarantine: 'undo' puts them back. "
+"The version kept is shown first."
+msgstr ""
+
+msgid ""
 "This copy is on the same disk as Docker: it protects from a wrong move, "
 "not from a disk failure; copy it to a USB stick or the NAS too."
 msgstr ""
@@ -8125,6 +8175,9 @@ msgid "To sort"
 msgstr ""
 
 msgid "To sort by place and by trip; no position leaves the PC."
+msgstr ""
+
+msgid "To undo it all:"
 msgstr ""
 
 msgid ""
@@ -8397,6 +8450,9 @@ msgid ""
 "described. The words found today come from folders, names, dates, places "
 "and people. 👉 Describe the photos: 🤖 mh tags (or its step on the home "
 "page)."
+msgstr ""
+
+msgid "What this clean did"
 msgstr ""
 
 msgid "What was already done is in the journal: 'undo' puts it back."

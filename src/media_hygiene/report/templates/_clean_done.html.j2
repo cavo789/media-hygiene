@@ -1,0 +1,24 @@
+{# A clean report's two blocks (0309): what this run did, then what it left for later. #}
+{% set d = report.done %}
+{% if d %}
+<div class="note" id="done">
+  <strong>✅ {{ _("What this clean did") }}</strong>
+  <ul>
+    <li>🧬 {{ ngettext("%(num)s exact copy removed", "%(num)s exact copies removed", d.copies, num=d.copies | number) }} · {{ d.copies_bytes | size }}</li>
+    {% if d.asked.near %}<li>🪞 {{ ngettext("%(num)s near duplicate moved to the quarantine", "%(num)s near duplicates moved to the quarantine", d.near, num=d.near | number) }}</li>{% endif %}
+    {% if d.asked.bursts %}<li>📸 {{ ngettext("%(num)s burst shot set aside", "%(num)s burst shots set aside", d.bursts, num=d.bursts | number) }}</li>{% endif %}
+    {% if d.broken %}<li>💔 {{ ngettext("%(num)s broken file handled", "%(num)s broken files handled", d.broken, num=d.broken | number) }}</li>{% endif %}
+    {% if s.run_id %}<li>↩️ {{ _("To undo it all:") }} <code>mh undo {{ s.run_id }}</code></li>{% endif %}
+  </ul>
+</div>
+{% if d.near_left or d.bursts_left %}
+<div class="note" id="untouched-later">
+  <strong>⏸️ {{ _("Not touched by this clean (decide later, if you want)") }}</strong>
+  <ul>
+    {% if d.near_left %}<li>🪞 {{ ngettext("%(num)s group of near duplicates", "%(num)s groups of near duplicates", d.near_left, num=d.near_left | number) }} → <code>mh review --near</code></li>{% endif %}
+    {% if d.bursts_left %}<li>📸 {{ ngettext("%(num)s burst series", "%(num)s burst series", d.bursts_left, num=d.bursts_left | number) }} → <code>mh review</code></li>{% endif %}
+  </ul>
+  <span class="muted">{{ _("The audit report of these folders shows them: see All reports.") }}</span>
+</div>
+{% endif %}
+{% endif %}

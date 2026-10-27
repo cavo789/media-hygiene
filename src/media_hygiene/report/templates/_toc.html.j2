@@ -1,5 +1,7 @@
 {# The table of contents of report.html and near.html: one entry per section shown. #}
 {% set sections = [
+  ("done", "✅ " ~ _("What this clean did"), report.done),
+  ("untouched-later", "⏸️ " ~ _("Not touched by this clean"), report.done and (report.done.near_left or report.done.bursts_left)),
   ("untouched", "⚠️ " ~ _("Files left untouched"), report.incidents.failed or report.incidents.skipped),
   ("pairs", "📁 " ~ _("Folder pairs"), report.pairs),
   ("backups", "🗄️ " ~ _("Backup folders"), backups),

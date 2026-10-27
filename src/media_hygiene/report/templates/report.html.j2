@@ -40,6 +40,7 @@
   <div class="card"><div class="value">{{ s.broken_files | number }}</div><div class="label">{{ _("broken files") }}</div></div>
 </div>
 {% include "_actions.html.j2" %}
+{% include "_clean_done.html.j2" %}
 
 {% set inv = s.inventory %}
 {% if inv and (inv.images or inv.videos) %}
