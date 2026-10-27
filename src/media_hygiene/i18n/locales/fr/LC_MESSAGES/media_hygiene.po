@@ -6793,6 +6793,13 @@ msgstr ""
 msgid "Read the reports in your browser"
 msgstr "Lire les rapports dans votre navigateur"
 
+msgid ""
+"Read-only: this page only reads the journal and changes nothing. A run is"
+" put back with 'undo', in the terminal."
+msgstr ""
+"Lecture seule : cette page ne fait que lire le journal et ne change rien."
+" Une exécution se remet en place avec « undo », dans le terminal."
+
 msgid "Reading 128 KB of each file already in the cache, once"
 msgstr "Lecture de 128 Ko de chaque fichier déjà en cache, une seule fois"
 
@@ -10372,6 +10379,9 @@ msgstr ""
 "Parcourt tous les dossiers ; photos et vidéos sont reconnues à leur "
 "extension."
 
+msgid "What an album is, and what this page does"
+msgstr "Ce qu'est un album, et ce que fait cette page"
+
 msgid "What do you want to do?"
 msgstr "Que voulez-vous faire ?"
 
@@ -10382,6 +10392,9 @@ msgstr ""
 
 msgid "What do you want to do? duplicates, phone, undo…"
 msgstr "Que voulez-vous faire ? doublons, téléphone, annuler…"
+
+msgid "What each run did"
+msgstr "Ce qu'a fait chaque exécution"
 
 msgid "What is left stays in the quarantine; run 'purge' again later."
 msgstr "Ce qui reste demeure en quarantaine ; relancez 'purge' plus tard."

@@ -1,0 +1,60 @@
+{% extends "page_frame.html.j2" %}
+{# What each run did (0350): the table of `mh history`, shown in the page the home page's
+   *History and undo* space opened. Read-only: it reads /journal each time it is opened and
+   changes nothing; each run's undo is the line to copy. #}
+{% set page_name = _("What each run did") %}
+{% set keys_safe = _("Read-only: this page only reads the journal and changes nothing. A run is put back with 'undo', in the terminal.") %}
+{% block style %}
+  main table { border-collapse: collapse; width: 100%; background: var(--card); }
+  main th, main td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: left; }
+  main td.num, main th.num { text-align: right; }
+  main code { overflow-wrap: anywhere; user-select: all; }
+  main .table-wrap { overflow-x: auto; }
+  main .error { color: var(--bad); font-weight: 600; }
+{% endblock %}
+{% block bar %}
+  <strong>{{ _("Runs (newest first)") }}</strong>
+{% endblock %}
+{% block content %}
+<main>
+{% if error %}
+  <p class="error" role="alert">{{ error }}</p>
+{% if hint %}
+  <p>💡 {{ hint }}</p>
+{% endif %}
+{% elif not table.rows %}
+  <p>{{ _("No run yet.") }}</p>
+{% else %}
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>{{ _("Run") }}</th>
+        <th>{{ _("Command") }}</th>
+{% for figure in table.figures %}
+        <th class="num">{{ figure }}</th>
+{% endfor %}
+        <th>{{ _("Put back") }}</th>
+      </tr>
+    </thead>
+    <tbody>
+{% for row in table.rows %}
+      <tr>
+        <td><code>{{ row.run_id }}</code></td>
+        <td>{{ row.command }}</td>
+{% for cell in row.cells %}
+        <td class="num">{{ cell }}</td>
+{% endfor %}
+        <td>{% if row.undo %}<code>{{ row.undo }}</code>{% else %}—{% endif %}</td>
+      </tr>
+{% endfor %}
+    </tbody>
+  </table>
+  </div>
+{% for note in table.notes %}
+  <p>{{ note }}</p>
+{% endfor %}
+  <p class="muted">💡 {{ _("'media-hygiene undo <run>' restores the files of a run.") }}</p>
+{% endif %}
+</main>
+{% endblock %}

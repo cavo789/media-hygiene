@@ -26,7 +26,7 @@ docker run --rm -it -v "$HOME\media-hygiene\journal:/journal" cavo789/media-hygi
 | Needs | `/journal`, the folder `clean` writes to. |
 | Writes | Nothing. |
 | Undo | Nothing to undo. |
-| With `mh` | `mh history`. |
+| With `mh` | `mh history`; from the home page, *History and undo* › **See what each run did** shows the same table in the page itself (nothing is printed in the terminal), with the `mh undo <run>` line to copy for each run. |
 
 ## Run it
 

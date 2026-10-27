@@ -175,6 +175,7 @@ puis les dossiers dont elle a besoin, ses options, des exemples : [`audit`](http
 [le classeur d'inventaire](https://cavo789.github.io/media-hygiene/fr/reference-inventory/),
 [les tags](https://cavo789.github.io/media-hygiene/fr/reference-tags/),
 [les personnes](https://cavo789.github.io/media-hygiene/fr/reference-people/),
+[les albums](https://cavo789.github.io/media-hygiene/fr/reference-albums/),
 [utilisation avancée](https://cavo789.github.io/media-hygiene/fr/reference-advanced/).
 
 **Pour les développeurs** : [construire l'image, le devcontainer, les versions](https://cavo789.github.io/media-hygiene/fr/development/).

@@ -10,6 +10,8 @@ from __future__ import annotations
 from functools import partial
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.cli.menu_entry import Doc
+from media_hygiene.docs.served import served_url
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.review.local_app import PAGE_PATH
@@ -34,6 +36,9 @@ if TYPE_CHECKING:
 
 _PACKAGE: Final = "media_hygiene.share"
 _TEMPLATE: Final = "album.html.j2"
+ALBUMS_DOC: Final = Doc(
+    "reference-albums/"
+)  # what an album is, what this page does (0349)
 
 
 def album_pages(runtime: Runtime, home: Handling, executor: Executor) -> AlbumPages:
@@ -69,6 +74,7 @@ def album_page() -> bytes:
                 "album": ALBUM_PREFIX,
                 "change": ALBUMS_PATH,
                 "assets": ASSETS_PREFIX,
+                "doc": served_url(ALBUMS_DOC),
             }
         )
         .encode()

@@ -182,7 +182,7 @@ def test_pages_of_mh_alone_in_a_real_browser(
     assert _started(walk["clicks_from"], walk["clicks_until"]) == []
     console = walk["console"]
     assert console["stayed"], console
-    assert "history" in console["said"], console
+    assert "status" in console["said"], console
     assert console["step"]["state"] == "done", console
     assert console["step"]["code"] == 0, console
     rounds = walk["own_server"]

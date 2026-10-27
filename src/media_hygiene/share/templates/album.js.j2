@@ -62,7 +62,7 @@ async function showList() {
   const view = await ask(P.list);
   if (!view) return;
   if (!view.albums.length) {
-    $("main").innerHTML = `<p class="note">${esc(T.none)}</p>`;
+    $("main").innerHTML = `<p class="note">${esc(T.none)} <a href="${esc(P.doc)}" target="_blank" rel="noopener">${esc(T.learn)}</a></p>`;
     return;
   }
   $("main").innerHTML = `<div class="shelf">${view.albums.map((each) => `<a href="#a/${encodeURIComponent(each.name)}">

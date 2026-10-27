@@ -107,7 +107,7 @@ def open_from_home(page: Page, name: str) -> dict[str, Any]:
 
 
 def console_step(page: Page) -> dict[str, Any]:
-    """`history` from the home page: it runs in the window of mh, the page stays.
+    """`status` from the home page: it runs in the window of mh, the page stays.
 
     Args:
         page: The tab, on the home page.
@@ -117,7 +117,7 @@ def console_step(page: Page) -> dict[str, Any]:
     """
     page.evaluate(MARK_JS)
     start = time.monotonic()
-    page.evaluate(RUN_JS, "history")
+    page.evaluate(RUN_JS, "status")
     said = page.locator("#runDlg [role=status]").inner_text(timeout=SHOWN_MS)
     page.wait_for_selector("#runDlg", state="hidden", timeout=STEP_MS)
     took = (time.monotonic() - start) * 1000

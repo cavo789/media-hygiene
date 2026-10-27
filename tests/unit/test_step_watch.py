@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.home_views import HomeState
 
 _JSON: Final = {"host": "127.0.0.1", "content-type": "application/json"}
-_STEPS: Final = {3: "mh history", 4: "mh review", 5: "mh browse"}
+_STEPS: Final = {3: "mh status", 4: "mh review", 5: "mh browse"}
 
 
 class _Menu:
@@ -61,13 +61,13 @@ def _state(tmp_path: Path) -> dict[str, object]:
 def test_a_console_step_is_handed_over_and_the_server_stays(tmp_path: Path) -> None:
     """Its words and id in the file `mh` watches; no end; the page can follow it."""
     door, ending = _door(tmp_path)
-    status, body = _post(door, {"number": 3, "command": "mh history"})
+    status, body = _post(door, {"number": 3, "command": "mh status"})
     assert status == HTTPStatus.OK
     assert body["kept"] is True
-    assert body["command"] == "mh history"
+    assert body["command"] == "mh status"
     assert ending.asked is None
     written = json.loads((tmp_path / WATCH.now).read_text("utf-8"))
-    assert written == {"id": body["id"], "words": ["history"]}
+    assert written == {"id": body["id"], "words": ["status"]}
     assert _state(tmp_path) == {
         "state": StepState.WAITING,
         "id": body["id"],
@@ -78,8 +78,8 @@ def test_a_console_step_is_handed_over_and_the_server_stays(tmp_path: Path) -> N
 def test_a_second_step_waits_for_the_first(tmp_path: Path) -> None:
     """409 while a step waits or runs: one at a time in the window of mh."""
     door, ending = _door(tmp_path)
-    assert _post(door, {"number": 3, "command": "mh history"})[0] == HTTPStatus.OK
-    status, body = _post(door, {"number": 3, "command": "mh history"})
+    assert _post(door, {"number": 3, "command": "mh status"})[0] == HTTPStatus.OK
+    status, body = _post(door, {"number": 3, "command": "mh status"})
     assert status == HTTPStatus.CONFLICT
     assert "running in the window of mh" in str(body["error"])
     (tmp_path / WATCH.now).unlink()

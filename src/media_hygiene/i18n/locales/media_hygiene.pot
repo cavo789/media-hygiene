@@ -5615,6 +5615,11 @@ msgstr ""
 msgid "Read the reports in your browser"
 msgstr ""
 
+msgid ""
+"Read-only: this page only reads the journal and changes nothing. A run is"
+" put back with 'undo', in the terminal."
+msgstr ""
+
 msgid "Reading 128 KB of each file already in the cache, once"
 msgstr ""
 
@@ -8562,6 +8567,9 @@ msgid ""
 "extension."
 msgstr ""
 
+msgid "What an album is, and what this page does"
+msgstr ""
+
 msgid "What do you want to do?"
 msgstr ""
 
@@ -8569,6 +8577,9 @@ msgid "What do you want to do? Every action, by everyday words."
 msgstr ""
 
 msgid "What do you want to do? duplicates, phone, undo…"
+msgstr ""
+
+msgid "What each run did"
 msgstr ""
 
 msgid "What is left stays in the quarantine; run 'purge' again later."
