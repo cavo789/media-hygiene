@@ -1,0 +1,145 @@
+// The naming guided (TODOs 0324, 0325, 0326), included in the script of people.html.j2:
+// the people list (a column on a wide screen, the filter of the top bar with suggestions on
+// a narrow one), the progress line read from the state the server sends, "Next to do" (g),
+// "Only what is left", and who a group nobody is given looks like ("It is Papy", y).
+let chosen = ""; // the person chosen in the list; kept across new states
+let onlyLeft = false; // "Only what is left": the verified sections are hidden
+let onlyPerson = false; // "Show only this person", cleared by Esc
+
+function toDo(item) {
+  return !item.verified && item.faces > 0;
+}
+
+// A section drawn or not: the view switch, and the person chosen when shown alone.
+function visible(item) {
+  if (onlyPerson && chosen && item.name !== chosen) return false;
+  return !(onlyLeft && item.verified && item.name !== chosen);
+}
+
+function decorate(node, item) {
+  node.hidden = !visible(item);
+}
+
+// "It is Papy (0.42)": the same request as typing the name; a second one for siblings.
+function suggestButtons(item, index, bar) {
+  if (item.name || !item.suggest || !item.suggest.length) return;
+  for (const one of item.suggest) {
+    const button = element("button", "suggest", fill(TEXTS.itIs, { name: one.name, score: one.score.toFixed(2) }));
+    button.title = TEXTS.suggestHint;
+    button.disabled = !state.writable;
+    button.addEventListener("click", () => nameGroups(index, one.name));
+    bar.prepend(button);
+  }
+}
+
+function folded(text) {
+  return text.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+}
+
+function drawProgress() {
+  const todo = state.todo || { attributed: 0, people: 0, unnamed: 0, unnamed_faces: 0, ignored: 0 };
+  const parts = [];
+  if (todo.attributed) parts.push(fill(counted(TEXTS.leftAttributed, todo.attributed), { people: counted(TEXTS.persons, todo.people) }));
+  if (todo.unnamed) parts.push(fill(counted(TEXTS.leftUnnamed, todo.unnamed), { faces: counted(TEXTS.faces, todo.unnamed_faces) }));
+  if (todo.ignored) parts.push(counted(TEXTS.ignoredShort, todo.ignored));
+  $("todo").textContent = parts.length ? TEXTS.toDo + " " + parts.join(" · ") : TEXTS.allDone;
+  $("onlyLeft").textContent = onlyLeft ? TEXTS.everything : TEXTS.onlyLeft;
+  $("next").disabled = !state.sections.some(toDo);
+}
+
+function entry(label, count, action, isChosen) {
+  const item = element("li");
+  const button = element("button", isChosen ? "chosen" : "", label);
+  if (count) button.append(" ", element("small", "", count));
+  button.addEventListener("click", action);
+  item.append(button);
+  return item;
+}
+
+// The people list, filtered by what is typed (folded, a part of the name).
+function drawPeople() {
+  const typed = folded($("who").value);
+  const roster = state.roster || [];
+  const shown = roster.filter((person) => folded(person.name).includes(typed));
+  const items = shown.map((person) => {
+    const count = "✓ " + person.verified + (person.attributed ? " · " + fill(TEXTS.toConfirm, { n: person.attributed }) : "");
+    const node = entry(person.name, count, () => choose(person.name), person.name === chosen);
+    if (person.attributed) node.classList.add("work");
+    return node;
+  });
+  const unnamed = state.sections.filter((item) => !item.name && item.faces > 0).length;
+  if (unnamed && !typed) items.push(entry(fill(TEXTS.unnamedEntry, { n: unnamed }), "", () => choose(""), false));
+  $("peopleList").replaceChildren(...items);
+  $("whoList").replaceChildren(...roster.map((person) => { const option = element("option"); option.value = person.name; return option; }));
+  $("onlyPerson").checked = onlyPerson;
+  $("onlyPerson").disabled = !chosen;
+}
+
+function drawGuide() {
+  if (chosen && !(state.roster || []).some((person) => person.name === chosen)) { chosen = ""; onlyPerson = false; }
+  drawProgress();
+  drawPeople();
+}
+
+function goTo(index) {
+  current = index;
+  mark();
+  const node = $("groups").children[index];
+  if (node) node.scrollIntoView({ block: "start" });
+}
+
+// A person: their first section, opened, and their attributed one too; "" the first group
+// nobody is given.
+async function choose(name) {
+  chosen = name;
+  if (!name) onlyPerson = false;
+  render(true);
+  drawPeople();
+  const indexes = state.sections.map((item, index) => index).filter((index) => state.sections[index].name === name && (name || state.sections[index].faces));
+  if (!indexes.length) return;
+  for (const index of indexes) if (name && isFolded(state.sections[index])) await fold(index);
+  goTo(indexes[0]);
+}
+
+// The next attributed section, else the next group nobody is given, from `start` on;
+// opened, the right action focused (Confirm, or the name field).
+async function nextToDo(start) {
+  const order = [...state.sections.keys()];
+  const from = start === undefined ? current + 1 : start;
+  const after = [...order.slice(from), ...order.slice(0, from)];
+  const wanted = (kind) => after.find((index) => toDo(state.sections[index]) && Boolean(state.sections[index].name) === kind && visible(state.sections[index]));
+  const index = [wanted(true), wanted(false)].find((one) => one !== undefined);
+  if (index === undefined) return;
+  if (isFolded(state.sections[index])) await fold(index);
+  goTo(index);
+  const node = $("groups").children[index];
+  const target = state.sections[index].name ? node.querySelector("button.main") : node.querySelector("button.suggest") || node.querySelector("input");
+  if (target && !target.disabled) target.focus();
+}
+
+// Confirmed or named: on to the next section to do, unless the user moved meanwhile.
+async function nameThenNext(index, name) {
+  const result = await nameGroups(index, name);
+  if (result && current === index) nextToDo(Math.min(index, state.sections.length - 1));
+}
+
+function clearPerson() {
+  if (!onlyPerson) return false;
+  onlyPerson = false;
+  render(true);
+  drawPeople();
+  return true;
+}
+
+$("who").addEventListener("input", drawPeople);
+$("who").addEventListener("keydown", (event) => {
+  event.stopPropagation();
+  if (event.key === "Escape") { $("who").value = ""; drawPeople(); $("who").blur(); return; }
+  if (event.key !== "Enter") return;
+  const typed = folded($("who").value);
+  const found = (state.roster || []).find((person) => folded(person.name) === typed) || (state.roster || []).find((person) => folded(person.name).includes(typed));
+  if (found) { choose(found.name); $("who").blur(); }
+});
+$("onlyPerson").addEventListener("change", () => { onlyPerson = $("onlyPerson").checked && Boolean(chosen); render(true); drawPeople(); });
+$("next").addEventListener("click", () => nextToDo());
+$("onlyLeft").addEventListener("click", () => { onlyLeft = !onlyLeft; render(true); drawProgress(); });

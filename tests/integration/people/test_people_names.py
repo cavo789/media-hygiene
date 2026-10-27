@@ -207,3 +207,29 @@ def test_a_verified_section_comes_folded_as_a_strip_its_sample_on_opening(
     assert len(sample) == 4
     unknown = Request("GET", "/api/sample/x", JSON)
     assert json.loads(asyncio.run(app.handle(unknown)).body) == {"shown": []}
+
+
+def test_the_people_list_and_what_is_left_follow_each_naming(
+    cli: CliRunner, apps: list[object]
+) -> None:
+    """The list and the progress line come from the state read back (0324, 0325)."""
+    assert run(cli, "people").exit_code == 0
+    before = state(apps[-1])
+    assert before["roster"] == []
+    todo = before["todo"]
+    assert isinstance(todo, dict)
+    assert todo["unnamed"] == len(before["sections"])  # type: ignore[arg-type]
+    named = name_largest_again(apps[-1], before)
+    assert named["roster"][0]["name"] == "Chloé"  # type: ignore[index]
+    assert named["todo"]["unnamed"] == todo["unnamed"] - 1  # type: ignore[index]
+    sections = named["sections"]
+    assert isinstance(sections, list)
+    unnamed = [s for s in sections if not s["name"]]
+    assert all("suggest" in s for s in unnamed)
+
+
+def name_largest_again(app: object, before: dict[str, object]) -> dict[str, object]:
+    """Name the first section of a state Chloé."""
+    sections = before["sections"]
+    assert isinstance(sections, list)
+    return post(app, {"action": "name", "name": "Chloé", "faces": keys(sections[0])})

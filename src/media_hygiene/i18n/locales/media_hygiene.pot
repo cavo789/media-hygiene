@@ -2449,6 +2449,9 @@ msgid ""
 "not a sentence."
 msgstr ""
 
+msgid "Everything"
+msgstr ""
+
 msgid ""
 "Everything 'clean --tier near-all' moves to the quarantine, group by "
 "group: the groups to check first, then, folded, the sure groups that "
@@ -3011,6 +3014,9 @@ msgstr ""
 msgid "Go to Share"
 msgstr ""
 
+msgid "Go to a person (/)"
+msgstr ""
+
 #, python-brace-format
 msgid "Go to stage {stage} of the cycle"
 msgstr ""
@@ -3298,6 +3304,10 @@ msgid ""
 msgstr ""
 
 msgid "It changes nothing in your photos"
+msgstr ""
+
+#, python-brace-format
+msgid "It is {name}? ({score})"
 msgstr ""
 
 #, python-brace-format
@@ -4070,6 +4080,9 @@ msgstr ""
 msgid "Next time, type it directly: {command}"
 msgstr ""
 
+msgid "Next to do (g)"
+msgstr ""
+
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
 msgstr ""
 
@@ -4660,6 +4673,9 @@ msgstr ""
 msgid "Nothing left to check nor to sort."
 msgstr ""
 
+msgid "Nothing left to do: every face shown is verified or ignored."
+msgstr ""
+
 msgid "Nothing left to do: everything is applied."
 msgstr ""
 
@@ -5013,6 +5029,9 @@ msgid ""
 "the PC: {command}"
 msgstr ""
 
+msgid "Only what is left"
+msgstr ""
+
 msgid ""
 "Only what is new; a photo moved by sort is renamed on the NAS, not sent "
 "again."
@@ -5207,6 +5226,12 @@ msgid "Path contains"
 msgstr ""
 
 msgid "People"
+msgstr ""
+
+msgid ""
+"People come in alphabetical order, then the unnamed groups, largest "
+"first: each name given there names the most faces. g goes to the next "
+"section to do, / to the people list."
 msgstr ""
 
 msgid ""
@@ -6445,6 +6470,9 @@ msgid "Show its photos"
 msgstr ""
 
 msgid "Show more"
+msgstr ""
+
+msgid "Show only this person (Esc)"
 msgstr ""
 
 msgid ""
@@ -8025,6 +8053,11 @@ msgid ""
 "hygiene undo' removes it; deleting it by hand is safe too."
 msgstr ""
 
+msgid ""
+"This group looks like the faces you confirmed as this person's: a click "
+"names it so (y)."
+msgstr ""
+
 msgid "This help."
 msgstr ""
 
@@ -8209,6 +8242,9 @@ msgid "To copy, in all: {size}"
 msgstr ""
 
 msgid "To do"
+msgstr ""
+
+msgid "To do:"
 msgstr ""
 
 msgid "To fill in"
@@ -8417,6 +8453,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "Unknown run {run_id}."
+msgstr ""
+
+#, python-brace-format
+msgid "Unnamed groups ({n})"
 msgstr ""
 
 msgid "Untick: stays on the phone"
@@ -12582,6 +12622,12 @@ msgid "{n} already there"
 msgstr ""
 
 #, python-brace-format
+msgid "{n} attributed face ({people})"
+msgid_plural "{n} attributed faces ({people})"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} choice of the batch taken back"
 msgid_plural "{n} choices of the batch taken back"
 msgstr[0] ""
@@ -12714,6 +12760,12 @@ msgid "{n} files were sorted already by an earlier run: left where they are."
 msgstr ""
 
 #, python-brace-format
+msgid "{n} group ignored"
+msgid_plural "{n} groups ignored"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} group picked: the next name goes to it."
 msgid_plural "{n} groups picked: the next name goes to all of them."
 msgstr[0] ""
@@ -12756,6 +12808,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} other photo looks like the person you set aside on {date}"
 msgid_plural "{n} other photos look like the person you set aside on {date}"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} person"
+msgid_plural "{n} people"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -12852,6 +12910,16 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} sure proposal accepted"
 msgid_plural "{n} sure proposals accepted"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} to confirm"
+msgstr ""
+
+#, python-brace-format
+msgid "{n} unnamed group ({faces})"
+msgid_plural "{n} unnamed groups ({faces})"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -13283,8 +13351,9 @@ msgstr ""
 
 msgid ""
 "↑ ↓ move, o folds or opens, Enter names, y confirms the attributed faces "
-"shown, x names several groups at once, i ignores a group; × marks a face "
-"that is someone else's, the next button saves it."
+"shown (or names a group as the person it looks like), x names several "
+"groups at once, i ignores a group; × marks a face that is someone else's,"
+" the next button saves it."
 msgstr ""
 
 #, python-brace-format

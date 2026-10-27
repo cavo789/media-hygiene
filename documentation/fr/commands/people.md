@@ -96,6 +96,25 @@ visages, pour que le travail restant vienne en premier ; leurs visages ne sont c
 vous les ouvrez. La page retient dans ce navigateur ce que vous avez replié, personne par
 personne ; Entrée sur une section repliée l'ouvre, puis va à son champ de nom.
 
+Les personnes viennent par ordre alphabétique (`Chloé` avec `chloe`), chacune vérifiée puis
+attribuée, puis les groupes sans nom, les plus grands d'abord : chaque nom donné là nomme le plus
+de visages. Sur un grand écran, une colonne liste les personnes avec leurs nombres (✓ vérifiés,
+attribués encore à confirmer, en gras tant qu'il en reste), et en dernier **Groupes sans nom
+(n)** ; sur un téléphone, le champ **Aller à une personne** de la barre du haut tient la même
+liste. Tapez quelques lettres (`/` atteint le champ), choisissez un nom : la page va à ses
+sections et les ouvre ; **Montrer seulement cette personne** cache les autres jusqu'à Échap.
+
+La barre du haut dit ce qui reste, relu du serveur après chaque changement : *À faire : 312
+visages attribués (7 personnes) · 41 groupes sans nom (980 visages)*. **Prochain à faire** (`g`)
+va à la prochaine section attribuée, puis au prochain groupe sans nom, et y place le focus ;
+après `y`, la page avance d'elle-même : `y`, `y`, `y` parcourt le travail. **Seulement ce qui
+reste** cache les sections vérifiées (la liste des personnes les atteint toujours).
+
+Un groupe sans nom qui ressemble aux visages confirmés de quelqu'un le dit : **C'est Papy ?
+(0.42)**, deux noms pour des frères et sœurs. Un clic (ou `y`) nomme le groupe ainsi, comme taper
+le nom ; un visage retiré de quelqu'un ne compte jamais pour lui. Le nombre est la ressemblance,
+de 0 à 1 : un indice montré dès 0,30, sous le `[people] similarity` qui attribue les visages.
+
 ## Retirer toutes les photos de quelqu'un
 
 Pour oublier quelqu'un (un ex, par exemple), retirez les photos où il apparaît depuis le groupe

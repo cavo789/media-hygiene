@@ -34,3 +34,15 @@ say which one the group comes closest to.
 ## Setting?
 
 The suggestion floor could become `[people] suggest_similarity`; propose in the report.
+
+## Status — PARTIAL (2026-10-27)
+
+- **Done:** `people/suggest.py` (median of each face's best match against up to 200 verified
+  faces per person, 12 faces per group; rejected faces left out; a second name within 0.05),
+  "It is Papy? (0.42)" button and `y` on an unnamed group, docs en + fr, unit + integration tests.
+- **Not done:** the floor `SUGGEST = 0.30` is **estimated** (below SFace's documented 0.363),
+  not measured on real faces; the cost is estimated (about 6 GFLOP for 1,000 groups × 20
+  people), not measured on the maintainer's index.
+  **Reason:** needs the maintainer's face index: measure the score of right and wrong
+  suggestions (and the time of `state()`) with a step of `tests/measure/mh-measure.ps1`, then
+  set the floor (or a `[people] suggest_similarity` setting if it must differ per collection).

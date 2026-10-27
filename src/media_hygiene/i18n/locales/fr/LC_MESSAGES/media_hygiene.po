@@ -3021,6 +3021,10 @@ msgstr ""
 "Chaque mot doit être trouvé : tapez un à trois mots (plage, gâteau "
 "bougie), pas une phrase."
 
+#
+msgid "Everything"
+msgstr "Tout"
+
 msgid ""
 "Everything 'clean --tier near-all' moves to the quarantine, group by "
 "group: the groups to check first, then, folded, the sure groups that "
@@ -3704,6 +3708,10 @@ msgstr "Aller à"
 msgid "Go to Share"
 msgstr "Aller à Partager"
 
+#
+msgid "Go to a person (/)"
+msgstr "Aller à une personne (/)"
+
 #, python-brace-format
 msgid "Go to stage {stage} of the cycle"
 msgstr "Aller à l'étape {stage} du cycle"
@@ -4038,6 +4046,10 @@ msgstr ""
 
 msgid "It changes nothing in your photos"
 msgstr "Il ne change rien à vos photos"
+
+#, python-brace-format
+msgid "It is {name}? ({score})"
+msgstr "C'est {name} ? ({score})"
 
 #, python-brace-format
 msgid ""
@@ -4946,6 +4958,10 @@ msgstr "Étape suivante"
 msgid "Next time, type it directly: {command}"
 msgstr "La prochaine fois, tapez-la directement : {command}"
 
+#
+msgid "Next to do (g)"
+msgstr "Prochain à faire (g)"
+
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
 msgstr "Pas encore de résultats Czkawka : lancez d'abord Czkawka (PowerShell) :"
 
@@ -5646,6 +5662,10 @@ msgstr ""
 msgid "Nothing left to check nor to sort."
 msgstr "Plus rien à vérifier ni à trier."
 
+#
+msgid "Nothing left to do: every face shown is verified or ignored."
+msgstr "Plus rien à faire : chaque visage montré est vérifié ou ignoré."
+
 msgid "Nothing left to do: everything is applied."
 msgstr "Plus rien à faire : tout est appliqué."
 
@@ -6097,6 +6117,9 @@ msgstr ""
 "Seul ce PC peut ouvrir le diaporama. Pour la télé et votre téléphone, "
 "tapez sur le PC : {command}"
 
+msgid "Only what is left"
+msgstr "Seulement ce qui reste"
+
 msgid ""
 "Only what is new; a photo moved by sort is renamed on the NAS, not sent "
 "again."
@@ -6310,6 +6333,12 @@ msgstr "Le chemin contient"
 
 msgid "People"
 msgstr "Personnes"
+
+msgid ""
+"People come in alphabetical order, then the unnamed groups, largest "
+"first: each name given there names the most faces. g goes to the next "
+"section to do, / to the people list."
+msgstr "Les personnes viennent par ordre alphabétique, puis les groupes sans nom, les plus grands d'abord : chaque nom donné là nomme le plus de visages. g va à la prochaine section à faire, / à la liste des personnes."
 
 msgid ""
 "People whose folders hold their photos (\"Photos Chloé\", \"iPhone "
@@ -7517,7 +7546,9 @@ msgid "Search your photos"
 msgstr "Chercher dans vos photos"
 
 msgid "Search, browse and the albums of this home: nothing here changes a photo."
-msgstr "Chercher, parcourir et les albums de la maison : rien ici ne change une photo."
+msgstr ""
+"Chercher, parcourir et les albums de la maison : rien ici ne change une "
+"photo."
 
 msgid "Searching OpenStreetMap…"
 msgstr "Recherche sur OpenStreetMap…"
@@ -7791,6 +7822,10 @@ msgstr "Voir ses photos"
 
 msgid "Show more"
 msgstr "En montrer plus"
+
+#, python-brace-format
+msgid "Show only this person (Esc)"
+msgstr "Montrer seulement cette personne (Échap)"
 
 msgid ""
 "Show photos on the TV, the phone choosing the next one: a folder, a "
@@ -9743,6 +9778,12 @@ msgstr ""
 "Les audits l'ignorent. 'media-hygiene undo' le supprime ; le supprimer à "
 "la main est sans danger aussi."
 
+#
+msgid ""
+"This group looks like the faces you confirmed as this person's: a click "
+"names it so (y)."
+msgstr "Ce groupe ressemble aux visages que vous avez confirmés pour cette personne : un clic le nomme ainsi (y)."
+
 msgid "This help."
 msgstr "Cette aide."
 
@@ -9958,6 +9999,10 @@ msgstr "À copier, en tout : {size}"
 
 msgid "To do"
 msgstr "À faire"
+
+#
+msgid "To do:"
+msgstr "À faire :"
 
 msgid "To fill in"
 msgstr "À compléter"
@@ -10208,6 +10253,10 @@ msgstr "Lieu ou groupe inconnu : rechargez la page."
 #, python-brace-format
 msgid "Unknown run {run_id}."
 msgstr "Exécution inconnue : {run_id}."
+
+#, python-brace-format
+msgid "Unnamed groups ({n})"
+msgstr "Groupes sans nom ({n})"
 
 msgid "Untick: stays on the phone"
 msgstr "Décocher : reste sur le téléphone"
@@ -15072,6 +15121,12 @@ msgid "{n} already there"
 msgstr "{n} déjà en place"
 
 #, python-brace-format
+msgid "{n} attributed face ({people})"
+msgid_plural "{n} attributed faces ({people})"
+msgstr[0] "{n} visage attribué ({people})"
+msgstr[1] "{n} visages attribués ({people})"
+
+#, python-brace-format
 msgid "{n} choice of the batch taken back"
 msgid_plural "{n} choices of the batch taken back"
 msgstr[0] "{n} choix du lot repris"
@@ -15225,6 +15280,12 @@ msgstr ""
 " ils sont."
 
 #, python-brace-format
+msgid "{n} group ignored"
+msgid_plural "{n} groups ignored"
+msgstr[0] "{n} groupe ignoré"
+msgstr[1] "{n} groupes ignorés"
+
+#, python-brace-format
 msgid "{n} group picked: the next name goes to it."
 msgid_plural "{n} groups picked: the next name goes to all of them."
 msgstr[0] "{n} groupe choisi : le prochain nom lui est donné."
@@ -15269,6 +15330,12 @@ msgid "{n} other photo looks like the person you set aside on {date}"
 msgid_plural "{n} other photos look like the person you set aside on {date}"
 msgstr[0] "{n} autre photo ressemble à la personne mise de côté le {date}"
 msgstr[1] "{n} autres photos ressemblent à la personne mise de côté le {date}"
+
+#, python-brace-format
+msgid "{n} person"
+msgid_plural "{n} people"
+msgstr[0] "{n} personne"
+msgstr[1] "{n} personnes"
 
 #, python-brace-format
 msgid "{n} photo"
@@ -15365,6 +15432,16 @@ msgid "{n} sure proposal accepted"
 msgid_plural "{n} sure proposals accepted"
 msgstr[0] "{n} proposition sûre acceptée"
 msgstr[1] "{n} propositions sûres acceptées"
+
+#, python-brace-format
+msgid "{n} to confirm"
+msgstr "{n} à confirmer"
+
+#, python-brace-format
+msgid "{n} unnamed group ({faces})"
+msgid_plural "{n} unnamed groups ({faces})"
+msgstr[0] "{n} groupe sans nom ({faces})"
+msgstr[1] "{n} groupes sans nom ({faces})"
 
 #, python-brace-format
 msgid "{n} video"
@@ -15854,15 +15931,13 @@ msgstr "… et %(count)s de plus."
 msgid "… and {count} more."
 msgstr "… et {count} de plus."
 
+#
 msgid ""
 "↑ ↓ move, o folds or opens, Enter names, y confirms the attributed faces "
-"shown, x names several groups at once, i ignores a group; × marks a face "
-"that is someone else's, the next button saves it."
-msgstr ""
-"↑ ↓ se déplacer, o replie ou ouvre, Entrée nomme, y confirme les visages "
-"attribués affichés, x nomme plusieurs groupes à la fois, i ignore un "
-"groupe ; × marque un visage qui est celui de quelqu'un d'autre, le "
-"prochain bouton l'enregistre."
+"shown (or names a group as the person it looks like), x names several "
+"groups at once, i ignores a group; × marks a face that is someone else's,"
+" the next button saves it."
+msgstr "↑ ↓ se déplacent, o replie ou ouvre, Entrée nomme, y confirme les visages attribués montrés (ou nomme un groupe comme la personne à qui il ressemble), x nomme plusieurs groupes à la fois, i ignore un groupe ; × marque un visage qui est celui de quelqu'un d'autre, le bouton suivant l'enregistre."
 
 #, python-brace-format
 msgid ""

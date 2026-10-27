@@ -9,9 +9,12 @@ import numpy as np
 from media_hygiene.config.people_settings import PeopleSettings, Person
 from media_hygiene.faces.models import EMBEDDING_SIZE, FaceBox, embedding_bytes
 from media_hygiene.index.face_rows import StoredFace
+from media_hygiene.people.board import PeopleBoard
+from media_hygiene.people.guide import left_to_do, people_list
 from media_hygiene.people.known import Known
 from media_hygiene.people.naming import NOBODY, FaceName, How, face_id, name_all
 from media_hygiene.people.sections import sections_of
+from media_hygiene.people.suggest import suggestions
 from media_hygiene.people.why import CLOSE, why_named
 from media_hygiene.services.people_names import named_photos
 
@@ -181,3 +184,48 @@ def test_why_names_the_reference_the_score_and_a_close_runner() -> None:
     alone = why_named(STRANGER, known)
     assert alone.how is None
     assert alone.runner is None
+
+
+def test_people_come_in_alphabetical_order_folded() -> None:
+    """Zoé after Émile and chloe, whatever their faces (0324)."""
+    zoe = FaceName("Zoé", How.CONFIRMED)
+    emile = FaceName("Émile", How.CONFIRMED)
+    chloe = FaceName("chloe", How.ASSIGNED)
+    names = (zoe, zoe, zoe, emile, chloe, chloe, NOBODY, NOBODY)
+    groups = ((0, 1, 2), (3,), (4, 5), (6, 7))
+    shown = sections_of(groups, names).shown
+    assert [s.name for s in shown] == ["chloe", "Émile", "Zoé", ""]
+
+
+def test_the_people_list_and_what_is_left() -> None:
+    """Counts per person; attributed faces, their people, unnamed groups (0325)."""
+    chloe = FaceName("Chloé", How.CONFIRMED)
+    near = FaceName("Chloé", How.ASSIGNED)
+    ana = FaceName("Ana", How.CONFIRMED)
+    gone = FaceName("", How.IGNORED)
+    names = (chloe, near, near, ana, NOBODY, NOBODY, NOBODY, gone, gone)
+    groups = ((0, 1, 2), (3,), (4, 5), (6,), (7, 8))
+    sections = sections_of(groups, names)
+    assert people_list(sections) == [
+        {"name": "Ana", "verified": 1, "attributed": 0},
+        {"name": "Chloé", "verified": 1, "attributed": 2},
+    ]
+    assert left_to_do(sections) == {
+        "attributed": 2,
+        "people": 1,
+        "unnamed": 2,
+        "unnamed_faces": 3,
+        "ignored": 1,
+    }
+
+
+def test_an_unnamed_group_says_who_it_looks_like() -> None:
+    """Close to Chloé's verified faces: suggested; far: nobody; rejected: not used."""
+    every = (CHLOE, CHLOE_OLDER, CHLOE_OLDER, STRANGER, STRANGER)
+    board = PeopleBoard(every, ((0,), (1, 2), (3, 4)), 0)
+    chloe = FaceName("Chloé", How.CONFIRMED)
+    sections = sections_of(board.groups, (chloe, NOBODY, NOBODY, NOBODY, NOBODY))
+    found = suggestions(board, sections, {})
+    assert found == {1: [{"name": "Chloé", "score": 0.95}]}
+    out = frozenset({"Chloé"})
+    assert not suggestions(board, sections, {1: out, 2: out})
