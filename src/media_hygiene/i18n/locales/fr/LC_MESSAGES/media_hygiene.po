@@ -8497,6 +8497,9 @@ msgstr ""
 "L'audit lit vos dossiers et écrit un rapport ; vos photos ne sont pas "
 "touchées."
 
+msgid "The audit report of these folders shows them:"
+msgstr "Le rapport d'audit de ces dossiers les montre :"
+
 msgid "The audit report of these folders shows them: see All reports."
 msgstr "Le rapport d'audit de ces dossiers les montre : voir Tous les rapports."
 
@@ -12463,6 +12466,9 @@ msgstr "seulement la plus nette"
 
 msgid "only the sharpest, then next"
 msgstr "seulement la plus nette, puis suivante"
+
+msgid "open it"
+msgstr "l'ouvrir"
 
 msgid "open it large (a double click too)"
 msgstr "l'ouvrir en grand (un double clic aussi)"

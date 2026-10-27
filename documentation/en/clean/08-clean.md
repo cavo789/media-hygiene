@@ -186,8 +186,8 @@ done, in two blocks:
   and the `mh undo` line that puts it all back. The near duplicates shown below it are the ones
   this clean moved, nothing else.
 - **⏸️ Not touched by this clean**: one line per kind left for later (near duplicates, burst
-  series) with the command that decides them (`mh review --near`, `mh review`); the audit report
-  shows them.
+  series) with the command that decides them (`mh review --near`, `mh review`); a link opens
+  the latest audit report of the same folders, which shows them (none: see *All reports*).
 
 ![The top of a clean report: 85 media files scanned, 32 duplicate copies in 20 groups, 16.4 MB removed from your folders, 3 broken files, then the folder pairs that were cleaned](../images/clean-report.webp)
 

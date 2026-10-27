@@ -192,8 +192,8 @@ intacts, s'il y en a. Il dit ce qui a été fait, en deux blocs :
   `--decisions`), les fichiers abîmés traités, et la ligne `mh undo` qui remet tout en place. Les
   quasi-doublons montrés plus bas sont ceux que ce nettoyage a déplacés, rien d'autre.
 - **⏸️ Laissé par ce nettoyage** : une ligne par type laissé pour plus tard (quasi-doublons,
-  rafales) avec la commande qui les décide (`mh review --near`, `mh review`) ; le rapport d'audit
-  les montre.
+  rafales) avec la commande qui les décide (`mh review --near`, `mh review`) ; un lien ouvre
+  le dernier rapport d'audit des mêmes dossiers, qui les montre (aucun : voir *Tous les rapports*).
 
 ![Le haut d'un rapport de nettoyage : 85 fichiers média analysés, 32 copies en double dans 20 groupes, 16,4 Mo retirés de vos dossiers, 3 fichiers cassés, puis les paires de dossiers nettoyées](../images/clean-report.webp)
 

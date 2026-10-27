@@ -7043,6 +7043,9 @@ msgid ""
 "touched."
 msgstr ""
 
+msgid "The audit report of these folders shows them:"
+msgstr ""
+
 msgid "The audit report of these folders shows them: see All reports."
 msgstr ""
 
@@ -10401,6 +10404,9 @@ msgid "only the sharpest"
 msgstr ""
 
 msgid "only the sharpest, then next"
+msgstr ""
+
+msgid "open it"
 msgstr ""
 
 msgid "open it large (a double click too)"

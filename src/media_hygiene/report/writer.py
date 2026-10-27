@@ -19,7 +19,7 @@ from media_hygiene.report.backup_views import (
     write_backup_csvs,
 )
 from media_hygiene.report.builder import ReportBuilder
-from media_hygiene.report.clean_done import asked_flags
+from media_hygiene.report.clean_done import asked_flags, latest_audit_link
 from media_hygiene.report.csv_export import write_plan_csv
 from media_hygiene.report.environment import make_environment
 from media_hygiene.report.index_page import write_index
@@ -72,6 +72,7 @@ class ReportWriter:
         target.write_text(
             page.render(
                 report=view,
+                audit_link=latest_audit_link(self.reports_dir, record),  # 0412
                 backups=backups,
                 intruders=intruder_section(record.findings.intruders, self.mapper),
             ),
@@ -95,6 +96,7 @@ class ReportWriter:
         summary = view.header.summary.model_copy(
             update={
                 "backup_only": backup_only(record.findings.backups),
+                "roots": tuple(str(root) for root in record.findings.roots),
                 **asked_flags(record.asked),  # 0309
             }
         )

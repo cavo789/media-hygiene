@@ -18,7 +18,11 @@
     {% if d.near_left %}<li>🪞 {{ ngettext("%(num)s group of near duplicates", "%(num)s groups of near duplicates", d.near_left, num=d.near_left | number) }} → <code>mh review --near</code></li>{% endif %}
     {% if d.bursts_left %}<li>📸 {{ ngettext("%(num)s burst series", "%(num)s burst series", d.bursts_left, num=d.bursts_left | number) }} → <code>mh review</code></li>{% endif %}
   </ul>
+  {% if audit_link %}
+  <span class="muted">{{ _("The audit report of these folders shows them:") }} <a href="{{ audit_link }}">{{ _("open it") }}</a></span>
+  {% else %}
   <span class="muted">{{ _("The audit report of these folders shows them: see All reports.") }}</span>
+  {% endif %}
 </div>
 {% endif %}
 {% endif %}
