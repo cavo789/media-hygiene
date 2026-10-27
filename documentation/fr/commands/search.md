@@ -85,7 +85,7 @@ régulière invalide est signalée sous le champ.
   que la recherche trouve, pas seulement les 240 affichés ; **Inverser la sélection** (ou I) choisit
   les autres.
 - **Regarder** : Entrée ou un double clic montre la photo en grand (avec un lien vers
-  l'original) ; ← → la précédente ou la suivante, Suppr la met de côté puis montre la suivante, F
+  l'original) ; ← → (sur un téléphone, un glissement) la précédente ou la suivante, Suppr la met de côté puis montre la suivante, F
   plein écran, ? toutes les touches, Échap la ferme. **👤 Mettre une personne de côté** trouve
   toutes les photos de quelqu'un depuis celle qui est montrée
   ([`people`](people.md#depuis-nimporte-quelle-page--mettre-une-personne-de-côté)).

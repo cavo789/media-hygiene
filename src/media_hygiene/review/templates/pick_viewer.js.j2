@@ -3,6 +3,9 @@
    set aside, take back, add to the album, go full screen. Shares the state of
    `pick_grid.js.j2`, included just before. #}
 let saving = false;    // Delete in the viewer: one save at a time (a key held repeats)
+const SWIPE_PX = 50;   // a touch moved less than this is a tap (as the albums' page)
+let pointer = null;    // where a touch began on the large view
+let swiped = false;    // the click that ends a swipe does not close the view
 
 // Opened large: the file shown alone is set aside (Delete) or taken back (Backspace), the
 // save read back from the server (its label too). One save at a time: a key held repeats.
@@ -109,5 +112,17 @@ const VIEWER_KEYS = {
 };
 
 $("viewer").addEventListener("click", (event) => {
+  if (swiped) { swiped = false; return; }
   if (!event.target.closest("a, video, .stay")) close(); // the lists under it stay open
+});
+// A phone: a swipe to the left shows the next file, to the right the previous one.
+$("viewer").addEventListener("pointerdown", (event) => { pointer = { x: event.clientX, y: event.clientY }; });
+$("viewer").addEventListener("pointerup", (event) => {
+  if (!pointer) return;
+  const dx = event.clientX - pointer.x;
+  const dy = event.clientY - pointer.y;
+  pointer = null;
+  if (Math.abs(dx) <= SWIPE_PX || Math.abs(dx) <= Math.abs(dy)) return;
+  swiped = true;
+  (dx < 0 ? VIEWER_KEYS.ArrowRight : VIEWER_KEYS.ArrowLeft)();
 });

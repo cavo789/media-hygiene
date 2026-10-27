@@ -78,8 +78,8 @@ no escaping. A regular expression that does not compile is told under the field.
   what it touches (with Ctrl, it adds); Ctrl+A every file shown, then **Pick all N files found**
   in the bar takes every file the search finds, not only the 240 shown; **Invert the picking**
   (or I) picks the others.
-- **Look**: Enter or a double click shows the photo large (with a link to the original); ← → the
-  previous or next one, Delete sets it aside then shows the next one, F full screen, ? every key,
+- **Look**: Enter or a double click shows the photo large (with a link to the original); ← → (on a
+  phone, a swipe) the previous or next one, Delete sets it aside then shows the next one, F full screen, ? every key,
   Escape closes it. **👤 Set a person aside** finds every photo of someone on the one shown
   ([`people`](people.md#from-any-page-set-a-person-aside)).
 
