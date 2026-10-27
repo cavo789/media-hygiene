@@ -33,3 +33,17 @@ check, `review/http.py` `is_local`).
 ## Gain
 
 Search and browse from the sofa, safely.
+
+## Done (2026-10-27)
+
+- `review/lan_paths.py`: the one explicit list of what a paired phone may ask (`phone_may`);
+  `lan_app` refuses everything else (*Open this page or run this step on the PC*). Added:
+  `/search`, `/browse`, `/api/folders`, `/api/chosen` (read), `/thumb/`, `/preview/`, `/video/`;
+  `POST /api/search`, `/api/folder`, `/api/heaviest` (reads). Refused: `/original/` (a photo
+  opens at its preview size), *set aside*, *Apply now*, a move, a rule, a name refused.
+- The phone's home page opens `mh search` / `mh browse` as pages (`PHONE_PAGES`) instead of
+  the toast *Run this step on the PC*.
+- The unpaired walk (0384's test) now covers 30 routes × GET/POST × 4 hosts → 401/403.
+- Docs en + fr (`commands/home.md`): what a paired phone opens.
+- Not done: reviews, people, places and the slideshow served by the home server (0417);
+  pages that write from the phone (0361).

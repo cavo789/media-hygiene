@@ -29,6 +29,7 @@ from media_hygiene.review.home_tags_api import TAGS_PATH
 from media_hygiene.review.home_texts import home_texts
 from media_hygiene.review.lan import lan_access
 from media_hygiene.review.lan_app import LAN_PATH, LanApp
+from media_hygiene.review.lan_paths import PHONE_PAGES
 from media_hygiene.review.lan_problem import with_problem
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.presence import ALIVE_SECONDS, PRESENCE_PATH, Presence
@@ -89,6 +90,7 @@ def home_page(*, relays_steps: bool = False, remote: bool = False) -> bytes:
         alive_ms=ALIVE_SECONDS * 1000,
         relays_steps=relays_steps,
         remote=remote,
+        phone_pages=PHONE_PAGES if remote else {},
         window=_mh_window(),
         thousands=separators()[0],
     ).encode()

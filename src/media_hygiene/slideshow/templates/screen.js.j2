@@ -230,4 +230,22 @@
   film.addEventListener("ended", ended, false);
   film.addEventListener("error", ended, false);
   ask(0);
+
+  // The server gone (0416): two asks in a row without any answer, the overlay says so.
+  var lostAsks = 0;
+  function probe() {
+    var check = new XMLHttpRequest();
+    check.open("HEAD", window.location.pathname, true);
+    check.onload = function () { lostAsks = 0; };
+    check.onerror = function () {
+      var overlay = document.getElementById("mhStopped");
+      lostAsks += 1;
+      if (overlay && lostAsks >= 2) {
+        overlay.hidden = false;
+        overlay.style.display = "flex";
+      }
+    };
+    check.send();
+  }
+  window.setInterval(probe, 10000);
 }());

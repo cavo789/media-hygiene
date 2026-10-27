@@ -2911,8 +2911,8 @@ msgid "From the cache alone: no file is read again."
 msgstr ""
 
 msgid ""
-"From the phone: the audit, the reports and the albums. Run this step on "
-"the PC."
+"From the phone: the audit, the reports, the albums, the search and "
+"browse. Open this page or run this step on the PC."
 msgstr ""
 
 msgid "From your NAS or an old disk"

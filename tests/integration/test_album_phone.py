@@ -149,15 +149,15 @@ def test_a_paired_phone_lists_the_albums_and_opens_one(
 def test_a_phone_never_reaches_a_file_of_no_album(
     phone_door: tuple[LanApp, _Home, Runtime],
 ) -> None:
-    """Another photo of the library, an original, a preview: never served."""
+    """Another photo by the albums' paths, an original: never served."""
     door, _home, runtime = phone_door
     shown = set(_keys(_album(door)))
     other = next(key for key, _path in _photos(runtime) if key not in shown)
     for path in (f"/thumb/{other}{_JPEG}", f"/tv/{other}{_JPEG}", f"/film/{other}.mp4"):
         assert _ask(door, _phone(path)).status == HTTPStatus.NOT_FOUND, path
     kept = next(iter(shown))
-    for path in (f"/original/{kept}{_JPEG}", f"/preview/{kept}{_JPEG}"):
-        assert _ask(door, _phone(path)).status == HTTPStatus.FORBIDDEN, path
+    original = _ask(door, _phone(f"/original/{kept}{_JPEG}"))
+    assert original.status == HTTPStatus.FORBIDDEN  # search's previews pass (0360)
     unpaired = _ask(door, _phone("/api/album-list", paired=False))
     assert unpaired.status == HTTPStatus.UNAUTHORIZED
 

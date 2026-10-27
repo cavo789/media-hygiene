@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import sys
 import time
+import urllib.request
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Final
 
@@ -43,6 +44,8 @@ RUN_JS: Final = """(name) => {
   button.click();
   button.remove();
 }"""
+STOPPED: Final = "#mhStopped"  # presence.html.j2's overlay
+FAILED_FETCH_JS: Final = "() => fetch('/api/state').catch(() => null)"
 STEP_JS: Final = "() => fetch('/api/step', { cache: 'no-store' }).then((r) => r.json())"
 # The search page timed by the browser: its navigation, its first answer of /api/search.
 TIMING_JS: Final = """() => {
@@ -148,6 +151,32 @@ def own_server_rounds(page: Page) -> dict[str, Any]:
     return {"review": name, "rounds_ms": times}
 
 
+def stopped_overlay(page: Page, home: str) -> dict[str, Any]:
+    """0416: the server ended behind the page's back, the page says it stopped.
+
+    The search page is opened, then `/api/stop` is asked by this script (not the
+    page, which would know it ended); one fetch of the page then finds no server.
+
+    Args:
+        page: The tab, on the home page.
+        home: The home page's address.
+
+    Returns:
+        Whether the overlay showed, and how long after the stop.
+    """
+    page.goto(f"{home}search")
+    page.wait_for_selector(PAGE_READY, timeout=SHOWN_MS)
+    stop = urllib.request.Request(  # noqa: S310  # the loopback server under test
+        f"{home}api/stop", data=b"{}", headers={"Content-Type": "application/json"}
+    )
+    with urllib.request.urlopen(stop, timeout=10):  # noqa: S310
+        pass
+    start = time.monotonic()
+    page.evaluate(FAILED_FETCH_JS)
+    page.wait_for_selector(STOPPED, state="visible", timeout=SHOWN_MS)
+    return {"shown": True, "after_ms": round((time.monotonic() - start) * 1000)}
+
+
 def main() -> None:
     """Walk the pages, write /shots/walk.json (Playwright: in its image only)."""
     # pylint: disable-next=import-error,import-outside-toplevel
@@ -169,6 +198,7 @@ def main() -> None:
         walk["clicks_until"] = time.time()
         walk["console"] = console_step(page)
         walk["own_server"] = own_server_rounds(page)
+        walk["stopped"] = stopped_overlay(page, home)  # last: it ends mh
         browser.close()
     OUTPUT.write_text(json.dumps(walk, indent=2), encoding="utf-8")
 

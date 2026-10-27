@@ -75,8 +75,8 @@ def _shell() -> dict[str, str]:
             "If Windows asks about Docker Desktop: tick Private networks, then Allow."
         ),
         "onThePc": _(
-            "From the phone: the audit, the reports and the albums. Run this step on "
-            "the PC."
+            "From the phone: the audit, the reports, the albums, the search and "
+            "browse. Open this page or run this step on the PC."
         ),
         "albumsOpen": _("Open the albums"),
         "albumsText": _(

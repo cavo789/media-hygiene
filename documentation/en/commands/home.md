@@ -157,8 +157,12 @@ desktop shortcut do the same (off by default for now):
 3. On the phone, scan the QR code, or open the address and type the code: the home page opens.
    The phone stays paired (a cookie) until `mh` stops, even after the steps run on the PC.
 
-From the phone: 🔒 the page, where you are, the reports, the **audit** run by the page and
-[your albums](#your-albums-on-the-phone).
+From the phone: 🔒 the page, where you are, the reports, the **audit** run by the page,
+[your albums](#your-albums-on-the-phone), and **search** and **browse** (their photos opened at
+the phone's size, never an original, and their videos; *set aside*, *Apply now* and a move stay the PC's). Only a paired
+phone reaches them: any other device of the Wi-Fi (a guest, a TV) gets the pairing page, or
+nothing, on every address. While the phone shows a page, `mh` keeps running even with the
+PC's tab closed; once `mh` stops, the phone's page says so.
 Every other step stays on the PC (*Run this step on the PC*): its questions are asked in the
 window of `mh`, which nobody sees from the sofa.
 
@@ -202,7 +206,7 @@ Your albums*). The relatives look at your screen and pair nothing.
 | | |
 |---|---|
 | Your photos | 🔒 Only read. The phone gets pictures sized for it (1440 pixels at most, kept in `/cache`), never an original. |
-| What the phone reaches | The albums and **their** files only: no other photo of your library, whatever address it types. |
+| What the phone reaches | The albums and **their** files; the rest of your library through *Search* and *Browse* only (read only). |
 | Where | The home Wi-Fi only, while `mh` runs on the PC (said on the page). |
 
 ## The keyboard, the palette, the theme

@@ -5,7 +5,8 @@ image (`tests/support/pages_browser.py`) runs `tests/support/pages_walk.py` on t
 host's network. Proven here: search and browse open from the home page and come back,
 each under a bound, without a container started by the click (Docker's events); a
 console step runs while the page stays open; the tab follows a page of its own server
-back to the home page ten times in a row, without F5 (0354). Not proven: `mh.ps1`,
+back to the home page ten times in a row, without F5 (0354); the server gone, the
+page says Media Hygiene stopped (0416). Not proven: `mh.ps1`,
 Windows, Docker Desktop (step 36 of `mh-measure.ps1`, by hand).
 
 Heavy (Chromium, a dozen servers started): CI only, where `MEDIA_HYGIENE_E2E_BROWSER`
@@ -188,3 +189,4 @@ def test_pages_of_mh_alone_in_a_real_browser(
     assert rounds["review"], "no review page available on the demo tree"
     assert len(rounds["rounds_ms"]) == _ROUNDS
     assert max(rounds["rounds_ms"]) < _ROUND_MS, rounds
+    assert walk["stopped"]["shown"], walk["stopped"]  # 0416

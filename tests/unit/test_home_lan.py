@@ -268,7 +268,6 @@ def test_a_paired_phone_reads_and_runs_the_audit_as_from_the_loopback() -> None:
     [
         ("POST", "/api/step"),
         ("POST", STOP_PATH),
-        ("POST", "/api/alive"),
         ("POST", "/api/apply"),
         ("GET", "/api/other"),
         ("PUT", "/api/audit"),
@@ -282,6 +281,58 @@ def test_a_paired_phone_never_runs_a_step_nor_quits(method: str, path: str) -> N
     reply = _ask(app, request)
     assert reply.status == HTTPStatus.FORBIDDEN
     assert not fake.seen
+
+
+def test_a_paired_phone_searches_and_browses_as_from_the_loopback() -> None:
+    """0360: search, browse, a thumbnail, a photo, a video; a search and a folder."""
+    app, fake = _app()
+    reads = (
+        "/search", "/browse", "/api/folders", "/api/chosen", "/thumb/1",
+        "/preview/1", "/video/1",
+    )  # fmt: skip
+    for path in reads:
+        assert _ask(app, _phone(path)).body == b"home", path
+    for path in ("/api/search", "/api/folder", "/api/heaviest"):
+        assert _ask(app, _phone(path, method="POST")).body == b"home", path
+    assert len(fake.seen) == len(reads) + 3
+    assert _ask(app, _phone("/original/1")).status == HTTPStatus.FORBIDDEN
+
+
+@pytest.mark.parametrize(
+    "path",
+    [
+        "/api/chosen",
+        "/api/apply",
+        "/api/move",
+        "/api/period-rule",
+        "/api/people/reject",
+    ],
+)
+def test_a_paired_phone_never_writes_from_search(path: str) -> None:
+    """Set aside, Apply now, a move, a rule, a name refused: the PC's (0360)."""
+    app, fake = _app()
+    reply = _ask(app, _phone(path, method="POST"))
+    assert reply.status == HTTPStatus.FORBIDDEN
+    assert b"on the PC" in reply.body
+    assert not fake.seen
+
+
+def test_a_paired_phone_keeps_the_server_alive() -> None:
+    """0416: its pings reach the home page's presence; an unpaired device's do not."""
+    app, fake = _app()
+    assert _ask(app, _phone("/api/alive", method="POST")).body == b"home"
+    unpaired = _phone("/api/alive", paired=False, method="POST")
+    assert _ask(app, unpaired).status == HTTPStatus.FORBIDDEN
+    assert len(fake.seen) == 1
+    assert "wirePresence();  //" in home.home_page(remote=True).decode()
+
+
+def test_the_phones_page_opens_search_and_browse() -> None:
+    """The phone's home page goes to both pages; the PC's runs them as before."""
+    phone = home.home_page(remote=True).decode()
+    assert '"mh search": "/search"' in phone
+    assert '"mh browse": "/browse"' in phone
+    assert "const PHONE_PAGES = {};" in home.home_page().decode()
 
 
 def test_a_post_from_another_origin_is_refused() -> None:
@@ -506,7 +557,9 @@ def test_a_forged_host_by_the_lan_door_never_passes_for_the_pc(
     paths = (
         "/", "/api/state", LAN_PATH, STOP_PATH, "/api/alive", "/api/audit",
         "/api/step", "/search", "/browse", "/thumb/x", "/file/x", "/albums",
-        "/reports/x", "/preview/x", "/assets/x", "/person",
+        "/reports/x", "/preview/x", "/assets/x", "/person", "/api/search",
+        "/api/folder", "/api/folders", "/api/chosen", "/original/x", "/video/x",
+        "/api/heaviest", "/api/apply", "/api/move", "/docs/x",
     )  # fmt: skip
     for path in paths:
         headers = {"host": host, "content-type": _JSON}

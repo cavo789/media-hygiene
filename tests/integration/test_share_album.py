@@ -192,6 +192,33 @@ def test_every_framed_page_says_when_media_hygiene_stopped() -> None:
     assert "window.mhEnded()" in link
 
 
+@pytest.mark.parametrize(
+    ("name", "flag"),
+    [("slideshow.html.j2", "presence_probe"), ("screen.html.j2", "presence_es5")],
+)
+def test_the_slideshow_and_the_tv_say_when_their_server_stopped(
+    name: str, flag: str
+) -> None:
+    """0416: no presence there; the page asks itself, any answer means it is up."""
+    folder = (
+        Path(__file__).resolve().parents[2] / "src/media_hygiene/slideshow/templates"
+    )
+    source = (folder / name).read_text("utf-8")
+    assert f'{{% set {flag} = true %}}{{% include "presence.html.j2" %}}' in source
+    script = (folder / "screen.js.j2").read_text("utf-8")
+    assert 'check.open("HEAD", window.location.pathname, true);' in script
+
+
+def test_a_failed_fetch_asks_again_at_once() -> None:
+    """0416: a page fetch finding no server counts, not only the pings."""
+    presence = (
+        Path(__file__).resolve().parents[2]
+        / "src/media_hygiene/review/templates/presence.html.j2"
+    ).read_text("utf-8")
+    assert "window.fetch = (...args) => own(...args).catch(" in presence
+    assert 'method: "HEAD"' in presence
+
+
 def _tagged(runtime: Runtime, tags: tuple[Tag, ...]) -> list[Path]:
     """The album's photos, the first given tags in the index (current version)."""
     _album(runtime)
