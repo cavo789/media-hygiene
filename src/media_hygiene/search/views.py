@@ -8,6 +8,9 @@ from typing import TYPE_CHECKING, Final
 from pydantic import BaseModel, ConfigDict, Field
 
 from media_hygiene.console.formatting import human_size
+from media_hygiene.constants import MediaKind
+from media_hygiene.review.videos import video_path
+from media_hygiene.scan.filters import media_kind
 from media_hygiene.search.folder_order import Shown
 from media_hygiene.search.query import Filters, Order, SearchQuery, Sorting, parse_terms
 from media_hygiene.tags.models import TagSource
@@ -165,6 +168,7 @@ def _hit_view(hit: Hit, mapper: HostPathMapper) -> dict[str, object]:
         and its host path (`path`, for `/person`).
     """
     path = hit.photo.path
+    video = media_kind(path) is MediaKind.VIDEO
     caption = hit.tags.get(TagSource.CAPTION, ())
     return {
         "key": hit.key,
@@ -182,6 +186,7 @@ def _hit_view(hit: Hit, mapper: HostPathMapper) -> dict[str, object]:
         },
         "thumb": f"{THUMB_PREFIX}{hit.key}{JPEG}",
         "preview": f"{PREVIEW_PREFIX}{hit.key}{JPEG}",
+        "video": video_path(str(hit.key), path) if video else "",  # played (0373)
         "original": f"{ORIGINAL_PREFIX}{hit.key}{path.suffix.lower()}",
         "path": mapper.to_host(path),
     }

@@ -32,12 +32,7 @@ async function loadTree() {
 function card(file, index) {
   const node = element("article");
   let picture;
-  if (file.video) {
-    picture = element("video");
-    picture.preload = "metadata";
-    picture.muted = true;
-    picture.src = file.video + "#t=0.5";
-  } else if (file.thumb) {
+  if (file.thumb) {
     picture = element("img");
     picture.loading = "lazy";
     picture.draggable = false; // a drag draws a rectangle (`pick_band.js.j2`)

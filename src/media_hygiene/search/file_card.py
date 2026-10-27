@@ -42,8 +42,8 @@ def file_card(
         "name": path.name,
         "date": day,
         "size": human_size(size),
-        "thumb": "" if video else f"{THUMB_PREFIX}{key}{JPEG}",
-        "preview": "" if video else f"{PREVIEW_PREFIX}{key}{JPEG}",
+        "thumb": f"{THUMB_PREFIX}{key}{JPEG}",  # a video's: one frame (0373)
+        "preview": f"{PREVIEW_PREFIX}{key}{JPEG}",
         "video": video_path(str(key), path) if video else "",
         "original": f"{ORIGINAL_PREFIX}{key}{path.suffix.lower()}",
         "chosen": mapper.to_host(path) in chosen,
