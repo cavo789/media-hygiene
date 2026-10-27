@@ -1817,9 +1817,6 @@ msgstr ""
 msgid "Choose every draft shown"
 msgstr "Choisir tous les brouillons affichés"
 
-msgid "Choose media-hygiene-ca.crt in Downloads."
-msgstr "Choisissez media-hygiene-ca.crt dans Téléchargements."
-
 msgid ""
 "Choose other folders (shorter names) in the workbook, save it, and run "
 "'sort' again."
@@ -2514,10 +2511,9 @@ msgstr "Ne pas montrer"
 
 msgid ""
 "Do not tap Open after the download: Android refuses it (\"cannot install "
-"CA certificates\"). Go through Settings instead:"
-msgstr ""
-"N'appuyez pas sur Ouvrir après le téléchargement : Android le refuse (« Impossible "
-"d'installer les certificats AC »). Passez plutôt par les Paramètres :"
+"CA certificates\"). Use the phone's Settings app instead, not Chrome's "
+"settings."
+msgstr "N'appuyez pas sur Ouvrir après le téléchargement : Android le refuse (« Impossible d'installer les certificats AC »). Passez par l'appli Paramètres du téléphone, pas par les paramètres de Chrome."
 
 msgid "Doc"
 msgstr "Doc"
@@ -6404,6 +6400,9 @@ msgstr ""
 "Ouvrez index.html dans le dossier monté sur /reports : il liste tous les "
 "rapports."
 
+msgid "Open the Download folder and tap media-hygiene-ca.crt."
+msgstr "Ouvrez le dossier Download et touchez media-hygiene-ca.crt."
+
 msgid "Open the albums"
 msgstr "Ouvrir les albums"
 
@@ -6531,6 +6530,12 @@ msgstr "Autre catégorie"
 
 msgid "Other commands"
 msgstr "Autres commandes"
+
+msgid ""
+"Other phones (Pixel…): Settings > Security > More settings > Encryption "
+"and credentials > Install a certificate > CA certificate > Install "
+"anyway."
+msgstr "Autres téléphones (Pixel…) : Paramètres > Sécurité > Autres paramètres > Chiffrement et identifiants > Installer un certificat > Certificat CA > Installer quand même."
 
 msgid "Our photos"
 msgstr "Nos photos"
@@ -7673,6 +7678,11 @@ msgstr "Exemples de noms"
 msgid "Samples"
 msgstr "Exemples"
 
+msgid ""
+"Samsung: Settings > Security and privacy > More security settings > "
+"Install from device storage > CA certificate > Install anyway."
+msgstr "Samsung : Paramètres > Sécurité et confidentialité > Autres paramètres de sécurité > Installer depuis stock. appar. > Certificat AC > Installer quand même."
+
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -8128,14 +8138,6 @@ msgid ""
 msgstr ""
 "Réglages > Général > VPN et gestion de l'appareil : installez le profil "
 "Media Hygiene."
-
-msgid ""
-"Settings > Security (or Security and privacy) > More settings > "
-"Encryption and credentials > Install a certificate > CA certificate."
-msgstr ""
-"Paramètres > Sécurité (ou Sécurité et confidentialité) > Autres "
-"paramètres > Chiffrement et identifiants > Installer un certificat > "
-"Certificat CA."
 
 msgid "Settle the near duplicates"
 msgstr "Trancher les quasi-doublons"

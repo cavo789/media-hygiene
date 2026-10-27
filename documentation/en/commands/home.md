@@ -190,10 +190,16 @@ the home network too: the phone already paired reloads its page and gets the sli
 The PC's card says *First time on this phone? Install the certificate first:*
 `http://192.168.1.20:8089/`. Open it on the phone, tap **Download the certificate**, then:
 
-- **Android**: do not tap *Open* after the download (Android 11 and later refuse: *cannot
-  install CA certificates*); go through *Settings › Security (or Security and privacy) › More settings › Encryption and
-  credentials › Install a certificate › CA certificate*, choose `media-hygiene-ca.crt` in
-  *Downloads* (Android warns that the network may be monitored: it is your own PC).
+- **Android**: in the **phone's Settings app** (the gear on the home screen, not Chrome's
+  settings). Do not tap *Open* after the download: Android 11 and later refuse it (*cannot
+  install CA certificates*).
+  1. **Samsung**: *Settings › Security and privacy › More security settings › Install from
+     device storage › CA certificate › Install anyway*.
+     **Other phones** (Pixel…): *Settings › Security › More settings › Encryption and
+     credentials › Install a certificate › CA certificate › Install anyway*.
+  2. Open the *Download* folder and tap `media-hygiene-ca.crt`.
+
+  Android warns that the network may be monitored: it is your own PC.
   Downloading is not enough, and **CA certificate** matters (not *VPN and app*, not *Wi-Fi*).
   Check: *Trusted credentials › User* shows *Media Hygiene (this PC)*, and Chrome shows `https`
   without a red cross; otherwise *Install* fails (*This app cannot be installed*).

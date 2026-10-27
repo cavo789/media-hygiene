@@ -1465,9 +1465,6 @@ msgstr ""
 msgid "Choose every draft shown"
 msgstr ""
 
-msgid "Choose media-hygiene-ca.crt in Downloads."
-msgstr ""
-
 msgid ""
 "Choose other folders (shorter names) in the workbook, save it, and run "
 "'sort' again."
@@ -2058,7 +2055,8 @@ msgstr ""
 
 msgid ""
 "Do not tap Open after the download: Android refuses it (\"cannot install "
-"CA certificates\"). Go through Settings instead:"
+"CA certificates\"). Use the phone's Settings app instead, not Chrome's "
+"settings."
 msgstr ""
 
 msgid "Doc"
@@ -5253,6 +5251,9 @@ msgstr ""
 msgid "Open index.html in the folder mounted on /reports: it lists every report."
 msgstr ""
 
+msgid "Open the Download folder and tap media-hygiene-ca.crt."
+msgstr ""
+
 msgid "Open the albums"
 msgstr ""
 
@@ -5372,6 +5373,12 @@ msgid "Other category"
 msgstr ""
 
 msgid "Other commands"
+msgstr ""
+
+msgid ""
+"Other phones (Pixel…): Settings > Security > More settings > Encryption "
+"and credentials > Install a certificate > CA certificate > Install "
+"anyway."
 msgstr ""
 
 msgid "Our photos"
@@ -6325,6 +6332,11 @@ msgstr ""
 msgid "Samples"
 msgstr ""
 
+msgid ""
+"Samsung: Settings > Security and privacy > More security settings > "
+"Install from device storage > CA certificate > Install anyway."
+msgstr ""
+
 msgid "Save"
 msgstr ""
 
@@ -6710,11 +6722,6 @@ msgstr ""
 msgid ""
 "Settings > General > VPN and device management: install the profile Media"
 " Hygiene."
-msgstr ""
-
-msgid ""
-"Settings > Security (or Security and privacy) > More settings > "
-"Encryption and credentials > Install a certificate > CA certificate."
 msgstr ""
 
 msgid "Settle the near duplicates"
