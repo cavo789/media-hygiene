@@ -30,6 +30,8 @@ BARE = Intruder(ROOT / "README", 5, 0)
         ("IMG_1.jpg.json", True),
         (".DS_Store", True),
         ("a.XMP", True),
+        ("GX010042.LRV", True),
+        ("DJI_0001.srt", True),
         ("thumbs.db.zip", False),
         ("notes.docx", False),
     ],

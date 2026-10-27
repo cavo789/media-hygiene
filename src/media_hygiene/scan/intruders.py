@@ -30,6 +30,8 @@ DEFAULT_COMPANIONS: Final = (
     ".picasa.ini",
     "picasa.ini",
     ".nomedia",
+    ".lrv",
+    ".srt",
 )
 NO_EXTENSION: Final = "(none)"
 

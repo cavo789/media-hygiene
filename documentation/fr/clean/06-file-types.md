@@ -109,7 +109,7 @@ de toute façon chaque dossier.
   (jamais lus).
 - **Les compagnons ne sont jamais des intrus** : ce qui accompagne une photo ou un dossier de
   photos, `.xmp`, `.aae`, `.thm`, `.json` (Google Takeout), `Thumbs.db`, `desktop.ini`,
-  `.DS_Store`, `.picasa.ini`, `.nomedia`. Changez la liste dans `[scan] companions` du
+  `.DS_Store`, `.picasa.ini`, `.nomedia`, `.lrv` et `.srt` (GoPro, drones). Changez la liste dans `[scan] companions` du
   [fichier de configuration](07-configuration-file.md) : un nom, ou une extension avec son
   point, sans tenir compte de la casse, par exemple
   `companions = [".xmp", ".json", "thumbs.db", ".lrv"]`.

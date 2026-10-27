@@ -103,7 +103,7 @@ date). Counting them costs no extra disk read: the audit lists every folder anyw
 - **Protected and backup folders are left out**, and so are the excluded ones (never read).
 - **Companions are never intruders**: what follows a photo or a folder of photos, `.xmp`,
   `.aae`, `.thm`, `.json` (Google Takeout), `Thumbs.db`, `desktop.ini`, `.DS_Store`,
-  `.picasa.ini`, `.nomedia`. Change the list in `[scan] companions` of the
+  `.picasa.ini`, `.nomedia`, `.lrv` and `.srt` (GoPro, drones). Change the list in `[scan] companions` of the
   [configuration file](07-configuration-file.md): a name, or an extension with its dot, case
   ignored, such as `companions = [".xmp", ".json", "thumbs.db", ".lrv"]`.
 
