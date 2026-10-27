@@ -12484,7 +12484,8 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "{count} photos to look at with {model}, about {time}. Each one is kept at"
-" once: a stop loses nothing, the next run goes on."
+" once: a stop loses nothing, the next run goes on. The first time, the "
+"model is downloaded once (about 900 MB)."
 msgstr ""
 
 #, python-brace-format

@@ -43,7 +43,8 @@ def runs_texts() -> dict[str, str]:
         "meaningPreparing": _("Counting the photos to look at…"),
         "meaningAsk": _(
             "{count} photos to look at with {model}, about {time}. Each one is kept "
-            "at once: a stop loses nothing, the next run goes on."
+            "at once: a stop loses nothing, the next run goes on. The first time, "
+            "the model is downloaded once (about 900 MB)."
         ),
         "meaningNothing": _("Every photo is looked at already."),
         "meaningNow": _("Look now"),
