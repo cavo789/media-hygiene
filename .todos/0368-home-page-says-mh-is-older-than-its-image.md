@@ -27,3 +27,9 @@ in a minimised window, so the line is never seen.
 ## Gain
 
 The line seen by the user who only uses the home page: 0 → 1 (estimated: the console is minimised).
+
+## Decided (2026-10-27)
+
+Review of the `/todo:iterate` of 2026-10-26 (0338 item 3, maintainer): the home page offers
+`mh update` **as a button** when `mh` is older than its image, not only a line. The page's server
+must first receive the launcher's stamp (it does not today: 0338's report).
