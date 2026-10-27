@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+import hashlib
 import io
 from typing import TYPE_CHECKING
 
 import pytest
 from PIL import Image
 
-from media_hygiene.report.preview_cache import PreviewJob, cached_preview
+from media_hygiene.report.preview_cache import PreviewJob, cached_preview, preview_key
 from media_hygiene.report.thumbnails import jpeg_preview
 from tests.support.media import FFMPEG, MediaFactory
 
@@ -49,3 +50,17 @@ def test_a_broken_video_has_no_preview(tmp_path: Path) -> None:
     broken.write_bytes(b"not a video")
 
     assert jpeg_preview(broken, _EDGE) is None
+
+
+def test_an_empty_preview_of_before_0373_is_not_read(tmp_path: Path) -> None:
+    """Before 0373 a video was kept as an empty preview: a frame is made instead."""
+    video = MediaFactory(tmp_path / "data").video("clip.mp4")
+    job = PreviewJob(video, _EDGE, tmp_path / "cache")
+    stat = video.stat()
+    old = f"1\0{video}\0{stat.st_size}\0{stat.st_mtime_ns}\0{_EDGE}"
+    old_name = hashlib.sha256(old.encode()).hexdigest()[:32] + ".jpg"
+    (tmp_path / "cache").mkdir()
+    (tmp_path / "cache" / old_name).write_bytes(b"")
+
+    assert preview_key(job, stat.st_size, stat.st_mtime_ns) != old_name
+    assert cached_preview(job) is not None
