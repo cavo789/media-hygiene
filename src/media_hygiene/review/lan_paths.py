@@ -54,6 +54,8 @@ _GET, _POST = "GET", "POST"
 PHONE_HIDDEN: Final = (
     "#setAside", "#takeBack", "#chosen", "#applyBar", "#ruleOpen", "#moveBar",
     ".unname", ".writes",
+    # Nothing to pick on a phone, no keyboard, albums made on the PC (2026-10-27).
+    "#albumBar", "#keys", ".tick",
 )  # fmt: skip
 
 

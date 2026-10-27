@@ -218,6 +218,7 @@ async function choose(action) {
 }
 
 async function loadChosen() {
+  if ("phone" in document.documentElement.dataset) return; // a phone sets nothing aside (0429)
   const answer = await ask(CHOSEN_PATH);
   if (answer) said(answer, await answer.json().catch(() => ({})));
 }
