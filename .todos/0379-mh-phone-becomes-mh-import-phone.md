@@ -45,3 +45,7 @@ content without a copy). Only the verb and the rule of reasons (0377) are shared
 
 One verb to learn for "bring photos in", whatever the source (*estimated*: one verb fewer in
 `mh --help`, the menu's import stage in one place). No speed change.
+
+## Decided (2026-10-27)
+
+- `mh phone` is removed in this version, no alias: `mh import --phone` only (maintainer).
