@@ -157,8 +157,10 @@ les rapports HTML ouverts depuis le disque, mènent toujours au
 
 ## Depuis un téléphone du Wi-Fi de la maison : `mh --lan`
 
-Sous Windows, `mh` (ou son raccourci du bureau) ouvre la page d'accueil à un téléphone **du même
-Wi-Fi** aussi, par défaut, jusqu'à l'arrêt de `mh` ; `mh --lan` fait de même :
+Sous Windows, `mh --lan` ouvre la page d'accueil à un téléphone **du même Wi-Fi** aussi,
+jusqu'à l'arrêt de `mh` ; avec `lan = true` sous `[review]` dans `config.toml` (puis
+`mh update`), `mh` seul et son raccourci du bureau font de même (désactivé par défaut pour
+l'instant) :
 
 1. `mh` trouve l'adresse du PC sur le réseau de la maison (*192.168.1.20*) et dit *La page
    d'accueil s'ouvre aussi aux téléphones du réseau de la maison*. Windows peut demander si
@@ -192,9 +194,8 @@ Wi-Fi comme **public** : passez-le en privé dans *Paramètres › Réseau et In
 Réseau privé*. La première fois, Windows peut poser une fois la question pour Docker Desktop :
 cochez **Réseaux privés**, puis **Autoriser**.
 
-PC de bureau, réseau partagé : `lan = false` sous `[review]` dans `config.toml`, puis
-`mh update` : la page d'accueil reste sur le PC, sans carte (`mh --lan` l'ouvre quand même
-s'il est tapé). Windows PowerShell seulement pour l'instant.
+Avec `lan = false` (le défaut pour l'instant) : la page d'accueil reste sur le PC, sans carte
+(`mh --lan` l'ouvre quand même s'il est tapé). Windows PowerShell seulement pour l'instant.
 
 ## Vos albums, sur le téléphone
 

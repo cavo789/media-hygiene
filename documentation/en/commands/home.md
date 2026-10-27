@@ -145,8 +145,9 @@ lead to the [website](https://cavo789.github.io/media-hygiene/): no page of the 
 
 ## From a phone on the home Wi-Fi: `mh --lan`
 
-In Windows, `mh` (or its desktop shortcut) opens the home page to a phone **of the same Wi-Fi**
-too, by default, until `mh` stops; `mh --lan` does the same:
+In Windows, `mh --lan` opens the home page to a phone **of the same Wi-Fi** too, until `mh`
+stops; with `lan = true` under `[review]` in `config.toml` (then `mh update`), `mh` alone and its
+desktop shortcut do the same (off by default for now):
 
 1. `mh` finds the PC's address on the home network (*192.168.1.20*) and says *The home page opens
    to the phones of the home network too*. Windows may ask whether **Docker Desktop** may accept
@@ -176,8 +177,8 @@ The phone cannot open the page? The card *On your phone* says why: *No home netw
 it to private in *Settings › Network & Internet › Wi-Fi › Private network*. The first time,
 Windows may ask about Docker Desktop once: tick **Private networks**, then **Allow**.
 
-An office PC, a shared network: `lan = false` under `[review]` in `config.toml`, then
-`mh update`: the home page stays on the PC, no card (`mh --lan` still opens it when typed).
+With `lan = false` (the default for now): the home page stays on the PC, no card (`mh --lan`
+still opens it when typed).
 Windows PowerShell only for now.
 
 ## Your albums, on the phone

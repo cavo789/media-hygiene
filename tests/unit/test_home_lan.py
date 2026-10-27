@@ -473,6 +473,6 @@ def test_powershell_lan_off_keeps_mh_alone_on_the_pc(tmp_path: Path) -> None:
 
 
 def test_the_setting_reaches_the_launcher() -> None:
-    """`[review] lan` defaults to on, the launcher's too."""
-    assert ReviewSettings().lan is True
-    assert _COMMANDS.lan is True
+    """`[review] lan` defaults to off until 0384 is fixed, the launcher's too."""
+    assert ReviewSettings().lan is False
+    assert _COMMANDS.lan is False

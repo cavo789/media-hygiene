@@ -7286,13 +7286,6 @@ msgid ""
 msgstr ""
 
 msgid ""
-"The home page opens to the phones of your home Wi-Fi too, while mh runs: "
-"scan its QR code, type nothing more. A phone needs the code of this run; "
-"never the internet. false keeps the page on this PC only (an office PC, a"
-" shared network); then type mh update."
-msgstr ""
-
-msgid ""
 "The home page stopped unexpectedly twice in a row: type mh to start it "
 "again."
 msgstr ""
@@ -10946,6 +10939,14 @@ msgstr ""
 msgid ""
 "true: every 'audit' then looks for faces in the photos not looked at yet,"
 " after saying how long it takes and asking, as 'audit --people' does."
+msgstr ""
+
+msgid ""
+"true: the home page opens to the phones of your home Wi-Fi too, while mh "
+"runs: scan its QR code, type nothing more. A phone needs the code of this"
+" run; never the internet. false, for now the default, keeps the page on "
+"this PC only; mh --lan opens it for one run. After a change, type mh "
+"update."
 msgstr ""
 
 #, python-brace-format
