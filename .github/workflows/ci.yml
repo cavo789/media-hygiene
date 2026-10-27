@@ -20,6 +20,11 @@ concurrency:
 env:
   # A fork publishes under its own account by setting this repository variable.
   IMAGE: ${{ vars.DOCKER_HUB_NAMESPACE || 'cavo789' }}/media-hygiene
+  # ffmpeg for the tests, a static build pinned by its digest and kept in the Actions cache:
+  # `apt-get install ffmpeg` hung on Ubuntu's mirror (31 min in run 40397484657). A month-end
+  # autobuild of BtbN/FFmpeg-Builds, the ones that stay published; libx264, aac and mjpeg in.
+  FFMPEG_URL: https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-09-30-13-08/ffmpeg-n8.1.3-9-g29e619e767-linux64-gpl-8.1.tar.xz
+  FFMPEG_SHA256: 97ce978979194b5cf7e06a5e68020dbdaa7a4f3294c5452b6a1bc347100dbb79
 
 # Runners pinned to Ubuntu 26.04, which `ubuntu-latest` becomes on 2026-10-19: the gate is
 # proven on it beforehand, and a later image change is a deliberate edit, never a surprise.
@@ -61,8 +66,25 @@ jobs:
         run: uv sync --locked
       # ffmpeg writes the test videos (inventory, sort of the docs library, re-encoded copies),
       # as in the devcontainer; the tool itself only warns when it is missing.
-      - name: Install ffmpeg
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+      - &ffmpeg-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.local/ffmpeg
+          key: ffmpeg-${{ env.FFMPEG_SHA256 }}
+      - &ffmpeg-install
+        name: Install ffmpeg (static, pinned, cached)
+        timeout-minutes: 3
+        run: |
+          dir="$HOME/.local/ffmpeg"
+          if [[ ! -x "$dir/ffprobe" ]]; then
+            curl -fsSL --retry 3 --max-time 120 -o "$RUNNER_TEMP/ffmpeg.tar.xz" "$FFMPEG_URL"
+            echo "$FFMPEG_SHA256  $RUNNER_TEMP/ffmpeg.tar.xz" | sha256sum --check -
+            mkdir -p "$dir"
+            tar -xJf "$RUNNER_TEMP/ffmpeg.tar.xz" -C "$dir" --strip-components=2 \
+              --wildcards '*/bin/ffmpeg' '*/bin/ffprobe'
+          fi
+          echo "$dir" >>"$GITHUB_PATH"
+          "$dir/ffmpeg" -hide_banner -version | head -n 1
       - name: Tests with coverage
         # -n auto: one worker per vCPU of the runner (4); the devcontainer stays serial
         # (`tests`, `check`), as the maintainer's PC suffers under load.
@@ -91,8 +113,8 @@ jobs:
       - name: Install the locked environment
         run: uv sync --locked
       # ffmpeg writes the demo videos: the image's own ffprobe must tell the truncated one.
-      - name: Install ffmpeg
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+      - *ffmpeg-cache
+      - *ffmpeg-install
       - name: End-to-end tests (real docker run)
         # A folder of the runner's own disk: Docker bind-mounts it, which the
         # devcontainer's volume cannot offer (0189: launcher --photos, mh folders add).
