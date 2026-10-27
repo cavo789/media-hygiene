@@ -17,3 +17,10 @@ The maintainer, 2026-10-23: "on `browse` I double-click a photo to see it full s
 First check, per page, which tiles are photos worth seeing large (a pair of folders may show
 none). Where they are: `pick_viewer.*` on those tiles, its picking keys left out (`pick_marks =
 false`), and the ⌨ panel where missing (0304's style). Skill `photo-picking-pages`.
+
+
+## Decided (2026-10-27)
+
+- Next/previous series stay on ←/→/Space as today; on this page the grid frame moves with ↑/↓ only (maintainer).
+- Delete sets the picked shots aside (1…9 removed); A adds to the album in the large view as in browse, "keep all" becomes a button (maintainer).
+- 0321: the shared grid script gets an option that turns its picking keys off, so one large view serves every page (maintainer).
