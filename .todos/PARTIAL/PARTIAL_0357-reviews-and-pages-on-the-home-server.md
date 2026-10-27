@@ -41,3 +41,27 @@ previews (`/cache`). `shrink` changes photos: it waits for 0361.
 
 Each review, people, places and slideshow page: from about 5.5 s (*estimated* after 0354) to under
 1 s (*estimated*).
+
+## Status — PARTIAL (2026-10-27)
+
+### Done
+- `review --near` served by the home server under `/review/near/` (`services/near_here.py`,
+  routed by `HomeWithPages`): each GET of the page audits again from the index on the fresh
+  settings (`FreshRuntime`), opens the session on `decisions.json`, and serves `NearApp` with
+  the prefix taken off; `/review/near` redirects to `/review/near/`; *Apply now* through the
+  home relay (as search, 0356). A click on *Settle the near duplicates* answers
+  `{"page": "/review/near/"}` (`SERVED_HERE`).
+- The review pages' own paths are relative (`review_page`: state, decide, file, apply,
+  albums; the near views' preview/original/video): the same at `/` or under a prefix, so the
+  other reviews can follow without touching their templates.
+- Tests: `tests/integration/test_home_serves_near.py`; near/pairs/gone/junk tests updated.
+  Docs en + fr (`commands/review.md`, *Good to know*).
+
+### Not done
+- Bursts, pairs, junk, gone, review-sort, people, places, slideshow on the home server
+  (items 1, 3–5): the same pattern per page (their views still build `/preview/…` from the
+  root: make them relative like `near_views`). **Reason:** scope of one run.
+- Item 2 (*Apply now* showing the step running, then the page's new state) and item 6
+  (memory measurement, freeing idle pages). **Reason:** scope; memory needs a real collection.
+- Acceptance (< 1 s from the home page): Windows only. The page's first byte waits for an
+  audit from the cache: measure step 35 with `review --near` added.

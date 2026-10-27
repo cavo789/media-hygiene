@@ -199,7 +199,7 @@ def test_the_page_renders_with_its_routes_and_both_plural_forms() -> None:
     place = DecisionsPlace(argument="decisions.json", host="decisions.json")
     page = review_page("pairs_review.html.j2", place, ("/api/pairs", "/api/file"))
     text = page.decode()
-    assert '"/api/pairs"' in text
+    assert '"api/pairs"' in text
     texts = json.loads(text.split("const T = ", 1)[1].split("\n", 1)[0].rstrip(";"))
     assert texts["files"] == [
         "{n} identical file, {size}",

@@ -132,9 +132,11 @@ class NearStateBuilder:
             name=name,
             folder=folder,
             details=" · ".join(details),
-            preview=f"{PREVIEW_PREFIX}{key}.jpg" if visual is not None else "",
-            video=video_path(key, file.path) if look is not None else "",
-            original=f"{ORIGINAL_PREFIX}{key}{file.path.suffix.lower()}",
+            preview=page_relative(f"{PREVIEW_PREFIX}{key}.jpg")
+            if visual is not None
+            else "",
+            video=page_relative(video_path(key, file.path)) if look is not None else "",
+            original=page_relative(f"{ORIGINAL_PREFIX}{key}{file.path.suffix.lower()}"),
             protected=self.policy.is_protected(file),
         )
 
@@ -151,3 +153,15 @@ class NearStateBuilder:
         if visual is not None:
             return visual.pixels
         return self.similar.video_looks[file.path].pixels
+
+
+def page_relative(path: str) -> str:
+    """An address relative to the page: the same at `/` or under a prefix (0357).
+
+    Args:
+        path: The address, from the root.
+
+    Returns:
+        It without its leading `/`; empty stays empty.
+    """
+    return path.removeprefix("/")

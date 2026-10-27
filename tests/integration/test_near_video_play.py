@@ -52,11 +52,11 @@ def test_both_versions_play_and_seek(locations: Locations) -> None:
         lambda pool: NearApp(session, PAGE, pool),
         [
             Call("GET", "/"),
-            Call("GET", group.kept.video),
-            ranged(group.kept.video, "bytes=100-1099"),
-            ranged(group.kept.video, "bytes=-10"),
-            ranged(group.kept.video, f"bytes={size}-"),
-            ranged(copy.video, "bytes=0-"),
+            Call("GET", "/" + group.kept.video),
+            ranged("/" + group.kept.video, "bytes=100-1099"),
+            ranged("/" + group.kept.video, "bytes=-10"),
+            ranged("/" + group.kept.video, f"bytes={size}-"),
+            ranged("/" + copy.video, "bytes=0-"),
         ],
     )
     assert MEDIA in page.headers["content-security-policy"]
@@ -81,9 +81,9 @@ def test_only_the_videos_of_the_plan_are_served(locations: Locations) -> None:
     """Unknown key, wrong extension, a picture of the plan, a vanished file: 404."""
     session = video_session(locations)
     [group] = [g for g in session.state().groups if g.kept.name == "Plage.mp4"]
-    key = group.kept.video.removeprefix("/video/").removesuffix(".mp4")
+    key = group.kept.video.removeprefix("video/").removesuffix(".mp4")
     picture = next(g for g in session.state().groups if g.kept.preview).kept
-    picture_key = picture.preview.removeprefix("/preview/").removesuffix(".jpg")
+    picture_key = picture.preview.removeprefix("preview/").removesuffix(".jpg")
     replies = serve_app_and_call(
         lambda pool: NearApp(session, PAGE, pool),
         [
@@ -107,14 +107,14 @@ def test_a_long_video_is_sent_in_chunks(locations: Locations) -> None:
     session = video_session(locations)
     [group] = [g for g in session.state().groups if g.kept.name == "Plage.mp4"]
     source = session.preview_source(
-        group.kept.video.removeprefix("/video/").removesuffix(".mp4")
+        group.kept.video.removeprefix("video/").removesuffix(".mp4")
     )
     assert source is not None
     padded = source.read_bytes() + bytes(2 * CHUNK)
     source.write_bytes(padded)
     [reply] = serve_app_and_call(
         lambda pool: NearApp(session, PAGE, pool),
-        [ranged(group.kept.video, "bytes=0-10,20-30")],
+        [ranged("/" + group.kept.video, "bytes=0-10,20-30")],
     )
     assert (reply.status, reply.body) == (200, padded)
 

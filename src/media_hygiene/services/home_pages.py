@@ -25,6 +25,7 @@ from media_hygiene.review.presence import PRESENCE_PATH
 from media_hygiene.review.step_watch import STEP_PATH
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.services.fresh_runtime import FreshRuntime
+from media_hygiene.services.near_here import NEAR_PREFIX, NearHere
 from media_hygiene.services.search import open_search
 from media_hygiene.services.search_app import SearchBuild, search_app
 
@@ -105,6 +106,7 @@ class HomeWithPages:
 
     home: Handling
     pages: SearchHere
+    near: NearHere  # `/review/near/…` (0357)
 
     async def handle(self, request: Request) -> Response:
         """Route a request.
@@ -118,6 +120,8 @@ class HomeWithPages:
         path = request.path
         if path in _HOME_PATHS or path.startswith(REPORTS_PREFIX):
             return await self.home.handle(request)
+        if path == NEAR_PREFIX or path.startswith(f"{NEAR_PREFIX}/"):
+            return await self.near.handle(request)
         app = self.pages.app()
         return await (self.home if app is None else app).handle(request)
 
@@ -137,7 +141,9 @@ def home_with_pages(
         The router.
     """
     pages = SearchHere(runtime, server)
+    relay = home_relay(runtime.locations.reports_dir)
+    near = NearHere(FreshRuntime(runtime), server, relay)
     try:
-        yield HomeWithPages(home, pages)
+        yield HomeWithPages(home, pages, near)
     finally:
         pages.close()

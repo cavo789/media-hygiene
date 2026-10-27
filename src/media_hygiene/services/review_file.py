@@ -38,7 +38,8 @@ def review_page(template: str, place: DecisionsPlace, api: tuple[str, str]) -> b
         api: The paths that decide and that read the file back.
 
     Returns:
-        The page.
+        The page; its own paths relative to it, the same at `/` or under a
+        prefix of the home server (0357).
     """
     environment = translated_environment(_TEMPLATES_PACKAGE, escaped=("html", "j2"))
     decide_path, file_path = api
@@ -49,11 +50,13 @@ def review_page(template: str, place: DecisionsPlace, api: tuple[str, str]) -> b
             header=header,
             # Opened from the home page: *Apply now*, where the page includes it (0288).
             apply_offered=header.home,
-            apply_path=APPLY_PATH,
-            state_path=STATE_PATH,
-            decide_path=decide_path,
-            file_path=file_path,
-            albums_path=ALBUMS_PATH,  # the pages that add to an album include it
+            apply_path=APPLY_PATH.removeprefix("/"),
+            state_path=STATE_PATH.removeprefix("/"),
+            decide_path=decide_path.removeprefix("/"),
+            file_path=file_path.removeprefix("/"),
+            albums_path=ALBUMS_PATH.removeprefix(
+                "/"
+            ),  # the pages that add to an album include it
             file=place.argument,
             clean_option=decisions_flag(place.argument),
             place=place.host,
