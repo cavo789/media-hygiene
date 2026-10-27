@@ -75,3 +75,20 @@ Today a dead disk means rebuilding the photo folders by hand from `\\NAS\backup_
 (robocopy typed by the user, no check, the files moved since doubled). With `pull`: one command,
 each copy proven, the index valid again, no `mh tags` to run again (with 0352). Duration: the
 read from the NAS (*to measure*, step of point 7).
+
+## Status — PARTIAL (2026-10-27, unattended run)
+
+Done: the plan's core, `src/media_hygiene/services/pull_plan.py` (pure, no I/O):
+`plan_pull(PullSides, folders)` sorts the target's files into `copies` (missing at
+their place on the PC), `kept` (present with another size/time beyond robocopy's 2 s:
+never overwritten), `moved` (content known by the index elsewhere in the folders: not
+copied twice), `removed` (`.removed/…`: never back); `--folder` filter, case-insensitive;
+`copied_size`. Tests: `tests/unit/test_pull_plan.py` (7, incl. identical copies under two
+names).
+
+Left (not doable safely while the maintainer is away, Windows-only): the host command in
+`mh.ps1` / `mh_pull.ps1.j2` (robocopy flags `/XC /XN /XO`, `/COPY:DAT` to check on
+Windows), the `pull-step` container command (listing the target read-only, digests from
+the index, journal `Phase.PULL`, SHA-256 proof, `--undo`), the drive-letter refusal design,
+docs (en + fr, "After a crash"), `COMMANDS_TOO`, `menu_catalog_*`, mkdocs `nav`, i18n, the
+bash `mh` refusal, and the crash-rehearsal step in `tests/measure/mh-measure.ps1`.
