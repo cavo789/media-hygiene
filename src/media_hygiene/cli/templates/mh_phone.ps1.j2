@@ -1,4 +1,4 @@
-{# `mh phone` in mh.ps1: see services/launcher_phone.py. #}
+{# `mh import --phone` in mh.ps1: see services/launcher_phone.py. #}
 {% set f = function %}
 {% set p = phone %}
 {% set t = phone.texts %}
@@ -195,7 +195,7 @@ function global:_{{ f }}_phone_date($item) {
     return ([datetime]$date).ToString("yyyy-MM-dd'T'HH:mm:ss'Z'", [Globalization.CultureInfo]::InvariantCulture)
 }
 
-# A command of the container for mh phone ({{ p.plan }}, {{ c.review }}, {{ c.prove }}, {{ c.done }}): the lines
+# A command of the container for mh import --phone ({{ p.plan }}, {{ c.review }}, {{ c.prove }}, {{ c.done }}): the lines
 # on its stdin, its lines back from its stdout, in UTF-8 both ways. The photos, the backups and
 # the destination read-only; $page publishes the port of a page. $null when it failed.
 function global:_{{ f }}_phone_docker($lines, [string]$destination, $page, $words) {

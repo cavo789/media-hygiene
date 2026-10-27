@@ -1,4 +1,4 @@
-"""`mh phone`: copy only the new photos and videos of a phone over USB (0219).
+"""`mh import --phone`: copy only the new photos and videos of a phone over USB (0219).
 
 There is no PowerShell here: the rendered `mh.ps1` is checked as text — the phone read
 through Shell.Application only (no Add-Type), `CopyHere` only (never `MoveHere`), the
@@ -85,7 +85,7 @@ def _script(locale: Locale = Locale.EN) -> str:
 
 
 def _phone_part(text: str) -> str:
-    """The functions of `mh phone`, from the first to the end of the last."""
+    """The functions of `mh import --phone`, first to end of the last."""
     start = text.index("function global:_mh_phone {")
     last = text.index("function global:_mh_phone_free(")
     return text[start : text.index("\n}\n", last) + 3]
@@ -98,9 +98,11 @@ def _body(text: str, name: str) -> str:
 
 
 def test_every_phone_function_is_in_the_script() -> None:
-    """The dispatcher calls `_mh_phone`; its helpers are defined once each."""
+    """`mh import --phone` calls `_mh_phone`; its helpers are defined once each."""
     text = _script()
-    assert "'phone' { _mh_phone @more; return }" in text
+    assert "if ($rest[0] -eq 'import' -and $more -contains '--phone') {" in text
+    assert "_mh_phone @words" in text
+    assert "'phone' {" not in text  # `mh phone` is gone, no alias (0379)
     for name in _FUNCTIONS:
         assert len(re.findall(rf"function global:_mh_{name}\b[ (]", text)) == 1, name
 
@@ -237,7 +239,7 @@ def test_an_unplugged_phone_after_listing_stops_before_anything() -> None:
     main = _body(_script(), "phone {")
     there = main.index("if (-not (_mh_phone_there $shell $name))")
     assert there < main.index("_mh_phone_docker $lines $destination")
-    assert "Type mh phone again: what is already copied is skipped." in main
+    assert "Type mh import --phone again: what is already copied is skipped." in main
 
 
 def test_the_destination_defaults_to_phone_under_the_first_photo_folder() -> None:
@@ -289,7 +291,7 @@ def _safe(value: str) -> None:
 
 
 def _free_part(text: str) -> str:
-    """The functions of `mh phone --free`, from the first to the end of the last."""
+    """The functions of `import --phone --free`, first to end of the last."""
     start = text.index("function global:_mh_phone_clear(")
     last = text.index("function global:_mh_phone_gone(")
     return text[start : text.index("\n}\n", last) + 3]
@@ -307,7 +309,7 @@ def test_only_one_folder_of_dcim_is_copied_and_offered() -> None:
         "[StringComparison]::OrdinalIgnoreCase)) { continue }"
     )
     assert skipped < main.index("$lines.Add(")
-    assert 'else { Write-Host "mh phone copies only' in main
+    assert 'else { Write-Host "mh import --phone copies only' in main
 
 
 def test_free_is_asked_for_and_said_before_anything() -> None:
@@ -418,8 +420,8 @@ def test_bash_says_phone_is_for_windows_only(tmp_path: Path) -> None:
         render_script(launcher_script(runtime, Shell.BASH, _COMMANDS)), encoding="utf-8"
     )
     env = {"HOME": str(tmp_path), "PATH": "/usr/bin:/bin"}
-    done = run_bash(f"source {path}; mh phone; echo status=$?", env)
-    assert done.stderr == "mh phone is for Windows only.\n"
+    done = run_bash(f"source {path}; mh import --phone; echo status=$?", env)
+    assert done.stderr == "mh import --phone is for Windows only.\n"
     assert done.stdout == "status=2\n"
 
 

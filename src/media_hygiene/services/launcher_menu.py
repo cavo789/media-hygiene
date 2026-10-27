@@ -54,6 +54,7 @@ class MenuTexts:  # pylint: disable=too-many-instance-attributes  # one per mess
     daemon: str  # mh.sh: the same, Docker on Linux, macOS or WSL
     starting: str  # mh.ps1: Docker Desktop does not answer, `mh` starts it (0200)
     ready: str  # mh.ps1: started after a failed run: the command is typed again
+    running: str  # `mh` alone: the page runs in the background, its window kept open
     crashed: str  # the home server stopped unexpectedly: started again (0365)
     crashed_again: str  # the same within a minute: the loop ends
     crash: Crash = CRASH  # the codes of a crash, and its window
@@ -107,6 +108,12 @@ def menu_texts() -> MenuTexts:
         ),
         ready=shell_safe(
             _("Docker Desktop is ready: type the command again (↑ then Enter).")
+        ),
+        running=shell_safe(
+            _(
+                "Media Hygiene is running: its page opens in your browser. Keep this "
+                "window open (minimised is fine): closing it stops Media Hygiene."
+            )
         ),
         crashed=shell_safe(_("The home page stopped unexpectedly: started again.")),
         crashed_again=shell_safe(

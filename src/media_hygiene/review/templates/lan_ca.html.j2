@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+{# The page of the plain HTTP door (0430, review/lan_ca_page.py): the steps to install the PC's
+   authority on a phone, once, then the way on to the HTTPS page. Same look as lan_pair.html.j2. #}
+<html lang="{{ _('en') }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Media Hygiene</title>
+<style>
+:root { color-scheme: light dark; --ink: #0b2239; --muted: #4a5a6a; --surface: #ffffff; --page: #f3f6fa; --accent: #3d85c6; }
+@media (prefers-color-scheme: dark) { :root { --ink: #e8eef5; --muted: #a9b6c3; --surface: #16222e; --page: #0d1620; --accent: #7fb3e6; } }
+body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box; background: var(--page); color: var(--ink); font: 17px/1.5 system-ui, sans-serif; }
+main { width: 100%; max-width: 460px; padding: 24px; border-radius: 14px; background: var(--surface); box-shadow: 0 2px 12px rgba(0, 0, 0, .12); }
+h1 { margin: 0 0 8px; font-size: 1.4rem; }
+h2 { margin: 16px 0 4px; font-size: 1.05rem; }
+p, li { color: var(--muted); }
+p { margin: 0 0 12px; }
+ol { margin: 0 0 12px; padding-left: 1.3em; }
+.warn { margin-top: 12px; color: var(--ink); font-weight: 600; }
+.button { display: block; box-sizing: border-box; width: 100%; margin-top: 12px; padding: 12px; border-radius: 10px; background: var(--accent); color: #fff; font: 600 1.1rem/1.2 system-ui, sans-serif; text-align: center; text-decoration: none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>{{ _("Media Hygiene on this phone") }}</h1>
+  <p>{{ _("Once per phone: install the certificate of Media Hygiene on this PC. The phone then trusts the page of your PC, and only it. Nothing goes to the internet.") }}</p>
+  <a class="button" href="{{ download }}" download>{{ _("Download the certificate") }}</a>
+  <p class="warn">{{ _("Downloading it is not enough: install it as a CA certificate, below. Not as a VPN and app certificate, nor as a Wi-Fi one.") }}</p>
+  <h2>{{ _("Android") }}</h2>
+  <ol>
+    <li>{{ _("Settings > Security (or Security and privacy) > More settings > Encryption and credentials > Install a certificate > CA certificate.") }}</li>
+    <li>{{ _("Choose media-hygiene-ca.crt in Downloads.") }}</li>
+    <li>{{ _("Check: Trusted credentials > User shows Media Hygiene (this PC). The address bar then shows https without a red cross.") }}</li>
+  </ol>
+  <h2>{{ _("iPhone, iPad") }}</h2>
+  <ol>
+    <li>{{ _("Open this page in Safari, download the certificate, allow the profile.") }}</li>
+    <li>{{ _("Settings > General > VPN and device management: install the profile Media Hygiene.") }}</li>
+    <li>{{ _("Settings > General > About > Certificate trust settings: turn Media Hygiene on.") }}</li>
+  </ol>
+  <a class="button" href="{{ secure }}">{{ _("Done: open Media Hygiene") }}</a>
+</main>
+</body>
+</html>

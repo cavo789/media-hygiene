@@ -26,6 +26,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.review.home_views import HomeState
     from media_hygiene.services.fresh_runtime import FreshRuntime
+    from media_hygiene.services.home_tags_models import TagsRunner
     from media_hygiene.services.runtime import Runtime
 
 
@@ -46,7 +47,6 @@ def home_command(
     from media_hygiene.cli.apply_step import page_apply
     from media_hygiene.cli.home_audit import page_audit
     from media_hygiene.cli.home_state import home_state
-    from media_hygiene.cli.home_tags import page_tags
     from media_hygiene.review.home_views import STEP_EXIT_BASE
     from media_hygiene.services.fresh_runtime import FreshRuntime
     from media_hygiene.services.home import HomeSources, serve_home
@@ -56,9 +56,10 @@ def home_command(
     # The session long: the settings read again as their files change (0358).
     fresh = FreshRuntime(runtime)
     state = partial(_state_now, home_state, fresh)
+    runs = _page_runs(runtime, fresh)
     code = serve_home(
         runtime,
-        HomeSources(state, page_audit(fresh), page_apply(runtime), page_tags(fresh)),
+        HomeSources(state, page_audit(fresh), page_apply(runtime), runs),
         port,
     )
     runtime.output.blank()
@@ -72,6 +73,27 @@ def home_command(
         )
     )
     raise typer.Exit(code)
+
+
+def _page_runs(runtime: Runtime, fresh: FreshRuntime) -> dict[str, TagsRunner]:
+    """The read-only steps the page runs: tags, faces, and meaning when it is on.
+
+    Args:
+        runtime: The settings at start (`[tags] meaning`, 0425).
+        fresh: The runtime, its settings read again when changed.
+
+    Returns:
+        The runners, by path.
+    """
+    from media_hygiene.cli.home_meaning import page_meaning
+    from media_hygiene.cli.home_people import page_people
+    from media_hygiene.cli.home_tags import page_tags
+    from media_hygiene.review.home_tags_api import MEANING_PATH, PEOPLE_PATH, TAGS_PATH
+
+    runs = {TAGS_PATH: page_tags(fresh), PEOPLE_PATH: page_people(fresh)}
+    if runtime.settings.tags.meaning:
+        runs[MEANING_PATH] = page_meaning(fresh)
+    return runs
 
 
 def _state_now(read: Callable[[Runtime], HomeState], fresh: FreshRuntime) -> HomeState:

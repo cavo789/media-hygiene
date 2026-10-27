@@ -146,6 +146,7 @@ def clean_area() -> Area:
         "review-pairs",
         "review-junk",
         "review-gone",
+        "review-intruders",
         "crosscheck",
         "shrink",
         "phone-free",

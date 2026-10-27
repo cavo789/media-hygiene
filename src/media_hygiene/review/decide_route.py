@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING, ClassVar, Protocol, override
 
 from pydantic import ValidationError
 
-from media_hygiene.errors import DecisionsError
+from media_hygiene.errors import DecisionsError, MountError
 from media_hygiene.report.preview_cache import PreviewPool
 from media_hygiene.review.files import ReviewFiles, file_response
 from media_hygiene.review.http import Response
@@ -75,7 +75,8 @@ def decide_route(
         request: The request, with a JSON body.
         decide: Reads the body, records and saves the choices, and returns the
             counts and the file as read back from the disk; raises `ValidationError`
-            for a body that is not a choice, `DecisionsError` for a refused one.
+            for a body that is not a choice, `DecisionsError` for a refused one,
+            `MountError` when the reports folder cannot keep the file.
 
     Returns:
         The response.
@@ -87,7 +88,7 @@ def decide_route(
         answer = decide(request.body)
     except ValidationError:
         return Response(HTTPStatus.BAD_REQUEST)
-    except (DecisionsError, OSError) as exc:
+    except (DecisionsError, MountError, OSError) as exc:
         return choice_failed(exc)
     return json_response(HTTPStatus.OK, dict(answer))
 

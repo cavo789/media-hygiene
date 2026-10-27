@@ -17,7 +17,6 @@ from media_hygiene.cli.status_step import Slot
 from media_hygiene.i18n import _
 
 FOLDERS_PAGE = "start/03-several-folders/"
-LAUNCHER_PAGE = "commands/launcher/"
 
 
 def import_steps() -> tuple[Step, ...]:
@@ -33,15 +32,15 @@ def import_steps() -> tuple[Step, ...]:
             space,
             _("Copy the new photos of the phone"),
             _("Plug it in over USB: only the new ones are copied, nothing is erased."),
-            "phone",
+            "import --phone",
             Risk.SAFE,
             Kind.HOST,
             icon="phone",
             keywords=_("phone smartphone iphone android usb cable copy dcim"),
             doc=Doc(
-                LAUNCHER_PAGE,
-                "#a-phone-copy-only-its-new-photos-mh-phone",
-                "#un-téléphone--copiez-seulement-ses-nouvelles-photos--mh-phone",
+                "commands/import/",
+                "#from-a-phone-mh-import---phone",
+                "#depuis-un-téléphone--mh-import---phone",
             ),
             windows=True,
         ),
@@ -53,15 +52,15 @@ def import_steps() -> tuple[Step, ...]:
                 "Only what the PC already holds, proven file by file, and that you "
                 "tick on a page."
             ),
-            "phone --free",
+            "import --phone --free",
             Risk.FINAL,
             Kind.HOST,
             icon="phone",
             keywords=_("phone room free space delete erase memory full"),
             doc=Doc(
-                LAUNCHER_PAGE,
-                "#free-the-phone-mh-phone---free",
-                "#libérer-le-téléphone--mh-phone---free",
+                "commands/import/",
+                "#free-the-phone-mh-import---phone---free",
+                "#libérer-le-téléphone--mh-import---phone---free",
             ),
             optional=True,
             windows=True,

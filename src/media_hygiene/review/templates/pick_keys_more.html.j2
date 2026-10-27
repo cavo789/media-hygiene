@@ -1,11 +1,16 @@
 {# The *More keys* of the ⌨ panel of a page of photos to pick (the frame's `more_keys` block):
    the frame, the large view. A page with a search field sets `pick_search_key` (`/`); the phone
-   page sets `pick_marks = false` and `pick_space_opened` (what Space does in the large view). #}
+   page sets `pick_marks = false` and `pick_space_opened` (what Space does in the large view); a
+   review whose ←/→/Space change the series sets `pick_moves = false` (`pickMoves`, 0319). #}
 {% if pick_search_key | default(false) %}
     <dt><kbd>/</kbd></dt><dd>{{ _("type a new search") }}</dd>
 {% endif %}
+{% if pick_moves | default(true) %}
     <dt><kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd></dt><dd>{{ _("move the frame") }}</dd>
     <dt><kbd>␣</kbd></dt><dd>{{ _("pick or unpick the framed file") }}</dd>
+{% else %}
+    <dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>{{ _("move the frame") }}</dd>
+{% endif %}
     <dt><kbd>Enter</kbd></dt><dd>{{ _("open it large (a double click too)") }}</dd>
     <dt><kbd>Home</kbd> <kbd>End</kbd></dt><dd>{{ _("the first or last file") }}</dd>
     <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>{{ _("opened: the previous or next one") }}</dd>

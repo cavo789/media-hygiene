@@ -18,13 +18,12 @@ from functools import partial
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
-from pydantic import ValidationError
-
 from media_hygiene.i18n import _
 from media_hygiene.review.home_views import APPLY_PATH
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
 from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_response
+from media_hygiene.search.asked import read_asked
 from media_hygiene.search.chosen_api import CHOSEN_PATH
 from media_hygiene.search.coverage import CoverageKept
 from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS, FOLDERS_PATH
@@ -40,7 +39,7 @@ from media_hygiene.search.pictures import Pictures
 from media_hygiene.search.reading import read_query, search_note
 from media_hygiene.search.rule_desk import PERIOD_RULES_PATH, RULE_POSTS
 from media_hygiene.search.rule_go import GO_PATHS, go_answer
-from media_hygiene.search.views import SearchAsked, found_view
+from media_hygiene.search.views import found_view
 from media_hygiene.share.album_api import ALBUMS_PATH
 
 if TYPE_CHECKING:
@@ -182,10 +181,9 @@ class SearchApp:
             The total and the first files, those set aside marked; 400 for a body
             that is not a search.
         """
-        try:
-            asked = SearchAsked.model_validate_json(request.body)
-        except ValidationError:
-            return Response(HTTPStatus.BAD_REQUEST)
+        asked = read_asked(request.body)
+        if isinstance(asked, Response):
+            return asked
         query = read_query(self.place.index, asked.query())
         found = found_view(
             with_facts(self.place.index, self.place.index.find(query, asked.shown)),

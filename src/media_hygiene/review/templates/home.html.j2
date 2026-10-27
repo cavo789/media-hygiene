@@ -13,6 +13,16 @@
 <meta name="color-scheme" content="light dark">
 <title>Media Hygiene — {{ texts.home }}</title>
 <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+{% if remote %}
+{# The phone's app (0432): Chrome's install from the manifest, iOS from these tags (review/app_shell.py). #}
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/app-icon-192.png">
+<link rel="apple-touch-startup-image" href="/app-icon-512.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="{{ _('Media Hygiene') }}">
+<meta name="theme-color" content="#f3f6fa">
+{% endif %}
 <script>
 {% include "theme_choice.js.j2" %}
 </script>
@@ -24,11 +34,7 @@
 </head>
 <body>
 {% include "home_icons.svg.j2" %}
-<div class="loading" id="loading" role="status">
-  <img src="{{ paths.assets }}images/meerkat-lookout.webp" alt="" width="400" height="387">
-  <p>{{ texts.loading }}</p>
-  <p class="muted" id="loadingSlow" hidden>{{ texts.loadingSlow }}</p>
-</div>
+{% include "splash.html.j2" %}
 <a class="skip" href="#main">{{ texts.skip }}</a>
 <div class="app" id="app">
   <aside class="sidebar" id="sidebar" aria-label="{{ texts.sidebar }}">
@@ -82,6 +88,11 @@
         <div class="lan-qr" id="lanQr"></div>
         <p class="lan-line">{{ texts.lanOpen }} <strong class="lan-url" id="lanUrl"></strong></p>
         <p class="lan-line">{{ texts.lanCode }} <strong class="lan-code" id="lanCode"></strong></p>
+        <p class="lan-line" id="lanCaLine" hidden>{{ texts.lanCa }} <strong class="lan-url" id="lanCa"></strong> <a id="lanCaHow" href="#" target="_blank" rel="noopener">{{ texts.lanCaHow }}</a></p>
+        <div id="lanPhones" hidden>
+          <p class="lan-line">{{ texts.lanPhones }}</p>
+          <ul class="lan-phones" id="lanPhoneList" data-forget="{{ texts.lanForget }}"></ul>
+        </div>
         <p class="lan-note">{{ texts.lanNote }}</p>
         <p class="lan-note">{{ texts.lanFirewall }}</p>
       </div>
@@ -134,6 +145,8 @@
 <dialog id="runDlg" aria-labelledby="runTitle"></dialog>
 <dialog id="keysDlg" aria-labelledby="keysTitle"></dialog>
 <dialog id="tagsDlg" aria-labelledby="tagsTitle"></dialog>
+<dialog id="peopleDlg" aria-labelledby="peopleTitle"></dialog>
+<dialog id="meaningDlg" aria-labelledby="meaningTitle"></dialog>
 <dialog id="stoppedDlg" class="stopped-dlg" aria-labelledby="stoppedTitle">
   <div class="dlg">
     <img src="{{ paths.assets }}images/meerkat-asleep.webp" alt="" width="400" height="387">

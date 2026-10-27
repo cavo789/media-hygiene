@@ -155,7 +155,7 @@ function whyFace(key, name, face) {
     text.append(element("p", "muted", TEXTS.reference), reference);
   }
   if (face.runner) text.append(element("p", "muted", face.runner));
-  const buttons = element("div", "buttons");
+  const buttons = element("div", "buttons writes");
   if (face.how !== "confirmed") {
     const yes = element("button", "", fill(TEXTS.yes, { name }));
     yes.type = "button";
@@ -245,7 +245,11 @@ async function search(event, again) {
   };
   const answer = await ask(SEARCH_PATH, body);
   if (!answer) { told(TEXTS.offline, true); return; }
-  if (!answer.ok) { told(fill(TEXTS.failed, { status: answer.status }), true); return; }
+  if (!answer.ok) {
+    const refused = answer.status === 400 ? await answer.json().catch(() => ({})) : {};  // a bad regex (0426)
+    told(refused.error || fill(TEXTS.failed, { status: answer.status }), true);
+    return;
+  }
   const found = await answer.json();
   asked = body;
   offerRule();

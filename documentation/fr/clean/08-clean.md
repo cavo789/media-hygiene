@@ -1,6 +1,6 @@
 # 8. Nettoyer
 
-[Documentation](../README.md) › Nettoyer, étape 8 sur 14 · 🇬🇧 [English](../../en/clean/08-clean.md)
+[Documentation](../README.md) › Nettoyer, étape 8 sur 15 · 🇬🇧 [English](../../en/clean/08-clean.md)
 
 Vous avez fait l'audit, lu les paires de dossiers, peut-être choisi quels dossiers restent. Place
 au ménage. `clean` déplace les copies en trop en quarantaine — rien n'est effacé — et garde une

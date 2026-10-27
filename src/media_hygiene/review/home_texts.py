@@ -11,6 +11,7 @@ from media_hygiene.i18n import _
 from media_hygiene.review.home_texts_family import family_texts
 from media_hygiene.review.home_texts_marked import marked_texts
 from media_hygiene.review.home_texts_run import run_texts
+from media_hygiene.review.home_texts_runs import runs_texts
 from media_hygiene.review.home_texts_tags import tags_texts
 
 
@@ -27,6 +28,7 @@ def home_texts() -> dict[str, str]:
         **marked_texts(),
         **run_texts(),
         **tags_texts(),
+        **runs_texts(),
         **family_texts(),
     }
 
@@ -68,6 +70,13 @@ def _shell() -> dict[str, str]:
         "lanOpen": _("Same Wi-Fi, open:"),
         "lanCode": _("Code:"),
         "lanNote": _("Until mh stops; never the internet."),
+        "lanCa": _("First time on this phone? Install the certificate first:"),
+        "lanCaHow": _("How?"),
+        "lanPhones": _("Phones paired for good"),
+        "lanForget": _("Forget this phone"),
+        "addToHome": _(
+            "To keep Media Hygiene as an app: Share, then Add to Home Screen."
+        ),
         "lanNone": _("No home network found: the phone cannot open this page."),
         "lanPublic": _(
             "Windows counts this Wi-Fi as public: its firewall blocks the phone. "

@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.cli.home_state import home_state
 from media_hygiene.review.ending import STOPPED
 from media_hygiene.review.home_app import HomeApp
+from media_hygiene.review.home_tags_api import TAGS_PATH
 from media_hygiene.review.presence import Presence
 from media_hygiene.services.home import home_page
 
@@ -40,5 +41,5 @@ def home_app_of(
         ending,
         audit,
         Presence(ending, STOPPED),
-        tags=tags,
+        runs={} if tags is None else {TAGS_PATH: tags},
     )

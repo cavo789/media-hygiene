@@ -1,6 +1,6 @@
 # 9. Annuler, historique, purge
 
-[Documentation](../README.md) › Nettoyer, étape 9 sur 14 · 🇬🇧 [English](../../en/clean/09-undo-history-purge.md)
+[Documentation](../README.md) › Nettoyer, étape 9 sur 15 · 🇬🇧 [English](../../en/clean/09-undo-history-purge.md)
 
 Un nettoyage n'est pas définitif. Le journal retient chaque action : vous pouvez tout remettre en
 place, voir ce que chaque nettoyage a fait et, une fois sûr·e, vider la quarantaine pour de bon.
@@ -124,7 +124,7 @@ contenu.
 - Il demande d'abord, comme `clean` ; `--yes` saute la question.
 - Après une purge, `undo` ne peut plus ramener ces fichiers. La date de la purge est écrite à
   côté du journal de l'exécution (`<exécution>.purged.json`, le journal lui-même n'est jamais
-  réécrit) : `mh phone --free` la donne sur la vignette d'une photo mise de côté par celle-ci.
+  réécrit) : `mh import --phone --free` la donne sur la vignette d'une photo mise de côté par celle-ci.
 - Plutôt garder une copie ? `purge --to <dossier>` copie d'abord la quarantaine sur un NAS, un
   disque ou le dossier synchronisé d'un cloud, vérifie chaque octet, puis la vide — voir
   [`purge`](../commands/purge.md).

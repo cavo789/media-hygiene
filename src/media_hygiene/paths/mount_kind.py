@@ -16,3 +16,4 @@ class MountKind(StrEnum):
     CACHE = "cache"
     SHARES = "shares"  # `share` only: the copies made to send (0296)
     BACKUPS = "backups"  # `backup` and `restore` only: the index and settings (0352)
+    LAN = "lan"  # `mh --lan` only: the certificates of the home network (0430)

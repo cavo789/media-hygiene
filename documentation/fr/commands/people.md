@@ -76,6 +76,18 @@ avec -p 127.0.0.1:8088:8088.
 ✅ Page arrêtée ; rien n'a été modifié.
 ```
 
+### Depuis la page d'accueil
+
+Sur la page d'accueil (`mh`), le bouton **Dans cette page** à côté de `people` cherche les visages
+sans la console. Il compte d'abord les photos dont le cache n'a pas encore les visages et le
+temps que cela devrait prendre (une estimation tant qu'aucun passage n'a mesuré votre
+ordinateur), puis demande : **Analyser maintenant**, **Analyser pendant 1 h** (il s'arrête tout
+seul) ou **Pas maintenant**. Pendant l'analyse, la page montre les photos analysées, le rythme, le
+temps restant et les visages de la dernière photo ; **Arrêter après cette photo** l'interrompt,
+et le passage suivant reprend là où il s'était arrêté (les visages de chaque photo sont gardés
+aussitôt dans le cache). La page des personnes montre ensuite les groupes. Seul le cache est
+écrit : vos photos ne sont pas modifiées.
+
 ## Nommer les groupes
 
 Dans la page, tapez un nom sur un groupe et appuyez sur Entrée : le nom est enregistré dans

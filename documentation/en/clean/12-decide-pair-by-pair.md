@@ -1,6 +1,6 @@
 # 12. Decide pair by pair
 
-[Documentation](../README.md) › Cleaning, step 12 of 14 · 🇫🇷 [Français](../../fr/clean/12-decide-pair-by-pair.md)
+[Documentation](../README.md) › Cleaning, step 12 of 15 · 🇫🇷 [Français](../../fr/clean/12-decide-pair-by-pair.md)
 
 [`--prefer`](05-choose-the-kept-copy.md) changes the choice for a whole folder, everywhere. Sometimes
 you only disagree with one pair: keep the other side, leave that pair alone, or keep both folders

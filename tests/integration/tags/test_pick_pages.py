@@ -1,16 +1,19 @@
-"""`search` and `browse`: one page of photos to pick, same gestures, keys and bar."""
+"""`search`, `browse`, the reviews: one page of photos to pick, same keys and bar."""
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import pytest
+
+from media_hygiene.review.place import DecisionsPlace
+from media_hygiene.services.review_file import review_page
 from media_hygiene.services.sort_reviewing import open_sort_review, sort_page
 from tests.support.pick_pages import PICK_PARTS
 from tests.support.search_page import serve_search
 from tests.support.sort_review import classified
 
 if TYPE_CHECKING:
-    import pytest
     from typer.testing import CliRunner
 
     from media_hygiene.paths.locations import Locations
@@ -95,3 +98,58 @@ def test_the_sort_review_is_built_from_the_same_parts(locations: Locations) -> N
     assert "every photo of the event" in keys  # Ctrl+A
     assert "set the picked files aside" not in keys  # Delete takes back a choice here
     assert 'id="zoom"' not in page  # the large view replaced Z
+
+
+def _review(template: str) -> str:
+    """A review page, as rendered for its server."""
+    place = DecisionsPlace(argument="decisions.json", host="decisions.json")
+    return review_page(template, place, ("/api/decide", "/api/file")).decode()
+
+
+@pytest.mark.parametrize("template", ["review.html.j2", "unwanted_review.html.j2"])
+def test_the_burst_and_junk_reviews_are_built_from_the_same_parts(
+    template: str,
+) -> None:
+    """0319, 0320: their shots are the shared grid; ←/→/Space change the group."""
+    page = _review(template)
+    for part in PICK_PARTS:
+        assert page.count(part) == 1, part
+    assert page.count('"use strict";') == 1
+    assert "pickMoves = false;" in page  # the frame moves with ↑/↓ only
+    keys = page.split('id="keys"')[1].split("</section>")[0]
+    assert "set the picked files aside" in keys  # Delete
+    assert "<kbd>↑</kbd> <kbd>↓</kbd></dt><dd>move the frame" in keys
+    assert "pick or unpick the framed file" not in keys  # Space changes the series
+    assert "<kbd>1</kbd>" not in keys  # 1…9 gave way to Delete
+    top = page.split('<header id="bar">')[1].split("</header>")[0]
+    assert 'id="invert"' in top
+
+
+def test_the_burst_review_keeps_every_shot_with_a_button() -> None:
+    """0319: A is the album key of the large view; *Keep every shot* is a button."""
+    page = _review("review.html.j2")
+    assert 'id="keepAll"' in page
+    assert 'key === "a"' not in page
+    assert "add it to the album named in the bar" in page
+    top = page.split('<header id="bar">')[1].split("</header>")[0]
+    assert 'id="albumBar"' in top
+
+
+@pytest.mark.parametrize(
+    "template", ["near_review.html.j2", "gone_review.html.j2", "pairs_review.html.j2"]
+)
+def test_the_group_reviews_share_the_large_view_without_picking(template: str) -> None:
+    """0321: one large view (Enter, double click, ← →, F, Esc); nothing to pick."""
+    page = _review(template)
+    for part in (
+        'id="viewerHelp"',
+        "function wireCard(node, index)",
+        "const VIEWER_KEYS = {",
+    ):
+        assert page.count(part) == 1, part
+    assert "pickKeys = false;" in page
+    assert '<span id="acting" hidden>' not in page  # no picking bar
+    assert "showLarge(" in page
+    keys = page.split('id="keys"')[1].split("</section>")[0]
+    assert "open the photo large" in keys
+    assert "set it aside, then the next one" not in page  # no Delete in the large view

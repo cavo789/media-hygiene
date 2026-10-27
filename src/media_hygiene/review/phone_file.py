@@ -45,7 +45,7 @@ class PhoneChoice(BaseModel):
 
 
 class PhoneDecisions(BaseModel):
-    """The decisions file of one `mh phone`: the phone, and each file shown."""
+    """The decisions file of one `mh import --phone`: the phone, and each file shown."""
 
     model_config = _FROZEN
 

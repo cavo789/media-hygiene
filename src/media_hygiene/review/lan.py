@@ -6,19 +6,20 @@ for the run (`MEDIA_HYGIENE_LAUNCHER_LAN_*`, never carried into another `mh` fil
 server derives from the secret a pairing code to type on the phone (or its QR code) and
 the token the phone keeps in a cookie once paired: the same for the whole run, the home
 page restarting after each step. Only a private IPv4 address is taken: never the
-internet. Plain HTTP, as decided (2026-10-21): the session is short, at home.
+internet. HTTPS when `/lan` holds the certificates (0430), plain HTTP otherwise.
 """
 
 from __future__ import annotations
 
 import hashlib
 import hmac
-import ipaddress
 import os
 import secrets
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.review.lan_address import lan_address
+from media_hygiene.review.lan_tls import certificates, lan_folder
 from media_hygiene.services.next_command import LAUNCHER_VARIABLE
 
 if TYPE_CHECKING:
@@ -26,7 +27,6 @@ if TYPE_CHECKING:
 
     from media_hygiene.review.http import Request
 
-LAN_ADDRESS_VARIABLE: Final = f"{LAUNCHER_VARIABLE}_LAN_ADDRESS"
 LAN_SECRET_VARIABLE: Final = f"{LAUNCHER_VARIABLE}_LAN_SECRET"
 PAIR_PREFIX: Final = "/pair/"
 COOKIE_NAME: Final = "mh_lan"
@@ -44,6 +44,7 @@ class LanAccess:
     address: str
     port: int
     secret: bytes
+    secure: bool = False  # HTTPS, the certificates of `/lan` made (0430)
 
     @property
     def host(self) -> str:
@@ -59,9 +60,9 @@ class LanAccess:
         """The page's origin on the phone, for the `Origin` of its requests.
 
         Returns:
-            E.g. `http://192.168.1.20:8765`.
+            E.g. `https://192.168.1.20:8765`.
         """
-        return f"http://{self.host}"
+        return f"{'https' if self.secure else 'http'}://{self.host}"
 
     @property
     def code(self) -> str:
@@ -96,7 +97,7 @@ class LanAccess:
         """The address the QR code holds: the page, the code in its path.
 
         Returns:
-            E.g. `http://192.168.1.20:8765/pair/01234567`.
+            E.g. `https://192.168.1.20:8765/pair/01234567`.
         """
         return f"{self.origin}{PAIR_PREFIX}{self.code}"
 
@@ -152,24 +153,6 @@ def cookies(headers: Mapping[str, str]) -> dict[str, str]:
     return {name: value for name, _equal, value in pairs if name}
 
 
-def private_address(text: str) -> str | None:
-    """Accept an address of a home network only: a private IPv4, never the internet.
-
-    Args:
-        text: The address `mh` found.
-
-    Returns:
-        It, or None for a public, loopback, link-local or malformed address.
-    """
-    try:
-        address = ipaddress.IPv4Address(text.strip())
-    except ValueError:
-        return None
-    if not address.is_private or address.is_loopback or address.is_link_local:
-        return None
-    return str(address)
-
-
 def lan_access(port: int) -> LanAccess | None:
     """The access `mh --lan` asked for this run, from its environment.
 
@@ -180,21 +163,11 @@ def lan_access(port: int) -> LanAccess | None:
         The access; None without `mh --lan` or with an address refused. Without the
         secret (`media-hygiene home` run by hand), one is drawn for this server only.
     """
-    address = private_address(os.environ.get(LAN_ADDRESS_VARIABLE, ""))
+    address = lan_address()
     if address is None:
         return None
     given = os.environ.get(LAN_SECRET_VARIABLE, "")
     secret = given.encode() if given else secrets.token_bytes(_SECRET_BYTES)
-    return LanAccess(address, port, secret)
-
-
-def lan_refused() -> str | None:
-    """The address `mh --lan` gave when it is refused, to say so.
-
-    Returns:
-        The address given, or None when none was given or it was accepted.
-    """
-    given = os.environ.get(LAN_ADDRESS_VARIABLE, "").strip()
-    if not given or private_address(given) is not None:
-        return None
-    return given
+    folder = lan_folder()  # HTTPS with the certificates of `/lan` (0430)
+    secure = folder is not None and certificates(folder, address)
+    return LanAccess(address, port, secret, secure=secure)

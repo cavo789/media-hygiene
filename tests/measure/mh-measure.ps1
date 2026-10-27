@@ -67,7 +67,7 @@
 #  19. a phone plugged in over USB (MTP), read through Shell.Application: the devices of This
 #      PC, DCIM, listing time and properties, the 20 most recent files copied once (CopyHere
 #      only: nothing is written to the phone), speed and dates of the copies   (0218, for 0219);
-#      then, if you agree, mh phone end to end: every file of DCIM copied, again (nothing
+#      then, if you agree, mh import --phone end to end: every file of DCIM copied, again (nothing
 #      copied), then the cable pulled out during a copy, plugged in again       (0219);
 #      then, if you agree, ONE synthetic test file written to the phone and deleted (InvokeVerb,
 #      InvokeVerbEx, MoveHere), DCIM counted before and after, the gallery's trash; the 20 files
@@ -160,7 +160,7 @@
 #   .\mh-measure.ps1 -Only 18 -Count 5
 #   .\mh-measure.ps1 -Only 19 -Count 1   (a phone plugged in over USB; -Count 1: the test folder is not used)
 #                                         (19l-19o write ONE test file to the phone, after a y, then delete it)
-#                                         (19p: mh phone --free on 3 test files written to the phone, after a y)
+#                                         (19p: mh import --phone --free on 3 test files written to the phone, after a y)
 #                                         (19q: the phone locked then unlocked: what Windows shows of it, read only)
 #                                         (19r: 20 test files written to the phone, CopyHere vs MoveHere back, after a y)
 #   .\mh-measure.ps1 -Only 20 -Count 1 -Sample 1000 -Cpus 4 -Branch iterate/2026-10-17   (image embeddings)
@@ -1346,8 +1346,8 @@ if (Wanted 19) {
             $target = $shell.Namespace($phoneTmp)
             # One round only: copying the same files again opens Windows' "Replace or Skip"
             # dialogs behind the console, flag 16 ignored over MTP (measured 2026-10-19: 386 s for
-            # 20 files, twice). mh phone copies into an empty staging folder instead (0219).
-            Log "   19f. second copy of the same files: not run (its hidden Replace or Skip dialogs are measured; mh phone avoids them)"
+            # 20 files, twice). mh import --phone copies into an empty staging folder instead (0219).
+            Log "   19f. second copy of the same files: not run (its hidden Replace or Skip dialogs are measured; mh import --phone avoids them)"
             foreach ($round in 1) {
                 $bytes = 0
                 $late = 0
@@ -1375,11 +1375,11 @@ if (Wanted 19) {
     if (Test-Path -LiteralPath $phoneTmp) { Remove-Item -Recurse -Force -LiteralPath $phoneTmp }
     Log "   19g. temporary copies removed; the phone was only read (CopyHere), nothing deleted, moved or renamed on it"
 
-    # 19h-19k: mh phone end to end (0219), with mh written by the image under test. Its photo
+    # 19h-19k: mh import --phone end to end (0219), with mh written by the image under test. Its photo
     # folder is an empty test folder: the first run copies every file of DCIM into
     # <that folder>\Phone\<phone name>, the second copies nothing; then the largest copies are
     # removed and copied again while you pull the cable out. All under -Work, removed at the end.
-    $answer = if ($dcim) { Read-Host "19h. mh phone copie TOUTES les photos et videos du DCIM du telephone dans $Work (voir la taille en 19c). Le lancer ? (o/n)" } else { 'n' }
+    $answer = if ($dcim) { Read-Host "19h. mh import --phone copie TOUTES les photos et videos du DCIM du telephone dans $Work (voir la taille en 19c). Le lancer ? (o/n)" } else { 'n' }
     if ($answer -in 'y', 'o') {
         $phoneLibrary = Join-Path $Work "phone-library"
         $mhDir = Join-Path $tool "mh19"
@@ -1396,10 +1396,10 @@ if (Wanted 19) {
         . $mhFile
         foreach ($round in 'first', 'second') {
             $watch = [Diagnostics.Stopwatch]::StartNew()
-            $said = @(mh phone 6>&1 | ForEach-Object { "$_" })
+            $said = @(mh import --phone 6>&1 | ForEach-Object { "$_" })
             $seconds = $watch.Elapsed.TotalSeconds
-            foreach ($line in ($said | Where-Object { $_ -notmatch '^\s+\d+/\d+ ' })) { Log ("   19h. $round mh phone: " + $line) }
-            Log ("   19h. $round mh phone: {0:N1} s wall time, {1} files copied (lines 'n/m')" -f $seconds, @($said | Where-Object { $_ -match '^\s+\d+/\d+ ' }).Count)
+            foreach ($line in ($said | Where-Object { $_ -notmatch '^\s+\d+/\d+ ' })) { Log ("   19h. $round mh import --phone: " + $line) }
+            Log ("   19h. $round mh import --phone: {0:N1} s wall time, {1} files copied (lines 'n/m')" -f $seconds, @($said | Where-Object { $_ -match '^\s+\d+/\d+ ' }).Count)
         }
         $copies = @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -File -Force -ErrorAction SilentlyContinue)
         Log ("   19i. read back: {0} files, {1:N1} MB under {2}\Phone; staging folders left: {3}" -f $copies.Count, (($copies | Measure-Object Length -Sum).Sum / 1MB), $phoneLibrary, @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -Directory -Force -Filter '.mh-phone-*' -ErrorAction SilentlyContinue).Count)
@@ -1415,18 +1415,18 @@ if (Wanted 19) {
         }
         if ($largest.Count -gt 0) {
             foreach ($copy in $largest) { Remove-Item -LiteralPath $copy.FullName -Force }
-            Log ("   19j. the {0} largest copies removed ({1:N1} MB): the next mh phone copies them again" -f $largest.Count, (($largest | Measure-Object Length -Sum).Sum / 1MB))
+            Log ("   19j. the {0} largest copies removed ({1:N1} MB): the next mh import --phone copies them again" -f $largest.Count, (($largest | Measure-Object Length -Sum).Sum / 1MB))
             Read-Host "19j. Ensuite : quand la ligne '2/$($largest.Count)' apparait, DEBRANCHEZ LE CABLE, puis attendez (jusqu'a 60 s). Appuyez sur Entree pour demarrer" | Out-Null
             $watch = [Diagnostics.Stopwatch]::StartNew()
             # Shown as it comes (the '2/N' line to wait for), and logged after: captured alone,
             # the maintainer saw nothing (2026-10-20).
-            $said = @(mh phone 6>&1 | ForEach-Object { $text = "$_"; Write-Host $text; $text })
+            $said = @(mh import --phone 6>&1 | ForEach-Object { $text = "$_"; Write-Host $text; $text })
             foreach ($line in $said) { Log ("   19j. cable pulled: " + $line) }
             Log ("   19j. cable pulled: {0:N1} s wall time; staging folders left: {1}" -f $watch.Elapsed.TotalSeconds, @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -Directory -Force -Filter '.mh-phone-*' -ErrorAction SilentlyContinue).Count)
             $dialog = Read-Host "19j. Windows a-t-il affiche une fenetre ou une question (regardez avec Alt+Tab) ? (n ou ce qu'il a dit)"
             Log "   19j. a window during the cable pulled (none expected): $dialog"
             Read-Host "19k. Rebranchez le telephone, deverrouillez-le (Transfert de fichiers), puis appuyez sur Entree" | Out-Null
-            $said = @(mh phone 6>&1 | ForEach-Object { "$_" })
+            $said = @(mh import --phone 6>&1 | ForEach-Object { "$_" })
             foreach ($line in ($said | Where-Object { $_ -notmatch '^\s+\d+/\d+ ' })) { Log ("   19k. after the cable: " + $line) }
         }
         # A name the phone does not hold: mh gave it _1, _2... (a regex on _<digits> also caught
@@ -1440,7 +1440,7 @@ if (Wanted 19) {
         Log "   19k. copies under a name the phone does not hold (_1...): $($names.Count) (0 expected: no name was taken)"
         foreach ($copy in ($names | Select-Object -First 5)) { Log "   19k. renamed: $($copy.Name)" }
     } else {
-        Log "   19h. mh phone end to end: skipped"
+        Log "   19h. mh import --phone end to end: skipped"
     }
 
     # 19l-19o: a file deleted on the phone over MTP (0247, for 0248). ONE synthetic test file at
@@ -1590,12 +1590,12 @@ if (Wanted 19) {
         Log "   19o. the PC's temporary folders of 19l-19o removed"
     }
 
-    # 19p: mh phone --free end to end (0248), on THREE synthetic test files only (16x16 grey
+    # 19p: mh import --phone --free end to end (0248), on THREE synthetic test files only (16x16 grey
     # JPEGs made here, a tail of bytes making each one unique), written into DCIM\mh-measure-free
     # on the phone; --only mh-measure-free keeps every other file of the phone out of the import
     # and of the page. A and C are new: imported, then proven and deleted from the phone. B has a
     # twin in the destination with its name and size but another content: kept on the phone.
-    $answer = if ($phone) { Read-Host "19p. Ensuite : mh phone --free sur 3 fichiers de test ecrits sur le telephone (DCIM\mh-measure-free) ; aucun autre fichier du telephone n'est touche. Continuer ? (o/n)" } else { 'n' }
+    $answer = if ($phone) { Read-Host "19p. Ensuite : mh import --phone --free sur 3 fichiers de test ecrits sur le telephone (DCIM\mh-measure-free) ; aucun autre fichier du telephone n'est touche. Continuer ? (o/n)" } else { 'n' }
     $device = $null
     if ($answer -in 'y', 'o') {
         foreach ($entry in $shell.Namespace(17).Items()) {
@@ -1603,7 +1603,7 @@ if (Wanted 19) {
         }
         if (-not $device) { Log "   19p. the phone '$($phone.Name)' is not seen any more: 19p skipped" }
     } else {
-        Log "   19p. mh phone --free on test files: skipped"
+        Log "   19p. mh import --phone --free on test files: skipped"
     }
     $dcimFree = if ($device) { PhoneFindDcim $device.GetFolder 0 } else { $null }
     if ($dcimFree) {
@@ -1664,12 +1664,12 @@ if (Wanted 19) {
         Log "   19p. B's twin written in the destination: same name and size, another content"
         Read-Host "19p. Ensuite : une page s'ouvre dans votre navigateur ; laissez les cases cochees telles quelles (A, B, C), appuyez sur Delete, confirmez. Appuyez sur Entree pour demarrer" | Out-Null
         $watch = [Diagnostics.Stopwatch]::StartNew()
-        $said = @(mh phone --to $freeTo --only mh-measure-free --free 6>&1 | ForEach-Object { "$_" })
+        $said = @(mh import --phone --to $freeTo --only mh-measure-free --free 6>&1 | ForEach-Object { "$_" })
         $seconds = $watch.Elapsed.TotalSeconds
-        foreach ($line in $said) { Log ("   19p. mh phone --free: " + $line) }
-        Log ("   19p. mh phone --free: {0:N1} s wall time (the page included)" -f $seconds)
+        foreach ($line in $said) { Log ("   19p. mh import --phone --free: " + $line) }
+        Log ("   19p. mh import --phone --free: {0:N1} s wall time (the page included)" -f $seconds)
         $dialog = Read-Host "19p. Windows a-t-il affiche une fenetre ou une question (regardez avec Alt+Tab) ? (n ou ce qu'il a dit)"
-        Log "   19p. a window during mh phone --free (none expected): $dialog"
+        Log "   19p. a window during mh import --phone --free (none expected): $dialog"
         $left = @(foreach ($entry in $testFolder.Items()) { "$($entry.ExtendedProperty('System.FileName'))" })
         Log ("   19p. left on the phone in DCIM\mh-measure-free: {0} (expected: only {1})" -f ($left -join ', '), $names[1])
         $onPc = @(Get-ChildItem -LiteralPath $freeTo -Recurse -File -Force -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName.Substring($freeTo.Length) })

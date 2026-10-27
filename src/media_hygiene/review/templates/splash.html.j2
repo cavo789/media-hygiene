@@ -1,0 +1,10 @@
+{# The startup screen, the same on the PC's home page and in the phone's app (0432): the meerkat,
+   the product's name, what it does; hidden once the page's state has come (home.js.j2). One file,
+   included by home.html.j2, so both stay identical. #}
+<div class="loading" id="loading" role="status">
+  <img src="{{ paths.assets }}images/meerkat-splash.webp" alt="" width="800" height="800">
+  <p class="splash-name">{{ _("Media Hygiene") }}</p>
+  <p class="muted">{{ _("Your photos and videos, sorted and without duplicates.") }}</p>
+  <p>{{ texts.loading }}</p>
+  <p class="muted" id="loadingSlow" hidden>{{ texts.loadingSlow }}</p>
+</div>

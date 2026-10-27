@@ -1,4 +1,4 @@
-r"""The journal of `mh phone` freeing a phone: `pending` before, `done` after (0248).
+r"""The journal of `import --phone --free`: `pending` before, `done` after (0248).
 
 A run of kind `phone`, written ahead as `clean` writes: `phone-prove` records each
 proven file `pending` before `mh` removes it from the phone, `phone-done` records it

@@ -58,7 +58,7 @@ where you are…* shows while it counts the quarantine, which takes a few second
 thousands of files.
 
 The phone, `mh shortcut` (an icon on the Desktop) and `mh explorer` (the right-click of a folder)
-are for Windows: the bash `mh` leaves them out. `mh` runs `open`, `folders`, `update`, `phone`,
+are for Windows: the bash `mh` leaves them out. `mh` runs `open`, `folders`, `update`, `import --phone`,
 `shortcut` and `explorer` itself: [what `mh` does by itself](launcher.md#what-mh-does-by-itself).
 A command that has no place in the menu yet still shows, last, under *Other commands*.
 
@@ -71,10 +71,10 @@ Quarantine: empty.
 
       Import photos
       From a phone
-    1 mh phone                                        Copy the new   🔒
+    1 mh import --phone                                        Copy the new   🔒
                                                       photos of the
                                                       phone
-    2 mh phone --free                                 Make room on   ⚠️ optional
+    2 mh import --phone --free                                 Make room on   ⚠️ optional
                                                       the phone
       From your NAS or an old disk
       mh folders add --backup "\\NAS\Photos"          Plug in your   🔒

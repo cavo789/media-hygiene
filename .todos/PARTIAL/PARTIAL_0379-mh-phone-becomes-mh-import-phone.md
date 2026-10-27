@@ -45,3 +45,26 @@ content without a copy). Only the verb and the rule of reasons (0377) are shared
 
 One verb to learn for "bring photos in", whatever the source (*estimated*: one verb fewer in
 `mh --help`, the menu's import stage in one place). No speed change.
+
+## Decided (2026-10-27)
+
+- `mh phone` is removed in this version, no alias: `mh import --phone` only (maintainer).
+
+## Status — PARTIAL (2026-10-27, unattended run)
+
+Done: `mh phone` removed, no alias (decided); `mh import --phone [--to] [--only] [--free]` is a
+host command of `mh.ps1`, dispatched before Docker by the `--phone` flag of `import`
+(`launcher_host.PHONE_FLAG`); the bash `mh` says `mh import --phone is for Windows only.` (status
+2); the container's `import --phone` (reached without `mh.ps1`) says the same in one line, status
+2. Menu: the two phone actions run `import --phone` / `import --phone --free`, still in the Import
+stage, their docs on `commands/import`. Docs en + fr: the phone section moved from `launcher.md`
+to `import.md` ("From a phone"), anchors and links updated, `--phone` in its options; every
+`mh phone` in src, docs, tests and `mh-measure.ps1` now says `mh import --phone`.
+Destination unchanged: `<first photo folder>\Phone\<phone name>` (point 3 left as is: the
+destination folder is one of the three places `phone-plan` matches by name and size, with the
+index and the journals: a new `From phone` folder would copy again what no audit has indexed yet;
+a rename is a decision for the maintainer).
+
+Left for the maintainer: run `mh import --phone`, then `mh import --phone --free` with the phone
+plugged in (Windows PowerShell 5.1: the dispatch itself is not run here, no PowerShell in the
+devcontainer); `docs_screenshots` (the menu, `import --help` and launcher captures are stale).

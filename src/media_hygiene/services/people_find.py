@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.faces.worker import FaceJob, find_faces
+from media_hygiene.i18n import ngettext
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
@@ -129,4 +130,10 @@ class _Run:
         self.deps.store.put(found)
         self.outcome.analysed += 1
         self.outcome.faces += len(found.faces)
+        count = len(found.faces)
+        self.deps.progress.current(
+            ngettext(
+                "Last photo: {count} face", "Last photo: {count} faces", count
+            ).format(count=count)
+        )
         self.outcome.seconds += found.seconds

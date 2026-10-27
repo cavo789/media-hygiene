@@ -1,6 +1,6 @@
 # 8. Clean
 
-[Documentation](../README.md) › Cleaning, step 8 of 14 · 🇫🇷 [Français](../../fr/clean/08-clean.md)
+[Documentation](../README.md) › Cleaning, step 8 of 15 · 🇫🇷 [Français](../../fr/clean/08-clean.md)
 
 You have audited, read the folder pairs, maybe chosen which folders stay. Time to free the
 space. `clean` moves the extra copies to the quarantine — nothing is erased — and keeps a written

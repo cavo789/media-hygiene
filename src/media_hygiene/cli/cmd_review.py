@@ -1,6 +1,7 @@
 """`media-hygiene review`: set burst shots aside, series by series, in the browser.
 
-The other pages (`--near`, `--pairs`, `--junk`) are dispatched by `review_modes`.
+The other pages (`--near`, `--pairs`, `--junk`, `--gone`, `--intruders`) are
+dispatched by `review_modes`.
 """
 
 # pylint: disable=import-outside-toplevel,too-many-locals  # lazy: a command imports
@@ -36,6 +37,7 @@ def review_command(  # pylint: disable=too-many-arguments
     pairs: Annotated[bool, review_options.pairs()] = False,
     junk: Annotated[bool, review_options.junk()] = False,
     gone: Annotated[bool, review_options.gone()] = False,
+    intruders: Annotated[bool, review_options.intruders()] = False,
     decisions: Annotated[Path, review_options.decisions_file()] = _DECISIONS_FILE,
     port: Annotated[int | None, review_options.port(options.panel_advanced())] = None,
     prefer: Annotated[list[str] | None, folder_options.prefer()] = None,
@@ -61,6 +63,7 @@ def review_command(  # pylint: disable=too-many-arguments
         pairs: `--pairs`, the folder pairs instead of the burst series.
         junk: `--junk`, the photos most likely unwanted instead.
         gone: `--gone`, the files gone since the last audit instead.
+        intruders: `--intruders`, the files neither photos nor videos instead.
     """
     from media_hygiene.cli.apply_step import end_on_applied, page_apply
     from media_hygiene.cli.flows import audit_and_show
@@ -91,6 +94,7 @@ def review_command(  # pylint: disable=too-many-arguments
                 ReviewMode.PAIRS: pairs,
                 ReviewMode.JUNK: junk,
                 ReviewMode.GONE: gone,
+                ReviewMode.INTRUDERS: intruders,
             }
         )
         target = review_target(runtime, decisions, port)

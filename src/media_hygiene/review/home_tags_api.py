@@ -4,6 +4,8 @@
 `POST {"action": "prepare"}` writes the cheap words and counts the photos to describe,
 `{"action": "describe", "minutes": 60}` sends them (no `minutes`: until done or Stop),
 `{"action": "stop"}` stops after the photo in flight. One half at a time: 409 else.
+`/api/people` (the face scan, 0424) and `/api/meaning` (search by meaning, 0425) answer
+the same way, each with its own `HomeTags`.
 """
 
 from __future__ import annotations
@@ -24,6 +26,11 @@ if TYPE_CHECKING:
     from media_hygiene.services.home_tags import HomeTags
 
 TAGS_PATH: Final = "/api/tags"
+PEOPLE_PATH: Final = "/api/people"  # the face scan of `people` (0424)
+MEANING_PATH: Final = "/api/meaning"  # search by meaning, `[tags] meaning` (0425)
+RUN_PATHS: Final = frozenset({TAGS_PATH, PEOPLE_PATH, MEANING_PATH})
+RUN_NAMES: Final = {"tags": TAGS_PATH, "people": PEOPLE_PATH, "meaning": MEANING_PATH}
+TAGS_RUN: Final = frozenset({TAGS_PATH})  # the page without faces nor meaning
 _MAX_MINUTES: Final = 24 * 60
 
 
@@ -83,6 +90,6 @@ async def tags_response(tags: HomeTags, request: Request) -> Response:
         case _:
             started = tags.describe(asked.minutes)
     if not started:
-        message = _("Tags already run: wait for the end, or stop them.")
+        message = _("This step already runs: wait for its end, or stop it.")
         return json_response(HTTPStatus.CONFLICT, {"error": message})
     return tags_state(tags)

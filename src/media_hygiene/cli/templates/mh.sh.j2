@@ -30,6 +30,12 @@
         return
     fi
     # The commands of the host itself, without the container (0175, 0180, 0181).
+    if [[ "$1" == import && " ${*:2} " == *" {{ host.phone }} "* ]]; then
+        # `{{ function }} import {{ host.phone }}` reads a phone over USB: mh.ps1 only (0219, 0379).
+        set -- "import {{ host.phone }}"
+        printf '%s\n' "{{ host.texts.windows }}" >&2
+        return 2
+    fi
     case "$1" in
 {% for name in host.names %}
         {{ name }}) _{{ function }}_{{ name }} "${@:2}"; return ;;
@@ -196,6 +202,7 @@ _{{ function }}_{{ name }}() {
 _{{ function }}_home() {
     local _{{ function }}_relay=1 _{{ function }}_tab='' status=0 after=0 crashed=-{{ texts.crash.window }} steps number line chosen words=() color=(--color never)
     if [[ -t 2 ]]; then color=(--color always); fi
+    echo "{{ texts.running }}" >&2  # once: the page runs in the background (0355)
     while true; do
         if [[ "$status" -eq {{ page_closed }} ]]; then return 0; fi  # its tab closed (0262)
         if [[ "$status" -ge {{ signal_base }} ]]; then return "$status"; fi

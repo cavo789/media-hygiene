@@ -1,4 +1,4 @@
-r"""What `mh phone --free` needs: its batches, its waits and its messages (0248).
+r"""What `import --phone --free` needs: its batches, its waits, its messages (0248).
 
 After the import, the files the PC may hold are ticked on a page (`phone-review`);
 then, batch by batch, each one is copied again into an empty staging folder, proven
@@ -29,7 +29,7 @@ PHONE_MB_PER_SECOND: Final = 24
 # measured).
 GONE_SECONDS: Final = 10
 # The PC folder the files moved off the phone land in, next to the import: never
-# removed by a later `mh phone` (unlike the staging folders), emptied as each copy is
+# removed by a later import (unlike the staging folders), emptied as each copy is
 # proven equal.
 MOVED_PREFIX: Final = ".mh-moved-"
 FREE_FLAG: Final = "--free"
@@ -37,7 +37,7 @@ FREE_FLAG: Final = "--free"
 
 @dataclass(frozen=True, slots=True)
 class PhoneFreeTexts:  # pylint: disable=too-many-instance-attributes  # one per message
-    """The messages of `mh phone --free`, ready to sit inside double quotes."""
+    """The messages of `mh import --phone --free`, ready to sit inside double quotes."""
 
     read: str
     none: str
@@ -71,7 +71,7 @@ class PhoneFreeCommand:  # pylint: disable=too-many-instance-attributes  # one p
 
 
 def phone_free_command() -> PhoneFreeCommand:
-    """Gather the values and the translated messages of `mh phone --free`.
+    """Gather the values and the translated messages of `mh import --phone --free`.
 
     Returns:
         Them, the messages safe inside double quotes.
@@ -111,7 +111,8 @@ def phone_free_command() -> PhoneFreeCommand:
             ),
             still=say(
                 _(
-                    "Still on the phone after the move: {count}. Type mh phone "
+                    "Still on the phone after the move: {count}. Type mh import "
+                    "--phone "
                     "--free again."
                 ),
                 "count",
@@ -128,7 +129,7 @@ def phone_free_command() -> PhoneFreeCommand:
                 _(
                     "The phone no longer answers (unplugged, or asleep: keep it "
                     "unlocked, screen on): what is counted above was deleted, the rest "
-                    "is still on it. Type mh phone --free again."
+                    "is still on it. Type mh import --phone --free again."
                 )
             ),
             aside=say(_("Set aside before, left on the phone: {count}."), "count"),

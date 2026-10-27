@@ -1,0 +1,21 @@
+{# The large view alone, for a review answering one group at a time (`--near`, `--gone`,
+   `--pairs`, 0321): the shared grid's script with nothing to pick (`pickKeys = false`), so
+   one large view serves every page (skill photo-picking-pages). Included in the page's
+   `after` block before its own script, which calls `showLarge(files, nodes)` with the tiles
+   worth seeing large; their keys are `pick_large_keys.html.j2`. #}
+{% set pick_marks = false %}
+{% set pick_album = false %}
+{% set pick_space = _("play or pause a video") %}
+{% include "pick_viewer.html.j2" %}
+<script>
+{% include "pick_grid.js.j2" %}
+{% include "pick_viewer.js.j2" %}
+const TEXTS = {};       // nothing picked, nothing saved by the shared scripts here
+const CHOSEN_PATH = "";
+function scope() {
+  return {};
+}
+pickMoves = false;      // the page's ←/→ change the group
+pickKeys = false;       // Enter or a double click opens the tile large, nothing more
+for (const key of ["Delete", "Backspace", "a"]) delete VIEWER_KEYS[key];
+</script>

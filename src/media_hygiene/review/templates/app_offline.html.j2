@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+{# The page the phone's app shows when Media Hygiene is not running on the PC (0432,
+   review/app_shell.py), kept by the service worker with its meerkat. Retry reloads the home page;
+   it retries by itself every few seconds. Same look as lan_pair.html.j2. #}
+<html lang="{{ _('en') }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Media Hygiene</title>
+<style>
+:root { color-scheme: light dark; --ink: #0b2239; --muted: #4a5a6a; --surface: #ffffff; --page: #f3f6fa; --accent: #3d85c6; }
+@media (prefers-color-scheme: dark) { :root { --ink: #e8eef5; --muted: #a9b6c3; --surface: #16222e; --page: #0d1620; --accent: #7fb3e6; } }
+body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box; background: var(--page); color: var(--ink); font: 17px/1.5 system-ui, sans-serif; }
+main { width: 100%; max-width: 420px; padding: 24px; border-radius: 14px; background: var(--surface); box-shadow: 0 2px 12px rgba(0, 0, 0, .12); text-align: center; }
+img { width: 200px; max-width: 70%; height: auto; }
+h1 { margin: 8px 0; font-size: 1.4rem; }
+p { margin: 0 0 12px; color: var(--muted); }
+button { width: 100%; margin-top: 8px; padding: 12px; border: 0; border-radius: 10px; background: var(--accent); color: #fff; font: 600 1.1rem/1.2 system-ui, sans-serif; }
+</style>
+</head>
+<body>
+<main>
+  <img src="{{ image }}" alt="" width="400" height="387">
+  <h1>{{ _("Media Hygiene is asleep") }}</h1>
+  <p>{{ _("It is not running on the PC. On the PC, start Media Hygiene (type mh in Windows PowerShell): this page opens again by itself.") }}</p>
+  <button type="button" id="retry">{{ _("Retry") }}</button>
+</main>
+<script>
+const home = () => window.location.replace("/");
+document.getElementById("retry").addEventListener("click", home);
+// Back as soon as the PC answers: a light request every few seconds, the page only then.
+window.setInterval(() => { fetch("/", { method: "HEAD", cache: "no-store" }).then((r) => { if (r.status < 500) home(); }).catch(() => undefined); }, {{ retry }});
+</script>
+</body>
+</html>

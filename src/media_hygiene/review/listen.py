@@ -2,7 +2,8 @@
 
 The PC's door listens on the page's port, the home network's on `LAN_DOOR_PORT` only
 when `mh --lan` asked for it: every request of the second one is marked `Door.LAN`,
-so that no header can make it pass for the PC.
+so that no header can make it pass for the PC. With the certificates of `/lan` (0430)
+that door is HTTPS, and a plain HTTP one beside it hands out the authority to install.
 """
 
 from __future__ import annotations
@@ -12,7 +13,10 @@ import contextlib
 from dataclasses import replace
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.review.doors import Door, lan_door_port
+from media_hygiene.review.doors import LAN_CA_DOOR_PORT, Door, lan_door_port
+from media_hygiene.review.lan_address import lan_address
+from media_hygiene.review.lan_ca_page import CaDoor
+from media_hygiene.review.lan_tls import lan_folder, secure_door
 from media_hygiene.review.serving import serve_connection
 
 if TYPE_CHECKING:
@@ -70,11 +74,34 @@ async def listening(handle: Handle, port: int) -> AsyncIterator[asyncio.Server]:
         )
         await stack.enter_async_context(server)
         if lan_port is not None:
+            address = lan_address()
+            secure = None if address is None else secure_door(address)
             marked = lan_handle(handle)
             lan = await asyncio.start_server(
                 lambda reader, writer: serve_connection(reader, writer, marked),
                 LISTEN_HOST,
                 lan_port,
+                ssl=secure,
             )
             await stack.enter_async_context(lan)
+            folder = lan_folder()
+            if secure is not None and folder is not None:
+                origin = f"https://{address}:{port}"
+                await stack.enter_async_context(await _ca_door(CaDoor(folder, origin)))
         yield server
+
+
+async def _ca_door(door: CaDoor) -> asyncio.Server:
+    """Listen on the plain HTTP door that hands out the authority (0430).
+
+    Args:
+        door: Its pages.
+
+    Returns:
+        The server, on `LAN_CA_DOOR_PORT`.
+    """
+    return await asyncio.start_server(
+        lambda reader, writer: serve_connection(reader, writer, door.handle),
+        LISTEN_HOST,
+        LAN_CA_DOOR_PORT,
+    )

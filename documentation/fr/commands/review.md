@@ -35,7 +35,7 @@ docker run --rm -it `
 | Conseillé | `/cache` (l'audit par lequel il commence prend quelques secondes), `/config`. |
 | Écrit | `decisions.json` dans `/reports`, le cache. |
 | Annuler | Changez vos choix dans la page, ou supprimez `decisions.json`. |
-| Avec `mh` | `mh review`, `mh review --near`, `mh review --pairs`, `mh review --junk`, `mh review --gone` : le port est publié pour vous. |
+| Avec `mh` | `mh review`, `mh review --near`, `mh review --pairs`, `mh review --junk`, `mh review --gone`, `mh review --intruders` : le port est publié pour vous. |
 
 ## Cinq sortes de tri
 
@@ -46,6 +46,7 @@ docker run --rm -it `
 | `review --pairs` | **Les paires de dossiers** de fichiers identiques, la plus grande place libérée d'abord : comme prévu (`→`), inverser les dossiers (`W`), ne pas toucher (`L`). | `clean --decisions` |
 | `review --junk` | **Les photos le plus probablement indésirables** (minuscules, captures d'écran, presque noires ou blanches, les plus floues), groupe par groupe : chacune gardée ou mise de côté par vous. | `clean --decisions` |
 | `review --gone` | **Les photos et vidéos disparues depuis un audit** (supprimées dans l'Explorateur ?), par dossier et par jour : supprimées exprès (`D`, retenues, mises de côté si elles reviennent) ou déplacées ailleurs (`M`, oubliées). [Étape 9 du nettoyage](../clean/09-undo-history-purge.md#supprimés-dans-lexplorateur-) | `clean --decisions` |
+| `review --intruders` | **Les fichiers intrus** (zip, docx, pdf… dans les dossiers photos), par extension et par dossier : cochez ceux à mettre de côté ; pas de vignettes, rien à regarder. [Étape 15 du nettoyage](../clean/15-intruder-files.md) | `clean --decisions` |
 
 ## Lancer
 
@@ -78,14 +79,29 @@ quand la page d'accueil l'a ouvert), puis les photos.
 | `→` | Rafale suivante, telle que montrée | Comme prévu, puis le groupe suivant | Comme prévu, puis la paire suivante |
 | `←` | Rafale précédente | Groupe précédent | Paire précédente |
 | `N` | Rafale suivante encore à voir | Groupe suivant encore indécis | Paire suivante encore indécise |
-| `1` … `9` | Écarter cette photo, ou la reprendre | — | — |
-| `S` / `A` / `X` | Garder seulement la plus nette / tout garder / écarter toute la rafale | — | — |
+| `Suppr` | Écarter les photos choisies | — | — |
+| `S` / `X` | Garder seulement la plus nette / écarter toute la rafale (*Garder toutes les photos* : un bouton) | — | — |
 | `W` / `L` / `U` | — | Garder l'autre version / laisser tel quel / revenir à indécis | Inverser les dossiers / ne pas toucher / revenir à indécise |
 | `V` / `G` | Valider d'un coup toutes les rafales évidentes | `G` : toute la paire de dossiers comme prévu | — |
 | `Z` | Annuler le dernier choix | — | — |
 
 `review --junk` : `→` le groupe tel que marqué, puis le suivant ; `Espace` garde ou met de côté
-la photo sous le curseur (`↑` / `↓`) ; `←`, `N`, `U` comme pour les autres tris.
+la photo encadrée ; `Suppr` met de côté les photos choisies ; `←`, `N`, `U` comme pour les autres
+tris.
+
+**Choisissez les photos comme dans [`browse`](browse.md)** (`review` et `review --junk`) : un
+clic choisit une photo ; la case ☑ (ou Ctrl+clic) en ajoute ou en retire une ; Maj+clic choisit
+toutes les photos depuis la dernière cliquée ; un rectangle tracé à la souris choisit ce qu'il
+touche (avec Ctrl, il ajoute) ; Ctrl+A toute la rafale ou tout le groupe ; **Inverser la sélection**
+(ou I) choisit les autres. `Suppr` ou le bouton de la barre écarte les photos choisies, *Retirer
+de la mise de côté* les reprend. Comme `←`, `→` et Espace changent de rafale ici, le cadre se
+déplace avec `↑` / `↓`.
+
+**Voir une photo en grand** sur chaque tri : Entrée ou un double clic ; `←` / `→` la précédente
+ou la suivante, `F` plein écran, `?` toutes les touches, `Échap` ferme. Sur `review` et
+`review --junk`, `Suppr` écarte la photo affichée et `⌫` la reprend ; sur `review`, `A` l'ajoute
+à l'album nommé dans la barre. Sur `--near`, `--gone` et `--pairs`, la grande vue montre
+seulement (rien à choisir).
 
 `review --gone` : `D` supprimé exprès, `M` déplacé ailleurs (le fichier sous le curseur, puis le
 suivant), `G` tout le groupe supprimé exprès, `U` le groupe redevient sans réponse ; `→`, `←`,
@@ -103,7 +119,8 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
 | `--near` | Trier les quasi-doublons et vidéos réencodées au lieu des rafales. |
 | `--pairs` | Trier les paires de dossiers de fichiers identiques au lieu des rafales. |
 | `--junk` | Trier les photos le plus probablement indésirables au lieu des rafales ; seuils dans `[review.unwanted]`. |
-| `--gone` | Trier les photos et vidéos disparues depuis un audit au lieu des rafales. Un seul de `--near`, `--pairs`, `--junk`, `--gone` par lancement. |
+| `--gone` | Trier les photos et vidéos disparues depuis un audit au lieu des rafales. |
+| `--intruders` | Choisir les fichiers intrus à mettre de côté, par extension et par dossier, au lieu des rafales. Un seul de `--near`, `--pairs`, `--junk`, `--gone`, `--intruders` par lancement. |
 | `--decisions FICHIER` | Le fichier où les choix sont enregistrés, et repris ; `decisions.json` de `/reports` par défaut. |
 | `--port PORT` | Port de la page, 8088 par défaut ; publiez le même : `-p 127.0.0.1:9000:9000` pour `--port 9000`. |
 | `--prefer`, `--protect`, `--exclude` | Comme pour [`audit`](audit.md#options) : donnez à `review` les mêmes qu'à `clean`. |
@@ -135,7 +152,7 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
   quelqu'un présent sur cette photo, pour les mettre toutes de côté : voir
   [`people`](people.md#depuis-nimporte-quelle-page--mettre-une-personne-de-côté).
 - Le tri des rafales a aussi un champ **Album** : **➕ Ajouter à l'album** met dans cet album les
-  photos de la série affichée qui ne sont pas écartées, à part de vos décisions. Voir
+  photos choisies, comme dans `browse`, à part de vos décisions. Voir
   [Mettre des photos dans un album](search.md#mettre-des-photos-dans-un-album).
 - *port is already allocated* ? Un autre programme utilise 8088 : `-p 127.0.0.1:9000:9000` et
   `review --port 9000`.

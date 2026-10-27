@@ -10,6 +10,9 @@
    A page where a pick means something else (the phone page: ticked = leaves the phone)
    sets `saveChoice(action, keys)` (it saves, reads back and says; true once saved),
    may set `placeCards(cards)` (the cards in groups) and `deleteKeySets = false`.
+   A review moving between series with ←/→/Space sets `pickMoves = false` (↑/↓ move the
+   frame by one, the page keeps ←/→/Space, 0319); a review answering per group sets
+   `pickKeys = false` too (no picking at all, only the large view: `showLarge`, 0321).
    Included first in the page's script: the strict mode starts here. #}
 "use strict";
 const $ = (id) => document.getElementById(id);
@@ -24,6 +27,8 @@ const picked = new Set(); // the keys of the files picked
 let bandDrawn = false; // a rectangle just ended: the click that follows picks nothing
 let saveChoice = null; // the page's own saving of a choice, instead of `CHOSEN_PATH`'s
 let deleteKeySets = true; // the Delete key sets the picked files aside
+let pickMoves = true;  // ←/→ move the frame, Space picks; false: ↑/↓ move by one, the page has ←/→/Space
+let pickKeys = true;   // false: nothing is picked (no ☑, no key, no click), the large view only
 
 function fill(template, values) {
   return template.replace(/\{(\w+)\}/g, (all, name) => (name in values ? values[name] : all));
@@ -62,6 +67,9 @@ async function ask(path, body) {
 function wireCard(node, index) {
   node.classList.add("file");
   node.tabIndex = 0;
+  node.addEventListener("dblclick", () => { focusOn(index); open(); });
+  node.addEventListener("focus", () => focusOn(index));
+  if (!pickKeys) return node;
   const tick = element("input", "tick");
   tick.type = "checkbox";
   tick.tabIndex = -1;
@@ -78,9 +86,15 @@ function wireCard(node, index) {
     focusOn(index);
     pick(index, event);
   });
-  node.addEventListener("dblclick", () => { focusOn(index); open(); });
-  node.addEventListener("focus", () => focusOn(index));
   return node;
+}
+
+// A page answering per group (0321): its own tiles open large, nothing is picked.
+function showLarge(listed, nodes) {
+  files = listed;
+  cards = nodes.map((node, index) => wireCard(node, index));
+  current = -1;
+  anchor = -1;
 }
 
 // The same files in the same order: the cards shown can stay, only their labels change.
@@ -228,6 +242,13 @@ document.addEventListener("keydown", (event) => {
     return;
   }
   if (["SELECT", "INPUT"].includes(document.activeElement.tagName)) return; // a field typed in
+  if (!pickKeys) {
+    if (event.key === "Enter" && current >= 0 && document.activeElement.classList.contains("file")) {
+      event.preventDefault();
+      open();
+    }
+    return;
+  }
   if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "a") {
     event.preventDefault();
     everything = false;
@@ -240,7 +261,7 @@ document.addEventListener("keydown", (event) => {
     invert();
     return;
   }
-  const moves = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: columns(), ArrowUp: -columns() };
+  const moves = pickMoves ? { ArrowRight: 1, ArrowLeft: -1, ArrowDown: columns(), ArrowUp: -columns() } : { ArrowDown: 1, ArrowUp: -1 };
   if ((event.key === "Home" || event.key === "End") && cards.length) {
     event.preventDefault();
     jump(event.key === "Home" ? 0 : cards.length - 1);
@@ -250,7 +271,7 @@ document.addEventListener("keydown", (event) => {
   } else if (event.key === "Enter" && current >= 0 && document.activeElement.classList.contains("file")) {
     event.preventDefault();
     open();
-  } else if (event.key === " " && current >= 0 && document.activeElement.classList.contains("file")) {
+  } else if (event.key === " " && pickMoves && current >= 0 && document.activeElement.classList.contains("file")) {
     event.preventDefault();
     pick(current, event);
   } else if (event.key === "Delete" && deleteKeySets) {
@@ -258,8 +279,10 @@ document.addEventListener("keydown", (event) => {
     choose("add");
   }
 });
-$("setAside").addEventListener("click", () => choose("add"));
-$("takeBack").addEventListener("click", () => choose("remove"));
-$("unpick").addEventListener("click", () => { picked.clear(); everything = false; showPicked(); });
-$("invert").addEventListener("click", invert);
-$("pickAll").addEventListener("click", () => { everything = true; showPicked(); });
+if ($("acting")) { // a page answering per group has no picking bar (0321)
+  $("setAside").addEventListener("click", () => choose("add"));
+  $("takeBack").addEventListener("click", () => choose("remove"));
+  $("unpick").addEventListener("click", () => { picked.clear(); everything = false; showPicked(); });
+  $("invert").addEventListener("click", invert);
+  $("pickAll").addEventListener("click", () => { everything = true; showPicked(); });
+}

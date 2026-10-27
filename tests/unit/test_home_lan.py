@@ -29,14 +29,14 @@ from media_hygiene.review.ending import STOP_PATH, Ending, EndingDoor
 from media_hygiene.review.http import ContentType, Request, Response, is_local
 from media_hygiene.review.lan import (
     COOKIE_NAME,
-    LAN_ADDRESS_VARIABLE,
     LAN_SECRET_VARIABLE,
     LanAccess,
     cookies,
     lan_access,
-    private_address,
 )
-from media_hygiene.review.lan_app import LAN_PATH, MAX_FAILURES, LanApp
+from media_hygiene.review.lan_address import LAN_ADDRESS_VARIABLE, private_address
+from media_hygiene.review.lan_app import LAN_PATH, LanApp
+from media_hygiene.review.lan_pairing import MAX_FAILURES
 from media_hygiene.review.lan_problem import (
     LAN_PROBLEM_VARIABLE,
     LanProblem,
@@ -245,14 +245,14 @@ def test_wrong_codes_close_the_pairing() -> None:
     assert _ask(app, _phone("/", paired=False)).status == HTTPStatus.UNAUTHORIZED
 
 
-def test_a_paired_phone_reads_and_runs_the_audit_as_from_the_loopback() -> None:
-    """The phone's page; the state, the reports, the audit passed on, Host rewritten."""
+def test_a_paired_phone_reads_the_audit_as_from_the_loopback() -> None:
+    """The phone's page; the state, the reports, the audit's state, Host rewritten."""
     app, fake = _app()
     page = _ask(app, _phone("/"))
     assert page.body == _PHONE_PAGE
     for path in ("/api/state", "/api/audit", "/reports/index.html"):
         assert _ask(app, _phone(path)).body == b"home", path
-    assert _ask(app, _phone("/api/audit", method="POST")).body == b"home"
+    assert _ask(app, _phone("/api/alive", method="POST")).body == b"home"
     hosts = {request.headers["host"] for request in fake.seen}
     assert hosts == {f"127.0.0.1:{_PORT}"}
     posted = fake.seen[-1]
@@ -338,7 +338,7 @@ def test_the_phones_page_opens_search_and_browse() -> None:
 def test_a_post_from_another_origin_is_refused() -> None:
     """The cookie alone is not enough: the page itself, at the PC's address."""
     app, fake = _app()
-    request = _phone("/api/audit", method="POST")
+    request = _phone("/api/search", method="POST")
     request = replace(request, headers={**request.headers, "origin": "http://evil"})
     assert _ask(app, request).status == HTTPStatus.FORBIDDEN
     assert not fake.seen
@@ -536,9 +536,9 @@ def test_powershell_lan_off_keeps_mh_alone_on_the_pc(tmp_path: Path) -> None:
 
 
 def test_the_setting_reaches_the_launcher() -> None:
-    """`[review] lan` defaults to off until 0384 is fixed, the launcher's too."""
-    assert ReviewSettings().lan is False
-    assert _COMMANDS.lan is False
+    """`[review] lan` is on by default (2026-10-27); false keeps the PC alone."""
+    assert ReviewSettings().lan is True
+    assert ReviewSettings(lan=False).lan is False
 
 
 _FORGED: Final = ("127.0.0.1:8765", "localhost:8765", "[::1]:8765", _LAN_HOST)
@@ -619,3 +619,18 @@ def test_both_doors_listen_under_mh_lan(monkeypatch: pytest.MonkeyPatch) -> None
 
     asyncio.run(run())
     assert seen == [Door.PC, Door.LAN]
+
+
+def test_mh_alone_says_it_runs_and_how_a_phone_opens_it(tmp_path: Path) -> None:
+    """The page runs detached (0355): the window says so, and tips `mh --lan`."""
+    powershell = _render(Shell.POWERSHELL, tmp_path)
+    loop = powershell[powershell.index("function global:_mh_home {") :]
+    running = "Media Hygiene is running: its page opens in your browser."
+    assert running in loop[: loop.index("while ($true)")]
+    tip = "On a phone of the home Wi-Fi too: mh --lan"
+    guarded = "if (-not ($global:MediaHygieneLan -and $global:MediaHygieneLan.address))"
+    line = next(line for line in loop.splitlines() if tip in line)
+    assert line.strip().startswith(guarded)
+    bash = _render(Shell.BASH, tmp_path)
+    assert running in bash
+    assert tip not in bash  # `mh --lan` is PowerShell only

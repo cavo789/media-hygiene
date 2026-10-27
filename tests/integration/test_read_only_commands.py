@@ -56,7 +56,9 @@ RUNS: tuple[tuple[str, ...], ...] = (
     ("status",),
     ("launcher",),
     ("menu",),
-    ("phone-plan",),  # plumbing of `mh phone` (0219): an empty listing on stdin
+    (
+        "phone-plan",
+    ),  # plumbing of `mh import --phone` (0219): an empty listing on stdin
 )
 
 

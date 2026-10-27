@@ -1,6 +1,6 @@
 # 6. Only some file types
 
-[Documentation](../README.md) › Cleaning, step 6 of 14 · 🇫🇷 [Français](../../fr/clean/06-file-types.md)
+[Documentation](../README.md) › Cleaning, step 6 of 15 · 🇫🇷 [Français](../../fr/clean/06-file-types.md)
 
 By default, the tool analyses every photo, RAW file and video, and nothing else. `--ext` narrows
 the analysis to some types; the other files of your photo folders are listed by the audit.

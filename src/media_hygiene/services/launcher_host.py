@@ -4,9 +4,9 @@ The container can neither open a browser nor write a Windows shortcut or registr
 `mh open` (the reports in the browser), `mh shortcut` (an icon opening the menu) and
 `mh explorer` (the right-click entry of a folder and of an open folder's background,
 0188) are functions of the script, and so are `mh folders` and `mh update`, which
-write the script itself again. `mh`
-dispatches them before anything else, by their first word; the bash script says that
-`shortcut`, `explorer` and `phone` (0219) are for Windows. Their messages are written
+write the script itself again. `mh` dispatches them before anything else, by their
+first word (`import --phone` by its flag); the bash script says that `shortcut`,
+`explorer` and `import --phone` (0219, 0379) are for Windows. Their messages are written
 into the script, translated, with the shell variables they show (`${index}`,
 `${path}`, `${key}`, `$1`).
 """
@@ -39,12 +39,13 @@ EXPLORER: Final = "explorer"
 # Both write `mh` again by running `launcher` (0176, 0177: `launcher_kept.py`).
 FOLDERS: Final = "folders"
 UPDATE: Final = "update"
-# Copies the new photos of a phone over USB, which only Windows PowerShell reads (0219).
-PHONE: Final = "phone"
+# `import --phone` copies the new photos of a phone over USB, which only Windows
+# PowerShell reads (0219): a host command found by this flag of `import` (0379).
+PHONE_FLAG: Final = "--phone"
 # Copies the photo folders to a NAS: Windows writes it, the bash `mh` refuses (0264).
 PUSH: Final = "push"
-HOST_COMMANDS: Final = (OPEN, SHORTCUT, EXPLORER, FOLDERS, UPDATE, PHONE, PUSH)
-WINDOWS_ONLY: Final = (SHORTCUT, EXPLORER, PHONE)
+HOST_COMMANDS: Final = (OPEN, SHORTCUT, EXPLORER, FOLDERS, UPDATE, PUSH)
+WINDOWS_ONLY: Final = (SHORTCUT, EXPLORER)
 # The name of the shortcut and of the right-click entry.
 LABEL: Final = "Media Hygiene"
 # HKCU: the user's own key, no administrator needed.
@@ -94,6 +95,7 @@ class HostCommands:  # pylint: disable=too-many-instance-attributes  # one per t
     key: str = EXPLORER_KEY
     background: str = BACKGROUND_KEY
     flag: str = FROM_EXPLORER
+    phone: str = PHONE_FLAG
     icon: str = ICON  # its path in the image
     icon_name: str = ICON_NAME
     minimised: int = MINIMISED

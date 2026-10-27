@@ -5,7 +5,7 @@
 const T = {{ texts | tojson }};
 const P = {{ paths | tojson }};
 const RELAYS = {{ relays_steps | tojson }};
-// A phone on the home network (mh --lan, 0269): reads and the audit only; Quit and the
+// A phone on the home network (mh --lan, 0269): reads only, never the audit (0427); Quit and the
 // presence stay the PC's (its tab, not the phone's, keeps the page open).
 const REMOTE = {{ remote | tojson }};
 const PHONE_PAGES = {{ phone_pages | tojson }};  // a phone opens these steps as pages (0360)
@@ -53,7 +53,7 @@ const RISK = {
 };
 // The meerkat of each stage, and of a few actions (assets/images/meerkat-*.webp).
 const POSE = { import: "phone", clean: "broom", sort: "sorting", find: "magnifier", backup: "nas" };
-const ACTION_POSE = { audit: "lookout", import: "nas", "nas-add": "nas", review: "magnifier", "review-near": "magnifier", "review-pairs": "magnifier", "review-junk": "magnifier", "review-gone": "magnifier" };
+const ACTION_POSE = { audit: "lookout", import: "nas", "nas-add": "nas", review: "magnifier", "review-near": "magnifier", "review-pairs": "magnifier", "review-junk": "magnifier", "review-gone": "magnifier", "review-intruders": "magnifier" };
 // The panels a tool's page shows above its commands.
 const TOPS = { history: ["undo", "quarantine"], reports: ["reportsList"] };
 
@@ -216,12 +216,50 @@ function showLan() {
       $("#lanQr").innerHTML = lan.qr;
       $("#lanUrl").textContent = lan.url;
       $("#lanCode").textContent = lan.code;
+      // HTTPS (0430): a phone installs the PC's certificate first, once.
+      $("#lanCaLine").hidden = !lan.ca;
+      $("#lanCa").textContent = lan.ca || "";
+      if (lan.caHelp) $("#lanCaHow").href = lan.caHelp;  // the steps per phone, in the docs
+      // Phones paired for good (0431): listed, each forgotten on demand.
+      if (lan.phones) fetch(lan.phones, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).then((answer) => answer && showPhones(answer, lan.forget));
       $("#lanCard").hidden = false;
     })
     .catch(() => undefined);
 }
+// The list answered by the server, read back from its file after each forget (0431).
+function showPhones(answer, forgetPath) {
+  const list = $("#lanPhoneList");
+  list.replaceChildren();
+  for (const phone of answer.phones) {
+    const item = document.createElement("li");
+    const name = document.createElement("span");
+    name.textContent = `${phone.name} · ${phone.paired}`;
+    const forget = document.createElement("button");
+    forget.type = "button";
+    forget.textContent = list.dataset.forget;
+    forget.addEventListener("click", () => {
+      forget.disabled = true;
+      post(forgetPath, { id: phone.id })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((again) => { if (again) showPhones(again, forgetPath); else forget.disabled = false; })
+        .catch(() => { forget.disabled = false; });
+    });
+    item.append(name, forget);
+    list.append(item);
+  }
+  $("#lanPhones").hidden = answer.phones.length === 0;
+}
+// The phone's app (0432): the worker keeps the offline page; iOS never invites to install, a line says how.
+function asApp() {
+  if (!REMOTE) return;
+  if (window.isSecureContext && "serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+  const ios = /iPhone|iPad/.test(navigator.userAgent);
+  const standalone = navigator.standalone || window.matchMedia("(display-mode: standalone)").matches;
+  if (ios && !standalone) toast(T.addToHome);
+}
 function begin() {
   index();
+  asApp();
   applyTheme(store.get("theme", "auto"), false);
   const wanted = decodeURIComponent((location.hash || "").slice(1));
   view.id = SPACE[wanted] ? wanted : HOME;

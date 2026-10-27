@@ -2,7 +2,8 @@
 
 `review` alone reviews the burst series (`cmd_review`); `--near` the near duplicates,
 `--pairs` the folder pairs of the exact duplicates, `--junk` the photos most likely
-unwanted, `--gone` the files deleted in the Explorer (`gone_review_flow`). One mode per
+unwanted, `--gone` the files deleted in the Explorer (`gone_review_flow`), `--intruders`
+the files neither photos nor videos (`intruders_review_flow`). One mode per
 run: each page writes its own key of the same decisions file,
 keeping the others.
 """
@@ -15,6 +16,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.cli.apply_step import end_on_applied, page_apply
 from media_hygiene.cli.gone_review_flow import run_gone
+from media_hygiene.cli.intruders_review_flow import run_intruders
 from media_hygiene.cli.near_review_flow import tell_near_opened, tell_near_stopped
 from media_hygiene.cli.pairs_review_flow import tell_pairs_opened, tell_pairs_stopped
 from media_hygiene.cli.unwanted_review_flow import (
@@ -48,6 +50,7 @@ class ReviewMode(StrEnum):
     PAIRS = "pairs"
     JUNK = "junk"
     GONE = "gone"
+    INTRUDERS = "intruders"
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,7 +67,8 @@ def review_mode(given: Mapping[ReviewMode, bool]) -> ReviewMode:
     """Choose the mode from the options, one at most.
 
     Args:
-        given: Whether `--near`, `--pairs`, `--junk` and `--gone` were given.
+        given: Whether `--near`, `--pairs`, `--junk`, `--gone`, `--intruders`
+            were given.
 
     Returns:
         The mode; the burst series without an option.
@@ -75,7 +79,10 @@ def review_mode(given: Mapping[ReviewMode, bool]) -> ReviewMode:
     chosen = [mode for mode, on in given.items() if on]
     if len(chosen) > 1:
         raise ConfigError(
-            _("--near, --pairs, --junk and --gone are separate reviews: one per run."),
+            _(
+                "--near, --pairs, --junk, --gone and --intruders are separate "
+                "reviews: one per run."
+            ),
             _("Run them one after the other: they all save in one file."),
         )
     return chosen[0] if chosen else ReviewMode.BURSTS
@@ -86,13 +93,14 @@ def run_mode(run: ReviewRun, mode: ReviewMode, findings: AuditFindings) -> None:
 
     Args:
         run: The command line, runtime, decisions file and port.
-        mode: `NEAR`, `PAIRS`, `JUNK` or `GONE`.
+        mode: `NEAR`, `PAIRS`, `JUNK`, `GONE` or `INTRUDERS`.
         findings: The audit just run.
     """
     runs = {
         ReviewMode.PAIRS: _run_pairs,
         ReviewMode.JUNK: _run_junk,
         ReviewMode.GONE: run_gone,
+        ReviewMode.INTRUDERS: run_intruders,
     }
     runs.get(mode, _run_near)(run, findings)
 

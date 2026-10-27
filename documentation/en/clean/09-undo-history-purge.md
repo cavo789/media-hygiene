@@ -1,6 +1,6 @@
 # 9. Undo, history, purge
 
-[Documentation](../README.md) › Cleaning, step 9 of 14 · 🇫🇷 [Français](../../fr/clean/09-undo-history-purge.md)
+[Documentation](../README.md) › Cleaning, step 9 of 15 · 🇫🇷 [Français](../../fr/clean/09-undo-history-purge.md)
 
 A clean is not final. The journal remembers every action, so you can put everything back, see
 what each clean did, and, once you are sure, empty the quarantine for good.
@@ -117,7 +117,7 @@ It is, with 'clean --delete', the only way the tool removes content.
 - It asks first, like `clean`; `--yes` skips the question.
 - After a purge, `undo` can no longer bring those files back. The date of the purge is written
   next to the run's journal (`<run>.purged.json`, the journal itself is never rewritten):
-  `mh phone --free` says it on the tile of a photo set aside by that run.
+  `mh import --phone --free` says it on the tile of a photo set aside by that run.
 - Rather keep a copy? `purge --to <folder>` first copies the quarantine to a NAS, a disk or a
   cloud's synced folder, checks every byte, then empties it — see
   [`purge`](../commands/purge.md).

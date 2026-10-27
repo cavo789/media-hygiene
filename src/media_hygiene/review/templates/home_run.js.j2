@@ -197,8 +197,8 @@ function drawAudit(state) {
   const list = $("#auditSteps");
   if (!list) return state.phase === "running";
   const running = state.phase === "running";
-  $("#auditStart").hidden = running;
-  $("#auditStop").hidden = !running;
+  $("#auditStart").hidden = running || REMOTE;  // a phone never starts it (0427)
+  $("#auditStop").hidden = !running || REMOTE;
   list.hidden = state.steps.length === 0;
   list.innerHTML = state.steps.map((step) => {
     const counts = step.total === null ? count(step.done) : `${count(step.done)} / ${count(step.total)}`;

@@ -109,7 +109,7 @@ def test_the_phone_page_offers_the_way_back_and_says_nothing_is_deleted() -> Non
 def test_from_the_console_the_phone_page_has_no_way_back(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """`mh phone --free` typed: no home page to go back to, as on the other pages."""
+    """`import --phone --free` typed: no home page to go back to, as elsewhere."""
     monkeypatch.delenv(LAUNCHER_STEPS_VARIABLE, raising=False)
     assert not page_header("phone_review.html.j2").home
     assert 'id="homeLink"' not in render_page("phone_review.html.j2")
@@ -156,11 +156,11 @@ def test_the_places_policy_lets_the_fonts_in_and_names_the_tiles_only() -> None:
 
 
 def test_every_page_template_includes_the_theme_and_the_bar() -> None:
-    """The sixteen pages, from their templates: the frame's parts, or their own."""
+    """The seventeen pages, from their templates: the frame's parts, or their own."""
     pages = [
         path for path in _SRC.glob("*/templates/*.html.j2") if path.name in PAGE_STEPS
     ]
-    assert len(pages) == len(PAGE_STEPS) == 16
+    assert len(pages) == len(PAGE_STEPS) == 17
     for path in pages:
         text = path.read_text("utf-8")
         framed = text.startswith(FRAME_EXTENDS)

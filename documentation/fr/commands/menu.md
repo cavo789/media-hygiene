@@ -61,7 +61,7 @@ quarantaine, ce qui prend quelques secondes quand elle contient des milliers de 
 
 Le téléphone, `mh shortcut` (une icône sur le Bureau) et `mh explorer` (le clic droit d'un
 dossier) sont pour Windows : le `mh` de bash les laisse de côté. `mh` lance lui-même `open`,
-`folders`, `update`, `phone`, `shortcut` et `explorer` : [ce que `mh` fait
+`folders`, `update`, `import --phone`, `shortcut` et `explorer` : [ce que `mh` fait
 lui-même](launcher.md#ce-que-mh-fait-lui-même). Une commande qui n'a pas encore sa place dans le
 menu s'affiche quand même, en dernier, sous *Autres commandes*.
 
@@ -74,11 +74,11 @@ Quarantaine : vide.
 
       Importer des photos
       Depuis un téléphone
-    1 mh phone                                        Copier les   🔒
+    1 mh import --phone                                        Copier les   🔒
                                                       nouvelles
                                                       photos du
                                                       téléphone
-    2 mh phone --free                                 Faire de la  ⚠️ facultatif
+    2 mh import --phone --free                                 Faire de la  ⚠️ facultatif
                                                       place sur le
                                                       téléphone
       Depuis votre NAS ou un ancien disque

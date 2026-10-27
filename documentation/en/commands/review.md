@@ -35,7 +35,7 @@ docker run --rm -it `
 | Recommended | `/cache` (the audit it starts with takes seconds), `/config`. |
 | Writes | `decisions.json` in `/reports`, the cache. |
 | Undo | Change your choices in the page, or delete `decisions.json`. |
-| With `mh` | `mh review`, `mh review --near`, `mh review --pairs`, `mh review --junk`, `mh review --gone`: the port is published for you. |
+| With `mh` | `mh review`, `mh review --near`, `mh review --pairs`, `mh review --junk`, `mh review --gone`, `mh review --intruders`: the port is published for you. |
 
 ## Five kinds of review
 
@@ -46,6 +46,7 @@ docker run --rm -it `
 | `review --pairs` | **Folder pairs** of identical files, the most space freed first: as planned (`→`), swap the folders (`W`), leave alone (`L`). | `clean --decisions` |
 | `review --junk` | **Photos most likely unwanted** (tiny, screenshots, nearly black or white, the blurriest), group by group: each one kept or set aside by you. | `clean --decisions` |
 | `review --gone` | **Photos and videos gone since an audit** (deleted in the Explorer?), by folder and day: deleted on purpose (`D`, remembered, set aside if they come back) or moved elsewhere (`M`, forgotten). [Cleaning, step 9](../clean/09-undo-history-purge.md#deleted-in-the-explorer) | `clean --decisions` |
+| `review --intruders` | **Intruder files** (zip, docx, pdf… in the photo folders), per extension and per folder: tick those to set aside; no tiles, nothing to look at. [Cleaning, step 15](../clean/15-intruder-files.md) | `clean --decisions` |
 
 ## Run it
 
@@ -77,14 +78,26 @@ photos.
 | `→` | Next series, as shown | As planned, then the next group | As planned, then the next pair |
 | `←` | Previous series | Previous group | Previous pair |
 | `N` | Next series still to see | Next group still undecided | Next pair still undecided |
-| `1` … `9` | Set that shot aside, or take it back | — | — |
-| `S` / `A` / `X` | Keep only the sharpest / keep all / set the whole series aside | — | — |
+| `Delete` | Set the picked shots aside | — | — |
+| `S` / `X` | Keep only the sharpest / set the whole series aside (*Keep every shot*: a button) | — | — |
 | `W` / `L` / `U` | — | Keep the other version / leave alone / back to undecided | Swap the folders / leave alone / back to undecided |
 | `V` / `G` | Validate every obvious series at once | `G`: the whole folder pair as planned | — |
 | `Z` | Undo the last choice | — | — |
 
-`review --junk`: `→` the group as marked, then the next one; `Space` keeps or sets aside the photo
-under the cursor (`↑` / `↓`); `←`, `N`, `U` as for the other reviews.
+`review --junk`: `→` the group as marked, then the next one; `Space` keeps or sets aside the
+framed photo; `Delete` sets the picked photos aside; `←`, `N`, `U` as for the other reviews.
+
+**Pick the shots as in [`browse`](browse.md)** (`review` and `review --junk`): a click picks one
+shot; the ☑ box (or Ctrl+click) adds or removes one; Shift+click picks every shot from the last
+one clicked; a rectangle dragged with the mouse picks what it touches (with Ctrl, it adds);
+Ctrl+A the whole series or group; **Invert the picking** (or I) picks the others. `Delete` or
+the bar's button sets the picked shots aside, *Take out of the set aside* takes them back. Since
+`←`, `→` and Space change the series here, the frame moves with `↑` / `↓`.
+
+**See a photo large** on every review: Enter or a double click; `←` / `→` the previous or next
+one, `F` full screen, `?` every key, `Esc` closes. On `review` and `review --junk`, `Delete`
+sets the photo shown aside and `⌫` takes it back; on `review`, `A` adds it to the album named
+in the bar. On `--near`, `--gone` and `--pairs`, the large view only shows (nothing to pick).
 
 `review --gone`: `D` deleted on purpose, `M` moved elsewhere (the file under the cursor, then the
 next one), `G` the whole group deleted on purpose, `U` the group back to unanswered; `→`, `←`,
@@ -102,7 +115,8 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
 | `--near` | Review the near duplicates and re-encoded videos instead of the burst series. |
 | `--pairs` | Review the folder pairs of the identical files instead of the burst series. |
 | `--junk` | Review the photos most likely unwanted instead of the burst series; thresholds in `[review.unwanted]`. |
-| `--gone` | Review the photos and videos gone since an audit instead of the burst series. One of `--near`, `--pairs`, `--junk`, `--gone` per run. |
+| `--gone` | Review the photos and videos gone since an audit instead of the burst series. |
+| `--intruders` | Pick the intruder files to set aside, per extension and per folder, instead of the burst series. One of `--near`, `--pairs`, `--junk`, `--gone`, `--intruders` per run. |
 | `--decisions FILE` | The file the choices are saved in, and resumed from; `decisions.json` of `/reports` by default. |
 | `--port PORT` | Port of the page, 8088 by default; publish the same one: `-p 127.0.0.1:9000:9000` for `--port 9000`. |
 | `--prefer`, `--protect`, `--exclude` | As for [`audit`](audit.md#options): give `review` the same ones as `clean`. |
@@ -128,8 +142,8 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
 - A shot of a **protected folder** is never proposed nor set aside.
 - **👤 this person**, under each shot, opens in a new tab every photo of someone on that shot,
   to set them all aside: see [`people`](people.md#from-any-page-set-a-person-aside).
-- The burst review has an **Album** field too: **➕ Add to the album** puts the shots of the
-  series shown that are not set aside in that album, apart from your decisions. See
+- The burst review has an **Album** field too: **➕ Add to the album** puts the picked shots in
+  that album, as in `browse`, apart from your decisions. See
   [Put photos in an album](search.md#put-photos-in-an-album).
 - *port is already allocated*? Another program uses 8088: `-p 127.0.0.1:9000:9000` and
   `review --port 9000`.

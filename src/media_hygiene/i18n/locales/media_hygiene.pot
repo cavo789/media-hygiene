@@ -392,7 +392,9 @@ msgid ""
 "the kept copy; 'undo' rebuilds them from it."
 msgstr ""
 
-msgid "--near, --pairs, --junk and --gone are separate reviews: one per run."
+msgid ""
+"--near, --pairs, --junk, --gone and --intruders are separate reviews: one"
+" per run."
 msgstr ""
 
 msgid "--people keeps the faces in the cache: mount /cache to look for them."
@@ -522,9 +524,6 @@ msgstr ""
 msgid "A click on a file moves the cursor to it."
 msgstr ""
 
-msgid "A click on a photo keeps it or sets it aside too."
-msgstr ""
-
 #, python-brace-format
 msgid "A commented configuration file was created: {path}."
 msgstr ""
@@ -594,6 +593,12 @@ msgid ""
 msgstr ""
 
 msgid ""
+"A local model looks at each photo on this computer's processor, so that "
+"search finds photos by what they show. Nothing is sent; only the cache is"
+" written."
+msgstr ""
+
+msgid ""
 "A local vision model (Ollama) names the subject of the photos no other "
 "rule decides. Off until a 'subject' rule is written below and a model is "
 "set here. The photos are sent to url, and only there: keep that server on"
@@ -618,6 +623,16 @@ msgid ""
 "those you keep. Nothing leaves the phone before that page's “Delete … "
 "from the phone” button, and each file is compared with the PC's copy once"
 " more just before."
+msgstr ""
+
+msgid ""
+"A part of the path. * is any characters, ? one character, /regex/ a "
+"regular expression: *.mov, /\\.(mov|mp4)$/"
+msgstr ""
+
+msgid ""
+"A phone over USB instead of a folder: Windows only, the mh of PowerShell "
+"copies its new photos itself; --free then makes room on it."
 msgstr ""
 
 #, python-brace-format
@@ -854,6 +869,11 @@ msgid "After an undo, 'media-hygiene clean {flag}' applies it again."
 msgstr ""
 
 msgid ""
+"After an update of Media Hygiene, type mh config --upgrade: it adds the "
+"new settings, each explained, and keeps every value you wrote here."
+msgstr ""
+
+msgid ""
 "After how many days 'status' suggests emptying the quarantine with "
 "'purge' (the files set aside still take their space until then)."
 msgstr ""
@@ -891,7 +911,7 @@ msgid "All {total} files found are picked"
 msgstr ""
 
 #, python-brace-format
-msgid "Already copied by an earlier mh phone: {count}."
+msgid "Already copied by an earlier mh import --phone: {count}."
 msgstr ""
 
 msgid "Already in place"
@@ -969,6 +989,13 @@ msgid "An icon on the Desktop and in the Start menu"
 msgstr ""
 
 msgid ""
+"An intruder file is a file of your photo folders that is neither a photo,"
+" a video nor one of their companions (sidecar, Thumbs.db…): a zip, a "
+"docx, a pdf copied there. A docx may matter: nothing is set aside without"
+" you."
+msgstr ""
+
+msgid ""
 "An mh page is open in another window: close it there (Ctrl+C), then type "
 "the command again."
 msgstr ""
@@ -988,6 +1015,9 @@ msgid "And to go back"
 msgstr ""
 
 msgid "And write again the page that gathers them all."
+msgstr ""
+
+msgid "Android"
 msgstr ""
 
 msgid "Animals"
@@ -1234,6 +1264,9 @@ msgstr ""
 msgid "Brought up to date, read back from {path}: it starts this mh."
 msgstr ""
 
+msgid "Build search by meaning"
+msgstr ""
+
 msgid "Built in: your own folders"
 msgstr ""
 
@@ -1369,6 +1402,11 @@ msgstr ""
 msgid "Check, then sort"
 msgstr ""
 
+msgid ""
+"Check: Trusted credentials > User shows Media Hygiene (this PC). The "
+"address bar then shows https without a red cross."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Checked on Docker Hub once a day at most; {setting} in config.toml turns "
@@ -1425,6 +1463,9 @@ msgid ""
 msgstr ""
 
 msgid "Choose every draft shown"
+msgstr ""
+
+msgid "Choose media-hygiene-ca.crt in Downloads."
 msgstr ""
 
 msgid ""
@@ -1594,7 +1635,7 @@ msgstr ""
 msgid "Copied"
 msgstr ""
 
-msgid "Copied by mh phone"
+msgid "Copied by mh import --phone"
 msgstr ""
 
 #, python-brace-format
@@ -1615,7 +1656,7 @@ msgid "Copies found in these folders are kept first, in this order."
 msgstr ""
 
 #, python-brace-format
-msgid "Copies not found when read back: {count}. Type mh phone again."
+msgid "Copies not found when read back: {count}. Type mh import --phone again."
 msgstr ""
 
 msgid "Copies, previewed"
@@ -1693,6 +1734,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "Could not write {path}."
+msgstr ""
+
+msgid "Counting the photos to look at…"
+msgstr ""
+
+msgid "Counting the photos to scan…"
 msgstr ""
 
 msgid ""
@@ -2068,6 +2115,9 @@ msgstr ""
 msgid "Done"
 msgstr ""
 
+msgid "Done: open Media Hygiene"
+msgstr ""
+
 #, python-brace-format
 msgid "Done: {command}."
 msgstr ""
@@ -2085,6 +2135,14 @@ msgid "Download decisions.json"
 msgstr ""
 
 msgid "Download it again from the report, next to it on /reports."
+msgstr ""
+
+msgid "Download the certificate"
+msgstr ""
+
+msgid ""
+"Downloading it is not enough: install it as a CA certificate, below. Not "
+"as a VPN and app certificate, nor as a Wi-Fi one."
 msgstr ""
 
 #, python-brace-format
@@ -2181,6 +2239,14 @@ msgid "Each outing or party gets its folder: name it while seeing its photos."
 msgstr ""
 
 msgid "Each photo"
+msgstr ""
+
+#, python-format
+msgid ""
+"Each pick is saved at once in %(place)s; nothing moves here. Done? Ctrl+C"
+" in the terminal stops the page; then run the same 'clean' command with "
+"%(option)s: the files set aside go to the quarantine, and 'undo' brings "
+"them back."
 msgstr ""
 
 msgid ""
@@ -2427,6 +2493,12 @@ msgid "Every group to check has been decided."
 msgstr ""
 
 msgid "Every pair has been decided."
+msgstr ""
+
+msgid "Every photo is looked at already."
+msgstr ""
+
+msgid "Every photo is scanned already: the people page shows the faces."
 msgstr ""
 
 msgid ""
@@ -2709,10 +2781,16 @@ msgid ""
 "browser. Faces kept in the cache, never sent anywhere."
 msgstr ""
 
+msgid "Find the faces in your photos"
+msgstr ""
+
 msgid "Find their photos"
 msgstr ""
 
 msgid "Finding faces"
+msgstr ""
+
+msgid "Finding faces…"
 msgstr ""
 
 msgid ""
@@ -2721,6 +2799,9 @@ msgid ""
 msgstr ""
 
 msgid "Fingerprinting videos"
+msgstr ""
+
+msgid "First time on this phone? Install the certificate first:"
 msgstr ""
 
 msgid "Five stages; the highlighted one is your next step."
@@ -2859,16 +2940,16 @@ msgstr ""
 msgid "For good, once the quarantine is checked."
 msgstr ""
 
-msgid "For mh phone: journal the files gone from the phone."
+msgid "For mh import --phone: journal the files gone from the phone."
 msgstr ""
 
-msgid "For mh phone: prove by their content the files ticked to delete."
+msgid "For mh import --phone: prove by their content the files ticked to delete."
 msgstr ""
 
-msgid "For mh phone: the page where you tick what leaves the phone."
+msgid "For mh import --phone: the page where you tick what leaves the phone."
 msgstr ""
 
-msgid "For mh phone: which files of a phone are new, from its listing."
+msgid "For mh import --phone: which files of a phone are new, from its listing."
 msgstr ""
 
 msgid "For mh push: one step of a backup, its lines on stdin and stdout."
@@ -2892,6 +2973,9 @@ msgid "Forget every face"
 msgstr ""
 
 msgid "Forget its position"
+msgstr ""
+
+msgid "Forget this phone"
 msgstr ""
 
 msgid "Format"
@@ -3228,6 +3312,9 @@ msgstr ""
 msgid "How to write a search"
 msgstr ""
 
+msgid "How?"
+msgstr ""
+
 #, python-brace-format
 msgid "I checked: sort this file"
 msgid_plural "I checked: sort these {n} files"
@@ -3345,6 +3432,14 @@ msgstr ""
 msgid "It changes nothing in your photos"
 msgstr ""
 
+msgid "It failed: the window where mh runs says why."
+msgstr ""
+
+msgid ""
+"It is not running on the PC. On the PC, start Media Hygiene (type mh in "
+"Windows PowerShell): this page opens again by itself."
+msgstr ""
+
 #, python-brace-format
 msgid "It is {name}? ({score})"
 msgstr ""
@@ -3413,6 +3508,9 @@ msgstr ""
 msgid "Keep both names (link)"
 msgstr ""
 
+msgid "Keep every shot"
+msgstr ""
+
 msgid "Keep it, encrypted for your Windows account only, on this PC? (y/n)"
 msgstr ""
 
@@ -3438,6 +3536,9 @@ msgstr ""
 msgid ""
 "Keep the GPS position in the copies; removed by default, a photo sent "
 "must not say where the house is."
+msgstr ""
+
+msgid "Keep the picked photos"
 msgstr ""
 
 msgid "Keep the source folders the sort leaves empty."
@@ -3528,6 +3629,12 @@ msgstr ""
 
 msgid "Last mh push"
 msgstr ""
+
+#, python-brace-format
+msgid "Last photo: {count} face"
+msgid_plural "Last photo: {count} faces"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Later"
 msgstr ""
@@ -3669,6 +3776,12 @@ msgstr ""
 msgid "Look again, slower: the photo turned, less strict"
 msgstr ""
 
+msgid "Look for 1 h"
+msgstr ""
+
+msgid "Look now"
+msgstr ""
+
 msgid "Looked at: nothing special that month"
 msgstr ""
 
@@ -3676,6 +3789,9 @@ msgid "Looking at the photo turned, one angle after the other…"
 msgstr ""
 
 msgid "Looking at the photos"
+msgstr ""
+
+msgid "Looking at the photos…"
 msgstr ""
 
 #, python-brace-format
@@ -3730,6 +3846,9 @@ msgstr ""
 msgid "May"
 msgstr ""
 
+msgid "Media Hygiene"
+msgstr ""
+
 msgid ""
 "Media Hygiene added to the right-click menu and checked: right-click a "
 "folder, or the empty space of an open folder, then Media Hygiene to open "
@@ -3747,6 +3866,14 @@ msgid ""
 msgstr ""
 
 msgid "Media Hygiene in the Explorer's right-click"
+msgstr ""
+
+msgid "Media Hygiene is asleep"
+msgstr ""
+
+msgid ""
+"Media Hygiene is running: its page opens in your browser. Keep this "
+"window open (minimised is fine): closing it stops Media Hygiene."
 msgstr ""
 
 msgid "Media Hygiene is stopped"
@@ -4192,14 +4319,14 @@ msgstr ""
 
 msgid ""
 "No choice yet: moving on (→, ← or N) accepts the proposal, the shots in "
-"red dashes set aside and the others kept. A keeps every shot; a digit "
-"takes a shot back."
+"red dashes set aside and the others kept. *Keep every shot* keeps them "
+"all; Backspace in the large view takes a shot back."
 msgstr ""
 
 msgid ""
 "No choice yet: moving on (→, ← or N) keeps every shot of this series. S "
-"keeps only the sharpest, X sets the whole series aside, 1…9 sets one shot"
-" aside."
+"keeps only the sharpest, X sets the whole series aside, Delete sets the "
+"picked shots aside."
 msgstr ""
 
 msgid "No choice yet: nothing will be moved."
@@ -4305,6 +4432,17 @@ msgstr ""
 msgid "No index yet: the albums show the photos an audit has seen."
 msgstr ""
 
+msgid "No intruder file set aside yet."
+msgstr ""
+
+msgid "No intruder file: nothing to pick."
+msgstr ""
+
+msgid ""
+"No intruder file: your photo folders hold only photos, videos and their "
+"companions."
+msgstr ""
+
 #, python-brace-format
 msgid "No journal found at {path}."
 msgstr ""
@@ -4351,7 +4489,7 @@ msgstr ""
 
 msgid ""
 "No phone seen: plug it in, unlock it, choose File transfer (iPhone: Trust"
-" this computer), then type mh phone again."
+" this computer), then type mh import --phone again."
 msgstr ""
 
 msgid "No photo folder to copy into: only backup folders are mounted."
@@ -4362,7 +4500,10 @@ msgid ""
 " again."
 msgstr ""
 
-msgid "No photo folder: type mh phone --to <folder>."
+msgid "No photo folder: type mh import --phone --to <folder>."
+msgstr ""
+
+msgid "No photo in the cache: run the audit first."
 msgstr ""
 
 #, python-brace-format
@@ -4940,6 +5081,12 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Once per phone: install the certificate of Media Hygiene on this PC. The "
+"phone then trusts the page of your PC, and only it. Nothing goes to the "
+"internet."
+msgstr ""
+
+msgid ""
 "Once per video: a few frames are decoded and hashed, to find the same "
 "video saved again (re-encoded, resized). The cache keeps the result."
 msgstr ""
@@ -5145,6 +5292,9 @@ msgstr ""
 msgid "Open the slideshow at 127.0.0.1, or from the TV with mh --lan."
 msgstr ""
 
+msgid "Open this page in Safari, download the certificate, allow the profile."
+msgstr ""
+
 msgid "Open this section (o)"
 msgstr ""
 
@@ -5234,6 +5384,12 @@ msgid ""
 "{place}. Nothing leaves the phone before you press Delete."
 msgstr ""
 
+#, python-brace-format
+msgid "Page stopped — {count} intruder file set aside."
+msgid_plural "Page stopped — {count} intruder files set aside."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Page stopped; nothing was changed."
 msgstr ""
 
@@ -5278,6 +5434,10 @@ msgstr ""
 msgid "Path contains"
 msgstr ""
 
+#, python-brace-format
+msgid "Path contains: invalid regular expression ({error})."
+msgstr ""
+
 msgid "People"
 msgstr ""
 
@@ -5296,6 +5456,9 @@ msgid ""
 msgstr ""
 
 msgid "Per extension"
+msgstr ""
+
+msgid "Per folder"
 msgstr ""
 
 #, python-brace-format
@@ -5319,6 +5482,9 @@ msgid ""
 msgstr ""
 
 msgid "Phone, NAS: whenever you want"
+msgstr ""
+
+msgid "Phones paired for good"
 msgstr ""
 
 msgid "Photo"
@@ -5383,6 +5549,12 @@ msgstr ""
 msgid "Pick none"
 msgstr ""
 
+msgid ""
+"Pick the intruder files (zip, docx, pdf… in your photo folders) to set "
+"aside, per extension and per folder, instead of the burst series; 'clean "
+"--decisions' moves them to the quarantine."
+msgstr ""
+
 msgid "Pick the others: the ones picked are left (I)"
 msgstr ""
 
@@ -5390,6 +5562,9 @@ msgid "Pick this file"
 msgstr ""
 
 msgid "Pick this photo"
+msgstr ""
+
+msgid "Pick this shot"
 msgstr ""
 
 msgid "Pictures received through a messaging app, if you want them apart:"
@@ -5548,6 +5723,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Put back the files of the last run"
+msgstr ""
+
+msgid "Put every intruder file back"
 msgstr ""
 
 msgid "Put this face back"
@@ -5816,6 +5994,9 @@ msgid "Restoring"
 msgstr ""
 
 msgid "Results"
+msgstr ""
+
+msgid "Retry"
 msgstr ""
 
 #, python-brace-format
@@ -6206,6 +6387,12 @@ msgid "Saved, read back from {path}:"
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"Saved, then read back from the disk at {time}: {count} intruder files set"
+" aside in {file}."
+msgstr ""
+
+#, python-brace-format
 msgid "Saved, then read back from the disk at {time}: {file} holds your choice."
 msgstr ""
 
@@ -6230,6 +6417,12 @@ msgstr ""
 msgid ""
 "Say what to show, one of: --folder \"C:\\Photos\\Holidays\", --search "
 "\"words\", or --album \"Crete 2023\"."
+msgstr ""
+
+msgid "Scan for 1 h"
+msgstr ""
+
+msgid "Scan now"
 msgstr ""
 
 msgid "School"
@@ -6259,6 +6452,12 @@ msgid ""
 "service, never a photo nor a position. Its usage policy: "
 "https://operations.osmfoundation.org/policies/nominatim/ (one search per "
 "second at most). Another instance, or empty to search offline only."
+msgstr ""
+
+msgid "Search by meaning"
+msgstr ""
+
+msgid "Search by meaning is off: set meaning = true under [tags] first."
 msgstr ""
 
 msgid "Search by meaning: every photo is looked at already."
@@ -6429,6 +6628,10 @@ msgstr ""
 msgid "Set aside in config.toml: hidden from the map."
 msgstr ""
 
+#, python-brace-format
+msgid "Set aside in {file}, as read from the disk"
+msgstr ""
+
 msgid "Set aside on"
 msgstr ""
 
@@ -6466,6 +6669,12 @@ msgstr ""
 msgid "Set the failed photos aside"
 msgstr ""
 
+msgid "Set the files ticked aside"
+msgstr ""
+
+msgid "Set the intruder files aside"
+msgstr ""
+
 msgid "Set this cluster aside"
 msgstr ""
 
@@ -6486,6 +6695,21 @@ msgid "Setting restored: {name}"
 msgstr ""
 
 msgid "Settings"
+msgstr ""
+
+msgid ""
+"Settings > General > About > Certificate trust settings: turn Media "
+"Hygiene on."
+msgstr ""
+
+msgid ""
+"Settings > General > VPN and device management: install the profile Media"
+" Hygiene."
+msgstr ""
+
+msgid ""
+"Settings > Security (or Security and privacy) > More settings > "
+"Encryption and credentials > Install a certificate > CA certificate."
 msgstr ""
 
 msgid "Settle the near duplicates"
@@ -6798,7 +7022,9 @@ msgid "Step-by-step guide and every command: {url}"
 msgstr ""
 
 #, python-brace-format
-msgid "Still on the phone after the move: {count}. Type mh phone --free again."
+msgid ""
+"Still on the phone after the move: {count}. Type mh import --phone --free"
+" again."
 msgstr ""
 
 msgid ""
@@ -6845,6 +7071,12 @@ msgid "Stopped: the next classify run goes on where this one stopped."
 msgstr ""
 
 msgid "Stopped: the next people run goes on where this one stopped."
+msgstr ""
+
+msgid "Stopped: the next run goes on where this one stopped."
+msgstr ""
+
+msgid "Stopped: the next scan goes on where this one stopped."
 msgstr ""
 
 msgid "Stopped: the next tags run goes on where this one stopped."
@@ -6919,9 +7151,6 @@ msgid "Tags"
 msgstr ""
 
 msgid "Tags already run: wait for the end, or stop them."
-msgstr ""
-
-msgid "Tags failed: the window where mh runs says why."
 msgstr ""
 
 #, python-brace-format
@@ -7424,6 +7653,12 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
+#, python-brace-format
+msgid "The home page has {count} photo scanned for faces: Stop is on the page."
+msgid_plural "The home page has {count} photos scanned for faces: Stop is on the page."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid ""
 "The home page in your browser: where you are, the next step as a button, "
 "every step of the guides, the reports."
@@ -7605,7 +7840,7 @@ msgstr ""
 msgid "The page is not running any more: start people again."
 msgstr ""
 
-msgid "The page is not running any more: type mh phone again."
+msgid "The page is not running any more: type mh import --phone again."
 msgstr ""
 
 msgid "The page of the tool this server shows"
@@ -7630,16 +7865,21 @@ msgid "The password of {share} is kept: mh folders remove forgets it."
 msgstr ""
 
 msgid ""
+"The phone is read-only: the reports, the albums, the search and browse. "
+"Open this page or run this step on the PC."
+msgstr ""
+
+msgid ""
 "The phone no longer answers (unplugged, or asleep: keep it unlocked, "
 "screen on): what is counted above was deleted, the rest is still on it. "
-"Type mh phone --free again."
+"Type mh import --phone --free again."
 msgstr ""
 
 #, python-brace-format
 msgid ""
 "The phone no longer answers (unplugged, or asleep: keep it unlocked, "
-"screen on, during the copy): {count} files copied so far. Type mh phone "
-"again: what is already copied is skipped."
+"screen on, during the copy): {count} files copied so far. Type mh import "
+"--phone again: what is already copied is skipped."
 msgstr ""
 
 msgid "The phone run the files were proven in."
@@ -8229,6 +8469,9 @@ msgstr ""
 msgid "This shot lies in a protected folder: it is never moved."
 msgstr ""
 
+msgid "This step already runs: wait for its end, or stop it."
+msgstr ""
+
 msgid "This step takes no words."
 msgstr ""
 
@@ -8268,7 +8511,16 @@ msgstr ""
 msgid "Three things to know before you start"
 msgstr ""
 
+msgid "Tick an extension or a folder first."
+msgstr ""
+
 msgid "Tick at least one photo."
+msgstr ""
+
+msgid ""
+"Tick extensions, folders, or both: with both, a file must match one "
+"ticked extension and lie in one ticked folder. Protected and backup "
+"folders are left out: they are never changed."
 msgstr ""
 
 msgid "Tick or untick every file of this folder"
@@ -8345,6 +8597,9 @@ msgstr ""
 msgid ""
 "To get a run back: copy each drive's folder of it back into that drive's "
 "quarantine, then run 'undo <run>'."
+msgstr ""
+
+msgid "To keep Media Hygiene as an app: Share, then Add to Home Screen."
 msgstr ""
 
 msgid ""
@@ -8454,6 +8709,11 @@ msgid ""
 "splits more groups, lower mixes people."
 msgstr ""
 
+msgid ""
+"Two small local models find the faces, on this computer: nothing is sent."
+" Only the cache is written: your photos are not changed."
+msgstr ""
+
 msgid "Type"
 msgstr ""
 
@@ -8469,6 +8729,9 @@ msgstr ""
 msgid "Type a name to filter the folders"
 msgstr ""
 
+msgid "Type an album's name in the bar first."
+msgstr ""
+
 #, python-brace-format
 msgid "Type mh push --undo {run_id} in Windows PowerShell."
 msgstr ""
@@ -8481,7 +8744,7 @@ msgstr ""
 
 msgid ""
 "Type the code shown on the PC: on its page (in the sidebar of the home "
-"page, at the top of the slideshow's) and in the window of mh."
+"page, at the top of the slideshow's) and in the window of Media Hygiene."
 msgstr ""
 
 msgid "Type the event's name first."
@@ -8754,7 +9017,7 @@ msgstr ""
 
 msgid ""
 "Whole series set aside: its shots go to the quarantine at 'clean "
-"--decisions'. A or X keeps them all again."
+"--decisions'. *Keep every shot* or X keeps them all again."
 msgstr ""
 
 msgid "Why"
@@ -9041,6 +9304,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "Your decisions — {count} intruder file is set aside."
+msgid_plural "Your decisions — {count} intruder files are set aside."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "Your decisions — {count} unwanted photo set aside in 'review --junk'."
 msgid_plural "Your decisions — {count} unwanted photos set aside in 'review --junk'."
 msgstr[0] ""
@@ -9101,6 +9370,9 @@ msgstr ""
 msgid "Your photos and videos were not touched."
 msgstr ""
 
+msgid "Your photos and videos, sorted and without duplicates."
+msgstr ""
+
 msgid "Your photos, in order"
 msgstr ""
 
@@ -9123,6 +9395,9 @@ msgid ""
 msgstr ""
 
 msgid "Yours to decide"
+msgstr ""
+
+msgid "Zip, docx, pdf in the photo folders: tick them per type or folder."
 msgstr ""
 
 msgid ""
@@ -9619,6 +9894,9 @@ msgstr ""
 msgid "does not answer (powered off?)"
 msgstr ""
 
+msgid "double click"
+msgstr ""
+
 msgid "drag"
 msgstr ""
 
@@ -9629,6 +9907,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "duplicates copies analyse scan check damaged broken unreadable"
+msgstr ""
+
+msgid "e.g. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/"
 msgstr ""
 
 msgid "e.g. Crete 2023"
@@ -9675,6 +9956,12 @@ msgid "every photo has GPS"
 msgstr ""
 
 msgid "every photo of the event"
+msgstr ""
+
+msgid "every photo of the group"
+msgstr ""
+
+msgid "every shot of the series"
 msgstr ""
 
 msgid "every source"
@@ -9767,6 +10054,9 @@ msgstr ""
 msgid "home page start"
 msgstr ""
 
+msgid "iPhone, iPad"
+msgstr ""
+
 msgid "if the cache is ever lost: mh restore."
 msgstr ""
 
@@ -9792,6 +10082,9 @@ msgid "in the search box: search OpenStreetMap"
 msgstr ""
 
 msgid "in your own home only: meals, games, children, sofa, garden"
+msgstr ""
+
+msgid "intruder zip pdf docx documents not photos"
 msgstr ""
 
 #, python-brace-format
@@ -9906,13 +10199,10 @@ msgstr ""
 msgid "keep both names (links, one drive), then next"
 msgstr ""
 
-msgid "keep every shot"
-msgstr ""
-
 msgid "keep nothing"
 msgstr ""
 
-msgid "keep or set aside the photo under the cursor"
+msgid "keep or set aside the framed photo"
 msgstr ""
 
 msgid "keep the other version, then next"
@@ -10067,6 +10357,18 @@ msgstr ""
 msgid "mh forgets it; its photos do not move."
 msgstr ""
 
+msgid ""
+"mh import --phone copies only the new photos and videos of a phone "
+"plugged in over USB; --to <folder> chooses where, --only <folder of DCIM>"
+" takes that folder only (Camera), --free then offers to delete from the "
+"phone what the PC holds."
+msgstr ""
+
+msgid ""
+"mh import --phone is for Windows only: type it in Windows PowerShell, "
+"where mh reads the phone itself."
+msgstr ""
+
 msgid "mh is unchanged: launcher refused it (see above)."
 msgstr ""
 
@@ -10091,13 +10393,6 @@ msgstr ""
 msgid ""
 "mh needs at least one photo folder: add the new one first, then remove "
 "this one."
-msgstr ""
-
-msgid ""
-"mh phone copies only the new photos and videos of a phone plugged in over"
-" USB; --to <folder> chooses where, --only <folder of DCIM> takes that "
-"folder only (Camera), --free then offers to delete from the phone what "
-"the PC holds."
 msgstr ""
 
 msgid "mh push"
@@ -10419,6 +10714,9 @@ msgstr ""
 msgid "open it large (a double click too)"
 msgstr ""
 
+msgid "open the photo large"
+msgstr ""
+
 msgid "opened: every key of the large view"
 msgstr ""
 
@@ -10668,9 +10966,6 @@ msgid "seen by the model"
 msgstr ""
 
 msgid "send mail email attach zip facebook social network album gps"
-msgstr ""
-
-msgid "set a shot aside, or take it back"
 msgstr ""
 
 msgid "set aside"
@@ -10976,6 +11271,12 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"the same 'clean' command with {option}; the intruder files set aside go "
+"to the quarantine, 'undo' brings them back."
+msgstr ""
+
+#, python-brace-format
+msgid ""
 "the same 'clean' command with {option}; the photos set aside go to the "
 "quarantine, 'undo' brings them back."
 msgstr ""
@@ -11072,6 +11373,11 @@ msgstr ""
 msgid "this setting is required"
 msgstr ""
 
+msgid ""
+"tick in 'review --intruders' the intruder files to set aside, per "
+"extension or per folder."
+msgstr ""
+
 msgid "tick or untick it"
 msgstr ""
 
@@ -11109,6 +11415,14 @@ msgstr ""
 msgid "today"
 msgstr ""
 
+msgid ""
+"true (the default): the home page opens to the phones of your home Wi-Fi "
+"too, while Media Hygiene runs; a phone pairs once with the code shown on "
+"the PC; never the internet. false: the page stays on this PC only, and mh"
+" --lan opens it to the phones for one run. After a change, type mh "
+"update."
+msgstr ""
+
 #, python-brace-format
 msgid "true or false is expected, not {value}"
 msgstr ""
@@ -11123,6 +11437,13 @@ msgid ""
 msgstr ""
 
 msgid ""
+"true: a paired phone may download the originals of photos and videos "
+"(full size, GPS position included). false (the default): a phone sees "
+"them at preview size only. Whatever this says, a phone never changes "
+"anything: setting aside, moving, cleaning stay the PC's."
+msgstr ""
+
+msgid ""
 "true: a photo without GPS in a folder named after a town "
 "(2019/Douarnenez) gets the position of that town's centre in its sidecar,"
 " so that other applications show it on their map. Approximate: off by "
@@ -11132,14 +11453,6 @@ msgstr ""
 msgid ""
 "true: every 'audit' then looks for faces in the photos not looked at yet,"
 " after saying how long it takes and asking, as 'audit --people' does."
-msgstr ""
-
-msgid ""
-"true: the home page opens to the phones of your home Wi-Fi too, while mh "
-"runs: scan its QR code, type nothing more. A phone needs the code of this"
-" run; never the internet. false, for now the default, keeps the page on "
-"this PC only; mh --lan opens it for one run. After a change, type mh "
-"update."
 msgstr ""
 
 #, python-brace-format
@@ -11863,6 +12176,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} group of faces on the people page; {left} photos left."
+msgid_plural "{count} groups of faces on the people page; {left} photos left."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid ""
 "{count} group of near duplicates to check stays in place: decide it with "
 "'review --near', or --tier near-all moves it too."
@@ -11903,6 +12222,10 @@ msgid "{count} identical copy, {size}: no risk, one command."
 msgid_plural "{count} identical copies, {size}: no risk, one command."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} intruder files, {size} in all."
+msgstr ""
 
 #, python-brace-format
 msgid "{count} layout written to {path}, read back from the disk:"
@@ -11985,6 +12308,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} photo can now be found by what it shows ({duration})."
 msgid_plural "{count} photos can now be found by what they show ({duration})."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} photo can now be found by what it shows; {left} left."
+msgid_plural "{count} photos can now be found by what they show; {left} left."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -12117,6 +12446,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} photo scanned, {faces} faces found; kept in the cache."
+msgid_plural "{count} photos scanned, {faces} faces found; kept in the cache."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid ""
 "{count} photo without GPS gets the position of its folder's town (its "
 "centre, approximate): {towns}."
@@ -12143,6 +12478,18 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "{count} photos to describe with {model}, about {time}. Each answer is "
+"kept at once: a stop loses nothing, the next run goes on."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{count} photos to look at with {model}, about {time}. Each one is kept at"
+" once: a stop loses nothing, the next run goes on."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{count} photos to scan for faces, about {time}. Each photo's faces are "
 "kept at once: a stop loses nothing, the next run goes on."
 msgstr ""
 
@@ -12993,6 +13340,12 @@ msgid "{n} set aside, not ticked"
 msgstr ""
 
 #, python-brace-format
+msgid "{n} shot picked"
+msgid_plural "{n} shots picked"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} shot proposed aside"
 msgid_plural "{n} shots proposed aside"
 msgstr[0] ""
@@ -13536,6 +13889,10 @@ msgstr ""
 msgid "👉 What next: open Windows PowerShell and type:"
 msgstr ""
 
+#, python-brace-format
+msgid "💡 On a phone of the home Wi-Fi too: {command}"
+msgstr ""
+
 msgid "📍 The GPS positions were kept, as asked."
 msgstr ""
 
@@ -13682,10 +14039,12 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "🧹 {count} file that is not a photo or a video ({extensions}) takes {size}"
-" in your photo folders: see 'Intruder files' in the report."
+" in your photo folders: see 'Intruder files' in the report; 'review "
+"--intruders' picks those to set aside."
 msgid_plural ""
 "🧹 {count} files that are not photos or videos ({extensions}) take {size} "
-"in your photo folders: see 'Intruder files' in the report."
+"in your photo folders: see 'Intruder files' in the report; 'review "
+"--intruders' picks those to set aside."
 msgstr[0] ""
 msgstr[1] ""
 

@@ -11,6 +11,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.search.days import NAME as DAY
+from media_hygiene.search.path_match import condition as path_condition
 from media_hygiene.search.query import Order, Sorting, match_expression
 from media_hygiene.tags.models import TagSource
 
@@ -69,7 +70,6 @@ YEARS: Final = f"CAST(substr({DAY}(files.media_date), 1, 4) AS INTEGER) BETWEEN 
 DAYS: Final = f"{DAY}(files.media_date) BETWEEN ? AND ?"  # ISO days compare as text
 # `fold` is Python's `casefold`: SQLite's `lower` knows ASCII only.
 FOLD: Final = "fold"
-FOLDER: Final = f"instr({FOLD}(files.path), ?) > 0"
 PLACE: Final = "mh_place"  # the state a path says (`convention.place_of_path`, 0407)
 LEFT_OR_NOT: Final = f"({PLACE}(files.path) = 'left') = ?"  # 1: left only, 0: sorted
 KIND: Final = "mh_kind"  # `photos`, `videos` (`folder_order.kind_of_path`, 0347)
@@ -148,8 +148,7 @@ def conditions(query: SearchQuery) -> tuple[list[str], list[object]]:
     if filters.sorting is not Sorting.ALL:
         chosen.append(LEFT_OR_NOT)
         parameters.append(int(filters.sorting is Sorting.LEFT))
-    folder = filters.folder.strip().replace("\\", "/").casefold()
-    if folder:
-        chosen.append(FOLDER)
-        parameters.append(folder)
+    if (folder := path_condition(filters.folder)) is not None:
+        chosen.append(folder[0])
+        parameters.append(folder[1])
     return chosen, parameters

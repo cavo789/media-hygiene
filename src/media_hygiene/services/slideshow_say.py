@@ -11,7 +11,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
-from media_hygiene.review.lan import lan_refused
+from media_hygiene.review.lan_address import lan_refused
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.services.launcher_lan import LAN_FLAG
 from media_hygiene.services.next_command import LAUNCHER_FUNCTION

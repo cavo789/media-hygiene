@@ -10,7 +10,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
-from media_hygiene.review.lan import lan_refused
+from media_hygiene.review.lan_address import lan_refused
 from media_hygiene.review.local_app import PAGE_PATH
 
 if TYPE_CHECKING:

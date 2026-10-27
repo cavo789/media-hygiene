@@ -66,11 +66,6 @@
     decide(index, [...aside]);
   };
 
-  const toggle = (position) => {
-    const item = series[current];
-    if (item && position < item.shots.length) toggleRank(current, shown(item)[position]);
-  };
-
   const keepSharpest = async () => {
     const shots = series[current].shots;
     const aside = shots.map((shot, rank) => rank).filter((rank) => !shots[rank].best && !shots[rank].protected);

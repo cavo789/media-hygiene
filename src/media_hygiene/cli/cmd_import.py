@@ -43,6 +43,16 @@ def import_command(  # pylint: disable=too-many-arguments
         typer.Option("--yes", "-y", help=_("Copy without asking first.")),
     ] = False,
     backup: Annotated[list[str] | None, folder_options.backup()] = None,
+    phone: Annotated[
+        bool,
+        typer.Option(
+            "--phone",
+            help=_(
+                "A phone over USB instead of a folder: Windows only, the mh of "
+                "PowerShell copies its new photos itself; --free then makes room on it."
+            ),
+        ),
+    ] = False,
 ) -> None:
     """Copy what only a folder holds, never what you set aside or deleted before.
 
@@ -52,9 +62,10 @@ def import_command(  # pylint: disable=too-many-arguments
         to: `--to`, the folder receiving the copies.
         yes: `--yes`, no question.
         backup: `--backup` folders, compared and never changed.
+        phone: `--phone`, handled by `mh.ps1` before Docker (0379): refused here.
 
     Raises:
-        typer.Exit: The user declined.
+        typer.Exit: The user declined, or `--phone` reached the container.
     """
     from media_hygiene.cli.next_steps import carried, safety, suggest
     from media_hygiene.console.import_view import show_plan, show_result
@@ -67,6 +78,14 @@ def import_command(  # pylint: disable=too-many-arguments
     sources = [folder] if folder else backup
     runtime = runtime_of(ctx).with_overrides(folder_options.backup_layer(sources))
     output = runtime.output
+    if phone:
+        output.error(
+            _(
+                "mh import --phone is for Windows only: type it in Windows "
+                "PowerShell, where mh reads the phone itself."
+            )
+        )
+        raise typer.Exit(code=2)
     with user_errors(output):
         ImportService(runtime, NullProgress()).ensure_ready()
         with RichProgress(output.console) as progress:

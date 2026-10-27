@@ -1,4 +1,4 @@
-"""A message of `mh phone`, safe inside double quotes, its fields as shell variables."""
+"""A message of `import --phone`, safe inside double quotes, its fields as variables."""
 
 from __future__ import annotations
 

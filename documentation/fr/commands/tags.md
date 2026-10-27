@@ -62,6 +62,12 @@ l'interrompt, et le passage suivant reprend là où il s'était arrêté (chaque
 aussitôt dans le cache). Rouvrir la page pendant un passage le montre. Seul le cache est écrit :
 vos photos ne sont pas modifiées. Si Ollama est injoignable, la page le dit en une ligne.
 
+Avec la recherche par le sens activée (`[tags] meaning = true`), la fin de cette fenêtre propose
+**Préparer la recherche par le sens** : les mêmes chiffres, **Regarder maintenant** / **Regarder
+pendant 1 h** / **Pas maintenant**, la progression et **Arrêter après cette photo**. Le modèle
+tourne sur le processeur de votre ordinateur (des heures sur toute une collection, estimé) ;
+chaque photo est gardée aussitôt dans le cache, le passage suivant continue.
+
 ## D'où viennent les mots
 
 | Source | Mots | Coût |

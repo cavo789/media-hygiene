@@ -56,6 +56,12 @@ d'une seule source) dans la colonne de gauche, les touches ⌨ en dessous, une s
 de la grille, puis les photos trouvées. **🔎 Mots** vient d'abord, **📁 Dossiers** ensuite : il
 ouvre `browse`, le même serveur. Ctrl+C, ou fermer son onglet, arrête la page.
 
+**Chemin contient** prend une partie du chemin, sans tenir compte des majuscules. `*` remplace
+n'importe quels caractères et `?` un seul : `*.mov` trouve tous les fichiers `.mov` (`.MOV`
+aussi). Entre deux barres obliques, c'est une expression régulière : `/\.(mov|mp4)$/`. Tout le
+reste est lu tel quel : `Vacances (2019)` ou `a+b` n'ont pas besoin d'échappement. Une expression
+régulière invalide est signalée sous le champ.
+
 - **⚖ Fichiers les plus lourds** (au-dessus des dossiers) : tous les dossiers, sans mot, les
   vidéos d'abord sauf si **Afficher** dit autre chose, les plus grosses d'abord — ou **Trier par :
   débit**, les vidéos les moins bien compressées pour leur durée (les meilleures à alléger avec

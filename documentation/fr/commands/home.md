@@ -134,7 +134,7 @@ qui a ouvert la page :
   votre dossier des rapports et s'arrête avec `199`. `mh` lit ce fichier une fois, le retire, et
   lance ces mots : `Noël 2025` reste un seul mot. Avec des rapports dans un volume nommé, ou un
   `mh` plus ancien, la page donne la commande à copier à la place.
-- **⚠️ Définitif** (`purge`, `clean --delete`, `phone --free`) : la page demande d'abord ; `mh`
+- **⚠️ Définitif** (`purge`, `clean --delete`, `import --phone --free`) : la page demande d'abord ; `mh`
   redemande dans sa fenêtre avant de toucher quoi que ce soit.
 - **Sinon** (`mh home` tapé, un `mh` plus ancien, ou `docker run` seul) : le bouton copie la
   commande (*Commande copiée*) et la page continue ; arrêtez-la avec Ctrl+C dans la fenêtre où
@@ -161,10 +161,10 @@ les rapports HTML ouverts depuis le disque, mènent toujours au
 
 ## Depuis un téléphone du Wi-Fi de la maison : `mh --lan`
 
-Sous Windows, `mh --lan` ouvre la page d'accueil à un téléphone **du même Wi-Fi** aussi,
-jusqu'à l'arrêt de `mh` ; avec `lan = true` sous `[review]` dans `config.toml` (puis
-`mh update`), `mh` seul et son raccourci du bureau font de même (désactivé par défaut pour
-l'instant) :
+Sous Windows, **`mh` et son raccourci du bureau ouvrent la page d'accueil aux téléphones du
+même Wi-Fi aussi**, jusqu'à l'arrêt de `mh` : c'est le défaut (`lan = true`). Vous préférez la
+page sur ce PC seulement ? Voyez [Garder la page sur ce PC seulement](#garder-la-page-sur-ce-pc-seulement)
+plus bas.
 
 1. `mh` trouve l'adresse du PC sur le réseau de la maison (*192.168.1.20*) et dit *La page
    d'accueil s'ouvre aussi aux téléphones du réseau de la maison*. Windows peut demander si
@@ -173,17 +173,17 @@ l'instant) :
 2. La page du PC montre, dans sa barre latérale, *Sur votre téléphone* : l'adresse, un **code**
    de 8 chiffres et son **QR code** (la fenêtre de `mh` dit la même adresse et le même code).
 3. Sur le téléphone, scannez le QR code, ou ouvrez l'adresse et tapez le code : la page d'accueil
-   s'ouvre. Le téléphone reste appairé (un cookie) jusqu'à l'arrêt de `mh`, même après les
-   étapes lancées sur le PC.
+   s'ouvre. Le téléphone reste appairé **pour de bon** (un cookie à lui, 400 jours) : le
+   `mh --lan` suivant s'y ouvre sans code. Sans HTTPS, jusqu'à l'arrêt de `mh` seulement.
 
 Sur le téléphone, la page d'accueil est la porte de la famille, **Nos photos** : *Retrouver une
 photo* (la recherche et le parcours), les albums et où vous en êtes ; les étapes qui changent les
 photos (importer, nettoyer, trier, sauvegarder) et les outils n'y sont pas montrés, le PC garde
 tout le cycle.
 
-Depuis le téléphone : 🔒 la page, où vous en êtes, les rapports, l'**audit** lancé par la page,
+🔒 **Le téléphone ne fait que lire : tout changement se fait sur le PC.** Depuis le téléphone : la page, où vous en êtes, les rapports, l'avancement d'un audit lancé sur le PC,
 [vos albums](#vos-albums-sur-le-téléphone), ainsi que **la recherche** et **le parcours** (leurs
-photos ouvertes à la taille du téléphone, jamais un original, et leurs vidéos ; *mettre de côté*, *Appliquer maintenant* et un
+photos ouvertes à la taille du téléphone, et leurs vidéos ; les originaux seulement avec `lan_phone_originals = true` sous `[review]` de `config.toml`, désactivé par défaut : pleine taille, position GPS comprise ; *mettre de côté*, *Appliquer maintenant* et un
 déplacement restent au PC). Seul un téléphone appairé les atteint : tout autre appareil du Wi-Fi
 (un invité, une télé) reçoit la page d'appairage, ou rien, à toute adresse. Tant que le téléphone montre une page, `mh` continue même onglet du
 PC fermé ; une fois `mh` arrêté, la page du téléphone le dit.
@@ -198,8 +198,43 @@ diaporama.
 |---|---|
 | Qui | Un appareil du même Wi-Fi **avec le code** ; 5 codes erronés ferment l'appairage jusqu'à l'arrêt de `mh`. |
 | Où | L'adresse privée du PC seulement (`10.x`, `172.16–31.x`, `192.168.x`) : jamais toutes les interfaces, jamais Internet ; `mh` n'ouvre aucun port sur votre box. |
-| Comment | HTTP simple sur le réseau de la maison, comme décidé : aucun avertissement de certificat sur le téléphone ; le code et le cookie circulent en clair sur votre Wi-Fi, pour cette fois seulement. |
-| La fois suivante | Un nouveau `mh --lan`, un nouveau code : l'ancien téléphone doit s'appairer à nouveau. |
+| Comment | HTTPS (`https://192.168.1.20:8088`), signé par une autorité de certification que `mh` crée sur votre PC : le téléphone l'installe une fois (ci-dessous) ; le code et le cookie ne circulent jamais en clair. |
+| Gardé | `C:\Users\<vous>\media-hygiene\lan\` contient cette autorité et le certificat de la page (`ca.key` n'en sort jamais). Supprimé, `mh` en crée une nouvelle : réinstallez-la sur chaque téléphone. |
+| La fois suivante | Un téléphone appairé ouvre la page directement. La carte du PC liste les **téléphones appairés pour de bon** (Android, iPhone… et la date) avec **Oublier ce téléphone** : son cookie n'ouvre plus rien. `phones.json` (dans le dossier `lan`) ne garde qu'un hash du jeton de chaque téléphone. |
+
+### Une fois par téléphone : installer le certificat
+
+La carte du PC dit *Première fois sur ce téléphone ? Installez d'abord le certificat :*
+`http://192.168.1.20:8089/`. Ouvrez-la sur le téléphone, touchez **Télécharger le certificat**,
+puis :
+
+- **Android** : *Paramètres › Sécurité (ou Sécurité et confidentialité) › Autres paramètres ›
+  Chiffrement et identifiants › Installer un certificat › Certificat CA*, choisissez
+  `media-hygiene-ca.crt` dans *Téléchargements* (Android prévient que le réseau peut être
+  surveillé : c'est votre propre PC). Le télécharger ne suffit pas, et **Certificat CA** compte
+  (ni *VPN et appli*, ni *Wi-Fi*). Vérifiez : *Identifiants de confiance › Utilisateur* montre
+  *Media Hygiene (this PC)*, et Chrome affiche `https` sans croix rouge ; sinon *Installer*
+  échoue (*Impossible d'installer cette appli*).
+- **iPhone, iPad** (dans Safari) : autorisez le profil, installez-le dans *Réglages › Général ›
+  VPN et gestion de l'appareil*, puis activez **Media Hygiene** dans *Réglages › Général ›
+  Informations › Réglages des certificats*.
+
+Touchez ensuite **C'est fait : ouvrir Média Hygiène**, et appairez avec le code comme plus haut.
+Quand l'adresse du PC change, `mh` signe pour elle un nouveau certificat avec la même autorité :
+rien à réinstaller. Demandez à votre box une **réservation DHCP** du PC pour garder la même
+adresse, et le favori du téléphone. Le [diaporama](slideshow.md) reste en HTTP simple : une
+télé ne peut pas installer de certificat.
+
+### Média Hygiène comme une app sur le téléphone
+
+Une fois appairé en HTTPS, le téléphone peut garder la page d'accueil comme une app, avec le
+suricate pour icône : **Android** (Chrome) propose *Installer l'application* (ou ⋮ › *Ajouter à
+l'écran d'accueil*) ; sur un **iPhone**, Safari le dit en une ligne : *Partager*, puis *Sur
+l'écran d'accueil*. L'icône ouvre alors directement la page d'accueil, sans QR code ni code.
+Quand Média Hygiène ne tourne pas sur le PC, l'app montre le suricate endormi, *Média Hygiène
+dort*, au lieu de l'erreur du navigateur, et rouvre la page d'elle-même dès que `mh` tourne.
+L'app ne garde que cette page : jamais une photo. Rien n'est publié : ni magasin, ni compte, ni
+Internet.
 
 Le téléphone n'ouvre pas la page ? La carte *Sur votre téléphone* dit pourquoi : *Aucun réseau
 domestique trouvé* (la page s'ouvre pour le PC seul, rien n'échoue), ou Windows considère le
@@ -207,8 +242,32 @@ Wi-Fi comme **public** : passez-le en privé dans *Paramètres › Réseau et In
 Réseau privé*. La première fois, Windows peut poser une fois la question pour Docker Desktop :
 cochez **Réseaux privés**, puis **Autoriser**.
 
-Avec `lan = false` (le défaut pour l'instant) : la page d'accueil reste sur le PC, sans carte
-(`mh --lan` l'ouvre quand même s'il est tapé). Windows PowerShell seulement pour l'instant.
+### Garder la page sur ce PC seulement
+
+Pas de téléphone à la maison, ou vous n'en voulez pas ? Coupez-le une fois, dans `config.toml` :
+
+1. Dans Windows PowerShell, ouvrez le fichier (`mh config` le crée la première fois) :
+
+   ```powershell
+   mh config
+   notepad "$HOME\media-hygiene\config\config.toml"
+   ```
+
+2. Trouvez la ligne `lan = true` (sous `[review]`) et changez-la en :
+
+   ```toml
+   lan = false
+   ```
+
+3. Enregistrez, fermez le Bloc-notes, puis tapez `mh update` (il écrit le changement dans `mh`
+   et le raccourci).
+
+Dès lors, `mh` et son raccourci gardent la page sur ce PC : pas de carte *Sur votre téléphone*,
+pas de question du pare-feu de Windows. Pour une soirée avec un téléphone, tapez `mh --lan` :
+la page s'ouvre au Wi-Fi pour cette fois seulement. Pour la rouvrir à chaque fois, remettez
+`lan = true`, puis `mh update`.
+
+Windows PowerShell seulement pour l'instant.
 
 ## Vos albums, sur le téléphone
 
@@ -233,7 +292,7 @@ n'appairent rien.
 
 | | |
 |---|---|
-| Vos photos | 🔒 Seulement lues. Le téléphone reçoit des images à sa taille (1440 pixels au plus, gardées dans `/cache`), jamais un original. |
+| Vos photos | 🔒 Seulement lues. Le téléphone reçoit des images à sa taille (1440 pixels au plus, gardées dans `/cache`), un original seulement avec `[review] lan_phone_originals = true`. |
 | Ce que le téléphone atteint | Les albums et **leurs** fichiers ; le reste de votre bibliothèque par *Rechercher* et *Parcourir* seulement (en lecture). |
 | Où | Le Wi-Fi de la maison seulement, tant que `mh` tourne sur le PC (dit sur la page). |
 

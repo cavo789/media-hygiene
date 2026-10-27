@@ -124,7 +124,7 @@ opened the page:
   the words into `.mh-step.json` of your reports folder and ends with `199`. `mh` reads that file
   once, removes it, and runs those words: `Christmas 2025` stays one word. With reports in a
   named volume, or an older `mh`, the page gives the command to copy instead.
-- **⚠️ For good** (`purge`, `clean --delete`, `phone --free`): the page asks first; `mh` asks
+- **⚠️ For good** (`purge`, `clean --delete`, `import --phone --free`): the page asks first; `mh` asks
   again in its window before touching anything.
 - **Otherwise** (`mh home` typed, an older `mh`, or `docker run` alone): the button copies the
   command (*Command copied*) and the page keeps running; stop it with Ctrl+C in the window where
@@ -148,9 +148,9 @@ lead to the [website](https://cavo789.github.io/media-hygiene/): no page of the 
 
 ## From a phone on the home Wi-Fi: `mh --lan`
 
-In Windows, `mh --lan` opens the home page to a phone **of the same Wi-Fi** too, until `mh`
-stops; with `lan = true` under `[review]` in `config.toml` (then `mh update`), `mh` alone and its
-desktop shortcut do the same (off by default for now):
+In Windows, **`mh` and its desktop shortcut open the home page to the phones of the same
+Wi-Fi too**, until `mh` stops: this is the default (`lan = true`). You prefer the page on this
+PC only? See [Keep the page on this PC only](#keep-the-page-on-this-pc-only) below.
 
 1. `mh` finds the PC's address on the home network (*192.168.1.20*) and says *The home page opens
    to the phones of the home network too*. Windows may ask whether **Docker Desktop** may accept
@@ -158,15 +158,16 @@ desktop shortcut do the same (off by default for now):
 2. The PC's page shows, in its sidebar, *On your phone*: the address, a **code** of 8 digits
    and its **QR code** (the window of `mh` says the same address and code).
 3. On the phone, scan the QR code, or open the address and type the code: the home page opens.
-   The phone stays paired (a cookie) until `mh` stops, even after the steps run on the PC.
+   The phone stays paired **for good** (a cookie of its own, 400 days): the next `mh --lan`
+   opens on it without a code. Without HTTPS, until `mh` stops only.
 
 On the phone, the home page is the family's door, **Our photos**: *Find a photo* (search and
 browse), the albums and where you are; the stages that change photos (import, clean, sort, back
 up) and the tools are not shown there, the PC keeps the whole cycle.
 
-From the phone: 🔒 the page, where you are, the reports, the **audit** run by the page,
+🔒 **The phone is read-only: every change is made on the PC.** From the phone: the page, where you are, the reports, the progress of an audit started on the PC,
 [your albums](#your-albums-on-the-phone), and **search** and **browse** (their photos opened at
-the phone's size, never an original, and their videos; *set aside*, *Apply now* and a move stay the PC's). Only a paired
+the phone's size, and their videos; the originals only with `lan_phone_originals = true` under `[review]` of `config.toml`, off by default: full size, GPS position included; *set aside*, *Apply now* and a move stay the PC's). Only a paired
 phone reaches them: any other device of the Wi-Fi (a guest, a TV) gets the pairing page, or
 nothing, on every address. While the phone shows a page, `mh` keeps running even with the
 PC's tab closed; once `mh` stops, the phone's page says so.
@@ -180,16 +181,70 @@ the home network too: the phone already paired reloads its page and gets the sli
 |---|---|
 | Who | A device on the same Wi-Fi **with the code**; 5 wrong codes close the pairing until `mh` stops. |
 | Where | The PC's private address only (`10.x`, `172.16–31.x`, `192.168.x`): never every interface, never the internet; `mh` opens no port on your router. |
-| How | Plain HTTP on the home network, as decided: no certificate warning on the phone; the code and the cookie travel in clear on your Wi-Fi, for this run only. |
-| Next time | A new `mh --lan`, a new code: the old phone must pair again. |
+| How | HTTPS (`https://192.168.1.20:8088`), signed by a certificate authority `mh` makes on your PC: the phone installs it once (below); the code and the cookie never travel in clear. |
+| Kept | `C:\Users\<you>\media-hygiene\lan\` holds that authority and the page's certificate (`ca.key` never leaves it). Deleted, `mh` makes a new one: install it again on each phone. |
+| Next time | A paired phone opens the page directly. The PC's card lists the **phones paired for good** (Android, iPhone… and the date) with **Forget this phone**: its cookie opens nothing any more. `phones.json` (in the `lan` folder) keeps only a hash of each phone's token. |
+
+### Once per phone: install the certificate
+
+The PC's card says *First time on this phone? Install the certificate first:*
+`http://192.168.1.20:8089/`. Open it on the phone, tap **Download the certificate**, then:
+
+- **Android**: *Settings › Security (or Security and privacy) › More settings › Encryption and
+  credentials › Install a certificate › CA certificate*, choose `media-hygiene-ca.crt` in
+  *Downloads* (Android warns that the network may be monitored: it is your own PC).
+  Downloading is not enough, and **CA certificate** matters (not *VPN and app*, not *Wi-Fi*).
+  Check: *Trusted credentials › User* shows *Media Hygiene (this PC)*, and Chrome shows `https`
+  without a red cross; otherwise *Install* fails (*This app cannot be installed*).
+- **iPhone, iPad** (in Safari): allow the profile, install it in *Settings › General › VPN and
+  device management*, then turn **Media Hygiene** on in *Settings › General › About ›
+  Certificate trust settings*.
+
+Then tap **Done: open Media Hygiene**, and pair with the code as above. When the PC's address
+changes, `mh` signs a new certificate for it with the same authority: nothing to install
+again. Ask your box for a **DHCP reservation** of the PC to keep the same address, and the
+phone's bookmark. The [slideshow](slideshow.md) stays in plain HTTP: a TV cannot install a
+certificate.
+
+### Media Hygiene as an app on the phone
+
+Once paired over HTTPS, the phone may keep the home page as an app, with the meerkat as its
+icon: **Android** (Chrome) offers *Install app* (or ⋮ › *Add to Home screen*); on an
+**iPhone**, Safari says how in one line: *Share*, then *Add to Home Screen*. The icon then
+opens the home page directly, no QR code, no code. When Media Hygiene is not running on the
+PC, the app shows the asleep meerkat, *Media Hygiene is asleep*, instead of the browser's
+error, and opens the page again by itself once `mh` runs. The app keeps that page only:
+never a photo. Nothing is published: no store, no account, no internet.
 
 The phone cannot open the page? The card *On your phone* says why: *No home network found*
 (the page opens for the PC alone, nothing fails), or Windows counts the Wi-Fi as **public**: set
 it to private in *Settings › Network & Internet › Wi-Fi › Private network*. The first time,
 Windows may ask about Docker Desktop once: tick **Private networks**, then **Allow**.
 
-With `lan = false` (the default for now): the home page stays on the PC, no card (`mh --lan`
-still opens it when typed).
+### Keep the page on this PC only
+
+No phone at home, or you do not want one? Turn it off once, in `config.toml`:
+
+1. In Windows PowerShell, open the file (`mh config` creates it the first time):
+
+   ```powershell
+   mh config
+   notepad "$HOME\media-hygiene\config\config.toml"
+   ```
+
+2. Find the line `lan = true` (under `[review]`) and change it to:
+
+   ```toml
+   lan = false
+   ```
+
+3. Save, close Notepad, then type `mh update` (it writes the change into `mh` and the shortcut).
+
+From then on, `mh` and its shortcut keep the page on this PC: no card *On your phone*, no
+question from Windows' firewall. For one evening with a phone, type `mh --lan`: the page opens
+to the Wi-Fi for that run only. To open it again every time, put back `lan = true`, then
+`mh update`.
+
 Windows PowerShell only for now.
 
 ## Your albums, on the phone
@@ -212,7 +267,7 @@ Your albums*). The relatives look at your screen and pair nothing.
 
 | | |
 |---|---|
-| Your photos | 🔒 Only read. The phone gets pictures sized for it (1440 pixels at most, kept in `/cache`), never an original. |
+| Your photos | 🔒 Only read. The phone gets pictures sized for it (1440 pixels at most, kept in `/cache`), an original only with `[review] lan_phone_originals = true`. |
 | What the phone reaches | The albums and **their** files; the rest of your library through *Search* and *Browse* only (read only). |
 | Where | The home Wi-Fi only, while `mh` runs on the PC (said on the page). |
 

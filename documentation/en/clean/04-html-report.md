@@ -1,6 +1,6 @@
 # 4. The HTML report
 
-[Documentation](../README.md) › Cleaning, step 4 of 14 · 🇫🇷 [Français](../../fr/clean/04-html-report.md)
+[Documentation](../README.md) › Cleaning, step 4 of 15 · 🇫🇷 [Français](../../fr/clean/04-html-report.md)
 
 The terminal gives the totals and the folder pairs. The report shows the rest: the pictures
 themselves, every copy line by line, and the proof that they are identical. It is a web page

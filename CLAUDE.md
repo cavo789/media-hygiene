@@ -15,7 +15,7 @@ pushes `--target published`), `ENTRYPOINT ["media-hygiene"]`) run from PowerShel
 [README.md](README.md) / [README_FR.md](README_FR.md) (quick start + contents only) and
 `documentation/en/` / `documentation/fr/` (same file names and `images/` in both). Step by step,
 one guide per goal after shared first steps: `start/` (steps 1–3: audit, cache, several folders),
-then `clean/` (steps 4–13) or `sort/` (from step 4, with `classify`); `commands/` holds one page
+then `clean/` (steps 4–15) or `sort/` (from step 4, with `classify`); `commands/` holds one page
 per CLI verb (what it does, mounts, options, examples, its `--help` capture), indexed by
 `reference-commands.md` — a new verb needs its page in both languages and its name in
 `COMMANDS_TOO` of `tests/support/docs/scenario.py` (`tests/unit/test_docs_commands.py` checks

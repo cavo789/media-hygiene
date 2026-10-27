@@ -10,8 +10,8 @@ validates every obvious series at once.
 `port`: the port of every page (`review`, `home`, `places`…), published by `mh` under
 the same number on the host; another number for whoever cannot free 8088 (0260).
 
-`lan`: `mh` opens the home page to the phones of the home Wi-Fi too (0367); off by
-default until 0384 is fixed (`mh --lan` opens it for one run).
+`lan`: `mh` opens the home page to the phones of the home Wi-Fi too (0367); on by
+default since HTTPS and durable pairing (0430, 0431); false keeps it on the PC.
 
 `[review.unwanted]`: what `review --junk` lists as most likely unwanted, never set
 aside without you. Each threshold at 0 disables its reason.
@@ -81,8 +81,10 @@ class ReviewSettings(BaseModel):
     # change: it writes the port into `mh`).
     port: int = Field(default=PAGE_PORT, ge=1, le=_LAST_PORT)
     # The home page open to the phones of the home network too, for the run (0367);
-    # false: the PC alone. Written into `mh` by `mh update`, like `port`. Off by
-    # default until 0384 (a forged `Host` passes for the PC) is fixed: meanwhile,
-    # `mh --lan` opens it for one run.
-    lan: bool = False
+    # false: the PC alone (`mh --lan` then opens it for one run). Written into `mh` by
+    # `mh update`, like `port`. On by default (maintainer, 2026-10-27).
+    lan: bool = True
+    # A paired phone may download the originals of photos and videos (0427); never a
+    # write from a phone, whatever this says.
+    lan_phone_originals: bool = False
     unwanted: UnwantedSettings = UnwantedSettings()

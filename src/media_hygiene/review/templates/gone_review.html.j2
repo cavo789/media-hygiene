@@ -26,6 +26,7 @@
 {% set page_name = _("Files gone review") %}
 {% set keys_safe = _("Every answer is saved at once in %(place)s. Done? Ctrl+C in the terminal stops the review; then run the same 'clean' command with %(option)s: the files deleted on purpose are remembered, and 'undo' forgets them.", place=place, option=clean_option) %}
 {% block style %}
+{% include "pick_viewer.css.j2" %}
   main h2 { font-size: 1rem; margin: 0 0 8px; }
   #status.error { color: var(--bad); font-weight: 600; } #status.saved { color: var(--ok); }
   #state { margin: 0 0 12px; padding: 8px 12px; font-weight: 600; background: var(--card);
@@ -61,6 +62,7 @@
       <dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>{{ _("move the cursor") }}</dd>
       <dt><kbd>→</kbd> <kbd>←</kbd></dt><dd>{{ _("next, previous group") }}</dd>
       <dt><kbd>N</kbd></dt><dd>{{ _("next group not answered") }}</dd>
+{% include "pick_large_keys.html.j2" %}
 {% endblock %}
 {% block bar %}
   <strong id="position"></strong>
@@ -79,6 +81,7 @@
 </main>
 {% endblock %}
 {% block after %}
+{% include "pick_large.html.j2" %}
 <script>
 {% include "gone_review.js.j2" %}
 </script>

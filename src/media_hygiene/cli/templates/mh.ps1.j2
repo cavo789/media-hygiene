@@ -65,6 +65,12 @@ function global:{{ function }} {
     # The commands of the host itself, without the container (0175, 0180, 0181).
     # Splatted: each word its own argument, as typed.
     $more = @($rest | Select-Object -Skip 1)
+    if ($rest[0] -eq 'import' -and $more -contains '{{ host.phone }}') {
+        # `{{ function }} import {{ host.phone }}`: a phone over USB, read by Windows itself, not Docker (0219, 0379).
+        $words = @($more | Where-Object { $_ -ne '{{ host.phone }}' })
+        _{{ function }}_phone @words
+        return
+    }
     switch ($rest[0]) {
 {% for name in host.names %}
         '{{ name }}' { _{{ function }}_{{ name }} @more; return }

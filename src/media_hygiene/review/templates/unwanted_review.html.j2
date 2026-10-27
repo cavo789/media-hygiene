@@ -2,7 +2,11 @@
 {# The keyboard review of the photos most likely unwanted, served by `media-hygiene review --junk`.
    The page never touches a file: each choice is sent to the server, which saves the `unwanted`
    key of the decisions file; `clean --decisions` then moves the photos set aside to the
-   quarantine, journaled. The panel below the group shows the file as read back from the disk. #}
+   quarantine, journaled. The panel below the group shows the file as read back from the disk.
+   The photos of the group are a page of photos to pick like `browse` (`pick_*`, skill
+   photo-picking-pages, 0320): ←/→ change the group and Space keeps or sets aside the framed
+   photo as before, so the frame moves with ↑/↓ (`pick_moves = false`); Delete sets the
+   picked photos aside. #}
 {% set texts = {
   "position": _("Group {number} of {total}"),
   "totals": _("Set aside: {aside} · decided: {decided} of {total}"),
@@ -24,9 +28,25 @@
   "failed": _("Not saved (error {status})."),
   "offline": _("The review is not running any more: start it again."),
 } %}
+{% set pick_texts = {
+  "picked": [ngettext("{n} photo picked", "{n} photos picked", 1), ngettext("{n} photo picked", "{n} photos picked", 2)],
+  "aside": texts.aside,
+  "tick": _("Pick this photo"),
+  "saving": texts.saving,
+  "notSaved": _("Nothing was saved: {error}"),
+  "offline": texts.offline,
+  "failed": texts.failed,
+} %}
+{% set pick_all = _("every photo of the group") %}
+{% set pick_moves = false %}
+{% set pick_album = false %}
 {% set page_name = _("Unwanted photos review") %}
 {% set keys_safe = _("Every choice is saved at once in %(place)s. Done? Ctrl+C in the terminal stops the review; then run the same 'clean' command with %(option)s: the photos set aside go to the quarantine, and 'undo' brings them back.", place=place, option=clean_option) %}
 {% block style %}
+{% include "pick_grid.css.j2" %}
+  main#grid { display: block; }
+  /* Where you are on its own line, then the picking: the grid never moves when a pick starts. */
+  #bar #lead, #bar #acting { flex-basis: 100%; }
   main h2 { font-size: 1rem; margin: 0 0 8px; }
   #status.error { color: var(--bad); font-weight: 600; } #status.saved { color: var(--ok); }
   #state { margin: 0 0 12px; padding: 8px 12px; font-weight: 600; background: var(--card);
@@ -37,7 +57,6 @@
   .shot.kept { border-color: var(--ok); }
   .shot.aside, .shot.proposed { border: 3px dashed var(--bad); }
   .shot.aside img { opacity: .6; }
-  .shot.cursor { outline: 3px solid var(--accent); outline-offset: 2px; }
   .shot img { display: block; width: 100%; height: 160px; object-fit: contain; border-radius: 6px; background: var(--bg); }
   figcaption { margin-top: 4px; font-size: .8rem; overflow-wrap: anywhere; }
   figcaption .original { margin-left: 6px; color: var(--accent); }
@@ -48,27 +67,27 @@
 {% block side %}
   <section id="toc" aria-label="{{ page_name }}">
     <p class="muted">{{ _("Never a photo of a protected folder, a burst shot, a near or exact duplicate. The thresholds are in [review.unwanted] of config.toml.") }}</p>
-    <p class="muted">{{ _("A click on a photo keeps it or sets it aside too.") }}</p>
   </section>
 {% endblock %}
 {% block keys %}
       <dt><kbd>→</kbd></dt><dd>{{ _("the group as marked, then next") }}</dd>
-      <dt><kbd>␣</kbd></dt><dd>{{ _("keep or set aside the photo under the cursor") }}</dd>
-      <dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>{{ _("move the cursor") }}</dd>
       <dt><kbd>←</kbd></dt><dd>{{ _("previous group") }}</dd>
+      <dt><kbd>␣</kbd></dt><dd>{{ _("keep or set aside the framed photo") }}</dd>
+{% include "pick_keys.html.j2" %}
 {% endblock %}
 {% block more_keys %}
       <dt><kbd>N</kbd></dt><dd>{{ _("next undecided group") }}</dd>
       <dt><kbd>U</kbd></dt><dd>{{ _("the group back to undecided") }}</dd>
+{% include "pick_keys_more.html.j2" %}
 {% endblock %}
 {% block bar %}
   <strong id="position"></strong>
   <span id="totals" class="muted"></span>
-  <span id="status" role="status" aria-live="polite"></span>
-  {% include "apply_now.html.j2" %}
+  {% set pick_remove = _("Keep the picked photos") %}
+  {% include "pick_acting.html.j2" %}
 {% endblock %}
 {% block content %}
-<main>
+<main id="grid">
   <h2 id="title"></h2>
   <p id="state" role="status"></p>
   <div id="shots" class="shots"></div>
@@ -79,7 +98,24 @@
 </main>
 {% endblock %}
 {% block after %}
+{% include "pick_viewer.html.j2" %}
 <script>
+{% include "pick_grid.js.j2" %}
+{% include "pick_viewer.js.j2" %}
+{% include "pick_band.js.j2" %}
+// The hooks of the shared grid (pick_grid.js.j2), set by the page's script below.
+const TEXTS = {{ pick_texts | tojson }};
+const CHOSEN_PATH = ""; // unused: `saveChoice` saves the choices of this page
+let card = null;        // (file, index) → its tile
+let reopen = null;      // (again) → the photos of the group shown again
+function scope() {
+  return {};
+}
+function placeCards(nodes) { // the grid of photos under the group's title and state
+  document.getElementById("shots").replaceChildren(...nodes);
+}
+pickMoves = false;      // ←/→ change the group, Space keeps or sets aside the framed photo
+delete VIEWER_KEYS.a;   // no album here
 {% include "unwanted_review.js.j2" %}
 </script>
 {% endblock %}

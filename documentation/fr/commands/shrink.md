@@ -144,7 +144,7 @@ est dit après chaque vidéo.
   `clip.mp4.xmp`. Un fichier déjà nommé `clip.mp4` à côté n'est jamais remplacé : cette vidéo
   est sautée.
 - **Jamais réimporté** : l'original est retenu comme tout fichier que vous avez mis de côté. Si un
-  téléphone ou une sauvegarde le garde encore, `mh phone` ne l'importe pas à nouveau, et le
+  téléphone ou une sauvegarde le garde encore, `mh import --phone` ne l'importe pas à nouveau, et le
   `clean` suivant remet de côté une copie revenue.
 
 ## Options

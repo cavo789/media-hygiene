@@ -1,6 +1,6 @@
 # 12. Décider paire par paire
 
-[Documentation](../README.md) › Nettoyer, étape 12 sur 14 · 🇬🇧 [English](../../en/clean/12-decide-pair-by-pair.md)
+[Documentation](../README.md) › Nettoyer, étape 12 sur 15 · 🇬🇧 [English](../../en/clean/12-decide-pair-by-pair.md)
 
 [`--prefer`](05-choose-the-kept-copy.md) change le choix pour tout un dossier, partout. Parfois,
 vous n'êtes en désaccord qu'avec une seule paire : garder l'autre côté, ne pas toucher à cette

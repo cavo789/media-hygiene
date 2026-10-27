@@ -159,7 +159,9 @@
         <label>{{ _("From") }}<input id="from" type="date" min="1800-01-01" max="2200-12-31"></label>
         <label>{{ _("To") }}<input id="to" type="date" min="1800-01-01" max="2200-12-31"></label>
       </div>
-      <label>{{ _("Path contains") }}<input id="folder" type="text"></label>
+      <label>{{ _("Path contains") }}<input id="folder" type="text"
+               title="{{ _('A part of the path. * is any characters, ? one character, /regex/ a regular expression: *.mov, /\\.(mov|mp4)$/') }}"
+               placeholder="{{ _('e.g. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/') }}"></label>
       <label>{{ _("Sorted") }}
         <select id="sorting" title="{{ _('Sorted: in a year-month folder (2009/2009-11/…), as the sort convention puts them') }}">
           <option value="all">{{ _("every photo") }}</option>

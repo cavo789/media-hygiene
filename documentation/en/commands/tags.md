@@ -61,6 +61,11 @@ answer is kept in the cache at once). Reopening the page during a run shows the 
 cache is written: your photos are not changed. If Ollama cannot be reached, the page says so in
 one line.
 
+With search by meaning on (`[tags] meaning = true`), the end of this dialog offers **Build
+search by meaning**: the same figures, **Look now** / **Look for 1 h** / **Not now**, the
+progress and **Stop after this photo**. The model runs on your computer's processor (hours on a
+whole collection, estimated); each photo is kept in the cache at once, so the next run goes on.
+
 ## Where the words come from
 
 | Source | Words | Cost |

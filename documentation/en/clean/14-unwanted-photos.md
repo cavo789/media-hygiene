@@ -1,6 +1,6 @@
 # 14. Unwanted photos
 
-[Documentation](../README.md) › Cleaning, step 14 of 14 · 🇫🇷 [Français](../../fr/clean/14-unwanted-photos.md)
+[Documentation](../README.md) › Cleaning, step 14 of 15 · 🇫🇷 [Français](../../fr/clean/14-unwanted-photos.md)
 
 Beyond duplicates, a collection keeps photos nobody wants: icons and thumbnails, screenshots,
 a shot taken in the pocket (all black), a shaken one. `review --junk` shows you those most
@@ -72,8 +72,10 @@ you decide; the reason is written under each one.
 | Key | What it does |
 |---|---|
 | `→` | The group as marked: the photos still proposed go aside, then the next group |
-| `Space` (or a click) | Keep, or set aside, the photo under the cursor |
-| `↑` / `↓` | Move the cursor |
+| `Space` | Keep, or set aside, the framed photo |
+| `↑` / `↓` | Move the frame |
+| `Delete` | Set the picked photos aside: a click picks one, Ctrl+click, Shift+click, a rectangle, Ctrl+A, I as in [`browse`](../commands/browse.md) |
+| Enter or a double click | See the photo large (`Delete` there sets it aside, `⌫` takes it back) |
 | `←` / `N` | Previous group / next undecided group |
 | `U` | The whole group back to undecided |
 
@@ -97,4 +99,4 @@ The same `decisions.json` holds the choices of the other reviews: `review --junk
 
 ---
 
-← [13. A second opinion](13-second-opinion.md) · [Documentation](../README.md)
+← [13. A second opinion](13-second-opinion.md) · [Documentation](../README.md) · Next: **[15. Intruder files](15-intruder-files.md)** →
