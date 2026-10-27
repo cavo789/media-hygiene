@@ -106,6 +106,16 @@ def _describe(
     runtime = _runtime(source)
     with TagStep(runtime) as step:
         work = step.plan(())
+        # The window of mh says why the PC works, and where to stop it (review of 0343).
+        runtime.output.info(
+            ngettext(
+                "The home page has {count} photo described by the model: "
+                "Stop is on the page.",
+                "The home page has {count} photos described by the model: "
+                "Stop is on the page.",
+                len(work.missing),
+            ).format(count=len(work.missing))
+        )
         answering = Answering(True, progress, stopped)  # noqa: FBT003
         outcome = describe_photos(step, work, answering)
         tagged = step.derive(work)

@@ -16,7 +16,7 @@ from tests.integration.tags.test_tags_command import ASKED
 from tests.integration.test_home_page import serve
 from tests.support.home_app import home_app_of
 from tests.support.review import JSON_HEADERS, Call
-from tests.support.runtime import make_runtime
+from tests.support.runtime import make_runtime, output_of
 from tests.support.tagging import write_tags_config
 
 _POLL = 0.01
@@ -68,6 +68,8 @@ def test_the_page_asks_with_figures_then_describes_and_resumes(
     _wait(tags)
     assert tags.state().phase is TagsPhase.DONE, tags.state().error
     assert fake.described() == 2
+    said = " ".join(output_of(runtime).split())
+    assert f"The home page has {ASKED} photos described by the model" in said
     with TagStep(runtime) as step:
         assert len(step.plan(()).missing) == ASKED - 2
     holder["limit"] = ASKED + 1

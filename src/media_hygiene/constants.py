@@ -152,7 +152,7 @@ class Sizes(IntEnum):
     MAX_GROUPS_IN_REPORT = 500
     PAIR_SAMPLES = 4
     MAX_SAMPLED_PAIRS = 50
-    RANDOM_SAMPLE = 30
+    RANDOM_SAMPLE = 5  # as many as REPORT_EXAMPLES (review of 2026-10-26)
     REPORT_EXAMPLES = 5  # per chapter of the audit report; the full list elsewhere
     MAX_ORPHANS_IN_REPORT = 500
     IO_CONCURRENCY = 16

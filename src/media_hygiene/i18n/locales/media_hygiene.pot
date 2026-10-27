@@ -7274,6 +7274,16 @@ msgstr ""
 msgid "The home page"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"The home page has {count} photo described by the model: Stop is on the "
+"page."
+msgid_plural ""
+"The home page has {count} photos described by the model: Stop is on the "
+"page."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid ""
 "The home page in your browser: where you are, the next step as a button, "
 "every step of the guides, the reports."
