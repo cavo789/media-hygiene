@@ -24,7 +24,8 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.i18n import _
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.lan import PAIR_PREFIX
-from media_hygiene.review.lan_app import LAN_PATH, lan_response
+from media_hygiene.review.lan_app import LAN_PATH
+from media_hygiene.review.lan_card import lan_response
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.shared_routes import asset_or_page

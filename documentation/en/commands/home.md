@@ -203,6 +203,16 @@ again. Ask your box for a **DHCP reservation** of the PC to keep the same addres
 phone's bookmark. The [slideshow](slideshow.md) stays in plain HTTP: a TV cannot install a
 certificate.
 
+### Media Hygiene as an app on the phone
+
+Once paired over HTTPS, the phone may keep the home page as an app, with the meerkat as its
+icon: **Android** (Chrome) offers *Install app* (or ⋮ › *Add to Home screen*); on an
+**iPhone**, Safari says how in one line: *Share*, then *Add to Home Screen*. The icon then
+opens the home page directly, no QR code, no code. When Media Hygiene is not running on the
+PC, the app shows the asleep meerkat, *Media Hygiene is asleep*, instead of the browser's
+error, and opens the page again by itself once `mh` runs. The app keeps that page only:
+never a photo. Nothing is published: no store, no account, no internet.
+
 The phone cannot open the page? The card *On your phone* says why: *No home network found*
 (the page opens for the PC alone, nothing fails), or Windows counts the Wi-Fi as **public**: set
 it to private in *Settings › Network & Internet › Wi-Fi › Private network*. The first time,

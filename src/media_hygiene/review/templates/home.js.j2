@@ -248,8 +248,17 @@ function showPhones(answer, forgetPath) {
   }
   $("#lanPhones").hidden = answer.phones.length === 0;
 }
+// The phone's app (0432): the worker keeps the offline page; iOS never invites to install, a line says how.
+function asApp() {
+  if (!REMOTE) return;
+  if (window.isSecureContext && "serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+  const ios = /iPhone|iPad/.test(navigator.userAgent);
+  const standalone = navigator.standalone || window.matchMedia("(display-mode: standalone)").matches;
+  if (ios && !standalone) toast(T.addToHome);
+}
 function begin() {
   index();
+  asApp();
   applyTheme(store.get("theme", "auto"), false);
   const wanted = decodeURIComponent((location.hash || "").slice(1));
   view.id = SPACE[wanted] ? wanted : HOME;

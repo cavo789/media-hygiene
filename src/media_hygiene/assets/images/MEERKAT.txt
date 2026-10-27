@@ -6,6 +6,10 @@ media-hygiene, and its poses.
   JPEG on a magenta ground), the ground made transparent, cropped and fitted in 400 x 400 px:
   lookout (the first audit), broom (clean), sorting (sort), magnifier (find), phone (import),
   nas (back up), party (everything done), asleep (the page stopped).
+- meerkat-splash.webp: the startup screen of the phone app and the PC's home page (0430), drawn
+  by Google Gemini from the avatar and favicon.png on 2026-10-27 (1024 x 1024 JPEG on a magenta
+  ground), the ground and its glow made transparent, a white sticker outline added like the
+  poses, cropped and fitted in 800 x 800 px (shown larger than the poses).
 - favicon.png: 64 x 64 px, the avatar centred on a transparent square (0278).
 - All WebP but favicon.png, transparent background, quality 90.
 - Not covered by the project's MIT licence (LICENSE): (c) 2026 Christophe Avonture, all rights

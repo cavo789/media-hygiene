@@ -4112,6 +4112,11 @@ msgstr ""
 msgid "It changes nothing in your photos"
 msgstr "Il ne change rien à vos photos"
 
+msgid ""
+"It is not running on the PC. On the PC, start Media Hygiene (type mh in "
+"Windows PowerShell): this page opens again by itself."
+msgstr "Il ne tourne pas sur le PC. Sur le PC, lancez Média Hygiène (tapez mh dans Windows PowerShell) : cette page se rouvre d'elle-même."
+
 #, python-brace-format
 msgid "It is {name}? ({score})"
 msgstr "C'est {name} ? ({score})"
@@ -4552,6 +4557,9 @@ msgstr "Reconnaît"
 msgid "May"
 msgstr "mai"
 
+msgid "Media Hygiene"
+msgstr "Média Hygiène"
+
 msgid ""
 "Media Hygiene added to the right-click menu and checked: right-click a "
 "folder, or the empty space of an open folder, then Media Hygiene to open "
@@ -4577,6 +4585,9 @@ msgstr ""
 
 msgid "Media Hygiene in the Explorer's right-click"
 msgstr "Media Hygiene dans le clic droit de l'Explorateur"
+
+msgid "Media Hygiene is asleep"
+msgstr "Média Hygiène dort"
 
 msgid "Media Hygiene is stopped"
 msgstr "Media Hygiene est arrêté"
@@ -7068,6 +7079,9 @@ msgstr "Restauration"
 
 msgid "Results"
 msgstr "Résultats"
+
+msgid "Retry"
+msgstr "Réessayer"
 
 #, python-brace-format
 msgid ""
@@ -10177,6 +10191,9 @@ msgstr ""
 "Pour récupérer une exécution : recopiez le dossier de chaque disque dans "
 "la quarantaine de ce disque, puis lancez 'undo <exécution>'."
 
+msgid "To keep Media Hygiene as an app: Share, then Add to Home Screen."
+msgstr "Pour garder Média Hygiène comme une app : Partager, puis Sur l'écran d'accueil."
+
 msgid ""
 "To keep settings, mount a folder of yours on /config, e.g. -v \"$HOME"
 "\\media-hygiene\\config:/config\": config.toml is created there, "
@@ -10341,11 +10358,8 @@ msgstr ""
 
 msgid ""
 "Type the code shown on the PC: on its page (in the sidebar of the home "
-"page, at the top of the slideshow's) and in the window of mh."
-msgstr ""
-"Tapez le code affiché sur le PC : sur sa page (dans la barre latérale de "
-"la page d'accueil, en haut de celle du diaporama) et dans la fenêtre de "
-"mh."
+"page, at the top of the slideshow's) and in the window of Media Hygiene."
+msgstr "Tapez le code affiché sur le PC : sur sa page (dans la barre latérale de la page d'accueil, en haut de celle du diaporama) et dans la fenêtre de Média Hygiène."
 
 msgid "Type the event's name first."
 msgstr "Tapez d'abord le nom de l'événement."
@@ -11102,6 +11116,9 @@ msgstr "Vos dossiers de photos :"
 
 msgid "Your photos and videos were not touched."
 msgstr "Vos photos et vidéos n'ont pas été touchées."
+
+msgid "Your photos and videos, sorted and without duplicates."
+msgstr "Vos photos et vidéos, triées et sans doublons."
 
 msgid "Your photos, in order"
 msgstr "Vos photos, en ordre"

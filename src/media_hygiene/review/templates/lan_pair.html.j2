@@ -27,7 +27,7 @@ button { width: 100%; margin-top: 16px; padding: 12px; border: 0; border-radius:
   <h1>{{ _("Media Hygiene on this phone") }}</h1>
   {% if problem %}<p class="problem" role="alert">{{ problem }}</p>{% endif %}
   {% if not closed %}
-  <p>{{ _("Type the code shown on the PC: on its page (in the sidebar of the home page, at the top of the slideshow's) and in the window of mh.") }}</p>
+  <p>{{ _("Type the code shown on the PC: on its page (in the sidebar of the home page, at the top of the slideshow's) and in the window of Media Hygiene.") }}</p>
   <form id="pair" autocomplete="off">
     <label for="code">{{ _("Pairing code") }}</label>
     <input id="code" name="code" inputmode="numeric" pattern="[0-9 ]*" maxlength="{{ digits + 2 }}" required autofocus>

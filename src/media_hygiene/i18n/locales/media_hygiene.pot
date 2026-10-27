@@ -3363,6 +3363,11 @@ msgstr ""
 msgid "It changes nothing in your photos"
 msgstr ""
 
+msgid ""
+"It is not running on the PC. On the PC, start Media Hygiene (type mh in "
+"Windows PowerShell): this page opens again by itself."
+msgstr ""
+
 #, python-brace-format
 msgid "It is {name}? ({score})"
 msgstr ""
@@ -3748,6 +3753,9 @@ msgstr ""
 msgid "May"
 msgstr ""
 
+msgid "Media Hygiene"
+msgstr ""
+
 msgid ""
 "Media Hygiene added to the right-click menu and checked: right-click a "
 "folder, or the empty space of an open folder, then Media Hygiene to open "
@@ -3765,6 +3773,9 @@ msgid ""
 msgstr ""
 
 msgid "Media Hygiene in the Explorer's right-click"
+msgstr ""
+
+msgid "Media Hygiene is asleep"
 msgstr ""
 
 msgid "Media Hygiene is stopped"
@@ -5846,6 +5857,9 @@ msgid "Restoring"
 msgstr ""
 
 msgid "Results"
+msgstr ""
+
+msgid "Retry"
 msgstr ""
 
 #, python-brace-format
@@ -8392,6 +8406,9 @@ msgid ""
 "quarantine, then run 'undo <run>'."
 msgstr ""
 
+msgid "To keep Media Hygiene as an app: Share, then Add to Home Screen."
+msgstr ""
+
 msgid ""
 "To keep settings, mount a folder of yours on /config, e.g. -v \"$HOME"
 "\\media-hygiene\\config:/config\": config.toml is created there, "
@@ -8526,7 +8543,7 @@ msgstr ""
 
 msgid ""
 "Type the code shown on the PC: on its page (in the sidebar of the home "
-"page, at the top of the slideshow's) and in the window of mh."
+"page, at the top of the slideshow's) and in the window of Media Hygiene."
 msgstr ""
 
 msgid "Type the event's name first."
@@ -9144,6 +9161,9 @@ msgid "Your photo folders:"
 msgstr ""
 
 msgid "Your photos and videos were not touched."
+msgstr ""
+
+msgid "Your photos and videos, sorted and without duplicates."
 msgstr ""
 
 msgid "Your photos, in order"

@@ -222,6 +222,17 @@ rien à réinstaller. Demandez à votre box une **réservation DHCP** du PC pour
 adresse, et le favori du téléphone. Le [diaporama](slideshow.md) reste en HTTP simple : une
 télé ne peut pas installer de certificat.
 
+### Média Hygiène comme une app sur le téléphone
+
+Une fois appairé en HTTPS, le téléphone peut garder la page d'accueil comme une app, avec le
+suricate pour icône : **Android** (Chrome) propose *Installer l'application* (ou ⋮ › *Ajouter à
+l'écran d'accueil*) ; sur un **iPhone**, Safari le dit en une ligne : *Partager*, puis *Sur
+l'écran d'accueil*. L'icône ouvre alors directement la page d'accueil, sans QR code ni code.
+Quand Média Hygiène ne tourne pas sur le PC, l'app montre le suricate endormi, *Média Hygiène
+dort*, au lieu de l'erreur du navigateur, et rouvre la page d'elle-même dès que `mh` tourne.
+L'app ne garde que cette page : jamais une photo. Rien n'est publié : ni magasin, ni compte, ni
+Internet.
+
 Le téléphone n'ouvre pas la page ? La carte *Sur votre téléphone* dit pourquoi : *Aucun réseau
 domestique trouvé* (la page s'ouvre pour le PC seul, rien n'échoue), ou Windows considère le
 Wi-Fi comme **public** : passez-le en privé dans *Paramètres › Réseau et Internet › Wi-Fi ›

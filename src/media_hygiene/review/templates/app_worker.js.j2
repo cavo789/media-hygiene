@@ -1,0 +1,23 @@
+{# The service worker of the home page as an app (0432, review/app_shell.py). It keeps the offline
+   page and its meerkat only: never a photo, never an API answer (the phone stays read-only). A page
+   that cannot be reached (Media Hygiene not running on the PC) shows the offline page instead of the
+   browser's error; every other request goes to the PC as if there were no worker. #}
+const KEPT = "media-hygiene-offline-v1";
+const OFFLINE = {{ offline | tojson }};
+const IMAGE = {{ image | tojson }};
+self.addEventListener("install", (event) => {
+  event.waitUntil(caches.open(KEPT).then((cache) => cache.addAll([OFFLINE, IMAGE])).then(() => self.skipWaiting()));
+});
+self.addEventListener("activate", (event) => {
+  event.waitUntil(caches.keys().then((names) => Promise.all(names.filter((name) => name !== KEPT).map((name) => caches.delete(name)))).then(() => self.clients.claim()));
+});
+self.addEventListener("fetch", (event) => {
+  const request = event.request;
+  if (request.mode === "navigate") {
+    event.respondWith(fetch(request).catch(() => caches.match(OFFLINE)));
+    return;
+  }
+  if (new URL(request.url).pathname === IMAGE) {
+    event.respondWith(caches.match(IMAGE).then((kept) => kept || fetch(request)));
+  }
+});

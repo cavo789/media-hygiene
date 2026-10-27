@@ -1,8 +1,6 @@
 """A minimal HTTP/1.1 exchange on asyncio streams: one request, one response, closed.
 
-Enough for one local page: GET, and POST with a small body; no keep-alive, no chunked
-body. A request is the PC's when it came in by the PC's door (`doors`, 0384) and names
-a loopback host: a page of another site through its own name (DNS rebinding) is refused.
+GET, small POST. The PC's: by its door (`doors`, 0384), a loopback host (no rebinding).
 """
 
 from __future__ import annotations
@@ -28,10 +26,11 @@ _LOCALHOST: Final = "localhost"
 _HTTP_1: Final = "HTTP/1."
 _REQUEST_LINE_PARTS: Final = 3  # method, target, version
 NO_REFERRER: Final = "no-referrer"
-# What the page may load: itself only. `places` adds its scripts and the map tiles.
+# Itself only (+ manifest, worker: the phone's app, 0432); `places` adds scripts, tiles.
 REVIEW_POLICY: Final = (
     "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
-    "img-src 'self'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'"
+    "img-src 'self'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; "
+    "manifest-src 'self'; worker-src 'self'"
 )
 
 
@@ -56,6 +55,7 @@ class ContentType(StrEnum):
     THREE_GPP2 = "video/3gpp2"
     WEBM = "video/webm"
     CA_CERT = "application/x-x509-ca-cert"  # a phone offers to install it (0430)
+    MANIFEST = "application/manifest+json"  # the home page as an app (0432)
 
 
 @dataclass(frozen=True, slots=True)

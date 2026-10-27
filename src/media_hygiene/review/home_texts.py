@@ -71,6 +71,9 @@ def _shell() -> dict[str, str]:
         "lanCa": _("First time on this phone? Install the certificate first:"),
         "lanPhones": _("Phones paired for good"),
         "lanForget": _("Forget this phone"),
+        "addToHome": _(
+            "To keep Media Hygiene as an app: Share, then Add to Home Screen."
+        ),
         "lanNone": _("No home network found: the phone cannot open this page."),
         "lanPublic": _(
             "Windows counts this Wi-Fi as public: its firewall blocks the phone. "

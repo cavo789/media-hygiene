@@ -21,19 +21,17 @@ from dataclasses import dataclass, field
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
-import segno
-
 from media_hygiene.i18n import _
-from media_hygiene.review.doors import LAN_CA_PORT, Door
+from media_hygiene.review.app_shell import shell_response
+from media_hygiene.review.doors import Door
 from media_hygiene.review.http import ContentType, Request, Response, is_local
 from media_hygiene.review.lan import COOKIE_NAME, PAIR_PREFIX, cookies
+from media_hygiene.review.lan_card import lan_response
 from media_hygiene.review.lan_pairing import Pairing, pair_page
 from media_hygiene.review.lan_paths import phone_may
 from media_hygiene.review.lan_phones import device_name
 from media_hygiene.review.lan_phones_api import (
-    FORGET_PATH,
     PHONE_PATHS,
-    PHONES_PATH,
     durable_cookie,
     phones_answer,
 )
@@ -50,8 +48,6 @@ if TYPE_CHECKING:
 
 LAN_PATH: Final = "/api/lan"
 _GET = "GET"
-_QR_SCALE: Final = 5
-_QR_BORDER: Final = 2
 
 
 @dataclass(frozen=True, slots=True)
@@ -77,8 +73,9 @@ class LanApp:
             return await self._pc(request)
         if not self.lan.names_me(request):  # whatever `Host` it forged (0384)
             return Response(HTTPStatus.FORBIDDEN)
-        if request.path.startswith(PAIR_PREFIX) and request.method == _GET:
-            return self._pair(request)
+        public = self._public(request)
+        if public is not None:  # the pairing, the app's shell (0432)
+            return public
         if not self._is_paired(request):
             if request.method == _GET:
                 return pair_page(HTTPStatus.UNAUTHORIZED, closed=self.pairing.closed)
@@ -103,6 +100,21 @@ class LanApp:
         ):
             return phones_answer(self.phones, request)
         return await self.home.handle(request)
+
+    def _public(self, request: Request) -> Response | None:
+        """Answer what needs no pairing: the code, the app's manifest, icons, worker.
+
+        Args:
+            request: A request of the home network's door.
+
+        Returns:
+            The response; None for anything else.
+        """
+        if request.method != _GET:
+            return None
+        if request.path.startswith(PAIR_PREFIX):
+            return self._pair(request)
+        return shell_response(request.path)  # nothing private
 
     def _pair(self, request: Request) -> Response:
         """Check the code; the right one pairs the phone, for good under HTTPS.
@@ -161,27 +173,3 @@ class LanApp:
             headers["origin"] = f"http://{local}"
         passed = Request(request.method, path, headers, request.body)
         return await asset_or_page(passed, self.home.handle)
-
-
-def lan_response(lan: LanAccess, *, phones: bool = False) -> Response:
-    """What the PC's page shows to pair a phone: the address, the code, the QR code.
-
-    Args:
-        lan: The run's access.
-        phones: Phones are paired for good: where the page lists and forgets them.
-
-    Returns:
-        JSON: `url`, `code`, `qr` (an SVG drawing of the pairing address), under
-        HTTPS `ca`: where a phone installs the PC's authority first (0430), and with
-        `phones`, the paths `phones` and `forget` (0431).
-    """
-    qr = segno.make(lan.pair_url, error="m").svg_inline(
-        scale=_QR_SCALE, border=_QR_BORDER, dark="#000", light="#fff"
-    )
-    url = f"{lan.origin}{PAGE_PATH}"
-    card: dict[str, object] = {"url": url, "code": lan.shown_code, "qr": qr}
-    if lan.secure:
-        card["ca"] = f"http://{lan.address}:{LAN_CA_PORT}/"
-    if phones:
-        card |= {"phones": PHONES_PATH, "forget": FORGET_PATH}
-    return json_response(HTTPStatus.OK, card)
