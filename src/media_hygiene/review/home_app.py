@@ -7,17 +7,18 @@ the tool folders at each call; slow through Docker Desktop's file sharing, 0277)
 come from the door every page shares, `ending`),
 `GET /api/audit` the progress of the audit run by the page, and `POST /api/audit`
 starts it (one at a time) or stops it, `/api/tags` the same for `tags`
-(`home_tags_api`, 0343); `POST /api/alive` says a tab still shows the
-page (0261, `presence`). `POST /api/step` ends the server with `STEP_EXIT_BASE + n` for
-step `n`, which `mh` then runs in the terminal (`home_step`): only when the launcher
-said it does (`MEDIA_HYGIENE_LAUNCHER_STEPS`), else it is refused and the page copies
-the command instead.
+(`home_tags_api`, 0343), `/api/people` and `/api/meaning` for faces and meaning;
+`POST /api/alive` says a tab still shows the page (0261, `presence`). `POST /api/step`
+ends the server with `STEP_EXIT_BASE + n` for step `n`, which `mh` then runs in the
+terminal (`home_step`): only when the launcher said it does
+(`MEDIA_HYGIENE_LAUNCHER_STEPS`), else it is refused and the page copies the command
+instead.
 """
 
 from __future__ import annotations
 
 import asyncio
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import StrEnum
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final, override
@@ -26,7 +27,7 @@ from pydantic import BaseModel, ConfigDict, ValidationError
 
 from media_hygiene.i18n import _
 from media_hygiene.review.home_step import StepDoor, step_response
-from media_hygiene.review.home_tags_api import TAGS_PATH, tags_response, tags_state
+from media_hygiene.review.home_tags_api import tags_response, tags_state
 from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH, LocalApp
@@ -36,7 +37,7 @@ from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.step_watch import STEP_PATH, step_state
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Mapping
     from pathlib import Path
 
     from media_hygiene.review.ending import Ending
@@ -78,7 +79,8 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
     relays_steps: bool = False  # the launcher runs the step `STEP_EXIT_BASE + n` names
     relays_fields: bool = False  # and the words of a form (`home_fields`)
     keeps: bool = False  # and runs a console step with the server up (`step_watch`)
-    tags: HomeTags | None = None  # `tags` run in the page (0343)
+    # Read-only steps run in the page by path: tags (0343), faces (0424), meaning (0425)
+    runs: Mapping[str, HomeTags] = field(default_factory=dict)
 
     @override
     async def answer(self, request: Request) -> Response:
@@ -105,8 +107,8 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
             return await step_response(door, request)
         if path == AUDIT_PATH and request.method == _POST:
             return await self._audit(request)
-        if path == TAGS_PATH and request.method == _POST and self.tags is not None:
-            return await tags_response(self.tags, request)
+        if path in self.runs and request.method == _POST:
+            return await tags_response(self.runs[path], request)
         if path == PRESENCE_PATH and request.method == _POST:
             return await presence_response(self.presence, request)
         return Response(HTTPStatus.METHOD_NOT_ALLOWED)
@@ -124,8 +126,8 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
             return Response(HTTPStatus.OK, self.page, ContentType.HTML)
         if path.startswith(REPORTS_PREFIX):
             return await report_response(self.reports_dir, path)
-        if path == TAGS_PATH and self.tags is not None:
-            return tags_state(self.tags)
+        if path in self.runs:
+            return tags_state(self.runs[path])
         if path == STEP_PATH:
             return await step_state(self.reports_dir)
         if path == STATE_PATH:

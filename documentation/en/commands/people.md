@@ -74,6 +74,16 @@ changed.
 ✅ Page stopped; nothing was changed.
 ```
 
+### From the home page
+
+On the home page (`mh`), the **In this page** button next to `people` scans the faces without
+the console. It first counts the photos whose faces the cache lacks and the time it should take
+(an estimate until a run has measured your computer), then asks: **Scan now**, **Scan for 1 h**
+(it stops by itself) or **Not now**. While it runs, the page shows the photos scanned, the rate,
+the time left and the faces of the last photo; **Stop after this photo** ends it, and the next
+scan goes on where it stopped (each photo's faces are kept in the cache at once). The people
+page then shows the groups. Only the cache is written: your photos are not changed.
+
 ## Name the groups
 
 On the page, type a name on a group and press Enter: the name is saved into `config.toml`, read

@@ -15,7 +15,7 @@ from media_hygiene.review.app import DECIDE_PATH
 from media_hygiene.review.ending import STOP_PATH
 from media_hygiene.review.gone_app import GONE_DECIDE_PATH
 from media_hygiene.review.home_app import AUDIT_PATH
-from media_hygiene.review.home_tags_api import TAGS_PATH
+from media_hygiene.review.home_tags_api import RUN_PATHS
 from media_hygiene.review.home_views import APPLY_PATH
 from media_hygiene.review.lan_phones_api import PHONE_PATHS
 from media_hygiene.review.near_app import NEAR_DECIDE_PATH
@@ -68,7 +68,7 @@ _SORTING: Final = frozenset(
     }
 )
 _PC_ONLY: Final = frozenset(
-    {STOP_PATH, STEP_PATH, AUDIT_PATH, APPLY_PATH, TAGS_PATH, *PHONE_PATHS}
+    {STOP_PATH, STEP_PATH, AUDIT_PATH, APPLY_PATH, *RUN_PATHS, *PHONE_PATHS}
 )
 CHANGES: Final = (
     _DECISIONS

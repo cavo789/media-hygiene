@@ -591,6 +591,12 @@ msgid ""
 msgstr ""
 
 msgid ""
+"A local model looks at each photo on this computer's processor, so that "
+"search finds photos by what they show. Nothing is sent; only the cache is"
+" written."
+msgstr ""
+
+msgid ""
 "A local vision model (Ollama) names the subject of the photos no other "
 "rule decides. Off until a 'subject' rule is written below and a model is "
 "set here. The photos are sent to url, and only there: keep that server on"
@@ -1239,6 +1245,9 @@ msgstr ""
 msgid "Brought up to date, read back from {path}: it starts this mh."
 msgstr ""
 
+msgid "Build search by meaning"
+msgstr ""
+
 msgid "Built in: your own folders"
 msgstr ""
 
@@ -1706,6 +1715,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "Could not write {path}."
+msgstr ""
+
+msgid "Counting the photos to look at…"
+msgstr ""
+
+msgid "Counting the photos to scan…"
 msgstr ""
 
 msgid ""
@@ -2453,6 +2468,12 @@ msgstr ""
 msgid "Every pair has been decided."
 msgstr ""
 
+msgid "Every photo is looked at already."
+msgstr ""
+
+msgid "Every photo is scanned already: the people page shows the faces."
+msgstr ""
+
 msgid ""
 "Every photo this person is on, with others or not. Nothing is deleted "
 "here: 'clean --decisions' moves them to the quarantine, 'undo' brings "
@@ -2733,10 +2754,16 @@ msgid ""
 "browser. Faces kept in the cache, never sent anywhere."
 msgstr ""
 
+msgid "Find the faces in your photos"
+msgstr ""
+
 msgid "Find their photos"
 msgstr ""
 
 msgid "Finding faces"
+msgstr ""
+
+msgid "Finding faces…"
 msgstr ""
 
 msgid ""
@@ -3378,6 +3405,9 @@ msgstr ""
 msgid "It changes nothing in your photos"
 msgstr ""
 
+msgid "It failed: the window where mh runs says why."
+msgstr ""
+
 msgid ""
 "It is not running on the PC. On the PC, start Media Hygiene (type mh in "
 "Windows PowerShell): this page opens again by itself."
@@ -3573,6 +3603,12 @@ msgstr ""
 msgid "Last mh push"
 msgstr ""
 
+#, python-brace-format
+msgid "Last photo: {count} face"
+msgid_plural "Last photo: {count} faces"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Later"
 msgstr ""
 
@@ -3713,6 +3749,12 @@ msgstr ""
 msgid "Look again, slower: the photo turned, less strict"
 msgstr ""
 
+msgid "Look for 1 h"
+msgstr ""
+
+msgid "Look now"
+msgstr ""
+
 msgid "Looked at: nothing special that month"
 msgstr ""
 
@@ -3720,6 +3762,9 @@ msgid "Looking at the photo turned, one angle after the other…"
 msgstr ""
 
 msgid "Looking at the photos"
+msgstr ""
+
+msgid "Looking at the photos…"
 msgstr ""
 
 #, python-brace-format
@@ -4418,6 +4463,9 @@ msgid ""
 msgstr ""
 
 msgid "No photo folder: type mh phone --to <folder>."
+msgstr ""
+
+msgid "No photo in the cache: run the audit first."
 msgstr ""
 
 #, python-brace-format
@@ -6305,6 +6353,12 @@ msgid ""
 "\"words\", or --album \"Crete 2023\"."
 msgstr ""
 
+msgid "Scan for 1 h"
+msgstr ""
+
+msgid "Scan now"
+msgstr ""
+
 msgid "School"
 msgstr ""
 
@@ -6332,6 +6386,12 @@ msgid ""
 "service, never a photo nor a position. Its usage policy: "
 "https://operations.osmfoundation.org/policies/nominatim/ (one search per "
 "second at most). Another instance, or empty to search offline only."
+msgstr ""
+
+msgid "Search by meaning"
+msgstr ""
+
+msgid "Search by meaning is off: set meaning = true under [tags] first."
 msgstr ""
 
 msgid "Search by meaning: every photo is looked at already."
@@ -6935,6 +6995,12 @@ msgstr ""
 msgid "Stopped: the next people run goes on where this one stopped."
 msgstr ""
 
+msgid "Stopped: the next run goes on where this one stopped."
+msgstr ""
+
+msgid "Stopped: the next scan goes on where this one stopped."
+msgstr ""
+
 msgid "Stopped: the next tags run goes on where this one stopped."
 msgstr ""
 
@@ -7007,9 +7073,6 @@ msgid "Tags"
 msgstr ""
 
 msgid "Tags already run: wait for the end, or stop them."
-msgstr ""
-
-msgid "Tags failed: the window where mh runs says why."
 msgstr ""
 
 #, python-brace-format
@@ -7509,6 +7572,12 @@ msgid ""
 msgid_plural ""
 "The home page has {count} photos described by the model: Stop is on the "
 "page."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "The home page has {count} photo scanned for faces: Stop is on the page."
+msgid_plural "The home page has {count} photos scanned for faces: Stop is on the page."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -8322,6 +8391,9 @@ msgstr ""
 msgid "This shot lies in a protected folder: it is never moved."
 msgstr ""
 
+msgid "This step already runs: wait for its end, or stop it."
+msgstr ""
+
 msgid "This step takes no words."
 msgstr ""
 
@@ -8548,6 +8620,11 @@ msgstr ""
 msgid ""
 "Two faces this similar (cosine, 0 to 1) may be the same person: higher "
 "splits more groups, lower mixes people."
+msgstr ""
+
+msgid ""
+"Two small local models find the faces, on this computer: nothing is sent."
+" Only the cache is written: your photos are not changed."
 msgstr ""
 
 msgid "Type"
@@ -11981,6 +12058,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} group of faces on the people page; {left} photos left."
+msgid_plural "{count} groups of faces on the people page; {left} photos left."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid ""
 "{count} group of near duplicates to check stays in place: decide it with "
 "'review --near', or --tier near-all moves it too."
@@ -12103,6 +12186,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} photo can now be found by what it shows ({duration})."
 msgid_plural "{count} photos can now be found by what they show ({duration})."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} photo can now be found by what it shows; {left} left."
+msgid_plural "{count} photos can now be found by what they show; {left} left."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -12235,6 +12324,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} photo scanned, {faces} faces found; kept in the cache."
+msgid_plural "{count} photos scanned, {faces} faces found; kept in the cache."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid ""
 "{count} photo without GPS gets the position of its folder's town (its "
 "centre, approximate): {towns}."
@@ -12261,6 +12356,18 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "{count} photos to describe with {model}, about {time}. Each answer is "
+"kept at once: a stop loses nothing, the next run goes on."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{count} photos to look at with {model}, about {time}. Each one is kept at"
+" once: a stop loses nothing, the next run goes on."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{count} photos to scan for faces, about {time}. Each photo's faces are "
 "kept at once: a stop loses nothing, the next run goes on."
 msgstr ""
 

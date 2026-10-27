@@ -181,11 +181,11 @@ class HomeTags:
             self._finish(PageTags(phase=TagsPhase.FAILED, error=message))
         # Any bug: the page says it failed in one line, the terminal logs it.
         except* Exception:  # pylint: disable=broad-exception-caught
-            _LOGGER.exception("tags started from the home page failed")
+            _LOGGER.exception("a step started from the home page failed")
             self._finish(
                 PageTags(
                     phase=TagsPhase.FAILED,
-                    error=_("Tags failed: the window where mh runs says why."),
+                    error=_("It failed: the window where mh runs says why."),
                 )
             )
         progress.stop()
