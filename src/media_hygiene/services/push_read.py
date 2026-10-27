@@ -1,4 +1,4 @@
-"""The lines of `mh backup`'s plan piped back to the container (0264).
+"""The lines of `mh push`'s plan piped back to the container (0264).
 
 `mh` pipes the plan back to the run that journals it before Windows acts, and to the
 run that proves it after: the changes (moves, set-asides) and the copies, each path
@@ -10,13 +10,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.plan.backup_entries import Entry, Stat
-from media_hygiene.services.backup_lines import Change, Order
+from media_hygiene.plan.push_entries import Entry, Stat
+from media_hygiene.services.push_lines import Change, Order
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from media_hygiene.services.backup_place import Target
+    from media_hygiene.services.push_place import Target
 
 _TAB: Final = "\t"
 _ENTRY_FIELDS: Final = 3  # path, size, mtime_ns

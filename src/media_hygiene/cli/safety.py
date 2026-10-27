@@ -15,7 +15,6 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.constants import DOC_PAGES
 from media_hygiene.i18n import _
 from media_hygiene.paths.mounts import is_read_only
-from media_hygiene.services.backup_lines import BACKUP_STEP
 from media_hygiene.services.data_checks import nothing_mounted
 from media_hygiene.services.phone_plan import (
     PHONE_DONE,
@@ -23,6 +22,7 @@ from media_hygiene.services.phone_plan import (
     PHONE_PROVE,
     PHONE_REVIEW,
 )
+from media_hygiene.services.push_lines import PUSH_STEP
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
@@ -51,7 +51,7 @@ PAGE_COMMANDS: Final = frozenset(
 # without the keyboard (`-i`), which stays for the `mh` that reads their output.
 DATA_COMMANDS: Final = frozenset(
     {"launcher", "menu", PHONE_PLAN, PHONE_REVIEW, PHONE_PROVE, PHONE_DONE}
-    | {BACKUP_STEP}
+    | {PUSH_STEP}
 )
 # The commands that may run for hours: the launcher keeps the computer awake during
 # them, and says in the window title, with a sound, when they end (0179, 0185).

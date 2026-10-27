@@ -1,4 +1,4 @@
-r"""List a folder for `mh backup`: every file, its size and time, what was unreadable.
+r"""List a folder for `mh push`: every file, its size and time, what was unreadable.
 
 Every file counts, not only photos and videos (a PDF in `C:\Photos` is backed up too,
 TODO 0264); the folders skipped are the system ones (`#recycle`, `@eaDir`…), the names
@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import TYPE_CHECKING
 
-from media_hygiene.plan.backup_entries import Stat
+from media_hygiene.plan.push_entries import Stat
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping

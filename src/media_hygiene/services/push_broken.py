@@ -1,4 +1,4 @@
-"""What `mh backup` reads of the files: their content for a move, the audit's verdict.
+"""What `mh push` reads of the files: their content for a move, the audit's verdict.
 
 A move on the target is proven by the first and last 64 KiB of both files (128 KiB
 read on each side, the target's over the network), each file read once a run. A PC
@@ -17,9 +17,9 @@ from media_hygiene.scan.hashing import partial_digest
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
-    from media_hygiene.plan.backup_entries import Stat
-    from media_hygiene.services.backup_place import Target
-    from media_hygiene.services.backup_sources import Source
+    from media_hygiene.plan.push_entries import Stat
+    from media_hygiene.services.push_place import Target
+    from media_hygiene.services.push_sources import Source
     from media_hygiene.services.runtime import Runtime
 
 _BROKEN: Final = (

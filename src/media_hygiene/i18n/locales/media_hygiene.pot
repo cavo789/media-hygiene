@@ -1076,7 +1076,7 @@ msgid "Backup folder"
 msgstr ""
 
 #, python-brace-format
-msgid "Backup folder kept, read back: {target}. Next time, mh backup alone."
+msgid "Backup folder kept, read back: {target}. Next time, mh push alone."
 msgstr ""
 
 msgid "Backup folders"
@@ -2743,9 +2743,6 @@ msgstr ""
 msgid "For good, once the quarantine is checked."
 msgstr ""
 
-msgid "For mh backup: one step of a backup, its lines on stdin and stdout."
-msgstr ""
-
 msgid "For mh phone: journal the files gone from the phone."
 msgstr ""
 
@@ -2756,6 +2753,9 @@ msgid "For mh phone: the page where you tick what leaves the phone."
 msgstr ""
 
 msgid "For mh phone: which files of a phone are new, from its listing."
+msgstr ""
+
+msgid "For mh push: one step of a backup, its lines on stdin and stdout."
 msgstr ""
 
 #, python-brace-format
@@ -3386,7 +3386,7 @@ msgstr ""
 msgid "Last complete audit (UTC)"
 msgstr ""
 
-msgid "Last mh backup"
+msgid "Last mh push"
 msgstr ""
 
 msgid "Later"
@@ -4018,8 +4018,8 @@ msgid "No backup folder to import from."
 msgstr ""
 
 msgid ""
-"No backup folder yet: type mh backup --to <the NAS folder>, a shared "
-"folder of its own such as backup_photos."
+"No backup folder yet: type mh push --to <the NAS folder>, a shared folder"
+" of its own such as backup_photos."
 msgstr ""
 
 msgid "No burst series: nothing to review."
@@ -4379,7 +4379,7 @@ msgstr ""
 msgid "Not a town: never read as one, in any folder"
 msgstr ""
 
-msgid "Not backed up yet: mh backup copies to the NAS"
+msgid "Not backed up yet: mh push copies to the NAS"
 msgstr ""
 
 #, python-brace-format
@@ -4412,10 +4412,10 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Not in the backup: {count} file (robocopy failed, or new since the plan)."
-" Type mh backup again:"
+" Type mh push again:"
 msgid_plural ""
 "Not in the backup: {count} files (robocopy failed, or new since the "
-"plan). Type mh backup again:"
+"plan). Type mh push again:"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -4526,7 +4526,7 @@ msgstr ""
 msgid ""
 "Nothing is applied when the files set aside and replaced exceed this "
 "share of the backup, in percent: a drive missing? many files changed at "
-"once? 'mh backup --anyway' goes on."
+"once? 'mh push --anyway' goes on."
 msgstr ""
 
 msgid ""
@@ -5215,10 +5215,10 @@ msgstr ""
 msgid "Planned"
 msgstr ""
 
-msgid "Planned with mh backup: not in the tool yet."
+msgid "Planned with mh push: not in the tool yet."
 msgstr ""
 
-msgid "Planned: mh backup is coming."
+msgid "Planned: mh push is coming."
 msgstr ""
 
 #, python-brace-format
@@ -5549,7 +5549,7 @@ msgid "Renamed on the backup (moved, or set aside in .removed): {count}."
 msgstr ""
 
 #, python-brace-format
-msgid "Renames not seen made: {count}. Type mh backup again."
+msgid "Renames not seen made: {count}. Type mh push again."
 msgstr ""
 
 #, python-brace-format
@@ -6599,7 +6599,7 @@ msgstr ""
 msgid ""
 "Stopped: more than {percent} % of the backup would be set aside or "
 "replaced. A drive missing? Many files changed at once? Nothing was "
-"applied; mh backup --anyway goes on."
+"applied; mh push --anyway goes on."
 msgstr ""
 
 msgid "Stopped: the next classify run goes on where this one stopped."
@@ -8116,10 +8116,10 @@ msgid "Type a name to filter the folders"
 msgstr ""
 
 #, python-brace-format
-msgid "Type mh backup --undo {run_id} in Windows PowerShell."
+msgid "Type mh push --undo {run_id} in Windows PowerShell."
 msgstr ""
 
-msgid "Type mh backup in Windows PowerShell: it mounts it."
+msgid "Type mh push in Windows PowerShell: it mounts it."
 msgstr ""
 
 msgid "Type the album's name in the bar first: then A adds the file shown."
@@ -8448,9 +8448,9 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Windows only, as mh backup: copy your photo folders into a folder of "
-"their own on the NAS, only what it lacks; a photo moved is renamed there,"
-" a deletion by mistake never carried over. Run here, it shows the plan."
+"Windows only, as mh push: copy your photo folders into a folder of their "
+"own on the NAS, only what it lacks; a photo moved is renamed there, a "
+"deletion by mistake never carried over. Run here, it shows the plan."
 msgstr ""
 
 msgid "Windows paths must use 'single quotes' in TOML, e.g. 'C:\\Photos'."
@@ -9388,8 +9388,8 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"in Windows PowerShell, type mh backup --to {target}: Windows copies, "
-"about 7 times faster than Docker."
+"in Windows PowerShell, type mh push --to {target}: Windows copies, about "
+"7 times faster than Docker."
 msgstr ""
 
 msgid "in a filter box: empty it"
@@ -9672,30 +9672,6 @@ msgstr ""
 msgid "mh asks you again in {window} before touching anything."
 msgstr ""
 
-msgid "mh backup"
-msgstr ""
-
-msgid ""
-"mh backup (Windows only): a file the PC no longer has, or the previous "
-"copy of an edited file, waits in the .removed folder of the backup that "
-"many days, then mh backup erases it."
-msgstr ""
-
-msgid ""
-"mh backup --to <the NAS folder> the first time, then mh backup alone; "
-"--anyway goes past the safety stop; --undo <run> puts back what a run "
-"renamed or set aside."
-msgstr ""
-
-msgid "mh backup copies it"
-msgstr ""
-
-msgid ""
-"mh backup is for Windows only: Windows writes to the NAS about 7 times "
-"faster than a copy through Docker (measured: 86 to 105.8 MB/s against "
-"15.1 MB/s). Nothing was started."
-msgstr ""
-
 msgid "mh forgets it; its photos do not move."
 msgstr ""
 
@@ -9725,6 +9701,30 @@ msgid ""
 " USB; --to <folder> chooses where, --only <folder of DCIM> takes that "
 "folder only (Camera), --free then offers to delete from the phone what "
 "the PC holds."
+msgstr ""
+
+msgid "mh push"
+msgstr ""
+
+msgid ""
+"mh push (Windows only): a file the PC no longer has, or the previous copy"
+" of an edited file, waits in the .removed folder of the backup that many "
+"days, then mh push erases it."
+msgstr ""
+
+msgid ""
+"mh push --to <the NAS folder> the first time, then mh push alone; "
+"--anyway goes past the safety stop; --undo <run> puts back what a run "
+"renamed or set aside."
+msgstr ""
+
+msgid "mh push copies it"
+msgstr ""
+
+msgid ""
+"mh push is for Windows only: Windows writes to the NAS about 7 times "
+"faster than a copy through Docker (measured: 86 to 105.8 MB/s against "
+"15.1 MB/s). Nothing was started."
 msgstr ""
 
 #, python-brace-format
@@ -9970,7 +9970,7 @@ msgstr ""
 msgid "nothing to put back"
 msgstr ""
 
-msgid "nothing: type mh backup again after your next import or sort."
+msgid "nothing: type mh push again after your next import or sort."
 msgstr ""
 
 msgid "of every folder: where the space goes"
@@ -13142,8 +13142,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid ""
-"🛟 A backup run changed its backup folder only, never your photos: mh "
-"backup --undo <run> puts back what it renamed or set aside there."
+"🛟 A backup run changed its backup folder only, never your photos: mh push"
+" --undo <run> puts back what it renamed or set aside there."
 msgstr ""
 
 msgid ""

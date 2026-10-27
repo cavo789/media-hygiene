@@ -57,14 +57,14 @@ class ActionKind(StrEnum):
     # (`path`) from the backup (`keeper`), proven by its SHA-256. `undo` removes the
     # copy while it still holds those bytes; the backup is never touched.
     COPY_IN = "copy-in"
-    # Written by `mh backup` (0264), on its target only (`path` and `target` relative to
+    # Written by `mh push` (0264), on its target only (`path` and `target` relative to
     # it): a file renamed there (a move on the PC), the previous copy of an edited file
     # and a file the PC no longer has set aside in `.removed`, and per source folder the
-    # bytes robocopy copied. `mh backup --undo` reverses them; `undo` refuses the run.
-    BACKUP_MOVE = "backup-move"
-    BACKUP_ASIDE = "backup-aside"
-    BACKUP_REMOVE = "backup-remove"
-    BACKUP_COPY = "backup-copy"
+    # bytes robocopy copied. `mh push --undo` reverses them; `undo` refuses the run.
+    PUSH_MOVE = "push-move"
+    PUSH_ASIDE = "push-aside"
+    PUSH_REMOVE = "push-remove"
+    PUSH_COPY = "push-copy"
     # Written by `shrink` (0303): a video re-encoded lighter (`path`, its SHA-256 once
     # proven, from `keeper`), its original set aside (remembered: a phone's copy of it
     # is never imported again), and a video not worth it (a mark: never tried again).
@@ -95,7 +95,7 @@ class Phase(StrEnum):
     XMP = "xmp"
     PHONE = "phone"
     IMPORT = "import"
-    BACKUP = "backup"
+    PUSH = "push"
     SHRINK = "shrink"
     UNDO = "undo"
 
@@ -108,7 +108,7 @@ class Status(StrEnum):
 
 
 # The phases that change files; `undo` reverses one of them, but `phone`'s (0248) and
-# `backup`'s (0264: `mh backup --undo`).
+# `push`'s (0264: `mh push --undo`).
 ACTING_PHASES: Final = (
     Phase.CLEAN,
     Phase.SORT,
@@ -116,7 +116,7 @@ ACTING_PHASES: Final = (
     Phase.XMP,
     Phase.PHONE,
     Phase.IMPORT,
-    Phase.BACKUP,
+    Phase.PUSH,
     Phase.SHRINK,
 )
 # Actions on folders (an album's marker included): nothing is deleted nor freed by them.
@@ -156,17 +156,17 @@ PHONE_DELETIONS: Final = frozenset(
 XMP_ACTIONS: Final = frozenset({ActionKind.CREATE_XMP, ActionKind.MERGE_XMP})
 # Files `import` copied into the library (0245): nothing is deleted nor freed.
 COPIES_IN: Final = frozenset({ActionKind.COPY_IN})
-# What `mh backup` did on its target (0264): nothing on the PC is deleted nor freed.
+# What `mh push` did on its target (0264): nothing on the PC is deleted nor freed.
 BACKUP_ACTIONS: Final = frozenset(
     {
-        ActionKind.BACKUP_MOVE,
-        ActionKind.BACKUP_ASIDE,
-        ActionKind.BACKUP_REMOVE,
-        ActionKind.BACKUP_COPY,
+        ActionKind.PUSH_MOVE,
+        ActionKind.PUSH_ASIDE,
+        ActionKind.PUSH_REMOVE,
+        ActionKind.PUSH_COPY,
     }
 )
 # The files set aside in the target's `.removed`: `history` counts them as quarantined.
-BACKUP_SET_ASIDE: Final = frozenset({ActionKind.BACKUP_ASIDE, ActionKind.BACKUP_REMOVE})
+BACKUP_SET_ASIDE: Final = frozenset({ActionKind.PUSH_ASIDE, ActionKind.PUSH_REMOVE})
 # The lighter videos `shrink` wrote (0303): their originals are counted as set aside.
 SHRUNK_VIDEOS: Final = frozenset({ActionKind.SHRUNK})
 # Actions after which the file is still on the PC: neither deleted nor freed.
@@ -178,7 +178,7 @@ LEFT_IN_PLACE: Final = (
     | BACKUP_ACTIONS
     | SHRUNK_VIDEOS
 )
-# Files moved: by `sort` on the PC, by `mh backup` on its target.
-MOVES: Final = frozenset({ActionKind.MOVE, ActionKind.BACKUP_MOVE})
-# Bytes copied: by `import` into the library, by `mh backup` to its target.
-COPIES: Final = COPIES_IN | {ActionKind.BACKUP_COPY}
+# Files moved: by `sort` on the PC, by `mh push` on its target.
+MOVES: Final = frozenset({ActionKind.MOVE, ActionKind.PUSH_MOVE})
+# Bytes copied: by `import` into the library, by `mh push` to its target.
+COPIES: Final = COPIES_IN | {ActionKind.PUSH_COPY}

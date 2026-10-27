@@ -1,4 +1,4 @@
-"""What `mh backup` does to its target: only what it lacks, a move as a rename (0264).
+"""What `mh push` does to its target: only what it lacks, a move as a rename (0264).
 
 Pure: the files of the sources and of the target, each by its path relative to the
 target (`C/Photos/2024/IMG_1.jpg`), with its size and modification time. A path is
@@ -16,13 +16,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from media_hygiene.plan.backup_entries import (
+from media_hygiene.plan.backup_gone import Gone, GoneReason
+from media_hygiene.plan.push_entries import (
     Edit,
     Entry,
     Move,
     Stat,
 )
-from media_hygiene.plan.backup_gone import Gone, GoneReason
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
@@ -32,7 +32,7 @@ type Same = Callable[[str, str], bool]
 
 
 @dataclass(frozen=True, slots=True)
-class BackupInputs:
+class PushInputs:
     """The files on each side, and what the tool knows of the PC's."""
 
     source: Mapping[str, Stat]
@@ -42,7 +42,7 @@ class BackupInputs:
 
 
 @dataclass(frozen=True, slots=True)
-class BackupPlan:
+class PushPlan:
     """What the target needs: moves, copies, set-asides; and what is left alone."""
 
     held: int  # files of the target, below the sources taking part
@@ -84,7 +84,7 @@ class BackupPlan:
         """Tell whether the set-asides and replacements exceed a share of the backup.
 
         Args:
-            percent: `[backup] stop_above_percent`.
+            percent: `[push] stop_above_percent`.
 
         Returns:
             True when more than that share would be set aside or replaced.
@@ -93,7 +93,7 @@ class BackupPlan:
         return self.held > 0 and touched * 100 > percent * self.held
 
 
-def plan_backup(inputs: BackupInputs, same: Same) -> BackupPlan:
+def plan_push(inputs: PushInputs, same: Same) -> PushPlan:
     """Compare the sources with the target.
 
     Args:
@@ -124,7 +124,7 @@ def plan_backup(inputs: BackupInputs, same: Same) -> BackupPlan:
     arrived = {move.new for move in moves}
     left = {move.old.path for move in moves}
     reasons = inputs.reasons or {}
-    return BackupPlan(
+    return PushPlan(
         held=len(inputs.target),
         unchanged=unchanged,
         new=tuple(entry for entry in new if entry.path not in arrived),

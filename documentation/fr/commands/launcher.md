@@ -119,7 +119,7 @@ Docker. Le `--help` de l'image ne les liste donc pas ; cette page et le menu de 
 | `mh folders` | Liste vos dossiers de photos et les quarantaines, chacun *présent* ou *introuvable* (un disque pas branché) ; une quarantaine pas encore créée est dite telle : le premier `clean` la crée. `add` et `remove` les changent : [plus bas](#changer-vos-dossiers--mh-folders). |
 | `mh update` | Télécharge la nouvelle version de l'image, puis réécrit `mh` avec les mêmes dossiers : [plus bas](#une-nouvelle-version--mh-update). |
 | `mh phone` | Windows : copie uniquement les **nouvelles** photos et vidéos d'un téléphone branché en USB ; avec `--free`, supprime ensuite du téléphone ce que le PC détient, prouvé par son contenu : [plus bas](#un-téléphone--copiez-seulement-ses-nouvelles-photos--mh-phone). |
-| `mh backup` | Windows : copie vos dossiers de photos dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; Windows l'écrit (robocopy), le conteneur décide : [`backup`](backup.md). |
+| `mh push` | Windows : copie vos dossiers de photos dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; Windows l'écrit (robocopy), le conteneur décide : [`push`](push.md). |
 | `mh --lan` | Windows : comme `mh` seul (ouvert au Wi-Fi de la maison par défaut ; tapé, même avec `[review] lan = false`) : la page d'accueil qu'un téléphone du même Wi-Fi peut aussi ouvrir avec un code (ou son QR code), jusqu'à l'arrêt de `mh` ; depuis le téléphone, l'audit et les rapports seulement : [`home`](home.md#depuis-un-téléphone-du-wi-fi-de-la-maison--mh---lan). |
 | `mh slideshow --folder "C:\…" --lan` | Windows : le [diaporama](slideshow.md) ouvert à la télé et aux téléphones du réseau de la maison, pour ce lancement ; la télé est appairée par un code qu'elle affiche, tapé sur le téléphone. |
 
@@ -131,7 +131,7 @@ signalé jusqu'au redémarrage de Windows. Les deux montrent l'icône *Media Hyg
 copie depuis l'image dans `media-hygiene.ico`, à côté de `mh.ps1` ; s'il n'y arrive pas, ils le
 disent en une ligne et gardent l'icône de PowerShell. Depuis WSL,
 Linux ou macOS, `mh open` utilise `wslview`, `explorer.exe`, `xdg-open` ou `open` ;
-`mh shortcut`, `mh explorer` et `mh phone` disent qu'elles sont pour Windows ; `mh backup` dit
+`mh shortcut`, `mh explorer` et `mh phone` disent qu'elles sont pour Windows ; `mh push` dit
 pourquoi (Windows écrit sur le NAS 7 fois plus vite) et la commande à taper dans Windows PowerShell.
 
 **Ce que lancent l'icône et le clic droit** : Windows PowerShell, `-NoExit -Command`, qui charge

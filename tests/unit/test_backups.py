@@ -11,7 +11,7 @@ from pydantic import ValidationError
 from media_hygiene.cli.folder_options import FolderOptions
 from media_hygiene.config.folder_roles import overlap
 from media_hygiene.config.settings import FolderSettings
-from media_hygiene.console.backup_view import backup_lines
+from media_hygiene.console.backup_view import push_lines
 from media_hygiene.constants import MediaKind
 from media_hygiene.errors import DecisionsError
 from media_hygiene.paths.host_paths import HostPathMapper
@@ -156,7 +156,7 @@ def test_the_backup_option_becomes_a_setting() -> None:
 
 def test_two_lines_say_when_nothing_is_missing_or_only_there() -> None:
     """A complete backup: one line says so, the other that nothing is only in it."""
-    lacks, holds = backup_lines(
+    lacks, holds = push_lines(
         BackupCoverage(_BACKUP, files=3), HostPathMapper(Path("/data"))
     )
     assert "every file of your photos is in this backup" in lacks

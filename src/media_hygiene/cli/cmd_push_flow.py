@@ -1,7 +1,7 @@
-"""The steps of `mh backup` in the container: plan, start, prove, undo, undone (0264).
+"""The steps of `mh push` in the container: plan, start, prove, undo, undone (0264).
 
 Lines are data: read on stdin, written on stdout, in UTF-8 both ways; every message
-goes to stderr (`backup-step` is a data command).
+goes to stderr (`push-step` is a data command).
 """
 
 # pylint: disable=import-outside-toplevel  # lazy: a step loads its code when it runs
@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.services.backup_lines import BackupStep
+from media_hygiene.services.push_lines import PushStep
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -35,7 +35,7 @@ class StepCall:
     seconds: float = 0.0
 
 
-def run_step(runtime: Runtime, step: BackupStep, call: StepCall) -> None:
+def run_step(runtime: Runtime, step: PushStep, call: StepCall) -> None:
     """Run one step.
 
     Args:
@@ -46,14 +46,14 @@ def run_step(runtime: Runtime, step: BackupStep, call: StepCall) -> None:
     Raises:
         MountError: A step that journals without a journal mount.
     """
-    if step is not BackupStep.PLAN and not runtime.persistent(MountKind.JOURNAL):
+    if step is not PushStep.PLAN and not runtime.persistent(MountKind.JOURNAL):
         raise MountError(_("No journal mount: nothing was changed."))
     steps = {
-        BackupStep.PLAN: _plan,
-        BackupStep.START: _start,
-        BackupStep.PROVE: _prove,
-        BackupStep.UNDO: _undo,
-        BackupStep.UNDONE: _undone,
+        PushStep.PLAN: _plan,
+        PushStep.START: _start,
+        PushStep.PROVE: _prove,
+        PushStep.UNDO: _undo,
+        PushStep.UNDONE: _undone,
     }
     steps[step](runtime, call)
 
@@ -65,11 +65,11 @@ def _plan(runtime: Runtime, call: StepCall) -> None:
         runtime: Settings, mount points and output.
         call: The target, `--anyway`.
     """
-    from media_hygiene.console.backup_target_view import show_plan
-    from media_hygiene.services.backup_lines import plan_lines
-    from media_hygiene.services.backup_run import prepare_backup
+    from media_hygiene.console.push_target_view import show_plan
+    from media_hygiene.services.push_lines import plan_lines
+    from media_hygiene.services.push_run import prepare_push
 
-    prepared = prepare_backup(runtime, call.target, anyway=call.anyway)
+    prepared = prepare_push(runtime, call.target, anyway=call.anyway)
     show_plan(runtime.output, prepared)
     _write(plan_lines(prepared))
 
@@ -81,14 +81,14 @@ def _start(runtime: Runtime, call: StepCall) -> None:
         runtime: Settings, mount points and output.
         call: The target.
     """
-    from media_hygiene.services.backup_journal import backup_run, record_pending
-    from media_hygiene.services.backup_proof import ProofQuery, plan_of
-    from media_hygiene.services.backup_sources import backup_target
+    from media_hygiene.services.push_journal import push_run, record_pending
+    from media_hygiene.services.push_proof import ProofQuery, plan_of
+    from media_hygiene.services.push_sources import push_target
 
     plan = plan_of(runtime, ProofQuery(call.target, _read()))
-    target = backup_target(runtime, call.target)
+    target = push_target(runtime, call.target)
     record_pending(
-        backup_run(runtime.locations.journal_dir, plan.run_id, target), plan.changes
+        push_run(runtime.locations.journal_dir, plan.run_id, target), plan.changes
     )
 
 
@@ -99,11 +99,11 @@ def _prove(runtime: Runtime, call: StepCall) -> None:
         runtime: Settings, mount points and output.
         call: The target, robocopy's time.
     """
-    from media_hygiene.console.backup_target_view import show_proof
-    from media_hygiene.services.backup_proof import ProofQuery, prove_backup
+    from media_hygiene.console.push_target_view import show_proof
+    from media_hygiene.services.push_proof import ProofQuery, prove_push
 
     query = ProofQuery(call.target, _read(), call.seconds)
-    show_proof(runtime.output, prove_backup(runtime, query))
+    show_proof(runtime.output, prove_push(runtime, query))
 
 
 def _undo(runtime: Runtime, call: StepCall) -> None:
@@ -113,10 +113,10 @@ def _undo(runtime: Runtime, call: StepCall) -> None:
         runtime: Settings, mount points and output.
         call: The target, the run.
     """
-    from media_hygiene.services.backup_sources import backup_target
-    from media_hygiene.services.backup_undo import plan_undo
+    from media_hygiene.services.push_sources import push_target
+    from media_hygiene.services.push_undo import plan_undo
 
-    target = backup_target(runtime, call.target)
+    target = push_target(runtime, call.target)
     undo = plan_undo(runtime.locations.journal_dir, call.run, target)
     output = runtime.output
     if undo.skipped:
@@ -141,10 +141,10 @@ def _undone(runtime: Runtime, call: StepCall) -> None:
         runtime: Settings, mount points and output.
         call: The target, the run.
     """
-    from media_hygiene.services.backup_sources import backup_target
-    from media_hygiene.services.backup_undo import record_undone
+    from media_hygiene.services.push_sources import push_target
+    from media_hygiene.services.push_undo import record_undone
 
-    target = backup_target(runtime, call.target)
+    target = push_target(runtime, call.target)
     back = record_undone(runtime.locations.journal_dir, call.run, target)
     runtime.output.success(
         ngettext(

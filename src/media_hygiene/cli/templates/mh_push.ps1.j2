@@ -1,16 +1,16 @@
-{# `mh backup` in mh.ps1: see services/launcher_backup.py. #}
+{# `mh push` in mh.ps1: see services/launcher_push.py. #}
 {% set f = function %}
-{% set b = backup %}
-{% set t = backup.texts %}
-{% set o = backup.orders %}
-{% set s = backup.steps %}
+{% set b = push %}
+{% set t = push.texts %}
+{% set o = push.orders %}
+{% set s = push.steps %}
 
-# `{{ f }} backup [--to <folder>] [--anyway] [--undo <run>]`: copy the photo folders into a folder
+# `{{ f }} push [--to <folder>] [--anyway] [--undo <run>]`: copy the photo folders into a folder
 # of their own on the NAS, only what it lacks (0264). The container decides ({{ b.step }}): it
 # knows the index, the journals and what was moved; it reads the photos and the target
 # read-only. Windows writes the target, about 7 times faster than Docker (measured): renames
 # with Move-Item, copies with robocopy, never /MIR nor /PURGE.
-function global:_{{ f }}_backup {
+function global:_{{ f }}_push {
     $words = @($args)
     $to = ''
     $undo = ''
@@ -60,11 +60,11 @@ function global:_{{ f }}_backup {
     if ($null -eq $shared) { $global:LASTEXITCODE = 1; return }
     $mount = $null
     try {
-        $mount = _{{ f }}_backup_mount $to
+        $mount = _{{ f }}_push_mount $to
         if (-not $mount) { $global:LASTEXITCODE = 1; return }
         $run = @{ target = $to; mounts = $mount.mounts; data = $data; marks = @($shared.labels); backups = @(foreach ($folder in @(_{{ f }}_backups)) { '--backup'; $folder }) }
-        if ($undo) { _{{ f }}_backup_undo $run $undo; return }
-        _{{ f }}_backup_run $run $anyway
+        if ($undo) { _{{ f }}_push_undo $run $undo; return }
+        _{{ f }}_push_run $run $anyway
     } finally {
         if ($mount -and $mount.volumes) { _{{ f }}_nas_release $mount.volumes }
         if ($mount -and $mount.drive) { Remove-PSDrive -Name $mount.drive -Force -ErrorAction SilentlyContinue }
@@ -73,8 +73,8 @@ function global:_{{ f }}_backup {
 }
 
 # One run: the plan, asked once, journaled, applied by Windows, then proven by the container.
-function global:_{{ f }}_backup_run($run, $anyway) {
-    $plan = _{{ f }}_backup_docker @() $run (@('{{ s.PLAN.value }}') + $anyway)
+function global:_{{ f }}_push_run($run, $anyway) {
+    $plan = _{{ f }}_push_docker @() $run (@('{{ s.PLAN.value }}') + $anyway)
     if ($null -eq $plan) { Write-Host "{{ t.no_plan }}"; $global:LASTEXITCODE = 1; return }
     $sources = New-Object 'System.Collections.Generic.List[object]'
     $changes = New-Object 'System.Collections.Generic.List[object]'
@@ -105,9 +105,9 @@ function global:_{{ f }}_backup_run($run, $anyway) {
     if ($changes.Count + $expired.Count + $copies -eq 0) { return }
     if ((Read-Host "{{ t.ask }}") -notmatch '^[yYoO]') { Write-Host "{{ t.declined }}"; return }
     # Each rename journaled before Windows makes it.
-    if ($null -eq (_{{ f }}_backup_docker $plan $run @('{{ s.START.value }}'))) { Write-Host "{{ t.no_plan }}"; $global:LASTEXITCODE = 1; return }
+    if ($null -eq (_{{ f }}_push_docker $plan $run @('{{ s.START.value }}'))) { Write-Host "{{ t.no_plan }}"; $global:LASTEXITCODE = 1; return }
     foreach ($folder in $expired) { Remove-Item -LiteralPath $folder -Recurse -Force -ErrorAction SilentlyContinue }
-    foreach ($change in $changes) { _{{ f }}_backup_move $change[0] $change[1] $run.target }
+    foreach ($change in $changes) { _{{ f }}_push_move $change[0] $change[1] $run.target }
     $watch = [Diagnostics.Stopwatch]::StartNew()
     foreach ($source in $sources) {
         $from = "$($source[0])".TrimEnd('\')
@@ -126,25 +126,25 @@ function global:_{{ f }}_backup_run($run, $anyway) {
         if ($code -ge {{ b.failed }}) { Write-Host "{{ t.failed }}" }
     }
     $seconds = $watch.Elapsed.TotalSeconds.ToString('F1', [Globalization.CultureInfo]::InvariantCulture)
-    if ($null -eq (_{{ f }}_backup_docker $plan $run @('{{ s.PROVE.value }}', '--seconds', $seconds))) { $global:LASTEXITCODE = 1 }
+    if ($null -eq (_{{ f }}_push_docker $plan $run @('{{ s.PROVE.value }}', '--seconds', $seconds))) { $global:LASTEXITCODE = 1 }
 }
 
-# `{{ f }} backup --undo <run>`: the renames of a run put back, journaled before and after.
-function global:_{{ f }}_backup_undo($run, [string]$id) {
-    $lines = _{{ f }}_backup_docker @() $run @('{{ s.UNDO.value }}', '--run', $id)
+# `{{ f }} push --undo <run>`: the renames of a run put back, journaled before and after.
+function global:_{{ f }}_push_undo($run, [string]$id) {
+    $lines = _{{ f }}_push_docker @() $run @('{{ s.UNDO.value }}', '--run', $id)
     if ($null -eq $lines) { Write-Host "{{ t.no_plan }}"; $global:LASTEXITCODE = 1; return }
     $moves = @($lines | Where-Object { "$_".StartsWith("{{ o.MOVE.value }}`t") })
     if ($moves.Count -eq 0) { Write-Host "{{ t.undo_none }}"; return }
     foreach ($line in $moves) {
         $fields = "$line" -split "`t"
-        _{{ f }}_backup_move $fields[1] $fields[2] $run.target
+        _{{ f }}_push_move $fields[1] $fields[2] $run.target
     }
-    $null = _{{ f }}_backup_docker @() $run @('{{ s.UNDONE.value }}', '--run', $id)
+    $null = _{{ f }}_push_docker @() $run @('{{ s.UNDONE.value }}', '--run', $id)
 }
 
 # A rename on the target, never over a file; the folders it leaves empty removed, up to
 # the target itself. A file gone since is left: the closing run says it.
-function global:_{{ f }}_backup_move([string]$from, [string]$to, [string]$root) {
+function global:_{{ f }}_push_move([string]$from, [string]$to, [string]$root) {
     if (-not (Test-Path -LiteralPath $from) -or (Test-Path -LiteralPath $to)) { return }
     try {
         $null = New-Item -ItemType Directory -Force -Path (Split-Path -Parent $to) -ErrorAction Stop
@@ -167,7 +167,7 @@ function global:_{{ f }}_backup_move([string]$from, [string]$to, [string]$root) 
 # must open it too: a share it cannot open yet gets the same user name and password on a free
 # drive letter (New-PSDrive -Persist: robocopy needs a real SMB session; removed after).
 # $null when the target cannot be reached.
-function global:_{{ f }}_backup_mount([string]$to) {
+function global:_{{ f }}_push_mount([string]$to) {
     $made = @{ mounts = @(); volumes = @(); drive = '' }
     $target = $to
     if ($to -match '^\\\\([^\\]+)\\([^\\]+)') {
@@ -213,7 +213,7 @@ function global:_{{ f }}_backup_mount([string]$to) {
 # A step of the container ({{ b.step }}): the lines on its stdin, its lines back from its stdout,
 # in UTF-8 both ways; its messages go to the console. The photos and the target read-only,
 # the tool folders as for any command. $null when it failed.
-function global:_{{ f }}_backup_docker($lines, $run, $words) {
+function global:_{{ f }}_push_docker($lines, $run, $words) {
 {% if script.folders %}
     $null = New-Item -ItemType Directory -Force -Path {{ script.folders }}
 {% endif %}

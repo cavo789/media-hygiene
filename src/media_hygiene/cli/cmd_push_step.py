@@ -1,7 +1,7 @@
-r"""`media-hygiene backup-step`: the container's part of `mh backup` (0264).
+r"""`media-hygiene push-step`: the container's part of `mh push` (0264).
 
 Plumbing for `mh` only, hidden from `--help`, as `phone-plan` is. The steps, in order:
-`plan` prints the plan's lines on stdout (`backup_lines`); once the user agreed,
+`plan` prints the plan's lines on stdout (`push_lines`); once the user agreed,
 `start` reads them back on stdin and journals each rename `pending`; Windows renames
 and copies; `prove` reads them back again, lists the target and journals what was
 made. `undo` prints the renames of a run back, `undone` journals those made. Every
@@ -15,16 +15,16 @@ from typing import Annotated
 import typer
 
 from media_hygiene.cli import folder_options
-from media_hygiene.cli.cmd_backup_flow import StepCall, run_step
+from media_hygiene.cli.cmd_push_flow import StepCall, run_step
 from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.i18n import _
-from media_hygiene.services.backup_lines import BackupStep
+from media_hygiene.services.push_lines import PushStep
 
 
-def backup_step_command(  # pylint: disable=too-many-arguments
+def push_step_command(  # pylint: disable=too-many-arguments
     ctx: typer.Context,
     step: Annotated[
-        BackupStep,
+        PushStep,
         typer.Argument(
             help=_("plan, start, prove, undo or undone."), show_default=False
         ),
@@ -49,7 +49,7 @@ def backup_step_command(  # pylint: disable=too-many-arguments
     ] = 0.0,
     backup: Annotated[list[str] | None, folder_options.kept_backup()] = None,
 ) -> None:
-    """Run one step of mh backup in the container.
+    """Run one step of mh push in the container.
 
     Args:
         ctx: Typer context holding the runtime.

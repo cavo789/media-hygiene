@@ -1,4 +1,4 @@
-"""`[backup]` — what `mh backup` keeps, when it stops, how many files at once."""
+"""`[push]` — what `mh push` keeps, when it stops, how many files at once."""
 
 from __future__ import annotations
 
@@ -14,11 +14,11 @@ THREADS: Final = 8
 _MOST_THREADS: Final = 128  # robocopy refuses more
 
 
-class BackupSettings(BaseModel):
-    """`[backup]` — the folder `mh backup` fills (0264).
+class PushSettings(BaseModel):
+    """`[push]` — the folder `mh push` fills (0264).
 
     `keep_removed_days`: a file set aside in the backup's `.removed` (gone from the PC,
-    or the previous copy of an edited file) is erased by `mh backup` after that many
+    or the previous copy of an edited file) is erased by `mh push` after that many
     days. `stop_above_percent`: nothing is applied when the files set aside and
     replaced exceed that share of the backup (a drive missing, many files changed at
     once). `threads`: how many files robocopy copies at once (`/MT`).

@@ -1,9 +1,9 @@
-"""`mh backup`'s plan, in the container: the sources against the target (0264).
+"""`mh push`'s plan, in the container: the sources against the target (0264).
 
 Read-only: the photo folders and the target are listed (size, date), a few files read
 (128 KiB each) to prove a move, the index and the journals read. Only the sources
 listed whole take part: a folder the walk could not read leaves its part of the target
-untouched. Windows applies the plan (`mh_backup.ps1.j2`); `backup_proof` proves it.
+untouched. Windows applies the plan (`mh_push.ps1.j2`); `push_proof` proves it.
 """
 
 from __future__ import annotations
@@ -13,23 +13,23 @@ from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.runs import RUN_ID_PATTERN, new_run_id
-from media_hygiene.plan.backup_target import BackupInputs, BackupPlan, plan_backup
+from media_hygiene.plan.push_target import PushInputs, PushPlan, plan_push
 from media_hygiene.scan.filters import ScanFilters
 from media_hygiene.scan.skipped_dirs import SYSTEM_DIR_NAMES
-from media_hygiene.services.backup_broken import BrokenFinder, ContentCheck
-from media_hygiene.services.backup_listing import list_tree
-from media_hygiene.services.backup_place import REMOVED_FOLDER, Target
 from media_hygiene.services.backup_reasons import gone_reasons
-from media_hygiene.services.backup_sources import (
+from media_hygiene.services.push_broken import BrokenFinder, ContentCheck
+from media_hygiene.services.push_listing import list_tree
+from media_hygiene.services.push_place import REMOVED_FOLDER, Target
+from media_hygiene.services.push_sources import (
     Source,
-    backup_sources,
-    backup_target,
+    push_sources,
+    push_target,
 )
 
 if TYPE_CHECKING:
     from pathlib import Path, PurePosixPath
 
-    from media_hygiene.plan.backup_entries import Stat
+    from media_hygiene.plan.push_entries import Stat
     from media_hygiene.services.runtime import Runtime
 
 _STAMP: Final = "%Y%m%d-%H%M%S"
@@ -50,15 +50,15 @@ class Prepared:  # pylint: disable=too-many-instance-attributes  # one per plan 
 
     target: Target
     run_id: str
-    plan: BackupPlan
+    plan: PushPlan
     sources: tuple[Source, ...] = ()  # taking part
     skipped: tuple[Skipped, ...] = ()
     expired: tuple[str, ...] = ()  # `.removed/<run>` folders older than kept
     excluded: tuple[str, ...] = ()  # robocopy `/XD`: names, host paths
     stopped: bool = False
     threads: int = 1
-    keep_days: int = 0  # `[backup] keep_removed_days`
-    stop_percent: int = 0  # `[backup] stop_above_percent`
+    keep_days: int = 0  # `[push] keep_removed_days`
+    stop_percent: int = 0  # `[push] stop_above_percent`
 
 
 @dataclass(frozen=True, slots=True)
@@ -71,7 +71,7 @@ class Sides:
     skipped: list[Skipped] = field(default_factory=list)
 
 
-def prepare_backup(runtime: Runtime, target_host: str, *, anyway: bool) -> Prepared:
+def prepare_push(runtime: Runtime, target_host: str, *, anyway: bool) -> Prepared:
     """Compare the photo folders with the target.
 
     Args:
@@ -82,8 +82,8 @@ def prepare_backup(runtime: Runtime, target_host: str, *, anyway: bool) -> Prepa
     Returns:
         The plan.
     """
-    target = backup_target(runtime, target_host)
-    filters = backup_filters(runtime)
+    target = push_target(runtime, target_host)
+    filters = push_filters(runtime)
     sides = list_sides(runtime, target, filters)
     check = ContentCheck(target, tuple(sides.sources))
     on_pc = {path.casefold() for path in sides.source}
@@ -92,14 +92,14 @@ def prepare_backup(runtime: Runtime, target_host: str, *, anyway: bool) -> Prepa
         for path in sides.target
         if path.casefold() not in on_pc
     }
-    inputs = BackupInputs(
+    inputs = PushInputs(
         sides.source,
         sides.target,
         broken=BrokenFinder(runtime, check).broken(sides.source),
         reasons=gone_reasons(runtime, gone),
     )
-    plan = plan_backup(inputs, check.same)
-    settings = runtime.settings.backup
+    plan = plan_push(inputs, check.same)
+    settings = runtime.settings.push
     return Prepared(
         target=target,
         run_id=new_run_id(runtime.locations.journal_dir),
@@ -131,7 +131,7 @@ def list_sides(runtime: Runtime, target: Target, filters: ScanFilters) -> Sides:
         Both sides of the folders listed whole.
     """
     sides = Sides()
-    for source in backup_sources(runtime, target):
+    for source in push_sources(runtime, target):
 
         def skips(below: PurePosixPath, point: Path = source.point) -> bool:
             """Skip a folder skipped on the PC, on both sides.
@@ -157,7 +157,7 @@ def list_sides(runtime: Runtime, target: Target, filters: ScanFilters) -> Sides:
     return sides
 
 
-def backup_filters(runtime: Runtime) -> ScanFilters:
+def push_filters(runtime: Runtime) -> ScanFilters:
     """The folders skipped: system names, `[scan] excluded_names`, `[folders] excluded`.
 
     Args:
@@ -176,7 +176,7 @@ def backup_filters(runtime: Runtime) -> ScanFilters:
 
 
 def _expired(target: Target, days: int) -> tuple[str, ...]:
-    """The folders of `.removed` older than `[backup] keep_removed_days`.
+    """The folders of `.removed` older than `[push] keep_removed_days`.
 
     Args:
         target: The target.

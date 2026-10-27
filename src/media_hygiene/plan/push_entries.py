@@ -1,4 +1,4 @@
-"""The records of `mh backup`'s plan: a file's size and time, a move, an edit (0264)."""
+"""The records of `mh push`'s plan: a file's size and time, a move, an edit (0264)."""
 
 from __future__ import annotations
 

@@ -78,7 +78,7 @@ class Kept:
     moved: int = 0
     linked: int = 0  # hard links: an album's (nothing freed), a copy's (its bytes)
     written: int = 0  # the sidecars `xmp` created or rewrote
-    copied: int = 0  # bytes copied by `import`, or by `mh backup` to its target (0264)
+    copied: int = 0  # bytes copied by `import`, or by `mh push` to its target (0264)
 
 
 @dataclass(frozen=True, slots=True)
@@ -137,7 +137,7 @@ def summarize(journal_dir: Path, run_id: str) -> RunSummary:
     linked = [entry for entry in files if entry.action in LINKS]
     written = sum(1 for entry in files if entry.action in XMP_ACTIONS)
     copied = sum(entry.size for entry in files if entry.action in COPIES)
-    aside = QUARANTINED | BACKUP_SET_ASIDE  # `mh backup`'s `.removed` (0264)
+    aside = QUARANTINED | BACKUP_SET_ASIDE  # `mh push`'s `.removed` (0264)
     quarantined = [entry for entry in files if entry.action in aside]
     # Only a deleted file frees space: a quarantined one takes it until `purge`.
     deleted = [

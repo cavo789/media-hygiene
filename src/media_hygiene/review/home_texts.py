@@ -146,7 +146,7 @@ def _spaces() -> dict[str, str]:
         "done": _("Done"),
         "optional": _("Optional"),
         "planned": _("Planned"),
-        "plannedReason": _("Planned with mh backup: not in the tool yet."),
+        "plannedReason": _("Planned with mh push: not in the tool yet."),
         "nothingYet": _("Nothing to do yet."),
         "riskSafe": _("Photos untouched"),
         "riskUndo": _("Undoable"),
@@ -162,7 +162,7 @@ def _spaces() -> dict[str, str]:
         "verbFill": _("Fill in"),
         "verbSoon": _("Soon"),
         "inThisPage": _("In this page"),
-        "backupPlanned": _("Planned: mh backup is coming."),
+        "backupPlanned": _("Planned: mh push is coming."),
         "backupPlannedText": _(
             "The cycle already keeps its place: once the command exists, its entry in "
             "the catalog lights this page, the palette and the console menu."

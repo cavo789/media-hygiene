@@ -1,4 +1,4 @@
-r"""Where the target of `mh backup` is, for the container and for Windows (0264)."""
+r"""Where the target of `mh push` is, for the container and for Windows (0264)."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ REMOVED_FOLDER: Final = ".removed"
 
 @dataclass(frozen=True, slots=True)
 class Target:
-    """The folder `mh backup` fills: where the container and Windows see it."""
+    """The folder `mh push` fills: where the container and Windows see it."""
 
     point: Path
     host: str

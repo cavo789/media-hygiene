@@ -1,6 +1,6 @@
-r"""The journal of `mh backup`: `pending` before Windows renames, `done` after (0264).
+r"""The journal of `mh push`: `pending` before Windows renames, `done` after (0264).
 
-A run of kind `backup`, written ahead as `clean` writes: each rename on the target (a
+A run of kind `push`, written ahead as `clean` writes: each rename on the target (a
 move, a set-aside in `.removed`) is recorded `pending` before `mh` makes it, then
 `done` when the target, listed again, shows it made; the bytes robocopy copied are
 recorded per photo folder. Paths are relative to the target (`C/Photos/a.jpg`), the
@@ -24,27 +24,27 @@ from media_hygiene.actions.kinds import ActionKind, Phase, Status
 from media_hygiene.actions.runs import RUN_ID_PATTERN
 from media_hygiene.errors import JournalError
 from media_hygiene.i18n import _
-from media_hygiene.services.backup_lines import Order
+from media_hygiene.services.push_lines import Order
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping
     from pathlib import Path
 
-    from media_hygiene.services.backup_lines import Change
-    from media_hygiene.services.backup_place import Target
+    from media_hygiene.services.push_lines import Change
+    from media_hygiene.services.push_place import Target
 
 KINDS: Final[Mapping[Order, ActionKind]] = MappingProxyType(
     {
-        Order.MOVE: ActionKind.BACKUP_MOVE,
-        Order.ASIDE: ActionKind.BACKUP_ASIDE,
-        Order.REMOVE: ActionKind.BACKUP_REMOVE,
+        Order.MOVE: ActionKind.PUSH_MOVE,
+        Order.ASIDE: ActionKind.PUSH_ASIDE,
+        Order.REMOVE: ActionKind.PUSH_REMOVE,
     }
 )
 
 
 @dataclass(frozen=True, slots=True)
 class BackupRun:
-    """A run of `mh backup`: its journal, and the target it changed."""
+    """A run of `mh push`: its journal, and the target it changed."""
 
     journal: Path
     target: Target
@@ -59,7 +59,7 @@ class BackupRun:
         return self.journal.stem
 
 
-def backup_run(journal_dir: Path, run_id: str, target: Target) -> BackupRun:
+def push_run(journal_dir: Path, run_id: str, target: Target) -> BackupRun:
     """Name the journal of a run, refusing an identifier that is none.
 
     Args:
@@ -102,7 +102,7 @@ def record_pending(run: BackupRun, changes: Iterable[Change]) -> int:
             journal.record(
                 JournalEntry(
                     seq=seq,
-                    phase=Phase.BACKUP,
+                    phase=Phase.PUSH,
                     status=Status.PENDING,
                     action=KINDS[change.order],
                     path=change.old.path,
@@ -127,7 +127,7 @@ def record_done(run: BackupRun, copied: Mapping[str, int]) -> tuple[JournalEntry
         The renames written `done`.
     """
     entries = read_journal(run.journal) if run.journal.is_file() else []
-    latest = latest_states(entries, Phase.BACKUP)
+    latest = latest_states(entries, Phase.PUSH)
     made = [
         entry
         for entry in latest.values()
@@ -159,9 +159,9 @@ def _copied(run: BackupRun, seq: int, copied: tuple[str, int]) -> JournalEntry:
     folder, size = copied
     return JournalEntry(
         seq=seq,
-        phase=Phase.BACKUP,
+        phase=Phase.PUSH,
         status=Status.DONE,
-        action=ActionKind.BACKUP_COPY,
+        action=ActionKind.PUSH_COPY,
         path=folder,
         host_path=run.target.host_of(folder),
         size=size,
@@ -182,4 +182,4 @@ def _made(root: Path, entry: JournalEntry) -> bool:
     """
     if entry.target is None or not (root / entry.target).is_file():
         return False
-    return entry.action is ActionKind.BACKUP_ASIDE or not (root / entry.path).exists()
+    return entry.action is ActionKind.PUSH_ASIDE or not (root / entry.path).exists()

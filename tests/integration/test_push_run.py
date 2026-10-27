@@ -1,9 +1,9 @@
-"""`mh backup` (0264): planned by the container, applied by a stand-in, proven.
+"""`mh push` (0264): planned by the container, applied by a stand-in, proven.
 
-The stand-in does what `mh_backup.ps1.j2` does: the renames of the plan, then a
+The stand-in does what `mh_push.ps1.j2` does: the renames of the plan, then a
 robocopy of each photo folder (every file new or changed by size and date, never a
 broken one, nothing deleted). The closing run proves it; a second run plans nothing; a
-move on the PC is a rename on the backup; `mh backup --undo` puts back what a run set
+move on the PC is a rename on the backup; `mh push --undo` puts back what a run set
 aside; the photos are never written.
 """
 
@@ -26,15 +26,15 @@ from media_hygiene.actions.runs import summarize
 from media_hygiene.errors import JournalError, MountError
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.paths.mounts import MountTable
-from media_hygiene.plan.backup_entries import Stat
 from media_hygiene.plan.backup_gone import GoneReason
-from media_hygiene.services.backup_journal import backup_run, record_pending
-from media_hygiene.services.backup_lines import plan_lines
-from media_hygiene.services.backup_place import REMOVED_FOLDER
-from media_hygiene.services.backup_proof import ProofQuery, plan_of, prove_backup
-from media_hygiene.services.backup_run import prepare_backup
-from media_hygiene.services.backup_sources import backup_target
-from media_hygiene.services.backup_undo import plan_undo, record_undone
+from media_hygiene.plan.push_entries import Stat
+from media_hygiene.services.push_journal import push_run, record_pending
+from media_hygiene.services.push_lines import plan_lines
+from media_hygiene.services.push_place import REMOVED_FOLDER
+from media_hygiene.services.push_proof import ProofQuery, plan_of, prove_push
+from media_hygiene.services.push_run import prepare_push
+from media_hygiene.services.push_sources import push_target
+from media_hygiene.services.push_undo import plan_undo, record_undone
 from media_hygiene.services.undo_guard import ensure_undo_ready
 from tests.support.demo import build_demo
 from tests.support.runtime import make_runtime
@@ -43,7 +43,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.paths.locations import Locations
-    from media_hygiene.services.backup_proof import BackupProof
+    from media_hygiene.services.push_proof import PushProof
     from media_hygiene.services.runtime import Runtime
 
 TARGET: Final = "E:\\Backup"
@@ -51,7 +51,7 @@ PHOTOS: Final = "c/Family Photos"
 
 
 def mounted(locations: Locations, *more: str) -> Runtime:
-    """The demo's photo folder and the target mounted apart, as `mh backup` does."""
+    """The demo's photo folder and the target mounted apart, as `mh push` does."""
     data = locations.data_dir
     (data / "e" / "Backup").mkdir(parents=True, exist_ok=True)
     folders = frozenset(
@@ -71,11 +71,11 @@ def photos_of(locations: Locations) -> dict[str, tuple[int, int]]:
 
 
 def windows(runtime: Runtime, lines: list[str]) -> None:
-    """The stand-in for `mh_backup.ps1.j2`: renames, then robocopy, never a deletion."""
-    target = backup_target(runtime, TARGET)
+    """The stand-in for `mh_push.ps1.j2`: renames, then robocopy, never a deletion."""
+    target = push_target(runtime, TARGET)
     plan = plan_of(runtime, ProofQuery(TARGET, lines))
     record_pending(
-        backup_run(runtime.locations.journal_dir, plan.run_id, target), plan.changes
+        push_run(runtime.locations.journal_dir, plan.run_id, target), plan.changes
     )
     for change in plan.changes:
         old, new = target.point / change.old.path, target.point / change.new
@@ -92,7 +92,7 @@ def windows(runtime: Runtime, lines: list[str]) -> None:
 def robocopy(runtime: Runtime, folders: tuple[str, str], broken: set[str]) -> None:
     """Copy every file new or changed by size and date, keeping its date."""
     source = runtime.mapper.to_container(folders[0])
-    target = backup_target(runtime, TARGET)
+    target = push_target(runtime, TARGET)
     into = target.point / (target.relative(folders[1]) or "")
     for path in source.rglob("*"):
         if not path.is_file() or runtime.mapper.to_host(path) in broken:
@@ -108,11 +108,11 @@ def robocopy(runtime: Runtime, folders: tuple[str, str], broken: set[str]) -> No
         shutil.copy2(path, copy)
 
 
-def backed_up(runtime: Runtime) -> tuple[list[str], BackupProof]:
+def backed_up(runtime: Runtime) -> tuple[list[str], PushProof]:
     """One whole run: plan, applied, proven; its lines and its proof."""
-    lines = list(plan_lines(prepare_backup(runtime, TARGET, anyway=False)))
+    lines = list(plan_lines(prepare_push(runtime, TARGET, anyway=False)))
     windows(runtime, lines)
-    return lines, prove_backup(runtime, ProofQuery(TARGET, lines, 1.0))
+    return lines, prove_push(runtime, ProofQuery(TARGET, lines, 1.0))
 
 
 def journal_clean(runtime: Runtime, path: Path, action: ActionKind) -> None:
@@ -148,7 +148,7 @@ def test_a_first_backup_copies_everything_and_proves_it(locations: Locations) ->
     assert proof.held == len(before)
     assert photos_of(locations) == before
     summary = summarize(runtime.locations.journal_dir, proof.run_id)
-    assert summary.kind is Phase.BACKUP
+    assert summary.kind is Phase.PUSH
     assert summary.kept.copied == proof.copied_bytes > 0
 
 
@@ -157,7 +157,7 @@ def test_a_second_run_plans_nothing(locations: Locations) -> None:
     build_demo(locations.data_dir)
     runtime = mounted(locations)
     backed_up(runtime)
-    plan = prepare_backup(runtime, TARGET, anyway=False).plan
+    plan = prepare_push(runtime, TARGET, anyway=False).plan
     assert not plan.copies
     assert not plan.moves
     assert not plan.gone
@@ -174,7 +174,7 @@ def test_a_folder_renamed_on_the_pc_is_renamed_on_the_backup(
     photos = locations.data_dir / PHOTOS
     (photos / "2019").rename(photos / "2019 - Holidays")
     files = sum(path.is_file() for path in (photos / "2019 - Holidays").rglob("*"))
-    prepared = prepare_backup(runtime, TARGET, anyway=False)
+    prepared = prepare_push(runtime, TARGET, anyway=False)
     assert not prepared.plan.copies
     assert len(prepared.plan.moves) == files == 5  # three photos, a twin, a sidecar
     _lines, proof = backed_up(runtime)
@@ -198,7 +198,7 @@ def test_identical_twins_are_renamed_by_name(locations: Locations) -> None:
     (photos / "Best").mkdir()
     for name in ("IMG_0001.jpg", "IMG_0001 (1).jpg"):
         (photos / "2019/Vacances" / name).rename(photos / "Best" / name)
-    plan = prepare_backup(runtime, TARGET, anyway=False).plan
+    plan = prepare_push(runtime, TARGET, anyway=False).plan
     moves = [
         (move.old.path.rsplit("/", 1)[1], move.new.split("/", 2)[2])
         for move in plan.moves
@@ -237,7 +237,7 @@ def test_only_purged_or_confirmed_files_leave_the_backup(locations: Locations) -
     journal_clean(runtime, purged, ActionKind.QUARANTINE_DUPLICATE)
     purged.unlink()
     (photos / "2019/Vacances/IMG_0003.jpg").unlink()  # by mistake, in the Explorer
-    prepared = prepare_backup(runtime, TARGET, anyway=False)
+    prepared = prepare_push(runtime, TARGET, anyway=False)
     reasons = {
         gone.entry.path.rsplit("/", 1)[1]: gone.reason for gone in prepared.plan.gone
     }
@@ -254,7 +254,7 @@ def test_only_purged_or_confirmed_files_leave_the_backup(locations: Locations) -
 
 
 def test_undo_puts_back_what_a_run_set_aside(locations: Locations) -> None:  # pylint: disable=too-many-locals
-    """`mh backup --undo`: the file back in place, journaled; the copies stay."""
+    """`mh push --undo`: the file back in place, journaled; the copies stay."""
     build_demo(locations.data_dir)
     runtime = mounted(locations)
     backed_up(runtime)
@@ -262,7 +262,7 @@ def test_undo_puts_back_what_a_run_set_aside(locations: Locations) -> None:  # p
     journal_clean(runtime, purged, ActionKind.QUARANTINE_DUPLICATE)
     purged.unlink()
     _lines, proof = backed_up(runtime)
-    target = backup_target(runtime, TARGET)
+    target = push_target(runtime, TARGET)
     undo = plan_undo(runtime.locations.journal_dir, proof.run_id, target)
     assert len(undo.lines) == 1
     for line in undo.lines:
@@ -278,15 +278,15 @@ def test_undo_puts_back_what_a_run_set_aside(locations: Locations) -> None:  # p
 
 
 def test_undo_of_a_backup_run_is_refused_by_the_container(locations: Locations) -> None:
-    """Windows writes the backup: `undo` says to type `mh backup --undo`."""
+    """Windows writes the backup: `undo` says to type `mh push --undo`."""
     build_demo(locations.data_dir)
     runtime = mounted(locations)
     _lines, proof = backed_up(runtime)
     with pytest.raises(JournalError) as refused:
         ensure_undo_ready(runtime, [proof.run_id])
-    assert f"mh backup --undo {proof.run_id}" in (refused.value.tip or "")
+    assert f"mh push --undo {proof.run_id}" in (refused.value.tip or "")
     entries = read_journal(journal_file(runtime.locations.journal_dir, proof.run_id))
-    assert all(entry.phase is Phase.BACKUP for entry in entries)
+    assert all(entry.phase is Phase.PUSH for entry in entries)
 
 
 def test_a_folder_of_the_backup_not_mounted_now_is_left_alone(
@@ -298,7 +298,7 @@ def test_a_folder_of_the_backup_not_mounted_now_is_left_alone(
     other = locations.data_dir / "e/Backup/F/Photos/a.jpg"
     other.parent.mkdir(parents=True)
     other.write_bytes(b"from a drive not plugged in")
-    plan = prepare_backup(runtime, TARGET, anyway=False).plan
+    plan = prepare_push(runtime, TARGET, anyway=False).plan
     assert not plan.gone
     backed_up(runtime)
     assert other.is_file()
@@ -309,9 +309,9 @@ def test_a_target_overlapping_a_photo_folder_is_refused(locations: Locations) ->
     build_demo(locations.data_dir)
     runtime = mounted(locations)
     with pytest.raises(MountError, match="overlaps"):
-        prepare_backup(runtime, "C:\\Family Photos\\Backup", anyway=False)
+        prepare_push(runtime, "C:\\Family Photos\\Backup", anyway=False)
     with pytest.raises(MountError, match="overlaps"):
-        prepare_backup(runtime, "C:\\", anyway=False)
+        prepare_push(runtime, "C:\\", anyway=False)
 
 
 def test_the_safety_stop_holds_the_run(locations: Locations) -> None:
@@ -321,21 +321,21 @@ def test_the_safety_stop_holds_the_run(locations: Locations) -> None:
     backed_up(runtime)
     for path in (locations.data_dir / PHOTOS).rglob("*.jpg"):
         path.write_bytes(path.read_bytes() + b"!")
-    stopped = prepare_backup(runtime, TARGET, anyway=False)
+    stopped = prepare_push(runtime, TARGET, anyway=False)
     assert stopped.stopped
     assert "stop" in plan_lines(stopped)
-    assert not prepare_backup(runtime, TARGET, anyway=True).stopped
+    assert not prepare_push(runtime, TARGET, anyway=True).stopped
 
 
 def test_expired_folders_of_removed_are_listed(locations: Locations) -> None:
-    """Older than `[backup] keep_removed_days`: erased by Windows."""
+    """Older than `[push] keep_removed_days`: erased by Windows."""
     build_demo(locations.data_dir)
     runtime = mounted(locations)
     removed = locations.data_dir / "e/Backup" / REMOVED_FOLDER
     (removed / "20200101-120000").mkdir(parents=True)
     (removed / "29990101-120000").mkdir()
     (removed / "not a run").mkdir()
-    prepared = prepare_backup(runtime, TARGET, anyway=False)
+    prepared = prepare_push(runtime, TARGET, anyway=False)
     assert prepared.expired == (f"{REMOVED_FOLDER}/20200101-120000",)
     assert "expired\tE:\\Backup\\.removed\\20200101-120000" in plan_lines(prepared)
 
@@ -377,7 +377,7 @@ def test_each_reason_a_file_is_gone(locations: Locations) -> None:
         repository.connection.commit()
     for name in ("IMG_0001.jpg", "IMG_0002.jpg", "IMG_0003.jpg"):
         (vacation / name).unlink()
-    plan = prepare_backup(runtime, TARGET, anyway=False).plan
+    plan = prepare_push(runtime, TARGET, anyway=False).plan
     reasons = {g.entry.path.rsplit("/", 1)[1]: g.reason for g in plan.gone}
     assert reasons == {
         "IMG_0001.jpg": GoneReason.CONFIRMED,

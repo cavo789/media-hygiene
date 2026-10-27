@@ -1,4 +1,4 @@
-"""`mh backup --undo <run>`: the renames of a run put back on the target (0264).
+"""`mh push --undo <run>`: the renames of a run put back on the target (0264).
 
 The container reads the run's journal and the target (read-only) and writes the
 renames back as `move` lines, each recorded `pending` (phase `undo`) before Windows
@@ -18,15 +18,15 @@ from media_hygiene.actions.runs import run_phase
 from media_hygiene.actions.undo import actions_to_undo
 from media_hygiene.errors import JournalError
 from media_hygiene.i18n import _
-from media_hygiene.services.backup_journal import KINDS, backup_run
-from media_hygiene.services.backup_lines import Order
+from media_hygiene.services.push_journal import KINDS, push_run
+from media_hygiene.services.push_lines import Order
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.actions.journal import JournalEntry
-    from media_hygiene.services.backup_journal import BackupRun
-    from media_hygiene.services.backup_place import Target
+    from media_hygiene.services.push_journal import BackupRun
+    from media_hygiene.services.push_place import Target
 
 _RENAMES = frozenset(KINDS.values())
 
@@ -70,7 +70,7 @@ def plan_undo(journal_dir: Path, run_id: str, target: Target) -> UndoPlan:
                 lines.append(line)
             else:
                 journal.record(_undo(entry, Status.DONE))  # made by that undo
-    copies = sum(entry.action is ActionKind.BACKUP_COPY for entry in entries)
+    copies = sum(entry.action is ActionKind.PUSH_COPY for entry in entries)
     return UndoPlan(tuple(lines), tuple(skipped), copies)
 
 
@@ -124,7 +124,7 @@ def record_undone(journal_dir: Path, run_id: str, target: Target) -> int:
 
 
 def _existing(journal_dir: Path, run_id: str, target: Target) -> BackupRun:
-    """The run of `mh backup` named, refusing any other.
+    """The run of `mh push` named, refusing any other.
 
     Args:
         journal_dir: Journal mount point.
@@ -137,9 +137,9 @@ def _existing(journal_dir: Path, run_id: str, target: Target) -> BackupRun:
     Raises:
         JournalError: No such run, or one of another command.
     """
-    run = backup_run(journal_dir, run_id, target)
+    run = push_run(journal_dir, run_id, target)
     if not run.journal.is_file() or run_phase(read_journal(run.journal)) is not (
-        Phase.BACKUP
+        Phase.PUSH
     ):
         raise JournalError(_("Unknown run {run_id}.").format(run_id=run_id))
     return run

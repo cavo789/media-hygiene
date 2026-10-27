@@ -35,7 +35,7 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 | voir mes mots dans digiKam, darktable, Lightroom ou Immich | [`xmp`](commands/xmp.md) |
 | récupérer les photos que seul mon NAS a encore, pas celles que j'ai supprimées | [`import`](commands/import.md) |
 | récupérer la place des vidéos de mes anciens appareils, l'image gardée | [`shrink`](commands/shrink.md) |
-| sauvegarder mes photos sur mon NAS, seulement ce qui lui manque | [`backup`](commands/backup.md) |
+| sauvegarder mes photos sur mon NAS, seulement ce qui lui manque | [`push`](commands/push.md) |
 | répondre à mes propres questions sur mes photos avec Excel | [`inventory`](commands/inventory.md) |
 | taper `mh audit` au lieu d'un long `docker run` | [`launcher`](commands/launcher.md) |
 | vérifier chaque réglage et chaque dossier avant que l'outil agisse | [`config`](commands/config.md) |
@@ -83,7 +83,7 @@ exemples et son `--help`.
 | [`xmp`](commands/xmp.md) | Écrit les mots de `tags` dans des fichiers compagnons `.xmp` à côté des photos, pour digiKam, darktable, Lightroom ou Immich ; jamais dans une photo. Montre ce qu'il écrirait ; `--apply` écrit. | [Référence](reference-tags.md#emporter-les-mots-avec-les-photos--xmp) |
 | [`import`](commands/import.md) | Copie dans vos photos ce qu'une sauvegarde (un NAS) est seule à contenir, jamais ce que vous avez mis de côté ou supprimé avant ; les quasi-copies listées à part ; chaque copie prouvée ; la sauvegarde seulement lue. | [Commandes](commands/import.md) |
 | [`shrink`](commands/shrink.md) | Liste les vidéos lourdes qui gagnent à être allégées (anciens appareils, MJPEG), avec la place que chacune libérerait ; `--apply` les réencode en H.264, chacune vérifiée (durée, son, date, lieu), l'original en quarantaine. | [Commandes](commands/shrink.md) |
-| [`backup`](commands/backup.md) | Windows seulement (`mh backup`) : copier vos dossiers de photos dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; une photo déplacée y est renommée, une suppression par erreur n'y est jamais reportée ; annuler avec `--undo`. | [Commandes](commands/backup.md) |
+| [`push`](commands/push.md) | Windows seulement (`mh push`) : copier vos dossiers de photos dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; une photo déplacée y est renommée, une suppression par erreur n'y est jamais reportée ; annuler avec `--undo`. | [Commandes](commands/push.md) |
 
 ## Options
 
@@ -222,7 +222,7 @@ commande montre son propre `--help` ; voici la liste des commandes :
 ╭─ Agir : déplace, écrit ou supprime des fichiers ─────────────────────────────╮
 │ album        Crée le dossier d'un album sur le disque, en liens physiques :  │
 │              rien n'est copié ni déplacé (journalisé, annulable).            │
-│ backup       Windows seulement, en mh backup : copier vos dossiers de photos │
+│ backup       Windows seulement, en mh push : copier vos dossiers de photos │
 │              dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui  │
 │              manque ; une photo déplacée y est renommée, une suppression par │
 │              erreur n'y est jamais reportée. Lancée ici, elle montre le      │

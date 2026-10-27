@@ -97,16 +97,16 @@ def find_steps() -> tuple[Step, ...]:
             optional=True,
         ),
         Step(
-            "backup-to",
+            "push-to",
             Space.BACKUP,
             _("Choose the backup folder on the NAS"),
             _("A folder of its own, never mixed with your other shares."),
-            "backup --to {path}",
+            "push --to {path}",
             Risk.SAFE,
             Kind.HOST,
             icon="nas",
             keywords=_("backup nas destination"),
-            doc=Doc("commands/backup/"),
+            doc=Doc("commands/push/"),
             fields=(
                 Field(
                     "path",
@@ -118,19 +118,19 @@ def find_steps() -> tuple[Step, ...]:
             windows=True,
         ),
         Step(
-            "backup",
+            "push",
             Space.BACKUP,
             _("Back up what the NAS lacks"),
             _(
                 "Only what is new; a photo moved by sort is renamed on the NAS, "
                 "not sent again."
             ),
-            "backup",
+            "push",
             Risk.UNDO,
             Kind.HOST,
             icon="shield",
             keywords=_("backup nas copy robocopy"),
-            doc=Doc("commands/backup/"),
+            doc=Doc("commands/push/"),
             windows=True,
         ),
     )
@@ -169,11 +169,11 @@ def find_areas() -> tuple[Area, ...]:
         ),
         "shield",
         (
-            Group(_("The guide"), ("backup-to", "backup"), numbered=True),
+            Group(_("The guide"), ("push-to", "push"), numbered=True),
             Group(_("And to go back"), ("import",)),
         ),
-        Doc("commands/backup/"),
-        _("mh backup"),
+        Doc("commands/push/"),
+        _("mh push"),
         stage=5,
     )
     return find, backup

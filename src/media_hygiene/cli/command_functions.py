@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.cli.cmd_album import album_command
 from media_hygiene.cli.cmd_audit import audit_command
-from media_hygiene.cli.cmd_backup import backup_command
 from media_hygiene.cli.cmd_browse import browse_command
 from media_hygiene.cli.cmd_classify import classify_command
 from media_hygiene.cli.cmd_clean import clean_command
@@ -21,6 +20,7 @@ from media_hygiene.cli.cmd_menu import menu_command
 from media_hygiene.cli.cmd_people import people_command
 from media_hygiene.cli.cmd_places import places_command
 from media_hygiene.cli.cmd_purge import purge_command
+from media_hygiene.cli.cmd_push import push_command
 from media_hygiene.cli.cmd_reports import reports_command
 from media_hygiene.cli.cmd_review import review_command
 from media_hygiene.cli.cmd_review_sort import review_sort_command
@@ -47,7 +47,7 @@ def command_functions() -> dict[str, Callable[..., None]]:
     return {
         "album": album_command,
         "audit": audit_command,
-        "backup": backup_command,
+        "push": push_command,
         "browse": browse_command,
         "classify": classify_command,
         "clean": clean_command,

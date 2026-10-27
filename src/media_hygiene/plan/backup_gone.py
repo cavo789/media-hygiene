@@ -14,7 +14,7 @@ from enum import StrEnum
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from media_hygiene.plan.backup_entries import Entry
+    from media_hygiene.plan.push_entries import Entry
 
 
 class GoneReason(StrEnum):

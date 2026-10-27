@@ -143,7 +143,7 @@ def test_every_action_kind_can_be_undone() -> None:
     """A new kind without its reversal fails here, not in a user's undo.
 
     A file deleted from a phone has none: `undo` refuses a phone run first (0248);
-    nor has `mh backup`'s: Windows undoes it, `undo` refuses the run first (0264).
+    nor has `mh push`'s: Windows undoes it, `undo` refuses the run first (0264).
     """
     assert set(REVERSALS) == set(ActionKind) - PHONE_DELETIONS - BACKUP_ACTIONS
 

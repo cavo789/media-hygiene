@@ -96,10 +96,10 @@
 #      minimised and its keep-open line, a console step from the page (window forward, button
 #      flashing with bellStyle taskbar, or nothing; minimised, then normal), the bold line, the window
 #      closed then the stop shown by the page; asks what you saw            (0284, 0285)
-#  27. mh backup to the NAS (-Nas, -NasTarget: a shared folder of its own, created in DSM first):
+#  27. mh push to the NAS (-Nas, -NasTarget: a shared folder of its own, created in DSM first):
 #      robocopy of 20 photos into <target>\mh-measure-test with /MT:1 then /MT:8 (MB/s of NAS
 #      writes), 20 renames there timed, whether a credential-only New-PSDrive lets robocopy in;
-#      then in a test mh: mh backup twice (the second copies nothing), once stopped by Ctrl+C
+#      then in a test mh: mh push twice (the second copies nothing), once stopped by Ctrl+C
 #      and typed again, once after a folder renamed (renames only); the test folder removed (0264)
 #  28. an mh.ps1 older than its image: a test mh written by -Image, its stamp changed, then
 #      removed: mh history says the line naming mh update (expected), mh update of the local
@@ -171,7 +171,7 @@
 #   .\mh-measure.ps1 -Only 24 -Count 1   (search by meaning on C:\Photos: 0263)
 #   .\mh-measure.ps1 -Only 25 -Count 1   (mh.ps1 written again after loading: 0276)
 #   .\mh-measure.ps1 -Only 26 -Count 1   (the shortcut minimised, a console step brought forward: 0284, 0285)
-#   .\mh-measure.ps1 -Only 27 -Count 20 -Nas 192.168.1.2 -NasTarget backup_photos -NasUser me   (mh backup: 0264)
+#   .\mh-measure.ps1 -Only 27 -Count 20 -Nas 192.168.1.2 -NasTarget backup_photos -NasUser me   (mh push: 0264)
 #   .\mh-measure.ps1 -Only 28 -Count 1   (an mh older than its image, then mh update: 0290)
 #   .\mh-measure.ps1 -Only 29 -Count 20   (mh --lan: the home page on a phone of the home Wi-Fi: 0269)
 #   .\mh-measure.ps1 -Only 30 -Count 30   (mh slideshow --lan: the photos on the TV, the phone as remote: 0291)
@@ -2574,14 +2574,14 @@ if ((Wanted 26) -and $fresh) {
     Log "   26: minimised $minimised, keep-open line $line, bold line $bold, console step minimised $min, normal $normal, stop shown $stop"
 }
 
-# --- 27: mh backup, Windows writing to the NAS (0264) ----------------------------------------
+# --- 27: mh push, Windows writing to the NAS (0264) ----------------------------------------
 # Writes ONLY below \\<Nas>\<NasTarget>\mh-measure-test, removed at the end. The password is
 # asked once (or read back from step 21's kept credential), never logged.
 if (Wanted 27) {
     $saved = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
     Log ""
-    Log "== 27. mh backup: Windows writes to the NAS (0264)"
+    Log "== 27. mh push: Windows writes to the NAS (0264)"
     if ($Nas -eq "") {
         Log "   27. skipped: give -Nas <name or IP address> -NasTarget <shared folder of its own> -NasUser <user>"
     } else {
@@ -2626,8 +2626,8 @@ if (Wanted 27) {
         $watch = [Diagnostics.Stopwatch]::StartNew()
         foreach ($file in @(Get-ChildItem -LiteralPath (Join-Path $test "mt8") -File)) { Move-Item -LiteralPath $file.FullName -Destination (Join-Path $renamed $file.Name) }
         Log ("   27c. 20 renames on the NAS: {0:N2} s" -f $watch.Elapsed.TotalSeconds)
-        # 27d: mh backup end to end, in a test mh whose photo folder is the 20 photos.
-        if ((Read-Host "27d. Run mh backup in a test mh into $test\mh (it asks before applying: answer y)? (y/n)") -match '^y') {
+        # 27d: mh push end to end, in a test mh whose photo folder is the 20 photos.
+        if ((Read-Host "27d. Run mh push in a test mh into $test\mh (it asks before applying: answer y)? (y/n)") -match '^y') {
             $mhDir = Join-Path $tool "mh27"
             New-Item -ItemType Directory -Force -Path $mhDir, (Join-Path $tool "config") | Out-Null
             $mhFile = Join-Path $mhDir "mh.ps1"
@@ -2641,25 +2641,25 @@ if (Wanted 27) {
             & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $sample > $mhFile
             . $mhFile
             # mh keeps its target next to yours: yours is put back at the end.
-            $keptTarget = Join-Path $mhHome "backup-target.txt"
+            $keptTarget = Join-Path $mhHome "push-target.txt"
             $yours = if (Test-Path -LiteralPath $keptTarget) { Get-Content -LiteralPath $keptTarget -Raw } else { $null }
             $target = Join-Path $test "mh"
             foreach ($round in "first", "second") {
                 $watch = [Diagnostics.Stopwatch]::StartNew()
-                $said = @(mh backup --to $target 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'Copied|Renamed|To copy|Already there|Moved on|up to date|Not in the backup|robocopy|refused|cannot' })
-                foreach ($line in $said) { Log "   27d. $round mh backup: $line" }
-                Log ("   27d. $round mh backup: {0:N1} s, exit code {1}" -f $watch.Elapsed.TotalSeconds, $LASTEXITCODE)
+                $said = @(mh push --to $target 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'Copied|Renamed|To copy|Already there|Moved on|up to date|Not in the backup|robocopy|refused|cannot' })
+                foreach ($line in $said) { Log "   27d. $round mh push: $line" }
+                Log ("   27d. $round mh push: {0:N1} s, exit code {1}" -f $watch.Elapsed.TotalSeconds, $LASTEXITCODE)
             }
-            Write-Host "27e. Now: 20 more photos are added; press Ctrl+C while robocopy runs, then mh backup runs again."
+            Write-Host "27e. Now: 20 more photos are added; press Ctrl+C while robocopy runs, then mh push runs again."
             foreach ($photo in ($picked | Select-Object -Skip 20 -First 20)) { Copy-Item -LiteralPath $photo.FullName -Destination $sample }
-            try { mh backup 2>&1 | Out-Host } catch { }
-            $said = @(mh backup 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'Copied|To copy|Already there|up to date|Not in the backup' })
+            try { mh push 2>&1 | Out-Host } catch { }
+            $said = @(mh push 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'Copied|To copy|Already there|up to date|Not in the backup' })
             foreach ($line in $said) { Log "   27e. after Ctrl+C, again: $line" }
             $sub = Join-Path $sample "sorted"
             New-Item -ItemType Directory -Force -Path $sub | Out-Null
             Get-ChildItem -LiteralPath $sample -File | Select-Object -First 10 | ForEach-Object { Move-Item -LiteralPath $_.FullName -Destination $sub }
             $watch = [Diagnostics.Stopwatch]::StartNew()
-            $said = @(mh backup 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'Copied|Renamed|To copy|Moved on|Not in the backup' })
+            $said = @(mh push 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'Copied|Renamed|To copy|Moved on|Not in the backup' })
             foreach ($line in $said) { Log "   27f. after 10 photos moved into a folder: $line" }
             Log ("   27f. {0:N1} s" -f $watch.Elapsed.TotalSeconds)
             Log ("   27g. Docker volumes of the NAS left (none expected): " + ((@(& docker volume ls -q --filter name=mh-nas-) -join ' / ') -replace '^$', 'none'))

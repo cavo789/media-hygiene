@@ -1,4 +1,4 @@
-"""The closing run of `mh backup`: what the target holds now, read back (0264).
+"""The closing run of `mh push`: what the target holds now, read back (0264).
 
 After Windows renamed and robocopy copied, the photo folders and the target are listed
 again: each copy the plan asked for found with its size and date (a copy robocopy
@@ -11,19 +11,19 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from media_hygiene.plan.backup_entries import Entry
-from media_hygiene.services.backup_broken import BrokenFinder, ContentCheck
-from media_hygiene.services.backup_journal import backup_run, record_done
-from media_hygiene.services.backup_read import read_plan
-from media_hygiene.services.backup_run import backup_filters, list_sides
-from media_hygiene.services.backup_sources import backup_target
+from media_hygiene.plan.push_entries import Entry
+from media_hygiene.services.push_broken import BrokenFinder, ContentCheck
+from media_hygiene.services.push_journal import push_run, record_done
+from media_hygiene.services.push_read import read_plan
+from media_hygiene.services.push_run import list_sides, push_filters
+from media_hygiene.services.push_sources import push_target
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from media_hygiene.plan.backup_entries import Stat
-    from media_hygiene.services.backup_read import ReadPlan
-    from media_hygiene.services.backup_run import Sides
+    from media_hygiene.plan.push_entries import Stat
+    from media_hygiene.services.push_read import ReadPlan
+    from media_hygiene.services.push_run import Sides
     from media_hygiene.services.runtime import Runtime
 
 
@@ -37,7 +37,7 @@ class ProofQuery:
 
 
 @dataclass(frozen=True, slots=True)
-class BackupProof:  # pylint: disable=too-many-instance-attributes  # one per line said
+class PushProof:  # pylint: disable=too-many-instance-attributes  # one per line said
     """What the target holds after the run, read back."""
 
     run_id: str
@@ -53,7 +53,7 @@ class BackupProof:  # pylint: disable=too-many-instance-attributes  # one per li
     seconds: float = 0.0
 
 
-def prove_backup(runtime: Runtime, query: ProofQuery) -> BackupProof:
+def prove_push(runtime: Runtime, query: ProofQuery) -> PushProof:
     """List both sides again; journal what was made.
 
     Args:
@@ -63,10 +63,10 @@ def prove_backup(runtime: Runtime, query: ProofQuery) -> BackupProof:
     Returns:
         What the target holds now.
     """
-    target = backup_target(runtime, query.target)
+    target = push_target(runtime, query.target)
     plan = read_plan(query.lines, target)
-    run = backup_run(runtime.locations.journal_dir, plan.run_id, target)
-    sides = list_sides(runtime, target, backup_filters(runtime))
+    run = push_run(runtime.locations.journal_dir, plan.run_id, target)
+    sides = list_sides(runtime, target, push_filters(runtime))
     there = {path.casefold(): stat for path, stat in sides.target.items()}
     found = [entry for entry in plan.copies if _there(there, entry)]
     made = record_done(run, _per_folder(sides, found))
@@ -77,7 +77,7 @@ def prove_backup(runtime: Runtime, query: ProofQuery) -> BackupProof:
         for path, stat in sorted(sides.source.items())
         if path not in broken and not _there(there, Entry(path, stat))
     )
-    return BackupProof(
+    return PushProof(
         run_id=run.run_id,
         target=target.host,
         copied=len(found),
@@ -135,4 +135,4 @@ def plan_of(runtime: Runtime, query: ProofQuery) -> ReadPlan:
     Returns:
         The plan.
     """
-    return read_plan(query.lines, backup_target(runtime, query.target))
+    return read_plan(query.lines, push_target(runtime, query.target))

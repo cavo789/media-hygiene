@@ -149,7 +149,7 @@
 
 {% include 'mh_drives.sh.j2' %}
 
-{% include 'mh_backup.sh.j2' %}
+{% include 'mh_push.sh.j2' %}
 {% for name in host.windows %}
 
 # `{{ function }} {{ name }}` writes a Windows shortcut or registry key, or reads a phone: mh.ps1

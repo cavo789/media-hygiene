@@ -1,4 +1,4 @@
-r"""The target of `mh backup` and the photo folders copied into it (0264).
+r"""The target of `mh push` and the photo folders copied into it (0264).
 
 The target is a folder of its own (`\\NAS\backup_photos`), mounted read-only: only
 Windows writes there. It is refused when it is, holds or lies in a photo folder or a
@@ -16,7 +16,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.paths.host_paths import is_within
 from media_hygiene.paths.unc import UNC_FOLDER
-from media_hygiene.services.backup_place import Target, host_parts
+from media_hygiene.services.push_place import Target, host_parts
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -33,7 +33,7 @@ class Source:
     prefix: str  # `C/Photos`, its folder in the target
 
 
-def backup_target(runtime: Runtime, host: str) -> Target:
+def push_target(runtime: Runtime, host: str) -> Target:
     r"""Find the target in the container; refuse one that overlaps a folder of the tool.
 
     Args:
@@ -60,12 +60,12 @@ def backup_target(runtime: Runtime, host: str) -> Target:
             _("The backup target {target} is not mounted: nothing was read.").format(
                 target=target.host
             ),
-            _("Type mh backup in Windows PowerShell: it mounts it."),
+            _("Type mh push in Windows PowerShell: it mounts it."),
         )
     return target
 
 
-def backup_sources(runtime: Runtime, target: Target) -> tuple[Source, ...]:
+def push_sources(runtime: Runtime, target: Target) -> tuple[Source, ...]:
     """List the photo folders mounted, each with its folder in the target.
 
     Args:

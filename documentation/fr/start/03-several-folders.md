@@ -154,13 +154,13 @@ Un dossier qui ne doit même pas être lu est plutôt [exclu](../clean/05-choose
 
 ### Votre NAS : sauvegardez-y vos photos
 
-Dans l'autre sens : `mh backup --to \\NAS\backup_photos` copie chaque dossier de photos de `mh`
+Dans l'autre sens : `mh push --to \\NAS\backup_photos` copie chaque dossier de photos de `mh`
 dans un dossier partagé **rien qu'à lui** sur le NAS (créé une fois dans DSM), seulement ce qui
 lui manque, à la vitesse de Windows (environ 100 Mo/s, contre 15 Mo/s par Docker : mesuré). Une
 photo déplacée par `sort` y est renommée, pas renvoyée ; une photo supprimée par erreur sur le
 PC n'est jamais supprimée du NAS : seul ce que vous avez purgé ou confirmé supprimé est mis de
-côté, dans `.removed`. Les fois suivantes, `mh backup` seul. Windows PowerShell seulement :
-[`backup`](../commands/backup.md).
+côté, dans `.removed`. Les fois suivantes, `mh push` seul. Windows PowerShell seulement :
+[`push`](../commands/push.md).
 
 ## Un téléphone ? Copiez seulement ses nouvelles photos
 

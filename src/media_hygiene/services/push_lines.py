@@ -1,4 +1,4 @@
-r"""The plan of `mh backup` as lines, between the container and Windows (0264).
+r"""The plan of `mh push` as lines, between the container and Windows (0264).
 
 One line per order, its kind first, fields separated by a tab, host paths as Windows
 writes them; `mh` applies them in this order and pipes them back for the journal and
@@ -20,22 +20,22 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.services.backup_place import REMOVED_FOLDER, host_join
+from media_hygiene.services.push_place import REMOVED_FOLDER, host_join
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from media_hygiene.plan.backup_entries import Entry, Stat
-    from media_hygiene.services.backup_place import Target
-    from media_hygiene.services.backup_run import Prepared
+    from media_hygiene.plan.push_entries import Entry, Stat
+    from media_hygiene.services.push_place import Target
+    from media_hygiene.services.push_run import Prepared
 
 _TAB: Final = "\t"
 # The hidden command running the container's steps, for `mh` only.
-BACKUP_STEP: Final = "backup-step"
+PUSH_STEP: Final = "push-step"
 
 
-class BackupStep(StrEnum):
-    """A step of `mh backup` run by the container."""
+class PushStep(StrEnum):
+    """A step of `mh push` run by the container."""
 
     PLAN = "plan"
     START = "start"

@@ -1,8 +1,10 @@
-# `backup` : copier vos photos sur le NAS, seulement ce qui lui manque
+# `push` : copier vos photos sur le NAS, seulement ce qui lui manque
 
-[Documentation](../README.md) › [Commandes](../reference-commands.md) › `backup` · 🇬🇧 [English](../../en/commands/backup.md)
+[Documentation](../README.md) › [Commandes](../reference-commands.md) › `push` · 🇬🇧 [English](../../en/commands/push.md)
 
-> **Windows seulement.** Tapez-la dans **Windows PowerShell** : `mh backup --to \\<NAS>\backup_photos`.
+> À ne pas confondre avec `--backup` (un dossier comparé à vos photos, jamais modifié) ni avec `mh backup` (la sauvegarde de l'index et des réglages, TODO 0352).
+
+> **Windows seulement.** Tapez-la dans **Windows PowerShell** : `mh push --to \\<NAS>\backup_photos`.
 > Windows écrit sur le NAS environ 7 fois plus vite qu'une copie par Docker (86 à 105,8 Mo/s
 > contre 15,1 Mo/s, mesuré sur un Synology en Ethernet) ; le `mh` de WSL ou de Linux la refuse
 > et donne cette même commande.
@@ -19,10 +21,10 @@ Windows copie : renommages par `Move-Item`, copies par `robocopy`. Vos photos so
 **Quand** : après un import, un nettoyage ou un tri ; aussi souvent que vous voulez, un passage
 sans rien de nouveau ne fait que lister les deux côtés.
 
-**Essayez** (la première fois, puis `mh backup` seul) :
+**Essayez** (la première fois, puis `mh push` seul) :
 
 ```powershell
-mh backup --to \\NAS\backup_photos
+mh push --to \\NAS\backup_photos
 ```
 
 ## D'un coup d'œil
@@ -32,8 +34,8 @@ mh backup --to \\NAS\backup_photos
 | Vos photos | 🔒 Seulement lues (montées `:ro`). |
 | Le dossier de sauvegarde | ✋ Écrit par Windows : nouveaux fichiers copiés, fichiers renommés renommés, fichiers mis de côté dans `.removed`. Jamais `robocopy /MIR` ni `/PURGE`. |
 | Besoin | Windows PowerShell ; un dossier partagé rien qu'à lui sur le NAS (dans DSM : *Panneau de configuration → Dossier partagé → Créer*, p. ex. `backup_photos`) ; `/journal` ; `/cache`. |
-| Annuler | `mh backup --undo <passage>` remet ce qu'un passage a renommé ou mis de côté (les copies restent). |
-| Avec `mh` | `mh backup --to <dossier>` une fois, puis `mh backup` ; `--anyway` ; `--undo <passage>`. |
+| Annuler | `mh push --undo <passage>` remet ce qu'un passage a renommé ou mis de côté (les copies restent). |
+| Avec `mh` | `mh push --to <dossier>` une fois, puis `mh push` ; `--anyway` ; `--undo <passage>`. |
 
 ## Le dossier de sauvegarde
 
@@ -42,7 +44,7 @@ qu'aucune commande ne modifie), jamais un dossier de photos, jamais à l'intéri
 refuse un tel dossier et nomme les deux. Chaque dossier de photos va dessous par son propre
 chemin, le lecteur comme dossier : `C:\Photos` dans `\\NAS\backup_photos\C\Photos`, pour que
 deux dossiers du même nom ne se rencontrent jamais. Le dossier donné avec `--to` est retenu
-(`%USERPROFILE%\media-hygiene\backup-target.txt`), relu et affiché ; le mot de passe du NAS est
+(`%USERPROFILE%\media-hygiene\push-target.txt`), relu et affiché ; le mot de passe du NAS est
 celui que `mh folders add --backup` a gardé, sinon demandé une fois. Si Windows ne peut pas
 encore ouvrir le partage, il reçoit une lettre de lecteur libre (`Z:` d'abord) le temps du
 passage, retirée ensuite.
@@ -80,7 +82,7 @@ sauvegarde.
 
 **L'arrêt de sécurité** : quand les fichiers mis de côté et remplacés dépassent
 `stop_above_percent` (20 %) de la sauvegarde, rien n'est appliqué : un disque absent ? beaucoup
-de fichiers changés d'un coup ? Regardez, puis `mh backup --anyway`.
+de fichiers changés d'un coup ? Regardez, puis `mh push --anyway`.
 
 ## Vitesse
 
@@ -94,9 +96,9 @@ tri qui déplace toute la photothèque, seulement des renommages.
 
 | Réglage | Par défaut | Ce qu'il fait |
 |---|---|---|
-| `[backup] keep_removed_days` | `90` | Jours qu'un fichier attend dans `.removed` avant que `mh backup` l'efface. |
-| `[backup] stop_above_percent` | `20` | L'arrêt de sécurité. |
-| `[backup] threads` | `8` | Fichiers que robocopy copie à la fois (`/MT`). |
+| `[push] keep_removed_days` | `90` | Jours qu'un fichier attend dans `.removed` avant que `mh push` l'efface. |
+| `[push] stop_above_percent` | `20` | L'arrêt de sécurité. |
+| `[push] threads` | `8` | Fichiers que robocopy copie à la fois (`/MT`). |
 
 ## Options
 
@@ -107,7 +109,7 @@ tri qui déplace toute la photothèque, seulement des renommages.
 | `--undo PASSAGE` | Remettre ce que ce passage a renommé ou mis de côté (`mh` seulement). |
 | `--backup CHEMIN` | Une sauvegarde comparée, que le dossier ne doit pas chevaucher (`mh` passe les vôtres). |
 
-Lancée à la main (`docker run … media-hygiene backup --to …`), la commande ne fait que montrer le
+Lancée à la main (`docker run … media-hygiene push --to …`), la commande ne fait que montrer le
 plan.
 
 ## Aller plus loin
@@ -119,13 +121,13 @@ plan.
 ## L'aide intégrée
 
 <details>
-<summary><code>backup --help</code></summary>
+<summary><code>push --help</code></summary>
 
-<!-- capture: help-backup.txt -->
+<!-- capture: help-push.txt -->
 ```text
- Utilisation : media-hygiene backup [OPTIONS]
+ Utilisation : media-hygiene push [OPTIONS]
 
- Windows seulement, en mh backup : copier vos dossiers de photos dans un
+ Windows seulement, en mh push : copier vos dossiers de photos dans un
  dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; une photo
  déplacée y est renommée, une suppression par erreur n'y est jamais reportée.
  Lancée ici, elle montre le plan.

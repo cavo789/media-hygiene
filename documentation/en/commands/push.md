@@ -1,8 +1,10 @@
-# `backup`: copy your photos to the NAS, only what it lacks
+# `push`: copy your photos to the NAS, only what it lacks
 
-[Documentation](../README.md) › [Commands](../reference-commands.md) › `backup` · 🇫🇷 [Français](../../fr/commands/backup.md)
+[Documentation](../README.md) › [Commands](../reference-commands.md) › `push` · 🇫🇷 [Français](../../fr/commands/push.md)
 
-> **Windows only.** Type it in **Windows PowerShell**: `mh backup --to \\<NAS>\backup_photos`.
+> Not to be confused with `--backup` (a folder compared with your photos, never changed) nor with `mh backup` (the save of the index and the settings, TODO 0352).
+
+> **Windows only.** Type it in **Windows PowerShell**: `mh push --to \\<NAS>\backup_photos`.
 > Windows writes to the NAS about 7 times faster than a copy through Docker (86 to 105.8 MB/s
 > against 15.1 MB/s, measured on a Synology over Ethernet); the `mh` of WSL or Linux refuses it
 > and says this same command.
@@ -19,10 +21,10 @@ copies: renames with `Move-Item`, copies with `robocopy`. Your photos are only r
 **When**: after an import, a clean or a sort; as often as you like, a run with nothing new only
 lists both sides.
 
-**Try it** (the first time, then `mh backup` alone):
+**Try it** (the first time, then `mh push` alone):
 
 ```powershell
-mh backup --to \\NAS\backup_photos
+mh push --to \\NAS\backup_photos
 ```
 
 ## At a glance
@@ -32,8 +34,8 @@ mh backup --to \\NAS\backup_photos
 | Your photos | 🔒 Only read (mounted `:ro`). |
 | The backup folder | ✋ Written by Windows: new files copied, renamed files renamed, files set aside in `.removed`. Never `robocopy /MIR` nor `/PURGE`. |
 | Needs | Windows PowerShell; a shared folder of its own on the NAS (in DSM: *Control Panel → Shared Folder → Create*, e.g. `backup_photos`); `/journal`; `/cache`. |
-| Undo | `mh backup --undo <run>` puts back what a run renamed or set aside (the copies stay). |
-| With `mh` | `mh backup --to <folder>` once, then `mh backup`; `--anyway`; `--undo <run>`. |
+| Undo | `mh push --undo <run>` puts back what a run renamed or set aside (the copies stay). |
+| With `mh` | `mh push --to <folder>` once, then `mh push`; `--anyway`; `--undo <run>`. |
 
 ## The backup folder
 
@@ -41,7 +43,7 @@ A folder **of its own**: never your NAS's `Photos` share (a [backup you compare]
 which no command changes), never a photo folder, never inside one: `mh` refuses such a folder
 and names both. Each photo folder goes below it by its own path, the drive as a folder:
 `C:\Photos` into `\\NAS\backup_photos\C\Photos`, so two folders of the same name never meet.
-The folder given with `--to` is kept (`%USERPROFILE%\media-hygiene\backup-target.txt`), read back
+The folder given with `--to` is kept (`%USERPROFILE%\media-hygiene\push-target.txt`), read back
 and said; the NAS's password is the one `mh folders add --backup` kept, else asked once. When
 Windows cannot open the share yet, it gets a free drive letter (`Z:` first) for the time of the
 run, removed after.
@@ -75,7 +77,7 @@ A file the [audit](audit.md) found broken never replaces its copy in the backup.
 
 **The safety stop**: when the files set aside and replaced exceed `stop_above_percent` (20 %)
 of the backup, nothing is applied: a drive missing? many files changed at once? Look, then
-`mh backup --anyway`.
+`mh push --anyway`.
 
 ## Speed
 
@@ -88,9 +90,9 @@ and copy only the new files; after a sort that moves the whole library, renames 
 
 | Setting | Default | What it does |
 |---|---|---|
-| `[backup] keep_removed_days` | `90` | Days a file waits in `.removed` before `mh backup` erases it. |
-| `[backup] stop_above_percent` | `20` | The safety stop. |
-| `[backup] threads` | `8` | Files robocopy copies at once (`/MT`). |
+| `[push] keep_removed_days` | `90` | Days a file waits in `.removed` before `mh push` erases it. |
+| `[push] stop_above_percent` | `20` | The safety stop. |
+| `[push] threads` | `8` | Files robocopy copies at once (`/MT`). |
 
 ## Options
 
@@ -101,7 +103,7 @@ and copy only the new files; after a sort that moves the whole library, renames 
 | `--undo RUN` | Put back what that run renamed or set aside (`mh` only). |
 | `--backup PATH` | A backup compared, which the folder must not overlap (`mh` passes yours). |
 
-Run by hand (`docker run … media-hygiene backup --to …`), the command only shows the plan.
+Run by hand (`docker run … media-hygiene push --to …`), the command only shows the plan.
 
 ## Go further
 
@@ -112,13 +114,13 @@ Run by hand (`docker run … media-hygiene backup --to …`), the command only s
 ## The built-in help
 
 <details>
-<summary><code>backup --help</code></summary>
+<summary><code>push --help</code></summary>
 
-<!-- capture: help-backup.txt -->
+<!-- capture: help-push.txt -->
 ```text
- Usage: media-hygiene backup [OPTIONS]
+ Usage: media-hygiene push [OPTIONS]
 
- Windows only, as mh backup: copy your photo folders into a folder of their own
+ Windows only, as mh push: copy your photo folders into a folder of their own
  on the NAS, only what it lacks; a photo moved is renamed there, a deletion by
  mistake never carried over. Run here, it shows the plan.
 

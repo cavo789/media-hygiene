@@ -35,7 +35,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | see my words in digiKam, darktable, Lightroom or Immich | [`xmp`](commands/xmp.md) |
 | get back the photos only my NAS still has, not the ones I deleted | [`import`](commands/import.md) |
 | win back the space of my old camera videos, the picture kept | [`shrink`](commands/shrink.md) |
-| back up my photos to my NAS, only what it lacks | [`backup`](commands/backup.md) |
+| back up my photos to my NAS, only what it lacks | [`push`](commands/push.md) |
 | answer my own questions about my photos in Excel | [`inventory`](commands/inventory.md) |
 | type `mh audit` instead of a long `docker run` | [`launcher`](commands/launcher.md) |
 | check every setting and every folder before the tool acts | [`config`](commands/config.md) |
@@ -82,7 +82,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`xmp`](commands/xmp.md) | Write the words of `tags` into `.xmp` sidecars next to the photos, for digiKam, darktable, Lightroom or Immich; never into a photo. Shows what it would write; `--apply` writes. | [Reference](reference-tags.md#carry-the-words-with-the-photos-xmp) |
 | [`import`](commands/import.md) | Copy into your photos what only a backup (a NAS) holds, never what you set aside or deleted before; near copies listed apart; each copy proven; the backup only read. | [Commands](commands/import.md) |
 | [`shrink`](commands/shrink.md) | List the heavy videos worth lightening (old cameras, MJPEG), with the space each would free; `--apply` re-encodes them in H.264, each one checked (length, sound, date, place), the original in the quarantine. | [Commands](commands/shrink.md) |
-| [`backup`](commands/backup.md) | Windows only (`mh backup`): copy your photo folders into a folder of their own on the NAS, only what it lacks; a photo moved is renamed there, a deletion by mistake never carried over; undo with `--undo`. | [Commands](commands/backup.md) |
+| [`push`](commands/push.md) | Windows only (`mh push`): copy your photo folders into a folder of their own on the NAS, only what it lacks; a photo moved is renamed there, a deletion by mistake never carried over; undo with `--undo`. | [Commands](commands/push.md) |
 
 ## Options
 
@@ -212,7 +212,7 @@ command shows its own `--help`; here is the list of the commands:
 ╭─ Act: moves, writes or deletes files ────────────────────────────────────────╮
 │ album        Make an album's folder on the disk, as hard links: nothing is   │
 │              copied nor moved (journaled, undoable).                         │
-│ backup       Windows only, as mh backup: copy your photo folders into a      │
+│ backup       Windows only, as mh push: copy your photo folders into a      │
 │              folder of their own on the NAS, only what it lacks; a photo     │
 │              moved is renamed there, a deletion by mistake never carried     │
 │              over. Run here, it shows the plan.                              │

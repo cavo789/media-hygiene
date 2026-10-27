@@ -1,4 +1,4 @@
-"""What `mh backup` says: its plan before Windows acts, the target read back after."""
+"""What `mh push` says: its plan before Windows acts, the target read back after."""
 
 from __future__ import annotations
 
@@ -15,8 +15,8 @@ if TYPE_CHECKING:
 
     from media_hygiene.console.output import Output
     from media_hygiene.plan.backup_gone import Gone
-    from media_hygiene.services.backup_proof import BackupProof
-    from media_hygiene.services.backup_run import Prepared
+    from media_hygiene.services.push_proof import PushProof
+    from media_hygiene.services.push_run import Prepared
 
 _NAMED: Final = 5  # files named when some are missing; the others counted
 
@@ -74,12 +74,12 @@ def show_plan(output: Output, prepared: Prepared) -> None:
             _(
                 "Stopped: more than {percent} % of the backup would be set aside or "
                 "replaced. A drive missing? Many files changed at once? Nothing was "
-                "applied; mh backup --anyway goes on."
+                "applied; mh push --anyway goes on."
             ).format(percent=prepared.stop_percent)
         )
 
 
-def show_proof(output: Output, proof: BackupProof) -> None:
+def show_proof(output: Output, proof: PushProof) -> None:
     """Say what the target holds now, read back.
 
     Args:
@@ -105,7 +105,7 @@ def show_proof(output: Output, proof: BackupProof) -> None:
         )
     if proof.unmade:
         output.warning(
-            _("Renames not seen made: {count}. Type mh backup again.").format(
+            _("Renames not seen made: {count}. Type mh push again.").format(
                 count=human_number(proof.unmade)
             )
         )
@@ -120,13 +120,13 @@ def show_proof(output: Output, proof: BackupProof) -> None:
             Advice(
                 TipKind.SAFETY,
                 _("Changed your mind? This puts back what was renamed or set aside:"),
-                f"mh backup --undo {proof.run_id}",
+                f"mh push --undo {proof.run_id}",
             )
         )
-    output.next_step(_("nothing: type mh backup again after your next import or sort."))
+    output.next_step(_("nothing: type mh push again after your next import or sort."))
 
 
-def _missing(output: Output, proof: BackupProof) -> None:
+def _missing(output: Output, proof: PushProof) -> None:
     """Name the files the backup still lacks, a few, the others counted.
 
     Args:
@@ -138,9 +138,9 @@ def _missing(output: Output, proof: BackupProof) -> None:
     output.warning(
         ngettext(
             "Not in the backup: {count} file (robocopy failed, or new since the "
-            "plan). Type mh backup again:",
+            "plan). Type mh push again:",
             "Not in the backup: {count} files (robocopy failed, or new since the "
-            "plan). Type mh backup again:",
+            "plan). Type mh push again:",
             len(proof.missing),
         ).format(count=human_number(len(proof.missing)))
     )

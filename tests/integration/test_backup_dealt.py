@@ -10,7 +10,7 @@ from __future__ import annotations
 import shutil
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.console.backup_view import backup_lines
+from media_hygiene.console.backup_view import push_lines
 from media_hygiene.paths.host_paths import HostPathMapper
 from tests.integration.test_returned_files import audit, set_burst_aside, shots
 from tests.support.runtime import make_runtime
@@ -56,7 +56,7 @@ def test_only_what_was_never_dealt_with_is_proposed(locations: Locations) -> Non
     assert [file.path for file in coverage.to_import] == [fresh]
     assert coverage.dealt.set_aside == {nas_aside}
     assert coverage.dealt.deleted == {nas_deleted}
-    _lacks, holds = backup_lines(coverage, HostPathMapper(locations.data_dir))
+    _lacks, holds = push_lines(coverage, HostPathMapper(locations.data_dir))
     assert "1 file is only in it, never in your photos" in holds
     assert "2 other files are ones you set aside or deleted before" in holds
 
