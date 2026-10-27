@@ -208,11 +208,17 @@ La carte du PC dit *Première fois sur ce téléphone ? Installez d'abord le cer
 `http://192.168.1.20:8089/`. Ouvrez-la sur le téléphone, touchez **Télécharger le certificat**,
 puis :
 
-- **Android** : *Paramètres › Sécurité (ou Sécurité et confidentialité) › Autres paramètres ›
-  Chiffrement et identifiants › Installer un certificat › Certificat CA*, choisissez
-  `media-hygiene-ca.crt` dans *Téléchargements* (Android prévient que le réseau peut être
-  surveillé : c'est votre propre PC). Le télécharger ne suffit pas, et **Certificat CA** compte
-  (ni *VPN et appli*, ni *Wi-Fi*). Vérifiez : *Identifiants de confiance › Utilisateur* montre
+- **Android** : dans l'appli **Paramètres du téléphone** (la roue dentée de l'écran d'accueil,
+  pas les paramètres de Chrome). N'appuyez pas sur *Ouvrir* après le téléchargement : Android 11
+  et plus le refuse (*Impossible d'installer les certificats AC*).
+  1. **Samsung** : *Paramètres › Sécurité et confidentialité › Autres paramètres de sécurité ›
+     Installer depuis stock. appar. › Certificat AC › Installer quand même*.
+     **Autres téléphones** (Pixel…) : *Paramètres › Sécurité › Autres paramètres › Chiffrement
+     et identifiants › Installer un certificat › Certificat CA › Installer quand même*.
+  2. Ouvrez le dossier *Download* et touchez `media-hygiene-ca.crt`.
+
+  Android prévient que le réseau peut être surveillé : c'est votre propre PC. Le télécharger
+  ne suffit pas, et **Certificat CA** compte (ni *VPN et appli*, ni *Wi-Fi*). Vérifiez : *Identifiants de confiance › Utilisateur* montre
   *Media Hygiene (this PC)*, et Chrome affiche `https` sans croix rouge ; sinon *Installer*
   échoue (*Impossible d'installer cette appli*).
 - **iPhone, iPad** (dans Safari) : autorisez le profil, installez-le dans *Réglages › Général ›

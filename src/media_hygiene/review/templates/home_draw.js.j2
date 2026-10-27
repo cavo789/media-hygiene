@@ -225,7 +225,8 @@ function card(action) {
   </article>`;
 }
 function groupHtml(group, cards) {
-  const names = group.actions.filter((name) => BY_ID[name]);
+  // A phone lists only what it opens itself (search, browse): the rest is the PC's work.
+  const names = group.actions.filter((name) => BY_ID[name] && (!REMOTE || PHONE_PAGES[BY_ID[name].command]));
   const extra = group.extra && EXTRAS[group.extra] ? EXTRAS[group.extra]() : "";
   if (!names.length && !extra) return "";
   let body = "";

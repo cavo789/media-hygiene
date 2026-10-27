@@ -135,7 +135,7 @@ def test_a_phone_is_named_after_its_browser(agent: str, name: str) -> None:
 def test_the_durable_cookie_survives_a_restart(tmp_path: Path) -> None:
     """Paired once, the phone opens the page of the next run without a code."""
     token, header = _pair(_app(tmp_path))
-    for part in ("HttpOnly", "SameSite=Strict", "Secure", "Max-Age="):
+    for part in ("HttpOnly", "SameSite=Lax", "Secure", "Max-Age="):
         assert part in header
     later = _app(tmp_path, secret=b"b" * 32)  # a new run: a new secret
     assert _ask(later, _phone("/", token)).status is HTTPStatus.OK

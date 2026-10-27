@@ -30,3 +30,8 @@ Decided by the maintainer (inbox, 2026-10-27; follows 0408, 0399): the search pa
 The sort-review integration tests run against the view; `sort-decisions.json` written as before
 (same format, NON-goal: no change to classify/sort files); old routes redirect; no link to
 `/review-sort` or `/browse` left. Say that `docs_screenshots` must run.
+
+## Status — UNNEEDED (2026-10-27)
+
+Split by the maintainer into 0437 (read-only view), 0438 (choices and rules), 0439 (retire
+review-sort), 0440 (dead browse templates; `/api/heaviest` stays). This file keeps the design.

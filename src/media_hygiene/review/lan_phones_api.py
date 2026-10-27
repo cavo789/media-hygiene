@@ -33,10 +33,13 @@ def durable_cookie(token: str) -> str:
 
     Returns:
         The `Set-Cookie` header line: HTTPS only, never read by the page's scripts.
+        `Lax`, not `Strict`: the installed app opened from its icon arrives as from
+        another app, and asked for the code again (maintainer's Android, 2026-10-27);
+        every `POST` still checks its `Origin`, and a phone only reads.
     """
     return (
         f"Set-Cookie: {COOKIE_NAME}={token}; Path=/; Max-Age={COOKIE_SECONDS}; "
-        "HttpOnly; SameSite=Strict; Secure"
+        "HttpOnly; SameSite=Lax; Secure"
     )
 
 
