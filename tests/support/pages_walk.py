@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 OUTPUT: Final = Path("/shots/walk.json")
 SEARCH_API: Final = "/api/search"
 HOME_READY: Final = "#runDlg"  # the home page's own dialog: no other page has it
+HOME_DRAWN: Final = "#loading"  # hidden once /api/state answered and the page is drawn
 PAGE_READY: Final = "#homeLink"  # *Back to the home page*, on every page mh opened
 SHOWN_MS: Final = 30_000  # a page served by the home server (search, browse)
 STEP_MS: Final = 120_000  # a console step, or a page of its own server
@@ -29,10 +30,19 @@ ROUNDS: Final = (
 REVIEWS: Final = ("review", "review-pairs", "review-junk")
 MARK_JS: Final = "() => { window.mhWalk = 1; }"
 MARKED_JS: Final = "() => window.mhWalk === 1"
-AVAILABLE_JS: Final = (
-    "(name) => Boolean(BY_ID[name]) && statusOf(BY_ID[name]).available"
-)
-RUN_JS: Final = "(name) => onRun(name)"
+# The page's script lives in a closure (no globals): the walk asks what the page asks
+# (/api/state) and clicks what the page draws (a `data-run` button, its one dispatcher).
+AVAILABLE_JS: Final = """(name) => fetch('/api/state', { cache: 'no-store' })
+  .then((r) => r.json())
+  .then((s) => s.actions.some((a) => a.name === name && a.available && !a.planned))"""
+RUN_JS: Final = """(name) => {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.dataset.run = name;
+  document.body.append(button);
+  button.click();
+  button.remove();
+}"""
 STEP_JS: Final = "() => fetch('/api/step', { cache: 'no-store' }).then((r) => r.json())"
 # The search page timed by the browser: its navigation, its first answer of /api/search.
 TIMING_JS: Final = """() => {
@@ -56,6 +66,17 @@ def _searched(answer: Any) -> bool:  # noqa: ANN401  # Playwright's Response
     return SEARCH_API in str(answer.url)
 
 
+def home_shown(page: Page, timeout: int) -> None:
+    """Wait for the home page, its state read and drawn (its buttons answer clicks).
+
+    Args:
+        page: The tab.
+        timeout: The bound, in ms.
+    """
+    page.wait_for_selector(HOME_READY, state="attached", timeout=timeout)
+    page.wait_for_selector(HOME_DRAWN, state="hidden", timeout=timeout)
+
+
 def open_from_home(page: Page, name: str) -> dict[str, Any]:
     """Click a page the home server serves itself, then come back to the home page.
 
@@ -77,7 +98,7 @@ def open_from_home(page: Page, name: str) -> dict[str, Any]:
     measured: dict[str, Any] = page.evaluate(TIMING_JS)
     start = time.monotonic()
     page.click(PAGE_READY)
-    page.wait_for_selector(HOME_READY, state="attached", timeout=SHOWN_MS)
+    home_shown(page, SHOWN_MS)
     back = (time.monotonic() - start) * 1000
     return {**measured, "click_to_shown_ms": round(shown), "back_home_ms": round(back)}
 
@@ -122,8 +143,7 @@ def own_server_rounds(page: Page) -> dict[str, Any]:
         page.evaluate(RUN_JS, name)
         page.wait_for_selector(PAGE_READY, timeout=STEP_MS)
         page.click(PAGE_READY)
-        page.wait_for_selector(HOME_READY, state="attached", timeout=STEP_MS)
-        page.wait_for_function("() => typeof onRun === 'function'", timeout=STEP_MS)
+        home_shown(page, STEP_MS)
         times.append(round((time.monotonic() - start) * 1000))
     return {"review": name, "rounds_ms": times}
 
@@ -138,12 +158,13 @@ def main() -> None:
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
         page = browser.new_page()
+        # What the page throws lands in the log the test prints when the walk fails.
+        page.on("pageerror", lambda error: sys.stderr.write(f"page error: {error}\n"))
         page.goto(home)
-        page.wait_for_selector(HOME_READY, state="attached", timeout=STEP_MS)
-        page.wait_for_function("() => typeof onRun === 'function'")
+        home_shown(page, STEP_MS)
         walk["clicks_from"] = time.time()
         walk["search"] = open_from_home(page, "search")
-        if page.evaluate("() => Boolean(BY_ID.browse)"):
+        if page.evaluate(AVAILABLE_JS, "browse"):
             walk["browse"] = open_from_home(page, "browse")
         walk["clicks_until"] = time.time()
         walk["console"] = console_step(page)

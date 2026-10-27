@@ -29,8 +29,9 @@ env:
 # Runners pinned to Ubuntu 26.04, which `ubuntu-latest` becomes on 2026-10-19: the gate is
 # proven on it beforehand, and a later image change is a deliberate edit, never a surprise.
 jobs:
-  # Lint and tests in parallel (≈ 110 s and ≈ 145 s on the runner, measured): the image
-  # jobs wait for the longer of the two instead of their sum.
+  # Every job but `publish` starts at once: the tests (≈ 320 s on the runner, measured on
+  # 6cc9187) used to hold the image jobs back, the run lasting their sum (≈ 9 min 30).
+  # `publish` still needs them all: nothing is named on Docker Hub before every gate passed.
   lint:
     name: Lint, types
     runs-on: ubuntu-26.04
@@ -87,18 +88,29 @@ jobs:
           "$dir/ffmpeg" -hide_banner -version | head -n 1
       - name: Tests with coverage
         # -n auto: one worker per vCPU of the runner (4); the devcontainer stays serial
-        # (`tests`, `check`), as the maintainer's PC suffers under load.
-        run: uv run pytest -n auto --cov --cov-report=term-missing:skip-covered
+        # (`tests`, `check`), as the maintainer's PC suffers under load. worksteal: an idle
+        # worker takes the tests still queued on a busy one (the last 7 % took 82 s of 319 s
+        # on 6cc9187, three workers waiting); --durations names the slowest ones in the log.
+        run: >-
+          uv run pytest -n auto --dist worksteal --durations=15
+          --cov --cov-report=term-missing:skip-covered
 
   image:
     name: Image end-to-end tests
-    needs: [lint, tests]
     runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - name: Install the locked environment
+        run: uv sync --locked
+      # The Playwright image (≈ 2 GB) pulled while the image builds, not inside the tests;
+      # the browser test builds it again, at once from Docker's cache (or fully if this failed).
+      - name: Browser image, in the background
+        run: >-
+          nohup uv run python -c "from tests.support.pages_browser import build_browser;
+          build_browser()" >"$RUNNER_TEMP/browser-image.log" 2>&1 &
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - name: Build media-hygiene:latest (amd64)
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
@@ -110,8 +122,6 @@ jobs:
           tags: media-hygiene:latest
           cache-from: type=gha,scope=linux-amd64
           cache-to: type=gha,mode=max,scope=linux-amd64
-      - name: Install the locked environment
-        run: uv sync --locked
       # ffmpeg writes the demo videos: the image's own ffprobe must tell the truncated one.
       - *ffmpeg-cache
       - *ffmpeg-install
@@ -124,13 +134,12 @@ jobs:
           MEDIA_HYGIENE_E2E_BROWSER: "1"
         run: uv run pytest -m e2e
 
-  # One native build per platform, in parallel with the end-to-end tests: arm64 on an ARM
+  # One native build per platform, in parallel with the gates: arm64 on an ARM
   # runner, never emulated (QEMU took half an hour to compile ffmpeg). On a vX.Y.Z tag each
   # pushes its image by digest only; `publish` names them once the end-to-end tests pass. On
   # main they build without pushing: arm64 is proven buildable before any release.
   build-amd64:
     name: Image amd64
-    needs: [lint, tests]
     runs-on: ubuntu-26.04
     outputs:
       digest: ${{ steps.build.outputs.digest }}
@@ -174,7 +183,6 @@ jobs:
 
   build-arm64:
     name: Image arm64
-    needs: [lint, tests]
     runs-on: ubuntu-26.04-arm
     outputs:
       digest: ${{ steps.build.outputs.digest }}
@@ -183,7 +191,7 @@ jobs:
   publish:
     name: Publish to Docker Hub
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [image, build-amd64, build-arm64]
+    needs: [lint, tests, image, build-amd64, build-arm64]
     runs-on: ubuntu-26.04
     permissions:
       contents: write # the GitHub Release of the tag, its last step
