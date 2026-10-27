@@ -624,6 +624,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"A part of the path. * is any characters, ? one character, /regex/ a "
+"regular expression: *.mov, /\\.(mov|mp4)$/"
+msgstr ""
+
+msgid ""
 "A phone over USB instead of a folder: Windows only, the mh of PowerShell "
 "copies its new photos itself; --free then makes room on it."
 msgstr ""
@@ -5395,6 +5400,10 @@ msgstr ""
 msgid "Path contains"
 msgstr ""
 
+#, python-brace-format
+msgid "Path contains: invalid regular expression ({error})."
+msgstr ""
+
 msgid "People"
 msgstr ""
 
@@ -9818,6 +9827,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "duplicates copies analyse scan check damaged broken unreadable"
+msgstr ""
+
+msgid "e.g. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/"
 msgstr ""
 
 msgid "e.g. Crete 2023"

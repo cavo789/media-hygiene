@@ -795,6 +795,13 @@ msgstr ""
 "encore comparé à la copie du PC juste avant."
 
 msgid ""
+"A part of the path. * is any characters, ? one character, /regex/ a "
+"regular expression: *.mov, /\\.(mov|mp4)$/"
+msgstr ""
+"Une partie du chemin. * remplace n'importe quels caractères, ? un seul, "
+"/regex/ est une expression régulière : *.mov, /\\.(mov|mp4)$/"
+
+msgid ""
 "A phone over USB instead of a folder: Windows only, the mh of PowerShell "
 "copies its new photos itself; --free then makes room on it."
 msgstr ""
@@ -6544,6 +6551,10 @@ msgstr "Chemin"
 msgid "Path contains"
 msgstr "Le chemin contient"
 
+#, python-brace-format
+msgid "Path contains: invalid regular expression ({error})."
+msgstr "Chemin contient : expression régulière invalide ({error})."
+
 msgid "People"
 msgstr "Personnes"
 
@@ -11862,6 +11873,9 @@ msgstr[1] "copies en double dans %(num)s groupes"
 
 msgid "duplicates copies analyse scan check damaged broken unreadable"
 msgstr "doublons copies analyser scanner vérifier abîmés cassés illisibles"
+
+msgid "e.g. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/"
+msgstr "p. ex. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/"
 
 msgid "e.g. Crete 2023"
 msgstr "p. ex. Crète 2023"

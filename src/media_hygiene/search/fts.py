@@ -13,14 +13,11 @@ from contextlib import closing
 from pathlib import Path
 from typing import TYPE_CHECKING, Final, Self
 
-from media_hygiene.classify.convention import place_of_path
 from media_hygiene.index.descriptions import PhotoVersion
 from media_hygiene.index.read_only import connect_read_only
 from media_hygiene.index.tag_rows import TagStore
 from media_hygiene.search import statements as sql
-from media_hygiene.search.days import NAME as DAY
-from media_hygiene.search.days import media_day
-from media_hygiene.search.folder_order import kind_of_path
+from media_hygiene.search.functions import register
 from media_hygiene.search.hits import hit_of
 from media_hygiene.search.models import Found
 from media_hygiene.search.query import match_expression
@@ -48,10 +45,7 @@ class SearchIndex:
         self._built_at = 0.0  # when (monotonic seconds)
         self._people: dict[Path, tuple[str, ...]] = {}
         self.stop_words: frozenset[str] = frozenset()  # `[tags]`, folded (0345)
-        connection.create_function(sql.FOLD, 1, str.casefold, deterministic=True)
-        connection.create_function(DAY, 1, media_day, deterministic=True)
-        connection.create_function(sql.PLACE, 1, place_of_path, deterministic=True)
-        connection.create_function(sql.KIND, 1, kind_of_path, deterministic=True)
+        register(connection)
         connection.execute(sql.CREATE_PEOPLE)
 
     @classmethod

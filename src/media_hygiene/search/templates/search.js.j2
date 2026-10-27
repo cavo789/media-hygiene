@@ -245,7 +245,11 @@ async function search(event, again) {
   };
   const answer = await ask(SEARCH_PATH, body);
   if (!answer) { told(TEXTS.offline, true); return; }
-  if (!answer.ok) { told(fill(TEXTS.failed, { status: answer.status }), true); return; }
+  if (!answer.ok) {
+    const refused = answer.status === 400 ? await answer.json().catch(() => ({})) : {};  // a bad regex (0426)
+    told(refused.error || fill(TEXTS.failed, { status: answer.status }), true);
+    return;
+  }
   const found = await answer.json();
   asked = body;
   offerRule();

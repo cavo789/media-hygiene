@@ -54,6 +54,11 @@ column, the ⌨ keys under them, one bar above the grid, then the photos found. 
 first, **📁 Folders** second: it opens `browse`, the same server. Ctrl+C, or closing its tab,
 stops the page.
 
+**Path contains** takes a part of the path, case-insensitive. `*` stands for any characters and
+`?` for one: `*.mov` finds every `.mov` file (`.MOV` too). Between two slashes it is a regular
+expression: `/\.(mov|mp4)$/`. Anything else is read as typed, so `Vacances (2019)` or `a+b` need
+no escaping. A regular expression that does not compile is told under the field.
+
 - **⚖ Heaviest files** (above the folders): every folder, no word, the videos first unless
   **Show** says otherwise, the largest first — or **Sort by: bit rate**, the videos worst
   compressed for their length (the best to lighten with [`shrink`](shrink.md)). A video's tile
