@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.http import Request, Response, is_local
 from media_hygiene.review.lan import cookies
-from media_hygiene.review.lan_app import Pairing, pair_page
+from media_hygiene.review.lan_pairing import Pairing, pair_page
 from media_hygiene.services.reviewing import HOST_LOOPBACK
 from media_hygiene.slideshow.screens import SCREEN_COOKIE
 

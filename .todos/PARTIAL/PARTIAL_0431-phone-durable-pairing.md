@@ -24,3 +24,25 @@ corrupt file means pairing again, never a crash.
 ## Explicit NON-goals
 
 - HTTPS, the CA, `/lan` (0430). Manifest, service worker, splash (0432).
+
+## Status — PARTIAL (2026-10-27)
+
+### Done
+- `review/lan_phones.py`: `PhoneBook` over `/lan/phones.json` (id, name from the
+  `User-Agent`, date, SHA-256 of the token only; atomic draft + rename, 0600; a missing or
+  corrupt file lists nobody); `phone_book()` only under HTTPS.
+- `review/lan_app.py`: the right code under HTTPS draws a token per phone and sets
+  `Max-Age` 400 days (Chrome's cap), `HttpOnly; SameSite=Strict; Secure`; a phone is paired
+  by the run's cookie or a listed token; `MAX_FAILURES` unchanged. Plain HTTP: as before.
+- `review/lan_phones_api.py`: `GET /api/lan/phones`, `POST /api/lan/forget` (loopback only,
+  JSON POST guard), the list answered after a forget is read back from disk.
+- The PC's card lists "Phones paired for good" with "Forget this phone" (`home.js.j2`).
+- `Pairing`/`pair_page` moved to `review/lan_pairing.py` (`lan_app.py` near the cap).
+- Docs en+fr (`commands/home.md`), translations, `tests/unit/test_lan_phones.py`.
+
+### Not done
+- The test on the maintainer's Android phone: pair, restart `mh --lan`, reopen without a
+  code; forget it from the PC.
+  **Reason:** needs the maintainer's PC and phone.
+- `docs_screenshots` (the card gained the phones list).
+  **Reason:** heavy (image build + browser): run by the maintainer.

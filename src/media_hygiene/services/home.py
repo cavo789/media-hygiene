@@ -30,6 +30,7 @@ from media_hygiene.review.home_texts import home_texts
 from media_hygiene.review.lan import lan_access
 from media_hygiene.review.lan_app import LAN_PATH, LanApp
 from media_hygiene.review.lan_paths import PHONE_PAGES
+from media_hygiene.review.lan_phones import phone_book
 from media_hygiene.review.lan_problem import with_problem
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.presence import ALIVE_SECONDS, PRESENCE_PATH, Presence
@@ -178,7 +179,12 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         ):
             handler: Handling = album_pages(runtime, both, pool)  # `/albums` (0297)
             if lan is not None:
-                handler = LanApp(handler, lan, home_page(remote=True))
+                handler = LanApp(  # phones paired for good under HTTPS (0431)
+                    handler,
+                    lan,
+                    home_page(remote=True),
+                    phones=phone_book(secure=lan.secure),
+                )
             handler = with_problem(handler)
             door = with_person(EndingDoor(handler, ending), runtime, pool)
             code = asyncio.run(serve_until_ended(door, port, ready))

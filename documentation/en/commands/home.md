@@ -158,7 +158,8 @@ desktop shortcut do the same (off by default for now):
 2. The PC's page shows, in its sidebar, *On your phone*: the address, a **code** of 8 digits
    and its **QR code** (the window of `mh` says the same address and code).
 3. On the phone, scan the QR code, or open the address and type the code: the home page opens.
-   The phone stays paired (a cookie) until `mh` stops, even after the steps run on the PC.
+   The phone stays paired **for good** (a cookie of its own, 400 days): the next `mh --lan`
+   opens on it without a code. Without HTTPS, until `mh` stops only.
 
 On the phone, the home page is the family's door, **Our photos**: *Find a photo* (search and
 browse), the albums and where you are; the stages that change photos (import, clean, sort, back
@@ -182,7 +183,7 @@ the home network too: the phone already paired reloads its page and gets the sli
 | Where | The PC's private address only (`10.x`, `172.16–31.x`, `192.168.x`): never every interface, never the internet; `mh` opens no port on your router. |
 | How | HTTPS (`https://192.168.1.20:8088`), signed by a certificate authority `mh` makes on your PC: the phone installs it once (below); the code and the cookie never travel in clear. |
 | Kept | `C:\Users\<you>\media-hygiene\lan\` holds that authority and the page's certificate (`ca.key` never leaves it). Deleted, `mh` makes a new one: install it again on each phone. |
-| Next time | A new `mh --lan`, a new code: the old phone must pair again. |
+| Next time | A paired phone opens the page directly. The PC's card lists the **phones paired for good** (Android, iPhone… and the date) with **Forget this phone**: its cookie opens nothing any more. `phones.json` (in the `lan` folder) keeps only a hash of each phone's token. |
 
 ### Once per phone: install the certificate
 

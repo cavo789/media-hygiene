@@ -69,6 +69,8 @@ def _shell() -> dict[str, str]:
         "lanCode": _("Code:"),
         "lanNote": _("Until mh stops; never the internet."),
         "lanCa": _("First time on this phone? Install the certificate first:"),
+        "lanPhones": _("Phones paired for good"),
+        "lanForget": _("Forget this phone"),
         "lanNone": _("No home network found: the phone cannot open this page."),
         "lanPublic": _(
             "Windows counts this Wi-Fi as public: its firewall blocks the phone. "

@@ -219,9 +219,34 @@ function showLan() {
       // HTTPS (0430): a phone installs the PC's certificate first, once.
       $("#lanCaLine").hidden = !lan.ca;
       $("#lanCa").textContent = lan.ca || "";
+      // Phones paired for good (0431): listed, each forgotten on demand.
+      if (lan.phones) fetch(lan.phones, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).then((answer) => answer && showPhones(answer, lan.forget));
       $("#lanCard").hidden = false;
     })
     .catch(() => undefined);
+}
+// The list answered by the server, read back from its file after each forget (0431).
+function showPhones(answer, forgetPath) {
+  const list = $("#lanPhoneList");
+  list.replaceChildren();
+  for (const phone of answer.phones) {
+    const item = document.createElement("li");
+    const name = document.createElement("span");
+    name.textContent = `${phone.name} · ${phone.paired}`;
+    const forget = document.createElement("button");
+    forget.type = "button";
+    forget.textContent = list.dataset.forget;
+    forget.addEventListener("click", () => {
+      forget.disabled = true;
+      post(forgetPath, { id: phone.id })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((again) => { if (again) showPhones(again, forgetPath); else forget.disabled = false; })
+        .catch(() => { forget.disabled = false; });
+    });
+    item.append(name, forget);
+    list.append(item);
+  }
+  $("#lanPhones").hidden = answer.phones.length === 0;
 }
 function begin() {
   index();

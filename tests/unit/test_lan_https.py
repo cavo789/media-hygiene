@@ -24,8 +24,9 @@ from media_hygiene.review.doors import LAN_CA_DOOR_PORT, LAN_CA_PORT
 from media_hygiene.review.http import Request
 from media_hygiene.review.lan import LAN_SECRET_VARIABLE, LanAccess, lan_access
 from media_hygiene.review.lan_address import LAN_ADDRESS_VARIABLE
-from media_hygiene.review.lan_app import Pairing, lan_response
+from media_hygiene.review.lan_app import lan_response
 from media_hygiene.review.lan_ca_page import CA_DOWNLOAD, CaDoor
+from media_hygiene.review.lan_pairing import Pairing
 from media_hygiene.review.lan_tls import (
     CA_CERT,
     CA_KEY,

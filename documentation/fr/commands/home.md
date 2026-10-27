@@ -173,8 +173,8 @@ l'instant) :
 2. La page du PC montre, dans sa barre latérale, *Sur votre téléphone* : l'adresse, un **code**
    de 8 chiffres et son **QR code** (la fenêtre de `mh` dit la même adresse et le même code).
 3. Sur le téléphone, scannez le QR code, ou ouvrez l'adresse et tapez le code : la page d'accueil
-   s'ouvre. Le téléphone reste appairé (un cookie) jusqu'à l'arrêt de `mh`, même après les
-   étapes lancées sur le PC.
+   s'ouvre. Le téléphone reste appairé **pour de bon** (un cookie à lui, 400 jours) : le
+   `mh --lan` suivant s'y ouvre sans code. Sans HTTPS, jusqu'à l'arrêt de `mh` seulement.
 
 Sur le téléphone, la page d'accueil est la porte de la famille, **Nos photos** : *Retrouver une
 photo* (la recherche et le parcours), les albums et où vous en êtes ; les étapes qui changent les
@@ -200,7 +200,7 @@ diaporama.
 | Où | L'adresse privée du PC seulement (`10.x`, `172.16–31.x`, `192.168.x`) : jamais toutes les interfaces, jamais Internet ; `mh` n'ouvre aucun port sur votre box. |
 | Comment | HTTPS (`https://192.168.1.20:8088`), signé par une autorité de certification que `mh` crée sur votre PC : le téléphone l'installe une fois (ci-dessous) ; le code et le cookie ne circulent jamais en clair. |
 | Gardé | `C:\Users\<vous>\media-hygiene\lan\` contient cette autorité et le certificat de la page (`ca.key` n'en sort jamais). Supprimé, `mh` en crée une nouvelle : réinstallez-la sur chaque téléphone. |
-| La fois suivante | Un nouveau `mh --lan`, un nouveau code : l'ancien téléphone doit s'appairer à nouveau. |
+| La fois suivante | Un téléphone appairé ouvre la page directement. La carte du PC liste les **téléphones appairés pour de bon** (Android, iPhone… et la date) avec **Oublier ce téléphone** : son cookie n'ouvre plus rien. `phones.json` (dans le dossier `lan`) ne garde qu'un hash du jeton de chaque téléphone. |
 
 ### Une fois par téléphone : installer le certificat
 

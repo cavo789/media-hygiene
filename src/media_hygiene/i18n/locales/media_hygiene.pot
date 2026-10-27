@@ -2909,6 +2909,9 @@ msgstr ""
 msgid "Forget its position"
 msgstr ""
 
+msgid "Forget this phone"
+msgstr ""
+
 msgid "Format"
 msgstr ""
 
@@ -5343,6 +5346,9 @@ msgid ""
 msgstr ""
 
 msgid "Phone, NAS: whenever you want"
+msgstr ""
+
+msgid "Phones paired for good"
 msgstr ""
 
 msgid "Photo"
