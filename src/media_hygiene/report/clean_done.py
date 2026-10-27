@@ -12,7 +12,6 @@ from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.constants import REPORT_FILE_NAME, RunKind
-from media_hygiene.report.index_page import report_folders
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -69,6 +68,11 @@ def latest_audit_link(reports_dir: Path, record: ReportRecord) -> str | None:
     """
     if record.kind is not RunKind.CLEAN:
         return None
+    # Imported here: `index_page` loads jinja2, which the CLI's start must not (0412).
+    from media_hygiene.report.index_page import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+        report_folders,
+    )
+
     roots = tuple(sorted(str(root) for root in record.findings.roots))
     for summary, folder in report_folders(reports_dir):
         if (
