@@ -21,6 +21,8 @@ import shutil
 import signal
 import subprocess
 import tempfile
+import time
+import urllib.request
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Final
 
@@ -47,6 +49,7 @@ _IMAGE_USER: Final = (
     "id() { echo 1000; }"  # the demo volumes belong to the image's user
 )
 _STEP_TIMEOUT: Final = 600
+_HOME_UP_S: Final = 120  # mh starts its container, then the home server
 _PORT: Final = re.compile(r'-p "127\.0\.0\.1:(\d+):')
 # Bounds, in ms, generous for a CI runner (the figures themselves go to the log).
 _SHOWN_MS: Final = 10_000
@@ -100,6 +103,7 @@ def served(volumes: dict[str, str]) -> Iterator[tuple[Path, str]]:
         ) as home,
     ):  # fmt: skip
         try:
+            _wait_for_home(port.group(1), home)
             yield root, port.group(1)
         finally:
             os.killpg(home.pid, signal.SIGTERM)
@@ -107,6 +111,24 @@ def served(volumes: dict[str, str]) -> Iterator[tuple[Path, str]]:
     if left:
         docker("rm", "--force", *left)
     shutil.rmtree(root, ignore_errors=True)
+
+
+def _wait_for_home(port: str, home: subprocess.Popen[bytes]) -> None:
+    """Wait until the home page answers: the browser starts faster than `mh` does.
+
+    Args:
+        port: The port of the home page.
+        home: The `mh` process (its end fails the wait at once).
+    """
+    deadline = time.monotonic() + _HOME_UP_S
+    while time.monotonic() < deadline and home.poll() is None:
+        try:
+            # A fixed loopback URL of the server under test.
+            with urllib.request.urlopen(f"http://127.0.0.1:{port}/", timeout=2):
+                return
+        except OSError:
+            time.sleep(0.5)
+    pytest.fail(f"the home page of mh did not answer on port {port}")
 
 
 def _started(since: float, until: float) -> list[str]:
