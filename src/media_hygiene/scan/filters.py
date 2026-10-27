@@ -13,7 +13,8 @@ from media_hygiene.constants import (
     MediaKind,
 )
 from media_hygiene.paths.host_paths import is_within
-from media_hygiene.scan.skipped_dirs import APP_DIR_NAMES, SYSTEM_DIR_NAMES, matches_any
+from media_hygiene.scan.intruders import DEFAULT_COMPANIONS, is_companion
+from media_hygiene.scan.skipped_dirs import SYSTEM_DIR_NAMES, matches_any
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -46,24 +47,23 @@ class ScanFilters:
 
     Folders are skipped by host path (`excluded`) or by name (`excluded_names`, globs
     added to the system folder names), wherever they are.
-
-    Extensions that are not media (`.pdf`) make the walk skip software folders too
-    (`.git`, `node_modules`, `AppData`, ...): there, where a file lies is what makes a
-    program work, and identical files are expected.
     """
 
     excluded: tuple[Path, ...] = ()
     extensions: frozenset[str] = frozenset()
     excluded_names: tuple[str, ...] = ()
+    companions: tuple[str, ...] = DEFAULT_COMPANIONS
 
-    @property
-    def other_files(self) -> bool:
-        """Tell whether files other than photos, RAW files and videos are analysed.
+    def is_intruder(self, path: Path) -> bool:
+        """Tell whether a file is neither media (whatever `--ext`) nor a companion.
+
+        Args:
+            path: A regular file, not a sidecar of a file beside it.
 
         Returns:
-            True when an extension asked for is not a media one.
+            True for a zip, a docx, a pdf...
         """
-        return not self.extensions <= MEDIA_EXTENSIONS
+        return media_kind(path) is None and not is_companion(path.name, self.companions)
 
     def accepts(self, path: Path) -> bool:
         """Tell whether a file has one of the extensions analysed.
@@ -77,7 +77,7 @@ class ScanFilters:
         return path.suffix.casefold() in (self.extensions or MEDIA_EXTENSIONS)
 
     def kind_of(self, path: Path) -> MediaKind | None:
-        """Classify a file the walk keeps: its media kind, or `OTHER`.
+        """Classify a file the walk keeps: its media kind.
 
         Args:
             path: A file.
@@ -87,7 +87,7 @@ class ScanFilters:
         """
         if not self.accepts(path):
             return None
-        return media_kind(path) or MediaKind.OTHER
+        return media_kind(path)
 
     def skips_dir(self, path: Path) -> bool:
         """Tell whether a directory must be skipped.
@@ -96,12 +96,9 @@ class ScanFilters:
             path: Directory about to be entered.
 
         Returns:
-            True for system folders, software folders (other files only) and
-            folders the user excluded by path or by name.
+            True for system folders and folders the user excluded by path or by name.
         """
         name = path.name
         if matches_any(name, (*SYSTEM_DIR_NAMES, *self.excluded_names)):
-            return True
-        if self.other_files and name.casefold() in APP_DIR_NAMES:
             return True
         return any(is_within(path, folder) for folder in self.excluded)

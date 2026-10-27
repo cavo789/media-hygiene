@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import asyncio
 from dataclasses import dataclass, field
+from functools import partial
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final, Literal
 
@@ -22,14 +23,15 @@ from media_hygiene.i18n import _
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
 from media_hygiene.search.views import SearchAsked
-from media_hygiene.share.album_said import shelf_view
+from media_hygiene.share.album_cover import choose_cover
+from media_hygiene.share.album_said import cover_message, shelf_view
 from media_hygiene.share.album_store import AlbumChange
 
 if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
 
-    from media_hygiene.share.album_store import AlbumStore
+    from media_hygiene.share.album_store import AlbumStore, Shelf
 
 ALBUMS_PATH: Final = "/api/albums"
 # Files added at once: a search finding more is narrowed first (the TV shows 3000).
@@ -42,7 +44,7 @@ class AlbumAsked(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    action: Literal["add", "remove"]
+    action: Literal["add", "remove", "cover"]  # cover: one file of the album (0371)
     album: str = Field(max_length=_MAX_TEXT)
     keys: tuple[str, ...] = Field(default=(), max_length=MAX_ADDED)
     all: bool = False  # every file the search finds, not only those shown
@@ -98,13 +100,28 @@ class AlbumDesk:
         async with self._turn:
             try:
                 self.ready()
-                run = self.store.add if asked.action == "add" else self.store.remove
-                shelf = await asyncio.to_thread(run, change)
+                shelf = await asyncio.to_thread(self._run(asked), change)
             except MediaHygieneError as exc:
                 return _refused(exc)
             except OSError as exc:
                 return _not_saved(exc)
-        return json_response(HTTPStatus.OK, shelf_view(shelf, asked.album, self._host))
+        said = shelf_view(shelf, asked.album, self._host)
+        if asked.action == "cover":
+            said["message"] = cover_message(shelf, asked.album)
+        return json_response(HTTPStatus.OK, said)
+
+    def _run(self, asked: AlbumAsked) -> Callable[[AlbumChange], Shelf]:
+        """The change a request asks for.
+
+        Args:
+            asked: The request.
+
+        Returns:
+            What saves it.
+        """
+        if asked.action == "cover":
+            return partial(choose_cover, self.store)
+        return self.store.add if asked.action == "add" else self.store.remove
 
     @property
     def _host(self) -> str:

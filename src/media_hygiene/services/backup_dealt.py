@@ -12,15 +12,11 @@ byte); the others are proposed without reading them.
 from __future__ import annotations
 
 from dataclasses import replace
-from datetime import UTC, datetime
-from pathlib import Path
 from typing import TYPE_CHECKING
 
-from media_hygiene.actions.kinds import ActionKind
-from media_hygiene.index.gone_rows import gone_records
 from media_hygiene.plan.backup_import import DealtWith
-from media_hygiene.plan.returned import Remembered, RememberedSet
 from media_hygiene.scan.exact import ExactDuplicateFinder
+from media_hygiene.services.dealt_with import waiting_gone
 from media_hygiene.services.returned import ReturnedFinder
 
 if TYPE_CHECKING:
@@ -40,22 +36,10 @@ def gone_finder(runtime: Runtime, deps: ScanDeps) -> ReturnedFinder | None:
     Returns:
         The finder, or None when nothing waits.
     """
-    by_partial: dict[tuple[int, str], Remembered] = {}
-    for record in gone_records(deps.repository.connection):
-        at = datetime.fromisoformat(record.gone_at) if record.gone_at else None
-        said = Remembered(
-            "",
-            at or datetime.now(UTC),
-            ActionKind.MARK_GONE,
-            runtime.mapper.to_host(Path(record.path)),
-        )
-        by_partial[record.size, record.partial_digest] = said
-    if not by_partial:
+    waiting = waiting_gone(runtime, deps.repository.connection)
+    if not waiting:
         return None
-    # By partial digest only, even when the SHA-256 is known: the backup is never
-    # read whole (0274).
-    remembered = RememberedSet(by_partial=by_partial)
-    return ReturnedFinder(ExactDuplicateFinder(deps), remembered)
+    return ReturnedFinder(ExactDuplicateFinder(deps), waiting)
 
 
 async def dealt_with(compared: BackupComparison, finders: Finders) -> BackupComparison:

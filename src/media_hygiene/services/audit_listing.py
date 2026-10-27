@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
@@ -45,4 +46,5 @@ def list_walk(
     unique = unique_files(found.files)
     warn_about_aliases(runtime, unique.aliases)
     every_path = frozenset(file.path for file in found.files)
-    return Walk(unique.files, found.sidecars, found.unreadable), every_path
+    walked = Walk(unique.files, found.sidecars, found.unreadable)
+    return replace(walked, intruders=found.intruders), every_path

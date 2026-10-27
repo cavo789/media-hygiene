@@ -39,6 +39,7 @@ from media_hygiene.places.photos import (
     CLUSTER_PREFIX,
     FOLDER_PREFIX,
     FOLDERS_PATH,
+    GROUP_PREFIX,
     TREE_PREFIX,
 )
 from media_hygiene.places.posts import ASIDE_PATH, PHOTOS_PATH, SAVE_PATH
@@ -136,6 +137,7 @@ def serve_places(runtime: Runtime, opened: OpenedMap, port: int) -> None:
         cluster_path=CLUSTER_PREFIX,
         folders_path=FOLDERS_PATH,
         folder_photos=FOLDER_PREFIX,
+        group_photos=GROUP_PREFIX,
         tree_photos=TREE_PREFIX,
         folder_path=FOLDER_PATH,
         aside_path=ASIDE_PATH,

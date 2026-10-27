@@ -7,8 +7,10 @@ and the zip are read back from the disk; the videos are left out and counted.
 from __future__ import annotations
 
 import asyncio
+import os
 import zipfile
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
 from http import HTTPStatus
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
@@ -41,6 +43,16 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 _ALBUM: Final = "Crete 2023"
+# No EXIF date in these photos: the files' dates order them (0370), noon local time.
+_DAY_ONE: Final = datetime(2023, 7, 10, 12)  # noqa: DTZ001 - a file's local date
+_DAY_TWO: Final = datetime(2023, 7, 11, 12)  # noqa: DTZ001 - a file's local date
+_FIRST: Final = "001_2023-07-10.jpg"  # Photos/Crete/IMG_1.jpg
+_SECOND: Final = "002_2023-07-11.jpg"  # Phone/DCIM/img_1.jpg
+
+
+def _dated(path: Path, when: datetime) -> None:
+    """Give a file the modification date of a moment."""
+    os.utime(path, (when.timestamp(), when.timestamp()))
 
 
 def _manifest(folder: Path) -> dict[str, tuple[bytes, int]]:
@@ -61,6 +73,8 @@ def _album(runtime: Runtime) -> None:
         data / "c" / "Phone" / "DCIM" / "VID_1.mp4",
     )
     files[2].write_bytes(b"\x00\x00\x00\x18ftypmp42 a video")
+    for file, day in zip(files[:2], (_DAY_ONE, _DAY_TWO), strict=True):
+        _dated(file, day)
     album_store(runtime).add(AlbumChange(_ALBUM, files))
 
 
@@ -81,20 +95,16 @@ def test_an_album_gives_one_folder_one_zip_and_no_original_touched(
     assert _manifest(runtime.locations.data_dir) == before
     sent = prepared.sent
     assert sent.folder == runtime.locations.shares_dir / _ALBUM
-    # In the order of their paths (Phone before Photos); the same name in Windows,
-    # whatever the case: numbered.
-    assert sorted(path.name for path in sent.folder.iterdir()) == [
-        "IMG_1_1.jpg",
-        "img_1.jpg",
-    ]
+    # Numbered by the day each was taken (0370), whatever their names and folders.
+    assert sorted(path.name for path in sent.folder.iterdir()) == [_FIRST, _SECOND]
     assert (sent.photos, sent.zipped, prepared.videos, prepared.missing) == (2, 2, 1, 0)
     assert sent.size == sum(path.stat().st_size for path in sent.folder.iterdir())
     assert sent.archive == runtime.locations.shares_dir / "Crete 2023.zip"
     assert sent.zip_size == sent.archive.stat().st_size
     with zipfile.ZipFile(sent.archive) as archive:
         assert sorted(archive.namelist()) == [
-            "Crete 2023/IMG_1_1.jpg",
-            "Crete 2023/img_1.jpg",
+            f"Crete 2023/{_FIRST}",
+            f"Crete 2023/{_SECOND}",
         ]
     assert not any(_gps(path) for path in sent.folder.iterdir())
     assert not sent.replaced
@@ -192,6 +202,33 @@ def test_every_framed_page_says_when_media_hygiene_stopped() -> None:
     assert "window.mhEnded()" in link
 
 
+@pytest.mark.parametrize(
+    ("name", "flag"),
+    [("slideshow.html.j2", "presence_probe"), ("screen.html.j2", "presence_es5")],
+)
+def test_the_slideshow_and_the_tv_say_when_their_server_stopped(
+    name: str, flag: str
+) -> None:
+    """0416: no presence there; the page asks itself, any answer means it is up."""
+    folder = (
+        Path(__file__).resolve().parents[2] / "src/media_hygiene/slideshow/templates"
+    )
+    source = (folder / name).read_text("utf-8")
+    assert f'{{% set {flag} = true %}}{{% include "presence.html.j2" %}}' in source
+    script = (folder / "screen.js.j2").read_text("utf-8")
+    assert 'check.open("HEAD", window.location.pathname, true);' in script
+
+
+def test_a_failed_fetch_asks_again_at_once() -> None:
+    """0416: a page fetch finding no server counts, not only the pings."""
+    presence = (
+        Path(__file__).resolve().parents[2]
+        / "src/media_hygiene/review/templates/presence.html.j2"
+    ).read_text("utf-8")
+    assert "window.fetch = (...args) => own(...args).catch(" in presence
+    assert 'method: "HEAD"' in presence
+
+
 def _tagged(runtime: Runtime, tags: tuple[Tag, ...]) -> list[Path]:
     """The album's photos, the first given tags in the index (current version)."""
     _album(runtime)
@@ -244,10 +281,10 @@ def test_the_words_of_tags_travel_asked_once_names_never(tmp_path: Path) -> None
     assert asked == [1]
     assert prepared.described == 1
     packets = _packets(prepared.sent.folder)
-    assert not packets["img_1.jpg"]  # the photo without tags gets nothing
-    assert "<rdf:li>plage</rdf:li>" in packets["IMG_1_1.jpg"]
-    assert "Anna" not in packets["IMG_1_1.jpg"]
-    assert "Crete" not in packets["IMG_1_1.jpg"]
+    assert not packets[_SECOND]  # the photo without tags gets nothing
+    assert "<rdf:li>plage</rdf:li>" in packets[_FIRST]
+    assert "Anna" not in packets[_FIRST]
+    assert "Crete" not in packets[_FIRST]
 
 
 def test_declined_or_stale_the_copies_carry_nothing(tmp_path: Path) -> None:

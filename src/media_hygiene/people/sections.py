@@ -1,4 +1,4 @@
-"""The sections of the page: each person verified then attributed, then the rest.
+"""The sections of the page: people by name, verified then attributed, then the rest.
 
 A person shows in two sections at most: the faces the user confirmed (*verified*), and
 the faces the tool gives them (*attributed*): the rest of the groups holding faces they
@@ -6,6 +6,8 @@ confirmed, and the groups whose faces mostly come close to them, none confirmed.
 attributed faces are checked a page at a time; once confirmed they move to the verified
 section, and an empty section is not shown. A group mostly ignored is not shown again. A
 face the user took out of someone (`rejected`) is never shown under that name again.
+The people come in alphabetical order, without case nor accents (TODO 0324): the work
+left is found by the page's *Next to do*, not by the order (TODO 0325).
 """
 
 from __future__ import annotations
@@ -14,6 +16,7 @@ from collections import Counter
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.people.folding import folded
 from media_hygiene.people.naming import How
 
 if TYPE_CHECKING:
@@ -56,8 +59,8 @@ def sections_of(
         ruled_out: The names each face is not, by number (the user took it out).
 
     Returns:
-        The people (those with verified faces first, most faces first), each verified
-        then attributed, then the groups nobody is given.
+        The people in alphabetical order (folded: `Chloé` with `chloe`), each verified
+        then attributed, then the groups nobody is given, largest first.
     """
     ruled_out = ruled_out or {}
     verified: dict[str, list[int]] = {}
@@ -81,13 +84,7 @@ def sections_of(
             for key in group
             if names[key].how not in _SETTLED and owner not in ruled_out.get(key, ())
         )
-    people = sorted(
-        {*verified, *attributed},
-        key=lambda name: (
-            name not in verified,
-            -len(verified.get(name, ())) - len(attributed.get(name, ())),
-        ),
-    )
+    people = sorted({*verified, *attributed}, key=lambda name: (folded(name), name))
     shown = [
         section
         for name in people

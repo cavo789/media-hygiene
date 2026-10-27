@@ -75,11 +75,11 @@ class CleanService:
             MountError: The journal is not persistent, a folder is read-only, the
                 journal or the quarantine is not writable, or what goes to the
                 quarantine (exact copies unless `--delete`, near duplicates, burst
-                shots, copies of other files) has no quarantine to go to.
+                shots, files set aside) has no quarantine to go to.
         """
         runtime = self._runtime
         if not runtime.persistent(MountKind.QUARANTINE):
-            message = _quarantine_needed(runtime, mode)
+            message = _quarantine_needed(mode)
             if message is not None:
                 again = NextVerb(typed_again(runtime, "clean"), CHANGING)
                 raise missing_mount(runtime, message, again)
@@ -172,11 +172,10 @@ class CleanService:
             forget_listings(repository.connection, done)  # read again
 
 
-def _quarantine_needed(runtime: Runtime, mode: CleanMode) -> str | None:
+def _quarantine_needed(mode: CleanMode) -> str | None:
     """Say why this clean needs a quarantine, if it does.
 
     Args:
-        runtime: Settings, mount points and output.
         mode: What the clean will do.
 
     Returns:
@@ -188,6 +187,4 @@ def _quarantine_needed(runtime: Runtime, mode: CleanMode) -> str | None:
         return _("--tier near moves near duplicates to /quarantine: mount it.")
     if mode.bursts:
         return _("The burst shots and files you set aside go to /quarantine: mount it.")
-    if runtime.settings.scan.other_files:
-        return _("Copies of other files than media go to /quarantine: mount it.")
     return None

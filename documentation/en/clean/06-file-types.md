@@ -3,7 +3,7 @@
 [Documentation](../README.md) › Cleaning, step 6 of 14 · 🇫🇷 [Français](../../fr/clean/06-file-types.md)
 
 By default, the tool analyses every photo, RAW file and video, and nothing else. `--ext` narrows
-the analysis to some types, or widens it to other files.
+the analysis to some types; the other files of your photo folders are listed by the audit.
 
 ## What is analysed by default
 
@@ -65,9 +65,8 @@ Audit summary
 └─────────────────────────────────────────────────┴────────┘
 ```
 
-A value without a dot is a category when one has that name, otherwise an extension: `--ext pdf`
-means the extension. Write the dot to ask for an extension that is also a category's name:
-`--ext .raw`. A name close to a category (`--ext photos`) is refused, with the right spelling:
+A value without a dot is a category when one has that name, otherwise an extension: `--ext heic`
+means the extension. Only photo, RAW and video extensions are accepted: `--ext pdf` is refused. A name close to a category (`--ext photos`) is refused, with the right spelling:
 without that check, it would silently analyse nothing.
 
 ## Your own categories
@@ -77,63 +76,36 @@ Name the lists you type often in the [configuration file](07-configuration-file.
 
 ```toml
 [scan.categories]
-documents = ["pdf", "docx", "doc", "odt", "txt"]
-web = ["png", "webp", "svg"]
+phone = ["heic", "jpg", "mov", "mp4"]
+web = ["png", "webp", "gif"]
 ```
 
-Then `--ext documents`, or `extensions = ["documents"]` in `[scan]`. A name holds letters,
+Then `--ext phone`, or `extensions = ["phone"]` in `[scan]`. A name holds letters,
 digits, `-` and `_`; a category lists extensions, never other categories; `photo`, `raw`,
 `video` and `media` cannot be redefined. A category only names a list: each file is still
-handled by its extension. With `web` above, the PNG files are images (checked, previewed, their
-copies set aside) and the SVG files are other files (compared only, their copies moved to the
-quarantine, see below).
+handled by its extension.
 
-## Other file types
+## Files that are not photos or videos
 
-The tool is made for photos and videos, but `--ext` also accepts other extensions, for instance
-to find the duplicate documents of a family folder. `clean` ([step 8](08-clean.md)) then needs
-the `/quarantine` mount, which `mh` adds; the folder must be one of `mh`'s (otherwise run
-[`launcher`](../commands/launcher.md) again with its `-v`):
+A zip, a Word document or a PDF copied among the family photos is not analysed, but the audit
+counts it: one line at its end, nothing when there is none.
 
-```powershell
-mh clean --ext pdf,docx
+```text
+🧹 312 files that are not photos or videos (zip, docx, pdf, …) take 4.2 GB in your photo
+folders: see 'Intruder files' in the report.
 ```
 
-<details>
-<summary>Without <code>mh</code>: the full command</summary>
+The report's **🧹 Intruder files** section gives the totals per extension and the heaviest
+folders; `intruders.csv`, next to `plan.csv`, lists every file (path, folder, extension, size,
+date). Counting them costs no extra disk read: the audit lists every folder anyway.
 
-```powershell
-docker run --rm -it `
-  -v "C:\Users\Me\Documents:/data/c/Users/Me/Documents" `
-  -v "$HOME\media-hygiene\journal:/journal" `
-  -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene clean --ext pdf,docx
-```
-
-</details>
-
-Such files are handled with more care than photos. For a photo, the folder is only a way to
-sort; for a document or a program, **where the file lies can be what makes it work**: an
-identical `LICENSE`, `__init__.py` or template in two projects is expected, and deleting "the
-copy" breaks one of them.
-
-- **Only compared**, byte for byte: never decoded (images go through Pillow, RAW files through
-  LibRaw, videos through `ffprobe`; other types have no check), no preview, no near duplicates.
-  An empty file is never "broken": it may be a marker a program needs.
-- **Their copies are moved to the quarantine**, never deleted: `clean` refuses to run without
-  the `/quarantine` mount. `undo` puts them back; `purge` deletes them for good. The console,
-  the report and its folder pairs say so: *moved to the quarantine*, 📦 instead of 🗑️.
-- **Software folders are skipped**: `.git`, `.hg`, `.svn`, `node_modules`, `.venv`, `venv`,
-  `site-packages`, `__pycache__`, `AppData`, `ProgramData`, `Program Files`,
-  `Program Files (x86)` and `Windows`, whatever their case.
-- **An extension typo is not refused**: `--ext jpgg` is a valid extension that simply matches
-  nothing (only names close to a category are refused). The audit names the extensions that
-  are not photos or videos: read that warning.
-- **`--ext` still limits the analysis**: `--ext jpg,pdf` analyses JPEG photos and PDF documents,
-  not the RAW files and videos.
-
-Mount the folders holding your documents, never a whole drive or `C:\Users`: programs and their
-data live there too.
+- **Nothing is moved**: a document may matter. Delete or move them yourself, or keep them.
+- **Protected and backup folders are left out**, and so are the excluded ones (never read).
+- **Companions are never intruders**: what follows a photo or a folder of photos, `.xmp`,
+  `.aae`, `.thm`, `.json` (Google Takeout), `Thumbs.db`, `desktop.ini`, `.DS_Store`,
+  `.picasa.ini`, `.nomedia`, `.lrv` and `.srt` (GoPro, drones). Change the list in `[scan] companions` of the
+  [configuration file](07-configuration-file.md): a name, or an extension with its dot, case
+  ignored, such as `companions = [".xmp", ".json", "thumbs.db", ".lrv"]`.
 
 ---
 

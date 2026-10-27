@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, Final
 from PIL import Image, ImageFile, ImageOps
 
 from media_hygiene.constants import THUMBNAILS_DIR_NAME, MediaKind
+from media_hygiene.report.video_preview import video_preview
 from media_hygiene.scan.filters import media_kind
 from media_hygiene.scan.image_check import prepare_image_worker
 from media_hygiene.scan.raw_check import raw_errors, raw_preview
@@ -82,7 +83,8 @@ def preview_name(path: Path) -> str:
 def jpeg_preview(source: Path, edge: int) -> bytes | None:
     """Render a picture as an upright JPEG, its longer side at most `edge` pixels.
 
-    Runs in a worker process: the review page, and the photos a local model sees.
+    Runs in a worker process: the review page, the photos a local model sees, and a
+    frame of a video (search and browse).
 
     Args:
         source: Image or RAW file.
@@ -91,6 +93,8 @@ def jpeg_preview(source: Path, edge: int) -> bytes | None:
     Returns:
         The JPEG bytes, or None when the picture cannot be decoded.
     """
+    if media_kind(source) is MediaKind.VIDEO:  # one frame of it (0373)
+        return video_preview(source, edge)
     return fitted_jpeg(source, JpegFit((edge, edge), _REVIEW_QUALITY))
 
 

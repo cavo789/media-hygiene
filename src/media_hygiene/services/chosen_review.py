@@ -58,7 +58,7 @@ def named_files(runtime: Runtime, named: Sequence[NamedFile]) -> tuple[MediaFile
             path := mapper.to_container(item.path),
             item.size,
             item.mtime_ns,
-            media_kind(path) or MediaKind.OTHER,
+            media_kind(path) or MediaKind.SIDECAR,
         )
         for item in named
     )

@@ -12,7 +12,7 @@ import shlex
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.constants import MediaKind, Sizes
+from media_hygiene.constants import Sizes
 from media_hygiene.report.reasons import keep_reason_label
 from media_hygiene.report.thumbnails import PREVIEWABLE, thumbnail_name
 from media_hygiene.report.views import GroupView, ProofView, RemovedView
@@ -92,7 +92,7 @@ class GroupRenderer:
         removable = tuple(
             RemovedView(
                 host(file.path),
-                moved=file.kind is MediaKind.OTHER or not self.delete_copies,
+                moved=not self.delete_copies,
             )
             for file in decision.removable
         )

@@ -1,4 +1,4 @@
-"""Extension categories: names for lists of extensions (`photo`, `video`, `documents`).
+"""Extension categories: names for lists of extensions (`photo`, `video`, `phone`).
 
 A category is only a name: what happens to a file (decoded, deleted or quarantined)
 still follows its extension. The built-in categories come from the extension
@@ -96,7 +96,7 @@ def _check_name(name: str) -> None:
     if not _CATEGORY_NAME.fullmatch(name):
         message = _(
             "invalid category name '{name}': letters, digits, '-' and '_' only, "
-            "such as documents"
+            "such as phone"
         ).format(name=name)
         raise ValueError(message)
     if name in BUILTIN_CATEGORIES:

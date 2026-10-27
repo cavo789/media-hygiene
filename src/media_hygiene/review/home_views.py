@@ -134,6 +134,7 @@ class HomeState(Frozen):  # one field per part of the page
     index: str | None = None  # `/reports/index.html`, when it exists
     previews: tuple[str, ...] = ()  # thumbnails of the last audit's report
     update: HomeUpdate | None = None  # a newer version, from Docker Hub (0267)
+    stale: str = ""  # `mh` written by another image: the console's line (0368)
     windows: bool = True  # the Windows actions are offered
     ai: bool = False  # a local model is set
     settings_error: str = ""  # config.toml does not load: the line the page shows

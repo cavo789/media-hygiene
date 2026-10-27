@@ -8,6 +8,7 @@ const RELAYS = {{ relays_steps | tojson }};
 // A phone on the home network (mh --lan, 0269): reads and the audit only; Quit and the
 // presence stay the PC's (its tab, not the phone's, keeps the page open).
 const REMOTE = {{ remote | tojson }};
+const PHONE_PAGES = {{ phone_pages | tojson }};  // a phone opens these steps as pages (0360)
 const WINDOW = {{ window | tojson }};
 const ALIVE_MS = {{ alive_ms | tojson }};
 const THOUSANDS = {{ thousands | tojson }};
@@ -21,6 +22,7 @@ const HINT_MS = 30000;
 const TOAST_MS = 6500;
 const LOADING_SLOW_MS = 5000;
 const HOME = "home";
+const FAMILY_STAGE = "find";  // the one stage a paired phone sees (0293)
 const STORE_PREFIX = "mh-home-";
 let S = null;
 
@@ -67,6 +69,8 @@ function index() {
   STAGES = S.spaces.filter((space) => space.stage);
   SHARE = S.spaces.filter((space) => !space.stage && space.id === "share");
   TOOLS = S.spaces.filter((space) => !space.stage && space.id !== "share");
+  // A paired phone (0293): the stages that change photos and the tools hidden, only Find.
+  if (REMOTE) { STAGES = STAGES.filter((space) => space.id === FAMILY_STAGE); TOOLS = []; }
 }
 const statusOf = (action) => ({
   available: action.available && !action.planned,
@@ -187,7 +191,8 @@ function wire() {
 // The page shows at once, its meerkat waiting for the state: reading the tool folders can be
 // slow through Docker Desktop (0277). The tab says it is there from the start (0261).
 function start() {
-  if (!REMOTE) { wirePresence(); showLan(); }
+  wirePresence();  // a paired phone keeps the PC's server alive too (0416)
+  if (!REMOTE) showLan();
   const slow = window.setTimeout(() => { $("#loadingSlow").hidden = false; }, LOADING_SLOW_MS);
   const shown = () => { window.clearTimeout(slow); $("#loading").hidden = true; };
   fetch(P.state, { cache: "no-store" })

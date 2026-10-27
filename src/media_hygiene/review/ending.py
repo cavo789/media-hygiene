@@ -6,7 +6,8 @@ The home page ends with `STEP_EXIT_BASE + n` when the user chooses step `n`, whi
 then runs with the mounts it needs. A page whose tab was closed (`presence`,
 `POST /api/alive`) ends with `ExitCode.PAGE_CLOSED`, raised as `PageClosed` for its
 command to say so (0262). Given one, it answers `/person` too (0351). The server listens
-on every interface of the container: Docker publishes the port on the host's loopback.
+on every interface of the container: Docker publishes the port on the host's loopback
+(and `mh --lan` its home network door: `listen`, 0384).
 """
 
 from __future__ import annotations
@@ -20,6 +21,7 @@ from media_hygiene.constants import ExitCode
 from media_hygiene.errors import PageClosed
 from media_hygiene.i18n import _
 from media_hygiene.review.http import Response, is_local
+from media_hygiene.review.listen import listening
 from media_hygiene.review.presence import PRESENCE_PATH, Presence, presence_response
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
 from media_hygiene.review.shared_routes import asset_or_page
@@ -29,8 +31,6 @@ if TYPE_CHECKING:
 
     from media_hygiene.review.http import Request
 
-# Every interface of the container: Docker forwards the published port to it.
-LISTEN_HOST: Final = "0.0.0.0"  # noqa: S104
 STOP_PATH: Final = "/api/stop"
 STOPPED: Final = 0  # the exit code of a page closed by its "Back to the home page"
 _POST: Final = "POST"
@@ -186,8 +186,7 @@ async def serve_until_ended(
     Raises:
         PageClosed: The page's tab was closed and none came back (0262).
     """
-    server = await asyncio.start_server(door.connection, LISTEN_HOST, port)
-    async with server:
+    async with listening(door.handle, port) as server:
         ready(server.sockets[0].getsockname()[1])
         async with asyncio.TaskGroup() as group:
             serving = group.create_task(server.serve_forever())

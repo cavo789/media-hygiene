@@ -103,5 +103,6 @@ def test_a_folder_not_found_ends_powershell_with_2() -> None:
     """Measured 2026-10-20 (15e): said, but exit code 0; now 2, as mh.sh says it."""
     text = render_script(launcher_script(_runtime(), Shell.POWERSHELL, _COMMANDS))
     missing = [line for line in text.splitlines() if "or write mh again" in line]
-    assert len(missing) == 2  # a --photos folder, a folder of the launcher line
+    # a --photos folder, the folder of `import <folder>` (0378), the launcher line's
+    assert len(missing) == 3
     assert all("$global:LASTEXITCODE = 2; return" in line for line in missing)

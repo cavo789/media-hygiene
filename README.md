@@ -169,6 +169,7 @@ the folders it needs, its options, examples:
 [the inventory workbook](https://cavo789.github.io/media-hygiene/reference-inventory/),
 [tags](https://cavo789.github.io/media-hygiene/reference-tags/),
 [people](https://cavo789.github.io/media-hygiene/reference-people/),
+[albums](https://cavo789.github.io/media-hygiene/reference-albums/),
 [advanced usage](https://cavo789.github.io/media-hygiene/reference-advanced/).
 
 **For developers** — [build the image, the devcontainer, releases](https://cavo789.github.io/media-hygiene/development/).

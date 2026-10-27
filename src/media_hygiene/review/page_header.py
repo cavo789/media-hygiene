@@ -15,6 +15,7 @@ from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.menu_catalog import catalog
+from media_hygiene.cli.menu_entry import Doc
 from media_hygiene.constants import Locale
 from media_hygiene.docs.served import served_url
 from media_hygiene.i18n import active_locale
@@ -27,8 +28,11 @@ if TYPE_CHECKING:
 
     from jinja2 import Environment
 
-# Each page's template, and the action of the catalog that opens it: its chapter.
-PAGE_STEPS: Final = MappingProxyType(
+# What an album is, what the albums' page does (0349): the chapter of its bar (0342).
+ALBUMS_DOC: Final = Doc("reference-albums/")
+# Each page's template, and the action of the catalog that opens it: its chapter; or
+# the chapter itself, for a page no action opens (the albums, a home page group, 0342).
+PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
     {
         "review.html.j2": "review",
         "near_review.html.j2": "review-near",
@@ -44,6 +48,8 @@ PAGE_STEPS: Final = MappingProxyType(
         "person.html.j2": "people",
         "slideshow.html.j2": "slideshow",
         "shrink.html.j2": "shrink",
+        "history.html.j2": "history",
+        "album.html.j2": ALBUMS_DOC,
     }
 )
 # The other language's link, written in that language: never translated.
@@ -86,7 +92,8 @@ def page_header(template: str) -> PageHeader:
     Raises:
         KeyError: The page's action has no chapter (test_page_headers checks each).
     """
-    doc = catalog().step(PAGE_STEPS[template]).doc
+    wanted = PAGE_STEPS[template]
+    doc = wanted if isinstance(wanted, Doc) else catalog().step(wanted).doc
     if doc is None:  # pragma: no cover - test_page_headers checks every page has one
         raise KeyError(template)
     here = active_locale()

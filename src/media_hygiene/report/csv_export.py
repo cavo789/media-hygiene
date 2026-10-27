@@ -134,7 +134,7 @@ class _Rows:
             keep = _Line(_("keep"), group, digest, reason)
             yield self.row(decision.keeper, keep)
             for file in decision.removable:
-                moved = plan.to_quarantine(file)
+                moved = plan.to_quarantine
                 action = _("move to the quarantine") if moved else _("delete")
                 yield self.row(file, _Line(action, group, digest))
             for file in decision.protected:

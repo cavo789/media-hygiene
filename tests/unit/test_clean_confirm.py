@@ -41,11 +41,11 @@ def test_by_default_nothing_is_erased(tmp_path: Path) -> None:
 
 
 def test_delete_says_it_erases_and_what_still_moves(tmp_path: Path) -> None:
-    """`--delete`: the warning, and the copies of other files still moved."""
-    decisions = (copies(MediaKind.IMAGE, "a.jpg"), copies(MediaKind.OTHER, "b.pdf"))
+    """`--delete`: the warning; no copy is said moved."""
+    decisions = (copies(MediaKind.IMAGE, "a.jpg"), copies(MediaKind.IMAGE, "b.jpg"))
     text = said(tmp_path, CleanPlan(decisions, (), delete_copies=True))
     assert "--delete: the copies are deleted for good" in text
-    assert "1 copy of another file than a media will be moved" in text
+    assert "will be moved" not in text
 
 
 def test_the_question_names_where_the_copies_go(

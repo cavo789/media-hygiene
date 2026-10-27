@@ -83,10 +83,22 @@ drawn but left out of that view.
   `[classify] folder_town_ignore` (a folder `Martin` is a first name, not Martin in Slovakia).
   A saved folder renamed or moved since shows ⚠ *not found*: rename it back, or forget it.
 
+  **The folders of one town are one line**: a collection sorted by year holds `2019\Turin` and
+  `2023\Turin`, listed once as *📁 Turin — 126 photos without GPS · 3 folders*. Opening it shows
+  the photos of every folder and one pin; **Save this position** writes it for all of them in one
+  save (still one `[[places.folders]]` entry per folder), **Forget its position** forgets them all.
+  Folders of one town saved at different spots say so (*· 2 positions*): the pin starts at the one
+  with the most photos, and one save aligns them. The ▸ before the line unfolds its folders, each
+  still openable and saved alone (the airport and the city). A folder placed by hand without a
+  town, or not found (⚠), stays a line of its own.
+
   The list has two sub-lists, each with its count: **To place** (📁, open) and **Placed** (📌,
   folded; the folders not found, ⚠, at its top). Each is sorted by the name shown, case and
   accents ignored (*Écluse* among the E); saving a position moves the line from one to the other
-  and flashes it, **Forget its position** moves it back. The folders set aside as *not a town*
+  and **opens the next folder to place** at once (same filter, its line scrolled into view; the
+  bar says *Next: Ciney (12 left)*), so a whole list is placed without scrolling back: drag,
+  **Enter**, drag, **Enter**. **N** / **→** and **P** / **←** open the next or previous folder of
+  the list without saving. **Forget its position** moves it back. The folders set aside as *not a town*
   are in neither. **Type a name** in the box on top of the list to filter both sub-lists as you
   type (the name shown and the folder's path; the counts read *3 / 41*); Esc empties the box.
 - **Any folder**, folded under the town folders, lists every folder of the index as

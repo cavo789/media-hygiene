@@ -65,7 +65,8 @@ dossiers ; son bouton **📺 Partager sur la télé** donne cette commande, copi
 plus : il montrait les fichiers mis de côté, promis à la quarantaine ; donné, il dit d'utiliser
 `--album`. Depuis la
 [page d'accueil](home.md) ouverte par `mh --lan`, l'étape *Montrer vos photos sur la télé* demande
-le dossier et ouvre le diaporama de la même façon.
+le dossier et ouvre le diaporama de la même façon ; *Montrer un album sur la télé* demande le nom de
+l'album (`--album … --lan`). Le lancer depuis un téléphone appairé n'est pas encore possible : lancez-le sur le PC.
 
 ### Sur la télé, une fois
 

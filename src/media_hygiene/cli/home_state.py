@@ -29,6 +29,7 @@ from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.home_parts import HomeLink
 from media_hygiene.review.home_views import REPORTS_PREFIX, HomeState
 from media_hygiene.services.launcher_host import windows_menu
+from media_hygiene.services.launcher_stamp import say_stamp
 from media_hygiene.services.next_command import LAUNCHER_PHOTOS_VARIABLE
 from media_hygiene.services.status import read_status
 
@@ -81,6 +82,7 @@ def home_state(runtime: Runtime) -> HomeState:
         else None,
         previews=audit_previews(reports) if reports else (),
         update=update,
+        stale=say_stamp(),
         windows=windows,
         ai=bool(runtime.settings.classify.ai.model),
     )

@@ -27,7 +27,7 @@ docker run --rm -it -v "$HOME\media-hygiene\journal:/journal" cavo789/media-hygi
 | Il faut | `/journal`, le dossier où `clean` écrit. |
 | Écrit | Rien. |
 | Annuler | Rien à annuler. |
-| Avec `mh` | `mh history`. |
+| Avec `mh` | `mh history` ; depuis la page d'accueil, *Historique et annulation* › **Voir ce qu'a fait chaque exécution** affiche le même tableau dans la page elle-même (rien n'est écrit dans le terminal), avec la ligne `mh undo <run>` à copier pour chaque exécution. |
 
 ## Lancer
 

@@ -31,7 +31,7 @@ def mark_gone(changes: JournaledChanges, plan: CleanPlan) -> None:
             continue
         record = answer.record
         file = MediaFile(
-            Path(record.path), record.size, record.mtime_ns, MediaKind.OTHER
+            Path(record.path), record.size, record.mtime_ns, MediaKind.SIDECAR
         )
         entry = changes.entry(file, ActionKind.MARK_GONE).model_copy(
             update={"sha256": record.full_digest, "partial": record.partial_digest}

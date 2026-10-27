@@ -70,8 +70,8 @@ Chaque page de revue a la même disposition : à gauche, ce qui mène aux photos
 matières, les paires de dossiers, une courte explication), les touches en bas à gauche
 (⌨ **Clavier**, les premières toujours visibles, les autres sous *Plus de touches*) avec la ligne
 qui dit où chaque choix est enregistré ; à droite, une seule barre en haut (où vous en êtes, les
-totaux, le choix relu sur le disque ; *Appliquer maintenant* sur les rafales et les quasi-doublons
-quand la page d'accueil les a ouvertes), puis les photos.
+totaux, le choix relu sur le disque ; *Appliquer maintenant* sur chaque tri qui déplace des fichiers
+quand la page d'accueil l'a ouvert), puis les photos.
 
 | Touche | Rafales (`review`) | Quasi-doublons (`review --near`) | Paires de dossiers (`review --pairs`) |
 |---|---|---|---|
@@ -123,8 +123,10 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
   quasi-doublons (`near`), les paires de dossiers (`pairs`, de `review --pairs` ou du
   téléchargement du rapport) et les photos indésirables (`unwanted`) ; chaque tri garde les
   autres.
-- **Ouvertes depuis l'[accueil](home.md)**, les pages des rafales et des quasi-doublons
-  montrent un bouton **Appliquer maintenant** dès que quelque chose est écarté ou décidé : la
+- **Ouvertes depuis l'[accueil](home.md)**, les pages des rafales, des quasi-doublons, des
+  paires de dossiers et des photos indésirables montrent un bouton **Appliquer maintenant** dès
+  que quelque chose est écarté ou décidé (`--gone` n'en a pas : ses réponses ne déplacent aucun
+  fichier) : la
   page se ferme et `mh` lance l'étape de l'accueil qui applique vos choix (sa question habituelle
   d'abord), puis l'accueil revient. Ouvertes par `mh review` seul : pas de bouton, tapez la
   commande `clean`.

@@ -25,6 +25,10 @@ STOP_WORDS: Final = (
     *("personne", "personnes", "chose", "objet", "fond", "scène", "vue"),
     *("floor", "wall", "indoor", "indoors", "outdoor", "outdoors", "ceiling"),
     *("picture", "person", "people", "thing", "object", "background", "scene", "view"),
+    # Say nothing about what the photo shows (measured 2026-10-25, 3,138 answers).
+    # `adulte` / `adult` stay (40 % of photos): a search tells `enfant` from them.
+    *("photo floue", "flou", "photographie", "ambiance"),
+    *("blurry photo", "photograph", "blur"),
 )
 _TOWN_KM: Final = 20.0
 _MEANING_THREADS: Final = 4

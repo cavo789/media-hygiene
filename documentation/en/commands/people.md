@@ -93,6 +93,25 @@ work left stands first; their faces are loaded only when you open them. The page
 this browser what you folded, person by person; Enter on a folded section opens it, then goes
 to its name field.
 
+The people come in alphabetical order (`Chloé` with `chloe`), each verified then attributed,
+then the unnamed groups, largest first: each name given there names the most faces. On a wide
+screen, a column lists the people with their counts (✓ verified, attributed still to confirm,
+in bold while some are left), and last **Unnamed groups (n)**; on a phone, the field **Go to a
+person** of the top bar holds the same list. Type a few letters (`/` reaches the field), pick a
+name: the page goes to their sections and opens them; **Show only this person** hides the
+others until Esc.
+
+The top bar says what is left, read back from the server after each change: *To do: 312
+attributed faces (7 people) · 41 unnamed groups (980 faces)*. **Next to do** (`g`) goes to the
+next attributed section, then to the next unnamed group, and focuses its button; after `y`, the
+page moves on by itself, so `y`, `y`, `y` goes through the work. **Only what is left** hides
+the verified sections (the people list still reaches them).
+
+An unnamed group that looks like the faces you confirmed for someone says so: **It is Papy?
+(0.42)**, two names for siblings. A click (or `y`) names the group so, as typing the name would;
+a face you took out of someone never counts for them. The figure is the likeness, from 0 to 1:
+a hint shown from 0.30, below the `[people] similarity` that attributes faces.
+
 ## Remove every photo of someone
 
 To forget someone (a former partner, say), remove the photos they are on from the group itself:

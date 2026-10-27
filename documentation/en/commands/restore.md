@@ -32,6 +32,14 @@ index checked; an archive made by a newer version is refused (`mh update` first)
 index in place is **backed up first**, and the window ends on the line that puts it back:
 `mh restore <that archive>`. The rows of each table are shown, read back from the restored index.
 
+### After a lost disk
+
+`mh restore` first copies to the PC the archives it lacks from the folder `.mh-backups` of the
+[`push`](push.md) target, or from the folder of `--from`:
+`mh restore --from \\NAS\backup_photos\.mh-backups` (after a crash, `push`'s own file is gone
+too: `--from` is then needed). The copy is said in one line, then the most recent archive is put
+back.
+
 ## Options
 
 | Option | What it does |

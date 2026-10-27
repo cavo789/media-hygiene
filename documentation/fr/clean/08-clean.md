@@ -192,8 +192,8 @@ intacts, s'il y en a. Il dit ce qui a été fait, en deux blocs :
   `--decisions`), les fichiers abîmés traités, et la ligne `mh undo` qui remet tout en place. Les
   quasi-doublons montrés plus bas sont ceux que ce nettoyage a déplacés, rien d'autre.
 - **⏸️ Laissé par ce nettoyage** : une ligne par type laissé pour plus tard (quasi-doublons,
-  rafales) avec la commande qui les décide (`mh review --near`, `mh review`) ; le rapport d'audit
-  les montre.
+  rafales) avec la commande qui les décide (`mh review --near`, `mh review`) ; un lien ouvre
+  le dernier rapport d'audit des mêmes dossiers, qui les montre (aucun : voir *Tous les rapports*).
 
 ![Le haut d'un rapport de nettoyage : 85 fichiers média analysés, 32 copies en double dans 20 groupes, 16,4 Mo retirés de vos dossiers, 3 fichiers cassés, puis les paires de dossiers nettoyées](../images/clean-report.webp)
 
@@ -202,8 +202,7 @@ intacts, s'il y en a. Il dit ce qui a été fait, en deux blocs :
 `clean --delete` supprime pour de bon les copies en trop au lieu de les déplacer, après la même
 comparaison octet par octet avec la copie gardée. La copie gardée reste : `undo` reconstruit
 chaque copie supprimée à partir d'elle. C'est, avec `purge`, la seule façon dont l'outil supprime
-du contenu, et il le dit avant de demander. Les copies d'autres fichiers que des médias (`--ext`)
-vont toujours en quarantaine.
+du contenu, et il le dit avant de demander.
 
 ## Bon à savoir
 

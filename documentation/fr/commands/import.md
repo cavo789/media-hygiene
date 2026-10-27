@@ -1,34 +1,39 @@
-# `import` : récupérer ce que seul votre NAS contient
+# `import` : rapatrier ce que seul un dossier contient (NAS, disque USB, carte SD)
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `import` · 🇬🇧 [English](../../en/commands/import.md)
 
 ## En bref
 
-**Copier dans vos photos les photos et vidéos qu'une sauvegarde est seule à avoir encore : jamais
-celles que vous avez mises de côté ou supprimées exprès.**
+**Copier dans vos photos les photos et vidéos qu'un dossier est seul à avoir : votre NAS, un
+disque USB, une carte SD, un ancien disque. Jamais celles que vous avez mises de côté ou
+supprimées exprès.**
 
 Votre NAS (ou un ancien disque) est un [dossier de sauvegarde](../clean/05-choose-the-kept-copy.md#comparer-une-sauvegarde-ou-un-ancien-disque) :
 l'audit le compare à vos photos et dit ce qu'il est seul à contenir. `import` copie ces fichiers
-dans vos photos, chacun vérifié, pour ne plus dépendre du NAS pour les garder.
+dans vos photos, chacun vérifié, pour ne plus dépendre du NAS pour les garder. Reconnus par leur
+contenu (SHA-256), quels que soient leur nom et leur place.
 
 **Quand** : une fois un dossier de sauvegarde ajouté (`mh folders add --backup \\NAS\Photos`),
-après un [`audit`](audit.md) qui dit *fichiers sont seulement là, jamais dans vos photos*.
+après un [`audit`](audit.md) qui dit *fichiers sont seulement là, jamais dans vos photos*. Ou
+tout de suite, pour un dossier branché maintenant (une carte SD, le disque USB d'un ami) :
+nommez-le sur la commande, rien à ajouter avant.
 
 **Essayez** :
 
 ```powershell
-mh import
+mh import            # vos dossiers de sauvegarde (le NAS)
+mh import E:\DCIM    # ce dossier seulement : lu, jamais ajouté à mh
 ```
 
 ## D'un coup d'œil
 
 | | |
 |---|---|
-| Vos photos | ✋ Agit : copie des fichiers **dans** vos photos (sous `From NAS`), n'en modifie jamais un. |
-| La sauvegarde | Seulement lue (montée `:ro`) : rien n'est écrit, déplacé ni supprimé sur le NAS. |
-| Besoin | Un dossier de sauvegarde ; vos dossiers de photos **sans** `:ro` ; `/journal` ; `/cache`. |
+| Vos photos | ✋ Agit : copie des fichiers **dans** vos photos (sous `From NAS`, `From E`…), n'en modifie jamais un. |
+| Le dossier | Seulement lu (monté `:ro`) : rien n'est écrit, déplacé ni supprimé sur le NAS, le disque ou la carte. |
+| Besoin | Un dossier de sauvegarde, ou un dossier nommé sur la commande ; vos dossiers de photos **sans** `:ro` ; `/journal` ; `/cache`. |
 | Annuler | [`undo <run>`](undo.md) retire les copies (une copie modifiée depuis est gardée). |
-| Avec `mh` | `mh import`, `mh import --yes`. |
+| Avec `mh` | `mh import`, `mh import E:\DCIM`, `mh import --yes`. |
 
 ## Ce qui est copié, ce qui ne l'est pas
 
@@ -47,8 +52,11 @@ mh import
 - **Une seule fois** : deux fichiers identiques de la sauvegarde (même taille, même début et même
   fin) sont copiés une fois.
 
-Les copies vont dans **`From NAS`** dans votre premier dossier de photos, les dossiers du NAS
-gardés en dessous (`C:\Photos\From NAS\2019\Été\IMG_0007.jpg`), ou dans le dossier de `--to`.
+Les copies vont dans **`From <source>`** dans votre premier dossier de photos : `From NAS` pour
+un partage réseau, `From E` pour un dossier du lecteur `E:`, ses dossiers gardés en dessous
+(`C:\Photos\From NAS\2019\Été\IMG_0007.jpg`, `C:\Photos\From E\100CANON\IMG_0008.jpg`), ou dans
+le dossier de `--to`. Un fichier déjà copié par un import précédent, où qu'il soit maintenant,
+est dans vos photos : jamais copié deux fois.
 Triez-les ensuite avec [`classify`](classify.md) et [`sort`](sort.md), comme n'importe quel
 dossier.
 
@@ -77,7 +85,8 @@ le milieu diffère compte comme présent dans vos photos. Il reste sur le NAS : 
 
 | Option | Ce qu'elle fait |
 |---|---|
-| `--to CHEMIN` | Dossier qui reçoit les copies (chemin de l'hôte) ; par défaut : `From NAS` dans votre premier dossier de photos. |
+| `DOSSIER` | Le dossier d'où importer (chemin de l'hôte), au lieu de vos dossiers de sauvegarde : une carte SD, un disque USB. Seulement lu pour ce passage, jamais ajouté à `mh`. |
+| `--to CHEMIN` | Dossier qui reçoit les copies (chemin de l'hôte) ; par défaut : `From <source>` dans votre premier dossier de photos. |
 | `--yes`, `-y` | Copier sans demander. |
 | `--backup CHEMIN` | Le dossier de sauvegarde d'où importer, s'il n'est pas dans `config.toml` (`mh` passe les vôtres). |
 

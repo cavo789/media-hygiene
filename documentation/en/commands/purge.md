@@ -48,6 +48,28 @@ purged: 16.4 MB freed.*
 |---|---|
 | `RUN` | Only the quarantine of this run (see [`history`](history.md)); every run by default. |
 | `--yes`, `-y` | Do not ask. |
+| `--to FOLDER` | Copy the quarantine to `FOLDER` first, check every byte of the copy, and only then erase it. |
+
+## Keep a copy elsewhere: `--to`
+
+Rather than erasing, `purge --to` moves the quarantine off the PC: a NAS share, an external disk,
+or a cloud's synced folder (OneDrive, Dropbox…), mounted in the container:
+
+```powershell
+docker run --rm -it `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  -v "\\NAS\archives_quarantaine:/archive" `
+  cavo789/media-hygiene purge --to /archive
+```
+
+- Each run goes to `<folder>/<run>/<drive>/…` (`C` for the default quarantine, `D` for `D:`'s…):
+  two quarantines never mix.
+- The free space of the folder is checked first; one file missing, of another size or with other
+  bytes, or changed during the copy, and that run is **not** erased.
+- A cloud's synced folder proves the local copy only, not the upload: it is as safe as your sync.
+- To get a run back: copy each `<drive>` folder of it back into that drive's quarantine
+  (`<folder>/<run>/C` → `quarantine\<run>`), then run [`undo <run>`](undo.md).
+- Without `--to` (and without `--yes`), `purge` reminds you of this option before its question.
 
 ## Good to know
 

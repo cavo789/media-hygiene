@@ -44,8 +44,20 @@ puis l'archive est **relue sur le disque** : chaque fichier comparé à son SHA-
 l'archive, sa taille et les lignes de chaque table relues (`files`, `tags`, `descriptions`,
 `meanings`, `faces`).
 
-L'archive est sur `C:`, comme le disque de Docker : elle protège d'une fausse manœuvre, pas d'une
-panne du disque. Copiez-la aussi sur une clé USB ou le NAS.
+### Une copie hors du PC
+
+Sur `C:` seul, l'archive protégerait d'une fausse manœuvre, pas d'une panne du disque. `mh` la
+copie donc lui-même dans un autre dossier, une fois relue :
+
+- quand [`push`](push.md) a une cible (le NAS), dans son dossier `.mh-backups`
+  (`\\NAS\backup_photos\.mh-backups`), sans option ;
+- ailleurs avec `--to` : `mh backup --to E:\mh-backups` (une clé USB, un autre partage).
+
+Ce dossier garde les 3 mêmes archives que le PC ; une copie est écrite entière ou pas du tout,
+puis relistée : `Relu : 3 archive(s) dans …`. Un NAS qui ne répond pas est signalé, et l'archive
+reste sur le PC ; un dossier donné avec `--to` qui ne s'ouvre pas arrête la commande. `backup` et
+[`restore`](restore.md) sont refusés pendant qu'une autre commande `mh` tourne (une page, un
+audit), sauf la page d'accueil qui les a lancés.
 
 Avec `docker run`, montez vous-même le dossier des archives :
 

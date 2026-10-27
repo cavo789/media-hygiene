@@ -550,13 +550,13 @@ Note ("   9c. window title at the next mh call: " + $Host.UI.RawUI.WindowTitle)
     } else {
         Log "   9b. skipped: powercfg /requests needs an administrator PowerShell (run -Only 9 from one)"
     }
-    $heard = Read-Host "9c. Did you hear a sound when mh audit ended in the other window? (y/n)"
+    $heard = Read-Host "9c. Avez-vous entendu un son quand mh audit s'est termine dans l'autre fenetre ? (o/n)"
     Log "   9c. sound heard at the end: $heard"
-    Write-Host "9d. Open a console yourself: Win+R, type conhost.exe powershell.exe, Enter. In it, type:"
+    Write-Host "9d. Ouvrez vous-meme une console : Win+R, tapez conhost.exe powershell.exe, Entree. Dedans, tapez :"
     Write-Host "    . '$mhFile'; mh review"
-    $opened = Read-Host "9d. A window runs mh review: did your browser open on the review page by itself? (y/n; n/a if it said there is nothing to review)"
+    $opened = Read-Host "9d. Une fenetre execute mh review : votre navigateur s'est-il ouvert tout seul sur la page de revue ? (o/n ; n/a s'il a dit qu'il n'y a rien a revoir)"
     Log "   9d. browser opened by mh review: $opened"
-    Write-Host "Press Ctrl+C in the review window, then close it."
+    Write-Host "Appuyez sur Ctrl+C dans la fenetre de revue, puis fermez-la."
 }
 
 # --- 10: what mh does by itself, without docker run (0175, 0180, 0181) ----------------------
@@ -588,7 +588,7 @@ if ((Wanted 10) -or $portOnly) {
             mh audit | Out-Null
         }
         mh open
-        $opened = Read-Host "10a. mh open: did your browser open the list of the reports? (y/n)"
+        $opened = Read-Host "10a. mh open : votre navigateur a-t-il ouvert la liste des rapports ? (o/n)"
         Log "   10a. browser opened on index.html by mh open: $opened"
 
         # 10b: the shortcuts, yours saved first.
@@ -602,11 +602,11 @@ if ((Wanted 10) -or $portOnly) {
             Log ("   10b. {0} exists: {1}; target {2}; arguments {3}" -f $link, (Test-Path -LiteralPath $link), $back.TargetPath, $back.Arguments)
             Log ("   10b. {0} arguments hold Bypass (0257, expected False): {1}" -f $link, ($back.Arguments -match 'Bypass'))
         }
-        $clicked = Read-Host "10b. Double-click Media Hygiene on your Desktop: does a PowerShell window open, stay open, and the home page open in your browser? (y/n)"
+        $clicked = Read-Host "10b. Double-cliquez Media Hygiene sur votre Bureau : une fenetre PowerShell s'ouvre-t-elle, reste-t-elle ouverte, et la page d'accueil s'ouvre-t-elle dans votre navigateur ? (o/n)"
         Log "   10b. the icon opens the window and the home page: $clicked"
-        $alert = Read-Host "10b. Did Avast or Windows Defender show anything since that double-click (an alert, a blocked file)? (none, or what it said)"
+        $alert = Read-Host "10b. Avast ou Windows Defender a-t-il affiche quelque chose depuis ce double-clic (une alerte, un fichier bloque) ? (rien, ou ce qu'il a dit)"
         Log "   10b. antivirus after the double-click (0257): $alert"
-        $null = Read-Host "10b. Close that window with its X (top right). Then press Enter here"
+        $null = Read-Host "10b. Fermez cette fenetre avec sa croix (en haut a droite). Puis appuyez sur Entree ici"
         MhLeftovers "10b"
 
         # 10c: the right-click entries (a folder; the background of an open folder, 0188), yours
@@ -628,31 +628,31 @@ if ((Wanted 10) -or $portOnly) {
         New-Item -ItemType Directory -Force -Path $odd | Out-Null
         Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 3 | Copy-Item -Destination $odd
         explorer.exe $Work
-        $menu = Read-Host "10c. In the Explorer window, right-click the folder L'ete 2019, then Media Hygiene: do a PowerShell window and the home page open? (y/n)"
+        $menu = Read-Host "10c. Dans la fenetre de l'Explorateur, clic droit sur le dossier L'ete 2019, puis Media Hygiene : une fenetre PowerShell et la page d'accueil s'ouvrent-elles ? (o/n)"
         Log "   10c. right-click opens the window and the home page: $menu"
-        $alert = Read-Host "10c. Did Avast or Windows Defender show anything since that right-click (an alert, a blocked file)? (none, or what it said)"
+        $alert = Read-Host "10c. Avast ou Windows Defender a-t-il affiche quelque chose depuis ce clic droit (une alerte, un fichier bloque) ? (rien, ou ce qu'il a dit)"
         Log "   10c. antivirus after the right-click (0257): $alert"
-        $where = Read-Host "10c. Where was Media Hygiene: in the first menu, or under Show more options? (first/more)"
+        $where = Read-Host "10c. Ou se trouvait Media Hygiene : dans le premier menu, ou sous Afficher d'autres options ? (first/more)"
         Log "   10c. entry found in: $where (Windows $([Environment]::OSVersion.Version))"
-        $named = Read-Host "10c. On the page, under 'Where you are', is the first line 'This page also analyses: ...\L'ete 2019', in bold? (y/n, or what it says)"
+        $named = Read-Host "10c. Sur la page, sous 'Where you are', la premiere ligne est-elle 'This page also analyses: ...\L'ete 2019', en gras ? (o/n, ou ce qu'elle dit)"
         Log "   10c. the page names the folder clicked (0258): $named"
-        $popup = Read-Host "10c. Click Run on the line mh audit. Does the page say 'mh audit runs in the PowerShell window of mh (in the taskbar)'? If the page has not come back after 30 s, does it add 'Nothing moves? Look at ...'? (y/back: the page came back before 30 s, no hint expected; y/y; y/n; n/...)"
+        $popup = Read-Host "10c. Cliquez Run sur la ligne mh audit. La page dit-elle 'mh audit runs in the PowerShell window of mh (in the taskbar)' ? Si la page n'est pas revenue apres 30 s, ajoute-t-elle 'Nothing moves? Look at ...' ? (o/back : la page est revenue avant 30 s, aucun conseil attendu ; o/o ; o/n ; n/...)"
         Log "   10c. Run names the window, then the 30 s hint (0258): $popup"
-        $audit = Read-Host "10c. In the PowerShell window, how many media files does the audit say it scanned? (43 with L'ete 2019's 3 photos; type the number)"
+        $audit = Read-Host "10c. Dans la fenetre PowerShell, combien de fichiers media l'audit dit-il avoir analyses ? (43 avec les 3 photos de L'ete 2019 ; tapez le nombre)"
         Log "   10c. audit run from the page, files scanned (43 expected): $audit"
-        $back = Read-Host "10c. When the audit ended, did the home page come back by itself? (y/n)"
+        $back = Read-Host "10c. Quand l'audit s'est termine, la page d'accueil est-elle revenue toute seule ? (o/n)"
         Log "   10c. the page came back after the step: $back"
-        $null = Read-Host "10c. Close that mh window with its X (top right), as a user would. Then press Enter here"
+        $null = Read-Host "10c. Fermez cette fenetre mh avec sa croix (en haut a droite), comme le ferait un utilisateur. Puis appuyez sur Entree ici"
         # 0250: the page of a closed window keeps running; the next mh page must stop it itself.
         $pages = @(& docker ps --filter "publish=8088" --format '{{.ID}};{{.Labels}}' 2>$null | ForEach-Object { "$_" -replace ';.*?(media-hygiene\.page=[^,]*).*', ';$1' })
         Log ("   10c. containers on port 8088 after the X (0250): " + $(if ($pages) { $pages -join ' / ' } else { '(none)' }))
-        $inside = Read-Host "10c. In Explorer, open L'ete 2019, right-click the EMPTY SPACE next to its photos, then Media Hygiene: does the home page open, naming L'ete 2019 under 'Where you are'? (y/n)"
+        $inside = Read-Host "10c. Dans l'Explorateur, ouvrez L'ete 2019, clic droit sur l'ESPACE VIDE a cote de ses photos, puis Media Hygiene : la page d'accueil s'ouvre-t-elle, en nommant L'ete 2019 sous 'Where you are' ? (o/n)"
         Log "   10c. right-click on the background of the open folder opens the menu on it (0188): $inside"
-        $freed = Read-Host "10c. Did that window first say 'An mh page left open by a closed window was stopped.' and open the page, with no 'port is already allocated'? (y/n, or what it said)"
+        $freed = Read-Host "10c. Cette fenetre a-t-elle d'abord dit 'An mh page left open by a closed window was stopped.' puis ouvert la page, sans 'port is already allocated' ? (o/n, ou ce qu'elle a dit)"
         Log "   10c. the next page stopped the leftover and opened (0250): $freed"
-        $where = Read-Host "10c. Where was Media Hygiene on the background: in the first menu, or under Show more options? (first/more)"
+        $where = Read-Host "10c. Ou se trouvait Media Hygiene sur l'arriere-plan : dans le premier menu, ou sous Afficher d'autres options ? (first/more)"
         Log "   10c. background entry found in: $where"
-        $null = Read-Host "10c. Close that mh window too, with its X. Then press Enter here"
+        $null = Read-Host "10c. Fermez aussi cette fenetre mh, avec sa croix. Puis appuyez sur Entree ici"
         MhLeftovers "10c"
 
         # 10e (0257): the same right-click with mh.ps1 where users keep it, under
@@ -665,11 +665,11 @@ if ((Wanted 10) -or $portOnly) {
         . $mhHome
         $said = @(mh explorer 6>&1 | ForEach-Object { "$_" })
         foreach ($line in $said) { Log ("   10e. " + $line) }
-        $menu = Read-Host "10e. Right-click L'ete 2019 again, then Media Hygiene (mh.ps1 now under $home10e): do the window and the home page open? (y/n)"
+        $menu = Read-Host "10e. Clic droit sur L'ete 2019 a nouveau, puis Media Hygiene (mh.ps1 est maintenant sous $home10e) : la fenetre et la page d'accueil s'ouvrent-elles ? (o/n)"
         Log "   10e. right-click with mh.ps1 under the user's folder: $menu"
-        $alert = Read-Host "10e. Did Avast or Windows Defender show anything this time? (none, or what it said)"
+        $alert = Read-Host "10e. Avast ou Windows Defender a-t-il affiche quelque chose cette fois ? (rien, ou ce qu'il a dit)"
         Log "   10e. antivirus, mh.ps1 under %USERPROFILE%\media-hygiene: $alert"
-        $null = Read-Host "10e. Close that mh window with its X (top right). Then press Enter here"
+        $null = Read-Host "10e. Fermez cette fenetre mh avec sa croix (en haut a droite). Puis appuyez sur Entree ici"
         MhLeftovers "10e"
         . $mhFile
         Remove-Item -LiteralPath $home10e -Recurse -Force -ErrorAction SilentlyContinue
@@ -781,9 +781,9 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
     # 11e: mh update. The local build has nothing to pull.
     $said = @(mh update 6>&1 | ForEach-Object { "$_" })
     foreach ($line in $said) { Log ("   11e. local image: " + $line) }
-    $agree = Read-Host "11e. Try mh update for real? Your local image is tagged cavo789/media-hygiene, then the published one is pulled over that tag (y/n)"
+    $agree = Read-Host "11e. Essayer mh update pour de vrai ? Votre image locale est etiquetee cavo789/media-hygiene, puis la publiee est tiree par-dessus cette etiquette (o/n)"
     Log "   11e. real update tried: $agree"
-    if ($agree -eq 'y') {
+    if ($agree -in 'y', 'o') {
         & docker tag $Image "cavo789/media-hygiene:latest"
         & docker run --rm -e "MEDIA_HYGIENE_IMAGE=cavo789/media-hygiene" @toolMounts $Image launcher --photos $data > $mhFile
         . $mhFile
@@ -802,19 +802,19 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
     $pickedDir = Join-Path $Work "Picked photos"
     New-Item -ItemType Directory -Force -Path $pickedDir | Out-Null
     Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 2 | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $pickedDir ("picked-" + $_.Name)) }
-    Write-Host "11f. A folder window opens: choose $pickedDir (This PC, then the folders), then OK."
+    Write-Host "11f. Une fenetre de dossier s'ouvre : choisissez $pickedDir (Ce PC, puis les dossiers), puis OK."
     $said = @(mh folders add 6>&1 | ForEach-Object { "$_" })
     foreach ($line in $said) { Log ("   11f. " + $line) }
     # The folder window gives the long path, %TEMP% may be the short one (CHRIST~1): its name.
     Log ("   11f. the file names the folder chosen: " + [bool](Select-String -LiteralPath $mhFile -SimpleMatch -Pattern "\Picked photos" -Quiet))
-    $front = Read-Host "11f. Did the window open in front of this console, without Alt+Tab? (y/n)"
+    $front = Read-Host "11f. La fenetre s'est-elle ouverte devant cette console, sans Alt+Tab ? (o/n)"
     Log "   11f. window in front of the console: $front"
     $before = (Get-FileHash -LiteralPath $mhFile).Hash
-    Write-Host "11g. The folder window opens again: click Cancel."
+    Write-Host "11g. La fenetre de dossier s'ouvre a nouveau : cliquez Annuler."
     $said = @(mh folders add 6>&1 | ForEach-Object { "$_" })
     foreach ($line in $said) { Log ("   11g. cancelled: " + $line) }
     Log ("   11g. mh.ps1 unchanged after cancel: " + ($before -eq (Get-FileHash -LiteralPath $mhFile).Hash))
-    $avast = Read-Host "11g. Did your antivirus say anything during 11f or 11g? (n, or what it said)"
+    $avast = Read-Host "11g. Votre antivirus a-t-il dit quelque chose pendant 11f ou 11g ? (n, ou ce qu'il a dit)"
     Log "   11g. antivirus: $avast"
     $null = @(mh folders remove $pickedDir 6>&1)
 
@@ -859,9 +859,9 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
         # listed here without starting any (wsl -e would start one, and mount the stick).
         $running = @(& wsl.exe --list --running --quiet 2>$null | ForEach-Object { "$_" -replace "`0", '' } | Where-Object { $_.Trim() })
         Log ("   11j. WSL distributions running before the eject: " + $(if ($running) { $running -join ', ' } else { 'none' }))
-        $ejected = Read-Host "11j. Safely remove ${letter}: now (taskbar, Safely Remove Hardware, Eject). Did Windows let you, without 'This device is currently in use'? (y/n, or what it said)"
+        $ejected = Read-Host "11j. Retirez ${letter}: en securite maintenant (barre des taches, Retirer le peripherique en toute securite, Ejecter). Windows vous l'a-t-il permis, sans 'Ce peripherique est actuellement utilise' ? (o/n, ou ce qu'il a dit)"
         Log "   11j. ${letter}: ejected safely after the mh commands: $ejected"
-        $null = Read-Host "11j. Plug ${letter}: back in (same letter), then press Enter"
+        $null = Read-Host "11j. Rebranchez ${letter}: (meme lettre), puis appuyez sur Entree"
         # 11k (0254): from your WSL distribution (Docker Desktop's integration on): is the
         # interop on, is the stick in /mnt, and which mount does a container started from
         # WSL see: the distribution's /mnt/x once mounted there (the line mh.sh says to type), or not.
@@ -884,15 +884,15 @@ Note ("   11b. new terminal, exit code " + $LASTEXITCODE + ": " + (@($lines | Wh
         $said = @(& wsl.exe -u root -e umount "/mnt/$low" 2>&1 | ForEach-Object { "$_" })
         Log ("   11k. umount /mnt/$low in ${distro}: exit code $LASTEXITCODE " + ($said -join ' / '))
         # 11j asked after the mh commands alone; here, after WSL's own mount and Docker's try.
-        $ejected = Read-Host "11k. Safely remove ${letter}: again now. Did Windows let you this time? (y/n, or what it said)"
+        $ejected = Read-Host "11k. Retirez ${letter}: en securite a nouveau maintenant. Windows vous l'a-t-il permis cette fois ? (o/n, ou ce qu'il a dit)"
         Log "   11k. ${letter}: ejected after the WSL checks: $ejected"
-        if ("$ejected" -notmatch '^y') {
-            Write-Host "11k. In another PowerShell (on C:), type: wsl --shutdown   (it stops Docker Desktop too)"
-            $shut = Read-Host "11k. Then Safely remove ${letter}: again. Did Windows let you now? (y/n, or what it said)"
+        if ("$ejected" -notmatch '^[yo]') {
+            Write-Host "11k. Dans un autre PowerShell (sur C:), tapez : wsl --shutdown   (cela arrete aussi Docker Desktop)"
+            $shut = Read-Host "11k. Puis retirez ${letter}: en securite a nouveau. Windows vous l'a-t-il permis maintenant ? (o/n, ou ce qu'il a dit)"
             Log "   11k. ${letter}: ejected after wsl --shutdown: $shut"
-            $null = Read-Host "11k. Start Docker Desktop again (Start menu), wait until it runs, plug ${letter}: back in, then press Enter"
+            $null = Read-Host "11k. Relancez Docker Desktop (menu Demarrer), attendez qu'il tourne, rebranchez ${letter}:, puis appuyez sur Entree"
         } else {
-            $null = Read-Host "11k. Plug ${letter}: back in (same letter), then press Enter"
+            $null = Read-Host "11k. Rebranchez ${letter}: (meme lettre), puis appuyez sur Entree"
         }
     }
     $null = @(mh folders remove $backupDir 6>&1)
@@ -974,7 +974,7 @@ if (Wanted 13) {
         }
         $bytes = 0
         $files = 0
-        Write-Host "13. Copying 1 GB of photos twice to $drive13 first (minutes on a slow disk)..."
+        Write-Host "13. Copie de 1 Go de photos deux fois vers $drive13 d'abord (des minutes sur un disque lent)..."
         foreach ($photo in (Get-ChildItem -Path $Photos -Recurse -File -Include *.jpg, *.jpeg)) {
             if ($bytes -ge 1GB) { break }
             $name = "{0:D6}-{1}" -f $files, $photo.Name
@@ -1023,37 +1023,37 @@ if (Wanted 14) {
     Log "== 14. the mh menu by hand (0172)"
     foreach ($console in 'conhost', 'usual') {
         if ($console -eq 'conhost') {
-            Write-Host "14 (old console): Win+R, type conhost.exe powershell.exe, Enter."
+            Write-Host "14 (ancienne console) : Win+R, tapez conhost.exe powershell.exe, Entree."
         } else {
-            Write-Host "14 (usual console): open Windows PowerShell as you usually do."
+            Write-Host "14 (console habituelle) : ouvrez Windows PowerShell comme d'habitude."
         }
         Write-Host "    In it, type: . '$mhFile'; mh menu"
-        Write-Host "    The mh menu shows. Type the number of 'audit', Enter; when it ends, type mh menu again, then Ctrl+C at the question."
-        $colours = Read-Host "14. Colours shown as colours, not as codes like [32m? (y/n)"
-        $columns = Read-Host "14. Emoji and step columns lined up? (y/n)"
-        $ran = Read-Host "14. The number + Enter ran audit? (y/n)"
-        $stopped = Read-Host "14. Ctrl+C at the question gave the prompt back, no red error? (y/n)"
+        Write-Host "    Le menu mh s'affiche. Tapez le numero de 'audit', Entree ; quand il se termine, tapez mh menu a nouveau, puis Ctrl+C a la question."
+        $colours = Read-Host "14. Les couleurs sont-elles affichees comme des couleurs, pas comme des codes du genre [32m ? (o/n)"
+        $columns = Read-Host "14. Les emoji et les colonnes des etapes sont-ils alignes ? (o/n)"
+        $ran = Read-Host "14. Le numero + Entree a-t-il lance audit ? (o/n)"
+        $stopped = Read-Host "14. Ctrl+C a la question a-t-il rendu l'invite, sans erreur rouge ? (o/n)"
         Log "   14 ($console): colours $colours, columns $columns, number ran $ran, Ctrl+C clean $stopped"
-        Write-Host "Close that window."
+        Write-Host "Fermez cette fenetre."
     }
     # mh alone: the home page in the browser; its buttons run the steps in the console (0210).
-    Write-Host "14 (home page): open Windows PowerShell as you usually do."
+    Write-Host "14 (page d'accueil) : ouvrez Windows PowerShell comme d'habitude."
     Write-Host "    In it, type: . '$mhFile'; mh"
-    Write-Host "    The home page opens in your browser. Click Run on the 'clean' step: it runs in the"
-    Write-Host "    PowerShell window and asks its question there; answer n. The page must come back."
-    Write-Host "    Then go to the Clean space; click 'Open the page' on its 'review' step: the review"
-    Write-Host "    page must show in the SAME tab. On it, click 'Back to the home page' in the top bar."
-    Write-Host "    Count the browser tabs on 127.0.0.1 (0280: one tab from start to end)."
-    Write-Host "    Finally press Ctrl+C in the PowerShell window (the home page has no Quit button)."
-    $opened = Read-Host "14h. mh alone opened the home page in the browser? (y/n)"
-    $asked = Read-Host "14h. Run on 'clean' ran it in the PowerShell window, with its question? (y/n)"
-    $back = Read-Host "14h. After it, the home page came back by itself (reloaded)? (y/n)"
-    $sameTab = Read-Host "14h. The review page showed in the same tab, no new tab? (y/n)"
-    $homeLink = Read-Host "14h. 'Back to the home page' came back to the Clean space? (y/n)"
-    $tabs = Read-Host "14h. How many tabs on 127.0.0.1 at the end? (a number)"
-    $quit = Read-Host "14h. Ctrl+C gave the PowerShell prompt back, no red error? (y/n)"
+    Write-Host "    La page d'accueil s'ouvre dans votre navigateur. Cliquez Run sur l'etape 'clean' : elle s'execute dans la"
+    Write-Host "    fenetre PowerShell et pose sa question la ; repondez n. La page doit revenir."
+    Write-Host "    Allez ensuite dans l'espace Clean ; cliquez 'Open the page' sur son etape 'review' : la page de"
+    Write-Host "    revue doit s'afficher dans le MEME onglet. Dessus, cliquez 'Back to the home page' dans la barre du haut."
+    Write-Host "    Comptez les onglets du navigateur sur 127.0.0.1 (0280 : un seul onglet du debut a la fin)."
+    Write-Host "    Enfin, appuyez sur Ctrl+C dans la fenetre PowerShell (la page d'accueil n'a pas de bouton Quitter)."
+    $opened = Read-Host "14h. mh seul a-t-il ouvert la page d'accueil dans le navigateur ? (o/n)"
+    $asked = Read-Host "14h. Run sur 'clean' l'a-t-il execute dans la fenetre PowerShell, avec sa question ? (o/n)"
+    $back = Read-Host "14h. Apres cela, la page d'accueil est-elle revenue toute seule (rechargee) ? (o/n)"
+    $sameTab = Read-Host "14h. La page de revue s'est-elle affichee dans le meme onglet, sans nouvel onglet ? (o/n)"
+    $homeLink = Read-Host "14h. 'Back to the home page' est-il revenu a l'espace Clean ? (o/n)"
+    $tabs = Read-Host "14h. Combien d'onglets sur 127.0.0.1 a la fin ? (un nombre)"
+    $quit = Read-Host "14h. Ctrl+C a-t-il rendu l'invite PowerShell, sans erreur rouge ? (o/n)"
     Log "   14h (home page): opened $opened, clean in the console $asked, page back $back, review in the same tab $sameTab, back to Clean $homeLink, tabs $tabs, Ctrl+C clean $quit"
-    Write-Host "Close that window."
+    Write-Host "Fermez cette fenetre."
 }
 
 # --- 15: the launcher line of the guide, then mh audit and mh --photos (0173) ----------------
@@ -1105,7 +1105,7 @@ if (Wanted 16) {
     & docker run --rm $Image launcher --photos $data > $mhFile
     . $mhFile
     Log ("   16. Docker Desktop client: " + "$(& docker version --format '{{.Client.Version}}' 2>$null)")
-    Read-Host "16. Quit Docker Desktop now (its icon near the clock, right-click, Quit), wait 20 s, then press Enter"
+    Read-Host "16. Quittez Docker Desktop maintenant (son icone pres de l'horloge, clic droit, Quit), attendez 20 s, puis appuyez sur Entree"
     $said = @(& docker run --rm $Image --version 2>&1 | ForEach-Object { "$_" })
     $code = $LASTEXITCODE
     foreach ($line in $said) { Log ("   16a. docker run says: " + $line.Trim()) }
@@ -1113,7 +1113,7 @@ if (Wanted 16) {
     & docker version --format '{{.Server.Version}}' 2>&1 | Out-Null
     Log "   16b. docker version exit code with Docker Desktop closed: $LASTEXITCODE"
     # 16c: what `mh` alone (the shortcut, the right-click) runs before the home page.
-    Write-Host "16c. mh starts Docker Desktop now (up to 3 minutes); do not touch it."
+    Write-Host "16c. mh demarre Docker Desktop maintenant (jusqu'a 3 minutes) ; n'y touchez pas."
     $watch = [Diagnostics.Stopwatch]::StartNew()
     $said = @(_mh_desktop 6>&1 | ForEach-Object { "$_" })
     $watch.Stop()
@@ -1122,7 +1122,7 @@ if (Wanted 16) {
     & docker version --format '{{.Server.Version}}' 2>&1 | Out-Null
     Log "   16c. docker version exit code afterwards: $LASTEXITCODE"
     # 16d: another command after a quit: Docker Desktop started, the command not run twice.
-    Read-Host "16d. Quit Docker Desktop again, wait 20 s, then press Enter (mh audit runs, then mh starts Docker Desktop)"
+    Read-Host "16d. Quittez Docker Desktop a nouveau, attendez 20 s, puis appuyez sur Entree (mh audit s'execute, puis mh demarre Docker Desktop)"
     $watch = [Diagnostics.Stopwatch]::StartNew()
     $said = @(mh audit 6>&1 2>&1 | ForEach-Object { "$_" })
     $code = $LASTEXITCODE
@@ -1175,7 +1175,7 @@ if (Wanted 17) {
         $still = (Test-Path -LiteralPath $path) -and ([IO.File]::ReadAllText($path) -eq $written[$variant])
         Log ("   17. {0,-18} still there, unchanged, 15 s later: {1}" -f $variant, $still)
     }
-    $seen = Read-Host "17. Did the antivirus show alerts? Which file names did they give? (type them, or none)"
+    $seen = Read-Host "17. L'antivirus a-t-il affiche des alertes ? Quels noms de fichiers a-t-il donnes ? (tapez-les, ou none)"
     Log "   17. antivirus alerts: $seen"
     if (-not $Keep) { Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $folder }
 }
@@ -1212,18 +1212,18 @@ if (Wanted 18) {
     $global:MediaHygieneCloud = $null
     Log ""
     Log "== 18. photos in OneDrive's cloud only, played by offline files (0199)"
-    Write-Host "18a. mh audit follows: it should say 3 files of $cloud are in the cloud only. Type N."
+    Write-Host "18a. mh audit suit : il doit dire que 3 fichiers de $cloud sont uniquement dans le cloud. Tapez N."
     $watch = [Diagnostics.Stopwatch]::StartNew()
     mh audit
     Log ("   18a. mh audit answered N: exit code {0}, {1:N1} s (an audit would take longer)" -f $LASTEXITCODE, $watch.Elapsed.TotalSeconds)
-    $line = Read-Host "18a. Did mh say '3 files (... GB) of $cloud are in OneDrive's cloud only' with the free space of $($cloud.Substring(0, 2))? Type what was wrong, or ok"
+    $line = Read-Host "18a. mh a-t-il dit '3 files (... GB) of $cloud are in OneDrive's cloud only' avec l'espace libre de $($cloud.Substring(0, 2)) ? Tapez ce qui n'allait pas, ou ok"
     Log "   18a. the line: $line"
-    Write-Host "18b. mh audit again: no new count, the same question. Type y."
+    Write-Host "18b. mh audit a nouveau : pas de nouveau compte, la meme question. Tapez y."
     mh audit | Out-Null
     Log "   18b. mh audit answered y: exit code $LASTEXITCODE"
-    Write-Host "18c. mh audit a third time: no question expected."
+    Write-Host "18c. mh audit une troisieme fois : aucune question attendue."
     mh audit | Out-Null
-    $asked = Read-Host "18c. Was the question asked again? (y/n)"
+    $asked = Read-Host "18c. La question a-t-elle ete posee a nouveau ? (o/n)"
     Log "   18c. asked again after y in the same window (n expected): $asked"
     $said = @(mh folders add $later 6>&1 | ForEach-Object { "$_" })
     foreach ($said1 in $said) { Log ("   18d. mh folders add: " + $said1) }
@@ -1291,7 +1291,7 @@ if (Wanted 19) {
     Log ""
     Log "== 19. a phone over USB, read through Shell.Application (0218)"
     Log "   19. Windows PowerShell $($PSVersionTable.PSVersion), Shell.Application; nothing is written to the phone before 19l"
-    Read-Host "19a. Plug the phone in, unlock it (Android: choose File transfer; iPhone: Trust this computer), then press Enter" | Out-Null
+    Read-Host "19a. Branchez le telephone, deverrouillez-le (Android : choisissez Transfert de fichiers ; iPhone : Faire confiance a cet ordinateur), puis appuyez sur Entree" | Out-Null
     $devices = @()
     $phone = $null
     $dcim = $null
@@ -1306,7 +1306,7 @@ if (Wanted 19) {
     if ($devices.Count -eq 0) {
         Log "   19a. no item of This PC without a file system: the phone is not seen (cable, unlock, File transfer?)"
     } else {
-        $answer = Read-Host "19a. Number of the phone (1 to $($devices.Count))"
+        $answer = Read-Host "19a. Numero du telephone (1 a $($devices.Count))"
         $phone = $devices[[int]$answer - 1]
         Log "   19a. phone picked: '$($phone.Name)' (Type '$($phone.Type)')"
         $dcim = PhoneFindDcim $phone.GetFolder 0
@@ -1314,7 +1314,7 @@ if (Wanted 19) {
             # A locked phone, or USB left on "Charging only", shows the phone without its storage.
             $top = @(foreach ($entry in $phone.GetFolder.Items()) { $entry.Name })
             Log ("   19b. try {0}: no DCIM folder within three levels of the phone; it shows: {1}" -f $try, $(if ($top.Count) { $top -join ' / ' } else { '(nothing)' }))
-            $again = Read-Host "19b. Unlock the phone, choose File transfer in its USB notification, open it in Explorer until you see DCIM, then press Enter to look again (s to skip the phone)"
+            $again = Read-Host "19b. Deverrouillez le telephone, choisissez Transfert de fichiers dans sa notification USB, ouvrez-le dans l'Explorateur jusqu'a voir DCIM, puis appuyez sur Entree pour chercher a nouveau (s pour passer le telephone)"
             if ($again -eq 's') { break }
             foreach ($entry in $shell.Namespace(17).Items()) {
                 if (-not $entry.IsFileSystem -and $entry.Name -eq $phone.Name) { $phone = $entry }
@@ -1379,8 +1379,8 @@ if (Wanted 19) {
     # folder is an empty test folder: the first run copies every file of DCIM into
     # <that folder>\Phone\<phone name>, the second copies nothing; then the largest copies are
     # removed and copied again while you pull the cable out. All under -Work, removed at the end.
-    $answer = if ($dcim) { Read-Host "19h. mh phone copies EVERY photo and video of the phone's DCIM into $Work (see the size in 19c). Run it? (y/n)" } else { 'n' }
-    if ($answer -eq 'y') {
+    $answer = if ($dcim) { Read-Host "19h. mh phone copie TOUTES les photos et videos du DCIM du telephone dans $Work (voir la taille en 19c). Le lancer ? (o/n)" } else { 'n' }
+    if ($answer -in 'y', 'o') {
         $phoneLibrary = Join-Path $Work "phone-library"
         $mhDir = Join-Path $tool "mh19"
         New-Item -ItemType Directory -Force -Path $phoneLibrary, $mhDir, (Join-Path $tool "config") | Out-Null
@@ -1416,16 +1416,16 @@ if (Wanted 19) {
         if ($largest.Count -gt 0) {
             foreach ($copy in $largest) { Remove-Item -LiteralPath $copy.FullName -Force }
             Log ("   19j. the {0} largest copies removed ({1:N1} MB): the next mh phone copies them again" -f $largest.Count, (($largest | Measure-Object Length -Sum).Sum / 1MB))
-            Read-Host "19j. Next: when the line '2/$($largest.Count)' appears, PULL THE CABLE OUT, then wait (up to 60 s). Press Enter to start" | Out-Null
+            Read-Host "19j. Ensuite : quand la ligne '2/$($largest.Count)' apparait, DEBRANCHEZ LE CABLE, puis attendez (jusqu'a 60 s). Appuyez sur Entree pour demarrer" | Out-Null
             $watch = [Diagnostics.Stopwatch]::StartNew()
             # Shown as it comes (the '2/N' line to wait for), and logged after: captured alone,
             # the maintainer saw nothing (2026-10-20).
             $said = @(mh phone 6>&1 | ForEach-Object { $text = "$_"; Write-Host $text; $text })
             foreach ($line in $said) { Log ("   19j. cable pulled: " + $line) }
             Log ("   19j. cable pulled: {0:N1} s wall time; staging folders left: {1}" -f $watch.Elapsed.TotalSeconds, @(Get-ChildItem -LiteralPath (Join-Path $phoneLibrary 'Phone') -Recurse -Directory -Force -Filter '.mh-phone-*' -ErrorAction SilentlyContinue).Count)
-            $dialog = Read-Host "19j. Did Windows show any window or question (look with Alt+Tab)? (n or what it said)"
+            $dialog = Read-Host "19j. Windows a-t-il affiche une fenetre ou une question (regardez avec Alt+Tab) ? (n ou ce qu'il a dit)"
             Log "   19j. a window during the cable pulled (none expected): $dialog"
-            Read-Host "19k. Plug the phone in again, unlock it (File transfer), then press Enter" | Out-Null
+            Read-Host "19k. Rebranchez le telephone, deverrouillez-le (Transfert de fichiers), puis appuyez sur Entree" | Out-Null
             $said = @(mh phone 6>&1 | ForEach-Object { "$_" })
             foreach ($line in ($said | Where-Object { $_ -notmatch '^\s+\d+/\d+ ' })) { Log ("   19k. after the cable: " + $line) }
         }
@@ -1447,14 +1447,14 @@ if (Wanted 19) {
     # a time (a 16x16 grey JPEG made here, never a photo), written into DCIM\mh-measure on the
     # phone, then deleted: InvokeVerb, InvokeVerbEx, MoveHere to the PC, each on its own test
     # file. Every other file of the phone is left alone: DCIM is counted before and after.
-    $answer = if ($dcim) { Read-Host "19l. Next: this writes ONE test file to the phone (in DCIM\mh-measure), then deletes it, three ways in turn; no other file of the phone is touched. Go on? (y/n)" } else { 'n' }
+    $answer = if ($dcim) { Read-Host "19l. Ensuite : cela ecrit UN fichier de test sur le telephone (dans DCIM\mh-measure), puis le supprime, de trois facons tour a tour ; aucun autre fichier du telephone n'est touche. Continuer ? (o/n)" } else { 'n' }
     $device = $null
-    if ($answer -eq 'y' -and $phone) {
+    if (($answer -in 'y', 'o') -and $phone) {
         foreach ($entry in $shell.Namespace(17).Items()) {
             if (-not $entry.IsFileSystem -and $entry.Name -eq $phone.Name) { $device = $entry }
         }
         if (-not $device) { Log "   19l. the phone '$($phone.Name)' is not seen any more (plugged in, unlocked, File transfer?): 19l-19o skipped" }
-    } elseif ($answer -eq 'y') {
+    } elseif ($answer -in 'y', 'o') {
         Log "   19l. no phone picked in 19a: 19l-19o skipped"
     } else {
         Log "   19l. writing and deleting a test file on the phone: skipped"
@@ -1532,7 +1532,7 @@ if (Wanted 19) {
                     $moved = Get-Item -LiteralPath (Join-Path $phoneMoved $name) -ErrorAction SilentlyContinue
                     Log ("   19m. MoveHere: copy on the PC {0}" -f $(if ($moved) { "there, $($moved.Length) bytes" } else { 'NOT there' }))
                 }
-                $dialog = Read-Host "19m. $way : did Windows show a dialog or question (look with Alt+Tab)? (n or what it said)"
+                $dialog = Read-Host "19m. $way : Windows a-t-il affiche une boite de dialogue ou une question (regardez avec Alt+Tab) ? (n ou ce qu'il a dit)"
                 Log "   19m. $way : dialog: $dialog"
                 if ($gone -ge 0) { $deleted += $way; $onPhone = $null }
             }
@@ -1550,7 +1550,7 @@ if (Wanted 19) {
                 } catch { Log "   19n. $way on the folder: error $($_.Exception.Message)" }
                 $gone = PhoneGone $dcimFolder 'mh-measure' 60
                 Log ("   19n. DCIM\mh-measure removed with {0}: {1}" -f $way, $(if ($gone -ge 0) { "gone after {0:N1} s" -f ($watch.Elapsed.TotalSeconds) } else { 'STILL there after 60 s: delete it by hand' }))
-                $dialog = Read-Host "19n. Did Windows show a dialog or question (look with Alt+Tab)? (n or what it said)"
+                $dialog = Read-Host "19n. Windows a-t-il affiche une boite de dialogue ou une question (regardez avec Alt+Tab) ? (n ou ce qu'il a dit)"
                 Log "   19n. dialog on the folder: $dialog"
             } else {
                 Log "   19n. DCIM\mh-measure left on the phone (no way deleted the test file, or it is not empty): delete it by hand in Explorer"
@@ -1559,7 +1559,7 @@ if (Wanted 19) {
         $after = @(PhoneFiles $dcimFolder 0)
         $left = @($after | Where-Object { $_.Name -like 'mh-measure-*' })
         Log ("   19n. DCIM after: {0} files, before: {1} ({2}); test files left: {3}" -f $after.Count, $countBefore, $(if ($after.Count -eq $countBefore) { 'the same: no other file touched' } else { 'DIFFERENT' }), $left.Count)
-        $trash = Read-Host "19n. On the phone, open the Gallery, then its Trash (Recycle bin): is a mh-measure-... picture there? (n or what you see)"
+        $trash = Read-Host "19n. Sur le telephone, ouvrez la Galerie, puis sa Corbeille : une image mh-measure-... s'y trouve-t-elle ? (n ou ce que vous voyez)"
         Log "   19n. phone gallery trash after the deletions over USB: $trash"
 
         # 19o: the read speed of 0248's proof: the 20 files of 19d copied into an EMPTY folder
@@ -1595,9 +1595,9 @@ if (Wanted 19) {
     # on the phone; --only mh-measure-free keeps every other file of the phone out of the import
     # and of the page. A and C are new: imported, then proven and deleted from the phone. B has a
     # twin in the destination with its name and size but another content: kept on the phone.
-    $answer = if ($phone) { Read-Host "19p. Next: mh phone --free on 3 test files written to the phone (DCIM\mh-measure-free); no other file of the phone is touched. Go on? (y/n)" } else { 'n' }
+    $answer = if ($phone) { Read-Host "19p. Ensuite : mh phone --free sur 3 fichiers de test ecrits sur le telephone (DCIM\mh-measure-free) ; aucun autre fichier du telephone n'est touche. Continuer ? (o/n)" } else { 'n' }
     $device = $null
-    if ($answer -eq 'y') {
+    if ($answer -in 'y', 'o') {
         foreach ($entry in $shell.Namespace(17).Items()) {
             if (-not $entry.IsFileSystem -and $entry.Name -eq $phone.Name) { $device = $entry }
         }
@@ -1662,13 +1662,13 @@ if (Wanted 19) {
         $twin[$twin.Length - 1] = [byte](($twin[$twin.Length - 1] + 1) % 256)
         [IO.File]::WriteAllBytes((Join-Path $twinFolder $names[1]), $twin)
         Log "   19p. B's twin written in the destination: same name and size, another content"
-        Read-Host "19p. Next: a page opens in your browser; leave the ticks as they are (A, B, C), press Delete, confirm. Press Enter to start" | Out-Null
+        Read-Host "19p. Ensuite : une page s'ouvre dans votre navigateur ; laissez les cases cochees telles quelles (A, B, C), appuyez sur Delete, confirmez. Appuyez sur Entree pour demarrer" | Out-Null
         $watch = [Diagnostics.Stopwatch]::StartNew()
         $said = @(mh phone --to $freeTo --only mh-measure-free --free 6>&1 | ForEach-Object { "$_" })
         $seconds = $watch.Elapsed.TotalSeconds
         foreach ($line in $said) { Log ("   19p. mh phone --free: " + $line) }
         Log ("   19p. mh phone --free: {0:N1} s wall time (the page included)" -f $seconds)
-        $dialog = Read-Host "19p. Did Windows show any window or question (look with Alt+Tab)? (n or what it said)"
+        $dialog = Read-Host "19p. Windows a-t-il affiche une fenetre ou une question (regardez avec Alt+Tab) ? (n ou ce qu'il a dit)"
         Log "   19p. a window during mh phone --free (none expected): $dialog"
         $left = @(foreach ($entry in $testFolder.Items()) { "$($entry.ExtendedProperty('System.FileName'))" })
         Log ("   19p. left on the phone in DCIM\mh-measure-free: {0} (expected: only {1})" -f ($left -join ', '), $names[1])
@@ -1689,10 +1689,10 @@ if (Wanted 19) {
     }
     # 19q: what Shell.Application shows of a LOCKED phone (0336): Windows lists it by name, but
     # does it show no storage (no item), or an empty storage? Read only, then once unlocked.
-    $answer = if ($phone) { Read-Host "19q. Next: lock the phone (screen off), keep it plugged in, wait 10 s, then type y (n skips)" } else { 'n' }
-    if ($answer -eq 'y') {
+    $answer = if ($phone) { Read-Host "19q. Ensuite : verrouillez le telephone (ecran eteint), laissez-le branche, attendez 10 s, puis tapez o (n passe)" } else { 'n' }
+    if ($answer -in 'y', 'o') {
         foreach ($state in 'locked', 'unlocked') {
-            if ($state -eq 'unlocked') { $null = Read-Host "19q. Now unlock the phone (File transfer if asked), wait 10 s, then press Enter" }
+            if ($state -eq 'unlocked') { $null = Read-Host "19q. Deverrouillez maintenant le telephone (Transfert de fichiers si demande), attendez 10 s, puis appuyez sur Entree" }
             $device = $null
             foreach ($entry in $shell.Namespace(17).Items()) {
                 if (-not $entry.IsFileSystem -and $entry.Name -eq $phone.Name) { $device = $entry }
@@ -1710,9 +1710,9 @@ if (Wanted 19) {
     # never a photo) written to DCIM\mh-measure-speed, then read back twice: CopyHere into one PC
     # folder (the proof's copy of today), then MoveHere into another (today's deletion). Both
     # copies hashed against the originals; DCIM counted before and after.
-    $answer = if ($phone) { Read-Host "19r. Next: 20 test files (80 MB, random bytes) written to the phone (DCIM\mh-measure-speed), copied back, then moved back to the PC; no other file of the phone is touched. Go on? (y/n)" } else { 'n' }
+    $answer = if ($phone) { Read-Host "19r. Ensuite : 20 fichiers de test (80 Mo, octets aleatoires) ecrits sur le telephone (DCIM\mh-measure-speed), recopies, puis redeplaces vers le PC ; aucun autre fichier du telephone n'est touche. Continuer ? (o/n)" } else { 'n' }
     $device = $null
-    if ($answer -eq 'y') {
+    if ($answer -in 'y', 'o') {
         foreach ($entry in $shell.Namespace(17).Items()) {
             if (-not $entry.IsFileSystem -and $entry.Name -eq $phone.Name) { $device = $entry }
         }
@@ -1775,7 +1775,7 @@ if (Wanted 19) {
         }
         Start-Sleep -Seconds 2
         Log ("   19r. test files left on the phone after MoveHere: {0} (0 expected)" -f @($speedFolder.Items()).Count)
-        $dialog = Read-Host "19r. Did Windows show any window or question (look with Alt+Tab)? (n or what it said)"
+        $dialog = Read-Host "19r. Windows a-t-il affiche une fenetre ou une question (regardez avec Alt+Tab) ? (n ou ce qu'il a dit)"
         Log "   19r. a window during 19r (none expected): $dialog"
         foreach ($entry in @($dcimFolder.Items())) { if ($entry.Name -eq 'mh-measure-speed') { $shell.Namespace($speedMoved).MoveHere($entry, 4 + 16 + 1024) } }
         Start-Sleep -Seconds 2
@@ -2125,7 +2125,7 @@ else:
 '@
         try {
             # 21a: the NAS powered on and answering; the PC's adapter on that link.
-            Read-Host "21a. Power the NAS on, then press Enter (this script waits up to 3 minutes for it)" | Out-Null
+            Read-Host "21a. Allumez le NAS, puis appuyez sur Entree (ce script l'attend jusqu'a 3 minutes)" | Out-Null
             $watch = [Diagnostics.Stopwatch]::StartNew()
             $up = $false
             while (-not $up -and $watch.Elapsed.TotalSeconds -lt 180) {
@@ -2158,10 +2158,10 @@ else:
                 if ($credential) { Log "   21c. password read back from $kept (delete it to forget it)" }
             }
             if (-not $credential) {
-                if ($NasUser -eq "") { $NasUser = Read-Host "21c. User name on the NAS" }
-                $secure = Read-Host "21c. Password of $NasUser on the NAS (never logged)" -AsSecureString
+                if ($NasUser -eq "") { $NasUser = Read-Host "21c. Nom d'utilisateur sur le NAS" }
+                $secure = Read-Host "21c. Mot de passe de $NasUser sur le NAS (jamais journalise)" -AsSecureString
                 $credential = New-Object System.Management.Automation.PSCredential($NasUser, $secure)
-                if ((Read-Host "21c. Keep it, encrypted for your Windows account, in $kept? (y/n)") -match '^y') {
+                if ((Read-Host "21c. Le garder, chiffre pour votre compte Windows, dans $kept ? (o/n)") -match '^[yo]') {
                     $credential | Export-Clixml -LiteralPath $kept
                     Log "   21c. password kept in $kept (encrypted for this Windows user; delete the file to forget it)"
                 }
@@ -2279,8 +2279,8 @@ else:
         # asked, kept or not), listed, then an audit with it. Never an import here: the test
         # folder holds one photo, so nearly the whole NAS would be proposed.
         $unc = "\\$Nas\$NasShare"
-        $go = Read-Host "21h. Try 'mh folders add --backup $unc' in a test mh (it asks the user name, the password, then whether to keep it), then 'mh audit' with it? (y/n)"
-        if ($go -match '^y') {
+        $go = Read-Host "21h. Essayer 'mh folders add --backup $unc' dans un mh de test (il demande le nom d'utilisateur, le mot de passe, puis s'il faut le garder), puis 'mh audit' avec lui ? (o/n)"
+        if ($go -match '^[yo]') {
             $mhDir = Join-Path $tool "mh21"
             New-Item -ItemType Directory -Force -Path $mhDir, (Join-Path $tool "config") | Out-Null
             $mhFile = Join-Path $mhDir "mh.ps1"
@@ -2372,12 +2372,12 @@ if (Wanted 22) {
         $first = Get-ChildItem -LiteralPath (Join-Path $links $copiesFolder) -File | Select-Object -First 1
         $twin = Join-Path (Join-Path $links $keptFolder) $first.Name
         Write-Host ""
-        Write-Host "22c. Open $(Join-Path $links $copiesFolder) and $(Join-Path $links $keptFolder) in Explorer."
-        $seen = Read-Host "Do both folders show the photos, and do both open? (y/n, then any remark)"
+        Write-Host "22c. Ouvrez $(Join-Path $links $copiesFolder) et $(Join-Path $links $keptFolder) dans l'Explorateur."
+        $seen = Read-Host "Les deux dossiers montrent-ils les photos, et s'ouvrent-ils tous les deux ? (o/n, puis une remarque)"
         Log "   22c. Explorer shows both, both open: $seen"
         $hashBefore = (Get-FileHash -LiteralPath $twin).Hash
-        Write-Host "22d. Open $($first.FullName) in the Photos app, rotate or edit it, and SAVE it (not 'Save a copy')."
-        Read-Host "Press Enter once it is saved and Photos is closed" | Out-Null
+        Write-Host "22d. Ouvrez $($first.FullName) dans l'application Photos, faites-la pivoter ou retouchez-la, et ENREGISTREZ-la (pas 'Enregistrer une copie')."
+        Read-Host "Appuyez sur Entree une fois enregistree et Photos fermee" | Out-Null
         $edited = (Get-FileHash -LiteralPath $first.FullName).Hash
         $twinNow = (Get-FileHash -LiteralPath $twin).Hash
         $names = @(& fsutil hardlink list $first.FullName 2>&1)
@@ -2403,9 +2403,9 @@ if (Wanted 23) {
     $ErrorActionPreference = "Continue"
     Log ""
     Log "== 23. the home page of your own mh, timed (0277)"
-    Write-Host "23: open Windows PowerShell as you usually do, type mh, Enter."
-    Write-Host "    Wait until the home page shows in the browser (time it if you can), then come back here."
-    $seen = Read-Host "23. Seconds between Enter and the page shown (your estimate, empty if unknown)"
+    Write-Host "23 : ouvrez Windows PowerShell comme d'habitude, tapez mh, Entree."
+    Write-Host "    Attendez que la page d'accueil s'affiche dans le navigateur (chronometrez si possible), puis revenez ici."
+    $seen = Read-Host "23. Secondes entre Entree et la page affichee (votre estimation, vide si inconnue)"
     Log "   23a. estimated by you: $seen s from mh to the page shown"
     $page = @(& docker ps --quiet --filter "label=media-hygiene.page")
     if ($page.Count -eq 0) {
@@ -2479,7 +2479,7 @@ for root in ('/journal', '/quarantine', '/reports', '/cache'):
                 Log ("   23b. GET {0}: failed after {1:N2} s: {2}" -f $path, $watch.Elapsed.TotalSeconds, $_.Exception.Message)
             }
         }
-        Write-Host "23: you may close the home page now (Ctrl+C in its PowerShell window)."
+        Write-Host "23 : vous pouvez fermer la page d'accueil maintenant (Ctrl+C dans sa fenetre PowerShell)."
     }
     # Each step chosen on the page is one docker run for the step, then one for the page again.
     foreach ($try in 1, 2) {
@@ -2555,21 +2555,21 @@ if (Wanted 26) {
     }
 }
 if ((Wanted 26) -and $fresh) {
-    Write-Host "26: open a NEW Windows PowerShell window (it loads the mh just written), type: mh shortcut"
-    Write-Host "    Close that window. Double-click the Media Hygiene icon of the Desktop."
-    $minimised = Read-Host "26a. The PowerShell window started minimised in the taskbar? (y/n)"
-    $line = Read-Host "26b. In it (click its button): 'Keep this window open (minimised is fine)...'? (y/n)"
-    Write-Host "    Windows Terminal: Settings, Open JSON file; in profiles, defaults, add"
+    Write-Host "26 : ouvrez une NOUVELLE fenetre Windows PowerShell (elle charge le mh qui vient d'etre ecrit), tapez : mh shortcut"
+    Write-Host "    Fermez cette fenetre. Double-cliquez l'icone Media Hygiene du Bureau."
+    $minimised = Read-Host "26a. La fenetre PowerShell a-t-elle demarre reduite dans la barre des taches ? (o/n)"
+    $line = Read-Host "26b. Dedans (cliquez son bouton) : 'Keep this window open (minimised is fine)...' ? (o/n)"
+    Write-Host "    Windows Terminal : Parametres, Ouvrir le fichier JSON ; dans profiles, defaults, ajoutez"
     Write-Host '        "bellStyle": "taskbar",'
-    Write-Host "    save. Then minimise the mh window (or tab away from it). On the home page, Run 'clean'."
-    Write-Host "    The bell rings before the step, whether it asks or not ('Nothing to clean' is fine)."
-    $bold = Read-Host "26c. The page showed at once, in bold, 'Switch to ... now'? (y/n)"
-    $min = Read-Host "26d. Window minimised: it came forward (f), its taskbar button flashed (b), or nothing (n)?"
-    Write-Host "    If clean asks, answer n. When the page is back, leave the window open (not minimised),"
-    Write-Host "    click on the browser, then Run 'clean' again."
-    $normal = Read-Host "26e. Window open behind the browser: forward (f), button flashed (b), or nothing (n)?"
-    Write-Host "    If it asks, answer n. When the page is back, close the PowerShell window (its X), look at the page."
-    $stop = Read-Host "26f. The page showed 'Media Hygiene is stopped' within about 10 s, by itself? (y/n)"
+    Write-Host "    enregistrez. Puis reduisez la fenetre mh (ou changez d'onglet). Sur la page d'accueil, Run 'clean'."
+    Write-Host "    La cloche sonne avant l'etape, qu'elle pose une question ou non ('Nothing to clean' convient)."
+    $bold = Read-Host "26c. La page a-t-elle affiche aussitot, en gras, 'Switch to ... now' ? (o/n)"
+    $min = Read-Host "26d. Fenetre reduite : est-elle passee devant (f), son bouton de la barre des taches a-t-il clignote (b), ou rien (n) ?"
+    Write-Host "    Si clean pose une question, repondez n. Quand la page est revenue, laissez la fenetre ouverte (pas reduite),"
+    Write-Host "    cliquez sur le navigateur, puis Run 'clean' a nouveau."
+    $normal = Read-Host "26e. Fenetre ouverte derriere le navigateur : devant (f), bouton clignote (b), ou rien (n) ?"
+    Write-Host "    S'il pose une question, repondez n. Quand la page est revenue, fermez la fenetre PowerShell (sa croix), regardez la page."
+    $stop = Read-Host "26f. La page a-t-elle affiche 'Media Hygiene is stopped' en une dizaine de secondes, toute seule ? (o/n)"
     Log "   26: minimised $minimised, keep-open line $line, bold line $bold, console step minimised $min, normal $normal, stop shown $stop"
 }
 
@@ -2590,8 +2590,8 @@ if (Wanted 27) {
         $nasCred = $null
         if (Test-Path -LiteralPath $credFile) { try { $nasCred = Import-Clixml -LiteralPath $credFile } catch { } }
         if (-not $nasCred) {
-            if ($NasUser -eq "") { $NasUser = Read-Host "27. User name on the NAS" }
-            $secure = Read-Host "27. Password of $NasUser on the NAS (never logged)" -AsSecureString
+            if ($NasUser -eq "") { $NasUser = Read-Host "27. Nom d'utilisateur sur le NAS" }
+            $secure = Read-Host "27. Mot de passe de $NasUser sur le NAS (jamais journalise)" -AsSecureString
             $nasCred = New-Object System.Management.Automation.PSCredential($NasUser, $secure)
         }
         # 27a: can Windows open the share before, and after a credential-only New-PSDrive?
@@ -2626,7 +2626,7 @@ if (Wanted 27) {
         foreach ($file in @(Get-ChildItem -LiteralPath (Join-Path $test "mt8") -File)) { Move-Item -LiteralPath $file.FullName -Destination (Join-Path $renamed $file.Name) }
         Log ("   27c. 20 renames on the NAS: {0:N2} s" -f $watch.Elapsed.TotalSeconds)
         # 27d: mh push end to end, in a test mh whose photo folder is the 20 photos.
-        if ((Read-Host "27d. Run mh push in a test mh into $test\mh (it asks before applying: answer y)? (y/n)") -match '^y') {
+        if ((Read-Host "27d. Lancer mh push dans un mh de test vers $test\mh (il demande avant d'appliquer : repondez y) ? (o/n)") -match '^[yo]') {
             $mhDir = Join-Path $tool "mh27"
             New-Item -ItemType Directory -Force -Path $mhDir, (Join-Path $tool "config") | Out-Null
             $mhFile = Join-Path $mhDir "mh.ps1"
@@ -2649,7 +2649,7 @@ if (Wanted 27) {
                 foreach ($line in $said) { Log "   27d. $round mh push: $line" }
                 Log ("   27d. $round mh push: {0:N1} s, exit code {1}" -f $watch.Elapsed.TotalSeconds, $LASTEXITCODE)
             }
-            Write-Host "27e. Now: 20 more photos are added; press Ctrl+C while robocopy runs, then mh push runs again."
+            Write-Host "27e. Maintenant : 20 photos de plus sont ajoutees ; appuyez sur Ctrl+C pendant que robocopy tourne, puis mh push se relance."
             foreach ($photo in ($picked | Select-Object -Skip 20 -First 20)) { Copy-Item -LiteralPath $photo.FullName -Destination $sample }
             try { mh push 2>&1 | Out-Host } catch { }
             $said = @(mh push 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'Copied|To copy|Already there|up to date|Not in the backup' })
@@ -2736,33 +2736,39 @@ if (Wanted 29) {
         Log ("   29a. network {0} on {1}: category {2}" -f $network.Name, $network.InterfaceAlias, $network.NetworkCategory)
     }
     if ($address) {
-        Write-Host "29: open a NEW Windows PowerShell window and type these two lines:"
+        Write-Host "29 : ouvrez une NOUVELLE fenetre Windows PowerShell et tapez ces deux lignes :"
         Write-Host "        . '$copy'"
         Write-Host "        mh"
-        Write-Host "    (mh alone, as the desktop shortcut runs it: open to the home Wi-Fi by default, 0367.)"
-        Write-Host "    Wait for the home page in the browser."
-        $firewall = Read-Host "29b. Did Windows ask whether Docker Desktop may accept connections? (n / p: allowed on private / b: both ticked)"
+        Write-Host "    (mh seul, comme le lance le raccourci du Bureau : ouvert au Wi-Fi de la maison par defaut, 0367.)"
+        Write-Host "    Attendez la page d'accueil dans le navigateur."
+        $firewall = Read-Host "29b. Windows a-t-il demande si Docker Desktop peut accepter des connexions ? (n / p : autorise sur prive / b : les deux cochees)"
         $ports = @(docker ps --format '{{.Ports}}' 2>$null) -join ' | '
         Log "   29b. firewall prompt $firewall; ports published: $ports"
-        $card = Read-Host "29c. The PC's page shows 'On your phone' with a QR code, an address and a code of 8 digits? (y/n)"
-        Write-Host "    On the phone, on the same Wi-Fi: scan the QR code with its camera."
-        $qr = Read-Host "29d. The phone opened the home page by the QR code? (y / n / c: it asked the code)"
-        Write-Host "    On the phone, open a private tab, type the address shown, then the code."
-        $typed = Read-Host "29e. The code typed opened the page? (y/n)"
-        Write-Host "    On the phone: Run the audit of the page (the audit space, 'Run the audit here')."
-        $audit = Read-Host "29f. The audit ran to its end, its progress shown on the phone? (y/n)"
-        Write-Host "    On the phone: tap the button of any other step (clean, status...)."
-        $refused = Read-Host "29g. The phone said 'Run this step on the PC', nothing ran on the PC? (y/n)"
-        Write-Host "    On the PC's page: run 'status' (it runs in the mh window, then the page comes back). Then reload the phone."
-        $kept = Read-Host "29h. After the step, the phone's page answered again without the code? (y/n)"
-        Write-Host "    On the phone: Wi-Fi off (mobile data on), reload the page."
-        $outside = Read-Host "29i. From mobile data the page did NOT open? (y/n)"
-        Write-Host "    On the PC: close the home page's tab."
-        Write-Host "    Start it a second time in the same way (. '$copy' then mh), wait for the home page."
-        $again = Read-Host "29j. The second time, did Windows ask about Docker Desktop again? (y/n)"
+        $card = Read-Host "29c. La page du PC montre-t-elle 'On your phone' avec un QR code, une adresse et un code de 8 chiffres ? (o/n)"
+        Write-Host "    Sur le telephone, sur le meme Wi-Fi : scannez le QR code avec son appareil photo."
+        $qr = Read-Host "29d. Le telephone a-t-il ouvert la page d'accueil par le QR code ? (o / n / c : il a demande le code)"
+        Write-Host "    Sur le telephone, ouvrez un onglet prive, tapez l'adresse affichee, puis le code."
+        $typed = Read-Host "29e. Le code tape a-t-il ouvert la page ? (o/n)"
+        Write-Host "    Sur le telephone : lancez l'audit de la page (l'espace audit, 'Run the audit here')."
+        $audit = Read-Host "29f. L'audit est-il alle jusqu'au bout, sa progression affichee sur le telephone ? (o/n)"
+        Write-Host "    Sur le telephone : touchez le bouton de n'importe quelle autre etape (clean, status...)."
+        $refused = Read-Host "29g. Le telephone a-t-il dit 'Run this step on the PC', sans rien lancer sur le PC ? (o/n)"
+        Write-Host "    Sur la page du PC : lancez 'status' (il s'execute dans la fenetre mh, puis la page revient). Puis rechargez le telephone."
+        $kept = Read-Host "29h. Apres l'etape, la page du telephone repond-elle a nouveau sans le code ? (o/n)"
+        Write-Host "    Sur le telephone : Wi-Fi coupe (donnees mobiles actives), rechargez la page."
+        $outside = Read-Host "29i. Depuis les donnees mobiles, la page ne s'est-elle PAS ouverte ? (o/n)"
+        # 0384: a device of the Wi-Fi forging the PC's Host header must get the pairing, never the PC's rights.
+        # curl.exe (Windows 10 1803+): Invoke-WebRequest of PowerShell 5.1 refuses to set Host.
+        $port = 8088
+        $forged = & curl.exe -s -o NUL -w '%{http_code}' -H "Host: 127.0.0.1:$port" "http://${address}:$port/api/state" 2>$null
+        $plain = & curl.exe -s -o NUL -w '%{http_code}' "http://127.0.0.1:$port/api/state" 2>$null
+        Log "   29j. forged Host by the home network address: HTTP $forged (401/403 expected, 200 = hole); the PC by 127.0.0.1: HTTP $plain (200 expected)"
+        Write-Host "    Sur le PC : fermez l'onglet de la page d'accueil."
+        Write-Host "    Relancez-la une seconde fois de la meme facon (. '$copy' puis mh), attendez la page d'accueil."
+        $again = Read-Host "29j. La seconde fois, Windows a-t-il redemande pour Docker Desktop ? (o/n)"
         $blocked = @(Get-NetFirewallRule -Action Block -Enabled True -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -match 'Docker' }).Count
         Log "   29j. firewall prompt again $again; enabled Docker block rules readable without admin: $blocked"
-        Write-Host "    On the PC: close the home page's tab."
+        Write-Host "    Sur le PC : fermez l'onglet de la page d'accueil."
         Log "   29: card $card, by QR $qr, by code $typed, audit $audit, step refused $refused, paired after a step $kept, unreachable from mobile data $outside"
     } else {
         Log "   29: skipped the phone part: no private address found (mh --lan says the same)"
@@ -2777,9 +2783,9 @@ if (Wanted 29) {
 function SlideTimes([string]$what, [int]$times) {
     $taken = @()
     for ($i = 1; $i -le $times; $i++) {
-        $null = Read-Host "    $what ${i}/${times}: press Enter as you tap on the phone"
+        $null = Read-Host "    $what ${i}/${times} : appuyez sur Entree en touchant le telephone"
         $watch = [Diagnostics.Stopwatch]::StartNew()
-        $null = Read-Host "    ... press Enter when the new photo is whole on the TV"
+        $null = Read-Host "    ... appuyez sur Entree quand la nouvelle photo est entiere sur la tele"
         $watch.Stop()
         $taken += $watch.Elapsed.TotalSeconds
     }
@@ -2813,45 +2819,45 @@ if (Wanted 30) {
     $shown = Join-Path $data "flat"
     if ($address) {
         Log "   30a. address found = $address"
-        Write-Host "30: open a NEW Windows PowerShell window and type these two lines:"
+        Write-Host "30 : ouvrez une NOUVELLE fenetre Windows PowerShell et tapez ces deux lignes :"
         Write-Host "        . '$showFile'"
         Write-Host "        mh slideshow --folder '$shown' --lan"
-        Write-Host "    The PC's browser opens the remote."
-        $card = Read-Host "30b. The PC's page shows the TV's address (http://${address}:.../screen), a QR code and a code of 8 digits? (y/n)"
-        Write-Host "    On the Chromecast: open its browser, type the TV's address of the PC's page."
-        $tvCode = Read-Host "30c. The TV shows a code of 6 digits, big and readable from the sofa? (y/n)"
-        Write-Host "    On the phone (same Wi-Fi): scan the QR code of the PC's page."
-        $phone = Read-Host "30d. The phone opened the remote, with the thumbnails? (y / n / c: it asked the code)"
-        Write-Host "    On the phone: type the TV's code in 'The code the TV shows', then 'Pair the TV'."
-        $paired = Read-Host "30e. The first photo appeared on the TV, black borders, no file name? (y/n)"
-        Write-Host "    On the TV: press OK on the remote."
-        $full = Read-Host "30f. Full screen? (y / n / b: the browser's bar stays)"
-        Write-Host "    Next: tap the right arrow on the phone; wait each time for the photo."
+        Write-Host "    Le navigateur du PC ouvre la telecommande."
+        $card = Read-Host "30b. La page du PC montre-t-elle l'adresse de la tele (http://${address}:.../screen), un QR code et un code de 8 chiffres ? (o/n)"
+        Write-Host "    Sur la Chromecast : ouvrez son navigateur, tapez l'adresse de la tele indiquee par la page du PC."
+        $tvCode = Read-Host "30c. La tele montre-t-elle un code de 6 chiffres, grand et lisible depuis le canape ? (o/n)"
+        Write-Host "    Sur le telephone (meme Wi-Fi) : scannez le QR code de la page du PC."
+        $phone = Read-Host "30d. Le telephone a-t-il ouvert la telecommande, avec les miniatures ? (o / n / c : il a demande le code)"
+        Write-Host "    Sur le telephone : tapez le code de la tele dans 'The code the TV shows', puis 'Pair the TV'."
+        $paired = Read-Host "30e. La premiere photo est-elle apparue sur la tele, bords noirs, sans nom de fichier ? (o/n)"
+        Write-Host "    Sur la tele : appuyez sur OK de la telecommande."
+        $full = Read-Host "30f. Plein ecran ? (o / n / b : la barre du navigateur reste)"
+        Write-Host "    Ensuite : touchez la fleche droite sur le telephone ; attendez la photo a chaque fois."
         $next = SlideTimes "next" 5
         Log "   30g. tap -> photo on the TV, next (loaded in advance): $next"
-        Write-Host "    Jump: each time tap a thumbnail far down the grid (never the next one)."
+        Write-Host "    Saut : a chaque fois, touchez une miniature loin dans la grille (jamais la suivante)."
         $jump = SlideTimes "jump" 5
         Log "   30g. tap -> photo on the TV, a far thumbnail: $jump"
-        $bands = Read-Host "30g. Did you ever see a photo drawn in bands, or half a photo? (n / y: when)"
-        Write-Host "    On the phone: 'Each photo' 5 s, then Play; wait 20 s."
-        $timer = Read-Host "30h. The TV moved on alone every 5 s or so? (y/n)"
-        Write-Host "    On the phone: Pause, then 'Do not show'."
-        $skip = Read-Host "30h. The TV moved on, and the thumbnail is dimmed on the phone? (y/n)"
-        Write-Host "    On the TV: reload the page (or open the bookmark again)."
-        $reload = Read-Host "30i. Still paired (no code), the same photo back? (y/n)"
-        Write-Host "    On the phone: lock it, wait one minute, unlock it."
-        $sleep = Read-Host "30j. The remote shows the photo the TV shows, its buttons work? (y/n)"
+        $bands = Read-Host "30g. Avez-vous deja vu une photo dessinee par bandes, ou a moitie ? (n / o : quand)"
+        Write-Host "    Sur le telephone : 'Each photo' 5 s, puis Play ; attendez 20 s."
+        $timer = Read-Host "30h. La tele a-t-elle avance toute seule toutes les 5 s environ ? (o/n)"
+        Write-Host "    Sur le telephone : Pause, puis 'Do not show'."
+        $skip = Read-Host "30h. La tele a-t-elle avance, et la miniature est-elle grisee sur le telephone ? (o/n)"
+        Write-Host "    Sur la tele : rechargez la page (ou rouvrez le favori)."
+        $reload = Read-Host "30i. Toujours appairee (sans code), la meme photo est-elle revenue ? (o/n)"
+        Write-Host "    Sur le telephone : verrouillez-le, attendez une minute, deverrouillez-le."
+        $sleep = Read-Host "30j. La telecommande montre-t-elle la photo que montre la tele, ses boutons marchent-ils ? (o/n)"
         Log "   30: PC card $card, TV code $tvCode, phone $phone, TV paired $paired, full screen $full, bands $bands, timer $timer, do not show $skip, TV reload $reload, phone asleep $sleep"
-        $own = Read-Host "30k. Now the TV's own browser (Samsung: the Internet app): try it? (y/n)"
-        if ($own -eq 'y') {
-            Write-Host "    On the TV's Internet app: type the TV's address; type its code on the phone."
-            $ownCode = Read-Host "30k. The TV showed its code, then the photo once paired? (y/n)"
+        $own = Read-Host "30k. Maintenant le navigateur propre de la tele (Samsung : l'application Internet) : l'essayer ? (o/n)"
+        if ($own -in 'y', 'o') {
+            Write-Host "    Dans l'application Internet de la tele : tapez l'adresse de la tele ; tapez son code sur le telephone."
+            $ownCode = Read-Host "30k. La tele a-t-elle montre son code, puis la photo une fois appairee ? (o/n)"
             $ownNext = SlideTimes "next (TV's browser)" 3
             $ownJump = SlideTimes "jump (TV's browser)" 3
-            $ownBands = Read-Host "30k. Bands seen on the TV's own browser? (n / y)"
+            $ownBands = Read-Host "30k. Des bandes vues sur le navigateur propre de la tele ? (n / o)"
             Log "   30k. TV's own browser: code then photo $ownCode, next $ownNext, jump $ownJump, bands $ownBands"
         }
-        Write-Host "    In the slideshow's window: Ctrl+C, then close it."
+        Write-Host "    Dans la fenetre du diaporama : Ctrl+C, puis fermez-la."
     } else {
         Log "   30: skipped the TV part: no private address found (mh --lan says the same)"
     }
@@ -2876,7 +2882,7 @@ if (Wanted 31) {
     $chosenFilms = @($found | Sort-Object Length | Select-Object -First 4)
     foreach ($film in $chosenFilms) { Copy-Item -LiteralPath $film.FullName -Destination $filmDir }
     Get-ChildItem -Path (Join-Path $data "flat") -File | Select-Object -First 4 | Copy-Item -Destination $filmDir
-    $hevcPath = Read-Host "31a. Path of ONE HEVC video of your photos (inventory.xlsx, column Codec = hevc), or Enter to skip"
+    $hevcPath = Read-Host "31a. Chemin d'UNE video HEVC de vos photos (inventory.xlsx, colonne Codec = hevc), ou Entree pour passer"
     $hevcCopied = "none"
     if ($hevcPath -ne "" -and (Test-Path -LiteralPath $hevcPath)) {
         Copy-Item -LiteralPath $hevcPath -Destination (Join-Path $filmDir ("hevc-" + (Split-Path $hevcPath -Leaf)))
@@ -2900,10 +2906,10 @@ if (Wanted 31) {
     Log ("   31a. mh audit of the test folder: exit code {0}, {1:N1} s" -f $LASTEXITCODE, $watch.Elapsed.TotalSeconds)
     $address = _mh_lan_address
     if ($address) {
-        Write-Host "31: open a NEW Windows PowerShell window and type these two lines:"
+        Write-Host "31 : ouvrez une NOUVELLE fenetre Windows PowerShell et tapez ces deux lignes :"
         Write-Host "        . '$filmFile'"
         Write-Host "        mh slideshow --folder '$filmDir' --lan"
-        $filmPort = Read-Host "31b. The port in the TV's address on the PC's page (Enter: 8088)"
+        $filmPort = Read-Host "31b. Le port dans l'adresse de la tele sur la page du PC (Entree : 8088)"
         if ($filmPort -eq "") { $filmPort = "8088" }
         $hevcUrl = ""
         try {
@@ -2915,34 +2921,34 @@ if (Wanted 31) {
         } catch {
             Log ("   31b. GET /api/slides failed: " + $_.Exception.Message)
         }
-        Write-Host "    Pair the Chromecast's browser and the phone as in step 30 (the TV's code, the QR code)."
-        $marked = Read-Host "31c. On the phone: the videos' thumbnails show a frame and a play mark, the HEVC one says 'Not on the TV: its format (hevc) ...'? (y / n: what)"
-        Write-Host "    On the phone: Pause if playing, then tap a video's thumbnail; press Enter at the tap."
-        $null = Read-Host "    Enter as you tap"
+        Write-Host "    Appairez le navigateur de la Chromecast et le telephone comme a l'etape 30 (le code de la tele, le QR code)."
+        $marked = Read-Host "31c. Sur le telephone : les miniatures des videos montrent-elles une image et une marque de lecture, et la HEVC dit-elle 'Not on the TV: its format (hevc) ...' ? (o / n : quoi)"
+        Write-Host "    Sur le telephone : Pause si ca joue, puis touchez la miniature d'une video ; appuyez sur Entree au toucher."
+        $null = Read-Host "    Entree au toucher"
         $watch = [Diagnostics.Stopwatch]::StartNew()
-        $null = Read-Host "    ... Enter when its first frame is on the TV"
+        $null = Read-Host "    ... Entree quand sa premiere image est sur la tele"
         $watch.Stop()
         Log ("   31d. tap -> the video's first frame on the TV: {0:N1} s" -f $watch.Elapsed.TotalSeconds)
-        $plays = Read-Host "31d. On the phone: Play. The video plays on the TV? (s: with sound / m: muted / d: offered a download / n: black or frozen)"
-        $smooth = Read-Host "31e. Smooth, no stutter, the whole picture (not cropped, not stretched)? (y / n: what)"
-        $paused = Read-Host "31f. On the phone: Pause, wait 5 s, Play. The video paused, then went on where it was? (y / r: restarted / n)"
-        $endNext = Read-Host "31g. At the video's end, the TV moved on alone to the next photo or video? (y / n: it stayed)"
-        $afterFilm = Read-Host "31g. The photo after the video came at once (loaded during the video)? (y / n: seconds)"
+        $plays = Read-Host "31d. Sur le telephone : Play. La video joue-t-elle sur la tele ? (s : avec le son / m : muette / d : telechargement propose / n : noir ou figee)"
+        $smooth = Read-Host "31e. Fluide, sans saccade, l'image entiere (ni rognee, ni etiree) ? (o / n : quoi)"
+        $paused = Read-Host "31f. Sur le telephone : Pause, attendez 5 s, Play. La video s'est-elle arretee, puis a-t-elle repris la ou elle etait ? (o / r : repartie du debut / n)"
+        $endNext = Read-Host "31g. A la fin de la video, la tele est-elle passee toute seule a la photo ou video suivante ? (o / n : elle est restee)"
+        $afterFilm = Read-Host "31g. La photo apres la video est-elle venue aussitot (chargee pendant la video) ? (o / n : secondes)"
         Log "   31: marked $marked, plays $plays, smooth $smooth, pause/play $paused, moved on at the end $endNext, next photo at once $afterFilm"
         if ($hevcUrl -ne "") {
             $hevcExt = [IO.Path]::GetExtension($hevcPath).ToLower()
-            Write-Host "    In the Chromecast's browser, open a NEW tab and type: $hevcUrl$hevcExt"
-            $hevcPlays = Read-Host "31h. Does the HEVC video play there? (y / d: offered a download / n: black or error)"
+            Write-Host "    Dans le navigateur de la Chromecast, ouvrez un NOUVEL onglet et tapez : $hevcUrl$hevcExt"
+            $hevcPlays = Read-Host "31h. La video HEVC joue-t-elle la ? (o / d : telechargement propose / n : noir ou erreur)"
             Log "   31h. HEVC on the Chromecast's browser, opened by its address: $hevcPlays"
         } else {
             Log "   31h. HEVC: no HEVC video in the show, not tried"
         }
-        $ownFilms = Read-Host "31i. Now the TV's own browser (Samsung Internet app), paired as in 30k: try it? (y/n)"
-        if ($ownFilms -eq 'y') {
-            $ownSkip = Read-Host "31i. Play on the phone: the TV shows the photos only, never a video, and the phone's line says the videos are skipped? (y / n: what)"
+        $ownFilms = Read-Host "31i. Maintenant le navigateur propre de la tele (application Internet Samsung), appairee comme en 30k : l'essayer ? (o/n)"
+        if ($ownFilms -in 'y', 'o') {
+            $ownSkip = Read-Host "31i. Jouez sur le telephone : la tele ne montre que les photos, jamais une video, et la ligne du telephone dit-elle que les videos sont sautees ? (o / n : quoi)"
             Log "   31i. TV's own browser: $ownSkip"
         }
-        Write-Host "    In the slideshow's window: Ctrl+C, then close it."
+        Write-Host "    Dans la fenetre du diaporama : Ctrl+C, puis fermez-la."
     } else {
         Log "   31: skipped the TV part: no private address found (mh --lan says the same)"
     }
@@ -3028,8 +3034,8 @@ if (Wanted 32) {
     } else {
         Log "   32c. no copy found in $shareFolder"
     }
-    $explorer = Read-Host "32d. Did the Explorer open on $shares, the folder '$albumName' and its zip side by side? (y / n: what)"
-    $look = Read-Host "32e. Open two copies: upright, sharp enough on screen, colours as the originals? (y / n: what)"
+    $explorer = Read-Host "32d. L'Explorateur s'est-il ouvert sur $shares, avec le dossier '$albumName' et son zip cote a cote ? (o / n : quoi)"
+    $look = Read-Host "32e. Ouvrez deux copies : droites, assez nettes a l'ecran, couleurs comme les originaux ? (o / n : quoi)"
     Log "   32d. Explorer opened on Shares: $explorer; copies look right: $look"
     Remove-Item -Recurse -Force -LiteralPath $shareFolder -ErrorAction SilentlyContinue
     Remove-Item -Force -LiteralPath $shareZip -ErrorAction SilentlyContinue
@@ -3085,10 +3091,10 @@ if (Wanted 33) {
     Log ("   33a. album of {0} files ({1} videos) written to {2}" -f $albumFiles.Count, $smallFilms.Count, $phoneAlbums)
     $address = _mh_lan_address
     if ($address) {
-        Write-Host "33: open a NEW Windows PowerShell window and type these two lines:"
+        Write-Host "33 : ouvrez une NOUVELLE fenetre Windows PowerShell et tapez ces deux lignes :"
         Write-Host "        . '$phoneFile'"
         Write-Host "        mh --lan"
-        $phonePort = Read-Host "33b. The port in the address on the PC's page, in 'On your phone' (Enter: 8088)"
+        $phonePort = Read-Host "33b. Le port dans l'adresse de la page du PC, dans 'On your phone' (Entree : 8088)"
         if ($phonePort -eq "") { $phonePort = "8088" }
         $base = "http://127.0.0.1:$phonePort"
         $named = [Uri]::EscapeDataString($phoneAlbum)
@@ -3115,25 +3121,25 @@ if (Wanted 33) {
         } catch {
             Log ("   33b. the albums' routes failed: " + $_.Exception.Message)
         }
-        Write-Host "    On the phone (same Wi-Fi): pair it with the QR code, then 'Open the albums' on its home page."
-        $listed = Read-Host "33d. The list shows the album, its cover, its dates and its count? (y / n: what)"
-        $scroll = Read-Host "33e. Open the album and scroll the mosaic quickly to the end: smooth? (y / j: jerky / b: blank tiles for long)"
+        Write-Host "    Sur le telephone (meme Wi-Fi) : appairez-le avec le QR code, puis 'Open the albums' sur sa page d'accueil."
+        $listed = Read-Host "33d. La liste montre-t-elle l'album, sa couverture, ses dates et son nombre ? (o / n : quoi)"
+        $scroll = Read-Host "33e. Ouvrez l'album et faites defiler la mosaique vite jusqu'au bout : fluide ? (o / j : saccade / b : tuiles vides longtemps)"
         # Asked, not timed: two Enter presses around a tap were misread (2026-10-22, 23.9 s logged
         # for a photo shown at once); 33c times a phone-sized picture from the PC.
-        $tapped = Read-Host "33f. Tap a photo far down the mosaic: full screen at once, sharp and whole? (y / n: about how many seconds)"
+        $tapped = Read-Host "33f. Touchez une photo loin dans la mosaique : plein ecran aussitot, nette et entiere ? (o / n : environ combien de secondes)"
         Log "   33f. tap -> photo full screen at once: $tapped"
-        $swipe = Read-Host "33g. Swipe left 5 times: each next photo at once (loaded in advance)? (y / n: seconds) ; a tap closes it? (y/n)"
-        $video = Read-Host "33h. Open a video of the album: it plays in place, with sound? (y / m: muted / n: what)"
-        $back = Read-Host "33i. Full screen, the phone's Back button closes the photo and stays in the album? (y / n: what)"
+        $swipe = Read-Host "33g. Glissez 5 fois vers la gauche : chaque photo suivante aussitot (chargee d'avance) ? (o / n : secondes) ; un toucher la ferme-t-il ? (o/n)"
+        $video = Read-Host "33h. Ouvrez une video de l'album : elle joue sur place, avec le son ? (o / m : muette / n : quoi)"
+        $back = Read-Host "33i. En plein ecran, le bouton Retour du telephone ferme-t-il la photo en restant dans l'album ? (o / n : quoi)"
         $before = (Get-Content -LiteralPath $phoneAlbums -Raw | ConvertFrom-Json).albums
-        $moved = Read-Host "33j. Full screen: Take out of the album (OK), then on another photo Add to an album, name 'Kids'. Said and saved? (y / n: what)"
+        $moved = Read-Host "33j. En plein ecran : Take out of the album (OK), puis sur une autre photo Add to an album, nom 'Kids'. Dit et enregistre ? (o / n : quoi)"
         $after = (Get-Content -LiteralPath $phoneAlbums -Raw | ConvertFrom-Json).albums
         $counts = ($after | ForEach-Object { "$($_.name): $(@($_.entries).Count)" }) -join ', '
         Log ("   33j. albums.json before: {0} files in 1 album; after: {1}" -f @($before[0].entries).Count, $counts)
-        $other = Read-Host "33k. In the phone's address bar, type http://${address}:$phonePort/original/1.jpg then /preview/1.jpg: refused both? (y / n: what shows)"
-        $mobile = Read-Host "33l. Wi-Fi off (mobile data), reload the album: the page cannot be reached? (y / n)"
+        $other = Read-Host "33k. Dans la barre d'adresse du telephone, tapez http://${address}:$phonePort/original/1.jpg puis /preview/1.jpg : refuses tous les deux ? (o / n : ce qui s'affiche)"
+        $mobile = Read-Host "33l. Wi-Fi coupe (donnees mobiles), rechargez l'album : la page est-elle injoignable ? (o/n)"
         Log "   33: list $listed, scroll $scroll, swipe $swipe, video $video, Back $back, changed $moved, another file refused $other, mobile data cut off $mobile"
-        Write-Host "    In the window of mh --lan: Quit on the PC's page (or Ctrl+C), then close it."
+        Write-Host "    Dans la fenetre de mh --lan : Quit sur la page du PC (ou Ctrl+C), puis fermez-la."
     } else {
         Log "   33: skipped the phone part: no private address found (mh --lan says the same)"
     }
@@ -3220,10 +3226,10 @@ if (Wanted 34) {
         $now = @(Get-ChildItem -LiteralPath $lighten -File | ForEach-Object { "$($_.Name) $([Math]::Round($_.Length / 1MB, 1)) MB $($_.LastWriteTime)" }) -join '; '
         Log "   34c. the folder now holds: $now (the original: $($mjpeg.Name), $($mjpeg.LastWriteTime))"
     }
-    Write-Host "34: the encoded videos are in $encoded, the real shrink's result in $lighten."
-    $windows = Read-Host "34d. Play each one in Windows (Photos, Media Player): picture, sound, upright, smooth? (y / n: which, what)"
-    $look = Read-Host "34e. Next to its original: any visible difference at the same level 'same'? and 'lighter'? (say which)"
-    $phoneSays = Read-Host "34f. Copy one 'same' and one 'lighter' to your phone: do they play, with the right date in its gallery? (y / n: what)"
+    Write-Host "34 : les videos encodees sont dans $encoded, le resultat du vrai shrink dans $lighten."
+    $windows = Read-Host "34d. Lisez chacune dans Windows (Photos, Lecteur multimedia) : image, son, droite, fluide ? (o / n : laquelle, quoi)"
+    $look = Read-Host "34e. A cote de son original : une difference visible au meme niveau 'same' ? et 'lighter' ? (dites lequel)"
+    $phoneSays = Read-Host "34f. Copiez une 'same' et une 'lighter' sur votre telephone : jouent-elles, avec la bonne date dans sa galerie ? (o / n : quoi)"
     Log "   34d. plays in Windows: $windows"
     Log "   34e. visible difference: $look"
     Log "   34f. on the phone: $phoneSays"

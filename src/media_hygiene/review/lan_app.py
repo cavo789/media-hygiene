@@ -1,18 +1,18 @@
 """The home page's door to the home network: pairing, then what a phone may do (0269).
 
-In front of the home page under `mh --lan`. A request from the loopback goes through
-as before, plus `GET /api/lan` (the address, the code and its QR code for the PC's
-page; never to the network). A request naming the PC's address on the home network:
+In front of the home page under `mh --lan`. A request of the PC's door goes through as
+before, plus `GET /api/lan` (the code and its QR code for the PC's page). A request of
+the home network's door (`doors`, 0384: never passed on as the PC's, whatever its
+`Host`) must name the PC's address on the home network, then:
 
 - `GET /pair/<code>`: the right code sets the phone's cookie and opens the home page;
   `MAX_FAILURES` wrong ones close the pairing until the server stops;
 - without the cookie, every `GET` gets the pairing page, anything else 403;
-- with it, only the reads (`READ_PATHS`, `READ_PREFIXES`: the page, its state, the
-  reports, the theme, the docs, the albums and their files, 0297), the audit of the
-  page (`POST /api/audit`) and a change of an album (`POST /api/albums`, 0295): none
-  changes a photo. A step, a stop or the presence stay the PC's: 403, said on each
-  step's button (decided 2026-10-21). What passes is handed on as from the loopback,
-  its `Origin` checked; any other `Host` (DNS rebinding) is refused as before.
+- with it, only what `lan_paths` lists: the reads (the page, its state, the reports,
+  the theme, the docs, the albums, search and browse and their files, 0297, 0360), the
+  audit, a search or a folder listed, and a change of an album (0295): none changes a
+  photo. A step or a stop stay the PC's: 403, said on each
+  step's button (decided 2026-10-21). What passes goes on as the PC's, `Origin` checked.
 """
 
 from __future__ import annotations
@@ -23,15 +23,13 @@ from typing import TYPE_CHECKING, Final
 
 import segno
 
-from media_hygiene.docs.pages import DOCS_PREFIX
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
-from media_hygiene.review.home_app import AUDIT_PATH
-from media_hygiene.review.home_assets import ASSETS_PREFIX, FAVICON_PATH
-from media_hygiene.review.home_views import REPORTS_PREFIX
+from media_hygiene.review.doors import Door
 from media_hygiene.review.http import ContentType, Request, Response, is_local
 from media_hygiene.review.lan import CODE_DIGITS, COOKIE_NAME, PAIR_PREFIX
-from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH
+from media_hygiene.review.lan_paths import phone_may
+from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.serving import json_response
 from media_hygiene.review.shared_routes import asset_or_page
 from media_hygiene.services.reviewing import HOST_LOOPBACK
@@ -43,12 +41,7 @@ if TYPE_CHECKING:
 
 LAN_PATH: Final = "/api/lan"
 MAX_FAILURES: Final = 5  # wrong codes before the pairing closes for this server
-_HOME_READS: Final = frozenset({PAGE_PATH, STATE_PATH, AUDIT_PATH, FAVICON_PATH})
-READ_PATHS: Final = _HOME_READS | albums.PHONE_READS
-_HOME_PREFIXES: Final = (REPORTS_PREFIX, ASSETS_PREFIX, DOCS_PREFIX)
-READ_PREFIXES: Final = (*_HOME_PREFIXES, *albums.PHONE_READ_PREFIXES)
-WRITE_PATHS: Final = albums.PHONE_WRITES | {AUDIT_PATH}
-_GET, _POST = "GET", "POST"
+_GET = "GET"
 _QR_SCALE: Final = 5
 _QR_BORDER: Final = 2
 _PACKAGE: Final = "media_hygiene.review"
@@ -111,10 +104,11 @@ class LanApp:
         Returns:
             The response.
         """
-        if is_local(request) and request.path == LAN_PATH:
-            return lan_response(self.lan)
-        if is_local(request) or not self.lan.names_me(request):
-            return await self.home.handle(request)  # another host: refused there
+        if request.door is Door.PC:  # the loopback publish: refused there if not local
+            card = is_local(request) and request.path == LAN_PATH
+            return lan_response(self.lan) if card else await self.home.handle(request)
+        if not self.lan.names_me(request):  # whatever `Host` it forged (0384)
+            return Response(HTTPStatus.FORBIDDEN)
         if request.path.startswith(PAIR_PREFIX) and request.method == _GET:
             return self.pairing.check(self.lan, request.path.removeprefix(PAIR_PREFIX))
         if not self.lan.is_paired(request):
@@ -133,15 +127,11 @@ class LanApp:
             The response; 403 for a step, Quit, or another site's request.
         """
         path = request.path
-        reads = request.method == _GET and (
-            path in READ_PATHS or path.startswith(READ_PREFIXES)
-        )
-        writes = request.method == _POST and path in WRITE_PATHS
         origin = request.headers.get("origin")
-        if not (reads or writes) or origin not in {None, self.lan.origin}:
+        if not phone_may(request) or origin not in {None, self.lan.origin}:
             message = _(
-                "From the phone: the audit, the reports and the albums. Run this "
-                "step on the PC."
+                "From the phone: the audit, the reports, the albums, the search and "
+                "browse. Open this page or run this step on the PC."
             )
             return json_response(HTTPStatus.FORBIDDEN, {"error": message})
         if request.method == _GET and path == PAGE_PATH:

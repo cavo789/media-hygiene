@@ -143,6 +143,26 @@ msgstr[0] "%(num)s fichier"
 msgstr[1] "%(num)s fichiers"
 
 #, python-format
+msgid ""
+"%(num)s file of your photo folders is not a photo or a video (%(size)s): "
+"a zip, a document, a spreadsheet… Nothing is moved: a document may "
+"matter. intruders.csv, next to this page, lists every file."
+msgid_plural ""
+"%(num)s files of your photo folders are not photos or videos (%(size)s): "
+"zips, documents, spreadsheets… Nothing is moved: a document may matter. "
+"intruders.csv, next to this page, lists every file."
+msgstr[0] ""
+"%(num)s fichier de vos dossiers de photos n'est ni une photo ni une vidéo"
+" (%(size)s) : un zip, un document, un tableur… Rien n'est déplacé : un "
+"document peut compter. intruders.csv, à côté de cette page, liste chaque "
+"fichier."
+msgstr[1] ""
+"%(num)s fichiers de vos dossiers de photos ne sont ni des photos ni des "
+"vidéos (%(size)s) : des zip, des documents, des tableurs… Rien n'est "
+"déplacé : un document peut compter. intruders.csv, à côté de cette page, "
+"liste chaque fichier."
+
+#, python-format
 msgid "%(num)s group of near duplicates"
 msgid_plural "%(num)s groups of near duplicates"
 msgstr[0] "%(num)s groupe de quasi-doublons"
@@ -987,13 +1007,6 @@ msgid "Add a photo folder"
 msgstr "Ajouter un dossier de photos"
 
 msgid ""
-"Add one first: mh folders add --backup <folder>, or --backup <folder> on "
-"this command."
-msgstr ""
-"Ajoutez-en d'abord un : mh folders add --backup <dossier>, ou --backup "
-"<dossier> sur cette commande."
-
-msgid ""
 "Add or remove a photo folder: mh folders add (a window to choose it) or "
 "mh folders add <folder>, mh folders remove <folder>. A backup, compared, "
 "never changed: mh folders add --backup <folder>."
@@ -1177,6 +1190,9 @@ msgstr ""
 msgid "Altitude (m)"
 msgstr "Altitude (m)"
 
+msgid "An album of yours on the big screen; the phone is the remote."
+msgstr "Un de vos albums sur le grand écran ; le téléphone sert de télécommande."
+
 #, python-brace-format
 msgid "An album's name: 1 to {most} characters, without double quotes."
 msgstr "Le nom d'un album : de 1 à {most} caractères, sans guillemets doubles."
@@ -1253,6 +1269,13 @@ msgstr ""
 "update. Les deux réécrivent ce fichier."
 
 msgid ""
+"Another mh command is running (a page, an audit): close it first, the "
+"index may be written meanwhile. Nothing was changed."
+msgstr ""
+"Une autre commande mh tourne (une page, un audit) : fermez-la d'abord, "
+"l'index pourrait être écrit pendant ce temps. Rien n'a été changé."
+
+msgid ""
 "Answered: the files marked 🗑️ are remembered with 'clean --decisions', "
 "set aside if they come back; the others are forgotten."
 msgstr ""
@@ -1293,6 +1316,13 @@ msgstr "Appliquer vos choix"
 
 msgid "April"
 msgstr "avril"
+
+msgid "Archive to a folder of its own (a NAS, another disk)."
+msgstr "Archivez dans un dossier à part (un NAS, un autre disque)."
+
+#, python-brace-format
+msgid "Archived: {count} files, {size} in {folder}."
+msgstr "Archivé : {count} fichiers, {size} dans {folder}."
 
 #, python-brace-format
 msgid ""
@@ -1954,11 +1984,6 @@ msgstr ""
 msgid "Copies not found when read back: {count}. Type mh phone again."
 msgstr "Copies introuvables à la relecture : {count}. Tapez de nouveau mh phone."
 
-msgid "Copies of other files than media go to /quarantine: mount it."
-msgstr ""
-"Les copies des fichiers autres que des médias vont dans /quarantine : "
-"montez-le."
-
 msgid "Copies, previewed"
 msgstr "Des copies, en aperçu"
 
@@ -1966,12 +1991,13 @@ msgid "Copy and paste this command to run it again."
 msgstr "Copiez-collez cette commande pour relancer."
 
 msgid ""
-"Copy into your photos what only a backup (a NAS) holds, never what you "
-"set aside or deleted before; each copy proven (journaled, undoable)."
+"Copy into your photos what only a folder holds (your NAS, a USB disk, an "
+"SD card), never what you set aside or deleted before; each copy proven "
+"(journaled, undoable)."
 msgstr ""
-"Copie dans vos photos ce qu'une sauvegarde (un NAS) est seule à contenir,"
-" jamais ce que vous avez mis de côté ou supprimé avant ; chaque copie "
-"prouvée (journalisé, annulable)."
+"Copie dans vos photos ce qu'un dossier est seul à contenir (votre NAS, un"
+" disque USB, une carte SD), jamais ce que vous avez mis de côté ou "
+"supprimé avant ; chaque copie prouvée (journalisée, annulable)."
 
 msgid "Copy it (Ctrl+C):"
 msgstr "Copiez-la (Ctrl+C) :"
@@ -1993,6 +2019,21 @@ msgstr "Copier les nouvelles photos du téléphone"
 
 msgid "Copy the photos to a local disk, or mount it yourself with -v."
 msgstr "Copiez les photos sur un disque local, ou montez-le vous-même avec -v."
+
+#, python-brace-format
+msgid ""
+"Copy the quarantine of {runs} ({count} files, {size}) to {target}, check "
+"the copy, then empty it?"
+msgstr ""
+"Copier la quarantaine de {runs} ({count} fichiers, {size}) vers {target},"
+" vérifier la copie, puis la vider ?"
+
+msgid ""
+"Copy the quarantine to this folder first, check every byte of the copy, "
+"and only then erase it."
+msgstr ""
+"Copier d'abord la quarantaine dans ce dossier, vérifier chaque octet de "
+"la copie, et seulement ensuite l'effacer."
 
 msgid "Copy them into your photos?"
 msgstr "Les copier dans vos photos ?"
@@ -2308,14 +2349,16 @@ msgid "Deleted in the Explorer"
 msgstr "Supprimés dans l'Explorateur"
 
 #, python-brace-format
+msgid ""
+"Deleted in the Explorer (found gone on {date}), not confirmed yet in mh "
+"review --gone: not proposed again."
+msgstr ""
+"Supprimé dans l'Explorateur (constaté disparu le {date}), pas encore "
+"confirmé dans mh review --gone : pas proposé à nouveau."
+
+#, python-brace-format
 msgid "Deleted on purpose: {deleted} · answered: {decided} of {total}"
 msgstr "Supprimés exprès : {deleted} · répondu : {decided} sur {total}"
-
-msgid "Deleted or moved to the quarantine"
-msgstr "Supprimés ou déplacés en quarantaine"
-
-msgid "Deleted or moved to the quarantine from"
-msgstr "Supprimées ou déplacées en quarantaine depuis"
 
 msgid ""
 "Deletes them from the cache and shows that none is left; your photos do "
@@ -2593,14 +2636,6 @@ msgstr ""
 
 msgid "Each group of near duplicates is described through the version kept."
 msgstr "Chaque groupe de quasi-doublons est décrit par la version conservée."
-
-msgid ""
-"Each line: the file kept, and the byte-for-byte identical file deleted "
-"(📦: moved to the quarantine, not a media file)."
-msgstr ""
-"Chaque ligne : le fichier gardé, et le fichier identique octet par octet "
-"qui est supprimé (📦 : déplacé en quarantaine, ce n'est pas une photo ni "
-"une vidéo)."
 
 msgid "Each line: the file kept, and the byte-for-byte identical file deleted."
 msgstr ""
@@ -3014,6 +3049,9 @@ msgstr ""
 "Chaque mot doit être trouvé : tapez un à trois mots (plage, gâteau "
 "bougie), pas une phrase."
 
+msgid "Everything"
+msgstr "Tout"
+
 msgid ""
 "Everything 'clean --tier near-all' moves to the quarantine, group by "
 "group: the groups to check first, then, folded, the sure groups that "
@@ -3073,6 +3111,9 @@ msgstr ""
 "Exposition : sombre sous dark_below ou claire au-dessus de bright_above "
 "(luminosité moyenne, de 0 à 255), ou quand plus de clipped_above des "
 "pixels (de 0 à 1) sont noir pur ou blanc pur."
+
+msgid "Extension"
+msgstr "Extension"
 
 msgid "Extension categories (--ext)"
 msgstr "Catégories d'extensions (--ext)"
@@ -3396,12 +3437,20 @@ msgid "Folder pairs review"
 msgstr "Revue des paires de dossiers"
 
 msgid ""
-"Folder receiving the copies (host path); default: 'From NAS' in your "
-"first photo folder, the folders of the backup kept below it."
+"Folder receiving the copies (host path); default: 'From <source>' in your"
+" first photo folder (From NAS, From E), its folders kept below it."
 msgstr ""
 "Dossier qui reçoit les copies (chemin de l'hôte) ; par défaut : « From "
-"NAS » dans votre premier dossier de photos, les dossiers de la sauvegarde"
-" gardés en dessous."
+"<source> » dans votre premier dossier de photos (From NAS, From E), ses "
+"dossiers gardés en dessous."
+
+msgid ""
+"Folder to import from (host path): your NAS, a USB disk, an SD card, an "
+"old disk; only read. Default: your backup folders."
+msgstr ""
+"Dossier d'où importer (chemin de l'hôte) : votre NAS, un disque USB, une "
+"carte SD, un ancien disque ; seulement lu. Par défaut : vos dossiers de "
+"sauvegarde."
 
 msgid "Folder whose copies are kept first. Repeat it; the order matters."
 msgstr ""
@@ -3578,11 +3627,11 @@ msgid "From the cache alone: no file is read again."
 msgstr "Depuis le cache seul : aucun fichier n'est relu."
 
 msgid ""
-"From the phone: the audit, the reports and the albums. Run this step on "
-"the PC."
+"From the phone: the audit, the reports, the albums, the search and "
+"browse. Open this page or run this step on the PC."
 msgstr ""
-"Depuis le téléphone : l'audit, les rapports et les albums. Lancez cette "
-"étape sur le PC."
+"Depuis le téléphone : l'audit, les rapports, les albums, la recherche et "
+"le parcours. Ouvrez cette page ou lancez cette étape sur le PC."
 
 msgid "From your NAS or an old disk"
 msgstr "Depuis votre NAS ou un ancien disque"
@@ -3594,12 +3643,13 @@ msgid "GB"
 msgstr "Go"
 
 msgid ""
-"Gather your photos on the PC: those of the phone, and those only your NAS"
-" still keeps. Nothing leaves the phone or the NAS without your say."
+"Gather your photos on the PC: those of the phone, and those only a folder"
+" keeps (your NAS, a USB disk, an SD card). Nothing leaves them without "
+"your say."
 msgstr ""
-"Rassemblez vos photos sur le PC : celles du téléphone, et celles que seul"
-" votre NAS garde encore. Rien n'est effacé du téléphone ni du NAS sans "
-"votre accord."
+"Rassemblez vos photos sur le PC : celles du téléphone, et celles qu'un "
+"dossier est seul à garder (votre NAS, un disque USB, une carte SD). Rien "
+"n'en part sans votre accord."
 
 msgid ""
 "Get a proposed tree, correct it in a workbook or in the browser, then "
@@ -3608,8 +3658,8 @@ msgstr ""
 "Recevez une proposition d'arborescence, corrigez-la dans un classeur ou "
 "dans le navigateur, puis appliquez-la. Rien ne bouge avant votre accord."
 
-msgid "Get back what only the NAS holds"
-msgstr "Récupérer ce que seul le NAS contient"
+msgid "Get back what only the NAS or the disk holds"
+msgstr "Récupérer ce que seul le NAS ou le disque contient"
 
 msgid "Ghent"
 msgstr "Gand"
@@ -3697,6 +3747,9 @@ msgstr "Aller à"
 msgid "Go to Share"
 msgstr "Aller à Partager"
 
+msgid "Go to a person (/)"
+msgstr "Aller à une personne (/)"
+
 #, python-brace-format
 msgid "Go to stage {stage} of the cycle"
 msgstr "Aller à l'étape {stage} du cycle"
@@ -3754,6 +3807,9 @@ msgstr "Rapport HTML : {path}"
 
 msgid "Heaviest files"
 msgstr "Fichiers les plus lourds"
+
+msgid "Heaviest folders"
+msgstr "Dossiers les plus lourds"
 
 msgid "Height"
 msgstr "Hauteur"
@@ -3934,6 +3990,9 @@ msgstr "Image impossible à décoder"
 msgid "Import"
 msgstr "Importer"
 
+msgid "Import a USB disk, an SD card or any folder"
+msgstr "Importer un disque USB, une carte SD ou n'importe quel dossier"
+
 msgid "Import photos"
 msgstr "Importer des photos"
 
@@ -4000,6 +4059,9 @@ msgstr "Langue de l'interface : \"en\" ou \"fr\"."
 msgid "Into folders"
 msgstr "Dans des dossiers"
 
+msgid "Intruder files"
+msgstr "Fichiers intrus"
+
 #, python-brace-format
 msgid "Invalid value for {option}: {reason}"
 msgstr "Valeur invalide pour {option} : {reason}"
@@ -4031,6 +4093,10 @@ msgstr ""
 
 msgid "It changes nothing in your photos"
 msgstr "Il ne change rien à vos photos"
+
+#, python-brace-format
+msgid "It is {name}? ({score})"
+msgstr "C'est {name} ? ({score})"
 
 #, python-brace-format
 msgid ""
@@ -4753,6 +4819,13 @@ msgstr "Nom de l'événement"
 msgid "Name of the event's folder"
 msgstr "Nom du dossier de l'événement"
 
+msgid ""
+"Name one: mh import <folder> (a USB disk, an SD card), or add your NAS "
+"once: mh folders add --backup <folder>."
+msgstr ""
+"Nommez-en un : mh import <dossier> (un disque USB, une carte SD), ou "
+"ajoutez votre NAS une fois : mh folders add --backup <dossier>."
+
 msgid "Name the events"
 msgstr "Nommer les événements"
 
@@ -4794,6 +4867,15 @@ msgstr "Personnes nommées : {names}."
 #, python-brace-format
 msgid "Named: {people}."
 msgstr "Nommés : {people}."
+
+msgid ""
+"Names and extensions (with their dot) that follow photos: never counted "
+"as intruder files, the files of your photo folders that are not photos or"
+" videos. Case ignored."
+msgstr ""
+"Noms et extensions (avec leur point) qui accompagnent les photos : jamais"
+" comptés comme fichiers intrus, les fichiers de vos dossiers de photos "
+"qui ne sont ni des photos ni des vidéos. Sans tenir compte de la casse."
 
 msgid ""
 "Names are saved in config.toml: mount a writable folder of yours on "
@@ -4889,6 +4971,9 @@ msgstr ""
 msgid "New Year"
 msgstr "Nouvel An"
 
+msgid "New album…"
+msgstr "Nouvel album…"
+
 msgid "New name"
 msgstr "Nouveau nom"
 
@@ -4939,6 +5024,9 @@ msgstr "Étape suivante"
 msgid "Next time, type it directly: {command}"
 msgstr "La prochaine fois, tapez-la directement : {command}"
 
+msgid "Next to do (g)"
+msgstr "Prochain à faire (g)"
+
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
 msgstr "Pas encore de résultats Czkawka : lancez d'abord Czkawka (PowerShell) :"
 
@@ -4979,9 +5067,6 @@ msgstr "Pas encore d'audit."
 
 msgid "No audit yet: 'shrink' reads the videos the audit described."
 msgstr "Pas encore d'audit : 'shrink' lit les vidéos que l'audit a décrites."
-
-msgid "No backup folder to import from."
-msgstr "Aucun dossier de sauvegarde d'où importer."
 
 msgid ""
 "No backup folder yet: type mh push --to <the NAS folder>, a shared folder"
@@ -5110,6 +5195,9 @@ msgstr "Aucune paire de dossiers : rien à passer en revue."
 #, python-brace-format
 msgid "No folder to analyse under {path}."
 msgstr "Aucun dossier à analyser sous {path}."
+
+msgid "No folder to import from."
+msgstr "Aucun dossier d'où importer."
 
 msgid "No group yet: no two faces look alike enough."
 msgstr ""
@@ -5493,14 +5581,6 @@ msgstr "Pas sur la télé : son format ({format}) n'y est pas lu."
 msgid "Not opened by mh? Type the command yourself; this page is closed."
 msgstr "Pas ouverte par mh ? Tapez la commande vous-même ; cette page est fermée."
 
-#, python-brace-format
-msgid ""
-"Not photos or videos: {extensions}. These files are only compared byte "
-"for byte, and their copies are moved to the quarantine."
-msgstr ""
-"Ni photos ni vidéos : {extensions}. Ces fichiers sont seulement comparés "
-"octet par octet, et leurs copies sont déplacées en quarantaine."
-
 msgid "Not readable"
 msgstr "Illisible"
 
@@ -5639,6 +5719,9 @@ msgstr ""
 msgid "Nothing left to check nor to sort."
 msgstr "Plus rien à vérifier ni à trier."
 
+msgid "Nothing left to do: every face shown is verified or ignored."
+msgstr "Plus rien à faire : chaque visage montré est vérifié ou ignoré."
+
 msgid "Nothing left to do: everything is applied."
 msgstr "Plus rien à faire : tout est appliqué."
 
@@ -5709,8 +5792,8 @@ msgstr "Rien à récupérer."
 msgid "Nothing to get back: the PC already has what the NAS keeps."
 msgstr "Rien à récupérer : le PC a déjà tout ce que garde le NAS."
 
-msgid "Nothing to import: every file of the backup is dealt with."
-msgstr "Rien à importer : chaque fichier de la sauvegarde est déjà traité."
+msgid "Nothing to import: every file of the folder is dealt with."
+msgstr "Rien à importer : chaque fichier du dossier est déjà traité."
 
 msgid "Nothing to move: every file is where the plan puts it."
 msgstr "Rien à déplacer : chaque fichier est là où le plan le met."
@@ -5928,37 +6011,36 @@ msgstr "Une seule chose est définitive :"
 msgid "One zip outside Docker's cache: a Docker reset loses nothing."
 msgstr "Un zip hors du cache de Docker : une remise à zéro de Docker ne perd rien."
 
+msgid "Only a photo of the album can be its cover."
+msgstr "Seule une photo de l'album peut en être la couverture."
+
 #, python-brace-format
 msgid ""
 "Only analyse these categories or extensions, e.g. --ext photo,video or "
 "--ext png,webp (repeatable). Categories: {categories} and those of "
-"scan.categories in config.toml. Other types too, such as --ext pdf,docx: "
-"their copies are moved to the quarantine. Default: media (every photo, "
-"RAW and video)."
+"scan.categories in config.toml. Photo, RAW and video extensions only. "
+"Default: media (every photo, RAW and video)."
 msgstr ""
-"N'analyse que ces catégories ou extensions, p. ex. --ext photo,video ou "
-"--ext png,webp (répétable). Catégories : {categories} et celles de "
-"scan.categories dans config.toml. D'autres types aussi, comme --ext "
-"pdf,docx : leurs copies sont déplacées en quarantaine. Par défaut : media"
-" (toutes les photos, RAW et vidéos)."
+"N'analyser que ces catégories ou extensions, par exemple --ext "
+"photo,video ou --ext png,webp (répétable). Catégories : {categories} et "
+"celles de scan.categories dans config.toml. Extensions de photos, RAW et "
+"vidéos seulement. Par défaut : media (toutes les photos, RAW et vidéos)."
 
 msgid ""
 "Only analyse these categories or extensions, e.g. [\"photo\", \"video\"] "
 "or [\"png\", \"webp\"]. Built-in categories: photo, raw, video and media "
 "(the three); yours are defined below. Empty: media, every photo, RAW and "
-"video extension. Other types are allowed, such as [\"pdf\", \"docx\"]: "
-"their copies are moved to the quarantine, never deleted. A name without a"
-" dot is a category when one has that name, otherwise an extension: write "
-"\".raw\" for the extension."
+"video extension. Only photo, RAW and video extensions: the audit lists "
+"the other files (intruder files). A name without a dot is a category when"
+" one has that name, otherwise an extension."
 msgstr ""
-"N'analyser que ces catégories ou extensions, p. ex. [\"photo\", "
+"N'analyser que ces catégories ou extensions, par exemple [\"photo\", "
 "\"video\"] ou [\"png\", \"webp\"]. Catégories intégrées : photo, raw, "
 "video et media (les trois) ; les vôtres se définissent plus bas. Vide : "
-"media, toutes les extensions de photos, RAW et vidéos. D'autres types "
-"sont permis, comme [\"pdf\", \"docx\"] : leurs copies sont déplacées en "
-"quarantaine, jamais supprimées. Un nom sans point est une catégorie quand"
-" l'une porte ce nom, sinon une extension : écrivez \".raw\" pour "
-"l'extension."
+"media, toutes les extensions de photos, RAW et vidéos. Extensions de "
+"photos, RAW et vidéos seulement : l'audit liste les autres fichiers "
+"(fichiers intrus). Un nom sans point est une catégorie quand l'une porte "
+"ce nom, sinon une extension."
 
 #, python-brace-format
 msgid "Only analysed: {scope}."
@@ -6090,6 +6172,9 @@ msgstr ""
 "Seul ce PC peut ouvrir le diaporama. Pour la télé et votre téléphone, "
 "tapez sur le PC : {command}"
 
+msgid "Only what is left"
+msgstr "Seulement ce qui reste"
+
 msgid ""
 "Only what is new; a photo moved by sort is renamed on the NAS, not sent "
 "again."
@@ -6103,6 +6188,13 @@ msgid ""
 msgstr ""
 "Seulement ce que le PC détient déjà, prouvé fichier par fichier, et que "
 "vous cochez sur une page."
+
+msgid ""
+"Only what your photos lack, by content; the folder is only read, never "
+"added to mh."
+msgstr ""
+"Seulement ce qui manque à vos photos, d'après le contenu ; le dossier est"
+" seulement lu, jamais ajouté à mh."
 
 msgid "Open a folder left in the search page, pick, then Move to an event…:"
 msgstr ""
@@ -6237,6 +6329,9 @@ msgstr "Autre catégorie"
 msgid "Other commands"
 msgstr "Autres commandes"
 
+msgid "Our photos"
+msgstr "Nos photos"
+
 msgid "Output (override general.* of config.toml)"
 msgstr "Affichage (remplace general.* de config.toml)"
 
@@ -6302,6 +6397,15 @@ msgid "People"
 msgstr "Personnes"
 
 msgid ""
+"People come in alphabetical order, then the unnamed groups, largest "
+"first: each name given there names the most faces. g goes to the next "
+"section to do, / to the people list."
+msgstr ""
+"Les personnes viennent par ordre alphabétique, puis les groupes sans nom,"
+" les plus grands d'abord : chaque nom donné là nomme le plus de visages. "
+"g va à la prochaine section à faire, / à la liste des personnes."
+
+msgid ""
 "People whose folders hold their photos (\"Photos Chloé\", \"iPhone "
 "Manon\"), besides those named on the people page, e.g. [\"Chloé\", "
 "\"Manon\"]: a folder holding one of these names, as a word, is that "
@@ -6314,6 +6418,9 @@ msgstr ""
 "comme un mot, est celui de cette personne. Majuscules et accents ne "
 "comptent pas. Ses photos rejoignent votre propre dossier du même moment "
 "(la règle same_moment)."
+
+msgid "Per extension"
+msgstr "Par extension"
 
 #, python-brace-format
 msgid "Per photo: {describe:.1f} s to describe, {map:.1f} s to map."
@@ -6670,6 +6777,17 @@ msgstr "Rayon, en mètres"
 msgid "Random sample"
 msgstr "Échantillon aléatoire"
 
+msgid ""
+"Rather keep a copy elsewhere? 'purge --to <folder>' first copies the "
+"quarantine there, checks every byte of the copy, and only then empties "
+"the quarantine. <folder> can be a NAS share, an external disk or a "
+"cloud's synced folder, mounted in the container."
+msgstr ""
+"Plutôt garder une copie ailleurs ? 'purge --to <dossier>' copie d'abord "
+"la quarantaine, vérifie chaque octet de la copie, puis seulement vide la "
+"quarantaine. <dossier> peut être un partage NAS, un disque externe ou le "
+"dossier synchronisé d'un cloud, monté dans le conteneur."
+
 msgid "Rating"
 msgstr "Note"
 
@@ -6708,6 +6826,10 @@ msgstr "Relu dans config.toml : {names} noms, {ignored} visages ignorés."
 msgid "Read back from the index: {faces} faces left."
 msgstr "Relu dans l'index : il reste {faces} visages."
 
+#, python-brace-format
+msgid "Read back: {count} archive(s) in {other}."
+msgstr "Relu : {count} archive(s) dans {other}."
+
 msgid ""
 "Read every folder again, even those that did not change since the last "
 "audit: for a photo changed in place by another program."
@@ -6722,6 +6844,13 @@ msgstr ""
 
 msgid "Read the reports in your browser"
 msgstr "Lire les rapports dans votre navigateur"
+
+msgid ""
+"Read-only: this page only reads the journal and changes nothing. A run is"
+" put back with 'undo', in the terminal."
+msgstr ""
+"Lecture seule : cette page ne fait que lire le journal et ne change rien."
+" Une exécution se remet en place avec « undo », dans le terminal."
 
 msgid "Reading 128 KB of each file already in the cache, once"
 msgstr "Lecture de 128 Ko de chaque fichier déjà en cache, une seule fois"
@@ -7250,6 +7379,10 @@ msgid "Run {run_id} of the same sort was already undone: left aside."
 msgstr "Le passage {run_id} du même tri a déjà été annulé : laissé de côté."
 
 #, python-brace-format
+msgid "Run {run} stays in the quarantine."
+msgstr "L'exécution {run} reste dans la quarantaine."
+
+#, python-brace-format
 msgid ""
 "Running in the window where mh runs: {command}. The home page comes back "
 "here when it ends."
@@ -7502,6 +7635,11 @@ msgstr "Recherche arrêtée ; vos photos n'ont pas été modifiées."
 msgid "Search your photos"
 msgstr "Chercher dans vos photos"
 
+msgid "Search, browse and the albums of this home: nothing here changes a photo."
+msgstr ""
+"Chercher, parcourir et les albums de la maison : rien ici ne change une "
+"photo."
+
 msgid "Searching OpenStreetMap…"
 msgstr "Recherche sur OpenStreetMap…"
 
@@ -7745,6 +7883,9 @@ msgstr "Afficher"
 msgid "Show again"
 msgstr "Remontrer"
 
+msgid "Show an album on the TV"
+msgstr "Montrer un album sur la télé"
+
 msgid "Show an album, made in search, browse or the burst review: \"Crete 2023\"."
 msgstr ""
 "Montrer un album, fait dans search, browse ou le tri des rafales : "
@@ -7774,6 +7915,12 @@ msgstr "Voir ses photos"
 
 msgid "Show more"
 msgstr "En montrer plus"
+
+msgid "Show only this person (Esc)"
+msgstr "Montrer seulement cette personne (Échap)"
+
+msgid "Show or hide its folders: each one can be placed alone"
+msgstr "Montrer ou cacher ses dossiers : chacun peut être placé seul"
 
 msgid ""
 "Show photos on the TV, the phone choosing the next one: a folder, a "
@@ -7871,14 +8018,6 @@ msgstr ""
 
 msgid "Software"
 msgstr "Logiciel"
-
-msgid ""
-"Software folders (.git, node_modules, AppData, Program Files, ...) are "
-"skipped: there, where a file lies makes a program work."
-msgstr ""
-"Les dossiers de logiciels (.git, node_modules, AppData, Program Files, "
-"...) sont ignorés : là, c'est l'endroit où se trouve un fichier qui fait "
-"fonctionner un programme."
 
 msgid "Some destinations cannot be used; nothing was moved:"
 msgstr "Certaines destinations sont inutilisables ; rien n'a été déplacé :"
@@ -8315,9 +8454,6 @@ msgstr "L'album {name} est vide : retiré de {place}."
 msgid "The album's name"
 msgstr "Nom de l'album"
 
-msgid "The album's name (a new name creates it):"
-msgstr "Le nom de l'album (un nouveau nom le crée) :"
-
 msgid ""
 "The album's name, as search and browse saved it: the folder holding its "
 "links."
@@ -8341,6 +8477,13 @@ msgstr ""
 msgid "The albums cannot be read (error {status})."
 msgstr "Les albums n'ont pas pu être lus (erreur {status})."
 
+#, python-brace-format
+msgid "The archive folder {target} and {folder} are one inside the other."
+msgstr "Le dossier d'archive {target} et {folder} sont l'un dans l'autre."
+
+msgid "The archives stay on this PC only, in the folder backups of mh."
+msgstr "Les archives restent sur ce PC seulement, dans le dossier backups de mh."
+
 msgid "The audit counts them"
 msgstr "L'audit les compte"
 
@@ -8359,6 +8502,9 @@ msgid ""
 msgstr ""
 "L'audit lit vos dossiers et écrit un rapport ; vos photos ne sont pas "
 "touchées."
+
+msgid "The audit report of these folders shows them:"
+msgstr "Le rapport d'audit de ces dossiers les montre :"
 
 msgid "The audit report of these folders shows them: see All reports."
 msgstr "Le rapport d'audit de ces dossiers les montre : voir Tous les rapports."
@@ -8550,6 +8696,22 @@ msgstr ""
 
 msgid "The copy of the import has the same name and size."
 msgstr "La copie de l'import a le même nom et la même taille."
+
+#, python-brace-format
+msgid ""
+"The copy to {other} failed: the archive stays on this PC only, in the "
+"folder backups of mh."
+msgstr ""
+"La copie vers {other} a échoué : l'archive reste sur ce PC seulement, "
+"dans le dossier backups de mh."
+
+#, python-brace-format
+msgid "The copy to {target} failed: {reason}."
+msgstr "La copie vers {target} a échoué : {reason}."
+
+#, python-brace-format
+msgid "The cover of {name} could not be saved."
+msgstr "La couverture de {name} n'a pas pu être enregistrée."
 
 msgid "The current folder (PowerShell, or bash on WSL, Linux, macOS):"
 msgstr "Le dossier courant (PowerShell, ou bash sous WSL, Linux, macOS) :"
@@ -8760,6 +8922,9 @@ msgstr ""
 msgid "The folder {path} is not mounted."
 msgstr "Le dossier {path} n'est pas monté."
 
+msgid "The folder, as the Explorer shows it"
+msgstr "Le dossier, tel que l'Explorateur le montre"
+
 msgid "The folders mh knows"
 msgstr "Les dossiers que mh connaît"
 
@@ -8798,8 +8963,8 @@ msgid_plural ""
 "The home page has {count} photos described by the model: Stop is on the "
 "page."
 msgstr[0] ""
-"La page d'accueil fait décrire {count} photo par le modèle : Stop est sur "
-"la page."
+"La page d'accueil fait décrire {count} photo par le modèle : Stop est sur"
+" la page."
 msgstr[1] ""
 "La page d'accueil fait décrire {count} photos par le modèle : Stop est "
 "sur la page."
@@ -9715,6 +9880,13 @@ msgstr ""
 "Les audits l'ignorent. 'media-hygiene undo' le supprime ; le supprimer à "
 "la main est sans danger aussi."
 
+msgid ""
+"This group looks like the faces you confirmed as this person's: a click "
+"names it so (y)."
+msgstr ""
+"Ce groupe ressemble aux visages que vous avez confirmés pour cette "
+"personne : un clic le nomme ainsi (y)."
+
 msgid "This help."
 msgstr "Cette aide."
 
@@ -9791,6 +9963,10 @@ msgid "This photo is not in your library: {warning} Tick it anyway?"
 msgstr ""
 "Cette photo n'est pas dans votre photothèque : {warning} La cocher quand "
 "même ?"
+
+#, python-brace-format
+msgid "This photo is now the cover of {name}."
+msgstr "Cette photo est désormais la couverture de {name}."
 
 #, python-brace-format
 msgid ""
@@ -9931,8 +10107,18 @@ msgstr "À copier, en tout : {size}"
 msgid "To do"
 msgstr "À faire"
 
+msgid "To do:"
+msgstr "À faire :"
+
 msgid "To fill in"
 msgstr "À compléter"
+
+msgid ""
+"To get a run back: copy each drive's folder of it back into that drive's "
+"quarantine, then run 'undo <run>'."
+msgstr ""
+"Pour récupérer une exécution : recopiez le dossier de chaque disque dans "
+"la quarantaine de ce disque, puis lancez 'undo <exécution>'."
 
 msgid ""
 "To keep settings, mount a folder of yours on /config, e.g. -v \"$HOME"
@@ -10181,6 +10367,10 @@ msgstr "Lieu ou groupe inconnu : rechargez la page."
 msgid "Unknown run {run_id}."
 msgstr "Exécution inconnue : {run_id}."
 
+#, python-brace-format
+msgid "Unnamed groups ({n})"
+msgstr "Groupes sans nom ({n})"
+
 msgid "Untick: stays on the phone"
 msgstr "Décocher : reste sur le téléphone"
 
@@ -10213,6 +10403,9 @@ msgstr "Mis à jour : {before} → {after}. Ce qui a changé : {notes}"
 
 msgid "Usage:"
 msgstr "Utilisation :"
+
+msgid "Use as cover"
+msgstr "Utiliser comme couverture"
 
 msgid "Use the published image, or install the dependencies again: uv sync."
 msgstr "Utilisez l'image publiée, ou réinstallez les dépendances : uv sync."
@@ -10263,6 +10456,9 @@ msgstr ""
 "Parcourt tous les dossiers ; photos et vidéos sont reconnues à leur "
 "extension."
 
+msgid "What an album is, and what this page does"
+msgstr "Ce qu'est un album, et ce que fait cette page"
+
 msgid "What do you want to do?"
 msgstr "Que voulez-vous faire ?"
 
@@ -10273,6 +10469,9 @@ msgstr ""
 
 msgid "What do you want to do? duplicates, phone, undo…"
 msgstr "Que voulez-vous faire ? doublons, téléphone, annuler…"
+
+msgid "What each run did"
+msgstr "Ce qu'a fait chaque exécution"
 
 msgid "What is left stays in the quarantine; run 'purge' again later."
 msgstr "Ce qui reste demeure en quarantaine ; relancez 'purge' plus tard."
@@ -10421,12 +10620,6 @@ msgstr "Sera supprimé"
 msgid "Will be deleted from"
 msgstr "Seront supprimées de"
 
-msgid "Will be deleted or moved to the quarantine"
-msgstr "Sera supprimé ou déplacé en quarantaine"
-
-msgid "Will be deleted or moved to the quarantine from"
-msgstr "Seront supprimées ou déplacées en quarantaine depuis"
-
 msgid "Will be moved to the quarantine"
 msgstr "Sera déplacé en quarantaine"
 
@@ -10435,6 +10628,10 @@ msgstr "Seront déplacées en quarantaine depuis"
 
 msgid "Windows"
 msgstr "Windows"
+
+#, python-brace-format
+msgid "Windows cannot open {other}."
+msgstr "Windows ne peut pas ouvrir {other}."
 
 #, python-brace-format
 msgid ""
@@ -10522,10 +10719,13 @@ msgstr ""
 
 msgid ""
 "Words left out because they describe nearly every photo. Written here, "
-"the list replaces the built-in one (French and English)."
+"the list replaces the built-in one (French and English): this is the "
+"whole built-in list, edit it rather than starting from a few words."
 msgstr ""
 "Mots écartés parce qu'ils décrivent presque toutes les photos. Écrite "
-"ici, la liste remplace celle intégrée (français et anglais)."
+"ici, la liste remplace celle intégrée (français et anglais) : c'est la "
+"liste intégrée complète, modifiez-la plutôt que de partir de quelques "
+"mots."
 
 msgid "Words of"
 msgstr "Mots de"
@@ -10942,6 +11142,12 @@ msgstr "un dossier tel que l'Explorateur le montre, par exemple {example}"
 
 msgid "a folder not found"
 msgstr "un dossier introuvable"
+
+msgid "a folder opened: save its position"
+msgstr "un dossier ouvert : enregistrer sa position"
+
+msgid "a folder opened: the next or previous one of its list (← → too)"
+msgstr "un dossier ouvert : le suivant ou le précédent de sa liste (← → aussi)"
 
 msgid "a folder someone named (the other one is generic)"
 msgstr "un dossier nommé par quelqu'un (l'autre est générique)"
@@ -11585,16 +11791,16 @@ msgstr "chez soi seulement : repas, jeux, enfants, canapé, jardin"
 #, python-brace-format
 msgid ""
 "invalid category name '{name}': letters, digits, '-' and '_' only, such "
-"as documents"
+"as phone"
 msgstr ""
 "nom de catégorie « {name} » invalide : lettres, chiffres, « - » et « _ » "
-"seulement, par exemple documents"
+"seulement, par exemple phone"
 
 #, python-brace-format
-msgid "invalid extension {values}: letters, digits, '-' and '_' only, such as pdf"
+msgid "invalid extension {values}: letters, digits, '-' and '_' only, such as jpg"
 msgstr ""
 "extension {values} invalide : lettres, chiffres, « - » et « _ » "
-"seulement, par exemple pdf"
+"seulement, par exemple jpg"
 
 msgid "invert: the others instead"
 msgstr "inverser : les autres à la place"
@@ -11869,6 +12075,13 @@ msgstr "mh vous le redemande dans {window} avant de toucher quoi que ce soit."
 msgid "mh audit: it reads again only what changed."
 msgstr "mh audit : il ne relit que ce qui a changé."
 
+msgid ""
+"mh backup [--to <folder>] or mh restore [--from <folder>]: by default the"
+" folder .mh-backups of the mh push target."
+msgstr ""
+"mh backup [--to <dossier>] ou mh restore [--from <dossier>] : par défaut "
+"le dossier .mh-backups de la cible de mh push."
+
 msgid "mh forgets it; its photos do not move."
 msgstr "mh l'oublie ; ses photos ne bougent pas."
 
@@ -12084,8 +12297,8 @@ msgstr ""
 msgid "naming the events up to this one covers {share}%% of the work"
 msgstr "nommer les événements jusqu'à celui-ci couvre {share} %% du travail"
 
-msgid "nas get back restore backup copy missing"
-msgstr "nas récupérer restaurer sauvegarde copier manquantes"
+msgid "nas get back restore backup copy missing usb disk"
+msgstr "nas récupérer restaurer sauvegarde copier manquant usb disque"
 
 msgid "nas synology backup old disk share network smb"
 msgstr "nas synology sauvegarde ancien disque partage réseau smb"
@@ -12263,6 +12476,9 @@ msgstr "seulement la plus nette"
 msgid "only the sharpest, then next"
 msgstr "seulement la plus nette, puis suivante"
 
+msgid "open it"
+msgstr "l'ouvrir"
+
 msgid "open it large (a double click too)"
 msgstr "l'ouvrir en grand (un double clic aussi)"
 
@@ -12295,9 +12511,6 @@ msgstr "original"
 
 msgid "other file types"
 msgstr "autres types de fichiers"
-
-msgid "other files than media moved to the quarantine"
-msgstr "fichiers autres que photos et vidéos déplacés en quarantaine"
 
 msgid "outside the mounted folders"
 msgstr "hors des dossiers montés"
@@ -12571,6 +12784,9 @@ msgstr "raccourci bureau icône démarrer"
 
 msgid "size, largest first"
 msgstr "taille, la plus grande d'abord"
+
+msgid "slideshow tv television album chromecast phone remote sofa"
+msgstr "diaporama télé télévision album chromecast téléphone télécommande canapé"
 
 msgid "slideshow tv television chromecast phone remote holidays"
 msgstr "diaporama télé télévision chromecast téléphone télécommande vacances"
@@ -13133,6 +13349,9 @@ msgstr "mise à jour version nouvelle update docker"
 msgid "usage policy"
 msgstr "conditions d'utilisation"
 
+msgid "usb disk card sd camera folder import copy"
+msgstr "usb disque carte sd appareil dossier importer copier"
+
 msgid "validate"
 msgstr "valider"
 
@@ -13383,6 +13602,10 @@ msgstr[0] "{count} album, enregistré dans {place}."
 msgstr[1] "{count} albums, enregistrés dans {place}."
 
 #, python-brace-format
+msgid "{count} archive(s) copied from {other} to this PC."
+msgstr "{count} archive(s) copiée(s) de {other} vers ce PC."
+
+#, python-brace-format
 msgid "{count} backup (read-only)"
 msgid_plural "{count} backups (read-only)"
 msgstr[0] "{count} sauvegarde (lecture seule)"
@@ -13463,20 +13686,6 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} copies to set aside"
 msgstr "{count} copies à mettre de côté"
-
-#, python-brace-format
-msgid ""
-"{count} copy of another file than a media will be moved to the "
-"quarantine, not deleted."
-msgid_plural ""
-"{count} copies of other files than media will be moved to the quarantine,"
-" not deleted."
-msgstr[0] ""
-"{count} copie d'un fichier autre qu'un média sera déplacée en "
-"quarantaine, pas supprimée."
-msgstr[1] ""
-"{count} copies de fichiers autres que des médias seront déplacées en "
-"quarantaine, pas supprimées."
 
 #, python-brace-format
 msgid "{count} day ago"
@@ -13727,22 +13936,6 @@ msgstr[1] ""
 #, python-brace-format
 msgid ""
 "{count} file is both in {kept} (kept) and in {removed} (a copy 'clean' "
-"deletes, or moves to the quarantine if not a media file), {size} to free."
-msgid_plural ""
-"{count} files are both in {kept} (kept) and in {removed} (copies 'clean' "
-"deletes, or moves to the quarantine if not a media file), {size} to free."
-msgstr[0] ""
-"{count} fichier est à la fois dans {kept} (gardé) et dans {removed} (une "
-"copie que 'clean' supprime, ou déplace en quarantaine si ce n'est pas une"
-" photo ni une vidéo), {size} à libérer."
-msgstr[1] ""
-"{count} fichiers sont à la fois dans {kept} (gardés) et dans {removed} "
-"(des copies que 'clean' supprime, ou déplace en quarantaine si ce ne sont"
-" pas des photos ni des vidéos), {size} à libérer."
-
-#, python-brace-format
-msgid ""
-"{count} file is both in {kept} (kept) and in {removed} (a copy 'clean' "
 "moves to the quarantine), {size} to free with 'purge'."
 msgid_plural ""
 "{count} files are both in {kept} (kept) and in {removed} (copies 'clean' "
@@ -13876,6 +14069,10 @@ msgstr ""
 "OneDrive : les lire les télécharge sur ce PC ({free} Go libres sur "
 "{drive}). Pour les garder ici : clic droit sur le dossier, puis Toujours "
 "conserver sur cet appareil."
+
+#, python-brace-format
+msgid "{count} files differ from their copy in {target}: {names}."
+msgstr "{count} fichiers diffèrent de leur copie dans {target} : {names}."
 
 #, python-brace-format
 msgid "{count} files have an identical copy: left out."
@@ -14971,10 +15168,10 @@ msgid "{name} must be a JSON array, e.g. [\"C:\\\\Photos\"]"
 msgstr "{name} doit être un tableau JSON, p. ex. [\"C:\\\\Photos\"]"
 
 #, python-brace-format
-msgid "{name} must be a JSON object, e.g. {{\"documents\": [\"pdf\", \"docx\"]}}"
+msgid "{name} must be a JSON object, e.g. {{\"phone\": [\"jpg\", \"heic\"]}}"
 msgstr ""
-"{name} doit contenir un objet JSON, p. ex. {{\"documents\": [\"pdf\", "
-"\"docx\"]}}"
+"{name} doit être un objet JSON, par exemple {{\"phone\": [\"jpg\", "
+"\"heic\"]}}"
 
 #, python-brace-format
 msgid "{name} was already there: copied as {final}."
@@ -15011,6 +15208,10 @@ msgid "{name}: {count} photos"
 msgstr "{name} : {count} photos"
 
 #, python-brace-format
+msgid "{name}: {words}"
+msgstr "{name} : {words}"
+
+#, python-brace-format
 msgid "{n} Mb/s"
 msgstr "{n} Mb/s"
 
@@ -15023,6 +15224,12 @@ msgstr[1] "{n} télés"
 #, python-brace-format
 msgid "{n} already there"
 msgstr "{n} déjà en place"
+
+#, python-brace-format
+msgid "{n} attributed face ({people})"
+msgid_plural "{n} attributed faces ({people})"
+msgstr[0] "{n} visage attribué ({people})"
+msgstr[1] "{n} visages attribués ({people})"
 
 #, python-brace-format
 msgid "{n} choice of the batch taken back"
@@ -15178,6 +15385,18 @@ msgstr ""
 " ils sont."
 
 #, python-brace-format
+msgid "{n} folder"
+msgid_plural "{n} folders"
+msgstr[0] "{n} dossier"
+msgstr[1] "{n} dossiers"
+
+#, python-brace-format
+msgid "{n} group ignored"
+msgid_plural "{n} groups ignored"
+msgstr[0] "{n} groupe ignoré"
+msgstr[1] "{n} groupes ignorés"
+
+#, python-brace-format
 msgid "{n} group picked: the next name goes to it."
 msgid_plural "{n} groups picked: the next name goes to all of them."
 msgstr[0] "{n} groupe choisi : le prochain nom lui est donné."
@@ -15224,6 +15443,12 @@ msgstr[0] "{n} autre photo ressemble à la personne mise de côté le {date}"
 msgstr[1] "{n} autres photos ressemblent à la personne mise de côté le {date}"
 
 #, python-brace-format
+msgid "{n} person"
+msgid_plural "{n} people"
+msgstr[0] "{n} personne"
+msgstr[1] "{n} personnes"
+
+#, python-brace-format
 msgid "{n} photo"
 msgid_plural "{n} photos"
 msgstr[0] "{n} photo"
@@ -15268,6 +15493,12 @@ msgstr[1] "{n} photos mises de côté, masquées"
 #, python-brace-format
 msgid "{n} photos of these days stay with the rule '{rule}'."
 msgstr "{n} photos de ces jours restent avec la règle '{rule}'."
+
+#, python-brace-format
+msgid "{n} position"
+msgid_plural "{n} positions"
+msgstr[0] "{n} position"
+msgstr[1] "{n} positions"
 
 #, python-brace-format
 msgid "{n} rule decided nothing."
@@ -15318,6 +15549,16 @@ msgid "{n} sure proposal accepted"
 msgid_plural "{n} sure proposals accepted"
 msgstr[0] "{n} proposition sûre acceptée"
 msgstr[1] "{n} propositions sûres acceptées"
+
+#, python-brace-format
+msgid "{n} to confirm"
+msgstr "{n} à confirmer"
+
+#, python-brace-format
+msgid "{n} unnamed group ({faces})"
+msgid_plural "{n} unnamed groups ({faces})"
+msgstr[0] "{n} groupe sans nom ({faces})"
+msgstr[1] "{n} groupes sans nom ({faces})"
 
 #, python-brace-format
 msgid "{n} video"
@@ -15576,6 +15817,16 @@ msgstr ""
 "{final} définitif"
 
 #, python-brace-format
+msgid "{said} Next: {name} ({n} left)."
+msgid_plural "{said} Next: {name} ({n} left)."
+msgstr[0] "{said} Suivant : {name} ({n} restant)."
+msgstr[1] "{said} Suivant : {name} ({n} restants)."
+
+#, python-brace-format
+msgid "{said} Nothing left to place."
+msgstr "{said} Plus rien à placer."
+
+#, python-brace-format
 msgid "{seconds} s"
 msgstr "{seconds} s"
 
@@ -15660,6 +15911,12 @@ msgid "{table} in config.toml"
 msgstr "{table} dans config.toml"
 
 #, python-brace-format
+msgid "{target} lacks {missing} for the copy: nothing copied, nothing erased."
+msgstr ""
+"Il manque {missing} sur {target} pour la copie : rien n'a été copié ni "
+"effacé."
+
+#, python-brace-format
 msgid ""
 "{target} overlaps {folder}: choose a folder of its own, outside your "
 "photo folders and backups."
@@ -15721,6 +15978,14 @@ msgstr[0] ""
 msgstr[1] ""
 "{units} groupes de photos (événements ou photos seules) ne sont pris par "
 "aucune de vos règles :"
+
+#, python-brace-format
+msgid ""
+"{values}: media-hygiene only handles photos and videos; the audit lists "
+"the other files of your photo folders (intruder files)"
+msgstr ""
+"{values} : media-hygiene ne traite que les photos et les vidéos ; l'audit"
+" liste les autres fichiers de vos dossiers de photos (fichiers intrus)"
 
 #, python-brace-format
 msgid ""
@@ -15809,13 +16074,15 @@ msgstr "… et {count} de plus."
 
 msgid ""
 "↑ ↓ move, o folds or opens, Enter names, y confirms the attributed faces "
-"shown, x names several groups at once, i ignores a group; × marks a face "
-"that is someone else's, the next button saves it."
+"shown (or names a group as the person it looks like), x names several "
+"groups at once, i ignores a group; × marks a face that is someone else's,"
+" the next button saves it."
 msgstr ""
-"↑ ↓ se déplacer, o replie ou ouvre, Entrée nomme, y confirme les visages "
-"attribués affichés, x nomme plusieurs groupes à la fois, i ignore un "
-"groupe ; × marque un visage qui est celui de quelqu'un d'autre, le "
-"prochain bouton l'enregistre."
+"↑ ↓ se déplacent, o replie ou ouvre, Entrée nomme, y confirme les visages"
+" attribués montrés (ou nomme un groupe comme la personne à qui il "
+"ressemble), x nomme plusieurs groupes à la fois, i ignore un groupe ; × "
+"marque un visage qui est celui de quelqu'un d'autre, le bouton suivant "
+"l'enregistre."
 
 #, python-brace-format
 msgid ""
@@ -16066,11 +16333,11 @@ msgstr ""
 "chacun est journalisé et 'undo' le reprend."
 
 msgid ""
-"🛟 The backup is only read: each file is copied, compared with its source,"
+"🛟 The folder is only read: each file is copied, compared with its source,"
 " journaled; 'undo' removes the copies."
 msgstr ""
-"🛟 La sauvegarde est seulement lue : chaque fichier est copié, comparé à "
-"sa source, journalisé ; 'undo' retire les copies."
+"🛟 Le dossier est seulement lu : chaque fichier est copié, comparé à sa "
+"source, journalisé ; « undo » retire les copies."
 
 msgid "🤖 Local AI (Ollama), optional: a model set in config.toml"
 msgstr "🤖 IA locale (Ollama), facultative : un modèle indiqué dans config.toml"
@@ -16081,4 +16348,20 @@ msgid ""
 msgstr ""
 "🤖 classify et tags peuvent aussi interroger un modèle d'IA local : "
 "indiquez [classify.ai] model dans config.toml (mh config)."
+
+#, python-brace-format
+msgid ""
+"🧹 {count} file that is not a photo or a video ({extensions}) takes {size}"
+" in your photo folders: see 'Intruder files' in the report."
+msgid_plural ""
+"🧹 {count} files that are not photos or videos ({extensions}) take {size} "
+"in your photo folders: see 'Intruder files' in the report."
+msgstr[0] ""
+"🧹 {count} fichier qui n'est ni une photo ni une vidéo ({extensions}) "
+"occupe {size} dans vos dossiers de photos : voyez « Fichiers intrus » "
+"dans le rapport."
+msgstr[1] ""
+"🧹 {count} fichiers qui ne sont ni des photos ni des vidéos ({extensions})"
+" occupent {size} dans vos dossiers de photos : voyez « Fichiers intrus » "
+"dans le rapport."
 

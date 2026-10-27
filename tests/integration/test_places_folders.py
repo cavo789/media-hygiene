@@ -179,3 +179,38 @@ def test_xmp_writes_the_saved_position_not_the_towns_centre(
     folder = locations.data_dir / "c" / "Photos" / "2019" / "Saint-Jean de Luz"
     doc = parse((folder / "IMG_31.jpg.xmp").read_bytes())
     assert simple_value(doc, LATITUDE) == coordinate(BEACH["latitude"], "NS")
+
+
+def test_the_folders_of_one_town_are_one_group_saved_together(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """TODO 0383: 2019 and 2023 of one town: one group, its photos, one save."""
+    later = locations.data_dir / "c" / "Photos" / "2023" / "Saint-Jean de Luz"
+    write_shot(later / "IMG_41.jpg", Shot(41))
+    runner = _tree(locations, monkeypatch)
+    other = "C:\\Photos\\2023\\Saint-Jean de Luz"
+    save = {"action": "save", "folder": HOST, "together": [HOST, other], **BEACH}
+    answers = open_map(
+        monkeypatch,
+        runner,
+        [
+            ("GET /api/folders", None),
+            ("GET /api/group/0", None),
+            ("POST /api/folder", save),
+            ("POST /api/folder", {**save, "action": "forget"}),
+        ],
+    )
+    [group] = json.loads(answers[0].body)["groups"]
+    assert len(group["folders"]) == 2
+    assert group["positions"] == 0
+    shown = json.loads(answers[1].body)["photos"]
+    assert sorted(photo["name"] for photo in shown) == [
+        "IMG_31.jpg",
+        "IMG_32.jpg",
+        "IMG_41.jpg",
+    ]
+    placed = _folders(answers[2])
+    assert all(folder["saved"] for folder in placed)
+    assert json.loads(answers[2].body)["groups"][0]["positions"] == 1
+    assert not any(folder["saved"] for folder in _folders(answers[3]))
+    assert not read_folders(locations.config_file)

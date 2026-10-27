@@ -50,6 +50,30 @@ Avec `o` : *✅ Quarantaine vidée : 16,4 Mo libérés.*
 |---|---|
 | `EXÉCUTION` | Seulement la quarantaine de cette exécution (voir [`history`](history.md)) ; toutes par défaut. |
 | `--yes`, `-y` | Ne pas demander. |
+| `--to DOSSIER` | Copier d'abord la quarantaine dans `DOSSIER`, vérifier chaque octet de la copie, et seulement ensuite l'effacer. |
+
+## Garder une copie ailleurs : `--to`
+
+Plutôt qu'effacer, `purge --to` sort la quarantaine du PC : un partage NAS, un disque externe ou
+le dossier synchronisé d'un cloud (OneDrive, Dropbox…), monté dans le conteneur :
+
+```powershell
+docker run --rm -it `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  -v "\\NAS\archives_quarantaine:/archive" `
+  cavo789/media-hygiene purge --to /archive
+```
+
+- Chaque exécution va dans `<dossier>/<exécution>/<disque>/…` (`C` pour la quarantaine par
+  défaut, `D` pour celle de `D:`…) : deux quarantaines ne se mélangent jamais.
+- L'espace libre du dossier est vérifié d'abord ; un seul fichier absent, d'une autre taille ou
+  d'autres octets, ou modifié pendant la copie, et cette exécution n'est **pas** effacée.
+- Le dossier synchronisé d'un cloud prouve la copie locale, pas l'envoi : c'est aussi sûr que
+  votre synchronisation.
+- Pour récupérer une exécution : recopiez chacun de ses dossiers `<disque>` dans la quarantaine
+  de ce disque (`<dossier>/<exécution>/C` → `quarantine\<exécution>`), puis lancez
+  [`undo <exécution>`](undo.md).
+- Sans `--to` (et sans `--yes`), `purge` rappelle cette option avant sa question.
 
 ## Bon à savoir
 

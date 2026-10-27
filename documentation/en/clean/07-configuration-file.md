@@ -459,7 +459,7 @@ excluded_names = []    # folder names skipped on every disk, e.g. ["Thumbnails",
 extensions = []        # e.g. ["photo", "mp4"]; empty: every photo, RAW and video
 
 [scan.categories]      # your own categories for --ext
-documents = ["pdf", "docx", "txt"]
+phone = ["heic", "jpg", "mov", "mp4"]
 
 [clean]
 confirm = true         # clean asks before doing anything
@@ -491,6 +491,9 @@ junk_files = ["Thumbs.db", "desktop.ini", ".DS_Store"]  # do not keep a folder a
   read only once, for its check and its fingerprint. Each worker holds one such file at a time:
   with 16 workers, up to 2 GB at worst. Raise it for big scans when memory allows, lower it if
   Docker Desktop has little (*Settings > Resources*); `0` reads each file twice.
+- **`companions`** (not written in the example): the names and extensions that follow photos
+  (`.xmp`, `.json`, `Thumbs.db`…), never counted as intruder files
+  ([step 6](06-file-types.md#files-that-are-not-photos-or-videos)).
 - **`workers`** (4, in `[clean]`, not written in the example): how many files `clean`, `undo`
   and `sort` handle at once. Four readers read a Windows folder about 4 times faster than one; lower it to
   `1` for a slow USB hard disk, whose head seeks back and forth between the readers.
@@ -928,7 +931,7 @@ then `config.toml`, then the defaults. `--prefer` on the command line therefore 
 The environment variables are named `MEDIA_HYGIENE_<SECTION>__<KEY>` (two underscores), for
 instance `-e MEDIA_HYGIENE_GENERAL__LOCALE=fr` in `docker run`; lists are written as JSON
 arrays, tables as JSON objects that replace the file's whole table
-(`MEDIA_HYGIENE_SCAN__CATEGORIES='{"documents": ["pdf", "docx"]}'`). Lists of tables, such as
+(`MEDIA_HYGIENE_SCAN__CATEGORIES='{"phone": ["heic", "jpg"]}'`). Lists of tables, such as
 the rules of `classify` (`[[classify.rules]]`), are read from `config.toml` only. Up to version
 0.2 their prefix was `MEDIA_DEDUP_`, no longer read since version 0.4.0.
 

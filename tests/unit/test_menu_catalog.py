@@ -76,7 +76,7 @@ def test_the_slideshow_is_in_share_and_nowhere_else() -> None:
     """Share holds the slideshow and the album's uses; Find no longer lists it."""
     areas = {area.space: area for area in CATALOG.areas}
     listed = {name for group in areas[Space.SHARE].groups for name in group.steps}
-    assert listed == {"slideshow", "share", "album"}
+    assert listed == {"slideshow", "slideshow-album", "share", "album"}
     assert CATALOG.step("album").space is Space.SHARE  # one album, several uses
     assert CATALOG.step("share").space is Space.SHARE
     assert CATALOG.step("slideshow").space is Space.SHARE
@@ -121,3 +121,26 @@ def test_every_active_entry_but_the_extras_has_its_doc() -> None:
     """The page links each action to its chapter; only the planned ones wait."""
     missing = [step.name for step in ACTIVE if step.doc is None]
     assert not missing
+
+
+def test_phone_free_is_filed_under_clean_and_still_second_from_a_phone() -> None:
+    """It erases for good (Clean up), yet reads as step 2 of "From a phone"."""
+    step = next(s for s in CATALOG.steps if s.name == "phone-free")
+    assert step.space is Space.CLEAN
+    areas = {a.space: a for a in CATALOG.areas}
+    phone = next(g for g in areas[Space.IMPORT].groups if g.title == "From a phone")
+    assert phone.steps[1] == "phone-free"
+    further = next(g for g in areas[Space.CLEAN].groups if g.title == "Go further")
+    assert "phone-free" in further.steps
+
+
+def test_show_an_album_on_the_tv_takes_the_album_name() -> None:
+    """Share lists the step; its form builds `slideshow --album "<name>" --lan`."""
+    step = next(s for s in CATALOG.steps if s.name == "slideshow-album")
+    assert step.space is Space.SHARE
+    assert step.words({"album": "Crete 2023"}) == (
+        "slideshow",
+        "--album",
+        "Crete 2023",
+        "--lan",
+    )

@@ -62,7 +62,8 @@ Instead of a folder: `--search "noel 2025"` (the photos a [`search`](search.md) 
 **📺 Share on the TV** button gives this command, copied). `--chosen` is gone: it showed the
 files set aside, meant for the quarantine; given, it says to use `--album`. From the
 [home page](home.md) opened by `mh --lan`, the *Show your photos on the TV* step asks for the
-folder and opens the show the same way.
+folder and opens the show the same way; *Show an album on the TV* asks for the album's name
+(`--album … --lan`). Starting it from a paired phone is not available yet: run it on the PC.
 
 ### On the TV, once
 

@@ -53,7 +53,7 @@ backups = []
 
 
 [scan]
-{{ comment(_('Only analyse these categories or extensions, e.g. ["photo", "video"] or ["png", "webp"]. Built-in categories: photo, raw, video and media (the three); yours are defined below. Empty: media, every photo, RAW and video extension. Other types are allowed, such as ["pdf", "docx"]: their copies are moved to the quarantine, never deleted. A name without a dot is a category when one has that name, otherwise an extension: write ".raw" for the extension.'), "--ext") }}
+{{ comment(_('Only analyse these categories or extensions, e.g. ["photo", "video"] or ["png", "webp"]. Built-in categories: photo, raw, video and media (the three); yours are defined below. Empty: media, every photo, RAW and video extension. Only photo, RAW and video extensions: the audit lists the other files (intruder files). A name without a dot is a category when one has that name, otherwise an extension.'), "--ext") }}
 extensions = []
 
 {{ comment(_("Folder names never analysed, wherever they are, on every disk: they add to the system and trash folders always skipped ('media-hygiene config' lists them). Globs matching the whole name, case ignored: * stands for any characters, ? for one, e.g. [\"Thumbnails\", \".Trash-*\", \"*.lrdata\"]. Globs, not regular expressions as in [keep]: folder names hold dots and dollars ($RECYCLE.BIN), which a regular expression reads as operators. A comma separates names: write ? in its place. For one precise folder, use excluded in [folders]."), "--exclude-name") }}
@@ -65,9 +65,15 @@ full_check_days = 7
 {{ comment(_("A photo or RAW file up to this size, in MB, is read once into memory: it is checked and its fingerprint computed from that one reading. Each worker holds one such file at a time: with 16 workers, up to 16 x this size at worst. Lower it when Docker has little memory (Docker Desktop: Settings > Resources); 0 reads every file twice.")) }}
 read_whole_mb = 128
 
+{{ comment(_("Names and extensions (with their dot) that follow photos: never counted as intruder files, the files of your photo folders that are not photos or videos. Case ignored.")) }}
+companions = [
+    ".xmp", ".aae", ".thm", ".json", "thumbs.db", "desktop.ini", ".ds_store",
+    ".picasa.ini", "picasa.ini", ".nomedia", ".lrv", ".srt",
+]
+
 {{ comment(_("Your own categories: a name, then its extensions (not other categories). The built-in ones cannot be redefined. Variable: MEDIA_HYGIENE_SCAN__CATEGORIES holds a JSON object that replaces this whole table.")) }}
 [scan.categories]
-# documents = ["pdf", "docx", "txt"]
+# phone = ["jpg", "heic", "mp4", "mov"]
 
 
 [keep]
@@ -231,8 +237,13 @@ town_hint_km = 10
 {{ comment(_("The words of 'tags', to find photos by what they show: the meaningful words of the folder and file names (none for IMG_1234), the date (year, month, season, holidays), the place (your [[classify.places]], the nearest town) and, when [classify.ai] model is set, what the vision model sees. They are kept in the cache (/cache), never written into the photos.")) }}
 {{ comment(_('Language of the words: "en", "fr", or empty for the language of the interface.')) }}
 language = ""
-{{ comment(_("Words left out because they describe nearly every photo. Written here, the list replaces the built-in one (French and English).")) }}
-# stop_words = ["sol", "mur", "intérieur", "floor", "wall", "indoor"]
+{{ comment(_("Words left out because they describe nearly every photo. Written here, the list replaces the built-in one (French and English): this is the whole built-in list, edit it rather than starting from a few words.")) }}
+# stop_words = ["sol", "mur", "murs", "intérieur", "extérieur", "plafond", "photo",
+#    "image", "personne", "personnes", "chose", "objet", "fond", "scène", "vue",
+#    "floor", "wall", "indoor", "indoors", "outdoor", "outdoors", "ceiling", "picture",
+#    "person", "people", "thing", "object", "background", "scene", "view",
+#    "photo floue", "flou", "photographie", "ambiance", "blurry photo", "photograph",
+#    "blur"]
 {{ comment(_("A GPS position is named after its town only within this distance, in km.")) }}
 town_km = 20
 {{ comment(_("The words 'xmp' writes into the .xmp sidecars next to the photos (dc:subject), by source: vision, place, folder, name, takeout (the Google Photos description), former (the folders and names of the copies 'clean' removed), date. The model's sentence goes into dc:description.")) }}

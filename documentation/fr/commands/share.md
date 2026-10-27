@@ -134,8 +134,10 @@ Dans `config.toml`, `[share]` :
 
 ## Bon à savoir
 
-- Les copies portent le nom des photos (`IMG_1234.jpg`) ; deux photos du même nom venant de deux
-  dossiers deviennent `IMG_1234.jpg` et `IMG_1234_1.jpg`. Une photo HEIC ou RAW donne un JPEG (un
+- Les copies sont numérotées dans l'ordre où les photos ont été prises, avec leur jour :
+  `001_2023-07-10.jpg`, `002_2023-07-10.jpg`… (la date écrite par l'appareil, sinon celle du
+  fichier ; quatre chiffres dès 1 000 photos). Triées par nom chez le destinataire, les photos de
+  deux appareils suivent les jours au lieu de se mélanger. Une photo HEIC ou RAW donne un JPEG (un
   fichier RAW, l'aperçu qu'il contient, sans son EXIF).
 - Le dossier est toujours `<votre dossier personnel>\media-hygiene\Shares` : aucun dossier à
   taper, et aucun dossier de photos n'est jamais ouvert en écriture. Supprimez ce que vous avez

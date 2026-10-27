@@ -7,12 +7,15 @@ phone never adds a file it was not shown.
 
 from __future__ import annotations
 
+from dataclasses import replace
 from functools import partial
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.docs.served import served_url
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.review.local_app import PAGE_PATH
+from media_hygiene.review.page_header import ALBUMS_DOC, page_header
 from media_hygiene.services.album_reader import AlbumReader
 from media_hygiene.services.albums import album_desk
 from media_hygiene.share.album_api import ALBUMS_PATH
@@ -63,13 +66,16 @@ def album_page() -> bytes:
     return (
         environment.get_template(_TEMPLATE)
         .render(
+            # served by the home server itself: its way back is a plain link (0356)
+            header=replace(page_header(_TEMPLATE), shared=True),
             paths={
                 "home": PAGE_PATH,
                 "list": ALBUM_LIST_PATH,
                 "album": ALBUM_PREFIX,
                 "change": ALBUMS_PATH,
                 "assets": ASSETS_PREFIX,
-            }
+                "doc": served_url(ALBUMS_DOC),
+            },
         )
         .encode()
     )

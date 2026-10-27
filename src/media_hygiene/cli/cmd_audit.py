@@ -130,6 +130,9 @@ def audit_command(  # pylint: disable=too-many-arguments
                 ),
             )
         )
+    from media_hygiene.cli.audit_intruders import tell_intruders
+
+    tell_intruders(output, findings)
     faces_next = False
     if people or runtime.settings.people.with_audit:
         with user_errors(output):

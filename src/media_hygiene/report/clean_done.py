@@ -11,7 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
-from media_hygiene.constants import RunKind
+from media_hygiene.constants import REPORT_FILE_NAME, RunKind
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -53,6 +53,35 @@ def asked_flags(asked: CleanAsked | None) -> dict[str, bool]:
     """
     asked = asked or CleanAsked()
     return {"near_tier": asked.near, "bursts_decided": asked.bursts}
+
+
+def latest_audit_link(reports_dir: Path, record: ReportRecord) -> str | None:
+    """Find the newest audit report of the folders a clean worked on (0412).
+
+    Args:
+        reports_dir: Reports mount point.
+        record: What the report is written from.
+
+    Returns:
+        A link relative to the new report's folder, or None (an audit, or no
+        audit of the same folders: the page then points at *All reports*).
+    """
+    if record.kind is not RunKind.CLEAN:
+        return None
+    # Imported here: `index_page` loads jinja2, which the CLI's start must not (0412).
+    from media_hygiene.report.index_page import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+        report_folders,
+    )
+
+    roots = tuple(sorted(str(root) for root in record.findings.roots))
+    for summary, folder in report_folders(reports_dir):
+        if (
+            summary.kind is RunKind.AUDIT
+            and tuple(sorted(summary.roots)) == roots
+            and (folder / REPORT_FILE_NAME).is_file()
+        ):
+            return f"../{folder.name}/{REPORT_FILE_NAME}"
+    return None
 
 
 def _not_done(record: ReportRecord) -> frozenset[Path]:

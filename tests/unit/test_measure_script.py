@@ -27,3 +27,12 @@ def test_step_36_asks_its_three_questions_in_french() -> None:
         assert asked in text
     assert "(o/n)" in text
     assert 'Log "   36c. Quit, then mh again' in text
+
+
+def test_every_question_is_in_french_and_o_is_a_yes() -> None:
+    """No English yes/no hint is left in a prompt (0422); the code accepts `o` too."""
+    text = SCRIPT.read_text("ascii")
+    assert "(y/n" not in text
+    assert "(y /" not in text
+    assert "-eq 'y'" not in text
+    assert "-match '^y'" not in text

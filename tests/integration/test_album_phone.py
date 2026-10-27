@@ -18,12 +18,13 @@ from urllib.parse import quote
 
 import pytest
 
+from media_hygiene.review.doors import Door
 from media_hygiene.review.ending import Ending, EndingDoor
 from media_hygiene.review.http import ContentType, Request, Response
 from media_hygiene.review.lan import COOKIE_NAME, LanAccess
 from media_hygiene.review.lan_app import LanApp
 from media_hygiene.review.local_app import LocalApp
-from media_hygiene.services.album_pages import album_pages
+from media_hygiene.services.album_pages import album_page, album_pages
 from media_hygiene.services.albums import album_store
 from media_hygiene.share.album_store import AlbumChange
 from media_hygiene.share.albums import ALBUMS_FILE, read_albums
@@ -98,9 +99,9 @@ def _phone(path: str, body: object = None, *, paired: bool = True) -> Request:
     if paired:
         headers["cookie"] = f"{COOKIE_NAME}={_ACCESS.token}"
     if body is None:
-        return Request("GET", path, headers)
+        return Request("GET", path, headers, door=Door.LAN)
     headers |= {"content-type": ContentType.JSON, "origin": _ORIGIN}
-    return Request("POST", path, headers, json.dumps(body).encode())
+    return Request("POST", path, headers, json.dumps(body).encode(), Door.LAN)
 
 
 def _json(reply: Response) -> dict[str, object]:
@@ -148,15 +149,15 @@ def test_a_paired_phone_lists_the_albums_and_opens_one(
 def test_a_phone_never_reaches_a_file_of_no_album(
     phone_door: tuple[LanApp, _Home, Runtime],
 ) -> None:
-    """Another photo of the library, an original, a preview: never served."""
+    """Another photo by the albums' paths, an original: never served."""
     door, _home, runtime = phone_door
     shown = set(_keys(_album(door)))
     other = next(key for key, _path in _photos(runtime) if key not in shown)
     for path in (f"/thumb/{other}{_JPEG}", f"/tv/{other}{_JPEG}", f"/film/{other}.mp4"):
         assert _ask(door, _phone(path)).status == HTTPStatus.NOT_FOUND, path
     kept = next(iter(shown))
-    for path in (f"/original/{kept}{_JPEG}", f"/preview/{kept}{_JPEG}"):
-        assert _ask(door, _phone(path)).status == HTTPStatus.FORBIDDEN, path
+    original = _ask(door, _phone(f"/original/{kept}{_JPEG}"))
+    assert original.status == HTTPStatus.FORBIDDEN  # search's previews pass (0360)
     unpaired = _ask(door, _phone("/api/album-list", paired=False))
     assert unpaired.status == HTTPStatus.UNAUTHORIZED
 
@@ -203,3 +204,107 @@ def test_a_paired_phone_changes_an_album_and_nothing_else(
     evil = _phone("/api/albums", taken)
     evil = Request(evil.method, evil.path, {**evil.headers, "origin": "http://evil"})
     assert _ask(door, evil).status == HTTPStatus.FORBIDDEN
+
+
+def _post(door: LanApp, body: dict[str, object]) -> dict[str, object]:
+    return _json(_ask(door, _phone("/api/albums", body)))
+
+
+def _cover(door: LanApp) -> int:
+    cover = _album(door)["cover"]
+    assert isinstance(cover, dict)
+    return int(cover["key"])
+
+
+def test_the_cover_chosen_on_the_phone_is_shown_saved_and_followed(
+    phone_door: tuple[LanApp, _Home, Runtime],
+) -> None:
+    """0371: chosen → shown in the album and the list; taken out → the tool's."""
+    door, _home, runtime = phone_door
+    keys = _keys(_album(door))
+    tool = _cover(door)
+    chosen = next(key for key in keys if key != tool)
+    said = _post(door, {"action": "cover", "album": _ALBUM, "keys": [str(chosen)]})
+    assert "now the cover of Crete 2023" in str(said["message"])
+    assert _cover(door) == chosen
+    listing = _json(_ask(door, _phone("/api/album-list")))
+    albums = listing["albums"]
+    assert isinstance(albums, list)
+    assert albums[0]["cover"]["key"] == chosen
+    saved = read_albums(runtime.locations.reports_dir / ALBUMS_FILE)
+    assert saved.version == 2
+    assert saved.albums[0].cover is not None
+    # Taken out of the album: back to the tool's choice, silently.
+    _post(door, {"action": "remove", "album": _ALBUM, "keys": [str(chosen)]})
+    assert _cover(door) != chosen
+
+
+def test_a_cover_follows_its_photo_when_it_moves(
+    phone_door: tuple[LanApp, _Home, Runtime],
+) -> None:
+    """The file moved: the entry followed, the cover with it, never the stale path."""
+    door, _home, runtime = phone_door
+    keys = _keys(_album(door))
+    tool = _cover(door)
+    chosen = next(key for key in keys if key != tool)
+    _post(door, {"action": "cover", "album": _ALBUM, "keys": [str(chosen)]})
+    source = dict(_photos(runtime))[chosen]
+    moved = source.with_name(f"moved_{source.name}")
+    source.rename(moved)
+    # Followed as its entry is: both name the same file now, never the stale path.
+    cover = _cover(door)
+    assert cover in _keys(_album(door))
+    assert cover != tool
+    album = read_albums(runtime.locations.reports_dir / ALBUMS_FILE).albums[0]
+    entry = album.cover_entry()
+    assert album.cover is not None
+    assert entry is not None
+    assert album.cover.path == entry.path != runtime.mapper.to_host(source)
+
+
+def test_a_cover_outside_the_album_is_refused(
+    phone_door: tuple[LanApp, _Home, Runtime],
+) -> None:
+    """Only a photo of the album, shown on the page, can be its cover."""
+    door, _home, runtime = phone_door
+    keys = _keys(_album(door))
+    other = next(key for key, _path in _photos(runtime) if key not in keys)
+    body = {"action": "cover", "album": _ALBUM, "keys": [str(other)]}
+    assert _ask(door, _phone("/api/albums", body)).status == HTTPStatus.CONFLICT
+
+
+def test_a_schema_1_albums_file_is_read_then_written_as_2(
+    phone_door: tuple[LanApp, _Home, Runtime],
+) -> None:
+    """An albums file of before 0371 is read; the next change writes schema 2."""
+    door, _home, runtime = phone_door
+    target = runtime.locations.reports_dir / ALBUMS_FILE
+    data = json.loads(target.read_text("utf-8"))
+    data["version"] = 1
+    target.write_text(json.dumps(data), "utf-8")
+    assert read_albums(target).version == 1
+    first = _keys(_album(door))[0]
+    _post(door, {"action": "cover", "album": _ALBUM, "keys": [str(first)]})
+    assert read_albums(target).version == 2
+
+
+def test_adding_to_an_album_of_another_case_adds_to_it(
+    phone_door: tuple[LanApp, _Home, Runtime],
+) -> None:
+    """0372: picked from the list, or typed in another case: never a second album."""
+    door, _home, runtime = phone_door
+    first, second = _keys(_album(door))
+    _post(door, {"action": "add", "album": "Kids", "keys": [str(first)]})
+    _post(door, {"action": "add", "album": "KIDS ", "keys": [str(second)]})
+    saved = read_albums(runtime.locations.reports_dir / ALBUMS_FILE)
+    counts = {album.name: len(album.entries) for album in saved.albums}
+    assert counts == {_ALBUM: 2, "Kids": 2}
+
+
+def test_the_page_picks_the_album_from_a_list_never_a_prompt() -> None:
+    """0372: a sheet of the saved albums and a field; `window.prompt` is gone."""
+    page = album_page().decode()
+    assert "window.prompt" not in page
+    assert 'id="sheetAlbums"' in page
+    assert 'id="sheetName"' in page
+    assert "Use as cover" in page

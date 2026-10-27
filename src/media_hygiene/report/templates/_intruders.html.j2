@@ -1,0 +1,10 @@
+{# Files that are neither photos, videos nor companions (0410): included by report.html.j2. #}
+{% if intruders %}
+<h2 id="intruders">🧹 {{ _("Intruder files") }}</h2>
+<p class="note">{{ ngettext("%(num)s file of your photo folders is not a photo or a video (%(size)s): a zip, a document, a spreadsheet… Nothing is moved: a document may matter. intruders.csv, next to this page, lists every file.", "%(num)s files of your photo folders are not photos or videos (%(size)s): zips, documents, spreadsheets… Nothing is moved: a document may matter. intruders.csv, next to this page, lists every file.", intruders.count, num=intruders.count | number, size=intruders.size | size) }}</p>
+<h3>{{ _("Per extension") }}</h3>
+<ul class="files">{% for row in intruders.extensions %}<li>{{ row.name }} <span class="muted">· {{ ngettext("%(num)s file", "%(num)s files", row.count, num=row.count | number) }} · {{ row.size | size }}</span></li>{% endfor %}</ul>
+<h3>{{ _("Heaviest folders") }}</h3>
+<ul class="files">{% for row in intruders.folders %}<li>{{ row.name }} <span class="muted">· {{ ngettext("%(num)s file", "%(num)s files", row.count, num=row.count | number) }} · {{ row.size | size }}</span></li>{% endfor %}</ul>
+{% if intruders.hidden_folders %}<p class="muted">{{ _("… and %(count)s more (the CSV lists them all).", count=intruders.hidden_folders | number) }}</p>{% endif %}
+{% endif %}

@@ -10,6 +10,7 @@ from functools import partial
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.plan.pairs import folder_pairs
+from media_hygiene.review.apply_api import ApplyOffer
 from media_hygiene.review.pairs_app import PAIRS_DECIDE_PATH, PAIRS_FILE_PATH, PairsApp
 from media_hygiene.review.pairs_session import PairsSession, PairsSource
 from media_hygiene.review.pairs_views import PairsStateBuilder
@@ -23,6 +24,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.plan.models import AuditFindings
     from media_hygiene.plan.pairs import FolderPair
+    from media_hygiene.review.apply_api import ReviewStart
     from media_hygiene.services.runtime import Runtime
 
 _PAGE_TEMPLATE: Final = "pairs_review.html.j2"
@@ -71,14 +73,23 @@ def open_pairs_review(
     return session
 
 
-def serve_pairs_review(runtime: Runtime, session: PairsSession, port: int) -> None:
+def serve_pairs_review(
+    runtime: Runtime, session: PairsSession, start: ReviewStart
+) -> int:
     """Serve the page until Ctrl+C; every decision is saved as it is made.
 
     Args:
         runtime: Settings, mount points and output.
         session: The review.
-        port: The port to listen on, inside the container (0: any free one).
+        start: The port to listen on, inside the container (0: any free one), and
+            the step *Apply now* ends on.
+
+    Returns:
+        `STEP_EXIT_BASE + n` when *Apply now* chose step `n`; 0 otherwise.
     """
     api = (PAIRS_DECIDE_PATH, PAIRS_FILE_PATH)
-    page = ReviewPage(_PAGE_TEMPLATE, session.place, api, partial(PairsApp, session))
-    serve_review_page(runtime, page, port)
+    offer = ApplyOffer(start.apply, lambda: session.decided[0] > 0)
+    page = ReviewPage(
+        _PAGE_TEMPLATE, session.place, api, partial(PairsApp, session), offer
+    )
+    return serve_review_page(runtime, page, start.port)

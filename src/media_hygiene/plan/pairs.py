@@ -7,8 +7,6 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import TYPE_CHECKING
 
-from media_hygiene.constants import MediaKind
-
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping
     from pathlib import Path
@@ -21,13 +19,11 @@ if TYPE_CHECKING:
 class Disposal(StrEnum):
     """What `clean` does with the copies of a folder pair.
 
-    Every copy is moved to the quarantine; with `clean --delete`, media copies are
-    deleted and copies of other files (`--ext pdf`) moved. A pair can hold both.
+    Every copy is moved to the quarantine; with `clean --delete`, every copy is deleted.
     """
 
     DELETED = "deleted"
     MOVED = "moved"
-    MIXED = "mixed"
 
 
 @dataclass(frozen=True, slots=True)
@@ -46,9 +42,9 @@ class Copy:
         """Tell whether `clean` moves this copy to the quarantine rather than delete it.
 
         Returns:
-            True by default; with `--delete`, for another file than a media only.
+            True by default; False with `--delete`.
         """
-        return self.removed.kind is MediaKind.OTHER or not self.delete_copies
+        return not self.delete_copies
 
 
 @dataclass(frozen=True, slots=True)
@@ -84,15 +80,13 @@ class FolderPair:
 
     @property
     def disposal(self) -> Disposal:
-        """Whether the copies are deleted, moved to the quarantine, or both.
+        """Whether the copies are deleted or moved to the quarantine.
 
         Returns:
             The disposal of the pair.
         """
-        moved = sum(copy.moved for copy in self.copies)
-        if not moved:
-            return Disposal.DELETED
-        return Disposal.MOVED if moved == len(self.copies) else Disposal.MIXED
+        moved = any(copy.moved for copy in self.copies)
+        return Disposal.MOVED if moved else Disposal.DELETED
 
 
 def folder_pairs(

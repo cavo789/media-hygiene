@@ -38,6 +38,7 @@ def _page() -> str:
         cluster_path="/api/cluster/",
         folders_path="/api/folders",
         folder_photos="/api/folder/",
+        group_photos="/api/group/",
         tree_photos="/api/tree/",
         folder_path="/api/folder",
         aside_path="/api/aside",
@@ -165,5 +166,31 @@ def test_any_folder_of_the_index_is_listed_as_a_tree() -> None:
     assert 'id="treeFilter"' in page
     assert 'tree: "/api/tree/"' in page
     assert "if (node.count) button.addEventListener" in page  # none without GPS: grey
-    assert "if (known) { showFolder(known.rank); return; }" in page
+    assert "if (known) { showFolder(known); return; }" in page
     assert "if (folderPin) folderPin.setLatLng(event.latlng);" in page
+
+
+def test_a_save_opens_the_next_folder_to_place() -> None:
+    """TODO 0340: no flash in "Placed"; the next line of "To place" opens; N/P/Enter."""
+    page = _page()
+    texts = _texts()
+
+    assert 'folderFlash = action === "forget" ? chosen.folder : null;' in page
+    assert "openFolderLine(fresh);" in page
+    assert 'li.scrollIntoView({ block: "nearest" })' in page
+    assert 'key === "n" || key === "arrowright"' in page
+    assert "<kbd>N</kbd> <kbd>P</kbd>" in page
+    assert texts["nothingLeft"] == "{said} Plus rien à placer."
+    assert len(texts["savedNext"]) == 2  # type: ignore[arg-type]
+
+
+def test_the_folders_of_one_town_are_one_line() -> None:
+    """TODO 0383: one line per town, its folders unfolded by ▸, saved together."""
+    page = _page()
+    texts = _texts()
+
+    assert 'groupPhotos: "/api/group/"' in page
+    assert "townLines(folders.filter((folder) => folderMatches(folder, typed)))" in page
+    assert "together: chosen.members" in page
+    assert texts["folderCount"] == ["{n} dossier", "{n} dossiers"]
+    assert texts["positionCount"] == ["{n} position", "{n} positions"]

@@ -10,12 +10,11 @@ from pydantic import ValidationError
 
 from media_hygiene.actions.purge import purge_run, quarantine_runs
 from media_hygiene.config.sort_settings import SortSettings
-from media_hygiene.constants import SUMMARY_FILE_NAME, RunKind
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.paths.mounts import MountTable
 from media_hygiene.paths.tool_overlaps import DataScope, tool_overlaps
 from media_hygiene.report.index_page import prune_reports
-from media_hygiene.report.summary import ReportSummary
+from tests.support.report_folders import write_summary
 
 PHOTOS = Path("/data/c/Photos")
 QUARANTINE = Path("/quarantine")
@@ -97,19 +96,8 @@ def test_purge_deletes_run_folders_only(tmp_path: Path) -> None:
 
 
 def report(folder: Path, created: str, name: str) -> None:
-    """Write a report folder with its summary; `name` is what the summary claims."""
-    folder.mkdir(parents=True)
-    summary = ReportSummary(
-        folder=name,
-        kind=RunKind.AUDIT,
-        created_at=datetime.fromisoformat(created),
-        files_scanned=1,
-        duplicate_groups=0,
-        duplicate_files=0,
-        reclaimable_bytes=0,
-        broken_files=0,
-    )
-    (folder / SUMMARY_FILE_NAME).write_text(summary.model_dump_json())
+    """Write an audit report folder; `name` is what its summary claims."""
+    write_summary(folder, folder=name, created_at=datetime.fromisoformat(created))
 
 
 def test_prune_deletes_report_folders_only(tmp_path: Path) -> None:

@@ -44,6 +44,12 @@
   "folderSaved": _("Position saved in config.toml."),
   "folderForgotten": _("Position taken out of config.toml."),
   "folderIgnored": _("Saved in config.toml: this name is no town."),
+  "savedNext": [ngettext("{said} Next: {name} ({n} left).", "{said} Next: {name} ({n} left).", 1),
+                ngettext("{said} Next: {name} ({n} left).", "{said} Next: {name} ({n} left).", 2)],
+  "nothingLeft": _("{said} Nothing left to place."),
+  "folderCount": [ngettext("{n} folder", "{n} folders", 1), ngettext("{n} folder", "{n} folders", 2)],
+  "positionCount": [ngettext("{n} position", "{n} positions", 1), ngettext("{n} position", "{n} positions", 2)],
+  "showFolders": _("Show or hide its folders: each one can be placed alone"),
   "setAside": _("Not a place worth a name: hide it from the map"),
   "asideSaved": _("Set aside in config.toml: hidden from the map."),
   "asideRestored": _("Back on the map: taken out of config.toml."),
@@ -134,9 +140,10 @@
   #folderFilter, #treeFilter { margin-top: 4px; }
   #tree ul { margin-left: 14px; }
   .tree-line { display: flex; gap: 2px; align-items: center; }
-  .tree-line button.toggle { width: 20px; padding: 0; font: inherit; color: var(--muted);
+  .tree-line button.toggle, li.folder button.toggle { width: 20px; padding: 0; font: inherit; color: var(--muted);
                              background: none; border: 0; cursor: pointer; }
   .tree-line button.link { flex: 1; width: auto; }
+  li.town-folders > ul { padding-left: 20px; }
   li.none > .tree-line button.link { color: var(--muted); cursor: default; }
   li.shown > .tree-line button.link { background: var(--bg); font-weight: 600; }
   li.cluster { display: flex; gap: 4px; align-items: center; }
@@ -278,6 +285,8 @@
 {% if osm_path %}
     <dt><kbd>Enter</kbd></dt><dd>{{ _("in the search box: search OpenStreetMap") }}</dd>
 {% endif %}
+    <dt><kbd>N</kbd> <kbd>P</kbd></dt><dd>{{ _("a folder opened: the next or previous one of its list (← → too)") }}</dd>
+    <dt><kbd>Enter</kbd></dt><dd>{{ _("a folder opened: save its position") }}</dd>
     <dt><kbd>Esc</kbd></dt><dd>{{ _("in a filter box: empty it") }}</dd>
 {% endblock %}
 {% block bar %}
@@ -323,7 +332,7 @@
   const paths = { state: {{ state_path | tojson }}, save: {{ save_path | tojson }},
                   search: {{ search_path | tojson }}, osm: {{ osm_path | tojson }},
                   cluster: {{ cluster_path | tojson }}, folders: {{ folders_path | tojson }},
-                  folderPhotos: {{ folder_photos | tojson }}, folder: {{ folder_path | tojson }},
+                  folderPhotos: {{ folder_photos | tojson }}, groupPhotos: {{ group_photos | tojson }}, folder: {{ folder_path | tojson }},
                   tree: {{ tree_photos | tojson }},
                   aside: {{ aside_path | tojson }}, hint: {{ hint_path | tojson }}, photos: {{ photos_path | tojson }} };
   const tiles = {{ tiles | tojson }};
@@ -585,12 +594,33 @@
     if (event.key === "Escape") { if (viewed >= 0) closeViewer(); else closeDrawer(); }
     else if (viewed >= 0 && event.key === "ArrowLeft") openViewer(viewed - 1);
     else if (viewed >= 0 && event.key === "ArrowRight") openViewer(viewed + 1);
+    else if (viewed < 0 && opened && opened.folder && folderKey(event)) { /* done */ }
     else return;
     event.preventDefault();
   });
 
   // The folders named after a town, or placed: their photos without GPS, a pin to drag.
   let folders = [], ignored = [], folderFlash = null;
+  // The lines each list shows now (filter and order kept): "next" walks them (0340).
+  let shownTodo = [], shownPlaced = [];
+  // The folders of one town (0383): one line, one pin, one save; ▸ unfolds them.
+  let groups = [];
+  const groupsOpen = new Set();
+  function townLines(seen) {
+    const grouped = new Set(), lines = [];
+    for (const group of groups) {
+      const members = group.folders.map((rank) => folders[rank]);
+      members.forEach((folder) => grouped.add(folder.rank));
+      if (!members.some((folder) => seen.includes(folder))) continue;
+      const first = members[0];
+      lines.push({ folder: `town:${folded(first.town)}|${first.country}`, town: first.town, country: first.country,
+                   latitude: group.latitude, longitude: group.longitude, found: true, members, group: group.rank,
+                   saved: members.every((folder) => folder.saved), positions: group.positions,
+                   count: members.reduce((sum, folder) => sum + folder.count, 0),
+                   videos: members.reduce((sum, folder) => sum + folder.videos, 0) });
+    }
+    return [...lines, ...seen.filter((folder) => !grouped.has(folder.rank))];
+  }
   const filesOf = (folder) => holds(folder.count - folder.videos, folder.videos);
   // The name a folder line shows: its town, else its last folder name.
   const folderName = (folder) => folder.town || lastName(folder.folder);
@@ -602,13 +632,15 @@
   function drawFolders() {
     const typed = folded(byId("folderFilter").value.trim());
     // A copy is sorted: `folders` keeps the server's order, whose index is the rank the API names.
-    const seen = folders.filter((folder) => folderMatches(folder, typed));
+    const seen = townLines(folders.filter((folder) => folderMatches(folder, typed)));
     const placed = seen.filter((folder) => folder.saved).sort(byFolderName);
     // Saved but not found (renamed, moved): at the top of "Placed", where they are seen.
     const lines = [["foldersTodo", seen.filter((folder) => !folder.saved).sort(byFolderName), "todoFold"],
                    ["foldersPlaced", [...placed.filter((f) => !f.found), ...placed.filter((f) => f.found)], "placedFold"]];
-    const total = [folders.filter((folder) => !folder.saved).length, folders.filter((folder) => folder.saved).length];
-    byId("foldersCount").textContent = countOf(seen.length, folders.length);
+    const every = townLines(folders);
+    const total = [every.filter((folder) => !folder.saved).length, every.filter((folder) => folder.saved).length];
+    byId("foldersCount").textContent = countOf(seen.length, every.length);
+    shownTodo = lines[0][1]; shownPlaced = lines[1][1];
     lines.forEach(([id, rows, fold], index) => {
       const list = byId(id); list.replaceChildren();
       byId(fold.replace("Fold", "Count")).textContent = countOf(rows.length, total[index]);
@@ -618,14 +650,42 @@
     folderFlash = null;
     highlight();
   }
+  // The words after a line's name: its files, and for a town its folders and positions.
+  function lineText(folder) {
+    const words = [fill(T.withoutGps, { files: filesOf(folder) })];
+    if (folder.members) words.push(counted(T.folderCount, folder.members.length));
+    if (folder.positions > 1) words.push(counted(T.positionCount, folder.positions));
+    return `${folderName(folder)} — ${words.join(" · ")}`;
+  }
   function drawFolder(list, folder, fold) {
     const mark = !folder.found ? "⚠ " : folder.saved ? "📌 " : "📁 ";
-    const li = item(list, `${mark}${folderName(folder)} — ${fill(T.withoutGps, { files: filesOf(folder) })}`, () => showFolder(folder.rank));
+    const li = item(list, `${mark}${lineText(folder)}`, () => showFolder(folder));
     li.title = folder.folder; li.dataset.drawer = `folder:${folder.folder}`; li.classList.add("folder");
     if (!folder.found) li.classList.add("missing");
     // A town guess only: a position saved (📌) is the user's, forgotten in the drawer.
-    if (folder.town && !folder.saved) tail(li, "✕", T.notTown, () => ignoreName(folder));
+    if (folder.town && !folder.saved) tail(li, "✕", T.notTown, () => ignoreName(folder.members ? folder.members[0] : folder));
     if (folder.folder === folderFlash) { unfold("foldersFold"); unfold(fold); flash(li); }
+    if (folder.members) drawTown(list, li, folder);
+  }
+  // A town's line: ▸ before it, its folders below it when unfolded, each openable alone.
+  function drawTown(list, li, town) {
+    li.title = town.members.map((folder) => folder.folder).join("\n");
+    const open = groupsOpen.has(town.folder), toggle = document.createElement("button");
+    toggle.type = "button"; toggle.className = "toggle"; toggle.textContent = open ? "▾" : "▸";
+    toggle.title = T.showFolders; toggle.setAttribute("aria-label", T.showFolders); toggle.setAttribute("aria-expanded", String(open));
+    toggle.addEventListener("click", (event) => {
+      event.stopPropagation();
+      if (groupsOpen.has(town.folder)) groupsOpen.delete(town.folder); else groupsOpen.add(town.folder);
+      drawFolders();
+    });
+    li.prepend(toggle);
+    if (!open) return;
+    const holder = document.createElement("li"), below = document.createElement("ul");
+    holder.className = "town-folders"; holder.append(below); list.append(holder);
+    for (const folder of town.members) {
+      const line = item(below, `${folder.saved ? "📌 " : "📁 "}${folder.folder} — ${fill(T.withoutGps, { files: filesOf(folder) })}`, () => showFolder(folder));
+      line.title = folder.folder; line.dataset.drawer = `folder:${folder.folder}`; line.classList.add("folder");
+    }
   }
   byId("folderFilter").addEventListener("input", drawFolders);
   byId("folderFilter").addEventListener("keydown", (event) => {
@@ -665,7 +725,7 @@
   }
   // Every list the folders' answer feeds: the town folders, the names set aside, the tree.
   function gotFolders(answer) {
-    folders = answer.folders; ignored = answer.ignored || []; tree = answer.tree || [];
+    folders = answer.folders; groups = answer.groups || []; ignored = answer.ignored || []; tree = answer.tree || [];
     drawFolders(); drawAside(); drawTree();
   }
   // Léo is the cat (0235): the name goes into folder_town_ignore, its line leaves the list.
@@ -707,15 +767,17 @@
     }
     highlight();
   }
-  function showFolder(rank) {
-    const folder = folders[rank], key = `folder:${folder.folder}`;
+  // A folder's line, or a town's (its folders' photos, one pin for all of them).
+  function showFolder(folder) {
+    const key = `folder:${folder.folder}`;
     if (opened && opened.key === key) { closeDrawer(); return; }
-    const name = folder.town || lastName(folder.folder);
+    const forget = folder.members ? folder.members.some((one) => one.saved) : folder.saved;
     const actions = { clusterName: false, clusterAside: false, giveTo: false,
-                      folderSave: folder.found, folderForget: folder.saved, folderIgnore: Boolean(folder.town) };
-    openDrawer({ key, url: paths.folderPhotos + rank, at: [folder.latitude, folder.longitude], zoom: TOWN_ZOOM,
+                      folderSave: folder.found, folderForget: forget, folderIgnore: Boolean(folder.town) };
+    const url = folder.members ? paths.groupPhotos + folder.group : paths.folderPhotos + folder.rank;
+    openDrawer({ key, url, at: [folder.latitude, folder.longitude], zoom: TOWN_ZOOM,
                  pictures: folder.count - folder.videos, videos: folder.videos, folder, actions,
-                 title: `${name} — ${fill(T.withoutGps, { files: filesOf(folder) })}`,
+                 title: lineText(folder),
                  note: folder.found ? T.folderHint : T.folderMissing });
   }
   async function actOnFolder(action, said) {
@@ -726,13 +788,40 @@
     let response;
     try {
       response = await fetch(paths.folder, { method: "POST", headers: { "Content-Type": "application/json" },
-                                             body: JSON.stringify({ action, folder: chosen.folder,
+                                             body: JSON.stringify({ action, folder: (chosen.members ? chosen.members[0] : chosen).folder,
+                                                                    together: chosen.members ? chosen.members.map((one) => one.folder) : [],
                                                                     latitude: where.lat, longitude: where.lng }) });
     } catch (error) { status(T.offline, "error"); return; }
     const answer = await response.json().catch(() => ({}));
     if (!response.ok) { status(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
-    folderFlash = action === "ignore" ? null : chosen.folder;
-    closeDrawer(); gotFolders(answer); status(said, "saved");
+    // A save sends no eye to "Placed" (0340): the next folder to place opens instead.
+    const before = shownTodo, at = before.findIndex((folder) => folder.folder === chosen.folder);
+    folderFlash = action === "forget" ? chosen.folder : null;
+    closeDrawer(); gotFolders(answer);
+    if (action === "forget" || at < 0) { status(said, "saved"); return; }
+    const left = new Set(shownTodo.map((folder) => folder.folder));
+    const next = [...before.slice(at + 1), ...before.slice(0, at)].find((folder) => left.has(folder.folder));
+    const fresh = next && shownTodo.find((folder) => folder.folder === next.folder);
+    if (!fresh) { status(fill(T.nothingLeft, { said }), "saved"); return; }
+    openFolderLine(fresh);
+    status(fill(counted(T.savedNext, shownTodo.length), { said, name: folderName(fresh) }), "saved");
+  }
+  // Open a folder of a list and bring its line into view.
+  function openFolderLine(folder) {
+    showFolder(folder);
+    const li = [...document.querySelectorAll("li[data-drawer]")].find((line) => line.dataset.drawer === `folder:${folder.folder}`);
+    if (li) li.scrollIntoView({ block: "nearest" });
+  }
+  // N / → and P / ← walk the list of the folder opened; Enter saves it.
+  function folderKey(event) {
+    const chosen = opened.folder, key = event.key.toLowerCase();
+    if (key === "enter") { if (event.target.closest?.("#drawer button")) return false; if (chosen.found) actOnFolder("save", T.folderSaved); return true; }
+    const step = key === "n" || key === "arrowright" ? 1 : key === "p" || key === "arrowleft" ? -1 : 0;
+    if (!step || event.ctrlKey || event.metaKey || event.altKey) return false;
+    const list = chosen.saved ? shownPlaced : shownTodo, at = list.findIndex((folder) => folder.folder === chosen.folder);
+    if (at < 0 || list.length < 2) return true;
+    openFolderLine(list[(at + step + list.length) % list.length]);
+    return true;
   }
   byId("folderSave").addEventListener("click", () => actOnFolder("save", T.folderSaved));
   byId("folderForget").addEventListener("click", () => actOnFolder("forget", T.folderForgotten));
@@ -783,7 +872,7 @@
   // A folder of the town list opens as there; any other, its pin in the middle of the map.
   function showTreeFolder(node) {
     const known = listedAs(node);
-    if (known) { showFolder(known.rank); return; }
+    if (known) { showFolder(known); return; }
     const key = `folder:${node.folder}`;
     if (opened && opened.key === key) { closeDrawer(); return; }
     const centre = map.getCenter();

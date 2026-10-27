@@ -19,10 +19,14 @@ from media_hygiene.report.backup_views import (
     write_backup_csvs,
 )
 from media_hygiene.report.builder import ReportBuilder
-from media_hygiene.report.clean_done import asked_flags
+from media_hygiene.report.clean_done import asked_flags, latest_audit_link
 from media_hygiene.report.csv_export import write_plan_csv
 from media_hygiene.report.environment import make_environment
 from media_hygiene.report.index_page import write_index
+from media_hygiene.report.intruder_views import (
+    intruder_section,
+    write_intruders_csv,
+)
 from media_hygiene.report.thumbnail_jobs import make_thumbnails
 
 if TYPE_CHECKING:
@@ -65,7 +69,15 @@ class ReportWriter:
         environment = make_environment()
         target = folder / REPORT_FILE_NAME
         page = environment.get_template(_REPORT_TEMPLATE)
-        target.write_text(page.render(report=view, backups=backups), encoding="utf-8")
+        target.write_text(
+            page.render(
+                report=view,
+                audit_link=latest_audit_link(self.reports_dir, record),  # 0412
+                backups=backups,
+                intruders=intruder_section(record.findings.intruders, self.mapper),
+            ),
+            encoding="utf-8",
+        )
         if view.similar.near or view.similar.videos.groups:
             near_page = environment.get_template(_NEAR_TEMPLATE)
             (folder / NEAR_FILE_NAME).write_text(
@@ -79,10 +91,12 @@ class ReportWriter:
             )
         write_plan_csv(folder / PLAN_CSV_FILE_NAME, record.findings, self.mapper)
         write_backup_csvs(folder, record.findings.backups, self.mapper)
+        write_intruders_csv(folder, record.findings.intruders, self.mapper)
         # What only a backup holds: `mh menu` then proposes `import` (0265).
         summary = view.header.summary.model_copy(
             update={
                 "backup_only": backup_only(record.findings.backups),
+                "roots": tuple(str(root) for root in record.findings.roots),
                 **asked_flags(record.asked),  # 0309
             }
         )

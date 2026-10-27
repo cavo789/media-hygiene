@@ -163,7 +163,7 @@ def test_a_drive_with_its_own_quarantine_says_nothing(
 def test_delete_counts_only_what_still_moves(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """--delete: media copies are deleted; other files, near, unreadable still move."""
+    """--delete: copies are deleted; near duplicates and unreadable files still move."""
     free(monkeypatch, 0)
     runtime = runtime_on(tmp_path, ON_TWO_DRIVES)
     data = f"{runtime.locations.data_dir}/e"
@@ -171,7 +171,6 @@ def test_delete_counts_only_what_still_moves(
     plan = CleanPlan((media,), (), delete_copies=True)
     assert not list(set_aside(plan))
     assert said(runtime, plan)  # nothing copied: no refusal even with 0 free
-    other = copies(data, MediaKind.OTHER)
     near = NearDecision(media.keeper, media.removable)
     broken = (
         BrokenFile(
@@ -183,13 +182,13 @@ def test_delete_counts_only_what_still_moves(
             BrokenReason.EMPTY,
         ),
     )
-    plan = CleanPlan((media, other), broken, near=(near,), delete_copies=True)
+    plan = CleanPlan((media,), broken, near=(near,), delete_copies=True)
     route = QuarantineRoute(
         Drives(runtime.mounts.host_sources), runtime.locations.quarantine_dir
     )
     free(monkeypatch, 100 * GB)
     (room,) = cross_drive(route, set_aside(plan), GB)
-    assert (room.cross.count, room.cross.size) == (3, 2 * PHOTO_SIZE + 5)
+    assert (room.cross.count, room.cross.size) == (2, PHOTO_SIZE + 5)
     assert room.cross.sources == ("E:",)
     assert room.missing == 0
     assert room.cross.size + GB < room.free

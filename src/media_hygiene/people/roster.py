@@ -14,10 +14,12 @@ from media_hygiene.i18n import _
 from media_hygiene.people.changes import Naming, give_name, ignore_faces, reject_faces
 from media_hygiene.people.config_file import read_people, save_people
 from media_hygiene.people.followed import follow_ids
+from media_hygiene.people.guide import left_to_do, people_list
 from media_hygiene.people.hidden import Named, page_sections
 from media_hygiene.people.known import Known
 from media_hygiene.people.naming import id_of, name_all
 from media_hygiene.people.proof import followed_line, proof_line
+from media_hygiene.people.suggest import suggestions
 from media_hygiene.people.views import section_view
 
 if TYPE_CHECKING:
@@ -84,17 +86,22 @@ class Roster:
             view: Host paths, and the files set aside.
 
         Returns:
-            The sections, the names known, the counts.
+            The sections (each group nobody is given with who it looks like), the
+            names known, the people list, what is left to do, the counts.
         """
         sections = self.sections(view)
         board = self.board
+        alike = suggestions(board, sections, self._named.ruled_out)
         return {
             "alone": self.board.alone,
             "ignored": sections.ignored,
             "writable": self.writable,
             "people": [person.name for person in self._settings.person],
+            "roster": people_list(sections),
+            "todo": left_to_do(sections),
             "sections": [
-                section_view(board, section, view) for section in sections.shown
+                {**section_view(board, section, view), "suggest": alike.get(at, [])}
+                for at, section in enumerate(sections.shown)
             ],
         }
 

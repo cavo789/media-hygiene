@@ -11,7 +11,7 @@ from media_hygiene.scan.models import BrokenFile, MediaFile
 
 MAPPER = HostPathMapper(Path("/data"))
 VIDEO = MediaFile(Path("/data/c/Photos/clip.mp4"), 400, 0, MediaKind.VIDEO)
-DOCUMENT = MediaFile(Path("/data/c/Docs/a.pdf"), 10, 0, MediaKind.OTHER)
+PHOTO = MediaFile(Path("/data/c/Photos/a.jpg"), 10, 0, MediaKind.IMAGE)
 
 
 def test_by_default_the_copies_go_to_the_quarantine() -> None:
@@ -28,22 +28,20 @@ def test_with_delete_the_copies_are_deleted() -> None:
 
 def test_the_estimate_follows_the_bytes_of_the_files() -> None:
     """The step weighs every file it handles."""
-    actions = [(VIDEO, "", lambda: None), (DOCUMENT, "", lambda: None)]
+    actions = [(VIDEO, "", lambda: None), (PHOTO, "", lambda: None)]
     assert clean_step(actions, delete_copies=False).total_weight == 410
 
 
 def test_the_line_under_the_bar_names_the_action_and_the_windows_path() -> None:
     """A copy set aside, shown with the path the user knows."""
-    label = clean_labels(delete_copies=False).of_copy(VIDEO)
+    label = clean_labels(delete_copies=False).copy
     line = said((VIDEO, label, lambda: None), MAPPER)
     assert line == "Moving a duplicate copy to the quarantine: C:\\Photos\\clip.mp4"
 
 
-def test_with_delete_only_media_copies_are_said_deleted() -> None:
-    """Copies of other files than media still go to the quarantine, and say so."""
-    labels = clean_labels(delete_copies=True)
-    assert labels.of_copy(VIDEO).startswith("Deleting a duplicate copy")
-    assert labels.of_copy(DOCUMENT).startswith("Moving a duplicate copy")
+def test_with_delete_the_copies_are_said_deleted() -> None:
+    """`clean --delete`: the line says the copy is deleted."""
+    assert clean_labels(delete_copies=True).copy.startswith("Deleting a duplicate copy")
 
 
 def test_an_empty_file_is_said_deleted_an_unreadable_one_set_aside() -> None:

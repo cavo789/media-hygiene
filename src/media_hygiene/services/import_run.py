@@ -64,10 +64,10 @@ class ImportService:
         """
         if not backup_folders(self._runtime.settings, self._runtime.mapper).folders:
             raise MountError(
-                _("No backup folder to import from."),
+                _("No folder to import from."),
                 _(
-                    "Add one first: mh folders add --backup <folder>, or --backup "
-                    "<folder> on this command."
+                    "Name one: mh import <folder> (a USB disk, an SD card), or add "
+                    "your NAS once: mh folders add --backup <folder>."
                 ),
             )
         ensure_can_act(self._runtime, Phase.IMPORT.value)
@@ -76,7 +76,7 @@ class ImportService:
         """Audit with the backups, then decide every copy.
 
         Args:
-            to: The folder receiving the copies (container path); None: `From NAS`
+            to: The folder receiving the copies (container path); None: `From <source>`
                 in the first photo folder.
 
         Returns:

@@ -24,6 +24,7 @@ from media_hygiene.places.toml_edit import (
 )
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from pathlib import Path
 
 _PLACES: Final = "places"
@@ -67,28 +68,39 @@ def save_folder(config_file: Path, position: FolderPosition | str) -> None:
     Args:
         config_file: `config.toml`, created when missing.
         position: The position; a host path alone takes the folder's out.
+    """
+    save_folders(config_file, [position])
+
+
+def save_folders(config_file: Path, positions: Sequence[FolderPosition | str]) -> None:
+    """Write folders' positions in one write; a bare folder forgets its own (0383).
+
+    Args:
+        config_file: `config.toml`, created when missing.
+        positions: The positions; a host path alone takes the folder's out.
 
     Raises:
         ValueError: The file is not TOML.
         OSError: The file cannot be written.
     """
-    folder = position if isinstance(position, str) else position.folder
     document = document_of(config_file)
     places = table_of(document, _PLACES)
     rows = places.get(_FOLDERS)
     if not isinstance(rows, AoT):
         rows = tomlkit.aot()
         places.append(_FOLDERS, rows)
-    for rank in reversed(range(len(rows.body))):
-        if str(rows.body[rank].get("folder", "")).casefold() == folder.casefold():
-            del rows[rank]
-    if not isinstance(position, str):
-        table = tomlkit.table()
-        table["folder"] = host_path(position.folder)  # 'C:\Photos', as users write
-        table["latitude"] = round(position.latitude, DECIMALS)
-        table["longitude"] = round(position.longitude, DECIMALS)
-        table.add(tomlkit.nl())  # a blank line before what follows
-        rows.append(table)
+    for position in positions:
+        folder = position if isinstance(position, str) else position.folder
+        for rank in reversed(range(len(rows.body))):
+            if str(rows.body[rank].get("folder", "")).casefold() == folder.casefold():
+                del rows[rank]
+        if not isinstance(position, str):
+            table = tomlkit.table()
+            table["folder"] = host_path(position.folder)  # 'C:\Photos', as users write
+            table["latitude"] = round(position.latitude, DECIMALS)
+            table["longitude"] = round(position.longitude, DECIMALS)
+            table.add(tomlkit.nl())  # a blank line before what follows
+            rows.append(table)
     if not rows.body:
         del places[_FOLDERS]
     write_document(config_file, document)

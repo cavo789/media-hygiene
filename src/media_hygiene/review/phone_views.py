@@ -16,6 +16,7 @@ from typing import Final
 from pydantic import BaseModel, ConfigDict
 
 from media_hygiene.i18n import _
+from media_hygiene.services.dealt_with import waiting_warning
 from media_hygiene.services.phone_plan import AsideState, PhoneCase
 from media_hygiene.services.phone_proof import AsideWhen, aside_warning
 
@@ -91,6 +92,8 @@ def set_aside_warning(reason: tuple[str, ...]) -> str:
     if len(reason) < _ASIDE_FIELDS:
         return aside_warning(AsideWhen("", now, quarantined=False))
     run_id, state, at = reason[:_ASIDE_FIELDS]
+    if state == AsideState.WAITING.value:
+        return waiting_warning(_moment(at) or now)
     quarantined = state == AsideState.QUARANTINE.value
     purged = _moment(reason[_PURGED]) if len(reason) > _PURGED else None
     when = AsideWhen(run_id, _moment(at) or now, quarantined, purged)

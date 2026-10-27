@@ -62,12 +62,11 @@ class ColorMode(StrEnum):
 
 
 class MediaKind(StrEnum):
-    """Families of files: media, other files asked for with `--ext`, sidecars."""
+    """Families of files: photos, RAW files, videos, and their sidecars."""
 
     IMAGE = "image"
     RAW = "raw"
     VIDEO = "video"
-    OTHER = "other"
     SIDECAR = "sidecar"
 
 

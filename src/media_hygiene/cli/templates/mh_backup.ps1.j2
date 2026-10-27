@@ -1,0 +1,99 @@
+{# `mh backup` / `mh restore` around docker run (0414, 0419): see services/launcher_keep.py. #}
+{% set k = keep.place %}
+{% set t = keep.place.texts %}
+# `{{ function }} backup [--to <folder>]` / `{{ function }} restore [--from <folder>]`: the container
+# writes and reads the archives in the folder of this PC; Windows copies them to (backup) or
+# from (restore) another folder: --to/--from, else <push target>\{{ k.folder }} (the NAS: they
+# survive a lost disk). A folder that cannot be opened is said, the PC copy kept; typed, it
+# stops the command. Refused while another {{ function }} container runs, the home page waiting
+# for this step excepted. $null when the command must not run.
+function global:_{{ function }}_keep_before([string]$command, [object[]]$words) {
+    $ErrorActionPreference = 'Continue'
+    $flag = if ($command -eq 'backup') { '--to' } else { '--from' }
+    $rest = @()
+    $other = ''
+    $typed = $false
+    $help = $false
+    for ($i = 0; $i -lt $words.Count; $i++) {
+        $word = "$($words[$i])"
+        if ($word -in @('--to', '--from')) {
+            if ($word -ne $flag -or $i + 1 -ge $words.Count) { Write-Host "{{ t.usage }}"; $global:LASTEXITCODE = 2; return $null }
+            $i++
+            $other = "$($words[$i])"
+            $typed = $true
+            continue
+        }
+        if ($word -in @({{ listed(keep.help_flags) }})) { $help = $true }
+        $rest += $words[$i]
+    }
+    $null = New-Item -ItemType Directory -Force -Path "{{ keep.host }}"
+    $place = @{ rest = $rest; other = ''; command = $command }
+    if ($help) { return $place }
+    $waiting = ''
+{% if host.step_file %}
+    $cid = Join-Path (Split-Path -Parent "{{ host.step_file }}") '{{ watch.cid }}'
+    if (Test-Path -LiteralPath $cid) { $waiting = "$(Get-Content -LiteralPath $cid -TotalCount 1)".Trim() }
+{% endif %}
+    foreach ($id in @(docker ps -q --filter "ancestor={{ image }}" 2>$null)) {
+        if ("$id" -match '^[0-9a-f]+$' -and -not ($waiting -and $waiting.StartsWith("$id"))) { Write-Host "{{ t.busy }}"; $global:LASTEXITCODE = 1; return $null }
+    }
+    if (-not $typed) {
+        $kept = _{{ function }}_nas_file '{{ k.file }}'
+        if (Test-Path -LiteralPath $kept) {
+            $pushed = "$(Get-Content -LiteralPath $kept -TotalCount 1)".Trim().TrimEnd('\')
+            if ($pushed) { $other = "$pushed\{{ k.folder }}" }
+        }
+    }
+    if (-not $other) { return $place }
+    $other = $other.TrimEnd('\')
+    if ($command -eq 'backup') { $null = New-Item -ItemType Directory -Force -Path $other -ErrorAction SilentlyContinue }
+    if (-not (Test-Path -LiteralPath $other)) {
+        Write-Host "{{ t.unreachable }}"
+        if ($typed) { $global:LASTEXITCODE = 2; return $null }
+        Write-Host "{{ t.fallback }}"
+        return $place
+    }
+    $place.other = $other
+    if ($command -eq 'restore') {
+        # The archives there this PC lacks (all of them after a crash), copied first.
+        $count = _{{ function }}_keep_copy $other "{{ keep.host }}"
+        Write-Host "{{ t.fetched }}"
+    }
+    return $place
+}
+
+# After a backup: the archives of this PC copied to the other folder, those it no longer
+# keeps (rotated out) removed there, only names of archives; the result read back.
+function global:_{{ function }}_keep_after($place) {
+    $other = $place.other
+    if (-not $other -or $place.command -ne 'backup') { return }
+    $local = @(Get-ChildItem -LiteralPath "{{ keep.host }}" -Filter '{{ k.prefix }}*{{ k.suffix }}' -File | ForEach-Object { $_.Name })
+    $null = _{{ function }}_keep_copy "{{ keep.host }}" $other
+    $there = @(Get-ChildItem -LiteralPath $other -Filter '{{ k.prefix }}*{{ k.suffix }}' -File -ErrorAction SilentlyContinue)
+    if (@($local | Where-Object { $_ -notin @($there | ForEach-Object { $_.Name }) }).Count) { Write-Host "{{ t.failed }}"; return }
+    foreach ($file in $there) {
+        if ($file.Name -notin $local) { Remove-Item -LiteralPath $file.FullName -Force -ErrorAction SilentlyContinue }
+    }
+    $count = @(Get-ChildItem -LiteralPath $other -Filter '{{ k.prefix }}*{{ k.suffix }}' -File -ErrorAction SilentlyContinue).Count
+    Write-Host "{{ t.sent }}"
+}
+
+# The archives of one folder missing in another, copied under {{ k.partial }}, renamed once
+# their size is checked: never a half archive taken for one. The number copied.
+function global:_{{ function }}_keep_copy([string]$from, [string]$into) {
+    $count = 0
+    foreach ($file in @(Get-ChildItem -LiteralPath $from -Filter '{{ k.prefix }}*{{ k.suffix }}' -File -ErrorAction SilentlyContinue)) {
+        $there = Join-Path $into $file.Name
+        if (Test-Path -LiteralPath $there) { continue }
+        $draft = "$there{{ k.partial }}"
+        try {
+            Copy-Item -LiteralPath $file.FullName -Destination $draft -ErrorAction Stop
+            if ((Get-Item -LiteralPath $draft).Length -ne $file.Length) { throw 'size' }
+            Move-Item -LiteralPath $draft -Destination $there -ErrorAction Stop
+            $count++
+        } catch {
+            Remove-Item -LiteralPath $draft -Force -ErrorAction SilentlyContinue
+        }
+    }
+    return $count
+}

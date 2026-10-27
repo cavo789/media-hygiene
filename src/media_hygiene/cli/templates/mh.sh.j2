@@ -68,10 +68,29 @@
         *" $command "*) long=1 ;;
     esac
     for folder in "${given[@]}"; do photos+=(-v "$folder$mode"); done
+    # `{{ function }} import <folder>`: that folder only, read-only, for this run; never added (0378).
+    local source=() words=() point after=""
+    if [[ "$command" == import ]]; then
+        for arg in "$@"; do
+            if [[ -n "$after" && "$arg" != -* ]]; then
+                _{{ function }}_drive "$arg" || return 2
+                if [[ ! -d "$arg" ]]; then printf '%s\n' "{{ texts.missing }}" >&2; return 2; fi
+                folder="$(cd "$arg" && pwd -P)"
+                point="/data$folder"
+                if [[ "$folder" =~ ^/mnt/([a-z])(/.*)?$ ]]; then point="/data/${BASH_REMATCH[1]}${BASH_REMATCH[2]}"; fi
+                source=(-v "$folder:$point:ro")
+                arg="$point"
+            fi
+            after=""
+            if [[ "$arg" == import && -z "${source[*]}" ]]; then after=1; fi
+            words+=("$arg")
+        done
+        set -- "${words[@]}"
+    fi
 {% if script.backups %}
     # The backups: mounted read-only below, whatever the command; given to those taking them (0205).
     case " {{ script.commands.backups | join(" ") }} " in
-        *" $command "*) backups=({% for volume in script.backups %}--backup "{{ volume.point.as_posix() }}"{{ " " if not loop.last }}{% endfor %}) ;;
+        *" $command "*) if [[ -z "${source[*]}" ]]; then backups=({% for volume in script.backups %}--backup "{{ volume.point.as_posix() }}"{{ " " if not loop.last }}{% endfor %}); fi ;;
     esac
 {% endif %}
     # Only the loop of `{{ function }}` alone reads the step chosen on the home page (0210),
@@ -119,7 +138,7 @@
 {% for volume in script.data %}
         -v "{{ volume.host }}:{{ volume.point.as_posix() }}${mode}" \
 {% endfor %}
-        "${photos[@]}" \
+        "${photos[@]}" "${source[@]}" \
 {% for volume in script.backups %}
         -v "{{ volume.host }}:{{ volume.point.as_posix() }}:ro" \
 {% endfor %}

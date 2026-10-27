@@ -53,9 +53,9 @@ def action_commands(act: str) -> tuple[tuple[str, str, str], ...]:
             "import",
             act,
             _(
-                "Copy into your photos what only a backup (a NAS) holds, never what "
-                "you set aside or deleted before; each copy proven (journaled, "
-                "undoable)."
+                "Copy into your photos what only a folder holds (your NAS, a USB "
+                "disk, an SD card), never what you set aside or deleted before; each "
+                "copy proven (journaled, undoable)."
             ),
         ),
         (

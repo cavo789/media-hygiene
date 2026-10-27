@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.constants import SIDECAR_EXTENSIONS
+from media_hygiene.constants import MEDIA_EXTENSIONS, SIDECAR_EXTENSIONS
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -48,20 +48,39 @@ def normalized_extensions(values: Iterable[str]) -> tuple[str, ...]:
 
 
 def check_extensions(extensions: Sequence[str]) -> None:
-    """Refuse malformed extensions and sidecars.
+    """Refuse malformed extensions, sidecars and files that are not media.
 
     Args:
         extensions: Extensions with their dot.
 
     Raises:
-        ValueError: An extension is malformed or is a sidecar's.
+        ValueError: An extension is malformed, a sidecar's or not a media one.
     """
     malformed = [ext for ext in extensions if not _EXTENSION.fullmatch(ext)]
     if malformed:
         message = _(
-            "invalid extension {values}: letters, digits, '-' and '_' only, such as pdf"
+            "invalid extension {values}: letters, digits, '-' and '_' only, such as jpg"
         ).format(values=", ".join(malformed))
         raise ValueError(message)
+    _refuse_sidecars(extensions)
+    others = [ext for ext in extensions if ext not in MEDIA_EXTENSIONS]
+    if others:
+        message = _(
+            "{values}: media-hygiene only handles photos and videos; the audit "
+            "lists the other files of your photo folders (intruder files)"
+        ).format(values=", ".join(others))
+        raise ValueError(message)
+
+
+def _refuse_sidecars(extensions: Sequence[str]) -> None:
+    """Refuse sidecars: they follow the photo of the same name.
+
+    Args:
+        extensions: Extensions with their dot.
+
+    Raises:
+        ValueError: An extension is a sidecar's.
+    """
     sidecars = [ext for ext in extensions if ext in SIDECAR_EXTENSIONS]
     if sidecars:
         message = _(

@@ -63,7 +63,7 @@ It prints, in this order:
 | `--backup PATH` | A backup or an old disk: compared, never changed. Says what it lacks and what only it holds (`backup-missing.csv`, `backup-only.csv`). [Cleaning, step 5](../clean/05-choose-the-kept-copy.md#compare-a-backup-or-an-old-disk) |
 | `--exclude-name NAME` | Folder name never analysed, wherever it is (`--exclude-name Thumbnails,.Trash-*`). [Cleaning, step 5](../clean/05-choose-the-kept-copy.md#skip-a-folder-name-on-every-disk) |
 | `--full` | Read every folder again, even those unchanged since the last audit (taken from the cache otherwise): for a photo changed in place by another program. [Step 2](../start/02-keep-the-cache.md#what-changes) |
-| `--ext EXT` | Only these categories or extensions (`--ext photo,video`, `--ext heic`); other file types too (`--ext pdf,docx`). [Cleaning, step 6](../clean/06-file-types.md) |
+| `--ext EXT` | Only these categories or extensions (`--ext photo,video`, `--ext heic`); photo, RAW and video extensions only. [Cleaning, step 6](../clean/06-file-types.md) |
 | `--people` | Then look for faces in the photos not looked at yet, after saying how long it takes and asking ([People](../reference-people.md#during-the-audit-audit---people)); `with_audit = true` in `[people]` does it at every audit. |
 | `--yes`, `-y` | With `--people`: do not ask. Without a terminal (no `-it`), `--people` needs it: nothing waits for an answer. |
 

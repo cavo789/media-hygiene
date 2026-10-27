@@ -17,7 +17,9 @@ from dataclasses import dataclass
 from functools import partial
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.constants import MediaKind
 from media_hygiene.report.thumbnails import jpeg_preview
+from media_hygiene.scan.filters import media_kind
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -26,6 +28,8 @@ if TYPE_CHECKING:
 
 # Raise it when previews are made differently: every preview is then made again.
 _VERSION: Final = 1
+# Videos got a frame in 0373: their empty previews of before (no picture) are not read.
+_VIDEO_VERSION: Final = 2
 _NAME_LENGTH: Final = 32
 _SUFFIX: Final = ".jpg"
 _PARTIAL: Final = ".part"
@@ -114,7 +118,8 @@ def preview_key(job: PreviewJob, size: int, mtime_ns: int) -> str:
     Returns:
         A file name such as `0f3a….jpg`.
     """
-    key = f"{_VERSION}\0{job.source}\0{size}\0{mtime_ns}\0{job.edge}"
+    version = _VIDEO_VERSION if media_kind(job.source) is MediaKind.VIDEO else _VERSION
+    key = f"{version}\0{job.source}\0{size}\0{mtime_ns}\0{job.edge}"
     return hashlib.sha256(key.encode()).hexdigest()[:_NAME_LENGTH] + _SUFFIX
 
 

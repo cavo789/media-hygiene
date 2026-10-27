@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from pathlib import Path
 
 from media_hygiene.actions.outcome import Incident, Outcome
@@ -17,11 +18,13 @@ from media_hygiene.report.clean_done import (
     CleanAsked,
     asked_flags,
     clean_done,
+    latest_audit_link,
     shown_similar,
 )
 from media_hygiene.report.summary import ReportSummary
 from media_hygiene.report.views import ReportRecord
 from media_hygiene.scan.models import MediaFile
+from tests.support.report_folders import MINIMAL, write_summary
 
 
 def media(name: str) -> MediaFile:
@@ -89,15 +92,33 @@ def test_an_audit_has_no_done_block_and_old_summaries_load() -> None:
     assert clean_done(audit) is None
     assert shown_similar(audit) is SIMILAR
     assert asked_flags(None) == {"near_tier": False, "bursts_decided": False}
-    old = ReportSummary.model_validate(
-        {
-            "folder": "x",
-            "kind": "clean",
-            "files_scanned": 1,
-            "duplicate_groups": 0,
-            "duplicate_files": 0,
-            "reclaimable_bytes": 0,
-            "broken_files": 0,
-        }
-    )
+    old = ReportSummary.model_validate({"folder": "x", "kind": "clean", **MINIMAL})
     assert (old.near_tier, old.bursts_decided) == (False, False)
+
+
+def _report(reports: Path, name: str, roots: tuple[str, ...]) -> str:
+    """Write a report folder named `<day>-<kind>` (`02-audit`)."""
+    day, kind = name.split("-")
+    folder = f"202610{day}-000000-{kind}"
+    write_summary(
+        reports / folder,
+        kind=RunKind(kind),
+        roots=roots,
+        created_at=datetime(2026, 10, int(day), tzinfo=UTC),
+    )
+    (reports / folder / "report.html").write_text("x", encoding="utf-8")
+    return folder
+
+
+def test_a_clean_links_the_latest_audit_of_the_same_folders(tmp_path: Path) -> None:
+    """Two audits of other folders, two of these: the newest of these, else None."""
+    clean = record(CleanPlan(decisions=(), broken=()), CleanAsked())
+    assert latest_audit_link(tmp_path, clean) is None
+    _report(tmp_path, "01-audit", ("/data/c",))
+    second = _report(tmp_path, "02-audit", ("/data/c",))
+    _report(tmp_path, "03-audit", ("/data/d",))
+    _report(tmp_path, "04-clean", ("/data/c",))
+    link = latest_audit_link(tmp_path, clean)
+    assert link == f"../{second}/report.html"
+    audit = ReportRecord(RunKind.AUDIT, clean.findings)
+    assert latest_audit_link(tmp_path, audit) is None

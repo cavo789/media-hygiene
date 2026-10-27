@@ -73,6 +73,20 @@ def test_phrases_stay_whole_and_singular() -> None:
     )
 
 
+def test_blur_and_filler_words_are_stop_words_but_adult_stays() -> None:
+    """Measured 2026-10-25: tags that say nothing about the photo are dropped."""
+    words = ["photo floue", "Flou", "photographie", "ambiance", "adulte", "enfant"]
+    assert normalize(words, FRENCH) == ("adulte", "enfant")
+    english = ["blurry photo", "Photograph", "blur", "adult"]
+    assert normalize(english, ENGLISH) == ("adult",)
+
+
+def test_a_short_french_plural_agrees_inside_a_phrase() -> None:
+    """`arbres nus` -> `arbre nu`; `bus` and `des` are left alone."""
+    assert normalize(["arbres nus", "bus"], FRENCH) == ("arbre nu", "bus")
+    assert normalize(["des"], FRENCH) == ("des",)
+
+
 def test_own_stop_words_replace_the_list() -> None:
     """A configured list replaces the built-in one, case ignored."""
     rules = WordRules.of(TagSettings(stop_words=("Chat",)), Locale.FR)

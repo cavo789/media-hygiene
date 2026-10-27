@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.paths.locations import BACKUPS_POINT, SHARES_POINT
+from media_hygiene.services.launcher_keep import KeepPlace, keep_place
 
 if TYPE_CHECKING:
     from media_hygiene.paths.docker_run import Shell
@@ -55,6 +56,8 @@ class BackupMount:
     verbs: tuple[str, ...]
     host: str
     point: str
+    place: KeepPlace  # the copy elsewhere: --to/--from, the push target (0414, 0419)
+    help_flags: tuple[str, ...] = HELP_FLAGS
 
 
 def backup_mount(shell: Shell) -> BackupMount:
@@ -67,5 +70,8 @@ def backup_mount(shell: Shell) -> BackupMount:
         It, `$HOME` left for the shell to expand.
     """
     return BackupMount(
-        BACKUP_VERBS, shell.home_folder(BACKUPS_FOLDER), BACKUPS_POINT.as_posix()
+        BACKUP_VERBS,
+        shell.home_folder(BACKUPS_FOLDER),
+        BACKUPS_POINT.as_posix(),
+        keep_place(),
     )

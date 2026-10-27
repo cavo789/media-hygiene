@@ -76,6 +76,7 @@ class ReportSummary(BaseModel):
 
     folder: str
     kind: RunKind
+    roots: tuple[str, ...] = ()  # the folders scanned, to find a clean's audit (0412)
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     files_scanned: int
     duplicate_groups: int

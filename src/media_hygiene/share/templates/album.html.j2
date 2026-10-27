@@ -5,9 +5,13 @@
    mosaic by day; a tap opens a photo full screen, a swipe goes to the next or the previous one, a
    tap closes. Videos play in place when the phone plays them as they are (as on the TV, 0292).
    A photo may be taken out of the album, or added to another one (0295 item 4): albums.json only,
-   no photo touched. Everything is drawn by album.js.j2 from GET list / album. #}
+   no photo touched; the album is picked from the list (0372). The photo shown may become the
+   album's cover (0371). Everything is drawn by album.js.j2 from GET list / album.
+   On top, the bar of every page (page_header.html.j2, 0342): its *Back to the home page* is a
+   plain link, the home server serves this page; inside an album, *← Albums* stays below it. #}
 {% set texts = {
   "albums": _("Albums"),
+  "learn": _("What an album is, and what this page does"),
   "none": _("No album yet. On the PC, in search or browse, pick photos, then Add to the album."),
   "photos": [ngettext("{n} photo or video", "{n} photos and videos", 1), ngettext("{n} photo or video", "{n} photos and videos", 2)],
   "missing": [ngettext("{n} file missing: moved out of the folders analysed, or deleted.", "{n} files missing: moved out of the folders analysed, or deleted.", 1), ngettext("{n} file missing: moved out of the folders analysed, or deleted.", "{n} files missing: moved out of the folders analysed, or deleted.", 2)],
@@ -18,22 +22,26 @@
   "out": _("Take out of the album"),
   "outAsk": _("Take this photo out of {name}? The photo itself stays where it is."),
   "addTo": _("Add to an album"),
-  "addAsk": _("The album's name (a new name creates it):"),
+  "cover": _("Use as cover"),
+  "newAlbum": _("New album…"),
   "of": _("{at} of {total}"),
 } %}
+{% set page_name = texts.albums %}
 <html lang="{{ _('en') }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<title>{{ texts.albums }} — Media Hygiene</title>
-<link rel="icon" type="image/png" href="{{ paths.assets }}images/favicon.png">
+<title>{{ page_name }} — media-hygiene</title>
+<link rel="icon" type="image/png" href="{{ header.assets }}images/favicon.png">
 <style>
 {% include "theme.css.j2" %}
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text); font: 400 16px/1.5 var(--mk-font-text); }
-  header { position: sticky; top: 0; z-index: 2; display: flex; gap: 12px; align-items: center; padding: 10px 16px; background: var(--card); border-bottom: 1px solid var(--line); }
-  header h1 { flex: 1; margin: 0; font-size: 1.15rem; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .mh-bar { overflow-wrap: anywhere; }
+  .heading { display: flex; gap: 12px; align-items: center; padding: 10px 16px 0; }
+  .heading h2 { flex: 1; min-width: 0; margin: 0; font-size: 1.15rem; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .heading a.back[hidden] { display: none; }
   a.back, button { min-height: 44px; padding: 8px 14px; font: inherit; font-weight: 600; color: var(--accent); background: transparent; border: 1px solid var(--line); border-radius: 10px; text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; }
   .note { margin: 12px 16px; color: var(--muted); font-size: .9rem; }
   .note.error { color: var(--bad); font-weight: 600; }
@@ -65,15 +73,23 @@
   .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); background: rgba(0, 0, 0, .7); }
   .bar span { flex: 1; font-size: .9rem; }
   .bar button { color: #fff; border-color: rgba(255, 255, 255, .4); }
+  .sheet { position: fixed; z-index: 7; inset: auto 0 0 0; max-height: 70vh; overflow-y: auto; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); color: var(--text); background: var(--card); border-top: 1px solid var(--line); border-radius: 16px 16px 0 0; }
+  .sheet[hidden] { display: none; }
+  .sheet h2 { margin: 0 0 8px; font-size: 1.05rem; }
+  .sheet ul { margin: 0 0 12px; padding: 0; list-style: none; }
+  .sheet li button { width: 100%; margin: 0 0 6px; justify-content: flex-start; }
+  .sheet form { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sheet input { flex: 1; min-width: 0; min-height: 44px; padding: 6px 10px; font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; }
   .toast { position: fixed; z-index: 6; inset: auto 16px 16px 16px; padding: 12px 16px; border-radius: 10px; color: #fff; background: rgba(0, 0, 0, .85); }
   .toast[hidden] { display: none; }
 </style>
 </head>
 <body>
-<header>
-  <a class="back" id="back" href="{{ paths.home }}">⌂</a>
-  <h1 id="title">{{ texts.albums }}</h1>
-</header>
+{% include "page_header.html.j2" %}
+<div class="heading">
+  <a class="back" id="back" href="#" hidden>← {{ texts.albums }}</a>
+  <h2 id="title">{{ texts.albums }}</h2>
+</div>
 <p class="note">🔒 {{ _("On the home Wi-Fi only, while mh runs on the PC. Your photos are only read: taking a photo out of an album, or adding it to another one, changes the albums file alone.") }}</p>
 <p class="note error" id="problem" role="alert" hidden></p>
 <main id="main"></main>
@@ -81,10 +97,20 @@
   <div class="stage" id="stage"></div>
   <div class="bar">
     <span id="where"></span>
+    <button type="button" id="cover">🖼 {{ texts.cover }}</button>
     <button type="button" id="addTo">➕ {{ texts.addTo }}</button>
     <button type="button" id="takeOut">➖ {{ texts.out }}</button>
     <button type="button" id="close" aria-label="{{ _('Close') }}">✕</button>
   </div>
+</div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
+  <h2 id="sheetTitle">{{ texts.addTo }}</h2>
+  <ul id="sheetAlbums"></ul>
+  <form id="sheetNew">
+    <input id="sheetName" type="text" maxlength="80" autocomplete="off" placeholder="{{ texts.newAlbum }}" aria-label="{{ texts.newAlbum }}">
+    <button type="submit">➕</button>
+    <button type="button" id="sheetClose" aria-label="{{ _('Close') }}">✕</button>
+  </form>
 </div>
 <p class="toast" id="toast" role="status" hidden></p>
 <script>
@@ -92,7 +118,8 @@
 {% include "album.js.j2" %}
 })();
 </script>
-{# Served by the home server in the home page's tab: its pings keep that server running (0341). #}
-{% include "presence.html.j2" %}
+{# Served by the home server in the home page's tab: its pings keep that server running (0341);
+   the bar's way back, a plain link (home_link.html.j2 includes presence.html.j2). #}
+{% include "home_link.html.j2" %}
 </body>
 </html>

@@ -65,6 +65,7 @@
     const done = photos.filter((photo) => photo.decision !== "").length;
     byId("position").textContent = fill(T.position, { number: at + 1, total: groups.length });
     byId("totals").textContent = fill(T.totals, { aside: number(aside), decided: number(done), total: number(photos.length) });
+    if (window.mhApplyNow) window.mhApplyNow(aside > 0); // apply_now.html.j2, opened from home
     byId("title").textContent = group.title;
     const state = byId("state");
     state.textContent = decided(group) ? T.decided : T.pending;

@@ -58,7 +58,7 @@ def file_of(path: Path, stat: tuple[int, int] | None = None) -> MediaFile:
     if stat is None:
         info = path.stat()
         stat = (info.st_size, info.st_mtime_ns)
-    return MediaFile(path, *stat, media_kind(path) or MediaKind.OTHER)
+    return MediaFile(path, *stat, media_kind(path) or MediaKind.SIDECAR)
 
 
 class Relocator:

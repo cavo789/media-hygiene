@@ -50,6 +50,20 @@ def share_steps() -> tuple[Step, ...]:
             optional=True,
         ),
         Step(
+            "slideshow-album",
+            Space.SHARE,
+            _("Show an album on the TV"),
+            _("An album of yours on the big screen; the phone is the remote."),
+            "slideshow --album {album} --lan",
+            Risk.SAFE,
+            Kind.PAGE,
+            icon="image",
+            keywords=_("slideshow tv television album chromecast phone remote sofa"),
+            doc=Doc("commands/slideshow/"),
+            fields=(Field("album", _("The album's name"), _("Crete 2023")),),
+            optional=True,
+        ),
+        Step(
             "share",
             Space.SHARE,
             _("Prepare an album for sending"),
@@ -101,7 +115,9 @@ def share_area() -> Area:
         "image",
         (
             Group(_("Your albums"), (), extra="albums"),  # on a phone too (0297)
-            Group(_("The commands"), ("slideshow", "share", "album")),
+            Group(
+                _("The commands"), ("slideshow", "slideshow-album", "share", "album")
+            ),
         ),
         Doc("commands/slideshow/"),
         _("mh slideshow"),

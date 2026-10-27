@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING
 from pydantic import ValidationError
 
 from media_hygiene.i18n import _
+from media_hygiene.share.album_cover import followed_cover
 from media_hygiene.share.album_follow import digest_of, follow, index_of
 from media_hygiene.share.albums import (
     MAX_NAME,
@@ -68,7 +69,7 @@ class AlbumStore:
             lookup: The index (to follow moved files) and the mapper.
         """
         self.place = place
-        self._lookup = lookup
+        self.lookup = lookup
 
     def on_disk(self) -> Shelf:
         """Read the albums, follow the files that moved, save what was found again.
@@ -85,10 +86,12 @@ class AlbumStore:
         missing: dict[str, tuple[str, ...]] = {}
         changed = False
         for album in base.albums:
-            followed = follow(album.entries, self._lookup)
-            albums.append(album.model_copy(update={"entries": followed.entries}))
+            followed = follow(album.entries, self.lookup)
+            cover = followed_cover(album, self.lookup)  # 0371
+            update = {"entries": followed.entries, "cover": cover}
+            albums.append(album.model_copy(update=update))
             missing[album.name] = followed.missing
-            changed = changed or followed.changed
+            changed = changed or followed.changed or cover != album.cover
         if not changed:
             return Shelf(base, missing)
         write_albums(self.place.target, AlbumsFile(albums=tuple(albums)))
@@ -113,8 +116,8 @@ class AlbumStore:
         known = {entry.path for entry in album.entries}
         added = dt.datetime.now(tz=dt.UTC).replace(microsecond=0)
         entries = list(album.entries)
-        mapper = self._lookup.mapper
-        with index_of(self._lookup) as connection:
+        mapper = self.lookup.mapper
+        with index_of(self.lookup) as connection:
             for source in change.files:
                 host = mapper.to_host(source)
                 if host in known:
@@ -144,7 +147,7 @@ class AlbumStore:
         album = base.named(change.name)
         if album is None:
             raise AlbumsError(_("No album named {name}.").format(name=change.name))
-        gone = {self._lookup.mapper.to_host(source) for source in change.files}
+        gone = {self.lookup.mapper.to_host(source) for source in change.files}
         kept = tuple(entry for entry in album.entries if entry.path not in gone)
         return self._save(base, album.model_copy(update={"entries": kept}))
 

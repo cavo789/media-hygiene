@@ -17,6 +17,7 @@ function proceed(action, body, command) {
   launch(action, body, command);
 }
 function launch(action, body, command) {
+  if (REMOTE && PHONE_PAGES[action.command]) { goTo(PHONE_PAGES[action.command]); return; }
   if (REMOTE) { toast(T.onThePc); return; }
   if (!RELAYS) { copyBox(command); return; }
   // At once, before the server answers: the click is seen, never "nothing happens" (0277).

@@ -20,6 +20,7 @@ import pytest
 from PIL import Image
 
 from media_hygiene.index.schema import prepare
+from media_hygiene.review.doors import Door as SocketDoor
 from media_hygiene.review.ending import Ending, EndingDoor
 from media_hygiene.review.http import Request, Response
 from media_hygiene.review.lan import COOKIE_NAME, LanAccess
@@ -27,7 +28,7 @@ from media_hygiene.search.fts import SearchIndex
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.slideshow.app import ShowPages, SlideshowApp
 from media_hygiene.slideshow.desk import Changes, Desk
-from media_hygiene.slideshow.door import Door
+from media_hygiene.slideshow.door import Door, Visitor
 from media_hygiene.slideshow.pictures import ShowPictures
 from media_hygiene.slideshow.screen_jpeg import ScreenJob
 from media_hygiene.slideshow.screens import MAX_FAILURES, SCREEN_COOKIE, Screens
@@ -99,12 +100,15 @@ _PHONE: Final = _Sender(_LAN_HOST, _PHONE_COOKIE)
 
 def _request(path: str, sender: _Sender = _STRANGER, body: object = None) -> Request:
     headers = {"host": sender.host}
+    door = (
+        SocketDoor.PC if sender is _PC else SocketDoor.LAN
+    )  # the socket, as the server marks it
     if sender.cookie:
         headers["cookie"] = sender.cookie
     if body is None:
-        return Request("GET", path, headers)
+        return Request("GET", path, headers, door=door)
     headers |= {"content-type": _JSON, "origin": f"http://{sender.host}"}
-    return Request("POST", path, headers, json.dumps(body).encode())
+    return Request("POST", path, headers, json.dumps(body).encode(), door)
 
 
 def test_the_pc_does_everything_without_pairing(app: SlideshowApp) -> None:
@@ -208,6 +212,7 @@ def test_a_phone_s_post_from_another_site_is_refused(app: SlideshowApp) -> None:
         request.path,
         {**request.headers, "origin": "http://evil.example"},
         request.body,
+        request.door,
     )
     assert _ask(app, forged).status is HTTPStatus.FORBIDDEN
     assert app.desk.show.current == Slide(_SHOWN_KEYS[0])
@@ -324,3 +329,13 @@ def test_waiting_tvs_are_bounded() -> None:
     kept = [code for code in waiting if code is not None]
     assert len(kept) == len(set(kept))
     assert screens.arrive(tokens[-1] or "") is None
+
+
+def test_a_forged_loopback_host_by_the_lan_door_is_a_stranger(
+    app: SlideshowApp,
+) -> None:
+    """0384: the PC's `Host` written by a device of the Wi-Fi gives no PC right."""
+    forged = Request(
+        "GET", "/api/slides", {"host": f"127.0.0.1:{_TV_PORT}"}, door=SocketDoor.LAN
+    )
+    assert app.door.visitor(forged) is not Visitor.PC

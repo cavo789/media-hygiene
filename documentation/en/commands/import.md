@@ -1,34 +1,37 @@
-# `import`: get back what only your NAS holds
+# `import`: bring in what only a folder holds (NAS, USB disk, SD card)
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `import` · 🇫🇷 [Français](../../fr/commands/import.md)
 
 ## In short
 
-**Copy into your photos the photos and videos only a backup still has: never the ones you set
-aside or deleted on purpose.**
+**Copy into your photos the photos and videos only a folder has: your NAS, a USB disk, an SD
+card, an old disk. Never the ones you set aside or deleted on purpose.**
 
 Your NAS (or an old disk) is a [backup folder](../clean/05-choose-the-kept-copy.md#compare-a-backup-or-an-old-disk):
 the audit compares it with your photos and says what only it holds. `import` copies those
-files into your photos, each one checked, so the NAS is never needed to keep them.
+files into your photos, each one checked, so the NAS is never needed to keep them. Matched by
+content (SHA-256), whatever their name or place.
 
 **When**: once a backup folder is added (`mh folders add --backup \\NAS\Photos`), after an
-[`audit`](audit.md) said *files are only in it, never in your photos*.
+[`audit`](audit.md) said *files are only in it, never in your photos*. Or at once, for a folder
+you plug in now (an SD card, a friend's USB disk): name it on the command, nothing to add first.
 
 **Try it**:
 
 ```powershell
-mh import
+mh import            # your backup folders (the NAS)
+mh import E:\DCIM    # that folder only: read, never added to mh
 ```
 
 ## At a glance
 
 | | |
 |---|---|
-| Your photos | ✋ Acts: copies files **into** your photos (below `From NAS`), never changes one there. |
-| The backup | Only read (mounted `:ro`): nothing on the NAS is written, moved nor deleted. |
-| Needs | A backup folder; your photo folders **without** `:ro`; `/journal`; `/cache`. |
+| Your photos | ✋ Acts: copies files **into** your photos (below `From NAS`, `From E`…), never changes one there. |
+| The folder | Only read (mounted `:ro`): nothing on the NAS, the disk or the card is written, moved nor deleted. |
+| Needs | A backup folder, or a folder named on the command; your photo folders **without** `:ro`; `/journal`; `/cache`. |
 | Undo | [`undo <run>`](undo.md) removes the copies (a copy you edited since is kept). |
-| With `mh` | `mh import`, `mh import --yes`. |
+| With `mh` | `mh import`, `mh import E:\DCIM`, `mh import --yes`. |
 
 ## What is copied, what is not
 
@@ -44,8 +47,11 @@ mh import
   HEIC on the NAS and its JPG on the PC): *probably in your photos already*, not copied.
 - **Once**: two identical files of the backup (same size, same start and end) are copied once.
 
-The copies go to **`From NAS`** in your first photo folder, the folders of the NAS kept below
-it (`C:\Photos\From NAS\2019\Été\IMG_0007.jpg`), or to the folder of `--to`. Sort them later
+The copies go to **`From <source>`** in your first photo folder: `From NAS` for a network
+share, `From E` for a folder of drive `E:`, its folders kept below it
+(`C:\Photos\From NAS\2019\Été\IMG_0007.jpg`, `C:\Photos\From E\100CANON\IMG_0008.jpg`), or to
+the folder of `--to`. A file already copied by an earlier import, wherever it is now, is in
+your photos: never copied twice. Sort them later
 with [`classify`](classify.md) and [`sort`](sort.md), as any folder.
 
 ## How a copy is made
@@ -72,7 +78,8 @@ counts as in your photos. It stays on the NAS: nothing is lost.
 
 | Option | What it does |
 |---|---|
-| `--to PATH` | Folder receiving the copies (host path); default: `From NAS` in your first photo folder. |
+| `FOLDER` | The folder to import from (host path), instead of your backup folders: an SD card, a USB disk. Only read for this run, never added to `mh`. |
+| `--to PATH` | Folder receiving the copies (host path); default: `From <source>` in your first photo folder. |
 | `--yes`, `-y` | Copy without asking first. |
 | `--backup PATH` | The backup folder to import from, when not in `config.toml` (`mh` passes yours). |
 

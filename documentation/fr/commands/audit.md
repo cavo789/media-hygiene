@@ -65,7 +65,7 @@ Il affiche, dans cet ordre :
 | `--backup CHEMIN` | Une sauvegarde ou un ancien disque : comparé, jamais modifié. Dit ce qui lui manque et ce que lui seul contient (`backup-missing.csv`, `backup-only.csv`). [Étape 5 du nettoyage](../clean/05-choose-the-kept-copy.md#comparer-une-sauvegarde-ou-un-ancien-disque) |
 | `--exclude-name NOM` | Nom de dossier jamais analysé, où qu'il soit (`--exclude-name Thumbnails,.Trash-*`). [Étape 5 du nettoyage](../clean/05-choose-the-kept-copy.md#ignorer-un-nom-de-dossier-sur-tous-les-disques) |
 | `--full` | Relire tous les dossiers, même ceux inchangés depuis le dernier audit (repris du cache sinon) : pour une photo modifiée sur place par un autre programme. [Étape 2](../start/02-keep-the-cache.md#ce-qui-change) |
-| `--ext EXT` | Seulement ces catégories ou extensions (`--ext photo,video`, `--ext heic`) ; d'autres types de fichiers aussi (`--ext pdf,docx`). [Étape 6 du nettoyage](../clean/06-file-types.md) |
+| `--ext EXT` | Seulement ces catégories ou extensions (`--ext photo,video`, `--ext heic`) ; extensions de photos, RAW et vidéos seulement. [Étape 6 du nettoyage](../clean/06-file-types.md) |
 | `--people` | Chercher ensuite les visages des photos pas encore examinées, après avoir dit combien de temps cela prend et demandé ([Les personnes](../reference-people.md#pendant-laudit--audit---people)) ; `with_audit = true` dans `[people]` le fait à chaque audit. |
 | `--yes`, `-y` | Avec `--people` : ne pas demander. Sans terminal (pas de `-it`), `--people` en a besoin : rien n'attend de réponse. |
 

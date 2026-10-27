@@ -19,7 +19,7 @@ from typing import TYPE_CHECKING, Final
 from pydantic import ValidationError
 
 from media_hygiene.i18n import _
-from media_hygiene.places.folders import FolderAct
+from media_hygiene.places.folder_act import FolderAct
 from media_hygiene.places.osm_search import OSM_PATH, SearchText, search_osm
 from media_hygiene.places.photos import PhotoSources, photo_response
 from media_hygiene.places.posts import BOARD_POSTS, board_post
