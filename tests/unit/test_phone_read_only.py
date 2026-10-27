@@ -192,3 +192,6 @@ def test_a_phones_spaces_list_only_the_pages_it_opens() -> None:
     phone = home.home_page(remote=True).decode()
     assert "(!REMOTE || PHONE_PAGES[BY_ID[name].command])" in phone
     assert '"mh search"' in phone
+    assert (
+        "S.actions.filter((action) => !REMOTE || PHONE_PAGES[action.command])" in phone
+    )

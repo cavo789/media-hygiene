@@ -249,7 +249,8 @@ function paletteEntries(query) {
   const words = norm(query).split(/\s+/).filter(Boolean);
   const spaces = [SPACE[HOME], ...S.spaces];
   const goItems = spaces.map((space) => ({ type: "go", id: space.id, title: space.long || space.title, sub: space.stage ? fill(T.goStage, { stage: space.stage }) : space.id === HOME ? T.goHome : space.id === "share" ? T.goShare : T.goTools, icon: space.icon, hay: norm(`${space.title} ${space.long || ""} ${space.pitch || ""}`) }));
-  const runItems = S.actions.map((action) => ({ type: "run", id: action.name, title: action.title, sub: action.command, icon: action.icon, risk: action.risk, home: action.space, hay: norm(`${action.title} ${action.text} ${action.command} ${action.keywords} ${(SPACE[action.space] || {}).title || ""}`) }));
+  // A phone finds only what it opens itself (search, browse), as its spaces list.
+  const runItems = S.actions.filter((action) => !REMOTE || PHONE_PAGES[action.command]).map((action) => ({ type: "run", id: action.name, title: action.title, sub: action.command, icon: action.icon, risk: action.risk, home: action.space, hay: norm(`${action.title} ${action.text} ${action.command} ${action.keywords} ${(SPACE[action.space] || {}).title || ""}`) }));
   if (!words.length) {
     const out = [];
     if (S.proposed) out.push({ header: T.nextStep }, runItems.find((item) => item.id === S.proposed.name));
