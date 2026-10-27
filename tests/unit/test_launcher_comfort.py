@@ -62,13 +62,14 @@ def _powershell(locale: Locale = Locale.FR) -> str:
     return expanded(text)
 
 
-# `docker` stands in for the image: prints its arguments; with `WAIT_FOR`, waits (5 s
-# at most) for that file, as a page stays open while the browser comes.
+# `docker` stands in for the image: prints its arguments; with `WAIT_FOR`, `docker run`
+# waits (10 s at most) for that file, as a page stays open while the browser comes. The
+# launcher's own `docker ps` must not wait: no browser opens before the run (10 s lost).
 _FAKE_DOCKER: Final = r"""
 docker() {
     printf 'ran:%s\n' "$@"
     local tries=100
-    if [[ -n "${WAIT_FOR:-}" ]]; then
+    if [[ -n "${WAIT_FOR:-}" && "$1" == run ]]; then
         while [[ ! -s "$WAIT_FOR" && $tries -gt 0 ]]; do
             sleep 0.1
             tries=$((tries - 1))

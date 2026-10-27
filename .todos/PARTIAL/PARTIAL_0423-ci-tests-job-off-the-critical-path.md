@@ -63,3 +63,27 @@ started at 10:01:57 and the browser test at 10:04:12 (*measured*), so the pull n
 anything on the run's duration. Caching it (`docker save` into `actions/cache`) would not shorten
 the run, and it would use up most of the repository's Actions cache, which the buildx and ffmpeg
 caches also need.
+
+## Status — PARTIAL (2026-10-27)
+
+### Done
+- `test_bash_opens_the_browser_once_the_page_answers`: the 10 s were the fake `docker`
+  waiting for the browser on **every** call, the launcher's `docker ps` included (traced
+  with `PS4=$EPOCHREALTIME`: 10.4 s on `docker ps`, before any browser could open). It now
+  waits on `docker run` only: 10.31 s → under 1 s (*measured* locally, `--durations`),
+  same assertions.
+- `test_sort` documentation library, measured locally: 11 s per locale, of which 8 s build
+  the library (profile: 6.3 s `write_shot`, of which 2.6 s grain + 1.6 s Gaussian blur of the
+  synthetic pictures, 1.4 s ffmpeg videos, 1.1 s HEIC encoding). Kept as is: `[fr]` covers
+  what `[en]` does not (the folder names, accents included, matched against event names);
+  a per-process cache would not help since the two locales run on different xdist workers.
+
+### Not done
+- Medians of the Tests vs e2e jobs over at least three green runs, and the decision to split
+  the Tests job (`tests/unit` / `tests/integration`, `coverage combine`).
+  **Reason:** needs several CI runs after this commit (`ci`, `gh run view --json jobs`);
+  expected gain of this commit about 10 s of one worker, ≈ 3 s of the run (*estimated*:
+  10 s / 4 workers).
+- Options left for the documentation library if the Tests job stays the critical path: a
+  smaller grain/blur in `tests/support/docs/painting.py` for this test only (pictures no longer
+  those of the screenshots), or a disk cache of rendered pictures shared by the workers.
