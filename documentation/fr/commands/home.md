@@ -181,9 +181,9 @@ photo* (la recherche et le parcours), les albums et où vous en êtes ; les éta
 photos (importer, nettoyer, trier, sauvegarder) et les outils n'y sont pas montrés, le PC garde
 tout le cycle.
 
-Depuis le téléphone : 🔒 la page, où vous en êtes, les rapports, l'**audit** lancé par la page,
+🔒 **Le téléphone ne fait que lire : tout changement se fait sur le PC.** Depuis le téléphone : la page, où vous en êtes, les rapports, l'avancement d'un audit lancé sur le PC,
 [vos albums](#vos-albums-sur-le-téléphone), ainsi que **la recherche** et **le parcours** (leurs
-photos ouvertes à la taille du téléphone, jamais un original, et leurs vidéos ; *mettre de côté*, *Appliquer maintenant* et un
+photos ouvertes à la taille du téléphone, et leurs vidéos ; les originaux seulement avec `lan_phone_originals = true` sous `[review]` de `config.toml`, désactivé par défaut : pleine taille, position GPS comprise ; *mettre de côté*, *Appliquer maintenant* et un
 déplacement restent au PC). Seul un téléphone appairé les atteint : tout autre appareil du Wi-Fi
 (un invité, une télé) reçoit la page d'appairage, ou rien, à toute adresse. Tant que le téléphone montre une page, `mh` continue même onglet du
 PC fermé ; une fois `mh` arrêté, la page du téléphone le dit.
@@ -292,7 +292,7 @@ n'appairent rien.
 
 | | |
 |---|---|
-| Vos photos | 🔒 Seulement lues. Le téléphone reçoit des images à sa taille (1440 pixels au plus, gardées dans `/cache`), jamais un original. |
+| Vos photos | 🔒 Seulement lues. Le téléphone reçoit des images à sa taille (1440 pixels au plus, gardées dans `/cache`), un original seulement avec `[review] lan_phone_originals = true`. |
 | Ce que le téléphone atteint | Les albums et **leurs** fichiers ; le reste de votre bibliothèque par *Rechercher* et *Parcourir* seulement (en lecture). |
 | Où | Le Wi-Fi de la maison seulement, tant que `mh` tourne sur le PC (dit sur la page). |
 

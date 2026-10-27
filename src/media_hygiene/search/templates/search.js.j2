@@ -155,7 +155,7 @@ function whyFace(key, name, face) {
     text.append(element("p", "muted", TEXTS.reference), reference);
   }
   if (face.runner) text.append(element("p", "muted", face.runner));
-  const buttons = element("div", "buttons");
+  const buttons = element("div", "buttons writes");
   if (face.how !== "confirmed") {
     const yes = element("button", "", fill(TEXTS.yes, { name }));
     yes.type = "button";

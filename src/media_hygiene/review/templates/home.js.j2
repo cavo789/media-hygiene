@@ -5,7 +5,7 @@
 const T = {{ texts | tojson }};
 const P = {{ paths | tojson }};
 const RELAYS = {{ relays_steps | tojson }};
-// A phone on the home network (mh --lan, 0269): reads and the audit only; Quit and the
+// A phone on the home network (mh --lan, 0269): reads only, never the audit (0427); Quit and the
 // presence stay the PC's (its tab, not the phone's, keeps the page open).
 const REMOTE = {{ remote | tojson }};
 const PHONE_PAGES = {{ phone_pages | tojson }};  // a phone opens these steps as pages (0360)

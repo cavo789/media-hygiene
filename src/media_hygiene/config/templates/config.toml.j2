@@ -120,6 +120,9 @@ port = 8088
 {{ comment(_("true (the default): the home page opens to the phones of your home Wi-Fi too, while Media Hygiene runs; a phone pairs once with the code shown on the PC; never the internet. false: the page stays on this PC only, and mh --lan opens it to the phones for one run. After a change, type mh update.")) }}
 lan = true
 
+{{ comment(_("true: a paired phone may download the originals of photos and videos (full size, GPS position included). false (the default): a phone sees them at preview size only. Whatever this says, a phone never changes anything: setting aside, moving, cleaning stay the PC's.")) }}
+lan_phone_originals = false
+
 [review.unwanted]
 {{ comment(_("'review --junk' shows the photos most likely unwanted, one group per reason; nothing is set aside until you say so, and 'clean --decisions' moves only what you set aside to the quarantine. A photo of a protected folder, a burst shot, a near or exact duplicate is never listed.")) }}
 

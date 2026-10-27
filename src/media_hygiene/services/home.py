@@ -184,6 +184,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
                     lan,
                     home_page(remote=True),
                     phones=phone_book(secure=lan.secure),
+                    originals=runtime.settings.review.lan_phone_originals,
                 )
             handler = with_problem(handler)
             door = with_person(EndingDoor(handler, ending), runtime, pool)

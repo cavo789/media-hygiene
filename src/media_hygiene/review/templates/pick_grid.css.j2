@@ -1,7 +1,12 @@
 {# The look of a page of photos to pick (`browse`, `search`, the phone page), on top of the
    frame's (`page_frame.css.j2`: the columns, the keys, the one bar): the views, the start of
    the bar (0305), the tiles with their ☑ box, the rectangle, the *marked to set aside* label.
-   Included in the page's `style` block; the large view is `pick_viewer.css.j2`. #}
+   Included in the page's `style` block; the large view is `pick_viewer.css.j2`.
+   `html[data-phone]`: set by the home network's door (`lan_paths.phone_marked`): a phone
+   is read-only (0429), so no control that writes is shown there (`PHONE_HIDDEN`). #}
+  html[data-phone] #setAside, html[data-phone] #takeBack, html[data-phone] #chosen,
+  html[data-phone] #applyBar, html[data-phone] #ruleOpen, html[data-phone] #moveBar,
+  html[data-phone] .unname, html[data-phone] .writes { display: none !important; }
   label { font-size: .85rem; color: var(--muted); }
   input, select { padding: 4px 6px; font: inherit; color: var(--text); background: var(--bg);
                   border: 1px solid var(--line); border-radius: 6px; }

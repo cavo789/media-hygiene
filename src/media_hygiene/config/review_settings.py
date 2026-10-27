@@ -84,4 +84,7 @@ class ReviewSettings(BaseModel):
     # false: the PC alone (`mh --lan` then opens it for one run). Written into `mh` by
     # `mh update`, like `port`. On by default (maintainer, 2026-10-27).
     lan: bool = True
+    # A paired phone may download the originals of photos and videos (0427); never a
+    # write from a phone, whatever this says.
+    lan_phone_originals: bool = False
     unwanted: UnwantedSettings = UnwantedSettings()

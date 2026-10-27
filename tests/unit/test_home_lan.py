@@ -245,14 +245,14 @@ def test_wrong_codes_close_the_pairing() -> None:
     assert _ask(app, _phone("/", paired=False)).status == HTTPStatus.UNAUTHORIZED
 
 
-def test_a_paired_phone_reads_and_runs_the_audit_as_from_the_loopback() -> None:
-    """The phone's page; the state, the reports, the audit passed on, Host rewritten."""
+def test_a_paired_phone_reads_the_audit_as_from_the_loopback() -> None:
+    """The phone's page; the state, the reports, the audit's state, Host rewritten."""
     app, fake = _app()
     page = _ask(app, _phone("/"))
     assert page.body == _PHONE_PAGE
     for path in ("/api/state", "/api/audit", "/reports/index.html"):
         assert _ask(app, _phone(path)).body == b"home", path
-    assert _ask(app, _phone("/api/audit", method="POST")).body == b"home"
+    assert _ask(app, _phone("/api/alive", method="POST")).body == b"home"
     hosts = {request.headers["host"] for request in fake.seen}
     assert hosts == {f"127.0.0.1:{_PORT}"}
     posted = fake.seen[-1]
@@ -338,7 +338,7 @@ def test_the_phones_page_opens_search_and_browse() -> None:
 def test_a_post_from_another_origin_is_refused() -> None:
     """The cookie alone is not enough: the page itself, at the PC's address."""
     app, fake = _app()
-    request = _phone("/api/audit", method="POST")
+    request = _phone("/api/search", method="POST")
     request = replace(request, headers={**request.headers, "origin": "http://evil"})
     assert _ask(app, request).status == HTTPStatus.FORBIDDEN
     assert not fake.seen

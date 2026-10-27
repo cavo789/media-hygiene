@@ -165,9 +165,9 @@ On the phone, the home page is the family's door, **Our photos**: *Find a photo*
 browse), the albums and where you are; the stages that change photos (import, clean, sort, back
 up) and the tools are not shown there, the PC keeps the whole cycle.
 
-From the phone: 🔒 the page, where you are, the reports, the **audit** run by the page,
+🔒 **The phone is read-only: every change is made on the PC.** From the phone: the page, where you are, the reports, the progress of an audit started on the PC,
 [your albums](#your-albums-on-the-phone), and **search** and **browse** (their photos opened at
-the phone's size, never an original, and their videos; *set aside*, *Apply now* and a move stay the PC's). Only a paired
+the phone's size, and their videos; the originals only with `lan_phone_originals = true` under `[review]` of `config.toml`, off by default: full size, GPS position included; *set aside*, *Apply now* and a move stay the PC's). Only a paired
 phone reaches them: any other device of the Wi-Fi (a guest, a TV) gets the pairing page, or
 nothing, on every address. While the phone shows a page, `mh` keeps running even with the
 PC's tab closed; once `mh` stops, the phone's page says so.
@@ -267,7 +267,7 @@ Your albums*). The relatives look at your screen and pair nothing.
 
 | | |
 |---|---|
-| Your photos | 🔒 Only read. The phone gets pictures sized for it (1440 pixels at most, kept in `/cache`), never an original. |
+| Your photos | 🔒 Only read. The phone gets pictures sized for it (1440 pixels at most, kept in `/cache`), an original only with `[review] lan_phone_originals = true`. |
 | What the phone reaches | The albums and **their** files; the rest of your library through *Search* and *Browse* only (read only). |
 | Where | The home Wi-Fi only, while `mh` runs on the PC (said on the page). |
 
