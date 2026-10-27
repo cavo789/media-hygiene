@@ -11195,6 +11195,14 @@ msgstr ""
 msgid "today"
 msgstr ""
 
+msgid ""
+"true (the default): the home page opens to the phones of your home Wi-Fi "
+"too, while Media Hygiene runs; a phone pairs once with the code shown on "
+"the PC; never the internet. false: the page stays on this PC only, and mh"
+" --lan opens it to the phones for one run. After a change, type mh "
+"update."
+msgstr ""
+
 #, python-brace-format
 msgid "true or false is expected, not {value}"
 msgstr ""
@@ -11218,14 +11226,6 @@ msgstr ""
 msgid ""
 "true: every 'audit' then looks for faces in the photos not looked at yet,"
 " after saying how long it takes and asking, as 'audit --people' does."
-msgstr ""
-
-msgid ""
-"true: the home page opens to the phones of your home Wi-Fi too, while mh "
-"runs: scan its QR code, type nothing more. A phone needs the code of this"
-" run; never the internet. false, for now the default, keeps the page on "
-"this PC only; mh --lan opens it for one run. After a change, type mh "
-"update."
 msgstr ""
 
 #, python-brace-format

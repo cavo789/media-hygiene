@@ -536,9 +536,9 @@ def test_powershell_lan_off_keeps_mh_alone_on_the_pc(tmp_path: Path) -> None:
 
 
 def test_the_setting_reaches_the_launcher() -> None:
-    """`[review] lan` defaults to off until 0384 is fixed, the launcher's too."""
-    assert ReviewSettings().lan is False
-    assert _COMMANDS.lan is False
+    """`[review] lan` is on by default (2026-10-27); false keeps the PC alone."""
+    assert ReviewSettings().lan is True
+    assert ReviewSettings(lan=False).lan is False
 
 
 _FORGED: Final = ("127.0.0.1:8765", "localhost:8765", "[::1]:8765", _LAN_HOST)

@@ -148,9 +148,9 @@ lead to the [website](https://cavo789.github.io/media-hygiene/): no page of the 
 
 ## From a phone on the home Wi-Fi: `mh --lan`
 
-In Windows, `mh --lan` opens the home page to a phone **of the same Wi-Fi** too, until `mh`
-stops; with `lan = true` under `[review]` in `config.toml` (then `mh update`), `mh` alone and its
-desktop shortcut do the same (off by default for now):
+In Windows, **`mh` and its desktop shortcut open the home page to the phones of the same
+Wi-Fi too**, until `mh` stops: this is the default (`lan = true`). You prefer the page on this
+PC only? See [Keep the page on this PC only](#keep-the-page-on-this-pc-only) below.
 
 1. `mh` finds the PC's address on the home network (*192.168.1.20*) and says *The home page opens
    to the phones of the home network too*. Windows may ask whether **Docker Desktop** may accept
@@ -221,8 +221,30 @@ The phone cannot open the page? The card *On your phone* says why: *No home netw
 it to private in *Settings › Network & Internet › Wi-Fi › Private network*. The first time,
 Windows may ask about Docker Desktop once: tick **Private networks**, then **Allow**.
 
-With `lan = false` (the default for now): the home page stays on the PC, no card (`mh --lan`
-still opens it when typed).
+### Keep the page on this PC only
+
+No phone at home, or you do not want one? Turn it off once, in `config.toml`:
+
+1. In Windows PowerShell, open the file (`mh config` creates it the first time):
+
+   ```powershell
+   mh config
+   notepad "$HOME\media-hygiene\config\config.toml"
+   ```
+
+2. Find the line `lan = true` (under `[review]`) and change it to:
+
+   ```toml
+   lan = false
+   ```
+
+3. Save, close Notepad, then type `mh update` (it writes the change into `mh` and the shortcut).
+
+From then on, `mh` and its shortcut keep the page on this PC: no card *On your phone*, no
+question from Windows' firewall. For one evening with a phone, type `mh --lan`: the page opens
+to the Wi-Fi for that run only. To open it again every time, put back `lan = true`, then
+`mh update`.
+
 Windows PowerShell only for now.
 
 ## Your albums, on the phone

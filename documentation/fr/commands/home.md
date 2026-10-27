@@ -161,10 +161,10 @@ les rapports HTML ouverts depuis le disque, mènent toujours au
 
 ## Depuis un téléphone du Wi-Fi de la maison : `mh --lan`
 
-Sous Windows, `mh --lan` ouvre la page d'accueil à un téléphone **du même Wi-Fi** aussi,
-jusqu'à l'arrêt de `mh` ; avec `lan = true` sous `[review]` dans `config.toml` (puis
-`mh update`), `mh` seul et son raccourci du bureau font de même (désactivé par défaut pour
-l'instant) :
+Sous Windows, **`mh` et son raccourci du bureau ouvrent la page d'accueil aux téléphones du
+même Wi-Fi aussi**, jusqu'à l'arrêt de `mh` : c'est le défaut (`lan = true`). Vous préférez la
+page sur ce PC seulement ? Voyez [Garder la page sur ce PC seulement](#garder-la-page-sur-ce-pc-seulement)
+plus bas.
 
 1. `mh` trouve l'adresse du PC sur le réseau de la maison (*192.168.1.20*) et dit *La page
    d'accueil s'ouvre aussi aux téléphones du réseau de la maison*. Windows peut demander si
@@ -242,8 +242,32 @@ Wi-Fi comme **public** : passez-le en privé dans *Paramètres › Réseau et In
 Réseau privé*. La première fois, Windows peut poser une fois la question pour Docker Desktop :
 cochez **Réseaux privés**, puis **Autoriser**.
 
-Avec `lan = false` (le défaut pour l'instant) : la page d'accueil reste sur le PC, sans carte
-(`mh --lan` l'ouvre quand même s'il est tapé). Windows PowerShell seulement pour l'instant.
+### Garder la page sur ce PC seulement
+
+Pas de téléphone à la maison, ou vous n'en voulez pas ? Coupez-le une fois, dans `config.toml` :
+
+1. Dans Windows PowerShell, ouvrez le fichier (`mh config` le crée la première fois) :
+
+   ```powershell
+   mh config
+   notepad "$HOME\media-hygiene\config\config.toml"
+   ```
+
+2. Trouvez la ligne `lan = true` (sous `[review]`) et changez-la en :
+
+   ```toml
+   lan = false
+   ```
+
+3. Enregistrez, fermez le Bloc-notes, puis tapez `mh update` (il écrit le changement dans `mh`
+   et le raccourci).
+
+Dès lors, `mh` et son raccourci gardent la page sur ce PC : pas de carte *Sur votre téléphone*,
+pas de question du pare-feu de Windows. Pour une soirée avec un téléphone, tapez `mh --lan` :
+la page s'ouvre au Wi-Fi pour cette fois seulement. Pour la rouvrir à chaque fois, remettez
+`lan = true`, puis `mh update`.
+
+Windows PowerShell seulement pour l'instant.
 
 ## Vos albums, sur le téléphone
 
