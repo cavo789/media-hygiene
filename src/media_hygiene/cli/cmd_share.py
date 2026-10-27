@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 MAIL_LIMIT_BYTES: Final = 25 * 1000 * 1000
 
 
-def share_command(
+def share_command(  # pylint: disable=too-many-arguments  # one per option
     ctx: typer.Context,
     *,
     album: Annotated[
@@ -44,6 +44,17 @@ def share_command(
             ),
         ),
     ] = False,
+    describe: Annotated[
+        bool | None,
+        typer.Option(
+            "--describe/--no-describe",
+            help=_(
+                "Add the description and the keywords found by tags to the copies "
+                "(names never); asked when omitted, Yes by default."
+            ),
+            show_default=False,
+        ),
+    ] = None,
 ) -> None:
     """Prepare an album for sending: resized copies without GPS, a folder and a zip.
 
@@ -51,7 +62,9 @@ def share_command(
         ctx: Typer context holding the runtime.
         album: `--album`, the album's name.
         keep_gps: `--keep-gps`, the position kept in the copies.
+        describe: `--describe/--no-describe`; None: asked.
     """
+    from media_hygiene.cli.share_describe import describe_answer
     from media_hygiene.services.share_album import SendRequest, prepare_album
 
     runtime = runtime_of(ctx)
@@ -59,7 +72,14 @@ def share_command(
         _("Preparing the photos of the album {name}…").format(name=album)
     )
     with user_errors(runtime.output):
-        prepared = prepare_album(runtime, SendRequest(album, keep_gps=keep_gps))
+        prepared = prepare_album(
+            runtime,
+            SendRequest(
+                album,
+                keep_gps=keep_gps,
+                describe=describe_answer(runtime.output, describe),
+            ),
+        )
     _say(runtime, prepared)
 
 
@@ -70,6 +90,7 @@ def _say(runtime: Runtime, prepared: Prepared) -> None:
         runtime: Settings, mount points and output.
         prepared: The album ready to send.
     """
+    from media_hygiene.cli.share_describe import say_described
     from media_hygiene.console.formatting import human_size
 
     output = runtime.output
@@ -94,6 +115,7 @@ def _say(runtime: Runtime, prepared: Prepared) -> None:
         output.info(_("📍 The GPS positions were kept, as asked."))
     else:
         output.info(_("📍 The GPS positions were removed: --keep-gps keeps them."))
+    say_described(output, prepared.described)
     _left_out(output, prepared)
     if sent.zip_size > MAIL_LIMIT_BYTES:
         output.warning(

@@ -93,6 +93,27 @@ mh share --album "Crète 2023" --keep-gps
 Les notes du fabricant (un bloc propre à chaque marque d'appareil, qui peut contenir son numéro de
 série) et le bloc XMP ne sont jamais copiés non plus.
 
+## La description et les mots-clés
+
+Quand `tags` a décrit des photos de l'album, `share` demande : *Ajouter la description et
+les mots-clés trouvés par tags aux copies ?* **Oui** par défaut (Entrée accepte). Chaque
+copie porte alors la phrase du modèle et ses mots dans le fichier : un paquet XMP
+(`dc:description`, `dc:subject`) et les champs que l'Explorateur Windows montre sous
+Propriétés › Détails (*Mots clés*, *Commentaires*). Une photo envoyée seule garde ses
+mots, quel que soit le service qui la reçoit. Les originaux ne sont jamais réécrits.
+
+🔒 La phrase du modèle décrit parfois des scènes intimes : c'est pourquoi la question
+est posée. Les noms des personnes ne sont jamais écrits, et une description déjà dans la
+photo (tapée par une personne, un appareil ou Windows) est gardée au lieu de celle du
+modèle.
+
+```powershell
+mh share --album "Crète 2023" --no-describe
+```
+
+`--describe` / `--no-describe` répondent sans la question (scripts) ; sans terminal et
+sans l'une ni l'autre, la réponse est Oui.
+
 ## Réglages
 
 Dans `config.toml`, `[share]` :
@@ -109,6 +130,7 @@ Dans `config.toml`, `[share]` :
 |---|---|
 | `--album "Crète 2023"` | L'album à envoyer, fait dans `search`, `browse` ou la revue des rafales. |
 | `--keep-gps` | Garder la position GPS dans les copies, pour cette fois. |
+| `--describe` / `--no-describe` | Ajouter (ou non) aux copies la description et les mots-clés trouvés par `tags`, sans demander. |
 
 ## Bon à savoir
 

@@ -799,6 +799,21 @@ msgid "Add photos to it in search or browse; the videos are never copied."
 msgstr ""
 
 msgid ""
+"Add the description and the keywords found by tags to the copies (names "
+"never); asked when omitted, Yes by default."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Add the description and the keywords found by tags to the copy of {n} "
+"photo?"
+msgid_plural ""
+"Add the description and the keywords found by tags to the copies of {n} "
+"photos?"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid ""
 "Add the settings of this version to your config.toml, with their "
 "explanation; your values and comments are kept."
 msgstr ""
@@ -13251,6 +13266,12 @@ msgid "❚❚ Pause"
 msgstr ""
 
 #, python-brace-format
+msgid "🏷 {n} copy carries its description and keywords (read back)."
+msgid_plural "🏷 {n} copies carry their description and keywords (read back)."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid ""
 "👀 Not identical files: look at them before answering, every one on a "
 "single page: {path} (Ctrl+click opens it)."
@@ -13327,6 +13348,11 @@ msgid "🔒 Read-only: your photos and videos are not touched."
 msgstr ""
 
 msgid "🔒 The phone is only read: nothing on it is deleted, moved or renamed."
+msgstr ""
+
+msgid ""
+"🔒 The sentence of the vision model sometimes describes intimate scenes; "
+"the names of people are never written."
 msgstr ""
 
 msgid ""

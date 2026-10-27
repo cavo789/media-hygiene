@@ -11,6 +11,12 @@ from typing import TYPE_CHECKING, Final
 from PIL import ExifTags, Image
 
 from media_hygiene.share.sent_photo import SendJob, sent_jpeg
+from media_hygiene.share.sent_words import (
+    XP_COMMENT,
+    XP_KEYWORDS,
+    SentWords,
+    ucs2_text,
+)
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -87,3 +93,41 @@ def test_a_damaged_photo_gives_nothing(tmp_path: Path) -> None:
     source = tmp_path / "broken.jpg"
     source.write_bytes(b"not a jpeg")
     assert sent_jpeg(SendJob(2048, 85), source) is None
+
+
+_WORDS: Final = SentWords("Un ours brun près d'une rivière.", ("ours", "rivière"))
+
+
+def _packet(copy: Image.Image) -> str:
+    """The XMP packet of a copy, as text."""
+    packet = copy.info.get("xmp", b"")
+    assert isinstance(packet, bytes)
+    return packet.decode()
+
+
+def test_the_words_travel_in_the_copy_accents_kept(tmp_path: Path) -> None:
+    """0381: the packet and the Windows fields hold them; the human description wins."""
+    copy = _read(sent_jpeg(SendJob(512, 85), gps_photo(tmp_path / "a.jpg"), _WORDS))
+    packet = _packet(copy)
+    assert "<rdf:li>rivière</rdf:li>" in packet
+    assert "Un ours brun" not in packet  # `Knossos`, written by a person, wins
+    exif = copy.getexif()
+    assert ucs2_text(exif[XP_KEYWORDS]) == "ours;rivière"
+    assert XP_COMMENT not in exif
+    assert exif[_DESCRIPTION] == "Knossos"
+
+
+def test_without_a_description_the_sentence_is_written(tmp_path: Path) -> None:
+    """No description in the photo: the model's sentence goes into both places."""
+    source = tmp_path / "b.jpg"
+    Image.new("RGB", (64, 48)).save(source)
+    copy = _read(sent_jpeg(SendJob(512, 85), source, _WORDS))
+    assert "près d'une rivière." in _packet(copy)
+    assert ucs2_text(copy.getexif()[XP_COMMENT]) == _WORDS.sentence
+
+
+def test_no_words_write_nothing(tmp_path: Path) -> None:
+    """Without words: no packet, no Windows field."""
+    copy = _read(sent_jpeg(SendJob(512, 85), gps_photo(tmp_path / "c.jpg")))
+    assert "xmp" not in copy.info
+    assert XP_KEYWORDS not in copy.getexif()

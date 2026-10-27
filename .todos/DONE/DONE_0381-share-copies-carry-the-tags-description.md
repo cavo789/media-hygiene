@@ -51,16 +51,16 @@ copy is the right place: putting the words in it changes no original.
 
 ## Steps
 
-- [ ] `.claude/scripts/near_limit.sh` on the files above, and plan a new module (e.g.
+- [x] `.claude/scripts/near_limit.sh` on the files above, and plan a new module (e.g.
   `share/sent_words.py`) before writing.
-- [ ] `SendJob` / `SendRequest` carry `describe: bool` (parameter object, ≤ 3 args).
-- [ ] Read the words in the main process, then pass them to the worker per photo. The pool
+- [x] `SendJob` / `SendRequest` carry `describe: bool` (parameter object, ≤ 3 args).
+- [x] Read the words in the main process, then pass them to the worker per photo. The pool
   must not open the index.
-- [ ] Tests: read the packet back from a written copy (Pillow `info["xmp"]`, `getexif()`):
+- [x] Tests: read the packet back from a written copy (Pillow `info["xmp"]`, `getexif()`):
   accents kept, an existing human description kept, `person` never written, `--no-describe`
   writes nothing, a photo without tags gets nothing.
-- [ ] `_say`: one line read back from the disk ("{n} copies carry their description").
-- [ ] `i18n_update` + French; `share.md` in both languages (the question, the flag, what
+- [x] `_say`: one line read back from the disk ("{n} copies carry their description").
+- [x] `i18n_update` + French; `share.md` in both languages (the question, the flag, what
   travels, the privacy line). Console output changes, so `docs_screenshots` should be run
   (do not run it unasked).
 

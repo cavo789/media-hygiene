@@ -17,6 +17,9 @@ import pytest
 from PIL import ExifTags, Image
 
 from media_hygiene.errors import MountError
+from media_hygiene.index.descriptions import PhotoVersion
+from media_hygiene.index.repository import FactsRepository
+from media_hygiene.index.tag_rows import TagStore
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.http import Request, Response
 from media_hygiene.review.presence import PRESENCE_PATH
@@ -25,11 +28,14 @@ from media_hygiene.services.albums import album_store
 from media_hygiene.services.share_album import SendRequest, prepare_album
 from media_hygiene.share.album_store import AlbumChange
 from media_hygiene.share.prepare import folder_name
+from media_hygiene.tags.models import FileTags, Tag, TagSource
 from tests.support.cli import point_mounts, run
 from tests.support.runtime import make_locations, make_runtime
 from tests.unit.test_share_sent_photo import gps_photo
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from typer.testing import CliRunner
 
     from media_hygiene.services.runtime import Runtime
@@ -184,3 +190,89 @@ def test_every_framed_page_says_when_media_hygiene_stopped() -> None:
     ).read_text("utf-8")
     assert '{% include "presence.html.j2" %}' in link
     assert "window.mhEnded()" in link
+
+
+def _tagged(runtime: Runtime, tags: tuple[Tag, ...]) -> list[Path]:
+    """The album's photos, the first given tags in the index (current version)."""
+    _album(runtime)
+    data = runtime.locations.data_dir
+    photos = [data / "c" / "Photos" / "Crete" / "IMG_1.jpg"]
+    photos.append(data / "c" / "Phone" / "DCIM" / "img_1.jpg")
+    files = [
+        FileTags(PhotoVersion(path, path.stat().st_size, path.stat().st_mtime_ns), tags)
+        for path in photos[:1]
+    ]
+    with FactsRepository.open(runtime.locations.index_file) as repository:
+        TagStore(repository.connection).replace(list(TagSource), files)
+    return photos
+
+
+_SEEN: Final = (
+    Tag(TagSource.CAPTION, "Une plage à Réthymnon.", "vision"),
+    Tag(TagSource.VISION, "plage", "vision"),
+    Tag(TagSource.PERSON, "Anna"),
+    Tag(TagSource.FOLDER, "Crete"),
+)
+
+
+def _recorder(asked: list[int]) -> Callable[[int], bool]:
+    """An answer of Yes that records each count asked."""
+
+    def answer(count: int) -> bool:
+        asked.append(count)
+        return True
+
+    return answer
+
+
+def _packets(folder: Path) -> dict[str, str]:
+    """The XMP packet of each copy, as text (empty without one)."""
+    found: dict[str, str] = {}
+    for path in sorted(folder.iterdir()):
+        with Image.open(path) as image:
+            packet = image.info.get("xmp", b"")
+            found[path.name] = packet.decode() if isinstance(packet, bytes) else ""
+    return found
+
+
+def test_the_words_of_tags_travel_asked_once_names_never(tmp_path: Path) -> None:
+    """0381: asked with the count; vision words only (no name, no folder word)."""
+    runtime = make_runtime(make_locations(tmp_path))
+    _tagged(runtime, _SEEN)
+    asked: list[int] = []
+    prepared = prepare_album(runtime, SendRequest(_ALBUM, describe=_recorder(asked)))
+    assert asked == [1]
+    assert prepared.described == 1
+    packets = _packets(prepared.sent.folder)
+    assert not packets["img_1.jpg"]  # the photo without tags gets nothing
+    assert "<rdf:li>plage</rdf:li>" in packets["IMG_1_1.jpg"]
+    assert "Anna" not in packets["IMG_1_1.jpg"]
+    assert "Crete" not in packets["IMG_1_1.jpg"]
+
+
+def test_declined_or_stale_the_copies_carry_nothing(tmp_path: Path) -> None:
+    """`--no-describe` writes nothing; a photo changed since `tags` is not asked."""
+    runtime = make_runtime(make_locations(tmp_path))
+    photos = _tagged(runtime, _SEEN)
+    declined = prepare_album(runtime, SendRequest(_ALBUM, describe=lambda _n: False))
+    assert declined.described == 0
+    assert not any(_packets(declined.sent.folder).values())
+    photos[0].write_bytes(photos[0].read_bytes() + b"\x00")  # another version
+    asked: list[int] = []
+    prepare_album(runtime, SendRequest(_ALBUM, describe=_recorder(asked)))
+    assert not asked
+
+
+def test_the_command_says_how_many_copies_carry_words(
+    cli: CliRunner, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Without a terminal nor the option: Yes, said; `--no-describe`: not said."""
+    locations = make_locations(tmp_path)
+    point_mounts(locations, monkeypatch)
+    _tagged(make_runtime(locations), _SEEN)
+    said = " ".join(run(cli, "share", "--album", _ALBUM).output.split())
+    assert "1 copy carries its description and keywords" in said
+    quiet = " ".join(
+        run(cli, "share", "--album", _ALBUM, "--no-describe").output.split()
+    )
+    assert "carries its description" not in quiet
