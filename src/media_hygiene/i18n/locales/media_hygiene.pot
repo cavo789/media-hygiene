@@ -2056,6 +2056,11 @@ msgstr ""
 msgid "Do not show"
 msgstr ""
 
+msgid ""
+"Do not tap Open after the download: Android refuses it (\"cannot install "
+"CA certificates\"). Go through Settings instead:"
+msgstr ""
+
 msgid "Doc"
 msgstr ""
 

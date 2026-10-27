@@ -29,6 +29,7 @@ ol { margin: 0 0 12px; padding-left: 1.3em; }
   <p class="warn">{{ _("Downloading it is not enough: install it as a CA certificate, below. Not as a VPN and app certificate, nor as a Wi-Fi one.") }}</p>
   <h2>{{ _("Android") }}</h2>
   <ol>
+    <li>{{ _("Do not tap Open after the download: Android refuses it (\"cannot install CA certificates\"). Go through Settings instead:") }}</li>
     <li>{{ _("Settings > Security (or Security and privacy) > More settings > Encryption and credentials > Install a certificate > CA certificate.") }}</li>
     <li>{{ _("Choose media-hygiene-ca.crt in Downloads.") }}</li>
     <li>{{ _("Check: Trusted credentials > User shows Media Hygiene (this PC). The address bar then shows https without a red cross.") }}</li>

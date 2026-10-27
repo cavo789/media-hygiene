@@ -190,7 +190,8 @@ the home network too: the phone already paired reloads its page and gets the sli
 The PC's card says *First time on this phone? Install the certificate first:*
 `http://192.168.1.20:8089/`. Open it on the phone, tap **Download the certificate**, then:
 
-- **Android**: *Settings › Security (or Security and privacy) › More settings › Encryption and
+- **Android**: do not tap *Open* after the download (Android 11 and later refuse: *cannot
+  install CA certificates*); go through *Settings › Security (or Security and privacy) › More settings › Encryption and
   credentials › Install a certificate › CA certificate*, choose `media-hygiene-ca.crt` in
   *Downloads* (Android warns that the network may be monitored: it is your own PC).
   Downloading is not enough, and **CA certificate** matters (not *VPN and app*, not *Wi-Fi*).

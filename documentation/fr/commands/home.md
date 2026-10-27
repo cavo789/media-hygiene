@@ -208,7 +208,8 @@ La carte du PC dit *Première fois sur ce téléphone ? Installez d'abord le cer
 `http://192.168.1.20:8089/`. Ouvrez-la sur le téléphone, touchez **Télécharger le certificat**,
 puis :
 
-- **Android** : *Paramètres › Sécurité (ou Sécurité et confidentialité) › Autres paramètres ›
+- **Android** : n'appuyez pas sur *Ouvrir* après le téléchargement (Android 11 et plus le
+  refuse : *Impossible d'installer les certificats AC*) ; passez par *Paramètres › Sécurité (ou Sécurité et confidentialité) › Autres paramètres ›
   Chiffrement et identifiants › Installer un certificat › Certificat CA*, choisissez
   `media-hygiene-ca.crt` dans *Téléchargements* (Android prévient que le réseau peut être
   surveillé : c'est votre propre PC). Le télécharger ne suffit pas, et **Certificat CA** compte

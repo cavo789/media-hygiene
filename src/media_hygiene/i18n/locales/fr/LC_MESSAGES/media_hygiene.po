@@ -2512,6 +2512,13 @@ msgstr ""
 msgid "Do not show"
 msgstr "Ne pas montrer"
 
+msgid ""
+"Do not tap Open after the download: Android refuses it (\"cannot install "
+"CA certificates\"). Go through Settings instead:"
+msgstr ""
+"N'appuyez pas sur Ouvrir après le téléchargement : Android le refuse (« Impossible "
+"d'installer les certificats AC »). Passez plutôt par les Paramètres :"
+
 msgid "Doc"
 msgstr "Doc"
 
@@ -14981,7 +14988,11 @@ msgid ""
 "{count} photos to look at with {model}, about {time}. Each one is kept at"
 " once: a stop loses nothing, the next run goes on. The first time, the "
 "model is downloaded once (about 900 MB)."
-msgstr "{count} photos à regarder avec {model}, environ {time}. Chacune est gardée aussitôt : un arrêt ne perd rien, la prochaine exécution continue. La première fois, le modèle est téléchargé une seule fois (environ 900 Mo)."
+msgstr ""
+"{count} photos à regarder avec {model}, environ {time}. Chacune est "
+"gardée aussitôt : un arrêt ne perd rien, la prochaine exécution continue."
+" La première fois, le modèle est téléchargé une seule fois (environ 900 "
+"Mo)."
 
 #, python-brace-format
 msgid ""
