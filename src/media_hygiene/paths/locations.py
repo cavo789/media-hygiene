@@ -18,6 +18,8 @@ _PREVIEWS_DIR_NAME: Final = "previews"
 SHARES_POINT: Final = Path("/shares")
 # Mounted by `mh` for `backup` and `restore` only: the archives of the index (0352).
 BACKUPS_POINT: Final = Path("/backups")
+# Mounted by `mh --lan` only: the certificates of the home network's door (0430).
+LAN_POINT: Final = Path("/lan")
 
 
 class Locations(BaseSettings):
@@ -41,6 +43,7 @@ class Locations(BaseSettings):
     cache_dir: Path = Path("/cache")
     shares_dir: Path = SHARES_POINT
     backups_dir: Path = BACKUPS_POINT
+    lan_dir: Path = LAN_POINT
 
     @property
     def config_file(self) -> Path:

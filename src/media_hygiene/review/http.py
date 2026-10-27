@@ -55,6 +55,7 @@ class ContentType(StrEnum):
     THREE_GPP = "video/3gpp"
     THREE_GPP2 = "video/3gpp2"
     WEBM = "video/webm"
+    CA_CERT = "application/x-x509-ca-cert"  # a phone offers to install it (0430)
 
 
 @dataclass(frozen=True, slots=True)

@@ -198,8 +198,29 @@ diaporama.
 |---|---|
 | Qui | Un appareil du même Wi-Fi **avec le code** ; 5 codes erronés ferment l'appairage jusqu'à l'arrêt de `mh`. |
 | Où | L'adresse privée du PC seulement (`10.x`, `172.16–31.x`, `192.168.x`) : jamais toutes les interfaces, jamais Internet ; `mh` n'ouvre aucun port sur votre box. |
-| Comment | HTTP simple sur le réseau de la maison, comme décidé : aucun avertissement de certificat sur le téléphone ; le code et le cookie circulent en clair sur votre Wi-Fi, pour cette fois seulement. |
+| Comment | HTTPS (`https://192.168.1.20:8088`), signé par une autorité de certification que `mh` crée sur votre PC : le téléphone l'installe une fois (ci-dessous) ; le code et le cookie ne circulent jamais en clair. |
+| Gardé | `C:\Users\<vous>\media-hygiene\lan\` contient cette autorité et le certificat de la page (`ca.key` n'en sort jamais). Supprimé, `mh` en crée une nouvelle : réinstallez-la sur chaque téléphone. |
 | La fois suivante | Un nouveau `mh --lan`, un nouveau code : l'ancien téléphone doit s'appairer à nouveau. |
+
+### Une fois par téléphone : installer le certificat
+
+La carte du PC dit *Première fois sur ce téléphone ? Installez d'abord le certificat :*
+`http://192.168.1.20:8089/`. Ouvrez-la sur le téléphone, touchez **Télécharger le certificat**,
+puis :
+
+- **Android** : *Paramètres › Sécurité (ou Sécurité et confidentialité) › Autres paramètres ›
+  Chiffrement et identifiants › Installer un certificat › Certificat CA*, choisissez
+  `media-hygiene-ca.crt` dans *Téléchargements* (Android prévient que le réseau peut être
+  surveillé : c'est votre propre PC).
+- **iPhone, iPad** (dans Safari) : autorisez le profil, installez-le dans *Réglages › Général ›
+  VPN et gestion de l'appareil*, puis activez **Media Hygiene** dans *Réglages › Général ›
+  Informations › Réglages des certificats*.
+
+Touchez ensuite **C'est fait : ouvrir Média Hygiène**, et appairez avec le code comme plus haut.
+Quand l'adresse du PC change, `mh` signe pour elle un nouveau certificat avec la même autorité :
+rien à réinstaller. Demandez à votre box une **réservation DHCP** du PC pour garder la même
+adresse, et le favori du téléphone. Le [diaporama](slideshow.md) reste en HTTP simple : une
+télé ne peut pas installer de certificat.
 
 Le téléphone n'ouvre pas la page ? La carte *Sur votre téléphone* dit pourquoi : *Aucun réseau
 domestique trouvé* (la page s'ouvre pour le PC seul, rien n'échoue), ou Windows considère le

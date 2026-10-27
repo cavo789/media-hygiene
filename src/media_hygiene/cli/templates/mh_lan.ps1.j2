@@ -66,5 +66,11 @@ function global:_{{ f }}_lan_page($command) {
     $port = {{ script.commands.port }}
     # The home network reaches another port of the container than the PC's loopback: the page
     # tells a phone from the PC by the socket, never by a Host header a device could forge (0384).
+    # The home page in HTTPS (0430), its certificates kept in the user's home: a phone installs the
+    # authority once, from the plain HTTP port beside it. Never the slideshow: a TV cannot install it.
+    if ($command -eq 'home') {
+        $null = New-Item -ItemType Directory -Force -Path "{{ l.folder }}"
+        $options += '-v', "{{ l.folder }}:{{ l.point }}", '-p', "$($lan.address):{{ l.ca_port }}:{{ l.ca_door_port }}"
+    }
     return $options + @('-p', "$($lan.address):${port}:{{ l.door_port }}", '-e', "{{ l.door }}={{ l.door_port }}", '-e', "{{ l.address }}=$($lan.address)", '-e', "{{ l.secret }}=$($lan.secret)")
 }

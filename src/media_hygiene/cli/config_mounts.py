@@ -16,8 +16,8 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 
-# Mounted by `mh` for one command only (`share`, `backup`/`restore`).
-_VERB_MOUNTS: Final = frozenset({MountKind.SHARES, MountKind.BACKUPS})
+# Mounted by `mh` for one command only (`share`, `backup`/`restore`, `--lan`).
+_VERB_MOUNTS: Final = frozenset({MountKind.SHARES, MountKind.BACKUPS, MountKind.LAN})
 
 
 def mounts_table(runtime: Runtime) -> Table:

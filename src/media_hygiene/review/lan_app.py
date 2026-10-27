@@ -25,7 +25,7 @@ import segno
 
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
-from media_hygiene.review.doors import Door
+from media_hygiene.review.doors import LAN_CA_PORT, Door
 from media_hygiene.review.http import ContentType, Request, Response, is_local
 from media_hygiene.review.lan import CODE_DIGITS, COOKIE_NAME, PAIR_PREFIX
 from media_hygiene.review.lan_paths import phone_may
@@ -81,7 +81,8 @@ class Pairing:
         if not lan.code_matches(typed):
             self.failures += 1
             return pair_page(HTTPStatus.FORBIDDEN, closed=self.closed)
-        cookie = f"{COOKIE_NAME}={lan.token}; Path=/; HttpOnly; SameSite=Lax"
+        secure = "; Secure" if lan.secure else ""  # HTTPS (0430)
+        cookie = f"{COOKIE_NAME}={lan.token}; Path=/; HttpOnly; SameSite=Lax{secure}"
         headers = (f"Location: {PAGE_PATH}", f"Set-Cookie: {cookie}")
         return Response(HTTPStatus.SEE_OTHER, headers=headers)
 
@@ -151,13 +152,17 @@ def lan_response(lan: LanAccess) -> Response:
         lan: The run's access.
 
     Returns:
-        JSON: `url`, `code`, and `qr` (an SVG drawing of the pairing address).
+        JSON: `url`, `code`, `qr` (an SVG drawing of the pairing address), and under
+        HTTPS `ca`: where a phone installs the PC's authority first (0430).
     """
     qr = segno.make(lan.pair_url, error="m").svg_inline(
         scale=_QR_SCALE, border=_QR_BORDER, dark="#000", light="#fff"
     )
     url = f"{lan.origin}{PAGE_PATH}"
-    return json_response(HTTPStatus.OK, {"url": url, "code": lan.shown_code, "qr": qr})
+    card: dict[str, object] = {"url": url, "code": lan.shown_code, "qr": qr}
+    if lan.secure:
+        card["ca"] = f"http://{lan.address}:{LAN_CA_PORT}/"
+    return json_response(HTTPStatus.OK, card)
 
 
 def pair_page(status: HTTPStatus, *, closed: bool) -> Response:

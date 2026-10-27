@@ -1255,6 +1255,9 @@ msgstr "Et pour revenir en arrière"
 msgid "And write again the page that gathers them all."
 msgstr "Et refaire la page qui les rassemble tous."
 
+msgid "Android"
+msgstr "Android"
+
 msgid "Animals"
 msgstr "Animaux"
 
@@ -1761,6 +1764,9 @@ msgstr ""
 
 msgid "Choose every draft shown"
 msgstr "Choisir tous les brouillons affichés"
+
+msgid "Choose media-hygiene-ca.crt in Downloads."
+msgstr "Choisissez media-hygiene-ca.crt dans Téléchargements."
 
 msgid ""
 "Choose other folders (shorter names) in the workbook, save it, and run "
@@ -2522,6 +2528,9 @@ msgstr "Documents et captures d'écran"
 msgid "Done"
 msgstr "Fait"
 
+msgid "Done: open Media Hygiene"
+msgstr "C'est fait : ouvrir Média Hygiène"
+
 #, python-brace-format
 msgid "Done: {command}."
 msgstr "Terminé : {command}."
@@ -2545,6 +2554,9 @@ msgid "Download it again from the report, next to it on /reports."
 msgstr ""
 "Téléchargez-le à nouveau depuis le rapport, et placez-le à côté de lui "
 "sur /reports."
+
+msgid "Download the certificate"
+msgstr "Télécharger le certificat"
 
 #, python-brace-format
 msgid ""
@@ -3352,6 +3364,9 @@ msgstr ""
 
 msgid "Fingerprinting videos"
 msgstr "Empreinte des vidéos"
+
+msgid "First time on this phone? Install the certificate first:"
+msgstr "Première fois sur ce téléphone ? Installez d'abord le certificat :"
 
 msgid "Five stages; the highlighted one is your next step."
 msgstr "Cinq étapes ; celle mise en évidence est la prochaine à faire."
@@ -5977,6 +5992,12 @@ msgstr ""
 "demander."
 
 msgid ""
+"Once per phone: install the certificate of Media Hygiene on this PC. The "
+"phone then trusts the page of your PC, and only it. Nothing goes to the "
+"internet."
+msgstr "Une fois par téléphone : installez le certificat de Média Hygiène de ce PC. Le téléphone fait alors confiance à la page de votre PC, et à elle seule. Rien ne part sur internet."
+
+msgid ""
 "Once per video: a few frames are decoded and hashed, to find the same "
 "video saved again (re-encoded, resized). The cache keeps the result."
 msgstr ""
@@ -6254,6 +6275,9 @@ msgstr "Ouvrez la recherche sur 127.0.0.1 ou localhost."
 
 msgid "Open the slideshow at 127.0.0.1, or from the TV with mh --lan."
 msgstr "Ouvrez le diaporama sur 127.0.0.1, ou depuis la télé avec mh --lan."
+
+msgid "Open this page in Safari, download the certificate, allow the profile."
+msgstr "Ouvrez cette page dans Safari, téléchargez le certificat, autorisez le profil."
 
 msgid "Open this section (o)"
 msgstr "Ouvrir cette section (o)"
@@ -7845,6 +7869,21 @@ msgstr "Réglage remis : {name}"
 
 msgid "Settings"
 msgstr "Réglages"
+
+msgid ""
+"Settings > General > About > Certificate trust settings: turn Media "
+"Hygiene on."
+msgstr "Réglages > Général > Informations > Réglages des certificats : activez Media Hygiene."
+
+msgid ""
+"Settings > General > VPN and device management: install the profile Media"
+" Hygiene."
+msgstr "Réglages > Général > VPN et gestion de l'appareil : installez le profil Media Hygiene."
+
+msgid ""
+"Settings > Security (or Security and privacy) > More settings > "
+"Encryption and credentials > Install a certificate > CA certificate."
+msgstr "Paramètres > Sécurité (ou Sécurité et confidentialité) > Autres paramètres > Chiffrement et identifiants > Installer un certificat > Certificat CA."
 
 msgid "Settle the near duplicates"
 msgstr "Trancher les quasi-doublons"
@@ -11758,6 +11797,9 @@ msgstr "historique journal exécutions"
 
 msgid "home page start"
 msgstr "accueil page home"
+
+msgid "iPhone, iPad"
+msgstr "iPhone, iPad"
 
 msgid "if the cache is ever lost: mh restore."
 msgstr "si le cache est un jour perdu : mh restore."

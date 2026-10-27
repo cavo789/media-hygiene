@@ -15,8 +15,16 @@ from dataclasses import dataclass
 from typing import Final
 
 from media_hygiene.i18n import _
-from media_hygiene.review.doors import LAN_DOOR_PORT, LAN_DOOR_VARIABLE
-from media_hygiene.review.lan import LAN_ADDRESS_VARIABLE, LAN_SECRET_VARIABLE
+from media_hygiene.paths.docker_run import Shell
+from media_hygiene.paths.locations import LAN_POINT
+from media_hygiene.review.doors import (
+    LAN_CA_DOOR_PORT,
+    LAN_CA_PORT,
+    LAN_DOOR_PORT,
+    LAN_DOOR_VARIABLE,
+)
+from media_hygiene.review.lan import LAN_SECRET_VARIABLE
+from media_hygiene.review.lan_address import LAN_ADDRESS_VARIABLE
 from media_hygiene.review.lan_problem import LAN_PROBLEM_VARIABLE, LanProblem
 from media_hygiene.services.launcher_phone_say import say
 from media_hygiene.services.next_command import LAUNCHER_FUNCTION
@@ -26,6 +34,8 @@ LAN_FLAG: Final = "--lan"
 # slideshow (0291, `mh slideshow --lan`, or chosen on a home page opened by `mh --lan`).
 LAN_SHOWS: Final = ("slideshow",)
 SECRET_BYTES: Final = 32
+# In the user's home, mounted as `/lan`: the certificates, kept between runs (0430).
+LAN_FOLDER: Final = "lan"
 # The private IPv4 ranges (RFC 1918), for PowerShell's -match: a home network only.
 PRIVATE_IPV4: Final = r"^(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.)"
 # The network category Windows' firewall treats as untrusted (Get-NetConnectionProfile).
@@ -53,6 +63,10 @@ class LanCommand:  # pylint: disable=too-many-instance-attributes  # one per tem
     secret: str  # the variable holding the run's secret
     door: str  # the variable naming the home network's door in the container (0384)
     door_port: int  # that door: the home network publish reaches it, never the PC's
+    ca_port: int  # the plain HTTP door's port on the PC's address: the authority (0430)
+    ca_door_port: int  # that door in the container
+    folder: str  # the certificates' folder on the PC
+    point: str  # where it is mounted
     problem: str  # the variable naming what keeps a phone away (0367)
     problems: type[LanProblem]
     secret_bytes: int
@@ -75,6 +89,10 @@ def lan_command() -> LanCommand:
         secret=LAN_SECRET_VARIABLE,
         door=LAN_DOOR_VARIABLE,
         door_port=LAN_DOOR_PORT,
+        ca_port=LAN_CA_PORT,
+        ca_door_port=LAN_CA_DOOR_PORT,
+        folder=Shell.POWERSHELL.home_folder(LAN_FOLDER),
+        point=LAN_POINT.as_posix(),
         problem=LAN_PROBLEM_VARIABLE,
         problems=LanProblem,
         secret_bytes=SECRET_BYTES,

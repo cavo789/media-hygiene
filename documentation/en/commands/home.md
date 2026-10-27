@@ -180,8 +180,27 @@ the home network too: the phone already paired reloads its page and gets the sli
 |---|---|
 | Who | A device on the same Wi-Fi **with the code**; 5 wrong codes close the pairing until `mh` stops. |
 | Where | The PC's private address only (`10.x`, `172.16–31.x`, `192.168.x`): never every interface, never the internet; `mh` opens no port on your router. |
-| How | Plain HTTP on the home network, as decided: no certificate warning on the phone; the code and the cookie travel in clear on your Wi-Fi, for this run only. |
+| How | HTTPS (`https://192.168.1.20:8088`), signed by a certificate authority `mh` makes on your PC: the phone installs it once (below); the code and the cookie never travel in clear. |
+| Kept | `C:\Users\<you>\media-hygiene\lan\` holds that authority and the page's certificate (`ca.key` never leaves it). Deleted, `mh` makes a new one: install it again on each phone. |
 | Next time | A new `mh --lan`, a new code: the old phone must pair again. |
+
+### Once per phone: install the certificate
+
+The PC's card says *First time on this phone? Install the certificate first:*
+`http://192.168.1.20:8089/`. Open it on the phone, tap **Download the certificate**, then:
+
+- **Android**: *Settings › Security (or Security and privacy) › More settings › Encryption and
+  credentials › Install a certificate › CA certificate*, choose `media-hygiene-ca.crt` in
+  *Downloads* (Android warns that the network may be monitored: it is your own PC).
+- **iPhone, iPad** (in Safari): allow the profile, install it in *Settings › General › VPN and
+  device management*, then turn **Media Hygiene** on in *Settings › General › About ›
+  Certificate trust settings*.
+
+Then tap **Done: open Media Hygiene**, and pair with the code as above. When the PC's address
+changes, `mh` signs a new certificate for it with the same authority: nothing to install
+again. Ask your box for a **DHCP reservation** of the PC to keep the same address, and the
+phone's bookmark. The [slideshow](slideshow.md) stays in plain HTTP: a TV cannot install a
+certificate.
 
 The phone cannot open the page? The card *On your phone* says why: *No home network found*
 (the page opens for the PC alone, nothing fails), or Windows counts the Wi-Fi as **public**: set

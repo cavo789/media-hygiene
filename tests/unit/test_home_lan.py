@@ -29,13 +29,12 @@ from media_hygiene.review.ending import STOP_PATH, Ending, EndingDoor
 from media_hygiene.review.http import ContentType, Request, Response, is_local
 from media_hygiene.review.lan import (
     COOKIE_NAME,
-    LAN_ADDRESS_VARIABLE,
     LAN_SECRET_VARIABLE,
     LanAccess,
     cookies,
     lan_access,
-    private_address,
 )
+from media_hygiene.review.lan_address import LAN_ADDRESS_VARIABLE, private_address
 from media_hygiene.review.lan_app import LAN_PATH, MAX_FAILURES, LanApp
 from media_hygiene.review.lan_problem import (
     LAN_PROBLEM_VARIABLE,

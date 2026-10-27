@@ -990,6 +990,9 @@ msgstr ""
 msgid "And write again the page that gathers them all."
 msgstr ""
 
+msgid "Android"
+msgstr ""
+
 msgid "Animals"
 msgstr ""
 
@@ -1425,6 +1428,9 @@ msgid ""
 msgstr ""
 
 msgid "Choose every draft shown"
+msgstr ""
+
+msgid "Choose media-hygiene-ca.crt in Downloads."
 msgstr ""
 
 msgid ""
@@ -2068,6 +2074,9 @@ msgstr ""
 msgid "Done"
 msgstr ""
 
+msgid "Done: open Media Hygiene"
+msgstr ""
+
 #, python-brace-format
 msgid "Done: {command}."
 msgstr ""
@@ -2085,6 +2094,9 @@ msgid "Download decisions.json"
 msgstr ""
 
 msgid "Download it again from the report, next to it on /reports."
+msgstr ""
+
+msgid "Download the certificate"
 msgstr ""
 
 #, python-brace-format
@@ -2721,6 +2733,9 @@ msgid ""
 msgstr ""
 
 msgid "Fingerprinting videos"
+msgstr ""
+
+msgid "First time on this phone? Install the certificate first:"
 msgstr ""
 
 msgid "Five stages; the highlighted one is your next step."
@@ -4940,6 +4955,12 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Once per phone: install the certificate of Media Hygiene on this PC. The "
+"phone then trusts the page of your PC, and only it. Nothing goes to the "
+"internet."
+msgstr ""
+
+msgid ""
 "Once per video: a few frames are decoded and hashed, to find the same "
 "video saved again (re-encoded, resized). The cache keeps the result."
 msgstr ""
@@ -5143,6 +5164,9 @@ msgid "Open the search at 127.0.0.1 or localhost."
 msgstr ""
 
 msgid "Open the slideshow at 127.0.0.1, or from the TV with mh --lan."
+msgstr ""
+
+msgid "Open this page in Safari, download the certificate, allow the profile."
 msgstr ""
 
 msgid "Open this section (o)"
@@ -6486,6 +6510,21 @@ msgid "Setting restored: {name}"
 msgstr ""
 
 msgid "Settings"
+msgstr ""
+
+msgid ""
+"Settings > General > About > Certificate trust settings: turn Media "
+"Hygiene on."
+msgstr ""
+
+msgid ""
+"Settings > General > VPN and device management: install the profile Media"
+" Hygiene."
+msgstr ""
+
+msgid ""
+"Settings > Security (or Security and privacy) > More settings > "
+"Encryption and credentials > Install a certificate > CA certificate."
 msgstr ""
 
 msgid "Settle the near duplicates"
@@ -9765,6 +9804,9 @@ msgid "history journal runs"
 msgstr ""
 
 msgid "home page start"
+msgstr ""
+
+msgid "iPhone, iPad"
 msgstr ""
 
 msgid "if the cache is ever lost: mh restore."

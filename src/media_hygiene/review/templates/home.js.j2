@@ -216,6 +216,9 @@ function showLan() {
       $("#lanQr").innerHTML = lan.qr;
       $("#lanUrl").textContent = lan.url;
       $("#lanCode").textContent = lan.code;
+      // HTTPS (0430): a phone installs the PC's certificate first, once.
+      $("#lanCaLine").hidden = !lan.ca;
+      $("#lanCa").textContent = lan.ca || "";
       $("#lanCard").hidden = false;
     })
     .catch(() => undefined);
