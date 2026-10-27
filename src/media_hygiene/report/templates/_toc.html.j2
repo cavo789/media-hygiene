@@ -10,15 +10,17 @@
   ("returned", "↩️ " ~ _("Back after being set aside"), report.returned.items),
   ("near", "🪞 " ~ _("Near duplicates"), report.similar.near),
   ("videos", "🎞️ " ~ _("Re-encoded videos"), report.similar.videos.groups),
-  ("bursts", "📸 " ~ _("Burst series"), report.similar.bursts),
   ("broken", "💔 " ~ _("Broken files"), report.broken.handled or report.broken.protected),
   ("orphans", "🏷️ " ~ _("Orphan sidecar files"), report.orphans.paths),
+  ("bursts", "📸 " ~ _("Burst series"), report.similar.bursts),
 ] %}
+{# The status of each chapter in an audit (0310): 🧹 clean, 👀 yours to decide, ℹ️ to know. #}
+{% set status = {} if report.done else {"groups": "🧹", "broken": "🧹", "orphans": "🧹", "near": "👀", "videos": "👀", "bursts": "ℹ️"} %}
 {% set on_page = ["near", "videos"] if near_page else sections | map(attribute=0) | list %}
 {% set shown = sections | selectattr(2) | selectattr(0, "in", on_page) | list %}
 {% if shown | length > 1 %}
 <nav class="toc" aria-label="{{ _('Contents') }}">
   <strong>{{ _("Contents") }}</strong>
-  <ul>{% for anchor, title, _items in shown %}<li><a href="#{{ anchor }}">{{ title }}</a></li>{% endfor %}</ul>
+  <ul>{% for anchor, title, _items in shown %}<li><a href="#{{ anchor }}">{{ title }}</a>{% if anchor in status %} {{ status[anchor] }}{% endif %}</li>{% endfor %}</ul>
 </nav>
 {% endif %}

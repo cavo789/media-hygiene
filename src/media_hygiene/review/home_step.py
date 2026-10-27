@@ -22,7 +22,13 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from media_hygiene.cli.menu_steps import full_catalog
 from media_hygiene.i18n import _
-from media_hygiene.review.home_fields import FieldError, checked_words, write_step
+from media_hygiene.review.home_fields import (
+    FieldError,
+    checked_words,
+    named_step,
+    shown,
+    write_step,
+)
 from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response, refused_post
@@ -44,7 +50,7 @@ if TYPE_CHECKING:
 
 
 class _Chosen(BaseModel):
-    """The step chosen: its number and command, or its name and its fields."""
+    """The step chosen: its number and command, or its name (and its fields)."""
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
@@ -90,6 +96,9 @@ async def step_response(door: StepDoor, request: Request) -> Response:
     pending = busy(door.reports_dir) if door.keeps else None
     if pending is not None:
         return pending
+    if chosen.name and not chosen.fields:  # a step named by a report (0310)
+        found = named_step(await asyncio.to_thread(door.state), chosen.name)
+        chosen = _Chosen(number=found[0], command=found[1]) if found else chosen
     if chosen.name:
         return await _with_fields(door, chosen)
     return await _numbered(door, chosen)
@@ -182,16 +191,3 @@ async def _with_fields(door: StepDoor, chosen: _Chosen) -> Response:
         )
     door.ending.end(STEP_EXIT_BASE + FIELDS_STEP)
     return json_response(HTTPStatus.OK, {"command": command})
-
-
-def shown(words: tuple[str, ...]) -> str:
-    """The command as the user would type it, a value with a space quoted.
-
-    Args:
-        words: The command's words, without `mh`.
-
-    Returns:
-        E.g. `mh album "Noël 2025" --category Noël`.
-    """
-    quoted = (f'"{word}"' if " " in word or "\\" in word else word for word in words)
-    return " ".join((LAUNCHER_FUNCTION, *quoted))

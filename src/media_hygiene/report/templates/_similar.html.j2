@@ -2,6 +2,7 @@
 {# The groups to check come first, the sure ones folded below them; each list the largest
    space first, with a running total (`gain_order`). #}
 {% from "_shots.html.j2" import shot, clip %}
+{% from "_decide.html.j2" import badge, decide, full_list with context %}
 {% set sim = report.similar %}
 {% macro group_of(group, show) %}
 <div class="shots">
@@ -15,7 +16,12 @@
 </div>
 {% endmacro %}
 {% macro groups_of(groups, show) %}
-{% if report.done %}{% for group in groups %}{{ group_of(group, show) }}{% endfor %}{% else %}
+{% if not report.done and not near_page %}{# the audit report: a count line, the largest few (0310) #}
+{% set sure = groups | selectattr("note.sure") | list %}
+<p class="muted">{{ _("%(sure)s, %(check)s to check", sure=ngettext("%(num)s sure", "%(num)s sure", sure | length, num=sure | length | number), check=(groups | length - sure | length) | number) }} · 💾 {{ groups | sum(attribute="note.gain") | size }}</p>
+{% for group in groups[:examples] %}{{ group_of(group, show) }}{% endfor %}
+{{ full_list(groups | length, "near.html") }}
+{% elif report.done %}{% for group in groups %}{{ group_of(group, show) }}{% endfor %}{% else %}
 {% set check = groups | rejectattr("note.sure") | list %}
 {% set sure = groups | selectattr("note.sure") | list %}
 <p class="muted">{{ _("%(sure)s, %(check)s to check", sure=ngettext("%(num)s sure", "%(num)s sure", sure | length, num=sure | length | number), check=check | length | number) }}</p>
@@ -28,14 +34,16 @@
 {% endif %}
 {% endmacro %}
 {% if sim.near %}
-<h2 id="near">🪞 {{ _("Near duplicates") }}</h2>
+<h2 id="near">🪞 {{ _("Near duplicates") }} {{ badge("decide") }}</h2>
 {% if not near_page %}<p class="muted">📄 <a href="near.html">{{ _("The near duplicates and re-encoded videos alone, on one page") }}</a></p>{% endif %}
 {% if report.done %}<p class="note">{{ _("This clean moved these copies to the quarantine: 'undo' puts them back. The version kept is shown first.") }}</p>{% else %}<p class="note">{{ _("The same picture saved again: resized, recompressed or without its date. They are not identical files, so a plain 'clean' leaves them alone. 'clean --tier near' moves the copies of the sure groups to the quarantine, where 'undo' finds them again; 'review --near' shows the groups to check one at a time, to decide each one (as planned, keep the other version, leave alone); 'clean --tier near-all' moves them all. The highest resolution is kept.") }}</p>{% endif %}
+{% if not near_page %}{{ decide("review-near", "mh review --near", _("Decide in the browser")) }}{% endif %}
 {{ groups_of(sim.near, shot) }}
 {% endif %}
 
 {% if sim.videos.groups %}
-<h2 id="videos">🎞️ {{ _("Re-encoded videos") }}</h2>
+<h2 id="videos">🎞️ {{ _("Re-encoded videos") }} {{ badge("decide") }}</h2>
 {% if report.done %}<p class="note">{{ _("This clean moved these copies to the quarantine: 'undo' puts them back. The version kept is shown first.") }}</p>{% else %}<p class="note">{{ _("The same video saved again: shared by a messaging app, converted or recompressed. Same length, same frames at the same moments, same date or none. They are not identical files, so a plain 'clean' leaves them alone. 'clean --tier near' moves the copies of the sure groups to the quarantine, where 'undo' finds them again; 'review --near' decides the groups to check one at a time; 'clean --tier near-all' moves them all. The highest resolution, then the largest file, is kept; between copies of the very same picture and sound, whose metadata alone differ, the usual rules choose (folder, name). Play each copy of the groups to check before choosing.") }}</p>{% endif %}
+{% if not near_page and not sim.near %}{{ decide("review-near", "mh review --near", _("Decide in the browser")) }}{% endif %}
 {{ groups_of(sim.videos.groups, clip) }}
 {% endif %}

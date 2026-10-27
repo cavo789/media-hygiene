@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_hygiene.constants import RunKind
+from media_hygiene.constants import RunKind, Sizes
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.index_page import load_summaries, prune_reports
 from media_hygiene.report.views import ReportRecord
@@ -12,6 +12,7 @@ from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.clean import CleanService
 from media_hygiene.services.reporting import write_report
+from tests.integration.test_plan_csv import audit_with_report
 from tests.support.demo import build_demo
 from tests.support.runtime import make_locations, make_runtime
 
@@ -75,3 +76,21 @@ def test_unreadable_summary_is_skipped(locations: Locations) -> None:
     broken.mkdir()
     (broken / "summary.json").write_text("{not json")
     assert load_summaries(locations.reports_dir) == []
+
+
+def test_an_audit_report_says_what_each_chapter_asks(locations: Locations) -> None:
+    """A badge per chapter, ▶ buttons by name, the bursts folded and last (0310)."""
+    findings, folder = audit_with_report(locations)
+    html = (folder / "report.html").read_text()
+    assert "🧹 'clean' takes care of it" in html
+    assert "👀 Yours to decide" in html
+    assert 'data-step="review-near"' in html
+    assert '<code class="command">mh review --near</code>' in html
+    assert 'fetch("/api/step"' in html  # the button shows only when the API answers
+    if findings.similar.bursts:
+        assert "For your information, nothing to do" in html
+        assert 'data-step="review"' in html
+        assert html.index('id="bursts"') > html.index('id="broken"')
+        assert '<details class="bursts">' in html
+    assert html.count('class="shots"') <= 2 * Sizes.REPORT_EXAMPLES
+    assert "The full list" in html

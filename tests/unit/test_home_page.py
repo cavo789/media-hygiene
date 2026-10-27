@@ -24,8 +24,13 @@ from media_hygiene.paths.docker_run import Shell
 from media_hygiene.review.ending import STOPPED, Ending
 from media_hygiene.review.home_app import HomeApp
 from media_hygiene.review.home_assets import ASSETS_DIR, asset_file, asset_response
-from media_hygiene.review.home_fields import STEP_FILE_NAME, FieldError, checked_words
-from media_hygiene.review.home_step import StepDoor, shown, step_response
+from media_hygiene.review.home_fields import (
+    STEP_FILE_NAME,
+    FieldError,
+    checked_words,
+    shown,
+)
+from media_hygiene.review.home_step import StepDoor, step_response
 from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
 from media_hygiene.review.http import ContentType, Request
 from media_hygiene.review.presence import Presence
@@ -335,3 +340,29 @@ def test_powershell_reads_the_file_once_then_splats_its_words(
     assert read < removed < run
     assert f'{STEP_FILE_NAME}"' in block
     assert "MEDIA_HYGIENE_LAUNCHER_STEPS=2" in text
+
+
+def test_a_report_names_its_step_and_the_menu_gives_its_number(
+    tmp_path: Path,
+) -> None:
+    """The audit report's ▶ posts `{"name": "review-near"}` (0310): the step runs."""
+    state = _state(tmp_path, "audit done")
+    ending = Ending()
+    door = StepDoor(lambda: state, ending, tmp_path, relays_steps=True)
+    status, body = _post(door, {"name": "review-near"})
+    near = state.action("review-near")
+    assert near is not None
+    assert near.number is not None
+    assert status == HTTPStatus.OK
+    assert body == {"number": near.number, "command": "mh review --near"}
+    assert ending.asked == STEP_EXIT_BASE + near.number
+
+
+def test_a_named_step_with_fields_still_needs_them(tmp_path: Path) -> None:
+    """A name alone is not a form: `album` without its words is refused."""
+    state = _state(tmp_path, "audit done")
+    ending = Ending()
+    door = StepDoor(lambda: state, ending, tmp_path, relays_steps=True)
+    status, _body = _post(door, {"name": "album"})
+    assert status == HTTPStatus.UNPROCESSABLE_ENTITY
+    assert ending.asked is None

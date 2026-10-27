@@ -118,6 +118,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-format
+msgid "%(num)s series: show the first ones"
+msgid_plural "%(num)s series: show the first ones"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
 msgid "%(num)s shot"
 msgid_plural "%(num)s shots"
 msgstr[0] ""
@@ -136,7 +142,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-format
+msgid "%(shown)s of %(count)s shown."
+msgstr ""
+
+#, python-format
 msgid "%(sure)s, %(check)s to check"
+msgstr ""
+
+msgid "'clean' takes care of it"
 msgstr ""
 
 msgid ""
@@ -1746,6 +1759,9 @@ msgstr ""
 msgid "Decide folder by folder"
 msgstr ""
 
+msgid "Decide in the browser"
+msgstr ""
+
 msgid ""
 "Decide per pair: “Swap the folders” keeps the copies of the second folder"
 " and removes those of the first one; “Leave alone” removes nothing of "
@@ -2815,6 +2831,9 @@ msgstr ""
 msgid ""
 "For the model, people are adult, child, baby or group: find someone by "
 "their name."
+msgstr ""
+
+msgid "For your information, nothing to do"
 msgstr ""
 
 msgid "Forget every face"
@@ -5047,6 +5066,10 @@ msgid "Opened without the home page: type the next step yourself."
 msgstr ""
 
 #, python-brace-format
+msgid "Opening in the window where mh runs: {command}."
+msgstr ""
+
+#, python-brace-format
 msgid "Option {name} needs a value."
 msgstr ""
 
@@ -6509,6 +6532,9 @@ msgstr ""
 msgid "Sort review"
 msgstr ""
 
+msgid "Sort the bursts"
+msgstr ""
+
 msgid "Sort the photos"
 msgstr ""
 
@@ -7210,6 +7236,9 @@ msgstr ""
 msgid "The folders mh knows"
 msgstr ""
 
+msgid "The full list"
+msgstr ""
+
 #, python-brace-format
 msgid "The groups could not be read (error {status})."
 msgstr ""
@@ -7398,6 +7427,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "The page failed (error {status})."
+msgstr ""
+
+#, python-brace-format
+msgid "The page failed (error {status}): copy the command."
 msgstr ""
 
 msgid ""
@@ -8900,6 +8933,9 @@ msgstr ""
 msgid ""
 "Your values and comments are kept; the new settings hold their default "
 "value."
+msgstr ""
+
+msgid "Yours to decide"
 msgstr ""
 
 msgid ""
@@ -10765,6 +10801,9 @@ msgid "the sidecar changed since (edited in another application?): kept"
 msgstr ""
 
 msgid "the sidecar is gone already"
+msgstr ""
+
+msgid "the spreadsheet (CSV)"
 msgstr ""
 
 msgid "the target exists"
@@ -13165,10 +13204,6 @@ msgstr ""
 
 #, python-format
 msgid "… and %(count)s more groups (largest files are shown first)."
-msgstr ""
-
-#, python-format
-msgid "… and %(count)s more series."
 msgstr ""
 
 #, python-format

@@ -13,6 +13,7 @@ from media_hygiene.console.formatting import (
     human_share,
     human_size,
 )
+from media_hygiene.constants import Sizes
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.report.report_header import report_header
 
@@ -38,6 +39,7 @@ def make_environment() -> Environment:
     environment.filters["duration"] = human_duration
     environment.filters["when"] = when
     environment.globals["report_header"] = report_header
+    environment.globals["examples"] = int(Sizes.REPORT_EXAMPLES)  # 0310
     return environment
 
 

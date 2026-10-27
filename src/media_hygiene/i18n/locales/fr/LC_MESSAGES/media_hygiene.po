@@ -148,11 +148,17 @@ msgid_plural "%(num)s groups of near duplicates"
 msgstr[0] "%(num)s groupe de quasi-doublons"
 msgstr[1] "%(num)s groupes de quasi-doublons"
 
-#, python-brace-format, python-format
+#, python-format
 msgid "%(num)s near duplicate moved to the quarantine"
 msgid_plural "%(num)s near duplicates moved to the quarantine"
 msgstr[0] "%(num)s quasi-doublon déplacé en quarantaine"
 msgstr[1] "%(num)s quasi-doublons déplacés en quarantaine"
+
+#, python-format
+msgid "%(num)s series: show the first ones"
+msgid_plural "%(num)s series: show the first ones"
+msgstr[0] "%(num)s série : voir les premières"
+msgstr[1] "%(num)s séries : voir les premières"
 
 #, python-format
 msgid "%(num)s shot"
@@ -173,8 +179,15 @@ msgstr[0] "%(num)s groupe sûr : l'afficher"
 msgstr[1] "%(num)s groupes sûrs : les afficher"
 
 #, python-format
+msgid "%(shown)s of %(count)s shown."
+msgstr "%(shown)s sur %(count)s affichés."
+
+#, python-format
 msgid "%(sure)s, %(check)s to check"
 msgstr "%(sure)s, %(check)s à vérifier"
+
+msgid "'clean' takes care of it"
+msgstr "'clean' s'en charge"
 
 msgid ""
 "'config --upgrade' adds them with their explanation; your values are kept"
@@ -2127,6 +2140,9 @@ msgstr ""
 msgid "Decide folder by folder"
 msgstr "Décider dossier par dossier"
 
+msgid "Decide in the browser"
+msgstr "Décider dans le navigateur"
+
 msgid ""
 "Decide per pair: “Swap the folders” keeps the copies of the second folder"
 " and removes those of the first one; “Leave alone” removes nothing of "
@@ -3467,6 +3483,9 @@ msgid ""
 msgstr ""
 "Pour le modèle, les personnes sont adulte, enfant, bébé ou groupe : "
 "trouvez quelqu'un par son nom."
+
+msgid "For your information, nothing to do"
+msgstr "Pour information, rien à faire"
 
 msgid "Forget every face"
 msgstr "Oublier tous les visages"
@@ -5498,7 +5517,6 @@ msgstr ""
 msgid "Not touched by this clean"
 msgstr "Laissé par ce nettoyage"
 
-#
 msgid "Not touched by this clean (decide later, if you want)"
 msgstr "Laissé par ce nettoyage (à décider plus tard, si vous voulez)"
 
@@ -6135,6 +6153,10 @@ msgstr "OpenStreetMap ne connaît aucune zone de ce nom."
 
 msgid "Opened without the home page: type the next step yourself."
 msgstr "Ouverte sans l'accueil : tapez vous-même l'étape suivante."
+
+#, python-brace-format
+msgid "Opening in the window where mh runs: {command}."
+msgstr "Ouverture dans la fenêtre où tourne mh : {command}."
 
 #, python-brace-format
 msgid "Option {name} needs a value."
@@ -7872,6 +7894,9 @@ msgstr "Trier"
 msgid "Sort review"
 msgstr "Revue du tri"
 
+msgid "Sort the bursts"
+msgstr "Trier les rafales"
+
 msgid "Sort the photos"
 msgstr "Trier les photos"
 
@@ -8717,6 +8742,9 @@ msgstr "Le dossier {path} n'est pas monté."
 msgid "The folders mh knows"
 msgstr "Les dossiers que mh connaît"
 
+msgid "The full list"
+msgstr "La liste complète"
+
 #, python-brace-format
 msgid "The groups could not be read (error {status})."
 msgstr "Les groupes n'ont pas pu être lus (erreur {status})."
@@ -8949,6 +8977,10 @@ msgstr ""
 #, python-brace-format
 msgid "The page failed (error {status})."
 msgstr "La page a échoué (erreur {status})."
+
+#, python-brace-format
+msgid "The page failed (error {status}): copy the command."
+msgstr "La page a échoué (erreur {status}) : copiez la commande."
 
 msgid ""
 "The page is not running any more: nothing more is saved here. Go back to "
@@ -9928,7 +9960,6 @@ msgstr "À trier"
 msgid "To sort by place and by trip; no position leaves the PC."
 msgstr "Pour trier par lieu et par voyage ; aucune position ne quitte le PC."
 
-#
 msgid "To undo it all:"
 msgstr "Pour tout annuler :"
 
@@ -10247,7 +10278,6 @@ msgstr ""
 "des noms, des dates, des lieux et des personnes. 👉 Décrivez les photos : "
 "🤖 mh tags (ou son étape sur la page d'accueil)."
 
-#
 msgid "What this clean did"
 msgstr "Ce que ce nettoyage a fait"
 
@@ -10819,6 +10849,9 @@ msgid ""
 msgstr ""
 "Vos valeurs et commentaires sont gardés ; les nouveaux réglages ont leur "
 "valeur par défaut."
+
+msgid "Yours to decide"
+msgstr "À vous de décider"
 
 msgid ""
 "Zone of the videos' UTC times, e.g. \"Europe/Brussels\". Empty: [general]"
@@ -12846,6 +12879,9 @@ msgstr ""
 
 msgid "the sidecar is gone already"
 msgstr "le fichier compagnon a déjà disparu"
+
+msgid "the spreadsheet (CSV)"
+msgstr "le tableur (CSV)"
 
 msgid "the target exists"
 msgstr "la cible existe"
@@ -15726,10 +15762,6 @@ msgid "… and %(count)s more groups (largest files are shown first)."
 msgstr ""
 "… et %(count)s groupes de plus (les plus gros fichiers sont affichés en "
 "premier)."
-
-#, python-format
-msgid "… and %(count)s more series."
-msgstr "… et %(count)s séries de plus."
 
 #, python-format
 msgid "… and %(count)s more."

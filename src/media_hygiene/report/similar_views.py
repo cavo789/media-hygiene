@@ -80,7 +80,7 @@ def similar_files(similar: SimilarFindings) -> list[MediaFile]:
     Returns:
         Every picture shown.
     """
-    shown_bursts = similar.bursts[: Sizes.MAX_BURSTS_IN_REPORT]
+    shown_bursts = similar.bursts[: Sizes.REPORT_EXAMPLES]
     return [
         *(
             file
@@ -107,7 +107,7 @@ class SimilarRenderer:
         Returns:
             The section.
         """
-        limit = Sizes.MAX_BURSTS_IN_REPORT
+        limit = Sizes.REPORT_EXAMPLES
         return SimilarSection(
             near=tuple(
                 self._near(decision, similar, share)
