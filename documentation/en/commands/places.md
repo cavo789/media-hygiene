@@ -2,6 +2,8 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `places` · 🇫🇷 [Français](../../fr/commands/places.md)
 
+> The page's button on the [home page](home.md) (`mh` alone) opens it; the command is still there for a script or without the home page, but `mh --help` no longer lists it.
+
 ## In short
 
 **Name the places that matter to you on a map (home, grandpa's, a village), so that `classify`

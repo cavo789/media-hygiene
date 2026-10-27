@@ -49,7 +49,7 @@ Under *Where you are* (the last audit, the quarantine), one line per step:
   with nothing to purge or undo, it has no number. A step that needs words only you know (an
   album's name, your NAS's folder, a folder to remove, how many reports to keep) shows an example,
   *(type it yourself)*: `mh album "Crete 2023"`. On the
-  [home page](home.md), its form fills them in. `mh backup` shows as *(planned)*.
+  [home page](home.md), its form fills them in. `mh push` shows as *(planned)*.
 
 Each action is listed once, numbered across the spaces, under the space where it first comes:
 `mh open`, `mh history`, `mh undo` and `mh purge` sit in the clean guide, where they come. While a
@@ -163,12 +163,12 @@ Quarantine: empty.
                                                       Excel
       Back up to the NAS
       The guide
-      mh backup --to "\\NAS\backup_photos"            Choose the     🔒
+      mh push --to "\\NAS\backup_photos"            Choose the     🔒
                                                       backup folder
                                                       on the NAS
                                                       (type it
                                                       yourself)
-   27 mh backup                                       Back up what   ↩️
+   27 mh push                                       Back up what   ↩️
                                                       the NAS lacks
       Share your photos
       The commands

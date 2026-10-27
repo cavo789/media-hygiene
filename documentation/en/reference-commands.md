@@ -35,7 +35,8 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | see my words in digiKam, darktable, Lightroom or Immich | [`xmp`](commands/xmp.md) |
 | get back the photos only my NAS still has, not the ones I deleted | [`import`](commands/import.md) |
 | win back the space of my old camera videos, the picture kept | [`shrink`](commands/shrink.md) |
-| back up my photos to my NAS, only what it lacks | [`backup`](commands/backup.md) |
+| back up my photos to my NAS, only what it lacks | [`push`](commands/push.md) |
+| keep the index and my settings safe from a Docker reset, and put them back | [`backup`](commands/backup.md), [`restore`](commands/restore.md) |
 | answer my own questions about my photos in Excel | [`inventory`](commands/inventory.md) |
 | type `mh audit` instead of a long `docker run` | [`launcher`](commands/launcher.md) |
 | check every setting and every folder before the tool acts | [`config`](commands/config.md) |
@@ -52,7 +53,6 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`audit`](commands/audit.md) | Find exact duplicates and broken files. Never writes to your folders. | [1](start/01-first-audit.md) |
 | [`status`](commands/status.md) | Where am I? The last audit, the quarantine, the runs still undoable, the reviews not applied, the last proposal not sorted; then one next step as a full command. Reads the tool's folders only, no scan. | [Cleaning, 9](clean/09-undo-history-purge.md#where-am-i-status) |
 | [`menu`](commands/menu.md) | What `mh menu` shows in the terminal: every step of the three guides with its full `mh` command, the one `status` would give proposed; Enter runs it through `mh`, a number runs another. Reads the tool's folders only, no scan. | [Clean in short](clean/quick-guide.md) |
-| [`home`](commands/home.md) | The home page in your browser: what `status` says, the next step as a big button, every step of the guides as `mh menu` numbers them, the reports and a few previews; runs the audit in the page, its progress shown. A step's button hands it to `mh` in the terminal. Never writes to your folders. | [Commands](commands/home.md) |
 | [`review`](commands/review.md) | Audit, then sort the burst series in your browser, one at a time, with the keyboard; `--near`: decide the near duplicates group by group. Never writes to your folders. | [Cleaning, 10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
 | [`history`](commands/history.md) | List the runs: their command, files deleted, space freed, quarantine, restores. | [Cleaning, 9](clean/09-undo-history-purge.md) |
 | [`reports`](commands/reports.md) | List the reports and refresh `index.html`; `--prune N` keeps the N most recent. | [Cleaning, 4](clean/04-html-report.md) |
@@ -60,12 +60,9 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`config`](commands/config.md) | Show every setting, where it comes from, and the state of each mount point; creates a commented `config.toml` the first time. | [Cleaning, 7](clean/07-configuration-file.md) |
 | [`launcher`](commands/launcher.md) | Print the script of `mh`, a short command holding the folders of this run: `mh audit`, `mh clean`… with the right mounts for each command. Redirect it to a file (`> mh.ps1`), without `-it`. | [3](start/01-first-audit.md#write-mh-once) |
 | [`classify`](commands/classify.md) | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [Sorting, 4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md), [10](sort/10-sort-by-person.md) |
-| [`review-sort`](commands/review-sort.md) | Show the events of the `classify` proposal one at a time in your browser, with their photos, and name them with the keyboard; saved next to `plan.json`, applied by `sort`. Never writes to your folders nor to the workbook. | [Sorting, 11](sort/11-name-events-in-the-browser.md) |
-| [`places`](commands/places.md) | Show where the photos were taken on a map in your browser, and name your places; saved into `config.toml`. Never writes to your folders. | [Sorting, 9](sort/09-places-from-gps.md) |
 | [`inventory`](commands/inventory.md) | Export every photo and video with what the audits learnt to an Excel workbook (or a CSV file), from the cache alone: no file is read. | [Reference](reference-inventory.md) |
 | [`tags`](commands/tags.md) | Give every photo and video words to find it by: the meaningful words of its folders and of its file name, its date (year, month, season, holidays), its place, and what a local vision model sees (optional; a video by its middle frame). Kept in the cache, never written into the photos. | [Reference](reference-tags.md) |
 | [`search`](commands/search.md) | Find photos by their words (those of `tags`) and the names given in `people` (`person:"…"`) in your browser, with filters and previews; with words, print the first matches as a table. Photos picked can be set aside for `clean --decisions`. Never writes to your folders. | [Reference](reference-tags.md#find-a-photo-by-its-words-search) |
-| [`browse`](commands/browse.md) | Walk through your folders in your browser, as in Explorer: the tree with its counts, the photos and videos of a folder, large with ←/→; set the ones picked aside for `clean --decisions`. Never writes to your folders. | [Find in short](find/quick-guide.md) |
 | [`slideshow`](commands/slideshow.md) | Show the photos of a folder, a search or the files set aside on the TV (its browser, or a Chromecast's), the phone as a remote: next, previous, a photo tapped, play and pause, "do not show". With `mh slideshow --lan`, for the home network only, the TV paired by a code it shows. Never writes to your folders. | [Commands](commands/slideshow.md) |
 | [`share`](commands/share.md) | Prepare an album for sending: a copy of each photo, upright, its long side at 2048 pixels, without its GPS position (`--keep-gps` keeps it), in a folder named after the album and its zip, in `media-hygiene\Shares`; the videos are left out and counted. Never writes to your folders. | [Commands](commands/share.md) |
 | [`people`](commands/people.md) | Find the faces in the photos, group those that look alike, and name them in your browser (the names go into `config.toml`; `search` finds them). The faces stay in the cache, never sent anywhere; `--forget` deletes them all. Never writes to your folders. | [Reference](reference-people.md), [Sorting, 10](sort/10-sort-by-person.md) |
@@ -82,7 +79,18 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`xmp`](commands/xmp.md) | Write the words of `tags` into `.xmp` sidecars next to the photos, for digiKam, darktable, Lightroom or Immich; never into a photo. Shows what it would write; `--apply` writes. | [Reference](reference-tags.md#carry-the-words-with-the-photos-xmp) |
 | [`import`](commands/import.md) | Copy into your photos what only a backup (a NAS) holds, never what you set aside or deleted before; near copies listed apart; each copy proven; the backup only read. | [Commands](commands/import.md) |
 | [`shrink`](commands/shrink.md) | List the heavy videos worth lightening (old cameras, MJPEG), with the space each would free; `--apply` re-encodes them in H.264, each one checked (length, sound, date, place), the original in the quarantine. | [Commands](commands/shrink.md) |
-| [`backup`](commands/backup.md) | Windows only (`mh backup`): copy your photo folders into a folder of their own on the NAS, only what it lacks; a photo moved is renamed there, a deletion by mistake never carried over; undo with `--undo`. | [Commands](commands/backup.md) |
+| [`push`](commands/push.md) | Windows only (`mh push`): copy your photo folders into a folder of their own on the NAS, only what it lacks; a photo moved is renamed there, a deletion by mistake never carried over; undo with `--undo`. | [Commands](commands/push.md) |
+| [`backup`](commands/backup.md) | Write the index (what the audits, `tags` and `people` learnt) and the settings into one zip in `media-hygiene\backups`, read back; the 3 most recent kept. Never reads your photos. | [Commands](commands/backup.md) |
+| [`restore`](commands/restore.md) | Put back a backup of the index (the settings too with `--config`), after checking it whole and backing up the index replaced. Never reads your photos. | [Commands](commands/restore.md) |
+
+**Pages: opened from the home page** (not listed by `mh --help`: they only open a page; typed, `mh browse`, `mh places`, `mh review-sort` and `mh home` still work, for a script or without the home page)
+
+| Command | What it does | Guide |
+|---|---|---|
+| [`home`](commands/home.md) | The home page in your browser: what `status` says, the next step as a big button, every step of the guides as `mh menu` numbers them, the reports and a few previews; runs the audit in the page, its progress shown. A step's button hands it to `mh` in the terminal. Never writes to your folders. | [Commands](commands/home.md) |
+| [`review-sort`](commands/review-sort.md) | Show the events of the `classify` proposal one at a time in your browser, with their photos, and name them with the keyboard; saved next to `plan.json`, applied by `sort`. Never writes to your folders nor to the workbook. | [Sorting, 11](sort/11-name-events-in-the-browser.md) |
+| [`places`](commands/places.md) | Show where the photos were taken on a map in your browser, and name your places; saved into `config.toml`. Never writes to your folders. | [Sorting, 9](sort/09-places-from-gps.md) |
+| [`browse`](commands/browse.md) | Walk through your folders in your browser, as in Explorer: the tree with its counts, the photos and videos of a folder, large with ←/→; set the ones picked aside for `clean --decisions`. Never writes to your folders. | [Find in short](find/quick-guide.md) |
 
 ## Options
 
@@ -212,7 +220,7 @@ command shows its own `--help`; here is the list of the commands:
 ╭─ Act: moves, writes or deletes files ────────────────────────────────────────╮
 │ album        Make an album's folder on the disk, as hard links: nothing is   │
 │              copied nor moved (journaled, undoable).                         │
-│ backup       Windows only, as mh backup: copy your photo folders into a      │
+│ backup       Windows only, as mh push: copy your photo folders into a      │
 │              folder of their own on the NAS, only what it lacks; a photo     │
 │              moved is renamed there, a deletion by mistake never carried     │
 │              over. Run here, it shows the plan.                              │

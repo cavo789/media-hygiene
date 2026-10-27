@@ -54,6 +54,24 @@ msgid "%(gain)s freed; with the groups above: %(share)s %% of the space"
 msgstr ""
 
 #, python-format
+msgid "%(num)s broken file handled"
+msgid_plural "%(num)s broken files handled"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)s burst series"
+msgid_plural "%(num)s burst series"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)s burst shot set aside"
+msgid_plural "%(num)s burst shots set aside"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
 msgid "%(num)s copy"
 msgid_plural "%(num)s copies"
 msgstr[0] ""
@@ -76,8 +94,32 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-format
+msgid "%(num)s exact copy removed"
+msgid_plural "%(num)s exact copies removed"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
 msgid "%(num)s file"
 msgid_plural "%(num)s files"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)s group of near duplicates"
+msgid_plural "%(num)s groups of near duplicates"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)s near duplicate moved to the quarantine"
+msgid_plural "%(num)s near duplicates moved to the quarantine"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)s series: show the first ones"
+msgid_plural "%(num)s series: show the first ones"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -100,7 +142,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-format
+msgid "%(shown)s of %(count)s shown."
+msgstr ""
+
+#, python-format
 msgid "%(sure)s, %(check)s to check"
+msgstr ""
+
+msgid "'clean' takes care of it"
 msgstr ""
 
 msgid ""
@@ -750,6 +799,21 @@ msgid "Add photos to it in search or browse; the videos are never copied."
 msgstr ""
 
 msgid ""
+"Add the description and the keywords found by tags to the copies (names "
+"never); asked when omitted, Yes by default."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Add the description and the keywords found by tags to the copy of {n} "
+"photo?"
+msgid_plural ""
+"Add the description and the keywords found by tags to the copies of {n} "
+"photos?"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid ""
 "Add the settings of this version to your config.toml, with their "
 "explanation; your values and comments are kept."
 msgstr ""
@@ -1063,6 +1127,14 @@ msgstr ""
 msgid "Back up"
 msgstr ""
 
+msgid "Back up the index and the settings"
+msgstr ""
+
+msgid ""
+"Back up the index and the settings into one archive outside Docker's "
+"cache volume, read back."
+msgstr ""
+
 msgid "Back up to the NAS"
 msgstr ""
 
@@ -1076,7 +1148,7 @@ msgid "Backup folder"
 msgstr ""
 
 #, python-brace-format
-msgid "Backup folder kept, read back: {target}. Next time, mh backup alone."
+msgid "Backup folder kept, read back: {target}. Next time, mh push alone."
 msgstr ""
 
 msgid "Backup folders"
@@ -1084,6 +1156,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "Backup of {folders} into {target}:"
+msgstr ""
+
+#, python-brace-format
+msgid "Backup written and read back: {path} ({size})."
 msgstr ""
 
 msgid "Backup, never changed"
@@ -1415,11 +1491,6 @@ msgid ""
 " phone."
 msgstr ""
 
-msgid ""
-"Close this page: mh moves the files set aside to the quarantine (it asks "
-"first), then opens the home page again."
-msgstr ""
-
 #, python-brace-format
 msgid ""
 "Close to a face you confirmed: resemblance {score}, a name is given from "
@@ -1703,6 +1774,9 @@ msgstr ""
 msgid "Decide folder by folder"
 msgstr ""
 
+msgid "Decide in the browser"
+msgstr ""
+
 msgid ""
 "Decide per pair: “Swap the folders” keeps the copies of the second folder"
 " and removes those of the first one; “Leave alone” removes nothing of "
@@ -1841,6 +1915,12 @@ msgstr ""
 msgid "Deleting an empty file (0 bytes): {path}"
 msgstr ""
 
+msgid "Describe for 1 h"
+msgstr ""
+
+msgid "Describe now"
+msgstr ""
+
 msgid "Describe the photos without asking, however many."
 msgstr ""
 
@@ -1854,6 +1934,9 @@ msgid "Describe {count} photos now, about {duration}?"
 msgstr ""
 
 msgid "Describing photos"
+msgstr ""
+
+msgid "Describing…"
 msgstr ""
 
 msgid "Description"
@@ -1952,6 +2035,10 @@ msgid "Documents and screenshots"
 msgstr ""
 
 msgid "Done"
+msgstr ""
+
+#, python-brace-format
+msgid "Done: {command}."
 msgstr ""
 
 msgid ""
@@ -2735,9 +2822,6 @@ msgstr ""
 msgid "For good, once the quarantine is checked."
 msgstr ""
 
-msgid "For mh backup: one step of a backup, its lines on stdin and stdout."
-msgstr ""
-
 msgid "For mh phone: journal the files gone from the phone."
 msgstr ""
 
@@ -2750,6 +2834,9 @@ msgstr ""
 msgid "For mh phone: which files of a phone are new, from its listing."
 msgstr ""
 
+msgid "For mh push: one step of a backup, its lines on stdin and stdout."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "For the TV and your phone: {command} (Windows PowerShell). The show then "
@@ -2759,6 +2846,9 @@ msgstr ""
 msgid ""
 "For the model, people are adult, child, baby or group: find someone by "
 "their name."
+msgstr ""
+
+msgid "For your information, nothing to do"
 msgstr ""
 
 msgid "Forget every face"
@@ -3106,6 +3196,9 @@ msgstr ""
 msgid "Id"
 msgstr ""
 
+msgid "If Windows asks about Docker Desktop: tick Private networks, then Allow."
+msgstr ""
+
 msgid "Ignore this group"
 msgstr ""
 
@@ -3138,6 +3231,10 @@ msgid "In the menu on the left and in the palette."
 msgstr ""
 
 msgid "In this page"
+msgstr ""
+
+#, python-brace-format
+msgid "Index restored from {name}, read back:"
 msgstr ""
 
 #, python-brace-format
@@ -3375,7 +3472,7 @@ msgstr ""
 msgid "Last complete audit (UTC)"
 msgstr ""
 
-msgid "Last mh backup"
+msgid "Last mh push"
 msgstr ""
 
 msgid "Later"
@@ -3588,6 +3685,11 @@ msgstr ""
 msgid ""
 "Media Hygiene does not answer: the albums show while mh runs on the PC, "
 "on the home Wi-Fi."
+msgstr ""
+
+msgid ""
+"Media Hygiene has stopped: this page no longer answers. Open it again "
+"from the desktop shortcut, or with mh."
 msgstr ""
 
 msgid "Media Hygiene in the Explorer's right-click"
@@ -3929,7 +4031,9 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
-msgid "New photos and videos to copy: {count} ({size} GB) into {destination}…"
+msgid ""
+"New photos and videos to copy: {count} ({size} GB) into {destination}; "
+"keep the phone unlocked, screen on…"
 msgstr ""
 
 #, python-brace-format
@@ -4000,8 +4104,8 @@ msgid "No backup folder to import from."
 msgstr ""
 
 msgid ""
-"No backup folder yet: type mh backup --to <the NAS folder>, a shared "
-"folder of its own such as backup_photos."
+"No backup folder yet: type mh push --to <the NAS folder>, a shared folder"
+" of its own such as backup_photos."
 msgstr ""
 
 msgid "No burst series: nothing to review."
@@ -4105,6 +4209,9 @@ msgstr ""
 msgid "No group yet: no two faces look alike enough."
 msgstr ""
 
+msgid "No home network found: the phone cannot open this page."
+msgstr ""
+
 msgid "No identical copy"
 msgstr ""
 
@@ -4206,6 +4313,9 @@ msgid "No photo looks unwanted: nothing to review."
 msgstr ""
 
 msgid "No photo nor video has disappeared: nothing to review."
+msgstr ""
+
+msgid "No photo nor video in the cache: run the audit first."
 msgstr ""
 
 msgid "No photo nor video of the index below these folders."
@@ -4355,7 +4465,7 @@ msgstr ""
 msgid "Not a town: never read as one, in any folder"
 msgstr ""
 
-msgid "Not backed up yet: mh backup copies to the NAS"
+msgid "Not backed up yet: mh push copies to the NAS"
 msgstr ""
 
 #, python-brace-format
@@ -4388,10 +4498,10 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Not in the backup: {count} file (robocopy failed, or new since the plan)."
-" Type mh backup again:"
+" Type mh push again:"
 msgid_plural ""
 "Not in the backup: {count} files (robocopy failed, or new since the "
-"plan). Type mh backup again:"
+"plan). Type mh push again:"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -4411,6 +4521,9 @@ msgid "Not looked at (not mounted): {points}."
 msgstr ""
 
 msgid "Not looked for yet"
+msgstr ""
+
+msgid "Not now"
 msgstr ""
 
 #, python-brace-format
@@ -4458,6 +4571,12 @@ msgstr ""
 msgid "Not this person: mark this face; the next button of the group saves it"
 msgstr ""
 
+msgid "Not touched by this clean"
+msgstr ""
+
+msgid "Not touched by this clean (decide later, if you want)"
+msgstr ""
+
 #, python-brace-format
 msgid "Not {name}"
 msgstr ""
@@ -4499,7 +4618,7 @@ msgstr ""
 msgid ""
 "Nothing is applied when the files set aside and replaced exceed this "
 "share of the backup, in percent: a drive missing? many files changed at "
-"once? 'mh backup --anyway' goes on."
+"once? 'mh push --anyway' goes on."
 msgstr ""
 
 msgid ""
@@ -4686,6 +4805,10 @@ msgid ""
 " after in the browser, then lighten; each original in the quarantine."
 msgstr ""
 
+#, python-brace-format
+msgid "Older backup removed ({kept} kept): {name}"
+msgstr ""
+
 msgid "On a folder: the home page, on that folder."
 msgstr ""
 
@@ -4770,6 +4893,9 @@ msgid ""
 msgstr ""
 
 msgid "One thing only is for good:"
+msgstr ""
+
+msgid "One zip outside Docker's cache: a Docker reset loses nothing."
 msgstr ""
 
 #, python-brace-format
@@ -4952,6 +5078,10 @@ msgid "OpenStreetMap knows no area of that name."
 msgstr ""
 
 msgid "Opened without the home page: type the next step yourself."
+msgstr ""
+
+#, python-brace-format
+msgid "Opening in the window where mh runs: {command}."
 msgstr ""
 
 #, python-brace-format
@@ -5188,10 +5318,10 @@ msgstr ""
 msgid "Planned"
 msgstr ""
 
-msgid "Planned with mh backup: not in the tool yet."
+msgid "Planned with mh push: not in the tool yet."
 msgstr ""
 
-msgid "Planned: mh backup is coming."
+msgid "Planned: mh push is coming."
 msgstr ""
 
 #, python-brace-format
@@ -5314,6 +5444,11 @@ msgstr ""
 msgid "Put back"
 msgstr ""
 
+msgid ""
+"Put back a backup of the index (and the settings with --config), after "
+"backing up the current one."
+msgstr ""
+
 msgid "Put back a copy of it, or move it away to start new albums."
 msgstr ""
 
@@ -5425,6 +5560,9 @@ msgstr ""
 msgid "Reading 128 KB of each file already in the cache, once"
 msgstr ""
 
+msgid "Reading the index"
+msgstr ""
+
 msgid "Reading the metadata of files already in the cache"
 msgstr ""
 
@@ -5519,7 +5657,7 @@ msgid "Renamed on the backup (moved, or set aside in .removed): {count}."
 msgstr ""
 
 #, python-brace-format
-msgid "Renames not seen made: {count}. Type mh backup again."
+msgid "Renames not seen made: {count}. Type mh push again."
 msgstr ""
 
 #, python-brace-format
@@ -5556,6 +5694,14 @@ msgstr ""
 msgid ""
 "Restore it, or delete it to start the review page over: the workbook "
 "alone then decides."
+msgstr ""
+
+msgid "Restore the index"
+msgstr ""
+
+msgid ""
+"Restore the settings (config.toml, people) too; the index alone by "
+"default."
 msgstr ""
 
 msgid "Restored"
@@ -5842,6 +5988,10 @@ msgstr ""
 msgid ""
 "Running in the window where mh runs: {command}. The home page comes back "
 "here when it ends."
+msgstr ""
+
+#, python-brace-format
+msgid "Running in the window where mh runs: {command}. This page stays open."
 msgstr ""
 
 msgid "Runs (newest first)"
@@ -6219,6 +6369,10 @@ msgstr[1] ""
 msgid "Setting"
 msgstr ""
 
+#, python-brace-format
+msgid "Setting restored: {name}"
+msgstr ""
+
 msgid "Settings"
 msgstr ""
 
@@ -6393,6 +6547,9 @@ msgstr ""
 msgid "Sort review"
 msgstr ""
 
+msgid "Sort the bursts"
+msgstr ""
+
 msgid "Sort the photos"
 msgstr ""
 
@@ -6537,6 +6694,9 @@ msgstr ""
 msgid "Still undoable: {what}"
 msgstr ""
 
+msgid "Stop after this photo"
+msgstr ""
+
 msgid "Stop the audit"
 msgstr ""
 
@@ -6546,6 +6706,10 @@ msgid ""
 msgstr ""
 
 msgid "Stopped (Ctrl+C)."
+msgstr ""
+
+#, python-brace-format
+msgid "Stopped (code {code}): {command}."
 msgstr ""
 
 msgid "Stopped before the end, as asked."
@@ -6558,7 +6722,7 @@ msgstr ""
 msgid ""
 "Stopped: more than {percent} % of the backup would be set aside or "
 "replaced. A drive missing? Many files changed at once? Nothing was "
-"applied; mh backup --anyway goes on."
+"applied; mh push --anyway goes on."
 msgstr ""
 
 msgid "Stopped: the next classify run goes on where this one stopped."
@@ -6617,11 +6781,10 @@ msgstr ""
 msgid "Switch between the board and one series at a time (P)"
 msgstr ""
 
-#, python-brace-format
 msgid ""
 "Switch to the PowerShell window: the files leave the phone one by one, "
-"each one copied again and compared with the PC's copy first (about "
-"{minutes} min)."
+"each one copied again and compared with the PC's copy first. Keep the "
+"phone unlocked, screen on."
 msgstr ""
 
 #, python-brace-format
@@ -6637,6 +6800,12 @@ msgid "Table of contents"
 msgstr ""
 
 msgid "Tags"
+msgstr ""
+
+msgid "Tags already run: wait for the end, or stop them."
+msgstr ""
+
+msgid "Tags failed: the window where mh runs says why."
 msgstr ""
 
 #, python-brace-format
@@ -6760,6 +6929,9 @@ msgid ""
 "touched."
 msgstr ""
 
+msgid "The audit report of these folders shows them: see All reports."
+msgstr ""
+
 msgid ""
 "The backup folder, as Windows writes it (\\\\NAS\\backup_photos): a "
 "folder of its own, never a photo folder nor a backup compared."
@@ -6786,6 +6958,30 @@ msgstr ""
 msgid ""
 "The backup target {target} overlaps {folder}: choose a folder of its own,"
 " outside your photo folders and backups."
+msgstr ""
+
+msgid "The backup to restore, by its name; the most recent by default."
+msgstr ""
+
+#, python-brace-format
+msgid "The backup {name} cannot be read: {why}."
+msgstr ""
+
+#, python-brace-format
+msgid "The backup {name} is damaged: its index differs from its manifest."
+msgstr ""
+
+#, python-brace-format
+msgid "The backup {name} is damaged: {member} differs from its manifest."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The backup {name} was made by a newer version of media-hygiene: type mh "
+"update first."
+msgstr ""
+
+msgid "The backups are written to /backups, which is not mounted."
 msgstr ""
 
 msgid ""
@@ -7055,6 +7251,9 @@ msgstr ""
 msgid "The folders mh knows"
 msgstr ""
 
+msgid "The full list"
+msgstr ""
+
 #, python-brace-format
 msgid "The groups could not be read (error {status})."
 msgstr ""
@@ -7075,6 +7274,16 @@ msgstr ""
 msgid "The home page"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"The home page has {count} photo described by the model: Stop is on the "
+"page."
+msgid_plural ""
+"The home page has {count} photos described by the model: Stop is on the "
+"page."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid ""
 "The home page in your browser: where you are, the next step as a button, "
 "every step of the guides, the reports."
@@ -7086,6 +7295,14 @@ msgid ""
 "until mh stops. Never the internet."
 msgstr ""
 
+msgid ""
+"The home page stopped unexpectedly twice in a row: type mh to start it "
+"again."
+msgstr ""
+
+msgid "The home page stopped unexpectedly: started again."
+msgstr ""
+
 msgid "The home page's tab was closed: the home page stopped."
 msgstr ""
 
@@ -7093,6 +7310,10 @@ msgid "The identical copies are set aside"
 msgstr ""
 
 msgid "The image on Docker Hub"
+msgstr ""
+
+#, python-brace-format
+msgid "The index of the backup is damaged: {why}."
 msgstr ""
 
 #, python-brace-format
@@ -7185,6 +7406,9 @@ msgstr ""
 msgid "The model {name} downloaded is not the expected file."
 msgstr ""
 
+msgid "The most recent backup, the index in place backed up first."
+msgstr ""
+
 msgid "The name shown and the folder's path; Esc empties the box."
 msgstr ""
 
@@ -7221,6 +7445,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "The page failed (error {status})."
+msgstr ""
+
+#, python-brace-format
+msgid "The page failed (error {status}): copy the command."
 msgstr ""
 
 msgid ""
@@ -7262,14 +7490,16 @@ msgid "The password of {share} is kept: mh folders remove forgets it."
 msgstr ""
 
 msgid ""
-"The phone no longer answers (unplugged?): what is counted above was "
-"deleted, the rest is still on it. Type mh phone --free again."
+"The phone no longer answers (unplugged, or asleep: keep it unlocked, "
+"screen on): what is counted above was deleted, the rest is still on it. "
+"Type mh phone --free again."
 msgstr ""
 
 #, python-brace-format
 msgid ""
-"The phone no longer answers (unplugged?): {count} files copied so far. "
-"Type mh phone again: what is already copied is skipped."
+"The phone no longer answers (unplugged, or asleep: keep it unlocked, "
+"screen on, during the copy): {count} files copied so far. Type mh phone "
+"again: what is already copied is skipped."
 msgstr ""
 
 msgid "The phone run the files were proven in."
@@ -7379,6 +7609,10 @@ msgid "The reports only: your photos are not concerned."
 msgstr ""
 
 msgid "The resized or recompressed copies, group by group."
+msgstr ""
+
+#, python-brace-format
+msgid "The restored index differs from the backup {name}."
 msgstr ""
 
 msgid "The review is not running any more: start it again."
@@ -7680,7 +7914,17 @@ msgid "Then press OK on the TV's remote for full screen."
 msgstr ""
 
 #, python-brace-format
+msgid "There is no backup named {name}."
+msgstr ""
+
+msgid "There is no backup to restore yet: type mh backup."
+msgstr ""
+
+#, python-brace-format
 msgid "There is no config.toml in {folder} yet."
+msgstr ""
+
+msgid "There is no index to back up yet: run an audit first."
 msgstr ""
 
 msgid "There is no such event."
@@ -7735,7 +7979,20 @@ msgstr ""
 msgid "This build cannot search by meaning: {module} is not installed."
 msgstr ""
 
+msgid ""
+"This clean moved these copies to the quarantine: 'undo' puts them back. "
+"The version kept is shown first."
+msgstr ""
+
+msgid ""
+"This copy is on the same disk as Docker: it protects from a wrong move, "
+"not from a disk failure; copy it to a USB stick or the NAS too."
+msgstr ""
+
 msgid "This ffmpeg cannot encode H.264: nothing was changed."
+msgstr ""
+
+msgid "This file is not an mh backup: its manifest is missing or unreadable."
 msgstr ""
 
 msgid ""
@@ -7824,6 +8081,11 @@ msgid "This shot lies in a protected folder: it is never moved."
 msgstr ""
 
 msgid "This step takes no words."
+msgstr ""
+
+msgid ""
+"This tab shows the home page by itself when mh brings it back; otherwise,"
+" the PowerShell window says when it is done."
 msgstr ""
 
 #, python-brace-format
@@ -7966,6 +8228,9 @@ msgstr ""
 msgid "To sort by place and by trip; no position leaves the PC."
 msgstr ""
 
+msgid "To undo it all:"
+msgstr ""
+
 msgid ""
 "Too many wrong codes: pairing a TV is closed. Stop the slideshow (Ctrl+C "
 "on the PC), then start it again."
@@ -8048,10 +8313,10 @@ msgid "Type a name to filter the folders"
 msgstr ""
 
 #, python-brace-format
-msgid "Type mh backup --undo {run_id} in Windows PowerShell."
+msgid "Type mh push --undo {run_id} in Windows PowerShell."
 msgstr ""
 
-msgid "Type mh backup in Windows PowerShell: it mounts it."
+msgid "Type mh push in Windows PowerShell: it mounts it."
 msgstr ""
 
 msgid "Type the album's name in the bar first: then A adds the file shown."
@@ -8238,6 +8503,9 @@ msgid ""
 "page)."
 msgstr ""
 
+msgid "What this clean did"
+msgstr ""
+
 msgid "What was already done is in the journal: 'undo' puts it back."
 msgstr ""
 
@@ -8361,6 +8629,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Windows counts this Wi-Fi as public: its firewall blocks the phone. "
+"Settings > Network & Internet > Wi-Fi > Private network."
+msgstr ""
+
+msgid ""
 "Windows counts this network as public: its firewall blocks the phone. On "
 "a home network, set it to private in Windows' Settings (Network and "
 "Internet)."
@@ -8375,9 +8648,9 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Windows only, as mh backup: copy your photo folders into a folder of "
-"their own on the NAS, only what it lacks; a photo moved is renamed there,"
-" a deletion by mistake never carried over. Run here, it shows the plan."
+"Windows only, as mh push: copy your photo folders into a folder of their "
+"own on the NAS, only what it lacks; a photo moved is renamed there, a "
+"deletion by mistake never carried over. Run here, it shows the plan."
 msgstr ""
 
 msgid "Windows paths must use 'single quotes' in TOML, e.g. 'C:\\Photos'."
@@ -8404,6 +8677,12 @@ msgid "Words"
 msgstr ""
 
 msgid ""
+"Words from folders, names, dates and places first (seconds), then what "
+"the local AI sees. Only the cache is written: your photos are not "
+"changed."
+msgstr ""
+
+msgid ""
 "Words left out because they describe nearly every photo. Written here, "
 "the list replaces the built-in one (French and English)."
 msgstr ""
@@ -8411,10 +8690,24 @@ msgstr ""
 msgid "Words of"
 msgstr ""
 
+msgid "Words of folders, names, dates and places"
+msgstr ""
+
+msgid "Words of folders, names, dates and places…"
+msgstr ""
+
 msgid ""
 "Words to find, printed as a table instead of opening the page: \"bord de "
 "mer\" a phrase, anniv* a start of word, place:durbuy among the places "
 "only (also vision, caption, folder, name, date, person)."
+msgstr ""
+
+msgid ""
+"Words written. Set [classify.ai] model to a local vision model (Ollama) "
+"to add what the photos show."
+msgstr ""
+
+msgid "Words written; the AI has already described every photo."
 msgstr ""
 
 #, python-brace-format
@@ -8660,6 +8953,9 @@ msgid ""
 "value."
 msgstr ""
 
+msgid "Yours to decide"
+msgstr ""
+
 msgid ""
 "Zone of the videos' UTC times, e.g. \"Europe/Brussels\". Empty: [general]"
 " timezone."
@@ -8886,6 +9182,9 @@ msgid "backup nas copy robocopy"
 msgstr ""
 
 msgid "backup nas destination"
+msgstr ""
+
+msgid "backup save index cache settings"
 msgstr ""
 
 msgid "best match"
@@ -9293,10 +9592,13 @@ msgstr ""
 msgid "home page start"
 msgstr ""
 
+msgid "if the cache is ever lost: mh restore."
+msgstr ""
+
 #, python-brace-format
 msgid ""
-"in Windows PowerShell, type mh backup --to {target}: Windows copies, "
-"about 7 times faster than Docker."
+"in Windows PowerShell, type mh push --to {target}: Windows copies, about "
+"7 times faster than Docker."
 msgstr ""
 
 msgid "in a filter box: empty it"
@@ -9579,28 +9881,7 @@ msgstr ""
 msgid "mh asks you again in {window} before touching anything."
 msgstr ""
 
-msgid "mh backup"
-msgstr ""
-
-msgid ""
-"mh backup (Windows only): a file the PC no longer has, or the previous "
-"copy of an edited file, waits in the .removed folder of the backup that "
-"many days, then mh backup erases it."
-msgstr ""
-
-msgid ""
-"mh backup --to <the NAS folder> the first time, then mh backup alone; "
-"--anyway goes past the safety stop; --undo <run> puts back what a run "
-"renamed or set aside."
-msgstr ""
-
-msgid "mh backup copies it"
-msgstr ""
-
-msgid ""
-"mh backup is for Windows only: Windows writes to the NAS about 7 times "
-"faster than a copy through Docker (measured: 86 to 105.8 MB/s against "
-"15.1 MB/s). Nothing was started."
+msgid "mh audit: it reads again only what changed."
 msgstr ""
 
 msgid "mh forgets it; its photos do not move."
@@ -9613,8 +9894,18 @@ msgid "mh keeps the hand until the end, then opens the home page again"
 msgstr ""
 
 msgid ""
+"mh mounts it for backup and restore; with docker run, add -v \"$HOME"
+"\\media-hygiene\\backups:/backups\"."
+msgstr ""
+
+msgid ""
 "mh mounts it for share; with docker run, add -v \"$HOME\\media-"
 "hygiene\\Shares:/shares\"."
+msgstr ""
+
+msgid ""
+"mh moves the files set aside to the quarantine in its window (it asks "
+"first)."
 msgstr ""
 
 msgid ""
@@ -9627,6 +9918,30 @@ msgid ""
 " USB; --to <folder> chooses where, --only <folder of DCIM> takes that "
 "folder only (Camera), --free then offers to delete from the phone what "
 "the PC holds."
+msgstr ""
+
+msgid "mh push"
+msgstr ""
+
+msgid ""
+"mh push (Windows only): a file the PC no longer has, or the previous copy"
+" of an edited file, waits in the .removed folder of the backup that many "
+"days, then mh push erases it."
+msgstr ""
+
+msgid ""
+"mh push --to <the NAS folder> the first time, then mh push alone; "
+"--anyway goes past the safety stop; --undo <run> puts back what a run "
+"renamed or set aside."
+msgstr ""
+
+msgid "mh push copies it"
+msgstr ""
+
+msgid ""
+"mh push is for Windows only: Windows writes to the NAS about 7 times "
+"faster than a copy through Docker (measured: 86 to 105.8 MB/s against "
+"15.1 MB/s). Nothing was started."
 msgstr ""
 
 #, python-brace-format
@@ -9872,7 +10187,7 @@ msgstr ""
 msgid "nothing to put back"
 msgstr ""
 
-msgid "nothing: type mh backup again after your next import or sort."
+msgid "nothing: type mh push again after your next import or sort."
 msgstr ""
 
 msgid "of every folder: where the space goes"
@@ -10109,6 +10424,9 @@ msgid "reports list index"
 msgstr ""
 
 msgid "reports old delete tidy prune"
+msgstr ""
+
+msgid "restore backup index cache lost"
 msgstr ""
 
 msgid "review page"
@@ -10503,6 +10821,9 @@ msgstr ""
 msgid "the sidecar is gone already"
 msgstr ""
 
+msgid "the spreadsheet (CSV)"
+msgstr ""
+
 msgid "the target exists"
 msgstr ""
 
@@ -10628,6 +10949,14 @@ msgstr ""
 msgid ""
 "true: every 'audit' then looks for faces in the photos not looked at yet,"
 " after saying how long it takes and asking, as 'audit --people' does."
+msgstr ""
+
+msgid ""
+"true: the home page opens to the phones of your home Wi-Fi too, while mh "
+"runs: scan its QR code, type nothing more. A phone needs the code of this"
+" run; never the internet. false, for now the default, keeps the page on "
+"this PC only; mh --lan opens it for one run. After a change, type mh "
+"update."
 msgstr ""
 
 #, python-brace-format
@@ -11638,6 +11967,12 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{count} photos to describe with {model}, about {time}. Each answer is "
+"kept at once: a stop loses nothing, the next run goes on."
+msgstr ""
+
+#, python-brace-format
 msgid "{count} report deleted."
 msgid_plural "{count} reports deleted."
 msgstr[0] ""
@@ -11852,6 +12187,10 @@ msgid "{drive}: stays shared with Docker Desktop: another mh window uses it."
 msgstr ""
 
 #, python-brace-format
+msgid "{elapsed} min gone by, of about {minutes}."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "{faces} faces in {photos} photos: no two of them look alike enough to be "
 "grouped."
@@ -11907,6 +12246,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "{files}, {undecided} to check or to sort"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{file} cannot be read: {error}. The last good settings stay until it is "
+"fixed."
 msgstr ""
 
 #, python-brace-format
@@ -12071,6 +12416,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{h} h {min} min"
+msgstr ""
+
+#, python-brace-format
 msgid "{h} h {m}"
 msgstr ""
 
@@ -12099,6 +12448,10 @@ msgid "{limit} or more is expected, not {value}"
 msgstr ""
 
 #, python-brace-format
+msgid "{min} min"
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "{moved} moved, {verified} checked at their new place (run {run}, at "
 "{time}): 'mh undo {run}' puts them back."
@@ -12112,6 +12465,13 @@ msgstr ""
 
 #, python-brace-format
 msgid "{name} ({count} faces)"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{name} answers but shows no storage: wake it up and unlock it, then "
+"choose File transfer in the USB notification (iPhone: Trust this "
+"computer). Waiting for it…"
 msgstr ""
 
 #, python-brace-format
@@ -12661,6 +13021,10 @@ msgid "{place}: {reason}"
 msgstr ""
 
 #, python-brace-format
+msgid "{rate} photos a minute, about {time} left."
+msgstr ""
+
+#, python-brace-format
 msgid "{reason}: {first} to {last} of {total}"
 msgstr ""
 
@@ -12869,10 +13233,6 @@ msgid "… and %(count)s more groups (largest files are shown first)."
 msgstr ""
 
 #, python-format
-msgid "… and %(count)s more series."
-msgstr ""
-
-#, python-format
 msgid "… and %(count)s more."
 msgstr ""
 
@@ -12897,6 +13257,10 @@ msgid "→ {folder}"
 msgstr ""
 
 #, python-brace-format
+msgid "↩️ The index replaced was backed up first: mh restore {name} puts it back."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "↩️ {count} photo or video you had already set aside is back ({size}): "
 "back to the quarantine."
@@ -12911,6 +13275,12 @@ msgstr ""
 
 msgid "❚❚ Pause"
 msgstr ""
+
+#, python-brace-format
+msgid "🏷 {n} copy carries its description and keywords (read back)."
+msgid_plural "🏷 {n} copies carry their description and keywords (read back)."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid ""
@@ -12992,6 +13362,11 @@ msgid "🔒 The phone is only read: nothing on it is deleted, moved or renamed."
 msgstr ""
 
 msgid ""
+"🔒 The sentence of the vision model sometimes describes intimate scenes; "
+"the names of people are never written."
+msgstr ""
+
+msgid ""
 "🔗 A link is one photo under two names: an edit saved in place shows under"
 " both names, deleting one name frees nothing while the other remains, and"
 " a backup tool may count it twice. 'undo' makes each name an independent "
@@ -13009,8 +13384,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid ""
-"🛟 A backup run changed its backup folder only, never your photos: mh "
-"backup --undo <run> puts back what it renamed or set aside there."
+"🛟 A backup run changed its backup folder only, never your photos: mh push"
+" --undo <run> puts back what it renamed or set aside there."
 msgstr ""
 
 msgid ""

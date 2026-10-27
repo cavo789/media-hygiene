@@ -89,6 +89,26 @@ mh share --album "Crete 2023" --keep-gps
 The maker's notes (a block private to each camera brand, which may hold its serial number) and
 the XMP block are never copied either.
 
+## The description and the keywords
+
+When `tags` described photos of the album, `share` asks: *Add the description and the
+keywords found by tags to the copies?* **Yes** is the default (Enter accepts). Each copy
+then carries the model's sentence and its words inside the file: an XMP packet
+(`dc:description`, `dc:subject`) and the fields Windows Explorer shows under
+Properties › Details (*Tags*, *Comments*). A photo sent alone keeps its words, whatever
+service receives it. The originals are never rewritten.
+
+🔒 The model's sentence sometimes describes intimate scenes: that is why you are asked.
+The names of people are never written, and a description already in the photo (typed by
+a person, a camera or Windows) is kept instead of the model's.
+
+```powershell
+mh share --album "Crete 2023" --no-describe
+```
+
+`--describe` / `--no-describe` answer without the question (scripts); without a terminal
+and without either, the answer is Yes.
+
 ## Settings
 
 In `config.toml`, `[share]`:
@@ -105,6 +125,7 @@ In `config.toml`, `[share]`:
 |---|---|
 | `--album "Crete 2023"` | The album to send, made in `search`, `browse` or the burst review. |
 | `--keep-gps` | Keep the GPS position in the copies, for this run. |
+| `--describe` / `--no-describe` | Add (or not) the description and the keywords found by `tags` to the copies, without asking. |
 
 ## Good to know
 

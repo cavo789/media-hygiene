@@ -2,6 +2,8 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `browse` · 🇬🇧 [English](../../en/commands/browse.md)
 
+> Le bouton de la page sur la [page d'accueil](home.md) (`mh` seul) l'ouvre ; la commande reste là pour un script ou sans la page d'accueil, mais `mh --help` ne la liste plus.
+
 ## En bref
 
 **Parcourir vos dossiers comme dans l'Explorateur, et mettre de côté les photos dont vous ne
@@ -123,9 +125,11 @@ quarantaine, journalisé : `mh undo` les remet, `mh purge` libère la place.
 
 **Ouverte depuis l'[accueil](home.md)** (`mh` seul, puis l'étape *Parcourir vos dossiers*) : dès
 que quelque chose est mis de côté, un bouton **Appliquer maintenant** apparaît dans la barre, à
-côté de la ligne enregistrée. Il ferme la page et `mh` lance l'étape de l'accueil qui applique vos choix
+côté de la ligne enregistrée. `mh` lance alors l'étape de l'accueil qui applique vos choix
 (`mh clean --decisions`, avec `--tier near` si vous avez aussi revu des quasi-doublons), avec sa
-question habituelle, dans la fenêtre où `mh` tourne (PowerShell sous Windows) ; puis l'accueil revient. Ouverte par
+question habituelle, dans la fenêtre où `mh` tourne (PowerShell sous Windows) ; la page reste
+ouverte, puis affiche *Terminé* (ou le code sur lequel il s'est arrêté) et montre de nouveau le
+dossier sans les fichiers déplacés. Ouverte par
 `mh browse` seul, pas de bouton : tapez la commande ci-dessus. Le bouton demande un `mh` écrit
 par cette version (`mh update` le réécrit).
 

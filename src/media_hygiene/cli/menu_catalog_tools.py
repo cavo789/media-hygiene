@@ -110,6 +110,28 @@ def tools_steps() -> tuple[Step, ...]:
                 "#une-nouvelle-version--mh-update",
             ),
         ),
+        Step(
+            "backup",
+            Space.SETTINGS,
+            _("Back up the index and the settings"),
+            _("One zip outside Docker's cache: a Docker reset loses nothing."),
+            "backup",
+            Risk.SAFE,
+            icon="shield",
+            keywords=_("backup save index cache settings"),
+            doc=Doc("commands/backup/"),
+        ),
+        Step(
+            "restore",
+            Space.SETTINGS,
+            _("Restore the index"),
+            _("The most recent backup, the index in place backed up first."),
+            "restore",
+            Risk.UNDO,
+            icon="undo",
+            keywords=_("restore backup index cache lost"),
+            doc=Doc("commands/restore/"),
+        ),
     )
 
 
@@ -153,6 +175,7 @@ def tools_areas() -> tuple[Area, ...]:
                 extra="folders",
             ),
             Group(_("Update"), ("update",), extra="update"),
+            Group(_("Backup"), ("backup", "restore")),
             Group(_("Windows"), ("shortcut", "explorer", "explorer-remove")),
             Group(_("Local AI"), (), extra="ai"),
             Group(_("Privacy"), ("people-forget",)),

@@ -47,11 +47,11 @@ def history_command(ctx: typer.Context) -> None:
         output.info(_("No run yet."))
         return
     output.show(_runs_table(summaries))
-    if any(run.kind is Phase.BACKUP for run in summaries):
+    if any(run.kind is Phase.PUSH for run in summaries):
         output.info(
             _(
                 "🛟 A backup run changed its backup folder only, never your photos: "
-                "mh backup --undo <run> puts back what it renamed or set aside there."
+                "mh push --undo <run> puts back what it renamed or set aside there."
             )
         )
     if any(run.kind is Phase.PHONE for run in summaries):
@@ -75,7 +75,7 @@ def _runs_table(summaries: list[RunSummary]) -> Table:
         *Sidecars* and *Folders removed* columns only when a run set unwanted
         photos aside, set aside again files that came back, marked files deleted
         in the Explorer, moved files, made an album, wrote sidecars or removed the
-        folders it left empty; *Copied* (bytes) when `import` or `mh backup` ran.
+        folders it left empty; *Copied* (bytes) when `import` or `mh push` ran.
     """
     from rich.table import Table
 
@@ -89,7 +89,7 @@ def _runs_table(summaries: list[RunSummary]) -> Table:
         (_("Linked"), lambda run: run.linked),
         (_("Sidecars"), lambda run: run.kept.written),
         (_("Folders removed"), lambda run: run.folders_removed),
-        (_("Copied"), lambda run: run.kept.copied),  # bytes: import, mh backup
+        (_("Copied"), lambda run: run.kept.copied),  # bytes: import, mh push
     ]
     shown = [(h, count) for h, count in optional if any(map(count, summaries))]
     sizes = {_("Copied")}

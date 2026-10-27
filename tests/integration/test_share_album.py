@@ -6,24 +6,35 @@ and the zip are read back from the disk; the videos are left out and counted.
 
 from __future__ import annotations
 
+import asyncio
 import zipfile
+from concurrent.futures import ThreadPoolExecutor
+from http import HTTPStatus
+from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 import pytest
 from PIL import ExifTags, Image
 
 from media_hygiene.errors import MountError
+from media_hygiene.index.descriptions import PhotoVersion
+from media_hygiene.index.repository import FactsRepository
+from media_hygiene.index.tag_rows import TagStore
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.review.http import Request, Response
+from media_hygiene.review.presence import PRESENCE_PATH
+from media_hygiene.services.album_pages import album_page, album_pages
 from media_hygiene.services.albums import album_store
 from media_hygiene.services.share_album import SendRequest, prepare_album
 from media_hygiene.share.album_store import AlbumChange
 from media_hygiene.share.prepare import folder_name
+from media_hygiene.tags.models import FileTags, Tag, TagSource
 from tests.support.cli import point_mounts, run
 from tests.support.runtime import make_locations, make_runtime
 from tests.unit.test_share_sent_photo import gps_photo
 
 if TYPE_CHECKING:
-    from pathlib import Path
+    from collections.abc import Callable
 
     from typer.testing import CliRunner
 
@@ -140,3 +151,128 @@ def test_the_command_says_what_was_read_back(
     unknown = run(cli, "share", "--album", "Nowhere")
     assert unknown.exit_code != 0
     assert "No album named Nowhere" in " ".join(unknown.output.split())
+
+
+class _Home:
+    """The home page behind the albums: records what reaches it."""
+
+    def __init__(self) -> None:
+        """Nothing asked yet."""
+        self.paths: list[str] = []
+
+    async def handle(self, request: Request) -> Response:
+        """Record the path; answer 200."""
+        self.paths.append(request.path)
+        return Response(HTTPStatus.OK)
+
+
+def test_the_albums_page_keeps_the_home_server_alive(tmp_path: Path) -> None:
+    """0341: the page pings `/api/alive`, which reaches the home page's presence."""
+    page = album_page().decode()
+    assert PRESENCE_PATH in page
+    assert 'id="mhStopped"' in page
+    assert "Media Hygiene has stopped" in page
+    runtime = make_runtime(make_locations(tmp_path))
+    home = _Home()
+    headers = {"host": "127.0.0.1:8088", "content-type": "application/json"}
+    alive = Request("POST", PRESENCE_PATH, headers, b"{}")
+    with ThreadPoolExecutor(1) as executor:
+        pages = album_pages(runtime, home, executor)
+        reply = asyncio.run(pages.handle(alive))
+    assert (reply.status, home.paths) == (HTTPStatus.OK, [PRESENCE_PATH])
+
+
+def test_every_framed_page_says_when_media_hygiene_stopped() -> None:
+    """0341: the shared presence, overlay included, is on the pages' home link."""
+    link = (
+        Path(__file__).resolve().parents[2]
+        / "src/media_hygiene/review/templates/home_link.html.j2"
+    ).read_text("utf-8")
+    assert '{% include "presence.html.j2" %}' in link
+    assert "window.mhEnded()" in link
+
+
+def _tagged(runtime: Runtime, tags: tuple[Tag, ...]) -> list[Path]:
+    """The album's photos, the first given tags in the index (current version)."""
+    _album(runtime)
+    data = runtime.locations.data_dir
+    photos = [data / "c" / "Photos" / "Crete" / "IMG_1.jpg"]
+    photos.append(data / "c" / "Phone" / "DCIM" / "img_1.jpg")
+    files = [
+        FileTags(PhotoVersion(path, path.stat().st_size, path.stat().st_mtime_ns), tags)
+        for path in photos[:1]
+    ]
+    with FactsRepository.open(runtime.locations.index_file) as repository:
+        TagStore(repository.connection).replace(list(TagSource), files)
+    return photos
+
+
+_SEEN: Final = (
+    Tag(TagSource.CAPTION, "Une plage à Réthymnon.", "vision"),
+    Tag(TagSource.VISION, "plage", "vision"),
+    Tag(TagSource.PERSON, "Anna"),
+    Tag(TagSource.FOLDER, "Crete"),
+)
+
+
+def _recorder(asked: list[int]) -> Callable[[int], bool]:
+    """An answer of Yes that records each count asked."""
+
+    def answer(count: int) -> bool:
+        asked.append(count)
+        return True
+
+    return answer
+
+
+def _packets(folder: Path) -> dict[str, str]:
+    """The XMP packet of each copy, as text (empty without one)."""
+    found: dict[str, str] = {}
+    for path in sorted(folder.iterdir()):
+        with Image.open(path) as image:
+            packet = image.info.get("xmp", b"")
+            found[path.name] = packet.decode() if isinstance(packet, bytes) else ""
+    return found
+
+
+def test_the_words_of_tags_travel_asked_once_names_never(tmp_path: Path) -> None:
+    """0381: asked with the count; vision words only (no name, no folder word)."""
+    runtime = make_runtime(make_locations(tmp_path))
+    _tagged(runtime, _SEEN)
+    asked: list[int] = []
+    prepared = prepare_album(runtime, SendRequest(_ALBUM, describe=_recorder(asked)))
+    assert asked == [1]
+    assert prepared.described == 1
+    packets = _packets(prepared.sent.folder)
+    assert not packets["img_1.jpg"]  # the photo without tags gets nothing
+    assert "<rdf:li>plage</rdf:li>" in packets["IMG_1_1.jpg"]
+    assert "Anna" not in packets["IMG_1_1.jpg"]
+    assert "Crete" not in packets["IMG_1_1.jpg"]
+
+
+def test_declined_or_stale_the_copies_carry_nothing(tmp_path: Path) -> None:
+    """`--no-describe` writes nothing; a photo changed since `tags` is not asked."""
+    runtime = make_runtime(make_locations(tmp_path))
+    photos = _tagged(runtime, _SEEN)
+    declined = prepare_album(runtime, SendRequest(_ALBUM, describe=lambda _n: False))
+    assert declined.described == 0
+    assert not any(_packets(declined.sent.folder).values())
+    photos[0].write_bytes(photos[0].read_bytes() + b"\x00")  # another version
+    asked: list[int] = []
+    prepare_album(runtime, SendRequest(_ALBUM, describe=_recorder(asked)))
+    assert not asked
+
+
+def test_the_command_says_how_many_copies_carry_words(
+    cli: CliRunner, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Without a terminal nor the option: Yes, said; `--no-describe`: not said."""
+    locations = make_locations(tmp_path)
+    point_mounts(locations, monkeypatch)
+    _tagged(make_runtime(locations), _SEEN)
+    said = " ".join(run(cli, "share", "--album", _ALBUM).output.split())
+    assert "1 copy carries its description and keywords" in said
+    quiet = " ".join(
+        run(cli, "share", "--album", _ALBUM, "--no-describe").output.split()
+    )
+    assert "carries its description" not in quiet

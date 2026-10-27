@@ -3,13 +3,15 @@
 The album's files are followed if they moved (`share.album_follow`), as for
 `slideshow --album`; those missing are counted. Only the photos are copied, each made
 in the worker pool (`share.sent_photo`); the videos are left out and counted: one
-video alone may pass a mail's limit. The photos are only read: the copies go to the
-shares folder, which must be mounted and writable before anything is made.
+video alone may pass a mail's limit. The sentence and the words of `tags` go into
+the copies when the user agrees (`share.sent_words`, 0381), read in this process. The
+photos are only read: the copies go to the shares folder, which must be mounted and
+writable before anything is made.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import partial
 from typing import TYPE_CHECKING
 
@@ -23,9 +25,15 @@ from media_hygiene.services.slideshow_pick import album_paths
 from media_hygiene.services.writable import ensure_writable
 from media_hygiene.share.prepare import Delivery
 from media_hygiene.share.sent_photo import SendJob, sent_jpeg
+from media_hygiene.share.sent_words import (
+    NO_WORDS,
+    SentWords,
+    described_on_disk,
+    words_of,
+)
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Callable, Iterator
     from pathlib import Path
 
     from media_hygiene.services.runtime import Runtime
@@ -38,6 +46,9 @@ class SendRequest:
 
     album: str
     keep_gps: bool = False  # `--keep-gps`; `[share] keep_gps` keeps it too
+    # Asked with the count of photos `tags` described, only when there is one: carry
+    # their sentence and words? Yes unless told otherwise (`--no-describe`).
+    describe: Callable[[int], bool] = field(default=lambda _count: True)
 
 
 @dataclass(frozen=True, slots=True)
@@ -49,6 +60,7 @@ class Prepared:
     videos: int  # left out on purpose
     missing: int  # files of the album found nowhere
     unreadable: int  # photos that could not be decoded
+    described: int = 0  # copies carrying the words of `tags`, read back
 
 
 def prepare_album(runtime: Runtime, request: SendRequest) -> Prepared:
@@ -74,11 +86,11 @@ def prepare_album(runtime: Runtime, request: SendRequest) -> Prepared:
             _("No photo to prepare in the album {name}.").format(name=request.album),
             _("Add photos to it in search or browse; the videos are never copied."),
         )
-    job = _job(runtime, request)
+    words = _words(runtime, request, photos)
     delivery = Delivery(shares, request.album)
     unreadable = len(sources) - len(photos) - videos  # neither a photo nor a video
     try:
-        for source, data in _made(runtime, job, photos):
+        for source, data in _made(runtime, _job(runtime, request), (photos, words)):
             if data is None:
                 unreadable += 1
             else:
@@ -86,7 +98,32 @@ def prepare_album(runtime: Runtime, request: SendRequest) -> Prepared:
         sent = delivery.finish()
     finally:
         delivery.discard()  # Ctrl+C or a full disk: the earlier folder stays
-    return Prepared(sent, job.keep_gps, videos, missing, unreadable)
+    return Prepared(
+        sent,
+        _job(runtime, request).keep_gps,
+        videos,
+        missing,
+        unreadable,
+        described_on_disk(sent.folder) if words else 0,
+    )
+
+
+def _words(
+    runtime: Runtime, request: SendRequest, photos: list[Path]
+) -> dict[Path, SentWords]:
+    """The sentence and the words to carry, once the user agreed.
+
+    Args:
+        runtime: Settings, mount points and output.
+        request: The album, and the question to ask.
+        photos: The photos, in the container.
+
+    Returns:
+        The words of each photo; empty when none has any, or when declined.
+    """
+    sources = runtime.settings.tags.xmp_sources
+    found = words_of(runtime.index_file, photos, sources)
+    return found if found and request.describe(len(found)) else {}
 
 
 def _job(runtime: Runtime, request: SendRequest) -> SendJob:
@@ -105,22 +142,25 @@ def _job(runtime: Runtime, request: SendRequest) -> SendJob:
 
 
 def _made(
-    runtime: Runtime, job: SendJob, photos: list[Path]
+    runtime: Runtime,
+    job: SendJob,
+    album: tuple[list[Path], dict[Path, SentWords]],
 ) -> Iterator[tuple[Path, bytes | None]]:
     """Make the copies in the worker pool, in the album's order.
 
     Args:
         runtime: Settings, mount points and output.
         job: How each photo is made.
-        photos: The photos, in the container.
+        album: The photos, in the container, and the words each one carries.
 
     Yields:
         Each photo, and its copy (None when it cannot be decoded).
     """
+    photos, words = album
+    carried = [words.get(photo, NO_WORDS) for photo in photos]
     with runtime.executor_factory() as executor:
-        yield from zip(
-            photos, executor.map(partial(sent_jpeg, job), photos), strict=True
-        )
+        made = executor.map(partial(sent_jpeg, job), photos, carried)
+        yield from zip(photos, made, strict=True)
 
 
 def _shares_ready(runtime: Runtime) -> Path:

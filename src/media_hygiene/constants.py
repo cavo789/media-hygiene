@@ -134,6 +134,12 @@ class ExitCode(IntEnum):
     USAGE = 2
     PAGE_CLOSED = 3  # a page's tab was closed: mh does not open home again (0262)
     GONE_REVIEW = 4  # the audit done, its user asked mh to open `review --gone`
+    CRASHED = (
+        5  # the home server ended on an unforeseen error: mh starts it again (0365)
+    )
+    KILLED = (
+        137  # 128 + SIGKILL: Docker killed the container (out of memory), a crash too
+    )
     INTERRUPTED = 130  # 128 + SIGINT, as shells report Ctrl+C
 
 
@@ -146,8 +152,8 @@ class Sizes(IntEnum):
     MAX_GROUPS_IN_REPORT = 500
     PAIR_SAMPLES = 4
     MAX_SAMPLED_PAIRS = 50
-    RANDOM_SAMPLE = 30
-    MAX_BURSTS_IN_REPORT = 200
+    RANDOM_SAMPLE = 5  # as many as REPORT_EXAMPLES (review of 2026-10-26)
+    REPORT_EXAMPLES = 5  # per chapter of the audit report; the full list elsewhere
     MAX_ORPHANS_IN_REPORT = 500
     IO_CONCURRENCY = 16
 

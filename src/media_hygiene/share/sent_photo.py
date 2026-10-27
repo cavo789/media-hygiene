@@ -8,8 +8,10 @@ date, the camera, the description, the copyright), except:
 - the maker's notes, private to each brand, which may hold a serial number.
 
 The XMP packet is never copied: it may repeat the position, and its description is
-also in the EXIF when Windows wrote it. A RAW file gives its embedded preview and no
-EXIF. The original is only read. Runs in the worker pool.
+also in the EXIF when Windows wrote it. The sentence and the words of `tags`, when
+given, go into a new packet and the EXIF fields of Windows (`share.sent_words`). A
+RAW file gives its embedded preview and no EXIF. The original is only
+read. Runs in the worker pool.
 """
 
 from __future__ import annotations
@@ -23,6 +25,7 @@ from PIL import ExifTags, Image, ImageFile
 
 from media_hygiene.report.thumbnails import unreadable_errors, upright_picture
 from media_hygiene.scan.image_check import prepare_image_worker
+from media_hygiene.share.sent_words import NO_WORDS, SentWords, add_words
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -41,12 +44,13 @@ class SendJob:
     keep_gps: bool = False
 
 
-def sent_jpeg(job: SendJob, source: Path) -> bytes | None:
+def sent_jpeg(job: SendJob, source: Path, words: SentWords = NO_WORDS) -> bytes | None:
     """Make the copy of one photo to send.
 
     Args:
         job: The size, the quality, the GPS kept or not.
         source: The photo, in the container; only read.
+        words: The sentence and the words of `tags` to carry; none by default.
 
     Returns:
         The JPEG, or None when the photo cannot be decoded.
@@ -57,24 +61,29 @@ def sent_jpeg(job: SendJob, source: Path) -> bytes | None:
     with contextlib.suppress(*unreadable_errors()):
         picture = upright_picture(source, job.long_side_px)
         picture.thumbnail((job.long_side_px, job.long_side_px))
-        exif, icc = _header(source, keep_gps=job.keep_gps)
+        exif, icc, xmp = _header(source, words, keep_gps=job.keep_gps)
         buffer = io.BytesIO()
-        picture.save(buffer, "JPEG", quality=job.quality, exif=exif, icc_profile=icc)
+        picture.save(
+            buffer, "JPEG", quality=job.quality, exif=exif, icc_profile=icc, xmp=xmp
+        )
         made = buffer.getvalue()  # whole, or nothing: never half a JPEG
     ImageFile.LOAD_TRUNCATED_IMAGES = False
     return made or None  # empty: the photo could not be decoded
 
 
-def _header(source: Path, *, keep_gps: bool) -> tuple[bytes, bytes | None]:
-    """The EXIF to write in the copy, and the colour profile of the photo.
+def _header(
+    source: Path, words: SentWords, *, keep_gps: bool
+) -> tuple[bytes, bytes | None, bytes]:
+    """The EXIF to write in the copy, the colour profile, the XMP packet.
 
     Args:
         source: The photo.
+        words: The sentence and the words to carry.
         keep_gps: Keep the GPS position.
 
     Returns:
-        The EXIF block (empty when the photo has none, or for a RAW file), and the
-        ICC profile, if any.
+        The EXIF block (empty when the photo has none and no words, or for a RAW
+        file), the ICC profile, if any, and the XMP packet (empty without words).
     """
     with contextlib.suppress(*unreadable_errors()), Image.open(source) as image:
         exif = image.getexif()
@@ -84,6 +93,7 @@ def _header(source: Path, *, keep_gps: bool) -> tuple[bytes, bytes | None]:
         exif.get_ifd(ExifTags.IFD.Exif).pop(_MAKER_NOTE, None)
         if _ORIENTATION in exif:
             exif[_ORIENTATION] = _UPRIGHT
+        xmp = add_words(exif, words)
         block = exif.tobytes() if exif else b""
-        return block, icc if isinstance(icc, bytes) else None
-    return b"", None
+        return block, icc if isinstance(icc, bytes) else None, xmp
+    return b"", None, b""

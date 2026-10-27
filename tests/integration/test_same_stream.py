@@ -47,5 +47,7 @@ def test_the_original_is_kept(renamed: CliRunner, locations: Locations) -> None:
     assert 'src="file:///C:/Exports/162.mp4"' in page
     assert 'id="bursts"' not in page
     assert "0 sure, 0 to check" not in page
-    assert "1 sure group: show it" in page  # folded below the groups to check
+    # A clean report lists the groups it moved, nothing folded (0309).
+    assert "sure group: show it" not in page
+    assert "This clean moved these copies to the quarantine" in page
     assert "Sure: the very picture and sound" in page

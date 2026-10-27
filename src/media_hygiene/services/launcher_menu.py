@@ -12,6 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Final
 
+from media_hygiene.constants import ExitCode
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.services.next_command import LAUNCHER_FUNCTION
 
@@ -24,6 +25,17 @@ BROWSE_WAIT: Final = 300
 # after a reboot, not a setting (step 16 of `mh-measure.ps1` times it).
 DESKTOP_WAIT: Final = 180
 _COMMAND: Final = f"{LAUNCHER_FUNCTION} ${{command}}"
+
+
+@dataclass(frozen=True, slots=True)
+class Crash:
+    """How `mh` tells a crash of the home server, and how often it starts it again."""
+
+    codes: tuple[int, ...]  # its own code, and Docker's kill (out of memory)
+    window: int  # two crashes within these seconds end `mh`'s loop (0365)
+
+
+CRASH: Final = Crash((int(ExitCode.CRASHED), int(ExitCode.KILLED)), 60)
 
 
 @dataclass(frozen=True, slots=True)
@@ -42,6 +54,9 @@ class MenuTexts:  # pylint: disable=too-many-instance-attributes  # one per mess
     daemon: str  # mh.sh: the same, Docker on Linux, macOS or WSL
     starting: str  # mh.ps1: Docker Desktop does not answer, `mh` starts it (0200)
     ready: str  # mh.ps1: started after a failed run: the command is typed again
+    crashed: str  # the home server stopped unexpectedly: started again (0365)
+    crashed_again: str  # the same within a minute: the loop ends
+    crash: Crash = CRASH  # the codes of a crash, and its window
 
 
 def menu_texts() -> MenuTexts:
@@ -92,6 +107,13 @@ def menu_texts() -> MenuTexts:
         ),
         ready=shell_safe(
             _("Docker Desktop is ready: type the command again (↑ then Enter).")
+        ),
+        crashed=shell_safe(_("The home page stopped unexpectedly: started again.")),
+        crashed_again=shell_safe(
+            _(
+                "The home page stopped unexpectedly twice in a row: type mh to start "
+                "it again."
+            )
         ),
     )
 

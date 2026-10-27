@@ -2,6 +2,8 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `review-sort` · 🇫🇷 [Français](../../fr/commands/review-sort.md)
 
+> The page's button on the [home page](home.md) (`mh` alone) opens it; the command is still there for a script or without the home page, but `mh --help` no longer lists it.
+
 ## In short
 
 **Give a name to each outing, party or trip of your photos while looking at them: that name

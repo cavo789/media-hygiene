@@ -202,6 +202,12 @@ function showLan() {
     .then((response) => (response.ok ? response.json() : null))
     .then((lan) => {
       if (!lan) return;
+      // No home network (0367): the card says why, without the pairing lines.
+      $("#lanNone").hidden = lan.problem !== "none";
+      $("#lanPublic").hidden = lan.problem !== "public";
+      $("#lanPair").hidden = !lan.qr;
+      $("#lanCard").hidden = false;
+      if (!lan.qr) return;
       $("#lanQr").innerHTML = lan.qr;
       $("#lanUrl").textContent = lan.url;
       $("#lanCode").textContent = lan.code;

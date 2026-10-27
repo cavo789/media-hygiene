@@ -15,6 +15,9 @@ const STOP_PATH = {{ stop_path | tojson }};
 const PHONE_MB_PER_SECOND = {{ phone_speed | tojson }}; // read twice: the proof's copy, then the move
 const GONE = new Set([404, 405]); // a route this page's server always answers: another server's
 const MB = 1024 * 1024;
+const RUN_HEADER = "X-Media-Hygiene-Run"; // review/respond.py, 0354
+const FOLLOW_MS = 1000; // after Delete or Leave, the address is asked again this often
+const ANSWER_MS = 2000; // a poll answered by nobody is dropped (home_link.html.j2)
 const FOLDED_KEY = "mh-phone-folded";
 const LANG = document.documentElement.lang;
 const UNITS = ["B", "KB", "MB", "GB", "TB"];
@@ -239,24 +242,51 @@ VIEWER_KEYS[" "] = async () => {
 };
 
 // The page ends; opened from the home page, this tab shows it once mh opens it again (0332).
-function end(path, text) {
+function end(path, text, minutes) {
   ask(path, {}).then(async (answer) => {
     if (!answer || GONE.has(answer.status)) { gone(); return; }
     const reply = await answer.json().catch(() => ({}));
     if (!answer.ok) { say(reply.error || fill(TEXTS.failed, { status: answer.status }), "error"); return; }
-    $("closedText").textContent = text;
     $("closed").style.display = "flex";
-    if (window.mhAwaitHome) window.mhAwaitHome(answer.headers.get("X-Media-Hygiene-Run"));  // RUN_HEADER, 0354
+    const run = answer.headers.get(RUN_HEADER);
+    if (window.mhAwaitHome) window.mhAwaitHome(run); // keeps the home page's section
+    follow(run, text, minutes);
   });
+}
+
+// After Delete or Leave (0338), whatever mh started the page (an old mh passes no relay, so no
+// `mhAwaitHome`): the tab watches the address, says the minutes gone by, and shows whatever
+// answers there again (seen gone, or another run id): the home page when mh brings it back.
+function follow(run, text, minutes) {
+  const started = Date.now();
+  let seenGone = false;
+  const show = () => {
+    const parts = [text];
+    if (minutes) parts.push(fill(TEXTS.elapsed, { elapsed: number(Math.floor((Date.now() - started) / 60000)), minutes: number(minutes) }));
+    if (seenGone) parts.push(TEXTS.console);
+    $("closedText").textContent = parts.join(" ");
+  };
+  const again = () => { show(); window.setTimeout(poll, FOLLOW_MS); };
+  const poll = () => fetch("/", { cache: "no-store", signal: AbortSignal.timeout(ANSWER_MS) })
+    .then((response) => {
+      const now = response.headers.get(RUN_HEADER);
+      if (response.ok && (seenGone || (run && now && now !== run))) window.location.replace("/");
+      else again();
+    })
+    .catch((error) => {
+      if (error.name !== "TimeoutError") seenGone = true; // refused: the server is gone
+      again();
+    });
+  again();
 }
 
 $("free").addEventListener("click", () => {
   const ranks = [...disk];
   if (!synced || !ranks.length) return; // the ticks shown are not those on the disk
   const minutes = Math.max(1, Math.ceil((2 * sum(ranks)) / MB / PHONE_MB_PER_SECOND / 60));
-  if (window.confirm(fill(TEXTS.confirm, { ticked: number(ranks.length), size: size(sum(ranks)) }))) end(FREE_PATH, fill(TEXTS.freed, { minutes: number(minutes) }));
+  if (window.confirm(fill(TEXTS.confirm, { ticked: number(ranks.length), size: size(sum(ranks)) }))) end(FREE_PATH, TEXTS.freed, minutes);
 });
-$("leave").addEventListener("click", () => end(STOP_PATH, TEXTS.left));
+$("leave").addEventListener("click", () => end(STOP_PATH, TEXTS.left, 0));
 
 Promise.all([ask(STATE_PATH), ask(FILE_PATH)])
   .then(async ([state, file]) => {

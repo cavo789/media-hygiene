@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 from importlib.metadata import version as package_version
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from pydantic import ValidationError
 
@@ -30,6 +30,9 @@ if TYPE_CHECKING:
 
 _TEMPLATE_PACKAGE = "media_hygiene.config"
 _TEMPLATE_NAME = "config.toml.j2"
+# Sections renamed since a default `config.toml` wrote them: `[backup]` of `mh backup`
+# became `[push]` with the verb (0375); a file written before still loads.
+_FORMER_SECTIONS: Final = {"backup": "push"}
 
 
 __all__ = [
@@ -77,7 +80,8 @@ def load_settings(locations: Locations, cli: Layer | None = None) -> LoadedSetti
     """
     layers = {
         Origin.FILE: linked_layer(
-            read_file_layer(locations.config_file), locations.config_dir
+            renamed_sections(read_file_layer(locations.config_file)),
+            locations.config_dir,
         ),
         Origin.ENV: read_env_layer(os.environ),
         Origin.CLI: cli or {},
@@ -91,6 +95,22 @@ def load_settings(locations: Locations, cli: Layer | None = None) -> LoadedSetti
     if variables:
         raise config_error(Problems((), layers, variables))
     return LoadedSettings(settings, layers)
+
+
+def renamed_sections(layer: Layer) -> Layer:
+    """The file's layer, a section of a former name read under its current one.
+
+    Args:
+        layer: The sections of `config.toml`, as read.
+
+    Returns:
+        The same sections, `[backup]` read as `[push]` unless both are written.
+    """
+    renamed = dict(layer)
+    for former, current in _FORMER_SECTIONS.items():
+        if former in renamed and current not in renamed:
+            renamed[current] = renamed.pop(former)
+    return renamed
 
 
 def default_config(locale: Locale) -> str:

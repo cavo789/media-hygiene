@@ -59,10 +59,10 @@ def action_commands(act: str) -> tuple[tuple[str, str, str], ...]:
             ),
         ),
         (
-            "backup",
+            "push",
             act,
             _(
-                "Windows only, as mh backup: copy your photo folders into a folder "
+                "Windows only, as mh push: copy your photo folders into a folder "
                 "of their own on the NAS, only what it lacks; a photo moved is "
                 "renamed there, a deletion by mistake never carried over. Run here, "
                 "it shows the plan."

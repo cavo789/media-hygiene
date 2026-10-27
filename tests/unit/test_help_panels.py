@@ -9,6 +9,7 @@ import typer.main
 from typer.core import TyperOption
 
 from media_hygiene.cli.app import build_app
+from media_hygiene.cli.commands import PAGE_ONLY, commands
 from media_hygiene.cli.options import panel_local_ai
 from media_hygiene.cli.safety import READ_ONLY_COMMANDS, read_only_marker
 from media_hygiene.services.phone_plan import PHONE_PLAN
@@ -70,7 +71,11 @@ def test_read_only_commands_share_one_panel_sorted_by_name() -> None:
     """Read-only commands first, then the others; each panel in alphabetical order."""
     infos = [info for info in build_app().registered_commands if not info.hidden]
     names = [info.name or "" for info in infos]
-    shown = {name for name in READ_ONLY_COMMANDS if name != PHONE_PLAN}
+    shown = {
+        name
+        for name in READ_ONLY_COMMANDS
+        if name != PHONE_PLAN and name not in PAGE_ONLY
+    }
     read_only = names[: len(shown)]
     assert set(read_only) == shown
     assert read_only == sorted(read_only)
@@ -103,3 +108,24 @@ def test_local_ai_options_stand_apart(name: str) -> None:
     assert panelled == _LOCAL_AI
     info = next(info for info in build_app().registered_commands if info.name == name)
     assert (info.short_help or "").endswith("🤖")
+
+
+def test_help_lists_only_the_verbs_with_a_console_use() -> None:
+    """`browse`, `home`, `places`, `review-sort` only open a page: hidden, kept."""
+    infos = build_app().registered_commands
+    hidden = {info.name for info in infos if info.hidden}
+    assert hidden >= PAGE_ONLY
+    visible = {info.name for info in infos if not info.hidden}
+    assert visible == {name for name, *_ in commands()} - PAGE_ONLY
+    assert {"review", "search", "slideshow", "people", "shrink"} <= visible
+
+
+@pytest.mark.parametrize("name", sorted(PAGE_ONLY))
+def test_a_hidden_verb_still_answers_when_typed(name: str) -> None:
+    """A shortcut or `mh menu` typing it still reaches the command.
+
+    Args:
+        name: The hidden verb.
+    """
+    group = typer.main.get_command(build_app())
+    assert name in group.commands  # type: ignore[attr-defined]

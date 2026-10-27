@@ -2,6 +2,8 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `home` · 🇫🇷 [Français](../../fr/commands/home.md)
 
+> `mh` alone opens this page; `mh home` is still there for a script, but `mh --help` no longer lists it.
+
 ## In short
 
 **One page in your browser: where your photos stand, the next step as a big button, every
@@ -143,8 +145,9 @@ lead to the [website](https://cavo789.github.io/media-hygiene/): no page of the 
 
 ## From a phone on the home Wi-Fi: `mh --lan`
 
-In Windows PowerShell, `mh --lan` opens the home page as `mh` alone does, and lets a phone
-**of the same Wi-Fi** open it too, until `mh` stops:
+In Windows, `mh --lan` opens the home page to a phone **of the same Wi-Fi** too, until `mh`
+stops; with `lan = true` under `[review]` in `config.toml` (then `mh update`), `mh` alone and its
+desktop shortcut do the same (off by default for now):
 
 1. `mh` finds the PC's address on the home network (*192.168.1.20*) and says *The home page opens
    to the phones of the home network too*. Windows may ask whether **Docker Desktop** may accept
@@ -169,8 +172,14 @@ the home network too: the phone already paired reloads its page and gets the sli
 | How | Plain HTTP on the home network, as decided: no certificate warning on the phone; the code and the cookie travel in clear on your Wi-Fi, for this run only. |
 | Next time | A new `mh --lan`, a new code: the old phone must pair again. |
 
-The phone cannot open the page? Windows counts the network as **public** (`mh` says so): set
-it to private in *Settings › Network and Internet*. `mh --lan` is Windows PowerShell only for now.
+The phone cannot open the page? The card *On your phone* says why: *No home network found*
+(the page opens for the PC alone, nothing fails), or Windows counts the Wi-Fi as **public**: set
+it to private in *Settings › Network & Internet › Wi-Fi › Private network*. The first time,
+Windows may ask about Docker Desktop once: tick **Private networks**, then **Allow**.
+
+With `lan = false` (the default for now): the home page stays on the PC, no card (`mh --lan`
+still opens it when typed).
+Windows PowerShell only for now.
 
 ## Your albums, on the phone
 
@@ -233,6 +242,12 @@ fonts and pictures come from the image itself: the page asks nothing of any othe
 - The steps are read again from the tool's folders each time the page loads: what another
   window did shows at the next reload. A button of a page drawn before such a change is refused
   (*The steps changed since the page was shown*) and the page shows the steps again.
+- `config.toml` is read again when you change it, the next audit run from the page included. A
+  typo that makes it unreadable is said at the top of the page (*…config.toml cannot be read: …
+  The last good settings stay until it is fixed.*); the line goes once the file is fixed.
+- If the page stops unexpectedly (a bug, Docker out of memory), `mh` starts it again by itself
+  (*The home page stopped unexpectedly: started again.*); a second stop within a minute gives the
+  prompt back.
 
 ## Go further
 

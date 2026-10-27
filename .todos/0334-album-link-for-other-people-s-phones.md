@@ -2,8 +2,7 @@
 
 - **Priority**: Low
 - **Batch**: share
-- **Depends**: 0297
-- **Needs maintainer**: the design: how the link is made and given (QR code, mail), how long it lasts, what it lets the phone see (one album only), whether the PC must stay on
+- **Depends**: 0297, 0384
 - **Files**: `src/media_hygiene/share/album_page.py`, `src/media_hygiene/share/templates/album.html.j2`, `src/media_hygiene/review/lan_app.py`, `documentation/en/`, `documentation/fr/`
 
 ## Why
@@ -23,3 +22,10 @@ album page of 0297 reused read-only.
 ## Tests
 
 To write with the design.
+
+## Decided (inbox, 2026-10-27)
+
+The maintainer chose: a QR code shown on the PC plus a link to copy (to send by mail or
+message); the link lasts **24 h**; it shows **one album, read-only** (no set-aside, no other
+album, no search); the PC stays on with `mh --lan` (no cloud, nothing leaves the home network).
+Depends on 0384: no link before the forged `Host` hole is closed.

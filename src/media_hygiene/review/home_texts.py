@@ -10,6 +10,7 @@ from __future__ import annotations
 from media_hygiene.i18n import _
 from media_hygiene.review.home_texts_marked import marked_texts
 from media_hygiene.review.home_texts_run import run_texts
+from media_hygiene.review.home_texts_tags import tags_texts
 
 
 def home_texts() -> dict[str, str]:
@@ -18,7 +19,14 @@ def home_texts() -> dict[str, str]:
     Returns:
         By key.
     """
-    return {**_shell(), **_home(), **_spaces(), **marked_texts(), **run_texts()}
+    return {
+        **_shell(),
+        **_home(),
+        **_spaces(),
+        **marked_texts(),
+        **run_texts(),
+        **tags_texts(),
+    }
 
 
 def _shell() -> dict[str, str]:
@@ -58,6 +66,14 @@ def _shell() -> dict[str, str]:
         "lanOpen": _("Same Wi-Fi, open:"),
         "lanCode": _("Code:"),
         "lanNote": _("Until mh stops; never the internet."),
+        "lanNone": _("No home network found: the phone cannot open this page."),
+        "lanPublic": _(
+            "Windows counts this Wi-Fi as public: its firewall blocks the phone. "
+            "Settings > Network & Internet > Wi-Fi > Private network."
+        ),
+        "lanFirewall": _(
+            "If Windows asks about Docker Desktop: tick Private networks, then Allow."
+        ),
         "onThePc": _(
             "From the phone: the audit, the reports and the albums. Run this step on "
             "the PC."
@@ -130,7 +146,7 @@ def _spaces() -> dict[str, str]:
         "done": _("Done"),
         "optional": _("Optional"),
         "planned": _("Planned"),
-        "plannedReason": _("Planned with mh backup: not in the tool yet."),
+        "plannedReason": _("Planned with mh push: not in the tool yet."),
         "nothingYet": _("Nothing to do yet."),
         "riskSafe": _("Photos untouched"),
         "riskUndo": _("Undoable"),
@@ -146,7 +162,7 @@ def _spaces() -> dict[str, str]:
         "verbFill": _("Fill in"),
         "verbSoon": _("Soon"),
         "inThisPage": _("In this page"),
-        "backupPlanned": _("Planned: mh backup is coming."),
+        "backupPlanned": _("Planned: mh push is coming."),
         "backupPlannedText": _(
             "The cycle already keeps its place: once the command exists, its entry in "
             "the catalog lights this page, the palette and the console menu."

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import shlex
-import subprocess
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -12,17 +11,11 @@ from typing import TYPE_CHECKING, Final
 from tests.support.docker import docker
 from tests.support.docs.container import DUMB, Command
 from tests.support.docs.terminal import tidy
+from tests.support.pages_browser import BrowserRun, run_browser
 
 if TYPE_CHECKING:
     from tests.support.docs.container import Demo
 
-PLAYWRIGHT: Final = "1.57.0"
-# Microsoft's image ships the browsers, not the Python package: a layer adds it, once.
-_BROWSER_BASE: Final = f"mcr.microsoft.com/playwright/python:v{PLAYWRIGHT}-jammy"
-_DOCKERFILE: Final = (
-    f"FROM {_BROWSER_BASE}\nRUN pip install --no-cache-dir playwright=={PLAYWRIGHT}\n"
-)
-BROWSER_IMAGE: Final = f"media-hygiene-docs-browser:{PLAYWRIGHT}"
 _SCRIPT: Final = Path(__file__).with_name("browser.py")
 _SERVED: Final = _SCRIPT.with_name("served.py")  # imported by browser.py
 _READY: Final = "127.0.0.1:8088"  # the review and the search print their address
@@ -38,15 +31,6 @@ class Job:
 
     network: str
     args: tuple[str, ...]
-
-
-def build_browser() -> None:
-    """Build the browser image (instant after the first time: Docker caches it)."""
-    command = ["docker", "build", "--quiet", "--tag", BROWSER_IMAGE, "-"]
-    # Fixed, trusted arguments; the Dockerfile comes on the standard input.
-    subprocess.run(  # noqa: S603
-        command, input=_DOCKERFILE, text=True, check=True, capture_output=True
-    )
 
 
 def start_review(
@@ -126,26 +110,11 @@ def _browse(demo: Demo, job: Job, shots: Path) -> str:
     Returns:
         Empty when it worked, its log otherwise.
     """
-    name = f"{demo.prefix}-browser"
-    docker("rm", "--force", name)
-    install = (
-        "pip install --quiet --disable-pip-version-check --root-user-action=ignore"
+    run = BrowserRun(
+        name=f"{demo.prefix}-browser",
+        scripts=(_SCRIPT, _SERVED, *sorted(_SCRIPT.parent.glob("*.js"))),
+        args=job.args,
+        network=job.network,
+        options=("-v", f"{demo.volume('reports')}:/reports:ro"),
     )
-    script = f"{install} playwright=={PLAYWRIGHT} && python /tmp/browser.py "
-    script += shlex.join(job.args)
-    # --init and --ipc=host: what Playwright advises for Chromium in Docker.
-    docker("create", "--name", name, "--network", job.network, "--init",
-           "--ipc", "host", "-v", f"{demo.volume('reports')}:/reports:ro",
-           BROWSER_IMAGE, "sh", "-c", script)  # fmt: skip
-    for source in (_SCRIPT, _SERVED, *sorted(_SCRIPT.parent.glob("*.js"))):
-        docker("cp", str(source), f"{name}:/tmp/{source.name}")
-    docker("cp", str(shots), f"{name}:/shots")
-    docker("start", name)
-    code = docker("wait", name).stdout.strip()
-    if code != "0":
-        log = docker("logs", name)
-        docker("rm", name)
-        return f"{log.stdout}{log.stderr}" or f"exit code {code}"
-    docker("cp", f"{name}:/shots/.", str(shots))
-    docker("rm", name)
-    return ""
+    return run_browser(run, shots)

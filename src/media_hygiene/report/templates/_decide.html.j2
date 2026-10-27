@@ -1,0 +1,65 @@
+{# The status of each chapter of the audit report and its ▶ button (0310). The report is a
+   static file: the button shows only when the home page serves it (its `GET /api/step`
+   answers), and posts the step by its name; else the command to copy stays. #}
+{% macro badge(kind) %}{% if not report.done %}
+{% set said = {
+  "clean": "🧹 " ~ _("'clean' takes care of it"),
+  "decide": "👀 " ~ _("Yours to decide"),
+  "info": "ℹ️ " ~ _("For your information, nothing to do"),
+} %}<span class="badge status-{{ kind }}">{{ said[kind] }}</span>{% endif %}{% endmacro %}
+{% macro decide(step, command, label) %}{% if not report.done %}
+<p class="decide" data-step="{{ step }}">
+  <button type="button" class="run" hidden>▶ {{ label }}</button>
+  <span class="fallback">▶ {{ label }}: <code class="command">{{ command }}</code>
+    <button type="button" class="copy-decide" data-copied="{{ _('Copied') }}">{{ _("Copy the command") }}</button></span>
+  <span class="said muted" role="status"></span>
+</p>{% endif %}{% endmacro %}
+{% macro full_list(count, page, csv=true) %}
+<p class="muted">{{ _("%(shown)s of %(count)s shown.", shown=[examples, count] | min | number, count=count | number) }}
+{% if page %}📄 <a href="{{ page }}">{{ _("The full list") }}</a>{% endif %}
+{% if csv and report.header.summary.plan_file %} · <a href="{{ report.header.summary.plan_file }}">{{ _("the spreadsheet (CSV)") }}</a>{% endif %}</p>
+{% endmacro %}
+{% macro decide_script() %}
+<script>
+(() => {
+  const TEXTS = {{ {"running": _("Opening in the window where mh runs: {command}."), "failed": _("The page failed (error {status}): copy the command.")} | tojson }};
+  const rows = document.querySelectorAll("p.decide");
+  for (const row of rows) {
+    const copy = row.querySelector("button.copy-decide");
+    copy.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(row.querySelector("code").textContent); copy.textContent = copy.dataset.copied; } catch { /* select it by hand */ }
+    });
+  }
+  if (!rows.length || !window.location.protocol.startsWith("http")) return;
+  // Served by the home page: its step API answers. `mh reports`, a disk: no button.
+  fetch("/api/step", { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : null))
+    .then((state) => {
+      if (!state || !("state" in state)) return;
+      for (const row of rows) {
+        const run = row.querySelector("button.run");
+        const said = row.querySelector(".said");
+        run.hidden = false;
+        row.querySelector(".fallback").hidden = true;
+        run.addEventListener("click", () => {
+          run.disabled = true;
+          fetch("/api/step", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: row.dataset.step }) })
+            .then(async (response) => {
+              const answer = await response.json().catch(() => ({}));
+              if (!response.ok) {
+                said.textContent = answer.error || TEXTS.failed.replace("{status}", response.status);
+                row.querySelector(".fallback").hidden = false;
+                run.disabled = false;
+                return;
+              }
+              if (answer.page) { window.location.href = answer.page; return; }
+              said.textContent = TEXTS.running.replace("{command}", answer.command || "");
+            })
+            .catch(() => { run.disabled = false; row.querySelector(".fallback").hidden = false; });
+        });
+      }
+    })
+    .catch(() => { /* not the home page: the command stays */ });
+})();
+</script>
+{% endmacro %}

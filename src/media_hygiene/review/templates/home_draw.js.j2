@@ -26,7 +26,8 @@ function actionButton(action, st) {
   const off = !st.available;
   const glyph = st.planned ? "info" : action.fields.length ? "edit" : action.kind === "page" ? "external" : "play";
   const cls = st.proposed ? "btn btn-primary" : action.risk === "final" && !off ? "btn btn-danger-ghost" : "btn";
-  const here = action.name === "audit" && !off ? `<button class="btn btn-ghost btn-sm" type="button" data-act="audit-here">${esc(T.inThisPage)}</button>` : "";
+  const inPage = { audit: "audit-here", tags: "tags-here" }[action.name];
+  const here = inPage && !off && (!REMOTE || action.name === "audit") ? `<button class="btn btn-ghost btn-sm" type="button" data-act="${inPage}">${esc(T.inThisPage)}</button>` : "";
   return `<button class="${cls}" type="button" data-run="${esc(action.name)}"${off ? ' aria-disabled="true"' : ""}>${icon(glyph)} ${esc(verbOf(action, st))}</button>${here}`;
 }
 
@@ -159,9 +160,10 @@ function auditPanel() {
 }
 function viewHome() {
   const given = S.given.map((line) => `<p class="callout callout-info">${icon("folder")}<span>${esc(line)}</span></p>`).join("");
+  const broken = S.settings_error ? `<p class="callout callout-warn" id="settingsError" role="alert">${icon("info")}<span>${esc(S.settings_error)}</span></p>` : "";
   return `${updateBanner()}
     <div class="page-head"><h1>${esc(T.whereYourPhotos)}</h1><p>${esc(T.readNow)}</p></div>
-    ${given}${hero()}${REMOTE ? EXTRAS.albums() : ""}
+    ${broken}${given}${hero()}${REMOTE ? EXTRAS.albums() : ""}
     <section class="block" aria-labelledby="cycleTitle">
       <div class="section-head"><h2 id="cycleTitle">${esc(T.cycle)}</h2><p class="section-note">${esc(T.cycleNote)}</p></div>
       <ol class="cycle">${STAGES.map(station).join("")}</ol>

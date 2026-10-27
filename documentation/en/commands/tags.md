@@ -49,6 +49,18 @@ docker run --rm -it `
 Without a vision model, it takes seconds: *✅ 52,318 files: 241,906 words from their folders,
 names, dates and places.*
 
+### From the home page
+
+On the home page (`mh`), the **In this page** button next to *Give your photos words* runs
+`tags` without the console. It writes the words of folders, names, dates and places first
+(seconds), then shows what the vision model would cost: *40,099 photos to describe with
+qwen2.5vl:7b, about 21 h 27 min*. Pick **Describe now**, **Describe for 1 h** (it stops by
+itself) or **Not now**. While it runs, the page shows the photos described, the rate and the
+time left; **Stop after this photo** ends it, and the next run goes on where it stopped (each
+answer is kept in the cache at once). Reopening the page during a run shows the run. Only the
+cache is written: your photos are not changed. If Ollama cannot be reached, the page says so in
+one line.
+
 ## Where the words come from
 
 | Source | Words | Cost |

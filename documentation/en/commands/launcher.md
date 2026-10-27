@@ -115,8 +115,8 @@ So `--help` of the image does not list them; this page and the `mh` menu do.
 | `mh folders` | Lists your photo folders and the quarantines, each *found* or *not found* (a disk not plugged in); a quarantine not created yet is said so: the first `clean` creates it. `add` and `remove` change them: [below](#change-your-folders-mh-folders). |
 | `mh update` | Downloads the new version of the image, then writes `mh` again with the same folders: [below](#a-new-version-mh-update). |
 | `mh phone` | Windows: copies only the **new** photos and videos of a phone plugged in over USB; with `--free`, then deletes from the phone what the PC holds, proven by its content: [below](#a-phone-copy-only-its-new-photos-mh-phone). |
-| `mh backup` | Windows: copies your photo folders into a folder of their own on the NAS, only what it lacks; Windows writes it (robocopy), the container decides: [`backup`](backup.md). |
-| `mh --lan` | Windows: the home page, as `mh` alone, that a phone of the same Wi-Fi may open too with a code (or its QR code), until `mh` stops; from the phone, the audit and the reports only: [`home`](home.md#from-a-phone-on-the-home-wi-fi-mh---lan). |
+| `mh push` | Windows: copies your photo folders into a folder of their own on the NAS, only what it lacks; Windows writes it (robocopy), the container decides: [`push`](push.md). |
+| `mh --lan` | Windows: the home page open to the home Wi-Fi for this run, even with `[review] lan = false` (the default for now): the home page that a phone of the same Wi-Fi may open too with a code (or its QR code), until `mh` stops; from the phone, the audit and the reports only: [`home`](home.md#from-a-phone-on-the-home-wi-fi-mh---lan). |
 | `mh slideshow --folder "C:\…" --lan` | Windows: the [slideshow](slideshow.md) opened to the TV and the phones of the home network, for this run; the TV is paired by a code it shows, typed on the phone. |
 
 `mh shortcut` and `mh explorer` read back what they wrote (the `.lnk` files, the registry keys
@@ -127,7 +127,7 @@ Windows restarts. Both show the *Media Hygiene* icon: Docker copies it from the 
 `media-hygiene.ico`, next to `mh.ps1`; if it cannot, they say so in one line and keep
 PowerShell's icon. From WSL, Linux or macOS,
 `mh open` uses `wslview`, `explorer.exe`, `xdg-open` or `open`; `mh shortcut`, `mh explorer` and
-`mh phone` say they are for Windows; `mh backup` says why (Windows writes to the NAS 7 times faster)
+`mh phone` say they are for Windows; `mh push` says why (Windows writes to the NAS 7 times faster)
 and the command to type in Windows PowerShell.
 
 **What the icon and the right-click start**: Windows PowerShell, `-NoExit -Command`, loading
@@ -233,7 +233,10 @@ mh phone --free                # then free the phone: below
 ```
 
 Plug the phone in over USB, unlock it and choose *File transfer* (iPhone: *Trust this
-computer*). `mh phone` finds it (several phones: it asks which one), lists its `DCIM` folder
+computer*), and **keep it unlocked, screen on** until `mh` is done: asleep or locked, a phone
+shows Windows no storage at all. Then `mh phone` says *answers but shows no storage: wake it up
+and unlock it…* and waits for it, up to a minute. It finds the phone (several phones: it asks
+which one), lists its `DCIM` folder
 (about 30 seconds per 1,000 files), then copies **only** what your library does not hold yet:
 
 - **already in your library**: a file of the same name (case ignored) and the same size that an
@@ -300,8 +303,10 @@ disk and shown. **Nothing leaves the phone before you press *Delete N files from
 *Leave everything on the phone* ends it with nothing deleted. Opened from the home page (*Make
 room on the phone*), the page has **⌂ Back to the home page** at the top right, as every page:
 it ends the page in the same way, nothing deleted, and the home page comes back in the same tab;
-after *Delete*, the tab says to switch to the PowerShell window (with the time it takes), then
-shows the home page again once it is done. If the page stopped meanwhile (ended in another tab,
+after *Delete*, the tab says to switch to the PowerShell window and counts the minutes gone by
+against the estimate (*2 min gone by, of about 4*), then shows the home page by itself once `mh`
+brings it back, even when `mh.ps1` was written by an older image; typed in a console, it says that
+the PowerShell window tells when it is done. If the page stopped meanwhile (ended in another tab,
 the window of `mh` closed), a tick says so plainly — *The page is not running any more* — and the red
 button is refused: nothing more is saved there. Then, for each file ticked:
 

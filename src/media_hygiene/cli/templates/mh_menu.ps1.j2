@@ -13,6 +13,7 @@ function global:_{{ function }}_home {
     $status = 0
     $after = $false
     $tab = $false
+    $crashed = $null
     while ($true) {
         if ($status -eq {{ page_closed }}) { $global:LASTEXITCODE = 0; return }
         if ($status -ge {{ signal_base }}) { $global:LASTEXITCODE = $status; return }
@@ -26,6 +27,15 @@ function global:_{{ function }}_home {
             try { {{ function }} home @typed } finally { $global:MediaHygieneRelay = $null; $global:MediaHygieneTab = $null }
 {% endif %}
             $status = $LASTEXITCODE
+            # A crash (its own code, or Docker's kill) starts it again once a minute (0365).
+            if (@({{ texts.crash.codes | join(", ") }}) -contains $status) {
+                if ($crashed -and ((Get-Date) - $crashed).TotalSeconds -lt {{ texts.crash.window }}) { Write-Host "{{ texts.crashed_again }}"; return }
+                Write-Host "{{ texts.crashed }}"
+                $crashed = Get-Date
+                $status = 0
+                $tab = $true
+                continue
+            }
             if ($status -le {{ step_base }} -or $status -ge {{ signal_base }}) { return }
             $tab = $true
         }

@@ -11,13 +11,16 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.paths.locations import SHARES_POINT
+from media_hygiene.paths.locations import BACKUPS_POINT, SHARES_POINT
 
 if TYPE_CHECKING:
     from media_hygiene.paths.docker_run import Shell
 
 SHARE_VERB: Final = "share"
 SHARES_FOLDER: Final = "Shares"  # as the TODO and the docs name it in the Explorer
+# `backup` and `restore` (0352): the archives of the index, mounted for them only.
+BACKUP_VERBS: Final = ("backup", "restore")
+BACKUPS_FOLDER: Final = "backups"
 HELP_FLAGS: Final = ("--help", "-h")  # asked for the help: no folder opened
 
 
@@ -42,4 +45,27 @@ def share_mount(shell: Shell) -> ShareMount:
     """
     return ShareMount(
         SHARE_VERB, shell.home_folder(SHARES_FOLDER), SHARES_POINT.as_posix()
+    )
+
+
+@dataclass(frozen=True, slots=True)
+class BackupMount:
+    """The verbs of the backups, their folder on the host and its mount point."""
+
+    verbs: tuple[str, ...]
+    host: str
+    point: str
+
+
+def backup_mount(shell: Shell) -> BackupMount:
+    """The folder of `mh backup` and `mh restore` for a shell (0352).
+
+    Args:
+        shell: The shell of the script.
+
+    Returns:
+        It, `$HOME` left for the shell to expand.
+    """
+    return BackupMount(
+        BACKUP_VERBS, shell.home_folder(BACKUPS_FOLDER), BACKUPS_POINT.as_posix()
     )

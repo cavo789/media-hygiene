@@ -185,7 +185,15 @@ que [`search`](../commands/search.md) retrouve (`former:julie`), et
 
 Chaque nettoyage écrit son propre rapport, listé dans `index.html` à côté des audits : ce qui a
 été libéré, les paires de dossiers telles qu'elles ont été nettoyées, et les fichiers laissés
-intacts, s'il y en a.
+intacts, s'il y en a. Il dit ce qui a été fait, en deux blocs :
+
+- **✅ Ce que ce nettoyage a fait** : les copies exactes retirées, les quasi-doublons déplacés
+  (seulement avec `--tier near`), les photos de rafale mises de côté (seulement avec
+  `--decisions`), les fichiers abîmés traités, et la ligne `mh undo` qui remet tout en place. Les
+  quasi-doublons montrés plus bas sont ceux que ce nettoyage a déplacés, rien d'autre.
+- **⏸️ Laissé par ce nettoyage** : une ligne par type laissé pour plus tard (quasi-doublons,
+  rafales) avec la commande qui les décide (`mh review --near`, `mh review`) ; le rapport d'audit
+  les montre.
 
 ![Le haut d'un rapport de nettoyage : 85 fichiers média analysés, 32 copies en double dans 20 groupes, 16,4 Mo retirés de vos dossiers, 3 fichiers cassés, puis les paires de dossiers nettoyées](../images/clean-report.webp)
 

@@ -110,6 +110,9 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
 
 ## Good to know
 
+- **From the home page, at once**: *Settle the near duplicates* opens `review --near` in the
+  home page's own server, without starting another container; the audit is read again from the
+  cache each time the page opens. `mh review --near` typed alone works as before.
 - **Proof, not promise**: after each choice, the page reads `decisions.json` back from the disk
   and shows what it holds (*✔ Saved, then read back from the disk at 14:32:05*).
 - **Stop whenever you like**: the next `review` opens the first series still to see. Series you

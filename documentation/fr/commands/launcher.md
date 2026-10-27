@@ -119,8 +119,8 @@ Docker. Le `--help` de l'image ne les liste donc pas ; cette page et le menu de 
 | `mh folders` | Liste vos dossiers de photos et les quarantaines, chacun *présent* ou *introuvable* (un disque pas branché) ; une quarantaine pas encore créée est dite telle : le premier `clean` la crée. `add` et `remove` les changent : [plus bas](#changer-vos-dossiers--mh-folders). |
 | `mh update` | Télécharge la nouvelle version de l'image, puis réécrit `mh` avec les mêmes dossiers : [plus bas](#une-nouvelle-version--mh-update). |
 | `mh phone` | Windows : copie uniquement les **nouvelles** photos et vidéos d'un téléphone branché en USB ; avec `--free`, supprime ensuite du téléphone ce que le PC détient, prouvé par son contenu : [plus bas](#un-téléphone--copiez-seulement-ses-nouvelles-photos--mh-phone). |
-| `mh backup` | Windows : copie vos dossiers de photos dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; Windows l'écrit (robocopy), le conteneur décide : [`backup`](backup.md). |
-| `mh --lan` | Windows : la page d'accueil, comme `mh` seul, qu'un téléphone du même Wi-Fi peut aussi ouvrir avec un code (ou son QR code), jusqu'à l'arrêt de `mh` ; depuis le téléphone, l'audit et les rapports seulement : [`home`](home.md#depuis-un-téléphone-du-wi-fi-de-la-maison--mh---lan). |
+| `mh push` | Windows : copie vos dossiers de photos dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; Windows l'écrit (robocopy), le conteneur décide : [`push`](push.md). |
+| `mh --lan` | Windows : la page d'accueil ouverte au Wi-Fi de la maison pour cette fois, même avec `[review] lan = false` (le défaut pour l'instant) : la page d'accueil qu'un téléphone du même Wi-Fi peut aussi ouvrir avec un code (ou son QR code), jusqu'à l'arrêt de `mh` ; depuis le téléphone, l'audit et les rapports seulement : [`home`](home.md#depuis-un-téléphone-du-wi-fi-de-la-maison--mh---lan). |
 | `mh slideshow --folder "C:\…" --lan` | Windows : le [diaporama](slideshow.md) ouvert à la télé et aux téléphones du réseau de la maison, pour ce lancement ; la télé est appairée par un code qu'elle affiche, tapé sur le téléphone. |
 
 `mh shortcut` et `mh explorer` relisent ce qu'ils ont écrit (les fichiers `.lnk`, les clés de
@@ -131,7 +131,7 @@ signalé jusqu'au redémarrage de Windows. Les deux montrent l'icône *Media Hyg
 copie depuis l'image dans `media-hygiene.ico`, à côté de `mh.ps1` ; s'il n'y arrive pas, ils le
 disent en une ligne et gardent l'icône de PowerShell. Depuis WSL,
 Linux ou macOS, `mh open` utilise `wslview`, `explorer.exe`, `xdg-open` ou `open` ;
-`mh shortcut`, `mh explorer` et `mh phone` disent qu'elles sont pour Windows ; `mh backup` dit
+`mh shortcut`, `mh explorer` et `mh phone` disent qu'elles sont pour Windows ; `mh push` dit
 pourquoi (Windows écrit sur le NAS 7 fois plus vite) et la commande à taper dans Windows PowerShell.
 
 **Ce que lancent l'icône et le clic droit** : Windows PowerShell, `-NoExit -Command`, qui charge
@@ -245,7 +245,10 @@ mh phone --free                       # puis libérer le téléphone : plus bas
 ```
 
 Branchez le téléphone en USB, déverrouillez-le et choisissez *Transfert de fichiers* (iPhone :
-*Faire confiance à cet ordinateur*). `mh phone` le trouve (plusieurs téléphones : il demande
+*Faire confiance à cet ordinateur*), et **gardez-le déverrouillé, écran allumé** jusqu'à la fin
+de `mh` : en veille ou verrouillé, un téléphone ne montre aucun stockage à Windows. `mh phone`
+dit alors *répond mais ne montre aucun stockage : réveillez-le et déverrouillez-le…* et
+l'attend, jusqu'à une minute. Il trouve le téléphone (plusieurs téléphones : il demande
 lequel), liste son dossier `DCIM` (environ 30 secondes par tranche de 1 000 fichiers), puis copie
 **uniquement** ce que votre photothèque n'a pas encore :
 
@@ -319,8 +322,10 @@ appuyiez sur *Supprimer N fichiers du téléphone*** ; *Tout laisser sur le tél
 sans rien supprimer. Ouverte depuis l'accueil (*Faire de la place sur le téléphone*), la page a
 **⌂ Retour à l'accueil** en haut à droite, comme toutes les pages : il la termine de la même
 façon, sans rien supprimer, et l'accueil revient dans le même onglet ; après *Supprimer*,
-l'onglet dit de passer à la fenêtre PowerShell (avec le temps que cela prend), puis montre à
-nouveau l'accueil une fois fini. Si la page s'est arrêtée entre-temps (terminée dans un autre onglet, la
+l'onglet dit de passer à la fenêtre PowerShell et compte les minutes écoulées face à
+l'estimation (*2 min écoulées, sur environ 4*), puis montre l'accueil tout seul quand `mh` le
+rouvre, même si `mh.ps1` a été écrit par une image plus ancienne ; tapé dans une console, il dit
+que la fenêtre PowerShell indique quand c'est fini. Si la page s'est arrêtée entre-temps (terminée dans un autre onglet, la
 fenêtre de `mh` fermée), une coche le dit clairement — *La page ne tourne plus* — et le bouton
 rouge est refusé : plus rien n'y est enregistré. Ensuite, pour chaque fichier coché :
 

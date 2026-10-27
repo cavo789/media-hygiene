@@ -65,6 +65,18 @@ Click a date to open that report. Each run has its own folder, named after its d
 when there are near duplicates. A *Contents* box at the top of `report.html` leads to each
 section.
 
+Each chapter of an audit report says what it asks of you:
+
+- 🧹 **'clean' takes care of it**: identical copies, broken files, orphan sidecars;
+- 👀 **Yours to decide**: near duplicates, re-encoded videos;
+- ℹ️ **For your information, nothing to do**: burst series, folded, last.
+
+A chapter shows a count line and its 5 largest examples, not the whole list: **The full list**
+opens `near.html`, and `plan.csv` holds every file. Where there is something to decide, a ▶
+button opens the review: **Decide in the browser** (`review --near`), **Sort the bursts**
+(`review`). It works when the home page (`mh`) shows the report; opened from the disk or by
+`mh reports`, the button gives way to the command to copy.
+
 ## The top: the totals
 
 ![The top of an audit report: 85 media files scanned, 32 duplicate copies in 20 groups, 14.0 MB can be freed, 3 broken files, then What you can do (identical copies, near duplicates, burst series, each with Copy the command), the inventory line, the contents and how we know these are duplicates](../images/report-top.webp)

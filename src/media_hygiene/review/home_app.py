@@ -6,7 +6,8 @@ the tool folders at each call; slow through Docker Desktop's file sharing, 0277)
 `GET /reports/<path>` a file of the reports folder (its images and fonts, `/assets/`,
 come from the door every page shares, `ending`),
 `GET /api/audit` the progress of the audit run by the page, and `POST /api/audit`
-starts it (one at a time) or stops it; `POST /api/alive` says a tab still shows the
+starts it (one at a time) or stops it, `/api/tags` the same for `tags`
+(`home_tags_api`, 0343); `POST /api/alive` says a tab still shows the
 page (0261, `presence`). `POST /api/step` ends the server with `STEP_EXIT_BASE + n` for
 step `n`, which `mh` then runs in the terminal (`home_step`): only when the launcher
 said it does (`MEDIA_HYGIENE_LAUNCHER_STEPS`), else it is refused and the page copies
@@ -25,13 +26,14 @@ from pydantic import BaseModel, ConfigDict, ValidationError
 
 from media_hygiene.i18n import _
 from media_hygiene.review.home_step import StepDoor, step_response
+from media_hygiene.review.home_tags_api import TAGS_PATH, tags_response, tags_state
 from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH, LocalApp
 from media_hygiene.review.presence import PRESENCE_PATH, presence_response
 from media_hygiene.review.report_files import report_response
 from media_hygiene.review.serving import json_response, refused_post
-from media_hygiene.review.step_watch import step_state
+from media_hygiene.review.step_watch import STEP_PATH, step_state
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -42,8 +44,8 @@ if TYPE_CHECKING:
     from media_hygiene.review.http import Request
     from media_hygiene.review.presence import Presence
     from media_hygiene.services.home_audit import HomeAudit
+    from media_hygiene.services.home_tags import HomeTags
 
-STEP_PATH: Final = "/api/step"
 AUDIT_PATH: Final = "/api/audit"
 _GET, _POST = "GET", "POST"
 
@@ -76,6 +78,7 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
     relays_steps: bool = False  # the launcher runs the step `STEP_EXIT_BASE + n` names
     relays_fields: bool = False  # and the words of a form (`home_fields`)
     keeps: bool = False  # and runs a console step with the server up (`step_watch`)
+    tags: HomeTags | None = None  # `tags` run in the page (0343)
 
     @override
     async def answer(self, request: Request) -> Response:
@@ -102,6 +105,8 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
             return await step_response(door, request)
         if path == AUDIT_PATH and request.method == _POST:
             return await self._audit(request)
+        if path == TAGS_PATH and request.method == _POST and self.tags is not None:
+            return await tags_response(self.tags, request)
         if path == PRESENCE_PATH and request.method == _POST:
             return await presence_response(self.presence, request)
         return Response(HTTPStatus.METHOD_NOT_ALLOWED)
@@ -119,6 +124,8 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
             return Response(HTTPStatus.OK, self.page, ContentType.HTML)
         if path.startswith(REPORTS_PREFIX):
             return await report_response(self.reports_dir, path)
+        if path == TAGS_PATH and self.tags is not None:
+            return tags_state(self.tags)
         if path == STEP_PATH:
             return await step_state(self.reports_dir)
         if path == STATE_PATH:

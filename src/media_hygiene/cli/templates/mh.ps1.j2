@@ -33,7 +33,7 @@ function global:{{ function }} {
         $given += "${full}:/data/" + $full.Substring(0, 1).ToLower() + ($full.Substring(2) -replace '\\', '/')
     }
     if ($rest.Count -eq 1 -and $rest[0] -eq '{{ lan.flag }}') {
-        # `{{ function }} {{ lan.flag }}`: the same, a phone of the home network may open the page (0269).
+        # `{{ function }} {{ lan.flag }}`: a phone of the home network may open the page (0269), whatever [review] lan.
         if (-not (_{{ function }}_desktop)) { return }
         _{{ function }}_lan @typed
         return
@@ -49,7 +49,11 @@ function global:{{ function }} {
         # Alone: the home page, the steps chosen there run here (0210); with --photos,
         # the step chosen gets them too (0181). Docker Desktop started first (0200).
         if (-not (_{{ function }}_desktop)) { return }
-        _{{ function }}_home @typed
+{% if script.commands.lan %}
+        _{{ function }}_lan @typed  # open to the home network too: [review] lan (0367)
+{% else %}
+        _{{ function }}_home @typed  # [review] lan = false: this PC only (0367)
+{% endif %}
         return
     }
     if ($rest.Count -eq 1 -and $rest[0] -eq 'menu') {
@@ -113,6 +117,11 @@ function global:{{ function }} {
     if ($command -eq '{{ share.verb }}') {
         $null = New-Item -ItemType Directory -Force -Path "{{ share.host }}"
         $share = @('-v', "{{ share.host }}:{{ share.point }}")
+    }
+    # `{{ function }} backup` / `restore`: the archives of the index, mounted for these commands only (0352).
+    if ($command -in @({{ listed(keep.verbs) }})) {
+        $null = New-Item -ItemType Directory -Force -Path "{{ keep.host }}"
+        $share = @('-v', "{{ keep.host }}:{{ keep.point }}")
     }
     $status = 1
     $follow = $false
@@ -190,7 +199,7 @@ function global:{{ function }} {
     if ($long) {
         if ($status -eq 0) { [Media.SystemSounds]::Asterisk.Play() } else { [Media.SystemSounds]::Hand.Play() }
     }
-    if ($share -and $status -eq 0 -and -not ($rest | Where-Object { $_ -in @({{ listed(share.help_flags) }}) })) {
+    if ($command -eq '{{ share.verb }}' -and $status -eq 0 -and -not ($rest | Where-Object { $_ -in @({{ listed(share.help_flags) }}) })) {
         # The album's folder and its zip, side by side in the Explorer (0296).
         Invoke-Item -LiteralPath "{{ share.host }}"
     }
@@ -229,6 +238,6 @@ function global:_{{ function }}_open {
 {% include 'mh_cloud.ps1.j2' %}
 {% include 'mh_phone.ps1.j2' %}
 {% include 'mh_phone_free.ps1.j2' %}
-{% include 'mh_backup.ps1.j2' %}
+{% include 'mh_push.ps1.j2' %}
 {% include 'mh_stale.ps1.j2' %}
 {% include 'mh_lan.ps1.j2' %}

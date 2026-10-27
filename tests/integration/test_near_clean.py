@@ -106,3 +106,24 @@ def test_a_whatsapp_copy_named_the_day_of_the_original_is_moved_by_the_tier(
     assert (data / KEPT).is_file()
     assert run(cli, "undo").exit_code == 0
     assert (data / WHATSAPP).is_file()
+
+
+def test_the_clean_report_tells_what_was_done(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """A plain clean: no near-duplicate thumbnail, one line left; near-all: moved."""
+    assert run(cli, "clean", "--yes").exit_code == 0
+    report = next(locations.reports_dir.glob("*-clean/report.html")).read_text()
+    assert "What this clean did" in report
+    assert "Not touched by this clean" in report
+    assert "mh review --near" in report
+    assert "IMG-20210705-WA0001.jpg" not in report
+    assert "⭐ sharpest" not in report
+    assert run(cli, "undo").exit_code == 0
+    assert run(cli, "clean", "--yes", "--tier", "near-all").exit_code == 0
+    folders = locations.reports_dir.glob("*-clean/summary.json")
+    folder = next(f.parent for f in folders if '"near_tier": true' in f.read_text())
+    report = (folder / "report.html").read_text()
+    assert "IMG-20210705-WA0001.jpg" in report
+    assert "moved to the quarantine" in report
+    assert "with --tier near" not in report

@@ -1,0 +1,31 @@
+{# The page's presence (0262, review/presence.py; 10 s is its ALIVE_SECONDS): the page says it is
+   alive, and that it leaves on pagehide, so its server ends once no tab shows it. When two pings
+   in a row find no server (PowerShell closed, Ctrl+C, the home page ended), the page says that
+   Media Hygiene stopped instead of staying silent until a click (0341). A page ending its server
+   on purpose (home_link.html.j2's ⌂, the phone's Leave) calls `window.mhEnded()` first.
+   Included by home_link.html.j2 and by the pages served in front of the home page (albums). #}
+<div id="mhStopped" hidden role="alertdialog" aria-live="assertive"
+     style="position: fixed; inset: 0; z-index: 61; align-items: center; justify-content: center;
+            padding: 16px; background: rgba(0, 0, 0, .55); font: 16px/1.5 var(--mk-font-text);">
+  <p style="max-width: 520px; padding: 20px 24px; border-radius: 12px; background: var(--mk-surface); color: var(--mk-ink);">
+    {{ _("Media Hygiene has stopped: this page no longer answers. Open it again from the desktop shortcut, or with mh.") }}</p>
+</div>
+<script>
+(() => {
+  const ALIVE_MS = 10000;
+  const FAILURES = 2;
+  let failed = 0;
+  let ended = false;
+  window.mhEnded = () => { ended = true; };
+  const stopped = document.getElementById("mhStopped");
+  const alive = (leaving) => fetch("/api/alive", { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ leaving: leaving }) })
+    .then(() => { failed = 0; })
+    .catch(() => {
+      failed += 1;
+      if (!leaving && !ended && failed >= FAILURES) { stopped.hidden = false; stopped.style.display = "flex"; }
+    });
+  window.addEventListener("pageshow", () => alive(false));
+  window.addEventListener("pagehide", () => alive(true));
+  window.setInterval(() => alive(false), ALIVE_MS);
+})();
+</script>

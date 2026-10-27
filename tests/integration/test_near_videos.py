@@ -70,5 +70,5 @@ def test_review_near_shows_a_video_without_preview(locations: Locations) -> None
     [video] = [group for group in groups if group.kept.name == "Plage.mp4"]
     assert not video.kept.preview
     assert video.kept.original.endswith(".mp4")
-    assert video.kept.video.startswith("/video/")
+    assert video.kept.video.startswith("video/")
     assert "3 s" in video.kept.details

@@ -157,7 +157,7 @@ def test_the_page_renders_with_its_route() -> None:
     text = review_page(
         "gone_review.html.j2", place, ("/api/gone", "/api/file")
     ).decode()
-    assert '"/api/gone"' in text
+    assert '"api/gone"' in text
     assert "(s)" not in text
 
 

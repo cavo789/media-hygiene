@@ -15,3 +15,4 @@ class MountKind(StrEnum):
     REPORTS = "reports"
     CACHE = "cache"
     SHARES = "shares"  # `share` only: the copies made to send (0296)
+    BACKUPS = "backups"  # `backup` and `restore` only: the index and settings (0352)

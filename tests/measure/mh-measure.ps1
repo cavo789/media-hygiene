@@ -96,15 +96,15 @@
 #      minimised and its keep-open line, a console step from the page (window forward, button
 #      flashing with bellStyle taskbar, or nothing; minimised, then normal), the bold line, the window
 #      closed then the stop shown by the page; asks what you saw            (0284, 0285)
-#  27. mh backup to the NAS (-Nas, -NasTarget: a shared folder of its own, created in DSM first):
+#  27. mh push to the NAS (-Nas, -NasTarget: a shared folder of its own, created in DSM first):
 #      robocopy of 20 photos into <target>\mh-measure-test with /MT:1 then /MT:8 (MB/s of NAS
 #      writes), 20 renames there timed, whether a credential-only New-PSDrive lets robocopy in;
-#      then in a test mh: mh backup twice (the second copies nothing), once stopped by Ctrl+C
+#      then in a test mh: mh push twice (the second copies nothing), once stopped by Ctrl+C
 #      and typed again, once after a folder renamed (renames only); the test folder removed (0264)
 #  28. an mh.ps1 older than its image: a test mh written by -Image, its stamp changed, then
 #      removed: mh history says the line naming mh update (expected), mh update of the local
 #      build writes it again without a pull, folders read back, the line gone      (0290)
-#  29. mh --lan, the home page on a phone of the home Wi-Fi: the address mh finds (timed) and
+#  29. mh alone (0367; was mh --lan), the home page on a phone of the home Wi-Fi: the address mh finds (timed) and
 #      Windows' category of that network; then, in a new window, mh --lan by hand: Windows'
 #      firewall prompt, the ports Docker publishes, the QR code and the code on the PC's page,
 #      the phone paired by the QR code then by the code, the audit run from the phone, a step
@@ -134,11 +134,10 @@
 #      back), another photo's address refused                                  (0297)
 #  34. shrink: two of your videos re-encoded by the image's ffmpeg, timed, played    (0303)
 #  35. the pages opened from the home page: an empty container, mh menu, what mh search does
-#      before its page answers (your cache and config, read-only), then your clicks on the
-#      home page timed with Docker's own events (which containers stop and start); nothing
-#      written                                                                  (0354)
-#  36. a console step from the home page: the page stays up while it runs in the window of mh,
-#      timed with Docker's events (no page container stopped or started)         (0355)
+#      before its page answers (your cache and config, read-only); the clicks themselves are
+#      timed by Chromium in the CI (0366); nothing written                     (0354)
+#  36. the home page by hand: three yes/no questions (it opens; a console step runs in the
+#      window of mh while the page stays open; Quit then mh again)       (0355, 0366)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -162,6 +161,8 @@
 #   .\mh-measure.ps1 -Only 19 -Count 1   (a phone plugged in over USB; -Count 1: the test folder is not used)
 #                                         (19l-19o write ONE test file to the phone, after a y, then delete it)
 #                                         (19p: mh phone --free on 3 test files written to the phone, after a y)
+#                                         (19q: the phone locked then unlocked: what Windows shows of it, read only)
+#                                         (19r: 20 test files written to the phone, CopyHere vs MoveHere back, after a y)
 #   .\mh-measure.ps1 -Only 20 -Count 1 -Sample 1000 -Cpus 4 -Branch iterate/2026-10-17   (image embeddings)
 #   .\mh-measure.ps1 -Only 21 -Count 1 -Nas 192.168.1.2 -NasShare photo -NasUser me   (the NAS, read-only)
 #   .\mh-measure.ps1 -Only 22 -Count 3   (a pair keeping both names: hard links, 0213)
@@ -169,7 +170,7 @@
 #   .\mh-measure.ps1 -Only 24 -Count 1   (search by meaning on C:\Photos: 0263)
 #   .\mh-measure.ps1 -Only 25 -Count 1   (mh.ps1 written again after loading: 0276)
 #   .\mh-measure.ps1 -Only 26 -Count 1   (the shortcut minimised, a console step brought forward: 0284, 0285)
-#   .\mh-measure.ps1 -Only 27 -Count 20 -Nas 192.168.1.2 -NasTarget backup_photos -NasUser me   (mh backup: 0264)
+#   .\mh-measure.ps1 -Only 27 -Count 20 -Nas 192.168.1.2 -NasTarget backup_photos -NasUser me   (mh push: 0264)
 #   .\mh-measure.ps1 -Only 28 -Count 1   (an mh older than its image, then mh update: 0290)
 #   .\mh-measure.ps1 -Only 29 -Count 20   (mh --lan: the home page on a phone of the home Wi-Fi: 0269)
 #   .\mh-measure.ps1 -Only 30 -Count 30   (mh slideshow --lan: the photos on the TV, the phone as remote: 0291)
@@ -178,7 +179,7 @@
 #   .\mh-measure.ps1 -Only 33 -Count 120  (an album on the phone at home, mh --lan: 0297)
 #   .\mh-measure.ps1 -Only 34 -Count 1   (shrink: two of your videos re-encoded, timed, played: 0303)
 #   .\mh-measure.ps1 -Only 35 -Count 1   (the pages opened from the home page, each phase timed: 0354)
-#   .\mh-measure.ps1 -Only 36 -Count 1   (a console step from the home page, the page staying up: 0355)
+#   .\mh-measure.ps1 -Only 36 -Count 1   (the home page by hand, three yes/no questions: 0355, 0366)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -1686,6 +1687,103 @@ if (Wanted 19) {
         foreach ($folder in $freeLocal, $freeTo, $freeAside) { Remove-Item -Recurse -Force -LiteralPath $folder -ErrorAction SilentlyContinue }
         Log "   19p. the PC's temporary folders of 19p removed"
     }
+    # 19q: what Shell.Application shows of a LOCKED phone (0336): Windows lists it by name, but
+    # does it show no storage (no item), or an empty storage? Read only, then once unlocked.
+    $answer = if ($phone) { Read-Host "19q. Next: lock the phone (screen off), keep it plugged in, wait 10 s, then type y (n skips)" } else { 'n' }
+    if ($answer -eq 'y') {
+        foreach ($state in 'locked', 'unlocked') {
+            if ($state -eq 'unlocked') { $null = Read-Host "19q. Now unlock the phone (File transfer if asked), wait 10 s, then press Enter" }
+            $device = $null
+            foreach ($entry in $shell.Namespace(17).Items()) {
+                if (-not $entry.IsFileSystem -and $entry.Name -eq $phone.Name) { $device = $entry }
+            }
+            if (-not $device) { Log "   19q. $state`: the phone '$($phone.Name)' is NOT listed in This PC"; continue }
+            $tops = @($device.GetFolder.Items())
+            Log ("   19q. {0}: listed; {1} top item(s): {2}" -f $state, $tops.Count, (($tops | ForEach-Object { "'$($_.Name)' ($(@($_.GetFolder.Items()).Count) inside)" }) -join ', '))
+            $found = PhoneFindDcim $device.GetFolder 0
+            Log ("   19q. {0}: DCIM {1}" -f $state, $(if ($found) { 'found' } else { 'NOT found' }))
+        }
+    } else {
+        Log "   19q. a locked phone: skipped"
+    }
+    # 19r: one read instead of two (0337). 20 synthetic test files (4 MB of random bytes each,
+    # never a photo) written to DCIM\mh-measure-speed, then read back twice: CopyHere into one PC
+    # folder (the proof's copy of today), then MoveHere into another (today's deletion). Both
+    # copies hashed against the originals; DCIM counted before and after.
+    $answer = if ($phone) { Read-Host "19r. Next: 20 test files (80 MB, random bytes) written to the phone (DCIM\mh-measure-speed), copied back, then moved back to the PC; no other file of the phone is touched. Go on? (y/n)" } else { 'n' }
+    $device = $null
+    if ($answer -eq 'y') {
+        foreach ($entry in $shell.Namespace(17).Items()) {
+            if (-not $entry.IsFileSystem -and $entry.Name -eq $phone.Name) { $device = $entry }
+        }
+        if (-not $device) { Log "   19r. the phone '$($phone.Name)' is not seen any more: 19r skipped" }
+    } else {
+        Log "   19r. CopyHere vs MoveHere on 20 test files: skipped"
+    }
+    $dcimSpeed = if ($device) { PhoneFindDcim $device.GetFolder 0 } else { $null }
+    if ($dcimSpeed) {
+        $speedLocal = Join-Path $Work "phone-speed-local"
+        $speedCopied = Join-Path $Work "phone-speed-copied"
+        $speedMoved = Join-Path $Work "phone-speed-moved"
+        foreach ($folder in $speedLocal, $speedCopied, $speedMoved) {
+            if (Test-Path -LiteralPath $folder) { Remove-Item -Recurse -Force -LiteralPath $folder }
+            New-Item -ItemType Directory -Force -Path $folder | Out-Null
+        }
+        $dcimFolder = $dcimSpeed.GetFolder
+        $countBefore = @(PhoneFiles $dcimFolder 0).Count
+        Log "   19r. DCIM before: $countBefore files"
+        $dcimFolder.NewFolder('mh-measure-speed')
+        $speedItem = $null
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        while (-not $speedItem -and $watch.Elapsed.TotalSeconds -lt 30) {
+            foreach ($entry in $dcimFolder.Items()) { if ($entry.Name -eq 'mh-measure-speed') { $speedItem = $entry } }
+            if (-not $speedItem) { Start-Sleep -Milliseconds 300 }
+        }
+        if (-not $speedItem) { Log "   19r. DCIM\mh-measure-speed NOT seen on the phone within 30 s: 19r stops here" }
+    }
+    if ($dcimSpeed -and $speedItem) {
+        $speedFolder = $speedItem.GetFolder
+        $random = New-Object Random
+        $originals = @{}
+        foreach ($number in 1..20) {
+            $name = "mh-speed-$stamp-$number.bin"
+            $bytes = New-Object byte[] (4MB)
+            $random.NextBytes($bytes)
+            $local = Join-Path $speedLocal $name
+            [IO.File]::WriteAllBytes($local, $bytes)
+            $originals[$name] = (Get-FileHash -LiteralPath $local -Algorithm SHA256).Hash
+            $speedFolder.CopyHere($local, 4 + 16 + 1024)
+        }
+        $watch = [Diagnostics.Stopwatch]::StartNew()
+        while (@($speedFolder.Items()).Count -lt 20 -and $watch.Elapsed.TotalSeconds -lt 120) { Start-Sleep -Milliseconds 500 }
+        Start-Sleep -Seconds 3
+        Log ("   19r. test files on the phone: {0} of 20 after {1:N1} s" -f @($speedFolder.Items()).Count, $watch.Elapsed.TotalSeconds)
+        foreach ($way in 'CopyHere', 'MoveHere') {
+            $into = if ($way -eq 'CopyHere') { $speedCopied } else { $speedMoved }
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            foreach ($entry in @($speedFolder.Items())) {
+                if ($way -eq 'CopyHere') { $shell.Namespace($into).CopyHere($entry, 4 + 16 + 1024) }
+                else { $shell.Namespace($into).MoveHere($entry, 4 + 16 + 1024) }
+            }
+            while (@(Get-ChildItem -LiteralPath $into -File).Count -lt 20 -and $watch.Elapsed.TotalSeconds -lt 300) { Start-Sleep -Milliseconds 300 }
+            $seconds = $watch.Elapsed.TotalSeconds
+            $same = 0
+            foreach ($copy in @(Get-ChildItem -LiteralPath $into -File)) {
+                if ($originals[$copy.Name] -eq (Get-FileHash -LiteralPath $copy.FullName -Algorithm SHA256).Hash) { $same++ }
+            }
+            Log ("   19r. {0}: 20 files (80 MB) on the PC after {1:N1} s = {2:N1} MB/s; {3} of 20 equal to their original (SHA-256)" -f $way, $seconds, (80 / $seconds), $same)
+        }
+        Start-Sleep -Seconds 2
+        Log ("   19r. test files left on the phone after MoveHere: {0} (0 expected)" -f @($speedFolder.Items()).Count)
+        $dialog = Read-Host "19r. Did Windows show any window or question (look with Alt+Tab)? (n or what it said)"
+        Log "   19r. a window during 19r (none expected): $dialog"
+        foreach ($entry in @($dcimFolder.Items())) { if ($entry.Name -eq 'mh-measure-speed') { $shell.Namespace($speedMoved).MoveHere($entry, 4 + 16 + 1024) } }
+        Start-Sleep -Seconds 2
+        $countAfter = @(PhoneFiles $dcimFolder 0).Count
+        Log ("   19r. DCIM after: {0} files, before: {1} ({2})" -f $countAfter, $countBefore, $(if ($countAfter -eq $countBefore) { 'the same: no other file touched' } else { 'DIFFERENT' }))
+        foreach ($folder in $speedLocal, $speedCopied, $speedMoved) { Remove-Item -Recurse -Force -LiteralPath $folder -ErrorAction SilentlyContinue }
+        Log "   19r. the PC's temporary folders of 19r removed"
+    }
 }
 
 # --- 20: image embeddings, a bench on photos of C:\Photos (0220, for 0221) ------------------
@@ -2475,14 +2573,14 @@ if ((Wanted 26) -and $fresh) {
     Log "   26: minimised $minimised, keep-open line $line, bold line $bold, console step minimised $min, normal $normal, stop shown $stop"
 }
 
-# --- 27: mh backup, Windows writing to the NAS (0264) ----------------------------------------
+# --- 27: mh push, Windows writing to the NAS (0264) ----------------------------------------
 # Writes ONLY below \\<Nas>\<NasTarget>\mh-measure-test, removed at the end. The password is
 # asked once (or read back from step 21's kept credential), never logged.
 if (Wanted 27) {
     $saved = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
     Log ""
-    Log "== 27. mh backup: Windows writes to the NAS (0264)"
+    Log "== 27. mh push: Windows writes to the NAS (0264)"
     if ($Nas -eq "") {
         Log "   27. skipped: give -Nas <name or IP address> -NasTarget <shared folder of its own> -NasUser <user>"
     } else {
@@ -2527,8 +2625,8 @@ if (Wanted 27) {
         $watch = [Diagnostics.Stopwatch]::StartNew()
         foreach ($file in @(Get-ChildItem -LiteralPath (Join-Path $test "mt8") -File)) { Move-Item -LiteralPath $file.FullName -Destination (Join-Path $renamed $file.Name) }
         Log ("   27c. 20 renames on the NAS: {0:N2} s" -f $watch.Elapsed.TotalSeconds)
-        # 27d: mh backup end to end, in a test mh whose photo folder is the 20 photos.
-        if ((Read-Host "27d. Run mh backup in a test mh into $test\mh (it asks before applying: answer y)? (y/n)") -match '^y') {
+        # 27d: mh push end to end, in a test mh whose photo folder is the 20 photos.
+        if ((Read-Host "27d. Run mh push in a test mh into $test\mh (it asks before applying: answer y)? (y/n)") -match '^y') {
             $mhDir = Join-Path $tool "mh27"
             New-Item -ItemType Directory -Force -Path $mhDir, (Join-Path $tool "config") | Out-Null
             $mhFile = Join-Path $mhDir "mh.ps1"
@@ -2542,25 +2640,25 @@ if (Wanted 27) {
             & docker run --rm -e "MEDIA_HYGIENE_IMAGE=$Image" @toolMounts $Image launcher --photos $sample > $mhFile
             . $mhFile
             # mh keeps its target next to yours: yours is put back at the end.
-            $keptTarget = Join-Path $mhHome "backup-target.txt"
+            $keptTarget = Join-Path $mhHome "push-target.txt"
             $yours = if (Test-Path -LiteralPath $keptTarget) { Get-Content -LiteralPath $keptTarget -Raw } else { $null }
             $target = Join-Path $test "mh"
             foreach ($round in "first", "second") {
                 $watch = [Diagnostics.Stopwatch]::StartNew()
-                $said = @(mh backup --to $target 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'Copied|Renamed|To copy|Already there|Moved on|up to date|Not in the backup|robocopy|refused|cannot' })
-                foreach ($line in $said) { Log "   27d. $round mh backup: $line" }
-                Log ("   27d. $round mh backup: {0:N1} s, exit code {1}" -f $watch.Elapsed.TotalSeconds, $LASTEXITCODE)
+                $said = @(mh push --to $target 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'Copied|Renamed|To copy|Already there|Moved on|up to date|Not in the backup|robocopy|refused|cannot' })
+                foreach ($line in $said) { Log "   27d. $round mh push: $line" }
+                Log ("   27d. $round mh push: {0:N1} s, exit code {1}" -f $watch.Elapsed.TotalSeconds, $LASTEXITCODE)
             }
-            Write-Host "27e. Now: 20 more photos are added; press Ctrl+C while robocopy runs, then mh backup runs again."
+            Write-Host "27e. Now: 20 more photos are added; press Ctrl+C while robocopy runs, then mh push runs again."
             foreach ($photo in ($picked | Select-Object -Skip 20 -First 20)) { Copy-Item -LiteralPath $photo.FullName -Destination $sample }
-            try { mh backup 2>&1 | Out-Host } catch { }
-            $said = @(mh backup 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'Copied|To copy|Already there|up to date|Not in the backup' })
+            try { mh push 2>&1 | Out-Host } catch { }
+            $said = @(mh push 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'Copied|To copy|Already there|up to date|Not in the backup' })
             foreach ($line in $said) { Log "   27e. after Ctrl+C, again: $line" }
             $sub = Join-Path $sample "sorted"
             New-Item -ItemType Directory -Force -Path $sub | Out-Null
             Get-ChildItem -LiteralPath $sample -File | Select-Object -First 10 | ForEach-Object { Move-Item -LiteralPath $_.FullName -Destination $sub }
             $watch = [Diagnostics.Stopwatch]::StartNew()
-            $said = @(mh backup 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'Copied|Renamed|To copy|Moved on|Not in the backup' })
+            $said = @(mh push 2>&1 | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match 'Copied|Renamed|To copy|Moved on|Not in the backup' })
             foreach ($line in $said) { Log "   27f. after 10 photos moved into a folder: $line" }
             Log ("   27f. {0:N1} s" -f $watch.Elapsed.TotalSeconds)
             Log ("   27g. Docker volumes of the NAS left (none expected): " + ((@(& docker volume ls -q --filter name=mh-nas-) -join ' / ') -replace '^$', 'none'))
@@ -2630,8 +2728,9 @@ if (Wanted 29) {
     Set-Content -LiteralPath $copy -Value $lines -Encoding Ascii
     . $copy
     $watch = [Diagnostics.Stopwatch]::StartNew()
-    $address = _mh_lan_address
+    $found = _mh_lan_address  # @{ address; problem } since 0367
     $watch.Stop()
+    $address = if ($found) { $found.address } else { $null }
     Log ("   29a. address found = {0}, in {1:N2} s" -f $address, $watch.Elapsed.TotalSeconds)
     foreach ($network in @(Get-NetConnectionProfile -ErrorAction SilentlyContinue)) {
         Log ("   29a. network {0} on {1}: category {2}" -f $network.Name, $network.InterfaceAlias, $network.NetworkCategory)
@@ -2639,7 +2738,8 @@ if (Wanted 29) {
     if ($address) {
         Write-Host "29: open a NEW Windows PowerShell window and type these two lines:"
         Write-Host "        . '$copy'"
-        Write-Host "        mh --lan"
+        Write-Host "        mh"
+        Write-Host "    (mh alone, as the desktop shortcut runs it: open to the home Wi-Fi by default, 0367.)"
         Write-Host "    Wait for the home page in the browser."
         $firewall = Read-Host "29b. Did Windows ask whether Docker Desktop may accept connections? (n / p: allowed on private / b: both ticked)"
         $ports = @(docker ps --format '{{.Ports}}' 2>$null) -join ' | '
@@ -2657,6 +2757,11 @@ if (Wanted 29) {
         $kept = Read-Host "29h. After the step, the phone's page answered again without the code? (y/n)"
         Write-Host "    On the phone: Wi-Fi off (mobile data on), reload the page."
         $outside = Read-Host "29i. From mobile data the page did NOT open? (y/n)"
+        Write-Host "    On the PC: close the home page's tab."
+        Write-Host "    Start it a second time in the same way (. '$copy' then mh), wait for the home page."
+        $again = Read-Host "29j. The second time, did Windows ask about Docker Desktop again? (y/n)"
+        $blocked = @(Get-NetFirewallRule -Action Block -Enabled True -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -match 'Docker' }).Count
+        Log "   29j. firewall prompt again $again; enabled Docker block rules readable without admin: $blocked"
         Write-Host "    On the PC: close the home page's tab."
         Log "   29: card $card, by QR $qr, by code $typed, audit $audit, step refused $refused, paired after a step $kept, unreachable from mobile data $outside"
     } else {
@@ -3125,50 +3230,10 @@ if (Wanted 34) {
     $ErrorActionPreference = $saved
 }
 
-# One click on the home page timed between two Enters, with the containers Docker created,
-# started and stopped meanwhile (35d, 36): two marker volumes, created and removed at once,
-# give both Enters in Docker's clock. A "page" container carries mh's page label (the home
-# page, search...), a "step" one does not (mh menu, a console step).
-function ClickTimed([string]$asked, [string]$doing, [string]$seenWhen) {
-    $invariant = [Globalization.CultureInfo]::InvariantCulture
-    $null = Read-Host "    ${asked}: press Enter here, THEN $doing"
-    $since = [DateTimeOffset]::UtcNow.AddSeconds(-1)
-    $mark = "mh-measure-mark-$PID"
-    & docker volume create "$mark-a" | Out-Null
-    & docker volume rm "$mark-a" | Out-Null
-    $watch = [Diagnostics.Stopwatch]::StartNew()
-    $null = Read-Host "    ... press Enter as soon as $seenWhen"
-    $watch.Stop()
-    & docker volume create "$mark-b" | Out-Null
-    & docker volume rm "$mark-b" | Out-Null
-    $until = [DateTimeOffset]::UtcNow.AddSeconds(1)
-    $from = ($since.ToUnixTimeMilliseconds() / 1000).ToString("F3", $invariant)
-    $to = ($until.ToUnixTimeMilliseconds() / 1000).ToString("F3", $invariant)
-    $events = @(& docker events --since $from --until $to --filter type=container --filter type=volume --filter event=create --filter event=start --filter event=die --format '{{.TimeNano}} {{.Type}} {{.Action}} {{.Actor.ID}} {{json .Actor.Attributes}}' 2>&1)
-    $zero = $null
-    foreach ($line in $events) { $fields = "$line" -split ' ', 5; if ($fields.Count -ge 4 -and $fields[3] -eq "$mark-a") { $zero = [decimal]$fields[0] } }
-    $timeline = @()
-    foreach ($line in $events) {
-        $fields = "$line" -split ' ', 5
-        if ($fields.Count -lt 4 -or $null -eq $zero -or $fields[3] -eq "$mark-a") { continue }
-        $at = ([decimal]$fields[0] - $zero) / 1000000000
-        if ($fields[3] -eq "$mark-b") { $what = "you saw it" }
-        elseif ($fields[1] -eq "volume") { continue }
-        else {
-            $kind = if ($fields.Count -gt 4 -and $fields[4] -match '"media-hygiene\.page"') { "page" } else { "step" }
-            $what = "$($fields[2]) $kind $($fields[3].Substring(0, 6))"
-        }
-        $timeline += ("+{0} s {1}" -f $at.ToString("F2", $invariant), $what)
-    }
-    return ("{0:N2} s between your Enters; Docker: {1}" -f $watch.Elapsed.TotalSeconds, ($timeline -join '; '))
-}
-
 # --- 35: the pages opened from the home page, each phase timed (0354) -----------------------
-# Your own mh and your usual cache, read-only: nothing is written. 35a-35c run alone. In 35d you
-# click on the home page in your usual window; Docker's own events then say which containers
-# stopped and started between your two Enters, two marker volumes giving both Enters in
-# Docker's clock (created and removed at once). A "page" container carries mh's page label
-# (the home page, search...), a "step" one does not (mh menu, a console step).
+# Your own mh and your usual cache, read-only: nothing is written. 35a-35c run alone. The
+# clicks on the home page are timed by Chromium in the CI since 0366
+# (tests/e2e/test_pages_browser.py): no step asks to time a page by hand.
 if (Wanted 35) {
     $saved = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
@@ -3249,48 +3314,27 @@ print(f'35c. total inside the container: {(time.perf_counter() - start) * 1000:.
         foreach ($line in $lines) { Log ("   " + "$line".Trim()) }
         Log ("   35c. the whole docker run: {0:N2} s" -f $watch.Elapsed.TotalSeconds)
     }
-    # By hand: each click between two Enters, the containers of that time read from Docker.
-    Write-Host "35d: in your usual Windows PowerShell window, type mh: the home page opens in the browser."
-    $null = Read-Host "    When the home page is shown with its steps, press Enter here"
-    $clicks = @(
-        @("search", "click 'search' (find a photo by its words) on the home page", "the search page is shown"),
-        @("home", "click 'Back to the home page' on the search page", "the home page is shown with its steps")
-    )
-    $other = Read-Host "35e. Also time another page of the home page, once (its name as the page shows it; empty: none)"
-    if ($other) { $clicks += , @($other, "click '$other' on the home page", "that page is shown") }
-    foreach ($round in 1, 2, 3) {
-        foreach ($click in $clicks) {
-            if ($click[0] -eq $other -and $round -gt 1) { continue }
-            $said = ClickTimed "35d. $($click[0]) ${round}/3" $click[1] $click[2]
-            Log "   35d. $($click[0]) ${round}/3: $said"
-            if ($click[0] -eq $other) { $null = Read-Host "    Come back to the home page, then press Enter" }
-        }
-    }
-    $felt = Read-Host "35f. Which wait bothers you most (a page opened, the home page back, a console step, other)?"
+    $felt = Read-Host "35f. Quelle attente vous gene le plus (une page qui s'ouvre, le retour a l'accueil, une etape en console, autre) ?"
     Log "   35f. what bothers you most: $felt"
-    Write-Host "35: you may quit the home page now (Quit on the page, or Ctrl+C in its window)."
     $ErrorActionPreference = $saved
 }
 
-# --- 36: a console step from the home page, the page staying up (0355) -----------------------
-# The image of the branch built first, and mh written again (mh update): the new mh keeps the
-# home server up while the step runs in its window. Nothing written but what the step does:
-# choose a step that only reads (history, status).
+# --- 36: the home page by hand, three yes/no questions (0355, 0366) ----------------------------
+# What the browser test of the CI cannot prove: mh.ps1, Windows and Docker Desktop. The image of
+# the branch built first, and mh written again (mh update). Nothing written but what the step
+# does: choose a step that only reads (history).
 if (Wanted 36) {
     $saved = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
     Log ""
-    Log "== 36. a console step from the home page, the page staying up (0355)"
-    Write-Host "36: in your usual Windows PowerShell window: mh update, then mh. The home page opens."
-    $null = Read-Host "    When the home page is shown with its steps, press Enter here"
-    $step = Read-Host "36a. A step that runs in the window of mh and only reads, as the page names it (e.g. history, status)"
-    foreach ($round in 1, 2, 3) {
-        $said = ClickTimed "36a. $step ${round}/3" "click '$step' on the home page (answer in the window of mh if it asks), then look at the page" "the page says '$step... done' and shows its state"
-        Log "   36a. $step ${round}/3: $said"
-    }
-    $stayed = Read-Host "36b. While the step ran, did the home page stay open (no 'This page is closed', no reload)? (y/n)"
-    $busy = Read-Host "36c. Click a second step while one waits for your answer in the window of mh: did the page say a step is running? (y / n / s: skipped)"
-    Log "   36b. the page stayed open: $stayed; 36c. a second step refused while one runs: $busy"
+    Log "== 36. the home page by hand on Windows (0355, 0366)"
+    Write-Host "36 : dans votre fenetre Windows PowerShell habituelle, tapez mh update, puis mh."
+    $opens = Read-Host "36a. La page d'accueil s'ouvre-t-elle dans le navigateur, avec ses etapes ? (o/n)"
+    $kept = Read-Host "36b. Cliquez 'history' sur la page : l'etape tourne-t-elle dans la fenetre de mh pendant que la page reste ouverte, puis la page dit-elle 'termine' ? (o/n)"
+    $again = Read-Host "36c. Cliquez Quitter sur la page, puis tapez mh a nouveau : la page d'accueil revient-elle ? (o/n)"
+    Log "   36a. the home page opens: $opens"
+    Log "   36b. a console step runs in the window of mh, the page staying open: $kept"
+    Log "   36c. Quit, then mh again, the home page back: $again"
     $ErrorActionPreference = $saved
 }
 

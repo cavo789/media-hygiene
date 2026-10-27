@@ -1,0 +1,9 @@
+{# `mh push` in mh.sh: refused, see services/launcher_push.py. #}
+
+# `{{ function }} push` copies to the NAS through Windows, about 7 times faster than a copy through
+# Docker (measured, 0264): mh.ps1 only. Said with the command to type in Windows PowerShell.
+_{{ function }}_push() {
+    printf '%s\n' "{{ push.texts.windows }}" "{{ push.texts.paste }}" >&2
+    printf '    %s\n' '{{ push.example }}' >&2
+    return 2
+}

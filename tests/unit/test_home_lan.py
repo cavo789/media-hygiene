@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Final, override
 import pytest
 
 from media_hygiene.cli.menu_catalog_share import share_area
+from media_hygiene.config.review_settings import ReviewSettings
 from media_hygiene.paths.docker_run import Shell
 from media_hygiene.paths.mounts import MountTable
 from media_hygiene.review.ending import STOP_PATH, Ending, EndingDoor
@@ -30,6 +31,12 @@ from media_hygiene.review.lan import (
     private_address,
 )
 from media_hygiene.review.lan_app import LAN_PATH, MAX_FAILURES, LanApp
+from media_hygiene.review.lan_problem import (
+    LAN_PROBLEM_VARIABLE,
+    LanProblem,
+    lan_problem,
+    with_problem,
+)
 from media_hygiene.review.local_app import LocalApp
 from media_hygiene.services import home
 from media_hygiene.services.home_lan import say_lan
@@ -44,6 +51,8 @@ from tests.support.runtime import make_locations, make_runtime, output_of
 
 if TYPE_CHECKING:
     from pathlib import Path
+
+    from media_hygiene.review.ending import Handling
 
 _PORT: Final = 8765
 _ADDRESS: Final = "192.168.1.20"
@@ -79,7 +88,7 @@ def _app() -> tuple[LanApp, _Home]:
     return LanApp(fake, _access(), _PHONE_PAGE), fake
 
 
-def _ask(app: LanApp, request: Request) -> Response:
+def _ask(app: Handling, request: Request) -> Response:
     """Ask through the door every page has, as the server does."""
     return asyncio.run(EndingDoor(app, Ending()).handle(request))
 
@@ -351,7 +360,7 @@ def test_powershell_opens_the_slideshow_to_the_lan_when_asked(tmp_path: Path) ->
     """`mh slideshow --lan`: address and secret drawn, the flag left out, cleared."""
     script = _render(Shell.POWERSHELL, tmp_path)
     assert "$rest[0] -in @('slideshow') -and $rest -contains '--lan'" in script
-    assert "function global:_mh_lan_open {" in script
+    assert "function global:_mh_lan_open($soft) {" in script
     assert "$plain = @($rest | Where-Object { $_ -ne '--lan' }) + $typed" in script
     assert "try { mh @plain } finally { $global:MediaHygieneLan = $null }" in script
     assert (
@@ -377,3 +386,93 @@ def test_the_albums_open_from_the_share_area_and_the_phones_home() -> None:
     assert "albums: () =>" in phone
     assert '${hero()}${REMOTE ? EXTRAS.albums() : ""}' in phone
     assert share_area().groups[0].extra == "albums"
+
+
+_LOCAL: Final = {"host": f"127.0.0.1:{_PORT}"}
+
+
+@pytest.mark.parametrize(
+    ("given", "taken"),
+    [("none", LanProblem.NONE), ("public", LanProblem.PUBLIC), ("", None), ("x", None)],
+)
+def test_the_problem_is_read_from_mh(
+    monkeypatch: pytest.MonkeyPatch, given: str, taken: LanProblem | None
+) -> None:
+    """`mh` names what keeps a phone away; anything else is no problem (0367)."""
+    monkeypatch.setenv(LAN_PROBLEM_VARIABLE, given)
+    assert lan_problem() is taken
+
+
+def test_no_home_network_still_answers_the_card(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Without an address: the PC's `/api/lan` says why, the rest passes on (0367)."""
+    monkeypatch.setenv(LAN_PROBLEM_VARIABLE, "none")
+    fake = _Home()
+    app = with_problem(fake)
+    reply = _ask(app, Request("GET", LAN_PATH, _LOCAL))
+    assert json.loads(reply.body) == {"problem": "none"}
+    assert _ask(app, Request("GET", "/api/state", _LOCAL)).body == b"home"
+    assert (
+        b"problem" not in _ask(app, Request("GET", LAN_PATH, {"host": _LAN_HOST})).body
+    )
+
+
+def test_a_public_network_keeps_the_code_and_says_so(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A public network: the QR code and code still there, the problem beside (0367)."""
+    monkeypatch.setenv(LAN_PROBLEM_VARIABLE, "public")
+    app, _fake = _app()
+    body = json.loads(_ask(with_problem(app), Request("GET", LAN_PATH, _LOCAL)).body)
+    assert body["problem"] == "public"
+    assert body["code"] == _access().shown_code
+
+
+def test_without_a_problem_nothing_is_wrapped(monkeypatch: pytest.MonkeyPatch) -> None:
+    """No variable: the handler as it was."""
+    monkeypatch.delenv(LAN_PROBLEM_VARIABLE, raising=False)
+    fake = _Home()
+    assert with_problem(fake) is fake
+
+
+def test_the_pc_page_holds_the_problem_lines() -> None:
+    """The card's lines for no network, a public one, the firewall prompt."""
+    page = home.home_page().decode()
+    for name in ("lanNone", "lanPublic", "lanPair"):
+        assert f'id="{name}"' in page
+    assert "Private network" in page
+
+
+def _render_lan(tmp_path: Path, *, lan: bool) -> str:
+    runtime = replace(
+        make_runtime(make_locations(tmp_path)), mounts=MountTable(frozenset())
+    )
+    commands = replace(_COMMANDS, lan=lan)
+    return render_script(launcher_script(runtime, Shell.POWERSHELL, commands))
+
+
+def test_powershell_opens_mh_alone_to_the_lan_by_default(tmp_path: Path) -> None:
+    """`mh` alone: the LAN path, never failing for want of a home network (0367)."""
+    script = _render_lan(tmp_path, lan=True)
+    assert "_mh_lan @typed  # open to the home network too" in script
+    assert "$null = _mh_lan_open $true" in script
+    assert "@{ problem = 'none' }; return $true" in script
+    assert "$problem = 'public'" in script
+    assert f'"{LAN_PROBLEM_VARIABLE}=$($lan.problem)"' in script
+    assert "if (-not $lan.address) { return $options }" in script
+    assert script.isascii()
+
+
+def test_powershell_lan_off_keeps_mh_alone_on_the_pc(tmp_path: Path) -> None:
+    """`[review] lan = false`: `mh` alone on the PC only; `--lan` still opens."""
+    script = _render_lan(tmp_path, lan=False)
+    assert "_mh_home @typed  # [review] lan = false" in script
+    assert "_mh_lan @typed  # open" not in script
+    assert "$rest[0] -eq '--lan'" in script
+
+
+def test_the_setting_reaches_the_launcher() -> None:
+    """`[review] lan` defaults to off until 0384 is fixed, the launcher's too."""
+    assert ReviewSettings().lan is False
+    assert _COMMANDS.lan is False

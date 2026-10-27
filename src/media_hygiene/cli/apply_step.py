@@ -18,7 +18,7 @@ from media_hygiene.cli.menu_steps import build_menu
 from media_hygiene.cli.status_step import Slot
 from media_hygiene.i18n import _
 from media_hygiene.review.apply_api import ApplyStep
-from media_hygiene.services.home import launcher_relays_steps
+from media_hygiene.services.home_launch import launcher_relays_steps
 from media_hygiene.services.next_command import LAUNCHER_FUNCTION
 from media_hygiene.services.status import read_status
 

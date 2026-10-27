@@ -26,7 +26,6 @@ from media_hygiene.review.home_views import (
 )
 from media_hygiene.review.step_watch import WATCH
 from media_hygiene.services.launcher_ascii import ascii_powershell
-from media_hygiene.services.launcher_backup import backup_command
 from media_hygiene.services.launcher_cloud import cloud_check
 from media_hygiene.services.launcher_drives import with_drive_quarantines
 from media_hygiene.services.launcher_file import header
@@ -40,7 +39,8 @@ from media_hygiene.services.launcher_memory import locale_option
 from media_hygiene.services.launcher_menu import BROWSE_WAIT, DESKTOP_WAIT, menu_texts
 from media_hygiene.services.launcher_nas import SMB_OPTIONS, NasShare, nas_texts
 from media_hygiene.services.launcher_phone import phone_command
-from media_hygiene.services.launcher_share import share_mount
+from media_hygiene.services.launcher_push import push_command
+from media_hygiene.services.launcher_share import backup_mount, share_mount
 from media_hygiene.services.launcher_stale import stale_texts
 from media_hygiene.services.launcher_stamp import launcher_stamp
 from media_hygiene.services.launcher_update import update_texts
@@ -78,6 +78,7 @@ class LauncherCommands:  # pylint: disable=too-many-instance-attributes  # one p
     port: int
     long: tuple[str, ...] = ()  # the computer kept awake, the end told (0179, 0185)
     backups: tuple[str, ...] = ()  # they take `--backup`: given each backup (0205)
+    lan: bool = False  # `mh` alone opens the home page to the home network (0367)
     browse_wait: int = BROWSE_WAIT  # seconds `mh` waits for a page before giving up
 
 
@@ -178,9 +179,10 @@ def render_script(script: LauncherScript) -> str:
         checked=(*checked_folders(script), *(v.host for v in script.backups)),
         cloud=cloud_check(script.commands.names),
         phone=phone_command(),
-        backup=backup_command(),
+        push=push_command(),
         lan=lan_command(),
         share=share_mount(script.shell),
+        keep=backup_mount(script.shell),
         zone=WINDOWS_ZONE_VARIABLE,
         relay=LAUNCHER_STEPS_VARIABLE,
         relay_fields=RELAY_FIELDS,

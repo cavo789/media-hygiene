@@ -17,12 +17,14 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.menu_entry import FieldKind
 from media_hygiene.i18n import _
+from media_hygiene.services.next_command import LAUNCHER_FUNCTION
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
     from pathlib import Path
 
     from media_hygiene.cli.menu_entry import Field, Step
+    from media_hygiene.review.home_views import HomeState
 
 STEP_FILE_NAME: Final = ".mh-step.json"
 # `MEDIA_HYGIENE_LAUNCHER_STEPS` of an `mh` that also reads the one-shot file.
@@ -107,3 +109,34 @@ def write_step(folder: Path, words: tuple[str, ...]) -> Path:
     text = json.dumps({"words": list(words)}, ensure_ascii=False, indent=0)
     target.write_text(text + "\n", encoding="utf-8")
     return target
+
+
+def named_step(state: HomeState, name: str) -> tuple[int, str] | None:
+    """The number and command of a step without fields, from its name (0310).
+
+    A page that does not know `mh menu`'s numbers (the audit report) names the step.
+
+    Args:
+        state: The home page's state.
+        name: The step's name, e.g. `review-near`.
+
+    Returns:
+        Its number and command; None when it takes fields or cannot run now.
+    """
+    action = state.action(name)
+    if action is None or action.number is None or action.fields:
+        return None
+    return action.number, action.command
+
+
+def shown(words: tuple[str, ...]) -> str:
+    """The command as the user would type it, a value with a space quoted.
+
+    Args:
+        words: The command's words, without `mh`.
+
+    Returns:
+        E.g. `mh album "Noël 2025" --category Noël`.
+    """
+    quoted = (f'"{word}"' if " " in word or "\\" in word else word for word in words)
+    return " ".join((LAUNCHER_FUNCTION, *quoted))

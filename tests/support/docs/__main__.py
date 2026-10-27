@@ -20,7 +20,7 @@ from tests.support.docs.library import build_library
 from tests.support.docs.names import Locale
 from tests.support.docs.pages import refresh
 from tests.support.docs.scenario import run_scenario
-from tests.support.docs.screenshots import build_browser
+from tests.support.pages_browser import build_browser
 
 DOCUMENTATION: Final = Path(__file__).resolve().parents[3] / "documentation"
 console = Console()

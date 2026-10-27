@@ -16,12 +16,16 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.errors import MountError
-from media_hygiene.review.home_app import AUDIT_PATH, STEP_PATH
+from media_hygiene.review.apply_relay import home_relay
+from media_hygiene.review.home_app import AUDIT_PATH
+from media_hygiene.review.home_tags_api import TAGS_PATH
 from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH
 from media_hygiene.review.presence import PRESENCE_PATH
+from media_hygiene.review.step_watch import STEP_PATH
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.services.fresh_runtime import FreshRuntime
+from media_hygiene.services.near_here import NEAR_PREFIX, NearHere
 from media_hygiene.services.search import open_search
 from media_hygiene.services.search_app import SearchBuild, search_app
 
@@ -37,7 +41,7 @@ if TYPE_CHECKING:
 
 # The home page's own paths (`HomeApp`); `/reports/…` too.
 _HOME_PATHS: Final = frozenset(
-    {PAGE_PATH, STATE_PATH, STEP_PATH, AUDIT_PATH, PRESENCE_PATH}
+    {PAGE_PATH, STATE_PATH, STEP_PATH, AUDIT_PATH, TAGS_PATH, PRESENCE_PATH}
 )
 
 
@@ -81,7 +85,11 @@ class SearchHere:
             return None
         server = self._server
         build = SearchBuild(
-            SEARCH_PAGE_PATH, server.apply, server.ending, server.executor
+            SEARCH_PAGE_PATH,
+            server.apply,
+            server.ending,
+            server.executor,
+            home_relay(runtime.locations.reports_dir),
         )
         self._app = search_app(runtime, search, build)
         self._built_for = runtime
@@ -98,6 +106,7 @@ class HomeWithPages:
 
     home: Handling
     pages: SearchHere
+    near: NearHere  # `/review/near/…` (0357)
 
     async def handle(self, request: Request) -> Response:
         """Route a request.
@@ -111,6 +120,8 @@ class HomeWithPages:
         path = request.path
         if path in _HOME_PATHS or path.startswith(REPORTS_PREFIX):
             return await self.home.handle(request)
+        if path == NEAR_PREFIX or path.startswith(f"{NEAR_PREFIX}/"):
+            return await self.near.handle(request)
         app = self.pages.app()
         return await (self.home if app is None else app).handle(request)
 
@@ -130,7 +141,9 @@ def home_with_pages(
         The router.
     """
     pages = SearchHere(runtime, server)
+    relay = home_relay(runtime.locations.reports_dir)
+    near = NearHere(FreshRuntime(runtime), server, relay)
     try:
-        yield HomeWithPages(home, pages)
+        yield HomeWithPages(home, pages, near)
     finally:
         pages.close()

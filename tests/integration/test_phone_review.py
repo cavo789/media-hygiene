@@ -453,3 +453,21 @@ def test_from_home_a_closed_tab_ends_the_loop_of_mh(
     asyncio.run(send_call(ports.get(timeout=10), leaving))
     thread.join(timeout=10)
     assert len(ended) == 1
+
+
+def test_after_delete_the_tab_follows_the_address_whatever_mh(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0338: without the relay (an older mh), the page still watches its address."""
+    thread, port, _ = _serve(locations, monkeypatch)
+    page = asyncio.run(send_call(port, Call("GET", "/"))).body.decode()
+    asyncio.run(send_call(port, Call("POST", STOP_PATH, b"{}", JSON_HEADERS)))
+    thread.join(timeout=10)
+    assert 'id="homeLink"' not in page
+    follow = page[page.index("function follow(") :]
+    assert "follow(run, text, minutes);" in page
+    assert 'window.location.replace("/")' in follow
+    assert "seenGone = true" in follow
+    assert "TEXTS.elapsed" in follow
+    assert "TEXTS.console" in follow
+    assert "min gone by, of about" in page

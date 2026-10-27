@@ -1,10 +1,11 @@
 """`POST /api/apply`: *Apply now*, on a page opened from the home page (0243, 0288).
 
-The page ends with the code of the home page's step that applies the decisions
-(`clean --decisions`): `STEP_EXIT_BASE + n`, `n` its number in `mh menu`. `mh`, whose
-home loop opened the page, then runs that step with its usual question and opens the
-home page again: no new code path, the home page's own. Opened by its command alone,
-nobody would run the step: the page shows no button and this route refuses.
+The page hands `mh` the home page's step that applies the decisions (`clean
+--decisions`), the fastest way `mh` takes it (`apply_relay`, 0363): beside the home
+server, which stays up; its words in the one-shot file; or `STEP_EXIT_BASE + n`, `n` its
+number in `mh menu`. `mh` runs it with its usual question: the home page's own path.
+Opened by its command alone, nobody would run the step: no button, and this route
+refuses.
 `browse` routes it itself; the reviews wrap their app in `ApplyingApp`.
 """
 
@@ -17,19 +18,29 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import ExitCode
 from media_hygiene.i18n import _
+from media_hygiene.review.apply_relay import ApplyRelay, relayed
 from media_hygiene.review.ending import Ending, EndingDoor
-from media_hygiene.review.home_views import STEP_EXIT_BASE
+from media_hygiene.review.home_views import APPLY_PATH
 from media_hygiene.review.http import Response, is_local
 from media_hygiene.review.presence import Presence
 from media_hygiene.review.serving import json_response, refused_post
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+    from pathlib import Path
 
     from media_hygiene.review.ending import Handling
     from media_hygiene.review.http import Request
 
-APPLY_PATH: Final = "/api/apply"
+__all__ = [
+    "APPLY_PATH",  # defined in `home_views`, a leaf `search.app` imports too
+    "ApplyDesk",
+    "ApplyOffer",
+    "ApplyStep",
+    "ApplyingApp",
+    "ReviewStart",
+    "applying_door",
+]
 _POST: Final = "POST"
 
 
@@ -63,6 +74,7 @@ class ApplyDesk:
 
     offer: ApplyOffer
     ending: Ending
+    relay: ApplyRelay | None = None  # None: the number alone, as before 0363
 
     @property
     def offered(self) -> bool:
@@ -93,10 +105,7 @@ class ApplyDesk:
                 "No step applies the decisions now: type the next step yourself."
             )
             return json_response(HTTPStatus.CONFLICT, {"error": message})
-        self.ending.end(STEP_EXIT_BASE + step.number)
-        return json_response(
-            HTTPStatus.OK, {"number": step.number, "command": step.command}
-        )
+        return await relayed(self.relay, step, self.ending)
 
 
 @dataclass(frozen=True, slots=True)
@@ -124,16 +133,23 @@ class ApplyingApp:
         return refused_post(request) or await self.desk.answer()
 
 
-def applying_door(app: Handling, offer: ApplyOffer) -> EndingDoor:
+def applying_door(
+    app: Handling, offer: ApplyOffer, reports_dir: Path | None = None
+) -> EndingDoor:
     """The door of a review page: Ctrl+C, its tab closed, home, or *Apply now*.
 
     Args:
         app: Answers the page.
         offer: The step *Apply now* ends on, and whether anything is chosen.
+        reports_dir: Where its words go for `mh` (served by a container of its own:
+            the server ends); None: the number alone.
 
     Returns:
         The door to serve, until its page asks to end.
     """
     ending = Ending()
+    relay = None if reports_dir is None else ApplyRelay(reports_dir)
     presence = Presence(ending, ExitCode.PAGE_CLOSED)
-    return EndingDoor(ApplyingApp(app, ApplyDesk(offer, ending)), ending, presence)
+    return EndingDoor(
+        ApplyingApp(app, ApplyDesk(offer, ending, relay)), ending, presence
+    )

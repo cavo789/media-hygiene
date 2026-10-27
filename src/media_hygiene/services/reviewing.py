@@ -121,7 +121,9 @@ def serve_review(runtime: Runtime, session: ReviewSession, start: ReviewStart) -
     code = 0
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         app = ReviewApp(session, page, executor, runtime.previews_dir, albums)
-        door = with_person(applying_door(app, offer), runtime, executor)
+        door = with_person(
+            applying_door(app, offer, runtime.locations.reports_dir), runtime, executor
+        )
         ready = partial(_announce, runtime, session)
         code = asyncio.run(serve_until_ended(door, start.port, ready))
     return code

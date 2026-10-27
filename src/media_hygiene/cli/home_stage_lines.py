@@ -102,7 +102,7 @@ def _backup_line(status: Status) -> str:
         Its line.
     """
     if status.backed_up is None:
-        return _("Not backed up yet: mh backup copies to the NAS")
+        return _("Not backed up yet: mh push copies to the NAS")
     return _("Last backup: {when}").format(when=ago(status.backed_up))
 
 

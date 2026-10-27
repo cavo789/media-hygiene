@@ -65,6 +65,19 @@ d'après sa date et son type (`AAAAMMJJ-HHMMSS-audit`), qui contient `report.htm
 vignettes et `plan.csv`, et `near.html` s'il y a des quasi-doublons. Un encadré *Sommaire* en
 haut de `report.html` mène à chaque section.
 
+Chaque chapitre d'un rapport d'audit dit ce qu'il attend de vous :
+
+- 🧹 **'clean' s'en charge** : copies identiques, fichiers cassés, fichiers compagnons orphelins ;
+- 👀 **À vous de décider** : quasi-doublons, vidéos réencodées ;
+- ℹ️ **Pour information, rien à faire** : rafales, repliées, en dernier.
+
+Un chapitre montre une ligne de comptes et ses 5 plus grands exemples, pas toute la liste :
+**La liste complète** ouvre `near.html`, et `plan.csv` contient chaque fichier. Là où il y a
+quelque chose à décider, un bouton ▶ ouvre le tri : **Décider dans le navigateur**
+(`review --near`), **Trier les rafales** (`review`). Il fonctionne quand la page d'accueil
+(`mh`) affiche le rapport ; ouvert depuis le disque ou par `mh reports`, le bouton laisse la
+place à la commande à copier.
+
 ## Le haut : les totaux
 
 ![Le haut d'un rapport d'audit : 85 fichiers média analysés, 32 copies en double dans 20 groupes, 14,0 Mo libérables, 3 fichiers cassés, puis Ce que vous pouvez faire (copies identiques, quasi-doublons, rafales, chacune avec Copier la commande), la ligne d'inventaire, le sommaire et comment on sait que ce sont des doublons](../images/report-top.webp)

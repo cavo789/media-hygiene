@@ -126,8 +126,9 @@ def phone_free_command() -> PhoneFreeCommand:
             ),
             stopped=say(
                 _(
-                    "The phone no longer answers (unplugged?): what is counted above "
-                    "was deleted, the rest is still on it. Type mh phone --free again."
+                    "The phone no longer answers (unplugged, or asleep: keep it "
+                    "unlocked, screen on): what is counted above was deleted, the rest "
+                    "is still on it. Type mh phone --free again."
                 )
             ),
             aside=say(_("Set aside before, left on the phone: {count}."), "count"),

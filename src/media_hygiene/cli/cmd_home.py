@@ -46,27 +46,29 @@ def home_command(
     from media_hygiene.cli.apply_step import page_apply
     from media_hygiene.cli.home_audit import page_audit
     from media_hygiene.cli.home_state import home_state
+    from media_hygiene.cli.home_tags import page_tags
     from media_hygiene.review.home_views import STEP_EXIT_BASE
     from media_hygiene.services.fresh_runtime import FreshRuntime
     from media_hygiene.services.home import HomeSources, serve_home
 
     runtime = runtime_of(ctx)
     port = review_options.page_port(runtime, port)
-    output = runtime.output
     # The session long: the settings read again as their files change (0358).
-    state = partial(_state_now, home_state, FreshRuntime(runtime))
+    fresh = FreshRuntime(runtime)
+    state = partial(_state_now, home_state, fresh)
     code = serve_home(
-        runtime, HomeSources(state, page_audit(runtime), page_apply(runtime)), port
+        runtime,
+        HomeSources(state, page_audit(fresh), page_apply(runtime), page_tags(fresh)),
+        port,
     )
-    output.blank()
+    runtime.output.blank()
     if code < STEP_EXIT_BASE:
-        output.success(_("Home page closed; your photos were not changed."))
+        runtime.output.success(_("Home page closed; your photos were not changed."))
         return
-    number = code - STEP_EXIT_BASE
-    command = state().command_of(number)
-    output.info(
+    command = state().command_of(code - STEP_EXIT_BASE)
+    runtime.output.info(
         _("Step {number} chosen on the home page: {command}").format(
-            number=number, command=command
+            number=code - STEP_EXIT_BASE, command=command
         )
     )
     raise typer.Exit(code)
@@ -80,6 +82,9 @@ def _state_now(read: Callable[[Runtime], HomeState], fresh: FreshRuntime) -> Hom
         fresh: The runtime, its settings read again when changed.
 
     Returns:
-        The state.
+        The state, with the line of a settings file that does not load (0364).
     """
-    return read(fresh.runtime())
+    state = read(fresh.runtime())
+    if not fresh.error:
+        return state
+    return state.model_copy(update={"settings_error": fresh.error})

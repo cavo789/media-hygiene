@@ -1,120 +1,73 @@
-# `backup` : copier vos photos sur le NAS, seulement ce qui lui manque
+# `backup` : l'index et les réglages, gardés hors de Docker
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `backup` · 🇬🇧 [English](../../en/commands/backup.md)
 
-> **Windows seulement.** Tapez-la dans **Windows PowerShell** : `mh backup --to \\<NAS>\backup_photos`.
-> Windows écrit sur le NAS environ 7 fois plus vite qu'une copie par Docker (86 à 105,8 Mo/s
-> contre 15,1 Mo/s, mesuré sur un Synology en Ethernet) ; le `mh` de WSL ou de Linux la refuse
-> et donne cette même commande.
-
 ## En bref
 
-**Copier chaque dossier de photos que `mh` connaît dans un dossier rien qu'à eux sur le NAS :
-seulement ce qui lui manque ; une photo déplacée sur le PC y est renommée, jamais renvoyée ; une
-photo supprimée par erreur n'est jamais supprimée du NAS.**
+**Ce que les audits et `mh tags` ont appris, à l'abri d'une remise à zéro de Docker.**
 
-Le conteneur décide (il connaît vos audits, ce que vous avez déplacé, mis de côté ou purgé),
-Windows copie : renommages par `Move-Item`, copies par `robocopy`. Vos photos sont seulement lues.
+Le [cache](../reference-glossary.md#cache) (`/cache`) est un volume Docker, `media-hygiene-cache` :
+un `docker volume prune`, une réinitialisation de Docker Desktop ou un nouveau WSL l'effacent. Il
+contient l'index : l'empreinte de chaque fichier, ce que les audits ont lu, les mots de `tags`, les
+descriptions, les visages — des heures de travail à refaire. `backup` écrit l'index et vos réglages
+(`config.toml`, `people\*.toml`) dans un seul zip, `mh-backup-AAAAMMJJ-HHMMSS.zip`, dans
+`$HOME\media-hygiene\backups` ; [`restore`](restore.md) le remet en place.
 
-**Quand** : après un import, un nettoyage ou un tri ; aussi souvent que vous voulez, un passage
-sans rien de nouveau ne fait que lister les deux côtés.
+À ne pas confondre avec `--backup` (un dossier
+[comparé](../clean/05-choose-the-kept-copy.md#comparer-une-sauvegarde-ou-un-ancien-disque)) ni avec
+[`push`](push.md) (vos photos copiées sur le NAS) : `backup` garde la mémoire de l'outil, jamais une
+photo.
 
-**Essayez** (la première fois, puis `mh backup` seul) :
-
-```powershell
-mh backup --to \\NAS\backup_photos
-```
+**Quand** : après un long `mh tags` ou `mh people`, avant une mise à jour ou une réinitialisation de
+Docker Desktop.
 
 ## D'un coup d'œil
 
 | | |
 |---|---|
-| Vos photos | 🔒 Seulement lues (montées `:ro`). |
-| Le dossier de sauvegarde | ✋ Écrit par Windows : nouveaux fichiers copiés, fichiers renommés renommés, fichiers mis de côté dans `.removed`. Jamais `robocopy /MIR` ni `/PURGE`. |
-| Besoin | Windows PowerShell ; un dossier partagé rien qu'à lui sur le NAS (dans DSM : *Panneau de configuration → Dossier partagé → Créer*, p. ex. `backup_photos`) ; `/journal` ; `/cache`. |
-| Annuler | `mh backup --undo <passage>` remet ce qu'un passage a renommé ou mis de côté (les copies restent). |
-| Avec `mh` | `mh backup --to <dossier>` une fois, puis `mh backup` ; `--anyway` ; `--undo <passage>`. |
+| Vos photos | 🔒 Ni lues ni modifiées. |
+| Besoins | `/cache` (l'index), `/config`, `/backups` (où va l'archive). |
+| Écrit | Dans `/backups` seulement : l'archive ; les 3 plus récentes sont gardées, les plus anciennes supprimées. |
+| Avec `mh` | `mh backup` : `mh` monte `$HOME\media-hygiene\backups` pour `backup` et `restore` seulement. |
 
-## Le dossier de sauvegarde
+## Lancer
 
-Un dossier **rien qu'à lui** : jamais le partage `Photos` de votre NAS (une [sauvegarde que vous comparez](../clean/05-choose-the-kept-copy.md#comparer-une-sauvegarde-ou-un-ancien-disque),
-qu'aucune commande ne modifie), jamais un dossier de photos, jamais à l'intérieur d'un : `mh`
-refuse un tel dossier et nomme les deux. Chaque dossier de photos va dessous par son propre
-chemin, le lecteur comme dossier : `C:\Photos` dans `\\NAS\backup_photos\C\Photos`, pour que
-deux dossiers du même nom ne se rencontrent jamais. Le dossier donné avec `--to` est retenu
-(`%USERPROFILE%\media-hygiene\backup-target.txt`), relu et affiché ; le mot de passe du NAS est
-celui que `mh folders add --backup` a gardé, sinon demandé une fois. Si Windows ne peut pas
-encore ouvrir le partage, il reçoit une lettre de lecteur libre (`Z:` d'abord) le temps du
-passage, retirée ensuite.
+Dans Windows PowerShell :
 
-## Ce que fait un passage
+```powershell
+mh backup
+```
 
-1. **Liste** vos dossiers de photos et la sauvegarde (taille, date) : tous les fichiers, pas
-   seulement les photos (un PDF dans `C:\Photos` est sauvegardé aussi), sauf les dossiers
-   système (`#recycle`, `@eaDir`…), les dossiers exclus et la quarantaine.
-2. **Planifie**, et le dit : ce qui est déjà là, ce qui est nouveau, ce qui a été déplacé (même
-   taille, date, premiers et derniers 64 Ko : renommé sur le NAS, rien n'est envoyé), ce qui a
-   été modifié (la copie du NAS mise de côté d'abord), ce qui a disparu du PC.
-3. **Demande une fois**, journalise chaque renommage, puis Windows renomme et lance `robocopy`
-   par dossier : seuls les fichiers nouveaux ou changés de taille ou de date sont copiés, un
-   passage interrompu reprend au suivant.
-4. **Prouve** : la sauvegarde est listée à nouveau, chaque copie retrouvée avec sa taille et sa
-   date (un fichier que robocopy n'a pas copié est nommé), le passage noté dans
-   [`history`](history.md).
+L'index est copié par la sauvegarde propre à SQLite (cohérente même si une autre fenêtre le lit),
+puis l'archive est **relue sur le disque** : chaque fichier comparé à son SHA-256 de
+`manifest.json`, l'index vérifié en entier (`PRAGMA integrity_check`). La fenêtre montre alors
+l'archive, sa taille et les lignes de chaque table relues (`files`, `tags`, `descriptions`,
+`meanings`, `faces`).
 
-Un dossier non branché (un disque USB) ou non lu en entier laisse sa partie de la sauvegarde
-telle quelle.
+L'archive est sur `C:`, comme le disque de Docker : elle protège d'une fausse manœuvre, pas d'une
+panne du disque. Copiez-la aussi sur une clé USB ou le NAS.
 
-## Ce qui quitte la sauvegarde
+Avec `docker run`, montez vous-même le dossier des archives :
 
-Un fichier que le PC n'a plus est **mis de côté** dans `\\NAS\backup_photos\.removed\<passage>\…`,
-et seulement si vous l'avez retiré exprès : **purgé** de la quarantaine (ou supprimé par `clean`
-comme copie exacte), ou **confirmé** supprimé dans [`review --gone`](review.md). Un fichier
-encore en quarantaine, une suppression pas encore confirmée, ou un fichier dont l'outil ne sait
-rien (une suppression par erreur ?) **reste**, compté par raison. La copie précédente d'un
-fichier modifié va aussi dans `.removed`. `.removed` est vidé après `keep_removed_days` (90
-jours).
+```powershell
+docker run --rm -it `
+  -v media-hygiene-cache:/cache `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "$HOME\media-hygiene\backups:/backups" `
+  cavo789/media-hygiene backup
+```
 
-Un fichier que l'[audit](audit.md) a trouvé abîmé ne remplace jamais sa copie dans la
-sauvegarde.
+## Bon à savoir
 
-**L'arrêt de sécurité** : quand les fichiers mis de côté et remplacés dépassent
-`stop_above_percent` (20 %) de la sauvegarde, rien n'est appliqué : un disque absent ? beaucoup
-de fichiers changés d'un coup ? Regardez, puis `mh backup --anyway`.
+- Pas dans l'archive : les aperçus (refaits par les rapports), les modèles (téléchargés à nouveau),
+  le journal (déjà hors du volume, dans `$HOME\media-hygiene\journal`), les mots de passe du NAS
+  (lisibles par votre compte Windows sur ce PC seulement).
+- Les 3 archives les plus récentes sont gardées dans `$HOME\media-hygiene\backups` ; une quatrième
+  supprime la plus ancienne, dit en une ligne.
 
-## Vitesse
+## Pour aller plus loin
 
-Une première sauvegarde de 240,9 Go : environ 40 minutes aux 100 Mo/s de Windows, contre 4 h 28
-par Docker à 15 Mo/s (estimé d'après les lectures mesurées ; la vitesse d'écriture du NAS est
-mesurée par l'étape 27 de `mh-measure.ps1`). Les passages suivants listent les deux côtés
-(environ 21 s pour 52 094 fichiers, estimé) et ne copient que les nouveaux fichiers ; après un
-tri qui déplace toute la photothèque, seulement des renommages.
-
-## Réglages (`config.toml`)
-
-| Réglage | Par défaut | Ce qu'il fait |
-|---|---|---|
-| `[backup] keep_removed_days` | `90` | Jours qu'un fichier attend dans `.removed` avant que `mh backup` l'efface. |
-| `[backup] stop_above_percent` | `20` | L'arrêt de sécurité. |
-| `[backup] threads` | `8` | Fichiers que robocopy copie à la fois (`/MT`). |
-
-## Options
-
-| Option | Ce qu'elle fait |
-|---|---|
-| `--to DOSSIER` | Le dossier de sauvegarde (`\\NAS\backup_photos`, ou un dossier d'un disque) ; retenu pour les passages suivants. |
-| `--anyway` | Passer outre l'arrêt de sécurité. |
-| `--undo PASSAGE` | Remettre ce que ce passage a renommé ou mis de côté (`mh` seulement). |
-| `--backup CHEMIN` | Une sauvegarde comparée, que le dossier ne doit pas chevaucher (`mh` passe les vôtres). |
-
-Lancée à la main (`docker run … media-hygiene backup --to …`), la commande ne fait que montrer le
-plan.
-
-## Aller plus loin
-
-- [Plusieurs dossiers : votre NAS](../start/03-several-folders.md#votre-nas--sauvegardez-y-vos-photos)
-- [`import`](import.md) : récupérer ce que seul le NAS contient
-- [Le lanceur `mh`](launcher.md)
+- [`restore` : remettre une sauvegarde](restore.md)
 
 ## L'aide intégrée
 
@@ -123,27 +76,13 @@ plan.
 
 <!-- capture: help-backup.txt -->
 ```text
- Utilisation : media-hygiene backup [OPTIONS]
+ Usage: media-hygiene backup [OPTIONS]
 
- Windows seulement, en mh backup : copier vos dossiers de photos dans un
- dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; une photo
- déplacée y est renommée, une suppression par erreur n'y est jamais reportée.
- Lancée ici, elle montre le plan.
+ 🔒 Read-only: never changes your photos. Back up the index and the settings
+ into one archive outside Docker's cache volume, read back.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ *  --to              <str>  The backup folder, as Windows writes it          │
-│                             (\\NAS\backup_photos): a folder of its own,      │
-│                             never a photo folder nor a backup compared.      │
-│                             [required]                                       │
-│    --anyway                 Go on even when more than stop_above_percent     │
-│                             (config.toml) of the backup would be set aside   │
-│                             or replaced.                                     │
-│    --help    -h             Affiche ce message et quitte.                    │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
-│ --backup        <str>  Une sauvegarde ou un ancien disque, monté en lecture  │
-│                        seule : jamais modifié, et jamais refusé pour cela    │
-│                        (mh passe vos sauvegardes). Répétable.                │
+│ --help  -h        Show this message and exit.                                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

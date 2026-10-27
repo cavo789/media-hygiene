@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from rich.table import Table
 
@@ -14,6 +14,10 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.services.runtime import Runtime
+
+
+# Mounted by `mh` for one command only (`share`, `backup`/`restore`).
+_VERB_MOUNTS: Final = frozenset({MountKind.SHARES, MountKind.BACKUPS})
 
 
 def mounts_table(runtime: Runtime) -> Table:
@@ -32,8 +36,8 @@ def mounts_table(runtime: Runtime) -> Table:
         table.add_column(header, overflow="fold")
     data_dir = runtime.locations.data_dir
     for kind in MountKind:
-        if kind is MountKind.SHARES and not runtime.persistent(kind):
-            continue  # mounted by `mh` for `share` only: not a missing mount
+        if kind in _VERB_MOUNTS and not runtime.persistent(kind):
+            continue  # mounted by `mh` for one command only: not a missing mount
         path = runtime.locations.path_of(kind)
         paths = [path]
         if kind is MountKind.DATA:

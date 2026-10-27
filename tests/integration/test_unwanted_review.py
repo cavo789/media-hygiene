@@ -193,5 +193,5 @@ def test_the_page_renders_with_its_route() -> None:
     """The page names its route; the texts carry no "(s)"."""
     place = DecisionsPlace(argument="decisions.json", host="decisions.json")
     text = review_page("unwanted_review.html.j2", place, ("/api/junk", "/api/file"))
-    assert '"/api/junk"' in text.decode()
+    assert '"api/junk"' in text.decode()
     assert "(s)" not in text.decode()

@@ -535,3 +535,34 @@ def test_powershell_opens_the_gone_review_after_the_audit(tmp_path: Path) -> Non
     code = int(ExitCode.GONE_REVIEW)
     asked = f"$follow = $command -eq 'audit' -and $status -eq {code}"
     assert text.index(asked) < text.index("if ($follow) { mh review --gone @typed }")
+
+
+_CRASHED: Final = str(int(ExitCode.CRASHED))
+_KILLED: Final = str(int(ExitCode.KILLED))
+
+
+@pytest.mark.parametrize("code", [_CRASHED, _KILLED])
+def test_a_crashed_home_server_starts_again_once(tmp_path: Path, code: str) -> None:
+    """0365: a crash (its own code, Docker's kill) starts the page again, said once."""
+    done = _bash(tmp_path, "mh", code)
+    assert _lines(done) == ["home:relayed", "home:relayed", "status=0"]
+    assert "stopped unexpectedly: started again" in done.stderr
+
+
+def test_two_crashes_in_a_row_end_the_loop(tmp_path: Path) -> None:
+    """0365: crashed again within a minute: the prompt back, with the reason."""
+    done = _bash(tmp_path, "mh", f"{_CRASHED} {_KILLED}")
+    assert _lines(done) == ["home:relayed", "home:relayed", f"status={_KILLED}"]
+    assert "twice in a row" in done.stderr
+
+
+def test_the_powershell_loop_starts_a_crashed_server_again(tmp_path: Path) -> None:
+    """0365: the same rule in mh.ps1, before a code ends the loop."""
+    runtime = replace(
+        make_runtime(make_locations(tmp_path)), mounts=MountTable(frozenset())
+    )
+    text = render_script(launcher_script(runtime, Shell.POWERSHELL, _COMMANDS))
+    crashed = f"if (@({_CRASHED}, {_KILLED}) -contains $status) {{"
+    ends = f"if ($status -le {STEP_EXIT_BASE} -or $status -ge {SIGNAL_EXIT_BASE})"
+    assert text.index(crashed) < text.index(ends)
+    assert "$crashed = Get-Date" in text

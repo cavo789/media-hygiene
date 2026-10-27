@@ -25,13 +25,13 @@ def show_backups(runtime: Runtime, backups: Sequence[BackupCoverage]) -> None:
         backups: Each backup folder compared with the library.
     """
     for backup in backups:
-        for line in backup_lines(backup, runtime.mapper):
+        for line in push_lines(backup, runtime.mapper):
             runtime.output.info(line)
     if backups:
         runtime.output.blank()
 
 
-def backup_lines(backup: BackupCoverage, mapper: HostPathMapper) -> tuple[str, str]:
+def push_lines(backup: BackupCoverage, mapper: HostPathMapper) -> tuple[str, str]:
     """The two lines of one backup folder.
 
     Args:

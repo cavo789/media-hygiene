@@ -7,7 +7,6 @@ from typing import Self
 from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 
 from media_hygiene.config.album_settings import AlbumSettings
-from media_hygiene.config.backup_settings import BackupSettings
 from media_hygiene.config.cache_settings import CacheSettings
 from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.clean_settings import CleanSettings
@@ -16,6 +15,7 @@ from media_hygiene.config.inventory_settings import InventorySettings
 from media_hygiene.config.patterns import valid_patterns
 from media_hygiene.config.people_settings import PeopleSettings
 from media_hygiene.config.places_settings import PlacesSettings
+from media_hygiene.config.push_settings import PushSettings
 from media_hygiene.config.review_settings import ReviewSettings
 from media_hygiene.config.scan_settings import ScanSettings
 from media_hygiene.config.share_settings import ShareSettings
@@ -164,7 +164,7 @@ class Settings(BaseModel):
     album: AlbumSettings = AlbumSettings()
     tags: TagSettings = TagSettings()
     people: PeopleSettings = PeopleSettings()
-    backup: BackupSettings = BackupSettings()
+    push: PushSettings = PushSettings()
     slideshow: SlideshowSettings = SlideshowSettings()
     share: ShareSettings = ShareSettings()
     shrink: ShrinkSettings = ShrinkSettings()

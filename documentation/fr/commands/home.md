@@ -2,6 +2,8 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `home` · 🇬🇧 [English](../../en/commands/home.md)
 
+> `mh` seul ouvre cette page ; `mh home` reste là pour un script, mais `mh --help` ne la liste plus.
+
 ## En bref
 
 **Une page dans votre navigateur : où en sont vos photos, l'étape suivante en un gros bouton,
@@ -155,8 +157,10 @@ les rapports HTML ouverts depuis le disque, mènent toujours au
 
 ## Depuis un téléphone du Wi-Fi de la maison : `mh --lan`
 
-Dans Windows PowerShell, `mh --lan` ouvre la page d'accueil comme `mh` seul, et laisse un
-téléphone **du même Wi-Fi** l'ouvrir aussi, jusqu'à l'arrêt de `mh` :
+Sous Windows, `mh --lan` ouvre la page d'accueil à un téléphone **du même Wi-Fi** aussi,
+jusqu'à l'arrêt de `mh` ; avec `lan = true` sous `[review]` dans `config.toml` (puis
+`mh update`), `mh` seul et son raccourci du bureau font de même (désactivé par défaut pour
+l'instant) :
 
 1. `mh` trouve l'adresse du PC sur le réseau de la maison (*192.168.1.20*) et dit *La page
    d'accueil s'ouvre aussi aux téléphones du réseau de la maison*. Windows peut demander si
@@ -184,9 +188,14 @@ diaporama.
 | Comment | HTTP simple sur le réseau de la maison, comme décidé : aucun avertissement de certificat sur le téléphone ; le code et le cookie circulent en clair sur votre Wi-Fi, pour cette fois seulement. |
 | La fois suivante | Un nouveau `mh --lan`, un nouveau code : l'ancien téléphone doit s'appairer à nouveau. |
 
-Le téléphone n'ouvre pas la page ? Windows considère le réseau comme **public** (`mh` le dit) :
-passez-le en privé dans *Paramètres › Réseau et Internet*. `mh --lan` ne fonctionne que dans
-Windows PowerShell pour l'instant.
+Le téléphone n'ouvre pas la page ? La carte *Sur votre téléphone* dit pourquoi : *Aucun réseau
+domestique trouvé* (la page s'ouvre pour le PC seul, rien n'échoue), ou Windows considère le
+Wi-Fi comme **public** : passez-le en privé dans *Paramètres › Réseau et Internet › Wi-Fi ›
+Réseau privé*. La première fois, Windows peut poser une fois la question pour Docker Desktop :
+cochez **Réseaux privés**, puis **Autoriser**.
+
+Avec `lan = false` (le défaut pour l'instant) : la page d'accueil reste sur le PC, sans carte
+(`mh --lan` l'ouvre quand même s'il est tapé). Windows PowerShell seulement pour l'instant.
 
 ## Vos albums, sur le téléphone
 
@@ -256,6 +265,13 @@ aucun autre site.
   qu'une autre fenêtre a fait apparaît au rechargement suivant. Un bouton d'une page dessinée
   avant un tel changement est refusé (*Les étapes ont changé depuis l'affichage de la page*) et
   la page remontre les étapes.
+- `config.toml` est relu quand vous le modifiez, y compris pour le prochain audit lancé depuis la
+  page. Une faute de frappe qui le rend illisible est signalée en haut de la page (*…config.toml
+  ne peut pas être lu : … Les derniers bons réglages restent jusqu'à sa correction.*) ; la ligne
+  disparaît une fois le fichier corrigé.
+- Si la page s'arrête de façon inattendue (un bug, Docker à court de mémoire), `mh` la relance
+  tout seul (*La page d'accueil s'est arrêtée de façon inattendue : relancée.*) ; un second arrêt
+  dans la minute rend l'invite.
 
 ## Aller plus loin
 

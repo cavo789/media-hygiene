@@ -51,7 +51,7 @@ Sous *Où vous en êtes* (le dernier audit, la quarantaine), une ligne par étap
   demande des mots que vous seul connaissez (le nom d'un album, le dossier de votre NAS, un
   dossier à retirer, combien de rapports garder) montre un exemple, *(à taper vous-même)* :
   `mh album "Crète 2023"`. Sur la [page d'accueil](home.md), son formulaire les
-  remplit. `mh backup` s'affiche *(prévu)*.
+  remplit. `mh push` s'affiche *(prévu)*.
 
 Chaque action est listée une fois, numérotée d'un espace à l'autre, dans l'espace où elle vient
 en premier : `mh open`, `mh history`, `mh undo` et `mh purge` sont dans le guide du nettoyage, là
@@ -191,13 +191,13 @@ Quarantaine : vide.
                                                       Excel
       Sauvegarder sur le NAS
       Le parcours
-      mh backup --to "\\NAS\backup_photos"            Choisir le   🔒
+      mh push --to "\\NAS\backup_photos"            Choisir le   🔒
                                                       dossier de
                                                       sauvegarde
                                                       sur le NAS
                                                       (à taper
                                                       vous-même)
-   27 mh backup                                       Sauvegarder  ↩️
+   27 mh push                                       Sauvegarder  ↩️
                                                       ce qui
                                                       manque au
                                                       NAS

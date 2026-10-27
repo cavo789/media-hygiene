@@ -33,6 +33,8 @@ FIELDS_STEP: Final = 99
 # A code from here on is a signal's (128 + n): `mh` ends its loop, never runs a step.
 SIGNAL_EXIT_BASE: Final = 128
 REPORTS_PREFIX: Final = "/reports/"
+# *Apply now* of browse and the reviews (`apply_api`): here, a leaf `search.app` reads.
+APPLY_PATH: Final = "/api/apply"
 
 
 class HomeField(Frozen):
@@ -134,6 +136,7 @@ class HomeState(Frozen):  # one field per part of the page
     update: HomeUpdate | None = None  # a newer version, from Docker Hub (0267)
     windows: bool = True  # the Windows actions are offered
     ai: bool = False  # a local model is set
+    settings_error: str = ""  # config.toml does not load: the line the page shows
 
     def command_of(self, number: int) -> str | None:
         """The command of a runnable step.

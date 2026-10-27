@@ -66,7 +66,7 @@ def test_the_page_decides_and_reads_back(locations: Locations) -> None:
         [
             Call("GET", "/"),
             Call("GET", "/api/state"),
-            Call("GET", group.kept.preview),
+            Call("GET", "/" + group.kept.preview),
             choose(0, "swap"),
             Call("GET", "/api/file"),
             choose(7, "planned"),

@@ -143,12 +143,12 @@ A folder that must not even be read is [excluded](../clean/05-choose-the-kept-co
 
 ### Your NAS: back up your photos to it
 
-The other way round: `mh backup --to \\NAS\backup_photos` copies every photo folder of `mh`
+The other way round: `mh push --to \\NAS\backup_photos` copies every photo folder of `mh`
 into a shared folder **of its own** on the NAS (create it once in DSM), only what it lacks, at
 the speed of Windows (about 100 MB/s, against 15 MB/s through Docker: measured). A photo moved
 by `sort` is renamed there, not sent again; a photo deleted by mistake on the PC is never
 deleted from the NAS: only what you purged or confirmed deleted is set aside, in `.removed`.
-The next times, `mh backup` alone. Windows PowerShell only: [`backup`](../commands/backup.md).
+The next times, `mh push` alone. Windows PowerShell only: [`push`](../commands/push.md).
 
 ## A phone? Copy only its new photos
 

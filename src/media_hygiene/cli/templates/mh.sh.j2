@@ -94,6 +94,11 @@
         mkdir -p "{{ share.host }}"
         share=(-v "{{ share.host }}:{{ share.point }}")
     fi
+    if [[ " {{ keep.verbs | join(' ') }} " == *" $command "* ]]; then
+        # `{{ function }} backup` / `restore`: the archives of the index, mounted for these commands only (0352).
+        mkdir -p "{{ keep.host }}"
+        share=(-v "{{ keep.host }}:{{ keep.point }}")
+    fi
     if [[ -n "$long" ]]; then
         read -r -a awake <<< "$(_{{ function }}_awake "$command")"
         _{{ function }}_title "{{ function }} $command..."
@@ -149,7 +154,7 @@
 
 {% include 'mh_drives.sh.j2' %}
 
-{% include 'mh_backup.sh.j2' %}
+{% include 'mh_push.sh.j2' %}
 {% for name in host.windows %}
 
 # `{{ function }} {{ name }}` writes a Windows shortcut or registry key, or reads a phone: mh.ps1
@@ -170,7 +175,7 @@ _{{ function }}_{{ name }}() {
 # A terminal has no portable way to come forward: a console step rings its bell (BEL), and
 # the page says to switch to it (0285).
 _{{ function }}_home() {
-    local _{{ function }}_relay=1 _{{ function }}_tab='' status=0 after=0 steps number line chosen words=() color=(--color never)
+    local _{{ function }}_relay=1 _{{ function }}_tab='' status=0 after=0 crashed=-{{ texts.crash.window }} steps number line chosen words=() color=(--color never)
     if [[ -t 2 ]]; then color=(--color always); fi
     while true; do
         if [[ "$status" -eq {{ page_closed }} ]]; then return 0; fi  # its tab closed (0262)
@@ -183,6 +188,13 @@ _{{ function }}_home() {
 {% else %}
             {{ function }} home "$@" || status=$?
 {% endif %}
+            # A crash (its own code, or Docker's kill) starts it again once a minute (0365).
+            if [[ " {{ texts.crash.codes | join(" ") }} " == *" $status "* ]]; then
+                if ((SECONDS - crashed < {{ texts.crash.window }})); then printf '%s\n' "{{ texts.crashed_again }}" >&2; return "$status"; fi
+                printf '%s\n' "{{ texts.crashed }}" >&2
+                crashed=$SECONDS status=0 _{{ function }}_tab=1
+                continue
+            fi
             if [[ "$status" -le {{ step_base }} || "$status" -ge {{ signal_base }} ]]; then return "$status"; fi
             _{{ function }}_tab=1
         fi

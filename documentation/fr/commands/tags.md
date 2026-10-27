@@ -50,6 +50,18 @@ docker run --rm -it `
 Sans modèle de vision, il prend quelques secondes : *✅ 52 318 fichiers : 241 906 mots tirés de
 leurs dossiers, noms, dates et lieux.*
 
+### Depuis la page d'accueil
+
+Sur la page d'accueil (`mh`), le bouton **Dans cette page** à côté de *Donner des mots à vos
+photos* lance `tags` sans la console. Il écrit d'abord les mots des dossiers, des noms, des dates
+et des lieux (quelques secondes), puis montre ce que coûterait le modèle de vision : *40 099
+photos à décrire avec qwen2.5vl:7b, environ 21 h 27 min*. Choisissez **Décrire maintenant**,
+**Décrire pendant 1 h** (il s'arrête tout seul) ou **Pas maintenant**. Pendant la description, la
+page montre les photos décrites, le rythme et le temps restant ; **Arrêter après cette photo**
+l'interrompt, et le passage suivant reprend là où il s'était arrêté (chaque réponse est gardée
+aussitôt dans le cache). Rouvrir la page pendant un passage le montre. Seul le cache est écrit :
+vos photos ne sont pas modifiées. Si Ollama est injoignable, la page le dit en une ligne.
+
 ## D'où viennent les mots
 
 | Source | Mots | Coût |

@@ -76,10 +76,15 @@
     </details>
     <section class="lan-card" id="lanCard" hidden aria-labelledby="lanTitle">
       <p class="lan-title" id="lanTitle">{{ texts.lanTitle }}</p>
-      <div class="lan-qr" id="lanQr"></div>
-      <p class="lan-line">{{ texts.lanOpen }} <strong class="lan-url" id="lanUrl"></strong></p>
-      <p class="lan-line">{{ texts.lanCode }} <strong class="lan-code" id="lanCode"></strong></p>
-      <p class="lan-note">{{ texts.lanNote }}</p>
+      <p class="lan-note lan-problem" id="lanNone" hidden>{{ texts.lanNone }}</p>
+      <p class="lan-note lan-problem" id="lanPublic" hidden>{{ texts.lanPublic }}</p>
+      <div id="lanPair">
+        <div class="lan-qr" id="lanQr"></div>
+        <p class="lan-line">{{ texts.lanOpen }} <strong class="lan-url" id="lanUrl"></strong></p>
+        <p class="lan-line">{{ texts.lanCode }} <strong class="lan-code" id="lanCode"></strong></p>
+        <p class="lan-note">{{ texts.lanNote }}</p>
+        <p class="lan-note">{{ texts.lanFirewall }}</p>
+      </div>
     </section>
     <div class="signature">
       <img src="{{ paths.assets }}images/avatar.webp" alt="{{ texts.avatarAlt }}" width="236" height="320">
@@ -128,6 +133,7 @@
 <dialog id="confirmDlg" aria-labelledby="confirmTitle"></dialog>
 <dialog id="runDlg" aria-labelledby="runTitle"></dialog>
 <dialog id="keysDlg" aria-labelledby="keysTitle"></dialog>
+<dialog id="tagsDlg" aria-labelledby="tagsTitle"></dialog>
 <dialog id="stoppedDlg" class="stopped-dlg" aria-labelledby="stoppedTitle">
   <div class="dlg">
     <img src="{{ paths.assets }}images/meerkat-asleep.webp" alt="" width="400" height="387">
@@ -150,6 +156,7 @@
 {% include "home.js.j2" %}
 {% include "home_draw.js.j2" %}
 {% include "home_run.js.j2" %}
+{% include "home_tags.js.j2" %}
   start();
 })();
 </script>

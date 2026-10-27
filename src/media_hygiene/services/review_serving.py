@@ -72,7 +72,8 @@ def serve_review_page(runtime: Runtime, review: ReviewPage, port: int) -> int:
     offer = review.apply or ApplyOffer(None, _nothing)
     code = 0
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        door = applying_door(review.app(page, executor, runtime.previews_dir), offer)
+        app = review.app(page, executor, runtime.previews_dir)
+        door = applying_door(app, offer, runtime.locations.reports_dir)
         door = with_person(door, runtime, executor)
         code = asyncio.run(serve_until_ended(door, port, ready))
     return code

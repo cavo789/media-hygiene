@@ -11,6 +11,8 @@
   "unreadable-video": _("Video cannot be opened"),
 } %}
 {% from "_disposal.html.j2" import removed_from_label, disposal_note %}
+{% from "_decide.html.j2" import badge, full_list, decide_script with context %}
+{% set few = examples if not is_clean else none %}
 {% block title %}{{ _("media-hygiene report") }} — {{ s.folder }}{% endblock %}
 {% macro group_block(group) %}
 <div class="group">
@@ -40,6 +42,7 @@
   <div class="card"><div class="value">{{ s.broken_files | number }}</div><div class="label">{{ _("broken files") }}</div></div>
 </div>
 {% include "_actions.html.j2" %}
+{% include "_clean_done.html.j2" %}
 
 {% set inv = s.inventory %}
 {% if inv and (inv.images or inv.videos) %}
@@ -133,19 +136,19 @@
 {% endif %}
 
 {% if report.groups.largest %}
-<h2 id="groups">🧬 {{ _("Duplicate groups") }}</h2>
-{% for group in report.groups.largest %}{{ group_block(group) }}{% endfor %}
-{% if report.groups.hidden %}<p class="muted">{{ _("… and %(count)s more groups (largest files are shown first).", count=report.groups.hidden | number) }}</p>{% endif %}
+<h2 id="groups">🧬 {{ _("Duplicate groups") }} {{ badge("clean") }}</h2>
+{% for group in report.groups.largest[:few] %}{{ group_block(group) }}{% endfor %}
+{% if few %}{{ full_list(s.duplicate_groups, "") }}{% elif report.groups.hidden %}<p class="muted">{{ _("… and %(count)s more groups (largest files are shown first).", count=report.groups.hidden | number) }}</p>{% endif %}
 {% endif %}
 
 {% include "_returned.html.j2" %}
 {% include "_similar.html.j2" %}
-{% include "_bursts.html.j2" %}
 
 {% if report.broken.handled or report.broken.protected %}
-<h2 id="broken">💔 {{ _("Broken files") }}</h2>
+<h2 id="broken">💔 {{ _("Broken files") }} {{ badge("clean") }}</h2>
 <p class="muted">{{ _("Empty files are deleted; unreadable ones are moved to the quarantine, never deleted outright.") }}</p>
-{% for item in report.broken.handled + report.broken.protected %}
+{% set all_broken = report.broken.handled + report.broken.protected %}
+{% for item in all_broken[:few] %}
 <div class="group">
   <div class="thumb">{% if item.thumbnail %}<img src="{{ item.thumbnail }}" alt="" loading="lazy">{% else %}❔{% endif %}</div>
   <ul class="files">
@@ -155,6 +158,7 @@
   </ul>
 </div>
 {% endfor %}
+{% if few %}{{ full_list(all_broken | length, "") }}{% endif %}
 {% endif %}
 
 {% if report.broken.unread %}
@@ -166,16 +170,19 @@
 {% endif %}
 
 {% if report.orphans.paths %}
-<h2 id="orphans">🏷️ {{ _("Orphan sidecar files") }}</h2>
+<h2 id="orphans">🏷️ {{ _("Orphan sidecar files") }} {{ badge("clean") }}</h2>
 <p class="muted">{{ _("Sidecars (.xmp, .aae, .thm) hold the metadata or edits of the photo of the same name, next to them. These ones have no such file left: they are moved to the quarantine, never deleted outright. A sidecar next to its photo is never touched.") }}</p>
 <ul class="files">
-  {% for path in report.orphans.paths %}<li class="remove">🏷️ {{ path }}</li>{% endfor %}
+  {% for path in report.orphans.paths[:few] %}<li class="remove">🏷️ {{ path }}</li>{% endfor %}
 </ul>
-{% if report.orphans.hidden %}<p class="muted">{{ _("… and %(count)s more (the CSV lists them all).", count=report.orphans.hidden | number) }}</p>{% endif %}
+{% if few %}{{ full_list(report.orphans.paths | length + report.orphans.hidden, "") }}{% elif report.orphans.hidden %}<p class="muted">{{ _("… and %(count)s more (the CSV lists them all).", count=report.orphans.hidden | number) }}</p>{% endif %}
 {% endif %}
+
+{% include "_bursts.html.j2" %}
 
 {% if not report.groups.largest and not report.broken.handled and not report.orphans.paths and not report.returned.items %}
 <p class="note">🎉 {{ _("Nothing to clean: no duplicate and no broken file.") }}</p>
 {% endif %}
 <p class="muted"><a href="../index.html">← {{ _("All reports") }}</a></p>
+{{ decide_script() }}
 {% endblock %}

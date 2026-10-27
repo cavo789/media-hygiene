@@ -1,0 +1,66 @@
+{# `tags` run by the page (0343): the cheap words, then the figures and a question, then the
+   model's progress (described / total, rate, time left) and Stop. /api/tags holds the run:
+   reopening the page during a run shows it again. #}
+const TAGS_HOUR = 60;
+const tags = { open: false };
+const fillIn = (text, values) => text.replace(/\{(\w+)\}/g, (all, key) => (key in values ? values[key] : all));
+function duration(seconds) {
+  const minutes = Math.max(1, Math.round(seconds / 60));
+  const hours = Math.floor(minutes / 60);
+  return hours ? fillIn(T.tagsHours, { h: hours, min: minutes % 60 }) : fillIn(T.tagsMinutes, { min: minutes });
+}
+function tagsBody(state) {
+  const steps = state.steps.map((step) => {
+    const counts = step.total === null ? count(step.done) : `${count(step.done)} / ${count(step.total)}`;
+    const pct = step.total ? Math.round((100 * step.done) / step.total) : 0;
+    return `<li class="pstep${step.finished ? " is-done" : ""}">${icon(step.finished ? "check" : "history")}<span>${esc(step.title)}</span><span class="pstep-count">${esc(counts)}</span><span class="pbar" aria-hidden="true"><span style="width:${pct}%"></span></span></li>`;
+  }).join("");
+  const parts = [`<ol class="progress-steps"${steps ? "" : " hidden"}>${steps}</ol>`];
+  const figures = state.figures;
+  if (state.phase === "preparing") parts.push(`<p class="pcurrent">${esc(T.tagsPreparing)}</p>`);
+  if (state.phase === "asking" && figures) {
+    if (!figures.model) parts.push(`<p>${esc(T.tagsNoModel)}</p>`);
+    else if (!figures.to_describe) parts.push(`<p>${esc(T.tagsNothing)}</p>`);
+    else {
+      parts.push(`<p>${esc(fillIn(T.tagsAsk, { count: count(figures.to_describe), model: figures.model, time: duration(figures.to_describe * figures.seconds_per_photo) }))}</p>`);
+      parts.push(`<div class="audit-controls"><button class="btn btn-primary" type="button" data-act="tags-all">${icon("play")} ${esc(T.tagsNow)}</button><button class="btn" type="button" data-act="tags-hour">${esc(T.tagsHour)}</button><button class="btn btn-ghost" type="button" data-close>${esc(T.tagsNotNow)}</button></div>`);
+    }
+  }
+  if (state.phase === "running") {
+    const step = state.steps.find((one) => one.total !== null && !one.finished);
+    if (step && step.done && state.elapsed) {
+      const rate = step.done / state.elapsed;
+      parts.push(`<p class="pcurrent" aria-live="polite">${esc(fillIn(T.tagsRate, { rate: (rate * 60).toFixed(1), time: duration((step.total - step.done) / rate) }))}</p>`);
+    } else parts.push(`<p class="pcurrent">${esc(T.tagsRunning)}</p>`);
+    parts.push(`<div class="audit-controls"><button class="btn btn-ghost" type="button" data-act="tags-stop">${esc(T.tagsStop)}</button></div>`);
+  }
+  if (state.phase === "stopped") parts.push(`<p>${esc(T.tagsStopped)}</p>`);
+  parts.push(...state.lines.map((line) => `<p>${esc(line)}</p>`));
+  if (state.error) parts.push(`<p class="muted">${esc(state.error)}</p>`);
+  return parts.join("");
+}
+function drawTags(state) {
+  const dialog = $("#tagsDlg");
+  dialog.innerHTML = `<div class="dlg">
+    <div class="dlg-head"><div><p class="eyebrow">${icon("tag")} ${esc(T.tagsEyebrow)}</p><h2 id="tagsTitle">${esc(T.tagsTitle)}</h2></div>${closeButton()}</div>
+    <p class="muted">${esc(T.tagsText)}</p>${tagsBody(state)}</div>`;
+  if (!dialog.open) showDialog(dialog);
+  return state.phase === "preparing" || state.phase === "running";
+}
+const pollTags = () => fetch(P.tags, { cache: "no-store" })
+  .then((response) => response.json())
+  .then((state) => { if (state.phase !== "idle" && drawTags(state)) window.setTimeout(pollTags, POLL_MS); })
+  .catch(() => stopped());
+function askTags(body) {
+  post(P.tags, body)
+    .then((reply) => { if (!reply.ok) toast(reply.body.error || T.tagsBusy); pollTags(); })
+    .catch(() => stopped());
+}
+ACTS["tags-here"] = () => askTags({ action: "prepare" });
+ACTS["tags-all"] = () => askTags({ action: "describe" });
+ACTS["tags-hour"] = () => askTags({ action: "describe", minutes: TAGS_HOUR });
+ACTS["tags-stop"] = () => askTags({ action: "stop" });
+if (P.tags) fetch(P.tags, { cache: "no-store" })  // a run going on: show it again
+  .then((response) => (response.ok ? response.json() : null))
+  .then((state) => { if (state && (state.phase === "preparing" || state.phase === "running")) pollTags(); })
+  .catch(() => {});

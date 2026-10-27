@@ -90,3 +90,6 @@ class ReportSummary(BaseModel):
     inventory: Inventory | None = None
     # Files only a backup folder holds, never imported nor dealt with (`import`).
     backup_only: int = 0
+    # A clean's options: near duplicates moved (`--tier near`), bursts (`--decisions`).
+    near_tier: bool = False
+    bursts_decided: bool = False

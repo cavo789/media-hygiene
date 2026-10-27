@@ -5,10 +5,12 @@
    the home step that applies the decisions; mh runs it in the terminal (its usual question),
    then opens the home page again on the same port: the page goes there once the server was
    seen gone, then answering again, on the section the home page was left from (0280, kept
-   for this tab in sessionStorage by home_run.js.j2). #}
+   for this tab in sessionStorage by home_run.js.j2). Served by the home server that mh keeps
+   up (0363), the answer is `kept`: the step runs in the window of mh, this page stays open,
+   follows it on `follow` (`GET /api/step`), then loads again with its end said. #}
 {% if apply_offered %}
 <span id="applyBar">
-  <button id="applyNow" type="button" hidden title="{{ _('Close this page: mh moves the files set aside to the quarantine (it asks first), then opens the home page again.') }}">{{ _("Apply now") }}</button>
+  <button id="applyNow" type="button" hidden title="{{ _('mh moves the files set aside to the quarantine in its window (it asks first).') }}">{{ _("Apply now") }}</button>
   <span id="applySaid" role="status"></span>
 </span>
 <script>
@@ -22,12 +24,36 @@
   const TEXTS = {{ {
     "applying": _("Running in the window where mh runs: {command}. The home page comes back here when it ends."),
     "failed": _("The page failed (error {status})."),
+    "kept": _("Running in the window where mh runs: {command}. This page stays open."),
+    "done": _("Done: {command}."),
+    "stopped": _("Stopped (code {code}): {command}."),
   } | tojson }};
   const button = document.getElementById("applyNow");
   const said = document.getElementById("applySaid");
   const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
 
   window.mhApplyNow = (pending) => { if (!button.disabled) button.hidden = !pending; };
+  const ENDED_KEY = "mh-apply-ended";
+  try {
+    const ended = window.sessionStorage.getItem(ENDED_KEY);
+    if (ended) { said.textContent = ended; window.sessionStorage.removeItem(ENDED_KEY); }
+  } catch { /* private mode: nothing said */ }
+
+  // The step's files, as mh writes them: its end said, then the page read again (the files
+  // set aside are gone from the decisions). The server gone meanwhile: wait for the next one.
+  const followStep = (state) => {
+    const poll = () => fetch(state.follow, { cache: "no-store" })
+      .then((response) => response.json())
+      .then((step) => {
+        if (step.state !== "done" || step.id !== state.id) { window.setTimeout(poll, APPLY_POLL_MS); return; }
+        const text = fill(step.code === 0 ? TEXTS.done : TEXTS.stopped, { command: state.command, code: step.code });
+        try { window.sessionStorage.setItem(ENDED_KEY, text); } catch { /* private mode */ }
+        said.textContent = text;
+        window.location.reload();
+      })
+      .catch(() => waitForHome(null));
+    window.setTimeout(poll, APPLY_POLL_MS);
+  };
 
   const waitForHome = (run) => {
     let seenGone = false;
@@ -59,9 +85,13 @@
       return;
     }
     said.className = "";
-    said.textContent = fill(TEXTS.applying, { command: state.command });
     button.hidden = true;
-    button.disabled = true;
+    if (state.kept) {
+      said.textContent = fill(TEXTS.kept, { command: state.command });
+      followStep(state);
+      return;
+    }
+    said.textContent = fill(TEXTS.applying, { command: state.command });
     waitForHome(answer.headers.get(RUN_HEADER));
   });
 })();

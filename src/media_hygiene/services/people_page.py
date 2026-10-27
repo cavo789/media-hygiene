@@ -4,9 +4,8 @@ The faces are cut from their photos on request in the worker pool and never writ
 anywhere; the page is served like `review` and `places`, on the loopback only. The
 names are saved into `config.toml` (`[[people.person]]`), when `/config` is mounted
 and writable; otherwise the page shows the groups and the names already given. The
-photos of a group can be set aside in the decisions file of the reports folder, like
-on the search page; opened from the home page, *Apply now* ends the page on the step
-that moves them to the quarantine.
+photos of a group can be set aside in the decisions file, as on the search page;
+opened from the home page, *Apply now* hands `mh` the step that quarantines them.
 """
 
 from __future__ import annotations
@@ -114,7 +113,8 @@ def serve_people(
             aside,
             alike,
         )
-        door = with_person(applying_door(app, offer), runtime, executor)
+        door = applying_door(app, offer, runtime.locations.reports_dir)
+        door = with_person(door, runtime, executor)
         code = asyncio.run(
             serve_until_ended(door, start.port, partial(_announce, runtime, roster))
         )

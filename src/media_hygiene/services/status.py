@@ -79,7 +79,7 @@ class Status:  # pylint: disable=too-many-instance-attributes
     # Photos analysed and faces found; None before any `people`.
     faces: tuple[int, int] | None = None
     imported: str | None = None  # the newest `import` run (0265)
-    backed_up: datetime | None = None  # when the newest `mh backup` ran (0264)
+    backed_up: datetime | None = None  # when the newest `mh push` ran (0264)
     disk: DiskProgress | None = None  # what the tree says of the sorting (0405)
 
     @property
@@ -149,9 +149,7 @@ def read_status(runtime: Runtime) -> Status:
         tagged=tag_coverage(runtime.index_file),
         faces=face_coverage(runtime.index_file),
         imported=next((r.run_id for r in runs if r.kind is Phase.IMPORT), None),
-        backed_up=_started(
-            next((r.run_id for r in runs if r.kind is Phase.BACKUP), "")
-        ),
+        backed_up=_started(next((r.run_id for r in runs if r.kind is Phase.PUSH), "")),
         disk=disk_progress(runtime),
     )
 

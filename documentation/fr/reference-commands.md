@@ -35,7 +35,8 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 | voir mes mots dans digiKam, darktable, Lightroom ou Immich | [`xmp`](commands/xmp.md) |
 | récupérer les photos que seul mon NAS a encore, pas celles que j'ai supprimées | [`import`](commands/import.md) |
 | récupérer la place des vidéos de mes anciens appareils, l'image gardée | [`shrink`](commands/shrink.md) |
-| sauvegarder mes photos sur mon NAS, seulement ce qui lui manque | [`backup`](commands/backup.md) |
+| sauvegarder mes photos sur mon NAS, seulement ce qui lui manque | [`push`](commands/push.md) |
+| garder l'index et mes réglages à l'abri d'une remise à zéro de Docker, et les remettre | [`backup`](commands/backup.md), [`restore`](commands/restore.md) |
 | répondre à mes propres questions sur mes photos avec Excel | [`inventory`](commands/inventory.md) |
 | taper `mh audit` au lieu d'un long `docker run` | [`launcher`](commands/launcher.md) |
 | vérifier chaque réglage et chaque dossier avant que l'outil agisse | [`config`](commands/config.md) |
@@ -53,7 +54,6 @@ exemples et son `--help`.
 | [`audit`](commands/audit.md) | Trouve les doublons exacts et les fichiers cassés. N'écrit jamais dans vos dossiers. | [1](start/01-first-audit.md) |
 | [`status`](commands/status.md) | Où en suis-je ? Le dernier audit, la quarantaine, les exécutions encore annulables, les tris pas appliqués, la dernière proposition pas triée ; puis une étape suivante en commande complète. Ne lit que les dossiers de l'outil, sans analyse. | [Nettoyer, 9](clean/09-undo-history-purge.md#où-en-suis-je--status) |
 | [`menu`](commands/menu.md) | Ce que montre `mh menu` dans le terminal : chaque étape des trois guides avec sa commande `mh` complète, celle que donnerait `status` proposée ; Entrée la lance par `mh`, un numéro en lance une autre. Ne lit que les dossiers de l'outil, sans analyse. | [Nettoyer en bref](clean/quick-guide.md) |
-| [`home`](commands/home.md) | La page d'accueil dans votre navigateur : ce que dit `status`, l'étape suivante en gros bouton, chaque étape des guides numérotée comme dans `mh menu`, les rapports et quelques aperçus ; lance l'audit dans la page, sa progression affichée. Le bouton d'une étape la confie à `mh` dans le terminal. N'écrit jamais dans vos dossiers. | [Commandes](commands/home.md) |
 | [`review`](commands/review.md) | Analyse, puis trie les rafales dans votre navigateur, une à la fois, au clavier ; `--near` : décider les quasi-doublons groupe par groupe. N'écrit jamais dans vos dossiers. | [Nettoyer, 10](clean/10-review-bursts.md), [11](clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near) |
 | [`history`](commands/history.md) | Liste les exécutions : leur commande, fichiers supprimés, espace libéré, quarantaine, restaurations. | [Nettoyer, 9](clean/09-undo-history-purge.md) |
 | [`reports`](commands/reports.md) | Liste les rapports et régénère `index.html` ; `--prune N` garde les N plus récents. | [Nettoyer, 4](clean/04-html-report.md) |
@@ -61,12 +61,9 @@ exemples et son `--help`.
 | [`config`](commands/config.md) | Affiche chaque réglage, son origine, et l'état de chaque point de montage ; crée un `config.toml` commenté la première fois. | [Nettoyer, 7](clean/07-configuration-file.md) |
 | [`launcher`](commands/launcher.md) | Affiche le script de `mh`, une commande courte qui retient les dossiers de cette exécution : `mh audit`, `mh clean`… avec les bons montages pour chaque commande. À rediriger vers un fichier (`> mh.ps1`), sans `-it`. | [3](start/01-first-audit.md#écrire-mh-une-fois) |
 | [`classify`](commands/classify.md) | Propose où ranger chaque photo et vidéo : année, événement, catégorie. N'écrit jamais dans vos dossiers ; écrit un classeur à modifier et un rapport dans `/reports`. | [Trier, 4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md), [10](sort/10-sort-by-person.md) |
-| [`review-sort`](commands/review-sort.md) | Montre les événements de la proposition de `classify` un par un dans votre navigateur, avec leurs photos, et les nomme au clavier ; enregistré à côté de `plan.json`, appliqué par `sort`. N'écrit jamais dans vos dossiers ni dans le classeur. | [Trier, 11](sort/11-name-events-in-the-browser.md) |
-| [`places`](commands/places.md) | Montre sur une carte dans votre navigateur où les photos ont été prises, et nomme vos lieux ; enregistrés dans `config.toml`. N'écrit jamais dans vos dossiers. | [Trier, 9](sort/09-places-from-gps.md) |
 | [`inventory`](commands/inventory.md) | Exporte chaque photo et vidéo avec ce que les audits en ont appris vers un classeur Excel (ou un fichier CSV), depuis le cache seul : aucun fichier n'est lu. | [Référence](reference-inventory.md) |
 | [`tags`](commands/tags.md) | Donne à chaque photo et vidéo des mots pour la retrouver : les mots parlants de ses dossiers et de son nom de fichier, sa date (année, mois, saison, fêtes), son lieu, et ce qu'y voit un modèle de vision local (facultatif ; une vidéo par l'image du milieu). Gardés dans le cache, jamais écrits dans les photos. | [Référence](reference-tags.md) |
 | [`search`](commands/search.md) | Retrouve des photos par leurs mots (ceux de `tags`) et les noms donnés dans `people` (`person:"…"`) dans votre navigateur, avec filtres et aperçus ; avec des mots, affiche les premiers résultats en tableau. Les photos choisies peuvent être mises de côté pour `clean --decisions`. N'écrit jamais dans vos dossiers. | [Référence](reference-tags.md#retrouver-une-photo-par-ses-mots--search) |
-| [`browse`](commands/browse.md) | Parcourt vos dossiers dans votre navigateur, comme dans l'Explorateur : l'arborescence avec ses nombres, les photos et vidéos d'un dossier, en grand avec ←/→ ; met de côté celles choisies pour `clean --decisions`. N'écrit jamais dans vos dossiers. | [Retrouver en bref](find/quick-guide.md) |
 | [`slideshow`](commands/slideshow.md) | Montre les photos d'un dossier, d'une recherche ou les fichiers mis de côté sur la télé (son navigateur, ou celui d'un Chromecast), le téléphone comme télécommande : suivante, précédente, une photo touchée, lecture et pause, « ne pas montrer ». Avec `mh slideshow --lan`, pour le réseau de la maison seulement, la télé appairée par un code qu'elle affiche. N'écrit jamais dans vos dossiers. | [Commandes](commands/slideshow.md) |
 | [`share`](commands/share.md) | Prépare un album pour l'envoyer : une copie de chaque photo, redressée, son grand côté à 2048 pixels, sans sa position GPS (`--keep-gps` la garde), dans un dossier au nom de l'album et son zip, dans `media-hygiene\Shares` ; les vidéos sont laissées de côté et comptées. N'écrit jamais dans vos dossiers. | [Commandes](commands/share.md) |
 | [`people`](commands/people.md) | Trouve les visages des photos, regroupe ceux qui se ressemblent, et vous les fait nommer dans votre navigateur (les noms vont dans `config.toml` ; `search` les retrouve). Les visages restent dans le cache, jamais envoyés nulle part ; `--forget` les supprime tous. N'écrit jamais dans vos dossiers. | [Référence](reference-people.md), [Trier, 10](sort/10-sort-by-person.md) |
@@ -83,7 +80,18 @@ exemples et son `--help`.
 | [`xmp`](commands/xmp.md) | Écrit les mots de `tags` dans des fichiers compagnons `.xmp` à côté des photos, pour digiKam, darktable, Lightroom ou Immich ; jamais dans une photo. Montre ce qu'il écrirait ; `--apply` écrit. | [Référence](reference-tags.md#emporter-les-mots-avec-les-photos--xmp) |
 | [`import`](commands/import.md) | Copie dans vos photos ce qu'une sauvegarde (un NAS) est seule à contenir, jamais ce que vous avez mis de côté ou supprimé avant ; les quasi-copies listées à part ; chaque copie prouvée ; la sauvegarde seulement lue. | [Commandes](commands/import.md) |
 | [`shrink`](commands/shrink.md) | Liste les vidéos lourdes qui gagnent à être allégées (anciens appareils, MJPEG), avec la place que chacune libérerait ; `--apply` les réencode en H.264, chacune vérifiée (durée, son, date, lieu), l'original en quarantaine. | [Commandes](commands/shrink.md) |
-| [`backup`](commands/backup.md) | Windows seulement (`mh backup`) : copier vos dossiers de photos dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; une photo déplacée y est renommée, une suppression par erreur n'y est jamais reportée ; annuler avec `--undo`. | [Commandes](commands/backup.md) |
+| [`push`](commands/push.md) | Windows seulement (`mh push`) : copier vos dossiers de photos dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; une photo déplacée y est renommée, une suppression par erreur n'y est jamais reportée ; annuler avec `--undo`. | [Commandes](commands/push.md) |
+| [`backup`](commands/backup.md) | Écrit l'index (ce que les audits, `tags` et `people` ont appris) et les réglages dans un zip de `media-hygiene\backups`, relu ; les 3 plus récents gardés. Ne lit jamais vos photos. | [Commandes](commands/backup.md) |
+| [`restore`](commands/restore.md) | Remet une sauvegarde de l'index (les réglages aussi avec `--config`), après l'avoir vérifiée en entier et avoir sauvegardé l'index remplacé. Ne lit jamais vos photos. | [Commandes](commands/restore.md) |
+
+**Pages : ouvertes depuis la page d'accueil** (absentes de `mh --help` : elles ne font qu'ouvrir une page ; tapées, `mh browse`, `mh places`, `mh review-sort` et `mh home` marchent toujours, pour un script ou sans la page d'accueil)
+
+| Commande | Rôle | Guide |
+|---|---|---|
+| [`home`](commands/home.md) | La page d'accueil dans votre navigateur : ce que dit `status`, l'étape suivante en gros bouton, chaque étape des guides numérotée comme dans `mh menu`, les rapports et quelques aperçus ; lance l'audit dans la page, sa progression affichée. Le bouton d'une étape la confie à `mh` dans le terminal. N'écrit jamais dans vos dossiers. | [Commandes](commands/home.md) |
+| [`review-sort`](commands/review-sort.md) | Montre les événements de la proposition de `classify` un par un dans votre navigateur, avec leurs photos, et les nomme au clavier ; enregistré à côté de `plan.json`, appliqué par `sort`. N'écrit jamais dans vos dossiers ni dans le classeur. | [Trier, 11](sort/11-name-events-in-the-browser.md) |
+| [`places`](commands/places.md) | Montre sur une carte dans votre navigateur où les photos ont été prises, et nomme vos lieux ; enregistrés dans `config.toml`. N'écrit jamais dans vos dossiers. | [Trier, 9](sort/09-places-from-gps.md) |
+| [`browse`](commands/browse.md) | Parcourt vos dossiers dans votre navigateur, comme dans l'Explorateur : l'arborescence avec ses nombres, les photos et vidéos d'un dossier, en grand avec ←/→ ; met de côté celles choisies pour `clean --decisions`. N'écrit jamais dans vos dossiers. | [Retrouver en bref](find/quick-guide.md) |
 
 ## Options
 
@@ -222,7 +230,7 @@ commande montre son propre `--help` ; voici la liste des commandes :
 ╭─ Agir : déplace, écrit ou supprime des fichiers ─────────────────────────────╮
 │ album        Crée le dossier d'un album sur le disque, en liens physiques :  │
 │              rien n'est copié ni déplacé (journalisé, annulable).            │
-│ backup       Windows seulement, en mh backup : copier vos dossiers de photos │
+│ backup       Windows seulement, en mh push : copier vos dossiers de photos │
 │              dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui  │
 │              manque ; une photo déplacée y est renommée, une suppression par │
 │              erreur n'y est jamais reportée. Lancée ici, elle montre le      │
