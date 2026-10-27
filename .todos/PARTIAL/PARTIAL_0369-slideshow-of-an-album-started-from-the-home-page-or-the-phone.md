@@ -30,3 +30,14 @@ the TV*. Today: `mh slideshow --album <name> --lan` typed in the console.
 ## Gain
 
 Starting a show: walk to the PC and type a command → two taps on the phone (estimated).
+
+## Status — PARTIAL (2026-10-27)
+
+### Done
+- Share step *Show an album on the TV* (`slideshow --album {album} --lan`), run from the PC; docs en + fr; tests.
+
+### Not done
+- A paired phone starts it (whitelist the step in `lan_paths`, `POST /api/step`), and opens the remote on the phone.
+  **Reason:** the slideshow is a blocking console step with its own server, not on the home server (0417); letting a phone start a process on the PC is a decision for the maintainer.
+- A message when no album is saved, a list of albums instead of free text.
+  **Reason:** left with the phone part.

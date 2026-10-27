@@ -1190,6 +1190,9 @@ msgstr ""
 msgid "Altitude (m)"
 msgstr "Altitude (m)"
 
+msgid "An album of yours on the big screen; the phone is the remote."
+msgstr "Un de vos albums sur le grand écran ; le téléphone sert de télécommande."
+
 #, python-brace-format
 msgid "An album's name: 1 to {most} characters, without double quotes."
 msgstr "Le nom d'un album : de 1 à {most} caractères, sans guillemets doubles."
@@ -7880,6 +7883,9 @@ msgstr "Afficher"
 msgid "Show again"
 msgstr "Remontrer"
 
+msgid "Show an album on the TV"
+msgstr "Montrer un album sur la télé"
+
 msgid "Show an album, made in search, browse or the burst review: \"Crete 2023\"."
 msgstr ""
 "Montrer un album, fait dans search, browse ou le tri des rafales : "
@@ -10718,7 +10724,8 @@ msgid ""
 msgstr ""
 "Mots écartés parce qu'ils décrivent presque toutes les photos. Écrite "
 "ici, la liste remplace celle intégrée (français et anglais) : c'est la "
-"liste intégrée complète, modifiez-la plutôt que de partir de quelques mots."
+"liste intégrée complète, modifiez-la plutôt que de partir de quelques "
+"mots."
 
 msgid "Words of"
 msgstr "Mots de"
@@ -12777,6 +12784,9 @@ msgstr "raccourci bureau icône démarrer"
 
 msgid "size, largest first"
 msgstr "taille, la plus grande d'abord"
+
+msgid "slideshow tv television album chromecast phone remote sofa"
+msgstr "diaporama télé télévision album chromecast téléphone télécommande canapé"
 
 msgid "slideshow tv television chromecast phone remote holidays"
 msgstr "diaporama télé télévision chromecast téléphone télécommande vacances"

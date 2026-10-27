@@ -937,6 +937,9 @@ msgstr ""
 msgid "Altitude (m)"
 msgstr ""
 
+msgid "An album of yours on the big screen; the phone is the remote."
+msgstr ""
+
 #, python-brace-format
 msgid "An album's name: 1 to {most} characters, without double quotes."
 msgstr ""
@@ -6517,6 +6520,9 @@ msgstr ""
 msgid "Show again"
 msgstr ""
 
+msgid "Show an album on the TV"
+msgstr ""
+
 msgid "Show an album, made in search, browse or the burst review: \"Crete 2023\"."
 msgstr ""
 
@@ -10692,6 +10698,9 @@ msgid "shortcut desktop icon start"
 msgstr ""
 
 msgid "size, largest first"
+msgstr ""
+
+msgid "slideshow tv television album chromecast phone remote sofa"
 msgstr ""
 
 msgid "slideshow tv television chromecast phone remote holidays"
