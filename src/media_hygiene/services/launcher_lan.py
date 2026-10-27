@@ -51,6 +51,7 @@ class LanTexts:
     firewall: str  # Windows may ask about Docker Desktop
     public: str  # the network is "Public" for Windows
     windows: str  # the bash `mh`: PowerShell only
+    tip: str  # `mh` alone: a phone of the home Wi-Fi may open the page too
 
 
 @dataclass(frozen=True, slots=True)
@@ -123,6 +124,11 @@ def lan_command() -> LanCommand:
                     "Windows counts this network as public: its firewall blocks the "
                     "phone. On a home network, set it to private in Windows' Settings "
                     "(Network and Internet)."
+                )
+            ),
+            tip=say(
+                _("💡 On a phone of the home Wi-Fi too: {command}").replace(
+                    "{command}", command
                 )
             ),
             windows=say(

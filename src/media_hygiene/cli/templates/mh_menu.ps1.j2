@@ -14,6 +14,9 @@ function global:_{{ function }}_home {
     $after = $false
     $tab = $false
     $crashed = $null
+    # Said once: the page runs in the background, this window says nothing more until a step (0355).
+    Write-Host "{{ texts.running }}"
+    if (-not ($global:MediaHygieneLan -and $global:MediaHygieneLan.address)) { Write-Host "{{ lan.texts.tip }}" }
     while ($true) {
         if ($status -eq {{ page_closed }}) { $global:LASTEXITCODE = 0; return }
         if ($status -ge {{ signal_base }}) { $global:LASTEXITCODE = $status; return }

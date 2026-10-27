@@ -4115,7 +4115,9 @@ msgstr "Il ne change rien à vos photos"
 msgid ""
 "It is not running on the PC. On the PC, start Media Hygiene (type mh in "
 "Windows PowerShell): this page opens again by itself."
-msgstr "Il ne tourne pas sur le PC. Sur le PC, lancez Média Hygiène (tapez mh dans Windows PowerShell) : cette page se rouvre d'elle-même."
+msgstr ""
+"Il ne tourne pas sur le PC. Sur le PC, lancez Média Hygiène (tapez mh "
+"dans Windows PowerShell) : cette page se rouvre d'elle-même."
 
 #, python-brace-format
 msgid "It is {name}? ({score})"
@@ -4588,6 +4590,11 @@ msgstr "Media Hygiene dans le clic droit de l'Explorateur"
 
 msgid "Media Hygiene is asleep"
 msgstr "Média Hygiène dort"
+
+msgid ""
+"Media Hygiene is running: its page opens in your browser. Keep this "
+"window open (minimised is fine): closing it stops Media Hygiene."
+msgstr "Média Hygiène tourne : sa page s'ouvre dans votre navigateur. Gardez cette fenêtre ouverte (réduite, c'est bien) : la fermer arrête Média Hygiène."
 
 msgid "Media Hygiene is stopped"
 msgstr "Media Hygiene est arrêté"
@@ -10192,7 +10199,9 @@ msgstr ""
 "la quarantaine de ce disque, puis lancez 'undo <exécution>'."
 
 msgid "To keep Media Hygiene as an app: Share, then Add to Home Screen."
-msgstr "Pour garder Média Hygiène comme une app : Partager, puis Sur l'écran d'accueil."
+msgstr ""
+"Pour garder Média Hygiène comme une app : Partager, puis Sur l'écran "
+"d'accueil."
 
 msgid ""
 "To keep settings, mount a folder of yours on /config, e.g. -v \"$HOME"
@@ -10359,7 +10368,10 @@ msgstr ""
 msgid ""
 "Type the code shown on the PC: on its page (in the sidebar of the home "
 "page, at the top of the slideshow's) and in the window of Media Hygiene."
-msgstr "Tapez le code affiché sur le PC : sur sa page (dans la barre latérale de la page d'accueil, en haut de celle du diaporama) et dans la fenêtre de Média Hygiène."
+msgstr ""
+"Tapez le code affiché sur le PC : sur sa page (dans la barre latérale de "
+"la page d'accueil, en haut de celle du diaporama) et dans la fenêtre de "
+"Média Hygiène."
 
 msgid "Type the event's name first."
 msgstr "Tapez d'abord le nom de l'événement."
@@ -16223,6 +16235,10 @@ msgstr ""
 
 msgid "👉 What next: open Windows PowerShell and type:"
 msgstr "👉 Et ensuite : ouvrez Windows PowerShell et tapez :"
+
+#, python-brace-format
+msgid "💡 On a phone of the home Wi-Fi too: {command}"
+msgstr "💡 Sur un téléphone du Wi-Fi de la maison aussi : {command}"
 
 msgid "📍 The GPS positions were kept, as asked."
 msgstr "📍 Les positions GPS ont été gardées, comme demandé."

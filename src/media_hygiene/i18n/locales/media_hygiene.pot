@@ -3778,6 +3778,11 @@ msgstr ""
 msgid "Media Hygiene is asleep"
 msgstr ""
 
+msgid ""
+"Media Hygiene is running: its page opens in your browser. Keep this "
+"window open (minimised is fine): closing it stops Media Hygiene."
+msgstr ""
+
 msgid "Media Hygiene is stopped"
 msgstr ""
 
@@ -13602,6 +13607,10 @@ msgid "👉 What next: mh history (the phone's run, and what it deleted)."
 msgstr ""
 
 msgid "👉 What next: open Windows PowerShell and type:"
+msgstr ""
+
+#, python-brace-format
+msgid "💡 On a phone of the home Wi-Fi too: {command}"
 msgstr ""
 
 msgid "📍 The GPS positions were kept, as asked."
