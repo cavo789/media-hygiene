@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path  # Typer reads the annotation at run time
 from typing import TYPE_CHECKING, Annotated
 
 import typer
@@ -18,7 +19,7 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 
-def purge_command(
+def purge_command(  # pylint: disable=too-many-arguments  # one per option
     ctx: typer.Context,
     run_id: Annotated[
         str | None,
@@ -26,6 +27,16 @@ def purge_command(
     ] = None,
     *,
     yes: Annotated[bool, options.yes()] = False,
+    to: Annotated[
+        Path | None,
+        typer.Option(
+            "--to",
+            help=_(
+                "Copy the quarantine to this folder first, check every byte of the "
+                "copy, and only then erase it."
+            ),
+        ),
+    ] = None,
 ) -> None:
     """Free the space held by the quarantine — this cannot be undone.
 
@@ -33,6 +44,7 @@ def purge_command(
         ctx: Typer context holding the runtime.
         run_id: Run to purge, or None for every run.
         yes: `--yes`, skip the confirmation.
+        to: `--to`, the folder the quarantine is archived to first (0306).
 
     Raises:
         MediaHygieneError: The requested run has no quarantine, the quarantine is
@@ -45,6 +57,13 @@ def purge_command(
         folder_size,
         run_folders,
         runs_in,
+    )
+    from media_hygiene.cli.purge_archive import (
+        PurgeQuestion,
+        archive_runs,
+        purge_question,
+        refuse_target,
+        report_archived,
     )
     from media_hygiene.console.formatting import human_number, human_size
     from media_hygiene.errors import MediaHygieneError
@@ -71,6 +90,7 @@ def purge_command(
                     _("Run {run_id} has no quarantine.").format(run_id=run_id)
                 )
             runs = [run_id]
+        target = None if to is None else refuse_target(runtime, to)
     held = held_back(runtime, runs)  # each run whole, or not at all (0183)
     if held:
         output.warning(
@@ -87,21 +107,19 @@ def purge_command(
     folders = [folder for run in runs for folder in run_folders(quarantines, run)]
     count = sum(file_count(folder) for folder in folders)
     size = human_size(sum(folder_size(folder) for folder in folders))
-    output.warning(
-        _(
-            "'purge' erases for good: these files cannot come back, not even with "
-            "'undo'. It is, with 'clean --delete', the only way the tool removes "
-            "content."
-        )
+    asked = purge_question(
+        runtime, PurgeQuestion(tuple(runs), human_number(count), size, target, yes=yes)
     )
-    question = _("Erase the quarantine of {runs} ({count} files, {size})?")
-    asked = question.format(runs=", ".join(runs), count=human_number(count), size=size)
     if not yes and not output.confirm(asked):
         output.info(_("Nothing was changed."))
         raise typer.Exit(ExitCode.OK)
     with user_errors(output):
+        archived = [] if target is None else archive_runs(runtime, runs, target)
         freed = _purge(runtime, runs)
     output.success(_("Quarantine purged: {size} freed.").format(size=human_size(freed)))
+    if archived:
+        report_archived(runtime, archived)
+        return
     output.tip(_("'undo' can no longer restore these files."))
 
 

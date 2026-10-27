@@ -125,6 +125,9 @@ contenu.
 - Après une purge, `undo` ne peut plus ramener ces fichiers. La date de la purge est écrite à
   côté du journal de l'exécution (`<exécution>.purged.json`, le journal lui-même n'est jamais
   réécrit) : `mh phone --free` la donne sur la vignette d'une photo mise de côté par celle-ci.
+- Plutôt garder une copie ? `purge --to <dossier>` copie d'abord la quarantaine sur un NAS, un
+  disque ou le dossier synchronisé d'un cloud, vérifie chaque octet, puis la vide — voir
+  [`purge`](../commands/purge.md).
 
 Où va le reste de la place ? **⚖ Fichiers les plus lourds** dans
 [`browse`](../commands/browse.md) liste les fichiers les plus lourds de toute la photothèque, les

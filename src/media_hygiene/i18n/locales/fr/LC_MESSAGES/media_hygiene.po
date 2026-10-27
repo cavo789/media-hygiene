@@ -1314,6 +1314,13 @@ msgstr "Appliquer vos choix"
 msgid "April"
 msgstr "avril"
 
+msgid "Archive to a folder of its own (a NAS, another disk)."
+msgstr "Archivez dans un dossier à part (un NAS, un autre disque)."
+
+#, python-brace-format
+msgid "Archived: {count} files, {size} in {folder}."
+msgstr "Archivé : {count} fichiers, {size} dans {folder}."
+
 #, python-brace-format
 msgid ""
 "As decided by the classify run {run}: run classify again to see the rules"
@@ -2009,6 +2016,21 @@ msgstr "Copier les nouvelles photos du téléphone"
 
 msgid "Copy the photos to a local disk, or mount it yourself with -v."
 msgstr "Copiez les photos sur un disque local, ou montez-le vous-même avec -v."
+
+#, python-brace-format
+msgid ""
+"Copy the quarantine of {runs} ({count} files, {size}) to {target}, check "
+"the copy, then empty it?"
+msgstr ""
+"Copier la quarantaine de {runs} ({count} fichiers, {size}) vers {target},"
+" vérifier la copie, puis la vider ?"
+
+msgid ""
+"Copy the quarantine to this folder first, check every byte of the copy, "
+"and only then erase it."
+msgstr ""
+"Copier d'abord la quarantaine dans ce dossier, vérifier chaque octet de "
+"la copie, et seulement ensuite l'effacer."
 
 msgid "Copy them into your photos?"
 msgstr "Les copier dans vos photos ?"
@@ -6752,6 +6774,17 @@ msgstr "Rayon, en mètres"
 msgid "Random sample"
 msgstr "Échantillon aléatoire"
 
+msgid ""
+"Rather keep a copy elsewhere? 'purge --to <folder>' first copies the "
+"quarantine there, checks every byte of the copy, and only then empties "
+"the quarantine. <folder> can be a NAS share, an external disk or a "
+"cloud's synced folder, mounted in the container."
+msgstr ""
+"Plutôt garder une copie ailleurs ? 'purge --to <dossier>' copie d'abord "
+"la quarantaine, vérifie chaque octet de la copie, puis seulement vide la "
+"quarantaine. <dossier> peut être un partage NAS, un disque externe ou le "
+"dossier synchronisé d'un cloud, monté dans le conteneur."
+
 msgid "Rating"
 msgstr "Note"
 
@@ -7341,6 +7374,10 @@ msgstr ""
 #, python-brace-format
 msgid "Run {run_id} of the same sort was already undone: left aside."
 msgstr "Le passage {run_id} du même tri a déjà été annulé : laissé de côté."
+
+#, python-brace-format
+msgid "Run {run} stays in the quarantine."
+msgstr "L'exécution {run} reste dans la quarantaine."
 
 #, python-brace-format
 msgid ""
@@ -8434,6 +8471,10 @@ msgstr ""
 msgid "The albums cannot be read (error {status})."
 msgstr "Les albums n'ont pas pu être lus (erreur {status})."
 
+#, python-brace-format
+msgid "The archive folder {target} and {folder} are one inside the other."
+msgstr "Le dossier d'archive {target} et {folder} sont l'un dans l'autre."
+
 msgid "The archives stay on this PC only, in the folder backups of mh."
 msgstr "Les archives restent sur ce PC seulement, dans le dossier backups de mh."
 
@@ -8654,6 +8695,10 @@ msgid ""
 msgstr ""
 "La copie vers {other} a échoué : l'archive reste sur ce PC seulement, "
 "dans le dossier backups de mh."
+
+#, python-brace-format
+msgid "The copy to {target} failed: {reason}."
+msgstr "La copie vers {target} a échoué : {reason}."
 
 #, python-brace-format
 msgid "The cover of {name} could not be saved."
@@ -10058,6 +10103,13 @@ msgstr "À faire :"
 
 msgid "To fill in"
 msgstr "À compléter"
+
+msgid ""
+"To get a run back: copy each drive's folder of it back into that drive's "
+"quarantine, then run 'undo <run>'."
+msgstr ""
+"Pour récupérer une exécution : recopiez le dossier de chaque disque dans "
+"la quarantaine de ce disque, puis lancez 'undo <exécution>'."
 
 msgid ""
 "To keep settings, mount a folder of yours on /config, e.g. -v \"$HOME"
@@ -14001,6 +14053,10 @@ msgstr ""
 "conserver sur cet appareil."
 
 #, python-brace-format
+msgid "{count} files differ from their copy in {target}: {names}."
+msgstr "{count} fichiers diffèrent de leur copie dans {target} : {names}."
+
+#, python-brace-format
 msgid "{count} files have an identical copy: left out."
 msgstr "{count} fichiers ont une copie identique : laissés de côté."
 
@@ -15835,6 +15891,12 @@ msgstr "{subject} : page '{page}', classeur '{workbook}'"
 #, python-brace-format
 msgid "{table} in config.toml"
 msgstr "{table} dans config.toml"
+
+#, python-brace-format
+msgid "{target} lacks {missing} for the copy: nothing copied, nothing erased."
+msgstr ""
+"Il manque {missing} sur {target} pour la copie : rien n'a été copié ni "
+"effacé."
 
 #, python-brace-format
 msgid ""

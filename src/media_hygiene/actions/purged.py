@@ -61,12 +61,22 @@ def note_purged(journal_dir: Path, run_id: str) -> None:
     """
     record = PurgeRecord(run=run_id, purged=datetime.now(UTC))
     target = purge_record(journal_dir, run_id)
-    draft = target.with_name(f".{target.name}.partial")
     try:
-        draft.write_text(record.model_dump_json() + "\n", encoding="utf-8")
-        draft.replace(target)
+        write_record(target, record)
     except OSError as exc:
         _LOGGER.warning("Cannot record the purge of %s: %s", run_id, exc.strerror)
+
+
+def write_record(target: Path, record: BaseModel) -> None:
+    """Write a record file whole or not at all: a draft, then renamed.
+
+    Args:
+        target: The record file.
+        record: Its content.
+    """
+    draft = target.with_name(f".{target.name}.partial")
+    draft.write_text(record.model_dump_json() + "\n", encoding="utf-8")
+    draft.replace(target)
 
 
 def purge_dates(journal_dir: Path, run_ids: Iterable[str]) -> Mapping[str, datetime]:

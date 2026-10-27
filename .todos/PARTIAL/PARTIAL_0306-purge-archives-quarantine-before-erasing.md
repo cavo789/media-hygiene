@@ -135,3 +135,25 @@ By the maintainer, at the start of `/todo:iterate`:
   early, with a clear message.
 - The cloud note ("as safe as your sync") goes in the docs; OneDrive's Files On-Demand behaviour
   stays to check by the maintainer.
+
+## Done (2026-10-27, PARTIAL)
+
+- `purge --to <folder>` in the container: each run copied to `<folder>/<run>/<drive>/…` (`C`
+  for the default quarantine), free space checked first, every file then compared **byte for
+  byte** and its source checked unchanged since the copy began (size + mtime); one difference or
+  a failed copy (full disk) and the run is not erased. `<run>.archived.json` recorded; the purge
+  still writes `<run>.purged.json`, so every reader of purged runs treats it as purged.
+  Refused: a target that is, holds or lies in any mount point or drive quarantine.
+- The hint above the question (no `--to`, no `--yes`); the archived lines read back from the
+  target and the 👉 line to get a run back. Round trip clean → purge --to → copy back → undo
+  tested (two drives): `undo` copes without the parked rows `forget_runs` drops.
+- Docs EN + FR (`commands/purge.md`, clean step 9), French translations.
+
+## Left
+
+- `[purge] archive_to`, `--no-archive`, `--yes` + `archive_to` archiving.
+- The copy made by Windows (`mh.ps1` + `mh_purge.ps1.j2`, robocopy, target mounted read-only for
+  the check) and `mh.sh`: today `--to` copies through the container, i.e. through Docker's
+  mount (measured 15.1 MB/s CIFS vs ~100 MB/s from Windows in 0264), and the target must be
+  mounted by hand (`mh` does not mount it).
+- `history` showing "archived to …".

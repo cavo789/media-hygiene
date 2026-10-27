@@ -1036,6 +1036,13 @@ msgstr ""
 msgid "April"
 msgstr ""
 
+msgid "Archive to a folder of its own (a NAS, another disk)."
+msgstr ""
+
+#, python-brace-format
+msgid "Archived: {count} files, {size} in {folder}."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "As decided by the classify run {run}: run classify again to see the rules"
@@ -1637,6 +1644,17 @@ msgid "Copy the new photos of the phone"
 msgstr ""
 
 msgid "Copy the photos to a local disk, or mount it yourself with -v."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Copy the quarantine of {runs} ({count} files, {size}) to {target}, check "
+"the copy, then empty it?"
+msgstr ""
+
+msgid ""
+"Copy the quarantine to this folder first, check every byte of the copy, "
+"and only then erase it."
 msgstr ""
 
 msgid "Copy them into your photos?"
@@ -5578,6 +5596,13 @@ msgstr ""
 msgid "Random sample"
 msgstr ""
 
+msgid ""
+"Rather keep a copy elsewhere? 'purge --to <folder>' first copies the "
+"quarantine there, checks every byte of the copy, and only then empties "
+"the quarantine. <folder> can be a NAS share, an external disk or a "
+"cloud's synced folder, mounted in the container."
+msgstr ""
+
 msgid "Rating"
 msgstr ""
 
@@ -6059,6 +6084,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "Run {run_id} of the same sort was already undone: left aside."
+msgstr ""
+
+#, python-brace-format
+msgid "Run {run} stays in the quarantine."
 msgstr ""
 
 #, python-brace-format
@@ -6990,6 +7019,10 @@ msgstr ""
 msgid "The albums cannot be read (error {status})."
 msgstr ""
 
+#, python-brace-format
+msgid "The archive folder {target} and {folder} are one inside the other."
+msgstr ""
+
 msgid "The archives stay on this PC only, in the folder backups of mh."
 msgstr ""
 
@@ -7170,6 +7203,10 @@ msgstr ""
 msgid ""
 "The copy to {other} failed: the archive stays on this PC only, in the "
 "folder backups of mh."
+msgstr ""
+
+#, python-brace-format
+msgid "The copy to {target} failed: {reason}."
 msgstr ""
 
 #, python-brace-format
@@ -8294,6 +8331,11 @@ msgid "To do:"
 msgstr ""
 
 msgid "To fill in"
+msgstr ""
+
+msgid ""
+"To get a run back: copy each drive's folder of it back into that drive's "
+"quarantine, then run 'undo <run>'."
 msgstr ""
 
 msgid ""
@@ -11713,6 +11755,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{count} files differ from their copy in {target}: {names}."
+msgstr ""
+
+#, python-brace-format
 msgid "{count} files have an identical copy: left out."
 msgstr ""
 
@@ -13280,6 +13326,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{table} in config.toml"
+msgstr ""
+
+#, python-brace-format
+msgid "{target} lacks {missing} for the copy: nothing copied, nothing erased."
 msgstr ""
 
 #, python-brace-format
