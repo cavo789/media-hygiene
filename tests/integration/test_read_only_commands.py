@@ -40,6 +40,7 @@ PORT = 8765
 # Each read-only command, in an order where each finds what it needs.
 RUNS: tuple[tuple[str, ...], ...] = (
     ("audit",),
+    ("backup",),  # after the audit: an index to keep (0352)
     ("crosscheck",),
     ("classify",),
     ("review",),

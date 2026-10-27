@@ -16,6 +16,8 @@ if TYPE_CHECKING:
 _PREVIEWS_DIR_NAME: Final = "previews"
 # Mounted by `mh` for `share` only: the copies of an album to send (0296).
 SHARES_POINT: Final = Path("/shares")
+# Mounted by `mh` for `backup` and `restore` only: the archives of the index (0352).
+BACKUPS_POINT: Final = Path("/backups")
 
 
 class Locations(BaseSettings):
@@ -38,6 +40,7 @@ class Locations(BaseSettings):
     reports_dir: Path = Path("/reports")
     cache_dir: Path = Path("/cache")
     shares_dir: Path = SHARES_POINT
+    backups_dir: Path = BACKUPS_POINT
 
     @property
     def config_file(self) -> Path:

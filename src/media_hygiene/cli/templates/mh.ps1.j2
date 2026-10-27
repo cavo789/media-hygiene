@@ -118,6 +118,11 @@ function global:{{ function }} {
         $null = New-Item -ItemType Directory -Force -Path "{{ share.host }}"
         $share = @('-v', "{{ share.host }}:{{ share.point }}")
     }
+    # `{{ function }} backup` / `restore`: the archives of the index, mounted for these commands only (0352).
+    if ($command -in @({{ listed(keep.verbs) }})) {
+        $null = New-Item -ItemType Directory -Force -Path "{{ keep.host }}"
+        $share = @('-v', "{{ keep.host }}:{{ keep.point }}")
+    }
     $status = 1
     $follow = $false
     $browser = $null
@@ -194,7 +199,7 @@ function global:{{ function }} {
     if ($long) {
         if ($status -eq 0) { [Media.SystemSounds]::Asterisk.Play() } else { [Media.SystemSounds]::Hand.Play() }
     }
-    if ($share -and $status -eq 0 -and -not ($rest | Where-Object { $_ -in @({{ listed(share.help_flags) }}) })) {
+    if ($command -eq '{{ share.verb }}' -and $status -eq 0 -and -not ($rest | Where-Object { $_ -in @({{ listed(share.help_flags) }}) })) {
         # The album's folder and its zip, side by side in the Explorer (0296).
         Invoke-Item -LiteralPath "{{ share.host }}"
     }

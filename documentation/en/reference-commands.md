@@ -36,6 +36,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | get back the photos only my NAS still has, not the ones I deleted | [`import`](commands/import.md) |
 | win back the space of my old camera videos, the picture kept | [`shrink`](commands/shrink.md) |
 | back up my photos to my NAS, only what it lacks | [`push`](commands/push.md) |
+| keep the index and my settings safe from a Docker reset, and put them back | [`backup`](commands/backup.md), [`restore`](commands/restore.md) |
 | answer my own questions about my photos in Excel | [`inventory`](commands/inventory.md) |
 | type `mh audit` instead of a long `docker run` | [`launcher`](commands/launcher.md) |
 | check every setting and every folder before the tool acts | [`config`](commands/config.md) |
@@ -83,6 +84,8 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`import`](commands/import.md) | Copy into your photos what only a backup (a NAS) holds, never what you set aside or deleted before; near copies listed apart; each copy proven; the backup only read. | [Commands](commands/import.md) |
 | [`shrink`](commands/shrink.md) | List the heavy videos worth lightening (old cameras, MJPEG), with the space each would free; `--apply` re-encodes them in H.264, each one checked (length, sound, date, place), the original in the quarantine. | [Commands](commands/shrink.md) |
 | [`push`](commands/push.md) | Windows only (`mh push`): copy your photo folders into a folder of their own on the NAS, only what it lacks; a photo moved is renamed there, a deletion by mistake never carried over; undo with `--undo`. | [Commands](commands/push.md) |
+| [`backup`](commands/backup.md) | Write the index (what the audits, `tags` and `people` learnt) and the settings into one zip in `media-hygiene\backups`, read back; the 3 most recent kept. Never reads your photos. | [Commands](commands/backup.md) |
+| [`restore`](commands/restore.md) | Put back a backup of the index (the settings too with `--config`), after checking it whole and backing up the index replaced. Never reads your photos. | [Commands](commands/restore.md) |
 
 ## Options
 

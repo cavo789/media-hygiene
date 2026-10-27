@@ -1063,6 +1063,14 @@ msgstr ""
 msgid "Back up"
 msgstr ""
 
+msgid "Back up the index and the settings"
+msgstr ""
+
+msgid ""
+"Back up the index and the settings into one archive outside Docker's "
+"cache volume, read back."
+msgstr ""
+
 msgid "Back up to the NAS"
 msgstr ""
 
@@ -1084,6 +1092,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "Backup of {folders} into {target}:"
+msgstr ""
+
+#, python-brace-format
+msgid "Backup written and read back: {path} ({size})."
 msgstr ""
 
 msgid "Backup, never changed"
@@ -3152,6 +3164,10 @@ msgid "In this page"
 msgstr ""
 
 #, python-brace-format
+msgid "Index restored from {name}, read back:"
+msgstr ""
+
+#, python-brace-format
 msgid "Install it with: ollama pull {model}"
 msgstr ""
 
@@ -4713,6 +4729,10 @@ msgid ""
 " after in the browser, then lighten; each original in the quarantine."
 msgstr ""
 
+#, python-brace-format
+msgid "Older backup removed ({kept} kept): {name}"
+msgstr ""
+
 msgid "On a folder: the home page, on that folder."
 msgstr ""
 
@@ -4797,6 +4817,9 @@ msgid ""
 msgstr ""
 
 msgid "One thing only is for good:"
+msgstr ""
+
+msgid "One zip outside Docker's cache: a Docker reset loses nothing."
 msgstr ""
 
 #, python-brace-format
@@ -5341,6 +5364,11 @@ msgstr ""
 msgid "Put back"
 msgstr ""
 
+msgid ""
+"Put back a backup of the index (and the settings with --config), after "
+"backing up the current one."
+msgstr ""
+
 msgid "Put back a copy of it, or move it away to start new albums."
 msgstr ""
 
@@ -5586,6 +5614,14 @@ msgstr ""
 msgid ""
 "Restore it, or delete it to start the review page over: the workbook "
 "alone then decides."
+msgstr ""
+
+msgid "Restore the index"
+msgstr ""
+
+msgid ""
+"Restore the settings (config.toml, people) too; the index alone by "
+"default."
 msgstr ""
 
 msgid "Restored"
@@ -6253,6 +6289,10 @@ msgstr[1] ""
 msgid "Setting"
 msgstr ""
 
+#, python-brace-format
+msgid "Setting restored: {name}"
+msgstr ""
+
 msgid "Settings"
 msgstr ""
 
@@ -6834,6 +6874,30 @@ msgid ""
 " outside your photo folders and backups."
 msgstr ""
 
+msgid "The backup to restore, by its name; the most recent by default."
+msgstr ""
+
+#, python-brace-format
+msgid "The backup {name} cannot be read: {why}."
+msgstr ""
+
+#, python-brace-format
+msgid "The backup {name} is damaged: its index differs from its manifest."
+msgstr ""
+
+#, python-brace-format
+msgid "The backup {name} is damaged: {member} differs from its manifest."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The backup {name} was made by a newer version of media-hygiene: type mh "
+"update first."
+msgstr ""
+
+msgid "The backups are written to /backups, which is not mounted."
+msgstr ""
+
 msgid ""
 "The blurriest: sharpness under this percentile (0 to 100) of your own "
 "photos, so the threshold follows your cameras. 0 disables the reason."
@@ -7157,6 +7221,10 @@ msgid "The image on Docker Hub"
 msgstr ""
 
 #, python-brace-format
+msgid "The index of the backup is damaged: {why}."
+msgstr ""
+
+#, python-brace-format
 msgid "The index {file} cannot be read: {reason}."
 msgstr ""
 
@@ -7244,6 +7312,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "The model {name} downloaded is not the expected file."
+msgstr ""
+
+msgid "The most recent backup, the index in place backed up first."
 msgstr ""
 
 msgid "The name shown and the folder's path; Esc empties the box."
@@ -7442,6 +7513,10 @@ msgid "The reports only: your photos are not concerned."
 msgstr ""
 
 msgid "The resized or recompressed copies, group by group."
+msgstr ""
+
+#, python-brace-format
+msgid "The restored index differs from the backup {name}."
 msgstr ""
 
 msgid "The review is not running any more: start it again."
@@ -7743,7 +7818,17 @@ msgid "Then press OK on the TV's remote for full screen."
 msgstr ""
 
 #, python-brace-format
+msgid "There is no backup named {name}."
+msgstr ""
+
+msgid "There is no backup to restore yet: type mh backup."
+msgstr ""
+
+#, python-brace-format
 msgid "There is no config.toml in {folder} yet."
+msgstr ""
+
+msgid "There is no index to back up yet: run an audit first."
 msgstr ""
 
 msgid "There is no such event."
@@ -7798,7 +7883,15 @@ msgstr ""
 msgid "This build cannot search by meaning: {module} is not installed."
 msgstr ""
 
+msgid ""
+"This copy is on the same disk as Docker: it protects from a wrong move, "
+"not from a disk failure; copy it to a USB stick or the NAS too."
+msgstr ""
+
 msgid "This ffmpeg cannot encode H.264: nothing was changed."
+msgstr ""
+
+msgid "This file is not an mh backup: its manifest is missing or unreadable."
 msgstr ""
 
 msgid ""
@@ -8981,6 +9074,9 @@ msgstr ""
 msgid "backup nas destination"
 msgstr ""
 
+msgid "backup save index cache settings"
+msgstr ""
+
 msgid "best match"
 msgstr ""
 
@@ -9386,6 +9482,9 @@ msgstr ""
 msgid "home page start"
 msgstr ""
 
+msgid "if the cache is ever lost: mh restore."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "in Windows PowerShell, type mh push --to {target}: Windows copies, about "
@@ -9672,6 +9771,9 @@ msgstr ""
 msgid "mh asks you again in {window} before touching anything."
 msgstr ""
 
+msgid "mh audit: it reads again only what changed."
+msgstr ""
+
 msgid "mh forgets it; its photos do not move."
 msgstr ""
 
@@ -9679,6 +9781,11 @@ msgid "mh is unchanged: launcher refused it (see above)."
 msgstr ""
 
 msgid "mh keeps the hand until the end, then opens the home page again"
+msgstr ""
+
+msgid ""
+"mh mounts it for backup and restore; with docker run, add -v \"$HOME"
+"\\media-hygiene\\backups:/backups\"."
 msgstr ""
 
 msgid ""
@@ -10207,6 +10314,9 @@ msgid "reports list index"
 msgstr ""
 
 msgid "reports old delete tidy prune"
+msgstr ""
+
+msgid "restore backup index cache lost"
 msgstr ""
 
 msgid "review page"
@@ -13027,6 +13137,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "→ {folder}"
+msgstr ""
+
+#, python-brace-format
+msgid "↩️ The index replaced was backed up first: mh restore {name} puts it back."
 msgstr ""
 
 #, python-brace-format

@@ -94,6 +94,11 @@
         mkdir -p "{{ share.host }}"
         share=(-v "{{ share.host }}:{{ share.point }}")
     fi
+    if [[ " {{ keep.verbs | join(' ') }} " == *" $command "* ]]; then
+        # `{{ function }} backup` / `restore`: the archives of the index, mounted for these commands only (0352).
+        mkdir -p "{{ keep.host }}"
+        share=(-v "{{ keep.host }}:{{ keep.point }}")
+    fi
     if [[ -n "$long" ]]; then
         read -r -a awake <<< "$(_{{ function }}_awake "$command")"
         _{{ function }}_title "{{ function }} $command..."

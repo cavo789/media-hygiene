@@ -120,6 +120,7 @@ nav:
       - commands/album.md
       - commands/audit.md
       - commands/push.md
+      - commands/backup.md
       - commands/browse.md
       - commands/classify.md
       - commands/clean.md
@@ -135,6 +136,7 @@ nav:
       - commands/places.md
       - commands/purge.md
       - commands/reports.md
+      - commands/restore.md
       - commands/review-sort.md
       - commands/review.md
       - commands/search.md

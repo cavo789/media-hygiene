@@ -154,6 +154,22 @@ def command_table(analyse: str, act: str) -> tuple[tuple[str, str, str], ...]:
             _("List the HTML reports of previous audits and cleans."),
         ),
         (
+            "backup",
+            analyse,
+            _(
+                "Back up the index and the settings into one archive outside "
+                "Docker's cache volume, read back."
+            ),
+        ),
+        (
+            "restore",
+            act,
+            _(
+                "Put back a backup of the index (and the settings with --config), "
+                "after backing up the current one."
+            ),
+        ),
+        (
             "config",
             analyse,
             _("Show every setting, where it comes from, and the mount points."),

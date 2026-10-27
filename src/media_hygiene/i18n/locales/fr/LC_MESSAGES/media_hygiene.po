@@ -1344,6 +1344,16 @@ msgstr "Retour à l'outil"
 msgid "Back up"
 msgstr "Sauvegarder"
 
+msgid "Back up the index and the settings"
+msgstr "Sauvegarder l'index et les réglages"
+
+msgid ""
+"Back up the index and the settings into one archive outside Docker's "
+"cache volume, read back."
+msgstr ""
+"Sauvegarde l'index et les réglages dans une archive hors du volume de "
+"cache de Docker, relue."
+
 msgid "Back up to the NAS"
 msgstr "Sauvegarder sur le NAS"
 
@@ -1368,6 +1378,10 @@ msgstr "Dossiers de sauvegarde"
 #, python-brace-format
 msgid "Backup of {folders} into {target}:"
 msgstr "Sauvegarde de {folders} dans {target} :"
+
+#, python-brace-format
+msgid "Backup written and read back: {path} ({size})."
+msgstr "Sauvegarde écrite et relue : {path} ({size})."
 
 msgid "Backup, never changed"
 msgstr "Sauvegarde, jamais modifiée"
@@ -3874,6 +3888,10 @@ msgid "In this page"
 msgstr "Dans cette page"
 
 #, python-brace-format
+msgid "Index restored from {name}, read back:"
+msgstr "Index remis depuis {name}, relu :"
+
+#, python-brace-format
 msgid "Install it with: ollama pull {model}"
 msgstr "Installez-le avec : ollama pull {model}"
 
@@ -5705,6 +5723,10 @@ msgstr ""
 "légers : comparez avant et après dans le navigateur, puis allégez ; "
 "chaque original en quarantaine."
 
+#, python-brace-format
+msgid "Older backup removed ({kept} kept): {name}"
+msgstr "Sauvegarde plus ancienne supprimée ({kept} gardées) : {name}"
+
 msgid "On a folder: the home page, on that folder."
 msgstr "Sur un dossier : la page d'accueil, sur ce dossier."
 
@@ -5820,6 +5842,9 @@ msgstr ""
 
 msgid "One thing only is for good:"
 msgstr "Une seule chose est définitive :"
+
+msgid "One zip outside Docker's cache: a Docker reset loses nothing."
+msgstr "Un zip hors du cache de Docker : une remise à zéro de Docker ne perd rien."
 
 #, python-brace-format
 msgid ""
@@ -6482,6 +6507,13 @@ msgstr ""
 msgid "Put back"
 msgstr "Remettre"
 
+msgid ""
+"Put back a backup of the index (and the settings with --config), after "
+"backing up the current one."
+msgstr ""
+"Remet une sauvegarde de l'index (et les réglages avec --config), après "
+"avoir sauvegardé l'index actuel."
+
 msgid "Put back a copy of it, or move it away to start new albums."
 msgstr ""
 "Remettez-en une copie, ou déplacez-le ailleurs pour commencer de nouveaux"
@@ -6767,6 +6799,16 @@ msgid ""
 msgstr ""
 "Restaurez-le, ou supprimez-le pour recommencer la revue : le classeur "
 "décide alors seul."
+
+msgid "Restore the index"
+msgstr "Remettre l'index"
+
+msgid ""
+"Restore the settings (config.toml, people) too; the index alone by "
+"default."
+msgstr ""
+"Remettre aussi les réglages (config.toml, people) ; l'index seul par "
+"défaut."
 
 msgid "Restored"
 msgstr "Restaurés"
@@ -7573,6 +7615,10 @@ msgstr[1] "Mettre aussi ces {n} photos de côté"
 msgid "Setting"
 msgstr "Réglage"
 
+#, python-brace-format
+msgid "Setting restored: {name}"
+msgstr "Réglage remis : {name}"
+
 msgid "Settings"
 msgstr "Réglages"
 
@@ -8259,6 +8305,32 @@ msgstr ""
 "dossier rien qu'à lui, hors de vos dossiers de photos et de vos "
 "sauvegardes."
 
+msgid "The backup to restore, by its name; the most recent by default."
+msgstr "La sauvegarde à remettre, par son nom ; la plus récente par défaut."
+
+#, python-brace-format
+msgid "The backup {name} cannot be read: {why}."
+msgstr "La sauvegarde {name} ne peut pas être lue : {why}."
+
+#, python-brace-format
+msgid "The backup {name} is damaged: its index differs from its manifest."
+msgstr "La sauvegarde {name} est abîmée : son index diffère de son manifeste."
+
+#, python-brace-format
+msgid "The backup {name} is damaged: {member} differs from its manifest."
+msgstr "La sauvegarde {name} est abîmée : {member} diffère de son manifeste."
+
+#, python-brace-format
+msgid ""
+"The backup {name} was made by a newer version of media-hygiene: type mh "
+"update first."
+msgstr ""
+"La sauvegarde {name} a été faite par une version plus récente de media-"
+"hygiene : tapez d'abord mh update."
+
+msgid "The backups are written to /backups, which is not mounted."
+msgstr "Les sauvegardes sont écrites dans /backups, qui n'est pas monté."
+
 msgid ""
 "The blurriest: sharpness under this percentile (0 to 100) of your own "
 "photos, so the threshold follows your cameras. 0 disables the reason."
@@ -8672,6 +8744,10 @@ msgid "The image on Docker Hub"
 msgstr "L'image sur Docker Hub"
 
 #, python-brace-format
+msgid "The index of the backup is damaged: {why}."
+msgstr "L'index de la sauvegarde est abîmé : {why}."
+
+#, python-brace-format
 msgid "The index {file} cannot be read: {reason}."
 msgstr "L'index {file} ne peut pas être lu : {reason}."
 
@@ -8774,6 +8850,9 @@ msgstr "Le modèle {model} n'est pas installé sur {url}."
 #, python-brace-format
 msgid "The model {name} downloaded is not the expected file."
 msgstr "Le modèle {name} téléchargé n'est pas le fichier attendu."
+
+msgid "The most recent backup, the index in place backed up first."
+msgstr "La sauvegarde la plus récente, l'index en place sauvegardé d'abord."
 
 msgid "The name shown and the folder's path; Esc empties the box."
 msgstr "Le nom affiché et le chemin du dossier ; Échap vide la zone."
@@ -9018,6 +9097,10 @@ msgstr "Les rapports seulement : vos photos ne sont pas concernées."
 
 msgid "The resized or recompressed copies, group by group."
 msgstr "Les copies redimensionnées ou recompressées, groupe par groupe."
+
+#, python-brace-format
+msgid "The restored index differs from the backup {name}."
+msgstr "L'index remis diffère de la sauvegarde {name}."
 
 msgid "The review is not running any more: start it again."
 msgstr "Le tri ne tourne plus : relancez-le."
@@ -9425,8 +9508,18 @@ msgid "Then press OK on the TV's remote for full screen."
 msgstr "Puis appuyez sur OK sur la télécommande de la télé pour le plein écran."
 
 #, python-brace-format
+msgid "There is no backup named {name}."
+msgstr "Aucune sauvegarde ne s'appelle {name}."
+
+msgid "There is no backup to restore yet: type mh backup."
+msgstr "Aucune sauvegarde à remettre pour l'instant : tapez mh backup."
+
+#, python-brace-format
 msgid "There is no config.toml in {folder} yet."
 msgstr "Il n'y a pas encore de config.toml dans {folder}."
+
+msgid "There is no index to back up yet: run an audit first."
+msgstr "Pas encore d'index à sauvegarder : lancez d'abord un audit."
 
 msgid "There is no such event."
 msgstr "Cet événement n'existe pas."
@@ -9488,8 +9581,21 @@ msgstr ""
 "Cette version ne sait pas chercher par le sens : {module} n'est pas "
 "installé."
 
+msgid ""
+"This copy is on the same disk as Docker: it protects from a wrong move, "
+"not from a disk failure; copy it to a USB stick or the NAS too."
+msgstr ""
+"Cette copie est sur le même disque que Docker : elle protège d'une fausse"
+" manœuvre, pas d'une panne du disque ; copiez-la aussi sur une clé USB ou"
+" le NAS."
+
 msgid "This ffmpeg cannot encode H.264: nothing was changed."
 msgstr "Ce ffmpeg ne sait pas encoder en H.264 : rien n'a été modifié."
+
+msgid "This file is not an mh backup: its manifest is missing or unreadable."
+msgstr ""
+"Ce fichier n'est pas une sauvegarde de mh : son manifeste manque ou est "
+"illisible."
 
 msgid ""
 "This folder is an album of media-hygiene: hard links, second names of "
@@ -10895,6 +11001,9 @@ msgstr "sauvegarder sauvegarde nas copier robocopy"
 msgid "backup nas destination"
 msgstr "sauvegarde nas destination"
 
+msgid "backup save index cache settings"
+msgstr "sauvegarde sauvegarder index cache réglages backup"
+
 msgid "best match"
 msgstr "meilleure correspondance"
 
@@ -11327,6 +11436,9 @@ msgstr "historique journal exécutions"
 msgid "home page start"
 msgstr "accueil page home"
 
+msgid "if the cache is ever lost: mh restore."
+msgstr "si le cache est un jour perdu : mh restore."
+
 #, python-brace-format
 msgid ""
 "in Windows PowerShell, type mh push --to {target}: Windows copies, about "
@@ -11637,6 +11749,9 @@ msgstr "mh seul l'ouvre ; le raccourci du Bureau aussi."
 msgid "mh asks you again in {window} before touching anything."
 msgstr "mh vous le redemande dans {window} avant de toucher quoi que ce soit."
 
+msgid "mh audit: it reads again only what changed."
+msgstr "mh audit : il ne relit que ce qui a changé."
+
 msgid "mh forgets it; its photos do not move."
 msgstr "mh l'oublie ; ses photos ne bougent pas."
 
@@ -11645,6 +11760,13 @@ msgstr "mh n'a pas changé : launcher l'a refusé (voir plus haut)."
 
 msgid "mh keeps the hand until the end, then opens the home page again"
 msgstr "mh garde la main jusqu'à la fin, puis rouvre la page d'accueil"
+
+msgid ""
+"mh mounts it for backup and restore; with docker run, add -v \"$HOME"
+"\\media-hygiene\\backups:/backups\"."
+msgstr ""
+"mh le monte pour backup et restore ; avec docker run, ajoutez -v \"$HOME"
+"\\media-hygiene\\backups:/backups\"."
 
 msgid ""
 "mh mounts it for share; with docker run, add -v \"$HOME\\media-"
@@ -12230,6 +12352,9 @@ msgstr "rapports liste index"
 
 msgid "reports old delete tidy prune"
 msgstr "rapports anciens supprimer ranger prune"
+
+msgid "restore backup index cache lost"
+msgstr "remettre restaurer sauvegarde index cache perdu restore"
 
 msgid "review page"
 msgstr "page de revue"
@@ -15574,6 +15699,10 @@ msgstr ""
 #, python-brace-format
 msgid "→ {folder}"
 msgstr "→ {folder}"
+
+#, python-brace-format
+msgid "↩️ The index replaced was backed up first: mh restore {name} puts it back."
+msgstr "↩️ L'index remplacé a d'abord été sauvegardé : mh restore {name} le remet."
 
 #, python-brace-format
 msgid ""

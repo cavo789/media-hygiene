@@ -40,7 +40,7 @@ from media_hygiene.services.launcher_menu import BROWSE_WAIT, DESKTOP_WAIT, menu
 from media_hygiene.services.launcher_nas import SMB_OPTIONS, NasShare, nas_texts
 from media_hygiene.services.launcher_phone import phone_command
 from media_hygiene.services.launcher_push import push_command
-from media_hygiene.services.launcher_share import share_mount
+from media_hygiene.services.launcher_share import backup_mount, share_mount
 from media_hygiene.services.launcher_stale import stale_texts
 from media_hygiene.services.launcher_stamp import launcher_stamp
 from media_hygiene.services.launcher_update import update_texts
@@ -182,6 +182,7 @@ def render_script(script: LauncherScript) -> str:
         push=push_command(),
         lan=lan_command(),
         share=share_mount(script.shell),
+        keep=backup_mount(script.shell),
         zone=WINDOWS_ZONE_VARIABLE,
         relay=LAUNCHER_STEPS_VARIABLE,
         relay_fields=RELAY_FIELDS,

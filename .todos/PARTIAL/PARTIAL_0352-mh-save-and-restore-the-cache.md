@@ -105,3 +105,40 @@ maintainer's collection (*estimated*; neither the index size nor the `mh tags` d
 measured). With a backup: a restore in seconds to minutes, the time of copying `index.sqlite`
 (*estimated*, size to measure with
 `docker run --rm -v media-hygiene-cache:/cache:ro alpine sh -c "du -sh /cache/*"`).
+
+## Status — PARTIAL (2026-10-27)
+
+### Done
+- Container verbs `backup` and `restore` (`cli/cmd_backup.py`; `services/backup_archive.py`,
+  `backup_check.py`, `cache_backup.py`, `cache_restore.py`): the index copied by SQLite's
+  `backup`, `/config`, `manifest.json` (version, schema, SHA-256 per member, row counts of
+  `files`, `tags`, `descriptions`, `meanings`, `faces`); the archive read back (every SHA-256,
+  `integrity_check`, counts) before it is named; `KEPT = 3` most recent kept.
+- `restore [<name>] [--config]`: archive checked whole first, newer schema refused (`mh update`),
+  member names leaving the folder refused, the current index backed up first (never rotated the
+  archive being restored), the index written through SQLite's `backup` into the live file, the
+  counts read back; the undo line `mh restore <that archive>`; `/config` only with `--config`,
+  files absent from the archive left in place.
+- New mount `/backups` (`MountKind.BACKUPS`), mounted by `mh.ps1`/`mh.sh` from
+  `$HOME\media-hygiene\backups` for `backup`/`restore` only (`launcher_share.backup_mount`).
+- Pages `commands/backup.md` and `commands/restore.md` (en + fr; the docs test wants one page per
+  verb), reference-commands, mkdocs nav, `COMMANDS_TOO`, menu (Settings › Backup), French.
+- Tests: `tests/integration/test_cache_backup.py` (round trip, auto-backup then undo, damaged
+  archive, not a zip, path traversal, newer schema, rotation, `--config`, refusals, CLI output).
+
+### Not done
+- Guard against another running `mh` container (host side, `docker ps` with labels in
+  `mh_guards.*`). **Reason:** needs a label every `mh` container carries; to design with the
+  page labels, and to test on Windows.
+- `--to <folder>` / `--from <folder>` (USB stick, NAS) and the default in `<push target>\.mh-backups`
+  when `push-target.txt` exists (decision of the TODO). **Reason:** a host folder outside the
+  home must be mounted by `mh.ps1` (a `-v` per run, removable drives via `_removable`); the
+  maintainer's choice on the NAS default is pending.
+- The launcher script (`mh.ps1`/`mh.sh`) in the archive: not mounted in the container.
+- Step 3 in depth: what happens to `tags`/`descriptions`/`faces` rows of a file moved by
+  `sort`/`undo`/quarantine between backup and restore (the restored index lacks the `moves`
+  rows written since); only "rows kept as they were" is tested. To check with
+  `cache-invalidation-reviewer`.
+- Acceptance on a real Docker volume (`docker volume rm` then `mh restore`): e2e test.
+- `docs_screenshots` to run (`help-backup.txt`, `help-restore.txt`, the command list capture of
+  `reference-commands.md`).

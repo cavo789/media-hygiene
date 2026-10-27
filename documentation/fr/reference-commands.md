@@ -36,6 +36,7 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 | récupérer les photos que seul mon NAS a encore, pas celles que j'ai supprimées | [`import`](commands/import.md) |
 | récupérer la place des vidéos de mes anciens appareils, l'image gardée | [`shrink`](commands/shrink.md) |
 | sauvegarder mes photos sur mon NAS, seulement ce qui lui manque | [`push`](commands/push.md) |
+| garder l'index et mes réglages à l'abri d'une remise à zéro de Docker, et les remettre | [`backup`](commands/backup.md), [`restore`](commands/restore.md) |
 | répondre à mes propres questions sur mes photos avec Excel | [`inventory`](commands/inventory.md) |
 | taper `mh audit` au lieu d'un long `docker run` | [`launcher`](commands/launcher.md) |
 | vérifier chaque réglage et chaque dossier avant que l'outil agisse | [`config`](commands/config.md) |
@@ -84,6 +85,8 @@ exemples et son `--help`.
 | [`import`](commands/import.md) | Copie dans vos photos ce qu'une sauvegarde (un NAS) est seule à contenir, jamais ce que vous avez mis de côté ou supprimé avant ; les quasi-copies listées à part ; chaque copie prouvée ; la sauvegarde seulement lue. | [Commandes](commands/import.md) |
 | [`shrink`](commands/shrink.md) | Liste les vidéos lourdes qui gagnent à être allégées (anciens appareils, MJPEG), avec la place que chacune libérerait ; `--apply` les réencode en H.264, chacune vérifiée (durée, son, date, lieu), l'original en quarantaine. | [Commandes](commands/shrink.md) |
 | [`push`](commands/push.md) | Windows seulement (`mh push`) : copier vos dossiers de photos dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; une photo déplacée y est renommée, une suppression par erreur n'y est jamais reportée ; annuler avec `--undo`. | [Commandes](commands/push.md) |
+| [`backup`](commands/backup.md) | Écrit l'index (ce que les audits, `tags` et `people` ont appris) et les réglages dans un zip de `media-hygiene\backups`, relu ; les 3 plus récents gardés. Ne lit jamais vos photos. | [Commandes](commands/backup.md) |
+| [`restore`](commands/restore.md) | Remet une sauvegarde de l'index (les réglages aussi avec `--config`), après l'avoir vérifiée en entier et avoir sauvegardé l'index remplacé. Ne lit jamais vos photos. | [Commandes](commands/restore.md) |
 
 ## Options
 
