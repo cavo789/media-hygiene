@@ -29,3 +29,18 @@ The maintainer chose: a QR code shown on the PC plus a link to copy (to send by 
 message); the link lasts **24 h**; it shows **one album, read-only** (no set-aside, no other
 album, no search); the PC stays on with `mh --lan` (no cloud, nothing leaves the home network).
 Depends on 0384: no link before the forged `Host` hole is closed.
+
+## Status — PARTIAL (2026-10-27)
+
+### Done
+- The design note (private, `.claude/plans/0334-album-link-design.md`): an in-memory random
+  token per album (192 bits, `compare_digest`, 24 h, dropped by *Stop sharing* or a restart),
+  routes `/a/<token>` on the LAN door only, before the pairing check, read-only album page,
+  pictures of that album's keys alone, the PC's `POST /api/album-link` loopback-only, the QR code
+  as `lan_response`, and the tests to write.
+
+### Not done
+- The implementation and its tests.
+  **Reason:** a security feature (a door without pairing) — the two open points of the note
+  (tokens lost at a restart of `mh`, or kept in `/reports`; videos over the link or photos only)
+  change what is built; to confirm before writing it, as the TODO asked ("the maintainer's review").
