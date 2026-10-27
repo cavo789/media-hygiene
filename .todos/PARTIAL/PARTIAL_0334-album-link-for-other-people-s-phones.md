@@ -44,3 +44,11 @@ Depends on 0384: no link before the forged `Host` hole is closed.
   **Reason:** a security feature (a door without pairing) — the two open points of the note
   (tokens lost at a restart of `mh`, or kept in `/reports`; videos over the link or photos only)
   change what is built; to confirm before writing it, as the TODO asked ("the maintainer's review").
+
+## Decided (2026-10-27)
+
+By the maintainer, on the design note's two open points:
+- Link tokens stay **in memory** only: a restart of `mh` revokes every link (nothing secret on
+  disk).
+- **Photos and videos** go over the link (videos play in place, as on a paired phone).
+The design is now complete: the code can be written.
