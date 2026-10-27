@@ -119,8 +119,12 @@ function global:{{ function }} {
         $share = @('-v', "{{ share.host }}:{{ share.point }}")
     }
     # `{{ function }} backup` / `restore`: the archives of the index, mounted for these commands only (0352).
+    # A copy goes to, or comes from, --to/--from or the push target; refused while mh runs (0414, 0419).
+    $keep = $null
     if ($command -in @({{ listed(keep.verbs) }})) {
-        $null = New-Item -ItemType Directory -Force -Path "{{ keep.host }}"
+        $keep = _{{ function }}_keep_before $command $rest
+        if ($null -eq $keep) { return }  # said, its exit code set
+        $rest = @($keep.rest)
         $share = @('-v', "{{ keep.host }}:{{ keep.point }}")
     }
     $status = 1
@@ -203,6 +207,7 @@ function global:{{ function }} {
         # The album's folder and its zip, side by side in the Explorer (0296).
         Invoke-Item -LiteralPath "{{ share.host }}"
     }
+    if ($keep -and $status -eq 0) { _{{ function }}_keep_after $keep }
     if ($status -ne 0) {
         # The container did not run or failed: Docker Desktop stopped is started, and the
         # command typed again by the user, never run twice by mh (a clean may have stopped
@@ -231,6 +236,8 @@ function global:_{{ function }}_open {
 {% include 'mh_desktop.ps1.j2' %}
 
 {% include 'mh_guards.ps1.j2' %}
+
+{% include 'mh_backup.ps1.j2' %}
 
 {% include 'mh_windows.ps1.j2' %}
 {% include 'mh_folders.ps1.j2' %}

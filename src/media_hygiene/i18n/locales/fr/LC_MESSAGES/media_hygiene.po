@@ -1253,6 +1253,13 @@ msgstr ""
 "update. Les deux réécrivent ce fichier."
 
 msgid ""
+"Another mh command is running (a page, an audit): close it first, the "
+"index may be written meanwhile. Nothing was changed."
+msgstr ""
+"Une autre commande mh tourne (une page, un audit) : fermez-la d'abord, "
+"l'index pourrait être écrit pendant ce temps. Rien n'a été changé."
+
+msgid ""
 "Answered: the files marked 🗑️ are remembered with 'clean --decisions', "
 "set aside if they come back; the others are forgotten."
 msgstr ""
@@ -6708,6 +6715,10 @@ msgstr "Relu dans config.toml : {names} noms, {ignored} visages ignorés."
 msgid "Read back from the index: {faces} faces left."
 msgstr "Relu dans l'index : il reste {faces} visages."
 
+#, python-brace-format
+msgid "Read back: {count} archive(s) in {other}."
+msgstr "Relu : {count} archive(s) dans {other}."
+
 msgid ""
 "Read every folder again, even those that did not change since the last "
 "audit: for a photo changed in place by another program."
@@ -8341,6 +8352,9 @@ msgstr ""
 msgid "The albums cannot be read (error {status})."
 msgstr "Les albums n'ont pas pu être lus (erreur {status})."
 
+msgid "The archives stay on this PC only, in the folder backups of mh."
+msgstr "Les archives restent sur ce PC seulement, dans le dossier backups de mh."
+
 msgid "The audit counts them"
 msgstr "L'audit les compte"
 
@@ -8550,6 +8564,14 @@ msgstr ""
 
 msgid "The copy of the import has the same name and size."
 msgstr "La copie de l'import a le même nom et la même taille."
+
+#, python-brace-format
+msgid ""
+"The copy to {other} failed: the archive stays on this PC only, in the "
+"folder backups of mh."
+msgstr ""
+"La copie vers {other} a échoué : l'archive reste sur ce PC seulement, "
+"dans le dossier backups de mh."
 
 msgid "The current folder (PowerShell, or bash on WSL, Linux, macOS):"
 msgstr "Le dossier courant (PowerShell, ou bash sous WSL, Linux, macOS) :"
@@ -10437,6 +10459,10 @@ msgid "Windows"
 msgstr "Windows"
 
 #, python-brace-format
+msgid "Windows cannot open {other}."
+msgstr "Windows ne peut pas ouvrir {other}."
+
+#, python-brace-format
 msgid ""
 "Windows cannot open {target}: is the NAS on, the shared folder created, "
 "the password right? Nothing was changed."
@@ -11868,6 +11894,13 @@ msgstr "mh vous le redemande dans {window} avant de toucher quoi que ce soit."
 
 msgid "mh audit: it reads again only what changed."
 msgstr "mh audit : il ne relit que ce qui a changé."
+
+msgid ""
+"mh backup [--to <folder>] or mh restore [--from <folder>]: by default the"
+" folder .mh-backups of the mh push target."
+msgstr ""
+"mh backup [--to <dossier>] ou mh restore [--from <dossier>] : par défaut "
+"le dossier .mh-backups de la cible de mh push."
 
 msgid "mh forgets it; its photos do not move."
 msgstr "mh l'oublie ; ses photos ne bougent pas."
@@ -13381,6 +13414,10 @@ msgid "{count} album, saved in {place}."
 msgid_plural "{count} albums, saved in {place}."
 msgstr[0] "{count} album, enregistré dans {place}."
 msgstr[1] "{count} albums, enregistrés dans {place}."
+
+#, python-brace-format
+msgid "{count} archive(s) copied from {other} to this PC."
+msgstr "{count} archive(s) copiée(s) de {other} vers ce PC."
 
 #, python-brace-format
 msgid "{count} backup (read-only)"

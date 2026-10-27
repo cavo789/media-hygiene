@@ -992,6 +992,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Another mh command is running (a page, an audit): close it first, the "
+"index may be written meanwhile. Nothing was changed."
+msgstr ""
+
+msgid ""
 "Answered: the files marked 🗑️ are remembered with 'clean --decisions', "
 "set aside if they come back; the others are forgotten."
 msgstr ""
@@ -5546,6 +5551,10 @@ msgstr ""
 msgid "Read back from the index: {faces} faces left."
 msgstr ""
 
+#, python-brace-format
+msgid "Read back: {count} archive(s) in {other}."
+msgstr ""
+
 msgid ""
 "Read every folder again, even those that did not change since the last "
 "audit: for a photo changed in place by another program."
@@ -6912,6 +6921,9 @@ msgstr ""
 msgid "The albums cannot be read (error {status})."
 msgstr ""
 
+msgid "The archives stay on this PC only, in the folder backups of mh."
+msgstr ""
+
 msgid "The audit counts them"
 msgstr ""
 
@@ -7083,6 +7095,12 @@ msgid "The copy from the phone is missing or incomplete: kept on the phone."
 msgstr ""
 
 msgid "The copy of the import has the same name and size."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The copy to {other} failed: the archive stays on this PC only, in the "
+"folder backups of mh."
 msgstr ""
 
 msgid "The current folder (PowerShell, or bash on WSL, Linux, macOS):"
@@ -8623,6 +8641,10 @@ msgid "Windows"
 msgstr ""
 
 #, python-brace-format
+msgid "Windows cannot open {other}."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "Windows cannot open {target}: is the NAS on, the shared folder created, "
 "the password right? Nothing was changed."
@@ -9882,6 +9904,11 @@ msgid "mh asks you again in {window} before touching anything."
 msgstr ""
 
 msgid "mh audit: it reads again only what changed."
+msgstr ""
+
+msgid ""
+"mh backup [--to <folder>] or mh restore [--from <folder>]: by default the"
+" folder .mh-backups of the mh push target."
 msgstr ""
 
 msgid "mh forgets it; its photos do not move."
@@ -11240,6 +11267,10 @@ msgid "{count} album, saved in {place}."
 msgid_plural "{count} albums, saved in {place}."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} archive(s) copied from {other} to this PC."
+msgstr ""
 
 #, python-brace-format
 msgid "{count} backup (read-only)"

@@ -22,3 +22,24 @@ loss of the PC, so the archive goes on the NAS when there is one.
    `descriptions`, `faces`; the restored index lacks the `moves` rows written since): check with
    the `cache-invalidation-reviewer` agent, one test per event.
 5. An e2e test on a real Docker volume (`docker volume rm`, then `mh restore`).
+
+## Status — PARTIAL (2026-10-27)
+
+### Done
+- `mh.ps1`: `mh backup --to <folder>` / `mh restore --from <folder>`; default `<push target>\.mh-backups`
+  (with 0414). Design: the container keeps the PC folder (`/backups`); Windows copies the archives
+  after a backup (written under `.part`, size checked, renamed; the other folder rotated to the PC's
+  archives only once all are in, read back and counted) and before a restore (the archives the PC
+  lacks). A NAS needs no Docker SMB volume nor password in the container
+  (`mh_backup.ps1.j2`, `services/launcher_keep.py`).
+- Guard: refused while another container of the image runs (`docker ps --filter ancestor=<image>`,
+  no new label needed, older containers seen too), the home page waiting for the step excepted
+  (its id from the `cid` file).
+- Docs en + fr (`backup.md`, `restore.md`), French translations, text tests.
+
+### Remaining
+- `mh.sh` (bash): `--to`/`--from` not handled (passed to the container, which refuses them).
+- Item 4: the rows of files moved by `sort`/`undo`/quarantine between backup and restore — review
+  with `cache-invalidation-reviewer`, one test per event.
+- Item 5: the e2e test on a real Docker volume.
+- Not run on Windows: no `pwsh` in the devcontainer; the script is checked as text only.

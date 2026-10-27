@@ -42,8 +42,20 @@ then the archive is **read back from the disk**: every file checked against its 
 archive, its size and the rows of each table read back (`files`, `tags`, `descriptions`,
 `meanings`, `faces`).
 
-The archive is on `C:`, like Docker's own disk: it protects from a wrong move, not from a disk
-failure. Copy it to a USB stick or the NAS too.
+### A copy off the PC
+
+On `C:` alone, the archive would protect from a wrong move, not from a disk failure. So `mh`
+copies it, itself, to another folder once it is read back:
+
+- when [`push`](push.md) has a target (the NAS), into its folder `.mh-backups`
+  (`\\NAS\backup_photos\.mh-backups`), with no option;
+- elsewhere with `--to`: `mh backup --to E:\mh-backups` (a USB stick, another share).
+
+That folder keeps the same 3 archives as the PC; a copy is written whole or not at all, then
+listed again: `Read back: 3 archive(s) in …`. A NAS that does not answer is said, and the archive
+stays on the PC; a folder typed with `--to` that cannot be opened stops the command. `backup` and
+[`restore`](restore.md) are refused while another `mh` command runs (a page, an audit), the home
+page that started them excepted.
 
 With `docker run`, mount the folder of the archives yourself:
 

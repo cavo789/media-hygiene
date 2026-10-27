@@ -32,6 +32,14 @@ l'index vérifié ; une archive faite par une version plus récente est refusée
 Ensuite l'index en place est **sauvegardé d'abord**, et la fenêtre finit sur la ligne qui le remet :
 `mh restore <cette archive>`. Les lignes de chaque table sont montrées, relues dans l'index remis.
 
+### Après la perte du disque
+
+`mh restore` copie d'abord sur le PC les archives qui lui manquent depuis le dossier `.mh-backups`
+de la cible de [`push`](push.md), ou depuis le dossier de `--from` :
+`mh restore --from \\NAS\backup_photos\.mh-backups` (après une panne, le fichier de `push` a
+disparu aussi : `--from` est alors nécessaire). La copie est dite en une ligne, puis l'archive la
+plus récente est remise.
+
 ## Options
 
 | Option | Ce qu'elle fait |
