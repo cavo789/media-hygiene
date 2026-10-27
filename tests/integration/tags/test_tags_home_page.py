@@ -117,11 +117,17 @@ def test_the_tags_routes(locations: Locations) -> None:
     runtime = make_runtime(locations)
     tags = HomeTags(TagsRunner(_figures, _endless))
     audit = HomeAudit(lambda _progress: AuditResult(lines=()))
+    first, code = serve(
+        home_app_of(runtime, audit, tags),
+        [Call("GET", TAGS_PATH), _ask({"action": "prepare"})],
+    )
+    assert code is None
+    _wait(
+        tags
+    )  # the prepare thread ends first: on a slow runner, describe would race it
     replies, code = serve(
         home_app_of(runtime, audit, tags),
         [
-            Call("GET", TAGS_PATH),
-            _ask({"action": "prepare"}),
             Call("GET", TAGS_PATH),
             _ask({"action": "describe", "minutes": 0}),
             _ask({"action": "describe"}),
@@ -129,7 +135,8 @@ def test_the_tags_routes(locations: Locations) -> None:
             _ask({"action": "stop"}),
         ],
     )
-    idle, _prepared, _asking, bad, running, again, stop = replies
+    idle, _prepared = first
+    _asking, bad, running, again, stop = replies
     assert code is None
     assert idle.json()["phase"] == "idle"  # type: ignore[index]
     assert bad.status == 400
