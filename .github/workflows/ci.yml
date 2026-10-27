@@ -98,6 +98,8 @@ jobs:
         # devcontainer's volume cannot offer (0189: launcher --photos, mh folders add).
         env:
           MEDIA_HYGIENE_E2E_HOST_DIR: ${{ runner.temp }}
+          # The pages in Chromium (Playwright image, 0366): here only, never on the PC.
+          MEDIA_HYGIENE_E2E_BROWSER: "1"
         run: uv run pytest -m e2e
 
   # One native build per platform, in parallel with the end-to-end tests: arm64 on an ARM

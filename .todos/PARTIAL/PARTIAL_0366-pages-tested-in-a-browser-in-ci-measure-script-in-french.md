@@ -60,3 +60,27 @@ does not prove `mh.ps1`, Windows or Docker Desktop (those stay a short check by 
 Page regressions caught by the CI, without the maintainer (today: found by hand on Windows, the
 F5 bug once in three returns, *measured* 35d); real timings instead of two Enters; a measure
 script the maintainer understands.
+
+## Status — PARTIAL (2026-10-27)
+
+### Done
+- `tests/e2e/test_pages_browser.py`: `mh` alone through `mh.sh` (reports on a host folder so
+  the step files exist, demo audited first), Chromium in the Playwright image on the host's
+  network runs `tests/support/pages_walk.py`: search (click → page → first `/api/search`
+  answer, navigation timing) and browse, each back by *⌂ Back to the home page*, under 10 s;
+  no container of the image started meanwhile (`docker events`); `history` as a console step:
+  the dialog names it, the page never reloads nor closes, `/api/step` says done, code 0; a
+  review (its own server) then back ten times, the tab following without F5. Figures printed
+  to the CI log. Runs only with `MEDIA_HYGIENE_E2E_BROWSER=1` (set in `ci.yml`'s e2e job) and
+  `MEDIA_HYGIENE_E2E_HOST_DIR`: never on the maintainer's PC by default.
+- Shared part moved to `tests/support/pages_browser.py` (image, `BrowserRun`, `run_browser`);
+  `docs/screenshots.py` uses it.
+- `mh-measure.ps1`: 35d/35e and `ClickTimed` removed; step 36 = three yes/no questions in
+  French (results logged in English); `tests/unit/test_measure_script.py` checks ASCII only.
+
+### Not done
+- The browser test was **not run locally** (needs the image built + CI's host folder): its
+  first run is the CI of the pull request; selectors (`#runDlg`, `#homeLink`, `onRun`,
+  `BY_ID`) read from the templates, may need a fix there.
+- The rest of `mh-measure.ps1` (steps 1–35, ~230 questions and lines) still in English.
+  **Reason:** scope; mechanical, a TODO of its own (keep ASCII, `[char]` for accents).

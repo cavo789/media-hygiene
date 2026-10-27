@@ -134,11 +134,10 @@
 #      back), another photo's address refused                                  (0297)
 #  34. shrink: two of your videos re-encoded by the image's ffmpeg, timed, played    (0303)
 #  35. the pages opened from the home page: an empty container, mh menu, what mh search does
-#      before its page answers (your cache and config, read-only), then your clicks on the
-#      home page timed with Docker's own events (which containers stop and start); nothing
-#      written                                                                  (0354)
-#  36. a console step from the home page: the page stays up while it runs in the window of mh,
-#      timed with Docker's events (no page container stopped or started)         (0355)
+#      before its page answers (your cache and config, read-only); the clicks themselves are
+#      timed by Chromium in the CI (0366); nothing written                     (0354)
+#  36. the home page by hand: three yes/no questions (it opens; a console step runs in the
+#      window of mh while the page stays open; Quit then mh again)       (0355, 0366)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -180,7 +179,7 @@
 #   .\mh-measure.ps1 -Only 33 -Count 120  (an album on the phone at home, mh --lan: 0297)
 #   .\mh-measure.ps1 -Only 34 -Count 1   (shrink: two of your videos re-encoded, timed, played: 0303)
 #   .\mh-measure.ps1 -Only 35 -Count 1   (the pages opened from the home page, each phase timed: 0354)
-#   .\mh-measure.ps1 -Only 36 -Count 1   (a console step from the home page, the page staying up: 0355)
+#   .\mh-measure.ps1 -Only 36 -Count 1   (the home page by hand, three yes/no questions: 0355, 0366)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -3231,50 +3230,10 @@ if (Wanted 34) {
     $ErrorActionPreference = $saved
 }
 
-# One click on the home page timed between two Enters, with the containers Docker created,
-# started and stopped meanwhile (35d, 36): two marker volumes, created and removed at once,
-# give both Enters in Docker's clock. A "page" container carries mh's page label (the home
-# page, search...), a "step" one does not (mh menu, a console step).
-function ClickTimed([string]$asked, [string]$doing, [string]$seenWhen) {
-    $invariant = [Globalization.CultureInfo]::InvariantCulture
-    $null = Read-Host "    ${asked}: press Enter here, THEN $doing"
-    $since = [DateTimeOffset]::UtcNow.AddSeconds(-1)
-    $mark = "mh-measure-mark-$PID"
-    & docker volume create "$mark-a" | Out-Null
-    & docker volume rm "$mark-a" | Out-Null
-    $watch = [Diagnostics.Stopwatch]::StartNew()
-    $null = Read-Host "    ... press Enter as soon as $seenWhen"
-    $watch.Stop()
-    & docker volume create "$mark-b" | Out-Null
-    & docker volume rm "$mark-b" | Out-Null
-    $until = [DateTimeOffset]::UtcNow.AddSeconds(1)
-    $from = ($since.ToUnixTimeMilliseconds() / 1000).ToString("F3", $invariant)
-    $to = ($until.ToUnixTimeMilliseconds() / 1000).ToString("F3", $invariant)
-    $events = @(& docker events --since $from --until $to --filter type=container --filter type=volume --filter event=create --filter event=start --filter event=die --format '{{.TimeNano}} {{.Type}} {{.Action}} {{.Actor.ID}} {{json .Actor.Attributes}}' 2>&1)
-    $zero = $null
-    foreach ($line in $events) { $fields = "$line" -split ' ', 5; if ($fields.Count -ge 4 -and $fields[3] -eq "$mark-a") { $zero = [decimal]$fields[0] } }
-    $timeline = @()
-    foreach ($line in $events) {
-        $fields = "$line" -split ' ', 5
-        if ($fields.Count -lt 4 -or $null -eq $zero -or $fields[3] -eq "$mark-a") { continue }
-        $at = ([decimal]$fields[0] - $zero) / 1000000000
-        if ($fields[3] -eq "$mark-b") { $what = "you saw it" }
-        elseif ($fields[1] -eq "volume") { continue }
-        else {
-            $kind = if ($fields.Count -gt 4 -and $fields[4] -match '"media-hygiene\.page"') { "page" } else { "step" }
-            $what = "$($fields[2]) $kind $($fields[3].Substring(0, 6))"
-        }
-        $timeline += ("+{0} s {1}" -f $at.ToString("F2", $invariant), $what)
-    }
-    return ("{0:N2} s between your Enters; Docker: {1}" -f $watch.Elapsed.TotalSeconds, ($timeline -join '; '))
-}
-
 # --- 35: the pages opened from the home page, each phase timed (0354) -----------------------
-# Your own mh and your usual cache, read-only: nothing is written. 35a-35c run alone. In 35d you
-# click on the home page in your usual window; Docker's own events then say which containers
-# stopped and started between your two Enters, two marker volumes giving both Enters in
-# Docker's clock (created and removed at once). A "page" container carries mh's page label
-# (the home page, search...), a "step" one does not (mh menu, a console step).
+# Your own mh and your usual cache, read-only: nothing is written. 35a-35c run alone. The
+# clicks on the home page are timed by Chromium in the CI since 0366
+# (tests/e2e/test_pages_browser.py): no step asks to time a page by hand.
 if (Wanted 35) {
     $saved = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
@@ -3355,48 +3314,27 @@ print(f'35c. total inside the container: {(time.perf_counter() - start) * 1000:.
         foreach ($line in $lines) { Log ("   " + "$line".Trim()) }
         Log ("   35c. the whole docker run: {0:N2} s" -f $watch.Elapsed.TotalSeconds)
     }
-    # By hand: each click between two Enters, the containers of that time read from Docker.
-    Write-Host "35d: in your usual Windows PowerShell window, type mh: the home page opens in the browser."
-    $null = Read-Host "    When the home page is shown with its steps, press Enter here"
-    $clicks = @(
-        @("search", "click 'search' (find a photo by its words) on the home page", "the search page is shown"),
-        @("home", "click 'Back to the home page' on the search page", "the home page is shown with its steps")
-    )
-    $other = Read-Host "35e. Also time another page of the home page, once (its name as the page shows it; empty: none)"
-    if ($other) { $clicks += , @($other, "click '$other' on the home page", "that page is shown") }
-    foreach ($round in 1, 2, 3) {
-        foreach ($click in $clicks) {
-            if ($click[0] -eq $other -and $round -gt 1) { continue }
-            $said = ClickTimed "35d. $($click[0]) ${round}/3" $click[1] $click[2]
-            Log "   35d. $($click[0]) ${round}/3: $said"
-            if ($click[0] -eq $other) { $null = Read-Host "    Come back to the home page, then press Enter" }
-        }
-    }
-    $felt = Read-Host "35f. Which wait bothers you most (a page opened, the home page back, a console step, other)?"
+    $felt = Read-Host "35f. Quelle attente vous gene le plus (une page qui s'ouvre, le retour a l'accueil, une etape en console, autre) ?"
     Log "   35f. what bothers you most: $felt"
-    Write-Host "35: you may quit the home page now (Quit on the page, or Ctrl+C in its window)."
     $ErrorActionPreference = $saved
 }
 
-# --- 36: a console step from the home page, the page staying up (0355) -----------------------
-# The image of the branch built first, and mh written again (mh update): the new mh keeps the
-# home server up while the step runs in its window. Nothing written but what the step does:
-# choose a step that only reads (history, status).
+# --- 36: the home page by hand, three yes/no questions (0355, 0366) ----------------------------
+# What the browser test of the CI cannot prove: mh.ps1, Windows and Docker Desktop. The image of
+# the branch built first, and mh written again (mh update). Nothing written but what the step
+# does: choose a step that only reads (history).
 if (Wanted 36) {
     $saved = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
     Log ""
-    Log "== 36. a console step from the home page, the page staying up (0355)"
-    Write-Host "36: in your usual Windows PowerShell window: mh update, then mh. The home page opens."
-    $null = Read-Host "    When the home page is shown with its steps, press Enter here"
-    $step = Read-Host "36a. A step that runs in the window of mh and only reads, as the page names it (e.g. history, status)"
-    foreach ($round in 1, 2, 3) {
-        $said = ClickTimed "36a. $step ${round}/3" "click '$step' on the home page (answer in the window of mh if it asks), then look at the page" "the page says '$step... done' and shows its state"
-        Log "   36a. $step ${round}/3: $said"
-    }
-    $stayed = Read-Host "36b. While the step ran, did the home page stay open (no 'This page is closed', no reload)? (y/n)"
-    $busy = Read-Host "36c. Click a second step while one waits for your answer in the window of mh: did the page say a step is running? (y / n / s: skipped)"
-    Log "   36b. the page stayed open: $stayed; 36c. a second step refused while one runs: $busy"
+    Log "== 36. the home page by hand on Windows (0355, 0366)"
+    Write-Host "36 : dans votre fenetre Windows PowerShell habituelle, tapez mh update, puis mh."
+    $opens = Read-Host "36a. La page d'accueil s'ouvre-t-elle dans le navigateur, avec ses etapes ? (o/n)"
+    $kept = Read-Host "36b. Cliquez 'history' sur la page : l'etape tourne-t-elle dans la fenetre de mh pendant que la page reste ouverte, puis la page dit-elle 'termine' ? (o/n)"
+    $again = Read-Host "36c. Cliquez Quitter sur la page, puis tapez mh a nouveau : la page d'accueil revient-elle ? (o/n)"
+    Log "   36a. the home page opens: $opens"
+    Log "   36b. a console step runs in the window of mh, the page staying open: $kept"
+    Log "   36c. Quit, then mh again, the home page back: $again"
     $ErrorActionPreference = $saved
 }
 
