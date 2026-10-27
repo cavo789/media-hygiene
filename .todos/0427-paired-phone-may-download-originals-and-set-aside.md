@@ -26,3 +26,13 @@ every write stays the PC's).
 
 - With the setting off nothing changes; with it on, a paired phone downloads an original and
   sets a photo aside, undoable from the PC.
+
+## Decided (2026-10-27)
+
+By the maintainer:
+- The name `[review] lan_phone_writes` is fine, provided its comment in the default
+  `config.toml` says plainly what it allows (a paired phone downloads originals and sets
+  photos aside) and that it is off by default.
+- A paired phone may **not** start the read-only audit: an audit follows a change made on
+  the PC, it has no use on a phone. Remove it from the phone's allowed routes
+  (`review/lan_paths.py`), with a test that the phone gets the 403 "on the PC" answer.
