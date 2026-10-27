@@ -2,6 +2,8 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `browse` · 🇫🇷 [Français](../../fr/commands/browse.md)
 
+> The page's button on the [home page](home.md) (`mh` alone) opens it; the command is still there for a script or without the home page, but `mh --help` no longer lists it.
+
 ## In short
 
 **Look through your folders as in Explorer, and set aside the photos you no longer want.**

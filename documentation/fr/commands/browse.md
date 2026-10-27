@@ -2,6 +2,8 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `browse` · 🇬🇧 [English](../../en/commands/browse.md)
 
+> Le bouton de la page sur la [page d'accueil](home.md) (`mh` seul) l'ouvre ; la commande reste là pour un script ou sans la page d'accueil, mais `mh --help` ne la liste plus.
+
 ## En bref
 
 **Parcourir vos dossiers comme dans l'Explorateur, et mettre de côté les photos dont vous ne

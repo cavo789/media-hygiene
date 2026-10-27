@@ -60,3 +60,20 @@ What each page command does in the console (read in the code, 2026-10-24):
 
 A shorter `mh --help` (4 verbs fewer: `browse`, `places`, `home`, `review-sort`), each verb
 listed doing something in the console; the pages reached from the home page, as the maintainer uses them.
+
+## Status — PARTIAL (2026-10-27)
+
+Done: `browse`, `home`, `places`, `review-sort` hidden (`cli/commands.py` `PAGE_ONLY`,
+`hidden=True` in `cli/app.py`), still run when typed, by `mh menu` and the home page; tests in
+`tests/unit/test_help_panels.py`; `reference-commands.md` (en/fr) lists them apart under
+*Pages: opened from the home page*; each of their pages (en/fr) opens with a line saying the
+home page's button opens it and the command stays for a script.
+
+Left:
+- Step 3: no `NextVerb` proposes a hidden verb today (checked by grep): nothing to change;
+  `console/classify_rules_view.py` and `xmp_view.py` still name `review-sort` / `places` in text.
+- Step 4: the guides (`start/`, `clean/`, `sort/09`, `sort/11`, `find/`) still show the
+  command first; rewrite each step as "the home page's button, then the command".
+- Their `--help` captures and `COMMANDS_TOO` entries are kept (harmless; the command pages still
+  show them in a fold). Drop them when the pages are rewritten around the page.
+- `docs_screenshots` to run: the `mh --help` capture of `reference-commands.md` is stale.

@@ -2,6 +2,8 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `home` · 🇬🇧 [English](../../en/commands/home.md)
 
+> `mh` seul ouvre cette page ; `mh home` reste là pour un script, mais `mh --help` ne la liste plus.
+
 ## En bref
 
 **Une page dans votre navigateur : où en sont vos photos, l'étape suivante en un gros bouton,

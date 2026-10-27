@@ -8,7 +8,7 @@ from media_hygiene.cli.cmd_phone_free import phone_done_command, phone_prove_com
 from media_hygiene.cli.cmd_phone_plan import phone_plan_command
 from media_hygiene.cli.cmd_phone_review import phone_review_command
 from media_hygiene.cli.cmd_push_step import push_step_command
-from media_hygiene.cli.commands import commands
+from media_hygiene.cli.commands import PAGE_ONLY, commands
 from media_hygiene.cli.localized import LocalizedCommand, LocalizedGroup
 from media_hygiene.cli.root import root_callback
 from media_hygiene.cli.safety import help_of
@@ -85,6 +85,7 @@ def build_app() -> typer.Typer:
             help=help_of(name, help_text),
             short_help=help_text,
             rich_help_panel=panel,
+            hidden=name in PAGE_ONLY,
         )(function)
     # Plumbing for `mh phone` and `mh push` only (0219, 0248, 0264): hidden from
     # `--help`, no page.

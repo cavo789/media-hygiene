@@ -2,6 +2,8 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `places` · 🇬🇧 [English](../../en/commands/places.md)
 
+> Le bouton de la page sur la [page d'accueil](home.md) (`mh` seul) l'ouvre ; la commande reste là pour un script ou sans la page d'accueil, mais `mh --help` ne la liste plus.
+
 ## En bref
 
 **Nommer sur une carte les lieux qui comptent pour vous (la maison, chez papy, un village), pour
