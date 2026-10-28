@@ -6155,6 +6155,9 @@ msgstr ""
 msgid "On the phone's remote, type the code of this TV:"
 msgstr "Sur la télécommande du téléphone, tapez le code de cette télé :"
 
+msgid "On the phone, everything is read-only: albums change on the PC."
+msgstr "Sur le téléphone, tout est en lecture seule : les albums changent sur le PC."
+
 msgid "On this page"
 msgstr "Dans cette page"
 
@@ -9104,8 +9107,8 @@ msgid ""
 "stops it."
 msgstr ""
 "Les événements du dernier classify sont prêts, ouvrez {url} dans votre "
-"navigateur. Chaque choix est enregistré aussitôt dans sort-decisions.json. "
-"Ctrl+C l'arrête."
+"navigateur. Chaque choix est enregistré aussitôt dans sort-"
+"decisions.json. Ctrl+C l'arrête."
 
 msgid "The face models are not in the cache yet: run 'audit --people' once."
 msgstr ""

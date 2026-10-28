@@ -46,7 +46,8 @@ READ_PREFIXES: Final = (
 # `POST /api/alive`: an open phone keeps the PC's server up (0416).
 _SAYS: Final = frozenset({SEARCH_PATH, PRESENCE_PATH})
 # The `POST`s a phone may send: reads, but an album's change (0295: never a photo's).
-POST_PATHS: Final = albums.PHONE_WRITES | _SAYS | FOLDER_POSTS
+# No album change from a phone: albums are made on the PC (0435, decided 2026-10-27).
+POST_PATHS: Final = _SAYS | FOLDER_POSTS
 # The steps a phone opens as pages instead of asking the PC to run them.
 PHONE_PAGES: Final = {"mh search": SEARCH_PAGE_PATH, "mh browse": BROWSE_PATH}
 _GET, _POST = "GET", "POST"

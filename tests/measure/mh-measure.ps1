@@ -2726,9 +2726,12 @@ if (Wanted 29) {
     $copy = Join-Path $folder "mh.ps1"
     $lines = @(& docker run --rm $Image launcher --shell powershell --photos $data 2>$null)
     Set-Content -LiteralPath $copy -Value $lines -Encoding Ascii
-    . $copy
+    # An empty mh.ps1 would leave the user's own mh in the new window: no QR code, a wrong answer.
+    $launcherOk = $lines.Count -ge 100
+    if (-not $launcherOk) { Log "   29: skipped: the image wrote $($lines.Count) lines of mh.ps1 (docker run gave no output: restart Docker Desktop)" }
+    if ($launcherOk) { . $copy }
     $watch = [Diagnostics.Stopwatch]::StartNew()
-    $found = _mh_lan_address  # @{ address; problem } since 0367
+    $found = if ($launcherOk) { _mh_lan_address } else { $null }  # @{ address; problem } since 0367
     $watch.Stop()
     $address = if ($found) { $found.address } else { $null }
     Log ("   29a. address found = {0}, in {1:N2} s" -f $address, $watch.Elapsed.TotalSeconds)
@@ -2749,10 +2752,10 @@ if (Wanted 29) {
         $qr = Read-Host "29d. Le telephone a-t-il ouvert la page d'accueil par le QR code ? (o / n / c : il a demande le code)"
         Write-Host "    Sur le telephone, ouvrez un onglet prive, tapez l'adresse affichee, puis le code."
         $typed = Read-Host "29e. Le code tape a-t-il ouvert la page ? (o/n)"
-        Write-Host "    Sur le telephone : lancez l'audit de la page (l'espace audit, 'Run the audit here')."
-        $audit = Read-Host "29f. L'audit est-il alle jusqu'au bout, sa progression affichee sur le telephone ? (o/n)"
-        Write-Host "    Sur le telephone : touchez le bouton de n'importe quelle autre etape (clean, status...)."
-        $refused = Read-Host "29g. Le telephone a-t-il dit 'Run this step on the PC', sans rien lancer sur le PC ? (o/n)"
+        # 0293, 0429, 0435: a paired phone gets the family view, read-only: no step of the PC, no write button.
+        $family = Read-Host "29f. Le telephone montre-t-il seulement Accueil, Retrouver et Partager, sans etape (audit, clean...) ? (o/n)"
+        Write-Host "    Sur le telephone : ouvrez Retrouver, cherchez une photo, ouvrez-la en grand ; puis ouvrez un album."
+        $writes = Read-Host "29g. Un bouton qui change quelque chose est-il affiche (album, deplacer, mettre de cote, couverture) ? (o : oui, liste-les / n)"
         Write-Host "    Sur la page du PC : lancez 'status' (il s'execute dans la fenetre mh, puis la page revient). Puis rechargez le telephone."
         $kept = Read-Host "29h. Apres l'etape, la page du telephone repond-elle a nouveau sans le code ? (o/n)"
         Write-Host "    Sur le telephone : Wi-Fi coupe (donnees mobiles actives), rechargez la page."
@@ -2760,17 +2763,18 @@ if (Wanted 29) {
         # 0384: a device of the Wi-Fi forging the PC's Host header must get the pairing, never the PC's rights.
         # curl.exe (Windows 10 1803+): Invoke-WebRequest of PowerShell 5.1 refuses to set Host.
         $port = 8088
-        $forged = & curl.exe -s -o NUL -w '%{http_code}' -H "Host: 127.0.0.1:$port" "http://${address}:$port/api/state" 2>$null
+        # HTTPS since 0430 (-k: the PC's own authority, not installed on this PC).
+        $forged = & curl.exe -s -k -o NUL -w '%{http_code}' -H "Host: 127.0.0.1:$port" "https://${address}:$port/api/state" 2>$null
         $plain = & curl.exe -s -o NUL -w '%{http_code}' "http://127.0.0.1:$port/api/state" 2>$null
         Log "   29j. forged Host by the home network address: HTTP $forged (401/403 expected, 200 = hole); the PC by 127.0.0.1: HTTP $plain (200 expected)"
         Write-Host "    Sur le PC : fermez l'onglet de la page d'accueil."
         Write-Host "    Relancez-la une seconde fois de la meme facon (. '$copy' puis mh), attendez la page d'accueil."
-        $again = Read-Host "29j. La seconde fois, Windows a-t-il redemande pour Docker Desktop ? (o/n)"
+        $again = Read-Host "29k. La seconde fois, Windows a-t-il redemande pour Docker Desktop ? (o/n)"
         $blocked = @(Get-NetFirewallRule -Action Block -Enabled True -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -match 'Docker' }).Count
-        Log "   29j. firewall prompt again $again; enabled Docker block rules readable without admin: $blocked"
+        Log "   29k. firewall prompt again $again; enabled Docker block rules readable without admin: $blocked"
         Write-Host "    Sur le PC : fermez l'onglet de la page d'accueil."
-        Log "   29: card $card, by QR $qr, by code $typed, audit $audit, step refused $refused, paired after a step $kept, unreachable from mobile data $outside"
-    } else {
+        Log "   29: card $card, by QR $qr, by code $typed, family view only $family, write buttons shown $writes (0429, 0435), paired after a step $kept, unreachable from mobile data $outside"
+    } elseif ($launcherOk) {
         Log "   29: skipped the phone part: no private address found (mh --lan says the same)"
     }
     $ErrorActionPreference = $saved

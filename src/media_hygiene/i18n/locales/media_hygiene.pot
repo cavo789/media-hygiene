@@ -5085,6 +5085,9 @@ msgstr ""
 msgid "On the phone's remote, type the code of this TV:"
 msgstr ""
 
+msgid "On the phone, everything is read-only: albums change on the PC."
+msgstr ""
+
 msgid "On this page"
 msgstr ""
 

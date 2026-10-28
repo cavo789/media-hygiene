@@ -29,7 +29,7 @@ creates it), then **➕ Add to the album**. The page says what it saved, read ba
 with its cover, its dates and its place; a click opens one, its photos by day, and a photo opens
 full screen.
 
-From the page, on the PC or on a phone, you can:
+From the page, on the PC (a phone only looks: albums change on the PC), you can:
 
 - **➖ Take out of the album** a photo: it leaves the list, the file stays where it is;
 - **➕ Add to an album** a photo, to another album: pick it in the list of your albums (the most
@@ -45,7 +45,7 @@ Only `albums.json` changes. Nothing else can be done there: no file is deleted, 
 
 Under `mh --lan`, a phone paired by its code on the home Wi-Fi opens the same page, while `mh`
 runs on the PC. It sees the pictures of the albums only, sized for a phone, never another photo
-of the library nor an original.
+of the library nor an original. It changes nothing: no *➖*, *➕* nor *🖼* there.
 
 ## Albums and the folders of links
 

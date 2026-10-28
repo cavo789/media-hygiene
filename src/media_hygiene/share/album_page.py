@@ -139,16 +139,16 @@ class AlbumPages:
             request: The request.
 
         Returns:
-            The JPEG or the video; 404 for a file in no album, asked by a phone;
-            None when the PC asks for it (the search's thumbnail).
+            The JPEG or the video; None for a file in no album (the search's
+            picture answers it).
         """
         key = request.path.rsplit("/", 1)[-1].split(".", 1)[0]
         shown = self.parts.shown
         if key.isdigit() and int(key) not in shown.keys:
             await self._read(None)  # an album changed since: its files, read again
-        if PHONE_HEADER not in request.headers and not (
-            key.isdigit() and int(key) in shown.keys
-        ):
+        # A file in no album: the search's picture, for the PC and a phone alike (a
+        # phone searches the whole library since 0360; a 404 here left its tiles empty).
+        if not (key.isdigit() and int(key) in shown.keys):
             return None
         try:
             with self.parts.shelf.pictures(shown.keys) as pictures:

@@ -104,6 +104,17 @@ def _phone(path: str, body: object = None, *, paired: bool = True) -> Request:
     return Request("POST", path, headers, json.dumps(body).encode(), Door.LAN)
 
 
+def _pc(path: str, body: object) -> Request:
+    """A `POST` of the PC's albums page: albums change on the PC only (0435)."""
+    local = f"127.0.0.1:{_PORT}"
+    headers = {
+        "host": local,
+        "content-type": ContentType.JSON,
+        "origin": f"http://{local}",
+    }
+    return Request("POST", path, headers, json.dumps(body).encode())
+
+
 def _json(reply: Response) -> dict[str, object]:
     assert reply.status == HTTPStatus.OK, reply.body
     loaded: dict[str, object] = json.loads(reply.body)
@@ -146,15 +157,20 @@ def test_a_paired_phone_lists_the_albums_and_opens_one(
     assert _ask(door, _phone("/api/album/Nowhere")).status == HTTPStatus.NOT_FOUND
 
 
-def test_a_phone_never_reaches_a_file_of_no_album(
+def test_a_phones_thumbnail_of_a_file_of_no_album_goes_on_to_search(
     phone_door: tuple[LanApp, _Home, Runtime],
 ) -> None:
-    """Another photo by the albums' paths, an original: never served."""
-    door, _home, runtime = phone_door
+    """A phone searches the whole library (0360): its tiles are search's, not a 404.
+
+    Seen on the maintainer's phone (2026-10-27, 0443): every tile of search said
+    *No preview*, the albums' page answering 404 for a file in no album.
+    """
+    door, home, runtime = phone_door
     shown = set(_keys(_album(door)))
     other = next(key for key, _path in _photos(runtime) if key not in shown)
-    for path in (f"/thumb/{other}{_JPEG}", f"/tv/{other}{_JPEG}", f"/film/{other}.mp4"):
-        assert _ask(door, _phone(path)).status == HTTPStatus.NOT_FOUND, path
+    reply = _ask(door, _phone(f"/thumb/{other}{_JPEG}"))
+    assert (reply.status, reply.body) == (HTTPStatus.OK, b"home")
+    assert home.seen == [f"/thumb/{other}{_JPEG}"]
     kept = next(iter(shown))
     original = _ask(door, _phone(f"/original/{kept}{_JPEG}"))
     assert original.status == HTTPStatus.FORBIDDEN  # search's previews pass (0360)
@@ -179,7 +195,7 @@ def test_the_pc_gets_the_search_thumbnail_of_a_file_of_no_album(
     assert len(home.seen) == 1  # an album's file: still the albums' own
 
 
-def test_a_paired_phone_changes_an_album_and_nothing_else(
+def test_the_pc_changes_an_album_and_nothing_else(
     phone_door: tuple[LanApp, _Home, Runtime],
 ) -> None:
     """Out of the album, into another one, read back; a file of no album is dropped."""
@@ -189,7 +205,7 @@ def test_a_paired_phone_changes_an_album_and_nothing_else(
     added = _json(
         _ask(
             door,
-            _phone(
+            _pc(
                 "/api/albums",
                 {"action": "add", "album": "Kids", "keys": [str(first), str(other)]},
             ),
@@ -197,17 +213,29 @@ def test_a_paired_phone_changes_an_album_and_nothing_else(
     )
     assert "Only this file changed" in str(added["message"])
     taken = {"action": "remove", "album": _ALBUM, "keys": [str(second)]}
-    _json(_ask(door, _phone("/api/albums", taken)))
+    _json(_ask(door, _pc("/api/albums", taken)))
     saved = read_albums(runtime.locations.reports_dir / ALBUMS_FILE)
     counts = {album.name: len(album.entries) for album in saved.albums}
     assert counts == {_ALBUM: 1, "Kids": 1}  # the file of no album never entered
-    evil = _phone("/api/albums", taken)
+    evil = _pc("/api/albums", taken)
     evil = Request(evil.method, evil.path, {**evil.headers, "origin": "http://evil"})
     assert _ask(door, evil).status == HTTPStatus.FORBIDDEN
 
 
+def test_a_paired_phone_may_not_change_an_album(
+    phone_door: tuple[LanApp, _Home, Runtime],
+) -> None:
+    """0435: off the PC everything is read-only, albums included; the file unchanged."""
+    door, _home, runtime = phone_door
+    before = (runtime.locations.reports_dir / ALBUMS_FILE).read_bytes()
+    first = _keys(_album(door))[0]
+    asked = {"action": "add", "album": "Kids", "keys": [str(first)]}
+    assert _ask(door, _phone("/api/albums", asked)).status == HTTPStatus.FORBIDDEN
+    assert (runtime.locations.reports_dir / ALBUMS_FILE).read_bytes() == before
+
+
 def _post(door: LanApp, body: dict[str, object]) -> dict[str, object]:
-    return _json(_ask(door, _phone("/api/albums", body)))
+    return _json(_ask(door, _pc("/api/albums", body)))
 
 
 def _cover(door: LanApp) -> int:
@@ -270,7 +298,7 @@ def test_a_cover_outside_the_album_is_refused(
     keys = _keys(_album(door))
     other = next(key for key, _path in _photos(runtime) if key not in keys)
     body = {"action": "cover", "album": _ALBUM, "keys": [str(other)]}
-    assert _ask(door, _phone("/api/albums", body)).status == HTTPStatus.CONFLICT
+    assert _ask(door, _pc("/api/albums", body)).status == HTTPStatus.CONFLICT
 
 
 def test_a_schema_1_albums_file_is_read_then_written_as_2(
