@@ -93,6 +93,25 @@ eight digits: the remote opens. Then:
 - A video's thumbnail is marked **▶**. On the TV, it plays to its end, then the show moves on;
   **❚❚ Pause** pauses it too. A video the TV cannot play is labelled under its thumbnail
   (*Not on the TV: its format (hevc) does not play there.*) and passed over.
+- **The event's name**: at each new event (a new folder, in the show's order), the TV shows a
+  title card for 3 seconds (one of its photos blurred, the name large, the month and the place
+  under it), then a banner on its first photo for a few seconds. The name is the folder's
+  (`2026\2026-10\Walk in Valkenburg` → *Walk in Valkenburg*: years, months, dates and camera
+  folders are passed over); the month is the photos' date taken; the place is one of yours
+  (`places`), else the nearest town of their GPS, found offline (with its country when it is not your
+  home country, e.g. *Valkenburg, Netherlands*: the country of your place marked `home`, else of
+  your first place, else where most of the photos were taken). One tap chooses where it is
+  told: **TV and phone** (the default), **Phone only** (under the controls; the storyteller's notes then open by themselves),
+  **Nowhere**.
+- **The storyteller's notes** (unfold them under the controls): while the family watches the TV,
+  the phone shows the photo on screen larger, its day and time, the event and its place, its
+  description and words (when `describe` gave some), the next photo, and a small drawing of
+  where the event's photos were taken (the red dot: this one), over the names of the nearby
+  towns and villages (read from the towns built into the tool: nothing goes to the internet).
+  If you set `[places] tiles` in `config.toml` (the map of [`places`](places.md)), real map
+  tiles are drawn under the points instead: the phone's browser downloads them, so the tile
+  server sees the area viewed (never a photo). Three buttons: **Pause while I talk**, **Back to the start of this event**,
+  **Next event**. They only move the show: nothing is changed on the PC.
 
 The TV loads the next photo in advance, behind the one shown, and swaps once it is decoded: you
 never see a photo drawn in bands.

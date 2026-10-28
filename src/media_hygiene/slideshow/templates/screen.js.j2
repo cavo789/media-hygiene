@@ -28,6 +28,12 @@
   var BEHIND = typeof ahead.decode === "function" ? "layer back quiet" : "layer back";
   var SHRINK = 0.85;
   var FITS_TRIES = 20;
+  var TITLE_MS = {{ title_seconds }} * 1000;
+  var BANNER_MS = {{ banner_seconds }} * 1000;
+  var card = document.getElementById("card");
+  var banner = document.getElementById("banner");
+  var told = 0;
+  var tellTimer = null;
 
   front.photo.className = "hidden";
   back.photo.className = "hidden";
@@ -136,7 +142,65 @@
     }
   }
 
+  function setText(id, text) {
+    var element = document.getElementById(id);
+    element.innerHTML = "";
+    element.appendChild(document.createTextNode(text || ""));
+  }
+
+  function hideTelling() {
+    if (tellTimer !== null) {
+      window.clearTimeout(tellTimer);
+      tellTimer = null;
+    }
+    card.className = "hidden";
+    banner.className = "hidden";
+  }
+
+  // A new event: its title card, then a banner on its first photo, never permanently.
+  function tell(chapter, photo) {
+    var line = [chapter.name, chapter.period, chapter.place];
+    var parts = [];
+    var each;
+    if (!chapter.name && !chapter.period && !chapter.place) {
+      return;
+    }
+    for (each = 0; each < line.length; each += 1) {
+      if (line[each]) {
+        parts.push(line[each]);
+      }
+    }
+    setText("cardName", chapter.name);
+    setText("cardPeriod", chapter.period);
+    setText("cardPlace", chapter.place);
+    setText("banner", parts.join(" \u00b7 "));
+    document.getElementById("cardPhoto").src = photo || "";
+    document.getElementById("cardPhoto").className = photo ? "" : "hidden";
+    card.className = "";
+    tellTimer = window.setTimeout(function () {
+      card.className = "hidden";
+      banner.className = "";
+      tellTimer = window.setTimeout(hideTelling, BANNER_MS);
+    }, TITLE_MS);
+  }
+
+  function telling(answer) {
+    var chapter = answer.chapter;
+    if (!chapter) {
+      told = 0;
+      hideTelling();
+      return;
+    }
+    if (chapter.number === told) {
+      return;
+    }
+    told = chapter.number;
+    hideTelling();
+    tell(chapter, answer.photo || answer.next);
+  }
+
   function showAnswer(answer) {
+    telling(answer);
     if (answer.film && films) {
       showFilm(answer.film, answer.key, answer.playing);
     } else {

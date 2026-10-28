@@ -93,6 +93,13 @@ mh import --phone --only Camera                # seulement le dossier DCIM\Camer
 mh import --phone --free                       # puis libérer le téléphone : plus bas
 ```
 
+**Un dossier par téléphone** : les copies vont dans un dossier au nom du téléphone, celui que
+Windows montre dans *Ce PC* (le nom d'appareil du téléphone). Deux téléphones du même modèle
+laissés à leur nom d'usine (*Galaxy A71*) partageraient un dossier : donnez d'abord à chacun
+son propre nom (Samsung : *Paramètres › À propos du téléphone › Modifier* ; Pixel :
+*Paramètres › À propos du téléphone › Nom de l'appareil*), puis rebranchez-le. `mh` le dit
+(💡) quand le nom ressemble à un nom d'usine. Les dossiers déjà créés ne sont pas renommés.
+
 Branchez le téléphone en USB, déverrouillez-le et choisissez *Transfert de fichiers* (iPhone :
 *Faire confiance à cet ordinateur*), et **gardez-le déverrouillé, écran allumé** jusqu'à la fin
 de `mh` : en veille ou verrouillé, un téléphone ne montre aucun stockage à Windows. `mh import --phone`

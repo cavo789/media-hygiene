@@ -1494,6 +1494,9 @@ msgstr "Retour aux photos"
 msgid "Back to the report"
 msgstr "Retour au rapport"
 
+msgid "Back to the start of this event"
+msgstr "Retour au début de cet événement"
+
 msgid "Back to the tool"
 msgstr "Retour à l'outil"
 
@@ -5194,6 +5197,9 @@ msgstr ""
 "Prochain audit : quelques secondes, les fichiers vérifiés sont repris du "
 "cache."
 
+msgid "Next event"
+msgstr "Événement suivant"
+
 msgid "Next event (N)"
 msgstr "Événement suivant (N)"
 
@@ -5574,6 +5580,9 @@ msgstr ""
 
 msgid "No place yet: click a circle or the map."
 msgstr "Aucun lieu pour l'instant : cliquez sur un cercle ou sur la carte."
+
+msgid "No position for this event."
+msgstr "Aucune position pour cet événement."
 
 msgid "No preview"
 msgstr "Pas d'aperçu"
@@ -6073,6 +6082,9 @@ msgstr "Rien n'a été écrit : vos rangements restent tels quels."
 msgid "November"
 msgstr "novembre"
 
+msgid "Nowhere"
+msgstr "Nulle part"
+
 #, python-brace-format
 msgid "Number of the phone (1 to {count})"
 msgstr "Numéro du téléphone (1 à {count})"
@@ -6156,7 +6168,9 @@ msgid "On the phone's remote, type the code of this TV:"
 msgstr "Sur la télécommande du téléphone, tapez le code de cette télé :"
 
 msgid "On the phone, everything is read-only: albums change on the PC."
-msgstr "Sur le téléphone, tout est en lecture seule : les albums changent sur le PC."
+msgstr ""
+"Sur le téléphone, tout est en lecture seule : les albums changent sur le "
+"PC."
 
 msgid "On this page"
 msgstr "Dans cette page"
@@ -6638,6 +6652,9 @@ msgstr "Le chemin contient"
 msgid "Path contains: invalid regular expression ({error})."
 msgstr "Chemin contient : expression régulière invalide ({error})."
 
+msgid "Pause while I talk"
+msgstr "Pause, je raconte"
+
 msgid "People"
 msgstr "Personnes"
 
@@ -6693,6 +6710,9 @@ msgid ""
 msgstr ""
 "Téléphone libéré : {count} fichiers supprimés ({size} Go), chacun vu "
 "parti du téléphone et retrouvé entier sur le PC."
+
+msgid "Phone only"
+msgstr "Téléphone seul"
 
 msgid "Phone, NAS: whenever you want"
 msgstr "Téléphone, NAS : quand vous voulez"
@@ -8665,6 +8685,9 @@ msgstr ""
 msgid "TB"
 msgstr "To"
 
+msgid "TV and phone"
+msgstr "TV et téléphone"
+
 msgid "Table of contents"
 msgstr "Sommaire"
 
@@ -9092,6 +9115,9 @@ msgstr "Les copies précédentes de cet album ont été remplacées."
 
 msgid "The event shown"
 msgstr "L'événement affiché"
+
+msgid "The event's name:"
+msgstr "Le nom de l'événement :"
 
 msgid ""
 "The events of the Events sheet, in its order: naming the first ones "
@@ -9935,6 +9961,9 @@ msgstr "L'étape choisie analyse aussi : {folder}"
 
 msgid "The steps changed since the page was shown: here they are."
 msgstr "Les étapes ont changé depuis l'affichage de la page : les voici."
+
+msgid "The storyteller's notes"
+msgstr "Les notes du conteur"
 
 msgid ""
 "The subject a local vision model sees, for the photos no rule above "
@@ -10953,8 +10982,14 @@ msgstr ""
 "disque des photos (un déplacement, pas une copie). Par défaut : le "
 "dossier quarantine de votre dossier personnel."
 
+msgid "Where the event is told"
+msgstr "Où l'événement est annoncé"
+
 msgid "Where the files of this event go, as 'sort' will move them:"
 msgstr "Où vont les fichiers de cet événement, tels que 'sort' les déplacera :"
+
+msgid "Where the photos of this event were taken"
+msgstr "Où les photos de cet événement ont été prises"
 
 msgid "Where to start"
 msgstr "Par où commencer"
@@ -11686,6 +11721,10 @@ msgstr "comme prévu, puis suivant"
 #, python-brace-format
 msgid "at {seconds} s"
 msgstr "à {seconds} s"
+
+#, python-brace-format
+msgid "at {time}"
+msgstr "à {time}"
 
 #, python-brace-format
 msgid ""
@@ -16445,6 +16484,10 @@ msgstr ""
 " ou un autre nom."
 
 #, python-brace-format
+msgid "{town}, {country}"
+msgstr "{town}, {country}"
+
+#, python-brace-format
 msgid "{to} is neither a NAS folder nor a folder on a drive."
 msgstr "{to} n'est ni un dossier du NAS ni un dossier d'un disque."
 
@@ -16641,6 +16684,18 @@ msgstr "👉 Et ensuite : ouvrez Windows PowerShell et tapez :"
 #, python-brace-format
 msgid "💡 On a phone of the home Wi-Fi too: {command}"
 msgstr "💡 Sur un téléphone du Wi-Fi de la maison aussi : {command}"
+
+#, python-brace-format
+msgid ""
+"💡 {name} looks like the phone's factory name: two phones of the same "
+"model would share its folder. Give it a name of its own (Samsung: "
+"Settings > About phone > Edit; Pixel: Settings > About phone > Device "
+"name), then plug it in again."
+msgstr ""
+"💡 {name} ressemble au nom d'usine du téléphone : deux téléphones du même "
+"modèle partageraient son dossier. Donnez-lui un nom à lui (Samsung : "
+"Paramètres > À propos du téléphone > Modifier ; Pixel : Paramètres > À "
+"propos du téléphone > Nom de l'appareil), puis rebranchez-le."
 
 msgid "📍 The GPS positions were kept, as asked."
 msgstr "📍 Les positions GPS ont été gardées, comme demandé."

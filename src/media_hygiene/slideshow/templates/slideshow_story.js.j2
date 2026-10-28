@@ -1,0 +1,112 @@
+{# The storyteller's notes (0449), under the remote's controls: drawn from each show the remote
+   receives (event `mh-show`, slideshow.js.j2). The map draws the event's positions over the
+   nearby towns (offline gazetteer: nothing leaves the network), or over the tiles of
+   `[places] tiles` when the user set it (fetched by the phone: the server sees the area). The controls only move the
+   show, as ◀ ▶ do: nothing is written. #}
+(() => {
+  const TEXTS = {{ texts | tojson }};
+  const SHOW_PATH = {{ show_path | tojson }};
+  const WIDTH = 320;
+  const HEIGHT = 140;
+  const TILE = 256;
+  const MAX_ZOOM = 18;
+  /* `[places] tiles`, only when the user set it: else the towns, drawn offline. */
+  const TILES = {{ map_tiles | tojson }};
+  const SVG = "http://www.w3.org/2000/svg";
+  const thumb = (key) => `/thumb/${key}.jpg`;
+  const send = (action) =>
+    fetch(SHOW_PATH, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action }) });
+
+  /* Web Mercator at zoom 0, in pixels of 256-pixel tiles. */
+  const world = (lat, lon) => {
+    const sin = Math.sin((Math.max(Math.min(lat, 85), -85) * Math.PI) / 180);
+    return [((lon + 180) / 360) * TILE, (0.5 - Math.log((1 + sin) / (1 - sin)) / (4 * Math.PI)) * TILE];
+  };
+  const element = (name, attributes) => {
+    const node = document.createElementNS(SVG, name);
+    for (const [key, value] of Object.entries(attributes)) node.setAttribute(key, String(value));
+    return node;
+  };
+
+  /* The tiles under the frame, at the whole zoom that fits it. */
+  function drawTiles(map, zoom, origin) {
+    const count = 2 ** zoom;
+    const [left, top] = origin;
+    for (let ty = Math.floor(top / TILE); ty * TILE < top + HEIGHT; ty += 1) {
+      if (ty < 0 || ty >= count) continue;
+      for (let tx = Math.floor(left / TILE); tx * TILE < left + WIDTH; tx += 1) {
+        const url = TILES.replace("{z}", zoom).replace("{x}", ((tx % count) + count) % count)
+          .replace("{y}", ty).replace("{s}", "a");
+        map.append(element("image", { href: url, x: tx * TILE - left, y: ty * TILE - top, width: TILE, height: TILE }));
+      }
+    }
+  }
+
+  function drawMap(points, here, area) {
+    const map = document.getElementById("storyMap");
+    const none = document.getElementById("storyNoMap");
+    map.replaceChildren();
+    const shown = points.length !== 0 && area;
+    map.hidden = !shown;
+    none.hidden = Boolean(shown);
+    none.textContent = TEXTS.storyNoMap;
+    document.getElementById("storyCredit").hidden = !shown || !TILES;
+    if (!shown) return;
+    const [south, west, north, east] = area.frame;
+    const [x0, y0] = world(north, west);
+    const [x1, y1] = world(south, east);
+    let scale = Math.min(WIDTH / Math.max(x1 - x0, 1e-9), HEIGHT / Math.max(y1 - y0, 1e-9));
+    let zoom = 0;
+    if (TILES) {
+      zoom = Math.max(0, Math.min(MAX_ZOOM, Math.floor(Math.log2(scale))));
+      scale = 2 ** zoom;
+    }
+    const origin = [((x0 + x1) / 2) * scale - WIDTH / 2, ((y0 + y1) / 2) * scale - HEIGHT / 2];
+    const at = (lat, lon) => {
+      const [x, y] = world(lat, lon);
+      return [x * scale - origin[0], y * scale - origin[1]];
+    };
+    if (TILES) drawTiles(map, zoom, origin);
+    else {
+      for (const [name, lat, lon] of area.towns || []) {
+        const [x, y] = at(lat, lon);
+        map.append(element("circle", { cx: x.toFixed(1), cy: y.toFixed(1), r: 2, class: "town" }));
+        const label = element("text", { x: (x + 4).toFixed(1), y: (y - 3).toFixed(1) });
+        label.textContent = name;
+        map.append(label);
+      }
+    }
+    const dot = (p, mark) => {
+      const [x, y] = at(p[0], p[1]);
+      const attributes = { cx: x.toFixed(1), cy: y.toFixed(1), r: mark ? 6 : 4 };
+      if (mark) attributes.class = "here";
+      map.append(element("circle", attributes));
+    };
+    for (const point of points) dot(point, false);
+    if (here) dot(here, true);
+  }
+
+  window.addEventListener("mh-show", (event) => {
+    const show = event.detail;
+    const story = show.story || {};
+    const box = document.getElementById("story");
+    box.hidden = show.current === null;
+    if (show.current === null) return;
+    document.getElementById("storyNow").src = thumb(show.current);
+    const next = document.getElementById("storyNext");
+    next.hidden = story.next === null || story.next === undefined;
+    if (!next.hidden) next.src = thumb(story.next);
+    const chapter = show.chapter || {};
+    const at = story.time ? TEXTS.storyAt.replace("{time}", story.time) : "";
+    const when = [story.day, at].filter(Boolean).join(" ");
+    document.getElementById("storyWhen").textContent =
+      [chapter.name, when, chapter.place].filter(Boolean).join(" · ");
+    document.getElementById("storyCaption").textContent = story.caption || "";
+    document.getElementById("storyWords").textContent = (story.words || []).join(", ");
+    drawMap(story.points || [], story.here, story.map);
+  });
+
+  document.getElementById("talk").addEventListener("click", () => send("pause"));
+  document.getElementById("eventStart").addEventListener("click", () => send("event"));
+  document.getElementById("nextEvent").addEventListener("click", () => send("next_event"));
+})();

@@ -87,3 +87,5 @@ One `/todo:run NNNN` each, highest priority first.
 | 0430 | HTTPS on the home network: a local CA, its download page, the `/lan` folder | [PARTIAL_0430-phone-app-over-https.md](PARTIAL/PARTIAL_0430-phone-app-over-https.md) |
 | 0431 | A phone paired once stays paired (paired-phones file, "Forget this phone") | [PARTIAL_0431-phone-durable-pairing.md](PARTIAL/PARTIAL_0431-phone-durable-pairing.md) |
 | 0432 | The home page installs as an app: manifest, service worker, offline meerkat, shared splash | [PARTIAL_0432-phone-installable-app.md](PARTIAL/PARTIAL_0432-phone-installable-app.md) |
+| 0448 | slideshow: the TV tells the event (name, month, place), a title card per event | [PARTIAL_0448-slideshow-tells-the-event-name-date-place.md](PARTIAL/PARTIAL_0448-slideshow-tells-the-event-name-date-place.md) |
+| 0449 | slideshow: the storyteller's view on the phone, and story controls | [PARTIAL_0449-slideshow-storyteller-view-on-the-phone.md](PARTIAL/PARTIAL_0449-slideshow-storyteller-view-on-the-phone.md) |

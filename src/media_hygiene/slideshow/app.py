@@ -22,7 +22,7 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
-from media_hygiene.review.http import ContentType, Response
+from media_hygiene.review.http import NO_REFERRER, ContentType, Response
 from media_hygiene.review.lan import PAIR_PREFIX
 from media_hygiene.review.lan_app import LAN_PATH
 from media_hygiene.review.lan_card import lan_response
@@ -53,6 +53,8 @@ class ShowPages:
 
     remote: bytes
     screen: bytes
+    policy: str = NEAR_POLICY  # the remote's: allows `[places] tiles` when set (0449)
+    referrer: str = NO_REFERRER
 
 
 @dataclass(frozen=True, slots=True)
@@ -160,8 +162,14 @@ class SlideshowApp:
             return Response(HTTPStatus.METHOD_NOT_ALLOWED)
         path = request.path
         if path == PAGE_PATH:
-            remote = self.pages.remote
-            return Response(HTTPStatus.OK, remote, ContentType.HTML, policy=NEAR_POLICY)
+            pages = self.pages
+            return Response(
+                HTTPStatus.OK,
+                pages.remote,
+                ContentType.HTML,
+                policy=pages.policy,
+                referrer=pages.referrer,
+            )
         if path == SLIDES_PATH:
             return json_response(HTTPStatus.OK, slides_view(self.desk))
         if path.startswith(f"{SHOW_PATH}/"):
