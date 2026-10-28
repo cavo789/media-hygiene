@@ -256,6 +256,13 @@ msgstr ""
 "quasi-doublon ou un doublon exact n'est jamais listé."
 
 msgid ""
+"'review-sort' now opens the 🗂 Events view of 'search', and goes in the "
+"next version: use 'search'."
+msgstr ""
+"'review-sort' ouvre désormais la vue 🗂 Événements de 'search', et "
+"disparaît à la version suivante : utilisez 'search'."
+
+msgid ""
 "'share' makes copies of an album to send them, in your folder media-"
 "hygiene\\Shares: each photo upright, its long side fitted into "
 "long_side_px pixels, JPEG quality quality (30 to 95). Your photos are "
@@ -3051,20 +3058,6 @@ msgstr ""
 "clean » avec --tier near %(option)s : les groupes sûrs et ceux que vous "
 "avez décidés partent en quarantaine, et « undo » les ramène."
 
-#, python-format
-msgid ""
-"Every choice is saved at once in %(place)s; the workbook %(workbook)s is "
-"never changed. Nothing moves without your GO (Sort this event now); every"
-" move is journaled: 'undo' puts it back. Done? Ctrl+C in the terminal "
-"stops the review; then 'sort' applies your choices on top of the "
-"workbook."
-msgstr ""
-"Chaque choix est enregistré aussitôt dans %(place)s ; le classeur "
-"%(workbook)s n'est jamais modifié. Rien ne bouge sans votre GO (Trier cet"
-" événement maintenant) ; chaque déplacement est journalisé : 'undo' le "
-"remet. Terminé ? Ctrl+C dans le terminal arrête la revue ; ensuite 'sort'"
-" applique vos choix par-dessus le classeur."
-
 msgid "Every cluster lies in a place of yours."
 msgstr "Chaque groupe est dans un de vos lieux."
 
@@ -4491,6 +4484,9 @@ msgstr "Tout laisser sur le téléphone"
 msgid "Leave the picked files where they are"
 msgstr "Laisser les fichiers choisis où ils sont"
 
+msgid "Leave the whole event where it is (Shift+S)"
+msgstr "Laisser tout l'événement où il est (Maj+S)"
+
 msgid "Leave where they are (S)"
 msgstr "Laisser où elles sont (S)"
 
@@ -5313,7 +5309,6 @@ msgstr "Aucun classeur de classify dans /reports."
 msgid "No config.toml created: the container cannot write to {folder}."
 msgstr "Aucun config.toml créé : le conteneur ne peut pas écrire dans {folder}."
 
-#
 msgid "No date taken"
 msgstr "Pas de date de prise"
 
@@ -5334,16 +5329,12 @@ msgstr "Aucun brouillon prêt pour l'instant."
 msgid "No draft: {reason}"
 msgstr "Pas de brouillon : {reason}"
 
-msgid "No event in this proposal: nothing to review."
-msgstr "Aucun événement dans cette proposition : rien à revoir."
-
 msgid "No event left to decide after this one."
 msgstr "Plus aucun événement à décider après celui-ci."
 
 msgid "No event left to sort after this one."
 msgstr "Plus aucun événement à trier après celui-ci."
 
-#
 msgid "No event matches these filters."
 msgstr "Aucun événement ne correspond à ces filtres."
 
@@ -7314,27 +7305,11 @@ msgstr "Réessayer"
 
 #, python-brace-format
 msgid ""
-"Review ready, open {url} in your browser. Each choice is saved at once in"
-" {place}. Ctrl+C stops the review."
-msgstr ""
-"Revue prête, ouvrez {url} dans votre navigateur. Chaque choix est "
-"enregistré aussitôt dans {place}. Ctrl+C arrête la revue."
-
-#, python-brace-format
-msgid ""
 "Review ready, open {url} in your browser. Each decision is saved at once "
 "in {place}. Ctrl+C stops the review."
 msgstr ""
 "Tri prêt, ouvrez {url} dans votre navigateur. Chaque décision est "
 "enregistrée aussitôt dans {place}. Ctrl+C arrête le tri."
-
-#, python-brace-format
-msgid ""
-"Review stopped — events chosen: {events}, photos chosen one by one: "
-"{files}."
-msgstr ""
-"Revue arrêtée — événements choisis : {events}, photos choisies une à une "
-": {files}."
 
 #, python-brace-format
 msgid ""
@@ -8383,9 +8358,6 @@ msgstr ""
 msgid "Sort out"
 msgstr "Trier"
 
-msgid "Sort review"
-msgstr "Revue du tri"
-
 msgid "Sort the bursts"
 msgstr "Trier les rafales"
 
@@ -8707,8 +8679,8 @@ msgstr ""
 "Tags : {files} fichiers ont des mots, dont {seen} du modèle de vision ; "
 "'search' les retrouve."
 
-msgid "Take back the choice made here"
-msgstr "Reprendre le choix fait ici"
+msgid "Take back the choice made here (T)"
+msgstr "Reprendre le choix fait ici (T)"
 
 msgid "Take back the last batch of sure proposals (Shift+Z)"
 msgstr "Reprendre le dernier lot de propositions sûres (Maj+Z)"
@@ -8980,9 +8952,6 @@ msgstr "Le classeur de classify à lire ; celui du dernier classify par défaut.
 msgid "The classify workbook, edited; the latest classify run's by default."
 msgstr "Le classeur de classify, modifié ; celui du dernier classify par défaut."
 
-msgid "The classify workbook; the latest classify run's by default."
-msgstr "Le classeur de classify ; celui du dernier classify par défaut."
-
 msgid ""
 "The clusters set aside on the map of 'places' (✕: not a place worth a "
 "name), written by the map: every cluster whose middle lies within "
@@ -9128,6 +9097,16 @@ msgstr ""
 "Les événements de la feuille Événements, dans son ordre : nommer les "
 "premiers couvre l'essentiel du travail."
 
+#, python-brace-format
+msgid ""
+"The events of the latest classify run are ready, open {url} in your "
+"browser. Each choice is saved at once in sort-decisions.json. Ctrl+C "
+"stops it."
+msgstr ""
+"Les événements du dernier classify sont prêts, ouvrez {url} dans votre "
+"navigateur. Chaque choix est enregistré aussitôt dans sort-decisions.json. "
+"Ctrl+C l'arrête."
+
 msgid "The face models are not in the cache yet: run 'audit --people' once."
 msgstr ""
 "Les modèles de visages ne sont pas encore dans le cache : lancez une fois"
@@ -9174,7 +9153,9 @@ msgstr "Les visages que vous avez confirmés comme ceux de cette personne."
 msgid ""
 "The file does not say when it was taken (a scan, a screenshot): a search "
 "by date does not find it."
-msgstr "Le fichier ne dit pas quand il a été pris (un scan, une capture d'écran) : une recherche par date ne le trouve pas."
+msgstr ""
+"Le fichier ne dit pas quand il a été pris (un scan, une capture d'écran) "
+": une recherche par date ne le trouve pas."
 
 msgid "The files given at least these stars in Windows (1 to 5)."
 msgstr "Les fichiers qui ont au moins ces étoiles dans Windows (1 à 5)."
@@ -10053,10 +10034,10 @@ msgstr ""
 
 msgid ""
 "The workbook was edited otherwise since this choice: choose again here, "
-"or press Delete to let the workbook decide."
+"or press T to let the workbook decide."
 msgstr ""
 "Le classeur a été modifié autrement depuis ce choix : choisissez à "
-"nouveau ici, ou appuyez sur Suppr pour laisser le classeur décider."
+"nouveau ici, ou appuyez sur T pour laisser le classeur décider."
 
 #, python-brace-format
 msgid "The workbook {path} cannot be opened: {reason}."
@@ -10279,10 +10260,8 @@ msgstr "C'est la première paire."
 msgid "This is the first series."
 msgstr "C'est la première série."
 
-msgid "This is the last event: stop the review with Ctrl+C in the terminal."
-msgstr ""
-"C'est le dernier événement : arrêtez la revue avec Ctrl+C dans le "
-"terminal."
+msgid "This is the last event."
+msgstr "C'est le dernier événement."
 
 msgid "This is the last group: stop the review with Ctrl+C in the terminal."
 msgstr "C'est le dernier groupe : arrêtez la revue avec Ctrl+C dans le terminal."
@@ -11829,9 +11808,6 @@ msgstr "choisir tous les brouillons affichés"
 msgid "chosen"
 msgstr "choisie"
 
-msgid "chosen here"
-msgstr "choisi ici"
-
 msgid ""
 "chosen in the review page, then edited otherwise in the workbook, whose "
 "value was carried over"
@@ -12077,9 +12053,6 @@ msgstr "toutes les photos"
 
 msgid "every photo has GPS"
 msgstr "chaque photo a son GPS"
-
-msgid "every photo of the event"
-msgstr "toutes les photos de l'événement"
 
 msgid "every photo of the group"
 msgstr "toutes les photos du groupe"
@@ -12396,9 +12369,6 @@ msgstr "launcher script mh ps1 réécrire"
 
 msgid "launcher: write your folders once"
 msgstr "launcher : écrire vos dossiers une fois"
-
-msgid "leave a field; drop the folder typed and not saved"
-msgstr "quitter un champ ; abandonner le dossier tapé et non enregistré"
 
 msgid "leave the group alone, then next"
 msgstr "laisser le groupe tel quel, puis suivant"
@@ -12762,8 +12732,8 @@ msgstr "groupe suivant sans réponse"
 msgid "next group to check, undecided"
 msgstr "groupe suivant à vérifier, non décidé"
 
-msgid "next or previous event (the ← → buttons of the bar)"
-msgstr "événement suivant ou précédent (les boutons ← → de la barre)"
+msgid "next or previous event (its ← → buttons)"
+msgstr "événement suivant ou précédent (ses boutons ← →)"
 
 msgid "next series still to see"
 msgstr "série suivante à voir"
@@ -12792,7 +12762,6 @@ msgstr "aucun caractère de contrôle"
 msgid "no date"
 msgstr "sans date"
 
-#
 msgid "no date taken"
 msgstr "pas de date de prise"
 
@@ -13170,9 +13139,6 @@ msgstr "même événement, autre jour ({date}) : {rule}"
 msgid "same streams"
 msgstr "mêmes flux"
 
-msgid "save the folder, then the next event"
-msgstr "enregistrer le dossier, puis l'événement suivant"
-
 msgid ""
 "say in 'review --gone' which vanished files you deleted on purpose: they "
 "will be set aside if they come back."
@@ -13305,6 +13271,9 @@ msgstr "reprendre le dernier lot de propositions sûres"
 
 msgid "take it back out of the set aside"
 msgstr "la reprendre de ce qui est mis de côté"
+
+msgid "take the picked files back out of the set aside"
+msgstr "sortir les fichiers choisis de ce qui est mis de côté"
 
 #, python-brace-format
 msgid "taken {taken} (EXIF: what the search finds by)"
@@ -14249,20 +14218,6 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} entries at its top"
 msgstr "{count} éléments à sa racine"
-
-#, python-brace-format
-msgid ""
-"{count} event to decide: {sure} with a sure proposal (one click), {look} "
-"to look at."
-msgid_plural ""
-"{count} events to decide: {sure} with a sure proposal (one click), {look}"
-" to look at."
-msgstr[0] ""
-"{count} événement à décider : {sure} avec une proposition sûre (un clic),"
-" {look} à regarder."
-msgstr[1] ""
-"{count} événements à décider : {sure} avec une proposition sûre (un "
-"clic), {look} à regarder."
 
 #, python-brace-format
 msgid ""
@@ -15949,7 +15904,9 @@ msgstr[1] "{n} séries évidentes validées"
 
 #, python-brace-format
 msgid "{n} of its files are not in the index: run audit on their folder."
-msgstr "{n} de ses fichiers ne sont pas dans l'index : lancez audit sur leur dossier."
+msgstr ""
+"{n} de ses fichiers ne sont pas dans l'index : lancez audit sur leur "
+"dossier."
 
 #, python-brace-format
 msgid "{n} of {count} set aside"

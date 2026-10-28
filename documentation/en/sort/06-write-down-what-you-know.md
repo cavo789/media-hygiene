@@ -292,7 +292,7 @@ The rules that decided nothing are named after the table: a typo in a regular ex
 wrong year, or simply nothing of that kind in your folders.
 
 **Keep the list alive: *Your rules*.** On the page of the events
-([`review-sort`](../commands/review-sort.md)), **📌 Your rules** lists every rule of
+([`review-sort`](../commands/search.md#the-events-of-the-latest-classify)), **📌 Your rules** lists every rule of
 `config.toml`, with the files it decided at the `classify` run the page shows and, for a
 folder-name rule, the days of the event holding most of its files. They are shown by kind
 (*Dates*, *Folder and file names*, *Days of every year*… your own folders last), each kind

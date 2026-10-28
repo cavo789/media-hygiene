@@ -20,6 +20,7 @@ from media_hygiene.search.app import (
     SearchPages,
 )
 from media_hygiene.search.chosen_api import CHOSEN_PATH, ChosenDesk
+from media_hygiene.search.events_choose import SORT_PATHS
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH, EVENTS_PATH
 from media_hygiene.search.folders import (
     BROWSE_PATH,
@@ -106,6 +107,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "move_paths": {"view": MOVE_VIEW_PATH, "move": MOVE_PATH},
         "folder_query": FOLDER_QUERY,
         "events_path": EVENTS_PATH,
+        "sort_paths": SORT_PATHS,
         "events_page": EVENTS_PAGE_PATH,
         "first_hits": FIRST_HITS,
         "event_gap_hours": event_gap_hours(runtime),

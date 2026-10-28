@@ -1,6 +1,6 @@
-"""`media-hygiene review-sort`: walk through a classify proposal, event by event.
+"""The plan the search's *🗂 Events* view walks through, event by event (0438).
 
-The page reads the same workbook `sort` would apply (the latest classify run's by
+The view reads the same workbook `sort` would apply (the latest classify run's by
 default) and its plan; its choices go to `sort-decisions.json` next to `plan.json`,
 never into the workbook: Excel may have it open. `sort` lays them over the workbook's
 edits (`classify/page_overlay`).
@@ -8,49 +8,22 @@ edits (`classify/page_overlay`).
 
 from __future__ import annotations
 
-import asyncio
-import contextlib
-from functools import partial
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.classify.page_overlay import overlay
 from media_hygiene.classify.workbook.reader import read_edits
 from media_hygiene.console.formatting import human_number
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _, ngettext
-from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mounts import is_writable
-from media_hygiene.review.ending import run_server
-from media_hygiene.review.page_header import page_header
-from media_hygiene.review.sort_app import PAGE_PATH, STATE_PATH, SortReviewApp
 from media_hygiene.review.sort_batch import SortBatchSession
-from media_hygiene.review.sort_choices import (
-    DESTINATION_PATH,
-    EVENT_PATH,
-    FILES_PATH,
-    FORGET_PATH,
-    SURE_PATH,
-)
 from media_hygiene.review.sort_files import RuleBook, SortSource
-from media_hygiene.review.sort_now import SORT_NOW_PATH
-from media_hygiene.review.sort_rule_choices import (
-    PROGRESS_PATH,
-    RULE_PATH,
-    RULE_PREVIEW_PATH,
-    RULES_PATH,
-    RULES_REMOVE_PATH,
-)
 from media_hygiene.services.page_choices import page_decisions, page_file
-from media_hygiene.services.reviewing import address_tip, page_url
-from media_hygiene.services.sort_event import sorter_of
 from media_hygiene.services.sort_inputs import find_workbook, open_elsewhere, plan_of
 from media_hygiene.services.writable import writable_tip
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
-
-_TEMPLATES_PACKAGE: Final = "media_hygiene.review"
-_PAGE_TEMPLATE: Final = "sort_review.html.j2"
 
 
 def open_sort_review(runtime: Runtime, given: str | None) -> SortBatchSession:
@@ -105,74 +78,3 @@ def open_sort_review(runtime: Runtime, given: str | None) -> SortBatchSession:
         RuleBook(runtime.locations.config_file, runtime.settings.classify.rules),
     )
     return SortBatchSession(source, base)
-
-
-def sort_page(session: SortBatchSession) -> str:
-    """Render the page of a review: its paths, the workbook and the decisions file.
-
-    Args:
-        session: The review.
-
-    Returns:
-        The page, as HTML.
-    """
-    environment = translated_environment(_TEMPLATES_PACKAGE, escaped=("html", "j2"))
-    workbook, decisions = session.hosts
-    return environment.get_template(_PAGE_TEMPLATE).render(
-        header=page_header(_PAGE_TEMPLATE),
-        paths={
-            "page": PAGE_PATH,
-            "state": STATE_PATH,
-            "event": EVENT_PATH,
-            "files": FILES_PATH,
-            "forget": FORGET_PATH,
-            "sure": SURE_PATH,
-            "destination": DESTINATION_PATH,
-            "sortNow": SORT_NOW_PATH,
-            "progress": PROGRESS_PATH,
-            "rulePreview": RULE_PREVIEW_PATH,
-            "rule": RULE_PATH,
-            "rules": RULES_PATH,
-            "rulesRemove": RULES_REMOVE_PATH,
-        },
-        workbook=workbook,
-        decisions=decisions,
-    )
-
-
-def serve_sort_review(runtime: Runtime, session: SortBatchSession, port: int) -> None:
-    """Serve the page until Ctrl+C; every choice is saved as it is made.
-
-    Args:
-        runtime: Settings, mount points and output.
-        session: The review.
-        port: The port to listen on, inside the container (0: any free one).
-    """
-    page = sort_page(session)
-    with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        app = SortReviewApp(
-            session,
-            page.encode(),
-            executor,
-            runtime.previews_dir,
-            sorter_of(runtime, session),
-        )
-        asyncio.run(run_server(app, port, partial(_announce, runtime, session)))
-
-
-def _announce(runtime: Runtime, session: SortBatchSession, port: int) -> None:
-    """Tell where the page is and how to open it from the host.
-
-    Args:
-        runtime: Settings, mount points and output.
-        session: The review.
-        port: The port listened on, inside the container.
-    """
-    output = runtime.output
-    output.success(
-        _(
-            "Review ready, open {url} in your browser. Each choice is saved at once "
-            "in {place}. Ctrl+C stops the review."
-        ).format(url=page_url(port), place=session.hosts[1])
-    )
-    address_tip(output, port)

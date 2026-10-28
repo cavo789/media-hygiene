@@ -31,7 +31,7 @@ l'Explorateur, dit encore son année. Le mois est celui du **début** de l'évé
 seule l'année est connue. L'outil n'écrit **aucun mot à lui** dans l'arborescence : seulement
 des chiffres et les noms que vous avez tapés. **Un fichier ne bouge qu'une fois, vers sa vraie
 place** : ce qui n'est pas décidé reste où il est jusqu'à ce que vous décidiez (dans
-[`review-sort`](../commands/review-sort.md) ou [`search`](../commands/search.md)).
+[`review-sort`](../commands/search.md#les-événements-du-dernier-classify) ou [`search`](../commands/search.md)).
 
 > 💡 Un `config.toml` écrit par une version plus ancienne range autrement (`{year}/{category}`,
 > dossiers *À vérifier* et *À trier*) : `classify` le dit en une ligne, et

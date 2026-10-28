@@ -78,22 +78,21 @@ def test_folders_it_cannot_write_and_a_workbook_open(locations: Locations) -> No
 
 
 def test_files_left_as_they_are_and_photos_gone(locations: Locations) -> None:
-    """A protected photo takes no choice; a photo deleted since has no preview."""
+    """A protected photo takes no choice."""
     build_library(locations.data_dir)
     runtime = make_runtime(locations, {"folders": {"protected": ["C:\\Photos\\2016"]}})
     classify(runtime)
     app = reopened(runtime)
     (locations.data_dir / PARTY / "IMG_0005.jpg").unlink()
 
-    async def try_it() -> tuple[int, str, int, bool]:
+    async def try_it() -> tuple[int, str, bool]:
         event, rows = await first_event(app)
         body = {"event": event, "rows": rows[:1], "category": "X"}
         answer = await call(app, "POST /api/files", body)
-        gone = await call(app, f"GET /preview/{rows[-1]}.jpg")
         view = json.loads((await call(app, f"GET /api/event/{event}")).body)
         movable = any(photo["movable"] for photo in view["photos"])
-        return answer.status, json.loads(answer.body)["error"], gone.status, movable
+        return answer.status, json.loads(answer.body)["error"], movable
 
-    status, error, gone, movable = asyncio.run(try_it())
-    assert (status, gone, movable) == (422, 404, False)
+    status, error, movable = asyncio.run(try_it())
+    assert (status, movable) == (422, False)
     assert "is left as it is" in error

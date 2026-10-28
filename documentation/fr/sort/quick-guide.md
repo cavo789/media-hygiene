@@ -351,7 +351,7 @@ Chaque commande du tri, et l'étape de cette page qui la montre :
 | Commande | Étape | Ce qu'elle fait |
 |---|---|---|
 | [`classify`](../commands/classify.md) | 1, 4, 7, 8 | Propose une place pour chaque fichier, sans rien modifier ; 🤖 la règle `subject` et `--sample` demandent une IA locale. |
-| [`review-sort`](../commands/review-sort.md) | 3 | Nomme les événements dans le navigateur. |
+| [`review-sort`](../commands/search.md#les-événements-du-dernier-classify) | 3 | Nomme les événements dans le navigateur. |
 | [`places`](../commands/places.md) | 5 | Nomme vos lieux sur une carte. |
 | [`people`](../commands/people.md) | 6 | Trouve et nomme les visages ; `--forget` les supprime. |
 | [`sort`](../commands/sort.md) | 9 | Déplace les fichiers comme le dit le classeur. |

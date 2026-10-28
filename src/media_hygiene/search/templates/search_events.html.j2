@@ -1,17 +1,47 @@
-{# *🗂 Events* (0437): the events of the latest classify plan in the left column, as
-   review-sort lists them — its progress, its three filters, the event's card — and its
-   photos in the grid, the search's own tiles. Read-only: the choices come with 0438. #}
+{# *🗂 Events* (0437, 0438): the events of the latest classify plan in the left column, as
+   review-sort showed them — its progress and runs, its three filters, the event's card —
+   and its photos in the grid, the search's own tiles. The choices are review-sort's: the
+   folder (F, Enter), the name (E), the picked photos to another folder (O) or left (S),
+   the whole event left (Shift+S), a choice taken back (T), the sure proposals (V,
+   Shift+Z), *Remember as a rule* (R), *Sort this event now* (M); each is saved at once
+   in sort-decisions.json, read back. Delete sets aside, as on every tile page. #}
 <details id="events">
   <summary>🗂 {{ _("Events of the latest classify") }}</summary>
   <p id="eventsSaid" class="muted" role="status"></p>
   <p id="eventsProgress" class="muted"></p>
+  <details id="runs" hidden><summary>{{ _("The sort runs of this plan") }}</summary><ol id="runList"></ol></details>
+  <p id="eventsTotals" class="muted"></p>
   <label class="filter" title="{{ _('N, P and U skip the events already chosen and those whose proposal is sure') }}"><input type="checkbox" id="onlyDecide"> {{ _("Only the events to decide") }}</label>
   <label class="filter" title="{{ _('N and P walk only the events to decide whose proposal is sure, one by one, before accepting them') }}"><input type="checkbox" id="onlySure"> {{ _("Only the sure proposals") }}</label>
   <label class="filter" title="{{ _('N, P and U walk only the events with files still to move: neither sorted nor in place') }}"><input type="checkbox" id="onlyUnsorted"> {{ _("Only the events not sorted yet") }}</label>
-  <dl id="eventCard" hidden>
-    <dt>{{ _("Name") }}</dt><dd id="eventName"></dd>
-    <dt>{{ _("Folder") }}</dt><dd id="eventFolder"></dd>
-    <dt>{{ _("Why") }}</dt><dd id="eventWhy"></dd>
-  </dl>
+  <p class="eventButtons">
+    <button type="button" id="sure" title="{{ _('Accept at once every event still to decide whose proposal is sure (V)') }}"></button>
+    <button type="button" id="sureUndo" class="plain" title="{{ _('Take back the last batch of sure proposals (Shift+Z)') }}" hidden></button>
+    <button type="button" id="rulesOpen" class="plain">📌 {{ _("Your rules") }}</button>
+  </p>
+  <section id="eventCard" hidden aria-label="{{ _('The event shown') }}">
+    <p id="eventNav">
+      <button type="button" id="prevEvent" class="plain" title="{{ _('Previous event (P)') }}" aria-label="{{ _('Previous event (P)') }}">←</button>
+      <strong id="position"></strong>
+      <button type="button" id="nextEvent" class="plain" title="{{ _('Next event (N)') }}" aria-label="{{ _('Next event (N)') }}">→</button>
+    </p>
+    <h3 id="eventTitle"></h3>
+    <div id="eventSummary" class="muted"></div>
+    <dl id="eventFacts"></dl>
+    <p id="eventConflict" class="conflict" hidden></p>
+    <form id="eventChoice" autocomplete="off">
+      <label>{{ _("Folder") }} <kbd>F</kbd><span class="path"><span id="eventPrefix" class="muted"></span><input id="eventFolderIn" list="categories"></span></label>
+      <details id="eventNaming"><summary>{{ _("Name of the event") }} <kbd>E</kbd></summary><input id="eventNameIn"></details>
+    </form>
+    <p id="destination" class="muted" role="status" aria-live="polite"></p>
+    <p class="eventButtons">
+      <button type="button" id="sortNow" title="{{ _('Save the folder, then move the files of this event only, journaled: undo puts them back (M)') }}">{{ _("Sort this event now") }}</button>
+      <button type="button" id="eventRuleOpen" class="plain" title="{{ _('Write this event down as a rule of config.toml: its days, its folder; the next classify runs apply it (R)') }}">📌 {{ _("Remember as a rule") }}</button>
+      <button type="button" id="sendPicked" class="plain">{{ _("Send to another folder (O)") }}</button>
+      <button type="button" id="leavePicked" class="plain">{{ _("Leave where they are (S)") }}</button>
+      <button type="button" id="stayEvent" class="plain">{{ _("Leave the whole event where it is (Shift+S)") }}</button>
+      <button type="button" id="forgetChoice" class="plain">{{ _("Take back the choice made here (T)") }}</button>
+    </p>
+  </section>
   <ol id="eventList"></ol>
 </details>

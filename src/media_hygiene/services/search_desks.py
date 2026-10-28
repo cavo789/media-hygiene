@@ -12,6 +12,7 @@ from media_hygiene.services.group_sort import sorted_group
 from media_hygiene.services.people_page import names_file
 from media_hygiene.services.rule_trial import try_rule, written_rules
 from media_hygiene.services.selection_move import SelectionMover
+from media_hygiene.services.sort_event import sorter_of
 from media_hygiene.services.sort_reviewing import open_sort_review
 
 if TYPE_CHECKING:
@@ -67,4 +68,6 @@ def events_desk(
         The desk.
     """
     opener = partial(open_sort_review, runtime, None)
-    return EventsDesk(search, runtime.mapper, opener, chosen.paths)
+    return EventsDesk(
+        search, runtime.mapper, opener, chosen.paths, partial(sorter_of, runtime)
+    )

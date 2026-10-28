@@ -142,7 +142,7 @@ qui a ouvert la page :
   refuse de copier (une adresse autre que `127.0.0.1` ou `localhost`), la commande est
   sélectionnée : faites Ctrl+C.
 
-Chaque autre page ([`review`](review.md), [`review-sort`](review-sort.md),
+Chaque autre page ([`review`](review.md), [`review-sort`](search.md#les-événements-du-dernier-classify),
 [`places`](places.md), [`search`](search.md), [`browse`](browse.md), [`people`](people.md))
 prend l'allure et le thème de la page d'accueil, sous une barre : **Documentation** ouvre le
 chapitre de cette page, à côté de son jumeau anglais (*In English*). Quand la page d'accueil l'a

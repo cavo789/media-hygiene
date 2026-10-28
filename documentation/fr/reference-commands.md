@@ -22,7 +22,7 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 | être sûr des doublons avant de supprimer des photos de famille | [`crosscheck`](commands/crosscheck.md) |
 | retrouver tous les rapports, supprimer les anciens | [`reports`](commands/reports.md) |
 | obtenir une arborescence bien rangée, par année, événement, lieu ou personne, et la corriger d'abord | [`classify`](commands/classify.md) |
-| nommer mes événements en regardant leurs photos | [`review-sort`](commands/review-sort.md) |
+| nommer mes événements en regardant leurs photos | [`search`](commands/search.md#les-événements-du-dernier-classify), ses 🗂 Événements |
 | déplacer mes photos dans l'arborescence approuvée, de façon annulable | [`sort`](commands/sort.md) |
 | faire d'un album un dossier de l'Explorateur, sans copie | [`album`](commands/album.md) |
 | nommer mes lieux sur une carte, pour trier par lieu et par voyage | [`places`](commands/places.md), puis `classify` |
@@ -89,7 +89,7 @@ exemples et son `--help`.
 | Commande | Rôle | Guide |
 |---|---|---|
 | [`home`](commands/home.md) | La page d'accueil dans votre navigateur : ce que dit `status`, l'étape suivante en gros bouton, chaque étape des guides numérotée comme dans `mh menu`, les rapports et quelques aperçus ; lance l'audit dans la page, sa progression affichée. Le bouton d'une étape la confie à `mh` dans le terminal. N'écrit jamais dans vos dossiers. | [Commandes](commands/home.md) |
-| [`review-sort`](commands/review-sort.md) | Montre les événements de la proposition de `classify` un par un dans votre navigateur, avec leurs photos, et les nomme au clavier ; enregistré à côté de `plan.json`, appliqué par `sort`. N'écrit jamais dans vos dossiers ni dans le classeur. | [Trier, 11](sort/11-name-events-in-the-browser.md) |
+| [`review-sort`](commands/review-sort.md) | Ouvre la vue 🗂 Événements de [`search`](commands/search.md#les-événements-du-dernier-classify), pour cette version seulement : utilisez `search`. |
 | [`places`](commands/places.md) | Montre sur une carte dans votre navigateur où les photos ont été prises, et nomme vos lieux ; enregistrés dans `config.toml`. N'écrit jamais dans vos dossiers. | [Trier, 9](sort/09-places-from-gps.md) |
 | [`browse`](commands/browse.md) | Parcourt vos dossiers dans votre navigateur, comme dans l'Explorateur : l'arborescence avec ses nombres, les photos et vidéos d'un dossier, en grand avec ←/→ ; met de côté celles choisies pour `clean --decisions`. N'écrit jamais dans vos dossiers. | [Retrouver en bref](find/quick-guide.md) |
 

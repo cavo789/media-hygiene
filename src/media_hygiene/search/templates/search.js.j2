@@ -37,6 +37,7 @@ function card(hit, index) {
     if (!hit.taken) node.classList.add("notTaken");
     if (hit.left) node.classList.add("leftHere");
   }
+  if (hit.row !== undefined && eventTile) eventTile(hit, meta, node);  // an event's (0438)
   if (hit.caption) meta.append(element("div", "muted caption", hit.caption));
   meta.append(chipsOf(hit));
   node.append(withLength(hit, picture), meta);

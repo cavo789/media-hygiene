@@ -199,6 +199,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"'review-sort' now opens the 🗂 Events view of 'search', and goes in the "
+"next version: use 'search'."
+msgstr ""
+
+msgid ""
 "'share' makes copies of an album to send them, in your folder media-"
 "hygiene\\Shares: each photo upright, its long side fitted into "
 "long_side_px pixels, JPEG quality quality (30 to 95). Your photos are "
@@ -2465,15 +2470,6 @@ msgid ""
 "quarantine, and 'undo' brings them back."
 msgstr ""
 
-#, python-format
-msgid ""
-"Every choice is saved at once in %(place)s; the workbook %(workbook)s is "
-"never changed. Nothing moves without your GO (Sort this event now); every"
-" move is journaled: 'undo' puts it back. Done? Ctrl+C in the terminal "
-"stops the review; then 'sort' applies your choices on top of the "
-"workbook."
-msgstr ""
-
 msgid "Every cluster lies in a place of yours."
 msgstr ""
 
@@ -3673,6 +3669,9 @@ msgstr ""
 msgid "Leave the picked files where they are"
 msgstr ""
 
+msgid "Leave the whole event where it is (Shift+S)"
+msgstr ""
+
 msgid "Leave where they are (S)"
 msgstr ""
 
@@ -4379,9 +4378,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "No draft: {reason}"
-msgstr ""
-
-msgid "No event in this proposal: nothing to review."
 msgstr ""
 
 msgid "No event left to decide after this one."
@@ -6041,20 +6037,8 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"Review ready, open {url} in your browser. Each choice is saved at once in"
-" {place}. Ctrl+C stops the review."
-msgstr ""
-
-#, python-brace-format
-msgid ""
 "Review ready, open {url} in your browser. Each decision is saved at once "
 "in {place}. Ctrl+C stops the review."
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Review stopped — events chosen: {events}, photos chosen one by one: "
-"{files}."
 msgstr ""
 
 #, python-brace-format
@@ -6924,9 +6908,6 @@ msgstr ""
 msgid "Sort out"
 msgstr ""
 
-msgid "Sort review"
-msgstr ""
-
 msgid "Sort the bursts"
 msgstr ""
 
@@ -7199,7 +7180,7 @@ msgid ""
 "'search' finds them."
 msgstr ""
 
-msgid "Take back the choice made here"
+msgid "Take back the choice made here (T)"
 msgstr ""
 
 msgid "Take back the last batch of sure proposals (Shift+Z)"
@@ -7429,9 +7410,6 @@ msgstr ""
 msgid "The classify workbook, edited; the latest classify run's by default."
 msgstr ""
 
-msgid "The classify workbook; the latest classify run's by default."
-msgstr ""
-
 msgid ""
 "The clusters set aside on the map of 'places' (✕: not a place worth a "
 "name), written by the map: every cluster whose middle lies within "
@@ -7551,6 +7529,13 @@ msgstr ""
 msgid ""
 "The events of the Events sheet, in its order: naming the first ones "
 "covers most of the work."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The events of the latest classify run are ready, open {url} in your "
+"browser. Each choice is saved at once in sort-decisions.json. Ctrl+C "
+"stops it."
 msgstr ""
 
 msgid "The face models are not in the cache yet: run 'audit --people' once."
@@ -8278,7 +8263,7 @@ msgstr ""
 
 msgid ""
 "The workbook was edited otherwise since this choice: choose again here, "
-"or press Delete to let the workbook decide."
+"or press T to let the workbook decide."
 msgstr ""
 
 #, python-brace-format
@@ -8461,7 +8446,7 @@ msgstr ""
 msgid "This is the first series."
 msgstr ""
 
-msgid "This is the last event: stop the review with Ctrl+C in the terminal."
+msgid "This is the last event."
 msgstr ""
 
 msgid "This is the last group: stop the review with Ctrl+C in the terminal."
@@ -9774,9 +9759,6 @@ msgstr ""
 msgid "chosen"
 msgstr ""
 
-msgid "chosen here"
-msgstr ""
-
 msgid ""
 "chosen in the review page, then edited otherwise in the workbook, whose "
 "value was carried over"
@@ -10002,9 +9984,6 @@ msgid "every photo"
 msgstr ""
 
 msgid "every photo has GPS"
-msgstr ""
-
-msgid "every photo of the event"
 msgstr ""
 
 msgid "every photo of the group"
@@ -10297,9 +10276,6 @@ msgid "launcher script mh ps1 write again"
 msgstr ""
 
 msgid "launcher: write your folders once"
-msgstr ""
-
-msgid "leave a field; drop the folder typed and not saved"
 msgstr ""
 
 msgid "leave the group alone, then next"
@@ -10615,7 +10591,7 @@ msgstr ""
 msgid "next group to check, undecided"
 msgstr ""
 
-msgid "next or previous event (the ← → buttons of the bar)"
+msgid "next or previous event (its ← → buttons)"
 msgstr ""
 
 msgid "next series still to see"
@@ -11000,9 +10976,6 @@ msgstr ""
 msgid "same streams"
 msgstr ""
 
-msgid "save the folder, then the next event"
-msgstr ""
-
 msgid ""
 "say in 'review --gone' which vanished files you deleted on purpose: they "
 "will be set aside if they come back."
@@ -11128,6 +11101,9 @@ msgid "take back the last batch of sure proposals"
 msgstr ""
 
 msgid "take it back out of the set aside"
+msgstr ""
+
+msgid "take the picked files back out of the set aside"
 msgstr ""
 
 #, python-brace-format
@@ -11933,16 +11909,6 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} entries at its top"
 msgstr ""
-
-#, python-brace-format
-msgid ""
-"{count} event to decide: {sure} with a sure proposal (one click), {look} "
-"to look at."
-msgid_plural ""
-"{count} events to decide: {sure} with a sure proposal (one click), {look}"
-" to look at."
-msgstr[0] ""
-msgstr[1] ""
 
 #, python-brace-format
 msgid ""

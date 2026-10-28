@@ -12,7 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from http import HTTPStatus
 from pathlib import PurePosixPath
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Final, cast
 
 from media_hygiene.errors import DecisionsError, MediaHygieneError
 from media_hygiene.review.http import Response
@@ -28,6 +28,7 @@ if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.review.sort_batch import SortBatchSession
     from media_hygiene.review.sort_cards import PhotoCard
+    from media_hygiene.review.sort_now import Sorter
     from media_hygiene.search.fts import SearchIndex
 
 EVENTS_PAGE_PATH: Final = "/events"
@@ -48,6 +49,10 @@ class EventsDesk:
     chosen: Callable[
         [], frozenset[str]
     ]  # the host paths set aside, marked on the tiles
+    # *Sort this event now*: the sorter of the session; None: the page cannot move.
+    sorter: Callable[[SortBatchSession], Sorter | None] = field(
+        default=lambda _session: None
+    )
     held: list[SortBatchSession] = field(default_factory=list)  # opened once
 
     def state(self) -> Response:
@@ -57,7 +62,7 @@ class EventsDesk:
             `{workbook, decisions, events, progress}`, or `{events: [], missing}`.
         """
         try:
-            session = self._session()
+            session = self.session()
         except MediaHygieneError as exc:
             return json_response(HTTPStatus.OK, {"events": [], "missing": str(exc)})
         state = session.state().model_dump(mode="json")
@@ -75,27 +80,35 @@ class EventsDesk:
             unknown event or no plan.
         """
         try:
-            view = self._session().event(path.removeprefix(f"{EVENTS_PATH}/"))
+            view = self.session().event(path.removeprefix(f"{EVENTS_PATH}/"))
         except DecisionsError, MediaHygieneError:
             return Response(HTTPStatus.NOT_FOUND)
-        found = self._tiles(view.photos)
+        found, shown = self._tiles(view.photos)
+        tiles = found_view(found, self.mapper, self.chosen())
+        hits = cast("list[dict[str, object]]", tiles["hits"])
+        tiles["hits"] = [
+            {**hit, **_facts(photo)} for hit, photo in zip(hits, shown, strict=True)
+        ]
         return json_response(
             HTTPStatus.OK,
             {
                 "card": view.card.model_dump(mode="json"),
-                **found_view(found, self.mapper, self.chosen()),
+                **tiles,
                 "missing": len(view.photos) - found.total,
             },
         )
 
-    def _tiles(self, photos: tuple[PhotoCard, ...]) -> Found:
+    def _tiles(
+        self, photos: tuple[PhotoCard, ...]
+    ) -> tuple[Found, tuple[PhotoCard, ...]]:
         """The photos of an event, found in the index, in the event's order.
 
         Args:
             photos: Its photos.
 
         Returns:
-            Those the index holds, described as a search describes them.
+            Those the index holds, described as a search describes them, and
+            their cards.
         """
         paths = [
             str(PurePosixPath(self.mapper.to_container(photo.folder)) / photo.name)
@@ -109,12 +122,13 @@ class EventsDesk:
             else []
         )
         by_path = {str(row[1]): row for row in rows}
-        hits = tuple(
-            hit_of((None, {}), by_path[path]) for path in paths if path in by_path
-        )
-        return with_facts(self.index, Found(len(hits), hits))
+        held = list(zip(paths, photos, strict=True))
+        held = [(path, photo) for path, photo in held if path in by_path]
+        hits = tuple(hit_of((None, {}), by_path[path]) for path, _photo in held)
+        found = with_facts(self.index, Found(len(hits), hits))
+        return found, tuple(photo for _path, photo in held)
 
-    def _session(self) -> SortBatchSession:
+    def session(self) -> SortBatchSession:
         """The plan's session, opened on the first ask.
 
         Returns:
@@ -123,3 +137,17 @@ class EventsDesk:
         if not self.held:
             self.held.append(self.opener())
         return self.held[0]
+
+
+def _facts(photo: PhotoCard) -> dict[str, object]:
+    """What a tile of an event says of its file's sorting (0438).
+
+    Args:
+        photo: Its card in the plan.
+
+    Returns:
+        Its plan row, host folder and what the plan, the workbook, the page chose.
+    """
+    return photo.model_dump(
+        include={"row", "proposed", "movable", "own", "workbook", "page", "conflict"}
+    ) | {"host": photo.folder}

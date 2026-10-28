@@ -1,4 +1,4 @@
-{# Included in the script of sort_review.html.j2, after the dialog's shared script
+{# Included in the Events view of the search (`search_events.js.j2`, 0438; review-sort's until 0439), after the dialog's shared script
    (`rule_dialog.js.j2`): *Remember as a rule* (0392). The dialog is
    filled from the event shown (its days, the folder typed, its last folder as the name);
    the server says, as the user changes it, what the rule would take on the plan shown;
@@ -27,15 +27,25 @@
     if (!events.length) return;
     const card = events[current];
     ruleTarget = { event: card.id, replaces: "" };
-    const folder = byId("folder").value.trim() || card.category;
-    const name = byId("name").value.trim() || lastFolder(folder) || card.title;
+    const folder = byId("eventFolderIn").value.trim() || card.category;
+    const name = byId("eventNameIn").value.trim() || lastFolder(folder) || card.title;
     ruleFill({ name: name, first: card.first_day, last: card.last_day, category: folder });
-    byId("ruleDlg").showModal();
+    ruleForEvent();
     showRulePreview();
   };
-  ruleOnChange(showRulePreview);
-  byId("ruleOpen").addEventListener("click", openRule);
+  // The search's own dialog (*Make it a rule*, `search_rule.js.j2`), in the event's mode:
+  // its trial, its GO and *Update a rule…* step aside while `ruleEvent` holds.
+  const ruleForEvent = () => {
+    ruleEvent = true;
+    byId("ruleDlg").classList.remove("aside");
+    byId("ruleDlg").classList.add("eventRule");
+    byId("ruleDlg").showModal();
+  };
+  byId("ruleDlg").addEventListener("close", () => { ruleEvent = false; byId("ruleDlg").classList.remove("eventRule"); });
+  ruleOnChange(() => { if (ruleEvent) showRulePreview(); });
+  byId("eventRuleOpen").addEventListener("click", openRule);
   byId("ruleForm").addEventListener("submit", async (event) => {
+    if (!ruleEvent) return;  // a period's rule: the search's own
     event.preventDefault();
     const index = current;
     const sent = await postRule(P.rule);
@@ -48,8 +58,8 @@
     if (byId("rulesDlg").open) showRules();
     setStatus(fill(T.ruleSaved, { name: answer.name, dates: answer.dates, time: new Date(answer.modified).toLocaleTimeString() }), "saved");
     if (index !== current || shown !== current) return;
-    showPhotos(answer.view.photos, true);
-    showEvent(answer.view.card);
+    refresh(true);
+    drawEvent(answer.view.card);
     showTotals();
   });
 
@@ -70,7 +80,7 @@
   const openConvert = (rule) => {
     ruleTarget = { event: rule.event, replaces: rule.name };
     ruleFill(rule);
-    byId("ruleDlg").showModal();
+    ruleForEvent();
     showRulePreview();
   };
   const fillRules = (view) => {

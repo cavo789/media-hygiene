@@ -25,6 +25,7 @@ function offerRule() {
 }
 
 async function tryRule() {
+  if (ruleEvent) return;  // the dialog serves an event of the Events view (0438)
   const asking = ++ruleTrial;
   ruleSay(TEXTS.ruleTrying, false);
   ruleEl("ruleYes").disabled = true;
@@ -186,13 +187,14 @@ ruleEl("ruleUpdate").addEventListener("change", () => {
 });
 ruleOnChange(tryRule);
 $("ruleOpen").addEventListener("click", openRule);
-ruleEl("ruleDlg").addEventListener("close", () => { ruleTrial++; search(null); });
+ruleEl("ruleDlg").addEventListener("close", () => { ruleTrial++; if (!ruleEvent) search(null); });
 // The dialog's keys stay its own: Esc closes it, the grid's keys never fire behind it.
 ruleEl("ruleDlg").addEventListener("keydown", (event) => {
   if (event.key === "Escape") { event.preventDefault(); ruleEl("ruleDlg").close(); }
   event.stopPropagation();
 });
 ruleEl("ruleForm").addEventListener("submit", async (event) => {
+  if (ruleEvent) return;  // `events_rule.js.j2` saves an event's rule
   event.preventDefault();
   const sent = await rulePost(RULE_SAVE_PATH, { ...ruleValues(), replaces: ruleReplaces });
   if (!sent) { ruleSay(TEXTS.offline, true); return; }

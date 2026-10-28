@@ -30,7 +30,7 @@ media-hygiene**, the day the tool is gone:
 says its year. The month is that of the event's **start**, `00` when only the year is known.
 The tool writes **no word of its own** in the tree: only digits and the names you typed.
 **A file moves once, to its real place**: what is not decided stays where it is until you decide
-(in [`review-sort`](../commands/review-sort.md) or [`search`](../commands/search.md)).
+(in [`review-sort`](../commands/search.md#the-events-of-the-latest-classify) or [`search`](../commands/search.md)).
 
 > 💡 A `config.toml` written by an older version sorts otherwise (`{year}/{category}`, *To check*
 > and *To sort* folders): `classify` says so in one line, and `mh config --convention` shows the

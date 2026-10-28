@@ -6,10 +6,13 @@ import asyncio
 import json
 from typing import TYPE_CHECKING
 
-from media_hygiene.classify.page_decisions import read_page_decisions
-from media_hygiene.classify.plan_file import ClassifyPlan
-from media_hygiene.review.http import Request
-from tests.support.sort_review import PAGE, call, classified, first_event, reopened
+from tests.support.sort_review import (
+    call,
+    classified,
+    first_event,
+    reopened,
+    saved_choices,
+)
 from tests.support.sorting import EVENT_NAME, PARTY, sort
 
 if TYPE_CHECKING:
@@ -21,18 +24,16 @@ if TYPE_CHECKING:
 PARTY_SHOTS = 6
 
 
-def test_the_state_an_event_its_previews_and_a_choice(locations: Locations) -> None:
+def test_the_state_an_event_and_a_choice(locations: Locations) -> None:
     """One event to decide; named here, it is saved with the workbook's value seen."""
     runtime, workbook = classified(locations)
     app = reopened(runtime)
 
     async def browse() -> dict[str, Response]:
-        event, rows = await first_event(app)
+        event, _rows = await first_event(app)
         return {
             "state": await call(app, "GET /api/state"),
             "event": await call(app, f"GET /api/event/{event}"),
-            "thumb": await call(app, f"GET /thumb/{rows[0]}.jpg"),
-            "large": await call(app, f"GET /preview/{rows[0]}.jpg"),
             "chosen": await call(
                 app, "POST /api/event", {"event": event, "name": EVENT_NAME}
             ),
@@ -46,14 +47,8 @@ def test_the_state_an_event_its_previews_and_a_choice(locations: Locations) -> N
     assert card["page"] is None
     assert not card["workbook"]["text"]
     assert len(json.loads(seen["event"].body)["photos"]) == PARTY_SHOTS
-    assert seen["thumb"].body.startswith(b"\xff\xd8")
-    assert seen["thumb"].cacheable
-    assert len(seen["large"].body) > len(seen["thumb"].body)
     assert json.loads(seen["chosen"].body)["card"]["page"]["name"] == EVENT_NAME
-    plan = ClassifyPlan.model_validate_json(
-        workbook.with_name("plan.json").read_text("utf-8")
-    )
-    saved = read_page_decisions(workbook.with_name("sort-decisions.json"), plan.plan_id)
+    saved = saved_choices(workbook)
     [event] = saved.events
     assert (event.value.name, event.base.empty) == (EVENT_NAME, True)
     result = sort(runtime)
@@ -101,16 +96,8 @@ def test_refusals_never_save_anything(locations: Locations) -> None:
             ("POST /api/forget", {"event": event, "extra": 1}),
         ]
         statuses = [(await call(app, *request)).status for request in bodies]
-        assert (await call(app, "GET /")).body == PAGE
-        others = [
-            await call(app, "GET /api/event/nope"),
-            await call(app, "GET /thumb/nope.jpg"),
-            await call(app, f"GET /thumb/{rows[0]}.png"),
-            await call(app, "PUT /api/event"),
-            await app.handle(Request("POST", "/api/event", {"host": "127.0.0.1"})),
-            await app.handle(Request("GET", "/", {"host": "evil.example"})),
-        ]
+        others = [await call(app, "GET /api/event/nope")]
         return statuses + [response.status for response in others]
 
-    assert asyncio.run(refused()) == [422] * 7 + [404, 404, 404, 405, 415, 403]
+    assert asyncio.run(refused()) == [422] * 7 + [404]
     assert not workbook.with_name("sort-decisions.json").exists()

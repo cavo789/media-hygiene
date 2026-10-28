@@ -131,7 +131,7 @@ opened the page:
   `mh` runs, paste the command there (right click) and press Enter. When the browser refuses to
   copy (an address other than `127.0.0.1` or `localhost`), the command is selected: press Ctrl+C.
 
-Every other page ([`review`](review.md), [`review-sort`](review-sort.md),
+Every other page ([`review`](review.md), [`review-sort`](search.md#the-events-of-the-latest-classify),
 [`places`](places.md), [`search`](search.md), [`browse`](browse.md), [`people`](people.md))
 wears the home page's look and theme, under a bar: **Documentation** opens that page's chapter,
 next to its French twin (*En français*). When the home page opened it, the page shows in the

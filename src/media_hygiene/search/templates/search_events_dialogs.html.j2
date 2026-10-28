@@ -1,0 +1,32 @@
+{# The dialogs of the *🗂 Events* view (0438), review-sort's: the sure proposals accepted
+   at once, *Check, then sort*, *Your rules*, the photos sent to another folder. #}
+<datalist id="categories"></datalist>
+<dialog id="sureDlg" aria-labelledby="sureAsk">
+  <p id="sureAsk"></p>
+  <ol id="sureList"></ol>
+  <menu><button type="button" id="sureNo" class="plain"></button><button type="button" id="sureYes"></button></menu>
+</dialog>
+<dialog id="goDlg" aria-labelledby="goTitle">
+  <h2 id="goTitle">{{ _("Check, then sort") }}</h2>
+  <p class="muted">{{ _("Where the files of this event go, as 'sort' will move them:") }}</p>
+  <ul id="goList"></ul>
+  <p class="muted">{{ _("Moved at once, journaled: 'undo' puts them back. The other events are left for later.") }}</p>
+  <menu><button type="button" id="goNo" class="plain">{{ _("Cancel") }}</button><button type="button" id="goYes"></button></menu>
+</dialog>
+<dialog id="rulesDlg" aria-labelledby="rulesTitle">
+  <h2 id="rulesTitle">📌 {{ _("Your rules") }}</h2>
+  <p id="rulesRun" class="muted"></p>
+  <p class="muted">{{ _("Shown by kind and date, the latest first; config.toml keeps its own order, which decides. Click Rule or Files to sort by it, again to reverse.") }}</p>
+  <p id="rulesSaid" role="status"></p>
+  <table id="rulesTable">
+    <thead><tr><th><button type="button" class="sortBy plain" data-by="name">{{ _("Rule") }}</button></th><th>{{ _("Match") }}</th><th><button type="button" class="sortBy plain" data-by="files">{{ _("Files") }}</button></th><th>{{ _("Days") }}</th><th></th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <menu><button type="button" id="rulesRemoveAll" class="plain" hidden></button><button type="button" id="rulesClose">{{ _("Close") }}</button></menu>
+</dialog>
+<dialog id="sendDlg">
+  <form id="send" method="dialog" autocomplete="off">
+    <label><span id="send-label"></span><input id="send-category" list="categories"></label>
+    <menu><button type="button" id="sendNo" class="plain">{{ _("Cancel") }}</button><button type="submit">{{ _("Send") }}</button></menu>
+  </form>
+</dialog>

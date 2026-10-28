@@ -342,7 +342,7 @@ Each command of the sort, and the step of this page that shows it:
 | Command | Step | What it does |
 |---|---|---|
 | [`classify`](../commands/classify.md) | 1, 4, 7, 8 | Proposes a place for each file, without modifying anything; 🤖 the `subject` rule and `--sample` need a local AI. |
-| [`review-sort`](../commands/review-sort.md) | 3 | Names the events in the browser. |
+| [`review-sort`](../commands/search.md#the-events-of-the-latest-classify) | 3 | Names the events in the browser. |
 | [`places`](../commands/places.md) | 5 | Names your places on a map. |
 | [`people`](../commands/people.md) | 6 | Finds and names the faces; `--forget` deletes them. |
 | [`sort`](../commands/sort.md) | 9 | Moves the files as the workbook says. |

@@ -152,14 +152,7 @@
   article.leftHere img { opacity: .45; } article.leftHere .goes { color: var(--muted); text-decoration: line-through; }
 {% include "rule_dialog.css.j2" %}
 {% include "folder_tree.css.j2" %}
-  #events summary { cursor: pointer; margin: 8px 0 4px; }
-  #events label.filter { flex-direction: row; gap: 4px; align-items: center; }
-  #eventList { list-style: none; margin: 4px 0; padding: 0; max-height: 50vh; overflow: auto; }
-  #eventList button { width: 100%; text-align: left; overflow-wrap: anywhere; }
-  #eventList button.open { border-color: var(--accent); }
-  #eventList .conflict { color: var(--bad); }
-  #eventCard { margin: 4px 0; padding: 6px; border: 1px solid var(--line); border-radius: 8px; }
-  #eventCard dt { color: var(--muted); } #eventCard dd { margin: 0 0 4px; overflow-wrap: anywhere; }
+{% include "search_events.css.j2" %}
   #folders summary { cursor: pointer; margin: 8px 0 4px; }
   #withinLine { display: flex; gap: 6px; align-items: baseline; overflow-wrap: anywhere; }
   #withinLine[hidden] { display: none; }
@@ -226,6 +219,7 @@
 {% endblock %}
 {% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
 {% block more_keys %}{% include "pick_keys_more.html.j2" %}
+{% include "search_events_keys.html.j2" %}
     <dt><kbd>W</kbd></dt><dd>{{ _("opened: why this person's name (the face, its reference)") }}</dd>
 {% endblock %}
 {% block bar %}
@@ -245,6 +239,7 @@
 {% include "pick_viewer.html.j2" %}
 {% include "rule_dialog.html.j2" %}
 {% include "move_dialog.html.j2" %}
+{% include "search_events_dialogs.html.j2" %}
 <div id="why" role="dialog" aria-modal="true" aria-labelledby="whyTitle" hidden>
   <div class="box">
     <h2 id="whyTitle"></h2>
