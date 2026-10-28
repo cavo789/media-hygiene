@@ -67,7 +67,7 @@ Un moment de votre vie vu par vos photos (une kermesse, un week-end à la mer, u
 `classify` réunit les photos et vidéos prises sans pause de plus de 6 heures, d'un dossier ou d'un
 téléphone à l'autre. Le nom que vous lui donnez devient son dossier quand `sort` range la
 collection.
-[`review-sort` : à quoi ça sert](commands/review-sort.md#à-quoi-ça-sert)
+[`review-sort` : à quoi ça sert](commands/search.md#les-événements-du-dernier-classify)
 
 ### Exécution
 

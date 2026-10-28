@@ -28,8 +28,7 @@ function card(hit, index) {
   picture.addEventListener("error", () => picture.replaceWith(element("div", "empty", TEXTS.noPreview)));
   const meta = element("div", "meta");
   meta.append(element("div", "name", hit.name), element("div", "muted folderLine", hit.folder));
-  const when = [hit.date, hit.size].filter(Boolean).join(" · ");  // as the folder view says it
-  if (when) meta.append(element("div", "muted", when));
+  meta.append(takenLine(hit));  // which date it is (0433)
   if (hit.facts) meta.append(element("div", "muted", hit.facts));  // a video (0408)
   if (hit.to !== undefined) { // a rule tried (0396): where the file would go
     const goes = hit.left ? TEXTS.leftHere : hit.taken ? fill(TEXTS.goesTo, { folder: hit.to || TEXTS.stays })
@@ -38,10 +37,20 @@ function card(hit, index) {
     if (!hit.taken) node.classList.add("notTaken");
     if (hit.left) node.classList.add("leftHere");
   }
+  if (hit.row !== undefined && eventTile) eventTile(hit, meta, node);  // an event's (0438)
   if (hit.caption) meta.append(element("div", "muted caption", hit.caption));
   meta.append(chipsOf(hit));
-  node.append(picture, meta);
+  node.append(withLength(hit, picture), meta);
   return wireCard(node, index);
+}
+
+// The day taken (EXIF, what the search finds by), its time and the file's modified
+// day in the tooltip: a modified day Explorer shows is not the one searched (0433).
+function takenLine(hit) {
+  const line = element("div", "muted", [hit.date ? "📷 " + hit.date : TEXTS.noTaken, hit.size].filter(Boolean).join(" · "));
+  line.title = hit.date ? fill(TEXTS.takenTip, { taken: hit.taken || hit.date })
+    + (hit.modified && hit.modified !== hit.date ? fill(TEXTS.modifiedTip, { day: hit.modified }) : "") : TEXTS.noTakenTip;
+  return line;
 }
 
 // The words of a file as chips: a click searches the word; a person's has a × too.
@@ -204,7 +213,7 @@ function scope() {
 }
 
 function reopen(again) {
-  return search(null, again);
+  return eventShown ? showEvent(eventShown, again) : search(null, again);  // an event (0437)
 }
 
 // What the index can be found by (0344, 0346): the line under the field when the photos are

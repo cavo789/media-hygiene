@@ -98,6 +98,20 @@ régulière invalide est signalée sous le champ.
   les vidéos seulement. La recherche trie et filtre avant de montrer ses premiers fichiers :
   *Afficher : vidéos*, *Trier par : taille* donne les plus grosses vidéos trouvées. Chaque vignette
   dit sa date et sa taille.
+- **Quelle date** : `📷 2023-07-14` est le jour où la photo a été **prise**, écrit dans la photo
+  elle-même (EXIF *DateTimeOriginal* ; la date d'enregistrement d'une vidéo) : c'est elle que
+  *Du*, *Au* et les années trouvent. Ce n'est pas la *Date de modification* que l'Explorateur
+  Windows montre par défaut : pointez la date pour voir les deux, avec l'heure de la prise.
+  L'Explorateur montre la date de prise dans **Propriétés › Détails › Prise de vue** du fichier,
+  ou en colonne *Prise de vue* (clic droit sur les en-têtes de colonnes). Un fichier qui ne la
+  dit pas (un scan, une capture d'écran) affiche *pas de date de prise* : une recherche par date
+  ne le trouve pas.
+- **L'EXIF de la photo** : dans la grande vue, **I** liste ce que la photo dit d'elle-même :
+  quand elle a été prise, l'appareil, l'objectif, l'exposition, sa taille en pixels et sa
+  position GPS. En lecture seule : la photo n'est jamais modifiée.
+- **La durée d'une vidéo** est dans le coin de son aperçu, comme sur les sites de vidéos :
+  `▶ 1:45`. Sous 3 secondes, le badge est rouge : un clip si court vaut rarement d'être gardé (le
+  mettre de côté reste votre choix).
 - **Triées** : *toutes les photos*, *pas encore triées* ou *triées (année, puis année-mois)*, lu
   dans les dossiers seuls ([la convention](../sort/04-classify.md#la-convention--année-mois-événement)) :
   une photo dans `2009\2009-11\…` est triée, où que soit cette paire de dossiers et quoi qui l'y
@@ -106,6 +120,39 @@ régulière invalide est signalée sous le champ.
 
 Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers
 fichiers en tableau.
+
+## Les événements du dernier classify
+
+**🗂 Événements du dernier classify**, sous les dossiers de la colonne de gauche, liste les
+événements du dernier plan de [`classify`](classify.md) (elle a repris `review-sort`, qui ne fait
+plus que l'ouvrir) : la ligne de progression (triés, déjà en place, restants) et les passages de
+`sort` de ce plan, chacun avec sa ligne d'annulation ; les trois filtres (*Seulement les
+événements à décider*, *Seulement les propositions sûres*, *Seulement les événements pas encore
+triés*) ; ✓ sur un événement déjà trié, ⚠ sur celui dont le classeur a changé un choix antérieur
+depuis. Cliquez un événement : sa fiche s'affiche au-dessus de la liste, ses photos dans la
+grille, chaque vignette disant où `sort` la mettra (*C:\Photos → 2016\2016-07\Fête*). L'adresse
+`/events` (et `mh review-sort`) ouvre la page, liste ouverte.
+
+Choisissez au clavier, comme dans l'ancienne page ; chaque choix est **enregistré aussitôt** dans
+`sort-decisions.json` à côté du plan, relu sur le disque, avec ce que disait le classeur au moment
+du choix (une modification ultérieure du même événement dans le classeur est un conflit, montré
+en rouge, jamais tranché en silence). Le classeur lui-même n'est jamais modifié.
+
+| Touche | Ce qu'elle fait |
+|---|---|
+| **F**, puis **Entrée** | taper le dossier de l'événement, l'enregistrer, puis l'événement suivant à décider |
+| **E** | changer le nom de l'événement (par défaut, le dernier dossier) |
+| **N** / **P**, **U** | événement suivant ou précédent, suivant à décider |
+| **O** / **S** | les photos choisies : vers un autre dossier, ou laissées où elles sont |
+| **Maj+S** | laisser tout l'événement où il est |
+| **T** | reprendre le choix fait ici (des photos choisies, sinon de l'événement) |
+| **V**, **Maj+Z** | accepter d'un coup toutes les propositions sûres, reprendre ce lot |
+| **R** | *Retenir comme règle* : les jours et le dossier de l'événement écrits dans `config.toml` |
+| **M** | *Trier cet événement maintenant* : où va chaque fichier, puis un seul GO ; journalisé, `undo` le remet |
+| **Suppr**, **⌫** | mettre de côté les photos choisies, les en sortir (comme sur toute page de photos) |
+
+**📌 Vos règles** liste chaque règle de `config.toml` avec les fichiers qu'elle a décidés :
+retirez celles qui ne décident rien, changez une règle de nom de dossier en dates.
 
 ## Déplacer des photos vers un événement, sans règle
 
@@ -131,7 +178,7 @@ prochain `classify` les trouve à leur place.
 ## Faire d'une période une règle
 
 Une fois une période cherchée, **📌 En faire une règle** ouvre, à côté de la grille, la boîte de
-*Retenir comme règle* de [`review-sort`](review-sort.md), remplie avec la période : tapez son nom
+*Retenir comme règle* de [`review-sort`](#les-événements-du-dernier-classify), remplie avec la période : tapez son nom
 et son dossier (*Garder mes dossiers en dessous* est coché). Pendant que vous tapez, la grille montre
 **les photos que la règle prendrait, chacune avec l'endroit où elle irait**
 (*→ 2017\Fêtes\Mariages\Mariage d'Hervé et Magda*), calculé par le moteur de `classify` avec vos

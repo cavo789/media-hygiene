@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.review.apply_api import ApplyDesk
     from media_hygiene.search.chosen_api import ChosenDesk
+    from media_hygiene.search.events_desk import EventsDesk
     from media_hygiene.search.folders import FolderDesk
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.search.people_desk import PeopleDesk
@@ -33,3 +34,4 @@ class SearchPlace:  # pylint: disable=too-many-instance-attributes
     albums: AlbumDesk  # the albums, never the files set aside
     names: PeopleDesk  # a name taken off a photo (its cross), put back
     rules: RuleDesk  # *Make it a rule* of a period (0396)
+    events: EventsDesk | None = None  # the *🗂 Events* view (0437)

@@ -8,15 +8,12 @@ import pytest
 
 from media_hygiene.review.place import DecisionsPlace
 from media_hygiene.services.review_file import review_page
-from media_hygiene.services.sort_reviewing import open_sort_review, sort_page
 from tests.support.pick_pages import PICK_PARTS
 from tests.support.search_page import serve_search
-from tests.support.sort_review import classified
 
 if TYPE_CHECKING:
     from typer.testing import CliRunner
 
-    from media_hygiene.paths.locations import Locations
 
 # The shared parts, as each one shows in the page served (review/templates/pick_*).
 _SHARED = (
@@ -80,24 +77,21 @@ def test_a_search_sent_hands_the_keys_to_the_grid(
     assert "function scope() {\n  return asked;" in search
 
 
-def test_the_sort_review_is_built_from_the_same_parts(locations: Locations) -> None:
-    """0389: review-sort's photos are the shared grid; no Delete to set aside there."""
-    runtime, _workbook = classified(locations)
-    page = sort_page(open_sort_review(runtime, None))
+def test_the_events_view_is_part_of_the_search_page(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0438: review-sort's choices in the search's Events view, the grid shared once."""
+    search, _browse = _pages(cli, monkeypatch)
     for part in PICK_PARTS:
-        assert page.count(part) == 1, part
-    assert page.count('"use strict";') == 1
-    top = page.split('<header id="bar">')[1].split("</header>")[0]
-    assert (
-        top.index('id="prevEvent"')
-        < top.index('id="position"')
-        < top.index('id="nextEvent"')
-    )
-    assert 'id="invert"' in top
-    keys = page.split('id="keys"')[1].split("</section>")[0]
-    assert "every photo of the event" in keys  # Ctrl+A
-    assert "set the picked files aside" not in keys  # Delete takes back a choice here
-    assert 'id="zoom"' not in page  # the large view replaced Z
+        assert search.count(part) == 1, part
+    side = search.split('<aside id="side">')[1].split("</aside>")[0]
+    for wanted in ('id="eventChoice"', 'id="eventFolderIn"', 'id="sortNow"'):
+        assert wanted in side
+    keys = search.split('id="keys"')[1].split("</section>")[0]
+    assert "set the picked files aside" in keys  # Delete sets aside here too
+    assert "take back the choice made here" in keys  # T
+    assert "/api/sort/forget" in search
+    assert "deleteKeySets = false" not in search
 
 
 def _review(template: str) -> str:

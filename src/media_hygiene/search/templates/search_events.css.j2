@@ -1,0 +1,37 @@
+  /* *🗂 Events* (0437, 0438): the list, the event's card and its choices, the dialogs. */
+  #events summary { cursor: pointer; margin: 8px 0 4px; }
+  #events label.filter { flex-direction: row; gap: 4px; align-items: center; }
+  #eventList { list-style: none; margin: 4px 0; padding: 0; max-height: 40vh; overflow: auto; }
+  #eventList button { width: 100%; text-align: left; overflow-wrap: anywhere; }
+  #eventList button.open { border-color: var(--accent); }
+  .conflict, #eventList .conflict { color: var(--bad); font-weight: 600; }
+  #eventCard { margin: 4px 0; padding: 6px; border: 1px solid var(--line); border-radius: 8px; }
+  #eventCard[hidden], #events button[hidden], #runs[hidden] { display: none; }
+  #eventCard h3 { margin: 4px 0; font-size: 1.05rem; overflow-wrap: anywhere; }
+  #eventFacts dt { font-weight: 600; float: left; margin-right: 6px; } #eventFacts dd { margin: 0 0 2px; overflow-wrap: anywhere; }
+  #eventNav { display: flex; gap: 6px; align-items: center; margin: 0; }
+  #eventChoice { display: flex; flex-direction: column; gap: 4px; }
+  #eventChoice .path { display: flex; align-items: center; gap: 2px; } #eventChoice .path input { flex: 1; }
+  #eventNaming summary { cursor: pointer; color: var(--muted); font-size: .85rem; }
+  #destination { overflow-wrap: anywhere; font-size: .85rem; } #destination.error { color: var(--bad); }
+  .eventButtons { display: flex; flex-wrap: wrap; gap: 4px; }
+  .dirty { color: var(--warn, var(--bad)); font-weight: 600; }
+  #sure:not(:disabled) { font-weight: 600; }
+  .file .meta .proposed { color: var(--muted); overflow-wrap: anywhere; }
+  .file.conflicting { border-color: var(--bad); }
+  #runList { margin: 4px 0; padding-left: 1.2rem; font-size: .85rem; } #runList li { overflow-wrap: anywhere; } #runList .undone { color: var(--muted); text-decoration: line-through; }
+  dialog { max-width: min(56rem, 94vw); color: var(--text); background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
+  dialog::backdrop { background: rgb(0 0 0 / 50%); }
+  dialog menu { display: flex; gap: 8px; justify-content: end; padding: 0; }
+  #sureDlg ol { max-height: 55vh; overflow: auto; padding-left: 1.6rem; } #sureDlg li { margin: 2px 0; overflow-wrap: anywhere; }
+  #sureDlg li button { border: 0; padding: 0; color: var(--accent); background: none; text-decoration: underline; }
+  #sendDlg label { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; color: var(--text); } #sendDlg input { min-width: 24rem; }
+  #rulesSaid.error { color: var(--bad); } #rulesSaid.saved { color: var(--ok); }
+  #rulesDlg { width: min(60rem, 94vw); } #rulesDlg table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  #rulesDlg tbody { display: block; max-height: 55vh; overflow: auto; } #rulesDlg thead, #rulesDlg tbody tr { display: table; width: 100%; table-layout: fixed; }
+  #rulesDlg td, #rulesDlg th { padding: 3px 6px; text-align: left; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+  #rulesDlg tr.dead td:nth-child(3) { color: var(--bad); font-weight: 600; }
+  #rulesDlg tr.group th { padding-top: 10px; color: var(--accent); }
+  #rulesDlg .sortBy { padding: 0; border: 0; font: inherit; font-weight: 600; background: none; color: inherit; cursor: pointer; }
+  #goList { max-height: 50vh; overflow: auto; padding-left: 1.2rem; } #goList li { overflow-wrap: anywhere; margin: 2px 0; }
+  #ruleDlg.eventRule .ruleGo, #ruleDlg.eventRule #ruleSources, #ruleDlg.eventRule label:has(#ruleUpdate) { display: none; }

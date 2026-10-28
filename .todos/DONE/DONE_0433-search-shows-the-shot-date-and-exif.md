@@ -30,3 +30,12 @@ where (Properties › Details › *Date taken*, or the *Date taken* column).
 
 - Editing EXIF (never: photos are only read).
 - A search by modified date.
+
+## Status — DONE (2026-10-28)
+
+- Tile: `📷 <day taken>`; tooltip "taken <date time> (EXIF…) · file modified <day> (the date
+  Explorer shows)" when the days differ; *no date taken* with its reason otherwise (`media_date`
+  is EXIF `taken_at`, else the video's recording date: no file-date fallback).
+- Large view, key I: the EXIF lines (`search/exif_facts.py`) for every page whose files carry
+  `exif` (shared `pick_viewer.js.j2`). GPS shown as coordinates, not a place name.
+- Docs en+fr (`commands/search.md`, *Which date*, *The photo's EXIF*). `docs_screenshots` should run.

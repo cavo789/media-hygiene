@@ -14,3 +14,14 @@ catalog entry and nav go. An existing `sort-decisions.json` keeps working.
 ## Explicit NON-goals
 
 - The browse templates (0440).
+
+## Status — DONE (2026-10-28)
+
+- `mh review-sort` opens search at `/events` with a one-line notice (goes next version); its
+  `workbook` argument went (the view reads the latest classify run). Removed: `review/sort_app.py`,
+  `sort_review.html.j2`, `sort_page`/`serve_sort_review`. The session/choice modules stay (the
+  view uses them). Tests run against the search routes (`tests/support/sort_review.EventsPage`).
+- Docs: `commands/review-sort.md` reduced to the notice + help (the docs tests require a page per
+  verb while it exists); every link points to `search.md`'s Events section; the menu step's doc
+  link too. The catalog step and nav stay until the verb goes.
+- `docs_screenshots` must run (review-sort help, search page).

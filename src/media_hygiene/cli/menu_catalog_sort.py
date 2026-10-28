@@ -46,7 +46,7 @@ def sort_steps() -> tuple[Step, ...]:
             Kind.PAGE,
             icon="calendar",
             keywords=_("events name parties holidays"),
-            doc=Doc("commands/review-sort/"),
+            doc=Doc("commands/search/"),
             optional=True,
         ),
         Step(

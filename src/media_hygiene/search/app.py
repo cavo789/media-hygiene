@@ -1,14 +1,10 @@
-"""The routes of the search page and the folder view, one server.
+"""The routes of the search page, one server.
 
-`GET /` serves the page the command opens (`/search` or `/browse`). `POST /api/search`
-answers the files matching the words and filters sent in JSON, `/thumb/<key>.jpg` a
-small preview (in the cache), `/preview/<key>.jpg` a large one, `/original/<key>.<ext>`
-the file untouched. `/api/chosen`: what is set aside (the decisions file of the
-reports, `chosen_api`); `/api/albums` the albums (`share.album_api`); `/api/apply` ends
-the page on the home page's step that applies them (`apply_api`). The folder view asks
-for its tree, folders, heaviest files and videos (`folders`); `/api/period-…` try,
-write and sort the rule of a period (`rule_desk`, `rule_go`, 0396, 0397). Like `review`
-and `places`: loopback hosts only, JSON bodies only, from the page's own origin.
+`GET /` serves the page the command opens (`/search`, `/browse`, `/events`); `POST
+/api/search` the files matching the words and filters, `/thumb/`, `/preview/`,
+`/original/` the pictures. `/api/chosen`: what is set aside; `/api/albums`; `/api/apply`
+ends on the home step applying them; folders, period rules, the Events view and its
+choices (`events_choose`). Loopback hosts only, JSON bodies only, the page's origin.
 """
 
 from __future__ import annotations
@@ -26,6 +22,8 @@ from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_respons
 from media_hygiene.search.asked import read_asked
 from media_hygiene.search.chosen_api import CHOSEN_PATH
 from media_hygiene.search.coverage import CoverageKept
+from media_hygiene.search.events_choose import SORT_POSTS, events_get, sort_post
+from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
 from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS, FOLDERS_PATH
 from media_hygiene.search.hits import with_facts
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH
@@ -53,10 +51,9 @@ if TYPE_CHECKING:
 PAGE_PATH: Final = "/"
 SEARCH_PAGE_PATH: Final = "/search"
 SEARCH_PATH: Final = "/api/search"
-# The page shows this many files at most; the total says how many match.
 _GET, _POST = "GET", "POST"
 _POSTED: Final = frozenset({SEARCH_PATH, CHOSEN_PATH, *FOLDER_POSTS, APPLY_PATH})
-_POSTED_TOO: Final = frozenset({ALBUMS_PATH, PEOPLE_REJECT_PATH, PEOPLE_WHY_PATH})
+_POSTED_TOO: Final = SORT_POSTS | {ALBUMS_PATH, PEOPLE_REJECT_PATH, PEOPLE_WHY_PATH}
 
 
 @dataclass(frozen=True, slots=True)
@@ -125,8 +122,12 @@ class SearchApp:
             return await self.place.apply.answer()
         if request.path == ALBUMS_PATH:
             return await self.place.albums.answer(request.body)
-        if request.path in GO_PATHS:
-            return await go_answer(self.place.rules, request.path, request.body)
+        if request.path in GO_PATHS | SORT_POSTS:  # a rule's GO, the Events (0438)
+            return await (
+                sort_post(self.place.events, request)
+                if request.path in SORT_POSTS
+                else go_answer(self.place.rules, request.path, request.body)
+            )
         answers: dict[str, Callable[[bytes], Response]] = {
             CHOSEN_PATH: self.place.chosen.answer,
             PEOPLE_REJECT_PATH: self.place.names.answer,
@@ -151,7 +152,7 @@ class SearchApp:
         """
         path = self.pages.first if request.path == PAGE_PATH else request.path
         # One page (0408): `/browse` is the search, folders open; videos: `media-src`.
-        if path in {SEARCH_PAGE_PATH, BROWSE_PATH}:
+        if path in {SEARCH_PAGE_PATH, BROWSE_PATH, EVENTS_PAGE_PATH}:
             return Response(
                 HTTPStatus.OK, self.pages.search, ContentType.HTML, policy=NEAR_POLICY
             )
@@ -163,6 +164,9 @@ class SearchApp:
         }
         if path in states:
             return states[path]()
+        events = events_get(self.place.events, path)
+        if events is not None:  # the Events view (0437, 0438)
+            return events
         if path.startswith(FACE_CROP_PREFIX):
             return await crop_answer(self.place.names, path, self.executor)
         pictures = Pictures(self.place.index, self.place.previews, self.executor)

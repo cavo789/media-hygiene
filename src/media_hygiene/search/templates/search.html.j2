@@ -16,6 +16,15 @@
   "offline": _("The search is not running any more: start it again."),
   "failed": _("The search failed (error {status})."),
   "noPreview": _("No preview"),
+  "noTaken": _("no date taken"),
+  "progressLine": _("Sorted: {events} events, {files} files ({share}) · already in place: {inPlace} files · left: {leftEvents} events, {leftFiles} files to move"),
+  "eventFiles": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
+  "eventMissing": _("{n} of its files are not in the index: run audit on their folder."),
+  "eventsNone": _("No event matches these filters."),
+  "eventsLoading": _("Reading the latest classify plan…"),
+  "noTakenTip": _("The file does not say when it was taken (a scan, a screenshot): a search by date does not find it."),
+  "takenTip": _("taken {taken} (EXIF: what the search finds by)"),
+  "modifiedTip": _(" · file modified {day} (the date Explorer shows)"),
   "picked": [ngettext("{n} file picked", "{n} files picked", 1), ngettext("{n} file picked", "{n} files picked", 2)],
   "allFound": _("Pick all {total} files found"),
   "allPicked": _("All {total} files found are picked"),
@@ -143,6 +152,7 @@
   article.leftHere img { opacity: .45; } article.leftHere .goes { color: var(--muted); text-decoration: line-through; }
 {% include "rule_dialog.css.j2" %}
 {% include "folder_tree.css.j2" %}
+{% include "search_events.css.j2" %}
   #folders summary { cursor: pointer; margin: 8px 0 4px; }
   #withinLine { display: flex; gap: 6px; align-items: baseline; overflow-wrap: anywhere; }
   #withinLine[hidden] { display: none; }
@@ -185,6 +195,7 @@
       <summary>📁 {{ _("In a folder") }}</summary>
       <div id="tree" aria-label="{{ _('Your folders') }}"></div>
     </details>
+    {% include "search_events.html.j2" %}
     <button type="button" id="ruleOpen" class="plain" hidden title="{{ _('Write this period down as a date rule of config.toml, after seeing the photos it would take and where each one would go') }}">📌 {{ _("Make it a rule") }}</button>
     <p id="coverage" role="status" hidden></p>
     <details id="syntax">
@@ -208,6 +219,7 @@
 {% endblock %}
 {% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
 {% block more_keys %}{% include "pick_keys_more.html.j2" %}
+{% include "search_events_keys.html.j2" %}
     <dt><kbd>W</kbd></dt><dd>{{ _("opened: why this person's name (the face, its reference)") }}</dd>
 {% endblock %}
 {% block bar %}
@@ -227,6 +239,7 @@
 {% include "pick_viewer.html.j2" %}
 {% include "rule_dialog.html.j2" %}
 {% include "move_dialog.html.j2" %}
+{% include "search_events_dialogs.html.j2" %}
 <div id="why" role="dialog" aria-modal="true" aria-labelledby="whyTitle" hidden>
   <div class="box">
     <h2 id="whyTitle"></h2>
@@ -245,5 +258,6 @@
 {% include "rule_dialog.js.j2" %}
 {% include "move_dialog.js.j2" %}
 {% include "search_rule.js.j2" %}
+{% include "search_events.js.j2" %}
 </script>
 {% endblock %}

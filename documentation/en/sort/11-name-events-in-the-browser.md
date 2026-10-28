@@ -6,7 +6,7 @@
 school fair, a weekend), gathered by `classify` from one folder or phone to another. Its name
 becomes **the folder where `sort` puts all its photos**: named `Kermesse`, it goes to
 `2016/2016-07/Kermesse`; without a name, its files stay where they are. What moves on the disk, name or
-category: [`review-sort`, what it is for](../commands/review-sort.md#what-it-is-for).
+category: [`review-sort`, what it is for](../commands/search.md#the-events-of-the-latest-classify).
 
 The workbook of [step 5](05-review-the-proposal.md) is good for renaming in bulk, not for
 *looking* at photos: naming an event means reading the report in one window and typing in the

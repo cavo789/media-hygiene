@@ -1,0 +1,225 @@
+{# *🗂 Events* (0437, 0438): the latest classify plan's events, read once when opened (or
+   at `/events`, which `mh review-sort` opens); one clicked shows its card and its photos
+   in the grid, the search's own tiles with where each one goes. The choices are
+   review-sort's (`events_choice`, `events_sure`, `events_rule`, `events_progress`),
+   posted to `/api/sort/…`: each one saved at once in sort-decisions.json and read back,
+   then the event's tiles asked again. Delete sets aside as on every tile page,
+   Backspace takes the picked files back out; T takes back a choice made here. #}
+{% include "search_events_texts.js.j2" %}
+const EVENTS_PATH = {{ events_path | tojson }};
+let eventShown = null; // the event whose photos the grid shows
+let eventTile = null;  // (hit, meta, node): a tile of an event says where it goes
+let ruleEvent = false; // the rule dialog serves an event, not a period (`events_rule`)
+let showEvent = null;  // (id, again): an event shown, its tiles asked again
+
+(() => {
+  const T = ET;
+  const P = {{ sort_paths | tojson }};
+  const byId = $;
+  const line = (tag, text, css) => element(tag, css || "", text);
+  let events = [];
+  let current = -1;  // the event shown, in `events` (the grid's frame is the cards' .current)
+  let photoOf = {};  // the tiles of the event shown, by key: its plan row, its host folder
+  const setStatus = (text, kind) => {
+    byId("chosen").textContent = text;
+    byId("chosen").title = text;
+    byId("chosen").className = kind || "";
+  };
+  const isOpen = (card) => card.undecided > 0 && !card.page && !card.workbook.text && !card.sorted;
+  const inPlace = (card) => !card.sorted && card.moves === 0 && !card.page && !card.workbook.text;
+  const unsorted = (card) => !card.sorted && !inPlace(card);
+  const id = () => events[current].id;
+  const fact = (term, text) => [line("dt", term), line("dd", text || T.nothing)];
+  const keptText = (count, folders) => counted(T.nKept, count) + " (" + folders.slice(0, 3).join(", ") + (folders.length > 3 ? "…" : "") + ")";
+
+  const showTotals = () => {
+    const chosen = events.filter((card) => card.page).length;
+    byId("eventsTotals").textContent = fill(T.totals, { chosen: chosen, open: events.filter(isOpen).length });
+    showSure();
+    listEvents();
+  };
+  const drawEvent = (card) => {
+    byId("eventCard").hidden = false;
+    byId("position").textContent = fill(T.position, { number: current + 1, total: events.length });
+    byId("eventTitle").textContent = card.title;
+    byId("eventSummary").textContent = [card.span, fill(T.files, { files: counted(T.nFiles, card.files), undecided: card.undecided }), fill(T.share, { share: card.share })].join(" · ");
+    const rule = card.rule ? card.rule + (card.rule_days ? " (" + card.rule_days + ")" : "") : "";
+    byId("eventFacts").replaceChildren(...fact(T.from, card.folders.join(" · ")), ...(rule ? fact(T.ruleFact, rule) : []), ...fact(T.state, ""));
+    byId("eventConflict").hidden = !card.conflict;
+    byId("eventConflict").textContent = T.conflict;
+    fillChoice(card);
+  };
+
+  // A tile of the event: before → after, and what the page or the workbook chose.
+  eventTile = (hit, meta, node) => {
+    if (hit.conflict) node.classList.add("conflicting");
+    meta.append(element("div", "goes", goesText(hit.key)));
+    if (hit.own) meta.append(element("div", "muted", T.ownFolder));
+    const note = !hit.movable ? T.left : hit.page ? "✅ " + hit.page : hit.workbook ? "📒 " + hit.workbook : "";
+    if (note) meta.append(element("div", "muted", note));
+  };
+  // The tiles of the event shown, asked again: as the disk holds its choices now.
+  const refresh = async (again) => {
+    const index = current;
+    const answer = await ask(EVENTS_PATH + "/" + encodeURIComponent(events[index].id));
+    if (!answer || !answer.ok) { setStatus(T.offline, "error"); return; }
+    if (index !== current) return;  // another event was asked for meanwhile
+    const view = await answer.json();
+    events[index] = view.card;
+    photoOf = Object.fromEntries(view.hits.map((hit) => [hit.key, { ...hit, folder: hit.host }]));
+    eventShown = view.card.id;
+    total = view.total;
+    showFiles(view.hits, again);
+    $("more").hidden = true;
+    if (view.missing) told(fill(TEXTS.eventMissing, { n: view.missing }), false);
+  };
+  const load = async (index) => {
+    current = index;
+    eventShown = events[index].id;
+    drawEvent(events[index]);
+    showTotals();
+    await refresh(false);
+  };
+  // A choice sent: saved, read back; the event's card and tiles shown as the disk holds them.
+  const send = async (path, body, then) => {
+    const index = current;
+    setStatus(T.saving);
+    const response = await ask(path, body);
+    if (!response) { setStatus(T.offline, "error"); return false; }
+    const answer = await response.json().catch(() => ({}));
+    if (!response.ok) { setStatus(answer.error || fill(T.failed, { status: response.status }), "error"); return false; }
+    events[index] = answer.card;
+    if (index !== current) return true;
+    setStatus(T.saved, "saved");
+    await refresh(true);
+    if (then) then(); else { drawEvent(answer.card); showTotals(); }
+    return true;
+  };
+
+{% include "events_sure.js.j2" %}
+{% include "events_choice.js.j2" %}
+{% include "events_rule.js.j2" %}
+{% include "events_progress.js.j2" %}
+
+  const EVENT_FILTERS = { onlyDecide: (card) => isOpen(card) && !card.sure, onlySure: (card) => card.sure && isOpen(card), onlyUnsorted: unsorted };
+  const listEvents = () => {
+    const shown = events.filter(visible);
+    byId("eventList").replaceChildren(...shown.map((card) => {
+      const marks = (card.sorted ? "✓ " : "") + (card.conflict ? "⚠ " : "");
+      const button = element("button", card.conflict ? "plain conflict" : "plain", marks + card.title + " · " + counted(TEXTS.eventFiles, card.files));
+      button.type = "button";
+      button.title = card.span;
+      button.classList.toggle("open", eventShown === card.id);
+      button.addEventListener("click", () => { if (mayLeave(() => load(events.indexOf(card)))) load(events.indexOf(card)); });
+      const item = element("li");
+      item.append(button);
+      return item;
+    }));
+    if (!shown.length) byId("eventList").append(element("li", "muted", TEXTS.eventsNone));
+  };
+  const go = (step) => {
+    if (!mayLeave(() => go(step))) return;
+    let next = current + step;
+    while (next >= 0 && next < events.length && !visible(events[next])) next += step;
+    if (next < 0 || next >= events.length) { setStatus(next < 0 ? T.first : T.last); return; }
+    setStatus("");
+    load(next);
+  };
+  const goOpen = () => {
+    if (!mayLeave(goOpen)) return;
+    const wanted = onlyUnsorted() ? unsorted : isOpen;
+    const next = events.findIndex((card, index) => index > current && wanted(card) && visible(card));
+    if (next < 0) { setStatus(onlyUnsorted() ? T.noUnsorted : T.noOpen); drawEvent(events[current]); showTotals(); return; }
+    load(next);
+  };
+  // The photos picked, else the one framed; those left as they are take no choice.
+  const chosenRows = () => {
+    const framed = cards.findIndex((node) => node.classList.contains("current"));
+    const keys = picked.size ? [...picked] : framed >= 0 ? [files[framed].key] : [];
+    return keys.filter((key) => photoOf[key] && photoOf[key].movable).map((key) => photoOf[key].row);
+  };
+  const accept = () => { const body = choiceBody(); markSaved(); send(P.event, body, goOpen); };
+  const stayEvent = () => send(P.event, { event: id(), stay: true }, goOpen);
+  const forget = () => {
+    const rows = [...picked].filter((key) => photoOf[key]).map((key) => photoOf[key].row);
+    send(P.forget, { event: id(), rows: rows });
+  };
+  let sending = [];  // the rows the send dialog is about
+  const openSend = () => {
+    sending = chosenRows();
+    if (!sending.length) { setStatus(T.leftAll, "error"); return; }
+    byId("send-label").textContent = fill(T.sendTo, { count: sending.length });
+    byId("send-category").value = "";
+    byId("sendDlg").showModal();
+  };
+  const leavePicked = () => {
+    const rows = chosenRows();
+    if (!rows.length) { setStatus(T.leftAll, "error"); return; }
+    send(P.files, { event: id(), rows: rows, stay: true });
+  };
+
+  byId("eventChoice").addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    event.stopPropagation();
+    document.activeElement.blur();
+    accept();
+  });
+  byId("send").addEventListener("submit", (event) => {
+    event.preventDefault();
+    byId("sendDlg").close();
+    send(P.files, { event: id(), rows: sending, category: byId("send-category").value });
+  });
+  byId("sendNo").addEventListener("click", () => byId("sendDlg").close());
+  // After the shared grid's keys: what it took (arrows, Space, Enter on a framed photo,
+  // Ctrl+A, I, Delete, the large view's keys) is not the Events view's.
+  const EVENT_KEYS = { Enter: accept, n: () => go(1), PageDown: () => go(1), p: () => go(-1), PageUp: () => go(-1), u: goOpen, v: acceptSure, o: openSend, m: sortNow, r: openRule, t: forget, s: leavePicked, S: stayEvent, Z: undoSure,
+    e: () => { byId("eventNaming").open = true; byId("eventNameIn").focus(); }, f: () => byId("eventFolderIn").focus(), Backspace: () => choose("remove") };
+  document.addEventListener("keydown", (event) => {
+    if (eventShown === null || current < 0 || !byId("events").open) return;
+    if (["sureDlg", "sendDlg", "ruleDlg", "rulesDlg", "goDlg"].some((dialog) => byId(dialog).open)) return;
+    if (event.defaultPrevented || byId("viewer").classList.contains("open")) return;
+    if (event.key === "Escape") { if (choiceDirty()) dropChoice(); document.activeElement.blur(); return; }
+    const typing = ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName);
+    if (typing || event.ctrlKey || event.metaKey || event.altKey) return;
+    const key = event.key.length === 1 && !event.shiftKey ? event.key.toLowerCase() : event.key;
+    if (!(key in EVENT_KEYS) || (key === "Backspace" && !picked.size)) return;
+    event.preventDefault();
+    EVENT_KEYS[key]();
+  });
+  const buttons = { prevEvent: () => go(-1), nextEvent: () => go(1), leavePicked: leavePicked, sendPicked: openSend, stayEvent: stayEvent, forgetChoice: forget, sure: acceptSure, sortNow: sortNow, sureUndo: undoSure };
+  for (const [button, action] of Object.entries(buttons)) byId(button).addEventListener("click", action);
+  // One filter at a time, kept for this viewer (review-sort's, 0388, 0398).
+  for (const box of Object.keys(EVENT_FILTERS)) {
+    try { byId(box).checked = localStorage.getItem("mh-events-" + box) === "1"; } catch (error) { /* not kept */ }
+    byId(box).addEventListener("change", (event) => {
+      for (const other of Object.keys(EVENT_FILTERS)) {
+        if (other !== box && event.target.checked) byId(other).checked = false;
+        try { localStorage.setItem("mh-events-" + other, byId(other).checked ? "1" : "0"); } catch (error) { /* not kept */ }
+      }
+      event.target.blur();
+      listEvents();
+    });
+  }
+
+  const loadEvents = async () => {
+    byId("eventsSaid").textContent = TEXTS.eventsLoading;
+    const answer = await ask(EVENTS_PATH);
+    if (!answer || !answer.ok) { byId("eventsSaid").textContent = TEXTS.offline; return; }
+    const view = await answer.json();
+    events = view.events;
+    byId("eventsSaid").textContent = view.missing || "";
+    byId("categories").replaceChildren(...(view.categories || []).map((name) => Object.assign(document.createElement("option"), { value: name })));
+    showTotals();
+    showProgress();
+  };
+  showEvent = (wanted, again) => {
+    const index = events.findIndex((card) => card.id === wanted);
+    return index === current ? refresh(again) : load(index);
+  };
+  byId("events").addEventListener("toggle", () => { if (byId("events").open && !events.length) loadEvents(); });
+  // A search typed leaves the event: the grid shows what was searched.
+  $("form").addEventListener("submit", () => { eventShown = null; current = -1; byId("eventCard").hidden = true; listEvents(); });
+  // `/events` (`mh review-sort` opens it): the search, its events open.
+  if (window.location.pathname === {{ events_page | tojson }}) byId("events").open = true;
+})();

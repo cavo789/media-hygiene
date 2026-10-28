@@ -1,15 +1,15 @@
-"""`media-hygiene review-sort` from the command line: what it opens, says and saves."""
+"""`media-hygiene review-sort` from the command line: search's Events view (0439)."""
 
 from __future__ import annotations
 
 import json
 import shutil
+from http import HTTPStatus
 from typing import TYPE_CHECKING
 
-from media_hygiene.services import sort_reviewing
+from media_hygiene.services import search_pages as search_service
+from tests.integration.tags.test_search_command import _call, fake_server
 from tests.support.cli import run
-from tests.support.scenes import Shot, write_shot
-from tests.support.sort_review import PORT, call, fake_server
 from tests.support.sorting import EVENT_NAME, build_library
 
 if TYPE_CHECKING:
@@ -17,65 +17,35 @@ if TYPE_CHECKING:
     from typer.testing import CliRunner
 
     from media_hygiene.paths.locations import Locations
-    from media_hygiene.review.sort_app import SortReviewApp
+    from media_hygiene.search.app import SearchApp
 
 
-def test_the_page_is_served_and_the_choices_counted(
+def test_the_verb_opens_the_events_view_and_its_choices_are_saved(
     cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Ready on its port; one event named; the summary and what comes next."""
+    """0439: the search's Events view, a one-line notice; a choice there, then sort."""
     shutil.rmtree(locations.data_dir)
     build_library(locations.data_dir)
     assert run(cli, "classify").exit_code == 0
     pages: list[bytes] = []
-    thumbs: list[int] = []
 
-    async def name_it(app: SortReviewApp) -> None:
-        pages.append(app.page)
-        [card] = json.loads((await call(app, "GET /api/state")).body)["events"]
-        view = json.loads((await call(app, f"GET /api/event/{card['id']}")).body)
-        thumbs.append((await call(app, f"GET {view['photos'][0]['thumb']}")).status)
-        await call(app, "POST /api/event", {"event": card["id"], "name": EVENT_NAME})
+    async def name_it(app: SearchApp) -> None:
+        pages.append((await _call(app, "GET /")).body)
+        [card] = json.loads((await _call(app, "GET /api/events")).body)["events"]
+        view = json.loads((await _call(app, f"GET /api/events/{card['id']}")).body)
+        assert view["hits"][0]["row"]
+        body = {"event": card["id"], "name": EVENT_NAME}
+        saved = await _call(app, "POST /api/sort/event", body)
+        assert saved.status == HTTPStatus.OK, saved.body
 
-    monkeypatch.setattr(sort_reviewing, "run_server", fake_server(name_it))
+    monkeypatch.setattr(search_service, "serve_until_ended", fake_server(name_it))
     result = run(cli, "review-sort")
     assert result.exit_code == 0, result.output
-    assert f"open http://127.0.0.1:{PORT}/ in your browser" in result.output
-    assert "1 event to decide: 0 with a sure proposal (one click)" in result.output
-    assert "events chosen: 1, photos chosen one by one: 0" in result.output
-    assert "sort-decisions.json" in result.output
-    assert b"/api/forget" in pages[0]
-    assert b"/api/sure" in pages[0]
-    assert b"sort-decisions.json" in pages[0]
-    # The next event's thumbnails and the zoom around the cursor are asked ahead.
-    assert b"new Image().src = photo.thumb" in pages[0]
-    assert b"new Image().src = files[near].preview" in pages[0]
-    assert thumbs == [200]
-    assert any((locations.cache_dir / "previews").iterdir())  # kept for next time
+    assert "now opens the 🗂 Events view of 'search'" in result.output
+    assert "/events in your browser" in result.output
+    assert b'id="eventChoice"' in pages[0]
     sorted_out = run(cli, "sort", "--yes")
     assert (
         "1 choice of the review page applied on top of the workbook"
         in sorted_out.output
     )
-
-
-def test_nothing_to_review_and_nothing_to_open(
-    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """No classify run yet; then a proposal without any event; never a traceback."""
-    none = run(cli, "review-sort")
-    assert none.exit_code != 0
-    assert "Run 'classify' first" in none.output
-    shutil.rmtree(locations.data_dir)
-    write_shot(
-        locations.data_dir / "c/Photos/IMG_1.jpg",
-        Shot(1, taken_at="2020:01:01 10:00:00"),
-    )
-    assert run(cli, "classify").exit_code == 0
-    empty = run(cli, "review-sort")
-    assert empty.exit_code == 0, empty.output
-    assert "nothing to review" in empty.output
-    monkeypatch.delenv("MEDIA_HYGIENE_REPORTS_DIR")
-    unmounted = run(cli, "review-sort")
-    assert unmounted.exit_code != 0
-    assert "Traceback" not in unmounted.output

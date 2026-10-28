@@ -15,3 +15,13 @@ filters, an event's card, the progress. No choice written yet.
 ## Explicit NON-goals
 
 - Choices, rules, Delete (0438); retiring review-sort (0439); browse templates (0440).
+
+## Status — DONE (2026-10-28)
+
+- `search/events_desk.py`: `GET /api/events` (state + progress), `GET /api/events/<id>` (card +
+  the photos as the search's own tiles, by index key: previews, large view, set aside unchanged);
+  the plan read on the first ask (`open_sort_review`), never at search start.
+- Page: *🗂 Events of the latest classify* in the left column (`search_events.*.j2`): progress
+  line, review-sort's three filters (kept per viewer), ✓ sorted / ⚠ conflict, the card (name,
+  folder, why); `/events` opens it.
+- Not checked in headless Chromium (mddoc-playwright) in this run.

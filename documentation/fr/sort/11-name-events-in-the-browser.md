@@ -6,7 +6,7 @@
 photos d'un même moment (une kermesse, un week-end), réunies par `classify` d'un dossier ou d'un
 téléphone à l'autre. Son nom devient **le dossier où `sort` range toutes ses photos** : nommé
 `Kermesse`, il va dans `2016/2016-07/Kermesse` ; sans nom, ses fichiers restent où ils sont. Ce qui bouge
-sur le disque, nom ou catégorie : [`review-sort`, à quoi ça sert](../commands/review-sort.md#à-quoi-ça-sert).
+sur le disque, nom ou catégorie : [`review-sort`, à quoi ça sert](../commands/search.md#les-événements-du-dernier-classify).
 
 Le classeur de l'[étape 5](05-review-the-proposal.md) est fait pour renommer en masse, pas pour
 *regarder* les photos : nommer un événement, c'est lire le rapport dans une fenêtre et taper dans

@@ -1,4 +1,4 @@
-{# Included in the script of sort_review.html.j2: the events whose proposal is sure
+{# Included in the Events view of the search (`search_events.js.j2`, 0438; review-sort's until 0439): the events whose proposal is sure
    (`sort_sure`) accepted at once, in one write read back from the disk, and taken back
    whole by one button; the filter that keeps only the events left to decide. Same
    mechanics as the obvious burst series (review_obvious.js.j2). #}
@@ -33,7 +33,7 @@
     if (!response.ok) { setStatus(answer.error || fill(T.failed, { status: response.status }), "error"); return null; }
     const byEvent = new Map(answer.events.map((card) => [card.id, card]));
     events = events.map((card) => byEvent.get(card.id) || card);
-    showEvent(events[current]);
+    drawEvent(events[current]);
     showTotals();
     return answer;
   };

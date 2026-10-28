@@ -5,13 +5,12 @@ from __future__ import annotations
 import asyncio
 import json
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import pytest
 
 from media_hygiene.classify.plan_file import ClassifyPlan
 from media_hygiene.errors import WorkbookError
-from media_hygiene.review.sort_app import SortReviewApp
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.runtime import Runtime
@@ -19,9 +18,9 @@ from media_hygiene.services.sort_event import only_event, sort_event, sorter_of
 from media_hygiene.services.sort_inputs import find_workbook, load_inputs
 from media_hygiene.services.sort_reviewing import open_sort_review
 from tests.support.layouts import LEGACY_LAYOUTS
-from tests.support.runtime import make_runtime, thread_pool
+from tests.support.runtime import make_runtime
 from tests.support.scenes import Shot, write_shot
-from tests.support.sort_review import PAGE, call
+from tests.support.sort_review import EventsPage, app_of, call
 from tests.support.sorting import PARTY, PHOTOS, build_library, classify, snapshot, undo
 
 if TYPE_CHECKING:
@@ -89,32 +88,23 @@ def test_an_unknown_event_is_said(locations: Locations) -> None:
         only_event(inputs, "nope")
 
 
-def page_of(runtime: Runtime) -> SortReviewApp:
-    """The review page of the latest classify run, able to sort."""
+def page_of(runtime: Runtime) -> EventsPage:
+    """The Events view of the latest classify run, able to sort."""
     session = open_sort_review(runtime, None)
-    return SortReviewApp(
-        session, PAGE, thread_pool(), None, sorter_of(runtime, session)
-    )
+    return app_of(session, sorter_of(runtime, session))
 
 
 def test_the_page_sorts_one_event_and_shows_it_sorted(locations: Locations) -> None:
-    """The run read back; the event sorted, skipped as open; previews follow."""
+    """The run read back; the event sorted, skipped as open."""
     runtime, _workbook, sizes = two_events(locations)
     party = max(sizes, key=lambda event: sizes[event])
     app = page_of(runtime)
 
-    async def act() -> tuple[dict[str, Any], int]:
-        done = await call(app, "POST /api/sort-now", {"event": party})
-        answer = json.loads(done.body)
-        row = answer["view"]["photos"][0]["row"]
-        thumb = await call(app, f"GET /thumb/{row}.jpg")
-        return answer, thumb.status
-
-    answer, thumb = asyncio.run(act())
+    done = asyncio.run(call(app, "POST /api/sort-now", {"event": party}))
+    answer = json.loads(done.body)
     assert answer["moved"] == answer["verified"] == sizes[party]
     assert answer["intact"]
     assert answer["view"]["card"]["sorted"]
-    assert thumb == HTTPStatus.OK
 
 
 def test_the_page_says_what_is_missing_instead_of_moving(
@@ -135,7 +125,7 @@ def test_the_page_says_what_is_missing_instead_of_moving(
 def test_a_page_without_a_sorter_refuses(locations: Locations) -> None:
     """Opened without the means to move: the route says to use the terminal."""
     runtime, _workbook, sizes = two_events(locations)
-    app = SortReviewApp(open_sort_review(runtime, None), PAGE, thread_pool())
+    app = app_of(open_sort_review(runtime, None))
     answer = asyncio.run(call(app, "POST /api/sort-now", {"event": next(iter(sizes))}))
     assert answer.status is HTTPStatus.CONFLICT
     assert "sort --event" in json.loads(answer.body)["error"]

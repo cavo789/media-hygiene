@@ -81,6 +81,7 @@ function open() {
   $("viewerName").textContent = file.name;
   $("viewerAside").hidden = !file.chosen;
   $("viewerInfo").textContent = [file.date, file.size, file.facts, file.where || file.folder || scope().folder].filter(Boolean).join(" · ");
+  for (const line of file.exif || []) $("viewerInfo").append(element("div", "", line)); // EXIF (0433)
   if (typeof infoExtra === "function") $("viewerInfo").append(...infoExtra(file)); // a page's own facts
   $("viewerSaid").textContent = "";
   $("originalLink").href = file.original;

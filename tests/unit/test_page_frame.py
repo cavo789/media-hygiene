@@ -106,7 +106,6 @@ _MAIN_KEY: Final = {
     "gone_review.html.j2": "deleted on purpose: remembered",
     "unwanted_review.html.j2": "the group as marked, then next",
     "pairs_review.html.j2": "swap the folders, then next",
-    "sort_review.html.j2": "save the folder, then the next event",
     "places.html.j2": "close the large photo, then the photos of the place",
     "browse.html.j2": "every file from the last one clicked",
     "search.html.j2": "every file from the last one clicked",
@@ -123,14 +122,3 @@ def test_each_page_shows_its_main_keys_in_the_panel(template: str, key: str) -> 
     assert key in panel.split('id="moreKeys"')[0]
     assert '<p class="safe">🔒 ' in panel
     assert "Ctrl+C in the terminal" not in page.split("</aside>")[1].split("<script")[0]
-
-
-def test_review_sort_keeps_its_fields_in_the_bar_and_the_event_on_the_left() -> None:
-    """The name and category where the eye is, the facts of the event on the left."""
-    page = render_page("sort_review.html.j2")
-    top = page.split('<header id="bar">')[1].split("</header>")[0]
-    assert 'id="choice"' in top
-    assert 'id="name"' in top
-    side = page.split('<aside id="side">')[1].split("</aside>")[0]
-    assert 'id="facts"' in side
-    assert "<kbd>Space</kbd>" not in page  # the line of twelve keys under the photos

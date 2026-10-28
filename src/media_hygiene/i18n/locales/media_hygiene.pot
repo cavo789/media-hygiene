@@ -36,6 +36,10 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
+#, python-brace-format
+msgid " · file modified {day} (the date Explorer shows)"
+msgstr ""
+
 msgid " — none yet"
 msgstr ""
 
@@ -192,6 +196,11 @@ msgid ""
 "reason; nothing is set aside until you say so, and 'clean --decisions' "
 "moves only what you set aside to the quarantine. A photo of a protected "
 "folder, a burst shot, a near or exact duplicate is never listed."
+msgstr ""
+
+msgid ""
+"'review-sort' now opens the 🗂 Events view of 'search', and goes in the "
+"next version: use 'search'."
 msgstr ""
 
 msgid ""
@@ -1294,6 +1303,10 @@ msgstr ""
 msgid "Camera"
 msgstr ""
 
+#, python-brace-format
+msgid "Camera: {camera}"
+msgstr ""
+
 msgid "Cameras"
 msgstr ""
 
@@ -2394,6 +2407,9 @@ msgid ""
 " outside any event, by proposed folder."
 msgstr ""
 
+msgid "Events of the latest classify"
+msgstr ""
+
 #, python-brace-format
 msgid "Events split in several, each part keeps the edit: {names}."
 msgstr ""
@@ -2452,15 +2468,6 @@ msgid ""
 "stops the review; then run the same 'clean' command with --tier near "
 "%(option)s: the sure groups and the groups you decided go to the "
 "quarantine, and 'undo' brings them back."
-msgstr ""
-
-#, python-format
-msgid ""
-"Every choice is saved at once in %(place)s; the workbook %(workbook)s is "
-"never changed. Nothing moves without your GO (Sort this event now); every"
-" move is journaled: 'undo' puts it back. Done? Ctrl+C in the terminal "
-"stops the review; then 'sort' applies your choices on top of the "
-"workbook."
 msgstr ""
 
 msgid "Every cluster lies in a place of yours."
@@ -3046,6 +3053,10 @@ msgid "From:"
 msgstr ""
 
 msgid "GB"
+msgstr ""
+
+#, python-brace-format
+msgid "GPS: {where}"
 msgstr ""
 
 msgid ""
@@ -3658,6 +3669,9 @@ msgstr ""
 msgid "Leave the picked files where they are"
 msgstr ""
 
+msgid "Leave the whole event where it is (Shift+S)"
+msgstr ""
+
 msgid "Leave where they are (S)"
 msgstr ""
 
@@ -3674,6 +3688,10 @@ msgid ""
 msgstr ""
 
 msgid "Lens"
+msgstr ""
+
+#, python-brace-format
+msgid "Lens: {lens}"
 msgstr ""
 
 msgid "Light"
@@ -4342,6 +4360,9 @@ msgstr ""
 msgid "No config.toml created: the container cannot write to {folder}."
 msgstr ""
 
+msgid "No date taken"
+msgstr ""
+
 msgid "No decision in the file: as planned."
 msgstr ""
 
@@ -4359,13 +4380,13 @@ msgstr ""
 msgid "No draft: {reason}"
 msgstr ""
 
-msgid "No event in this proposal: nothing to review."
-msgstr ""
-
 msgid "No event left to decide after this one."
 msgstr ""
 
 msgid "No event left to sort after this one."
+msgstr ""
+
+msgid "No event matches these filters."
 msgstr ""
 
 msgid "No face found, even turned: set this photo aside on its own."
@@ -5858,6 +5879,9 @@ msgstr ""
 msgid "Reading the index"
 msgstr ""
 
+msgid "Reading the latest classify plan…"
+msgstr ""
+
 msgid "Reading the metadata of files already in the cache"
 msgstr ""
 
@@ -6013,20 +6037,8 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"Review ready, open {url} in your browser. Each choice is saved at once in"
-" {place}. Ctrl+C stops the review."
-msgstr ""
-
-#, python-brace-format
-msgid ""
 "Review ready, open {url} in your browser. Each decision is saved at once "
 "in {place}. Ctrl+C stops the review."
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Review stopped — events chosen: {events}, photos chosen one by one: "
-"{files}."
 msgstr ""
 
 #, python-brace-format
@@ -6896,9 +6908,6 @@ msgstr ""
 msgid "Sort out"
 msgstr ""
 
-msgid "Sort review"
-msgstr ""
-
 msgid "Sort the bursts"
 msgstr ""
 
@@ -7171,7 +7180,7 @@ msgid ""
 "'search' finds them."
 msgstr ""
 
-msgid "Take back the choice made here"
+msgid "Take back the choice made here (T)"
 msgstr ""
 
 msgid "Take back the last batch of sure proposals (Shift+Z)"
@@ -7205,6 +7214,10 @@ msgid "Take this photo out of {name}? The photo itself stays where it is."
 msgstr ""
 
 msgid "Taken out of config.toml: its GPS decides again."
+msgstr ""
+
+#, python-brace-format
+msgid "Taken: {when}"
 msgstr ""
 
 msgid "The Explorer's menu is as it was."
@@ -7397,9 +7410,6 @@ msgstr ""
 msgid "The classify workbook, edited; the latest classify run's by default."
 msgstr ""
 
-msgid "The classify workbook; the latest classify run's by default."
-msgstr ""
-
 msgid ""
 "The clusters set aside on the map of 'places' (✕: not a place worth a "
 "name), written by the map: every cluster whose middle lies within "
@@ -7521,6 +7531,13 @@ msgid ""
 "covers most of the work."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"The events of the latest classify run are ready, open {url} in your "
+"browser. Each choice is saved at once in sort-decisions.json. Ctrl+C "
+"stops it."
+msgstr ""
+
 msgid "The face models are not in the cache yet: run 'audit --people' once."
 msgstr ""
 
@@ -7549,6 +7566,11 @@ msgid ""
 msgstr ""
 
 msgid "The faces you confirmed as this person's."
+msgstr ""
+
+msgid ""
+"The file does not say when it was taken (a scan, a screenshot): a search "
+"by date does not find it."
 msgstr ""
 
 msgid "The files given at least these stars in Windows (1 to 5)."
@@ -8241,7 +8263,7 @@ msgstr ""
 
 msgid ""
 "The workbook was edited otherwise since this choice: choose again here, "
-"or press Delete to let the workbook decide."
+"or press T to let the workbook decide."
 msgstr ""
 
 #, python-brace-format
@@ -8424,7 +8446,7 @@ msgstr ""
 msgid "This is the first series."
 msgstr ""
 
-msgid "This is the last event: stop the review with Ctrl+C in the terminal."
+msgid "This is the last event."
 msgstr ""
 
 msgid "This is the last group: stop the review with Ctrl+C in the terminal."
@@ -9737,9 +9759,6 @@ msgstr ""
 msgid "chosen"
 msgstr ""
 
-msgid "chosen here"
-msgstr ""
-
 msgid ""
 "chosen in the review page, then edited otherwise in the workbook, whose "
 "value was carried over"
@@ -9965,9 +9984,6 @@ msgid "every photo"
 msgstr ""
 
 msgid "every photo has GPS"
-msgstr ""
-
-msgid "every photo of the event"
 msgstr ""
 
 msgid "every photo of the group"
@@ -10260,9 +10276,6 @@ msgid "launcher script mh ps1 write again"
 msgstr ""
 
 msgid "launcher: write your folders once"
-msgstr ""
-
-msgid "leave a field; drop the folder typed and not saved"
 msgstr ""
 
 msgid "leave the group alone, then next"
@@ -10578,7 +10591,7 @@ msgstr ""
 msgid "next group to check, undecided"
 msgstr ""
 
-msgid "next or previous event (the ← → buttons of the bar)"
+msgid "next or previous event (its ← → buttons)"
 msgstr ""
 
 msgid "next series still to see"
@@ -10606,6 +10619,9 @@ msgid "no control character"
 msgstr ""
 
 msgid "no date"
+msgstr ""
+
+msgid "no date taken"
 msgstr ""
 
 msgid "no double quote"
@@ -10960,9 +10976,6 @@ msgstr ""
 msgid "same streams"
 msgstr ""
 
-msgid "save the folder, then the next event"
-msgstr ""
-
 msgid ""
 "say in 'review --gone' which vanished files you deleted on purpose: they "
 "will be set aside if they come back."
@@ -11088,6 +11101,13 @@ msgid "take back the last batch of sure proposals"
 msgstr ""
 
 msgid "take it back out of the set aside"
+msgstr ""
+
+msgid "take the picked files back out of the set aside"
+msgstr ""
+
+#, python-brace-format
+msgid "taken {taken} (EXIF: what the search finds by)"
 msgstr ""
 
 msgid "the PowerShell window of mh (in the taskbar)"
@@ -11889,16 +11909,6 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} entries at its top"
 msgstr ""
-
-#, python-brace-format
-msgid ""
-"{count} event to decide: {sure} with a sure proposal (one click), {look} "
-"to look at."
-msgid_plural ""
-"{count} events to decide: {sure} with a sure proposal (one click), {look}"
-" to look at."
-msgstr[0] ""
-msgstr[1] ""
 
 #, python-brace-format
 msgid ""
@@ -13263,6 +13273,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} of its files are not in the index: run audit on their folder."
+msgstr ""
+
+#, python-brace-format
 msgid "{n} of {count} set aside"
 msgid_plural "{n} of {count} set aside"
 msgstr[0] ""
@@ -13814,6 +13828,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{when} · {events} · {files} files · undone"
+msgstr ""
+
+#, python-brace-format
+msgid "{width} by {height} pixels"
 msgstr ""
 
 msgid "— a new rule —"

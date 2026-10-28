@@ -2,7 +2,7 @@
 
 `POST /api/rule/preview` tells what a rule would take, `/api/rule` writes it into
 `config.toml` (or replaces a folder-name rule in place), `/api/rules/remove` removes the
-rules that decide nothing; `GET /api/rules` (`sort_app`) lists what each one decided.
+rules that decide nothing; `GET /api/rules` (`events_choose`) lists what each decided.
 """
 
 from __future__ import annotations

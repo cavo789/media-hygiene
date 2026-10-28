@@ -20,6 +20,8 @@ from media_hygiene.search.app import (
     SearchPages,
 )
 from media_hygiene.search.chosen_api import CHOSEN_PATH, ChosenDesk
+from media_hygiene.search.events_choose import SORT_PATHS
+from media_hygiene.search.events_desk import EVENTS_PAGE_PATH, EVENTS_PATH
 from media_hygiene.search.folders import (
     BROWSE_PATH,
     FOLDER_PATH,
@@ -29,23 +31,20 @@ from media_hygiene.search.folders import (
 )
 from media_hygiene.search.heaviest import FIRST_SHOWN, HEAVIEST_PATH
 from media_hygiene.search.move_go import MOVE_PATH, MOVE_VIEW_PATH
-from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH, NamesPlace, PeopleDesk
+from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH, PeopleDesk
 from media_hygiene.search.people_why import PEOPLE_WHY_PATH
 from media_hygiene.search.place import SearchPlace
 from media_hygiene.search.rule_desk import (
     PERIOD_RULES_PATH,
     RULE_SAVE_PATH,
     RULE_TRIAL_PATH,
-    RuleDesk,
 )
 from media_hygiene.search.rule_go import RULE_GO_PATH
 from media_hygiene.search.views import FIRST_HITS
 from media_hygiene.services.albums import album_desk
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
-from media_hygiene.services.group_sort import sorted_group
-from media_hygiene.services.people_page import names_file
-from media_hygiene.services.rule_trial import event_gap_hours, try_rule, written_rules
-from media_hygiene.services.selection_move import SelectionMover
+from media_hygiene.services.rule_trial import event_gap_hours
+from media_hygiene.services.search_desks import events_desk, names_place, rule_desk
 from media_hygiene.share.album_api import ALBUMS_PATH
 from media_hygiene.share.album_pickers import SearchPicker
 
@@ -107,6 +106,9 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "rule_go_path": RULE_GO_PATH,
         "move_paths": {"view": MOVE_VIEW_PATH, "move": MOVE_PATH},
         "folder_query": FOLDER_QUERY,
+        "events_path": EVENTS_PATH,
+        "sort_paths": SORT_PATHS,
+        "events_page": EVENTS_PAGE_PATH,
         "first_hits": FIRST_HITS,
         "event_gap_hours": event_gap_hours(runtime),
         "apply_offered": build.apply is not None,
@@ -133,41 +135,9 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         album_desk(runtime, SearchPicker(search).files),
         PeopleDesk(search, names_place(runtime)),
         rule_desk(runtime, search),
+        events_desk(runtime, search, chosen),
     )
     return SearchApp(place, pages, build.executor)
-
-
-def rule_desk(runtime: Runtime, search: SearchIndex) -> RuleDesk:
-    """*Make it a rule* (0396): the date rules of `config.toml`, tried on the index.
-
-    Args:
-        runtime: Settings, mount points and output.
-        search: The open index.
-
-    Returns:
-        The desk.
-    """
-    return RuleDesk(
-        search,
-        runtime.mapper,
-        runtime.locations.config_file,
-        partial(written_rules, runtime),
-        partial(try_rule, runtime, search.connection),
-        partial(sorted_group, runtime),
-        SelectionMover(runtime),
-    )
-
-
-def names_place(runtime: Runtime) -> NamesPlace:
-    """Where the page saves the names it corrects, and `[people]` at the start.
-
-    Args:
-        runtime: Settings, mount points and output.
-
-    Returns:
-        The place; no file when `/config` cannot be written.
-    """
-    return NamesPlace(names_file(runtime), runtime.settings.people, runtime.mapper)
 
 
 def chosen_desk(runtime: Runtime, search: SearchIndex) -> ChosenDesk:

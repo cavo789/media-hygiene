@@ -22,7 +22,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | be sure of the duplicates before deleting family photos | [`crosscheck`](commands/crosscheck.md) |
 | find every report again, delete the old ones | [`reports`](commands/reports.md) |
 | get a tidy tree proposed, by year, event, place or person, and correct it first | [`classify`](commands/classify.md) |
-| name my events while looking at their photos | [`review-sort`](commands/review-sort.md) |
+| name my events while looking at their photos | [`search`](commands/search.md#the-events-of-the-latest-classify), its 🗂 Events |
 | move my photos into the tree I approved, undoable | [`sort`](commands/sort.md) |
 | make an album a folder of the Explorer, without a copy | [`album`](commands/album.md) |
 | name my places on a map, to sort by place and by trip | [`places`](commands/places.md), then `classify` |
@@ -88,7 +88,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 | Command | What it does | Guide |
 |---|---|---|
 | [`home`](commands/home.md) | The home page in your browser: what `status` says, the next step as a big button, every step of the guides as `mh menu` numbers them, the reports and a few previews; runs the audit in the page, its progress shown. A step's button hands it to `mh` in the terminal. Never writes to your folders. | [Commands](commands/home.md) |
-| [`review-sort`](commands/review-sort.md) | Show the events of the `classify` proposal one at a time in your browser, with their photos, and name them with the keyboard; saved next to `plan.json`, applied by `sort`. Never writes to your folders nor to the workbook. | [Sorting, 11](sort/11-name-events-in-the-browser.md) |
+| [`review-sort`](commands/review-sort.md) | Opens the 🗂 Events view of [`search`](commands/search.md#the-events-of-the-latest-classify), for this version only: use `search`. |
 | [`places`](commands/places.md) | Show where the photos were taken on a map in your browser, and name your places; saved into `config.toml`. Never writes to your folders. | [Sorting, 9](sort/09-places-from-gps.md) |
 | [`browse`](commands/browse.md) | Walk through your folders in your browser, as in Explorer: the tree with its counts, the photos and videos of a folder, large with ←/→; set the ones picked aside for `clean --decisions`. Never writes to your folders. | [Find in short](find/quick-guide.md) |
 

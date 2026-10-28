@@ -90,6 +90,19 @@ no escaping. A regular expression that does not compile is told under the field.
   largest first); **Show** keeps the photos or the videos only. The search sorts and filters
   before it shows its first files: *Show: videos*, *Sort by: size* gives the largest videos found.
   Each tile says its date and size.
+- **Which date**: `📷 2023-07-14` is the day the photo was **taken**, written in the photo
+  itself (EXIF *DateTimeOriginal*; a video's recording date): what *From*, *To* and the years
+  find. It is not the *Date modified* Windows Explorer shows by default: point at the date for
+  both, with the time taken. Explorer shows the date taken in the file's **Properties ›
+  Details › Date taken**, or as the *Date taken* column (right-click the column headers). A file
+  that does not say it (a scan, a screenshot) reads *no date taken*: a search by date does not
+  find it.
+- **The photo's EXIF**: in the large view, **I** lists what the photo says of itself: when it was
+  taken, the camera, the lens, the exposure, its size in pixels and its GPS position. Read only:
+  the photo is never changed.
+- **A video's length** is on its preview's corner, as on video sites: `▶ 1:45`. Under 3 seconds,
+  the badge is red: a clip that short is rarely worth keeping (setting it aside stays your
+  choice).
 - **Sorted**: *every photo*, *not sorted yet* or *sorted (year, then year-month)*, read from the
   folders alone ([the convention](../sort/04-classify.md#the-convention-year-month-event)): a
   photo in `2009\2009-11\…` is sorted, wherever that pair of folders lies and whoever put it
@@ -98,6 +111,38 @@ no escaping. A regular expression that does not compile is told under the field.
 
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20 files
 as a table.
+
+## The events of the latest classify
+
+**🗂 Events of the latest classify**, under the folders in the left column, lists the events of
+the latest [`classify`](classify.md) plan (it took in `review-sort`, which now only opens it):
+the progress line (sorted, already in place, left) and the sort runs of the plan, each with its
+undo line; the three filters (*Only the events to decide*, *Only the sure proposals*, *Only the
+events not sorted yet*); ✓ on an event already sorted, ⚠ on one whose earlier choice the
+workbook changed since. Click an event: its card shows above the list, its photos in the grid,
+each tile saying where `sort` will put it (*C:\Photos → 2016\2016-07\Party*). The address
+`/events` (and `mh review-sort`) opens the page with the list open.
+
+Choose with the keyboard, as in the old page; every choice is **saved at once** in
+`sort-decisions.json` next to the plan, read back from the disk, with what the workbook said
+when you chose (a later edit of the same event in the workbook is a conflict, shown in red,
+never settled silently). The workbook itself is never changed.
+
+| Key | What it does |
+|---|---|
+| **F**, then **Enter** | type the event's folder, save it, then the next event to decide |
+| **E** | change the event's name (by default, the last folder) |
+| **N** / **P**, **U** | next or previous event, next one to decide |
+| **O** / **S** | the picked photos: to another folder, or left where they are |
+| **Shift+S** | leave the whole event where it is |
+| **T** | take back the choice made here (of the picked photos, else of the event) |
+| **V**, **Shift+Z** | accept every sure proposal at once, take that batch back |
+| **R** | *Remember as a rule*: the event's days and folder written into `config.toml` |
+| **M** | *Sort this event now*: where each file goes, then one GO; journaled, `undo` puts it back |
+| **Delete**, **⌫** | set the picked photos aside, take them back out (as on every page of photos) |
+
+**📌 Your rules** lists every rule of `config.toml` with the files it decided: remove the ones that
+decide nothing, turn a folder-name rule into dates.
 
 ## Move photos to an event, without a rule
 
@@ -122,7 +167,7 @@ No rule is written: the next `classify` finds them in place.
 ## Make a period a rule
 
 Once a period is searched, **📌 Make it a rule** opens, beside the grid, the dialog of
-[`review-sort`](review-sort.md)'s *Remember as a rule*, filled with the period: type its name
+[`review-sort`](#the-events-of-the-latest-classify)'s *Remember as a rule*, filled with the period: type its name
 and its folder (*keep my folders below it* is on). As you type, the grid shows **the photos the
 rule would take, each with where it would go** (*→ 2017\Parties\Weddings\Hervé and Magda's
 wedding*), computed by the `classify` engine with your rules and the one typed (nothing is

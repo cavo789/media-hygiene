@@ -11,6 +11,7 @@ from media_hygiene.console.formatting import human_size
 from media_hygiene.constants import MediaKind
 from media_hygiene.review.videos import video_path
 from media_hygiene.scan.filters import media_kind
+from media_hygiene.search.exif_facts import modified_day
 from media_hygiene.search.folder_order import Shown
 from media_hygiene.search.query import Filters, Order, SearchQuery, Sorting, parse_terms
 from media_hygiene.tags.models import TagSource
@@ -178,6 +179,10 @@ def _hit_view(hit: Hit, mapper: HostPathMapper) -> dict[str, object]:
         "size": human_size(hit.photo.size),  # shown as the folder view does (0347)
         "bytes": hit.photo.size,
         "facts": hit.facts,  # a video's length, bit rate, codec (0408)
+        "taken": hit.taken,  # the date and time taken, for the tile's tooltip (0433)
+        "modified": modified_day(hit.photo.mtime_ns),  # as Explorer shows it
+        "exif": list(hit.exif),  # the large view's facts (key I)
+        "seconds": hit.seconds,  # a video's length: its badge (0434)
         "caption": caption[0] if caption else "",
         "tags": {
             source.value: list(hit.tags[source])

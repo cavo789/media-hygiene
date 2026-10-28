@@ -20,13 +20,13 @@ from tests.support.sorting import EVENT_NAME, PARTY, name_first_event, sort
 
 if TYPE_CHECKING:
     from media_hygiene.paths.locations import Locations
-    from media_hygiene.review.sort_app import SortReviewApp
     from media_hygiene.services.runtime import Runtime
+    from tests.support.sort_review import EventsPage
 
 LATER = "Fancy fair"
 
 
-def _name_here(app: SortReviewApp, name: str = EVENT_NAME) -> dict[str, object]:
+def _name_here(app: EventsPage, name: str = EVENT_NAME) -> dict[str, object]:
     """Name the only event in the page.
 
     Args:
