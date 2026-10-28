@@ -106,8 +106,11 @@ de huit chiffres : la télécommande s'ouvre. Ensuite :
   secondes. Le nom est celui du dossier (`2026\2026-10\Promenade à Valkenburg` → *Promenade à
   Valkenburg* : années, mois, dates et dossiers d'appareil sont sautés) ; le mois vient de la
   date de prise de vue ; le lieu est l'un des vôtres (`places`), sinon la ville la plus proche
-  de leur GPS, trouvée hors ligne. Une touche choisit où il est annoncé : **TV et téléphone**
-  (par défaut), **Téléphone seul** (sous les commandes), **Nulle part**.
+  de leur GPS, trouvée hors ligne (avec son pays s'il n'est pas le vôtre, p. ex. *Valkenburg,
+  Pays-Bas* : le pays du lieu marqué `home`, sinon de votre premier lieu, sinon celui où la
+  plupart des photos ont été prises). Une touche choisit où il est annoncé : **TV et téléphone**
+  (par défaut), **Téléphone seul** (sous les commandes ; les notes du conteur s'ouvrent alors d'elles-mêmes),
+  **Nulle part**.
 - **Les notes du conteur** (à déplier sous les commandes) : pendant que la famille regarde la
   télé, le téléphone montre en plus grand la photo affichée, son jour et son heure, l'événement
   et son lieu, sa description et ses mots (quand `describe` en a donné), la photo suivante, et

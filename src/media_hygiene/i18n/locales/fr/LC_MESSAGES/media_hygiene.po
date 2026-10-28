@@ -16484,6 +16484,10 @@ msgstr ""
 " ou un autre nom."
 
 #, python-brace-format
+msgid "{town}, {country}"
+msgstr "{town}, {country}"
+
+#, python-brace-format
 msgid "{to} is neither a NAS folder nor a folder on a drive."
 msgstr "{to} n'est ni un dossier du NAS ni un dossier d'un disque."
 

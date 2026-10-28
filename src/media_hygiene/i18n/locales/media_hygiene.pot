@@ -13803,6 +13803,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{town}, {country}"
+msgstr ""
+
+#, python-brace-format
 msgid "{to} is neither a NAS folder nor a folder on a drive."
 msgstr ""
 

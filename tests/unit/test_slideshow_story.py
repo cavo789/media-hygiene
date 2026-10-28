@@ -78,7 +78,11 @@ def _index(runtime: Runtime, tmp_path: Path) -> Path:
             "2026:11:01 10:00:00",
             (50.8501, 4.3501),
         ),
-        ("c/Photos/2026/2026-11/Jardin/d.jpg", "2026:11:02 10:00:00", None),
+        (
+            "c/Photos/2026/2026-11/Jardin/d.jpg",
+            "2026:11:02 10:00:00",
+            (50.8502, 4.3502),
+        ),
     )
     with closing(sqlite3.connect(index)) as connection:
         prepare(connection)
@@ -109,7 +113,7 @@ def test_each_folder_is_an_event_named_dated_and_placed(tmp_path: Path) -> None:
     assert first is not None
     assert second is not None
     assert (first.number, first.name, first.period) == (1, "Promenade", "October 2026")
-    assert first.place == "Valkenburg"
+    assert first.place == "Valkenburg, Netherlands"  # home (Brussels) is in Belgium
     assert (second.number, second.name, second.place) == (2, "Jardin", "Home")
 
 
@@ -147,3 +151,13 @@ def test_the_same_event_on_the_next_photo_is_not_told_again() -> None:
     first = screen_view(desk)["chapter"]
     desk.show.move(1)
     assert screen_view(desk)["chapter"] == first
+
+
+def test_without_places_home_is_the_country_most_photos_lie_in(tmp_path: Path) -> None:
+    """Three Belgian photos against one Dutch: the Dutch event names its country."""
+    runtime = make_runtime(make_locations(tmp_path))
+    with SearchIndex.open(_index(runtime, tmp_path)) as search:
+        slides = picked_slides(runtime, search, Pick(folder=r"C:\Photos")).slides
+    places = [slide.chapter.place for slide in slides if slide.chapter]
+    assert places[0] == "Valkenburg, Netherlands"
+    assert places[2] == "Brussels"

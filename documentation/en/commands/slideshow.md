@@ -98,8 +98,11 @@ eight digits: the remote opens. Then:
   under it), then a banner on its first photo for a few seconds. The name is the folder's
   (`2026\2026-10\Walk in Valkenburg` → *Walk in Valkenburg*: years, months, dates and camera
   folders are passed over); the month is the photos' date taken; the place is one of yours
-  (`places`), else the nearest town of their GPS, found offline. One tap chooses where it is
-  told: **TV and phone** (the default), **Phone only** (under the controls), **Nowhere**.
+  (`places`), else the nearest town of their GPS, found offline (with its country when it is not your
+  home country, e.g. *Valkenburg, Netherlands*: the country of your place marked `home`, else of
+  your first place, else where most of the photos were taken). One tap chooses where it is
+  told: **TV and phone** (the default), **Phone only** (under the controls; the storyteller's notes then open by themselves),
+  **Nowhere**.
 - **The storyteller's notes** (unfold them under the controls): while the family watches the TV,
   the phone shows the photo on screen larger, its day and time, the event and its place, its
   description and words (when `describe` gave some), the next photo, and a small drawing of
