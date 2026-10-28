@@ -269,8 +269,8 @@ Your albums*). The relatives look at your screen and pair nothing.
   **a tap** (or the phone's *Back*) closes it. The next photos are loaded in advance.
 - **Videos** play in place, as on the TV: H.264 as it is; another format (HEVC, AVI) is
   labelled, never converted.
-- **➖ Take out of the album**, **➕ Add to an album** (a new name creates it): only
-  `albums.json` changes, read back and said; no photo is copied, moved or touched.
+- 🔒 **Read only**: albums are made and changed on the PC (*➖ Take out*, *➕ Add*, *🖼 Cover*,
+  [the albums' reference](../reference-albums.md)); the phone shows them.
 
 | | |
 |---|---|

@@ -3,6 +3,8 @@
    `keys.css.j2`), the one sticky bar on top of the right column, the content under it. A page
    adds its own rules after these, in its `style` block. #}
   * { box-sizing: border-box; }
+  /* A page shown on a phone (`data-phone`, lan_paths.phone_marked): no write (0429). */
+  html[data-phone] .pc-only, html:not([data-phone]) .phone-only { display: none !important; }
   body { margin: 0; background: var(--bg); color: var(--text);
          font: 400 15px/1.5 var(--mk-font-text); }
   .muted { color: var(--muted); }

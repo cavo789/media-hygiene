@@ -138,7 +138,7 @@ function move(step) {
 
 async function change(action, name) {
   const item = items[at];
-  if (!item || !album) return;
+  if (!item || !album || document.documentElement.hasAttribute("data-phone")) return; // read-only (0429)
   if (action === "remove" && !window.confirm(fill(T.outAsk, { name: album.name }))) return;
   const body = JSON.stringify({ action, album: name || album.name, keys: [String(item.key)] });
   const answer = await ask(P.change, { method: "POST", headers: { "Content-Type": "application/json" }, body });

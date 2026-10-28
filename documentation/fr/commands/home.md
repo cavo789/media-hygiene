@@ -293,8 +293,8 @@ n'appairent rien.
   chargées d'avance.
 - **Les vidéos** se lisent sur place, comme sur la télé : le H.264 tel quel ; un autre format
   (HEVC, AVI) est signalé, jamais converti.
-- **➖ Retirer de l'album**, **➕ Ajouter à un album** (un nouveau nom le crée) : seul
-  `albums.json` change, relu et affiché ; aucune photo n'est copiée, déplacée ni touchée.
+- 🔒 **Lecture seule** : les albums se font et se changent sur le PC (*➖ Retirer*, *➕ Ajouter*,
+  *🖼 Couverture*, [la référence des albums](../reference-albums.md)) ; le téléphone les montre.
 
 | | |
 |---|---|

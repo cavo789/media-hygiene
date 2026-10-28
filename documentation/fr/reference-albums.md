@@ -31,7 +31,7 @@ dit ce qu'elle a enregistré, relu depuis le disque.
 chaque album avec sa couverture, ses dates et son lieu ; un clic ouvre un album, ses photos par
 jour, et une photo s'ouvre en plein écran.
 
-Depuis la page, sur le PC ou sur un téléphone, vous pouvez :
+Depuis la page, sur le PC (un téléphone regarde seulement : les albums changent sur le PC), vous pouvez :
 
 - **➖ Retirer de l'album** une photo : elle sort de la liste, le fichier reste où il est ;
 - **➕ Ajouter à un album** une photo, à un autre album : choisissez-le dans la liste de vos
@@ -48,7 +48,7 @@ ni envoyé.
 
 Avec `mh --lan`, un téléphone jumelé par son code sur le Wi-Fi de la maison ouvre la même page,
 tant que `mh` tourne sur le PC. Il ne voit que les images des albums, à la taille d'un téléphone,
-jamais une autre photo de la bibliothèque ni un original.
+jamais une autre photo de la bibliothèque ni un original. Il ne change rien : ni *➖*, ni *➕*, ni *🖼*.
 
 ## Les albums et les dossiers de liens
 
