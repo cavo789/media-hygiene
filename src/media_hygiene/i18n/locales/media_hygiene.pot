@@ -1182,6 +1182,9 @@ msgstr ""
 msgid "Back to the report"
 msgstr ""
 
+msgid "Back to the start of this event"
+msgstr ""
+
 msgid "Back to the tool"
 msgstr ""
 
@@ -4265,6 +4268,9 @@ msgstr ""
 msgid "Next audit: a few seconds, the files checked are taken from the cache."
 msgstr ""
 
+msgid "Next event"
+msgstr ""
+
 msgid "Next event (N)"
 msgstr ""
 
@@ -4585,6 +4591,9 @@ msgid ""
 msgstr ""
 
 msgid "No place yet: click a circle or the map."
+msgstr ""
+
+msgid "No position for this event."
 msgstr ""
 
 msgid "No preview"
@@ -5475,6 +5484,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Path contains: invalid regular expression ({error})."
+msgstr ""
+
+msgid "Pause while I talk"
 msgstr ""
 
 msgid "People"
@@ -8206,6 +8218,9 @@ msgstr ""
 msgid "The steps changed since the page was shown: here they are."
 msgstr ""
 
+msgid "The storyteller's notes"
+msgstr ""
+
 msgid ""
 "The subject a local vision model sees, for the photos no rule above "
 "decided ([classify.ai] model must be set). It picks one of these "
@@ -9052,6 +9067,9 @@ msgstr ""
 msgid "Where the files of this event go, as 'sort' will move them:"
 msgstr ""
 
+msgid "Where the photos of this event were taken"
+msgstr ""
+
 msgid "Where to start"
 msgstr ""
 
@@ -9657,6 +9675,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "at {seconds} s"
+msgstr ""
+
+#, python-brace-format
+msgid "at {time}"
 msgstr ""
 
 #, python-brace-format

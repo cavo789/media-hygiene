@@ -1,0 +1,68 @@
+{# The storyteller's notes (0449), under the remote's controls: drawn from each show the remote
+   receives (event `mh-show`, slideshow.js.j2). The map is a drawing of the event's positions
+   on a plain background: no map tile, nothing leaves the network. The controls only move the
+   show, as ◀ ▶ do: nothing is written. #}
+(() => {
+  const TEXTS = {{ texts | tojson }};
+  const SHOW_PATH = {{ show_path | tojson }};
+  const WIDTH = 320;
+  const HEIGHT = 140;
+  const MARGIN = 12;
+  const SVG = "http://www.w3.org/2000/svg";
+  const thumb = (key) => `/thumb/${key}.jpg`;
+  const send = (action) =>
+    fetch(SHOW_PATH, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action }) });
+
+  function drawMap(points, here) {
+    const map = document.getElementById("storyMap");
+    const none = document.getElementById("storyNoMap");
+    map.replaceChildren();
+    map.hidden = points.length === 0;
+    none.hidden = points.length !== 0;
+    none.textContent = TEXTS.storyNoMap;
+    if (points.length === 0) return;
+    const lats = points.map((p) => p[0]);
+    const lons = points.map((p) => p[1]);
+    const south = Math.min(...lats);
+    const west = Math.min(...lons);
+    const tall = Math.max(Math.max(...lats) - south, 1e-4);
+    const wide = Math.max(Math.max(...lons) - west, 1e-4);
+    const scale = Math.min((WIDTH - 2 * MARGIN) / wide, (HEIGHT - 2 * MARGIN) / tall);
+    const at = (p) => [MARGIN + (p[1] - west) * scale, HEIGHT - MARGIN - (p[0] - south) * scale];
+    const dot = (p, mark) => {
+      const [x, y] = at(p);
+      const circle = document.createElementNS(SVG, "circle");
+      circle.setAttribute("cx", x.toFixed(1));
+      circle.setAttribute("cy", y.toFixed(1));
+      circle.setAttribute("r", mark ? "6" : "4");
+      if (mark) circle.setAttribute("class", "here");
+      map.append(circle);
+    };
+    for (const point of points) dot(point, false);
+    if (here) dot(here, true);
+  }
+
+  window.addEventListener("mh-show", (event) => {
+    const show = event.detail;
+    const story = show.story || {};
+    const box = document.getElementById("story");
+    box.hidden = show.current === null;
+    if (show.current === null) return;
+    document.getElementById("storyNow").src = thumb(show.current);
+    const next = document.getElementById("storyNext");
+    next.hidden = story.next === null || story.next === undefined;
+    if (!next.hidden) next.src = thumb(story.next);
+    const chapter = show.chapter || {};
+    const at = story.time ? TEXTS.storyAt.replace("{time}", story.time) : "";
+    const when = [story.day, at].filter(Boolean).join(" ");
+    document.getElementById("storyWhen").textContent =
+      [chapter.name, when, chapter.place].filter(Boolean).join(" · ");
+    document.getElementById("storyCaption").textContent = story.caption || "";
+    document.getElementById("storyWords").textContent = (story.words || []).join(", ");
+    drawMap(story.points || [], story.here);
+  });
+
+  document.getElementById("talk").addEventListener("click", () => send("pause"));
+  document.getElementById("eventStart").addEventListener("click", () => send("event"));
+  document.getElementById("nextEvent").addEventListener("click", () => send("next_event"));
+})();

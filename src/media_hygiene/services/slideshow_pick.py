@@ -25,6 +25,7 @@ from media_hygiene.search import statements as sql
 from media_hygiene.search.days import NAME as DAY
 from media_hygiene.search.query import SearchQuery, parse_terms
 from media_hygiene.services.albums import album_store
+from media_hygiene.services.slideshow_notes import notes_of
 from media_hygiene.services.slideshow_story import told_slides
 from media_hygiene.share.albums import AlbumsError
 from media_hygiene.slideshow.slides import Film, Slide
@@ -117,7 +118,15 @@ def picked_slides(runtime: Runtime, search: SearchIndex, pick: Pick) -> Picked:
         runtime,
         connection,
         [
-            (Slide(key, day or None, _film(connection, key, source)), source)
+            (
+                Slide(
+                    key,
+                    day or None,
+                    _film(connection, key, source),
+                    notes=notes_of(connection, key, source),
+                ),
+                source,
+            )
             for _undated, day, _path, key, source in photos[:MAX_SLIDES]
         ],
     )

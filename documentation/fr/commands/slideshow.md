@@ -108,6 +108,13 @@ de huit chiffres : la télécommande s'ouvre. Ensuite :
   date de prise de vue ; le lieu est l'un des vôtres (`places`), sinon la ville la plus proche
   de leur GPS, trouvée hors ligne. Une touche choisit où il est annoncé : **TV et téléphone**
   (par défaut), **Téléphone seul** (sous les commandes), **Nulle part**.
+- **Les notes du conteur** (à déplier sous les commandes) : pendant que la famille regarde la
+  télé, le téléphone montre en plus grand la photo affichée, son jour et son heure, l'événement
+  et son lieu, sa description et ses mots (quand `describe` en a donné), la photo suivante, et
+  un petit dessin des endroits où les photos de l'événement ont été prises (le point rouge :
+  celle-ci ; dessiné sur le téléphone, aucune carte n'est téléchargée). Trois boutons : **Pause,
+  je raconte**, **Retour au début de cet événement**, **Événement suivant**. Ils ne font que
+  déplacer le diaporama : rien n'est modifié sur le PC.
 
 La télé charge la photo suivante à l'avance, derrière celle affichée, et les échange une fois
 décodée : vous ne voyez jamais une photo dessinée par bandes.

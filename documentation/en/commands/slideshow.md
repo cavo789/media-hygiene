@@ -100,6 +100,12 @@ eight digits: the remote opens. Then:
   folders are passed over); the month is the photos' date taken; the place is one of yours
   (`places`), else the nearest town of their GPS, found offline. One tap chooses where it is
   told: **TV and phone** (the default), **Phone only** (under the controls), **Nowhere**.
+- **The storyteller's notes** (unfold them under the controls): while the family watches the TV,
+  the phone shows the photo on screen larger, its day and time, the event and its place, its
+  description and words (when `describe` gave some), the next photo, and a small drawing of
+  where the event's photos were taken (the red dot: this one; drawn on the phone, no map is
+  downloaded). Three buttons: **Pause while I talk**, **Back to the start of this event**,
+  **Next event**. They only move the show: nothing is changed on the PC.
 
 The TV loads the next photo in advance, behind the one shown, and swaps once it is decoded: you
 never see a photo drawn in bands.

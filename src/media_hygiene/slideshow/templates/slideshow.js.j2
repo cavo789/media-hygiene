@@ -59,6 +59,7 @@
     }
     seconds.value = paceValue;
     tellEvent(show);
+    window.dispatchEvent(new CustomEvent("mh-show", { detail: show }));
     const tile = tiles.get(current);
     if (tile) tile.scrollIntoView({ block: "nearest" });
   }

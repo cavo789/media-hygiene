@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from media_hygiene.slideshow.chapters import Chapter
+    from media_hygiene.slideshow.notes import Notes
 
 # What a Chromecast's browser plays without help; an unknown codec is tried, the TV
 # says when it fails.
@@ -69,6 +70,7 @@ class Slide:
     day: str | None = None
     film: Film | None = None  # None: a photo
     chapter: Chapter | None = None  # its event (0448)
+    notes: Notes | None = None  # what the storyteller reads (0449)
 
 
 @dataclass(frozen=True, slots=True)

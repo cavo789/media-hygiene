@@ -1494,6 +1494,9 @@ msgstr "Retour aux photos"
 msgid "Back to the report"
 msgstr "Retour au rapport"
 
+msgid "Back to the start of this event"
+msgstr "Retour au début de cet événement"
+
 msgid "Back to the tool"
 msgstr "Retour à l'outil"
 
@@ -5194,6 +5197,9 @@ msgstr ""
 "Prochain audit : quelques secondes, les fichiers vérifiés sont repris du "
 "cache."
 
+msgid "Next event"
+msgstr "Événement suivant"
+
 msgid "Next event (N)"
 msgstr "Événement suivant (N)"
 
@@ -5574,6 +5580,9 @@ msgstr ""
 
 msgid "No place yet: click a circle or the map."
 msgstr "Aucun lieu pour l'instant : cliquez sur un cercle ou sur la carte."
+
+msgid "No position for this event."
+msgstr "Aucune position pour cet événement."
 
 msgid "No preview"
 msgstr "Pas d'aperçu"
@@ -6642,6 +6651,9 @@ msgstr "Le chemin contient"
 #, python-brace-format
 msgid "Path contains: invalid regular expression ({error})."
 msgstr "Chemin contient : expression régulière invalide ({error})."
+
+msgid "Pause while I talk"
+msgstr "Pause, je raconte"
 
 msgid "People"
 msgstr "Personnes"
@@ -9950,6 +9962,9 @@ msgstr "L'étape choisie analyse aussi : {folder}"
 msgid "The steps changed since the page was shown: here they are."
 msgstr "Les étapes ont changé depuis l'affichage de la page : les voici."
 
+msgid "The storyteller's notes"
+msgstr "Les notes du conteur"
+
 msgid ""
 "The subject a local vision model sees, for the photos no rule above "
 "decided ([classify.ai] model must be set). It picks one of these "
@@ -10973,6 +10988,9 @@ msgstr "Où l'événement est annoncé"
 msgid "Where the files of this event go, as 'sort' will move them:"
 msgstr "Où vont les fichiers de cet événement, tels que 'sort' les déplacera :"
 
+msgid "Where the photos of this event were taken"
+msgstr "Où les photos de cet événement ont été prises"
+
 msgid "Where to start"
 msgstr "Par où commencer"
 
@@ -11703,6 +11721,10 @@ msgstr "comme prévu, puis suivant"
 #, python-brace-format
 msgid "at {seconds} s"
 msgstr "à {seconds} s"
+
+#, python-brace-format
+msgid "at {time}"
+msgstr "à {time}"
 
 #, python-brace-format
 msgid ""

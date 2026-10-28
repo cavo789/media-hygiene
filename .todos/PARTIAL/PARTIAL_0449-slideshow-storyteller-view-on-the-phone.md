@@ -25,3 +25,23 @@ while the family looks at the TV.
 ## Explicit NON-goals
 
 - Anything that changes photos, albums or the index from the phone.
+
+## Status — PARTIAL (2026-10-28)
+
+### Done
+- The storyteller's notes on the remote (a fold under the controls): the photo shown larger (its
+  thumbnail), day and time, event and place, description (`caption`, else Takeout) and the vision
+  words (`tags`), the next photo; read from the index only (`services/slideshow_notes.py`).
+- Story controls: *Pause while I talk*, *Back to the start of this event*, *Next event*
+  (actions `event`, `next_event`; past the last event the show stays). No write route.
+- The event's map: an SVG drawing of its photos' positions (this one in red), no tiles at all.
+- Tests `tests/unit/test_slideshow_notes.py`; docs en+fr (`commands/slideshow.md`).
+
+### Not done
+- The people recognised.
+  **Reason:** their names are made at each search from the face lists (never in the index);
+  reading them at show start needs the faces machinery — a follow-up.
+- A map background (towns, or `[places] tiles` when set).
+  **Reason:** the plain drawing is enough for a first phone test; tiles are opt-in anyway.
+- Checked on a real phone; documentation captures not regenerated (`docs_screenshots`).
+  **Reason:** needs the maintainer's phone; captures are run by the maintainer.
