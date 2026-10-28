@@ -403,5 +403,5 @@ def test_the_keys_of_the_large_view_and_their_list(
     assert "focusOn(Math.min(index + 1, files.length - 1));" in aside
     help_list = page.split('<dl id="viewerHelp"')[1].split("</dl>")[0]
     # Every key listed: ← → and Home End share a line each.
-    assert help_list.count("<dt>") == len(keys.strip().splitlines()) - 2
+    assert help_list.count("<dt") == len(keys.strip().splitlines()) - 2
     assert "window.mhAlbumAdd = (pick) =>" in page
