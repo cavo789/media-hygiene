@@ -1,6 +1,6 @@
 # 0444 — A paired phone starts the album slideshow on the TV (rest of 0369)
 
-- **Priority**: Low
+- **Priority**: High
 - **Batch**: slideshow
 - **Depends**: 0417
 - **Files**: `src/media_hygiene/review/lan_app.py`, `src/media_hygiene/review/home_parts.py`, `src/media_hygiene/review/templates/home_run.js.j2`, `src/media_hygiene/cli/menu_catalog_share.py`, `tests/integration/test_home_page.py`, `documentation/en/commands/slideshow.md`, `documentation/fr/commands/slideshow.md`, `documentation/en/commands/home.md`, `documentation/fr/commands/home.md`
@@ -9,7 +9,8 @@
 
 0369 (DONE) added the Share step *Show an album on the TV*, run from the PC only. Decided by
 the maintainer (inbox of 2026-10-28): a paired phone may start **this one step** on the PC; every
-other acting step keeps *Run this step on the PC*.
+other acting step keeps *Run this step on the PC*. The maintainer insists: this must be possible
+(a required feature, not a nice-to-have).
 
 ## What to do
 
