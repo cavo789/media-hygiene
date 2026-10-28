@@ -57,6 +57,7 @@ if TYPE_CHECKING:
 _COMMANDS: Final = LauncherCommands(("audit", "menu"), (), (), ("menu",), 8088)
 _FUNCTIONS: Final = (
     "phone",
+    "phone_audit",
     "phone_said",
     "phone_pick",
     "phone_there",
@@ -259,9 +260,27 @@ def test_the_summary_is_read_back_and_ends_on_the_next_step() -> None:
     assert "$back.Length -eq $copy.Size" in said
     main = _body(text, "phone {")
     assert main.rstrip().splitlines()[-2].strip() == (
-        'if ($copies -gt 0) { Write-Host "👉 What next: mh audit (the new files join '
-        'your library)." }'
+        "if ($copies -gt 0) { _mh_phone_audit }"
     )
+
+
+def test_the_files_copied_are_audited_by_the_open_home_page_else_here() -> None:
+    """0451: the home page asked first, as its own button does; else `mh audit`."""
+    audit = _body(_script(), "phone_audit")
+    assert (
+        "Invoke-WebRequest -Uri 'http://127.0.0.1:8088/api/audit' -Method Post "
+        "-ContentType 'application/json' -Body '{\"action\": \"start\"}'"
+    ) in audit
+    asked = audit.index("Invoke-WebRequest")
+    assert audit.index("The home page audits the new files now") > asked
+    assert audit.index("return") < audit.index("    mh audit\n")
+    assert audit.rstrip().splitlines()[-2].strip() == "mh audit"
+
+
+def test_the_skipped_set_aside_are_said_to_be_on_the_phone() -> None:
+    """The count is of the phone's files, never of the files copied."""
+    main = _body(_script(), "phone {")
+    assert "Also on the phone, skipped: ${count} you set aside earlier" in main
 
 
 def test_the_french_script_says_it_in_french() -> None:

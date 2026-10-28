@@ -58,12 +58,15 @@ FILL_PEOPLE: Final = _FILL.format(rows=_PERSON_ROWS)  # an index without tags ye
 DATA_VERSION: Final = "PRAGMA data_version"
 HAS_TAGS: Final = "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'tags'"
 ANY_TAG: Final = "SELECT 1 FROM tags LIMIT 1"  # at least one file has a word
+ANY_WORD: Final = f"SELECT 1 FROM temp.{TABLE} LIMIT 1"  # noqa: S608  # tags or names
 _FROM: Final = f" FROM temp.{TABLE} JOIN files ON files.rowid = {TABLE}.rowid"
+# Without words, every file of the index, those `tags` has not described yet too (0451).
+_FILES: Final = " FROM files"
 HITS: Final = (
     "SELECT files.rowid, files.path, files.size, files.mtime_ns,"
-    f" {DAY}(files.media_date)" + _FROM
+    f" {DAY}(files.media_date)"
 )
-COUNT: Final = "SELECT COUNT(*)" + _FROM
+COUNT: Final = "SELECT COUNT(*)"
 MATCHES: Final = f"{TABLE} MATCH ?"
 # `media_day` reads every form a date is written in (`search/days.py`).
 YEARS: Final = f"CAST(substr({DAY}(files.media_date), 1, 4) AS INTEGER) BETWEEN ? AND ?"
@@ -98,7 +101,7 @@ WHERE: Final = " WHERE "
 AND: Final = " AND "
 SOURCE_OF: Final = "SELECT path, size, mtime_ns FROM files WHERE rowid = ?"
 DATE_OF: Final = "SELECT media_date FROM files WHERE rowid = ?"  # as the file writes it
-VERSIONS: Final = "SELECT files.path, files.size, files.mtime_ns" + _FROM
+VERSIONS: Final = "SELECT files.path, files.size, files.mtime_ns"
 # Search by meaning (`search.meaning_index`): the rows of the files a search matches,
 # those of every file (filters only), one file as a hit, and a probe of one term.
 KEYS: Final = "SELECT files.rowid" + _FROM
@@ -115,6 +118,18 @@ FOLDER_FILES: Final = (
     f"SELECT rowid, path, size, {DAY}(media_date) FROM files"  # noqa: S608
     " WHERE path > ? AND path < ?"
 )
+
+
+def rows_of(query: SearchQuery) -> str:
+    """Where the files of a search are read: the words' table only when it has words.
+
+    Args:
+        query: Its words and filters.
+
+    Returns:
+        The `FROM` of its statements.
+    """
+    return _FROM if match_expression(query) is not None else _FILES
 
 
 def conditions(query: SearchQuery) -> tuple[list[str], list[object]]:

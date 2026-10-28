@@ -190,3 +190,16 @@ def test_every_form_of_a_date_gives_its_day(tmp_path: Path) -> None:
             "1985-06-01",
             None,
         ]
+
+
+def test_a_file_without_words_is_found_by_its_date_and_folder(tmp_path: Path) -> None:
+    """0451: photos just imported, no `tags` run yet: found without words only."""
+    with SearchIndex.open(_index(tmp_path, _TAGS[:2])) as search:
+        assert sorted(_names(search, "", Filters(folder="2019"))) == [
+            "IMG_2.jpg",
+            "IMG_3.jpg",
+        ]
+        assert _names(search, "", Filters(years=(2008, 2008))) == ["IMG_1.jpg"]
+        assert search.find(SearchQuery(()), 10).total == len(_FILES)
+        assert _names(search, "ours") == []
+        assert len(search.versions(SearchQuery((), Filters(folder="Divers")))) == 1

@@ -16,6 +16,7 @@ from urllib.parse import urlencode
 from media_hygiene.console.search_view import show_found
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
+from media_hygiene.search import statements as sql
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.folders import BROWSE_PATH, FOLDER_QUERY
 from media_hygiene.search.meaning_index import MeaningIndex
@@ -73,9 +74,7 @@ def open_search(runtime: Runtime, *, words: bool = True) -> SearchIndex:
         stop = runtime.settings.tags.stop_words
         search.stop_words = frozenset(word.casefold() for word in stop)
         # A file with a tag is a file with words: no need to wait for the names then.
-        empty = (
-            words and not search.tagged and search.find(SearchQuery(()), 1).total == 0
-        )
+        empty = words and not search.tagged and not _worded(search)
         with_meaning(runtime, search)
     except sqlite3.Error as exc:
         raise unreadable_index(runtime, index, exc) from exc
@@ -88,6 +87,19 @@ def open_search(runtime: Runtime, *, words: bool = True) -> SearchIndex:
             )
         )
     return search
+
+
+def _worded(search: SearchIndex) -> bool:
+    """Tell whether a file has words: a tag, or the name of someone on it.
+
+    Args:
+        search: The open index.
+
+    Returns:
+        True when the words' table has a row, built first by a search.
+    """
+    search.find(SearchQuery(()), 1)  # builds the words' table, names included
+    return search.connection.execute(sql.ANY_WORD).fetchone() is not None
 
 
 def print_found(runtime: Runtime, search: SearchIndex, printed: Printed) -> int:

@@ -122,3 +122,25 @@ def test_each_page_shows_its_main_keys_in_the_panel(template: str, key: str) -> 
     assert key in panel.split('id="moreKeys"')[0]
     assert '<p class="safe">🔒 ' in panel
     assert "Ctrl+C in the terminal" not in page.split("</aside>")[1].split("<script")[0]
+
+
+@pytest.mark.parametrize("template", _FRAMED)
+def test_the_left_column_list_may_shrink_so_it_scrolls(template: str) -> None:
+    """`#toc` is the part of `#side` that scrolls: a page never stops it shrinking.
+
+    The search's open tree of folders was taller than the window, out of reach (0451).
+    """
+    page = render_page(template)
+    rules = re.findall(r"#toc\s*\{([^}]*)\}", page)
+    assert rules, template
+    for rule in rules:
+        assert not re.search(r"flex:\s*(none|\d+\s+0)\b", rule), (template, rule)
+
+
+def test_the_search_tree_of_folders_scrolls_on_its_own() -> None:
+    """A tree of years taller than the window: its own scroll bar, the form in sight."""
+    page = render_page("search.html.j2")
+    rule = re.search(r"#folders #tree \{([^}]*)\}", page)
+    assert rule is not None
+    assert "max-height" in rule[1]
+    assert "overflow-y: auto" in rule[1]

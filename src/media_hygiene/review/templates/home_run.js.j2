@@ -191,7 +191,7 @@ function stopped() {
 }
 
 // ---- The audit run by the page: its steps polled while it runs, then its summary --------
-const audit = { last: null };
+const audit = { last: null, timer: 0 };
 function drawAudit(state) {
   audit.last = state;
   const list = $("#auditSteps");
@@ -213,20 +213,35 @@ function drawAudit(state) {
   $("#auditEnd").innerHTML = end.join("");
   return running;
 }
+// Between runs it is still looked for every IDLE_MS: an audit asked from the console
+// (`mh import --phone`, 0451) is then shown and followed as one started here.
+function nextAudit(wait) {
+  window.clearTimeout(audit.timer);
+  audit.timer = window.setTimeout(pollAudit, wait);
+}
+function showAudit() {
+  if (view.id !== HOME) go(HOME, false);
+  const here = $("#auditHere");
+  if (here) here.scrollIntoView({ behavior: reduced.matches ? "auto" : "smooth", block: "center" });
+}
 const pollAudit = () => fetch(P.audit, { cache: "no-store" })
   .then((response) => response.json())
   .then((state) => {
-    if (drawAudit(state)) window.setTimeout(pollAudit, POLL_MS);
-    else if (state.phase !== "idle") reload();
+    const was = audit.last ? audit.last.phase : null;
+    if (state.phase === "running" && was !== null && was !== "running") showAudit();
+    if (drawAudit(state)) { nextAudit(POLL_MS); return; }
+    if (state.phase !== "idle" && (was === null || was === "running")) reload();
+    nextAudit(IDLE_MS);
   })
-  .catch(() => stopped());
+  // Only a run followed says the page stopped; between runs, a step may hold the server.
+  .catch(() => { if (audit.last && audit.last.phase === "running") stopped(); else nextAudit(IDLE_MS); });
 function askAudit(action) {
   if (action === "start" && view.id !== HOME) go(HOME, false);
   post(P.audit, { action: action })
     .then((reply) => {
       if (!reply.ok) toast(reply.body.error || T.auditBusy);
       pollAudit();
-      if (action === "start") { const here = $("#auditHere"); if (here) here.scrollIntoView({ behavior: reduced.matches ? "auto" : "smooth", block: "center" }); }
+      if (action === "start") showAudit();
     })
     .catch(() => stopped());
 }

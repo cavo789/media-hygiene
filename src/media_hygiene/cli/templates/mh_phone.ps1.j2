@@ -3,6 +3,7 @@
 {% set p = phone %}
 {% set t = phone.texts %}
 {% set c = phone.free %}
+{% set e = phone.end %}
 
 # `{{ f }} phone [--to <folder>] [--only <folder of DCIM>] [{{ c.flag }}]`: copy only the new photos and videos of a phone
 # plugged in over USB (0219). Shell.Application only (a COM object of Windows: no Add-Type);
@@ -86,11 +87,23 @@ function global:_{{ f }}_phone {
     $count = '{0:N0}' -f $library
     if ($library -gt 0) { Write-Host "{{ t.library }}" }
     $count = '{0:N0}' -f $aside
-    if ($aside -gt 0) { Write-Host "{{ t.aside }}" }
+    if ($aside -gt 0) { Write-Host "{{ e.aside }}" }
     $count = '{0:N0}' -f $here
     if ($here -gt 0) { Write-Host "{{ t.here }}" }
     if ($free) { _{{ f }}_phone_clear $shell $name $items $plan $result $destination; return }
-    if ($copies -gt 0) { Write-Host "{{ t.next }}" }
+    if ($copies -gt 0) { _{{ f }}_phone_audit }
+}
+
+# The files copied join the library through an audit, run at once (0451): by the home page
+# when it is open (it shows the run, then reloads on its summary), else in this console.
+function global:_{{ f }}_phone_audit {
+    try {
+        $null = Invoke-WebRequest -Uri 'http://127.0.0.1:{{ script.commands.port }}{{ e.path }}' -Method Post -ContentType 'application/json' -Body '{{ e.body }}' -UseBasicParsing -TimeoutSec 5 -ErrorAction Stop
+        Write-Host "{{ e.on_page }}"
+        return
+    } catch { }
+    Write-Host "{{ e.in_console }}"
+    {{ f }} audit
 }
 
 # What was copied, read back from the destination: each copy there with the phone's size.

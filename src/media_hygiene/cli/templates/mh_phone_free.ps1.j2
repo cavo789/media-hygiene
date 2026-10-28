@@ -116,7 +116,7 @@ function global:_{{ f }}_phone_clear($shell, [string]$name, $items, $plan, $resu
     $count = '{0:N0}' -f $aside
     if ($aside -gt 0) { Write-Host "{{ t.aside }}" }
     if ($stopped) { Write-Host "{{ t.stopped }}" }
-    if ($result -and $result.Files.Count -gt 0) { Write-Host "{{ phone.texts.next }}" } else { Write-Host "{{ t.next }}" }
+    if ($result -and $result.Files.Count -gt 0) { _{{ f }}_phone_audit } else { Write-Host "{{ t.next }}" }
 }
 
 # The page where the files to delete are ticked ({{ c.review }}): the port published on the loopback

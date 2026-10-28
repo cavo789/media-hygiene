@@ -963,6 +963,12 @@ msgid ""
 "photo shows. Default: [tags] meaning."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Also on the phone, skipped: {count} you set aside earlier (a clean or a "
+"review); they do not come back into your library."
+msgstr ""
+
 msgid "Altitude (m)"
 msgstr ""
 
@@ -1134,6 +1140,9 @@ msgid "Audit in this page"
 msgstr ""
 
 msgid "Audit now"
+msgstr ""
+
+msgid "Audit of the new files, so that they join your library (mh audit):"
 msgstr ""
 
 msgid "Audit report"
@@ -6659,10 +6668,6 @@ msgid ""
 msgstr ""
 
 msgid "Set aside"
-msgstr ""
-
-#, python-brace-format
-msgid "Set aside before on purpose, not copied: {count}."
 msgstr ""
 
 #, python-brace-format
@@ -13955,7 +13960,9 @@ msgid ""
 "single page: {path} (Ctrl+click opens it)."
 msgstr ""
 
-msgid "👉 What next: mh audit (the new files join your library)."
+msgid ""
+"👉 The home page audits the new files now: follow it there, it shows them "
+"when done."
 msgstr ""
 
 msgid "👉 What next: mh history (the phone's run, and what it deleted)."

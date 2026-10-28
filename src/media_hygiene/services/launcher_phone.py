@@ -18,6 +18,7 @@ from dataclasses import dataclass
 from typing import Final
 
 from media_hygiene.i18n import _
+from media_hygiene.services.launcher_phone_end import PhoneEnd, phone_end
 from media_hygiene.services.launcher_phone_free import (
     PhoneFreeCommand,
     phone_free_command,
@@ -70,10 +71,8 @@ class PhoneTexts:  # pylint: disable=too-many-instance-attributes  # one per mes
     copied: str  # holds `${count}`, `${size}`, `${speed}`, `${destination}`
     missing: str  # holds `${count}`
     library: str  # holds `${count}`
-    aside: str  # holds `${count}`
     here: str  # holds `${count}`
     nothing: str
-    next: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -81,6 +80,7 @@ class PhoneCommand:  # pylint: disable=too-many-instance-attributes  # one per v
     """What the script needs to run `mh import --phone`."""
 
     texts: PhoneTexts
+    end: PhoneEnd  # the set-aside said, the files copied audited (0451)
     free: PhoneFreeCommand  # `--free` (0248)
     naming: PhoneNaming  # a factory name: how to rename the phone (0450)
     plan: str = PHONE_PLAN
@@ -106,7 +106,7 @@ def phone_command() -> PhoneCommand:
     Returns:
         Them, the messages safe inside double quotes.
     """
-    return PhoneCommand(_texts(), phone_free_command(), phone_naming())
+    return PhoneCommand(_texts(), phone_end(), phone_free_command(), phone_naming())
 
 
 def _texts() -> PhoneTexts:
@@ -191,10 +191,8 @@ def _texts() -> PhoneTexts:
             "count",
         ),
         library=say(_("Already in your library, not copied: {count}."), "count"),
-        aside=say(_("Set aside before on purpose, not copied: {count}."), "count"),
         here=say(
             _("Already copied by an earlier mh import --phone: {count}."), "count"
         ),
         nothing=say(_("Nothing new on the phone: nothing to copy.")),
-        next=say(_("👉 What next: mh audit (the new files join your library).")),
     )
