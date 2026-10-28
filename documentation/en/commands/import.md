@@ -101,8 +101,11 @@ which one), lists its `DCIM` folder
 - **already copied** into that folder by an earlier `mh import --phone`.
 
 It ends with what it read back from the folder: *New photos and videos copied: 212 (1.40 GB,
-18.5 MB/s)*, then each count left out, and *👉 What next: `mh audit`*. 🔒 Without `--free`, the
-phone is only read: nothing on it is deleted, moved or renamed.
+18.5 MB/s)*, then each count left out (*Also on the phone, skipped: 164 you set aside earlier*:
+files of the phone, not of the copy). Then it audits at once, so that the new files join your
+library and [`search`](search.md): in the home page when it is open (the page shows the audit,
+then its result), else in the console. 🔒 Without `--free`, the phone is only read: nothing on
+it is deleted, moved or renamed.
 
 - **Run `mh audit` once first**: the library is what the cache knows. Without an audit, every
   photo of the phone is new (it says so).

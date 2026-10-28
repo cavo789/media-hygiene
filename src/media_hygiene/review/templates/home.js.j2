@@ -13,6 +13,7 @@ const WINDOW = {{ window | tojson }};
 const ALIVE_MS = {{ alive_ms | tojson }};
 const THOUSANDS = {{ thousands | tojson }};
 const POLL_MS = 1000;
+const IDLE_MS = 3000; // between runs, an audit asked from the console is looked for (0451)
 // The next server may answer 0.5 s after this one ended (measured, 0354): asked often, and
 // known by the run id each server sends (`RUN_HEADER` of review/respond.py).
 const COMEBACK_MS = 250;

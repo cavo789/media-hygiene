@@ -109,8 +109,12 @@ lequel), liste son dossier `DCIM` (environ 30 secondes par tranche de 1 000 fich
 - **déjà copié** dans ce dossier par un `mh import --phone` précédent.
 
 Il termine par ce qu'il a relu dans le dossier : *Nouvelles photos et vidéos copiées : 212
-(1,40 Go, 18,5 Mo/s)*, puis chaque nombre laissé de côté, et *👉 Et maintenant : `mh audit`*.
-🔒 Sans `--free`, le téléphone est seulement lu : rien n'y est supprimé, déplacé ni renommé.
+(1,40 Go, 18,5 Mo/s)*, puis chaque nombre laissé de côté (*Aussi sur le téléphone, ignorés : 164
+que vous aviez écartés auparavant* : des fichiers du téléphone, pas de la copie). Puis il fait
+l'audit aussitôt, pour que les nouveaux fichiers rejoignent votre photothèque et
+[`search`](search.md) : dans la page d'accueil quand elle est ouverte (la page montre l'audit,
+puis son résultat), sinon dans la console. 🔒 Sans `--free`, le téléphone est seulement lu :
+rien n'y est supprimé, déplacé ni renommé.
 
 - **Lancez d'abord une fois `mh audit`** : la photothèque est ce que le cache connaît. Sans audit,
   chaque photo du téléphone est nouvelle (il le dit).

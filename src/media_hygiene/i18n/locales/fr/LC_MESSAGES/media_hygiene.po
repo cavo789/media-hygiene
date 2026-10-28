@@ -1229,6 +1229,15 @@ msgstr ""
 "pour que 'search' trouve ce qu'une photo montre. Par défaut : [tags] "
 "meaning."
 
+#, python-brace-format
+msgid ""
+"Also on the phone, skipped: {count} you set aside earlier (a clean or a "
+"review); they do not come back into your library."
+msgstr ""
+"Aussi sur le téléphone, ignorés : {count} que vous aviez écartés "
+"auparavant (un nettoyage ou une revue) ; ils ne reviennent pas dans votre"
+" photothèque."
+
 msgid "Altitude (m)"
 msgstr "Altitude (m)"
 
@@ -1441,6 +1450,11 @@ msgstr "Auditer dans cette page"
 
 msgid "Audit now"
 msgstr "Auditer maintenant"
+
+msgid "Audit of the new files, so that they join your library (mh audit):"
+msgstr ""
+"Audit des nouveaux fichiers, pour qu'ils rejoignent votre photothèque (mh"
+" audit) :"
 
 msgid "Audit report"
 msgstr "Rapport d'audit"
@@ -6156,7 +6170,9 @@ msgid "On the phone's remote, type the code of this TV:"
 msgstr "Sur la télécommande du téléphone, tapez le code de cette télé :"
 
 msgid "On the phone, everything is read-only: albums change on the PC."
-msgstr "Sur le téléphone, tout est en lecture seule : les albums changent sur le PC."
+msgstr ""
+"Sur le téléphone, tout est en lecture seule : les albums changent sur le "
+"PC."
 
 msgid "On this page"
 msgstr "Dans cette page"
@@ -8049,10 +8065,6 @@ msgstr ""
 
 msgid "Set aside"
 msgstr "Écartées"
-
-#, python-brace-format
-msgid "Set aside before on purpose, not copied: {count}."
-msgstr "Écartés volontairement auparavant, non copiés : {count}."
 
 #, python-brace-format
 msgid "Set aside before, left on the phone: {count}."
@@ -16625,10 +16637,12 @@ msgstr ""
 "👀 Ce ne sont pas des fichiers identiques : regardez-les avant de "
 "répondre, tous sur une seule page : {path} (Ctrl+clic l'ouvre)."
 
-msgid "👉 What next: mh audit (the new files join your library)."
+msgid ""
+"👉 The home page audits the new files now: follow it there, it shows them "
+"when done."
 msgstr ""
-"👉 Et maintenant : mh audit (les nouveaux fichiers rejoignent votre "
-"photothèque)."
+"👉 La page d'accueil fait maintenant l'audit des nouveaux fichiers : "
+"suivez-le là, elle les montre à la fin."
 
 msgid "👉 What next: mh history (the phone's run, and what it deleted)."
 msgstr ""
