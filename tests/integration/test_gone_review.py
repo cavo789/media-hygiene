@@ -180,7 +180,7 @@ def test_a_preview_kept_in_the_cache_is_shown(locations: Locations) -> None:
     assert state.preview
     shown, missing = serve_app_and_call(
         lambda pool: GoneApp(session, PAGE, pool),
-        [Call("GET", state.preview), Call("GET", "/preview/0123.jpg")],
+        [Call("GET", f"/{state.preview}"), Call("GET", "/preview/0123.jpg")],
     )
     assert (shown.status, shown.body) == (200, b"\xff\xd8 a jpeg")
     assert missing.status == 404

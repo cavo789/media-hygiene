@@ -54,3 +54,28 @@ def test_before_the_page_nothing_answers(
     """The review's API waits for its page: no session yet."""
     answer = serve_home(cli, monkeypatch, [("GET /review/near/api/state", None)])[0]
     assert answer.status == 404
+
+
+def test_the_other_reviews_are_served_under_their_prefixes(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0417: the burst series, the pairs, the junk and the files gone, the same way."""
+    pages = {
+        ("review",): "/review/bursts/",
+        ("review", "--pairs"): "/review/pairs/",
+        ("review", "--junk"): "/review/junk/",
+        ("review", "--gone"): "/review/gone/",
+    }
+    asked: list[tuple[str, object]] = []
+    for words, page in pages.items():
+        assert served_here(words) == page
+        asked += [(f"GET {page}", None), (f"GET {page}api/state", None)]
+    answers = serve_home(cli, monkeypatch, asked)
+    for at, page in enumerate(pages.values()):
+        shown, state = answers[2 * at], answers[2 * at + 1]
+        assert shown.status == 200, page
+        if state.status == 404:  # nothing to review: the page said so
+            assert b"nothing to review" in shown.body, page
+            continue
+        assert '"api/state"' in shown.body.decode(), page
+        assert '"/preview/' not in state.body.decode(), page  # relative to the page

@@ -51,8 +51,14 @@ class WatchFiles:
 
 
 WATCH: Final = WatchFiles()
-NEAR_REVIEW_PAGE: Final = "/review/near/"  # `services/near_here`
+NEAR_REVIEW_PAGE: Final = "/review/near/"  # `services/review_here`
 HISTORY_PAGE: Final = "/history/"  # `services/history_here` (0350)
+PAIRS_PAGE: Final = (
+    "/review/pairs/"  # `services/review_kinds` (0417), as the next three
+)
+JUNK_PAGE: Final = "/review/junk/"
+GONE_PAGE: Final = "/review/gone/"
+BURSTS_PAGE: Final = "/review/bursts/"
 STEP_PATH: Final = "/api/step"  # `POST` a step (`home_step`), `GET` where it is
 # The pages the home server serves itself (0356): a click on them is a plain link.
 SERVED_HERE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
@@ -60,6 +66,10 @@ SERVED_HERE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
         ("search",): SEARCH_PAGE_PATH,
         ("browse",): BROWSE_PATH,
         ("review", "--near"): NEAR_REVIEW_PAGE,  # 0357
+        ("review", "--pairs"): PAIRS_PAGE,  # 0417, as the next three
+        ("review", "--junk"): JUNK_PAGE,
+        ("review", "--gone"): GONE_PAGE,
+        ("review",): BURSTS_PAGE,
         ("history",): HISTORY_PAGE,  # 0350
     }
 )

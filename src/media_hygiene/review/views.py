@@ -29,6 +29,9 @@ _FROZEN = ConfigDict(frozen=True, extra="forbid")
 _PREVIEW_KEY_LENGTH: Final = 24
 PREVIEW_PREFIX: Final = "/preview/"
 ORIGINAL_PREFIX: Final = "/original/"
+# The same, relative to a review's page: under a prefix of the home server too (0417).
+PREVIEW_LINK: Final = PREVIEW_PREFIX.removeprefix("/")
+ORIGINAL_LINK: Final = ORIGINAL_PREFIX.removeprefix("/")
 
 
 class ShotState(FileCard):
@@ -166,8 +169,8 @@ class StateBuilder:
             name=name,
             folder=folder,
             details=" · ".join(details),
-            preview=f"{PREVIEW_PREFIX}{preview_key(file)}.jpg",
-            original=f"{ORIGINAL_PREFIX}{preview_key(file)}{file.path.suffix.lower()}",
+            preview=f"{PREVIEW_LINK}{preview_key(file)}.jpg",
+            original=f"{ORIGINAL_LINK}{preview_key(file)}{file.path.suffix.lower()}",
             protected=self.policy.is_protected(file),
             best=best,
             size=file.size,

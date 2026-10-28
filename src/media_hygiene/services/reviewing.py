@@ -41,7 +41,7 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 HOST_LOOPBACK: Final = "127.0.0.1"
-_PAGE_TEMPLATE: Final = "review.html.j2"
+PAGE_TEMPLATE: Final = "review.html.j2"
 
 
 def review_target(runtime: Runtime, decisions: Path, port: int) -> Path:
@@ -115,7 +115,7 @@ def serve_review(runtime: Runtime, session: ReviewSession, start: ReviewStart) -
     Returns:
         `STEP_EXIT_BASE + n` when *Apply now* chose step `n`; 0 otherwise.
     """
-    page = review_page(_PAGE_TEMPLATE, session.place, (DECIDE_PATH, FILE_PATH))
+    page = review_page(PAGE_TEMPLATE, session.place, (DECIDE_PATH, FILE_PATH))
     offer = ApplyOffer(start.apply, lambda: session.progress[1] > 0)
     albums = album_desk(runtime, KeyPicker(session.preview_source).files)
     code = 0

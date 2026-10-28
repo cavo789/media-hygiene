@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     from media_hygiene.plan.models import AuditFindings
     from media_hygiene.services.runtime import Runtime
 
-_PAGE_TEMPLATE: Final = "gone_review.html.j2"
+PAGE_TEMPLATE: Final = "gone_review.html.j2"
 
 
 def files_gone(runtime: Runtime) -> tuple[GoneRecord, ...]:
@@ -79,5 +79,5 @@ def serve_gone_review(runtime: Runtime, session: GoneSession, port: int) -> None
         port: The port to listen on, inside the container (0: any free one).
     """
     api = (GONE_DECIDE_PATH, GONE_FILE_PATH)
-    page = ReviewPage(_PAGE_TEMPLATE, session.place, api, partial(GoneApp, session))
+    page = ReviewPage(PAGE_TEMPLATE, session.place, api, partial(GoneApp, session))
     serve_review_page(runtime, page, port)
