@@ -44,7 +44,7 @@ class AlbumAsked(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    action: Literal["add", "remove", "cover"]  # cover: one file of the album (0371)
+    action: Literal["add", "remove", "cover", "tv"]  # cover: one file (0371); tv: 0454
     album: str = Field(max_length=_MAX_TEXT)
     keys: tuple[str, ...] = Field(default=(), max_length=MAX_ADDED)
     all: bool = False  # every file the search finds, not only those shown
@@ -59,6 +59,8 @@ class AlbumDesk:
     # The files a request names (its keys, or every file found), in the container.
     pick: Callable[[AlbumAsked], tuple[Path, ...]]
     ready: Callable[[], None]  # raises when the reports folder cannot keep them
+    # 📺 *On the TV* (0454): the files shown by the home server's slideshow.
+    tv: Callable[[tuple[Path, ...]], Response] | None = None
     _turn: asyncio.Lock = field(default_factory=asyncio.Lock)
 
     def state(self) -> Response:
@@ -90,12 +92,9 @@ class AlbumDesk:
         except ValidationError:
             return Response(HTTPStatus.BAD_REQUEST)
         files = self.pick(asked)
-        if len(files) > MAX_ADDED:
-            message = _(
-                "{count} files: an album takes at most {most} at once. Narrow the "
-                "search (a year, a folder), then add again."
-            ).format(count=len(files), most=MAX_ADDED)
-            return json_response(HTTPStatus.CONFLICT, {"error": message})
+        early = self._early(asked, files)
+        if early is not None:
+            return early
         change = AlbumChange(asked.album, files)
         async with self._turn:
             try:
@@ -109,6 +108,21 @@ class AlbumDesk:
         if asked.action == "cover":
             said["message"] = cover_message(shelf, asked.album)
         return json_response(HTTPStatus.OK, said)
+
+    def _early(self, asked: AlbumAsked, files: tuple[Path, ...]) -> Response | None:
+        """The answer before any save: too many files, or the TV (0454).
+
+        Args:
+            asked: The request.
+            files: The files it names.
+
+        Returns:
+            409 for too many, the TV's answer; None to save a change.
+        """
+        early = too_many(files)
+        if early is not None or asked.action != "tv":
+            return early
+        return Response(HTTPStatus.NOT_FOUND) if self.tv is None else self.tv(files)
 
     def _run(self, asked: AlbumAsked) -> Callable[[AlbumChange], Shelf]:
         """The change a request asks for.
@@ -131,6 +145,24 @@ class AlbumDesk:
             Its host path.
         """
         return self.store.place.host
+
+
+def too_many(files: tuple[Path, ...]) -> Response | None:
+    """Refuse more files than an album, or the TV, takes at once.
+
+    Args:
+        files: The files a request names.
+
+    Returns:
+        409 with the way to narrow the search; None when they fit.
+    """
+    if len(files) <= MAX_ADDED:
+        return None
+    message = _(
+        "{count} files: an album takes at most {most} at once. Narrow the "
+        "search (a year, a folder), then add again."
+    ).format(count=len(files), most=MAX_ADDED)
+    return json_response(HTTPStatus.CONFLICT, {"error": message})
 
 
 def _not_saved(error: OSError) -> Response:

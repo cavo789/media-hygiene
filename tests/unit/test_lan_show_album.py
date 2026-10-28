@@ -102,13 +102,14 @@ def test_an_unpaired_phone_is_refused() -> None:
     assert not fake.steps
 
 
-def test_no_album_saved_refuses_and_the_page_says_how_to_make_one() -> None:
-    """No album: nothing to start; the phone's page has the line to make one."""
+def test_no_album_saved_refuses_and_the_page_offers_a_folder_or_a_month() -> None:
+    """No album: nothing to start; the phone's page offers a folder or a month."""
     fake = _Home(())
     assert _step(fake, _show("Crete 2023")).status is HTTPStatus.FORBIDDEN
     page = home.home_page(remote=True).decode()
     assert "tvAlbums()" in page
-    assert "make one on the PC" in page
+    assert "choose a folder or a month" in page
+    assert '"tvChoices": "/slideshow/choices"' in page
     assert '"albumList": "/api/album-list"' in page
 
 

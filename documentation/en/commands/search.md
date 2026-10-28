@@ -270,7 +270,10 @@ to the album**.
   found nowhere (deleted, or in the quarantine) stays in the album, listed as missing, until it
   comes back.
 - **📺 Share on the TV** gives the command that shows the album typed, copied for you: stop the
-  page, then `mh slideshow --album "Crete 2023" --lan` ([`slideshow`](slideshow.md)).
+  page, then `mh slideshow --album "Crete 2023" --lan` ([`slideshow`](slideshow.md)). To show
+  photos once, no album is needed: **📺 On the TV** in the bar (search opened from the home page)
+  shows the picked files, or every file found when nothing is picked (at most 3000), and opens
+  the remote.
 - **📨 Prepare for sending** gives the command that makes the album ready to send by mail:
   resized copies without the GPS position, a folder and a zip, `mh share --album "Crete 2023"`
   ([`share`](share.md)).

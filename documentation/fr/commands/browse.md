@@ -113,6 +113,9 @@ Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`).
 - **➕ Ajouter à l'album** met les photos choisies dans l'album tapé dans **Album**, à part de la
   mise de côté ; **📺 Partager sur la télé** donne la commande qui le montre. Voir
   [Mettre des photos dans un album](search.md#mettre-des-photos-dans-un-album).
+- **📺 Sur la télé** (ouvert depuis la page d'accueil) montre aussitôt sur la télé les fichiers
+  choisis, ou tous ceux du dossier quand rien n'est choisi ; sans album. Voir
+  [`slideshow`](slideshow.md).
 
 Ctrl+C, ou fermer son onglet, arrête la page ; quand des fichiers sont mis de côté, `browse` propose l'étape suivante :
 

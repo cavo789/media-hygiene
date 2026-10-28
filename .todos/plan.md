@@ -88,3 +88,4 @@ One `/todo:run NNNN` each, highest priority first.
 | 0432 | The home page installs as an app: manifest, service worker, offline meerkat, shared splash | [PARTIAL_0432-phone-installable-app.md](PARTIAL/PARTIAL_0432-phone-installable-app.md) |
 | 0448 | slideshow: the TV tells the event (name, month, place), a title card per event | [PARTIAL_0448-slideshow-tells-the-event-name-date-place.md](PARTIAL/PARTIAL_0448-slideshow-tells-the-event-name-date-place.md) |
 | 0449 | slideshow: the storyteller's view on the phone, and story controls | [PARTIAL_0449-slideshow-storyteller-view-on-the-phone.md](PARTIAL/PARTIAL_0449-slideshow-storyteller-view-on-the-phone.md) |
+| 0454 | The pick bar sends the selection (or the whole page) to the TV, no album needed | [PARTIAL_0454-selection-to-the-tv-from-the-pick-bar.md](PARTIAL/PARTIAL_0454-selection-to-the-tv-from-the-pick-bar.md) |

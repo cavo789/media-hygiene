@@ -10,7 +10,9 @@ photos ») sans copier une photo : aucune place en plus.**
 Un **album** est la liste nommée de photos que vous faites dans
 [`search`](search.md#mettre-des-photos-dans-un-album), [`browse`](browse.md) ou la revue des
 rafales, enregistrée dans `albums.json`. Il a plusieurs usages, tous sous *Partager* dans la page
-d'accueil et `mh menu` :
+d'accueil et `mh menu`. Un album est **une sélection à garder** et à remontrer : pour montrer des
+photos une fois sur la télé, pas besoin d'album (**📺 Sur la télé** dans la barre de `search` et
+`browse`, voir [`slideshow`](slideshow.md)).
 
 | Usage | Commande |
 |---|---|

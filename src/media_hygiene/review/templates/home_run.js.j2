@@ -399,7 +399,42 @@ function tvAlbums() {
         : `<p class="muted">${esc(T.tvNone)}</p>`;
       $$("[data-tv]", box).forEach((button) => button.addEventListener("click", () => tvStart(button.dataset.tv)));
     })
-    .catch(() => { box.innerHTML = `<p class="muted">${esc(T.tvNone)}</p>`; });
+    .catch(() => { box.innerHTML = `<p class="muted">${esc(T.tvNone)}</p>`; })
+    .finally(tvChoices);
+}
+// ---- A folder or a month on the TV (0455): the lists come from the index, read-only -----------
+function tvChoices() {
+  const box = $("#tvChoices");
+  if (!box || !P.tvChoices) return;
+  fetch(P.tvChoices, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+    .then((lists) => {
+      const options = (values) => values.map((value) => `<option value="${esc(value)}">${esc(value)}</option>`).join("");
+      const pick = (id, label, values) => (values.length
+        ? `<label class="muted" for="${id}">${esc(label)}</label><select id="${id}">${options(values)}</select><button class="btn btn-primary" type="button" data-choose="${id}">${icon("play")} ${esc(T.tvShow)}</button>`
+        : "");
+      box.innerHTML = pick("tvFolder", T.tvFolder, lists.folders || []) + pick("tvMonth", T.tvMonth, lists.months || []);
+      $$("[data-choose]", box).forEach((button) => button.addEventListener("click", () => tvChoose(button.dataset.choose)));
+    })
+    .catch(() => { box.innerHTML = ""; });
+}
+function tvChoose(id) {
+  const value = $(`#${id}`).value;
+  let body = { folder: value };
+  if (id === "tvMonth") {
+    const [year, month] = value.split("-").map(Number);
+    const last = new Date(Date.UTC(year, month, 0)).getUTCDate();
+    body = { first: `${value}-01`, last: `${value}-${String(last).padStart(2, "0")}` };
+  }
+  $$("[data-choose]").forEach((button) => { button.disabled = true; });
+  toast(T.tvStarting);
+  post(P.tvChoose, body)
+    .then((reply) => {
+      if (reply.ok && reply.body.page) { window.location.assign(reply.body.page); return; }
+      $$("[data-choose]").forEach((button) => { button.disabled = false; });
+      toast(reply.body.error || fill(T.failed, { status: reply.status }));
+    })
+    .catch(() => { $$("[data-choose]").forEach((button) => { button.disabled = false; }); toast(T.tvLate); });
 }
 function tvStart(album) {
   $$("[data-tv]").forEach((button) => { button.disabled = true; });
