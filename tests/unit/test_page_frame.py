@@ -135,3 +135,12 @@ def test_the_left_column_list_may_shrink_so_it_scrolls(template: str) -> None:
     assert rules, template
     for rule in rules:
         assert not re.search(r"flex:\s*(none|\d+\s+0)\b", rule), (template, rule)
+
+
+def test_the_search_tree_of_folders_scrolls_on_its_own() -> None:
+    """A tree of years taller than the window: its own scroll bar, the form in sight."""
+    page = render_page("search.html.j2")
+    rule = re.search(r"#folders #tree \{([^}]*)\}", page)
+    assert rule is not None
+    assert "max-height" in rule[1]
+    assert "overflow-y: auto" in rule[1]

@@ -137,7 +137,9 @@ class SearchIndex:
         """
         self._fresh()
         conditions, parameters = sql.conditions(query)
-        where = sql.WHERE + sql.AND.join(conditions) if conditions else ""
+        where = sql.rows_of(query) + (
+            sql.WHERE + sql.AND.join(conditions) if conditions else ""
+        )
         order = sql.BEST_FIRST if match_expression(query) else sql.NEWEST_FIRST
         order = sql.BY_ORDER.get(query.filters.order, order)
         total = self._connection.execute(sql.COUNT + where, parameters).fetchone()[0]
@@ -159,7 +161,9 @@ class SearchIndex:
         """
         self._fresh()
         conditions, parameters = sql.conditions(query)
-        where = sql.WHERE + sql.AND.join(conditions) if conditions else ""
+        where = sql.rows_of(query) + (
+            sql.WHERE + sql.AND.join(conditions) if conditions else ""
+        )
         rows = self._connection.execute(sql.VERSIONS + where, parameters)
         return tuple(
             PhotoVersion(Path(path), size, mtime) for path, size, mtime in rows

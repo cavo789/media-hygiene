@@ -110,6 +110,8 @@
   /* The field and its filters, one under the other, in the left column: as tall as they
      are, scrolled on their own once the open tree of folders is taller than the window. */
   #toc { flex: 0 1 auto; }
+  /* The open tree scrolls on its own, the form above it staying in sight (0451). */
+  #folders #tree { max-height: 45vh; overflow-y: auto; scrollbar-gutter: stable; }
   form { display: flex; flex-direction: column; gap: 6px; }
   form label { display: flex; flex-direction: column; }
   form input, form select { width: 100%; }

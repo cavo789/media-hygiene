@@ -30,7 +30,11 @@ The maintainer, 2026-10-28, after `mh import --phone` (83 files copied):
   console brings it back to its home view, scrolled to the audit, followed, then reloaded on
   its summary. Between runs, a poll nobody answers is not *the page stopped* (a step may
   hold the server).
-- Search: `#toc { flex: 0 1 auto; }`; a test that no framed page stops `#toc` shrinking.
+- Search: `#toc { flex: 0 1 auto; }`; a test that no framed page stops `#toc` shrinking;
+  the open tree *In a folder* scrolls on its own (`max-height: 45vh`).
+- Search without words read only the files `tags` had described (the full-text table
+  joined first): 55 photos imported that day, in the tree, never found by date or folder.
+  Without words, the statements now read `files` itself (`statements.rows_of`).
 
 ## Left
 
