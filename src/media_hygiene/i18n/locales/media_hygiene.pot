@@ -3057,6 +3057,11 @@ msgstr ""
 msgid "From a phone"
 msgstr ""
 
+msgid ""
+"From a phone, only an album saved on the PC goes on the TV; run any other"
+" step on the PC."
+msgstr ""
+
 msgid "From one element to the next; the first one leads straight to the content."
 msgstr ""
 
@@ -4328,6 +4333,11 @@ msgstr ""
 
 #, python-brace-format
 msgid "No album named {name}. The albums: {names}."
+msgstr ""
+
+msgid ""
+"No album saved yet: make one on the PC, in search or browse (Add to an "
+"album), then come back here."
 msgstr ""
 
 msgid ""
@@ -7289,6 +7299,11 @@ msgstr ""
 msgid "The PC lacks them; never those you set aside on purpose."
 msgstr ""
 
+msgid ""
+"The PC starts the show; the TV opens it at its bookmark, this phone "
+"becomes the remote."
+msgstr ""
+
 msgid "The TV is paired: it shows the photo now."
 msgstr ""
 
@@ -8220,6 +8235,12 @@ msgstr ""
 msgid ""
 "The shell of the script: 'powershell' (Windows) or 'bash' (WSL, Linux, "
 "macOS). Default: guessed from the mounted folders."
+msgstr ""
+
+msgid "The show did not start: look at the window of mh on the PC."
+msgstr ""
+
+msgid "The show starts on the PC…"
 msgstr ""
 
 #, python-brace-format

@@ -173,6 +173,10 @@ function familyHome() {
       <div class="audit-controls">${buttons}</div>
     </section>
     ${EXTRAS.albums()}
+    <section class="block" aria-labelledby="tvTitle">
+      <div class="section-head"><h2 id="tvTitle">${esc(T.tvTitle)}</h2><p class="section-note">${esc(T.tvNote)}</p></div>
+      <div class="audit-controls" id="tvAlbums" aria-live="polite"></div>
+    </section>
     <section class="block" aria-labelledby="whereTitle">
       <div class="section-head"><h2 id="whereTitle">${esc(T.whereYouAre)}</h2></div>
       <div class="tiles">${S.tiles.map(tile).join("")}</div>
@@ -271,5 +275,6 @@ const EXTRAS = {
 function renderMain() {
   const space = SPACE[view.id];
   $("#main").innerHTML = space.id === HOME ? viewHome() : viewSpace(space);
+  if (REMOTE && space.id === HOME) tvAlbums();
   if (audit.last) drawAudit(audit.last);
 }

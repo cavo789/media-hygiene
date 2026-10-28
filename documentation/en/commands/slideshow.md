@@ -63,7 +63,10 @@ Instead of a folder: `--search "noel 2025"` (the photos a [`search`](search.md) 
 files set aside, meant for the quarantine; given, it says to use `--album`. From the
 [home page](home.md) opened by `mh --lan`, the *Show your photos on the TV* step asks for the
 folder and opens the show the same way; *Show an album on the TV* asks for the album's name
-(`--album … --lan`). Starting it from a paired phone is not available yet: run it on the PC.
+(`--album … --lan`). A paired phone starts it too, from the sofa: on the phone's home page,
+**Show an album on the TV** lists the albums saved on the PC; a tap runs the show on the PC, and
+the phone opens the remote by itself once the show answers (no code). The TV's bookmark then
+shows its code: type it on the remote. No album saved: the phone says to make one on the PC.
 
 ### On the TV, once
 

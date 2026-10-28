@@ -7,8 +7,10 @@ from __future__ import annotations
 
 import os
 
+from media_hygiene.i18n import _
 from media_hygiene.review.home_fields import RELAY_FIELDS
 from media_hygiene.review.step_watch import WATCH
+from media_hygiene.services.launcher_host import windows_menu
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 
 
@@ -30,3 +32,14 @@ def launcher_relays_steps() -> bool:
         `STEP_EXIT_BASE + n` then runs step `n`; else the code would be lost.
     """
     return bool(os.environ.get(LAUNCHER_STEPS_VARIABLE))
+
+
+def mh_window() -> str:
+    """Name the window where `mh` runs the step chosen, often behind the browser (0258).
+
+    Returns:
+        PowerShell's window from `mh.ps1` (or without `mh`), else the terminal.
+    """
+    if windows_menu():
+        return _("the PowerShell window of mh (in the taskbar)")
+    return _("the terminal where mh runs")

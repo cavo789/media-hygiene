@@ -28,3 +28,21 @@ other acting step keeps *Run this step on the PC*. The maintainer insists: this 
 ## Gain
 
 Walk to the PC and type a command → two taps on the phone (estimated).
+
+## Status
+
+PARTIAL (2026-10-28). Done without 0417, the way steps work today: the phone's home page
+lists the albums of `albums.json` under *Show an album on the TV* (none: a line saying how
+to make one on the PC); a tap sends `POST /api/step` for `slideshow-album`, let through by
+`review/lan_show.py` for that body and a saved album only (`lan_paths.PHONE_STEPS`,
+`write_routes` note; every other step still 403); `mh` runs `slideshow --album … --lan`,
+the home page ends and the phone polls `/api/slides` until the slideshow answers, then opens
+its remote (same HTTPS origin, durable cookie: no code). Tests:
+`tests/unit/test_lan_show_album.py`. Docs: `commands/home.md`, `commands/slideshow.md`.
+
+Left:
+- A test on the real phone and TV (maintainer): the switch of server on the same port, the
+  installed app following, the TV's bookmark (`http://<addr>:8089/`) pairing again by its code
+  (TVs are paired per slideshow run).
+- Once 0417 serves the slideshow from the home server, the phone opens the remote without
+  the server switch, and the TV's pairing may survive.

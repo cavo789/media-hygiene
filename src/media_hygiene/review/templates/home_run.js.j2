@@ -380,3 +380,42 @@ const ACTS = {
   "open-palette": openPalette,
   "open-keys": openKeys,
 };
+
+// ---- A paired phone starts an album on the TV (0444) --------------------------------------
+// The albums saved on the PC, no free text; the PC runs `slideshow --album … --lan`, the home
+// page ends, and this phone follows to the slideshow's remote once it answers (same origin,
+// same cookie: no code).
+const TV_STEP = "slideshow-album";
+const TV_WAIT_MS = 120000;
+function tvAlbums() {
+  const box = $("#tvAlbums");
+  if (!box) return;
+  fetch(P.albumList, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+    .then((list) => {
+      const names = (list.albums || []).map((album) => album.name);
+      box.innerHTML = names.length
+        ? names.map((name) => `<button class="btn btn-primary" type="button" data-tv="${esc(name)}">${icon("play")} ${esc(name)}</button>`).join("")
+        : `<p class="muted">${esc(T.tvNone)}</p>`;
+      $$("[data-tv]", box).forEach((button) => button.addEventListener("click", () => tvStart(button.dataset.tv)));
+    })
+    .catch(() => { box.innerHTML = `<p class="muted">${esc(T.tvNone)}</p>`; });
+}
+function tvStart(album) {
+  $$("[data-tv]").forEach((button) => { button.disabled = true; });
+  toast(T.tvStarting);
+  post(P.step, { name: TV_STEP, fields: { album: album } })
+    .then((reply) => {
+      if (reply.ok) { tvFollow(Date.now()); return; }
+      $$("[data-tv]").forEach((button) => { button.disabled = false; });
+      toast(reply.body.error || fill(T.failed, { status: reply.status }));
+    })
+    .catch(() => tvFollow(Date.now()));
+}
+// The slideshow's own address answers once it serves: then the remote, never the offline page.
+function tvFollow(since) {
+  if (Date.now() - since > TV_WAIT_MS) { toast(T.tvLate); return; }
+  fetch(P.slides, { cache: "no-store" })
+    .then((response) => { if (response.ok) window.location.replace("/"); else window.setTimeout(() => tvFollow(since), POLL_MS); })
+    .catch(() => window.setTimeout(() => tvFollow(since), POLL_MS));
+}

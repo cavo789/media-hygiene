@@ -66,7 +66,11 @@ plus : il montrait les fichiers mis de côté, promis à la quarantaine ; donné
 `--album`. Depuis la
 [page d'accueil](home.md) ouverte par `mh --lan`, l'étape *Montrer vos photos sur la télé* demande
 le dossier et ouvre le diaporama de la même façon ; *Montrer un album sur la télé* demande le nom de
-l'album (`--album … --lan`). Le lancer depuis un téléphone appairé n'est pas encore possible : lancez-le sur le PC.
+l'album (`--album … --lan`). Un téléphone appairé le lance aussi, depuis le canapé : sur la page
+d'accueil du téléphone, **Montrer un album sur la télé** liste les albums enregistrés sur le PC ;
+un appui lance le diaporama sur le PC, et le téléphone ouvre la télécommande de lui-même dès que
+le diaporama répond (sans code). Le favori de la télé affiche alors son code : tapez-le sur la
+télécommande. Aucun album enregistré : le téléphone dit d'en faire un sur le PC.
 
 ### Sur la télé, une fois
 

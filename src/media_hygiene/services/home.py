@@ -41,12 +41,13 @@ from media_hygiene.services.home_lan import say_lan
 from media_hygiene.services.home_launch import (
     launcher_relays_fields,
     launcher_relays_steps,
+    mh_window,
 )
 from media_hygiene.services.home_pages import HomeServer, home_with_pages
 from media_hygiene.services.home_tags import HomeTags
-from media_hygiene.services.launcher_host import windows_menu
 from media_hygiene.services.reviewing import address_tip, page_url
-from media_hygiene.share.album_page import ALBUMS_PAGE
+from media_hygiene.share.album_page import ALBUM_LIST_PATH, ALBUMS_PAGE
+from media_hygiene.slideshow.app import SLIDES_PATH
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
@@ -90,25 +91,16 @@ def home_page(
             "assets": ASSETS_PREFIX,
             "lan": LAN_PATH,
             "albums": ALBUMS_PAGE,
+            "albumList": ALBUM_LIST_PATH,  # a phone starts an album on the TV (0444)
+            "slides": SLIDES_PATH,  # the slideshow answering: the phone follows
         },
         alive_ms=ALIVE_SECONDS * 1000,
         relays_steps=relays_steps,
         remote=remote,
         phone_pages=PHONE_PAGES if remote else {},
-        window=_mh_window(),
+        window=mh_window(),
         thousands=separators()[0],
     ).encode()
-
-
-def _mh_window() -> str:
-    """Name the window where `mh` runs the step chosen, often behind the browser (0258).
-
-    Returns:
-        PowerShell's window from `mh.ps1` (or without `mh`), else the terminal.
-    """
-    if windows_menu():
-        return _("the PowerShell window of mh (in the taskbar)")
-    return _("the terminal where mh runs")
 
 
 @dataclass(frozen=True, slots=True)
