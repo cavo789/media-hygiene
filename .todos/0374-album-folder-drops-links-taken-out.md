@@ -23,3 +23,12 @@ the folder: the folder only grows.
 ## Acceptance
 
 - After taking photos out of an album, `album <name> --apply` leaves the folder equal to the album.
+
+## Decided (2026-10-27)
+
+By the maintainer: a stale link's other name (the photo to link back from at `undo`) is
+found through the index: a file of the same size with the same `(st_dev, st_ino)`. A link
+whose other name lies outside the analysed folders is left in place; a file with
+`st_nlink == 1` (copied by hand: its only copy) is never touched. Design proposed in the
+run of 2026-10-27: split the undo machinery (`actions/reversal.py` is at the 200-line cap)
+before adding the new journal kind.
