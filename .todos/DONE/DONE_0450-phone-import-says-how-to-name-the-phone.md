@@ -23,3 +23,12 @@ A71*), two phones of the same model share a folder.
 ## Explicit NON-goals
 
 - Renaming existing folders.
+
+## Status — DONE (2026-10-28)
+
+- `services/launcher_phone_name.py`: `FACTORY_WORDS` (a named constant, brands and model lines),
+  a case-insensitive `-match` pattern; `mh_phone.ps1.j2` prints one 💡 line (translated) after
+  the destination is known, before the listing.
+- Docs en+fr (`commands/import.md`): one folder per phone, how to rename it.
+- Test `tests/unit/test_launcher_phone.py::test_a_factory_name_is_told_how_to_rename_the_phone`
+  (the script as text; the pattern checked with Python's `re`, not on Windows PowerShell 5.1).

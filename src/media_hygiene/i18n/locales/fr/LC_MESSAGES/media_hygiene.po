@@ -16681,6 +16681,18 @@ msgstr "👉 Et ensuite : ouvrez Windows PowerShell et tapez :"
 msgid "💡 On a phone of the home Wi-Fi too: {command}"
 msgstr "💡 Sur un téléphone du Wi-Fi de la maison aussi : {command}"
 
+#, python-brace-format
+msgid ""
+"💡 {name} looks like the phone's factory name: two phones of the same "
+"model would share its folder. Give it a name of its own (Samsung: "
+"Settings > About phone > Edit; Pixel: Settings > About phone > Device "
+"name), then plug it in again."
+msgstr ""
+"💡 {name} ressemble au nom d'usine du téléphone : deux téléphones du même "
+"modèle partageraient son dossier. Donnez-lui un nom à lui (Samsung : "
+"Paramètres > À propos du téléphone > Modifier ; Pixel : Paramètres > À "
+"propos du téléphone > Nom de l'appareil), puis rebranchez-le."
+
 msgid "📍 The GPS positions were kept, as asked."
 msgstr "📍 Les positions GPS ont été gardées, comme demandé."
 

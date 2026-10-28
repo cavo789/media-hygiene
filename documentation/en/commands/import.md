@@ -86,6 +86,13 @@ mh import --phone --only Camera         # only the folder DCIM\Camera of the pho
 mh import --phone --free                # then free the phone: below
 ```
 
+**One folder per phone**: the copies go to a folder named after the phone, the name Windows
+shows in *This PC* (the phone's own device name). Two phones of the same model left at their
+factory name (*Galaxy A71*) would share one folder: give each its own name first (Samsung:
+*Settings › About phone › Edit*; Pixel: *Settings › About phone › Device name*), then plug it
+in again. `mh` says so (💡) when the name looks like a factory one. Folders already made are
+not renamed.
+
 Plug the phone in over USB, unlock it and choose *File transfer* (iPhone: *Trust this
 computer*), and **keep it unlocked, screen on** until `mh` is done: asleep or locked, a phone
 shows Windows no storage at all. Then `mh import --phone` says *answers but shows no storage: wake it up

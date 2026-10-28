@@ -13964,6 +13964,14 @@ msgstr ""
 msgid "💡 On a phone of the home Wi-Fi too: {command}"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"💡 {name} looks like the phone's factory name: two phones of the same "
+"model would share its folder. Give it a name of its own (Samsung: "
+"Settings > About phone > Edit; Pixel: Settings > About phone > Device "
+"name), then plug it in again."
+msgstr ""
+
 msgid "📍 The GPS positions were kept, as asked."
 msgstr ""
 
