@@ -24,7 +24,8 @@ def test_a_copy_of_this_run_is_kept_one_of_an_older_run_is_not(
     """Same number, another run (`people` again on the same port): rendered again."""
     write_burst(locations.data_dir)
     session = review_session(locations)
-    preview = session.state().series[0].shots[0].preview
+    # Relative to the page since 0417 (served under a prefix too): asked from `/`.
+    preview = "/" + session.state().series[0].shots[0].preview.removeprefix("/")
     kept, older, video_part = serve_and_call(
         session,
         [
