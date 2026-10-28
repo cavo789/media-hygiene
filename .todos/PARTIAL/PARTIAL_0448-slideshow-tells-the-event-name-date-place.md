@@ -42,3 +42,20 @@ event, the phone's choice reaches the TV's state. Docs en+fr; `docs_screenshots`
 
 - The storyteller's view on the phone (0449).
 - Editing event names (the folder is the name).
+
+## Status — PARTIAL (2026-10-28)
+
+### Done
+- Name from the folder (years, months, dates, device folders and the drive's top folder passed),
+  period (one month, a span, across years), place (user's place, else nearest offline town).
+- Title card on the TV at each new event (blurred photo, name, period, place, 3 s), then a banner
+  5 s; three buttons on the phone (TV and phone / Phone only / Nowhere), kept in the server's state.
+- Tests `tests/unit/test_slideshow_story.py`; docs en+fr (`commands/slideshow.md`).
+
+### Not done
+- Documentation captures not regenerated.
+  **Reason:** `docs_screenshots` is heavy, run it unasked never: the maintainer runs it.
+- Checked on a real TV/Chromecast (card timing, blur on the 2012 TV's browser).
+  **Reason:** needs the maintainer's TV.
+- The title card does not pause the show's timer (it eats up to 3 s of the first photo).
+  **Reason:** kept simple for a first TV test; decide after seeing it.

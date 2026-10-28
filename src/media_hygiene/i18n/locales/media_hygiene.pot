@@ -5020,6 +5020,9 @@ msgstr ""
 msgid "November"
 msgstr ""
 
+msgid "Nowhere"
+msgstr ""
+
 #, python-brace-format
 msgid "Number of the phone (1 to {count})"
 msgstr ""
@@ -5515,6 +5518,9 @@ msgstr ""
 msgid ""
 "Phone freed: {count} files deleted ({size} GB), each one seen gone from "
 "the phone and found whole on the PC."
+msgstr ""
+
+msgid "Phone only"
 msgstr ""
 
 msgid "Phone, NAS: whenever you want"
@@ -7168,6 +7174,9 @@ msgstr ""
 msgid "TB"
 msgstr ""
 
+msgid "TV and phone"
+msgstr ""
+
 msgid "Table of contents"
 msgstr ""
 
@@ -7527,6 +7536,9 @@ msgid "The earlier copies of this album were replaced."
 msgstr ""
 
 msgid "The event shown"
+msgstr ""
+
+msgid "The event's name:"
 msgstr ""
 
 msgid ""
@@ -9032,6 +9044,9 @@ msgstr ""
 msgid ""
 "Where the copies set aside go, once: best on the photos' disk (a move, "
 "not a copy). Default: the quarantine folder of your home."
+msgstr ""
+
+msgid "Where the event is told"
 msgstr ""
 
 msgid "Where the files of this event go, as 'sort' will move them:"

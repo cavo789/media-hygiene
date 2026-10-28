@@ -26,6 +26,8 @@ _PATHS: Final = {
     "code_shown": "code",
     "ended_prefix": "/api/ended/",
     "photos_only": "/photos",
+    "title_seconds": 3,
+    "banner_seconds": 5,
 }
 _ORIENTATION: Final = 0x0112
 _ROTATED: Final = 6  # EXIF: the camera was turned a quarter clockwise

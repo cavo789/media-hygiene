@@ -100,6 +100,14 @@ de huit chiffres : la télécommande s'ouvre. Ensuite :
 - La vignette d'une vidéo est marquée **▶**. Sur la télé, elle passe jusqu'au bout, puis le
   diaporama continue ; **❚❚ Pause** la met en pause aussi. Une vidéo que la télé ne sait pas lire
   est signalée sous sa vignette (*Pas sur la télé : son format (hevc) n'y est pas lu.*) et passée.
+- **Le nom de l'événement** : à chaque nouvel événement (un nouveau dossier, dans l'ordre du
+  diaporama), la télé montre un carton titre pendant 3 secondes (une de ses photos floutée, le
+  nom en grand, le mois et le lieu dessous), puis un bandeau sur sa première photo quelques
+  secondes. Le nom est celui du dossier (`2026\2026-10\Promenade à Valkenburg` → *Promenade à
+  Valkenburg* : années, mois, dates et dossiers d'appareil sont sautés) ; le mois vient de la
+  date de prise de vue ; le lieu est l'un des vôtres (`places`), sinon la ville la plus proche
+  de leur GPS, trouvée hors ligne. Une touche choisit où il est annoncé : **TV et téléphone**
+  (par défaut), **Téléphone seul** (sous les commandes), **Nulle part**.
 
 La télé charge la photo suivante à l'avance, derrière celle affichée, et les échange une fois
 décodée : vous ne voyez jamais une photo dessinée par bandes.

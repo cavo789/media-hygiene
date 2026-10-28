@@ -93,6 +93,13 @@ eight digits: the remote opens. Then:
 - A video's thumbnail is marked **▶**. On the TV, it plays to its end, then the show moves on;
   **❚❚ Pause** pauses it too. A video the TV cannot play is labelled under its thumbnail
   (*Not on the TV: its format (hevc) does not play there.*) and passed over.
+- **The event's name**: at each new event (a new folder, in the show's order), the TV shows a
+  title card for 3 seconds (one of its photos blurred, the name large, the month and the place
+  under it), then a banner on its first photo for a few seconds. The name is the folder's
+  (`2026\2026-10\Walk in Valkenburg` → *Walk in Valkenburg*: years, months, dates and camera
+  folders are passed over); the month is the photos' date taken; the place is one of yours
+  (`places`), else the nearest town of their GPS, found offline. One tap chooses where it is
+  told: **TV and phone** (the default), **Phone only** (under the controls), **Nowhere**.
 
 The TV loads the next photo in advance, behind the one shown, and swaps once it is decoded: you
 never see a photo drawn in bands.

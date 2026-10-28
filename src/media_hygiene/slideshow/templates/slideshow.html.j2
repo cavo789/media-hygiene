@@ -4,7 +4,9 @@
    shows that photo on the TV; the code a TV shows pairs it. On the PC, the card says how the TV
    and the phone open the show (GET /api/lan: the address, the code, the QR code; 404 without
    `mh --lan`). The server holds the show: this page only asks and draws (`slideshow.js.j2`).
-   Videos (0292) are marked ▶; one the TV cannot play is labelled, never sent to it. #}
+   Videos (0292) are marked ▶; one the TV cannot play is labelled, never sent to it. The event of
+   the photo shown (0448: its folder's name, its month, its place) is said under the controls;
+   three buttons choose where it is told: the TV and the phone, the phone only, nowhere. #}
 {% set texts = {
   "place": _("Photo {place} of {total}"),
   "nothing": _("Nothing on the TV: every photo is set out of the show."),
@@ -35,6 +37,10 @@
   button:disabled { opacity: .45; cursor: default; }
   select, input { min-height: 44px; padding: 6px 10px; font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; }
   #status { margin: 8px 0 0; color: var(--muted); font-size: .9rem; }
+  .telling { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; }
+  .telling button { min-height: 36px; padding: 4px 12px; }
+  .telling button[aria-pressed="true"] { color: var(--on-accent); background: var(--accent); }
+  #event { margin: 8px 0 0; font-weight: 600; }
   #status.error { color: var(--bad); font-weight: 600; }
   .card { margin: 12px 16px 0; padding: 12px 16px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
   .card p { margin: 0 0 8px; }
@@ -85,6 +91,13 @@
       </select></label>
     <button id="out" class="plain" type="button">{{ _("Do not show") }}</button>
   </div>
+  <div class="telling" role="group" aria-label="{{ _('Where the event is told') }}">
+    <span>{{ _("The event's name:") }}</span>
+    <button class="plain" type="button" data-where="tv" aria-pressed="false">{{ _("TV and phone") }}</button>
+    <button class="plain" type="button" data-where="phone" aria-pressed="false">{{ _("Phone only") }}</button>
+    <button class="plain" type="button" data-where="none" aria-pressed="false">{{ _("Nowhere") }}</button>
+  </div>
+  <p id="event" hidden></p>
   <p id="status" role="status"></p>
 {% endblock %}
 {% block content %}

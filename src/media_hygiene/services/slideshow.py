@@ -35,6 +35,7 @@ from media_hygiene.slideshow.app import (
     ShowPages,
     SlideshowApp,
 )
+from media_hygiene.slideshow.chapters import BANNER_SECONDS, TITLE_SECONDS
 from media_hygiene.slideshow.desk import Changes, Desk
 from media_hygiene.slideshow.door import Door
 from media_hygiene.slideshow.pictures import ShowPictures
@@ -58,6 +59,7 @@ if TYPE_CHECKING:
 _PACKAGE: Final = "media_hygiene.slideshow"
 _REMOTE_TEMPLATE: Final = "slideshow.html.j2"
 _SCREEN_TEMPLATE: Final = "screen.html.j2"
+_TELLING: Final = {"title_seconds": TITLE_SECONDS, "banner_seconds": BANNER_SECONDS}
 
 
 @dataclass(frozen=True, slots=True)
@@ -158,7 +160,7 @@ def _app(runtime: Runtime, show: Show, serving: _Serving) -> SlideshowApp:
     pages = ShowPages(
         headed_page(environment, _REMOTE_TEMPLATE, paths),
         environment.get_template(_SCREEN_TEMPLATE)
-        .render(**paths, phone_url=phone_url)
+        .render(**paths, phone_url=phone_url, **_TELLING)
         .encode(),
     )
     screens = Screens()

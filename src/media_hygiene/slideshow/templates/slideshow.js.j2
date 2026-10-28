@@ -58,8 +58,21 @@
       seconds.add(new Option(TEXTS.seconds.replace("{n}", paceValue), paceValue));
     }
     seconds.value = paceValue;
+    tellEvent(show);
     const tile = tiles.get(current);
     if (tile) tile.scrollIntoView({ block: "nearest" });
+  }
+
+  // The event of the photo shown (0448), unless told nowhere; the button of the choice pressed.
+  function tellEvent(show) {
+    for (const button of document.querySelectorAll("[data-where]")) {
+      button.setAttribute("aria-pressed", String(button.dataset.where === show.telling));
+    }
+    const chapter = show.chapter;
+    const parts = chapter ? [chapter.name, chapter.period, chapter.place].filter(Boolean) : [];
+    const event = document.getElementById("event");
+    event.textContent = parts.join(" · ");
+    event.hidden = show.telling === "none" || parts.length === 0;
   }
 
   function poll() {
@@ -152,6 +165,9 @@
   document.getElementById("next").addEventListener("click", () => ask({ action: "next" }));
   play.addEventListener("click", () => ask({ action: playing ? "pause" : "play" }));
   out.addEventListener("click", () => current !== null && ask({ action: "out", key: current }));
+  for (const button of document.querySelectorAll("[data-where]")) {
+    button.addEventListener("click", () => ask({ action: "tell", where: button.dataset.where }));
+  }
   seconds.addEventListener("change", () => ask({ action: "pace", seconds: Number(seconds.value) }));
   document.getElementById("pair").addEventListener("submit", (event) => {
     event.preventDefault();

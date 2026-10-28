@@ -6073,6 +6073,9 @@ msgstr "Rien n'a été écrit : vos rangements restent tels quels."
 msgid "November"
 msgstr "novembre"
 
+msgid "Nowhere"
+msgstr "Nulle part"
+
 #, python-brace-format
 msgid "Number of the phone (1 to {count})"
 msgstr "Numéro du téléphone (1 à {count})"
@@ -6156,7 +6159,9 @@ msgid "On the phone's remote, type the code of this TV:"
 msgstr "Sur la télécommande du téléphone, tapez le code de cette télé :"
 
 msgid "On the phone, everything is read-only: albums change on the PC."
-msgstr "Sur le téléphone, tout est en lecture seule : les albums changent sur le PC."
+msgstr ""
+"Sur le téléphone, tout est en lecture seule : les albums changent sur le "
+"PC."
 
 msgid "On this page"
 msgstr "Dans cette page"
@@ -6693,6 +6698,9 @@ msgid ""
 msgstr ""
 "Téléphone libéré : {count} fichiers supprimés ({size} Go), chacun vu "
 "parti du téléphone et retrouvé entier sur le PC."
+
+msgid "Phone only"
+msgstr "Téléphone seul"
 
 msgid "Phone, NAS: whenever you want"
 msgstr "Téléphone, NAS : quand vous voulez"
@@ -8665,6 +8673,9 @@ msgstr ""
 msgid "TB"
 msgstr "To"
 
+msgid "TV and phone"
+msgstr "TV et téléphone"
+
 msgid "Table of contents"
 msgstr "Sommaire"
 
@@ -9092,6 +9103,9 @@ msgstr "Les copies précédentes de cet album ont été remplacées."
 
 msgid "The event shown"
 msgstr "L'événement affiché"
+
+msgid "The event's name:"
+msgstr "Le nom de l'événement :"
 
 msgid ""
 "The events of the Events sheet, in its order: naming the first ones "
@@ -10952,6 +10966,9 @@ msgstr ""
 "Où vont les copies mises de côté, une seule fois : de préférence sur le "
 "disque des photos (un déplacement, pas une copie). Par défaut : le "
 "dossier quarantine de votre dossier personnel."
+
+msgid "Where the event is told"
+msgstr "Où l'événement est annoncé"
 
 msgid "Where the files of this event go, as 'sort' will move them:"
 msgstr "Où vont les fichiers de cet événement, tels que 'sort' les déplacera :"
