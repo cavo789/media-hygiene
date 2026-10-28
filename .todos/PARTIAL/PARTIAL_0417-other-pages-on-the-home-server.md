@@ -53,14 +53,34 @@ already open in < 1 s from the home page; the other pages still start a server o
   53–58 ms; before the cache every start took 1.2 s.
 - Measure on the real collection: item 12 of 0445.
 
+### Done: the reviews (commit 76fa1c62)
+- `services/review_here.py` (generic, was `near_here`) + `services/review_kinds.py`: the burst
+  series (`/review/bursts/`), `--near`, `--pairs` (`/review/pairs/`), `--junk`
+  (`/review/junk/`), `--gone` (`/review/gone/`) in the home server, each rebuilt from the
+  audit at each visit, *Apply now* where offered; `SERVED_HERE` lists them. Previews and
+  originals relative (`views.PREVIEW_LINK`, `ORIGINAL_LINK`). Measured on the demo tree
+  (24 files, server side, 3 runs): 16–61 ms per page. `--intruders` keeps its own server.
+
+### Done: places (commit dfcffe08)
+- `services/places_here.py` at `/places/`, the app shared with `places` alone
+  (`services/places_build.py`), relative addresses (Leaflet, previews, large views); the
+  towns read once per process (`geo/towns_once.py`). Measured, demo tree: 284 ms the first
+  time, 29–32 ms after.
+
 ### Left
-1. Bursts, pairs, junk, gone, people, places on the home server (item 1 above): the same
-   pattern as `near_here.py` per page, their views made relative like `near_views`.
-   `review-sort` goes into the search (separate TODO).
-2. *Apply now* shows the step running, then the page's new state (item 2).
-3. Memory: free idle pages (an idle show could be dropped after N minutes without a remote
-   or TV asking); `mh-measure.ps1` step with `review --near` added (item 3, acceptance).
-4. `page_audit` re-reads its settings when `config.toml` changes; *a file that no longer
+1. **People** (`/people/`): not done. `mh people` analyses the faces first (a model, minutes,
+   its progress in the window of `mh`), then serves the page from `run_people`'s result; the
+   page alone can only be built once the analysis is complete. Needs: a split between the
+   analysis (a console step kept beside the server, 0355) and the page (built in the home
+   server from the face store, `people/app.py` paths made relative: `GROUPS_PATH`,
+   `SECTION_PREFIX`, `SAMPLE_PREFIX`, `CHANGE_PATH`, `ASIDE_PATH`, `FACE_PREFIX`,
+   `PHOTO_PREFIX`), and a decision of the maintainer: what a click does while faces are left
+   to analyse (run the analysis then open the page, or open the page on what is analysed).
+2. `--intruders`: still its own server (not in the TODO's list; its page is small).
+3. *Apply now* shows the step running, then the page's new state (item 2).
+4. Memory: free idle pages (an idle show or review could be dropped after N minutes); the
+   `mh-measure.ps1` step with `review --near` added (item 3, acceptance; 0445 item 12 for the
+   slideshow).
+5. `page_audit` re-reads its settings when `config.toml` changes; *a file that no longer
    loads* said on the page (item 4).
-5. Not supported: the TV in the home server under plain HTTP `--lan` (no `/lan` certificates):
-   the TV needs the plain door, which exists under HTTPS only; `mh --lan` always mounts `/lan`.
+6. Not supported: the TV in the home server under plain-HTTP `--lan` (no `/lan`).
