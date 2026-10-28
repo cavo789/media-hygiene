@@ -84,3 +84,11 @@ already open in < 1 s from the home page; the other pages still start a server o
 5. `page_audit` re-reads its settings when `config.toml` changes; *a file that no longer
    loads* said on the page (item 4).
 6. Not supported: the TV in the home server under plain-HTTP `--lan` (no `/lan`).
+
+## Decided (2026-10-28)
+
+- People on the home server: when faces are not analysed yet, a click **runs the analysis
+  first** (its progress shown, as the face scan of 0424), then opens the page (maintainer).
+- Plain-HTTP `--lan` without `/lan` (the TV with no way in to the home server): nothing to do.
+  `mh --lan` mounts `/lan` and makes the certificates by default; the case only arises when
+  `openssl` or the folder fails, and the page then stays plain HTTP as before (maintainer).
