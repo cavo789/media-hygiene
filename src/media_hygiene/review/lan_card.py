@@ -24,6 +24,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.lan import LanAccess
 
 _QR_SCALE: Final = 5
+TV_SCREEN: Final = "/screen"  # the TV's page on the plain door (`slideshow/tv_door`)
 _QR_BORDER: Final = 2
 # The steps to install the certificate on each phone, in the docs (0430).
 CA_DOC: Final = Doc(
@@ -55,7 +56,7 @@ def lan_response(lan: LanAccess, *, phones: bool = False, tv: bool = False) -> R
         plain = f"http://{lan.address}:{LAN_CA_PORT}"
         card["ca"] = f"{plain}{PHONE_STEPS if tv else '/'}"
         if tv:
-            card["tv"] = f"{plain}/"
+            card["tv"] = f"{plain}{TV_SCREEN}"  # the same in the home server (0417)
         card["caHelp"] = served_url(CA_DOC)
     if phones:
         card |= {"phones": PHONES_PATH, "forget": FORGET_PATH}

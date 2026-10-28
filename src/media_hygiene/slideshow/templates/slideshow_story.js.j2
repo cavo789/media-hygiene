@@ -13,7 +13,7 @@
   /* `[places] tiles`, only when the user set it: else the towns, drawn offline. */
   const TILES = {{ map_tiles | tojson }};
   const SVG = "http://www.w3.org/2000/svg";
-  const thumb = (key) => `/thumb/${key}.jpg`;
+  const thumb = (key) => `thumb/${key}.jpg`;
   const send = (action) =>
     fetch(SHOW_PATH, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action }) });
 

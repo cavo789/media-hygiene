@@ -4679,6 +4679,16 @@ msgstr ""
 msgid "No signal"
 msgstr ""
 
+msgid ""
+"No slideshow is running: choose an album under Show an album on the TV, "
+"on the home page."
+msgstr ""
+
+msgid ""
+"No slideshow yet: on the phone, open Media Hygiene and choose an album "
+"under Show an album on the TV. It appears here by itself."
+msgstr ""
+
 msgid "No step applies the decisions now: type the next step yourself."
 msgstr ""
 

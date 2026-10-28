@@ -17,7 +17,8 @@ import pytest
 from media_hygiene.review.doors import Door
 from media_hygiene.review.http import Request, Response
 from media_hygiene.review.lan import COOKIE_NAME, LanAccess
-from media_hygiene.review.lan_app import LAN_PATH, LanApp
+from media_hygiene.review.lan_app import LanApp
+from media_hygiene.review.lan_paths import LAN_PATH
 from media_hygiene.review.lan_phones import (
     DEFAULT_DEVICE,
     PHONES_FILE,

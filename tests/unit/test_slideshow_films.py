@@ -219,10 +219,10 @@ def test_the_phone_sees_the_videos_marked_and_the_hevc_one_labelled(
     """The H.264 video: its address; the HEVC one: none, its format to say why."""
     slides = json.loads(_get(app, "/api/slides").body)["slides"]
     assert [(slide["thumb"], slide["film"], slide["format"]) for slide in slides] == [
-        ("/thumb/1.jpg", "", ""),
-        ("", "/film/2.mov", "h264"),
+        ("thumb/1.jpg", "", ""),
+        ("", "film/2.mov", "h264"),
         ("", "", "hevc"),
-        ("/thumb/4.jpg", "", ""),
+        ("thumb/4.jpg", "", ""),
     ]
 
 
@@ -234,12 +234,12 @@ def test_the_tv_plays_the_video_and_says_when_it_ended(app: SlideshowApp) -> Non
     assert (view["key"], view["photo"], view["film"], view["next"]) == (
         2,
         "",
-        "/film/2.mov",
-        "/tv/4.jpg",
+        "film/2.mov",
+        "tv/4.jpg",
     )
     assert view["playing"]
     moved = json.loads(_get(app, "/api/ended/2").body)
-    assert moved["photo"] == "/tv/4.jpg"
+    assert moved["photo"] == "tv/4.jpg"
     assert json.loads(_get(app, "/api/ended/2").body)["key"] == 4  # said twice: once
 
 
@@ -257,7 +257,7 @@ def test_a_photos_only_tv_makes_the_show_pass_over_the_videos(
     assert app.desk.show.jump(2)
     tv = {"host": lan, "cookie": f"{SCREEN_COOKIE}={token}"}
     view = json.loads(_get(app, "/api/wait/0/photos", tv).body)
-    assert view["photo"] == "/tv/4.jpg"
+    assert view["photo"] == "tv/4.jpg"
     assert not app.desk.show.films
     assert not json.loads(_get(app, "/api/show/0").body)["films"]
     assert not app.desk.show.jump(2)

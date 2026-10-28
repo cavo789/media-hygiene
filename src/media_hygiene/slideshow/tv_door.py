@@ -14,6 +14,7 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.http import ContentType, Response
+from media_hygiene.review.lan_card import TV_SCREEN
 from media_hygiene.review.videos import NEAR_POLICY
 from media_hygiene.slideshow.door import Visitor, screen_cookie, screen_token
 from media_hygiene.slideshow.screen_api import ScreenDesk
@@ -22,7 +23,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.http import Request
     from media_hygiene.slideshow.app import SlideshowApp
 
-SCREEN_PATH: Final = "/screen"
+SCREEN_PATH: Final = TV_SCREEN
 TV_HOME: Final = "/"
 _GET: Final = "GET"
 

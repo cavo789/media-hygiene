@@ -63,10 +63,12 @@ Instead of a folder: `--search "noel 2025"` (the photos a [`search`](search.md) 
 files set aside, meant for the quarantine; given, it says to use `--album`. From the
 [home page](home.md) opened by `mh --lan`, the *Show your photos on the TV* step asks for the
 folder and opens the show the same way; *Show an album on the TV* asks for the album's name
-(`--album … --lan`). A paired phone starts it too, from the sofa: on the phone's home page,
-**Show an album on the TV** lists the albums saved on the PC; a tap runs the show on the PC, and
-the phone opens the remote by itself once the show answers (no code). The TV's bookmark then
-shows its code: type it on the remote. No album saved: the phone says to make one on the PC.
+and opens the show **in the home page's own server**: the home page keeps running, the remote
+opens at once (`/slideshow/`). A paired phone starts it too, from the sofa: on the phone's home
+page, **Show an album on the TV** lists the albums saved on the PC; a tap opens the remote at once
+(no code). The TV, at its bookmark, waits for a show while none runs and shows it by itself; it
+is paired once (its code typed on the remote) and **stays paired while `mh` runs**: another album
+reaches it without a new code. No album saved: the phone says to make one on the PC.
 
 ### On the TV, once
 
@@ -74,13 +76,14 @@ shows its code: type it on the remote. No album saved: the phone says to make on
    web browser app on it, open it.
    **The TV's own browser** (a Samsung *Smart Hub*: the **Internet** app) works too, slower, and
    shows the photos only: the videos need the Chromecast's browser.
-2. Type the address the window gives, for example `http://192.168.1.20:8089/` (port **8089**: the
+2. Type the address the window gives, for example `http://192.168.1.20:8089/screen` (port **8089**: the
    phone's remote is on 8088, in `https`). It is plain `http`, on your home network: a TV cannot
    install the PC's certificate, and nothing goes on the internet. That address serves the TV's
    pages only, never the remote.
 3. **Bookmark it**: next time, the bookmark is enough (see [A stable address](#a-stable-address)).
 4. The TV shows a code of six digits. On the phone's remote, type it in **The code the TV shows**,
-   then **Pair the TV**: the first photo appears. The TV is paired until the slideshow stops.
+   then **Pair the TV**: the first photo appears. The TV is paired until the slideshow stops; when
+   the show runs in the home page (an album started there), until `mh` stops.
 5. Press **OK** on the TV's remote (or click) for full screen.
 
 Typing a code with a TV remote is painful: here the TV only shows one, the phone types it.
@@ -88,7 +91,8 @@ Typing a code with a TV remote is painful: here the TV only shows one, the phone
 ### On the phone
 
 Open the address the window gives, in `https`, for example `https://192.168.1.20:8088/` (or scan
-the QR code on the PC's page) and type the code of eight digits: the remote opens. A phone already
+the QR code on the PC's page) and type the code of eight digits: the remote opens, and the phone is
+paired for good, as on the home page. A phone already
 paired on the [home page](home.md#from-a-phone-on-the-home-wi-fi-mh---lan) opens it without a
 code, from its browser or the installed app. A phone that says the connection is not private
 installs the PC's certificate first, once: the window gives where (`http://192.168.1.20:8089/phone`),

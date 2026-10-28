@@ -3,8 +3,9 @@
 `POST /api/step` stays the PC's (`write_routes`), but for this body only:
 `{"name": "slideshow-album", "fields": {"album": <name>}}`, the name one of the albums
 of `albums.json` as the home page lists them (`GET /api/album-list`): no free text.
-It then goes on to the home page as the PC's would: `mh` runs
-`slideshow --album <name> --lan`, the home page ends, the slideshow takes its port.
+It then goes on to the home page as the PC's would: an `mh` that keeps the home server
+up answers with the page `/slideshow/album/<name>`, the show served by the home server
+itself (0417; `album_show`); an older one runs `slideshow --album <name> --lan`.
 """
 
 from __future__ import annotations

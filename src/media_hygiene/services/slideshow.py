@@ -12,55 +12,27 @@ import asyncio
 import contextlib
 from dataclasses import dataclass
 from functools import partial
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _, ngettext
-from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.ending import Ending, EndingDoor, serve_until_ended
 from media_hygiene.review.lan import lan_access
-from media_hygiene.review.lan_app import LAN_PATH
 from media_hygiene.review.lan_phones import phone_book
-from media_hygiene.review.local_app import PAGE_PATH
-from media_hygiene.review.page_header import headed_page
-from media_hygiene.search.pictures import Pictures
 from media_hygiene.services.search import open_search
-from media_hygiene.services.slideshow_map import map_tiles
-from media_hygiene.services.slideshow_pick import Pick, picked_slides
+from media_hygiene.services.slideshow_build import Serving, show_app
+from media_hygiene.services.slideshow_pick import Pick, Picked, picked_slides
 from media_hygiene.services.slideshow_say import announce_slideshow
-from media_hygiene.slideshow.app import (
-    SCREENS_PATH,
-    SHOW_PATH,
-    SLIDES_PATH,
-    ShowPages,
-    SlideshowApp,
-)
-from media_hygiene.slideshow.chapters import BANNER_SECONDS, TITLE_SECONDS
 from media_hygiene.slideshow.desk import Changes, Desk
 from media_hygiene.slideshow.door import Door
-from media_hygiene.slideshow.pictures import ShowPictures
-from media_hygiene.slideshow.screen_api import (
-    CODE_SHOWN,
-    ENDED_PREFIX,
-    PHOTOS_ONLY,
-    WAIT_PREFIX,
-)
-from media_hygiene.slideshow.screen_jpeg import ScreenJob
 from media_hygiene.slideshow.screens import Screens
 from media_hygiene.slideshow.show import Show
 from media_hygiene.slideshow.slides import Timing
-from media_hygiene.slideshow.tv_door import SCREEN_PATH, TvDoor
+from media_hygiene.slideshow.tv_door import TvDoor
 
 if TYPE_CHECKING:
-    from concurrent.futures import Executor
-
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.services.runtime import Runtime
-
-_PACKAGE: Final = "media_hygiene.slideshow"
-_REMOTE_TEMPLATE: Final = "slideshow.html.j2"
-_SCREEN_TEMPLATE: Final = "screen.html.j2"
-_TELLING: Final = {"title_seconds": TITLE_SECONDS, "banner_seconds": BANNER_SECONDS}
 
 
 @dataclass(frozen=True, slots=True)
@@ -85,36 +57,15 @@ def serve_slideshow(runtime: Runtime, start: ShowStart) -> int:
         MediaHygieneError: Nothing to show.
     """
     with open_search(runtime, words=False) as search:
-        picked = picked_slides(runtime, search, start.pick)
-        if not picked.slides:
-            raise MediaHygieneError(
-                _("No photo or video to show: nothing the last audit saw matches."),
-                _(
-                    "Check the folder as the Explorer shows it, under one of your "
-                    "photo folders; a search needs 'tags' first."
-                ),
-            )
-        if picked.found > len(picked.slides):
-            runtime.output.warning(
-                _(
-                    "{found} photos and videos found: the first {shown} by date are "
-                    "shown."
-                ).format(found=picked.found, shown=len(picked.slides))
-            )
-        if picked.missing:
-            runtime.output.warning(
-                ngettext(
-                    "{n} file of the album is missing (moved out of the folders "
-                    "analysed, or deleted): not shown.",
-                    "{n} files of the album are missing (moved out of the folders "
-                    "analysed, or deleted): not shown.",
-                    picked.missing,
-                ).format(n=picked.missing)
-            )
+        picked = shown_slides(runtime, search, start.pick)
         settings = runtime.settings.slideshow
         show = Show(picked.slides, Timing(settings.interval_seconds))
         with runtime.executor_factory() as executor:
-            app = _app(runtime, show, _Serving(search, executor, start.port))
+            lan = lan_access(start.port) if start.port else None  # `mh --lan`
+            secure = lan is not None and lan.secure  # phones paired for good (0431)
+            door = Door(lan, Screens(), phones=phone_book(secure=secure))
+            desk = Desk(show, door.screens, Changes())
+            app = show_app(runtime, desk, Serving(search, executor, door))
             ready = partial(announce_slideshow, runtime, app.door)
             with contextlib.suppress(KeyboardInterrupt):
                 ending = Ending()
@@ -128,59 +79,43 @@ def serve_slideshow(runtime: Runtime, start: ShowStart) -> int:
     return len(picked.slides)
 
 
-@dataclass(frozen=True, slots=True)
-class _Serving:
-    """The open index, the worker pool, the port."""
-
-    search: SearchIndex
-    executor: Executor
-    port: int
-
-
-def _app(runtime: Runtime, show: Show, serving: _Serving) -> SlideshowApp:
-    """Build the server's routes.
+def shown_slides(runtime: Runtime, search: SearchIndex, pick: Pick) -> Picked:
+    """The photos of the show; what was cut or is missing said in the console.
 
     Args:
         runtime: Settings, mount points and output.
-        show: The show.
-        serving: The index, the worker pool, the port.
+        search: The open index.
+        pick: The folder, the words, or the album.
 
     Returns:
-        The app.
+        The photos.
+
+    Raises:
+        MediaHygieneError: Nothing to show.
     """
-    environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
-    tiles = map_tiles(runtime.settings.places)
-    paths = {
-        "map_tiles": tiles.url,
-        "map_credit": tiles.credit,
-        "screen_path": SCREEN_PATH,
-        "slides_path": SLIDES_PATH,
-        "show_path": SHOW_PATH,
-        "screens_path": SCREENS_PATH,
-        "lan_path": LAN_PATH,
-        "wait_prefix": WAIT_PREFIX,
-        "code_shown": CODE_SHOWN,
-        "ended_prefix": ENDED_PREFIX,
-        "photos_only": PHOTOS_ONLY,
-    }
-    lan = lan_access(serving.port) if serving.port else None  # `mh --lan`
-    phone_url = "" if lan is None else f"{lan.origin}{PAGE_PATH}"  # shown on the TV
-    pages = ShowPages(
-        headed_page(environment, _REMOTE_TEMPLATE, paths),
-        environment.get_template(_SCREEN_TEMPLATE)
-        .render(**paths, phone_url=phone_url, **_TELLING)
-        .encode(),
-        tiles.policy,
-        tiles.referrer,
-    )
-    screens = Screens()
-    previews = runtime.previews_dir
-    pictures = ShowPictures(
-        frozenset(slide.key for slide in show.slides),
-        Pictures(serving.search, previews, serving.executor),
-        ScreenJob(runtime.settings.slideshow.screen_px, previews),
-        serving.executor,
-    )
-    secure = lan is not None and lan.secure  # phones paired for good (0431)
-    door = Door(lan, screens, phones=phone_book(secure=secure))
-    return SlideshowApp(Desk(show, screens, Changes()), door, pages, pictures)
+    picked = picked_slides(runtime, search, pick)
+    if not picked.slides:
+        raise MediaHygieneError(
+            _("No photo or video to show: nothing the last audit saw matches."),
+            _(
+                "Check the folder as the Explorer shows it, under one of your "
+                "photo folders; a search needs 'tags' first."
+            ),
+        )
+    if picked.found > len(picked.slides):
+        runtime.output.warning(
+            _(
+                "{found} photos and videos found: the first {shown} by date are shown."
+            ).format(found=picked.found, shown=len(picked.slides))
+        )
+    if picked.missing:
+        runtime.output.warning(
+            ngettext(
+                "{n} file of the album is missing (moved out of the folders "
+                "analysed, or deleted): not shown.",
+                "{n} files of the album are missing (moved out of the folders "
+                "analysed, or deleted): not shown.",
+                picked.missing,
+            ).format(n=picked.missing)
+        )
+    return picked

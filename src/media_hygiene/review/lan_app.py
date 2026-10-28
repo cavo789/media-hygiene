@@ -21,7 +21,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
 from media_hygiene.review.app_shell import shell_response
@@ -30,13 +30,8 @@ from media_hygiene.review.http import ContentType, Request, Response, is_local
 from media_hygiene.review.lan import COOKIE_NAME, PAIR_PREFIX, cookies
 from media_hygiene.review.lan_card import lan_response
 from media_hygiene.review.lan_pairing import Pairing, pair_page
-from media_hygiene.review.lan_paths import phone_marked, phone_may
-from media_hygiene.review.lan_phones import device_name
-from media_hygiene.review.lan_phones_api import (
-    PHONE_PATHS,
-    durable_cookie,
-    phones_answer,
-)
+from media_hygiene.review.lan_paths import LAN_PATH, phone_marked, phone_may
+from media_hygiene.review.lan_phones_api import PHONE_PATHS, for_good, phones_answer
 from media_hygiene.review.lan_show import phone_step
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.serving import json_response
@@ -50,7 +45,6 @@ if TYPE_CHECKING:
     from media_hygiene.review.lan import LanAccess
     from media_hygiene.review.lan_phones import PhoneBook
 
-LAN_PATH: Final = "/api/lan"
 _GET, _POST = "GET", "POST"
 
 
@@ -131,13 +125,7 @@ class LanApp:
             303 to the page with the cookie; the pairing page otherwise.
         """
         answer = self.pairing.check(self.lan, request.path.removeprefix(PAIR_PREFIX))
-        if answer.status is not HTTPStatus.SEE_OTHER or self.phones is None:
-            return answer
-        token = self.phones.add(device_name(request.headers.get("user-agent", "")))
-        if token is None:  # the file cannot be written: paired for this run only
-            return answer
-        headers = (f"Location: {PAGE_PATH}", durable_cookie(token))
-        return Response(HTTPStatus.SEE_OTHER, headers=headers)
+        return for_good(answer, self.phones, request)
 
     def _is_paired(self, request: Request) -> bool:
         """Tell whether the phone holds this run's cookie, or one paired for good.

@@ -10,6 +10,7 @@ country most of the show's located photos lie in.
 
 from __future__ import annotations
 
+import functools
 from collections import Counter
 from dataclasses import replace
 from itertools import groupby
@@ -38,6 +39,16 @@ if TYPE_CHECKING:
 _METADATA = "SELECT metadata FROM files WHERE rowid = ?"
 
 
+@functools.cache
+def _towns() -> Gazetteer:
+    """The towns, read once per process: the home server starts a show per album (0417).
+
+    Returns:
+        The gazetteer (0.5 s, 90 MB at its peak: measured, devcontainer).
+    """
+    return Gazetteer.load()
+
+
 def told_slides(
     runtime: Runtime,
     connection: sqlite3.Connection,
@@ -54,7 +65,7 @@ def told_slides(
         The slides, in the same order.
     """
     points = {slide.key: _point(connection, slide.key) for slide, _path in shown}
-    towns = Gazetteer.load() if any(points.values()) else None
+    towns = _towns() if any(points.values()) else None
     places = Places(runtime, towns, [point for point in points.values() if point])
     told: list[Slide] = []
     runs = groupby(shown, key=lambda pair: pair[1].parent)

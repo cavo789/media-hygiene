@@ -20,19 +20,20 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
 from media_hygiene.review.http import NO_REFERRER, ContentType, Response
 from media_hygiene.review.lan import PAIR_PREFIX
-from media_hygiene.review.lan_app import LAN_PATH
 from media_hygiene.review.lan_card import lan_response
+from media_hygiene.review.lan_paths import LAN_PATH
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.shared_routes import asset_or_page
 from media_hygiene.review.videos import NEAR_POLICY
 from media_hygiene.slideshow.door import Visitor, screen_token
 from media_hygiene.slideshow.pictures import slides_view
+from media_hygiene.slideshow.routes import SCREENS_PATH, SHOW_PATH, SLIDES_PATH
 from media_hygiene.slideshow.screen_api import ScreenDesk, pair_screen
 from media_hygiene.slideshow.tv_door import SCREEN_PATH, screen_page
 
@@ -42,9 +43,6 @@ if TYPE_CHECKING:
     from media_hygiene.slideshow.door import Door
     from media_hygiene.slideshow.pictures import ShowPictures
 
-SLIDES_PATH: Final = "/api/slides"
-SHOW_PATH: Final = "/api/show"
-SCREENS_PATH: Final = "/api/screens"
 _GET, _POST = "GET", "POST"
 
 
@@ -122,7 +120,7 @@ class SlideshowApp:
             if pictured is not None:
                 return pictured
         if request.path.startswith(PAIR_PREFIX):
-            return self.door.pair_phone(request.path.removeprefix(PAIR_PREFIX))
+            return self.door.pair_phone(request)
         return self.door.stranger_page(request)
 
     async def _remote(self, request: Request) -> Response:

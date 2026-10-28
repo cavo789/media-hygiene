@@ -131,9 +131,9 @@ def test_the_pc_does_everything_without_pairing(app: SlideshowApp) -> None:
     assert wait == {
         "version": state["version"],
         "key": 2,
-        "photo": "/tv/2.jpg",
+        "photo": "tv/2.jpg",
         "film": "",
-        "next": "/tv/1.jpg",
+        "next": "tv/1.jpg",
         "playing": False,
         "code": "",
         "chapter": None,
@@ -260,7 +260,7 @@ def test_the_tv_shows_a_code_the_phone_types(app: SlideshowApp) -> None:
     shown = json.loads(
         _ask(app, _request("/api/wait/0", sender=_Sender(_LAN_HOST, tv))).body
     )
-    assert shown["photo"] == "/tv/1.jpg"
+    assert shown["photo"] == "tv/1.jpg"
     assert (
         _ask(app, _request("/tv/1.jpg", sender=_Sender(_LAN_HOST, tv))).status
         is HTTPStatus.OK
@@ -377,7 +377,7 @@ def test_the_tv_is_served_by_the_plain_door_and_the_remote_is_not(
     paired = _ask(app, _request("/api/screens", _PHONE, {"code": code["code"]}))
     assert paired.status is HTTPStatus.OK
     shown = json.loads(asyncio.run(door.handle(_plain("/api/wait/0", token))).body)
-    assert shown["photo"] == "/tv/1.jpg"
+    assert shown["photo"] == "tv/1.jpg"
     picture = asyncio.run(door.handle(_plain("/tv/1.jpg", token)))
     assert picture.status is HTTPStatus.OK
 
@@ -420,7 +420,7 @@ def test_the_pc_s_card_gives_the_tv_the_plain_door_under_https() -> None:
     secure = LanAccess(_PC_ADDRESS, _TV_PORT, b"cd" * 32, secure=True)
     card = json.loads(lan_response(secure, tv=True).body)
     assert card["url"].startswith("https://")
-    assert card["tv"] == f"http://{_TV_HOST}/"
+    assert card["tv"] == f"http://{_TV_HOST}/screen"
     assert card["ca"] == f"http://{_TV_HOST}{PHONE_STEPS}"
     assert "tv" not in json.loads(lan_response(_ACCESS, tv=True).body)
 

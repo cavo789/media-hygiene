@@ -28,8 +28,8 @@ from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.review.home_tags_api import RUN_NAMES, TAGS_RUN
 from media_hygiene.review.home_texts import home_texts
 from media_hygiene.review.lan import lan_access
-from media_hygiene.review.lan_app import LAN_PATH, LanApp
-from media_hygiene.review.lan_paths import PHONE_PAGES
+from media_hygiene.review.lan_app import LanApp
+from media_hygiene.review.lan_paths import LAN_PATH, PHONE_PAGES
 from media_hygiene.review.lan_phones import phone_book
 from media_hygiene.review.lan_problem import with_problem
 from media_hygiene.review.local_app import STATE_PATH
@@ -47,7 +47,7 @@ from media_hygiene.services.home_pages import HomeServer, home_with_pages
 from media_hygiene.services.home_tags import HomeTags
 from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.share.album_page import ALBUM_LIST_PATH, ALBUMS_PAGE
-from media_hygiene.slideshow.app import SLIDES_PATH
+from media_hygiene.slideshow.routes import SLIDES_PATH
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
@@ -168,7 +168,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
             contextlib.suppress(KeyboardInterrupt),
             runtime.executor_factory() as pool,
             home_with_pages(
-                runtime, app, HomeServer(sources.apply, ending, pool)
+                runtime, app, HomeServer(sources.apply, ending, pool, lan)
             ) as both,
         ):
             handler: Handling = album_pages(runtime, both, pool)  # `/albums` (0297)
@@ -181,7 +181,9 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
                     originals=runtime.settings.review.lan_phone_originals,
                 )
             handler = with_problem(handler)
-            door = with_person(EndingDoor(handler, ending), runtime, pool)
+            door = with_person(  # the TV on the plain door (0417)
+                EndingDoor(handler, ending, plain=both.slideshow.tv), runtime, pool
+            )
             code = asyncio.run(serve_until_ended(door, port, ready))
     finally:
         app.audit.stop()  # between two files: the index keeps what it committed

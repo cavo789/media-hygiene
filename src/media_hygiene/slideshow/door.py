@@ -5,10 +5,10 @@ request naming the PC's address on the home network, exactly (`LanAccess.names_m
 another name is DNS rebinding), is a phone paired by the run's code (0269's cookie,
 `/pair/<code>` as on the home page), a TV paired by its own code (`screens`), or a
 stranger: a stranger sees the screen page with its code, or the phone's pairing page,
-nothing else. A phone paired for good on the home page (`phones.json`, 0431) needs no
-code. Under HTTPS the TV comes by the plain door (`tv_door`): only a TV or a stranger
-there, never a phone. Any other `Host` is refused. Never the internet: `mh --lan`
-publishes the port on the PC's private address only.
+nothing else. A phone paired for good (`phones.json`, 0431), here or on the home page,
+needs no code. Under HTTPS the TV comes by the plain door (`tv_door`): only a TV or a
+stranger there, never a phone. Any other `Host` is refused. Never the internet:
+`mh --lan` publishes the port on the PC's private address only.
 """
 
 from __future__ import annotations
@@ -20,8 +20,9 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.doors import LAN_CA_PORT
 from media_hygiene.review.http import Request, Response, is_local
-from media_hygiene.review.lan import COOKIE_NAME, cookies
+from media_hygiene.review.lan import COOKIE_NAME, PAIR_PREFIX, cookies
 from media_hygiene.review.lan_pairing import Pairing, pair_page
+from media_hygiene.review.lan_phones_api import for_good
 from media_hygiene.services.reviewing import HOST_LOOPBACK
 from media_hygiene.slideshow.screens import SCREEN_COOKIE
 
@@ -111,18 +112,20 @@ class Door:
         token = cookies(request.headers).get(COOKIE_NAME, "")
         return self.phones is not None and self.phones.knows(token)
 
-    def pair_phone(self, typed: str) -> Response:
+    def pair_phone(self, request: Request) -> Response:
         """Check the run's code typed on a phone; the right one opens the remote.
 
         Args:
-            typed: The code, from the path.
+            request: `GET /pair/<code>`.
 
         Returns:
-            303 to the remote with the phone's cookie; the pairing page otherwise.
+            303 to the remote with the phone's cookie, for good under HTTPS as on
+            the home page (0431); the pairing page otherwise.
         """
         if self.lan is None:
             return Response(HTTPStatus.FORBIDDEN)
-        return self.pairing.check(self.lan, typed)
+        typed = request.path.removeprefix(PAIR_PREFIX)
+        return for_good(self.pairing.check(self.lan, typed), self.phones, request)
 
     def stranger_page(self, request: Request) -> Response:
         """What a stranger gets: the pairing page for a `GET`, 403 otherwise.

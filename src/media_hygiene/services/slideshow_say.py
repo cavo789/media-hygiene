@@ -55,7 +55,7 @@ def say_slideshow(output: Output, lan: LanAccess | None) -> None:
     """
     if lan is not None:
         plain = f"http://{lan.address}:{LAN_CA_PORT}"
-        screen = f"{plain}/" if lan.secure else f"{lan.origin}{SCREEN_PATH}"
+        screen = f"{plain}{SCREEN_PATH}" if lan.secure else f"{lan.origin}{SCREEN_PATH}"
         output.info(
             _(
                 "On the TV, in its browser (the Chromecast's, or the TV's own): open "

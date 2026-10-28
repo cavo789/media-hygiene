@@ -382,9 +382,9 @@ const ACTS = {
 };
 
 // ---- A paired phone starts an album on the TV (0444) --------------------------------------
-// The albums saved on the PC, no free text; the PC runs `slideshow --album … --lan`, the home
-// page ends, and this phone follows to the slideshow's remote once it answers (same origin,
-// same cookie: no code).
+// The albums saved on the PC, no free text. An mh that keeps the home server up starts the show
+// in it (0417): this phone opens its remote at once. An older one runs `slideshow --album … --lan`,
+// the home page ends, and this phone follows to the slideshow's remote once it answers.
 const TV_STEP = "slideshow-album";
 const TV_WAIT_MS = 120000;
 function tvAlbums() {
@@ -406,6 +406,7 @@ function tvStart(album) {
   toast(T.tvStarting);
   post(P.step, { name: TV_STEP, fields: { album: album } })
     .then((reply) => {
+      if (reply.ok && reply.body.page) { window.location.assign(reply.body.page); return; }  // in this server (0417)
       if (reply.ok) { tvFollow(Date.now()); return; }
       $$("[data-tv]").forEach((button) => { button.disabled = false; });
       toast(reply.body.error || fill(T.failed, { status: reply.status }));

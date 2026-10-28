@@ -29,6 +29,7 @@ from media_hygiene.services.history_here import HISTORY_PREFIX, HistoryHere
 from media_hygiene.services.near_here import NEAR_PREFIX, NearHere
 from media_hygiene.services.search import open_search
 from media_hygiene.services.search_app import SearchBuild, search_app
+from media_hygiene.services.slideshow_here import SLIDESHOW_PREFIX, SlideshowHere
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
@@ -37,6 +38,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.apply_api import ApplyStep
     from media_hygiene.review.ending import Ending, Handling
     from media_hygiene.review.http import Request, Response
+    from media_hygiene.review.lan import LanAccess
     from media_hygiene.search.app import SearchApp
     from media_hygiene.services.runtime import Runtime
 
@@ -53,6 +55,7 @@ class HomeServer:
     apply: Callable[[], ApplyStep | None] | None  # *Apply now*'s step; None: no button
     ending: Ending
     executor: Executor
+    lan: LanAccess | None = None  # under `mh --lan`: the slideshow's phones and TVs
 
 
 class SearchHere:
@@ -109,6 +112,7 @@ class HomeWithPages:
     pages: SearchHere
     near: NearHere  # `/review/near/…` (0357)
     history: HistoryHere  # `/history/` (0350)
+    slideshow: SlideshowHere  # `/slideshow/…`, its TV on the plain door (0417)
 
     async def handle(self, request: Request) -> Response:
         """Route a request.
@@ -124,6 +128,8 @@ class HomeWithPages:
             return await self.home.handle(request)
         if path == NEAR_PREFIX or path.startswith(f"{NEAR_PREFIX}/"):
             return await self.near.handle(request)
+        if path == SLIDESHOW_PREFIX or path.startswith(f"{SLIDESHOW_PREFIX}/"):
+            return await self.slideshow.handle(request)
         if path in {HISTORY_PREFIX, f"{HISTORY_PREFIX}/"}:
             return await self.history.handle(request)
         app = self.pages.app()
@@ -148,7 +154,9 @@ def home_with_pages(
     relay = home_relay(runtime.locations.reports_dir)
     fresh = FreshRuntime(runtime)
     near = NearHere(fresh, server, relay)
+    slideshow = SlideshowHere(fresh, server)
     try:
-        yield HomeWithPages(home, pages, near, HistoryHere(fresh))
+        yield HomeWithPages(home, pages, near, HistoryHere(fresh), slideshow)
     finally:
+        slideshow.close()
         pages.close()

@@ -66,11 +66,13 @@ plus : il montrait les fichiers mis de côté, promis à la quarantaine ; donné
 `--album`. Depuis la
 [page d'accueil](home.md) ouverte par `mh --lan`, l'étape *Montrer vos photos sur la télé* demande
 le dossier et ouvre le diaporama de la même façon ; *Montrer un album sur la télé* demande le nom de
-l'album (`--album … --lan`). Un téléphone appairé le lance aussi, depuis le canapé : sur la page
-d'accueil du téléphone, **Montrer un album sur la télé** liste les albums enregistrés sur le PC ;
-un appui lance le diaporama sur le PC, et le téléphone ouvre la télécommande de lui-même dès que
-le diaporama répond (sans code). Le favori de la télé affiche alors son code : tapez-le sur la
-télécommande. Aucun album enregistré : le téléphone dit d'en faire un sur le PC.
+l'album et ouvre le diaporama **dans le serveur même de la page d'accueil** : la page d'accueil
+continue, la télécommande s'ouvre aussitôt (`/slideshow/`). Un téléphone appairé le lance aussi,
+depuis le canapé : sur la page d'accueil du téléphone, **Montrer un album sur la télé** liste les
+albums enregistrés sur le PC ; un appui ouvre aussitôt la télécommande (sans code). La télé, à son
+favori, attend un diaporama tant qu'aucun ne tourne et l'affiche d'elle-même ; elle est appairée
+une fois (son code tapé sur la télécommande) et **le reste tant que `mh` tourne** : un autre album
+lui arrive sans nouveau code. Aucun album enregistré : le téléphone dit d'en faire un sur le PC.
 
 ### Sur la télé, une fois
 
@@ -79,7 +81,7 @@ télécommande. Aucun album enregistré : le téléphone dit d'en faire un sur l
    **Le navigateur de la télé** (sur une Samsung *Smart Hub* : l'application **Internet**)
    fonctionne aussi, plus lentement, et ne montre que les photos : les vidéos demandent le
    navigateur du Chromecast.
-2. Tapez l'adresse que donne la fenêtre, par exemple `http://192.168.1.20:8089/` (port **8089** :
+2. Tapez l'adresse que donne la fenêtre, par exemple `http://192.168.1.20:8089/screen` (port **8089** :
    la télécommande du téléphone est sur 8088, en `https`). C'est du `http` simple, sur votre
    réseau de la maison : une télé ne peut pas installer le certificat du PC, et rien ne part sur
    Internet. Cette adresse ne sert que les pages de la télé, jamais la télécommande.
@@ -87,7 +89,8 @@ télécommande. Aucun album enregistré : le téléphone dit d'en faire un sur l
    [Une adresse stable](#une-adresse-stable)).
 4. La télé affiche un code de six chiffres. Sur la télécommande du téléphone, tapez-le dans
    **Le code qu'affiche la télé**, puis **Appairer la télé** : la première photo apparaît. La
-   télé reste appairée jusqu'à l'arrêt du diaporama.
+   télé reste appairée jusqu'à l'arrêt du diaporama ; quand le diaporama tourne dans la page
+   d'accueil (un album lancé depuis elle), jusqu'à l'arrêt de `mh`.
 5. Appuyez sur **OK** sur la télécommande de la télé (ou cliquez) pour le plein écran.
 
 Taper un code avec la télécommande d'une télé est pénible : ici la télé en affiche seulement un,
@@ -96,7 +99,8 @@ le téléphone le tape.
 ### Sur le téléphone
 
 Ouvrez l'adresse que donne la fenêtre, en `https`, par exemple `https://192.168.1.20:8088/` (ou
-scannez le QR code de la page du PC) et tapez le code de huit chiffres : la télécommande s'ouvre.
+scannez le QR code de la page du PC) et tapez le code de huit chiffres : la télécommande s'ouvre,
+et le téléphone est appairé pour de bon, comme sur la page d'accueil.
 Un téléphone déjà appairé sur la [page d'accueil](home.md#depuis-un-téléphone-du-wi-fi-de-la-maison--mh---lan)
 l'ouvre sans code, depuis son navigateur ou l'application installée. Un téléphone qui dit que la
 connexion n'est pas privée installe d'abord le certificat du PC, une fois : la fenêtre dit où
