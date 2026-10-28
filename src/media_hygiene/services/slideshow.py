@@ -25,6 +25,7 @@ from media_hygiene.review.page_header import headed_page
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.services.search import open_search
+from media_hygiene.services.slideshow_map import map_tiles
 from media_hygiene.services.slideshow_pick import Pick, picked_slides
 from media_hygiene.services.slideshow_say import say_slideshow
 from media_hygiene.slideshow.app import (
@@ -144,7 +145,10 @@ def _app(runtime: Runtime, show: Show, serving: _Serving) -> SlideshowApp:
         The app.
     """
     environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
+    tiles = map_tiles(runtime.settings.places)
     paths = {
+        "map_tiles": tiles.url,
+        "map_credit": tiles.credit,
         "screen_path": SCREEN_PATH,
         "slides_path": SLIDES_PATH,
         "show_path": SHOW_PATH,
@@ -162,6 +166,8 @@ def _app(runtime: Runtime, show: Show, serving: _Serving) -> SlideshowApp:
         environment.get_template(_SCREEN_TEMPLATE)
         .render(**paths, phone_url=phone_url, **_TELLING)
         .encode(),
+        tiles.policy,
+        tiles.referrer,
     )
     screens = Screens()
     previews = runtime.previews_dir

@@ -115,7 +115,11 @@ de huit chiffres : la télécommande s'ouvre. Ensuite :
   télé, le téléphone montre en plus grand la photo affichée, son jour et son heure, l'événement
   et son lieu, sa description et ses mots (quand `describe` en a donné), la photo suivante, et
   un petit dessin des endroits où les photos de l'événement ont été prises (le point rouge :
-  celle-ci ; dessiné sur le téléphone, aucune carte n'est téléchargée). Trois boutons : **Pause,
+  celle-ci), sur les noms des villes et villages proches (lus dans les villes intégrées à
+  l'outil : rien ne part sur internet). Si vous réglez `[places] tiles` dans `config.toml` (la
+  carte de [`places`](places.md)), de vraies tuiles de carte sont dessinées sous les points à la
+  place : le navigateur du téléphone les télécharge, le serveur de tuiles voit donc la zone
+  regardée (jamais une photo). Trois boutons : **Pause,
   je raconte**, **Retour au début de cet événement**, **Événement suivant**. Ils ne font que
   déplacer le diaporama : rien n'est modifié sur le PC.
 

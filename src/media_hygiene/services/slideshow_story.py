@@ -23,6 +23,7 @@ from media_hygiene.geo.gazetteer import Gazetteer
 from media_hygiene.i18n import _
 from media_hygiene.scan.metadata import MediaMetadata
 from media_hygiene.slideshow.chapters import Chapter, event_name, event_period
+from media_hygiene.slideshow.event_map import event_map
 
 if TYPE_CHECKING:
     import sqlite3
@@ -65,6 +66,7 @@ def told_slides(
             event_name(folder, runtime.locations.data_dir),
             event_period(slide.day for slide in slides),
             places.named(located),
+            event_map(located, places.towns),
         )
         told.extend(replace(slide, chapter=chapter) for slide in slides)
     return tuple(told)
@@ -92,6 +94,15 @@ class Places:
         self._zones = zones_of(settings.places)
         self._towns = None if towns is None else towns.renamed(settings.town_names)
         self._home = self._home_country(settings.places, everywhere)
+
+    @property
+    def towns(self) -> Gazetteer | None:
+        """The towns, named the user's way.
+
+        Returns:
+            Them; None when no photo has GPS.
+        """
+        return self._towns
 
     def _home_country(
         self, places: Sequence[PersonalPlace], points: Sequence[Point]

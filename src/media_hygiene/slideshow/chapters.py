@@ -20,6 +20,8 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
     from pathlib import PurePath
 
+    from media_hygiene.slideshow.event_map import EventMap
+
 # How long the TV shows an event's title card, then the banner on its first photo.
 TITLE_SECONDS: Final = 3
 BANNER_SECONDS: Final = 5
@@ -43,6 +45,7 @@ class Chapter:
     name: str = ""
     period: str = ""
     place: str = ""
+    map: EventMap | None = None  # the phone's small map (0449), not sent to the TV
 
     def view(self) -> dict[str, object]:
         """The event, for the pages.

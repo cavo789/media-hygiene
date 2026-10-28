@@ -90,6 +90,7 @@ def test_the_storyteller_reads_the_photo_the_next_one_and_the_map() -> None:
         "caption": "",
         "words": [],
         "here": (50.0, 5.0),
+        "map": None,
         "next": 2,
         "points": [(50.0, 5.0), (50.1, 5.1)],
     }

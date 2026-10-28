@@ -8,7 +8,7 @@
    the photo shown (0448: its folder's name, its month, its place) is said under the controls;
    three buttons choose where it is told: the TV and the phone, the phone only, nowhere. The
    storyteller's notes (0449): the photo larger, its time, description and words, the next photo,
-   the event's positions drawn offline (no map tiles), and three show controls. #}
+   the event's positions over its towns (offline), or over `[places] tiles` when set, and three show controls. #}
 {% set texts = {
   "place": _("Photo {place} of {total}"),
   "nothing": _("Nothing on the TV: every photo is set out of the show."),
@@ -74,6 +74,9 @@
   #storyMap { display: block; width: 100%; max-width: 320px; height: 140px; margin-top: 6px; background: var(--chip); border-radius: 8px; }
   #storyMap circle { fill: var(--accent); opacity: .6; }
   #storyMap circle.here { fill: var(--bad); opacity: 1; }
+  #storyMap circle.town { fill: var(--muted); opacity: 1; }
+  #storyMap text { font-size: 11px; fill: var(--muted); }
+  #storyCredit { font-size: .7rem; color: var(--muted); }
   /* The way the TV and the phone open the show, and the TV's code, in the left column. */
   #side .card { margin: 0; }
 {% endblock %}
@@ -128,6 +131,7 @@
     <p id="storyCaption"></p>
     <p id="storyWords"></p>
     <svg id="storyMap" viewBox="0 0 320 140" role="img" aria-label="{{ _('Where the photos of this event were taken') }}"></svg>
+    <p id="storyCredit" hidden>{{ map_credit }}</p>
     <p id="storyNoMap" hidden></p>
   </details>
   <p id="status" role="status"></p>

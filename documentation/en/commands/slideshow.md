@@ -106,8 +106,11 @@ eight digits: the remote opens. Then:
 - **The storyteller's notes** (unfold them under the controls): while the family watches the TV,
   the phone shows the photo on screen larger, its day and time, the event and its place, its
   description and words (when `describe` gave some), the next photo, and a small drawing of
-  where the event's photos were taken (the red dot: this one; drawn on the phone, no map is
-  downloaded). Three buttons: **Pause while I talk**, **Back to the start of this event**,
+  where the event's photos were taken (the red dot: this one), over the names of the nearby
+  towns and villages (read from the towns built into the tool: nothing goes to the internet).
+  If you set `[places] tiles` in `config.toml` (the map of [`places`](places.md)), real map
+  tiles are drawn under the points instead: the phone's browser downloads them, so the tile
+  server sees the area viewed (never a photo). Three buttons: **Pause while I talk**, **Back to the start of this event**,
   **Next event**. They only move the show: nothing is changed on the PC.
 
 The TV loads the next photo in advance, behind the one shown, and swaps once it is decoded: you

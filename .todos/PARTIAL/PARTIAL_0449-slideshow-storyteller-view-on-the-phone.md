@@ -34,14 +34,15 @@ while the family looks at the TV.
   words (`tags`), the next photo; read from the index only (`services/slideshow_notes.py`).
 - Story controls: *Pause while I talk*, *Back to the start of this event*, *Next event*
   (actions `event`, `next_event`; past the last event the show stays). No write route.
-- The event's map: an SVG drawing of its photos' positions (this one in red), no tiles at all.
+- The event's map: an SVG drawing of its photos' positions (this one in red), over the labels of a
+  handful of nearby towns from the offline gazetteer (`slideshow/event_map.py`); when the user set
+  `[places] tiles`, over those tiles instead, the remote's CSP allowing that host only
+  (`services/slideshow_map.py`).
 - Tests `tests/unit/test_slideshow_notes.py`; docs en+fr (`commands/slideshow.md`).
 
 ### Not done
 - The people recognised.
   **Reason:** their names are made at each search from the face lists (never in the index);
   reading them at show start needs the faces machinery — a follow-up.
-- A map background (towns, or `[places] tiles` when set).
-  **Reason:** the plain drawing is enough for a first phone test; tiles are opt-in anyway.
 - Checked on a real phone; documentation captures not regenerated (`docs_screenshots`).
   **Reason:** needs the maintainer's phone; captures are run by the maintainer.

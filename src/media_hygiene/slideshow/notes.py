@@ -44,6 +44,9 @@ def story_view(show: Show) -> dict[str, object]:
         "caption": notes.caption,
         "words": list(notes.words),
         "here": notes.point,
+        "map": None
+        if current is None or current.chapter is None or current.chapter.map is None
+        else current.chapter.map.view(),
         "next": None if upcoming is None else upcoming.key,
         "points": [
             slide.notes.point
