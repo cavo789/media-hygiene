@@ -1347,6 +1347,9 @@ msgstr ""
 "Répondu : les fichiers marqués 🗑️ sont retenus par 'clean --decisions', "
 "mis de côté s'ils reviennent ; les autres sont oubliés."
 
+msgid "Any date"
+msgstr "Toutes les dates"
+
 msgid "Any folder"
 msgstr "N'importe quel dossier"
 
@@ -4798,6 +4801,9 @@ msgstr "Paramètre manquant"
 msgid "Modified (UTC)"
 msgstr "Modifié (UTC)"
 
+msgid "Month"
+msgstr "Mois"
+
 msgid "More keys"
 msgstr "Plus de touches"
 
@@ -5975,6 +5981,9 @@ msgstr ""
 msgid "Nothing matches. Try duplicates, phone, NAS or undo."
 msgstr "Rien ne correspond. Essayez doublons, téléphone, NAS ou annuler."
 
+msgid "Nothing moved: every file is already in its place, or stays where it is."
+msgstr "Rien n'a bougé : chaque fichier est déjà à sa place, ou reste où il est."
+
 msgid "Nothing moves without you."
 msgstr "Rien ne bouge sans vous."
 
@@ -6026,9 +6035,6 @@ msgstr "Rien à importer : chaque fichier du dossier est déjà traité."
 
 msgid "Nothing to move: every file is where the plan puts it."
 msgstr "Rien à déplacer : chaque fichier est là où le plan le met."
-
-msgid "Nothing to move: no run was made."
-msgstr "Rien à déplacer : aucun passage n'a été fait."
 
 msgid "Nothing to put back."
 msgstr "Rien à remettre."
@@ -7064,6 +7070,9 @@ msgstr[1] ""
 
 msgid "Quarantined"
 msgstr "En quarantaine"
+
+msgid "Quick periods"
+msgstr "Périodes rapides"
 
 msgid "RAW"
 msgstr "RAW"
@@ -10320,6 +10329,9 @@ msgstr "Ce mh ne lance pas les étapes de la page : tapez la commande."
 msgid "This mh does not take the words of a form: copy the command."
 msgstr "Ce mh ne prend pas les mots d'un formulaire : copiez la commande."
 
+msgid "This month"
+msgstr "Ce mois-ci"
+
 #, python-brace-format
 msgid "This page also analyses: {folder}"
 msgstr "Cette page analyse aussi : {folder}"
@@ -10396,6 +10408,9 @@ msgid "This workbook was written by another version: it cannot be checked."
 msgstr ""
 "Ce classeur a été écrit par une autre version : il ne peut pas être "
 "vérifié."
+
+msgid "This year"
+msgstr "Cette année"
 
 #, python-brace-format
 msgid ""
@@ -10577,6 +10592,9 @@ msgstr "Pour trier par lieu et par voyage ; aucune position ne quitte le PC."
 
 msgid "To undo it all:"
 msgstr "Pour tout annuler :"
+
+msgid "Today"
+msgstr "Aujourd'hui"
 
 msgid ""
 "Too many wrong codes: pairing a TV is closed. Stop the slideshow (Ctrl+C "
@@ -15885,12 +15903,10 @@ msgstr[0] "{n} fichier, {size}, {share} de votre photothèque"
 msgstr[1] "{n} fichiers, {size}, {share} de votre photothèque"
 
 #, python-brace-format
-msgid ""
-"{n} files are not in the latest classify run: run classify again to sort "
-"them."
+msgid "{n} files are not in the index yet: run an audit, then move them."
 msgstr ""
-"{n} fichiers ne sont pas dans le dernier passage de classify : relancez "
-"classify pour les trier."
+"{n} fichiers ne sont pas encore dans l'index : lancez un audit, puis "
+"déplacez-les."
 
 #, python-brace-format
 msgid "{n} files of these days stay with another rule: shown after, marked."

@@ -35,7 +35,7 @@ def build_plan(
     """
     proposals = sorted(classification.proposals, key=lambda p: str(p.file.path))
     ids = _row_ids(proposals)
-    rows = tuple(_row(p, ids[str(p.file.path)], mapper) for p in proposals)
+    rows = rows_of(proposals, mapper)
     known = {str(p.file.path) for p in proposals}
     events = tuple(
         _event(event, ids)
@@ -50,6 +50,20 @@ def build_plan(
         events=events,
         unused_rules=classification.unused_rules,
     )
+
+
+def rows_of(proposals: list[Proposal], mapper: HostPathMapper) -> tuple[PlanRow, ...]:
+    """The rows of proposals, their stable ids included.
+
+    Args:
+        proposals: The proposals, in path order.
+        mapper: Container ↔ host paths.
+
+    Returns:
+        One row each.
+    """
+    ids = _row_ids(proposals)
+    return tuple(_row(p, ids[str(p.file.path)], mapper) for p in proposals)
 
 
 def _row_ids(proposals: list[Proposal]) -> dict[str, str]:

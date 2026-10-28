@@ -286,6 +286,25 @@ document.addEventListener("keydown", (event) => {
   }
 });
 $("form").addEventListener("submit", search);
+// From given: To follows when empty or before it (0453), the period still one day at least.
+$("from").addEventListener("change", () => {
+  const from = $("from").value;
+  if (from && (!$("to").value || $("to").value < from)) $("to").value = from;
+});
+// A quick period: today, this month, this year (local days), or none; then searched.
+const isoDay = (day) => [day.getFullYear(), String(day.getMonth() + 1).padStart(2, "0"), String(day.getDate()).padStart(2, "0")].join("-");
+function period(span) {
+  const now = new Date();
+  const first = span === "year" ? new Date(now.getFullYear(), 0, 1) : span === "month" ? new Date(now.getFullYear(), now.getMonth(), 1) : now;
+  const last = span === "year" ? new Date(now.getFullYear(), 11, 31) : span === "month" ? new Date(now.getFullYear(), now.getMonth() + 1, 0) : now;
+  return span ? [isoDay(first), isoDay(last)] : ["", ""];
+}
+for (const button of document.querySelectorAll(".spans button")) {
+  button.addEventListener("click", () => {
+    [$("from").value, $("to").value] = period(button.dataset.span);
+    search(null);
+  });
+}
 $("sorting").addEventListener("change", () => search(null));  // what is left to sort (0407)
 // **Sort by** and **Show** (0347): the server sorts and filters, so the first files shown
 // are the right ones; kept for this viewer, as on the folder view.
