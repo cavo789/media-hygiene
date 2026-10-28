@@ -15,6 +15,8 @@ import hmac
 import secrets
 from typing import Final
 
+from media_hygiene.slideshow.chapters import Telling
+
 SCREEN_COOKIE: Final = "mh_screen"
 SCREEN_DIGITS: Final = 6  # read on the TV, typed on the phone
 MAX_WAITING: Final = 8
@@ -26,7 +28,7 @@ _HALF: Final = SCREEN_DIGITS // 2
 class Screens:
     """The TVs waiting for their code to be typed, and those paired."""
 
-    __slots__ = ("_paired", "_photos_only", "_waiting", "failures")
+    __slots__ = ("_paired", "_photos_only", "_waiting", "failures", "telling")
 
     def __init__(self) -> None:
         """Start without any TV."""
@@ -34,6 +36,7 @@ class Screens:
         self._paired: set[str] = set()
         self._photos_only: set[str] = set()  # TVs whose browser plays no video
         self.failures = 0
+        self.telling = Telling.TV  # where the events are told, chosen on the phone
 
     @property
     def films(self) -> bool:

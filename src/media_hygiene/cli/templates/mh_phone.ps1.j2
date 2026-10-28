@@ -41,6 +41,8 @@ function global:_{{ f }}_phone {
     $own = ($name -replace '[\\/:*?"<>|]', '_').Trim().TrimEnd('.')
     if (-not $own) { $own = '{{ p.folder }}' }
     $destination = Join-Path $to $own
+    # A factory name (0450): two phones of one model would share this folder.
+    if ($name -match '{{ p.naming.pattern }}') { Write-Host "{{ p.naming.tip }}" }
     # Over MTP, about 31 ms a file (measured): a line every {{ p.every }} files.
     Write-Host "{{ t.listing }}"
     $items = New-Object 'System.Collections.Generic.Dictionary[string,object]'

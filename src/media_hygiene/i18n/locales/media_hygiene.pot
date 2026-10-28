@@ -1191,6 +1191,9 @@ msgstr ""
 msgid "Back to the report"
 msgstr ""
 
+msgid "Back to the start of this event"
+msgstr ""
+
 msgid "Back to the tool"
 msgstr ""
 
@@ -4274,6 +4277,9 @@ msgstr ""
 msgid "Next audit: a few seconds, the files checked are taken from the cache."
 msgstr ""
 
+msgid "Next event"
+msgstr ""
+
 msgid "Next event (N)"
 msgstr ""
 
@@ -4594,6 +4600,9 @@ msgid ""
 msgstr ""
 
 msgid "No place yet: click a circle or the map."
+msgstr ""
+
+msgid "No position for this event."
 msgstr ""
 
 msgid "No preview"
@@ -5027,6 +5036,9 @@ msgid "Nothing written: your layouts stay as they are."
 msgstr ""
 
 msgid "November"
+msgstr ""
+
+msgid "Nowhere"
 msgstr ""
 
 #, python-brace-format
@@ -5483,6 +5495,9 @@ msgstr ""
 msgid "Path contains: invalid regular expression ({error})."
 msgstr ""
 
+msgid "Pause while I talk"
+msgstr ""
+
 msgid "People"
 msgstr ""
 
@@ -5524,6 +5539,9 @@ msgstr ""
 msgid ""
 "Phone freed: {count} files deleted ({size} GB), each one seen gone from "
 "the phone and found whole on the PC."
+msgstr ""
+
+msgid "Phone only"
 msgstr ""
 
 msgid "Phone, NAS: whenever you want"
@@ -7173,6 +7191,9 @@ msgstr ""
 msgid "TB"
 msgstr ""
 
+msgid "TV and phone"
+msgstr ""
+
 msgid "Table of contents"
 msgstr ""
 
@@ -7532,6 +7553,9 @@ msgid "The earlier copies of this album were replaced."
 msgstr ""
 
 msgid "The event shown"
+msgstr ""
+
+msgid "The event's name:"
 msgstr ""
 
 msgid ""
@@ -8197,6 +8221,9 @@ msgid "The step you choose also analyses: {folder}"
 msgstr ""
 
 msgid "The steps changed since the page was shown: here they are."
+msgstr ""
+
+msgid "The storyteller's notes"
 msgstr ""
 
 msgid ""
@@ -9039,7 +9066,13 @@ msgid ""
 "not a copy). Default: the quarantine folder of your home."
 msgstr ""
 
+msgid "Where the event is told"
+msgstr ""
+
 msgid "Where the files of this event go, as 'sort' will move them:"
+msgstr ""
+
+msgid "Where the photos of this event were taken"
 msgstr ""
 
 msgid "Where to start"
@@ -9647,6 +9680,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "at {seconds} s"
+msgstr ""
+
+#, python-brace-format
+msgid "at {time}"
 msgstr ""
 
 #, python-brace-format
@@ -13771,6 +13808,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{town}, {country}"
+msgstr ""
+
+#, python-brace-format
 msgid "{to} is neither a NAS folder nor a folder on a drive."
 msgstr ""
 
@@ -13932,6 +13973,14 @@ msgstr ""
 
 #, python-brace-format
 msgid "💡 On a phone of the home Wi-Fi too: {command}"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"💡 {name} looks like the phone's factory name: two phones of the same "
+"model would share its folder. Give it a name of its own (Samsung: "
+"Settings > About phone > Edit; Pixel: Settings > About phone > Device "
+"name), then plug it in again."
 msgstr ""
 
 msgid "📍 The GPS positions were kept, as asked."

@@ -25,6 +25,7 @@ from media_hygiene.review.page_header import headed_page
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.services.search import open_search
+from media_hygiene.services.slideshow_map import map_tiles
 from media_hygiene.services.slideshow_pick import Pick, picked_slides
 from media_hygiene.services.slideshow_say import say_slideshow
 from media_hygiene.slideshow.app import (
@@ -35,6 +36,7 @@ from media_hygiene.slideshow.app import (
     ShowPages,
     SlideshowApp,
 )
+from media_hygiene.slideshow.chapters import BANNER_SECONDS, TITLE_SECONDS
 from media_hygiene.slideshow.desk import Changes, Desk
 from media_hygiene.slideshow.door import Door
 from media_hygiene.slideshow.pictures import ShowPictures
@@ -58,6 +60,7 @@ if TYPE_CHECKING:
 _PACKAGE: Final = "media_hygiene.slideshow"
 _REMOTE_TEMPLATE: Final = "slideshow.html.j2"
 _SCREEN_TEMPLATE: Final = "screen.html.j2"
+_TELLING: Final = {"title_seconds": TITLE_SECONDS, "banner_seconds": BANNER_SECONDS}
 
 
 @dataclass(frozen=True, slots=True)
@@ -142,7 +145,10 @@ def _app(runtime: Runtime, show: Show, serving: _Serving) -> SlideshowApp:
         The app.
     """
     environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
+    tiles = map_tiles(runtime.settings.places)
     paths = {
+        "map_tiles": tiles.url,
+        "map_credit": tiles.credit,
         "screen_path": SCREEN_PATH,
         "slides_path": SLIDES_PATH,
         "show_path": SHOW_PATH,
@@ -158,8 +164,10 @@ def _app(runtime: Runtime, show: Show, serving: _Serving) -> SlideshowApp:
     pages = ShowPages(
         headed_page(environment, _REMOTE_TEMPLATE, paths),
         environment.get_template(_SCREEN_TEMPLATE)
-        .render(**paths, phone_url=phone_url)
+        .render(**paths, phone_url=phone_url, **_TELLING)
         .encode(),
+        tiles.policy,
+        tiles.referrer,
     )
     screens = Screens()
     previews = runtime.previews_dir

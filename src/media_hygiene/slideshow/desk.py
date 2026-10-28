@@ -20,6 +20,8 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from media_hygiene.config.slideshow_settings import LONGEST_INTERVAL, SHORTEST_INTERVAL
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
+from media_hygiene.slideshow.chapters import Telling
+from media_hygiene.slideshow.notes import event_start, story_view
 from media_hygiene.slideshow.slides import Timing
 
 if TYPE_CHECKING:
@@ -41,6 +43,9 @@ class Action(StrEnum):
     PLAY = "play"
     PAUSE = "pause"
     PACE = "pace"  # each photo stays `seconds`
+    TELL = "tell"  # tell the events `where` (0448)
+    EVENT = "event"  # back to the start of this event (0449)
+    NEXT_EVENT = "next_event"  # the first photo of the next event (0449)
 
 
 class ShowAsked(BaseModel):
@@ -51,6 +56,7 @@ class ShowAsked(BaseModel):
     action: Action
     key: int | None = None
     seconds: int | None = Field(default=None, ge=SHORTEST_INTERVAL, le=LONGEST_INTERVAL)
+    where: Telling | None = None
 
 
 class Changes:
@@ -115,6 +121,7 @@ class Desk:
         """
         show = self.show
         current = show.current
+        chapter = None if current is None else current.chapter
         return {
             "version": show.version,
             "current": None if current is None else current.key,
@@ -125,6 +132,9 @@ class Desk:
             "out": sorted(show.skipped),
             "screens": self.screens.paired,
             "films": show.films,  # False: every TV shows photos only (0292)
+            "telling": self.screens.telling.value,
+            "chapter": None if chapter is None else chapter.view(),
+            "story": story_view(show),
         }
 
     def ask(self, body: bytes) -> Response:
@@ -166,8 +176,14 @@ class Desk:
                 seconds = asked.seconds or show.timing.interval
                 show.timing = Timing(seconds, show.timing.clock)
                 show.play(playing=show.playing)
+            case Action.TELL:
+                self.screens.telling = asked.where or Telling.TV
+                show.version += 1
             case Action.JUMP:
                 return show.jump(key)
+            case Action.EVENT | Action.NEXT_EVENT:
+                start = event_start(show, int(asked.action is Action.NEXT_EVENT))
+                return start is None or show.jump(start)  # no next event: stays
             case Action.OUT | Action.IN:
                 return show.set_out(key, out=asked.action is Action.OUT)
         return True

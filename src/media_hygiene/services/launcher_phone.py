@@ -9,8 +9,7 @@ moved or renamed. Each file goes into an empty staging folder of the run first: 
 MTP Windows ignores "yes to all" (flag 16) and opens its "replace" dialog behind the
 console (step 19 of `mh-measure.ps1`, measured 2026-10-19), so the copy never meets a
 name already there; `Move-Item` then puts it in place, `_1` added to a name taken.
-The messages are written into the script, translated, with the shell variables they
-show (`${count}`, `${size}`...).
+The messages are written into the script, translated, with their shell variables.
 """
 
 from __future__ import annotations
@@ -24,6 +23,7 @@ from media_hygiene.services.launcher_phone_free import (
     PhoneFreeCommand,
     phone_free_command,
 )
+from media_hygiene.services.launcher_phone_name import PhoneNaming, phone_naming
 from media_hygiene.services.launcher_phone_say import say
 from media_hygiene.services.phone_known import STAGING_PREFIX
 from media_hygiene.services.phone_plan import PHONE_PLAN, PhoneCase
@@ -82,6 +82,7 @@ class PhoneCommand:  # pylint: disable=too-many-instance-attributes  # one per v
     texts: PhoneTexts
     end: PhoneEnd  # the set-aside said, the files copied audited (0451)
     free: PhoneFreeCommand  # `--free` (0248)
+    naming: PhoneNaming  # a factory name: how to rename the phone (0450)
     plan: str = PHONE_PLAN
     new: str = PhoneCase.NEW.value
     library: str = PhoneCase.LIBRARY.value
@@ -105,7 +106,7 @@ def phone_command() -> PhoneCommand:
     Returns:
         Them, the messages safe inside double quotes.
     """
-    return PhoneCommand(texts=_texts(), end=phone_end(), free=phone_free_command())
+    return PhoneCommand(_texts(), phone_end(), phone_free_command(), phone_naming())
 
 
 def _texts() -> PhoneTexts:

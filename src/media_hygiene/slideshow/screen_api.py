@@ -20,6 +20,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
 from media_hygiene.review.serving import json_response
+from media_hygiene.slideshow.chapters import Telling
 from media_hygiene.slideshow.desk import WAIT_SECONDS
 from media_hygiene.slideshow.door import Visitor
 from media_hygiene.slideshow.films import film_ended, film_path, show_films
@@ -124,7 +125,24 @@ def screen_view(desk: Desk) -> dict[str, object]:
         "next": "" if upcoming is None or upcoming.film else tv_path(upcoming.key),
         "playing": show.playing,
         "code": "",
+        "chapter": _told(desk),
     }
+
+
+def _told(desk: Desk) -> dict[str, object] | None:
+    """The event of the photo shown, when the TV tells it (0448).
+
+    Args:
+        desk: The show.
+
+    Returns:
+        Its number, name, period and place; None when told on the phone only, or
+        nowhere.
+    """
+    current = desk.show.current
+    if current is None or current.chapter is None:
+        return None
+    return current.chapter.view() if desk.screens.telling is Telling.TV else None
 
 
 def pair_screen(desk: Desk, body: bytes) -> Response:

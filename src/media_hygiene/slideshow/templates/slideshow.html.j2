@@ -4,7 +4,11 @@
    shows that photo on the TV; the code a TV shows pairs it. On the PC, the card says how the TV
    and the phone open the show (GET /api/lan: the address, the code, the QR code; 404 without
    `mh --lan`). The server holds the show: this page only asks and draws (`slideshow.js.j2`).
-   Videos (0292) are marked ▶; one the TV cannot play is labelled, never sent to it. #}
+   Videos (0292) are marked ▶; one the TV cannot play is labelled, never sent to it. The event of
+   the photo shown (0448: its folder's name, its month, its place) is said under the controls;
+   three buttons choose where it is told: the TV and the phone, the phone only, nowhere. The
+   storyteller's notes (0449): the photo larger, its time, description and words, the next photo,
+   the event's positions over its towns (offline), or over `[places] tiles` when set, and three show controls. #}
 {% set texts = {
   "place": _("Photo {place} of {total}"),
   "nothing": _("Nothing on the TV: every photo is set out of the show."),
@@ -24,6 +28,8 @@
   "seconds": _("{n} s"),
   "filmPlays": _("the video plays to its end"),
   "unplayable": _("Not on the TV: its format ({format}) does not play there."),
+  "storyAt": _("at {time}"),
+  "storyNoMap": _("No position for this event."),
   "photosOnly": _("videos skipped: this TV's own browser shows photos only, open the show in the Chromecast's browser for them"),
 } %}
 {% set page_name = _("Slideshow") %}
@@ -35,6 +41,10 @@
   button:disabled { opacity: .45; cursor: default; }
   select, input { min-height: 44px; padding: 6px 10px; font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; }
   #status { margin: 8px 0 0; color: var(--muted); font-size: .9rem; }
+  .telling { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; }
+  .telling button { min-height: 36px; padding: 4px 12px; }
+  .telling button[aria-pressed="true"] { color: var(--on-accent); background: var(--accent); }
+  #event { margin: 8px 0 0; font-weight: 600; }
   #status.error { color: var(--bad); font-weight: 600; }
   .card { margin: 12px 16px 0; padding: 12px 16px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
   .card p { margin: 0 0 8px; }
@@ -53,6 +63,20 @@
   .tile.unplayable figcaption { color: var(--bad); }
   .tile figcaption { padding: 2px 6px; font-size: .75rem; color: var(--muted); }
   .tile button { position: absolute; top: 4px; right: 4px; min-height: 32px; padding: 2px 8px; font-size: .75rem; }
+  /* The storyteller's view (0449): the photo larger, its notes, the next one, the event's map. */
+  #story { margin-top: 8px; }
+  #story .now { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 8px; align-items: start; }
+  #story img { display: block; width: 100%; border-radius: 8px; background: var(--chip); }
+  #story .next { font-size: .8rem; color: var(--muted); }
+  #story .next img { opacity: .8; }
+  #story p { margin: 6px 0 0; }
+  #storyWords { color: var(--muted); font-size: .9rem; }
+  #storyMap { display: block; width: 100%; max-width: 320px; height: 140px; margin-top: 6px; background: var(--chip); border-radius: 8px; }
+  #storyMap circle { fill: var(--accent); opacity: .6; }
+  #storyMap circle.here { fill: var(--bad); opacity: 1; }
+  #storyMap circle.town { fill: var(--muted); opacity: 1; }
+  #storyMap text { font-size: 11px; fill: var(--muted); }
+  #storyCredit { font-size: .7rem; color: var(--muted); }
   /* The way the TV and the phone open the show, and the TV's code, in the left column. */
   #side .card { margin: 0; }
 {% endblock %}
@@ -85,6 +109,31 @@
       </select></label>
     <button id="out" class="plain" type="button">{{ _("Do not show") }}</button>
   </div>
+  <div class="telling" role="group" aria-label="{{ _('Where the event is told') }}">
+    <span>{{ _("The event's name:") }}</span>
+    <button class="plain" type="button" data-where="tv" aria-pressed="false">{{ _("TV and phone") }}</button>
+    <button class="plain" type="button" data-where="phone" aria-pressed="false">{{ _("Phone only") }}</button>
+    <button class="plain" type="button" data-where="none" aria-pressed="false">{{ _("Nowhere") }}</button>
+  </div>
+  <p id="event" hidden></p>
+  <details id="story" class="card">
+    <summary>{{ _("The storyteller's notes") }}</summary>
+    <div class="controls">
+      <button id="talk" class="plain" type="button">{{ _("Pause while I talk") }}</button>
+      <button id="eventStart" class="plain" type="button">{{ _("Back to the start of this event") }}</button>
+      <button id="nextEvent" class="plain" type="button">{{ _("Next event") }}</button>
+    </div>
+    <div class="now">
+      <img id="storyNow" alt="">
+      <div class="next">{{ _("Next") }}<img id="storyNext" alt=""></div>
+    </div>
+    <p id="storyWhen"></p>
+    <p id="storyCaption"></p>
+    <p id="storyWords"></p>
+    <svg id="storyMap" viewBox="0 0 320 140" role="img" aria-label="{{ _('Where the photos of this event were taken') }}"></svg>
+    <p id="storyCredit" hidden>{{ map_credit }}</p>
+    <p id="storyNoMap" hidden></p>
+  </details>
   <p id="status" role="status"></p>
 {% endblock %}
 {% block content %}
@@ -93,6 +142,7 @@
 {% block after %}
 <script>
 {% include "slideshow.js.j2" %}
+{% include "slideshow_story.js.j2" %}
 </script>
 {% set presence_probe = true %}{% include "presence.html.j2" %}
 {% endblock %}

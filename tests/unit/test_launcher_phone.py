@@ -37,6 +37,7 @@ from media_hygiene.services.launcher_phone_free import (
     MOVED_PREFIX,
     PHONE_MB_PER_SECOND,
 )
+from media_hygiene.services.launcher_phone_name import phone_naming
 from media_hygiene.services.phone_free import PROVEN
 from media_hygiene.services.phone_known import STAGING_PREFIX
 from media_hygiene.services.phone_plan import (
@@ -487,3 +488,19 @@ def test_a_phone_asleep_during_a_copy_is_said() -> None:
     assert "keep the phone unlocked" in texts.copying
     assert "asleep" in texts.unplugged
     assert "asleep" in phone_command().free.texts.stopped
+
+
+def test_a_factory_name_is_told_how_to_rename_the_phone() -> None:
+    """A brand or model word first: one tip, before the listing; an own name: none."""
+    naming = phone_naming()
+    main = _body(_script(), "phone {")
+    tip = main.index(f"if ($name -match '{naming.pattern}')")
+    assert main.index("$destination = Join-Path $to $own") < tip
+    assert tip < main.index('Write-Host "Listing')
+    assert "looks like the phone's factory name" in main
+    factory = re.compile(naming.pattern, re.IGNORECASE)
+    for name in ("Galaxy A71", "Pixel 8", "iPhone de Manon", "redmi note 12"):
+        assert factory.search(name), name
+    for name in ("Christophe A71", "Manon S23", "Mike's phone"):
+        assert not factory.search(name), name
+    _safe(naming.tip)
