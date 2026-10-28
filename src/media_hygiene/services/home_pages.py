@@ -26,9 +26,12 @@ from media_hygiene.review.step_watch import STEP_PATH
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.history_here import HISTORY_PREFIX, HistoryHere
-from media_hygiene.services.near_here import NEAR_PREFIX, NearHere
+from media_hygiene.services.places_here import PLACES_PREFIX, PlacesHere
+from media_hygiene.services.review_here import ReviewHere
+from media_hygiene.services.review_kinds import REVIEWS
 from media_hygiene.services.search import open_search
 from media_hygiene.services.search_app import SearchBuild, search_app
+from media_hygiene.services.slideshow_here import SLIDESHOW_PREFIX, SlideshowHere
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
@@ -37,6 +40,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.apply_api import ApplyStep
     from media_hygiene.review.ending import Ending, Handling
     from media_hygiene.review.http import Request, Response
+    from media_hygiene.review.lan import LanAccess
     from media_hygiene.search.app import SearchApp
     from media_hygiene.services.runtime import Runtime
 
@@ -53,6 +57,7 @@ class HomeServer:
     apply: Callable[[], ApplyStep | None] | None  # *Apply now*'s step; None: no button
     ending: Ending
     executor: Executor
+    lan: LanAccess | None = None  # under `mh --lan`: the slideshow's phones and TVs
 
 
 class SearchHere:
@@ -107,8 +112,10 @@ class HomeWithPages:
 
     home: Handling
     pages: SearchHere
-    near: NearHere  # `/review/near/…` (0357)
+    reviews: tuple[ReviewHere, ...]  # `/review/near/…` (0357), the others (0417)
     history: HistoryHere  # `/history/` (0350)
+    slideshow: SlideshowHere  # `/slideshow/…`, its TV on the plain door (0417)
+    places: PlacesHere  # `/places/…` (0417)
 
     async def handle(self, request: Request) -> Response:
         """Route a request.
@@ -122,8 +129,13 @@ class HomeWithPages:
         path = request.path
         if path in _HOME_PATHS or path.startswith(REPORTS_PREFIX):
             return await self.home.handle(request)
-        if path == NEAR_PREFIX or path.startswith(f"{NEAR_PREFIX}/"):
-            return await self.near.handle(request)
+        review = next((each for each in self.reviews if each.serves(path)), None)
+        if review is not None:
+            return await review.handle(request)
+        if path == PLACES_PREFIX or path.startswith(f"{PLACES_PREFIX}/"):
+            return await self.places.handle(request)
+        if path == SLIDESHOW_PREFIX or path.startswith(f"{SLIDESHOW_PREFIX}/"):
+            return await self.slideshow.handle(request)
         if path in {HISTORY_PREFIX, f"{HISTORY_PREFIX}/"}:
             return await self.history.handle(request)
         app = self.pages.app()
@@ -145,10 +157,18 @@ def home_with_pages(
         The router.
     """
     pages = SearchHere(runtime, server)
-    relay = home_relay(runtime.locations.reports_dir)
     fresh = FreshRuntime(runtime)
-    near = NearHere(fresh, server, relay)
+    reviews = tuple(ReviewHere(kind, fresh, server) for kind in REVIEWS)
+    slideshow = SlideshowHere(fresh, server)
     try:
-        yield HomeWithPages(home, pages, near, HistoryHere(fresh))
+        yield HomeWithPages(
+            home,
+            pages,
+            reviews,
+            HistoryHere(fresh),
+            slideshow,
+            PlacesHere(fresh, server),
+        )
     finally:
+        slideshow.close()
         pages.close()

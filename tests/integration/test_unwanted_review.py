@@ -90,7 +90,7 @@ def test_the_page_lists_decides_and_reads_back(locations: Locations) -> None:
         [
             Call("GET", "/"),
             Call("GET", "/api/state"),
-            Call("GET", state.photos[night].preview),
+            Call("GET", f"/{state.photos[night].preview}"),
             choose((night, True), (shot, False)),
             Call("GET", "/api/file"),
             choose((999, True)),

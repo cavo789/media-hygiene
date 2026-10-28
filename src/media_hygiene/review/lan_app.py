@@ -12,7 +12,8 @@ the home network's door (`doors`, 0384: never passed on as the PC's, whatever it
   the theme, the docs, the albums, search and browse and their files, 0297, 0360), the
   audit's progress, a search or a folder listed, and a change of an album (0295): none
   changes a photo; never an audit started (0427). A step or a stop stay the PC's: 403,
-  said on each step's button (decided 2026-10-21). What passes goes on as the PC's,
+  said on each step's button (decided 2026-10-21), but an album saved on the PC
+  shown on the TV (`lan_show`, 0444). What passes goes on as the PC's,
   `Origin` checked.
 """
 
@@ -20,7 +21,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
 from media_hygiene.review.app_shell import shell_response
@@ -29,16 +30,13 @@ from media_hygiene.review.http import ContentType, Request, Response, is_local
 from media_hygiene.review.lan import COOKIE_NAME, PAIR_PREFIX, cookies
 from media_hygiene.review.lan_card import lan_response
 from media_hygiene.review.lan_pairing import Pairing, pair_page
-from media_hygiene.review.lan_paths import phone_marked, phone_may
-from media_hygiene.review.lan_phones import device_name
-from media_hygiene.review.lan_phones_api import (
-    PHONE_PATHS,
-    durable_cookie,
-    phones_answer,
-)
+from media_hygiene.review.lan_paths import LAN_PATH, phone_marked, phone_may
+from media_hygiene.review.lan_phones_api import PHONE_PATHS, for_good, phones_answer
+from media_hygiene.review.lan_show import phone_step
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.serving import json_response
 from media_hygiene.review.shared_routes import asset_or_page
+from media_hygiene.review.step_watch import STEP_PATH
 from media_hygiene.services.reviewing import HOST_LOOPBACK
 from media_hygiene.share import album_page as albums
 
@@ -47,8 +45,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.lan import LanAccess
     from media_hygiene.review.lan_phones import PhoneBook
 
-LAN_PATH: Final = "/api/lan"
-_GET = "GET"
+_GET, _POST = "GET", "POST"
 
 
 @dataclass(frozen=True, slots=True)
@@ -128,13 +125,7 @@ class LanApp:
             303 to the page with the cookie; the pairing page otherwise.
         """
         answer = self.pairing.check(self.lan, request.path.removeprefix(PAIR_PREFIX))
-        if answer.status is not HTTPStatus.SEE_OTHER or self.phones is None:
-            return answer
-        token = self.phones.add(device_name(request.headers.get("user-agent", "")))
-        if token is None:  # the file cannot be written: paired for this run only
-            return answer
-        headers = (f"Location: {PAGE_PATH}", durable_cookie(token))
-        return Response(HTTPStatus.SEE_OTHER, headers=headers)
+        return for_good(answer, self.phones, request)
 
     def _is_paired(self, request: Request) -> bool:
         """Tell whether the phone holds this run's cookie, or one paired for good.
@@ -161,10 +152,15 @@ class LanApp:
         """
         path = request.path
         origin = request.headers.get("origin")
-        if not phone_may(request, originals=self.originals) or origin not in {
-            None,
-            self.lan.origin,
-        }:
+        local = f"{HOST_LOOPBACK}:{self.lan.port}"
+        headers = {**request.headers, "host": local, albums.PHONE_HEADER: "1"}
+        if origin is not None:
+            headers["origin"] = f"http://{local}"
+        passed = Request(request.method, path, headers, request.body)
+        same_site = origin in {None, self.lan.origin}
+        if same_site and request.method == _POST and path == STEP_PATH:
+            return await phone_step(self.home, passed)  # an album on the TV (0444)
+        if not phone_may(request, originals=self.originals) or not same_site:
             message = _(
                 "The phone is read-only: the reports, the albums, the search and "
                 "browse. Open this page or run this step on the PC."
@@ -172,9 +168,4 @@ class LanApp:
             return json_response(HTTPStatus.FORBIDDEN, {"error": message})
         if request.method == _GET and path == PAGE_PATH:
             return Response(HTTPStatus.OK, self.phone_page, ContentType.HTML)
-        local = f"{HOST_LOOPBACK}:{self.lan.port}"
-        headers = {**request.headers, "host": local, albums.PHONE_HEADER: "1"}
-        if origin is not None:
-            headers["origin"] = f"http://{local}"
-        passed = Request(request.method, path, headers, request.body)
         return phone_marked(await asset_or_page(passed, self.home.handle))

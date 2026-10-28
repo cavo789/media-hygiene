@@ -17,7 +17,7 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.http import ContentType, is_local
-from media_hygiene.review.lan_app import LAN_PATH
+from media_hygiene.review.lan_paths import LAN_PATH
 from media_hygiene.review.serving import json_response
 from media_hygiene.services.next_command import LAUNCHER_VARIABLE
 

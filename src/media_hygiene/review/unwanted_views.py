@@ -11,7 +11,11 @@ from media_hygiene.console.formatting import human_number, human_size
 from media_hygiene.i18n import _
 from media_hygiene.plan.unwanted import UnwantedReason
 from media_hygiene.review.near_views import folder_and_name
-from media_hygiene.review.views import ORIGINAL_PREFIX, PREVIEW_PREFIX, preview_key
+from media_hygiene.review.views import (
+    ORIGINAL_LINK,
+    PREVIEW_LINK,
+    preview_key,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -129,7 +133,7 @@ class UnwantedStateBuilder:
             name=name,
             folder=folder,
             details=" · ".join((size, human_size(file.size))),
-            preview=f"{PREVIEW_PREFIX}{key}.jpg",
-            original=f"{ORIGINAL_PREFIX}{key}{file.path.suffix.lower()}",
+            preview=f"{PREVIEW_LINK}{key}.jpg",
+            original=f"{ORIGINAL_LINK}{key}{file.path.suffix.lower()}",
             reason=photo.reason,
         )

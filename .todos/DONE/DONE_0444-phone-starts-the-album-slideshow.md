@@ -28,3 +28,22 @@ other acting step keeps *Run this step on the PC*. The maintainer insists: this 
 ## Gain
 
 Walk to the PC and type a command → two taps on the phone (estimated).
+
+## Status
+
+DONE (2026-10-28), in two steps.
+
+1. Without 0417 (commit 9f18cff0): the phone's home page lists the albums of `albums.json`
+   under *Show an album on the TV*; a tap sends `POST /api/step` for `slideshow-album`, let
+   through by `review/lan_show.py` for that body and a saved album only (every other step
+   still 403). Tests: `tests/unit/test_lan_show_album.py`.
+2. With 0417 (the slideshow on the home server): an `mh` that keeps the home server up
+   answers that step with the page `/slideshow/album/<name>` (`review/album_show.py`), the
+   PC's form as well as the phone's tap: the show starts in the home server
+   (`services/slideshow_here.py`), the remote opens at once, nothing stops. The TV's bookmark
+   is `http://<addr>:8089/screen` (plain door): it waits while no show runs, is paired once by
+   its code, and stays paired while the home server runs (the `Screens` live there); another
+   album reaches it by itself. An older `mh` (no kept server) keeps step 1's way. Tests:
+   `tests/unit/test_slideshow_here.py`.
+
+The test on the real phone and TV is the maintainer's: item 11 of 0445.

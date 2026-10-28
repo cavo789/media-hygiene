@@ -40,7 +40,7 @@ if TYPE_CHECKING:
     from media_hygiene.scan.models import MediaFile
     from media_hygiene.services.runtime import Runtime
 
-_PAGE_TEMPLATE: Final = "unwanted_review.html.j2"
+PAGE_TEMPLATE: Final = "unwanted_review.html.j2"
 
 
 def unwanted_limits(settings: UnwantedSettings) -> UnwantedLimits:
@@ -157,6 +157,6 @@ def serve_unwanted_review(
     # Only the photos set aside move: a photo kept leaves nothing to apply.
     offer = ApplyOffer(start.apply, lambda: session.decided[1] > 0)
     page = ReviewPage(
-        _PAGE_TEMPLATE, session.place, api, partial(UnwantedApp, session), offer
+        PAGE_TEMPLATE, session.place, api, partial(UnwantedApp, session), offer
     )
     return serve_review_page(runtime, page, start.port)

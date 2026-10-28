@@ -30,6 +30,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from media_hygiene.review.http import Request
+    from media_hygiene.review.listen import Handle
 
 STOP_PATH: Final = "/api/stop"
 STOPPED: Final = 0  # the exit code of a page closed by its "Back to the home page"
@@ -101,6 +102,7 @@ class EndingDoor:
     ending: Ending
     presence: Presence | None = None
     person: Handling | None = None  # `/person` (0351)
+    plain: Handle | None = None  # the plain HTTP door's own pages: the TV's (slideshow)
 
     async def connection(
         self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter
@@ -186,7 +188,7 @@ async def serve_until_ended(
     Raises:
         PageClosed: The page's tab was closed and none came back (0262).
     """
-    async with listening(door.handle, port) as server:
+    async with listening(door.handle, port, door.plain) as server:
         ready(server.sockets[0].getsockname()[1])
         async with asyncio.TaskGroup() as group:
             serving = group.create_task(server.serve_forever())

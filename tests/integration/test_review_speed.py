@@ -43,7 +43,7 @@ def test_the_original_is_the_file_itself(locations: Locations) -> None:
     found, unknown, other = serve_and_call(
         session,
         [
-            Call("GET", original),
+            Call("GET", f"/{original}"),  # relative to the page (0417)
             Call("GET", "/original/0123.jpg"),
             Call("GET", original.removesuffix(".jpg") + ".png"),
         ],

@@ -18,7 +18,7 @@ from media_hygiene.i18n import _
 from media_hygiene.places.clusters import SHOWN
 from media_hygiene.places.config_photos import give_photos, read_place_photos
 from media_hygiene.places.drawer_rows import JPEG
-from media_hygiene.review.views import PREVIEW_PREFIX, preview_key
+from media_hygiene.review.views import PREVIEW_LINK, preview_key
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -144,7 +144,7 @@ class HandDesk:
         """
         key = preview_key(file)
         self.sources[key] = file.path
-        return f"{PREVIEW_PREFIX}{key}{JPEG}"
+        return f"{PREVIEW_LINK}{key}{JPEG}"
 
     def _digest(self, candidate: Candidate) -> str | None:
         """A file's SHA-256, read once per session.

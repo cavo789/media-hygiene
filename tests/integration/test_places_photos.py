@@ -35,7 +35,7 @@ def _answers(
         listed = await call(app, "GET /api/cluster/0")
         seen.append(listed)
         photos = json.loads(listed.body)["photos"]
-        seen.append(await call(app, f"GET {photos[0]['preview']}"))
+        seen.append(await call(app, f"GET /{photos[0]['preview']}"))
         seen.extend([await call(app, route) for route in routes])
 
     monkeypatch.setattr(places_service, "run_server", fake_server(act))
@@ -104,7 +104,7 @@ def test_each_photo_names_its_host_folder_and_has_a_larger_preview(
     async def act(app: PlacesApp) -> None:
         listed = await call(app, "GET /api/cluster/0")
         first = json.loads(listed.body)["photos"][0]
-        seen.extend([listed, await call(app, f"GET {first['large']}")])
+        seen.extend([listed, await call(app, f"GET /{first['large']}")])
 
     monkeypatch.setattr(places_service, "run_server", fake_server(act))
     assert run(runner, "places").exit_code == 0

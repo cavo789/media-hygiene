@@ -2,7 +2,8 @@
 
 Anywhere but the PC, everything is read-only (maintainer, 2026-10-27): a test walks this
 set against `lan_paths` and fails if a phone may reach one of them, whatever the
-`[review]` settings. A new route that writes joins this set.
+`[review]` settings. A new route that writes joins this set. One exception, by its body
+only: `POST /api/step` naming an album saved on the PC, on the TV (`lan_show`, 0444).
 """
 
 from __future__ import annotations

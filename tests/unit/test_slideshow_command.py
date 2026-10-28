@@ -9,25 +9,22 @@ from __future__ import annotations
 
 import json
 import queue
-import sqlite3
 import threading
 import urllib.request
-from contextlib import closing
 from typing import TYPE_CHECKING, Final
 
 import pytest
-from PIL import Image
 from typer.testing import CliRunner
 
 from media_hygiene.constants import ExitCode
 from media_hygiene.errors import MediaHygieneError
-from media_hygiene.index.schema import prepare
 from media_hygiene.review.lan import LanAccess
-from media_hygiene.services import slideshow
+from media_hygiene.services import slideshow_say
 from media_hygiene.services.slideshow import ShowStart, serve_slideshow
 from media_hygiene.services.slideshow_pick import Pick
 from media_hygiene.services.slideshow_say import say_slideshow
 from tests.support.cli import point_mounts, run
+from tests.support.indexed_photos import indexed_photos
 from tests.support.runtime import make_locations, make_runtime, output_of
 
 if TYPE_CHECKING:
@@ -43,17 +40,7 @@ _TIMEOUT: Final = 10.0
 def _library(locations: Locations) -> None:
     """Two photos in the Holidays folder of drive C, known to the index."""
     folder = locations.data_dir / "c" / "Photos" / "Holidays"
-    folder.mkdir(parents=True)
-    with closing(sqlite3.connect(locations.index_file)) as connection:
-        prepare(connection)
-        for number in range(2):
-            photo = folder / f"IMG_{number}.jpg"
-            Image.new("RGB", (64, 48)).save(photo)
-            connection.execute(
-                "INSERT INTO files (path, size, mtime_ns) VALUES (?, ?, 1)",
-                (str(photo), photo.stat().st_size),
-            )
-        connection.commit()
+    indexed_photos(locations.index_file, folder, 2)
 
 
 def test_the_command_asks_what_to_show(
@@ -116,7 +103,9 @@ def test_the_show_is_served_until_the_page_stops_it(
     runtime = make_runtime(make_locations(tmp_path))
     _library(runtime.locations)
     ports: queue.Queue[int] = queue.Queue()
-    monkeypatch.setattr(slideshow, "address_tip", lambda _output, port: ports.put(port))
+    monkeypatch.setattr(
+        slideshow_say, "address_tip", lambda _output, port: ports.put(port)
+    )
     shown: queue.Queue[int] = queue.Queue()
     start = ShowStart(Pick(folder=_FOLDER), 0)
     thread = threading.Thread(target=lambda: shown.put(serve_slideshow(runtime, start)))

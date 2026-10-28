@@ -35,8 +35,9 @@ from media_hygiene.review.lan import (
     lan_access,
 )
 from media_hygiene.review.lan_address import LAN_ADDRESS_VARIABLE, private_address
-from media_hygiene.review.lan_app import LAN_PATH, LanApp
+from media_hygiene.review.lan_app import LanApp
 from media_hygiene.review.lan_pairing import MAX_FAILURES
+from media_hygiene.review.lan_paths import LAN_PATH
 from media_hygiene.review.lan_problem import (
     LAN_PROBLEM_VARIABLE,
     LanProblem,

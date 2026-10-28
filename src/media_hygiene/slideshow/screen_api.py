@@ -24,7 +24,7 @@ from media_hygiene.slideshow.chapters import Telling
 from media_hygiene.slideshow.desk import WAIT_SECONDS
 from media_hygiene.slideshow.door import Visitor
 from media_hygiene.slideshow.films import film_ended, film_path, show_films
-from media_hygiene.slideshow.pictures import tv_path
+from media_hygiene.slideshow.pictures import relative, tv_path
 from media_hygiene.slideshow.screens import shown_code
 
 if TYPE_CHECKING:
@@ -120,13 +120,25 @@ def screen_view(desk: Desk) -> dict[str, object]:
     return {
         "version": show.version,
         "key": None if current is None else current.key,
-        "photo": "" if current is None or current.film else tv_path(current.key),
-        "film": "" if current is None else film_path(current),
-        "next": "" if upcoming is None or upcoming.film else tv_path(upcoming.key),
+        "photo": "" if current is None or current.film else _tv(current.key),
+        "film": "" if current is None else relative(film_path(current)),
+        "next": "" if upcoming is None or upcoming.film else _tv(upcoming.key),
         "playing": show.playing,
         "code": "",
         "chapter": _told(desk),
     }
+
+
+def _tv(key: int) -> str:
+    """A photo's TV picture, relative to the TV's page (0417).
+
+    Args:
+        key: The photo's key.
+
+    Returns:
+        E.g. `tv/12.jpg`.
+    """
+    return relative(tv_path(key))
 
 
 def _told(desk: Desk) -> dict[str, object] | None:

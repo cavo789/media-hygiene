@@ -824,6 +824,16 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"A phone that says the connection is not private: install the PC's "
+"certificate first, from {steps}. A phone paired on the home page needs no"
+" code."
+msgstr ""
+"Un téléphone qui dit que la connexion n'est pas privée : installez "
+"d'abord le certificat du PC, depuis {steps}. Un téléphone appairé sur la "
+"page d'accueil n'a pas besoin de code."
+
+#, python-brace-format
+msgid ""
 "A photo changed in place by another program? 'audit --full' reads every "
 "folder (done anyway for those listed {days} days ago)."
 msgstr ""
@@ -3767,6 +3777,13 @@ msgstr "Depuis WSL ou Linux, montez le partage vous-même, puis donnez son dossi
 msgid "From a phone"
 msgstr "Depuis un téléphone"
 
+msgid ""
+"From a phone, only an album saved on the PC goes on the TV; run any other"
+" step on the PC."
+msgstr ""
+"Depuis un téléphone, seul un album enregistré sur le PC va sur la télé ; "
+"lancez toute autre étape sur le PC."
+
 msgid "From one element to the next; the first one leads straight to the content."
 msgstr "D'un élément à l'autre ; le premier mène directement au contenu."
 
@@ -5260,6 +5277,13 @@ msgid "No album named {name}. The albums: {names}."
 msgstr "Aucun album nommé {name}. Les albums : {names}."
 
 msgid ""
+"No album saved yet: make one on the PC, in search or browse (Add to an "
+"album), then come back here."
+msgstr ""
+"Aucun album enregistré : faites-en un sur le PC, dans search ou browse "
+"(Ajouter à un album), puis revenez ici."
+
+msgid ""
 "No album yet. On the PC, in search or browse, pick photos, then Add to "
 "the album."
 msgstr ""
@@ -5661,6 +5685,21 @@ msgstr "Aucune exécution pour l'instant."
 
 msgid "No signal"
 msgstr "Aucun indice"
+
+msgid ""
+"No slideshow is running: choose an album under Show an album on the TV, "
+"on the home page."
+msgstr ""
+"Aucun diaporama en cours : choisissez un album sous Montrer un album sur "
+"la télé, sur la page d'accueil."
+
+msgid ""
+"No slideshow yet: on the phone, open Media Hygiene and choose an album "
+"under Show an album on the TV. It appears here by itself."
+msgstr ""
+"Pas encore de diaporama : sur le téléphone, ouvrez Media Hygiene et "
+"choisissez un album sous Montrer un album sur la télé. Il s'affiche ici "
+"tout seul."
 
 msgid "No step applies the decisions now: type the next step yourself."
 msgstr ""
@@ -8792,6 +8831,13 @@ msgstr "Le PC a tout"
 msgid "The PC lacks them; never those you set aside on purpose."
 msgstr "Le PC ne les a plus ; jamais ceux que vous avez écartés exprès."
 
+msgid ""
+"The PC starts the show; the TV opens it at its bookmark, this phone "
+"becomes the remote."
+msgstr ""
+"Le PC lance le diaporama ; la télé l'ouvre à son favori, ce téléphone "
+"devient la télécommande."
+
 msgid "The TV is paired: it shows the photo now."
 msgstr "La télé est appairée : elle montre la photo maintenant."
 
@@ -9963,6 +10009,12 @@ msgid ""
 msgstr ""
 "Le shell du script : 'powershell' (Windows) ou 'bash' (WSL, Linux, "
 "macOS). Par défaut : deviné d'après les dossiers montés."
+
+msgid "The show did not start: look at the window of mh on the PC."
+msgstr "Le diaporama n'a pas démarré : regardez la fenêtre de mh sur le PC."
+
+msgid "The show starts on the PC…"
+msgstr "Le diaporama démarre sur le PC…"
 
 #, python-brace-format
 msgid "The slideshow failed (error {status})."

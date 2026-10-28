@@ -172,7 +172,11 @@ phone reaches them: any other device of the Wi-Fi (a guest, a TV) gets the pairi
 nothing, on every address. While the phone shows a page, `mh` keeps running even with the
 PC's tab closed; once `mh` stops, the phone's page says so.
 Every other step stays on the PC (*Run this step on the PC*): its questions are asked in the
-window of `mh`, which nobody sees from the sofa.
+window of `mh`, which nobody sees from the sofa. One exception: **Show an album on the TV**, on
+the phone's page, lists the albums saved on the PC; a tap starts that album's
+[slideshow](slideshow.md) in the home page's own server, and the phone opens its remote at once.
+The TV's bookmark (`http://<PC address>:8089/screen`) waits for a show and stays paired while
+`mh` runs.
 
 The *Show your photos on the TV* step, chosen on the PC, opens the [slideshow](slideshow.md) to
 the home network too: the phone already paired reloads its page and gets the slideshow's remote.

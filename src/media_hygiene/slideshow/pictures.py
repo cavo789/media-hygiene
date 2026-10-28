@@ -41,6 +41,18 @@ def tv_path(key: int) -> str:
     return f"{TV_PREFIX}{key}{JPEG}"
 
 
+def relative(path: str) -> str:
+    """An address of the show, relative to its page: under `/slideshow/` too (0417).
+
+    Args:
+        path: E.g. `/tv/12.jpg`.
+
+    Returns:
+        E.g. `tv/12.jpg`.
+    """
+    return path.lstrip("/")
+
+
 def thumb_path(key: int) -> str:
     """The address of a photo's thumbnail.
 
@@ -66,9 +78,9 @@ def slides_view(desk: Desk) -> dict[str, object]:
     slides = [
         {
             "key": slide.key,
-            "thumb": "" if slide.film else thumb_path(slide.key),
+            "thumb": "" if slide.film else relative(thumb_path(slide.key)),
             "day": slide.day,
-            "film": film_path(slide),
+            "film": relative(film_path(slide)),
             "format": "" if slide.film is None else slide.film.label,
         }
         for slide in desk.show.slides

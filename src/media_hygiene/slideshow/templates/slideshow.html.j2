@@ -144,5 +144,6 @@
 {% include "slideshow.js.j2" %}
 {% include "slideshow_story.js.j2" %}
 </script>
-{% set presence_probe = true %}{% include "presence.html.j2" %}
+{# In the home server (0417) the remote says it is alive: the home page's tab may leave for it. #}
+{% set presence_probe = not (presence_kept | default(false)) %}{% include "presence.html.j2" %}
 {% endblock %}

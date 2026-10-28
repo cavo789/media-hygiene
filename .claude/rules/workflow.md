@@ -16,6 +16,9 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   commit gate. The whole suite is CI's job, or `check` when a change is cross-cutting (a
   `conftest.py`, a template, a constant every module reads). ❌ DON'T: run the whole suite after
   each edit (minutes of load on the maintainer's PC).
+- ✅ DO: keep what passes to one line and what fails in full: `pytest -q --tb=short … | tail
+  -25`, `pre-commit … | grep -v -e Passed -e Skipped`, `git push -q`. ❌ DON'T: cut a failure's
+  trace to save room (guessing its cause costs more rounds than reading it).
 - ✅ DO: before editing files near a size cap, `.claude/scripts/near_limit.sh <files>`; plan
   the split (a new module) before writing, not after the linter fails.
 - ✅ DO: when a cache or index starts trusting more (reusing a listing, a stat, a digest), list

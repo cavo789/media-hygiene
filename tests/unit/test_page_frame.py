@@ -29,6 +29,7 @@ EXEMPT: Final = {
     "lan_ca.html.j2": "a phone not trusting the PC yet: plain HTTP (0430)",
     "app_offline.html.j2": "kept by the phone's worker: the PC is off (0432)",
     "screen.html.j2": "the TV: a 2012 browser, a black screen, no UI",
+    "tv_wait.html.j2": "the TV waiting for a show (0417): a 2012 browser, no script",
     "base.html.j2": "an HTML report opened from the disk: no server, no way home",
     "album.html.j2": (
         "served in front of the home page by its own server: its ⌂ link goes back "

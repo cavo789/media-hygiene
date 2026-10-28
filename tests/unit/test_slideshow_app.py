@@ -20,10 +20,16 @@ import pytest
 from PIL import Image
 
 from media_hygiene.index.schema import prepare
+from media_hygiene.review.doors import LAN_CA_PORT
 from media_hygiene.review.doors import Door as SocketDoor
 from media_hygiene.review.ending import Ending, EndingDoor
 from media_hygiene.review.http import Request, Response
-from media_hygiene.review.lan import COOKIE_NAME, LanAccess
+from media_hygiene.review.lan import COOKIE_NAME, LanAccess, lan_access
+from media_hygiene.review.lan_address import LAN_ADDRESS_VARIABLE
+from media_hygiene.review.lan_ca_page import CA_DOWNLOAD, PHONE_STEPS, CaDoor
+from media_hygiene.review.lan_card import lan_response
+from media_hygiene.review.lan_phones import PhoneBook
+from media_hygiene.review.lan_tls import certificates, secure_door
 from media_hygiene.search.fts import SearchIndex
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.slideshow.app import ShowPages, SlideshowApp
@@ -34,6 +40,7 @@ from media_hygiene.slideshow.screen_jpeg import ScreenJob
 from media_hygiene.slideshow.screens import MAX_FAILURES, SCREEN_COOKIE, Screens
 from media_hygiene.slideshow.show import Show
 from media_hygiene.slideshow.slides import Slide, Timing
+from media_hygiene.slideshow.tv_door import TvDoor
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -124,9 +131,9 @@ def test_the_pc_does_everything_without_pairing(app: SlideshowApp) -> None:
     assert wait == {
         "version": state["version"],
         "key": 2,
-        "photo": "/tv/2.jpg",
+        "photo": "tv/2.jpg",
         "film": "",
-        "next": "/tv/1.jpg",
+        "next": "tv/1.jpg",
         "playing": False,
         "code": "",
         "chapter": None,
@@ -253,7 +260,7 @@ def test_the_tv_shows_a_code_the_phone_types(app: SlideshowApp) -> None:
     shown = json.loads(
         _ask(app, _request("/api/wait/0", sender=_Sender(_LAN_HOST, tv))).body
     )
-    assert shown["photo"] == "/tv/1.jpg"
+    assert shown["photo"] == "tv/1.jpg"
     assert (
         _ask(app, _request("/tv/1.jpg", sender=_Sender(_LAN_HOST, tv))).status
         is HTTPStatus.OK
@@ -340,3 +347,92 @@ def test_a_forged_loopback_host_by_the_lan_door_is_a_stranger(
         "GET", "/api/slides", {"host": f"127.0.0.1:{_TV_PORT}"}, door=SocketDoor.LAN
     )
     assert app.door.visitor(forged) is not Visitor.PC
+
+
+# ---- Under HTTPS: the TV by the plain door, phones paired for good (2026-10-28) ----
+
+_TV_HOST: Final = f"{_PC_ADDRESS}:{LAN_CA_PORT}"
+
+
+def _plain(path: str, cookie: str = "", method: str = "GET") -> Request:
+    """A request of the plain HTTP door, marked as the home network's."""
+    headers = {"host": _TV_HOST} | ({"cookie": cookie} if cookie else {})
+    return Request(method, path, headers, b"", SocketDoor.LAN)
+
+
+def test_the_tv_is_served_by_the_plain_door_and_the_remote_is_not(
+    app: SlideshowApp, tmp_path: Path
+) -> None:
+    """`/` leads the TV to its page; its code, then its show and its pictures."""
+    assert certificates(tmp_path, _PC_ADDRESS)
+    tv = TvDoor(app)
+    door = CaDoor(tmp_path, f"https://{_LAN_HOST}", tv.handle)
+    home = asyncio.run(door.handle(_plain("/")))
+    assert home.status is HTTPStatus.SEE_OTHER
+    assert "Location: /screen" in home.headers
+    page = asyncio.run(door.handle(_plain("/screen")))
+    assert page.body == _SCREEN
+    token = f"{SCREEN_COOKIE}={_screen_token(page)}"
+    code = json.loads(asyncio.run(door.handle(_plain("/api/wait/0", token))).body)
+    paired = _ask(app, _request("/api/screens", _PHONE, {"code": code["code"]}))
+    assert paired.status is HTTPStatus.OK
+    shown = json.loads(asyncio.run(door.handle(_plain("/api/wait/0", token))).body)
+    assert shown["photo"] == "tv/1.jpg"
+    picture = asyncio.run(door.handle(_plain("/tv/1.jpg", token)))
+    assert picture.status is HTTPStatus.OK
+
+
+def test_the_plain_door_serves_nothing_of_the_remote(
+    app: SlideshowApp, tmp_path: Path
+) -> None:
+    """A phone's cookie on the plain door: no remote, no show moved, no pairing."""
+    tv = TvDoor(app)
+    door = CaDoor(tmp_path, f"https://{_LAN_HOST}", tv.handle)
+    for path in ("/api/slides", "/api/show/0", "/thumb/1.jpg", "/pair/1", "/api/lan"):
+        answer = asyncio.run(door.handle(_plain(path, _PHONE_COOKIE)))
+        assert answer.status is HTTPStatus.NOT_FOUND, path
+    posted = asyncio.run(door.handle(_plain("/api/show", _PHONE_COOKIE, "POST")))
+    assert posted.status is HTTPStatus.METHOD_NOT_ALLOWED
+    assert app.desk.show.current == Slide(_SHOWN_KEYS[0])
+    steps = asyncio.run(door.handle(_plain(PHONE_STEPS)))
+    assert CA_DOWNLOAD.encode() in steps.body
+    forged = Request("GET", "/screen", {"host": _LAN_HOST}, b"", SocketDoor.LAN)
+    assert asyncio.run(tv.handle(forged)).status is HTTPStatus.FORBIDDEN
+
+
+def test_a_phone_paired_on_the_home_page_opens_the_remote_without_a_code(
+    app: SlideshowApp, tmp_path: Path
+) -> None:
+    """A cookie `phones.json` knows opens the remote; a phone forgotten does not."""
+    book = PhoneBook(tmp_path)
+    token = book.add("Android")
+    assert token is not None
+    door = Door(_ACCESS, app.desk.screens, phones=book)
+    durable = SlideshowApp(app.desk, door, app.pages, app.pictures)
+    phone = _Sender(_LAN_HOST, f"{COOKIE_NAME}={token}")
+    assert _ask(durable, _request("/", sender=phone)).body == _REMOTE
+    assert book.forget(book.listed()[0].id)
+    assert _ask(durable, _request("/", sender=phone)).status is HTTPStatus.UNAUTHORIZED
+
+
+def test_the_pc_s_card_gives_the_tv_the_plain_door_under_https() -> None:
+    """The slideshow's card: the TV on the plain door, the steps beside it."""
+    secure = LanAccess(_PC_ADDRESS, _TV_PORT, b"cd" * 32, secure=True)
+    card = json.loads(lan_response(secure, tv=True).body)
+    assert card["url"].startswith("https://")
+    assert card["tv"] == f"http://{_TV_HOST}/screen"
+    assert card["ca"] == f"http://{_TV_HOST}{PHONE_STEPS}"
+    assert "tv" not in json.loads(lan_response(_ACCESS, tv=True).body)
+
+
+def test_the_slideshow_s_phone_door_is_tls_when_lan_is_mounted(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """With `/lan`, the slideshow's access is HTTPS, as the home page's."""
+    monkeypatch.setenv(LAN_ADDRESS_VARIABLE, _PC_ADDRESS)
+    monkeypatch.setenv("MEDIA_HYGIENE_LAN_DIR", str(tmp_path))
+    access = lan_access(_TV_PORT)
+    assert access is not None
+    assert access.secure
+    assert access.pair_url.startswith(f"https://{_LAN_HOST}/pair/")
+    assert secure_door(_PC_ADDRESS) is not None

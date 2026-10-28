@@ -19,7 +19,7 @@ from pydantic import ValidationError
 
 from media_hygiene.classify.place_match import place_at, zones_of
 from media_hygiene.classify.whereabouts import located_point
-from media_hygiene.geo.gazetteer import Gazetteer
+from media_hygiene.geo.towns_once import shared_towns
 from media_hygiene.i18n import _
 from media_hygiene.scan.metadata import MediaMetadata
 from media_hygiene.slideshow.chapters import Chapter, event_name, event_period
@@ -32,6 +32,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.config.classify_places import PersonalPlace
     from media_hygiene.geo.distance import Point
+    from media_hygiene.geo.gazetteer import Gazetteer
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.slideshow.slides import Slide
 
@@ -54,7 +55,7 @@ def told_slides(
         The slides, in the same order.
     """
     points = {slide.key: _point(connection, slide.key) for slide, _path in shown}
-    towns = Gazetteer.load() if any(points.values()) else None
+    towns = shared_towns() if any(points.values()) else None
     places = Places(runtime, towns, [point for point in points.values() if point])
     told: list[Slide] = []
     runs = groupby(shown, key=lambda pair: pair[1].parent)

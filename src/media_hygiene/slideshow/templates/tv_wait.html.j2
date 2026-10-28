@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+{# The TV's page while the home server shows nothing yet (0417): at its bookmark, it asks
+   again every few seconds (a meta refresh: any TV browser, no script), and shows the album
+   as soon as a phone or the PC starts one. Never a name nor a path. #}
+<html lang="{{ _('en') }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="{{ refresh_seconds }}">
+<title>{{ _("Slideshow") }}</title>
+<style>
+  body { margin: 0; background: #000; color: #ddd; font: 28px/1.5 sans-serif; text-align: center; }
+  p { margin: 30vh 5vw 0; }
+</style>
+</head>
+<body>
+<p>{{ _("No slideshow yet: on the phone, open Media Hygiene and choose an album under Show an album on the TV. It appears here by itself.") }}</p>
+</body>
+</html>

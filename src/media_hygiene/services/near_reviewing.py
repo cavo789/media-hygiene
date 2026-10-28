@@ -25,7 +25,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.apply_api import ReviewStart
     from media_hygiene.services.runtime import Runtime
 
-_PAGE_TEMPLATE: Final = "near_review.html.j2"
+PAGE_TEMPLATE: Final = "near_review.html.j2"
 
 
 def open_near_review(
@@ -72,6 +72,6 @@ def serve_near_review(
     api = (NEAR_DECIDE_PATH, NEAR_FILE_PATH)
     offer = ApplyOffer(start.apply, lambda: session.decided[0] > 0)
     page = ReviewPage(
-        _PAGE_TEMPLATE, session.place, api, partial(NearApp, session), offer
+        PAGE_TEMPLATE, session.place, api, partial(NearApp, session), offer
     )
     return serve_review_page(runtime, page, start.port)

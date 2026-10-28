@@ -1,14 +1,15 @@
 ---
 description: Process one or more TODO files from .todos/ by number (readiness → implement → close out).
-argument-hint: "<NNN> [NNN...]"
-allowed-tools: Read, Glob, Grep, Edit, Write, Bash
+argument-hint: "<NNN> [NNN...] [--model sonnet|opus]"
+allowed-tools: Read, Glob, Grep, Edit, Write, Bash, Agent
 ---
 
 # TODOs
 
 Process one or more TODO files from `.todos/` by TODO number.
 
-**Usage:** `/todo:run 0133 0134 0135`
+**Usage:** `/todo:run 0133 0134 0135` — `/todo:run 0450 --model sonnet` imposes the model of
+the subagents (see "Model per TODO" in Phase 2).
 
 **Arguments:** one or more numeric TODO IDs only. IDs are matched by value, not by digit
 width — a legacy 3-digit ID (`031`) and a current 4-digit one (`0637`) both resolve fine,
@@ -18,10 +19,13 @@ so type the number exactly as it appears in the filename you're targeting.
 
 Read `$ARGUMENTS`.
 
-If `$ARGUMENTS` is empty, or contains anything other than space-separated numbers, stop immediately and respond:
+First take out an optional `--model <name>` (`sonnet` or `opus`; any other name: stop with
+the usage below): it imposes the model of every subagent of this run.
+
+If what remains of `$ARGUMENTS` is empty, or contains anything other than space-separated numbers, stop immediately and respond:
 
 ```text
-Usage: /todo:run <number> [number...]
+Usage: /todo:run <number> [number...] [--model sonnet|opus]
 Example: /todo:run 0133 0134 0135
 ```
 
@@ -150,6 +154,26 @@ For each file passed in `$ARGUMENTS`:
 ---
 
 ## Phase 2 — Implementation
+
+### Model per TODO — each TODO in a subagent
+
+When the project has `.claude/scripts/todo_model.py`, each TODO is implemented by a subagent
+(Agent tool, `general-purpose`, foreground: the next TODO may depend on it), never in the main
+session: the main session keeps only its short report, so a run of several TODOs stays cheap.
+
+- The model: the `--model` given, else the first word of
+  `python3 .claude/scripts/todo_model.py NNNN` (`sonnet` for text-only or small Low work,
+  `opus` for anything touching the user's files, caches, concurrency, open questions — and in
+  doubt). Say it in one line before starting: `0450 → sonnet (text only)`.
+- The subagent's prompt gives it everything, as it starts cold: the TODO ID, "follow
+  `.claude/commands/todo/run.md` Phases 2–3 and `.claude/rules/workflow.md` on it; targeted
+  tests, the commit gate on the changed files; do not ask: a blocker goes in your report",
+  and "report in at most 12 lines: outcome, files changed, tests and results, the gain,
+  questions". The lock, the close-out and Phases 4–6 stay with the main session.
+- After it, check its claims cheaply (`git status --porcelain`, the TODO file moved) before the
+  next TODO.
+
+Without the script, implement in the main session as below.
 
 For each TODO file (process them in the order given):
 

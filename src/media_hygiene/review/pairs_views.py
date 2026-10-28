@@ -13,7 +13,11 @@ from media_hygiene.plan.pair_links import link_refusal
 from media_hygiene.report.pair_views import pair_samples
 from media_hygiene.report.reasons import keep_reason_label
 from media_hygiene.review.near_views import folder_and_name
-from media_hygiene.review.views import ORIGINAL_PREFIX, PREVIEW_PREFIX, preview_key
+from media_hygiene.review.views import (
+    ORIGINAL_LINK,
+    PREVIEW_LINK,
+    preview_key,
+)
 
 if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
@@ -123,6 +127,6 @@ class PairsStateBuilder:
         _folder, name = folder_and_name(self.mapper.to_host(file.path))
         return SampleState(
             name=name,
-            preview=f"{PREVIEW_PREFIX}{key}.jpg",
-            original=f"{ORIGINAL_PREFIX}{key}{file.path.suffix.lower()}",
+            preview=f"{PREVIEW_LINK}{key}.jpg",
+            original=f"{ORIGINAL_LINK}{key}{file.path.suffix.lower()}",
         )

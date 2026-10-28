@@ -79,7 +79,7 @@
 {% set page_name = _("Your places") %}
 {% set keys_safe = _("Done? Ctrl+C in the terminal stops the map. Then add a 'place' rule (and a 'trip' rule) to [[classify.rules]] and run 'classify'.") %}
 {% block head %}
-<link rel="stylesheet" href="/leaflet.css">
+<link rel="stylesheet" href="leaflet.css">
 {% endblock %}
 {% block style %}
   /* The map fills the window under the header: the columns take the height left, the lists
@@ -325,7 +325,7 @@
 </main>
 {% endblock %}
 {% block after %}
-<script src="/leaflet.js"></script>
+<script src="leaflet.js"></script>
 <script>
 (() => {
   const T = {{ texts | tojson }};

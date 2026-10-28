@@ -8,7 +8,8 @@
   show once past that version; `POST /api/show`: next, previous, a photo, play, pause,
   the interval, "do not show"; `POST /api/screens`: the code a TV shows, to pair it.
   The PC and the paired phones only; `GET /api/lan` (the address, the code and the QR
-  code for the PC's page) the PC only.
+  code for the PC's page) the PC only. Under HTTPS the TV comes by the plain door
+  instead (`tv_door`): the phone's remote stays HTTPS.
 - `GET /tv/<key>.jpg` (the TV's picture), `/thumb/<key>.jpg` and `/film/<key>.<ext>` (a
   video, 0292): the show's files only.
 
@@ -19,20 +20,22 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
 from media_hygiene.review.http import NO_REFERRER, ContentType, Response
 from media_hygiene.review.lan import PAIR_PREFIX
-from media_hygiene.review.lan_app import LAN_PATH
 from media_hygiene.review.lan_card import lan_response
+from media_hygiene.review.lan_paths import LAN_PATH
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.shared_routes import asset_or_page
 from media_hygiene.review.videos import NEAR_POLICY
-from media_hygiene.slideshow.door import Visitor, screen_cookie, screen_token
+from media_hygiene.slideshow.door import Visitor, screen_token
 from media_hygiene.slideshow.pictures import slides_view
+from media_hygiene.slideshow.routes import SCREENS_PATH, SHOW_PATH, SLIDES_PATH
 from media_hygiene.slideshow.screen_api import ScreenDesk, pair_screen
+from media_hygiene.slideshow.tv_door import SCREEN_PATH, screen_page
 
 if TYPE_CHECKING:
     from media_hygiene.review.http import Request
@@ -40,10 +43,6 @@ if TYPE_CHECKING:
     from media_hygiene.slideshow.door import Door
     from media_hygiene.slideshow.pictures import ShowPictures
 
-SCREEN_PATH: Final = "/screen"
-SLIDES_PATH: Final = "/api/slides"
-SHOW_PATH: Final = "/api/show"
-SCREENS_PATH: Final = "/api/screens"
 _GET, _POST = "GET", "POST"
 
 
@@ -82,7 +81,7 @@ class SlideshowApp:
             )
             return Response(HTTPStatus.FORBIDDEN, message.encode())
         if request.method == _GET and request.path == SCREEN_PATH:
-            return self._screen_page(request, visitor)
+            return screen_page(self, request, visitor)
         screen = ScreenDesk(self.desk, visitor, screen_token(request))
         answer = await screen.answer(request)
         if answer is not None:
@@ -102,7 +101,7 @@ class SlideshowApp:
         """
         if self.door.lan is None:
             return Response(HTTPStatus.NOT_FOUND)
-        return lan_response(self.door.lan)
+        return lan_response(self.door.lan, tv=True)
 
     async def _stranger(self, request: Request, visitor: Visitor) -> Response:
         """Answer a TV (its pictures) or a stranger (the pairing pages).
@@ -121,31 +120,8 @@ class SlideshowApp:
             if pictured is not None:
                 return pictured
         if request.path.startswith(PAIR_PREFIX):
-            return self.door.pair_phone(request.path.removeprefix(PAIR_PREFIX))
+            return self.door.pair_phone(request)
         return self.door.stranger_page(request)
-
-    def _screen_page(self, request: Request, visitor: Visitor) -> Response:
-        """The TV's page; a TV not known yet gets a token in a cookie.
-
-        Args:
-            request: The request.
-            visitor: Who sent it.
-
-        Returns:
-            The page.
-        """
-        headers: tuple[str, ...] = ()
-        if visitor is Visitor.STRANGER:
-            fresh = self.desk.screens.arrive(screen_token(request))
-            if fresh is not None:
-                headers = (screen_cookie(fresh),)
-        return Response(
-            HTTPStatus.OK,
-            self.pages.screen,
-            ContentType.HTML,
-            policy=NEAR_POLICY,  # it plays the videos
-            headers=headers,
-        )
 
     async def _remote(self, request: Request) -> Response:
         """Answer the PC or a paired phone: the remote, the show, the pictures.

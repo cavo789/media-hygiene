@@ -45,7 +45,7 @@ def test_the_page_the_state_and_the_previews(locations: Locations) -> None:
         [
             Call("GET", "/"),
             Call("GET", "/api/state?now"),
-            Call("GET", preview),
+            Call("GET", f"/{preview}"),  # relative to the page (0417)
             Call("GET", "/preview/0123.jpg"),
             Call("GET", "/favicon.ico"),
         ],
@@ -178,7 +178,7 @@ def test_a_vanished_shot_has_no_preview(locations: Locations) -> None:
     session = review_session(locations)
     preview = session.state().series[0].shots[0].preview
     shots[0].unlink()
-    [reply] = serve_and_call(session, [Call("GET", preview)])
+    [reply] = serve_and_call(session, [Call("GET", f"/{preview}")])
     assert reply.status == 404
 
 

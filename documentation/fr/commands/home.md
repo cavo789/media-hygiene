@@ -188,7 +188,11 @@ déplacement restent au PC). Seul un téléphone appairé les atteint : tout aut
 (un invité, une télé) reçoit la page d'appairage, ou rien, à toute adresse. Tant que le téléphone montre une page, `mh` continue même onglet du
 PC fermé ; une fois `mh` arrêté, la page du téléphone le dit.
 Toute autre étape reste sur le PC (*Lancez cette étape sur le PC*) : ses questions sont posées
-dans la fenêtre de `mh`, que personne ne voit depuis le canapé.
+dans la fenêtre de `mh`, que personne ne voit depuis le canapé. Une exception :
+**Montrer un album sur la télé**, sur la page du téléphone, liste les albums enregistrés sur le
+PC ; un appui lance le [diaporama](slideshow.md) de cet album dans le serveur même de la page
+d'accueil, et le téléphone ouvre aussitôt sa télécommande. Le favori de la télé
+(`http://<adresse du PC>:8089/screen`) attend un diaporama et reste appairé tant que `mh` tourne.
 
 L'étape *Montrer vos photos sur la télé*, choisie sur le PC, ouvre aussi le [diaporama](slideshow.md)
 au réseau de la maison : le téléphone déjà appairé recharge sa page et obtient la télécommande du

@@ -61,11 +61,12 @@ or locked.
 Lots run **one after the other** (they share the working tree), each delegated to a
 `general-purpose` subagent, in the foreground (the next lot depends on its commit).
 
-**Model per lot** (the `model` parameter): `sonnet` when every TODO of the lot is mechanical — docs
-and captures, translations, backlog files, a small rule or setting with its tests, Priority `Low`
-with a clear recipe; `opus` (the default) for design work, concurrency, caches and indexes,
-anything touching user data (moves, deletions, journals), or a TODO whose Context reports a past
-mistake. In doubt, `opus`. Say the choice in the progress line.
+**Model per lot** (the `model` parameter): run `python3 .claude/scripts/todo_model.py NNNN` on
+each TODO of the lot (when the project has it); `sonnet` only when every TODO of the lot says
+`sonnet`, else `opus`. The script's rules: `opus` for anything touching the user's files or what
+protects them, caches, concurrency, an open question, a past mistake, many source files, and in
+doubt; `sonnet` for text only (docs, translations, backlog) or small Low work. Without the
+script, the same rules by hand. Say the choice and its reason in the progress line.
 
 The prompt gives the subagent everything it needs, since it starts cold:
 

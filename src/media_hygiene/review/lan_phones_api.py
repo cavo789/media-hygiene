@@ -12,6 +12,8 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.http import Response
 from media_hygiene.review.lan import COOKIE_NAME
+from media_hygiene.review.lan_phones import device_name
+from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.serving import json_response, refused_post
 
 if TYPE_CHECKING:
@@ -41,6 +43,27 @@ def durable_cookie(token: str) -> str:
         f"Set-Cookie: {COOKIE_NAME}={token}; Path=/; Max-Age={COOKIE_SECONDS}; "
         "HttpOnly; SameSite=Lax; Secure"
     )
+
+
+def for_good(answer: Response, phones: PhoneBook | None, request: Request) -> Response:
+    """Pair for good a phone whose code was right, on any page under HTTPS (0431).
+
+    Args:
+        answer: The pairing's answer: 303 when the code was right.
+        phones: The paired-phones file; None without HTTPS.
+        request: `GET /pair/<code>`, for the phone's name.
+
+    Returns:
+        303 to the page with the phone's own cookie; the answer as it was otherwise
+        (a wrong code, no HTTPS, or a file that cannot be written: this run only).
+    """
+    if answer.status is not HTTPStatus.SEE_OTHER or phones is None:
+        return answer
+    token = phones.add(device_name(request.headers.get("user-agent", "")))
+    if token is None:
+        return answer
+    headers = (f"Location: {PAGE_PATH}", durable_cookie(token))
+    return Response(HTTPStatus.SEE_OTHER, headers=headers)
 
 
 def phones_list(phones: PhoneBook) -> Response:

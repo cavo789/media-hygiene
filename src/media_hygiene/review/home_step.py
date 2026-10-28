@@ -22,6 +22,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from media_hygiene.cli.menu_steps import full_catalog
 from media_hygiene.i18n import _
+from media_hygiene.review.album_show import kept_answer
 from media_hygiene.review.home_fields import (
     FieldError,
     checked_words,
@@ -33,7 +34,6 @@ from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.step_watch import (
-    busy,
     keep_step,
     runs_beside,
     served_here,
@@ -93,7 +93,11 @@ async def step_response(door: StepDoor, request: Request) -> Response:
         chosen = _Chosen.model_validate_json(request.body)
     except ValidationError:
         return Response(HTTPStatus.BAD_REQUEST)
-    pending = busy(door.reports_dir) if door.keeps else None
+    pending = (  # an album's show here (0417), or `mh` busy
+        kept_answer(door.reports_dir, chosen.name, chosen.fields)
+        if door.keeps
+        else None
+    )
     if pending is not None:
         return pending
     if chosen.name and not chosen.fields:  # a step named by a report (0310)

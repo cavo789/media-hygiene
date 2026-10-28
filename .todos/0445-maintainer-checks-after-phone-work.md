@@ -28,6 +28,16 @@ then close it or file a TODO for what fails.
 8. `mh import --phone`, then `mh import --phone --free`, phone plugged in (0379).
 9. `.\mh-measure.ps1 -Only 29 -Count 1` (step 29 reworked: family view, write buttons, HTTPS).
 10. `docs_screenshots` (and `docs_screenshots fr`): many pages and console outputs changed.
+11. TV + phone, an album on the TV (0444, 0417): `mh --lan`; on the TV's browser open
+    `http://<PC address>:8089/screen` and bookmark it (it says *No slideshow yet*). On the phone,
+    home page, *Show an album on the TV*, tap an album: the remote opens **at once** (seconds?),
+    the TV shows its code within 5 s; type it on the remote. Back on the phone's home page, tap
+    another album: the TV changes album **without a new code**? The PC's home page still answers
+    meanwhile? Same from the PC's home page (*Show an album on the TV* form).
+12. Memory and time on the real collection (0417): with Task Manager (*Docker Desktop* /
+    *Vmmem* memory) note the home server's memory before and after the first album shown, and
+    after 5 albums shown in a row; the first album takes ~0.5 s more (the towns are read once,
+    ~36 MB kept: measured on the demo tree), each next one < 1 s?
 
 ## Explicit NON-goals
 

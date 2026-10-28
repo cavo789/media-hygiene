@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import MediaKind
-from media_hygiene.review.views import PREVIEW_PREFIX, preview_key
+from media_hygiene.review.views import PREVIEW_LINK, preview_key
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, MutableMapping
@@ -87,8 +87,8 @@ def _row(
     if not video:
         key = preview_key(file)
         sources[key] = file.path
-        row["preview"] = f"{PREVIEW_PREFIX}{key}{JPEG}"
-        row["large"] = f"{LARGE_PREFIX}{key}{JPEG}"
+        row["preview"] = f"{PREVIEW_LINK}{key}{JPEG}"
+        row["large"] = f"{LARGE_PREFIX.removeprefix('/')}{key}{JPEG}"
     if item.point is not None:
         row["latitude"] = item.point.latitude
         row["longitude"] = item.point.longitude

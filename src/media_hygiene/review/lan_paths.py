@@ -16,6 +16,7 @@ from dataclasses import replace
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.docs.pages import DOCS_PREFIX
+from media_hygiene.review.album_show import ALBUM_STEP, SLIDESHOW_PAGE
 from media_hygiene.review.home_app import AUDIT_PATH
 from media_hygiene.review.home_assets import ASSETS_PREFIX, FAVICON_PATH
 from media_hygiene.review.home_views import REPORTS_PREFIX
@@ -28,17 +29,24 @@ from media_hygiene.search.chosen_api import CHOSEN_PATH
 from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS, FOLDERS_PATH
 from media_hygiene.search.views import ORIGINAL_PREFIX, PREVIEW_PREFIX, THUMB_PREFIX
 from media_hygiene.share import album_page as albums
+from media_hygiene.slideshow.routes import SCREENS_PATH, SHOW_PATH
 
 if TYPE_CHECKING:
     from media_hygiene.review.http import Request, Response
 
+LAN_PATH: Final = "/api/lan"  # the PC's card: the code, its QR code (`lan_app`)
 _HOME_READS: Final = frozenset({PAGE_PATH, STATE_PATH, AUDIT_PATH, FAVICON_PATH})
 _SEARCH_READS: Final = frozenset({SEARCH_PAGE_PATH, BROWSE_PATH, FOLDERS_PATH})
 READ_PATHS: Final = _HOME_READS | _SEARCH_READS | {CHOSEN_PATH} | albums.PHONE_READS
 _HOME_PREFIXES: Final = (REPORTS_PREFIX, ASSETS_PREFIX, DOCS_PREFIX)
 # A photo opens at its preview size: never an original over the Wi-Fi.
 _SEARCH_PREFIXES: Final = (THUMB_PREFIX, PREVIEW_PREFIX, VIDEO_PREFIX)
+# The slideshow in the home server (0417): its remote, its show, its pictures, an album
+# started (`album_show`); never its card of the code (`/api/lan`, the PC's).
+_SHOW: Final = SLIDESHOW_PAGE.removesuffix("/")
+SHOW_CARD: Final = f"{_SHOW}{LAN_PATH}"
 READ_PREFIXES: Final = (
+    SLIDESHOW_PAGE,
     *_HOME_PREFIXES,
     *_SEARCH_PREFIXES,
     *albums.PHONE_READ_PREFIXES,
@@ -47,7 +55,13 @@ READ_PREFIXES: Final = (
 _SAYS: Final = frozenset({SEARCH_PATH, PRESENCE_PATH})
 # The `POST`s a phone may send: reads, but an album's change (0295: never a photo's).
 # No album change from a phone: albums are made on the PC (0435, decided 2026-10-27).
-POST_PATHS: Final = _SAYS | FOLDER_POSTS
+# The slideshow's remote moves the show held in memory and pairs a TV (0417): no file.
+POST_PATHS: Final = (
+    _SAYS | FOLDER_POSTS | {f"{_SHOW}{SHOW_PATH}", f"{_SHOW}{SCREENS_PATH}"}
+)
+# The one acting step a paired phone may start on the PC (0444, maintainer 2026-10-28):
+# an album saved on the PC, on the TV (`lan_show`). Every other step stays the PC's.
+PHONE_STEPS: Final = frozenset({ALBUM_STEP})
 # The steps a phone opens as pages instead of asking the PC to run them.
 PHONE_PAGES: Final = {"mh search": SEARCH_PAGE_PATH, "mh browse": BROWSE_PATH}
 _GET, _POST = "GET", "POST"
@@ -74,6 +88,8 @@ def phone_may(request: Request, *, originals: bool = False) -> bool:
     if request.method == _GET:
         if originals and path.startswith(ORIGINAL_PREFIX):
             return True
+        if path == SHOW_CARD:
+            return False
         return path in READ_PATHS or path.startswith(READ_PREFIXES)
     return request.method == _POST and path in POST_PATHS
 

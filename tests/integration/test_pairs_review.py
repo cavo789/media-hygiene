@@ -76,7 +76,7 @@ def test_the_page_lists_decides_and_reads_back(locations: Locations) -> None:
         [
             Call("GET", "/"),
             Call("GET", "/api/state"),
-            Call("GET", summer.samples[0].preview),
+            Call("GET", f"/{summer.samples[0].preview}"),
             choose(iphone, "swap"),
             Call("GET", "/api/file"),
             choose(99, "planned"),

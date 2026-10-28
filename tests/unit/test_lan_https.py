@@ -189,10 +189,14 @@ def test_the_card_links_the_steps_of_the_docs(language: str, heading: str) -> No
     assert slug == (CA_DOC.en if language == "en" else CA_DOC.fr)
 
 
-def test_mh_lan_mounts_the_certificates_for_the_home_page_only(
+def test_mh_lan_mounts_the_certificates_for_home_and_the_slideshow(
     tmp_path: Path,
 ) -> None:
-    """`mh --lan` mounts `/lan` for the home page, never the slideshow."""
+    """`mh --lan` mounts `/lan` for the home page and the slideshow alike (2026-10-28).
+
+    The slideshow in plain HTTP sent a phone that installed the app to its offline
+    page: the phone's remote is HTTPS too, the TV is served by the plain door.
+    """
     runtime = replace(
         make_runtime(make_locations(tmp_path)), mounts=MountTable(frozenset())
     )
@@ -201,5 +205,8 @@ def test_mh_lan_mounts_the_certificates_for_the_home_page_only(
     mount = r'''-v', "$HOME\media-hygiene\lan:/lan"'''
     assert mount in script
     assert f":{LAN_CA_PORT}:{LAN_CA_DOOR_PORT}" in script
-    guarded = script[script.index("if ($command -eq 'home') {") :]
-    assert guarded.index(mount) < guarded.index("}")
+    assert "-eq 'home'" not in script
+    page = script[script.index("_lan_page($command) {") :]
+    shows = page[: page.index("\n}")]
+    assert "@('home', 'slideshow')" in shows
+    assert mount in shows

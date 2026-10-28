@@ -204,17 +204,23 @@ def test_every_framed_page_says_when_media_hygiene_stopped() -> None:
 
 @pytest.mark.parametrize(
     ("name", "flag"),
-    [("slideshow.html.j2", "presence_probe"), ("screen.html.j2", "presence_es5")],
+    [
+        ("slideshow.html.j2", "presence_probe = not (presence_kept | default(false))"),
+        ("screen.html.j2", "presence_es5 = true"),
+    ],
 )
 def test_the_slideshow_and_the_tv_say_when_their_server_stopped(
     name: str, flag: str
 ) -> None:
-    """0416: no presence there; the page asks itself, any answer means it is up."""
+    """0416: no presence there; the page asks itself, any answer means it is up.
+
+    0417: in the home server, the remote says it is alive instead (`presence_kept`).
+    """
     folder = (
         Path(__file__).resolve().parents[2] / "src/media_hygiene/slideshow/templates"
     )
     source = (folder / name).read_text("utf-8")
-    assert f'{{% set {flag} = true %}}{{% include "presence.html.j2" %}}' in source
+    assert f'{{% set {flag} %}}{{% include "presence.html.j2" %}}' in source
     script = (folder / "screen.js.j2").read_text("utf-8")
     assert 'check.open("HEAD", window.location.pathname, true);' in script
 

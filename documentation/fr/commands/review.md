@@ -128,10 +128,11 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
 
 ## Bon à savoir
 
-- **Depuis la page d'accueil, tout de suite** : *Trancher les quasi-doublons* ouvre
-  `review --near` dans le serveur même de la page d'accueil, sans démarrer un autre conteneur ;
-  l'audit est relu depuis le cache à chaque ouverture de la page. `mh review --near` tapé seul
-  fonctionne comme avant.
+- **Depuis la page d'accueil, tout de suite** : les rafales, *Trancher les quasi-doublons*, les
+  paires de dossiers, les photos indésirables et les fichiers disparus s'ouvrent dans le serveur
+  même de la page d'accueil, sans démarrer un autre conteneur ; l'audit est relu depuis le cache
+  à chaque ouverture de la page. `mh review` tapé seul, avec ou sans son option, fonctionne comme
+  avant.
 - **Une preuve, pas une promesse** : après chaque choix, la page relit `decisions.json` sur le
   disque et montre ce qu'il contient (*✔ Enregistré, puis relu sur le disque à 14:32:05*).
 - **Arrêtez quand vous voulez** : le `review` suivant ouvre la première rafale encore à voir. Les

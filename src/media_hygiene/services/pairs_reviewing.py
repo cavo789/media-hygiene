@@ -27,7 +27,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.apply_api import ReviewStart
     from media_hygiene.services.runtime import Runtime
 
-_PAGE_TEMPLATE: Final = "pairs_review.html.j2"
+PAGE_TEMPLATE: Final = "pairs_review.html.j2"
 
 
 def audit_pairs(findings: AuditFindings) -> tuple[FolderPair, ...]:
@@ -90,6 +90,6 @@ def serve_pairs_review(
     api = (PAIRS_DECIDE_PATH, PAIRS_FILE_PATH)
     offer = ApplyOffer(start.apply, lambda: session.decided[0] > 0)
     page = ReviewPage(
-        _PAGE_TEMPLATE, session.place, api, partial(PairsApp, session), offer
+        PAGE_TEMPLATE, session.place, api, partial(PairsApp, session), offer
     )
     return serve_review_page(runtime, page, start.port)

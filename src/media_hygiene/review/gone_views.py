@@ -22,7 +22,7 @@ from media_hygiene.report.preview_cache import PreviewJob, preview_key
 from media_hygiene.report.thumbnails import REVIEW_EDGE
 from media_hygiene.review.file_card import FileCard
 from media_hygiene.review.near_views import folder_and_name
-from media_hygiene.review.views import PREVIEW_PREFIX
+from media_hygiene.review.views import PREVIEW_LINK
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -170,7 +170,7 @@ class GoneStateBuilder:
         details = [record.taken_at or "", human_size(record.size), record.camera or ""]
         preview = ""
         if kept_preview(self.previews, record) is not None:
-            preview = f"{PREVIEW_PREFIX}{gone_key(record)}.jpg"
+            preview = f"{PREVIEW_LINK}{gone_key(record)}.jpg"
         return GoneState(
             name=name,
             folder=folder,
