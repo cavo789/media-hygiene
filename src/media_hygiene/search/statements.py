@@ -58,6 +58,7 @@ FILL_PEOPLE: Final = _FILL.format(rows=_PERSON_ROWS)  # an index without tags ye
 DATA_VERSION: Final = "PRAGMA data_version"
 HAS_TAGS: Final = "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'tags'"
 ANY_TAG: Final = "SELECT 1 FROM tags LIMIT 1"  # at least one file has a word
+ANY_WORD: Final = f"SELECT 1 FROM temp.{TABLE} LIMIT 1"  # noqa: S608  # tags or names
 _FROM: Final = f" FROM temp.{TABLE} JOIN files ON files.rowid = {TABLE}.rowid"
 # Without words, every file of the index, those `tags` has not described yet too (0451).
 _FILES: Final = " FROM files"
