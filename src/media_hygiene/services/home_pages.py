@@ -26,6 +26,7 @@ from media_hygiene.review.step_watch import STEP_PATH
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.history_here import HISTORY_PREFIX, HistoryHere
+from media_hygiene.services.places_here import PLACES_PREFIX, PlacesHere
 from media_hygiene.services.review_here import ReviewHere
 from media_hygiene.services.review_kinds import REVIEWS
 from media_hygiene.services.search import open_search
@@ -114,6 +115,7 @@ class HomeWithPages:
     reviews: tuple[ReviewHere, ...]  # `/review/near/…` (0357), the others (0417)
     history: HistoryHere  # `/history/` (0350)
     slideshow: SlideshowHere  # `/slideshow/…`, its TV on the plain door (0417)
+    places: PlacesHere  # `/places/…` (0417)
 
     async def handle(self, request: Request) -> Response:
         """Route a request.
@@ -130,6 +132,8 @@ class HomeWithPages:
         review = next((each for each in self.reviews if each.serves(path)), None)
         if review is not None:
             return await review.handle(request)
+        if path == PLACES_PREFIX or path.startswith(f"{PLACES_PREFIX}/"):
+            return await self.places.handle(request)
         if path == SLIDESHOW_PREFIX or path.startswith(f"{SLIDESHOW_PREFIX}/"):
             return await self.slideshow.handle(request)
         if path in {HISTORY_PREFIX, f"{HISTORY_PREFIX}/"}:
@@ -157,7 +161,14 @@ def home_with_pages(
     reviews = tuple(ReviewHere(kind, fresh, server) for kind in REVIEWS)
     slideshow = SlideshowHere(fresh, server)
     try:
-        yield HomeWithPages(home, pages, reviews, HistoryHere(fresh), slideshow)
+        yield HomeWithPages(
+            home,
+            pages,
+            reviews,
+            HistoryHere(fresh),
+            slideshow,
+            PlacesHere(fresh, server),
+        )
     finally:
         slideshow.close()
         pages.close()

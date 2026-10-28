@@ -10,7 +10,6 @@ country most of the show's located photos lie in.
 
 from __future__ import annotations
 
-import functools
 from collections import Counter
 from dataclasses import replace
 from itertools import groupby
@@ -20,7 +19,7 @@ from pydantic import ValidationError
 
 from media_hygiene.classify.place_match import place_at, zones_of
 from media_hygiene.classify.whereabouts import located_point
-from media_hygiene.geo.gazetteer import Gazetteer
+from media_hygiene.geo.towns_once import shared_towns
 from media_hygiene.i18n import _
 from media_hygiene.scan.metadata import MediaMetadata
 from media_hygiene.slideshow.chapters import Chapter, event_name, event_period
@@ -33,20 +32,11 @@ if TYPE_CHECKING:
 
     from media_hygiene.config.classify_places import PersonalPlace
     from media_hygiene.geo.distance import Point
+    from media_hygiene.geo.gazetteer import Gazetteer
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.slideshow.slides import Slide
 
 _METADATA = "SELECT metadata FROM files WHERE rowid = ?"
-
-
-@functools.cache
-def _towns() -> Gazetteer:
-    """The towns, read once per process: the home server starts a show per album (0417).
-
-    Returns:
-        The gazetteer (0.5 s, 90 MB at its peak: measured, devcontainer).
-    """
-    return Gazetteer.load()
 
 
 def told_slides(
@@ -65,7 +55,7 @@ def told_slides(
         The slides, in the same order.
     """
     points = {slide.key: _point(connection, slide.key) for slide, _path in shown}
-    towns = _towns() if any(points.values()) else None
+    towns = shared_towns() if any(points.values()) else None
     places = Places(runtime, towns, [point for point in points.values() if point])
     told: list[Slide] = []
     runs = groupby(shown, key=lambda pair: pair[1].parent)

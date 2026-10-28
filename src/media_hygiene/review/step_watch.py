@@ -59,6 +59,7 @@ PAIRS_PAGE: Final = (
 JUNK_PAGE: Final = "/review/junk/"
 GONE_PAGE: Final = "/review/gone/"
 BURSTS_PAGE: Final = "/review/bursts/"
+PLACES_PAGE: Final = "/places/"  # `services/places_here` (0417)
 STEP_PATH: Final = "/api/step"  # `POST` a step (`home_step`), `GET` where it is
 # The pages the home server serves itself (0356): a click on them is a plain link.
 SERVED_HERE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
@@ -70,6 +71,7 @@ SERVED_HERE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
         ("review", "--junk"): JUNK_PAGE,
         ("review", "--gone"): GONE_PAGE,
         ("review",): BURSTS_PAGE,
+        ("places",): PLACES_PAGE,
         ("history",): HISTORY_PAGE,  # 0350
     }
 )

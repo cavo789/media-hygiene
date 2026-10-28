@@ -131,7 +131,7 @@ def test_photos_given_to_a_place_follow_it_and_come_back(
     hand = given["places"][0]["hand"]  # type: ignore[index]
     assert len(hand) == 2
     assert all(photo["now"].startswith("C:\\Photos\\IMG_") for photo in hand)
-    assert all(photo["preview"].startswith("/preview/") for photo in hand)
+    assert all(photo["preview"].startswith("preview/") for photo in hand)  # 0417
     photos = read_place_photos(config)[0].photos
     files = sorted((locations.data_dir / "c" / "Photos").glob("IMG_*.jpg"))
     assert {photo.sha256 for photo in photos} < {full_digest(path) for path in files}

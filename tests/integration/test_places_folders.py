@@ -57,7 +57,7 @@ def test_a_folder_named_after_a_town_is_listed_with_its_photos(
         seen.append(await call(app, "GET /api/folders"))
         seen.append(await call(app, "GET /api/folder/0"))
         first = json.loads(seen[-1].body)["photos"][0]["preview"]
-        seen.append(await call(app, f"GET {first}"))
+        seen.append(await call(app, f"GET /{first}"))
         seen.append(await call(app, "GET /api/folder/9"))
 
     monkeypatch.setattr(places_service, "run_server", fake_server(act))

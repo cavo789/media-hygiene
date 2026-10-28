@@ -12,42 +12,19 @@ from __future__ import annotations
 import asyncio
 import contextlib
 from functools import partial
-from http import HTTPStatus
-from importlib.resources import files
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.errors import ConfigError
-from media_hygiene.geo.gazetteer import Gazetteer
+from media_hygiene.geo.towns_once import shared_towns
 from media_hygiene.i18n import _
-from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.places.app import (
-    FOLDER_PATH,
-    HINT_PATH,
-    PAGE_POLICY,
-    PAGE_REFERRER,
-    SEARCH_PATH,
-    STATE_PATH,
-    PlacesApp,
-)
 from media_hygiene.places.board import PlacesBoard
 from media_hygiene.places.clusters import clusters_of
 from media_hygiene.places.folder_rows import FolderContext
 from media_hygiene.places.folders import FolderDesk
-from media_hygiene.places.osm_search import OSM_PATH, online_search
-from media_hygiene.places.photos import (
-    CLUSTER_PREFIX,
-    FOLDER_PREFIX,
-    FOLDERS_PATH,
-    GROUP_PREFIX,
-    TREE_PREFIX,
-)
-from media_hygiene.places.posts import ASIDE_PATH, PHOTOS_PATH, SAVE_PATH
-from media_hygiene.report.preview_cache import PreviewPool
 from media_hygiene.review.ending import run_server
-from media_hygiene.review.http import ContentType, Response
-from media_hygiene.review.page_header import page_header
 from media_hygiene.services.missing_mount import missing_mount
+from media_hygiene.services.places_build import places_app
 from media_hygiene.services.places_index import OpenedMap, located_files, read_index
 from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.services.search_app import shown_roots
@@ -56,14 +33,6 @@ from media_hygiene.services.writable import ensure_writable
 if TYPE_CHECKING:
     from media_hygiene.services.next_command import NextVerb
     from media_hygiene.services.runtime import Runtime
-
-_PACKAGE: Final = "media_hygiene.places"
-_PAGE_TEMPLATE: Final = "places.html.j2"
-_STATIC: Final = "static"
-_ASSETS: Final = {
-    "/leaflet.js": ("leaflet.js", ContentType.JAVASCRIPT),
-    "/leaflet.css": ("leaflet.css", ContentType.CSS),
-}
 
 
 def open_places(runtime: Runtime, again: NextVerb) -> OpenedMap:
@@ -100,7 +69,7 @@ def open_places(runtime: Runtime, again: NextVerb) -> OpenedMap:
             _("Run 'audit' first with the same /cache mount: it records the positions.")
         )
     config_file = runtime.locations.config_file
-    towns = Gazetteer.load().renamed(runtime.settings.classify.town_names)
+    towns = shared_towns().renamed(runtime.settings.classify.town_names)
     context = FolderContext(
         config_file,
         runtime.mapper,
@@ -126,46 +95,8 @@ def serve_places(runtime: Runtime, opened: OpenedMap, port: int) -> None:
         opened: The map's state, and its folders.
         port: The port to listen on, inside the container (0: any free one).
     """
-    settings = runtime.settings.places
-    osm = online_search(settings.nominatim_url)
-    environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
-    page = environment.get_template(_PAGE_TEMPLATE).render(
-        header=page_header(_PAGE_TEMPLATE),
-        state_path=STATE_PATH,
-        save_path=SAVE_PATH,
-        search_path=SEARCH_PATH,
-        cluster_path=CLUSTER_PREFIX,
-        folders_path=FOLDERS_PATH,
-        folder_photos=FOLDER_PREFIX,
-        group_photos=GROUP_PREFIX,
-        tree_photos=TREE_PREFIX,
-        folder_path=FOLDER_PATH,
-        aside_path=ASIDE_PATH,
-        hint_path=HINT_PATH,
-        photos_path=PHOTOS_PATH,
-        osm_path=OSM_PATH if osm else "",
-        osm_host=osm.host if osm else "",
-        tiles=settings.tiles,
-        attribution=settings.attribution,
-    )
-    policy = PAGE_POLICY.format(tiles=settings.tile_host)
-    static = files(_PACKAGE).joinpath(_STATIC)
-    assets = {
-        path: Response(
-            HTTPStatus.OK, static.joinpath(name).read_bytes(), kind, cacheable=True
-        )
-        for path, (name, kind) in _ASSETS.items()
-    }
-    shown = Response(
-        HTTPStatus.OK,
-        page.encode(),
-        ContentType.HTML,
-        policy=policy,
-        referrer=PAGE_REFERRER,
-    )
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        pool = PreviewPool(executor, runtime.previews_dir)
-        app = PlacesApp(opened.board, shown, assets, osm, pool, opened.folders)
+        app = places_app(runtime, opened, executor)
         asyncio.run(run_server(app, port, partial(_announce, runtime)))
 
 

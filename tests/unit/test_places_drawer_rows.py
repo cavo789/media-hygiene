@@ -52,8 +52,8 @@ def test_a_picture_has_two_previews_a_video_none(tmp_path: Path) -> None:
     first, second = drawer_rows([picture, video], HostPathMapper(tmp_path), sources)
 
     preview, large = str(first["preview"]), str(first["large"])
-    assert preview.startswith(PREVIEW_PREFIX)
-    assert large == preview.replace(PREVIEW_PREFIX, LARGE_PREFIX)
+    assert f"/{preview}".startswith(PREVIEW_PREFIX)  # relative to the page (0417)
+    assert f"/{large}" == f"/{preview}".replace(PREVIEW_PREFIX, LARGE_PREFIX)
     assert (first["video"], second["video"]) == (False, True)
     assert "preview" not in second
     assert list(sources.values()) == [picture.file.path]
