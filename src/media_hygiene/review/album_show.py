@@ -24,6 +24,8 @@ if TYPE_CHECKING:
 
 SLIDESHOW_PAGE: Final = "/slideshow/"  # `services/slideshow_here`
 ALBUM_SHOW: Final = "album/"  # `/slideshow/album/<name>`: that album's show starts
+TV_CHOICES: Final = f"{SLIDESHOW_PAGE}choices"  # a folder or a month (0455)
+TV_CHOOSE: Final = f"{SLIDESHOW_PAGE}choose"  # `services/slideshow_choices`
 ALBUM_STEP: Final = "slideshow-album"  # the step that shows an album on the TV
 
 

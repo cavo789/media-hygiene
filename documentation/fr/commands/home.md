@@ -189,9 +189,11 @@ déplacement restent au PC). Seul un téléphone appairé les atteint : tout aut
 PC fermé ; une fois `mh` arrêté, la page du téléphone le dit.
 Toute autre étape reste sur le PC (*Lancez cette étape sur le PC*) : ses questions sont posées
 dans la fenêtre de `mh`, que personne ne voit depuis le canapé. Une exception :
-**Montrer un album sur la télé**, sur la page du téléphone, liste les albums enregistrés sur le
-PC ; un appui lance le [diaporama](slideshow.md) de cet album dans le serveur même de la page
-d'accueil, et le téléphone ouvre aussitôt sa télécommande. Le favori de la télé
+**Montrer sur la télé**, sur la page du téléphone, propose trois choix : un album enregistré sur
+le PC, **un dossier** (un des dossiers analysés) ou **un mois** (selon la date lue par l'audit).
+Un appui lance ce [diaporama](slideshow.md) dans le serveur même de la page d'accueil, et le
+téléphone ouvre aussitôt sa télécommande. Il ne fait que montrer : rien n'est écrit, rien ne
+bouge. Aucun album enregistré : le dossier et le mois restent là. Le favori de la télé
 (`http://<adresse du PC>:8089/screen`) attend un diaporama et reste appairé tant que `mh` tourne.
 
 L'étape *Montrer vos photos sur la télé*, choisie sur le PC, ouvre aussi le [diaporama](slideshow.md)

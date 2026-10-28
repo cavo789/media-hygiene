@@ -68,11 +68,20 @@ plus : il montrait les fichiers mis de côté, promis à la quarantaine ; donné
 le dossier et ouvre le diaporama de la même façon ; *Montrer un album sur la télé* demande le nom de
 l'album et ouvre le diaporama **dans le serveur même de la page d'accueil** : la page d'accueil
 continue, la télécommande s'ouvre aussitôt (`/slideshow/`). Un téléphone appairé le lance aussi,
-depuis le canapé : sur la page d'accueil du téléphone, **Montrer un album sur la télé** liste les
-albums enregistrés sur le PC ; un appui ouvre aussitôt la télécommande (sans code). La télé, à son
+depuis le canapé : sur la page d'accueil du téléphone, **Montrer sur la télé** propose un album
+enregistré sur le PC, un dossier (un des dossiers analysés) ou un mois (selon la date lue par
+l'audit) ; un appui ouvre aussitôt la télécommande (sans code), en lecture seule. La télé, à son
 favori, attend un diaporama tant qu'aucun ne tourne et l'affiche d'elle-même ; elle est appairée
 une fois (son code tapé sur la télécommande) et **le reste tant que `mh` tourne** : un autre album
-lui arrive sans nouveau code. Aucun album enregistré : le téléphone dit d'en faire un sur le PC.
+lui arrive sans nouveau code. Aucun album enregistré : un dossier ou un mois reste toujours possible.
+
+**Depuis toute page de vignettes, sans album** : dans [`search`](search.md) et
+[`browse`](browse.md) ouverts depuis la page d'accueil, **📺 Sur la télé** dans la barre montre
+les photos et vidéos choisies ou, rien de choisi, tous les fichiers que montre la page (le
+résultat de la recherche, les fichiers du dossier), 3000 au plus (au-delà : affinez la
+recherche). La télécommande s'ouvre aussitôt dans un nouvel onglet ; un diaporama en cours est
+remplacé (la page le dit) et la télé appairée le reste. La sélection dure autant que le
+diaporama : une télé rechargée ne perd rien, arrêter `mh` y met fin.
 
 ### Sur la télé, une fois
 

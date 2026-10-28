@@ -306,3 +306,26 @@ if ($("acting")) { // a page answering per group has no picking bar (0321)
   $("invert").addEventListener("click", invert);
   $("pickAll").addEventListener("click", () => { everything = true; showPicked(); });
 }
+
+// 📺 *On the TV* (0454): the files picked, else every file the page shows, to the home
+// server's slideshow; its remote opens in a new tab at once (opened before the answer:
+// a browser lets a click open a tab, not a script after it).
+async function toTv(button) {
+  const some = picked.size > 0 || everything;
+  const sent = some ? picking() : { keys: files.map((file) => file.key), all: total > files.length, search: scope() };
+  sent.keys = sent.keys.map(String);
+  const remote = window.open("", "_blank");
+  $("chosen").className = "";
+  $("chosen").textContent = button.dataset.sending;
+  const answer = await ask(button.dataset.path, { action: "tv", album: "", ...sent });
+  const state = answer ? await answer.json().catch(() => ({})) : {};
+  if (!answer || !answer.ok) {
+    if (remote) remote.close();
+    $("chosen").className = "error";
+    $("chosen").textContent = state.error || (answer ? fill(TEXTS.failed, { status: answer.status }) : TEXTS.offline);
+    return;
+  }
+  $("chosen").textContent = state.replaced ? button.dataset.replaced : "";
+  if (remote) remote.location = state.page; else window.location = state.page;
+}
+if ($("tvSend")) $("tvSend").addEventListener("click", () => toTv($("tvSend")));

@@ -56,6 +56,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.apply_api import ApplyStep
     from media_hygiene.review.apply_relay import ApplyRelay
     from media_hygiene.review.ending import Ending
+    from media_hygiene.review.http import Response
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.services.runtime import Runtime
 
@@ -73,6 +74,7 @@ class SearchBuild:
     ending: Ending
     executor: Executor
     relay: ApplyRelay | None = None  # where *Apply now* hands its step (0363)
+    tv: Callable[[tuple[Path, ...]], Response] | None = None  # 📺 On the TV (0454)
 
 
 def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> SearchApp:
@@ -112,6 +114,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "first_hits": FIRST_HITS,
         "event_gap_hours": event_gap_hours(runtime),
         "apply_offered": build.apply is not None,
+        "tv_here": build.tv is not None,
     }
     pages = SearchPages(
         headed_page(environment, _SEARCH_TEMPLATE, paths),
@@ -132,7 +135,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
             build.ending,
             build.relay,
         ),
-        album_desk(runtime, SearchPicker(search).files),
+        album_desk(runtime, SearchPicker(search).files, build.tv),
         PeopleDesk(search, names_place(runtime)),
         rule_desk(runtime, search),
         events_desk(runtime, search, chosen),

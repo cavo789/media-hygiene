@@ -704,6 +704,9 @@ msgstr ""
 "Un fichier accessible par deux chemins (dossier monté deux fois, lien "
 "physique) est reconnu : il n'est jamais compté comme sa propre copie."
 
+msgid "A folder"
+msgstr "Un dossier"
+
 msgid "A folder of its own, never mixed with your other shares."
 msgstr "Un dossier à lui, jamais mêlé à vos autres partages."
 
@@ -786,6 +789,9 @@ msgstr ""
 "Un modèle qui voit les images, par exemple \"qwen2.5vl:7b\". Vide : "
 "aucune photo n'est jamais envoyée. map_model : un modèle de texte qui "
 "choisit les catégories ; vide : le même modèle."
+
+msgid "A month"
+msgstr "Un mois"
 
 #, python-brace-format
 msgid "A new version, {version}: {command}"
@@ -960,6 +966,9 @@ msgstr ""
 " aussi proposée à l'écart : son empreinte perceptuelle en diffère de "
 "moins de bits que cette valeur (0 à 64). Une petite valeur ne repère que "
 "les répétitions de la même image. 0 désactive la règle."
+
+msgid "A show was running on the TV: replaced by this one."
+msgstr "Un diaporama passait sur la télé : remplacé par celui-ci."
 
 msgid "A step is running in the window of mh: wait for its end."
 msgstr "Une étape tourne dans la fenêtre de mh : attendez sa fin."
@@ -5276,12 +5285,8 @@ msgstr "Aucun album nommé {name}."
 msgid "No album named {name}. The albums: {names}."
 msgstr "Aucun album nommé {name}. Les albums : {names}."
 
-msgid ""
-"No album saved yet: make one on the PC, in search or browse (Add to an "
-"album), then come back here."
-msgstr ""
-"Aucun album enregistré : faites-en un sur le PC, dans search ou browse "
-"(Ajouter à un album), puis revenez ici."
+msgid "No album saved yet: choose a folder or a month below."
+msgstr "Aucun album enregistré : choisissez un dossier ou un mois ci-dessous."
 
 msgid ""
 "No album yet. On the PC, in search or browse, pick photos, then Add to "
@@ -5602,6 +5607,9 @@ msgid "No photo or video to show: nothing the last audit saw matches."
 msgstr ""
 "Aucune photo ni vidéo à montrer : rien de ce que le dernier audit a vu ne"
 " correspond."
+
+msgid "No photo or video was taken in this period."
+msgstr "Aucune photo ni vidéo prise pendant cette période."
 
 msgid "No photo to give: none ticked, or none reachable."
 msgstr "Aucune photo à donner : aucune cochée, ou aucune accessible."
@@ -6197,6 +6205,9 @@ msgstr "Sur un autre disque ou montage"
 msgid "On the PC:"
 msgstr "Sur le PC :"
 
+msgid "On the TV"
+msgstr "Sur la télé"
+
 msgid ""
 "On the TV, in its browser (the Chromecast's, or the TV's own): open this "
 "address once, then bookmark it."
@@ -6548,6 +6559,9 @@ msgstr "Ouvrez la recherche sur 127.0.0.1 ou localhost."
 
 msgid "Open the slideshow at 127.0.0.1, or from the TV with mh --lan."
 msgstr "Ouvrez le diaporama sur 127.0.0.1, ou depuis la télé avec mh --lan."
+
+msgid "Open this page from the home page to show it on the TV."
+msgstr "Ouvrez cette page depuis la page d'accueil pour la montrer sur la télé."
 
 msgid "Open this page in Safari, download the certificate, allow the profile."
 msgstr ""
@@ -8304,6 +8318,9 @@ msgstr "Voir ses photos"
 msgid "Show more"
 msgstr "En montrer plus"
 
+msgid "Show on the TV"
+msgstr "Montrer sur la télé"
+
 msgid "Show only this person (Esc)"
 msgstr "Montrer seulement cette personne (Échap)"
 
@@ -8316,6 +8333,11 @@ msgid ""
 msgstr ""
 "Montrer des photos sur la télé, le téléphone choisissant la suivante : un"
 " dossier, une recherche ou un album."
+
+msgid "Show the files picked on the TV; nothing picked: every file of the page"
+msgstr ""
+"Montrer sur la télé les fichiers choisis ; rien de choisi : tous ceux de "
+"la page"
 
 msgid "Show the photos a search finds, as typed in search: \"noel 2025\"."
 msgstr ""
@@ -8559,6 +8581,9 @@ msgstr ""
 
 msgid "Started"
 msgstr "Lancé le"
+
+msgid "Starting the show on the TV…"
+msgstr "Lancement du diaporama sur la télé…"
 
 msgid "State"
 msgstr "État"
@@ -10327,6 +10352,9 @@ msgstr ""
 "seconds noms de photos gardées ailleurs, qui ne prennent pas de place. "
 "Les audits l'ignorent. 'media-hygiene undo' le supprime ; le supprimer à "
 "la main est sans danger aussi."
+
+msgid "This folder is not among the folders analysed."
+msgstr "Ce dossier ne fait pas partie des dossiers analysés."
 
 msgid ""
 "This group looks like the faces you confirmed as this person's: a click "

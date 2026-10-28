@@ -47,11 +47,12 @@ _SHOWN: Final = PREVIEWABLE | {MediaKind.VIDEO}
 
 @dataclass(frozen=True, slots=True)
 class Pick:
-    """What the command was asked to show: one of the three."""
+    """What the command was asked to show: one of the four."""
 
     folder: str | None = None  # as the Explorer shows it
     words: str | None = None  # a search, as typed in `search`
     album: str | None = None  # an album's name (`albums.json`)
+    files: tuple[Path, ...] | None = None  # picked on a page, in the container (0454)
 
 
 @dataclass(frozen=True, slots=True)
@@ -78,7 +79,7 @@ def picked_slides(runtime: Runtime, search: SearchIndex, pick: Pick) -> Picked:
         MediaHygieneError: None or more than one of the three was given, or no
             album has that name.
     """
-    given = (pick.folder, pick.words, pick.album)
+    given = (pick.folder, pick.words, pick.album, pick.files)
     if sum(each is not None for each in given) != 1:
         raise MediaHygieneError(
             _(
@@ -99,13 +100,13 @@ def picked_slides(runtime: Runtime, search: SearchIndex, pick: Pick) -> Picked:
         found = search.find(SearchQuery(parse_terms(pick.words)), MAX_SLIDES)
         rows = ((hit.key, str(hit.photo.path), hit.date) for hit in found.hits)
     else:
-        paths, missing = album_paths(runtime, pick.album or "")
+        if pick.files is None:
+            paths, missing = album_paths(runtime, pick.album or "")
+            inside = [runtime.mapper.to_container(path) for path in paths]
+        else:
+            inside = list(pick.files)
         rows = (
-            row
-            for path in paths
-            for row in connection.execute(
-                _BY_PATH, (str(runtime.mapper.to_container(path)),)
-            )
+            row for path in inside for row in connection.execute(_BY_PATH, (str(path),))
         )
     photos = sorted(
         (

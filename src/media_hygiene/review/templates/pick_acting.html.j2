@@ -3,7 +3,8 @@
    what is set aside (`#chosen`) and *Apply now*. `pickAll` (a search shows its first files
    only) picks every file found. The page adds its own fields after it, in the bar; a
    page where a pick means something else names its two actions (`pick_add`,
-   `pick_remove`). #}
+   `pick_remove`). 📺 *On the TV* (0454, `tv_here`: a page served by the home server)
+   sends the files picked, or every file the page shows, to its slideshow. #}
 <span id="lead"><span id="status" role="status"></span></span>
 <span id="acting" hidden>
   <button id="unpick" class="plain" type="button" title="{{ _('Pick none') }}" aria-label="{{ _('Pick none') }}">✕</button>
@@ -13,5 +14,11 @@
   <button id="takeBack" class="plain" type="button" hidden>{{ pick_remove | default(_("Take out of the set aside")) }}</button>
   <button id="invert" class="plain" type="button" title="{{ _('Pick the others: the ones picked are left (I)') }}">{{ _("Invert the picking") }}</button>
 </span>
+{% if tv_here | default(false) %}
+<button id="tvSend" class="plain" type="button" data-path="{{ albums_path }}"
+        data-replaced="{{ _('A show was running on the TV: replaced by this one.') }}"
+        data-sending="{{ _('Starting the show on the TV…') }}"
+        title="{{ _('Show the files picked on the TV; nothing picked: every file of the page') }}">📺 {{ _("On the TV") }}</button>
+{% endif %}
 <span id="chosen" role="status"></span>
 {% include "apply_now.html.j2" %}

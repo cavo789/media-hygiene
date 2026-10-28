@@ -104,6 +104,8 @@ Your browser opens on the page (if not: `http://127.0.0.1:8088/`).
 - **➕ Add to the album** puts the picked photos in the album typed in **Album**, apart from the
   set aside; **📺 Share on the TV** gives the command that shows it. See
   [Put photos in an album](search.md#put-photos-in-an-album).
+- **📺 On the TV** (opened from the home page) shows the picked files on the TV at once, or every
+  file of the folder when nothing is picked; no album needed. See [`slideshow`](slideshow.md).
 
 Ctrl+C, or closing its tab, stops the page; when files are set aside, `browse` proposes the next step:
 

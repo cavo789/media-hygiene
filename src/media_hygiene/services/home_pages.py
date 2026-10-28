@@ -12,7 +12,7 @@ but `/` (read in the code): no prefix is needed for these two.
 from __future__ import annotations
 
 from contextlib import ExitStack, contextmanager
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.errors import MountError
@@ -32,6 +32,7 @@ from media_hygiene.services.review_kinds import REVIEWS
 from media_hygiene.services.search import open_search
 from media_hygiene.services.search_app import SearchBuild, search_app
 from media_hygiene.services.slideshow_here import SLIDESHOW_PREFIX, SlideshowHere
+from media_hygiene.services.slideshow_selection import TvSlot
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
@@ -58,6 +59,7 @@ class HomeServer:
     ending: Ending
     executor: Executor
     lan: LanAccess | None = None  # under `mh --lan`: the slideshow's phones and TVs
+    tv: TvSlot = field(default_factory=TvSlot)  # 📺 On the TV of the pages (0454)
 
 
 class SearchHere:
@@ -96,6 +98,7 @@ class SearchHere:
             server.ending,
             server.executor,
             home_relay(runtime.locations.reports_dir),
+            server.tv,
         )
         self._app = search_app(runtime, search, build)
         self._built_for = runtime

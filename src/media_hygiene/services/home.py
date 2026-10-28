@@ -16,6 +16,7 @@ from media_hygiene.console.formatting import separators
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.person.door import with_person
+from media_hygiene.review.album_show import TV_CHOICES, TV_CHOOSE
 from media_hygiene.review.ending import (
     STOP_PATH,
     STOPPED,
@@ -92,6 +93,8 @@ def home_page(
             "lan": LAN_PATH,
             "albums": ALBUMS_PAGE,
             "albumList": ALBUM_LIST_PATH,  # a phone starts an album on the TV (0444)
+            "tvChoices": TV_CHOICES,
+            "tvChoose": TV_CHOOSE,
             "slides": SLIDES_PATH,  # the slideshow answering: the phone follows
         },
         alive_ms=ALIVE_SECONDS * 1000,

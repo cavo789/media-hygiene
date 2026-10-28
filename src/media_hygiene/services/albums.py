@@ -23,6 +23,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
 
+    from media_hygiene.review.http import Response
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.share.album_api import AlbumAsked
 
@@ -44,18 +45,21 @@ def album_store(runtime: Runtime) -> AlbumStore:
 
 
 def album_desk(
-    runtime: Runtime, pick: Callable[[AlbumAsked], tuple[Path, ...]]
+    runtime: Runtime,
+    pick: Callable[[AlbumAsked], tuple[Path, ...]],
+    tv: Callable[[tuple[Path, ...]], Response] | None = None,
 ) -> AlbumDesk:
     """The desk answering a page about the albums.
 
     Args:
         runtime: Settings, mount points and output.
         pick: The files a page's request names.
+        tv: Shows files on the TV (0454); None: the page cannot.
 
     Returns:
         It.
     """
-    return AlbumDesk(album_store(runtime), pick, partial(_reports_ready, runtime))
+    return AlbumDesk(album_store(runtime), pick, partial(_reports_ready, runtime), tv)
 
 
 def _reports_ready(runtime: Runtime) -> None:

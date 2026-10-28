@@ -65,10 +65,17 @@ files set aside, meant for the quarantine; given, it says to use `--album`. From
 folder and opens the show the same way; *Show an album on the TV* asks for the album's name
 and opens the show **in the home page's own server**: the home page keeps running, the remote
 opens at once (`/slideshow/`). A paired phone starts it too, from the sofa: on the phone's home
-page, **Show an album on the TV** lists the albums saved on the PC; a tap opens the remote at once
-(no code). The TV, at its bookmark, waits for a show while none runs and shows it by itself; it
+page, **Show on the TV** offers an album saved on the PC, a folder (one of the folders analysed)
+or a month (by the date the audit read); a tap opens the remote at once (no code), read-only. The TV, at its bookmark, waits for a show while none runs and shows it by itself; it
 is paired once (its code typed on the remote) and **stays paired while `mh` runs**: another album
-reaches it without a new code. No album saved: the phone says to make one on the PC.
+reaches it without a new code. No album saved: a folder or a month is always there.
+
+**From any page of tiles, no album needed**: in [`search`](search.md) and [`browse`](browse.md)
+opened from the home page, **📺 On the TV** in the bar shows the photos and videos picked, or,
+nothing picked, every file the page shows (the search's result, the folder's files), at most
+3000 (more: narrow the search). The remote opens at once in a new tab; a show already running is
+replaced (the page says so) and the TV paired stays paired. The selection lasts as long as the
+show: a TV reloaded loses nothing, stopping `mh` ends it.
 
 ### On the TV, once
 

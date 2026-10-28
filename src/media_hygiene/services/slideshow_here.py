@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import dataclasses
 from contextlib import ExitStack
+from functools import partial
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 from urllib.parse import unquote
@@ -29,7 +30,9 @@ from media_hygiene.review.lan_phones import phone_book
 from media_hygiene.services.search import open_search
 from media_hygiene.services.slideshow import shown_slides
 from media_hygiene.services.slideshow_build import Serving, show_app
+from media_hygiene.services.slideshow_choices import Chooser
 from media_hygiene.services.slideshow_pick import Pick
+from media_hygiene.services.slideshow_selection import selected, why
 from media_hygiene.slideshow.desk import Changes, Desk
 from media_hygiene.slideshow.door import Door, Visitor
 from media_hygiene.slideshow.films import show_films
@@ -72,6 +75,8 @@ class SlideshowHere:
         self._stack = ExitStack()  # the index, opened at the first show
         self._search: tuple[SearchIndex, Runtime] | None = None
         self.app: SlideshowApp | None = None
+        # 📺 On the TV of `search` and `browse` (0454)
+        server.tv.start = partial(selected, self._begin)
 
     async def handle(self, request: Request) -> Response:
         """Answer a path under `/slideshow`, the prefix taken off.
@@ -88,6 +93,11 @@ class SlideshowHere:
             return Response(HTTPStatus.SEE_OTHER, headers=(location,))
         if request.method == "GET" and path.startswith(_ALBUM_PATH):
             return self._start(unquote(path.removeprefix(_ALBUM_PATH)))
+        chosen = Chooser(self._opened, self._begin).answer(  # a folder, a month: 0455
+            dataclasses.replace(request, path=path)
+        )
+        if chosen is not None:
+            return chosen
         if self.app is None:
             message = _(
                 "No slideshow is running: choose an album under Show an album on the "
@@ -121,23 +131,37 @@ class SlideshowHere:
     def _start(self, album: str) -> Response:
         """Start an album's show, in place of the one shown; then its remote.
 
-        On the server's own thread, as `search`: the index is opened there.
-
         Args:
             album: The album's name, as saved.
 
         Returns:
             303 to the remote; 409 with the reason when there is nothing to show.
         """
-        runtime = self._fresh.runtime()
         try:
-            search = self._index(runtime)
-            picked = shown_slides(runtime, search, Pick(album=album))
+            self._begin(Pick(album=album))
         except MediaHygieneError as exc:
-            text = str(exc) if exc.tip is None else f"{exc}\n{exc.tip}"
-            return Response(HTTPStatus.CONFLICT, text.encode())
+            return Response(HTTPStatus.CONFLICT, why(exc).encode())
+        return Response(HTTPStatus.SEE_OTHER, headers=(f"Location: {SLIDESHOW_PAGE}",))
+
+    def _begin(self, pick: Pick) -> bool:
+        """Start a show, in place of the one shown.
+
+        On the server's own thread, as `search`: the index is opened there.
+
+        Args:
+            pick: What to show.
+
+        Returns:
+            Whether a show was running, now replaced.
+
+        Raises:
+            MediaHygieneError: Nothing to show.
+        """
+        runtime, search = self._opened()
+        picked = shown_slides(runtime, search, pick)
         show = Show(picked.slides, Timing(runtime.settings.slideshow.interval_seconds))
         screens = self.door.screens
+        replaced = self.app is not None
         if self.app is not None:  # the TVs waiting on the last show move on to this one
             show.version = self.app.desk.show.version + 1
         if not screens.films:
@@ -148,7 +172,12 @@ class SlideshowHere:
         )
         self.app = show_app(runtime, desk, serving)
         self._changes.notify()
-        return Response(HTTPStatus.SEE_OTHER, headers=(f"Location: {SLIDESHOW_PAGE}",))
+        return replaced
+
+    def _opened(self) -> tuple[Runtime, SearchIndex]:
+        """The settings now, and the index opened for them."""
+        runtime = self._fresh.runtime()
+        return runtime, self._index(runtime)
 
     def _index(self, runtime: Runtime) -> SearchIndex:
         """The index, opened once per settings.

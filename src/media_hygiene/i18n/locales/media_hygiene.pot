@@ -563,6 +563,9 @@ msgid ""
 "is recognised: it is never counted as its own copy."
 msgstr ""
 
+msgid "A folder"
+msgstr ""
+
 msgid "A folder of its own, never mixed with your other shares."
 msgstr ""
 
@@ -618,6 +621,9 @@ msgid ""
 "A model that sees images, e.g. \"qwen2.5vl:7b\". Empty: no photo is ever "
 "sent. map_model: a text model that chooses the categories; empty: the "
 "same model."
+msgstr ""
+
+msgid "A month"
 msgstr ""
 
 #, python-brace-format
@@ -737,6 +743,9 @@ msgid ""
 "A shot nearly identical to a sharper shot kept of its series is proposed "
 "aside too: its perceptual hash differs by fewer bits than this (0 to 64)."
 " Low values only catch repeats of the same frame. 0 disables the rule."
+msgstr ""
+
+msgid "A show was running on the TV: replaced by this one."
 msgstr ""
 
 msgid "A step is running in the window of mh: wait for its end."
@@ -4335,9 +4344,7 @@ msgstr ""
 msgid "No album named {name}. The albums: {names}."
 msgstr ""
 
-msgid ""
-"No album saved yet: make one on the PC, in search or browse (Add to an "
-"album), then come back here."
+msgid "No album saved yet: choose a folder or a month below."
 msgstr ""
 
 msgid ""
@@ -4605,6 +4612,9 @@ msgid "No photo or video directly in this folder: open a subfolder."
 msgstr ""
 
 msgid "No photo or video to show: nothing the last audit saw matches."
+msgstr ""
+
+msgid "No photo or video was taken in this period."
 msgstr ""
 
 msgid "No photo to give: none ticked, or none reachable."
@@ -5118,6 +5128,9 @@ msgstr ""
 msgid "On the PC:"
 msgstr ""
 
+msgid "On the TV"
+msgstr ""
+
 msgid ""
 "On the TV, in its browser (the Chromecast's, or the TV's own): open this "
 "address once, then bookmark it."
@@ -5374,6 +5387,9 @@ msgid "Open the search at 127.0.0.1 or localhost."
 msgstr ""
 
 msgid "Open the slideshow at 127.0.0.1, or from the TV with mh --lan."
+msgstr ""
+
+msgid "Open this page from the home page to show it on the TV."
 msgstr ""
 
 msgid "Open this page in Safari, download the certificate, allow the profile."
@@ -6857,6 +6873,9 @@ msgstr ""
 msgid "Show more"
 msgstr ""
 
+msgid "Show on the TV"
+msgstr ""
+
 msgid "Show only this person (Esc)"
 msgstr ""
 
@@ -6866,6 +6885,9 @@ msgstr ""
 msgid ""
 "Show photos on the TV, the phone choosing the next one: a folder, a "
 "search or an album."
+msgstr ""
+
+msgid "Show the files picked on the TV; nothing picked: every file of the page"
 msgstr ""
 
 msgid "Show the photos a search finds, as typed in search: \"noel 2025\"."
@@ -7072,6 +7094,9 @@ msgid ""
 msgstr ""
 
 msgid "Started"
+msgstr ""
+
+msgid "Starting the show on the TV…"
 msgstr ""
 
 msgid "State"
@@ -8495,6 +8520,9 @@ msgid ""
 "This folder is an album of media-hygiene: hard links, second names of "
 "photos kept elsewhere, which take no space. The audits skip it. 'media-"
 "hygiene undo' removes it; deleting it by hand is safe too."
+msgstr ""
+
+msgid "This folder is not among the folders analysed."
 msgstr ""
 
 msgid ""
