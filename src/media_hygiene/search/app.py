@@ -26,6 +26,7 @@ from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_respons
 from media_hygiene.search.asked import read_asked
 from media_hygiene.search.chosen_api import CHOSEN_PATH
 from media_hygiene.search.coverage import CoverageKept
+from media_hygiene.search.events_desk import EVENTS_PAGE_PATH, EVENTS_PATH
 from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS, FOLDERS_PATH
 from media_hygiene.search.hits import with_facts
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH
@@ -151,7 +152,7 @@ class SearchApp:
         """
         path = self.pages.first if request.path == PAGE_PATH else request.path
         # One page (0408): `/browse` is the search, folders open; videos: `media-src`.
-        if path in {SEARCH_PAGE_PATH, BROWSE_PATH}:
+        if path in {SEARCH_PAGE_PATH, BROWSE_PATH, EVENTS_PAGE_PATH}:
             return Response(
                 HTTPStatus.OK, self.pages.search, ContentType.HTML, policy=NEAR_POLICY
             )
@@ -163,6 +164,9 @@ class SearchApp:
         }
         if path in states:
             return states[path]()
+        if path.startswith(EVENTS_PATH) and self.place.events is not None:  # 0437
+            events = self.place.events
+            return events.state() if path == EVENTS_PATH else events.event(path)
         if path.startswith(FACE_CROP_PREFIX):
             return await crop_answer(self.place.names, path, self.executor)
         pictures = Pictures(self.place.index, self.place.previews, self.executor)

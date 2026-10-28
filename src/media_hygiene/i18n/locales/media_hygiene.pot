@@ -36,6 +36,10 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
+#, python-brace-format
+msgid " · file modified {day} (the date Explorer shows)"
+msgstr ""
+
 msgid " — none yet"
 msgstr ""
 
@@ -1294,6 +1298,10 @@ msgstr ""
 msgid "Camera"
 msgstr ""
 
+#, python-brace-format
+msgid "Camera: {camera}"
+msgstr ""
+
 msgid "Cameras"
 msgstr ""
 
@@ -2394,6 +2402,9 @@ msgid ""
 " outside any event, by proposed folder."
 msgstr ""
 
+msgid "Events of the latest classify"
+msgstr ""
+
 #, python-brace-format
 msgid "Events split in several, each part keeps the edit: {names}."
 msgstr ""
@@ -3048,6 +3059,10 @@ msgstr ""
 msgid "GB"
 msgstr ""
 
+#, python-brace-format
+msgid "GPS: {where}"
+msgstr ""
+
 msgid ""
 "Gather your photos on the PC: those of the phone, and those only a folder"
 " keeps (your NAS, a USB disk, an SD card). Nothing leaves them without "
@@ -3674,6 +3689,10 @@ msgid ""
 msgstr ""
 
 msgid "Lens"
+msgstr ""
+
+#, python-brace-format
+msgid "Lens: {lens}"
 msgstr ""
 
 msgid "Light"
@@ -4342,6 +4361,9 @@ msgstr ""
 msgid "No config.toml created: the container cannot write to {folder}."
 msgstr ""
 
+msgid "No date taken"
+msgstr ""
+
 msgid "No decision in the file: as planned."
 msgstr ""
 
@@ -4366,6 +4388,9 @@ msgid "No event left to decide after this one."
 msgstr ""
 
 msgid "No event left to sort after this one."
+msgstr ""
+
+msgid "No event matches these filters."
 msgstr ""
 
 msgid "No face found, even turned: set this photo aside on its own."
@@ -5858,6 +5883,9 @@ msgstr ""
 msgid "Reading the index"
 msgstr ""
 
+msgid "Reading the latest classify plan…"
+msgstr ""
+
 msgid "Reading the metadata of files already in the cache"
 msgstr ""
 
@@ -7207,6 +7235,10 @@ msgstr ""
 msgid "Taken out of config.toml: its GPS decides again."
 msgstr ""
 
+#, python-brace-format
+msgid "Taken: {when}"
+msgstr ""
+
 msgid "The Explorer's menu is as it was."
 msgstr ""
 
@@ -7549,6 +7581,11 @@ msgid ""
 msgstr ""
 
 msgid "The faces you confirmed as this person's."
+msgstr ""
+
+msgid ""
+"The file does not say when it was taken (a scan, a screenshot): a search "
+"by date does not find it."
 msgstr ""
 
 msgid "The files given at least these stars in Windows (1 to 5)."
@@ -10608,6 +10645,9 @@ msgstr ""
 msgid "no date"
 msgstr ""
 
+msgid "no date taken"
+msgstr ""
+
 msgid "no double quote"
 msgstr ""
 
@@ -11088,6 +11128,10 @@ msgid "take back the last batch of sure proposals"
 msgstr ""
 
 msgid "take it back out of the set aside"
+msgstr ""
+
+#, python-brace-format
+msgid "taken {taken} (EXIF: what the search finds by)"
 msgstr ""
 
 msgid "the PowerShell window of mh (in the taskbar)"
@@ -13263,6 +13307,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} of its files are not in the index: run audit on their folder."
+msgstr ""
+
+#, python-brace-format
 msgid "{n} of {count} set aside"
 msgid_plural "{n} of {count} set aside"
 msgstr[0] ""
@@ -13814,6 +13862,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{when} · {events} · {files} files · undone"
+msgstr ""
+
+#, python-brace-format
+msgid "{width} by {height} pixels"
 msgstr ""
 
 msgid "— a new rule —"

@@ -1,0 +1,84 @@
+{# *🗂 Events* (0437): the latest classify plan's events, read once when opened (or at
+   `/events`); one clicked shows its card and its photos in the grid. The filters are
+   review-sort's, kept for this viewer. #}
+const EVENTS_PATH = {{ events_path | tojson }};
+let events = [];      // the plan's event cards
+let eventShown = null; // the event whose photos the grid shows
+
+const eventOpen = (card) => card.undecided > 0 && !card.page && !card.workbook.text && !card.sorted;
+const eventInPlace = (card) => !card.sorted && card.moves === 0 && !card.page && !card.workbook.text;
+const eventUnsorted = (card) => !card.sorted && !eventInPlace(card);
+const EVENT_FILTERS = {
+  onlyDecide: (card) => eventOpen(card) && !card.sure,
+  onlySure: (card) => card.sure && eventOpen(card),
+  onlyUnsorted: eventUnsorted,
+};
+
+function eventsProgress(view) {
+  const done = view.progress;
+  const moving = done.sorted_files + done.left_files;
+  const share = moving ? Math.round((1000 * done.sorted_files) / moving) / 10 : 100;
+  const number = (n) => n.toLocaleString();
+  $("eventsProgress").textContent = fill(TEXTS.progressLine, {
+    events: number(done.sorted_events), files: number(done.sorted_files), share: share.toLocaleString() + " %",
+    inPlace: number(done.in_place), leftEvents: number(done.left_events), leftFiles: number(done.left_files),
+  });
+}
+
+function listEvents() {
+  const shown = events.filter((card) => Object.entries(EVENT_FILTERS).every(([box, wanted]) => !$(box).checked || wanted(card)));
+  $("eventList").replaceChildren(...shown.map((card) => {
+    const marks = (card.sorted ? "✓ " : "") + (card.conflict ? "⚠ " : "");
+    const button = element("button", card.conflict ? "plain conflict" : "plain",
+      marks + card.title + " · " + counted(TEXTS.eventFiles, card.files));
+    button.type = "button";
+    button.title = card.span;
+    button.classList.toggle("open", eventShown === card.id);
+    button.addEventListener("click", () => showEvent(card.id));
+    const item = element("li");
+    item.append(button);
+    return item;
+  }));
+  if (!shown.length) $("eventList").append(element("li", "muted", TEXTS.eventsNone));
+}
+
+async function loadEvents() {
+  $("eventsSaid").textContent = TEXTS.eventsLoading;
+  const answer = await ask(EVENTS_PATH);
+  if (!answer || !answer.ok) { $("eventsSaid").textContent = TEXTS.offline; return; }
+  const view = await answer.json();
+  events = view.events;
+  $("eventsSaid").textContent = view.missing || "";
+  if (view.progress) eventsProgress(view);
+  listEvents();
+}
+
+async function showEvent(id, again) {
+  const answer = await ask(EVENTS_PATH + "/" + encodeURIComponent(id));
+  if (!answer || !answer.ok) { told(fill(TEXTS.failed, { status: answer ? answer.status : 0 }), true); return; }
+  const view = await answer.json();
+  const card = view.card;
+  eventShown = card.id;
+  $("eventCard").hidden = false;
+  $("eventName").textContent = (card.page && card.page.text) || (card.workbook && card.workbook.text) || card.title;
+  $("eventFolder").textContent = card.folder ? card.prefix + card.folder : TEXTS.stays;
+  $("eventWhy").textContent = [card.band, card.why, card.rule].filter(Boolean).join(" · ");
+  total = view.total;
+  showFiles(view.hits, again);
+  $("more").hidden = true;
+  told(counted(TEXTS.found, view.total) + (view.missing ? " " + fill(TEXTS.eventMissing, { n: view.missing }) : ""), false);
+  listEvents();
+}
+
+$("events").addEventListener("toggle", () => { if ($("events").open && !events.length) loadEvents(); });
+for (const box of Object.keys(EVENT_FILTERS)) {
+  try { $(box).checked = localStorage.getItem("mh-events-" + box) === "1"; } catch (error) { /* not kept */ }
+  $(box).addEventListener("change", () => {
+    try { localStorage.setItem("mh-events-" + box, $(box).checked ? "1" : "0"); } catch (error) { /* not kept */ }
+    listEvents();
+  });
+}
+// A search typed leaves the event: the grid shows what was searched.
+$("form").addEventListener("submit", () => { eventShown = null; $("eventCard").hidden = true; listEvents(); });
+// `/events` (and later `mh review-sort`): the search, its events open.
+if (window.location.pathname === {{ events_page | tojson }}) $("events").open = true;

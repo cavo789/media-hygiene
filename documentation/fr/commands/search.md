@@ -98,6 +98,20 @@ régulière invalide est signalée sous le champ.
   les vidéos seulement. La recherche trie et filtre avant de montrer ses premiers fichiers :
   *Afficher : vidéos*, *Trier par : taille* donne les plus grosses vidéos trouvées. Chaque vignette
   dit sa date et sa taille.
+- **Quelle date** : `📷 2023-07-14` est le jour où la photo a été **prise**, écrit dans la photo
+  elle-même (EXIF *DateTimeOriginal* ; la date d'enregistrement d'une vidéo) : c'est elle que
+  *Du*, *Au* et les années trouvent. Ce n'est pas la *Date de modification* que l'Explorateur
+  Windows montre par défaut : pointez la date pour voir les deux, avec l'heure de la prise.
+  L'Explorateur montre la date de prise dans **Propriétés › Détails › Prise de vue** du fichier,
+  ou en colonne *Prise de vue* (clic droit sur les en-têtes de colonnes). Un fichier qui ne la
+  dit pas (un scan, une capture d'écran) affiche *pas de date de prise* : une recherche par date
+  ne le trouve pas.
+- **L'EXIF de la photo** : dans la grande vue, **I** liste ce que la photo dit d'elle-même :
+  quand elle a été prise, l'appareil, l'objectif, l'exposition, sa taille en pixels et sa
+  position GPS. En lecture seule : la photo n'est jamais modifiée.
+- **La durée d'une vidéo** est dans le coin de son aperçu, comme sur les sites de vidéos :
+  `▶ 1:45`. Sous 3 secondes, le badge est rouge : un clip si court vaut rarement d'être gardé (le
+  mettre de côté reste votre choix).
 - **Triées** : *toutes les photos*, *pas encore triées* ou *triées (année, puis année-mois)*, lu
   dans les dossiers seuls ([la convention](../sort/04-classify.md#la-convention--année-mois-événement)) :
   une photo dans `2009\2009-11\…` est triée, où que soit cette paire de dossiers et quoi qui l'y
@@ -106,6 +120,18 @@ régulière invalide est signalée sous le champ.
 
 Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers
 fichiers en tableau.
+
+## Les événements du dernier classify
+
+**🗂 Événements du dernier classify**, sous les dossiers de la colonne de gauche, liste les
+événements du dernier plan de [`classify`](classify.md) comme [`review-sort`](review-sort.md) les
+montre : la ligne de progression (triés, déjà en place, restants), les trois mêmes filtres
+(*Seulement les événements à décider*, *Seulement les propositions sûres*, *Seulement les
+événements pas encore triés*), ✓ sur un événement déjà trié, ⚠ sur celui dont le classeur a changé
+un choix antérieur depuis. Cliquez un événement : son nom, son dossier proposé et pourquoi
+s'affichent au-dessus de la liste, ses photos dans la grille, choisies et mises de côté comme
+celles de toute recherche. La liste est en lecture seule pour l'instant : nommez et triez un
+événement dans `review-sort`. L'adresse `/events` ouvre la page, liste ouverte.
 
 ## Déplacer des photos vers un événement, sans règle
 

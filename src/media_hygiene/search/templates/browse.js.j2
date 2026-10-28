@@ -40,6 +40,7 @@ function card(file, index) {
     picture.src = file.thumb;
     picture.addEventListener("error", () => picture.replaceWith(element("div", "empty", TEXTS.noPreview)));
   } else picture = element("div", "empty", TEXTS.noPreview);
+  picture = withLength(file, picture);  // a video's length (0434)
   const meta = element("div", "meta");
   meta.append(element("div", "name", file.name),
               element("div", "muted", [file.date, file.size].filter(Boolean).join(" · ")));

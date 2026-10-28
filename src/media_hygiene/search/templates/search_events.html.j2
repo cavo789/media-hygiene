@@ -1,0 +1,17 @@
+{# *🗂 Events* (0437): the events of the latest classify plan in the left column, as
+   review-sort lists them — its progress, its three filters, the event's card — and its
+   photos in the grid, the search's own tiles. Read-only: the choices come with 0438. #}
+<details id="events">
+  <summary>🗂 {{ _("Events of the latest classify") }}</summary>
+  <p id="eventsSaid" class="muted" role="status"></p>
+  <p id="eventsProgress" class="muted"></p>
+  <label class="filter" title="{{ _('N, P and U skip the events already chosen and those whose proposal is sure') }}"><input type="checkbox" id="onlyDecide"> {{ _("Only the events to decide") }}</label>
+  <label class="filter" title="{{ _('N and P walk only the events to decide whose proposal is sure, one by one, before accepting them') }}"><input type="checkbox" id="onlySure"> {{ _("Only the sure proposals") }}</label>
+  <label class="filter" title="{{ _('N, P and U walk only the events with files still to move: neither sorted nor in place') }}"><input type="checkbox" id="onlyUnsorted"> {{ _("Only the events not sorted yet") }}</label>
+  <dl id="eventCard" hidden>
+    <dt>{{ _("Name") }}</dt><dd id="eventName"></dd>
+    <dt>{{ _("Folder") }}</dt><dd id="eventFolder"></dd>
+    <dt>{{ _("Why") }}</dt><dd id="eventWhy"></dd>
+  </dl>
+  <ol id="eventList"></ol>
+</details>

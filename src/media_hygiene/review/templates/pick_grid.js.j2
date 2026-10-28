@@ -45,6 +45,25 @@ function element(tag, className, text) {
   return node;
 }
 
+// A video's length on its preview, as video sites show it (0434); a very short one
+// stands out: rarely worth keeping.
+const SHORT_VIDEO_SECONDS = 3;
+function withLength(file, picture) {
+  if (!file.video || typeof file.seconds !== "number") return picture;
+  const shot = element("div", "shot");
+  const short = file.seconds < SHORT_VIDEO_SECONDS;
+  shot.append(picture, element("span", short ? "length short" : "length", "▶ " + clock(file.seconds)));
+  return shot;
+}
+
+// `0:02`, `1:45`, `1:05:10`.
+function clock(seconds) {
+  const whole = Math.round(seconds);
+  const two = (n) => String(n).padStart(2, "0");
+  const hours = Math.floor(whole / 3600), minutes = Math.floor(whole / 60) % 60;
+  return hours ? hours + ":" + two(minutes) + ":" + two(whole % 60) : minutes + ":" + two(whole % 60);
+}
+
 // Said in the line the bar always shows, whether files are picked or not.
 function failed(answer) {
   $("chosen").className = "error";

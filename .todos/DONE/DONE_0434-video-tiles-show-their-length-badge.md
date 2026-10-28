@@ -26,3 +26,12 @@ and should stand out.
 ## Explicit NON-goals
 
 - Deleting short videos automatically (set aside stays the user's choice).
+
+## Status — DONE (2026-10-28)
+
+- `withLength(file, picture)` in the shared `pick_grid.js.j2` + `.length` CSS: `▶ 0:02`, `1:45`,
+  `1:05:10` on the preview's bottom-right corner; red under `SHORT_VIDEO_SECONDS = 3` (a named
+  constant: no setting, memory `few-settings`). Used by search (and the events view) and browse;
+  pages whose files carry no `seconds` show none.
+- Filter / sort "shortest first": not built, question to the maintainer.
+- Docs en+fr. `docs_screenshots` should run.

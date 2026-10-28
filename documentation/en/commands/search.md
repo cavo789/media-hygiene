@@ -90,6 +90,19 @@ no escaping. A regular expression that does not compile is told under the field.
   largest first); **Show** keeps the photos or the videos only. The search sorts and filters
   before it shows its first files: *Show: videos*, *Sort by: size* gives the largest videos found.
   Each tile says its date and size.
+- **Which date**: `📷 2023-07-14` is the day the photo was **taken**, written in the photo
+  itself (EXIF *DateTimeOriginal*; a video's recording date): what *From*, *To* and the years
+  find. It is not the *Date modified* Windows Explorer shows by default: point at the date for
+  both, with the time taken. Explorer shows the date taken in the file's **Properties ›
+  Details › Date taken**, or as the *Date taken* column (right-click the column headers). A file
+  that does not say it (a scan, a screenshot) reads *no date taken*: a search by date does not
+  find it.
+- **The photo's EXIF**: in the large view, **I** lists what the photo says of itself: when it was
+  taken, the camera, the lens, the exposure, its size in pixels and its GPS position. Read only:
+  the photo is never changed.
+- **A video's length** is on its preview's corner, as on video sites: `▶ 1:45`. Under 3 seconds,
+  the badge is red: a clip that short is rarely worth keeping (setting it aside stays your
+  choice).
 - **Sorted**: *every photo*, *not sorted yet* or *sorted (year, then year-month)*, read from the
   folders alone ([the convention](../sort/04-classify.md#the-convention-year-month-event)): a
   photo in `2009\2009-11\…` is sorted, wherever that pair of folders lies and whoever put it
@@ -98,6 +111,17 @@ no escaping. A regular expression that does not compile is told under the field.
 
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20 files
 as a table.
+
+## The events of the latest classify
+
+**🗂 Events of the latest classify**, under the folders in the left column, lists the events of
+the latest [`classify`](classify.md) plan as [`review-sort`](review-sort.md) shows them: the
+progress line (sorted, already in place, left), the same three filters (*Only the events to
+decide*, *Only the sure proposals*, *Only the events not sorted yet*), ✓ on an event already
+sorted, ⚠ on one whose earlier choice the workbook changed since. Click an event: its name, its
+proposed folder and why show above the list, its photos in the grid, picked and set aside as any
+search's. The list is read only for now: name and sort an event in `review-sort`. The address
+`/events` opens the page with the list open.
 
 ## Move photos to an event, without a rule
 

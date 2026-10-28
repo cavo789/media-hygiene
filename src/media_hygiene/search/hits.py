@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.index.descriptions import PhotoVersion
+from media_hygiene.search.exif_facts import exif_lines, taken_text
 from media_hygiene.search.folder_order import kind_of_path
 from media_hygiene.search.heaviest import video_facts
 from media_hygiene.search.models import Hit
@@ -22,7 +23,9 @@ if TYPE_CHECKING:
     from media_hygiene.search.models import Found
 
 
-_METADATA: Final = "SELECT rowid, metadata FROM files WHERE rowid IN ({marks})"
+_METADATA: Final = (
+    "SELECT rowid, metadata, media_date FROM files WHERE rowid IN ({marks})"
+)
 
 
 def hit_of(
@@ -56,7 +59,7 @@ def hit_of(
 
 
 def with_facts(index: SearchIndex, found: Found) -> Found:
-    """The files found, each video with its length, bit rate and codec (0408).
+    """The files found with their metadata: when taken, EXIF, a video's length (0408).
 
     Read for the files shown only; an index older than the metadata gives none.
 
@@ -65,20 +68,43 @@ def with_facts(index: SearchIndex, found: Found) -> Found:
         found: What a search found.
 
     Returns:
-        The same files, the videos described as the folder view does.
+        The same files, described: the videos as the folder view does, every file
+        with its date taken and its EXIF lines (0433), each video's seconds (0434).
     """
-    videos = [
-        hit for hit in found.hits if kind_of_path(str(hit.photo.path)) == "videos"
-    ]
-    if not videos:
+    if not found.hits:
         return found
-    marks = ", ".join("?" * len(videos))
+    marks = ", ".join("?" * len(found.hits))
     try:
         rows = index.connection.execute(
-            _METADATA.format(marks=marks), [hit.key for hit in videos]
+            _METADATA.format(marks=marks), [hit.key for hit in found.hits]
         ).fetchall()
     except sqlite3.OperationalError:  # no `metadata` column: an older index
         return found
-    facts = {key: video_facts(json.loads(text)) for key, text in rows if text}
-    hits = tuple(replace(hit, facts=facts.get(hit.key, "")) for hit in found.hits)
+    known = {key: (json.loads(text) if text else {}, day) for key, text, day in rows}
+    hits = tuple(_described(hit, known.get(hit.key)) for hit in found.hits)
     return replace(found, hits=hits)
+
+
+def _described(hit: Hit, known: tuple[dict[str, object], str | None] | None) -> Hit:
+    """One file with what its metadata says.
+
+    Args:
+        hit: The file.
+        known: Its metadata and its date as written, None when the index has no row.
+
+    Returns:
+        The file described.
+    """
+    if known is None:
+        return hit
+    metadata, written = known
+    taken = taken_text(written)
+    video = kind_of_path(str(hit.photo.path)) == "videos"
+    seconds = metadata.get("duration") if video else None
+    return replace(
+        hit,
+        facts=video_facts(metadata) if video and metadata else "",
+        taken=taken,
+        exif=exif_lines(metadata, taken),
+        seconds=float(seconds) if isinstance(seconds, int | float) else None,
+    )
