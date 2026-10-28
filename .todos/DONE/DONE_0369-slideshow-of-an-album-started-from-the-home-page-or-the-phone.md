@@ -41,3 +41,6 @@ Starting a show: walk to the PC and type a command → two taps on the phone (es
   **Reason:** the slideshow is a blocking console step with its own server, not on the home server (0417); letting a phone start a process on the PC is a decision for the maintainer.
 - A message when no album is saved, a list of albums instead of free text.
   **Reason:** left with the phone part.
+
+### Decided (2026-10-28, inbox)
+- A paired phone may start this one step (and only it) → the rest filed as 0444.

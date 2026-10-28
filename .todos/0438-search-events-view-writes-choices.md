@@ -4,7 +4,6 @@
 - **Batch**: search
 - **Depends**: 0437
 - **Files**: `src/media_hygiene/search/app.py`, `src/media_hygiene/search/templates/search.js.j2`, `src/media_hygiene/review/sort_now.py`, `src/media_hygiene/review/sort_rule.py`, `src/media_hygiene/review/sort_choices.py`, `src/media_hygiene/classify/page_overlay.py`, `documentation/en/commands/search.md`, `documentation/fr/commands/search.md`
-- **Needs maintainer**: which key takes back a choice once Delete sets aside (asked at the start of the run)
 
 ## Why
 
@@ -12,6 +11,9 @@ Part 2 of 0415 (split 2026-10-27; design in `.todos/UNNEEDED/UNNEEDED_0415-*.md`
 (M, R, rules) of review-sort, written in `sort-decisions.json` with the workbook value each saw
 (`base`), conflicts never settled silently (`page_overlay`). Delete sets aside, as on every
 tile page (skill `photo-picking-pages`).
+
+**Decided (2026-10-28, inbox)**: Backspace takes back a choice once Delete has set it aside,
+as in every tile page's large view.
 
 ## Explicit NON-goals
 
