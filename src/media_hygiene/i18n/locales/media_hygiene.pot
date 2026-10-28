@@ -1056,6 +1056,9 @@ msgid ""
 "set aside if they come back; the others are forgotten."
 msgstr ""
 
+msgid "Any date"
+msgstr ""
+
 msgid "Any folder"
 msgstr ""
 
@@ -3942,6 +3945,9 @@ msgstr ""
 msgid "Modified (UTC)"
 msgstr ""
 
+msgid "Month"
+msgstr ""
+
 msgid "More keys"
 msgstr ""
 
@@ -4926,6 +4932,9 @@ msgstr ""
 msgid "Nothing matches. Try duplicates, phone, NAS or undo."
 msgstr ""
 
+msgid "Nothing moved: every file is already in its place, or stays where it is."
+msgstr ""
+
 msgid "Nothing moves without you."
 msgstr ""
 
@@ -4973,9 +4982,6 @@ msgid "Nothing to import: every file of the folder is dealt with."
 msgstr ""
 
 msgid "Nothing to move: every file is where the plan puts it."
-msgstr ""
-
-msgid "Nothing to move: no run was made."
 msgstr ""
 
 msgid "Nothing to put back."
@@ -5826,6 +5832,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Quarantined"
+msgstr ""
+
+msgid "Quick periods"
 msgstr ""
 
 msgid "RAW"
@@ -8499,6 +8508,9 @@ msgstr ""
 msgid "This mh does not take the words of a form: copy the command."
 msgstr ""
 
+msgid "This month"
+msgstr ""
+
 #, python-brace-format
 msgid "This page also analyses: {folder}"
 msgstr ""
@@ -8560,6 +8572,9 @@ msgid "This workbook belongs to another classify run."
 msgstr ""
 
 msgid "This workbook was written by another version: it cannot be checked."
+msgstr ""
+
+msgid "This year"
 msgstr ""
 
 #, python-brace-format
@@ -8710,6 +8725,9 @@ msgid "To sort by place and by trip; no position leaves the PC."
 msgstr ""
 
 msgid "To undo it all:"
+msgstr ""
+
+msgid "Today"
 msgstr ""
 
 msgid ""
@@ -13254,9 +13272,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid ""
-"{n} files are not in the latest classify run: run classify again to sort "
-"them."
+msgid "{n} files are not in the index yet: run an audit, then move them."
 msgstr ""
 
 #, python-brace-format

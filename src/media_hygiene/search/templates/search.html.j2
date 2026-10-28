@@ -64,9 +64,9 @@
   "goRunning": _("Sorting the files of the rule: the plan of classify is read, the files moved, then checked at their new place…"),
   "goAlready": _("{n} files were sorted already by an earlier run: left where they are."),
   "goDone": _("{moved} moved, {verified} checked at their new place (run {run}, at {time}): 'mh undo {run}' puts them back."),
-  "goNothing": _("Nothing to move: no run was made."),
+  "goNothing": _("Nothing moved: every file is already in its place, or stays where it is."),
   "goBroken": _("The run {run} ended, but its manifest does not check out: look at it before going on."),
-  "goUnknown": _("{n} files are not in the latest classify run: run classify again to sort them."),
+  "goUnknown": _("{n} files are not in the index yet: run an audit, then move them."),
   "goFixed": [ngettext("{n} file lies in a protected or 'leave' folder: never moved.", "{n} files lie in a protected or 'leave' folder: never moved.", 1), ngettext("{n} file lies in a protected or 'leave' folder: never moved.", "{n} files lie in a protected or 'leave' folder: never moved.", 2)],
   "counts": _("{photos} photos · {videos} videos · {size}"),
   "moveNamed": _("(your folder of another event, {name}: unticked)"),
@@ -118,6 +118,9 @@
   #text { font-size: 1.05rem; }
   .years { display: flex; flex-wrap: wrap; gap: 8px; }
   .years label { flex: 1 1 8rem; }
+  /* Today, this month, this year, any date: one click fills From and To, then searches. */
+  .spans { display: flex; gap: 4px; }
+  .spans button { flex: 1 1 auto; padding: 2px 4px; font-size: .8rem; white-space: nowrap; }
   #syntax { margin-top: 6px; color: var(--muted); }
   #syntax ul { margin: 4px 0; padding-left: 18px; }
   #syntax dt { margin-top: 4px; color: var(--text); }
@@ -171,6 +174,12 @@
       <div class="years">
         <label>{{ _("From") }}<input id="from" type="date" min="1800-01-01" max="2200-12-31"></label>
         <label>{{ _("To") }}<input id="to" type="date" min="1800-01-01" max="2200-12-31"></label>
+      </div>
+      <div class="spans" role="group" aria-label="{{ _('Quick periods') }}">
+        <button type="button" class="plain" data-span="day" title="{{ _('Today') }}" aria-label="{{ _('Today') }}">📍 {{ _("Today") }}</button>
+        <button type="button" class="plain" data-span="month" title="{{ _('This month') }}" aria-label="{{ _('This month') }}">🗓️ {{ _("Month") }}</button>
+        <button type="button" class="plain" data-span="year" title="{{ _('This year') }}" aria-label="{{ _('This year') }}">📆 {{ _("Year") }}</button>
+        <button type="button" class="plain" data-span="" title="{{ _('Any date') }}" aria-label="{{ _('Any date') }}">✕</button>
       </div>
       <label>{{ _("Path contains") }}<input id="folder" type="text"
                title="{{ _('A part of the path. * is any characters, ? one character, /regex/ a regular expression: *.mov, /\\.(mov|mp4)$/') }}"

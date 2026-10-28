@@ -15,16 +15,20 @@ from typing import TYPE_CHECKING
 import pytest
 
 from media_hygiene.classify.page_decisions import PAGE_DECISIONS_FILE_NAME
+from media_hygiene.classify.plan_file import ClassifyPlan
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.config.classify_rules import ClassifyRule
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.index.descriptions import PhotoVersion
+from media_hygiene.scan.progress import NullProgress
 from media_hygiene.search.rule_models import RuleTry
+from media_hygiene.services.audit import AuditService
 from media_hygiene.services.group_sort import sort_group
 from media_hygiene.services.rule_trial import try_rule
 from media_hygiene.services.runtime import Runtime
 from tests.integration.test_sort_event import SPRING, SPRING_SHOTS, two_events
-from tests.support.sorting import PARTY, PARTY_SHOTS, snapshot, undo
+from tests.support.scenes import Shot, write_shot
+from tests.support.sorting import PARTY, PARTY_SHOTS, PHOTOS, snapshot, undo
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -86,6 +90,33 @@ def test_a_file_the_run_does_not_know_is_counted_not_moved(
     done = sort_group(runtime, {**spring, late: "2017/Fêtes/Groupe"}, "Fêtes/Groupe")
     assert (done.moved, done.unknown) == (SPRING_SHOTS, 1)
     assert late.exists()
+
+
+def test_a_file_audited_after_classify_joins_the_plan_then_moves(
+    locations: Locations,
+) -> None:
+    """0452: photos imported since classify, audited: a row each, moved, undone."""
+    runtime, workbook, _sizes = two_events(locations)
+    data = locations.data_dir
+    plan_file = workbook.with_name("plan.json")
+    before = ClassifyPlan.model_validate_json(plan_file.read_text("utf-8"))
+    late = data / PHOTOS / "Phone" / "Camera" / "late.jpg"
+    write_shot(late, Shot(99, taken_at="2017:05:01 20:00:00"))
+    AuditService(runtime, NullProgress()).run()
+    spring = _folders(runtime, data / SPRING, "2017-05-01..2017-05-01")
+    done = sort_group(runtime, {**spring, late: "2017/Fêtes/Groupe"}, "Fêtes/Groupe")
+    assert (done.moved, done.unknown) == (SPRING_SHOTS + 1, 0)
+    assert not late.exists()
+    assert (data / "c" / "2017" / "Fêtes" / "Groupe" / "late.jpg").is_file()
+    # The plan and its workbook are left as classify wrote them: still one pair.
+    assert ClassifyPlan.model_validate_json(plan_file.read_text("utf-8")) == before
+    again = _folders(
+        runtime, data / "c" / "2017" / "Fêtes" / "Groupe", "2017-05-01..2017-05-01"
+    )
+    second = sort_group(runtime, again, "Fêtes/Groupe")
+    assert (second.run_id, second.unknown) == ("", 0)
+    undo(runtime, done.run_id)
+    assert late.is_file()
 
 
 def test_without_a_journal_nothing_is_written_nor_moved(

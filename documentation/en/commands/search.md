@@ -84,7 +84,9 @@ no escaping. A regular expression that does not compile is told under the field.
   ([`people`](people.md#from-any-page-set-a-person-aside)).
 
 - **A period**: *From* and *To* are calendars, a day each, both included; one alone is a period
-  of one day. The day is the one the photo was taken, as `classify` dates it.
+  of one day. The day is the one the photo was taken, as `classify` dates it. *From* chosen,
+  *To* takes the same day when it is empty or earlier. Under them, one click searches
+  **📍 Today**, **🗓️ Month** (this month), **📆 Year** (this year); **✕** clears both.
 - **Sort by** and **Show**, in the bar as on the [folder view](browse.md): *best match* (the
   default; the newest first without words), *name*, *date* (the oldest first) or *size* (the
   largest first); **Show** keeps the photos or the videos only. The search sorts and filters
@@ -162,7 +164,8 @@ count. A folder you named after **another** event (`Saint Nicolas 2009`: a name,
 **unticked**: its photos stay where they are, unless you tick it. A folder of dates, a family
 member's folder, a phone's `DCIM` are ticked. **Move these N files now** moves exactly the ticked
 ones, journaled, checked at their new place, said as read back (*'mh undo …' puts them back*).
-No rule is written: the next `classify` finds them in place.
+No rule is written: the next `classify` finds them in place. Photos added since the
+latest `classify` (a phone imported, then audited) move too: no new `classify` is needed.
 
 ## Make a period a rule
 

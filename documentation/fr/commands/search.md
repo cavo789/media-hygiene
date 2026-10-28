@@ -91,7 +91,9 @@ régulière invalide est signalée sous le champ.
   ([`people`](people.md#depuis-nimporte-quelle-page--mettre-une-personne-de-côté)).
 
 - **Une période** : *Du* et *Au* sont des calendriers, un jour chacun, inclus ; un seul est une
-  période d'un jour. Le jour est celui de la prise de vue, tel que `classify` le date.
+  période d'un jour. Le jour est celui de la prise de vue, tel que `classify` le date. *Du*
+  choisi, *Au* prend le même jour s'il est vide ou plus tôt. En dessous, un clic cherche
+  **📍 Aujourd'hui**, **🗓️ Mois** (ce mois-ci), **📆 Année** (cette année) ; **✕** vide les deux.
 - **Trier par** et **Afficher**, dans la barre comme sur la [vue des dossiers](browse.md) :
   *meilleure correspondance* (par défaut ; la plus récente d'abord sans mots), *nom*, *date* (la
   plus ancienne d'abord) ou *taille* (la plus grande d'abord) ; **Afficher** garde les photos ou
@@ -173,7 +175,8 @@ nom, une soirée) est **décoché** : ses photos restent où elles sont, sauf si
 dossier de dates, le dossier d'un membre de la famille, le `DCIM` d'un téléphone sont cochés.
 **Déplacer ces N fichiers maintenant** déplace exactement ceux cochés, noté au journal, vérifié à
 leur nouvelle place, dit tel que relu (*'mh undo …' les remet*). Aucune règle n'est écrite : le
-prochain `classify` les trouve à leur place.
+prochain `classify` les trouve à leur place. Les photos ajoutées depuis le dernier `classify`
+(un téléphone importé, puis audité) sont déplacées aussi : pas besoin d'un nouveau `classify`.
 
 ## Faire d'une période une règle
 

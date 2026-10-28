@@ -9,7 +9,8 @@ maintainer's run of 52,056 rows: 1.1 s and 4.3 s). A file an earlier run of the 
 moved is recognised at its new place and counted as sorted; one the run does not know
 (added since), or in a protected or `leave` folder, is left and counted; one the plan
 leaves for another reason (a folder the user named) moves: the user picked it. Nothing
-to move: no run at all.
+to move: no run at all. A file the plan does not know (imported since) gets a row of its
+own for this move (`plan_newcomers`, 0452): the engine's root, the page's folder.
 """
 
 from __future__ import annotations
@@ -17,8 +18,6 @@ from __future__ import annotations
 from dataclasses import asdict
 from typing import TYPE_CHECKING
 
-from media_hygiene.actions.sort_resume import moved_targets
-from media_hygiene.classify.models import SortReason
 from media_hygiene.classify.page_decisions import (
     FileDecision,
     PageDecisions,
@@ -31,7 +30,8 @@ from media_hygiene.classify.workbook.reader import read_edits
 from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import NullProgress
-from media_hygiene.services.group_sort_models import Counted, GroupSorted, Matched
+from media_hygiene.services.group_match import match_group
+from media_hygiene.services.group_sort_models import Counted, GroupSorted
 from media_hygiene.services.page_choices import page_decisions, page_file
 from media_hygiene.services.sort import SortService
 from media_hygiene.services.sort_event import only_rows
@@ -63,7 +63,7 @@ def sort_group(
     service.ensure_ready()  # refused before anything is written: no `/journal`, `:ro`
     workbook = find_workbook(runtime, None)
     plan_file, plan = plan_of(runtime, workbook)
-    found = _match(runtime, plan, folders)
+    whole, found = match_group(runtime, plan, folders)
     counted: Counted = {
         "unknown": found.unknown,
         "fixed": found.fixed,
@@ -73,17 +73,16 @@ def sort_group(
         return GroupSorted("", 0, 0, intact=True, **counted)
     edits = read_edits(workbook, plan)
     chosen = _choose((plan_file, plan, edits), found.rows, category)
-    inputs = inputs_of(workbook, plan, overlay(edits, chosen))
+    inputs = inputs_of(workbook, whole, overlay(edits, chosen))
     prepared = service.prepare(only_rows(inputs, frozenset(found.rows)))
     if not prepared.plan.groups:
         return GroupSorted("", 0, 0, intact=True, **counted)
     result = service.execute(prepared, lambda: False)
-    done = result.manifest
     return GroupSorted(
         result.run_id,
-        done.moved,
-        done.verified,
-        done.intact,
+        result.manifest.moved,
+        result.manifest.verified,
+        result.manifest.intact,
         **counted,
         links=(*result.links.lines, *result.links.problems),
     )
@@ -105,40 +104,6 @@ def sorted_group(
     return asdict(sort_group(runtime, folders, category))
 
 
-def _match(
-    runtime: Runtime, plan: ClassifyPlan, folders: Mapping[Path, str]
-) -> Matched:
-    """Find the plan's row of each file of the group, where it is now.
-
-    Args:
-        runtime: Mount points (host paths), the journal (rows moved since).
-        plan: The latest classify plan.
-        folders: Container path → its folder.
-
-    Returns:
-        The rows to move, and the files counted apart.
-    """
-    by_host = {row.path: row for row in plan.rows}
-    moved = moved_targets(runtime.locations.journal_dir, plan.plan_id)
-    now = {runtime.mapper.to_host(path): row for row, path in moved.items()}
-    rows: dict[str, str] = {}
-    already = fixed = 0
-    for path, folder in folders.items():
-        host = runtime.mapper.to_host(path)
-        if host in now:
-            already += 1
-            continue
-        row = by_host.get(host)
-        if row is None:
-            continue
-        if row.reason is SortReason.LEFT_AS_IS:  # protected, `leave`: never moved
-            fixed += 1
-        else:
-            rows[row.id] = folder
-    unknown = len(folders) - len(rows) - already - fixed
-    return Matched(rows, already, fixed, unknown)
-
-
 def _choose(
     read: tuple[Path, ClassifyPlan, Edits], rows: Mapping[str, str], category: str
 ) -> PageDecisions:
@@ -146,7 +111,7 @@ def _choose(
 
     Args:
         read: The plan's file, the plan, the workbook's edits.
-        rows: Row id → its folder.
+        rows: Row id → its folder; the rows of this move only (0452) are left out.
         category: The rule's category.
 
     Returns:
@@ -156,6 +121,7 @@ def _choose(
         DecisionsError: The choices did not read back as written.
     """
     plan_file, plan, edits = read
+    own = {row.id for row in plan.rows}
     base = page_decisions(plan_file, plan)
     decided = {
         row: FileDecision(
@@ -165,6 +131,7 @@ def _choose(
             category=category,
         )
         for row, folder in rows.items()
+        if row in own
     }
     kept = tuple(item for item in base.files if item.row not in decided)
     target = page_file(plan_file)

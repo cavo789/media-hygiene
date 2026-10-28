@@ -52,7 +52,7 @@ def try_rule(
     Returns:
         By container path, where each file would go.
     """
-    files = _inputs(runtime, connection, asked.files)
+    files = index_inputs(runtime, connection, asked.files)
     settings = runtime.settings.classify
     rules = tried_rules(written_rules(runtime), asked.rule, asked.replaces)
     scope = with_people(run_scope(runtime, None), runtime)
@@ -118,7 +118,7 @@ def written_rules(runtime: Runtime) -> tuple[ClassifyRule, ...]:
     return read_rules(config) if config.is_file() else runtime.settings.classify.rules
 
 
-def _inputs(
+def index_inputs(
     runtime: Runtime, connection: sqlite3.Connection, files: Sequence[PhotoVersion]
 ) -> tuple[MediaInput, ...]:
     """What `classify` needs of the files, from the index.
