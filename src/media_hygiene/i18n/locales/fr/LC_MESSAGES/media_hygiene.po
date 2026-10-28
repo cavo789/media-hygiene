@@ -824,6 +824,16 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"A phone that says the connection is not private: install the PC's "
+"certificate first, from {steps}. A phone paired on the home page needs no"
+" code."
+msgstr ""
+"Un téléphone qui dit que la connexion n'est pas privée : installez d'abord le "
+"certificat du PC, depuis {steps}. Un téléphone appairé sur la page d'accueil "
+"n'a pas besoin de code."
+
+#, python-brace-format
+msgid ""
 "A photo changed in place by another program? 'audit --full' reads every "
 "folder (done anyway for those listed {days} days ago)."
 msgstr ""

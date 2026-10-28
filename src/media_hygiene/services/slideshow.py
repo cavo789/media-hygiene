@@ -20,16 +20,15 @@ from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.ending import Ending, EndingDoor, serve_until_ended
 from media_hygiene.review.lan import lan_access
 from media_hygiene.review.lan_app import LAN_PATH
+from media_hygiene.review.lan_phones import phone_book
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.page_header import headed_page
 from media_hygiene.search.pictures import Pictures
-from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.services.search import open_search
 from media_hygiene.services.slideshow_map import map_tiles
 from media_hygiene.services.slideshow_pick import Pick, picked_slides
-from media_hygiene.services.slideshow_say import say_slideshow
+from media_hygiene.services.slideshow_say import announce_slideshow
 from media_hygiene.slideshow.app import (
-    SCREEN_PATH,
     SCREENS_PATH,
     SHOW_PATH,
     SLIDES_PATH,
@@ -50,6 +49,7 @@ from media_hygiene.slideshow.screen_jpeg import ScreenJob
 from media_hygiene.slideshow.screens import Screens
 from media_hygiene.slideshow.show import Show
 from media_hygiene.slideshow.slides import Timing
+from media_hygiene.slideshow.tv_door import SCREEN_PATH, TvDoor
 
 if TYPE_CHECKING:
     from concurrent.futures import Executor
@@ -115,11 +115,15 @@ def serve_slideshow(runtime: Runtime, start: ShowStart) -> int:
         show = Show(picked.slides, Timing(settings.interval_seconds))
         with runtime.executor_factory() as executor:
             app = _app(runtime, show, _Serving(search, executor, start.port))
-            ready = partial(_announce, runtime, app.door)
+            ready = partial(announce_slideshow, runtime, app.door)
             with contextlib.suppress(KeyboardInterrupt):
                 ending = Ending()
                 asyncio.run(
-                    serve_until_ended(EndingDoor(app, ending), start.port, ready)
+                    serve_until_ended(
+                        EndingDoor(app, ending, plain=TvDoor(app).handle),
+                        start.port,
+                        ready,
+                    )
                 )
     return len(picked.slides)
 
@@ -177,24 +181,6 @@ def _app(runtime: Runtime, show: Show, serving: _Serving) -> SlideshowApp:
         ScreenJob(runtime.settings.slideshow.screen_px, previews),
         serving.executor,
     )
-    return SlideshowApp(
-        Desk(show, screens, Changes()), Door(lan, screens), pages, pictures
-    )
-
-
-def _announce(runtime: Runtime, door: Door, port: int) -> None:
-    """Say where the remote is, and how the TV and the phones open the show.
-
-    Args:
-        runtime: Settings, mount points and output.
-        door: The run's access to the home network, if any.
-        port: The port listened on, inside the container.
-    """
-    runtime.output.success(
-        _(
-            "Slideshow ready: the remote at {url} on this PC. Ctrl+C stops it; your "
-            "photos are not changed."
-        ).format(url=page_url(port))
-    )
-    address_tip(runtime.output, port)
-    say_slideshow(runtime.output, door.lan)
+    secure = lan is not None and lan.secure  # phones paired for good (0431)
+    door = Door(lan, screens, phones=phone_book(secure=secure))
+    return SlideshowApp(Desk(show, screens, Changes()), door, pages, pictures)

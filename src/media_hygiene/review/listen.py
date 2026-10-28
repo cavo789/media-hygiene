@@ -3,7 +3,8 @@
 The PC's door listens on the page's port, the home network's on `LAN_DOOR_PORT` only
 when `mh --lan` asked for it: every request of the second one is marked `Door.LAN`,
 so that no header can make it pass for the PC. With the certificates of `/lan` (0430)
-that door is HTTPS, and a plain HTTP one beside it hands out the authority to install.
+that door is HTTPS, and a plain HTTP one beside it hands out the authority to install,
+and serves the TV's pages under the slideshow (a TV cannot install it).
 """
 
 from __future__ import annotations
@@ -55,12 +56,15 @@ def lan_handle(handle: Handle) -> Handle:
 
 
 @contextlib.asynccontextmanager
-async def listening(handle: Handle, port: int) -> AsyncIterator[asyncio.Server]:
+async def listening(
+    handle: Handle, port: int, plain: Handle | None = None
+) -> AsyncIterator[asyncio.Server]:
     """Listen on the PC's door, and on the home network's under `mh --lan`.
 
     Args:
         handle: Answers a request.
         port: The page's port (0: any free one).
+        plain: Answers the plain HTTP door beside the HTTPS one, but the authority.
 
     Yields:
         The PC's server (its port is the page's).
@@ -87,7 +91,9 @@ async def listening(handle: Handle, port: int) -> AsyncIterator[asyncio.Server]:
             folder = lan_folder()
             if secure is not None and folder is not None:
                 origin = f"https://{address}:{port}"
-                await stack.enter_async_context(await _ca_door(CaDoor(folder, origin)))
+                screen = None if plain is None else lan_handle(plain)
+                door = CaDoor(folder, origin, screen)
+                await stack.enter_async_context(await _ca_door(door))
         yield server
 
 

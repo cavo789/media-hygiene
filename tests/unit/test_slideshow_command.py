@@ -23,7 +23,7 @@ from media_hygiene.constants import ExitCode
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.index.schema import prepare
 from media_hygiene.review.lan import LanAccess
-from media_hygiene.services import slideshow
+from media_hygiene.services import slideshow_say
 from media_hygiene.services.slideshow import ShowStart, serve_slideshow
 from media_hygiene.services.slideshow_pick import Pick
 from media_hygiene.services.slideshow_say import say_slideshow
@@ -116,7 +116,9 @@ def test_the_show_is_served_until_the_page_stops_it(
     runtime = make_runtime(make_locations(tmp_path))
     _library(runtime.locations)
     ports: queue.Queue[int] = queue.Queue()
-    monkeypatch.setattr(slideshow, "address_tip", lambda _output, port: ports.put(port))
+    monkeypatch.setattr(
+        slideshow_say, "address_tip", lambda _output, port: ports.put(port)
+    )
     shown: queue.Queue[int] = queue.Queue()
     start = ShowStart(Pick(folder=_FOLDER), 0)
     thread = threading.Thread(target=lambda: shown.put(serve_slideshow(runtime, start)))

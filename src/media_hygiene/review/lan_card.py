@@ -14,6 +14,7 @@ import segno
 from media_hygiene.cli.menu_entry import Doc
 from media_hygiene.docs.served import served_url
 from media_hygiene.review.doors import LAN_CA_PORT
+from media_hygiene.review.lan_ca_page import PHONE_STEPS
 from media_hygiene.review.lan_phones_api import FORGET_PATH, PHONES_PATH
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.serving import json_response
@@ -32,17 +33,18 @@ CA_DOC: Final = Doc(
 )
 
 
-def lan_response(lan: LanAccess, *, phones: bool = False) -> Response:
+def lan_response(lan: LanAccess, *, phones: bool = False, tv: bool = False) -> Response:
     """What the PC's page shows to pair a phone: the address, the code, the QR code.
 
     Args:
         lan: The run's access.
         phones: Phones are paired for good: where the page lists and forgets them.
+        tv: The slideshow's: under HTTPS, the TV's address on the plain door.
 
     Returns:
         JSON: `url`, `code`, `qr` (an SVG drawing of the pairing address), under
         HTTPS `ca`: where a phone installs the PC's authority first (0430), and with
-        `phones`, the paths `phones` and `forget` (0431).
+        `phones`, the paths `phones` and `forget` (0431); with `tv` under HTTPS, `tv`.
     """
     qr = segno.make(lan.pair_url, error="m").svg_inline(
         scale=_QR_SCALE, border=_QR_BORDER, dark="#000", light="#fff"
@@ -50,7 +52,10 @@ def lan_response(lan: LanAccess, *, phones: bool = False) -> Response:
     url = f"{lan.origin}{PAGE_PATH}"
     card: dict[str, object] = {"url": url, "code": lan.shown_code, "qr": qr}
     if lan.secure:
-        card["ca"] = f"http://{lan.address}:{LAN_CA_PORT}/"
+        plain = f"http://{lan.address}:{LAN_CA_PORT}"
+        card["ca"] = f"{plain}{PHONE_STEPS if tv else '/'}"
+        if tv:
+            card["tv"] = f"{plain}/"
         card["caHelp"] = served_url(CA_DOC)
     if phones:
         card |= {"phones": PHONES_PATH, "forget": FORGET_PATH}

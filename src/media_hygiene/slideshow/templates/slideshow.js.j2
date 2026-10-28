@@ -153,7 +153,8 @@
     fetch(LAN_PATH, { cache: "no-store" })
       .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
       .then((lan) => {
-        document.getElementById("screenUrl").textContent = new URL(SCREEN_PATH, lan.url).href;
+        // Under HTTPS the TV comes by the plain door: it cannot trust the PC's authority.
+        document.getElementById("screenUrl").textContent = lan.tv || new URL(SCREEN_PATH, lan.url).href;
         document.getElementById("phoneUrl").textContent = lan.url;
         document.getElementById("phoneCode").textContent = lan.code;
         document.getElementById("qr").innerHTML = lan.qr;

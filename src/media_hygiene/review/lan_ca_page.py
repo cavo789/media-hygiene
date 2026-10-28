@@ -2,7 +2,8 @@
 
 A phone that does not trust the PC's authority yet cannot open the HTTPS page. This
 door, published on `LAN_CA_PORT`, serves only the steps to install it and `ca.crt`
-(never `ca.key`); every other address goes on to the HTTPS page.
+(never `ca.key`); every other address goes on to the HTTPS page. Under the slideshow
+it serves the TV's pages instead (`slideshow/tv_door`), the steps at `PHONE_STEPS`.
 """
 
 from __future__ import annotations
@@ -16,12 +17,14 @@ from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.lan_tls import CA_CERT
 
 if TYPE_CHECKING:
+    from collections.abc import Awaitable, Callable
     from pathlib import Path
 
     from media_hygiene.review.http import Request
 
 CA_DOWNLOAD: Final = "/media-hygiene-ca.crt"
 _STEPS_PATH: Final = "/"
+PHONE_STEPS: Final = "/phone"  # the steps, when `/` is the TV's (slideshow)
 _PACKAGE: Final = "media_hygiene.review"
 _TEMPLATE: Final = "lan_ca.html.j2"
 
@@ -32,6 +35,7 @@ class CaDoor:
 
     folder: Path  # the `/lan` folder
     secure_origin: str  # e.g. `https://192.168.1.20:8088`
+    screen: Callable[[Request], Awaitable[Response]] | None = None  # the TV's pages
 
     async def handle(self, request: Request) -> Response:
         """Answer a phone on the plain HTTP door.
@@ -40,13 +44,18 @@ class CaDoor:
             request: The request.
 
         Returns:
-            The steps, the authority, or 303 to the same address in HTTPS.
+            The steps, the authority, the TV's pages, or 303 to the same address in
+            HTTPS.
         """
         if request.method != "GET":
             return Response(HTTPStatus.METHOD_NOT_ALLOWED)
         if request.path == CA_DOWNLOAD:
             body = (self.folder / CA_CERT).read_bytes()
             return Response(HTTPStatus.OK, body, ContentType.CA_CERT)
+        if self.screen is not None:  # the slideshow: every other path is the TV's
+            if request.path == PHONE_STEPS:
+                return steps_page(self.secure_origin)
+            return await self.screen(request)
         if request.path == _STEPS_PATH:
             return steps_page(self.secure_origin)
         location = f"Location: {self.secure_origin}{request.path}"

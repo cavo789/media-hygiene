@@ -75,8 +75,10 @@ l'album (`--album … --lan`). Le lancer depuis un téléphone appairé n'est pa
    **Le navigateur de la télé** (sur une Samsung *Smart Hub* : l'application **Internet**)
    fonctionne aussi, plus lentement, et ne montre que les photos : les vidéos demandent le
    navigateur du Chromecast.
-2. Tapez l'adresse que donne la fenêtre, par exemple `http://192.168.1.20:8088/screen`. C'est du
-   `http` simple, sur votre réseau de la maison : pas de certificat, rien sur Internet.
+2. Tapez l'adresse que donne la fenêtre, par exemple `http://192.168.1.20:8089/` (port **8089** :
+   la télécommande du téléphone est sur 8088, en `https`). C'est du `http` simple, sur votre
+   réseau de la maison : une télé ne peut pas installer le certificat du PC, et rien ne part sur
+   Internet. Cette adresse ne sert que les pages de la télé, jamais la télécommande.
 3. **Mettez-la en favori** : la fois suivante, le favori suffit (voyez
    [Une adresse stable](#une-adresse-stable)).
 4. La télé affiche un code de six chiffres. Sur la télécommande du téléphone, tapez-le dans
@@ -89,8 +91,13 @@ le téléphone le tape.
 
 ### Sur le téléphone
 
-Ouvrez l'adresse que donne la fenêtre (ou scannez le QR code de la page du PC) et tapez le code
-de huit chiffres : la télécommande s'ouvre. Ensuite :
+Ouvrez l'adresse que donne la fenêtre, en `https`, par exemple `https://192.168.1.20:8088/` (ou
+scannez le QR code de la page du PC) et tapez le code de huit chiffres : la télécommande s'ouvre.
+Un téléphone déjà appairé sur la [page d'accueil](home.md#depuis-un-téléphone-du-wi-fi-de-la-maison--mh---lan)
+l'ouvre sans code, depuis son navigateur ou l'application installée. Un téléphone qui dit que la
+connexion n'est pas privée installe d'abord le certificat du PC, une fois : la fenêtre dit où
+(`http://192.168.1.20:8089/phone`), les étapes sont celles de la
+[page d'accueil](home.md#une-fois-par-téléphone--installer-le-certificat). Ensuite :
 
 - **◀** et **▶** : les photos précédente et suivante ; **▶ Lecture** / **❚❚ Pause**, et
   **Chaque photo** : combien de temps une photo reste pendant la lecture.
@@ -131,7 +138,7 @@ Ctrl+C dans la fenêtre PowerShell arrête le diaporama ; la télé garde sa der
 ## Une adresse stable
 
 Le favori de la télé nomme l'adresse du PC sur votre réseau de la maison et le port. Le port est
-fixe (`[review] port`, 8088). L'adresse est donnée par votre box, et peut changer avec le temps :
+fixe (`[review] port`, 8088 ; celui de la télé, 8089). L'adresse est donnée par votre box, et peut changer avec le temps :
 dans la page de la box, **réservez** l'adresse du PC (souvent *DHCP › Bail statique* ou
 *Réservation d'adresse*, par l'adresse MAC du PC). L'outil ne le fait pas pour vous.
 
