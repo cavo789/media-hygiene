@@ -44,3 +44,33 @@ message. Disable instead, reserve room (fixed widths, `min-height`), long text i
   unchanged (test). Photos visible above the fold before/after: measured on `demo`.
 - Same keys and layout on the other pick pages (skill's tests); i18n FR complete; docs EN/FR;
   say that `docs_screenshots` must run.
+
+## Status — PARTIAL (2026-10-29)
+
+### Done
+- Bar = two fixed lines (`search.html.j2`: flex with a `::before` break and `order`): line 1 where
+  you are (ellipsis) · 📺 · Sort by · S/M/L (`localStorage` `mh-search-size`); line 2 the actions
+  always shown, greyed while nothing is picked (`pick_grid.js.j2` disables `unpick`/`setAside`/
+  `invert`), album ➕ ➖ 📺 Share ✉️ Send (`album_short` in `album_bar.html.j2`), 📂 Event…, the
+  set aside line, ✅ Apply (`apply_short`, `apply_more` in `apply_now.html.j2`; hidden = greyed in
+  place). The album's said lines float under the bar (absolute), never push the grid.
+- Emojis on the pick buttons (🗑 ↩ 🔀) and keys in their tooltips (shared `pick_acting.html.j2`).
+- Left column: Show (All/📷/🎬) and Sorted (All/sorted/not yet) segmented (hidden inputs keep
+  `$("kind")`/`$("sorting")`); *Words of* select gone, `folder:`/`name:` syntax documented in the
+  page help and the docs; `pick_order.html.j2` `order_kind = false`.
+- Dates on one line + 📅 ▾ menu (Today/Month/Year/✕ Clear); 🔍 Search sticky at the form's bottom.
+- ⌨ panel: no 🔒 line on search (→ Apply tooltip, docs); I moved to *More keys* (all pages);
+  *More keys* floats over the page, Esc closes it (`page_frame.html.j2`, `keys.css.j2`).
+- Cards: name/folder/caption one line with ellipsis + `title`; words max 2 lines, then `+N`
+  (6 shown); S = photo only, L = everything.
+- Load on scroll (IntersectionObserver on `#moreLine`, the button kept for the keyboard).
+- Tests: `tests/unit/test_search_fixed_bar.py`; docs EN/FR `commands/search.md`, `status.md`.
+
+### Not done
+- Item 6, active filters as chips above the grid (« 3 filters · ✕ clear all »).
+  **Reason:** the frame's contract allows nothing between the bar and the grid; it needs a place
+  decided (a third bar line, or in line 1 next to the count) — left for a follow-up.
+- Acceptance test in headless Chromium (grid `getBoundingClientRect` unchanged at 1920/1280 when
+  picking, searching, applying) and the photos-above-the-fold count on `demo`.
+  **Reason:** needs the `mddoc-playwright` image run; not done in this unattended run.
+- `docs_screenshots` must run (search page captures are stale).

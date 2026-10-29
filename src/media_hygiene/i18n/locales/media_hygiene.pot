@@ -1081,6 +1081,9 @@ msgstr ""
 msgid "Any folder"
 msgstr ""
 
+msgid "Apply"
+msgstr ""
+
 msgid "Apply it? (y/n)"
 msgstr ""
 
@@ -1564,6 +1567,9 @@ msgid "Clean {run_id}"
 msgstr ""
 
 msgid "Cleaning"
+msgstr ""
+
+msgid "Clear"
 msgstr ""
 
 msgid "Click the face of the person to set aside."
@@ -2461,6 +2467,9 @@ msgid ""
 "Events: photos taken less than merge_gap_hours apart belong together; "
 "fewer than min_event_size photos are not an event, and fall back to their"
 " month."
+msgstr ""
+
+msgid "Event…"
 msgstr ""
 
 #, python-format
@@ -3650,6 +3659,9 @@ msgid ""
 "interface."
 msgstr ""
 
+msgid "Large: the whole caption and every word"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Larger areas not listed (regions, countries): {count}. A 'trip' rule "
@@ -3957,6 +3969,9 @@ msgstr ""
 msgid "Media files scanned"
 msgstr ""
 
+msgid "Medium"
+msgstr ""
+
 msgid "Menu of Media Hygiene"
 msgstr ""
 
@@ -4064,9 +4079,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Move to an event"
-msgstr ""
-
-msgid "Move to an event…"
 msgstr ""
 
 #, python-brace-format
@@ -5207,6 +5219,11 @@ msgid ""
 "before you apply."
 msgstr ""
 
+msgid ""
+"One source only: write its name and a colon before the word "
+"(folder:durbuy, name:anniv*):"
+msgstr ""
+
 msgid "One thing only is for good:"
 msgstr ""
 
@@ -5821,6 +5838,9 @@ msgstr ""
 msgid ""
 "Purged on {date}: it is nowhere else. Deleted from the phone, it is lost "
 "for good."
+msgstr ""
+
+msgid "Put aside"
 msgstr ""
 
 msgid "Put back"
@@ -6560,6 +6580,9 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
+msgid "Search (Enter; / comes back to Words)"
+msgstr ""
+
 msgid "Search OpenStreetMap"
 msgstr ""
 
@@ -6759,6 +6782,9 @@ msgid "Set aside on {date}, still recoverable with mh undo {run} until mh purge.
 msgstr ""
 
 msgid "Set aside the picked files"
+msgstr ""
+
+msgid "Set aside the picked files (Delete)"
 msgstr ""
 
 #, python-brace-format
@@ -6965,6 +6991,9 @@ msgstr[1] ""
 msgid ""
 "Slideshow ready: the remote at {url} on this PC. Ctrl+C stops it; your "
 "photos are not changed."
+msgstr ""
+
+msgid "Small: the photos only"
 msgstr ""
 
 msgid "Software"
@@ -7289,6 +7318,9 @@ msgid "Take out of the album"
 msgstr ""
 
 msgid "Take out of the set aside"
+msgstr ""
+
+msgid "Take out of the set aside (Backspace in the large view)"
 msgstr ""
 
 #, python-brace-format
@@ -8667,6 +8699,9 @@ msgstr ""
 msgid "Three things to know before you start"
 msgstr ""
 
+msgid "Thumbnail size"
+msgstr ""
+
 msgid "Tick an extension or a folder first."
 msgstr ""
 
@@ -9282,9 +9317,6 @@ msgid ""
 "Words left out because they describe nearly every photo. Written here, "
 "the list replaces the built-in one (French and English): this is the "
 "whole built-in list, edit it rather than starting from a few words."
-msgstr ""
-
-msgid "Words of"
 msgstr ""
 
 msgid "Words of folders, names, dates and places"
@@ -10819,6 +10851,9 @@ msgstr ""
 msgid "not sorted yet."
 msgstr ""
 
+msgid "not yet"
+msgstr ""
+
 msgid "nothing"
 msgstr ""
 
@@ -11174,6 +11209,9 @@ msgid "sort the burst series with the keyboard, in 'review'."
 msgstr ""
 
 msgid "sort this event now: move its files, the others left for later"
+msgstr ""
+
+msgid "sorted"
 msgstr ""
 
 msgid "sorted (year, then year-month)"

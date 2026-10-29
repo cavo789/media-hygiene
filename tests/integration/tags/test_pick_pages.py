@@ -20,7 +20,6 @@ _SHARED = (
     *PICK_PARTS,
     "#bar #albumBar { flex-basis: 100%",  # pick_grid.css.j2: the bar keeps its height
     '<select id="order">',  # pick_order.html.j2: Sort by (0347)
-    '<select id="kind">',  # and Show
 )
 
 
@@ -40,6 +39,10 @@ def test_both_pages_are_built_from_the_same_parts(
         for part in _SHARED:
             assert page.count(part) == 1, part
         assert page.count('"use strict";') == 1
+        # Show: a select on the folder view, buttons in the search's left column (0463).
+        assert (
+            page.count('<select id="kind">') + page.count('id="kind" value="all"') == 1
+        )
 
 
 def test_the_search_keeps_its_field_on_the_left_and_one_bar_above(

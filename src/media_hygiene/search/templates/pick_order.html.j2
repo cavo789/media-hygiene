@@ -1,7 +1,8 @@
 {# **Sort by** and **Show**, the same on the folder view and the search (0347), in the bar
    after the picking. `order_best` (the search): *best match* first, the default; `order_rate`
    (the folders): the videos worst compressed first. The page's script reads `#order` and
-   `#kind`, and lists the files again when they change. #}
+   `#kind`, and lists the files again when they change. `order_kind = false` (the search, 0463): *Show* is
+   in its left column instead. #}
     <label>{{ _("Sort by") }}
       <select id="order">
         {% if order_best | default(false) %}<option value="best">{{ _("best match") }}</option>{% endif %}
@@ -10,9 +11,11 @@
         <option value="size">{{ _("size, largest first") }}</option>
         {% if order_rate | default(false) %}<option value="rate" title="{{ _('The videos worst compressed for their length first: the best to lighten') }}">{{ _("bit rate (heaviest files)") }}</option>{% endif %}
       </select></label>
+{% if order_kind | default(true) %}
     <label>{{ _("Show") }}
       <select id="kind">
         <option value="all">{{ _("All") }}</option>
         <option value="photos">{{ _("Photos") }}</option>
         <option value="videos">{{ _("Videos") }}</option>
       </select></label>
+{% endif %}

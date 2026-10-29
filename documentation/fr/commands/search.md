@@ -65,8 +65,8 @@ régulière invalide est signalée sous le champ.
 - **⚖ Fichiers les plus lourds** (au-dessus des dossiers) : tous les dossiers, sans mot, les
   vidéos d'abord sauf si **Afficher** dit autre chose, les plus grosses d'abord — ou **Trier par :
   débit**, les vidéos les moins bien compressées pour leur durée (les meilleures à alléger avec
-  [`shrink`](shrink.md)). La vignette d'une vidéo dit sa durée, son débit et son codec. **En
-  montrer plus**, sous la grille, en ajoute autant.
+  [`shrink`](shrink.md)). La vignette d'une vidéo dit sa durée, son débit et son codec. Arrivé au
+  bas de la grille, les fichiers suivants se chargent d'eux-mêmes.
 - **Dans un dossier** : sous le formulaire, l'arbre de vos dossiers, comme sur la vue des dossiers
   (ouvert à la demande). Un clic limite la recherche à ce dossier et en dessous, **sans taper de
   mot** : des mots vides listent tout le dossier ; ✕ à côté de son nom recherche à nouveau dans
@@ -82,8 +82,20 @@ régulière invalide est signalée sous le champ.
   ajoute ou en retire un ; Maj+clic choisit tous les fichiers depuis le dernier cliqué ; un
   rectangle tracé à la souris choisit ce qu'il touche (avec Ctrl, il ajoute) ; Ctrl+A tous les
   fichiers affichés, puis **Choisir les N fichiers trouvés** dans la barre prend tous les fichiers
-  que la recherche trouve, pas seulement les 240 affichés ; **Inverser la sélection** (ou I) choisit
-  les autres.
+  que la recherche trouve, pas seulement les 240 affichés ; **🔀 Inverser la sélection** (ou I)
+  choisit les autres.
+- **La barre** a deux lignes qui ne bougent jamais, quoi qu'on choisisse ou trouve : en haut, où
+  vous en êtes (le nombre), **📺 Sur la télé**, **Trier par** et la taille des vignettes **S**
+  (les photos seules), **M**, **L** (tous les mots), gardée pour ce navigateur ; en dessous, que
+  faire des fichiers choisis — grisé tant qu'aucun ne l'est : **🗑 Mettre de côté**,
+  **🔀 Inverser**, l'album avec **➕** et **➖**, **📺 Partager**, **✉️ Envoyer**,
+  **📂 Événement…**, puis ce qui est mis de côté et **✅ Appliquer**. Pointez un bouton pour son
+  nom complet et sa touche. **✅ Appliquer** le rappelle aussi : 🔒 rien ne bouge sans votre GO ;
+  chaque déplacement est journalisé, `undo` le défait. Sur une vignette, le nom, le dossier et la
+  légende tiennent sur une ligne chacun (pointez-les pour le texte entier), les mots sur deux
+  lignes puis *+N*.
+- **⌨ Clavier** : le panneau liste les gestes principaux ; **Plus de touches** s'ouvre par-dessus
+  la page (Échap le ferme), le formulaire au-dessus ne quitte donc jamais l'écran.
 - **Regarder** : Entrée ou un double clic montre la photo en grand (avec un lien vers
   l'original) ; ← → (sur un téléphone, un glissement) la précédente ou la suivante, Suppr la met de côté puis montre la suivante, F
   plein écran, ? toutes les touches, Échap la ferme. **👤 Mettre une personne de côté** trouve
@@ -92,12 +104,13 @@ régulière invalide est signalée sous le champ.
 
 - **Une période** : *Du* et *Au* sont des calendriers, un jour chacun, inclus ; un seul est une
   période d'un jour. Le jour est celui de la prise de vue, tel que `classify` le date. *Du*
-  choisi, *Au* prend le même jour s'il est vide ou plus tôt. En dessous, un clic cherche
-  **📍 Aujourd'hui**, **🗓️ Mois** (ce mois-ci), **📆 Année** (cette année) ; **✕** vide les deux.
-- **Trier par** et **Afficher**, dans la barre comme sur la [vue des dossiers](browse.md) :
+  choisi, *Au* prend le même jour s'il est vide ou plus tôt. À côté, le menu **📅 ▾** cherche
+  **📍 Aujourd'hui**, **🗓️ Mois** (ce mois-ci), **📆 Année** (cette année) ; **✕ Effacer** vide les
+  deux. **🔍 Chercher** reste en vue au bas du formulaire.
+- **Trier par**, dans la barre comme sur la [vue des dossiers](browse.md) :
   *meilleure correspondance* (par défaut ; la plus récente d'abord sans mots), *nom*, *date* (la
-  plus ancienne d'abord) ou *taille* (la plus grande d'abord) ; **Afficher** garde les photos ou
-  les vidéos seulement. La recherche trie et filtre avant de montrer ses premiers fichiers :
+  plus ancienne d'abord) ou *taille* (la plus grande d'abord) ; **Afficher**, dans la colonne de
+  gauche, garde **📷** les photos ou **🎬** les vidéos seulement. La recherche trie et filtre avant de montrer ses premiers fichiers :
   *Afficher : vidéos*, *Trier par : taille* donne les plus grosses vidéos trouvées. Chaque vignette
   dit sa date et sa taille.
 - **Quelle date** : `📷 2023-07-14` est le jour où la photo a été **prise**, écrit dans la photo
@@ -114,10 +127,10 @@ régulière invalide est signalée sous le champ.
 - **La durée d'une vidéo** est dans le coin de son aperçu, comme sur les sites de vidéos :
   `▶ 1:45`. Sous 3 secondes, le badge est rouge : un clip si court vaut rarement d'être gardé (le
   mettre de côté reste votre choix).
-- **Triées** : *toutes les photos*, *pas encore triées* ou *triées (année, puis année-mois)*, lu
+- **Triées** : *Tout*, *pas encore* ou *triées* (année, puis année-mois), lu
   dans les dossiers seuls ([la convention](../sort/04-classify.md#la-convention--année-mois-événement)) :
   une photo dans `2009\2009-11\…` est triée, où que soit cette paire de dossiers et quoi qui l'y
-  ait mise. *Pas encore triées*, puis choisir et **📂 Déplacer vers un événement…** : la page
+  ait mise. *Pas encore*, puis choisir et **📂 Événement…** : la page
   devient le moyen de trier ce qui reste, dossier après dossier.
 
 Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers
@@ -160,7 +173,7 @@ retirez celles qui ne décident rien, changez une règle de nom de dossier en da
 
 Pour un événement unique, une règle n'est pas nécessaire : cherchez ses jours (ou des mots),
 **choisissez** les photos (comme partout : clic, Ctrl, Maj, un rectangle, Ctrl+A), puis
-**📂 Déplacer vers un événement…** dans la barre. Tapez le nom de l'événement, ou choisissez un
+**📂 Événement…** dans la barre. Tapez le nom de l'événement, ou choisissez un
 de vos dossiers d'événement que le champ liste (ceux déjà dans le mois où vont les photos,
 les sous-dossiers écrits `France\Morzine`) ; `\` crée aussi des sous-dossiers d'un nouveau nom. La
 ligne en dessous montre le dossier créé, tel que l'Explorateur le montrera, sous l'année
@@ -322,11 +335,11 @@ crée, en seconds noms (liens physiques), sans copie.
 
 ## D'où vient chaque mot
 
-Le menu *Mots de* limite une recherche à une source ; taper son préfixe fait la même chose
-(`place:durbuy`). Une source qui n'a encore aucun mot affiche *— aucun pour l'instant* dans le
-menu et dans *Comment écrire une recherche*.
+Son préfixe devant un mot limite la recherche à une source : `place:durbuy`, `folder:durbuy`,
+`name:anniv*`. Une source qui n'a encore aucun mot affiche *— aucun pour l'instant* dans
+*Comment écrire une recherche*.
 
-| Mots de | Préfixe | Ce qu'elle contient |
+| Source | Préfixe | Ce qu'elle contient |
 |---|---|---|
 | toutes les sources | | N'importe laquelle (par défaut). |
 | vus par le modèle | `vision:` | Les mots que le modèle de vision a donnés à ce que montre la photo (🤖 [`tags`](tags.md)). |
@@ -353,7 +366,7 @@ dates, des lieux et des personnes.
 | `un vieil homme dans un jardin` | **Une phrase entière demande la recherche par le sens** (`tags --meaning`) ; sans elle, des mots seulement. | `jardin` ; ou lancez une fois 🤖 `tags --meaning` : les phrases marchent alors. |
 | `plage` pendant un `tags` | **Les mots du modèle arrivent dans la recherche à la fin du run** (ou après un seul Ctrl+C, qui écrit ceux des photos déjà décrites). | Attendez la fin de `tags`, ou un Ctrl+C. |
 
-Rien trouvé ? Moins de mots, le début d'un mot (`anniv*`), une autre source dans *Mots de*, ou
+Rien trouvé ? Moins de mots, le début d'un mot (`anniv*`), le préfixe d'une autre source (`folder:`), ou
 la recherche par le sens. La page garde ces conseils courts, dans *Comment écrire une
 recherche*.
 

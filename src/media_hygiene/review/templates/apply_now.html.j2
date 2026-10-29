@@ -7,10 +7,11 @@
    seen gone, then answering again, on the section the home page was left from (0280, kept
    for this tab in sessionStorage by home_run.js.j2). Served by the home server that mh keeps
    up (0363), the answer is `kept`: the step runs in the window of mh, this page stays open,
-   follows it on `follow` (`GET /api/step`), then loads again with its end said. #}
+   follows it on `follow` (`GET /api/step`), then loads again with its end said. The search's
+   fixed bar (0463) sets `apply_short` (✅ Apply) and `apply_more` (the 🔒 line, in the tooltip). #}
 {% if apply_offered %}
 <span id="applyBar">
-  <button id="applyNow" type="button" hidden title="{{ _('mh moves the files set aside to the quarantine in its window (it asks first).') }}">{{ _("Apply now") }}</button>
+  <button id="applyNow" type="button" hidden title="{{ _('mh moves the files set aside to the quarantine in its window (it asks first).') }}{% if apply_more is defined %} {{ apply_more }}{% endif %}">{% if apply_short | default(false) %}✅ {{ _("Apply") }}{% else %}{{ _("Apply now") }}{% endif %}</button>
   <span id="applySaid" role="status"></span>
 </span>
 <script>

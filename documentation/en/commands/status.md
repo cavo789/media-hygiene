@@ -61,7 +61,7 @@ Under the title *Where you are*:
   is sorted, one directly in `year/year-month` was looked at (nothing special), anything else is
   left — whoever put it there, a move in Explorer included (after the next audit). Your
   protected folders and backups are counted apart. Then **the ten largest folders left**, with
-  `mh search --folder "<folder>"` to open one in the search page, pick, and *Move to an event…*;
+  `mh search --folder "<folder>"` to open one in the search page, pick, and *📂 Event…*;
 
 then **one** next step, as a full command ready to paste. A quarantine older than 30 days is the
 first thing it suggests to [`purge`](purge.md).

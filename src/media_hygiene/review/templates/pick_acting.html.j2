@@ -10,9 +10,9 @@
   <button id="unpick" class="plain" type="button" title="{{ _('Pick none') }}" aria-label="{{ _('Pick none') }}">✕</button>
   <strong id="picked"></strong>
   <button id="pickAll" class="plain" type="button" hidden></button>
-  <button id="setAside" type="button">{{ pick_add | default(_("Set aside the picked files")) }}</button>
-  <button id="takeBack" class="plain" type="button" hidden>{{ pick_remove | default(_("Take out of the set aside")) }}</button>
-  <button id="invert" class="plain" type="button" title="{{ _('Pick the others: the ones picked are left (I)') }}">{{ _("Invert the picking") }}</button>
+  <button id="setAside" type="button" title="{{ pick_add_title | default(_('Set aside the picked files (Delete)')) }}">{{ pick_add | default("🗑 " + _("Set aside the picked files")) }}</button>
+  <button id="takeBack" class="plain" type="button" hidden title="{{ _('Take out of the set aside (Backspace in the large view)') }}">{{ pick_remove | default("↩ " + _("Take out of the set aside")) }}</button>
+  <button id="invert" class="plain" type="button" title="{{ _('Pick the others: the ones picked are left (I)') }}">🔀 {{ _("Invert the picking") }}</button>
 </span>
 {% if tv_here | default(false) %}
 <button id="tvSend" class="plain" type="button" data-path="{{ albums_path }}"

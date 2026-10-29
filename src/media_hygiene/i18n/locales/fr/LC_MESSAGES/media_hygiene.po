@@ -1375,6 +1375,9 @@ msgstr "Toutes les dates"
 msgid "Any folder"
 msgstr "N'importe quel dossier"
 
+msgid "Apply"
+msgstr "Appliquer"
+
 msgid "Apply it? (y/n)"
 msgstr "L'appliquer ? (o/n)"
 
@@ -1931,6 +1934,9 @@ msgstr "Nettoyage {run_id}"
 
 msgid "Cleaning"
 msgstr "Nettoyage"
+
+msgid "Clear"
+msgstr "Effacer"
 
 msgid "Click the face of the person to set aside."
 msgstr "Cliquez sur le visage de la personne à mettre de côté."
@@ -3036,6 +3042,9 @@ msgstr ""
 "Événements : les photos prises à moins de merge_gap_hours d'écart vont "
 "ensemble ; moins de min_event_size photos ne font pas un événement, et "
 "retombent dans leur mois."
+
+msgid "Event…"
+msgstr "Événement…"
 
 #, python-format
 msgid ""
@@ -4473,6 +4482,9 @@ msgid ""
 "interface."
 msgstr "Langue des mots : \"en\", \"fr\", ou vide pour la langue de l'interface."
 
+msgid "Large: the whole caption and every word"
+msgstr "Grande : toute la légende et tous les mots"
+
 #, python-brace-format
 msgid ""
 "Larger areas not listed (regions, countries): {count}. A 'trip' rule "
@@ -4818,6 +4830,9 @@ msgstr "Media Hygiene {version} est disponible"
 msgid "Media files scanned"
 msgstr "Fichiers média analysés"
 
+msgid "Medium"
+msgstr "Moyenne"
+
 msgid "Menu of Media Hygiene"
 msgstr "Menu de Media Hygiene"
 
@@ -4951,9 +4966,6 @@ msgstr[1] "Déplacer ces {n} fichiers maintenant"
 
 msgid "Move to an event"
 msgstr "Déplacer vers un événement"
-
-msgid "Move to an event…"
-msgstr "Déplacer vers un événement…"
 
 #, python-brace-format
 msgid "Move {count} files into {folders} folders?"
@@ -6313,6 +6325,13 @@ msgstr ""
 "Une série à la fois, au clavier, dans le navigateur ; rien ne bouge avant"
 " « Appliquer »."
 
+msgid ""
+"One source only: write its name and a colon before the word "
+"(folder:durbuy, name:anniv*):"
+msgstr ""
+"Une seule source : écrivez son nom et deux-points avant le mot "
+"(folder:durbuy, name:anniv*) :"
+
 msgid "One thing only is for good:"
 msgstr "Une seule chose est définitive :"
 
@@ -7058,6 +7077,9 @@ msgid ""
 msgstr ""
 "Purgé le {date} : il n'est nulle part ailleurs. Supprimé du téléphone, il"
 " est perdu pour de bon."
+
+msgid "Put aside"
+msgstr "Mettre de côté"
 
 msgid "Put back"
 msgstr "Remettre"
@@ -7949,6 +7971,9 @@ msgstr "Captures d'écran et documents"
 msgid "Search"
 msgstr "Chercher"
 
+msgid "Search (Enter; / comes back to Words)"
+msgstr "Chercher (Entrée ; / revient aux Mots)"
+
 msgid "Search OpenStreetMap"
 msgstr "Chercher sur OpenStreetMap"
 
@@ -8188,6 +8213,9 @@ msgstr ""
 
 msgid "Set aside the picked files"
 msgstr "Mettre de côté les fichiers choisis"
+
+msgid "Set aside the picked files (Delete)"
+msgstr "Mettre de côté les fichiers choisis (Suppr)"
 
 #, python-brace-format
 msgid "Set aside their {n} photo"
@@ -8431,6 +8459,9 @@ msgid ""
 msgstr ""
 "Diaporama prêt : la télécommande sur {url} sur ce PC. Ctrl+C l'arrête ; "
 "vos photos ne sont pas modifiées."
+
+msgid "Small: the photos only"
+msgstr "Petite : les photos seules"
 
 msgid "Software"
 msgstr "Logiciel"
@@ -8808,6 +8839,9 @@ msgstr "Retirer de l'album"
 
 msgid "Take out of the set aside"
 msgstr "Retirer de la mise de côté"
+
+msgid "Take out of the set aside (Backspace in the large view)"
+msgstr "Retirer de la mise de côté (Retour arrière en grand)"
 
 #, python-brace-format
 msgid "Take the batch back ({events})"
@@ -10520,6 +10554,9 @@ msgstr "Celles effacées dans l'Explorateur depuis un audit : voulu, ou perdu ?"
 msgid "Three things to know before you start"
 msgstr "Trois choses à savoir avant de commencer"
 
+msgid "Thumbnail size"
+msgstr "Taille des vignettes"
+
 msgid "Tick an extension or a folder first."
 msgstr "Cochez d'abord une extension ou un dossier."
 
@@ -11253,9 +11290,6 @@ msgstr ""
 "ici, la liste remplace celle intégrée (français et anglais) : c'est la "
 "liste intégrée complète, modifiez-la plutôt que de partir de quelques "
 "mots."
-
-msgid "Words of"
-msgstr "Mots de"
 
 msgid "Words of folders, names, dates and places"
 msgstr "Mots des dossiers, des noms, des dates et des lieux"
@@ -12983,6 +13017,9 @@ msgstr "pas encore triées"
 msgid "not sorted yet."
 msgstr "pas encore triée."
 
+msgid "not yet"
+msgstr "pas encore"
+
 msgid "nothing"
 msgstr "rien"
 
@@ -13366,6 +13403,9 @@ msgstr ""
 "trier cet événement maintenant : déplacer ses fichiers, les autres "
 "attendent"
 
+msgid "sorted"
+msgstr "triées"
+
 msgid "sorted (year, then year-month)"
 msgstr "triées (année, puis année-mois)"
 
@@ -13434,7 +13474,9 @@ msgstr "sortir les fichiers choisis de ce qui est mis de côté"
 msgid ""
 "taken out of the album, but its other name is outside the analysed "
 "folders: left in place"
-msgstr "retirée de l'album, mais son autre nom est hors des dossiers analysés : laissé en place"
+msgstr ""
+"retirée de l'album, mais son autre nom est hors des dossiers analysés : "
+"laissé en place"
 
 #, python-brace-format
 msgid "taken {taken} (EXIF: what the search finds by)"
@@ -14864,8 +14906,12 @@ msgid ""
 msgid_plural ""
 "{count} links of photos taken out of the album removed: the photos stay "
 "where they are."
-msgstr[0] "{count} lien d'une photo retirée de l'album supprimé : la photo reste où elle est."
-msgstr[1] "{count} liens de photos retirées de l'album supprimés : les photos restent où elles sont."
+msgstr[0] ""
+"{count} lien d'une photo retirée de l'album supprimé : la photo reste où "
+"elle est."
+msgstr[1] ""
+"{count} liens de photos retirées de l'album supprimés : les photos "
+"restent où elles sont."
 
 #, python-brace-format
 msgid "{count} named face"
@@ -16397,7 +16443,9 @@ msgstr "{path} : pas allégée : {reason}"
 
 #, python-brace-format
 msgid "{path}: taken out of the album, its link goes; the photo stays at {other}"
-msgstr "{path} : retirée de l'album, son lien est retiré ; la photo reste à {other}"
+msgstr ""
+"{path} : retirée de l'album, son lien est retiré ; la photo reste à "
+"{other}"
 
 #, python-brace-format
 msgid "{path}: this version cannot undo the action '{action}'."

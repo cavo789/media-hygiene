@@ -121,7 +121,8 @@ def test_each_page_shows_its_main_keys_in_the_panel(template: str, key: str) -> 
     page = render_page(template)
     panel = page.split('id="keys"')[1].split("</section>")[0]
     assert key in panel.split('id="moreKeys"')[0]
-    assert '<p class="safe">🔒 ' in panel
+    # The search's 🔒 line is the tooltip of ✅ Apply (0463): the panel stays short.
+    assert ('<p class="safe">🔒 ' in panel) == (template != "search.html.j2")
     assert "Ctrl+C in the terminal" not in page.split("</aside>")[1].split("<script")[0]
 
 

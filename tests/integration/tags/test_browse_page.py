@@ -351,12 +351,13 @@ def test_one_bar_above_the_grid_and_the_safety_line_under_the_keys(
         'id="chosen"',
     ):
         assert part in header
-    assert '<button id="takeBack" class="plain" type="button" hidden>' in header
+    assert '<button id="takeBack" class="plain" type="button" hidden' in header
     assert 'id="albumBar"' in header
     # The compact album field says how to start.
     assert "type a name, e.g. Crete 2023" in header
     keys = page.split('id="keys"')[1].split("</section>")[0]
-    assert "🔒 Nothing moves without your GO" in keys
+    # 0463: the 🔒 line left the panel for the tooltip of ✅ Apply and the help page.
+    assert "🔒 Nothing moves without your GO" not in keys
     script = page.split("function showPicked()")[1].split("\n}\n")[0]
     assert '$("bar").classList.toggle("acting", some)' in script
     # *Take out of the set aside* shows only for a picked file already set aside.

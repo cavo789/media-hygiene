@@ -29,7 +29,7 @@ $("heaviest").addEventListener("click", () => {
   within = null;
   showWithin();
   $("text").value = "";
-  if ($("kind").value === "all") $("kind").value = "videos";
+  if ($("kind").value === "all") segmented("kind", "videos");  // the 🎬 of Show (0463)
   if (!["size", "rate"].includes($("order").value)) $("order").value = "size";
   search(null);
 });

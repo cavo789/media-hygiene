@@ -7,7 +7,9 @@
    *Share on the TV* gives the command that shows the album typed (`slideshow --album`),
    *Prepare for sending* the one that makes its copies to send (`share --album`, 0296).
    `album_compact` (browse's one bar, 0305): the field says how to start, and the list of the
-   albums is not said on opening (the field offers them), only what each change saved. #}
+   albums is not said on opening (the field offers them), only what each change saved.
+   `album_short` (the search's fixed bar, 0463): emoji and a short word, the whole label in the
+   tooltip. #}
 {% if albums_path %}
 {% set album_quiet = album_compact | default(false) %}
 <style>
@@ -24,10 +26,17 @@
   <input id="albumName" list="albumNames" maxlength="80" autocomplete="off"
          placeholder="{{ _('type a name, e.g. Crete 2023') if album_quiet else _('e.g. Crete 2023') }}">
   <datalist id="albumNames"></datalist>
+{% if album_short | default(false) %}
+  <button id="albumAdd" type="button" disabled title="{{ _('Add to the album') }}" aria-label="{{ _('Add to the album') }}">➕</button>
+  <button id="albumRemove" class="plain" type="button" disabled title="{{ _('Take out of the album') }}" aria-label="{{ _('Take out of the album') }}">➖</button>
+  <button id="albumTv" class="plain" type="button" disabled title="{{ _('Share on the TV') }}">📺 {{ _("Share") }}</button>
+  <button id="albumSend" class="plain" type="button" disabled title="{{ _('Prepare for sending') }}">✉️ {{ _("Send") }}</button>
+{% else %}
   <button id="albumAdd" type="button" disabled>➕ {{ _("Add to the album") }}</button>
   <button id="albumRemove" class="plain" type="button" disabled>{{ _("Take out of the album") }}</button>
   <button id="albumTv" class="plain" type="button" disabled>📺 {{ _("Share on the TV") }}</button>
   <button id="albumSend" class="plain" type="button" disabled>📨 {{ _("Prepare for sending") }}</button>
+{% endif %}
 </div>
 <p id="albumSaid" role="status"></p>
 <p id="albumTvLine" hidden></p>
