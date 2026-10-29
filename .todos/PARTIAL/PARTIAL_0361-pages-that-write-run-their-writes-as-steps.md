@@ -37,3 +37,24 @@ its write-ahead journal and its `undo`.
 
 The last page with its own container joins the single server; the same channel serves any later
 page that changes photos.
+
+## Status — PARTIAL (2026-10-29)
+
+### Done
+- Item 2, the channel of progress: `services/step_progress.py` — `SharedProgress` tees the
+  window's progress into `/reports/.mh-step-progress.json` (title, done, total, current file;
+  at start and end always, between at most every 0.5 s; written beside then renamed). Only
+  under an `mh` that keeps the server (`MEDIA_HYGIENE_LAUNCHER_STEPS=3`); the last step's file
+  is removed first. `shrink --apply` uses it (`cli/shrink_flow.py`).
+- `GET /api/step` adds `progress` to the state (`review/step_watch.py`, read-only); the home
+  page's step dialog shows `done / total · file` while the step runs (`home_run.js.j2`).
+- Tests: `tests/unit/test_step_progress.py`. Docs en + fr (`commands/shrink.md`, *Good to know*).
+
+### Not done
+- Items 1, 4: shrink's page (`--try`, its own container) moved to the home server under a prefix
+  and its apply sent as `shrink --apply --only <ids>` through `.mh-step.json` — needs an
+  `--only` option and the page's views made relative. **Reason:** scope of one run.
+- Item 3 (confirmation stays in mh's window): unchanged today (`lighten` asks), to keep.
+- Item 5 (a write from the server fails on its read-only mounts): needs the server's mounts in
+  `mh.ps1`/`mh.sh` checked by an e2e test. **Reason:** scope; image tests run in CI.
+- Acceptance on Windows (the maintainer's PC).

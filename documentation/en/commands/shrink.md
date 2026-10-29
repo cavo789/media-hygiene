@@ -154,6 +154,9 @@ figures; the list says its estimate, and the real gain is said after each video.
 - **Slow**: a re-encoding takes about as long as the film, or longer on a small computer; one
   video at a time, on half of the processors (`threads`), so that the computer stays usable.
   Ctrl+C stops after the video being encoded; type the command again for the rest.
+- **Started from the home page**: the re-encoding runs in the window of `mh` (the home server
+  never writes your photos); the page stays open and shows how far it is (videos done, the one
+  being encoded), then its new state.
 - **The space comes back with `purge`**: until then, the originals are in the quarantine.
 - **Settings**: the `[shrink]` section of `config.toml` (`codecs`, `bits_per_pixel`,
   `min_gain_percent`, `same_crf`, `lighter_crf`, `lighter_lines`, `preset`, `threads`,

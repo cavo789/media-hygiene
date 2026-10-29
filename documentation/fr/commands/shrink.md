@@ -162,6 +162,9 @@ est dit après chaque vidéo.
 - **Lent** : un réencodage prend à peu près la durée du film, ou plus sur un petit ordinateur ;
   une vidéo à la fois, sur la moitié des processeurs (`threads`), pour que l'ordinateur reste
   utilisable. Ctrl+C arrête après la vidéo en cours ; retapez la commande pour le reste.
+- **Lancé depuis la page d'accueil** : le réencodage tourne dans la fenêtre de `mh` (le serveur
+  de la page n'écrit jamais vos photos) ; la page reste ouverte et montre où il en est (vidéos
+  faites, celle en cours), puis son nouvel état.
 - **La place revient avec `purge`** : d'ici là, les originaux sont en quarantaine.
 - **Réglages** : la section `[shrink]` de `config.toml` (`codecs`, `bits_per_pixel`,
   `min_gain_percent`, `same_crf`, `lighter_crf`, `lighter_lines`, `preset`, `threads`,
