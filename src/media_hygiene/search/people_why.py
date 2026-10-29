@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING, Final
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from media_hygiene.i18n import _
-from media_hygiene.people.crops import CropJob, face_crop
+from media_hygiene.people.crops import CropJob, face_crop, upright_size
 from media_hygiene.people.naming import How
 from media_hygiene.people.why import why_named
 from media_hygiene.review.config_saving import save_refused
@@ -27,7 +27,9 @@ from media_hygiene.search.views import PREVIEW_PREFIX
 
 if TYPE_CHECKING:
     from concurrent.futures import Executor
+    from pathlib import Path
 
+    from media_hygiene.faces.models import FaceBox
     from media_hygiene.people.why import Why
     from media_hygiene.search.people_desk import PeopleDesk
     from media_hygiene.search.people_seen import Seen
@@ -72,6 +74,10 @@ def why_answer(desk: PeopleDesk, body: bytes) -> Response:
     except ValueError as exc:
         return save_refused(exc)
     faces = [_face_view(desk, seen, seen.numbers[key]) for key in ids]
+    outline = _outline(photo.path, asked.key)
+    for view, key in zip(faces, ids, strict=True):
+        if outline is not None:
+            view["photo"] = {**outline, "box": _box(seen.faces[seen.numbers[key]].box)}
     return json_response(HTTPStatus.OK, {"name": asked.name, "faces": faces})
 
 
@@ -96,6 +102,38 @@ async def crop_answer(desk: PeopleDesk, path: str, executor: Executor) -> Respon
     if image is None:
         return Response(HTTPStatus.NOT_FOUND)
     return Response(HTTPStatus.OK, image, ContentType.JPEG, cacheable=True)
+
+
+def _box(box: FaceBox) -> dict[str, float]:
+    """A face's box, in pixels of the upright photo.
+
+    Args:
+        box: The face.
+
+    Returns:
+        x, y, width, height.
+    """
+    return {"x": box.x, "y": box.y, "width": box.width, "height": box.height}
+
+
+def _outline(path: Path, key: int) -> dict[str, object] | None:
+    """What the panel needs to draw a box on the whole photo.
+
+    Args:
+        path: The photo.
+        key: Its key in the search.
+
+    Returns:
+        Its preview and upright size; None when the size cannot be read.
+    """
+    size = upright_size(path)
+    if size is None:
+        return None
+    return {
+        "preview": f"{PREVIEW_PREFIX}{key}{_JPEG}",
+        "width": size[0],
+        "height": size[1],
+    }
 
 
 def _face_view(desk: PeopleDesk, seen: Seen, number: int) -> dict[str, object]:

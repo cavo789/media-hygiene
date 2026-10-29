@@ -265,6 +265,12 @@ def test_why_this_name_then_yes_or_not_for_one_face(
     reference = assigned[0]["reference"]
     assert any(key.split("#")[0].endswith(reference["file"]) for key in confirmed)
     assert reference["preview"].startswith("/preview/")
+    photo = assigned[0]["photo"]
+    box = photo["box"]
+    assert photo["preview"].startswith("/preview/")
+    assert photo["width"] > 0 < photo["height"]
+    assert 0 <= box["x"] < photo["width"]
+    assert 0 <= box["y"] < photo["height"]
     mine = json.loads(answers[2].body)["faces"][0]
     assert mine["how"] == "confirmed"
     assert "reference" not in mine

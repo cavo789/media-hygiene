@@ -257,7 +257,7 @@ La × ne choisit jamais la photo, et la carte reste à sa place. La grande vue m
 noms, avec la même ×, sous ses informations (`I`).
 
 `W` dans la grande vue ouvre **Pourquoi ce nom ?** : le visage
-de la photo découpé, comment il a reçu le nom (*confirmé par vous*, ou *proche d'un visage que
+de la photo découpé et entouré sur la photo entière (utile quand elle compte plusieurs visages), comment il a reçu le nom (*confirmé par vous*, ou *proche d'un visage que
 vous avez confirmé*, avec ce visage, son fichier et le score face à `[people] similarity`), et la
 personne suivante quand elle est proche aussi. **Oui, c'est …** confirme ce visage, **Pas …**
 retire le nom de ce visage seulement ; les deux sont enregistrés, relus et dits de la même façon.

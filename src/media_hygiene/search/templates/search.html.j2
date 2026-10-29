@@ -147,6 +147,10 @@
                padding: 8px 0; border-top: 1px solid var(--line); }
   #why img { width: 120px; height: 120px; object-fit: cover; border-radius: 8px;
              background: var(--chip); }
+  #why .whole { position: relative; width: 240px; max-width: 100%; margin-bottom: 6px; }
+  #why .whole img { width: 100%; height: 100%; object-fit: contain; }
+  #why .outline { position: absolute; border: 2px solid var(--accent); border-radius: 4px;
+                  box-shadow: 0 0 0 1px var(--card); pointer-events: none; }
   #why .reference img { width: 72px; height: 72px; }
   #why .reference { display: flex; gap: 8px; align-items: center; overflow-wrap: anywhere; }
   #why .buttons { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
