@@ -136,6 +136,7 @@ class ExitCode(IntEnum):
     CRASHED = (
         5  # the home server ended on an unforeseen error: mh starts it again (0365)
     )
+    REMOUNT = 6  # mh stopped the home server: a photo folder came or left (0359)
     KILLED = (
         137  # 128 + SIGKILL: Docker killed the container (out of memory), a crash too
     )

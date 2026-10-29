@@ -95,8 +95,11 @@ Plus : [Trier, étape 12](../sort/12-albums.md#choisir-ce-que-lalbum-rassemble).
 - **Un lien physique ne quitte jamais son disque, ni son `-v`** : montez le dossier qui contient à
   la fois les photos et les albums (`C:\Photos` pour `C:\Photos\Albums`).
 - **Relancez-le** plus tard, après avoir ajouté des photos à l'album : seules les nouvelles photos
-  sont ajoutées ; une photo n'est jamais liée deux fois. Une photo retirée de l'album reste dans
-  son dossier : annulez l'exécution (`undo`), ou supprimez le lien.
+  sont ajoutées ; une photo n'est jamais liée deux fois. Le lien d'une photo retirée de
+  l'album est supprimé (listé d'abord sous *Liens à retirer* ; la photo reste où elle est, `undo`
+  la relie). Un fichier copié à la main dans le dossier (sa seule copie) n'est jamais touché, ni
+  un lien dont la photo est hors des dossiers analysés ; tant qu'une photo de l'album est
+  introuvable, aucun lien n'est retiré.
 - **Jamais vu comme des doublons** : `audit`, `clean`, `classify` et `sort` ignorent tout dossier
   qui contient `.media-hygiene-album`. Gardez ce fichier.
 - Une photo retouchée dans l'album l'est aussi dans son dossier trié : c'est le même fichier.

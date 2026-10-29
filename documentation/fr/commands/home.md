@@ -338,6 +338,11 @@ aucun autre site.
 
 ## Bon à savoir
 
+- **Une clé USB ou un disque branché plus tard** (0359) : `mh` démarre la page d'accueil sans
+  un dossier de photos absent (une ligne : *pas branché, affiché dès qu'il l'est*), regarde vos
+  dossiers toutes les 3 secondes et relance la page avec le dossier dès qu'il est branché
+  (2 à 3 s environ ; l'onglet se recharge seul). De même quand il est retiré. Une commande tapée
+  seule refuse toujours un dossier absent.
 - La page ne répond qu'à `127.0.0.1` ou `localhost` (et, sous `mh --lan`, à l'adresse du PC pour
   un téléphone appairé), et seulement à ses propres boutons : un autre site ne peut pas choisir
   une étape à votre place.

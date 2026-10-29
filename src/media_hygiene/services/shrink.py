@@ -19,6 +19,7 @@ from media_hygiene.actions.kinds import Phase
 from media_hygiene.actions.not_worth import not_worth
 from media_hygiene.actions.outcome import Tally
 from media_hygiene.actions.shrink import Gains, Recipe, ShrinkExecutor
+from media_hygiene.console.links_view import show_links
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.index.read_only import connect_read_only
@@ -30,7 +31,9 @@ from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.quarantine_space import quarantine_route
 from media_hygiene.services.search_app import shown_roots
 from media_hygiene.services.shrink_index import park_originals
+from media_hygiene.services.shrink_links import renamed
 from media_hygiene.services.shrink_tools import encoding_tools
+from media_hygiene.services.sort_links import follow_links
 from media_hygiene.shrink.candidates import FILES, Selection, candidates
 from media_hygiene.shrink.encode import encoding_of
 
@@ -161,4 +164,7 @@ class ShrinkService:
         run_id = context.quarantine_run_dir.name
         journal = journal_file(runtime.locations.journal_dir, run_id)
         park_originals(runtime, run_id, read_journal(journal))
+        show_links(
+            runtime.output, follow_links(runtime, renamed(journal, Phase.SHRINK))
+        )
         return ShrinkResult(run_id, tally.freeze(), executor.gains, interrupted)

@@ -30,6 +30,13 @@ function global:_{{ function }}_home {
             try { {{ function }} home @typed } finally { $global:MediaHygieneRelay = $null; $global:MediaHygieneTab = $null }
 {% endif %}
             $status = $LASTEXITCODE
+            # A photo folder came or left: the server started again with it, the tab kept (0359).
+            if ($status -eq {{ texts.remount.code }}) {
+                Write-Host "{{ texts.remounted }}"
+                $status = 0
+                $tab = $true
+                continue
+            }
             # A crash (its own code, or Docker's kill) starts it again once a minute (0365).
             if (@({{ texts.crash.codes | join(", ") }}) -contains $status) {
                 if ($crashed -and ((Get-Date) - $crashed).TotalSeconds -lt {{ texts.crash.window }}) { Write-Host "{{ texts.crashed_again }}"; return }
@@ -103,9 +110,23 @@ function global:_{{ function }}_watch {
     $global:MediaHygieneHeld = $null
     $waiter = Start-Process -FilePath docker -ArgumentList 'wait', $id -NoNewWindow -PassThru -RedirectStandardOutput $code
     $ended = $false
+    $moved = $false
+    $ticks = 0
+    $seen = _{{ function }}_present
     try {
         while (-not $waiter.HasExited) {
-            if (-not (Test-Path -LiteralPath $now)) { Start-Sleep -Milliseconds 250; continue }
+            if (-not (Test-Path -LiteralPath $now)) {
+                Start-Sleep -Milliseconds 250
+                # A folder plugged in or removed: the server stopped, started again by the loop (0359).
+                $ticks++
+                if ($ticks % {{ texts.remount.ticks }} -eq 0 -and (_{{ function }}_present) -ne $seen) {
+                    $moved = $true
+                    $null = docker stop $id 2>$null
+                    $waiter.WaitForExit()
+                    break
+                }
+                continue
+            }
             $step = Get-Content -LiteralPath $now -Raw -Encoding UTF8 | ConvertFrom-Json
             Remove-Item -LiteralPath $now -Force -ErrorAction SilentlyContinue
             # Without a byte order mark: the server reads it as JSON.
@@ -127,8 +148,14 @@ function global:_{{ function }}_watch {
         if ($held -and $held.shared -and $held.shared.mounted) { _{{ function }}_unmount $held.shared.mounted }
         if ($held -and $held.nas -and $held.nas.volumes) { _{{ function }}_nas_release $held.nas.volumes }
     }
+    if ($moved) { $global:LASTEXITCODE = {{ texts.remount.code }}; return }
     $said = "$(Get-Content -LiteralPath $code -TotalCount 1 -ErrorAction SilentlyContinue)".Trim()
     $global:LASTEXITCODE = if ($said -match '^\d+$') { [int]$said } else { 1 }
+}
+
+# Which photo folders are there, one digit each: a change means one was plugged in or removed (0359).
+function global:_{{ function }}_present {
+    return (@(foreach ($folder in @({{ quoted(checked) }})) { if (Test-Path -LiteralPath $folder) { '1' } else { '0' } }) -join '')
 }
 
 {% endif %}

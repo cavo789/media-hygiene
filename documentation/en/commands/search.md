@@ -239,7 +239,7 @@ what it holds now (*Saved in config.toml, read back: 1 face of this photo is not
 view shows the same names, with the same ×, under its facts (`I`).
 
 `W` in the large view opens **Why this name?**: the face of the
-photo cut out, how it got the name (*confirmed by you*, or *close to a face you confirmed*, with
+photo cut out and outlined on the whole photo (useful when it holds several faces), how it got the name (*confirmed by you*, or *close to a face you confirmed*, with
 that face, its file, and the score against `[people] similarity`), and the next person when they
 come close too. **Yes, it is …** confirms that face, **Not …** takes the name off that face
 only; both are saved, read back and said the same way. Esc closes the panel and leaves the large

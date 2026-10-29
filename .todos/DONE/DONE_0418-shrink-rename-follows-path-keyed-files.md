@@ -17,3 +17,12 @@ Rarely relevant (estimated: few old MJPEG clips are in albums).
 
 A video in an album and in `decisions.json`, shrunk: both name the `.mp4`; `undo`: both name the
 original again.
+
+## Status
+
+DONE (2026-10-29). `services/shrink_links.renamed` lists the videos a run renamed from its
+journal (`SHRUNK` entries: `keeper` → `path`, reversed for `undo`); `shrink --apply` and `undo`
+hand them to `follow_links` (0382): face lists, `albums.json`, `decisions.json`, `--try`
+choices are rewritten and read back. Test: `tests/integration/test_shrink_links.py`.
+Not done: a classify `plan.json` row is not rewritten (sort's rewrite does not cover it either;
+a video renamed between classify and sort is reported missing by `sort`, as before).

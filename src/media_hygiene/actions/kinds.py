@@ -37,6 +37,9 @@ class ActionKind(StrEnum):
     # (`keeper`), and the marker telling the scans to skip that folder.
     LINK = "link"
     MARK_ALBUM = "mark-album"
+    # Written by `album` (0374): a link of a photo taken out of the album removed;
+    # `keeper` is its other name, `undo` links it again from there.
+    UNLINK = "unlink"
     # Written by `clean --decisions`: a copy replaced by a hard link to its kept file
     # (`keeper`), a pair that keeps both names (0213).
     LINK_DUPLICATE = "link-duplicate"
@@ -171,7 +174,7 @@ BACKUP_SET_ASIDE: Final = frozenset({ActionKind.PUSH_ASIDE, ActionKind.PUSH_REMO
 SHRUNK_VIDEOS: Final = frozenset({ActionKind.SHRUNK})
 # Actions after which the file is still on the PC: neither deleted nor freed.
 LEFT_IN_PLACE: Final = (
-    frozenset({ActionKind.MOVE})
+    frozenset({ActionKind.MOVE, ActionKind.UNLINK})
     | LINKS
     | XMP_ACTIONS
     | COPIES_IN

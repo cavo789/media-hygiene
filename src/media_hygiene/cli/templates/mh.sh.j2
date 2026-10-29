@@ -43,6 +43,8 @@
     esac
 {% if checked %}
     for folder in {% for folder in checked %}"{{ folder }}"{{ " " if not loop.last }}{% endfor %}; do
+        # The home server starts without a folder not plugged in: shown once it is (0359).
+        if [[ -n "${_{{ function }}_detach:-}" && ! -d "$folder" ]]; then printf '%s\n' "{{ texts.unplugged }}" >&2; continue; fi
         _{{ function }}_drive "$folder" || return 2
         if [[ ! -d "$folder" ]]; then printf '%s\n' "{{ texts.missing }}" >&2; return 2; fi
     done
@@ -124,6 +126,14 @@
         mkdir -p "{{ keep.host }}"
         share=(-v "{{ keep.host }}:{{ keep.point }}")
     fi
+    # The photo folders and backups; the home server leaves out those not plugged in (0359).
+    local data=()
+{% for volume in script.data %}
+    if [[ -z "${_{{ function }}_detach:-}" || "{{ volume.host }}" != /* || -d "{{ volume.host }}" ]]; then data+=(-v "{{ volume.host }}:{{ volume.point.as_posix() }}${mode}"); fi
+{% endfor %}
+{% for volume in script.backups %}
+    if [[ -z "${_{{ function }}_detach:-}" || "{{ volume.host }}" != /* || -d "{{ volume.host }}" ]]; then data+=(-v "{{ volume.host }}:{{ volume.point.as_posix() }}:ro"); fi
+{% endfor %}
     if [[ -n "$long" ]]; then
         read -r -a awake <<< "$(_{{ function }}_awake "$command")"
         _{{ function }}_title "{{ function }} $command..."
@@ -141,13 +151,7 @@
 {% for option in script.environment %}
         {{ option }} \
 {% endfor %}
-{% for volume in script.data %}
-        -v "{{ volume.host }}:{{ volume.point.as_posix() }}${mode}" \
-{% endfor %}
-        "${photos[@]}" "${source[@]}" \
-{% for volume in script.backups %}
-        -v "{{ volume.host }}:{{ volume.point.as_posix() }}:ro" \
-{% endfor %}
+        "${data[@]}" "${photos[@]}" "${source[@]}" \
 {% for volume in script.tools + script.drives %}
         -v "{{ volume.host }}:{{ volume.point.as_posix() }}" \
 {% endfor %}
@@ -214,6 +218,12 @@ _{{ function }}_home() {
 {% else %}
             {{ function }} home "$@" || status=$?
 {% endif %}
+            # A photo folder came or left: the server started again with it, the tab kept (0359).
+            if [[ "$status" -eq {{ texts.remount.code }} ]]; then
+                printf '%s\n' "{{ texts.remounted }}" >&2
+                status=0 _{{ function }}_tab=1
+                continue
+            fi
             # A crash (its own code, or Docker's kill) starts it again once a minute (0365).
             if [[ " {{ texts.crash.codes | join(" ") }} " == *" $status "* ]]; then
                 if ((SECONDS - crashed < {{ texts.crash.window }})); then printf '%s\n' "{{ texts.crashed_again }}" >&2; return "$status"; fi
@@ -266,7 +276,7 @@ _{{ function }}_home() {
 # `{{ watch.now }}`, runs here while the page stays up (`{{ watch.running }}`, then
 # `{{ watch.done }}` with its exit code); returns the server's own code once it ended.
 _{{ function }}_watch() {
-    local folder now running ended cid code id waiter result line step chosen words=()
+    local folder now running ended cid code id waiter result line step chosen words=() ticks=0 seen moved=""
     folder="$(dirname "{{ host.step_file }}")"
     now="$folder/{{ watch.now }}" running="$folder/{{ watch.running }}" ended="$folder/{{ watch.done }}"
     cid="$folder/{{ watch.cid }}" code="$folder/{{ watch.code }}"
@@ -276,8 +286,19 @@ _{{ function }}_watch() {
     docker wait "$id" > "$code" 2>/dev/null &
     waiter=$!
     trap 'docker stop "$id" >/dev/null 2>&1' INT
+    seen="$(_{{ function }}_present)"
     while kill -0 "$waiter" 2>/dev/null; do
-        if [[ ! -f "$now" ]]; then sleep 0.25; continue; fi
+        if [[ ! -f "$now" ]]; then
+            sleep 0.25
+            # A folder plugged in or removed: the server stopped, started again by the loop (0359).
+            ticks=$((ticks + 1))
+            if ((ticks % {{ texts.remount.ticks }} == 0)) && [[ "$(_{{ function }}_present)" != "$seen" ]]; then
+                moved=1
+                docker stop "$id" >/dev/null 2>&1
+                break
+            fi
+            continue
+        fi
         step="" words=()
         while IFS= read -r line; do
             if [[ "$line" =~ ^\"id\":\ \"([^\"]*)\" ]]; then step="${BASH_REMATCH[1]}"
@@ -294,8 +315,18 @@ _{{ function }}_watch() {
     done
     trap - INT
     wait "$waiter" 2>/dev/null
+    if [[ -n "$moved" ]]; then return {{ texts.remount.code }}; fi
     read -r result < "$code" || result=1
     return "${result:-1}"
+}
+
+# Which photo folders are there, one digit each: a change means one was plugged in or removed (0359).
+_{{ function }}_present() {
+    local seen=""
+{% for folder in checked %}
+    if [[ -d "{{ folder }}" ]]; then seen+=1; else seen+=0; fi
+{% endfor %}
+    printf '%s' "$seen"
 }
 
 {% endif %}

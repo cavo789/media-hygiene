@@ -24,6 +24,7 @@ from media_hygiene.services.shrink import ShrinkJobs, ShrinkService
 from media_hygiene.services.shrink_page import serve_try
 from media_hygiene.services.shrink_tools import encoding_tools
 from media_hygiene.services.shrink_try import chosen, ensure_cache, opened_try
+from media_hygiene.services.step_progress import shared
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
@@ -61,7 +62,8 @@ def lighten(runtime: Runtime, jobs: ShrinkJobs, *, yes: bool) -> None:
         )
     )
     with RichProgress(output.console) as progress, StopRequest() as stop:
-        result = ShrinkService(runtime, progress).execute(jobs, stop.requested)
+        sink = shared(progress, runtime.locations.reports_dir)  # 0361: the page follows
+        result = ShrinkService(runtime, sink).execute(jobs, stop.requested)
     show_result(runtime, result)
     safety(
         runtime,

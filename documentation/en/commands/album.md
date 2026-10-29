@@ -94,8 +94,10 @@ plan **instead of** `albums.json`; given together, every option must match: `--c
 - **A hard link never leaves its disk, nor its `-v`**: mount the folder holding both the photos
   and the albums (`C:\Photos` for `C:\Photos\Albums`).
 - **Run it again** later, after adding photos to the album: only the new photos are added; a
-  photo is never linked twice. A photo taken out of the album stays in its folder: `undo` the
-  run, or delete the link.
+  photo is never linked twice. The link of a photo taken out of the album is removed (listed
+  first under *Links to remove*; the photo stays where it is, `undo` links it again). A file
+  copied into the folder by hand (its only copy) is never touched, nor a link whose photo lies
+  outside the analysed folders; while a photo of the album is not found, no link is removed.
 - **Never seen as duplicates**: `audit`, `clean`, `classify` and `sort` skip every folder holding
   `.media-hygiene-album`. Keep that file.
 - A photo edited in the album is edited in its sorted folder too: it is the same file.
