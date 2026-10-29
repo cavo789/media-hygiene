@@ -3,8 +3,10 @@
 `then` lists the steps run once the copies are done: `audit` (the new files join the
 library), `tags` (🤖 the local model describes the new photos: skipped with one line
 when it cannot be reached), `places` (🌐 the new spots named online, after their own
-question, 0474). The audit always comes first while another step is on: tags and place
-names read the index. An empty list: nothing runs after the copies.
+question, 0474), `copies` (the new files that are exact copies of another go to
+the quarantine through `clean`'s journal: `mh undo` puts them back, 0478). The audit
+always comes first while another step is on: tags, place names and copies read the
+index. An empty list: nothing runs after the copies.
 The section is `[imports]`: `import` is a word of Python the settings cannot be named.
 """
 
@@ -21,6 +23,7 @@ class ImportStep(StrEnum):
     AUDIT = "audit"
     TAGS = "tags"
     PLACES = "places"
+    COPIES = "copies"
 
 
 class ImportSettings(BaseModel):
@@ -32,6 +35,7 @@ class ImportSettings(BaseModel):
         ImportStep.AUDIT,
         ImportStep.TAGS,
         ImportStep.PLACES,
+        ImportStep.COPIES,
     )
 
     @field_validator("then")

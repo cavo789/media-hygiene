@@ -9174,6 +9174,8 @@ msgid ""
 " audit: the new files join your library (first while another step is on)."
 " tags: the local AI model describes the new photos (skipped when it is "
 "not running). places: the new spots named online, after its own question."
+" copies: the new files that are exact copies of another go to the "
+"quarantine (mh undo puts them back)."
 msgstr ""
 
 msgid "What the last audit found"
@@ -14162,6 +14164,9 @@ msgstr ""
 msgid "→ {folder}"
 msgstr ""
 
+msgid "↩️ Put them back: mh undo"
+msgstr ""
+
 #, python-brace-format
 msgid "↩️ The index replaced was backed up first: mh restore {name} puts it back."
 msgstr ""
@@ -14177,6 +14182,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "▶ Play"
+msgstr ""
+
+#, python-brace-format
+msgid "✨ All done: {count} imported, {aside} copies set aside."
 msgstr ""
 
 msgid "❚❚ Pause"

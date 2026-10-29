@@ -2,27 +2,37 @@
 
 The user's place (`[[classify.places]]`) first; for a photo, the name OpenStreetMap
 gave its spot once the user said Yes after an import (0474, `services.place_names`),
-else the landmark of the offline GeoNames snapshot it was taken at (`geo.landmarks`);
+else the landmark of the offline GeoNames snapshot it was taken at (`geo.landmarks`,
+only those near a photo of the index or of the show: 0479);
 else the nearest town. Nothing is sent from here.
 """
 
 from __future__ import annotations
 
+import sqlite3
 from collections import Counter
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.place_match import place_at, zones_of
-from media_hygiene.geo.landmarks import shared_landmarks
+from media_hygiene.geo.distance import Point
+from media_hygiene.geo.landmarks import Cells, near_cells, shared_landmarks
 from media_hygiene.geo.reverse import rounded
 from media_hygiene.i18n import _
+from media_hygiene.index.read_only import connect_read_only
 from media_hygiene.services.place_names import read_names, spot_key
 from media_hygiene.slideshow.chapters import told_place
+
+# Truncated, not floored: `near_cells` adds the cells around, which covers the gap.
+_LOCATED = (
+    "SELECT DISTINCT CAST(json_extract(metadata, '$.latitude') AS INTEGER),"
+    " CAST(json_extract(metadata, '$.longitude') AS INTEGER) FROM files"
+    " WHERE json_extract(metadata, '$.latitude') IS NOT NULL"
+)
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from media_hygiene.config.classify_places import PersonalPlace
-    from media_hygiene.geo.distance import Point
     from media_hygiene.geo.gazetteer import Gazetteer
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.slideshow.chapters import Chapter
@@ -50,7 +60,11 @@ class Places:
         self._zones = zones_of(settings.places)
         self._towns = None if towns is None else towns.renamed(settings.town_names)
         self._home = self._home_country(settings.places, everywhere)
-        self._landmarks = None if towns is None else shared_landmarks()
+        self._landmarks = (
+            None
+            if towns is None
+            else shared_landmarks(near_cells(everywhere) | _indexed(runtime))
+        )
         self._online = read_names(runtime.locations.cache_dir)  # said Yes to (0474)
 
     @property
@@ -149,3 +163,26 @@ class Places:
         if self._home and country != self._home:
             return _("{town}, {country}").format(town=name, country=country)
         return name
+
+
+def _indexed(runtime: Runtime) -> Cells:
+    """The cells around the photos of the index that have GPS (0479).
+
+    Args:
+        runtime: Where the index lies.
+
+    Returns:
+        The cells; none without a kept index.
+    """
+    index_file = runtime.index_file
+    if index_file is None or not index_file.is_file():
+        return frozenset()
+    try:
+        connection = connect_read_only(index_file)
+        try:
+            rows = connection.execute(_LOCATED).fetchall()
+        finally:
+            connection.close()
+    except sqlite3.Error:
+        return frozenset()
+    return near_cells(Point(float(lat), float(lon)) for lat, lon in rows)

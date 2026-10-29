@@ -43,7 +43,7 @@ class NearestIndex:
         for index, (lat, lon) in enumerate(
             zip(latitudes.tolist(), longitudes.tolist(), strict=True)
         ):
-            cells[_cell(lat, lon)].append(index)
+            cells[cell_of(lat, lon)].append(index)
         self._cells = {key: np.array(found) for key, found in cells.items()}
 
     def nearest(self, point: Point) -> tuple[int, float] | None:
@@ -92,7 +92,7 @@ class NearestIndex:
         Returns:
             Their indexes.
         """
-        row, column = _cell(point.latitude, point.longitude)
+        row, column = cell_of(point.latitude, point.longitude)
         around = [
             found
             for step in _RING
@@ -121,7 +121,7 @@ class NearestIndex:
         return int(candidates[best]), float(distances[best])
 
 
-def _cell(latitude: float, longitude: float) -> tuple[int, int]:
+def cell_of(latitude: float, longitude: float) -> tuple[int, int]:
     """The one-degree cell of a position.
 
     Args:

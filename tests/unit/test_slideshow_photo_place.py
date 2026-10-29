@@ -4,7 +4,11 @@ from __future__ import annotations
 
 import json
 import lzma
+import sqlite3
+from contextlib import closing
 from typing import TYPE_CHECKING, Final
+
+import pytest
 
 from media_hygiene.geo.distance import Point
 from media_hygiene.geo.landmarks import LANDMARKS_FILE, Landmarks
@@ -28,7 +32,7 @@ _EIFFEL: Final = Point(48.8584, 2.2945)
 
 def _places(tmp_path: Path) -> Places:
     runtime = make_runtime(make_locations(tmp_path), {"classify": {"places": [_HOME]}})
-    return Places(runtime, shared_towns(), [Point(50.85, 4.35)])
+    return Places(runtime, shared_towns(), [Point(50.85, 4.35), _EIFFEL])
 
 
 def test_the_user_s_place_then_a_landmark_then_the_town(tmp_path: Path) -> None:
@@ -73,3 +77,32 @@ def test_the_tv_shows_the_place_while_it_tells_the_events() -> None:
     assert screen_view(desk)["where"] == "Tour Eiffel"
     desk.ask(json.dumps({"action": "tell", "where": "phone"}).encode())
     assert screen_view(desk)["where"] == ""
+
+
+def test_no_landmark_where_no_photo_of_the_show_or_index_lies(tmp_path: Path) -> None:
+    """A cell without a photo loads nothing: the Eiffel Tower falls back to its town."""
+    runtime = make_runtime(make_locations(tmp_path), {"classify": {"places": [_HOME]}})
+    places = Places(runtime, shared_towns(), [Point(50.85, 4.35)])
+    assert places.spot(_EIFFEL, _EVENT) != "Tour Eiffel"
+
+
+def test_the_index_s_photos_load_their_cells(tmp_path: Path) -> None:
+    """A photo of the index near the Eiffel Tower loads its cell for any show."""
+    runtime = make_runtime(make_locations(tmp_path), {"classify": {"places": [_HOME]}})
+    index_file = runtime.index_file
+    if index_file is None:
+        pytest.skip("no kept index in this runtime")
+    index_file.parent.mkdir(parents=True, exist_ok=True)
+    with closing(sqlite3.connect(index_file)) as connection:
+        connection.execute("CREATE TABLE files (metadata TEXT)")
+        connection.execute(
+            "INSERT INTO files VALUES (?)",
+            (
+                json.dumps(
+                    {"latitude": _EIFFEL.latitude, "longitude": _EIFFEL.longitude}
+                ),
+            ),
+        )
+        connection.commit()
+    places = Places(runtime, shared_towns(), [Point(50.85, 4.35)])
+    assert places.spot(_EIFFEL, _EVENT) == "Tour Eiffel"

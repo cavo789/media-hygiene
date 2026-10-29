@@ -141,6 +141,7 @@
 #  37. a USB stick plugged in, then removed, during a session of mh: the home page follows it
 #  38. mh import --phone --since today / week, then without --since (0476): what is left, timed
 #  39. the whole chain after a phone import of about 100 photos, timed step by step (0475)
+#  40. the whole chain after an import with copies set aside, then undone (0478)
 #      (two yes/no questions, by hand)                                               (0359)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
@@ -3408,6 +3409,25 @@ if (Wanted 39) {
     Log "   39c. tags, seconds: $tagsSec"
     Log "   39d. place names, seconds: $placesSec"
     Log "   39e. last line, event name proposed: $tvOk"
+    $ErrorActionPreference = $saved
+}
+
+# --- 40: the whole chain after an import, with copies set aside (0478) ----------------------
+# By hand: about 100 new photos on the phone (taken today), 2 of them sent twice (WhatsApp).
+if (Wanted 40) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 40. the whole chain after an import, copies set aside (0478)"
+    Write-Host "40 : environ 100 nouvelles photos dont 2 en double (WhatsApp). Tapez : mh import --phone --since today"
+    $chainSec = Read-Host "40a. Secondes du debut a la ligne 'Termine' ? (nombre)"
+    $copiesSec = Read-Host "40b. Secondes de l'etape copies (avant la ligne 'Termine') ? (nombre)"
+    $endLine = Read-Host "40c. Recopiez la ligne 'Termine : ...'"
+    $undoOk = Read-Host "40d. Tapez mh undo : les copies sont-elles revenues ? (o/n)"
+    Log "   40a. whole chain, seconds: $chainSec"
+    Log "   40b. copies step, seconds: $copiesSec"
+    Log "   40c. end line: $endLine"
+    Log "   40d. undo puts the copies back: $undoOk"
     $ErrorActionPreference = $saved
 }
 

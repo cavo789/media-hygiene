@@ -132,8 +132,10 @@ tags > places*) : **audit**, pour que les nouveaux fichiers rejoignent votre pho
 [`search`](search.md) (dans la page d'accueil quand elle est ouverte et que l'audit est seul,
 sinon dans la console) ; **tags** 🤖 (le modèle d'IA local décrit les nouvelles photos ; s'il ne
 tourne pas, `tags` le dit et la suite continue) ; **places** 🌐 (les nouveaux lieux nommés en
-ligne, après leur propre question). Enfin, le nom proposé pour les nouvelles photos et le
-diaporama : *📺 Votre diaporama « Promenade à Liège » est prêt*, puis *Le montrer sur la télé
+ligne, après leur propre question) ; **copies** (les nouveaux fichiers identiques à un autre, la
+même photo deux fois ou une que votre photothèque a déjà, vont en quarantaine comme avec
+[`clean`](clean.md) : `mh undo` les remet). Enfin, *✨ Terminé : 42 importés, 3 copies mises de
+côté*, le nom proposé pour les nouvelles photos et le diaporama : *📺 Votre diaporama « Promenade à Liège » est prêt*, puis *Le montrer sur la télé
 maintenant ? (o/N)*. Retirez une étape de `then` pour la couper (`then = []` : rien ne tourne). 🔒 Sans `--free`, le téléphone est seulement lu :
 rien n'y est supprimé, déplacé ni renommé.
 

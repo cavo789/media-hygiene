@@ -1597,7 +1597,6 @@ msgstr "Bande"
 msgid "Bands"
 msgstr "Bandes"
 
-#
 msgid "Beach"
 msgstr "Plage"
 
@@ -1612,7 +1611,6 @@ msgstr ""
 "une application (DCIM\\IMG_1234.jpg), et un dossier nommé par quelqu'un "
 "plutôt qu'un dossier générique (DCIM, Camera, Nouveau dossier)."
 
-#
 msgid "Birthday"
 msgstr "Anniversaire"
 
@@ -2063,7 +2061,6 @@ msgstr "Compléter {path} changerait un réglage : rien n'a été écrit."
 msgid "Computing what the rule would take…"
 msgstr "Calcul de ce que la règle prendrait…"
 
-#
 msgid "Concert"
 msgstr "Concert"
 
@@ -3695,7 +3692,6 @@ msgstr ""
 msgid "For every terminal, add that line to {profile}."
 msgstr "Pour chaque terminal, ajoutez cette ligne à {profile}."
 
-#
 msgid "For example: mh import --phone --since week"
 msgstr "Par exemple : mh import --phone --since week"
 
@@ -3710,11 +3706,12 @@ msgstr ""
 "Pour mh import --phone : inscrit au journal les fichiers partis du "
 "téléphone."
 
-#
 msgid ""
 "For mh import --phone: name the new places, then propose the slideshow of"
 " the new photos."
-msgstr "Pour mh import --phone : nommer les nouveaux lieux, puis proposer le diaporama des nouvelles photos."
+msgstr ""
+"Pour mh import --phone : nommer les nouveaux lieux, puis proposer le "
+"diaporama des nouvelles photos."
 
 msgid "For mh import --phone: prove by their content the files ticked to delete."
 msgstr ""
@@ -4033,7 +4030,6 @@ msgstr ""
 msgid "Hide"
 msgstr "Masquer"
 
-#
 msgid "Hike"
 msgstr "Randonnée"
 
@@ -4585,7 +4581,9 @@ msgstr "Laissés tels quels"
 msgid ""
 "Left on the phone: {count} older photos and videos (before the period; "
 "--since all takes them)."
-msgstr "Laissées sur le téléphone : {count} photos et vidéos plus anciennes (avant la période ; --since all les prend)."
+msgstr ""
+"Laissées sur le téléphone : {count} photos et vidéos plus anciennes "
+"(avant la période ; --since all les prend)."
 
 #, python-brace-format
 msgid ""
@@ -5113,7 +5111,9 @@ msgstr ""
 "ajoutez votre NAS une fois : mh folders add --backup <dossier>."
 
 msgid "Name the event so and save it; change it in the field above at any time"
-msgstr "Nommer l'événement ainsi et l'enregistrer ; modifiable à tout moment dans le champ ci-dessus"
+msgstr ""
+"Nommer l'événement ainsi et l'enregistrer ; modifiable à tout moment dans"
+" le champ ci-dessus"
 
 msgid "Name the faces"
 msgstr "Nommer les visages"
@@ -6088,7 +6088,9 @@ msgstr "Rien sur le téléphone que le PC détienne : rien à libérer."
 msgid ""
 "Nothing runs after the import ([imports] then is empty): mh audit adds "
 "the new files to your library."
-msgstr "Rien ne tourne après l'import ([imports] then est vide) : mh audit ajoute les nouveaux fichiers à votre photothèque."
+msgstr ""
+"Rien ne tourne après l'import ([imports] then est vide) : mh audit ajoute"
+" les nouveaux fichiers à votre photothèque."
 
 msgid "Nothing set aside"
 msgstr "Rien de mis de côté"
@@ -6458,12 +6460,18 @@ msgid ""
 "Only the files of a period: today, week, month, all or a day "
 "(2026-10-29), by the date in their name, else their modified time. "
 "Default: every file of a folder; with --phone, since the last import."
-msgstr "Seulement les fichiers d'une période : today, week, month, all ou un jour (2026-10-29), selon la date de leur nom, sinon leur date de modification. Par défaut : tous les fichiers d'un dossier ; avec --phone, depuis le dernier import."
+msgstr ""
+"Seulement les fichiers d'une période : today, week, month, all ou un jour"
+" (2026-10-29), selon la date de leur nom, sinon leur date de "
+"modification. Par défaut : tous les fichiers d'un dossier ; avec --phone,"
+" depuis le dernier import."
 
 msgid ""
 "Only the files of a period: today, week, month, all or a day "
 "(2026-10-29); default: since the last import."
-msgstr "Seulement les fichiers d'une période : today, week, month, all ou un jour (2026-10-29) ; par défaut : depuis le dernier import."
+msgstr ""
+"Seulement les fichiers d'une période : today, week, month, all ou un jour"
+" (2026-10-29) ; par défaut : depuis le dernier import."
 
 msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
 msgstr ""
@@ -6761,7 +6769,6 @@ msgstr "Code d'appairage"
 msgid "Parties"
 msgstr "Fêtes"
 
-#
 msgid "Party"
 msgstr "Fête"
 
@@ -7105,7 +7112,6 @@ msgstr ""
 msgid "Proposed folder"
 msgstr "Dossier proposé"
 
-#
 msgid "Proposed name:"
 msgstr "Nom proposé :"
 
@@ -8391,7 +8397,6 @@ msgstr "Affiche chaque réglage, son origine, et les points de montage."
 msgid "Show it"
 msgstr "La voir"
 
-#
 msgid "Show it on the TV now? (y/N)"
 msgstr "Le montrer sur la télé maintenant ? (o/N)"
 
@@ -8489,7 +8494,6 @@ msgstr "Taille"
 msgid "Size (bytes)"
 msgstr "Taille (octets)"
 
-#
 msgid "Skiing"
 msgstr "Ski"
 
@@ -9436,9 +9440,10 @@ msgstr ""
 "l'Explorateur l'affiche (monté en lecture seule) : un fichier qu'il "
 "contient n'est pas copié de nouveau."
 
-#
 msgid "The folder the phone's files were copied into, as Explorer shows it."
-msgstr "Le dossier où les fichiers du téléphone ont été copiés, tel que l'Explorateur le montre."
+msgstr ""
+"Le dossier où les fichiers du téléphone ont été copiés, tel que "
+"l'Explorateur le montre."
 
 msgid "The folder to remove"
 msgstr "Dossier à retirer"
@@ -9762,7 +9767,9 @@ msgstr "Le mot de passe de {share} est gardé : mh folders remove l'oublie."
 msgid ""
 "The period of the import: today, week, month, all or a day; default: "
 "since the last import."
-msgstr "La période de l'import : today, week, month, all ou un jour ; par défaut : depuis le dernier import."
+msgstr ""
+"La période de l'import : today, week, month, all ou un jour ; par défaut "
+": depuis le dernier import."
 
 msgid ""
 "The phone is read-only: the reports, the albums and the search. Open this"
@@ -11017,7 +11024,6 @@ msgstr "Utiliser comme couverture"
 msgid "Use the published image, or install the dependencies again: uv sync."
 msgstr "Utilisez l'image publiée, ou réinstallez les dépendances : uv sync."
 
-#, python-brace-format
 msgid "Use this name"
 msgstr "Prendre ce nom"
 
@@ -11098,7 +11104,16 @@ msgid ""
 " audit: the new files join your library (first while another step is on)."
 " tags: the local AI model describes the new photos (skipped when it is "
 "not running). places: the new spots named online, after its own question."
-msgstr "Ce qui tourne après un import, dans cet ordre ; retirez une étape pour la couper. audit : les nouveaux fichiers rejoignent votre photothèque (en premier tant qu'une autre étape est active). tags : le modèle d'IA local décrit les nouvelles photos (sauté s'il ne tourne pas). places : les nouveaux lieux nommés en ligne, après sa propre question."
+" copies: the new files that are exact copies of another go to the "
+"quarantine (mh undo puts them back)."
+msgstr ""
+"Ce qui tourne après un import, dans cet ordre ; retirez une étape pour la"
+" couper. audit : les nouveaux fichiers rejoignent votre photothèque (en "
+"premier tant qu'une autre étape est active). tags : le modèle d'IA local "
+"décrit les nouvelles photos (sauté s'il ne tourne pas). places : les "
+"nouveaux lieux nommés en ligne, après sa propre question. copies : les "
+"nouveaux fichiers identiques à un autre vont en quarantaine (mh undo les "
+"remet)."
 
 msgid "What the last audit found"
 msgstr "Ce que le dernier audit a trouvé"
@@ -12728,14 +12743,18 @@ msgstr ""
 msgid "mh forgets it; its photos do not move."
 msgstr "mh l'oublie ; ses photos ne bougent pas."
 
-#
 msgid ""
 "mh import --phone copies only the new photos and videos of a phone "
 "plugged in over USB; --to <folder> chooses where, --only <folder of DCIM>"
 " takes that folder only (Camera), --since today|week|month|all a period "
 "(default: since the last import), --free then offers to delete from the "
 "phone what the PC holds."
-msgstr "mh import --phone copie seulement les nouvelles photos et vidéos d'un téléphone branché en USB ; --to <dossier> choisit où, --only <dossier de DCIM> ne prend que ce dossier (Camera), --since today|week|month|all une période (par défaut : depuis le dernier import), --free propose ensuite d'effacer du téléphone ce que le PC détient."
+msgstr ""
+"mh import --phone copie seulement les nouvelles photos et vidéos d'un "
+"téléphone branché en USB ; --to <dossier> choisit où, --only <dossier de "
+"DCIM> ne prend que ce dossier (Camera), --since today|week|month|all une "
+"période (par défaut : depuis le dernier import), --free propose ensuite "
+"d'effacer du téléphone ce que le PC détient."
 
 msgid ""
 "mh import --phone is for Windows only: type it in Windows PowerShell, "
@@ -16897,6 +16916,9 @@ msgstr ""
 msgid "→ {folder}"
 msgstr "→ {folder}"
 
+msgid "↩️ Put them back: mh undo"
+msgstr "↩️ Pour les remettre : mh undo"
+
 #, python-brace-format
 msgid "↩️ The index replaced was backed up first: mh restore {name} puts it back."
 msgstr "↩️ L'index remplacé a d'abord été sauvegardé : mh restore {name} le remet."
@@ -16917,6 +16939,10 @@ msgstr[1] ""
 
 msgid "▶ Play"
 msgstr "▶ Lecture"
+
+#, python-brace-format
+msgid "✨ All done: {count} imported, {aside} copies set aside."
+msgstr "✨ Terminé : {count} importés, {aside} copies mises de côté."
 
 msgid "❚❚ Pause"
 msgstr "❚❚ Pause"
@@ -16990,7 +17016,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "📺 Your slideshow \"{title}\" is ready: mh slideshow --folder \"{folder}\""
-msgstr "📺 Votre diaporama « {title} » est prêt : mh slideshow --folder \"{folder}\""
+msgstr ""
+"📺 Votre diaporama « {title} » est prêt : mh slideshow --folder "
+"\"{folder}\""
 
 msgid "🔒 Analyse: read-only, never changes your photos"
 msgstr "🔒 Analyser : lecture seule, ne modifie jamais vos photos"
@@ -17168,7 +17196,9 @@ msgstr ""
 msgid ""
 "🤖 Describing the new photos with the local AI model (mh tags); skipped if"
 " it is not running:"
-msgstr "🤖 Description des nouvelles photos par le modèle d'IA local (mh tags) ; sautée s'il ne tourne pas :"
+msgstr ""
+"🤖 Description des nouvelles photos par le modèle d'IA local (mh tags) ; "
+"sautée s'il ne tourne pas :"
 
 msgid "🤖 Local AI (Ollama), optional: a model set in config.toml"
 msgstr "🤖 IA locale (Ollama), facultative : un modèle indiqué dans config.toml"

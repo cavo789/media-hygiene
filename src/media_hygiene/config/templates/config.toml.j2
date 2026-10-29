@@ -174,8 +174,8 @@ interval_seconds = 8
 
 
 [imports]
-{{ comment(_("What runs after an import, in this order; remove a step to switch it off. audit: the new files join your library (first while another step is on). tags: the local AI model describes the new photos (skipped when it is not running). places: the new spots named online, after its own question.")) }}
-then = ["audit", "tags", "places"]
+{{ comment(_("What runs after an import, in this order; remove a step to switch it off. audit: the new files join your library (first while another step is on). tags: the local AI model describes the new photos (skipped when it is not running). places: the new spots named online, after its own question. copies: the new files that are exact copies of another go to the quarantine (mh undo puts them back).")) }}
+then = ["audit", "tags", "places", "copies"]
 
 
 [share]

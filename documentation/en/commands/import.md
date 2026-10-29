@@ -122,8 +122,10 @@ files of the phone, not of the copy). Then it runs the steps of `[imports] then`
 files join your library and [`search`](search.md) (in the home page when it is open and the audit
 is the only step, else in the console); **tags** 🤖 (the local AI model describes the new
 photos; when it is not running, `tags` says so and the chain goes on); **places** 🌐 (the new spots
-named online, after their own question). Last, the name proposed for the new photos and the
-slideshow: *📺 Your slideshow "Walk in Liège" is ready*, then *Show it on the TV now? (y/N)*.
+named online, after their own question); **copies** (the new files that are exact copies of
+another, the same photo twice or one your library already holds, go to the quarantine like a
+[`clean`](clean.md): `mh undo` puts them back). Last, *✨ All done: 42 imported, 3 copies set
+aside*, the name proposed for the new photos and the slideshow: *📺 Your slideshow "Walk in Liège" is ready*, then *Show it on the TV now? (y/N)*.
 Remove a step from `then` to switch it off (`then = []`: nothing runs). 🔒 Without `--free`, the phone is only read: nothing on
 it is deleted, moved or renamed.
 
