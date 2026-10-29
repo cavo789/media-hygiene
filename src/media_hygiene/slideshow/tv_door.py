@@ -44,6 +44,8 @@ def screen_page(app: SlideshowApp, request: Request, visitor: Visitor) -> Respon
         fresh = app.desk.screens.arrive(screen_token(request))
         if fresh is not None:
             headers = (screen_cookie(fresh),)
+            app.desk.show.version += 1  # the remotes put the code field on top (0456)
+            app.desk.changes.notify()
     return Response(
         HTTPStatus.OK,
         app.pages.screen,

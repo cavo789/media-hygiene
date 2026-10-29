@@ -117,7 +117,7 @@ class Desk:
         Returns:
             The version, the photo shown (its key, its place from 1), whether it
             plays, the interval, the photos set out, the TVs paired, whether the
-            videos are shown.
+            videos are shown, whether a TV waits for its code.
         """
         show = self.show
         current = show.current
@@ -131,6 +131,7 @@ class Desk:
             "seconds": round(show.timing.interval),
             "out": sorted(show.skipped),
             "screens": self.screens.paired,
+            "tvWaiting": self.screens.waiting,  # the code field on top (0456)
             "films": show.films,  # False: every TV shows photos only (0292)
             "telling": self.screens.telling.value,
             "chapter": None if chapter is None else chapter.view(),
