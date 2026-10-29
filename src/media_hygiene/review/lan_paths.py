@@ -16,7 +16,7 @@ from dataclasses import replace
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.docs.pages import DOCS_PREFIX
-from media_hygiene.review.album_show import ALBUM_STEP, SLIDESHOW_PAGE
+from media_hygiene.review.album_show import ALBUM_STEP, SLIDESHOW_PAGE, TV_CHOOSE
 from media_hygiene.review.home_app import AUDIT_PATH
 from media_hygiene.review.home_assets import ASSETS_PREFIX, FAVICON_PATH
 from media_hygiene.review.home_views import REPORTS_PREFIX
@@ -55,10 +55,10 @@ READ_PREFIXES: Final = (
 _SAYS: Final = frozenset({SEARCH_PATH, PRESENCE_PATH})
 # The `POST`s a phone may send: reads, but an album's change (0295: never a photo's).
 # No album change from a phone: albums are made on the PC (0435, decided 2026-10-27).
-# The slideshow's remote moves the show held in memory and pairs a TV (0417): no file.
-POST_PATHS: Final = (
-    _SAYS | FOLDER_POSTS | {f"{_SHOW}{SHOW_PATH}", f"{_SHOW}{SCREENS_PATH}"}
-)
+# The slideshow's remote moves the show held in memory and pairs a TV (0417), a folder
+# or a month chosen on the phone starts one (0455): no file.
+_SHOW_POSTS: Final = {f"{_SHOW}{SHOW_PATH}", f"{_SHOW}{SCREENS_PATH}", TV_CHOOSE}
+POST_PATHS: Final = _SAYS | FOLDER_POSTS | _SHOW_POSTS
 # The one acting step a paired phone may start on the PC (0444, maintainer 2026-10-28):
 # an album saved on the PC, on the TV (`lan_show`). Every other step stays the PC's.
 PHONE_STEPS: Final = frozenset({ALBUM_STEP})
