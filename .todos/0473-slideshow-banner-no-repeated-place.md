@@ -1,4 +1,4 @@
-# 0464 — Slideshow banner: do not repeat the place when it is the event's name
+# 0473 — Slideshow banner: do not repeat the place when it is the event's name
 
 - **Priority**: Medium
 - **Batch**: slideshow

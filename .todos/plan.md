@@ -30,7 +30,7 @@ One `/todo:run NNNN` each, highest priority first.
 | ID | Priority | Title | Batch |
 |---|---|---|---|
 | 0461 | Medium | Family home page: *On this day*, *Latest additions*, *Slideshow on the TV*, *Map*, `[home] family_title` (rest of 0293) | home |
-| 0464 | Medium | Slideshow banner: do not repeat the place when it is the event's name | slideshow |
+| 0473 | Medium | Slideshow banner: do not repeat the place when it is the event's name | slideshow |
 | 0462 | Low | One album by a 24 h link on someone else's phone: the implementation (rest of 0334) | share |
 
 ## Waiting for the maintainer
@@ -47,7 +47,7 @@ One `/todo:run NNNN` each, highest priority first.
 | 0447 | High | What the maintainer still has to review (resume point of 2026-10-28) | go through the list below with Claude (`/todo:review-feedback`, then `/todo:inbox`) |
 | 0255 | Medium | Measure `mh phone` with an iPhone: HEIC conversion, Live Photos, deletion from the PC | one run of step 19 with an iPhone plugged in over USB (unlocked, "Trust this computer"), about 10 minutes (*estimated*, as the Android run) |
 | 0413 | Medium | Import then free the phone in one go: the implementation | the result of step 19r of `mh-measure.ps1` (CopyHere vs MoveHere, 20 synthetic files), run with `.\mh-measure.ps1 -Only 19 -Count 1` |
-| 0463 | Medium | Slideshow: the place of each photo on the TV (town, monument when known) | monuments: whether the image may grow for an offline landmark list (size to measure) |
+| 0472 | Medium | Slideshow: the place of each photo on the TV (town, monument when known) | monuments: whether the image may grow for an offline landmark list (size to measure) |
 | 0322 | Low | `mh phone`: the folders a gallery app makes outside `DCIM` (`Pictures/…`) | the folders of their phone outside `DCIM` that hold photos (names only) |
 | 0441 | Low | `mh import --phone` copies into `From phone\<name>`, as `mh import <folder>` | one `mh import --phone` with the phone plugged in, after the change |
 

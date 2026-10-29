@@ -1,4 +1,4 @@
-# 0463 — Slideshow: the place of each photo on the TV (town, monument when known)
+# 0472 — Slideshow: the place of each photo on the TV (town, monument when known)
 
 - **Priority**: Medium
 - **Batch**: slideshow
