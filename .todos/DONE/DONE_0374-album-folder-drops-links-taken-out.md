@@ -32,3 +32,15 @@ whose other name lies outside the analysed folders is left in place; a file with
 `st_nlink == 1` (copied by hand: its only copy) is never touched. Design proposed in the
 run of 2026-10-27: split the undo machinery (`actions/reversal.py` is at the 200-line cap)
 before adding the new journal kind.
+
+## Status — DONE (2026-10-29)
+
+- `actions/album_stale.py` finds the folder's names no file of the album has any more; the
+  other name through the index (`services/album_others.py`: same size, then same
+  `(st_dev, st_ino)`, outside the album folder). `st_nlink == 1` never touched; other name not
+  found → listed as left in place; while a file of the album is not found, nothing is removed.
+- `--apply` removes them (rechecked `samefile` just before), journaled as `unlink`
+  (`keeper` = other name); `undo` relinks (`Reversal.RELINK`, size checked). `reversal.py`
+  split: `_changed` moved to `actions/moved_check.py`.
+- Tests in `tests/integration/test_album.py` (taken out → listed, removed, undone; hand copy
+  kept; other name unseen → left; a photo not found → nothing removed). Docs en + fr.

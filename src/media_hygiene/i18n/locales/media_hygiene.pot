@@ -3785,6 +3785,9 @@ msgstr ""
 msgid "Links to make"
 msgstr ""
 
+msgid "Links to remove"
+msgstr ""
+
 #, python-brace-format
 msgid "Links updated, read back from the disk: {parts}."
 msgstr ""
@@ -11238,6 +11241,11 @@ msgstr ""
 msgid "take the picked files back out of the set aside"
 msgstr ""
 
+msgid ""
+"taken out of the album, but its other name is outside the analysed "
+"folders: left in place"
+msgstr ""
+
 #, python-brace-format
 msgid "taken {taken} (EXIF: what the search finds by)"
 msgstr ""
@@ -12402,6 +12410,16 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} link made: no photo was copied nor moved, no space is used."
 msgid_plural "{count} links made: no photo was copied nor moved, no space is used."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} link of a photo taken out of the album removed: the photo stays "
+"where it is."
+msgid_plural ""
+"{count} links of photos taken out of the album removed: the photos stay "
+"where they are."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -13704,6 +13722,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{path}: not lightened: {reason}"
+msgstr ""
+
+#, python-brace-format
+msgid "{path}: taken out of the album, its link goes; the photo stays at {other}"
 msgstr ""
 
 #, python-brace-format

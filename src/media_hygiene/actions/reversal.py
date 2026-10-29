@@ -16,11 +16,11 @@ from media_hygiene.actions.copy_in_undo import copy_blocker
 from media_hygiene.actions.folder_undo import folder_blocker
 from media_hygiene.actions.kinds import MARKS, ActionKind
 from media_hygiene.actions.link_undo import separate_blocker
+from media_hygiene.actions.moved_check import changed_since
 from media_hygiene.actions.quarantine import QUARANTINED
 from media_hygiene.actions.xmp_undo import xmp_blocker
 from media_hygiene.errors import JournalError
 from media_hygiene.i18n import _
-from media_hygiene.scan.hashing import full_digest
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
@@ -44,6 +44,7 @@ class Reversal(Enum):
     RESTORE_XMP = auto()
     FORGET_MARK = auto()  # a mark: nothing on the disk, the undo line is the change
     REMOVE_COPY = auto()  # a file `import` copied in (0245): removed while unchanged
+    RELINK = auto()  # an album's link removed (0374): made again from its other name
 
 
 REVERSALS: Final[Mapping[ActionKind, Reversal]] = MappingProxyType(
@@ -56,6 +57,7 @@ REVERSALS: Final[Mapping[ActionKind, Reversal]] = MappingProxyType(
         ActionKind.LINK: Reversal.REMOVE_LINK,
         ActionKind.LINK_DUPLICATE: Reversal.SEPARATE_LINK,
         ActionKind.MARK_ALBUM: Reversal.REMOVE_MARKER,
+        ActionKind.UNLINK: Reversal.RELINK,
         ActionKind.CREATE_XMP: Reversal.REMOVE_XMP,
         ActionKind.MERGE_XMP: Reversal.RESTORE_XMP,
         ActionKind.COPY_IN: Reversal.REMOVE_COPY,
@@ -64,6 +66,8 @@ REVERSALS: Final[Mapping[ActionKind, Reversal]] = MappingProxyType(
     | dict.fromkeys(MARKS, Reversal.FORGET_MARK)
     | dict.fromkeys(QUARANTINED, Reversal.UNQUARANTINE)
 )
+# The sources that must still hold what the action saw: a moved file, a link's photo.
+_CHECKED: Final = frozenset({Reversal.MOVE_BACK, Reversal.RELINK})
 _WITHOUT_SOURCE: Final = frozenset({Reversal.RECREATE_EMPTY, Reversal.RECREATE_FOLDER})
 # Sidecars `xmp` wrote: undone only while they hold what it wrote (`xmp_undo`).
 XMP_REVERSALS: Final = frozenset({Reversal.REMOVE_XMP, Reversal.RESTORE_XMP})
@@ -157,7 +161,7 @@ def _source_blocker(entry: JournalEntry, reversal: Reversal) -> str | None:
     if source is None:
         return _("the journal does not say where its content is")
     if source.is_file():
-        changed = reversal is Reversal.MOVE_BACK and _changed(entry, source)
+        changed = reversal in _CHECKED and changed_since(entry, source)
         return _("{path} changed since").format(path=source) if changed else None
     if reversal is Reversal.MOVE_BACK:
         return _("it is no longer at {path}: moved or renamed since").format(
@@ -181,20 +185,6 @@ def source_of(entry: JournalEntry, reversal: Reversal) -> Path | None:
         Reversal.COPY_FROM_KEEPER: entry.keeper,
         Reversal.UNQUARANTINE: entry.quarantine,
         Reversal.MOVE_BACK: entry.target,
+        Reversal.RELINK: entry.keeper,
     }.get(reversal)
     return Path(source) if source else None
-
-
-def _changed(entry: JournalEntry, source: Path) -> bool:
-    """Tell whether a moved file was modified since the move.
-
-    Args:
-        entry: The move.
-        source: Where the file is now.
-
-    Returns:
-        True when its size, or its SHA-256 when journaled, differs.
-    """
-    if source.stat().st_size != entry.size:
-        return True
-    return entry.sha256 is not None and full_digest(source) != entry.sha256

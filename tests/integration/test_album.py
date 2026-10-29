@@ -219,3 +219,71 @@ def test_a_photo_moved_by_hand_is_linked_where_it_is_now(
     made = run(cli, "album", "Crete 2023", "--apply")
     assert made.exit_code == 0, made.output
     assert album_files(locations, "Crete 2023")["DSC_0001.jpg"].samefile(new)
+
+
+def test_a_photo_taken_out_loses_its_link_and_undo_brings_it_back(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0374: the folder follows the album; a copy made by hand is never touched."""
+    photos = classified(cli, locations, monkeypatch)
+    assert run(cli, "audit").exit_code == 0  # the index knows the photos
+    kept = photos / WEDDING_CATEGORY / "DSC_0000.jpg"
+    out = photos / "Divers" / "IMG_9000.jpg"
+    _saved_album(locations, (kept, out))
+    assert run(cli, "album", "Crete 2023", "--apply").exit_code == 0
+    folder = locations.data_dir / ALBUMS / "Crete 2023"
+    by_hand = folder / "notes.jpg"
+    by_hand.write_bytes(b"only copy")
+    album_store(make_runtime(locations)).remove(AlbumChange("Crete 2023", (out,)))
+    shown = flat(run(cli, "album", "Crete 2023").output)
+    assert "Links to remove │ 1" in shown
+    assert "IMG_9000.jpg: taken out of the album" in shown
+    assert (folder / "IMG_9000.jpg").is_file()  # a dry run changes nothing
+    made = run(cli, "album", "Crete 2023", "--apply")
+    assert made.exit_code == 0, made.output
+    assert "1 link of a photo taken out of the album removed" in flat(made.output)
+    assert sorted(album_files(locations, "Crete 2023")) == [
+        "DSC_0000.jpg",
+        "notes.jpg",
+    ]
+    assert out.is_file()
+    assert by_hand.read_bytes() == b"only copy"
+    again = run(cli, "album", "Crete 2023", "--apply")
+    assert "Nothing to add" in again.output
+    undone = run(cli, "undo")
+    assert undone.exit_code == 0, undone.output
+    assert (folder / "IMG_9000.jpg").samefile(out)
+
+
+def test_a_link_whose_photo_moved_unseen_is_left_in_place(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Its other name not in the index (moved, no audit since): never removed."""
+    photos = classified(cli, locations, monkeypatch)
+    assert run(cli, "audit").exit_code == 0
+    kept = photos / WEDDING_CATEGORY / "DSC_0000.jpg"
+    out = photos / "Divers" / "IMG_9000.jpg"
+    _saved_album(locations, (kept, out))
+    assert run(cli, "album", "Crete 2023", "--apply").exit_code == 0
+    album_store(make_runtime(locations)).remove(AlbumChange("Crete 2023", (out,)))
+    out.rename(photos / "Divers" / "renamed.jpg")
+    made = flat(run(cli, "album", "Crete 2023", "--apply").output)
+    assert "Links to remove │ 0" in made
+    assert "left in place" in made
+    assert "IMG_9000.jpg" in album_files(locations, "Crete 2023")
+
+
+def test_a_photo_not_found_keeps_every_link(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A file of the album not found: its link may be one of those left over."""
+    photos = classified(cli, locations, monkeypatch)
+    assert run(cli, "audit").exit_code == 0
+    kept = photos / WEDDING_CATEGORY / "DSC_0000.jpg"
+    other = photos / WEDDING_CATEGORY / "DSC_0001.jpg"
+    _saved_album(locations, (kept, other))
+    assert run(cli, "album", "Crete 2023", "--apply").exit_code == 0
+    other.rename(photos / WEDDING_CATEGORY / "moved.jpg")  # no audit since
+    shown = flat(run(cli, "album", "Crete 2023").output)
+    assert "Links to remove │ 0" in shown
+    assert "DSC_0001.jpg" in album_files(locations, "Crete 2023")
