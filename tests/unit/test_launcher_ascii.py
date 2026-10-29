@@ -57,8 +57,8 @@ def test_an_accented_folder_is_written_in_ascii_and_read_back() -> None:
     assert text.isascii()
     assert "Vid$([char]0x00E9)os" in text
     back = expanded(text)
-    assert '-v "C:\\Photos\\Vidéos:/data/c/Photos/Vidéos${mode}" `' in back
-    assert '-v "D:\\Été 2019:/data/d/Été 2019${mode}" `' in back
+    assert "'-v'; \"C:\\Photos\\Vidéos:/data/c/Photos/Vidéos${mode}\" }" in back
+    assert "'-v'; \"D:\\Été 2019:/data/d/Été 2019${mode}\" }" in back
 
 
 def test_comments_lose_their_accents_only() -> None:

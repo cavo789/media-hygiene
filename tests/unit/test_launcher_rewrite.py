@@ -494,7 +494,7 @@ def test_folders_add_backup_rewrites_and_keeps_it_apart(tmp_path: Path) -> None:
     text = script.read_text(encoding="utf-8")
     assert f"_mh_backups=({quoted(str(backup), Shell.BASH)})" in text
     mount = next(line for line in text.splitlines() if f'-v "{backup}:' in line)
-    assert mount.endswith('Backup disk:ro" \\')
+    assert mount.endswith('Backup disk:ro"); fi')
     listed = _mh(tmp_path, script, "mh folders")
     backups = listed.stdout.index("Your backups, compared, never changed:")
     assert listed.stdout.index(f"    {backup}: found", backups) > backups

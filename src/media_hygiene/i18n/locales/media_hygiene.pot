@@ -663,6 +663,9 @@ msgid ""
 "folder (done anyway for those listed {days} days ago)."
 msgstr ""
 
+msgid "A photo folder was plugged in or removed: the home page follows it."
+msgstr ""
+
 msgid "A photo of this person: its path"
 msgstr ""
 
@@ -13055,6 +13058,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{folder}: give the full path, from the drive letter."
+msgstr ""
+
+#, python-brace-format
+msgid "{folder}: not plugged in, shown once it is."
 msgstr ""
 
 #, python-brace-format

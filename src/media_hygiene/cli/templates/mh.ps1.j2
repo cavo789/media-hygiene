@@ -77,7 +77,10 @@ function global:{{ function }} {
 {% endfor %}
     }
     foreach ($folder in @({{ quoted(checked) }})) {
-        if (-not (Test-Path -LiteralPath $folder)) { Write-Host "{{ texts.missing }}"; $global:LASTEXITCODE = 2; return }
+        if (Test-Path -LiteralPath $folder) { continue }
+        # The home server starts without a folder not plugged in: shown once it is (0359).
+        if ($global:MediaHygieneDetach) { Write-Host "{{ texts.unplugged }}"; continue }
+        Write-Host "{{ texts.missing }}"; $global:LASTEXITCODE = 2; return
     }
     $command = $rest | Where-Object { $_ -in @({{ listed(script.commands.names) }}) } | Select-Object -First 1
     # `{{ function }} import <folder>`: that folder only, read-only, for this run; never added (0378).
@@ -144,6 +147,15 @@ function global:{{ function }} {
         $rest = @($keep.rest)
         $share = @('-v', "{{ keep.host }}:{{ keep.point }}")
     }
+    # The photo folders and backups; the home server leaves out those not plugged in (0359).
+    $data = @(
+{% for volume in script.data %}
+        if (-not $detach -or "{{ volume.host }}" -notmatch '^[A-Za-z]:' -or (Test-Path -LiteralPath "{{ volume.host }}")) { '-v'; "{{ volume.host }}:{{ volume.point.as_posix() }}${mode}" }
+{% endfor %}
+{% for volume in script.backups %}
+        if (-not $detach -or "{{ volume.host }}" -notmatch '^[A-Za-z]:' -or (Test-Path -LiteralPath "{{ volume.host }}")) { '-v'; "{{ volume.host }}:{{ volume.point.as_posix() }}:ro" }
+{% endfor %}
+    )
     $status = 1
     $follow = $false
     $browser = $null
@@ -182,13 +194,8 @@ function global:{{ function }} {
 {% for option in script.environment %}
             {{ option }} `
 {% endfor %}
-{% for volume in script.data %}
-            -v "{{ volume.host }}:{{ volume.point.as_posix() }}${mode}" `
-{% endfor %}
+            @data `
             @photos `
-{% for volume in script.backups %}
-            -v "{{ volume.host }}:{{ volume.point.as_posix() }}:ro" `
-{% endfor %}
             @($nas.mounts) `
             @(foreach ($volume in $source) { '-v'; "${volume}:ro" }) `
 {% for volume in script.tools + script.drives %}

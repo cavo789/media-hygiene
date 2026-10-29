@@ -8,7 +8,7 @@ alone.
 from __future__ import annotations
 
 import re
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
@@ -16,7 +16,7 @@ import pytest
 
 from media_hygiene.constants import ExitCode, Locale
 from media_hygiene.i18n import using
-from media_hygiene.paths.docker_run import Shell
+from media_hygiene.paths.docker_run import Shell, Volume
 from media_hygiene.paths.mounts import MountTable
 from media_hygiene.review.home_fields import RELAY_FIELDS, write_step
 from media_hygiene.review.home_views import (
@@ -57,6 +57,17 @@ docker() {
     if [[ "$1" == version ]]; then return 0; fi
     if [[ "$1" == stop ]]; then said "stopped:$2"; return 0; fi
     if [[ "$1" == wait ]]; then
+        if [[ -s "$HOME/unplug" ]]; then
+            # A folder removed during the session (0359): served until mh stops it.
+            rm -rf -- "$(<"$HOME/unplug")" "$HOME/unplug"
+            local waited
+            for waited in $(seq 80); do
+                if grep -qs '^stopped:' "$HOME/said"; then break; fi
+                sleep 0.1
+            done
+            echo 143
+            return 0
+        fi
         # The page asks the console steps of $HOME/asks one by one (0355), each once
         # the last is done; then the server ends with the code `run -d` kept.
         local asked step=0 tries
@@ -141,19 +152,34 @@ docker() {
 """
 
 
+@dataclass(frozen=True, slots=True)
+class Unplugged:
+    """`home`'s codes, and the photo folders of the script (0359)."""
+
+    codes: str
+    data: tuple[Volume, ...]
+
+
 def _bash(
-    tmp_path: Path, line: str, codes: str | tuple[str, str]
+    tmp_path: Path,
+    line: str,
+    codes: str | tuple[str, str] | Unplugged,
 ) -> subprocess.CompletedProcess[str]:
     """Load the bash `mh` and run `line`; `home` exits with `codes`, one by one.
 
     A pair: `home`'s codes, then `browse`'s (its *Apply now* ends on that code).
     """
+    data: tuple[Volume, ...] = ()
+    if isinstance(codes, Unplugged):
+        data = codes.data
+        codes = codes.codes
     codes, browse = codes if isinstance(codes, tuple) else (codes, "0")
     runtime = replace(
         make_runtime(make_locations(tmp_path)), mounts=MountTable(frozenset())
     )
     script = tmp_path / "mh.sh"
-    script.write_text(render_script(launcher_script(runtime, Shell.BASH, _COMMANDS)))
+    built = launcher_script(runtime, Shell.BASH, _COMMANDS)
+    script.write_text(render_script(replace(built, data=data or built.data)))
     (tmp_path / "codes").write_text(f"{codes}\n")
     (tmp_path / "browse").write_text(f"{browse}\n")
     fake = _FAKE_DOCKER.replace("RELAY", _RELAY).replace("KEPT", _KEPT)
@@ -504,7 +530,8 @@ def test_powershell_watches_the_server_in_the_background(tmp_path: Path) -> None
     assert "Start-Process -FilePath docker -ArgumentList 'wait', $id" in watch
     assert "while (-not $waiter.HasExited) {" in watch
     assert "Start-Sleep -Milliseconds 250" in watch
-    assert watch.count("docker ") == 2  # wait, then stop on Ctrl+C: never per poll
+    # wait, stop on a folder plugged in or removed (0359), on Ctrl+C: never per poll
+    assert watch.count("docker ") == 3
     assert "if (-not $ended) { $null = docker stop $id" in watch
     assert "[IO.File]::WriteAllText($done," in watch  # no byte order mark
     assert "if ($detach) { $tty = @('-d', '--cidfile', $detach) }" in text
@@ -566,3 +593,47 @@ def test_the_powershell_loop_starts_a_crashed_server_again(tmp_path: Path) -> No
     ends = f"if ($status -le {STEP_EXIT_BASE} -or $status -ge {SIGNAL_EXIT_BASE})"
     assert text.index(crashed) < text.index(ends)
     assert "$crashed = Get-Date" in text
+
+
+def test_a_folder_removed_during_the_session_restarts_the_server_once(
+    tmp_path: Path,
+) -> None:
+    """0359: a folder leaving: the server stopped, started again without it, one tab."""
+    photos = tmp_path / "stick"
+    photos.mkdir()
+    (tmp_path / "unplug").write_text(f"{photos}\n")
+    data = (Volume(str(photos), Path("/data/stick")),)
+    done = _bash(tmp_path, "mh", Unplugged("0 0", data))
+    assert _lines(done) == [
+        "home:relayed",
+        "stopped:home1",
+        "home:relayed",
+        "status=0",
+    ]
+    assert "plugged in or removed" in done.stderr
+    assert f"{photos}: not plugged in, shown once it is" in done.stderr
+    assert _tabs(tmp_path) <= 1
+
+
+def test_a_command_still_refuses_a_missing_folder(tmp_path: Path) -> None:
+    """0359: only the home server starts without it; a command says to plug it in."""
+    missing = tmp_path / "stick"
+    data = (Volume(str(missing), Path("/data/s")),)
+    done = _bash(tmp_path, "mh history", Unplugged("0", data))
+    assert "cannot be found: plug its disk in" in done.stderr
+    assert _lines(done) == ["status=2"]
+
+
+def test_powershell_follows_the_folders_during_the_session(tmp_path: Path) -> None:
+    """0359: mh.ps1 polls the folders, stops the server on a change, starts it again."""
+    runtime = make_runtime(make_locations(tmp_path))
+    built = launcher_script(runtime, Shell.POWERSHELL, _COMMANDS)
+    stick = Volume("E:\\Photos", Path("/data/e/Photos"))
+    text = render_script(replace(built, data=(stick,)))
+    code = int(ExitCode.REMOUNT)
+    assert "if ($global:MediaHygieneDetach) { Write-Host" in text
+    assert "not plugged in, shown once it is" in text
+    assert "(Test-Path -LiteralPath \"E:\\Photos\")) { '-v';" in text
+    assert "(_mh_present) -ne $seen" in text
+    assert f"if ($moved) {{ $global:LASTEXITCODE = {code}; return }}" in text
+    assert text.index(f"if ($status -eq {code}) {{") < text.index("$crashed = Get-Date")

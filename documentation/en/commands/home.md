@@ -313,6 +313,11 @@ fonts and pictures come from the image itself: the page asks nothing of any othe
 
 ## Good to know
 
+- **A USB stick or a disk plugged in later** (0359): `mh` starts the home page without a photo
+  folder that is not there (one line: *not plugged in, shown once it is*), checks your folders
+  every 3 seconds, and starts the page again with the folder once it is plugged in (about
+  2–3 s; the tab reloads by itself). Unplugged the same way. A command typed alone still refuses
+  a missing folder.
 - The page answers only at `127.0.0.1` or `localhost` (and, under `mh --lan`, at the PC's address
   to a paired phone), and only to its own buttons: another site cannot choose a step for you.
 - Closing the page's browser tab, or Ctrl+C in the terminal stops the page
