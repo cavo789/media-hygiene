@@ -91,3 +91,7 @@ The link that opens one album only, for other people's phones (no pairing), is n
   an API in the phone's list, thumbnails), *Latest additions*, the *Slideshow on the TV* and
   *Map* entrances.
 - `[home] family_title` (the title is the fixed translated text for now).
+
+## Closed (inbox, 2026-10-29)
+
+Everything decided; the rest refiled as 0461.

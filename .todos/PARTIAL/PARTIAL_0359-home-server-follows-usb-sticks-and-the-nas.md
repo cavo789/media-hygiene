@@ -56,3 +56,28 @@ started again, and a missing folder refuses every command).
 `mh search` / `mh browse` typed in another window while this `mh`'s home server runs: open the
 tab on that server (found by its container label) instead of starting a second page and asking
 to close one (the port guard of 0250).
+
+## Status — PARTIAL (2026-10-29)
+
+### Done
+- Items 1–2 for photo folders and backups: the home server (`mh` alone, detached) starts
+  without a folder not plugged in (one line *E:\Photos: not plugged in, shown once it is*);
+  any other command still refuses it. `mh`'s watch loop (`mh.ps1` / `mh.sh`) checks the
+  folders every 12 polls (3 s, `Test-Path` / `-d`, `_mh_present`); a change stops the server,
+  the watch returns `ExitCode.REMOUNT` (6) and the loop starts it again with the new mounts,
+  the tab kept (no second tab), one line said (`launcher_menu.REMOUNT`).
+- Tests (`test_launcher_home.py`): bash fake docker, a folder removed during the session
+  restarts the server once; a command still refuses a missing folder; the PowerShell blocks
+  as text. Step 37 of `mh-measure.ps1` (by hand). Docs en + fr (`commands/home.md`).
+
+### Not done
+- The NAS checked every minute (asynchronous port 445), item 2's NAS half, and item 4 (a NAS
+  asleep: time limit on reads, a *NAS not reachable* tile). **Reason:** scope of one run.
+- Item 3: *Remove the USB stick* button and `mh eject E:`. **Reason:** scope.
+- Item 5: files of a missing folder opened from search/browse say *not plugged in*. **Reason:** scope.
+- *Also*: `mh search` in another window opening the tab on the running home server. **Reason:** scope.
+- That the open tab reloads by itself after the restart (0354's `X-Media-Hygiene-Run`) is not
+  re-tested here; and on WSL a stick plugged in later is not mounted at /mnt/<x> by WSL itself
+  (`mh_drives.sh.j2`), so the bash follow-up works on native Linux only.
+- The Windows run: `.\mh-measure.ps1 -Only 37 -Count 1 -Image media-hygiene` after
+  `mh update` with the image of branch `iterate/2026-10-29`. **Reason:** Windows only.

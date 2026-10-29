@@ -95,3 +95,7 @@ after the implementation: an unattended run closes PARTIAL on it.
 ## Inbox (2026-10-27)
 
 - `mh --lan` from bash: dropped (no request, Windows-first). The acting commands from the phone: their own TODO later. The phone test stays a measure (`-Only 29`) (maintainer, 2026-10-27).
+
+## Inbox (2026-10-29)
+
+- The acting commands from the phone: dropped (the phone stays read-only). `mh --lan` from bash: dropped. Only the phone test (`-Only 29`) remains.

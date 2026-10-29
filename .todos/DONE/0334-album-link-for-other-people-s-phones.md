@@ -52,3 +52,7 @@ By the maintainer, on the design note's two open points:
   disk).
 - **Photos and videos** go over the link (videos play in place, as on a paired phone).
 The design is now complete: the code can be written.
+
+## Closed (inbox, 2026-10-29)
+
+Design approved; the implementation refiled as 0462.

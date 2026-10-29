@@ -108,11 +108,19 @@ function openRun(action, command, run, kept) {
     <p class="dlg-text" role="status">${esc(kept ? fill(T.runsKept, { command: command, window: WINDOW }) : where)}</p>
     ${action.kind === "page" ? "" : `<p class="dlg-alert" role="alert">${icon("keyboard")} ${esc(fill(T.switchNow, { window: WINDOW }))}</p>`}
     <p class="dlg-hint" id="runHint" hidden>${icon("info")} ${esc(fill(T.nothingMoves, { window: WINDOW }))}</p>
+    <p class="small" id="runProgress"></p>
     <p class="muted small">${esc(T.notOpenedByMh)}</p>
   </div>`;
   showDialog(dialog);
   if (kept) followStep(kept, command);
   else waitForComeBack(action.kind === "page", run);
+}
+// How far a step that writes is (0361: `.mh-step-progress.json`): done / total, its file.
+function showProgress(progress) {
+  const line = $("#runProgress");
+  if (!line || !progress) return;
+  const count = progress.total ? `${progress.done} / ${progress.total}` : `${progress.done}`;
+  line.textContent = progress.current ? `${count} · ${progress.current}` : count;
 }
 // A page this very server serves (0356): a plain link, its Back comes to this section.
 function goTo(page) {
@@ -125,7 +133,7 @@ function followStep(id, command) {
   const poll = () => fetch(P.step, { cache: "no-store" })
     .then((response) => response.json())
     .then((step) => {
-      if (step.state !== "done" || step.id !== id) { window.setTimeout(poll, POLL_MS); return; }
+      if (step.state !== "done" || step.id !== id) { showProgress(step.progress); window.setTimeout(poll, POLL_MS); return; }
       $("#runDlg").close();
       const ok = step.code === 0;
       toast(fill(ok ? T.stepDone : T.stepFailed, { command: command, code: step.code }), ok ? "ok" : "info");
@@ -411,7 +419,7 @@ function tvChoices() {
     .then((lists) => {
       const options = (values) => values.map((value) => `<option value="${esc(value)}">${esc(value)}</option>`).join("");
       const pick = (id, label, values) => (values.length
-        ? `<label class="muted" for="${id}">${esc(label)}</label><select id="${id}">${options(values)}</select><button class="btn btn-primary" type="button" data-choose="${id}">${icon("play")} ${esc(T.tvShow)}</button>`
+        ? `<div class="tv-choice"><label class="muted" for="${id}">${esc(label)}</label><select id="${id}">${options(values)}</select><button class="btn btn-primary" type="button" data-choose="${id}">${icon("play")} ${esc(T.tvShow)}</button></div>`
         : "");
       box.innerHTML = pick("tvFolder", T.tvFolder, lists.folders || []) + pick("tvMonth", T.tvMonth, lists.months || []);
       $$("[data-choose]", box).forEach((button) => button.addEventListener("click", () => tvChoose(button.dataset.choose)));

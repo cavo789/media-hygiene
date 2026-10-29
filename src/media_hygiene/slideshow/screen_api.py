@@ -25,7 +25,7 @@ from media_hygiene.slideshow.desk import WAIT_SECONDS
 from media_hygiene.slideshow.door import Visitor
 from media_hygiene.slideshow.films import film_ended, film_path, show_films
 from media_hygiene.slideshow.pictures import relative, tv_path
-from media_hygiene.slideshow.screens import shown_code
+from media_hygiene.slideshow.screen_codes import shown_code
 
 if TYPE_CHECKING:
     from media_hygiene.review.http import Request, Response

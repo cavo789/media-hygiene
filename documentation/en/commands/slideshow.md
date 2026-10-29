@@ -89,8 +89,11 @@ show: a TV reloaded loses nothing, stopping `mh` ends it.
    pages only, never the remote.
 3. **Bookmark it**: next time, the bookmark is enough (see [A stable address](#a-stable-address)).
 4. The TV shows a code of six digits. On the phone's remote, type it in **The code the TV shows**,
-   then **Pair the TV**: the first photo appears. The TV is paired until the slideshow stops; when
-   the show runs in the home page (an album started there), until `mh` stops.
+   then **Pair the TV**: the first photo appears. While a TV waits for its code, that field shows
+   **at the top of the remote**, above the buttons and the photos, on the phone as on the PC.
+   Under `mh --lan` (HTTPS) the TV stays paired **for good**, even after `mh` restarts: forget it
+   on the PC's page as a phone is forgotten (it is listed as **TV**). Otherwise it is paired until
+   the slideshow stops; when the show runs in the home page, until `mh` stops.
 5. Press **OK** on the TV's remote (or click) for full screen.
 
 Typing a code with a TV remote is painful: here the TV only shows one, the phone types it.

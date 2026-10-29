@@ -59,9 +59,21 @@
     }
     seconds.value = paceValue;
     tellEvent(show);
+    placePairing(show.tvWaiting);
     window.dispatchEvent(new CustomEvent("mh-show", { detail: show }));
     const tile = tiles.get(current);
     if (tile) tile.scrollIntoView({ block: "nearest" });
+  }
+
+  // A TV shows its code (0456): the field goes on top of the controls, then back to the side.
+  const pairCard = document.getElementById("pairCard");
+  const pairHome = document.createComment("pairCard");
+  pairCard.before(pairHome);
+  function placePairing(waiting) {
+    const top = document.querySelector(".controls");
+    if (waiting && !pairCard.classList.contains("waiting")) top.before(pairCard);
+    if (!waiting && pairCard.classList.contains("waiting")) pairHome.after(pairCard);
+    pairCard.classList.toggle("waiting", Boolean(waiting));
   }
 
   // The event of the photo shown (0448), unless told nowhere; the button of the choice pressed.

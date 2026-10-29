@@ -23,6 +23,8 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 PHONES_FILE: Final = "phones.json"
+TVS_FILE: Final = "tvs.json"  # the TVs of the slideshow paired for good (0456)
+TV_NAME: Final = "TV"
 _TOKEN_BYTES: Final = 32
 _ID_BYTES: Final = 6
 # The device named after the browser's own words, else a plain "phone".
@@ -78,13 +80,22 @@ class PhoneBook:
 
     __slots__ = ("path",)
 
-    def __init__(self, folder: Path) -> None:
+    def __init__(self, folder: Path, file: str = PHONES_FILE) -> None:
         """Keep the file's place.
 
         Args:
             folder: The `/lan` folder.
+            file: `phones.json`, or `tvs.json` for the slideshow's TVs.
         """
-        self.path = folder / PHONES_FILE
+        self.path = folder / file
+
+    def tvs(self) -> PhoneBook:
+        """The TVs' file beside this one: the same rules, another cookie.
+
+        Returns:
+            `tvs.json` in the same folder.
+        """
+        return PhoneBook(self.path.parent, TVS_FILE)
 
     def listed(self) -> tuple[Phone, ...]:
         """The paired phones, as on disk.
@@ -118,6 +129,18 @@ class PhoneBook:
             The token for its cookie; None when the file cannot be written.
         """
         token = secrets.token_hex(_TOKEN_BYTES)
+        return token if self.keep(token, name) else None
+
+    def keep(self, token: str, name: str) -> bool:
+        """Pair a device whose token is already drawn (a TV's cookie, 0456).
+
+        Args:
+            token: Its token; only its hash is written.
+            name: What the PC's page calls it.
+
+        Returns:
+            True once written and read back.
+        """
         phone = Phone(
             id=secrets.token_hex(_ID_BYTES),
             name=name,
@@ -127,8 +150,8 @@ class PhoneBook:
         try:
             self._save((*self.listed(), phone))
         except OSError:
-            return None
-        return token
+            return False
+        return self.knows(token)
 
     def knows(self, token: str) -> bool:
         """Tell whether a cookie is the token of a phone still paired.

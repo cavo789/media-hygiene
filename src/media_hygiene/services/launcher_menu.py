@@ -39,6 +39,17 @@ CRASH: Final = Crash((int(ExitCode.CRASHED), int(ExitCode.KILLED)), 60)
 
 
 @dataclass(frozen=True, slots=True)
+class Remount:
+    """How `mh` follows a photo folder plugged in or removed during a session (0359)."""
+
+    code: int  # what its watch returns once it stopped the server to mount again
+    ticks: int  # the folders checked every `ticks` polls of 250 ms (Test-Path: ms)
+
+
+REMOUNT: Final = Remount(int(ExitCode.REMOUNT), 12)
+
+
+@dataclass(frozen=True, slots=True)
 class MenuTexts:  # pylint: disable=too-many-instance-attributes  # one per message
     """The messages of `mh` itself, ready to sit inside double quotes."""
 
@@ -57,7 +68,10 @@ class MenuTexts:  # pylint: disable=too-many-instance-attributes  # one per mess
     running: str  # `mh` alone: the page runs in the background, its window kept open
     crashed: str  # the home server stopped unexpectedly: started again (0365)
     crashed_again: str  # the same within a minute: the loop ends
+    unplugged: str  # the home server starts without a missing folder; holds `${folder}`
+    remounted: str  # a photo folder came or left: the server started again with it
     crash: Crash = CRASH  # the codes of a crash, and its window
+    remount: Remount = REMOUNT  # 0359
 
 
 def menu_texts() -> MenuTexts:
@@ -116,6 +130,12 @@ def menu_texts() -> MenuTexts:
             )
         ),
         crashed=shell_safe(_("The home page stopped unexpectedly: started again.")),
+        unplugged=shell_safe(_("{folder}: not plugged in, shown once it is.")).replace(
+            "{folder}", "${folder}"
+        ),
+        remounted=shell_safe(
+            _("A photo folder was plugged in or removed: the home page follows it.")
+        ),
         crashed_again=shell_safe(
             _(
                 "The home page stopped unexpectedly twice in a row: type mh to start "

@@ -97,9 +97,12 @@ diaporama : une télé rechargée ne perd rien, arrêter `mh` y met fin.
 3. **Mettez-la en favori** : la fois suivante, le favori suffit (voyez
    [Une adresse stable](#une-adresse-stable)).
 4. La télé affiche un code de six chiffres. Sur la télécommande du téléphone, tapez-le dans
-   **Le code qu'affiche la télé**, puis **Appairer la télé** : la première photo apparaît. La
-   télé reste appairée jusqu'à l'arrêt du diaporama ; quand le diaporama tourne dans la page
-   d'accueil (un album lancé depuis elle), jusqu'à l'arrêt de `mh`.
+   **Le code qu'affiche la télé**, puis **Appairer la télé** : la première photo apparaît. Tant
+   qu'une télé attend son code, ce champ s'affiche **en haut de la télécommande**, au-dessus des
+   boutons et des photos, sur le téléphone comme sur le PC. Sous `mh --lan` (HTTPS), la télé reste
+   appairée **pour de bon**, même après un redémarrage de `mh` : oubliez-la sur la page du PC
+   comme un téléphone (elle y figure sous **TV**). Sinon elle reste appairée jusqu'à l'arrêt du
+   diaporama ; quand le diaporama tourne dans la page d'accueil, jusqu'à l'arrêt de `mh`.
 5. Appuyez sur **OK** sur la télécommande de la télé (ou cliquez) pour le plein écran.
 
 Taper un code avec la télécommande d'une télé est pénible : ici la télé en affiche seulement un,

@@ -847,6 +847,9 @@ msgstr ""
 "relit tous les dossiers (c'est fait de toute façon pour ceux listés il y "
 "a {days} jours)."
 
+msgid "A photo folder was plugged in or removed: the home page follows it."
+msgstr "Un dossier de photos a été branché ou retiré : la page d'accueil suit."
+
 msgid "A photo of this person: its path"
 msgstr "Une photo de cette personne : son chemin"
 
@@ -4615,6 +4618,9 @@ msgstr "Liens"
 
 msgid "Links to make"
 msgstr "Liens à créer"
+
+msgid "Links to remove"
+msgstr "Liens à retirer"
 
 #, python-brace-format
 msgid "Links updated, read back from the disk: {parts}."
@@ -13425,6 +13431,11 @@ msgstr "la reprendre de ce qui est mis de côté"
 msgid "take the picked files back out of the set aside"
 msgstr "sortir les fichiers choisis de ce qui est mis de côté"
 
+msgid ""
+"taken out of the album, but its other name is outside the analysed "
+"folders: left in place"
+msgstr "retirée de l'album, mais son autre nom est hors des dossiers analysés : laissé en place"
+
 #, python-brace-format
 msgid "taken {taken} (EXIF: what the search finds by)"
 msgstr "pris le {taken} (EXIF : ce que la recherche utilise)"
@@ -14847,6 +14858,16 @@ msgstr[1] ""
 "place n'est prise."
 
 #, python-brace-format
+msgid ""
+"{count} link of a photo taken out of the album removed: the photo stays "
+"where it is."
+msgid_plural ""
+"{count} links of photos taken out of the album removed: the photos stay "
+"where they are."
+msgstr[0] "{count} lien d'une photo retirée de l'album supprimé : la photo reste où elle est."
+msgstr[1] "{count} liens de photos retirées de l'album supprimés : les photos restent où elles sont."
+
+#, python-brace-format
 msgid "{count} named face"
 msgid_plural "{count} named faces"
 msgstr[0] "{count} visage nommé"
@@ -15661,6 +15682,10 @@ msgid "{folder}: give the full path, from the drive letter."
 msgstr "{folder} : donnez le chemin complet, depuis la lettre du lecteur."
 
 #, python-brace-format
+msgid "{folder}: not plugged in, shown once it is."
+msgstr "{folder} : pas branché, affiché dès qu'il l'est."
+
+#, python-brace-format
 msgid "{folder}: {count} file of your photos is not in this backup ({size})."
 msgid_plural "{folder}: {count} files of your photos are not in this backup ({size})."
 msgstr[0] ""
@@ -16369,6 +16394,10 @@ msgstr "{path} : pas copié : {reason}"
 #, python-brace-format
 msgid "{path}: not lightened: {reason}"
 msgstr "{path} : pas allégée : {reason}"
+
+#, python-brace-format
+msgid "{path}: taken out of the album, its link goes; the photo stays at {other}"
+msgstr "{path} : retirée de l'album, son lien est retiré ; la photo reste à {other}"
 
 #, python-brace-format
 msgid "{path}: this version cannot undo the action '{action}'."

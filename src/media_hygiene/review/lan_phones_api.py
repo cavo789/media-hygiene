@@ -70,14 +70,14 @@ def phones_list(phones: PhoneBook) -> Response:
     """The paired phones, as on disk.
 
     Args:
-        phones: The paired-phones file.
+        phones: The paired-phones file (the TVs' beside it, 0456).
 
     Returns:
         JSON: `phones`, each with `id`, `name` and `paired` (ISO date).
     """
     listed = [
         {"id": p.id, "name": p.name, "paired": p.paired.date().isoformat()}
-        for p in phones.listed()
+        for p in (*phones.listed(), *phones.tvs().listed())
     ]
     return json_response(HTTPStatus.OK, {"phones": listed})
 
@@ -103,6 +103,6 @@ def phones_answer(phones: PhoneBook, request: Request) -> Response:
         phone_id = str(json.loads(request.body)["id"])
     except ValueError, KeyError, TypeError:
         return Response(HTTPStatus.BAD_REQUEST)
-    if not phones.forget(phone_id):
+    if not (phones.forget(phone_id) and phones.tvs().forget(phone_id)):
         return json_response(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": phone_id})
     return phones_list(phones)

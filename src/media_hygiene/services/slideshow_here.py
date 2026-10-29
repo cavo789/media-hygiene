@@ -36,7 +36,7 @@ from media_hygiene.services.slideshow_selection import selected, why
 from media_hygiene.slideshow.desk import Changes, Desk
 from media_hygiene.slideshow.door import Door, Visitor
 from media_hygiene.slideshow.films import show_films
-from media_hygiene.slideshow.screens import Screens
+from media_hygiene.slideshow.screens import screens_of
 from media_hygiene.slideshow.show import Show
 from media_hygiene.slideshow.slides import Timing
 from media_hygiene.slideshow.tv_door import TV_HOME, TvDoor
@@ -70,7 +70,8 @@ class SlideshowHere:
         self._server = server
         lan = server.lan
         secure = lan is not None and lan.secure  # phones paired for good (0431)
-        self.door = Door(lan, Screens(), phones=phone_book(secure=secure))
+        phones = phone_book(secure=secure)  # the TVs too, for good (0456)
+        self.door = Door(lan, screens_of(phones), phones=phones)
         self._changes = Changes()
         self._stack = ExitStack()  # the index, opened at the first show
         self._search: tuple[SearchIndex, Runtime] | None = None

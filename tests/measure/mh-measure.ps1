@@ -138,6 +138,8 @@
 #      timed by Chromium in the CI (0366); nothing written                     (0354)
 #  36. the home page by hand: three yes/no questions (it opens; a console step runs in the
 #      window of mh while the page stays open; Quit then mh again)       (0355, 0366)
+#  37. a USB stick plugged in, then removed, during a session of mh: the home page follows it
+#      (two yes/no questions, by hand)                                               (0359)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -3345,6 +3347,23 @@ if (Wanted 36) {
     Log "   36a. the home page opens: $opens"
     Log "   36b. a console step runs in the window of mh, the page staying open: $kept"
     Log "   36c. Quit, then mh again, the home page back: $again"
+    $ErrorActionPreference = $saved
+}
+
+# --- 37: a USB stick plugged in, then removed, during a session (0359) ----------------------
+# By hand: a stick holding a photo folder added with mh folders add, unplugged when mh starts.
+if (Wanted 37) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 37. a USB stick during a session of mh (0359)"
+    Write-Host "37 : la cle USB (un dossier de mh folders add) debranchee, tapez mh update puis mh."
+    $starts = Read-Host "37a. La page d'accueil s'ouvre-t-elle, la fenetre disant 'pas branche' pour la cle ? (o/n)"
+    $plugged = Read-Host "37b. Branchez la cle : en moins de 10 s la fenetre dit-elle 'branche ou retire', et ses photos sont-elles dans Parcourir sans rien taper ? (o/n)"
+    $removed = Read-Host "37c. Retirez la cle (sans Ejecter) : la fenetre le dit-elle, et la page revient-elle seule ? (o/n)"
+    Log "   37a. the home page starts without the stick: $starts"
+    Log "   37b. stick plugged in, followed within 10 s: $plugged"
+    Log "   37c. stick removed, followed: $removed"
     $ErrorActionPreference = $saved
 }
 

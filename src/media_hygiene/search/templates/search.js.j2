@@ -146,12 +146,30 @@ async function why(key, name) {
   $("whyClose").focus();
 }
 
+// The whole photo with the face outlined: the box in pixels, drawn in percent of the photo.
+function outlined(photo, name) {
+  const figure = element("div", "whole");
+  const picture = element("img");
+  picture.src = photo.preview;
+  picture.alt = name;
+  const box = element("span", "outline");
+  const percent = (value, total) => `${(100 * value / total).toFixed(3)}%`;
+  box.style.left = percent(photo.box.x, photo.width);
+  box.style.top = percent(photo.box.y, photo.height);
+  box.style.width = percent(photo.box.width, photo.width);
+  box.style.height = percent(photo.box.height, photo.height);
+  figure.style.aspectRatio = `${photo.width} / ${photo.height}`;
+  figure.append(picture, box);
+  return figure;
+}
+
 function whyFace(key, name, face) {
   const row = element("div", "face");
   const picture = element("img");
   picture.src = face.crop;
   picture.alt = name;
   const text = element("div");
+  if (face.photo) text.append(outlined(face.photo, name));
   text.append(element("p", "", face.said));
   if (face.reference) {
     const reference = element("div", "reference");

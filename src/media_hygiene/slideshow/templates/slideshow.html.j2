@@ -79,6 +79,8 @@
   #storyCredit { font-size: .7rem; color: var(--muted); }
   /* The way the TV and the phone open the show, and the TV's code, in the left column. */
   #side .card { margin: 0; }
+  /* A TV waits for its code (0456): the field on top of the remote, phone and PC alike. */
+  #pairCard.waiting { margin: 0 0 8px; border: 2px solid var(--accent); }
 {% endblock %}
 {% block side %}
 <section id="lan" class="card" hidden>
@@ -87,7 +89,7 @@
   <div id="qr"></div>
 </section>
 <p id="lanOff" class="card" hidden></p>
-<section class="card">
+<section id="pairCard" class="card">
   <form id="pair" class="pair" autocomplete="off">
     <label for="tvCode">{{ _("The code the TV shows") }}</label>
     <input id="tvCode" inputmode="numeric" pattern="[0-9 ]*" maxlength="8" required>

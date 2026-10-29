@@ -17,10 +17,8 @@ The session of 2026-10-28 ended here: the inbox was partly answered (0438 Backsp
    `feedback-2026-10-27-iterate.md`, `feedback-0394-0398.md`,
    `feedback-review-sort-0385-0390.md` (each may be stale: say so and close it).
 2. ~~Branch `measure-29-lan`~~: done on 2026-10-28 (salvaged by PR #46, branch deleted).
-3. 0293 and 0334 (PARTIAL): every point is decided; refile the remainder as fresh TODOs
-   (`/todo:inbox` Phase 2) so `/todo:iterate` takes them.
-4. 0269 (PARTIAL): two open points — moving the questions of the acting commands to the phone,
-   and `mh --lan` from bash: decide or close.
+3. ~~0293 and 0334~~: refiled as 0461, 0462 (2026-10-29).
+4. ~~0269 open points~~: both dropped (2026-10-29).
 5. The rest of the inbox needs the PC, phones or TV (measure script, 0430–0432, 0441, 0442,
    0255, 0322, 0313, 0436, 0373, 0194, 0082/0090/0104) and `docs_screenshots`.
 

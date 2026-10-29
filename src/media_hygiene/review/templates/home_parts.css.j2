@@ -265,6 +265,9 @@ kbd {
 .plain-list li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
 .audit-here { background: var(--mk-sunken); border-style: dashed; border-color: var(--mk-border-strong); }
 .audit-controls { display: flex; flex-wrap: wrap; gap: 8px; }
+/* A folder or a month on the TV (0455): label, list, its own button, one block each */
+.tv-choice { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; flex: 1 1 100%; min-width: 0; }
+.tv-choice select { max-width: 100%; width: 100%; }
 .progress-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .pstep { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: 4px 8px; font-size: .9rem; }
 .pstep .i { width: 16px; height: 16px; color: var(--mk-ink-soft); }

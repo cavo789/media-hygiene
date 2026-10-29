@@ -31,8 +31,8 @@ if TYPE_CHECKING:
     from media_hygiene.review.lan_phones import PhoneBook
     from media_hygiene.slideshow.screens import Screens
 
-# Kept by the TV across its browser's restarts while the server runs.
-_SCREEN_AGE_SECONDS: Final = 24 * 3600
+# Kept by the TV across its browser's restarts, and across runs under HTTPS (0456).
+_SCREEN_AGE_SECONDS: Final = 400 * 24 * 3600
 
 
 class Visitor(Enum):

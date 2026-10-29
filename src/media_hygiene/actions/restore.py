@@ -64,7 +64,8 @@ def perform(entry: JournalEntry, reversal: Reversal) -> None:
         raise FileExistsError(
             errno.EEXIST, _("it already exists"), entry.host_path
         ) from None
-    if path.stat().st_mtime_ns != entry.mtime_ns:  # a file moved back kept its time
+    relinked = reversal is Reversal.RELINK  # the photo's own time: never changed
+    if not relinked and path.stat().st_mtime_ns != entry.mtime_ns:  # a move kept it
         # Only the owner may set a time: not the image's user on a file it did not make.
         os.utime(path, ns=(entry.mtime_ns, entry.mtime_ns))
 
@@ -99,6 +100,8 @@ def _bring_back(entry: JournalEntry, reversal: Reversal) -> None:
         create_empty(path)
     elif reversal is Reversal.MOVE_BACK:
         move_no_replace(source, path)
+    elif reversal is Reversal.RELINK:  # an album's name of the same photo (0374)
+        os.link(source, path)
     elif entry.action in QUARANTINED:
         _unquarantine(entry, source)
     else:
