@@ -8,7 +8,7 @@ to the folder you choose. You name each person once, on a page of your browser; 
 `classify` does the rest. This step is **optional**: without it, everything else works the same.
 
 It adds one thing to the commands of the previous steps: `people`, to find and name the faces.
-`classify`, the workbook, `review-sort` and `sort` stay as they are.
+`classify`, the workbook, the 🗂 Events tab of `search` and `sort` stay as they are.
 
 ## What leaves your computer
 
@@ -160,7 +160,7 @@ category = "People/Chloé"
 ## 4. Classify, look, sort
 
 Then the same commands as steps [4](04-classify.md), [5](05-review-the-proposal.md) and
-[7](07-sort.md): `mh classify`, the workbook (or [`mh review-sort`](11-name-events-in-the-browser.md)),
+[7](07-sort.md): `mh classify`, the workbook (or [the 🗂 Events tab of `search`](11-name-events-in-the-browser.md)),
 then `mh sort`. On the demo library of this guide, every photo already lies in a folder:
 there, the rule goes right above *Existing folders*, or that rule would decide them all:
 
@@ -179,7 +179,7 @@ Why
 What to check:
 
 - the *Why* table of `classify` has a line **With Chloé**, with the number of files the rule
-  decided; the *Reason* column of the workbook names it for each file, and `review-sort` shows
+  decided; the *Reason* column of the workbook names it for each file, and the 🗂 Events tab of `search` shows
   it under *Proposed*;
 - the rule is listed after *Rules that decided nothing*? Its events were decided by a rule
   above it, or nobody named is on enough of their photos: move it up, or lower `min_share`;

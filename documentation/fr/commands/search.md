@@ -111,7 +111,8 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   deux. **🔍 Chercher** reste en vue au bas du formulaire.
 - **Trier par**, dans la barre comme sur la [vue des dossiers](#parcourir-vos-dossiers) :
   *meilleure correspondance* (par défaut ; la plus récente d'abord sans mots), *nom*, *date* (la
-  plus ancienne d'abord) ou *taille* (la plus grande d'abord) ; **Afficher**, dans la colonne de
+  plus ancienne d'abord), *taille* (la plus grande d'abord) ou *durée, la plus courte d'abord* (les
+  vidéos par durée, les photos ensuite : les vidéos ratées d'une ou deux secondes viennent en premier) ; **Afficher**, dans la colonne de
   gauche, garde **📷** les photos ou **🎬** les vidéos seulement. La recherche trie et filtre avant de montrer ses premiers fichiers :
   *Afficher : vidéos*, *Trier par : taille* donne les plus grosses vidéos trouvées. Chaque vignette
   dit sa date et sa taille.
@@ -130,7 +131,8 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   ne le trouve pas.
 - **L'EXIF de la photo** : dans la grande vue, **I** liste ce que la photo dit d'elle-même :
   quand elle a été prise, l'appareil, l'objectif, l'exposition, sa taille en pixels et sa
-  position GPS. En lecture seule : la photo n'est jamais modifiée.
+  position GPS, avec la ville la plus proche et son pays (*Bruxelles, Belgique*, trouvés hors ligne :
+  aucune position ne quitte votre PC). En lecture seule : la photo n'est jamais modifiée.
 - **La durée d'une vidéo** est dans le coin de son aperçu, comme sur les sites de vidéos :
   `▶ 1:45`. Sous 3 secondes, le badge est rouge : un clip si court vaut rarement d'être gardé (le
   mettre de côté reste votre choix).
@@ -145,15 +147,16 @@ fichiers en tableau.
 
 ## Les événements du dernier classify
 
-**🗂 Événements du dernier classify**, sous les dossiers de la colonne de gauche, liste les
-événements du dernier plan de [`classify`](classify.md) (elle a repris `review-sort`, qui ne fait
-plus que l'ouvrir) : la ligne de progression (triés, déjà en place, restants) et les passages de
+L'onglet **🗂 Événements**, en haut de la colonne de gauche à côté de **🔎 Photos**, liste les
+événements du dernier plan de [`classify`](classify.md) (il a repris `review-sort`, retiré dans
+cette version) : la ligne de progression (triés, déjà en place, restants) et les passages de
 `sort` de ce plan, chacun avec sa ligne d'annulation ; les trois filtres (*Seulement les
 événements à décider*, *Seulement les propositions sûres*, *Seulement les événements pas encore
 triés*) ; ✓ sur un événement déjà trié, ⚠ sur celui dont le classeur a changé un choix antérieur
 depuis. Cliquez un événement : sa fiche s'affiche au-dessus de la liste, ses photos dans la
 grille, chaque vignette disant où `sort` la mettra (*C:\Photos → 2016\2016-07\Fête*). L'adresse
-`/events` (et `mh review-sort`) ouvre la page, liste ouverte.
+`/events` ouvre la page sur cet onglet. La page retient le dernier onglet choisi ; ← et →
+passent d'un onglet à l'autre quand l'un d'eux a le focus.
 
 Choisissez au clavier, comme dans l'ancienne page ; chaque choix est **enregistré aussitôt** dans
 `sort-decisions.json` à côté du plan, relu sur le disque, avec ce que disait le classeur au moment
@@ -201,7 +204,7 @@ prochain `classify` les trouve à leur place. Les photos ajoutées depuis le der
 ## Faire d'une période une règle
 
 Une fois une période cherchée, **📌 En faire une règle** ouvre, à côté de la grille, la boîte de
-*Retenir comme règle* de [`review-sort`](#les-événements-du-dernier-classify), remplie avec la période : tapez son nom
+*Retenir comme règle* de l'onglet Événements, remplie avec la période : tapez son nom
 et son dossier (*Garder mes dossiers en dessous* est coché). Pendant que vous tapez, la grille montre
 **les photos que la règle prendrait, chacune avec l'endroit où elle irait**
 (*→ 2017\Fêtes\Mariages\Mariage d'Hervé et Magda*), calculé par le moteur de `classify` avec vos

@@ -42,7 +42,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
-| Vos photos | 🔒 Rien ne bouge sans votre GO sur une page (review-sort, search), noté au journal : `undo` le remet. `mh home` les monte accessibles en écriture, avec `/journal` ; l'audit lancé depuis la page ne fait que les lire. |
+| Vos photos | 🔒 Rien ne bouge sans votre GO sur une page (search), noté au journal : `undo` le remet. `mh home` les monte accessibles en écriture, avec `/journal` ; l'audit lancé depuis la page ne fait que les lire. |
 | Il faut | Les dossiers de l'outil (`/reports`, `/journal`, `/quarantine`, `/cache`), comme pour `status` ; vos dossiers pour l'audit ; `-p 127.0.0.1:8088:8088` pour la page. |
 | Écrit | Rien par elle-même ; l'audit lancé depuis la page écrit son cache et son rapport, comme `audit` ; la [page des albums](#vos-albums-sur-le-téléphone) ne change que `albums.json`. |
 | Annuler | Rien à annuler ; chaque étape garde sa propre annulation. |
@@ -142,7 +142,7 @@ qui a ouvert la page :
   refuse de copier (une adresse autre que `127.0.0.1` ou `localhost`), la commande est
   sélectionnée : faites Ctrl+C.
 
-Chaque autre page ([`review`](review.md), [`review-sort`](search.md#les-événements-du-dernier-classify),
+Chaque autre page ([`review`](review.md), [l'onglet 🗂 Événements de `search`](search.md#les-événements-du-dernier-classify),
 [`places`](places.md), [`search`](search.md), [`people`](people.md))
 prend l'allure et le thème de la page d'accueil, sous une barre : **Documentation** ouvre le
 chapitre de cette page, à côté de son jumeau anglais (*In English*). Quand la page d'accueil l'a

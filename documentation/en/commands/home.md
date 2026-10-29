@@ -40,7 +40,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
-| Your photos | 🔒 Nothing moves without your GO on a page (review-sort, search), journaled: `undo` puts it back. `mh home` mounts them writable, with `/journal`; the audit run from the page only reads them. |
+| Your photos | 🔒 Nothing moves without your GO on a page (search), journaled: `undo` puts it back. `mh home` mounts them writable, with `/journal`; the audit run from the page only reads them. |
 | Needs | The tool's folders (`/reports`, `/journal`, `/quarantine`, `/cache`), as `status` does; your folders for the audit; `-p 127.0.0.1:8088:8088` for the page. |
 | Writes | Nothing by itself; the audit run from the page writes its cache and its report, as `audit` does; the [albums' page](#your-albums-on-the-phone) changes `albums.json` alone. |
 | Undo | Nothing to undo; each step keeps its own undo. |
@@ -131,7 +131,7 @@ opened the page:
   `mh` runs, paste the command there (right click) and press Enter. When the browser refuses to
   copy (an address other than `127.0.0.1` or `localhost`), the command is selected: press Ctrl+C.
 
-Every other page ([`review`](review.md), [`review-sort`](search.md#the-events-of-the-latest-classify),
+Every other page ([`review`](review.md), [the 🗂 Events tab of `search`](search.md#the-events-of-the-latest-classify),
 [`places`](places.md), [`search`](search.md), [`people`](people.md))
 wears the home page's look and theme, under a bar: **Documentation** opens that page's chapter,
 next to its French twin (*En français*). When the home page opened it, the page shows in the

@@ -84,7 +84,7 @@ More: [review the proposal](05-review-the-proposal.md).
 Rather a photo on screen than a spreadsheet? The same events, one at a time, with their photos:
 
 ```powershell
-mh review-sort
+mh search
 ```
 
 Your browser opens on the page (if not: `http://127.0.0.1:8088/`). <kbd>Enter</kbd> accepts the name and category and
@@ -268,7 +268,7 @@ After your rules, your places, your people, run step 1 again:
 mh classify
 ```
 
-The edits already made in the old workbook and in `review-sort` are carried over. Correct again
+The edits already made in the old workbook and in the 🗂 Events tab of `search` are carried over. Correct again
 (steps 2 and 3), as many times as needed: nothing moves before `sort`.
 
 ??? info "Details"
@@ -342,7 +342,7 @@ Each command of the sort, and the step of this page that shows it:
 | Command | Step | What it does |
 |---|---|---|
 | [`classify`](../commands/classify.md) | 1, 4, 7, 8 | Proposes a place for each file, without modifying anything; 🤖 the `subject` rule and `--sample` need a local AI. |
-| [`review-sort`](../commands/search.md#the-events-of-the-latest-classify) | 3 | Names the events in the browser. |
+| [the 🗂 Events tab of `search`](../commands/search.md#the-events-of-the-latest-classify) | 3 | Names the events in the browser. |
 | [`places`](../commands/places.md) | 5 | Names your places on a map. |
 | [`people`](../commands/people.md) | 6 | Finds and names the faces; `--forget` deletes them. |
 | [`sort`](../commands/sort.md) | 9 | Moves the files as the workbook says. |
@@ -360,7 +360,7 @@ this guide](../reference-glossary.md). An error message?
 ??? note "Without `mh`: the full commands"
 
     For the ones that modify nothing (`classify`), read-only; add `-p 127.0.0.1:8088:8088` after
-    `-it` for the ones that open a page (`review-sort`, `places`, `people`):
+    `-it` for the ones that open a page (`search`, `places`, `people`):
 
     ```powershell
     docker run --rm -it `

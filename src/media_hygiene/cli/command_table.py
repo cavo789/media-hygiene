@@ -60,11 +60,6 @@ def command_table(analyse: str, act: str) -> tuple[tuple[str, str, str], ...]:
             ),
         ),
         (
-            "review-sort",
-            act,
-            _("Name the events of the classify proposal one by one in your browser."),
-        ),
-        (
             "places",
             analyse,
             _(

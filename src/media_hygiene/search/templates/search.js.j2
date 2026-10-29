@@ -307,6 +307,7 @@ document.addEventListener("keydown", (event) => {
   const typing = ["INPUT", "SELECT"].includes(document.activeElement.tagName);
   if (event.key === "/" && !typing) {
     event.preventDefault();
+    if ($("toc").hidden) $("tabPhotos").click();
     $("text").focus();
   } else if (event.key === "ArrowDown" && document.activeElement === $("text") && cards.length) {
     event.preventDefault();

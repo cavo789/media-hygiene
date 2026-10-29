@@ -242,7 +242,12 @@
   main:not([data-size="l"]) .chip.extra, main[data-size="l"] .chip.rest { display: none; }
 {% endblock %}
 {% block side %}
-    <section id="toc" aria-label="{{ _('Search your photos') }}">
+    {# Two tabs (0457): the search, or the events of the latest classify; kept per viewer. #}
+    <div id="tabs" role="tablist" aria-label="{{ _('What the left column shows') }}">
+      <button type="button" role="tab" id="tabPhotos" aria-controls="toc" aria-selected="true" title="{{ _('Search your photos') }}">🔎 {{ _("Photos") }}</button>
+      <button type="button" role="tab" id="tabEvents" aria-controls="events" aria-selected="false" tabindex="-1" title="{{ _('The events of the latest classify, one by one') }}">🗂 {{ _("Events") }}</button>
+    </div>
+    <section id="toc" role="tabpanel" aria-labelledby="tabPhotos" aria-label="{{ _('Search your photos') }}">
     <form id="form">
       <label>{{ _("Words") }}
         <input id="text" type="search" autocomplete="off"
@@ -290,7 +295,6 @@
       <summary title="{{ _('Every folder as a tree; a click searches in it') }}">📁 {{ _("My folders") }} ▸</summary>
       <div id="tree" aria-label="{{ _('Your folders') }}"></div>
     </details>
-    {% include "search_events.html.j2" %}
     <button type="button" id="ruleOpen" class="plain" hidden title="{{ _('Write this period down as a date rule of config.toml, after seeing the photos it would take and where each one would go') }}">📌 {{ _("Make it a rule") }}</button>
     <p id="coverage" role="status" hidden></p>
     <details id="syntax">
@@ -312,6 +316,7 @@
       </dl>
     </details>
     </section>
+    {% include "search_events.html.j2" %}
 {% endblock %}
 {% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
 {% block more_keys %}{% include "pick_keys_more.html.j2" %}
@@ -322,6 +327,7 @@
     {% include "pick_acting.html.j2" %}
     {% set order_best = true %}
     {% set order_rate = true %}
+    {% set order_short = true %}
     {% include "pick_order.html.j2" %}
     <div class="seg" id="sizes" role="group" aria-label="{{ _('Thumbnail size') }}">
       <input type="hidden" id="size" value="m">

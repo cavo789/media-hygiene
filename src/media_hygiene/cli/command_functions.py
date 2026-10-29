@@ -23,7 +23,6 @@ from media_hygiene.cli.cmd_purge import purge_command
 from media_hygiene.cli.cmd_push import push_command
 from media_hygiene.cli.cmd_reports import reports_command
 from media_hygiene.cli.cmd_review import review_command
-from media_hygiene.cli.cmd_review_sort import review_sort_command
 from media_hygiene.cli.cmd_search import search_command
 from media_hygiene.cli.cmd_share import share_command
 from media_hygiene.cli.cmd_shrink import shrink_command
@@ -64,7 +63,6 @@ def command_functions() -> dict[str, Callable[..., None]]:
         "purge": purge_command,
         "reports": reports_command,
         "review": review_command,
-        "review-sort": review_sort_command,
         "search": search_command,
         "restore": restore_command,
         "share": share_command,

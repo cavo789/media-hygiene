@@ -37,19 +37,6 @@ def sort_steps() -> tuple[Step, ...]:
             ai=True,
         ),
         Step(
-            "review-sort",
-            space,
-            _("Name the events"),
-            _("Each outing or party gets its folder: name it while seeing its photos."),
-            "review-sort",
-            Risk.SAFE,
-            Kind.PAGE,
-            icon="calendar",
-            keywords=_("events name parties holidays"),
-            doc=Doc("commands/search/"),
-            optional=True,
-        ),
-        Step(
             "places",
             space,
             _("Name your places on a map"),
@@ -97,7 +84,7 @@ def sort_area() -> Area:
     Returns:
         It.
     """
-    guide = ("classify", "review-sort", "places", "people", "sort")
+    guide = ("classify", "places", "people", "sort")
     return Area(
         Space.SORT,
         _("Sort out"),

@@ -82,6 +82,9 @@ SHOWN: Final = f"{KIND}(files.path) = ?"
 WITHIN: Final = "files.path > ? AND files.path < ?"
 ONLY: Final = "files.path IN (SELECT value FROM json_each(?))"  # the set aside (0464)
 _RATE: Final = "json_extract(files.metadata, '$.bit_rate')"  # unknown last (0408)
+_LENGTH: Final = (
+    "json_extract(files.metadata, '$.duration')"  # photos: none, last (0459)
+)
 # **Sort by** (0347), as the folder view sorts: ties by path, undated last.
 BY_ORDER: Final = {
     Order.NAME: f" ORDER BY {FOLD}(files.path)",
@@ -93,6 +96,7 @@ BY_ORDER: Final = {
     Order.RATE: (
         f" ORDER BY {_RATE} IS NULL, {_RATE} DESC, files.size DESC, {FOLD}(files.path)"
     ),
+    Order.SHORT: f" ORDER BY {_LENGTH} IS NULL, {_LENGTH}, {FOLD}(files.path)",
 }
 BEST_FIRST: Final = f" ORDER BY {TABLE}.rank"
 # EXIF writes `2019:07:14` or `14/07/2019`, videos `2019-07-14T…`: one day each;

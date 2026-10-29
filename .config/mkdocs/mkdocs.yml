@@ -137,7 +137,6 @@ nav:
       - commands/purge.md
       - commands/reports.md
       - commands/restore.md
-      - commands/review-sort.md
       - commands/review.md
       - commands/search.md
       - commands/share.md

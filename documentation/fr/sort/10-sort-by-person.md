@@ -9,7 +9,7 @@ sur une page de votre navigateur ; une règle de `classify` fait le reste. Cette
 **facultative** : sans elle, tout le reste fonctionne de la même façon.
 
 Elle ajoute une seule chose aux commandes des étapes précédentes : `people`, pour trouver et
-nommer les visages. `classify`, le classeur, `review-sort` et `sort` restent les mêmes.
+nommer les visages. `classify`, le classeur, l'onglet 🗂 Événements de `search` et `sort` restent les mêmes.
 
 ## Ce qui quitte votre ordinateur
 
@@ -170,7 +170,7 @@ category = "Personnes/Chloé"
 
 Ensuite, les mêmes commandes qu'aux étapes [4](04-classify.md), [5](05-review-the-proposal.md)
 et [7](07-sort.md) : `mh classify`, le classeur (ou
-[`mh review-sort`](11-name-events-in-the-browser.md)), puis `mh sort`. Dans la bibliothèque de démonstration de ce guide, chaque photo est déjà dans
+[l'onglet 🗂 Événements de `search`](11-name-events-in-the-browser.md)), puis `mh sort`. Dans la bibliothèque de démonstration de ce guide, chaque photo est déjà dans
 un dossier : la règle y est placée juste au-dessus de *Dossiers existants*, sinon cette règle-là
 les déciderait toutes :
 
@@ -190,7 +190,7 @@ Ce qu'il faut vérifier :
 
 - le tableau *Pourquoi* de `classify` a une ligne **Avec Chloé**, avec le nombre de fichiers que
   la règle a décidés ; la colonne *Raison* du classeur la nomme pour chaque fichier, et
-  `review-sort` l'affiche sous *Proposé* ;
+  l'onglet 🗂 Événements de `search` l'affiche sous *Proposé* ;
 - la règle figure après *Règles qui n'ont rien décidé* ? Ses événements ont été décidés par une
   règle placée au-dessus, ou personne de nommé n'est sur assez de leurs photos : remontez-la, ou
   baissez `min_share` ;

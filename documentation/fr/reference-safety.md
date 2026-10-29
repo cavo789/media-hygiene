@@ -15,7 +15,7 @@ Nous le garantissons : quand vous lancez l'une de ces commandes, vos photos et v
 |---|---|
 | `audit`, `crosscheck` | Le rapport HTML (`/reports`) et le cache (`/cache`). |
 | `classify` | La proposition et son classeur (`/reports`), le cache. |
-| `review`, `review-sort` | Vos choix, dans un petit fichier `.json` à côté du rapport (`/reports`). |
+| `review`, `search` (🗂 Événements) | Vos choix, dans un petit fichier `.json` à côté du rapport (`/reports`). |
 | `places` | Les lieux que vous nommez, dans `config.toml` (`/config`). |
 | `inventory` | Le classeur (`/reports`), lu dans le cache seul. |
 | `tags`, `people` | Les mots et les visages, dans le cache (`/cache`) : jamais dans vos photos. |

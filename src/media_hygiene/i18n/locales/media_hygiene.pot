@@ -199,11 +199,6 @@ msgid ""
 msgstr ""
 
 msgid ""
-"'review-sort' now opens the 🗂 Events view of 'search', and goes in the "
-"next version: use 'search'."
-msgstr ""
-
-msgid ""
 "'share' makes copies of an album to send them, in your folder media-"
 "hygiene\\Shares: each photo upright, its long side fitted into "
 "long_side_px pixels, JPEG quality quality (30 to 95). Your photos are "
@@ -236,11 +231,6 @@ msgid ""
 " 1920 for a Full HD TV, 3840 for a 4K one; smaller loads faster on an old"
 " TV. The port is [review] port: a TV's bookmark keeps working while it "
 "does not change."
-msgstr ""
-
-msgid ""
-"'sort' applies them on top of the workbook, which you may still edit; it "
-"refuses an event or a file edited otherwise in both."
 msgstr ""
 
 #, python-brace-format
@@ -1438,9 +1428,9 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Check their dates, their patterns and their order in config.toml; review-"
-"sort lists them under Your rules, with a button to remove those that "
-"match nothing any more."
+"Check their dates, their patterns and their order in config.toml; the 🗂 "
+"Events tab of 'search' lists them under Your rules, with a button to "
+"remove those that match nothing any more."
 msgstr ""
 
 #, python-brace-format
@@ -1494,8 +1484,8 @@ msgid "Choose a vision model in [classify.ai] model, e.g. qwen2.5vl."
 msgstr ""
 
 msgid ""
-"Choose again in 'review-sort' (it shows both), or set the workbook cells "
-"back, then run 'sort' again."
+"Choose again in the 🗂 Events tab of 'search' (it shows both), or set the "
+"workbook cells back, then run 'sort' again."
 msgstr ""
 
 msgid "Choose an event."
@@ -2286,9 +2276,6 @@ msgstr ""
 msgid ""
 "Each one was first proven on the PC by its content: in your library, in "
 "the folder of the import, or set aside before."
-msgstr ""
-
-msgid "Each outing or party gets its folder: name it while seeing its photos."
 msgstr ""
 
 msgid "Each photo"
@@ -4177,12 +4164,6 @@ msgstr ""
 msgid ""
 "Name one: mh import <folder> (a USB disk, an SD card), or add your NAS "
 "once: mh folders add --backup <folder>."
-msgstr ""
-
-msgid "Name the events"
-msgstr ""
-
-msgid "Name the events of the classify proposal one by one in your browser."
 msgstr ""
 
 msgid "Name the faces"
@@ -7656,11 +7637,7 @@ msgid ""
 "covers most of the work."
 msgstr ""
 
-#, python-brace-format
-msgid ""
-"The events of the latest classify run are ready, open {url} in your "
-"browser. Each choice is saved at once in sort-decisions.json. Ctrl+C "
-"stops it."
+msgid "The events of the latest classify, one by one"
 msgstr ""
 
 msgid "The face models are not in the cache yet: run 'audit --people' once."
@@ -7789,8 +7766,8 @@ msgstr ""
 msgid ""
 "The guesses, the files no rule decides, the undated and the received "
 "ones: an empty layout leaves them where they are until you decide in "
-"'review-sort' or 'search', so the tool never writes a folder name of its "
-"own."
+"'search' (its 🗂 Events tab), so the tool never writes a folder name of "
+"its own."
 msgstr ""
 
 msgid "The guide"
@@ -8289,6 +8266,11 @@ msgstr ""
 msgid ""
 "The shell of the script: 'powershell' (Windows) or 'bash' (WSL, Linux, "
 "macOS). Default: guessed from the mounted folders."
+msgstr ""
+
+msgid ""
+"The shortest videos first, to find the failed ones of a second or two; "
+"the photos after"
 msgstr ""
 
 msgid "The show did not start: look at the window of mh on the PC."
@@ -9095,6 +9077,9 @@ msgid "What the last audit found"
 msgstr ""
 
 msgid "What the last clean left"
+msgstr ""
+
+msgid "What the left column shows"
 msgstr ""
 
 msgid "What the photos show"
@@ -10104,9 +10089,6 @@ msgstr ""
 msgid "environment"
 msgstr ""
 
-msgid "events name parties holidays"
-msgstr ""
-
 msgid "every file from the last one clicked"
 msgstr ""
 
@@ -10437,6 +10419,9 @@ msgid "left to the rule {rule}"
 msgstr ""
 
 msgid "left where it is: not sorted with the others"
+msgstr ""
+
+msgid "length, shortest first"
 msgstr ""
 
 msgid "less than a minute"

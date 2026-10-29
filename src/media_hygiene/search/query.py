@@ -51,6 +51,7 @@ class Order(StrEnum):
     DATE = "date"  # the oldest first, undated last
     SIZE = "size"  # the largest first
     RATE = "rate"  # the videos worst compressed for their length first (0408)
+    SHORT = "short"  # the shortest videos first, the photos after (0459)
 
 
 class Sorting(StrEnum):

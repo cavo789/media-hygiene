@@ -1,12 +1,12 @@
-{# *🗂 Events* (0437, 0438): the events of the latest classify plan in the left column, as
+{# *🗂 Events* (0437, 0438; a tab since 0457): the events of the latest classify plan in the left column, as
    review-sort showed them — its progress and runs, its three filters, the event's card —
    and its photos in the grid, the search's own tiles. The choices are review-sort's: the
    folder (F, Enter), the name (E), the picked photos to another folder (O) or left (S),
    the whole event left (Shift+S), a choice taken back (T), the sure proposals (V,
    Shift+Z), *Remember as a rule* (R), *Sort this event now* (M); each is saved at once
    in sort-decisions.json, read back. Delete sets aside, as on every tile page. #}
-<details id="events">
-  <summary>🗂 {{ _("Events of the latest classify") }}</summary>
+<section id="events" role="tabpanel" aria-labelledby="tabEvents" hidden>
+  <h2 class="tabTitle">🗂 {{ _("Events of the latest classify") }}</h2>
   <p id="eventsSaid" class="muted" role="status"></p>
   <p id="eventsProgress" class="muted"></p>
   <details id="runs" hidden><summary>{{ _("The sort runs of this plan") }}</summary><ol id="runList"></ol></details>
@@ -44,4 +44,4 @@
     </p>
   </section>
   <ol id="eventList"></ol>
-</details>
+</section>

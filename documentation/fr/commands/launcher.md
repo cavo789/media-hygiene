@@ -84,7 +84,7 @@ mh audit
   dossier de photos qui est un disque entier (`E:\`) a aussi la sienne : l'analyse ne lit jamais
   un dossier `media-hygiene`. `mh folders add` avec un dossier d'un nouveau disque ajoute aussi sa
   quarantaine.
-- **Le port de la page du navigateur** (`-p 127.0.0.1:8088:8088`) pour `review`, `review-sort`,
+- **Le port de la page du navigateur** (`-p 127.0.0.1:8088:8088`) pour `review`,
   `places`, `search` et `people`, et **votre navigateur s'ouvre sur cette page** dès qu'elle
   répond : aucune adresse à copier. Ctrl+C dans la fenêtre l'arrête toujours.
 - **Votre ordinateur reste éveillé pendant les commandes longues** (`audit`, `clean`,

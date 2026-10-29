@@ -102,8 +102,9 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   **📍 Today**, **🗓️ Month** (this month), **📆 Year** (this year); **✕ Clear** empties both.
   **🔍 Search** stays in sight at the bottom of the form.
 - **Sort by**, in the bar as on the [folder view](#walk-through-your-folders): *best match* (the
-  default; the newest first without words), *name*, *date* (the oldest first) or *size* (the
-  largest first); **Show**, in the left column, keeps **📷** the photos or **🎬** the videos only. The search sorts and filters
+  default; the newest first without words), *name*, *date* (the oldest first), *size* (the
+  largest first) or *length, shortest first* (the videos by duration, the photos after: the failed
+  videos of a second or two come first); **Show**, in the left column, keeps **📷** the photos or **🎬** the videos only. The search sorts and filters
   before it shows its first files: *Show: videos*, *Sort by: size* gives the largest videos found.
   Each tile says its date and size.
 - **🗑 set aside**, the fourth choice of **Show** (or a click on the *🗑 N set aside* counter of
@@ -119,7 +120,8 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   that does not say it (a scan, a screenshot) reads *no date taken*: a search by date does not
   find it.
 - **The photo's EXIF**: in the large view, **I** lists what the photo says of itself: when it was
-  taken, the camera, the lens, the exposure, its size in pixels and its GPS position. Read only:
+  taken, the camera, the lens, the exposure, its size in pixels and its GPS position, with the
+  nearest town and its country (*Brussels, Belgium*, found offline: no position leaves your PC). Read only:
   the photo is never changed.
 - **A video's length** is on its preview's corner, as on video sites: `▶ 1:45`. Under 3 seconds,
   the badge is red: a clip that short is rarely worth keeping (setting it aside stays your
@@ -135,14 +137,15 @@ as a table.
 
 ## The events of the latest classify
 
-**🗂 Events of the latest classify**, under the folders in the left column, lists the events of
-the latest [`classify`](classify.md) plan (it took in `review-sort`, which now only opens it):
+The **🗂 Events** tab, on top of the left column next to **🔎 Photos**, lists the events of
+the latest [`classify`](classify.md) plan (it took in `review-sort`, removed in this version):
 the progress line (sorted, already in place, left) and the sort runs of the plan, each with its
 undo line; the three filters (*Only the events to decide*, *Only the sure proposals*, *Only the
 events not sorted yet*); ✓ on an event already sorted, ⚠ on one whose earlier choice the
 workbook changed since. Click an event: its card shows above the list, its photos in the grid,
 each tile saying where `sort` will put it (*C:\Photos → 2016\2016-07\Party*). The address
-`/events` (and `mh review-sort`) opens the page with the list open.
+`/events` opens the page on this tab. The page remembers the last tab chosen; ← and → move
+between the two tabs once one has the focus.
 
 Choose with the keyboard, as in the old page; every choice is **saved at once** in
 `sort-decisions.json` next to the plan, read back from the disk, with what the workbook said
@@ -189,7 +192,7 @@ latest `classify` (a phone imported, then audited) move too: no new `classify` i
 ## Make a period a rule
 
 Once a period is searched, **📌 Make it a rule** opens, beside the grid, the dialog of
-[`review-sort`](#the-events-of-the-latest-classify)'s *Remember as a rule*, filled with the period: type its name
+the Events tab's *Remember as a rule*, filled with the period: type its name
 and its folder (*keep my folders below it* is on). As you type, the grid shows **the photos the
 rule would take, each with where it would go** (*→ 2017\Parties\Weddings\Hervé and Magda's
 wedding*), computed by the `classify` engine with your rules and the one typed (nothing is

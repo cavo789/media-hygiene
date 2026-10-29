@@ -6,11 +6,11 @@
 school fair, a weekend), gathered by `classify` from one folder or phone to another. Its name
 becomes **the folder where `sort` puts all its photos**: named `Kermesse`, it goes to
 `2016/2016-07/Kermesse`; without a name, its files stay where they are. What moves on the disk, name or
-category: [`review-sort`, what it is for](../commands/search.md#the-events-of-the-latest-classify).
+category: [the 🗂 Events tab of `search`, what it is for](../commands/search.md#the-events-of-the-latest-classify).
 
 The workbook of [step 5](05-review-the-proposal.md) is good for renaming in bulk, not for
 *looking* at photos: naming an event means reading the report in one window and typing in the
-other. With hundreds of events, that is hundreds of back-and-forths. `review-sort` puts both in
+other. With hundreds of events, that is hundreds of back-and-forths. The 🗂 Events tab of `search` puts both in
 one page of your browser: **one event at a time, its photos, its proposal, and a field to name
 it**, all with the keyboard.
 
@@ -24,7 +24,7 @@ the same reports folder, which `mh` mounts (read-only is enough for the photos: 
 shows them):
 
 ```powershell
-mh review-sort
+mh search
 ```
 
 <details>
@@ -34,7 +34,7 @@ mh review-sort
 docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "$HOME\media-hygiene\reports:/reports" `
-  cavo789/media-hygiene review-sort
+  cavo789/media-hygiene search
 ```
 
 </details>
@@ -42,8 +42,8 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 As for [the burst review](../clean/10-review-bursts.md#step-1-start-the-review),
 `mh` opens the page to your computer only, on port 8088 (`-p 127.0.0.1:8088:8088` in the full
 command). The page
-reads the workbook of the latest `classify` run, the one `sort` applies; name another one after
-the command: `review-sort "C:\Photos triées\reports\20261002-123210-classify\classify.xlsx"`.
+reads the workbook of the latest `classify` run, the one `sort` applies: click the **🗂 Events**
+tab on top of the left column.
 
 ```text
 412 events to decide: 260 with a sure proposal (one click), 152 to look at.
@@ -160,7 +160,7 @@ files of this event only, as [`sort --event`](../commands/sort.md) does: journal
 its own `undo`. The status line gives what the disk holds after the run: the files moved and
 checked at their new place. The event then shows *sorted*, and <kbd>U</kbd> and *Only the events
 to decide* skip it; a later `sort` of the whole workbook skips its files. The photos must be
-mounted without `:ro`, with a `/journal` (`mh review-sort` does it): otherwise the page says
+mounted without `:ro`, with a `/journal` (`mh search` does it): otherwise the page says
 what is missing, and nothing moves.
 
 **Check first, then GO.** Each photo of the event says where it is and where it goes, as `sort`

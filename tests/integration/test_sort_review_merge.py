@@ -95,7 +95,7 @@ def test_a_workbook_edit_after_a_page_choice_is_a_conflict(
     with pytest.raises(WorkbookError) as refused:
         sort(runtime)
     assert f"page '{EVENT_NAME}', workbook '{LATER}'" in refused.value.message
-    assert "review-sort" in (refused.value.tip or "")
+    assert "Events" in (refused.value.tip or "")
     assert (locations.data_dir / PARTY / "IMG_0000.jpg").is_file()
     card = _card(runtime)
     assert card["conflict"]

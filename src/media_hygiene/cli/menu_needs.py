@@ -58,7 +58,6 @@ def _needs() -> dict[str, Need]:
         "review-junk": audit,
         "review-gone": audit,
         "review-intruders": audit,
-        "review-sort": _proposal,
         "sort": _proposal,
     }
 

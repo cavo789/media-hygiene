@@ -159,8 +159,6 @@ Quarantaine : vide.
 ✅ 17 mh classify                                     Proposer une 🔒
                                                       arborescence
                                                       rangée
-   18 mh review-sort                                  Nommer les   🔒 facultatif
-                                                      événements
    19 mh places                                       Nommer vos   🔒 facultatif
                                                       lieux sur
                                                       une carte

@@ -307,7 +307,7 @@ Les règles qui n'ont rien décidé sont nommées après le tableau : une faute 
 expression régulière, une mauvaise année, ou simplement rien de ce genre dans vos dossiers.
 
 **Garder la liste vivante : *Vos règles*.** Sur la page des événements
-([`review-sort`](../commands/search.md#les-événements-du-dernier-classify)), **📌 Vos règles** liste chaque règle de
+([l'onglet 🗂 Événements de `search`](../commands/search.md#les-événements-du-dernier-classify)), **📌 Vos règles** liste chaque règle de
 `config.toml`, avec les fichiers qu'elle a décidés lors du `classify` que montre la page et, pour
 une règle sur un nom de dossier, les jours de l'événement qui contient la plupart de ses
 fichiers. Elles sont affichées par type (*Dates*, *Noms de dossiers et de fichiers*, *Jours de
