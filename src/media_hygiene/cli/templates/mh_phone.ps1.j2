@@ -116,22 +116,59 @@ function global:_{{ f }}_phone {
 
 # The steps of [imports] then after the copies (0475): the list said, each step run in turn,
 # a step that fails said by itself and the chain going on; phone-end last (places, slideshow).
+# Order (0480): audit, copies (before the tags), bursts (a page beside the next steps), tags.
 function global:_{{ f }}_phone_then($chain, [string]$destination, [string]$period) {
     $steps = @($chain)
     if ($steps.Count -eq 0) { Write-Host "{{ n.off }}"; return }
     $list = $steps -join ' > '
     Write-Host "{{ n.listed }}"
+    $bursts = $null
     foreach ($step in $steps) {
         if ($step -eq '{{ n.audit }}') {
             # Alone, the audit may run on the home page; followed by other steps, here.
             if ($steps.Count -eq 1) { _{{ f }}_phone_audit } else { Write-Host "{{ e.in_console }}"; {{ f }} audit }
         }
+        elseif ($step -eq '{{ n.copies_step }}') { {{ f }} {{ n.end }} --folder $destination --since $period --copies }
+        elseif ($step -eq '{{ n.bursts_step }}') { $bursts = _{{ f }}_phone_bursts $destination $period }
         elseif ($step -eq '{{ n.tags_step }}') { Write-Host "{{ n.tags }}"; {{ f }} tags --path $destination --yes }
     }
     if ($steps.Count -eq 1) { return }
+    if ($bursts) { _{{ f }}_phone_bursts_end $bursts }
     {{ f }} {{ n.end }} --folder $destination --since $period
     $answer = "$(Read-Host "{{ n.tv }}")".Trim()
-    if ($answer -match '^[yYoOjJ]') { {{ f }} slideshow --folder $destination }
+    # The new event only: the folder holds the earlier imports too (0480).
+    if ($answer -match '^[yYoOjJ]') { {{ f }} slideshow --folder $destination --since $period }
+}
+
+# The page of the import's burst series, in the background like the home page (0480): its
+# container's id, and what it holds (tab, stick, NAS); none when no series (nothing served).
+function global:_{{ f }}_phone_bursts([string]$destination, [string]$period) {
+    $cid = Join-Path $env:TEMP '{{ f }}-import-bursts.cid'
+    # A former import's choices are not this one's: applied then, never twice.
+    Remove-Item -LiteralPath $cid, (Join-Path '{{ script.tools[n.reports].host }}' '{{ n.decisions }}') -Force -ErrorAction SilentlyContinue
+    $global:MediaHygieneHeld = $null
+    $global:MediaHygieneDetach = $cid
+    try { $null = {{ f }} review --imported $destination --since $period } finally { $global:MediaHygieneDetach = $null }
+    $held = $global:MediaHygieneHeld
+    $global:MediaHygieneHeld = $null
+    if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $cid)) { return $null }
+    Write-Host "{{ n.bursts }}"
+    return @{ id = "$(Get-Content -LiteralPath $cid -TotalCount 1)".Trim(); held = $held; cid = $cid }
+}
+
+# Once the other steps ran: the page stopped when the user is done (each choice is already
+# saved), then the shots set aside go through clean (journal, byte compare, mh undo).
+function global:_{{ f }}_phone_bursts_end($bursts) {
+    $running = "$(docker inspect -f '{{ '{{' }}.State.Running{{ '}}' }}' $bursts.id 2>$null)".Trim() -eq 'true'
+    if ($running) { $null = Read-Host "{{ n.bursts_done }}" }
+    $null = docker stop $bursts.id 2>$null
+    $held = $bursts.held
+    if ($held -and $held.browser) { Remove-Job -Job $held.browser -Force }
+    if ($held -and $held.shared -and $held.shared.mounted) { _{{ f }}_unmount $held.shared.mounted }
+    if ($held -and $held.nas -and $held.nas.volumes) { _{{ f }}_nas_release $held.nas.volumes }
+    Remove-Item -LiteralPath $bursts.cid -Force -ErrorAction SilentlyContinue
+    $decided = Join-Path '{{ script.tools[n.reports].host }}' '{{ n.decisions }}'
+    if (Test-Path -LiteralPath $decided) { {{ f }} clean --decisions '{{ n.decisions }}' }
 }
 
 # The files copied join the library through an audit, run at once (0451): by the home page

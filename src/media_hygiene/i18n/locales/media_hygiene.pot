@@ -2182,6 +2182,11 @@ msgstr ""
 msgid "Done"
 msgstr ""
 
+msgid ""
+"Done on the burst page? Press Enter: the shots you set aside go to the "
+"quarantine (mh undo puts them back)."
+msgstr ""
+
 msgid "Done: open Media Hygiene"
 msgstr ""
 
@@ -5292,6 +5297,12 @@ msgstr[1] ""
 msgid "Only on the NAS"
 msgstr ""
 
+msgid "Only set aside the new files that are exact copies."
+msgstr ""
+
+msgid "Only the burst series of the files an import copied there."
+msgstr ""
+
 msgid ""
 "Only the event's main folder (the one holding most of its photos) and the"
 " folders sharing a parent with it are kept below; a folder sharing "
@@ -5311,6 +5322,11 @@ msgid ""
 "it for several. The events stay whole: they are built from every file, "
 "and only the files below the folders get a proposal. With --year: the "
 "files of both."
+msgstr ""
+
+msgid ""
+"Only the files of a period, by the day in their name, else their modified"
+" time: today, week, month, all or a day such as 2026-10-29."
 msgstr ""
 
 msgid ""
@@ -9172,10 +9188,11 @@ msgstr ""
 msgid ""
 "What runs after an import, in this order; remove a step to switch it off."
 " audit: the new files join your library (first while another step is on)."
-" tags: the local AI model describes the new photos (skipped when it is "
-"not running). places: the new spots named online, after its own question."
 " copies: the new files that are exact copies of another go to the "
-"quarantine (mh undo puts them back)."
+"quarantine (mh undo puts them back). bursts: the page of the import's "
+"burst series opens while the next steps run. tags: the local AI model "
+"describes the new photos (skipped when it is not running). places: the "
+"new spots named online, after its own question."
 msgstr ""
 
 msgid "What the last audit found"
@@ -14185,8 +14202,10 @@ msgid "▶ Play"
 msgstr ""
 
 #, python-brace-format
-msgid "✨ All done: {count} imported, {aside} copies set aside."
-msgstr ""
+msgid "✨ All done: {count} new photo or video in your library."
+msgid_plural "✨ All done: {count} new photos and videos in your library."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "❚❚ Pause"
 msgstr ""
@@ -14243,8 +14262,13 @@ msgid ""
 "it. Each one was first proven on the PC by its content."
 msgstr ""
 
+msgid ""
+"📸 The burst series of the new photos open in your browser: keep the best "
+"shots there while the next steps run."
+msgstr ""
+
 #, python-brace-format
-msgid "📺 Your slideshow \"{title}\" is ready: mh slideshow --folder \"{folder}\""
+msgid "📺 Your slideshow \"{title}\" is ready: {command}"
 msgstr ""
 
 msgid "🔒 Analyse: read-only, never changes your photos"
@@ -14380,6 +14404,12 @@ msgid ""
 "🤖 classify and tags can also ask a local AI model: set [classify.ai] "
 "model in config.toml (mh config)."
 msgstr ""
+
+#, python-brace-format
+msgid "🧹 {count} copy among the new files set aside."
+msgid_plural "🧹 {count} copies among the new files set aside."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid ""

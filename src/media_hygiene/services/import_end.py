@@ -15,7 +15,13 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import MEDIA_EXTENSIONS
 from media_hygiene.search.event_suggest import title_of
-from media_hygiene.services.import_since import file_day, kept
+from media_hygiene.services.import_since import (
+    file_day,
+    first_day,
+    kept,
+    last_import,
+    today_local,
+)
 
 if TYPE_CHECKING:
     from datetime import date
@@ -44,6 +50,21 @@ def new_files(folder: Path, first: date | None) -> tuple[Path, ...]:
         if kept(path.name, _stamp(path), first):
             found.append(path)
     return tuple(sorted(found))
+
+
+def imported(runtime: Runtime, folder: str, since: str | None) -> tuple[Path, ...]:
+    """The files of an import: its folder as the Explorer shows it, in its period.
+
+    Args:
+        runtime: Mount points (the journal holds the last import's day).
+        folder: The host folder the import copied into.
+        since: `--since`: today, week, month, all, a day; None: since the last import.
+
+    Returns:
+        Their container paths, sorted.
+    """
+    first = first_day(since, today_local(), last_import(runtime.locations.journal_dir))
+    return new_files(runtime.mapper.to_container(folder), first)
 
 
 def show_title(runtime: Runtime, files: tuple[Path, ...]) -> str:

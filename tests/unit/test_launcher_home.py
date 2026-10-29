@@ -535,7 +535,10 @@ def test_powershell_watches_the_server_in_the_background(tmp_path: Path) -> None
     assert "if (-not $ended) { $null = docker stop $id" in watch
     assert "[IO.File]::WriteAllText($done," in watch  # no byte order mark
     assert "if ($detach) { $tty = @('-d', '--cidfile', $detach) }" in text
-    assert f"if ($detach) {{ $relay = @('-e', '{_KEPT}') }}" in text
+    assert (
+        f"if ($detach -and $command -in @('home')) {{ $relay = @('-e', '{_KEPT}') }}"
+        in text
+    )
 
 
 def test_an_audit_asking_for_the_gone_review_opens_it(tmp_path: Path) -> None:

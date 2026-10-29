@@ -128,14 +128,20 @@ Il termine par ce qu'il a relu dans le dossier : *Nouvelles photos et vidéos co
 (1,40 Go, 18,5 Mo/s)*, puis chaque nombre laissé de côté (*Aussi sur le téléphone, ignorés : 164
 que vous aviez écartés auparavant* : des fichiers du téléphone, pas de la copie). Puis il lance
 les étapes de `[imports] then` dans `config.toml`, annoncées d'abord (*Après l'import : audit >
-tags > places*) : **audit**, pour que les nouveaux fichiers rejoignent votre photothèque et
+copies > bursts > tags > places*) : **audit**, pour que les nouveaux fichiers rejoignent votre photothèque et
 [`search`](search.md) (dans la page d'accueil quand elle est ouverte et que l'audit est seul,
-sinon dans la console) ; **tags** 🤖 (le modèle d'IA local décrit les nouvelles photos ; s'il ne
-tourne pas, `tags` le dit et la suite continue) ; **places** 🌐 (les nouveaux lieux nommés en
-ligne, après leur propre question) ; **copies** (les nouveaux fichiers identiques à un autre, la
-même photo deux fois ou une que votre photothèque a déjà, vont en quarantaine comme avec
-[`clean`](clean.md) : `mh undo` les remet). Enfin, *✨ Terminé : 42 importés, 3 copies mises de
-côté*, le nom proposé pour les nouvelles photos et le diaporama : *📺 Votre diaporama « Promenade à Liège » est prêt*, puis *Le montrer sur la télé
+sinon dans la console) ; **copies** (les nouveaux fichiers identiques à un autre, la même photo
+deux fois ou une que votre photothèque a déjà, vont en quarantaine comme avec
+[`clean`](clean.md), avant les tags : *🧹 3 copies parmi les nouveaux fichiers mises de côté*,
+`mh undo` les remet) ; **bursts** (la [revue des rafales](review.md) s'ouvre dans le navigateur
+sur les **rafales des nouvelles photos seulement** pendant que les étapes suivantes tournent ;
+pas de rafale, pas de page) ; **tags** 🤖 (le modèle d'IA local décrit les nouvelles photos ;
+s'il ne tourne pas, `tags` le dit et la suite continue) ; **places** 🌐 (les nouveaux lieux
+nommés en ligne, après leur propre question). Quand la page des rafales était ouverte : *Fini
+sur la page des rafales ? Appuyez sur Entrée*, puis les prises écartées vont en quarantaine
+(`clean --decisions import-bursts.json`, avec sa propre question). Enfin, *✨ Tout est fait : 42
+nouvelles photos et vidéos dans votre photothèque*, le nom proposé pour les nouvelles photos et
+le diaporama de **cet import seulement** : *📺 Votre diaporama « Promenade à Liège » est prêt : mh slideshow --folder "…" --since today*, puis *Le montrer sur la télé
 maintenant ? (o/N)*. Retirez une étape de `then` pour la couper (`then = []` : rien ne tourne). 🔒 Sans `--free`, le téléphone est seulement lu :
 rien n'y est supprimé, déplacé ni renommé.
 

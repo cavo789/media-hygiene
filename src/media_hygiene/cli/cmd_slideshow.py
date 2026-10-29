@@ -8,7 +8,7 @@ from typing import Annotated
 
 import typer
 
-from media_hygiene.cli import review_options
+from media_hygiene.cli import import_options, review_options
 from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.i18n import _, ngettext
 
@@ -53,6 +53,7 @@ def slideshow_command(  # pylint: disable=too-many-arguments
         ),
     ] = False,
     port: Annotated[int | None, review_options.port()] = None,
+    since: Annotated[str | None, import_options.since()] = None,
 ) -> None:
     """Show photos on the TV, the phone choosing the next one, until Ctrl+C.
 
@@ -63,11 +64,13 @@ def slideshow_command(  # pylint: disable=too-many-arguments
         album: `--album`, an album's name.
         chosen: `--chosen`, removed (0295): it showed the files set aside.
         port: `--port`, inside the container.
+        since: `--since`, with `--folder`: only its files of that period (0480).
 
     Raises:
         MediaHygieneError: `--chosen`, said in one line to use an album.
     """
     from media_hygiene.errors import MediaHygieneError
+    from media_hygiene.services.import_end import imported
     from media_hygiene.services.slideshow import ShowStart, serve_slideshow
     from media_hygiene.services.slideshow_pick import Pick
 
@@ -75,6 +78,8 @@ def slideshow_command(  # pylint: disable=too-many-arguments
     port = review_options.page_port(runtime, port)
     pick = Pick(folder=folder, words=words, album=album)
     with user_errors(runtime.output):
+        if since is not None and folder is not None:
+            pick = Pick(files=imported(runtime, folder, since))
         if chosen:
             raise MediaHygieneError(
                 _(

@@ -142,6 +142,7 @@
 #  38. mh import --phone --since today / week, then without --since (0476): what is left, timed
 #  39. the whole chain after a phone import of about 100 photos, timed step by step (0475)
 #  40. the whole chain after an import with copies set aside, then undone (0478)
+#  41. the chain in its new order: copies before tags, the import's bursts page, its slideshow (0480)
 #      (two yes/no questions, by hand)                                               (0359)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
@@ -3428,6 +3429,27 @@ if (Wanted 40) {
     Log "   40b. copies step, seconds: $copiesSec"
     Log "   40c. end line: $endLine"
     Log "   40d. undo puts the copies back: $undoOk"
+    $ErrorActionPreference = $saved
+}
+
+# --- 41: copies before tags, the import's bursts page, the new event's slideshow (0480) -----
+# By hand: about 20 new photos on the phone (taken today): 2 sent twice, 1 burst of 3 shots.
+if (Wanted 41) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 41. copies before tags, the import's bursts page, its slideshow (0480)"
+    Write-Host "41 : 20 nouvelles photos, 2 en double, 1 rafale de 3. Tapez : mh import --phone --since today"
+    $order = Read-Host "41a. La ligne 'copies mises de cote' vient-elle AVANT la description par l'IA ? (o/n)"
+    $page = Read-Host "41b. La page des rafales s'est-elle ouverte seule, sur cette rafale SEULEMENT ? (o/n)"
+    $wait = Read-Host "41c. Secondes entre l'ouverture de la page et la fin des tags (nombre)"
+    $aside = Read-Host "41d. Apres Entree, les prises ecartees sont-elles en quarantaine (mh undo) ? (o/n)"
+    $show = Read-Host "41e. Le diaporama propose ne montre-t-il QUE les photos de cet import ? (o/n)"
+    Log "   41a. copies before tags: $order"
+    Log "   41b. bursts page, this import's series only: $page"
+    Log "   41c. page open beside tags, seconds: $wait"
+    Log "   41d. shots set aside quarantined: $aside"
+    Log "   41e. slideshow of the new event only: $show"
     $ErrorActionPreference = $saved
 }
 

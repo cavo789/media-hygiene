@@ -91,3 +91,30 @@ def test_phone_end_proposes_the_slideshow(
         build_app(), [PHONE_END, "--folder", "C:\\Photos\\Phone", "--since", "all"]
     )
     assert result.exit_code == 0, result.output
+
+
+def test_phone_end_copies_sets_aside_only_and_says_so(
+    runner: CliRunner, locations: Locations
+) -> None:
+    """0480: `--copies` runs alone, right after the audit; no slideshow line."""
+    folder = locations.data_dir / "c" / "Photos" / "Phone"
+    folder.mkdir(parents=True)
+    (folder / "IMG_20261029_1.jpg").write_bytes(b"x")
+    result = runner.invoke(
+        build_app(),
+        [PHONE_END, "--folder", "C:\\Photos\\Phone", "--since", "all", "--copies"],
+    )
+    assert result.exit_code == 0, result.output
+    assert "set aside" in result.output
+    assert "All done" not in result.output
+
+
+def test_the_default_order_puts_copies_before_tags() -> None:
+    """Audit, copies, bursts, tags, places (0480)."""
+    assert ImportSettings().then == (
+        ImportStep.AUDIT,
+        ImportStep.COPIES,
+        ImportStep.BURSTS,
+        ImportStep.TAGS,
+        ImportStep.PLACES,
+    )

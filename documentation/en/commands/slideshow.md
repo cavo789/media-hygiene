@@ -179,6 +179,7 @@ The port is `[review] port`, the one of every page.
 | Option | What it does |
 |---|---|
 | `--folder "C:\…"` | The photos of this folder and its subfolders, as the Explorer shows it. |
+| `--since today` | With `--folder`: only its files of a period (`today`, `week`, `month`, `all` or a day such as `2026-10-29`), by the day in their name, else their modified time. What an import offers: the new event only. |
 | `--search "words"` | The photos a search finds, as typed in [`search`](search.md). |
 | `--album "Crete 2023"` | An album made in `search` or the burst review; its files missing (deleted, in the quarantine) are counted, not shown. |
 | `--port PORT` | Port of the page, 8088 by default; publish the same one. |

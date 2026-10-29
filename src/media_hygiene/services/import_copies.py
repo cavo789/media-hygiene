@@ -12,9 +12,8 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import TYPE_CHECKING
 
-from media_hygiene.config.import_settings import ImportStep
 from media_hygiene.errors import MountError
-from media_hygiene.i18n import _
+from media_hygiene.i18n import _, ngettext
 from media_hygiene.plan.models import CleanPlan
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
@@ -93,20 +92,36 @@ def set_aside_copies(runtime: Runtime, new: Collection[Path]) -> int:
     return outcome.quarantined
 
 
-def tell_done(runtime: Runtime, new: Collection[Path]) -> None:
-    """Set the copies aside when `copies` is on, then say what the import did.
+def tell_aside(runtime: Runtime, new: Collection[Path]) -> None:
+    """Set the new exact copies aside, before the tags describe them (0480).
 
     Args:
         runtime: Settings, mount points and output.
         new: The files the import copied.
     """
-    aside = 0
-    if ImportStep.COPIES in runtime.settings.imports.then:
-        aside = set_aside_copies(runtime, new)
+    aside = set_aside_copies(runtime, new)
     runtime.output.success(
-        _("✨ All done: {count} imported, {aside} copies set aside.").format(
-            count=len(new), aside=aside
-        )
+        ngettext(
+            "🧹 {count} copy among the new files set aside.",
+            "🧹 {count} copies among the new files set aside.",
+            aside,
+        ).format(count=aside)
     )
     if aside:
         runtime.output.info(_("↩️ Put them back: mh undo"))
+
+
+def tell_done(runtime: Runtime, new: Collection[Path]) -> None:
+    """Say what the import did, once every step ran.
+
+    Args:
+        runtime: Settings, mount points and output.
+        new: The files the import copied and kept (the copies set aside are gone).
+    """
+    runtime.output.success(
+        ngettext(
+            "✨ All done: {count} new photo or video in your library.",
+            "✨ All done: {count} new photos and videos in your library.",
+            len(new),
+        ).format(count=len(new))
+    )

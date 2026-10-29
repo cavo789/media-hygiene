@@ -59,6 +59,8 @@ _FUNCTIONS: Final = (
     "phone",
     "phone_audit",
     "phone_then",
+    "phone_bursts",
+    "phone_bursts_end",
     "phone_said",
     "phone_pick",
     "phone_there",
@@ -119,7 +121,12 @@ def test_the_phone_is_only_read_never_moved_nor_deleted() -> None:
         assert verb not in part, verb
     assert "New-Object -ComObject Shell.Application" in part
     # Every Remove-Item works on the staging folder or a staged copy only.
-    removals = [line for line in part.splitlines() if "Remove-Item" in line]
+    # The bursts page's own files (its container id, its choices) lie on the PC (0480).
+    removals = [
+        line
+        for line in part.splitlines()
+        if "Remove-Item" in line and "cid" not in line
+    ]
     assert len(removals) == 3
     assert all(
         "$staging" in line or "$staged" in line or "Filter" in line for line in removals
@@ -526,3 +533,17 @@ def test_the_last_import_day_is_written_after_a_copy() -> None:
     read = main.index("Get-Content -LiteralPath $last")
     assert read < main.index("Set-Content -LiteralPath $last")
     assert "if ($copies -gt 0 -and -not $result.Stopped)" in main
+
+
+def test_copies_come_before_the_tags_and_the_bursts_page_beside_them() -> None:
+    """0480: copies before tags; the bursts page in the background, then clean."""
+    then = _body(_script(), "phone_then")
+    assert then.index("--copies") < then.index(" tags --path")
+    assert "_mh_phone_bursts $destination $period" in then
+    assert "slideshow --folder $destination --since $period" in then
+    bursts = _body(_script(), "phone_bursts(")
+    assert "review --imported $destination --since $period" in bursts
+    assert "$global:MediaHygieneDetach = $null" in bursts
+    end = _body(_script(), "phone_bursts_end")
+    assert "docker stop" in end
+    assert "clean --decisions 'import-bursts.json'" in end

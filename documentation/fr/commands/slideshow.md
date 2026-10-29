@@ -192,6 +192,7 @@ Le port est `[review] port`, celui de toutes les pages.
 | Option | Ce qu'elle fait |
 |---|---|
 | `--folder "C:\…"` | Les photos de ce dossier et de ses sous-dossiers, tel que l'Explorateur le montre. |
+| `--since today` | Avec `--folder` : seulement ses fichiers d'une période (`today`, `week`, `month`, `all` ou un jour comme `2026-10-29`), selon la date de leur nom, sinon leur date de modification. Ce qu'un import propose : le nouvel événement seulement. |
 | `--search "mots"` | Les photos que trouve une recherche, tapée comme dans [`search`](search.md). |
 | `--album "Crète 2023"` | Un album fait dans `search` ou le tri des rafales ; ses fichiers manquants (supprimés, en quarantaine) sont comptés, pas montrés. |
 | `--port PORT` | Port de la page, 8088 par défaut ; publiez le même. |
