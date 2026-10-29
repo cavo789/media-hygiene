@@ -1,0 +1,79 @@
+{# *Path contains* lists the folders (0471): a click on the empty field shows them, most
+   files first with their count; typing narrows the list (a part of the path, any case).
+   ↓/↑ move, Enter picks (fills the field, then searches), Esc closes. Free text (*.mp4, a
+   regex) still works: the list only helps. It floats under the field: nothing moves. #}
+const PATH_LIST_MAX = 200;  // lines shown at once; typing narrows the rest
+let pathRows = [];
+let pathAt = -1;
+
+function pathTyped(node, folders) {
+  // What the field gets: the part below the mounted folder (2019/Durbuy), a substring of
+  // the indexed path; a mounted folder itself gets its own container path.
+  if (node.parent === null) return node.inside;
+  const top = folders.find((root) => root.parent === null && node.inside.startsWith(`${root.inside}/`));
+  return top ? node.inside.slice(top.inside.length + 1) : node.inside;
+}
+
+function pathClose() {
+  $("folderList").hidden = true;
+  $("folder").setAttribute("aria-expanded", "false");
+  pathAt = -1;
+}
+
+function pathMark(at) {
+  const lines = $("folderList").children;
+  pathAt = Math.max(-1, Math.min(at, lines.length - 1));
+  for (const [i, line] of [...lines].entries()) line.setAttribute("aria-selected", String(i === pathAt));
+  if (pathAt >= 0) lines[pathAt].scrollIntoView({ block: "nearest" });
+}
+
+function pathPick(row) {
+  $("folder").value = row.typed;
+  pathClose();
+  search(null);
+}
+
+async function pathOpen() {
+  const folders = await folderList();
+  const typed = $("folder").value.trim().toLowerCase();
+  pathRows = folders
+    .map((node) => ({ node, typed: pathTyped(node, folders) }))
+    .filter((row) => !typed || row.node.path.toLowerCase().includes(typed) || row.typed.toLowerCase().includes(typed))
+    .sort((a, b) => b.node.files - a.node.files || a.node.path.localeCompare(b.node.path))
+    .slice(0, PATH_LIST_MAX);
+  const lines = pathRows.map((row) => {
+    const line = element("li", "", row.node.path);
+    line.setAttribute("role", "option");
+    line.append(element("small", "", String(row.node.files)));
+    line.addEventListener("mousedown", (event) => { event.preventDefault(); pathPick(row); });
+    return line;
+  });
+  $("folderList").replaceChildren(...lines);
+  $("folderList").hidden = !lines.length || document.activeElement !== $("folder");
+  $("folder").setAttribute("aria-expanded", String(!$("folderList").hidden));
+  pathAt = -1;
+}
+
+$("folder").addEventListener("click", () => { if (!$("folder").value) pathOpen(); });
+$("folder").addEventListener("input", () => { pathOpen(); });
+$("folder").addEventListener("blur", pathClose);
+$("folder").addEventListener("keydown", (event) => {
+  if ($("folderList").hidden) {
+    if (event.key === "ArrowDown") { event.preventDefault(); pathOpen(); }
+    return;
+  }
+  if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+    event.preventDefault();
+    pathMark(pathAt + (event.key === "ArrowDown" ? 1 : -1));
+  } else if (event.key === "Enter" && pathAt >= 0) {
+    event.preventDefault();
+    event.stopPropagation();
+    pathPick(pathRows[pathAt]);
+  } else if (event.key === "Escape") {
+    event.preventDefault();
+    event.stopPropagation();
+    pathClose();
+  } else if (event.key === "Enter") {
+    pathClose();  // free text: the form's own Enter searches
+  }
+});

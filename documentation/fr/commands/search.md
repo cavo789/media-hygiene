@@ -59,15 +59,18 @@ ouvre [vos dossiers](#parcourir-vos-dossiers). Ctrl+C, ou fermer son onglet, arr
 n'importe quels caractères et `?` un seul : `*.mov` trouve tous les fichiers `.mov` (`.MOV`
 aussi). Entre deux barres obliques, c'est une expression régulière : `/\.(mov|mp4)$/`. Tout le
 reste est lu tel quel : `Vacances (2019)` ou `a+b` n'ont pas besoin d'échappement. Une expression
-régulière invalide est signalée sous le champ.
+régulière invalide est signalée sous le champ. Un clic dans le champ vide liste vos dossiers,
+les plus remplis d'abord avec leur nombre de fichiers ; taper réduit la liste. ↓/↑ s'y
+déplacent, Entrée (ou un clic) choisit un dossier et lance la recherche, Échap la ferme. La liste
+n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherchés tels quels.
 
 - **⚖ Fichiers les plus lourds** (au-dessus des dossiers) : tous les dossiers, sans mot, les
   vidéos d'abord sauf si **Afficher** dit autre chose, les plus grosses d'abord — ou **Trier par :
   débit**, les vidéos les moins bien compressées pour leur durée (les meilleures à alléger avec
   [`shrink`](shrink.md)). La vignette d'une vidéo dit sa durée, son débit et son codec. Arrivé au
   bas de la grille, les fichiers suivants se chargent d'eux-mêmes.
-- **Dans un dossier** : sous le formulaire, l'arbre de vos dossiers, comme sur la vue des dossiers
-  (ouvert à la demande). Un clic limite la recherche à ce dossier et en dessous, **sans taper de
+- **📁 Mes dossiers ▸** : une ligne sous le formulaire ; un clic ouvre l'arbre de vos dossiers
+  par-dessus la page (rien en dessous ne bouge), Échap le ferme. Un clic limite la recherche à ce dossier et en dessous, **sans taper de
   mot** : des mots vides listent tout le dossier ; ✕ à côté de son nom recherche à nouveau dans
   tous les dossiers.
 

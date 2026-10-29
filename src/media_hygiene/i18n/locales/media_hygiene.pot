@@ -2527,6 +2527,9 @@ msgstr ""
 msgid "Every file of your photos is in this backup."
 msgstr ""
 
+msgid "Every folder as a tree; a click searches in it"
+msgstr ""
+
 msgid ""
 "Every folder of the index, as 'browse' shows them: place one named after "
 "no town (a wedding, a holiday). Its subfolders get its position, unless "
@@ -3401,9 +3404,6 @@ msgstr ""
 msgid "Import photos"
 msgstr ""
 
-msgid "In a folder"
-msgstr ""
-
 msgid "In the album already"
 msgstr ""
 
@@ -4138,6 +4138,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Moving an unwanted photo you set aside to the quarantine: {path}"
+msgstr ""
+
+msgid "My folders"
 msgstr ""
 
 msgid "My places"
@@ -9495,6 +9498,9 @@ msgid "Your folders ({count})"
 msgstr ""
 
 msgid "Your folders are clean."
+msgstr ""
+
+msgid "Your folders, most files first"
 msgstr ""
 
 msgid "Your folders, the update, Windows and the advanced settings."

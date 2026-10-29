@@ -27,3 +27,16 @@ def test_to_follows_from_when_empty_or_earlier() -> None:
         'if (from && (!$("to").value || $("to").value < from)) $("to").value = from;'
         in page
     )
+
+
+def test_path_contains_lists_the_folders_without_moving_the_grid() -> None:
+    """0471: a floating list under *Path contains*; *My folders* folded to one line."""
+    page = render_page("search.html.j2")
+    assert 'aria-controls="folderList"' in page
+    assert re.search(r"#folderList \{[^}]*position: absolute", page)
+    assert re.search(r"#folders\[open\] > #tree \{[^}]*position: fixed", page)
+    assert "📁 My folders ▸" in page
+    assert "In a folder" not in page
+    for key in ('"ArrowDown"', '"ArrowUp"', '"Enter"', '"Escape"'):
+        assert key in page
+    assert "b.node.files - a.node.files" in page  # most files first

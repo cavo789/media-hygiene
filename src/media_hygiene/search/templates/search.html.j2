@@ -172,6 +172,20 @@
 {% include "folder_tree.css.j2" %}
 {% include "search_events.css.j2" %}
   #folders summary { cursor: pointer; margin: 8px 0 4px; }
+  /* Folded to one line (0471): opened, the tree floats over the page like *More keys*,
+     the line keeps its place, nothing below it moves; Esc or a folder picked closes it. */
+  #folders[open] > #tree { position: fixed; z-index: 4; left: 16px; top: 16px; width: min(28rem, calc(100vw - 32px));
+                           max-height: calc(100vh - 32px); padding: 10px 12px; background: var(--card);
+                           border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 4px 18px rgba(0, 0, 0, .3); }
+  /* *Path contains* lists the folders (0471): floating under the field, never pushing the form. */
+  #folderLabel { position: relative; }
+  #folderList { position: absolute; z-index: 4; top: 100%; left: 0; right: 0; max-height: 50vh; overflow-y: auto;
+                margin: 2px 0 0; padding: 4px 0; list-style: none; background: var(--card);
+                border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 4px 18px rgba(0, 0, 0, .3); }
+  #folderList[hidden] { display: none; }
+  #folderList li { padding: 2px 8px; cursor: pointer; overflow-wrap: anywhere; }
+  #folderList li small { margin-left: 6px; color: var(--muted); }
+  #folderList li[aria-selected="true"], #folderList li:hover { background: var(--chip); }
   #withinLine { display: flex; gap: 6px; align-items: baseline; overflow-wrap: anywhere; }
   #withinLine[hidden] { display: none; }
   #heaviest { width: 100%; margin-top: 6px; }
@@ -246,9 +260,11 @@
           </div>
         </details>
       </div>
-      <label>{{ _("Path contains") }}<input id="folder" type="text"
+      <label id="folderLabel">{{ _("Path contains") }}<input id="folder" type="text" autocomplete="off"
+               role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="folderList"
                title="{{ _('A part of the path. * is any characters, ? one character, /regex/ a regular expression: *.mov, /\\.(mov|mp4)$/') }}"
-               placeholder="{{ _('e.g. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/') }}"></label>
+               placeholder="{{ _('e.g. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/') }}">
+        <ul id="folderList" role="listbox" aria-label="{{ _('Your folders, most files first') }}" hidden></ul></label>
       <span class="segLabel">{{ _("Show") }}</span>
       <div class="seg" role="group" aria-label="{{ _('Show') }}">
         <input type="hidden" id="kind" value="all">
@@ -271,7 +287,7 @@
     </form>
     <button type="button" id="heaviest" class="plain" title="{{ _('The heaviest files of every folder: where the space goes') }}">⚖ {{ _("Heaviest files") }}</button>
     <details id="folders">
-      <summary>📁 {{ _("In a folder") }}</summary>
+      <summary title="{{ _('Every folder as a tree; a click searches in it') }}">📁 {{ _("My folders") }} ▸</summary>
       <div id="tree" aria-label="{{ _('Your folders') }}"></div>
     </details>
     {% include "search_events.html.j2" %}
@@ -342,6 +358,7 @@
 {% include "folder_tree.js.j2" %}
 {% include "search.js.j2" %}
 {% include "search_folders.js.j2" %}
+{% include "search_path_list.js.j2" %}
 {% include "rule_dialog.js.j2" %}
 {% include "move_dialog.js.j2" %}
 {% include "search_rule.js.j2" %}

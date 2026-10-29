@@ -277,7 +277,7 @@ async function search(event, again) {
   const body = {
     text: $("text").value, day_from: $("from").value || null, day_to: $("to").value || null,
     folder: $("folder").value, source: null, sorting: $("sorting").value,
-    order: $("order").value, kind: asideShown() ? "all" : $("kind").value, aside: asideShown(), within: within ? within.inside : "",
+    order: $("order").value, kind: asideListed() ? "all" : $("kind").value, aside: asideListed(), within: within ? within.inside : "",
     more: more,
   };
   const answer = await ask(SEARCH_PATH, body);
@@ -363,17 +363,17 @@ showSize();
 $("size").addEventListener("change", () => { remember("size"); showSize(); });  // no new search
 $("sorting").addEventListener("change", () => search(null));  // what is left to sort (0407)
 // 🗑 (0464): the files set aside only; the counter opens it, ✕ leaves it. Never kept.
-const asideShown = () => $("kind").value === "aside";
+const asideListed = () => $("kind").value === "aside";
 $("kind").addEventListener("change", () => {
-  if (!asideShown()) remember("kind");
-  $("asideLeave").disabled = !asideShown();  // greyed, never hidden: nothing moves
+  if (!asideListed()) remember("kind");
+  $("asideLeave").disabled = !asideListed();  // greyed, never hidden: nothing moves
   search(null);
 });
 function showAside(on) {
   segmented("kind", on ? "aside" : remembered("kind") || "all");
   $("kind").dispatchEvent(new Event("change"));
 }
-$("chosen").addEventListener("click", () => { if (!asideShown()) showAside(true); });
+$("chosen").addEventListener("click", () => { if (!asideListed()) showAside(true); });
 $("chosen").title = TEXTS.asideOpen;
 $("asideLeave").addEventListener("click", () => showAside(false));
 // **Sort by** (0347): the server sorts, so the first files shown are the right ones.

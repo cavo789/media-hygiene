@@ -1,5 +1,5 @@
 {# The folders as a filter of the search (0348): the tree of the folder view, closed under
-   *In a folder*; a folder clicked narrows the search to it and below, words or none (empty
+   *📁 My folders* (folded to one line, floating once opened: 0471); a folder clicked narrows the search to it and below, words or none (empty
    words list the whole folder); ✕ searches every folder again. Read once, when opened. #}
 const FOLDERS_PATH = {{ folders_path | tojson }};
 const FIRST_SHOWN = {{ first_hits | tojson }};  // *Show more* asks as many again
@@ -12,15 +12,29 @@ function showWithin() {
   }
 }
 
-async function loadFolders() {
+// Asked once, shared by the tree and the list of *Path contains* (0471): from the index.
+let folderRows = null;
+async function folderList() {
+  if (folderRows) return folderRows;
   const answer = await ask(FOLDERS_PATH);
-  if (!answer || !answer.ok) return;  // the search works without the tree
-  const { folders } = await answer.json();
-  $("tree").replaceChildren(folderTree(folders, (node) => { within = node; showWithin(); search(null); }));
+  if (!answer || !answer.ok) return [];  // the search works without them
+  folderRows = (await answer.json()).folders;
+  return folderRows;
+}
+
+async function loadFolders() {
+  const folders = await folderList();
+  $("tree").replaceChildren(folderTree(folders, (node) => {
+    within = node; showWithin(); $("folders").open = false; search(null);
+  }));
   showWithin();
 }
 
 $("folders").addEventListener("toggle", () => { if ($("folders").open && !$("tree").children.length) loadFolders(); });
+// Folded (0471): the floating tree closes with Esc, like *More keys*.
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && $("folders").open) { $("folders").open = false; event.stopImmediatePropagation(); }
+}, true);
 $("withinClear").addEventListener("click", () => { within = null; showWithin(); search(null); });
 
 // *⚖ Heaviest files* (0408, as the folder view had it): every folder, no word, the videos

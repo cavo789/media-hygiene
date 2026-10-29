@@ -3125,6 +3125,9 @@ msgstr ""
 msgid "Every file of your photos is in this backup."
 msgstr "Chaque fichier de vos photos est dans cette sauvegarde."
 
+msgid "Every folder as a tree; a click searches in it"
+msgstr "Tous les dossiers en arbre ; un clic cherche dedans"
+
 msgid ""
 "Every folder of the index, as 'browse' shows them: place one named after "
 "no town (a wedding, a holiday). Its subfolders get its position, unless "
@@ -4180,9 +4183,6 @@ msgstr "Importer un disque USB, une carte SD ou n'importe quel dossier"
 msgid "Import photos"
 msgstr "Importer des photos"
 
-msgid "In a folder"
-msgstr "Dans un dossier"
-
 msgid "In the album already"
 msgstr "Déjà dans l'album"
 
@@ -5029,6 +5029,9 @@ msgid "Moving an unwanted photo you set aside to the quarantine: {path}"
 msgstr ""
 "Déplacement en quarantaine d'une photo indésirable que vous avez mise de "
 "côté : {path}"
+
+msgid "My folders"
+msgstr "Mes dossiers"
 
 msgid "My places"
 msgstr "Mes lieux"
@@ -11510,6 +11513,9 @@ msgstr "Vos dossiers ({count})"
 
 msgid "Your folders are clean."
 msgstr "Vos dossiers sont propres."
+
+msgid "Your folders, most files first"
+msgstr "Vos dossiers, les plus remplis d'abord"
 
 msgid "Your folders, the update, Windows and the advanced settings."
 msgstr "Vos dossiers, la mise à jour, Windows et les réglages avancés."

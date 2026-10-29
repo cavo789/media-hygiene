@@ -57,14 +57,17 @@ stops the page.
 **Path contains** takes a part of the path, case-insensitive. `*` stands for any characters and
 `?` for one: `*.mov` finds every `.mov` file (`.MOV` too). Between two slashes it is a regular
 expression: `/\.(mov|mp4)$/`. Anything else is read as typed, so `Vacances (2019)` or `a+b` need
-no escaping. A regular expression that does not compile is told under the field.
+no escaping. A regular expression that does not compile is told under the field. A click on
+the empty field lists your folders, most files first with their count; typing narrows the list.
+↓/↑ move in it, Enter (or a click) picks a folder and searches, Esc closes it. The list only
+helps: `*.mp4` or a regular expression are still searched as typed.
 
 - **⚖ Heaviest files** (above the folders): every folder, no word, the videos first unless
   **Show** says otherwise, the largest first — or **Sort by: bit rate**, the videos worst
   compressed for their length (the best to lighten with [`shrink`](shrink.md)). A video's tile
   says its length, bit rate and codec. Scrolled to the end of the grid, the next files load by themselves.
-- **In a folder**: under the form, the tree of your folders, as on the folder view (opened on
-  demand). A click narrows the search to that folder and below, **without typing any word**:
+- **📁 My folders ▸**: one line under the form; a click opens the tree of your folders over the
+  page (nothing below moves), Esc closes it. A click narrows the search to that folder and below, **without typing any word**:
   empty words list the whole folder; ✕ next to its name searches every folder again.
 
 - **Search**: type the words, then Enter; the keys then go to the grid, `/` comes back to the
