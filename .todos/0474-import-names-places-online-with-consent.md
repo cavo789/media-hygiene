@@ -4,7 +4,6 @@
 - **Batch**: slideshow
 - **Depends**: 0472
 - **Files**: `src/media_hygiene/cli/cmd_import.py`, `src/media_hygiene/geo/nominatim.py`, `src/media_hygiene/places/`, `src/media_hygiene/config/`
-- **Needs maintainer**: the decision to let positions leave the machine (opt-in), see *Design change*
 
 ## Why
 
@@ -33,3 +32,7 @@ the user to keep as a named place (nothing written to `config.toml` without a cl
 
 - Answer No / no network / empty URL: no request at all (test with a fake server).
 - One request per cluster, cached; a second import of the same place asks nothing.
+
+## Decided (2026-10-29, the maintainer)
+
+Yes, opt-in: positions may leave the machine only after an explicit Yes each time (default No), per cluster, rounded, cached. Update CLAUDE.md's "no position ever leaves the machine" to "never without your consent" and the docs.

@@ -4,7 +4,6 @@
 - **Batch**: slideshow
 - **Depends**: —
 - **Files**: `src/media_hygiene/services/slideshow_story.py`, `src/media_hygiene/slideshow/slides.py`, `src/media_hygiene/slideshow/templates/slideshow.html.j2`, `src/media_hygiene/slideshow/templates/slideshow.js.j2`, `src/media_hygiene/geo/`
-- **Needs maintainer**: monuments: whether the image may grow for an offline landmark list (size to measure)
 
 ## Why
 
@@ -32,3 +31,7 @@ place (`[[classify.places]]`), else the nearest town of the vendored GeoNames sn
 ## Acceptance
 
 - A photo in a user's place shows it; one elsewhere shows its town; one without GPS shows nothing; the screen does not jump.
+
+## Decided (2026-10-29, the maintainer)
+
+Monuments: embed the offline GeoNames landmark list whatever its size (measure and report it anyway).

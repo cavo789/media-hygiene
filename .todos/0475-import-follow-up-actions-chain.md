@@ -2,9 +2,8 @@
 
 - **Priority**: Medium
 - **Batch**: phone
-- **Depends**: —
+- **Depends**: 0474
 - **Files**: `src/media_hygiene/services/launcher_phone_end.py`, `src/media_hygiene/cli/cmd_import.py`, `src/media_hygiene/config/`, `src/media_hygiene/review/templates/` (home page run)
-- **Needs maintainer**: the default of each action (on/off), see *To decide*
 
 ## Why
 
@@ -34,3 +33,7 @@ for a typical import, e.g. 100 photos); place names off (0474).
 
 - Toggles saved and read back from `config.toml`; a disabled action never runs; tags without
   Ollama skips cleanly; a chain stopped halfway resumes from the next step.
+
+## Decided (2026-10-29, the maintainer)
+
+Defaults: audit, tags and place names all on (place names still ask their own consent, 0474).
