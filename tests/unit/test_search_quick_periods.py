@@ -39,4 +39,6 @@ def test_path_contains_lists_the_folders_without_moving_the_grid() -> None:
     assert "In a folder" not in page
     for key in ('"ArrowDown"', '"ArrowUp"', '"Enter"', '"Escape"'):
         assert key in page
-    assert "b.node.files - a.node.files" in page  # most files first
+    assert (
+        "pathWhen(b.node.path).localeCompare(pathWhen(a.node.path))" in page
+    )  # latest first

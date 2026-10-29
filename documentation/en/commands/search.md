@@ -58,7 +58,7 @@ stops the page.
 `?` for one: `*.mov` finds every `.mov` file (`.MOV` too). Between two slashes it is a regular
 expression: `/\.(mov|mp4)$/`. Anything else is read as typed, so `Vacances (2019)` or `a+b` need
 no escaping. A regular expression that does not compile is told under the field. A click on
-the empty field lists your folders, most files first with their count; typing narrows the list.
+the empty field lists your folders, the latest first (2026/2026-10 before 2026/2026-09) with their count; typing narrows the list.
 ↓/↑ move in it, Enter (or a click) picks a folder and searches, Esc closes it. The list only
 helps: `*.mp4` or a regular expression are still searched as typed.
 

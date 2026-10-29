@@ -1,10 +1,21 @@
-{# *Path contains* lists the folders (0471): a click on the empty field shows them, most
-   files first with their count; typing narrows the list (a part of the path, any case).
+{# *Path contains* lists the folders (0471): a click on the empty field shows them, the
+   latest first (by the last year, then month, its path names: 2026/2026-10 before
+   2026/2026-09; a year folder above its months; folders naming no year at the end), each
+   with its count; typing narrows the list (a part of the path, any case).
    ↓/↑ move, Enter picks (fills the field, then searches), Esc closes. Free text (*.mp4, a
    regex) still works: the list only helps. It floats under the field: nothing moves. #}
 const PATH_LIST_MAX = 200;  // lines shown at once; typing narrows the rest
 let pathRows = [];
 let pathAt = -1;
+
+function pathWhen(path) {
+  // "2026-10" for …/2026/2026-10/…, "2026-13" for a year folder (above its months), "" for none
+  let when = "";
+  for (const found of path.matchAll(/(?:^|\D)((?:19|20)\d\d)(?:-(0[1-9]|1[0-2]))?(?=\D|$)/g)) {
+    when = found[1] + "-" + (found[2] || "13");
+  }
+  return when;
+}
 
 function pathTyped(node, folders) {
   // What the field gets: the part below the mounted folder (2019/Durbuy), a substring of
@@ -39,7 +50,7 @@ async function pathOpen() {
   pathRows = folders
     .map((node) => ({ node, typed: pathTyped(node, folders) }))
     .filter((row) => !typed || row.node.path.toLowerCase().includes(typed) || row.typed.toLowerCase().includes(typed))
-    .sort((a, b) => b.node.files - a.node.files || a.node.path.localeCompare(b.node.path))
+    .sort((a, b) => pathWhen(b.node.path).localeCompare(pathWhen(a.node.path)) || b.node.path.localeCompare(a.node.path, undefined, { numeric: true }))
     .slice(0, PATH_LIST_MAX);
   const lines = pathRows.map((row) => {
     const line = element("li", "", row.node.path);

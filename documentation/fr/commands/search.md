@@ -60,7 +60,7 @@ n'importe quels caractères et `?` un seul : `*.mov` trouve tous les fichiers `.
 aussi). Entre deux barres obliques, c'est une expression régulière : `/\.(mov|mp4)$/`. Tout le
 reste est lu tel quel : `Vacances (2019)` ou `a+b` n'ont pas besoin d'échappement. Une expression
 régulière invalide est signalée sous le champ. Un clic dans le champ vide liste vos dossiers,
-les plus remplis d'abord avec leur nombre de fichiers ; taper réduit la liste. ↓/↑ s'y
+les plus récents d'abord (2026/2026-10 avant 2026/2026-09) avec leur nombre de fichiers ; taper réduit la liste. ↓/↑ s'y
 déplacent, Entrée (ou un clic) choisit un dossier et lance la recherche, Échap la ferme. La liste
 n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherchés tels quels.
 
