@@ -229,7 +229,9 @@
   .segLabel { font-size: .85rem; color: var(--muted); }
   /* Dates on one line, the quick periods in a 📅 menu floating under it. */
   .years { flex-wrap: nowrap; align-items: end; position: relative; }
-  .years label { flex: 0 1 11ch; min-width: 0; }
+  /* The two dates share the room the 📅 menu leaves: dd/mm/yyyy and the calendar icon fit. */
+  .years label { flex: 1 1 0; min-width: 0; }
+  .years input { width: 100%; box-sizing: border-box; padding-left: 4px; padding-right: 2px; }
   .dateMenu { flex: none; }
   .dateMenu summary { list-style: none; cursor: pointer; padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; }
   .dateMenu[open] .spans { position: absolute; z-index: 3; right: 0; top: 100%; flex-direction: column;
