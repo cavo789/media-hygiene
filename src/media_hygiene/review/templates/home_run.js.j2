@@ -411,7 +411,7 @@ function tvChoices() {
     .then((lists) => {
       const options = (values) => values.map((value) => `<option value="${esc(value)}">${esc(value)}</option>`).join("");
       const pick = (id, label, values) => (values.length
-        ? `<label class="muted" for="${id}">${esc(label)}</label><select id="${id}">${options(values)}</select><button class="btn btn-primary" type="button" data-choose="${id}">${icon("play")} ${esc(T.tvShow)}</button>`
+        ? `<div class="tv-choice"><label class="muted" for="${id}">${esc(label)}</label><select id="${id}">${options(values)}</select><button class="btn btn-primary" type="button" data-choose="${id}">${icon("play")} ${esc(T.tvShow)}</button></div>`
         : "");
       box.innerHTML = pick("tvFolder", T.tvFolder, lists.folders || []) + pick("tvMonth", T.tvMonth, lists.months || []);
       $$("[data-choose]", box).forEach((button) => button.addEventListener("click", () => tvChoose(button.dataset.choose)));
