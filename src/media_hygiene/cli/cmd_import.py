@@ -11,7 +11,7 @@ import typer
 
 from media_hygiene.cli import folder_options
 from media_hygiene.cli.context import runtime_of, user_errors
-from media_hygiene.i18n import _
+from media_hygiene.i18n import _, ngettext
 
 
 def import_command(  # pylint: disable=too-many-arguments
@@ -53,6 +53,18 @@ def import_command(  # pylint: disable=too-many-arguments
             ),
         ),
     ] = False,
+    since: Annotated[
+        str | None,
+        typer.Option(
+            "--since",
+            help=_(
+                "Only the files of a period: today, week, month, all or a day "
+                "(2026-10-29), by the date in their name, else their modified time. "
+                "Default: every file of a folder; with --phone, since the last import."
+            ),
+            show_default=False,
+        ),
+    ] = None,
 ) -> None:
     """Copy what only a folder holds, never what you set aside or deleted before.
 
@@ -63,15 +75,18 @@ def import_command(  # pylint: disable=too-many-arguments
         yes: `--yes`, no question.
         backup: `--backup` folders, compared and never changed.
         phone: `--phone`, handled by `mh.ps1` before Docker (0379): refused here.
+        since: `--since`, only the files of a period (0476).
 
     Raises:
         typer.Exit: The user declined, or `--phone` reached the container.
     """
     from media_hygiene.cli.import_places import offer_place_names
     from media_hygiene.cli.next_steps import carried, safety, suggest
+    from media_hygiene.config.import_settings import ImportStep
     from media_hygiene.console.import_view import show_plan, show_result
     from media_hygiene.console.progress import RichProgress
     from media_hygiene.scan.progress import NullProgress
+    from media_hygiene.services.import_period import within
     from media_hygiene.services.import_run import ImportService
     from media_hygiene.services.interrupt import StopRequest
     from media_hygiene.services.next_command import CHANGING, NextVerb
@@ -93,7 +108,16 @@ def import_command(  # pylint: disable=too-many-arguments
             plan = ImportService(runtime, progress).prepare(
                 runtime.mapper.to_container(to) if to else None
             )
+        plan, older = within(plan, since)
     show_plan(runtime, plan)
+    if older:
+        output.info(
+            ngettext(
+                "{count} older file left out (--since).",
+                "{count} older files left out (--since).",
+                older,
+            ).format(count=f"{older:,}")
+        )
     if not plan.jobs:
         output.success(_("Nothing to import: every file of the folder is dealt with."))
         return
@@ -108,7 +132,8 @@ def import_command(  # pylint: disable=too-many-arguments
     with RichProgress(output.console) as progress, StopRequest() as stop:
         result = ImportService(runtime, progress).execute(plan, stop.requested)
     show_result(runtime, result)
-    if not yes or runtime.settings.places.reverse_lookup == "always":
+    asked = not yes or runtime.settings.places.reverse_lookup == "always"
+    if asked and ImportStep.PLACES in runtime.settings.imports.then:  # 0475
         offer_place_names(runtime, result.copied)  # --yes: no one to say Yes (0474)
     safety(
         runtime,

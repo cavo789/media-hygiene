@@ -152,6 +152,11 @@ Choose with the keyboard, as in the old page; every choice is **saved at once** 
 when you chose (a later edit of the same event in the workbook is a conflict, shown in red,
 never settled silently). The workbook itself is never changed.
 
+**💡 Proposed name**: under the name field, the card proposes one from what the index knows,
+without any AI call: the place (a place of yours, else the town) and an activity most of the
+described photos share (*Walk in Liège*), else the place and the day (*Liège — 29 October*), else
+the day alone. **Use this name** saves it in one click; nothing is sorted until you choose to.
+
 | Key | What it does |
 |---|---|
 | **F**, then **Enter** | type the event's folder, save it, then the next event to decide |

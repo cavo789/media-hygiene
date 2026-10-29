@@ -32,6 +32,7 @@
     <form id="eventChoice" autocomplete="off">
       <label>{{ _("Folder") }} <kbd>F</kbd><span class="path"><span id="eventPrefix" class="muted"></span><input id="eventFolderIn" list="categories"></span></label>
       <details id="eventNaming"><summary>{{ _("Name of the event") }} <kbd>E</kbd></summary><input id="eventNameIn"></details>
+      <p id="eventSuggest" hidden>💡 {{ _("Proposed name:") }} <strong id="eventSuggestName"></strong> <button type="button" id="eventSuggestUse" class="plain" title="{{ _('Name the event so and save it; change it in the field above at any time') }}">{{ _("Use this name") }}</button></p>
     </form>
     <p id="destination" class="muted" role="status" aria-live="polite"></p>
     <p class="eventButtons">

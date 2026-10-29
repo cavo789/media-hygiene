@@ -11,6 +11,7 @@ from media_hygiene.config.cache_settings import CacheSettings
 from media_hygiene.config.classify_settings import ClassifySettings
 from media_hygiene.config.clean_settings import CleanSettings
 from media_hygiene.config.folder_roles import check_backup_roles
+from media_hygiene.config.import_settings import ImportSettings
 from media_hygiene.config.inventory_settings import InventorySettings
 from media_hygiene.config.patterns import valid_patterns
 from media_hygiene.config.people_settings import PeopleSettings
@@ -168,3 +169,4 @@ class Settings(BaseModel):
     slideshow: SlideshowSettings = SlideshowSettings()
     share: ShareSettings = ShareSettings()
     shrink: ShrinkSettings = ShrinkSettings()
+    imports: ImportSettings = ImportSettings()

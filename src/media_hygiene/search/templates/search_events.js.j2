@@ -69,6 +69,9 @@ let showEvent = null;  // (id, again): an event shown, its tiles asked again
     photoOf = Object.fromEntries(view.hits.map((hit) => [hit.key, { ...hit, folder: hit.host }]));
     eventShown = view.card.id;
     total = view.total;
+    // The name proposed from the place, the day and the tags (0477): one click takes it.
+    byId("eventSuggestName").textContent = view.suggested || "";
+    byId("eventSuggest").hidden = !view.suggested || byId("eventNameIn").value === view.suggested;
     showFiles(view.hits, again);
     $("more").hidden = true;
     if (view.missing) told(fill(TEXTS.eventMissing, { n: view.missing }), false);

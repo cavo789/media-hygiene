@@ -101,11 +101,20 @@ def _burst(name: str, size: int, minutes: int = 0) -> JournalEntry:
     )
 
 
+def _files(result: Result) -> list[str]:
+    """The plan's file lines, without the chain's (0475)."""
+    return [
+        line for line in result.stdout.splitlines() if not line.startswith("then\t")
+    ]
+
+
 def _cases(result: Result) -> dict[str, list[str]]:
     """The plan printed on stdout, by path: the case then the reason."""
     assert result.exit_code == 0, result.output
     plan: dict[str, list[str]] = {}
     for line in result.stdout.splitlines():
+        if line.startswith("then\t"):  # the chain after the copies (0475)
+            continue
         case, path, _size, _date, *reason = line.split("\t")
         plan[path] = [case, *reason]
     return plan
@@ -217,7 +226,7 @@ def test_the_library_comes_before_the_journals_and_the_destination(
 def test_an_empty_cache_says_to_audit_first(runner: CliRunner) -> None:
     """Without any audit, every photo is new: said on stderr, never on stdout."""
     result = _plan(runner, _line("a.jpg", 5))
-    assert result.stdout == f"new\ta.jpg\t5\t{_DATE}\n"
+    assert result.stdout.startswith(f"new\ta.jpg\t5\t{_DATE}\nthen\t")
     assert "mh audit" in result.stderr
 
 
@@ -233,7 +242,7 @@ def test_unreadable_lines_are_skipped_and_counted(runner: CliRunner) -> None:
         + "\n"
     )
     result = _plan(runner, listing)
-    assert [line.split("\t")[1] for line in result.stdout.splitlines()] == ["ok.jpg"]
+    assert [line.split("\t")[1] for line in _files(result)] == ["ok.jpg"]
     assert "4 lines of the phone's listing could not be read" in result.stderr
 
 
@@ -245,9 +254,7 @@ def test_hidden_files_of_the_phone_are_left_out_and_counted(runner: CliRunner) -
         + _line(".thumbnails/123.jpg", 3)
     )
     result = _plan(runner, listing)
-    assert [line.split("\t")[1] for line in result.stdout.splitlines()] == [
-        "Camera/a.jpg"
-    ]
+    assert [line.split("\t")[1] for line in _files(result)] == ["Camera/a.jpg"]
     assert "2 hidden files of the phone left out" in result.stderr
 
 

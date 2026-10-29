@@ -28,3 +28,21 @@ user pick (a weekend only, older unimported photos left).
 - Unit tests of the name → date rules (each pattern, none → mtime); `--since week` copies only
   the files of the last 7 days (synthetic folder); the last-import date is saved and read back.
 - A step in `tests/measure/mh-measure.ps1` for the phone path (only the maintainer can run it).
+
+## Status (2026-10-29): PARTIAL
+
+Done: `mh import [--phone] --since today|week|month|all|<YYYY-MM-DD>`
+(`services/import_since.py`: the day in the name — `20261029_…`, `IMG_/VID_/PXL_…`,
+`Screenshot_2026-10-29…` — else the modified time; an unknown day is kept). Phone: no
+`--since` = since the last import, its day written by `mh.ps1` into the journal folder
+(`last-import.txt`) after an import that copied files; the first import takes all. The new
+files before the period become case `older` in `phone-plan` and are counted: « Left on the
+phone: 1,240 older photos and videos ». Folder import: `--since` filters the plan; its default
+stays every file (deviation: a NAS holds years never imported). Step 38 of `mh-measure.ps1`.
+Tests: `tests/unit/test_import_since.py`, `test_launcher_phone.py`. Docs EN+FR (import).
+
+Deviation: the period is decided in the container (`phone-plan`, before any copy) rather than
+in PowerShell: one set of rules, unit-tested, no extra cost (the listing is piped there anyway).
+
+Remaining:
+- Home page: *Today · This week · This month · All* before starting the phone import.

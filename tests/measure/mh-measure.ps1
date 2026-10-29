@@ -139,6 +139,8 @@
 #  36. the home page by hand: three yes/no questions (it opens; a console step runs in the
 #      window of mh while the page stays open; Quit then mh again)       (0355, 0366)
 #  37. a USB stick plugged in, then removed, during a session of mh: the home page follows it
+#  38. mh import --phone --since today / week, then without --since (0476): what is left, timed
+#  39. the whole chain after a phone import of about 100 photos, timed step by step (0475)
 #      (two yes/no questions, by hand)                                               (0359)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
@@ -3364,6 +3366,48 @@ if (Wanted 37) {
     Log "   37a. the home page starts without the stick: $starts"
     Log "   37b. stick plugged in, followed within 10 s: $plugged"
     Log "   37c. stick removed, followed: $removed"
+    $ErrorActionPreference = $saved
+}
+
+# --- 38: mh import --phone --since, a period only (0476) ------------------------------------
+# By hand: the phone plugged in over USB, unlocked, mh written again (mh update).
+if (Wanted 38) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 38. mh import --phone --since (0476)"
+    Write-Host "38 : telephone branche en USB et deverrouille. Tapez mh update, puis : mh import --phone --since today"
+    $todayOk = Read-Host "38a. Seules les photos d'aujourd'hui sont-elles copiees, la fenetre disant combien de plus anciennes restent sur le telephone ? (o/n)"
+    $todaySec = Read-Host "38b. Combien de secondes du debut a la fin de la copie ? (nombre)"
+    Write-Host "38 : tapez maintenant : mh import --phone   (sans --since)"
+    $lastOk = Read-Host "38c. Rien n'est recopie (depuis le dernier import), sans question en trop ? (o/n)"
+    Write-Host "38 : tapez : mh import --phone --since week"
+    $weekOk = Read-Host "38d. Seules les photos des 7 derniers jours sont-elles proposees ? (o/n)"
+    Log "   38a. --since today copies today's only, older ones said: $todayOk"
+    Log "   38b. --since today, seconds start to end: $todaySec"
+    Log "   38c. without --since, since the last import: $lastOk"
+    Log "   38d. --since week: $weekOk"
+    $ErrorActionPreference = $saved
+}
+
+# --- 39: the chain after a phone import, about 100 photos (0475) -----------------------------
+# By hand: about 100 new photos on the phone (taken today), Ollama running for tags.
+if (Wanted 39) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 39. the chain after a phone import (0475)"
+    Write-Host "39 : environ 100 nouvelles photos sur le telephone, Ollama demarre. Tapez : mh import --phone --since today"
+    $copySec = Read-Host "39a. Secondes de la copie (jusqu'a la ligne 'copiees') ? (nombre)"
+    $auditSec = Read-Host "39b. Secondes de l'etape audit ? (nombre)"
+    $tagsSec = Read-Host "39c. Secondes de l'etape tags ? (nombre, 0 si sautee)"
+    $placesSec = Read-Host "39d. Secondes de l'etape noms de lieux (reponse a la question comprise) ? (nombre)"
+    $tvOk = Read-Host "39e. La derniere ligne propose-t-elle le diaporama avec un nom d'evenement juste ? Recopiez ce nom"
+    Log "   39a. copy, seconds: $copySec"
+    Log "   39b. audit, seconds: $auditSec"
+    Log "   39c. tags, seconds: $tagsSec"
+    Log "   39d. place names, seconds: $placesSec"
+    Log "   39e. last line, event name proposed: $tvOk"
     $ErrorActionPreference = $saved
 }
 

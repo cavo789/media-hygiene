@@ -91,7 +91,16 @@ mh import --phone                              # dans <votre premier dossier de 
 mh import --phone --to "D:\Depuis les téléphones" # ailleurs, puis un dossier par téléphone
 mh import --phone --only Camera                # seulement le dossier DCIM\Camera du téléphone
 mh import --phone --free                       # puis libérer le téléphone : plus bas
+mh import --phone --since today                # seulement les photos du jour (week, month, all, 2026-10-29)
 ```
+
+**Une période** (`--since`) : sans elle, `mh import --phone` prend ce qui est arrivé **depuis le
+dernier import** (le premier prend tout) ; `--since today`, `week` (les 7 derniers jours), `month`
+(ce mois-ci), `all` ou un jour (`2026-10-29`). Le jour d'un fichier est la date de son nom
+(`IMG_20261029_…`, `Screenshot_2026-10-29…`), sinon sa date de modification sur le téléphone. Les
+nouveaux fichiers plus anciens restent sur le téléphone et sont comptés : *Laissées sur le
+téléphone : 1 240 photos et vidéos plus anciennes*. `--since` vaut aussi pour un dossier
+(`mh import E:\DCIM --since month`), dont le défaut reste tous les fichiers.
 
 **Un dossier par téléphone** : les copies vont dans un dossier au nom du téléphone, celui que
 Windows montre dans *Ce PC* (le nom d'appareil du téléphone). Deux téléphones du même modèle
@@ -117,10 +126,15 @@ lequel), liste son dossier `DCIM` (environ 30 secondes par tranche de 1 000 fich
 
 Il termine par ce qu'il a relu dans le dossier : *Nouvelles photos et vidéos copiées : 212
 (1,40 Go, 18,5 Mo/s)*, puis chaque nombre laissé de côté (*Aussi sur le téléphone, ignorés : 164
-que vous aviez écartés auparavant* : des fichiers du téléphone, pas de la copie). Puis il fait
-l'audit aussitôt, pour que les nouveaux fichiers rejoignent votre photothèque et
-[`search`](search.md) : dans la page d'accueil quand elle est ouverte (la page montre l'audit,
-puis son résultat), sinon dans la console. 🔒 Sans `--free`, le téléphone est seulement lu :
+que vous aviez écartés auparavant* : des fichiers du téléphone, pas de la copie). Puis il lance
+les étapes de `[imports] then` dans `config.toml`, annoncées d'abord (*Après l'import : audit >
+tags > places*) : **audit**, pour que les nouveaux fichiers rejoignent votre photothèque et
+[`search`](search.md) (dans la page d'accueil quand elle est ouverte et que l'audit est seul,
+sinon dans la console) ; **tags** 🤖 (le modèle d'IA local décrit les nouvelles photos ; s'il ne
+tourne pas, `tags` le dit et la suite continue) ; **places** 🌐 (les nouveaux lieux nommés en
+ligne, après leur propre question). Enfin, le nom proposé pour les nouvelles photos et le
+diaporama : *📺 Votre diaporama « Promenade à Liège » est prêt*, puis *Le montrer sur la télé
+maintenant ? (o/N)*. Retirez une étape de `then` pour la couper (`then = []` : rien ne tourne). 🔒 Sans `--free`, le téléphone est seulement lu :
 rien n'y est supprimé, déplacé ni renommé.
 
 - **Lancez d'abord une fois `mh audit`** : la photothèque est ce que le cache connaît. Sans audit,
@@ -218,6 +232,7 @@ suppression est écrite au journal avant et après (un passage de type `phone` d
 | `--yes`, `-y` | Copier sans demander. |
 | `--backup CHEMIN` | Le dossier de sauvegarde d'où importer, s'il n'est pas dans `config.toml` (`mh` passe les vôtres). |
 | `--phone` | Un téléphone en USB au lieu d'un dossier, Windows seulement : le `mh` de PowerShell copie lui-même ses nouvelles photos ([plus haut](#depuis-un-téléphone--mh-import---phone)) ; avec lui, `--only <dossier de DCIM>` et `--free`. |
+| `--since PÉRIODE` | Seulement les fichiers d'une période : `today`, `week`, `month`, `all` ou un jour (`2026-10-29`), selon la date de leur nom, sinon leur date de modification. Par défaut : tous les fichiers d'un dossier ; avec `--phone`, depuis le dernier import. |
 
 ## Bon à savoir
 

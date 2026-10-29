@@ -163,6 +163,12 @@ Choisissez au clavier, comme dans l'ancienne page ; chaque choix est **enregistr
 du choix (une modification ultérieure du même événement dans le classeur est un conflit, montré
 en rouge, jamais tranché en silence). Le classeur lui-même n'est jamais modifié.
 
+**💡 Nom proposé** : sous le champ du nom, la fiche en propose un d'après ce que l'index sait,
+sans aucun appel à l'IA : le lieu (un de vos lieux, sinon la ville) et une activité que la
+plupart des photos décrites partagent (*Promenade à Liège*), sinon le lieu et le jour (*Liège —
+29 octobre*), sinon le jour seul. **Prendre ce nom** l'enregistre en un clic ; rien n'est trié
+tant que vous ne le choisissez pas.
+
 | Touche | Ce qu'elle fait |
 |---|---|
 | **F**, puis **Entrée** | taper le dossier de l'événement, l'enregistrer, puis l'événement suivant à décider |

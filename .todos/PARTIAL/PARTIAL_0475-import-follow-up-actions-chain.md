@@ -45,3 +45,24 @@ audit → tags → places (0472, 0474) → events named (0477) → the last line
 home page: « 📺 Your slideshow *Promenade à Liège* is ready: send it to the TV? » (one click
 starts `slideshow` on the new event). Measure the whole chain for 100 photos on the
 maintainer's PC (a step of `mh-measure.ps1`); tags is the slow step.
+
+## Status (2026-10-29): PARTIAL
+
+Done: `[imports] then = ["audit", "tags", "places"]` (all on, as decided; `[imports]`: `import`
+is a Python keyword — deviation from `[import]`), audit added first while another step is on.
+`phone-plan` ends its plan with one `then<TAB><step>` line per step on (a disabled step never
+runs); `mh.ps1` says the list, runs `audit` (home page only when alone), `tags --path <phone
+folder> --yes` (🤖; tags describes only the photos not described yet), then the hidden
+`phone-end`: place names (🌐 0474's own question) on the new files of the period, the name
+proposed (0477) and « 📺 Your slideshow "Walk in Liège" is ready », then *Show it on the TV
+now? (y/N)* → `mh slideshow --folder <phone folder>`. A folder `import` honours the `places`
+toggle. Step 39 of `mh-measure.ps1` times the chain for ~100 photos. Tests:
+`tests/unit/test_import_then.py`, `test_launcher_phone.py`. Docs EN+FR (import).
+
+Remaining:
+- The chain on the home page, step by step (today only the audit runs there, when alone).
+- Interrupted (Ctrl+C, PC asleep): the next `mh` offering the remaining steps (no state kept).
+- The slideshow of the new event only: `slideshow` has no `--since`/event option, so the
+  whole phone folder is shown.
+- Toggles changeable from the list itself (today: edit `[imports] then`).
+- The measurement of the chain on the maintainer's PC (step 39).

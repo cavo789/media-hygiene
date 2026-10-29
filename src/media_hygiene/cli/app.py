@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import typer
 
+from media_hygiene.cli.cmd_phone_end import phone_end_command
 from media_hygiene.cli.cmd_phone_free import phone_done_command, phone_prove_command
 from media_hygiene.cli.cmd_phone_plan import phone_plan_command
 from media_hygiene.cli.cmd_phone_review import phone_review_command
@@ -15,6 +16,7 @@ from media_hygiene.cli.safety import help_of
 from media_hygiene.cli.usage_errors import localize_error_frame
 from media_hygiene.constants import APP_NAME, DOC_PAGES
 from media_hygiene.i18n import _
+from media_hygiene.services.import_end import PHONE_END
 from media_hygiene.services.phone_plan import (
     PHONE_DONE,
     PHONE_PLAN,
@@ -115,6 +117,14 @@ def build_app() -> typer.Typer:
             PHONE_DONE,
             _("For mh import --phone: journal the files gone from the phone."),
             phone_done_command,
+        ),
+        (
+            PHONE_END,
+            _(
+                "For mh import --phone: name the new places, then propose the "
+                "slideshow of the new photos."
+            ),
+            phone_end_command,
         ),
         (
             PUSH_STEP,

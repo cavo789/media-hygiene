@@ -14,6 +14,8 @@ from dataclasses import dataclass
 from media_hygiene.i18n import _
 from media_hygiene.review.home_app import AUDIT_PATH, AuditAction
 from media_hygiene.services.launcher_phone_say import say
+from media_hygiene.services.launcher_phone_since import PhoneSince, phone_since
+from media_hygiene.services.launcher_phone_then import PhoneThen, phone_then
 
 
 @dataclass(frozen=True, slots=True)
@@ -23,6 +25,8 @@ class PhoneEnd:
     aside: str  # holds `${count}`: on the phone, set aside before by the user
     on_page: str  # the home page runs the audit
     in_console: str  # `mh audit` runs here
+    since: PhoneSince  # `--since`, the last import's day (0476)
+    then: PhoneThen  # the chain after the copies (0475)
     path: str = AUDIT_PATH
     body: str = json.dumps({"action": AuditAction.START.value})
 
@@ -50,4 +54,6 @@ def phone_end() -> PhoneEnd:
         in_console=say(
             _("Audit of the new files, so that they join your library (mh audit):")
         ),
+        since=phone_since(),
+        then=phone_then(),
     )

@@ -173,6 +173,11 @@ screen_px = 1920
 interval_seconds = 8
 
 
+[imports]
+{{ comment(_("What runs after an import, in this order; remove a step to switch it off. audit: the new files join your library (first while another step is on). tags: the local AI model describes the new photos (skipped when it is not running). places: the new spots named online, after its own question.")) }}
+then = ["audit", "tags", "places"]
+
+
 [share]
 {{ comment(_("'share' makes copies of an album to send them, in your folder media-hygiene\\Shares: each photo upright, its long side fitted into long_side_px pixels, JPEG quality quality (30 to 95). Your photos are only read.")) }}
 long_side_px = 2048
