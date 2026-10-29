@@ -158,6 +158,9 @@ figures; the list says its estimate, and the real gain is said after each video.
   never writes your photos); the page stays open and shows how far it is (videos done, the one
   being encoded), then its new state.
 - **The space comes back with `purge`**: until then, the originals are in the quarantine.
+- **A video renamed (`.avi` → `.mp4`) keeps its links**: `albums.json`, `decisions.json` and the
+  videos chosen with `--try` name the new `.mp4`, read back from the disk; `undo` gives them the
+  original's name again.
 - **Settings**: the `[shrink]` section of `config.toml` (`codecs`, `bits_per_pixel`,
   `min_gain_percent`, `same_crf`, `lighter_crf`, `lighter_lines`, `preset`, `threads`,
   `try_count`: the drafts of `--try`, 10 by default).

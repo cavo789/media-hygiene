@@ -166,6 +166,9 @@ est dit après chaque vidéo.
   de la page n'écrit jamais vos photos) ; la page reste ouverte et montre où il en est (vidéos
   faites, celle en cours), puis son nouvel état.
 - **La place revient avec `purge`** : d'ici là, les originaux sont en quarantaine.
+- **Une vidéo renommée (`.avi` → `.mp4`) garde ses liens** : `albums.json`, `decisions.json` et
+  les vidéos choisies avec `--try` nomment le nouveau `.mp4`, relu sur le disque ; `undo` leur
+  rend le nom de l'original.
 - **Réglages** : la section `[shrink]` de `config.toml` (`codecs`, `bits_per_pixel`,
   `min_gain_percent`, `same_crf`, `lighter_crf`, `lighter_lines`, `preset`, `threads`,
   `try_count` : les brouillons de `--try`, 10 par défaut).
