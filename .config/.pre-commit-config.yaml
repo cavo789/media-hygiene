@@ -12,8 +12,9 @@ repos:
     rev: v6.0.0
     hooks:
       - id: check-added-large-files
-        # The GeoNames towns (~1.7 MB, xz) are shipped on purpose: offline geocoding.
-        exclude: ^src/media_hygiene/geo/data/towns\.tsv\.xz$
+        # The GeoNames towns (~1.7 MB, xz) and landmarks (~4.2 MB, xz, 0472) are shipped
+        # on purpose: offline geocoding.
+        exclude: ^src/media_hygiene/geo/data/(towns|landmarks)\.tsv\.xz$
       - id: check-case-conflict
       - id: check-executables-have-shebangs
       - id: check-merge-conflict

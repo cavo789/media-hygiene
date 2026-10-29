@@ -14,6 +14,7 @@ from enum import StrEnum
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.layout import month_name
+from media_hygiene.geo.folding import town_key
 from media_hygiene.plan.name_rules import DEFAULT_NAME_RULES
 
 if TYPE_CHECKING:
@@ -51,14 +52,32 @@ class Chapter:
         """The event, for the pages.
 
         Returns:
-            Its number, name, period and place (empty when unknown).
+            Its number, name, period and place (empty when unknown, or when the
+            name already says it: `told_place`).
         """
         return {
             "number": self.number,
             "name": self.name,
             "period": self.period,
-            "place": self.place,
+            "place": told_place(self.name, self.place),
         }
+
+
+def told_place(name: str, place: str) -> str:
+    """The place worth telling next to an event's name (0473).
+
+    Args:
+        name: The event's name, e.g. `Promenade à Valkenburg`.
+        place: Its place, e.g. `Valkenburg`.
+
+    Returns:
+        The place; empty when the name already contains it (case, accents and
+        separators ignored), so the TV never says it twice.
+    """
+    key = town_key(place)
+    if key and f" {key} " in f" {town_key(name)} ":
+        return ""
+    return place
 
 
 def event_name(folder: PurePath, library: PurePath) -> str:

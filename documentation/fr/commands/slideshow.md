@@ -136,7 +136,15 @@ connexion n'est pas privée installe d'abord le certificat du PC, une fois : la 
   Pays-Bas* : le pays du lieu marqué `home`, sinon de votre premier lieu, sinon celui où la
   plupart des photos ont été prises). Une touche choisit où il est annoncé : **TV et téléphone**
   (par défaut), **Téléphone seul** (sous les commandes ; les notes du conteur s'ouvrent alors d'elles-mêmes),
-  **Nulle part**.
+  **Nulle part**. Un lieu que le nom de l'événement dit déjà n'est pas répété (*Promenade à
+  Valkenburg* à *Valkenburg* : le nom seul).
+- **Où chaque photo a été prise** : pendant que la télé annonce les événements, une petite ligne
+  dans son coin en haut à droite nomme le lieu de la photo affichée, d'après son GPS : l'un de
+  vos lieux, sinon le monument, château, église ou musée où elle a été prise (à 200 m environ,
+  d'une liste de sites intégrée à l'outil : trouvé hors ligne), sinon sa ville. Rien quand la
+  photo n'a pas de GPS ou quand le bandeau de l'événement dit le même lieu ; la photo ne bouge
+  pas. Après un [`import`](import.md), les noms qu'OpenStreetMap a donnés aux nouveaux lieux
+  (si vous avez dit Oui) passent en premier.
 - **Les notes du conteur** (à déplier sous les commandes) : pendant que la famille regarde la
   télé, le téléphone montre en plus grand la photo affichée, son jour et son heure, l'événement
   et son lieu, sa description et ses mots (quand `describe` en a donné), la photo suivante, et

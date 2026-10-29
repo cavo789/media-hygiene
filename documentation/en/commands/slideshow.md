@@ -125,7 +125,15 @@ the steps are the [home page's](home.md#once-per-phone-install-the-certificate).
   home country, e.g. *Valkenburg, Netherlands*: the country of your place marked `home`, else of
   your first place, else where most of the photos were taken). One tap chooses where it is
   told: **TV and phone** (the default), **Phone only** (under the controls; the storyteller's notes then open by themselves),
-  **Nowhere**.
+  **Nowhere**. A place the event's name already says is not repeated (*Walk in Valkenburg*
+  in *Valkenburg*: the name only).
+- **Where each photo was taken**: while the TV tells the events, a small line in its top right
+  corner names the place of the photo shown, from its GPS: one of your places, else the
+  monument, castle, church or museum it was taken at (within about 200 m, from a list of
+  landmarks built into the tool: found offline), else its town. Nothing when the photo has no
+  GPS or when the event's banner says the same place; the photo never moves. After an
+  [`import`](import.md), the names OpenStreetMap gave the new places (when you said Yes) come
+  first.
 - **The storyteller's notes** (unfold them under the controls): while the family watches the TV,
   the phone shows the photo on screen larger, its day and time, the event and its place, its
   description and words (when `describe` gave some), the next photo, and a small drawing of

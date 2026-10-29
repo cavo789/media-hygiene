@@ -70,6 +70,7 @@ class Slide:
     day: str | None = None
     film: Film | None = None  # None: a photo
     chapter: Chapter | None = None  # its event (0448)
+    place: str = ""  # where it was taken, when its event does not say it (0472)
     notes: Notes | None = None  # what the storyteller reads (0449)
 
 

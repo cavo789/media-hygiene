@@ -177,7 +177,8 @@ Aucune position, aucune photo, aucune liste de lieux. Les photos d'un groupe son
 l'outil lui-même, depuis vos dossiers ; leurs aperçus restent dans `/cache`. La carte charge des **tuiles** (les zones
 que vous regardez) depuis le serveur de `[places] tiles` ; **Chercher sur OpenStreetMap** envoie
 **le texte que vous avez tapé**, sur votre clic seulement, à `[places] nominatim_url` (vide, cette
-recherche est désactivée). `classify` ne va jamais en ligne.
+recherche est désactivée). `classify` ne va jamais en ligne. Seul [`import`](import.md#bon-à-savoir)
+peut envoyer des positions, arrondies, après votre Oui explicite.
 
 ## Bon à savoir
 

@@ -882,6 +882,14 @@ msgstr ""
 msgid "Advanced: the short command that keeps your folders."
 msgstr ""
 
+msgid ""
+"After an 'import', name the new photos' places online (buildings, "
+"monuments, from OpenStreetMap, at nominatim_url): 'ask' each time (the "
+"answer is No unless you type y), 'never', or 'always'. Only then a "
+"position leaves your PC: rounded to about 100 m, one per group of photos,"
+" each asked once."
+msgstr ""
+
 #, python-brace-format
 msgid "After an undo, 'media-hygiene clean {flag}' applies it again."
 msgstr ""
@@ -5393,6 +5401,10 @@ msgid "Open this section (o)"
 msgstr ""
 
 msgid "OpenStreetMap contributors"
+msgstr ""
+
+#, python-brace-format
+msgid "OpenStreetMap could not be reached ({error}): try at the next import."
 msgstr ""
 
 msgid "OpenStreetMap knows no area of that name."
@@ -13402,6 +13414,16 @@ msgid "{n} min"
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{n} new place found. Look up its name online (OpenStreetMap)? Its "
+"position, rounded to about 100 m, is sent to {url}."
+msgid_plural ""
+"{n} new places found. Look up their names online (OpenStreetMap)? Their "
+"positions, rounded to about 100 m, are sent to {url}."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} obvious series"
 msgid_plural "{n} obvious series"
 msgstr[0] ""
@@ -13480,6 +13502,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} photos of these days stay with the rule '{rule}'."
 msgstr ""
+
+#, python-brace-format
+msgid "{n} place named: the slideshow shows it on the TV."
+msgid_plural "{n} places named: the slideshow shows them on the TV."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{n} position"
@@ -14133,6 +14161,9 @@ msgid ""
 msgstr ""
 
 msgid "🔒 Nothing was changed: this is only the list."
+msgstr ""
+
+msgid "🔒 Nothing was sent: the places keep their town's name."
 msgstr ""
 
 msgid "🔒 Only read: your photos and the backup folder are not changed."

@@ -36,3 +36,17 @@ the user to keep as a named place (nothing written to `config.toml` without a cl
 ## Decided (2026-10-29, the maintainer)
 
 Yes, opt-in: positions may leave the machine only after an explicit Yes each time (default No), per cluster, rounded, cached. Update CLAUDE.md's "no position ever leaves the machine" to "never without your consent" and the docs.
+
+## Status — PARTIAL (2026-10-29)
+
+Done: `cli/import_places.py` asks after `import`'s copies (default No; `[places] reverse_lookup`
+ask/never/always; `--yes` sends nothing unless `always`; empty `nominatim_url` sends nothing);
+`geo/reverse.py` (zoom 18, 1 req/s, User-Agent, positions rounded to 3 decimals, one per spot);
+`services/place_names.py` caches the names in `/cache/place-names.json` (asked once); the
+slideshow shows them first (0472). Tests with a fake server (`tests/unit/test_import_place_names.py`).
+Docs EN+FR (import, slideshow, places), CLAUDE.md geo line.
+
+Remaining:
+- `mh places` shows the names found as suggestions, kept as a named place on a click only.
+- Videos' positions (the import reads images' EXIF only).
+- Run it also after the phone launcher's audit (0451) — fits 0475's chain.

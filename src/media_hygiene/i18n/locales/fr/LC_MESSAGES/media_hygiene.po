@@ -1131,6 +1131,20 @@ msgstr "Avancé : analyse (remplace scan.* de config.toml)"
 msgid "Advanced: the short command that keeps your folders."
 msgstr "Avancé : la commande courte qui retient vos dossiers."
 
+msgid ""
+"After an 'import', name the new photos' places online (buildings, "
+"monuments, from OpenStreetMap, at nominatim_url): 'ask' each time (the "
+"answer is No unless you type y), 'never', or 'always'. Only then a "
+"position leaves your PC: rounded to about 100 m, one per group of photos,"
+" each asked once."
+msgstr ""
+"Après un 'import', nommer en ligne les lieux des nouvelles photos "
+"(bâtiments, monuments, par OpenStreetMap, à nominatim_url) : 'ask' à "
+"chaque fois (la réponse est Non sauf si vous tapez y), 'never' (jamais) "
+"ou 'always' (toujours). C'est le seul cas où une position quitte votre PC"
+" : arrondie à environ 100 m, une par groupe de photos, demandée une seule"
+" fois."
+
 #, python-brace-format
 msgid "After an undo, 'media-hygiene clean {flag}' applies it again."
 msgstr "Après un undo, 'media-hygiene clean {flag}' l'applique à nouveau."
@@ -1767,7 +1781,10 @@ msgid ""
 "Check their dates, their patterns and their order in config.toml; the 🗂 "
 "Events tab of 'search' lists them under Your rules, with a button to "
 "remove those that match nothing any more."
-msgstr "Vérifiez leurs dates, leurs motifs et leur ordre dans config.toml ; l'onglet 🗂 Événements de 'search' les liste sous Vos règles, avec un bouton pour retirer celles qui ne correspondent plus à rien."
+msgstr ""
+"Vérifiez leurs dates, leurs motifs et leur ordre dans config.toml ; "
+"l'onglet 🗂 Événements de 'search' les liste sous Vos règles, avec un "
+"bouton pour retirer celles qui ne correspondent plus à rien."
 
 #, python-brace-format
 msgid ""
@@ -1834,7 +1851,9 @@ msgstr ""
 msgid ""
 "Choose again in the 🗂 Events tab of 'search' (it shows both), or set the "
 "workbook cells back, then run 'sort' again."
-msgstr "Choisissez à nouveau dans l'onglet 🗂 Événements de 'search' (il montre les deux), ou remettez les cellules du classeur, puis relancez 'sort'."
+msgstr ""
+"Choisissez à nouveau dans l'onglet 🗂 Événements de 'search' (il montre "
+"les deux), ou remettez les cellules du classeur, puis relancez 'sort'."
 
 msgid "Choose an event."
 msgstr "Choisissez un événement."
@@ -6556,6 +6575,10 @@ msgstr "Ouvrir cette section (o)"
 msgid "OpenStreetMap contributors"
 msgstr "contributeurs d'OpenStreetMap"
 
+#, python-brace-format
+msgid "OpenStreetMap could not be reached ({error}): try at the next import."
+msgstr "OpenStreetMap est injoignable ({error}) : réessayez au prochain import."
+
 msgid "OpenStreetMap knows no area of that name."
 msgstr "OpenStreetMap ne connaît aucune zone de ce nom."
 
@@ -9371,7 +9394,11 @@ msgid ""
 "ones: an empty layout leaves them where they are until you decide in "
 "'search' (its 🗂 Events tab), so the tool never writes a folder name of "
 "its own."
-msgstr "Les suppositions, les fichiers qu'aucune règle ne décide, ceux sans date et ceux reçus : une disposition vide les laisse où ils sont jusqu'à ce que vous décidiez dans 'search' (son onglet 🗂 Événements), pour que l'outil n'écrive jamais un nom de dossier de lui-même."
+msgstr ""
+"Les suppositions, les fichiers qu'aucune règle ne décide, ceux sans date "
+"et ceux reçus : une disposition vide les laisse où ils sont jusqu'à ce "
+"que vous décidiez dans 'search' (son onglet 🗂 Événements), pour que "
+"l'outil n'écrive jamais un nom de dossier de lui-même."
 
 msgid "The guide"
 msgstr "Le parcours"
@@ -10007,7 +10034,9 @@ msgstr ""
 msgid ""
 "The shortest videos first, to find the failed ones of a second or two; "
 "the photos after"
-msgstr "Les vidéos les plus courtes d'abord, pour trouver celles ratées d'une ou deux secondes ; les photos ensuite"
+msgstr ""
+"Les vidéos les plus courtes d'abord, pour trouver celles ratées d'une ou "
+"deux secondes ; les photos ensuite"
 
 msgid "The show did not start: look at the window of mh on the PC."
 msgstr "Le diaporama n'a pas démarré : regardez la fenêtre de mh sur le PC."
@@ -16030,6 +16059,20 @@ msgid "{n} min"
 msgstr "{n} min"
 
 #, python-brace-format
+msgid ""
+"{n} new place found. Look up its name online (OpenStreetMap)? Its "
+"position, rounded to about 100 m, is sent to {url}."
+msgid_plural ""
+"{n} new places found. Look up their names online (OpenStreetMap)? Their "
+"positions, rounded to about 100 m, are sent to {url}."
+msgstr[0] ""
+"{n} nouveau lieu trouvé. Chercher son nom en ligne (OpenStreetMap) ? Sa "
+"position, arrondie à environ 100 m, est envoyée à {url}."
+msgstr[1] ""
+"{n} nouveaux lieux trouvés. Chercher leurs noms en ligne (OpenStreetMap) "
+"? Leurs positions, arrondies à environ 100 m, sont envoyées à {url}."
+
+#, python-brace-format
 msgid "{n} obvious series"
 msgid_plural "{n} obvious series"
 msgstr[0] "{n} série évidente"
@@ -16110,6 +16153,12 @@ msgstr[1] "{n} photos mises de côté, masquées"
 #, python-brace-format
 msgid "{n} photos of these days stay with the rule '{rule}'."
 msgstr "{n} photos de ces jours restent avec la règle '{rule}'."
+
+#, python-brace-format
+msgid "{n} place named: the slideshow shows it on the TV."
+msgid_plural "{n} places named: the slideshow shows them on the TV."
+msgstr[0] "{n} lieu nommé : le diaporama l'affiche sur la TV."
+msgstr[1] "{n} lieux nommés : le diaporama les affiche sur la TV."
 
 #, python-brace-format
 msgid "{n} position"
@@ -16874,6 +16923,9 @@ msgstr ""
 
 msgid "🔒 Nothing was changed: this is only the list."
 msgstr "🔒 Rien n'a été modifié : ce n'est que la liste."
+
+msgid "🔒 Nothing was sent: the places keep their town's name."
+msgstr "🔒 Rien n'a été envoyé : les lieux gardent le nom de leur ville."
 
 msgid "🔒 Only read: your photos and the backup folder are not changed."
 msgstr ""

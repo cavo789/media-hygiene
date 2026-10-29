@@ -20,12 +20,12 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
 from media_hygiene.review.serving import json_response
-from media_hygiene.slideshow.chapters import Telling
 from media_hygiene.slideshow.desk import WAIT_SECONDS
 from media_hygiene.slideshow.door import Visitor
 from media_hygiene.slideshow.films import film_ended, film_path, show_films
 from media_hygiene.slideshow.pictures import relative, tv_path
 from media_hygiene.slideshow.screen_codes import shown_code
+from media_hygiene.slideshow.screen_told import told_chapter, told_place_of
 
 if TYPE_CHECKING:
     from media_hygiene.review.http import Request, Response
@@ -125,7 +125,8 @@ def screen_view(desk: Desk) -> dict[str, object]:
         "next": "" if upcoming is None or upcoming.film else _tv(upcoming.key),
         "playing": show.playing,
         "code": "",
-        "chapter": _told(desk),
+        "chapter": told_chapter(desk),
+        "where": told_place_of(desk),
     }
 
 
@@ -139,22 +140,6 @@ def _tv(key: int) -> str:
         E.g. `tv/12.jpg`.
     """
     return relative(tv_path(key))
-
-
-def _told(desk: Desk) -> dict[str, object] | None:
-    """The event of the photo shown, when the TV tells it (0448).
-
-    Args:
-        desk: The show.
-
-    Returns:
-        Its number, name, period and place; None when told on the phone only, or
-        nowhere.
-    """
-    current = desk.show.current
-    if current is None or current.chapter is None:
-        return None
-    return current.chapter.view() if desk.screens.telling is Telling.TV else None
 
 
 def pair_screen(desk: Desk, body: bytes) -> Response:

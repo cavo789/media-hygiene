@@ -13,6 +13,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Final
 
+from tests.support.geonames.landmarks import ALL_ZIP, build_landmarks
 from tests.support.geonames.snapshot import (
     CITIES_ZIP,
     COUNTRIES_TXT,
@@ -27,13 +28,14 @@ _DATE_LINE: Final = "Snapshot of "
 
 
 def main() -> None:
-    """Download the three dumps and rebuild the snapshot."""
+    """Download the four dumps and rebuild the snapshot (towns, then landmarks)."""
     with tempfile.TemporaryDirectory(prefix="geonames-") as folder:
         work = Path(folder)
-        for name in (CITIES_ZIP, REGIONS_TXT, COUNTRIES_TXT):
+        for name in (CITIES_ZIP, REGIONS_TXT, COUNTRIES_TXT, ALL_ZIP):
             print(f"Downloading {DUMPS}{name}…")  # noqa: T201 - a developer tool
             urllib.request.urlretrieve(f"{DUMPS}{name}", work / name)  # noqa: S310
         count = build(work, DATA)
+        landmarks = build_landmarks(work / ALL_ZIP, DATA)
     today = datetime.now(UTC).date().isoformat()
     lines = ATTRIBUTION.read_text("utf-8").splitlines()
     dated = [
@@ -41,7 +43,7 @@ def main() -> None:
         for line in lines
     ]
     ATTRIBUTION.write_text("\n".join(dated) + "\n", "utf-8")
-    print(f"{count} towns written to {DATA}.")  # noqa: T201 - a developer tool
+    print(f"{count} towns, {landmarks} landmarks written to {DATA}.")  # noqa: T201
 
 
 if __name__ == "__main__":

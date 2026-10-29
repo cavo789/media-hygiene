@@ -67,6 +67,7 @@ def import_command(  # pylint: disable=too-many-arguments
     Raises:
         typer.Exit: The user declined, or `--phone` reached the container.
     """
+    from media_hygiene.cli.import_places import offer_place_names
     from media_hygiene.cli.next_steps import carried, safety, suggest
     from media_hygiene.console.import_view import show_plan, show_result
     from media_hygiene.console.progress import RichProgress
@@ -107,6 +108,8 @@ def import_command(  # pylint: disable=too-many-arguments
     with RichProgress(output.console) as progress, StopRequest() as stop:
         result = ImportService(runtime, progress).execute(plan, stop.requested)
     show_result(runtime, result)
+    if not yes or runtime.settings.places.reverse_lookup == "always":
+        offer_place_names(runtime, result.copied)  # --yes: no one to say Yes (0474)
     safety(
         runtime,
         _(

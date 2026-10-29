@@ -165,7 +165,8 @@ No position, no photo, no list of places. The photos of a cluster are shown by t
 from your folders; their previews stay in `/cache`. The map loads **tiles** (the areas you look at) from
 the server of `[places] tiles`; **Search OpenStreetMap** sends the **text you typed**, on your
 click only, to `[places] nominatim_url` (empty turns that search off). `classify` never goes
-online.
+online. Only [`import`](import.md#good-to-know) may send positions, rounded, after your
+explicit Yes.
 
 ## Good to know
 

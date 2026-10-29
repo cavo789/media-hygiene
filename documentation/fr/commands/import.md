@@ -225,6 +225,16 @@ suppression est écrite au journal avant et après (un passage de type `phone` d
   propose une version plus ancienne, dans DSM (Synology) : *Panneau de configuration → Services
   de fichiers → SMB → Paramètres avancés → Protocole SMB maximum : SMB3*.
 - **Le NAS éteint** : `import` le dit ; l'audit continue sans lui.
+- **Les noms des nouveaux lieux, en ligne, seulement si vous dites Oui** : après les copies,
+  quand les nouvelles photos ont été prises là où aucun de vos lieux ne couvre, `import` demande
+  *2 nouveaux lieux trouvés. Chercher leurs noms en ligne (OpenStreetMap) ?* La réponse est
+  **Non** sauf si vous tapez `y` ; alors une position par groupe de photos, arrondie à environ
+  100 m, est envoyée à `[places] nominatim_url` (une requête par seconde), et les noms trouvés
+  (*Kasteel Den Halder*) sont gardés dans `/cache` : le [diaporama](slideshow.md) les affiche
+  sur la télé, et un lieu déjà demandé ne l'est plus jamais. `[places] reverse_lookup =
+  "never"` (ou un `nominatim_url` vide) ne demande jamais ; `"always"` ne demande plus. Avec
+  `--yes`, personne n'est là pour dire Oui : rien n'est envoyé. C'est la seule fois où une
+  position de vos photos quitte votre PC, et jamais sans votre accord.
 - **Sûr** : refusé sans journal, ou avec vos dossiers de photos en lecture seule, comme toute
   commande qui modifie des fichiers.
 

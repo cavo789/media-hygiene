@@ -225,6 +225,8 @@ attribution = "© OpenStreetMap contributors"
 nominatim_url = "https://nominatim.openstreetmap.org"
 {{ comment(_("A place you name like a town within this distance, in km, gets a hint: 'classify' already names that town's photos, so the place may be redundant (it is saved anyway).")) }}
 town_hint_km = 10
+{{ comment(_("After an 'import', name the new photos' places online (buildings, monuments, from OpenStreetMap, at nominatim_url): 'ask' each time (the answer is No unless you type y), 'never', or 'always'. Only then a position leaves your PC: rounded to about 100 m, one per group of photos, each asked once.")) }}
+reverse_lookup = "ask"
 {{ comment(_("The positions you give whole folders on the map of 'places' (Save this position), written by the map: 'xmp' gives them to the photos of those folders without GPS, when [tags] xmp_folder_gps is true.")) }}
 # [[places.folders]]
 # folder = 'C:\Photos\2019\Douarnenez'

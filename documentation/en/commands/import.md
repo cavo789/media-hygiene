@@ -210,6 +210,15 @@ happens (a run of kind `phone` in `mh history`).
   offers an older version, in DSM (Synology): *Control Panel → File Services → SMB → Advanced
   Settings → Maximum SMB protocol: SMB3*.
 - **The NAS powered off**: `import` says so; the audit goes on without it.
+- **The names of the new places, online, only if you say Yes**: after the copies, when the new
+  photos were taken somewhere none of your places covers, `import` asks *2 new places found.
+  Look up their names online (OpenStreetMap)?* The answer is **No** unless you type `y`; then
+  one position per group of photos, rounded to about 100 m, is sent to `[places] nominatim_url`
+  (one request per second), and the names found (*Kasteel Den Halder*) are kept in `/cache`:
+  the [slideshow](slideshow.md) shows them on the TV, and a place already asked is never asked
+  again. `[places] reverse_lookup = "never"` (or an empty `nominatim_url`) never asks;
+  `"always"` no longer asks. With `--yes`, no one is there to say Yes: nothing is sent. This
+  is the only time a position of your photos leaves your PC, and never without your consent.
 - **Safe**: refused without a journal, or with your photo folders read-only, like every command
   that changes files.
 

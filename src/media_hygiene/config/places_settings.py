@@ -7,12 +7,14 @@ on a click only; empty, there is no online search. `[[places.folders]]` holds th
 positions the user gave whole folders on the map: `xmp` writes them for the photos of
 those folders that have none (0231). `[[places.ignored]]` holds the clusters the user
 set aside, as circles: hidden from the map, `classify` unchanged (0234). `town_hint_km`:
-a place named like a town within that distance gets a hint (0239).
+a place named like a town within that distance gets a hint (0239). `reverse_lookup`:
+after an `import`, whether the new photos' positions may be named online (0474): `ask`
+each time (default No), `never`, or `always` (the user's standing Yes).
 """
 
 from __future__ import annotations
 
-from typing import Final
+from typing import Final, Literal
 from urllib.parse import urlsplit
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -68,6 +70,7 @@ class PlacesSettings(BaseModel):
     folders: tuple[FolderPosition, ...] = ()
     ignored: tuple[IgnoredSpot, ...] = ()
     town_hint_km: float = Field(default=TOWN_HINT_KM, gt=0, le=MAX_TOWN_HINT_KM)
+    reverse_lookup: Literal["ask", "never", "always"] = "ask"
 
     @field_validator("nominatim_url")
     @classmethod
