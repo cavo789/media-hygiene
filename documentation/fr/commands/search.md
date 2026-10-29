@@ -355,7 +355,8 @@ fichiers trouvés**), puis **➕ Ajouter à l'album**.
   n'est choisi (3000 au plus), et ouvre la télécommande.
 - **📨 Préparer pour l'envoi** donne la commande qui prépare l'album pour un mail : des copies
   réduites sans la position GPS, un dossier et un zip, `mh share --album "Crète 2023"`
-  ([`share`](share.md)).
+  ([`share`](share.md)). Avec des photos choisies, pas d'album à créer avant : elles sont
+  ajoutées à l'album tapé, ou à un album au nom du jour (*Envoi 2026-10-29*) si le champ est vide.
 - Au plus 3 000 photos ajoutées d'un coup : affinez une recherche qui en trouve plus.
 
 Un album peut aussi devenir un dossier de l'Explorateur : [`album "Crète 2023"`](album.md) le

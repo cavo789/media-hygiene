@@ -4416,6 +4416,11 @@ msgid "No album saved yet: choose a folder or a month below."
 msgstr ""
 
 msgid ""
+"No album saved yet: in search or browse, pick photos, then Add to the "
+"album."
+msgstr ""
+
+msgid ""
 "No album yet. On the PC, in search or browse, pick photos, then Add to "
 "the album."
 msgstr ""
@@ -6064,6 +6069,9 @@ msgstr ""
 msgid "Reading 128 KB of each file already in the cache, once"
 msgstr ""
 
+msgid "Reading the albums…"
+msgstr ""
+
 msgid "Reading the index"
 msgstr ""
 
@@ -6769,6 +6777,10 @@ msgid "Send the photos ({count}) to the folder, under the year:"
 msgstr ""
 
 msgid "Send to another folder (O)"
+msgstr ""
+
+#, python-brace-format
+msgid "Sent {date}"
 msgstr ""
 
 #, python-brace-format

@@ -396,7 +396,7 @@ dialog::backdrop { background: rgba(20, 8, 32, .58); backdrop-filter: blur(2px);
 .eyebrow.is-danger { color: var(--mk-danger-line); }
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field label { font-weight: 700; }
-.field input {
+.field input, .field select {
   min-height: 46px;
   padding: 0 12px;
   border: 1px solid var(--mk-border-strong);
@@ -405,7 +405,7 @@ dialog::backdrop { background: rgba(20, 8, 32, .58); backdrop-filter: blur(2px);
   color: var(--mk-ink);
   font: 500 1rem/1.4 var(--mk-font-mono);
 }
-.field input:focus-visible { outline: 3px solid var(--mh-focus); outline-offset: 1px; }
+.field input:focus-visible, .field select:focus-visible { outline: 3px solid var(--mh-focus); outline-offset: 1px; }
 .field-error { color: var(--mk-danger-line); font-size: .88rem; font-weight: 600; }
 .palette-dlg { margin: 9vh auto auto; }
 .palette-box { width: min(660px, calc(100vw - 32px)); overflow: hidden; border: 1px solid var(--mk-border); border-radius: 18px; background: var(--mk-surface); box-shadow: var(--mk-shadow-3); }

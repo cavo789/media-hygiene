@@ -43,7 +43,7 @@ class HomeField(Frozen):
     name: str
     label: str
     example: str
-    kind: str  # text, number, folder
+    kind: str  # text, number, folder, album
 
 
 class HomeAction(Frozen):  # one field per thing the page draws

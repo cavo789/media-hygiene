@@ -61,6 +61,7 @@ class FieldKind(StrEnum):
     TEXT = "text"
     NUMBER = "number"
     FOLDER = "folder"  # a folder as the Explorer shows it
+    ALBUM = "album"  # an album saved, picked from their list, never typed
 
 
 @dataclass(frozen=True, slots=True)

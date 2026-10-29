@@ -27,6 +27,8 @@ def share_steps() -> tuple[Step, ...]:
     Returns:
         Them, in order.
     """
+    # Picked from the albums saved (the page lists them): a name typed would be a guess.
+    album = Field("album", _("The album's name"), _("Crete 2023"), kind=FieldKind.ALBUM)
     return (
         Step(
             "slideshow",
@@ -60,7 +62,7 @@ def share_steps() -> tuple[Step, ...]:
             icon="image",
             keywords=_("slideshow tv television album chromecast phone remote sofa"),
             doc=Doc("commands/slideshow/"),
-            fields=(Field("album", _("The album's name"), _("Crete 2023")),),
+            fields=(album,),
             optional=True,
         ),
         Step(
@@ -76,7 +78,7 @@ def share_steps() -> tuple[Step, ...]:
             icon="album",
             keywords=_("send mail email attach zip facebook social network album gps"),
             doc=Doc("commands/share/"),
-            fields=(Field("album", _("The album's name"), _("Crete 2023")),),
+            fields=(album,),
             optional=True,
         ),
         Step(
@@ -92,7 +94,7 @@ def share_steps() -> tuple[Step, ...]:
             icon="album",
             keywords=_("album folder explorer links christmas holidays"),
             doc=Doc("commands/album/"),
-            fields=(Field("album", _("The album's name"), _("Crete 2023")),),
+            fields=(album,),
             optional=True,
         ),
     )

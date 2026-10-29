@@ -65,7 +65,9 @@ msgstr[1] ""
 msgid ""
 " · click: the files of this day only; Shift+click: from the day clicked "
 "before to this one"
-msgstr " · clic : les fichiers de ce jour seulement ; Maj+clic : du jour cliqué avant à celui-ci"
+msgstr ""
+" · clic : les fichiers de ce jour seulement ; Maj+clic : du jour cliqué "
+"avant à celui-ci"
 
 #, python-brace-format
 msgid " · file modified {day} (the date Explorer shows)"
@@ -5362,6 +5364,13 @@ msgid "No album saved yet: choose a folder or a month below."
 msgstr "Aucun album enregistré : choisissez un dossier ou un mois ci-dessous."
 
 msgid ""
+"No album saved yet: in search or browse, pick photos, then Add to the "
+"album."
+msgstr ""
+"Pas encore d'album : dans search ou browse, choisissez des photos, puis "
+"Ajouter à l'album."
+
+msgid ""
 "No album yet. On the PC, in search or browse, pick photos, then Add to "
 "the album."
 msgstr ""
@@ -7341,6 +7350,9 @@ msgstr ""
 msgid "Reading 128 KB of each file already in the cache, once"
 msgstr "Lecture de 128 Ko de chaque fichier déjà en cache, une seule fois"
 
+msgid "Reading the albums…"
+msgstr "Lecture des albums…"
+
 msgid "Reading the index"
 msgstr "Lecture de l’index"
 
@@ -8201,6 +8213,10 @@ msgstr "Envoyer les photos ({count}) dans le dossier, sous l'année :"
 
 msgid "Send to another folder (O)"
 msgstr "Envoyer dans un autre dossier (O)"
+
+#, python-brace-format
+msgid "Sent {date}"
+msgstr "Envoi {date}"
 
 #, python-brace-format
 msgid "Sent: the step starts in {window}…"

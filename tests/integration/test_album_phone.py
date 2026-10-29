@@ -206,20 +206,35 @@ def test_the_pc_changes_an_album_and_nothing_else(
         _ask(
             door,
             _pc(
-                "/api/albums",
+                "/api/album-change",
                 {"action": "add", "album": "Kids", "keys": [str(first), str(other)]},
             ),
         )
     )
     assert "Only this file changed" in str(added["message"])
     taken = {"action": "remove", "album": _ALBUM, "keys": [str(second)]}
-    _json(_ask(door, _pc("/api/albums", taken)))
+    _json(_ask(door, _pc("/api/album-change", taken)))
     saved = read_albums(runtime.locations.reports_dir / ALBUMS_FILE)
     counts = {album.name: len(album.entries) for album in saved.albums}
     assert counts == {_ALBUM: 1, "Kids": 1}  # the file of no album never entered
-    evil = _pc("/api/albums", taken)
+    evil = _pc("/api/album-change", taken)
     evil = Request(evil.method, evil.path, {**evil.headers, "origin": "http://evil"})
     assert _ask(door, evil).status == HTTPStatus.FORBIDDEN
+
+
+def test_a_search_page_behind_keeps_its_own_album_changes(
+    phone_door: tuple[LanApp, _Home, Runtime],
+) -> None:
+    """`POST /api/albums` of `search` served behind goes on to it, never to this page.
+
+    The albums page took it, knew none of the search's keys, and said the album empty.
+    """
+    door, home, runtime = phone_door
+    before = (runtime.locations.reports_dir / ALBUMS_FILE).read_bytes()
+    asked = {"action": "add", "album": "Walk", "keys": ["1", "2", "3"]}
+    assert _ask(door, _pc("/api/albums", asked)).body == b"home"
+    assert "/api/albums" in home.seen
+    assert (runtime.locations.reports_dir / ALBUMS_FILE).read_bytes() == before
 
 
 def test_a_paired_phone_may_not_change_an_album(
@@ -230,12 +245,12 @@ def test_a_paired_phone_may_not_change_an_album(
     before = (runtime.locations.reports_dir / ALBUMS_FILE).read_bytes()
     first = _keys(_album(door))[0]
     asked = {"action": "add", "album": "Kids", "keys": [str(first)]}
-    assert _ask(door, _phone("/api/albums", asked)).status == HTTPStatus.FORBIDDEN
+    assert _ask(door, _phone("/api/album-change", asked)).status == HTTPStatus.FORBIDDEN
     assert (runtime.locations.reports_dir / ALBUMS_FILE).read_bytes() == before
 
 
 def _post(door: LanApp, body: dict[str, object]) -> dict[str, object]:
-    return _json(_ask(door, _pc("/api/albums", body)))
+    return _json(_ask(door, _pc("/api/album-change", body)))
 
 
 def _cover(door: LanApp) -> int:
@@ -298,7 +313,7 @@ def test_a_cover_outside_the_album_is_refused(
     keys = _keys(_album(door))
     other = next(key for key, _path in _photos(runtime) if key not in keys)
     body = {"action": "cover", "album": _ALBUM, "keys": [str(other)]}
-    assert _ask(door, _pc("/api/albums", body)).status == HTTPStatus.CONFLICT
+    assert _ask(door, _pc("/api/album-change", body)).status == HTTPStatus.CONFLICT
 
 
 def test_a_schema_1_albums_file_is_read_then_written_as_2(

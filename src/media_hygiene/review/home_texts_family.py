@@ -23,6 +23,11 @@ def family_texts() -> dict[str, str]:
             "becomes the remote."
         ),
         "tvNone": _("No album saved yet: choose a folder or a month below."),
+        "albumNone": _(
+            "No album saved yet: in search or browse, pick photos, then Add to the "
+            "album."
+        ),
+        "albumLoading": _("Reading the albums…"),
         "tvFolder": _("A folder"),
         "tvMonth": _("A month"),
         "tvShow": _("Show"),

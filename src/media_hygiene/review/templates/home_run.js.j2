@@ -38,6 +38,29 @@ function launch(action, body, command) {
 }
 const post = (path, body) => fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
   .then((response) => response.json().catch(() => ({})).then((answer) => ({ ok: response.ok, status: response.status, body: answer, run: response.headers.get(RUN_HEADER) })));
+// The albums saved, read from albums.json by the server; none: the form says how to make one.
+function albumChoices(form) {
+  const selects = $$("[data-album]", form);
+  if (!selects.length) return;
+  const run = $("[type=submit]", form);
+  run.disabled = true;
+  const none = () => {
+    const said = $("#formError", form);
+    said.textContent = T.albumNone;
+    said.hidden = false;
+  };
+  fetch(P.albumList, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+    .then((list) => {
+      const names = (list.albums || []).map((album) => album.name);
+      if (!names.length) { none(); return; }
+      const options = names.map((name) => `<option value="${esc(name)}">${esc(name)}</option>`).join("");
+      selects.forEach((select) => { select.innerHTML = options; select.disabled = false; });
+      selects[0].focus();
+      run.disabled = false;
+    })
+    .catch(none);
+}
 function showDialog(dialog) {
   dialog.opener = document.activeElement;
   dialog.showModal();
@@ -45,7 +68,11 @@ function showDialog(dialog) {
 const closeButton = () => `<button class="btn btn-ghost icon-btn" type="button" data-close aria-label="${esc(T.close)}">${icon("x")}</button>`;
 function openForm(action) {
   const dialog = $("#formDlg");
-  const fields = action.fields.map((field, at) => `<div class="field"><label for="f-${esc(field.name)}">${esc(field.label)}</label><input id="f-${esc(field.name)}" name="${esc(field.name)}" type="${field.kind === "number" ? "number" : "text"}" value="${esc(field.example)}" autocomplete="off" spellcheck="false" required${at ? "" : " autofocus"}></div>`).join("");
+  // An album is picked from those saved (`albumChoices`), never typed: only an existing name runs.
+  const input = (field, at) => (field.kind === "album"
+    ? `<select id="f-${esc(field.name)}" name="${esc(field.name)}" data-album required disabled${at ? "" : " autofocus"}><option value="">${esc(T.albumLoading)}</option></select>`
+    : `<input id="f-${esc(field.name)}" name="${esc(field.name)}" type="${field.kind === "number" ? "number" : "text"}" value="${esc(field.example)}" autocomplete="off" spellcheck="false" required${at ? "" : " autofocus"}>`);
+  const fields = action.fields.map((field, at) => `<div class="field"><label for="f-${esc(field.name)}">${esc(field.label)}</label>${input(field, at)}</div>`).join("");
   dialog.innerHTML = `<form class="dlg" id="formEl" novalidate>
     <div class="dlg-head"><div><p class="eyebrow">${icon("edit")} ${esc(T.toFill)}</p><h2 id="formTitle">${esc(action.title)}</h2></div>${closeButton()}</div>
     <p class="dlg-text">${esc(action.text)} ${esc(T.formNote)}</p>
@@ -54,6 +81,7 @@ function openForm(action) {
     <div class="dlg-foot"><button class="btn" type="button" data-close>${esc(T.cancel)}</button><button class="btn btn-primary" type="submit">${icon("play")} ${esc(T.verbRun)}</button></div>
   </form>`;
   const form = $("#formEl", dialog);
+  albumChoices(form);
   const values = () => Object.fromEntries(action.fields.map((field) => [field.name, form.elements[field.name].value.trim()]));
   form.addEventListener("submit", (event) => {
     event.preventDefault();

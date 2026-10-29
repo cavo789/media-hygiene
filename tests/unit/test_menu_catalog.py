@@ -12,7 +12,7 @@ import pytest
 
 from media_hygiene.cli.commands import commands
 from media_hygiene.cli.menu_catalog import catalog, named
-from media_hygiene.cli.menu_entry import Space
+from media_hygiene.cli.menu_entry import FieldKind, Space
 from media_hygiene.cli.review_modes import ReviewMode
 from media_hygiene.services.launcher_host import HOST_COMMANDS
 from tests.unit.test_documentation import DOCUMENTATION, anchors
@@ -144,3 +144,15 @@ def test_show_an_album_on_the_tv_takes_the_album_name() -> None:
         "Crete 2023",
         "--lan",
     )
+
+
+def test_an_album_is_picked_from_the_list_never_typed() -> None:
+    """Every `{album}` field is of the album kind: the home page lists those saved."""
+    albums = [
+        field
+        for step in CATALOG.steps
+        for field in step.fields
+        if field.name == "album"
+    ]
+    assert len(albums) >= 3
+    assert all(field.kind is FieldKind.ALBUM for field in albums)

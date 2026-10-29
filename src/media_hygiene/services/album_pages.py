@@ -18,8 +18,8 @@ from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.page_header import ALBUMS_DOC, page_header
 from media_hygiene.services.album_reader import AlbumReader
 from media_hygiene.services.albums import album_desk
-from media_hygiene.share.album_api import ALBUMS_PATH
 from media_hygiene.share.album_page import (
+    ALBUM_CHANGE_PATH,
     ALBUM_LIST_PATH,
     ALBUM_PREFIX,
     AlbumPages,
@@ -72,7 +72,7 @@ def album_page() -> bytes:
                 "home": PAGE_PATH,
                 "list": ALBUM_LIST_PATH,
                 "album": ALBUM_PREFIX,
-                "change": ALBUMS_PATH,
+                "change": ALBUM_CHANGE_PATH,
                 "assets": ASSETS_PREFIX,
                 "doc": served_url(ALBUMS_DOC),
             },

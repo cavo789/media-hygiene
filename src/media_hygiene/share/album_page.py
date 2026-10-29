@@ -9,8 +9,9 @@ Served by the home page's server, in front of it, to the PC and to a phone paire
   `/film/<key>.<ext>`: the files **of an album** only to a phone, never another file
   of the library, nor an original; the PC's request of another key goes on to the
   pages behind (`search` and `browse` share `/thumb/`, 0356);
-- `POST /api/albums`: a file of an album added to an album or taken out (0295 item 4:
-  a phone's only write besides the audit; no photo touched).
+- `POST /api/album-change`: a file of an album added to an album or taken out (0295
+  item 4; no photo touched). Its own path: `search` and `browse`, served behind, keep
+  `POST /api/albums` for the files they pick.
 """
 
 from __future__ import annotations
@@ -26,7 +27,6 @@ from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.videos import NEAR_POLICY
 from media_hygiene.search.views import THUMB_PREFIX
-from media_hygiene.share.album_api import ALBUMS_PATH
 from media_hygiene.slideshow.films import FILM_PREFIX
 from media_hygiene.slideshow.pictures import TV_PREFIX
 
@@ -39,10 +39,12 @@ if TYPE_CHECKING:
 ALBUMS_PAGE: Final = "/albums"
 ALBUM_LIST_PATH: Final = "/api/album-list"
 ALBUM_PREFIX: Final = "/api/album/"
+# The page's own change, never `/api/albums`: that one is the pages' behind (search).
+ALBUM_CHANGE_PATH: Final = "/api/album-change"
 # What a paired phone may ask of the albums (`review.lan_app`): reads, and one write.
 PHONE_READS: Final = frozenset({ALBUMS_PAGE, ALBUM_LIST_PATH})
 PHONE_READ_PREFIXES: Final = (ALBUM_PREFIX, TV_PREFIX, THUMB_PREFIX, FILM_PREFIX)
-PHONE_WRITES: Final = frozenset({ALBUMS_PATH})
+PHONE_WRITES: Final = frozenset({ALBUM_CHANGE_PATH})
 # Set by `review.lan_app` on what it passes on from a phone, whose `Host` it rewrites.
 PHONE_HEADER: Final = "x-media-hygiene-phone"
 _PICTURE_PREFIXES: Final = (TV_PREFIX, THUMB_PREFIX, FILM_PREFIX)
