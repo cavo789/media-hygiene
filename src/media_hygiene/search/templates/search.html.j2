@@ -29,6 +29,7 @@
   "allFound": _("Pick all {total} files found"),
   "allPicked": _("All {total} files found are picked"),
   "aside": _("marked to set aside"),
+  "asideOpen": _("Show only the files set aside (🗑 in Show)"),
   "tick": _("Pick this file"),
   "noAlbum": _("Type the album's name in the bar first: then A adds the file shown."),
   "saving": _("Saving…"),
@@ -192,7 +193,8 @@
   #bar #albumBar label { display: none; }
   #bar #albumBar input { width: 11em; }
   #bar > p#moveBar { flex-basis: auto; margin: 0; }
-  #bar > #chosen { flex: 1 1 0; min-width: 0; }
+  #bar > #chosen { flex: 1 1 0; min-width: 0; cursor: pointer; }
+  #asideLeave { min-width: 1.6em; }
   #bar #applyNow[hidden] { display: inline-block; opacity: .45; pointer-events: none; }
   #bar button { padding: 4px 8px; white-space: nowrap; }
   /* What a save says on the album floats under the bar: the grid stays where it is. */
@@ -253,6 +255,8 @@
         <button type="button" data-for="kind" data-value="all" aria-pressed="true">{{ _("All") }}</button>
         <button type="button" data-for="kind" data-value="photos" aria-pressed="false" title="{{ _('Photos') }}">📷</button>
         <button type="button" data-for="kind" data-value="videos" aria-pressed="false" title="{{ _('Videos') }}">🎬</button>
+        <button type="button" data-for="kind" data-value="aside" aria-pressed="false" title="{{ _('Only the files set aside, to see them or put some back before the quarantine') }}">🗑</button>
+        <button type="button" id="asideLeave" class="plain" disabled title="{{ _('Leave the set aside: every file again') }}" aria-label="{{ _('Leave the set aside: every file again') }}">✕</button>
       </div>
       <span class="segLabel" title="{{ _('Sorted: in a year-month folder (2009/2009-11/…), as the sort convention puts them') }}">{{ _("Sorted") }}</span>
       <div class="seg" role="group" aria-label="{{ _('Sorted') }}">

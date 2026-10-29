@@ -73,6 +73,9 @@ class Filters:  # pylint: disable=too-many-instance-attributes  # one per page f
     kind: Shown = "all"  # **Show**: every file, the photos or the videos (0347)
     order: Order = Order.BEST
     within: str = ""  # a folder of the tree (container path), its subfolders included
+    only: tuple[str, ...] | None = (
+        None  # these container paths only: the set aside (0464)
+    )
 
 
 @dataclass(frozen=True, slots=True)

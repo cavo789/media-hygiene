@@ -113,6 +113,11 @@ régulière invalide est signalée sous le champ.
   gauche, garde **📷** les photos ou **🎬** les vidéos seulement. La recherche trie et filtre avant de montrer ses premiers fichiers :
   *Afficher : vidéos*, *Trier par : taille* donne les plus grosses vidéos trouvées. Chaque vignette
   dit sa date et sa taille.
+- **🗑 mis de côté**, le quatrième choix d'**Afficher** (ou un clic sur le compteur *🗑 N mis de
+  côté* de la barre) : la même grille liste seulement les fichiers mis de côté, avant que
+  `clean --decisions` les envoie en quarantaine. Choisissez-en un ou plusieurs, puis *Retirer de
+  la mise de côté* les remet : le fichier de décisions est relu sur le disque avant que le
+  compteur change, et les vignettes restent en place. **✕** à côté de 🗑 quitte cette vue.
 - **Quelle date** : `📷 2023-07-14` est le jour où la photo a été **prise**, écrit dans la photo
   elle-même (EXIF *DateTimeOriginal* ; la date d'enregistrement d'une vidéo) : c'est elle que
   *Du*, *Au* et les années trouvent. Ce n'est pas la *Date de modification* que l'Explorateur

@@ -182,13 +182,13 @@ class SearchApp:
             request: `POST /api/search`.
 
         Returns:
-            The total and the first files, those set aside marked; 400 for a body
-            that is not a search.
+            The first files found (the set aside only, on **Show** 🗑), marked; 400.
         """
         asked = read_asked(request.body)
         if isinstance(asked, Response):
             return asked
         query = read_query(self.place.index, asked.query())
+        query = self.place.chosen.narrow(query, asked.aside)
         found = found_view(
             with_facts(self.place.index, self.place.index.find(query, asked.shown)),
             self.place.mapper,

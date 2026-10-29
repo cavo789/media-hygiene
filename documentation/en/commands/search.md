@@ -103,6 +103,11 @@ no escaping. A regular expression that does not compile is told under the field.
   largest first); **Show**, in the left column, keeps **📷** the photos or **🎬** the videos only. The search sorts and filters
   before it shows its first files: *Show: videos*, *Sort by: size* gives the largest videos found.
   Each tile says its date and size.
+- **🗑 set aside**, the fourth choice of **Show** (or a click on the *🗑 N set aside* counter of
+  the bar): the same grid lists only the files set aside, before `clean --decisions` sends them
+  to the quarantine. Pick one or several, then *Take out of the set aside* puts them back: the
+  decisions file is read back from the disk before the counter changes, and the tiles stay in
+  place. **✕** next to 🗑 leaves this view.
 - **Which date**: `📷 2023-07-14` is the day the photo was **taken**, written in the photo
   itself (EXIF *DateTimeOriginal*; a video's recording date): what *From*, *To* and the years
   find. It is not the *Date modified* Windows Explorer shows by default: point at the date for

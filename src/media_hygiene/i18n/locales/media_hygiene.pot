@@ -3720,6 +3720,9 @@ msgstr ""
 msgid "Leave the picked files where they are"
 msgstr ""
 
+msgid "Leave the set aside: every file again"
+msgstr ""
+
 msgid "Leave the whole event where it is (Shift+S)"
 msgstr ""
 
@@ -5299,6 +5302,11 @@ msgid ""
 msgstr ""
 
 msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
+msgstr ""
+
+msgid ""
+"Only the files set aside, to see them or put some back before the "
+"quarantine"
 msgstr ""
 
 msgid ""
@@ -6906,6 +6914,9 @@ msgid "Show more"
 msgstr ""
 
 msgid "Show on the TV"
+msgstr ""
+
+msgid "Show only the files set aside (🗑 in Show)"
 msgstr ""
 
 msgid "Show only this person (Esc)"

@@ -4545,6 +4545,9 @@ msgstr "Tout laisser sur le téléphone"
 msgid "Leave the picked files where they are"
 msgstr "Laisser les fichiers choisis où ils sont"
 
+msgid "Leave the set aside: every file again"
+msgstr "Quitter les fichiers mis de côté : tous les fichiers à nouveau"
+
 msgid "Leave the whole event where it is (Shift+S)"
 msgstr "Laisser tout l'événement où il est (Maj+S)"
 
@@ -6442,6 +6445,13 @@ msgid "Only the files of this year, or of these years: 2016 or 2015-2017."
 msgstr ""
 "Seulement les fichiers de cette année, ou de ces années : 2016 ou "
 "2015-2017."
+
+msgid ""
+"Only the files set aside, to see them or put some back before the "
+"quarantine"
+msgstr ""
+"Seulement les fichiers mis de côté, pour les voir ou en remettre avant la "
+"quarantaine"
 
 msgid ""
 "Only the first files of these days were tried: a shorter period shows "
@@ -8354,6 +8364,9 @@ msgstr "En montrer plus"
 
 msgid "Show on the TV"
 msgstr "Montrer sur la télé"
+
+msgid "Show only the files set aside (🗑 in Show)"
+msgstr "Montrer seulement les fichiers mis de côté (🗑 dans Afficher)"
 
 msgid "Show only this person (Esc)"
 msgstr "Montrer seulement cette personne (Échap)"
