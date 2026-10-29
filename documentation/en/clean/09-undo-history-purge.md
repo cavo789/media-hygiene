@@ -122,7 +122,7 @@ It is, with 'clean --delete', the only way the tool removes content.
   cloud's synced folder, checks every byte, then empties it — see
   [`purge`](../commands/purge.md).
 
-Where does the rest of the space go? **⚖ Heaviest files** in [`browse`](../commands/browse.md)
+Where does the rest of the space go? **⚖ Heaviest files** in [the folders of `search`](../commands/search.md#walk-through-your-folders)
 lists the heaviest files of the whole library, the videos first; [`shrink`](../commands/shrink.md)
 lightens the videos of old cameras, the originals in the quarantine.
 

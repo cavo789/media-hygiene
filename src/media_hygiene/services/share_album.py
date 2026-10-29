@@ -86,7 +86,7 @@ def prepare_album(runtime: Runtime, request: SendRequest) -> Prepared:
     if not photos:
         raise MediaHygieneError(
             _("No photo to prepare in the album {name}.").format(name=request.album),
-            _("Add photos to it in search or browse; the videos are never copied."),
+            _("Add photos to it in search; the videos are never copied."),
         )
     stems = dict(numbered_stems(runtime.index_file, photos))  # by date (0370)
     photos = list(stems)

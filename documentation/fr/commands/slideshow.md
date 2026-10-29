@@ -60,7 +60,7 @@ diaporama (utile pour l'essayer, ou pour le plan B ci-dessous).
 
 Au lieu d'un dossier : `--search "noel 2025"` (les photos que trouve une [`search`](search.md)) ou
 `--album "Crète 2023"` (un [album](search.md#mettre-des-photos-dans-un-album) fait dans `search`,
-[`browse`](browse.md) ou le tri des rafales [`review`](review.md) : des photos de plusieurs
+[les dossiers de `search`](search.md#parcourir-vos-dossiers) ou le tri des rafales [`review`](review.md) : des photos de plusieurs
 dossiers ; son bouton **📺 Partager sur la télé** donne cette commande, copiée). `--chosen` n'existe
 plus : il montrait les fichiers mis de côté, promis à la quarantaine ; donné, il dit d'utiliser
 `--album`. Depuis la
@@ -75,8 +75,7 @@ favori, attend un diaporama tant qu'aucun ne tourne et l'affiche d'elle-même ; 
 une fois (son code tapé sur la télécommande) et **le reste tant que `mh` tourne** : un autre album
 lui arrive sans nouveau code. Aucun album enregistré : un dossier ou un mois reste toujours possible.
 
-**Depuis toute page de vignettes, sans album** : dans [`search`](search.md) et
-[`browse`](browse.md) ouverts depuis la page d'accueil, **📺 Sur la télé** dans la barre montre
+**Depuis toute page de vignettes, sans album** : dans [`search`](search.md) ouvert depuis la page d'accueil, **📺 Sur la télé** dans la barre montre
 les photos et vidéos choisies ou, rien de choisi, tous les fichiers que montre la page (le
 résultat de la recherche, les fichiers du dossier), 3000 au plus (au-delà : affinez la
 recherche). La télécommande s'ouvre aussitôt dans un nouvel onglet ; un diaporama en cours est
@@ -97,9 +96,12 @@ diaporama : une télé rechargée ne perd rien, arrêter `mh` y met fin.
 3. **Mettez-la en favori** : la fois suivante, le favori suffit (voyez
    [Une adresse stable](#une-adresse-stable)).
 4. La télé affiche un code de six chiffres. Sur la télécommande du téléphone, tapez-le dans
-   **Le code qu'affiche la télé**, puis **Appairer la télé** : la première photo apparaît. La
-   télé reste appairée jusqu'à l'arrêt du diaporama ; quand le diaporama tourne dans la page
-   d'accueil (un album lancé depuis elle), jusqu'à l'arrêt de `mh`.
+   **Le code qu'affiche la télé**, puis **Appairer la télé** : la première photo apparaît. Tant
+   qu'une télé attend son code, ce champ s'affiche **en haut de la télécommande**, au-dessus des
+   boutons et des photos, sur le téléphone comme sur le PC. Sous `mh --lan` (HTTPS), la télé reste
+   appairée **pour de bon**, même après un redémarrage de `mh` : oubliez-la sur la page du PC
+   comme un téléphone (elle y figure sous **TV**). Sinon elle reste appairée jusqu'à l'arrêt du
+   diaporama ; quand le diaporama tourne dans la page d'accueil, jusqu'à l'arrêt de `mh`.
 5. Appuyez sur **OK** sur la télécommande de la télé (ou cliquez) pour le plein écran.
 
 Taper un code avec la télécommande d'une télé est pénible : ici la télé en affiche seulement un,
@@ -134,7 +136,15 @@ connexion n'est pas privée installe d'abord le certificat du PC, une fois : la 
   Pays-Bas* : le pays du lieu marqué `home`, sinon de votre premier lieu, sinon celui où la
   plupart des photos ont été prises). Une touche choisit où il est annoncé : **TV et téléphone**
   (par défaut), **Téléphone seul** (sous les commandes ; les notes du conteur s'ouvrent alors d'elles-mêmes),
-  **Nulle part**.
+  **Nulle part**. Un lieu que le nom de l'événement dit déjà n'est pas répété (*Promenade à
+  Valkenburg* à *Valkenburg* : le nom seul).
+- **Où chaque photo a été prise** : pendant que la télé annonce les événements, une petite ligne
+  dans son coin en haut à droite nomme le lieu de la photo affichée, d'après son GPS : l'un de
+  vos lieux, sinon le monument, château, église ou musée où elle a été prise (à 200 m environ,
+  d'une liste de sites intégrée à l'outil : trouvé hors ligne), sinon sa ville. Rien quand la
+  photo n'a pas de GPS ou quand le bandeau de l'événement dit le même lieu ; la photo ne bouge
+  pas. Après un [`import`](import.md), les noms qu'OpenStreetMap a donnés aux nouveaux lieux
+  (si vous avez dit Oui) passent en premier.
 - **Les notes du conteur** (à déplier sous les commandes) : pendant que la famille regarde la
   télé, le téléphone montre en plus grand la photo affichée, son jour et son heure, l'événement
   et son lieu, sa description et ses mots (quand `describe` en a donné), la photo suivante, et
@@ -182,8 +192,9 @@ Le port est `[review] port`, celui de toutes les pages.
 | Option | Ce qu'elle fait |
 |---|---|
 | `--folder "C:\…"` | Les photos de ce dossier et de ses sous-dossiers, tel que l'Explorateur le montre. |
+| `--since today` | Avec `--folder` : seulement ses fichiers d'une période (`today`, `week`, `month`, `all` ou un jour comme `2026-10-29`), selon la date de leur nom, sinon leur date de modification. Ce qu'un import propose : le nouvel événement seulement. |
 | `--search "mots"` | Les photos que trouve une recherche, tapée comme dans [`search`](search.md). |
-| `--album "Crète 2023"` | Un album fait dans `search`, `browse` ou le tri des rafales ; ses fichiers manquants (supprimés, en quarantaine) sont comptés, pas montrés. |
+| `--album "Crète 2023"` | Un album fait dans `search` ou le tri des rafales ; ses fichiers manquants (supprimés, en quarantaine) sont comptés, pas montrés. |
 | `--port PORT` | Port de la page, 8088 par défaut ; publiez le même. |
 | `--lan` (`mh` seulement) | Ouvre le diaporama à la télé et aux téléphones de votre réseau de la maison, pour ce lancement (Windows PowerShell). |
 

@@ -73,7 +73,7 @@ def test_powershell_keeps_the_folders_and_defaults_the_missing_ones(
     )
     assert "$tty = @(if ($command -notin @('launcher')) { '-it' })" in text
     assert "docker run --rm @tty `" in text
-    assert '-v "C:\\Photos:/data/c/Photos${mode}" `' in text
+    assert "'-v'; \"C:\\Photos:/data/c/Photos${mode}\" }" in text
     assert '-v "D:\\reports:/reports" `' in text
     assert '-v "my-cache:/cache" `' in text
     assert '-v "$HOME\\media-hygiene\\journal:/journal" `' in text

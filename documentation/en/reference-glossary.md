@@ -54,7 +54,7 @@ A moment of your life seen through your photos (a school fair, a weekend at the 
 Christmas): `classify` gathers the photos and videos taken without a break of more than 6 hours,
 from one folder or phone to another. The name you give it becomes its folder when `sort` tidies
 the collection.
-[`review-sort`: what it is for](commands/search.md#the-events-of-the-latest-classify)
+[The 🗂 Events tab of `search`: what it is for](commands/search.md#the-events-of-the-latest-classify)
 
 ### Excluded folder
 

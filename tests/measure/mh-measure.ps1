@@ -138,6 +138,12 @@
 #      timed by Chromium in the CI (0366); nothing written                     (0354)
 #  36. the home page by hand: three yes/no questions (it opens; a console step runs in the
 #      window of mh while the page stays open; Quit then mh again)       (0355, 0366)
+#  37. a USB stick plugged in, then removed, during a session of mh: the home page follows it
+#  38. mh import --phone --since today / week, then without --since (0476): what is left, timed
+#  39. the whole chain after a phone import of about 100 photos, timed step by step (0475)
+#  40. the whole chain after an import with copies set aside, then undone (0478)
+#  41. the chain in its new order: copies before tags, the import's bursts page, its slideshow (0480)
+#      (two yes/no questions, by hand)                                               (0359)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -3345,6 +3351,105 @@ if (Wanted 36) {
     Log "   36a. the home page opens: $opens"
     Log "   36b. a console step runs in the window of mh, the page staying open: $kept"
     Log "   36c. Quit, then mh again, the home page back: $again"
+    $ErrorActionPreference = $saved
+}
+
+# --- 37: a USB stick plugged in, then removed, during a session (0359) ----------------------
+# By hand: a stick holding a photo folder added with mh folders add, unplugged when mh starts.
+if (Wanted 37) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 37. a USB stick during a session of mh (0359)"
+    Write-Host "37 : la cle USB (un dossier de mh folders add) debranchee, tapez mh update puis mh."
+    $starts = Read-Host "37a. La page d'accueil s'ouvre-t-elle, la fenetre disant 'pas branche' pour la cle ? (o/n)"
+    $plugged = Read-Host "37b. Branchez la cle : en moins de 10 s la fenetre dit-elle 'branche ou retire', et ses photos sont-elles dans Parcourir sans rien taper ? (o/n)"
+    $removed = Read-Host "37c. Retirez la cle (sans Ejecter) : la fenetre le dit-elle, et la page revient-elle seule ? (o/n)"
+    Log "   37a. the home page starts without the stick: $starts"
+    Log "   37b. stick plugged in, followed within 10 s: $plugged"
+    Log "   37c. stick removed, followed: $removed"
+    $ErrorActionPreference = $saved
+}
+
+# --- 38: mh import --phone --since, a period only (0476) ------------------------------------
+# By hand: the phone plugged in over USB, unlocked, mh written again (mh update).
+if (Wanted 38) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 38. mh import --phone --since (0476)"
+    Write-Host "38 : telephone branche en USB et deverrouille. Tapez mh update, puis : mh import --phone --since today"
+    $todayOk = Read-Host "38a. Seules les photos d'aujourd'hui sont-elles copiees, la fenetre disant combien de plus anciennes restent sur le telephone ? (o/n)"
+    $todaySec = Read-Host "38b. Combien de secondes du debut a la fin de la copie ? (nombre)"
+    Write-Host "38 : tapez maintenant : mh import --phone   (sans --since)"
+    $lastOk = Read-Host "38c. Rien n'est recopie (depuis le dernier import), sans question en trop ? (o/n)"
+    Write-Host "38 : tapez : mh import --phone --since week"
+    $weekOk = Read-Host "38d. Seules les photos des 7 derniers jours sont-elles proposees ? (o/n)"
+    Log "   38a. --since today copies today's only, older ones said: $todayOk"
+    Log "   38b. --since today, seconds start to end: $todaySec"
+    Log "   38c. without --since, since the last import: $lastOk"
+    Log "   38d. --since week: $weekOk"
+    $ErrorActionPreference = $saved
+}
+
+# --- 39: the chain after a phone import, about 100 photos (0475) -----------------------------
+# By hand: about 100 new photos on the phone (taken today), Ollama running for tags.
+if (Wanted 39) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 39. the chain after a phone import (0475)"
+    Write-Host "39 : environ 100 nouvelles photos sur le telephone, Ollama demarre. Tapez : mh import --phone --since today"
+    $copySec = Read-Host "39a. Secondes de la copie (jusqu'a la ligne 'copiees') ? (nombre)"
+    $auditSec = Read-Host "39b. Secondes de l'etape audit ? (nombre)"
+    $tagsSec = Read-Host "39c. Secondes de l'etape tags ? (nombre, 0 si sautee)"
+    $placesSec = Read-Host "39d. Secondes de l'etape noms de lieux (reponse a la question comprise) ? (nombre)"
+    $tvOk = Read-Host "39e. La derniere ligne propose-t-elle le diaporama avec un nom d'evenement juste ? Recopiez ce nom"
+    Log "   39a. copy, seconds: $copySec"
+    Log "   39b. audit, seconds: $auditSec"
+    Log "   39c. tags, seconds: $tagsSec"
+    Log "   39d. place names, seconds: $placesSec"
+    Log "   39e. last line, event name proposed: $tvOk"
+    $ErrorActionPreference = $saved
+}
+
+# --- 40: the whole chain after an import, with copies set aside (0478) ----------------------
+# By hand: about 100 new photos on the phone (taken today), 2 of them sent twice (WhatsApp).
+if (Wanted 40) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 40. the whole chain after an import, copies set aside (0478)"
+    Write-Host "40 : environ 100 nouvelles photos dont 2 en double (WhatsApp). Tapez : mh import --phone --since today"
+    $chainSec = Read-Host "40a. Secondes du debut a la ligne 'Termine' ? (nombre)"
+    $copiesSec = Read-Host "40b. Secondes de l'etape copies (avant la ligne 'Termine') ? (nombre)"
+    $endLine = Read-Host "40c. Recopiez la ligne 'Termine : ...'"
+    $undoOk = Read-Host "40d. Tapez mh undo : les copies sont-elles revenues ? (o/n)"
+    Log "   40a. whole chain, seconds: $chainSec"
+    Log "   40b. copies step, seconds: $copiesSec"
+    Log "   40c. end line: $endLine"
+    Log "   40d. undo puts the copies back: $undoOk"
+    $ErrorActionPreference = $saved
+}
+
+# --- 41: copies before tags, the import's bursts page, the new event's slideshow (0480) -----
+# By hand: about 20 new photos on the phone (taken today): 2 sent twice, 1 burst of 3 shots.
+if (Wanted 41) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 41. copies before tags, the import's bursts page, its slideshow (0480)"
+    Write-Host "41 : 20 nouvelles photos, 2 en double, 1 rafale de 3. Tapez : mh import --phone --since today"
+    $order = Read-Host "41a. La ligne 'copies mises de cote' vient-elle AVANT la description par l'IA ? (o/n)"
+    $page = Read-Host "41b. La page des rafales s'est-elle ouverte seule, sur cette rafale SEULEMENT ? (o/n)"
+    $wait = Read-Host "41c. Secondes entre l'ouverture de la page et la fin des tags (nombre)"
+    $aside = Read-Host "41d. Apres Entree, les prises ecartees sont-elles en quarantaine (mh undo) ? (o/n)"
+    $show = Read-Host "41e. Le diaporama propose ne montre-t-il QUE les photos de cet import ? (o/n)"
+    Log "   41a. copies before tags: $order"
+    Log "   41b. bursts page, this import's series only: $page"
+    Log "   41c. page open beside tags, seconds: $wait"
+    Log "   41d. shots set aside quarantined: $aside"
+    Log "   41e. slideshow of the new event only: $show"
     $ErrorActionPreference = $saved
 }
 

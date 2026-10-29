@@ -16,6 +16,7 @@ const PEOPLE_WHY_PATH = {{ people_why_path | tojson }};
 let whyAsked = null; // the photo and the name the panel explains
 let asked = {};        // the search shown
 let within = null;     // the folder of the tree the search is narrowed to (0348)
+const CHIPS_SHOWN = 6;  // the words on a card at sizes S and M; the rest behind +N
 let more = 0;          // the files asked past the first ones (*Show more*, 0408)
 
 function card(hit, index) {
@@ -27,7 +28,7 @@ function card(hit, index) {
   picture.src = hit.thumb;
   picture.addEventListener("error", () => picture.replaceWith(element("div", "empty", TEXTS.noPreview)));
   const meta = element("div", "meta");
-  meta.append(element("div", "name", hit.name), element("div", "muted folderLine", hit.folder));
+  meta.append(titled(element("div", "name", hit.name)), titled(element("div", "muted folderLine", hit.folder)));
   meta.append(takenLine(hit));  // which date it is (0433)
   if (hit.facts) meta.append(element("div", "muted", hit.facts));  // a video (0408)
   if (hit.to !== undefined) { // a rule tried (0396): where the file would go
@@ -38,10 +39,16 @@ function card(hit, index) {
     if (hit.left) node.classList.add("leftHere");
   }
   if (hit.row !== undefined && eventTile) eventTile(hit, meta, node);  // an event's (0438)
-  if (hit.caption) meta.append(element("div", "muted caption", hit.caption));
+  if (hit.caption) meta.append(titled(element("div", "muted caption", hit.caption)));
   meta.append(chipsOf(hit));
   node.append(withLength(hit, picture), meta);
   return wireCard(node, index);
+}
+
+// One line on a card (0463): the whole text in the tooltip, and in the large view.
+function titled(node) {
+  node.title = node.textContent;
+  return node;
 }
 
 // The day taken (EXIF, what the search finds by), its time and the file's modified
@@ -67,13 +74,21 @@ function chipsOf(hit) {
       chips.append(chip);
     }
   }
+  // Two lines of words on a card (0463): the others behind +N (all of them at size L).
+  const extra = [...chips.children].slice(CHIPS_SHOWN);
+  if (extra.length) {
+    for (const chip of extra) chip.classList.add("extra");
+    const rest = element("span", "chip rest", "+" + extra.length);
+    rest.title = extra.map((chip) => chip.firstChild.textContent).join(" · ");
+    chips.append(rest);
+  }
   return chips;
 }
 
 // A chip's word as the new search: the phrase in every source, the filters emptied.
 function lookFor(word) {
   $("text").value = '"' + word.replaceAll('"', "") + '"';
-  for (const id of ["from", "to", "folder", "source"]) $(id).value = "";
+  for (const id of ["from", "to", "folder"]) $(id).value = "";
   if ($("viewer").classList.contains("open")) close();
   window.scrollTo(0, 0);
   search(null);
@@ -146,12 +161,30 @@ async function why(key, name) {
   $("whyClose").focus();
 }
 
+// The whole photo with the face outlined: the box in pixels, drawn in percent of the photo.
+function outlined(photo, name) {
+  const figure = element("div", "whole");
+  const picture = element("img");
+  picture.src = photo.preview;
+  picture.alt = name;
+  const box = element("span", "outline");
+  const percent = (value, total) => `${(100 * value / total).toFixed(3)}%`;
+  box.style.left = percent(photo.box.x, photo.width);
+  box.style.top = percent(photo.box.y, photo.height);
+  box.style.width = percent(photo.box.width, photo.width);
+  box.style.height = percent(photo.box.height, photo.height);
+  figure.style.aspectRatio = `${photo.width} / ${photo.height}`;
+  figure.append(picture, box);
+  return figure;
+}
+
 function whyFace(key, name, face) {
   const row = element("div", "face");
   const picture = element("img");
   picture.src = face.crop;
   picture.alt = name;
   const text = element("div");
+  if (face.photo) text.append(outlined(face.photo, name));
   text.append(element("p", "", face.said));
   if (face.reference) {
     const reference = element("div", "reference");
@@ -231,11 +264,6 @@ function covered(seen) {
   for (const term of document.querySelectorAll("#sourceList [data-source]")) {
     term.querySelector(".none").hidden = !none(term.dataset.source);
   }
-  for (const option of $("source").options) {
-    if (!option.value) continue;
-    if (!option.dataset.label) option.dataset.label = option.textContent;
-    option.textContent = option.dataset.label + (none(option.value) ? TEXTS.noneYet : "");
-  }
 }
 
 function told(text, error) {
@@ -248,8 +276,8 @@ async function search(event, again) {
   if (!again) more = 0;
   const body = {
     text: $("text").value, day_from: $("from").value || null, day_to: $("to").value || null,
-    folder: $("folder").value, source: $("source").value || null, sorting: $("sorting").value,
-    order: $("order").value, kind: $("kind").value, within: within ? within.inside : "",
+    folder: $("folder").value, source: null, sorting: $("sorting").value,
+    order: $("order").value, kind: asideListed() ? "all" : $("kind").value, aside: asideListed(), within: within ? within.inside : "",
     more: more,
   };
   const answer = await ask(SEARCH_PATH, body);
@@ -279,6 +307,7 @@ document.addEventListener("keydown", (event) => {
   const typing = ["INPUT", "SELECT"].includes(document.activeElement.tagName);
   if (event.key === "/" && !typing) {
     event.preventDefault();
+    if ($("toc").hidden) $("tabPhotos").click();
     $("text").focus();
   } else if (event.key === "ArrowDown" && document.activeElement === $("text") && cards.length) {
     event.preventDefault();
@@ -302,22 +331,63 @@ function period(span) {
 for (const button of document.querySelectorAll(".spans button")) {
   button.addEventListener("click", () => {
     [$("from").value, $("to").value] = period(button.dataset.span);
+    button.closest("details").open = false;  // the 📅 menu (0463)
     search(null);
   });
 }
-$("sorting").addEventListener("change", () => search(null));  // what is left to sort (0407)
-// **Sort by** and **Show** (0347): the server sorts and filters, so the first files shown
-// are the right ones; kept for this viewer, as on the folder view.
-for (const id of ["order", "kind"]) {
-  const select = $(id);
-  try {
-    const kept = localStorage.getItem("mh-search-" + id);
-    if ([...select.options].some((option) => option.value === kept)) select.value = kept;
-  } catch (error) { /* no storage (private window): the defaults */ }
-  select.addEventListener("change", () => {
-    try { localStorage.setItem("mh-search-" + id, select.value); } catch (error) { /* not kept */ }
-    search(null);
+// The segmented controls (0463): Show, Sorted, S/M/L; each sets its hidden field, then says
+// it changed. Show and the size are kept for this viewer, as Sort by.
+function segmented(id, value) {
+  $(id).value = value;
+  for (const button of document.querySelectorAll(`[data-for="${id}"]`)) {
+    button.setAttribute("aria-pressed", String(button.dataset.value === value));
+  }
+}
+function remembered(id) {
+  try { return localStorage.getItem("mh-search-" + id); } catch (error) { return null; } // private window
+}
+function remember(id) {
+  try { localStorage.setItem("mh-search-" + id, $(id).value); } catch (error) { /* not kept */ }
+}
+for (const button of document.querySelectorAll(".seg button[data-for]")) {
+  button.addEventListener("click", () => {
+    segmented(button.dataset.for, button.dataset.value);
+    $(button.dataset.for).dispatchEvent(new Event("change"));
   });
+}
+const showSize = () => { $("grid").dataset.size = $("size").value; };
+for (const id of ["kind", "size"]) {
+  const kept = remembered(id);
+  if (kept && kept !== "aside" && document.querySelector(`[data-for="${id}"][data-value="${kept}"]`)) segmented(id, kept);
+}
+showSize();
+$("size").addEventListener("change", () => { remember("size"); showSize(); });  // no new search
+$("sorting").addEventListener("change", () => search(null));  // what is left to sort (0407)
+// 🗑 (0464): the files set aside only; the counter opens it, ✕ leaves it. Never kept.
+const asideListed = () => $("kind").value === "aside";
+$("kind").addEventListener("change", () => {
+  if (!asideListed()) remember("kind");
+  $("asideLeave").disabled = !asideListed();  // greyed, never hidden: nothing moves
+  search(null);
+});
+function showAside(on) {
+  segmented("kind", on ? "aside" : remembered("kind") || "all");
+  $("kind").dispatchEvent(new Event("change"));
+}
+$("chosen").addEventListener("click", () => { if (!asideListed()) showAside(true); });
+$("chosen").title = TEXTS.asideOpen;
+$("asideLeave").addEventListener("click", () => showAside(false));
+// **Sort by** (0347): the server sorts, so the first files shown are the right ones.
+{
+  const kept = remembered("order");
+  if ([...$("order").options].some((option) => option.value === kept)) $("order").value = kept;
+  $("order").addEventListener("change", () => { remember("order"); search(null); });
+}
+// The next files load when the end of the grid comes in sight (0463), as *Show more* did.
+if (window.IntersectionObserver) {
+  new IntersectionObserver((seen) => {
+    if (seen.some((entry) => entry.isIntersecting) && !$("more").hidden) $("more").click();
+  }, { rootMargin: "400px" }).observe($("moreLine"));
 }
 $("text").focus();
 // `mh search --folder <folder>` (0405): the page opens on a folder left to sort.

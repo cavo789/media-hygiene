@@ -160,7 +160,7 @@ def test_every_page_template_includes_the_theme_and_the_bar() -> None:
     pages = [
         path for path in _SRC.glob("*/templates/*.html.j2") if path.name in PAGE_STEPS
     ]
-    assert len(pages) == len(PAGE_STEPS) == 16
+    assert len(pages) == len(PAGE_STEPS) == 15
     for path in pages:
         text = path.read_text("utf-8")
         framed = text.startswith(FRAME_EXTENDS)

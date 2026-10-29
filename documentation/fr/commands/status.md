@@ -65,7 +65,7 @@ Sous le titre *Où vous en êtes* :
   l'Explorateur compris (après le prochain audit). Vos dossiers protégés et vos sauvegardes sont
   comptés à part. Puis **les dix plus gros dossiers restants**, avec
   `mh search --folder "<dossier>"` pour en ouvrir un dans la page de recherche, choisir, puis
-  *Déplacer vers un événement…* ;
+  *📂 Événement…* ;
 
 puis **une** étape suivante, en commande complète prête à coller. Une quarantaine de plus de
 30 jours est la première chose qu'il propose de vider avec [`purge`](purge.md).

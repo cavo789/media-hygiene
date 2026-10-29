@@ -29,6 +29,7 @@
   "allFound": _("Pick all {total} files found"),
   "allPicked": _("All {total} files found are picked"),
   "aside": _("marked to set aside"),
+  "asideOpen": _("Show only the files set aside (🗑 in Show)"),
   "tick": _("Pick this file"),
   "noAlbum": _("Type the album's name in the bar first: then A adds the file shown."),
   "saving": _("Saving…"),
@@ -86,7 +87,8 @@
   "person": _("person"),
   "takeout": _("Google Photos description"),
 } %}
-{# What each source of "Words of" holds, where it comes from (0346). #}
+{# What each source of words holds, where it comes from (0346): written before a word
+   (`folder:durbuy`), since the *Words of* list is gone (0463). #}
 {% set explained = {
   "vision": _("the words the vision model gave to what the photo shows (🤖 tags)."),
   "caption": _("the model's whole sentence: for a phrase in quotes."),
@@ -104,7 +106,13 @@
 {% set rule_go = true %}
 {% set pick_all = _("every file shown") %}
 {% set pick_search_key = true %}
-{% set keys_safe = _("Nothing moves without your GO; every move is journaled: 'undo' puts it back. The files set aside go to the quarantine at the next 'clean --decisions'.") %}
+{# No 🔒 line in the ⌨ panel (0463): it is the tooltip of ✅ Apply, and the help page's. #}
+{% set apply_more = _("Nothing moves without your GO; every move is journaled: 'undo' puts it back. The files set aside go to the quarantine at the next 'clean --decisions'.") %}
+{% set keys_safe = "" %}
+{% set apply_short = true %}
+{% set album_short = true %}
+{% set order_kind = false %}
+{% set pick_add = "🗑 " + _("Put aside") %}
 {% block style %}
 {% include "pick_grid.css.j2" %}
   /* The field and its filters, one under the other, in the left column: as tall as they
@@ -147,6 +155,10 @@
                padding: 8px 0; border-top: 1px solid var(--line); }
   #why img { width: 120px; height: 120px; object-fit: cover; border-radius: 8px;
              background: var(--chip); }
+  #why .whole { position: relative; width: 240px; max-width: 100%; margin-bottom: 6px; }
+  #why .whole img { width: 100%; height: 100%; object-fit: contain; }
+  #why .outline { position: absolute; border: 2px solid var(--accent); border-radius: 4px;
+                  box-shadow: 0 0 0 1px var(--card); pointer-events: none; }
   #why .reference img { width: 72px; height: 72px; }
   #why .reference { display: flex; gap: 8px; align-items: center; overflow-wrap: anywhere; }
   #why .buttons { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
@@ -160,13 +172,82 @@
 {% include "folder_tree.css.j2" %}
 {% include "search_events.css.j2" %}
   #folders summary { cursor: pointer; margin: 8px 0 4px; }
+  /* Folded to one line (0471): opened, the tree floats over the page like *More keys*,
+     the line keeps its place, nothing below it moves; Esc or a folder picked closes it. */
+  #folders[open] > #tree { position: fixed; z-index: 4; left: 16px; top: 16px; width: min(28rem, calc(100vw - 32px));
+                           max-height: calc(100vh - 32px); padding: 10px 12px; background: var(--card);
+                           border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 4px 18px rgba(0, 0, 0, .3); }
+  /* *Path contains* lists the folders (0471): floating under the field, never pushing the form. */
+  #folderLabel { position: relative; }
+  #folderList { position: absolute; z-index: 4; top: 100%; left: 0; right: 0; max-height: 50vh; overflow-y: auto;
+                margin: 2px 0 0; padding: 4px 0; list-style: none; background: var(--card);
+                border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 4px 18px rgba(0, 0, 0, .3); }
+  #folderList[hidden] { display: none; }
+  #folderList li { padding: 2px 8px; cursor: pointer; overflow-wrap: anywhere; }
+  #folderList li small { margin-left: 6px; color: var(--muted); }
+  #folderList li[aria-selected="true"], #folderList li:hover { background: var(--chip); }
   #withinLine { display: flex; gap: 6px; align-items: baseline; overflow-wrap: anywhere; }
   #withinLine[hidden] { display: none; }
   #heaviest { width: 100%; margin-top: 6px; }
-  #moreLine { margin: 0 16px 16px; text-align: center; }
+  #moreLine { margin: 0 16px 16px; min-height: 2.4em; text-align: center; }
+  /* The fixed bar (0463): two lines that never wrap nor change height, whatever is picked,
+     found or said. Line 1: where you are, 📺, Sort by, S/M/L; line 2: the actions on the
+     picking (greyed while nothing is picked), the album, the set aside, ✅ Apply. */
+  #bar { flex-wrap: wrap; row-gap: 4px; }
+  #bar::before { content: ""; order: 2; flex-basis: 100%; height: 0; }
+  #bar > * { order: 3; }
+  #bar > #lead, #bar > #tvSend, #bar > label, #bar > #sizes { order: 1; }
+  #bar > #lead[hidden], #bar > #acting[hidden] { display: flex; }
+  #bar > #lead { flex: 1 1 0; min-width: 0; white-space: nowrap; overflow: hidden; }
+  #status { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #bar > #acting { flex-wrap: nowrap; }
+  #picked { display: inline-block; min-width: 9ch; white-space: nowrap; }
+  #bar #takeBack[hidden], #bar #pickAll[hidden] { display: none; }
+  #bar #albumBar { flex: 0 0 auto; flex-basis: auto; flex-wrap: nowrap; margin: 0; }
+  #bar #albumBar label { display: none; }
+  #bar #albumBar input { width: 11em; }
+  #bar > p#moveBar { flex-basis: auto; margin: 0; }
+  #bar > #chosen { flex: 1 1 0; min-width: 0; cursor: pointer; }
+  #asideLeave { min-width: 1.6em; }
+  #bar #applyNow[hidden] { display: inline-block; opacity: .45; pointer-events: none; }
+  #bar button { padding: 4px 8px; white-space: nowrap; }
+  /* What a save says on the album floats under the bar: the grid stays where it is. */
+  #bar > #albumSaid, #bar > #albumTvLine, #bar > #albumMissing {
+    position: absolute; top: 100%; left: 0; right: 0; margin: 0; padding: 2px 16px;
+    background: var(--card); box-shadow: 0 2px 6px rgba(0, 0, 0, .2); }
+  #bar > #albumSaid:empty { display: none; }
+  #bar > #albumSaid { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* Segmented controls: Show, Sorted (left column), S/M/L (the bar). */
+  .seg { display: flex; flex: none; }
+  .seg button { flex: 1 1 auto; padding: 3px 10px; color: var(--accent); background: transparent; border-radius: 0; }
+  .seg button:first-of-type { border-radius: 6px 0 0 6px; }
+  .seg button:last-of-type { border-radius: 0 6px 6px 0; }
+  .seg button[aria-pressed="true"] { color: var(--on-accent); background: var(--accent); }
+  .segLabel { font-size: .85rem; color: var(--muted); }
+  /* Dates on one line, the quick periods in a 📅 menu floating under it. */
+  .years { flex-wrap: nowrap; align-items: end; position: relative; }
+  .years label { flex: 0 1 11ch; min-width: 0; }
+  .dateMenu { flex: none; }
+  .dateMenu summary { list-style: none; cursor: pointer; padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; }
+  .dateMenu[open] .spans { position: absolute; z-index: 3; right: 0; top: 100%; flex-direction: column;
+                           padding: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
+  /* 🔍 Search stays in sight at the bottom of the form, however long the column. */
+  #go { position: sticky; bottom: 0; z-index: 1; }
+  /* Thumbnail sizes (S/M/L, kept per viewer): S the photo only, M one line each, L everything. */
+  main[data-size="s"] { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  main[data-size="s"] .meta { display: none; }
+  main[data-size="l"] { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  main:not([data-size="l"]) .meta > div:not(.chips) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  main:not([data-size="l"]) .chips { max-height: 3em; overflow: hidden; }
+  main:not([data-size="l"]) .chip.extra, main[data-size="l"] .chip.rest { display: none; }
 {% endblock %}
 {% block side %}
-    <section id="toc" aria-label="{{ _('Search your photos') }}">
+    {# Two tabs (0457): the search, or the events of the latest classify; kept per viewer. #}
+    <div id="tabs" role="tablist" aria-label="{{ _('What the left column shows') }}">
+      <button type="button" role="tab" id="tabPhotos" aria-controls="toc" aria-selected="true" title="{{ _('Search your photos') }}">🔎 {{ _("Photos") }}</button>
+      <button type="button" role="tab" id="tabEvents" aria-controls="events" aria-selected="false" tabindex="-1" title="{{ _('The events of the latest classify, one by one') }}">🗂 {{ _("Events") }}</button>
+    </div>
+    <section id="toc" role="tabpanel" aria-labelledby="tabPhotos" aria-label="{{ _('Search your photos') }}">
     <form id="form">
       <label>{{ _("Words") }}
         <input id="text" type="search" autocomplete="off"
@@ -174,40 +255,46 @@
       <div class="years">
         <label>{{ _("From") }}<input id="from" type="date" min="1800-01-01" max="2200-12-31"></label>
         <label>{{ _("To") }}<input id="to" type="date" min="1800-01-01" max="2200-12-31"></label>
+        <details class="dateMenu">
+          <summary title="{{ _('Quick periods') }}" aria-label="{{ _('Quick periods') }}">📅 ▾</summary>
+          <div class="spans" role="group" aria-label="{{ _('Quick periods') }}">
+            <button type="button" class="plain" data-span="day" title="{{ _('Today') }}" aria-label="{{ _('Today') }}">📍 {{ _("Today") }}</button>
+            <button type="button" class="plain" data-span="month" title="{{ _('This month') }}" aria-label="{{ _('This month') }}">🗓️ {{ _("Month") }}</button>
+            <button type="button" class="plain" data-span="year" title="{{ _('This year') }}" aria-label="{{ _('This year') }}">📆 {{ _("Year") }}</button>
+            <button type="button" class="plain" data-span="" title="{{ _('Any date') }}" aria-label="{{ _('Any date') }}">✕ {{ _("Clear") }}</button>
+          </div>
+        </details>
       </div>
-      <div class="spans" role="group" aria-label="{{ _('Quick periods') }}">
-        <button type="button" class="plain" data-span="day" title="{{ _('Today') }}" aria-label="{{ _('Today') }}">📍 {{ _("Today") }}</button>
-        <button type="button" class="plain" data-span="month" title="{{ _('This month') }}" aria-label="{{ _('This month') }}">🗓️ {{ _("Month") }}</button>
-        <button type="button" class="plain" data-span="year" title="{{ _('This year') }}" aria-label="{{ _('This year') }}">📆 {{ _("Year") }}</button>
-        <button type="button" class="plain" data-span="" title="{{ _('Any date') }}" aria-label="{{ _('Any date') }}">✕</button>
-      </div>
-      <label>{{ _("Path contains") }}<input id="folder" type="text"
+      <label id="folderLabel">{{ _("Path contains") }}<input id="folder" type="text" autocomplete="off"
+               role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="folderList"
                title="{{ _('A part of the path. * is any characters, ? one character, /regex/ a regular expression: *.mov, /\\.(mov|mp4)$/') }}"
-               placeholder="{{ _('e.g. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/') }}"></label>
-      <label>{{ _("Sorted") }}
-        <select id="sorting" title="{{ _('Sorted: in a year-month folder (2009/2009-11/…), as the sort convention puts them') }}">
-          <option value="all">{{ _("every photo") }}</option>
-          <option value="left">{{ _("not sorted yet") }}</option>
-          <option value="sorted">{{ _("sorted (year, then year-month)") }}</option>
-        </select></label>
-      <label>{{ _("Words of") }}
-        <select id="source">
-          <option value="">{{ _("every source") }}</option>
-          {% for value, label in sources.items() %}
-          <option value="{{ value }}">{{ label }}</option>
-          {% endfor %}
-          <option value="caption">{{ _("the model's sentence") }}</option>
-        </select></label>
+               placeholder="{{ _('e.g. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/') }}">
+        <ul id="folderList" role="listbox" aria-label="{{ _('Your folders, most files first') }}" hidden></ul></label>
+      <span class="segLabel">{{ _("Show") }}</span>
+      <div class="seg" role="group" aria-label="{{ _('Show') }}">
+        <input type="hidden" id="kind" value="all">
+        <button type="button" data-for="kind" data-value="all" aria-pressed="true">{{ _("All") }}</button>
+        <button type="button" data-for="kind" data-value="photos" aria-pressed="false" title="{{ _('Photos') }}">📷</button>
+        <button type="button" data-for="kind" data-value="videos" aria-pressed="false" title="{{ _('Videos') }}">🎬</button>
+        <button type="button" data-for="kind" data-value="aside" aria-pressed="false" title="{{ _('Only the files set aside, to see them or put some back before the quarantine') }}">🗑</button>
+        <button type="button" id="asideLeave" class="plain" disabled title="{{ _('Leave the set aside: every file again') }}" aria-label="{{ _('Leave the set aside: every file again') }}">✕</button>
+      </div>
+      <span class="segLabel" title="{{ _('Sorted: in a year-month folder (2009/2009-11/…), as the sort convention puts them') }}">{{ _("Sorted") }}</span>
+      <div class="seg" role="group" aria-label="{{ _('Sorted') }}">
+        <input type="hidden" id="sorting" value="all">
+        <button type="button" data-for="sorting" data-value="all" aria-pressed="true" title="{{ _('every photo') }}">{{ _("All") }}</button>
+        <button type="button" data-for="sorting" data-value="sorted" aria-pressed="false" title="{{ _('sorted (year, then year-month)') }}">{{ _("sorted") }}</button>
+        <button type="button" data-for="sorting" data-value="left" aria-pressed="false" title="{{ _('not sorted yet') }}">{{ _("not yet") }}</button>
+      </div>
       <p id="withinLine" hidden>📁 <span id="withinName"></span>
         <button type="button" id="withinClear" class="plain" title="{{ _('Search every folder again') }}">✕</button></p>
-      <button type="submit">{{ _("Search") }}</button>
+      <button type="submit" id="go" title="{{ _('Search (Enter; / comes back to Words)') }}">🔍 {{ _("Search") }}</button>
     </form>
     <button type="button" id="heaviest" class="plain" title="{{ _('The heaviest files of every folder: where the space goes') }}">⚖ {{ _("Heaviest files") }}</button>
     <details id="folders">
-      <summary>📁 {{ _("In a folder") }}</summary>
+      <summary title="{{ _('Every folder as a tree; a click searches in it') }}">📁 {{ _("My folders") }} ▸</summary>
       <div id="tree" aria-label="{{ _('Your folders') }}"></div>
     </details>
-    {% include "search_events.html.j2" %}
     <button type="button" id="ruleOpen" class="plain" hidden title="{{ _('Write this period down as a date rule of config.toml, after seeing the photos it would take and where each one would go') }}">📌 {{ _("Make it a rule") }}</button>
     <p id="coverage" role="status" hidden></p>
     <details id="syntax">
@@ -220,6 +307,7 @@
         <li id="tipMeaning" hidden>{{ _("Sentences work too: search by meaning is on.") }}</li>
       </ul>
       <p>{{ _('"bord de mer" finds the phrase, anniv* every word starting so, place:durbuy the word among the places only.') }}</p>
+      <p>{{ _("One source only: write its name and a colon before the word (folder:durbuy, name:anniv*):") }}</p>
       <dl id="sourceList">
         <dt>{{ _("every source") }}</dt><dd>{{ _("any of them (the default).") }}</dd>
         {% for value, text in explained.items() %}
@@ -228,6 +316,7 @@
       </dl>
     </details>
     </section>
+    {% include "search_events.html.j2" %}
 {% endblock %}
 {% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
 {% block more_keys %}{% include "pick_keys_more.html.j2" %}
@@ -238,13 +327,21 @@
     {% include "pick_acting.html.j2" %}
     {% set order_best = true %}
     {% set order_rate = true %}
+    {% set order_short = true %}
     {% include "pick_order.html.j2" %}
+    <div class="seg" id="sizes" role="group" aria-label="{{ _('Thumbnail size') }}">
+      <input type="hidden" id="size" value="m">
+      <button type="button" data-for="size" data-value="s" aria-pressed="false" title="{{ _('Small: the photos only') }}">S</button>
+      <button type="button" data-for="size" data-value="m" aria-pressed="true" title="{{ _('Medium') }}">M</button>
+      <button type="button" data-for="size" data-value="l" aria-pressed="false" title="{{ _('Large: the whole caption and every word') }}">L</button>
+    </div>
     {% set album_compact = true %}
     {% include "album_bar.html.j2" %}
-    <p id="moveBar"><button type="button" id="moveOpen" disabled title="{{ _('Move the photos picked to an event folder, year then year-month, without writing a rule') }}">📂 {{ _("Move to an event…") }}</button></p>
+    <p id="moveBar"><button type="button" id="moveOpen" class="plain" disabled title="{{ _('Move the photos picked to an event folder, year then year-month, without writing a rule') }}">📂 {{ _("Event…") }}</button></p>
 {% endblock %}
 {% block content %}
   <main id="grid"></main>
+  {# Reached by scrolling, the next files load by themselves (0463); the button stays for a keyboard. #}
   <p id="moreLine"><button id="more" class="plain" type="button" hidden>{{ _("Show more") }}</button></p>
 {% endblock %}
 {% block after %}
@@ -267,6 +364,7 @@
 {% include "folder_tree.js.j2" %}
 {% include "search.js.j2" %}
 {% include "search_folders.js.j2" %}
+{% include "search_path_list.js.j2" %}
 {% include "rule_dialog.js.j2" %}
 {% include "move_dialog.js.j2" %}
 {% include "search_rule.js.j2" %}

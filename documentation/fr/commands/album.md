@@ -8,11 +8,10 @@
 photos ») sans copier une photo : aucune place en plus.**
 
 Un **album** est la liste nommée de photos que vous faites dans
-[`search`](search.md#mettre-des-photos-dans-un-album), [`browse`](browse.md) ou la revue des
+[`search`](search.md#mettre-des-photos-dans-un-album), [les dossiers de `search`](search.md#parcourir-vos-dossiers) ou la revue des
 rafales, enregistrée dans `albums.json`. Il a plusieurs usages, tous sous *Partager* dans la page
 d'accueil et `mh menu`. Un album est **une sélection à garder** et à remontrer : pour montrer des
-photos une fois sur la télé, pas besoin d'album (**📺 Sur la télé** dans la barre de `search` et
-`browse`, voir [`slideshow`](slideshow.md)).
+photos une fois sur la télé, pas besoin d'album (**📺 Sur la télé** dans la barre de `search`, voir [`slideshow`](slideshow.md)).
 
 | Usage | Commande |
 |---|---|
@@ -80,7 +79,7 @@ Plus : [Trier, étape 12](../sort/12-albums.md#choisir-ce-que-lalbum-rassemble).
 
 | Option | Rôle |
 |---|---|
-| `NOM` | Le nom de l'album, tel que `search` et `browse` l'ont enregistré : le dossier qui contient ses liens (obligatoire). |
+| `NOM` | Le nom de l'album, tel que `search` l'ont enregistré : le dossier qui contient ses liens (obligatoire). |
 | `--category NOM` | Au lieu d'un album enregistré : les fichiers de cette catégorie, d'après le classeur de `classify` modifié. |
 | `--event ÉVÉNEMENT` | Les fichiers de cet événement : son identifiant (feuille Événements) ou son nom. |
 | `--rule NOM` | Les fichiers que l'entrée `[[classify.rules]]` de ce nom a décidés. |
@@ -95,8 +94,11 @@ Plus : [Trier, étape 12](../sort/12-albums.md#choisir-ce-que-lalbum-rassemble).
 - **Un lien physique ne quitte jamais son disque, ni son `-v`** : montez le dossier qui contient à
   la fois les photos et les albums (`C:\Photos` pour `C:\Photos\Albums`).
 - **Relancez-le** plus tard, après avoir ajouté des photos à l'album : seules les nouvelles photos
-  sont ajoutées ; une photo n'est jamais liée deux fois. Une photo retirée de l'album reste dans
-  son dossier : annulez l'exécution (`undo`), ou supprimez le lien.
+  sont ajoutées ; une photo n'est jamais liée deux fois. Le lien d'une photo retirée de
+  l'album est supprimé (listé d'abord sous *Liens à retirer* ; la photo reste où elle est, `undo`
+  la relie). Un fichier copié à la main dans le dossier (sa seule copie) n'est jamais touché, ni
+  un lien dont la photo est hors des dossiers analysés ; tant qu'une photo de l'album est
+  introuvable, aucun lien n'est retiré.
 - **Jamais vu comme des doublons** : `audit`, `clean`, `classify` et `sort` ignorent tout dossier
   qui contient `.media-hygiene-album`. Gardez ce fichier.
 - Une photo retouchée dans l'album l'est aussi dans son dossier trié : c'est le même fichier.
@@ -122,7 +124,7 @@ Plus : [Trier, étape 12](../sort/12-albums.md#choisir-ce-que-lalbum-rassemble).
  copié ni déplacé (journalisé, annulable).
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│ *    name      <str>  Le nom de l'album, tel que search et browse l'ont      │
+│ *    name      <str>  Le nom de l'album, tel que search l'ont      │
 │                       enregistré : le dossier qui contient ses liens.        │
 │                       [required]                                             │
 ╰──────────────────────────────────────────────────────────────────────────────╯

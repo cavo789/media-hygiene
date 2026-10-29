@@ -48,23 +48,26 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene search
 ```
 
-Open <http://127.0.0.1:8088/>. The page looks and works like [`browse`](browse.md): the search
+Open <http://127.0.0.1:8088/>. The page shows the search
 field and its filters (a period, a part of the path, the words of one source only) in the left
 column, the ⌨ keys under them, one bar above the grid, then the photos found. **🔎 Words** comes
-first, **📁 Folders** second: it opens `browse`, the same server. Ctrl+C, or closing its tab,
+first, **📁 Folders** second: it opens [your folders](#walk-through-your-folders). Ctrl+C, or closing its tab,
 stops the page.
 
 **Path contains** takes a part of the path, case-insensitive. `*` stands for any characters and
 `?` for one: `*.mov` finds every `.mov` file (`.MOV` too). Between two slashes it is a regular
 expression: `/\.(mov|mp4)$/`. Anything else is read as typed, so `Vacances (2019)` or `a+b` need
-no escaping. A regular expression that does not compile is told under the field.
+no escaping. A regular expression that does not compile is told under the field. A click on
+the empty field lists your folders, most files first with their count; typing narrows the list.
+↓/↑ move in it, Enter (or a click) picks a folder and searches, Esc closes it. The list only
+helps: `*.mp4` or a regular expression are still searched as typed.
 
 - **⚖ Heaviest files** (above the folders): every folder, no word, the videos first unless
   **Show** says otherwise, the largest first — or **Sort by: bit rate**, the videos worst
   compressed for their length (the best to lighten with [`shrink`](shrink.md)). A video's tile
-  says its length, bit rate and codec. **Show more**, under the grid, adds as many files again.
-- **In a folder**: under the form, the tree of your folders, as on the folder view (opened on
-  demand). A click narrows the search to that folder and below, **without typing any word**:
+  says its length, bit rate and codec. Scrolled to the end of the grid, the next files load by themselves.
+- **📁 My folders ▸**: one line under the form; a click opens the tree of your folders over the
+  page (nothing below moves), Esc closes it. A click narrows the search to that folder and below, **without typing any word**:
   empty words list the whole folder; ✕ next to its name searches every folder again.
 
 - **Search**: type the words, then Enter; the keys then go to the grid, `/` comes back to the
@@ -73,11 +76,21 @@ no escaping. A regular expression that does not compile is told under the field.
 - **Follow a word**: a click on a word under a photo (*Mechelen*, *2026*, a person's name)
   searches it as a phrase in every source, the filters emptied: from one photo to all the others
   with that word. It never picks the photo.
-- **Pick**, as in `browse`: a click picks one file; the ☑ box (or Ctrl+click) adds or removes one;
+- **Pick**, as on every page of photos: a click picks one file; the ☑ box (or Ctrl+click) adds or removes one;
   Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse picks
   what it touches (with Ctrl, it adds); Ctrl+A every file shown, then **Pick all N files found**
-  in the bar takes every file the search finds, not only the 240 shown; **Invert the picking**
+  in the bar takes every file the search finds, not only the 240 shown; **🔀 Invert the picking**
   (or I) picks the others.
+- **The bar** has two lines that never move, whatever is picked or found: on top, where you are
+  (the count), **📺 On the TV**, **Sort by** and the thumbnail size **S** (photos only), **M**,
+  **L** (every word), kept for this browser; below, what to do with the files picked — greyed
+  while none is: **🗑 Put aside**, **🔀 Invert**, the album with **➕** and **➖**, **📺 Share**,
+  **✉️ Send**, **📂 Event…**, then what is set aside and **✅ Apply**. Point at a button for its
+  whole name and its key. **✅ Apply** says it too: 🔒 nothing moves without your GO; every move
+  is journaled, `undo` puts it back. On a tile, the name, folder and caption keep one line each
+  (point at them for the whole text), the words two lines then *+N*.
+- **⌨ Keyboard**: the panel lists the main gestures; **More keys** opens over the page (Esc
+  closes it), so the form above never leaves the screen.
 - **Look**: Enter or a double click shows the photo large (with a link to the original); ← → (on a
   phone, a swipe) the previous or next one, Delete sets it aside then shows the next one, F full screen, ? every key,
   Escape closes it. **👤 Set a person aside** finds every photo of someone on the one shown
@@ -85,13 +98,20 @@ no escaping. A regular expression that does not compile is told under the field.
 
 - **A period**: *From* and *To* are calendars, a day each, both included; one alone is a period
   of one day. The day is the one the photo was taken, as `classify` dates it. *From* chosen,
-  *To* takes the same day when it is empty or earlier. Under them, one click searches
-  **📍 Today**, **🗓️ Month** (this month), **📆 Year** (this year); **✕** clears both.
-- **Sort by** and **Show**, in the bar as on the [folder view](browse.md): *best match* (the
-  default; the newest first without words), *name*, *date* (the oldest first) or *size* (the
-  largest first); **Show** keeps the photos or the videos only. The search sorts and filters
+  *To* takes the same day when it is empty or earlier. Next to them, the **📅 ▾** menu searches
+  **📍 Today**, **🗓️ Month** (this month), **📆 Year** (this year); **✕ Clear** empties both.
+  **🔍 Search** stays in sight at the bottom of the form.
+- **Sort by**, in the bar as on the [folder view](#walk-through-your-folders): *best match* (the
+  default; the newest first without words), *name*, *date* (the oldest first), *size* (the
+  largest first) or *length, shortest first* (the videos by duration, the photos after: the failed
+  videos of a second or two come first); **Show**, in the left column, keeps **📷** the photos or **🎬** the videos only. The search sorts and filters
   before it shows its first files: *Show: videos*, *Sort by: size* gives the largest videos found.
   Each tile says its date and size.
+- **🗑 set aside**, the fourth choice of **Show** (or a click on the *🗑 N set aside* counter of
+  the bar): the same grid lists only the files set aside, before `clean --decisions` sends them
+  to the quarantine. Pick one or several, then *Take out of the set aside* puts them back: the
+  decisions file is read back from the disk before the counter changes, and the tiles stay in
+  place. **✕** next to 🗑 leaves this view.
 - **Which date**: `📷 2023-07-14` is the day the photo was **taken**, written in the photo
   itself (EXIF *DateTimeOriginal*; a video's recording date): what *From*, *To* and the years
   find. It is not the *Date modified* Windows Explorer shows by default: point at the date for
@@ -100,15 +120,16 @@ no escaping. A regular expression that does not compile is told under the field.
   that does not say it (a scan, a screenshot) reads *no date taken*: a search by date does not
   find it.
 - **The photo's EXIF**: in the large view, **I** lists what the photo says of itself: when it was
-  taken, the camera, the lens, the exposure, its size in pixels and its GPS position. Read only:
+  taken, the camera, the lens, the exposure, its size in pixels and its GPS position, with the
+  nearest town and its country (*Brussels, Belgium*, found offline: no position leaves your PC). Read only:
   the photo is never changed.
 - **A video's length** is on its preview's corner, as on video sites: `▶ 1:45`. Under 3 seconds,
   the badge is red: a clip that short is rarely worth keeping (setting it aside stays your
   choice).
-- **Sorted**: *every photo*, *not sorted yet* or *sorted (year, then year-month)*, read from the
+- **Sorted**: *All*, *not yet* or *sorted* (year, then year-month), read from the
   folders alone ([the convention](../sort/04-classify.md#the-convention-year-month-event)): a
   photo in `2009\2009-11\…` is sorted, wherever that pair of folders lies and whoever put it
-  there. *Not sorted yet*, then pick and **📂 Move to an event…**: the page becomes the way to sort
+  there. *Not yet*, then pick and **📂 Event…**: the page becomes the way to sort
   what is left, folder after folder.
 
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20 files
@@ -116,19 +137,25 @@ as a table.
 
 ## The events of the latest classify
 
-**🗂 Events of the latest classify**, under the folders in the left column, lists the events of
-the latest [`classify`](classify.md) plan (it took in `review-sort`, which now only opens it):
+The **🗂 Events** tab, on top of the left column next to **🔎 Photos**, lists the events of
+the latest [`classify`](classify.md) plan (it took in `review-sort`, removed in this version):
 the progress line (sorted, already in place, left) and the sort runs of the plan, each with its
 undo line; the three filters (*Only the events to decide*, *Only the sure proposals*, *Only the
 events not sorted yet*); ✓ on an event already sorted, ⚠ on one whose earlier choice the
 workbook changed since. Click an event: its card shows above the list, its photos in the grid,
 each tile saying where `sort` will put it (*C:\Photos → 2016\2016-07\Party*). The address
-`/events` (and `mh review-sort`) opens the page with the list open.
+`/events` opens the page on this tab. The page remembers the last tab chosen; ← and → move
+between the two tabs once one has the focus.
 
 Choose with the keyboard, as in the old page; every choice is **saved at once** in
 `sort-decisions.json` next to the plan, read back from the disk, with what the workbook said
 when you chose (a later edit of the same event in the workbook is a conflict, shown in red,
 never settled silently). The workbook itself is never changed.
+
+**💡 Proposed name**: under the name field, the card proposes one from what the index knows,
+without any AI call: the place (a place of yours, else the town) and an activity most of the
+described photos share (*Walk in Liège*), else the place and the day (*Liège — 29 October*), else
+the day alone. **Use this name** saves it in one click; nothing is sorted until you choose to.
 
 | Key | What it does |
 |---|---|
@@ -149,7 +176,7 @@ decide nothing, turn a folder-name rule into dates.
 ## Move photos to an event, without a rule
 
 For a one-off event, a rule is not needed: search its days (or words), **pick** the photos (as
-everywhere: click, Ctrl, Shift, a rectangle, Ctrl+A), then **📂 Move to an event…** in the bar.
+everywhere: click, Ctrl, Shift, a rectangle, Ctrl+A), then **📂 Event…** in the bar.
 Type the event's name, or pick one of your event folders the field lists (those already in the
 month the photos go to, sub-folders written `France\Morzine`); `\` makes sub-folders of a new name too.
 The line under it shows the folder made, as
@@ -170,7 +197,7 @@ latest `classify` (a phone imported, then audited) move too: no new `classify` i
 ## Make a period a rule
 
 Once a period is searched, **📌 Make it a rule** opens, beside the grid, the dialog of
-[`review-sort`](#the-events-of-the-latest-classify)'s *Remember as a rule*, filled with the period: type its name
+the Events tab's *Remember as a rule*, filled with the period: type its name
 and its folder (*keep my folders below it* is on). As you type, the grid shows **the photos the
 rule would take, each with where it would go** (*→ 2017\Parties\Weddings\Hervé and Magda's
 wedding*), computed by the `classify` engine with your rules and the one typed (nothing is
@@ -204,6 +231,24 @@ again. Nothing moves without that GO.
 *These folders are mounted read-only*: your `mh` was written before the pages could sort (it
 mounts them `:ro`). Type `mh update` once: it writes `mh` again, from your image, with the same
 folders.
+
+## Walk through your folders
+
+**📁 Folders**, on top of the left column, opens the page on your folders, as in Explorer (the
+old `browse` command did only this; `/browse` still opens the same page).
+
+![The folder view: the tree of the folders on the left, the photos of the Birthday folder on the right with two marked to set aside and the saved line](../images/browse.webp)
+
+- **The tree**: your mounted folders, open; the folders below them, closed (▸ opens one). Click a
+  folder: its photos and videos appear, sorted by name, by date or by size, the largest first
+  (**Sort by**). **Show** keeps the photos or the videos only. Both choices are kept, in this
+  browser, for the next folder.
+- **⚖ Heaviest files**, above the folders: the heaviest files of every mounted folder, the videos
+  first, 200 at a time (**Show more** adds as many). The bar says what the list weighs: *200
+  files, 61.4 GB, 25 % of your library*. **Sort by** *bit rate* puts first the videos worst
+  compressed for their length (old cameras, MJPEG): the ones that gain the most once lightened.
+- Look, pick and set aside work as everywhere on this page; opened from the
+  [home page](home.md), **Apply now** runs `clean --decisions` for you.
 
 ## Set photos aside
 
@@ -239,7 +284,7 @@ what it holds now (*Saved in config.toml, read back: 1 face of this photo is not
 view shows the same names, with the same ×, under its facts (`I`).
 
 `W` in the large view opens **Why this name?**: the face of the
-photo cut out, how it got the name (*confirmed by you*, or *close to a face you confirmed*, with
+photo cut out and outlined on the whole photo (useful when it holds several faces), how it got the name (*confirmed by you*, or *close to a face you confirmed*, with
 that face, its file, and the score against `[people] similarity`), and the next person when they
 come close too. **Yes, it is …** confirms that face, **Not …** takes the name off that face
 only; both are saved, read back and said the same way. Esc closes the panel and leaves the large
@@ -302,11 +347,10 @@ second names (hard links), without a copy.
 
 ## Where each word comes from
 
-The *Words of* menu narrows a search to one source; typing its prefix does the same
-(`place:durbuy`). A source without any word yet says *— none yet* in the menu and in *How to
-write a search*.
+Its prefix before a word narrows the search to one source: `place:durbuy`, `folder:durbuy`,
+`name:anniv*`. A source without any word yet says *— none yet* in *How to write a search*.
 
-| Words of | Prefix | What it holds |
+| Source | Prefix | What it holds |
 |---|---|---|
 | every source | | Any of them (the default). |
 | seen by the model | `vision:` | The words the vision model gave to what the photo shows (🤖 [`tags`](tags.md)). |
@@ -332,7 +376,7 @@ not known yet: 0 of 44,488 files described…*, with the step that fills it (�
 | `an old man in a garden` | **A whole sentence needs search by meaning** (`tags --meaning`); without it, words only. | `garden`; or run 🤖 `tags --meaning` once: then sentences work. |
 | `beach` during a `tags` run | **The model's words reach the search at the end of the run** (or after one Ctrl+C, which writes those of the photos described so far). | Wait for the end of `tags`, or Ctrl+C once. |
 
-Nothing found? Fewer words, the start of a word (`anniv*`), another source in *Words of*, or
+Nothing found? Fewer words, the start of a word (`anniv*`), another source's prefix (`folder:`), or
 search by meaning. The page keeps these tips short, in *How to write a search*.
 
 ## Options

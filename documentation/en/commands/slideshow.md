@@ -58,7 +58,7 @@ only. Without `--lan`, only the PC can open the show (useful to try it, or for p
 
 Instead of a folder: `--search "noel 2025"` (the photos a [`search`](search.md) finds) or
 `--album "Crete 2023"` (an [album](search.md#put-photos-in-an-album) made in `search`,
-[`browse`](browse.md) or the burst [`review`](review.md): photos of several folders; its
+[the folders of `search`](search.md#walk-through-your-folders) or the burst [`review`](review.md): photos of several folders; its
 **📺 Share on the TV** button gives this command, copied). `--chosen` is gone: it showed the
 files set aside, meant for the quarantine; given, it says to use `--album`. From the
 [home page](home.md) opened by `mh --lan`, the *Show your photos on the TV* step asks for the
@@ -70,7 +70,7 @@ or a month (by the date the audit read); a tap opens the remote at once (no code
 is paired once (its code typed on the remote) and **stays paired while `mh` runs**: another album
 reaches it without a new code. No album saved: a folder or a month is always there.
 
-**From any page of tiles, no album needed**: in [`search`](search.md) and [`browse`](browse.md)
+**From any page of tiles, no album needed**: in [`search`](search.md)
 opened from the home page, **📺 On the TV** in the bar shows the photos and videos picked, or,
 nothing picked, every file the page shows (the search's result, the folder's files), at most
 3000 (more: narrow the search). The remote opens at once in a new tab; a show already running is
@@ -89,8 +89,11 @@ show: a TV reloaded loses nothing, stopping `mh` ends it.
    pages only, never the remote.
 3. **Bookmark it**: next time, the bookmark is enough (see [A stable address](#a-stable-address)).
 4. The TV shows a code of six digits. On the phone's remote, type it in **The code the TV shows**,
-   then **Pair the TV**: the first photo appears. The TV is paired until the slideshow stops; when
-   the show runs in the home page (an album started there), until `mh` stops.
+   then **Pair the TV**: the first photo appears. While a TV waits for its code, that field shows
+   **at the top of the remote**, above the buttons and the photos, on the phone as on the PC.
+   Under `mh --lan` (HTTPS) the TV stays paired **for good**, even after `mh` restarts: forget it
+   on the PC's page as a phone is forgotten (it is listed as **TV**). Otherwise it is paired until
+   the slideshow stops; when the show runs in the home page, until `mh` stops.
 5. Press **OK** on the TV's remote (or click) for full screen.
 
 Typing a code with a TV remote is painful: here the TV only shows one, the phone types it.
@@ -122,7 +125,15 @@ the steps are the [home page's](home.md#once-per-phone-install-the-certificate).
   home country, e.g. *Valkenburg, Netherlands*: the country of your place marked `home`, else of
   your first place, else where most of the photos were taken). One tap chooses where it is
   told: **TV and phone** (the default), **Phone only** (under the controls; the storyteller's notes then open by themselves),
-  **Nowhere**.
+  **Nowhere**. A place the event's name already says is not repeated (*Walk in Valkenburg*
+  in *Valkenburg*: the name only).
+- **Where each photo was taken**: while the TV tells the events, a small line in its top right
+  corner names the place of the photo shown, from its GPS: one of your places, else the
+  monument, castle, church or museum it was taken at (within about 200 m, from a list of
+  landmarks built into the tool: found offline), else its town. Nothing when the photo has no
+  GPS or when the event's banner says the same place; the photo never moves. After an
+  [`import`](import.md), the names OpenStreetMap gave the new places (when you said Yes) come
+  first.
 - **The storyteller's notes** (unfold them under the controls): while the family watches the TV,
   the phone shows the photo on screen larger, its day and time, the event and its place, its
   description and words (when `describe` gave some), the next photo, and a small drawing of
@@ -168,8 +179,9 @@ The port is `[review] port`, the one of every page.
 | Option | What it does |
 |---|---|
 | `--folder "C:\…"` | The photos of this folder and its subfolders, as the Explorer shows it. |
+| `--since today` | With `--folder`: only its files of a period (`today`, `week`, `month`, `all` or a day such as `2026-10-29`), by the day in their name, else their modified time. What an import offers: the new event only. |
 | `--search "words"` | The photos a search finds, as typed in [`search`](search.md). |
-| `--album "Crete 2023"` | An album made in `search`, `browse` or the burst review; its files missing (deleted, in the quarantine) are counted, not shown. |
+| `--album "Crete 2023"` | An album made in `search` or the burst review; its files missing (deleted, in the quarantine) are counted, not shown. |
 | `--port PORT` | Port of the page, 8088 by default; publish the same one. |
 | `--lan` (`mh` only) | Opens the show to the TV and the phones of your home network, for this run (Windows PowerShell). |
 

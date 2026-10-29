@@ -8,7 +8,7 @@
 photos de 8 Mo qui disent où est la maison.**
 
 `share` prend un [album](search.md#mettre-des-photos-dans-un-album) (une liste nommée de photos
-de n'importe quels dossiers, faite dans `search`, `browse` ou la `review` des rafales) et fait une
+de n'importe quels dossiers, faite dans `search` ou la `review` des rafales) et fait une
 copie de chaque photo, prête à envoyer : redressée, son grand côté ramené à 2048 pixels,
 enregistrée en JPEG, et **sans sa position GPS**. La date, l'appareil et la description restent.
 Les copies vont dans un dossier au nom de l'album, avec un zip de ce dossier à côté : joignez le
@@ -18,7 +18,7 @@ lui-même.
 
 **Où le lancer** : dans la page d'accueil, l'espace **Partager** (hors du cycle, dans le menu de
 gauche), l'étape *Préparer un album pour l'envoyer* ; ou le bouton **📨 Préparer pour l'envoi** à
-côté de l'album dans `search` ou `browse`, qui donne la commande, copiée ; ou `mh menu`, sous
+côté de l'album dans `search`, qui donne la commande, copiée ; ou `mh menu`, sous
 *Partager*.
 
 **Quand** : une fois l'album fait, après un [`audit`](audit.md) (une photo de l'album déplacée
@@ -128,7 +128,7 @@ Dans `config.toml`, `[share]` :
 
 | Option | Ce qu'elle fait |
 |---|---|
-| `--album "Crète 2023"` | L'album à envoyer, fait dans `search`, `browse` ou la revue des rafales. |
+| `--album "Crète 2023"` | L'album à envoyer, fait dans `search` ou la revue des rafales. |
 | `--keep-gps` | Garder la position GPS dans les copies, pour cette fois. |
 | `--describe` / `--no-describe` | Ajouter (ou non) aux copies la description et les mots-clés trouvés par `tags`, sans demander. |
 
@@ -165,7 +165,7 @@ Dans `config.toml`, `[share]` :
  pour un mail ou un réseau social.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ *  --album             <str>  L'album à envoyer, fait dans search, browse ou │
+│ *  --album             <str>  L'album à envoyer, fait dans search ou │
 │                               la revue des rafales : "Crète 2023".           │
 │                               [required]                                     │
 │    --keep-gps                 Garder la position GPS dans les copies ;       │

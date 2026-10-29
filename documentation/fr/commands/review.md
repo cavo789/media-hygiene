@@ -89,7 +89,7 @@ quand la page d'accueil l'a ouvert), puis les photos.
 la photo encadrée ; `Suppr` met de côté les photos choisies ; `←`, `N`, `U` comme pour les autres
 tris.
 
-**Choisissez les photos comme dans [`browse`](browse.md)** (`review` et `review --junk`) : un
+**Choisissez les photos comme dans [les dossiers de `search`](search.md#parcourir-vos-dossiers)** (`review` et `review --junk`) : un
 clic choisit une photo ; la case ☑ (ou Ctrl+clic) en ajoute ou en retire une ; Maj+clic choisit
 toutes les photos depuis la dernière cliquée ; un rectangle tracé à la souris choisit ce qu'il
 touche (avec Ctrl, il ajoute) ; Ctrl+A toute la rafale ou tout le groupe ; **Inverser la sélection**
@@ -153,7 +153,7 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
   quelqu'un présent sur cette photo, pour les mettre toutes de côté : voir
   [`people`](people.md#depuis-nimporte-quelle-page--mettre-une-personne-de-côté).
 - Le tri des rafales a aussi un champ **Album** : **➕ Ajouter à l'album** met dans cet album les
-  photos choisies, comme dans `browse`, à part de vos décisions. Voir
+  photos choisies, comme dans `search`, à part de vos décisions. Voir
   [Mettre des photos dans un album](search.md#mettre-des-photos-dans-un-album).
 - *port is already allocated* ? Un autre programme utilise 8088 : `-p 127.0.0.1:9000:9000` et
   `review --port 9000`.

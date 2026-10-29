@@ -5,6 +5,7 @@
 {% if pick_search_key | default(false) %}
     <dt><kbd>/</kbd></dt><dd>{{ _("type a new search") }}</dd>
 {% endif %}
+    <dt><kbd>I</kbd></dt><dd>{{ _("invert: the others instead") }}</dd>
 {% if pick_moves | default(true) %}
     <dt><kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd></dt><dd>{{ _("move the frame") }}</dd>
     <dt><kbd>␣</kbd></dt><dd>{{ _("pick or unpick the framed file") }}</dd>

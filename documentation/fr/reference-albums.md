@@ -21,7 +21,7 @@ n'importe quels dossiers. C'est ce qu'on montre aux autres : sur la télé avec
 ## Remplir un album
 
 Dans [`search`](commands/search.md#mettre-des-photos-dans-un-album) ou
-[`browse`](commands/browse.md), choisissez les photos, tapez le nom de l'album dans **Album** (les
+[les dossiers de `search`](commands/search.md#parcourir-vos-dossiers), choisissez les photos, tapez le nom de l'album dans **Album** (les
 albums déjà faits sont proposés ; un nouveau nom le crée), puis **➕ Ajouter à l'album**. La page
 dit ce qu'elle a enregistré, relu depuis le disque.
 

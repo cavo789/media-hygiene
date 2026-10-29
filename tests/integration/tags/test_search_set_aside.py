@@ -159,3 +159,36 @@ def test_nothing_is_saved_without_a_writable_reports_folder(
     assert [answer.status for answer in answers] == [409, 400]
     assert "cannot write" in json.loads(answers[0].body)["error"]
     assert not (locations.reports_dir / "decisions.json").exists()
+
+
+def test_show_set_aside_lists_them_and_put_back_is_read_from_disk(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0464: 3 set aside, Show 🗑 lists them, one put back: the file lists 2."""
+    assert run(cli, "tags", "--no-describe").exit_code == 0
+    aside = {"aside": True}
+    first, _console = _serve(
+        cli,
+        monkeypatch,
+        [
+            ("POST /api/search", aside),
+            ("POST /api/chosen", {"action": "add", "all": True, "search": _DURBUY}),
+            ("POST /api/search", aside),
+        ],
+    )
+    assert json.loads(first[0].body)["total"] == 0
+    listed = _hits(first[2])
+    assert len(listed) == 3
+    assert all(hit["chosen"] for hit in listed)
+    back = {"action": "remove", "keys": [listed[0]["key"]], "search": aside}
+    answers, _console = _serve(
+        cli,
+        monkeypatch,
+        [("POST /api/chosen", back), ("POST /api/search", aside)],
+    )
+    assert json.loads(answers[0].body)["count"] == 2
+    assert len(read_decisions(locations.reports_dir / "decisions.json").chosen) == 2
+    assert json.loads(answers[1].body)["total"] == 2
+    every = {"action": "remove", "all": True, "search": aside}
+    rest, _console = _serve(cli, monkeypatch, [("POST /api/chosen", every)])
+    assert json.loads(rest[0].body)["count"] == 0

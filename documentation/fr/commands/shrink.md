@@ -19,7 +19,7 @@ la corbeille : regardez-en quelques-unes, puis [`purge`](purge.md) libère la pl
 [`undo`](undo.md) ramène tout.
 
 **Quand** : après un [`clean`](clean.md), quand le disque est encore plein. **⚖ Fichiers les
-plus lourds** dans [`browse`](browse.md) montre où va la place.
+plus lourds** dans [les dossiers de `search`](search.md#parcourir-vos-dossiers) montre où va la place.
 
 **Essayer** (liste seulement, ne change rien) :
 
@@ -162,7 +162,13 @@ est dit après chaque vidéo.
 - **Lent** : un réencodage prend à peu près la durée du film, ou plus sur un petit ordinateur ;
   une vidéo à la fois, sur la moitié des processeurs (`threads`), pour que l'ordinateur reste
   utilisable. Ctrl+C arrête après la vidéo en cours ; retapez la commande pour le reste.
+- **Lancé depuis la page d'accueil** : le réencodage tourne dans la fenêtre de `mh` (le serveur
+  de la page n'écrit jamais vos photos) ; la page reste ouverte et montre où il en est (vidéos
+  faites, celle en cours), puis son nouvel état.
 - **La place revient avec `purge`** : d'ici là, les originaux sont en quarantaine.
+- **Une vidéo renommée (`.avi` → `.mp4`) garde ses liens** : `albums.json`, `decisions.json` et
+  les vidéos choisies avec `--try` nomment le nouveau `.mp4`, relu sur le disque ; `undo` leur
+  rend le nom de l'original.
 - **Réglages** : la section `[shrink]` de `config.toml` (`codecs`, `bits_per_pixel`,
   `min_gain_percent`, `same_crf`, `lighter_crf`, `lighter_lines`, `preset`, `threads`,
   `try_count` : les brouillons de `--try`, 10 par défaut).

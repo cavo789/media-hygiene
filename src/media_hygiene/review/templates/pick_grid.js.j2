@@ -197,6 +197,8 @@ function showPicked() {
   $("bar").classList.toggle("acting", some);
   $("lead").hidden = some;
   $("acting").hidden = !some;
+  // A page whose bar keeps every action in sight (the search, 0463): greyed while nothing is picked.
+  for (const id of ["unpick", "setAside", "invert"]) $(id).disabled = !some;
   $("picked").textContent = some ? counted(TEXTS.picked, count) : "";
   $("takeBack").hidden = !files.some((file) => file.chosen && (everything || picked.has(file.key)));
   // A search shows its first files only: every file it finds, once those shown are picked.

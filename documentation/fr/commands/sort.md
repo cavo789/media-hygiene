@@ -13,7 +13,7 @@ un même disque, un déplacement est un renommage : rien n'est copié, aucune pl
 Chaque déplacement est journalisé et `undo` remet tout en place.
 
 **Quand** : une fois la proposition relue ([trier, étape 5](../sort/05-review-the-proposal.md))
-et, si vous le voulez, les événements nommés avec [`review-sort`](search.md#les-événements-du-dernier-classify). **Enregistrez
+et, si vous le voulez, les événements nommés avec [l'onglet 🗂 Événements de `search`](search.md#les-événements-du-dernier-classify). **Enregistrez
 et fermez d'abord le classeur.**
 
 **Essayer** :
@@ -86,7 +86,7 @@ fichiers déjà à leur place et les dossiers sources qu'il va supprimer, puis d
 - **Rien de perdu, preuve à l'appui** : les fichiers et tailles des dossiers sources et cibles
   sont comptés avant et après, et doivent correspondre.
 - **Un événement à la fois** : `--event` (ou *Trier cet événement maintenant* dans
-  [`review-sort`](search.md#les-événements-du-dernier-classify)) trie un seul événement ; un `sort` ultérieur de tout le classeur
+  [l'onglet 🗂 Événements de `search`](search.md#les-événements-du-dernier-classify)) trie un seul événement ; un `sort` ultérieur de tout le classeur
   saute ses fichiers, déjà déplacés. Chaque exécution a son propre `undo`.
 - **Tout reste lié** : juste après les déplacements, `sort` réécrit chacun de vos fichiers qui
   nomment des photos par leur chemin — les noms donnés aux visages (`people\*.toml`),

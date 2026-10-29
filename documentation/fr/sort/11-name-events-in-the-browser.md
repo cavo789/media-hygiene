@@ -6,12 +6,12 @@
 photos d'un même moment (une kermesse, un week-end), réunies par `classify` d'un dossier ou d'un
 téléphone à l'autre. Son nom devient **le dossier où `sort` range toutes ses photos** : nommé
 `Kermesse`, il va dans `2016/2016-07/Kermesse` ; sans nom, ses fichiers restent où ils sont. Ce qui bouge
-sur le disque, nom ou catégorie : [`review-sort`, à quoi ça sert](../commands/search.md#les-événements-du-dernier-classify).
+sur le disque, nom ou catégorie : [l'onglet 🗂 Événements de `search`, à quoi ça sert](../commands/search.md#les-événements-du-dernier-classify).
 
 Le classeur de l'[étape 5](05-review-the-proposal.md) est fait pour renommer en masse, pas pour
 *regarder* les photos : nommer un événement, c'est lire le rapport dans une fenêtre et taper dans
 l'autre. Avec des centaines d'événements, cela fait des centaines d'allers-retours.
-`review-sort` réunit les deux dans une page de votre navigateur : **un événement à la fois, ses
+L'onglet 🗂 Événements de `search` réunit les deux dans une page de votre navigateur : **un événement à la fois, ses
 photos, sa proposition, et un champ pour le nommer**, le tout au clavier.
 
 C'est facultatif : le classeur seul suffit, et les deux s'utilisent ensemble. La page ne touche
@@ -24,7 +24,7 @@ dossiers et le même dossier de rapports, que `mh` monte (la lecture seule suffi
 la page ne fait que les montrer) :
 
 ```powershell
-mh review-sort
+mh search
 ```
 
 <details>
@@ -34,7 +34,7 @@ mh review-sort
 docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "$HOME\media-hygiene\reports:/reports" `
-  cavo789/media-hygiene --locale fr review-sort
+  cavo789/media-hygiene --locale fr search
 ```
 
 </details>
@@ -42,8 +42,8 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
 Comme pour [le tri des rafales](../clean/10-review-bursts.md#étape-1--lancer-le-tri),
 `mh` ouvre la page à votre ordinateur seulement, sur le port 8088 (`-p 127.0.0.1:8088:8088` dans
 la commande complète). La page
-lit le classeur du dernier `classify`, celui qu'applique `sort` ; nommez-en un autre après la
-commande : `review-sort "C:\Photos triées\reports\20261002-123210-classify\classify.xlsx"`.
+lit le classeur du dernier `classify`, celui qu'applique `sort` : cliquez l'onglet
+**🗂 Événements** en haut de la colonne de gauche.
 
 ```text
 412 événements à décider : 260 avec une proposition sûre (un clic), 152 à regarder.
@@ -99,7 +99,7 @@ demande s'il faut l'enregistrer, fermer l'onglet prévient.
 | <kbd>S</kbd> | Laisser les photos choisies (sinon celle encadrée) où elles sont. |
 | <kbd>Suppr</kbd> | Reprendre le choix fait ici : des photos choisies, sinon de l'événement. Le classeur décide à nouveau. |
 
-Les photos se choisissent comme dans [`browse`](../commands/browse.md) : un clic choisit une
+Les photos se choisissent comme dans [les dossiers de `search`](../commands/search.md#parcourir-vos-dossiers) : un clic choisit une
 photo ; la case ☑ de chaque vignette (ou Ctrl+clic) en ajoute ou en retire une ; Maj+clic choisit
 toutes les photos depuis la dernière cliquée ; un rectangle tiré à la souris sur la grille choisit
 ce qu'il touche (avec Ctrl, il s'ajoute au choix) ; Ctrl+A toutes les photos de l'événement.
@@ -169,7 +169,7 @@ champ) et demande, puis déplace les fichiers de cet événement seulement, comm
 déplacés et vérifiés à leur nouvelle place. L'événement s'affiche ensuite *trié*, et <kbd>U</kbd>
 et *Seulement les événements à décider* le sautent ; un `sort` ultérieur de tout le classeur
 saute ses fichiers. Les photos doivent être montées sans `:ro`, avec un `/journal`
-(`mh review-sort` le fait) : sinon la page dit ce qui manque, et rien ne bouge.
+(`mh search` le fait) : sinon la page dit ce qui manque, et rien ne bouge.
 
 **Vérifier d'abord, puis GO.** Chaque photo de l'événement dit où elle est et où elle va, tel
 que `sort` la déplacera. Avant de déplacer, *Vérifier, puis trier* les liste par dossier

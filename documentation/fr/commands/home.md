@@ -42,7 +42,7 @@ docker run --rm -it `
 
 | | |
 |---|---|
-| Vos photos | 🔒 Rien ne bouge sans votre GO sur une page (review-sort, search), noté au journal : `undo` le remet. `mh home` les monte accessibles en écriture, avec `/journal` ; l'audit lancé depuis la page ne fait que les lire. |
+| Vos photos | 🔒 Rien ne bouge sans votre GO sur une page (search), noté au journal : `undo` le remet. `mh home` les monte accessibles en écriture, avec `/journal` ; l'audit lancé depuis la page ne fait que les lire. |
 | Il faut | Les dossiers de l'outil (`/reports`, `/journal`, `/quarantine`, `/cache`), comme pour `status` ; vos dossiers pour l'audit ; `-p 127.0.0.1:8088:8088` pour la page. |
 | Écrit | Rien par elle-même ; l'audit lancé depuis la page écrit son cache et son rapport, comme `audit` ; la [page des albums](#vos-albums-sur-le-téléphone) ne change que `albums.json`. |
 | Annuler | Rien à annuler ; chaque étape garde sa propre annulation. |
@@ -104,7 +104,7 @@ qui a ouvert la page :
   étape tourne dans cette fenêtre : *mh clean s'exécute dans la fenêtre PowerShell de mh (dans
   la barre des tâches) : répondez-y s'il vous demande quelque chose. Cette page reste ouverte
   et montre le résultat à la fin* ; puis *mh clean : terminée.* et la page montre son nouvel
-  état, sans se recharger. *search* et *browse* s'ouvrent aussitôt dans ce même onglet,
+  état, sans se recharger. *search* s'ouvre aussitôt dans ce même onglet,
   servies par la page d'accueil elle-même ; une étape qui ouvre une autre page à elle (review,
   people…) ferme celle-ci entre-temps : *Retour à l'accueil* la ramène. Une deuxième étape demandée pendant
   qu'une autre tourne attend : *Une étape tourne dans la fenêtre de mh : attendez sa fin.*
@@ -142,8 +142,8 @@ qui a ouvert la page :
   refuse de copier (une adresse autre que `127.0.0.1` ou `localhost`), la commande est
   sélectionnée : faites Ctrl+C.
 
-Chaque autre page ([`review`](review.md), [`review-sort`](search.md#les-événements-du-dernier-classify),
-[`places`](places.md), [`search`](search.md), [`browse`](browse.md), [`people`](people.md))
+Chaque autre page ([`review`](review.md), [l'onglet 🗂 Événements de `search`](search.md#les-événements-du-dernier-classify),
+[`places`](places.md), [`search`](search.md), [`people`](people.md))
 prend l'allure et le thème de la page d'accueil, sous une barre : **Documentation** ouvre le
 chapitre de cette page, à côté de son jumeau anglais (*In English*). Quand la page d'accueil l'a
 ouverte, la page s'affiche dans **le même onglet** (pas de nouvel onglet), et **⌂ Retour à
@@ -338,6 +338,11 @@ aucun autre site.
 
 ## Bon à savoir
 
+- **Une clé USB ou un disque branché plus tard** (0359) : `mh` démarre la page d'accueil sans
+  un dossier de photos absent (une ligne : *pas branché, affiché dès qu'il l'est*), regarde vos
+  dossiers toutes les 3 secondes et relance la page avec le dossier dès qu'il est branché
+  (2 à 3 s environ ; l'onglet se recharge seul). De même quand il est retiré. Une commande tapée
+  seule refuse toujours un dossier absent.
 - La page ne répond qu'à `127.0.0.1` ou `localhost` (et, sous `mh --lan`, à l'adresse du PC pour
   un téléphone appairé), et seulement à ses propres boutons : un autre site ne peut pas choisir
   une étape à votre place.

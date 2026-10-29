@@ -112,7 +112,7 @@ cavo789/media-hygiene classify --sample 20
   [step 8: a local model](../sort/08-subjects-from-a-local-model.md),
   [step 9: the GPS](../sort/09-places-from-gps.md), [step 10: by person](../sort/10-sort-by-person.md)
 - [Sort in short](../sort/quick-guide.md)
-- Next: [`review-sort`](search.md#the-events-of-the-latest-classify) (optional), then [`sort`](sort.md).
+- Next: [the 🗂 Events tab of `search`](search.md#the-events-of-the-latest-classify) (optional), then [`sort`](sort.md).
 
 ## The built-in help
 

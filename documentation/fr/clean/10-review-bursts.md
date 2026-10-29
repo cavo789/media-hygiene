@@ -149,7 +149,7 @@ y a trouvé. Si le fichier ne contient pas votre choix, un message rouge le dit.
 | `←` | Série précédente (sans choix : comme affiché) |
 | `N` | Série suivante à voir |
 | `V` | Valider d'un coup toutes les séries évidentes (voir plus bas) |
-| `Suppr` | Écarter les photos choisies (un clic en choisit une, comme dans [`browse`](../commands/browse.md)) |
+| `Suppr` | Écarter les photos choisies (un clic en choisit une, comme dans [les dossiers de `search`](../commands/search.md#parcourir-vos-dossiers)) |
 | `S` | Ne garder que la plus nette, puis passer à la série suivante |
 | *Garder toutes les photos* (bouton) | Garder toutes les photos de la série |
 | `X` | Écarter toute la rafale, puis passer à la série suivante (`X` à nouveau les garde toutes) |
@@ -157,7 +157,7 @@ y a trouvé. Si le fichier ne contient pas votre choix, un message rouge le dit.
 | `C` | Comparer les photos à 100 % (`C` ou `Échap` ferme) |
 | `P` | Planche ⇄ une série à la fois |
 
-Les photos se choisissent comme dans [`browse`](../commands/browse.md) : Ctrl+clic, Maj+clic,
+Les photos se choisissent comme dans [les dossiers de `search`](../commands/search.md#parcourir-vos-dossiers) : Ctrl+clic, Maj+clic,
 un rectangle, Ctrl+A, I pour inverser ; `↑` / `↓` déplacent le cadre, Entrée ou un double clic
 montre la photo en grand (`Suppr` l'y écarte, `⌫` la reprend, `A` l'ajoute à l'album).
 

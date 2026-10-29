@@ -8,6 +8,7 @@ from input.
 
 from __future__ import annotations
 
+import json
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.search.days import NAME as DAY
@@ -16,7 +17,7 @@ from media_hygiene.search.query import Order, Sorting, match_expression
 from media_hygiene.tags.models import TagSource
 
 if TYPE_CHECKING:
-    from media_hygiene.search.query import SearchQuery
+    from media_hygiene.search.query import Filters, SearchQuery
 
 TABLE: Final = "search_text"
 _COLUMNS: Final = tuple(source.value for source in TagSource)
@@ -79,7 +80,11 @@ KIND: Final = "mh_kind"  # `photos`, `videos` (`folder_order.kind_of_path`, 0347
 SHOWN: Final = f"{KIND}(files.path) = ?"
 # A folder of the tree and below (0348): `/` sorts just before `0` in the paths.
 WITHIN: Final = "files.path > ? AND files.path < ?"
+ONLY: Final = "files.path IN (SELECT value FROM json_each(?))"  # the set aside (0464)
 _RATE: Final = "json_extract(files.metadata, '$.bit_rate')"  # unknown last (0408)
+_LENGTH: Final = (
+    "json_extract(files.metadata, '$.duration')"  # photos: none, last (0459)
+)
 # **Sort by** (0347), as the folder view sorts: ties by path, undated last.
 BY_ORDER: Final = {
     Order.NAME: f" ORDER BY {FOLD}(files.path)",
@@ -91,6 +96,7 @@ BY_ORDER: Final = {
     Order.RATE: (
         f" ORDER BY {_RATE} IS NULL, {_RATE} DESC, files.size DESC, {FOLD}(files.path)"
     ),
+    Order.SHORT: f" ORDER BY {_LENGTH} IS NULL, {_LENGTH}, {FOLD}(files.path)",
 }
 BEST_FIRST: Final = f" ORDER BY {TABLE}.rank"
 # EXIF writes `2019:07:14` or `14/07/2019`, videos `2019-07-14T…`: one day each;
@@ -154,9 +160,7 @@ def conditions(query: SearchQuery) -> tuple[list[str], list[object]]:
     if filters.days is not None:
         chosen.append(DAYS)
         parameters.extend(day.isoformat() for day in filters.days)
-    if filters.within:
-        chosen.append(WITHIN)
-        parameters.extend((filters.within + "/", filters.within + "0"))
+    _places(filters, chosen, parameters)
     if filters.kind != "all":
         chosen.append(SHOWN)
         parameters.append(filters.kind)
@@ -167,3 +171,19 @@ def conditions(query: SearchQuery) -> tuple[list[str], list[object]]:
         chosen.append(folder[0])
         parameters.append(folder[1])
     return chosen, parameters
+
+
+def _places(filters: Filters, chosen: list[str], parameters: list[object]) -> None:
+    """Add the folder of the tree and the files set aside, when asked.
+
+    Args:
+        filters: The search's filters.
+        chosen: The conditions, added to.
+        parameters: Their values, added to.
+    """
+    if filters.within:
+        chosen.append(WITHIN)
+        parameters.extend((filters.within + "/", filters.within + "0"))
+    if filters.only is not None:
+        chosen.append(ONLY)
+        parameters.append(json.dumps(filters.only))

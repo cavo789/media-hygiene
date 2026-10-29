@@ -17,7 +17,7 @@ does not see. That is why the original goes to the quarantine, not to the bin: w
 then [`purge`](purge.md) frees the space, or [`undo`](undo.md) brings everything back.
 
 **When**: after a [`clean`](clean.md), when the disk is still full. **⚖ Heaviest files** in
-[`browse`](browse.md) shows where the space goes.
+[the folders of `search`](search.md#walk-through-your-folders) shows where the space goes.
 
 **Try it** (only lists, changes nothing):
 
@@ -154,7 +154,13 @@ figures; the list says its estimate, and the real gain is said after each video.
 - **Slow**: a re-encoding takes about as long as the film, or longer on a small computer; one
   video at a time, on half of the processors (`threads`), so that the computer stays usable.
   Ctrl+C stops after the video being encoded; type the command again for the rest.
+- **Started from the home page**: the re-encoding runs in the window of `mh` (the home server
+  never writes your photos); the page stays open and shows how far it is (videos done, the one
+  being encoded), then its new state.
 - **The space comes back with `purge`**: until then, the originals are in the quarantine.
+- **A video renamed (`.avi` → `.mp4`) keeps its links**: `albums.json`, `decisions.json` and the
+  videos chosen with `--try` name the new `.mp4`, read back from the disk; `undo` gives them the
+  original's name again.
 - **Settings**: the `[shrink]` section of `config.toml` (`codecs`, `bits_per_pixel`,
   `min_gain_percent`, `same_crf`, `lighter_crf`, `lighter_lines`, `preset`, `threads`,
   `try_count`: the drafts of `--try`, 10 by default).

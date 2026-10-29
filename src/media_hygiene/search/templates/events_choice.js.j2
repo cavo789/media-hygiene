@@ -115,6 +115,14 @@
 
   byId("eventFolderIn").addEventListener("input", () => { byId("eventNameIn").placeholder = lastFolder(byId("eventFolderIn").value); typed(); });
   byId("eventNameIn").addEventListener("input", typed);
+  byId("eventSuggestUse").addEventListener("click", () => {
+    byId("eventNameIn").value = byId("eventSuggestName").textContent;
+    byId("eventNaming").open = true;
+    byId("eventSuggest").hidden = true;
+    const body = choiceBody();
+    markSaved();
+    send(P.event, body);
+  });
   window.addEventListener("beforeunload", (event) => {
     if (!choiceDirty()) return;
     event.preventDefault();

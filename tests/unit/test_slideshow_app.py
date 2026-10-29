@@ -137,6 +137,7 @@ def test_the_pc_does_everything_without_pairing(app: SlideshowApp) -> None:
         "playing": False,
         "code": "",
         "chapter": None,
+        "where": "",
     }
     assert _ask(app, _request("/tv/2.jpg", sender=_PC)).status is HTTPStatus.OK
     assert _ask(app, _request("/thumb/1.jpg", sender=_PC)).status is HTTPStatus.OK

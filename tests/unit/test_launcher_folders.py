@@ -102,8 +102,8 @@ def test_several_folders_and_the_quarantine_replace_the_defaults() -> None:
         "D:\\Images\\Famille",
     ]
     text = render_script(script)
-    assert '-v "C:\\Photos:/data/c/Photos${mode}" `' in text
-    assert '-v "D:\\Images\\Famille:/data/d/Images/Famille${mode}" `' in text
+    assert "'-v'; \"C:\\Photos:/data/c/Photos${mode}\" }" in text
+    assert "'-v'; \"D:\\Images\\Famille:/data/d/Images/Famille${mode}\" }" in text
     assert '-v "D:\\q:/quarantine" `' in text
     assert "$HOME\\media-hygiene\\quarantine" not in text
     # A quarantine named by the user receives every drive's files (0193).
@@ -137,7 +137,9 @@ def test_the_powershell_translation_is_written_in_ascii() -> None:
         '$given += "${full}:/data/" + $full.Substring(0, 1).ToLower() + '
         "($full.Substring(2) -replace '\\\\', '/')"
     ) in text
-    assert '-v "C:\\Photos\\Vidéos:/data/c/Photos/Vidéos${mode}" `' in expanded(text)
+    assert "'-v'; \"C:\\Photos\\Vidéos:/data/c/Photos/Vidéos${mode}\" }" in expanded(
+        text
+    )
 
 
 def test_launcher_writes_a_stopping_script_for_a_refused_folder(
@@ -162,7 +164,7 @@ def test_launcher_takes_photos_without_any_mount(
     result = CliRunner().invoke(build_app(), ["launcher", "--photos", "C:\\Photos"])
     assert result.exit_code == 0, result.output
     assert "function global:mh {" in result.stdout
-    assert '-v "C:\\Photos:/data/c/Photos${mode}" `' in result.stdout
+    assert "'-v'; \"C:\\Photos:/data/c/Photos${mode}\" }" in result.stdout
     assert "No photo folder" not in result.stderr
 
 
@@ -341,7 +343,7 @@ def test_powershell_mounts_a_backup_read_only_for_every_command() -> None:
         FolderChoice(("C:\\Photos",), backups=("E:\\Backup\\",)), Shell.POWERSHELL
     )
     assert text.isascii()
-    assert '            -v "E:\\Backup:/data/e/Backup:ro" `\n' in text
+    assert "'-v'; \"E:\\Backup:/data/e/Backup:ro\" }" in text
     assert "E:\\Backup:/data/e/Backup${mode}" not in text
     assert (
         "    $backups = @(if ($command -in @('audit', 'clean') -and -not $source) "

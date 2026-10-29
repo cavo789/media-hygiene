@@ -77,7 +77,10 @@ function global:{{ function }} {
 {% endfor %}
     }
     foreach ($folder in @({{ quoted(checked) }})) {
-        if (-not (Test-Path -LiteralPath $folder)) { Write-Host "{{ texts.missing }}"; $global:LASTEXITCODE = 2; return }
+        if (Test-Path -LiteralPath $folder) { continue }
+        # The home server starts without a folder not plugged in: shown once it is (0359).
+        if ($global:MediaHygieneDetach) { Write-Host "{{ texts.unplugged }}"; continue }
+        Write-Host "{{ texts.missing }}"; $global:LASTEXITCODE = 2; return
     }
     $command = $rest | Where-Object { $_ -in @({{ listed(script.commands.names) }}) } | Select-Object -First 1
     # `{{ function }} import <folder>`: that folder only, read-only, for this run; never added (0378).
@@ -121,9 +124,9 @@ function global:{{ function }} {
     # The backups: mounted read-only below, whatever the command; given to those taking them (0205).
     $backups = @({% if script.backups %}if ($command -in @({{ listed(script.commands.backups) }}) -and -not $source) { {% for volume in script.backups %}'--backup', "{{ volume.host }}"{{ ", " if not loop.last }}{% endfor %} }{% endif %})
     # Only the loop of `{{ function }}` alone reads the step chosen on the home page (0210),
-    # or on a page it opened (browse's Apply now, 0243).
     $relay = @(if ($global:MediaHygieneRelay -and $command -in @({{ listed(relayed) }})) { '-e', '{{ relay }}={{ relay_fields if host.step_file else 1 }}' })
-    if ($detach) { $relay = @('-e', '{{ relay }}={{ watch.kept }}') }
+    # Only the home page runs the steps beside it; another page in the background (0480) does not.
+    if ($detach -and $command -in @('home')) { $relay = @('-e', '{{ relay }}={{ watch.kept }}') }
     # The page names the folders given with --photos, a right-click's folder (0258).
     if ($relay -and $typed) { $relay += '-e', ('{{ photos }}=' + (@(for ($i = 1; $i -lt $typed.Count; $i += 2) { $typed[$i] }) -join '|')) }
 {% if script.folders %}
@@ -144,6 +147,15 @@ function global:{{ function }} {
         $rest = @($keep.rest)
         $share = @('-v', "{{ keep.host }}:{{ keep.point }}")
     }
+    # The photo folders and backups; the home server leaves out those not plugged in (0359).
+    $data = @(
+{% for volume in script.data %}
+        if (-not $detach -or "{{ volume.host }}" -notmatch '^[A-Za-z]:' -or (Test-Path -LiteralPath "{{ volume.host }}")) { '-v'; "{{ volume.host }}:{{ volume.point.as_posix() }}${mode}" }
+{% endfor %}
+{% for volume in script.backups %}
+        if (-not $detach -or "{{ volume.host }}" -notmatch '^[A-Za-z]:' -or (Test-Path -LiteralPath "{{ volume.host }}")) { '-v'; "{{ volume.host }}:{{ volume.point.as_posix() }}:ro" }
+{% endfor %}
+    )
     $status = 1
     $follow = $false
     $browser = $null
@@ -182,13 +194,8 @@ function global:{{ function }} {
 {% for option in script.environment %}
             {{ option }} `
 {% endfor %}
-{% for volume in script.data %}
-            -v "{{ volume.host }}:{{ volume.point.as_posix() }}${mode}" `
-{% endfor %}
+            @data `
             @photos `
-{% for volume in script.backups %}
-            -v "{{ volume.host }}:{{ volume.point.as_posix() }}:ro" `
-{% endfor %}
             @($nas.mounts) `
             @(foreach ($volume in $source) { '-v'; "${volume}:ro" }) `
 {% for volume in script.tools + script.drives %}

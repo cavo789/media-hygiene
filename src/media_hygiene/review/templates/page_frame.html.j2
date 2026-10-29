@@ -43,8 +43,14 @@
 {% block more_keys %}{% endblock %}
     </dl>
     </details>
+    <script>
+    document.addEventListener("keydown", (event) => {
+      const more = document.getElementById("moreKeys");
+      if (event.key === "Escape" && more.open) { more.open = false; event.stopImmediatePropagation(); }
+    }, true);
+    </script>
 {% endif %}
-{% if keys_safe is defined %}
+{% if keys_safe | default("") %}
     <p class="safe">🔒 {{ keys_safe }}</p>
 {% endif %}
   </section>

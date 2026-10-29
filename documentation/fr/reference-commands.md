@@ -29,7 +29,7 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 | retrouver les photos de quelqu'un par son nom, les ranger selon qui y figure | [`people`](commands/people.md), puis `search` ou `classify` |
 | donner à mes photos et vidéos des mots pour les retrouver | [`tags`](commands/tags.md) |
 | retrouver une photo par un mot, un lieu, une année, une personne | [`search`](commands/search.md) |
-| parcourir mes dossiers et retirer des photos, sans l'Explorateur, de façon annulable | [`browse`](commands/browse.md), puis `clean --decisions` |
+| parcourir mes dossiers et retirer des photos, sans l'Explorateur, de façon annulable | [les dossiers de `search`](commands/search.md#parcourir-vos-dossiers), puis `clean --decisions` |
 | montrer les photos des vacances sur la télé, en choisissant la suivante depuis mon téléphone | [`slideshow`](commands/slideshow.md) |
 | envoyer un album par mail ou sur un réseau social, réduit et sans la position GPS | [`share`](commands/share.md) |
 | voir mes mots dans digiKam, darktable, Lightroom ou Immich | [`xmp`](commands/xmp.md) |
@@ -76,7 +76,7 @@ exemples et son `--help`.
 | [`undo [EXÉCUTION]`](commands/undo.md) | Restaure chaque fichier d'une exécution (la plus récente par défaut) ; pour un album, supprime ses liens ; pour `xmp`, ses fichiers compagnons. | [Nettoyer, 9](clean/09-undo-history-purge.md) |
 | [`purge [EXÉCUTION]`](commands/purge.md) | Efface pour de bon la quarantaine d'une exécution (de toutes par défaut) : la seule commande qui efface du contenu, avec `clean --delete`. | [Nettoyer, 9](clean/09-undo-history-purge.md) |
 | [`sort [CLASSEUR]`](commands/sort.md) | Vérifie le classeur modifié de `classify`, demande confirmation, puis déplace les fichiers là où il le dit ; journalisé, annulable, prouvé. | [Trier, 7](sort/07-sort.md) |
-| [`album NOM`](commands/album.md) | Crée le dossier d'un album (enregistré dans `search`, `browse` ou la revue des rafales) en liens physiques : rien de copié ni de déplacé, aucune place prise. `--category`, `--event`, `--rule`, `--rating` rassemblent plutôt une sélection du plan de `classify`. Montre l'album ; `--apply` crée les liens. | [Trier, 12](sort/12-albums.md) |
+| [`album NOM`](commands/album.md) | Crée le dossier d'un album (enregistré dans `search` ou la revue des rafales) en liens physiques : rien de copié ni de déplacé, aucune place prise. `--category`, `--event`, `--rule`, `--rating` rassemblent plutôt une sélection du plan de `classify`. Montre l'album ; `--apply` crée les liens. | [Trier, 12](sort/12-albums.md) |
 | [`xmp`](commands/xmp.md) | Écrit les mots de `tags` dans des fichiers compagnons `.xmp` à côté des photos, pour digiKam, darktable, Lightroom ou Immich ; jamais dans une photo. Montre ce qu'il écrirait ; `--apply` écrit. | [Référence](reference-tags.md#emporter-les-mots-avec-les-photos--xmp) |
 | [`import`](commands/import.md) | Copie dans vos photos ce qu'un dossier (votre NAS, un disque USB, une carte SD) est seul à contenir, jamais ce que vous avez mis de côté ou supprimé avant ; les quasi-copies listées à part ; chaque copie prouvée ; la sauvegarde seulement lue. | [Commandes](commands/import.md) |
 | [`shrink`](commands/shrink.md) | Liste les vidéos lourdes qui gagnent à être allégées (anciens appareils, MJPEG), avec la place que chacune libérerait ; `--apply` les réencode en H.264, chacune vérifiée (durée, son, date, lieu), l'original en quarantaine. | [Commandes](commands/shrink.md) |
@@ -84,14 +84,12 @@ exemples et son `--help`.
 | [`backup`](commands/backup.md) | Écrit l'index (ce que les audits, `tags` et `people` ont appris) et les réglages dans un zip de `media-hygiene\backups`, relu ; les 3 plus récents gardés. Ne lit jamais vos photos. | [Commandes](commands/backup.md) |
 | [`restore`](commands/restore.md) | Remet une sauvegarde de l'index (les réglages aussi avec `--config`), après l'avoir vérifiée en entier et avoir sauvegardé l'index remplacé. Ne lit jamais vos photos. | [Commandes](commands/restore.md) |
 
-**Pages : ouvertes depuis la page d'accueil** (absentes de `mh --help` : elles ne font qu'ouvrir une page ; tapées, `mh browse`, `mh places`, `mh review-sort` et `mh home` marchent toujours, pour un script ou sans la page d'accueil)
+**Pages : ouvertes depuis la page d'accueil** (absentes de `mh --help` : elles ne font qu'ouvrir une page ; tapées, `mh places` et `mh home` marchent toujours, pour un script ou sans la page d'accueil)
 
 | Commande | Rôle | Guide |
 |---|---|---|
 | [`home`](commands/home.md) | La page d'accueil dans votre navigateur : ce que dit `status`, l'étape suivante en gros bouton, chaque étape des guides numérotée comme dans `mh menu`, les rapports et quelques aperçus ; lance l'audit dans la page, sa progression affichée. Le bouton d'une étape la confie à `mh` dans le terminal. N'écrit jamais dans vos dossiers. | [Commandes](commands/home.md) |
-| [`review-sort`](commands/review-sort.md) | Ouvre la vue 🗂 Événements de [`search`](commands/search.md#les-événements-du-dernier-classify), pour cette version seulement : utilisez `search`. |
 | [`places`](commands/places.md) | Montre sur une carte dans votre navigateur où les photos ont été prises, et nomme vos lieux ; enregistrés dans `config.toml`. N'écrit jamais dans vos dossiers. | [Trier, 9](sort/09-places-from-gps.md) |
-| [`browse`](commands/browse.md) | Parcourt vos dossiers dans votre navigateur, comme dans l'Explorateur : l'arborescence avec ses nombres, les photos et vidéos d'un dossier, en grand avec ←/→ ; met de côté celles choisies pour `clean --decisions`. N'écrit jamais dans vos dossiers. | [Retrouver en bref](find/quick-guide.md) |
 
 ## Options
 
@@ -116,7 +114,7 @@ Les autres se placent **après** : `cavo789/media-hygiene audit --prefer "C:\Pho
 | `--near` | `review` | Décider les quasi-doublons groupe par groupe (comme prévu, garder l'autre version, laisser tel quel, n'en garder aucune) au lieu de trier les rafales. [Étape 11 du nettoyage](clean/11-near-duplicates.md#décider-dans-le-navigateur--review---near) |
 | `--delete` | `clean` | Supprime pour de bon les copies exactes, après une comparaison octet par octet, au lieu de les déplacer en quarantaine ; `undo` les reconstruit depuis la copie gardée. [Étape 8 du nettoyage](clean/08-clean.md#besoin-de-la-place-tout-de-suite----delete) |
 | `--decisions FICHIER` | `clean`, `review` | `clean` : applique les décisions sur les paires de dossiers d'un rapport, les photos de rafale écartées avec `review` et les groupes de quasi-doublons décidés avec `review --near` (avec `--tier near`). `review` : le fichier où les choix sont enregistrés, `decisions.json` par défaut. Un chemin relatif est lu dans `/reports`. Une fois appliqué par `clean`, le fichier est renommé `decisions.applied-<run>.json`. [Étape 10 du nettoyage](clean/10-review-bursts.md), [étape 12 du nettoyage](clean/12-decide-pair-by-pair.md) |
-| `--port PORT` | `review`, `review-sort`, `places`, `search`, `browse`, `people`, `home`, `slideshow` | Port de la page, `[review] port` de `config.toml` par défaut (`8088`) ; publiez le même : `-p 127.0.0.1:8088:8088`. |
+| `--port PORT` | `review`, `places`, `search`, `people`, `home`, `slideshow` | Port de la page, `[review] port` de `config.toml` par défaut (`8088`) ; publiez le même : `-p 127.0.0.1:8088:8088`. |
 | `--prune N` | `reports` | Garde les N rapports les plus récents, supprime les autres. |
 | `--photos "C:\Photos"` | `launcher` | Un dossier de photos et vidéos, tel que l'Explorateur le montre ; répétez-la pour plusieurs dossiers. Pas besoin de `-v`. [Nettoyer en bref, 0](clean/quick-guide.md#0-une-seule-fois--écrire-la-commande-mh) |
 | `--quarantine "D:\quarantaine"` | `launcher` | Où vont les copies mises de côté ; de préférence sur le disque des photos. Par défaut : `$HOME\media-hygiene\quarantine`. |
@@ -181,9 +179,6 @@ commande montre son propre `--help` ; voici la liste des commandes :
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ 🔒 Analyser : lecture seule, ne modifie jamais vos photos ──────────────────╮
 │ audit        Trouver les doublons exacts et les fichiers cassés.             │
-│ browse       Parcourir vos dossiers dans votre navigateur, comme dans        │
-│              l'Explorateur, et mettre des photos de côté ; 'clean            │
-│              --decisions' les déplace ensuite.                               │
 │ classify     Propose où ranger chaque photo et vidéo : année, événement,     │
 │              catégorie, et ce que montrent les photos isolées avec une IA    │
 │              locale facultative 🤖                                           │
@@ -211,8 +206,6 @@ commande montre son propre `--help` ; voici la liste des commandes :
 │ review       Écarter des photos de rafale, une série à la fois, au clavier   │
 │              dans votre navigateur ; 'clean --decisions' les déplace         │
 │              ensuite.                                                        │
-│ review-sort  Nommer les événements de la proposition de classify un par un,  │
-│              dans votre navigateur.                                          │
 │ search       Retrouver des photos par leurs mots dans votre navigateur (ou   │
 │              en tableau) : les mots que 'tags' leur a donnés.                │
 │ share        Préparer un album pour l'envoyer : des copies réduites sans la  │

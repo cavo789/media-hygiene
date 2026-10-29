@@ -60,11 +60,6 @@ def command_table(analyse: str, act: str) -> tuple[tuple[str, str, str], ...]:
             ),
         ),
         (
-            "review-sort",
-            act,
-            _("Name the events of the classify proposal one by one in your browser."),
-        ),
-        (
             "places",
             analyse,
             _(
@@ -96,14 +91,6 @@ def command_table(analyse: str, act: str) -> tuple[tuple[str, str, str], ...]:
             _(
                 "Find photos by their words in your browser (or as a table): "
                 "the words 'tags' gave them."
-            ),
-        ),
-        (
-            "browse",
-            act,
-            _(
-                "The search page opened on your folders: walk "
-                "through them, set photos aside; 'clean --decisions' then moves them."
             ),
         ),
         (

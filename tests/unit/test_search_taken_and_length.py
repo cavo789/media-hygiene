@@ -97,7 +97,7 @@ def test_a_photo_carries_its_time_taken_its_exif_and_its_modified_day() -> None:
         "Lens: EF 50mm",
         "1/250 s · f/2.8 · ISO 400 · 50 mm",
         "4000 by 3000 pixels",
-        "GPS: 50.85000, 4.35000",
+        "GPS: 50.85000, 4.35000 (Brussels, Belgium)",
     ]
 
 

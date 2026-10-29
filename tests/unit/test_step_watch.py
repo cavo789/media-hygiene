@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.home_views import HomeState
 
 _JSON: Final = {"host": "127.0.0.1", "content-type": "application/json"}
-_STEPS: Final = {3: "mh status", 4: "mh review --intruders", 5: "mh browse"}
+_STEPS: Final = {3: "mh status", 4: "mh review --intruders", 5: "mh search"}
 
 
 class _Menu:
@@ -126,11 +126,11 @@ def test_the_state_follows_what_mh_writes(tmp_path: Path) -> None:
 
 
 def test_a_page_served_here_is_a_plain_link(tmp_path: Path) -> None:
-    """0356: browse and search, served by the home server: its path, nothing ends."""
+    """0356: search, served by the home server: its path, nothing ends."""
     door, ending = _door(tmp_path)
-    status, body = _post(door, {"number": 5, "command": "mh browse"})
+    status, body = _post(door, {"number": 5, "command": "mh search"})
     assert status == HTTPStatus.OK
-    assert body == {"page": "/browse", "command": "mh browse"}
+    assert body == {"page": "/search", "command": "mh search"}
     assert ending.asked is None
     assert not (tmp_path / STEP_FILE_NAME).exists()
     assert not (tmp_path / WATCH.now).exists()

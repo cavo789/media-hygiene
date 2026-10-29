@@ -9,9 +9,11 @@ file already in the album, under any name, is not linked again: running the same
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING
+
+from media_hygiene.actions.album_stale import Leftovers
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
@@ -45,6 +47,8 @@ class AlbumPlan:
     present: tuple[Path, ...] = ()  # in the album already
     missing: tuple[Path, ...] = ()  # neither where the plan nor where a sort put it
     elsewhere: tuple[Path, ...] = ()  # on another disk or mount: no link possible
+    # The names of photos taken out of the album since (0374).
+    leftovers: Leftovers = field(default_factory=Leftovers)
 
 
 def plan_links(

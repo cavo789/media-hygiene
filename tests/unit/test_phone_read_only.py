@@ -129,6 +129,13 @@ def test_a_write_added_to_the_phones_list_is_caught() -> None:
     assert CHANGES & (POST_PATHS | {"/api/chosen"})
 
 
+@pytest.mark.parametrize("path", ["/slideshow/choices", "/slideshow/choose"])
+def test_a_phone_may_show_a_folder_or_a_month_on_the_tv(path: str) -> None:
+    """0455: the lists read, the choice sent: a show in memory, no file written."""
+    method = "POST" if path.endswith("choose") else "GET"
+    assert phone_may(Request(method, path, {}, b"", Door.LAN))
+
+
 @pytest.mark.parametrize("path", sorted(CHANGES))
 @pytest.mark.parametrize("paired", [False, True])
 def test_a_curl_from_the_home_network_gets_403_on_every_write(

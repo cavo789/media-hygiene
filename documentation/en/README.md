@@ -137,8 +137,7 @@ otherwise both copies are sorted.
 - [People](reference-people.md): find the faces in the photos, group those alike and name them
   in your browser (`people`), then find someone with `search`; kept in the cache, never sent
   anywhere.
-- [Albums](reference-albums.md): what an album is here, how to fill one from `search` or
-  `browse`, and what the albums page shows and allows, on the PC and on a phone.
+- [Albums](reference-albums.md): what an album is here, how to fill one from `search`, and what the albums page shows and allows, on the PC and on a phone.
 - [Advanced usage](reference-advanced.md): limit the processors used (`PYTHON_CPU_COUNT`).
 
 ## For developers

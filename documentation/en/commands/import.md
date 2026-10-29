@@ -84,7 +84,15 @@ mh import --phone                       # into <your first photo folder>\Phone\<
 mh import --phone --to "D:\From phones" # elsewhere, then a folder per phone
 mh import --phone --only Camera         # only the folder DCIM\Camera of the phone
 mh import --phone --free                # then free the phone: below
+mh import --phone --since today         # only today's photos (week, month, all, 2026-10-29)
 ```
+
+**A period** (`--since`): without it, `mh import --phone` takes what came **since the last
+import** (the first one takes all); `--since today`, `week` (the last 7 days), `month` (this
+month), `all` or a day (`2026-10-29`). A file's day is the date in its name (`IMG_20261029_…`,
+`Screenshot_2026-10-29…`), else its modified time on the phone. The older new files stay on the
+phone and are counted: *Left on the phone: 1,240 older photos and videos*. `--since` works for a
+folder too (`mh import E:\DCIM --since month`), whose default stays every file.
 
 **One folder per phone**: the copies go to a folder named after the phone, the name Windows
 shows in *This PC* (the phone's own device name). Two phones of the same model left at their
@@ -109,9 +117,21 @@ which one), lists its `DCIM` folder
 
 It ends with what it read back from the folder: *New photos and videos copied: 212 (1.40 GB,
 18.5 MB/s)*, then each count left out (*Also on the phone, skipped: 164 you set aside earlier*:
-files of the phone, not of the copy). Then it audits at once, so that the new files join your
-library and [`search`](search.md): in the home page when it is open (the page shows the audit,
-then its result), else in the console. 🔒 Without `--free`, the phone is only read: nothing on
+files of the phone, not of the copy). Then it runs the steps of `[imports] then` in
+`config.toml`, said first (*After the import: audit > copies > bursts > tags > places*): **audit**, so that the new
+files join your library and [`search`](search.md) (in the home page when it is open and the audit
+is the only step, else in the console); **copies** (the new files that are exact copies of
+another, the same photo twice or one your library already holds, go to the quarantine like a
+[`clean`](clean.md), before the tags: *🧹 3 copies among the new files set aside*, `mh undo` puts
+them back); **bursts** (the [burst review](review.md) opens in the browser on the **new photos'
+series only** while the next steps run; no series, no page); **tags** 🤖 (the local AI model
+describes the new photos; when it is not running, `tags` says so and the chain goes on);
+**places** 🌐 (the new spots named online, after their own question). When the burst page was
+open: *Done on the burst page? Press Enter*, then the shots you set aside go to the quarantine
+(`clean --decisions import-bursts.json`, its own question). Last, *✨ All done: 42 new photos and
+videos in your library*, the name proposed for the new photos and the slideshow of **this import
+only**: *📺 Your slideshow "Walk in Liège" is ready: mh slideshow --folder "…" --since today*, then *Show it on the TV now? (y/N)*.
+Remove a step from `then` to switch it off (`then = []`: nothing runs). 🔒 Without `--free`, the phone is only read: nothing on
 it is deleted, moved or renamed.
 
 - **Run `mh audit` once first**: the library is what the cache knows. Without an audit, every
@@ -144,7 +164,7 @@ of the left column:
   this version gives no date: *purged since*).
 
 A ticked file carries a red *🗑️ leaves the phone* label. To change what is ticked, the page works
-as [`browse`](browse.md):
+as [the folders of `search`](search.md#walk-through-your-folders):
 
 - **Pick**: a click picks one file; the ☑ box of each thumbnail (or Ctrl+click) adds or removes
   one; Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse
@@ -203,6 +223,7 @@ happens (a run of kind `phone` in `mh history`).
 | `--yes`, `-y` | Copy without asking first. |
 | `--backup PATH` | The backup folder to import from, when not in `config.toml` (`mh` passes yours). |
 | `--phone` | A phone over USB instead of a folder, Windows only: the `mh` of PowerShell copies its new photos itself ([above](#from-a-phone-mh-import---phone)); with it, `--only <folder of DCIM>` and `--free`. |
+| `--since PERIOD` | Only the files of a period: `today`, `week`, `month`, `all` or a day (`2026-10-29`), by the date in their name, else their modified time. Default: every file of a folder; with `--phone`, since the last import. |
 
 ## Good to know
 
@@ -210,6 +231,15 @@ happens (a run of kind `phone` in `mh history`).
   offers an older version, in DSM (Synology): *Control Panel → File Services → SMB → Advanced
   Settings → Maximum SMB protocol: SMB3*.
 - **The NAS powered off**: `import` says so; the audit goes on without it.
+- **The names of the new places, online, only if you say Yes**: after the copies, when the new
+  photos were taken somewhere none of your places covers, `import` asks *2 new places found.
+  Look up their names online (OpenStreetMap)?* The answer is **No** unless you type `y`; then
+  one position per group of photos, rounded to about 100 m, is sent to `[places] nominatim_url`
+  (one request per second), and the names found (*Kasteel Den Halder*) are kept in `/cache`:
+  the [slideshow](slideshow.md) shows them on the TV, and a place already asked is never asked
+  again. `[places] reverse_lookup = "never"` (or an empty `nominatim_url`) never asks;
+  `"always"` no longer asks. With `--yes`, no one is there to say Yes: nothing is sent. This
+  is the only time a position of your photos leaves your PC, and never without your consent.
 - **Safe**: refused without a journal, or with your photo folders read-only, like every command
   that changes files.
 

@@ -51,6 +51,7 @@ class Order(StrEnum):
     DATE = "date"  # the oldest first, undated last
     SIZE = "size"  # the largest first
     RATE = "rate"  # the videos worst compressed for their length first (0408)
+    SHORT = "short"  # the shortest videos first, the photos after (0459)
 
 
 class Sorting(StrEnum):
@@ -73,6 +74,9 @@ class Filters:  # pylint: disable=too-many-instance-attributes  # one per page f
     kind: Shown = "all"  # **Show**: every file, the photos or the videos (0347)
     order: Order = Order.BEST
     within: str = ""  # a folder of the tree (container path), its subfolders included
+    only: tuple[str, ...] | None = (
+        None  # these container paths only: the set aside (0464)
+    )
 
 
 @dataclass(frozen=True, slots=True)

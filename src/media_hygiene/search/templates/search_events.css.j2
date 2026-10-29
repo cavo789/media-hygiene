@@ -1,5 +1,9 @@
   /* *🗂 Events* (0437, 0438): the list, the event's card and its choices, the dialogs. */
-  #events summary { cursor: pointer; margin: 8px 0 4px; }
+  #tabs { display: flex; gap: 6px; flex: none; }
+  #tabs button { flex: 1; padding: 6px; color: var(--accent); background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
+  #tabs button[aria-selected="true"] { font-weight: 600; color: var(--text); border-color: var(--accent); }
+  #toc[hidden], #events[hidden] { display: none; }
+  #events .tabTitle { margin: 8px 0 4px; font-size: 1rem; }
   #events label.filter { flex-direction: row; gap: 4px; align-items: center; }
   #eventList { list-style: none; margin: 4px 0; padding: 0; max-height: 40vh; overflow: auto; }
   #eventList button { width: 100%; text-align: left; overflow-wrap: anywhere; }

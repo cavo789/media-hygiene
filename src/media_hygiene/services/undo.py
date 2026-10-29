@@ -26,6 +26,7 @@ from media_hygiene.index.touched_folders import forget_listings
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.drive_letter import found_line, relocate, tidy
 from media_hygiene.services.quarantines import letter_changes
+from media_hygiene.services.shrink_links import renamed
 from media_hygiene.services.sort_links import follow_links
 
 if TYPE_CHECKING:
@@ -142,6 +143,7 @@ def undo_run(runtime: Runtime, run_id: str, progress: ProgressSink) -> Outcome:
     for change in changes:
         tidy(change, run_id)
     back = _follow_moves_back(runtime, (file, run_id), changes)
+    back += renamed(file, Phase.UNDO)  # a video `shrink` renamed (0418)
     show_links(runtime.output, follow_links(runtime, back))
     return replace(outcome, skipped=(*outcome.skipped, *refused))
 

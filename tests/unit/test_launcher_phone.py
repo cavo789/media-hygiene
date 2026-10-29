@@ -58,6 +58,9 @@ _COMMANDS: Final = LauncherCommands(("audit", "menu"), (), (), ("menu",), 8088)
 _FUNCTIONS: Final = (
     "phone",
     "phone_audit",
+    "phone_then",
+    "phone_bursts",
+    "phone_bursts_end",
     "phone_said",
     "phone_pick",
     "phone_there",
@@ -118,7 +121,12 @@ def test_the_phone_is_only_read_never_moved_nor_deleted() -> None:
         assert verb not in part, verb
     assert "New-Object -ComObject Shell.Application" in part
     # Every Remove-Item works on the staging folder or a staged copy only.
-    removals = [line for line in part.splitlines() if "Remove-Item" in line]
+    # The bursts page's own files (its container id, its choices) lie on the PC (0480).
+    removals = [
+        line
+        for line in part.splitlines()
+        if "Remove-Item" in line and "cid" not in line
+    ]
     assert len(removals) == 3
     assert all(
         "$staging" in line or "$staged" in line or "Filter" in line for line in removals
@@ -222,8 +230,8 @@ def test_the_container_decides_with_the_listing_on_its_stdin() -> None:
     assert '/journal" `' in plan
     assert "media-hygiene @words)" in plan
     assert (
-        f"_mh_phone_docker $lines $destination @() @('{PHONE_PLAN}', '--destination', "
-        "$destination)"
+        f"_mh_phone_docker $lines $destination @() (@('{PHONE_PLAN}', '--destination', "
+        "$destination) + @(if ($since) { '--since', $since }))"
     ) in _body(text, "phone {")
     assert "$OutputEncoding = [Text.UTF8Encoding]::new($false)" in plan
     assert "[Console]::OutputEncoding = $console" in plan
@@ -260,7 +268,7 @@ def test_the_summary_is_read_back_and_ends_on_the_next_step() -> None:
     assert "$back.Length -eq $copy.Size" in said
     main = _body(text, "phone {")
     assert main.rstrip().splitlines()[-2].strip() == (
-        "if ($copies -gt 0) { _mh_phone_audit }"
+        "if ($copies -gt 0) { _mh_phone_then $chain $destination $period }"
     )
 
 
@@ -504,3 +512,38 @@ def test_a_factory_name_is_told_how_to_rename_the_phone() -> None:
     for name in ("Christophe A71", "Manon S23", "Mike's phone"):
         assert not factory.search(name), name
     _safe(naming.tip)
+
+
+def test_the_chain_runs_the_plan_steps_then_phone_end() -> None:
+    """0475: the steps read from the plan, run in turn, phone-end and the TV last."""
+    main = _body(_script(), "phone {")
+    assert "if ($fields[0] -eq 'then') { $fields[1] }" in main
+    assert 'Where-Object { ("$_" -split "`t")[0] -ne \'then\' }' in main
+    chain = _body(_script(), "phone_then")
+    assert "mh tags --path $destination --yes" in chain
+    assert "mh phone-end --folder $destination --since $period" in chain
+    assert chain.index("phone-end") < chain.index("mh slideshow --folder $destination")
+    assert "if ($steps.Count -eq 1) { _mh_phone_audit }" in chain
+
+
+def test_the_last_import_day_is_written_after_a_copy() -> None:
+    """0476: the day written into the journal folder, read first as the period."""
+    main = _body(_script(), "phone {")
+    assert "last-import.txt" in main
+    read = main.index("Get-Content -LiteralPath $last")
+    assert read < main.index("Set-Content -LiteralPath $last")
+    assert "if ($copies -gt 0 -and -not $result.Stopped)" in main
+
+
+def test_copies_come_before_the_tags_and_the_bursts_page_beside_them() -> None:
+    """0480: copies before tags; the bursts page in the background, then clean."""
+    then = _body(_script(), "phone_then")
+    assert then.index("--copies") < then.index(" tags --path")
+    assert "_mh_phone_bursts $destination $period" in then
+    assert "slideshow --folder $destination --since $period" in then
+    bursts = _body(_script(), "phone_bursts(")
+    assert "review --imported $destination --since $period" in bursts
+    assert "$global:MediaHygieneDetach = $null" in bursts
+    end = _body(_script(), "phone_bursts_end")
+    assert "docker stop" in end
+    assert "clean --decisions 'import-bursts.json'" in end

@@ -135,7 +135,7 @@ To forget someone (a former partner, say), remove the photos they are on from th
    counted, never confirmed with the others. Their section says *N photos set aside, hidden*:
    **Show** draws them again, dimmed, each with ↺ to take that one back; **Take out of the set
    aside** takes them all back. The same goes for photos set aside on any other page
-   ([`search`](search.md), [`browse`](browse.md)), until `clean --decisions` moves them.
+   ([`search`](search.md)), until `clean --decisions` moves them.
 3. Opened from the home page (`mh`), **Apply now** closes the page and runs
    [`clean --decisions`](clean.md), which asks first. Otherwise, the command proposes it when you
    stop the page. It moves the photos to the quarantine, journaled; [`undo`](undo.md) puts them
@@ -161,16 +161,16 @@ since you chose it is left in place.
 
 ## From any page: set a person aside
 
-A photo shows someone you never want to see again, on any page (`review`, `browse`, `search`):
+A photo shows someone you never want to see again, on any page (`review`, `search`):
 **👤 this person** under a shot of `review`, or **👤 Set a person aside** in the large view of
-`browse` and `search`, opens the page *Set a person aside* in a new tab, on that photo. You can
+`search`, opens the page *Set a person aside* in a new tab, on that photo. You can
 also open it yourself at `/person` on the address of any of these pages and paste the path of a
 photo (`C:\Photos\…\IMG_1234.jpg`).
 
 1. The page shows the faces found on that photo by `audit --people`; click the right one (one
    face alone is taken at once).
 2. On the right, the photos of that person, the closest first, as a grid to pick like in
-   [`browse`](browse.md): click, Ctrl, Shift, rectangle, Ctrl+A, I, Delete, the large view and
+   [the folders of `search`](search.md#walk-through-your-folders): click, Ctrl, Shift, rectangle, Ctrl+A, I, Delete, the large view and
    its keys. If they look like someone you set aside before, the bar says so (*the person set
    aside on <date>*): what you set aside now joins that person.
 3. Delete (or **Set aside the picked files**) saves them at once in `decisions.json`, read back

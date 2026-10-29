@@ -29,8 +29,7 @@ PHONE_PLAN: Final = "phone-plan"
 PHONE_REVIEW, PHONE_PROVE, PHONE_DONE = "phone-review", "phone-prove", "phone-done"
 SEPARATOR: Final = "\t"
 _FIELDS: Final = 3  # relative path, size, modified date
-_PARENT: Final = ".."
-_BOM: Final = "﻿"
+_PARENT, _BOM = "..", "﻿"
 # Inside a line of the plan, a tab would start another field.
 _SPACE: Final = " "
 
@@ -42,6 +41,7 @@ class PhoneCase(StrEnum):
     LIBRARY = "library"  # the library holds a file of that name and size
     SET_ASIDE = "set-aside"  # the journals remember it as set aside on purpose
     DESTINATION = "destination"  # the destination folder holds it already
+    OLDER = "older"  # new, but before `--since`: left on the phone (0476)
 
 
 class AsideState(StrEnum):

@@ -73,6 +73,19 @@ class ChosenStore:
             return ()
         return read_decisions(self.place.target).chosen
 
+    def container_paths(self) -> tuple[str, ...]:
+        """The files set aside, as the index names them: to list only them.
+
+        Returns:
+            Their paths in the container, read from the disk.
+
+        Raises:
+            DecisionsError: The file is not a decisions file.
+        """
+        return tuple(
+            str(self._mapper.to_container(file.path)) for file in self.on_disk()
+        )
+
     def paths(self) -> frozenset[str]:
         """The host paths of the files set aside, to mark or count them on a page.
 

@@ -61,9 +61,9 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 _TEMPLATE_PACKAGE: Final = "media_hygiene.cli"
-# The pages that may end on a step `mh` runs: the home page, browse's Apply now (0243);
+# The pages that may end on a step `mh` runs: the home page (0243);
 # any other page opened from home gets the relay too: its way back home (0280).
-_RELAYED: Final = ("home", "browse")
+_RELAYED: Final = ("home",)
 _TEMPLATES: Final = {Shell.POWERSHELL: "mh.ps1.j2", Shell.BASH: "mh.sh.j2"}
 
 

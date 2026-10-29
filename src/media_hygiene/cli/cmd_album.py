@@ -28,8 +28,7 @@ def album_command(  # pylint: disable=too-many-arguments
         str,
         typer.Argument(
             help=_(
-                "The album's name, as search and browse saved it: the folder "
-                "holding its links."
+                "The album's name, as search saved it: the folder holding its links."
             )
         ),
     ],
@@ -136,7 +135,7 @@ def _make(runtime: Runtime, prepared: AlbumPrepared) -> None:
     from media_hygiene.services.next_command import CHANGING, NextVerb
 
     output = runtime.output
-    if not prepared.plan.links:
+    if not prepared.plan.links and not prepared.plan.leftovers.stale:
         output.success(_("Nothing to add: the album holds every file found."))
         return
     output.info(

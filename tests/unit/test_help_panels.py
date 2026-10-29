@@ -111,7 +111,7 @@ def test_local_ai_options_stand_apart(name: str) -> None:
 
 
 def test_help_lists_only_the_verbs_with_a_console_use() -> None:
-    """`browse`, `home`, `places`, `review-sort` only open a page: hidden, kept."""
+    """`browse`, `home`, `places` only open a page: hidden, kept."""
     infos = build_app().registered_commands
     hidden = {info.name for info in infos if info.hidden}
     assert hidden >= PAGE_ONLY

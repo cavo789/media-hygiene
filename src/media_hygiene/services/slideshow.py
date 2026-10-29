@@ -25,7 +25,7 @@ from media_hygiene.services.slideshow_pick import Pick, Picked, picked_slides
 from media_hygiene.services.slideshow_say import announce_slideshow
 from media_hygiene.slideshow.desk import Changes, Desk
 from media_hygiene.slideshow.door import Door
-from media_hygiene.slideshow.screens import Screens
+from media_hygiene.slideshow.screens import screens_of
 from media_hygiene.slideshow.show import Show
 from media_hygiene.slideshow.slides import Timing
 from media_hygiene.slideshow.tv_door import TvDoor
@@ -63,7 +63,8 @@ def serve_slideshow(runtime: Runtime, start: ShowStart) -> int:
         with runtime.executor_factory() as executor:
             lan = lan_access(start.port) if start.port else None  # `mh --lan`
             secure = lan is not None and lan.secure  # phones paired for good (0431)
-            door = Door(lan, Screens(), phones=phone_book(secure=secure))
+            phones = phone_book(secure=secure)  # the TVs too, for good (0456)
+            door = Door(lan, screens_of(phones), phones=phones)
             desk = Desk(show, door.screens, Changes())
             app = show_app(runtime, desk, Serving(search, executor, door))
             ready = partial(announce_slideshow, runtime, app.door)

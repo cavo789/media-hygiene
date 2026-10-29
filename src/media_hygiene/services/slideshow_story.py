@@ -5,23 +5,23 @@ most of its located photos lie in; else the town nearest to most of them (the of
 GeoNames snapshot, read only when a photo has GPS); else nothing. Nothing leaves the
 machine. A town in another country than home comes with it ("Valkenburg, Netherlands"):
 home is the country of the place flagged `home`, else of the first place, else the
-country most of the show's located photos lie in.
+country most of the show's located photos lie in. Each located photo also gets its own
+place (0472, `Places.spot`): the user's place, else the landmark it was taken at, else
+its town; empty when it is the event's place already.
 """
 
 from __future__ import annotations
 
-from collections import Counter
 from dataclasses import replace
 from itertools import groupby
 from typing import TYPE_CHECKING
 
 from pydantic import ValidationError
 
-from media_hygiene.classify.place_match import place_at, zones_of
 from media_hygiene.classify.whereabouts import located_point
 from media_hygiene.geo.towns_once import shared_towns
-from media_hygiene.i18n import _
 from media_hygiene.scan.metadata import MediaMetadata
+from media_hygiene.services.slideshow_places import Places
 from media_hygiene.slideshow.chapters import Chapter, event_name, event_period
 from media_hygiene.slideshow.event_map import event_map
 
@@ -30,9 +30,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
 
-    from media_hygiene.config.classify_places import PersonalPlace
     from media_hygiene.geo.distance import Point
-    from media_hygiene.geo.gazetteer import Gazetteer
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.slideshow.slides import Slide
 
@@ -69,94 +67,13 @@ def told_slides(
             places.named(located),
             event_map(located, places.towns),
         )
-        told.extend(replace(slide, chapter=chapter) for slide in slides)
+        told.extend(
+            replace(
+                slide, chapter=chapter, place=places.spot(points[slide.key], chapter)
+            )
+            for slide in slides
+        )
     return tuple(told)
-
-
-class Places:
-    """Names the place of a group of positions: the user's place, else a town."""
-
-    __slots__ = ("_home", "_towns", "_zones")
-
-    def __init__(
-        self,
-        runtime: Runtime,
-        towns: Gazetteer | None,
-        everywhere: Sequence[Point] = (),
-    ) -> None:
-        """Prepare the user's places.
-
-        Args:
-            runtime: Settings (`[[classify.places]]`, `[classify] town_names`).
-            towns: The GeoNames towns; None when no photo has GPS.
-            everywhere: The positions of the whole show (for the home country).
-        """
-        settings = runtime.settings.classify
-        self._zones = zones_of(settings.places)
-        self._towns = None if towns is None else towns.renamed(settings.town_names)
-        self._home = self._home_country(settings.places, everywhere)
-
-    @property
-    def towns(self) -> Gazetteer | None:
-        """The towns, named the user's way.
-
-        Returns:
-            Them; None when no photo has GPS.
-        """
-        return self._towns
-
-    def _home_country(
-        self, places: Sequence[PersonalPlace], points: Sequence[Point]
-    ) -> str:
-        """The country the user lives in, as far as the places and photos tell.
-
-        Args:
-            places: The user's places.
-            points: The positions of the whole show.
-
-        Returns:
-            Its name in the language in use; empty when unknown.
-        """
-        if self._towns is None:
-            return ""
-        flagged = next((place for place in places if place.home), None)
-        if flagged is None and places:
-            flagged = places[0]
-        if flagged is not None:
-            town = self._towns.nearest(flagged.point)
-            return town.country if town else ""
-        counts = Counter(
-            town.country for p in points if (town := self._towns.nearest(p))
-        )
-        return counts.most_common(1)[0][0] if counts else ""
-
-    def named(self, points: Sequence[Point]) -> str:
-        """The place most of the positions lie at.
-
-        Args:
-            points: The positions of an event's located photos.
-
-        Returns:
-            The user's place, else the nearest town; empty without a position.
-        """
-        own = Counter(
-            found.name for point in points if (found := place_at(point, self._zones))
-        )
-        if own:
-            return own.most_common(1)[0][0]
-        if self._towns is None:
-            return ""
-        towns = Counter(
-            (town.name, town.country)
-            for point in points
-            if (town := self._towns.nearest(point))
-        )
-        if not towns:
-            return ""
-        name, country = towns.most_common(1)[0][0]
-        if self._home and country != self._home:
-            return _("{town}, {country}").format(town=name, country=country)
-        return name
 
 
 def _point(connection: sqlite3.Connection, key: int) -> Point | None:

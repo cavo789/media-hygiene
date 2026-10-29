@@ -42,7 +42,6 @@ PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
         "intruders_review.html.j2": "review-intruders",
         "phone_review.html.j2": "phone-free",
         "search.html.j2": "search",
-        "browse.html.j2": "browse",
         "places.html.j2": "places",
         "people.html.j2": "people",
         "person.html.j2": "people",

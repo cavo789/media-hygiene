@@ -114,7 +114,7 @@ cavo789/media-hygiene --locale fr classify --sample 20
   [étape 8 : un modèle local](../sort/08-subjects-from-a-local-model.md),
   [étape 9 : le GPS](../sort/09-places-from-gps.md), [étape 10 : par personne](../sort/10-sort-by-person.md)
 - [Trier en bref](../sort/quick-guide.md)
-- Ensuite : [`review-sort`](search.md#les-événements-du-dernier-classify) (facultatif), puis [`sort`](sort.md).
+- Ensuite : [l'onglet 🗂 Événements de `search`](search.md#les-événements-du-dernier-classify) (facultatif), puis [`sort`](sort.md).
 
 ## L'aide intégrée
 

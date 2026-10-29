@@ -63,7 +63,7 @@ near duplicates only when you ask for it.
 ## Your photos are safe
 
 **We guarantee it: these commands never modify, move nor delete a photo or a video** —
-`audit`, `crosscheck`, `classify`, `review`, `review-sort`, `places`, `inventory`, `tags`,
+`audit`, `crosscheck`, `classify`, `review`, `places`, `inventory`, `tags`,
 `search`, `people`, `history`, `reports`, `config`, `status`, `launcher`. They only write their own files (reports, cache, `config.toml`). Run them
 with your folders mounted `:ro`: then the operating system itself forbids any change.
 
@@ -153,7 +153,7 @@ the folders it needs, its options, examples:
 [`review`](https://cavo789.github.io/media-hygiene/commands/review/), [`reports`](https://cavo789.github.io/media-hygiene/commands/reports/),
 [`crosscheck`](https://cavo789.github.io/media-hygiene/commands/crosscheck/), [`config`](https://cavo789.github.io/media-hygiene/commands/config/),
 [`launcher`](https://cavo789.github.io/media-hygiene/commands/launcher/), [`classify`](https://cavo789.github.io/media-hygiene/commands/classify/),
-[`review-sort`](https://cavo789.github.io/media-hygiene/commands/review-sort/), [`sort`](https://cavo789.github.io/media-hygiene/commands/sort/),
+[`sort`](https://cavo789.github.io/media-hygiene/commands/sort/),
 [`album`](https://cavo789.github.io/media-hygiene/commands/album/), [`places`](https://cavo789.github.io/media-hygiene/commands/places/),
 [`inventory`](https://cavo789.github.io/media-hygiene/commands/inventory/), [`tags`](https://cavo789.github.io/media-hygiene/commands/tags/),
 [`search`](https://cavo789.github.io/media-hygiene/commands/search/), [`xmp`](https://cavo789.github.io/media-hygiene/commands/xmp/),

@@ -1,5 +1,5 @@
 {# *🗂 Events* (0437, 0438): the latest classify plan's events, read once when opened (or
-   at `/events`, which `mh review-sort` opens); one clicked shows its card and its photos
+   at `/events`); one clicked shows its card and its photos
    in the grid, the search's own tiles with where each one goes. The choices are
    review-sort's (`events_choice`, `events_sure`, `events_rule`, `events_progress`),
    posted to `/api/sort/…`: each one saved at once in sort-decisions.json and read back,
@@ -69,6 +69,9 @@ let showEvent = null;  // (id, again): an event shown, its tiles asked again
     photoOf = Object.fromEntries(view.hits.map((hit) => [hit.key, { ...hit, folder: hit.host }]));
     eventShown = view.card.id;
     total = view.total;
+    // The name proposed from the place, the day and the tags (0477): one click takes it.
+    byId("eventSuggestName").textContent = view.suggested || "";
+    byId("eventSuggest").hidden = !view.suggested || byId("eventNameIn").value === view.suggested;
     showFiles(view.hits, again);
     $("more").hidden = true;
     if (view.missing) told(fill(TEXTS.eventMissing, { n: view.missing }), false);
@@ -176,7 +179,7 @@ let showEvent = null;  // (id, again): an event shown, its tiles asked again
   const EVENT_KEYS = { Enter: accept, n: () => go(1), PageDown: () => go(1), p: () => go(-1), PageUp: () => go(-1), u: goOpen, v: acceptSure, o: openSend, m: sortNow, r: openRule, t: forget, s: leavePicked, S: stayEvent, Z: undoSure,
     e: () => { byId("eventNaming").open = true; byId("eventNameIn").focus(); }, f: () => byId("eventFolderIn").focus(), Backspace: () => choose("remove") };
   document.addEventListener("keydown", (event) => {
-    if (eventShown === null || current < 0 || !byId("events").open) return;
+    if (eventShown === null || current < 0 || byId("events").hidden) return;
     if (["sureDlg", "sendDlg", "ruleDlg", "rulesDlg", "goDlg"].some((dialog) => byId(dialog).open)) return;
     if (event.defaultPrevented || byId("viewer").classList.contains("open")) return;
     if (event.key === "Escape") { if (choiceDirty()) dropChoice(); document.activeElement.blur(); return; }
@@ -217,9 +220,31 @@ let showEvent = null;  // (id, again): an event shown, its tiles asked again
     const index = events.findIndex((card) => card.id === wanted);
     return index === current ? refresh(again) : load(index);
   };
-  byId("events").addEventListener("toggle", () => { if (byId("events").open && !events.length) loadEvents(); });
+  // The two tabs (0457): Photos (the search) or Events; the choice kept per viewer.
+  const showTab = (wanted) => {
+    const onEvents = wanted === "events";
+    byId("toc").hidden = onEvents;
+    byId("events").hidden = !onEvents;
+    for (const [id, on] of [["tabPhotos", !onEvents], ["tabEvents", onEvents]]) {
+      byId(id).setAttribute("aria-selected", String(on));
+      byId(id).tabIndex = on ? 0 : -1;
+    }
+    try { localStorage.setItem("mh-search-tab", wanted); } catch (error) { /* not kept */ }
+    if (onEvents && !events.length) loadEvents();
+  };
+  byId("tabPhotos").addEventListener("click", () => showTab("photos"));
+  byId("tabEvents").addEventListener("click", () => showTab("events"));
+  byId("tabs").addEventListener("keydown", (event) => {
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+    event.preventDefault();
+    const wanted = byId("events").hidden ? "events" : "photos";
+    showTab(wanted);
+    byId(wanted === "events" ? "tabEvents" : "tabPhotos").focus();
+  });
   // A search typed leaves the event: the grid shows what was searched.
   $("form").addEventListener("submit", () => { eventShown = null; current = -1; byId("eventCard").hidden = true; listEvents(); });
-  // `/events` (`mh review-sort` opens it): the search, its events open.
-  if (window.location.pathname === {{ events_page | tojson }}) byId("events").open = true;
+  // `/events`: the search, its Events tab shown.
+  let kept = "photos";
+  try { kept = localStorage.getItem("mh-search-tab") || "photos"; } catch (error) { /* not kept */ }
+  showTab(window.location.pathname === {{ events_page | tojson }} ? "events" : kept);
 })();

@@ -4,7 +4,7 @@
 - **Batch**: search
 - **Depends**: —
 - **Files**: `src/media_hygiene/search/`, `documentation/en/commands/review-sort.md`, `documentation/fr/commands/review-sort.md`
-- **Needs maintainer**: answers to the six questions below (in a chat: `/todo:inbox` or `/todo:review-feedback`), and one run of `docs_screenshots`
+- **Needs maintainer**: one run of `docs_screenshots` (the six questions answered 2026-10-29: 0457–0460 filed)
 
 ## Why
 
@@ -31,3 +31,12 @@ The run was stopped at the maintainer's request after the *search* lot.
 ## Done when
 
 Each question answered in a `## Decided` section, the follow-ups filed as TODOs, the captures refreshed.
+
+## Decided
+
+1. → A tab (Photos / Events) instead of the collapsible section: follow-up TODO (2026-10-29)
+2. → Add the town of the GPS position (offline gazetteer) next to the coordinates: follow-up TODO (2026-10-29)
+3. → A *shortest first* sort for videos (no new filter): follow-up TODO (2026-10-29)
+4. → Keep key T (2026-10-29)
+5. → Remove `review-sort` in the next version (no hidden alias): its pages, menu entry and site nav go with it: follow-up TODO (2026-10-29)
+6. → Keep the 3 s threshold a named constant (2026-10-29)

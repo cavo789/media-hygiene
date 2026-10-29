@@ -29,7 +29,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | find the photos of someone by name, sort them by who is on them | [`people`](commands/people.md), then `search` or `classify` |
 | give my photos and videos words to search for | [`tags`](commands/tags.md) |
 | find a photo by a word, a place, a year, a person | [`search`](commands/search.md) |
-| look through my folders and remove photos, without Explorer, undoably | [`browse`](commands/browse.md), then `clean --decisions` |
+| look through my folders and remove photos, without Explorer, undoably | [the folders of `search`](commands/search.md#walk-through-your-folders), then `clean --decisions` |
 | show the holiday photos on the TV, choosing the next one from my phone | [`slideshow`](commands/slideshow.md) |
 | send an album by mail or to a social network, resized and without the GPS position | [`share`](commands/share.md) |
 | see my words in digiKam, darktable, Lightroom or Immich | [`xmp`](commands/xmp.md) |
@@ -75,7 +75,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`undo [RUN]`](commands/undo.md) | Restore every file of a run (the latest by default); for an album, remove its links; for `xmp`, its sidecars. | [Cleaning, 9](clean/09-undo-history-purge.md) |
 | [`purge [RUN]`](commands/purge.md) | Erase the quarantine of a run for good (of every run by default): the only command that erases content, with `clean --delete`. | [Cleaning, 9](clean/09-undo-history-purge.md) |
 | [`sort [WORKBOOK]`](commands/sort.md) | Check the edited workbook of `classify`, confirm, then move the files where it says; journaled, undoable, proven. | [Sorting, 7](sort/07-sort.md) |
-| [`album NAME`](commands/album.md) | Make the folder of an album (saved in `search`, `browse` or the burst review) as hard links: nothing copied nor moved, no space used. `--category`, `--event`, `--rule`, `--rating` gather a selection of the `classify` plan instead. Shows the album; `--apply` makes the links. | [Sorting, 12](sort/12-albums.md) |
+| [`album NAME`](commands/album.md) | Make the folder of an album (saved in `search` or the burst review) as hard links: nothing copied nor moved, no space used. `--category`, `--event`, `--rule`, `--rating` gather a selection of the `classify` plan instead. Shows the album; `--apply` makes the links. | [Sorting, 12](sort/12-albums.md) |
 | [`xmp`](commands/xmp.md) | Write the words of `tags` into `.xmp` sidecars next to the photos, for digiKam, darktable, Lightroom or Immich; never into a photo. Shows what it would write; `--apply` writes. | [Reference](reference-tags.md#carry-the-words-with-the-photos-xmp) |
 | [`import`](commands/import.md) | Copy into your photos what only a folder holds (your NAS, a USB disk, an SD card), never what you set aside or deleted before; near copies listed apart; each copy proven; the backup only read. | [Commands](commands/import.md) |
 | [`shrink`](commands/shrink.md) | List the heavy videos worth lightening (old cameras, MJPEG), with the space each would free; `--apply` re-encodes them in H.264, each one checked (length, sound, date, place), the original in the quarantine. | [Commands](commands/shrink.md) |
@@ -83,14 +83,12 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`backup`](commands/backup.md) | Write the index (what the audits, `tags` and `people` learnt) and the settings into one zip in `media-hygiene\backups`, read back; the 3 most recent kept. Never reads your photos. | [Commands](commands/backup.md) |
 | [`restore`](commands/restore.md) | Put back a backup of the index (the settings too with `--config`), after checking it whole and backing up the index replaced. Never reads your photos. | [Commands](commands/restore.md) |
 
-**Pages: opened from the home page** (not listed by `mh --help`: they only open a page; typed, `mh browse`, `mh places`, `mh review-sort` and `mh home` still work, for a script or without the home page)
+**Pages: opened from the home page** (not listed by `mh --help`: they only open a page; typed, `mh places` and `mh home` still work, for a script or without the home page)
 
 | Command | What it does | Guide |
 |---|---|---|
 | [`home`](commands/home.md) | The home page in your browser: what `status` says, the next step as a big button, every step of the guides as `mh menu` numbers them, the reports and a few previews; runs the audit in the page, its progress shown. A step's button hands it to `mh` in the terminal. Never writes to your folders. | [Commands](commands/home.md) |
-| [`review-sort`](commands/review-sort.md) | Opens the 🗂 Events view of [`search`](commands/search.md#the-events-of-the-latest-classify), for this version only: use `search`. |
 | [`places`](commands/places.md) | Show where the photos were taken on a map in your browser, and name your places; saved into `config.toml`. Never writes to your folders. | [Sorting, 9](sort/09-places-from-gps.md) |
-| [`browse`](commands/browse.md) | Walk through your folders in your browser, as in Explorer: the tree with its counts, the photos and videos of a folder, large with ←/→; set the ones picked aside for `clean --decisions`. Never writes to your folders. | [Find in short](find/quick-guide.md) |
 
 ## Options
 
@@ -115,7 +113,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--near` | `review` | Decide the near duplicates group by group (as planned, keep the other version, leave alone, keep none) instead of sorting the burst series. [Cleaning, step 11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
 | `--delete` | `clean` | Delete the exact copies for good, after a byte comparison, instead of moving them to the quarantine; `undo` rebuilds them from the kept copy. [Cleaning, step 8](clean/08-clean.md#need-the-space-at-once---delete) |
 | `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report, the burst shots set aside with `review` and the near-duplicate groups decided with `review --near` (with `--tier near`). `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. Once applied by `clean`, the file is renamed `decisions.applied-<run>.json`. [Cleaning, step 10](clean/10-review-bursts.md), [cleaning, step 12](clean/12-decide-pair-by-pair.md) |
-| `--port PORT` | `review`, `review-sort`, `places`, `search`, `browse`, `people`, `home`, `slideshow` | Port of the page, `[review] port` of `config.toml` by default (`8088`); publish the same one: `-p 127.0.0.1:8088:8088`. |
+| `--port PORT` | `review`, `places`, `search`, `people`, `home`, `slideshow` | Port of the page, `[review] port` of `config.toml` by default (`8088`); publish the same one: `-p 127.0.0.1:8088:8088`. |
 | `--prune N` | `reports` | Keep the N most recent reports, delete the others. |
 | `--photos "C:\Photos"` | `launcher` | A folder of photos and videos, as Explorer shows it; repeat it for several folders. No `-v` needed. [Clean in short, 0](clean/quick-guide.md#0-once-write-the-mh-command) |
 | `--quarantine "D:\quarantine"` | `launcher` | Where the copies set aside go; best on the photos' disk. Default: `$HOME\media-hygiene\quarantine`. |
@@ -203,8 +201,6 @@ command shows its own `--help`; here is the list of the commands:
 │ reports      List the HTML reports of previous audits and cleans.            │
 │ review       Set burst shots aside, one series at a time, with the keyboard  │
 │              in your browser; 'clean --decisions' then moves them.           │
-│ review-sort  Name the events of the classify proposal one by one in your     │
-│              browser.                                                        │
 │ search       Find photos by their words in your browser (or as a table): the │
 │              words 'tags' gave them.                                         │
 │ share        Prepare an album for sending: resized copies without the GPS    │

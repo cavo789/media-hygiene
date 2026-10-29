@@ -328,11 +328,11 @@ def test_a_paired_phone_keeps_the_server_alive() -> None:
     assert "wirePresence();  //" in home.home_page(remote=True).decode()
 
 
-def test_the_phones_page_opens_search_and_browse() -> None:
-    """The phone's home page goes to both pages; the PC's runs them as before."""
+def test_the_phones_page_opens_search() -> None:
+    """The phone's home page goes to search (its folders too); the PC's runs it."""
     phone = home.home_page(remote=True).decode()
     assert '"mh search": "/search"' in phone
-    assert '"mh browse": "/browse"' in phone
+    assert "mh browse" not in phone  # 0465: the verb is gone
     assert "const PHONE_PAGES = {};" in home.home_page().decode()
 
 

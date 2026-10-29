@@ -58,11 +58,10 @@ _POSTED_TOO: Final = SORT_POSTS | {ALBUMS_PATH, PEOPLE_REJECT_PATH, PEOPLE_WHY_P
 
 @dataclass(frozen=True, slots=True)
 class SearchPages:
-    """The two pages: the search, the folder view, and which one `/` serves."""
+    """The page (`/browse` opens it on its folders), and the path `/` serves."""
 
     search: bytes
-    browse: bytes
-    first: str = SEARCH_PAGE_PATH  # `/browse` for `browse`
+    first: str = SEARCH_PAGE_PATH
 
 
 @dataclass(frozen=True, slots=True)
@@ -182,13 +181,13 @@ class SearchApp:
             request: `POST /api/search`.
 
         Returns:
-            The total and the first files, those set aside marked; 400 for a body
-            that is not a search.
+            The first files found (the set aside only, on **Show** 🗑), marked; 400.
         """
         asked = read_asked(request.body)
         if isinstance(asked, Response):
             return asked
         query = read_query(self.place.index, asked.query())
+        query = self.place.chosen.narrow(query, asked.aside)
         found = found_view(
             with_facts(self.place.index, self.place.index.find(query, asked.shown)),
             self.place.mapper,

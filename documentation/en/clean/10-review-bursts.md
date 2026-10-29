@@ -141,7 +141,7 @@ show what it found there. If the file does not hold your choice, a red message s
 | `←` | Previous series (no choice: as shown) |
 | `N` | Next series still to see |
 | `V` | Validate every obvious series at once (see below) |
-| `Delete` | Set the picked shots aside (a click picks one, as in [`browse`](../commands/browse.md)) |
+| `Delete` | Set the picked shots aside (a click picks one, as in [the folders of `search`](../commands/search.md#walk-through-your-folders)) |
 | `S` | Keep only the sharpest shot, then go to the next series |
 | *Keep every shot* (button) | Keep every shot of the series |
 | `X` | Set the whole series aside, then go to the next series (`X` again keeps them all) |
@@ -149,7 +149,7 @@ show what it found there. If the file does not hold your choice, a red message s
 | `C` | Compare the shots at 100 % (`C` or `Esc` closes) |
 | `P` | Board ⇄ one series at a time |
 
-The shots are picked as in [`browse`](../commands/browse.md): Ctrl+click, Shift+click, a
+The shots are picked as in [the folders of `search`](../commands/search.md#walk-through-your-folders): Ctrl+click, Shift+click, a
 rectangle, Ctrl+A, I to invert; `↑` / `↓` move the frame, Enter or a double click shows the
 shot large (`Delete` there sets it aside, `⌫` takes it back, `A` adds it to the album).
 

@@ -11,6 +11,7 @@ from typing import Final
 
 from media_hygiene.classify.dates import exif_datetime
 from media_hygiene.i18n import _
+from media_hygiene.search.gps_town import town_text
 
 _NANO: Final = 1_000_000_000
 _DAY_LENGTH: Final = 10
@@ -122,9 +123,11 @@ def _place(metadata: dict[str, object]) -> str:
         metadata: Its metadata.
 
     Returns:
-        `GPS: 50.85000, 4.35000`, or empty without a position.
+        `GPS: 50.85000, 4.35000 (Brussels, Belgium)`, or empty without a position.
     """
     latitude, longitude = metadata.get("latitude"), metadata.get("longitude")
     if not isinstance(latitude, float | int) or not isinstance(longitude, float | int):
         return ""
-    return _("GPS: {where}").format(where=f"{latitude:.5f}, {longitude:.5f}")
+    where = f"{latitude:.5f}, {longitude:.5f}"
+    town = town_text(float(latitude), float(longitude))
+    return _("GPS: {where}").format(where=f"{where} ({town})" if town else where)

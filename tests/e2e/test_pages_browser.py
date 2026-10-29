@@ -2,7 +2,7 @@
 
 The image of the branch serves `mh` through `mh.sh` on the demo tree; the Playwright
 image (`tests/support/pages_browser.py`) runs `tests/support/pages_walk.py` on the
-host's network. Proven here: search and browse open from the home page and come back,
+host's network. Proven here: search opens from the home page and come back,
 each under a bound, without a container started by the click (Docker's events); a
 console step runs while the page stays open; the tab follows a page of its own server
 back to the home page ten times in a row, without F5 (0354); the server gone, the
@@ -156,7 +156,7 @@ def _started(since: float, until: float) -> list[str]:
 def test_pages_of_mh_alone_in_a_real_browser(
     served: tuple[Path, str], capsys: pytest.CaptureFixture[str]
 ) -> None:
-    """Search, browse, a console step and a review from the home page, timed."""
+    """Search, a console step and a review from the home page, timed."""
     root, port = served
     shots = root / "walk"
     shots.mkdir()
@@ -174,10 +174,8 @@ def test_pages_of_mh_alone_in_a_real_browser(
     with capsys.disabled():
         figures = json.dumps(walk, indent=2)
         print(f"\n0366, measured in Chromium (CI runner): {figures}")  # noqa: T201
-    for name in ("search", "browse"):
-        if name in walk:
-            assert walk[name]["click_to_shown_ms"] < _SHOWN_MS, walk[name]
-            assert walk[name]["back_home_ms"] < _BACK_MS, walk[name]
+    assert walk["search"]["click_to_shown_ms"] < _SHOWN_MS, walk["search"]
+    assert walk["search"]["back_home_ms"] < _BACK_MS, walk["search"]
     assert walk["search"]["first_search_ms"] is not None
     assert _started(walk["clicks_from"], walk["clicks_until"]) == []
     console = walk["console"]

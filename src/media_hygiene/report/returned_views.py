@@ -54,7 +54,7 @@ def why_set_aside(action: ActionKind) -> str:
     reasons = {
         ActionKind.QUARANTINE_BURST: _("a burst shot you set aside"),
         ActionKind.QUARANTINE_NEAR: _("a near duplicate set aside"),
-        ActionKind.QUARANTINE_CHOSEN: _("set aside in 'search' or 'browse'"),
+        ActionKind.QUARANTINE_CHOSEN: _("set aside in 'search'"),
         ActionKind.QUARANTINE_UNWANTED: _("an unwanted photo set aside"),
         ActionKind.MARK_GONE: _("deleted in the Explorer, on purpose"),
     }

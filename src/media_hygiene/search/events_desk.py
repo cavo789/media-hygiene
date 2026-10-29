@@ -18,6 +18,7 @@ from media_hygiene.errors import DecisionsError, MediaHygieneError
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
 from media_hygiene.search.days import NAME as DAY
+from media_hygiene.search.event_suggest import suggested
 from media_hygiene.search.hits import hit_of, with_facts
 from media_hygiene.search.models import Found
 from media_hygiene.search.views import found_view
@@ -76,8 +77,8 @@ class EventsDesk:
             path: `/api/events/<id>`.
 
         Returns:
-            `{card, hits, missing}` (photos the index does not hold); 404 for an
-            unknown event or no plan.
+            `{card, suggested, hits, missing}` (the name proposed, 0477; photos
+            the index does not hold); 404 for an unknown event or no plan.
         """
         try:
             view = self.session().event(path.removeprefix(f"{EVENTS_PATH}/"))
@@ -93,6 +94,7 @@ class EventsDesk:
             HTTPStatus.OK,
             {
                 "card": view.card.model_dump(mode="json"),
+                "suggested": suggested(self.index.connection, found),
                 **tiles,
                 "missing": len(view.photos) - found.total,
             },

@@ -15,7 +15,7 @@ modified, moved nor deleted**.
 |---|---|
 | `audit`, `crosscheck` | The HTML report (`/reports`) and the cache (`/cache`). |
 | `classify` | The proposal and its workbook (`/reports`), the cache. |
-| `review`, `review-sort` | Your choices, in a small `.json` file next to the report (`/reports`). |
+| `review`, `search` (🗂 Events) | Your choices, in a small `.json` file next to the report (`/reports`). |
 | `places` | The places you name, in `config.toml` (`/config`). |
 | `inventory` | The workbook (`/reports`), read from the cache alone. |
 | `tags`, `people` | The words and the faces, in the cache (`/cache`): never in your photos. |

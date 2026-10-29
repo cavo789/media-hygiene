@@ -7,7 +7,7 @@ when the reports folder cannot keep it: the page says why.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final, Literal
 
@@ -28,6 +28,7 @@ if TYPE_CHECKING:
     from media_hygiene.report.chosen_decisions import ChosenFile
     from media_hygiene.search.chosen import ChosenStore
     from media_hygiene.search.fts import SearchIndex
+    from media_hygiene.search.query import SearchQuery
 
 CHOSEN_PATH: Final = "/api/chosen"
 _MAX_KEYS: Final = 100_000
@@ -60,6 +61,24 @@ class ChosenDesk:
         """
         return self.store.paths()
 
+    def narrow(self, query: SearchQuery, aside: bool) -> SearchQuery:  # noqa: FBT001
+        """Keep a search to the files set aside, when the page shows only them.
+
+        Args:
+            query: The search.
+            aside: True when **Show** is 🗑 *set aside*.
+
+        Returns:
+            The search, narrowed to the files of the decisions file when asked.
+        """
+        if not aside:
+            return query
+        try:
+            only = self.store.container_paths()
+        except MediaHygieneError:
+            only = ()
+        return replace(query, filters=replace(query.filters, only=only))
+
     def state(self) -> Response:
         """`GET /api/chosen`: what the decisions file holds.
 
@@ -87,7 +106,8 @@ class ChosenDesk:
         except ValidationError:
             return Response(HTTPStatus.BAD_REQUEST)
         if asked.all:
-            photos = self.index.versions(read_query(self.index, asked.search.query()))
+            query = read_query(self.index, asked.search.query())
+            photos = self.index.versions(self.narrow(query, asked.search.aside))
         else:
             found = (self.index.source_of(key) for key in asked.keys)
             photos = tuple(photo for photo in found if photo is not None)

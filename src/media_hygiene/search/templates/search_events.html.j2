@@ -1,12 +1,12 @@
-{# *🗂 Events* (0437, 0438): the events of the latest classify plan in the left column, as
+{# *🗂 Events* (0437, 0438; a tab since 0457): the events of the latest classify plan in the left column, as
    review-sort showed them — its progress and runs, its three filters, the event's card —
    and its photos in the grid, the search's own tiles. The choices are review-sort's: the
    folder (F, Enter), the name (E), the picked photos to another folder (O) or left (S),
    the whole event left (Shift+S), a choice taken back (T), the sure proposals (V,
    Shift+Z), *Remember as a rule* (R), *Sort this event now* (M); each is saved at once
    in sort-decisions.json, read back. Delete sets aside, as on every tile page. #}
-<details id="events">
-  <summary>🗂 {{ _("Events of the latest classify") }}</summary>
+<section id="events" role="tabpanel" aria-labelledby="tabEvents" hidden>
+  <h2 class="tabTitle">🗂 {{ _("Events of the latest classify") }}</h2>
   <p id="eventsSaid" class="muted" role="status"></p>
   <p id="eventsProgress" class="muted"></p>
   <details id="runs" hidden><summary>{{ _("The sort runs of this plan") }}</summary><ol id="runList"></ol></details>
@@ -32,6 +32,7 @@
     <form id="eventChoice" autocomplete="off">
       <label>{{ _("Folder") }} <kbd>F</kbd><span class="path"><span id="eventPrefix" class="muted"></span><input id="eventFolderIn" list="categories"></span></label>
       <details id="eventNaming"><summary>{{ _("Name of the event") }} <kbd>E</kbd></summary><input id="eventNameIn"></details>
+      <p id="eventSuggest" hidden>💡 {{ _("Proposed name:") }} <strong id="eventSuggestName"></strong> <button type="button" id="eventSuggestUse" class="plain" title="{{ _('Name the event so and save it; change it in the field above at any time') }}">{{ _("Use this name") }}</button></p>
     </form>
     <p id="destination" class="muted" role="status" aria-live="polite"></p>
     <p class="eventButtons">
@@ -44,4 +45,4 @@
     </p>
   </section>
   <ol id="eventList"></ol>
-</details>
+</section>

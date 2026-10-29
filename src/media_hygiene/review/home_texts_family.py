@@ -14,7 +14,7 @@ def family_texts() -> dict[str, str]:
     return {
         "familyTitle": _("Our photos"),
         "familyNote": _(
-            "Search, browse and the albums of this home: nothing here changes a photo."
+            "Search and the albums of this home: nothing here changes a photo."
         ),
         "familyFind": _("Find a photo"),
         "tvTitle": _("Show on the TV"),

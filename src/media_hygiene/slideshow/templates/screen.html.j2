@@ -13,7 +13,9 @@
    applies. A video (0292) plays in a third layer, as it is; a browser too old for it shows
    photos only. At each new event (0448), a title card (its photo blurred, the name, the
    period, the place) for title_seconds, then a banner on its first photo for banner_seconds;
-   only while the phone tells the events on the TV (the server sends `chapter` then). #}
+   only while the phone tells the events on the TV (the server sends `chapter` then). Each
+   photo's own place (0472, `where`: a landmark, a town) in a corner, laid over the photo:
+   the photo never moves; empty, the corner is hidden. #}
 <html lang="{{ _('en') }}">
 <head>
 <meta charset="utf-8">
@@ -39,6 +41,7 @@ html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
 #card h1 { margin: 0 0 24px 0; margin: 0 0 3vh 0; font: bold 64px/1.15 sans-serif; font-size: 10vh; }
 #card p { margin: 0; color: #eee; }
 #banner { position: absolute; z-index: 4; left: 0; right: 0; bottom: 0; padding: 16px 4%; padding: 2.5vh 4%; background: rgba(0, 0, 0, 0.55); color: #fff; font: 26px/1.3 sans-serif; font-size: 3.6vh; }
+#where { position: absolute; z-index: 4; top: 0; right: 0; max-width: 60%; padding: 8px 16px; padding: 1.2vh 2vw; background: rgba(0, 0, 0, 0.45); color: #eee; font: 20px/1.3 sans-serif; font-size: 2.6vh; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 </style>
 </head>
 <body>
@@ -47,6 +50,7 @@ html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
 <div id="layerF" class="layer hidden"><video id="film" preload="auto" playsinline></video></div>
 <div id="card" class="hidden"><img id="cardPhoto" alt=""><div><h1 id="cardName"></h1><p id="cardPeriod"></p><p id="cardPlace"></p></div></div>
 <div id="banner" class="hidden"></div>
+<div id="where" class="quiet"></div>
 <div id="pairing" class="hidden">
   <p>{{ _("On the phone's remote, type the code of this TV:") }}</p>
   <strong id="code"></strong>

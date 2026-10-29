@@ -10,13 +10,13 @@ import io
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from PIL import Image
+
 from media_hygiene.report.thumbnails import unreadable_errors, upright_picture
 from media_hygiene.scan.image_check import prepare_image_worker
 
 if TYPE_CHECKING:
     from pathlib import Path
-
-    from PIL import Image
 
     from media_hygiene.faces.models import FaceBox
 
@@ -71,3 +71,25 @@ def crop_jpeg(picture: Image.Image, box: FaceBox) -> bytes:
     buffer = io.BytesIO()
     face.save(buffer, "JPEG", quality=_QUALITY)
     return buffer.getvalue()
+
+
+_ORIENTATION: Final = 0x0112
+_TURNED: Final = frozenset({5, 6, 7, 8})  # EXIF orientations that swap width and height
+
+
+def upright_size(path: Path) -> tuple[int, int] | None:
+    """The size of a photo as the face boxes see it (upright), read from its header.
+
+    Args:
+        path: The photo.
+
+    Returns:
+        (width, height), or None when it cannot be read (a RAW file, a missing file).
+    """
+    try:
+        with Image.open(path) as image:
+            width, height = image.size
+            turned = image.getexif().get(_ORIENTATION) in _TURNED
+    except unreadable_errors():
+        return None
+    return (height, width) if turned else (width, height)

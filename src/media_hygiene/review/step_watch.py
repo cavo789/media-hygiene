@@ -25,8 +25,8 @@ from media_hygiene.cli.safety import PAGE_COMMANDS
 from media_hygiene.i18n import _
 from media_hygiene.review.serving import json_response
 from media_hygiene.search.app import SEARCH_PAGE_PATH
-from media_hygiene.search.folders import BROWSE_PATH
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
+from media_hygiene.services.step_progress import read_progress
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -38,13 +38,11 @@ if TYPE_CHECKING:
 class WatchFiles:
     """The value of the variable, and the files `mh` and the server share."""
 
-    kept: str = (
-        "3"  # `MEDIA_HYGIENE_LAUNCHER_STEPS` of an `mh` that keeps the server up
-    )
+    # `MEDIA_HYGIENE_LAUNCHER_STEPS` of an `mh` that keeps the server up
+    kept: str = "3"
     now: str = ".mh-step-now.json"  # a step to run now, the server still up
-    running: str = (
-        ".mh-step-running.json"  # written by `mh`: the id of the step it runs
-    )
+    # written by `mh`: the id of the step it runs
+    running: str = ".mh-step-running.json"
     done: str = ".mh-step-done.json"  # written by `mh`: the id and the exit code
     cid: str = ".mh-home.cid"  # the home server's container id (`docker run --cidfile`)
     code: str = ".mh-home.code"  # its exit code, written by `docker wait`
@@ -65,7 +63,6 @@ STEP_PATH: Final = "/api/step"  # `POST` a step (`home_step`), `GET` where it is
 SERVED_HERE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
     {
         ("search",): SEARCH_PAGE_PATH,
-        ("browse",): BROWSE_PATH,
         ("review", "--near"): NEAR_REVIEW_PAGE,  # 0357
         ("review", "--pairs"): PAIRS_PAGE,  # 0417, as the next three
         ("review", "--junk"): JUNK_PAGE,
@@ -193,5 +190,7 @@ def _state(folder: Path) -> dict[str, object]:
         except OSError, ValueError:
             continue
         if isinstance(said, dict):
-            return {"state": state, "id": said.get("id"), "code": said.get("code")}
+            found = {"state": state, "id": said.get("id"), "code": said.get("code")}
+            progress = read_progress(folder)  # a step that writes says how far (0361)
+            return found if progress is None else found | {"progress": progress}
     return {"state": StepState.IDLE, "id": None, "code": None}

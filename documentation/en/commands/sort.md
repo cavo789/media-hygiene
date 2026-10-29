@@ -13,7 +13,7 @@ nothing is copied, no space is used. Every move is journaled and `undo` puts eve
 
 **When**: once you have reviewed the proposal ([sorting, step
 5](../sort/05-review-the-proposal.md)) and, if you wish, named the events with
-[`review-sort`](search.md#the-events-of-the-latest-classify). **Save and close the workbook first.**
+[the 🗂 Events tab of `search`](search.md#the-events-of-the-latest-classify). **Save and close the workbook first.**
 
 **Try it**:
 
@@ -84,7 +84,7 @@ the source folders it will remove, then asks.
 - **Nothing lost, proven**: the files and sizes of the source and target folders are counted
   before and after, and must match.
 - **One event at a time**: `--event` (or *Sort this event now* in
-  [`review-sort`](search.md#the-events-of-the-latest-classify)) sorts one event; a later `sort` of the whole workbook skips
+  [the 🗂 Events tab of `search`](search.md#the-events-of-the-latest-classify)) sorts one event; a later `sort` of the whole workbook skips
   its files, already moved. Each run has its own `undo`.
 - **Everything stays linked**: right after moving, `sort` rewrites every file of yours that names
   photos by path — the names given to faces (`people\*.toml`), `albums.json`, `decisions.json`

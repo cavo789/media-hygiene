@@ -122,7 +122,6 @@ nav:
       - commands/audit.md
       - commands/push.md
       - commands/backup.md
-      - commands/browse.md
       - commands/classify.md
       - commands/clean.md
       - commands/config.md
@@ -138,7 +137,6 @@ nav:
       - commands/purge.md
       - commands/reports.md
       - commands/restore.md
-      - commands/review-sort.md
       - commands/review.md
       - commands/search.md
       - commands/share.md

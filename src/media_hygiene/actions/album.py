@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.actions.album_links import UNSUPPORTED, why_not
 from media_hygiene.actions.journaled import JournaledChanges
 from media_hygiene.actions.kinds import ActionKind
-from media_hygiene.actions.outcome import Incident
+from media_hygiene.actions.outcome import Incident, why
 from media_hygiene.actions.sort_moves import file_of, make_folders
 from media_hygiene.constants import ALBUM_MARKER
 from media_hygiene.i18n import _
@@ -27,6 +27,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.actions.album_plan import AlbumLink, AlbumPlan
+    from media_hygiene.actions.album_stale import StaleLink
     from media_hygiene.actions.journaled import CleanContext
     from media_hygiene.actions.outcome import Tally
 
@@ -39,6 +40,7 @@ class AlbumRun:
 
     interrupted: bool = False
     unsupported: str = ""  # why no link can be made on this disk; empty: none
+    removed: int = 0  # links of photos taken out of the album, removed (0374)
 
 
 class AlbumExecutor:
@@ -83,7 +85,39 @@ class AlbumExecutor:
                 ended = AlbumRun(unsupported=reason)
                 break
         progress.stop()
-        return ended
+        if ended.interrupted or ended.unsupported:
+            return ended
+        return AlbumRun(removed=self._remove(plan.leftovers.stale, stop))
+
+    def _remove(self, stale: tuple[StaleLink, ...], stop: Callable[[], bool]) -> int:
+        """Remove the names of the photos taken out of the album, journaled (0374).
+
+        Each one is checked again just before: still another name of its photo.
+
+        Args:
+            stale: The names to remove.
+            stop: Tells when Ctrl+C was pressed.
+
+        Returns:
+            How many were removed.
+        """
+        removed = 0
+        for each in stale:
+            if stop():
+                break
+            if not (each.other.is_file() and each.link.samefile(each.other)):
+                continue
+            file = file_of(each.link, (each.size, each.mtime_ns))
+            entry = self._changes.entry(file, ActionKind.UNLINK).model_copy(
+                update={"keeper": str(each.other)}
+            )
+            try:
+                self._changes.record(entry, each.link.unlink)
+            except OSError as exc:
+                self._tally.failed.append(Incident(each.link, why(exc)))
+                continue
+            removed += 1
+        return removed
 
     def _link(self, link: AlbumLink) -> str:
         """Make one link, journaled; a failure is counted, never raised.

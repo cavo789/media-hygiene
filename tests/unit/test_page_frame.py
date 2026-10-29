@@ -108,7 +108,6 @@ _MAIN_KEY: Final = {
     "unwanted_review.html.j2": "the group as marked, then next",
     "pairs_review.html.j2": "swap the folders, then next",
     "places.html.j2": "close the large photo, then the photos of the place",
-    "browse.html.j2": "every file from the last one clicked",
     "search.html.j2": "every file from the last one clicked",
     "phone_review.html.j2": "every file from the last one clicked",
     "person.html.j2": "every file from the last one clicked",
@@ -121,7 +120,8 @@ def test_each_page_shows_its_main_keys_in_the_panel(template: str, key: str) -> 
     page = render_page(template)
     panel = page.split('id="keys"')[1].split("</section>")[0]
     assert key in panel.split('id="moreKeys"')[0]
-    assert '<p class="safe">🔒 ' in panel
+    # The search's 🔒 line is the tooltip of ✅ Apply (0463): the panel stays short.
+    assert ('<p class="safe">🔒 ' in panel) == (template != "search.html.j2")
     assert "Ctrl+C in the terminal" not in page.split("</aside>")[1].split("<script")[0]
 
 

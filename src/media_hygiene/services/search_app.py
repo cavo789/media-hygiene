@@ -62,7 +62,6 @@ if TYPE_CHECKING:
 
 _PACKAGE: Final = "media_hygiene.search"
 _SEARCH_TEMPLATE: Final = "search.html.j2"
-_BROWSE_TEMPLATE: Final = "browse.html.j2"
 
 
 @dataclass(frozen=True, slots=True)
@@ -118,7 +117,6 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
     }
     pages = SearchPages(
         headed_page(environment, _SEARCH_TEMPLATE, paths),
-        headed_page(environment, _BROWSE_TEMPLATE, paths),
         build.first,
     )
     chosen = chosen_desk(runtime, search)

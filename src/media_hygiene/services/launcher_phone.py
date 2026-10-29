@@ -121,8 +121,9 @@ def _texts() -> PhoneTexts:
                 "mh import --phone copies only the new photos and videos of a phone "
                 "plugged "
                 "in over USB; --to <folder> chooses where, --only <folder of DCIM> "
-                "takes that folder only (Camera), --free then offers to delete from "
-                "the phone what the PC holds."
+                "takes that folder only (Camera), --since today|week|month|all a "
+                "period (default: since the last import), --free then offers to "
+                "delete from the phone what the PC holds."
             )
         ),
         bad_folder=say(_("{to} is not a folder on a drive letter."), "to"),

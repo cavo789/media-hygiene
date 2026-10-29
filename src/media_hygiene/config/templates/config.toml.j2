@@ -173,6 +173,11 @@ screen_px = 1920
 interval_seconds = 8
 
 
+[imports]
+{{ comment(_("What runs after an import, in this order; remove a step to switch it off. audit: the new files join your library (first while another step is on). copies: the new files that are exact copies of another go to the quarantine (mh undo puts them back). bursts: the page of the import's burst series opens while the next steps run. tags: the local AI model describes the new photos (skipped when it is not running). places: the new spots named online, after its own question.")) }}
+then = ["audit", "copies", "bursts", "tags", "places"]
+
+
 [share]
 {{ comment(_("'share' makes copies of an album to send them, in your folder media-hygiene\\Shares: each photo upright, its long side fitted into long_side_px pixels, JPEG quality quality (30 to 95). Your photos are only read.")) }}
 long_side_px = 2048
@@ -225,6 +230,8 @@ attribution = "© OpenStreetMap contributors"
 nominatim_url = "https://nominatim.openstreetmap.org"
 {{ comment(_("A place you name like a town within this distance, in km, gets a hint: 'classify' already names that town's photos, so the place may be redundant (it is saved anyway).")) }}
 town_hint_km = 10
+{{ comment(_("After an 'import', name the new photos' places online (buildings, monuments, from OpenStreetMap, at nominatim_url): 'ask' each time (the answer is No unless you type y), 'never', or 'always'. Only then a position leaves your PC: rounded to about 100 m, one per group of photos, each asked once.")) }}
+reverse_lookup = "ask"
 {{ comment(_("The positions you give whole folders on the map of 'places' (Save this position), written by the map: 'xmp' gives them to the photos of those folders without GPS, when [tags] xmp_folder_gps is true.")) }}
 # [[places.folders]]
 # folder = 'C:\Photos\2019\Douarnenez'
@@ -286,7 +293,7 @@ leave = []
 
 {{ comment(_("Where files go. The convention: year, then year-month, then the event's name (2009/2009-11/Tom's birthday), the month of the event's start, 00 when only the year is known. A file directly in a year-month folder was looked at: nothing special that month. Placeholders: {year}, {year_month}, {quarter}, {month}, {month_name}, {day}, {category}, {event}, {event_start}, {place}, {country}, {region}, {city}."), "--layout") }}
 layout = "{year}/{year_month}/{category}"
-{{ comment(_("The guesses, the files no rule decides, the undated and the received ones: an empty layout leaves them where they are until you decide in 'review-sort' or 'search', so the tool never writes a folder name of its own.")) }}
+{{ comment(_("The guesses, the files no rule decides, the undated and the received ones: an empty layout leaves them where they are until you decide in 'search' (its 🗂 Events tab), so the tool never writes a folder name of its own.")) }}
 unsure_layout = ""
 manual_layout = ""
 undated_layout = ""

@@ -136,8 +136,6 @@ Quarantine: empty.
       Sort the photos
 ✅ 17 mh classify                                     Propose a tidy 🔒
                                                       tree
-   18 mh review-sort                                  Name the       🔒 optional
-                                                      events
    19 mh places                                       Name your      🔒 optional
                                                       places on a
                                                       map
@@ -152,8 +150,6 @@ Quarantine: empty.
    23 mh search                                       Find a photo   🔒
                                                       by its words
       Go further
-   24 mh browse                                       Walk through   🔒 optional
-                                                      your folders
    25 mh xmp                                          Carry the      ↩️ optional
                                                       words into
                                                       other photo

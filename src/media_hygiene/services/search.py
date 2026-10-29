@@ -1,4 +1,4 @@
-"""`search` and `browse`: find photos by their words, or walk through the folders.
+"""`search`: find photos by their words, or walk through the folders.
 
 The index (`/cache`) is read, never written: the full-text table lives in memory. The
 browser page is served like `review`, until Ctrl+C; the grid's previews are kept in
@@ -18,7 +18,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.search import statements as sql
 from media_hygiene.search.app import SEARCH_PAGE_PATH
-from media_hygiene.search.folders import BROWSE_PATH, FOLDER_QUERY
+from media_hygiene.search.folders import FOLDER_QUERY
 from media_hygiene.search.meaning_index import MeaningIndex
 from media_hygiene.search.names_soon import NamesKept
 from media_hygiene.search.people_words import unknown_people
@@ -26,12 +26,9 @@ from media_hygiene.search.query import SearchQuery, parse_terms
 from media_hygiene.search.reading import read_query
 from media_hygiene.services.data_checks import unreadable_index
 from media_hygiene.services.search_meaning import with_meaning
-from media_hygiene.services.search_pages import PageStart, Served, serve_pages
+from media_hygiene.services.search_pages import PageStart, serve_pages
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
-
-    from media_hygiene.review.apply_api import ApplyStep
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.services.runtime import Runtime
 
@@ -149,32 +146,3 @@ class SearchOpen:
 
     port: int
     folder: str = ""  # a part of the path, as *Path contains* takes it
-
-
-@dataclass(frozen=True, slots=True)
-class BrowseStart:
-    """`browse`: its port, and the step *Apply now* ends on (opened from home)."""
-
-    port: int  # inside the container (0: any free one)
-    apply: Callable[[], ApplyStep | None] | None = None  # None: no button
-
-
-def serve_browse(runtime: Runtime, search: SearchIndex, start: BrowseStart) -> Served:
-    """Serve the folder view until Ctrl+C, or *Apply now*.
-
-    Args:
-        runtime: Settings, mount points and output.
-        search: The open index.
-        start: The port, and the step *Apply now* ends on.
-
-    Returns:
-        How many files are set aside when the page stops, read from the disk, and
-        `STEP_EXIT_BASE + n` when *Apply now* chose step `n`.
-    """
-    ready = _(
-        "Your folders are ready, open {url} in your browser. Ctrl+C stops it; your "
-        "photos are not changed."
-    )
-    return serve_pages(
-        runtime, search, PageStart(start.port, BROWSE_PATH, ready, start.apply)
-    )

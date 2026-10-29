@@ -90,7 +90,7 @@ Plus : [revoir la proposition](05-review-the-proposal.md).
 Plutôt une photo à l'écran qu'un tableur ? Les mêmes événements, un à la fois, avec leurs photos :
 
 ```powershell
-mh review-sort
+mh search
 ```
 
 Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`). <kbd>Entrée</kbd> accepte le nom et la catégorie
@@ -278,7 +278,7 @@ Après vos règles, vos lieux, vos personnes, relancez l'étape 1 :
 mh classify
 ```
 
-Les modifications déjà faites dans l'ancien classeur et dans `review-sort` sont reprises.
+Les modifications déjà faites dans l'ancien classeur et dans l'onglet 🗂 Événements de `search` sont reprises.
 Corrigez encore (étapes 2 et 3), autant de fois qu'il le faut : rien ne bouge avant `sort`.
 
 ??? info "Détails"
@@ -334,7 +334,7 @@ mh album "Noël" --category Noël --apply
 
     Ce qu'il rassemble : `--category`, `--event`, `--rule`, ou `--rating 4` (au moins 4 étoiles
     dans Windows), ensemble si vous voulez (`--category Noël --rating 4`). `mh undo` supprime ses
-    liens, jamais une photo. Un album fait à la main dans `search` ou `browse` reçoit son dossier
+    liens, jamais une photo. Un album fait à la main dans `search` reçoit son dossier
     de la même façon, sans option : `mh album "Crète 2023"`. Plus : [albums](12-albums.md).
 
 ## Plus tard : de nouvelles photos
@@ -351,7 +351,7 @@ Chaque commande du tri, et l'étape de cette page qui la montre :
 | Commande | Étape | Ce qu'elle fait |
 |---|---|---|
 | [`classify`](../commands/classify.md) | 1, 4, 7, 8 | Propose une place pour chaque fichier, sans rien modifier ; 🤖 la règle `subject` et `--sample` demandent une IA locale. |
-| [`review-sort`](../commands/search.md#les-événements-du-dernier-classify) | 3 | Nomme les événements dans le navigateur. |
+| [l'onglet 🗂 Événements de `search`](../commands/search.md#les-événements-du-dernier-classify) | 3 | Nomme les événements dans le navigateur. |
 | [`places`](../commands/places.md) | 5 | Nomme vos lieux sur une carte. |
 | [`people`](../commands/people.md) | 6 | Trouve et nomme les visages ; `--forget` les supprime. |
 | [`sort`](../commands/sort.md) | 9 | Déplace les fichiers comme le dit le classeur. |
@@ -369,7 +369,7 @@ Un mot vous échappe ? [Les mots de ce guide](../reference-glossary.md). Un mess
 ??? note "Sans `mh` : les commandes complètes"
 
     Pour celles qui ne modifient rien (`classify`), en lecture seule ; ajoutez
-    `-p 127.0.0.1:8088:8088` après `-it` pour celles qui ouvrent une page (`review-sort`,
+    `-p 127.0.0.1:8088:8088` après `-it` pour celles qui ouvrent une page (`search`,
     `places`, `people`) :
 
     ```powershell

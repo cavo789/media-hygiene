@@ -41,6 +41,8 @@ def show_album(runtime: Runtime, prepared: AlbumPrepared) -> None:
     table.add_row(_("Files selected"), human_number(prepared.selected))
     table.add_row(_("Links to make"), human_number(len(plan.links)))
     table.add_row(_("In the album already"), human_number(len(plan.present)))
+    stale, left = plan.leftovers.stale, plan.leftovers.left
+    table.add_row(_("Links to remove"), human_number(len(stale)))
     table.add_row(_("Not found"), human_number(len(plan.missing)))
     table.add_row(_("On another disk or mount"), human_number(len(plan.elsewhere)))
     output.show(table)
@@ -51,6 +53,23 @@ def show_album(runtime: Runtime, prepared: AlbumPrepared) -> None:
     )
     _list(runtime, plan.missing, gone)
     _list(runtime, plan.elsewhere, _("on another disk or mount: no link possible"))
+    for each in stale[:_SHOWN]:
+        output.info(
+            escape(
+                _(
+                    "{path}: taken out of the album, its link goes; the photo stays at "
+                    "{other}"
+                ).format(path=host(each.link), other=host(each.other))
+            )
+        )
+    _list(
+        runtime,
+        left,
+        _(
+            "taken out of the album, but its other name is outside the analysed "
+            "folders: left in place"
+        ),
+    )
     # Both change what the next run links: ranked as next steps, at the end.
     if plan.missing:
         again = (
@@ -105,6 +124,16 @@ def show_album_result(runtime: Runtime, result: AlbumResult) -> None:
             outcome.done,
         ).format(count=human_number(outcome.done))
     )
+    if result.ended.removed:
+        output.success(
+            ngettext(
+                "{count} link of a photo taken out of the album removed: the photo "
+                "stays where it is.",
+                "{count} links of photos taken out of the album removed: the photos "
+                "stay where they are.",
+                result.ended.removed,
+            ).format(count=human_number(result.ended.removed))
+        )
     show_failed(runtime, outcome.failed)
     if result.ended.unsupported:
         output.error(_("The album stopped at the first link refused by the disk."))

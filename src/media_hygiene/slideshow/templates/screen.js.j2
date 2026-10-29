@@ -199,8 +199,15 @@
     tell(chapter, answer.photo || answer.next);
   }
 
+  // Where the photo shown was taken (0472): laid over the photo, hidden when unknown.
+  function placing(answer) {
+    setText("where", answer.where);
+    document.getElementById("where").className = answer.where ? "" : "quiet";
+  }
+
   function showAnswer(answer) {
     telling(answer);
+    placing(answer);
     if (answer.film && films) {
       showFilm(answer.film, answer.key, answer.playing);
     } else {

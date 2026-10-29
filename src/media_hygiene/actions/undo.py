@@ -9,7 +9,7 @@ import logging
 import threading
 from dataclasses import replace
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.journal import done_states, latest_states
 from media_hygiene.actions.kinds import (
@@ -36,6 +36,8 @@ if TYPE_CHECKING:
     from media_hygiene.scan.progress import ProgressSink
 
 _LOGGER = logging.getLogger(__name__)
+# An album's links, made or removed (0374): no bytes come back with them.
+_NO_ROOM: Final = frozenset({ActionKind.LINK, ActionKind.UNLINK})
 
 
 def actions_to_undo(entries: list[JournalEntry]) -> list[JournalEntry]:
@@ -163,5 +165,5 @@ class UndoExecutor:
             return
         with self._lock:
             self._tally.done += 1
-            if entry.action is not ActionKind.LINK:  # removing a link frees nothing
+            if entry.action not in _NO_ROOM:  # a link removed or made: no room at all
                 self._tally.bytes_done += entry.size
