@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from media_hygiene.classify.dates import exif_datetime
+from media_hygiene.classify.dates import exif_datetime, video_date, zone_of
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.review.serving import json_response
@@ -86,17 +86,19 @@ def _picked(desk: RuleDesk, keys: tuple[int, ...]) -> Picked:
         keys: The keys, from the page.
 
     Returns:
-        Them: a photo the classify plan lacks still has its month.
+        Them: a photo or video the classify plan lacks still has its month.
     """
     connection = desk.index.connection
     paths: dict[int, Path] = {}
     days: dict[Path, datetime] = {}
+    zone = zone_of(desk.mover.runtime.settings.classify.timezone if desk.mover else "")
     for key in keys:
         if (found := desk.index.source_of(key)) is None:
             continue
         paths[key] = found.path
         row = connection.execute(sql.DATE_OF, (key,)).fetchone()
-        if when := exif_datetime(row[0] if row else None):
+        written = row[0] if row else None
+        if when := exif_datetime(written) or video_date(written, zone):  # a video: ISO
             days[found.path] = when
     return Picked(paths, days)
 
