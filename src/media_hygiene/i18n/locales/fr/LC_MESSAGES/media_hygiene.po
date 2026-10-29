@@ -9425,11 +9425,16 @@ msgstr ""
 msgid "The files given at least these stars in Windows (1 to 5)."
 msgstr "Les fichiers qui ont au moins ces étoiles dans Windows (1 à 5)."
 
-msgid "The files missing from the albums"
-msgstr "Les fichiers manquants des albums"
-
 msgid "The files of this event: its id or its name."
 msgstr "Les fichiers de cet événement : son identifiant ou son nom."
+
+#, python-brace-format
+msgid ""
+"The files of {name} no longer found (moved without the index, or set "
+"aside then applied)"
+msgstr ""
+"Les fichiers de {name} introuvables (déplacés hors de l'index, ou mis de "
+"côté puis appliqués)"
 
 msgid "The files robocopy copied stay in the backup."
 msgstr "Les fichiers copiés par robocopy restent dans la sauvegarde."

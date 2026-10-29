@@ -53,7 +53,7 @@
     "notSaved": _("Nothing was saved: {error}"),
     "offline": _("The page is not running any more: start it again."),
     "count": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
-    "missing": _("The files missing from the albums"),
+    "missing": _("The files of {name} no longer found (moved without the index, or set aside then applied)"),
     "tv": _("To show {name} on the TV: close this page (Ctrl+C in the window where mh runs), then type (copied):"),
     "sendName": _("Sent {date}"),
     "send": _("To prepare {name} for sending (resized copies without the GPS position, a folder and a zip): close this page (Ctrl+C in the window where mh runs), then type (copied):"),
@@ -84,16 +84,23 @@
     }
     if (!answer.ok) return;
     albums = state.albums || [];
-    const missing = albums.flatMap((album) => album.missing.map((path) => album.name + " — " + path));
+    missingBox();
+    buttons();
+  };
+
+  // The files missing from the album named only (another album's are said on the albums page),
+  // hidden while a command is said: the bar has room for one of them.
+  const missingBox = () => {
+    const album = named();
+    const missing = album && $("albumTvLine").hidden ? album.missing : [];
     const box = $("albumMissing");
     box.hidden = !missing.length;
-    box.querySelector("summary").textContent = TEXTS.missing + " (" + missing.length + ")";
+    box.querySelector("summary").textContent = fill(TEXTS.missing, { name: album ? album.name : "" }) + " (" + missing.length + ")";
     box.querySelector("ul").replaceChildren(...missing.map((text) => {
       const item = document.createElement("li");
       item.textContent = text;
       return item;
     }));
-    buttons();
   };
 
   const send = async (action, pick) => {
@@ -126,11 +133,12 @@
     code.textContent = command;
     line.replaceChildren(fill(text, { name: album.name }) + " ", code);
     line.hidden = false;
+    missingBox();
     if (navigator.clipboard) navigator.clipboard.writeText(command).catch(() => { /* shown anyway */ });
   };
 
   // The command said belongs to the name and the picking it was given for: any change hides it.
-  const forget = () => { $("albumTvLine").hidden = true; };
+  const forget = () => { $("albumTvLine").hidden = true; missingBox(); };
   window.mhAlbumPicked = (count) => { pickedCount = count; forget(); buttons(); };
   // One file into the album named, without picking it (browse's large view, key A);
   // false when no album is named.

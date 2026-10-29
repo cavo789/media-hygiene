@@ -7805,10 +7805,13 @@ msgstr ""
 msgid "The files given at least these stars in Windows (1 to 5)."
 msgstr ""
 
-msgid "The files missing from the albums"
+msgid "The files of this event: its id or its name."
 msgstr ""
 
-msgid "The files of this event: its id or its name."
+#, python-brace-format
+msgid ""
+"The files of {name} no longer found (moved without the index, or set "
+"aside then applied)"
 msgstr ""
 
 msgid "The files robocopy copied stay in the backup."
