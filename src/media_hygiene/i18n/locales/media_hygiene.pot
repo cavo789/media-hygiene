@@ -36,6 +36,11 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
+msgid ""
+" · click: the files of this day only; Shift+click: from the day clicked "
+"before to this one"
+msgstr ""
+
 #, python-brace-format
 msgid " · file modified {day} (the date Explorer shows)"
 msgstr ""
@@ -1589,6 +1594,9 @@ msgid ""
 " this folder and of its subfolders ([tags] xmp_folder_gps = true)."
 msgstr ""
 
+msgid "Click: the files of this folder"
+msgstr ""
+
 msgid ""
 "Clocks: a camera whose clock was off (an hour behind on a trip abroad, a "
 "day ahead) is set right here, never in the photos. camera: a regular "
@@ -2378,6 +2386,12 @@ msgstr ""
 msgid ""
 "Empty files are deleted; unreadable ones are moved to the quarantine, "
 "never deleted outright."
+msgstr ""
+
+msgid "Empty the name"
+msgstr ""
+
+msgid "Empty the name, then the list of your folders again"
 msgstr ""
 
 msgid "Empty the path"
@@ -8104,6 +8118,18 @@ msgstr ""
 msgid "The password of {share} is kept: mh folders remove forgets it."
 msgstr ""
 
+msgid "The period after"
+msgstr ""
+
+msgid "The period after, as long (a day, a month)"
+msgstr ""
+
+msgid "The period before"
+msgstr ""
+
+msgid "The period before, as long (a day, a month)"
+msgstr ""
+
 msgid ""
 "The period of the import: today, week, month, all or a day; default: "
 "since the last import."
@@ -9602,6 +9628,9 @@ msgid "Your decisions — {count} unwanted photo set aside in 'review --junk'."
 msgid_plural "Your decisions — {count} unwanted photos set aside in 'review --junk'."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Your event folders of that month"
+msgstr ""
 
 msgid "Your folders"
 msgstr ""

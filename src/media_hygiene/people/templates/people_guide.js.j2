@@ -70,7 +70,6 @@ function drawPeople() {
   const unnamed = state.sections.filter((item) => !item.name && item.faces > 0).length;
   if (unnamed && !typed) items.push(entry(fill(TEXTS.unnamedEntry, { n: unnamed }), "", () => choose(""), false));
   $("peopleList").replaceChildren(...items);
-  $("whoList").replaceChildren(...roster.map((person) => { const option = element("option"); option.value = person.name; return option; }));
   $("onlyPerson").checked = onlyPerson;
   $("onlyPerson").disabled = !chosen;
 }
@@ -131,6 +130,7 @@ function clearPerson() {
   return true;
 }
 
+comboAttach($("who"), () => (state.roster || []).map((person) => person.name), (row) => { choose(row.value); $("who").blur(); });
 $("who").addEventListener("input", drawPeople);
 $("who").addEventListener("keydown", (event) => {
   event.stopPropagation();

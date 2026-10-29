@@ -25,7 +25,7 @@
   "noTakenTip": _("The file does not say when it was taken (a scan, a screenshot): a search by date does not find it."),
   "takenTip": _("taken {taken} (EXIF: what the search finds by)"),
   "modifiedTip": _(" · file modified {day} (the date Explorer shows)"),
-  "dayTip": _(" · click: the files of this day only"),
+  "dayTip": _(" · click: the files of this day only; Shift+click: from the day clicked before to this one"),
   "folderTip": _("Click: the files of this folder"),
   "picked": [ngettext("{n} file picked", "{n} files picked", 1), ngettext("{n} file picked", "{n} files picked", 2)],
   "allFound": _("Pick all {total} files found"),
@@ -181,18 +181,7 @@
   #folders[open] > #tree { position: fixed; z-index: 4; left: 16px; top: 16px; width: min(28rem, calc(100vw - 32px));
                            max-height: calc(100vh - 32px); padding: 10px 12px; background: var(--card);
                            border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 4px 18px rgba(0, 0, 0, .3); }
-  /* *Path contains* lists the folders (0471): floating under the field, never pushing the form. */
-  #folderLabel { position: relative; }
-  /* Its ✕ sits in the field, always there (greyed while empty): nothing moves. */
-  #folder { padding-right: 2em; }
-  #folderClear { position: absolute; right: 4px; bottom: 4px; padding: 2px 8px; }
-  #folderList { position: absolute; z-index: 4; top: 100%; left: 0; right: 0; max-height: 50vh; overflow-y: auto;
-                margin: 2px 0 0; padding: 4px 0; list-style: none; background: var(--card);
-                border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 4px 18px rgba(0, 0, 0, .3); }
-  #folderList[hidden] { display: none; }
-  #folderList li { padding: 2px 8px; cursor: pointer; overflow-wrap: anywhere; }
-  #folderList li small { margin-left: 6px; color: var(--muted); }
-  #folderList li[aria-selected="true"], #folderList li:hover { background: var(--chip); }
+{% include "combo_list.css.j2" %}
   #withinLine { display: flex; gap: 6px; align-items: baseline; overflow-wrap: anywhere; }
   #withinLine[hidden] { display: none; }
   #heaviest { width: 100%; margin-top: 6px; }
@@ -237,7 +226,8 @@
   /* The two dates share the room the 📅 menu leaves: dd/mm/yyyy and the calendar icon fit. */
   .years label { flex: 1 1 0; min-width: 0; }
   .years input { width: 100%; box-sizing: border-box; padding-left: 4px; padding-right: 2px; }
-  .dateMenu { flex: none; }
+  .dateMenu, .years .step { flex: none; }
+  .years .step { padding: 4px 2px; }
   .dateMenu summary { list-style: none; cursor: pointer; padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; }
   .dateMenu[open] .spans { position: absolute; z-index: 3; right: 0; top: 100%; flex-direction: column;
                            padding: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
@@ -263,8 +253,10 @@
         <input id="text" type="search" autocomplete="off"
                placeholder="{{ _('e.g. Durbuy bear, birthday cake, snow 2008') }}"></label>
       <div class="years">
+        <button type="button" id="dayBefore" class="plain step" disabled title="{{ _('The period before, as long (a day, a month)') }}" aria-label="{{ _('The period before') }}">◀</button>
         <label>{{ _("From") }}<input id="from" type="date" min="1800-01-01" max="2200-12-31"></label>
         <label>{{ _("To") }}<input id="to" type="date" min="1800-01-01" max="2200-12-31"></label>
+        <button type="button" id="dayAfter" class="plain step" disabled title="{{ _('The period after, as long (a day, a month)') }}" aria-label="{{ _('The period after') }}">▶</button>
         <details class="dateMenu">
           <summary title="{{ _('Quick periods') }}" aria-label="{{ _('Quick periods') }}">📅 ▾</summary>
           <div class="spans" role="group" aria-label="{{ _('Quick periods') }}">
@@ -275,12 +267,12 @@
           </div>
         </details>
       </div>
-      <label id="folderLabel">{{ _("Path contains") }}<input id="folder" type="text" autocomplete="off"
+      <label id="folderLabel" class="comboBox">{{ _("Path contains") }}<input id="folder" type="text" autocomplete="off"
                role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="folderList"
                title="{{ _('A part of the path. * is any characters, ? one character, /regex/ a regular expression: *.mov, /\\.(mov|mp4)$/') }}"
                placeholder="{{ _('e.g. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/') }}">
-        <button type="button" id="folderClear" class="plain" disabled title="{{ _('Empty the path, then the list of your folders again') }}" aria-label="{{ _('Empty the path') }}">✕</button>
-        <ul id="folderList" role="listbox" aria-label="{{ _('Your folders, the latest first') }}" hidden></ul></label>
+        <button type="button" id="folderClear" class="plain comboClear" disabled title="{{ _('Empty the path, then the list of your folders again') }}" aria-label="{{ _('Empty the path') }}">✕</button>
+        <ul id="folderList" class="comboList" role="listbox" aria-label="{{ _('Your folders, the latest first') }}" hidden></ul></label>
       <span class="segLabel">{{ _("Show") }}</span>
       <div class="seg" role="group" aria-label="{{ _('Show') }}">
         <input type="hidden" id="kind" value="all">
@@ -375,6 +367,7 @@
 {% include "folder_tree.js.j2" %}
 {% include "search.js.j2" %}
 {% include "search_folders.js.j2" %}
+{% include "combo_list.js.j2" %}
 {% include "search_path_list.js.j2" %}
 {% include "rule_dialog.js.j2" %}
 {% include "move_dialog.js.j2" %}

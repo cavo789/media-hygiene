@@ -1,6 +1,5 @@
 {# The dialogs of the *🗂 Events* view (0438), review-sort's: the sure proposals accepted
    at once, *Check, then sort*, *Your rules*, the photos sent to another folder. #}
-<datalist id="categories"></datalist>
 <dialog id="sureDlg" aria-labelledby="sureAsk">
   <p id="sureAsk"></p>
   <ol id="sureList"></ol>
@@ -26,7 +25,7 @@
 </dialog>
 <dialog id="sendDlg">
   <form id="send" method="dialog" autocomplete="off">
-    <label><span id="send-label"></span><input id="send-category" list="categories"></label>
+    <label><span id="send-label"></span><input id="send-category"></label>
     <menu><button type="button" id="sendNo" class="plain">{{ _("Cancel") }}</button><button type="submit">{{ _("Send") }}</button></menu>
   </form>
 </dialog>

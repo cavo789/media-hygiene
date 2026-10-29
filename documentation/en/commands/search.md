@@ -75,7 +75,13 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   (anniv\*) and the words of one source (place:durbuy).
 - **Follow a word**: a click on a word under a photo (*Mechelen*, *2026*, a person's name)
   searches it as a phrase in every source, the filters emptied: from one photo to all the others
-  with that word. It never picks the photo.
+  with that word. It never picks the photo. **Ctrl+click** adds the word to the search instead,
+  the other filters kept: *Manon*, then Ctrl+click on *2015*.
+- **Follow a day or a folder**: a click on a photo's day or folder, under it or in the large view,
+  shows the files of that day (*From* and *To* take it) or of that folder (*Path contains*). The
+  browser's **Back** (Alt+←) gives the search before each of these clicks. **Shift+click** on a
+  second day searches from the day clicked before to this one (put in order): a weekend, a trip,
+  a party past midnight.
 - **Pick**, as on every page of photos: a click picks one file; the ☑ box (or Ctrl+click) adds or removes one;
   Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse picks
   what it touches (with Ctrl, it adds); Ctrl+A every file shown, then **Pick all N files found**
@@ -99,7 +105,9 @@ helps: `*.mp4` or a regular expression are still searched as typed.
 - **A period**: *From* and *To* are calendars, a day each, both included; one alone is a period
   of one day. The day is the one the photo was taken, as `classify` dates it. *From* chosen,
   *To* takes the same day when it is empty or earlier. Next to them, the **📅 ▾** menu searches
-  **📍 Today**, **🗓️ Month** (this month), **📆 Year** (this year); **✕ Clear** empties both.
+  **📍 Today**, **🗓️ Month** (this month), **📆 Year** (this year); **✕ Clear** empties both. **◀ ▶** on
+  each side move the period by its own length, then search: one day → the day before or after,
+  a month of 📅 → the month before or after (greyed while both dates are empty).
   **🔍 Search** stays in sight at the bottom of the form.
 - **Sort by**, in the bar as on the [folder view](#walk-through-your-folders): *best match* (the
   default; the newest first without words), *name*, *date* (the oldest first), *size* (the
@@ -184,7 +192,9 @@ Explorer will show it, under the year and month of the earliest photo picked
 (*→ C:\Photos\2009\2009-11\Anniversaire de Tom*,
 [the convention](../sort/04-classify.md#the-convention-year-month-event)). The name proposed is
 that of **your folder holding most of the photos picked**: its photos go to the folder of the
-same name under the convention, never to a second one beside it.
+same name under the convention, never to a second one beside it. When every photo picked comes
+from one folder with a real name (*Anniversaire Chloé*, not *Juin 2012*), that name is proposed,
+even if it names a person or spans several days.
 
 Before the move, the photos are listed **by source folder**, one tick box each, with their
 count. A folder you named after **another** event (`Saint Nicolas 2009`: a name, one evening) is

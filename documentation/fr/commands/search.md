@@ -79,7 +79,13 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   mots (anniv\*) et les mots d'une seule source (place:durbuy).
 - **Suivre un mot** : un clic sur un mot sous une photo (*Mechelen*, *2026*, le nom d'une
   personne) le cherche comme expression dans toutes les sources, les filtres vidés : d'une photo à
-  toutes les autres qui ont ce mot. Il ne choisit jamais la photo.
+  toutes les autres qui ont ce mot. Il ne choisit jamais la photo. **Ctrl+clic** ajoute plutôt le
+  mot à la recherche, les autres filtres gardés : *Manon*, puis Ctrl+clic sur *2015*.
+- **Suivre un jour ou un dossier** : un clic sur le jour ou le dossier d'une photo, sous elle ou
+  dans la grande vue, montre les fichiers de ce jour (*Du* et *Au* le prennent) ou de ce dossier
+  (*Le chemin contient*). Le bouton **Précédent** du navigateur (Alt+←) rend la recherche d'avant
+  chacun de ces clics. **Maj+clic** sur un second jour cherche du jour
+  cliqué avant à celui-ci (remis dans l'ordre) : un week-end, un voyage, une fête après minuit.
 - **Choisir**, comme sur toute page de photos : un clic choisit un fichier ; la case ☑ (ou Ctrl+clic) en
   ajoute ou en retire un ; Maj+clic choisit tous les fichiers depuis le dernier cliqué ; un
   rectangle tracé à la souris choisit ce qu'il touche (avec Ctrl, il ajoute) ; Ctrl+A tous les
@@ -108,7 +114,9 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   période d'un jour. Le jour est celui de la prise de vue, tel que `classify` le date. *Du*
   choisi, *Au* prend le même jour s'il est vide ou plus tôt. À côté, le menu **📅 ▾** cherche
   **📍 Aujourd'hui**, **🗓️ Mois** (ce mois-ci), **📆 Année** (cette année) ; **✕ Effacer** vide les
-  deux. **🔍 Chercher** reste en vue au bas du formulaire.
+  deux. **◀ ▶** de part et d'autre déplacent la période de sa propre durée, puis cherchent :
+  un jour → la veille ou le lendemain, un mois du 📅 → le mois d'avant ou d'après (grisés tant
+  que les deux dates sont vides). **🔍 Chercher** reste en vue au bas du formulaire.
 - **Trier par**, dans la barre comme sur la [vue des dossiers](#parcourir-vos-dossiers) :
   *meilleure correspondance* (par défaut ; la plus récente d'abord sans mots), *nom*, *date* (la
   plus ancienne d'abord), *taille* (la plus grande d'abord) ou *durée, la plus courte d'abord* (les
@@ -196,7 +204,9 @@ ligne en dessous montre le dossier créé, tel que l'Explorateur le montrera, so
 et le mois de la plus ancienne photo choisie (*→ C:\Photos\2009\2009-11\Anniversaire de Tom*,
 [la convention](../sort/04-classify.md#la-convention--année-mois-événement)). Le nom proposé est
 celui de **votre dossier qui contient le plus de photos choisies** : ses photos vont dans le
-dossier du même nom sous la convention, jamais dans un second à côté.
+dossier du même nom sous la convention, jamais dans un second à côté. Quand toutes les photos
+choisies viennent d'un seul dossier au vrai nom (*Anniversaire Chloé*, pas *Juin 2012*), ce nom
+est proposé, même s'il nomme une personne ou couvre plusieurs jours.
 
 Avant le déplacement, les photos sont listées **par dossier source**, une case chacun, avec leur
 nombre. Un dossier que vous avez nommé d'après un **autre** événement (`Saint Nicolas 2009` : un

@@ -80,7 +80,13 @@ function open() {
   large.alt = file.name;
   $("viewerName").textContent = file.name;
   $("viewerAside").hidden = !file.chosen;
-  $("viewerInfo").textContent = [file.date, file.size, file.facts, file.where || file.folder || scope().folder].filter(Boolean).join(" · ");
+  // A page may turn the day or the folder into a link (`infoLink`, the search page's).
+  const facts = [["date", file.date], ["size", file.size], ["facts", file.facts], ["folder", file.where || file.folder || scope().folder]];
+  $("viewerInfo").replaceChildren();
+  for (const [at, [kind, text]] of facts.filter(([, text]) => text).entries()) {
+    if (at) $("viewerInfo").append(" · ");
+    $("viewerInfo").append(typeof infoLink === "function" ? infoLink(kind, text) : text);
+  }
   for (const line of file.exif || []) $("viewerInfo").append(element("div", "", line)); // EXIF (0433)
   if (typeof infoExtra === "function") $("viewerInfo").append(...infoExtra(file)); // a page's own facts
   $("viewerSaid").textContent = "";

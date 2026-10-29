@@ -3,11 +3,8 @@
    2026/2026-09; a year folder above its months; folders naming no year at the end), each
    with its count; typing narrows the list (a part of the path, any case).
    ↓/↑ move, Enter picks (fills the field, then searches), Esc closes. Free text (*.mp4, a
-   regex) still works: the list only helps. It floats under the field: nothing moves. #}
-const PATH_LIST_MAX = 200;  // lines shown at once; typing narrows the rest
-let pathRows = [];
-let pathAt = -1;
-
+   regex) still works: the list only helps. It floats under the field: nothing moves.
+   The list itself is `combo_list.js.j2`, shared with the move dialog. #}
 function pathWhen(path) {
   // "2026-10" for …/2026/2026-10/…, "2026-13" for a year folder (above its months), "" for none
   let when = "";
@@ -25,77 +22,29 @@ function pathTyped(node, folders) {
   return top ? node.inside.slice(top.inside.length + 1) : node.inside;
 }
 
-function pathClose() {
-  $("folderList").hidden = true;
-  $("folder").setAttribute("aria-expanded", "false");
-  pathAt = -1;
-}
+const pathCombo = comboList({
+  field: $("folder"),
+  list: $("folderList"),
+  clear: $("folderClear"),
+  rows: async () => {
+    const folders = await folderList();
+    return folders
+      .map((node) => ({ label: node.path, value: pathTyped(node, folders), count: node.files, when: pathWhen(node.path) }))
+      .map((row) => ({ ...row, keys: [row.label.toLowerCase(), row.value.toLowerCase()] }))
+      .sort((a, b) => b.when.localeCompare(a.when) || b.label.localeCompare(a.label, undefined, { numeric: true }));
+  },
+  pick: () => search(null),
+  cleared: () => search(null),
+});
 
-function pathMark(at) {
-  const lines = $("folderList").children;
-  pathAt = Math.max(-1, Math.min(at, lines.length - 1));
-  for (const [i, line] of [...lines].entries()) line.setAttribute("aria-selected", String(i === pathAt));
-  if (pathAt >= 0) lines[pathAt].scrollIntoView({ block: "nearest" });
-}
-
-function pathPick(row) {
-  $("folder").value = row.typed;
-  pathClearable();
-  pathClose();
-  search(null);
-}
-
-async function pathOpen() {
+// A card's folder (`C:\Photos\2015\Novembre 2015`): its files, the other filters emptied.
+async function searchFolder(path) {
   const folders = await folderList();
-  const typed = $("folder").value.trim().toLowerCase();
-  pathRows = folders
-    .map((node) => ({ node, typed: pathTyped(node, folders) }))
-    .filter((row) => !typed || row.node.path.toLowerCase().includes(typed) || row.typed.toLowerCase().includes(typed))
-    .sort((a, b) => pathWhen(b.node.path).localeCompare(pathWhen(a.node.path)) || b.node.path.localeCompare(a.node.path, undefined, { numeric: true }))
-    .slice(0, PATH_LIST_MAX);
-  const lines = pathRows.map((row) => {
-    const line = element("li", "", row.node.path);
-    line.setAttribute("role", "option");
-    line.append(element("small", "", String(row.node.files)));
-    line.addEventListener("mousedown", (event) => { event.preventDefault(); pathPick(row); });
-    return line;
-  });
-  $("folderList").replaceChildren(...lines);
-  $("folderList").hidden = !lines.length || document.activeElement !== $("folder");
-  $("folder").setAttribute("aria-expanded", String(!$("folderList").hidden));
-  pathAt = -1;
+  const node = folders.find((one) => one.path === path);
+  if (!node) return;
+  for (const id of ["text", "from", "to"]) $(id).value = "";
+  if ($("viewer").classList.contains("open")) close();
+  window.scrollTo(0, 0);
+  pathCombo.choose({ value: pathTyped(node, folders) });
 }
-
-function pathClearable() { $("folderClear").disabled = !$("folder").value; }
-
-$("folder").addEventListener("click", () => { if (!$("folder").value) pathOpen(); });
-$("folder").addEventListener("input", () => { pathClearable(); pathOpen(); });
-$("folderClear").addEventListener("click", () => {
-  $("folder").value = "";
-  pathClearable();
-  $("folder").focus();
-  pathOpen();
-  search(null);
-});
-$("folder").addEventListener("blur", pathClose);
-$("folder").addEventListener("keydown", (event) => {
-  if ($("folderList").hidden) {
-    if (event.key === "ArrowDown") { event.preventDefault(); pathOpen(); }
-    return;
-  }
-  if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-    event.preventDefault();
-    pathMark(pathAt + (event.key === "ArrowDown" ? 1 : -1));
-  } else if (event.key === "Enter" && pathAt >= 0) {
-    event.preventDefault();
-    event.stopPropagation();
-    pathPick(pathRows[pathAt]);
-  } else if (event.key === "Escape") {
-    event.preventDefault();
-    event.stopPropagation();
-    pathClose();
-  } else if (event.key === "Enter") {
-    pathClose();  // free text: the form's own Enter searches
-  }
-});
-pathClearable();  // a page opened on a folder (or a link with a path) starts with ✕ on
+function pathClearable() { pathCombo.clearable(); }  // a field filled back (history) gets its ✕

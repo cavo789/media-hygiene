@@ -1,7 +1,7 @@
 {# *Move to an event…* (0403), after the grid's scripts: the photos picked, by source
    folder, then moved. `showSources` is shared with the rule dialog's GO
    (`search_rule.js.j2`): one tick box per source folder, a folder named after another
-   event unticked; `MOVE_PATHS.view` answers them. The names offered come from the
+   event unticked; `MOVE_PATHS.view` answers them. The names offered (a list under the field, `combo_list.js.j2`) come from the
    folder tree (`FOLDERS_PATH`, `search_folders.js.j2`). #}
 const MOVE_PATHS = {{ move_paths | tojson }};
 const moveEl = (id) => document.getElementById(id);
@@ -48,7 +48,7 @@ async function askMove(name) {
   moveView = answer;
   moveLeft.clear();
   for (const source of answer.sources) if (!source.ticked) moveLeft.add(source.folder);
-  if (!moveEl("moveName").value) moveEl("moveName").value = answer.proposed;
+  if (!moveEl("moveName").value) { moveEl("moveName").value = answer.proposed; moveCombo.clearable(); }
   if (answer.month !== moveMonth) { moveMonth = answer.month; moveNames(moveMonth); }
   moveEl("moveWhere").textContent = answer.target ? "→ " + answer.target : "";
   showSources(moveEl("moveSources"), answer.sources, (source, ticked) => {
@@ -63,6 +63,7 @@ async function askMove(name) {
 // earliest one), from the tree's container paths: offered to the name, sub-folders as
 // Windows writes them. Read again at each opening: a move adds some.
 let moveMonth = null;
+let moveFolders = [];  // [{ label, value, count }] of `moveMonth`
 async function moveNames(month) {
   const answer = await ask(FOLDERS_PATH);
   if (!answer || !answer.ok || month !== moveMonth) return;  // a new name can still be typed
@@ -73,18 +74,26 @@ async function moveNames(month) {
     const at = folder.inside.indexOf(below);
     if (at < 0) continue;
     const name = folder.inside.slice(at + below.length);
-    if (name) names.set(name.toLowerCase(), name.replaceAll("/", "\\"));
+    if (name && !names.has(name.toLowerCase())) names.set(name.toLowerCase(), { label: name.replaceAll("/", "\\"), count: folder.files });
   }
-  const sorted = [...names.values()].sort((a, b) => a.localeCompare(b));
-  moveEl("moveNames").replaceChildren(...sorted.map((name) => Object.assign(document.createElement("option"), { value: name })));
+  moveFolders = [...names.values()].sort((a, b) => a.label.localeCompare(b.label)).map((row) => ({ ...row, value: row.label }));
 }
 
 let moveTimer = 0;
-moveEl("moveName").addEventListener("input", () => {
+function moveTyped() {
   window.clearTimeout(moveTimer);
   moveButton();
   moveTimer = window.setTimeout(() => askMove(moveEl("moveName").value.trim()), 250);
+}
+const moveCombo = comboList({
+  field: moveEl("moveName"),
+  list: moveEl("moveNames"),
+  clear: moveEl("moveClear"),
+  rows: async () => moveFolders,
+  pick: moveTyped,
+  cleared: moveTyped,
 });
+moveEl("moveName").addEventListener("input", moveTyped);
 moveEl("moveOpen").addEventListener("click", () => {
   if (!picked.size) return;
   moveView = null;
@@ -95,7 +104,9 @@ moveEl("moveOpen").addEventListener("click", () => {
   moveEl("moveName").focus();
   moveEl("moveNo").textContent = moveEl("moveNo").dataset.cancel;
   moveMonth = null;
-  moveEl("moveNames").replaceChildren();
+  moveFolders = [];
+  moveCombo.close();
+  moveCombo.clearable();
   askMove("");
 });
 moveEl("moveNo").addEventListener("click", () => moveEl("moveDlg").close());

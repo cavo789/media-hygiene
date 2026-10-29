@@ -28,7 +28,9 @@ function card(hit, index) {
   picture.src = hit.thumb;
   picture.addEventListener("error", () => picture.replaceWith(element("div", "empty", TEXTS.noPreview)));
   const meta = element("div", "meta");
-  meta.append(titled(element("div", "name", hit.name)), titled(element("div", "muted folderLine", hit.folder)));
+  const folder = titled(element("div", "muted folderLine", ""));
+  folder.append(linked(hit.folder, TEXTS.folderTip, () => searchFolder(hit.folder)));
+  meta.append(titled(element("div", "name", hit.name)), folder);
   meta.append(takenLine(hit));  // which date it is (0433)
   if (hit.facts) meta.append(element("div", "muted", hit.facts));  // a video (0408)
   if (hit.to !== undefined) { // a rule tried (0396): where the file would go
@@ -54,10 +56,29 @@ function titled(node) {
 // The day taken (EXIF, what the search finds by), its time and the file's modified
 // day in the tooltip: a modified day Explorer shows is not the one searched (0433).
 function takenLine(hit) {
-  const line = element("div", "muted", [hit.date ? "📷 " + hit.date : TEXTS.noTaken, hit.size].filter(Boolean).join(" · "));
+  const line = element("div", "muted", hit.date ? "📷 " : [TEXTS.noTaken, hit.size].filter(Boolean).join(" · "));
   line.title = hit.date ? fill(TEXTS.takenTip, { taken: hit.taken || hit.date })
     + (hit.modified && hit.modified !== hit.date ? fill(TEXTS.modifiedTip, { day: hit.modified }) : "") : TEXTS.noTakenTip;
+  // The day is a link: a click searches that day only (From = To = it).
+  if (hit.date) line.append(linked(hit.date, line.title + TEXTS.dayTip, (event) => searchDay(hit.date, event)), hit.size ? " · " + hit.size : "");
   return line;
+}
+
+// A fact of a card or of the large view that searches by itself on a click: never a pick,
+// a rectangle nor the large view.
+function linked(text, title, act) {
+  const link = element("span", "day", text);
+  link.title = title;
+  for (const kind of ["pointerdown", "mousedown", "dblclick"]) link.addEventListener(kind, (event) => event.stopPropagation());
+  link.addEventListener("click", (event) => { event.stopPropagation(); act(event); });
+  return link;
+}
+
+// The large view's day and folder (`pick_viewer.js.j2`): the same links as on the card.
+function infoLink(kind, text) {
+  if (kind === "date") return linked(text, TEXTS.dayTip.replace(/^ · /, ""), (event) => searchDay(text, event));
+  if (kind === "folder") return linked(text, TEXTS.folderTip, () => searchFolder(text));
+  return text;
 }
 
 // The words of a file as chips: a click searches the word; a person's has a × too.
@@ -69,7 +90,8 @@ function chipsOf(hit) {
       chip.title = fill(TEXTS.lookFor, { word, source: SOURCES[source] || source });
       // Never a pick, a rectangle nor the large view: only the search.
       for (const kind of ["pointerdown", "mousedown", "dblclick"]) chip.addEventListener(kind, (event) => event.stopPropagation());
-      chip.addEventListener("click", (event) => { event.stopPropagation(); lookFor(word); });
+      // Ctrl+click: the word is added to the search, the other filters kept.
+      chip.addEventListener("click", (event) => { event.stopPropagation(); (event.ctrlKey || event.metaKey ? addWord : lookFor)(word); });
       if (source === "person") chip.append(unnameButton(hit, word));
       chips.append(chip);
     }
@@ -89,6 +111,13 @@ function chipsOf(hit) {
 function lookFor(word) {
   $("text").value = '"' + word.replaceAll('"', "") + '"';
   for (const id of ["from", "to", "folder"]) $(id).value = "";
+  if ($("viewer").classList.contains("open")) close();
+  window.scrollTo(0, 0);
+  search(null);
+}
+
+function addWord(word) {
+  $("text").value = ($("text").value.trim() + ' "' + word.replaceAll('"', "") + '"').trim();
   if ($("viewer").classList.contains("open")) close();
   window.scrollTo(0, 0);
   search(null);
@@ -273,6 +302,7 @@ function told(text, error) {
 
 async function search(event, again) {
   if (event) event.preventDefault();
+  steppable();  // ◀ ▶ follow every way the dates change (cards, 📅, Back, a word)
   if (!again) more = 0;
   const body = {
     text: $("text").value, day_from: $("from").value || null, day_to: $("to").value || null,
@@ -289,6 +319,7 @@ async function search(event, again) {
   }
   const found = await answer.json();
   asked = body;
+  if (!again) keepInHistory();
   offerRule();
   total = found.total;
   showFiles(found.hits, again);
@@ -320,6 +351,39 @@ $("from").addEventListener("change", () => {
   const from = $("from").value;
   if (from && (!$("to").value || $("to").value < from)) $("to").value = from;
 });
+// One day only, from a card's day: the period shows it, then searched. Shift+click on a
+// second day (0488): from the day clicked before to this one, put in order.
+let dayClicked = "";
+function searchDay(day, event) {
+  const first = event && event.shiftKey && dayClicked ? dayClicked : day;
+  [$("from").value, $("to").value] = first < day ? [first, day] : [day, first];
+  dayClicked = day;
+  if ($("viewer").classList.contains("open")) close();
+  search(null);
+}
+// ◀ ▶ (0488): the period moves by its own length (whole months by months), then searched.
+const asDay = (text) => { const [y, m, d] = text.split("-").map(Number); return new Date(y, m - 1, d); };
+const lastOfMonth = (day) => new Date(day.getFullYear(), day.getMonth() + 1, 0).getDate();
+function shifted(from, to, way) {
+  if (from.getDate() === 1 && to.getDate() === lastOfMonth(to)) {
+    const months = (to.getFullYear() - from.getFullYear()) * 12 + to.getMonth() - from.getMonth() + 1;
+    const start = new Date(from.getFullYear(), from.getMonth() + way * months, 1);
+    return [start, new Date(start.getFullYear(), start.getMonth() + months, 0)];
+  }
+  const days = Math.round((to - from) / 86400000) + 1;
+  return [from, to].map((day) => new Date(day.getFullYear(), day.getMonth(), day.getDate() + way * days));
+}
+function stepPeriod(way) {
+  const from = $("from").value || $("to").value;
+  const to = $("to").value || from;
+  if (!from) return;
+  [$("from").value, $("to").value] = shifted(asDay(from), asDay(to), way).map(isoDay);
+  search(null);
+}
+const steppable = () => { $("dayBefore").disabled = $("dayAfter").disabled = !$("from").value && !$("to").value; };
+$("dayBefore").addEventListener("click", () => stepPeriod(-1));
+$("dayAfter").addEventListener("click", () => stepPeriod(1));
+for (const id of ["from", "to"]) for (const kind of ["input", "change"]) $(id).addEventListener(kind, steppable);
 // A quick period: today, this month, this year (local days), or none; then searched.
 const isoDay = (day) => [day.getFullYear(), String(day.getMonth() + 1).padStart(2, "0"), String(day.getDate()).padStart(2, "0")].join("-");
 function period(span) {
@@ -395,3 +459,22 @@ const openedOn = new URLSearchParams(window.location.search).get({{ folder_query
 if (openedOn) $("folder").value = openedOn;
 search();
 loadChosen();
+
+// Back (Alt+←) gives the search before (a click on a day, a folder, a word replaces it):
+// each search is a step of the browser's history, its fields restored from it.
+let restoring = false;
+function keepInHistory() {
+  if (restoring) return;
+  const state = { text: $("text").value, from: $("from").value, to: $("to").value, folder: $("folder").value };
+  if (history.state && JSON.stringify(history.state) === JSON.stringify(state)) return;
+  try {
+    if (history.state) history.pushState(state, ""); else history.replaceState(state, "");
+  } catch (error) { /* a sandboxed frame may refuse it */ }
+}
+window.addEventListener("popstate", async (event) => {
+  if (!event.state || !("folder" in event.state)) return;
+  for (const id of ["text", "from", "to", "folder"]) $(id).value = event.state[id];
+  pathClearable();
+  restoring = true;
+  try { await search(null); } finally { restoring = false; }
+});

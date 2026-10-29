@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.own_events import named_event, one_moment
 from media_hygiene.classify.rules_file import read_rules
-from media_hygiene.services.selection_models import Picked, event_path
+from media_hygiene.services.selection_models import Picked, event_path, sole_label
 from media_hygiene.services.selection_move import SelectionMover
 from tests.support.scenes import Shot, write_shot
 from tests.support.sorting import (
@@ -109,6 +109,15 @@ def test_an_event_name_may_hold_sub_folders(locations: Locations) -> None:
     assert done["moved"] == len(party), done
     moved_to = locations.data_dir / "c/2016/2016-07/France/Morzine"
     assert len(list(moved_to.glob("*.jpg"))) == len(party)
+
+
+def test_the_only_source_folder_names_the_event() -> None:
+    """All from `Anniversaire Chloé`: its name, even a person's; never a generic one."""
+    rules = FolderRules.build((), ((), ())).with_people(("Chloé",))
+    assert sole_label({"C:\\a": "Anniversaire Chloé"}, rules) == "Anniversaire Chloé"
+    assert not sole_label({"C:\\a": "Juin 2012"}, rules)
+    assert not sole_label({"C:\\a": "Chloé"}, rules)  # her folder, not an event
+    assert not sole_label({"C:\\a": "Mariage", "C:\\b": "Kermesse"}, rules)
 
 
 def test_the_event_path_makes_each_folder_safe() -> None:

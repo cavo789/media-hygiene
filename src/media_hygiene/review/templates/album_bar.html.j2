@@ -20,12 +20,12 @@
   #albumTvLine { font-size: .85rem; margin: 6px 0 0; }
   #albumTvLine code { padding: 2px 6px; border-radius: 6px; background: var(--chip); }
   #albumMissing { font-size: .8rem; color: var(--muted); }
+{% include "combo_list.css.j2" %}
 </style>
 <div id="albumBar">
   <label for="albumName">{{ _("Album") }}</label>
-  <input id="albumName" list="albumNames" maxlength="80" autocomplete="off"
+  <input id="albumName" maxlength="80" autocomplete="off"
          placeholder="{{ _('type a name, e.g. Crete 2023') if album_quiet else _('e.g. Crete 2023') }}">
-  <datalist id="albumNames"></datalist>
 {% if album_short | default(false) %}
   <button id="albumAdd" type="button" disabled title="{{ _('Add to the album') }}" aria-label="{{ _('Add to the album') }}">➕</button>
   <button id="albumRemove" class="plain" type="button" disabled title="{{ _('Take out of the album') }}" aria-label="{{ _('Take out of the album') }}">➖</button>
@@ -43,6 +43,7 @@
 <details id="albumMissing" hidden><summary></summary><ul></ul></details>
 <script>
 (() => {
+{% include "combo_list.js.j2" %}
   const ALBUMS_PATH = {{ albums_path | tojson }};
   const TEXTS = {{ {
     "saving": _("Saving…"),
@@ -80,12 +81,6 @@
     }
     if (!answer.ok) return;
     albums = state.albums || [];
-    $("albumNames").replaceChildren(...albums.map((album) => {
-      const option = document.createElement("option");
-      option.value = album.name;
-      option.label = album.name + " · " + counted(TEXTS.count, album.count);
-      return option;
-    }));
     const missing = albums.flatMap((album) => album.missing.map((path) => album.name + " — " + path));
     const box = $("albumMissing");
     box.hidden = !missing.length;
@@ -137,6 +132,7 @@
   // false when no album is named.
   window.mhAlbumAdd = (pick) => send("add", pick);
   try { $("albumName").value = window.localStorage.getItem(STORED) || ""; } catch { /* private mode */ }
+  comboAttach($("albumName"), () => albums.map((album) => ({ label: album.name, value: album.name, count: counted(TEXTS.count, album.count) })));
   $("albumName").addEventListener("input", buttons);
   $("albumAdd").addEventListener("click", () => send("add"));
   $("albumRemove").addEventListener("click", () => send("remove"));

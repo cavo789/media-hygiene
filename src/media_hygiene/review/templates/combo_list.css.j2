@@ -1,0 +1,15 @@
+  /* A drop-down list under a field (0471, 0487, 0490: *Path contains*, the move
+     dialog's event name, the album, the people, the event folders; shared by every page),
+     floating under it, never pushing the form; its ✕ sits in the field, always there (greyed
+     while empty): nothing moves. `combo_list.js.j2` drives it. */
+  .comboBox { position: relative; }
+  span.comboBox { display: inline-block; }
+  .comboBox > input { padding-right: 2em; }
+  .comboClear { position: absolute; right: 4px; bottom: 4px; padding: 2px 8px; }
+  .comboList { position: absolute; z-index: 4; top: 100%; left: 0; right: 0; max-height: 50vh; overflow-y: auto;
+               margin: 2px 0 0; padding: 4px 0; list-style: none; background: var(--card); color: var(--text);
+               border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 4px 18px rgba(0, 0, 0, .3); }
+  .comboList[hidden] { display: none; }
+  .comboList li { padding: 2px 8px; cursor: pointer; overflow-wrap: anywhere; }
+  .comboList li small { margin-left: 6px; color: var(--muted); }
+  .comboList li[aria-selected="true"], .comboList li:hover { background: var(--chip); }

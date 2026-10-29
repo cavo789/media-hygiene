@@ -62,6 +62,11 @@ msgstr[1] ""
 " {count} autres fichiers sont des fichiers que vous avez mis de côté ou "
 "supprimés avant : pas proposés."
 
+msgid ""
+" · click: the files of this day only; Shift+click: from the day clicked "
+"before to this one"
+msgstr " · clic : les fichiers de ce jour seulement ; Maj+clic : du jour cliqué avant à celui-ci"
+
 #, python-brace-format
 msgid " · file modified {day} (the date Explorer shows)"
 msgstr " · fichier modifié le {day} (la date que montre l'Explorateur)"
@@ -1958,6 +1963,9 @@ msgstr ""
 ".xmp des photos sans GPS de ce dossier et de ses sous-dossiers ([tags] "
 "xmp_folder_gps = true)."
 
+msgid "Click: the files of this folder"
+msgstr "Clic : les fichiers de ce dossier"
+
 msgid ""
 "Clocks: a camera whose clock was off (an hour behind on a trip abroad, a "
 "day ahead) is set right here, never in the photos. camera: a regular "
@@ -2931,6 +2939,12 @@ msgid ""
 msgstr ""
 "Les fichiers vides sont supprimés ; les illisibles sont déplacés en "
 "quarantaine, jamais supprimés directement."
+
+msgid "Empty the name"
+msgstr "Vider le nom"
+
+msgid "Empty the name, then the list of your folders again"
+msgstr "Vider le nom, puis revoir la liste de vos dossiers"
 
 msgid "Empty the path"
 msgstr "Vider le chemin"
@@ -9791,6 +9805,18 @@ msgstr ""
 msgid "The password of {share} is kept: mh folders remove forgets it."
 msgstr "Le mot de passe de {share} est gardé : mh folders remove l'oublie."
 
+msgid "The period after"
+msgstr "La période d'après"
+
+msgid "The period after, as long (a day, a month)"
+msgstr "La période d'après, aussi longue (un jour, un mois)"
+
+msgid "The period before"
+msgstr "La période d'avant"
+
+msgid "The period before, as long (a day, a month)"
+msgstr "La période d'avant, aussi longue (un jour, un mois)"
+
 msgid ""
 "The period of the import: today, week, month, all or a day; default: "
 "since the last import."
@@ -11645,6 +11671,9 @@ msgstr[0] ""
 msgstr[1] ""
 "Vos décisions — {count} photos indésirables mises de côté dans 'review "
 "--junk'."
+
+msgid "Your event folders of that month"
+msgstr "Vos dossiers d'événement de ce mois"
 
 msgid "Your folders"
 msgstr "Vos dossiers"

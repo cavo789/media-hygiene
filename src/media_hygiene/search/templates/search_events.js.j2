@@ -11,6 +11,7 @@ let eventShown = null; // the event whose photos the grid shows
 let eventTile = null;  // (hit, meta, node): a tile of an event says where it goes
 let ruleEvent = false; // the rule dialog serves an event, not a period (`events_rule`)
 let showEvent = null;  // (id, again): an event shown, its tiles asked again
+let eventCategories = [];  // the event folders offered under the folder fields (0490)
 
 (() => {
   const T = ET;
@@ -19,6 +20,7 @@ let showEvent = null;  // (id, again): an event shown, its tiles asked again
   const line = (tag, text, css) => element(tag, css || "", text);
   let events = [];
   let current = -1;  // the event shown, in `events` (the grid's frame is the cards' .current)
+  for (const field of ["eventFolderIn", "send-category", "ruleCategory"]) comboAttach(byId(field), () => eventCategories);
   let photoOf = {};  // the tiles of the event shown, by key: its plan row, its host folder
   const setStatus = (text, kind) => {
     byId("chosen").textContent = text;
@@ -212,7 +214,7 @@ let showEvent = null;  // (id, again): an event shown, its tiles asked again
     const view = await answer.json();
     events = view.events;
     byId("eventsSaid").textContent = view.missing || "";
-    byId("categories").replaceChildren(...(view.categories || []).map((name) => Object.assign(document.createElement("option"), { value: name })));
+    eventCategories = view.categories || [];
     showTotals();
     showProgress();
   };

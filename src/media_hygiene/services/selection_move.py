@@ -31,12 +31,14 @@ from media_hygiene.services.selection_models import (
     Picked,
     SourceFolder,
     event_path,
+    sole_label,
 )
 from media_hygiene.services.sort_inputs import find_workbook, plan_of
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
+    from media_hygiene.classify.folders import FolderRules
     from media_hygiene.services.runtime import Runtime
 
 
@@ -68,9 +70,13 @@ class SelectionMover:
             folder = parent_of(self.runtime.mapper.to_host(path))
             groups[folder].append(key)
             names[folder] = path.parent.name
-        named = self._named(names, rows)
+        settings = self.runtime.settings
+        rules = folder_rules(
+            settings.classify, [p.name for p in settings.people.person]
+        )
+        named = self._named(names, rows, rules)
         largest = Counter({f: len(groups[f]) for f in named}).most_common(1)
-        proposed = named[largest[0][0]] if largest else ""
+        proposed = named[largest[0][0]] if largest else sole_label(names, rules)
         typed = event_path(name or proposed)
         return MoveView(
             proposed=proposed,
@@ -89,20 +95,20 @@ class SelectionMover:
             ),
         )
 
-    def _named(self, names: Mapping[str, str], rows: PlanRows) -> dict[str, str]:
+    def _named(
+        self, names: Mapping[str, str], rows: PlanRows, rules: FolderRules
+    ) -> dict[str, str]:
         """The source folders the user named after one event of theirs.
 
         Args:
             names: The name of each host folder.
             rows: The plan's rows: the dates of each folder's files.
+            rules: Tell a generic name and a person's folder.
 
         Returns:
             Their meaning, by host folder.
         """
-        settings = self.runtime.settings
-        people = [person.name for person in settings.people.person]
-        rules = folder_rules(settings.classify, people)
-        gap = settings.classify.merge_gap_hours
+        gap = self.runtime.settings.classify.merge_gap_hours
         named: dict[str, str] = {}
         for folder, name in names.items():
             label = rules.label(name)

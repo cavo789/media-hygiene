@@ -1,0 +1,102 @@
+{# One drop-down list under a text field (0471, 0487): *Path contains* and the move
+   dialog's event name. Attached under the field, its width, the page's font; one line per
+   row with its count when known; typing narrows it, ↓/↑ move, Enter or a click picks, Esc
+   closes, the ✕ empties the field and shows the list again. Free text stays allowed: the
+   list only helps. `combo` = { field, list, clear, rows: async () => [{ label, value, count,
+   keys }], pick(row), cleared() }; rows come sorted; `keys` (lower case) are what typing
+   matches, the label by default. Self-contained (no page helper, no global but its two
+   functions), so a page may include it twice (the album bar's own copy). `comboAttach`
+   turns a bare field into one (0490: album, people, event folders), in place of a
+   `<datalist>`; `combo_list.css.j2` draws it. #}
+function comboList(combo) {
+  const COMBO_MAX = 200;  // lines shown at once; typing narrows the rest
+  let rows = [];
+  let at = -1;
+  const { field, list, clear } = combo;
+  const clearable = () => { if (clear) clear.disabled = !field.value; };
+  const close = () => { list.hidden = true; field.setAttribute("aria-expanded", "false"); at = -1; };
+  const mark = (to) => {
+    const lines = list.children;
+    at = Math.max(-1, Math.min(to, lines.length - 1));
+    for (const [i, line] of [...lines].entries()) line.setAttribute("aria-selected", String(i === at));
+    if (at >= 0) lines[at].scrollIntoView({ block: "nearest" });
+  };
+  const choose = (row) => { field.value = row.value; clearable(); close(); combo.pick(row); };
+  async function open() {
+    const all = await combo.rows();
+    const typed = field.value.trim().toLowerCase();
+    rows = all.filter((row) => !typed || (row.keys || [row.label.toLowerCase()]).some((key) => key.includes(typed)))
+      .slice(0, COMBO_MAX);
+    list.replaceChildren(...rows.map((row) => {
+      const line = document.createElement("li");
+      line.textContent = row.label;
+      line.setAttribute("role", "option");
+      if (row.count !== undefined && row.count !== null) {
+        const count = document.createElement("small");
+        count.textContent = String(row.count);
+        line.append(count);
+      }
+      line.addEventListener("mousedown", (event) => { event.preventDefault(); choose(row); });
+      return line;
+    }));
+    list.hidden = !rows.length || document.activeElement !== field;
+    field.setAttribute("aria-expanded", String(!list.hidden));
+    at = -1;
+  }
+  field.addEventListener("click", () => { if (!field.value) open(); });
+  field.addEventListener("input", (event) => { clearable(); if (!(event.detail && event.detail.picked)) open(); });
+  field.addEventListener("blur", close);
+  if (clear) clear.addEventListener("click", () => {
+    field.value = "";
+    clearable();
+    field.focus();
+    open();
+    if (combo.cleared) combo.cleared();
+  });
+  field.addEventListener("keydown", (event) => {
+    if (list.hidden) {
+      if (event.key === "ArrowDown") { event.preventDefault(); open(); }
+      return;
+    }
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      mark(at + (event.key === "ArrowDown" ? 1 : -1));
+    } else if (event.key === "Enter" && at >= 0) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      choose(rows[at]);
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      close();
+    } else if (event.key === "Enter") {
+      close();  // free text: the form's own Enter goes on
+    }
+  });
+  clearable();
+  return { open, close, choose, clearable };
+}
+
+// A bare field given a list under it: `names()` gives the names offered (or rows), read at
+// each opening; a pick fires the field's `input` (its own listeners run as for typing), then
+// `picked(row)`. Attach it before the field's own keydown listener: Enter and Esc on the
+// list stop there. Returns the box to put where the field goes when it has no parent yet.
+function comboAttach(field, names, picked) {
+  const box = document.createElement("span");
+  box.className = "comboBox";
+  const list = document.createElement("ul");
+  list.className = "comboList";
+  list.setAttribute("role", "listbox");
+  list.hidden = true;
+  if (field.parentNode) field.replaceWith(box);
+  box.append(field, list);
+  field.setAttribute("autocomplete", "off");
+  field.setAttribute("role", "combobox");
+  field.setAttribute("aria-expanded", "false");
+  const rows = async () => names().map((row) => (typeof row === "string" ? { label: row, value: row } : row));
+  comboList({ field, list, rows, pick: (row) => {
+    field.dispatchEvent(new CustomEvent("input", { bubbles: true, detail: { picked: true } }));
+    if (picked) picked(row);
+  } });
+  return box;
+}

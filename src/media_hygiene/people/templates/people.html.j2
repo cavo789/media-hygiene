@@ -84,6 +84,7 @@
 <link rel="icon" type="image/png" href="/assets/images/favicon.png">
 <style>
 {% include "theme.css.j2" %}
+{% include "combo_list.css.j2" %}
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
          font: 400 15px/1.5 var(--mk-font-text); }
@@ -179,7 +180,7 @@
   <div class="guide">
     <button id="next" class="main" type="button">{{ _("Next to do (g)") }}</button>
     <button id="onlyLeft" type="button"></button>
-    <input id="who" list="whoList" type="search" placeholder="{{ _('Go to a person (/)') }}" aria-label="{{ _('Go to a person (/)') }}">
+    <input id="who" type="search" placeholder="{{ _('Go to a person (/)') }}" aria-label="{{ _('Go to a person (/)') }}">
   </div>
   <p id="status" role="status"></p>
   {% include "apply_now.html.j2" %}
@@ -192,8 +193,6 @@
   </nav>
   <main id="groups"></main>
 </div>
-<datalist id="names"></datalist>
-<datalist id="whoList"></datalist>
 <div id="viewer" role="dialog" aria-modal="true">
   <img id="large" alt="">
   <div id="viewerName"></div>
@@ -500,7 +499,7 @@ function drawAlike() {
 function tools(item, index) {
   const bar = element("div", "tools");
   const input = element("input");
-  input.setAttribute("list", "names");
+  const box = comboAttach(input, () => state.people, (row) => nameGroups(index, row.value));
   input.placeholder = TEXTS.placeholder;
   input.value = item.verified ? item.name : "";
   input.disabled = !state.writable;
@@ -517,7 +516,7 @@ function tools(item, index) {
     yes.addEventListener("click", () => nameThenNext(index, item.name));
     bar.append(yes);
   }
-  bar.append(input, save);
+  bar.append(box, save);
   const out = marked(index);
   if (item.name && out.length) {
     const reject = element("button", "", fill(counted(TEXTS.rejectMarked, out.length), { name: item.name }));
@@ -649,7 +648,6 @@ function show(next) {
   state = next;
   for (const item of state.sections) item.strip = item.folded; // its sample comes on opening
   current = Math.min(current, Math.max(0, state.sections.length - 1));
-  $("names").replaceChildren(...state.people.map((name) => { const option = element("option"); option.value = name; return option; }));
   render();
   drawGuide();
   drawAlike();
@@ -726,6 +724,7 @@ $("viewerAside").addEventListener("click", (event) => {
   event.stopPropagation();
   viewerChoice(viewing && viewing.aside ? "remove" : "add");
 });
+{% include "combo_list.js.j2" %}
 {% include "people_guide.js.j2" %}
 load();
 </script>

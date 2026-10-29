@@ -14,6 +14,8 @@ if TYPE_CHECKING:
     from datetime import datetime
     from pathlib import Path
 
+    from media_hygiene.classify.folders import FolderRules
+
 
 @dataclass(frozen=True, slots=True)
 class Picked:
@@ -59,3 +61,22 @@ def event_path(name: str) -> str:
     """
     parts = (safe_name(part) for part in name.replace("\\", "/").split("/"))
     return "/".join(part for part in parts if part)
+
+
+def sole_label(names: Mapping[str, str], rules: FolderRules) -> str:
+    """The meaning of the only source folder's name: every picked photo comes from it.
+
+    Even one naming a person or of several days (`Anniversaire Chloé`): the user moves
+    that folder. A person's own folder (`Chloé`, one word) names no event.
+
+    Args:
+        names: The name of each source folder.
+        rules: Tell a generic name (`Juin 2012`, `DCIM`) and a person's.
+
+    Returns:
+        Its label; empty for several folders, a generic name or a person's folder.
+    """
+    label = rules.label(next(iter(names.values()))) if len(names) == 1 else None
+    if not label or (" " not in label and rules.of_person((label,))):
+        return ""
+    return label
