@@ -2,7 +2,7 @@
 
 - **Priority**: Medium
 - **Batch**: phone
-- **Depends**: 0474
+- **Depends**: 0474, 0476, 0477
 - **Files**: `src/media_hygiene/services/launcher_phone_end.py`, `src/media_hygiene/cli/cmd_import.py`, `src/media_hygiene/config/`, `src/media_hygiene/review/templates/` (home page run)
 
 ## Why
@@ -37,3 +37,11 @@ for a typical import, e.g. 100 photos); place names off (0474).
 ## Decided (2026-10-29, the maintainer)
 
 Defaults: audit, tags and place names all on (place names still ask their own consent, 0474).
+
+## Decided (2026-10-29, the maintainer): the goal, end to end
+
+Plug the phone, import, and minutes later the slideshow is ready: import (0476, a period) →
+audit → tags → places (0472, 0474) → events named (0477) → the last line, on the console and the
+home page: « 📺 Your slideshow *Promenade à Liège* is ready: send it to the TV? » (one click
+starts `slideshow` on the new event). Measure the whole chain for 100 photos on the
+maintainer's PC (a step of `mh-measure.ps1`); tags is the slow step.
