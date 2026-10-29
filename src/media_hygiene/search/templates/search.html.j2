@@ -179,6 +179,9 @@
                            border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 4px 18px rgba(0, 0, 0, .3); }
   /* *Path contains* lists the folders (0471): floating under the field, never pushing the form. */
   #folderLabel { position: relative; }
+  /* Its ✕ sits in the field, always there (greyed while empty): nothing moves. */
+  #folder { padding-right: 2em; }
+  #folderClear { position: absolute; right: 4px; bottom: 4px; padding: 2px 8px; }
   #folderList { position: absolute; z-index: 4; top: 100%; left: 0; right: 0; max-height: 50vh; overflow-y: auto;
                 margin: 2px 0 0; padding: 4px 0; list-style: none; background: var(--card);
                 border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 4px 18px rgba(0, 0, 0, .3); }
@@ -269,7 +272,8 @@
                role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="folderList"
                title="{{ _('A part of the path. * is any characters, ? one character, /regex/ a regular expression: *.mov, /\\.(mov|mp4)$/') }}"
                placeholder="{{ _('e.g. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/') }}">
-        <ul id="folderList" role="listbox" aria-label="{{ _('Your folders, most files first') }}" hidden></ul></label>
+        <button type="button" id="folderClear" class="plain" disabled title="{{ _('Empty the path, then the list of your folders again') }}" aria-label="{{ _('Empty the path') }}">✕</button>
+        <ul id="folderList" role="listbox" aria-label="{{ _('Your folders, the latest first') }}" hidden></ul></label>
       <span class="segLabel">{{ _("Show") }}</span>
       <div class="seg" role="group" aria-label="{{ _('Show') }}">
         <input type="hidden" id="kind" value="all">

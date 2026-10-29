@@ -2380,6 +2380,12 @@ msgid ""
 "never deleted outright."
 msgstr ""
 
+msgid "Empty the path"
+msgstr ""
+
+msgid "Empty the path, then the list of your folders again"
+msgstr ""
+
 msgid "Empty, or a disk unplugged"
 msgstr ""
 
@@ -9607,7 +9613,7 @@ msgstr ""
 msgid "Your folders are clean."
 msgstr ""
 
-msgid "Your folders, most files first"
+msgid "Your folders, the latest first"
 msgstr ""
 
 msgid "Your folders, the update, Windows and the advanced settings."

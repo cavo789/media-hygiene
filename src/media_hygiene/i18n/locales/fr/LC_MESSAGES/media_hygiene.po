@@ -2932,6 +2932,12 @@ msgstr ""
 "Les fichiers vides sont supprimés ; les illisibles sont déplacés en "
 "quarantaine, jamais supprimés directement."
 
+msgid "Empty the path"
+msgstr "Vider le chemin"
+
+msgid "Empty the path, then the list of your folders again"
+msgstr "Vider le chemin, puis revoir la liste de vos dossiers"
+
 msgid "Empty, or a disk unplugged"
 msgstr "Vide, ou un disque débranché"
 
@@ -11650,8 +11656,8 @@ msgstr "Vos dossiers ({count})"
 msgid "Your folders are clean."
 msgstr "Vos dossiers sont propres."
 
-msgid "Your folders, most files first"
-msgstr "Vos dossiers, les plus remplis d'abord"
+msgid "Your folders, the latest first"
+msgstr "Vos dossiers, les plus récents d'abord"
 
 msgid "Your folders, the update, Windows and the advanced settings."
 msgstr "Vos dossiers, la mise à jour, Windows et les réglages avancés."

@@ -40,6 +40,7 @@ function pathMark(at) {
 
 function pathPick(row) {
   $("folder").value = row.typed;
+  pathClearable();
   pathClose();
   search(null);
 }
@@ -65,8 +66,17 @@ async function pathOpen() {
   pathAt = -1;
 }
 
+function pathClearable() { $("folderClear").disabled = !$("folder").value; }
+
 $("folder").addEventListener("click", () => { if (!$("folder").value) pathOpen(); });
-$("folder").addEventListener("input", () => { pathOpen(); });
+$("folder").addEventListener("input", () => { pathClearable(); pathOpen(); });
+$("folderClear").addEventListener("click", () => {
+  $("folder").value = "";
+  pathClearable();
+  $("folder").focus();
+  pathOpen();
+  search(null);
+});
 $("folder").addEventListener("blur", pathClose);
 $("folder").addEventListener("keydown", (event) => {
   if ($("folderList").hidden) {
@@ -88,3 +98,4 @@ $("folder").addEventListener("keydown", (event) => {
     pathClose();  // free text: the form's own Enter searches
   }
 });
+pathClearable();  // a page opened on a folder (or a link with a path) starts with ✕ on
