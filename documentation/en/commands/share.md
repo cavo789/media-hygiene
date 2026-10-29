@@ -8,7 +8,7 @@
 photos that say where the house is.**
 
 `share` takes an [album](search.md#put-photos-in-an-album) (a named list of photos from any
-folders, made in `search`, `browse` or the burst `review`) and makes a copy of each photo,
+folders, made in `search` or the burst `review`) and makes a copy of each photo,
 ready to send: turned upright, its long side brought down to 2048 pixels, saved as a JPEG, and
 **without its GPS position**. The date, the camera and the description stay. The copies go into
 one folder named after the album, with a zip of it next to it: attach the zip to a mail, or add
@@ -17,7 +17,7 @@ USB stick. No account, no password: the tool sends nothing itself.
 
 **Where to start it**: in the home page, the **Share** area (outside the cycle, in the sidebar),
 the *Prepare an album for sending* step; or the **📨 Prepare for sending** button next to the
-album in `search` or `browse`, which gives the command, copied; or `mh menu`, under *Share*.
+album in `search`, which gives the command, copied; or `mh menu`, under *Share*.
 
 **When**: once the album exists, after an [`audit`](audit.md) (an album's photo moved since is
 found again by what the audit read).
@@ -123,7 +123,7 @@ In `config.toml`, `[share]`:
 
 | Option | What it does |
 |---|---|
-| `--album "Crete 2023"` | The album to send, made in `search`, `browse` or the burst review. |
+| `--album "Crete 2023"` | The album to send, made in `search` or the burst review. |
 | `--keep-gps` | Keep the GPS position in the copies, for this run. |
 | `--describe` / `--no-describe` | Add (or not) the description and the keywords found by `tags` to the copies, without asking. |
 
@@ -160,7 +160,7 @@ In `config.toml`, `[share]`:
  network.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ *  --album             <str>  The album to send, made in search, browse or   │
+│ *  --album             <str>  The album to send, made in search or   │
 │                               the burst review: "Crete 2023".                │
 │                               [required]                                     │
 │    --keep-gps                 Keep the GPS position in the copies; removed   │

@@ -30,7 +30,7 @@ type Captures = dict[str, str]
 COMMANDS: Final = ("audit", "review", "clean", "undo", "history", "reports", "purge")
 COMMANDS_TOO: Final = ("crosscheck", "config", "classify", "sort", "album", "inventory",
                        "places", "status", "launcher", "review-sort", "tags", "search",
-                       "browse", "people", "xmp", "menu", "home", "import",
+                       "people", "xmp", "menu", "home", "import",
                        "push", "slideshow", "share", "shrink", "backup",
                        "restore")  # fmt: skip
 _WINDOWS: Final[Mapping[Locale, Window]] = {

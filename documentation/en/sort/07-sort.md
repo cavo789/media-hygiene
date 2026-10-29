@@ -115,7 +115,7 @@ hundreds of empty `July 2016` folders behind. A folder holding only `Thumbs.db`,
 mounted folders, protected and excluded folders are never removed. `--keep-empty-folders` keeps
 them all.
 
-Sorted, and still short of space? **⚖ Heaviest files** in [`browse`](../commands/browse.md) lists
+Sorted, and still short of space? **⚖ Heaviest files** in [the folders of `search`](../commands/search.md#walk-through-your-folders) lists
 the heaviest files of the whole library, the videos first.
 
 ## Nothing lost, proven

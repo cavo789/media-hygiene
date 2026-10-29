@@ -48,10 +48,10 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene search
 ```
 
-Open <http://127.0.0.1:8088/>. The page looks and works like [`browse`](browse.md): the search
+Open <http://127.0.0.1:8088/>. The page shows the search
 field and its filters (a period, a part of the path, the words of one source only) in the left
 column, the ⌨ keys under them, one bar above the grid, then the photos found. **🔎 Words** comes
-first, **📁 Folders** second: it opens `browse`, the same server. Ctrl+C, or closing its tab,
+first, **📁 Folders** second: it opens [your folders](#walk-through-your-folders). Ctrl+C, or closing its tab,
 stops the page.
 
 **Path contains** takes a part of the path, case-insensitive. `*` stands for any characters and
@@ -73,7 +73,7 @@ no escaping. A regular expression that does not compile is told under the field.
 - **Follow a word**: a click on a word under a photo (*Mechelen*, *2026*, a person's name)
   searches it as a phrase in every source, the filters emptied: from one photo to all the others
   with that word. It never picks the photo.
-- **Pick**, as in `browse`: a click picks one file; the ☑ box (or Ctrl+click) adds or removes one;
+- **Pick**, as on every page of photos: a click picks one file; the ☑ box (or Ctrl+click) adds or removes one;
   Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse picks
   what it touches (with Ctrl, it adds); Ctrl+A every file shown, then **Pick all N files found**
   in the bar takes every file the search finds, not only the 240 shown; **🔀 Invert the picking**
@@ -98,7 +98,7 @@ no escaping. A regular expression that does not compile is told under the field.
   *To* takes the same day when it is empty or earlier. Next to them, the **📅 ▾** menu searches
   **📍 Today**, **🗓️ Month** (this month), **📆 Year** (this year); **✕ Clear** empties both.
   **🔍 Search** stays in sight at the bottom of the form.
-- **Sort by**, in the bar as on the [folder view](browse.md): *best match* (the
+- **Sort by**, in the bar as on the [folder view](#walk-through-your-folders): *best match* (the
   default; the newest first without words), *name*, *date* (the oldest first) or *size* (the
   largest first); **Show**, in the left column, keeps **📷** the photos or **🎬** the videos only. The search sorts and filters
   before it shows its first files: *Show: videos*, *Sort by: size* gives the largest videos found.
@@ -220,6 +220,24 @@ again. Nothing moves without that GO.
 *These folders are mounted read-only*: your `mh` was written before the pages could sort (it
 mounts them `:ro`). Type `mh update` once: it writes `mh` again, from your image, with the same
 folders.
+
+## Walk through your folders
+
+**📁 Folders**, on top of the left column, opens the page on your folders, as in Explorer (the
+old `browse` command did only this; `/browse` still opens the same page).
+
+![The folder view: the tree of the folders on the left, the photos of the Birthday folder on the right with two marked to set aside and the saved line](../images/browse.webp)
+
+- **The tree**: your mounted folders, open; the folders below them, closed (▸ opens one). Click a
+  folder: its photos and videos appear, sorted by name, by date or by size, the largest first
+  (**Sort by**). **Show** keeps the photos or the videos only. Both choices are kept, in this
+  browser, for the next folder.
+- **⚖ Heaviest files**, above the folders: the heaviest files of every mounted folder, the videos
+  first, 200 at a time (**Show more** adds as many). The bar says what the list weighs: *200
+  files, 61.4 GB, 25 % of your library*. **Sort by** *bit rate* puts first the videos worst
+  compressed for their length (old cameras, MJPEG): the ones that gain the most once lightened.
+- Look, pick and set aside work as everywhere on this page; opened from the
+  [home page](home.md), **Apply now** runs `clean --decisions` for you.
 
 ## Set photos aside
 

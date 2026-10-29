@@ -50,11 +50,10 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene --locale fr search
 ```
 
-Ouvrez <http://127.0.0.1:8088/>. La page a l'aspect et le fonctionnement de
-[`browse`](browse.md) : le champ de recherche et ses filtres (une période, une partie du chemin, les mots
+Ouvrez <http://127.0.0.1:8088/>. La page montre le champ de recherche et ses filtres (une période, une partie du chemin, les mots
 d'une seule source) dans la colonne de gauche, les touches ⌨ en dessous, une seule barre au-dessus
 de la grille, puis les photos trouvées. **🔎 Mots** vient d'abord, **📁 Dossiers** ensuite : il
-ouvre `browse`, le même serveur. Ctrl+C, ou fermer son onglet, arrête la page.
+ouvre [vos dossiers](#parcourir-vos-dossiers). Ctrl+C, ou fermer son onglet, arrête la page.
 
 **Chemin contient** prend une partie du chemin, sans tenir compte des majuscules. `*` remplace
 n'importe quels caractères et `?` un seul : `*.mov` trouve tous les fichiers `.mov` (`.MOV`
@@ -78,7 +77,7 @@ régulière invalide est signalée sous le champ.
 - **Suivre un mot** : un clic sur un mot sous une photo (*Mechelen*, *2026*, le nom d'une
   personne) le cherche comme expression dans toutes les sources, les filtres vidés : d'une photo à
   toutes les autres qui ont ce mot. Il ne choisit jamais la photo.
-- **Choisir**, comme dans `browse` : un clic choisit un fichier ; la case ☑ (ou Ctrl+clic) en
+- **Choisir**, comme sur toute page de photos : un clic choisit un fichier ; la case ☑ (ou Ctrl+clic) en
   ajoute ou en retire un ; Maj+clic choisit tous les fichiers depuis le dernier cliqué ; un
   rectangle tracé à la souris choisit ce qu'il touche (avec Ctrl, il ajoute) ; Ctrl+A tous les
   fichiers affichés, puis **Choisir les N fichiers trouvés** dans la barre prend tous les fichiers
@@ -107,7 +106,7 @@ régulière invalide est signalée sous le champ.
   choisi, *Au* prend le même jour s'il est vide ou plus tôt. À côté, le menu **📅 ▾** cherche
   **📍 Aujourd'hui**, **🗓️ Mois** (ce mois-ci), **📆 Année** (cette année) ; **✕ Effacer** vide les
   deux. **🔍 Chercher** reste en vue au bas du formulaire.
-- **Trier par**, dans la barre comme sur la [vue des dossiers](browse.md) :
+- **Trier par**, dans la barre comme sur la [vue des dossiers](#parcourir-vos-dossiers) :
   *meilleure correspondance* (par défaut ; la plus récente d'abord sans mots), *nom*, *date* (la
   plus ancienne d'abord) ou *taille* (la plus grande d'abord) ; **Afficher**, dans la colonne de
   gauche, garde **📷** les photos ou **🎬** les vidéos seulement. La recherche trie et filtre avant de montrer ses premiers fichiers :
@@ -236,6 +235,26 @@ relancez `classify`. Rien ne bouge sans ce GO.
 *Ces dossiers sont montés en lecture seule* : votre `mh` a été écrit avant que les pages puissent
 trier (il les monte en `:ro`). Tapez une fois `mh update` : il réécrit `mh`, depuis votre image,
 avec les mêmes dossiers.
+
+## Parcourir vos dossiers
+
+**📁 Dossiers**, en haut de la colonne de gauche, ouvre la page sur vos dossiers, comme dans
+l'Explorateur (l'ancienne commande `browse` ne faisait que cela ; `/browse` ouvre toujours la
+même page).
+
+![La vue par dossiers : l'arbre des dossiers à gauche, les photos du dossier Anniversaire à droite dont deux marquées à mettre de côté et la ligne d'enregistrement](../images/browse.webp)
+
+- **L'arborescence** : vos dossiers montés, ouverts ; les dossiers en dessous, fermés (▸ en ouvre
+  un). Cliquez un dossier : ses photos et vidéos apparaissent, triées par nom, par date ou par
+  taille, la plus grande d'abord (**Trier par**). **Afficher** garde les photos ou les vidéos
+  seulement. Les deux choix sont gardés, dans ce navigateur, pour le dossier suivant.
+- **⚖ Fichiers les plus lourds**, au-dessus des dossiers : les fichiers les plus lourds de tous
+  les dossiers montés, les vidéos d'abord, 200 à la fois (**En montrer plus** en ajoute autant).
+  La barre dit ce que pèse la liste : *200 fichiers, 61,4 Go, 25 % de votre photothèque*.
+  **Trier par** *débit* met en tête les vidéos les moins bien compressées pour leur durée
+  (anciens appareils, MJPEG) : celles qui gagnent le plus une fois allégées.
+- Regarder, choisir et mettre de côté marchent comme partout sur cette page ; ouverte depuis la
+  [page d'accueil](home.md), **Appliquer maintenant** lance `clean --decisions` pour vous.
 
 ## Mettre des photos de côté
 

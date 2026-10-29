@@ -8,10 +8,9 @@
 a photo: no extra space used.**
 
 An **album** is the named list of photos you make in [`search`](search.md#put-photos-in-an-album),
-[`browse`](browse.md) or the burst review, saved in `albums.json`. It has several uses, all under
+[the folders of `search`](search.md#walk-through-your-folders) or the burst review, saved in `albums.json`. It has several uses, all under
 *Share* in the home page and `mh menu`. An album is **a selection to keep** and show again: to
-show photos on the TV once, no album is needed (**📺 On the TV** in the bar of `search` and
-`browse`, see [`slideshow`](slideshow.md)).
+show photos on the TV once, no album is needed (**📺 On the TV** in the bar of `search`, see [`slideshow`](slideshow.md)).
 
 | Use | Command |
 |---|---|
@@ -79,7 +78,7 @@ plan **instead of** `albums.json`; given together, every option must match: `--c
 
 | Option | What it does |
 |---|---|
-| `NAME` | The album's name, as `search` and `browse` saved it: the folder holding its links (required). |
+| `NAME` | The album's name, as `search` saved it: the folder holding its links (required). |
 | `--category NAME` | Instead of a saved album: the files of this category, as the edited `classify` workbook says. |
 | `--event EVENT` | The files of this event: its id (Events sheet) or its name. |
 | `--rule NAME` | The files the `[[classify.rules]]` entry of this name decided. |
@@ -123,7 +122,7 @@ plan **instead of** `albums.json`; given together, every option must match: `--c
  (journaled, undoable).
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│ *    name      <str>  The album's name, as search and browse saved it: the   │
+│ *    name      <str>  The album's name, as search saved it: the   │
 │                       folder holding its links.                              │
 │                       [required]                                             │
 ╰──────────────────────────────────────────────────────────────────────────────╯

@@ -144,7 +144,7 @@ of the left column:
   this version gives no date: *purged since*).
 
 A ticked file carries a red *🗑️ leaves the phone* label. To change what is ticked, the page works
-as [`browse`](browse.md):
+as [the folders of `search`](search.md#walk-through-your-folders):
 
 - **Pick**: a click picks one file; the ☑ box of each thumbnail (or Ctrl+click) adds or removes
   one; Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse

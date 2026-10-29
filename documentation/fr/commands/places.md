@@ -110,7 +110,7 @@ placés à la main) ; ⤢ sous les boutons de zoom ramène cette vue. Une photo 
   la zone en haut de la liste pour filtrer les deux sous-listes au fil de la frappe (le nom
   affiché et le chemin du dossier ; les nombres se lisent *3 / 41*) ; Échap vide la zone.
 - **N'importe quel dossier**, replié sous les dossiers au nom d'une ville, liste chaque dossier
-  de l'index comme [`browse`](browse.md) les montre (lu dans `/cache`, sans parcourir le disque) :
+  de l'index comme [les dossiers de `search`](search.md#parcourir-vos-dossiers) les montre (lu dans `/cache`, sans parcourir le disque) :
   vos dossiers montés ouverts, les autres fermés (▸ en ouvre un). Chaque ligne compte les photos
   et vidéos sans GPS du dossier et de ses sous-dossiers : *📁 Mariage Julie — 42 photos sans GPS* ;
   un dossier dont toutes les photos ont leur GPS est grisé. Cliquez sur un dossier qui ne porte le

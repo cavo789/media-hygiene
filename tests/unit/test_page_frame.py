@@ -108,7 +108,6 @@ _MAIN_KEY: Final = {
     "unwanted_review.html.j2": "the group as marked, then next",
     "pairs_review.html.j2": "swap the folders, then next",
     "places.html.j2": "close the large photo, then the photos of the place",
-    "browse.html.j2": "every file from the last one clicked",
     "search.html.j2": "every file from the last one clicked",
     "phone_review.html.j2": "every file from the last one clicked",
     "person.html.j2": "every file from the last one clicked",

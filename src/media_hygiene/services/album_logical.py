@@ -62,7 +62,7 @@ def album_files(runtime: Runtime, name: str) -> AlbumFiles:
                 name=name.strip(), names=names
             ),
             _(
-                "Add photos to it in search or browse, or say what the album gathers "
+                "Add photos to it in search, or say what the album gathers "
                 "from the classify plan: --category, --event, --rule or --rating."
             ),
         )

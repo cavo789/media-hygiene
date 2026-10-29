@@ -17,7 +17,7 @@ does not see. That is why the original goes to the quarantine, not to the bin: w
 then [`purge`](purge.md) frees the space, or [`undo`](undo.md) brings everything back.
 
 **When**: after a [`clean`](clean.md), when the disk is still full. **⚖ Heaviest files** in
-[`browse`](browse.md) shows where the space goes.
+[the folders of `search`](search.md#walk-through-your-folders) shows where the space goes.
 
 **Try it** (only lists, changes nothing):
 

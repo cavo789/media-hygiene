@@ -54,22 +54,6 @@ def find_steps() -> tuple[Step, ...]:
             doc=Doc("commands/search/"),
         ),
         Step(
-            "browse",
-            space,
-            _("Walk through your folders"),
-            _(
-                "The search, opened on your folders; the heaviest files; set photos "
-                "aside."
-            ),
-            "browse",
-            Risk.SAFE,
-            Kind.PAGE,
-            icon="image",
-            keywords=_("browse explore folders gallery"),
-            doc=Doc("commands/browse/"),
-            optional=True,
-        ),
-        Step(
             "xmp",
             space,
             _("Carry the words into other photo software"),
@@ -153,7 +137,7 @@ def find_areas() -> tuple[Area, ...]:
         "search",
         (
             Group(_("The guide"), ("tags", "search"), numbered=True),
-            Group(_("Go further"), ("browse", "xmp", "inventory")),
+            Group(_("Go further"), ("xmp", "inventory")),
         ),
         Doc("find/quick-guide/"),
         _("Find in short"),

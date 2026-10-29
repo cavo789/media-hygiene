@@ -99,7 +99,7 @@ demande s'il faut l'enregistrer, fermer l'onglet prévient.
 | <kbd>S</kbd> | Laisser les photos choisies (sinon celle encadrée) où elles sont. |
 | <kbd>Suppr</kbd> | Reprendre le choix fait ici : des photos choisies, sinon de l'événement. Le classeur décide à nouveau. |
 
-Les photos se choisissent comme dans [`browse`](../commands/browse.md) : un clic choisit une
+Les photos se choisissent comme dans [les dossiers de `search`](../commands/search.md#parcourir-vos-dossiers) : un clic choisit une
 photo ; la case ☑ de chaque vignette (ou Ctrl+clic) en ajoute ou en retire une ; Maj+clic choisit
 toutes les photos depuis la dernière cliquée ; un rectangle tiré à la souris sur la grille choisit
 ce qu'il touche (avec Ctrl, il s'ajoute au choix) ; Ctrl+A toutes les photos de l'événement.

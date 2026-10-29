@@ -334,7 +334,7 @@ mh album "Noël" --category Noël --apply
 
     Ce qu'il rassemble : `--category`, `--event`, `--rule`, ou `--rating 4` (au moins 4 étoiles
     dans Windows), ensemble si vous voulez (`--category Noël --rating 4`). `mh undo` supprime ses
-    liens, jamais une photo. Un album fait à la main dans `search` ou `browse` reçoit son dossier
+    liens, jamais une photo. Un album fait à la main dans `search` reçoit son dossier
     de la même façon, sans option : `mh album "Crète 2023"`. Plus : [albums](12-albums.md).
 
 ## Plus tard : de nouvelles photos

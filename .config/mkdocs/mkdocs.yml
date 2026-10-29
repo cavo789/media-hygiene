@@ -122,7 +122,6 @@ nav:
       - commands/audit.md
       - commands/push.md
       - commands/backup.md
-      - commands/browse.md
       - commands/classify.md
       - commands/clean.md
       - commands/config.md

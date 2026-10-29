@@ -19,7 +19,7 @@ la corbeille : regardez-en quelques-unes, puis [`purge`](purge.md) libère la pl
 [`undo`](undo.md) ramène tout.
 
 **Quand** : après un [`clean`](clean.md), quand le disque est encore plein. **⚖ Fichiers les
-plus lourds** dans [`browse`](browse.md) montre où va la place.
+plus lourds** dans [les dossiers de `search`](search.md#parcourir-vos-dossiers) montre où va la place.
 
 **Essayer** (liste seulement, ne change rien) :
 

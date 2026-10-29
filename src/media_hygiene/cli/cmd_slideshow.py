@@ -40,10 +40,7 @@ def slideshow_command(  # pylint: disable=too-many-arguments
         str | None,
         typer.Option(
             "--album",
-            help=_(
-                'Show an album, made in search, browse or the burst review: "Crete '
-                '2023".'
-            ),
+            help=_('Show an album, made in search or the burst review: "Crete 2023".'),
             show_default=False,
         ),
     ] = None,
@@ -82,7 +79,7 @@ def slideshow_command(  # pylint: disable=too-many-arguments
             raise MediaHygieneError(
                 _(
                     "--chosen is gone (it showed the files set aside for the bin): "
-                    'add the photos to an album in search or browse, then --album "'
+                    'add the photos to an album in search, then --album "'
                     'Crete 2023".'
                 )
             )

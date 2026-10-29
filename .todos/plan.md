@@ -10,7 +10,7 @@
 
 | # | Lot | Priority | TODOs | Prompt |
 |---|---|---|---|---|
-| 1 | search | Medium | 5 | `/todo:run 0457 0460 0465 0458 0459` |
+| 1 | search | Medium | 5 | `/todo:run 0457 0460 0471 0458 0459` |
 
 ### 1. search
 
@@ -20,7 +20,7 @@
 |---|---|---|---|---|
 | 1 | 0457 | Medium | search: *🗂 Events* as a tab, not a collapsible section | — |
 | 2 | 0460 | Medium | Remove `review-sort` (search's Events replaces it) | 0457 |
-| 3 | 0465 | Medium | Remove `browse` (search opened on folders does it) | — |
+| 3 | 0471 | Medium | Search: folder autocomplete on the path field, *My folders* folded | 0465 |
 | 4 | 0458 | Low | Large view, key I: the town of the GPS position next to the coordinates | — |
 | 5 | 0459 | Low | search: a *shortest first* sort for videos | — |
 

@@ -19,7 +19,7 @@ send with [`share`](commands/share.md), or as a folder of the Explorer with
 
 ## Fill an album
 
-In [`search`](commands/search.md#put-photos-in-an-album) or [`browse`](commands/browse.md), pick
+In [`search`](commands/search.md#put-photos-in-an-album) or [the folders of `search`](commands/search.md#walk-through-your-folders), pick
 the photos, type the album's name in **Album** (the albums already made are proposed; a new name
 creates it), then **➕ Add to the album**. The page says what it saved, read back from the disk.
 

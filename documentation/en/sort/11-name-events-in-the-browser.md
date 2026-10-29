@@ -97,7 +97,7 @@ whether to save it, closing the tab warns.
 | <kbd>S</kbd> | Leave the picked photos (else the framed one) where they are. |
 | <kbd>Delete</kbd> | Take back the choice made here: of the picked photos, else of the event. The workbook decides again. |
 
-The photos are picked as in [`browse`](../commands/browse.md): a click picks one photo; the ☑ box
+The photos are picked as in [the folders of `search`](../commands/search.md#walk-through-your-folders): a click picks one photo; the ☑ box
 of each thumbnail (or Ctrl+click) adds or removes one; Shift+click picks every photo from the last
 one clicked; a rectangle dragged with the mouse over the grid picks what it touches (with Ctrl, it
 adds to the picking); Ctrl+A every photo of the event. **Invert the picking** (or I) picks the

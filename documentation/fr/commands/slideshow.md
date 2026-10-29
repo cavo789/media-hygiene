@@ -60,7 +60,7 @@ diaporama (utile pour l'essayer, ou pour le plan B ci-dessous).
 
 Au lieu d'un dossier : `--search "noel 2025"` (les photos que trouve une [`search`](search.md)) ou
 `--album "Crète 2023"` (un [album](search.md#mettre-des-photos-dans-un-album) fait dans `search`,
-[`browse`](browse.md) ou le tri des rafales [`review`](review.md) : des photos de plusieurs
+[les dossiers de `search`](search.md#parcourir-vos-dossiers) ou le tri des rafales [`review`](review.md) : des photos de plusieurs
 dossiers ; son bouton **📺 Partager sur la télé** donne cette commande, copiée). `--chosen` n'existe
 plus : il montrait les fichiers mis de côté, promis à la quarantaine ; donné, il dit d'utiliser
 `--album`. Depuis la
@@ -75,8 +75,7 @@ favori, attend un diaporama tant qu'aucun ne tourne et l'affiche d'elle-même ; 
 une fois (son code tapé sur la télécommande) et **le reste tant que `mh` tourne** : un autre album
 lui arrive sans nouveau code. Aucun album enregistré : un dossier ou un mois reste toujours possible.
 
-**Depuis toute page de vignettes, sans album** : dans [`search`](search.md) et
-[`browse`](browse.md) ouverts depuis la page d'accueil, **📺 Sur la télé** dans la barre montre
+**Depuis toute page de vignettes, sans album** : dans [`search`](search.md) ouvert depuis la page d'accueil, **📺 Sur la télé** dans la barre montre
 les photos et vidéos choisies ou, rien de choisi, tous les fichiers que montre la page (le
 résultat de la recherche, les fichiers du dossier), 3000 au plus (au-delà : affinez la
 recherche). La télécommande s'ouvre aussitôt dans un nouvel onglet ; un diaporama en cours est
@@ -186,7 +185,7 @@ Le port est `[review] port`, celui de toutes les pages.
 |---|---|
 | `--folder "C:\…"` | Les photos de ce dossier et de ses sous-dossiers, tel que l'Explorateur le montre. |
 | `--search "mots"` | Les photos que trouve une recherche, tapée comme dans [`search`](search.md). |
-| `--album "Crète 2023"` | Un album fait dans `search`, `browse` ou le tri des rafales ; ses fichiers manquants (supprimés, en quarantaine) sont comptés, pas montrés. |
+| `--album "Crète 2023"` | Un album fait dans `search` ou le tri des rafales ; ses fichiers manquants (supprimés, en quarantaine) sont comptés, pas montrés. |
 | `--port PORT` | Port de la page, 8088 par défaut ; publiez le même. |
 | `--lan` (`mh` seulement) | Ouvre le diaporama à la télé et aux téléphones de votre réseau de la maison, pour ce lancement (Windows PowerShell). |
 

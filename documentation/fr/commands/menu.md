@@ -179,8 +179,6 @@ Quarantaine : vide.
                                                       une photo
                                                       par ses mots
       Pour aller plus loin
-   24 mh browse                                       Parcourir    🔒 facultatif
-                                                      vos dossiers
    25 mh xmp                                          Emporter les ↩️ facultatif
                                                       mots dans
                                                       d'autres

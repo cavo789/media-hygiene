@@ -162,8 +162,8 @@ class LanApp:
             return await phone_step(self.home, passed)  # an album on the TV (0444)
         if not phone_may(request, originals=self.originals) or not same_site:
             message = _(
-                "The phone is read-only: the reports, the albums, the search and "
-                "browse. Open this page or run this step on the PC."
+                "The phone is read-only: the reports, the albums and the "
+                "search. Open this page or run this step on the PC."
             )
             return json_response(HTTPStatus.FORBIDDEN, {"error": message})
         if request.method == _GET and path == PAGE_PATH:

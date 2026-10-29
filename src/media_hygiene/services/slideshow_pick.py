@@ -155,7 +155,7 @@ def album_paths(runtime: Runtime, name: str) -> tuple[list[str], int]:
             _("No album named {name}. The albums: {names}.").format(
                 name=name, names=names
             ),
-            _("Add photos to an album in search or browse."),
+            _("Add photos to an album in search."),
         )
     gone = frozenset(shelf.missing.get(album.name, ()))
     paths = sorted(entry.path for entry in album.entries if entry.path not in gone)

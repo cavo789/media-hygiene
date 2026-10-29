@@ -102,7 +102,6 @@
     esac
 {% endif %}
     # Only the loop of `{{ function }}` alone reads the step chosen on the home page (0210),
-    # or on a page it opened (browse's Apply now, 0243).
     if [[ -n "${_{{ function }}_relay:-}" && " {{ relayed | join(" ") }} " == *" $command "* ]]; then relay=(-e "{{ relay }}={{ relay_fields if host.step_file else 1 }}"); fi
     if [[ -n "${_{{ function }}_detach:-}" ]]; then relay=(-e "{{ relay }}={{ watch.kept }}"); fi
     # The host's own zone, unless TZ says one: /etc/localtime links to it.
@@ -197,7 +196,6 @@ _{{ function }}_{{ name }}() {
 
 # `{{ function }}` alone: the home page. A step chosen there ends it with {{ step_base }} + n; it runs
 # here as `{{ function }} <step>`, its questions in this terminal, then the page comes back.
-# A page a step opened may end the same way (browse's Apply now, 0243): that step runs next.
 # Quit, Ctrl+C or an error end the loop with the page's exit code (0210). A signal's code
 # (128 + n: Ctrl+C is 130) ends it whatever ran, never read as a step (0287).
 # One tab (0280): the first page opens it; every later page of the loop shows in it, no new tab.

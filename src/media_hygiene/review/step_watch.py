@@ -25,7 +25,6 @@ from media_hygiene.cli.safety import PAGE_COMMANDS
 from media_hygiene.i18n import _
 from media_hygiene.review.serving import json_response
 from media_hygiene.search.app import SEARCH_PAGE_PATH
-from media_hygiene.search.folders import BROWSE_PATH
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 from media_hygiene.services.step_progress import read_progress
 
@@ -64,7 +63,6 @@ STEP_PATH: Final = "/api/step"  # `POST` a step (`home_step`), `GET` where it is
 SERVED_HERE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
     {
         ("search",): SEARCH_PAGE_PATH,
-        ("browse",): BROWSE_PATH,
         ("review", "--near"): NEAR_REVIEW_PAGE,  # 0357
         ("review", "--pairs"): PAIRS_PAGE,  # 0417, as the next three
         ("review", "--junk"): JUNK_PAGE,

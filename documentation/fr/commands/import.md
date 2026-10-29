@@ -156,7 +156,7 @@ PC le détient, expliqué en haut de la colonne de gauche :
   purge plus ancienne que cette version ne donne pas de date : *purgé depuis*).
 
 Un fichier coché porte une étiquette rouge *🗑️ quitte le téléphone*. Pour changer ce qui est coché,
-la page fonctionne comme [`browse`](browse.md) :
+la page fonctionne comme [les dossiers de `search`](search.md#parcourir-vos-dossiers) :
 
 - **Choisir** : un clic choisit un fichier ; la case ☑ de chaque vignette (ou Ctrl+clic) en
   ajoute ou en retire un ; Maj+clic choisit tous les fichiers depuis le dernier cliqué ; un

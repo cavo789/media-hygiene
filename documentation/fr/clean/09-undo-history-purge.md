@@ -130,7 +130,7 @@ contenu.
   [`purge`](../commands/purge.md).
 
 Où va le reste de la place ? **⚖ Fichiers les plus lourds** dans
-[`browse`](../commands/browse.md) liste les fichiers les plus lourds de toute la photothèque, les
+[les dossiers de `search`](../commands/search.md#parcourir-vos-dossiers) liste les fichiers les plus lourds de toute la photothèque, les
 vidéos d'abord ; [`shrink`](../commands/shrink.md) allège les vidéos des anciens appareils,
 les originaux en quarantaine.
 

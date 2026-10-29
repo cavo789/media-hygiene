@@ -193,8 +193,6 @@ def main() -> None:
         home_shown(page, STEP_MS)
         walk["clicks_from"] = time.time()
         walk["search"] = open_from_home(page, "search")
-        if page.evaluate(AVAILABLE_JS, "browse"):
-            walk["browse"] = open_from_home(page, "browse")
         walk["clicks_until"] = time.time()
         walk["console"] = console_step(page)
         walk["own_server"] = own_server_rounds(page)

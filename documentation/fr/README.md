@@ -144,8 +144,7 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
 - [Les personnes](reference-people.md) : trouver les visages des photos, regrouper ceux qui se
   ressemblent et les nommer dans votre navigateur (`people`), puis retrouver quelqu'un avec
   `search` ; gardés dans le cache, jamais envoyés.
-- [Les albums](reference-albums.md) : ce qu'est un album ici, comment le remplir depuis `search`
-  ou `browse`, et ce que la page des albums montre et permet, sur le PC et sur un téléphone.
+- [Les albums](reference-albums.md) : ce qu'est un album ici, comment le remplir depuis `search`, et ce que la page des albums montre et permet, sur le PC et sur un téléphone.
 - [Utilisation avancée](reference-advanced.md) : limiter les processeurs utilisés
   (`PYTHON_CPU_COUNT`).
 

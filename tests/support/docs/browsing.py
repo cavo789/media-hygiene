@@ -16,7 +16,7 @@ PLACE: Final = "Parc du Cinquantenaire"  # a public park of Brussels
 
 # As `mh` runs them: a step chosen on the page is relayed, so *Apply now* is offered.
 _LAUNCHED: Final = ("MEDIA_HYGIENE_LAUNCHER_STEPS=1",)
-_RELAYING: Final = frozenset({"browse", "home"})
+_RELAYING: Final = frozenset({"home"})
 
 type Captures = dict[str, str]
 
@@ -69,7 +69,7 @@ def served_pages(demo: Demo, shots: Path) -> Captures:
     word = demo.library.names.birthday.rsplit("/", maxsplit=1)[-1].casefold()
     _serve(demo, ("search", "--", "search", word), shots)
     folder = demo.library.names.birthday.rsplit("/", maxsplit=1)[-1]
-    _serve(demo, ("browse", "--", "browse", folder), shots)
+    _serve(demo, ("search", "--", "browse", folder), shots)
     _serve(demo, ("home", "--", "home"), shots)
     return captures
 

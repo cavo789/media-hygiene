@@ -124,7 +124,7 @@ chose reste, et `sort` dit combien restent et pourquoi. Vos dossiers montés, le
 et exclus ne sont jamais supprimés. `--keep-empty-folders` les garde tous.
 
 Trié, et toujours à court de place ? **⚖ Fichiers les plus lourds** dans
-[`browse`](../commands/browse.md) liste les fichiers les plus lourds de toute la photothèque, les
+[les dossiers de `search`](../commands/search.md#parcourir-vos-dossiers) liste les fichiers les plus lourds de toute la photothèque, les
 vidéos d'abord.
 
 ## Rien de perdu, preuve à l'appui

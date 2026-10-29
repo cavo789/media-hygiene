@@ -97,7 +97,7 @@ opened the page:
   disk (the default), the page **stays open** while a step runs in that window: *mh clean runs
   in the PowerShell window of mh (in the taskbar): answer it if it asks something. This page
   stays open and shows the result at the end*; then *mh clean: done.* and the page shows its
-  new state, without reloading. *search* and *browse* open at once in this very tab, served
+  new state, without reloading. *search* opens at once in this very tab, served
   by the home page itself; a step that opens another page of its own (review, people…) closes
   this one meanwhile: *Back to the home page* brings it back. A second step asked while
   one runs waits: *A step is running in the window of mh: wait for its end.* Otherwise (reports
@@ -132,7 +132,7 @@ opened the page:
   copy (an address other than `127.0.0.1` or `localhost`), the command is selected: press Ctrl+C.
 
 Every other page ([`review`](review.md), [`review-sort`](search.md#the-events-of-the-latest-classify),
-[`places`](places.md), [`search`](search.md), [`browse`](browse.md), [`people`](people.md))
+[`places`](places.md), [`search`](search.md), [`people`](people.md))
 wears the home page's look and theme, under a bar: **Documentation** opens that page's chapter,
 next to its French twin (*En français*). When the home page opened it, the page shows in the
 **same tab** (no new tab), and **⌂ Back to the home page** closes it (what you decided there is
@@ -162,11 +162,11 @@ PC only? See [Keep the page on this PC only](#keep-the-page-on-this-pc-only) bel
    opens on it without a code. Without HTTPS, until `mh` stops only.
 
 On the phone, the home page is the family's door, **Our photos**: *Find a photo* (search and
-browse), the albums and where you are; the stages that change photos (import, clean, sort, back
+your folders), the albums and where you are; the stages that change photos (import, clean, sort, back
 up) and the tools are not shown there, the PC keeps the whole cycle.
 
 🔒 **The phone is read-only: every change is made on the PC.** From the phone: the page, where you are, the reports, the progress of an audit started on the PC,
-[your albums](#your-albums-on-the-phone), and **search** and **browse** (their photos opened at
+[your albums](#your-albums-on-the-phone), and **search** (its photos opened at
 the phone's size, and their videos; the originals only with `lan_phone_originals = true` under `[review]` of `config.toml`, off by default: full size, GPS position included; *set aside*, *Apply now* and a move stay the PC's). Only a paired
 phone reaches them: any other device of the Wi-Fi (a guest, a TV) gets the pairing page, or
 nothing, on every address. While the phone shows a page, `mh` keeps running even with the

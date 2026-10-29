@@ -102,7 +102,7 @@ drawn but left out of that view.
   are in neither. **Type a name** in the box on top of the list to filter both sub-lists as you
   type (the name shown and the folder's path; the counts read *3 / 41*); Esc empties the box.
 - **Any folder**, folded under the town folders, lists every folder of the index as
-  [`browse`](browse.md) shows them (read from `/cache`, the disk is not walked): your mounted
+  [the folders of `search`](search.md#walk-through-your-folders) shows them (read from `/cache`, the disk is not walked): your mounted
   folders open, the others closed (▸ opens one). Each line counts the photos and videos without
   GPS of the folder and of its subfolders: *📁 Mariage Julie — 42 photos without GPS*; a folder
   whose photos all have GPS is greyed. Click one named after no town (a wedding, a holiday): the

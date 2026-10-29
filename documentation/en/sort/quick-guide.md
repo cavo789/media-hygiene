@@ -325,7 +325,7 @@ mh album "Christmas" --category Christmas --apply
 
     What it gathers: `--category`, `--event`, `--rule`, or `--rating 4` (at least 4 stars in
     Windows), together if you like (`--category Christmas --rating 4`). `mh undo` deletes its
-    links, never a photo. An album made by hand in `search` or `browse` gets its folder the same
+    links, never a photo. An album made by hand in `search` gets its folder the same
     way, without an option: `mh album "Crete 2023"`. More: [albums](12-albums.md).
 
 ## Later: new photos

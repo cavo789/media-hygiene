@@ -148,7 +148,7 @@ def browse(page: Page, name: str) -> None:
         page: The browser tab.
         name: The last part of the folder to open (its path ends with it).
     """
-    page.goto(SERVED)
+    page.goto(f"{SERVED}browse")  # `search`, its folders open (0408, 0465)
     page.wait_for_selector("#tree .folder")
     page.evaluate(
         "document.querySelectorAll('#tree ul[hidden]')"
@@ -161,7 +161,6 @@ def browse(page: Page, name: str) -> None:
     page.locator("#grid article").nth(2).click(modifiers=["Control"])
     page.click("#setAside")
     page.wait_for_selector("#grid .badge")
-    page.wait_for_selector("#applyNow:not([hidden])")
     page.mouse.move(5, 5)
     page.wait_for_timeout(PAUSE_MS)
     page.screenshot(path=SHOTS / "browse.png")

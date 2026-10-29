@@ -28,8 +28,7 @@ def share_command(  # pylint: disable=too-many-arguments  # one per option
         typer.Option(
             "--album",
             help=_(
-                'The album to send, made in search, browse or the burst review: "Crete '
-                '2023".'
+                'The album to send, made in search or the burst review: "Crete 2023".'
             ),
             show_default=False,
         ),

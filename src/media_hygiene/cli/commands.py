@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 # Verbs that only open a page (0362): the home page opens them in one click; hidden
 # from `--help`, still run when typed, by `mh menu` and by the home page.
-PAGE_ONLY: Final = frozenset({"browse", "home", "places", "review-sort"})
+PAGE_ONLY: Final = frozenset({"home", "places", "review-sort"})
 
 
 def commands() -> tuple[tuple[str, Callable[..., None], str, str], ...]:

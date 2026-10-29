@@ -63,7 +63,7 @@ POST_PATHS: Final = _SAYS | FOLDER_POSTS | _SHOW_POSTS
 # an album saved on the PC, on the TV (`lan_show`). Every other step stays the PC's.
 PHONE_STEPS: Final = frozenset({ALBUM_STEP})
 # The steps a phone opens as pages instead of asking the PC to run them.
-PHONE_PAGES: Final = {"mh search": SEARCH_PAGE_PATH, "mh browse": BROWSE_PATH}
+PHONE_PAGES: Final = {"mh search": SEARCH_PAGE_PATH}
 _GET, _POST = "GET", "POST"
 # The controls of a page of photos to pick that write, hidden on a phone (0429).
 PHONE_HIDDEN: Final = (

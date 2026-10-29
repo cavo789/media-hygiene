@@ -58,7 +58,7 @@ only. Without `--lan`, only the PC can open the show (useful to try it, or for p
 
 Instead of a folder: `--search "noel 2025"` (the photos a [`search`](search.md) finds) or
 `--album "Crete 2023"` (an [album](search.md#put-photos-in-an-album) made in `search`,
-[`browse`](browse.md) or the burst [`review`](review.md): photos of several folders; its
+[the folders of `search`](search.md#walk-through-your-folders) or the burst [`review`](review.md): photos of several folders; its
 **📺 Share on the TV** button gives this command, copied). `--chosen` is gone: it showed the
 files set aside, meant for the quarantine; given, it says to use `--album`. From the
 [home page](home.md) opened by `mh --lan`, the *Show your photos on the TV* step asks for the
@@ -70,7 +70,7 @@ or a month (by the date the audit read); a tap opens the remote at once (no code
 is paired once (its code typed on the remote) and **stays paired while `mh` runs**: another album
 reaches it without a new code. No album saved: a folder or a month is always there.
 
-**From any page of tiles, no album needed**: in [`search`](search.md) and [`browse`](browse.md)
+**From any page of tiles, no album needed**: in [`search`](search.md)
 opened from the home page, **📺 On the TV** in the bar shows the photos and videos picked, or,
 nothing picked, every file the page shows (the search's result, the folder's files), at most
 3000 (more: narrow the search). The remote opens at once in a new tab; a show already running is
@@ -172,7 +172,7 @@ The port is `[review] port`, the one of every page.
 |---|---|
 | `--folder "C:\…"` | The photos of this folder and its subfolders, as the Explorer shows it. |
 | `--search "words"` | The photos a search finds, as typed in [`search`](search.md). |
-| `--album "Crete 2023"` | An album made in `search`, `browse` or the burst review; its files missing (deleted, in the quarantine) are counted, not shown. |
+| `--album "Crete 2023"` | An album made in `search` or the burst review; its files missing (deleted, in the quarantine) are counted, not shown. |
 | `--port PORT` | Port of the page, 8088 by default; publish the same one. |
 | `--lan` (`mh` only) | Opens the show to the TV and the phones of your home network, for this run (Windows PowerShell). |
 

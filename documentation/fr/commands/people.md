@@ -143,7 +143,7 @@ lui-même :
    confirmées avec les autres. Leur section dit *N photos mises de côté, masquées* :
    **Afficher** les remontre, estompées, chacune avec ↺ pour reprendre celle-là ; **Retirer de
    la mise de côté** les reprend toutes. Il en va de même des photos mises de côté depuis une
-   autre page ([`search`](search.md), [`browse`](browse.md)), jusqu'à ce que `clean --decisions`
+   autre page ([`search`](search.md)), jusqu'à ce que `clean --decisions`
    les déplace.
 3. Ouverte depuis la page d'accueil (`mh`), **Appliquer maintenant** ferme la page et lance
    [`clean --decisions`](clean.md), qui demande d'abord. Sinon, la commande le propose quand vous
@@ -173,8 +173,8 @@ modifiée depuis votre choix reste en place.
 ## Depuis n'importe quelle page : mettre une personne de côté
 
 Une photo montre quelqu'un que vous ne voulez plus voir, sur n'importe quelle page (`review`,
-`browse`, `search`) : **👤 cette personne** sous une photo de `review`, ou **👤 Mettre une
-personne de côté** dans la grande vue de `browse` et `search`, ouvre la page *Mettre une
+`search`) : **👤 cette personne** sous une photo de `review`, ou **👤 Mettre une
+personne de côté** dans la grande vue de `search`, ouvre la page *Mettre une
 personne de côté* dans un nouvel onglet, sur cette photo. Vous pouvez aussi l'ouvrir vous-même à
 `/person` sur l'adresse de l'une de ces pages et y coller le chemin d'une photo
 (`C:\Photos\…\IMG_1234.jpg`).
@@ -182,7 +182,7 @@ personne de côté* dans un nouvel onglet, sur cette photo. Vous pouvez aussi l'
 1. La page montre les visages trouvés sur cette photo par `audit --people` ; cliquez sur le bon
    (un visage seul est pris d'office).
 2. À droite, les photos de cette personne, les plus ressemblantes d'abord, en grille à choisir
-   comme dans [`browse`](browse.md) : clic, Ctrl, Maj, rectangle, Ctrl+A, I, Suppr, la grande vue
+   comme dans [les dossiers de `search`](search.md#parcourir-vos-dossiers) : clic, Ctrl, Maj, rectangle, Ctrl+A, I, Suppr, la grande vue
    et ses touches. Si elles ressemblent à quelqu'un mis de côté avant, la barre le dit (*la
    personne mise de côté le <date>*) : ce que vous mettez de côté maintenant rejoint cette
    personne.

@@ -153,17 +153,17 @@ Enter enlarges one.
     `mh undo` brings them back, `mh purge` frees the space. More: [set photos
     aside](../commands/search.md#set-photos-aside).
 
-## 5. Walk through your folders: `browse` (optional)
+## 5. Walk through your folders: `search` (optional)
 
 <span class="mh-badge mh-optional">Optional</span> <span class="mh-badge mh-undo">↩️ Can be undone</span>
 
 To look through a folder and remove a few photos, as in Explorer, but undoably:
 
 ```powershell
-mh browse
+mh search
 ```
 
-Your browser opens on the page (if not: `http://127.0.0.1:8088/`): the tree of your folders on
+Your browser opens on the page (if not: `http://127.0.0.1:8088/`); **📁 Folders** shows the tree of your folders on
 the left, the photos of the folder chosen on the right; Enter enlarges one, ← and → go to the
 next ones. Pick some (a click, Ctrl, Shift, Ctrl+A), then Delete: they are set aside, saved in
 `decisions.json` of your reports, nothing moves yet. Then `mh clean --decisions` moves them to
@@ -171,8 +171,8 @@ the quarantine, journaled.
 
 ??? info "Details"
 
-    No words needed: the page shows what the audit read. **Search by words** goes to the
-    `search` page, on the same server. More: [`browse`](../commands/browse.md).
+    No words needed: the page shows what the audit read. **🔎 Words** goes back to the
+    search. More: [the folders of `search`](../commands/search.md#walk-through-your-folders).
 
 ## 6. Carry the words into other photo software (optional)
 
@@ -227,7 +227,7 @@ Each command of the search, and the step of this page that shows it:
 | [`places`](../commands/places.md) | 2 | Names your places on a map. |
 | [`tags`](../commands/tags.md) | 3 | Gives words to each photo and video; 🤖 what they show, with a local AI only. |
 | [`search`](../commands/search.md) | 4 | Finds a photo by a word, a place, a year, a person; sets photos aside. |
-| [`browse`](../commands/browse.md) | 5 | Walks through your folders, as in Explorer; sets photos aside. |
+| [`search` 📁 Folders](../commands/search.md#walk-through-your-folders) | 5 | Walks through your folders, as in Explorer; sets photos aside. |
 | [`clean`](../commands/clean.md) | 4, 5 | `--decisions`: moves the photos set aside to the quarantine. |
 | [`xmp`](../commands/xmp.md) | 6 | Writes the words into `.xmp` sidecars. |
 | [`undo`](../commands/undo.md) | 4, 5, 6 | Brings back the photos set aside; removes the `.xmp` files written. |
@@ -244,7 +244,7 @@ guide](../reference-glossary.md). An error message? [Troubleshooting](../referen
 
     For the ones that modify nothing (`audit`, `tags`, `inventory`, and `xmp` without
     `--apply`), read-only; add `-p 127.0.0.1:8088:8088` after `-it` for the ones that open a page
-    (`people`, `places`, `search`, `browse`):
+    (`people`, `places`, `search`):
 
     ```powershell
     docker run --rm -it `

@@ -58,11 +58,10 @@ _POSTED_TOO: Final = SORT_POSTS | {ALBUMS_PATH, PEOPLE_REJECT_PATH, PEOPLE_WHY_P
 
 @dataclass(frozen=True, slots=True)
 class SearchPages:
-    """The two pages: the search, the folder view, and which one `/` serves."""
+    """The page (`/browse` opens it on its folders), and the path `/` serves."""
 
     search: bytes
-    browse: bytes
-    first: str = SEARCH_PAGE_PATH  # `/browse` for `browse`
+    first: str = SEARCH_PAGE_PATH
 
 
 @dataclass(frozen=True, slots=True)

@@ -99,14 +99,6 @@ def command_table(analyse: str, act: str) -> tuple[tuple[str, str, str], ...]:
             ),
         ),
         (
-            "browse",
-            act,
-            _(
-                "The search page opened on your folders: walk "
-                "through them, set photos aside; 'clean --decisions' then moves them."
-            ),
-        ),
-        (
             "slideshow",
             analyse,
             _(

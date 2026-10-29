@@ -476,11 +476,11 @@ msgstr[1] "+ {n} photos placées à la main"
 
 msgid ""
 "--chosen is gone (it showed the files set aside for the bin): add the "
-"photos to an album in search or browse, then --album \"Crete 2023\"."
+"photos to an album in search, then --album \"Crete 2023\"."
 msgstr ""
 "--chosen n'existe plus (il montrait les fichiers mis de côté pour la "
-"corbeille) : ajoutez les photos à un album dans search ou browse, puis "
-"--album \"Crète 2023\"."
+"corbeille) : ajoutez les photos à un album dans search, puis --album "
+"\"Crète 2023\"."
 
 msgid ""
 "--delete: the copies are deleted for good, after a byte comparison with "
@@ -1081,20 +1081,18 @@ msgstr ""
 "folders remove <dossier>. Une sauvegarde, comparée, jamais modifiée : mh "
 "folders add --backup <dossier>."
 
-msgid "Add photos to an album in search or browse."
-msgstr "Ajoutez des photos à un album dans search ou browse."
+msgid "Add photos to an album in search."
+msgstr "Ajoutez des photos à un album dans search."
 
 msgid ""
-"Add photos to it in search or browse, or say what the album gathers from "
-"the classify plan: --category, --event, --rule or --rating."
+"Add photos to it in search, or say what the album gathers from the "
+"classify plan: --category, --event, --rule or --rating."
 msgstr ""
-"Ajoutez-y des photos dans search ou browse, ou dites ce que l'album "
-"rassemble du plan de classify : --category, --event, --rule ou --rating."
+"Ajoutez-y des photos dans search, ou dites ce que l'album rassemble du "
+"plan de classify : --category, --event, --rule ou --rating."
 
-msgid "Add photos to it in search or browse; the videos are never copied."
-msgstr ""
-"Ajoutez-y des photos dans search ou browse ; les vidéos ne sont jamais "
-"copiées."
+msgid "Add photos to it in search; the videos are never copied."
+msgstr "Ajoutez-y des photos dans search ; les vidéos ne sont jamais copiées."
 
 msgid ""
 "Add the description and the keywords found by tags to the copies (names "
@@ -1845,9 +1843,6 @@ msgstr "Choix sur {count} séries annulés."
 
 msgid "Choose a folder of photos or videos to add"
 msgstr "Choisissez un dossier de photos ou de vidéos à ajouter"
-
-msgid "Choose a folder on the left."
-msgstr "Choisissez un dossier à gauche."
 
 msgid "Choose a vision model in [classify.ai] model, e.g. qwen2.5vl."
 msgstr ""
@@ -3632,9 +3627,6 @@ msgstr "Dossiers"
 msgid "Folders analysed:"
 msgstr "Dossiers analysés :"
 
-msgid "Folders closed; your photos were not changed."
-msgstr "Dossiers fermés ; vos photos n'ont pas été modifiées."
-
 msgid "Folders left, the largest first:"
 msgstr "Dossiers restants, les plus gros d'abord :"
 
@@ -3812,11 +3804,11 @@ msgid "From the cache alone: no file is read again."
 msgstr "Depuis le cache seul : aucun fichier n'est relu."
 
 msgid ""
-"From the phone: the audit, the reports, the albums, the search and "
-"browse. Open this page or run this step on the PC."
+"From the phone: the audit, the reports, the albums and the search. Open "
+"this page or run this step on the PC."
 msgstr ""
-"Depuis le téléphone : l'audit, les rapports, les albums, la recherche et "
-"le parcours. Ouvrez cette page ou lancez cette étape sur le PC."
+"Depuis le téléphone : l'audit, les rapports, les albums et la recherche. "
+"Ouvrez cette page ou lancez cette étape sur le PC."
 
 msgid "From your NAS or an old disk"
 msgstr "Depuis votre NAS ou un ancien disque"
@@ -5586,12 +5578,6 @@ msgstr "Aucun dossier de photos : tapez mh import --phone --to <dossier>."
 msgid "No photo in the cache: run the audit first."
 msgstr "Aucune photo dans le cache : lancez d'abord l'audit."
 
-#, python-brace-format
-msgid "No photo in this folder ({n} video)."
-msgid_plural "No photo in this folder ({n} videos)."
-msgstr[0] "Aucune photo dans ce dossier ({n} vidéo)."
-msgstr[1] "Aucune photo dans ce dossier ({n} vidéos)."
-
 msgid "No photo left to analyse: every one is in the cache."
 msgstr "Plus aucune photo à analyser : toutes sont dans le cache."
 
@@ -5618,11 +5604,6 @@ msgstr "Aucune photo ni vidéo à classer."
 
 msgid "No photo of the index below these folders."
 msgstr "Aucune photo de l'index sous ces dossiers."
-
-msgid "No photo or video directly in this folder: open a subfolder."
-msgstr ""
-"Aucune photo ni vidéo directement dans ce dossier : ouvrez un sous-"
-"dossier."
 
 msgid "No photo or video to show: nothing the last audit saw matches."
 msgstr ""
@@ -5759,12 +5740,6 @@ msgstr ""
 
 msgid "No town of more than 1,000 inhabitants starts so."
 msgstr "Aucune ville de plus de 1 000 habitants ne commence ainsi."
-
-#, python-brace-format
-msgid "No video in this folder ({n} photo)."
-msgid_plural "No video in this folder ({n} photos)."
-msgstr[0] "Aucune vidéo dans ce dossier ({n} photo)."
-msgstr[1] "Aucune vidéo dans ce dossier ({n} photos)."
 
 msgid "No video left to lighten: nothing was changed."
 msgstr "Plus aucune vidéo à alléger : rien n'a changé."
@@ -6450,8 +6425,8 @@ msgid ""
 "Only the files set aside, to see them or put some back before the "
 "quarantine"
 msgstr ""
-"Seulement les fichiers mis de côté, pour les voir ou en remettre avant la "
-"quarantaine"
+"Seulement les fichiers mis de côté, pour les voir ou en remettre avant la"
+" quarantaine"
 
 msgid ""
 "Only the first files of these days were tried: a shorter period shows "
@@ -8001,6 +7976,9 @@ msgstr ""
 "(une recherche par seconde au plus). Une autre instance, ou vide pour ne "
 "chercher que hors ligne."
 
+msgid "Search and the albums of this home: nothing here changes a photo."
+msgstr "Chercher et les albums de la maison : rien ici ne change une photo."
+
 msgid "Search by meaning"
 msgstr "Recherche par le sens"
 
@@ -8057,11 +8035,6 @@ msgstr "Recherche arrêtée ; vos photos n'ont pas été modifiées."
 
 msgid "Search your photos"
 msgstr "Chercher dans vos photos"
-
-msgid "Search, browse and the albums of this home: nothing here changes a photo."
-msgstr ""
-"Chercher, parcourir et les albums de la maison : rien ici ne change une "
-"photo."
 
 msgid "Searching OpenStreetMap…"
 msgstr "Recherche sur OpenStreetMap…"
@@ -8332,10 +8305,8 @@ msgstr "Remontrer"
 msgid "Show an album on the TV"
 msgstr "Montrer un album sur la télé"
 
-msgid "Show an album, made in search, browse or the burst review: \"Crete 2023\"."
-msgstr ""
-"Montrer un album, fait dans search, browse ou le tri des rafales : "
-"\"Crète 2023\"."
+msgid "Show an album, made in search or the burst review: \"Crete 2023\"."
+msgstr "Montrer un album, fait dans search ou le tri des rafales : \"Crète 2023\"."
 
 msgid "Show every face of the group first, to take out those of someone else."
 msgstr ""
@@ -8922,12 +8893,10 @@ msgstr "La télé est appairée : elle montre la photo maintenant."
 msgid "The album stopped at the first link refused by the disk."
 msgstr "L'album s'est arrêté au premier lien refusé par le disque."
 
-msgid ""
-"The album to send, made in search, browse or the burst review: \"Crete "
-"2023\"."
+msgid "The album to send, made in search or the burst review: \"Crete 2023\"."
 msgstr ""
-"L'album à envoyer, fait dans search, browse ou la revue des rafales : "
-"\"Crète 2023\"."
+"L'album à envoyer, fait dans search ou la revue des rafales : \"Crète "
+"2023\"."
 
 #, python-brace-format
 msgid "The album {name} is empty: removed from {place}."
@@ -8936,12 +8905,10 @@ msgstr "L'album {name} est vide : retiré de {place}."
 msgid "The album's name"
 msgstr "Nom de l'album"
 
-msgid ""
-"The album's name, as search and browse saved it: the folder holding its "
-"links."
+msgid "The album's name, as search saved it: the folder holding its links."
 msgstr ""
-"Le nom de l'album, tel que search et browse l'ont enregistré : le dossier"
-" qui contient ses liens."
+"Le nom de l'album, tel que search l'a enregistré : le dossier qui "
+"contient ses liens."
 
 msgid ""
 "The album's photos in one folder of the Explorer, as hard links: no copy,"
@@ -9724,11 +9691,11 @@ msgid "The password of {share} is kept: mh folders remove forgets it."
 msgstr "Le mot de passe de {share} est gardé : mh folders remove l'oublie."
 
 msgid ""
-"The phone is read-only: the reports, the albums, the search and browse. "
-"Open this page or run this step on the PC."
+"The phone is read-only: the reports, the albums and the search. Open this"
+" page or run this step on the PC."
 msgstr ""
-"Le téléphone ne fait que lire : les rapports, les albums, la recherche et"
-" le parcours. Ouvrez cette page ou lancez cette étape sur le PC."
+"Le téléphone ne fait que lire : les rapports, les albums et la recherche."
+" Ouvrez cette page ou lancez cette étape sur le PC."
 
 msgid ""
 "The phone no longer answers (unplugged, or asleep: keep it unlocked, "
@@ -10042,18 +10009,6 @@ msgstr "La recherche a échoué (erreur {status})."
 
 msgid "The search is not running any more: start it again."
 msgstr "La recherche ne tourne plus : relancez-la."
-
-msgid ""
-"The search page opened on your folders: walk through them, set photos "
-"aside; 'clean --decisions' then moves them."
-msgstr ""
-"La page de recherche ouverte sur vos dossiers : parcourez-les, mettez des"
-" photos de côté ; 'clean --decisions' les déplace ensuite."
-
-msgid "The search, opened on your folders; the heaviest files; set photos aside."
-msgstr ""
-"La recherche, ouverte sur vos dossiers ; les fichiers les plus lourds ; "
-"mettre des photos de côté."
 
 #, python-brace-format
 msgid ""
@@ -11017,9 +10972,6 @@ msgstr "Vidéos datées par leurs balises"
 msgid "Waiting: the drafts are encoded one at a time."
 msgstr "En attente : les brouillons sont encodés un à la fois."
 
-msgid "Walk through your folders"
-msgstr "Parcourir vos dossiers"
-
 msgid ""
 "Walks through every folder; photos and videos are recognised by their "
 "extension."
@@ -11559,14 +11511,6 @@ msgstr "Vos dossiers ({count})"
 msgid "Your folders are clean."
 msgstr "Vos dossiers sont propres."
 
-#, python-brace-format
-msgid ""
-"Your folders are ready, open {url} in your browser. Ctrl+C stops it; your"
-" photos are not changed."
-msgstr ""
-"Vos dossiers sont prêts, ouvrez {url} dans votre navigateur. Ctrl+C "
-"l'arrête ; vos photos ne sont pas modifiées."
-
 msgid "Your folders, the update, Windows and the advanced settings."
 msgstr "Vos dossiers, la mise à jour, Windows et les réglages avancés."
 
@@ -11942,9 +11886,6 @@ msgstr "clair"
 
 msgid "broken files"
 msgstr "fichiers cassés"
-
-msgid "browse explore folders gallery"
-msgstr "parcourir explorer dossiers galerie"
 
 msgid "built in: its folder names the category"
 msgstr "intégrée : son dossier nomme la catégorie"
@@ -13042,9 +12983,6 @@ msgstr "rien à remettre"
 msgid "nothing: type mh push again after your next import or sort."
 msgstr "rien : tapez mh push à nouveau après votre prochain import ou tri."
 
-msgid "of every folder: where the space goes"
-msgstr "de tous les dossiers : où va la place"
-
 msgid "ok"
 msgstr "ok"
 
@@ -13372,8 +13310,8 @@ msgstr "écartée"
 msgid "set aside again after it came back"
 msgstr "remis de côté après son retour"
 
-msgid "set aside in 'search' or 'browse'"
-msgstr "mis de côté dans 'search' ou 'browse'"
+msgid "set aside in 'search'"
+msgstr "mis de côté dans 'search'"
 
 msgid "set it aside, then the next one"
 msgstr "la mettre de côté, puis la suivante"
@@ -13781,9 +13719,6 @@ msgstr "la valeur est inutilisable"
 
 msgid "the video plays to its end"
 msgstr "la vidéo passe jusqu'au bout"
-
-msgid "the whole folder"
-msgstr "tout le dossier"
 
 msgid "the whole folder pair as planned"
 msgstr "toute la paire de dossiers comme prévu"

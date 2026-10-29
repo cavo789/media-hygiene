@@ -21,7 +21,6 @@ FRAME_EXTENDS: Final = '{% extends "page_frame.html.j2" %}'
 # The package whose templates hold a page; the others are `media_hygiene.review`'s.
 _PACKAGES: Final = {
     "search.html.j2": "media_hygiene.search",
-    "browse.html.j2": "media_hygiene.search",
     "places.html.j2": "media_hygiene.places",
     "people.html.j2": "media_hygiene.people",
     "person.html.j2": "media_hygiene.person",

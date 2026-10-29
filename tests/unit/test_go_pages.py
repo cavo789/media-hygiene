@@ -7,9 +7,16 @@ from media_hygiene.cli.safety import GO_PAGES, PHOTO_READERS, READ_ONLY_COMMANDS
 
 
 def test_the_go_pages_are_writers_never_read_only() -> None:
-    """review-sort, browse, search and home: out of the `:ro` list, said apart."""
+    """review-sort, search and home: out of the `:ro` list, said apart."""
     names = {info.name for info in build_app().registered_commands}
     writers = {name for name in names if name not in READ_ONLY_COMMANDS}
-    assert {"review-sort", "browse", "search", "home"} == GO_PAGES
+    assert {"review-sort", "search", "home"} == GO_PAGES
     assert writers >= GO_PAGES
     assert not GO_PAGES & PHOTO_READERS
+
+
+def test_browse_is_gone_without_an_alias() -> None:
+    """0465: `browse` was the search on its folders; no command keeps the name."""
+    names = {info.name for info in build_app().registered_commands}
+    assert "browse" not in names
+    assert "search" in names
