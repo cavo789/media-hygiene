@@ -25,6 +25,8 @@
   "noTakenTip": _("The file does not say when it was taken (a scan, a screenshot): a search by date does not find it."),
   "takenTip": _("taken {taken} (EXIF: what the search finds by)"),
   "modifiedTip": _(" · file modified {day} (the date Explorer shows)"),
+  "dayTip": _(" · click: the files of this day only"),
+  "folderTip": _("Click: the files of this folder"),
   "picked": [ngettext("{n} file picked", "{n} files picked", 1), ngettext("{n} file picked", "{n} files picked", 2)],
   "allFound": _("Pick all {total} files found"),
   "allPicked": _("All {total} files found are picked"),
@@ -140,6 +142,8 @@
   .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
   .chip { padding: 0 6px; border-radius: 10px; background: var(--chip); cursor: pointer; }
   .chip:hover { background: var(--line); }
+  .day { cursor: pointer; text-decoration: underline dotted; }
+  .day:hover { background: var(--line); border-radius: 4px; }
   .chip .unname { margin-left: 4px; padding: 0 4px; border: 0; border-radius: 50%; font: inherit;
                   line-height: 1.2; background: transparent; color: var(--muted); cursor: pointer; }
   .chip .unname:hover { background: var(--bad); color: #fff; }
@@ -194,12 +198,13 @@
   #heaviest { width: 100%; margin-top: 6px; }
   #moreLine { margin: 0 16px 16px; min-height: 2.4em; text-align: center; }
   /* The fixed bar (0463): two lines that never wrap nor change height, whatever is picked,
-     found or said. Line 1: where you are, 📺, Sort by, S/M/L; line 2: the actions on the
-     picking (greyed while nothing is picked), the album, the set aside, ✅ Apply. */
+     found or said. Line 1: where you are, the set aside (its line clipped, whole in its
+     tooltip), 📺, Sort by, S/M/L; line 2: the actions on the picking (greyed while nothing
+     is picked), the album, ✅ Apply. */
   #bar { flex-wrap: wrap; row-gap: 4px; }
   #bar::before { content: ""; order: 2; flex-basis: 100%; height: 0; }
   #bar > * { order: 3; }
-  #bar > #lead, #bar > #tvSend, #bar > label, #bar > #sizes { order: 1; }
+  #bar > #lead, #bar > #chosen, #bar > #tvSend, #bar > label, #bar > #sizes { order: 1; }
   #bar > #lead[hidden], #bar > #acting[hidden] { display: flex; }
   #bar > #lead { flex: 1 1 0; min-width: 0; white-space: nowrap; overflow: hidden; }
   #status { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -210,7 +215,7 @@
   #bar #albumBar label { display: none; }
   #bar #albumBar input { width: 11em; }
   #bar > p#moveBar { flex-basis: auto; margin: 0; }
-  #bar > #chosen { flex: 1 1 0; min-width: 0; cursor: pointer; }
+  #bar > #chosen { flex: 0 1 34ch; min-width: 0; cursor: pointer; overflow: hidden; text-overflow: ellipsis; }
   #asideLeave { min-width: 1.6em; }
   #bar #applyNow[hidden] { display: inline-block; opacity: .45; pointer-events: none; }
   #bar button { padding: 4px 8px; white-space: nowrap; }
