@@ -78,3 +78,6 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   teaches in one-liners (read-only 🔒, the undo line); documentation and captures are
   Windows-first, for Windows PowerShell 5.1; every command that needs a local AI model is
   flagged 🤖 where it is pasted.
+- Every page that sets files aside (or records any choice `clean --decisions` applies) offers
+  *Apply now* (`ApplyOffer`, the shared `apply_now` template, same place in the bar) once
+  something is pending; a page without it is a bug, like a page missing the way back home.
