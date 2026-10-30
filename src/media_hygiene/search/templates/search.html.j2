@@ -222,13 +222,15 @@
   .seg button[aria-pressed="true"] { color: var(--on-accent); background: var(--accent); }
   .segLabel { font-size: .85rem; color: var(--muted); }
   /* Dates on one line, the quick periods in a 📅 menu floating under it. */
-  .years { flex-wrap: nowrap; align-items: end; position: relative; }
+  .years { flex-wrap: nowrap; align-items: end; position: relative; gap: 3px; }
   /* The two dates share the room the 📅 menu leaves: dd/mm/yyyy and the calendar icon fit. */
   .years label { flex: 1 1 0; min-width: 0; }
-  .years input { width: 100%; box-sizing: border-box; padding-left: 4px; padding-right: 2px; }
+  .years input { width: 100%; box-sizing: border-box; padding-left: 2px; padding-right: 0; font-size: .9rem; }
+  /* The calendar icon without its own margin and padding: the year keeps its four digits. */
+  .years input::-webkit-calendar-picker-indicator { margin: 0; padding: 0; }
   .dateMenu, .years .step { flex: none; }
   .years .step { padding: 4px 2px; }
-  .dateMenu summary { list-style: none; cursor: pointer; padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; }
+  .dateMenu summary { list-style: none; cursor: pointer; padding: 4px 3px; border: 1px solid var(--line); border-radius: 6px; }
   .dateMenu[open] .spans { position: absolute; z-index: 3; right: 0; top: 100%; flex-direction: column;
                            padding: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
   /* 🔍 Search stays in sight at the bottom of the form, however long the column. */
