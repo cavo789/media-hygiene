@@ -143,6 +143,7 @@
 #  39. the whole chain after a phone import of about 100 photos, timed step by step (0475)
 #  40. the whole chain after an import with copies set aside, then undone (0478)
 #  41. the chain in its new order: copies before tags, the import's bursts page, its slideshow (0480)
+#  42. a page on port 8088 stopped, then the port watched: PID 0 seen? seconds until free (0503)
 #      (two yes/no questions, by hand)                                               (0359)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
@@ -3450,6 +3451,40 @@ if (Wanted 41) {
     Log "   41c. page open beside tags, seconds: $wait"
     Log "   41d. shots set aside quarantined: $aside"
     Log "   41e. slideshow of the new event only: $show"
+    $ErrorActionPreference = $saved
+}
+
+# --- 42: the port of the pages right after a page stops (0503) ------------------------------
+# Automatic: a container listens on 8088 (python's http.server in the image), is stopped,
+# then the port is polled every 100 ms: which PIDs Windows names, and how long until free.
+# Gives PORT_RELEASE_SECONDS (launcher_port.py, 10 s estimated) a measured value.
+if (Wanted 42) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 42. port 8088 right after a page stops: PID 0, release time (0503)"
+    for ($round = 1; $round -le 5; $round++) {
+        $id = "$(docker run -d --rm -p 127.0.0.1:8088:8088 --entrypoint python $Image -m http.server 8088 2>&1)".Trim()
+        $ready = $false
+        for ($i = 0; $i -lt 100 -and -not $ready; $i++) {
+            if (@(Get-NetTCPConnection -LocalPort 8088 -State Listen -ErrorAction SilentlyContinue).Count -gt 0) { $ready = $true } else { Start-Sleep -Milliseconds 100 }
+        }
+        $null = docker stop $id 2>&1
+        $clock = [Diagnostics.Stopwatch]::StartNew()
+        $pids = @()
+        while ($clock.Elapsed.TotalSeconds -lt 30) {
+            $sockets = @(Get-NetTCPConnection -LocalPort 8088 -State Listen -ErrorAction SilentlyContinue)
+            if ($sockets.Count -eq 0) { break }
+            foreach ($socket in $sockets) {
+                $owner = "$($socket.OwningProcess)"
+                $name = "$((Get-Process -Id $socket.OwningProcess -ErrorAction SilentlyContinue).ProcessName)"
+                if ($pids -notcontains "$owner/$name") { $pids += "$owner/$name" }
+            }
+            Start-Sleep -Milliseconds 100
+        }
+        $seconds = [math]::Round($clock.Elapsed.TotalSeconds, 1)
+        Log "   42.$round listening before stop: $ready; free after: $seconds s; PIDs seen after stop: $($pids -join ', ')"
+    }
     $ErrorActionPreference = $saved
 }
 

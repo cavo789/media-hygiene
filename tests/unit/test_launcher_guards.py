@@ -159,6 +159,7 @@ def test_bash_port_held_by_another_container_names_it(tmp_path: Path) -> None:
     with using(Locale.EN):
         done = _bash(tmp_path, "mh review", "0def34;org.opencontainers.image.title=x")
     assert "docker stop 0def34" in done.stderr
+    assert f"port {_PORT} " in done.stderr  # the port named (0503)
     assert not (tmp_path / "stopped").exists()
     assert "status=1" in done.stdout
 
@@ -177,7 +178,11 @@ def test_bash_port_held_by_another_program_names_it(tmp_path: Path) -> None:
     with using(Locale.EN):
         busy = launcher_guards().port.busy
         done = _listen(tmp_path, "mh review", _listening("python3"))
-    said = busy.replace("${name}", "python3").replace("${process}", "4242")
+    said = (
+        busy.replace("${name}", "python3")
+        .replace("${process}", "4242")
+        .replace("${port}", str(_PORT))
+    )
     assert said in done.stderr
     assert "ran:" not in done.stdout
     assert "status=1" in done.stdout
@@ -221,10 +226,14 @@ def test_powershell_names_another_program_on_the_port() -> None:
         f"Get-NetTCPConnection -LocalPort {_PORT} -State Listen "
         "-ErrorAction SilentlyContinue"
     )
-    assert body.index("docker ps --filter") < body.index(probe)
-    assert "Get-Process -Id $process -ErrorAction SilentlyContinue" in body
-    assert "'com.docker.backend', 'com.docker.proxy', 'wslrelay'" in body
-    assert f'Write-Host "{busy}"; return $false' in body
+    assert body.index("docker ps --filter") < body.index("_mh_port_holder")
+    holder = shown[shown.index("function global:_mh_port_holder") :]
+    holder = holder[: holder.index("\n}\n")]
+    assert probe in holder
+    assert "_mh_port_holder" in body
+    assert "Get-Process -Id $process -ErrorAction SilentlyContinue" in holder
+    assert "'com.docker.backend', 'com.docker.proxy', 'wslrelay'" in holder
+    assert f'Write-Host "{busy}" -ForegroundColor Red' in body
     assert "${name}" in busy
     assert "${process}" in busy
     assert "Add-Type" not in body

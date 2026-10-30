@@ -5,13 +5,13 @@
 # (or is this one, idle) is stopped, said in one line; one whose shell still runs is left
 # alone, the user told to close it there.
 _{{ function }}_page_free() {
-    local line id labels owner since started pattern='(^|,){{ guards.label | replace(".", "[.]") }}=bash-([0-9]+)(-([0-9]*))?(,|$)'
+    local port={{ script.commands.port }} line id labels owner since started pattern='(^|,){{ guards.label | replace(".", "[.]") }}=bash-([0-9]+)(-([0-9]*))?(,|$)'
     while IFS= read -r line; do
         id="${line%%;*}"
         labels="${line#*;}"
         if [[ ! "$id" =~ ^[0-9a-f]+$ ]]; then continue; fi  # a container id, nothing else
         if [[ ! "$labels" =~ $pattern ]]; then
-            printf '%s\n' "{{ guards.texts.held }}" >&2
+            _{{ function }}_refuse "{{ guards.texts.held }}"
             return 1
         fi
         owner="${BASH_REMATCH[2]}"
@@ -20,7 +20,7 @@ _{{ function }}_page_free() {
         # label has no start time: the PID alone, as before).
         if [[ "$owner" != "$$" ]] && started="$(_{{ function }}_started "$owner")" \
             && [[ -z "$since" || "$started" == "$since" ]]; then
-            printf '%s\n' "{{ guards.texts.open }}" >&2
+            _{{ function }}_refuse "{{ guards.texts.open }}"
             return 1
         fi
         docker stop "$id" >/dev/null 2>&1
@@ -31,9 +31,11 @@ _{{ function }}_page_free() {
 
 # No container holds the port: a program listening on it (another local server) is
 # named, never Docker's raw "address already in use" (0253). ss tells the program of a
-# socket of this user only; without ss, or for another user's, Docker says it.
+# socket of this user only; without ss, or for another user's, Docker says it. Linux
+# closes a listening socket when its process exits: no "being released" wait as in
+# mh.ps1 (0503); Docker's own docker-proxy, still there a moment, is not another program.
 _{{ function }}_port_user() {
-    local said name process pattern='users:\(\("([^"]+)",pid=([0-9]+)'
+    local port={{ script.commands.port }} said name process pattern='users:\(\("([^"]+)",pid=([0-9]+)'
     if ! command -v ss >/dev/null 2>&1; then return 0; fi
     said="$(ss -ltnp "sport = :{{ script.commands.port }}" 2>/dev/null)"
     if [[ ! "$said" =~ $pattern ]]; then return 0; fi
@@ -42,7 +44,7 @@ _{{ function }}_port_user() {
     case " {{ guards.port.listeners | join(" ") }} " in
         *" $name "*) return 0 ;;
     esac
-    printf '%s\n' "{{ guards.port.busy }}" >&2
+    _{{ function }}_refuse "{{ guards.port.busy }}"
     return 1
 }
 
@@ -55,4 +57,13 @@ _{{ function }}_started() {
     stat="$(cat "/proc/$1/stat" 2>/dev/null)" || return 1
     read -ra fields <<< "${stat##*) }"
     printf '%s' "${fields[19]}"
+}
+
+# A refusal: in red when standard error is a terminal (0503), the plain line otherwise.
+_{{ function }}_refuse() {
+    if [[ -t 2 ]] && command -v tput >/dev/null 2>&1; then
+        printf '%s%s%s\n' "$(tput setaf 1 2>/dev/null)" "$1" "$(tput sgr0 2>/dev/null)" >&2
+    else
+        printf '%s\n' "$1" >&2
+    fi
 }

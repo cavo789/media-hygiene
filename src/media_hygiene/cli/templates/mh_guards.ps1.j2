@@ -7,6 +7,7 @@
 # True once the port is free.
 function global:_{{ function }}_page_free {
     $ErrorActionPreference = 'Continue'
+    $port = {{ script.commands.port }}
     $held = @(docker ps --filter "publish={{ script.commands.port }}" --format '{% raw %}{{.ID}};{{.Labels}}{% endraw %}' 2>$null)
     $mark = '(^|,)' + [regex]::Escape('{{ guards.label }}') + '=powershell-(\d+)(-(\d*))?(,|$)'
     foreach ($line in $held) {
@@ -15,24 +16,52 @@ function global:_{{ function }}_page_free {
         $owner = 0
         $since = ''
         if ("$labels" -match $mark) { $owner = [int]$Matches[2]; $since = "$($Matches[4])" }
-        if (-not $owner) { Write-Host "{{ guards.texts.held }}"; return $false }
+        if (-not $owner) { Write-Host "{{ guards.texts.held }}" -ForegroundColor Red; return $false }
         if ($owner -ne $PID -and (Get-Process -Id $owner -ErrorAction SilentlyContinue)) {
             # Live only when the start time matches; an unreadable one (or an older mh's
             # label without it) cannot prove the console gone: left alone.
             $started = _{{ function }}_started $owner
-            if (-not $since -or -not $started -or $started -eq $since) { Write-Host "{{ guards.texts.open }}"; return $false }
+            if (-not $since -or -not $started -or $started -eq $since) { Write-Host "{{ guards.texts.open }}" -ForegroundColor Red; return $false }
         }
         $null = docker stop $id 2>$null
         Write-Host "{{ guards.texts.stopped }}"
     }
     # No container holds it: a program listening on it (another local server) is named,
     # never Docker's raw "port is already allocated" (0253); Docker's own listeners are not.
+    # A socket being released (PID 0, or a process gone: an mh page stopped a moment ago)
+    # is waited for, a line said once; refused only when still there at the end (0503).
+    $said = $false
+    $until = (Get-Date).AddSeconds({{ guards.port.wait }})
+    while ($true) {
+        $holder = _{{ function }}_port_holder
+        if ($null -eq $holder) { return $true }
+        if ($holder.name) {
+            $name = $holder.name
+            $process = $holder.process
+            Write-Host "{{ guards.port.busy }}" -ForegroundColor Red
+            return $false
+        }
+        if ((Get-Date) -ge $until) { Write-Host "{{ guards.port.released }}" -ForegroundColor Red; return $false }
+        if (-not $said) { Write-Host "{{ guards.port.releasing }}"; $said = $true }
+        Start-Sleep -Milliseconds {{ guards.port.poll }}
+    }
+}
+
+# Who listens on the port of the pages: $null when nobody but Docker; @{ name; process }
+# for another program; @{ name = '' } for a socket being released. PID 0 is the System
+# Idle Process: Windows names it for a socket whose owner has exited (0503); PID 4
+# (System, http.sys) is a real holder.
+function global:_{{ function }}_port_holder {
+    $releasing = $false
     foreach ($socket in @(Get-NetTCPConnection -LocalPort {{ script.commands.port }} -State Listen -ErrorAction SilentlyContinue)) {
         $process = $socket.OwningProcess
-        $name = "$((Get-Process -Id $process -ErrorAction SilentlyContinue).ProcessName)"
-        if ($name -and $name -notin @({% for name in guards.port.listeners %}'{{ name }}'{{ ", " if not loop.last }}{% endfor %})) { Write-Host "{{ guards.port.busy }}"; return $false }
+        $found = if ($process) { Get-Process -Id $process -ErrorAction SilentlyContinue } else { $null }
+        if (-not $found) { $releasing = $true; continue }
+        $name = "$($found.ProcessName)"
+        if ($name -and $name -notin @({% for name in guards.port.listeners %}'{{ name }}'{{ ", " if not loop.last }}{% endfor %})) { return @{ name = $name; process = $process } }
     }
-    return $true
+    if ($releasing) { return @{ name = '' } }
+    return $null
 }
 
 # The start time of a process, UTC, written the same in every language; '' when unreadable.
@@ -55,7 +84,7 @@ function global:_{{ function }}_removable([string[]]$folders) {
         $letter = $drive.ToLower()
         $null = wsl.exe -d {{ guards.distro }} sh -c "mountpoint -q /mnt/host/$letter && exit 10; mkdir -p /mnt/host/$letter && mount -t drvfs ${drive}: /mnt/host/$letter" 2>$null
         if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 10) {
-            Write-Host "{{ guards.texts.unshared }}"
+            Write-Host "{{ guards.texts.unshared }}" -ForegroundColor Red
             _{{ function }}_unmount $shared.mounted
             return $null
         }

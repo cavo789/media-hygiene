@@ -14,6 +14,9 @@ function global:_{{ function }}_home {
     $after = $false
     $tab = $false
     $crashed = $null
+    # The port checked before any line of success: a refusal alone, in red (0503). The
+    # relaunch of home after a page step waits the same way for the port the step freed.
+    if (-not (_{{ function }}_page_free)) { $global:LASTEXITCODE = 1; return }
     # Said once: the page runs in the background, this window says nothing more until a step (0355).
     Write-Host "{{ texts.running }}"
     if (-not ($global:MediaHygieneLan -and $global:MediaHygieneLan.address)) { Write-Host "{{ lan.texts.tip }}" }

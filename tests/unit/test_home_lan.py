@@ -520,7 +520,7 @@ def test_powershell_opens_mh_alone_to_the_lan_by_default(tmp_path: Path) -> None
     """`mh` alone: the LAN path, never failing for want of a home network (0367)."""
     script = _render_lan(tmp_path, lan=True)
     assert "_mh_lan @typed  # open to the home network too" in script
-    assert "$null = _mh_lan_open $true" in script
+    assert "if (-not (_mh_lan_open $true)) { return }" in script
     assert "@{ problem = 'none' }; return $true" in script
     assert "$problem = 'public'" in script
     assert f'"{LAN_PROBLEM_VARIABLE}=$($lan.problem)"' in script

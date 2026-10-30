@@ -190,12 +190,17 @@ setting is required.`
   process number and the time it started, so a number Windows has given to another program
   since does not keep a dead page alive.
 - Another program uses 8088 (another local server, a preview of your editor): `mh` names it
-  before the page, with its process number (*The port of the mh pages is used by another
-  program, python (process 4242): close it, then type the command again.*), and runs nothing.
+  before the page, in red, with its process number (*The port 8088 of the mh pages is used by
+  another program, python (process 4242): close it, then type the command again.*), and runs
+  nothing.
   Close that program; if you cannot, give the pages another port: `port = 9000` under
   `[review]` in `config.toml`, then `mh update` (it writes the new port into `mh`). On Windows it asks Windows which program listens;
   in WSL or Linux, `ss` tells it for your own programs only, and Docker says *address already in
   use* for the others.
+- *The port 8088 of the mh pages is still being released*: an mh page has just stopped (a
+  page chosen on the home page ends the home page first) and Windows has not freed its port
+  yet. `mh` waits up to 10 seconds, then starts. Only if Windows still holds it does it stop
+  (*…is not released yet by Windows: wait a few seconds, then type the command again*); do so.
 - *port is already allocated* with `docker run` typed by hand: choose another number, the same
   three times: `-p 127.0.0.1:9000:9000` and `review --port 9000`.
 - Open it with `127.0.0.1` or `localhost`: the page refuses other host names.

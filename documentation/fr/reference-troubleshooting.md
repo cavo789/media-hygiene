@@ -200,12 +200,17 @@ un lieu ou une personne la nomme par son numéro et son `name` : `« match » da
   Ctrl+C. `mh` reconnaît une fenêtre à son numéro de processus et à l'heure où elle a démarré :
   un numéro que Windows a donné depuis à un autre programme ne garde pas en vie une page morte.
 - Un autre programme utilise 8088 (un autre serveur local, l'aperçu de votre éditeur) : `mh` le
-  nomme avant la page, avec son numéro de processus (*Le port des pages de mh est pris par un
-  autre programme, python (processus 4242) : fermez-le, puis retapez la commande.*), et ne lance
-  rien. Fermez ce programme ; si vous ne pouvez pas, donnez un autre port aux pages : `port = 9000`
+  nomme avant la page, en rouge, avec son numéro de processus (*Le port 8088 des pages de mh est
+  pris par un autre programme, python (processus 4242) : fermez-le, puis retapez la commande.*),
+  et ne lance rien. Fermez ce programme ; si vous ne pouvez pas, donnez un autre port aux pages : `port = 9000`
   sous `[review]` dans `config.toml`, puis `mh update` (il écrit le nouveau port dans `mh`). Sous Windows, il demande à Windows quel
   programme écoute ; dans WSL ou sous Linux, `ss` le dit pour vos propres programmes seulement,
   et Docker dit *address already in use* pour les autres.
+- *Le port 8088 des pages de mh se libère encore* : une page mh vient de s'arrêter (une page
+  choisie sur la page d'accueil arrête d'abord celle-ci) et Windows n'a pas encore libéré son
+  port. `mh` attend jusqu'à 10 secondes, puis démarre. Si Windows le tient encore, il s'arrête
+  (*Windows n'a pas encore libéré le port 8088 des pages de mh : attendez quelques secondes,
+  puis retapez la commande*) : faites-le.
 - *port is already allocated* avec un `docker run` tapé à la main : choisissez un autre numéro,
   le même trois fois : `-p 127.0.0.1:9000:9000` et `review --port 9000`.
 - Ouvrez-la avec `127.0.0.1` ou `localhost` : la page refuse les autres noms d'hôte.

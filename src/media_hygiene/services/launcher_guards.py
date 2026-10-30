@@ -7,9 +7,7 @@ of its console in a label, with the console's start time: Windows gives the PID 
 closed console to another process, so a PID alone could make a dead page look live.
 Before a page, `mh` stops one whose console is gone, says it in one line, and
 leaves a page whose console still runs, telling the user to close it there.
-Never Docker's raw "port is already allocated": a program that is not a container
-listening on the port (another local server) is named with its process number (0253),
-Docker's own listeners excepted.
+Never Docker's raw "port is already allocated": the port itself, `launcher_port`.
 
 A removable drive (0252): WSL mounts fixed drives only, so Docker Desktop shows an
 empty folder for a USB stick. `mh.ps1` mounts it in Docker Desktop's VM first
@@ -29,6 +27,7 @@ from typing import Final
 
 from media_hygiene.i18n import _
 from media_hygiene.services.launcher_menu import shell_safe, with_variable
+from media_hygiene.services.launcher_port import PortGuard, port_guard
 
 # The label of a page container: `<shell>-<PID>-<start time of its console>`,
 # e.g. `powershell-4242-20261019175220` (an older `mh` wrote `powershell-4242`).
@@ -37,17 +36,6 @@ PAGE_LABEL: Final = "media-hygiene.page"
 DRIVE_LABEL: Final = "media-hygiene.drive"
 # The WSL distribution of Docker Desktop's VM, where a removable drive is mounted.
 DESKTOP_DISTRO: Final = "docker-desktop"
-# Docker's own programs listening for a published port (Docker Desktop on Windows, the
-# engine on Linux): never "another program" holding the port of the pages (0253).
-DOCKER_LISTENERS: Final = (
-    "com.docker.backend",
-    "com.docker.proxy",
-    "wslrelay",
-    "vpnkit",
-    "docker-proxy",
-    "rootlesskit",
-    "dockerd",
-)
 
 
 @dataclass(frozen=True, slots=True)
@@ -61,14 +49,6 @@ class GuardTexts:
     unshared: str  # mh.ps1: mounting it failed; holds `${drive}`
     kept: str  # mh.ps1: left mounted, another mh container uses it; holds `${drive}`
     stuck: str  # mh.ps1: unmounting it failed; holds `${drive}`
-
-
-@dataclass(frozen=True, slots=True)
-class PortGuard:
-    """Another program on the port of the pages (0253): the line, Docker's names."""
-
-    busy: str  # holds `${name}` and `${process}`
-    listeners: tuple[str, ...] = DOCKER_LISTENERS
 
 
 @dataclass(frozen=True, slots=True)
@@ -112,13 +92,13 @@ def launcher_guards() -> LauncherGuards:
             ),
             held=with_variable(
                 _(
-                    "The port of the mh pages is held by the container {id}: close "
-                    "the window where it runs, or type docker stop {id}, then type "
-                    "the command again."
+                    "The port {port} of the mh pages is held by the container {id}: "
+                    "close the window where it runs, or type docker stop {id}, then "
+                    "type the command again."
                 ),
                 "{id}",
                 "${id}",
-            ),
+            ).replace("{port}", "${port}"),
             shared=with_variable(
                 _("{drive}: is a removable drive: shared with Docker Desktop."),
                 "{drive}",
@@ -150,17 +130,7 @@ def launcher_guards() -> LauncherGuards:
                 "${drive}",
             ),
         ),
-        port=PortGuard(
-            busy=with_variable(
-                _(
-                    "The port of the mh pages is used by another program, {name} "
-                    "(process {process}): close it, then type the command again; or "
-                    "choose another port, [review] port in config.toml, then mh update."
-                ),
-                "{name}",
-                "${name}",
-            ).replace("{process}", "${process}"),
-        ),
+        port=port_guard(),
         wsl=_wsl_texts(),
     )
 

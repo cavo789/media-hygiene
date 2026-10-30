@@ -8214,15 +8214,29 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"The port of the mh pages is held by the container {id}: close the window "
-"where it runs, or type docker stop {id}, then type the command again."
+"The port {port} of the mh pages is held by the container {id}: close the "
+"window where it runs, or type docker stop {id}, then type the command "
+"again."
 msgstr ""
 
 #, python-brace-format
 msgid ""
-"The port of the mh pages is used by another program, {name} (process "
-"{process}): close it, then type the command again; or choose another "
-"port, [review] port in config.toml, then mh update."
+"The port {port} of the mh pages is not released yet by Windows: wait a "
+"few seconds, then type the command again; or choose another port, "
+"[review] port in config.toml, then mh update."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The port {port} of the mh pages is still being released (an mh page has "
+"just stopped): waiting a few seconds..."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The port {port} of the mh pages is used by another program, {name} "
+"(process {process}): close it, then type the command again; or choose "
+"another port, [review] port in config.toml, then mh update."
 msgstr ""
 
 msgid ""

@@ -11,7 +11,7 @@
 # Never stopped by the network (0367): without a home network, the page opens for the PC
 # alone and its card says why the phone cannot come.
 function global:_{{ f }}_lan {
-    $null = _{{ f }}_lan_open $true
+    if (-not (_{{ f }}_lan_open $true)) { return }
     try { _{{ f }}_home @args } finally { $global:MediaHygieneLan = $null }
 }
 
@@ -19,6 +19,8 @@ function global:_{{ f }}_lan {
 # the pages `{{ f }}` runs until the caller clears it (the home loop, or `{{ f }} slideshow {{ l.flag }}`, 0291).
 # With $soft, no address is not a failure; the page is told (`{{ l.problem }}`, 0367).
 function global:_{{ f }}_lan_open($soft) {
+    # The port checked first: a refusal is never said after the lines of a page opening (0503).
+    if (-not (_{{ f }}_page_free)) { $global:LASTEXITCODE = 1; return $false }
     $found = _{{ f }}_lan_address
     if (-not $found) {
         Write-Host "{{ t.none }}"
