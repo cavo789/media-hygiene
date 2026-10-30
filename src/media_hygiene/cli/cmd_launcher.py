@@ -72,7 +72,7 @@ def launcher_command(  # pylint: disable=too-many-arguments  # one per option
     """
     from media_hygiene.console.output import data_on_terminal
     from media_hygiene.services.launcher import render_script
-    from media_hygiene.services.launcher_file import written
+    from media_hygiene.services.launcher_file import rewritten_by_mh, written
     from media_hygiene.services.launcher_folders import FolderChoice
     from media_hygiene.services.launcher_memory import remembered
 
@@ -90,7 +90,10 @@ def launcher_command(  # pylint: disable=too-many-arguments  # one per option
                 "it again."
             )
         )
-    runtime.output.info(remembered(runtime, script))
+    if (
+        not rewritten_by_mh()
+    ):  # `mh folders` lists what it read back, `mh update` the versions
+        runtime.output.info(remembered(runtime, script))
     if done := written(script.shell):
         runtime.output.success(done)
 

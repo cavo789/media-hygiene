@@ -68,6 +68,15 @@ def header(shell: Shell) -> tuple[str, ...]:
     )
 
 
+def rewritten_by_mh() -> bool:
+    """Tell whether `mh folders` or `mh update` runs `launcher`, not the reader.
+
+    Returns:
+        True when `mh` rewrites its own file: it says what it read back itself.
+    """
+    return bool(os.environ.get(LAUNCHER_VARIABLE))
+
+
 def written(shell: Shell) -> str:
     """The line ending `launcher`: how to load the script just written.
 
@@ -78,7 +87,7 @@ def written(shell: Shell) -> str:
         The line; empty when `mh folders` or `mh update` runs `launcher`: `mh` loads
         the file itself, then shows what it read back.
     """
-    if os.environ.get(LAUNCHER_VARIABLE):
+    if rewritten_by_mh():
         return ""
     return _("Launcher written. Load it with: {load}, then type: mh audit").format(
         load=load_command(shell)

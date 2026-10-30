@@ -82,9 +82,11 @@ _{{ f }}_state() {
 
 # Run `launcher` again with these --photos and --backup folders, into a file beside this one; it
 # replaces this file only when `launcher` succeeded (a refused folder leaves mh as it
-# was), then it is loaded again and its folders read back (0176).
+# was), then it is loaded again and its folders read back (0176): not for `update`, whose
+# folders stay the same (`--quiet` first).
 _{{ f }}_rewrite() {
-    local file="${_{{ f }}_file:-}" temp path words=({{ kept.launcher | join(" ") }})
+    local file="${_{{ f }}_file:-}" temp path quiet="" words=({{ kept.launcher | join(" ") }})
+    if [[ "${1:-}" == --quiet ]]; then quiet=1; shift; fi
     if [[ ! -f "$file" ]]; then printf '%s\n' "{{ update.no_file }}" >&2; return 1; fi
     words+=("$@")
     temp="$file.new"
@@ -97,6 +99,7 @@ _{{ f }}_rewrite() {
     mv -f "$temp" "$file"
     # shellcheck disable=SC1090  # the file just written
     source "$file"
+    if [[ -n "$quiet" ]]; then return 0; fi
     path="$file"
     printf '%s\n' "{{ host.texts.saved }}"
     _{{ f }}_list
@@ -115,7 +118,7 @@ _{{ f }}_update() {
     if [[ -n "$before" ]]; then old="$(docker run --rm "$image" --version)"; fi
     if ! docker pull "$image"; then printf '%s\n' "{{ update.pull_failed }}" >&2; return 1; fi
     after="$(docker image inspect --format '{% raw %}{{.Id}}{% endraw %}' "$image")"
-    _{{ f }}_rewrite "${pairs[@]}" || return 1
+    _{{ f }}_rewrite --quiet "${pairs[@]}" || return 1
     new="$(docker run --rm "$image" --version)"
     if [[ "$before" == "$after" ]]; then printf '%s\n' "{{ update.latest }}"; return 0; fi
     printf '%s\n' "{{ update.updated }}"
@@ -128,6 +131,6 @@ _{{ f }}_update() {
     fi
 {% else %}
     printf '%s\n' "{{ update.local }}"
-    _{{ f }}_rewrite "${pairs[@]}"
+    _{{ f }}_rewrite --quiet "${pairs[@]}"
 {% endif %}
 }

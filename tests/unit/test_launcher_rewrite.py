@@ -278,6 +278,8 @@ def test_update_pulls_rewrites_and_says_both_versions(tmp_path: Path) -> None:
     assert "still takes 100 MB: docker image prune frees it." in done.stdout
     assert not any(call.startswith(("image prune", "rmi")) for call in calls)
     assert _held(done) == [str(photos)]
+    assert "Saved, read back" not in done.stdout  # same folders: not listed again
+    assert "mh remembers" not in done.stderr + done.stdout  # nor what mh keeps
 
 
 def test_update_without_a_new_image_says_already_the_latest(tmp_path: Path) -> None:

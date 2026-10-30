@@ -152,7 +152,15 @@
     if (pickedCount) {
       // The files picked are what to send: saved in an album first, `share` takes one.
       const day = new Date().toLocaleDateString("sv"); // YYYY-MM-DD, the local day
-      if (!$("albumName").value.trim()) $("albumName").value = fill(TEXTS.sendName, { date: day });
+      // A plain folder in *Path contains* (search) names the album by its last part, after
+      // the closest YYYY-MM (or YYYY) folder above it: 2026/2026-09/Hertogenbosch gives
+      // 2026-09-Hertogenbosch. Wildcards or a regex do not name one: the day then.
+      const typed = ($("folder")?.value ?? "").trim();
+      const parts = /[*?]|^\/.*\/$/.test(typed) ? [] : typed.replace(/[\\/]+$/, "").split(/[\\/]/);
+      const last = parts.pop() ?? "";
+      const dated = parts.reverse().find((part) => /^\d{4}(-\d\d)?$/.test(part));
+      const named = dated && !/^\d{4}/.test(last) ? `${dated}-${last}` : last;
+      if (!$("albumName").value.trim()) $("albumName").value = named || fill(TEXTS.sendName, { date: day });
       await send("add");
     }
     say(TEXTS.send, 'mh share --album "{name}"');

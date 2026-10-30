@@ -102,8 +102,9 @@ function global:_{{ f }}_state($folder, $quarantine = $false) {
 
 # Run `launcher` again with these photo folders and backups, into a file beside this one; it
 # replaces this file only when `launcher` succeeded (a refused folder leaves mh as it
-# was), then it is loaded again and its folders read back (0176). True when written.
-function global:_{{ f }}_rewrite($photos, $backups) {
+# was), then it is loaded again and its folders read back (0176): not for `update`, whose
+# folders stay the same (`$quiet`). True when written.
+function global:_{{ f }}_rewrite($photos, $backups, $quiet = $false) {
     $file = $MyInvocation.MyCommand.ScriptBlock.File
     if (-not $file -or -not (Test-Path -LiteralPath $file)) { Write-Host "{{ update.no_file }}"; return $false }
     $docker = @({{ kept.docker | join(", ") }})
@@ -116,6 +117,7 @@ function global:_{{ f }}_rewrite($photos, $backups) {
     Set-Content -LiteralPath $temp -Value $lines -Encoding Ascii
     Move-Item -LiteralPath $temp -Destination $file -Force
     . $file
+    if ($quiet) { return $true }
     $path = $file
     Write-Host "{{ host.texts.saved }}"
     _{{ f }}_list
@@ -135,7 +137,7 @@ function global:_{{ f }}_update {
     $after = "$(docker image inspect --format '{% raw %}{{.Id}}{% endraw %}' $image)"
     $photos = @(_{{ f }}_photos)
     $backups = @(_{{ f }}_backups)
-    if (-not (_{{ f }}_rewrite $photos $backups)) { return }
+    if (-not (_{{ f }}_rewrite $photos $backups $true)) { return }
     $new = "$(docker run --rm $image --version)"
     if ($before -eq $after) { Write-Host "{{ update.latest }}"; return }
     Write-Host "{{ update.updated }}"
@@ -150,6 +152,6 @@ function global:_{{ f }}_update {
     Write-Host "{{ update.local }}"
     $photos = @(_{{ f }}_photos)
     $backups = @(_{{ f }}_backups)
-    $null = _{{ f }}_rewrite $photos $backups
+    $null = _{{ f }}_rewrite $photos $backups $true
 {% endif %}
 }

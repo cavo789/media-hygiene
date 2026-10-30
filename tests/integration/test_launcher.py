@@ -11,6 +11,7 @@ import pytest
 
 from media_hygiene.constants import ExitCode
 from media_hygiene.paths.mounts import MountTable
+from media_hygiene.services.next_command import LAUNCHER_VARIABLE
 from tests.support.cli import run
 from tests.support.host_bash import fake_program
 
@@ -131,3 +132,15 @@ def test_another_page_port_reaches_the_script_and_the_page(
     review = _arguments(script, tmp_path / "home", "review")
     assert review[review.index("-p") + 1] == "127.0.0.1:9000:9000"
     assert "MEDIA_HYGIENE_REVIEW__PORT=9000" in review
+
+
+def test_a_rewrite_by_mh_says_neither_what_it_keeps_nor_how_to_load(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch, mounted_data: Path
+) -> None:
+    """`mh update` and `mh folders` rerun launcher: they say what they read back."""
+    del mounted_data
+    monkeypatch.setenv(LAUNCHER_VARIABLE, "bash")
+    result = run(cli, "launcher", "--shell", "bash")
+    assert result.exit_code == 0, result.output
+    assert "mh remembers" not in result.stderr
+    assert "Launcher written" not in result.stderr
