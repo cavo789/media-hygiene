@@ -76,6 +76,5 @@ having checked it; write "to check" instead.
 A caller may add its own extra mandatory fields on top of these four (e.g. `ux-onboarding-review`'s
 `Horizon`) — say so explicitly in that skill rather than leaving it implicit.
 
-After writing the TODOs, regenerate the execution plan with `/todo:plan` (it parses these bullets).
-Do not hand-edit `.todos/plan.md` — it is a regenerated projection. In the report, point to
-`.todos/plan.md` and quote the first prompt to run.
+After writing the TODOs, do not run nor offer `/todo:plan`: the user regenerates the plan when
+they choose. Never hand-edit `.todos/plan.md` — it is a regenerated projection.

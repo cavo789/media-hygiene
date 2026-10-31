@@ -1,0 +1,70 @@
+# 0545 — Keep each photo's landmark and town in the index: searchable, shown, scanned once
+
+- **Priority**: medium
+- **Batch**: unassigned
+- **Depends**: —
+- **Files**: src/media_hygiene/services/slideshow_places.py, src/media_hygiene/geo/landmarks.py, src/media_hygiene/index/, src/media_hygiene/review/templates/pick_*, search, src/media_hygiene/classify/folder_towns.py, src/media_hygiene/geo/gazetteer.py
+- **Needs maintainer**: the questions below, asked when the TODO runs
+
+## Context
+
+The maintainer saw "Montagne de Bueren" in the slideshow's place corner for
+`C:\Photos\2026\2026-10\Promenade à Liège\20261029_124120.jpg` (2026-10-31), then looked
+for it on the PC and could not find it: it is in no tile, in no large view, and nothing
+can search for it. The cause: the name is not stored. `services/slideshow_places.py`
+works it out again at each show from the GPS position (user's place > OSM name in
+`/cache/place-names.json` (0474) > GeoNames landmark within `NEAR_M` = 200 m > town).
+The maintainer's remarks: "not very efficient, no cache?" and "searching for Montagne de
+Bueren will never find the photo".
+
+## Wanted
+
+1. **Store it once**: the landmark (and its source: user / OSM / GeoNames) in the index,
+   next to the GPS metadata, filled by the audit/import for new photos; the slideshow
+   reads it instead of recomputing it. Follow the index's (path, size, mtime) rules; on a
+   move by `sort`/`undo`, the row follows (workflow.md move rules; one test per event).
+2. **Search**: the landmark is a search field ("Montagne de Bueren" finds the photo).
+3. **Show it**: under the date on the tile and in the large view (skill
+   `photo-picking-pages`: same place on every tile page), and in the PC slideshow's
+   corner like on the TV.
+4. **Scan the existing collection**, like `mh tags` but without an AI model: every GPS
+   photo of the index gets its offline GeoNames landmark (instant, nothing leaves the
+   machine); the online OSM naming stays behind the explicit Yes asked each time
+   (`[places] reverse_lookup`). Visible on a page too (memory: visible in web or
+   nonexistent), with a progress line.
+5. Correcting a wrong name: see 0489 (this TODO provides the storage it writes into).
+6. **The town too (and its region/country)**, stored the same way and at the same time:
+   the offline `Gazetteer` already gives them (`geo/gazetteer.py`, `Town`). Searchable
+   ("Colmar" finds the photo), shown with the landmark ("Montagne de Bueren · Liège"). The
+   maintainer's goal (2026-10-31): sort into `2017/2017-11/Alsace` with `classify`, then
+   still find each photo's building and town by search. The stored town/region must be
+   what `classify` folder names read (`classify/folder_towns.py`, `town_folders.py`):
+   one source, no second computation.
+   Caveat to tell the maintainer: GeoNames regions are the current ones (Alsace is in
+   *Grand Est* since 2016; admin2 gives *Bas-Rhin*/*Haut-Rhin*): a folder named "Alsace"
+   comes from the user's own `[[classify.places]]` area (`places` page), not from GeoNames.
+7. **The building the photo shows** (vs. the landmark *near* where it was taken): the GPS
+   only gives the nearest named monument within `NEAR_M`; a photo of the cathedral taken
+   from 400 m gets nothing, and one taken next to a castle facing the other way gets the
+   castle. Option to ask: an opt-in 🤖 local vision model (Ollama, like `mh tags`)
+   choosing among the GeoNames/OSM landmarks within ~1 km the one the picture shows —
+   offline, a short list to pick from, never a free guess. Otherwise 0489 (typed by hand).
+
+## Questions for the maintainer (ask at run time)
+
+- Town/region: GeoNames admin1 (Grand Est) or admin2 (Bas-Rhin) in the folder names and
+  the label, or only the user's own places?
+- The building shown: the 🤖 vision pick of item 7 in this TODO, a follow-up TODO, or
+  only the manual 0489?
+- Automatic during every `audit`/`import`, or only on demand (a verb / a home action)?
+- Keep the 200 m radius, or make it a setting (memory: few settings — a constant unless
+  collections differ)?
+- Measure first: share of the maintainer's GPS photos with a GeoNames landmark within
+  200 m (tells how useful the scan is) — via `tests/measure/mh-measure.ps1`.
+
+## Acceptance
+
+- [ ] The landmark and the town are computed once and stored; the slideshow and classify no longer recompute them
+- [ ] Search finds a photo by its landmark or its town; tiles and large view show it
+- [ ] A scan fills it for the existing GPS photos, offline; tests for moves/renames
+- [ ] Both languages of the docs updated; `docs_screenshots` flagged as stale

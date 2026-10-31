@@ -59,6 +59,5 @@ as a valid `Depends` value).
    adjust — these header bullets are what `/todo:plan` parses.
 
 6. **Report and hand off.**
-   - Print the created path and the Title.
-   - Remind the user that `.todos/plan.md` is a generated projection — run
-     `/todo:plan` to regenerate it. Offer to run it now.
+   - Print the created path and the Title. Do not run nor offer `/todo:plan`:
+     the user regenerates the plan when they choose.
