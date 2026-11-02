@@ -63,7 +63,7 @@ def test_move_dialog_sources_keep_box_and_folder_on_one_line() -> None:
         ".sources input[type=checkbox] { width: auto; flex: none; margin: 0; }" in page
     )
     assert re.search(r"\.sources label \{ display: flex !important;", page)
-    assert re.search(r"\.sources \{[^}]*overflow: hidden auto", page)
+    assert re.search(r"#moveDlg \.moveBody \{[^}]*overflow: hidden auto", page)
     assert 'element("b", "count"' in page
 
 
