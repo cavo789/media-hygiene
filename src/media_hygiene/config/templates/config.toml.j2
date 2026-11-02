@@ -257,9 +257,9 @@ language = ""
 #    "photograph", "blur", "adult"]
 {{ comment(_("A GPS position is named after its town only within this distance, in km.")) }}
 town_km = 20
-{{ comment(_("The words 'xmp' writes into the .xmp sidecars next to the photos (dc:subject), by source: vision, place, folder, name, takeout (the Google Photos description), former (the folders and names of the copies 'clean' removed), date. The model's sentence goes into dc:description.")) }}
+{{ comment(_("The words 'xmp' writes into the .xmp sidecars next to the photos (dc:subject), by source: vision, place, hand (the words you typed on photos of the search page), folder, name, takeout (the Google Photos description), former (the folders and names of the copies 'clean' removed), date. The model's sentence goes into dc:description.")) }}
 {{ comment(_("person writes the names of the people on each photo (PersonInImage): never by default, as the names then travel with every copy of the photos.")) }}
-xmp_sources = ["vision", "place"]
+xmp_sources = ["vision", "place", "hand"]
 {{ comment(_("true: a photo without GPS in a folder named after a town (2019/Douarnenez) gets the position of that town's centre in its sidecar, so that other applications show it on their map. Approximate: off by default.")) }}
 xmp_folder_gps = false
 {{ comment(_("true: 'tags' also lets a model look at each photo (CLIP, on this computer's processor: no GPU, nothing sent), once, about 1 minute per 1,000 photos, so that 'search' finds what a photo shows even without a word for it (\"a cat on a sofa\"). The model (894 MB) is downloaded into the cache the first time. It sees what is on a photo, never who nor where: names come from 'people', places from the GPS."), "--meaning") }}
@@ -268,6 +268,7 @@ meaning = false
 meaning_threads = 4
 {{ comment(_("How many photos a search by meaning finds at most, the closest first.")) }}
 meaning_results = 200
+{{ comment(_("The words you typed on photos of the search page (🏷 Tag…): each one in tags/<word>.toml next to this file, its photos as {path, id}. The page writes them; [[tags.hand]] entries (word, file) link them.")) }}
 
 
 [people]
@@ -368,11 +369,7 @@ kind = "download"
 # name = "{{ _("Towns of the folders") }}"
 # match = "folder_town"
 #
-# [[classify.rules]]
-# name = "{{ _("Italy 2023") }}"
-# match = "date_range"
-# dates = "2023-07-01..2023-07-15"
-# category = "{{ _("Italy 2023") }}"
+{{ comment(_('Your events (match = "date_range": a name, its days, its cameras) are written by the search page, never by hand: Move to an event…, or the events found in your folders on the Events tab.')) }}
 #
 # [[classify.rules]]
 # name = "{{ _("Grandma's birthday") }}"
@@ -475,12 +472,10 @@ category = "Saint-Nicolas"
 # radius_m = 200
 # home = true
 
-{{ comment(_("Photos given one of your places by hand, written by the map of 'places' (Give these photos to…) when their GPS position is wrong, as a phone indoors often records: they go to that place whatever their position says, and their trips are measured from it. They are known by their content (size, then SHA-256), so moving or renaming them changes nothing; a photo edited since falls back to its GPS. path is where it was, for you to read only. Deleting a place on the map deletes its entry.")) }}
+{{ comment(_("Photos given one of your places by hand, written by the map of 'places' (Give these photos to…) when their GPS position is wrong, as a phone indoors often records: they go to that place whatever their position says, and their trips are measured from it. Their list is in the file linked (one line per photo: path, and id = the start of its SHA-256 and its size); the id is what counts, the path is kept current by sort, undo and each audit. A photo edited since falls back to its GPS. Deleting a place on the map deletes its entry.")) }}
 # [[classify.place_photos]]
 # place = "{{ _("Home") }}"
-# photos = [
-#     { sha256 = "<its SHA-256>", size = 2481152, path = 'C:\Photos\IMG_1234.jpg' },
-# ]
+# file = "places/{{ _("Home") }}.toml"
 
 {{ comment(_("Your names for the towns: the towns are named after GeoNames, in English or in their own language (Brussels, Brugge, Gent). Write the exact GeoNames name, then yours: trips, {city}, the places page and the folder_town rule use yours; a folder named either way matches.")) }}
 # [classify.town_names]

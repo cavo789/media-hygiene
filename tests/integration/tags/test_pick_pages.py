@@ -103,6 +103,10 @@ def test_the_events_view_is_part_of_the_search_page(
     )
     assert 'role="tabpanel" aria-labelledby="tabEvents" hidden' in side
     assert 'localStorage.setItem("mh-search-tab"' in search
+    # 0558: the late photos of an event, in the Events view, added or refused.
+    for wanted in ('id="lateList"', 'id="lateAdd"', 'id="lateRefuse"'):
+        assert wanted in side
+    assert "/api/late-events/refuse" in search
 
 
 def _review(template: str) -> str:

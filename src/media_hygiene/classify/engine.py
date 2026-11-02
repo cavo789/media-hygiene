@@ -21,6 +21,7 @@ from media_hygiene.classify.models import Band, Proposal, SortReason, Verdict
 from media_hygiene.classify.moments import Moments, joined_signals
 from media_hygiene.classify.received import join_received, received_guesses
 from media_hygiene.classify.rules.building import RuleFacts, Seen
+from media_hygiene.classify.rules.kept import Kept
 from media_hygiene.classify.rules.order import decide, unused
 from media_hygiene.classify.signals import folder_signal
 from media_hygiene.classify.trips import find_whereabouts
@@ -30,7 +31,7 @@ from media_hygiene.name_patterns import GENERIC_FOLDERS
 from media_hygiene.paths.host_paths import is_within
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Sequence
+    from collections.abc import Callable, Mapping, Sequence
     from pathlib import Path
 
     from media_hygiene.classify.layout import GeoValues
@@ -53,6 +54,7 @@ class Scope:  # pylint: disable=too-many-instance-attributes  # one field per op
     towns: Gazetteer | None = None  # read only when a `trip` rule is on
     within: tuple[Path, ...] = ()  # `--path`: only the files below them get a proposal
     people: tuple[str, ...] = ()  # `[[people.person]]` names: their folders are theirs
+    refused: Mapping[str, frozenset[str]] = field(default_factory=dict)  # 0558
 
 
 @dataclass(frozen=True, slots=True)
@@ -98,7 +100,9 @@ def classify(
     signals = joined_signals(signals, events, Moments(datings, rules, settings))
     # Every `path` rule asks for the host path of every file: computed once each.
     facts = RuleFacts(datings, signals, event_of, cache(scope.host))
-    facts = replace(facts, seen=scope.seen, where=where)
+    facts = replace(
+        facts, seen=scope.seen, where=where, kept=Kept(refused=scope.refused)
+    )
     signals = decide(files, settings, facts)
     moments = year_folders(files, datings, (signals, event_of, settings.event_year))
     proposals = [

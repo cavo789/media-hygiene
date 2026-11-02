@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.models import DateSource, SortReason
 from media_hygiene.classify.rules.calendar import parse_one_off, parse_recurring
+from media_hygiene.classify.rules.devices import devices_test, unrefused
 from media_hygiene.classify.rules.kept import Kept
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.classify.rules.matchers import KIND_TESTS, camera_test, path_test
@@ -91,7 +92,10 @@ def build_test(rule: ClassifyRule, facts: RuleFacts) -> Test:
             lambda file: folders[file.path].reason is SortReason.SAME_MOMENT
         ),
         RuleMatch.CALENDAR: lambda: _dated(parse_recurring(rule.dates), facts),
-        RuleMatch.DATE_RANGE: lambda: _dated(parse_one_off(rule.dates), facts),
+        RuleMatch.DATE_RANGE: lambda: unrefused(
+            facts.kept.refused.get(rule.name, frozenset()),
+            devices_test(rule.devices, _dated(parse_one_off(rule.dates), facts)),
+        ),
         RuleMatch.KIND: lambda: KIND_TESTS[rule.kind] if rule.kind else _never,
         RuleMatch.PATH: lambda: path_test(rule.pattern, facts.host),
         RuleMatch.CAMERA: lambda: camera_test(rule.pattern),

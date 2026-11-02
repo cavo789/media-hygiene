@@ -1,13 +1,18 @@
-"""The desks of the search page built from the runtime: rules, names, events."""
+"""The desks of the search page built from the runtime: rules, names, events, words."""
 
 from __future__ import annotations
 
 from functools import partial
 from typing import TYPE_CHECKING
 
+from media_hygiene.classify.own_events import folder_rules
 from media_hygiene.search.events_desk import EventsDesk
+from media_hygiene.search.found_desk import FoundDesk
+from media_hygiene.search.hand_index import HandIndex
+from media_hygiene.search.late_desk import LateDesk
 from media_hygiene.search.people_desk import NamesPlace
 from media_hygiene.search.rule_desk import RuleDesk
+from media_hygiene.search.tag_desk import TagDesk
 from media_hygiene.services.group_sort import sorted_group
 from media_hygiene.services.people_page import names_file
 from media_hygiene.services.rule_trial import try_rule, written_rules
@@ -68,6 +73,35 @@ def events_desk(
         The desk.
     """
     opener = partial(open_sort_review, runtime, None)
-    return EventsDesk(
-        search, runtime.mapper, opener, chosen.paths, partial(sorter_of, runtime)
+    settings = runtime.settings
+    names = [person.name for person in settings.people.person]
+    found = FoundDesk(
+        search.connection,
+        runtime.mapper,
+        runtime.locations.config_file,
+        (folder_rules(settings.classify, names), settings.classify.merge_gap_hours),
     )
+    return EventsDesk(
+        search,
+        runtime.mapper,
+        opener,
+        chosen.paths,
+        partial(sorter_of, runtime),
+        found,
+        LateDesk(search, runtime.mapper, runtime.locations.config_file, chosen.paths),
+    )
+
+
+def tag_desk(runtime: Runtime, search: SearchIndex) -> TagDesk | None:
+    """*🏷 Tag…* (0555): the words typed by hand, saved into `/config/tags/`.
+
+    Args:
+        runtime: Settings, mount points and output.
+        search: The open index.
+
+    Returns:
+        The desk; None on a search without words typed by hand (a test's index).
+    """
+    if not isinstance(search, HandIndex):
+        return None
+    return TagDesk(search, runtime.mapper, names_file(runtime))

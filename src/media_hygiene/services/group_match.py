@@ -1,12 +1,15 @@
 """A group of files matched against the latest classify plan (0397, 0452).
 
 Each file is found by its host path in the plan, or at the place an earlier run of the
-plan moved it (the journal). A file the plan does not know gets a row of its own for
-this move (`plan_newcomers`): the plan then holds it, in memory only.
+plan moved it (the journal): there already in the folder asked, it is counted; moved
+elsewhere, it moves again from that place, as a file the plan does not know. A file
+the plan does not know gets a row of its own for this move (`plan_newcomers`): the
+plan then holds it, in memory only.
 """
 
 from __future__ import annotations
 
+from pathlib import PureWindowsPath
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.sort_resume import moved_targets
@@ -64,11 +67,11 @@ def _match(
     already = fixed = 0
     for path, folder in folders.items():
         host = runtime.mapper.to_host(path)
-        if host in now:
+        row = by_host.get(host)
+        if row is None and host in now and _sits_in(host, folder):
             already += 1
             continue
-        row = by_host.get(host)
-        if row is None:
+        if row is None:  # unknown, or moved by an earlier run elsewhere: from here
             strangers.append(path)
             continue
         if row.reason is SortReason.LEFT_AS_IS:  # protected, `leave`: never moved
@@ -76,3 +79,17 @@ def _match(
         else:
             rows[row.id] = folder
     return Matched(rows, already, fixed, tuple(strangers))
+
+
+def _sits_in(host: str, folder: str) -> bool:
+    """Tell whether a file is in the folder asked already.
+
+    Args:
+        host: The file's host path.
+        folder: The folder below its root, `/`-separated.
+
+    Returns:
+        True when its folder ends with that one.
+    """
+    parent = PureWindowsPath(host).parent.as_posix().casefold()
+    return parent.endswith("/" + folder.strip("/").casefold())

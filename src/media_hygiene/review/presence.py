@@ -6,7 +6,9 @@ few seconds while open, and that it leaves on `pagehide` (a `keepalive` fetch, w
 outlives the tab). The server ends a while after a tab left without another coming back
 (a reload leaves, then comes back at once), or after a long silence: browsers slow the
 timers of a tab in the background (down to once a minute), which must not count as
-closed. Nothing ends before a first tab spoke: a page opened late is still served.
+closed. Nothing ends before a first tab spoke: a page opened late is still served. A
+timer that fires late tells the loop was busy (the events of a large plan read for
+seconds): the pings queued meanwhile are not read yet, so it waits once more.
 """
 
 from __future__ import annotations
@@ -31,6 +33,8 @@ ALIVE_SECONDS: Final = 10
 LEAVING_GRACE_SECONDS: Final = 10.0
 # No news at all: longer than the once-a-minute timers of a tab in the background.
 SILENCE_SECONDS: Final = 180.0
+# A timer later than this: the loop was busy, the tabs' pings still queued.
+LATE_SECONDS: Final = 1.0
 
 
 class _Alive(BaseModel):
@@ -44,7 +48,7 @@ class _Alive(BaseModel):
 class Presence:
     """Ends the server with a code once no tab shows the page; remembers it did."""
 
-    __slots__ = ("_code", "_ending", "_timer", "closed")
+    __slots__ = ("_code", "_due", "_ending", "_timer", "closed")
 
     def __init__(self, ending: Ending, code: int) -> None:
         """Wait for a first tab before counting anything.
@@ -56,6 +60,7 @@ class Presence:
         self._ending = ending
         self._code = code
         self._timer: asyncio.TimerHandle | None = None
+        self._due = 0.0
         self.closed = False
 
     def seen(self, *, leaving: bool) -> None:
@@ -66,11 +71,23 @@ class Presence:
         """
         if self._timer is not None:
             self._timer.cancel()
-        delay = LEAVING_GRACE_SECONDS if leaving else SILENCE_SECONDS
-        self._timer = asyncio.get_running_loop().call_later(delay, self._close)
+        self._arm(LEAVING_GRACE_SECONDS if leaving else SILENCE_SECONDS)
+
+    def _arm(self, delay: float) -> None:
+        """Count down again.
+
+        Args:
+            delay: Seconds before the server ends without news of a tab.
+        """
+        loop = asyncio.get_running_loop()
+        self._due = loop.time() + delay
+        self._timer = loop.call_later(delay, self._close)
 
     def _close(self) -> None:
         """No tab came back: end the server, unless something else ended it first."""
+        if asyncio.get_running_loop().time() - self._due > LATE_SECONDS:
+            self._arm(LEAVING_GRACE_SECONDS)  # the loop was busy: read its pings first
+            return
         if self._ending.asked is None:
             self.closed = True
             self._ending.end(self._code)

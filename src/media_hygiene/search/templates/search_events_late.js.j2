@@ -1,0 +1,92 @@
+{# *New photos during an event* (0558): `GET` the events with late photos; *See them*
+   puts one event's on the shared grid (`showFiles`), those of the event's camera
+   picked. *Add* opens *Move to an event…* named after the event; *Refuse* posts the
+   picked keys; each answer is read back from the disk. `/events?late=<rule>` opens
+   one at once (the home page's link). #}
+(() => {
+  const LT = {{ {
+    "title": _("New photos during your events"),
+    "line": _("{n} new photos during '{name}' ({dates})"),
+    "see": _("See them"),
+    "shown": _("{n} new photos during '{name}'"),
+    "none": _("No new photo during '{name}': all added or refused."),
+    "probably": _("✔ Probably: the event's camera"),
+    "elsewhere": _("During the event, but another camera: elsewhere?"),
+    "other": _("Rather the event '{name}' (its camera)"),
+    "ask": _("No camera in this file: is it of the event?"),
+    "saving": _("Saving…"),
+    "failed": _("Not saved (error {status})."),
+  } | tojson }};
+  const LATE_PATH = {{ late_path | tojson }};
+  const REFUSE_PATH = {{ late_refuse_path | tojson }};
+  const byId = $;
+  let shownEvent = null;  // {id, label, category} of the late photos on the grid
+  const say = (text, kind) => { byId("lateSaid").textContent = text || ""; byId("lateSaid").className = kind || "muted"; };
+  const list = (view) => {
+    byId("late").hidden = !view.events.length && !shownEvent;
+    byId("lateTitle").textContent = LT.title + " (" + view.events.length + ")";
+    byId("lateList").replaceChildren(...view.events.map((item) => {
+      const line = element("li", "foundItem", "");
+      line.append(element("span", "", fill(LT.line, { n: item.total, name: item.label, dates: item.dates }) + " "));
+      const button = element("button", "plain", LT.see);
+      button.type = "button";
+      button.addEventListener("click", () => open(item.id, false));
+      line.append(button);
+      return line;
+    }));
+    if (view.error) say(view.error, "error");
+  };
+  const load = async () => {
+    const answer = await ask(LATE_PATH);
+    if (answer && answer.ok) list(await answer.json());
+  };
+  // One event's late photos on the grid; the event's camera picked, as read from the disk.
+  const open = async (id, again) => {
+    if (!again) window.mhLate.opened += 1;
+    const answer = await ask(LATE_PATH + "/" + encodeURIComponent(id));
+    if (!answer || !answer.ok) { say(fill(LT.failed, { status: answer ? answer.status : 0 }), "error"); return; }
+    const view = await answer.json();
+    eventShown = null;
+    byId("eventCard").hidden = true;
+    shownEvent = { id: view.id, label: view.label || view.id, category: view.category || "" };
+    total = view.total;
+    showFiles(view.hits, again);
+    $("more").hidden = true;
+    for (const hit of view.hits) if (hit.ticked) picked.add(hit.key);
+    showPicked();
+    byId("lateBar").hidden = !view.hits.length;
+    byId("lateShownTitle").textContent = view.hits.length ? fill(LT.shown, { n: view.hits.length, name: shownEvent.label }) : "";
+    if (!view.hits.length) say(fill(LT.none, { name: shownEvent.label }), "saved");
+  };
+  const refuse = async () => {
+    if (!shownEvent || !picked.size) return;
+    say(LT.saving, "");
+    const answer = await ask(REFUSE_PATH, { event: shownEvent.id, keys: [...picked] });
+    if (!answer) { say(TEXTS.offline, "error"); return; }
+    const view = await answer.json().catch(() => ({}));
+    if (!answer.ok) { say(view.error || fill(LT.failed, { status: answer.status }), "error"); return; }
+    list(view);
+    say(view.said, "saved");
+    await open(shownEvent.id, false);
+  };
+  window.mhLate = {
+    opened: 0,  // late views opened: a search answered after one is dropped
+    shown: () => shownEvent !== null && eventShown === null,
+    reopen: (again) => open(shownEvent.id, again),
+    // After *Add*: the list and the grid read again (the photos moved left both).
+    moved: () => { if (!window.mhLate.shown()) return false; load(); open(shownEvent.id, false); return true; },
+    tile: (hit, meta, node) => {
+      const text = hit.likely === "other" ? fill(LT.other, { name: hit.other }) : LT[hit.likely];
+      meta.append(element("div", hit.likely === "probably" ? "goes" : "muted", text));
+      if (hit.likely !== "probably") node.classList.add("notTaken");
+    },
+  };
+  window.mhMoveName = () => (window.mhLate.shown() ? shownEvent.category : "");
+  byId("lateAdd").addEventListener("click", () => byId("moveOpen").click());
+  byId("lateRefuse").addEventListener("click", refuse);
+  $("form").addEventListener("submit", () => { shownEvent = null; byId("lateBar").hidden = true; });
+  byId("tabEvents").addEventListener("click", load, { once: true });
+  const wanted = new URLSearchParams(window.location.search).get("late");
+  if (!byId("events").hidden || wanted) load();
+  if (wanted) open(wanted, false);
+})();

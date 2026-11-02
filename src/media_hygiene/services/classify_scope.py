@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.engine import Scope
+from media_hygiene.classify.late_files import refused_by_event
 from media_hygiene.classify.whereabouts import load_towns
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
@@ -46,4 +47,5 @@ def run_scope(runtime: Runtime, years: tuple[int, int] | None) -> Scope:
         settings.keep.generic_folders,
         mapper.to_host,
         towns=load_towns(settings.classify),
+        refused=refused_by_event(runtime.locations.config_dir, settings.classify.rules),
     )

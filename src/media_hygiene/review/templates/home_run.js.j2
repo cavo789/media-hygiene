@@ -423,11 +423,14 @@ const ACTS = {
 // the home page ends, and this phone follows to the slideshow's remote once it answers.
 const TV_STEP = "slideshow-album";
 const TV_WAIT_MS = 120000;
+// Asked once per visit: each render of the home page asked it again (2026-11-02).
+let tvList = null;
 function tvAlbums() {
   const box = $("#tvAlbums");
   if (!box) return;
-  fetch(P.albumList, { cache: "no-store" })
-    .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+  tvList = tvList || fetch(P.albumList, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : Promise.reject(response.status)));
+  tvList
     .then((list) => {
       const names = (list.albums || []).map((album) => album.name);
       box.innerHTML = names.length
@@ -435,7 +438,7 @@ function tvAlbums() {
         : `<p class="muted">${esc(T.tvNone)}</p>`;
       $$("[data-tv]", box).forEach((button) => button.addEventListener("click", () => tvStart(button.dataset.tv)));
     })
-    .catch(() => { box.innerHTML = `<p class="muted">${esc(T.tvNone)}</p>`; })
+    .catch(() => { tvList = null; box.innerHTML = `<p class="muted">${esc(T.tvNone)}</p>`; })
     .finally(tvChoices);
 }
 // ---- A folder or a month on the TV (0455): the lists come from the index, read-only -----------

@@ -39,3 +39,13 @@
   #rulesDlg .sortBy { padding: 0; border: 0; font: inherit; font-weight: 600; background: none; color: inherit; cursor: pointer; }
   #goList { max-height: 50vh; overflow: auto; padding-left: 1.2rem; } #goList li { overflow-wrap: anywhere; margin: 2px 0; }
   #ruleDlg.eventRule .ruleGo, #ruleDlg.eventRule #ruleSources, #ruleDlg.eventRule label:has(#ruleUpdate) { display: none; }
+  /* *Events found in your folders* (0557). */
+  #found { margin: 4px 0; padding: 6px; border: 1px solid var(--line); border-radius: 8px; }
+  #found[hidden], #found details[hidden], #found button[hidden] { display: none; }
+  #found summary { cursor: pointer; font-weight: 600; }
+  .foundBar { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; } .foundBar input { flex: 1; min-width: 8em; }
+  .foundList { list-style: none; margin: 4px 0; padding: 0; max-height: 40vh; overflow: auto; }
+  .foundItem { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 2px 0; border-bottom: 1px solid var(--line); }
+  .foundItem[hidden] { display: none; }
+  .foundItem label { flex: 1; display: flex; gap: 4px; align-items: center; overflow-wrap: anywhere; }
+  .foundThumbs img { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; margin-left: 2px; }

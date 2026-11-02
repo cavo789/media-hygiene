@@ -88,6 +88,7 @@
   "place": _("place"),
   "person": _("person"),
   "takeout": _("Google Photos description"),
+  "hand": _("typed by hand"),
 } %}
 {# What each source of words holds, where it comes from (0346): written before a word
    (`folder:durbuy`), since the *Words of* list is gone (0463). #}
@@ -101,6 +102,7 @@
   "place": _("the town and your own places where the photo was taken."),
   "person": _("the names given to the faces on the people page."),
   "takeout": _("the description typed in Google Photos (a Takeout export)."),
+  "hand": _("the words you gave the photos with 🏷 Tag…, kept in your settings."),
 } %}
 {% set page_name = _("Search your photos") %}
 {% set rule_title = _("Make it a rule") %}
@@ -342,7 +344,7 @@
     </div>
     {% set album_compact = true %}
     {% include "album_bar.html.j2" %}
-    <p id="moveBar"><button type="button" id="moveOpen" class="plain" disabled title="{{ _('Move the photos picked to an event folder, year then year-month, without writing a rule') }}">📂 {{ _("Event…") }}</button></p>
+    <p id="moveBar"><button type="button" id="moveOpen" class="plain" disabled title="{{ _('Move the photos picked to an event folder, year then year-month, without writing a rule') }}">📂 {{ _("Event…") }}</button> <button type="button" id="tagOpen" class="plain" disabled title="{{ _('Give the photos picked a word of yours, kept in your settings') }}">🏷 {{ _("Tag…") }}</button></p>
 {% endblock %}
 {% block content %}
   <main id="grid"></main>
@@ -353,6 +355,7 @@
 {% include "pick_viewer.html.j2" %}
 {% include "rule_dialog.html.j2" %}
 {% include "move_dialog.html.j2" %}
+{% include "hand_tag_dialog.html.j2" %}
 {% include "search_events_dialogs.html.j2" %}
 <div id="why" role="dialog" aria-modal="true" aria-labelledby="whyTitle" hidden>
   <div class="box">
@@ -373,7 +376,10 @@
 {% include "search_path_list.js.j2" %}
 {% include "rule_dialog.js.j2" %}
 {% include "move_dialog.js.j2" %}
+{% include "hand_tag.js.j2" %}
 {% include "search_rule.js.j2" %}
 {% include "search_events.js.j2" %}
+{% include "search_events_found.js.j2" %}
+{% include "search_events_late.js.j2" %}
 </script>
 {% endblock %}

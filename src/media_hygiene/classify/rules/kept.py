@@ -42,11 +42,15 @@ class Kept:
     `aside`: the files a `kind` rule takes, never a date rule's (0394).
     `own`: the files of a folder the user named after one event, and that name: a date
     rule of another name never takes them (0404).
+    `refused`: by event rule name, the content ids the user refused it (0558).
     """
 
     named: Mapping[str, tuple[str, ...]] = field(default_factory=dict)
     aside: frozenset[Path] = frozenset()
     own: Mapping[Path, str] = field(default_factory=dict)
+    refused: Mapping[str, frozenset[str]] = field(
+        default_factory=dict
+    )  # by event, 0558
 
 
 def named_folders(facts: RuleFacts) -> dict[str, tuple[str, ...]]:

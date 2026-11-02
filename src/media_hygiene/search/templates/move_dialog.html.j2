@@ -12,8 +12,16 @@
   #moveDlg > form > label { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; }
   #moveDlg { overflow: visible; }
   #moveDlg h2 { margin: 0 0 6px; } #moveDlg menu { display: flex; gap: 8px; justify-content: end; padding: 0; }
-  .sources { list-style: none; padding: 0; margin: 6px 0; max-height: 40vh; overflow: auto; }
-  .sources label { display: block !important; overflow-wrap: anywhere; }  /* one line: box, then text */
+  .sources { list-style: none; padding: 0; margin: 6px 0; max-height: 40vh; overflow: hidden auto;
+             scrollbar-width: thin; border: 1px solid var(--line); border-radius: 6px; }
+  /* one row per folder: box at the left, text beside it (a long folder wraps under the text);
+     the box's `width: auto` beats the shared `input { width: 100% }` of the form fields (0562) */
+  .sources label { display: flex !important; flex-direction: row !important; gap: 8px; align-items: baseline;
+                   margin: 0; padding: 4px 8px; cursor: pointer; overflow-wrap: anywhere; min-width: 0; }
+  .sources li:nth-child(even) label { background: color-mix(in srgb, var(--line) 35%, transparent); }
+  .sources label:hover { background: color-mix(in srgb, var(--line) 70%, transparent); }
+  .sources input[type=checkbox] { width: auto; flex: none; margin: 0; }
+  .sources .count { color: var(--muted); font-weight: 600; }
   .sources .why { color: var(--muted); font-size: .85rem; }
   #moveSaid.error { color: var(--bad); } #moveSaid.saved { color: var(--ok); }
   #moveBar { margin: 6px 0 0; }

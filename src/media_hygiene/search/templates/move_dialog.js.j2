@@ -19,7 +19,9 @@ function showSources(list, sources, changed) {
     box.checked = source.ticked;
     box.addEventListener("change", () => changed(source, box.checked));
     const why = source.named ? element("span", "why", " " + fill(TEXTS.moveNamed, { name: source.named })) : null;
-    label.append(box, " " + counted(TEXTS.nFiles, source.files) + " — " + source.folder, ...(why ? [why] : []));
+    const text = element("span", "", "");
+    text.append(element("b", "count", counted(TEXTS.nFiles, source.files)), " — " + source.folder, ...(why ? [why] : []));
+    label.append(box, text);
     item.append(label);
     return item;
   }));
@@ -50,7 +52,7 @@ async function askMove(name) {
   for (const source of answer.sources) if (!source.ticked) moveLeft.add(source.folder);
   if (!moveEl("moveName").value) { moveEl("moveName").value = answer.proposed; moveCombo.clearable(); }
   if (answer.month !== moveMonth) { moveMonth = answer.month; moveNames(moveMonth); }
-  moveEl("moveWhere").textContent = answer.target ? "→ " + answer.target : "";
+  moveEl("moveWhere").textContent = answer.target ? "→ " + answer.target + (answer.remembers ? " — " + answer.remembers : "") : "";
   showSources(moveEl("moveSources"), answer.sources, (source, ticked) => {
     if (ticked) moveLeft.delete(source.folder); else moveLeft.add(source.folder);
     moveButton();
@@ -97,7 +99,7 @@ moveEl("moveName").addEventListener("input", moveTyped);
 moveEl("moveOpen").addEventListener("click", () => {
   if (!picked.size) return;
   moveView = null;
-  moveEl("moveName").value = "";
+  moveEl("moveName").value = window.mhMoveName ? window.mhMoveName() : "";  // late photos: their event (0558)
   moveEl("moveWhere").textContent = "";
   moveEl("moveSources").replaceChildren();
   moveEl("moveDlg").showModal();
@@ -107,7 +109,7 @@ moveEl("moveOpen").addEventListener("click", () => {
   moveFolders = [];
   moveCombo.close();
   moveCombo.clearable();
-  askMove("");
+  askMove(moveEl("moveName").value);
 });
 moveEl("moveNo").addEventListener("click", () => moveEl("moveDlg").close());
 // The dialog's keys stay its own: the grid's keys never fire behind it.
@@ -126,12 +128,13 @@ moveEl("moveForm").addEventListener("submit", async (event) => {
   if (answer.already) parts.push(fill(TEXTS.goAlready, { n: answer.already }));
   if (answer.unknown) parts.push(fill(TEXTS.goUnknown, { n: answer.unknown }));
   if (answer.fixed) parts.push(counted(TEXTS.goFixed, answer.fixed));
-  parts.push(...(answer.links || []));  // names, albums, decisions rewritten (0406)
+  parts.push(...(answer.links || []));
+  if (answer.remembered) parts.push(answer.remembered);  // the event config.toml keeps (0556)  // names, albums, decisions rewritten (0406)
   const said = parts.join(" ");
   moveSay(said, answer.run_id && !answer.intact ? "error" : "saved");
   if (answer.run_id) moveEl("moveNo").textContent = moveEl("moveNo").dataset.close;  // nothing left to cancel
   told(said, Boolean(answer.run_id) && !answer.intact);
-  search(null);  // the tiles at their new place, read from the index
+  if (!(window.mhLate && window.mhLate.moved())) search(null);  // the tiles at their new place, read from the index
 });
 
 // The button follows the picking (`pick_grid.js.j2` calls this hook, as for the albums).

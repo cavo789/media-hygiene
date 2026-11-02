@@ -19,7 +19,7 @@ from media_hygiene.classify.layout import Values, render
 from media_hygiene.classify.models import SortReason
 from media_hygiene.classify.own_events import own_folders, spared
 from media_hygiene.classify.rules.building import build_test
-from media_hygiene.classify.rules.kept import Kept, kept_below, named_folders
+from media_hygiene.classify.rules.kept import kept_below, named_folders
 from media_hygiene.classify.rules.kinds import (
     BUILT_IN,
     DATED,
@@ -59,7 +59,8 @@ def decide(
     if any(rule.match in DATED for rule in settings.rules):
         own = own_folders(facts, settings.merge_gap_hours)
         facts = replace(
-            facts, kept=Kept(aside=kind_taken(files, settings.rules), own=own)
+            facts,
+            kept=replace(facts.kept, aside=kind_taken(files, settings.rules), own=own),
         )
     if any(rule.keep_folders for rule in settings.rules):
         facts = replace(facts, kept=replace(facts.kept, named=named_folders(facts)))

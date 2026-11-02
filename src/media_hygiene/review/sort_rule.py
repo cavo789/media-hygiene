@@ -20,9 +20,10 @@ from media_hygiene.classify.rules.calendar import parse_one_off
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.config.classify_rules import ClassifyRule
 from media_hygiene.config.rule_checks import one_name
+from media_hygiene.review.rule_overlaps import overlapping
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable, Sequence
+    from collections.abc import Sequence
 
     from media_hygiene.classify.plan_file import ClassifyPlan, PlanRow
     from media_hygiene.classify.rules.calendar import OneOff
@@ -163,24 +164,6 @@ def _in(row: PlanRow, window: OneOff) -> bool:
         True for a dated file of those days.
     """
     return row.date is not None and window.contains(date.fromisoformat(row.date[:10]))
-
-
-def overlapping(window: OneOff, rules: Iterable[ClassifyRule]) -> list[str]:
-    """The `date_range` rules sharing a day with a window: the first listed wins there.
-
-    Args:
-        window: The new rule's days.
-        rules: The rules of `config.toml`.
-
-    Returns:
-        Their names and days.
-    """
-    return [
-        f"{rule.name} ({rule.dates})"
-        for rule in rules
-        if rule.match is RuleMatch.DATE_RANGE
-        and window.overlaps(parse_one_off(rule.dates))
-    ]
 
 
 def _last(folder: str) -> str:

@@ -36,6 +36,7 @@ from media_hygiene.review.lan_problem import with_problem
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.presence import ALIVE_SECONDS, PRESENCE_PATH, Presence
 from media_hygiene.review.step_watch import STEP_PATH, keeps_server
+from media_hygiene.search.late_desk import LATE_PATH
 from media_hygiene.services.album_pages import album_pages
 from media_hygiene.services.home_audit import HomeAudit
 from media_hygiene.services.home_lan import say_lan
@@ -96,6 +97,7 @@ def home_page(
             "tvChoices": TV_CHOICES,
             "tvChoose": TV_CHOOSE,
             "slides": SLIDES_PATH,  # the slideshow answering: the phone follows
+            "late": LATE_PATH,  # new photos during an event (0558), the search app's
         },
         alive_ms=ALIVE_SECONDS * 1000,
         relays_steps=relays_steps,

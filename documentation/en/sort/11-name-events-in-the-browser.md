@@ -137,6 +137,50 @@ events already chosen and those whose proposal is sure: only the ones that need 
 Tick **Only the sure proposals** instead to walk the sure ones one by one before accepting them.
 One box at a time; the browser remembers it for the next opening of the page.
 
+## Events made on the pages, never by hand
+
+An event you name is **remembered** for every later `classify`: its name, its days and the
+cameras of its photos. You never write it in `config.toml` yourself: three gestures of the pages
+do it, and each one says what it saved, read back from the disk.
+
+- **Move to an event…** On the search page, give a period or open a folder, pick the photos,
+  then *Move to an event…* and type its name. Before the move, the dialog says what will be
+  remembered: "It will be remembered as the event 'Turin' (config.toml)", or "in the event
+  'Turin'" when the photos widen one already known, and the cameras ("Cameras: Apple iPhone
+  12."). After the move: "The event 'Turin' is remembered: 2019-07-12..2019-07-19."
+- **The events found in your folders.** Folders you already sorted by hand
+  (`2019\2019-07\Montenegro`) are events too. At the top of the 🗂 Events tab, *N events found
+  in your folders* lists them, each with its days and its number of files, all ticked: untick
+  those that are not events worth remembering, then **Confirm**. The ticked ones are
+  remembered; the unticked ones are noted as "not events" and never proposed again (*N folders
+  said not to be events*, folded below, lets you tick one back). A folder whose photos are far
+  apart in time (`Prints jan10`) is a batch, not one event: it is listed apart, never proposed.
+- **New photos during an event.** A spouse's phone, a USB stick, a friend's photos: files of a
+  remembered event's days that are in none of its folders. The Events tab and the home page say
+  "N new photos during 'Turin' — see them?". *See them* shows them on the grid, those of the
+  event's camera ticked; then **Add the picked to the event…** (the move above, journaled: `undo`
+  puts them back) or **Refuse the picked** (never proposed to this event again).
+
+**The same name, several events.** `Turin` every two or three years is one event each time: a
+move to `Turin` joins the `Turin` whose days touch the photos' days (a day apart at most), else
+it starts another one, saved as `Turin (April 2022)`. The page says so before the move ("It
+will be remembered as a new 'Turin (April 2022)': 'Turin' is another event") and names each one
+with its month when several share a name: `Turin (July 2019)`.
+
+**Two events on the same days.** You at the seaside, your daughter at a scout camp the same
+week: two events whose days overlap. Their cameras tell their photos apart (your phone, hers),
+so they live side by side without a warning. A late photo is ranked by its camera: the event's
+own (*✔ Probably: the event's camera*), another one (*During the event, but another camera:
+elsewhere?*), the camera of the other event of those days (*Rather the event 'Camp' (its
+camera)*). A photo with no camera in its EXIF (a scan, a picture received) is never guessed:
+*No camera in this file: is it of the event?*
+
+**Where your "no" goes.** Not in `config.toml`, which must not keep growing: the photos refused
+for an event go to `/config/events/<start>-<name>.toml` (`C:\Users\you\media-hygiene\config\events\2019-07-12-Turin.toml`),
+the folders said not to be events to `/config/events/not-events.toml`. Both list the files'
+content (their SHA-256), not their paths: a refusal still holds after the photo moved or was
+renamed.
+
 ## Remember an event as a rule
 
 A choice made here holds for this proposal; a **rule** holds for every later `classify`, the

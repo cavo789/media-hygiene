@@ -1,0 +1,18 @@
+{# *Events found in your folders* (0557): the folders `YYYY/YYYY-MM/<name>` not yet
+   remembered, ticked; the user unticks those that are no event, then confirms: the
+   ticked ones become events of config.toml, the unticked ones are remembered as no
+   event (can be ticked back from the folded section). Batches are shown apart. #}
+<details id="found" hidden>
+  <summary id="foundTitle"></summary>
+  <p class="muted">{{ _("Untick the folders that are not events worth remembering, then confirm: the ticked ones are written to config.toml.") }}</p>
+  <p class="foundBar">
+    <input id="foundFilter" type="search" placeholder="{{ _('Filter by name') }}" aria-label="{{ _('Filter by name') }}">
+    <button type="button" id="foundAll" class="plain">{{ _("Tick all") }}</button>
+    <button type="button" id="foundNone" class="plain">{{ _("Untick all") }}</button>
+    <button type="button" id="foundSave">{{ _("Confirm") }}</button>
+  </p>
+  <p id="foundSaid" class="muted" role="status" aria-live="polite"></p>
+  <ul id="foundList" class="foundList"></ul>
+  <details id="foundRefused" hidden><summary id="foundRefusedTitle"></summary><ul id="foundRefusedList" class="foundList"></ul></details>
+  <details id="foundBatches" hidden><summary id="foundBatchesTitle"></summary><p class="muted">{{ _("Their photos are far apart in time: a batch, not one event. Never proposed.") }}</p><ul id="foundBatchList" class="foundList"></ul></details>
+</details>

@@ -23,8 +23,8 @@ from media_hygiene.classify.rules_edit import replace_rule
 from media_hygiene.classify.rules_file import add_rule
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
+from media_hygiene.review.rule_overlaps import overlapping
 from media_hygiene.review.serving import json_response
-from media_hygiene.review.sort_rule import overlapping
 from media_hygiene.search.chosen_api import chosen_refused
 from media_hygiene.search.models import Found
 from media_hygiene.search.query import Filters, SearchQuery

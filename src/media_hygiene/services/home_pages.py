@@ -1,18 +1,16 @@
 """`search` and `browse` served by the home server itself (0356).
 
-A click on either from the home page used to stop the home server, start a container
-for the page and wait for it: 7.6 to 8.7 s (measured on Windows, step 35 of
-`mh-measure.ps1`). Now the home server answers them too: its own paths stay its own,
-every other one goes to the app of `search` and `browse` (`search_app`), built at the
-first request of either, the index opened once for the session; built again once the
-settings changed (`FreshRuntime`, 0358). No path of theirs is one of the home page's
-but `/` (read in the code): no prefix is needed for these two.
+A click on either used to stop the home server and start a container: 7.6 to 8.7 s
+(measured on Windows, step 35 of `mh-measure.ps1`). Now the home server answers every
+path not its own with the app of `search` (`search_app`), built at the first request,
+again once the settings changed (`FreshRuntime`, 0358); no index: its pages say why.
 """
 
 from __future__ import annotations
 
 from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass, field
+from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.errors import MountError
@@ -20,10 +18,13 @@ from media_hygiene.review.apply_relay import home_relay
 from media_hygiene.review.home_app import AUDIT_PATH
 from media_hygiene.review.home_tags_api import RUN_PATHS
 from media_hygiene.review.home_views import REPORTS_PREFIX
+from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH
 from media_hygiene.review.presence import PRESENCE_PATH
 from media_hygiene.review.step_watch import STEP_PATH
 from media_hygiene.search.app import SEARCH_PAGE_PATH
+from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
+from media_hygiene.search.folders import BROWSE_PATH
 from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.history_here import HISTORY_PREFIX, HistoryHere
 from media_hygiene.services.places_here import PLACES_PREFIX, PlacesHere
@@ -40,7 +41,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.review.apply_api import ApplyStep
     from media_hygiene.review.ending import Ending, Handling
-    from media_hygiene.review.http import Request, Response
+    from media_hygiene.review.http import Request
     from media_hygiene.review.lan import LanAccess
     from media_hygiene.search.app import SearchApp
     from media_hygiene.services.runtime import Runtime
@@ -49,6 +50,7 @@ if TYPE_CHECKING:
 _HOME_PATHS: Final = frozenset(
     {PAGE_PATH, STATE_PATH, STEP_PATH, AUDIT_PATH, PRESENCE_PATH, *RUN_PATHS}
 )
+_SEARCH_PAGES: Final = frozenset({SEARCH_PAGE_PATH, BROWSE_PATH, EVENTS_PAGE_PATH})
 
 
 @dataclass(frozen=True, slots=True)
@@ -77,6 +79,7 @@ class SearchHere:
         self._stack = ExitStack()  # every index opened, closed with the server
         self._app: SearchApp | None = None
         self._built_for: Runtime | None = None
+        self.refused: MountError | None = None  # why the last build failed
 
     def app(self) -> SearchApp | None:
         """The app, the index opened on the server's own thread: again on new settings.
@@ -89,8 +92,10 @@ class SearchHere:
             return self._app
         try:
             search = self._stack.enter_context(open_search(runtime, words=False))
-        except MountError:
+        except MountError as error:
+            self.refused = error
             return None
+        self.refused = None
         server = self._server
         build = SearchBuild(
             SEARCH_PAGE_PATH,
@@ -103,6 +108,25 @@ class SearchHere:
         self._app = search_app(runtime, search, build)
         self._built_for = runtime
         return self._app
+
+    async def answer(self, request: Request, home: Handling) -> Response:
+        """Answer with the app; without an index, its pages say why (never a 404).
+
+        Args:
+            request: The request.
+            home: The home page's app, for every other path.
+
+        Returns:
+            The response.
+        """
+        app = self.app()
+        if app is not None:
+            return await app.handle(request)
+        said = self.refused
+        if said is None or request.path not in _SEARCH_PAGES:
+            return await home.handle(request)
+        text = "\n\n".join(filter(None, (said.message, said.tip, said.command)))
+        return Response(HTTPStatus.SERVICE_UNAVAILABLE, text.encode(), ContentType.TEXT)
 
     def close(self) -> None:
         """Close the index, if it was opened."""
@@ -141,8 +165,7 @@ class HomeWithPages:
             return await self.slideshow.handle(request)
         if path in {HISTORY_PREFIX, f"{HISTORY_PREFIX}/"}:
             return await self.history.handle(request)
-        app = self.pages.app()
-        return await (self.home if app is None else app).handle(request)
+        return await self.pages.answer(request, self.home)
 
 
 @contextmanager

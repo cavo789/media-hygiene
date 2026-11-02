@@ -198,7 +198,7 @@ function start() {
   const shown = () => { window.clearTimeout(slow); $("#loading").hidden = true; };
   fetch(P.state, { cache: "no-store" })
     .then((response) => { if (!response.ok) throw new Error(String(response.status)); return response.json(); })
-    .then((state) => { S = state; shown(); begin(); })
+    .then((state) => { S = state; shown(); begin(); askLate(); })
     .catch(() => { shown(); stopped(); });
 }
 // The PC's page under mh --lan: the address, the code and the QR code a phone needs (0269).

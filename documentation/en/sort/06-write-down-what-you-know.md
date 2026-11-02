@@ -75,6 +75,13 @@ party that ends at 3 in the morning stays whole; a week of skiing that holds a b
 week of skiing. Two `date_range` rules sharing a day are a warning: on those days, the first
 one listed wins.
 
+**Your events are made on the pages, never by hand.** A trip, a wedding, a weekend: the
+`date_range` rule that remembers it (its name, its days, its cameras as `devices`) is written by
+*Move to an event…* on the search page, or by confirming *the events found in your folders* on
+the 🗂 Events tab; photos arriving later in its days are proposed to you
+([step 11](11-name-events-in-the-browser.md#events-made-on-the-pages-never-by-hand)). The
+examples below show what the page writes, to read it, not to type it.
+
 **Written from the browser.** On the page of the events, *📌 Remember as a rule* writes such a
 rule for the event shown, after saying what it would take
 ([step 11](11-name-events-in-the-browser.md#remember-an-event-as-a-rule)).

@@ -3,8 +3,8 @@
 `POST /api/move/view` answers where the keys picked would go for the name typed (or
 the one proposed), grouped by source folder, each ticked or not; `POST /api/move`
 moves the keys ticked to `YYYY/YYYY-MM/<name>` in a thread (`services.selection_move`,
-the journaled sort of a group), and answers the run read back. No rule is written: a
-selection with exceptions is a move, not a rule.
+the journaled sort of a group), and answers the run read back, the event remembered
+in `config.toml` on the same action (`move_event`, 0556).
 """
 
 from __future__ import annotations
@@ -20,8 +20,10 @@ from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.review.serving import json_response
 from media_hygiene.search import statements as sql
+from media_hygiene.search.event_match import Moved
+from media_hygiene.search.move_event import cameras_of, foreseen, remember_event
 from media_hygiene.search.rule_models import refused_rule
-from media_hygiene.services.selection_models import Picked
+from media_hygiene.services.selection_models import Picked, event_path
 
 if TYPE_CHECKING:
     from datetime import datetime
@@ -68,9 +70,14 @@ async def move_answer(desk: RuleDesk, path: str, body: bytes) -> Response:
         if path == MOVE_VIEW_PATH:
             view = await asyncio.to_thread(desk.mover.view, chosen, asked.name)
             answer: dict[str, object] = view.model_dump()
+            answer["remembers"] = foreseen(
+                _config_of(desk), _moved(desk, view.name, chosen)
+            )
         else:
             answer = await asyncio.to_thread(desk.mover.move, chosen, asked.name)
             desk.index.built = None  # this page moved files: its next search reads them
+            moved = _moved(desk, event_path(asked.name), chosen)
+            answer["remembered"] = remember_event(_config_of(desk), moved)
     except ValueError as exc:
         return _conflict(str(exc))
     except MediaHygieneError as exc:
@@ -101,6 +108,38 @@ def _picked(desk: RuleDesk, keys: tuple[int, ...]) -> Picked:
         if when := exif_datetime(written) or video_date(written, zone):  # a video: ISO
             days[found.path] = when
     return Picked(paths, days)
+
+
+def _moved(desk: RuleDesk, name: str, chosen: Picked) -> Moved:
+    """What a move brings to its event: the name, the days, the cameras.
+
+    Args:
+        desk: The rule's desk: the index.
+        name: The event's folder name.
+        chosen: The files picked and their dates.
+
+    Returns:
+        The move.
+    """
+    days = tuple(sorted(when.date() for when in chosen.days.values()))
+    devices = cameras_of(desk.index.connection, tuple(chosen.paths))
+    return Moved(name, days, devices)
+
+
+def _config_of(desk: RuleDesk) -> Path:
+    """`config.toml`, where the event is remembered.
+
+    Args:
+        desk: The rule's desk: the mover's runtime.
+
+    Returns:
+        Its path.
+    """
+    if desk.mover is None:  # pragma: no cover - checked before any move
+        raise MediaHygieneError(
+            _("This page cannot move files: run 'sort' in the terminal.")
+        )
+    return desk.mover.runtime.locations.config_file
 
 
 def _conflict(said: str) -> Response:

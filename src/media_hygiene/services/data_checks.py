@@ -11,6 +11,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.paths.overlaps import mount_overlaps
 from media_hygiene.services.missing_mount import no_folder
+from media_hygiene.services.next_command import LAUNCHER_FUNCTION
 from media_hygiene.services.policy import unmounted_folders
 from media_hygiene.services.tool_mounts import refuse_tool_folders_in_data
 from media_hygiene.services.unseen_drives import refuse_unseen_drives
@@ -167,11 +168,18 @@ def unreadable_index(runtime: Runtime, index: Path, error: Exception) -> MountEr
         error: What SQLite said.
 
     Returns:
-        The error, with the tip to let the next audit build it again.
+        The error, with the audit that brings it up to date.
     """
-    return MountError(
+    refused = MountError(
         _("The index {file} cannot be read: {reason}.").format(
             file=runtime.mapper.to_host(index), reason=error
         ),
-        _("Delete it: the next audit builds it again, reading every file once."),
+        _(
+            "The index is the memory of mh: what it already knows about each photo. "
+            "An audit brings it up to date, quickly: the files it knows are not read "
+            "again. If it still fails, delete the file: the audit then reads every "
+            "file once. Run this command in the window of mh, then try again:"
+        ),
     )
+    refused.command = f"{LAUNCHER_FUNCTION} audit"
+    return refused

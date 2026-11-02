@@ -7,6 +7,7 @@ in the background, whose timers browsers slow down).
 from __future__ import annotations
 
 import asyncio
+import time
 from typing import TYPE_CHECKING, Final
 
 import pytest
@@ -30,6 +31,7 @@ def _short_delays(monkeypatch: pytest.MonkeyPatch) -> None:
     """Delays of a test, not of a user."""
     monkeypatch.setattr(presence_module, "LEAVING_GRACE_SECONDS", _GRACE)
     monkeypatch.setattr(presence_module, "SILENCE_SECONDS", _SILENCE)
+    monkeypatch.setattr(presence_module, "LATE_SECONDS", _GRACE)
 
 
 def _run[T](scenario: Callable[[Ending, Presence], Coroutine[None, None, T]]) -> T:
@@ -70,6 +72,26 @@ def test_a_reload_does_not_end_it() -> None:
         presence.seen(leaving=True)
         presence.seen(leaving=False)
         await asyncio.sleep(_GRACE * 3)
+        return ending.asked
+
+    assert _run(scenario) is None
+
+
+def test_a_busy_loop_reads_the_pings_queued_before_ending() -> None:
+    """The loop blocked past the grace (a large plan read): the tab back keeps it."""
+
+    async def scenario(ending: Ending, presence: Presence) -> int | None:
+        presence.seen(leaving=True)
+
+        async def ping() -> None:  # a request takes a few turns: accept, read, answer
+            for _turn in range(3):
+                await asyncio.sleep(0)
+            presence.seen(leaving=False)
+
+        asyncio.get_running_loop().call_soon(time.sleep, _GRACE * 4)  # on the loop
+        pinged = asyncio.create_task(ping())
+        await asyncio.sleep(_GRACE * 6)
+        await pinged
         return ending.asked
 
     assert _run(scenario) is None

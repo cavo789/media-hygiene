@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+import asyncio
 import contextlib
 from functools import partial
+from http import HTTPStatus
 from typing import TYPE_CHECKING, cast
 
 from media_hygiene.errors import MountError
 from media_hygiene.review.ending import Ending
+from media_hygiene.review.http import Request
 from media_hygiene.services import home_pages
 from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.home_pages import HomeServer, SearchHere
@@ -20,8 +23,12 @@ if TYPE_CHECKING:
 
     import pytest
 
+    from media_hygiene.review.ending import Handling
     from media_hygiene.search.app import SearchApp
+    from media_hygiene.services.history_here import HistoryHere
+    from media_hygiene.services.places_here import PlacesHere
     from media_hygiene.services.runtime import Runtime
+    from media_hygiene.services.slideshow_here import SlideshowHere
 
 
 _NO_INDEX = "No index yet."
@@ -37,7 +44,9 @@ def _here(
     def opened(runtime: Runtime, *, words: bool) -> Iterator[object]:
         assert not words
         if not index[0]:
-            raise MountError(_NO_INDEX)
+            refused = MountError(_NO_INDEX)
+            refused.command = "mh audit"
+            raise refused
         yield runtime
 
     def built(runtime: Runtime, _search: object, _build: object) -> SearchApp:
@@ -79,3 +88,23 @@ def test_no_index_yet_is_tried_again(
     index[0] = True
     assert here.app() is not None
     assert builds == [8111]
+
+
+def test_search_without_index_says_why(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`/search` without an index: the reason and its tip, never a bare 404."""
+    here, _builds = _here(tmp_path, monkeypatch, index=[False])
+    pages = home_pages.HomeWithPages(
+        cast("Handling", None),
+        here,
+        (),
+        cast("HistoryHere", None),
+        cast("SlideshowHere", None),
+        cast("PlacesHere", None),
+    )
+    request = Request("GET", "/search", {"host": "127.0.0.1"})
+    answer = asyncio.run(pages.handle(request))
+    assert answer.status == HTTPStatus.SERVICE_UNAVAILABLE
+    assert _NO_INDEX in answer.body.decode()
+    assert answer.body.decode().endswith("mh audit")

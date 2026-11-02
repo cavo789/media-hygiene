@@ -44,5 +44,7 @@
       <button type="button" id="forgetChoice" class="plain">{{ _("Take back the choice made here (T)") }}</button>
     </p>
   </section>
+  {% include "search_events_late.html.j2" %}
+  {% include "search_events_found.html.j2" %}
   <ol id="eventList"></ol>
 </section>

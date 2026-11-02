@@ -114,12 +114,6 @@ Add your rules at the end of the file, for instance:
 
 ```toml
 [[classify.rules]]
-name = "Italy 2023"
-match = "date_range"
-dates = "2023-07-01..2023-07-15"
-category = "Holidays and outings/Italy 2023"
-
-[[classify.rules]]
 name = "Christmas"
 match = "calendar"
 dates = "12-24..12-26"
@@ -127,6 +121,11 @@ category = "Parties/Christmas {year}"
 ```
 
 The rules are read in order: the first sure one decides.
+
+Your **events** (a trip, a wedding) are never typed there: on the search page, pick their photos
+and *Move to an event…*, or confirm *the events found in your folders* on the 🗂 Events tab; the
+page writes them, with their days and cameras, and later proposes the new photos of those days
+([events made on the pages](11-name-events-in-the-browser.md#events-made-on-the-pages-never-by-hand)).
 
 ??? info "Every kind of rule, and your own tree"
 

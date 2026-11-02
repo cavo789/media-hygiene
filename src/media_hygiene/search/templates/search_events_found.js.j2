@@ -1,0 +1,75 @@
+{# *Events found in your folders* (0557): `GET` the list, `POST` the folders ticked
+   and unticked; the answer is the list read back from the disk. #}
+(() => {
+  const FT = {{ {
+    "title": _("{n} events found in your folders"),
+    "refused": _("{n} folders said not to be events"),
+    "batches": _("{n} folders holding a batch, not one event"),
+    "files": _("{first} → {last} · {n} files"),
+    "saving": _("Saving…"),
+    "failed": _("Not saved (error {status})."),
+  } | tojson }};
+  const FOUND_PATH = {{ found_path | tojson }};
+  const byId = $;
+  const row = (item, ticked) => {
+    const line = element("li", "foundItem", "");
+    const box = document.createElement("input");
+    box.type = "checkbox";
+    box.checked = ticked;
+    box.dataset.folder = item.folder;
+    const label = element("label", "", "");
+    const text = element("span", "", "");
+    text.append(element("strong", "", item.name), element("span", "muted", " " + fill(FT.files, { first: item.first, last: item.last, n: item.files })));
+    text.title = item.folder + (item.devices.length ? " · " + item.devices.join(", ") : "");
+    label.append(box, text);
+    const thumbs = element("span", "foundThumbs", "");
+    for (const src of item.thumbs) { const picture = document.createElement("img"); picture.src = src; picture.alt = ""; picture.loading = "lazy"; thumbs.append(picture); }
+    line.dataset.name = item.name.toLowerCase();
+    line.append(label, thumbs);
+    return line;
+  };
+  const section = (id, list, items, ticked) => {
+    byId(list).replaceChildren(...items.map((item) => row(item, ticked)));
+    if (id) byId(id).hidden = !items.length;
+  };
+  const show = (view) => {
+    byId("found").hidden = !(view.proposed.length || (view.not_events || []).length || (view.batches || []).length);
+    byId("foundTitle").textContent = fill(FT.title, { n: view.proposed.length });
+    byId("foundRefusedTitle").textContent = fill(FT.refused, { n: (view.not_events || []).length });
+    byId("foundBatchesTitle").textContent = fill(FT.batches, { n: (view.batches || []).length });
+    section(null, "foundList", view.proposed, true);
+    section("foundRefused", "foundRefusedList", view.not_events || [], false);
+    section("foundBatches", "foundBatchList", view.batches || [], false);
+    for (const box of byId("foundBatchList").querySelectorAll("input")) box.disabled = true;
+    byId("foundSave").hidden = !view.proposed.length && !(view.not_events || []).length;
+    byId("foundSaid").textContent = (view.said || []).join(" ") || view.error || "";
+    filter();
+  };
+  const filter = () => {
+    const wanted = byId("foundFilter").value.trim().toLowerCase();
+    for (const line of byId("found").querySelectorAll(".foundItem")) line.hidden = Boolean(wanted) && !line.dataset.name.includes(wanted);
+  };
+  const shown = (list) => [...byId(list).querySelectorAll(".foundItem:not([hidden]) input")];
+  const tick = (on) => { for (const box of shown("foundList")) box.checked = on; };
+  const load = async () => {
+    const answer = await ask(FOUND_PATH);
+    if (answer && answer.ok) show(await answer.json());
+  };
+  byId("foundFilter").addEventListener("input", filter);
+  byId("foundAll").addEventListener("click", () => tick(true));
+  byId("foundNone").addEventListener("click", () => tick(false));
+  byId("foundSave").addEventListener("click", async () => {
+    const boxes = [...byId("foundList").querySelectorAll("input"), ...byId("foundRefusedList").querySelectorAll("input")];
+    const refusedBefore = new Set([...byId("foundRefusedList").querySelectorAll("input")].map((box) => box.dataset.folder));
+    const body = {
+      ticked: boxes.filter((box) => box.checked).map((box) => box.dataset.folder),
+      unticked: boxes.filter((box) => !box.checked && !refusedBefore.has(box.dataset.folder)).map((box) => box.dataset.folder),
+    };
+    byId("foundSaid").textContent = FT.saving;
+    const answer = await ask(FOUND_PATH, body);
+    if (!answer || !answer.ok) { byId("foundSaid").textContent = fill(FT.failed, { status: answer ? answer.status : 0 }); return; }
+    show(await answer.json());
+  });
+  byId("tabEvents").addEventListener("click", load, { once: true });
+  if (!byId("events").hidden) load();
+})();

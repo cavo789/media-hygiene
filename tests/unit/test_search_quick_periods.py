@@ -56,6 +56,17 @@ def test_move_dialog_lists_the_event_folders_like_path_contains() -> None:
     assert "count: folder.files" in page
 
 
+def test_move_dialog_sources_keep_box_and_folder_on_one_line() -> None:
+    """0562: the shared field width never stretches the boxes; no sideways scroll."""
+    page = render_page("search.html.j2")
+    assert (
+        ".sources input[type=checkbox] { width: auto; flex: none; margin: 0; }" in page
+    )
+    assert re.search(r"\.sources label \{ display: flex !important;", page)
+    assert re.search(r"\.sources \{[^}]*overflow: hidden auto", page)
+    assert 'element("b", "count"' in page
+
+
 @pytest.mark.parametrize(
     "template", ["search.html.j2", "people.html.j2", "review.html.j2"]
 )

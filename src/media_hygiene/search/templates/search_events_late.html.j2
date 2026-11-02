@@ -1,0 +1,16 @@
+{# *New photos during an event* (0558): files of a remembered event's days arrived later
+   (another phone, a USB stick), outside any event folder. One line per event; *See them*
+   shows them on the grid, the same camera ticked. *Add* opens *Move to an event…* named
+   after the event (journaled, the event widened); *Refuse* writes the picked ones in
+   /config/events/<start>-<name>.toml: never proposed again. Both read back and shown. #}
+<details id="late" hidden open>
+  <summary id="lateTitle"></summary>
+  <p class="muted">{{ _("Photos of an event's days that are in none of its folders: a spouse's phone, a USB stick, a friend's photos. The event's camera comes ticked; check, then add or refuse.") }}</p>
+  <ul id="lateList" class="foundList"></ul>
+  <p id="lateBar" class="foundBar" hidden>
+    <strong id="lateShownTitle"></strong>
+    <button type="button" id="lateAdd" title="{{ _('Move the picked photos into the event folder, journaled: undo puts them back') }}">{{ _("Add the picked to the event…") }}</button>
+    <button type="button" id="lateRefuse" class="plain" title="{{ _('Never propose the picked photos to this event again (kept in /config/events/)') }}">{{ _("Refuse the picked") }}</button>
+  </p>
+  <p id="lateSaid" class="muted" role="status" aria-live="polite"></p>
+</details>

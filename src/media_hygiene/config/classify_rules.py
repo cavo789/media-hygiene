@@ -33,6 +33,8 @@ _ONLY = {
     "per_photo": RuleMatch.SUBJECT,
     "all": RuleMatch.PERSON,
     "min_share": RuleMatch.PERSON,
+    "devices": RuleMatch.DATE_RANGE,
+    "file": RuleMatch.DATE_RANGE,
 }
 _OPTIONAL = ("dates", "kind", "pattern", "categories", "names", *_ONLY)
 
@@ -57,6 +59,10 @@ class ClassifyRule(BaseModel):
     all: bool = False  # `person`: every name, not any of them
     # `person`: the percentage of an event's photos the people must be on; None: 10.
     min_share: int | None = Field(default=None, ge=1, le=100)
+    # `date_range`: the cameras of the files moved to the event (0556), `Make Model`.
+    devices: tuple[str, ...] = ()
+    # `date_range`: its refused files, `events/<start>-<name>.toml` (0556); empty: none.
+    file: str = ""
     score: int | None = Field(default=None, ge=0, le=100)  # None: `[classify] scores`
     keep_folders: bool = False  # the folders the user named stay below the category
     # Its own layout, not `[classify] layout` (0402): screenshots out of the years.

@@ -174,3 +174,11 @@ def test_the_window_is_translated(monkeypatch: pytest.MonkeyPatch) -> None:
         page = home_page(relays_steps=True).decode()
     window = "la fenêtre PowerShell de mh (dans la barre des tâches)"
     assert f"const WINDOW = {json.dumps(window)};" in page
+
+
+def test_the_home_page_asks_for_the_late_photos_of_events() -> None:
+    """0558: one line per event with new photos, read from the search's app."""
+    page = home_page(relays_steps=True).decode()
+    assert '"late": "/api/late-events"' in page
+    assert 'id="lateEvents"' in page
+    assert "askLate();" in page

@@ -152,6 +152,21 @@ def test_a_group_sorted_twice_moves_nothing_and_makes_no_run(
     assert sorted(locations.journal_dir.glob("*.jsonl")) == runs
 
 
+def test_a_group_sorted_then_moved_elsewhere_moves_again(locations: Locations) -> None:
+    """A file an earlier run moved, sent to another folder, moves from its new place."""
+    runtime, _workbook, _sizes = two_events(locations)
+    data = locations.data_dir
+    spring = _folders(runtime, data / SPRING, "2017-05-01..2017-05-01")
+    sort_group(runtime, spring, "Fêtes/Groupe")
+    moved_to = data / "c" / "2017" / "Fêtes" / "Groupe"
+    elsewhere = dict.fromkeys(sorted(moved_to.glob("*.jpg")), "2017/2017-05/Naissance")
+    second = sort_group(runtime, elsewhere, "Naissance")
+    assert (second.moved, second.already) == (SPRING_SHOTS, 0)
+    assert len(list((data / "c" / "2017" / "2017-05" / "Naissance").glob("*.jpg"))) == (
+        SPRING_SHOTS
+    )
+
+
 def test_a_group_sort_counts_only_the_folders_it_touches(locations: Locations) -> None:
     """The manifest's census covers the source and target folders, not the tree."""
     runtime, _workbook, _sizes = two_events(locations)

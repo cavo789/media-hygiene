@@ -25,6 +25,8 @@ from media_hygiene.review.sort_choices import CHOICES
 from media_hygiene.review.sort_now import SORT_NOW_PATH, sort_now
 from media_hygiene.review.sort_rule_choices import PROGRESS_PATH, RULES_PATH
 from media_hygiene.search.events_desk import EVENTS_PATH
+from media_hygiene.search.found_desk import FOUND_PATH
+from media_hygiene.search.late_desk import LATE_PATH, LATE_REFUSE_PATH
 
 if TYPE_CHECKING:
     from media_hygiene.review.http import Request
@@ -48,7 +50,13 @@ def sort_path(path: str) -> str:
     return SORT_PREFIX + path.removeprefix(_API)
 
 
-SORT_POSTS: Final = frozenset(sort_path(path) for path in (*CHOICES, SORT_NOW_PATH))
+SORT_POSTS: Final = frozenset(
+    {
+        *(sort_path(path) for path in (*CHOICES, SORT_NOW_PATH)),
+        FOUND_PATH,
+        LATE_REFUSE_PATH,
+    }
+)
 SORT_GETS: Final = frozenset(sort_path(path) for path in (RULES_PATH, PROGRESS_PATH))
 SORT_PATHS: Final = {  # what the page's script calls them
     "event": sort_path("/api/event"),
@@ -100,6 +108,20 @@ async def sort_post(desk: EventsDesk | None, request: Request) -> Response:
     Returns:
         The answer; 404 without a plan.
     """
+    if request.path == LATE_REFUSE_PATH:  # 0558: needs no plan
+        late = desk.late if desk is not None else None
+        return (
+            Response(HTTPStatus.NOT_FOUND)
+            if late is None
+            else late.refuse(request.body)
+        )
+    if request.path == FOUND_PATH:  # 0557: needs no plan
+        found = desk.found if desk is not None else None
+        return (
+            Response(HTTPStatus.NOT_FOUND)
+            if found is None
+            else found.confirm(request.body)
+        )
     try:
         session = desk.session() if desk is not None else None
     except MediaHygieneError:
@@ -124,6 +146,8 @@ def events_get(desk: EventsDesk | None, path: str) -> Response | None:
     """
     if desk is None:
         return None
+    if path == FOUND_PATH or path.startswith(LATE_PATH):  # 0557, 0558
+        return _without_plan(desk, path)
     if path.startswith(EVENTS_PATH):  # 0437
         return desk.state() if path == EVENTS_PATH else desk.event(path)
     if path not in SORT_GETS:
@@ -137,3 +161,22 @@ def events_get(desk: EventsDesk | None, path: str) -> Response | None:
     else:
         body = session.progress_view().model_dump_json()
     return Response(HTTPStatus.OK, body.encode(), ContentType.JSON)
+
+
+def _without_plan(desk: EventsDesk, path: str) -> Response:
+    """The events found in the folders (0557), or the late photos (0558): no plan read.
+
+    Args:
+        desk: The Events view.
+        path: `FOUND_PATH`, `LATE_PATH` or `LATE_PATH/<event>`.
+
+    Returns:
+        The view; 404 when the page has none.
+    """
+    if path == FOUND_PATH:
+        found = desk.found
+        return Response(HTTPStatus.NOT_FOUND) if found is None else found.state()
+    late = desk.late
+    if late is None:
+        return Response(HTTPStatus.NOT_FOUND)
+    return late.state() if path == LATE_PATH else late.event(path)

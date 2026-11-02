@@ -77,6 +77,14 @@ entier ; une semaine de ski qui contient un anniversaire reste une semaine de sk
 `date_range` qui partagent un jour donnent un avertissement : ces jours-là, la première de la
 liste l'emporte.
 
+**Vos événements se font sur les pages, jamais à la main.** Un voyage, un mariage, un week-end :
+la règle `date_range` qui le retient (son nom, ses jours, ses appareils dans `devices`) est écrite
+par *Déplacer vers un événement…* sur la page de recherche, ou en confirmant *les événements
+trouvés dans vos dossiers* dans l'onglet 🗂 Événements ; les photos arrivées plus tard pendant ses
+jours vous sont proposées
+([étape 11](11-name-events-in-the-browser.md#des-événements-faits-sur-les-pages-jamais-à-la-main)).
+Les exemples ci-dessous montrent ce que la page écrit, pour le lire, pas pour le taper.
+
 **Écrite depuis le navigateur.** Sur la page des événements, *📌 Retenir comme règle* écrit une
 telle règle pour l'événement affiché, après avoir dit ce qu'elle prendrait
 ([étape 11](11-name-events-in-the-browser.md#retenir-un-événement-comme-règle)).

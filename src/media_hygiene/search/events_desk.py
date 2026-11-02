@@ -30,7 +30,9 @@ if TYPE_CHECKING:
     from media_hygiene.review.sort_batch import SortBatchSession
     from media_hygiene.review.sort_cards import PhotoCard
     from media_hygiene.review.sort_now import Sorter
+    from media_hygiene.search.found_desk import FoundDesk
     from media_hygiene.search.fts import SearchIndex
+    from media_hygiene.search.late_desk import LateDesk
 
 EVENTS_PAGE_PATH: Final = "/events"
 EVENTS_PATH: Final = "/api/events"
@@ -41,7 +43,7 @@ _ROWS: Final = (
 
 
 @dataclass(frozen=True, slots=True)
-class EventsDesk:
+class EventsDesk:  # pylint: disable=too-many-instance-attributes  # one per view
     """Answers the Events view: the plan's events, one event's photos."""
 
     index: SearchIndex
@@ -54,6 +56,8 @@ class EventsDesk:
     sorter: Callable[[SortBatchSession], Sorter | None] = field(
         default=lambda _session: None
     )
+    found: FoundDesk | None = None  # *Events found in your folders* (0557)
+    late: LateDesk | None = None  # *New photos during an event* (0558)
     held: list[SortBatchSession] = field(default_factory=list)  # opened once
 
     def state(self) -> Response:

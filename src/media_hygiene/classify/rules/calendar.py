@@ -162,19 +162,32 @@ def _month_day(text: str) -> tuple[int, int]:
 def overlapping_ranges(rules: Sequence[ClassifyRule]) -> tuple[tuple[str, str], ...]:
     """The pairs of date ranges sharing a day: the first one listed wins.
 
+    Two events whose cameras differ share their days without a clash (0556): their
+    cameras tell their photos apart.
+
     Args:
         rules: The rules.
 
     Returns:
         The names of each such pair, in list order.
     """
-    ranges = [
-        (rule.name, parse_one_off(rule.dates))
-        for rule in rules
-        if rule.match is RuleMatch.DATE_RANGE
-    ]
+    ranges = [rule for rule in rules if rule.match is RuleMatch.DATE_RANGE]
     return tuple(
-        (first, second)
-        for (first, one), (second, other) in combinations(ranges, 2)
-        if one.overlaps(other)
+        (one.name, other.name)
+        for one, other in combinations(ranges, 2)
+        if parse_one_off(one.dates).overlaps(parse_one_off(other.dates))
+        and not cameras_apart(one.devices, other.devices)
     )
+
+
+def cameras_apart(one: tuple[str, ...], other: tuple[str, ...]) -> bool:
+    """Tell whether two events' cameras tell their photos apart.
+
+    Args:
+        one: The cameras of an event.
+        other: Those of the other one.
+
+    Returns:
+        True when both have cameras and share none.
+    """
+    return bool(one and other) and not {*one} & {*other}

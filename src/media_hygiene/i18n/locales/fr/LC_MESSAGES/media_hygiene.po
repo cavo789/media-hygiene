@@ -977,6 +977,13 @@ msgstr ""
 "Une étape à taper vous-même demande des mots que vous seul connaissez : "
 "{url}"
 
+msgid ""
+"A word of yours (anniversaire Léa): kept in your settings, found by the "
+"search at once, written into the .xmp sidecars by 'xmp'."
+msgstr ""
+"Un mot à vous (anniversaire Léa) : gardé dans vos réglages, trouvé tout "
+"de suite par la recherche, écrit dans les fichiers .xmp par 'xmp'."
+
 msgid "A word, a place, a year, a person: with previews, in the browser."
 msgstr ""
 "Un mot, un lieu, une année, une personne : avec aperçus, dans le "
@@ -1109,6 +1116,9 @@ msgstr[0] ""
 msgstr[1] ""
 "Ajouter la description et les mots-clés trouvés par tags aux copies de "
 "{n} photos ?"
+
+msgid "Add the picked to the event…"
+msgstr "Ajouter les photos choisies à l'événement…"
 
 msgid ""
 "Add the settings of this version to your config.toml, with their "
@@ -1696,6 +1706,10 @@ msgstr "Appareil : {camera}"
 msgid "Cameras"
 msgstr "Appareils"
 
+#, python-brace-format
+msgid "Cameras: {cameras}."
+msgstr "Appareils : {cameras}."
+
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -2078,6 +2092,9 @@ msgstr "Concert"
 msgid "Configured folder {path} is not mounted: it is ignored."
 msgstr "Le dossier configuré {path} n'est pas monté : il est ignoré."
 
+msgid "Confirm"
+msgstr "Confirmer"
+
 msgid "Confirm the files to check"
 msgstr "Confirmer les fichiers à vérifier"
 
@@ -2443,11 +2460,6 @@ msgstr ""
 "Supprimer tous les visages du cache, puis montrer qu'il n'en reste aucun "
 "; demande aussi avant d'effacer les noms de config.toml."
 
-msgid "Delete it: the next audit builds it again, reading every file once."
-msgstr ""
-"Supprimez-le : le prochain audit le reconstruit, en relisant chaque "
-"fichier une fois."
-
 msgid "Delete the copies at once"
 msgstr "Supprimer les copies tout de suite"
 
@@ -2774,6 +2786,9 @@ msgstr "Durée"
 
 msgid "Duration (s)"
 msgstr "Durée (s)"
+
+msgid "During the event, but another camera: elsewhere?"
+msgstr "Pendant l'événement, mais un autre appareil : ailleurs ?"
 
 msgid "EXIF"
 msgstr "EXIF"
@@ -3469,6 +3484,9 @@ msgstr "Remplissez chaque champ."
 msgid "Films and series"
 msgstr "Films et séries"
 
+msgid "Filter by name"
+msgstr "Filtrer par nom"
+
 msgid "Filter the folders"
 msgstr "Filtrer les dossiers"
 
@@ -3925,6 +3943,9 @@ msgstr ""
 "Donnez à l'album un nom simple, par exemple « Noël » ou « Le meilleur de "
 "2016 »."
 
+msgid "Give the photos picked a word of yours, kept in your settings"
+msgstr "Donner aux photos choisies un mot à vous, gardé dans vos réglages"
+
 msgid "Give the place a name."
 msgstr "Donnez un nom au lieu."
 
@@ -4357,8 +4378,19 @@ msgstr ""
 msgid "It was then:"
 msgstr "Il était alors :"
 
-msgid "Italy 2023"
-msgstr "Italie 2023"
+#, python-brace-format
+msgid "It will be remembered as a new '{name}': '{other}' is another event."
+msgstr ""
+"Il sera retenu comme un nouvel événement « {name} » : « {other} » est un "
+"autre événement."
+
+#, python-brace-format
+msgid "It will be remembered as the event '{name}' (config.toml)."
+msgstr "Il sera retenu comme l'événement « {name} » (config.toml)."
+
+#, python-brace-format
+msgid "It will be remembered in the event '{name}' (config.toml)."
+msgstr "Il sera ajouté à l'événement « {name} » (config.toml)."
 
 msgid "Its content is nowhere on the PC: kept on the phone."
 msgstr "Son contenu n'est nulle part sur le PC : gardé sur le téléphone."
@@ -5012,6 +5044,13 @@ msgstr ""
 "Déplacer les photos choisies dans le dossier d'un événement, année puis "
 "année-mois, sans écrire de règle"
 
+msgid ""
+"Move the picked photos into the event folder, journaled: undo puts them "
+"back"
+msgstr ""
+"Déplacer les photos choisies dans le dossier de l'événement, journalisé :"
+" undo les remet en place"
+
 msgid "Move them now"
 msgstr "Les déplacer maintenant"
 
@@ -5273,6 +5312,13 @@ msgstr ""
 "fichiers identiques ailleurs SONT donc supprimés (une « bibliothèque de "
 "référence »)."
 
+msgid ""
+"Never propose the picked photos to this event again (kept in "
+"/config/events/)"
+msgstr ""
+"Ne plus jamais proposer les photos choisies à cet événement (gardé dans "
+"/config/events/)"
+
 msgid "Never what you set aside or deleted on purpose; each copy is checked."
 msgstr ""
 "Jamais ce que vous avez écarté ou supprimé exprès ; chaque copie est "
@@ -5302,6 +5348,9 @@ msgid ""
 msgstr ""
 "Nouvelles photos et vidéos à copier : {count} ({size} Go) dans "
 "{destination} ; gardez le téléphone déverrouillé, écran allumé…"
+
+msgid "New photos during your events"
+msgstr "Nouvelles photos pendant vos événements"
 
 #, python-brace-format
 msgid "New photos? The cycle starts again at {stage}."
@@ -5400,6 +5449,14 @@ msgstr ""
 
 msgid "No burst series: nothing to review."
 msgstr "Aucune rafale : rien à trier."
+
+msgid "No camera in these files: a late photo will be asked."
+msgstr ""
+"Aucun appareil dans ces fichiers : une photo arrivée plus tard sera "
+"demandée."
+
+msgid "No camera in this file: is it of the event?"
+msgstr "Aucun appareil dans ce fichier : est-il de l'événement ?"
 
 msgid ""
 "No category: downloaded films and series are not memories, they stay "
@@ -5617,6 +5674,10 @@ msgstr[0] ""
 msgstr[1] ""
 "Rien de nouveau ni de modifié depuis le dernier audit : {count} fichiers "
 "repris du cache."
+
+#, python-brace-format
+msgid "No new photo during '{name}': all added or refused."
+msgstr "Plus de nouvelle photo pendant « {name} » : toutes ajoutées ou refusées."
 
 msgid "No obvious series left to validate."
 msgstr "Plus aucune série évidente à valider."
@@ -5941,6 +6002,10 @@ msgstr "Pas enregistré : config.toml dit toujours que ce n'est pas {name}."
 
 msgid "Not saved: config.toml, read back, does not say so."
 msgstr "Pas enregistré : config.toml, relu, ne le dit pas."
+
+#, python-brace-format
+msgid "Not saved: {error}"
+msgstr "Pas enregistré : {error}"
 
 #, python-brace-format
 msgid "Not saved: {reason}."
@@ -6959,19 +7024,30 @@ msgid ""
 "Photos given one of your places by hand, written by the map of 'places' "
 "(Give these photos to…) when their GPS position is wrong, as a phone "
 "indoors often records: they go to that place whatever their position "
-"says, and their trips are measured from it. They are known by their "
-"content (size, then SHA-256), so moving or renaming them changes nothing;"
-" a photo edited since falls back to its GPS. path is where it was, for "
-"you to read only. Deleting a place on the map deletes its entry."
+"says, and their trips are measured from it. Their list is in the file "
+"linked (one line per photo: path, and id = the start of its SHA-256 and "
+"its size); the id is what counts, the path is kept current by sort, undo "
+"and each audit. A photo edited since falls back to its GPS. Deleting a "
+"place on the map deletes its entry."
 msgstr ""
 "Les photos données à la main à l'un de vos lieux, écrites par la carte de"
 " 'places' (Donner ces photos à…) quand leur position GPS est fausse, "
 "comme un téléphone à l'intérieur en enregistre souvent : elles vont à ce "
 "lieu quoi que dise leur position, et leurs voyages sont mesurés depuis "
-"lui. Elles sont reconnues à leur contenu (taille, puis SHA-256) : les "
-"déplacer ou les renommer ne change rien ; une photo modifiée depuis "
-"revient à son GPS. path est l'endroit où elle était, à lire pour vous "
-"seulement. Supprimer un lieu sur la carte supprime son entrée."
+"lui. Leur liste est dans le fichier lié (une ligne par photo : path, et "
+"id = le début de son SHA-256 et sa taille) ; l'id compte, le chemin est "
+"tenu à jour par sort, undo et chaque audit. Une photo modifiée depuis "
+"revient à son GPS. Supprimer un lieu sur la carte supprime son entrée."
+
+msgid ""
+"Photos of an event's days that are in none of its folders: a spouse's "
+"phone, a USB stick, a friend's photos. The event's camera comes ticked; "
+"check, then add or refuse."
+msgstr ""
+"Des photos des jours d'un événement qui ne sont dans aucun de ses "
+"dossiers : le téléphone du conjoint, une clé USB, les photos d'un ami. "
+"Celles de l'appareil de l'événement arrivent cochées ; vérifiez, puis "
+"ajoutez ou refusez."
 
 msgid "Photos placed by hand"
 msgstr "Photos placées à la main"
@@ -7283,6 +7359,10 @@ msgstr ""
 "quarantaine. <dossier> peut être un partage NAS, un disque externe ou le "
 "dossier synchronisé d'un cloud, monté dans le conteneur."
 
+#, python-brace-format
+msgid "Rather the event '{name}' (its camera)"
+msgstr "Plutôt l'événement « {name} » (son appareil)"
+
 msgid "Rating"
 msgstr "Note"
 
@@ -7417,6 +7497,9 @@ msgstr "Rapports récents"
 
 msgid "Recognising what you had set aside"
 msgstr "Reconnaissance de ce que vous aviez mis de côté"
+
+msgid "Refuse the picked"
+msgstr "Refuser les photos choisies"
 
 msgid ""
 "Regular expressions matching the whole name, case ignored: file names "
@@ -8188,6 +8271,9 @@ msgstr "Voir chaque réglage et d'où il vient"
 msgid "See the files"
 msgstr "Voir les fichiers"
 
+msgid "See them"
+msgstr "Les voir"
+
 msgid "See what changes"
 msgstr "Voir ce qui change"
 
@@ -8928,6 +9014,12 @@ msgstr "TV et téléphone"
 msgid "Table of contents"
 msgstr "Sommaire"
 
+msgid "Tag the photos picked"
+msgstr "Étiqueter les photos choisies"
+
+msgid "Tag them"
+msgstr "Les étiqueter"
+
 msgid "Tags"
 msgstr "Tags"
 
@@ -8941,6 +9033,9 @@ msgid ""
 msgstr ""
 "Tags : {files} fichiers ont des mots, dont {seen} du modèle de vision ; "
 "'search' les retrouve."
+
+msgid "Tag…"
+msgstr "Étiqueter…"
 
 msgid "Take back the choice made here (T)"
 msgstr "Reprendre le choix fait ici (T)"
@@ -8967,6 +9062,10 @@ msgstr "Reprendre le lot ({events})"
 #, python-brace-format
 msgid "Take the whole event: {first} to {last}"
 msgstr "Prendre tout l'événement : du {first} au {last}"
+
+#, python-brace-format
+msgid "Take the word {word} off this photo"
+msgstr "Retirer le mot {word} de cette photo"
 
 msgid "Take this photo back (Backspace)"
 msgstr "Reprendre cette photo (Retour arrière)"
@@ -9356,11 +9455,23 @@ msgstr ""
 msgid "The earlier copies of this album were replaced."
 msgstr "Les copies précédentes de cet album ont été remplacées."
 
+#, python-brace-format
+msgid "The event '{name}' is remembered: {dates}."
+msgstr "L'événement « {name} » est retenu : {dates}."
+
+#, python-brace-format
+msgid "The event is not remembered: {reason}"
+msgstr "L'événement n'est pas retenu : {reason}"
+
 msgid "The event shown"
 msgstr "L'événement affiché"
 
 msgid "The event's name:"
 msgstr "Le nom de l'événement :"
+
+#, python-brace-format
+msgid "The events file {file} cannot be read: {error}."
+msgstr "Le fichier d'événements {file} est illisible : {error}."
 
 msgid ""
 "The events of the Events sheet, in its order: naming the first ones "
@@ -9616,6 +9727,18 @@ msgstr "Les copies identiques sont de côté"
 
 msgid "The image on Docker Hub"
 msgstr "L'image sur Docker Hub"
+
+msgid ""
+"The index is the memory of mh: what it already knows about each photo. An"
+" audit brings it up to date, quickly: the files it knows are not read "
+"again. If it still fails, delete the file: the audit then reads every "
+"file once. Run this command in the window of mh, then try again:"
+msgstr ""
+"L'index est la mémoire de mh : ce qu'il sait déjà de chaque photo. Un "
+"audit le remet à jour, rapidement : les fichiers déjà connus ne sont pas "
+"relus. Si l'erreur revient, supprimez le fichier : l'audit relira alors "
+"chaque fichier une fois. Lancez cette commande dans la fenêtre de mh, "
+"puis réessayez :"
 
 #, python-brace-format
 msgid "The index of the backup is damaged: {why}."
@@ -9884,6 +10007,16 @@ msgstr "La télécommande : sur un téléphone du même Wi-Fi, ouvrez"
 msgid "The photo, full screen"
 msgstr "La photo, en plein écran"
 
+#, python-brace-format
+msgid "The photos given a place or a word were not followed ({reason})."
+msgstr "Les photos données à un lieu ou à un mot n'ont pas été suivies ({reason})."
+
+#, python-brace-format
+msgid "The photos given {place} on the map; config.toml links this file."
+msgstr ""
+"Les photos données à {place} sur la carte ; config.toml renvoie à ce "
+"fichier."
+
 msgid ""
 "The photos have vectors, but the model of search by meaning is not in the"
 " cache: the words alone answer."
@@ -9901,6 +10034,16 @@ msgstr ""
 "Les photos choisies vont dans le dossier de l'événement, sous leur année "
 "et leur mois, noté au journal : 'undo' les remet. Aucune règle n'est "
 "écrite."
+
+#, python-brace-format
+msgid "The photos you gave the word {word}; config.toml links this file."
+msgstr ""
+"Les photos auxquelles vous avez donné le mot {word} ; config.toml relie "
+"ce fichier."
+
+#, python-brace-format
+msgid "The places of config.toml cannot be read: {error}."
+msgstr "Les lieux de config.toml ne peuvent pas être lus : {error}."
 
 #, python-brace-format
 msgid "The places of {file} are invalid: {reason}."
@@ -10304,14 +10447,17 @@ msgstr "Le plan complet en tableur (CSV) : chaque groupe, chaque fichier"
 
 msgid ""
 "The words 'xmp' writes into the .xmp sidecars next to the photos "
-"(dc:subject), by source: vision, place, folder, name, takeout (the Google"
-" Photos description), former (the folders and names of the copies 'clean'"
-" removed), date. The model's sentence goes into dc:description."
+"(dc:subject), by source: vision, place, hand (the words you typed on "
+"photos of the search page), folder, name, takeout (the Google Photos "
+"description), former (the folders and names of the copies 'clean' "
+"removed), date. The model's sentence goes into dc:description."
 msgstr ""
-"Les mots que 'xmp' écrit dans les fichiers compagnons .xmp à côté des "
-"photos (dc:subject), par source : vision, place, folder, name, takeout "
-"(la description Google Photos), former (les dossiers et noms des copies "
-"retirées par 'clean'), date. La phrase du modèle va dans dc:description."
+"Les mots que 'xmp' écrit dans les fichiers .xmp à côté des photos "
+"(dc:subject), par source : vision, place, hand (les mots que vous avez "
+"tapés sur des photos de la page de recherche), folder, name, takeout (la "
+"description de Google Photos), former (les dossiers et noms des copies "
+"que 'clean' a retirées), date. La phrase du modèle va dans "
+"dc:description."
 
 msgid ""
 "The words of 'tags', to find photos by what they show: the meaningful "
@@ -10327,6 +10473,21 @@ msgstr ""
 "[[classify.places]], la ville la plus proche) et, quand [classify.ai] "
 "model est renseigné, ce que voit le modèle de vision. Ils sont gardés "
 "dans le cache (/cache), jamais écrits dans les photos."
+
+#, python-brace-format
+msgid "The words typed on photos cannot be read: {error}."
+msgstr "Les mots tapés sur des photos ne peuvent pas être lus : {error}."
+
+#, python-brace-format
+msgid ""
+"The words you typed on photos of the search page (🏷 Tag…): each one in "
+"tags/<word>.toml next to this file, its photos as {path, id}. The page "
+"writes them; [[tags.hand]] entries (word, file) link them."
+msgstr ""
+"Les mots que vous avez tapés sur des photos de la page de recherche (🏷 "
+"Étiqueter…) : chacun dans tags/<mot>.toml à côté de ce fichier, ses "
+"photos en {path, id}. La page les écrit ; les entrées [[tags.hand]] "
+"(word, file) les relient."
 
 msgid "The workbook and its plan.json do not match: one of them changed."
 msgstr ""
@@ -10418,6 +10579,13 @@ msgid ""
 msgstr ""
 "Leurs dossiers, leur nom, leur date, leur lieu, et ce qu'y voit une IA "
 "locale si vous en avez une."
+
+msgid ""
+"Their photos are far apart in time: a batch, not one event. Never "
+"proposed."
+msgstr ""
+"Leurs photos sont éloignées dans le temps : un lot, pas un seul "
+"événement. Jamais proposé."
 
 msgid ""
 "Their photos are found by their face; you check them before setting them "
@@ -10707,6 +10875,9 @@ msgstr "Trois choses à savoir avant de commencer"
 msgid "Thumbnail size"
 msgstr "Taille des vignettes"
 
+msgid "Tick all"
+msgstr "Tout cocher"
+
 msgid "Tick an extension or a folder first."
 msgstr "Cochez d'abord une extension ou un dossier."
 
@@ -10975,6 +11146,9 @@ msgstr "Tapez un nom ou une catégorie, ou laissez-le où il est."
 msgid "Type a name to filter the folders"
 msgstr "Tapez un nom pour filtrer les dossiers"
 
+msgid "Type a word, pick a photo."
+msgstr "Tapez un mot, choisissez une photo."
+
 msgid "Type an album's name in the bar first."
 msgstr "Tapez d'abord le nom d'un album dans la barre."
 
@@ -11078,6 +11252,16 @@ msgstr "Exécution inconnue : {run_id}."
 #, python-brace-format
 msgid "Unnamed groups ({n})"
 msgstr "Groupes sans nom ({n})"
+
+msgid "Untick all"
+msgstr "Tout décocher"
+
+msgid ""
+"Untick the folders that are not events worth remembering, then confirm: "
+"the ticked ones are written to config.toml."
+msgstr ""
+"Décochez les dossiers qui ne sont pas des événements à retenir, puis "
+"confirmez : les dossiers cochés sont écrits dans config.toml."
 
 msgid "Untick: stays on the phone"
 msgstr "Décocher : reste sur le téléphone"
@@ -11446,8 +11630,16 @@ msgstr "Avec Léa"
 msgid "Without a date"
 msgstr "Sans date"
 
+msgid "Word"
+msgstr "Mot"
+
 msgid "Words"
 msgstr "Mots"
+
+msgid "Words cannot be saved: /config is not mounted, or read-only."
+msgstr ""
+"Les mots ne peuvent pas être enregistrés : /config n'est pas monté, ou en"
+" lecture seule."
 
 msgid ""
 "Words from folders, names, dates and places first (seconds), then what "
@@ -11715,6 +11907,16 @@ msgstr[1] ""
 
 msgid "Your event folders of that month"
 msgstr "Vos dossiers d'événement de ce mois"
+
+msgid ""
+"Your events (match = \"date_range\": a name, its days, its cameras) are "
+"written by the search page, never by hand: Move to an event…, or the "
+"events found in your folders on the Events tab."
+msgstr ""
+"Vos événements (match = \"date_range\" : un nom, ses jours, ses "
+"appareils) sont écrits par la page de recherche, jamais à la main : "
+"Déplacer vers un événement…, ou les événements trouvés dans vos dossiers,"
+" onglet Événements."
 
 msgid "Your folders"
 msgstr "Vos dossiers"
@@ -12868,6 +13070,14 @@ msgstr "mh n'a pas changé : launcher l'a refusé (voir plus haut)."
 msgid "mh keeps the hand until the end, then opens the home page again"
 msgstr "mh garde la main jusqu'à la fin, puis rouvre la page d'accueil"
 
+#, python-brace-format
+msgid ""
+"mh met an unexpected error ({reason}): what it did before stays done. Its"
+" window shows the details."
+msgstr ""
+"mh a rencontré une erreur imprévue ({reason}) : ce qu'il a fait avant reste "
+"fait. Sa fenêtre en montre le détail."
+
 msgid ""
 "mh mounts it for backup and restore; with docker run, add -v \"$HOME"
 "\\media-hygiene\\backups:/backups\"."
@@ -13954,6 +14164,11 @@ msgstr ""
 "les mots que le modèle de vision a donnés à ce que montre la photo (🤖 "
 "tags)."
 
+msgid "the words you gave the photos with 🏷 Tag…, kept in your settings."
+msgstr ""
+"les mots que vous avez donnés aux photos avec 🏷 Étiqueter…, gardés dans "
+"vos réglages."
+
 msgid "the year, month, season and holidays of the date taken."
 msgstr "l'année, le mois, la saison et les fêtes de la date de prise de vue."
 
@@ -14121,6 +14336,9 @@ msgstr "taper une nouvelle recherche"
 
 msgid "type the folder of the event"
 msgstr "taper le dossier de l'événement"
+
+msgid "typed by hand"
+msgstr "tapé à la main"
 
 msgid "unanswered"
 msgstr "sans réponse"
@@ -14944,6 +15162,12 @@ msgstr[1] ""
 "décidées : {decided}."
 
 #, python-brace-format
+msgid "{count} folder remembered as no event."
+msgid_plural "{count} folders remembered as no event."
+msgstr[0] "{count} dossier retenu comme n'étant pas un événement."
+msgstr[1] "{count} dossiers retenus comme n'étant pas des événements."
+
+#, python-brace-format
 msgid "{count} folder will be left empty and removed; 'undo' recreates it."
 msgid_plural "{count} folders will be left empty and removed; 'undo' recreates them."
 msgstr[0] "{count} dossier sera laissé vide et supprimé ; 'undo' le recrée."
@@ -15214,6 +15438,46 @@ msgstr[0] "{count} photo décrite ; gardée dans le cache."
 msgstr[1] "{count} photos décrites ; gardées dans le cache."
 
 #, python-brace-format
+msgid "{count} photo given a place"
+msgid_plural "{count} photos given a place"
+msgstr[0] "{count} photo donnée à un lieu"
+msgstr[1] "{count} photos données à un lieu"
+
+#, python-brace-format
+msgid ""
+"{count} photo given a place was renamed outside: its path is updated, "
+"read back from the disk."
+msgid_plural ""
+"{count} photos given a place were renamed outside: their path is updated,"
+" read back from the disk."
+msgstr[0] ""
+"{count} photo donnée à un lieu a été renommée en dehors : son chemin est "
+"mis à jour, relu sur le disque."
+msgstr[1] ""
+"{count} photos données à un lieu ont été renommées en dehors : leur "
+"chemin est mis à jour, relu sur le disque."
+
+#, python-brace-format
+msgid "{count} photo given a word by hand"
+msgid_plural "{count} photos given a word by hand"
+msgstr[0] "{count} photo ayant reçu un mot à la main"
+msgstr[1] "{count} photos ayant reçu un mot à la main"
+
+#, python-brace-format
+msgid ""
+"{count} photo given a word by hand was renamed outside: its path is "
+"updated, read back from the disk."
+msgid_plural ""
+"{count} photos given a word by hand were renamed outside: their path is "
+"updated, read back from the disk."
+msgstr[0] ""
+"{count} photo ayant reçu un mot à la main a été renommée hors de l'outil "
+": son chemin est mis à jour, relu sur le disque."
+msgstr[1] ""
+"{count} photos ayant reçu un mot à la main ont été renommées hors de "
+"l'outil : leur chemin est mis à jour, relu sur le disque."
+
+#, python-brace-format
 msgid ""
 "{count} photo has not been looked at for faces yet: about {duration} "
 "(estimated; the two face models, 39 MB, are downloaded first)."
@@ -15346,6 +15610,20 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} photos et vidéos que vous aviez mises de côté sont revenues "
 "({size}) : 'clean' les remet de côté."
+
+#, python-brace-format
+msgid ""
+"{count} photo refused: never proposed to this event again ({total} kept "
+"in {file})."
+msgid_plural ""
+"{count} photos refused: never proposed to this event again ({total} kept "
+"in {file})."
+msgstr[0] ""
+"{count} photo refusée : plus jamais proposée à cet événement ({total} "
+"gardées dans {file})."
+msgstr[1] ""
+"{count} photos refusées : plus jamais proposées à cet événement ({total} "
+"gardées dans {file})."
 
 #, python-brace-format
 msgid "{count} photo scanned, {faces} faces found; kept in the cache."
@@ -15766,6 +16044,14 @@ msgstr ""
 " '{file}' de config.toml (ses visages sont alors oubliés)"
 
 #, python-brace-format
+msgid ""
+"{file} is missing: restore it, or remove the line file = '{file}' of "
+"config.toml (its photos are then forgotten)"
+msgstr ""
+"{file} est introuvable : remettez-le en place, ou retirez la ligne file ="
+" '{file}' de config.toml (ses photos sont alors oubliées)"
+
+#, python-brace-format
 msgid "{file} is not inside the folder of config.toml"
 msgstr "{file} n'est pas dans le dossier de config.toml"
 
@@ -15792,6 +16078,10 @@ msgstr ""
 #, python-brace-format
 msgid "{file}, in the folder mounted on {mount}"
 msgstr "{file}, dans le dossier monté sur {mount}"
+
+#, python-brace-format
+msgid "{first} → {last} · {n} files"
+msgstr "{first} → {last} · {n} fichiers"
 
 #, python-brace-format
 msgid "{folder} (seen as {first} and as {second})"
@@ -16119,6 +16409,10 @@ msgstr[0] "{n} événement"
 msgstr[1] "{n} événements"
 
 #, python-brace-format
+msgid "{n} events found in your folders"
+msgstr "{n} événements trouvés dans vos dossiers"
+
+#, python-brace-format
 msgid "{n} face"
 msgid_plural "{n} faces"
 msgstr[0] "{n} visage"
@@ -16264,6 +16558,14 @@ msgstr[0] "{n} dossier"
 msgstr[1] "{n} dossiers"
 
 #, python-brace-format
+msgid "{n} folders holding a batch, not one event"
+msgstr "{n} dossiers contenant un lot, pas un seul événement"
+
+#, python-brace-format
+msgid "{n} folders said not to be events"
+msgstr "{n} dossiers indiqués comme n'étant pas des événements"
+
+#, python-brace-format
 msgid "{n} group ignored"
 msgid_plural "{n} groups ignored"
 msgstr[0] "{n} groupe ignoré"
@@ -16290,6 +16592,18 @@ msgstr[1] "{n} groupes ignorés ne sont pas affichés."
 #, python-brace-format
 msgid "{n} min"
 msgstr "{n} min"
+
+#, python-brace-format
+msgid "{n} new photos during '{name}'"
+msgstr "{n} nouvelles photos pendant « {name} »"
+
+#, python-brace-format
+msgid "{n} new photos during '{name}' ({dates})"
+msgstr "{n} nouvelles photos pendant « {name} » ({dates})"
+
+#, python-brace-format
+msgid "{n} new photos during '{name}' — see them?"
+msgstr "{n} nouvelles photos pendant « {name} » — les voir ?"
 
 #, python-brace-format
 msgid ""
@@ -16973,6 +17287,16 @@ msgstr ""
 "libère rien tant que l'autre reste, et un outil de sauvegarde peut la "
 "compter deux fois. 'undo' refait des noms des fichiers indépendants."
 
+#, python-brace-format
+msgid "“{word}” given to {n} photo, read back from the disk."
+msgid_plural "“{word}” given to {n} photos, read back from the disk."
+msgstr[0] "« {word} » donné à {n} photo, relu sur le disque."
+msgstr[1] "« {word} » donné à {n} photos, relu sur le disque."
+
+#, python-brace-format
+msgid "“{word}” taken off, read back from the disk."
+msgstr "« {word} » retiré, relu sur le disque."
+
 #, python-format
 msgid "… and %(count)s more (the CSV lists them all)."
 msgstr "… et %(count)s de plus (le CSV les liste tous)."
@@ -17038,6 +17362,9 @@ msgstr[1] ""
 
 msgid "▶ Play"
 msgstr "▶ Lecture"
+
+msgid "✔ Probably: the event's camera"
+msgstr "✔ Probablement : l'appareil de l'événement"
 
 #, python-brace-format
 msgid "✨ All done: {count} new photo or video in your library."

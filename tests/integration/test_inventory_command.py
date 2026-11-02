@@ -56,12 +56,13 @@ def test_an_empty_index_is_refused(locations: Locations) -> None:
 
 
 def test_a_damaged_index_is_refused(locations: Locations) -> None:
-    """A file that is not SQLite: the message names it, the tip says to delete it."""
+    """A file that is not SQLite: named, the audit to run, else delete it."""
     locations.index_file.write_bytes(b"not a database, not at all" * 100)
     with pytest.raises(MountError, match="cannot be read") as caught:
         export_inventory(make_runtime(locations), InventoryFormat.XLSX)
     assert caught.value.tip is not None
-    assert "Delete it" in caught.value.tip
+    assert "delete the file" in caught.value.tip
+    assert caught.value.command == "mh audit"
 
 
 @pytest.mark.parametrize("missing", [MountKind.CACHE, MountKind.REPORTS])

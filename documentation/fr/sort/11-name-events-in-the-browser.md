@@ -142,6 +142,57 @@ qui ont besoin de vous. Cochez plutôt **Seulement les propositions sûres** pou
 sûres une par une avant de les accepter. Une case à la fois ; le navigateur s'en souvient pour la
 prochaine ouverture de la page.
 
+## Des événements faits sur les pages, jamais à la main
+
+Un événement que vous nommez est **retenu** pour chaque `classify` suivant : son nom, ses jours et
+les appareils de ses photos. Vous ne l'écrivez jamais vous-même dans `config.toml` : trois gestes
+des pages le font, et chacun dit ce qu'il a enregistré, relu sur le disque.
+
+- **Déplacer vers un événement…** Sur la page de recherche, donnez une période ou ouvrez un
+  dossier, choisissez les photos, puis *Déplacer vers un événement…* et tapez son nom. Avant le
+  déplacement, la fenêtre dit ce qui sera retenu : « Il sera retenu comme l'événement « Turin »
+  (config.toml) », ou « Il sera ajouté à l'événement « Turin » » quand les photos élargissent un
+  événement déjà connu, et les appareils (« Appareils : Apple iPhone 12. »). Après le
+  déplacement : « L'événement « Turin » est retenu : 2019-07-12..2019-07-19. »
+- **Les événements trouvés dans vos dossiers.** Les dossiers que vous avez déjà rangés à la main
+  (`2019\2019-07\Monténégro`) sont aussi des événements. En haut de l'onglet 🗂 Événements,
+  *N événements trouvés dans vos dossiers* les liste, chacun avec ses jours et son nombre de
+  fichiers, tous cochés : décochez ceux qui ne méritent pas d'être retenus, puis **Confirmer**.
+  Les cochés sont retenus ; les décochés sont notés « pas des événements » et jamais reproposés
+  (*N dossiers indiqués comme n'étant pas des événements*, replié en dessous, permet d'en recocher
+  un). Un dossier dont les photos sont très espacées dans le temps (`Tirages jan10`) est un lot,
+  pas un événement : il est listé à part, jamais proposé.
+- **De nouvelles photos pendant un événement.** Le téléphone d'un conjoint, une clé USB, les
+  photos d'un ami : des fichiers des jours d'un événement retenu qui ne sont dans aucun de ses
+  dossiers. L'onglet Événements et la page d'accueil disent « N nouvelles photos pendant
+  « Turin » — les voir ? ». *Les voir* les montre dans la grille, celles de l'appareil de
+  l'événement cochées ; puis **Ajouter les photos choisies à l'événement…** (le déplacement
+  ci-dessus, journalisé : `undo` les remet en place) ou **Refuser les photos choisies** (jamais
+  reproposées à cet événement).
+
+**Le même nom, plusieurs événements.** `Turin` tous les deux ou trois ans, c'est un événement à
+chaque fois : un déplacement vers `Turin` rejoint le `Turin` dont les jours touchent ceux des
+photos (un jour d'écart au plus), sinon il en commence un autre, enregistré comme
+`Turin (avril 2022)`. La page le dit avant le déplacement (« Il sera retenu comme un nouvel
+événement « Turin (avril 2022) » : « Turin » est un autre événement ») et nomme chacun avec son
+mois quand plusieurs partagent un nom : `Turin (juillet 2019)`.
+
+**Deux événements les mêmes jours.** Vous à la mer, votre fille en camp scout la même semaine :
+deux événements dont les jours se chevauchent. Leurs appareils séparent leurs photos (votre
+téléphone, le sien) : ils vivent côte à côte, sans avertissement. Une photo arrivée plus tard est
+classée par son appareil : celui de l'événement (*✔ Probablement : l'appareil de l'événement*),
+un autre (*Pendant l'événement, mais un autre appareil : ailleurs ?*), celui de l'autre événement
+de ces jours (*Plutôt l'événement « Camp » (son appareil)*). Une photo sans appareil dans ses
+EXIF (un scan, une image reçue) n'est jamais devinée : *Aucun appareil dans ce fichier : est-il
+de l'événement ?*
+
+**Où vont vos « non ».** Pas dans `config.toml`, qui ne doit pas grossir sans fin : les photos
+refusées pour un événement vont dans `/config/events/<début>-<nom>.toml`
+(`C:\Users\vous\media-hygiene\config\events\2019-07-12-Turin.toml`), les dossiers qui ne sont
+pas des événements dans `/config/events/not-events.toml`. Les deux listent le contenu des fichiers
+(leur SHA-256), pas leurs chemins : un refus tient toujours après que la photo a été déplacée ou
+renommée.
+
 ## Retenir un événement comme règle
 
 Un choix fait ici vaut pour cette proposition ; une **règle** vaut pour chaque `classify`

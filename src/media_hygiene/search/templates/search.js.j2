@@ -41,6 +41,7 @@ function card(hit, index) {
     if (hit.left) node.classList.add("leftHere");
   }
   if (hit.row !== undefined && eventTile) eventTile(hit, meta, node);  // an event's (0438)
+  if (hit.likely && window.mhLate) window.mhLate.tile(hit, meta, node);  // a late photo's (0558)
   if (hit.caption) meta.append(titled(element("div", "muted caption", hit.caption)));
   meta.append(chipsOf(hit));
   node.append(withLength(hit, picture), meta);
@@ -93,6 +94,7 @@ function chipsOf(hit) {
       // Ctrl+click: the word is added to the search, the other filters kept.
       chip.addEventListener("click", (event) => { event.stopPropagation(); (event.ctrlKey || event.metaKey ? addWord : lookFor)(word); });
       if (source === "person") chip.append(unnameButton(hit, word));
+      if (source === "hand") chip.append(untagButton(hit, word));  // 0555
       chips.append(chip);
     }
   }
@@ -123,9 +125,10 @@ function addWord(word) {
   search(null);
 }
 
-// The large view's facts (I): the same chips, the same ×.
+// The large view's facts (I): the same chips, the same × (names, words typed by hand).
 function infoExtra(file) {
-  return file.tags && file.tags.person ? [chipsOf({ tags: { person: file.tags.person }, key: file.key })] : [];
+  const tags = Object.fromEntries(["person", "hand"].filter((s) => file.tags && file.tags[s]).map((s) => [s, file.tags[s]]));
+  return Object.keys(tags).length ? [chipsOf({ tags, key: file.key })] : [];
 }
 
 function unnameButton(hit, name) {
@@ -275,6 +278,7 @@ function scope() {
 }
 
 function reopen(again) {
+  if (window.mhLate && window.mhLate.shown()) return window.mhLate.reopen(again);  // late photos (0558)
   return eventShown ? showEvent(eventShown, again) : search(null, again);  // an event (0437)
 }
 
@@ -310,7 +314,9 @@ async function search(event, again) {
     order: $("order").value, kind: asideListed() ? "all" : $("kind").value, aside: asideListed(), within: within ? within.inside : "",
     more: more,
   };
+  const lateBefore = window.mhLate ? window.mhLate.opened : 0;
   const answer = await ask(SEARCH_PATH, body);
+  if (window.mhLate && window.mhLate.opened !== lateBefore) return;  // late photos shown meanwhile (0558)
   if (!answer) { told(TEXTS.offline, true); return; }
   if (!answer.ok) {
     const refused = answer.status === 400 ? await answer.json().catch(() => ({})) : {};  // a bad regex (0426)

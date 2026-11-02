@@ -1,0 +1,18 @@
+// *New photos during an event* (0558): asked once of the search's app the home server
+// answers too; one line per event leads to its photos on the Events page. No index, no
+// event: nothing shown.
+const LATE_TEXTS = {{ {
+  "line": _("{n} new photos during '{name}' — see them?"),
+} | tojson }};
+let lateEvents = [];
+function lateLines() {
+  return lateEvents.map((item) => `<p class="callout callout-info">${icon("folder")}<span><a href="${esc(item.page)}">${esc(fill(LATE_TEXTS.line, { n: item.total, name: item.label }))}</a></span></p>`).join("");
+}
+function askLate() {
+  if (REMOTE) return;  // the phone is read-only: nothing to add or refuse there
+  if (!P.late) return;
+  fetch(P.late, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : { events: [] }))
+    .then((view) => { lateEvents = view.events || []; const place = $("#lateEvents"); if (place) place.innerHTML = lateLines(); })
+    .catch(() => {});
+}
