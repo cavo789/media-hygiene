@@ -161,4 +161,21 @@ def test_the_group_reviews_share_the_large_view_without_picking(template: str) -
     assert "showLarge(" in page
     keys = page.split('id="keys"')[1].split("</section>")[0]
     assert "open the photo large" in keys
-    assert "set it aside, then the next one" not in page  # no Delete in the large view
+    assert (
+        "set it aside, then the previous one" not in page
+    )  # no Delete in the large view
+
+
+def test_the_large_view_arrows_step_over_the_files_set_aside() -> None:
+    """0517: ← → Home End: the nearest file not set aside; Delete: the previous."""
+    page = _review("near_review.html.j2")
+    assert "if (!files[index].chosen) return index;" in page
+    for key in (
+        "ArrowRight: () => largeAt(notAside(current, 1)),",
+        "ArrowLeft: () => largeAt(notAside(current, -1)),",
+        "Home: () => largeAt(notAside(-1, 1)),",
+        "End: () => largeAt(notAside(files.length, -1)),",
+    ):
+        assert key in page, key
+    assert "const before = notAside(index, -1);" in page
+    assert "before >= 0 ? before : notAside(index, 1)" in page

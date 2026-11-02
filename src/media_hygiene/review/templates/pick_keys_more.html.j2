@@ -14,9 +14,9 @@
 {% endif %}
     <dt><kbd>Enter</kbd></dt><dd>{{ _("open it large (a double click too)") }}</dd>
     <dt><kbd>Home</kbd> <kbd>End</kbd></dt><dd>{{ _("the first or last file") }}</dd>
-    <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>{{ _("opened: the previous or next one") }}</dd>
+    <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>{{ _("opened: the previous or next one not set aside") }}</dd>
 {% if pick_marks | default(true) %}
-    <dt><kbd>Delete</kbd></dt><dd>{{ _("opened: set it aside, then the next one") }}</dd>
+    <dt><kbd>Delete</kbd></dt><dd>{{ _("opened: set it aside, then the previous one") }}</dd>
     <dt><kbd>⌫</kbd></dt><dd>{{ _("opened: take it back out") }}</dd>
 {% endif %}
 {% if pick_space_opened is defined %}

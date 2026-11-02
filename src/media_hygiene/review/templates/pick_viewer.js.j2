@@ -31,12 +31,30 @@ async function saveShown(action) {
   return true;
 }
 
-// Delete: set aside, then the next one opens; the last one stays, marked.
+// The nearest file not set aside from `from` (excluded), going by `step` (+1 or -1); -1 if none.
+// The arrows step over the files set aside: none of them is ever shown on the way (0517).
+function notAside(from, step) {
+  for (let index = from + step; index >= 0 && index < files.length; index += step) {
+    if (!files[index].chosen) return index;
+  }
+  return -1;
+}
+
+// Shows the file at `index` large; a file not found (-1) leaves the one shown.
+function largeAt(index) {
+  if (index < 0) return;
+  focusOn(index);
+  open();
+}
+
+// Delete: set aside, then the previous file not set aside shows, else the next; none left
+// closes the view.
 async function asideShown() {
   const index = current;
   if (!(await saveShown("add"))) return;
-  focusOn(Math.min(index + 1, files.length - 1));
-  open();
+  const before = notAside(index, -1);
+  const shown = before >= 0 ? before : notAside(index, 1);
+  if (shown < 0) { focusOn(index); close(); } else largeAt(shown);
 }
 
 // Backspace: taken back out of the set aside; the file stays shown (a video keeps playing).
@@ -105,10 +123,10 @@ function close() {
 // The keys of the large view: listed under it with `?` (`pick_viewer.html.j2`, `viewerHelp`).
 const VIEWER_KEYS = {
   Escape: close,
-  ArrowRight: () => { jump(current + 1); open(); },
-  ArrowLeft: () => { jump(current - 1); open(); },
-  Home: () => { jump(0); open(); },
-  End: () => { jump(files.length - 1); open(); },
+  ArrowRight: () => largeAt(notAside(current, 1)),
+  ArrowLeft: () => largeAt(notAside(current, -1)),
+  Home: () => largeAt(notAside(-1, 1)),
+  End: () => largeAt(notAside(files.length, -1)),
   Delete: asideShown,
   Backspace: takeBackShown,
   " ": playPause,
