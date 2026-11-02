@@ -24,6 +24,10 @@ chaque groupe, la règle qui a décidé (*pourquoi : la date la plus ancienne*).
 Le fichier gardé conserve son nom et son dossier ; le nom d'une copie mise de côté est perdu une
 fois la quarantaine vidée. Regardez donc les paires de dossiers de l'audit : le dossier gardé est-il celui que vous voulez ?
 
+Sans modifier aucun fichier : dans [`search`](../commands/search.md), **📁 Mes dossiers**, puis
+**⋯** à côté d'un dossier, *Rôle de ce dossier* : aucun, protégé, préféré, sauvegarde ou exclu,
+chacun avec sa conséquence. Les sections ci-dessous disent ce que fait chaque rôle.
+
 ## Préférer un dossier
 
 Dans la bibliothèque de démonstration, `C:\Photos\2019\Vacances à la mer` est gardé plutôt que

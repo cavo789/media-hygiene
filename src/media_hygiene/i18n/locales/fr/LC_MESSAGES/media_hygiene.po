@@ -776,6 +776,15 @@ msgstr ""
 "envoyées à url, et seulement là : gardez ce serveur sur votre propre "
 "ordinateur."
 
+#, python-brace-format
+msgid ""
+"A master library you trust can be protected: never changed, it always "
+"keeps the copy. {link}, then ⋯ next to its folder: Role of this folder."
+msgstr ""
+"Une photothèque de référence peut être protégée : jamais modifiée, elle "
+"garde toujours la copie. {link}, puis ⋯ à côté de son dossier : Rôle de "
+"ce dossier."
+
 msgid ""
 "A model that sees images, e.g. \"qwen2.5vl:7b\". Empty: no photo is ever "
 "sent. map_model: a text model that chooses the categories; empty: the "
@@ -1326,7 +1335,9 @@ msgstr ""
 "juste avant de supprimer."
 
 msgid "An event was not found in the events folder once written."
-msgstr "Un événement est introuvable dans le dossier des événements une fois écrit."
+msgstr ""
+"Un événement est introuvable dans le dossier des événements une fois "
+"écrit."
 
 #, python-brace-format
 msgid ""
@@ -1625,6 +1636,11 @@ msgstr "Sauvegarde écrite et relue : {path} ({size})."
 
 msgid "Backup, never changed"
 msgstr "Sauvegarde, jamais modifiée"
+
+msgid "Backup: only compared, never changed and never the reason a copy goes."
+msgstr ""
+"Sauvegarde : seulement comparée, jamais modifiée et jamais la raison du "
+"départ d'une copie."
 
 msgid "Band"
 msgstr "Bande"
@@ -3353,6 +3369,9 @@ msgstr "Tout se fait aussi au clavier"
 msgid "Example:"
 msgstr "Exemple :"
 
+msgid "Excluded: not read at all by the audit."
+msgstr "Exclu : pas lu du tout par l'audit."
+
 msgid "Existing folder"
 msgstr "Dossier existant"
 
@@ -3762,6 +3781,9 @@ msgstr "Dossiers partageant des fichiers identiques"
 #, python-brace-format
 msgid "Folders skipped by name, wherever they are: {names}."
 msgstr "Dossiers ignorés par leur nom, où qu'ils soient : {names}."
+
+msgid "Folders with a role that are gone"
+msgstr "Dossiers avec un rôle qui n'existent plus"
 
 msgid "For a second opinion, run 'crosscheck' (same -v options)."
 msgstr "Si vous souhaitez un second avis, lancez 'crosscheck' (mêmes options -v)."
@@ -5972,6 +5994,9 @@ msgstr "Aucune de ces photos n'a de date : pas de mois où les mettre."
 msgid "None: it is clean"
 msgstr "Aucune : c'est propre"
 
+msgid "None: the folder is read and cleaned like the others."
+msgstr "Aucun : le dossier est lu et nettoyé comme les autres."
+
 msgid "Not a place worth a name: hide it from the map"
 msgstr "Pas un lieu qui mérite un nom : le cacher de la carte"
 
@@ -7297,6 +7322,11 @@ msgstr ""
 "commande > variables d'environnement MEDIA_HYGIENE_* (p. ex. "
 "MEDIA_HYGIENE_GENERAL__LOCALE=fr) > ce fichier > valeurs par défaut."
 
+msgid "Preferred: when copies differ only by folder, the copy here is kept."
+msgstr ""
+"Préféré : quand des copies ne diffèrent que par leur dossier, celle d'ici"
+" est gardée."
+
 msgid "Prepare an album for sending"
 msgstr "Préparer un album pour l'envoyer"
 
@@ -7364,6 +7394,11 @@ msgstr "Arborescence proposée"
 #, python-brace-format
 msgid "Proposed {when}"
 msgstr "Proposé {when}"
+
+msgid "Protected: never changed; identical files elsewhere are set aside."
+msgstr ""
+"Protégé : jamais modifié ; les fichiers identiques ailleurs sont mis de "
+"côté."
 
 msgid "Proving identity (full SHA-256)"
 msgstr "Preuve d'identité (SHA-256 complet)"
@@ -7847,6 +7882,9 @@ msgstr "Entrée du clic droit retirée : {key} n'existe plus."
 msgid "Role"
 msgstr "Rôle"
 
+msgid "Role of this folder"
+msgstr "Rôle de ce dossier"
+
 msgid "Room"
 msgstr "Place"
 
@@ -8216,6 +8254,10 @@ msgstr "Enregistré dans config.toml."
 
 msgid "Saved in config.toml: this name is no town."
 msgstr "Enregistré dans config.toml : ce nom n'est pas une ville."
+
+#, python-brace-format
+msgid "Saved in {file}: {folder} is now {role}."
+msgstr "Enregistré dans {file} : {folder} est maintenant {role}."
 
 #, python-brace-format
 msgid "Saved, read back from {path}:"
@@ -9902,6 +9944,13 @@ msgstr ""
 msgid "The largest clusters without a name"
 msgstr "Les plus grands groupes sans nom"
 
+msgid ""
+"The last audit's proposals were made with the former roles: run the audit"
+" again before cleaning."
+msgstr ""
+"Les propositions du dernier audit ont été faites avec les anciens rôles :"
+" relancez l'audit avant de nettoyer."
+
 #, python-brace-format
 msgid "The layouts of {path} follow the sort convention."
 msgstr "Les rangements de {path} suivent la convention de tri."
@@ -11403,6 +11452,9 @@ msgstr "Argument en trop : {values}"
 msgid "Unknown place or cluster: reload the page."
 msgstr "Lieu ou groupe inconnu : rechargez la page."
 
+msgid "Unknown role."
+msgstr "Rôle inconnu."
+
 #, python-brace-format
 msgid "Unknown run {run_id}."
 msgstr "Exécution inconnue : {run_id}."
@@ -12237,6 +12289,9 @@ msgstr ""
 "une règle 'place' (et une règle 'trip') dans [[classify.rules]], puis "
 "'classify'."
 
+msgid "a backup"
+msgstr "une sauvegarde"
+
 msgid "a burst shot you set aside"
 msgstr "une photo de rafale que vous avez mise de côté"
 
@@ -12798,6 +12853,9 @@ msgstr "toutes les sources"
 
 msgid "excel inventory csv table list"
 msgstr "excel inventaire csv tableau liste"
+
+msgid "excluded"
+msgstr "exclu"
 
 msgid "faces found"
 msgstr "visages trouvés"
@@ -13756,6 +13814,9 @@ msgstr "lire ou mettre en pause une vidéo"
 msgid "plays, {seconds} s each"
 msgstr "en lecture, {seconds} s chacune"
 
+msgid "preferred"
+msgstr "préféré"
+
 msgid "preferred folder"
 msgstr "dossier préféré"
 
@@ -13800,6 +13861,9 @@ msgstr "proposée à l'écart : sous-exposée à côté des autres"
 #, python-brace-format
 msgid "proposed by classify ({why}), not validated yet"
 msgstr "proposé par classify ({why}), pas encore validé"
+
+msgid "protected"
+msgstr "protégé"
 
 msgid "protected folder"
 msgstr "dossier protégé"
@@ -14648,6 +14712,9 @@ msgstr "sans GPS"
 msgid "without a date"
 msgstr "sans date"
 
+msgid "without a role"
+msgstr "sans rôle"
+
 msgid "words tags labels ai"
 msgstr "mots tags étiquettes ia"
 
@@ -15039,14 +15106,22 @@ msgstr[1] "{count} entrées retirées de config.toml, relues sur le disque."
 #, python-brace-format
 msgid "{count} event moved to the events folder, read back from the disk."
 msgid_plural "{count} events moved to the events folder, read back from the disk."
-msgstr[0] "{count} événement déplacé dans le dossier des événements, relu sur le disque."
-msgstr[1] "{count} événements déplacés dans le dossier des événements, relus sur le disque."
+msgstr[0] ""
+"{count} événement déplacé dans le dossier des événements, relu sur le "
+"disque."
+msgstr[1] ""
+"{count} événements déplacés dans le dossier des événements, relus sur le "
+"disque."
 
 #, python-brace-format
 msgid "{count} event of config.toml moves to the events folder with --apply."
 msgid_plural "{count} events of config.toml move to the events folder with --apply."
-msgstr[0] "{count} événement de config.toml part dans le dossier des événements avec --apply."
-msgstr[1] "{count} événements de config.toml partent dans le dossier des événements avec --apply."
+msgstr[0] ""
+"{count} événement de config.toml part dans le dossier des événements avec"
+" --apply."
+msgstr[1] ""
+"{count} événements de config.toml partent dans le dossier des événements "
+"avec --apply."
 
 #, python-brace-format
 msgid ""
@@ -16356,6 +16431,10 @@ msgid ""
 msgstr ""
 "{folder} a une position dans [[places.folders]] mais est introuvable : "
 "renommé ou déplacé ? Corrigez-le sur la carte de 'places'."
+
+#, python-brace-format
+msgid "{folder} has the role {badge} but is gone (renamed or deleted?)"
+msgstr "{folder} a le rôle {badge} mais n'existe plus (renommé ou supprimé ?)"
 
 #, python-brace-format
 msgid "{folder} is mounted read-only: config.toml cannot be completed."

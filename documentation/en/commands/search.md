@@ -69,6 +69,12 @@ helps: `*.mp4` or a regular expression are still searched as typed.
 - **📁 My folders ▸**: one line under the form; a click opens the tree of your folders over the
   page (nothing below moves), Esc closes it. A click narrows the search to that folder and below, **without typing any word**:
   empty words list the whole folder; ✕ next to its name searches every folder again.
+  Each folder shows its role (🛡️ protected, ⭐ preferred, 💾 backup, 🚫 excluded; hover for
+  what it means); **⋯** next to a folder, *Role of this folder*, gives it one or none. The
+  choice is written in `[folders]` of `config.toml` (your comments kept), read back from the
+  disk and shown; a role clashing with another (a backup inside a protected folder) is refused
+  with the reason. Run the audit again afterwards: its proposals used the former roles. A folder
+  with a role that was renamed or deleted in Explorer is listed under the tree, with **Remove**.
 
 - **Search**: type the words, then Enter; the keys then go to the grid, `/` comes back to the
   field. *How to write a search* recalls the phrases ("bord de mer"), the starts of words

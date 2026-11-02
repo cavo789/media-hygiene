@@ -23,6 +23,10 @@ which rule decided (*why: the oldest date*).
 The kept file keeps its name and its folder; the name of a copy set aside is lost once purged.
 So look at the folder pairs of the audit: is the kept folder the one you want?
 
+Without editing any file: in [`search`](../commands/search.md), **📁 My folders**, then **⋯**
+next to a folder, *Role of this folder*: none, protected, preferred, backup or excluded, each
+with its consequence. The sections below say what each role does.
+
 ## Prefer a folder
 
 In the demo library, `C:\Photos\2019\Seaside holidays` is kept rather than `C:\Photos\Old phone`

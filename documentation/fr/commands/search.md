@@ -73,6 +73,13 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   par-dessus la page (rien en dessous ne bouge), Échap le ferme. Un clic limite la recherche à ce dossier et en dessous, **sans taper de
   mot** : des mots vides listent tout le dossier ; ✕ à côté de son nom recherche à nouveau dans
   tous les dossiers.
+  Chaque dossier montre son rôle (🛡️ protégé, ⭐ préféré, 💾 sauvegarde, 🚫 exclu ; survolez
+  pour ce qu'il veut dire) ; **⋯** à côté d'un dossier, *Rôle de ce dossier*, lui en donne un ou
+  aucun. Le choix est écrit dans `[folders]` de `config.toml` (vos commentaires gardés), relu sur
+  le disque et affiché ; un rôle en conflit avec un autre (une sauvegarde dans un dossier
+  protégé) est refusé avec la raison. Relancez l'audit ensuite : ses propositions suivaient les
+  anciens rôles. Un dossier avec un rôle renommé ou supprimé dans l'Explorateur est listé sous
+  l'arbre, avec **Supprimer**.
 
 - **Chercher** : tapez les mots, puis Entrée ; les touches vont alors à la grille, `/` revient au
   champ. *Comment écrire une recherche* rappelle les expressions ("bord de mer"), les débuts de

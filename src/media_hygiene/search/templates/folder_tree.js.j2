@@ -1,8 +1,11 @@
 {# The tree of the library's folders, the same on the folder view and the search (0348):
    the mounted folders open, every folder below them closed, each with what it holds.
    `folderTree(folders, chosen)` builds it from `GET /api/folders`; `chosen(node)` is called
-   when a folder is clicked (the folder view opens it, the search filters on it). #}
-function folderBranch(node, children, chosen) {
+   when a folder is clicked (the folder view opens it, the search filters on it). `roles`
+   (0532), optional: `{of: Map(host path → role), pick(node)}` adds each folder's badge
+   and its *Role of this folder* button. #}
+const ROLE_BADGES = { protected: "🛡️", preferred: "⭐", backups: "💾", excluded: "🚫" };
+function folderBranch(node, children, chosen, roles) {
   const item = element("li");
   const line = element("div", "node");
   const below = children.get(node.path) || [];
@@ -13,10 +16,24 @@ function folderBranch(node, children, chosen) {
   button.dataset.path = node.path;
   button.append(element("small", "", fill(TEXTS.counts, node)));
   line.append(toggle, button);
+  if (roles) {
+    const role = roles.of.get(node.path);
+    if (role) {
+      const badge = element("span", "roleBadge", ROLE_BADGES[role]);
+      badge.title = TEXTS.roleWhy[role];
+      button.prepend(badge);
+    }
+    const menu = element("button", "plain roleOpen", "⋯");
+    menu.type = "button";
+    menu.title = TEXTS.roleOpen;
+    menu.setAttribute("aria-label", TEXTS.roleOpen);
+    menu.addEventListener("click", () => roles.pick(node));
+    line.append(menu);
+  }
   item.append(line);
   if (below.length) {
     const list = element("ul");
-    list.append(...below.map((child) => folderBranch(child, children, chosen)));
+    list.append(...below.map((child) => folderBranch(child, children, chosen, roles)));
     list.hidden = node.parent !== null;
     toggle.textContent = list.hidden ? "▸" : "▾";
     toggle.addEventListener("click", () => {
@@ -29,13 +46,13 @@ function folderBranch(node, children, chosen) {
   return item;
 }
 
-function folderTree(folders, chosen) {
+function folderTree(folders, chosen, roles = null) {
   const children = new Map();
   for (const node of folders) {
     if (!children.has(node.parent)) children.set(node.parent, []);
     children.get(node.parent).push(node);
   }
   const list = element("ul");
-  list.append(...(children.get(null) || []).map((node) => folderBranch(node, children, chosen)));
+  list.append(...(children.get(null) || []).map((node) => folderBranch(node, children, chosen, roles)));
   return list;
 }

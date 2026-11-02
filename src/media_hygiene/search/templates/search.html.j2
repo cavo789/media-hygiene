@@ -77,6 +77,11 @@
   "goUnknown": _("{n} files are not in the index yet: run an audit, then move them."),
   "goFixed": [ngettext("{n} file lies in a protected or 'leave' folder: never moved.", "{n} files lie in a protected or 'leave' folder: never moved.", 1), ngettext("{n} file lies in a protected or 'leave' folder: never moved.", "{n} files lie in a protected or 'leave' folder: never moved.", 2)],
   "counts": _("{photos} photos · {videos} videos · {size}"),
+  "roleOpen": _("Role of this folder"),
+  "roleWhy": {"protected": _("Protected: never changed; identical files elsewhere are set aside."), "preferred": _("Preferred: when copies differ only by folder, the copy here is kept."), "backups": _("Backup: only compared, never changed and never the reason a copy goes."), "excluded": _("Excluded: not read at all by the audit.")},
+  "roleMissing": _("{folder} has the role {badge} but is gone (renamed or deleted?)"),
+  "roleRemove": _("Remove"),
+  "roleSaving": _("Saving…"),
   "moveNamed": _("(your folder of another event, {name}: unticked)"),
   "moveNow": [ngettext("Move this file now", "Move these {n} files now", 1), ngettext("Move this file now", "Move these {n} files now", 2)],
   "moveReading": _("Reading where the photos picked lie…"),
@@ -306,6 +311,7 @@
     <details id="folders">
       <summary title="{{ _('Every folder as a tree; a click searches in it') }}">📁 {{ _("My folders") }} ▸</summary>
       <div id="tree" aria-label="{{ _('Your folders') }}"></div>
+      <ul id="roleMissing" aria-label="{{ _('Folders with a role that are gone') }}"></ul>
     </details>
     <button type="button" id="ruleOpen" class="plain" hidden title="{{ _('Write this period down as a date rule of config.toml, after seeing the photos it would take and where each one would go') }}">📌 {{ _("Make it a rule") }}</button>
     <p id="coverage" role="status" hidden></p>
@@ -360,6 +366,7 @@
 {% include "pick_viewer.html.j2" %}
 {% include "rule_dialog.html.j2" %}
 {% include "move_dialog.html.j2" %}
+{% include "folder_role_dialog.html.j2" %}
 {% include "hand_tag_dialog.html.j2" %}
 {% include "search_events_dialogs.html.j2" %}
 <div id="why" role="dialog" aria-modal="true" aria-labelledby="whyTitle" hidden>

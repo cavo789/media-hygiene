@@ -615,6 +615,12 @@ msgid ""
 " your own computer."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"A master library you trust can be protected: never changed, it always "
+"keeps the copy. {link}, then ⋯ next to its folder: Role of this folder."
+msgstr ""
+
 msgid ""
 "A model that sees images, e.g. \"qwen2.5vl:7b\". Empty: no photo is ever "
 "sent. map_model: a text model that chooses the categories; empty: the "
@@ -1293,6 +1299,9 @@ msgid "Backup written and read back: {path} ({size})."
 msgstr ""
 
 msgid "Backup, never changed"
+msgstr ""
+
+msgid "Backup: only compared, never changed and never the reason a copy goes."
 msgstr ""
 
 msgid "Band"
@@ -2722,6 +2731,9 @@ msgstr ""
 msgid "Example:"
 msgstr ""
 
+msgid "Excluded: not read at all by the audit."
+msgstr ""
+
 msgid "Existing folder"
 msgstr ""
 
@@ -3059,6 +3071,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Folders skipped by name, wherever they are: {names}."
+msgstr ""
+
+msgid "Folders with a role that are gone"
 msgstr ""
 
 msgid "For a second opinion, run 'crosscheck' (same -v options)."
@@ -4931,6 +4946,9 @@ msgstr ""
 msgid "None: it is clean"
 msgstr ""
 
+msgid "None: the folder is read and cleaned like the others."
+msgstr ""
+
 msgid "Not a place worth a name: hide it from the map"
 msgstr ""
 
@@ -6017,6 +6035,9 @@ msgid ""
 " > built-in defaults."
 msgstr ""
 
+msgid "Preferred: when copies differ only by folder, the copy here is kept."
+msgstr ""
+
 msgid "Prepare an album for sending"
 msgstr ""
 
@@ -6079,6 +6100,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Proposed {when}"
+msgstr ""
+
+msgid "Protected: never changed; identical files elsewhere are set aside."
 msgstr ""
 
 msgid "Proving identity (full SHA-256)"
@@ -6483,6 +6507,9 @@ msgstr ""
 msgid "Role"
 msgstr ""
 
+msgid "Role of this folder"
+msgstr ""
+
 msgid "Room"
 msgstr ""
 
@@ -6787,6 +6814,10 @@ msgid "Saved in config.toml."
 msgstr ""
 
 msgid "Saved in config.toml: this name is no town."
+msgstr ""
+
+#, python-brace-format
+msgid "Saved in {file}: {folder} is now {role}."
 msgstr ""
 
 #, python-brace-format
@@ -8202,6 +8233,11 @@ msgstr ""
 msgid "The largest clusters without a name"
 msgstr ""
 
+msgid ""
+"The last audit's proposals were made with the former roles: run the audit"
+" again before cleaning."
+msgstr ""
+
 #, python-brace-format
 msgid "The layouts of {path} follow the sort convention."
 msgstr ""
@@ -9414,6 +9450,9 @@ msgstr ""
 msgid "Unknown place or cluster: reload the page."
 msgstr ""
 
+msgid "Unknown role."
+msgstr ""
+
 #, python-brace-format
 msgid "Unknown run {run_id}."
 msgstr ""
@@ -10089,6 +10128,9 @@ msgstr ""
 msgid "a 'place' rule (and a 'trip' rule) in [[classify.rules]], then 'classify'."
 msgstr ""
 
+msgid "a backup"
+msgstr ""
+
 msgid "a burst shot you set aside"
 msgstr ""
 
@@ -10618,6 +10660,9 @@ msgid "every source"
 msgstr ""
 
 msgid "excel inventory csv table list"
+msgstr ""
+
+msgid "excluded"
 msgstr ""
 
 msgid "faces found"
@@ -11489,6 +11534,9 @@ msgstr ""
 msgid "plays, {seconds} s each"
 msgstr ""
 
+msgid "preferred"
+msgstr ""
+
 msgid "preferred folder"
 msgstr ""
 
@@ -11530,6 +11578,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "proposed by classify ({why}), not validated yet"
+msgstr ""
+
+msgid "protected"
 msgstr ""
 
 msgid "protected folder"
@@ -12285,6 +12336,9 @@ msgid "without GPS"
 msgstr ""
 
 msgid "without a date"
+msgstr ""
+
+msgid "without a role"
 msgstr ""
 
 msgid "words tags labels ai"
@@ -13647,6 +13701,10 @@ msgstr ""
 msgid ""
 "{folder} has a position in [[places.folders]] but cannot be found: "
 "renamed or moved? Correct it in the map of 'places'."
+msgstr ""
+
+#, python-brace-format
+msgid "{folder} has the role {badge} but is gone (renamed or deleted?)"
 msgstr ""
 
 #, python-brace-format
