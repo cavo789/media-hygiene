@@ -54,4 +54,4 @@ def test_classify_offers_it_and_names_a_rule_of_several_levels(
     locations.config_file.write_text(_OLD + rules, encoding="utf-8")
     shown = " ".join(run(cli, "classify").output.split())
     assert "config --convention" in shown
-    assert "The rule 'Fêtes' gives the category 'Parties/Christmas'" in shown
+    assert "1 rule gives a category of several folder levels ('Fêtes')" in shown
