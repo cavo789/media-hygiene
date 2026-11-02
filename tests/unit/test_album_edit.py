@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
+import time
 from http import HTTPStatus
 from typing import TYPE_CHECKING
 
@@ -13,9 +15,9 @@ from media_hygiene.review.http import Request
 from media_hygiene.review.lan_paths import phone_may
 from media_hygiene.search.aside_filter import Kept
 from media_hygiene.services.albums import album_desk, album_store
-from media_hygiene.share.album_edit import DELETED_FILE
 from media_hygiene.share.album_page import ALBUM_CHANGE_PATH
 from media_hygiene.share.album_store import AlbumChange
+from media_hygiene.share.album_trash import DELETED_FILE, KEEP_DAYS
 from media_hygiene.share.albums import ALBUMS_FILE
 from tests.support.runtime import make_locations, make_runtime
 
@@ -76,6 +78,23 @@ def test_delete_several_then_undo(runtime: Runtime) -> None:
     assert _names(runtime) == ["Rome", "Crete", "Paris"]
     assert not (runtime.locations.reports_dir / DELETED_FILE).exists()
     assert _post(runtime, {"action": "restore"})[0] is HTTPStatus.CONFLICT
+
+
+@pytest.mark.parametrize(
+    ("days", "back"), [(KEEP_DAYS - 1, True), (KEEP_DAYS + 1, False)]
+)
+def test_undo_forgets_a_delete_older_than_keep_days(
+    runtime: Runtime, days: int, *, back: bool
+) -> None:
+    """A delete of a month ago is forgotten: nothing to put back, its copy removed."""
+    _post(runtime, {"action": "delete", "names": ["Rome"]})
+    copy = runtime.locations.reports_dir / DELETED_FILE
+    then = time.time() - days * 86_400
+    os.utime(copy, (then, then))
+    status, _message = _post(runtime, {"action": "restore"})
+    assert (status is HTTPStatus.OK) is back
+    assert ("Rome" in _names(runtime)) is back
+    assert not copy.exists()
 
 
 def test_rename(runtime: Runtime) -> None:

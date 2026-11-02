@@ -16,3 +16,9 @@ shown. Follows 0532 (folder roles); analysed in detail at implementation time.
 
 `[album] root` empty: the albums page asks "Where should your albums go?" with a folder chooser;
 set: shown in the bar with *Change* (what happens to existing albums when it changes: to decide).
+
+## Decided (2026-11-02)
+
+By the maintainer, review of the 2026-11-02 iterate: when the albums folder changes, the album
+link folders are **recreated in the new folder**; the old folder is emptied of its links only
+(never a photo, never a file the tool did not make), and `albums.json` keeps the albums.
