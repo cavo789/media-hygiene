@@ -50,6 +50,6 @@ following action on a picking, whatever the gesture that picked it.
   **Reason:** file being rewritten concurrently by TODO 0572 (another session); do it once 0572 is committed.
 - A file set aside after it was put in an album: the albums page's TV still shows it.
   **Reason:** needs the album reading side (`services/album_pages.py`) to filter at display time — not in this run's scope.
-- Burst review's albums.
-  **Reason:** maintainer decision pending: should the burst review and the albums page apply the same rule?
+- Burst review's albums, and the albums page (its TV included).
+  **Reason:** not reached in this run. Maintainer's rule (2026-11-02): a file set aside is a soft delete, it no longer counts anywhere — both pages must ignore it, no question left.
 - Full `tests_for.py --depth 1` rerun after the album `pick` fix (only the 4 affected test files rerun: 24 passed); not tried in the app.
