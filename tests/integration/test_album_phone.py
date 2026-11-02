@@ -27,6 +27,7 @@ from media_hygiene.review.local_app import LocalApp
 from media_hygiene.services.album_pages import album_page, album_pages
 from media_hygiene.services.albums import album_store
 from media_hygiene.share.album_store import AlbumChange
+from media_hygiene.share.album_view import album_view
 from media_hygiene.share.albums import ALBUMS_FILE, read_albums
 from tests.support.cli import run
 from tests.support.runtime import make_runtime
@@ -39,6 +40,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.paths.locations import Locations
     from media_hygiene.services.runtime import Runtime
+    from media_hygiene.share.album_view import AlbumSeen, TownOf
 
 _PORT: Final = 8765
 _HOST: Final = f"192.168.1.20:{_PORT}"
@@ -193,6 +195,34 @@ def test_the_pc_gets_the_search_thumbnail_of_a_file_of_no_album(
     reply = _ask(door, Request("GET", f"/thumb/{kept}{_JPEG}", local))
     assert reply.body.startswith(b"\xff\xd8")
     assert len(home.seen) == 1  # an album's file: still the albums' own
+
+
+def test_thumbnails_of_no_album_read_the_albums_once_until_they_change(
+    phone_door: tuple[LanApp, _Home, Runtime], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Each tile in no album read the whole list again: a minute of CPU (2026-11-02)."""
+    door, _home, runtime = phone_door
+    shown = set(_keys(_album(door)))
+    others = [key for key, _path in _photos(runtime) if key not in shown]
+    assert len(others) >= 2
+    reads: list[str] = []
+    viewed = album_view
+
+    def counted(
+        seen: AlbumSeen, connection: sqlite3.Connection, town_of: TownOf
+    ) -> dict[str, object]:
+        """Count each album written for its page, then write it."""
+        reads.append(seen.name)
+        return viewed(seen, connection, town_of)
+
+    monkeypatch.setattr("media_hygiene.services.album_reader.album_view", counted)
+    local = {"host": f"127.0.0.1:{_PORT}"}
+    for key in others:
+        _ask(door, Request("GET", f"/thumb/{key}{_JPEG}", local))
+    assert len(reads) == 1
+    album_store(runtime).add(AlbumChange(_ALBUM, (_photos(runtime)[2][1],)))
+    _ask(door, Request("GET", f"/thumb/{others[-1]}{_JPEG}", local))
+    assert len(reads) == 2  # albums.json changed: read again
 
 
 def test_the_pc_changes_an_album_and_nothing_else(

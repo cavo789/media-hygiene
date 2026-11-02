@@ -2,7 +2,8 @@
 
 Each answer opens the index read-only for its own time: the home page's audit may write
 it meanwhile, and a fresh install has none yet (said, never a traceback). The towns
-(GeoNames, offline) are loaded once, at the first photo with a GPS position. The
+(GeoNames, offline) are loaded once, at the first photo with a GPS position. The list is
+kept until `albums.json` or the index changes: each thumbnail in no album asks it. The
 pictures sized for a phone are `slideshow`'s (0291), fitted into a square: a photo
 taken upright fills the phone held upright, one taken sideways the phone turned.
 """
@@ -56,14 +57,32 @@ class AlbumReader:
         self._runtime = runtime
         self._executor = executor
         self._towns: Gazetteer | None = None
+        self._listed: tuple[object, Keyed] | None = None
 
     def listing(self) -> Keyed:
         """Every album without its days, and the keys of every album's files.
 
         Returns:
+            `{"albums": [...]}` and the keys; read again once either file changed.
+        """
+        store = album_store(self._runtime)
+        files = (store.place.target, self._runtime.index_file)
+        stamp = tuple(
+            (f.stat().st_mtime_ns, f.stat().st_size) for f in files if f and f.is_file()
+        )
+        if self._listed is None or self._listed[0] != stamp:
+            self._listed = (stamp, self._listing(store.on_disk().albums.albums))
+        return self._listed[1]
+
+    def _listing(self, albums: tuple[Album, ...]) -> Keyed:
+        """Every album without its days, and the keys of every album's files.
+
+        Args:
+            albums: The albums, read back from the disk.
+
+        Returns:
             `{"albums": [...]}` and the keys.
         """
-        albums = album_store(self._runtime).on_disk().albums.albums
         with self._index() as search:
             seen = [self._seen(search, album) for album in albums]
             views = [album_view(each, search.connection, self._town) for each in seen]
