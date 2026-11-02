@@ -2106,6 +2106,12 @@ msgstr "Confirmer"
 msgid "Confirm the files to check"
 msgstr "Confirmer les fichiers à vérifier"
 
+#, python-brace-format
+msgid "Confirm this {n}"
+msgid_plural "Confirm these {n}"
+msgstr[0] "Confirmer {n} ligne"
+msgstr[1] "Confirmer ces {n} lignes"
+
 msgid "Confirmed by you on the people page: it is a face of reference."
 msgstr ""
 "Confirmé par vous dans la page des personnes : c'est un visage de "
@@ -2500,8 +2506,8 @@ msgstr[0] ""
 "Supprimer {n} album ? Vos photos restent où elles sont : seul le fichier "
 "des albums change."
 msgstr[1] ""
-"Supprimer {n} albums ? Vos photos restent où elles sont : seul le fichier "
-"des albums change."
+"Supprimer {n} albums ? Vos photos restent où elles sont : seul le fichier"
+" des albums change."
 
 #, python-brace-format
 msgid "Delete {ticked} files ({size}) from the phone"
@@ -7639,7 +7645,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Renamed: {name}. A folder of links made by mh album keeps its old name."
-msgstr "Renommé : {name}. Un dossier de liens créé par mh album garde son ancien nom."
+msgstr ""
+"Renommé : {name}. Un dossier de liens créé par mh album garde son ancien "
+"nom."
 
 #, python-brace-format
 msgid "Renames not seen made: {count}. Type mh push again."

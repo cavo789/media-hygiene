@@ -39,6 +39,10 @@ at least `key`, `name`, `preview`, `original`, `chosen`, optionally `video`, `da
 
 ## The contract
 
+- Never act on what is not shown: Ctrl+A and every bar button act on the tiles shown; the only
+  wider action (*Pick all N found*) states its count, and that count is what is posted
+  (set-aside files left out).
+
 **Layout** — the frame's (`page_frame.html.j2`; `tests/unit/test_page_frame.py` holds it for every
 page served). `page_header.html.j2` on top. Left column: the tabs, then what leads to the photos (a
 folder tree, a search form, a list of groups), then ⌨ keys. Right: **one** sticky bar, then the

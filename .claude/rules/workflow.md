@@ -81,3 +81,6 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
 - Every page that sets files aside (or records any choice `clean --decisions` applies) offers
   *Apply now* (`ApplyOffer`, the shared `apply_now` template, same place in the bar) once
   something is pending; a page without it is a bug, like a page missing the way back home.
+- An action never touches what is not shown: it acts on the rows or tiles visible (a filter
+  narrows what a button posts), or on a set whose size the button states ("Confirm these 20",
+  "every 1 234 found"). Hidden rows stay to decide, untouched.

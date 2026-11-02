@@ -1714,6 +1714,12 @@ msgstr ""
 msgid "Confirm the files to check"
 msgstr ""
 
+#, python-brace-format
+msgid "Confirm this {n}"
+msgid_plural "Confirm these {n}"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Confirmed by you on the people page: it is a face of reference."
 msgstr ""
 
