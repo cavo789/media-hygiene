@@ -2144,6 +2144,10 @@ msgstr ""
 "Confirmé par vous dans la page des personnes : c'est un visage de "
 "référence."
 
+#, python-brace-format
+msgid "Contact sheet, screen {page} of {pages}"
+msgstr "Planche contact, écran {page} sur {pages}"
+
 msgid "Contents"
 msgstr "Sommaire"
 
@@ -3054,6 +3058,14 @@ msgstr ""
 "Entrée lance l'étape {number} ({command}). Un autre numéro lance cette "
 "étape. Ctrl+C pour quitter."
 
+#, python-brace-format
+msgid ""
+"Enter validates the {series} still to see here as shown ({aside}), then "
+"the next screen; Z takes the screen back."
+msgstr ""
+"Entrée valide les {series} encore à voir ici telles qu'affichées "
+"({aside}), puis l'écran suivant ; Z reprend l'écran."
+
 msgid "Entirely a copy: the second folder holds nothing else."
 msgstr "Entièrement une copie : le second dossier ne contient rien d'autre."
 
@@ -3272,6 +3284,14 @@ msgstr "Chaque groupe de cette paire de dossiers est déjà décidé."
 
 msgid "Every group to check has been decided."
 msgstr "Chaque groupe à vérifier a été décidé."
+
+#, python-brace-format
+msgid ""
+"Every obvious series has been seen. Left to look at one by one: {series};"
+" P shows them."
+msgstr ""
+"Chaque série évidente a été vue. Reste à regarder une à une : {series} ; "
+"P les montre."
 
 msgid "Every pair has been decided."
 msgstr "Toutes les paires ont été décidées."
@@ -4865,6 +4885,10 @@ msgstr "Revoir les photos disparues"
 
 msgid "Look again, slower: the photo turned, less strict"
 msgstr "Regarder encore, plus lentement : la photo tournée, moins exigeant"
+
+#, python-brace-format
+msgid "Look at {series} on a contact sheet"
+msgstr "Regarder les {series} sur une planche contact"
 
 msgid "Look for 1 h"
 msgstr "Regarder pendant 1 h"
@@ -10521,6 +10545,13 @@ msgstr ""
 "lancé le {date}) n'est plus à jour : des photos ont été déplacées ou "
 "supprimées depuis. Il est ignoré ; le nettoyage n'en a pas besoin."
 
+msgid ""
+"The series whose proposal leaves nothing to judge, about twenty a screen:"
+" Enter validates what you see"
+msgstr ""
+"Les séries dont la proposition ne laisse rien à juger, une vingtaine par "
+"écran : Entrée valide ce que vous voyez"
+
 #, python-brace-format
 msgid "The settings changed but cannot be read; the last good ones stay: {error}"
 msgstr ""
@@ -11520,18 +11551,18 @@ msgid "User name on the NAS"
 msgstr "Nom d'utilisateur sur le NAS"
 
 msgid ""
-"Validate at once every series still to see whose proposal leaves nothing "
-"to judge (V)"
+"Validate at once, without seeing them, every series still to see whose "
+"proposal leaves nothing to judge (V)"
 msgstr ""
-"Valider d'un coup toutes les séries encore à voir dont la proposition ne "
-"laisse rien à juger (V)"
+"Valider d'un coup, sans les voir, chaque série encore à voir dont la "
+"proposition ne laisse rien à juger (V)"
 
 msgid "Validate the series still to see here, as moving on would"
 msgstr "Valider les séries encore à voir ici, comme si vous passiez à la suite"
 
 #, python-brace-format
-msgid "Validate {series} ({aside})"
-msgstr "Valider {series} ({aside})"
+msgid "Validate {series} unseen ({aside})"
+msgstr "Valider les {series} sans les voir ({aside})"
 
 msgid "Value"
 msgstr "Valeur"
@@ -12520,6 +12551,9 @@ msgstr "flou"
 
 msgid "board ⇄ one series"
 msgstr "planche ⇄ une série"
+
+msgid "board, contact sheet: validate the rows shown, next screen"
+msgstr "tableau, planche contact : valider les lignes affichées, écran suivant"
 
 msgid "board: pin the large preview of the shot under the mouse"
 msgstr "planche : épingler le grand aperçu de la photo sous la souris"
@@ -17413,6 +17447,10 @@ msgstr "{seconds} s"
 #, python-brace-format
 msgid "{section} is not a list."
 msgstr "{section} n'est pas une liste."
+
+#, python-brace-format
+msgid "{series} to look at one by one"
+msgstr "{series} à regarder une à une"
 
 #, python-brace-format
 msgid ""

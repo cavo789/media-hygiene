@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.report.burst_decisions import BurstStatus
 from media_hygiene.report.decisions import read_decisions
+from media_hygiene.review.place import DecisionsPlace
+from media_hygiene.services.review_file import review_page
 from tests.support.review import (
     BURST,
     JSON_HEADERS,
@@ -102,3 +104,15 @@ def test_reasons_stay_in_the_page_never_in_the_file(locations: Locations) -> Non
     text = (locations.reports_dir / "decisions.json").read_text()
     assert "blurrier" not in text
     assert BURST.rsplit("/", 1)[-1] in text
+
+
+def test_the_contact_sheet_is_offered_before_the_blind_validation() -> None:
+    """0520: the sheet first; Enter, flip, double click and Z are wired."""
+    place = DecisionsPlace(argument="decisions.json", host="decisions.json")
+    text = review_page("review.html.j2", place, ("/api/decide", "/api/file")).decode()
+    assert text.index('id="sheetOpen"') < text.index('id="obvious"')
+    assert "unseen" in text  # the fast path says it validates without looking
+    assert 'event.key === "Enter" && board' in text  # Enter: the screen, then the next
+    assert "toggleRank(index, rank)" in text  # a click flips the shot
+    assert 'addEventListener("dblclick"' in text  # a double click: the large view
+    assert "history.push(before)" in text  # one write a screen: Z takes it back whole

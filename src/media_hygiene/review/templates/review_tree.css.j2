@@ -28,10 +28,12 @@
   @keyframes flash { from { background: color-mix(in srgb, var(--ok) 35%, transparent); } }
   #tree.only-todo .row.done, #tree.only-todo details.done { display: none; }
   #tree.only-look .row.obvious { display: none; }
-  #obvious { width: 100%; margin: 0 0 8px; padding: 4px 8px; font: inherit; font-weight: 600;
+  #obvious, #sheetOpen { width: 100%; margin: 0 0 8px; padding: 4px 8px; font: inherit; font-weight: 600;
              color: var(--ok); background: var(--bg); cursor: pointer;
              border: 1px solid var(--ok); border-radius: 6px; }
-  #obvious:disabled { color: var(--muted); border-color: var(--line); cursor: default; }
+  #obvious { font-weight: 400; }
+  #sheetOpen:not(:disabled) { color: var(--card); background: var(--ok); }
+  #obvious:disabled, #sheetOpen:disabled { color: var(--muted); border-color: var(--line); cursor: default; }
   #disk p.done { color: var(--ok); font-weight: 600; } #disk p.todo { color: var(--muted); }
   #disk .names { display: inline-block; vertical-align: top; min-width: 220px; margin: 0 24px 6px 0; }
   #disk .names.kept strong { color: var(--ok); } #disk .names.aside strong { color: var(--bad); }

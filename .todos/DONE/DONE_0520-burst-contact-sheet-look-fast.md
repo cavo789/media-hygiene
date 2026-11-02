@@ -30,3 +30,10 @@ Load the `photo-picking-pages` skill first: same keys, same bar, *Apply now* in 
 The contact sheet is the view offered first for the obvious series; *Validate the obvious
 series* stays as the fast path, saying in one line that it validates unseen (0524). Tests of
 Enter, flip and Z; both languages documented.
+
+## Outcome (2026-11-02)
+
+DONE: a contact sheet of the obvious series (`review_sheet.js.j2`, on the board of
+`review_board.js.j2`): 20 compact rows a screen, Enter validates the screen in one write then
+the next, a click flips a shot (after 250 ms, so a double click opens the large view instead),
+Z takes the screen back whole; the button comes before *Validate … unseen* (V).

@@ -1739,6 +1739,10 @@ msgstr[1] ""
 msgid "Confirmed by you on the people page: it is a face of reference."
 msgstr ""
 
+#, python-brace-format
+msgid "Contact sheet, screen {page} of {pages}"
+msgstr ""
+
 msgid "Contents"
 msgstr ""
 
@@ -2480,6 +2484,12 @@ msgid ""
 "Ctrl+C leaves."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Enter validates the {series} still to see here as shown ({aside}), then "
+"the next screen; Z takes the screen back."
+msgstr ""
+
 msgid "Entirely a copy: the second folder holds nothing else."
 msgstr ""
 
@@ -2650,6 +2660,12 @@ msgid "Every group of this folder pair is decided already."
 msgstr ""
 
 msgid "Every group to check has been decided."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Every obvious series has been seen. Left to look at one by one: {series};"
+" P shows them."
 msgstr ""
 
 msgid "Every pair has been decided."
@@ -3999,6 +4015,10 @@ msgid "Look again at the photos gone"
 msgstr ""
 
 msgid "Look again, slower: the photo turned, less strict"
+msgstr ""
+
+#, python-brace-format
+msgid "Look at {series} on a contact sheet"
 msgstr ""
 
 msgid "Look for 1 h"
@@ -8690,6 +8710,11 @@ msgid ""
 "ignored; cleaning does not need it."
 msgstr ""
 
+msgid ""
+"The series whose proposal leaves nothing to judge, about twenty a screen:"
+" Enter validates what you see"
+msgstr ""
+
 #, python-brace-format
 msgid "The settings changed but cannot be read; the last good ones stay: {error}"
 msgstr ""
@@ -9513,15 +9538,15 @@ msgid "User name on the NAS"
 msgstr ""
 
 msgid ""
-"Validate at once every series still to see whose proposal leaves nothing "
-"to judge (V)"
+"Validate at once, without seeing them, every series still to see whose "
+"proposal leaves nothing to judge (V)"
 msgstr ""
 
 msgid "Validate the series still to see here, as moving on would"
 msgstr ""
 
 #, python-brace-format
-msgid "Validate {series} ({aside})"
+msgid "Validate {series} unseen ({aside})"
 msgstr ""
 
 msgid "Value"
@@ -10350,6 +10375,9 @@ msgid "blurry"
 msgstr ""
 
 msgid "board ⇄ one series"
+msgstr ""
+
+msgid "board, contact sheet: validate the rows shown, next screen"
 msgstr ""
 
 msgid "board: pin the large preview of the shot under the mouse"
@@ -14578,6 +14606,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{section} is not a list."
+msgstr ""
+
+#, python-brace-format
+msgid "{series} to look at one by one"
 msgstr ""
 
 #, python-brace-format
