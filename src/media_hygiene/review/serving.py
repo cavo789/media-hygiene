@@ -8,9 +8,11 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import json
+import logging
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.i18n import _
 from media_hygiene.review.http import (
     BadRequestError,
     ContentType,
@@ -29,6 +31,7 @@ _DROPPED_CONNECTION: Final = (
     asyncio.IncompleteReadError,
     ConnectionError,
 )
+_LOGGER: Final = logging.getLogger(__name__)
 
 
 async def serve_connection(
@@ -49,7 +52,7 @@ async def serve_connection(
         except BadRequestError as exc:
             response = Response(exc.status)
         else:
-            response = still_valid(request) or await handle(request)
+            response = still_valid(request) or await _answered(request, handle)
         await write_response(writer, response)
     except _DROPPED_CONNECTION:
         pass  # the browser went away: nothing to answer
@@ -57,6 +60,35 @@ async def serve_connection(
         writer.close()
         with contextlib.suppress(ConnectionError):
             await writer.wait_closed()
+
+
+async def _answered(
+    request: Request, handle: Callable[[Request], Awaitable[Response]]
+) -> Response:
+    """Answer a request; an unexpected error is logged with its trace, then said.
+
+    Without it the connection closed unanswered: the page said it was not running
+    any more, though its server ran and had done the work (a move, 2026-11-02).
+
+    Args:
+        request: The request.
+        handle: Answers it.
+
+    Returns:
+        The answer; 500 with the sentence to show after an unexpected error.
+    """
+    try:
+        return await handle(request)
+    except Exception as exc:  # pylint: disable=broad-exception-caught  # logged, answered
+        _LOGGER.exception("%s %s", request.method, request.path)
+        said = _(
+            "mh met an unexpected error ({reason}): what it did before stays done."
+            " Its window shows the details."
+        )
+        return json_response(
+            HTTPStatus.INTERNAL_SERVER_ERROR,
+            {"error": said.format(reason=f"{type(exc).__name__}: {exc}")},
+        )
 
 
 def still_valid(request: Request) -> Response | None:
