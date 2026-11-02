@@ -246,8 +246,8 @@ language = ""   # "en", "fr", or empty for the language of the interface
 #    "image", "personne", "personnes", "chose", "objet", "fond", "scène", "vue",
 #    "floor", "wall", "indoor", "indoors", "outdoor", "outdoors", "ceiling", "picture",
 #    "person", "people", "thing", "object", "background", "scene", "view",
-#    "photo floue", "flou", "photographie", "ambiance", "blurry photo", "photograph",
-#    "blur"]
+#    "photo floue", "flou", "photographie", "ambiance", "adulte", "blurry photo",
+#    "photograph", "blur", "adult"]
 town_km = 20
 xmp_sources = ["vision", "place"]   # the words written into the .xmp sidecars
 meaning = false        # true: tags also gives each photo its vector (search by meaning)
@@ -255,7 +255,7 @@ meaning_threads = 4    # processor threads of the model
 meaning_results = 200  # how many photos a search by meaning finds at most
 ```
 
-A list of `stop_words` written here replaces the built-in one; the commented line above is the whole built-in list, so start from it. `adult` is left out of it on purpose: it lets a search tell a child from an adult. The model itself is set in
+A list of `stop_words` written here replaces the built-in one; the commented line above is the whole built-in list, so start from it. `adult` is in it: it is on four photos out of ten, so it sorts nothing; `child` and `baby` stay. The model itself is set in
 `[classify.ai]` (model, url, `min_edge`, `confirm_above`).
 
 ## Why not inside the photos

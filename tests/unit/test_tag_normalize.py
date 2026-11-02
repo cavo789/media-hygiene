@@ -73,12 +73,12 @@ def test_phrases_stay_whole_and_singular() -> None:
     )
 
 
-def test_blur_and_filler_words_are_stop_words_but_adult_stays() -> None:
-    """Measured 2026-10-25: tags that say nothing about the photo are dropped."""
+def test_blur_filler_and_adult_words_are_stop_words() -> None:
+    """Tags that say nothing about the photo are dropped; `adulte` too (2026-11-02)."""
     words = ["photo floue", "Flou", "photographie", "ambiance", "adulte", "enfant"]
-    assert normalize(words, FRENCH) == ("adulte", "enfant")
-    english = ["blurry photo", "Photograph", "blur", "adult"]
-    assert normalize(english, ENGLISH) == ("adult",)
+    assert normalize(words, FRENCH) == ("enfant",)
+    english = ["blurry photo", "Photograph", "blur", "adult", "child"]
+    assert normalize(english, ENGLISH) == ("child",)
 
 
 def test_a_short_french_plural_agrees_inside_a_phrase() -> None:

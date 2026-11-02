@@ -409,7 +409,7 @@ dates, des lieux et des personnes.
 | Recherché | Ne trouve rien parce que | Essayez plutôt |
 |---|---|---|
 | `un vieil homme` | **Chaque mot doit être trouvé** : `un` et `vieil` et `homme` ; un petit mot compte aussi. | `homme`, puis moins de mots. |
-| `vieil homme`, `grand-mère`, `femme` | **Le modèle n'écrit jamais d'âge, de sexe ni de lien de parenté** : pour les personnes, il n'écrit que *adulte*, *enfant*, *bébé* ou *groupe*. | `person:` et le nom de la personne (nommée sur la page [`people`](people.md)), ou `adulte`. |
+| `vieil homme`, `grand-mère`, `femme` | **Le modèle n'écrit jamais d'âge, de sexe ni de lien de parenté** : pour les personnes, il n'écrit que *adulte*, *enfant*, *bébé* ou *groupe*. | `person:` et le nom de la personne (nommée sur la page [`people`](people.md)), ou `enfant`. |
 | `un vieil homme dans un jardin` | **Une phrase entière demande la recherche par le sens** (`tags --meaning`) ; sans elle, des mots seulement. | `jardin` ; ou lancez une fois 🤖 `tags --meaning` : les phrases marchent alors. |
 | `plage` pendant un `tags` | **Les mots du modèle arrivent dans la recherche à la fin du run** (ou après un seul Ctrl+C, qui écrit ceux des photos déjà décrites). | Attendez la fin de `tags`, ou un Ctrl+C. |
 
