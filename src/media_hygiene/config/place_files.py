@@ -9,10 +9,9 @@ the next save moves them to the file.
 
 from __future__ import annotations
 
-import tomllib
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.config.people_files import ENCODING, linked_path
+from media_hygiene.config.people_files import linked_path, load_linked
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
 
@@ -92,17 +91,10 @@ def _entry(entry: object, config_dir: Path) -> object:
     file, inline = entry.get(FILE), entry.get(PHOTOS, [])
     if not (isinstance(file, str) and file and isinstance(inline, list)):
         return entry
-    path = linked_path(config_dir, file)
-    try:
-        loaded = tomllib.loads(path.read_text(ENCODING))
-    except FileNotFoundError:
-        message = _(
-            "{file} is missing: restore it, or remove the line file = '{file}' "
-            "of config.toml (its photos are then forgotten)"
-        )
-        raise ValueError(message.format(file=file)) from None
-    except (tomllib.TOMLDecodeError, UnicodeDecodeError) as exc:
-        message = _("{file} is not valid TOML: {error}")
-        raise ValueError(message.format(file=file, error=exc)) from exc
+    missing = _(
+        "{file} is missing: restore it, or remove the line file = '{file}' "
+        "of config.toml (its photos are then forgotten)"
+    )
+    loaded = load_linked(linked_path(config_dir, file), file, missing)
     listed = loaded.get(PHOTOS, [])
     return {**entry, PHOTOS: [*inline, *(listed if isinstance(listed, list) else [])]}

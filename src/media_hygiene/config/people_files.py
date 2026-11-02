@@ -143,20 +143,36 @@ def read_lists(config_dir: Path, relative: str) -> dict[str, list[object]]:
     Raises:
         ValueError: The file is missing, outside the folder, or not valid TOML.
     """
-    path = linked_path(config_dir, relative)
-    try:
-        loaded = tomllib.loads(path.read_text(ENCODING))
-    except FileNotFoundError:
-        message = _(
-            "{file} is missing: restore it, or remove the line file = '{file}' "
-            "of config.toml (its faces are then forgotten)"
-        )
-        raise ValueError(message.format(file=relative)) from None
-    except (tomllib.TOMLDecodeError, UnicodeDecodeError) as exc:
-        message = _("{file} is not valid TOML: {error}")
-        raise ValueError(message.format(file=relative, error=exc)) from exc
+    missing = _(
+        "{file} is missing: restore it, or remove the line file = '{file}' "
+        "of config.toml (its faces are then forgotten)"
+    )
+    loaded = load_linked(linked_path(config_dir, relative), relative, missing)
     lists: dict[str, list[object]] = {}
     for key in (FACES, REJECTED):
         value = loaded.get(key, [])
         lists[key] = value if isinstance(value, list) else [value]
     return lists
+
+
+def load_linked(path: Path, relative: str, missing: str) -> dict[str, object]:
+    """Read a TOML file linked from `config.toml`.
+
+    Args:
+        path: The resolved file.
+        relative: The path written in `config.toml`, for the messages.
+        missing: The message when the file is missing (`{file}` placeholder).
+
+    Returns:
+        Its tables and keys.
+
+    Raises:
+        ValueError: The file is missing or not valid TOML.
+    """
+    try:
+        return tomllib.loads(path.read_text(ENCODING))
+    except FileNotFoundError:
+        raise ValueError(missing.format(file=relative)) from None
+    except (tomllib.TOMLDecodeError, UnicodeDecodeError) as exc:
+        message = _("{file} is not valid TOML: {error}")
+        raise ValueError(message.format(file=relative, error=exc)) from exc
