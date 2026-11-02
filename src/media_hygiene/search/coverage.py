@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 _FILES: Final = "SELECT COUNT(*) FROM files"
 _BY_SOURCE: Final = "SELECT source, COUNT(DISTINCT path) FROM tags GROUP BY source"
-_NAMED: Final = f"SELECT COUNT(DISTINCT path) FROM temp.{sql.PEOPLE}"  # noqa: S608
+_NAMED: Final = f"SELECT COUNT(DISTINCT path) FROM temp.{sql.PEOPLE} WHERE source = ?"  # noqa: S608
 
 
 class CoverageKept:
@@ -52,12 +52,19 @@ class CoverageKept:
                 connection.execute(_BY_SOURCE).fetchall() if search.has_tags else []
             )
             self._sources = {str(name): int(count) for name, count in by_source}
-        named = int(connection.execute(_NAMED).fetchone()[0])
+        named, hand = (
+            int(connection.execute(_NAMED, (source.value,)).fetchone()[0])
+            for source in (TagSource.PERSON, TagSource.HAND)
+        )
         sources = {
             source.value: self._sources.get(source.value, 0) for source in TagSource
         }
         return {
             "files": self._files,
-            "sources": {**sources, TagSource.PERSON.value: named},
+            "sources": {
+                **sources,
+                TagSource.PERSON.value: named,
+                TagSource.HAND.value: hand,
+            },
             "meaning": isinstance(search, MeaningIndex) and search.understands,
         }

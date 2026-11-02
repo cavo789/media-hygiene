@@ -1,0 +1,27 @@
+{# *🏷 Tag…* (0555): a word typed on the photos picked, or one given before (the list
+   under the field). Saved into /config/tags/<word>.toml, read back, shown on the
+   cards; the cross of a `hand` chip takes it off one photo. Its script is
+   `hand_tag.js.j2`; the dialog's look is the move dialog's. #}
+<style>
+  #tagDlg { max-width: min(28rem, 94vw); color: var(--text); background: var(--card);
+            border: 1px solid var(--line); border-radius: 10px; }
+  #tagDlg::backdrop { background: rgb(0 0 0 / 50%); }
+  #tagDlg { overflow: visible; }
+  #tagDlg > form > label { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; }
+  #tagDlg h2 { margin: 0 0 6px; } #tagDlg menu { display: flex; gap: 8px; justify-content: end; padding: 0; }
+  #tagSaid.error { color: var(--bad); }
+</style>
+<dialog id="tagDlg" aria-labelledby="tagTitle"
+        data-given="{{ _('Not saved: {error}') }}"
+        data-untag="{{ _('Take the word {word} off this photo') }}">
+  <form id="tagForm" method="dialog" autocomplete="off">
+    <h2 id="tagTitle">🏷 {{ _("Tag the photos picked") }}</h2>
+    <p class="muted">{{ _("A word of yours (anniversaire Léa): kept in your settings, found by the search at once, written into the .xmp sidecars by 'xmp'.") }}</p>
+    <label class="comboBox">{{ _("Word") }} <input id="tagWord" type="text" autocomplete="off" maxlength="80" required
+           role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="tagWords">
+      <button type="button" id="tagClear" class="plain comboClear" disabled aria-label="{{ _('Empty the name') }}">✕</button>
+      <ul id="tagWords" class="comboList" role="listbox" aria-label="{{ _('Word') }}" hidden></ul></label>
+    <p id="tagSaid" class="muted" role="status"></p>
+    <menu><button type="button" id="tagNo" class="plain">{{ _("Cancel") }}</button><button type="submit" id="tagGo">{{ _("Tag them") }}</button></menu>
+  </form>
+</dialog>

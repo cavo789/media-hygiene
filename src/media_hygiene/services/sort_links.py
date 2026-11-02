@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from media_hygiene.config.place_files import FOLDER
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.people.followed import follow_people
@@ -20,6 +21,7 @@ from media_hygiene.report.decisions_moves import DecisionMoves, follow_decisions
 from media_hygiene.review.place import DEFAULT_DECISIONS
 from media_hygiene.services.classify_inputs import root_of
 from media_hygiene.services.sort_links_folders import emptied_settings
+from media_hygiene.services.sort_links_places import followed_places
 from media_hygiene.share.album_moves import follow_albums
 from media_hygiene.share.albums import ALBUMS_FILE
 from media_hygiene.shrink.drafts import drafts_root
@@ -59,6 +61,7 @@ def follow_links(runtime: Runtime, moved: Sequence[tuple[str, str]]) -> LinksFol
     reports = locations.reports_dir
     stores: tuple[tuple[str, Callable[[], str]], ...] = (
         (str(locations.config_file), lambda: _people(locations.config_file, moves)),
+        (FOLDER, lambda: followed_places(locations.config_file, hosts)),
         (ALBUMS_FILE, lambda: _albums(reports / ALBUMS_FILE, hosts)),
         (
             DEFAULT_DECISIONS,

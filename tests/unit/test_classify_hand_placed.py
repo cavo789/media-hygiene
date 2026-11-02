@@ -18,6 +18,7 @@ from pydantic import ValidationError
 from media_hygiene.classify.engine import Scope, classify
 from media_hygiene.classify.hand_placed import Candidate, hand_placed, placed_by_hand
 from media_hygiene.classify.models import SortReason
+from media_hygiene.config.photo_ref import content_id
 from media_hygiene.config.place_photos import HandPhoto, PlacePhotos
 from media_hygiene.geo.gazetteer import Gazetteer
 from tests.support.layouts import legacy
@@ -48,7 +49,9 @@ def _sha(data: bytes) -> str:
 
 def _given(data: bytes = CONTENT, place: str = GRANDPA.name) -> PlacePhotos:
     """One photo of this content given to a place."""
-    photo = HandPhoto(sha256=_sha(data), size=len(data), path="C:\\Photos\\IMG_1.jpg")
+    photo = HandPhoto(
+        path="C:\\Photos\\IMG_1.jpg", id=content_id(_sha(data), len(data))
+    )
     return PlacePhotos(place=place, photos=(photo,))
 
 

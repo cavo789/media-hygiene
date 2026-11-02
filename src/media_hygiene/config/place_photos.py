@@ -11,10 +11,11 @@ reader only. A photo edited since (new content) falls back to its GPS.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from media_hygiene.config.photo_ref import PhotoRef
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -22,17 +23,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.config.classify_places import PersonalPlace
 
-SHA256: Final = r"^[0-9a-f]{64}$"
-
-
-class HandPhoto(BaseModel):
-    """One photo given a place: its content, and where it was when given."""
-
-    model_config = ConfigDict(frozen=True, extra="forbid")
-
-    sha256: str = Field(pattern=SHA256)
-    size: int = Field(ge=0)
-    path: str = ""  # host path when given: for the reader only
+HandPhoto = PhotoRef  # one photo given a place: `{path, id}` (0551)
 
 
 class PlacePhotos(BaseModel):
@@ -41,7 +32,9 @@ class PlacePhotos(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
     place: str = Field(min_length=1)
-    photos: tuple[HandPhoto, ...] = ()
+    photos: tuple[PhotoRef, ...] = ()
+    # The file holding the photos, relative to the folder of config.toml (0551).
+    file: str = ""
 
 
 def check_place_photos(

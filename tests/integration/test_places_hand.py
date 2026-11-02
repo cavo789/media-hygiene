@@ -13,6 +13,7 @@ import tomllib
 from typing import TYPE_CHECKING, Final, cast
 
 from media_hygiene.config.classify_settings import ClassifySettings
+from media_hygiene.config.photo_ref import content_id
 from media_hygiene.places.config_aside import read_aside
 from media_hygiene.places.config_photos import read_place_photos
 from media_hygiene.scan.hashing import full_digest
@@ -110,7 +111,7 @@ def test_photos_given_to_a_place_follow_it_and_come_back(
 
     def take_back(seen: list[Response]) -> dict[str, object]:
         hand = _json(seen[4])["places"][0]["hand"]  # type: ignore[index]
-        return {"action": "remove", "sha256": hand[0]["sha256"]}
+        return {"action": "remove", "id": hand[0]["id"]}
 
     renamed = GEER | {"key": 0, "name": "Geer house"}
     answers = _map(
@@ -134,7 +135,9 @@ def test_photos_given_to_a_place_follow_it_and_come_back(
     assert all(photo["preview"].startswith("preview/") for photo in hand)  # 0417
     photos = read_place_photos(config)[0].photos
     files = sorted((locations.data_dir / "c" / "Photos").glob("IMG_*.jpg"))
-    assert {photo.sha256 for photo in photos} < {full_digest(path) for path in files}
+    assert {photo.id for photo in photos} < {
+        content_id(full_digest(path), path.stat().st_size) for path in files
+    }
     assert len(_json(answers[3])["photos"]) == 1  # type: ignore[arg-type]
     assert len(_json(answers[5])["places"][0]["hand"]) == 1  # type: ignore[index]
     assert answers[6].status == 422
@@ -167,7 +170,11 @@ def test_a_photo_given_then_moved_and_renamed_is_still_the_places(
     moved = photos / "Geer" / "renamed.jpg"
     moved.parent.mkdir()
     (photos / "IMG_0.jpg").rename(moved)
-    assert run(runner, "audit").exit_code == 0
+    audited = run(runner, "audit")
+    assert audited.exit_code == 0, audited.output
+    assert "renamed outside" in audited.output  # 0551: the path follows, read back
+    paths = {photo.path for photo in read_place_photos(locations.config_file)[0].photos}
+    assert "C:\\Photos\\Geer\\renamed.jpg" in paths
     state = _json(_map(monkeypatch, runner, [("GET /api/state", None)])[0])
     hand = state["places"][0]["hand"]  # type: ignore[index]
     assert "C:\\Photos\\Geer\\renamed.jpg" in {photo["now"] for photo in hand}

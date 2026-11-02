@@ -23,19 +23,22 @@ if TYPE_CHECKING:
     from media_hygiene.search.models import Found
 
 
+# The words given at each search, never stored in the index: by file, by source.
+type Given = dict[Path, dict[TagSource, tuple[str, ...]]]
 _METADATA: Final = (
     "SELECT rowid, metadata, media_date FROM files WHERE rowid IN ({marks})"
 )
 
 
 def hit_of(
-    words: tuple[TagStore | None, Mapping[Path, tuple[str, ...]]],
+    words: tuple[TagStore | None, Mapping[Path, Mapping[TagSource, tuple[str, ...]]]],
     row: tuple[object, ...],
 ) -> Hit:
     """Make a hit of a row, with the tags of the file.
 
     Args:
-        words: The tags of the index (None without any), and the people.
+        words: The tags of the index (None without any), and those given at
+            each search (the people's names, the words typed by hand).
         row: Key, path, size, mtime and day (`YYYY-MM-DD`) of a file.
 
     Returns:
@@ -47,8 +50,8 @@ def hit_of(
     tags: dict[TagSource, list[str]] = {}
     for tag in store.of(photo) if store is not None else ():
         tags.setdefault(tag.source, []).append(tag.value)
-    if photo.path in people:
-        tags[TagSource.PERSON] = list(people[photo.path])
+    for source, values in people.get(photo.path, {}).items():
+        tags[source] = list(values)
     date = str(taken) if taken else None  # `YYYY-MM-DD`, from `media_day`
     return Hit(
         int(str(key)),
@@ -56,6 +59,30 @@ def hit_of(
         date,
         {source: tuple(values) for source, values in tags.items()},
     )
+
+
+def given_too(
+    given: Given, source: TagSource, words: Mapping[Path, tuple[str, ...]]
+) -> Given:
+    """The words given at each search, those of one source replaced.
+
+    Args:
+        given: The words given until now.
+        source: The source replaced: `person` or `hand`.
+        words: Its words, by file.
+
+    Returns:
+        The new words given.
+    """
+    fresh: Given = {}
+    for path, sources in given.items():
+        kept = {key: value for key, value in sources.items() if key is not source}
+        if kept:
+            fresh[path] = kept
+    for path, values in words.items():
+        if values:
+            fresh.setdefault(path, {})[source] = tuple(values)
+    return fresh
 
 
 def with_facts(index: SearchIndex, found: Found) -> Found:

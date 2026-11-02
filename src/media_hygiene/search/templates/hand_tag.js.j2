@@ -1,0 +1,91 @@
+{# *🏷 Tag…* (0555), after the grid's scripts: a word given to the photos picked, or
+   taken off one photo by the cross of its `hand` chip. Every answer is read back from
+   the disk by the server: the cards show the words it read, the bar says what was saved. #}
+const HAND_TAG_PATH = {{ hand_tag_path | tojson }};
+const tagEl = (id) => document.getElementById(id);
+let tagWordsGiven = [];  // the words given before, offered under the field
+const tagCombo = comboList({
+  field: tagEl("tagWord"),
+  list: tagEl("tagWords"),
+  clear: tagEl("tagClear"),
+  rows: async () => tagWordsGiven,
+  pick: () => {},
+  cleared: () => {},
+});
+
+// The words of the photos answered, on their cards (they stay in place), then the line.
+function tagShown(answer, ok, said) {
+  for (const [key, words] of Object.entries(answer.tags || {})) {
+    const index = files.findIndex((file) => String(file.key) === key);
+    if (index < 0) continue;
+    const tags = { ...files[index].tags };
+    if (words.length) tags.hand = words; else delete tags.hand;
+    files[index].tags = tags;
+    const chips = cards[index] && cards[index].querySelector(".chips");
+    if (chips) chips.replaceWith(chipsOf(files[index]));
+    if ($("viewer").classList.contains("open") && index === current) open();
+  }
+  if (answer.words) tagWordsGiven = answer.words.map((word) => ({ label: word, value: word }));
+  for (const line of [$("chosen"), $("viewerSaid")]) {
+    line.className = ok ? "" : "error";
+    line.textContent = said;
+    line.title = said;
+  }
+}
+
+async function tagPost(body) {
+  const answer = await ask(HAND_TAG_PATH, body);
+  if (!answer) return { ok: false, result: { error: TEXTS.offline } };
+  const result = await answer.json().catch(() => ({}));
+  return { ok: answer.ok, result };
+}
+
+function untagButton(hit, word) {
+  const button = element("button", "unname", "×");
+  button.type = "button";
+  button.title = fill(tagEl("tagDlg").dataset.untag, { word });
+  button.setAttribute("aria-label", button.title);
+  // Never a pick, a rectangle nor the large view: the grid's gestures stay as they are.
+  for (const kind of ["pointerdown", "mousedown", "dblclick"]) button.addEventListener(kind, (event) => event.stopPropagation());
+  button.addEventListener("click", async (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    const { ok, result } = await tagPost({ action: "remove", keys: [hit.key], word });
+    tagShown(result, ok, ok ? result.saved : fill(tagEl("tagDlg").dataset.given, { error: result.error }));
+  });
+  return button;
+}
+
+tagEl("tagOpen").addEventListener("click", async () => {
+  if (!picked.size) return;
+  tagEl("tagSaid").textContent = "";
+  tagEl("tagSaid").className = "muted";
+  tagEl("tagDlg").showModal();
+  tagEl("tagWord").focus();
+  tagCombo.close();
+  tagCombo.clearable();
+  const { ok, result } = await tagPost({ action: "list" });
+  if (ok) tagShown({ words: result.words }, true, $("chosen").textContent);
+});
+tagEl("tagNo").addEventListener("click", () => tagEl("tagDlg").close());
+// The dialog's keys stay its own: the grid's keys never fire behind it.
+tagEl("tagDlg").addEventListener("keydown", (event) => event.stopPropagation());
+tagEl("tagForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const word = tagEl("tagWord").value.trim();
+  if (!word) return;
+  tagEl("tagGo").disabled = true;
+  const { ok, result } = await tagPost({ action: "add", keys: [...picked], word });
+  tagEl("tagGo").disabled = false;
+  const said = ok ? result.saved : fill(tagEl("tagDlg").dataset.given, { error: result.error });
+  if (!ok) { tagEl("tagSaid").textContent = said; tagEl("tagSaid").className = "error"; return; }
+  tagShown(result, true, said);
+  tagEl("tagDlg").close();
+});
+
+// The button follows the picking, as *Event…* does.
+const tagPickedBefore = window.mhAlbumPicked;
+window.mhAlbumPicked = (count) => {
+  if (tagPickedBefore) tagPickedBefore(count);
+  tagEl("tagOpen").disabled = !picked.size || everything;
+};

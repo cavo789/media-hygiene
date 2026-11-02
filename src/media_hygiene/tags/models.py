@@ -36,6 +36,10 @@ class TagSource(StrEnum):
     # faces and `[[people.person]]`: never stored; written into a sidecar only when
     # the user adds it to `[tags] xmp_sources`.
     PERSON = "person"
+    # The words the user typed on photos of the search page (0555): decisions, kept in
+    # `/config/tags/<word>.toml` (`config.hand_tags`), given at each search; never in
+    # the index, never recomputed.
+    HAND = "hand"
 
 
 class PlaceKind(StrEnum):

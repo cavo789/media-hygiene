@@ -1,10 +1,9 @@
 """The routes of the search page, one server.
 
-`GET /` serves the page the command opens (`/search`, `/browse`, `/events`); `POST
-/api/search` the files matching the words and filters, `/thumb/`, `/preview/`,
-`/original/` the pictures. `/api/chosen`: what is set aside; `/api/albums`; `/api/apply`
-ends on the home step applying them; folders, period rules, the Events view and its
-choices (`events_choose`). Loopback hosts only, JSON bodies only, the page's origin.
+`GET /` serves the page opened (`/search`, `/browse`, `/events`); `POST /api/search` the
+files found; `/thumb/`, `/preview/`, `/original/` the pictures; `/api/chosen`, albums,
+*Apply now*, folders, period rules, the Events view, the words typed by hand (0555).
+Loopback hosts only, JSON bodies only, the page's origin.
 """
 
 from __future__ import annotations
@@ -37,6 +36,7 @@ from media_hygiene.search.pictures import Pictures
 from media_hygiene.search.reading import read_query, search_note
 from media_hygiene.search.rule_desk import PERIOD_RULES_PATH, RULE_POSTS
 from media_hygiene.search.rule_go import GO_PATHS, go_answer
+from media_hygiene.search.tag_desk import HAND_TAG_PATH as HAND
 from media_hygiene.search.views import found_view
 from media_hygiene.share.album_api import ALBUMS_PATH
 
@@ -52,7 +52,7 @@ PAGE_PATH: Final = "/"
 SEARCH_PAGE_PATH: Final = "/search"
 SEARCH_PATH: Final = "/api/search"
 _GET, _POST = "GET", "POST"
-_POSTED: Final = frozenset({SEARCH_PATH, CHOSEN_PATH, *FOLDER_POSTS, APPLY_PATH})
+_POSTED: Final = frozenset({SEARCH_PATH, CHOSEN_PATH, *FOLDER_POSTS, APPLY_PATH, HAND})
 _POSTED_TOO: Final = SORT_POSTS | {ALBUMS_PATH, PEOPLE_REJECT_PATH, PEOPLE_WHY_PATH}
 
 
@@ -132,6 +132,7 @@ class SearchApp:
             PEOPLE_REJECT_PATH: self.place.names.answer,
             PEOPLE_WHY_PATH: partial(why_answer, self.place.names),
             **self.place.rules.posts(),
+            **({HAND: self.place.tags.answer} if self.place.tags else {}),
         }
         if request.path in answers:
             return answers[request.path](request.body)

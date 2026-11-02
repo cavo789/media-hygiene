@@ -39,3 +39,22 @@ Explorer. A path alone breaks on outside renames; a hash alone locks the data in
   GPS) and its face names.
 - Tests, per event: `sort`, `undo`, quarantine and back, Explorer rename then `audit`, copy to
   another drive, edited copy, two identical copies (tie broken by name).
+
+## Status — PARTIAL (2026-11-02)
+
+### Done
+- Places: photos in `/config/places/<name>.toml` as `{path, id}` (`id` = 16 hex of SHA-256 + `:` + size); `[[classify.place_photos]]` keeps `place` + `file`; atomic save, comments kept, read back; old `sha256`+`size` form loads and migrates at next save.
+- Shared helper `src/media_hygiene/config/photo_ref.py` (`PhotoRef`, `content_id`, `follow_paths`, `relocate`, `ref_line`, `write_refs`); tool moves follow via `follow_links` (`services/sort_links_places.py`); `audit` relocates Explorer renames by id (`services/photo_refs_audit.py`).
+- Tests per event in `tests/unit/test_photo_ref.py` (sort, undo, quarantine and back, Explorer rename, copy to another drive, edited copy, identical copies tie by name).
+- Docs `commands/places.md` en + fr.
+
+### Not done
+- People faces as `{path, id, face}` in `people/*.toml` (still `<path>#<n>`), old form migration, relocation at audit.
+  **Reason:** faces are `<container>#<n>` strings throughout `people/`; saving needs the index to compute ids; `people/person_files.py` (182 lines) and `people/config_file.py` (194) need new modules. Reuse `config/photo_ref.py`.
+- Relocation only runs at the end of the `audit` command, not in `import` nor the home-page audit.
+  **Reason:** decision for the maintainer.
+- Wire change: the places page's take-back request sends `id` instead of `sha256` — to confirm.
+
+### Decided (2026-11-02)
+- The places page's take-back sends `id`: kept.
+- Relocation after `import` and the home page's audit too → TODO 0570 (with the people half).

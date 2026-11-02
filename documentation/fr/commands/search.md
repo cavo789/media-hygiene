@@ -328,6 +328,30 @@ ressemblent à un visage que vous venez de retirer gardent le leur jusqu'à ce q
 retiriez aussi ; `classify`, l'inventaire et les fichiers XMP relisent les noms à leur prochaine
 exécution. Sans `/config` accessible en écriture, rien n'est enregistré et la barre dit pourquoi.
 
+## Donner un mot à vous à des photos
+
+Certains mots, aucun nom de fichier ni modèle ne les donnera jamais : *anniversaire Léa*,
+*premier jour d'école*. Choisissez les photos (les mêmes gestes que partout : clic, Ctrl, Maj, un
+rectangle, Ctrl+A), puis **🏷 Étiqueter…** dans la barre. Tapez le mot, ou choisissez-en un déjà
+donné dans la liste sous le champ, puis **Les étiqueter**. Le mot est une décision à vous, comme
+un nom ou un lieu : il est gardé dans vos réglages, jamais dans le cache, et rien de recalculé ne
+le perd. Chaque mot a son fichier, `/config/tags/<mot>.toml`
+(`C:\Users\<vous>\media-hygiene\config\tags\` sous Windows), relié depuis `config.toml` par une
+entrée `[[tags.hand]]` ; chaque photo y est écrite par son chemin et un identifiant de son
+contenu. Le fichier est relu et la barre dit ce qu'il contient (*« anniversaire Léa » donné à
+12 photos, relu sur le disque.*) ; les cartes montrent le mot tout de suite, et la recherche le
+trouve (`hand:anniversaire`).
+
+Un mot tapé à la main sous une photo a une **×**, sur sa carte et dans les détails de la grande
+vue (`I`) : cliquez-la pour retirer le mot de cette photo, enregistré et relu de la même façon. Un
+mot qui ne reste sur aucune photo s'en va, avec son fichier.
+
+Les chemins suivent vos photos : `sort`, `undo`, la quarantaine et **📂 Événement…** les
+réécrivent aussitôt ; un dossier renommé dans l'Explorateur est retrouvé par l'identifiant de
+contenu à la fin du prochain `audit`. [`xmp`](xmp.md) écrit ces mots dans les fichiers `.xmp` avec
+les autres (`hand` dans `[tags] xmp_sources`, actif par défaut). Sans `/config` accessible en
+écriture, rien n'est enregistré et la barre dit pourquoi.
+
 ## Mettre des photos dans un album
 
 Pour montrer des photos à d'autres (sur la télé avec [`slideshow`](slideshow.md)), rassemblez-les
@@ -398,6 +422,7 @@ Son préfixe devant un mot limite la recherche à une source : `place:durbuy`, `
 | lieu | `place:` | La ville et vos propres lieux où la photo a été prise. |
 | personne | `person:` | Les noms donnés aux visages sur la page [`people`](people.md). |
 | description Google Photos | `takeout:` | La description tapée dans Google Photos (un export Takeout). |
+| tapé à la main | `hand:` | Les mots que vous avez donnés aux photos avec **🏷 Étiqueter…**, gardés dans vos réglages. |
 
 ## Conseils pour retrouver une photo
 

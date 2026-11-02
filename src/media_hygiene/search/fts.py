@@ -18,9 +18,10 @@ from media_hygiene.index.read_only import connect_read_only
 from media_hygiene.index.tag_rows import TagStore
 from media_hygiene.search import statements as sql
 from media_hygiene.search.functions import register
-from media_hygiene.search.hits import hit_of
+from media_hygiene.search.hits import Given, given_too, hit_of
 from media_hygiene.search.models import Found
 from media_hygiene.search.query import match_expression
+from media_hygiene.tags.models import TagSource
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -43,7 +44,7 @@ class SearchIndex:
         self._connection = connection
         self.built: int | None = None  # its data version; None: rebuild at next search
         self._built_at = 0.0  # when (monotonic seconds)
-        self._people: dict[Path, tuple[str, ...]] = {}
+        self._people: Given = {}  # the names, the words typed by hand (0555)
         self.stop_words: frozenset[str] = frozenset()  # `[tags]`, folded (0345)
         register(connection)
         connection.execute(sql.CREATE_PEOPLE)
@@ -116,7 +117,7 @@ class SearchIndex:
         Args:
             words: The names on each photo.
         """
-        self._people = dict(words)
+        self._people = given_too(self._people, TagSource.PERSON, words)
         self._connection.execute(sql.CLEAR_PEOPLE)
         self._connection.executemany(
             sql.PUT_PERSON,

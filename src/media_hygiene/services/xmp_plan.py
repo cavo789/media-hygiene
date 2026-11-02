@@ -10,7 +10,7 @@ belongs to this file alone); otherwise `IMG_1.jpg.xmp` is created.
 from __future__ import annotations
 
 from collections import Counter
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -37,6 +37,9 @@ if TYPE_CHECKING:
     from media_hygiene.services.xmp_towns import FolderSpot
 
 
+type Words = tuple[str, ...]
+
+
 @dataclass(frozen=True, slots=True)
 class XmpScope:
     """What the plan reads: the folders asked for, the protected ones, the sources."""
@@ -47,6 +50,8 @@ class XmpScope:
     tool: str  # `media-hygiene <version>`, the creator of new sidecars
     people: PeopleSettings | None = None  # the names: read with the `person` source
     spots: Mapping[Path, FolderSpot] = field(default_factory=dict[Path, "FolderSpot"])
+    # The words typed by hand (0555), by container path: read with the `hand` source.
+    hand: Mapping[Path, tuple[str, ...]] = field(default_factory=dict[Path, Words])
 
 
 @dataclass(slots=True)
@@ -97,6 +102,9 @@ def plan_sidecars(connection: sqlite3.Connection, scope: XmpScope) -> XmpPlan:
         else:
             spot = scope.spots.get(file.path)
             values = with_spot(_values(store, file, (scope.sources, named)), spot)
+            if TagSource.HAND in scope.sources and file.path in scope.hand:
+                typed = (*values.subjects, *scope.hand[file.path])
+                values = replace(values, subjects=tuple(dict.fromkeys(typed)))
             if spot is not None:
                 plan.positioned[spot.name] += 1
             _plan_file(plan, (file, values), (scope, folders))

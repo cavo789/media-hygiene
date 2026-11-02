@@ -1,4 +1,4 @@
-"""The photos given a place by hand, found by content: size, then SHA-256 (0237).
+"""The photos given a place by hand, found by content id: size, then SHA-256 (0237).
 
 Only the files whose size equals a listed photo's are hashed, unless the index already
 knows their digest: never the whole collection. A photo moved or renamed since is still
@@ -11,6 +11,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from media_hygiene.config.photo_ref import content_id, size_of
 from media_hygiene.scan.hashing import full_digest
 
 if TYPE_CHECKING:
@@ -67,15 +68,16 @@ def hand_placed(
     by_size: defaultdict[int, dict[str, str]] = defaultdict(dict)
     for entry in given:
         for photo in entry.photos:
-            by_size[photo.size][photo.sha256] = entry.place
+            by_size[size_of(photo.id)][photo.id] = entry.place
     found: dict[Path, str] = {}
     for candidate in candidates:
         listed = by_size.get(candidate.size)
         if not listed:
             continue
         sha = digest(candidate)
-        if sha is not None and sha in listed:
-            found[candidate.path] = listed[sha]
+        key = content_id(sha, candidate.size) if sha is not None else ""
+        if key in listed:
+            found[candidate.path] = listed[key]
     return found
 
 

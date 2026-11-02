@@ -19,7 +19,7 @@ from media_hygiene.i18n import _
 from media_hygiene.search import statements as sql
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.folders import FOLDER_QUERY
-from media_hygiene.search.meaning_index import MeaningIndex
+from media_hygiene.search.hand_index import HandIndex
 from media_hygiene.search.names_soon import NamesKept
 from media_hygiene.search.people_words import unknown_people
 from media_hygiene.search.query import SearchQuery, parse_terms
@@ -27,6 +27,7 @@ from media_hygiene.search.reading import read_query
 from media_hygiene.services.data_checks import unreadable_index
 from media_hygiene.services.search_meaning import with_meaning
 from media_hygiene.services.search_pages import PageStart, serve_pages
+from media_hygiene.tags.hand_files import hand_words
 
 if TYPE_CHECKING:
     from media_hygiene.search.fts import SearchIndex
@@ -65,7 +66,8 @@ def open_search(runtime: Runtime, *, words: bool = True) -> SearchIndex:
             ),
         )
     try:
-        search = MeaningIndex.open(index)
+        search = HandIndex.open(index)
+        search.give_hand(hand_words(runtime.locations.config_file, runtime.mapper))
         # Read meanwhile (0354): the page answers without waiting for them.
         search.name_people_soon(NamesKept(index, runtime.settings.people))
         stop = runtime.settings.tags.stop_words

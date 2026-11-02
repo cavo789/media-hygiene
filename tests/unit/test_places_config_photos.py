@@ -46,8 +46,8 @@ home = true
 
 
 def _photo(letter: str, path: str = "C:\\Photos\\2019\\IMG_1.jpg") -> HandPhoto:
-    """A photo whose digest is the letter, 64 times."""
-    return HandPhoto(sha256=letter * 64, size=10, path=path)
+    """A photo whose id is the letter, 16 times, and 10 bytes."""
+    return HandPhoto(path=path, id=f"{letter * 16}:10")
 
 
 def _settings(config: Path) -> ClassifySettings:
@@ -69,11 +69,17 @@ def test_give_read_back_and_comments_kept(tmp_path: Path) -> None:
     config = _file(tmp_path)
     give_photos(config, PlacePhotos(place="Geer", photos=(_photo("a"), _photo("b"))))
     assert read_place_photos(config) == (
-        PlacePhotos(place="Geer", photos=(_photo("a"), _photo("b"))),
+        PlacePhotos(
+            place="Geer", photos=(_photo("a"), _photo("b")), file="places/Geer.toml"
+        ),
     )
     text = config.read_text("utf-8")
     assert text.startswith(COMMENTED)
-    assert "path = 'C:\\Photos\\2019\\IMG_1.jpg'" in text
+    assert 'file = "places/Geer.toml"' in text
+    listed = (tmp_path / "places" / "Geer.toml").read_text("utf-8")
+    assert (
+        "{path = 'C:\\Photos\\2019\\IMG_1.jpg', id = \"aaaaaaaaaaaaaaaa:10\"}" in listed
+    )
     assert _settings(config).place_photos[0].place == "Geer"
 
 
@@ -83,11 +89,31 @@ def test_a_photo_given_again_leaves_its_former_place(tmp_path: Path) -> None:
     give_photos(config, PlacePhotos(place="Geer", photos=(_photo("a"),)))
     give_photos(config, PlacePhotos(place="Home", photos=(_photo("a"),)))
     assert read_place_photos(config) == (
-        PlacePhotos(place="Home", photos=(_photo("a"),)),
+        PlacePhotos(place="Home", photos=(_photo("a"),), file="places/Home.toml"),
     )
-    take_back(config, "a" * 64)
+    assert not (tmp_path / "places" / "Geer.toml").exists()
+    take_back(config, "a" * 16 + ":10")
     assert not read_place_photos(config)
     assert "place_photos" not in config.read_text("utf-8")
+    assert not (tmp_path / "places" / "Home.toml").exists()
+
+
+def test_the_form_before_0551_loads_and_moves_to_a_file(tmp_path: Path) -> None:
+    """`sha256` + `size` inline: read as an id, written to the place's file."""
+    config = tmp_path / "config.toml"
+    old = (
+        COMMENTED
+        + '\n[[classify.place_photos]]\nplace = "Geer"\nphotos = [\n'
+        + f"    {{ sha256 = \"{'c' * 64}\", size = 10, path = 'C:\\X\\a.jpg' }},\n]\n"
+    )
+    config.write_text(old, "utf-8")
+    [entry] = read_place_photos(config)
+    assert entry.photos == (HandPhoto(path="C:\\X\\a.jpg", id=f"{'c' * 16}:10"),)
+    give_photos(config, PlacePhotos(place="Geer", photos=(_photo("a"),)))
+    assert "sha256" not in config.read_text("utf-8")
+    [entry] = read_place_photos(config)
+    assert {photo.id for photo in entry.photos} == {f"{'c' * 16}:10", "a" * 16 + ":10"}
+    assert "# my own classify comment" in config.read_text("utf-8")
 
 
 def test_a_place_renamed_or_deleted_takes_its_photos_along(tmp_path: Path) -> None:

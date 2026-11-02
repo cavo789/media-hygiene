@@ -33,7 +33,7 @@ docker run --rm -it `
 |---|---|
 | Your photos | 🔒 Never changed: the positions come from the cache. The photo folders, read-only (`:ro`), show the photos of a cluster; without them, the map works but shows no photo. |
 | Needs | `/cache` (the positions the audits recorded, and the previews), `/config` (where the places are saved), your photo folders read-only, and `-p 127.0.0.1:8088:8088`. |
-| Writes | `[[classify.places]]` entries in `config.toml`, keeping your comments and the rest of the file; also the folders' positions (`[[places.folders]]`), the names that are no town (`folder_town_ignore`), the clusters set aside (`[[places.ignored]]`) and the photos given a place by hand (`[[classify.place_photos]]`). Each change is read back from the file before the page shows it. |
+| Writes | `[[classify.places]]` entries in `config.toml`, keeping your comments and the rest of the file; also the folders' positions (`[[places.folders]]`), the names that are no town (`folder_town_ignore`), the clusters set aside (`[[places.ignored]]`) and the photos given a place by hand (`[[classify.place_photos]]`, their list in `/config/places/<place>.toml`). Each change is read back from the file before the page shows it. |
 | Undo | Delete a place on the map, or its lines in `config.toml`; **Restore** what you set aside; ✕ a photo given by hand in its place's editor. |
 | With `mh` | `mh places`: your photo folders are mounted read-only and the port is published for you. |
 
@@ -134,9 +134,12 @@ drawn but left out of that view.
   photo of the cluster is given to it, those of the drawer you untick excepted (one really taken
   in the village). Only these photos: no larger circle (it would name the whole village) and no
   second zone (a real photo taken at that spot would be named too). They are saved in
-  `[[classify.place_photos]]` by their **content** (size and SHA-256, the host path only for you
-  to read): moved or renamed since (`sort`, `undo`, a folder renamed in Explorer), they are still
-  found; a photo edited since (new content) falls back to its GPS. The cluster's count drops (all
+  `places/<place>.toml` beside `config.toml` (which links it from `[[classify.place_photos]]`),
+  one line per photo: `{path = 'C:\Photos\…\IMG_0096.JPG', id = "fc7749d8b88880b3:2484373"}`.
+  The **id** (start of the SHA-256 and the size) is what the tool trusts; the **path** is kept
+  current for you and for other programs: at once by `sort`, `undo` and the quarantine, and at
+  the end of the next `audit` for a folder renamed in Explorer (between two identical copies, the
+  one of the same file name). A photo edited since (new content) falls back to its GPS. The cluster's count drops (all
   given, it leaves the list); the place's label says *+ 3 photos placed by hand*, and its editor
   lists them, each with ✕ to take it back. Renaming the place keeps them; deleting it asks, and
   takes them with it.

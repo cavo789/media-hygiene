@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.search.people_desk import PeopleDesk
     from media_hygiene.search.rule_desk import RuleDesk
+    from media_hygiene.search.tag_desk import TagDesk
     from media_hygiene.share.album_api import AlbumDesk
 
 
@@ -35,3 +36,4 @@ class SearchPlace:  # pylint: disable=too-many-instance-attributes
     names: PeopleDesk  # a name taken off a photo (its cross), put back
     rules: RuleDesk  # *Make it a rule* of a period (0396)
     events: EventsDesk | None = None  # the *🗂 Events* view (0437)
+    tags: TagDesk | None = None  # *🏷 Tag…*, the words typed by hand (0555)

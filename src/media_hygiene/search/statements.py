@@ -35,16 +35,21 @@ _CONCATENATED: Final = ", ".join(
 )
 PEOPLE: Final = "person_words"
 # The names of the people on each photo, made at each search: never in the index file.
+# The words typed by hand (0555) live there too, `source` telling them apart.
 CREATE_PEOPLE: Final = (
-    f"CREATE TEMP TABLE IF NOT EXISTS {PEOPLE}"
-    " (path TEXT NOT NULL, value TEXT NOT NULL)"
+    f"CREATE TEMP TABLE IF NOT EXISTS {PEOPLE} (path TEXT NOT NULL, value TEXT"
+    f" NOT NULL, source TEXT NOT NULL DEFAULT '{TagSource.PERSON.value}')"
 )
 PUT_PERSON: Final = "INSERT INTO temp.person_words (path, value) VALUES (?, ?)"
-CLEAR_PEOPLE: Final = "DELETE FROM temp.person_words"  # named again: one name less
+PUT_WORD: Final = "INSERT INTO temp.person_words (path, value, source) VALUES (?, ?, ?)"
+CLEAR_SOURCE: Final = "DELETE FROM temp.person_words WHERE source = ?"
+CLEAR_PEOPLE: Final = (  # named again: one name less
+    f"DELETE FROM temp.person_words WHERE source = '{TagSource.PERSON.value}'"  # noqa: S608
+)
 _TAG_ROWS: Final = "SELECT path, size, mtime_ns, source, value FROM tags"
 _PERSON_ROWS: Final = (
     "SELECT p.path AS path, w.size AS size, w.mtime_ns AS mtime_ns,"  # noqa: S608
-    f" '{TagSource.PERSON.value}' AS source, p.value AS value"
+    " p.source AS source, p.value AS value"
     f" FROM temp.{PEOPLE} AS p JOIN files AS w ON w.path = p.path"
 )
 # Only the tags of the version of each file the index knows.

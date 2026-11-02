@@ -25,6 +25,8 @@ from media_hygiene.services.run_listings import forget_run_listings
 from media_hygiene.services.tag_files import require_index
 from media_hygiene.services.xmp_plan import XmpScope, plan_sidecars
 from media_hygiene.services.xmp_towns import folder_spots
+from media_hygiene.tags.hand_files import hand_words
+from media_hygiene.tags.models import TagSource
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -93,7 +95,7 @@ class XmpService:
         try:
             with FactsRepository.open(index) as repository:
                 found = folder_spots(runtime, repository.connection)
-                scope = replace(scope, spots=found.spots)
+                scope = replace(scope, spots=found.spots, hand=_hand(runtime))
                 plan = plan_sidecars(repository.connection, scope)
         except sqlite3.Error as exc:
             raise unreadable_index(runtime, index, exc) from exc
@@ -116,3 +118,17 @@ class XmpService:
         run_id = context.quarantine_run_dir.name
         forget_run_listings(self._runtime, run_id, Phase.XMP)
         return XmpResult(run_id, tally.freeze(), interrupted)
+
+
+def _hand(runtime: Runtime) -> dict[Path, tuple[str, ...]]:
+    """The words typed by hand on each file (0555), when `hand` is written.
+
+    Args:
+        runtime: Settings, mount points and output.
+
+    Returns:
+        The words by container path; none when the source is not written.
+    """
+    if TagSource.HAND not in runtime.settings.tags.xmp_sources:
+        return {}
+    return hand_words(runtime.locations.config_file, runtime.mapper)

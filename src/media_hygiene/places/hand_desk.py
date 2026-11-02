@@ -13,7 +13,8 @@ from typing import TYPE_CHECKING
 from pydantic import BaseModel, ConfigDict, Field
 
 from media_hygiene.classify.hand_placed import Candidate, digest_of, hand_placed
-from media_hygiene.config.place_photos import SHA256, HandPhoto, PlacePhotos
+from media_hygiene.config.photo_ref import ID_PATTERN, content_id
+from media_hygiene.config.place_photos import HandPhoto, PlacePhotos
 from media_hygiene.i18n import _
 from media_hygiene.places.clusters import SHOWN
 from media_hygiene.places.config_photos import give_photos, read_place_photos
@@ -45,7 +46,7 @@ class PhotosAct(BaseModel):
     cluster: int = Field(default=-1, ge=-1)  # its rank in the state
     place: str = ""
     left_out: tuple[tuple[str, str], ...] = ()  # (host folder, name), unticked
-    sha256: str = Field(default="", pattern=f"({SHA256})|^$")
+    id: str = Field(default="", pattern=f"({ID_PATTERN})|^$")  # one to take back
 
 
 class HandDesk:
@@ -102,7 +103,7 @@ class HandDesk:
             if sha is not None:
                 size = file.path.stat().st_size
                 path = mapper.to_host(file.path)
-                photos.append(HandPhoto(sha256=sha, size=size, path=path))
+                photos.append(HandPhoto(path=path, id=content_id(sha, size)))
         if not photos:
             raise ValueError(_("No photo to give: none ticked, or none reachable."))
         given = PlacePhotos(place=place, photos=tuple(photos))
@@ -119,14 +120,17 @@ class HandDesk:
             Each photo's digest, its host path when given, its host path now and its
             preview (absent when it is not found among the located files).
         """
-        now = {self._digests[path]: path for path in self.given}
+        now = {
+            content_id(self._digests[path], self._files[path].size): path
+            for path in self.given
+        }
         rows: list[dict[str, object]] = []
         for entry in self.entries:
             if entry.place.casefold() != place.casefold():
                 continue
             for photo in entry.photos:
-                row: dict[str, object] = {"sha256": photo.sha256, "path": photo.path}
-                found = now.get(photo.sha256)
+                row: dict[str, object] = {"id": photo.id, "path": photo.path}
+                found = now.get(photo.id)
                 row["now"] = self._context.mapper.to_host(found) if found else ""
                 if found is not None and self._files[found].kind in SHOWN:
                     row["preview"] = self._preview(self._files[found])

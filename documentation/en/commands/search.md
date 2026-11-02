@@ -305,6 +305,29 @@ you just took out keep theirs until you take it off them too; `classify`, the in
 XMP sidecars read the names again at their next run. Without a writable `/config`, nothing is
 saved and the bar says why.
 
+## Give photos a word of yours
+
+Some words no file name nor model will ever give: *anniversaire Léa*, *first day at school*. Pick
+the photos (the same gestures as everywhere: click, Ctrl, Shift, a rectangle, Ctrl+A), then
+**🏷 Tag…** in the bar. Type the word, or choose one you gave before from the list under the
+field, then **Tag them**. The word is a decision of yours, like a name or a place: it is kept in
+your settings, never in the cache, so nothing recomputed loses it. Each word has its own file,
+`/config/tags/<word>.toml` (`C:\Users\<you>\media-hygiene\config\tags\` on Windows), linked
+from `config.toml` by a `[[tags.hand]]` entry; each photo is written as its path and an id of its
+content. The file is read back and the bar says what it holds now (*“anniversaire Léa” given to
+12 photos, read back from the disk.*); the cards show the word at once, and the search finds it
+(`hand:anniversaire`).
+
+A word typed by hand under a photo has a **×**, on its card and in the large view's facts (`I`):
+click it to take the word off that photo, saved and read back the same way. A word left on no
+photo goes, with its file.
+
+The paths follow your photos: `sort`, `undo`, the quarantine and **📂 Event…** rewrite them at
+once; a folder renamed in Explorer is found again by the content id at the end of the next
+`audit`. [`xmp`](xmp.md) writes these words into the `.xmp` sidecars with the others (`hand` in
+`[tags] xmp_sources`, on by default). Without a writable `/config`, nothing is saved and the bar
+says why.
+
 ## Put photos in an album
 
 To show photos to others (on the TV with [`slideshow`](slideshow.md)), gather them in an
@@ -373,6 +396,7 @@ Its prefix before a word narrows the search to one source: `place:durbuy`, `fold
 | place | `place:` | The town and your own places where the photo was taken. |
 | person | `person:` | The names given to the faces on the [`people`](people.md) page. |
 | Google Photos description | `takeout:` | The description typed in Google Photos (a Takeout export). |
+| typed by hand | `hand:` | The words you gave the photos with **🏷 Tag…**, kept in your settings. |
 
 ## Tips for finding a photo
 

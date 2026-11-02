@@ -26,7 +26,10 @@ if TYPE_CHECKING:
     from media_hygiene.search.query import SearchQuery, Term
 
 _SHORTEST: Final = 3  # as the index keeps a word (`normalize._MIN_LENGTH`)
-_NAMES: Final = f"SELECT DISTINCT value FROM temp.{sql.PEOPLE}"  # noqa: S608
+_NAMES: Final = (
+    f"SELECT DISTINCT value FROM temp.{sql.PEOPLE}"  # noqa: S608
+    f" WHERE source = '{TagSource.PERSON.value}'"
+)
 
 
 def read_query(index: SearchIndex, query: SearchQuery) -> SearchQuery:

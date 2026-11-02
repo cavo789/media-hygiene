@@ -978,18 +978,18 @@
       if (photo.preview) { const img = document.createElement("img"); img.src = photo.preview; img.alt = ""; img.loading = "lazy"; li.append(img); }
       where.textContent = photo.now || `${photo.path} — ${T.handGone}`;
       li.append(where); list.append(li);
-      const button = tail(li, "✕", T.takeBack, () => takeBack(photo.sha256));
+      const button = tail(li, "✕", T.takeBack, () => takeBack(photo.id));
       button.className = "";
     }
   }
-  async function takeBack(sha256) {
+  async function takeBack(id) {
     const key = editing ? editing.key : null;
-    const answer = await post(paths.photos, { action: "remove", sha256 });
+    const answer = await post(paths.photos, { action: "remove", id });
     if (!answer) return;
     state = answer; draw();
     const place = state.places.find((known) => known.key === key);
     if (place && editing) { editing.hand = place.hand; fillHand(place.hand); }
-    const still = state.places.some((known) => (known.hand || []).some((photo) => photo.sha256 === sha256));
+    const still = state.places.some((known) => (known.hand || []).some((photo) => photo.id === id));
     status(still ? T.notSaved : T.takenBack, still ? "error" : "saved");
   }
   // A name like a town's, near: a hint under the name, never a refusal (0239).

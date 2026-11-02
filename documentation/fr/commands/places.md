@@ -34,7 +34,7 @@ docker run --rm -it `
 |---|---|
 | Vos photos | 🔒 Jamais modifiées : les positions viennent du cache. Les dossiers de photos, en lecture seule (`:ro`), montrent les photos d'un groupe ; sans eux, la carte marche mais ne montre aucune photo. |
 | Il faut | `/cache` (les positions notées par les audits, et les aperçus), `/config` (où les lieux sont enregistrés), vos dossiers de photos en lecture seule, et `-p 127.0.0.1:8088:8088`. |
-| Écrit | Des entrées `[[classify.places]]` dans `config.toml`, en gardant vos commentaires et le reste du fichier ; aussi les positions des dossiers (`[[places.folders]]`), les noms qui ne sont pas des villes (`folder_town_ignore`), les groupes écartés (`[[places.ignored]]`) et les photos données à la main à un lieu (`[[classify.place_photos]]`). Chaque changement est relu dans le fichier avant que la page ne le montre. |
+| Écrit | Des entrées `[[classify.places]]` dans `config.toml`, en gardant vos commentaires et le reste du fichier ; aussi les positions des dossiers (`[[places.folders]]`), les noms qui ne sont pas des villes (`folder_town_ignore`), les groupes écartés (`[[places.ignored]]`) et les photos données à la main à un lieu (`[[classify.place_photos]]`, leur liste dans `/config/places/<lieu>.toml`). Chaque changement est relu dans le fichier avant que la page ne le montre. |
 | Annuler | Supprimez un lieu sur la carte, ou ses lignes dans `config.toml` ; **Rétablir** ce que vous avez écarté ; ✕ sur une photo donnée à la main, dans l'éditeur de son lieu. |
 | Avec `mh` | `mh places` : vos dossiers de photos sont montés en lecture seule et le port est publié pour vous. |
 
@@ -143,10 +143,13 @@ placés à la main) ; ⤢ sous les boutons de zoom ramène cette vue. Une photo 
   (*Geer — 1,4 km*). Toutes les photos du groupe lui sont données, sauf celles du tiroir que vous
   décochez (une vraiment prise dans le village). Ces photos seulement : pas de cercle plus grand
   (il nommerait tout le village) ni de deuxième zone (une vraie photo prise à cet endroit serait
-  nommée aussi). Elles sont enregistrées dans `[[classify.place_photos]]` par leur **contenu**
-  (taille et SHA-256, le chemin seulement pour vous) : déplacées ou renommées depuis (`sort`,
-  `undo`, un dossier renommé dans l'Explorateur), elles sont retrouvées ; une photo modifiée
-  depuis (nouveau contenu) revient à son GPS. Le nombre du groupe baisse (toutes données, il
+  nommée aussi). Elles sont enregistrées dans `places/<lieu>.toml` à côté de `config.toml` (qui
+  le lie depuis `[[classify.place_photos]]`), une ligne par photo :
+  `{path = 'C:\Photos\…\IMG_0096.JPG', id = "fc7749d8b88880b3:2484373"}`. L'**id** (début du
+  SHA-256 et taille) est ce que l'outil croit ; le **chemin** est tenu à jour pour vous et pour
+  d'autres programmes : aussitôt par `sort`, `undo` et la quarantaine, et à la fin de l'`audit`
+  suivant pour un dossier renommé dans l'Explorateur (entre deux copies identiques, celle du même
+  nom de fichier). Une photo modifiée depuis (nouveau contenu) revient à son GPS. Le nombre du groupe baisse (toutes données, il
   quitte la liste) ; l'étiquette du lieu dit *+ 3 photos placées à la main*, et son éditeur les
   liste, chacune avec ✕ pour la reprendre. Renommer le lieu les garde ; le supprimer demande, et
   les emporte avec lui.

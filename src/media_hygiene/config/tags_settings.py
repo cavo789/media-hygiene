@@ -16,6 +16,7 @@ from typing import Final, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from media_hygiene.config.hand_tags import HandTag
 from media_hygiene.constants import Locale
 from media_hygiene.tags.models import TagSource
 
@@ -34,8 +35,8 @@ _TOWN_KM: Final = 20.0
 _MEANING_THREADS: Final = 4
 _MEANING_RESULTS: Final = 200
 # Folder, name and date words are seen in the path already: only these go into
-# sidecars.
-XMP_SOURCES: Final = (TagSource.VISION, TagSource.PLACE)
+# sidecars; the words typed by hand too (0555).
+XMP_SOURCES: Final = (TagSource.VISION, TagSource.PLACE, TagSource.HAND)
 
 
 class TagSettings(BaseModel):
@@ -54,6 +55,8 @@ class TagSettings(BaseModel):
     # its sidecar: approximate, so only when asked (0230).
     xmp_folder_gps: bool = False
     meaning: bool = False
+    # `[[tags.hand]]`: the words typed on photos, each in `tags/<word>.toml` (0555).
+    hand: tuple[HandTag, ...] = ()
     meaning_threads: int = Field(default=_MEANING_THREADS, ge=1)
     meaning_results: int = Field(default=_MEANING_RESULTS, ge=1)
 

@@ -160,7 +160,7 @@ class PlacesBoard:
             OSError: The file cannot be written.
         """
         if act.action is PhotosAction.REMOVE:
-            take_back(self._context.config_file, act.sha256)
+            take_back(self._context.config_file, act.id)
             self._hand.reload()
             return
         wanted = act.place.casefold()
