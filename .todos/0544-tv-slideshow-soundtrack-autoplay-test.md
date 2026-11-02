@@ -1,7 +1,7 @@
 # 0544 — TV slideshow soundtrack: test whether the TV plays sound without a click
 
 - **Priority**: Low
-- **Batch**: phone
+- **Batch**: tv-slideshow
 - **Depends**: 0508
 - **Files**: `src/media_hygiene/review/templates/` (a test page), `src/media_hygiene/review/shared_routes.py`, `tests/unit/` (route test)
 - **Needs maintainer**: the test on the family TV

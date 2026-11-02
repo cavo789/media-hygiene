@@ -1,7 +1,7 @@
 # 0507 — TV from the phone: one folder list, newest first
 
 - **Priority**: Medium
-- **Batch**: phone
+- **Batch**: tv-slideshow
 - **Depends**: none
 - **Files**: `src/media_hygiene/services/slideshow_choices.py`, `src/media_hygiene/review/templates/home_run.js.j2`, `src/media_hygiene/review/home_texts_family.py`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/unit/test_tv_choices.py`, `documentation/en/commands/slideshow.md`, `documentation/fr/commands/slideshow.md`, `documentation/en/commands/home.md`, `documentation/fr/commands/home.md`
 

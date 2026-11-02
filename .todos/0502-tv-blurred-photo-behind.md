@@ -1,7 +1,7 @@
 # 0502 — TV slideshow: the photo blurred behind it instead of black bars
 
 - **Priority**: Medium
-- **Batch**: slideshow
+- **Batch**: tv-slideshow
 - **Depends**: —
 - **Files**: `src/media_hygiene/slideshow/templates/screen.html.j2`, `src/media_hygiene/slideshow/templates/screen.js.j2`
 - **Needs maintainer**: a try on the Samsung TV's own browser (and the Chromecast): smooth or not

@@ -1,7 +1,7 @@
 # 0508 — TV from the phone: a random slideshow that travels through time
 
 - **Priority**: Medium
-- **Batch**: phone
+- **Batch**: tv-slideshow
 - **Depends**: 0507
 - **Files**: `src/media_hygiene/services/slideshow_random.py` (new), `src/media_hygiene/services/slideshow_choices.py`, `src/media_hygiene/review/templates/home_run.js.j2`, `src/media_hygiene/review/home_texts_family.py`, `src/media_hygiene/i18n/locales/fr/LC_MESSAGES/media_hygiene.po`, `tests/unit/test_slideshow_random.py` (new), `tests/unit/test_tv_choices.py`, `documentation/en/commands/slideshow.md`, `documentation/fr/commands/slideshow.md`, `documentation/en/commands/home.md`, `documentation/fr/commands/home.md`
 
