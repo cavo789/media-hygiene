@@ -30,7 +30,8 @@ dit ce qu'elle a enregistré, relu depuis le disque.
 
 `mh` l'ouvre à `/albums` (l'espace *Partager* de la page d'accueil, *Vos albums*). Elle montre
 chaque album avec sa couverture, ses dates et son lieu ; un clic ouvre un album, ses photos par
-jour, et une photo s'ouvre en plein écran.
+jour, et une photo s'ouvre en plein écran. La page garde le menu de la page d'accueil à gauche (*Partager* en surbrillance) :
+un clic ouvre n'importe quel autre espace.
 
 Depuis la page, sur le PC (un téléphone regarde seulement : les albums changent sur le PC), vous pouvez :
 

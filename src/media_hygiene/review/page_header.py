@@ -15,11 +15,12 @@ from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.menu_catalog import catalog
-from media_hygiene.cli.menu_entry import Doc
+from media_hygiene.cli.menu_entry import Doc, Space
 from media_hygiene.constants import Locale
 from media_hygiene.docs.served import served_url
-from media_hygiene.i18n import active_locale
+from media_hygiene.i18n import _, active_locale
 from media_hygiene.review.home_assets import ASSETS_PREFIX
+from media_hygiene.review.shell import Shell, ShellAsk, page_shell
 from media_hygiene.review.step_watch import keeps_server
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 
@@ -51,6 +52,12 @@ PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
         "album.html.j2": ALBUMS_DOC,
     }
 )
+# The pages already in the home page's frame (0491: the shell; one TODO per page moves
+# it, 0492-0494); the others keep the thin bar until then. Value: a tile page (its
+# sidebar folded to its icons).
+SHELL_PAGES: Final[Mapping[str, bool]] = MappingProxyType({"album.html.j2": False})
+# A page whose space is not its action's (no action opens it).
+_PAGE_SPACES: Final = MappingProxyType({"album.html.j2": Space.SHARE})
 # The other language's link, written in that language: never translated.
 _TWIN_LABELS: Final = MappingProxyType(
     {Locale.EN: "In English", Locale.FR: "En français"}
@@ -58,7 +65,7 @@ _TWIN_LABELS: Final = MappingProxyType(
 
 
 @dataclass(frozen=True, slots=True)
-class PageHeader:
+class PageHeader:  # pylint: disable=too-many-instance-attributes  # one per link of the bar
     """What the bar of a page shows."""
 
     doc: str  # its chapter, in the page's language
@@ -68,6 +75,7 @@ class PageHeader:
     home: bool  # opened from the home page: the way back is offered
     shared: bool = False  # served by the home server itself (0356): a plain link back
     assets: str = ASSETS_PREFIX
+    shell: Shell | None = None  # in the home page's frame (0491)
 
     @property
     def twin_lang(self) -> str:
@@ -95,6 +103,9 @@ def page_header(template: str) -> PageHeader:
     doc = wanted if isinstance(wanted, Doc) else catalog().step(wanted).doc
     if doc is None:  # pragma: no cover - test_page_headers checks every page has one
         raise KeyError(template)
+    space = _PAGE_SPACES.get(template) or (
+        None if isinstance(wanted, Doc) else catalog().step(wanted).space
+    )
     here = active_locale()
     twin = Locale.EN if here is Locale.FR else Locale.FR
     return PageHeader(
@@ -104,6 +115,11 @@ def page_header(template: str) -> PageHeader:
         twin_label=_TWIN_LABELS[twin],
         home=bool(os.environ.get(LAUNCHER_STEPS_VARIABLE)),
         shared=keeps_server(),
+        shell=(
+            page_shell(ShellAsk(space, compact=SHELL_PAGES[template]), _("Home page"))
+            if template in SHELL_PAGES
+            else None
+        ),
     )
 
 

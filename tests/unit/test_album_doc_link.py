@@ -25,9 +25,10 @@ def test_the_page_names_the_chapter_in_its_language(locale: Locale) -> None:
 
 
 def test_the_page_wears_the_shared_bar_with_a_plain_way_back() -> None:
-    """0342: the bar of every page, its way back a plain link; ← Albums below."""
+    """0342, 0492: the home page's frame, its way back a plain link; ← Albums below."""
     page = album_page().decode()
-    assert page.count('class="mh-bar"') == 1
+    assert page.count('id="mhShellSide"') == 1
+    assert 'data-space="share" aria-current="page"' in page
     assert 'id="homeLink" href="/" data-shared="1"' in page
     assert 'id="back" href="#" hidden>← Albums' in page
     assert f"{_CHAPTER}/" in page.split('class="mh-doc"')[1]

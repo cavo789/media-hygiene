@@ -28,7 +28,8 @@ creates it), then **➕ Add to the album**. The page says what it saved, read ba
 
 `mh` opens it at `/albums` (the home page's *Share* area, *Your albums*). It shows every album
 with its cover, its dates and its place; a click opens one, its photos by day, and a photo opens
-full screen.
+full screen. The page keeps the home page's menu on the left (*Share* highlighted): one click
+opens any other space.
 
 From the page, on the PC (a phone only looks: albums change on the PC), you can:
 
