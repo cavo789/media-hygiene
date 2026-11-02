@@ -80,4 +80,4 @@ The maintainer sorts from `/search` only: picks a period, selects photos, clicks
   `events_choose`, their tests), and rewrite the rest of `sort/11` that still describes it.
   **Reason:** scope; a follow-up TODO.
 - No browser test of the new JS; `docs_screenshots` stale for `/search` (Events tab).
-- Open: should the gap be its own setting (it reuses classify's)?
+- Decided 2026-11-02: the gap stays classify's setting (one definition of an event).
