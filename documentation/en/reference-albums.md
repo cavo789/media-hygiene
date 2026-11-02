@@ -35,7 +35,7 @@ From the page, on the PC (a phone only looks: albums change on the PC), you can:
 
 - **🗑 Delete** the albums ticked in the list: the page asks once, then only `albums.json`
   changes, your photos stay where they are; **↩ Undo** in the message puts them back (the last
-  delete is kept next to the albums file, in `albums-deleted.json`);
+  delete is kept next to the albums file, in `albums-deleted.json`, for 30 days);
 - **✏️ Rename** an album: a name another album has (whatever its case) is refused; `slideshow`,
   `share` and `album --album` know it by its new name at once. A folder of links already made by
   `mh album` keeps its old name;

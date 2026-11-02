@@ -2,7 +2,7 @@
 
 Only `albums.json` changes: the photos stay where they are. A folder of links made
 by `mh album` is a copy of an album at one time: it keeps its own name. The albums
-of the last delete are kept next to the file (`DELETED_FILE`) for *Undo*.
+of the last delete are kept next to the file for *Undo* (`album_trash`).
 """
 
 from __future__ import annotations
@@ -12,22 +12,19 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.share.album_said import cover_message
 from media_hygiene.share.album_store import new_album
+from media_hygiene.share.album_trash import deleted_path, recent_deleted
 from media_hygiene.share.albums import (
     AlbumsError,
     AlbumsFile,
-    read_albums,
     same_name,
     write_albums,
 )
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from media_hygiene.share.album_api import AlbumAsked
     from media_hygiene.share.album_store import AlbumStore, Shelf
 
 EDITS: Final = frozenset({"delete", "rename", "restore"})  # the albums, not files
-DELETED_FILE: Final = "albums-deleted.json"  # the last delete, for Undo
 
 
 def delete_albums(store: AlbumStore, names: tuple[str, ...]) -> Shelf:
@@ -49,13 +46,13 @@ def delete_albums(store: AlbumStore, names: tuple[str, ...]) -> Shelf:
     if len(kept) == len(base.albums):
         raise AlbumsError(_("No album of these names: nothing deleted."))
     removed = tuple(album for album in base.albums if album not in kept)
-    write_albums(_deleted(store), AlbumsFile(albums=removed))
+    write_albums(deleted_path(store.place.target), AlbumsFile(albums=removed))
     write_albums(store.place.target, AlbumsFile(albums=kept))
     return store.on_disk()
 
 
 def restore_albums(store: AlbumStore) -> Shelf:
-    """Put back the albums of the last delete (*Undo*); a name taken since stays.
+    """Put back the albums of the last delete (*Undo*, within `KEEP_DAYS`).
 
     Args:
         store: The albums.
@@ -66,27 +63,14 @@ def restore_albums(store: AlbumStore) -> Shelf:
     Raises:
         AlbumsError: Nothing to put back.
     """
-    backup = _deleted(store)
-    removed = read_albums(backup).albums
+    removed = recent_deleted(store.place.target).albums
     if not removed:
         raise AlbumsError(_("No deleted album to put back."))
     base = store.on_disk().albums
     back = tuple(album for album in removed if base.named(album.name) is None)
     write_albums(store.place.target, AlbumsFile(albums=(*base.albums, *back)))
-    backup.unlink(missing_ok=True)
+    deleted_path(store.place.target).unlink(missing_ok=True)
     return store.on_disk()
-
-
-def _deleted(store: AlbumStore) -> Path:
-    """Where the albums of the last delete are kept: next to the albums file.
-
-    Args:
-        store: The albums.
-
-    Returns:
-        The file.
-    """
-    return store.place.target.with_name(DELETED_FILE)
 
 
 def rename_album(store: AlbumStore, names: tuple[str, str]) -> Shelf:

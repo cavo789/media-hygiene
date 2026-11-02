@@ -37,7 +37,7 @@ Depuis la page, sur le PC (un téléphone regarde seulement : les albums changen
 
 - **🗑 Supprimer** les albums cochés dans la liste : la page demande une fois, puis seul
   `albums.json` change, vos photos restent où elles sont ; **↩ Annuler** dans le message les remet
-  (la dernière suppression est gardée à côté du fichier des albums, dans `albums-deleted.json`) ;
+  (la dernière suppression est gardée à côté du fichier des albums, dans `albums-deleted.json`, pendant 30 jours) ;
 - **✏️ Renommer** un album : un nom qu'a déjà un autre album (quelles que soient ses majuscules)
   est refusé ; `slideshow`, `share` et `album --album` le connaissent aussitôt sous son nouveau
   nom. Un dossier de liens déjà créé par `mh album` garde son ancien nom ;
