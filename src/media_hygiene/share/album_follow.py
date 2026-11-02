@@ -2,8 +2,10 @@
 
 A file still at its path is kept as it is. One gone from it is looked for, in order:
 the moves the index recorded (`sort`, `undo`: `index.moves`), then the files of the
-same size whose SHA-256 is the entry's (the index's digest when it has one, else the
-file read once): a folder renamed in the Explorer is found after the next audit. Among
+same size whose SHA-256 the index already holds and is the entry's: following never
+reads a file in full (0547: a page listing albums froze at 400 % CPU hashing the
+copies of 240 lost photos), a folder renamed in the Explorer is found once an audit
+stored the digests. Among
 identical copies, the one of the same name first, then the first path: the same
 answer every time. Not found: the entry stays, said missing, never dropped.
 """
@@ -26,7 +28,9 @@ if TYPE_CHECKING:
     from media_hygiene.share.albums import AlbumEntry
 
 _MOVED: Final = "SELECT new FROM moves WHERE old = ?"
-_SAME_SIZE: Final = "SELECT path, full_digest FROM files WHERE size = ? ORDER BY path"
+_SAME_CONTENT: Final = (
+    "SELECT path FROM files WHERE size = ? AND full_digest = ? ORDER BY path"
+)
 _KNOWN: Final = (
     "SELECT full_digest FROM files WHERE path = ? AND size = ? AND mtime_ns = ?"
 )
@@ -153,6 +157,8 @@ def _same_content(
 ) -> Path | None:
     """The file of the same size and SHA-256 as an entry: the same name first.
 
+    Only the digests the index holds are compared: none is computed here (0547).
+
     Args:
         connection: The index.
         entry: The entry whose path is gone.
@@ -162,21 +168,11 @@ def _same_content(
         The file, in the container; None when nothing holds the same content.
     """
     try:
-        rows = connection.execute(_SAME_SIZE, (entry.size,)).fetchall()
+        rows = connection.execute(_SAME_CONTENT, (entry.size, entry.sha256)).fetchall()
     except sqlite3.Error:
         return None
-    rows.sort(key=lambda row: (Path(row[0]).name != name, row[0]))
-    for path, digest in rows:
-        candidate = Path(path)
-        if not candidate.is_file():
-            continue
-        try:
-            same = (digest or full_digest(candidate)) == entry.sha256
-        except OSError:
-            continue
-        if same:
-            return candidate
-    return None
+    paths = sorted((Path(row[0]) for row in rows), key=lambda p: (p.name != name, p))
+    return next((path for path in paths if path.is_file()), None)
 
 
 def _moved(connection: sqlite3.Connection, old: str) -> Path | None:

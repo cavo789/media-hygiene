@@ -1009,6 +1009,10 @@ msgstr ""
 msgid "Altitude (m)"
 msgstr ""
 
+#, python-brace-format
+msgid "An album is already named {name}."
+msgstr ""
+
 msgid "An album of yours on the big screen; the phone is the remote."
 msgstr ""
 
@@ -2033,6 +2037,16 @@ msgstr[1] ""
 #, python-brace-format
 msgid "Delete the place {name}? The photos stay where they are."
 msgstr ""
+
+#, python-brace-format
+msgid ""
+"Delete {n} album? Your photos stay where they are: only the albums file "
+"changes."
+msgid_plural ""
+"Delete {n} albums? Your photos stay where they are: only the albums file "
+"changes."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "Delete {ticked} files ({size}) from the phone"
@@ -4482,6 +4496,9 @@ msgstr ""
 msgid "No album named {name}. The albums: {names}."
 msgstr ""
 
+msgid "No album of these names: nothing deleted."
+msgstr ""
+
 msgid "No album saved yet: choose a folder or a month below."
 msgstr ""
 
@@ -4565,6 +4582,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "No decisions file of 'review --near' in {folder}."
+msgstr ""
+
+msgid "No deleted album to put back."
 msgstr ""
 
 msgid "No draft ready yet."
@@ -5879,6 +5899,10 @@ msgstr ""
 msgid "Pick this shot"
 msgstr ""
 
+#, python-brace-format
+msgid "Pick {name}"
+msgstr ""
+
 msgid "Picnic"
 msgstr ""
 
@@ -6289,8 +6313,15 @@ msgstr ""
 msgid "Removed from config.toml, read back at {time}: {names}."
 msgstr ""
 
+msgid "Rename"
+msgstr ""
+
 #, python-brace-format
 msgid "Renamed on the backup (moved, or set aside in .removed): {count}."
+msgstr ""
+
+#, python-brace-format
+msgid "Renamed: {name}. A folder of links made by mh album keeps its old name."
 msgstr ""
 
 #, python-brace-format
@@ -7872,6 +7903,10 @@ msgstr ""
 msgid "The decisions file {file} could not be archived."
 msgstr ""
 
+#, python-brace-format
+msgid "The deleted albums are back in {place}."
+msgstr ""
+
 msgid ""
 "The disk, the network or the cloud did not give these files (a disk "
 "unplugged, an online-only OneDrive file while offline…). They are not "
@@ -8236,6 +8271,10 @@ msgid ""
 msgstr ""
 
 msgid "The near duplicates and re-encoded videos alone, on one page"
+msgstr ""
+
+#, python-brace-format
+msgid "The new name of {name}:"
 msgstr ""
 
 #, python-brace-format
@@ -9295,6 +9334,9 @@ msgstr ""
 msgid ""
 "Undecided: nothing moves. → sets aside the photos marked, Space keeps or "
 "sets aside the photo under the cursor."
+msgstr ""
+
+msgid "Undo"
 msgstr ""
 
 msgid ""
@@ -12362,6 +12404,12 @@ msgid ""
 "{command}: this PC has no address on a home network (Wi-Fi or cable to a "
 "router): the page stays on this PC."
 msgstr ""
+
+#, python-brace-format
+msgid "{count} album deleted from {place}. Your photos stay where they are."
+msgid_plural "{count} albums deleted from {place}. Your photos stay where they are."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "{count} album photo"

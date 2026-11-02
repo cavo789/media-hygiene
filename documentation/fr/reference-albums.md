@@ -14,7 +14,8 @@ n'importe quels dossiers. C'est ce qu'on montre aux autres : sur la télé avec
 - Elle est enregistrée dans `albums.json`, dans votre dossier de rapports (`/reports`), **pas**
   dans le cache : supprimer le cache garde vos albums.
 - Une photo déplacée depuis par [`sort`](commands/sort.md) ou [`undo`](commands/undo.md), ou dans
-  un dossier que vous avez renommé (une fois qu'un audit l'a vu), est retrouvée par son contenu ;
+  un dossier que vous avez renommé (une fois qu'un audit l'a vu), est retrouvée par son contenu —
+  cherchée en arrière-plan, la page n'attend jamais : elle remontre la photo un peu plus tard ;
   une photo introuvable (supprimée, ou en quarantaine) reste dans la liste, comme *manquante*,
   jusqu'à son retour.
 
@@ -33,6 +34,12 @@ jour, et une photo s'ouvre en plein écran.
 
 Depuis la page, sur le PC (un téléphone regarde seulement : les albums changent sur le PC), vous pouvez :
 
+- **🗑 Supprimer** les albums cochés dans la liste : la page demande une fois, puis seul
+  `albums.json` change, vos photos restent où elles sont ; **↩ Annuler** dans le message les remet
+  (la dernière suppression est gardée à côté du fichier des albums, dans `albums-deleted.json`) ;
+- **✏️ Renommer** un album : un nom qu'a déjà un autre album (quelles que soient ses majuscules)
+  est refusé ; `slideshow`, `share` et `album --album` le connaissent aussitôt sous son nouveau
+  nom. Un dossier de liens déjà créé par `mh album` garde son ancien nom ;
 - **➖ Retirer de l'album** une photo : elle sort de la liste, le fichier reste où il est ;
 - **➕ Ajouter à un album** une photo, à un autre album : choisissez-le dans la liste de vos
   albums (le plus récent en premier), ou tapez un nouveau nom en dessous pour en créer un ; un nom
@@ -48,7 +55,7 @@ ni envoyé.
 
 Avec `mh --lan`, un téléphone jumelé par son code sur le Wi-Fi de la maison ouvre la même page,
 tant que `mh` tourne sur le PC. Il ne voit que les images des albums, à la taille d'un téléphone,
-jamais une autre photo de la bibliothèque ni un original. Il ne change rien : ni *➖*, ni *➕*, ni *🖼*.
+jamais une autre photo de la bibliothèque ni un original. Il ne change rien : ni *➖*, ni *➕*, ni *🖼*, ni *🗑*, ni *✏️*.
 
 ## Les albums et les dossiers de liens
 

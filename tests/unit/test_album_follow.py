@@ -18,6 +18,7 @@ import pytest
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.index.schema import prepare
 from media_hygiene.services.albums import album_store
+from media_hygiene.share.album_lost import search_lost
 from media_hygiene.share.album_store import AlbumChange
 from media_hygiene.share.albums import ALBUMS_FILE
 from tests.support.runtime import make_locations, make_runtime
@@ -114,6 +115,8 @@ def test_a_folder_renamed_in_the_explorer_is_found_after_the_audit(
     assert store.on_disk().missing[_ALBUM] == (_HOST,)
     _forget(runtime, photo)
     _index_row(runtime, renamed / "IMG_1.jpg")
+    assert store.on_disk().missing[_ALBUM] == (_HOST,)  # the page never hashes
+    assert search_lost(store) == 1
     shelf = store.on_disk()
     assert shelf.missing[_ALBUM] == ()
     assert _on_disk(runtime) == ["C:\\Photos\\Crete holidays\\IMG_1.jpg"]
@@ -174,7 +177,7 @@ def test_identical_copies_the_one_of_the_same_name_then_the_first_path(
     _write(runtime, "c/Backup/y/IMG_1.jpg")
     photo.unlink()
     _forget(runtime, photo)
-    store.on_disk()
+    search_lost(store)
     assert _on_disk(runtime) == ["C:\\Backup\\y\\IMG_1.jpg"]
 
 
@@ -187,6 +190,7 @@ def test_a_copy_found_again_already_in_the_album_is_kept_once(
     store = _album(runtime, photo, copy)
     photo.unlink()
     _forget(runtime, photo)
+    search_lost(store)
     shelf = store.on_disk()
     assert shelf.missing[_ALBUM] == ()
     assert _on_disk(runtime) == ["C:\\Backup\\IMG_1.jpg"]
@@ -199,3 +203,37 @@ def test_without_an_index_a_moved_file_is_missing(runtime: Runtime) -> None:
     runtime.locations.index_file.unlink()
     photo.rename(photo.with_name("IMG_9.jpg"))
     assert store.on_disk().missing[_ALBUM] == (_HOST,)
+
+
+def test_a_page_follows_a_copy_the_index_fully_hashed(runtime: Runtime) -> None:
+    """The digest already in the index is enough: the page follows it at once."""
+    photo = _write(runtime, _PHOTO)
+    store = _album(runtime, photo)
+    copy = _write(runtime, "c/Backup/IMG_1.jpg")
+    _index_row(runtime, copy, hashlib.sha256(b"crete").hexdigest())
+    photo.unlink()
+    _forget(runtime, photo)
+    assert store.on_disk().missing[_ALBUM] == ()
+    assert _on_disk(runtime) == ["C:\\Backup\\IMG_1.jpg"]
+
+
+def test_the_search_reads_at_most_its_budget(
+    runtime: Runtime, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Many same-size files without digest: the search stops at `MAX_READS`."""
+    photo = _write(runtime, _PHOTO)
+    store = _album(runtime, photo)
+    for rank in range(5):
+        _write(runtime, f"c/Other/{rank}.jpg", b"other")
+    photo.unlink()
+    _forget(runtime, photo)
+    monkeypatch.setattr("media_hygiene.share.album_lost.MAX_READS", 2)
+    reads: list[Path] = []
+
+    def counted(path: Path) -> str:
+        reads.append(path)
+        return "0" * 64
+
+    monkeypatch.setattr("media_hygiene.share.album_lost.full_digest", counted)
+    assert search_lost(store) == 0
+    assert len(reads) == 2

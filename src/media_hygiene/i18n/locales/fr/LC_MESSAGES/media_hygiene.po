@@ -1284,6 +1284,10 @@ msgstr ""
 msgid "Altitude (m)"
 msgstr "Altitude (m)"
 
+#, python-brace-format
+msgid "An album is already named {name}."
+msgstr "Un album s'appelle déjà {name}."
+
 msgid "An album of yours on the big screen; the phone is the remote."
 msgstr "Un de vos albums sur le grand écran ; le téléphone sert de télécommande."
 
@@ -2484,6 +2488,20 @@ msgstr[1] ""
 #, python-brace-format
 msgid "Delete the place {name}? The photos stay where they are."
 msgstr "Supprimer le lieu {name} ? Les photos restent où elles sont."
+
+#, python-brace-format
+msgid ""
+"Delete {n} album? Your photos stay where they are: only the albums file "
+"changes."
+msgid_plural ""
+"Delete {n} albums? Your photos stay where they are: only the albums file "
+"changes."
+msgstr[0] ""
+"Supprimer {n} album ? Vos photos restent où elles sont : seul le fichier "
+"des albums change."
+msgstr[1] ""
+"Supprimer {n} albums ? Vos photos restent où elles sont : seul le fichier "
+"des albums change."
 
 #, python-brace-format
 msgid "Delete {ticked} files ({size}) from the phone"
@@ -5438,6 +5456,9 @@ msgstr "Aucun album nommé {name}."
 msgid "No album named {name}. The albums: {names}."
 msgstr "Aucun album nommé {name}. Les albums : {names}."
 
+msgid "No album of these names: nothing deleted."
+msgstr "Aucun album de ces noms : rien n'est supprimé."
+
 msgid "No album saved yet: choose a folder or a month below."
 msgstr "Aucun album enregistré : choisissez un dossier ou un mois ci-dessous."
 
@@ -5544,6 +5565,9 @@ msgstr "Aucune décision dans le fichier : le --tier décide."
 #, python-brace-format
 msgid "No decisions file of 'review --near' in {folder}."
 msgstr "Aucun fichier de décisions de 'review --near' dans {folder}."
+
+msgid "No deleted album to put back."
+msgstr "Aucun album supprimé à remettre."
 
 msgid "No draft ready yet."
 msgstr "Aucun brouillon prêt pour l'instant."
@@ -7132,6 +7156,10 @@ msgstr "Choisir cette photo"
 msgid "Pick this shot"
 msgstr "Choisir cette photo"
 
+#, python-brace-format
+msgid "Pick {name}"
+msgstr "Cocher {name}"
+
 msgid "Picnic"
 msgstr "Pique-nique"
 
@@ -7152,8 +7180,9 @@ msgstr "Position de {folder} déplacée vers {target}, avec ses photos."
 msgid ""
 "Place of {folder} removed from config.toml: its photos went to several "
 "folders."
-msgstr "Position de {folder} retirée de config.toml : ses photos sont parties dans "
-"plusieurs dossiers."
+msgstr ""
+"Position de {folder} retirée de config.toml : ses photos sont parties "
+"dans plusieurs dossiers."
 
 #, python-brace-format
 msgid "Place of {folder} written back in config.toml."
@@ -7599,11 +7628,18 @@ msgstr "Supprimer ces règles de config.toml ? {names}"
 msgid "Removed from config.toml, read back at {time}: {names}."
 msgstr "Supprimées de config.toml, relu à {time} : {names}."
 
+msgid "Rename"
+msgstr "Renommer"
+
 #, python-brace-format
 msgid "Renamed on the backup (moved, or set aside in .removed): {count}."
 msgstr ""
 "Renommés dans la sauvegarde (déplacés, ou mis de côté dans .removed) : "
 "{count}."
+
+#, python-brace-format
+msgid "Renamed: {name}. A folder of links made by mh album keeps its old name."
+msgstr "Renommé : {name}. Un dossier de liens créé par mh album garde son ancien nom."
 
 #, python-brace-format
 msgid "Renames not seen made: {count}. Type mh push again."
@@ -9483,6 +9519,10 @@ msgstr "Le fichier de décisions {file} n'a pas pu être archivé ({error})."
 msgid "The decisions file {file} could not be archived."
 msgstr "Le fichier de décisions {file} n'a pas pu être archivé."
 
+#, python-brace-format
+msgid "The deleted albums are back in {place}."
+msgstr "Les albums supprimés sont de retour dans {place}."
+
 msgid ""
 "The disk, the network or the cloud did not give these files (a disk "
 "unplugged, an online-only OneDrive file while offline…). They are not "
@@ -9942,6 +9982,10 @@ msgstr ""
 
 msgid "The near duplicates and re-encoded videos alone, on one page"
 msgstr "Les quasi-doublons et les vidéos réencodées seuls, sur une page"
+
+#, python-brace-format
+msgid "The new name of {name}:"
+msgstr "Le nouveau nom de {name} :"
 
 #, python-brace-format
 msgid ""
@@ -11265,6 +11309,9 @@ msgid ""
 msgstr ""
 "Non décidé : rien ne bouge. → met de côté les photos marquées, Espace "
 "garde ou met de côté la photo sous le curseur."
+
+msgid "Undo"
+msgstr "Annuler"
 
 msgid ""
 "Undo the change in Excel (Ctrl+Z), restore a copy of the workbook, or run"
@@ -14729,6 +14776,12 @@ msgid ""
 msgstr ""
 "{command} : ce PC n'a pas d'adresse sur un réseau domestique (Wi-Fi ou "
 "câble vers une box) : la page reste sur ce PC."
+
+#, python-brace-format
+msgid "{count} album deleted from {place}. Your photos stay where they are."
+msgid_plural "{count} albums deleted from {place}. Your photos stay where they are."
+msgstr[0] "{count} album supprimé de {place}. Vos photos restent où elles sont."
+msgstr[1] "{count} albums supprimés de {place}. Vos photos restent où elles sont."
 
 #, python-brace-format
 msgid "{count} album photo"

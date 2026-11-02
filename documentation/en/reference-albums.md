@@ -14,7 +14,8 @@ send with [`share`](commands/share.md), or as a folder of the Explorer with
 - It is saved in `albums.json`, in your reports folder (`/reports`), **not** in the cache:
   deleting the cache keeps your albums.
 - A photo moved since by [`sort`](commands/sort.md) or [`undo`](commands/undo.md), or in a folder
-  you renamed (once an audit has seen it), is found again by its content; one found nowhere
+  you renamed (once an audit has seen it), is found again by its content — searched in the
+  background, so the page never waits: it shows the photo again a moment later; one found nowhere
   (deleted, or in the quarantine) stays in the list as *missing* until it comes back.
 
 ## Fill an album
@@ -31,6 +32,12 @@ full screen.
 
 From the page, on the PC (a phone only looks: albums change on the PC), you can:
 
+- **🗑 Delete** the albums ticked in the list: the page asks once, then only `albums.json`
+  changes, your photos stay where they are; **↩ Undo** in the message puts them back (the last
+  delete is kept next to the albums file, in `albums-deleted.json`);
+- **✏️ Rename** an album: a name another album has (whatever its case) is refused; `slideshow`,
+  `share` and `album --album` know it by its new name at once. A folder of links already made by
+  `mh album` keeps its old name;
 - **➖ Take out of the album** a photo: it leaves the list, the file stays where it is;
 - **➕ Add to an album** a photo, to another album: pick it in the list of your albums (the most
   recent first), or type a new name under it to create one; a name typed in another case is the
@@ -45,7 +52,7 @@ Only `albums.json` changes. Nothing else can be done there: no file is deleted, 
 
 Under `mh --lan`, a phone paired by its code on the home Wi-Fi opens the same page, while `mh`
 runs on the PC. It sees the pictures of the albums only, sized for a phone, never another photo
-of the library nor an original. It changes nothing: no *➖*, *➕* nor *🖼* there.
+of the library nor an original. It changes nothing: no *➖*, *➕*, *🖼*, *🗑* nor *✏️* there.
 
 ## Albums and the folders of links
 
