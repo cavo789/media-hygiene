@@ -111,11 +111,11 @@ function global:_{{ function }}_watch {
     $id = "$(Get-Content -LiteralPath $cid -TotalCount 1)".Trim()
     $held = $global:MediaHygieneHeld
     $global:MediaHygieneHeld = $null
+    $seen = _{{ function }}_present  # before the wait: a folder leaving meanwhile is seen
     $waiter = Start-Process -FilePath docker -ArgumentList 'wait', $id -NoNewWindow -PassThru -RedirectStandardOutput $code
     $ended = $false
     $moved = $false
     $ticks = 0
-    $seen = _{{ function }}_present
     try {
         while (-not $waiter.HasExited) {
             if (-not (Test-Path -LiteralPath $now)) {

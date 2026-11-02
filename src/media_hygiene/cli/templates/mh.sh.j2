@@ -281,10 +281,10 @@ _{{ function }}_watch() {
     rm -f -- "$cid" "$code" "$now" "$running"
     _{{ function }}_detach="$cid" {{ function }} home "$@" >/dev/null || return
     id="$(<"$cid")"
+    seen="$(_{{ function }}_present)"  # before the wait: a folder leaving meanwhile is seen
     docker wait "$id" > "$code" 2>/dev/null &
     waiter=$!
     trap 'docker stop "$id" >/dev/null 2>&1' INT
-    seen="$(_{{ function }}_present)"
     while kill -0 "$waiter" 2>/dev/null; do
         if [[ ! -f "$now" ]]; then
             sleep 0.25
