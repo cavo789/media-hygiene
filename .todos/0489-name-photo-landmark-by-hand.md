@@ -4,7 +4,7 @@
 - **Batch**: unassigned
 - **Depends**: 0545, 0553
 - **Files**: TBD
-- **Needs maintainer**: choose the storage and the entry point (questions below)
+- **Needs maintainer**: the measured share of their GPS photos for which `geo/landmarks` already finds a monument (storage decided 2026-11-02)
 
 ## Context
 
@@ -70,3 +70,9 @@ correction). Ask the questions below when running it.
 - [ ] The options above answered by the maintainer, and a follow-up implementation TODO filed
 - [ ] The measured share of the maintainer's GPS photos for which `geo/landmarks` already
       finds a monument (tells whether typing is the exception or the rule)
+
+## Decided (2026-11-02)
+
+By the maintainer, in `/todo:iterate`: the name is written into the XMP sidecar (the truth,
+read by other tools, survives moves) and cached in the index; it is typed in the large view of
+search/browse (skill `photo-picking-pages`).

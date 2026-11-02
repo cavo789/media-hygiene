@@ -4,7 +4,6 @@
 - **Batch**: page-shell
 - **Depends**: 0491
 - **Files**: `src/media_hygiene/review/templates/phone_review.html.j2`, `src/media_hygiene/slideshow/templates/slideshow.html.j2`, `src/media_hygiene/services/phone_review.py`, `src/media_hygiene/services/slideshow_build.py`
-- **Needs maintainer**: a decision: the slideshow is full screen on a TV and the phone page is a remote/reader — the shell's ☰ top bar only, or none
 
 ## Why
 
@@ -19,3 +18,8 @@ features at the same place.
 
 The phone page and the slideshow (TV + phone remote) are not desk pages: propose the phone layout
 of the shell (top bar + ☰) for the phone page, nothing on the TV, and ask before doing it.
+
+## Decided (2026-11-02)
+
+By the maintainer, in `/todo:iterate`: the phone page wears the shell's phone layout (top bar +
+☰); the TV slideshow stays full screen with no frame.
