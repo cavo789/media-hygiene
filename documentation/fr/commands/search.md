@@ -102,7 +102,10 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   chaque déplacement est journalisé, `undo` le défait. Un fichier mis de côté compte comme
   disparu pour toute action sauf *Reprendre* : choisi avec les autres (Ctrl+A, Maj, le
   rectangle), il reste hors de l'album, du partage, de la TV et du déplacement vers un
-  événement, et la réponse le dit (*3 fichiers mis de côté ignorés*). Sur une vignette, le nom, le dossier et la
+  événement, et la réponse le dit (*3 fichiers mis de côté ignorés*). Il quitte aussi les albums où il était
+  (leur page, leur TV, `slideshow --album`), et les photos d'un événement envoyées ailleurs
+  depuis 🗂 *Événements* le laissent en place ; de même pour une photo écartée dans la revue
+  des rafales. Sur une vignette, le nom, le dossier et la
   légende tiennent sur une ligne chacun (pointez-les pour le texte entier), les mots sur deux
   lignes puis *+N*.
 - **⌨ Clavier** : le panneau liste les gestes principaux ; **Plus de touches** s'ouvre par-dessus

@@ -21,9 +21,10 @@ from media_hygiene.i18n import _
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.local_app import choice_failed
 from media_hygiene.review.serving import json_response
-from media_hygiene.review.sort_choices import CHOICES
+from media_hygiene.review.sort_choices import CHOICES, FILES_PATH
 from media_hygiene.review.sort_now import SORT_NOW_PATH, sort_now
 from media_hygiene.review.sort_rule_choices import PROGRESS_PATH, RULES_PATH
+from media_hygiene.search.events_aside import rows_kept
 from media_hygiene.search.events_desk import EVENTS_PATH
 from media_hygiene.search.found_desk import FOUND_PATH
 from media_hygiene.search.late_desk import LATE_PATH, LATE_REFUSE_PATH
@@ -133,7 +134,10 @@ async def sort_post(desk: EventsDesk | None, request: Request) -> Response:
     path = _API + request.path.removeprefix(SORT_PREFIX)
     if path == SORT_NOW_PATH:
         return await sort_now(desk.sorter(session), request)
-    return choice_answer(session, path, request.body)
+    body = (
+        rows_kept(desk, session, request.body) if path == FILES_PATH else request.body
+    )
+    return choice_answer(session, path, body)
 
 
 def events_get(desk: EventsDesk | None, path: str) -> Response | None:

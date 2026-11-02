@@ -16,9 +16,10 @@ from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.page_header import ALBUMS_DOC, page_header
-from media_hygiene.search.aside_filter import Kept
+from media_hygiene.search.aside_filter import AsideFilter, Kept
 from media_hygiene.services.album_reader import AlbumReader
 from media_hygiene.services.albums import album_desk
+from media_hygiene.services.aside_paths import set_aside
 from media_hygiene.share.album_page import (
     ALBUM_CHANGE_PATH,
     ALBUM_LIST_PATH,
@@ -52,7 +53,8 @@ def album_pages(runtime: Runtime, home: Handling, executor: Executor) -> AlbumPa
     """
     reader = AlbumReader(runtime, executor)
     shown = Shown()
-    desk = album_desk(runtime, partial(_picked, (reader, shown)))
+    aside = AsideFilter(partial(set_aside, runtime), runtime.mapper)
+    desk = album_desk(runtime, partial(_picked, (reader, shown, aside)))
     return AlbumPages(home, AlbumParts(album_page(), reader, desk, shown))
 
 
@@ -81,16 +83,20 @@ def album_page() -> bytes:
     )
 
 
-def _picked(sources: tuple[AlbumReader, Shown], asked: AlbumAsked) -> Kept:
+def _picked(sources: tuple[AlbumReader, Shown, AsideFilter], asked: AlbumAsked) -> Kept:
     """The files a change names: those of the albums the page was shown, by key.
 
+    A page shown before a file was set aside cannot bring it back (0518), but to
+    take it out of an album.
+
     Args:
-        sources: The reader, and the keys of the albums' files.
+        sources: The reader, the keys of the albums' files, the files set aside.
         asked: The change; `all` (every file of a search) means nothing here.
 
     Returns:
         The files, in the container.
     """
-    reader, shown = sources
-    files = (reader.source(key) for key in shown.picked(asked.keys))
-    return Kept(tuple(file for file in files if file is not None))
+    reader, shown, aside = sources
+    found = (reader.source(key) for key in shown.picked(asked.keys))
+    files = tuple(file for file in found if file is not None)
+    return Kept(files) if asked.action == "remove" else aside.keep(files)

@@ -1,10 +1,10 @@
 """`sort --event <id>`, *Sort this event now*: one event sorted, the rest left.
 
 The plan is cut to the rows of one event (or of a group checked on a page, 0397);
-everything else is the whole `sort`: the same guards (a persistent `/journal`, no `:ro`
-data mount), the same journal, `undo` and manifest, the index following the moves.
-Those rows then count as moved for the plan: a later `sort` of the whole workbook skips
-them.
+the files set aside stay in place (0518); everything else is the whole `sort`: the
+same guards (a persistent `/journal`, no `:ro` data mount), the same journal, `undo`
+and manifest, the index following the moves. Those rows then count as moved for the
+plan: a later `sort` of the whole workbook skips them.
 """
 
 from __future__ import annotations
@@ -16,6 +16,7 @@ from media_hygiene.errors import WorkbookError
 from media_hygiene.i18n import _
 from media_hygiene.review.sort_now import SortedNow
 from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.aside_paths import set_aside
 from media_hygiene.services.sort import SortService
 from media_hygiene.services.sort_inputs import find_workbook, load_inputs
 
@@ -63,6 +64,23 @@ def only_rows(inputs: SortInputs, ids: frozenset[str]) -> SortInputs:
     return replace(inputs, plan=plan, cut=True)
 
 
+def not_aside(inputs: SortInputs, aside: frozenset[str]) -> SortInputs:
+    """Leave the files set aside in place: a soft delete, never sorted (0518).
+
+    Args:
+        inputs: The plan, cut to an event.
+        aside: The host paths set aside.
+
+    Returns:
+        The same inputs, without the rows of those files.
+    """
+    if not aside:
+        return inputs
+    return only_rows(
+        inputs, frozenset(row.id for row in inputs.plan.rows if row.path not in aside)
+    )
+
+
 def sort_event(runtime: Runtime, workbook: str, event_id: str) -> SortResult | None:
     """Sort the files of one event now, without asking: the page asked already.
 
@@ -83,6 +101,7 @@ def sort_event(runtime: Runtime, workbook: str, event_id: str) -> SortResult | N
     inputs = only_event(
         load_inputs(runtime, find_workbook(runtime, workbook)), event_id
     )
+    inputs = not_aside(inputs, set_aside(runtime))
     prepared = service.prepare(inputs)
     if not prepared.plan.groups:
         return None

@@ -38,8 +38,8 @@ from media_hygiene.services import (
     unwanted_reviewing,
 )
 from media_hygiene.services.albums import album_desk
+from media_hygiene.services.aside_paths import review_picker
 from media_hygiene.services.review_serving import ReviewPage
-from media_hygiene.share.album_pickers import KeyPicker
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -160,7 +160,7 @@ def _bursts(
     if not findings.similar.bursts:
         return None
     session = reviewing.open_review(runtime, findings, target)
-    albums = album_desk(runtime, KeyPicker(session.preview_source).files)
+    albums = album_desk(runtime, review_picker(runtime, session))
 
     def app(page: bytes, executor: Executor, previews: Path | None) -> LocalApp:
         """The burst review's app, with its albums.

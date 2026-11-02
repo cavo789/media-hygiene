@@ -23,6 +23,7 @@ from media_hygiene.review.place import decisions_place
 from media_hygiene.review.session import ReviewSession, ReviewSource
 from media_hygiene.review.views import StateBuilder
 from media_hygiene.services.albums import album_desk
+from media_hygiene.services.aside_paths import review_picker
 from media_hygiene.services.burst_carry import resume_bursts
 from media_hygiene.services.missing_mount import missing_mount, typed_again
 from media_hygiene.services.next_command import LAUNCHER_VARIABLE, NextVerb
@@ -30,7 +31,6 @@ from media_hygiene.services.policy import keep_policy, proposal_limits
 from media_hygiene.services.review import decisions_path
 from media_hygiene.services.review_file import first_save, review_page
 from media_hygiene.services.writable import ensure_writable
-from media_hygiene.share.album_pickers import KeyPicker
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -117,7 +117,7 @@ def serve_review(runtime: Runtime, session: ReviewSession, start: ReviewStart) -
     """
     page = review_page(PAGE_TEMPLATE, session.place, (DECIDE_PATH, FILE_PATH))
     offer = ApplyOffer(start.apply, lambda: session.progress[1] > 0)
-    albums = album_desk(runtime, KeyPicker(session.preview_source).files)
+    albums = album_desk(runtime, review_picker(runtime, session))
     code = 0
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         app = ReviewApp(session, page, executor, runtime.previews_dir, albums)

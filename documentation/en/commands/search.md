@@ -96,7 +96,9 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   is journaled, `undo` puts it back. A file set aside counts as gone for every action but
   *Take back*: picked with the others (Ctrl+A, Shift, the rectangle), it stays out of the
   album, the share, the TV and the event move, and the answer says so (*3 files set aside
-  ignored*). On a tile, the name, folder and caption keep one line each
+  ignored*). It also leaves the albums it was put in (their page, their TV, `slideshow
+  --album`), and the photos of an event sent elsewhere from 🗂 *Events* leave it in place;
+  the same goes for a shot set aside in the burst review. On a tile, the name, folder and caption keep one line each
   (point at them for the whole text), the words two lines then *+N*.
 - **⌨ Keyboard**: the panel lists the main gestures; **More keys** opens over the page (Esc
   closes it), so the form above never leaves the screen.

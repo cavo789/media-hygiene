@@ -14,6 +14,9 @@ import pytest
 
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.index.schema import prepare
+from media_hygiene.report.chosen_decisions import ChosenFile
+from media_hygiene.report.decisions import DecisionsFile
+from media_hygiene.review.place import DEFAULT_DECISIONS
 from media_hygiene.search.fts import SearchIndex
 from media_hygiene.services.albums import album_store
 from media_hygiene.services.slideshow_pick import Pick, picked_slides
@@ -150,3 +153,26 @@ def test_a_video_carries_its_codec_and_length(
         picked = picked_slides(runtime, search, Pick(folder=r"C:\Photos\Holidays"))
     films = [slide.film for slide in picked.slides]
     assert films == [None, film, None, None]
+
+
+def test_an_album_leaves_out_its_files_set_aside(
+    runtime: Runtime, tmp_path: Path
+) -> None:
+    """0518: a file set aside after it was put in the album is no longer shown."""
+    data = runtime.locations.data_dir
+    index = _index(runtime, tmp_path)
+    files = tuple(data / _FILES[at][0] for at in (0, 4))
+    for file in files:
+        file.parent.mkdir(parents=True, exist_ok=True)
+        file.write_bytes(b"x")
+    album_store(runtime).add(AlbumChange("Crete 2023", files))
+    aside = ChosenFile(path=runtime.mapper.to_host(files[0]), size=1, mtime_ns=1)
+    target = runtime.locations.reports_dir / DEFAULT_DECISIONS
+    target.write_text(
+        DecisionsFile(version=1, roots=("C:\\",), chosen=(aside,)).model_dump_json(),
+        "utf-8",
+    )
+    with SearchIndex.open(index) as search:
+        picked = picked_slides(runtime, search, Pick(album="Crete 2023"))
+    assert tuple(slide.key for slide in picked.slides) == (5,)
+    assert picked.missing == 0

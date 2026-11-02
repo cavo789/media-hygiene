@@ -55,9 +55,10 @@ class KeyPicker:
     """The burst review: the keys of its shots, as its previews name them."""
 
     source: Callable[[str], Path | None]
+    aside: AsideFilter | None = None  # drops the shots set aside (0518)
 
     def files(self, asked: AlbumAsked) -> Kept:
-        """The files a request names.
+        """The files a request names, those set aside left out but to take out.
 
         Args:
             asked: The request.
@@ -66,4 +67,7 @@ class KeyPicker:
             Them, in the container; unknown keys left out.
         """
         found = (self.source(key) for key in asked.keys)
-        return Kept(tuple(path for path in found if path is not None))
+        picked = tuple(path for path in found if path is not None)
+        if self.aside is None or asked.action == "remove":
+            return Kept(picked)
+        return self.aside.keep(picked)

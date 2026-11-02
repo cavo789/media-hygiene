@@ -4,7 +4,8 @@ Read from the index alone, as `browse` and `search` do: a photo the last audit d
 see is not shown. Photos and videos (0292: a video's codec and length from what the
 audit's `ffprobe` read), oldest first, the undated ones last; at most `MAX_SLIDES`,
 the first ones by date. An album's files are followed if they moved
-(`share.album_follow`); those missing are counted, never shown.
+(`share.album_follow`); those missing are counted, never shown; those set aside
+are left out (0518).
 """
 
 from __future__ import annotations
@@ -25,6 +26,7 @@ from media_hygiene.search import statements as sql
 from media_hygiene.search.days import NAME as DAY
 from media_hygiene.search.query import SearchQuery, parse_terms
 from media_hygiene.services.albums import album_store
+from media_hygiene.services.aside_paths import set_aside
 from media_hygiene.services.slideshow_notes import notes_of
 from media_hygiene.services.slideshow_story import told_slides
 from media_hygiene.share.albums import AlbumsError
@@ -142,7 +144,7 @@ def album_paths(runtime: Runtime, name: str) -> tuple[list[str], int]:
         name: The album's name.
 
     Returns:
-        The paths, and the count of files missing.
+        The paths, and the count of files missing; the files set aside left out.
 
     Raises:
         AlbumsError: No album of that name, or no albums file.
@@ -158,7 +160,12 @@ def album_paths(runtime: Runtime, name: str) -> tuple[list[str], int]:
             _("Add photos to an album in search."),
         )
     gone = frozenset(shelf.missing.get(album.name, ()))
-    paths = sorted(entry.path for entry in album.entries if entry.path not in gone)
+    aside = set_aside(runtime)  # a soft delete: no longer in any album (0518)
+    paths = sorted(
+        entry.path
+        for entry in album.entries
+        if entry.path not in gone and entry.path not in aside
+    )
     return paths, len(gone)
 
 
