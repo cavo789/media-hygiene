@@ -148,6 +148,7 @@ def _show_result(runtime: Runtime, result: SortResult) -> None:
         runtime: Settings, mount points and output.
         result: The run.
     """
+    from media_hygiene.cli.config_tidy_flow import tidy_tip
     from media_hygiene.cli.next_steps import carried, safety
     from media_hygiene.console.incidents_view import show_failed, show_skipped
     from media_hygiene.console.links_view import show_links
@@ -182,6 +183,7 @@ def _show_result(runtime: Runtime, result: SortResult) -> None:
         output.tip(
             _("Run the same command again to continue: the files moved are skipped.")
         )
+    tidy_tip(runtime)
     safety(
         runtime,
         _(

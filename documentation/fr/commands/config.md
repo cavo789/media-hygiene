@@ -28,7 +28,7 @@ docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygien
 | Vos photos | 🔒 Jamais modifiées. |
 | Il faut | Rien. |
 | Conseillé | `/config`, et les mêmes options `-v` que votre commande habituelle, pour voir leur état. |
-| Écrit | Un `config.toml` commenté dans `/config`, la première fois seulement ; avec `--upgrade`, les réglages qui lui manquent ; avec `--convention`, les dispositions de la convention de tri, une fois votre oui donné. |
+| Écrit | Un `config.toml` commenté dans `/config`, la première fois seulement ; avec `--upgrade`, les réglages qui lui manquent ; avec `--convention`, les dispositions de la convention de tri, une fois votre oui donné ; avec `tidy --apply`, les entrées retirées (une copie dans `/cache/config-backups/` d'abord). |
 | Annuler | Supprimez `config.toml` pour revenir aux valeurs par défaut. |
 | Avec `mh` | `mh config`. |
 
@@ -95,6 +95,34 @@ Rien n'est réécrit sans votre oui. Vos règles ne sont pas touchées : une rè
 a plusieurs niveaux de dossiers (`Fêtes/Noël`) est nommée par `classify`, pour que vous la
 raccourcissiez.
 
+## Le faire maigrir : `config tidy`
+
+Au fil des années, `config.toml` garde des entrées qui ne pointent plus sur rien : une règle
+`match = "path"` dont `sort` a déplacé les photos, un `[[places.folders]]` dont le dossier a
+été renommé. `config tidy` les liste, chacune avec sa raison, **sans rien changer** 🔒 :
+
+```powershell
+mh config tidy           # lister seulement
+mh config tidy --apply   # retirer les entrées cochées
+```
+
+| Entrée | Ne pointe plus sur rien quand |
+|---|---|
+| `[folders]` `preferred`, `protected`, `excluded`, `backups` | le dossier n'existe pas, ou est cité deux fois |
+| `[[places.folders]]` | son dossier n'existe pas, ou est cité deux fois |
+| `[[classify.rules]]` `match = "path"` / `"camera"` | aucun chemin / aucun appareil de l'index ne correspond à son `pattern` |
+| `[[classify.rules]]` `match = "date_range"` | aucune photo indexée n'a été prise à ces dates : montrée **non cochée** (une règle écrite avant un import) ; `--dates` la coche aussi |
+| `[[classify.clocks]]` | aucune photo de cet appareil à ces dates |
+
+Un dossier sur un lecteur non monté (une clé USB) n'est **pas jugé**, et c'est dit. Un index
+vide ne juge aucune règle : lancez d'abord `audit` sur tous vos dossiers. Vos lieux dessinés à
+la main et les endroits écartés ne sont jamais proposés.
+
+`--apply` copie d'abord `config.toml` dans `/cache/config-backups/` (daté), retire les entrées
+cochées (commentaires et ordre gardés), puis relit le fichier et dit combien sont parties. Pour
+annuler, recopiez ce fichier sur `config.toml` : la console donne la ligne. À la fin de `sort`,
+une ligne 💡 dit quand des entrées ne pointent plus sur rien.
+
 ## Qui l'emporte ?
 
 De la plus faible à la plus forte : la valeur par défaut, `config.toml`, une variable
@@ -103,8 +131,8 @@ d'environnement (`-e MEDIA_HYGIENE_<SECTION>__<CLÉ>=…`, comme
 
 ## Bon à savoir
 
-- `config` a trois options à lui, `--upgrade`, `--convention` et `--dry-run` ; les options
-  globales s'appliquent aussi (`--locale`, `--verbosity`).
+- `config` a l'action `tidy` et les options `--upgrade`, `--convention`, `--dry-run`, `--apply`
+  et `--dates` ; les options globales s'appliquent aussi (`--locale`, `--verbosity`).
 - `/config` contient `config.toml` **seulement** : n'y mettez jamais rien d'autre.
 - Un réglage inconnu de cette version est signalé, avec sa ligne : voir le
   [dépannage](../reference-troubleshooting.md#un-réglage-de-configtoml-est-inconnu-de-cette-version).

@@ -1448,6 +1448,10 @@ msgstr ""
 msgid "Changed your mind? 'media-hygiene undo {run_id}' restores everything:"
 msgstr ""
 
+#, python-brace-format
+msgid "Changed your mind? Copy {backup} over {config}."
+msgstr ""
+
 msgid "Changed your mind? This puts back what was renamed or set aside:"
 msgstr ""
 
@@ -2439,6 +2443,12 @@ msgstr ""
 msgid "Entirely a copy: the second folder holds nothing else."
 msgstr ""
 
+msgid "Entries pointing at nothing"
+msgstr ""
+
+msgid "Entry"
+msgstr ""
+
 msgid ""
 "Erase the quarantine of a run for good: with 'clean --delete', the only "
 "way the tool removes content."
@@ -2565,6 +2575,9 @@ msgid "Every cluster lies in a place of yours."
 msgstr ""
 
 msgid "Every copy"
+msgstr ""
+
+msgid "Every entry of config.toml points at something."
 msgstr ""
 
 msgid "Every file of this event is already in its folder: nothing to move."
@@ -3906,6 +3919,11 @@ msgstr ""
 msgid "Listing the photos and videos of {name}: about 30 seconds per 1,000 files…"
 msgstr ""
 
+msgid ""
+"Lists the entries pointing at nothing any more (folders gone, rules "
+"matching no photo); removes them with --apply, after a copy."
+msgstr ""
+
 #, python-brace-format
 msgid "Load it in this terminal with: {load}"
 msgstr ""
@@ -4079,6 +4097,9 @@ msgstr ""
 msgid ""
 "Mount each folder only once (a folder already includes its subfolders): "
 "remove one of these -v options."
+msgstr ""
+
+msgid "Mount it as for your other commands, without ':ro'."
 msgstr ""
 
 #, python-brace-format
@@ -4547,6 +4568,9 @@ msgstr ""
 msgid "No draft: {reason}"
 msgstr ""
 
+msgid "No entry is ticked: nothing was written."
+msgstr ""
+
 msgid "No event left to decide after this one."
 msgstr ""
 
@@ -4922,6 +4946,10 @@ msgstr[1] ""
 msgid ""
 "Not in your library: you set them aside (a burst shot, a near copy, an "
 "unwanted photo). Never ticked for you: read the warning first."
+msgstr ""
+
+#, python-brace-format
+msgid "Not judged, its drive is not mounted: {folder}"
 msgstr ""
 
 #, python-brace-format
@@ -6224,6 +6252,9 @@ msgid "Remove Media Hygiene from the right-click"
 msgstr ""
 
 msgid "Remove a folder"
+msgstr ""
+
+msgid "Remove the ticked entries (a copy is kept first):"
 msgstr ""
 
 #, python-brace-format
@@ -8999,6 +9030,12 @@ msgid ""
 "%(place)s."
 msgstr ""
 
+msgid "Tidy config.toml"
+msgstr ""
+
+msgid "Tidying config.toml would change other settings: nothing was written."
+msgstr ""
+
 #, python-brace-format
 msgid "Time per step: {steps}"
 msgstr ""
@@ -9465,6 +9502,9 @@ msgstr ""
 msgid "When two folders repeat each other: which one to keep, in one click."
 msgstr ""
 
+msgid "Where"
+msgstr ""
+
 msgid "Where am I, in the console"
 msgstr ""
 
@@ -9598,6 +9638,12 @@ msgid ""
 msgstr ""
 
 msgid "With Léa"
+msgstr ""
+
+msgid "With tidy: remove the ticked entries, after a copy of config.toml."
+msgstr ""
+
+msgid "With tidy: tick the date_range rules with no photo too."
 msgstr ""
 
 msgid "Without a date"
@@ -11113,7 +11159,21 @@ msgstr ""
 msgid "no frame: {error}"
 msgstr ""
 
+#, python-brace-format
+msgid "no indexed camera matches '{pattern}'"
+msgstr ""
+
+#, python-brace-format
+msgid "no indexed path matches '{pattern}'"
+msgstr ""
+
+msgid "no indexed photo was taken on these dates"
+msgstr ""
+
 msgid "no photo framed: save the folder, then the next event to decide"
+msgstr ""
+
+msgid "no photo of this camera was taken on these dates"
 msgstr ""
 
 msgid "no preview"
@@ -11668,6 +11728,9 @@ msgstr ""
 msgid "the first or last one"
 msgstr ""
 
+msgid "the folder does not exist"
+msgstr ""
+
 msgid "the folder is gone already"
 msgstr ""
 
@@ -11809,6 +11872,10 @@ msgid ""
 "quarantine, 'undo' brings them back."
 msgstr ""
 
+#, python-brace-format
+msgid "the same as entry {number}"
+msgstr ""
+
 msgid ""
 "the same command with --try compares a few before and after in the "
 "browser; with --apply, it re-encodes them, each original in the "
@@ -11901,6 +11968,14 @@ msgid ""
 msgstr ""
 
 msgid "tick or untick it"
+msgstr ""
+
+msgid "tidy clean config toml stale rules folders"
+msgstr ""
+
+msgid ""
+"tidy: list the entries of config.toml that point at nothing any more "
+"(folders gone, rules matching no photo)."
 msgstr ""
 
 #, python-brace-format
@@ -12406,6 +12481,18 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} entries at its top"
 msgstr ""
+
+#, python-brace-format
+msgid "{count} entry of config.toml points at nothing: mh config tidy"
+msgid_plural "{count} entries of config.toml point at nothing: mh config tidy"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} entry removed from config.toml, read back from the disk."
+msgid_plural "{count} entries removed from config.toml, read back from the disk."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid ""
@@ -13442,6 +13529,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{folder} is not mounted, or read-only: nothing was written."
+msgstr ""
+
+#, python-brace-format
 msgid "{folder} is not one of the folders listed"
 msgstr ""
 
@@ -14278,6 +14369,10 @@ msgid "{seconds} s"
 msgstr ""
 
 #, python-brace-format
+msgid "{section} is not a list."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "{series}: only the sharpest shot (and those of protected folders) would "
 "stay, {aside}, saved in one write. Series to look at, still to see: "
@@ -14643,6 +14738,9 @@ msgid "🔒 Nothing was changed: this is only the list."
 msgstr ""
 
 msgid "🔒 Nothing was sent: the places keep their town's name."
+msgstr ""
+
+msgid "🔒 Nothing was written."
 msgstr ""
 
 msgid "🔒 Only read: your photos and the backup folder are not changed."

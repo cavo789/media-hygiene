@@ -28,7 +28,7 @@ docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygien
 | Your photos | 🔒 Never changed. |
 | Needs | Nothing. |
 | Recommended | `/config`, and the same `-v` options as your usual command, to see their state. |
-| Writes | A commented `config.toml` in `/config`, the first time only; with `--upgrade`, the settings it lacks; with `--convention`, the layouts of the sort convention, once you say yes. |
+| Writes | A commented `config.toml` in `/config`, the first time only; with `--upgrade`, the settings it lacks; with `--convention`, the layouts of the sort convention, once you say yes; with `tidy --apply`, the entries removed (a copy in `/cache/config-backups/` first). |
 | Undo | Delete `config.toml` to get the defaults back. |
 | With `mh` | `mh config`. |
 
@@ -90,6 +90,34 @@ mh config --convention             # list, ask, write
 Nothing is rewritten without your yes. Your rules are not touched: a rule whose category has
 several folder levels (`Parties/Christmas`) is named by `classify`, for you to shorten.
 
+## Tidy it: `config tidy`
+
+Over the years `config.toml` keeps entries that point at nothing any more: a rule
+`match = "path"` whose photos `sort` moved away, a `[[places.folders]]` whose folder was
+renamed. `config tidy` lists them, each with its reason, **without changing anything** 🔒:
+
+```powershell
+mh config tidy           # list only
+mh config tidy --apply   # remove the ticked entries
+```
+
+| Entry | Pointing at nothing when |
+|---|---|
+| `[folders]` `preferred`, `protected`, `excluded`, `backups` | the folder does not exist, or is listed twice |
+| `[[places.folders]]` | its folder does not exist, or is listed twice |
+| `[[classify.rules]]` `match = "path"` / `"camera"` | no path / no camera of the index matches its `pattern` |
+| `[[classify.rules]]` `match = "date_range"` | no indexed photo was taken on its dates: shown **unticked** (a rule written before an import); `--dates` ticks it too |
+| `[[classify.clocks]]` | no photo of that camera on its dates |
+
+A folder on a drive that is not mounted (a USB stick) is **not judged**, and said so. An
+empty index judges no rule: run `audit` on all your folders first. Your hand-drawn places
+and the spots set aside are never proposed.
+
+`--apply` first copies `config.toml` to `/cache/config-backups/` (dated), removes the ticked
+entries (comments and order kept), then reads the file back and says how many are gone. To
+undo, copy that file back over `config.toml`: the console gives the line. At the end of
+`sort`, one 💡 line says when entries point at nothing.
+
 ## Who wins?
 
 From the weakest to the strongest: the built-in default, `config.toml`, an environment variable
@@ -98,8 +126,8 @@ the option of the command line.
 
 ## Good to know
 
-- `config` has three options of its own, `--upgrade`, `--convention` and `--dry-run`; the global
-  ones apply too
+- `config` has the action `tidy` and the options `--upgrade`, `--convention`, `--dry-run`, `--apply`
+  and `--dates`; the global ones apply too
   (`--locale`, `--verbosity`).
 - `/config` holds `config.toml` **only**: never put anything else there.
 - A setting unknown to this version is said, with its line: see

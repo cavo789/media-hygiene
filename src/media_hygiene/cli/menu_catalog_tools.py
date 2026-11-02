@@ -161,7 +161,7 @@ def tools_areas() -> tuple[Area, ...]:
         Doc("clean/04-html-report/"),
         _("4. The HTML report"),
     )
-    advanced = ("config", "status", "menu", "launcher", "home")
+    advanced = ("config", "config-tidy", "status", "menu", "launcher", "home")
     settings = Area(
         Space.SETTINGS,
         _("Settings"),

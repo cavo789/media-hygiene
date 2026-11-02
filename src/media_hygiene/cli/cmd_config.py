@@ -5,34 +5,16 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Annotated, Final
+from typing import Annotated, Final
 
 import typer
 
+from media_hygiene.cli.config_categories import ConfigAction
 from media_hygiene.cli.context import runtime_of
 from media_hygiene.i18n import _
 
-if TYPE_CHECKING:
-    from rich.table import Table
-
-    from media_hygiene.config.loader import Origin
-    from media_hygiene.services.runtime import Runtime
-
-
 _SYSTEM_NAMES_AFTER: Final = ("scan", "excluded_names")
 _PEOPLE, _IGNORED = "people", "ignored"
-
-
-def _origin_label(origin: Origin) -> str:
-    from media_hygiene.config.loader import Origin
-
-    labels = {
-        Origin.DEFAULT: _("default"),
-        Origin.FILE: _("config.toml"),
-        Origin.ENV: _("environment"),
-        Origin.CLI: _("command line"),
-    }
-    return labels[origin]
 
 
 def _shown(section: str, key: str, value: object) -> str:
@@ -59,7 +41,32 @@ def _shown(section: str, key: str, value: object) -> str:
 
 def config_command(  # pylint: disable=too-many-arguments  # one per option
     ctx: typer.Context,
+    action: Annotated[
+        ConfigAction | None,
+        typer.Argument(
+            help=_(
+                "tidy: list the entries of config.toml that point at nothing any "
+                "more (folders gone, rules matching no photo)."
+            ),
+        ),
+    ] = None,
     *,
+    apply: Annotated[
+        bool,
+        typer.Option(
+            "--apply",
+            help=_(
+                "With tidy: remove the ticked entries, after a copy of config.toml."
+            ),
+        ),
+    ] = False,
+    dates: Annotated[
+        bool,
+        typer.Option(
+            "--dates",
+            help=_("With tidy: tick the date_range rules with no photo too."),
+        ),
+    ] = False,
     upgrade: Annotated[
         bool,
         typer.Option(
@@ -94,18 +101,30 @@ def config_command(  # pylint: disable=too-many-arguments  # one per option
 
     Args:
         ctx: Typer context holding the runtime.
+        action: `tidy`, or nothing.
+        apply: `--apply`.
+        dates: `--dates`.
         upgrade: `--upgrade`.
         convention: `--convention`.
         dry_run: `--dry-run`.
     """
     from rich.table import Table
 
-    from media_hygiene.cli.config_mounts import mounts_table, on_host
+    from media_hygiene.cli.config_categories import (
+        categories_table,
+        edit_tip,
+        origin_label,
+    )
+    from media_hygiene.cli.config_mounts import mounts_table
     from media_hygiene.cli.config_upgrade_flow import show_upgrade, upgrade_tip
-    from media_hygiene.paths.mount_kind import MountKind
     from media_hygiene.scan.skipped_dirs import SYSTEM_DIR_NAMES
 
     runtime = runtime_of(ctx)
+    if action is ConfigAction.TIDY:
+        from media_hygiene.cli.config_tidy_flow import show_tidy
+
+        show_tidy(runtime, apply=apply, dates=dates)
+        return
     if convention:
         from media_hygiene.cli.config_convention_flow import show_convention
 
@@ -120,7 +139,7 @@ def config_command(  # pylint: disable=too-many-arguments  # one per option
         table.add_column(header, overflow="fold")
     for section, values in settings.items():
         for key, value in values.items():
-            origin = _origin_label(runtime.loaded.origin_of(section, key))
+            origin = origin_label(runtime.loaded.origin_of(section, key))
             table.add_row(f"{section}.{key}", _shown(section, key, value), origin)
             if (section, key) == _SYSTEM_NAMES_AFTER:
                 # Always skipped too: the user's names add to these.
@@ -128,52 +147,9 @@ def config_command(  # pylint: disable=too-many-arguments  # one per option
                 table.add_row(_("(always skipped)"), system, _("built-in"))
     runtime.output.show(table)
     runtime.output.blank()
-    runtime.output.show(_categories_table(runtime))
+    runtime.output.show(categories_table(runtime))
     runtime.output.blank()
     runtime.output.show(mounts_table(runtime))
     runtime.output.blank()
-    config_file = runtime.locations.config_file
-    if runtime.persistent(MountKind.CONFIG):
-        runtime.output.tip(
-            _("Edit {path} to change these settings; command-line options win.").format(
-                path=on_host(runtime, config_file) or config_file,
-            ),
-        )
-    else:
-        runtime.output.tip(
-            _(
-                "To keep settings, mount a folder of yours on /config, e.g. "
-                '-v "$HOME\\media-hygiene\\config:/config": config.toml is created '
-                "there, commented, on the first run; edit it with any text editor."
-            ),
-        )
+    edit_tip(runtime)
     upgrade_tip(runtime)
-
-
-def _categories_table(runtime: Runtime) -> Table:
-    """Every category `--ext` accepts, built in or from `[scan.categories]`.
-
-    Args:
-        runtime: Settings, mount points and output.
-
-    Returns:
-        The table: name, extensions, origin.
-    """
-    from rich.table import Table
-
-    from media_hygiene.config.categories import BUILTIN_CATEGORIES
-
-    table = Table(title=_("Extension categories (--ext)"), title_justify="left")
-    for header in (_("Category"), _("Extensions"), _("Origin")):
-        table.add_column(header, overflow="fold")
-    user = _origin_label(runtime.loaded.origin_of("scan", "categories"))
-    rows = [
-        (name, listed, _("built-in")) for name, listed in BUILTIN_CATEGORIES.items()
-    ]
-    rows += [
-        (name, listed, user)
-        for name, listed in runtime.settings.scan.categories.items()
-    ]
-    for name, listed, origin in rows:
-        table.add_row(name, ", ".join(ext.lstrip(".") for ext in listed), origin)
-    return table

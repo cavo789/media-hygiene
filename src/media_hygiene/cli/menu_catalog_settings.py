@@ -84,6 +84,21 @@ def settings_steps() -> tuple[Step, ...]:
             doc=Doc("commands/config/"),
         ),
         Step(
+            "config-tidy",
+            space,
+            _("Tidy config.toml"),
+            _(
+                "Lists the entries pointing at nothing any more (folders gone, rules "
+                "matching no photo); removes them with --apply, after a copy."
+            ),
+            "config tidy",
+            Risk.SAFE,
+            icon="sliders",
+            keywords=_("tidy clean config toml stale rules folders"),
+            doc=Doc("commands/config/"),
+            optional=True,
+        ),
+        Step(
             "status",
             space,
             _("Where am I, in the console"),

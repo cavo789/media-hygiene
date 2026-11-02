@@ -1789,6 +1789,10 @@ msgstr ""
 msgid "Changed your mind? 'media-hygiene undo {run_id}' restores everything:"
 msgstr "Vous changez d'avis ? 'media-hygiene undo {run_id}' restaure tout :"
 
+#, python-brace-format
+msgid "Changed your mind? Copy {backup} over {config}."
+msgstr "Changé d'avis ? Recopiez {backup} sur {config}."
+
 msgid "Changed your mind? This puts back what was renamed or set aside:"
 msgstr "Changé d'avis ? Ceci remet ce qui a été renommé ou mis de côté :"
 
@@ -2998,6 +3002,12 @@ msgstr ""
 msgid "Entirely a copy: the second folder holds nothing else."
 msgstr "Entièrement une copie : le second dossier ne contient rien d'autre."
 
+msgid "Entries pointing at nothing"
+msgstr "Entrées qui ne pointent sur rien"
+
+msgid "Entry"
+msgstr "Entrée"
+
 msgid ""
 "Erase the quarantine of a run for good: with 'clean --delete', the only "
 "way the tool removes content."
@@ -3165,6 +3175,9 @@ msgstr "Chaque groupe est dans un de vos lieux."
 
 msgid "Every copy"
 msgstr "Toutes les copies"
+
+msgid "Every entry of config.toml points at something."
+msgstr "Chaque entrée de config.toml pointe sur quelque chose."
 
 msgid "Every file of this event is already in its folder: nothing to move."
 msgstr ""
@@ -4754,6 +4767,13 @@ msgstr ""
 "Liste des photos et vidéos de {name} : environ 30 secondes par tranche de"
 " 1 000 fichiers…"
 
+msgid ""
+"Lists the entries pointing at nothing any more (folders gone, rules "
+"matching no photo); removes them with --apply, after a copy."
+msgstr ""
+"Liste les entrées qui ne pointent plus sur rien (dossiers disparus, "
+"règles sans photo) ; les retire avec --apply, après une copie."
+
 #, python-brace-format
 msgid "Load it in this terminal with: {load}"
 msgstr "Chargez-le dans ce terminal avec : {load}"
@@ -4952,6 +4972,9 @@ msgid ""
 msgstr ""
 "Montez chaque dossier une seule fois (un dossier inclut déjà ses sous-"
 "dossiers) : retirez l'une de ces options -v."
+
+msgid "Mount it as for your other commands, without ':ro'."
+msgstr "Montez-le comme pour vos autres commandes, sans ':ro'."
 
 #, python-brace-format
 msgid ""
@@ -5523,6 +5546,9 @@ msgstr "Aucun brouillon prêt pour l'instant."
 msgid "No draft: {reason}"
 msgstr "Pas de brouillon : {reason}"
 
+msgid "No entry is ticked: nothing was written."
+msgstr "Aucune entrée n'est cochée : rien n'a été écrit."
+
 msgid "No event left to decide after this one."
 msgstr "Plus aucun événement à décider après celui-ci."
 
@@ -5971,6 +5997,10 @@ msgstr ""
 "Pas dans votre photothèque : vous les avez mis de côté (une photo de "
 "rafale, une copie proche, une photo indésirable). Jamais cochés pour vous"
 " : lisez d'abord l'avertissement."
+
+#, python-brace-format
+msgid "Not judged, its drive is not mounted: {folder}"
+msgstr "Pas jugé, son lecteur n'est pas monté : {folder}"
 
 #, python-brace-format
 msgid "Not looked at (not mounted): {points}."
@@ -7532,6 +7562,9 @@ msgstr "Retirer Media Hygiene du clic droit"
 
 msgid "Remove a folder"
 msgstr "Retirer un dossier"
+
+msgid "Remove the ticked entries (a copy is kept first):"
+msgstr "Retirer les entrées cochées (une copie est gardée d'abord) :"
 
 #, python-brace-format
 msgid "Remove the {count} rules that decided nothing"
@@ -10913,6 +10946,12 @@ msgstr ""
 "question, chaque fichier recopié et comparé d'abord. Chaque coche est "
 "enregistrée aussitôt dans %(place)s."
 
+msgid "Tidy config.toml"
+msgstr "Faire maigrir config.toml"
+
+msgid "Tidying config.toml would change other settings: nothing was written."
+msgstr "Ranger config.toml changerait d'autres réglages : rien n'a été écrit."
+
 #, python-brace-format
 msgid "Time per step: {steps}"
 msgstr "Temps par étape : {steps}"
@@ -11457,6 +11496,9 @@ msgstr "Quand utiliser les couleurs (NO_COLOR est aussi respecté)."
 msgid "When two folders repeat each other: which one to keep, in one click."
 msgstr "Quand deux dossiers se répètent : lequel garder, en un clic."
 
+msgid "Where"
+msgstr "Où"
+
 msgid "Where am I, in the console"
 msgstr "Où en suis-je, dans la console"
 
@@ -11626,6 +11668,12 @@ msgstr ""
 
 msgid "With Léa"
 msgstr "Avec Léa"
+
+msgid "With tidy: remove the ticked entries, after a copy of config.toml."
+msgstr "Avec tidy : retirer les entrées cochées, après une copie de config.toml."
+
+msgid "With tidy: tick the date_range rules with no photo too."
+msgstr "Avec tidy : cocher aussi les règles date_range sans photo."
 
 msgid "Without a date"
 msgstr "Sans date"
@@ -13075,8 +13123,8 @@ msgid ""
 "mh met an unexpected error ({reason}): what it did before stays done. Its"
 " window shows the details."
 msgstr ""
-"mh a rencontré une erreur imprévue ({reason}) : ce qu'il a fait avant reste "
-"fait. Sa fenêtre en montre le détail."
+"mh a rencontré une erreur imprévue ({reason}) : ce qu'il a fait avant "
+"reste fait. Sa fenêtre en montre le détail."
 
 msgid ""
 "mh mounts it for backup and restore; with docker run, add -v \"$HOME"
@@ -13346,10 +13394,24 @@ msgstr "pas de guillemet double"
 msgid "no frame: {error}"
 msgstr "pas d'image : {error}"
 
+#, python-brace-format
+msgid "no indexed camera matches '{pattern}'"
+msgstr "aucun appareil de l'index ne correspond à '{pattern}'"
+
+#, python-brace-format
+msgid "no indexed path matches '{pattern}'"
+msgstr "aucun chemin de l'index ne correspond à '{pattern}'"
+
+msgid "no indexed photo was taken on these dates"
+msgstr "aucune photo indexée n'a été prise à ces dates"
+
 msgid "no photo framed: save the folder, then the next event to decide"
 msgstr ""
 "aucune photo encadrée : enregistrer le dossier, puis l'événement suivant "
 "à décider"
+
+msgid "no photo of this camera was taken on these dates"
+msgstr "aucune photo de cet appareil n'a été prise à ces dates"
 
 msgid "no preview"
 msgstr "pas d'aperçu"
@@ -13935,6 +13997,9 @@ msgstr "le premier ou le dernier fichier"
 msgid "the first or last one"
 msgstr "la première ou la dernière"
 
+msgid "the folder does not exist"
+msgstr "le dossier n'existe pas"
+
 msgid "the folder is gone already"
 msgstr "le dossier a déjà disparu"
 
@@ -14097,6 +14162,10 @@ msgstr ""
 "la même commande 'clean' avec {option} ; les photos écartées vont en "
 "quarantaine, 'undo' les ramène."
 
+#, python-brace-format
+msgid "the same as entry {number}"
+msgstr "la même que l'entrée {number}"
+
 msgid ""
 "the same command with --try compares a few before and after in the "
 "browser; with --apply, it re-encodes them, each original in the "
@@ -14207,6 +14276,16 @@ msgstr ""
 
 msgid "tick or untick it"
 msgstr "le cocher ou le décocher"
+
+msgid "tidy clean config toml stale rules folders"
+msgstr "ranger nettoyer config toml périmé règles dossiers"
+
+msgid ""
+"tidy: list the entries of config.toml that point at nothing any more "
+"(folders gone, rules matching no photo)."
+msgstr ""
+"tidy : lister les entrées de config.toml qui ne pointent plus sur rien "
+"(dossiers disparus, règles sans photo)."
 
 #, python-brace-format
 msgid ""
@@ -14811,6 +14890,18 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} entries at its top"
 msgstr "{count} éléments à sa racine"
+
+#, python-brace-format
+msgid "{count} entry of config.toml points at nothing: mh config tidy"
+msgid_plural "{count} entries of config.toml point at nothing: mh config tidy"
+msgstr[0] "{count} entrée de config.toml ne pointe sur rien : mh config tidy"
+msgstr[1] "{count} entrées de config.toml ne pointent sur rien : mh config tidy"
+
+#, python-brace-format
+msgid "{count} entry removed from config.toml, read back from the disk."
+msgid_plural "{count} entries removed from config.toml, read back from the disk."
+msgstr[0] "{count} entrée retirée de config.toml, relue sur le disque."
+msgstr[1] "{count} entrées retirées de config.toml, relues sur le disque."
 
 #, python-brace-format
 msgid ""
@@ -16130,6 +16221,10 @@ msgstr ""
 "'audit', puis placez-le sous son nouveau nom."
 
 #, python-brace-format
+msgid "{folder} is not mounted, or read-only: nothing was written."
+msgstr "{folder} n'est pas monté, ou en lecture seule : rien n'a été écrit."
+
+#, python-brace-format
 msgid "{folder} is not one of the folders listed"
 msgstr "{folder} ne fait pas partie des dossiers listés"
 
@@ -17056,6 +17151,10 @@ msgid "{seconds} s"
 msgstr "{seconds} s"
 
 #, python-brace-format
+msgid "{section} is not a list."
+msgstr "{section} n'est pas une liste."
+
+#, python-brace-format
 msgid ""
 "{series}: only the sharpest shot (and those of protected folders) would "
 "stay, {aside}, saved in one write. Series to look at, still to see: "
@@ -17508,6 +17607,9 @@ msgstr "🔒 Rien n'a été modifié : ce n'est que la liste."
 
 msgid "🔒 Nothing was sent: the places keep their town's name."
 msgstr "🔒 Rien n'a été envoyé : les lieux gardent le nom de leur ville."
+
+msgid "🔒 Nothing was written."
+msgstr "🔒 Rien n'a été écrit."
 
 msgid "🔒 Only read: your photos and the backup folder are not changed."
 msgstr ""

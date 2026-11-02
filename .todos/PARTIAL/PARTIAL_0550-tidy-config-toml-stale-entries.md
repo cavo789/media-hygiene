@@ -68,3 +68,28 @@ Safety:
 - [ ] Nothing removed without being shown and ticked; backup copy; result read back
 - [ ] Comments and order of `config.toml` kept (test on the default template)
 - [ ] Menu catalog, both languages of the docs, `i18n_update`; `docs_screenshots` flagged stale
+
+## Status — PARTIAL (2026-11-02)
+
+Maintainer's answers (2026-11-02): page + verb `mh config tidy`; `date_range` rules with no
+photo proposed unticked; one 💡 line at the end of `sort` when N > 0.
+
+### Done
+- `mh config tidy` (`config/tidy_find.py`, `config/tidy_write.py`, `services/config_tidy.py`,
+  `cli/config_tidy_flow.py`): lists read-only 🔒; `--apply` backs up to
+  `/cache/config-backups/` (dated), removes the ticked entries with tomlkit (comments, order
+  kept), reads the file back and shows what went; one-line undo (copy the backup back).
+- Detected: missing/duplicate folders (`[folders]` lists, `[[places.folders]]`), `path` and
+  `camera` rules matching nothing indexed, `[[classify.clocks]]` with no photo, duplicate
+  rules; `date_range` rules unticked (`--dates` ticks them). Unmounted drive → not judged;
+  empty index → no rule judged.
+- 💡 line at the end of `sort`; menu catalog; docs en/fr `commands/config.md`; i18n.
+
+### Not done
+- The web page with ticks (memory: visible in web or nonexistent).
+  **Reason:** scope; the CLI and the service it would call are ready.
+- `[[classify.place_photos]]` line by line, town renames vs GeoNames, `people` files.
+  **Reason:** scope (place photo paths are already relocated after each audit, TODO 0570).
+- A `path` rule aimed at a root the index never covered still looks stale when the index
+  holds other roots. **Reason:** open question — skip such rules?
+- `docs_screenshots` not run (`config --help` capture stale).
