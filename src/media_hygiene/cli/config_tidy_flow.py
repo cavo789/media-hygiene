@@ -45,7 +45,7 @@ def show_tidy(runtime: Runtime, *, apply: bool, dates: bool) -> None:
         output.info(_("🔒 Nothing was written."))
         output.next_step(
             _("Remove the ticked entries (a copy is kept first):"),
-            "config tidy --apply",
+            "mh config tidy --apply",
         )
         return
     if not chosen:
