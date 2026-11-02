@@ -39,14 +39,19 @@ _COMMANDS: Final = LauncherCommands(
 # A PID no process has: beyond Linux's largest `pid_max`.
 _GONE: Final = 2_147_483_646
 # `docker ps` prints $HELD; `docker stop` leaves a mark; `docker run` says what it got;
-# `ss` prints $LISTENING (nothing listens by default, whatever the test machine runs).
+# `ss` prints $LISTENING (nothing listens by default, whatever the test machine runs);
+# with $BIND, `docker run` fails as Docker does on a taken port.
 _FAKE_DOCKER: Final = r"""
 ss() { touch "$HOME/probed"; printf '%s' "${LISTENING:-}"; }
 docker() {
     case "$1" in
         ps) touch "$HOME/listed"; if [[ -n "$HELD" ]]; then printf '%s\n' "$HELD"; fi ;;
         stop) printf '%s\n' "$2" > "$HOME/stopped" ;;
-        *) printf 'ran:%s\n' "$@" ;;
+        *)
+            printf 'ran:%s\n' "$@"
+            # $BIND: Docker cannot bind the published port (0543).
+            if [[ -n "${BIND:-}" ]]; then printf '%s\n' "$BIND" >&2; return 125; fi
+            ;;
     esac
 }
 """
@@ -59,11 +64,17 @@ def _bash(
     return _run(tmp_path, line, {"HELD": held})
 
 
+_BIND: Final = (
+    "docker: Error response from daemon: driver failed programming external "
+    f"connectivity: Bind for 127.0.0.1:{_PORT} failed: port is already allocated."
+)
+
+
 def _listen(
     tmp_path: Path, line: str, listening: str
 ) -> subprocess.CompletedProcess[str]:
-    """Load the bash `mh` and run `line`, `ss` printing `listening`, no container."""
-    return _run(tmp_path, line, {"LISTENING": listening})
+    """Run `line`, `ss` printing `listening`, Docker refusing to bind the port."""
+    return _run(tmp_path, line, {"LISTENING": listening, "BIND": _BIND})
 
 
 def _run(
@@ -174,7 +185,7 @@ def _listening(name: str, pid: int = 4242) -> str:
 
 
 def test_bash_port_held_by_another_program_names_it(tmp_path: Path) -> None:
-    """No container, a server of this user listens: named with its PID, nothing runs."""
+    """Docker tried first, refused on the port: the server of this user named (0543)."""
     with using(Locale.EN):
         busy = launcher_guards().port.busy
         done = _listen(tmp_path, "mh review", _listening("python3"))
@@ -184,29 +195,44 @@ def test_bash_port_held_by_another_program_names_it(tmp_path: Path) -> None:
         .replace("${port}", str(_PORT))
     )
     assert said in done.stderr
-    assert "ran:" not in done.stdout
-    assert "status=1" in done.stdout
-
-
-@pytest.mark.parametrize("name", ["docker-proxy", "wslrelay"])
-def test_bash_port_held_by_docker_itself_is_not_another_program(
-    tmp_path: Path, name: str
-) -> None:
-    """Docker's own listener is not another program: the page runs."""
-    done = _listen(tmp_path, "mh review", _listening(name))
+    assert "port is already allocated" not in done.stderr  # never Docker's raw line
     assert "ran:review" in done.stdout
-    assert not done.stderr
+    assert "status=125" in done.stdout
+
+
+def test_bash_port_held_by_docker_itself_lets_docker_say(tmp_path: Path) -> None:
+    """Docker's own listener is not another program: Docker's line shown as it is."""
+    done = _listen(tmp_path, "mh review", _listening("docker-proxy"))
+    assert "port is already allocated" in done.stderr
+    assert "status=125" in done.stdout
 
 
 def test_bash_port_listener_of_another_user_lets_docker_say(tmp_path: Path) -> None:
-    """Ss tells no program (another user's socket): the page runs, Docker says."""
+    """Ss tells no program (another user's socket): Docker says it."""
     listening = f"LISTEN 0 5 127.0.0.1:{_PORT} 0.0.0.0:*\n"
     done = _listen(tmp_path, "mh review", listening)
-    assert "ran:review" in done.stdout
     assert (tmp_path / "probed").exists()
+    assert "port is already allocated" in done.stderr
 
 
-def test_bash_port_probe_only_before_a_page(tmp_path: Path) -> None:
+def test_bash_port_never_read_when_docker_starts(tmp_path: Path) -> None:
+    """0543: a page Docker starts never asks ss, whatever listens (try first)."""
+    env = {"LISTENING": _listening("python3")}
+    done = _run(tmp_path, "mh review", env)
+    assert "ran:review" in done.stdout
+    assert not (tmp_path / "probed").exists()
+    assert not done.stderr
+
+
+def test_bash_other_docker_failures_are_said_as_docker_said(tmp_path: Path) -> None:
+    """0543: a failure that is not the port: shown, the port never diagnosed."""
+    done = _run(tmp_path, "mh review", {"BIND": "docker: no such image"})
+    assert "docker: no such image" in done.stderr
+    assert not (tmp_path / "probed").exists()
+    assert "status=125" in done.stdout
+
+
+def test_bash_port_probe_only_for_a_page(tmp_path: Path) -> None:
     """An audit never asks ss: it costs nothing more."""
     done = _listen(tmp_path, "mh audit", _listening("python3"))
     assert "ran:audit" in done.stdout
@@ -226,10 +252,15 @@ def test_powershell_names_another_program_on_the_port() -> None:
         f"Get-NetTCPConnection -LocalPort {_PORT} -State Listen "
         "-ErrorAction SilentlyContinue"
     )
-    assert body.index("docker ps --filter") < body.index("_mh_port_holder")
+    assert (
+        "_mh_port_holder" not in body
+    )  # the port read only on Docker's refusal (0543)
+    assert "Get-NetTCPConnection" not in body
     holder = shown[shown.index("function global:_mh_port_holder") :]
     holder = holder[: holder.index("\n}\n")]
     assert probe in holder
+    body = shown[shown.index("function global:_mh_port_wait") :]
+    body = body[: body.index("\n}\n")]
     assert "_mh_port_holder" in body
     assert "Get-Process -Id $process -ErrorAction SilentlyContinue" in holder
     assert "'com.docker.backend', 'com.docker.proxy', 'wslrelay'" in holder

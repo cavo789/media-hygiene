@@ -26,11 +26,12 @@ _{{ function }}_page_free() {
         docker stop "$id" >/dev/null 2>&1
         printf '%s\n' "{{ guards.texts.stopped }}" >&2
     done < <(docker ps --filter "publish={{ script.commands.port }}" --format '{% raw %}{{.ID}};{{.Labels}}{% endraw %}' 2>/dev/null)
-    _{{ function }}_port_user
+    # The port itself is not read here: Docker is tried first (0543).
+    return 0
 }
 
-# No container holds the port: a program listening on it (another local server) is
-# named, never Docker's raw "address already in use" (0253). ss tells the program of a
+# Docker refused to bind the port of the pages (0543): a program listening on it (another
+# local server) is named, never Docker's raw "address already in use" (0253). ss tells the program of a
 # socket of this user only; without ss, or for another user's, Docker says it. Linux
 # closes a listening socket when its process exits: no "being released" wait as in
 # mh.ps1 (0503); Docker's own docker-proxy, still there a moment, is not another program.

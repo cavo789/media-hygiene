@@ -95,6 +95,18 @@ def _checked(field: Field, value: str) -> str:
     return text
 
 
+def write_whole(path: Path, text: str) -> None:
+    """Write `text` beside `path`, then rename: `mh` never reads half a file (0482).
+
+    Args:
+        path: The file `mh` reads.
+        text: Its whole content.
+    """
+    temporary = path.with_name(f"{path.name}.part")
+    temporary.write_text(text, encoding="utf-8")
+    temporary.replace(path)
+
+
 def write_step(folder: Path, words: tuple[str, ...]) -> Path:
     """Write the one-shot file `mh` runs after the page ends, one word per line.
 
@@ -107,7 +119,7 @@ def write_step(folder: Path, words: tuple[str, ...]) -> Path:
     """
     target = folder / STEP_FILE_NAME
     text = json.dumps({"words": list(words)}, ensure_ascii=False, indent=0)
-    target.write_text(text + "\n", encoding="utf-8")
+    write_whole(target, text + "\n")
     return target
 
 

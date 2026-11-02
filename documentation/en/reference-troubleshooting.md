@@ -189,8 +189,8 @@ setting is required.`
   in another window is left alone: close it there with Ctrl+C. `mh` knows a window by its
   process number and the time it started, so a number Windows has given to another program
   since does not keep a dead page alive.
-- Another program uses 8088 (another local server, a preview of your editor): `mh` names it
-  before the page, in red, with its process number (*The port 8088 of the mh pages is used by
+- Another program uses 8088 (another local server, a preview of your editor): `mh` starts the
+  page as usual and, only when Docker refuses the port, names that program in red, with its process number (*The port 8088 of the mh pages is used by
   another program, python (process 4242): close it, then type the command again.*), and runs
   nothing.
   Close that program; if you cannot, give the pages another port: `port = 9000` under
@@ -198,8 +198,9 @@ setting is required.`
   in WSL or Linux, `ss` tells it for your own programs only, and Docker says *address already in
   use* for the others.
 - *The port 8088 of the mh pages is still being released*: an mh page has just stopped (a
-  page chosen on the home page ends the home page first) and Windows has not freed its port
-  yet. `mh` waits up to 10 seconds, then starts. Only if Windows still holds it does it stop
+  page chosen on the home page ends the home page first) and Docker could not take its port
+  yet. `mh` tries again every second for up to 10 seconds; it says nothing at all when Docker
+  takes the port at once, which is the usual case. Only if Windows still holds it does it stop
   (*…is not released yet by Windows: wait a few seconds, then type the command again*); do so.
 - *port is already allocated* with `docker run` typed by hand: choose another number, the same
   three times: `-p 127.0.0.1:9000:9000` and `review --port 9000`.

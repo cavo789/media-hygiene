@@ -5,8 +5,8 @@ named with its process number (0253), Docker's own listeners excepted. A socket 
 owner has just exited (an mh page stopped a moment ago) is not a holder: Windows shows
 it under PID 0 (the System Idle Process) until it is released, `ss` with no process.
 `mh` waits for it, polling, a line said once; only a port still taken at the end is
-refused (0503). A home page step stops the home page, then starts its own page at once
-on the same port: the normal path, not a rare race.
+refused (0503). Since 0543 the port is read only when `docker run` failed on it:
+Docker can often bind while Windows still shows the PID 0 row, so it is tried first.
 """
 
 from __future__ import annotations
@@ -32,7 +32,15 @@ DOCKER_LISTENERS: Final = (
 # Estimated from the maintainer's report (freed "a few seconds later"); measured by the
 # `port` step of tests/measure/mh-measure.ps1. A constant, not a setting (few settings).
 PORT_RELEASE_SECONDS: Final = 10
-PORT_POLL_MILLISECONDS: Final = 500
+# `docker run` tried again every second while the port is being released (0543).
+PORT_POLL_MILLISECONDS: Final = 1000
+# What Docker says when it cannot bind a published port (Linux engine; Docker Desktop on
+# Windows, its "ports are not available" and the Winsock line): only then is the port
+# diagnosed (0543). Every other failure is shown as Docker said it.
+BIND_REFUSED: Final = (
+    "port is already allocated|address already in use|ports are not available"
+    "|Only one usage of each socket address"
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -43,6 +51,7 @@ class PortGuard:
     releasing: str  # a socket being released: waited for
     released: str  # still not released at the end of the wait: refused
     listeners: tuple[str, ...] = DOCKER_LISTENERS
+    bind: str = BIND_REFUSED
     wait: int = PORT_RELEASE_SECONDS
     poll: int = PORT_POLL_MILLISECONDS
 

@@ -50,3 +50,29 @@ those moments: Docker could bind although Windows still showed the row.
 Before: `mh` typed right after a page closed is refused, or waits, sometimes four tries
 in a row. After: it starts at once whenever Docker can bind (as before 2026-10-19); the
 clear refusal of 0253 stays for a real program on the port.
+
+## Status — PARTIAL (2026-11-02)
+
+### Done
+- `mh.ps1`: no port read before a page; `docker run` tried first (in a script block, its
+  standard error to a temporary file for pages only); on Docker's bind error
+  (`launcher_port.BIND_REFUSED`) `_mh_port_wait`: a real holder named in red (0253), PID 0 /
+  gone process / nothing visible: one "being released" line, `docker run` again every second
+  up to `PORT_RELEASE_SECONDS` (10), then the red refusal. Any other Docker error is shown as
+  Docker said it (`_mh_replay` drops PowerShell's decoration). A refused detached start's
+  cidfile is removed before the next try.
+- `_mh_page_free` keeps only the leftover-container check (0250); the home loop's guard order
+  kept: "Media Hygiene is running" + the `--lan` tip now said by `_mh_watch` once the server
+  started (bash too).
+- `mh.sh`: same order: the port diagnosed (`ss`, the program named) only on Docker's bind error.
+- Tests (bash run for real, PowerShell rendered); `mh-measure.ps1` step 42 records whether
+  `docker run` binds while the PID 0 row is shown; troubleshooting (en + fr).
+
+### Not done
+- Check on Windows PowerShell 5.1 that `& $run 2> $err` keeps an `-it` page interactive
+  (Ctrl+C, colours) and that the replay of a non-port Docker error reads well; run step 42.
+  **Reason:** Windows + Docker Desktop only (mh-measure step 42).
+- `mh --lan`: its "opening" / firewall lines are still said before the container starts
+  (`_mh_lan_open` is shared with `mh slideshow --lan`, a foreground page).
+  **Reason:** needs the lines carried to `_mh_watch` and to the slideshow path; small follow-up.
+- `docs_screenshots` should run (console lines order changed). **Reason:** never run unasked.

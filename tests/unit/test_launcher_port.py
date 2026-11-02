@@ -1,4 +1,4 @@
-"""`mh` and a port being released: waited for, never "close Idle" (0503).
+"""`mh` and a port being released: tried again, never "close Idle" (0503, 0543).
 
 PID 0 (Windows' System Idle Process) is what Get-NetTCPConnection names for a socket
 whose owner has just exited; `mh` waits for it, a line said once, and refuses in red
@@ -7,6 +7,7 @@ only when the port is still taken; every refusal comes before any line of succes
 
 from __future__ import annotations
 
+import re
 from typing import Final
 
 import pytest
@@ -55,20 +56,65 @@ def test_pid_zero_or_a_gone_process_is_no_holder() -> None:
     assert "if ($releasing) { return @{ name = '' } }" in holder
 
 
-def test_a_port_being_released_is_waited_for() -> None:
-    """Polled every 500 ms up to the limit, one line said, refused in red at the end."""
+def test_a_port_being_released_is_tried_again() -> None:
+    """0543: tried again every second up to the limit, one line, red at the end."""
     shown = _shown()
-    body = _body(shown, "_mh_page_free")
+    body = _body(shown, "_mh_port_wait")
     with using(Locale.EN):
         port = launcher_guards().port
     assert f"(Get-Date).AddSeconds({PORT_RELEASE_SECONDS})" in body
     assert f"Start-Sleep -Milliseconds {PORT_POLL_MILLISECONDS}" in body
-    assert f'if (-not $said) {{ Write-Host "{port.releasing}"; $said = $true }}' in body
-    assert f'Write-Host "{port.released}" -ForegroundColor Red; return $false' in body
+    assert PORT_POLL_MILLISECONDS == 1000
+    said = (
+        f'if (-not $wait.said) {{ Write-Host "{port.releasing}"; $wait.said = $true }}'
+    )
+    assert said in body
+    assert (
+        f'Write-Host "{port.released}" -ForegroundColor Red; $wait.again = $false'
+        in body
+    )
+    assert f'Write-Host "{port.busy}" -ForegroundColor Red' in body
     assert "$port = 8088" in body
     assert "${port}" in port.releasing
     assert "${port}" in port.released
     assert "${name}" not in port.released
+
+
+def test_docker_runs_before_the_port_is_read() -> None:
+    """0543: `mh` runs `docker run` first; the port read only on a bind refusal."""
+    shown = _shown()
+    run = _body(shown, "mh")
+    assert "Get-NetTCPConnection" not in run
+    assert "_mh_port_holder" not in run
+    assert run.index("& $run 2> $err") < run.index("_mh_port_wait $wait")
+    with using(Locale.EN):
+        bind = launcher_guards().port.bind
+    refused = (
+        f"if ($status -eq 0 -or -not ($said -match '{bind}')) "
+        "{ _mh_replay $said; break }"
+    )
+    assert refused in run
+    assert run.index(refused) < run.index("_mh_port_wait $wait")
+    assert "if (-not $wait.again) { $status = 1; break }" in run
+    # A refused detached start leaves its id file: removed before the next try.
+    assert "if ($detach) { Remove-Item -LiteralPath $detach -Force" in run
+    assert "if (-not $page) { & $run; $status = $LASTEXITCODE; break }" in run
+    assert "Get-NetTCPConnection" not in _body(shown, "_mh_page_free")
+
+
+def test_the_bind_errors_are_docker_s_own() -> None:
+    """The lines Docker says on a taken port, Linux engine and Docker Desktop."""
+    with using(Locale.EN):
+        pattern = re.compile(launcher_guards().port.bind)
+    assert pattern.search("Bind for 0.0.0.0:8088 failed: port is already allocated")
+    assert pattern.search("listen tcp4 0.0.0.0:8088: bind: address already in use")
+    assert pattern.search(
+        "ports are not available: exposing port TCP 127.0.0.1:8088 -> 0.0.0.0:0: "
+        "listen tcp 127.0.0.1:8088: bind: Only one usage of each socket address "
+        "(protocol/network address/port) is normally permitted."
+    )
+    assert not pattern.search("Unable to find image 'x' locally")
+    assert "'" not in pattern.pattern  # inside a PowerShell single-quoted string
 
 
 @pytest.mark.parametrize("text", ["held", "open", "unshared"])
@@ -81,11 +127,16 @@ def test_refusals_are_red(text: str) -> None:
     assert f'Write-Host "{texts.stopped}"\n' in shown
 
 
-def test_the_port_is_checked_before_any_line_of_success() -> None:
-    """Home and `mh --lan`: the guard runs before the running / LAN lines."""
+def test_the_running_line_is_said_once_the_server_started() -> None:
+    """0543: the running line follows the server's start, never a refusal after it."""
     shown = _shown()
     home = _body(shown, "_mh_home")
-    assert home.index("_mh_page_free") < home.index("Write-Host")
+    assert home.index("_mh_page_free") < home.index("$global:MediaHygieneSay = $true")
+    watch = _body(shown, "_mh_watch")
+    start = watch.index(
+        "if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $cid))"
+    )
+    assert start < watch.index("if ($global:MediaHygieneSay) {")
     lan = _body(shown, "_mh_lan_open")
     assert lan.index("_mh_page_free") < lan.index("Write-Host")
     assert "if (-not (_mh_lan_open $true)) { return }" in _body(shown, "_mh_lan")

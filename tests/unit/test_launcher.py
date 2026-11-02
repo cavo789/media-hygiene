@@ -72,7 +72,7 @@ def test_powershell_keeps_the_folders_and_defaults_the_missing_ones(
         in text
     )
     assert "$tty = @(if ($command -notin @('launcher')) { '-it' })" in text
-    assert "docker run --rm @tty `" in text
+    assert "    docker run --rm @tty `" in text
     assert "'-v'; \"C:\\Photos:/data/c/Photos${mode}\" }" in text
     assert '-v "D:\\reports:/reports" `' in text
     assert '-v "my-cache:/cache" `' in text
@@ -81,8 +81,8 @@ def test_powershell_keeps_the_folders_and_defaults_the_missing_ones(
     assert '-e "TZ=Europe/Brussels" `' in text
     assert "MEDIA_HYGIENE_LAUNCHER=1" not in text  # its own shell, never carried
     assert (
-        "            cavo789/media-hygiene @rest @backups @($nas.backups)\n"
-        "        $status = $LASTEXITCODE" in text
+        "                cavo789/media-hygiene @rest @backups @($nas.backups)\n"
+        "        }\n" in text
     )
 
 

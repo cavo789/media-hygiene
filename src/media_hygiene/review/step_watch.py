@@ -23,6 +23,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.safety import PAGE_COMMANDS
 from media_hygiene.i18n import _
+from media_hygiene.review.home_fields import write_whole
 from media_hygiene.review.serving import json_response
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
@@ -150,7 +151,7 @@ async def keep_step(folder: Path, words: tuple[str, ...], command: str) -> Respo
     step = secrets.token_hex(_ID_BYTES)
     text = json.dumps({"id": step, "words": list(words)}, ensure_ascii=False, indent=0)
     try:
-        await asyncio.to_thread((folder / WATCH.now).write_text, text + "\n", "utf-8")
+        await asyncio.to_thread(write_whole, folder / WATCH.now, text + "\n")
     except OSError:
         message = _("The reports folder cannot be written: copy the command.")
         return json_response(HTTPStatus.CONFLICT, {"error": message})

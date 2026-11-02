@@ -623,11 +623,11 @@ def test_both_doors_listen_under_mh_lan(monkeypatch: pytest.MonkeyPatch) -> None
 
 
 def test_mh_alone_says_it_runs_and_how_a_phone_opens_it(tmp_path: Path) -> None:
-    """The page runs detached (0355): the window says so, and tips `mh --lan`."""
+    """Detached (0355): said once the server started (0543); tips `mh --lan`."""
     powershell = _render(Shell.POWERSHELL, tmp_path)
-    loop = powershell[powershell.index("function global:_mh_home {") :]
+    loop = powershell[powershell.index("function global:_mh_watch {") :]
     running = "Media Hygiene is running: its page opens in your browser."
-    assert running in loop[: loop.index("while ($true)")]
+    assert running in loop[: loop.index("while (-not $waiter.HasExited)")]
     tip = "On a phone of the home Wi-Fi too: mh --lan"
     guarded = "if (-not ($global:MediaHygieneLan -and $global:MediaHygieneLan.address))"
     line = next(line for line in loop.splitlines() if tip in line)
