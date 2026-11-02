@@ -24,6 +24,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.review.http import Response
+    from media_hygiene.search.aside_filter import Kept
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.share.album_api import AlbumAsked
 
@@ -46,7 +47,7 @@ def album_store(runtime: Runtime) -> AlbumStore:
 
 def album_desk(
     runtime: Runtime,
-    pick: Callable[[AlbumAsked], tuple[Path, ...]],
+    pick: Callable[[AlbumAsked], Kept],
     tv: Callable[[tuple[Path, ...]], Response] | None = None,
 ) -> AlbumDesk:
     """The desk answering a page about the albums.

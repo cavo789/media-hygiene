@@ -5,12 +5,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from media_hygiene.search.aside_filter import Kept
 from media_hygiene.search.reading import read_query
 
 if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
 
+    from media_hygiene.search.aside_filter import AsideFilter
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.share.album_api import AlbumAsked
 
@@ -20,9 +22,10 @@ class SearchPicker:
     """`search` and `browse`: keys of the index, or every file a search finds."""
 
     index: SearchIndex
+    aside: AsideFilter | None = None  # drops the files set aside (0518)
 
-    def files(self, asked: AlbumAsked) -> tuple[Path, ...]:
-        """The files a request names.
+    def files(self, asked: AlbumAsked) -> Kept:
+        """The files a request names, those set aside left out but to take out.
 
         Args:
             asked: The request.
@@ -31,14 +34,20 @@ class SearchPicker:
             Them, in the container; unknown keys left out.
         """
         if asked.all:
-            return tuple(
+            picked = tuple(
                 photo.path
                 for photo in self.index.versions(
                     read_query(self.index, asked.search.query())
                 )
             )
-        found = (self.index.source_of(int(key)) for key in asked.keys if key.isdigit())
-        return tuple(photo.path for photo in found if photo is not None)
+        else:
+            found = (
+                self.index.source_of(int(key)) for key in asked.keys if key.isdigit()
+            )
+            picked = tuple(photo.path for photo in found if photo is not None)
+        if self.aside is None or asked.action == "remove":
+            return Kept(picked)
+        return self.aside.keep(picked)
 
 
 @dataclass(frozen=True, slots=True)
@@ -47,7 +56,7 @@ class KeyPicker:
 
     source: Callable[[str], Path | None]
 
-    def files(self, asked: AlbumAsked) -> tuple[Path, ...]:
+    def files(self, asked: AlbumAsked) -> Kept:
         """The files a request names.
 
         Args:
@@ -57,4 +66,4 @@ class KeyPicker:
             Them, in the container; unknown keys left out.
         """
         found = (self.source(key) for key in asked.keys)
-        return tuple(path for path in found if path is not None)
+        return Kept(tuple(path for path in found if path is not None))

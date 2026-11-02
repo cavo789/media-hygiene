@@ -27,12 +27,13 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 
-def rule_desk(runtime: Runtime, search: SearchIndex) -> RuleDesk:
+def rule_desk(runtime: Runtime, search: SearchIndex, chosen: ChosenDesk) -> RuleDesk:
     """*Make it a rule* (0396): the date rules of `config.toml`, tried on the index.
 
     Args:
         runtime: Settings, mount points and output.
         search: The open index.
+        chosen: The files set aside, left out of a move (0518).
 
     Returns:
         The desk.
@@ -45,6 +46,7 @@ def rule_desk(runtime: Runtime, search: SearchIndex) -> RuleDesk:
         partial(try_rule, runtime, search.connection),
         partial(sorted_group, runtime),
         SelectionMover(runtime),
+        chosen.paths,
     )
 
 

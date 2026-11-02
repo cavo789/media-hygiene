@@ -19,6 +19,7 @@ from media_hygiene.search.app import (
     SearchApp,
     SearchPages,
 )
+from media_hygiene.search.aside_filter import AsideFilter
 from media_hygiene.search.chosen_api import CHOSEN_PATH, ChosenDesk
 from media_hygiene.search.events_choose import SORT_PATHS
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH, EVENTS_PATH
@@ -147,9 +148,13 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
             build.ending,
             build.relay,
         ),
-        album_desk(runtime, SearchPicker(search).files, build.tv),
+        album_desk(
+            runtime,
+            SearchPicker(search, AsideFilter(chosen.paths, runtime.mapper)).files,
+            build.tv,
+        ),
         PeopleDesk(search, names_place(runtime)),
-        rule_desk(runtime, search),
+        rule_desk(runtime, search, chosen),
         events_desk(runtime, search, chosen),
         tag_desk(runtime, search),
     )

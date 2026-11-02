@@ -52,7 +52,7 @@ async function askMove(name) {
   for (const source of answer.sources) if (!source.ticked) moveLeft.add(source.folder);
   if (!moveEl("moveName").value) { moveEl("moveName").value = answer.proposed; moveCombo.clearable(); }
   if (answer.month !== moveMonth) { moveMonth = answer.month; moveNames(moveMonth); }
-  moveEl("moveWhere").textContent = answer.target ? "→ " + answer.target + (answer.remembers ? " — " + answer.remembers : "") : "";
+  moveEl("moveWhere").textContent = answer.target ? "→ " + answer.target + (answer.remembers ? " — " + answer.remembers : "") + (answer.ignored ? " — " + answer.ignored : "") : "";
   showSources(moveEl("moveSources"), answer.sources, (source, ticked) => {
     if (ticked) moveLeft.delete(source.folder); else moveLeft.add(source.folder);
     moveButton();
@@ -129,6 +129,7 @@ moveEl("moveForm").addEventListener("submit", async (event) => {
   if (answer.unknown) parts.push(fill(TEXTS.goUnknown, { n: answer.unknown }));
   if (answer.fixed) parts.push(counted(TEXTS.goFixed, answer.fixed));
   parts.push(...(answer.links || []));
+  if (answer.ignored) parts.push(answer.ignored);  // the files set aside left out (0518)
   if (answer.remembered) parts.push(answer.remembered);  // the event config.toml keeps (0556)  // names, albums, decisions rewritten (0406)
   const said = parts.join(" ");
   moveSay(said, answer.run_id && !answer.intact ? "error" : "saved");

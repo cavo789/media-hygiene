@@ -20,6 +20,7 @@ from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.review.serving import json_response
 from media_hygiene.search import statements as sql
+from media_hygiene.search.aside_filter import AsideFilter
 from media_hygiene.search.event_match import Moved
 from media_hygiene.search.move_event import cameras_of, foreseen, remember_event
 from media_hygiene.search.rule_models import refused_rule
@@ -65,7 +66,7 @@ async def move_answer(desk: RuleDesk, path: str, body: bytes) -> Response:
         return refused_rule(exc)
     if desk.mover is None:
         return _conflict(_("This page cannot move files: run 'sort' in the terminal."))
-    chosen = _picked(desk, asked.keys)
+    chosen, ignored = _picked(desk, asked.keys)
     try:
         if path == MOVE_VIEW_PATH:
             view = await asyncio.to_thread(desk.mover.view, chosen, asked.name)
@@ -79,35 +80,41 @@ async def move_answer(desk: RuleDesk, path: str, body: bytes) -> Response:
             moved = _moved(desk, event_path(asked.name), chosen)
             answer["remembered"] = remember_event(_config_of(desk), moved)
     except ValueError as exc:
-        return _conflict(str(exc))
+        return _conflict(" ".join(filter(None, (str(exc), ignored))))
     except MediaHygieneError as exc:
-        return _conflict(" ".join(filter(None, (exc.message, exc.tip))))
+        return _conflict(" ".join(filter(None, (exc.message, exc.tip, ignored))))
+    answer["ignored"] = ignored  # the files set aside left out (0518)
     return json_response(HTTPStatus.OK, answer)
 
 
-def _picked(desk: RuleDesk, keys: tuple[int, ...]) -> Picked:
+def _picked(desk: RuleDesk, keys: tuple[int, ...]) -> tuple[Picked, str]:
     """The files of the keys picked, and when each was taken as the index reads it.
+
+    The files set aside are left out: gone for a move, whatever picked them (0518).
 
     Args:
         desk: The rule's desk: the index.
         keys: The keys, from the page.
 
     Returns:
-        Them: a photo or video the classify plan lacks still has its month.
+        Them: a photo or video the classify plan lacks still has its month; the
+        sentence on the files set aside left out.
     """
     connection = desk.index.connection
     paths: dict[int, Path] = {}
     days: dict[Path, datetime] = {}
     zone = zone_of(desk.mover.runtime.settings.classify.timezone if desk.mover else "")
-    for key in keys:
-        if (found := desk.index.source_of(key)) is None:
+    found = {key: hit.path for key in keys if (hit := desk.index.source_of(key))}
+    kept = AsideFilter(desk.aside, desk.mapper).keep(found.values())
+    for key, path in found.items():
+        if path not in kept.files:
             continue
-        paths[key] = found.path
+        paths[key] = path
         row = connection.execute(sql.DATE_OF, (key,)).fetchone()
         written = row[0] if row else None
         if when := exif_datetime(written) or video_date(written, zone):  # a video: ISO
-            days[found.path] = when
-    return Picked(paths, days)
+            days[path] = when
+    return Picked(paths, days), kept.said
 
 
 def _moved(desk: RuleDesk, name: str, chosen: Picked) -> Moved:

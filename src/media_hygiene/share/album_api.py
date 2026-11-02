@@ -2,10 +2,10 @@
 
 Served by `search`, `browse` and the burst review, apart from *Set aside*
 (`/api/chosen`, `/api/decide`): an album never touches the decisions file, and the
-files set aside never enter an album. `POST` names the album and the files (their
-keys on the page, or every file a search finds: `all`); the answer is read back from
-the disk, the files missing from each album said. Nothing is saved when the reports
-folder cannot keep it: the page says why.
+files set aside never enter an album, a share nor the TV (0518). `POST` names the
+album and the files (their keys on the page, or every file a search finds: `all`);
+the answer is read back from the disk, the files missing from each album said.
+Nothing is saved when the reports folder cannot keep it: the page says why.
 """
 
 from __future__ import annotations
@@ -31,6 +31,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
 
+    from media_hygiene.search.aside_filter import Kept
     from media_hygiene.share.album_store import AlbumStore, Shelf
 
 ALBUMS_PATH: Final = "/api/albums"
@@ -57,7 +58,7 @@ class AlbumDesk:
 
     store: AlbumStore
     # The files a request names (its keys, or every file found), in the container.
-    pick: Callable[[AlbumAsked], tuple[Path, ...]]
+    pick: Callable[[AlbumAsked], Kept]
     ready: Callable[[], None]  # raises when the reports folder cannot keep them
     # 📺 *On the TV* (0454): the files shown by the home server's slideshow.
     tv: Callable[[tuple[Path, ...]], Response] | None = None
@@ -91,7 +92,8 @@ class AlbumDesk:
             asked = AlbumAsked.model_validate_json(body)
         except ValidationError:
             return Response(HTTPStatus.BAD_REQUEST)
-        files = self.pick(asked)
+        kept = self.pick(asked)
+        files = kept.files
         early = self._early(asked, files)
         if early is not None:
             return early
@@ -107,6 +109,9 @@ class AlbumDesk:
         said = shelf_view(shelf, asked.album, self._host)
         if asked.action == "cover":
             said["message"] = cover_message(shelf, asked.album)
+        said["message"] = " ".join(
+            filter(None, (str(said.get("message", "")), kept.said))
+        )
         return json_response(HTTPStatus.OK, said)
 
     def _early(self, asked: AlbumAsked, files: tuple[Path, ...]) -> Response | None:

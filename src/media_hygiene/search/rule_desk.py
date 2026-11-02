@@ -61,7 +61,7 @@ _NANOSECONDS: Final = 1_000_000_000
 
 
 @dataclass(frozen=True, slots=True)
-class RuleDesk:
+class RuleDesk:  # pylint: disable=too-many-instance-attributes  # one per page
     """Answers the page about the rule of a period."""
 
     index: SearchIndex
@@ -71,6 +71,7 @@ class RuleDesk:
     trial: Trial
     sorter: Sorter | None = None  # sorts a group checked on the page (0397)
     mover: SelectionMover | None = None  # *Move to an event…* (0403)
+    aside: Callable[[], frozenset[str]] = frozenset  # host paths set aside (0518)
 
     def run_trial(
         self, asked: PeriodRuleIn, rule: ClassifyRule

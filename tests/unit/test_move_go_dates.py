@@ -8,6 +8,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, cast
 
+from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.search import move_go
 
 if TYPE_CHECKING:
@@ -38,6 +39,14 @@ def _days_read(connection: sqlite3.Connection) -> dict[str, str]:
         connection=connection,
         source_of=lambda key: SimpleNamespace(path=paths[key]),
     )
-    desk = cast("RuleDesk", SimpleNamespace(index=index, mover=None))
-    picked = move_go._picked(desk, (1, 2, 3))  # noqa: SLF001  # pylint: disable=protected-access
+    desk = cast(
+        "RuleDesk",
+        SimpleNamespace(
+            index=index,
+            mover=None,
+            mapper=HostPathMapper(Path("/data")),
+            aside=frozenset,
+        ),
+    )
+    picked, _ignored = move_go._picked(desk, (1, 2, 3))  # noqa: SLF001  # pylint: disable=protected-access
     return {path.name: when.isoformat() for path, when in picked.days.items()}

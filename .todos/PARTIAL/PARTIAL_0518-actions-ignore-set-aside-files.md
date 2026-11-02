@@ -33,3 +33,23 @@ following action on a picking, whatever the gesture that picked it.
 - [ ] `album_api.py` docstring true again; docs (en + fr) say set-aside files are ignored by
       the actions; `i18n_update` + French translation.
 - [ ] Related: 0517 (large view arrows skip set-aside files) — same "as if gone" rule.
+
+## Status — PARTIAL (2026-11-02)
+
+### Done
+- Shared server-side helper `search/aside_filter.py` (`AsideFilter`/`Kept`), reading `decisions.json` on every request, for picked keys and `all`.
+- Album add, share/TV and send (`share/album_pickers.py` `SearchPicker`) drop set-aside files; the answer says how many were ignored; `album_api.py` docstring true again.
+- *Event…* preview and move (`search/move_go.py`) drop them; `move_dialog.js.j2` shows the count ignored.
+- *Set aside* / *Take back* unchanged (still act on set-aside files); *Take out* of an album left alone on purpose.
+- Period rule `rule_go` takes days, not keys: nothing to filter.
+- Counts decision: "N picked" still counts set-aside files (true for *Set aside* / *Take back*); every other action says what it left out.
+- Docs en + fr, i18n (French done), tests `tests/unit/test_aside_filter.py` + `test_move_go_dates.py`, `test_tv_selection.py`.
+
+### Not done
+- Events sort choices (`search/events_choose.py`).
+  **Reason:** file being rewritten concurrently by TODO 0572 (another session); do it once 0572 is committed.
+- A file set aside after it was put in an album: the albums page's TV still shows it.
+  **Reason:** needs the album reading side (`services/album_pages.py`) to filter at display time — not in this run's scope.
+- Burst review's albums.
+  **Reason:** maintainer decision pending: should the burst review and the albums page apply the same rule?
+- Full `tests_for.py --depth 1` rerun after the album `pick` fix (only the 4 affected test files rerun: 24 passed); not tried in the app.

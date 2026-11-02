@@ -20,6 +20,7 @@ import pytest
 
 from media_hygiene.review.ending import Ending
 from media_hygiene.review.http import Request, Response
+from media_hygiene.search.aside_filter import Kept
 from media_hygiene.search.fts import SearchIndex
 from media_hygiene.services import slideshow_here
 from media_hygiene.services.albums import album_desk
@@ -117,8 +118,8 @@ def test_more_files_than_an_album_takes_are_refused(tmp_path: Path) -> None:
         asked.append(files)
         return Response(HTTPStatus.OK)
 
-    def many(_asked: AlbumAsked) -> tuple[Path, ...]:
-        return tuple(Path(f"/data/c/{n}.jpg") for n in range(MAX_ADDED + 1))
+    def many(_asked: AlbumAsked) -> Kept:
+        return Kept(tuple(Path(f"/data/c/{n}.jpg") for n in range(MAX_ADDED + 1)))
 
     desk = album_desk(make_runtime(make_locations(tmp_path)), many, tv)
     body = json.dumps({"action": "tv", "album": "", "all": True}).encode()

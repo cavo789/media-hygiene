@@ -16,6 +16,7 @@ from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.page_header import ALBUMS_DOC, page_header
+from media_hygiene.search.aside_filter import Kept
 from media_hygiene.services.album_reader import AlbumReader
 from media_hygiene.services.albums import album_desk
 from media_hygiene.share.album_page import (
@@ -29,7 +30,6 @@ from media_hygiene.share.album_shelf import Shown
 
 if TYPE_CHECKING:
     from concurrent.futures import Executor
-    from pathlib import Path
 
     from media_hygiene.review.ending import Handling
     from media_hygiene.services.runtime import Runtime
@@ -81,7 +81,7 @@ def album_page() -> bytes:
     )
 
 
-def _picked(sources: tuple[AlbumReader, Shown], asked: AlbumAsked) -> tuple[Path, ...]:
+def _picked(sources: tuple[AlbumReader, Shown], asked: AlbumAsked) -> Kept:
     """The files a change names: those of the albums the page was shown, by key.
 
     Args:
@@ -93,4 +93,4 @@ def _picked(sources: tuple[AlbumReader, Shown], asked: AlbumAsked) -> tuple[Path
     """
     reader, shown = sources
     files = (reader.source(key) for key in shown.picked(asked.keys))
-    return tuple(file for file in files if file is not None)
+    return Kept(tuple(file for file in files if file is not None))
