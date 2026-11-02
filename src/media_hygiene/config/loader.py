@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Final
 
 from pydantic import ValidationError
 
+from media_hygiene.config.event_layer import linked_events
 from media_hygiene.config.explain import Problems, config_error
 from media_hygiene.config.hand_tags import linked_hand
 from media_hygiene.config.known_keys import unknown_variables
@@ -81,10 +82,13 @@ def load_settings(locations: Locations, cli: Layer | None = None) -> LoadedSetti
             version; the message names it, in the user's language.
     """
     layers = {
-        Origin.FILE: linked_hand(
-            linked_places(
-                linked_layer(
-                    renamed_sections(read_file_layer(locations.config_file)),
+        Origin.FILE: linked_events(
+            linked_hand(
+                linked_places(
+                    linked_layer(
+                        renamed_sections(read_file_layer(locations.config_file)),
+                        locations.config_dir,
+                    ),
                     locations.config_dir,
                 ),
                 locations.config_dir,

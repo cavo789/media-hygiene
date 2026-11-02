@@ -1,10 +1,10 @@
 {# *Events found in your folders* (0557): the folders `YYYY/YYYY-MM/<name>` not yet
    remembered, ticked; the user unticks those that are no event, then confirms: the
-   ticked ones become events of config.toml, the unticked ones are remembered as no
+   ticked ones become events of events/<year>.toml, the unticked ones are remembered as no
    event (can be ticked back from the folded section). Batches are shown apart. #}
 <details id="found" hidden>
   <summary id="foundTitle"></summary>
-  <p class="muted">{{ _("Untick the folders that are not events worth remembering, then confirm: the ticked ones are written to config.toml.") }}</p>
+  <p class="muted">{{ _("Untick the folders that are not events worth remembering, then confirm: the ticked ones are written to the events folder beside config.toml.") }}</p>
   <p class="foundBar">
     <input id="foundFilter" type="search" placeholder="{{ _('Filter by name') }}" aria-label="{{ _('Filter by name') }}">
     <button type="button" id="foundAll" class="plain">{{ _("Tick all") }}</button>

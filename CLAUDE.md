@@ -55,7 +55,8 @@ Data flows `scan` → `plan` → `actions` → `report`, orchestrated by `servic
 Mount points: `/data/<drive>/<path>` (folders to scan), `/config` (config.toml **only**),
 `/journal`, `/quarantine`, `/reports`, `/cache`. Never store other data under `/config`, but
 `/config/people/<name>.toml`: the face lists of each person named, linked from `config.toml`
-(0300). Only
+(0300), and `/config/events/`: the events remembered, `<year>.toml` (`[[rules]]`, merged into
+`[[classify.rules]]` above *Existing folders*, 0576), plus their refusals and `not-events.toml`. Only
 the quarantine goes per drive: `/quarantine/<x>` (`X:\media-hygiene\quarantine`, mounted by
 `mh` for each photo drive but `C:`) receives the files of drive `X:` (`paths/quarantines.py`,
 `QuarantineRoute`); `/quarantine` is `C:`'s and the default; readers list every quarantine and

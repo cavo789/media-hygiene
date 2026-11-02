@@ -1041,6 +1041,9 @@ msgid ""
 "deleting."
 msgstr ""
 
+msgid "An event was not found in the events folder once written."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "An event: photos taken less than {hours} hours apart (merge_gap_hours in "
@@ -1777,6 +1780,10 @@ msgid "Copy it (Ctrl+C):"
 msgstr ""
 
 msgid "Copy its id from the first column of the Events sheet."
+msgstr ""
+
+#, python-brace-format
+msgid "Copy kept: {backup}."
 msgstr ""
 
 msgid "Copy the command"
@@ -3625,11 +3632,11 @@ msgid "It will be remembered as a new '{name}': '{other}' is another event."
 msgstr ""
 
 #, python-brace-format
-msgid "It will be remembered as the event '{name}' (config.toml)."
+msgid "It will be remembered as the event '{name}' (events/)."
 msgstr ""
 
 #, python-brace-format
-msgid "It will be remembered in the event '{name}' (config.toml)."
+msgid "It will be remembered in the event '{name}' (events/)."
 msgstr ""
 
 msgid "Its content is nowhere on the PC: kept on the phone."
@@ -9420,7 +9427,7 @@ msgstr ""
 
 msgid ""
 "Untick the folders that are not events worth remembering, then confirm: "
-"the ticked ones are written to config.toml."
+"the ticked ones are written to the events folder beside config.toml."
 msgstr ""
 
 msgid "Untick: stays on the phone"
@@ -12597,6 +12604,18 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} entry removed from config.toml, read back from the disk."
 msgid_plural "{count} entries removed from config.toml, read back from the disk."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} event moved to the events folder, read back from the disk."
+msgid_plural "{count} events moved to the events folder, read back from the disk."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} event of config.toml moves to the events folder with --apply."
+msgid_plural "{count} events of config.toml move to the events folder with --apply."
 msgstr[0] ""
 msgstr[1] ""
 

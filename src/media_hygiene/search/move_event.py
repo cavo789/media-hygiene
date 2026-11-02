@@ -1,19 +1,21 @@
 """The event *Move to an event…* remembers (0556): its name, its period, its cameras.
 
-A move writes (or extends) one `date_range` rule in `config.toml`: the event's name as
-its category, the days of the files moved as its period, their cameras as `devices`.
-No list of files: they are those of the event's folder (`event_folder` finds it again
-when renamed). Which event a move joins: `event_match`. The dialog says before the move
-what will be remembered (`foreseen`), after it what the file holds (`remember_event`).
-Camera serial numbers are not read: the index keeps make and model only.
+A move writes (or extends) one `date_range` rule in `events/<year>.toml` (0576): the
+event's name as its category, the days of the files moved as its period, their cameras
+as `devices`. No list of files: they are those of the event's folder (`event_folder`
+finds it again when renamed). Which event a move joins: `event_match`. The dialog says
+before the move what will be remembered (`foreseen`), after it what the file holds
+(`remember_event`). Camera serial numbers are not read: the index keeps make and model
+only.
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.classify.event_store import add_event
 from media_hygiene.classify.rules_edit import replace_rule
-from media_hygiene.classify.rules_file import add_rule, read_rules
+from media_hygiene.classify.rules_file import read_rules
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
 from media_hygiene.search.event_match import (
@@ -74,12 +76,12 @@ def foreseen(config_file: Path, moved: Moved) -> str:
     events = events_named(rules, moved.name)
     joined = joined_event(events, moved)
     if joined is not None:
-        said = _("It will be remembered in the event '{name}' (config.toml).")
+        said = _("It will be remembered in the event '{name}' (events/).")
         return said.format(name=label(joined, rules))
     if events:
         said = _("It will be remembered as a new '{name}': '{other}' is another event.")
         return said.format(name=moved.name, other=with_month(events[0]))
-    said = _("It will be remembered as the event '{name}' (config.toml).")
+    said = _("It will be remembered as the event '{name}' (events/).")
     return said.format(name=moved.name)
 
 
@@ -99,7 +101,7 @@ def remember_event(config_file: Path, moved: Moved) -> str:
         events = events_named(read_rules(config_file), moved.name)
         joined = joined_event(events, moved)
         if joined is None:
-            held = add_rule(config_file, new_event(events, moved))
+            held = add_event(config_file, new_event(events, moved))
         else:
             held = replace_rule(config_file, joined.name, widened(joined, moved))
         rules = read_rules(config_file)

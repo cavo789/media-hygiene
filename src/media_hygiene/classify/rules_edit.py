@@ -12,10 +12,12 @@ from typing import TYPE_CHECKING
 
 from tomlkit.items import AoT, Comment, Table, Whitespace
 
+from media_hygiene.classify.event_store import holder, remove_events, replace_event
 from media_hygiene.classify.rules_file import (
     named,
     read_back,
     read_rules,
+    read_written,
     rule_table,
     rules_of,
 )
@@ -43,22 +45,28 @@ def remove_rules(config_file: Path, names: Collection[str]) -> tuple[ClassifyRul
     Raises:
         ConfigError: A name is not in the file, or one is still there once written.
     """
-    document = document_of(config_file)
-    rules = rules_of(document)
-    found = [
-        index
-        for index, item in enumerate(rules)
-        if any(named(item, name) for name in names)
-    ]
-    if len(found) != len(set(names)):
-        raise ConfigError(_("config.toml holds no rule of one of these names."))
-    for index in reversed(found):
-        _remove(rules, index)
-    write_document(config_file, document)
-    left = read_rules(config_file)
-    if any(_any_rule(rule, names) for rule in left):
+    events = {
+        n for n in names if not _written(config_file, n) and _event(config_file, n)
+    }
+    remove_events(config_file.parent, events)
+    names = [name for name in names if name not in events]
+    if names:
+        document = document_of(config_file)
+        rules = rules_of(document)
+        found = [
+            index
+            for index, item in enumerate(rules)
+            if any(named(item, name) for name in names)
+        ]
+        if len(found) != len(set(names)):
+            raise ConfigError(_("config.toml holds no rule of one of these names."))
+        for index in reversed(found):
+            _remove(rules, index)
+        write_document(config_file, document)
+    still = any(_any_rule(rule, names) for rule in read_written(config_file))
+    if still or any(_event(config_file, name) for name in events):
         raise ConfigError(_("config.toml read back still holds a rule removed."))
-    return left
+    return read_rules(config_file)
 
 
 def replace_rule(config_file: Path, name: str, rule: ClassifyRule) -> ClassifyRule:
@@ -75,6 +83,8 @@ def replace_rule(config_file: Path, name: str, rule: ClassifyRule) -> ClassifyRu
     Raises:
         ConfigError: No rule has that name, or another one already has the new name.
     """
+    if not _written(config_file, name) and _event(config_file, name):
+        return replace_event(config_file, name, rule)  # an event of `events/` (0576)
     document = document_of(config_file)
     rules = rules_of(document)
     at = next((index for index, item in enumerate(rules) if named(item, name)), None)
@@ -92,6 +102,32 @@ def replace_rule(config_file: Path, name: str, rule: ClassifyRule) -> ClassifyRu
     rules[at] = table
     write_document(config_file, document)
     return read_back(config_file, rule)
+
+
+def _written(config_file: Path, name: str) -> bool:
+    """Tell whether `config.toml` itself holds a rule of that name, case ignored.
+
+    Args:
+        config_file: `config.toml`.
+        name: The name.
+
+    Returns:
+        True when it does.
+    """
+    return any(_any_rule(rule, (name,)) for rule in read_written(config_file))
+
+
+def _event(config_file: Path, name: str) -> bool:
+    """Tell whether an events file of `events/` holds that name.
+
+    Args:
+        config_file: `config.toml`.
+        name: The name.
+
+    Returns:
+        True when one does.
+    """
+    return holder(config_file.parent, name) is not None
 
 
 def _any_rule(rule: ClassifyRule, names: Collection[str]) -> bool:

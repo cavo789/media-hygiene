@@ -153,7 +153,7 @@ des pages le font, et chacun dit ce qu'il a enregistré, relu sur le disque.
 - **Déplacer vers un événement…** Sur la page de recherche, donnez une période ou ouvrez un
   dossier, choisissez les photos, puis *Déplacer vers un événement…* et tapez son nom. Avant le
   déplacement, la fenêtre dit ce qui sera retenu : « Il sera retenu comme l'événement « Turin »
-  (config.toml) », ou « Il sera ajouté à l'événement « Turin » » quand les photos élargissent un
+  (events/) », ou « Il sera ajouté à l'événement « Turin » » quand les photos élargissent un
   événement déjà connu, et les appareils (« Appareils : Apple iPhone 12. »). Après le
   déplacement : « L'événement « Turin » est retenu : 2019-07-12..2019-07-19. »
 - **Les événements trouvés dans vos dossiers.** Les dossiers que vous avez déjà rangés à la main
@@ -196,6 +196,15 @@ refusées pour un événement vont dans `/config/events/<début>-<nom>.toml`
 pas des événements dans `/config/events/not-events.toml`. Les deux listent le contenu des fichiers
 (leur SHA-256), pas leurs chemins : un refus tient toujours après que la photo a été déplacée ou
 renommée.
+
+**Où vont vos événements.** Pas dans `config.toml` non plus : chaque événement est une table
+`[[rules]]` de `/config/events/<année>.toml`, l'année où il commence
+(`…\config\events\2019.toml`), lue avec les règles de `config.toml` par `classify` et les
+pages, juste au-dessus de *Dossiers existants*. Vous pouvez renommer ce fichier (tout
+`events\*.toml` contenant des `[[rules]]` est lu) ou le modifier ; le supprimer oublie ses
+événements. Les événements écrits dans `config.toml` par une version plus ancienne y sont
+déplacés par [`mh config tidy --apply`](../commands/config.md#le-faire-maigrir--config-tidy), une
+seule fois, une copie gardée d'abord.
 
 ## Retenir un événement comme règle
 

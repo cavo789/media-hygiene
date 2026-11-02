@@ -4,8 +4,9 @@
 remembered (`proposed`, ticked on the page), those the user said are no event
 (`not_events`, folded, can be ticked back) and the batches (`batches`: a gap longer
 than `merge_gap_hours`, never proposed). `POST` the folders ticked and unticked: the
-ticked ones become events of `config.toml` (0556's writer: name + period + cameras),
-the unticked ones are remembered by content id in `/config/events/not-events.toml`.
+ticked ones become events of `events/<year>.toml` (0556's writer: name, period,
+cameras), the unticked ones are remembered by content id in
+`/config/events/not-events.toml`.
 The answer is the list read back from the disk.
 """
 

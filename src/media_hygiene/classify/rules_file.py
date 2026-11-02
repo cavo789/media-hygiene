@@ -1,10 +1,8 @@
-"""Add, replace or remove a `[[classify.rules]]` rule in `config.toml`, comments kept.
+"""Add a `[[classify.rules]]` rule to `config.toml`, comments kept; read every rule.
 
-The review-sort page writes the rules the user validates there (0392, 0393). `tomlkit`
-edits the document in place and the file is replaced atomically (`places/toml_edit`);
-each change is read back from the disk and returned as the file holds it. A new rule
-goes just above *Existing folders* (the list's order decides: the first sure rule
-wins), the comments kept above the rule they were written for.
+The review-sort page writes the rules the user validates (0392, 0393): tomlkit, atomic
+(`places/toml_edit`), read back. A new rule goes just above *Existing folders* (the
+first sure rule wins). The events remembered by the tool live in `events/` (0576).
 """
 
 from __future__ import annotations
@@ -17,6 +15,7 @@ from tomlkit.items import AoT, Comment, Table, Whitespace
 
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.config.classify_rules import ClassifyRule
+from media_hygiene.config.event_layer import event_tables, merged_rules
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
 from media_hygiene.places.toml_edit import (
@@ -36,7 +35,20 @@ _RULES: Final = "rules"
 
 
 def read_rules(config_file: Path) -> tuple[ClassifyRule, ...]:
-    """The rules the file holds, as `classify` reads them.
+    """The rules, as `classify` reads them: `config.toml`, then the events of `events/`.
+
+    Args:
+        config_file: `config.toml`.
+
+    Returns:
+        The rules, in the order they apply (the events just above *Existing folders*).
+    """
+    merged = merged_rules(_written(config_file), event_tables(config_file.parent))
+    return tuple(ClassifyRule.model_validate(item) for item in merged)
+
+
+def read_written(config_file: Path) -> tuple[ClassifyRule, ...]:
+    """The rules written in `config.toml` itself, without the events of `events/`.
 
     Args:
         config_file: `config.toml`.
@@ -44,11 +56,23 @@ def read_rules(config_file: Path) -> tuple[ClassifyRule, ...]:
     Returns:
         The rules, in the file's order; none when the file has no list.
     """
+    return tuple(ClassifyRule.model_validate(item) for item in _written(config_file))
+
+
+def _written(config_file: Path) -> list[object]:
+    """The raw `[[classify.rules]]` of `config.toml`.
+
+    Args:
+        config_file: `config.toml`.
+
+    Returns:
+        Them; none without the file or the list.
+    """
     if not config_file.is_file():
-        return ()
+        return []
     loaded = tomllib.loads(config_file.read_text(ENCODING))
     written = loaded.get(_SECTION, {}).get(_RULES, [])
-    return tuple(ClassifyRule.model_validate(item) for item in written)
+    return written if isinstance(written, list) else []
 
 
 def add_rule(config_file: Path, rule: ClassifyRule) -> ClassifyRule:

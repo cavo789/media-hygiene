@@ -1325,6 +1325,9 @@ msgstr ""
 "identique octet par octet à celle conservée ; 'clean' les compare encore "
 "juste avant de supprimer."
 
+msgid "An event was not found in the events folder once written."
+msgstr "Un événement est introuvable dans le dossier des événements une fois écrit."
+
 #, python-brace-format
 msgid ""
 "An event: photos taken less than {hours} hours apart (merge_gap_hours in "
@@ -2185,6 +2188,10 @@ msgid "Copy its id from the first column of the Events sheet."
 msgstr ""
 "Copiez son identifiant depuis la première colonne de la feuille "
 "Événements."
+
+#, python-brace-format
+msgid "Copy kept: {backup}."
+msgstr "Copie gardée : {backup}."
 
 msgid "Copy the command"
 msgstr "Copier la commande"
@@ -4436,12 +4443,12 @@ msgstr ""
 "autre événement."
 
 #, python-brace-format
-msgid "It will be remembered as the event '{name}' (config.toml)."
-msgstr "Il sera retenu comme l'événement « {name} » (config.toml)."
+msgid "It will be remembered as the event '{name}' (events/)."
+msgstr "Il sera retenu comme l'événement « {name} » (events/)."
 
 #, python-brace-format
-msgid "It will be remembered in the event '{name}' (config.toml)."
-msgstr "Il sera ajouté à l'événement « {name} » (config.toml)."
+msgid "It will be remembered in the event '{name}' (events/)."
+msgstr "Il sera ajouté à l'événement « {name} » (events/)."
 
 msgid "Its content is nowhere on the PC: kept on the phone."
 msgstr "Son contenu n'est nulle part sur le PC : gardé sur le téléphone."
@@ -6302,8 +6309,8 @@ msgid ""
 "Nothing to set aside since the audit of {date}: audit again after adding "
 "photos."
 msgstr ""
-"Rien à mettre de côté depuis l'analyse du {date} : relancez l'analyse après "
-"avoir ajouté des photos."
+"Rien à mettre de côté depuis l'analyse du {date} : relancez l'analyse "
+"après avoir ajouté des photos."
 
 #, python-brace-format
 msgid ""
@@ -10254,8 +10261,8 @@ msgid ""
 "The proposal can be changed first, on the page or in the workbook; then "
 "it asks and moves: undoable, proven."
 msgstr ""
-"La proposition peut d'abord être changée, sur la page ou dans le classeur ; "
-"puis il demande et déplace : annulable, prouvé."
+"La proposition peut d'abord être changée, sur la page ou dans le classeur"
+" ; puis il demande et déplace : annulable, prouvé."
 
 msgid "The proposal is already made: → is enough when it suits you."
 msgstr "La proposition est déjà faite : → suffit quand elle vous convient."
@@ -11409,10 +11416,11 @@ msgstr "Tout décocher"
 
 msgid ""
 "Untick the folders that are not events worth remembering, then confirm: "
-"the ticked ones are written to config.toml."
+"the ticked ones are written to the events folder beside config.toml."
 msgstr ""
 "Décochez les dossiers qui ne sont pas des événements à retenir, puis "
-"confirmez : les dossiers cochés sont écrits dans config.toml."
+"confirmez : les dossiers cochés sont écrits dans le dossier des "
+"événements, à côté de config.toml."
 
 msgid "Untick: stays on the phone"
 msgstr "Décocher : reste sur le téléphone"
@@ -15027,6 +15035,18 @@ msgid "{count} entry removed from config.toml, read back from the disk."
 msgid_plural "{count} entries removed from config.toml, read back from the disk."
 msgstr[0] "{count} entrée retirée de config.toml, relue sur le disque."
 msgstr[1] "{count} entrées retirées de config.toml, relues sur le disque."
+
+#, python-brace-format
+msgid "{count} event moved to the events folder, read back from the disk."
+msgid_plural "{count} events moved to the events folder, read back from the disk."
+msgstr[0] "{count} événement déplacé dans le dossier des événements, relu sur le disque."
+msgstr[1] "{count} événements déplacés dans le dossier des événements, relus sur le disque."
+
+#, python-brace-format
+msgid "{count} event of config.toml moves to the events folder with --apply."
+msgid_plural "{count} events of config.toml move to the events folder with --apply."
+msgstr[0] "{count} événement de config.toml part dans le dossier des événements avec --apply."
+msgstr[1] "{count} événements de config.toml partent dans le dossier des événements avec --apply."
 
 #, python-brace-format
 msgid ""

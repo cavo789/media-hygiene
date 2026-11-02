@@ -123,6 +123,12 @@ cochées (commentaires et ordre gardés), puis relit le fichier et dit combien s
 annuler, recopiez ce fichier sur `config.toml` : la console donne la ligne. À la fin de `sort`,
 une ligne 💡 dit quand des entrées ne pointent plus sur rien.
 
+Les événements retenus par les pages vivent dans `/config/events/<année>.toml`, pas dans
+`config.toml`. Ceux qu'une version plus ancienne a écrits dans `config.toml` (une règle
+`date_range` nommée comme sa catégorie, telle `Turin` ou `Turin (juillet 2019)`) sont listés par
+`config tidy` et déplacés là par `--apply`, une seule fois, après la même copie datée ; vos règles
+écrites à la main restent dans `config.toml`.
+
 ## Qui l'emporte ?
 
 De la plus faible à la plus forte : la valeur par défaut, `config.toml`, une variable
