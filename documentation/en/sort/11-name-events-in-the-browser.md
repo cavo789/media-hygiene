@@ -17,7 +17,7 @@ it**, all with the keyboard.
 It is optional: the workbook alone is enough, and both can be used together. The page never
 touches a photo nor the workbook; `sort` ([step 7](07-sort.md)) applies your choices.
 
-> **Since 0572** the 🗂 Events tab no longer reads the `classify` plan: it groups the files not sorted yet of the period searched, and you move them with **📂 Event…** — [how](../commands/search.md#the-events-of-the-latest-classify). The plan-based steps below describe the former tab.
+> **Since 0572** the 🗂 Events tab no longer reads the `classify` plan: it groups the files not sorted yet of the period searched, and you move them with **📂 Move to an event…** — [how](../commands/search.md#the-events-of-the-latest-classify). The plan-based steps below describe the former tab.
 
 ## Start the page
 

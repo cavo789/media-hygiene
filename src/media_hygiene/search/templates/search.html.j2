@@ -342,6 +342,7 @@
     <dt><kbd>W</kbd></dt><dd>{{ _("opened: why this person's name (the face, its reference)") }}</dd>
 {% endblock %}
 {% block bar %}
+    {% set pick_first = "search_move_first.html.j2" %}
     {% include "pick_acting.html.j2" %}
     {% set order_best = true %}
     {% set order_rate = true %}
@@ -355,7 +356,7 @@
     </div>
     {% set album_compact = true %}
     {% include "album_bar.html.j2" %}
-    <p id="moveBar"><button type="button" id="moveOpen" class="plain" disabled title="{{ _('Move the photos picked to an event folder, year then year-month, without writing a rule') }}">📂 {{ _("Event…") }}</button> <button type="button" id="tagOpen" class="plain" disabled title="{{ _('Give the photos picked a word of yours, kept in your settings') }}">🏷 {{ _("Tag…") }}</button></p>
+    <p id="moveBar"><button type="button" id="tagOpen" class="plain" disabled title="{{ _('Give the photos picked a word of yours, kept in your settings') }}">🏷 {{ _("Tag…") }}</button></p>
 {% endblock %}
 {% block content %}
   <main id="grid"></main>

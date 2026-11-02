@@ -2577,9 +2577,6 @@ msgid ""
 " month."
 msgstr ""
 
-msgid "Event…"
-msgstr ""
-
 #, python-format
 msgid ""
 "Every answer is saved at once in %(place)s. Done? Ctrl+C in the terminal "
@@ -4257,6 +4254,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Move to an event"
+msgstr ""
+
+msgid "Move to an event…"
 msgstr ""
 
 #, python-brace-format

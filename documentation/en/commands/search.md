@@ -96,8 +96,9 @@ helps: `*.mp4` or a regular expression are still searched as typed.
 - **The bar** has two lines that never move, whatever is picked or found: on top, where you are
   (the count), **📺 On the TV**, **Sort by** and the thumbnail size **S** (photos only), **M**,
   **L** (every word), kept for this browser; below, what to do with the files picked — greyed
-  while none is: **🗑 Put aside**, **🔀 Invert**, the album with **➕** and **➖**, **📺 Share**,
-  **✉️ Send**, **📂 Event…**, then what is set aside and **✅ Apply**. Point at a button for its
+  while none is: first **📂 Move to an event…** (filled: the main action), **🔀 Invert**, and
+  last, apart and red, **🗑 Put aside**; the album with **➕** and **➖**, **📺 Share**,
+  **✉️ Send**, then what is set aside and **✅ Apply**. Point at a button for its
   whole name and its key. **✅ Apply** says it too: 🔒 nothing moves without your GO; every move
   is journaled, `undo` puts it back. A file set aside counts as gone for every action but
   *Take back*: picked with the others (Ctrl+A, Shift, the rectangle), it stays out of the
@@ -148,7 +149,7 @@ helps: `*.mp4` or a regular expression are still searched as typed.
 - **Sorted**: *All*, *not yet* or *sorted* (year, then year-month), read from the
   folders alone ([the convention](../sort/04-classify.md#the-convention-year-month-event)): a
   photo in `2009\2009-11\…` is sorted, wherever that pair of folders lies and whoever put it
-  there. *Not yet*, then pick and **📂 Event…**: the page becomes the way to sort
+  there. *Not yet*, then pick and **📂 Move to an event…**: the page becomes the way to sort
   what is left, folder after folder.
 
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20 files
@@ -163,7 +164,7 @@ no photo was taken for `classify`'s longest gap (18 hours by default), without r
 *Not sorted yet* means exactly the search's *Not yet*: not in a `YYYY\YYYY-MM\<name>` folder,
 whoever put it there; a file you sort leaves the list at the next search. Click an event: its
 photos fill the grid (never the Photos tab's: on an error the grid stays empty and the bar says
-why); pick them, then **📂 Event…** moves them. The address `/events` opens the page on this
+why); pick them, then **📂 Move to an event…** moves them. The address `/events` opens the page on this
 tab; ← and → move between the two tabs once one has the focus.
 
 The choices below (folder, name, sure proposals, rules, *Sort this event now*) belong to the
@@ -198,7 +199,7 @@ decide nothing, turn a folder-name rule into dates.
 ## Move photos to an event, without a rule
 
 For a one-off event, a rule is not needed: search its days (or words), **pick** the photos (as
-everywhere: click, Ctrl, Shift, a rectangle, Ctrl+A), then **📂 Event…** in the bar.
+everywhere: click, Ctrl, Shift, a rectangle, Ctrl+A), then **📂 Move to an event…** in the bar.
 Type the event's name, or pick one of your event folders the field lists (those already in the
 month the photos go to, sub-folders written `France\Morzine`); `\` makes sub-folders of a new name too.
 The line under it shows the folder made, as
@@ -336,7 +337,7 @@ A word typed by hand under a photo has a **×**, on its card and in the large vi
 click it to take the word off that photo, saved and read back the same way. A word left on no
 photo goes, with its file.
 
-The paths follow your photos: `sort`, `undo`, the quarantine and **📂 Event…** rewrite them at
+The paths follow your photos: `sort`, `undo`, the quarantine and **📂 Move to an event…** rewrite them at
 once; a folder renamed in Explorer is found again by the content id at the end of the next
 `audit`. [`xmp`](xmp.md) writes these words into the `.xmp` sidecars with the others (`hand` in
 `[tags] xmp_sources`, on by default). Without a writable `/config`, nothing is saved and the bar

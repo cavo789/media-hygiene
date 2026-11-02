@@ -39,6 +39,17 @@ at least `key`, `name`, `preview`, `original`, `chosen`, optionally `video`, `da
 
 ## The contract
 
+**Buttons by role** (0542, `pick_grid.css.j2`): the fill means *the main action*, not *a button*.
+
+| Role | Class | Bar buttons |
+|---|---|---|
+| primary (filled accent) | none / `primary` | *Apply now*; the page's most used action (`pick_first`: search's *📂 Move to an event…*) |
+| secondary (outline) | `plain` | ✕, *Pick all N found*, *Take out*, *Invert*, album ➕ ➖, share, send, 🏷 |
+| danger (red `--bad`, never the accent) | `danger` | *Set aside* — last of the picking actions, a gap before it |
+
+Order: the page's most used action first, right after the count (`{% set pick_first = "<template>" %}`
+before including `pick_acting.html.j2`), *Set aside* last.
+
 - Never act on what is not shown: Ctrl+A and every bar button act on the tiles shown; the only
   wider action (*Pick all N found*) states its count, and that count is what is posted
   (set-aside files left out).

@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
 
+from media_hygiene import review as templates
 from media_hygiene.review.place import DecisionsPlace
 from media_hygiene.services.review_file import review_page
 from tests.support.pick_pages import PICK_PARTS
@@ -179,3 +181,37 @@ def test_the_large_view_arrows_step_over_the_files_set_aside() -> None:
         assert key in page, key
     assert "const before = notAside(index, -1);" in page
     assert "before >= 0 ? before : notAside(index, 1)" in page
+
+
+def _bar_tag(page: str, ident: str) -> str:
+    """The opening tag of the bar's button `ident`."""
+    return (
+        page.split(f'id="{ident}"', maxsplit=1)[0].rsplit("<button", 1)[1]
+        + page.split(f'id="{ident}"')[1].split(">", maxsplit=1)[0]
+    )
+
+
+def test_the_bar_buttons_wear_their_role(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0542: Set aside red and last, the move first and filled, Apply now filled."""
+    search, _browse = _pages(cli, monkeypatch)
+    pages = [search] + [
+        _review(name) for name in ("review.html.j2", "unwanted_review.html.j2")
+    ]
+    for page in pages:
+        assert 'class="danger"' in _bar_tag(page, "setAside")
+        acting = page.split('<span id="acting" hidden>')[1].split("</span>")[0]
+        assert acting.rstrip().endswith("</button>")
+        assert acting.rindex("<button") == acting.index('id="setAside"') - len(
+            "<button "
+        )
+    assert "button.danger { color: #fff; background: var(--bad)" in search
+    move = _bar_tag(search, "moveOpen")
+    assert "primary" in move
+    assert "plain" not in move
+    assert "Move to an event…" in search
+    acting = search.split('<span id="acting" hidden>')[1].split("</span>")[0]
+    assert acting.index('id="moveOpen"') < acting.index('id="invert"')
+    apply_now = Path(templates.__file__).with_name("templates") / "apply_now.html.j2"
+    assert "plain" not in _bar_tag(apply_now.read_text(encoding="utf-8"), "applyNow")
