@@ -7144,6 +7144,21 @@ msgstr "Lieu"
 msgid "Place (video tag)"
 msgstr "Lieu (balise vidéo)"
 
+#, python-brace-format
+msgid "Place of {folder} moved to {target}, with its photos."
+msgstr "Position de {folder} déplacée vers {target}, avec ses photos."
+
+#, python-brace-format
+msgid ""
+"Place of {folder} removed from config.toml: its photos went to several "
+"folders."
+msgstr "Position de {folder} retirée de config.toml : ses photos sont parties dans "
+"plusieurs dossiers."
+
+#, python-brace-format
+msgid "Place of {folder} written back in config.toml."
+msgstr "Position de {folder} réécrite dans config.toml."
+
 msgid "Placed"
 msgstr "Placés"
 
@@ -12525,6 +12540,10 @@ msgid "config.toml read back still holds a rule removed."
 msgstr "config.toml relu contient encore une règle supprimée."
 
 #, python-brace-format
+msgid "config.toml read back: {count} folder positions."
+msgstr "config.toml relu : {count} positions de dossiers."
+
+#, python-brace-format
 msgid "config.toml was written by an earlier version: {count} new setting since."
 msgid_plural "config.toml was written by an earlier version: {count} new settings since."
 msgstr[0] ""
@@ -16854,15 +16873,15 @@ msgid_plural ""
 "convention wants one name (2009/2009-11/<name>). Write one name in their "
 "category in config.toml (the rules themselves still work)."
 msgstr[0] ""
-"{n} règle donne une catégorie sur plusieurs niveaux de dossiers ({names}) : "
-"la convention veut un seul nom (2009/2009-11/<nom>). Écrivez un seul nom "
-"dans sa catégorie, dans config.toml (la règle elle-même fonctionne "
+"{n} règle donne une catégorie sur plusieurs niveaux de dossiers ({names})"
+" : la convention veut un seul nom (2009/2009-11/<nom>). Écrivez un seul "
+"nom dans sa catégorie, dans config.toml (la règle elle-même fonctionne "
 "toujours)."
 msgstr[1] ""
 "{n} règles donnent une catégorie sur plusieurs niveaux de dossiers "
-"({names}) : la convention veut un seul nom (2009/2009-11/<nom>). Écrivez un "
-"seul nom dans leur catégorie, dans config.toml (les règles elles-mêmes "
-"fonctionnent toujours)."
+"({names}) : la convention veut un seul nom (2009/2009-11/<nom>). Écrivez "
+"un seul nom dans leur catégorie, dans config.toml (les règles elles-mêmes"
+" fonctionnent toujours)."
 
 #, python-brace-format
 msgid "{n} s"

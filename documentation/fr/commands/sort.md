@@ -93,9 +93,11 @@ fichiers déjà à leur place et les dossiers sources qu'il va supprimer, puis d
   `albums.json`, `decisions.json` (rafales, fichiers choisis dans `search` ; une paire de dossiers
   dont un dossier a disparu est retirée) et les vidéos choisies dans `shrink --try` — puis les
   relit et le dit en une ligne. Ils ne dépendent plus du cache : vous pouvez le supprimer. `undo`
-  remet les anciens chemins de la même façon. Un dossier de `config.toml` (`[folders] preferred`,
-  un dossier placé sur la carte) que l'exécution a vidé est nommé, pour que vous l'orientiez vers
-  le nouveau dossier.
+  remet les anciens chemins de la même façon. Un dossier placé sur la carte
+  (`[[places.folders]]`) que l'exécution a vidé suit ses photos quand elles sont toutes allées
+  dans un même dossier ; sinon il est retiré de `config.toml` (vos commentaires gardés) et `undo`
+  le réécrit. Un dossier `[folders] preferred` vidé est nommé, pour que vous l'orientiez vers le
+  nouveau dossier.
 
 ## Pour aller plus loin
 

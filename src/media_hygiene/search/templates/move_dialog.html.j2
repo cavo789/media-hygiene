@@ -4,16 +4,20 @@
    unticked). The names offered are the event folders already in the month they go to,
    sub-folders written `France\Morzine`, in the list *Path contains* uses
    (`combo_list.js.j2`, 0487); a new name is typed as before. Its script is
-   `move_dialog.js.j2`; the dialog's look is the rule dialog's. #}
+   `move_dialog.js.j2`; the dialog's look is the rule dialog's. The dialog is a column (0549):
+   the title, the name and the `menu` stay put, only `.moveBody` (folders + result) scrolls,
+   so Close is always in view; the name's list is outside it, never clipped. #}
 <style>
   #moveDlg { max-width: min(32rem, 94vw); color: var(--text); background: var(--card);
              border: 1px solid var(--line); border-radius: 10px; }
   #moveDlg::backdrop { background: rgb(0 0 0 / 50%); }
   #moveDlg > form > label { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; }
-  #moveDlg { overflow: visible; }
+  #moveDlg { overflow: visible; max-height: 92vh; max-height: 92dvh; box-sizing: border-box; }
+  #moveDlg[open] > form { display: flex; flex-direction: column; max-height: calc(92dvh - 2.5rem); }
+  #moveDlg .moveBody { flex: 1 1 auto; min-height: 0; overflow: hidden auto; scrollbar-width: thin; }
+  #moveDlg menu { flex: none; margin: 8px 0 0; }
   #moveDlg h2 { margin: 0 0 6px; } #moveDlg menu { display: flex; gap: 8px; justify-content: end; padding: 0; }
-  .sources { list-style: none; padding: 0; margin: 6px 0; max-height: 40vh; overflow: hidden auto;
-             scrollbar-width: thin; border: 1px solid var(--line); border-radius: 6px; }
+  .sources { list-style: none; padding: 0; margin: 6px 0; border: 1px solid var(--line); border-radius: 6px; }
   /* one row per folder: box at the left, text beside it (a long folder wraps under the text);
      the box's `width: auto` beats the shared `input { width: 100% }` of the form fields (0562) */
   .sources label { display: flex !important; flex-direction: row !important; gap: 8px; align-items: baseline;
@@ -35,9 +39,9 @@
            title="{{ _('A folder of yours, or a new name; \\ between sub-folders') }}">
       <button type="button" id="moveClear" class="plain comboClear" disabled title="{{ _('Empty the name, then the list of your folders again') }}" aria-label="{{ _('Empty the name') }}">✕</button>
       <ul id="moveNames" class="comboList" role="listbox" aria-label="{{ _('Your event folders of that month') }}" hidden></ul></label>
-    <p id="moveWhere" class="muted"></p>
+    <div class="moveBody"><p id="moveWhere" class="muted"></p>
     <ul id="moveSources" class="sources"></ul>
-    <p id="moveSaid" class="muted" role="status"></p>
+    <p id="moveSaid" class="muted" role="status"></p></div>
     <menu><button type="button" id="moveNo" class="plain" data-cancel="{{ _('Cancel') }}" data-close="{{ _('Close') }}">{{ _("Cancel") }}</button><button type="submit" id="moveGo" disabled>{{ _("Move them now") }}</button></menu>
   </form>
 </dialog>

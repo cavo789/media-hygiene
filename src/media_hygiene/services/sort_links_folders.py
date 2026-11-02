@@ -1,9 +1,10 @@
 """The folders `config.toml` names that a `sort` emptied or removed (0382).
 
-`[folders] preferred` and the folders placed on the map (`[[places.folders]]`) name
-folders, not photos: they are not rewritten (a folder is not a photo, and the photos
-may now lie in several folders). The ones a run took every file out of are said, one
-line each, with what to do. Protected folders and backups are never touched by `sort`.
+`[folders] preferred` names folders, not photos: it is not rewritten (the photos may
+now lie in several folders). The ones a run took every file out of are said, one line
+each, with what to do. The folders placed on the map (`[[places.folders]]`) follow
+their photos, or are removed (`sort_links_spots`, 0549). Protected folders and backups
+are never touched.
 """
 
 from __future__ import annotations
@@ -13,6 +14,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
 from media_hygiene.paths.host_paths import is_within
+from media_hygiene.services.sort_links_spots import followed_spots
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
@@ -31,9 +33,8 @@ def emptied_settings(runtime: Runtime, moves: Mapping[str, str]) -> tuple[str, .
         One line per folder.
     """
     settings, mapper = runtime.settings, runtime.mapper
-    named = (
-        *(("[folders] preferred", folder) for folder in settings.folders.preferred),
-        *(("[[places.folders]]", spot.folder) for spot in settings.places.folders),
+    named = tuple(
+        ("[folders] preferred", folder) for folder in settings.folders.preferred
     )
     sources = [Path(old).parent for old in moves]
     lines = []
@@ -48,7 +49,7 @@ def emptied_settings(runtime: Runtime, moves: Mapping[str, str]) -> tuple[str, .
                     "the photos' new folder in config.toml, or remove it."
                 ).format(setting=setting, folder=folder)
             )
-    return tuple(lines)
+    return (*lines, *followed_spots(runtime, moves, _holds_files))
 
 
 def _holds_files(folder: Path) -> bool:

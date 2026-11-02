@@ -91,8 +91,10 @@ the source folders it will remove, then asks.
   (burst series, files chosen in `search`; a folder pair whose folder is gone is dropped) and the
   videos chosen in `shrink --try` — then reads them back and says so in one line. They no longer
   depend on the cache: you can delete it. `undo` puts the old paths back the same way.
-  A folder of `config.toml` (`[folders] preferred`, a folder placed on the map) that the run
-  emptied is named, so that you can point it to the new folder.
+  A folder placed on the map (`[[places.folders]]`) that the run emptied follows its photos
+  when they all went to one folder, else it is removed from `config.toml` (your comments kept);
+  `undo` writes it back. A `[folders] preferred` folder the run emptied is named, so that you
+  can point it to the new folder.
 
 ## Go further
 

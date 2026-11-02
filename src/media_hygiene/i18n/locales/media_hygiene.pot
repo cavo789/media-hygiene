@@ -5891,6 +5891,20 @@ msgstr ""
 msgid "Place (video tag)"
 msgstr ""
 
+#, python-brace-format
+msgid "Place of {folder} moved to {target}, with its photos."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Place of {folder} removed from config.toml: its photos went to several "
+"folders."
+msgstr ""
+
+#, python-brace-format
+msgid "Place of {folder} written back in config.toml."
+msgstr ""
+
 msgid "Placed"
 msgstr ""
 
@@ -10372,6 +10386,10 @@ msgid "config.toml read back does not hold the rule '{name}'."
 msgstr ""
 
 msgid "config.toml read back still holds a rule removed."
+msgstr ""
+
+#, python-brace-format
+msgid "config.toml read back: {count} folder positions."
 msgstr ""
 
 #, python-brace-format
