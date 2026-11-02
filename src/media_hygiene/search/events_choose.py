@@ -27,6 +27,7 @@ from media_hygiene.review.sort_rule_choices import PROGRESS_PATH, RULES_PATH
 from media_hygiene.search.events_desk import EVENTS_PATH
 from media_hygiene.search.found_desk import FOUND_PATH
 from media_hygiene.search.late_desk import LATE_PATH, LATE_REFUSE_PATH
+from media_hygiene.search.span_events import SPAN_FILES_PATH, SPAN_PATH
 
 if TYPE_CHECKING:
     from media_hygiene.review.http import Request
@@ -36,6 +37,7 @@ if TYPE_CHECKING:
 SORT_PREFIX: Final = "/api/sort"
 _API: Final = "/api"
 _VALUE_ERROR: Final = "Value error, "
+_NO_PLAN: Final = (LATE_PATH, SPAN_PATH, SPAN_FILES_PATH)
 
 
 def sort_path(path: str) -> str:
@@ -146,7 +148,7 @@ def events_get(desk: EventsDesk | None, path: str) -> Response | None:
     """
     if desk is None:
         return None
-    if path == FOUND_PATH or path.startswith(LATE_PATH):  # 0557, 0558
+    if path == FOUND_PATH or path.startswith(_NO_PLAN):  # 0557, 0558, 0572
         return _without_plan(desk, path)
     if path.startswith(EVENTS_PATH):  # 0437
         return desk.state() if path == EVENTS_PATH else desk.event(path)
@@ -168,11 +170,15 @@ def _without_plan(desk: EventsDesk, path: str) -> Response:
 
     Args:
         desk: The Events view.
-        path: `FOUND_PATH`, `LATE_PATH` or `LATE_PATH/<event>`.
+        path: `FOUND_PATH`, `LATE_PATH[/<event>]`, or the events made from the
+            index (`SPAN_PATH…`, `SPAN_FILES_PATH…`).
 
     Returns:
         The view; 404 when the page has none.
     """
+    if path.startswith((SPAN_PATH, SPAN_FILES_PATH)):
+        span = desk.span
+        return Response(HTTPStatus.NOT_FOUND) if span is None else span.answer(path)
     if path == FOUND_PATH:
         found = desk.found
         return Response(HTTPStatus.NOT_FOUND) if found is None else found.state()

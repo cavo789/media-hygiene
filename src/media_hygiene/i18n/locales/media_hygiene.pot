@@ -2505,7 +2505,7 @@ msgid ""
 " outside any event, by proposed folder."
 msgstr ""
 
-msgid "Events of the latest classify"
+msgid "Events not sorted yet"
 msgstr ""
 
 #, python-brace-format
@@ -2586,6 +2586,9 @@ msgstr ""
 msgid ""
 "Every file of this event is already where it goes, or stays: nothing to "
 "move."
+msgstr ""
+
+msgid "Every file of this period is sorted already: nothing left to group."
 msgstr ""
 
 msgid "Every file of your photos is in this backup."
@@ -3311,6 +3314,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Group {number} of {total}"
+msgstr ""
+
+msgid "Grouping the files not sorted yet by date…"
 msgstr ""
 
 msgid "Groups"
@@ -8838,6 +8844,17 @@ msgid ""
 "not from a disk failure; copy it to a USB stick or the NAS too."
 msgstr ""
 
+msgid ""
+"This event has no file left to sort: sorted or moved since the list was "
+"made."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"This event's photos could not be read (error {status}): its files may "
+"have moved. Run the search again."
+msgstr ""
+
 msgid "This ffmpeg cannot encode H.264: nothing was changed."
 msgstr ""
 
@@ -11286,13 +11303,16 @@ msgstr ""
 msgid "opened: full screen"
 msgstr ""
 
-msgid "opened: set it aside, then the next one"
+msgid "opened: set it aside, then the previous one"
 msgstr ""
 
 msgid "opened: take it back out"
 msgstr ""
 
 msgid "opened: the previous or next one"
+msgstr ""
+
+msgid "opened: the previous or next one not set aside"
 msgstr ""
 
 msgid "opened: tick or untick it"
@@ -11387,7 +11407,7 @@ msgstr ""
 msgid "previous series (no choice: as shown)"
 msgstr ""
 
-msgid "previous, next"
+msgid "previous, next (set aside skipped)"
 msgstr ""
 
 msgid "privacy faces forget delete gdpr"
@@ -11537,7 +11557,7 @@ msgstr ""
 msgid "set aside in 'search'"
 msgstr ""
 
-msgid "set it aside, then the next one"
+msgid "set it aside, then the previous one"
 msgstr ""
 
 msgid "set the picked files aside"
@@ -11817,7 +11837,7 @@ msgstr ""
 msgid "the picked photos: to another folder, or left where they are"
 msgstr ""
 
-msgid "the previous or next one"
+msgid "the previous or next one not set aside"
 msgstr ""
 
 #, python-brace-format
@@ -12660,6 +12680,12 @@ msgid_plural ""
 "{count} files set aside ({size}), saved in {place}: 'clean --decisions' "
 "moves them to the quarantine, and remembers them: if one comes back (a "
 "new copy from the phone), the audit proposes it again."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} file set aside ignored."
+msgid_plural "{count} files set aside ignored."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -13774,6 +13800,13 @@ msgid "{n} events found in your folders"
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{n} events of files not sorted yet (not in a YYYY/YYYY-MM/<name> folder),"
+" cut where no photo was taken for {hours} hours. Pick photos, then Move "
+"to an event…"
+msgstr ""
+
+#, python-brace-format
 msgid "{n} face"
 msgid_plural "{n} faces"
 msgstr[0] ""
@@ -14057,13 +14090,11 @@ msgstr[1] ""
 msgid ""
 "{n} rule gives a category of several folder levels ({names}): the "
 "convention wants one name (2009/2009-11/<name>). Write one name in its "
-"category in config.toml; mh config tidy removes the rules matching no "
-"photo."
+"category in config.toml (the rule itself still works)."
 msgid_plural ""
 "{n} rules give a category of several folder levels ({names}): the "
 "convention wants one name (2009/2009-11/<name>). Write one name in their "
-"category in config.toml; mh config tidy removes the rules matching no "
-"photo."
+"category in config.toml (the rules themselves still work)."
 msgstr[0] ""
 msgstr[1] ""
 

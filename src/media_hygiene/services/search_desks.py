@@ -12,10 +12,11 @@ from media_hygiene.search.hand_index import HandIndex
 from media_hygiene.search.late_desk import LateDesk
 from media_hygiene.search.people_desk import NamesPlace
 from media_hygiene.search.rule_desk import RuleDesk
+from media_hygiene.search.span_events import SpanEvents
 from media_hygiene.search.tag_desk import TagDesk
 from media_hygiene.services.group_sort import sorted_group
 from media_hygiene.services.people_page import names_file
-from media_hygiene.services.rule_trial import try_rule, written_rules
+from media_hygiene.services.rule_trial import event_gap_hours, try_rule, written_rules
 from media_hygiene.services.selection_move import SelectionMover
 from media_hygiene.services.sort_event import sorter_of
 from media_hygiene.services.sort_reviewing import open_sort_review
@@ -89,6 +90,7 @@ def events_desk(
         partial(sorter_of, runtime),
         found,
         LateDesk(search, runtime.mapper, runtime.locations.config_file, chosen.paths),
+        SpanEvents(search, runtime.mapper, chosen.paths, event_gap_hours(runtime)),
     )
 
 

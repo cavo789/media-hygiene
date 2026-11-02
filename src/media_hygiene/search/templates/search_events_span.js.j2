@@ -1,0 +1,46 @@
+{# The events made from the index (0572, `span_events.py`): the files not sorted yet of
+   the period shown (the search's *From*/*To*), cut at each long gap; one clicked shows its
+   files in the grid. The plan's choices (folder, name, sure, rules, sort now) do not apply:
+   the user picks photos and moves them with *Move to an event…*. On any failure the grid
+   is emptied and the reason said: never another tab's files under an event. #}
+  const PLAN_ONLY = ["eventsProgress", "runs", "eventsTotals", "eventFacts", "eventConflict", "eventChoice", "destination", "eventSuggest"];
+  const spanTitle = (card) => card.first.slice(0, 10) + (card.last.slice(0, 10) !== card.first.slice(0, 10) ? " → " + card.last.slice(0, 10) : "");
+  const hideOutsideSpan = () => {
+    for (const id of PLAN_ONLY) byId(id).hidden = true;
+    for (const node of document.querySelectorAll("#events .filter, #events .eventButtons")) node.hidden = true;
+  };
+  const loadSpans = async () => {
+    hideOutsideSpan();
+    byId("eventCard").hidden = true;
+    byId("eventsSaid").textContent = TEXTS.spanLoading;
+    const period = encodeURIComponent(($("from").value || "") + ".." + ($("to").value || ""));
+    const answer = await ask(SPAN_PATHS.list + period);
+    if (!answer || !answer.ok) { byId("eventsSaid").textContent = answer ? fill(T.failed, { status: answer.status }) : TEXTS.offline; events = []; listEvents(); return; }
+    const view = await answer.json();
+    events = view.events.map((card) => ({ ...card, span: true, title: spanTitle(card), span_text: card.folders.join(" · ") + (card.more_folders ? " …" : "") }));
+    current = -1;
+    byId("eventsSaid").textContent = fill(TEXTS.spanSaid, { n: events.length, hours: {{ event_gap_hours | tojson }} });
+    listEvents();
+  };
+  const loadSpan = async (index) => {
+    current = index;
+    const card = events[index];
+    eventShown = card.id;
+    hideOutsideSpan();
+    byId("eventCard").hidden = false;
+    byId("position").textContent = fill(T.position, { number: index + 1, total: events.length });
+    byId("eventTitle").textContent = card.title;
+    byId("eventSummary").textContent = counted(TEXTS.eventFiles, card.files) + " · " + card.span_text;
+    listEvents();
+    showFiles([], false);  // the grid is the event's from now on, even while it loads
+    total = 0;
+    $("more").hidden = true;
+    const answer = await ask(SPAN_PATHS.files + encodeURIComponent(card.id));
+    if (index !== current) return;  // another event was asked for meanwhile
+    if (!answer || !answer.ok) { setStatus(answer ? fill(TEXTS.spanFailed, { status: answer.status }) : T.offline, "error"); return; }
+    const view = await answer.json();
+    photoOf = {};
+    total = view.total;
+    showFiles(view.hits, false);
+    setStatus(view.hits.length ? "" : TEXTS.spanEmpty, view.hits.length ? "" : "error");
+  };

@@ -7,6 +7,8 @@
    Backspace takes the picked files back out; T takes back a choice made here. #}
 {% include "search_events_texts.js.j2" %}
 const EVENTS_PATH = {{ events_path | tojson }};
+const SPAN_PATHS = {{ span_paths | tojson }};  // the events made from the index (0572)
+const SPAN = true;  // the Events tab lists them, never a classify plan's
 let eventShown = null; // the event whose photos the grid shows
 let eventTile = null;  // (hit, meta, node): a tile of an event says where it goes
 let ruleEvent = false; // the rule dialog serves an event, not a period (`events_rule`)
@@ -64,7 +66,8 @@ let eventCategories = [];  // the event folders offered under the folder fields 
   const refresh = async (again) => {
     const index = current;
     const answer = await ask(EVENTS_PATH + "/" + encodeURIComponent(events[index].id));
-    if (!answer || !answer.ok) { setStatus(T.offline, "error"); return; }
+    // Never another tab's grid under an event (0572): an empty grid and the reason.
+    if (!answer || !answer.ok) { if (index === current) { showFiles([], false); total = 0; } setStatus(answer ? fill(TEXTS.spanFailed, { status: answer.status }) : T.offline, "error"); return; }
     if (index !== current) return;  // another event was asked for meanwhile
     const view = await answer.json();
     events[index] = view.card;
@@ -78,7 +81,9 @@ let eventCategories = [];  // the event folders offered under the folder fields 
     $("more").hidden = true;
     if (view.missing) told(fill(TEXTS.eventMissing, { n: view.missing }), false);
   };
+{% include "search_events_span.js.j2" %}
   const load = async (index) => {
+    if (events[index].span) { loadSpan(index); return; }
     current = index;
     eventShown = events[index].id;
     drawEvent(events[index]);
@@ -108,7 +113,7 @@ let eventCategories = [];  // the event folders offered under the folder fields 
 
   const EVENT_FILTERS = { onlyDecide: (card) => isOpen(card) && !card.sure, onlySure: (card) => card.sure && isOpen(card), onlyUnsorted: unsorted };
   const listEvents = () => {
-    const shown = events.filter(visible);
+    const shown = SPAN ? events : events.filter(visible);
     byId("eventList").replaceChildren(...shown.map((card) => {
       const marks = (card.sorted ? "✓ " : "") + (card.conflict ? "⚠ " : "");
       const button = element("button", card.conflict ? "plain conflict" : "plain", marks + card.title + " · " + counted(TEXTS.eventFiles, card.files));
@@ -120,7 +125,7 @@ let eventCategories = [];  // the event folders offered under the folder fields 
       item.append(button);
       return item;
     }));
-    if (!shown.length) byId("eventList").append(element("li", "muted", TEXTS.eventsNone));
+    if (!shown.length) byId("eventList").append(element("li", "muted", SPAN ? TEXTS.spanNone : TEXTS.eventsNone));
   };
   const go = (step) => {
     if (!mayLeave(() => go(step))) return;
@@ -208,6 +213,7 @@ let eventCategories = [];  // the event folders offered under the folder fields 
   }
 
   const loadEvents = async () => {
+    if (SPAN) { loadSpans(); return; }
     byId("eventsSaid").textContent = TEXTS.eventsLoading;
     const answer = await ask(EVENTS_PATH);
     if (!answer || !answer.ok) { byId("eventsSaid").textContent = TEXTS.offline; return; }
@@ -232,7 +238,7 @@ let eventCategories = [];  // the event folders offered under the folder fields 
       byId(id).tabIndex = on ? 0 : -1;
     }
     try { localStorage.setItem("mh-search-tab", wanted); } catch (error) { /* not kept */ }
-    if (onEvents && !events.length) loadEvents();
+    if (onEvents && (SPAN || !events.length)) loadEvents();
   };
   byId("tabPhotos").addEventListener("click", () => showTab("photos"));
   byId("tabEvents").addEventListener("click", () => showTab("events"));
@@ -244,7 +250,7 @@ let eventCategories = [];  // the event folders offered under the folder fields 
     byId(wanted === "events" ? "tabEvents" : "tabPhotos").focus();
   });
   // A search typed leaves the event: the grid shows what was searched.
-  $("form").addEventListener("submit", () => { eventShown = null; current = -1; byId("eventCard").hidden = true; listEvents(); });
+  $("form").addEventListener("submit", () => { eventShown = null; current = -1; byId("eventCard").hidden = true; if (SPAN && !byId("events").hidden) loadEvents(); else listEvents(); });
   // `/events`: the search, its Events tab shown.
   let kept = "photos";
   try { kept = localStorage.getItem("mh-search-tab") || "photos"; } catch (error) { /* not kept */ }

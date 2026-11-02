@@ -99,13 +99,16 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   **🔀 Inverser**, l'album avec **➕** et **➖**, **📺 Partager**, **✉️ Envoyer**,
   **📂 Événement…**, puis ce qui est mis de côté et **✅ Appliquer**. Pointez un bouton pour son
   nom complet et sa touche. **✅ Appliquer** le rappelle aussi : 🔒 rien ne bouge sans votre GO ;
-  chaque déplacement est journalisé, `undo` le défait. Sur une vignette, le nom, le dossier et la
+  chaque déplacement est journalisé, `undo` le défait. Un fichier mis de côté compte comme
+  disparu pour toute action sauf *Reprendre* : choisi avec les autres (Ctrl+A, Maj, le
+  rectangle), il reste hors de l'album, du partage, de la TV et du déplacement vers un
+  événement, et la réponse le dit (*3 fichiers mis de côté ignorés*). Sur une vignette, le nom, le dossier et la
   légende tiennent sur une ligne chacun (pointez-les pour le texte entier), les mots sur deux
   lignes puis *+N*.
 - **⌨ Clavier** : le panneau liste les gestes principaux ; **Plus de touches** s'ouvre par-dessus
   la page (Échap le ferme), le formulaire au-dessus ne quitte donc jamais l'écran.
 - **Regarder** : Entrée ou un double clic montre la photo en grand (avec un lien vers
-  l'original) ; ← → (sur un téléphone, un glissement) la précédente ou la suivante, Suppr la met de côté puis montre la suivante, F
+  l'original) ; ← → (sur un téléphone, un glissement) la précédente ou la suivante pas mise de côté, Suppr la met de côté puis montre la précédente (la suivante au début), F
   plein écran, ? toutes les touches, Échap la ferme. **👤 Mettre une personne de côté** trouve
   toutes les photos de quelqu'un depuis celle qui est montrée
   ([`people`](people.md#depuis-nimporte-quelle-page--mettre-une-personne-de-côté)).
@@ -155,16 +158,20 @@ fichiers en tableau.
 
 ## Les événements du dernier classify
 
-L'onglet **🗂 Événements**, en haut de la colonne de gauche à côté de **🔎 Photos**, liste les
-événements du dernier plan de [`classify`](classify.md) (il a repris `review-sort`, retiré dans
-cette version) : la ligne de progression (triés, déjà en place, restants) et les passages de
-`sort` de ce plan, chacun avec sa ligne d'annulation ; les trois filtres (*Seulement les
-événements à décider*, *Seulement les propositions sûres*, *Seulement les événements pas encore
-triés*) ; ✓ sur un événement déjà trié, ⚠ sur celui dont le classeur a changé un choix antérieur
-depuis. Cliquez un événement : sa fiche s'affiche au-dessus de la liste, ses photos dans la
-grille, chaque vignette disant où `sort` la mettra (*C:\Photos → 2016\2016-07\Fête*). L'adresse
-`/events` ouvre la page sur cet onglet. La page retient le dernier onglet choisi ; ← et →
-passent d'un onglet à l'autre quand l'un d'eux a le focus.
+L'onglet **🗂 Événements**, en haut de la colonne de gauche à côté de **🔎 Photos**, n'a besoin
+d'aucun [`classify`](classify.md) : il regroupe **les fichiers pas encore triés** de la période
+de la recherche (*Du* / *Au* ; aucune : toutes les dates) selon le moment de la prise de vue, un
+nouvel événement là où aucune photo n'a été prise pendant le plus long écart de `classify`
+(18 heures par défaut), sans règles ni IA. *Pas encore trié* veut dire exactement le *Pas encore*
+de la recherche : hors d'un dossier `AAAA\AAAA-MM\<nom>`, quoi qui l'y ait mis ; un fichier que
+vous triez quitte la liste à la recherche suivante. Cliquez un événement : ses photos remplissent
+la grille (jamais celles de l'onglet Photos : en cas d'erreur la grille reste vide et la barre dit
+pourquoi) ; choisissez-les, puis **📂 Événement…** les déplace. L'adresse `/events` ouvre la page
+sur cet onglet ; ← et → passent d'un onglet à l'autre quand l'un d'eux a le focus.
+
+Les choix ci-dessous (dossier, nom, propositions sûres, règles, *Trier cet événement maintenant*)
+appartiennent à l'ancienne liste, tirée du plan : ils ne s'affichent plus dans l'onglet et seront
+retirés.
 
 Choisissez au clavier, comme dans l'ancienne page ; chaque choix est **enregistré aussitôt** dans
 `sort-decisions.json` à côté du plan, relu sur le disque, avec ce que disait le classeur au moment

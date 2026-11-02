@@ -93,12 +93,15 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   while none is: **🗑 Put aside**, **🔀 Invert**, the album with **➕** and **➖**, **📺 Share**,
   **✉️ Send**, **📂 Event…**, then what is set aside and **✅ Apply**. Point at a button for its
   whole name and its key. **✅ Apply** says it too: 🔒 nothing moves without your GO; every move
-  is journaled, `undo` puts it back. On a tile, the name, folder and caption keep one line each
+  is journaled, `undo` puts it back. A file set aside counts as gone for every action but
+  *Take back*: picked with the others (Ctrl+A, Shift, the rectangle), it stays out of the
+  album, the share, the TV and the event move, and the answer says so (*3 files set aside
+  ignored*). On a tile, the name, folder and caption keep one line each
   (point at them for the whole text), the words two lines then *+N*.
 - **⌨ Keyboard**: the panel lists the main gestures; **More keys** opens over the page (Esc
   closes it), so the form above never leaves the screen.
 - **Look**: Enter or a double click shows the photo large (with a link to the original); ← → (on a
-  phone, a swipe) the previous or next one, Delete sets it aside then shows the next one, F full screen, ? every key,
+  phone, a swipe) the previous or next one not set aside, Delete sets it aside then shows the previous one (the next one at the start), F full screen, ? every key,
   Escape closes it. **👤 Set a person aside** finds every photo of someone on the one shown
   ([`people`](people.md#from-any-page-set-a-person-aside)).
 
@@ -145,15 +148,18 @@ as a table.
 
 ## The events of the latest classify
 
-The **🗂 Events** tab, on top of the left column next to **🔎 Photos**, lists the events of
-the latest [`classify`](classify.md) plan (it took in `review-sort`, removed in this version):
-the progress line (sorted, already in place, left) and the sort runs of the plan, each with its
-undo line; the three filters (*Only the events to decide*, *Only the sure proposals*, *Only the
-events not sorted yet*); ✓ on an event already sorted, ⚠ on one whose earlier choice the
-workbook changed since. Click an event: its card shows above the list, its photos in the grid,
-each tile saying where `sort` will put it (*C:\Photos → 2016\2016-07\Party*). The address
-`/events` opens the page on this tab. The page remembers the last tab chosen; ← and → move
-between the two tabs once one has the focus.
+The **🗂 Events** tab, on top of the left column next to **🔎 Photos**, needs no
+[`classify`](classify.md) run: it groups **the files not sorted yet** of the period of the
+search (*From* / *To*; none: every date) by the time they were taken, a new event wherever
+no photo was taken for `classify`'s longest gap (18 hours by default), without rules nor AI.
+*Not sorted yet* means exactly the search's *Not yet*: not in a `YYYY\YYYY-MM\<name>` folder,
+whoever put it there; a file you sort leaves the list at the next search. Click an event: its
+photos fill the grid (never the Photos tab's: on an error the grid stays empty and the bar says
+why); pick them, then **📂 Event…** moves them. The address `/events` opens the page on this
+tab; ← and → move between the two tabs once one has the focus.
+
+The choices below (folder, name, sure proposals, rules, *Sort this event now*) belong to the
+former, plan-based list: they no longer show in the tab and will be retired.
 
 Choose with the keyboard, as in the old page; every choice is **saved at once** in
 `sort-decisions.json` next to the plan, read back from the disk, with what the workbook said

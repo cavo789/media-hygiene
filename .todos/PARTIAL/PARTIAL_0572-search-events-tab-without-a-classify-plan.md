@@ -4,7 +4,6 @@
 - **Batch**: unassigned
 - **Depends**: —
 - **Files**: src/media_hygiene/search/events_desk.py, src/media_hygiene/review/sort_progress.py, src/media_hygiene/search/templates/search_events*.j2, src/media_hygiene/review/templates/pick_grid.js.j2, documentation/en|fr/sort/
-- **Needs maintainer**: the choice in "Questions" below
 
 ## Context (maintainer, 2026-11-02)
 
@@ -51,3 +50,34 @@ The maintainer sorts from `/search` only: picks a period, selects photos, clicks
 - [ ] Moved rows found by content; sorted-by-any-means counted (tests per move kind)
 - [ ] Plan age shown, or the tab works without a plan (per the maintainer's choice)
 - [ ] Docs en/fr (`sort/11-name-events-in-the-browser.md`); `docs_screenshots` flagged stale
+
+## Maintainer's answers (2026-11-02)
+
+- **GO for events built on the fly** from the index for the period shown — no `classify`,
+  no AI, no rules — provided it does not kill performance (measure on a 50,000-file
+  index; say measured/estimated). Showing what is already sorted is useless and
+  counter-productive.
+- **"Not sorted yet" = the definition `/search` already uses** (`Sorting.LEFT` in
+  `search/query.py`: not in a `YYYY/YYYY-MM/<name>` folder yet), whoever moved it. One
+  definition everywhere in mh: reuse that code, never a second copy.
+
+## Status — PARTIAL (2026-11-02)
+
+### Done
+- The Events tab builds its events on the fly (`search/span_events.py`): the files not
+  sorted yet, by `/search`'s own condition (`Sorting.LEFT`, `search/statements.py`), cut at
+  each gap longer than classify's `event_gap_hours`, for the page's From/To. No plan.json,
+  no AI, no rules. A click fills the grid; 📂 Event… moves the picked photos.
+- The grid is emptied before each load; on a failure it stays empty with the reason.
+- Measured (synthetic 50,000-row index, 25,000 not sorted, `nice -n 19`, 3 runs): every
+  date 0.28 s (8,284 events), one year 0.05 s, one event's tiles 0.05 s; whole process
+  0.63 s, 81 MB peak (`/usr/bin/time`).
+- Tests: `tests/integration/test_span_events.py`; docs en/fr `commands/search.md`, `sort/11`.
+
+### Not done
+- Remove the plan-based UI now hidden (`events_choice`/`events_sure`/`events_rule`/
+  `events_progress` templates, `EventsDesk.opener/state/event`, the sort routes of
+  `events_choose`, their tests), and rewrite the rest of `sort/11` that still describes it.
+  **Reason:** scope; a follow-up TODO.
+- No browser test of the new JS; `docs_screenshots` stale for `/search` (Events tab).
+- Open: should the gap be its own setting (it reuses classify's)?

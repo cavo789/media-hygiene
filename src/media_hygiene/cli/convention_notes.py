@@ -63,12 +63,11 @@ def note_convention(runtime: Runtime) -> None:
             ngettext(
                 "{n} rule gives a category of several folder levels ({names}): "
                 "the convention wants one name (2009/2009-11/<name>). Write one "
-                "name in its category in config.toml; mh config tidy removes the "
-                "rules matching no photo.",
+                "name in its category in config.toml (the rule itself still works).",
                 "{n} rules give a category of several folder levels ({names}): "
                 "the convention wants one name (2009/2009-11/<name>). Write one "
-                "name in their category in config.toml; mh config tidy removes the "
-                "rules matching no photo.",
+                "name in their category in config.toml (the rules themselves still "
+                "work).",
                 len(deep),
             ).format(n=len(deep), names=named + more)
         )
