@@ -52,3 +52,11 @@ What the maintainer wants: see the proposal, accept it in one click and go to th
       of the Events tab change).
 
 Related: 0523 (one-click album/TV buttons on the same card) — keep its button below these three.
+
+## Decided (2026-11-02)
+
+By the maintainer, review of the 2026-11-02 iterate: since 0572 the Events tab lists events built
+from the index and hides the card's folder and name fields and its six buttons. This TODO is
+**rewritten for that index-based card**: before coding, read what the tab shows today and apply
+the goal above to it (say in one sentence where the files go, at most three buttons, the bar's
+gestures). The plan-based card does not come back.
