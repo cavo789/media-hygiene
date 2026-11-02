@@ -182,16 +182,16 @@ def _undoable(run: RunSummary) -> bool:
     return acted > run.restored
 
 
-def _last_sort(runs: tuple[RunSummary, ...]) -> str | None:
+def _last_sort(runs: tuple[RunSummary, ...]) -> RunSummary | None:
     """The newest sort run, not undone.
 
     Args:
         runs: The runs, newest first.
 
     Returns:
-        Its identifier, or None.
+        It, or None.
     """
     return next(
-        (run.run_id for run in runs if run.kind is Phase.SORT and _undoable(run)),
+        (run for run in runs if run.kind is Phase.SORT and _undoable(run)),
         None,
     )

@@ -41,7 +41,11 @@ Sous *Où vous en êtes* (le dernier audit, la quarantaine), une ligne par étap
 
 - **👉** l'étape proposée, celle que lance Entrée ; **✅** une étape que les dossiers de l'outil
   prouvent faite (un audit vu, plus aucune copie, un tri appliqué, des mots ou des visages
-  trouvés). Rien n'est marqué quand l'outil ne peut pas le savoir.
+  trouvés). Rien n'est marqué quand l'outil ne peut pas le savoir. Une étape faite qui ne
+  répondrait que « rien à faire » n'a pas de numéro : sa raison et sa date sont à sa place
+  (*Rien à mettre de côté depuis l'analyse du …*, *Déjà fait : la proposition du … a été appliquée
+  le … (n fichiers déplacés)*), de même sur la page d'accueil, où son bouton est éteint. L'analyse,
+  `classify`, les mots et les visages restent actifs : les relancer donne un nouveau résultat.
 - le **numéro** à taper, puis la **commande** que vous taperez plus tard vous-même ;
 - ce que fait l'étape, et son badge : 🔒 photos intactes, ↩️ annulable, ⚠️ définitif,
   *facultatif* ; 🤖 à côté de `classify` et `tags` quand un modèle local est indiqué

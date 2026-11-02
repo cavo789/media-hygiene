@@ -1,4 +1,4 @@
-# `sort`: move the files as the workbook says
+# `sort`: move the photos into the proposed folders
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `sort` · 🇫🇷 [Français](../../fr/commands/sort.md)
 

@@ -960,6 +960,16 @@ msgstr ""
 msgid "Already copied by an earlier mh import --phone: {count}."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Already done: the proposal of {proposed} was applied on {applied} "
+"({count} file moved)."
+msgid_plural ""
+"Already done: the proposal of {proposed} was applied on {applied} "
+"({count} files moved)."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Already in place"
 msgstr ""
 
@@ -972,9 +982,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "Already in your library, not copied: {count}."
-msgstr ""
-
-msgid "Already sorted as the workbook says."
 msgstr ""
 
 #, python-brace-format
@@ -1506,9 +1513,6 @@ msgstr ""
 msgid ""
 "Checking then deleting {count} files ({size} GB): about {minutes} min, "
 "each one copied again from the phone, then moved off it."
-msgstr ""
-
-msgid "Checks the workbook, asks, then moves: undoable, proven."
 msgstr ""
 
 #, python-brace-format
@@ -4188,7 +4192,7 @@ msgid ""
 "(journaled, undoable)."
 msgstr ""
 
-msgid "Move the photos as the workbook says"
+msgid "Move the photos into the proposed folders"
 msgstr ""
 
 msgid ""
@@ -5202,6 +5206,18 @@ msgid "Nothing to move: every file is where the plan puts it."
 msgstr ""
 
 msgid "Nothing to put back."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Nothing to set aside since the audit of {date}: audit again after adding "
+"photos."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Nothing to set aside since the clean of {date}: audit again after adding "
+"photos."
 msgstr ""
 
 msgid "Nothing to take back."
@@ -8465,6 +8481,11 @@ msgstr ""
 
 #, python-brace-format
 msgid "The previous image still takes {size} MB: docker image prune frees it."
+msgstr ""
+
+msgid ""
+"The proposal can be changed first, on the page or in the workbook; then "
+"it asks and moves: undoable, proven."
 msgstr ""
 
 msgid "The proposal is already made: → is enough when it suits you."

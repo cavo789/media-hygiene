@@ -13,9 +13,8 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.cli.command_help import command_help
 from media_hygiene.cli.menu_catalog import catalog, with_others
-from media_hygiene.cli.menu_needs import missing
+from media_hygiene.cli.menu_needs import clean_finished, missing
 from media_hygiene.cli.status_step import Slot, next_step
-from media_hygiene.constants import RunKind
 from media_hygiene.services.launcher_host import HOST_COMMANDS, windows_menu
 
 if TYPE_CHECKING:
@@ -124,8 +123,9 @@ def _filled(line: MenuStep, status: Status) -> MenuStep:
     """
     step = line.step
     reason = missing(step, status) or ""
-    if step.fields or step.planned or reason:
-        return replace(line, command="", reason=reason)
+    if step.fields or step.planned or reason:  # a done step is off with its reason
+        done = _done(step.slot, status)
+        return replace(line, command="", reason=reason, done=done)
     match step.slot:
         case Slot.PURGE:
             runs = status.quarantine.runs
@@ -149,11 +149,9 @@ def _done(slot: Slot | None, status: Status) -> bool:
     Returns:
         True only on proof: an audit seen, no copy left, a sort applied, tags, faces.
     """
-    summary = status.analysis.summary
     proofs = {
         Slot.AUDIT: status.analysis.seen,
-        Slot.CLEAN: summary is not None
-        and (summary.kind is RunKind.CLEAN or not summary.duplicate_files),
+        Slot.CLEAN: clean_finished(status) is not None,
         Slot.CLASSIFY: status.sort.proposed is not None,
         Slot.SORT: status.sort.sorted,
         Slot.TAGS: bool(status.tagged and status.tagged[0]),

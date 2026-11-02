@@ -40,7 +40,10 @@ Under *Where you are* (the last audit, the quarantine), one line per step:
 
 - **👉** the step proposed, the one Enter runs; **✅** a step the tool's folders prove done (an
   audit seen, no copy left, a sort applied, tags or faces found). Nothing is marked when the tool
-  cannot tell.
+  cannot tell. A done step that would only answer "nothing to do" has no number: its reason and
+  date stand in its place (*Nothing to set aside since the audit of …*, *Already done: the
+  proposal of … was applied on … (n files moved)*), the same on the home page, where its button
+  is off. The audit, `classify`, tags and faces stay on: running them again gives a new result.
 - the **number** to type, then the **command** you will later type yourself;
 - what the step does, and its badge: 🔒 photos untouched, ↩️ can be undone, ⚠️ for good,
   *optional*; 🤖 next to `classify` and `tags` when a local model is set (`[classify.ai] model`).

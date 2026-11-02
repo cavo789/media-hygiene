@@ -94,3 +94,16 @@ class ReportSummary(BaseModel):
     # A clean's options: near duplicates moved (`--tier near`), bursts (`--decisions`).
     near_tier: bool = False
     bursts_decided: bool = False
+
+    @property
+    def nothing_to_clean(self) -> bool:
+        """Tell whether this run left nothing for `clean`: no copy, broken file, orphan.
+
+        The terms of `Plan.is_empty` a summary keeps; the review's choices are read
+        apart (`decisions.json`), by the caller.
+
+        Returns:
+            True after a clean, or an audit that found nothing to set aside.
+        """
+        found = self.duplicate_files or self.broken_files or self.orphan_sidecars
+        return self.kind is RunKind.CLEAN or not found

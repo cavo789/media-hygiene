@@ -9,10 +9,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.cli.status_step import to_import
-from media_hygiene.i18n import _
+from media_hygiene.constants import RunKind
+from media_hygiene.i18n import _, ngettext
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+    from datetime import datetime
 
     from media_hygiene.cli.menu_entry import Step
     from media_hygiene.services.status import Status
@@ -59,6 +61,7 @@ def _needs() -> dict[str, Need]:
         "review-gone": audit,
         "review-intruders": audit,
         "sort": _proposal,
+        "clean": clean_finished,
     }
 
 
@@ -91,6 +94,46 @@ def _import(status: Status) -> str | None:
     return _("Nothing to get back: the PC already has what the NAS keeps.")
 
 
+def _day(moment: datetime) -> str:
+    """Write a moment's day, in local time.
+
+    Args:
+        moment: An aware moment.
+
+    Returns:
+        E.g. `2026-10-30`.
+    """
+    return moment.astimezone().strftime("%Y-%m-%d")
+
+
+def clean_finished(status: Status) -> str | None:
+    """Nothing left to set aside since the last audit or clean, no review pending.
+
+    The one rule of the ✅ (`menu_steps`), of the button off and of its reason.
+
+    Args:
+        status: What the tool folders say.
+
+    Returns:
+        The reason, dated; None when `clean` has something to do (or no audit yet).
+    """
+    summary, review = status.analysis.summary, status.review
+    if summary is None or not summary.nothing_to_clean:
+        return None
+    if review.shots_set_aside or review.near_groups:
+        return None
+    day = _day(summary.created_at)
+    if summary.kind is RunKind.CLEAN:
+        return _(
+            "Nothing to set aside since the clean of {date}: "
+            "audit again after adding photos."
+        ).format(date=day)
+    return _(
+        "Nothing to set aside since the audit of {date}: "
+        "audit again after adding photos."
+    ).format(date=day)
+
+
 def _proposal(status: Status) -> str | None:
     """A classify proposal waiting to be applied.
 
@@ -102,6 +145,17 @@ def _proposal(status: Status) -> str | None:
     """
     if status.sort.proposed is None:
         return _("No proposal to apply: ask classify for one first.")
-    if status.sort.sorted:
-        return _("Already sorted as the workbook says.")
+    sort = status.sort
+    if sort.sorted and sort.applied is not None and sort.proposed is not None:
+        return ngettext(
+            "Already done: the proposal of {proposed} was applied on {applied} "
+            "({count} file moved).",
+            "Already done: the proposal of {proposed} was applied on {applied} "
+            "({count} files moved).",
+            sort.moved,
+        ).format(
+            proposed=_day(sort.proposed),
+            applied=_day(sort.applied),
+            count=sort.moved,
+        )
     return None

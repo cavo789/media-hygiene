@@ -1224,6 +1224,20 @@ msgstr "Les {total} fichiers trouvés sont choisis"
 msgid "Already copied by an earlier mh import --phone: {count}."
 msgstr "Déjà copiés par un mh import --phone précédent : {count}."
 
+#, python-brace-format
+msgid ""
+"Already done: the proposal of {proposed} was applied on {applied} "
+"({count} file moved)."
+msgid_plural ""
+"Already done: the proposal of {proposed} was applied on {applied} "
+"({count} files moved)."
+msgstr[0] ""
+"Déjà fait : la proposition du {proposed} a été appliquée le {applied} "
+"({count} fichier déplacé)."
+msgstr[1] ""
+"Déjà fait : la proposition du {proposed} a été appliquée le {applied} "
+"({count} fichiers déplacés)."
+
 msgid "Already in place"
 msgstr "Déjà à leur place"
 
@@ -1237,9 +1251,6 @@ msgstr "Déjà dans votre photothèque"
 #, python-brace-format
 msgid "Already in your library, not copied: {count}."
 msgstr "Déjà dans votre photothèque, non copiés : {count}."
-
-msgid "Already sorted as the workbook says."
-msgstr "Déjà trié comme le dit le classeur."
 
 #, python-brace-format
 msgid "Already the latest version: {version}."
@@ -1866,9 +1877,6 @@ msgstr ""
 "Vérification puis suppression de {count} fichiers ({size} Go) : environ "
 "{minutes} min, chacun copié à nouveau depuis le téléphone, puis déplacé "
 "hors de celui-ci."
-
-msgid "Checks the workbook, asks, then moves: undoable, proven."
-msgstr "Vérifie le classeur, demande, puis déplace : annulable, prouvé."
 
 #, python-brace-format
 msgid "Choice on series {number} undone."
@@ -5087,8 +5095,8 @@ msgstr ""
 "Déplacer les photos et vidéos comme le dit le classeur de classify "
 "modifié (journalisé, annulable)."
 
-msgid "Move the photos as the workbook says"
-msgstr "Déplacer les photos comme le dit le classeur"
+msgid "Move the photos into the proposed folders"
+msgstr "Ranger les photos dans les dossiers proposés"
 
 msgid ""
 "Move the photos picked to an event folder, year then year-month, without "
@@ -6288,6 +6296,22 @@ msgstr "Rien à déplacer : chaque fichier est là où le plan le met."
 
 msgid "Nothing to put back."
 msgstr "Rien à remettre."
+
+#, python-brace-format
+msgid ""
+"Nothing to set aside since the audit of {date}: audit again after adding "
+"photos."
+msgstr ""
+"Rien à mettre de côté depuis l'analyse du {date} : relancez l'analyse après "
+"avoir ajouté des photos."
+
+#, python-brace-format
+msgid ""
+"Nothing to set aside since the clean of {date}: audit again after adding "
+"photos."
+msgstr ""
+"Rien à mettre de côté depuis le nettoyage du {date} : relancez l'analyse "
+"après avoir ajouté des photos."
 
 msgid "Nothing to take back."
 msgstr "Rien à reprendre."
@@ -10225,6 +10249,13 @@ msgstr ""
 #, python-brace-format
 msgid "The previous image still takes {size} MB: docker image prune frees it."
 msgstr "L'image précédente occupe encore {size} Mo : docker image prune la libère."
+
+msgid ""
+"The proposal can be changed first, on the page or in the workbook; then "
+"it asks and moves: undoable, proven."
+msgstr ""
+"La proposition peut d'abord être changée, sur la page ou dans le classeur ; "
+"puis il demande et déplace : annulable, prouvé."
 
 msgid "The proposal is already made: → is enough when it suits you."
 msgstr "La proposition est déjà faite : → suffit quand elle vous convient."

@@ -1,4 +1,4 @@
-# `sort` : déplacer les fichiers comme le dit le classeur
+# `sort` : ranger les photos dans les dossiers proposés
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `sort` · 🇬🇧 [English](../../en/commands/sort.md)
 

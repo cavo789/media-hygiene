@@ -290,7 +290,7 @@ Corrigez encore (étapes 2 et 3), autant de fois qu'il le faut : rien ne bouge a
 
 <span class="mh-badge mh-undo">↩️ Annulable</span>
 
-Déplacez les fichiers comme le dit le classeur :
+Rangez les photos dans les dossiers proposés (la proposition, changée sur la page ou dans le classeur) :
 
 ```powershell
 mh sort
@@ -354,7 +354,7 @@ Chaque commande du tri, et l'étape de cette page qui la montre :
 | [l'onglet 🗂 Événements de `search`](../commands/search.md#les-événements-du-dernier-classify) | 3 | Nomme les événements dans le navigateur. |
 | [`places`](../commands/places.md) | 5 | Nomme vos lieux sur une carte. |
 | [`people`](../commands/people.md) | 6 | Trouve et nomme les visages ; `--forget` les supprime. |
-| [`sort`](../commands/sort.md) | 9 | Déplace les fichiers comme le dit le classeur. |
+| [`sort`](../commands/sort.md) | 9 | Range les photos dans les dossiers proposés. |
 | [`undo`](../commands/undo.md) | 10, 11 | Annule un tri, un album. |
 | [`album`](../commands/album.md) | 11 | Une photo dans plusieurs dossiers, sans copie. |
 | [`status`](../commands/status.md) | Plus tard | Dit où vous en êtes et la prochaine étape. |

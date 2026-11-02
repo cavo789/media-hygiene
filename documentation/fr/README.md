@@ -105,7 +105,7 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
    les photos dans le rapport.
 6. [Écrire ce que vous savez](sort/06-write-down-what-you-know.md) : des règles pour vos voyages,
    vos anniversaires, vos dossiers et vos appareils, appliquées à chaque exécution.
-7. [Trier](sort/07-sort.md) : `sort` déplace les fichiers comme le dit le classeur, journalisé,
+7. [Trier](sort/07-sort.md) : `sort` range les photos dans les dossiers proposés, journalisé,
    annulable, et prouve que rien n'est perdu.
 
 **Aller plus loin :**

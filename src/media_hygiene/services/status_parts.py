@@ -19,6 +19,8 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
 
+    from media_hygiene.actions.runs import RunSummary
+
 
 @dataclass(frozen=True, slots=True)
 class QuarantinedRun:
@@ -138,12 +140,16 @@ class SortState:
 
     plan: Path | None = None
     proposed: datetime | None = None
-    sorted: bool = False
+    sorted: bool = False  # a sort since the proposal moved files
+    applied: datetime | None = None  # when that sort started
+    moved: int = 0  # the files it moved (from its journal)
     journal: Path | None = None  # where the runs of the plan are read (0398)
 
 
-def sort_state(reports_dir: Path, last_sort: str | None) -> SortState:
+def sort_state(reports_dir: Path, last_sort: RunSummary | None) -> SortState:
     """Find the newest `plan.json` and compare it with the newest sort run.
+
+    A sort that moved nothing does not count: the proposal is not applied.
 
     Args:
         reports_dir: The reports mount point.
@@ -156,5 +162,11 @@ def sort_state(reports_dir: Path, last_sort: str | None) -> SortState:
     if not plans:
         return SortState()
     proposed = datetime.fromtimestamp(plans[0].stat().st_mtime, UTC)
-    applied = last_sort is not None and run_started(last_sort) >= proposed
-    return SortState(plans[0], proposed, sorted=applied)
+    if last_sort is None or not last_sort.moved:
+        return SortState(plans[0], proposed)
+    started = run_started(last_sort.run_id)
+    if started < proposed:
+        return SortState(plans[0], proposed)
+    return SortState(
+        plans[0], proposed, sorted=True, applied=started, moved=last_sort.moved
+    )
