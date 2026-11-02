@@ -8452,13 +8452,6 @@ msgid "The review is not running any more: start it again."
 msgstr ""
 
 #, python-brace-format
-msgid ""
-"The rule '{name}' gives the category '{category}', several folder levels:"
-" the convention wants one name (2009/2009-11/<name>). Write one name in "
-"its category in config.toml."
-msgstr ""
-
-#, python-brace-format
 msgid "The rule would take {files}, shown first: {folders}."
 msgstr ""
 
@@ -14057,6 +14050,20 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} rule decided nothing."
 msgid_plural "{n} rules decided nothing."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{n} rule gives a category of several folder levels ({names}): the "
+"convention wants one name (2009/2009-11/<name>). Write one name in its "
+"category in config.toml; mh config tidy removes the rules matching no "
+"photo."
+msgid_plural ""
+"{n} rules give a category of several folder levels ({names}): the "
+"convention wants one name (2009/2009-11/<name>). Write one name in their "
+"category in config.toml; mh config tidy removes the rules matching no "
+"photo."
 msgstr[0] ""
 msgstr[1] ""
 

@@ -10207,16 +10207,6 @@ msgid "The review is not running any more: start it again."
 msgstr "Le tri ne tourne plus : relancez-le."
 
 #, python-brace-format
-msgid ""
-"The rule '{name}' gives the category '{category}', several folder levels:"
-" the convention wants one name (2009/2009-11/<name>). Write one name in "
-"its category in config.toml."
-msgstr ""
-"La règle '{name}' donne la catégorie '{category}', sur plusieurs niveaux "
-"de dossiers : la convention veut un seul nom (2009/2009-11/<nom>). "
-"Écrivez un seul nom dans sa catégorie, dans config.toml."
-
-#, python-brace-format
 msgid "The rule would take {files}, shown first: {folders}."
 msgstr "La règle prendrait {files}, montrés en premier : {folders}."
 
@@ -16813,6 +16803,28 @@ msgid "{n} rule decided nothing."
 msgid_plural "{n} rules decided nothing."
 msgstr[0] "{n} règle n'a rien décidé."
 msgstr[1] "{n} règles n'ont rien décidé."
+
+#, python-brace-format
+msgid ""
+"{n} rule gives a category of several folder levels ({names}): the "
+"convention wants one name (2009/2009-11/<name>). Write one name in its "
+"category in config.toml; mh config tidy removes the rules matching no "
+"photo."
+msgid_plural ""
+"{n} rules give a category of several folder levels ({names}): the "
+"convention wants one name (2009/2009-11/<name>). Write one name in their "
+"category in config.toml; mh config tidy removes the rules matching no "
+"photo."
+msgstr[0] ""
+"{n} règle donne une catégorie sur plusieurs niveaux de dossiers ({names}) : "
+"la convention veut un seul nom (2009/2009-11/<nom>). Écrivez un seul nom "
+"dans sa catégorie, dans config.toml ; mh config tidy retire les règles qui "
+"ne trouvent plus aucune photo."
+msgstr[1] ""
+"{n} règles donnent une catégorie sur plusieurs niveaux de dossiers "
+"({names}) : la convention veut un seul nom (2009/2009-11/<nom>). Écrivez un "
+"seul nom dans leur catégorie, dans config.toml ; mh config tidy retire les "
+"règles qui ne trouvent plus aucune photo."
 
 #, python-brace-format
 msgid "{n} s"
