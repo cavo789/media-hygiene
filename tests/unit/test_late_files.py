@@ -206,3 +206,22 @@ def test_an_unreadable_event_file_refuses_nothing(tmp_path: Path) -> None:
         file="events/gone.toml",
     )
     assert not refused_by_event(tmp_path, [rule])
+
+
+def test_an_event_whose_late_files_are_all_set_aside_is_not_proposed(
+    tmp_path: Path, connection: sqlite3.Connection
+) -> None:
+    """A file set aside is a soft delete: never a late file, its event dropped (0518).
+
+    Args:
+        tmp_path: Where config.toml goes.
+        connection: The index.
+    """
+    shown = _desk(tmp_path, connection)
+    before = {item["id"]: item for item in json.loads(shown.state().body)["events"]}
+    assert before["Wedding"]["total"] == 2
+    aside = frozenset({r"C:\Stick\d.jpg", r"C:\Phone\c.jpg"})
+    desk = LateDesk(shown.index, shown.mapper, shown.config_file, lambda: aside)
+    after = {item["id"]: item for item in json.loads(desk.state().body)["events"]}
+    assert "Wedding" not in after
+    assert after["Easter"]["total"] == before["Easter"]["total"] - 2

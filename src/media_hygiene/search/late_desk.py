@@ -33,6 +33,7 @@ from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
 from media_hygiene.search.event_match import label
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
+from media_hygiene.search.late_aside import without_aside
 from media_hygiene.search.late_tiles import late_tiles
 
 if TYPE_CHECKING:
@@ -161,14 +162,16 @@ class LateDesk:
         )
 
     def _found(self) -> tuple[tuple[ClassifyRule, ...], list[LateEvent]]:
-        """The rules and the events with late files.
+        """The rules and the events with late files, those set aside left out.
 
         Returns:
             Both.
         """
         rules = read_rules(self.config_file)
         refused = refused_by_event(self.config_file.parent, rules)
-        return rules, late_files(self.index.connection, rules, refused)
+        found = late_files(self.index.connection, rules, refused)
+        aside = (self.mapper, self.chosen())
+        return rules, without_aside(self.index.connection, found, aside)
 
     def _digests(self, keys: tuple[int, ...]) -> set[str]:
         """The content ids of index keys.
