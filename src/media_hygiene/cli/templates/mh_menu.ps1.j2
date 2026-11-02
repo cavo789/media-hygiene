@@ -14,12 +14,15 @@ function global:_{{ function }}_home {
     $after = $false
     $tab = $false
     $crashed = $null
-    # The port checked before any line of success: a refusal alone, in red (0503). The
-    # relaunch of home after a page step waits the same way for the port the step freed.
+    # A page left by a closed window stopped first; a refusal alone, in red (0503).
     if (-not (_{{ function }}_page_free)) { $global:LASTEXITCODE = 1; return }
-    # Said once: the page runs in the background, this window says nothing more until a step (0355).
+{% if host.step_file %}
+    # Said once the server has started (0543): a port refusal never follows it.
+    $global:MediaHygieneSay = $true
+{% else %}
     Write-Host "{{ texts.running }}"
     if (-not ($global:MediaHygieneLan -and $global:MediaHygieneLan.address)) { Write-Host "{{ lan.texts.tip }}" }
+{% endif %}
     while ($true) {
         if ($status -eq {{ page_closed }}) { $global:LASTEXITCODE = 0; return }
         if ($status -ge {{ signal_base }}) { $global:LASTEXITCODE = $status; return }
@@ -108,6 +111,12 @@ function global:_{{ function }}_watch {
     $global:MediaHygieneDetach = $cid
     try { $null = {{ function }} home @args } finally { $global:MediaHygieneDetach = $null }
     if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $cid)) { return }
+    if ($global:MediaHygieneSay) {
+        # Said once: the page runs in the background, this window says nothing more until a step (0355).
+        $global:MediaHygieneSay = $false
+        Write-Host "{{ texts.running }}"
+        if (-not ($global:MediaHygieneLan -and $global:MediaHygieneLan.address)) { Write-Host "{{ lan.texts.tip }}" }
+    }
     $id = "$(Get-Content -LiteralPath $cid -TotalCount 1)".Trim()
     $held = $global:MediaHygieneHeld
     $global:MediaHygieneHeld = $null
@@ -130,7 +139,10 @@ function global:_{{ function }}_watch {
                 }
                 continue
             }
-            $step = Get-Content -LiteralPath $now -Raw -Encoding UTF8 | ConvertFrom-Json
+            $step = $null
+            try { $step = Get-Content -LiteralPath $now -Raw -Encoding UTF8 -ErrorAction Stop | ConvertFrom-Json } catch { }
+            # Half written (an older server, 0482): read again next tick, never {{ function }} alone.
+            if (-not $step -or -not $step.id) { Start-Sleep -Milliseconds 250; continue }
             Remove-Item -LiteralPath $now -Force -ErrorAction SilentlyContinue
             # Without a byte order mark: the server reads it as JSON.
             [IO.File]::WriteAllText($running, '{"id": "' + $step.id + '"}')

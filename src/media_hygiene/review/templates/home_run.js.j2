@@ -410,6 +410,8 @@ function wirePresence() {
   window.setInterval(() => alive(false), ALIVE_MS);
 }
 const ACTS = {
+  // The tip on protecting a master library (0532): told once, until closed.
+  "protect-tip-seen": () => { store.set("protectTipSeen", true); const tip = $("#protectTip"); if (tip) tip.remove(); },
   "audit-here": () => askAudit("start"),
   "audit-stop": () => askAudit("stop"),
   "dismiss-update": () => { store.set("dismissed", S.update ? S.update.version : ""); render(); },

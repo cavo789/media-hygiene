@@ -118,6 +118,11 @@ entries (comments and order kept), then reads the file back and says how many ar
 undo, copy that file back over `config.toml`: the console gives the line. At the end of
 `sort`, one 💡 line says when entries point at nothing.
 
+The events remembered by the pages live in `/config/events/<year>.toml`, not in `config.toml`.
+Those an older version wrote into `config.toml` (a `date_range` rule named after its category,
+such as `Turin` or `Turin (July 2019)`) are listed by `config tidy` and moved there by `--apply`,
+once, after the same dated copy; your hand-written rules stay in `config.toml`.
+
 ## Who wins?
 
 From the weakest to the strongest: the built-in default, `config.toml`, an environment variable

@@ -71,3 +71,17 @@ def check_backup_roles(
                 "give it no other role"
             ).format(backup=backup, other=other, key=key)
             raise ValueError(message)
+
+
+def same_folder(first: str, second: str) -> bool:
+    r"""Tell whether two host paths name one folder, as the host compares them.
+
+    Args:
+        first: A host folder.
+        second: Another one.
+
+    Returns:
+        True when they are of one system and equal (`C:\Photos` ignores case).
+    """
+    one, two = _host_path(first), _host_path(second)
+    return type(one) is type(two) and one == two

@@ -279,7 +279,7 @@ The edits already made in the old workbook and in the 🗂 Events tab of `search
 
 <span class="mh-badge mh-undo">↩️ Can be undone</span>
 
-Move the files as the workbook says:
+Move the photos into the proposed folders (the proposal, changed on the page or in the workbook):
 
 ```powershell
 mh sort
@@ -344,7 +344,7 @@ Each command of the sort, and the step of this page that shows it:
 | [the 🗂 Events tab of `search`](../commands/search.md#the-events-of-the-latest-classify) | 3 | Names the events in the browser. |
 | [`places`](../commands/places.md) | 5 | Names your places on a map. |
 | [`people`](../commands/people.md) | 6 | Finds and names the faces; `--forget` deletes them. |
-| [`sort`](../commands/sort.md) | 9 | Moves the files as the workbook says. |
+| [`sort`](../commands/sort.md) | 9 | Moves the photos into the proposed folders. |
 | [`undo`](../commands/undo.md) | 10, 11 | Undoes a sort, an album. |
 | [`album`](../commands/album.md) | 11 | One photo in several folders, without a copy. |
 | [`status`](../commands/status.md) | Later | Says where you are and the next step. |

@@ -182,3 +182,33 @@ def test_review_intruders_without_any(cli: CliRunner, media: MediaFactory) -> No
     result = run(cli, "review", "--intruders")
     assert result.exit_code == 0, result.output
     assert "No intruder file: nothing to pick." in result.output
+
+
+def test_the_state_lists_each_file_for_the_live_counts(
+    media: MediaFactory, locations: Locations
+) -> None:
+    """0510: extension, host folder and bytes of each file; protected left out."""
+    _tree(media, locations)
+    files = answer(_app(locations), "GET /api/state")["files"]
+    assert isinstance(files, list)
+    assert sorted((f["extension"], f["folder"], f["bytes"]) for f in files) == [
+        (".pdf", "C:\\Photos\\Trip", len(_PDF)),
+        (".zip", "C:\\Photos", len(_ZIP)),
+        (".zip", "C:\\Photos\\Trip", len(_ZIP)),
+    ]
+
+
+def test_the_buttons_sit_in_the_bar_with_the_sentence() -> None:
+    """0510: the buttons and the sentence in the sticky bar, Set aside red, last."""
+    place = DecisionsPlace(argument="decisions.json", host="decisions.json")
+    text = review_page(
+        "intruders_review.html.j2", place, ("/api/intruders", "/api/file")
+    ).decode()
+    top = text[text.index('id="bar"') : text.index("<main")]
+    assert 'id="sentence"' in top
+    assert '<button type="button" id="pick" class="danger" disabled>' in top
+    assert 'id="back" class="plain"' in top
+    assert top.index('id="back"') < top.index('id="pick"')  # Set aside last
+    assert "Tick an extension or a folder." in text
+    assert "Set these {n} files aside" in text
+    assert "nothing moves until Apply" in text

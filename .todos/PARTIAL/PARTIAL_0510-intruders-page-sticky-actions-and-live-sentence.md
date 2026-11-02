@@ -70,3 +70,30 @@ filter the folder list to the folders that hold some (point 3 below, confirmed).
 
 Before: scroll past both tables to find the button, and guess what a mix of ticks does.
 After: the button is always in view and says, in numbers, exactly which files go.
+
+## Status — PARTIAL (2026-11-02)
+
+### Done
+
+- Both buttons in the sticky bar (*Put every intruder file back* outline, *Set aside* red and
+  last, disabled with nothing ticked, carrying the count: "Set these 12 files aside").
+- One live sentence in the bar for the four cases, counted in the page from `state.files`
+  (new `IntruderEntry`: extension, host folder, bytes; no new disk read).
+- Folder table filtered by the extensions ticked (and the other way), each row showing the
+  count and size left; a ticked row with nothing left stays shown at 0, in italics (deviation:
+  hidden it could no longer be unticked), and is named in the sentence.
+- Side text shortened; "nothing moves until Apply".
+- *Apply now*: `ApplyOffer` (pending = some intruder set aside), `ReviewStart` +
+  `end_on_applied` in `intruders_review_flow`; intruders added to `test_review_apply.py`.
+- Docs EN + FR `clean/15-intruder-files.md`; French translations.
+- Checked in headless Chromium (playwright, mocked API): four sentences, filtering, no pageerror.
+
+### Not done
+
+- Point 6 (page opened behind): filed as TODO 0577.
+  **Reason:** bringing the browser to front from the job needs `SetForegroundWindow` through
+  `Add-Type` (run-time compile, flagged by Avast); needs a check on Windows.
+- Sentence tests in pytest for the four cases (EN + FR): the logic is JavaScript; checked in
+  headless Chromium by hand, the template texts by pytest.
+  **Reason:** no JavaScript runtime in the test suite.
+- `docs_screenshots` not run (page changed): to run.

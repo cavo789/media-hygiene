@@ -27,6 +27,14 @@ def marked_texts() -> dict[str, str]:
             _("{key} runs the step, as in the console's menu."),
             key=f"<kbd>{escape(_('Enter'))}</kbd>",
         ),
+        "protectTip": _filled(
+            _(
+                "A master library you trust can be protected: never changed, it "
+                "always keeps the copy. {link}, then ⋯ next to its folder: Role of "
+                "this folder."
+            ),
+            link=f'<a href="#" data-run="search">{escape(_("My folders"))}</a>',
+        ),
         "cycleLoop": _filled(
             _("New photos? The cycle starts again at {stage}."), stage=stage
         ),

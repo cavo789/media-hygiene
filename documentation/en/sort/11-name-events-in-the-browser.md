@@ -17,7 +17,7 @@ it**, all with the keyboard.
 It is optional: the workbook alone is enough, and both can be used together. The page never
 touches a photo nor the workbook; `sort` ([step 7](07-sort.md)) applies your choices.
 
-> **Since 0572** the 🗂 Events tab no longer reads the `classify` plan: it groups the files not sorted yet of the period searched, and you move them with **📂 Event…** — [how](../commands/search.md#the-events-of-the-latest-classify). The plan-based steps below describe the former tab.
+> **Since 0572** the 🗂 Events tab no longer reads the `classify` plan: it groups the files not sorted yet of the period searched, and you move them with **📂 Move to an event…** — [how](../commands/search.md#the-events-of-the-latest-classify). The plan-based steps below describe the former tab.
 
 ## Start the page
 
@@ -147,13 +147,14 @@ do it, and each one says what it saved, read back from the disk.
 
 - **Move to an event…** On the search page, give a period or open a folder, pick the photos,
   then *Move to an event…* and type its name. Before the move, the dialog says what will be
-  remembered: "It will be remembered as the event 'Turin' (config.toml)", or "in the event
+  remembered: "It will be remembered as the event 'Turin' (events/)", or "in the event
   'Turin'" when the photos widen one already known, and the cameras ("Cameras: Apple iPhone
   12."). After the move: "The event 'Turin' is remembered: 2019-07-12..2019-07-19."
 - **The events found in your folders.** Folders you already sorted by hand
   (`2019\2019-07\Montenegro`) are events too. At the top of the 🗂 Events tab, *N events found
   in your folders* lists them, each with its days and its number of files, all ticked: untick
-  those that are not events worth remembering, then **Confirm**. The ticked ones are
+  those that are not events worth remembering, then **Confirm these N**. Confirm acts on the
+  rows shown only: with a filter typed, the hidden rows stay to decide, untouched. The ticked ones are
   remembered; the unticked ones are noted as "not events" and never proposed again (*N folders
   said not to be events*, folded below, lets you tick one back). A folder whose photos are far
   apart in time (`Prints jan10`) is a batch, not one event: it is listed apart, never proposed.
@@ -182,6 +183,13 @@ for an event go to `/config/events/<start>-<name>.toml` (`C:\Users\you\media-hyg
 the folders said not to be events to `/config/events/not-events.toml`. Both list the files'
 content (their SHA-256), not their paths: a refusal still holds after the photo moved or was
 renamed.
+
+**Where your events go.** Not in `config.toml` either: each event is a `[[rules]]` table of
+`/config/events/<year>.toml`, the year it starts in (`…\config\events\2019.toml`), read with
+the rules of `config.toml` by `classify` and the pages, just above *Existing folders*. You may
+rename such a file (every `events\*.toml` holding `[[rules]]` is read) or edit it; deleting it
+forgets its events. Events written into `config.toml` by an older version move there with
+[`mh config tidy --apply`](../commands/config.md#tidy-it-config-tidy), once, a copy kept first.
 
 ## Remember an event as a rule
 

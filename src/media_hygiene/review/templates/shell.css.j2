@@ -1,0 +1,58 @@
+{# The look of the frame (shell.html.j2): the home page's indigo sidebar fixed on the left (248 px; 64 px of
+   icons on a tile page, ☰ unfolds it; off-canvas under 860 px), the page shifted right of it, the top bar
+   sticky. Every class is `mh-shell-*`: no page's own rule reaches it. #}
+:root { --mh-shell-w: 248px; }
+html[data-phone] .mh-shell-side .pc-only { display: none; }
+:root.mh-shell-compact { --mh-shell-w: 64px; }
+html.mh-shelled body { padding-left: var(--mh-shell-w); }
+.mh-shell-side { position: fixed; inset: 0 auto 0 0; z-index: 30; width: var(--mh-shell-w); overflow-y: auto;
+  display: flex; flex-direction: column; gap: 10px; padding: 14px 10px; background: var(--mh-frame);
+  color: var(--mh-frame-ink); font: 400 .95rem/1.4 var(--mk-font-text); scrollbar-width: thin; }
+.mh-shell-brand { display: flex; align-items: center; gap: 10px; margin: 0 0 6px; padding: 0 6px;
+  font: 800 1.1rem/1.1 var(--mk-font-display); }
+.mh-shell-group { margin: 8px 0 4px; padding: 0 10px; font: 700 .68rem/1.2 var(--mk-font-text); letter-spacing: .09em;
+  text-transform: uppercase; color: var(--mh-frame-soft); }
+.mh-shell-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.mh-shell-link { display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 6px 12px; border-radius: 10px;
+  color: var(--mh-frame-ink); text-decoration: none; font-weight: 600; }
+a.mh-shell-link:hover { background: var(--mh-frame-raise); }
+.mh-shell-link[aria-disabled="true"] { opacity: .7; }
+.mh-shell-link[aria-current="page"] { background: var(--mh-frame-raise); box-shadow: inset 0 0 0 1px var(--mh-frame-line); }
+.mh-i { width: 20px; height: 20px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round;
+  stroke-linejoin: round; color: var(--mh-frame-soft); }
+.mh-shell-link[aria-current="page"] .mh-i { color: var(--mh-apricot); }
+.mh-shell-side :focus-visible { outline: 2px solid var(--mh-apricot); outline-offset: 2px; }
+.mh-shell-sign { margin-top: auto; padding: 12px 6px 0; border-top: 1px solid var(--mh-frame-line); font-size: .84rem;
+  color: var(--mh-frame-soft); }
+.mh-shell-sign p { margin: 0 0 8px; }
+.mh-shell-theme { display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: var(--mh-frame-raise); }
+.mh-shell-theme button { flex: 1; min-height: 32px; border: 0; border-radius: 8px; background: transparent;
+  color: var(--mh-frame-soft); font: 600 .8rem/1 var(--mk-font-text); cursor: pointer; }
+.mh-shell-theme button[aria-pressed="true"] { background: var(--mh-frame); color: var(--mh-frame-ink);
+  box-shadow: inset 0 0 0 1px var(--mh-frame-line); }
+.mh-shell-top { position: sticky; top: 0; z-index: 20; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px;
+  padding: 8px 16px; background: var(--mh-glass); border-bottom: 1px solid var(--mk-border); color: var(--mk-ink);
+  font: 400 .92rem/1.4 var(--mk-font-text); backdrop-filter: blur(10px); }
+.mh-shell-top h1.mh-page { margin: 0; font: 700 1.05rem/1.2 var(--mk-font-display); color: var(--mk-ink); }
+.mh-shell-crumb { color: var(--mk-ink-soft); }
+.mh-shell-top .mh-links { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-left: auto; }
+.mh-shell-top a { color: var(--mk-ink); text-underline-offset: 3px; }
+.mh-shell-top a.mh-home { padding: 2px 12px; border-radius: 999px; background: var(--mh-apricot); color: var(--mh-on-apricot);
+  font-weight: 600; text-decoration: none; }
+.mh-shell-menu { display: none; min-width: 40px; min-height: 40px; border: 0; border-radius: 10px; background: transparent;
+  color: var(--mk-ink); cursor: pointer; }
+.mh-shell-menu .mh-i { color: inherit; }
+/* A tile page: icons only, ☰ unfolds the labels over the page. */
+.mh-shell-compact .mh-shell-menu { display: inline-grid; place-items: center; }
+.mh-shell-compact:not(.mh-shell-open) .mh-shell-side .mh-shell-label { display: none; }
+.mh-shell-compact:not(.mh-shell-open) .mh-shell-link { justify-content: center; padding-inline: 0; }
+.mh-shell-compact.mh-shell-open .mh-shell-side { width: 248px; box-shadow: 0 0 24px #0006; }
+/* A phone: the sidebar off-canvas, ☰ opens it. */
+@media (max-width: 860px) {
+  :root, :root.mh-shell-compact { --mh-shell-w: 0px; }
+  .mh-shell-menu { display: inline-grid; place-items: center; }
+  .mh-shell-crumb { display: none; }
+  .mh-shell-side { width: 248px; transform: translateX(-100%); transition: transform .2s; }
+  .mh-shell-open .mh-shell-side { transform: none; box-shadow: 0 0 24px #0006; }
+  .mh-shell-compact:not(.mh-shell-open) .mh-shell-side .mh-shell-label { display: revert; }
+}

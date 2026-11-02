@@ -4,7 +4,6 @@
 - **Batch**: phone
 - **Depends**: 0547
 - **Files**: `src/media_hygiene/review/templates/home_draw.js.j2`, `src/media_hygiene/services/home.py`, `src/media_hygiene/share/album_page.py`, `src/media_hygiene/share/templates/album.html.j2`, `src/media_hygiene/share/templates/album.js.j2`, `documentation/en/`, `documentation/fr/`
-- **Needs maintainer**: choose between the two layouts below, and whether a send to the TV should keep making a "Sent <date>" album
 
 ## Seen (maintainer, 2026-10-31)
 
@@ -42,3 +41,9 @@ TV shows the selection, no album). Either way, they never appear among the home 
 - The albums page lists 50 albums, filtered by a typed name; a tap starts the TV.
 - Documentation (both languages): the home page and albums pages of the phone guide; say that
   `docs_screenshots` should run.
+
+## Decided (2026-11-02)
+
+By the maintainer, in `/todo:iterate`: layout **A** (home: "Albums (N)" + the 3 used last; the
+rest on the albums page), and a send to the TV keeps a **single "Last sent" album**, replaced at
+each send, never among the home shortcuts.

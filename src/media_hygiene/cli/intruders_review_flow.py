@@ -4,9 +4,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from media_hygiene.cli.apply_step import end_on_applied, page_apply
 from media_hygiene.cli.review_next import CleanNext, tell_choices_and_clean
 from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _, ngettext
+from media_hygiene.review.apply_api import ReviewStart
 from media_hygiene.services.intruder_pick import intruders_set_aside
 from media_hygiene.services.intruders_reviewing import (
     intruders_place,
@@ -30,7 +32,9 @@ def run_intruders(run: ReviewRun, findings: AuditFindings) -> None:
     if not findings.intruders:
         output.success(_("No intruder file: nothing to pick."))
         return
-    serve_intruders_review(runtime, run.port)
+    # Opened from the home page: `mh` runs the step *Apply now* ends on (0510).
+    start = ReviewStart(run.port, page_apply(runtime))
+    end_on_applied(runtime, serve_intruders_review(runtime, start))
     picked = len(intruders_set_aside(runtime))
     output.blank()
     output.success(

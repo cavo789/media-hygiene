@@ -23,6 +23,7 @@ from media_hygiene.search.aside_filter import AsideFilter
 from media_hygiene.search.chosen_api import CHOSEN_PATH, ChosenDesk
 from media_hygiene.search.events_choose import SORT_PATHS
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH, EVENTS_PATH
+from media_hygiene.search.folder_role_desk import ROLE_PATH, RoleDesk
 from media_hygiene.search.folders import (
     BROWSE_PATH,
     FOLDER_PATH,
@@ -104,6 +105,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "browse_path": BROWSE_PATH,
         "search_page": SEARCH_PAGE_PATH,
         "folders_path": FOLDERS_PATH,
+        "role_path": ROLE_PATH,
         "folder_path": FOLDER_PATH,
         "heaviest_path": HEAVIEST_PATH,
         "heaviest_first": FIRST_SHOWN,
@@ -135,7 +137,9 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         build.first,
     )
     chosen = chosen_desk(runtime, search)
-    folders = FolderDesk(search, runtime.mapper, shown_roots(runtime), chosen)
+    roots = shown_roots(runtime)
+    roles = RoleDesk(runtime.locations.config_file, runtime.mapper, roots)
+    folders = FolderDesk(search, runtime.mapper, roots, chosen, roles)
     place = SearchPlace(
         search,
         runtime.mapper,

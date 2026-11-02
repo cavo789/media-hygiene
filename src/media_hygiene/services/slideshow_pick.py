@@ -38,6 +38,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.services.runtime import Runtime
+    from media_hygiene.share.album_store import Shelf
 
 # The phone shows a thumbnail of each photo: a holiday is a few hundred photos.
 MAX_SLIDES: Final = 3000
@@ -55,6 +56,7 @@ class Pick:
     words: str | None = None  # a search, as typed in `search`
     album: str | None = None  # an album's name (`albums.json`)
     files: tuple[Path, ...] | None = None  # picked on a page, in the container (0454)
+    shelf: Shelf | None = None  # the albums already read and followed (0547)
 
 
 @dataclass(frozen=True, slots=True)
@@ -103,7 +105,7 @@ def picked_slides(runtime: Runtime, search: SearchIndex, pick: Pick) -> Picked:
         rows = ((hit.key, str(hit.photo.path), hit.date) for hit in found.hits)
     else:
         if pick.files is None:
-            paths, missing = album_paths(runtime, pick.album or "")
+            paths, missing = album_paths(runtime, pick.album or "", pick.shelf)
             inside = [runtime.mapper.to_container(path) for path in paths]
         else:
             inside = list(pick.files)
@@ -136,12 +138,15 @@ def picked_slides(runtime: Runtime, search: SearchIndex, pick: Pick) -> Picked:
     return Picked(slides, len(photos), missing)
 
 
-def album_paths(runtime: Runtime, name: str) -> tuple[list[str], int]:
+def album_paths(
+    runtime: Runtime, name: str, shelf: Shelf | None = None
+) -> tuple[list[str], int]:
     """The host paths of an album's files found on the disk, and how many are not.
 
     Args:
         runtime: Settings, mount points and output.
         name: The album's name.
+        shelf: The albums already read back (a page listing them all), else read.
 
     Returns:
         The paths, and the count of files missing; the files set aside left out.
@@ -149,7 +154,7 @@ def album_paths(runtime: Runtime, name: str) -> tuple[list[str], int]:
     Raises:
         AlbumsError: No album of that name, or no albums file.
     """
-    shelf = album_store(runtime).on_disk()
+    shelf = shelf or album_store(runtime).on_disk()
     album = shelf.albums.named(name)
     if album is None:
         names = ", ".join(each.name for each in shelf.albums.albums) or "-"

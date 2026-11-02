@@ -1,0 +1,32 @@
+{# *Role of this folder* (0532): none, protected, preferred, backup or excluded, each with
+   its consequence. Saved in `[folders]` of config.toml, read back from the disk and shown;
+   a role clashing with another is refused with the reason. Script: `search_folders.js.j2`. #}
+<style>
+  #roleDlg { max-width: min(32rem, 94vw); color: var(--text); background: var(--card);
+             border: 1px solid var(--line); border-radius: 10px; }
+  #roleDlg::backdrop { background: rgb(0 0 0 / 50%); }
+  #roleDlg h2 { margin: 0 0 6px; } #roleDlg menu { display: flex; gap: 8px; justify-content: end; padding: 0; }
+  #roleDlg fieldset { border: 0; padding: 0; margin: 6px 0; }
+  #roleDlg label { display: flex; gap: 8px; align-items: baseline; padding: 4px 0; cursor: pointer; }
+  #roleDlg input[type=radio] { width: auto; flex: none; }
+  #roleSaid.error { color: var(--bad); } #roleSaid.saved { color: var(--ok); }
+</style>
+<dialog id="roleDlg" aria-labelledby="roleTitle">
+  <form id="roleForm" method="dialog">
+    <h2 id="roleTitle">{{ _("Role of this folder") }}</h2>
+    <p id="roleFolder" class="muted"></p>
+    <fieldset>
+      <label><input type="radio" name="role" value="none"> <span>{{ _("None: the folder is read and cleaned like the others.") }}</span></label>
+      <label><input type="radio" name="role" value="protected"> <span>🛡️ {{ _("Protected: never changed; identical files elsewhere are set aside.") }}</span></label>
+      <label><input type="radio" name="role" value="preferred"> <span>⭐ {{ _("Preferred: when copies differ only by folder, the copy here is kept.") }}</span></label>
+      <label><input type="radio" name="role" value="backups"> <span>💾 {{ _("Backup: only compared, never changed and never the reason a copy goes.") }}</span></label>
+      <label><input type="radio" name="role" value="excluded"> <span>🚫 {{ _("Excluded: not read at all by the audit.") }}</span></label>
+    </fieldset>
+    <p id="roleSaid" role="status"></p>
+    <p id="roleStale" class="muted" hidden></p>
+    <menu>
+      <button type="button" id="roleSave">{{ _("Save") }}</button>
+      <button type="submit" class="plain">{{ _("Close") }} (Esc)</button>
+    </menu>
+  </form>
+</dialog>

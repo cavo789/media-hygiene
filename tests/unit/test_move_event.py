@@ -93,12 +93,14 @@ def test_no_date_remembers_nothing(tmp_path: Path) -> None:
     assert len(read_rules(config)) == 1
 
 
-def test_a_file_without_rules_list_says_why(tmp_path: Path) -> None:
-    """No [[classify.rules]]: the move ran, the event is not remembered, said."""
+def test_a_file_without_rules_list_still_remembers(tmp_path: Path) -> None:
+    """No [[classify.rules]]: the event goes to events/2019.toml, config untouched."""
     config = tmp_path / "config.toml"
     config.write_text("", encoding="utf-8")
     said = remember_event(config, Moved("Turin", (date(2019, 7, 2),)))
-    assert "not remembered" in said
+    assert "is remembered" in said
+    assert not config.read_text(encoding="utf-8")
+    assert (tmp_path / "events" / "2019.toml").is_file()
 
 
 def test_refusals_go_to_their_own_file_only_when_there_is_one(tmp_path: Path) -> None:
@@ -108,7 +110,7 @@ def test_refusals_go_to_their_own_file_only_when_there_is_one(tmp_path: Path) ->
     (event,) = _events(config)
     assert not read_refused(tmp_path, event)
     assert add_refused(config, event, ()) == frozenset()
-    assert not (tmp_path / "events").exists()
+    assert not (tmp_path / "events" / "2019-07-02-Turin.toml").exists()
     assert add_refused(config, event, ("aa", "bb")) == {"aa", "bb"}
     (linked,) = _events(config)
     assert linked.file == "events/2019-07-02-Turin.toml"

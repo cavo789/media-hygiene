@@ -74,8 +74,12 @@ docker() {
         if [[ -s "$HOME/asks" ]]; then
             while IFS= read -r asked; do
                 step=$((step + 1))
+                # Half a file first when asked (0482): mh must wait for the whole.
+                if [[ -e "$HOME/half" ]]; then : > "$MH_NOW"; sleep 0.6; fi
+                # Written whole then renamed, as the server does (0482).
                 printf '{\n"id": "s%d",\n"words": [\n"%s"\n]\n}\n' \
-                    "$step" "$asked" > "$MH_NOW"
+                    "$step" "$asked" > "$MH_NOW.part"
+                mv -f -- "$MH_NOW.part" "$MH_NOW"
                 for tries in $(seq 50); do
                     if grep -qs "\"s$step\"" "$MH_DONE"; then break; fi
                     sleep 0.1
@@ -503,6 +507,14 @@ def test_a_console_step_runs_while_the_server_stays_up(tmp_path: Path) -> None:
     assert not (reports / WATCH.running).exists()
     assert not (reports / WATCH.now).exists()
     assert not (tmp_path / "menus").exists()
+
+
+def test_a_step_file_read_half_written_waits_for_the_whole(tmp_path: Path) -> None:
+    """0482: an empty step file is read again, never run as `mh` alone (home twice)."""
+    (tmp_path / "asks").write_text("history\n")
+    (tmp_path / "half").touch()
+    done = _bash(tmp_path, "mh", "0")
+    assert _lines(done) == ["home:relayed", "ran:history", "status=0"]
 
 
 def test_a_page_step_still_ends_the_server_kept_up(tmp_path: Path) -> None:

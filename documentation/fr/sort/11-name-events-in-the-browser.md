@@ -17,7 +17,7 @@ photos, sa proposition, et un champ pour le nommer**, le tout au clavier.
 C'est facultatif : le classeur seul suffit, et les deux s'utilisent ensemble. La page ne touche
 ni aux photos ni au classeur ; c'est `sort` ([étape 7](07-sort.md)) qui applique vos choix.
 
-> **Depuis 0572** l'onglet 🗂 Événements ne lit plus le plan de `classify` : il regroupe les fichiers pas encore triés de la période cherchée, que vous déplacez avec **📂 Événement…** — [comment](../commands/search.md#les-événements-du-dernier-classify). Les étapes ci-dessous, tirées du plan, décrivent l'ancien onglet.
+> **Depuis 0572** l'onglet 🗂 Événements ne lit plus le plan de `classify` : il regroupe les fichiers pas encore triés de la période cherchée, que vous déplacez avec **📂 Déplacer vers un événement…** — [comment](../commands/search.md#les-événements-du-dernier-classify). Les étapes ci-dessous, tirées du plan, décrivent l'ancien onglet.
 
 ## Lancer la page
 
@@ -153,13 +153,15 @@ des pages le font, et chacun dit ce qu'il a enregistré, relu sur le disque.
 - **Déplacer vers un événement…** Sur la page de recherche, donnez une période ou ouvrez un
   dossier, choisissez les photos, puis *Déplacer vers un événement…* et tapez son nom. Avant le
   déplacement, la fenêtre dit ce qui sera retenu : « Il sera retenu comme l'événement « Turin »
-  (config.toml) », ou « Il sera ajouté à l'événement « Turin » » quand les photos élargissent un
+  (events/) », ou « Il sera ajouté à l'événement « Turin » » quand les photos élargissent un
   événement déjà connu, et les appareils (« Appareils : Apple iPhone 12. »). Après le
   déplacement : « L'événement « Turin » est retenu : 2019-07-12..2019-07-19. »
 - **Les événements trouvés dans vos dossiers.** Les dossiers que vous avez déjà rangés à la main
   (`2019\2019-07\Monténégro`) sont aussi des événements. En haut de l'onglet 🗂 Événements,
   *N événements trouvés dans vos dossiers* les liste, chacun avec ses jours et son nombre de
-  fichiers, tous cochés : décochez ceux qui ne méritent pas d'être retenus, puis **Confirmer**.
+  fichiers, tous cochés : décochez ceux qui ne méritent pas d'être retenus, puis **Confirmer
+  ces N**. Confirmer n'agit que sur les lignes affichées : avec un filtre tapé, les lignes
+  masquées restent à décider, intactes.
   Les cochés sont retenus ; les décochés sont notés « pas des événements » et jamais reproposés
   (*N dossiers indiqués comme n'étant pas des événements*, replié en dessous, permet d'en recocher
   un). Un dossier dont les photos sont très espacées dans le temps (`Tirages jan10`) est un lot,
@@ -194,6 +196,15 @@ refusées pour un événement vont dans `/config/events/<début>-<nom>.toml`
 pas des événements dans `/config/events/not-events.toml`. Les deux listent le contenu des fichiers
 (leur SHA-256), pas leurs chemins : un refus tient toujours après que la photo a été déplacée ou
 renommée.
+
+**Où vont vos événements.** Pas dans `config.toml` non plus : chaque événement est une table
+`[[rules]]` de `/config/events/<année>.toml`, l'année où il commence
+(`…\config\events\2019.toml`), lue avec les règles de `config.toml` par `classify` et les
+pages, juste au-dessus de *Dossiers existants*. Vous pouvez renommer ce fichier (tout
+`events\*.toml` contenant des `[[rules]]` est lu) ou le modifier ; le supprimer oublie ses
+événements. Les événements écrits dans `config.toml` par une version plus ancienne y sont
+déplacés par [`mh config tidy --apply`](../commands/config.md#le-faire-maigrir--config-tidy), une
+seule fois, une copie gardée d'abord.
 
 ## Retenir un événement comme règle
 

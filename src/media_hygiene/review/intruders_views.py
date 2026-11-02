@@ -34,6 +34,16 @@ class IntruderRow(BaseModel):
     size: str  # human, e.g. `12 MB`
 
 
+class IntruderEntry(BaseModel):
+    """One intruder file, for the page's live counts (0510): no path, no disk read."""
+
+    model_config = _FROZEN
+
+    extension: str
+    folder: str  # its folder, as the user knows it (host path)
+    bytes: int
+
+
 class IntrudersState(BaseModel):
     """Everything the page needs: `GET /api/state`."""
 
@@ -44,6 +54,7 @@ class IntrudersState(BaseModel):
     size: str
     extensions: tuple[IntruderRow, ...]
     folders: tuple[IntruderRow, ...]
+    files: tuple[IntruderEntry, ...]  # what the page counts the ticks on
     set_aside: tuple[ChosenFile, ...]  # read from the disk
 
 
@@ -87,6 +98,14 @@ def intruders_state(
         extensions=_rows(tally(found), str),
         folders=_rows(
             tally(found, by_folder=True), lambda key: mapper.to_host(Path(key))
+        ),
+        files=tuple(
+            IntruderEntry(
+                extension=item.extension,
+                folder=mapper.to_host(item.path.parent),
+                bytes=item.size,
+            )
+            for item in found
         ),
         set_aside=set_aside,
     )

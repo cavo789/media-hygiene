@@ -66,8 +66,11 @@ def sort_steps() -> tuple[Step, ...]:
         Step(
             "sort",
             space,
-            _("Move the photos as the workbook says"),
-            _("Checks the workbook, asks, then moves: undoable, proven."),
+            _("Move the photos into the proposed folders"),
+            _(
+                "The proposal can be changed first, on the page or in the workbook; "
+                "then it asks and moves: undoable, proven."
+            ),
             "sort",
             Risk.UNDO,
             icon="arrow-right",

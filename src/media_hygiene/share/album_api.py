@@ -1,11 +1,8 @@
 """`GET`/`POST /api/albums`: the albums, and a page's files added or taken out (0295).
 
-Served by `search`, `browse` and the burst review, apart from *Set aside*
-(`/api/chosen`, `/api/decide`): an album never touches the decisions file, and the
-files set aside never enter an album, a share nor the TV (0518). `POST` names the
-album and the files (their keys on the page, or every file a search finds: `all`);
-the answer is read back from the disk, the files missing from each album said.
-Nothing is saved when the reports folder cannot keep it: the page says why.
+Never the decisions file; the files set aside enter no album, share nor TV (0518).
+`POST` names the album and the files (keys, or a whole search: `all`), or deletes,
+renames, puts back albums (0499); the answer is read back from the disk.
 """
 
 from __future__ import annotations
@@ -24,7 +21,8 @@ from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
 from media_hygiene.search.views import SearchAsked
 from media_hygiene.share.album_cover import choose_cover
-from media_hygiene.share.album_said import cover_message, shelf_view
+from media_hygiene.share.album_edit import EDITS, edit, edit_message
+from media_hygiene.share.album_said import shelf_view
 from media_hygiene.share.album_store import AlbumChange
 
 if TYPE_CHECKING:
@@ -45,8 +43,11 @@ class AlbumAsked(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    action: Literal["add", "remove", "cover", "tv"]  # cover: one file (0371); tv: 0454
-    album: str = Field(max_length=_MAX_TEXT)
+    # cover: one file (0371); tv: 0454; delete, rename, restore: the albums (0499)
+    action: Literal["add", "remove", "cover", "tv", "delete", "rename", "restore"]
+    album: str = Field(default="", max_length=_MAX_TEXT)
+    names: tuple[str, ...] = Field(default=(), max_length=_MAX_TEXT)  # to delete
+    to: str = Field(default="", max_length=_MAX_TEXT)  # a new name
     keys: tuple[str, ...] = Field(default=(), max_length=MAX_ADDED)
     all: bool = False  # every file the search finds, not only those shown
     search: SearchAsked = SearchAsked()
@@ -54,13 +55,12 @@ class AlbumAsked(BaseModel):
 
 @dataclass(frozen=True, slots=True)
 class AlbumDesk:
-    """Answers a page about the albums; one change at a time."""
+    """Answers a page about the albums (`tv`: 📺 the TV, 0454); one change at a time."""
 
     store: AlbumStore
     # The files a request names (its keys, or every file found), in the container.
     pick: Callable[[AlbumAsked], Kept]
     ready: Callable[[], None]  # raises when the reports folder cannot keep them
-    # 📺 *On the TV* (0454): the files shown by the home server's slideshow.
     tv: Callable[[tuple[Path, ...]], Response] | None = None
     _turn: asyncio.Lock = field(default_factory=asyncio.Lock)
 
@@ -107,8 +107,8 @@ class AlbumDesk:
             except OSError as exc:
                 return _not_saved(exc)
         said = shelf_view(shelf, asked.album, self._host)
-        if asked.action == "cover":
-            said["message"] = cover_message(shelf, asked.album)
+        message = edit_message(shelf, asked, self._host)  # cover, delete, rename
+        said["message"] = said["message"] if message is None else message
         said["message"] = " ".join(
             filter(None, (str(said.get("message", "")), kept.said))
         )
@@ -140,6 +140,8 @@ class AlbumDesk:
         """
         if asked.action == "cover":
             return partial(choose_cover, self.store)
+        if asked.action in EDITS:
+            return lambda _change: edit(self.store, asked)
         return self.store.add if asked.action == "add" else self.store.remove
 
     @property

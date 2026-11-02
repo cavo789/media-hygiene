@@ -26,24 +26,39 @@ function global:_{{ function }}_page_free {
         $null = docker stop $id 2>$null
         Write-Host "{{ guards.texts.stopped }}"
     }
-    # No container holds it: a program listening on it (another local server) is named,
-    # never Docker's raw "port is already allocated" (0253); Docker's own listeners are not.
-    # A socket being released (PID 0, or a process gone: an mh page stopped a moment ago)
-    # is waited for, a line said once; refused only when still there at the end (0503).
-    $said = $false
-    $until = (Get-Date).AddSeconds({{ guards.port.wait }})
-    while ($true) {
-        $holder = _{{ function }}_port_holder
-        if ($null -eq $holder) { return $true }
-        if ($holder.name) {
-            $name = $holder.name
-            $process = $holder.process
-            Write-Host "{{ guards.port.busy }}" -ForegroundColor Red
-            return $false
-        }
-        if ((Get-Date) -ge $until) { Write-Host "{{ guards.port.released }}" -ForegroundColor Red; return $false }
-        if (-not $said) { Write-Host "{{ guards.port.releasing }}"; $said = $true }
-        Start-Sleep -Milliseconds {{ guards.port.poll }}
+    # The port itself is not read here: Docker is tried first, the port diagnosed only
+    # when it refuses to bind (0543, _{{ function }}_port_wait).
+    return $true
+}
+
+# Docker refused to bind the port of the pages (0543): a program listening on it (another
+# local server) is named, in red, never retried (0253); a socket being released (PID 0, a
+# process gone: an mh page stopped a moment ago) says one line once, then `docker run` is
+# tried again every second up to the limit (0503), then refused in red. $wait carries the
+# state between tries ($null the first time); .again tells whether to try again.
+function global:_{{ function }}_port_wait($wait) {
+    $port = {{ script.commands.port }}
+    if (-not $wait) { $wait = @{ until = (Get-Date).AddSeconds({{ guards.port.wait }}); said = $false; again = $true } }
+    $holder = _{{ function }}_port_holder
+    if ($holder -and $holder.name) {
+        $name = $holder.name
+        $process = $holder.process
+        Write-Host "{{ guards.port.busy }}" -ForegroundColor Red
+        $wait.again = $false
+        return $wait
+    }
+    if ((Get-Date) -ge $wait.until) { Write-Host "{{ guards.port.released }}" -ForegroundColor Red; $wait.again = $false; return $wait }
+    if (-not $wait.said) { Write-Host "{{ guards.port.releasing }}"; $wait.said = $true }
+    Start-Sleep -Milliseconds {{ guards.port.poll }}
+    return $wait
+}
+
+# What Docker said on standard error, shown again as typed, without PowerShell's own
+# decoration of a native command's error lines (0543).
+function global:_{{ function }}_replay([string[]]$said) {
+    foreach ($line in $said) {
+        if ($line -match '^(At line:|At .+:\d+ char:\d+|\s*\+ |\s*$)') { continue }
+        [Console]::Error.WriteLine(($line -replace '^docker : ', ''))
     }
 }
 

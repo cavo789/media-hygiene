@@ -3,6 +3,9 @@
    page's language and in the other one; "Back to the home page" when `mh` opened it from the home
    page: its click is handled by home_link.html.j2, which ends this page as Quit does and waits for
    the home page to come back (0210), or a plain link when the home server serves the page (0356); a page may say more on its title (`home_title`). The theme the home page's switch chose is read first. #}
+{% if header.shell %}
+{% include "shell.html.j2" %}
+{% else %}
 <script>
 {% include "theme_choice.js.j2" %}
 </script>
@@ -20,3 +23,4 @@
 {% endif %}
   </span>
 </nav>
+{% endif %}

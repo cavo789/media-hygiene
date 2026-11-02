@@ -1,11 +1,8 @@
 """The albums a phone or the PC shows (0297): `albums.json`, read through the index.
 
-Each answer opens the index read-only for its own time: the home page's audit may write
-it meanwhile, and a fresh install has none yet (said, never a traceback). The towns
-(GeoNames, offline) are loaded once, at the first photo with a GPS position. The list is
-kept until `albums.json` or the index changes: each thumbnail in no album asks it. The
-pictures sized for a phone are `slideshow`'s (0291), fitted into a square: a photo
-taken upright fills the phone held upright, one taken sideways the phone turned.
+Each answer opens the index read-only (an audit may write it; none yet: said). Towns
+load once. The list, kept until `albums.json` or the index changes, reads the shelf
+once and never hashes (0547). Phone pictures: `slideshow`'s (0291), in a square.
 """
 
 from __future__ import annotations
@@ -24,6 +21,7 @@ from media_hygiene.services.albums import album_store
 from media_hygiene.services.data_checks import unreadable_index
 from media_hygiene.services.slideshow_pick import Pick, picked_slides
 from media_hygiene.share.album_cover import cover_key
+from media_hygiene.share.album_lost import search_later
 from media_hygiene.share.album_view import AlbumSeen, album_view
 from media_hygiene.slideshow.pictures import ShowPictures
 from media_hygiene.slideshow.screen_jpeg import SQUARE, ScreenJob
@@ -36,10 +34,10 @@ if TYPE_CHECKING:
     from media_hygiene.geo.distance import Point
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.share.album_shelf import Keyed
+    from media_hygiene.share.album_store import Shelf
     from media_hygiene.share.albums import Album
 
-# The longest side of a phone's picture: a 1080-pixel-wide phone shows an upright photo
-# at its full width (3:4 → 1080 x 1440). A setting if a phone asks for more.
+# A phone's picture's longest side: 1080 px wide, upright, 3:4 → 1080 x 1440.
 PHONE_PX: Final = 1440
 _DROPPED: Final = "days"  # the list shows each album without its photos
 
@@ -71,20 +69,21 @@ class AlbumReader:
             (f.stat().st_mtime_ns, f.stat().st_size) for f in files if f and f.is_file()
         )
         if self._listed is None or self._listed[0] != stamp:
-            self._listed = (stamp, self._listing(store.on_disk().albums.albums))
+            search_later(store, shelf := store.on_disk())  # lost files: off the page
+            self._listed = (stamp, self._listing(shelf))
         return self._listed[1]
 
-    def _listing(self, albums: tuple[Album, ...]) -> Keyed:
-        """Every album without its days, and the keys of every album's files.
+    def _listing(self, shelf: Shelf) -> Keyed:
+        """The listing of the albums, read back from the disk once.
 
         Args:
-            albums: The albums, read back from the disk.
+            shelf: The albums (0547).
 
         Returns:
             `{"albums": [...]}` and the keys.
         """
         with self._index() as search:
-            seen = [self._seen(search, album) for album in albums]
+            seen = [self._seen(search, (album, shelf)) for album in shelf.albums.albums]
             views = [album_view(each, search.connection, self._town) for each in seen]
         keys = frozenset(slide.key for each in seen for slide in each.picked.slides)
         shown = [{k: v for k, v in view.items() if k != _DROPPED} for view in views]
@@ -99,11 +98,11 @@ class AlbumReader:
         Returns:
             Its view and keys; None for no album of that name.
         """
-        album = album_store(self._runtime).on_disk().albums.named(name)
+        album = (shelf := album_store(self._runtime).on_disk()).albums.named(name)
         if album is None:
             return None
         with self._index() as search:
-            seen = self._seen(search, album)
+            seen = self._seen(search, (album, shelf))
             view = album_view(seen, search.connection, self._town)
         return view, frozenset(slide.key for slide in seen.picked.slides)
 
@@ -139,17 +138,20 @@ class AlbumReader:
             photo = search.source_of(key)
         return None if photo is None else photo.path
 
-    def _seen(self, search: SearchIndex, album: Album) -> AlbumSeen:
+    def _seen(self, search: SearchIndex, shelved: tuple[Album, Shelf]) -> AlbumSeen:
         """An album's photos, oldest first, how many are missing, its chosen cover.
 
         Args:
             search: The open index.
-            album: The album, as saved.
+            shelved: The album, as saved, and the albums it was read with.
 
         Returns:
             The album as the page shows it.
         """
-        picked = picked_slides(self._runtime, search, Pick(album=album.name))
+        album, shelf = shelved
+        picked = picked_slides(
+            self._runtime, search, Pick(album=album.name, shelf=shelf)
+        )
         cover = cover_key(search.connection, album, self._runtime.mapper)
         return AlbumSeen(album.name, picked, cover)
 

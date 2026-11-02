@@ -21,9 +21,16 @@ function problem(text) {
   $("problem").textContent = text || "";
   $("problem").hidden = !text;
 }
-function toast(text) {
+function toast(text, undo) {
   const box = $("toast");
   box.textContent = text;
+  if (undo) { // the albums of a delete, put back from the copy the server kept (0499)
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = `↩ ${T.undo}`;
+    button.addEventListener("click", () => { box.hidden = true; edit({ action: "restore" }); });
+    box.append(button);
+  }
   box.hidden = false;
   window.clearTimeout(toast.timer);
   toast.timer = window.setTimeout(() => { box.hidden = true; }, 6000);
@@ -65,11 +72,37 @@ async function showList() {
     $("main").innerHTML = `<p class="note">${esc(T.none)} <a href="${esc(P.doc)}" target="_blank" rel="noopener">${esc(T.learn)}</a></p>`;
     return;
   }
-  $("main").innerHTML = `<div class="shelf">${view.albums.map((each) => `<a href="#a/${encodeURIComponent(each.name)}">
+  $("main").innerHTML = `<p class="tools pc-only"><button type="button" id="deleteTicked" disabled>🗑 ${esc(T.delete)}</button></p>
+    <div class="shelf">${view.albums.map((each) => `<div class="card">
+      <label class="tick pc-only"><input type="checkbox" data-tick="${esc(each.name)}" aria-label="${esc(fill(T.tick, { name: each.name }))}"></label>
+      <button type="button" class="rename pc-only" data-rename="${esc(each.name)}" title="${esc(T.rename)}" aria-label="${esc(T.rename)}">✏️</button>
+      <a href="#a/${encodeURIComponent(each.name)}">
       ${each.cover ? `<img src="${esc(each.cover.thumb)}" alt="" loading="lazy">` : `<span class="blank" aria-hidden="true">🖼</span>`}
       <p class="name">${esc(each.name)}</p>
       <p class="sub">${said([plural(T.photos, each.count), span(each), each.place])}</p>
-    </a>`).join("")}</div>`;
+    </a></div>`).join("")}</div>`;
+}
+// Delete, rename, put back albums (0499): the PC only; the answer is read back from the disk.
+const ticked = () => [...document.querySelectorAll("[data-tick]:checked")].map((box) => box.dataset.tick);
+async function edit(body) {
+  if (document.documentElement.hasAttribute("data-phone")) return; // read-only (0429)
+  const answer = await ask(P.change, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  if (!answer) return;
+  toast(answer.message, body.action === "delete");
+  showList();
+}
+function deleteTicked() {
+  const names = ticked();
+  if (names.length && window.confirm(plural(T.deleteAsk, names.length))) edit({ action: "delete", names });
+}
+function rename(button) { // the name becomes a field in its card, never a browser prompt
+  const name = button.dataset.rename;
+  const label = esc(fill(T.renameAsk, { name }));
+  const card = button.closest(".card");
+  if (card.querySelector("[data-renaming]")) return;
+  card.querySelector("a").insertAdjacentHTML("afterend", `<form class="renaming" data-renaming="${esc(name)}">
+      <input type="text" maxlength="80" value="${esc(name)}" aria-label="${label}" title="${label}"><button type="submit">✓</button></form>`);
+  card.querySelector("[data-renaming] input").select();
 }
 async function showAlbum(name) {
   $("back").hidden = false;
@@ -171,7 +204,23 @@ function addTo(name) {
 function videoShown() { const item = items[at]; return !item || !item.photo; }
 
 function wire() {
+  $("main").addEventListener("submit", (event) => {
+    const form = event.target.closest("[data-renaming]");
+    if (!form) return;
+    event.preventDefault();
+    const name = form.dataset.renaming;
+    const to = form.querySelector("input").value.trim();
+    if (to && to !== name) edit({ action: "rename", album: name, to });
+    else showList();
+  });
+  $("main").addEventListener("change", () => {
+    const button = $("deleteTicked");
+    if (button) button.disabled = !ticked().length;
+  });
   $("main").addEventListener("click", (event) => {
+    if (event.target.closest("#deleteTicked")) { deleteTicked(); return; }
+    const renamed = event.target.closest("[data-rename]");
+    if (renamed) { rename(renamed); return; }
     const button = event.target.closest("[data-at]");
     if (button) { openViewer(Number(button.dataset.at)); return; }
     const cover = event.target.closest("[data-key]");

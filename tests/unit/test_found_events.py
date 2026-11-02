@@ -213,3 +213,32 @@ def _no_plan() -> SortBatchSession:
     """No classify plan to read."""
     said = "no plan"
     raise MediaHygieneError(said)
+
+
+def test_a_filtered_confirm_leaves_the_hidden_rows_to_decide(
+    tmp_path: Path, opened: list[sqlite3.Connection]
+) -> None:
+    """Only the rows shown are posted: the others stay proposed, unwritten (0575)."""
+    desk = _desk(tmp_path, _index(opened))
+    folders = [str(item["folder"]) for item in _state(desk)["proposed"]]
+    shown = [folder for folder in folders if folder.endswith("Restaurant")]
+    body = json.dumps({"ticked": [], "unticked": shown}).encode()
+    answer = json.loads(desk.confirm(body).body)
+    assert len(answer["proposed"]) == len(folders) - 1
+    assert [item["name"] for item in answer["not_events"]] == ["Restaurant"]
+    assert not any(
+        rule.match is RuleMatch.DATE_RANGE
+        for rule in read_rules(tmp_path / "config.toml")
+    )
+
+
+def test_confirm_posts_the_shown_rows_and_names_its_count() -> None:
+    """The page's Confirm builds its body from the rows shown, its label counted."""
+    script = (
+        Path(__file__).parents[2]
+        / "src/media_hygiene/search/templates/search_events_found.js.j2"
+    ).read_text(encoding="utf-8")
+    assert "const boxes = decided();" in script
+    assert 'shown("foundList"), ...shown("foundRefusedList")' in script
+    assert "counted(FT.confirm, count)" in script
+    assert 'ngettext("Confirm this {n}", "Confirm these {n}", 1)' in script

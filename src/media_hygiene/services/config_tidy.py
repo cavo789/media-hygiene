@@ -141,17 +141,9 @@ def tidy(runtime: Runtime, entries: Sequence[StaleEntry]) -> Tidied:
     Raises:
         MountError: `/config` or `/cache` cannot be written.
     """
+    writable(runtime)
     locations = runtime.locations
     config_file = locations.config_file
-    for kind in (MountKind.CONFIG, MountKind.CACHE):
-        folder = locations.path_of(kind)
-        if not runtime.persistent(kind) or is_read_only(folder):
-            raise MountError(
-                _("{folder} is not mounted, or read-only: nothing was written.").format(
-                    folder=folder
-                ),
-                _("Mount it as for your other commands, without ':ro'."),
-            )
     text = read_user_text(config_file)
     result = without_entries(text, entries)
     backups = locations.cache_dir / BACKUP_DIR
@@ -164,3 +156,23 @@ def tidy(runtime: Runtime, entries: Sequence[StaleEntry]) -> Tidied:
     temporary.replace(config_file)
     check_removed(text, read_user_text(config_file), entries)  # proof, not promise
     return Tidied(tuple(entries), backup)
+
+
+def writable(runtime: Runtime) -> None:
+    """Refuse to write unless `/config` and `/cache` are mounted and writable.
+
+    Args:
+        runtime: Settings, mount points and output.
+
+    Raises:
+        MountError: One of them is not.
+    """
+    for kind in (MountKind.CONFIG, MountKind.CACHE):
+        folder = runtime.locations.path_of(kind)
+        if not runtime.persistent(kind) or is_read_only(folder):
+            raise MountError(
+                _("{folder} is not mounted, or read-only: nothing was written.").format(
+                    folder=folder
+                ),
+                _("Mount it as for your other commands, without ':ro'."),
+            )

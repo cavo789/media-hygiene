@@ -1,0 +1,73 @@
+{# Included in the script of review.html.j2, before the board: the contact sheet (0520), the
+   board over the obvious series still to see when it opened, more and smaller rows a
+   screen. Each series is seen, yet a screen goes at a glance: Enter validates the rows
+   shown as they are, in one write, then shows the next screen; Z takes that screen back
+   whole. A click on a shot flips it, a double click shows it large (pick_viewer.js.j2). The
+   doubtful series stay for one series at a time. #}
+  const sheetSize = 20;  // rows a screen: about what a 1080p screen holds at this size
+  const flipDelay = 250;  // ms: a click waits this long, in case it is a double click
+  let sheet = false;
+  let sheetList = [];  // the obvious series still to see when the sheet opened, in order
+
+  const paged = () => (sheet ? sheetList : order);
+  const pageSize = () => (sheet ? sheetSize : boardSize);
+
+  const setSheet = (on) => {
+    sheet = on;
+    document.body.classList.toggle("sheet", on);
+  };
+
+  const doubtful = () => series.filter((item) => !item.obvious && !item.reviewed).length;
+
+  const sheetInfo = (page, todo, aside) => {
+    const where = fill(T.sheetPage, { page: page + 1, pages: pageCount() });
+    const what = todo.length > 0 ? fill(T.sheetPending, { series: counted(T.nSeries, todo.length), aside: counted(T.nProposed, aside) }) : T.boardDone;
+    return [where, what, fill(T.sheetDoubtful, { series: counted(T.nSeries, doubtful()) })].join(" · ");
+  };
+
+  const sheetEnd = () => fill(T.sheetEnd, { series: counted(T.nSeries, doubtful()) });
+
+  const showSheetButton = () => {
+    const todo = obviousTodo();
+    const button = byId("sheetOpen");
+    button.disabled = todo.length === 0;
+    button.textContent = fill(T.sheetOpen, { series: counted(T.nObvious, todo.length) });
+  };
+
+  // The sheet opens on the obvious series still to see, in the order chosen; it keeps them
+  // while it is open: a row validated stays on its screen, marked seen.
+  const openSheet = () => {
+    const todo = new Set(obviousTodo());
+    if (todo.size === 0) {
+      setStatus(T.obviousNone);
+      return;
+    }
+    setBoard(true);
+    sheetList = order.filter((index) => todo.has(index));
+    setSheet(true);
+    show(sheetList[0]);
+  };
+
+  // A click flips the shot (set aside or kept) for its series; a double click, which also
+  // clicks twice, flips nothing and shows the shot large among those of its series.
+  let flipping = null;
+  const flipOrOpen = (figure, index, rank) => {
+    figure.addEventListener("click", (event) => {
+      event.stopPropagation();
+      window.clearTimeout(flipping);
+      flipping = window.setTimeout(() => {
+        current = index;
+        toggleRank(index, rank);
+      }, flipDelay);
+    });
+    figure.addEventListener("dblclick", (event) => {
+      event.stopPropagation();
+      window.clearTimeout(flipping);
+      current = index;
+      zoomOut();
+      showFiles(listed(series[index]), false);
+      largeAt(files.findIndex((file) => file.rank === rank));
+    });
+  };
+
+  byId("sheetOpen").addEventListener("click", openSheet);

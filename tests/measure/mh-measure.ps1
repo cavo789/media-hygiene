@@ -143,7 +143,7 @@
 #  39. the whole chain after a phone import of about 100 photos, timed step by step (0475)
 #  40. the whole chain after an import with copies set aside, then undone (0478)
 #  41. the chain in its new order: copies before tags, the import's bursts page, its slideshow (0480)
-#  42. a page on port 8088 stopped, then the port watched: PID 0 seen? seconds until free (0503)
+#  42. a page on port 8088 stopped, then the port watched: PID 0 seen? seconds until free (0503); docker run binds meanwhile? (0543)
 #      (two yes/no questions, by hand)                                               (0359)
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
@@ -3472,6 +3472,9 @@ if (Wanted 42) {
         $null = docker stop $id 2>&1
         $clock = [Diagnostics.Stopwatch]::StartNew()
         $pids = @()
+        # 0543: while Windows still shows a row (PID 0 or a gone process), can Docker bind?
+        # Tried once per round, at the first such row: the design "docker run first" rests on it.
+        $tried = 'no row left to try on'
         while ($clock.Elapsed.TotalSeconds -lt 30) {
             $sockets = @(Get-NetTCPConnection -LocalPort 8088 -State Listen -ErrorAction SilentlyContinue)
             if ($sockets.Count -eq 0) { break }
@@ -3479,11 +3482,22 @@ if (Wanted 42) {
                 $owner = "$($socket.OwningProcess)"
                 $name = "$((Get-Process -Id $socket.OwningProcess -ErrorAction SilentlyContinue).ProcessName)"
                 if ($pids -notcontains "$owner/$name") { $pids += "$owner/$name" }
+                if ($tried -eq 'no row left to try on' -and -not $name) {
+                    $at = [math]::Round($clock.Elapsed.TotalSeconds, 1)
+                    $again = @(docker run -d --rm -p 127.0.0.1:8088:8088 --entrypoint python $Image -m http.server 8088 2>&1 | ForEach-Object { "$_" })
+                    if ($LASTEXITCODE -eq 0) {
+                        $tried = "docker run BOUND at $at s, while PID $owner was shown"
+                        $null = docker stop ("$($again[-1])".Trim()) 2>&1
+                    } else {
+                        $tried = "docker run REFUSED at $at s (PID $owner shown): " + (($again | Select-Object -First 2) -join ' ')
+                    }
+                }
             }
             Start-Sleep -Milliseconds 100
         }
         $seconds = [math]::Round($clock.Elapsed.TotalSeconds, 1)
         Log "   42.$round listening before stop: $ready; free after: $seconds s; PIDs seen after stop: $($pids -join ', ')"
+        Log "   42.$round $tried (0543)"
     }
     $ErrorActionPreference = $saved
 }

@@ -112,7 +112,7 @@ class AlbumStore:
             OSError: A file cannot be read, or the albums cannot be saved.
         """
         base = read_albums(self.place.target)
-        album = base.named(change.name) or _new_album(change.name)
+        album = base.named(change.name) or new_album(change.name)
         known = {entry.path for entry in album.entries}
         added = dt.datetime.now(tz=dt.UTC).replace(microsecond=0)
         entries = list(album.entries)
@@ -172,7 +172,7 @@ class AlbumStore:
         return self.on_disk()
 
 
-def _new_album(name: str) -> Album:
+def new_album(name: str) -> Album:
     """An album not saved yet, its name with single spaces.
 
     Args:

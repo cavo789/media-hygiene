@@ -20,3 +20,17 @@ First page moved (the one the maintainer saw): `/albums` in the shared shell, th
 highlighted; on the phone (paired, read-only) the sidebar keeps only what a phone may open
 (0435). Check the album list, an album, the cover and *take out* still work; screenshot both
 themes.
+
+## Status — PARTIAL (2026-11-02)
+
+### Done
+- `/albums` in the shell (`SHELL_PAGES["album.html.j2"]`), *Share* highlighted; the viewer, sheet
+  and toast raised above the sidebar (z-index 40–42); on a paired phone (`data-phone`) the sidebar
+  keeps home, find and share only (`pc-only` on the others). Tests: `test_page_headers.py`,
+  `test_album_doc_link.py`. Docs EN/FR (`reference-albums.md`) say the menu stays on the left.
+
+### Not done
+- Screenshots in both themes, and a look at the list, an album, the cover and *take out* in a
+  browser.
+  **Reason:** no browser in the devcontainer; `docs_screenshots` (heavy, run by the maintainer)
+  and a manual check of `/albums` on the PC and the phone close it.

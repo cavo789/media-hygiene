@@ -3,16 +3,18 @@
    what is set aside (`#chosen`) and *Apply now*. `pickAll` (a search shows its first files
    only) picks every file found. The page adds its own fields after it, in the bar; a
    page where a pick means something else names its two actions (`pick_add`,
-   `pick_remove`). 📺 *On the TV* (0454, `tv_here`: a page served by the home server)
+   `pick_remove`). Order (0542): the page's most used action first (`pick_first`, a template
+   holding a `primary` button), *Set aside* last, red (`danger`), apart. 📺 *On the TV* (0454, `tv_here`: a page served by the home server)
    sends the files picked, or every file the page shows, to its slideshow. #}
 <span id="lead"><span id="status" role="status"></span></span>
 <span id="acting" hidden>
   <button id="unpick" class="plain" type="button" title="{{ _('Pick none') }}" aria-label="{{ _('Pick none') }}">✕</button>
   <strong id="picked"></strong>
   <button id="pickAll" class="plain" type="button" hidden></button>
-  <button id="setAside" type="button" title="{{ pick_add_title | default(_('Set aside the picked files (Delete)')) }}">{{ pick_add | default("🗑 " + _("Set aside the picked files")) }}</button>
+  {% if pick_first is string and pick_first.endswith(".html.j2") %}{% include pick_first %}{% endif %}
   <button id="takeBack" class="plain" type="button" hidden title="{{ _('Take out of the set aside (Backspace in the large view)') }}">{{ pick_remove | default("↩ " + _("Take out of the set aside")) }}</button>
   <button id="invert" class="plain" type="button" title="{{ _('Pick the others: the ones picked are left (I)') }}">🔀 {{ _("Invert the picking") }}</button>
+  <button id="setAside" class="danger" type="button" title="{{ pick_add_title | default(_('Set aside the picked files (Delete)')) }}">{{ pick_add | default("🗑 " + _("Set aside the picked files")) }}</button>
 </span>
 {% if tv_here | default(false) %}
 <button id="tvSend" class="plain" type="button" data-path="{{ albums_path }}"

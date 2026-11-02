@@ -41,3 +41,9 @@ files, classify's date rules). The maintainer wants `config.toml` kept small and
 
 Related: 0575 (Confirm acts on the rows shown only) first, so no new 196-event write lands
 before the storage moves.
+
+## Decided (2026-11-02)
+
+By the maintainer, in `/todo:iterate`: the events already in `config.toml` are moved to
+`/config/events/` by `config tidy` (0550), not at the first write; one file per year
+(`/config/events/<year>.toml`).

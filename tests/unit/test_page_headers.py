@@ -19,9 +19,10 @@ import pytest
 from media_hygiene.constants import DOC_PAGES, Locale
 from media_hygiene.i18n import using
 from media_hygiene.places.app import PAGE_POLICY
+from media_hygiene.review import page_header as page_header_module
 from media_hygiene.review.ending import Ending, EndingDoor
 from media_hygiene.review.http import ContentType, Request, Response
-from media_hygiene.review.page_header import PAGE_STEPS, page_header
+from media_hygiene.review.page_header import PAGE_STEPS, SHELL_PAGES, page_header
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 from tests.support.page_render import FRAME_EXTENDS, render_page
 from tests.unit.test_documentation import DOCUMENTATION, anchors
@@ -53,7 +54,8 @@ def test_each_page_shows_its_bar_and_its_chapter(
     monkeypatch.delenv(LAUNCHER_STEPS_VARIABLE, raising=False)
     with using(locale):
         page = render_page(template)
-    assert page.count('class="mh-bar"') == 1
+    # The thin bar, or the home page's frame once the page moved (0491).
+    assert page.count('class="mh-bar"') + page.count('id="mhShellSide"') == 1
     assert "Media Hygiene" in page
     assert 'id="homeLink"' not in page
     links = _LINK.findall(page)
@@ -190,3 +192,92 @@ def test_every_served_page_declares_the_favicon_its_policy_allows() -> None:
         shell.name for shell in shells if link not in shell.read_text("utf-8")
     ] == []
     assert "img-src 'self'" in PAGE_POLICY
+
+
+_SHELL_LINK: Final = re.compile(r'<a class="mh-shell-link" href="/#(?P<space>[a-z]+)"')
+
+
+def _in_shell(monkeypatch: pytest.MonkeyPatch, template: str, *, tiles: bool) -> str:
+    """The page rendered in the home page's frame (0491)."""
+    monkeypatch.setattr(page_header_module, "SHELL_PAGES", {template: tiles})
+    return render_page(template)
+
+
+@pytest.mark.parametrize("template", sorted(PAGE_STEPS))
+def test_every_page_renders_in_the_shell(
+    template: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0491: each page, moved, has the sidebar, one h1, its two chapters, no bar."""
+    monkeypatch.delenv(LAUNCHER_STEPS_VARIABLE, raising=False)
+    page = _in_shell(monkeypatch, template, tiles=False)
+    assert 'class="mh-bar"' not in page
+    assert page.count('id="mhShellSide"') == 1
+    assert len(re.findall(r"<h1\b", page)) == 1
+    assert '<h1 class="mh-page">' in page
+    assert len(_LINK.findall(page)) == 2
+    assert re.search(r"<p>Media Hygiene \d", page)  # the version
+
+
+def test_the_shell_highlights_the_pages_space_and_lists_every_space(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Albums: Share is current; from the home page, every space is a link home."""
+    monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, "1")
+    page = _in_shell(monkeypatch, "album.html.j2", tiles=False)
+    spaces = _SHELL_LINK.findall(page)
+    assert spaces[:1] == ["home"]
+    assert {"import", "clean", "sort", "find", "backup", "share", "settings"} <= set(
+        spaces
+    )
+    current = re.findall(r'data-space="([a-z]+)" aria-current="page"', page)
+    assert current == ["share"]
+    assert 'id="homeLink"' in page
+    assert '"mh-home-section", "#" + link.dataset.space' in page
+
+
+def test_the_shell_of_a_review_page_highlights_clean_and_folds(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A tile page: the sidebar folded to its icons; its stage, Clean, is current."""
+    monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, "1")
+    page = _in_shell(monkeypatch, "near_review.html.j2", tiles=True)
+    assert '"mh-shelled", "mh-shell-compact"' in page
+    assert re.findall(r'data-space="([a-z]+)" aria-current="page"', page) == ["clean"]
+
+
+def test_typed_in_the_console_the_shell_shows_spaces_but_links_nowhere(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """No home page to go back to: the entries are shown, not links."""
+    monkeypatch.delenv(LAUNCHER_STEPS_VARIABLE, raising=False)
+    page = _in_shell(monkeypatch, "search.html.j2", tiles=True)
+    assert _SHELL_LINK.findall(page) == []
+    assert 'class="mh-shell-link" aria-disabled="true"' in page
+    assert 'id="homeLink"' not in page
+
+
+def test_served_by_the_home_server_the_shell_is_plain_links(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """`/albums` from the home page (0356): plain links, the way back plain too."""
+    monkeypatch.setattr(page_header_module, "keeps_server", lambda: True)
+    page = _in_shell(monkeypatch, "album.html.j2", tiles=False)
+    assert "share" in _SHELL_LINK.findall(page)
+    assert 'data-shared="1"' in page
+
+
+def test_the_albums_page_is_in_the_shell_and_a_phone_keeps_what_it_opens() -> None:
+    """0492: `/albums` in the frame; a phone sees home, find and share only."""
+    assert SHELL_PAGES["album.html.j2"] is False  # not a tile page: the full sidebar
+    page = render_page("album.html.j2")
+    assert 'id="mhShellSide"' in page
+    assert 'class="mh-bar"' not in page
+    assert "html[data-phone] .mh-shell-side .pc-only { display: none; }" in page
+    kept = re.findall(
+        r'<li>\s*<(?:a|span) class="mh-shell-link"[^>]*data-space="([a-z]+)"', page
+    )
+    hidden = re.findall(
+        r'<li class="pc-only">\s*<(?:a|span) class="mh-shell-link"', page
+    )
+    assert hidden
+    assert set(kept) <= {"home", "find", "share"}

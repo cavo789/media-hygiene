@@ -30,6 +30,7 @@ from media_hygiene.search.folder_order import (  # pydantic reads them
     is_shown,
     ordered,
 )
+from media_hygiene.search.folder_role_desk import ROLE_PATH
 from media_hygiene.search.folder_tree import PHOTOS, folder_counts
 from media_hygiene.search.heaviest import (
     HEAVIEST_PATH,
@@ -42,13 +43,14 @@ from media_hygiene.search.heaviest import (
 if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.search.chosen_api import ChosenDesk
+    from media_hygiene.search.folder_role_desk import RoleDesk
     from media_hygiene.search.fts import SearchIndex
 
 BROWSE_PATH: Final = "/browse"
 FOLDER_QUERY: Final = "folder"  # `/search?folder=…`: the page opens on it (0405)
 FOLDERS_PATH: Final = "/api/folders"
 FOLDER_PATH: Final = "/api/folder"
-FOLDER_POSTS: Final = frozenset({FOLDER_PATH, HEAVIEST_PATH})
+FOLDER_POSTS: Final = frozenset({FOLDER_PATH, HEAVIEST_PATH, ROLE_PATH})
 _MAX_PATH: Final = 4096
 _AFTER_SLASH: Final = "0"  # the character after `/`: ends the range of a folder
 
@@ -71,6 +73,7 @@ class FolderDesk:
     mapper: HostPathMapper
     roots: tuple[Path, ...]  # the mounted folders, in the container
     chosen: ChosenDesk  # to mark the files set aside
+    roles: RoleDesk | None = None  # the roles of `[folders]` (0532)
 
     def tree(self) -> Response:
         """`GET /api/folders`: every folder under the mounted ones.
@@ -98,18 +101,25 @@ class FolderDesk:
             }
             for folder, count in sorted(counts.items())
         ]
-        return json_response(HTTPStatus.OK, {"folders": folders})
+        roles = [] if self.roles is None else self.roles.listed()
+        return json_response(HTTPStatus.OK, {"folders": folders, "roles": roles})
 
     def answer(self, path: str, body: bytes) -> Response:
         """Answer a `POST` of the folder view.
 
         Args:
-            path: `FOLDER_PATH` or `HEAVIEST_PATH`.
+            path: `FOLDER_PATH`, `HEAVIEST_PATH` or `ROLE_PATH`.
             body: The JSON the page sent.
 
         Returns:
             The files of a folder, or the heaviest of the library.
         """
+        if path == ROLE_PATH:
+            return (
+                Response(HTTPStatus.NOT_FOUND)
+                if self.roles is None
+                else self.roles.answer(body)
+            )
         if path == HEAVIEST_PATH:
             return self.heaviest(body)
         return self.listing(body)

@@ -22,12 +22,18 @@ mh review --intruders
 ```
 
 La page liste les fichiers intrus deux fois, **par extension** et **par dossier**, avec le
-nombre de fichiers et la place de chacun. Cochez des extensions, des dossiers, ou les deux, puis
-**Mettre de côté les fichiers cochés** :
+nombre de fichiers et la place de chacun. Cochez des extensions, des dossiers, ou les deux. La
+barre en haut de la page, toujours visible, dit en une phrase quels fichiers vos coches prennent,
+avec leur nombre et leur taille, et son bouton rouge porte ce nombre (**Mettre ces 12 fichiers de
+côté**) :
 
 - une extension seule : tous les fichiers de ce type, où qu'ils soient ;
 - un dossier seul : tous les fichiers intrus de ce dossier et de ses sous-dossiers ;
 - les deux : les fichiers d'une extension cochée rangés dans un dossier coché.
+
+Tant qu'une extension est cochée, le tableau des dossiers ne liste que ceux qui en contiennent,
+chacun avec le nombre et la taille de cette extension : vous voyez où ils sont. Un dossier coché
+fait de même sur le tableau des extensions. Décochez tout pour revoir toutes les lignes.
 
 **Rien ne bouge ici.** Un docx peut compter : rien n'est mis de côté sans vous. Chaque choix est
 enregistré aussitôt dans `decisions.json` du dossier des rapports ; la liste sous les tableaux
@@ -35,7 +41,9 @@ est ce fichier, relu sur le disque. **Remettre tous les fichiers intrus** le vid
 
 ## Étape 2 : appliquer
 
-Arrêtez la page avec Ctrl+C, puis lancez `clean` avec le fichier de décisions :
+Ouverte depuis la page d'accueil, la barre montre **Appliquer maintenant** dès qu'un fichier est
+mis de côté : `mh` lance l'étape qui les déplace, avec sa question habituelle. Ouverte par sa
+commande, arrêtez la page avec Ctrl+C, puis lancez `clean` avec le fichier de décisions :
 
 ```powershell
 mh clean --decisions decisions.json

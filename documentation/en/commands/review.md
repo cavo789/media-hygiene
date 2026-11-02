@@ -81,11 +81,20 @@ photos.
 | `Delete` | Set the picked shots aside | — | — |
 | `S` / `X` | Keep only the sharpest / set the whole series aside (*Keep every shot*: a button) | — | — |
 | `W` / `L` / `U` | — | Keep the other version / leave alone / back to undecided | Swap the folders / leave alone / back to undecided |
-| `V` / `G` | Validate every obvious series at once | `G`: the whole folder pair as planned | — |
+| `V` / `G` | Validate every obvious series at once, unseen | `G`: the whole folder pair as planned | — |
 | `Z` | Undo the last choice | — | — |
 
 `review --junk`: `→` the group as marked, then the next one; `Space` keeps or sets aside the
 framed photo; `Delete` sets the picked photos aside; `←`, `N`, `U` as for the other reviews.
+
+**The obvious series on a contact sheet** (`review`): *📇 Look at N obvious series on a
+contact sheet*, on the left, shows only the series with nothing to judge, about twenty rows a
+screen, the kept shot framed in green and those proposed aside smaller and dimmed with their
+reason. **Enter** validates the rows shown as they are, then shows the next screen; a click on
+a shot sets it aside or keeps it; a double click shows it large; `Z` takes the whole last
+screen back. The line on top says how many doubtful series are left to see one by one (`P`).
+Each series is seen, at about 400 a minute (estimated: 2 to 3 s a screen). `V` stays the fast
+path: it validates them all without showing them.
 
 **Pick the shots as in [the folders of `search`](search.md#walk-through-your-folders)** (`review` and `review --junk`): a click picks one
 shot; the ☑ box (or Ctrl+click) adds or removes one; Shift+click picks every shot from the last

@@ -7,13 +7,20 @@
 {% set texts = {
   "summary": _("{count} intruder files, {size} in all."),
   "none": _("No intruder file: your photo folders hold only photos, videos and their companions."),
-  "nothingTicked": _("Tick an extension or a folder first."),
   "saving": _("Saving…"),
   "proofOk": "✔ " ~ _("Saved, then read back from the disk at {time}: {count} intruder files set aside in {file}.").replace("{file}", file),
   "setAsideTitle": _("Set aside in {file}, as read from the disk").replace("{file}", file),
   "emptyAside": _("No intruder file set aside yet."),
   "failed": _("Not saved (error {status})."),
   "offline": _("The page is not running any more: start it again."),
+  "tickFirst": _("Tick an extension or a folder."),
+  "everywhere": [ngettext("{n} {files} file ({size}), in every folder.", "{n} {files} files ({size}), in every folder.", 1), ngettext("{n} {files} file ({size}), in every folder.", "{n} {files} files ({size}), in every folder.", 2)],
+  "ofFolders": _("Every intruder file of {folders} ({count}, {size})."),
+  "both": _("The {files} files of {folders} only ({count}, {size})."),
+  "count": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
+  "button": [ngettext("Set this {n} file aside", "Set these {n} files aside", 1), ngettext("Set this {n} file aside", "Set these {n} files aside", 2)],
+  "buttonNone": _("Set the files ticked aside"),
+  "units": [_("B"), _("KB"), _("MB"), _("GB"), _("TB")],
 } %}
 {% set page_name = _("Intruder files") %}
 {% block style %}
@@ -22,20 +29,28 @@
   table { border-collapse: collapse; width: 100%; font-size: .9rem; }
   td, th { padding: 4px 8px; border-bottom: 1px solid var(--line); text-align: left; overflow-wrap: anywhere; }
   td.num, th.num { text-align: right; white-space: nowrap; }
-  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
-  .actions button { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: inherit; cursor: pointer; }
-  .actions button.main { border-color: var(--accent); font-weight: 600; }
+  #bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  #sentence { flex-basis: 100%; margin: 0; font-weight: 600; }
+  #bar button { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--accent); cursor: pointer; }
+  #bar button.plain { color: var(--accent); background: transparent; }
+  #bar button.danger { color: #fff; background: var(--bad); border-color: var(--bad); font-weight: 600; margin-left: 12px; }
+  #bar button:disabled { opacity: .5; cursor: not-allowed; }
+  tr.ticked-off td { color: var(--muted); font-style: italic; }
   #aside li { overflow-wrap: anywhere; }
 {% endblock %}
 {% block side %}
   <section id="toc" aria-label="{{ page_name }}">
     <p class="muted">{{ _("An intruder file is a file of your photo folders that is neither a photo, a video nor one of their companions (sidecar, Thumbs.db…): a zip, a docx, a pdf copied there. A docx may matter: nothing is set aside without you.") }}</p>
-    <p class="muted">{{ _("Tick extensions, folders, or both: with both, a file must match one ticked extension and lie in one ticked folder. Protected and backup folders are left out: they are never changed.") }}</p>
-    <p class="safe">🔒 {{ _("Each pick is saved at once in %(place)s; nothing moves here. Done? Ctrl+C in the terminal stops the page; then run the same 'clean' command with %(option)s: the files set aside go to the quarantine, and 'undo' brings them back.", place=place, option=clean_option) }}</p>
+    <p class="muted">{{ _("Protected and backup folders are left out: they are never changed.") }}</p>
+    <p class="safe">🔒 {{ _("Each pick is saved at once in %(place)s; nothing moves until Apply. Done? Ctrl+C in the terminal stops the page; then run the same 'clean' command with %(option)s: the files set aside go to the quarantine, and 'undo' brings them back.", place=place, option=clean_option) }}</p>
   </section>
 {% endblock %}
 {% block bar %}
   <strong id="summary"></strong>
+  <p id="sentence" aria-live="polite"></p>
+  <button type="button" id="back" class="plain">{{ _("Put every intruder file back") }}</button>
+  <button type="button" id="pick" class="danger" disabled>{{ _("Set the files ticked aside") }}</button>
+  {% include "apply_now.html.j2" %}
   <span id="status" role="status" aria-live="polite"></span>
 {% endblock %}
 {% block content %}
@@ -44,10 +59,6 @@
   <table><thead><tr><th></th><th>{{ _("Extension") }}</th><th class="num">{{ _("Files") }}</th><th class="num">{{ _("Size") }}</th></tr></thead><tbody id="extensions"></tbody></table>
   <h2>{{ _("Per folder") }}</h2>
   <table><thead><tr><th></th><th>{{ _("Folder") }}</th><th class="num">{{ _("Files") }}</th><th class="num">{{ _("Size") }}</th></tr></thead><tbody id="folders"></tbody></table>
-  <div class="actions">
-    <button type="button" id="pick" class="main">{{ _("Set the files ticked aside") }}</button>
-    <button type="button" id="back">{{ _("Put every intruder file back") }}</button>
-  </div>
   <details id="disk" open>
     <summary id="asideTitle"></summary>
     <ul id="aside"></ul>

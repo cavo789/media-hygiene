@@ -8,6 +8,7 @@
     "files": _("{first} → {last} · {n} files"),
     "saving": _("Saving…"),
     "failed": _("Not saved (error {status})."),
+    "confirm": [ngettext("Confirm this {n}", "Confirm these {n}", 1), ngettext("Confirm this {n}", "Confirm these {n}", 2)],
   } | tojson }};
   const FOUND_PATH = {{ found_path | tojson }};
   const byId = $;
@@ -48,8 +49,13 @@
   const filter = () => {
     const wanted = byId("foundFilter").value.trim().toLowerCase();
     for (const line of byId("found").querySelectorAll(".foundItem")) line.hidden = Boolean(wanted) && !line.dataset.name.includes(wanted);
+    const count = decided().length;
+    byId("foundSave").textContent = counted(FT.confirm, count);
+    byId("foundSave").disabled = !count;
   };
+  // Never act on what is not shown (0575): only the rows the filter shows are posted.
   const shown = (list) => [...byId(list).querySelectorAll(".foundItem:not([hidden]) input")];
+  const decided = () => [...shown("foundList"), ...shown("foundRefusedList")];
   const tick = (on) => { for (const box of shown("foundList")) box.checked = on; };
   const load = async () => {
     const answer = await ask(FOUND_PATH);
@@ -59,7 +65,8 @@
   byId("foundAll").addEventListener("click", () => tick(true));
   byId("foundNone").addEventListener("click", () => tick(false));
   byId("foundSave").addEventListener("click", async () => {
-    const boxes = [...byId("foundList").querySelectorAll("input"), ...byId("foundRefusedList").querySelectorAll("input")];
+    const boxes = decided();
+    if (!boxes.length) return;
     const refusedBefore = new Set([...byId("foundRefusedList").querySelectorAll("input")].map((box) => box.dataset.folder));
     const body = {
       ticked: boxes.filter((box) => box.checked).map((box) => box.dataset.folder),

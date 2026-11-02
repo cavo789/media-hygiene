@@ -199,16 +199,17 @@ un lieu ou une personne la nomme par son numéro et son `name` : `« match » da
   arrêtée.*) ; une page encore ouverte dans une autre fenêtre est laissée : fermez-la là-bas avec
   Ctrl+C. `mh` reconnaît une fenêtre à son numéro de processus et à l'heure où elle a démarré :
   un numéro que Windows a donné depuis à un autre programme ne garde pas en vie une page morte.
-- Un autre programme utilise 8088 (un autre serveur local, l'aperçu de votre éditeur) : `mh` le
-  nomme avant la page, en rouge, avec son numéro de processus (*Le port 8088 des pages de mh est
+- Un autre programme utilise 8088 (un autre serveur local, l'aperçu de votre éditeur) : `mh`
+  lance la page comme d'habitude et, seulement si Docker refuse le port, nomme ce programme en rouge, avec son numéro de processus (*Le port 8088 des pages de mh est
   pris par un autre programme, python (processus 4242) : fermez-le, puis retapez la commande.*),
   et ne lance rien. Fermez ce programme ; si vous ne pouvez pas, donnez un autre port aux pages : `port = 9000`
   sous `[review]` dans `config.toml`, puis `mh update` (il écrit le nouveau port dans `mh`). Sous Windows, il demande à Windows quel
   programme écoute ; dans WSL ou sous Linux, `ss` le dit pour vos propres programmes seulement,
   et Docker dit *address already in use* pour les autres.
 - *Le port 8088 des pages de mh se libère encore* : une page mh vient de s'arrêter (une page
-  choisie sur la page d'accueil arrête d'abord celle-ci) et Windows n'a pas encore libéré son
-  port. `mh` attend jusqu'à 10 secondes, puis démarre. Si Windows le tient encore, il s'arrête
+  choisie sur la page d'accueil arrête d'abord celle-ci) et Docker n'a pas encore pu prendre son
+  port. `mh` réessaie chaque seconde pendant 10 secondes au plus ; il ne dit rien du tout quand
+  Docker prend le port aussitôt, le cas habituel. Si Windows le tient encore, il s'arrête
   (*Windows n'a pas encore libéré le port 8088 des pages de mh : attendez quelques secondes,
   puis retapez la commande*) : faites-le.
 - *port is already allocated* avec un `docker run` tapé à la main : choisissez un autre numéro,

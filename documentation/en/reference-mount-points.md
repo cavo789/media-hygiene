@@ -10,7 +10,7 @@ Each place in the container has one role.
 | `/data/<drive>/<path>` | The folders to analyse: `/data`, then the drive letter and the path of a Windows folder (`C:\Photos`, or `/mnt/c/Photos` in WSL → `/data/c/Photos`), or the full path of a Linux folder (`/home/me/Pictures` → `/data/home/me/Pictures`). | always; `:ro` for `audit` and `review` | [1](start/01-first-audit.md), [3](start/03-several-folders.md) |
 | `/cache` | SQLite index: later audits only read new or changed files; the descriptions of a local model ([sorting, step 8](sort/08-subjects-from-a-local-model.md)) are kept there too, and Czkawka's own cache for [`crosscheck`](commands/crosscheck.md); `inventory` exports it ([inventory](reference-inventory.md)). | optional, recommended; **required** by `inventory` | [2](start/02-keep-the-cache.md) |
 | `/reports` | One folder per run (`report.html`, one page per folder pair, previews, `plan.csv`), `index.html`, the `decisions.json` of `review`, the `<date>-classify` folders ([workbook and report](sort/05-review-the-proposal.md), and the `sort-decisions.json` of [the 🗂 Events tab of `search`](sort/11-name-events-in-the-browser.md)) and the `<date>-inventory` folders ([inventory](reference-inventory.md)). | optional; **required** by `review`, `review-sort`, `sort`, `album` and `inventory` | [Cleaning, 4](clean/04-html-report.md) |
-| `/config` | `config.toml` only, created and commented on first run; `places` saves your places in it. | optional; **required** by `places` | [Cleaning, 7](clean/07-configuration-file.md) |
+| `/config` | `config.toml` (+ `people/`, `events/`), created and commented on first run; `places` saves your places in it. | optional; **required** by `places` | [Cleaning, 7](clean/07-configuration-file.md) |
 | `/journal` | One JSONL journal per clean, sort or album. | **required** by `clean`, `sort`, `album`, `undo`, `history` | [Cleaning, 8](clean/08-clean.md) |
 | `/quarantine` | Unreadable files, orphan sidecars, near duplicates, burst shots set aside and copies of other file types moved by `clean`. | to handle them | [Cleaning, 8](clean/08-clean.md) |
 | `/quarantine/<drive>` | The quarantine of one drive (`E:\media-hygiene\quarantine` on `/quarantine/e`): the files of that drive set aside stay on it; `/quarantine` receives those of the other drives. `mh` mounts one for each photo drive other than `C:`. | optional, recommended for photos outside `C:` | [Cleaning, 8](clean/08-clean.md#photos-on-another-drive-than-the-quarantine) |
@@ -24,7 +24,9 @@ Each place in the container has one role.
 - **Create your folders before `docker run`**: a folder Docker creates by itself belongs to the
   administrator, and the tool cannot write there
   ([troubleshooting](reference-troubleshooting.md#folders-the-tool-cannot-write-to)).
-- **`/config` holds `config.toml` only**: nothing else is ever written there.
+- **`/config` holds `config.toml`**, plus two folders linked to it: `people/` (the faces of each
+  person named) and `events/` (the events remembered, one file per year). Nothing else is ever
+  written there.
 - **Only the quarantine goes per drive**: config, journal, reports and cache stay single (one
   index finds duplicates across drives; one journal records where each file went, so `undo`
   follows it). Keep a drive's quarantine mounted until its runs are purged or undone: otherwise

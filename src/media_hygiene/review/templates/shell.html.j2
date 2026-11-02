@@ -1,0 +1,20 @@
+{# The home page's frame around a page (0491, review/shell.py), included by page_header.html.j2 for the
+   pages of SHELL_PAGES: the sidebar (the home page, the five stages, share, the tools, the meerkat, the
+   version, the theme switch) fixed on the left, the page shifted right of it; the top bar (☰ on a phone,
+   the page's name, its chapter in both languages, *Back to the home page*) where the thin bar was. The
+   page's space is highlighted. Its ids (`homeLink`) and classes (`mh-doc`, `mh-page`) are the thin bar's:
+   home_link.html.j2 handles the way back the same. #}
+{% set shell = header.shell %}
+<script>
+{% include "theme_choice.js.j2" %}
+document.documentElement.classList.add("mh-shelled"{% if shell.compact %}, "mh-shell-compact"{% endif %});
+</script>
+<style>
+{% include "shell.css.j2" %}
+</style>
+{% include "home_icons.svg.j2" %}
+{% include "shell_side.html.j2" %}
+{% include "shell_top.html.j2" %}
+<script>
+{% include "shell.js.j2" %}
+</script>

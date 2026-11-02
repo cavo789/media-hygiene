@@ -1,0 +1,31 @@
+{# The sidebar of the frame (shell.html.j2): an entry opens that space of the home page; a link when a
+   home page is there to go back to (served by it, or `mh` opened this page from it), else shown only.
+   On a paired phone (`data-phone`, read-only, 0435) only the spaces a phone opens stay. #}
+{% set phone_spaces = ("home", "find", "share") %}
+{% macro entry(link) -%}
+<li{% if link.space not in phone_spaces %} class="pc-only"{% endif %}>
+{%- if header.shared or header.home %}<a class="mh-shell-link" href="/#{{ link.space }}" data-space="{{ link.space }}"{% if link.current %} aria-current="page"{% endif %} title="{{ link.title }}">
+{%- else %}<span class="mh-shell-link" aria-disabled="true"{% if link.current %} aria-current="page"{% endif %} title="{{ link.title }}">{% endif -%}
+<svg class="mh-i" aria-hidden="true"><use href="#i-{{ link.icon }}"></use></svg><span class="mh-shell-label">{{ link.title }}</span>
+{%- if header.shared or header.home %}</a>{% else %}</span>{% endif %}</li>
+{%- endmacro %}
+<aside class="mh-shell-side" id="mhShellSide" aria-label="{{ _('Menu of Media Hygiene') }}">
+  <p class="mh-shell-brand"><img src="{{ header.assets }}images/avatar.webp" alt="" width="30" height="40"><span class="mh-shell-label">Media Hygiene</span></p>
+  <nav aria-label="{{ _('Spaces') }}">
+    <ul class="mh-shell-list">{{ entry(shell.home) }}</ul>
+    <p class="mh-shell-group mh-shell-label">{{ _("The cycle of your photos") }}</p>
+    <ul class="mh-shell-list">{% for link in shell.stages %}{{ entry(link) }}{% endfor %}</ul>
+    <p class="mh-shell-group mh-shell-label">{{ _("Share") }}</p>
+    <ul class="mh-shell-list">{% for link in shell.share %}{{ entry(link) }}{% endfor %}</ul>
+    <p class="mh-shell-group mh-shell-label">{{ _("Tools") }}</p>
+    <ul class="mh-shell-list">{% for link in shell.tools %}{{ entry(link) }}{% endfor %}</ul>
+  </nav>
+  <div class="mh-shell-sign mh-shell-label">
+    <p>Media Hygiene {{ shell.version }}</p>
+    <div class="mh-shell-theme" role="group" aria-label="{{ _('Display') }}">
+      <button type="button" data-theme-choice="auto" aria-pressed="true">{{ _("Auto") }}</button>
+      <button type="button" data-theme-choice="light" aria-pressed="false">{{ _("Light") }}</button>
+      <button type="button" data-theme-choice="dark" aria-pressed="false">{{ _("Dark") }}</button>
+    </div>
+  </div>
+</aside>

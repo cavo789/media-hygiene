@@ -73,6 +73,13 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   par-dessus la page (rien en dessous ne bouge), Échap le ferme. Un clic limite la recherche à ce dossier et en dessous, **sans taper de
   mot** : des mots vides listent tout le dossier ; ✕ à côté de son nom recherche à nouveau dans
   tous les dossiers.
+  Chaque dossier montre son rôle (🛡️ protégé, ⭐ préféré, 💾 sauvegarde, 🚫 exclu ; survolez
+  pour ce qu'il veut dire) ; **⋯** à côté d'un dossier, *Rôle de ce dossier*, lui en donne un ou
+  aucun. Le choix est écrit dans `[folders]` de `config.toml` (vos commentaires gardés), relu sur
+  le disque et affiché ; un rôle en conflit avec un autre (une sauvegarde dans un dossier
+  protégé) est refusé avec la raison. Relancez l'audit ensuite : ses propositions suivaient les
+  anciens rôles. Un dossier avec un rôle renommé ou supprimé dans l'Explorateur est listé sous
+  l'arbre, avec **Supprimer**.
 
 - **Chercher** : tapez les mots, puis Entrée ; les touches vont alors à la grille, `/` revient au
   champ. *Comment écrire une recherche* rappelle les expressions ("bord de mer"), les débuts de
@@ -95,9 +102,10 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
 - **La barre** a deux lignes qui ne bougent jamais, quoi qu'on choisisse ou trouve : en haut, où
   vous en êtes (le nombre), **📺 Sur la télé**, **Trier par** et la taille des vignettes **S**
   (les photos seules), **M**, **L** (tous les mots), gardée pour ce navigateur ; en dessous, que
-  faire des fichiers choisis — grisé tant qu'aucun ne l'est : **🗑 Mettre de côté**,
-  **🔀 Inverser**, l'album avec **➕** et **➖**, **📺 Partager**, **✉️ Envoyer**,
-  **📂 Événement…**, puis ce qui est mis de côté et **✅ Appliquer**. Pointez un bouton pour son
+  faire des fichiers choisis — grisé tant qu'aucun ne l'est : d'abord
+  **📂 Déplacer vers un événement…** (plein : l'action principale), **🔀 Inverser**, et en
+  dernier, à part et en rouge, **🗑 Mettre de côté** ; l'album avec **➕** et **➖**,
+  **📺 Partager**, **✉️ Envoyer**, puis ce qui est mis de côté et **✅ Appliquer**. Pointez un bouton pour son
   nom complet et sa touche. **✅ Appliquer** le rappelle aussi : 🔒 rien ne bouge sans votre GO ;
   chaque déplacement est journalisé, `undo` le défait. Un fichier mis de côté compte comme
   disparu pour toute action sauf *Reprendre* : choisi avec les autres (Ctrl+A, Maj, le
@@ -153,7 +161,7 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
 - **Triées** : *Tout*, *pas encore* ou *triées* (année, puis année-mois), lu
   dans les dossiers seuls ([la convention](../sort/04-classify.md#la-convention--année-mois-événement)) :
   une photo dans `2009\2009-11\…` est triée, où que soit cette paire de dossiers et quoi qui l'y
-  ait mise. *Pas encore*, puis choisir et **📂 Événement…** : la page
+  ait mise. *Pas encore*, puis choisir et **📂 Déplacer vers un événement…** : la page
   devient le moyen de trier ce qui reste, dossier après dossier.
 
 Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers
@@ -169,7 +177,7 @@ nouvel événement là où aucune photo n'a été prise pendant le plus long éc
 de la recherche : hors d'un dossier `AAAA\AAAA-MM\<nom>`, quoi qui l'y ait mis ; un fichier que
 vous triez quitte la liste à la recherche suivante. Cliquez un événement : ses photos remplissent
 la grille (jamais celles de l'onglet Photos : en cas d'erreur la grille reste vide et la barre dit
-pourquoi) ; choisissez-les, puis **📂 Événement…** les déplace. L'adresse `/events` ouvre la page
+pourquoi) ; choisissez-les, puis **📂 Déplacer vers un événement…** les déplace. L'adresse `/events` ouvre la page
 sur cet onglet ; ← et → passent d'un onglet à l'autre quand l'un d'eux a le focus.
 
 Les choix ci-dessous (dossier, nom, propositions sûres, règles, *Trier cet événement maintenant*)
@@ -207,7 +215,7 @@ retirez celles qui ne décident rien, changez une règle de nom de dossier en da
 
 Pour un événement unique, une règle n'est pas nécessaire : cherchez ses jours (ou des mots),
 **choisissez** les photos (comme partout : clic, Ctrl, Maj, un rectangle, Ctrl+A), puis
-**📂 Événement…** dans la barre. Tapez le nom de l'événement, ou choisissez un
+**📂 Déplacer vers un événement…** dans la barre. Tapez le nom de l'événement, ou choisissez un
 de vos dossiers d'événement que le champ liste (ceux déjà dans le mois où vont les photos,
 les sous-dossiers écrits `France\Morzine`) ; `\` crée aussi des sous-dossiers d'un nouveau nom. La
 ligne en dessous montre le dossier créé, tel que l'Explorateur le montrera, sous l'année
@@ -356,7 +364,7 @@ Un mot tapé à la main sous une photo a une **×**, sur sa carte et dans les d�
 vue (`I`) : cliquez-la pour retirer le mot de cette photo, enregistré et relu de la même façon. Un
 mot qui ne reste sur aucune photo s'en va, avec son fichier.
 
-Les chemins suivent vos photos : `sort`, `undo`, la quarantaine et **📂 Événement…** les
+Les chemins suivent vos photos : `sort`, `undo`, la quarantaine et **📂 Déplacer vers un événement…** les
 réécrivent aussitôt ; un dossier renommé dans l'Explorateur est retrouvé par l'identifiant de
 contenu à la fin du prochain `audit`. [`xmp`](xmp.md) écrit ces mots dans les fichiers `.xmp` avec
 les autres (`hand` dans `[tags] xmp_sources`, actif par défaut). Sans `/config` accessible en

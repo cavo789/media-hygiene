@@ -1,0 +1,28 @@
+{# The frame's behaviour (shell.html.j2): ☰ opens the sidebar; the theme switch writes the home page's
+   key (`mh-home-theme`, read by theme_choice.js.j2); from a page `mh` opened from the home page, an entry
+   ends this page as *Back to the home page* does, the home page coming back on that space. #}
+(() => {
+  const THEME_KEY = "mh-home-theme";
+  const root = document.documentElement;
+  const menu = document.getElementById("mhShellMenu");
+  menu.addEventListener("click", () => {
+    const open = root.classList.toggle("mh-shell-open");
+    menu.setAttribute("aria-expanded", String(open));
+  });
+  const buttons = document.querySelectorAll(".mh-shell-theme button");
+  const show = (choice) => buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.themeChoice === choice)));
+  show(root.getAttribute("data-theme") || "auto");
+  buttons.forEach((button) => button.addEventListener("click", () => {
+    const choice = button.dataset.themeChoice;
+    if (choice === "auto") root.removeAttribute("data-theme"); else root.setAttribute("data-theme", choice);
+    try { window.localStorage.setItem(THEME_KEY, JSON.stringify(choice)); } catch { /* private mode: this page only */ }
+    show(choice);
+  }));
+  document.querySelectorAll("a.mh-shell-link").forEach((link) => link.addEventListener("click", (event) => {
+    const home = document.getElementById("homeLink");
+    if (home === null || home.dataset.shared) return; // served by the home server: a plain link
+    event.preventDefault();
+    try { window.sessionStorage.setItem("mh-home-section", "#" + link.dataset.space); } catch { /* the top of the page */ }
+    home.click();
+  }));
+})();

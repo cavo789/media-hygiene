@@ -82,12 +82,22 @@ quand la page d'accueil l'a ouvert), puis les photos.
 | `Suppr` | Écarter les photos choisies | — | — |
 | `S` / `X` | Garder seulement la plus nette / écarter toute la rafale (*Garder toutes les photos* : un bouton) | — | — |
 | `W` / `L` / `U` | — | Garder l'autre version / laisser tel quel / revenir à indécis | Inverser les dossiers / ne pas toucher / revenir à indécise |
-| `V` / `G` | Valider d'un coup toutes les rafales évidentes | `G` : toute la paire de dossiers comme prévu | — |
+| `V` / `G` | Valider d'un coup toutes les rafales évidentes, sans les voir | `G` : toute la paire de dossiers comme prévu | — |
 | `Z` | Annuler le dernier choix | — | — |
 
 `review --junk` : `→` le groupe tel que marqué, puis le suivant ; `Espace` garde ou met de côté
 la photo encadrée ; `Suppr` met de côté les photos choisies ; `←`, `N`, `U` comme pour les autres
 tris.
+
+**Les rafales évidentes sur une planche contact** (`review`) : *📇 Regarder les N rafales
+évidentes sur une planche contact*, à gauche, ne montre que les rafales sans rien à juger, une
+vingtaine de lignes par écran, la photo gardée encadrée de vert et celles proposées à l'écart
+plus petites et atténuées, avec leur raison. **Entrée** valide les lignes affichées telles
+quelles, puis montre l'écran suivant ; un clic sur une photo l'écarte ou la garde ; un double
+clic la montre en grand ; `Z` reprend tout le dernier écran. La ligne du haut dit combien de
+rafales douteuses restent à voir une à une (`P`). Chaque rafale est vue, à environ 400 par
+minute (estimé : 2 à 3 s par écran). `V` reste le chemin rapide : il les valide toutes sans les
+montrer.
 
 **Choisissez les photos comme dans [les dossiers de `search`](search.md#parcourir-vos-dossiers)** (`review` et `review --junk`) : un
 clic choisit une photo ; la case ☑ (ou Ctrl+clic) en ajoute ou en retire une ; Maj+clic choisit

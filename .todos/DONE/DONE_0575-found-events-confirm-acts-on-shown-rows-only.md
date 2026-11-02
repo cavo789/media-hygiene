@@ -38,8 +38,17 @@ on "Restaurant", unticking the 40, Confirm refuses those 40 **and** writes the 1
 
 ## Acceptance
 
-- [ ] Confirm with a filter writes and refuses only the rows shown (test).
-- [ ] The button names its count, singular and plural.
-- [ ] Docs en + fr say Confirm acts on the rows shown; `i18n_update` + French.
-- [ ] The rule "never act on what is not shown" added to the product rules of
+- [x] Confirm with a filter writes and refuses only the rows shown (test).
+- [x] The button names its count, singular and plural.
+- [x] Docs en + fr say Confirm acts on the rows shown; `i18n_update` + French.
+- [x] The rule "never act on what is not shown" added to the product rules of
       `.claude/rules/workflow.md` (and the `photo-picking-pages` skill for tiles).
+
+## Status — DONE (2026-11-02)
+
+Confirm posts only the rows the filter shows (proposed + refused lists), labelled
+"Confirm these N" (ngettext, `counted`), disabled when nothing is shown. Server unchanged (it
+already writes only what the body names). Rule added to `.claude/rules/workflow.md` and the
+`photo-picking-pages` skill. Docs: the section lives in `sort/11-name-events-in-the-browser.md`
+(en + fr), not in `commands/search.md`. The *Pick all N found* count vs posted check was not
+re-read in the browser.

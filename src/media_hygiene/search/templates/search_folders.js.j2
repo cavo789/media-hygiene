@@ -2,6 +2,7 @@
    *📁 My folders* (folded to one line, floating once opened: 0471); a folder clicked narrows the search to it and below, words or none (empty
    words list the whole folder); ✕ searches every folder again. Read once, when opened. #}
 const FOLDERS_PATH = {{ folders_path | tojson }};
+const ROLE_PATH = {{ role_path | tojson }};
 const FIRST_SHOWN = {{ first_hits | tojson }};  // *Show more* asks as many again
 
 function showWithin() {
@@ -14,21 +15,71 @@ function showWithin() {
 
 // Asked once, shared by the tree and the list of *Path contains* (0471): from the index.
 let folderRows = null;
+let folderRoles = [];  // `[folders]` of config.toml, as on the disk (0532)
 async function folderList() {
   if (folderRows) return folderRows;
   const answer = await ask(FOLDERS_PATH);
   if (!answer || !answer.ok) return [];  // the search works without them
-  folderRows = (await answer.json()).folders;
+  const read = await answer.json();
+  folderRows = read.folders;
+  folderRoles = read.roles || [];
   return folderRows;
 }
 
 async function loadFolders() {
   const folders = await folderList();
+  const roles = { of: new Map(folderRoles.map((r) => [r.path, r.role])), pick: openRole };
   $("tree").replaceChildren(folderTree(folders, (node) => {
     within = node; showWithin(); $("folders").open = false; search(null);
-  }));
+  }, roles));
+  showMissing();
   showWithin();
 }
+
+// A folder with a role renamed or deleted in Explorer: its role points nowhere (0532).
+function showMissing() {
+  $("roleMissing").replaceChildren(...folderRoles.filter((r) => r.where === "missing").map((r) => {
+    const line = element("li", "", fill(TEXTS.roleMissing, { folder: r.path, badge: ROLE_BADGES[r.role] }));
+    const remove = element("button", "plain", TEXTS.roleRemove);
+    remove.type = "button";
+    remove.addEventListener("click", () => saveRole(r.path, "none"));
+    line.append(remove);
+    return line;
+  }));
+}
+
+let roleFolder = null;
+function openRole(node) {
+  roleFolder = node.path;
+  $("roleFolder").textContent = node.path;
+  const now = folderRoles.find((r) => r.path === node.path);
+  for (const radio of document.querySelectorAll("#roleDlg input[name=role]")) {
+    radio.checked = radio.value === (now ? now.role : "none");
+  }
+  $("roleSaid").textContent = ""; $("roleSaid").className = ""; $("roleStale").hidden = true;
+  $("roleDlg").showModal();
+}
+
+// Saved, then shown as read back from the disk; a clash is said, nothing changed.
+async function saveRole(folder, role) {
+  $("roleSaid").textContent = TEXTS.roleSaving;
+  const answer = await ask(ROLE_PATH, { folder, role });
+  const read = answer ? await answer.json().catch(() => ({})) : {};
+  if (!answer || !answer.ok) {
+    $("roleSaid").textContent = read.error || TEXTS.offline;
+    $("roleSaid").className = "error";
+    return;
+  }
+  folderRoles = read.roles;
+  $("roleSaid").textContent = read.said; $("roleSaid").className = "saved";
+  $("roleStale").textContent = read.stale; $("roleStale").hidden = false;
+  $("coverage").hidden = false; $("coverage").textContent = read.said + " " + read.stale;
+  loadFolders();
+}
+$("roleSave").addEventListener("click", () => {
+  const picked = document.querySelector("#roleDlg input[name=role]:checked");
+  if (roleFolder && picked) saveRole(roleFolder, picked.value);
+});
 
 $("folders").addEventListener("toggle", () => { if ($("folders").open && !$("tree").children.length) loadFolders(); });
 // Folded (0471): the floating tree closes with Esc, like *More keys*.

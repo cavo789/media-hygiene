@@ -17,11 +17,12 @@ from media_hygiene.cli.menu_entry import Space
 from media_hygiene.cli.menu_steps import build_menu, choice_lines
 from media_hygiene.cli.menu_view import show_menu
 from media_hygiene.cli.status_step import Slot, next_step
-from media_hygiene.constants import CLASSIFY_PLAN_FILE_NAME, RunKind
+from media_hygiene.constants import CLASSIFY_PLAN_FILE_NAME
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.home_views import FIELDS_STEP
 from media_hygiene.services.status import read_status
 from media_hygiene.services.update_check import UpdateNotice
+from tests.support.audit_summary import Found, write_audit
 from tests.support.journaled import done_line
 from tests.support.runtime import make_locations, make_runtime, output_of
 
@@ -43,20 +44,7 @@ def _decisions(runtime: Runtime, document: dict[str, object]) -> None:
 
 def _report(runtime: Runtime, copies: int, *, backup_only: int = 0) -> None:
     """Write the summary of an audit that found `copies` extra copies."""
-    folder = runtime.locations.reports_dir / "20261014-100000-audit"
-    folder.mkdir()
-    summary = {
-        "folder": folder.name,
-        "kind": RunKind.AUDIT.value,
-        "created_at": "2026-10-14T10:00:00+00:00",
-        "files_scanned": 10,
-        "duplicate_groups": copies,
-        "duplicate_files": copies,
-        "reclaimable_bytes": 100,
-        "broken_files": 0,
-        "backup_only": backup_only,
-    }
-    (folder / "summary.json").write_text(json.dumps(summary), "utf-8")
+    write_audit(runtime, Found(copies, backup_only=backup_only))
 
 
 def _blank(runtime: Runtime) -> None:

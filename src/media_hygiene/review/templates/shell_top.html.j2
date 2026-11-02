@@ -1,0 +1,16 @@
+{# The top bar of the frame (shell.html.j2): ☰ (a phone, a tile page), the page's name, its chapter in
+   both languages, *Back to the home page* (handled by home_link.html.j2, as on the thin bar). #}
+<header class="mh-shell-top" aria-label="Media Hygiene">
+  <button class="mh-shell-menu" id="mhShellMenu" type="button" aria-label="{{ _('Open the menu') }}" aria-controls="mhShellSide" aria-expanded="false"><svg class="mh-i" aria-hidden="true"><use href="#i-menu"></use></svg></button>
+  <span class="mh-shell-crumb" aria-hidden="true">Media Hygiene ›</span>
+  <h1 class="mh-page">{{ page_name }}</h1>
+  <span class="mh-links">
+    <a class="mh-doc" href="{{ header.doc }}" target="_blank" rel="noopener">{{ _("Documentation") }}</a>
+    <a class="mh-doc" href="{{ header.twin }}" target="_blank" rel="noopener" hreflang="{{ header.twin_lang }}" lang="{{ header.twin_lang }}">{{ header.twin_label }}</a>
+{% if header.shared %}
+    <a class="mh-home" id="homeLink" href="/" data-shared="1">⌂ {{ _("Back to the home page") }}</a>
+{% elif header.home %}
+    <a class="mh-home" id="homeLink" href="#" title="{{ home_title | default(_('Close this page and go back to the home page: mh opens it again.')) }}">⌂ {{ _("Back to the home page") }}</a>
+{% endif %}
+  </span>
+</header>

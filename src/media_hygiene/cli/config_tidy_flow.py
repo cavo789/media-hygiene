@@ -12,6 +12,7 @@ from media_hygiene.cli.context import user_errors
 from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.services.config_tidy import stale_entries, tidy
+from media_hygiene.services.events_move import events_to_move, move_events
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -29,6 +30,7 @@ def show_tidy(runtime: Runtime, *, apply: bool, dates: bool) -> None:
         dates: Tick the `date_range` rules with no photo too.
     """
     output = runtime.output
+    _move_events(runtime, apply=apply)
     findings = stale_entries(runtime)
     for folder in findings.unknown:
         output.info(
@@ -67,6 +69,39 @@ def show_tidy(runtime: Runtime, *, apply: bool, dates: bool) -> None:
             backup=escape(backup), config=escape(config)
         )
     )
+
+
+def _move_events(runtime: Runtime, *, apply: bool) -> None:
+    """The events the tool wrote in `config.toml`: listed, moved to `events/` (0576).
+
+    Args:
+        runtime: Settings, mount points and output.
+        apply: Move them (a copy of `config.toml` kept first).
+    """
+    output = runtime.output
+    rules = events_to_move(runtime.locations.config_file)
+    if not rules:
+        return
+    if not apply:
+        output.info(
+            ngettext(
+                "{count} event of config.toml moves to the events folder with --apply.",
+                "{count} events of config.toml move to the events folder with --apply.",
+                len(rules),
+            ).format(count=human_number(len(rules)))
+        )
+        return
+    with user_errors(output):
+        backup = move_events(runtime, rules)
+    output.success(
+        ngettext(
+            "{count} event moved to the events folder, read back from the disk.",
+            "{count} events moved to the events folder, read back from the disk.",
+            len(rules),
+        ).format(count=human_number(len(rules)))
+    )
+    shown = on_host(runtime, backup) or str(backup)
+    output.tip(_("Copy kept: {backup}.").format(backup=escape(shown)))
 
 
 def _table(stale: Sequence[StaleEntry], chosen: Sequence[StaleEntry]) -> Table:

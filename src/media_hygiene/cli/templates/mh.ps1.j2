@@ -185,27 +185,45 @@ function global:{{ function }} {
                 if ($i -lt $wait) { Start-Process $url }
             }
         }
-        docker run --rm @tty `
-            -e "{{ variable }}={{ script.shell.value }}" `
-            -e "{{ stamp.variable }}={{ stamp.value }}" `
-            -e "{{ zone }}=$((Get-TimeZone).Id)" `
-            -e "COLUMNS=$($Host.UI.RawUI.WindowSize.Width)" `
-            @relay `
+        $run = {
+            $ErrorActionPreference = 'Continue'  # Docker's error lines are data, never a stop
+            docker run --rm @tty `
+                -e "{{ variable }}={{ script.shell.value }}" `
+                -e "{{ stamp.variable }}={{ stamp.value }}" `
+                -e "{{ zone }}=$((Get-TimeZone).Id)" `
+                -e "COLUMNS=$($Host.UI.RawUI.WindowSize.Width)" `
+                @relay `
 {% for option in script.environment %}
-            {{ option }} `
+                {{ option }} `
 {% endfor %}
-            @data `
-            @photos `
-            @($nas.mounts) `
-            @(foreach ($volume in $source) { '-v'; "${volume}:ro" }) `
+                @data `
+                @photos `
+                @($nas.mounts) `
+                @(foreach ($volume in $source) { '-v'; "${volume}:ro" }) `
 {% for volume in script.tools + script.drives %}
-            -v "{{ volume.host }}:{{ volume.point.as_posix() }}" `
+                -v "{{ volume.host }}:{{ volume.point.as_posix() }}" `
 {% endfor %}
-            @page `
-            @share `
-            @marks `
-            {{ image }} @rest @backups @($nas.backups)
-        $status = $LASTEXITCODE
+                @page `
+                @share `
+                @marks `
+                {{ image }} @rest @backups @($nas.backups)
+        }
+        # Docker tried first, as before 0253 (0543): the port is diagnosed only when Docker
+        # refuses to bind it, what it said on standard error read for that only.
+        $wait = $null
+        while ($true) {
+            if (-not $page) { & $run; $status = $LASTEXITCODE; break }
+            $err = [IO.Path]::GetTempFileName()
+            & $run 2> $err
+            $status = $LASTEXITCODE
+            $said = @(Get-Content -LiteralPath $err -ErrorAction SilentlyContinue | ForEach-Object { "$_" })
+            Remove-Item -LiteralPath $err -Force -ErrorAction SilentlyContinue
+            if ($status -eq 0 -or -not ($said -match '{{ guards.port.bind }}')) { _{{ function }}_replay $said; break }
+            $wait = _{{ function }}_port_wait $wait
+            if (-not $wait.again) { $status = 1; break }
+            # A container refused at start leaves its id file: Docker would refuse the next try.
+            if ($detach) { Remove-Item -LiteralPath $detach -Force -ErrorAction SilentlyContinue }
+        }
         # The audit asked to review the files gone at once: a success, then that page.
         $follow = $command -eq 'audit' -and $status -eq {{ gone_review }}
         if ($follow) { $status = 0 }

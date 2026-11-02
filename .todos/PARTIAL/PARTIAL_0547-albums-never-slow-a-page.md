@@ -59,3 +59,22 @@ queries**, whatever the albums hold.
   is found again by the background search / next audit, not by the page.
 - Gain to report: the maintainer's case, before (minutes, 400 % CPU, measured) → after (target:
   the albums list under 0.5 s, to measure with the same albums file put back).
+
+## Status
+
+- **Done**: the albums list reads and follows the shelf once (`AlbumReader` passes the `Shelf`
+  through `Pick.shelf` / `album_paths`: no more N² follows); following on a page compares only
+  the `full_digest` values the index holds (`album_follow._same_content`, one indexed query by
+  size + digest), never computes one; the lost files are searched by `share/album_lost.py`: one
+  background thread at the lowest priority, at most `MAX_READS` (400) files read per search,
+  each set of lost files searched once per run, what is found saved through `write_albums`.
+  Tests: `tests/unit/test_album_never_slow.py`, `tests/unit/test_album_follow.py`.
+- **Not done**:
+  - Why the "Sent <date>" album held entries not on disk: needs the maintainer's `albums.json`
+    of 2026-10-31 (count how many of the 240 were missing, and their paths). 0548 decides a
+    single "Last sent" album.
+  - The missing files are remembered in memory per run (not on disk with a check time, as the
+    TODO suggested): enough for "never searched again on each request"; a restart searches once.
+  - The gain on the maintainer's case: put the two albums back and time `/api/albums/list`
+    (target < 0.5 s).
+  **Reason:** needs the maintainer's albums file and machine.

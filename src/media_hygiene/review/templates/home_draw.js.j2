@@ -99,6 +99,7 @@ function hero() {
         ${docLinks(action)}
       </div>
       <p class="hero-hint">${T.enterHint}</p>
+      ${store.get("protectTipSeen", false) ? "" : `<p class="hero-hint" id="protectTip">💡 ${T.protectTip} <button class="btn btn-ghost" type="button" data-act="protect-tip-seen" aria-label="${esc(T.close)}">✕</button></p>`}
     </div>${art}
   </section>`;
 }
