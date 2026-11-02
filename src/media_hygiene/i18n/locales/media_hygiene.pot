@@ -2383,10 +2383,10 @@ msgstr ""
 
 #, python-format
 msgid ""
-"Each pick is saved at once in %(place)s; nothing moves here. Done? Ctrl+C"
-" in the terminal stops the page; then run the same 'clean' command with "
-"%(option)s: the files set aside go to the quarantine, and 'undo' brings "
-"them back."
+"Each pick is saved at once in %(place)s; nothing moves until Apply. Done?"
+" Ctrl+C in the terminal stops the page; then run the same 'clean' command"
+" with %(option)s: the files set aside go to the quarantine, and 'undo' "
+"brings them back."
 msgstr ""
 
 msgid ""
@@ -2657,6 +2657,10 @@ msgid "Every group of this folder pair is decided already."
 msgstr ""
 
 msgid "Every group to check has been decided."
+msgstr ""
+
+#, python-brace-format
+msgid "Every intruder file of {folders} ({count}, {size})."
 msgstr ""
 
 #, python-brace-format
@@ -6122,6 +6126,9 @@ msgstr ""
 msgid "Proposed {when}"
 msgstr ""
 
+msgid "Protected and backup folders are left out: they are never changed."
+msgstr ""
+
 msgid "Protected: never changed; identical files elsewhere are set aside."
 msgstr ""
 
@@ -7151,6 +7158,12 @@ msgstr ""
 #, python-brace-format
 msgid "Set this photo aside too"
 msgid_plural "Set these {n} photos aside too"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "Set this {n} file aside"
+msgid_plural "Set these {n} files aside"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -8869,6 +8882,10 @@ msgid "The zip, read back: {zip} ({size}, {n} files)."
 msgstr ""
 
 #, python-brace-format
+msgid "The {files} files of {folders} only ({count}, {size})."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "The {kind} folder ({tool}) and the photo folder {data} are one inside the"
 " other: the tool's own files would mix with your photos."
@@ -9160,16 +9177,10 @@ msgstr ""
 msgid "Tick all"
 msgstr ""
 
-msgid "Tick an extension or a folder first."
+msgid "Tick an extension or a folder."
 msgstr ""
 
 msgid "Tick at least one photo."
-msgstr ""
-
-msgid ""
-"Tick extensions, folders, or both: with both, a file must match one "
-"ticked extension and lie in one ticked folder. Protected and backup "
-"folders are left out: they are never changed."
 msgstr ""
 
 msgid "Tick or untick every file of this folder"
@@ -14369,6 +14380,12 @@ msgid ""
 msgid_plural ""
 "{n} videos not included: only the photos are copied (a video alone may "
 "pass a mail's limit)."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} {files} file ({size}), in every folder."
+msgid_plural "{n} {files} files ({size}), in every folder."
 msgstr[0] ""
 msgstr[1] ""
 

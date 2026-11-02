@@ -1,4 +1,6 @@
-{# The script of intruders_review.html.j2: the tallies with checkboxes, each pick saved and read back. #}
+{# The script of intruders_review.html.j2: the tallies with checkboxes, one live sentence that
+   says which files the ticks take (0510), each pick saved and read back. The counts come from
+   `state.files`: no disk read while ticking. #}
 (() => {
   const T = {{ texts | tojson }};
   const statePath = {{ state_path | tojson }};
@@ -7,7 +9,20 @@
   const byId = (id) => document.getElementById(id);
   const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
   const number = (value) => value.toLocaleString(lang);
+  const plural = (forms, n) => fill(forms[n === 1 ? 0 : 1], { n: number(n) });
   const clock = () => new Date().toLocaleTimeString(lang);
+  // As `human_size` (console/formatting.py): binary units, one decimal from KB on.
+  const size = (bytes) => {
+    if (!bytes) return number(0);
+    let value = bytes;
+    let unit = 0;
+    while (value >= 1024 && unit < T.units.length - 1) { value /= 1024; unit += 1; }
+    const shown = unit === 0 ? number(value) : value.toLocaleString(lang, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    return shown + " " + T.units[unit];
+  };
+  // A file lies in a folder ticked, or below it (as the server's `is_within`).
+  const within = (folder, top) => folder === top || folder.startsWith(/[\\/]$/.test(top) ? top : top + (top.includes("\\") ? "\\" : "/"));
+  let files = [];
 
   const setStatus = (text, kind) => {
     byId("status").textContent = text;
@@ -30,15 +45,53 @@
       const first = document.createElement("td");
       first.append(box);
       tr.append(first, cell(item.key), cell(number(item.count), "num"), cell(item.size, "num"));
-      tr.addEventListener("click", (event) => { if (event.target !== box) box.checked = !box.checked; });
+      tr.addEventListener("click", (event) => { if (event.target !== box) box.checked = !box.checked; refresh(); });
+      box.addEventListener("change", refresh);
       return tr;
     }));
   };
   const ticked = (id) => [...byId(id).querySelectorAll("input:checked")].map((box) => box.value);
-  const showAside = (files) => {
+  // Each row of a table shows what the other table's ticks leave of it; an unticked row with
+  // nothing left is hidden (the user sees where the files are), a ticked one stays, at 0.
+  const narrow = (id, keep) => {
+    for (const tr of byId(id).children) {
+      const box = tr.querySelector("input");
+      const left = files.filter((file) => keep(file, box.value));
+      const bytes = left.reduce((sum, file) => sum + file.bytes, 0);
+      tr.children[2].textContent = number(left.length);
+      tr.children[3].textContent = size(bytes);
+      tr.hidden = left.length === 0 && !box.checked;
+      tr.classList.toggle("ticked-off", left.length === 0);
+    }
+  };
+  const refresh = () => {
+    const extensions = ticked("extensions");
+    const folders = ticked("folders");
+    const byExtension = (file) => extensions.length === 0 || extensions.includes(file.extension);
+    const byFolder = (file) => folders.length === 0 || folders.some((top) => within(file.folder, top));
+    narrow("folders", (file, key) => file.folder === key && byExtension(file));
+    narrow("extensions", (file, key) => file.extension === key && byFolder(file));
+    const taken = files.filter((file) => byExtension(file) && byFolder(file));
+    const values = {
+      files: extensions.join(", "),
+      folders: folders.join(", "),
+      count: plural(T.count, taken.length),
+      size: size(taken.reduce((sum, file) => sum + file.bytes, 0)),
+    };
+    const none = extensions.length === 0 && folders.length === 0;
+    let sentence = T.tickFirst;
+    if (!none && folders.length === 0) sentence = fill(plural(T.everywhere, taken.length), values);
+    else if (!none && extensions.length === 0) sentence = fill(T.ofFolders, values);
+    else if (!none) sentence = fill(T.both, values);
+    byId("sentence").textContent = sentence;
+    byId("pick").disabled = none || taken.length === 0;
+    byId("pick").textContent = none ? T.buttonNone : plural(T.button, taken.length);
+  };
+  const showAside = (aside) => {
     byId("asideTitle").textContent = T.setAsideTitle;
-    if (files.length === 0) byId("aside").replaceChildren(Object.assign(document.createElement("li"), { textContent: T.emptyAside }));
-    else byId("aside").replaceChildren(...files.map((file) => Object.assign(document.createElement("li"), { textContent: file.path })));
+    if (aside.length === 0) byId("aside").replaceChildren(Object.assign(document.createElement("li"), { textContent: T.emptyAside }));
+    else byId("aside").replaceChildren(...aside.map((file) => Object.assign(document.createElement("li"), { textContent: file.path })));
+    if (window.mhApplyNow) window.mhApplyNow(aside.length > 0); // apply_now.html.j2, opened from home
   };
 
   const send = (body) => {
@@ -56,21 +109,18 @@
       .catch(() => setStatus(T.offline, "error"));
   };
 
-  byId("pick").addEventListener("click", () => {
-    const extensions = ticked("extensions");
-    const folders = ticked("folders");
-    if (extensions.length === 0 && folders.length === 0) setStatus(T.nothingTicked, "error");
-    else send({ extensions: extensions, folders: folders });
-  });
+  byId("pick").addEventListener("click", () => send({ extensions: ticked("extensions"), folders: ticked("folders") }));
   byId("back").addEventListener("click", () => send({ back: true }));
 
   fetch(statePath)
     .then((response) => response.json())
     .then((state) => {
       byId("summary").textContent = state.total === 0 ? T.none : fill(T.summary, { count: number(state.total), size: state.size });
+      files = state.files;
       rows("extensions", state.extensions);
       rows("folders", state.folders);
       showAside(state.set_aside);
+      refresh();
     })
     .catch(() => setStatus(T.offline, "error"));
 })();

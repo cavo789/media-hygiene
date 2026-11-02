@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.review.apply_api import ApplyOffer
 from media_hygiene.review.files import FILE_PATH
 from media_hygiene.review.intruders_app import INTRUDERS_PATH, IntrudersApp
 from media_hygiene.review.intruders_views import intruders_state
@@ -28,6 +29,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.report.chosen_decisions import ChosenFile
+    from media_hygiene.review.apply_api import ReviewStart
     from media_hygiene.review.intruders_app import IntrudersPick
     from media_hygiene.review.intruders_views import IntrudersState
     from media_hygiene.review.local_app import LocalApp
@@ -86,12 +88,13 @@ class IntrudersDeskOnDisk:
         return intruders_set_aside(runtime)
 
 
-def serve_intruders_review(runtime: Runtime, port: int) -> int:
+def serve_intruders_review(runtime: Runtime, start: ReviewStart) -> int:
     """Serve the page until Ctrl+C; every pick is saved as it is made.
 
     Args:
         runtime: Settings, mount points and output.
-        port: The port to listen on, inside the container (0: any free one).
+        start: The port to listen on, inside the container (0: any free one), and
+            the step *Apply now* ends on (0510).
 
     Returns:
         As `serve_review_page`.
@@ -110,5 +113,7 @@ def serve_intruders_review(runtime: Runtime, port: int) -> int:
         return IntrudersApp(desk, page)
 
     api = (INTRUDERS_PATH, FILE_PATH)
-    page = ReviewPage(_PAGE_TEMPLATE, intruders_place(runtime), api, app)
-    return serve_review_page(runtime, page, port)
+    # Pending once some intruder file is set aside in the decisions file (0510).
+    offer = ApplyOffer(start.apply, lambda: bool(intruders_set_aside(runtime)))
+    page = ReviewPage(_PAGE_TEMPLATE, intruders_place(runtime), api, app, offer)
+    return serve_review_page(runtime, page, start.port)

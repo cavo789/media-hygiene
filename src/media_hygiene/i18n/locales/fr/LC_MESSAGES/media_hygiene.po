@@ -2920,12 +2920,13 @@ msgstr "Chaque photo"
 
 #, python-format
 msgid ""
-"Each pick is saved at once in %(place)s; nothing moves here. Done? Ctrl+C"
-" in the terminal stops the page; then run the same 'clean' command with "
-"%(option)s: the files set aside go to the quarantine, and 'undo' brings "
-"them back."
+"Each pick is saved at once in %(place)s; nothing moves until Apply. Done?"
+" Ctrl+C in the terminal stops the page; then run the same 'clean' command"
+" with %(option)s: the files set aside go to the quarantine, and 'undo' "
+"brings them back."
 msgstr ""
-"Chaque choix est enregistré aussitôt dans %(place)s ; rien ne bouge ici. "
+"Chaque choix est enregistré aussitôt dans %(place)s ; rien ne bouge avant "
+"Appliquer. "
 "Terminé ? Ctrl+C dans le terminal arrête la page ; lancez ensuite la même"
 " commande 'clean' avec %(option)s : les fichiers mis de côté vont en "
 "quarantaine, et 'undo' les ramène."
@@ -3281,6 +3282,10 @@ msgstr "Chaque groupe de cette paire de dossiers est déjà décidé."
 
 msgid "Every group to check has been decided."
 msgstr "Chaque groupe à vérifier a été décidé."
+
+#, python-brace-format
+msgid "Every intruder file of {folders} ({count}, {size})."
+msgstr "Tous les fichiers intrus de {folders} ({count}, {size})."
 
 #, python-brace-format
 msgid ""
@@ -7419,6 +7424,11 @@ msgstr "Arborescence proposée"
 msgid "Proposed {when}"
 msgstr "Proposé {when}"
 
+msgid "Protected and backup folders are left out: they are never changed."
+msgstr ""
+"Les dossiers protégés et de sauvegarde sont laissés de côté : ils ne sont "
+"jamais modifiés."
+
 msgid "Protected: never changed; identical files elsewhere are set aside."
 msgstr ""
 "Protégé : jamais modifié ; les fichiers identiques ailleurs sont mis de "
@@ -8648,6 +8658,12 @@ msgid "Set this photo aside too"
 msgid_plural "Set these {n} photos aside too"
 msgstr[0] "Mettre aussi cette photo de côté"
 msgstr[1] "Mettre aussi ces {n} photos de côté"
+
+#, python-brace-format
+msgid "Set this {n} file aside"
+msgid_plural "Set these {n} files aside"
+msgstr[0] "Mettre ce {n} fichier de côté"
+msgstr[1] "Mettre ces {n} fichiers de côté"
 
 msgid "Setting"
 msgstr "Réglage"
@@ -10755,6 +10771,10 @@ msgid "The zip, read back: {zip} ({size}, {n} files)."
 msgstr "Le zip, relu : {zip} ({size}, {n} fichiers)."
 
 #, python-brace-format
+msgid "The {files} files of {folders} only ({count}, {size})."
+msgstr "Les fichiers {files} de {folders} seulement ({count}, {size})."
+
+#, python-brace-format
 msgid ""
 "The {kind} folder ({tool}) and the photo folder {data} are one inside the"
 " other: the tool's own files would mix with your photos."
@@ -11107,21 +11127,11 @@ msgstr "Taille des vignettes"
 msgid "Tick all"
 msgstr "Tout cocher"
 
-msgid "Tick an extension or a folder first."
-msgstr "Cochez d'abord une extension ou un dossier."
+msgid "Tick an extension or a folder."
+msgstr "Cochez une extension ou un dossier."
 
 msgid "Tick at least one photo."
 msgstr "Cochez au moins une photo."
-
-msgid ""
-"Tick extensions, folders, or both: with both, a file must match one "
-"ticked extension and lie in one ticked folder. Protected and backup "
-"folders are left out: they are never changed."
-msgstr ""
-"Cochez des extensions, des dossiers, ou les deux : avec les deux, un "
-"fichier doit avoir une extension cochée et se trouver dans un dossier "
-"coché. Les dossiers protégés et de sauvegarde sont laissés de côté : ils "
-"ne sont jamais modifiés."
 
 msgid "Tick or untick every file of this folder"
 msgstr "Cocher ou décocher tous les fichiers de ce dossier"
@@ -17187,6 +17197,12 @@ msgstr[0] ""
 msgstr[1] ""
 "{n} vidéos non incluses : seules les photos sont copiées (une vidéo seule"
 " peut dépasser la limite d'un mail)."
+
+#, python-brace-format
+msgid "{n} {files} file ({size}), in every folder."
+msgid_plural "{n} {files} files ({size}), in every folder."
+msgstr[0] "{n} fichier {files} ({size}), dans tous les dossiers."
+msgstr[1] "{n} fichiers {files} ({size}), dans tous les dossiers."
 
 #, python-brace-format
 msgid "{n} → {folder}"

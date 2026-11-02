@@ -14,7 +14,7 @@ from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
 from media_hygiene.review.http import Request
 from media_hygiene.services import review_serving, reviewing
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
-from tests.integration.test_unwanted_review import add_unwanted
+from tests.integration.test_unwanted_review import NIGHT, add_unwanted
 from tests.support.cli import run
 from tests.support.places_map import JSON
 from tests.support.runtime import make_runtime
@@ -77,8 +77,24 @@ JUNK = Mode(
     ("POST /api/junk", {"choices": [{"photo": 0, "aside": True}]}),
     add_unwanted,
 )
+
+
+def add_intruder(data: Path) -> None:
+    """A zip among the photos of the demo tree (0510)."""
+    (data / NIGHT).parent.mkdir(parents=True, exist_ok=True)
+    (data / NIGHT).with_name("old.zip").write_bytes(b"PK" + b"z" * 98)
+
+
+INTRUDERS = Mode(
+    ("review", "--intruders"),
+    review_serving,
+    ("POST /api/intruders", {"extensions": [".zip"]}),
+    add_intruder,
+)
 MODES = pytest.mark.parametrize(
-    "mode", [BURSTS, NEAR, PAIRS, JUNK], ids=["bursts", "near", "pairs", "junk"]
+    "mode",
+    [BURSTS, NEAR, PAIRS, JUNK, INTRUDERS],
+    ids=["bursts", "near", "pairs", "junk", "intruders"],
 )
 
 
