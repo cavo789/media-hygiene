@@ -28,12 +28,15 @@ first. Speak the user's language.
 
 For each question or deviation, in the order of the file:
 
-1. Give the context in 2–4 lines: what was done (the commit), what was chosen and the alternative
+1. Never a bare ID: name each TODO by what it is for the user ("0480 **la chaîne après un
+   import téléphone**"), in the context and in the question text itself — the user does not
+   remember IDs and often reads on a phone.
+2. Give the context in 2–4 lines: what was done (the commit), what was chosen and the alternative
    left aside, what each answer implies (behaviour, files touched, cost). Read the code or the
    commit only as far as needed to state that accurately.
-2. Ask (AskUserQuestion: at most 4 questions per call, related ones together; the recommended
+3. Ask (AskUserQuestion: at most 4 questions per call, related ones together; the recommended
    option first, with "(Recommended)"; "keep as is" is always one of the options).
-3. Record the answer in the feedback file next to the question (`→ <answer> (<date>)`).
+4. Record the answer in the feedback file next to the question (`→ <answer> (<date>)`).
 
 ## Phase 2 — Apply
 
