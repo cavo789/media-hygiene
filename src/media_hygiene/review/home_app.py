@@ -33,6 +33,7 @@ from media_hygiene.review.home_step import StepDoor, step_response
 from media_hygiene.review.home_tags_api import tags_response, tags_state
 from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.review.http import ContentType, Response
+from media_hygiene.review.import_steps_api import IMPORT_STEPS_PATH, import_steps_route
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH, LocalApp
 from media_hygiene.review.presence import PRESENCE_PATH, presence_response
 from media_hygiene.review.report_files import report_response
@@ -100,6 +101,8 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
         """
         if request.path == SCOPE_PATH and self.config_file is not None:  # 0535
             return await scope_route(self.config_file, request)
+        if request.path == IMPORT_STEPS_PATH and self.config_file is not None:
+            return await import_steps_route(self.config_file, request)  # 0481
         if request.method == _GET:
             return await self._read(request.path)
         if request.method == _POST:

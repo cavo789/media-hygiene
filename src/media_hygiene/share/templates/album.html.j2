@@ -32,6 +32,7 @@
   "renameAsk": _("The new name of {name}:"),
   "tick": _("Pick {name}"),
   "undo": _("Undo"),
+  "filter": _("Find an album by its name"),
 } %}
 {% set page_name = texts.albums %}
 {# `link` (0462): one album opened by a 24 h link on someone else's phone: read-only (as a
@@ -58,6 +59,8 @@
   .shelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; padding: 0 16px 24px; }
   .tools { display: flex; gap: 8px; padding: 0 16px 12px; }
   .shelf .card { position: relative; display: flex; flex-direction: column; }
+  .shelf .card[hidden] { display: none; }
+  #albumFilter { flex: 1; min-width: 0; }
   .shelf .tick { position: absolute; top: 6px; left: 6px; z-index: 1; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 8px; background: var(--card); }
   .shelf .tick input { width: 22px; height: 22px; }
   .shelf .rename { position: absolute; top: 6px; right: 6px; z-index: 1; min-height: 36px; padding: 4px 8px; background: var(--card); }

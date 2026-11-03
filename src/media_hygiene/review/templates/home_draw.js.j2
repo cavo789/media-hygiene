@@ -218,7 +218,7 @@ function stepRow(action, number, numbered) {
     <div class="step-body">
       <h3 class="step-title">${numbered ? `<span class="visually-hidden">${esc(fill(T.stepN, { number: number }))} </span>` : ""}${esc(action.title)}${tags}</h3>
       <p class="step-text">${esc(st.available || st.planned ? action.text : st.reason)}</p>
-      <div class="step-meta">${pillsOf(action)}${cmdChip(action.command)}</div>
+      <div class="step-meta">${pillsOf(action)}${cmdChip(action.command)}</div>${action.name === "phone" ? importsHtml() : ""}
     </div>
     <div class="step-actions">${actionButton(action, st)}${docLinks(action)}${starButton(action.name)}</div>
   </li>`;

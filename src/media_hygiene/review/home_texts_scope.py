@@ -6,7 +6,7 @@ from media_hygiene.i18n import _
 
 
 def scope_texts() -> dict[str, str]:
-    """The texts of the scope line and of its form.
+    """The texts of the scope line and of its form, and of the import's steps.
 
     Returns:
         By key, in the language in use.
@@ -29,4 +29,22 @@ def scope_texts() -> dict[str, str]:
         "scopeSaved": _("Saved in config.toml, read back from the disk."),
         "scopeFailed": _("The settings could not be saved in config.toml."),
         "scopeAuditAgain": _("Run the audit again"),
+        **imports_texts(),
+    }
+
+
+def imports_texts() -> dict[str, str]:
+    """The texts of the steps after an import (0481).
+
+    Returns:
+        By key, in the language in use.
+    """
+    return {
+        "importsThen": _("After the import:"),
+        "importsNone": _("nothing, only the copy"),
+        "imports_audit": _("add to the library (audit)"),
+        "imports_copies": _("set aside the copies"),
+        "imports_bursts": _("the burst series page"),
+        "imports_tags": _("🤖 describe the photos"),
+        "imports_places": _("🌐 name the places"),
     }

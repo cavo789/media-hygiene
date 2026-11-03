@@ -194,7 +194,10 @@ PC's tab closed; once `mh` stops, the phone's page says so.
 Every other step stays on the PC (*Run this step on the PC*): its questions are asked in the
 window of `mh`, which nobody sees from the sofa. One exception: **Show on the TV**, on the
 phone's page, offers three choices: an album saved on the PC, **a folder** (one of the folders
-analysed) or **a month** (by the date the audit read). A tap starts that
+analysed) or **a month** (by the date the audit read). However many albums, the page stays
+short: one **Albums (N)** button and, above it, the 3 albums this phone showed last; the albums
+page it opens lists them all with a box to find one by its name, the last shown first, and a
+tap on an album shows it on the TV. A tap starts that
 [slideshow](slideshow.md) in the home page's own server, and the phone opens its remote at once.
 It only shows: nothing is written, nothing moves. No album saved: the folder and the month are
 still there.

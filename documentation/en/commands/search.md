@@ -390,7 +390,7 @@ to the album**.
 - **📨 Prepare for sending** gives the command that makes the album ready to send by mail:
   resized copies without the GPS position, a folder and a zip, `mh share --album "Crete 2023"`
   ([`share`](share.md)). With photos picked, no album to make first: they are added to the album
-  typed, or to one named after the day (*Sent 2026-10-29*) when the field is empty.
+  typed, or, when the field is empty, to a single *Last sent* album, replaced at each send.
 - At most 3,000 photos added at once: narrow a search that finds more.
 
 An album can also become a folder of the Explorer: [`album "Crete 2023"`](album.md) makes it, as

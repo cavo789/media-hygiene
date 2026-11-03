@@ -213,6 +213,10 @@ Toute autre étape reste sur le PC (*Lancez cette étape sur le PC*) : ses quest
 dans la fenêtre de `mh`, que personne ne voit depuis le canapé. Une exception :
 **Montrer sur la télé**, sur la page du téléphone, propose trois choix : un album enregistré sur
 le PC, **un dossier** (un des dossiers analysés) ou **un mois** (selon la date lue par l'audit).
+Quel que soit le nombre d'albums, la page reste courte : un bouton **Albums (N)** et, devant lui,
+les 3 albums que ce téléphone a montrés en dernier ; la page des albums qu'il ouvre les liste
+tous, avec une case pour en trouver un par son nom, les derniers montrés d'abord, et un appui sur
+un album le montre sur la télé.
 Un appui lance ce [diaporama](slideshow.md) dans le serveur même de la page d'accueil, et le
 téléphone ouvre aussitôt sa télécommande. Il ne fait que montrer : rien n'est écrit, rien ne
 bouge. Aucun album enregistré : le dossier et le mois restent là. Le favori de la télé

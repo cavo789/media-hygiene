@@ -23,6 +23,7 @@ from media_hygiene.review.home_app import AUDIT_PATH, FAVOURITES_PATH, HomeApp
 from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.review.home_tags_api import RUN_NAMES, TAGS_RUN
 from media_hygiene.review.home_texts import home_texts
+from media_hygiene.review.import_steps_api import IMPORT_STEPS_PATH
 from media_hygiene.review.lan import lan_access
 from media_hygiene.review.lan_paths import LAN_PATH, PHONE_PAGES
 from media_hygiene.review.lan_problem import with_problem
@@ -82,6 +83,7 @@ def home_page(
             "audit": AUDIT_PATH,
             "favourites": FAVOURITES_PATH,
             "scope": SCOPE_PATH,
+            "importSteps": IMPORT_STEPS_PATH,  # [imports] then (0481)
             **{name: path if path in runs else "" for name, path in RUN_NAMES.items()},
             "alive": PRESENCE_PATH,
             "stop": STOP_PATH,

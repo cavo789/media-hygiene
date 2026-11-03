@@ -96,7 +96,7 @@
     "count": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
     "missing": _("The files of {name} no longer found (moved without the index, or set aside then applied)"),
     "tv": _("To show {name} on the TV: close this page (Ctrl+C in the window where mh runs), then type (copied):"),
-    "sendName": _("Sent {date}"),
+    "sendName": _("Last sent"),
     "send": _("To prepare {name} for sending (resized copies without the GPS position, a folder and a zip): close this page (Ctrl+C in the window where mh runs), then type (copied):"),
   } | tojson }};
   const QUIET = {{ album_quiet | tojson }};
@@ -192,7 +192,6 @@
   $("albumSend").addEventListener("click", async () => {
     if (pickedCount) {
       // The files picked are what to send: saved in an album first, `share` takes one.
-      const day = new Date().toLocaleDateString("sv"); // YYYY-MM-DD, the local day
       // A plain folder in *Path contains* (search) names the album by its last part, after
       // the closest YYYY-MM (or YYYY) folder above it: 2026/2026-09/Hertogenbosch gives
       // 2026-09-Hertogenbosch. Wildcards or a regex do not name one: the day then.
@@ -201,7 +200,14 @@
       const last = parts.pop() ?? "";
       const dated = parts.reverse().find((part) => /^\d{4}(-\d\d)?$/.test(part));
       const named = dated && !/^\d{4}/.test(last) ? `${dated}-${last}` : last;
-      if (!$("albumName").value.trim()) $("albumName").value = named || fill(TEXTS.sendName, { date: day });
+      if (!$("albumName").value.trim()) $("albumName").value = named || TEXTS.sendName;
+      // One "Last sent" album, replaced at each send (0548): never one more album per send.
+      if ($("albumName").value.trim() === TEXTS.sendName && albums.some((album) => album.name === TEXTS.sendName)) {
+        await fetch(ALBUMS_PATH, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "delete", names: [TEXTS.sendName] }),
+        }).catch(() => { /* the add below says it */ });
+      }
       await send("add");
     }
     say(TEXTS.send, 'mh share --album "{name}"');

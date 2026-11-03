@@ -1216,6 +1216,9 @@ msgstr ""
 "Après combien de jours 'status' propose de vider la quarantaine avec "
 "'purge' (les fichiers mis de côté occupent leur place jusque-là)."
 
+msgid "After the import:"
+msgstr "Après l'import :"
+
 #, python-brace-format
 msgid "After the import: {list} (change it: [imports] then in config.toml)."
 msgstr "Après l'import : {list} (à changer : [imports] then dans config.toml)."
@@ -1232,6 +1235,10 @@ msgstr "Album {name}"
 
 msgid "Albums"
 msgstr "Albums"
+
+#, python-brace-format
+msgid "Albums ({n})"
+msgstr "Albums ({n})"
 
 msgid "All"
 msgstr "Tout"
@@ -3682,6 +3689,9 @@ msgstr "Chercher une ville"
 msgid "Find a town (offline)…"
 msgstr "Chercher une ville (hors ligne)…"
 
+msgid "Find an album by its name"
+msgstr "Chercher un album par son nom"
+
 msgid ""
 "Find and safely clean duplicate photos and videos across folders and "
 "disks. Start with 'audit' (read-only), then 'clean'."
@@ -4807,6 +4817,9 @@ msgid "Last photo: {count} face"
 msgid_plural "Last photo: {count} faces"
 msgstr[0] "Dernière photo : {count} visage"
 msgstr[1] "Dernière photo : {count} visages"
+
+msgid "Last sent"
+msgstr "Dernier envoi"
 
 msgid "Later"
 msgstr "Plus tard"
@@ -8691,10 +8704,6 @@ msgstr "Envoyer les photos ({count}) dans le dossier, sous l'année :"
 
 msgid "Send to another folder (O)"
 msgstr "Envoyer dans un autre dossier (O)"
-
-#, python-brace-format
-msgid "Sent {date}"
-msgstr "Envoi {date}"
 
 #, python-brace-format
 msgid "Sent: the step starts in {window}…"
@@ -12745,6 +12754,9 @@ msgstr "l'ajouter à l'album nommé dans la barre"
 msgid "add or take out one file"
 msgstr "ajouter ou retirer un fichier"
 
+msgid "add to the library (audit)"
+msgstr "ajouter à la photothèque (audit)"
+
 msgid "album folder explorer links christmas holidays"
 msgstr "album dossier explorateur liens noël vacances"
 
@@ -14006,6 +14018,9 @@ msgstr "rien"
 msgid "nothing to put back"
 msgstr "rien à remettre"
 
+msgid "nothing, only the copy"
+msgstr "rien, seulement la copie"
+
 msgid "nothing: type mh push again after your next import or sort."
 msgstr "rien : tapez mh push à nouveau après votre prochain import ou tri."
 
@@ -14348,6 +14363,9 @@ msgstr "remis de côté après son retour"
 msgid "set aside in 'search'"
 msgstr "mis de côté dans 'search'"
 
+msgid "set aside the copies"
+msgstr "mettre de côté les copies"
+
 msgid "set it aside, then the previous one"
 msgstr "la mettre de côté, puis la précédente"
 
@@ -14466,6 +14484,9 @@ msgid ""
 msgstr ""
 "l'album et ce fichier sont sur deux disques ou deux montages : un lien "
 "physique ne peut pas les traverser"
+
+msgid "the burst series page"
+msgstr "la page des rafales"
 
 msgid "the classify proposal waits: 'sort' applies the edited workbook."
 msgstr "la proposition de classify attend : 'sort' applique le classeur modifié."
@@ -18118,6 +18139,9 @@ msgstr[1] ""
 msgid "❚❚ Pause"
 msgstr "❚❚ Pause"
 
+msgid "🌐 name the places"
+msgstr "🌐 nommer les lieux"
+
 #, python-brace-format
 msgid "🏷 {n} copy carries its description and keywords (read back)."
 msgid_plural "🏷 {n} copies carry their description and keywords (read back)."
@@ -18397,6 +18421,9 @@ msgid ""
 msgstr ""
 "🤖 classify et tags peuvent aussi interroger un modèle d'IA local : "
 "indiquez [classify.ai] model dans config.toml (mh config)."
+
+msgid "🤖 describe the photos"
+msgstr "🤖 décrire les photos"
 
 #, python-brace-format
 msgid "🧹 {count} copy among the new files set aside."

@@ -127,7 +127,9 @@ lequel), liste son dossier `DCIM` (environ 30 secondes par tranche de 1 000 fich
 Il termine par ce qu'il a relu dans le dossier : *Nouvelles photos et vidéos copiées : 212
 (1,40 Go, 18,5 Mo/s)*, puis chaque nombre laissé de côté (*Aussi sur le téléphone, ignorés : 164
 que vous aviez écartés auparavant* : des fichiers du téléphone, pas de la copie). Puis il lance
-les étapes de `[imports] then` dans `config.toml`, annoncées d'abord (*Après l'import : audit >
+les étapes de `[imports] then` dans `config.toml` (une case par étape sous *Copier les nouvelles photos du
+téléphone* dans la page d'accueil : une case changée écrit le fichier, et la page montre ce
+qu'elle a relu), annoncées d'abord (*Après l'import : audit >
 copies > bursts > tags > places*) : **audit**, pour que les nouveaux fichiers rejoignent votre photothèque et
 [`search`](search.md) (dans la page d'accueil quand elle est ouverte et que l'audit est seul,
 sinon dans la console) ; **copies** (les nouveaux fichiers identiques à un autre, la même photo

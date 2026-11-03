@@ -945,6 +945,9 @@ msgid ""
 "'purge' (the files set aside still take their space until then)."
 msgstr ""
 
+msgid "After the import:"
+msgstr ""
+
 #, python-brace-format
 msgid "After the import: {list} (change it: [imports] then in config.toml)."
 msgstr ""
@@ -960,6 +963,10 @@ msgid "Album {name}"
 msgstr ""
 
 msgid "Albums"
+msgstr ""
+
+#, python-brace-format
+msgid "Albums ({n})"
 msgstr ""
 
 msgid "All"
@@ -3002,6 +3009,9 @@ msgstr ""
 msgid "Find a town (offline)…"
 msgstr ""
 
+msgid "Find an album by its name"
+msgstr ""
+
 msgid ""
 "Find and safely clean duplicate photos and videos across folders and "
 "disks. Start with 'audit' (read-only), then 'clean'."
@@ -3944,6 +3954,9 @@ msgid "Last photo: {count} face"
 msgid_plural "Last photo: {count} faces"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Last sent"
+msgstr ""
 
 msgid "Later"
 msgstr ""
@@ -7184,10 +7197,6 @@ msgid "Send the photos ({count}) to the folder, under the year:"
 msgstr ""
 
 msgid "Send to another folder (O)"
-msgstr ""
-
-#, python-brace-format
-msgid "Sent {date}"
 msgstr ""
 
 #, python-brace-format
@@ -10534,6 +10543,9 @@ msgstr ""
 msgid "add or take out one file"
 msgstr ""
 
+msgid "add to the library (audit)"
+msgstr ""
+
 msgid "album folder explorer links christmas holidays"
 msgstr ""
 
@@ -11690,6 +11702,9 @@ msgstr ""
 msgid "nothing to put back"
 msgstr ""
 
+msgid "nothing, only the copy"
+msgstr ""
+
 msgid "nothing: type mh push again after your next import or sort."
 msgstr ""
 
@@ -12008,6 +12023,9 @@ msgstr ""
 msgid "set aside in 'search'"
 msgstr ""
 
+msgid "set aside the copies"
+msgstr ""
+
 msgid "set it aside, then the previous one"
 msgstr ""
 
@@ -12121,6 +12139,9 @@ msgstr ""
 msgid ""
 "the album and this file are on two disks or two mounts: a hard link "
 "cannot cross them"
+msgstr ""
+
+msgid "the burst series page"
 msgstr ""
 
 msgid "the classify proposal waits: 'sort' applies the edited workbook."
@@ -15183,6 +15204,9 @@ msgstr[1] ""
 msgid "❚❚ Pause"
 msgstr ""
 
+msgid "🌐 name the places"
+msgstr ""
+
 #, python-brace-format
 msgid "🏷 {n} copy carries its description and keywords (read back)."
 msgid_plural "🏷 {n} copies carry their description and keywords (read back)."
@@ -15386,6 +15410,9 @@ msgstr ""
 msgid ""
 "🤖 classify and tags can also ask a local AI model: set [classify.ai] "
 "model in config.toml (mh config)."
+msgstr ""
+
+msgid "🤖 describe the photos"
 msgstr ""
 
 #, python-brace-format
