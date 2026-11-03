@@ -47,3 +47,27 @@ then the PowerShell prompt: the page never opens.
 - A test reproduces the hand-over (server stopped, next one bound at once) on the code path.
 - Measured on the maintainer's PC (a step of `tests/measure/mh-measure.ps1`): time from the
   click to the page shown, before → after.
+
+## Status — PARTIAL (2026-11-03)
+
+### Done
+
+- Cause found (read from the code, not measured): a page step ends the home container, and
+  `_mh_watch` returned as soon as `docker wait` said its process exited; `mh people` then ran
+  `docker run -p 8088` while Docker (`--rm`) was still removing the container, which is when
+  Docker Desktop drops its published port. Docker refused, and since 0543 every refusal with no
+  non-Docker listener reads as "being released": retried each second, 10 s, refused; the home
+  loop then started home again on the same race (the line said twice). Before 0543 the first
+  try was delayed by the port read itself.
+- `_mh_watch` (PowerShell and bash): once the server ended, `docker container inspect` every
+  `CONTAINER_GONE_POLL_MILLISECONDS` (100) up to `CONTAINER_GONE_TRIES` (50, 5 s) until the
+  container is gone, then the step's page starts (`launcher_port`, `PortGuard.gone_*`).
+- Test: the bash `mh` run for real, the fake container still there for two checks: the page
+  starts only after them (`test_a_page_step_binds_once_the_home_container_is_gone`).
+- `tests/measure/mh-measure.ps1` step 43: seconds to bind 8088 at once vs once removed.
+
+### Not done
+
+- Measured click → page on Windows, before → after. **Reason:** Windows + Docker Desktop only
+  (`-Only 43`). If removal is not what frees the port there, the next step is 0505/0506 (serve
+  the page from the home server) or a published port kept across steps.

@@ -332,6 +332,11 @@ _{{ function }}_watch() {
     trap - INT
     wait "$waiter" 2>/dev/null
     if [[ -n "$moved" ]]; then return {{ texts.remount.code }}; fi
+    # Ended: its container removed by Docker before the next page binds the port (0583).
+    for ((ticks = 0; ticks < {{ guards.port.gone.limit }}; ticks++)); do
+        docker container inspect "$id" >/dev/null 2>&1 || break
+        sleep {{ guards.port.gone.poll / 1000 }}
+    done
     read -r result < "$code" || result=1
     return "${result:-1}"
 }

@@ -38,7 +38,7 @@ function global:_{{ function }}_page_free {
 # state between tries ($null the first time); .again tells whether to try again.
 function global:_{{ function }}_port_wait($wait) {
     $port = {{ script.commands.port }}
-    if (-not $wait) { $wait = @{ until = (Get-Date).AddSeconds({{ guards.port.wait }}); said = $false; again = $true } }
+    if (-not $wait) { $wait = @{ until = (Get-Date).AddSeconds({{ guards.port.release.limit }}); said = $false; again = $true } }
     $holder = _{{ function }}_port_holder
     if ($holder -and $holder.name) {
         $name = $holder.name
@@ -49,7 +49,7 @@ function global:_{{ function }}_port_wait($wait) {
     }
     if ((Get-Date) -ge $wait.until) { Write-Host "{{ guards.port.released }}" -ForegroundColor Red; $wait.again = $false; return $wait }
     if (-not $wait.said) { Write-Host "{{ guards.port.releasing }}"; $wait.said = $true }
-    Start-Sleep -Milliseconds {{ guards.port.poll }}
+    Start-Sleep -Milliseconds {{ guards.port.release.poll }}
     return $wait
 }
 
