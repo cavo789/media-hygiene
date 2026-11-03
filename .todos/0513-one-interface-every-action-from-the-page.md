@@ -68,3 +68,7 @@ restart the page. Not "most read-only pages are fine" by accident: they are `PAG
 
 Before: 39 of 52 actions (75 %) leave the page or restart it. After: 0 to type; the console
 only to start mh.
+
+## Decided (2026-11-03, iterate)
+
+By the maintainer: a long step started from the page goes on when the tab is closed (the page shows it again when reopened); the console stays a full interface, never removed.
