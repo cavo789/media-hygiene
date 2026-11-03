@@ -2377,6 +2377,9 @@ msgstr ""
 msgid "EXIF"
 msgstr ""
 
+msgid "Each copy in the second folder has an identical file in the first one."
+msgstr ""
+
 msgid ""
 "Each copy is compared again with the kept one before deletion; unreadable"
 " files go to the quarantine."
@@ -8550,11 +8553,6 @@ msgstr ""
 msgid "The page's tab was closed: the page stopped."
 msgstr ""
 
-msgid ""
-"The pairs come the most space freed first. Each copy in the second folder"
-" has an identical file in the first one."
-msgstr ""
-
 #, python-brace-format
 msgid ""
 "The password of {share} holds a comma or a double quote, which Docker "
@@ -10431,10 +10429,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "about {time} left"
-msgstr ""
-
-#, python-brace-format
-msgid "about {time} left at your pace"
 msgstr ""
 
 msgid "accept the proposal, next"
@@ -13239,6 +13233,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} left"
+msgstr ""
+
+#, python-brace-format
+msgid "{count} left, about {time} at your pace"
+msgstr ""
+
+#, python-brace-format
 msgid "{count} line of the files ticked could not be read: skipped."
 msgid_plural "{count} lines of the files ticked could not be read: skipped."
 msgstr[0] ""
@@ -14757,6 +14759,13 @@ msgid "{place}: {reason}"
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{protected} (folders.protected) and {excluded} (folders.excluded) are one"
+" folder or one inside the other: a protected folder is read, an excluded "
+"one is not; give them one role"
+msgstr ""
+
+#, python-brace-format
 msgid "{rate} photos a minute, about {time} left."
 msgstr ""
 
@@ -14812,6 +14821,10 @@ msgstr ""
 msgid ""
 "{setting} names {folder}, which this run emptied: point it to the photos'"
 " new folder in config.toml, or remove it."
+msgstr ""
+
+#, python-brace-format, python-format
+msgid "{share} %% of the {total} seen"
 msgstr ""
 
 #, python-brace-format

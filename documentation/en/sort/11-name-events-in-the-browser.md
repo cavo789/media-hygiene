@@ -154,7 +154,7 @@ do it, and each one says what it saved, read back from the disk.
   (`2019\2019-07\Montenegro`) are events too. At the top of the 🗂 Events tab, *N events found
   in your folders* lists them, each with its days and its number of files, all ticked: untick
   those that are not events worth remembering, then **Confirm these N**. Confirm acts on the
-  rows shown only: with a filter typed, the hidden rows stay to decide, untouched. The ticked ones are
+  rows shown only: with a filter typed, or a group folded, the hidden rows stay to decide, untouched. The ticked ones are
   remembered; the unticked ones are noted as "not events" and never proposed again (*N folders
   said not to be events*, folded below, lets you tick one back). A folder whose photos are far
   apart in time (`Prints jan10`) is a batch, not one event: it is listed apart, never proposed.

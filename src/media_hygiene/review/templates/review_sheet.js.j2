@@ -4,7 +4,11 @@
    shown as they are, in one write, then shows the next screen; Z takes that screen back
    whole. A click on a shot flips it, a double click shows it large (pick_viewer.js.j2). The
    doubtful series stay for one series at a time. #}
-  const sheetSize = 20;  // rows a screen: about what a 1080p screen holds at this size
+  // Rows a screen: as many as the window holds (0581), measured on the rows drawn; at least
+  // `sheetFewest`; `sheetFirst` while nothing was measured yet.
+  const sheetFewest = 3;
+  const sheetFirst = 20;
+  let sheetSize = sheetFirst;
   const flipDelay = 250;  // ms: a click waits this long, in case it is a double click
   let sheet = false;
   let sheetList = [];  // the obvious series still to see when the sheet opened, in order
@@ -45,7 +49,23 @@
     setBoard(true);
     sheetList = order.filter((index) => todo.has(index));
     setSheet(true);
+    sheetSize = sheetFirst;
     show(sheetList[0]);
+    fitSheet();
+  };
+
+  // The rows that fit below the bar, from the height the rows drawn take each.
+  const sheetFit = (rows, top, height) => {
+    const each = rows.length ? (rows[rows.length - 1].getBoundingClientRect().bottom - rows[0].getBoundingClientRect().top) / rows.length : 0;
+    return each > 0 ? Math.max(sheetFewest, Math.floor((height - top) / each)) : sheetFirst;
+  };
+  const fitSheet = () => {
+    const box = byId("boardRows");
+    const rows = [...box.children];
+    const fitting = sheetFit(rows, Math.max(0, rows.length ? rows[0].getBoundingClientRect().top : 0), window.innerHeight);
+    if (fitting === sheetSize) return;
+    sheetSize = fitting;
+    show(sheetList.includes(current) ? current : sheetList[0]);
   };
 
   // A click flips the shot (set aside or kept) for its series; a double click, which also

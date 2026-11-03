@@ -160,8 +160,8 @@ des pages le font, et chacun dit ce qu'il a enregistré, relu sur le disque.
   (`2019\2019-07\Monténégro`) sont aussi des événements. En haut de l'onglet 🗂 Événements,
   *N événements trouvés dans vos dossiers* les liste, chacun avec ses jours et son nombre de
   fichiers, tous cochés : décochez ceux qui ne méritent pas d'être retenus, puis **Confirmer
-  ces N**. Confirmer n'agit que sur les lignes affichées : avec un filtre tapé, les lignes
-  masquées restent à décider, intactes.
+  ces N**. Confirmer n'agit que sur les lignes affichées : avec un filtre tapé, ou un groupe
+  replié, les lignes masquées restent à décider, intactes.
   Les cochés sont retenus ; les décochés sont notés « pas des événements » et jamais reproposés
   (*N dossiers indiqués comme n'étant pas des événements*, replié en dessous, permet d'en recocher
   un). Un dossier dont les photos sont très espacées dans le temps (`Tirages jan10`) est un lot,

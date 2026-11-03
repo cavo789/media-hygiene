@@ -1,22 +1,58 @@
-{# Included in the script of review.html.j2: how long the series still to see should take,
-   at the pace of this session. Each pause counts two minutes at most: a coffee break
-   does not spoil the estimate. Shown once a few series were decided. #}
-  const paceCap = 120000;  // ms: a longer pause counts as this long
-  const paceFloor = 5;  // series decided in this session before an estimate is shown
+{# Included in the script of each review page (bursts, near duplicates, folder pairs): how
+   long the cases still to decide should take at the pace of this session (0530), and the
+   share of the total gain already seen (0527). Pure page code, nothing stored. A gap
+   between two decisions longer than a minute is idle time (a coffee break): left out of
+   the pace. Before ten cases decided in this session, only the count. The page defines
+   `fill`, and `T.units` for the sizes. #}
+  const PACE = {{ {
+    "left": _("{count} left"),
+    "eta": _("{count} left, about {time} at your pace"),
+    "seen": _("{share} %% of the {total} seen"),
+  } | tojson }};
+  const paceIdle = 60000;  // ms: a longer gap between two decisions is not counted
+  const paceFloor = 10;  // cases decided in this session before a time is shown
   const pace = { at: Date.now(), busy: 0, decided: 0 };
 
-  // Called after each saved choice, with the number of series it decided for the first time.
-  const paced = (newly) => {
-    const now = Date.now();
-    pace.busy += Math.min(now - pace.at, paceCap);
-    pace.at = now;
-    pace.decided += newly;
-  };
+  // The pace of a session: the time decisions took (idle gaps left out) and how many.
+  const pacedFrom = (state, now, newly) => ({
+    at: now,
+    busy: state.busy + (now - state.at <= paceIdle ? now - state.at : 0),
+    decided: state.decided + newly,
+  });
 
-  const remaining = (todo) => {
-    if (todo === 0 || pace.decided < paceFloor) return "";
-    const minutes = Math.max(1, Math.round((pace.busy / pace.decided) * todo / 60000));
+  // Called after each saved choice, with the number of cases it decided for the first time.
+  const paced = (newly) => Object.assign(pace, pacedFrom(pace, Date.now(), newly));
+
+  // "1,240 left, about 4 min at your pace"; the count only before `paceFloor` decisions.
+  const leftAtPace = (state, todo) => {
+    const count = todo.toLocaleString(document.documentElement.lang);
+    if (todo === 0) return "";
+    if (state.decided < paceFloor || state.busy === 0) return fill(PACE.left, { count: count });
+    const minutes = Math.max(1, Math.round((state.busy / state.decided) * todo / 60000));
     const hours = Math.floor(minutes / 60);
     const time = hours > 0 ? hours + " h " + String(minutes % 60).padStart(2, "0") : minutes + " min";
-    return fill(T.remaining, { time: time });
+    return fill(PACE.eta, { count: count, time: time });
+  };
+  // The bar's line: the time left, then the share of the gain seen.
+  const paceLine = (todo, share) => {
+    const left = leftAtPace(pace, todo);
+    return [left ? "⏱ " + left : "", share].filter(Boolean).join(" · ");
+  };
+
+  const paceSize = (bytes) => {
+    let value = bytes;
+    let unit = 0;
+    while (value >= 1024 && unit < T.units.length - 1) {
+      value /= 1024;
+      unit += 1;
+    }
+    return value.toLocaleString(document.documentElement.lang, { maximumFractionDigits: 1 }) + " " + T.units[unit];
+  };
+
+  // "62 % of the 40 GB seen": the gain of the cases seen, out of every case's gain.
+  const seenShare = (gains, seen) => {
+    const total = gains.reduce((sum, gain) => sum + gain, 0);
+    if (total === 0) return "";
+    const done = gains.reduce((sum, gain, index) => (seen(index) ? sum + gain : sum), 0);
+    return fill(PACE.seen, { share: Math.round((100 * done) / total), total: paceSize(total) });
   };

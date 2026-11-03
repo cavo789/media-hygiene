@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING, Final, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from media_hygiene.config.folder_roles import same_folder
+from media_hygiene.config.folder_roles import check_protected_excluded, same_folder
 from media_hygiene.config.settings import FolderSettings
 from media_hygiene.i18n import _
 from media_hygiene.places.toml_edit import (
@@ -130,10 +130,13 @@ class RoleDesk:
                 added = [asked.folder] if role == asked.role else []
                 table[role] = [host_path(path) for path in (*kept, *added)]
         try:
-            FolderSettings.model_validate(document.unwrap().get(_TABLE, {}))
+            folders = FolderSettings.model_validate(document.unwrap().get(_TABLE, {}))
+            check_protected_excluded(folders.protected, folders.excluded)
         except ValidationError as exc:
             reason = "; ".join(str(error["msg"]) for error in exc.errors())
             return json_response(HTTPStatus.CONFLICT, {"error": reason})
+        except ValueError as exc:
+            return json_response(HTTPStatus.CONFLICT, {"error": str(exc)})
         write_document(self.config_file, document)
         roles = self.listed()
         now = next(

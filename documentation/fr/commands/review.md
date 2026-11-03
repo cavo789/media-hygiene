@@ -89,15 +89,23 @@ quand la page d'accueil l'a ouvert), puis les photos.
 la photo encadrée ; `Suppr` met de côté les photos choisies ; `←`, `N`, `U` comme pour les autres
 tris.
 
-**Les rafales évidentes sur une planche contact** (`review`) : *📇 Regarder les N rafales
-évidentes sur une planche contact*, à gauche, ne montre que les rafales sans rien à juger, une
-vingtaine de lignes par écran, la photo gardée encadrée de vert et celles proposées à l'écart
+**Les rafales évidentes sur une planche contact** (`review`) : tant qu'il reste des rafales
+évidentes à voir, la page s'ouvre sur leur planche contact (*📇 Regarder les N rafales évidentes
+sur une planche contact*, à gauche, la rouvre) : seulement les rafales sans rien à juger, autant
+de lignes par écran que la fenêtre en tient (trois au moins), la photo gardée encadrée de vert et celles proposées à l'écart
 plus petites et atténuées, avec leur raison. **Entrée** valide les lignes affichées telles
 quelles, puis montre l'écran suivant ; un clic sur une photo l'écarte ou la garde ; un double
 clic la montre en grand ; `Z` reprend tout le dernier écran. La ligne du haut dit combien de
 rafales douteuses restent à voir une à une (`P`). Chaque rafale est vue, à environ 400 par
 minute (estimé : 2 à 3 s par écran). `V` reste le chemin rapide : il les valide toutes sans les
 montrer.
+
+**Où vous en êtes** (`review`, `--near`, `--pairs`) : la barre dit combien de cas restent et,
+une fois dix décidés dans cette session, combien de temps environ à votre rythme (*1 240
+restants, environ 4 min à votre rythme* ; une pause de plus d'une minute ne compte pas) ; puis la
+part du gain total déjà vue (*62 % des 40 Go vus*). L'ordre *espace libéré, le plus grand
+d'abord* (retenu par le navigateur) met le plus gros gain dans les premiers écrans ; sur
+`--pairs`, l'autre ordre est *par paire de dossiers*.
 
 **Choisissez les photos comme dans [les dossiers de `search`](search.md#parcourir-vos-dossiers)** (`review` et `review --junk`) : un
 clic choisit une photo ; la case ☑ (ou Ctrl+clic) en ajoute ou en retire une ; Maj+clic choisit

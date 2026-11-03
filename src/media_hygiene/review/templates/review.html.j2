@@ -62,7 +62,7 @@
   "rowGap": _("gap {gap} %%"),
   "compareTitle": "🔍 " ~ _("At 100 %%: move the mouse over a shot, the same area shows in every one. C or Escape closes."),
   "compareNone": _("Your browser cannot show this format: open the original."),
-  "remaining": "⏱ " ~ _("about {time} left at your pace"),
+  "units": [_("B"), _("KB"), _("MB"), _("GB"), _("TB")],
   "viewBoard": "🗂 " ~ _("Board"),
   "viewSingle": "🖼 " ~ _("One series"),
   "boardKeep": "✅ " ~ _("keep all"),
@@ -254,7 +254,8 @@ pickMoves = false;      // ←/→/Space change the series, ↑/↓ move the fra
     const shots = decided.reduce((count, item) => count + item.discarded.length, 0);
     const seen = series.filter((item) => item.reviewed).length;
     byId("totals").textContent = fill(T.totals, { seen: seen, series: decided.length, shots: shots });
-    byId("eta").textContent = remaining(series.length - seen);
+    const share = seenShare(series.map(spaceOf), (index) => series[index].reviewed);
+    byId("eta").textContent = paceLine(series.length - seen, share);
     if (window.mhApplyNow) window.mhApplyNow(shots > 0); // apply_now.html.j2, opened from home
   };
 
@@ -471,7 +472,9 @@ pickMoves = false;      // ←/→/Space change the series, ↑/↓ move the fra
       setBoard(savedBoard());
       buildTree();
       current = startAt();
-      render();
+      // Obvious series still to see: the page opens on their contact sheet (0581).
+      if (obviousTodo().length > 0) openSheet();
+      else render();
     })
     .catch(() => setStatus(T.offline, "error"));
 })();

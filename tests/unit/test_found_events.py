@@ -242,3 +242,14 @@ def test_confirm_posts_the_shown_rows_and_names_its_count() -> None:
     assert 'shown("foundList"), ...shown("foundRefusedList")' in script
     assert "counted(FT.confirm, count)" in script
     assert 'ngettext("Confirm this {n}", "Confirm these {n}", 1)' in script
+
+
+def test_a_folded_group_is_neither_posted_nor_counted() -> None:
+    """A row of the closed *Not events* is not shown: Confirm leaves it (0581)."""
+    script = (
+        Path(__file__).parents[2]
+        / "src/media_hygiene/search/templates/search_events_found.js.j2"
+    ).read_text(encoding="utf-8")
+    assert '!box.closest("details:not([open])")' in script
+    assert ".filter(unfolded)" in script
+    assert 'byId("foundRefused").addEventListener("toggle", filter)' in script

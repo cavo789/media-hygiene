@@ -72,7 +72,8 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   Each folder shows its role (🛡️ protected, ⭐ preferred, 💾 backup, 🚫 excluded; hover for
   what it means); **⋯** next to a folder, *Role of this folder*, gives it one or none. The
   choice is written in `[folders]` of `config.toml` (your comments kept), read back from the
-  disk and shown; a role clashing with another (a backup inside a protected folder) is refused
+  disk and shown; a role clashing with another (a backup inside a protected folder, a protected folder inside an
+  excluded one or the reverse) is refused
   with the reason. Run the audit again afterwards: its proposals used the former roles. A folder
   with a role that was renamed or deleted in Explorer is listed under the tree, with **Remove**.
 

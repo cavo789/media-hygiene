@@ -118,3 +118,24 @@ def test_an_unknown_role_is_a_bad_request(tmp_path: Path) -> None:
     desk = _desk(tmp_path)
     status, _body = _post(desk, "C:\\Photos", "master")
     assert status == HTTPStatus.BAD_REQUEST
+
+
+def test_excluded_inside_protected_is_refused_file_unchanged(tmp_path: Path) -> None:
+    """An excluded folder inside a protected one is refused, its reason said (0581)."""
+    desk = _desk(tmp_path)
+    status, body = _post(desk, "C:\\Photos\\Old", "excluded")
+    assert status == HTTPStatus.CONFLICT
+    assert "folders.excluded" in str(body["error"])
+    assert desk.config_file.read_text("utf-8") == _CONFIG
+
+
+def test_protected_inside_excluded_is_refused_file_unchanged(tmp_path: Path) -> None:
+    """A protected folder inside an excluded one is refused too (0581)."""
+    desk = _desk(tmp_path)
+    config = "[folders]\nexcluded = ['C:\\\\Phone']\n"
+    desk.config_file.write_text(config, "utf-8")
+    (tmp_path / "data" / "c" / "Phone" / "Keep").mkdir()
+    status, body = _post(desk, "C:\\Phone\\Keep", "protected")
+    assert status == HTTPStatus.CONFLICT
+    assert "folders.protected" in str(body["error"])
+    assert desk.config_file.read_text("utf-8") == config

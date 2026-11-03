@@ -73,6 +73,33 @@ def check_backup_roles(
             raise ValueError(message)
 
 
+def check_protected_excluded(
+    protected: tuple[str, ...], excluded: tuple[str, ...]
+) -> None:
+    """Refuse a protected folder that is, holds or lies in an excluded one (0581).
+
+    Protected, a folder always holds the kept copy; excluded, it is not read: one
+    inside the other, which wins is unclear.
+
+    Args:
+        protected: The `folders.protected` host paths.
+        excluded: The `folders.excluded` host paths.
+
+    Raises:
+        ValueError: The first such pair, naming both.
+    """
+    for folder in protected:
+        other = next((path for path in excluded if overlap(folder, path)), None)
+        if other is None:
+            continue
+        message = _(
+            "{protected} (folders.protected) and {excluded} (folders.excluded) are "
+            "one folder or one inside the other: a protected folder is read, an "
+            "excluded one is not; give them one role"
+        ).format(protected=folder, excluded=other)
+        raise ValueError(message)
+
+
 def same_folder(first: str, second: str) -> bool:
     r"""Tell whether two host paths name one folder, as the host compares them.
 
