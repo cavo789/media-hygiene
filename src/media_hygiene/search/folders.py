@@ -23,6 +23,7 @@ from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
 from media_hygiene.scan.filters import media_kind
 from media_hygiene.search import statements as sql
+from media_hygiene.search.album_move_desk import ALBUM_MOVE_PATH
 from media_hygiene.search.file_card import file_card
 from media_hygiene.search.folder_order import (  # pydantic reads them
     Order,
@@ -52,7 +53,7 @@ FOLDER_QUERY: Final = "folder"  # `/search?folder=…`: the page opens on it (04
 FOLDERS_PATH: Final = "/api/folders"
 FOLDER_PATH: Final = "/api/folder"
 FOLDER_POSTS: Final = frozenset(
-    {FOLDER_PATH, HEAVIEST_PATH, ROLE_PATH, ALBUM_ROOT_PATH}
+    {FOLDER_PATH, HEAVIEST_PATH, ROLE_PATH, ALBUM_ROOT_PATH, ALBUM_MOVE_PATH}
 )
 _MAX_PATH: Final = 4096
 _AFTER_SLASH: Final = "0"  # the character after `/`: ends the range of a folder
@@ -118,7 +119,12 @@ class FolderDesk:
         Returns:
             The files of a folder, or the heaviest of the library.
         """
-        desks = {ROLE_PATH: self.roles, ALBUM_ROOT_PATH: self.album_root}
+        moves = None if self.album_root is None else self.album_root.move
+        desks = {
+            ROLE_PATH: self.roles,
+            ALBUM_ROOT_PATH: self.album_root,
+            ALBUM_MOVE_PATH: moves,
+        }
         if path in desks:
             desk = desks[path]
             return Response(HTTPStatus.NOT_FOUND) if desk is None else desk.answer(body)

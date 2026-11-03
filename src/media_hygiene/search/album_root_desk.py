@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING, Final
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from media_hygiene.config.album_settings import AlbumSettings
-from media_hygiene.i18n import _
+from media_hygiene.i18n import _, ngettext
 from media_hygiene.paths.host_paths import is_within
 from media_hygiene.paths.mounts import is_writable
 from media_hygiene.places.toml_edit import (
@@ -27,6 +27,7 @@ from media_hygiene.places.toml_edit import (
     write_document,
 )
 from media_hygiene.review.serving import json_response
+from media_hygiene.search.album_move_desk import AlbumMoveDesk
 from media_hygiene.search.folder_role_desk import ALBUM_ROOT_PATH
 from media_hygiene.search.folders import FOLDERS_PATH
 
@@ -36,6 +37,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.http import Response
     from media_hygiene.search.folder_role_desk import RoleDesk
     from media_hygiene.search.folders import FolderDesk
+    from media_hygiene.services.runtime import Runtime
 
 _TABLE: Final = "album"
 _MAX_PATH: Final = 4096
@@ -54,6 +56,7 @@ class AlbumRootDesk:
     """Reads and writes `[album] root`, with the files and mounts of the roles."""
 
     roles: RoleDesk  # `config.toml`, the host paths, the mounted folders
+    move: AlbumMoveDesk | None = None  # moves the folders made before (0582)
 
     def shown(self) -> dict[str, str]:
         """The folder of the albums, as the file on the disk says it now.
@@ -107,12 +110,18 @@ class AlbumRootDesk:
             file=self.roles.mapper.to_host(self.roles.config_file),
             folder=now["used"] or "—",
         )
-        if before and before != now["used"]:
-            said += " " + _(
-                "The album folders made before stay in {folder}: make each one "
-                "again (mh album <name> --apply) to have it in the new folder."
-            ).format(folder=before)
-        return json_response(HTTPStatus.OK, {**now, "said": said})
+        movable = 0
+        if before and before != now["used"] and self.move is not None:
+            movable = self.move.movable(before)
+        if movable:
+            said += " " + ngettext(
+                "{n} album folder was made in {folder}: move it to the new folder?",
+                "{n} album folders were made in {folder}: move them to the new folder?",
+                movable,
+            ).format(n=movable, folder=before)
+        return json_response(
+            HTTPStatus.OK, {**now, "said": said, "movable": movable, "old": before}
+        )
 
     def _refused(self, root: str) -> str | None:
         """Why no album may go to a folder: not mounted, protected, read-only.
@@ -156,3 +165,16 @@ def folder_gets(folders: FolderDesk) -> dict[str, Callable[[], Response]]:
     if folders.album_root is not None:
         gets[ALBUM_ROOT_PATH] = folders.album_root.state
     return gets
+
+
+def album_root_desk(roles: RoleDesk, runtime: Runtime) -> AlbumRootDesk:
+    """The desk of the albums' folder, able to move the folders made before.
+
+    Args:
+        roles: `config.toml`, the host paths, the mounted folders.
+        runtime: Settings, mount points and output of the page.
+
+    Returns:
+        It.
+    """
+    return AlbumRootDesk(roles, AlbumMoveDesk(runtime))

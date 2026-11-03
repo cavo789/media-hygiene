@@ -4398,6 +4398,12 @@ msgid ""
 "back"
 msgstr ""
 
+#, python-brace-format
+msgid "Move the {n} album folder made in {folder}"
+msgid_plural "Move the {n} album folders made in {folder}"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Move them now"
 msgstr ""
 
@@ -4473,6 +4479,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Moving an unwanted photo you set aside to the quarantine: {path}"
+msgstr ""
+
+msgid "Moving…"
 msgstr ""
 
 msgid "My folders"
@@ -7997,12 +8006,6 @@ msgid ""
 "suggested (search, import, audit)."
 msgstr ""
 
-#, python-brace-format
-msgid ""
-"The album folders made before stay in {folder}: make each one again (mh "
-"album <name> --apply) to have it in the new folder."
-msgstr ""
-
 msgid "The album stopped at the first link refused by the disk."
 msgstr ""
 
@@ -9624,6 +9627,10 @@ msgid "To sort by place and by trip; no position leaves the PC."
 msgstr ""
 
 msgid "To undo it all:"
+msgstr ""
+
+#, python-brace-format
+msgid "To undo: {commands}"
 msgstr ""
 
 msgid "Today"
@@ -14345,6 +14352,18 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} album folder was made in {folder}: move it to the new folder?"
+msgid_plural "{n} album folders were made in {folder}: move them to the new folder?"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} album made again in the new folder."
+msgid_plural "{n} albums made again in the new folder."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} already there"
 msgstr ""
 
@@ -14442,6 +14461,12 @@ msgid ""
 msgid_plural ""
 "{n} files of the album are missing (moved out of the folders analysed, or"
 " deleted): not shown."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} file of {folder} was not made by media-hygiene: it stays ({files})."
+msgid_plural "{n} files of {folder} were not made by media-hygiene: they stay ({files})."
 msgstr[0] ""
 msgstr[1] ""
 

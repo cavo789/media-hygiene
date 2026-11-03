@@ -396,8 +396,12 @@ fichiers trouvés**), puis **➕ Ajouter à l'album**.
   --apply`) sont faits : `[album] root` de `config.toml`, sinon `Albums` dans la photothèque
   triée. Non réglé, la barre demande *Où mettre vos albums ?* ; **📁 Changer** le règle. Le
   dossier doit être dans un dossier monté, hors des dossiers protégés, et accessible en écriture ;
-  il est enregistré dans `config.toml` (vos commentaires gardés) et affiché tel que relu. Les
-  dossiers d'albums déjà faits restent où ils sont : refaites chacun pour l'avoir dans le nouveau.
+  il est enregistré dans `config.toml` (vos commentaires gardés) et affiché tel que relu. Si des
+  dossiers d'albums ont été faits dans l'ancien dossier, **Déplacer les N dossiers d'album créés
+  dans …** refait chaque album de `albums.json` dans le nouveau dossier (une exécution par album,
+  annulée par le `mh undo <exécution>` que la réponse donne), puis vide l'ancien dossier des liens
+  que media-hygiene a faits : un fichier que vous y avez mis vous-même reste, signalé, et son
+  dossier aussi.
 - **Retirer de l'album** retire les photos choisies de l'album tapé ; un album laissé vide est
   supprimé.
 - **Album** dans la colonne de gauche, une fois un album tapé : *Dans l'album* ne montre que ses

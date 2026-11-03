@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.apply_api import APPLY_PATH, ApplyDesk, ApplyOffer
 from media_hygiene.review.page_header import headed_page
-from media_hygiene.search.album_root_desk import AlbumRootDesk
+from media_hygiene.search.album_root_desk import album_root_desk
 from media_hygiene.search.app import (
     SEARCH_PAGE_PATH,
     SEARCH_PATH,
@@ -144,7 +144,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
     roles = RoleDesk(
         runtime.locations.config_file, runtime.mapper, roots, search.connection
     )
-    albums_at = AlbumRootDesk(roles)
+    albums_at = album_root_desk(roles, runtime)
     folders = FolderDesk(search, runtime.mapper, roots, chosen, roles, albums_at)
     place = SearchPlace(
         search,

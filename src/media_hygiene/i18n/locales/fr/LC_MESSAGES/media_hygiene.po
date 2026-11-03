@@ -5330,6 +5330,12 @@ msgstr ""
 "Déplacer les photos choisies dans le dossier de l'événement, journalisé :"
 " undo les remet en place"
 
+#, python-brace-format
+msgid "Move the {n} album folder made in {folder}"
+msgid_plural "Move the {n} album folders made in {folder}"
+msgstr[0] "Déplacer le {n} dossier d'album créé dans {folder}"
+msgstr[1] "Déplacer les {n} dossiers d'album créés dans {folder}"
+
 msgid "Move them now"
 msgstr "Les déplacer maintenant"
 
@@ -5412,6 +5418,9 @@ msgid "Moving an unwanted photo you set aside to the quarantine: {path}"
 msgstr ""
 "Déplacement en quarantaine d'une photo indésirable que vous avez mise de "
 "côté : {path}"
+
+msgid "Moving…"
+msgstr "Déplacement…"
 
 msgid "My folders"
 msgstr "Mes dossiers"
@@ -9619,14 +9628,6 @@ msgstr ""
 "écrit cette liste quand vous cliquez sur une étoile ou déplacez une "
 "carte. Vide : trois sont suggérées (search, import, audit)."
 
-#, python-brace-format
-msgid ""
-"The album folders made before stay in {folder}: make each one again (mh "
-"album <name> --apply) to have it in the new folder."
-msgstr ""
-"Les dossiers d'albums déjà faits restent dans {folder} : refaites chacun "
-"(mh album <nom> --apply) pour l'avoir dans le nouveau dossier."
-
 msgid "The album stopped at the first link refused by the disk."
 msgstr "L'album s'est arrêté au premier lien refusé par le disque."
 
@@ -11635,6 +11636,10 @@ msgstr "Pour trier par lieu et par voyage ; aucune position ne quitte le PC."
 
 msgid "To undo it all:"
 msgstr "Pour tout annuler :"
+
+#, python-brace-format
+msgid "To undo: {commands}"
+msgstr "Pour annuler : {commands}"
 
 msgid "Today"
 msgstr "Aujourd'hui"
@@ -17161,6 +17166,18 @@ msgstr[0] "{n} télé"
 msgstr[1] "{n} télés"
 
 #, python-brace-format
+msgid "{n} album folder was made in {folder}: move it to the new folder?"
+msgid_plural "{n} album folders were made in {folder}: move them to the new folder?"
+msgstr[0] "{n} dossier d'album a été créé dans {folder} : le déplacer vers le nouveau dossier ?"
+msgstr[1] "{n} dossiers d'album ont été créés dans {folder} : les déplacer vers le nouveau dossier ?"
+
+#, python-brace-format
+msgid "{n} album made again in the new folder."
+msgid_plural "{n} albums made again in the new folder."
+msgstr[0] "{n} album refait dans le nouveau dossier."
+msgstr[1] "{n} albums refaits dans le nouveau dossier."
+
+#, python-brace-format
 msgid "{n} already there"
 msgstr "{n} déjà en place"
 
@@ -17273,6 +17290,12 @@ msgstr[0] ""
 msgstr[1] ""
 "{n} fichiers de l'album sont manquants (déplacés hors des dossiers "
 "analysés, ou supprimés) : pas montrés."
+
+#, python-brace-format
+msgid "{n} file of {folder} was not made by media-hygiene: it stays ({files})."
+msgid_plural "{n} files of {folder} were not made by media-hygiene: they stay ({files})."
+msgstr[0] "{n} fichier de {folder} n'a pas été créé par media-hygiene : il reste ({files})."
+msgstr[1] "{n} fichiers de {folder} n'ont pas été créés par media-hygiene : ils restent ({files})."
 
 #, python-brace-format
 msgid "{n} file picked"
