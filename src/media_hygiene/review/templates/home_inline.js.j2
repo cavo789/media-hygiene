@@ -25,3 +25,26 @@ function runInline(action, fields) {
     .catch(() => stopped())
     .finally(() => { inlineBusy = false; reload(); });
 }
+// ---- A step still running in the window of mh, the page reopened (0514) ----------------------
+// The tab closed or reloaded: the step goes on in mh's window; the page shows it again, followed.
+function resumeStep() {
+  if (!RELAYS || REMOTE || !P.step) return;
+  fetch(P.step, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : null))
+    .then((step) => {
+      if (!step || !step.id || !["waiting", "running"].includes(step.state)) return;
+      openRun({ title: T.stillRuns, kind: "console" }, T.theStep, null, step.id);
+    })
+    .catch(() => { /* no state: nothing to show */ });
+}
+resumeStep();
+// ---- Choices waiting on the pages, one Apply all (0522) -----------------------------------
+// Read from decisions.json by the server at each state: once applied, the file is archived and
+// the banner goes. One `clean --decisions` run for every page, so one `mh undo` takes it back.
+function pendingBanner() {
+  const pending = S.pending;
+  if (!pending || !pending.total || !BY_ID.apply) return "";
+  const pages = pending.pages.map((page) => `<a href="${esc(page.url)}" data-pending-page>${esc(page.label)} (${page.count})</a>`).join(" · ");
+  const said = fill(T.pendingChoices, { count: pending.total });
+  return `<div class="banner" role="status" id="pendingBanner">${icon("check")}<p class="grow"><strong>${esc(said)}</strong><br>${pages}</p><button class="btn btn-primary" type="button" data-run="apply">${icon("check")} ${esc(T.applyAll)}</button></div>`;
+}

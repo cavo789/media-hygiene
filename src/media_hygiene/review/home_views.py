@@ -15,6 +15,7 @@ from media_hygiene.review.home_parts import (
     HomeFindings,
     HomeFolder,
     HomeLink,
+    HomePending,
     HomeQuarantine,
     HomeReport,
     HomeTile,
@@ -142,6 +143,7 @@ class HomeState(Frozen):  # one field per part of the page
     favourites: tuple[str, ...] = ()  # the starred actions, read from config.toml
     suggested: bool = False  # none starred yet: `favourites` are the suggested three
     family_title: str = ""  # `[home] family_title`: the phone's title (0461)
+    pending: HomePending | None = None  # choices waiting in decisions.json (0522)
 
     def command_of(self, number: int) -> str | None:
         """The command of a runnable step.

@@ -768,6 +768,9 @@ msgstr ""
 msgid "A step is running in the window of mh: wait for its end."
 msgstr ""
 
+msgid "A step still runs"
+msgstr ""
+
 #, python-brace-format
 msgid "A step to type yourself takes words only you know: {url}"
 msgstr ""
@@ -1167,6 +1170,9 @@ msgid "Any folder"
 msgstr ""
 
 msgid "Apply"
+msgstr ""
+
+msgid "Apply all"
 msgstr ""
 
 msgid "Apply it? (y/n)"
@@ -1603,6 +1609,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "Choices on {count} series undone."
+msgstr ""
+
+#, python-brace-format
+msgid "Choices waiting to be applied: {count}"
 msgstr ""
 
 msgid "Choose a folder of photos or videos to add"
@@ -2962,6 +2972,9 @@ msgid "Files changed since the review: run 'review --near' again."
 msgstr ""
 
 msgid "Files changed since the review: run 'review' again."
+msgstr ""
+
+msgid "Files gone"
 msgstr ""
 
 msgid "Files gone review"
@@ -9044,6 +9057,9 @@ msgstr ""
 msgid "The sort runs of this plan"
 msgstr ""
 
+msgid "The step"
+msgstr ""
+
 #, python-brace-format
 msgid "The step you choose also analyses: {folder}"
 msgstr ""
@@ -9819,6 +9835,9 @@ msgid "Untick: stays on the phone"
 msgstr ""
 
 msgid "Until mh stops; never the internet."
+msgstr ""
+
+msgid "Unwanted photos"
 msgstr ""
 
 msgid "Unwanted photos review"
@@ -14931,6 +14950,10 @@ msgid ""
 "{protected} (folders.protected) and {excluded} (folders.excluded) are one"
 " folder or one inside the other: a protected folder is read, an excluded "
 "one is not; give them one role"
+msgstr ""
+
+#, python-brace-format
+msgid "{rate} files/s"
 msgstr ""
 
 #, python-brace-format

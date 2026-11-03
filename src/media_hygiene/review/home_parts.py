@@ -103,3 +103,18 @@ class HomeReport(Frozen):
     label: str  # e.g. "Last audit", translated
     when: str
     url: str
+
+
+class PendingPage(Frozen):
+    """A page whose choices wait in `decisions.json` (0522): its count and link."""
+
+    label: str  # e.g. "Burst series", translated
+    count: int
+    url: str  # the page, served by the home server
+
+
+class HomePending(Frozen):
+    """Every choice waiting to be applied, read from disk: one `clean --decisions`."""
+
+    total: int
+    pages: tuple[PendingPage, ...]

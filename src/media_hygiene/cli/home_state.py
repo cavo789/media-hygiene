@@ -21,6 +21,7 @@ from media_hygiene.cli.home_favourites import (
 )
 from media_hygiene.cli.home_findings import home_findings
 from media_hygiene.cli.home_folders import home_folders
+from media_hygiene.cli.home_pending import home_pending
 from media_hygiene.cli.home_reports import audit_previews, latest_reports
 from media_hygiene.cli.home_runs import home_quarantine, home_undo, home_update
 from media_hygiene.cli.home_tiles import home_tiles
@@ -99,6 +100,7 @@ def home_state(runtime: Runtime) -> HomeState:
         favourites=starred or shown_favourites(SUGGESTED, known),
         suggested=not starred,
         family_title=runtime.settings.home.family_title,
+        pending=home_pending(reports),
     )
 
 

@@ -994,6 +994,9 @@ msgstr "Un diaporama passait sur la télé : remplacé par celui-ci."
 msgid "A step is running in the window of mh: wait for its end."
 msgstr "Une étape tourne dans la fenêtre de mh : attendez sa fin."
 
+msgid "A step still runs"
+msgstr "Une étape tourne encore"
+
 #, python-brace-format
 msgid "A step to type yourself takes words only you know: {url}"
 msgstr ""
@@ -1478,6 +1481,9 @@ msgstr "N'importe quel dossier"
 
 msgid "Apply"
 msgstr "Appliquer"
+
+msgid "Apply all"
+msgstr "Tout appliquer"
 
 msgid "Apply it? (y/n)"
 msgstr "L'appliquer ? (o/n)"
@@ -1978,6 +1984,10 @@ msgstr "Choix de la page de revue repris aussi : {count}."
 #, python-brace-format
 msgid "Choices on {count} series undone."
 msgstr "Choix sur {count} séries annulés."
+
+#, python-brace-format
+msgid "Choices waiting to be applied: {count}"
+msgstr "Choix en attente d'application : {count}"
 
 msgid "Choose a folder of photos or videos to add"
 msgstr "Choisissez un dossier de photos ou de vidéos à ajouter"
@@ -3639,6 +3649,9 @@ msgstr "Des fichiers ont changé depuis la revue : relancez « review --near ».
 
 msgid "Files changed since the review: run 'review' again."
 msgstr "Des fichiers ont changé depuis le tri : relancez 'review'."
+
+msgid "Files gone"
+msgstr "Fichiers disparus"
 
 msgid "Files gone review"
 msgstr "Revue des fichiers disparus"
@@ -10925,6 +10938,9 @@ msgstr "Le diaporama ne tourne plus : relancez-le sur le PC."
 msgid "The sort runs of this plan"
 msgstr "Les tris de ce plan"
 
+msgid "The step"
+msgstr "L'étape"
+
 #, python-brace-format
 msgid "The step you choose also analyses: {folder}"
 msgstr "L'étape choisie analyse aussi : {folder}"
@@ -11869,6 +11885,9 @@ msgstr "Décocher : reste sur le téléphone"
 
 msgid "Until mh stops; never the internet."
 msgstr "Jusqu'à l'arrêt de mh ; jamais sur Internet."
+
+msgid "Unwanted photos"
+msgstr "Photos indésirables"
 
 msgid "Unwanted photos review"
 msgstr "Revue des photos indésirables"
@@ -17813,6 +17832,10 @@ msgstr ""
 "{protected} (folders.protected) et {excluded} (folders.excluded) sont un "
 "même dossier ou l'un dans l'autre : un dossier protégé est lu, un dossier"
 " exclu ne l'est pas ; donnez-leur un seul rôle"
+
+#, python-brace-format
+msgid "{rate} files/s"
+msgstr "{rate} fichiers/s"
 
 #, python-brace-format
 msgid "{rate} photos a minute, about {time} left."
