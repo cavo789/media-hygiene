@@ -51,6 +51,7 @@ def tools_steps() -> tuple[Step, ...]:
             icon="trash",
             keywords=_("reports old delete tidy prune"),
             doc=Doc("commands/reports/", "#options", "#options"),
+            inline=True,
             fields=(
                 Field(
                     "count",
@@ -122,6 +123,7 @@ def tools_steps() -> tuple[Step, ...]:
             icon="shield",
             keywords=_("backup save index cache settings"),
             doc=Doc("commands/backup/"),
+            inline=True,
         ),
         Step(
             "restore",

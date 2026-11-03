@@ -30,3 +30,23 @@ A `Kind.CONSOLE` step ends the server (or runs beside it, `kept`, 0355): the pag
    disk); never a traceback in the dialog (the error message only); the one 👉 line.
 6. Long steps (audit, clean) are out of scope: they have their own followed run or page.
 7. Tests per candidate; docs EN + FR; `docs_screenshots` should run after.
+
+## Outcome (2026-11-03) — PARTIAL
+
+### Done
+
+- `Step.inline` (catalog flag, `HomeAction.inline`): `config`, `backup`, `history`,
+  `reports --prune {count}` run by the home server itself, whatever `mh` opened the page.
+- `review/inline_step.py`, `POST /api/inline` (`RUN_PATHS`: home only, refused from a phone):
+  `media-hygiene <words>` in a child process, `NO_COLOR`/`TERM=dumb`, 120 s limit
+  (`INLINE_SECONDS`), ANSI stripped, a traceback cut to its last line, one at a time (409).
+- `home_inline.js.j2`: the dialog (running, the output, Close), state reloaded after.
+- Tests `tests/unit/test_inline_step.py`; docs EN + FR (`commands/home.md`); FR translations.
+
+### Not done
+
+- `people --forget` and `restore` (they prompt: need a "yes" flag skipping the console
+  question, asked in the page first). **Reason:** each CLI's prompt to read and flag; a
+  follow-up of the same shape.
+- `backup` names the zip it wrote (its own output); not re-read from disk by the page.
+- `docs_screenshots` should run (new dialog).

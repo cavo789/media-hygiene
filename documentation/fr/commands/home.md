@@ -155,6 +155,13 @@ qui a ouvert la page :
   votre dossier des rapports et s'arrête avec `199`. `mh` lit ce fichier une fois, le retire, et
   lance ces mots : `Noël 2025` reste un seul mot. Avec des rapports dans un volume nommé, ou un
   `mh` plus ancien, la page donne la commande à copier à la place.
+- **Une étape courte qui ne demande rien** (*Voir chaque réglage et d'où il vient* `config`,
+  *Sauvegarder l'index et les réglages* `backup`, *Voir ce qu'a fait chaque exécution*
+  `history`, *Ne garder que les rapports récents* `reports --prune`) : la page d'accueil la
+  lance **elle-même**, quel que soit le `mh` qui l'a ouverte, et montre ce qu'elle a écrit dans
+  une fenêtre (*Tourne dans la page*, puis *Terminé. Ce qu'elle a écrit :*) : aucune fenêtre
+  où basculer. Une à la fois (*Une autre étape tourne : attendez sa fin.*) ; une étape qui
+  dépasse 2 minutes est arrêtée ; une erreur ne montre que son message.
 - **⚠️ Définitif** (`purge`, `clean --delete`, `import --phone --free`) : la page demande d'abord ; `mh`
   redemande dans sa fenêtre avant de toucher quoi que ce soit.
 - **Sinon** (`mh home` tapé, un `mh` plus ancien, ou `docker run` seul) : le bouton copie la

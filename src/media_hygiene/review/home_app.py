@@ -30,10 +30,11 @@ from pydantic import BaseModel, ConfigDict, ValidationError
 from media_hygiene.i18n import _
 from media_hygiene.review.home_favourites_api import favourites_response
 from media_hygiene.review.home_step import StepDoor, step_response
-from media_hygiene.review.home_tags_api import tags_response, tags_state
+from media_hygiene.review.home_tags_api import INLINE_PATH, tags_response, tags_state
 from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.import_steps_api import IMPORT_STEPS_PATH, import_steps_route
+from media_hygiene.review.inline_step import InlineRunner, inline_response
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH, LocalApp
 from media_hygiene.review.presence import PRESENCE_PATH, presence_response
 from media_hygiene.review.report_files import report_response
@@ -88,6 +89,7 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
     # Read-only steps run in the page by path: tags (0343), faces (0424), meaning (0425)
     runs: Mapping[str, HomeTags] = field(default_factory=dict)
     config_file: Path | None = None  # where the starred actions are written (0484)
+    inline: InlineRunner = field(default_factory=InlineRunner)  # 0505
 
     @override
     async def answer(self, request: Request) -> Response:
@@ -103,6 +105,8 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
             return await scope_route(self.config_file, request)
         if request.path == IMPORT_STEPS_PATH and self.config_file is not None:
             return await import_steps_route(self.config_file, request)  # 0481
+        if request.path == INLINE_PATH:  # a short step run here (0505)
+            return await inline_response(self.inline, request)
         if request.method == _GET:
             return await self._read(request.path)
         if request.method == _POST:

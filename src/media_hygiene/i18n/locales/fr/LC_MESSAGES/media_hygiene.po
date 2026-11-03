@@ -1460,6 +1460,9 @@ msgstr ""
 "Une autre commande mh tourne (une page, un audit) : fermez-la d'abord, "
 "l'index pourrait être écrit pendant ce temps. Rien n'a été changé."
 
+msgid "Another step runs: wait for its end."
+msgstr "Une autre étape tourne : attendez sa fin."
+
 msgid ""
 "Answered: the files marked 🗑️ are remembered with 'clean --decisions', "
 "set aside if they come back; the others are forgotten."
@@ -2841,6 +2844,9 @@ msgid ""
 msgstr ""
 "Fini sur la page des rafales ? Appuyez sur Entrée : les prises écartées "
 "vont en quarantaine (mh undo les remet)."
+
+msgid "Done. What it wrote:"
+msgstr "Terminé. Ce qu'elle a écrit :"
 
 msgid "Done: open Media Hygiene"
 msgstr "C'est fait : ouvrir Média Hygiène"
@@ -4589,6 +4595,9 @@ msgid ""
 msgstr ""
 "Elle partage des jours avec {rules} : la première listée dans config.toml"
 " l'emporte ces jours-là."
+
+msgid "It stopped on an error. What it wrote:"
+msgstr "Arrêtée sur une erreur. Ce qu'elle a écrit :"
 
 msgid "It was then:"
 msgstr "Il était alors :"
@@ -8370,8 +8379,14 @@ msgstr ""
 "En cours dans la fenêtre où mh tourne : {command}. Cette page reste "
 "ouverte."
 
+msgid "Running, a few seconds…"
+msgstr "En cours, quelques secondes…"
+
 msgid "Runs (newest first)"
 msgstr "Exécutions (les plus récentes d'abord)"
+
+msgid "Runs in the page"
+msgstr "Tourne dans la page"
 
 msgid "Runs to undo (newest first)"
 msgstr "Passages à annuler (les plus récents d'abord)"
@@ -9335,6 +9350,10 @@ msgstr "Arrêté (Ctrl+C)."
 #, python-brace-format
 msgid "Stopped (code {code}): {command}."
 msgstr "Arrêté (code {code}) : {command}."
+
+#, python-brace-format
+msgid "Stopped after {seconds} s: run it from the console instead."
+msgstr "Arrêtée après {seconds} s : lancez-la plutôt depuis la console."
 
 msgid "Stopped before the end, as asked."
 msgstr "Arrêté avant la fin, comme demandé."
@@ -11373,6 +11392,9 @@ msgstr "Cette photo est dans un dossier protégé : elle ne bouge jamais."
 
 msgid "This step already runs: wait for its end, or stop it."
 msgstr "Cette étape tourne déjà : attendez sa fin, ou arrêtez-la."
+
+msgid "This step does not run in the page."
+msgstr "Cette étape ne tourne pas dans la page."
 
 msgid "This step takes no words."
 msgstr "Cette étape ne prend pas de mots."

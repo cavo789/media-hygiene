@@ -1152,6 +1152,9 @@ msgid ""
 "index may be written meanwhile. Nothing was changed."
 msgstr ""
 
+msgid "Another step runs: wait for its end."
+msgstr ""
+
 msgid ""
 "Answered: the files marked 🗑️ are remembered with 'clean --decisions', "
 "set aside if they come back; the others are forgotten."
@@ -2330,6 +2333,9 @@ msgstr ""
 msgid ""
 "Done on the burst page? Press Enter: the shots you set aside go to the "
 "quarantine (mh undo puts them back)."
+msgstr ""
+
+msgid "Done. What it wrote:"
 msgstr ""
 
 msgid "Done: open Media Hygiene"
@@ -3760,6 +3766,9 @@ msgstr ""
 msgid ""
 "It shares days with {rules}: the first listed in config.toml wins on "
 "those days."
+msgstr ""
+
+msgid "It stopped on an error. What it wrote:"
 msgstr ""
 
 msgid "It was then:"
@@ -6921,7 +6930,13 @@ msgstr ""
 msgid "Running in the window where mh runs: {command}. This page stays open."
 msgstr ""
 
+msgid "Running, a few seconds…"
+msgstr ""
+
 msgid "Runs (newest first)"
+msgstr ""
+
+msgid "Runs in the page"
 msgstr ""
 
 msgid "Runs to undo (newest first)"
@@ -7749,6 +7764,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "Stopped (code {code}): {command}."
+msgstr ""
+
+#, python-brace-format
+msgid "Stopped after {seconds} s: run it from the console instead."
 msgstr ""
 
 msgid "Stopped before the end, as asked."
@@ -9397,6 +9416,9 @@ msgid "This shot lies in a protected folder: it is never moved."
 msgstr ""
 
 msgid "This step already runs: wait for its end, or stop it."
+msgstr ""
+
+msgid "This step does not run in the page."
 msgstr ""
 
 msgid "This step takes no words."

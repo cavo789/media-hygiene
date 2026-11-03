@@ -73,6 +73,7 @@ class HomeAction(Frozen):  # one field per thing the page draws
         ""  # its own confirmation (0311); empty: the page's generic one
     )
     confirm_text: str = ""
+    inline: bool = False  # run by the home server, its output in a dialog (0505)
 
 
 class HomeGroup(Frozen):

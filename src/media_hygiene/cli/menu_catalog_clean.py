@@ -77,6 +77,7 @@ def clean_steps() -> tuple[Step, ...]:
             icon="history",
             keywords=_("history journal runs"),
             doc=Doc("commands/history/"),
+            inline=True,
         ),
         Step(
             "undo",
