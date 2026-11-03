@@ -4,7 +4,7 @@ The image of the branch serves `mh` through `mh.sh` on the demo tree; the Playwr
 image (`tests/support/pages_browser.py`) runs `tests/support/pages_walk.py` on the
 host's network. Proven here: search opens from the home page and come back,
 each under a bound, without a container started by the click (Docker's events); a
-read-only step (`config`) answers in its page `/console/config/` (0567); the tab
+read-only step (`config`) answers in a dialog of the home page (0505); the tab
 follows a page of its own server
 back to the home page ten times in a row, without F5 (0354); the server gone, the
 page says Media Hygiene stopped (0416). Not proven: `mh.ps1`,
@@ -180,7 +180,7 @@ def test_pages_of_mh_alone_in_a_real_browser(
     assert walk["search"]["first_search_ms"] is not None
     assert _started(walk["clicks_from"], walk["clicks_until"]) == []
     console = walk["console"]
-    assert console["url"].endswith("/console/config/"), console
+    assert not console["url"].rstrip("/").endswith("/console/config"), console
     assert not console["error"], console
     assert console["said"].strip(), console
     rounds = walk["own_server"]
