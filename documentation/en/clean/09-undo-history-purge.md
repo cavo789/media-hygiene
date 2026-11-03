@@ -187,7 +187,9 @@ answer `y` and the page opens.
 
 `mh review --gone` shows them by folder and by day, each with its preview when the cache still
 holds one (else its name, date, size and camera): `D` deleted on purpose, `M` moved elsewhere,
-`G` the whole group deleted on purpose. Your answers are saved in `decisions.json`; the next
+`G` the whole group deleted on purpose. Your answers are saved in `decisions.json`. Opened
+from the home page, the bar shows **Apply now** once a file is answered deleted on purpose: `mh`
+runs that clean for you. The next
 `clean --decisions` remembers the files deleted on purpose (nothing moves: a line in the
 journal, counted by `history` under *Deleted in the Explorer*) and forgets the others. When one
 of them comes back, it is proposed like a file you had set aside. `undo` of that clean forgets
