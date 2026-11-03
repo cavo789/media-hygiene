@@ -3069,6 +3069,9 @@ msgstr ""
 "Chaque exécution est notée au journal ; undo remet chaque fichier à sa "
 "place."
 
+msgid "Each setting and where it comes from"
+msgstr "Chaque réglage et d'où il vient"
+
 msgid "Each tile leads to its space."
 msgstr "Chaque tuile mène à son espace."
 
@@ -7791,6 +7794,11 @@ msgstr ""
 "Lecture seule : cette page ne fait que lire le journal et ne change rien."
 " Une exécution se remet en place avec « undo », dans le terminal."
 
+msgid "Read-only: this page shows what the command prints, as in the terminal."
+msgstr ""
+"Lecture seule : cette page montre ce qu'écrit la commande, comme dans le "
+"terminal."
+
 msgid "Reading 128 KB of each file already in the cache, once"
 msgstr "Lecture de 128 Ko de chaque fichier déjà en cache, une seule fois"
 
@@ -10226,6 +10234,9 @@ msgstr "L'index de la sauvegarde est abîmé : {why}."
 msgid "The index {file} cannot be read: {reason}."
 msgstr "L'index {file} ne peut pas être lu : {reason}."
 
+msgid "The inventory"
+msgstr "L'inventaire"
+
 #, python-brace-format
 msgid "The inventory could not be written to {folder}: {reason}."
 msgstr "L'inventaire n'a pas pu être écrit dans {folder} : {reason}."
@@ -10652,6 +10663,9 @@ msgstr ""
 
 msgid "The report lists them all: type them again where they belong."
 msgstr "Le rapport les liste toutes : saisissez-les à nouveau là où elles vont."
+
+msgid "The reports"
+msgstr "Les rapports"
 
 #, python-brace-format
 msgid ""

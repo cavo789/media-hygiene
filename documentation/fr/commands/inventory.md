@@ -33,7 +33,7 @@ docker run --rm -it `
 | Il faut | `/cache` (rempli par un [`audit`](audit.md) précédent) et `/reports` (où va le classeur). |
 | Écrit | `/reports/<date>-inventory/inventory.xlsx` (ou `inventory.csv`). |
 | Annuler | Supprimez le dossier. |
-| Avec `mh` | `mh inventory`. |
+| Avec `mh` | `mh inventory`. Depuis la page d'accueil, cette étape affiche ce qu'elle écrit dans la page elle-même (rien dans le terminal) ; tapée, elle écrit comme avant. |
 
 ## Lancer
 

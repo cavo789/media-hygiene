@@ -27,7 +27,7 @@ docker run --rm -it -v "$HOME\media-hygiene\reports:/reports" cavo789/media-hygi
 | Il faut | `/reports`, le dossier de vos rapports. |
 | Écrit | `index.html` ; `--prune` supprime les anciens dossiers de rapport. |
 | Annuler | Un rapport supprimé ne revient pas ; relancez l'audit pour en obtenir un nouveau. |
-| Avec `mh` | `mh reports`, `mh reports --prune 10`. |
+| Avec `mh` | `mh reports`, `mh reports --prune 10`. Depuis la page d'accueil, cette étape affiche ce qu'elle écrit dans la page elle-même (rien dans le terminal) ; tapée, elle écrit comme avant. |
 
 ## Lancer
 

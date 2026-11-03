@@ -32,7 +32,7 @@ docker run --rm -it `
 | Needs | `/cache` (filled by an earlier [`audit`](audit.md)) and `/reports` (where the workbook goes). |
 | Writes | `/reports/<date>-inventory/inventory.xlsx` (or `inventory.csv`). |
 | Undo | Delete the folder. |
-| With `mh` | `mh inventory`. |
+| With `mh` | `mh inventory`. From the home page, this step shows what it prints in the page itself (nothing in the terminal); typed, it prints as before. |
 
 ## Run it
 

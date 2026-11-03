@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.menu_catalog import catalog
 from media_hygiene.cli.menu_entry import Doc, Space
+from media_hygiene.cli.safety import PAGE_CAPTURED
 from media_hygiene.constants import Locale
 from media_hygiene.docs.served import served_url
 from media_hygiene.i18n import _, active_locale
@@ -49,6 +50,7 @@ PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
         "slideshow.html.j2": "slideshow",
         "shrink.html.j2": "shrink",
         "history.html.j2": "history",
+        **{f"console_{name}.html.j2": name for name in PAGE_CAPTURED},
         "album.html.j2": ALBUMS_DOC,
         "album_edit.html.j2": ALBUMS_DOC,
     }
@@ -72,6 +74,7 @@ SHELL_PAGES: Final[Mapping[str, bool]] = MappingProxyType(
         "person.html.j2": True,
         "places.html.j2": True,
         "history.html.j2": False,
+        **dict.fromkeys((f"console_{name}.html.j2" for name in PAGE_CAPTURED), False),
         "shrink.html.j2": False,
     }
 )

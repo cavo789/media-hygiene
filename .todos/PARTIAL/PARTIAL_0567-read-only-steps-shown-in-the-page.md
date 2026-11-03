@@ -18,3 +18,18 @@ Maintainer: yes.
   in a dialog or panel, like the history (0350), from the same service as the console.
 - The console output is unchanged when typed.
 - Docs en + fr; `docs_screenshots` should run.
+
+## Status — PARTIAL (2026-11-03)
+
+### Done
+- `status`, `reports`, `inventory`, `config` chosen on the home page open `/console/<step>/`
+  (`services/console_here.py`, `cli/page_capture.py`): the same command function runs with a
+  recording console, its text shown in a page (🔒 line, bar, docs link); typed in a terminal,
+  unchanged. Tests `tests/unit/test_console_here.py`. Docs en + fr (each command page, *With mh*).
+
+### Not done
+- `folders`: a host step (`Kind.HOST`, run by `mh.ps1` on Windows), the container cannot list it.
+  **Reason:** needs `mh.ps1` to hand its listing to the server — a design of its own.
+- The text is shown preformatted (Rich's plain export), not as a styled panel/table.
+  **Reason:** one source for console and page was preferred; styling per step is a follow-up.
+- `docs_screenshots` should run (new pages).

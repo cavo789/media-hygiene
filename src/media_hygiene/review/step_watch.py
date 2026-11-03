@@ -21,7 +21,7 @@ from http import HTTPStatus
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.cli.safety import PAGE_COMMANDS
+from media_hygiene.cli.safety import PAGE_CAPTURED, PAGE_COMMANDS
 from media_hygiene.i18n import _
 from media_hygiene.review.home_fields import write_whole
 from media_hygiene.review.serving import json_response
@@ -71,6 +71,8 @@ SERVED_HERE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
         ("review",): BURSTS_PAGE,
         ("places",): PLACES_PAGE,
         ("history",): HISTORY_PAGE,  # 0350
+        # `services/console_here`: what the step prints, in the page (0567)
+        **{(name,): f"/console/{name}/" for name in PAGE_CAPTURED},
     }
 )
 _ID_BYTES: Final = 6

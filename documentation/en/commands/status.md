@@ -32,7 +32,7 @@ docker run --rm -it `
 | Recommended | The same tool folders as for `clean`: `/reports`, `/journal`, `/quarantine`, `/cache`. |
 | Writes | Nothing. |
 | Undo | Nothing to undo. |
-| With `mh` | `mh status`: every folder is mounted for you. |
+| With `mh` | `mh status`: every folder is mounted for you. From the home page, this step shows what it prints in the page itself (nothing in the terminal); typed, it prints as before. |
 
 ## Run it
 

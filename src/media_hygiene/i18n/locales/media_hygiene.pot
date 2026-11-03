@@ -2498,6 +2498,9 @@ msgstr ""
 msgid "Each run is written in the journal; undo puts each file back."
 msgstr ""
 
+msgid "Each setting and where it comes from"
+msgstr ""
+
 msgid "Each tile leads to its space."
 msgstr ""
 
@@ -6445,6 +6448,9 @@ msgid ""
 " put back with 'undo', in the terminal."
 msgstr ""
 
+msgid "Read-only: this page shows what the command prints, as in the terminal."
+msgstr ""
+
 msgid "Reading 128 KB of each file already in the cache, once"
 msgstr ""
 
@@ -8480,6 +8486,9 @@ msgstr ""
 msgid "The index {file} cannot be read: {reason}."
 msgstr ""
 
+msgid "The inventory"
+msgstr ""
+
 #, python-brace-format
 msgid "The inventory could not be written to {folder}: {reason}."
 msgstr ""
@@ -8829,6 +8838,9 @@ msgid ""
 msgstr ""
 
 msgid "The report lists them all: type them again where they belong."
+msgstr ""
+
+msgid "The reports"
 msgstr ""
 
 #, python-brace-format
