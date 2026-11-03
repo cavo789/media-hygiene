@@ -71,3 +71,11 @@ then the PowerShell prompt: the page never opens.
 - Measured click → page on Windows, before → after. **Reason:** Windows + Docker Desktop only
   (`-Only 43`). If removal is not what frees the port there, the next step is 0505/0506 (serve
   the page from the home server) or a published port kept across steps.
+
+## Measured (maintainer, 2026-11-03 18:10, step 43, image 32cafce7)
+
+Port 8088 bound in 0.9 s **in both cases** (3 runs each): started at once after the first
+container ended, or once Docker removed it (removal 0.4 s). The race this TODO's fix assumed is
+**not reproduced** by the script: the wait added by the fix costs ≈ 0.4 s and gains nothing
+measured here. The real cause of the "eternity" stays to be found from a real click on
+`mh people` from the home page (console lines + time), with the image of this branch.
