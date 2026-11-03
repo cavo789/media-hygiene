@@ -19,6 +19,7 @@ from media_hygiene.places.config_file import read_places, save_places
 from media_hygiene.places.config_photos import take_back
 from media_hygiene.places.drawer_rows import Shown, drawer_rows
 from media_hygiene.places.hand_desk import HandDesk, PhotosAction
+from media_hygiene.places.lookup_switch import lookup_of
 from media_hygiene.places.renames import renamed
 from media_hygiene.places.town_hint import HintAsk, TownHints
 
@@ -95,7 +96,15 @@ class PlacesBoard:
             The places, the clusters, the circles set aside.
         """
         view = BoardView(self._clusters, self._places, self._aside, self._hand)
-        return self._hints.mark(board_state(view))
+        return {
+            **self._hints.mark(board_state(view)),
+            "lookup": lookup_of(self.config_file),
+        }
+
+    @property
+    def config_file(self) -> Path:
+        """`config.toml`, where the page saves."""
+        return self._context.config_file
 
     def hint(self, ask: HintAsk) -> dict[str, object]:
         """Say whether a place of that name duplicates a town (0239).

@@ -931,6 +931,9 @@ msgid ""
 " each asked once."
 msgstr ""
 
+msgid "After an import, name the new photos' places online"
+msgstr ""
+
 #, python-brace-format
 msgid "After an undo, 'media-hygiene clean {flag}' applies it again."
 msgstr ""
@@ -1049,6 +1052,9 @@ msgid "Also remember it as an event (events/)"
 msgstr ""
 
 msgid "Altitude (m)"
+msgstr ""
+
+msgid "Always: their rounded positions are sent to OpenStreetMap"
 msgstr ""
 
 #, python-brace-format
@@ -1199,6 +1205,9 @@ msgid ""
 msgstr ""
 
 msgid "As planned"
+msgstr ""
+
+msgid "Ask each time"
 msgstr ""
 
 msgid "Ask for a second opinion"
@@ -4585,6 +4594,9 @@ msgid ""
 msgstr ""
 
 msgid "Never what you set aside or deleted on purpose; each copy is checked."
+msgstr ""
+
+msgid "Never: no position leaves this PC"
 msgstr ""
 
 msgid "New Year"

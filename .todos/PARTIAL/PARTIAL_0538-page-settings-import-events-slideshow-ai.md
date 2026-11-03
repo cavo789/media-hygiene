@@ -22,3 +22,17 @@ shown. Follows 0532 (folder roles); analysed in detail at implementation time.
   installed models (Ollama API listing: to check).
 - A language picker in the bar (`[general] locale`).
 - May split into one TODO per page at implementation.
+
+## Status — PARTIAL (2026-11-03)
+
+### Done
+- `[imports] then` as checkboxes: done with 0481, on the home page under *Copy the new
+  photos of the phone* (`review/import_steps_api.py`), read back from the disk.
+
+### Not done
+- Events page "split / merge more" (`merge_gap_hours`, `min_event_size`, `trip_min_km`)
+  with a preview; TV slideshow speed (`[slideshow] interval_seconds`); 🤖 local AI state and
+  model choice (Ollama `/api/tags` listing still to check); language picker
+  (`[general] locale`).
+  **Reason:** four pages of their own, not reached in this run; better split into one TODO
+  per page (the TODO allows it).

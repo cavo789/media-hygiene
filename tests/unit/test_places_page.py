@@ -44,6 +44,7 @@ def _page() -> str:
         aside_path="/api/aside",
         hint_path="/api/hint",
         photos_path="/api/place-photos",
+        lookup_path="/api/reverse-lookup",
         osm_path="",
         osm_host="",
         tiles="https://tile.example/{z}/{x}/{y}.png",

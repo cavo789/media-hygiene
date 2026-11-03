@@ -239,7 +239,8 @@ happens (a run of kind `phone` in `mh history`).
   (one request per second), and the names found (*Kasteel Den Halder*) are kept in `/cache`:
   the [slideshow](slideshow.md) shows them on the TV, and a place already asked is never asked
   again. `[places] reverse_lookup = "never"` (or an empty `nominatim_url`) never asks;
-  `"always"` no longer asks. With `--yes`, no one is there to say Yes: nothing is sent. This
+  `"always"` no longer asks; the [places](places.md) page switches it (*After an import, name the
+  new photos' places online*: ask, always, never), saved in `config.toml` and read back. With `--yes`, no one is there to say Yes: nothing is sent. This
   is the only time a position of your photos leaves your PC, and never without your consent.
 - **Safe**: refused without a journal, or with your photo folders read-only, like every command
   that changes files.

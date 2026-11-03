@@ -1197,6 +1197,9 @@ msgstr ""
 " : arrondie à environ 100 m, une par groupe de photos, demandée une seule"
 " fois."
 
+msgid "After an import, name the new photos' places online"
+msgstr "Après un import, nommer en ligne les lieux des nouvelles photos"
+
 #, python-brace-format
 msgid "After an undo, 'media-hygiene clean {flag}' applies it again."
 msgstr "Après un undo, 'media-hygiene clean {flag}' l'applique à nouveau."
@@ -1336,6 +1339,9 @@ msgstr "Aussi le retenir comme événement (events/)"
 
 msgid "Altitude (m)"
 msgstr "Altitude (m)"
+
+msgid "Always: their rounded positions are sent to OpenStreetMap"
+msgstr "Toujours : leurs positions arrondies sont envoyées à OpenStreetMap"
 
 #, python-brace-format
 msgid "An album is already named {name}."
@@ -1519,6 +1525,9 @@ msgstr ""
 
 msgid "As planned"
 msgstr "Comme prévu"
+
+msgid "Ask each time"
+msgstr "Demander à chaque fois"
 
 msgid "Ask for a second opinion"
 msgstr "Demander un second avis"
@@ -5567,6 +5576,9 @@ msgid "Never what you set aside or deleted on purpose; each copy is checked."
 msgstr ""
 "Jamais ce que vous avez écarté ou supprimé exprès ; chaque copie est "
 "vérifiée."
+
+msgid "Never: no position leaves this PC"
+msgstr "Jamais : aucune position ne quitte ce PC"
 
 msgid "New Year"
 msgstr "Nouvel An"

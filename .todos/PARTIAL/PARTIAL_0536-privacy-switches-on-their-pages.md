@@ -19,3 +19,18 @@ shown. Follows 0532 (folder roles); analysed in detail at implementation time.
 - Share dialog: "keep the position" (`[share] keep_gps`), size (`long_side_px`) and quality
   (`quality`) in the dialog itself, the default saved on request.
 - To decide: `[review] lan` / `lan_phone_originals` shown as a state only (network security).
+
+## Status — PARTIAL (2026-11-03)
+
+### Done
+- Places page: `[places] reverse_lookup` as a list in the left column (*Ask each time* /
+  *Always: their rounded positions are sent to OpenStreetMap* / *Never: no position leaves
+  this PC*), saved by `POST /api/reverse-lookup` (`places/lookup_switch.py`, `toml_edit`),
+  read back in the board's state and shown. Tests: `tests/unit/test_lookup_switch.py`.
+
+### Not done
+- Share dialog: `keep_gps`, `long_side_px`, `quality` in the dialog, the default saved on
+  request.
+- `[review] lan` / `lan_phone_originals` shown as a state.
+  **Reason:** out of this run's time; the share dialog is its own page work (and the lan
+  state still "to decide" by the maintainer: shown only, or switchable?).

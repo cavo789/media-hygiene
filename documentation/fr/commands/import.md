@@ -257,7 +257,9 @@ suppression est écrite au journal avant et après (un passage de type `phone` d
   100 m, est envoyée à `[places] nominatim_url` (une requête par seconde), et les noms trouvés
   (*Kasteel Den Halder*) sont gardés dans `/cache` : le [diaporama](slideshow.md) les affiche
   sur la télé, et un lieu déjà demandé ne l'est plus jamais. `[places] reverse_lookup =
-  "never"` (ou un `nominatim_url` vide) ne demande jamais ; `"always"` ne demande plus. Avec
+  "never"` (ou un `nominatim_url` vide) ne demande jamais ; `"always"` ne demande plus ; la page
+  [places](places.md) le change (*Après un import, nommer en ligne les lieux des nouvelles
+  photos* : demander, toujours, jamais), enregistré dans `config.toml` et relu. Avec
   `--yes`, personne n'est là pour dire Oui : rien n'est envoyé. C'est la seule fois où une
   position de vos photos quitte votre PC, et jamais sans votre accord.
 - **Sûr** : refusé sans journal, ou avec vos dossiers de photos en lecture seule, comme toute
