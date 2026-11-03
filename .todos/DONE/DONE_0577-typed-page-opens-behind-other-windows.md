@@ -4,7 +4,6 @@
 - **Batch**: launcher
 - **Depends**: —
 - **Files**: `src/media_hygiene/cli/templates/mh.ps1.j2`, `tests/unit/test_launcher_comfort.py`, `tests/measure/mh-measure.ps1`
-- **Needs maintainer**: a check on Windows (which window gets the focus)
 
 ## Reported (maintainer, 2026-10-30, from TODO 0510 point 1)
 
@@ -25,3 +24,8 @@ PC (memory `avast-on-maintainer-pc`). Not done in 0510.
    runs in the console's own process instead of the job (the job only waits, then signals)?
 2. If so, open from the main process once the job says the page answers; else leave as is and
    say on the console line "the page opened in your browser" (it may be behind).
+
+## Checked (maintainer, 2026-11-03, image 32cafce7) — not reproduced
+
+`mh review --intruders` typed with PowerShell in front and the browser open: the console prints
+its lines, then the browser comes to the front, maximised. Nothing to change; closed.
