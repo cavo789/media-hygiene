@@ -43,7 +43,14 @@ function showMissing() {
     const remove = element("button", "plain", TEXTS.roleRemove);
     remove.type = "button";
     remove.addEventListener("click", () => saveRole(r.path, "none"));
-    line.append(remove);
+    // Its files are now in another folder (0580): one click moves the role there.
+    const carry = (r.carry || []).map((to) => {
+      const button = element("button", "plain", fill(TEXTS.roleCarry, { folder: to }));
+      button.type = "button";
+      button.addEventListener("click", () => saveRole(to, r.role, r.path));
+      return button;
+    });
+    line.append(...carry, remove);
     return line;
   }));
 }
@@ -61,9 +68,9 @@ function openRole(node) {
 }
 
 // Saved, then shown as read back from the disk; a clash is said, nothing changed.
-async function saveRole(folder, role) {
+async function saveRole(folder, role, former = "") {
   $("roleSaid").textContent = TEXTS.roleSaving;
-  const answer = await ask(ROLE_PATH, { folder, role });
+  const answer = await ask(ROLE_PATH, { folder, role, former });
   const read = answer ? await answer.json().catch(() => ({})) : {};
   if (!answer || !answer.ok) {
     $("roleSaid").textContent = read.error || TEXTS.offline;

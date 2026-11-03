@@ -160,6 +160,23 @@ kbd {
 .hero-art { position: relative; min-height: 1px; }
 .hero-art img { position: absolute; right: 0; bottom: -30px; width: 236px; height: auto; filter: drop-shadow(0 10px 14px var(--mh-art-shadow)); pointer-events: none; }
 .hero.is-calm { background: var(--mk-surface); }
+/* The favourites (0484): large cards in a row, a grip to drag them, a star on each action */
+.favs { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.fav-card { position: relative; display: flex; border: 1px solid var(--mk-border); border-radius: 14px; background: var(--mk-surface); }
+.fav-card.is-dragging { opacity: .6; outline: 2px dashed var(--mk-border-strong); }
+.fav-main { flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; border-radius: 14px; }
+.fav-icon .i { width: 28px; height: 28px; }
+.fav-title { font-weight: 700; }
+.fav-grip { align-self: flex-start; padding: 10px 8px; cursor: grab; touch-action: none; user-select: none; color: var(--mk-ink-soft); }
+.star { border: 0; background: none; color: var(--mk-ink-soft); font-size: 1.15rem; line-height: 1; padding: 4px 6px; cursor: pointer; border-radius: 6px; }
+.star.is-on { color: var(--mk-primary); }
+/* The next step, one compact card under the cycle (0483): no art, one row of actions */
+.hero.is-compact { grid-template-columns: minmax(0, 1fr); padding: 16px 20px; }
+.hero.is-compact .hero-art { display: none; }
+.hero.is-compact .hero-body { gap: 6px; }
+.hero.is-compact h2 { font-size: 1.2rem; }
+.hero.is-compact .hero-why { font-size: 1rem; }
+.hero.is-compact .hero-tag, .hero.is-compact .eyebrow { margin-right: 0; }
 
 .block { display: flex; flex-direction: column; gap: 14px; }
 .section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; }

@@ -255,8 +255,10 @@ function nextAudit(wait) {
   window.clearTimeout(audit.timer);
   audit.timer = window.setTimeout(pollAudit, wait);
 }
+// The audit run in the page lives on the Clean stage (0483), no longer on the home page.
+const AUDIT_SPACE = "clean";
 function showAudit() {
-  if (view.id !== HOME) go(HOME, false);
+  if (view.id !== AUDIT_SPACE) go(AUDIT_SPACE, false);
   const here = $("#auditHere");
   if (here) here.scrollIntoView({ behavior: reduced.matches ? "auto" : "smooth", block: "center" });
 }
@@ -272,7 +274,7 @@ const pollAudit = () => fetch(P.audit, { cache: "no-store" })
   // Only a run followed says the page stopped; between runs, a step may hold the server.
   .catch(() => { if (audit.last && audit.last.phase === "running") stopped(); else nextAudit(IDLE_MS); });
 function askAudit(action) {
-  if (action === "start" && view.id !== HOME) go(HOME, false);
+  if (action === "start" && view.id !== AUDIT_SPACE) go(AUDIT_SPACE, false);
   post(P.audit, { action: action })
     .then((reply) => {
       if (!reply.ok) toast(reply.body.error || T.auditBusy);
@@ -345,7 +347,7 @@ function fillPalette() {
     ? entries.map((entry) => {
       if (entry.header) return `<li class="palette-group" role="presentation">${esc(entry.header)}</li>`;
       at += 1;
-      return `<li class="palette-opt" role="option" id="po-${at}" data-k="${at}" aria-selected="false">${icon(entry.icon)}<span class="po-title">${esc(entry.title)}</span>${entry.risk ? riskPill(entry.risk) : ""}<span class="po-sub">${esc(entry.sub)}</span></li>`;
+      return `<li class="palette-opt" role="option" id="po-${at}" data-k="${at}" aria-selected="false">${icon(entry.icon)}<span class="po-title">${esc(entry.title)}</span>${entry.risk ? riskPill(entry.risk) : ""}<span class="po-sub">${esc(entry.sub)}</span>${entry.type === "run" ? starButton(entry.id) : ""}</li>`;
     }).join("")
     : `<li class="palette-empty" role="presentation">${esc(T.nothingMatches)}</li>`;
   markActive();
@@ -426,17 +428,31 @@ const ACTS = {
 const TV_STEP = "slideshow-album";
 const TV_WAIT_MS = 120000;
 // Asked once per visit: each render of the home page asked it again (2026-11-02).
+// The home page stays short whatever the collection (0548): one "Albums (N)" entry, opening the
+// albums page where a tap shows an album on the TV, and the TV_RECENT albums this phone showed
+// last (kept on this phone only); "Last sent" (each send replaces it) is never a shortcut.
+const TV_RECENT = 3;
 let tvList = null;
+let tvAsked = false;
+const tvRecent = () => store.get("tvRecent", []);
 function tvAlbums() {
   const box = $("#tvAlbums");
   if (!box) return;
+  const asked = new URLSearchParams(window.location.search).get("tv"); // the albums page's tap
+  if (asked && !tvAsked) {
+    tvAsked = true;
+    window.history.replaceState(null, "", window.location.pathname);
+    tvStart(asked);
+  }
   tvList = tvList || fetch(P.albumList, { cache: "no-store" })
     .then((response) => (response.ok ? response.json() : Promise.reject(response.status)));
   tvList
     .then((list) => {
       const names = (list.albums || []).map((album) => album.name);
+      const shortcuts = tvRecent().filter((name) => names.includes(name) && name !== T.lastSent).slice(0, TV_RECENT);
       box.innerHTML = names.length
-        ? names.map((name) => `<button class="btn btn-primary" type="button" data-tv="${esc(name)}">${icon("play")} ${esc(name)}</button>`).join("")
+        ? shortcuts.map((name) => `<button class="btn btn-primary" type="button" data-tv="${esc(name)}">${icon("play")} ${esc(name)}</button>`).join("")
+          + `<a class="btn btn-ghost" href="${esc(P.albums)}?tv=1">${icon("image")} ${esc(fill(T.tvAll, { n: count(names.length) }))}</a>`
         : `<p class="muted">${esc(T.tvNone)}</p>`;
       $$("[data-tv]", box).forEach((button) => button.addEventListener("click", () => tvStart(button.dataset.tv)));
     })
@@ -478,6 +494,7 @@ function tvChoose(id) {
     .catch(() => { $$("[data-choose]").forEach((button) => { button.disabled = false; }); toast(T.tvLate); });
 }
 function tvStart(album) {
+  store.set("tvRecent", [album, ...tvRecent().filter((name) => name !== album)].slice(0, 2 * TV_RECENT));
   $$("[data-tv]").forEach((button) => { button.disabled = true; });
   toast(T.tvStarting);
   post(P.step, { name: TV_STEP, fields: { album: album } })

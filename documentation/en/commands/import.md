@@ -118,7 +118,8 @@ which one), lists its `DCIM` folder
 It ends with what it read back from the folder: *New photos and videos copied: 212 (1.40 GB,
 18.5 MB/s)*, then each count left out (*Also on the phone, skipped: 164 you set aside earlier*:
 files of the phone, not of the copy). Then it runs the steps of `[imports] then` in
-`config.toml`, said first (*After the import: audit > copies > bursts > tags > places*): **audit**, so that the new
+`config.toml` (one box per step under *Copy the new photos of the phone* on the home page: a box switched
+writes the file, and the page shows what it read back), said first (*After the import: audit > copies > bursts > tags > places*): **audit**, so that the new
 files join your library and [`search`](search.md) (in the home page when it is open and the audit
 is the only step, else in the console); **copies** (the new files that are exact copies of
 another, the same photo twice or one your library already holds, go to the quarantine like a
@@ -238,7 +239,8 @@ happens (a run of kind `phone` in `mh history`).
   (one request per second), and the names found (*Kasteel Den Halder*) are kept in `/cache`:
   the [slideshow](slideshow.md) shows them on the TV, and a place already asked is never asked
   again. `[places] reverse_lookup = "never"` (or an empty `nominatim_url`) never asks;
-  `"always"` no longer asks. With `--yes`, no one is there to say Yes: nothing is sent. This
+  `"always"` no longer asks; the [places](places.md) page switches it (*After an import, name the
+  new photos' places online*: ask, always, never), saved in `config.toml` and read back. With `--yes`, no one is there to say Yes: nothing is sent. This
   is the only time a position of your photos leaves your PC, and never without your consent.
 - **Safe**: refused without a journal, or with your photo folders read-only, like every command
   that changes files.

@@ -4,7 +4,8 @@ The image of the branch serves `mh` through `mh.sh` on the demo tree; the Playwr
 image (`tests/support/pages_browser.py`) runs `tests/support/pages_walk.py` on the
 host's network. Proven here: search opens from the home page and come back,
 each under a bound, without a container started by the click (Docker's events); a
-console step runs while the page stays open; the tab follows a page of its own server
+read-only step (`config`) answers in its page `/console/config/` (0567); the tab
+follows a page of its own server
 back to the home page ten times in a row, without F5 (0354); the server gone, the
 page says Media Hygiene stopped (0416). Not proven: `mh.ps1`,
 Windows, Docker Desktop (step 36 of `mh-measure.ps1`, by hand).
@@ -156,7 +157,7 @@ def _started(since: float, until: float) -> list[str]:
 def test_pages_of_mh_alone_in_a_real_browser(
     served: tuple[Path, str], capsys: pytest.CaptureFixture[str]
 ) -> None:
-    """Search, a console step and a review from the home page, timed."""
+    """Search, a read-only step page and a review from the home page, timed."""
     root, port = served
     shots = root / "walk"
     shots.mkdir()
@@ -179,10 +180,9 @@ def test_pages_of_mh_alone_in_a_real_browser(
     assert walk["search"]["first_search_ms"] is not None
     assert _started(walk["clicks_from"], walk["clicks_until"]) == []
     console = walk["console"]
-    assert console["stayed"], console
-    assert "status" in console["said"], console
-    assert console["step"]["state"] == "done", console
-    assert console["step"]["code"] == 0, console
+    assert console["url"].endswith("/console/config/"), console
+    assert not console["error"], console
+    assert console["said"].strip(), console
     rounds = walk["own_server"]
     assert rounds["review"], "no review page available on the demo tree"
     assert len(rounds["rounds_ms"]) == _ROUNDS

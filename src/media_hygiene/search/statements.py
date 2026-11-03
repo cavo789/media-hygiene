@@ -86,6 +86,7 @@ SHOWN: Final = f"{KIND}(files.path) = ?"
 # A folder of the tree and below (0348): `/` sorts just before `0` in the paths.
 WITHIN: Final = "files.path > ? AND files.path < ?"
 ONLY: Final = "files.path IN (SELECT value FROM json_each(?))"  # the set aside (0464)
+WITHOUT: Final = "files.path NOT IN (SELECT value FROM json_each(?))"  # 0501
 _RATE: Final = "json_extract(files.metadata, '$.bit_rate')"  # unknown last (0408)
 _LENGTH: Final = (
     "json_extract(files.metadata, '$.duration')"  # photos: none, last (0459)
@@ -189,6 +190,7 @@ def _places(filters: Filters, chosen: list[str], parameters: list[object]) -> No
     if filters.within:
         chosen.append(WITHIN)
         parameters.extend((filters.within + "/", filters.within + "0"))
-    if filters.only is not None:
-        chosen.append(ONLY)
-        parameters.append(json.dumps(filters.only))
+    for condition, paths in ((ONLY, filters.only), (WITHOUT, filters.without or None)):
+        if paths is not None:
+            chosen.append(condition)
+            parameters.append(json.dumps(paths))

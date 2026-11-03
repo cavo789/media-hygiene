@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.menu_catalog import catalog
 from media_hygiene.cli.menu_entry import Doc, Space
+from media_hygiene.cli.safety import PAGE_CAPTURED
 from media_hygiene.constants import Locale
 from media_hygiene.docs.served import served_url
 from media_hygiene.i18n import _, active_locale
@@ -49,15 +50,44 @@ PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
         "slideshow.html.j2": "slideshow",
         "shrink.html.j2": "shrink",
         "history.html.j2": "history",
+        **{f"console_{name}.html.j2": name for name in PAGE_CAPTURED},
         "album.html.j2": ALBUMS_DOC,
+        "album_edit.html.j2": ALBUMS_DOC,
     }
 )
-# The pages already in the home page's frame (0491: the shell; one TODO per page moves
-# it, 0492-0494); the others keep the thin bar until then. Value: a tile page (its
-# sidebar folded to its icons).
-SHELL_PAGES: Final[Mapping[str, bool]] = MappingProxyType({"album.html.j2": False})
-# A page whose space is not its action's (no action opens it).
-_PAGE_SPACES: Final = MappingProxyType({"album.html.j2": Space.SHARE})
+# The pages in the home page's frame (0491: the shell; 0492-0496 moved them); the
+# phone's page keeps the thin bar (read-only, its own layout). Value: a tile page or a
+# map with its own left column (the sidebar folded to its icons, the grid keeps its
+# columns).
+SHELL_PAGES: Final[Mapping[str, bool]] = MappingProxyType(
+    {
+        "album.html.j2": False,
+        "album_edit.html.j2": True,
+        "search.html.j2": True,
+        "review.html.j2": True,
+        "near_review.html.j2": True,
+        "pairs_review.html.j2": True,
+        "gone_review.html.j2": True,
+        "intruders_review.html.j2": True,
+        "unwanted_review.html.j2": True,
+        "people.html.j2": True,
+        "person.html.j2": True,
+        "places.html.j2": True,
+        "history.html.j2": False,
+        **dict.fromkeys((f"console_{name}.html.j2" for name in PAGE_CAPTURED), False),
+        "shrink.html.j2": False,
+    }
+)
+# A page whose space is not its action's: no action opens it, or the faces are found
+# (0495: *Find*, while `people` is listed under *Sort*).
+_PAGE_SPACES: Final = MappingProxyType(
+    {
+        "album.html.j2": Space.SHARE,
+        "album_edit.html.j2": Space.SHARE,
+        "people.html.j2": Space.FIND,
+        "person.html.j2": Space.FIND,
+    }
+)
 # The other language's link, written in that language: never translated.
 _TWIN_LABELS: Final = MappingProxyType(
     {Locale.EN: "In English", Locale.FR: "En français"}

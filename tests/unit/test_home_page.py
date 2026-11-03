@@ -108,7 +108,7 @@ def test_the_counts_and_the_reasons_come_from_the_tool_folders(tmp_path: Path) -
     spaces = {space.id: space for space in state.spaces}
     assert spaces["clean"].badge == "2,941"
     assert spaces["import"].badge == "214"
-    assert spaces["clean"].total == 8
+    assert spaces["clean"].total == 7  # `open` stays in `mh menu` (0504)
     tiles = {tile.label: tile for tile in state.tiles}
     assert tiles["Extra copies"].value == "2,941"
     assert tiles["Only on the NAS"].value == "214"
@@ -139,7 +139,7 @@ def test_every_action_of_the_catalog_is_in_the_state(tmp_path: Path) -> None:
     """The 46 actions, with their doc in both languages; fields for the forms."""
     state = _state(tmp_path, "first run")
     names = {action.name for action in state.actions}
-    assert names == {step.name for step in full_catalog().steps}
+    assert names == {step.name for step in full_catalog().steps if step.web}
     album = state.action("album")
     assert album is not None
     assert [field.name for field in album.fields] == ["album"]

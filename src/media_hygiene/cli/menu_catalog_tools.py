@@ -39,6 +39,7 @@ def tools_steps() -> tuple[Step, ...]:
             icon="report",
             keywords=_("reports list index"),
             doc=Doc("commands/reports/"),
+            web=False,
         ),
         Step(
             "reports-prune",
@@ -72,6 +73,7 @@ def tools_steps() -> tuple[Step, ...]:
             icon="folder",
             keywords=_("folders list disks"),
             doc=FOLDERS_DOC,
+            web=False,
         ),
         Step(
             "folders-remove",

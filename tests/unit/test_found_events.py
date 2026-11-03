@@ -28,8 +28,8 @@ from media_hygiene.search.found_desk import FOUND_PATH, FoundDesk
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+    from media_hygiene.review.events_batch import SortBatchSession
     from media_hygiene.review.http import Request
-    from media_hygiene.review.sort_batch import SortBatchSession
     from media_hygiene.search.fts import SearchIndex
 
 _GAP = 18.0
@@ -242,3 +242,14 @@ def test_confirm_posts_the_shown_rows_and_names_its_count() -> None:
     assert 'shown("foundList"), ...shown("foundRefusedList")' in script
     assert "counted(FT.confirm, count)" in script
     assert 'ngettext("Confirm this {n}", "Confirm these {n}", 1)' in script
+
+
+def test_a_folded_group_is_neither_posted_nor_counted() -> None:
+    """A row of the closed *Not events* is not shown: Confirm leaves it (0581)."""
+    script = (
+        Path(__file__).parents[2]
+        / "src/media_hygiene/search/templates/search_events_found.js.j2"
+    ).read_text(encoding="utf-8")
+    assert '!box.closest("details:not([open])")' in script
+    assert ".filter(unfolded)" in script
+    assert 'byId("foundRefused").addEventListener("toggle", filter)' in script

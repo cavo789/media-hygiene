@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import replace
 from functools import partial
 from typing import TYPE_CHECKING
 
@@ -127,6 +128,7 @@ def test_the_state_is_what_status_and_the_menu_say(
     status = read_status(runtime)
     assert state.lines == status_lines(status)
     menu = build_menu(status, runtime.settings.clean.purge_hint_days)
+    page = replace(menu, steps=tuple(line for line in menu.steps if line.step.web))
     numbered = {
         f"{action.number}\t{action.command}"
         for action in state.actions
@@ -135,7 +137,7 @@ def test_the_state_is_what_status_and_the_menu_say(
     assert numbered == {
         f"{number}\tmh {command}"
         for number, _tab, command in (
-            line.partition("\t") for line in choice_lines(menu)
+            line.partition("\t") for line in choice_lines(page)
         )
         if number != "0"
     }

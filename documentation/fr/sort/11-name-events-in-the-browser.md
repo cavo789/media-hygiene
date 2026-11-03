@@ -17,7 +17,7 @@ photos, sa proposition, et un champ pour le nommer**, le tout au clavier.
 C'est facultatif : le classeur seul suffit, et les deux s'utilisent ensemble. La page ne touche
 ni aux photos ni au classeur ; c'est `sort` ([étape 7](07-sort.md)) qui applique vos choix.
 
-> **Depuis 0572** l'onglet 🗂 Événements ne lit plus le plan de `classify` : il regroupe les fichiers pas encore triés de la période cherchée, que vous déplacez avec **📂 Déplacer vers un événement…** — [comment](../commands/search.md#les-événements-du-dernier-classify). Les étapes ci-dessous, tirées du plan, décrivent l'ancien onglet.
+> **Depuis 0572** l'onglet 🗂 Événements ne lit plus le plan de `classify` : il regroupe les fichiers pas encore triés de la période cherchée. Cliquez un événement : sa fiche dit en une phrase où vont ses fichiers, puis **Trier ici maintenant** (déplacés, notés au journal, puis l'événement suivant), **Un autre dossier…** (le **📂 Déplacer vers un événement…** de la barre) ou **Ne pas trier cet événement** — [comment](../commands/search.md#les-événements-du-dernier-classify). Les étapes ci-dessous, tirées du plan, décrivent l'ancien onglet.
 
 ## Lancer la page
 
@@ -160,8 +160,8 @@ des pages le font, et chacun dit ce qu'il a enregistré, relu sur le disque.
   (`2019\2019-07\Monténégro`) sont aussi des événements. En haut de l'onglet 🗂 Événements,
   *N événements trouvés dans vos dossiers* les liste, chacun avec ses jours et son nombre de
   fichiers, tous cochés : décochez ceux qui ne méritent pas d'être retenus, puis **Confirmer
-  ces N**. Confirmer n'agit que sur les lignes affichées : avec un filtre tapé, les lignes
-  masquées restent à décider, intactes.
+  ces N**. Confirmer n'agit que sur les lignes affichées : avec un filtre tapé, ou un groupe
+  replié, les lignes masquées restent à décider, intactes.
   Les cochés sont retenus ; les décochés sont notés « pas des événements » et jamais reproposés
   (*N dossiers indiqués comme n'étant pas des événements*, replié en dessous, permet d'en recocher
   un). Un dossier dont les photos sont très espacées dans le temps (`Tirages jan10`) est un lot,
@@ -217,8 +217,9 @@ et `keep_folders = true` pour que vos propres dossiers restent en dessous. Avant
 d'enregistrer, la boîte dit ce que la règle prendrait sur cette proposition : « 236 fichiers : 6
 de cet événement, 230 d'autres événements ou dossiers les mêmes jours. Ailleurs : Photos Chloé
 (230) », et les règles dont elle partage des jours (la première listée l'emporte ces jours-là).
-Enregistrée, la règle est écrite dans `config.toml` juste au-dessus de *Dossiers existants*,
-vos commentaires conservés, relue sur le disque et annoncée avec son heure ; le dossier de
+Enregistrée, la règle est écrite dans `/config/events/<année>.toml` (l'année où elle
+commence ; `config.toml` reste tel que vous l'avez écrit), appliquée juste au-dessus de
+*Dossiers existants*, relue sur le disque et annoncée avec son heure ; le dossier de
 l'événement est choisi en même temps, si bien que *Trier cet événement maintenant* marche tout
 de suite. La colonne de gauche nomme ensuite la règle qui décide les fichiers de l'événement :
 *Règle : Montenegro (2019-07-12..2019-07-19)*.

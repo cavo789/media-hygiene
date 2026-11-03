@@ -4,7 +4,6 @@
 - **Batch**: unassigned
 - **Depends**: —
 - **Files**: src/media_hygiene/config/tags_settings.py, src/media_hygiene/tags/normalize.py, src/media_hygiene/review/templates/pick_*, search page and its routes, tags index rows, XMP writers (`xmp_*`)
-- **Needs maintainer**: the questions below, asked when the TODO runs
 
 ## Context
 
@@ -42,3 +41,7 @@ Same layout and keys as the other tile pages (skill `photo-picking-pages`).
 - [ ] It disappears from every photo and does not come back at the next `mh tags`
 - [ ] Dropped tags can be listed and restored
 - [ ] Both languages of the docs updated; `docs_screenshots` flagged as stale
+
+## Decided (2026-11-03)
+
+By the maintainer: also remove the tag from the XMP sidecars already written; several tags at once (a list of the most frequent tags, tick the useless ones). No "merge into another tag".

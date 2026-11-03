@@ -9,15 +9,17 @@ from http import HTTPStatus
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from media_hygiene.classify.event_left import read_left
 from media_hygiene.index.schema import prepare
 from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.search.events_choose import events_get
 from media_hygiene.search.events_desk import EventsDesk
 from media_hygiene.search.fts import SearchIndex
 from media_hygiene.search.span_events import SPAN_FILES_PATH, SPAN_PATH, SpanEvents
+from media_hygiene.search.span_left import left_answer
 
 if TYPE_CHECKING:
-    from media_hygiene.review.sort_batch import SortBatchSession
+    from media_hygiene.review.events_batch import SortBatchSession
 
 _GAP_HOURS = 18.0
 _ROWS = (
@@ -133,3 +135,43 @@ def test_a_bad_period_is_a_404(tmp_path: Path) -> None:
         missing = events_get(bare, f"{SPAN_PATH}..")
         assert missing is not None
         assert missing.status == HTTPStatus.NOT_FOUND
+
+
+def test_do_not_sort_is_saved_read_back_and_undone(tmp_path: Path) -> None:
+    """0574: the event's content ids in events/left.toml, the card says `left`."""
+    _index(tmp_path / "index.db")
+    with closing(sqlite3.connect(tmp_path / "index.db")) as connection:
+        connection.execute("UPDATE files SET full_digest = 'id-' || rowid")
+        connection.commit()
+    with SearchIndex.open(tmp_path / "index.db") as search:
+        span = SpanEvents(
+            search, HostPathMapper(Path("/data")), _nothing_chosen, _GAP_HOURS, tmp_path
+        )
+        first = json.loads(span.answer(f"{SPAN_PATH}..").body)["events"][0]
+        assert first["left"] is False
+        body = json.dumps({"event": first["id"], "left": True}).encode()
+        saved = json.loads(left_answer(span, body).body)
+        assert saved["left"] is True
+        assert "these 3 files stay" in saved["said"]
+        assert read_left(tmp_path) == {"id-1", "id-2", "id-3"}
+        events = json.loads(span.answer(f"{SPAN_PATH}..").body)["events"]
+        assert [card["left"] for card in events] == [True, False]
+        back = json.dumps({"event": first["id"], "left": False}).encode()
+        assert json.loads(left_answer(span, back).body)["left"] is False
+        assert read_left(tmp_path) == frozenset()
+
+
+def test_do_not_sort_without_ids_or_tab_is_refused(tmp_path: Path) -> None:
+    """Files not hashed yet: 409, nothing written; no settings folder: 404."""
+    _index(tmp_path / "index.db")
+    with SearchIndex.open(tmp_path / "index.db") as search:
+        span = SpanEvents(
+            search, HostPathMapper(Path("/data")), _nothing_chosen, _GAP_HOURS, tmp_path
+        )
+        body = json.dumps(
+            {"event": "2024-04-05T12:00:00..2024-04-05T12:00:00", "left": True}
+        )
+        assert left_answer(span, body.encode()).status == HTTPStatus.CONFLICT
+        assert not (tmp_path / "events").exists()
+        assert left_answer(_span(search), body.encode()).status == HTTPStatus.NOT_FOUND
+        assert left_answer(span, b"{}").status == HTTPStatus.BAD_REQUEST

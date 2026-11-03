@@ -42,6 +42,7 @@ function card(hit, index) {
   }
   if (hit.row !== undefined && eventTile) eventTile(hit, meta, node);  // an event's (0438)
   if (hit.likely && window.mhLate) window.mhLate.tile(hit, meta, node);  // a late photo's (0558)
+  if (hit.inAlbum) { node.classList.add("inAlbum"); meta.append(element("div", "inAlbumMark", TEXTS.inAlbum)); }  // 0501
   if (hit.caption) meta.append(titled(element("div", "muted caption", hit.caption)));
   meta.append(chipsOf(hit));
   node.append(withLength(hit, picture), meta);
@@ -299,6 +300,15 @@ function covered(seen) {
   }
 }
 
+// The album named in the bar (0501): its files marked on their tiles, or kept, or left out.
+function albumAimed() {
+  const name = $("albumName") ? $("albumName").value.trim() : "";
+  $("albumIn").disabled = !name;
+  if (!name) return null;
+  const wanted = $("albumIn").value;
+  return { name: name, inside: wanted === "in" ? true : wanted === "out" ? false : null };
+}
+
 function told(text, error) {
   $("status").className = error ? "error" : "";
   $("status").textContent = text;
@@ -312,7 +322,7 @@ async function search(event, again) {
     text: $("text").value, day_from: $("from").value || null, day_to: $("to").value || null,
     folder: $("folder").value, source: null, sorting: $("sorting").value,
     order: $("order").value, kind: asideListed() ? "all" : $("kind").value, aside: asideListed(), within: within ? within.inside : "",
-    more: more,
+    more: more, album: albumAimed(),
   };
   const lateBefore = window.mhLate ? window.mhLate.opened : 0;
   const answer = await ask(SEARCH_PATH, body);
@@ -325,9 +335,12 @@ async function search(event, again) {
   }
   const found = await answer.json();
   asked = body;
+  showChips(body);  // the active filters, removable (0565)
   if (!again) keepInHistory();
   offerRule();
-  total = found.total;
+  // An album kept or left out (0501) narrows the files shown, not *Pick all N found*'s
+  // search: that one is not offered then, every action stays on the tiles shown.
+  total = body.album && body.album.inside !== null ? found.hits.length : found.total;
   showFiles(found.hits, again);
   $("more").hidden = found.total <= found.hits.length;
   covered(found.coverage);
@@ -463,6 +476,13 @@ $("text").focus();
 // `mh search --folder <folder>` (0405): the page opens on a folder left to sort.
 const openedOn = new URLSearchParams(window.location.search).get({{ folder_query | tojson }});
 if (openedOn) $("folder").value = openedOn;
+// *Add photos* of the albums page (0501): the period around the album's dates.
+for (const id of ["from", "to"]) {
+  const day = new URLSearchParams(window.location.search).get(id);
+  if (day) $(id).value = day;
+}
+$("albumIn").addEventListener("change", () => search(null));
+if ($("albumName")) $("albumName").addEventListener("change", () => search(null));
 search();
 loadChosen();
 

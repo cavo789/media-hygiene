@@ -34,7 +34,7 @@ docker run --rm -it `
   cavo789/media-hygiene home
 ```
 
-![The home page: the sidebar with the five stages of the cycle and the tools, the next step as a big button, the cycle, the tiles of where you are, what the last audit found, the reports and the audit in the page](../images/home.webp)
+![The home page: the sidebar with the five stages of the cycle and the tools, the cycle, the next step in one compact card, the tiles of where you are, what the last audit found and the recent reports](../images/home.webp)
 
 ## At a glance
 
@@ -57,20 +57,28 @@ docker run --rm -it `
   [`mh update`](launcher.md#a-new-version-mh-update); gone once `mh` is written again.
 - **The top bar**: *What do you want to do?* (the palette), **Undo the last run** while a run is
   undoable, and **Documentation**: the chapter of the page you are on, and its English twin.
-- **The next step**: why, what it risks in words (*Undoable*), the button that runs it and its
-  command: *the last audit found extra copies: 'clean' sets them aside*, **mh clean**. Its
-  button has the focus when the page opens: <kbd>Enter</kbd> runs it, as in `mh menu`. When
-  everything is applied, the page says so.
 - **The cycle of your photos**: the five stages, the next one highlighted (*You are here*), each
   with one line (*9 copies to set aside*, *A proposal to apply*) and how many steps of its
   guide are done.
+- **Your favourites**: a row of large cards, the actions you starred. Every action of a space,
+  and every line of the palette, has a ☆ that adds or removes it; drag a card by its ⋮⋮ (mouse
+  or finger), or <kbd>Alt</kbd>+<kbd>←</kbd> / <kbd>→</kbd> on it, to move it. The list is
+  written into `config.toml` (`[home] favorites = ["search", "import"]`, your comments kept)
+  and drawn as read back from the file; a name a newer version no longer knows is skipped.
+  Nothing starred: three are suggested (the library, an import, an audit). Not on a phone.
+- **The next step**, one compact card under the cycle: why, what it risks in words (*Undoable*), the button that runs it and its
+  command: *the last audit found extra copies: 'clean' sets them aside*, **mh clean**. Its
+  button has the focus when the page opens: <kbd>Enter</kbd> runs it, as in `mh menu`. When
+  everything is applied, the page says so.
 - **Where you are**: one tile per fact (the last audit, the extra copies, the quarantine, the
   files only on the NAS, the sort, the words, the faces), each leading to its space.
 - **What the last audit found**: each finding with its button (*9 identical copies*: **Set the
   extra copies aside**; *3 unreadable files*: the report), and a few previews of its report.
   Before any audit: three things to know (nothing moves without you, everything that moves can
   be undone, one thing only is for good).
-- **Recent reports**, and **Audit in this page** 🔒: **Audit now** reads your folders as
+- **Recent reports**.
+- **Audit in this page** 🔒, at the top of the *Clean* stage (its first step, the audit, has
+  **In this page** too): **Audit now** reads your folders as
   `mh audit` does, with the same settings. Each step shows with its counts as it goes; at the
   end, the audit's figures, the time each step took, *What you can do*, and a link to the new
   report. One audit at a time; **Stop the audit** stops it between two files: the cache keeps
@@ -81,10 +89,21 @@ docker run --rm -it `
   instead of its text (*Nothing to undo yet.*). *History and undo* shows the run still undoable
   and the quarantine run by run; *Settings* your folders, the update, Windows, the local AI,
   privacy, the advanced actions and *About*.
+- **What the page already shows stays in the console**: your folders (each found or not, the
+  quarantine of each drive) are in *Your folders* of the sidebar and of *Settings*, so the page
+  does not offer `mh folders`; nor `mh home`, `mh status`, `mh menu` (this page itself), nor
+  `mh open` and `mh reports` (the page's *Every report* link opens the same index, always
+  current). `mh menu` and `mh --help` keep them.
 
 Opened by a right-click on a folder (or `mh --photos "E:\Folder"`), the page names that folder
 first: *This page also analyses: E:\Folder*; the audit of the page and every step run from it
 analyse it too.
+
+The audit panel says what the audit analyses and ignores: *Analysed: photos, RAW, videos ·
+ignored folders: …* (`[scan] extensions` and `excluded_names` of `config.toml`). *Change*
+offers the kinds as checkboxes and the folder names as a list, one per line (`*` allowed); *Save*
+writes `config.toml` (your comments kept) and shows what the file holds once read back. The last
+audit was made with the former settings: the page says so and offers *Run the audit again*.
 
 ## Run a step
 
@@ -163,7 +182,8 @@ PC only? See [Keep the page on this PC only](#keep-the-page-on-this-pc-only) bel
 
 On the phone, the home page is the family's door, **Our photos**: *Find a photo* (search and
 your folders), the albums and where you are; the stages that change photos (import, clean, sort, back
-up) and the tools are not shown there, the PC keeps the whole cycle.
+up) and the tools are not shown there, the PC keeps the whole cycle. Its title is yours with
+`[home] family_title = "The Smiths"` in `config.toml` (empty: *Our photos*).
 
 🔒 **The phone is read-only: every change is made on the PC.** From the phone: the page, where you are, the reports, the progress of an audit started on the PC,
 [your albums](#your-albums-on-the-phone), and **search** (its photos opened at
@@ -174,7 +194,10 @@ PC's tab closed; once `mh` stops, the phone's page says so.
 Every other step stays on the PC (*Run this step on the PC*): its questions are asked in the
 window of `mh`, which nobody sees from the sofa. One exception: **Show on the TV**, on the
 phone's page, offers three choices: an album saved on the PC, **a folder** (one of the folders
-analysed) or **a month** (by the date the audit read). A tap starts that
+analysed) or **a month** (by the date the audit read). However many albums, the page stays
+short: one **Albums (N)** button and, above it, the 3 albums this phone showed last; the albums
+page it opens lists them all with a box to find one by its name, the last shown first, and a
+tap on an album shows it on the TV. A tap starts that
 [slideshow](slideshow.md) in the home page's own server, and the phone opens its remote at once.
 It only shows: nothing is written, nothing moves. No album saved: the folder and the month are
 still there.

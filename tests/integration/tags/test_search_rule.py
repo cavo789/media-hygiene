@@ -78,6 +78,7 @@ def test_a_rule_saved_then_updated_in_place(
     config = locations.config_dir / "config.toml"
     text = config.read_text().replace("\n[tags]", _EXISTING + "\n[tags]")
     config.write_text(text, encoding="utf-8")
+    before = config.read_bytes()
     updated = {**_RULE, "last": "2022-12-26", "replaces": "Christmas 2022"}
     answers = serve_search(
         cli,
@@ -103,12 +104,14 @@ def test_a_rule_saved_then_updated_in_place(
         ("Christmas 2022", "2022-12-26")
     ]
     assert json.loads(answers[3].body)["name_taken"]
+    assert config.read_bytes() == before  # 0578: in events/2022.toml, read back
+    assert "2022-12-26" in (locations.config_dir / "events" / "2022.toml").read_text()
 
 
-def test_a_rule_without_config_is_refused_said(
+def test_a_rule_without_a_list_in_config_goes_to_events(
     cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """No list of rules to write into: 409 and why; a bad rule: 400."""
+    """0578: no list of rules in config.toml: events/ holds it; a bad rule: 400."""
     answers = serve_search(
         cli,
         monkeypatch,
@@ -117,9 +120,10 @@ def test_a_rule_without_config_is_refused_said(
             ("POST /api/period-rule", {**_RULE, "name": " "}),
         ],
     )
-    assert [answer.status for answer in answers] == [409, 400]
-    assert json.loads(answers[0].body)["error"]
+    assert [answer.status for answer in answers] == [200, 400]
+    assert json.loads(answers[1].body)["error"]
     assert "Christmas" not in (locations.config_dir / "config.toml").read_text()
+    assert "Christmas" in (locations.config_dir / "events" / "2022.toml").read_text()
 
 
 def test_a_group_without_a_classify_run_is_refused_said(

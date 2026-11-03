@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.apply_api import APPLY_PATH, ApplyDesk, ApplyOffer
 from media_hygiene.review.page_header import headed_page
+from media_hygiene.search.album_root_desk import AlbumRootDesk
 from media_hygiene.search.app import (
     SEARCH_PAGE_PATH,
     SEARCH_PATH,
@@ -23,7 +24,7 @@ from media_hygiene.search.aside_filter import AsideFilter
 from media_hygiene.search.chosen_api import CHOSEN_PATH, ChosenDesk
 from media_hygiene.search.events_choose import SORT_PATHS
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH, EVENTS_PATH
-from media_hygiene.search.folder_role_desk import ROLE_PATH, RoleDesk
+from media_hygiene.search.folder_role_desk import ALBUM_ROOT_PATH, ROLE_PATH, RoleDesk
 from media_hygiene.search.folders import (
     BROWSE_PATH,
     FOLDER_PATH,
@@ -45,6 +46,7 @@ from media_hygiene.search.rule_desk import (
 )
 from media_hygiene.search.rule_go import RULE_GO_PATH
 from media_hygiene.search.span_events import SPAN_FILES_PATH, SPAN_PATH
+from media_hygiene.search.span_left import LEFT_PATH
 from media_hygiene.search.tag_desk import HAND_TAG_PATH
 from media_hygiene.search.views import FIRST_HITS
 from media_hygiene.services.albums import album_desk
@@ -106,6 +108,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "search_page": SEARCH_PAGE_PATH,
         "folders_path": FOLDERS_PATH,
         "role_path": ROLE_PATH,
+        "album_root_path": ALBUM_ROOT_PATH,
         "folder_path": FOLDER_PATH,
         "heaviest_path": HEAVIEST_PATH,
         "heaviest_first": FIRST_SHOWN,
@@ -121,7 +124,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "hand_tag_path": HAND_TAG_PATH,
         "folder_query": FOLDER_QUERY,
         "events_path": EVENTS_PATH,
-        "span_paths": {"list": SPAN_PATH, "files": SPAN_FILES_PATH},
+        "span_paths": {"list": SPAN_PATH, "files": SPAN_FILES_PATH, "left": LEFT_PATH},
         "found_path": FOUND_PATH,
         "late_path": LATE_PATH,
         "late_refuse_path": LATE_REFUSE_PATH,
@@ -138,8 +141,11 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
     )
     chosen = chosen_desk(runtime, search)
     roots = shown_roots(runtime)
-    roles = RoleDesk(runtime.locations.config_file, runtime.mapper, roots)
-    folders = FolderDesk(search, runtime.mapper, roots, chosen, roles)
+    roles = RoleDesk(
+        runtime.locations.config_file, runtime.mapper, roots, search.connection
+    )
+    albums_at = AlbumRootDesk(roles)
+    folders = FolderDesk(search, runtime.mapper, roots, chosen, roles, albums_at)
     place = SearchPlace(
         search,
         runtime.mapper,

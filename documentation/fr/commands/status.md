@@ -34,7 +34,7 @@ docker run --rm -it `
 | Conseillé | Les mêmes dossiers de l'outil que pour `clean` : `/reports`, `/journal`, `/quarantine`, `/cache`. |
 | Écrit | Rien. |
 | Annuler | Rien à annuler. |
-| Avec `mh` | `mh status` : chaque dossier est monté pour vous. |
+| Avec `mh` | `mh status` : chaque dossier est monté pour vous. Depuis la page d'accueil, cette étape affiche ce qu'elle écrit dans la page elle-même (rien dans le terminal) ; tapée, elle écrit comme avant. |
 
 ## Lancer
 

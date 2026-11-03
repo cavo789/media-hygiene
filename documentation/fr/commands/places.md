@@ -181,7 +181,10 @@ l'outil lui-même, depuis vos dossiers ; leurs aperçus restent dans `/cache`. L
 que vous regardez) depuis le serveur de `[places] tiles` ; **Chercher sur OpenStreetMap** envoie
 **le texte que vous avez tapé**, sur votre clic seulement, à `[places] nominatim_url` (vide, cette
 recherche est désactivée). `classify` ne va jamais en ligne. Seul [`import`](import.md#bon-à-savoir)
-peut envoyer des positions, arrondies, après votre Oui explicite.
+peut envoyer des positions, arrondies, après votre Oui explicite. La liste *Après un import,
+nommer en ligne les lieux des nouvelles photos*, dans la colonne de gauche, dit et change ce choix
+(`[places] reverse_lookup`) : *Demander à chaque fois*, *Toujours* ou *Jamais*, enregistré dans
+`config.toml` et relu.
 
 ## Bon à savoir
 

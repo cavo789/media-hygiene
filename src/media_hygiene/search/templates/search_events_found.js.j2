@@ -53,8 +53,10 @@
     byId("foundSave").textContent = counted(FT.confirm, count);
     byId("foundSave").disabled = !count;
   };
-  // Never act on what is not shown (0575): only the rows the filter shows are posted.
-  const shown = (list) => [...byId(list).querySelectorAll(".foundItem:not([hidden]) input")];
+  // Never act on what is not shown (0575): only the rows the filter shows are posted, and
+  // none of a folded group (*Not events* closed, 0581).
+  const unfolded = (box) => !box.closest("details:not([open])");
+  const shown = (list) => [...byId(list).querySelectorAll(".foundItem:not([hidden]) input")].filter(unfolded);
   const decided = () => [...shown("foundList"), ...shown("foundRefusedList")];
   const tick = (on) => { for (const box of shown("foundList")) box.checked = on; };
   const load = async () => {
@@ -62,6 +64,7 @@
     if (answer && answer.ok) show(await answer.json());
   };
   byId("foundFilter").addEventListener("input", filter);
+  byId("foundRefused").addEventListener("toggle", filter);
   byId("foundAll").addEventListener("click", () => tick(true));
   byId("foundNone").addEventListener("click", () => tick(false));
   byId("foundSave").addEventListener("click", async () => {

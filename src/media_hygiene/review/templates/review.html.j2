@@ -37,7 +37,7 @@
   "sheetDoubtful": _("{series} to look at one by one"),
   "sheetEnd": _("Every obvious series has been seen. Left to look at one by one: {series}; P shows them."),
   "obviousNone": _("No obvious series left to validate."),
-  "obviousAsk": _("{series}: only the sharpest shot (and those of protected folders) would stay, {aside}, saved in one write. Series to look at, still to see: {left}. Validate them? Z takes the whole batch back."),
+  "obviousToast": "✔ " ~ _("{series} validated: only the sharpest shot (and those of protected folders) stays, {aside}. Series to look at, still to see: {left}."),
   "obviousDone": _("{done}: Z takes the whole batch back."),
   "undoneMany": "↶ " ~ _("Choices on {count} series undone."),
   "welcome": "💡 " ~ _("The proposal is already made: → is enough when it suits you."),
@@ -62,7 +62,7 @@
   "rowGap": _("gap {gap} %%"),
   "compareTitle": "🔍 " ~ _("At 100 %%: move the mouse over a shot, the same area shows in every one. C or Escape closes."),
   "compareNone": _("Your browser cannot show this format: open the original."),
-  "remaining": "⏱ " ~ _("about {time} left at your pace"),
+  "units": [_("B"), _("KB"), _("MB"), _("GB"), _("TB")],
   "viewBoard": "🗂 " ~ _("Board"),
   "viewSingle": "🖼 " ~ _("One series"),
   "boardKeep": "✅ " ~ _("keep all"),
@@ -73,7 +73,7 @@
   "boardDone": _("Every series of this page has been seen: → opens the next page."),
   "validate": "✔ " ~ _("validate"),
   "validateTitle": _("Validate the series still to see here, as moving on would"),
-  "validateAsk": _("Series still to see in {folder}: {series}. Validate them as shown, {aside}, the others kept?"),
+  "validateDone": "✔ " ~ _("{folder}: {series} validated as shown, {aside}, the others kept."),
   "validateNone": _("Every series here has been seen already."),
   "diskTitle": _("What {file} holds for this series").replace("{file}", file),
   "diskTodo": "⏳ " ~ _("No choice yet: nothing will be moved."),
@@ -208,6 +208,7 @@
 </main>
 {% endblock %}
 {% block after %}
+{% include "undo_toast.html.j2" %}
 <div id="zoom" hidden></div>
 <div id="compare" role="dialog" aria-label="{{ _('Compare at 100 %%') }}" hidden></div>
 {% include "pick_viewer.html.j2" %}
@@ -253,7 +254,8 @@ pickMoves = false;      // ←/→/Space change the series, ↑/↓ move the fra
     const shots = decided.reduce((count, item) => count + item.discarded.length, 0);
     const seen = series.filter((item) => item.reviewed).length;
     byId("totals").textContent = fill(T.totals, { seen: seen, series: decided.length, shots: shots });
-    byId("eta").textContent = remaining(series.length - seen);
+    const share = seenShare(series.map(spaceOf), (index) => series[index].reviewed);
+    byId("eta").textContent = paceLine(series.length - seen, share);
     if (window.mhApplyNow) window.mhApplyNow(shots > 0); // apply_now.html.j2, opened from home
   };
 
@@ -470,7 +472,9 @@ pickMoves = false;      // ←/→/Space change the series, ↑/↓ move the fra
       setBoard(savedBoard());
       buildTree();
       current = startAt();
-      render();
+      // Obvious series still to see: the page opens on their contact sheet (0581).
+      if (obviousTodo().length > 0) openSheet();
+      else render();
     })
     .catch(() => setStatus(T.offline, "error"));
 })();

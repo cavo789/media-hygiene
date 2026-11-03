@@ -25,8 +25,8 @@ from media_hygiene.review.step_watch import STEP_PATH
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
 from media_hygiene.search.folders import BROWSE_PATH
+from media_hygiene.services.console_here import ReadOnlyHere
 from media_hygiene.services.fresh_runtime import FreshRuntime
-from media_hygiene.services.history_here import HISTORY_PREFIX, HistoryHere
 from media_hygiene.services.places_here import PLACES_PREFIX, PlacesHere
 from media_hygiene.services.review_here import ReviewHere
 from media_hygiene.services.review_kinds import REVIEWS
@@ -140,7 +140,7 @@ class HomeWithPages:
     home: Handling
     pages: SearchHere
     reviews: tuple[ReviewHere, ...]  # `/review/near/…` (0357), the others (0417)
-    history: HistoryHere  # `/history/` (0350)
+    history: ReadOnlyHere  # `/history/` (0350), `/console/<step>/` (0567)
     slideshow: SlideshowHere  # `/slideshow/…`, its TV on the plain door (0417)
     places: PlacesHere  # `/places/…` (0417)
 
@@ -163,7 +163,7 @@ class HomeWithPages:
             return await self.places.handle(request)
         if path == SLIDESHOW_PREFIX or path.startswith(f"{SLIDESHOW_PREFIX}/"):
             return await self.slideshow.handle(request)
-        if path in {HISTORY_PREFIX, f"{HISTORY_PREFIX}/"}:
+        if self.history.serves(path):
             return await self.history.handle(request)
         return await self.pages.answer(request, self.home)
 
@@ -191,7 +191,7 @@ def home_with_pages(
             home,
             pages,
             reviews,
-            HistoryHere(fresh),
+            ReadOnlyHere(fresh),
             slideshow,
             PlacesHere(fresh, server),
         )

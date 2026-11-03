@@ -8,6 +8,7 @@ from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.home_parts import HomeFolder
+from media_hygiene.services.quarantines import mounted_quarantines
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -36,17 +37,37 @@ def home_folders(runtime: Runtime) -> tuple[HomeFolder, ...]:
         role = _("Backup, never changed") if backup else _("Photos")
         folders.append(HomeFolder(path=host, role=role, note=note, ok=ok))
     if runtime.persistent(MountKind.QUARANTINE):
-        quarantine = runtime.locations.quarantine_dir
-        host = dict(runtime.mounts.host_sources).get(quarantine, str(quarantine))
-        folders.append(
-            HomeFolder(
-                path=host,
-                role=_("Quarantine"),
-                note=_("Found") if quarantine.is_dir() else _("Not found"),
-                ok=quarantine.is_dir(),
-            )
-        )
+        folders.extend(_quarantines(runtime))
     return tuple(folders)
+
+
+def _quarantines(runtime: Runtime) -> tuple[HomeFolder, ...]:
+    """The default quarantine, then each drive's own, as `mh folders` lists them (0504).
+
+    Args:
+        runtime: Settings, mount points and the mount table.
+
+    Returns:
+        One line per quarantine, found or not.
+    """
+    quarantines = mounted_quarantines(runtime)
+    sources = dict(runtime.mounts.host_sources)
+    named = (
+        (_("Quarantine"), quarantines.default),
+        *(
+            (_("Quarantine of {drive}").format(drive=drive), folder)
+            for drive, folder in quarantines.by_drive
+        ),
+    )
+    return tuple(
+        HomeFolder(
+            path=sources.get(folder, str(folder)),
+            role=role,
+            note=_("Found") if folder.is_dir() else _("Not found"),
+            ok=folder.is_dir(),
+        )
+        for role, folder in named
+    )
 
 
 def _note(root: Path, *, seen: bool) -> tuple[str, bool]:

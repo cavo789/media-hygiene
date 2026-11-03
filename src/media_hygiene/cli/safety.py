@@ -45,6 +45,8 @@ GO_PAGES: Final = frozenset({"search", "home"})
 PAGE_COMMANDS: Final = frozenset(
     {"review", "places", "search", "people", "home"} | {"slideshow", "shrink"}
 )
+# The read-only steps a page of the home server shows (0567): no question, no page.
+PAGE_CAPTURED: Final = frozenset({"status", "reports", "inventory", "config"})
 # The commands whose output stream is data (a script, the steps of the menu): every
 # message goes to stderr, and the launcher runs them without a terminal (`-t`) and
 # without the keyboard (`-i`), which stays for the `mh` that reads their output.

@@ -35,6 +35,7 @@
     return element;
   };
   const current = () => order[at];
+{% include "review_pace.js.j2" %}
   const undecided = (rank) => groups[rank].action === "" && !groups[rank].sure;
 
   // To check first, then by folder pair; or the space freed, largest first; or by pair.
@@ -61,6 +62,8 @@
     const upTo = order.slice(0, at + 1).reduce((sum, rank) => sum + groups[rank].gain, 0);
     const share = all ? Math.round((100 * upTo) / all) : 100;
     byId("share").textContent = fill(T.share, { size: size(upTo), share: share });
+    const seen = seenShare(groups.map((group) => group.gain), (rank) => groups[rank].action !== "");
+    byId("eta").textContent = paceLine(groups.length - decided, seen);
     if (window.mhApplyNow) window.mhApplyNow(decided > 0); // apply_now.html.j2, opened from home
   };
 
@@ -194,6 +197,7 @@
           setStatus(reply.body.error || fill(T.failed, { status: reply.status }), "error");
           return;
         }
+        if (action) paced(ranks.filter((rank) => groups[rank].action === "").length);
         for (const rank of ranks) {
           groups[rank].action = action || "";
           disk.delete(rank);
@@ -209,7 +213,11 @@
   const decidePair = (pair) => {
     const ranks = groups.map((group, rank) => rank).filter((rank) => groups[rank].pair === pair && groups[rank].action === "");
     if (ranks.length === 0) setStatus(T.pairNone, "");
-    else if (window.confirm(fill(T.pairAsk, { pair: pair, count: ranks.length }))) decide(ranks, "planned");
+    // Taken back in one click (0521): no question first; the toast's Undo (or Z) clears them again.
+    else decide(ranks, "planned", () => {
+      render();
+      window.mhUndoToast(fill(T.pairDone, { pair: pair, count: ranks.length }), () => decide(ranks, null), { keys: true });
+    });
   };
 
   document.addEventListener("keydown", (event) => {

@@ -16,7 +16,7 @@ from media_hygiene.actions.journal import journal_file
 from media_hygiene.actions.runs import list_run_ids
 from media_hygiene.actions.sort_resume import moved_rows
 from media_hygiene.classify.plan_file import ClassifyPlan
-from media_hygiene.review.sort_progress import SortProgress, sort_progress
+from media_hygiene.review.events_progress import SortProgress, sort_progress
 
 if TYPE_CHECKING:
     from pathlib import Path

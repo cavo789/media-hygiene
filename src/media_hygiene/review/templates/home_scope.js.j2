@@ -1,0 +1,59 @@
+// What the audit analyses and ignores (0535): `[scan] extensions` and `excluded_names`
+// of config.toml, read from the disk; *Change* writes them and draws what was read back.
+const scope = { data: null, editing: false, busy: false, stale: "" };
+const SCOPE_KINDS = ["photo", "raw", "video"];
+function scopeLine() {
+  const d = scope.data;
+  if (!d) return "";
+  const kinds = d.kinds.map((kind) => esc(T["scope_" + kind])).concat(d.others.map(esc)).join(", ");
+  const names = d.names.length ? d.names.map(esc).join(", ") : esc(T.scopeNone);
+  const change = REMOTE ? "" : ` <button class="btn btn-ghost" type="button" data-scope="edit">${esc(T.scopeChange)}</button>`;
+  const stale = scope.stale ? `<p class="hero-hint" role="status">${esc(scope.stale)} <button class="btn" type="button" data-act="audit-here">${esc(T.scopeAuditAgain)}</button></p>` : "";
+  return `<p class="muted" id="scopeLine"><strong>${esc(T.scopeAnalysed)}</strong> ${kinds} · <strong>${esc(T.scopeIgnored)}</strong> ${names}${change}</p>${stale}`;
+}
+function scopeForm() {
+  const d = scope.data;
+  const boxes = SCOPE_KINDS.map((kind) => `<label><input type="checkbox" name="scopeKind" value="${kind}"${d.kinds.includes(kind) ? " checked" : ""}> ${esc(T["scope_" + kind])}</label>`).join(" ");
+  const others = d.others.length ? `<p class="muted">${esc(fill(T.scopeOthers, { list: d.others.join(", ") }))}</p>` : "";
+  return `<form id="scopeForm"><fieldset><legend>${esc(T.scopeKinds)}</legend>${boxes}</fieldset>${others}
+    <label for="scopeNames">${esc(T.scopeNames)}</label><textarea id="scopeNames" rows="4">${esc(d.names.join("\n"))}</textarea>
+    <div class="audit-controls"><button class="btn" type="submit">${esc(T.scopeSave)}</button><button class="btn btn-ghost" type="button" data-scope="cancel">${esc(T.scopeCancel)}</button></div></form>`;
+}
+const scopeHtml = () => `<div id="scanScope">${scope.editing && scope.data ? scopeForm() : scopeLine()}</div>`;
+function redrawScope() { const box = $("#scanScope"); if (box) box.outerHTML = scopeHtml(); }
+function loadScope() {
+  if (!P.scope) return;
+  fetch(P.scope, { cache: "no-store" })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((answer) => { if (answer) { scope.data = answer.scope; redrawScope(); } })
+    .catch(() => {});
+}
+function saveScope(form) {
+  if (scope.busy) return;
+  const kinds = $$("input[name=scopeKind]", form).filter((box) => box.checked).map((box) => box.value);
+  const names = $("#scopeNames").value.split("\n").map((name) => name.trim()).filter(Boolean);
+  scope.busy = true;
+  post(P.scope, { kinds: kinds, names: names })
+    .then((reply) => {
+      if (!reply.ok) { toast(reply.body.error || T.scopeFailed); return; }
+      scope.data = reply.body.scope;  // what config.toml holds now, read back
+      scope.editing = false;
+      scope.stale = reply.body.stale;
+      redrawScope();
+      toast(T.scopeSaved);
+    })
+    .catch(() => stopped())
+    .finally(() => { scope.busy = false; });
+}
+document.addEventListener("click", (event) => {
+  const target = event.target.closest("[data-scope]");
+  if (!target) return;
+  scope.editing = target.dataset.scope === "edit";
+  redrawScope();
+});
+document.addEventListener("submit", (event) => {
+  if (event.target.id !== "scopeForm") return;
+  event.preventDefault();
+  saveScope(event.target);
+});
+loadScope();

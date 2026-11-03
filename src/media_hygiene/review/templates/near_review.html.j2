@@ -30,7 +30,7 @@
   "pairs": _("{pair} — groups: {count}, undecided: {left}"),
   "pairButton": "✔ " ~ _("as planned"),
   "pairButtonTitle": _("Decide every undecided group of this folder pair as planned, in one write (G)"),
-  "pairAsk": _("{pair} — undecided groups: {count}. As planned, their copies to the quarantine? Each group can still be decided again."),
+  "pairDone": "✔ " ~ _("{pair} — {count} undecided groups decided as planned: their copies go to the quarantine at the next clean."),
   "pairNone": _("Every group of this folder pair is decided already."),
   "share": _("Up to this group, in this order: {size}, {share} %% of the space of every group."),
   "allDecided": _("Every group to check has been decided."),
@@ -99,6 +99,7 @@
 {% block bar %}
   <strong id="position"></strong>
   <span id="totals" class="muted"></span>
+  <span id="eta" class="muted"></span>
   <span id="status" role="status" aria-live="polite"></span>
   {% include "apply_now.html.j2" %}
 {% endblock %}
@@ -114,6 +115,7 @@
 </main>
 {% endblock %}
 {% block after %}
+{% include "undo_toast.html.j2" %}
 {% include "pick_large.html.j2" %}
 <script>
 {% include "near_review.js.j2" %}

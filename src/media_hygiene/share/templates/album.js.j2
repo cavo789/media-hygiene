@@ -3,6 +3,9 @@
 // previous one, a tap closes it (the phone's Back button too). The next pictures are loaded
 // in advance. Changes go to POST P.change, read back from the disk by the server (0295).
 const P = {{ paths | tojson }};
+// Opened by an album's link (0462): that album alone, its view under `/a/<token>`.
+const LINK = document.documentElement.hasAttribute("data-link") ? location.pathname.replace(/\/$/, "") : "";
+if (LINK) P.album = `${LINK}/api/album/`;
 const T = {{ texts | tojson }};
 const LANG = document.documentElement.lang;
 const SWIPE_PX = 50; // a move shorter than this is a tap
@@ -61,6 +64,28 @@ function dayLabel(day) {
   if (!day) return T.undated;
   return new Intl.DateTimeFormat(LANG, { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(dateOf(day));
 }
+// The PC opens an album as tiles to pick and take out (0500); a phone, the swipe view.
+// Opened from the home page's "Albums (N)" on a phone (`?tv=1`, 0548): a tap shows it on the TV,
+// through the home page (read-only: the PC starts the show).
+const TV = document.documentElement.hasAttribute("data-phone") && new URLSearchParams(location.search).has("tv");
+const opened = (name) => (TV ? `${P.home}?tv=${encodeURIComponent(name)}`
+  : document.documentElement.hasAttribute("data-phone")
+    ? `#a/${encodeURIComponent(name)}` : `${P.edit_page}?album=${encodeURIComponent(name)}`);
+// The albums shown on the TV last first (the home page keeps them on this device), then by name.
+function used() {
+  try { return JSON.parse(localStorage.getItem("mh-home-tvRecent")) || []; } catch { return []; }
+}
+function ordered(albums) {
+  const recent = used();
+  const rank = (name) => (recent.includes(name) ? recent.indexOf(name) : recent.length);
+  return [...albums].sort((a, b) => rank(a.name) - rank(b.name) || a.name.localeCompare(b.name, LANG));
+}
+function narrow() { // the filter box: the cards whose name holds what is typed
+  const typed = $("albumFilter").value.trim().toLocaleLowerCase(LANG);
+  document.querySelectorAll(".shelf .card").forEach((card) => {
+    card.hidden = Boolean(typed) && !card.dataset.name.toLocaleLowerCase(LANG).includes(typed);
+  });
+}
 const said = (parts) => parts.filter(Boolean).map(esc).join(" · ");
 
 async function showList() {
@@ -72,18 +97,20 @@ async function showList() {
     $("main").innerHTML = `<p class="note">${esc(T.none)} <a href="${esc(P.doc)}" target="_blank" rel="noopener">${esc(T.learn)}</a></p>`;
     return;
   }
-  $("main").innerHTML = `<p class="tools pc-only"><button type="button" id="deleteTicked" disabled>🗑 ${esc(T.delete)}</button></p>
-    <div class="shelf">${view.albums.map((each) => `<div class="card">
+  $("main").innerHTML = `<p class="tools"><input type="search" id="albumFilter" autocomplete="off" placeholder="${esc(T.filter)}" aria-label="${esc(T.filter)}">
+    <button type="button" id="deleteTicked" class="pc-only" disabled>🗑 ${esc(T.delete)}</button></p>
+    <div class="shelf">${ordered(view.albums).map((each) => `<div class="card" data-name="${esc(each.name)}">
       <label class="tick pc-only"><input type="checkbox" data-tick="${esc(each.name)}" aria-label="${esc(fill(T.tick, { name: each.name }))}"></label>
       <button type="button" class="rename pc-only" data-rename="${esc(each.name)}" title="${esc(T.rename)}" aria-label="${esc(T.rename)}">✏️</button>
-      <a href="#a/${encodeURIComponent(each.name)}">
+      <a href="${opened(each.name)}">
       ${each.cover ? `<img src="${esc(each.cover.thumb)}" alt="" loading="lazy">` : `<span class="blank" aria-hidden="true">🖼</span>`}
       <p class="name">${esc(each.name)}</p>
       <p class="sub">${said([plural(T.photos, each.count), span(each), each.place])}</p>
     </a></div>`).join("")}</div>`;
+  $("albumFilter").addEventListener("input", narrow);
 }
 // Delete, rename, put back albums (0499): the PC only; the answer is read back from the disk.
-const ticked = () => [...document.querySelectorAll("[data-tick]:checked")].map((box) => box.dataset.tick);
+const ticked = () => [...document.querySelectorAll(".card:not([hidden]) [data-tick]:checked")].map((box) => box.dataset.tick);
 async function edit(body) {
   if (document.documentElement.hasAttribute("data-phone")) return; // read-only (0429)
   const answer = await ask(P.change, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
@@ -105,7 +132,7 @@ function rename(button) { // the name becomes a field in its card, never a brows
   card.querySelector("[data-renaming] input").select();
 }
 async function showAlbum(name) {
-  $("back").hidden = false;
+  $("back").hidden = Boolean(LINK);
   const view = await ask(P.album + encodeURIComponent(name));
   if (!view) return;
   album = view;
@@ -132,7 +159,8 @@ function tile(item, number) {
 function route() {
   closeViewer(true);
   const hash = location.hash.slice(1);
-  if (hash.startsWith("a/")) showAlbum(decodeURIComponent(hash.slice(2)));
+  if (LINK) showAlbum("");
+  else if (hash.startsWith("a/")) showAlbum(decodeURIComponent(hash.slice(2)));
   else showList();
 }
 

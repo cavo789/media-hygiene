@@ -58,3 +58,7 @@ maintainer's collection, estimated from the per-month folder layout).
 Is "a month across every folder" ever useful (photos of one month spread over several
 folders, e.g. phone + camera)? If yes, keep it as a second choice *below* the folder list,
 not removed. Default of this TODO: removed.
+
+## Decided (2026-11-03)
+
+By the maintainer: keep "a month across every folder" as a second choice placed *below* the folder list (not removed).

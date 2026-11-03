@@ -2,8 +2,7 @@
 
 `GET /` serves the page opened (`/search`, `/browse`, `/events`); `POST /api/search` the
 files found; `/thumb/`, `/preview/`, `/original/` the pictures; `/api/chosen`, albums,
-*Apply now*, folders, period rules, the Events view, the words typed by hand (0555).
-Loopback hosts only, JSON bodies only, the page's origin.
+*Apply now*, folders, period rules, Events, words typed by hand (0555). Loopback only.
 """
 
 from __future__ import annotations
@@ -16,15 +15,15 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.i18n import _
 from media_hygiene.review.home_views import APPLY_PATH
 from media_hygiene.review.http import ContentType, Response, is_local
-from media_hygiene.review.serving import json_response, refused_post, serve_connection
+from media_hygiene.review.serving import refused_post, serve_connection
 from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_response
-from media_hygiene.search.asked import read_asked
+from media_hygiene.search.album_root_desk import folder_gets
 from media_hygiene.search.chosen_api import CHOSEN_PATH
 from media_hygiene.search.coverage import CoverageKept
 from media_hygiene.search.events_choose import SORT_POSTS, events_get, sort_post
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
-from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS, FOLDERS_PATH
-from media_hygiene.search.hits import with_facts
+from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS
+from media_hygiene.search.found_answer import found_answer
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH
 from media_hygiene.search.people_why import (
     FACE_CROP_PREFIX,
@@ -33,11 +32,9 @@ from media_hygiene.search.people_why import (
     why_answer,
 )
 from media_hygiene.search.pictures import Pictures
-from media_hygiene.search.reading import read_query, search_note
 from media_hygiene.search.rule_desk import PERIOD_RULES_PATH, RULE_POSTS
 from media_hygiene.search.rule_go import GO_PATHS, go_answer
 from media_hygiene.search.tag_desk import HAND_TAG_PATH as HAND
-from media_hygiene.search.views import found_view
 from media_hygiene.share.album_api import ALBUMS_PATH
 
 if TYPE_CHECKING:
@@ -138,7 +135,7 @@ class SearchApp:
             return answers[request.path](request.body)
         if request.path in FOLDER_POSTS:
             return self.place.folders.answer(request.path, request.body)
-        return self._search(request)
+        return found_answer(self.place, self.coverage, request.body)
 
     async def _get(self, request: Request) -> Response:
         """Serve a page, what is set aside, the tree, a picture or a video.
@@ -159,7 +156,7 @@ class SearchApp:
         states = {
             CHOSEN_PATH: self.place.chosen.state,
             ALBUMS_PATH: self.place.albums.state,
-            FOLDERS_PATH: self.place.folders.tree,
+            **folder_gets(self.place.folders),
             PERIOD_RULES_PATH: self.place.rules.state,
         }
         if path in states:
@@ -174,27 +171,3 @@ class SearchApp:
             return await video_response(request, pictures.source)
         answer = await pictures.answer(path)
         return Response(HTTPStatus.NOT_FOUND) if answer is None else answer
-
-    def _search(self, request: Request) -> Response:
-        """Find the files matching the words and filters sent.
-
-        Args:
-            request: `POST /api/search`.
-
-        Returns:
-            The first files found (the set aside only, on **Show** 🗑), marked; 400.
-        """
-        asked = read_asked(request.body)
-        if isinstance(asked, Response):
-            return asked
-        query = read_query(self.place.index, asked.query())
-        query = self.place.chosen.narrow(query, asked.aside)
-        found = found_view(
-            with_facts(self.place.index, self.place.index.find(query, asked.shown)),
-            self.place.mapper,
-            self.place.chosen.paths(),
-        )
-        unknown = search_note(asked.query(), query, self.place.people)
-        note = {} if unknown is None else {"note": unknown}
-        coverage = {"coverage": self.coverage.of(self.place.index)}
-        return json_response(HTTPStatus.OK, {**found, **note, **coverage})

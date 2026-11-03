@@ -1,9 +1,4 @@
-"""Serve the home page until Ctrl+C, or until the user chooses a step.
-
-A step chosen is run by `mh` in the terminal (`home_step`, `step_watch`) when `mh` set
-`MEDIA_HYGIENE_LAUNCHER_STEPS`, else the page copies the command. It serves `search`
-and `browse` too. Photos read-only; its tab closed ends it.
-"""
+"""Serve the home page until Ctrl+C or a step chosen (`home_step`, `step_watch`)."""
 
 from __future__ import annotations
 
@@ -24,22 +19,22 @@ from media_hygiene.review.ending import (
     EndingDoor,
     serve_until_ended,
 )
-from media_hygiene.review.home_app import AUDIT_PATH, HomeApp
+from media_hygiene.review.home_app import AUDIT_PATH, FAVOURITES_PATH, HomeApp
 from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.review.home_tags_api import RUN_NAMES, TAGS_RUN
 from media_hygiene.review.home_texts import home_texts
+from media_hygiene.review.import_steps_api import IMPORT_STEPS_PATH
 from media_hygiene.review.lan import lan_access
-from media_hygiene.review.lan_app import LanApp
 from media_hygiene.review.lan_paths import LAN_PATH, PHONE_PAGES
-from media_hygiene.review.lan_phones import phone_book
 from media_hygiene.review.lan_problem import with_problem
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.presence import ALIVE_SECONDS, PRESENCE_PATH, Presence
+from media_hygiene.review.scan_scope_api import SCOPE_PATH
 from media_hygiene.review.step_watch import STEP_PATH, keeps_server
 from media_hygiene.search.late_desk import LATE_PATH
 from media_hygiene.services.album_pages import album_pages
 from media_hygiene.services.home_audit import HomeAudit
-from media_hygiene.services.home_lan import say_lan
+from media_hygiene.services.home_lan import lan_door, say_lan
 from media_hygiene.services.home_launch import (
     launcher_relays_fields,
     launcher_relays_steps,
@@ -56,7 +51,6 @@ if TYPE_CHECKING:
 
     from media_hygiene.console.page_progress import PageProgress
     from media_hygiene.review.apply_api import ApplyStep
-    from media_hygiene.review.ending import Handling
     from media_hygiene.review.home_views import HomeState
     from media_hygiene.services.home_audit import AuditResult
     from media_hygiene.services.home_tags_models import TagsRunner
@@ -87,6 +81,9 @@ def home_page(
             "state": STATE_PATH,
             "step": STEP_PATH,
             "audit": AUDIT_PATH,
+            "favourites": FAVOURITES_PATH,
+            "scope": SCOPE_PATH,
+            "importSteps": IMPORT_STEPS_PATH,  # [imports] then (0481)
             **{name: path if path in runs else "" for name, path in RUN_NAMES.items()},
             "alive": PRESENCE_PATH,
             "stop": STOP_PATH,
@@ -143,6 +140,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         relays_fields=relays and launcher_relays_fields(),
         keeps=relays and keeps_server(),
         runs={path: HomeTags(run) for path, run in sources.runs.items()},
+        config_file=runtime.locations.config_file,
     )
 
     def ready(port: int) -> None:
@@ -173,21 +171,23 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
             contextlib.suppress(KeyboardInterrupt),
             runtime.executor_factory() as pool,
             home_with_pages(
-                runtime, app, HomeServer(sources.apply, ending, pool, lan)
+                runtime, app, server := HomeServer(sources.apply, ending, pool, lan)
             ) as both,
         ):
-            handler: Handling = album_pages(runtime, both, pool)  # `/albums` (0297)
-            if lan is not None:
-                handler = LanApp(  # phones paired for good under HTTPS (0431)
-                    handler,
-                    lan,
-                    home_page(remote=True),
-                    phones=phone_book(secure=lan.secure),
-                    originals=runtime.settings.review.lan_phone_originals,
-                )
-            handler = with_problem(handler)
             door = with_person(  # the TV on the plain door (0417)
-                EndingDoor(handler, ending, plain=both.slideshow.tv), runtime, pool
+                EndingDoor(
+                    with_problem(
+                        lan_door(  # `/albums` (0297), a phone's door (0431, 0462)
+                            runtime,
+                            album_pages(runtime, both, server),
+                            None if lan is None else (lan, home_page(remote=True)),
+                        )
+                    ),
+                    ending,
+                    plain=both.slideshow.tv,
+                ),
+                runtime,
+                pool,
             )
             code = asyncio.run(serve_until_ended(door, port, ready))
     finally:

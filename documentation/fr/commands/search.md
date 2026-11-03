@@ -77,9 +77,11 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   pour ce qu'il veut dire) ; **⋯** à côté d'un dossier, *Rôle de ce dossier*, lui en donne un ou
   aucun. Le choix est écrit dans `[folders]` de `config.toml` (vos commentaires gardés), relu sur
   le disque et affiché ; un rôle en conflit avec un autre (une sauvegarde dans un dossier
-  protégé) est refusé avec la raison. Relancez l'audit ensuite : ses propositions suivaient les
+  protégé, un dossier protégé dans un dossier exclu ou l'inverse) est refusé avec la raison. Relancez l'audit ensuite : ses propositions suivaient les
   anciens rôles. Un dossier avec un rôle renommé ou supprimé dans l'Explorateur est listé sous
-  l'arbre, avec **Supprimer**.
+  l'arbre, avec **Supprimer** ; renommé, et le prochain audit pas encore lancé, le dossier qui
+  contient maintenant les mêmes fichiers est retrouvé dans le cache et proposé : **Porter le rôle
+  sur …** y déplace le rôle (deux tels dossiers : les deux sont proposés).
 
 - **Chercher** : tapez les mots, puis Entrée ; les touches vont alors à la grille, `/` revient au
   champ. *Comment écrire une recherche* rappelle les expressions ("bord de mer"), les débuts de
@@ -100,7 +102,9 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   que la recherche trouve, pas seulement les 240 affichés ; **🔀 Inverser la sélection** (ou I)
   choisit les autres.
 - **La barre** a deux lignes qui ne bougent jamais, quoi qu'on choisisse ou trouve : en haut, où
-  vous en êtes (le nombre), **📺 Sur la télé**, **Trier par** et la taille des vignettes **S**
+  vous en êtes (le nombre, puis chaque filtre actif en pastille — un mot, la période, le chemin,
+  le dossier, *pas encore*, 📷 — dont la **✕** le retire et relance la recherche ; celles qui
+  ne tiennent pas se replient en **+N**, un clic les liste sous la barre), **📺 Sur la télé**, **Trier par** et la taille des vignettes **S**
   (les photos seules), **M**, **L** (tous les mots), gardée pour ce navigateur ; en dessous, que
   faire des fichiers choisis — grisé tant qu'aucun ne l'est : d'abord
   **📂 Déplacer vers un événement…** (plein : l'action principale), **🔀 Inverser**, et en
@@ -180,33 +184,33 @@ la grille (jamais celles de l'onglet Photos : en cas d'erreur la grille reste vi
 pourquoi) ; choisissez-les, puis **📂 Déplacer vers un événement…** les déplace. L'adresse `/events` ouvre la page
 sur cet onglet ; ← et → passent d'un onglet à l'autre quand l'un d'eux a le focus.
 
-Les choix ci-dessous (dossier, nom, propositions sûres, règles, *Trier cet événement maintenant*)
-appartiennent à l'ancienne liste, tirée du plan : ils ne s'affichent plus dans l'onglet et seront
-retirés.
+**La fiche d'un événement** dit d'abord, en une phrase, où vont ses fichiers : *Ces 10
+fichiers iront dans C:\Photos\2019\2019-07\Juillet* (celui de vos dossiers qui en contient le
+plus, sous l'année et le mois du plus ancien ; les fichiers mis de côté ne sont jamais comptés ni
+déplacés). Puis trois boutons :
 
-Choisissez au clavier, comme dans l'ancienne page ; chaque choix est **enregistré aussitôt** dans
-`sort-decisions.json` à côté du plan, relu sur le disque, avec ce que disait le classeur au moment
-du choix (une modification ultérieure du même événement dans le classeur est un conflit, montré
-en rouge, jamais tranché en silence). Le classeur lui-même n'est jamais modifié.
+- **Trier ici maintenant** les y déplace, noté au journal (`undo` les remet), puis montre
+  l'événement suivant à décider ;
+- **Un autre dossier…** ouvre la boîte **📂 Déplacer vers un événement…** de la barre sur les
+  photos choisies, ou sur tout l'événement quand aucune ne l'est : un autre nom, un dossier
+  source décoché. Pour laisser certaines photos où elles sont, choisissez seulement les autres
+  (ou mettez-les de côté) ;
+- **Ne pas trier cet événement** : ses fichiers restent où ils sont, l'événement compté comme
+  décidé (⏸ dans la liste), enregistré par identifiant de contenu dans `events/left.toml` et
+  relu. Passer un événement avec → n'est pas ceci : un événement passé reste à décider.
 
-**💡 Nom proposé** : sous le champ du nom, la fiche en propose un d'après ce que l'index sait,
-sans aucun appel à l'IA : le lieu (un de vos lieux, sinon la ville) et une activité que la
-plupart des photos décrites partagent (*Promenade à Liège*), sinon le lieu et le jour (*Liège —
-29 octobre*), sinon le jour seul. **Prendre ce nom** l'enregistre en un clic ; rien n'est trié
-tant que vous ne le choisissez pas.
+**Annuler mon choix** s'affiche dès qu'un choix est enregistré : l'événement est de nouveau à
+décider. *📌 Retenir comme règle*, un lien sous les boutons, ouvre la boîte des règles sur les
+jours de l'événement (il ne déplace rien).
 
 | Touche | Ce qu'elle fait |
 |---|---|
-| **F**, puis **Entrée** | taper le dossier de l'événement, l'enregistrer, puis l'événement suivant à décider |
-| **E** | changer le nom de l'événement (par défaut, le dernier dossier) |
-| **N** / **P**, **U** | événement suivant ou précédent, suivant à décider |
-| **O** / **S** | les photos choisies : vers un autre dossier, ou laissées où elles sont |
-| **Maj+S** | laisser tout l'événement où il est |
-| **T** | reprendre le choix fait ici (des photos choisies, sinon de l'événement) |
-| **V**, **Maj+Z** | accepter d'un coup toutes les propositions sûres, reprendre ce lot |
-| **R** | *Retenir comme règle* : les jours et le dossier de l'événement écrits dans `config.toml` |
-| **M** | *Trier cet événement maintenant* : où va chaque fichier, puis un seul GO ; journalisé, `undo` le remet |
-| **Suppr**, **⌫** | mettre de côté les photos choisies, les en sortir (comme sur toute page de photos) |
+| **N** / **P**, **U** | événement suivant ou précédent (passé : il reste à décider), suivant à décider |
+| **M** | *Trier ici maintenant* |
+| **O** | *Un autre dossier…* |
+| **Maj+S** | *Ne pas trier cet événement* |
+| **T** | *Annuler mon choix* |
+| **Suppr**, **⌫** | mettre de côté les photos choisies, les en ressortir (comme sur toute page de photos) |
 
 **📌 Vos règles** liste chaque règle de `config.toml` avec les fichiers qu'elle a décidés :
 retirez celles qui ne décident rien, changez une règle de nom de dossier en dates.
@@ -231,8 +235,12 @@ nombre. Un dossier que vous avez nommé d'après un **autre** événement (`Sain
 nom, une soirée) est **décoché** : ses photos restent où elles sont, sauf si vous le cochez. Un
 dossier de dates, le dossier d'un membre de la famille, le `DCIM` d'un téléphone sont cochés.
 **Déplacer ces N fichiers maintenant** déplace exactement ceux cochés, noté au journal, vérifié à
-leur nouvelle place, dit tel que relu (*'mh undo …' les remet*). Aucune règle n'est écrite : le
-prochain `classify` les trouve à leur place. Les photos ajoutées depuis le dernier `classify`
+leur nouvelle place, dit tel que relu (*'mh undo …' les remet*). Rien d'autre n'est écrit : aucune
+règle dans `config.toml`, aucun événement dans `events/`, le prochain `classify` les trouve à leur
+place. Seulement si vous cochez **Aussi le retenir comme événement (events/)**, décochée à chaque
+ouverture (un rangement n'est pas un événement), l'événement est retenu aussi : son nom, ses jours
+et ses appareils, relus et montrés après le déplacement. `undo` remet les fichiers mais garde cet
+événement : retirez-le de `events/` à la main. Les photos ajoutées depuis le dernier `classify`
 (un téléphone importé, puis audité) sont déplacées aussi : pas besoin d'un nouveau `classify`.
 
 ## Faire d'une période une règle
@@ -246,8 +254,8 @@ règles et celle tapée (rien n'est écrit, rien ne bouge) ; puis les photos de 
 laisse à une autre règle (une capture d'écran, une photo d'un autre événement), grisées, et dites
 en mots au-dessus de la grille (*30 photos de ces jours restent avec la règle 'Anniversaire de Tom
 2009'*). En les voyant, corrigez les jours (seulement le 5 août) ou le dossier, puis
-**Enregistrer la règle** : elle est écrite dans `config.toml`, au-dessus de *Dossiers existants*,
-relue sur le disque et affichée. Le prochain `classify` l'applique.
+**Enregistrer la règle** : elle est écrite dans `events/<année>.toml` (l'année où elle commence ;
+`config.toml` reste tel que vous l'avez écrit), appliquée au-dessus de *Dossiers existants*, relue sur le disque et affichée. Le prochain `classify` l'applique.
 
 **Mettre à jour une règle…**, dans la même boîte, liste les règles de dates de `config.toml`, la
 plus récente d'abord : en choisir une remplit la boîte, et l'enregistrer la remplace sur place (sa
@@ -384,8 +392,22 @@ fichiers trouvés**), puis **➕ Ajouter à l'album**.
   n'a été copiée ni déplacée.*
 - Ce n'est **pas** la mise de côté : *Mettre de côté* prépare un retrait, *Ajouter à l'album* un
   partage. Aucun des deux ne touche jamais la liste de l'autre.
+- **📁 Vos albums vont dans …** sous la barre dit où les dossiers d'albums (`mh album <nom>
+  --apply`) sont faits : `[album] root` de `config.toml`, sinon `Albums` dans la photothèque
+  triée. Non réglé, la barre demande *Où mettre vos albums ?* ; **📁 Changer** le règle. Le
+  dossier doit être dans un dossier monté, hors des dossiers protégés, et accessible en écriture ;
+  il est enregistré dans `config.toml` (vos commentaires gardés) et affiché tel que relu. Les
+  dossiers d'albums déjà faits restent où ils sont : refaites chacun pour l'avoir dans le nouveau.
 - **Retirer de l'album** retire les photos choisies de l'album tapé ; un album laissé vide est
   supprimé.
+- **Album** dans la colonne de gauche, une fois un album tapé : *Dans l'album* ne montre que ses
+  fichiers, *Pas dans l'album* les autres ; dans les deux cas, un fichier déjà dedans affiche
+  **✓ dans l'album** sur sa vignette, l'ajout en double se voit (ajouter deux fois ne change rien de
+  toute façon). *Choisir les N trouvés* n'est pas proposé avec ces filtres : les boutons agissent
+  sur les vignettes affichées.
+- **➕ Ajouter des photos** d'un album ouvert sur la [page des albums](../reference-albums.md)
+  ouvre cette page avec l'album tapé, la période autour de ses dates et **← l'album** pour y
+  revenir.
 - Une photo déplacée depuis, par [`sort`](sort.md), par [`undo`](undo.md), ou dans un dossier
   renommé dans l'Explorateur (une fois qu'un audit l'a vu), est retrouvée par son contenu :
   l'album la suit. Une photo introuvable (supprimée, ou en quarantaine) reste dans l'album, listée
@@ -398,7 +420,8 @@ fichiers trouvés**), puis **➕ Ajouter à l'album**.
 - **📨 Préparer pour l'envoi** donne la commande qui prépare l'album pour un mail : des copies
   réduites sans la position GPS, un dossier et un zip, `mh share --album "Crète 2023"`
   ([`share`](share.md)). Avec des photos choisies, pas d'album à créer avant : elles sont
-  ajoutées à l'album tapé, ou à un album au nom du jour (*Envoi 2026-10-29*) si le champ est vide.
+  ajoutées à l'album tapé ou, si le champ est vide, à un seul album *Dernier envoi*, remplacé à
+  chaque envoi.
 - Au plus 3 000 photos ajoutées d'un coup : affinez une recherche qui en trouve plus.
 
 Un album peut aussi devenir un dossier de l'Explorateur : [`album "Crète 2023"`](album.md) le

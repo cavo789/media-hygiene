@@ -219,6 +219,13 @@
       <ul id="areas"></ul>
     </div>
     {% endif %}
+    {# [places] reverse_lookup (0536): the switch where its effect is, read back from config.toml #}
+    <label for="lookup">{{ _("After an import, name the new photos' places online") }}</label>
+    <select id="lookup">
+      <option value="ask">{{ _("Ask each time") }}</option>
+      <option value="always">{{ _("Always: their rounded positions are sent to OpenStreetMap") }}</option>
+      <option value="never">{{ _("Never: no position leaves this PC") }}</option>
+    </select>
     <form id="editor" hidden>
       <strong id="editorTitle"></strong>
       <label for="name">{{ _("Name (it becomes a folder name)") }}</label>
@@ -334,7 +341,8 @@
                   cluster: {{ cluster_path | tojson }}, folders: {{ folders_path | tojson }},
                   folderPhotos: {{ folder_photos | tojson }}, groupPhotos: {{ group_photos | tojson }}, folder: {{ folder_path | tojson }},
                   tree: {{ tree_photos | tojson }},
-                  aside: {{ aside_path | tojson }}, hint: {{ hint_path | tojson }}, photos: {{ photos_path | tojson }} };
+                  aside: {{ aside_path | tojson }}, hint: {{ hint_path | tojson }}, photos: {{ photos_path | tojson }},
+                  lookup: {{ lookup_path | tojson }} };
   const tiles = {{ tiles | tojson }};
   const attribution = {{ attribution | tojson }};
   const byId = (id) => document.getElementById(id);
@@ -1110,8 +1118,16 @@
     byId("search").addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); searchOsm(); } });
   }
 
+  byId("lookup").addEventListener("change", async (event) => {
+    const answer = await post(paths.lookup, { lookup: event.target.value });
+    if (!answer) return;
+    state = answer;
+    byId("lookup").value = answer.lookup;  // what config.toml holds, read back
+    status(T.saved);
+  });
   fetch(paths.state).then((response) => response.json()).then((answer) => {
     state = answer;
+    byId("lookup").value = answer.lookup;
     // Open while there are few places; the reader's own choice wins.
     byId("placesFold").open = folds.placesFold ?? state.places.length < FOLDED_FROM;
     byId("clustersFold").open = folds.clustersFold ?? true;

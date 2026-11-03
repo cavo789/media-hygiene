@@ -39,10 +39,16 @@ function moveButton() {
   moveEl("moveGo").textContent = counted(TEXTS.moveNow, keys.length);
 }
 
+// What the move writes besides the files (0573): nothing, unless the box is ticked.
+function moveRuleSay(remembers) {
+  const rule = moveEl("moveRule");
+  rule.textContent = moveEl("moveRemember").checked ? [remembers, rule.dataset.undo].filter(Boolean).join(" ") : rule.dataset.none;
+}
+
 async function askMove(name) {
   const asking = ++moveAsking;
   moveSay(TEXTS.moveReading, "");
-  const sent = await rulePost(MOVE_PATHS.view, { keys: [...picked], name: name });
+  const sent = await rulePost(MOVE_PATHS.view, { keys: [...picked], name: name, remember: moveEl("moveRemember").checked });
   if (asking !== moveAsking) return;
   if (!sent) { moveSay(TEXTS.offline, "error"); return; }
   const { response, answer } = sent;
@@ -52,7 +58,8 @@ async function askMove(name) {
   for (const source of answer.sources) if (!source.ticked) moveLeft.add(source.folder);
   if (!moveEl("moveName").value) { moveEl("moveName").value = answer.proposed; moveCombo.clearable(); }
   if (answer.month !== moveMonth) { moveMonth = answer.month; moveNames(moveMonth); }
-  moveEl("moveWhere").textContent = answer.target ? "→ " + answer.target + (answer.remembers ? " — " + answer.remembers : "") + (answer.ignored ? " — " + answer.ignored : "") : "";
+  moveEl("moveWhere").textContent = answer.target ? "→ " + answer.target + (answer.ignored ? " — " + answer.ignored : "") : "";
+  moveRuleSay(answer.remembers);
   showSources(moveEl("moveSources"), answer.sources, (source, ticked) => {
     if (ticked) moveLeft.delete(source.folder); else moveLeft.add(source.folder);
     moveButton();
@@ -96,11 +103,14 @@ const moveCombo = comboList({
   cleared: moveTyped,
 });
 moveEl("moveName").addEventListener("input", moveTyped);
+moveEl("moveRemember").addEventListener("change", () => askMove(moveEl("moveName").value.trim()));
 moveEl("moveOpen").addEventListener("click", () => {
   if (!picked.size) return;
   moveView = null;
   moveEl("moveName").value = window.mhMoveName ? window.mhMoveName() : "";  // late photos: their event (0558)
   moveEl("moveWhere").textContent = "";
+  moveEl("moveRemember").checked = false;  // a filing is not an event (0573)
+  moveRuleSay("");
   moveEl("moveSources").replaceChildren();
   moveEl("moveDlg").showModal();
   moveEl("moveName").focus();
@@ -119,7 +129,7 @@ moveEl("moveForm").addEventListener("submit", async (event) => {
   const keys = moveKeys();
   moveEl("moveGo").disabled = true;
   moveSay(TEXTS.goRunning, "");
-  const sent = await rulePost(MOVE_PATHS.move, { keys: keys, name: moveEl("moveName").value.trim() });
+  const sent = await rulePost(MOVE_PATHS.move, { keys: keys, name: moveEl("moveName").value.trim(), remember: moveEl("moveRemember").checked });
   if (!sent) { moveSay(TEXTS.offline, "error"); moveButton(); return; }
   const { response, answer } = sent;
   if (!response.ok) { moveSay(answer.error || fill(TEXTS.failed, { status: response.status }), "error"); moveButton(); return; }
@@ -130,12 +140,12 @@ moveEl("moveForm").addEventListener("submit", async (event) => {
   if (answer.fixed) parts.push(counted(TEXTS.goFixed, answer.fixed));
   parts.push(...(answer.links || []));
   if (answer.ignored) parts.push(answer.ignored);  // the files set aside left out (0518)
-  if (answer.remembered) parts.push(answer.remembered);  // the event config.toml keeps (0556)  // names, albums, decisions rewritten (0406)
+  if (answer.remembered) parts.push(answer.remembered);  // the event remembered, box ticked (0556, 0573)
   const said = parts.join(" ");
   moveSay(said, answer.run_id && !answer.intact ? "error" : "saved");
   if (answer.run_id) moveEl("moveNo").textContent = moveEl("moveNo").dataset.close;  // nothing left to cancel
   told(said, Boolean(answer.run_id) && !answer.intact);
-  if (!(window.mhLate && window.mhLate.moved())) search(null);  // the tiles at their new place, read from the index
+  if (!(window.mhLate && window.mhLate.moved()) && !(window.mhSpan && window.mhSpan.moved())) search(null);  // the tiles at their new place; an event of the tab: its list again (0574)
 });
 
 // The button follows the picking (`pick_grid.js.j2` calls this hook, as for the albums).

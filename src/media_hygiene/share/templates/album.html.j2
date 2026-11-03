@@ -32,9 +32,13 @@
   "renameAsk": _("The new name of {name}:"),
   "tick": _("Pick {name}"),
   "undo": _("Undo"),
+  "filter": _("Find an album by its name"),
 } %}
 {% set page_name = texts.albums %}
-<html lang="{{ _('en') }}">
+{# `link` (0462): one album opened by a 24 h link on someone else's phone: read-only (as a
+   phone), that album alone, no way to the home page nor to the list. #}
+{% set link = album_link is sameas true %}
+<html lang="{{ _('en') }}"{% if link %} data-phone data-link{% endif %}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -55,6 +59,8 @@
   .shelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; padding: 0 16px 24px; }
   .tools { display: flex; gap: 8px; padding: 0 16px 12px; }
   .shelf .card { position: relative; display: flex; flex-direction: column; }
+  .shelf .card[hidden] { display: none; }
+  #albumFilter { flex: 1; min-width: 0; }
   .shelf .tick { position: absolute; top: 6px; left: 6px; z-index: 1; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 8px; background: var(--card); }
   .shelf .tick input { width: 22px; height: 22px; }
   .shelf .rename { position: absolute; top: 6px; right: 6px; z-index: 1; min-height: 36px; padding: 4px 8px; background: var(--card); }
@@ -101,12 +107,16 @@
 </style>
 </head>
 <body>
-{% include "page_header.html.j2" %}
+{% if not link %}{% include "page_header.html.j2" %}{% endif %}
 <div class="heading">
   <a class="back" id="back" href="#" hidden>← {{ texts.albums }}</a>
   <h2 id="title">{{ texts.albums }}</h2>
 </div>
+{% if link %}
+<p class="note">🔒 {{ _("Shared with you for 24 hours: look, nothing here can be changed.") }}</p>
+{% else %}
 <p class="note phone-only">🔒 {{ _("On the phone, everything is read-only: albums change on the PC.") }}</p>
+{% endif %}
 <p class="note pc-only">🔒 {{ _("On the home Wi-Fi only, while mh runs on the PC. Your photos are only read: taking a photo out of an album, or adding it to another one, changes the albums file alone.") }}</p>
 <p class="note error" id="problem" role="alert" hidden></p>
 <main id="main"></main>
@@ -137,6 +147,6 @@
 </script>
 {# Served by the home server in the home page's tab: its pings keep that server running (0341);
    the bar's way back, a plain link (home_link.html.j2 includes presence.html.j2). #}
-{% include "home_link.html.j2" %}
+{% if not link %}{% include "home_link.html.j2" %}{% endif %}
 </body>
 </html>

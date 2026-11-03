@@ -36,7 +36,7 @@ docker run --rm -it `
   cavo789/media-hygiene home
 ```
 
-![La page d'accueil : le menu de gauche avec les cinq étapes du cycle et les outils, l'étape suivante en gros bouton, le cycle, les tuiles de là où vous en êtes, ce que le dernier audit a trouvé, les rapports et l'audit dans la page](../images/home.webp)
+![La page d'accueil : le menu de gauche avec les cinq étapes du cycle et les outils, le cycle, l'étape suivante en une carte compacte, les tuiles de là où vous en êtes, ce que le dernier audit a trouvé et les rapports récents](../images/home.webp)
 
 ## D'un coup d'œil
 
@@ -61,13 +61,20 @@ docker run --rm -it `
 - **La barre du haut** : *Que voulez-vous faire ?* (la palette), **Annuler la dernière
   exécution** tant qu'une exécution est annulable, et **Documentation** : le chapitre de la page
   où vous êtes, et son jumeau anglais.
-- **L'étape suivante** : pourquoi, ce qu'elle risque en mots (*Annulable*), le bouton qui la
-  lance et sa commande : *le dernier audit a trouvé des copies en trop : 'clean' les met de
-  côté*, **mh clean**. Son bouton a le focus à l'ouverture : <kbd>Entrée</kbd> la lance, comme
-  dans `mh menu`. Quand tout est appliqué, la page le dit.
 - **Le cycle de vos photos** : les cinq étapes, la prochaine mise en évidence (*Vous êtes ici*),
   chacune avec une ligne (*9 copies à mettre de côté*, *Une proposition à appliquer*) et le
   nombre d'étapes faites de son parcours.
+- **Vos favoris** : une rangée de grandes cartes, les actions que vous avez marquées d'une
+  étoile. Chaque action d'un espace, et chaque ligne de la palette, a un ☆ qui l'ajoute ou la
+  retire ; faites glisser une carte par son ⋮⋮ (souris ou doigt), ou <kbd>Alt</kbd>+<kbd>←</kbd>
+  / <kbd>→</kbd> dessus, pour la déplacer. La liste est écrite dans `config.toml` (`[home]
+  favorites = ["search", "import"]`, vos commentaires gardés) et affichée telle que relue du
+  fichier ; un nom qu'une version plus récente ne connaît plus est ignoré. Rien de marqué :
+  trois sont suggérées (la bibliothèque, un import, un audit). Pas sur un téléphone.
+- **L'étape suivante**, une carte compacte sous le cycle : pourquoi, ce qu'elle risque en mots (*Annulable*), le bouton qui la
+  lance et sa commande : *le dernier audit a trouvé des copies en trop : 'clean' les met de
+  côté*, **mh clean**. Son bouton a le focus à l'ouverture : <kbd>Entrée</kbd> la lance, comme
+  dans `mh menu`. Quand tout est appliqué, la page le dit.
 - **Où vous en êtes** : une tuile par fait (le dernier audit, les copies en trop, la
   quarantaine, les fichiers seulement sur le NAS, le tri, les mots, les visages), chacune mène à
   son espace.
@@ -75,7 +82,9 @@ docker run --rm -it `
   identiques* : **Mettre les copies en trop de côté** ; *3 fichiers illisibles* : le rapport), et
   quelques aperçus de son rapport. Avant tout audit : trois choses à savoir (rien ne bouge sans
   vous, tout ce qui bouge s'annule, une seule chose est définitive).
-- **Rapports récents**, et **Auditer dans cette page** 🔒 : **Auditer maintenant** lit vos
+- **Rapports récents**.
+- **Auditer dans cette page** 🔒, en haut de l'étape *Nettoyer* (sa première étape, l'audit, a
+  aussi **Dans cette page**) : **Auditer maintenant** lit vos
   dossiers comme `mh audit`, avec les mêmes réglages. Chaque étape s'affiche avec ses comptes au
   fil de l'eau ; à la fin, les chiffres de l'audit, le temps de chaque étape, *Ce que vous
   pouvez faire*, et un lien vers le nouveau rapport. Un audit à la fois ; **Arrêter l'audit**
@@ -87,10 +96,22 @@ docker run --rm -it `
   annuler pour l'instant.*). *Historique et annulation* montre l'exécution encore annulable et
   la quarantaine par exécution ; *Réglages* vos dossiers, la mise à jour, Windows, l'IA locale,
   la vie privée, les actions avancées et *À propos*.
+- **Ce que la page montre déjà reste dans la console** : vos dossiers (chacun trouvé ou non, la
+  quarantaine de chaque disque) sont dans *Vos dossiers* de la barre latérale et des *Réglages* :
+  la page ne propose donc pas `mh folders` ; ni `mh home`, `mh status`, `mh menu` (cette page
+  même), ni `mh open` et `mh reports` (le lien *Tous les rapports* de la page ouvre le même
+  index, toujours à jour). `mh menu` et `mh --help` les gardent.
 
 Ouverte par un clic droit sur un dossier (ou `mh --photos "E:\Dossier"`), la page nomme ce
 dossier en premier : *Cette page analyse aussi : E:\Dossier* ; l'audit de la page et chaque
 étape lancée depuis elle l'analysent aussi.
+
+Le panneau de l'audit dit ce que l'audit analyse et ignore : *Analysés : photos, RAW, vidéos ·
+dossiers ignorés : …* (`[scan] extensions` et `excluded_names` de `config.toml`). *Modifier*
+propose les sortes de fichiers en cases à cocher et les noms de dossiers en liste, un par ligne
+(`*` permis) ; *Enregistrer* écrit `config.toml` (vos commentaires gardés) et montre ce que le
+fichier contient, relu sur le disque. Le dernier audit a été fait avec les anciens réglages : la
+page le dit et propose *Relancer l'audit*.
 
 ## Lancer une étape
 
@@ -179,7 +200,8 @@ plus bas.
 Sur le téléphone, la page d'accueil est la porte de la famille, **Nos photos** : *Retrouver une
 photo* (la recherche et le parcours), les albums et où vous en êtes ; les étapes qui changent les
 photos (importer, nettoyer, trier, sauvegarder) et les outils n'y sont pas montrés, le PC garde
-tout le cycle.
+tout le cycle. Son titre est le vôtre avec `[home] family_title = "Les Dupont"` dans
+`config.toml` (vide : *Nos photos*).
 
 🔒 **Le téléphone ne fait que lire : tout changement se fait sur le PC.** Depuis le téléphone : la page, où vous en êtes, les rapports, l'avancement d'un audit lancé sur le PC,
 [vos albums](#vos-albums-sur-le-téléphone), ainsi que **la recherche** et **le parcours** (leurs
@@ -191,6 +213,10 @@ Toute autre étape reste sur le PC (*Lancez cette étape sur le PC*) : ses quest
 dans la fenêtre de `mh`, que personne ne voit depuis le canapé. Une exception :
 **Montrer sur la télé**, sur la page du téléphone, propose trois choix : un album enregistré sur
 le PC, **un dossier** (un des dossiers analysés) ou **un mois** (selon la date lue par l'audit).
+Quel que soit le nombre d'albums, la page reste courte : un bouton **Albums (N)** et, devant lui,
+les 3 albums que ce téléphone a montrés en dernier ; la page des albums qu'il ouvre les liste
+tous, avec une case pour en trouver un par son nom, les derniers montrés d'abord, et un appui sur
+un album le montre sur la télé.
 Un appui lance ce [diaporama](slideshow.md) dans le serveur même de la page d'accueil, et le
 téléphone ouvre aussitôt sa télécommande. Il ne fait que montrer : rien n'est écrit, rien ne
 bouge. Aucun album enregistré : le dossier et le mois restent là. Le favori de la télé

@@ -82,6 +82,7 @@ let eventCategories = [];  // the event folders offered under the folder fields 
     if (view.missing) told(fill(TEXTS.eventMissing, { n: view.missing }), false);
   };
 {% include "search_events_span.js.j2" %}
+{% include "search_events_span_card.js.j2" %}
   const load = async (index) => {
     if (events[index].span) { loadSpan(index); return; }
     current = index;
@@ -115,7 +116,7 @@ let eventCategories = [];  // the event folders offered under the folder fields 
   const listEvents = () => {
     const shown = SPAN ? events : events.filter(visible);
     byId("eventList").replaceChildren(...shown.map((card) => {
-      const marks = (card.sorted ? "✓ " : "") + (card.conflict ? "⚠ " : "");
+      const marks = (card.sorted ? "✓ " : "") + (card.left ? "⏸ " : "") + (card.conflict ? "⚠ " : "");
       const button = element("button", card.conflict ? "plain conflict" : "plain", marks + card.title + " · " + counted(TEXTS.eventFiles, card.files));
       button.type = "button";
       button.title = card.span;
@@ -193,9 +194,10 @@ let eventCategories = [];  // the event folders offered under the folder fields 
     const typing = ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName);
     if (typing || event.ctrlKey || event.metaKey || event.altKey) return;
     const key = event.key.length === 1 && !event.shiftKey ? event.key.toLowerCase() : event.key;
-    if (!(key in EVENT_KEYS) || (key === "Backspace" && !picked.size)) return;
+    const keys = events[current] && events[current].span ? { ...SPAN_KEYS, Backspace: EVENT_KEYS.Backspace } : EVENT_KEYS;  // 0574
+    if (!(key in keys) || (key === "Backspace" && !picked.size)) return;
     event.preventDefault();
-    EVENT_KEYS[key]();
+    keys[key]();
   });
   const buttons = { prevEvent: () => go(-1), nextEvent: () => go(1), leavePicked: leavePicked, sendPicked: openSend, stayEvent: stayEvent, forgetChoice: forget, sure: acceptSure, sortNow: sortNow, sureUndo: undoSure };
   for (const [button, action] of Object.entries(buttons)) byId(button).addEventListener("click", action);

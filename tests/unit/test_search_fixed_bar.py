@@ -57,3 +57,13 @@ def test_more_files_load_on_scroll_and_search_stays_in_sight() -> None:
     page = render_page("search.html.j2")
     assert '.observe($("moreLine"))' in page
     assert "#go { position: sticky; bottom: 0;" in page
+
+
+def test_the_active_filters_are_chips_after_the_count_folded_past_the_width() -> None:
+    """0565: a chip per filter in the lead, ✕ searches again, +N floats the rest."""
+    page = render_page("search.html.j2")
+    assert '$("lead").append(chipsLine, chipsMore);' in page
+    assert "showChips(body);" in page.split("asked = body;")[1].split("\n")[1]
+    assert "filter.off();\n    search(null);" in page
+    assert "#bar > #chipsFolded { position: absolute; top: 100%;" in page
+    assert 'chipsMore.textContent = "+" + folded.length;' in page

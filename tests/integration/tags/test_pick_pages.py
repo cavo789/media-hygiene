@@ -94,7 +94,7 @@ def test_the_events_view_is_part_of_the_search_page(
         assert wanted in side
     keys = search.split('id="keys"')[1].split("</section>")[0]
     assert "set the picked files aside" in keys  # Delete sets aside here too
-    assert "take back the choice made here" in keys  # T
+    assert "next event to decide" in keys  # U (0574 dropped T)
     assert "/api/sort/forget" in search
     assert "deleteKeySets = false" not in search
     # 0457: two tabs on top of the left column, the events' one hidden at first.

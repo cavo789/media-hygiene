@@ -23,10 +23,12 @@ from media_hygiene.index.descriptions import PhotoVersion
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.index.tag_rows import TagStore
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.review.ending import Ending
 from media_hygiene.review.http import Request, Response
 from media_hygiene.review.presence import PRESENCE_PATH
 from media_hygiene.services.album_pages import album_page, album_pages
 from media_hygiene.services.albums import album_store
+from media_hygiene.services.home_pages import HomeServer
 from media_hygiene.services.share_album import SendRequest, prepare_album
 from media_hygiene.share.album_store import AlbumChange
 from media_hygiene.share.prepare import folder_name
@@ -187,7 +189,7 @@ def test_the_albums_page_keeps_the_home_server_alive(tmp_path: Path) -> None:
     headers = {"host": "127.0.0.1:8088", "content-type": "application/json"}
     alive = Request("POST", PRESENCE_PATH, headers, b"{}")
     with ThreadPoolExecutor(1) as executor:
-        pages = album_pages(runtime, home, executor)
+        pages = album_pages(runtime, home, HomeServer(None, Ending(), executor))
         reply = asyncio.run(pages.handle(alive))
     assert (reply.status, home.paths) == (HTTPStatus.OK, [PRESENCE_PATH])
 

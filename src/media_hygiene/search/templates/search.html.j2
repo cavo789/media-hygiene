@@ -24,7 +24,11 @@
   "eventsLoading": _("Reading the latest classify plan…"),
   "spanLoading": _("Grouping the files not sorted yet by date…"),
   "spanNone": _("Every file of this period is sorted already: nothing left to group."),
-  "spanSaid": _("{n} events of files not sorted yet (not in a YYYY/YYYY-MM/<name> folder), cut where no photo was taken for {hours} hours. Pick photos, then Move to an event…"),
+  "spanSaid": _("{n} events of files not sorted yet (not in a YYYY/YYYY-MM/<name> folder), cut where no photo was taken for {hours} hours. Click one: where its files go, then Sort here now."),
+  "spanReading": _("Reading where its files go…"),
+  "spanNothing": _("No file of this event can move: they are set aside, or gone."),
+  "spanLeftSaid": _("Not to sort: its files stay where they are."),
+  "spanAllDecided": _("Every event of the list is decided."),
   "spanFailed": _("This event's photos could not be read (error {status}): its files may have moved. Run the search again."),
   "spanEmpty": _("This event has no file left to sort: sorted or moved since the list was made."),
   "noTakenTip": _("The file does not say when it was taken (a scan, a screenshot): a search by date does not find it."),
@@ -36,6 +40,7 @@
   "allFound": _("Pick all {total} files found"),
   "allPicked": _("All {total} files found are picked"),
   "aside": _("marked to set aside"),
+  "inAlbum": _("✓ in the album"),
   "asideOpen": _("Show only the files set aside (🗑 in Show)"),
   "tick": _("Pick this file"),
   "noAlbum": _("Type the album's name in the bar first: then A adds the file shown."),
@@ -76,11 +81,14 @@
   "goBroken": _("The run {run} ended, but its manifest does not check out: look at it before going on."),
   "goUnknown": _("{n} files are not in the index yet: run an audit, then move them."),
   "goFixed": [ngettext("{n} file lies in a protected or 'leave' folder: never moved.", "{n} files lie in a protected or 'leave' folder: never moved.", 1), ngettext("{n} file lies in a protected or 'leave' folder: never moved.", "{n} files lie in a protected or 'leave' folder: never moved.", 2)],
+  "chipRemove": _("Remove this filter and search again"),
+  "chipsMore": _("The other active filters"),
   "counts": _("{photos} photos · {videos} videos · {size}"),
   "roleOpen": _("Role of this folder"),
   "roleWhy": {"protected": _("Protected: never changed; identical files elsewhere are set aside."), "preferred": _("Preferred: when copies differ only by folder, the copy here is kept."), "backups": _("Backup: only compared, never changed and never the reason a copy goes."), "excluded": _("Excluded: not read at all by the audit.")},
   "roleMissing": _("{folder} has the role {badge} but is gone (renamed or deleted?)"),
   "roleRemove": _("Remove"),
+  "roleCarry": _("Carry the role to {folder}"),
   "roleSaving": _("Saving…"),
   "moveNamed": _("(your folder of another event, {name}: unticked)"),
   "moveNow": [ngettext("Move this file now", "Move these {n} files now", 1), ngettext("Move this file now", "Move these {n} files now", 2)],
@@ -129,6 +137,7 @@
 {% set pick_add = "🗑 " + _("Put aside") %}
 {% block style %}
 {% include "pick_grid.css.j2" %}
+  .inAlbum .inAlbumMark { color: var(--good, var(--accent)); font-size: .8rem; font-weight: 600; }
   /* The field and its filters, one under the other, in the left column: as tall as they
      are, scrolled on their own once the open tree of folders is taller than the window. */
   #toc { flex: 0 1 auto; }
@@ -207,8 +216,17 @@
   #bar > * { order: 3; }
   #bar > #lead, #bar > #chosen, #bar > #tvSend, #bar > label, #bar > #sizes { order: 1; }
   #bar > #lead[hidden], #bar > #acting[hidden] { display: flex; }
-  #bar > #lead { flex: 1 1 0; min-width: 0; white-space: nowrap; overflow: hidden; }
-  #status { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #bar > #lead { flex: 1 1 0; min-width: 0; white-space: nowrap; overflow: hidden; flex-wrap: nowrap; }
+  #status { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 0 1 auto; min-width: 4ch; }
+  /* The active filters (0565): chips after the count, the extra ones folded into +N. */
+  #chips { display: inline-flex; gap: 4px; flex: 0 1 auto; min-width: 0; overflow: hidden; margin-left: 8px; }
+  #chips .chip, #chipsFolded .chip { flex: none; padding: 0 2px 0 8px; border: 1px solid var(--line);
+                                     border-radius: 999px; font-size: .85rem; white-space: nowrap; }
+  #bar .chip button { padding: 0 4px; }
+  #bar .chipsMore { flex: none; margin-left: 4px; }
+  #bar .chipsMore[hidden], #chipsFolded[hidden] { display: none; }
+  #bar > #chipsFolded { position: absolute; top: 100%; left: 0; z-index: 5; display: flex; flex-wrap: wrap;
+                        gap: 4px; padding: 6px 16px; background: var(--card); box-shadow: 0 2px 6px rgba(0, 0, 0, .2); }
   #bar > #acting { flex-wrap: nowrap; }
   #picked { display: inline-block; min-width: 9ch; white-space: nowrap; }
   #bar #takeBack[hidden], #bar #pickAll[hidden] { display: none; }
@@ -281,6 +299,12 @@
           </div>
         </details>
       </div>
+      <label id="albumInLabel">{{ _("Album") }}
+        <select id="albumIn" disabled title="{{ _('Type an album in the bar: its files are marked, kept or left out') }}">
+          <option value="">{{ _("In the album or not") }}</option>
+          <option value="in">{{ _("In the album") }}</option>
+          <option value="out">{{ _("Not in the album") }}</option>
+        </select></label>
       <label id="folderLabel" class="comboBox">{{ _("Path contains") }}<input id="folder" type="text" autocomplete="off"
                role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="folderList"
                title="{{ _('A part of the path. * is any characters, ? one character, /regex/ a regular expression: *.mov, /\\.(mov|mp4)$/') }}"
@@ -384,6 +408,7 @@
 {% include "pick_band.js.j2" %}
 {% include "folder_tree.js.j2" %}
 {% include "search.js.j2" %}
+{% include "search_chips.js.j2" %}
 {% include "search_folders.js.j2" %}
 {% include "combo_list.js.j2" %}
 {% include "search_path_list.js.j2" %}

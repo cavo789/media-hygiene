@@ -169,7 +169,9 @@ from your folders; their previews stay in `/cache`. The map loads **tiles** (the
 the server of `[places] tiles`; **Search OpenStreetMap** sends the **text you typed**, on your
 click only, to `[places] nominatim_url` (empty turns that search off). `classify` never goes
 online. Only [`import`](import.md#good-to-know) may send positions, rounded, after your
-explicit Yes.
+explicit Yes. The list *After an import, name the new photos' places online*, in the left column,
+says and changes that choice (`[places] reverse_lookup`): *Ask each time*, *Always* or *Never*,
+saved in `config.toml` and read back.
 
 ## Good to know
 

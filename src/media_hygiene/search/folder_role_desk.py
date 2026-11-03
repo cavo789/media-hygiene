@@ -7,7 +7,8 @@ file is edited with `toml_edit` (comments kept, atomic), then read back from the
 the roles the page shows are those of the file. A role clashing with another (a backup
 inside a protected folder…) is refused with the reason, the file left as it was.
 A folder renamed or deleted in Explorer keeps its role on a path that is gone: it is
-listed as missing, for the page to offer *Remove*.
+listed as missing, for the page to offer *Remove*, and *Carry the role* to the folders
+now holding its files (0580, `folder_role_carry`): `former` moves the role in one write.
 """
 
 from __future__ import annotations
@@ -18,7 +19,7 @@ from typing import TYPE_CHECKING, Final, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from media_hygiene.config.folder_roles import same_folder
+from media_hygiene.config.folder_roles import check_protected_excluded, same_folder
 from media_hygiene.config.settings import FolderSettings
 from media_hygiene.i18n import _
 from media_hygiene.places.toml_edit import (
@@ -29,14 +30,17 @@ from media_hygiene.places.toml_edit import (
     write_document,
 )
 from media_hygiene.review.serving import json_response
+from media_hygiene.search.folder_role_carry import carried_to
 
 if TYPE_CHECKING:
+    import sqlite3
     from pathlib import Path
 
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.review.http import Response
 
 ROLE_PATH: Final = "/api/folder-role"
+ALBUM_ROOT_PATH: Final = "/api/album-root"  # `album_root_desk` (0534)
 ROLES: Final = ("protected", "preferred", "backups", "excluded")
 _TABLE: Final = "folders"
 _MAX_PATH: Final = 4096
@@ -69,6 +73,20 @@ class RoleAsked(BaseModel):
 
     folder: str = Field(min_length=1, max_length=_MAX_PATH)
     role: Role
+    former: str = Field(default="", max_length=_MAX_PATH)  # its role carried (0580)
+
+    def names(self, path: str) -> bool:
+        """Tell whether a folder of the file is the one asked, or the one it replaces.
+
+        Args:
+            path: A folder of `[folders]`.
+
+        Returns:
+            True for either.
+        """
+        return same_folder(path, self.folder) or bool(
+            self.former and same_folder(path, self.former)
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -78,20 +96,39 @@ class RoleDesk:
     config_file: Path
     mapper: HostPathMapper
     roots: tuple[Path, ...]  # the mounted folders, in the container
+    index: sqlite3.Connection | None = None  # where a folder renamed went (0580)
 
-    def listed(self) -> list[dict[str, str]]:
+    def listed(self) -> list[dict[str, object]]:
         """The roles of the file, as on the disk now.
 
         Returns:
-            Each folder with a role: its host path, its role and where it is
-            (`here`, `missing`: gone from a mounted folder, `elsewhere`: not mounted).
+            Each folder with a role: its host path, its role, where it is (`here`,
+            `missing`: gone from a mounted folder, `elsewhere`: not mounted) and,
+            when missing, the folders its files are in now (`carry`).
         """
         table = loaded(self.config_file).get(_TABLE, {})
-        return [
-            {"path": str(path), "role": role, "where": self._where(str(path))}
-            for role in ROLES
-            for path in table.get(role, [])
-        ]
+        listed: list[dict[str, object]] = []
+        for role in ROLES:
+            for path in table.get(role, []):
+                where = self._where(str(path))
+                carry = self._carry(str(path)) if where == "missing" else []
+                shown = {"path": str(path), "role": role, "where": where}
+                listed.append({**shown, "carry": carry})
+        return listed
+
+    def _carry(self, folder: str) -> list[str]:
+        """The folders now holding the files of a folder gone (0580).
+
+        Args:
+            folder: Its host path.
+
+        Returns:
+            Their host paths; none without an index.
+        """
+        if self.index is None:
+            return []
+        found = carried_to(self.index, self.mapper.to_container(folder))
+        return [self.mapper.to_host(path) for path in found]
 
     def _where(self, folder: str) -> Where:
         """Tell whether a folder with a role is here, gone, or not mounted.
@@ -124,19 +161,27 @@ class RoleDesk:
         document = document_of(self.config_file)
         table = table_of(document, _TABLE)
         for role in ROLES:
-            kept = [p for p in table.get(role, []) if not same_folder(p, asked.folder)]
+            kept = [p for p in table.get(role, []) if not asked.names(p)]
             if role in table or role == asked.role:
                 added = [asked.folder] if role == asked.role else []
                 table[role] = [host_path(path) for path in (*kept, *added)]
         try:
-            FolderSettings.model_validate(document.unwrap().get(_TABLE, {}))
+            folders = FolderSettings.model_validate(document.unwrap().get(_TABLE, {}))
+            check_protected_excluded(folders.protected, folders.excluded)
         except ValidationError as exc:
             reason = "; ".join(str(error["msg"]) for error in exc.errors())
             return json_response(HTTPStatus.CONFLICT, {"error": reason})
+        except ValueError as exc:
+            return json_response(HTTPStatus.CONFLICT, {"error": str(exc)})
         write_document(self.config_file, document)
         roles = self.listed()
         now = next(
-            (r["role"] for r in roles if same_folder(r["path"], asked.folder)), "none"
+            (
+                str(r["role"])
+                for r in roles
+                if same_folder(str(r["path"]), asked.folder)
+            ),
+            "none",
         )
         said = _("Saved in {file}: {folder} is now {role}.").format(
             file=self.mapper.to_host(self.config_file),

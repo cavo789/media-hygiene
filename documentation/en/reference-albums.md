@@ -39,13 +39,23 @@ From the page, on the PC (a phone only looks: albums change on the PC), you can:
 - **✏️ Rename** an album: a name another album has (whatever its case) is refused; `slideshow`,
   `share` and `album --album` know it by its new name at once. A folder of links already made by
   `mh album` keeps its old name;
-- **➖ Take out of the album** a photo: it leaves the list, the file stays where it is;
-- **➕ Add to an album** a photo, to another album: pick it in the list of your albums (the most
-  recent first), or type a new name under it to create one; a name typed in another case is the
-  same album;
-- **🖼 Use as cover** a photo: the list of albums shows it from now on, after a restart too. The
-  cover follows its photo when the file moves; taken out of the album, the cover goes back to
-  the one `mh` picks (the sharpest photo of the first day).
+- open an album: on the PC, its photos and videos are tiles to pick, as on the search page: a
+  click picks one, Ctrl+click or its ☑ adds or takes out one, Shift+click a range, a drag a
+  rectangle, Ctrl+A every file of the album, I the others instead; Enter or a double click opens
+  one large. The bar acts on the files picked:
+  - **➖ Take out**: they leave the album in one go, the files stay where they are; taking out
+    every file asks first (the album, empty, is removed);
+  - **➕ Album**: add them to another album, picked in the list of your albums or typed (a new
+    name creates it; a name typed in another case is the same album);
+  - **🖼** (*Use as cover*, one photo picked): the list of albums shows it from now on, after a
+    restart too. The cover follows its photo when the file moves; taken out of the album, the
+    cover goes back to the one `mh` picks (the sharpest photo of the first day);
+  - **✉️ Send**: the command that prepares the copies to send (`mh share --album`); a part of the
+    album picked is saved first in an album of its own, named after the day;
+  - **📺 On the TV**: the files picked, or the whole album, on the paired TV;
+- **➕ Add photos** to an album opened: the [search](commands/search.md) opens in the same tab,
+  the album typed in its **Album** field, the period around the album's dates (a day either
+  side); the files already in the album are marked, **← the album** comes back here.
 
 Only `albums.json` changes. Nothing else can be done there: no file is deleted, moved or sent.
 
@@ -54,6 +64,15 @@ Only `albums.json` changes. Nothing else can be done there: no file is deleted, 
 Under `mh --lan`, a phone paired by its code on the home Wi-Fi opens the same page, while `mh`
 runs on the PC. It sees the pictures of the albums only, sized for a phone, never another photo
 of the library nor an original. It changes nothing: no *➖*, *➕*, *🖼*, *🗑* nor *✏️* there.
+
+### By a link, on someone else's phone
+
+Under `mh --lan`, **🔗 Share by link** on an album opened on the PC gives a link and its QR code:
+a guest on the home Wi-Fi opens that album alone, read-only (its photos and videos, sized for a
+phone), without pairing their phone, for 24 hours. **📋 Copy the link** copies it; **⏹ Stop
+sharing** stops it at once, and so does a restart of `mh` (the link is kept in memory only).
+The link opens nothing else: no other album, no other photo, no original, not the home page.
+Without `mh --lan`, the button says to start it: a link works on the home Wi-Fi only.
 
 ## Albums and the folders of links
 

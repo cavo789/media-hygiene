@@ -603,6 +603,16 @@ msgid ""
 msgstr ""
 
 msgid ""
+"A link that opens this album alone, read-only, for 24 hours, on a phone "
+"of the home Wi-Fi"
+msgstr ""
+
+msgid ""
+"A link works only on the home Wi-Fi: start Media Hygiene with 'mh --lan',"
+" then share again."
+msgstr ""
+
+msgid ""
 "A local model looks at each photo on this computer's processor, so that "
 "search finds photos by what they show. Nothing is sent; only the cache is"
 " written."
@@ -846,6 +856,9 @@ msgid ""
 "<folder>."
 msgstr ""
 
+msgid "Add photos"
+msgstr ""
+
 msgid "Add photos to an album in search."
 msgstr ""
 
@@ -883,7 +896,13 @@ msgstr ""
 msgid "Add to an album"
 msgstr ""
 
+msgid "Add to another album"
+msgstr ""
+
 msgid "Add to the album"
+msgstr ""
+
+msgid "Add to the favourites"
 msgstr ""
 
 msgid "Add your photo folder: mh folders add <folder>."
@@ -912,6 +931,9 @@ msgid ""
 " each asked once."
 msgstr ""
 
+msgid "After an import, name the new photos' places online"
+msgstr ""
+
 #, python-brace-format
 msgid "After an undo, 'media-hygiene clean {flag}' applies it again."
 msgstr ""
@@ -924,6 +946,9 @@ msgstr ""
 msgid ""
 "After how many days 'status' suggests emptying the quarantine with "
 "'purge' (the files set aside still take their space until then)."
+msgstr ""
+
+msgid "After the import:"
 msgstr ""
 
 #, python-brace-format
@@ -941,6 +966,10 @@ msgid "Album {name}"
 msgstr ""
 
 msgid "Albums"
+msgstr ""
+
+#, python-brace-format
+msgid "Albums ({n})"
 msgstr ""
 
 msgid "All"
@@ -1019,7 +1048,13 @@ msgid ""
 "review); they do not come back into your library."
 msgstr ""
 
+msgid "Also remember it as an event (events/)"
+msgstr ""
+
 msgid "Altitude (m)"
+msgstr ""
+
+msgid "Always: their rounded positions are sent to OpenStreetMap"
 msgstr ""
 
 #, python-brace-format
@@ -1080,6 +1115,9 @@ msgid ""
 "estimate of a full run, and stop."
 msgstr ""
 
+msgid "Analysed:"
+msgstr ""
+
 msgid "And the state of each folder mounted."
 msgstr ""
 
@@ -1101,6 +1139,12 @@ msgstr ""
 msgid ""
 "Another folder? mh folders add <folder>. A new version? mh update. Both "
 "rewrite this file."
+msgstr ""
+
+msgid "Another folder…"
+msgstr ""
+
+msgid "Another folder…: the photos picked, else the whole event"
 msgstr ""
 
 msgid ""
@@ -1161,6 +1205,9 @@ msgid ""
 msgstr ""
 
 msgid "As planned"
+msgstr ""
+
+msgid "Ask each time"
 msgstr ""
 
 msgid "Ask for a second opinion"
@@ -1243,6 +1290,9 @@ msgid "Back after being set aside"
 msgstr ""
 
 msgid "Back on the map: taken out of config.toml."
+msgstr ""
+
+msgid "Back to the album"
 msgstr ""
 
 msgid "Back to the home page"
@@ -1438,6 +1488,10 @@ msgstr ""
 msgid "Cannot save the decisions file: {error}."
 msgstr ""
 
+#, python-brace-format
+msgid "Carry the role to {folder}"
+msgstr ""
+
 msgid "Carry the words into other photo software"
 msgstr ""
 
@@ -1445,6 +1499,9 @@ msgid "Categories"
 msgstr ""
 
 msgid "Category"
+msgstr ""
+
+msgid "Change"
 msgstr ""
 
 #, python-brace-format
@@ -1532,6 +1589,12 @@ msgid "Choice on series {number} undone."
 msgstr ""
 
 #, python-brace-format
+msgid "Choice taken back, read back: this file is to decide again."
+msgid_plural "Choice taken back, read back: these {n} files are to decide again."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "Choices of the review page carried over too: {count}."
 msgstr ""
 
@@ -1554,6 +1617,11 @@ msgid "Choose an event."
 msgstr ""
 
 msgid "Choose another decision for this pair, or leave it as planned."
+msgstr ""
+
+msgid ""
+"Choose another folder for the photos picked, or for the whole event when "
+"none is picked"
 msgstr ""
 
 msgid ""
@@ -1804,6 +1872,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Copy the command {command}"
+msgstr ""
+
+msgid "Copy the link"
 msgstr ""
 
 msgid "Copy the new photos of the phone"
@@ -2185,6 +2256,12 @@ msgstr ""
 msgid "Do not show"
 msgstr ""
 
+msgid "Do not sort this event"
+msgstr ""
+
+msgid "Do not sort this event: its files stay where they are"
+msgstr ""
+
 msgid ""
 "Do not tap Open after the download: Android refuses it (\"cannot install "
 "CA certificates\"). Use the phone's Settings app instead, not Chrome's "
@@ -2306,8 +2383,16 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Drag a card to move it, or Alt+← and Alt+→ on it; the ☆ of an action adds"
+" or removes it."
+msgstr ""
+
+msgid ""
 "Drag the pin where these photos were taken, then save: 'xmp' writes that "
 "position into their sidecars ([tags] xmp_folder_gps = true)."
+msgstr ""
+
+msgid "Drag to move"
 msgstr ""
 
 msgid "Drone"
@@ -2332,6 +2417,9 @@ msgid "During the event, but another camera: elsewhere?"
 msgstr ""
 
 msgid "EXIF"
+msgstr ""
+
+msgid "Each copy in the second folder has an identical file in the first one."
 msgstr ""
 
 msgid ""
@@ -2412,6 +2500,9 @@ msgid "Each run is written in the journal: what it did, and how to undo it."
 msgstr ""
 
 msgid "Each run is written in the journal; undo puts each file back."
+msgstr ""
+
+msgid "Each setting and where it comes from"
 msgstr ""
 
 msgid "Each tile leads to its space."
@@ -2625,6 +2716,9 @@ msgid "Every copy"
 msgstr ""
 
 msgid "Every entry of config.toml points at something."
+msgstr ""
+
+msgid "Every event of the list is decided."
 msgstr ""
 
 msgid "Every file of this event is already in its folder: nothing to move."
@@ -2931,6 +3025,9 @@ msgstr ""
 msgid "Find a town (offline)…"
 msgstr ""
 
+msgid "Find an album by its name"
+msgstr ""
+
 msgid ""
 "Find and safely clean duplicate photos and videos across folders and "
 "disks. Start with 'audit' (read-only), then 'clean'."
@@ -3013,6 +3110,9 @@ msgid ""
 "allowed, e.g. --exclude-name Thumbnails,.Trash-* (repeatable). Adds to "
 "the system folders already skipped. For one precise folder, use "
 "--exclude."
+msgstr ""
+
+msgid "Folder names ignored wherever they are, one per line (* allowed)"
 msgstr ""
 
 msgid ""
@@ -3554,7 +3654,13 @@ msgstr ""
 msgid "Import photos"
 msgstr ""
 
+msgid "In the album"
+msgstr ""
+
 msgid "In the album already"
+msgstr ""
+
+msgid "In the album or not"
 msgstr ""
 
 #, python-brace-format
@@ -3680,7 +3786,15 @@ msgid ""
 " --carry-over, or start fresh with --no-carry-over."
 msgstr ""
 
+msgid "Its files are not hashed yet: run an audit, then choose again."
+msgstr ""
+
 msgid "Its files moved, the room freed, what can still be undone."
+msgstr ""
+
+msgid ""
+"Its files stay where they are, the event counted as decided. Skipping it "
+"with → is not this: a skipped event stays to decide."
 msgstr ""
 
 msgid ""
@@ -3800,6 +3914,9 @@ msgstr ""
 msgid "Kinds of files"
 msgstr ""
 
+msgid "Kinds of files analysed"
+msgstr ""
+
 msgid ""
 "Labels of the 'inventory' export, computed when it is written: change a "
 "value and export again, nothing is scanned. A photo is blurry below "
@@ -3853,6 +3970,9 @@ msgid "Last photo: {count} face"
 msgid_plural "Last photo: {count} faces"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Last sent"
+msgstr ""
 
 msgid "Later"
 msgstr ""
@@ -3948,6 +4068,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Line {number} of {path} is corrupt."
+msgstr ""
+
+msgid "Link copied."
 msgstr ""
 
 msgid "Linked"
@@ -4231,6 +4354,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Move the files of this event to the folder said above, journaled: undo "
+"puts them back. Then the next event to decide."
+msgstr ""
+
+msgid ""
 "Move the photos and videos as the edited classify workbook says "
 "(journaled, undoable)."
 msgstr ""
@@ -4475,6 +4603,9 @@ msgstr ""
 msgid "Never what you set aside or deleted on purpose; each copy is checked."
 msgstr ""
 
+msgid "Never: no position leaves this PC"
+msgstr ""
+
 msgid "New Year"
 msgstr ""
 
@@ -4541,7 +4672,14 @@ msgstr ""
 msgid "No DCIM folder on {name}: no photo to copy."
 msgstr ""
 
+msgid "No Events tab here."
+msgstr ""
+
 msgid "No TV shows this code: type the code the TV shows now."
+msgstr ""
+
+#, python-brace-format
+msgid "No album is named {name}."
 msgstr ""
 
 #, python-brace-format
@@ -4676,6 +4814,9 @@ msgstr ""
 msgid "No file has words yet: nothing can be found."
 msgstr ""
 
+msgid "No file of this event can move: they are set aside, or gone."
+msgstr ""
+
 msgid "No folder chosen: nothing changed."
 msgstr ""
 
@@ -4683,6 +4824,9 @@ msgid "No folder for the albums: neither album.root nor classify.target is set."
 msgstr ""
 
 msgid "No folder in the index: run 'audit' first, with the same /cache mount."
+msgstr ""
+
+msgid "No folder is proposed for these files: choose one with Another folder…."
 msgstr ""
 
 msgid "No folder named after a town, or placed, holds photos without GPS."
@@ -5012,6 +5156,9 @@ msgstr ""
 msgid "Not found: renamed or moved? Rename it back, or forget its position."
 msgstr ""
 
+msgid "Not in the album"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Not in the backup: {count} file (robocopy failed, or new since the plan)."
@@ -5088,6 +5235,9 @@ msgid "Not the same content as {path}: kept on the phone."
 msgstr ""
 
 msgid "Not this person: mark this face; the next button of the group saves it"
+msgstr ""
+
+msgid "Not to sort: its files stay where they are."
 msgstr ""
 
 msgid "Not touched by this clean"
@@ -5457,6 +5607,9 @@ msgstr ""
 msgid "One zip outside Docker's cache: a Docker reset loses nothing."
 msgstr ""
 
+msgid "Only a filing: nothing is written to config.toml nor events/."
+msgstr ""
+
 msgid "Only a photo of the album can be its cover."
 msgstr ""
 
@@ -5690,6 +5843,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "Opening in the window where mh runs: {command}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Opens this album alone, read-only, for {hours} hours, on the home Wi-Fi "
+"while mh runs; a restart of mh stops it."
 msgstr ""
 
 #, python-brace-format
@@ -5952,6 +6111,9 @@ msgstr ""
 msgid "Pick none"
 msgstr ""
 
+msgid "Pick one photo, not a video, to make it the cover."
+msgstr ""
+
 msgid ""
 "Pick the intruder files (zip, docx, pdf… in your photo folders) to set "
 "aside, per extension and per folder, instead of the burst series; 'clean "
@@ -6187,6 +6349,10 @@ msgid "Quarantine"
 msgstr ""
 
 #, python-brace-format
+msgid "Quarantine of {drive}"
+msgstr ""
+
+#, python-brace-format
 msgid "Quarantine purged: {size} freed."
 msgstr ""
 
@@ -6286,6 +6452,9 @@ msgid ""
 " put back with 'undo', in the terminal."
 msgstr ""
 
+msgid "Read-only: this page shows what the command prints, as in the terminal."
+msgstr ""
+
 msgid "Reading 128 KB of each file already in the cache, once"
 msgstr ""
 
@@ -6302,6 +6471,9 @@ msgid "Reading the metadata of files already in the cache"
 msgstr ""
 
 msgid "Reading the tool folders…"
+msgstr ""
+
+msgid "Reading where its files go…"
 msgstr ""
 
 msgid "Reading where the photos picked lie…"
@@ -6378,6 +6550,9 @@ msgstr ""
 msgid "Remove a folder"
 msgstr ""
 
+msgid "Remove from the favourites"
+msgstr ""
+
 msgid "Remove the ticked entries (a copy is kept first):"
 msgstr ""
 
@@ -6387,6 +6562,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Remove these rules from config.toml? {names}"
+msgstr ""
+
+msgid "Remove this filter and search again"
 msgstr ""
 
 #, python-brace-format
@@ -6675,6 +6853,9 @@ msgstr ""
 msgid "Run the Czkawka command again; it writes this file with -C."
 msgstr ""
 
+msgid "Run the audit again"
+msgstr ""
+
 msgid "Run the audit first (Clean, step 1)."
 msgstr ""
 
@@ -6809,6 +6990,9 @@ msgstr ""
 msgid "Save {url} as {path} by hand, then run the command again."
 msgstr ""
 
+msgid "Saved in config.toml, read back from the disk."
+msgstr ""
+
 #, python-brace-format
 msgid "Saved in config.toml, read back: nobody is named {name}."
 msgstr ""
@@ -6841,6 +7025,16 @@ msgid "Saved in config.toml."
 msgstr ""
 
 msgid "Saved in config.toml: this name is no town."
+msgstr ""
+
+#, python-brace-format
+msgid "Saved in events/left.toml, read back: this file stays where it is."
+msgid_plural "Saved in events/left.toml, read back: these {n} files stay where they are."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "Saved in {file}: your albums now go to {folder}."
 msgstr ""
 
 #, python-brace-format
@@ -6968,6 +7162,11 @@ msgstr ""
 msgid "Search your photos"
 msgstr ""
 
+msgid ""
+"Search your photos, aimed at this album: its dates, its name in the album"
+" field"
+msgstr ""
+
 msgid "Searching OpenStreetMap…"
 msgstr ""
 
@@ -7023,10 +7222,6 @@ msgid "Send to another folder (O)"
 msgstr ""
 
 #, python-brace-format
-msgid "Sent {date}"
-msgstr ""
-
-#, python-brace-format
 msgid "Sent: the step starts in {window}…"
 msgstr ""
 
@@ -7048,12 +7243,6 @@ msgstr ""
 msgid ""
 "Series seen: {seen} · with shots set aside: {series} · shots set aside: "
 "{shots}"
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Series still to see in {folder}: {series}. Validate them as shown, "
-"{aside}, the others kept?"
 msgstr ""
 
 #, python-brace-format
@@ -7193,6 +7382,9 @@ msgstr ""
 msgid "Share"
 msgstr ""
 
+msgid "Share by link"
+msgstr ""
+
 msgid "Share of the work, cumulated"
 msgstr ""
 
@@ -7200,6 +7392,9 @@ msgid "Share on the TV"
 msgstr ""
 
 msgid "Share your photos"
+msgstr ""
+
+msgid "Shared with you for 24 hours: look, nothing here can be changed."
 msgstr ""
 
 msgid "Sharpness"
@@ -7364,6 +7559,12 @@ msgid "Sort"
 msgstr ""
 
 msgid "Sort by"
+msgstr ""
+
+msgid "Sort here now"
+msgstr ""
+
+msgid "Sort here now: move its files to the folder said, then the next event"
 msgstr ""
 
 msgid "Sort in short"
@@ -7532,6 +7733,9 @@ msgstr ""
 msgid "Stop after this photo"
 msgstr ""
 
+msgid "Stop sharing"
+msgstr ""
+
 msgid "Stop the audit"
 msgstr ""
 
@@ -7670,7 +7874,16 @@ msgstr ""
 msgid "Take back the last batch of sure proposals (Shift+Z)"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Take every photo out of {name}? The album will be empty and removed. The "
+"photos themselves stay where they are."
+msgstr ""
+
 msgid "Take it back: its GPS decides again"
+msgstr ""
+
+msgid "Take out"
 msgstr ""
 
 msgid "Take out of the album"
@@ -7684,6 +7897,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Take the batch back ({events})"
+msgstr ""
+
+msgid "Take the picked files out of the album: the photos stay where they are"
 msgstr ""
 
 #, python-brace-format
@@ -7743,6 +7959,18 @@ msgstr ""
 msgid "The TV is paired: it shows the photo now."
 msgstr ""
 
+msgid ""
+"The actions starred on the home page, in their order: the page writes "
+"this list when you click a star or move a card. Empty: three are "
+"suggested (search, import, audit)."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The album folders made before stay in {folder}: make each one again (mh "
+"album <name> --apply) to have it in the new folder."
+msgstr ""
+
 msgid "The album stopped at the first link refused by the disk."
 msgstr ""
 
@@ -7751,6 +7979,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "The album {name} is empty: removed from {place}."
+msgstr ""
+
+#, python-brace-format
+msgid "The album {name} is empty: removed."
 msgstr ""
 
 msgid "The album's name"
@@ -8027,6 +8259,9 @@ msgstr ""
 msgid "The event is not remembered: {reason}"
 msgstr ""
 
+msgid "The event is to decide again"
+msgstr ""
+
 msgid "The event shown"
 msgstr ""
 
@@ -8073,6 +8308,12 @@ msgid ""
 msgstr ""
 
 msgid "The faces you confirmed as this person's."
+msgstr ""
+
+msgid "The favourites are being saved: one moment."
+msgstr ""
+
+msgid "The favourites could not be saved in config.toml."
 msgstr ""
 
 msgid ""
@@ -8249,6 +8490,9 @@ msgstr ""
 msgid "The index {file} cannot be read: {reason}."
 msgstr ""
 
+msgid "The inventory"
+msgstr ""
+
 #, python-brace-format
 msgid "The inventory could not be written to {folder}: {reason}."
 msgstr ""
@@ -8267,6 +8511,11 @@ msgid "The largest clusters without a name"
 msgstr ""
 
 msgid ""
+"The last audit was made with the former settings: run the audit again "
+"before cleaning."
+msgstr ""
+
+msgid ""
 "The last audit's proposals were made with the former roles: run the audit"
 " again before cleaning."
 msgstr ""
@@ -8279,6 +8528,12 @@ msgstr ""
 msgid ""
 "The layouts of {path} that differ from the sort convention (year/year-"
 "month/event):"
+msgstr ""
+
+msgid "The link"
+msgstr ""
+
+msgid "The link opens nothing any more."
 msgstr ""
 
 msgid "The local model of [classify.ai] also describes the photos"
@@ -8375,6 +8630,9 @@ msgstr ""
 msgid "The new name of {name}:"
 msgstr ""
 
+msgid "The other active filters"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "The page does not open? docker run must publish the same port on both "
@@ -8410,11 +8668,6 @@ msgid "The page of the tool this server shows"
 msgstr ""
 
 msgid "The page's tab was closed: the page stopped."
-msgstr ""
-
-msgid ""
-"The pairs come the most space freed first. Each copy in the second folder"
-" has an identical file in the first one."
 msgstr ""
 
 #, python-brace-format
@@ -8492,7 +8745,7 @@ msgstr ""
 
 msgid ""
 "The photos picked go to the event's folder, under their year and month, "
-"journaled: 'undo' puts them back. No rule is written."
+"journaled: 'undo' puts them back."
 msgstr ""
 
 #, python-brace-format
@@ -8589,6 +8842,9 @@ msgid ""
 msgstr ""
 
 msgid "The report lists them all: type them again where they belong."
+msgstr ""
+
+msgid "The reports"
 msgstr ""
 
 #, python-brace-format
@@ -8732,6 +8988,9 @@ msgstr ""
 msgid "The settings changed but cannot be read; the last good ones stay: {error}"
 msgstr ""
 
+msgid "The settings could not be saved in config.toml."
+msgstr ""
+
 #, python-brace-format
 msgid "The sheet '{name}' was renamed or deleted."
 msgstr ""
@@ -8789,6 +9048,11 @@ msgid "The target {path} is not mounted."
 msgstr ""
 
 msgid "The terminal takes over: answer its question there. This page closes."
+msgstr ""
+
+msgid ""
+"The title a paired phone's page shows, e.g. the family's name; empty: Our"
+" photos."
 msgstr ""
 
 msgid "The tool only sees the folders you give it with -v."
@@ -9026,6 +9290,12 @@ msgstr ""
 msgid "This file is not an mh backup: its manifest is missing or unreadable."
 msgstr ""
 
+#, python-brace-format
+msgid "This file will go to {folder}."
+msgid_plural "These {n} files will go to {folder}."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid ""
 "This folder is an album of media-hygiene: hard links, second names of "
 "photos kept elsewhere, which take no space. The audits skip it. 'media-"
@@ -9168,6 +9438,9 @@ msgstr ""
 msgid "Those deleted in the Explorer since an audit: on purpose, or lost?"
 msgstr ""
 
+msgid "Three suggestions: the ☆ of any action makes it one of your favourites."
+msgstr ""
+
 msgid "Three things to know before you start"
 msgstr ""
 
@@ -9178,6 +9451,9 @@ msgid "Tick all"
 msgstr ""
 
 msgid "Tick an extension or a folder."
+msgstr ""
+
+msgid "Tick at least one kind of file to analyse."
 msgstr ""
 
 msgid "Tick at least one photo."
@@ -9278,6 +9554,9 @@ msgid "To move"
 msgstr ""
 
 msgid "To place"
+msgstr ""
+
+msgid "To prepare the copies to send, type in the terminal:"
 msgstr ""
 
 #, python-brace-format
@@ -9401,6 +9680,9 @@ msgstr ""
 msgid "Type a word, pick a photo."
 msgstr ""
 
+msgid "Type an album in the bar: its files are marked, kept or left out"
+msgstr ""
+
 msgid "Type an album's name in the bar first."
 msgstr ""
 
@@ -9443,6 +9725,12 @@ msgid ""
 msgstr ""
 
 msgid "Undo"
+msgstr ""
+
+msgid "Undo my choice"
+msgstr ""
+
+msgid "Undo my choice: the event is to decide again"
 msgstr ""
 
 msgid ""
@@ -9696,6 +9984,9 @@ msgid ""
 "{event}, {event_start}, {place}, {country}, {region}, {city}."
 msgstr ""
 
+msgid "Where should your albums go?"
+msgstr ""
+
 #, python-brace-format
 msgid "Where sure files go, e.g. '{year}/{year_month}/{category}'."
 msgstr ""
@@ -9909,6 +10200,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Write this event down as a rule: its days, its folder; the next classify "
+"runs apply it"
+msgstr ""
+
+msgid ""
 "Write this period down as a date rule of config.toml, after seeing the "
 "photos it would take and where each one would go"
 msgstr ""
@@ -10047,6 +10343,9 @@ msgid ""
 "events found in your folders on the Events tab."
 msgstr ""
 
+msgid "Your favourites"
+msgstr ""
+
 msgid "Your folders"
 msgstr ""
 
@@ -10100,6 +10399,11 @@ msgid "Your photos and videos were not touched."
 msgstr ""
 
 msgid "Your photos and videos, sorted and without duplicates."
+msgstr ""
+
+msgid ""
+"Your photos are only read: taking a photo out of an album, or adding it "
+"to another one, changes the albums file alone."
 msgstr ""
 
 msgid "Your photos, in order"
@@ -10258,13 +10562,6 @@ msgstr ""
 msgid "about {time} left"
 msgstr ""
 
-#, python-brace-format
-msgid "about {time} left at your pace"
-msgstr ""
-
-msgid "accept every sure proposal at once"
-msgstr ""
-
 msgid "accept the proposal, next"
 msgstr ""
 
@@ -10272,6 +10569,9 @@ msgid "add it to the album named in the bar"
 msgstr ""
 
 msgid "add or take out one file"
+msgstr ""
+
+msgid "add to the library (audit)"
 msgstr ""
 
 msgid "album folder explorer links christmas holidays"
@@ -10282,6 +10582,10 @@ msgid "all {count} kept"
 msgstr ""
 
 msgid "alphabetical order (nothing else differs)"
+msgstr ""
+
+#, python-brace-format
+msgid "also kept, written in config.toml: {list}"
 msgstr ""
 
 msgid "among the blurriest of your photos"
@@ -10441,9 +10745,6 @@ msgstr ""
 msgid ""
 "category {name}: a category lists extensions, not categories; for the "
 "extension, write .{value}"
-msgstr ""
-
-msgid "change the name of the event (by default, the last folder)"
 msgstr ""
 
 msgid "changed, not saved yet: Enter saves it, Esc drops it"
@@ -10649,6 +10950,9 @@ msgstr ""
 msgid "e.g. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/"
 msgstr ""
 
+msgid "e.g. C:\\Photos\\Albums"
+msgstr ""
+
 msgid "e.g. Crete 2023"
 msgstr ""
 
@@ -10672,6 +10976,9 @@ msgid "environment"
 msgstr ""
 
 msgid "every file from the last one clicked"
+msgstr ""
+
+msgid "every file of the album"
 msgstr ""
 
 msgid "every file of the page"
@@ -10792,6 +11099,9 @@ msgid "iPhone, iPad"
 msgstr ""
 
 msgid "if the cache is ever lost: mh restore."
+msgstr ""
+
+msgid "ignored folders:"
 msgstr ""
 
 #, python-brace-format
@@ -10988,9 +11298,6 @@ msgid "leave the group alone, then next"
 msgstr ""
 
 msgid "leave the pair alone, then next"
-msgstr ""
-
-msgid "leave the whole event where it is"
 msgstr ""
 
 msgid "leaves the phone"
@@ -11307,7 +11614,7 @@ msgstr ""
 msgid "next group to check, undecided"
 msgstr ""
 
-msgid "next or previous event (its ← → buttons)"
+msgid "next or previous event (its ← → buttons): skipped, it stays to decide"
 msgstr ""
 
 msgid "next series still to see"
@@ -11358,9 +11665,6 @@ msgstr ""
 msgid "no indexed photo was taken on these dates"
 msgstr ""
 
-msgid "no photo framed: save the folder, then the next event to decide"
-msgstr ""
-
 msgid "no photo of this camera was taken on these dates"
 msgstr ""
 
@@ -11375,6 +11679,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "nobody named {name} on this photo"
+msgstr ""
+
+msgid "none but the system ones"
 msgstr ""
 
 msgid "none: the whole group aside, then next"
@@ -11421,6 +11728,9 @@ msgid "nothing"
 msgstr ""
 
 msgid "nothing to put back"
+msgstr ""
+
+msgid "nothing, only the copy"
 msgstr ""
 
 msgid "nothing: type mh push again after your next import or sort."
@@ -11541,6 +11851,9 @@ msgstr ""
 msgid "photo"
 msgstr ""
 
+msgid "photos"
+msgstr ""
+
 msgid "photos have words"
 msgstr ""
 
@@ -11643,9 +11956,6 @@ msgstr ""
 msgid "reference-safety/"
 msgstr ""
 
-msgid "remember this event as a rule of config.toml"
-msgstr ""
-
 msgid "remove folder forget"
 msgstr ""
 
@@ -11741,6 +12051,9 @@ msgstr ""
 msgid "set aside in 'search'"
 msgstr ""
 
+msgid "set aside the copies"
+msgstr ""
+
 msgid "set it aside, then the previous one"
 msgstr ""
 
@@ -11775,9 +12088,6 @@ msgid "sort move tidy apply workbook"
 msgstr ""
 
 msgid "sort the burst series with the keyboard, in 'review'."
-msgstr ""
-
-msgid "sort this event now: move its files, the others left for later"
 msgstr ""
 
 msgid "sorted"
@@ -11836,12 +12146,6 @@ msgstr ""
 msgid "tags gives them some"
 msgstr ""
 
-msgid "take back the choice made here (of the picked photos, else of the event)"
-msgstr ""
-
-msgid "take back the last batch of sure proposals"
-msgstr ""
-
 msgid "take it back out of the set aside"
 msgstr ""
 
@@ -11863,6 +12167,9 @@ msgstr ""
 msgid ""
 "the album and this file are on two disks or two mounts: a hard link "
 "cannot cross them"
+msgstr ""
+
+msgid "the burst series page"
 msgstr ""
 
 msgid "the classify proposal waits: 'sort' applies the edited workbook."
@@ -12016,9 +12323,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "the person set aside on {date}"
-msgstr ""
-
-msgid "the picked photos: to another folder, or left where they are"
 msgstr ""
 
 msgid "the previous or next one not set aside"
@@ -12273,13 +12577,15 @@ msgstr ""
 msgid "type a new search"
 msgstr ""
 
-msgid "type the folder of the event"
-msgstr ""
-
 msgid "typed by hand"
 msgstr ""
 
 msgid "unanswered"
+msgstr ""
+
+msgid ""
+"undo puts the files back but keeps the event: remove it from events/ by "
+"hand."
 msgstr ""
 
 msgid "undo restore put back revert mistake"
@@ -12337,6 +12643,9 @@ msgid "video tags"
 msgstr ""
 
 msgid "video: open the original"
+msgstr ""
+
+msgid "videos"
 msgstr ""
 
 msgid "videos heavy lighten compress space mjpeg"
@@ -13068,6 +13377,14 @@ msgid "{count} layout written to {path}, read back from the disk:"
 msgid_plural "{count} layouts written to {path}, read back from the disk:"
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} left"
+msgstr ""
+
+#, python-brace-format
+msgid "{count} left, about {time} at your pace"
+msgstr ""
 
 #, python-brace-format
 msgid "{count} line of the files ticked could not be read: skipped."
@@ -13833,6 +14150,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{folder}: {series} validated as shown, {aside}, the others kept."
+msgstr ""
+
+#, python-brace-format
 msgid "{found} photos and videos found: the first {shown} by date are shown."
 msgstr ""
 
@@ -14011,8 +14332,8 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "{n} events of files not sorted yet (not in a YYYY/YYYY-MM/<name> folder),"
-" cut where no photo was taken for {hours} hours. Pick photos, then Move "
-"to an event…"
+" cut where no photo was taken for {hours} hours. Click one: where its "
+"files go, then Sort here now."
 msgstr ""
 
 #, python-brace-format
@@ -14405,8 +14726,8 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"{pair} — undecided groups: {count}. As planned, their copies to the "
-"quarantine? Each group can still be decided again."
+"{pair} — {count} undecided groups decided as planned: their copies go to "
+"the quarantine at the next clean."
 msgstr ""
 
 #, python-brace-format
@@ -14584,6 +14905,13 @@ msgid "{place}: {reason}"
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{protected} (folders.protected) and {excluded} (folders.excluded) are one"
+" folder or one inside the other: a protected folder is read, an excluded "
+"one is not; give them one role"
+msgstr ""
+
+#, python-brace-format
 msgid "{rate} photos a minute, about {time} left."
 msgstr ""
 
@@ -14631,15 +14959,18 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"{series}: only the sharpest shot (and those of protected folders) would "
-"stay, {aside}, saved in one write. Series to look at, still to see: "
-"{left}. Validate them? Z takes the whole batch back."
+"{series} validated: only the sharpest shot (and those of protected "
+"folders) stays, {aside}. Series to look at, still to see: {left}."
 msgstr ""
 
 #, python-brace-format
 msgid ""
 "{setting} names {folder}, which this run emptied: point it to the photos'"
 " new folder in config.toml, or remove it."
+msgstr ""
+
+#, python-brace-format, python-format
+msgid "{share} %% of the {total} seen"
 msgstr ""
 
 #, python-brace-format
@@ -14886,6 +15217,9 @@ msgstr[1] ""
 msgid "▶ Play"
 msgstr ""
 
+msgid "✓ in the album"
+msgstr ""
+
 msgid "✔ Probably: the event's camera"
 msgstr ""
 
@@ -14896,6 +15230,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "❚❚ Pause"
+msgstr ""
+
+msgid "🌐 name the places"
 msgstr ""
 
 #, python-brace-format
@@ -14931,6 +15268,13 @@ msgid ""
 "model would share its folder. Give it a name of its own (Samsung: "
 "Settings > About phone > Edit; Pixel: Settings > About phone > Device "
 "name), then plug it in again."
+msgstr ""
+
+msgid "📁 Where should your albums go? Pick a folder on the disk of your photos."
+msgstr ""
+
+#, python-brace-format
+msgid "📁 Your albums go to {folder}."
 msgstr ""
 
 msgid "📍 The GPS positions were kept, as asked."
@@ -15094,6 +15438,9 @@ msgstr ""
 msgid ""
 "🤖 classify and tags can also ask a local AI model: set [classify.ai] "
 "model in config.toml (mh config)."
+msgstr ""
+
+msgid "🤖 describe the photos"
 msgstr ""
 
 #, python-brace-format

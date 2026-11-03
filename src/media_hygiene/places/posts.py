@@ -17,6 +17,7 @@ from media_hygiene.config.classify_places import PersonalPlace
 from media_hygiene.config.places_settings import IgnoredSpot
 from media_hygiene.places.config_file import PlaceEdit
 from media_hygiene.places.hand_desk import PhotosAct
+from media_hygiene.places.lookup_switch import LOOKUP_PATH, LookupAsked, save_lookup
 from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.serving import json_response
 
@@ -27,7 +28,7 @@ if TYPE_CHECKING:
 SAVE_PATH: Final = "/api/places"
 ASIDE_PATH: Final = "/api/aside"
 PHOTOS_PATH: Final = "/api/place-photos"
-BOARD_POSTS: Final = frozenset({SAVE_PATH, ASIDE_PATH, PHOTOS_PATH})
+BOARD_POSTS: Final = frozenset({SAVE_PATH, ASIDE_PATH, PHOTOS_PATH, LOOKUP_PATH})
 
 
 class _PlaceIn(PersonalPlace):
@@ -76,6 +77,9 @@ async def board_post(board: PlacesBoard, request: Request) -> Response:
             aside = _Aside.model_validate_json(request.body)
             spot = IgnoredSpot(latitude=aside.latitude, longitude=aside.longitude)
             (board.restore if aside.restore else board.set_aside)(spot)
+        elif request.path == LOOKUP_PATH:  # 0536
+            asked = LookupAsked.model_validate_json(request.body)
+            await asyncio.to_thread(save_lookup, board.config_file, asked)
         else:
             act = PhotosAct.model_validate_json(request.body)
             await asyncio.to_thread(board.place_photos, act)

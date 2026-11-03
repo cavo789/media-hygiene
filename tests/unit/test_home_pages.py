@@ -12,6 +12,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.review.ending import Ending
 from media_hygiene.review.http import Request
 from media_hygiene.services import home_pages
+from media_hygiene.services.console_here import ReadOnlyHere
 from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.home_pages import HomeServer, SearchHere
 from tests.support.runtime import make_locations, make_runtime
@@ -25,7 +26,6 @@ if TYPE_CHECKING:
 
     from media_hygiene.review.ending import Handling
     from media_hygiene.search.app import SearchApp
-    from media_hygiene.services.history_here import HistoryHere
     from media_hygiene.services.places_here import PlacesHere
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.services.slideshow_here import SlideshowHere
@@ -99,7 +99,7 @@ def test_search_without_index_says_why(
         cast("Handling", None),
         here,
         (),
-        cast("HistoryHere", None),
+        ReadOnlyHere(cast("FreshRuntime", None)),
         cast("SlideshowHere", None),
         cast("PlacesHere", None),
     )

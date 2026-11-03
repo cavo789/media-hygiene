@@ -2,15 +2,21 @@
 
 from __future__ import annotations
 
+import dataclasses
 import json
+import sqlite3
 import tomllib
+from contextlib import closing
 from http import HTTPStatus
 from typing import TYPE_CHECKING
+
+import pytest
 
 from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.search.folder_role_desk import RoleDesk
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from pathlib import Path
 
 _CONFIG = """# my comment
@@ -46,7 +52,7 @@ def test_listed_roles_say_where_each_folder_is(tmp_path: Path) -> None:
     """Listed roles say where each folder is."""
     desk = _desk(tmp_path)
     assert desk.listed() == [
-        {"path": "C:\\Photos", "role": "protected", "where": "here"}
+        {"path": "C:\\Photos", "role": "protected", "where": "here", "carry": []}
     ]
 
 
@@ -59,7 +65,12 @@ def test_a_role_is_saved_keeping_comments_and_read_back(tmp_path: Path) -> None:
     text = desk.config_file.read_text("utf-8")
     assert "# my comment" in text
     assert "# my protected" in text
-    assert {"path": "C:\\Phone", "role": "preferred", "where": "here"} in body["roles"]  # type: ignore[operator]
+    assert {
+        "path": "C:\\Phone",
+        "role": "preferred",
+        "where": "here",
+        "carry": [],
+    } in body["roles"]  # type: ignore[operator]
     assert "C:\\Phone" in str(body["said"])
     assert body["stale"]
 
@@ -99,7 +110,7 @@ def test_a_folder_renamed_in_explorer_is_missing_then_removed(tmp_path: Path) ->
     assert desk.listed()[0]["where"] == "missing"
     status, _body = _post(desk, "C:\\Photos", "none")
     assert status == HTTPStatus.OK
-    assert desk.listed() == []
+    assert not desk.listed()
 
 
 def test_a_folder_outside_the_mounted_ones_is_elsewhere(tmp_path: Path) -> None:
@@ -110,6 +121,7 @@ def test_a_folder_outside_the_mounted_ones_is_elsewhere(tmp_path: Path) -> None:
         "path": "D:\\Backup",
         "role": "backups",
         "where": "elsewhere",
+        "carry": [],
     } in desk.listed()
 
 
@@ -118,3 +130,96 @@ def test_an_unknown_role_is_a_bad_request(tmp_path: Path) -> None:
     desk = _desk(tmp_path)
     status, _body = _post(desk, "C:\\Photos", "master")
     assert status == HTTPStatus.BAD_REQUEST
+
+
+def test_excluded_inside_protected_is_refused_file_unchanged(tmp_path: Path) -> None:
+    """An excluded folder inside a protected one is refused, its reason said (0581)."""
+    desk = _desk(tmp_path)
+    status, body = _post(desk, "C:\\Photos\\Old", "excluded")
+    assert status == HTTPStatus.CONFLICT
+    assert "folders.excluded" in str(body["error"])
+    assert desk.config_file.read_text("utf-8") == _CONFIG
+
+
+def test_protected_inside_excluded_is_refused_file_unchanged(tmp_path: Path) -> None:
+    """A protected folder inside an excluded one is refused too (0581)."""
+    desk = _desk(tmp_path)
+    config = "[folders]\nexcluded = ['C:\\\\Phone']\n"
+    desk.config_file.write_text(config, "utf-8")
+    (tmp_path / "data" / "c" / "Phone" / "Keep").mkdir()
+    status, body = _post(desk, "C:\\Phone\\Keep", "protected")
+    assert status == HTTPStatus.CONFLICT
+    assert "folders.protected" in str(body["error"])
+    assert desk.config_file.read_text("utf-8") == config
+
+
+@pytest.fixture
+def index() -> Iterator[sqlite3.Connection]:
+    """An index of the files alone, closed after the test."""
+    with closing(sqlite3.connect(":memory:")) as connection:
+        yield connection
+
+
+def _indexed(
+    desk: RoleDesk, index: sqlite3.Connection, folders: tuple[str, ...]
+) -> RoleDesk:
+    """An index holding the same two files in each folder (container paths)."""
+    index.execute(
+        "CREATE TABLE files (path TEXT PRIMARY KEY, size INTEGER NOT NULL,"
+        " partial_digest TEXT, full_digest TEXT)"
+    )
+    for folder in folders:
+        for name, size, digest in (("a.jpg", 10, "aa"), ("Old/b.jpg", 20, "bb")):
+            index.execute(
+                "INSERT INTO files VALUES (?, ?, ?, ?)",
+                (f"{folder}/{name}", size, digest[0], digest),
+            )
+    return dataclasses.replace(desk, index=index)
+
+
+def _rename(tmp_path: Path, *to: str) -> None:
+    data = tmp_path / "data" / "c"
+    for index, name in enumerate(to):
+        if index == 0:
+            (data / "Photos").rename(data / name)
+        else:
+            (data / name).mkdir()
+
+
+def test_a_folder_renamed_offers_to_carry_its_role(
+    tmp_path: Path, index: sqlite3.Connection
+) -> None:
+    """0580: same files below a new name: the role moves there, read back."""
+    data = tmp_path / "data" / "c"
+    desk = _indexed(_desk(tmp_path), index, (f"{data}/Photos", f"{data}/Pictures"))
+    _rename(tmp_path, "Pictures")
+    assert desk.listed()[0]["carry"] == ["C:\\Pictures"]
+    answer = desk.answer(
+        json.dumps(
+            {"folder": "C:\\Pictures", "role": "protected", "former": "C:\\Photos"}
+        ).encode()
+    )
+    assert answer.status == HTTPStatus.OK
+    assert _folders(desk)["protected"] == ["C:\\Pictures"]
+    assert desk.listed()[0]["where"] == "here"
+
+
+def test_a_folder_deleted_has_no_candidate(
+    tmp_path: Path, index: sqlite3.Connection
+) -> None:
+    """0580: the files are nowhere else: only *Remove*."""
+    data = tmp_path / "data" / "c"
+    desk = _indexed(_desk(tmp_path), index, (f"{data}/Photos",))
+    _rename(tmp_path, "Gone")
+    assert desk.listed()[0]["carry"] == []
+
+
+def test_two_candidates_are_both_listed(
+    tmp_path: Path, index: sqlite3.Connection
+) -> None:
+    """0580: a copy of the folder too: both offered, none chosen."""
+    data = tmp_path / "data" / "c"
+    folders = (f"{data}/Photos", f"{data}/Pictures", f"{data}/Copy")
+    desk = _indexed(_desk(tmp_path), index, folders)
+    _rename(tmp_path, "Pictures", "Copy")
+    assert desk.listed()[0]["carry"] == ["C:\\Copy", "C:\\Pictures"]

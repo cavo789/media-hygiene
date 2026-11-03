@@ -17,7 +17,7 @@ it**, all with the keyboard.
 It is optional: the workbook alone is enough, and both can be used together. The page never
 touches a photo nor the workbook; `sort` ([step 7](07-sort.md)) applies your choices.
 
-> **Since 0572** the 🗂 Events tab no longer reads the `classify` plan: it groups the files not sorted yet of the period searched, and you move them with **📂 Move to an event…** — [how](../commands/search.md#the-events-of-the-latest-classify). The plan-based steps below describe the former tab.
+> **Since 0572** the 🗂 Events tab no longer reads the `classify` plan: it groups the files not sorted yet of the period searched. Click an event: its card says in one sentence where its files go, then **Sort here now** (moved, journaled, then the next event), **Another folder…** (the bar's **📂 Move to an event…**) or **Do not sort this event** — [how](../commands/search.md#the-events-of-the-latest-classify). The plan-based steps below describe the former tab.
 
 ## Start the page
 
@@ -154,7 +154,7 @@ do it, and each one says what it saved, read back from the disk.
   (`2019\2019-07\Montenegro`) are events too. At the top of the 🗂 Events tab, *N events found
   in your folders* lists them, each with its days and its number of files, all ticked: untick
   those that are not events worth remembering, then **Confirm these N**. Confirm acts on the
-  rows shown only: with a filter typed, the hidden rows stay to decide, untouched. The ticked ones are
+  rows shown only: with a filter typed, or a group folded, the hidden rows stay to decide, untouched. The ticked ones are
   remembered; the unticked ones are noted as "not events" and never proposed again (*N folders
   said not to be events*, folded below, lets you tick one back). A folder whose photos are far
   apart in time (`Prints jan10`) is a batch, not one event: it is listed apart, never proposed.
@@ -201,8 +201,8 @@ of the event, which you can widen), its folder, and `keep_folders = true` so tha
 folders stay below it. Before saving, the dialog says what the rule would take on this
 proposal: "236 files: 6 of this event, 230 of other events or folders on the same days.
 Elsewhere: Photos Chloé (230)", and the rules whose days it shares (the first listed wins on
-those days). Saved, the rule is written into `config.toml` just above *Existing folders*, your
-comments kept, read back from the disk and said with its time; the event's folder is chosen at
+those days). Saved, the rule is written into `/config/events/<year>.toml` (the year it starts;
+`config.toml` stays as you wrote it), applied just above *Existing folders*, read back from the disk and said with its time; the event's folder is chosen at
 the same time, so *Sort this event now* works at once. The left column then names the rule
 that decides the event's files: *Rule: Montenegro (2019-07-12..2019-07-19)*.
 

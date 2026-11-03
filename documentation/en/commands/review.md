@@ -87,14 +87,22 @@ photos.
 `review --junk`: `→` the group as marked, then the next one; `Space` keeps or sets aside the
 framed photo; `Delete` sets the picked photos aside; `←`, `N`, `U` as for the other reviews.
 
-**The obvious series on a contact sheet** (`review`): *📇 Look at N obvious series on a
-contact sheet*, on the left, shows only the series with nothing to judge, about twenty rows a
-screen, the kept shot framed in green and those proposed aside smaller and dimmed with their
+**The obvious series on a contact sheet** (`review`): while obvious series are left to see, the
+page opens on their contact sheet (*📇 Look at N obvious series on a contact sheet*, on the
+left, opens it again): only the series with nothing to judge, as many rows a screen as the
+window holds (three at least), the kept shot framed in green and those proposed aside smaller and dimmed with their
 reason. **Enter** validates the rows shown as they are, then shows the next screen; a click on
 a shot sets it aside or keeps it; a double click shows it large; `Z` takes the whole last
 screen back. The line on top says how many doubtful series are left to see one by one (`P`).
 Each series is seen, at about 400 a minute (estimated: 2 to 3 s a screen). `V` stays the fast
 path: it validates them all without showing them.
+
+**How far you are** (`review`, `--near`, `--pairs`): the bar says how many cases are left and,
+once ten are decided in this session, about how long they take at your pace (*1 240 left, about
+4 min at your pace*; a pause of more than a minute does not count); then the share of the total
+gain already seen (*62 % of the 40 GB seen*). The order *space freed, largest first* (remembered
+by the browser) brings the biggest gain to the first screens; on `--pairs`, the other order is
+*by folder pair*.
 
 **Pick the shots as in [the folders of `search`](search.md#walk-through-your-folders)** (`review` and `review --junk`): a click picks one
 shot; the ☑ box (or Ctrl+click) adds or removes one; Shift+click picks every shot from the last
@@ -133,6 +141,11 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
 
 ## Good to know
 
+- **The home page's menu stays on the left**, folded to its icons (*Clean up* highlighted; ☰
+  unfolds it), so the grid keeps its columns.
+- **No question before a batch**: *Validate* a folder, *Validate the obvious series* or G (a
+  folder pair as planned) save at once; a line at the bottom says what was saved, with
+  **↶ Undo** for 8 seconds (Z does the same).
 - **From the home page, at once**: the burst series, *Settle the near duplicates*, the folder
   pairs, the unwanted photos and the files gone open in the home page's own server, without
   starting another container; the audit is read again from the cache each time the page opens.

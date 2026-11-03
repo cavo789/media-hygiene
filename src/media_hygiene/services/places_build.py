@@ -20,6 +20,7 @@ from media_hygiene.places.app import (
     STATE_PATH,
     PlacesApp,
 )
+from media_hygiene.places.lookup_switch import LOOKUP_PATH
 from media_hygiene.places.osm_search import OSM_PATH, online_search
 from media_hygiene.places.photos import (
     CLUSTER_PREFIX,
@@ -87,6 +88,7 @@ def places_app(runtime: Runtime, opened: OpenedMap, executor: Executor) -> Place
         "aside_path": ASIDE_PATH,
         "hint_path": HINT_PATH,
         "photos_path": PHOTOS_PATH,
+        "lookup_path": LOOKUP_PATH,
         "osm_path": OSM_PATH if osm else "",
     }
     page = environment.get_template(_PAGE_TEMPLATE).render(

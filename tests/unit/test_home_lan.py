@@ -445,7 +445,7 @@ def test_the_albums_open_from_the_share_area_and_the_phones_home() -> None:
     phone = home.home_page(remote=True).decode()
     assert '"albums": "/albums"' in phone
     assert "albums: () =>" in phone
-    assert '${hero()}${REMOTE ? EXTRAS.albums() : ""}' in phone
+    assert "${EXTRAS.albums()}" in phone
     assert share_area().groups[0].extra == "albums"
 
 

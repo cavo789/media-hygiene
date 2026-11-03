@@ -109,6 +109,7 @@ def settings_steps() -> tuple[Step, ...]:
             keywords=_("status state summary"),
             doc=Doc("commands/status/"),
             optional=True,
+            web=False,
         ),
         Step(
             "menu",
@@ -121,6 +122,7 @@ def settings_steps() -> tuple[Step, ...]:
             keywords=_("menu console powershell numbers"),
             doc=Doc("commands/menu/"),
             optional=True,
+            web=False,
         ),
         Step(
             "launcher",
@@ -146,5 +148,6 @@ def settings_steps() -> tuple[Step, ...]:
             keywords=_("home page start"),
             doc=Doc("commands/home/"),
             optional=True,
+            web=False,
         ),
     )

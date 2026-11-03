@@ -30,7 +30,7 @@ docker run --rm -it -v "$HOME\media-hygiene\config:/config" cavo789/media-hygien
 | Recommended | `/config`, and the same `-v` options as your usual command, to see their state. |
 | Writes | A commented `config.toml` in `/config`, the first time only; with `--upgrade`, the settings it lacks; with `--convention`, the layouts of the sort convention, once you say yes; with `tidy --apply`, the entries removed (a copy in `/cache/config-backups/` first). |
 | Undo | Delete `config.toml` to get the defaults back. |
-| With `mh` | `mh config`. |
+| With `mh` | `mh config`. From the home page, this step shows what it prints in the page itself (nothing in the terminal); typed, it prints as before. |
 
 ## Run it
 

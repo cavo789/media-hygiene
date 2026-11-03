@@ -11,7 +11,7 @@
 {% include "review_side.css.j2" %}
   /* One bar above the content (0305): where you are, or what to do with what is picked. */
   #content { min-width: 0; }
-  #bar { position: sticky; top: 0; z-index: 1; display: flex; flex-wrap: wrap; gap: 6px 10px;
+  #bar { position: sticky; top: var(--mh-shell-top-h, 0px); z-index: 1; display: flex; flex-wrap: wrap; gap: 6px 10px;
          align-items: center; padding: 8px 16px; background: var(--card);
          border-bottom: 1px solid var(--line); }
   #bar.acting { background: color-mix(in srgb, var(--accent) 14%, var(--card)); }

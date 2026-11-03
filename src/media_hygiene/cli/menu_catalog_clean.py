@@ -50,6 +50,7 @@ def clean_steps() -> tuple[Step, ...]:
             icon="report",
             keywords=_("report html browser read see"),
             doc=LAUNCHER_SELF,
+            web=False,
         ),
         Step(
             "clean",

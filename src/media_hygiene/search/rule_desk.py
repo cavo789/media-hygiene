@@ -18,9 +18,9 @@ from typing import TYPE_CHECKING, Final
 
 from pydantic import ValidationError
 
+from media_hygiene.classify.event_store import holder
+from media_hygiene.classify.remember_rule import remember_rule
 from media_hygiene.classify.rules.calendar import parse_one_off
-from media_hygiene.classify.rules_edit import replace_rule
-from media_hygiene.classify.rules_file import add_rule
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
 from media_hygiene.review.rule_overlaps import overlapping
@@ -165,7 +165,7 @@ class RuleDesk:  # pylint: disable=too-many-instance-attributes  # one per page
         )
 
     def save(self, body: bytes) -> Response:
-        """`POST /api/period-rule`: write the rule into `config.toml`, read it back.
+        """`POST /api/period-rule`: write the rule into `events/` (0578), read it back.
 
         Args:
             body: The rule typed.
@@ -182,14 +182,11 @@ class RuleDesk:  # pylint: disable=too-many-instance-attributes  # one per page
         if self.config is None or not self.config.is_file():
             return chosen_refused(ConfigError(_("This page cannot write config.toml.")))
         try:
-            held = (
-                replace_rule(self.config, asked.replaces, rule)
-                if asked.replaces
-                else add_rule(self.config, rule)
-            )
+            held = remember_rule(self.config, asked.replaces, rule)
         except ConfigError as exc:
             return chosen_refused(exc)
-        written = self.config.stat().st_mtime_ns / _NANOSECONDS
+        held_in = holder(self.config.parent, held.name) or self.config
+        written = held_in.stat().st_mtime_ns / _NANOSECONDS
         return json_response(
             HTTPStatus.OK,
             {

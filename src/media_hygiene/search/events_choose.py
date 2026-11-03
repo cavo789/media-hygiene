@@ -1,11 +1,11 @@
 """The choices of the *🗂 Events* view (0438): review-sort's routes, under `/api/sort/`.
 
-Each choice of review-sort (`sort_choices.CHOICES`: an event's folder, photos sent
+Each choice of review-sort (`events_choices.CHOICES`: an event's folder, photos sent
 elsewhere or left, a choice taken back, the sure proposals, the live destination, a
 rule) answers here at `/api/sort/<its path>`, on the plan's session the Events view
 holds: saved at once in `sort-decisions.json`, read back from the disk, the workbook
 value each one saw recorded (`base`). `POST /api/sort/sort-now` moves one event's
-files (`sort_now`); `GET /api/sort/rules` and `/api/sort/progress` are *Your rules*
+files (`events_now`); `GET /api/sort/rules` and `/api/sort/progress` are *Your rules*
 and the progress with the runs. The page then asks the event again for its tiles.
 """
 
@@ -18,21 +18,22 @@ from pydantic import ValidationError
 
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
+from media_hygiene.review.events_choices import CHOICES, FILES_PATH
+from media_hygiene.review.events_now import SORT_NOW_PATH, sort_now
+from media_hygiene.review.events_rule_choices import PROGRESS_PATH, RULES_PATH
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.local_app import choice_failed
 from media_hygiene.review.serving import json_response
-from media_hygiene.review.sort_choices import CHOICES, FILES_PATH
-from media_hygiene.review.sort_now import SORT_NOW_PATH, sort_now
-from media_hygiene.review.sort_rule_choices import PROGRESS_PATH, RULES_PATH
 from media_hygiene.search.events_aside import rows_kept
 from media_hygiene.search.events_desk import EVENTS_PATH
 from media_hygiene.search.found_desk import FOUND_PATH
 from media_hygiene.search.late_desk import LATE_PATH, LATE_REFUSE_PATH
 from media_hygiene.search.span_events import SPAN_FILES_PATH, SPAN_PATH
+from media_hygiene.search.span_left import LEFT_PATH, left_answer
 
 if TYPE_CHECKING:
+    from media_hygiene.review.events_batch import SortBatchSession
     from media_hygiene.review.http import Request
-    from media_hygiene.review.sort_batch import SortBatchSession
     from media_hygiene.search.events_desk import EventsDesk
 
 SORT_PREFIX: Final = "/api/sort"
@@ -58,6 +59,7 @@ SORT_POSTS: Final = frozenset(
         *(sort_path(path) for path in (*CHOICES, SORT_NOW_PATH)),
         FOUND_PATH,
         LATE_REFUSE_PATH,
+        LEFT_PATH,
     }
 )
 SORT_GETS: Final = frozenset(sort_path(path) for path in (RULES_PATH, PROGRESS_PATH))
@@ -118,6 +120,8 @@ async def sort_post(desk: EventsDesk | None, request: Request) -> Response:
             if late is None
             else late.refuse(request.body)
         )
+    if request.path == LEFT_PATH:  # 0574: needs no plan
+        return left_answer(desk.span if desk is not None else None, request.body)
     if request.path == FOUND_PATH:  # 0557: needs no plan
         found = desk.found if desk is not None else None
         return (

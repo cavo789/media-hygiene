@@ -138,6 +138,9 @@ class HomeState(Frozen):  # one field per part of the page
     windows: bool = True  # the Windows actions are offered
     ai: bool = False  # a local model is set
     settings_error: str = ""  # config.toml does not load: the line the page shows
+    favourites: tuple[str, ...] = ()  # the starred actions, read from config.toml
+    suggested: bool = False  # none starred yet: `favourites` are the suggested three
+    family_title: str = ""  # `[home] family_title`: the phone's title (0461)
 
     def command_of(self, number: int) -> str | None:
         """The command of a runnable step.

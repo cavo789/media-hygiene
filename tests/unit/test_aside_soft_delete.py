@@ -31,8 +31,8 @@ from tests.support.runtime import make_locations, make_runtime
 
 if TYPE_CHECKING:
     from media_hygiene.classify.page_overlay import Overlaid
+    from media_hygiene.review.events_batch import SortBatchSession
     from media_hygiene.review.session import ReviewSession
-    from media_hygiene.review.sort_batch import SortBatchSession
     from media_hygiene.search.events_desk import EventsDesk
     from media_hygiene.services.album_reader import AlbumReader
     from media_hygiene.services.runtime import Runtime

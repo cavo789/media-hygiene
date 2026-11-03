@@ -1,0 +1,19 @@
+{% extends "page_frame.html.j2" %}
+{# A read-only console step shown in the page (0567): what `mh <step>` prints, recorded
+   by the home server from the same command; nothing else is computed here. #}
+{% set keys_safe = _("Read-only: this page shows what the command prints, as in the terminal.") %}
+{% block style %}
+  main pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--card); padding: 12px; border: 1px solid var(--line); }
+  main .error { color: var(--bad); font-weight: 600; }
+{% endblock %}
+{% block bar %}
+  <strong>{{ page_name }}</strong>
+{% endblock %}
+{% block content %}
+<main>
+{% if error %}
+  <p class="error" role="alert">{{ error }}</p>
+{% endif %}
+  <pre>{{ text }}</pre>
+</main>
+{% endblock %}
