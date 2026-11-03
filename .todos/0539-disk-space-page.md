@@ -17,3 +17,7 @@ shown. Follows 0532 (folder roles); analysed in detail at implementation time.
 Space taken by previews (`[cache] previews_max_gb`) and by the quarantine (`[clean]
 purge_hint_days`), with *Empty* / *Purge* (purge needs the visual path of 0525 first, and the
 Apply-now / undo rules). Reached from a home tile.
+
+## Decided (2026-11-03, review of PR #61)
+
+By the maintainer: the whole page now (previews cache **and** quarantine), since 0525 is DONE (`mh undo --pick`): its Purge part no longer waits.

@@ -5,10 +5,8 @@ named with its process number (0253), Docker's own listeners excepted. A socket 
 owner has just exited (an mh page stopped a moment ago) is not a holder: Windows shows
 it under PID 0 (the System Idle Process) until it is released, `ss` with no process.
 `mh` waits for it, polling, a line said once; only a port still taken at the end is
-refused (0503). A page step chosen on the home page waits first for the home
-server's container to be removed (0583). Since 0543 the port is read only when
-`docker run` failed on it: Docker can often bind while Windows still shows the
-PID 0 row, so it is tried first.
+refused (0503). Since 0543 the port is read only when `docker run` failed on it:
+Docker can often bind while Windows still shows the PID 0 row, so it is tried first.
 """
 
 from __future__ import annotations
@@ -36,14 +34,6 @@ DOCKER_LISTENERS: Final = (
 PORT_RELEASE_SECONDS: Final = 10
 # `docker run` tried again every second while the port is being released (0543).
 PORT_POLL_MILLISECONDS: Final = 1000
-# The home server ended for a page step: its container waited for until Docker removed
-# it (`--rm`), checked every tenth of a second, before the page binds the same port
-# (0583). Docker Desktop releases a published port when the container is removed, not
-# when its process exits: started at once, the page was refused, then waited 10 s twice.
-# Estimated (a removal takes well under a second on Linux); measured by the `handover`
-# step of tests/measure/mh-measure.ps1. A constant, not a setting (few settings).
-CONTAINER_GONE_POLL_MILLISECONDS: Final = 100
-CONTAINER_GONE_TRIES: Final = 50
 # What Docker says when it cannot bind a published port (Linux engine; Docker Desktop on
 # Windows, its "ports are not available" and the Winsock line): only then is the port
 # diagnosed (0543). Every other failure is shown as Docker said it.
@@ -51,14 +41,6 @@ BIND_REFUSED: Final = (
     "port is already allocated|address already in use|ports are not available"
     "|Only one usage of each socket address"
 )
-
-
-@dataclass(frozen=True, slots=True)
-class Pace:
-    """A bounded wait: its limit, and how often it checks (milliseconds)."""
-
-    limit: int  # seconds for the port's release, checks for a container's removal
-    poll: int
 
 
 @dataclass(frozen=True, slots=True)
@@ -70,9 +52,8 @@ class PortGuard:
     released: str  # still not released at the end of the wait: refused
     listeners: tuple[str, ...] = DOCKER_LISTENERS
     bind: str = BIND_REFUSED
-    release: Pace = Pace(PORT_RELEASE_SECONDS, PORT_POLL_MILLISECONDS)
-    # the ended home server's container removed (0583)
-    gone: Pace = Pace(CONTAINER_GONE_TRIES, CONTAINER_GONE_POLL_MILLISECONDS)
+    wait: int = PORT_RELEASE_SECONDS
+    poll: int = PORT_POLL_MILLISECONDS
 
 
 def port_guard() -> PortGuard:

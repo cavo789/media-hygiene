@@ -164,12 +164,6 @@ function global:_{{ function }}_watch {
         if ($held -and $held.nas -and $held.nas.volumes) { _{{ function }}_nas_release $held.nas.volumes }
     }
     if ($moved) { $global:LASTEXITCODE = {{ texts.remount.code }}; return }
-    # Ended: its container removed by Docker before the next page binds the port (0583).
-    for ($i = 0; $i -lt {{ guards.port.gone.limit }}; $i++) {
-        $null = docker container inspect $id 2>$null
-        if ($LASTEXITCODE -ne 0) { break }
-        Start-Sleep -Milliseconds {{ guards.port.gone.poll }}
-    }
     $said = "$(Get-Content -LiteralPath $code -TotalCount 1 -ErrorAction SilentlyContinue)".Trim()
     $global:LASTEXITCODE = if ($said -match '^\d+$') { [int]$said } else { 1 }
 }

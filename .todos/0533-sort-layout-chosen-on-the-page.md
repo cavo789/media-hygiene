@@ -18,3 +18,7 @@ shown. Follows 0532 (folder roles); analysed in detail at implementation time.
   `undated_`, `received_layout`) chosen among named models, each with a **preview of the
   resulting tree on the user's own photos** (link with 0526, sort trial on a sample).
 - `[classify] leave` and `person_folders` set from the folder menu of 0532.
+
+## Decided (2026-11-03, review of PR #61)
+
+By the maintainer: offer two named models, **Year/Year-month/Event** (`{year}/{year_month}/{category}`, the default) and **Year/Month only** (`{year}/{year_month}`). No year/event, no year/place model.

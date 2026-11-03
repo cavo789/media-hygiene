@@ -35,3 +35,7 @@ The three pages use the one sheet template, same keys (test of the keys table).
   row of an intruder case should show (an icon per file?).
 - The burst sheet keeps its own rows (`review_board.js.j2`): only its sizing, click and keys
   moved to the shared templates.
+
+## Decided (2026-11-03, review of PR #61)
+
+By the maintainer: the intruders part is dropped (files without a picture: nothing to show on a sheet); in a group of 3+ versions a click keeps the first other version, as built.

@@ -57,3 +57,7 @@ the page, with the same progress and the same questions.
 - Point 3 also drops `mh`'s second question before acting (the page's confirm would replace
   it): a safety design choice to confirm first.
 - `docs_screenshots` should run (follow dialog changed).
+
+## Decided (2026-11-03, review of PR #61)
+
+By the maintainer: (1) the writing steps run from the page through `mh.ps1` in the background (the home container stays read-only); (2) the page's confirmation replaces mh's second console question. Remainder filed as 0586.

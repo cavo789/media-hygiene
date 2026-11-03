@@ -94,3 +94,7 @@ Timed by the maintainer (stopwatch): **32.1 s** from the click to the page. Abou
 the analysis of the 108 new photos (*computed*: 108 × 0.16 s); the other ≈ 15 s (*estimated*, by
 difference) are the container start, the grouping of the 20 315 faces and the page's start. Both
 halves are worth the work: with no new photo, the opening would still take ≈ 15 s.
+
+## Decided (2026-11-03, review of PR #61)
+
+By the maintainer: the wait for the container removal is useless (step 43: 0.9 s either way); removed in the review commit. The step 43 stays in mh-measure.ps1. What remains is the face work (`mh people` 32 s), filed as 0588.

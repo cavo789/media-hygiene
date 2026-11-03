@@ -56,15 +56,6 @@ said() { echo "$1" >> "$HOME/said"; }  # what the fake image did, in order
 docker() {
     if [[ "$1" == version ]]; then return 0; fi
     if [[ "$1" == stop ]]; then said "stopped:$2"; return 0; fi
-    if [[ "$1" == container && "$2" == inspect ]]; then
-        # The ended server's container, still there for $HOME/alive checks (0583).
-        local alive=0
-        if [[ -s "$HOME/alive" ]]; then read -r alive < "$HOME/alive"; fi
-        if ((alive == 0)); then return 1; fi
-        echo $((alive - 1)) > "$HOME/alive"
-        said "inspect:there"
-        return 0
-    fi
     if [[ "$1" == wait ]]; then
         if [[ -s "$HOME/unplug" ]]; then
             # A folder removed during the session (0359): served until mh stops it.
@@ -541,22 +532,6 @@ def test_a_page_step_still_ends_the_server_kept_up(tmp_path: Path) -> None:
     ]
 
 
-def test_a_page_step_binds_once_the_home_container_is_gone(tmp_path: Path) -> None:
-    """0583: the page starts after Docker removed the ended server, never before."""
-    _bash(tmp_path, "true", "0")
-    step = _step_file(tmp_path)
-    step.parent.mkdir(parents=True, exist_ok=True)
-    write_step(step.parent, ("browse",))
-    (tmp_path / "alive").write_text("2\n")
-    done = _bash(tmp_path, "mh", str(STEP_EXIT_BASE + FIELDS_STEP))
-    assert _lines(done)[:4] == [
-        "home:relayed",
-        "inspect:there",
-        "inspect:there",
-        "browse:relayed",
-    ]
-
-
 def test_powershell_watches_the_server_in_the_background(tmp_path: Path) -> None:
     """0355: started detached, its end seen without a docker call per poll, stopped."""
     runtime = make_runtime(make_locations(tmp_path))
@@ -568,9 +543,7 @@ def test_powershell_watches_the_server_in_the_background(tmp_path: Path) -> None
     assert "while (-not $waiter.HasExited) {" in watch
     assert "Start-Sleep -Milliseconds 250" in watch
     # wait, stop on a folder plugged in or removed (0359), on Ctrl+C: never per poll
-    # and once ended, its removal checked (0583)
-    assert watch.count("docker ") == 4
-    assert "docker container inspect $id" in watch
+    assert watch.count("docker ") == 3
     assert "if (-not $ended) { $null = docker stop $id" in watch
     assert "[IO.File]::WriteAllText($done," in watch  # no byte order mark
     assert "if ($detach) { $tty = @('-d', '--cidfile', $detach) }" in text
