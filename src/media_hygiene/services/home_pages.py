@@ -15,13 +15,9 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.errors import MountError
 from media_hygiene.review.apply_relay import home_relay
-from media_hygiene.review.home_app import AUDIT_PATH
-from media_hygiene.review.home_tags_api import RUN_PATHS
+from media_hygiene.review.home_paths import HOME_PATHS
 from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.review.http import ContentType, Response
-from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH
-from media_hygiene.review.presence import PRESENCE_PATH
-from media_hygiene.review.step_watch import STEP_PATH
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
 from media_hygiene.search.folders import BROWSE_PATH
@@ -46,10 +42,6 @@ if TYPE_CHECKING:
     from media_hygiene.search.app import SearchApp
     from media_hygiene.services.runtime import Runtime
 
-# The home page's own paths (`HomeApp`); `/reports/…` too.
-_HOME_PATHS: Final = frozenset(
-    {PAGE_PATH, STATE_PATH, STEP_PATH, AUDIT_PATH, PRESENCE_PATH, *RUN_PATHS}
-)
 _SEARCH_PAGES: Final = frozenset({SEARCH_PAGE_PATH, BROWSE_PATH, EVENTS_PAGE_PATH})
 
 
@@ -154,7 +146,7 @@ class HomeWithPages:
             The response.
         """
         path = request.path
-        if path in _HOME_PATHS or path.startswith(REPORTS_PREFIX):
+        if path in HOME_PATHS or path.startswith(REPORTS_PREFIX):
             return await self.home.handle(request)
         review = next((each for each in self.reviews if each.serves(path)), None)
         if review is not None:
