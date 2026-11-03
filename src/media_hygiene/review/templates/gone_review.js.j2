@@ -57,6 +57,7 @@
     const done = files.filter((file) => file.decision !== "").length;
     byId("position").textContent = fill(T.position, { number: at + 1, total: groups.length });
     byId("totals").textContent = fill(T.totals, { deleted: number(deleted), decided: number(done), total: number(files.length) });
+    if (window.mhApplyNow) window.mhApplyNow(deleted > 0); // apply_now.html.j2, opened from home
     byId("title").textContent = group.title;
     const state = byId("state");
     state.textContent = decided(group) ? T.decided : T.pending;

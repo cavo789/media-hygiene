@@ -40,3 +40,18 @@ since. The phone pages stay read-only (no Apply: nothing is set aside off the PC
 
 Before: on two pages, set aside, then go find and type `clean --decisions`. After: the same
 *Apply now* on every page, and a test so a new page cannot forget it.
+
+## Done (2026-11-03)
+
+- `review --gone`: `ApplyOffer` (pending once a file is answered deleted on purpose) in
+  `gone_reviewing.serve_gone_review` and in the home registry (`review_kinds._gone`); the shared
+  `apply_now` template in the bar after the totals; `gone_review_flow` ends on the step chosen.
+- Checked: `shrink --try` has no Apply: its own *Lighten* button already ends the page and runs
+  the lightening (`LIGHTEN_CODE`), and its `shrink-decisions.json` is not applied by
+  `clean --decisions`. The other `*_app.py` writing decisions (near, pairs, unwanted, bursts,
+  intruders, search, people) already offered it. Phone pages stay read-only.
+- `tests/unit/test_apply_on_every_review.py`: every `REVIEWS` kind builds an `ApplyOffer`,
+  every review service serving a `ReviewPage` passes one and its template reaches
+  `apply_now.html.j2`.
+- Skill `photo-picking-pages`: the rule binds pages without tiles. Docs EN + FR (clean step 9).
+  `docs_screenshots` should run (gone page bar).

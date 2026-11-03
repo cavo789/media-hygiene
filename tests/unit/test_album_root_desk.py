@@ -32,7 +32,7 @@ def _desk(tmp_path: Path) -> AlbumRootDesk:
     return AlbumRootDesk(RoleDesk(config, HostPathMapper(data), (data / "c",)))
 
 
-def _post(desk: AlbumRootDesk, root: str) -> tuple[HTTPStatus, dict[str, str]]:
+def _post(desk: AlbumRootDesk, root: str) -> tuple[HTTPStatus, dict[str, object]]:
     answer = desk.answer(json.dumps({"root": root}).encode())
     return HTTPStatus(answer.status), json.loads(answer.body)
 
@@ -52,7 +52,8 @@ def test_a_root_is_saved_keeping_comments_and_read_back(tmp_path: Path) -> None:
     assert "# my comment" in text
     assert tomllib.loads(text)["album"]["root"] == "C:\\Photos\\Albums"
     assert body["used"] == "C:\\Photos\\Albums"
-    assert "C:\\Photos\\Sorted\\Albums" in body["said"]  # the former folder said
+    assert body["old"] == "C:\\Photos\\Sorted\\Albums"  # the former folder
+    assert body["movable"] == 0  # no album folder made there: no move offered
 
 
 def test_a_protected_or_unmounted_root_is_refused(tmp_path: Path) -> None:
@@ -61,7 +62,7 @@ def test_a_protected_or_unmounted_root_is_refused(tmp_path: Path) -> None:
     for root in ("C:\\Photos\\Master\\Albums", "D:\\Albums"):
         status, body = _post(desk, root)
         assert status == HTTPStatus.CONFLICT
-        assert root in body["error"]
+        assert root in str(body["error"])
     assert desk.roles.config_file.read_text("utf-8") == _CONFIG
 
 

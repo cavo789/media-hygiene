@@ -21,7 +21,7 @@ from media_hygiene.review.ending import (
 )
 from media_hygiene.review.home_app import AUDIT_PATH, FAVOURITES_PATH, HomeApp
 from media_hygiene.review.home_assets import ASSETS_PREFIX
-from media_hygiene.review.home_tags_api import RUN_NAMES, TAGS_RUN
+from media_hygiene.review.home_tags_api import INLINE_PATH, RUN_NAMES, TAGS_RUN
 from media_hygiene.review.home_texts import home_texts
 from media_hygiene.review.import_steps_api import IMPORT_STEPS_PATH
 from media_hygiene.review.lan import lan_access
@@ -80,6 +80,7 @@ def home_page(
         paths={
             "state": STATE_PATH,
             "step": STEP_PATH,
+            "inline": INLINE_PATH,  # a short step run here (0505)
             "audit": AUDIT_PATH,
             "favourites": FAVOURITES_PATH,
             "scope": SCOPE_PATH,

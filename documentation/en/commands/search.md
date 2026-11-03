@@ -370,8 +370,11 @@ to the album**.
   --apply`) are made: `[album] root` of `config.toml`, else `Albums` in the sorted library.
   Not set, the bar asks *Where should your albums go?*; **📁 Change** sets it. The folder must be
   in a mounted folder, outside the protected ones, and writable; it is saved in `config.toml`
-  (your comments kept) and shown as read back. Album folders made before stay where they are:
-  make each one again to have it in the new folder.
+  (your comments kept) and shown as read back. When album folders were made in the old folder,
+  **Move the N album folders made in …** makes each album of `albums.json` again in the new
+  folder (one run per album, undone by the `mh undo <run>` the answer gives), then empties the
+  old folder of the links media-hygiene made: a file you put there yourself stays, said, and so
+  does its folder.
 - **Take out of the album** takes the picked photos out of the album typed; an album left empty
   is removed.
 - **Album** in the left column, once an album is typed: *In the album* shows only its files, *Not

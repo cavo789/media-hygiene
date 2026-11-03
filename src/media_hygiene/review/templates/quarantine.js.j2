@@ -1,0 +1,112 @@
+{# The script of quarantine.html.j2, after the shared `pick_*` scripts: the files of the
+   quarantine by run; ↩ Restore posts the keys picked, then shows the quarantine as the
+   server read it again from the disk. #}
+const TEXTS = {{ texts | tojson }};
+const STATE_PATH = {{ state_path | tojson }};
+const RESTORE_PATH = {{ restore_path | tojson }};
+const CHOSEN_PATH = ""; // unused: `saveChoice` restores
+const LANG = document.documentElement.lang;
+let tiles = [];
+
+const number = (value) => value.toLocaleString(LANG);
+const runsOf = () => [...new Set(tiles.map((tile) => tile.run))];
+
+function listing() {
+  return tiles.map((tile) => ({
+    key: tile.key, name: tile.name, preview: tile.preview, original: tile.original,
+    chosen: false, video: tile.video, size: tile.size, folder: tile.folder,
+  }));
+}
+
+function card(file, index) {
+  const tile = tiles[index];
+  const node = element("article");
+  let picture = element("div", "empty", tile.video ? "🎬" : "📷");
+  if (!tile.video) {
+    picture = element("img");
+    picture.loading = "lazy";
+    picture.draggable = false; // a drag draws a rectangle (`pick_band.js.j2`)
+    picture.alt = tile.name;
+    picture.src = tile.preview;
+    picture.addEventListener("error", () => picture.replaceWith(element("div", "empty", "📷")));
+  }
+  const meta = element("div", "meta");
+  meta.append(element("div", "name", tile.name), element("div", "muted", tile.folder), element("div", "muted", tile.size));
+  node.append(picture, meta);
+  return wireCard(node, index);
+}
+
+// The cards by run, newest first, as the server listed them.
+function placeCards(made) {
+  if (made.length === 0) {
+    $("grid").replaceChildren(element("p", "muted", TEXTS.empty));
+    return;
+  }
+  $("grid").replaceChildren(...runsOf().map((run, rank) => {
+    const section = element("section", "run");
+    section.id = "run-" + rank;
+    const grid = element("div", "tiles");
+    grid.append(...made.filter((node, index) => tiles[index].run === run));
+    section.append(element("h2", "", fill(TEXTS.run, { run: run })), grid);
+    return section;
+  }));
+}
+
+function paint() {
+  $("status").textContent = tiles.length ? fill(TEXTS.status, { count: number(tiles.length), runs: number(runsOf().length) }) : TEXTS.empty;
+  $("runs").replaceChildren(...runsOf().map((run, rank) => {
+    const item = element("li");
+    const link = element("a", "", run);
+    link.href = "#run-" + rank;
+    item.append(link, element("span", "muted", number(tiles.filter((tile) => tile.run === run).length)));
+    return item;
+  }));
+}
+
+function scope() {
+  return {};
+}
+
+function reopen() {
+  showFiles(listing(), false);
+  paint();
+}
+
+function say(text, kind) {
+  for (const id of ["chosen", "viewerSaid"]) {
+    $(id).className = kind || "";
+    $(id).textContent = text;
+  }
+  $("chosen").title = text;
+}
+
+// ↩ Restore: the files picked go back; the page then shows the quarantine read again.
+saveChoice = async (action, keys) => {
+  if (action !== "add" || keys.length === 0) return false;
+  say(TEXTS.restoring, "");
+  const answer = await ask(RESTORE_PATH, { keys: keys });
+  if (!answer) { say(TEXTS.offline, "error"); return false; }
+  const reply = await answer.json().catch(() => ({}));
+  if (!answer.ok) {
+    say(reply.error ? fill(TEXTS.notSaved, { error: reply.error }) : fill(TEXTS.failed, { status: answer.status }), "error");
+    return false;
+  }
+  tiles = reply.state.tiles;
+  let text = fill(TEXTS.back, { time: new Date().toLocaleTimeString(LANG), count: number(reply.back.length) });
+  if (reply.left.length) text += " " + fill(TEXTS.left, { reasons: reply.left.join(" · ") });
+  say(text, reply.left.length ? "error" : "saved");
+  if (reply.back.length) text += "\n" + reply.back.join("\n");
+  $("chosen").title = text;
+  return true;
+};
+deleteKeySets = false; // nothing is set aside here
+delete VIEWER_KEYS.Delete;
+delete VIEWER_KEYS.Backspace;
+delete VIEWER_KEYS.a;
+$("restore").addEventListener("click", () => choose("add"));
+
+ask(STATE_PATH).then(async (answer) => {
+  if (!answer || !answer.ok) { say(TEXTS.offline, "error"); return; }
+  tiles = (await answer.json()).tiles;
+  reopen();
+});

@@ -104,25 +104,25 @@ def open_from_home(page: Page, name: str) -> dict[str, Any]:
 
 
 def console_step(page: Page) -> dict[str, Any]:
-    """`config` from the home page: its output in a page of the home server (0567).
+    """`config` from the home page: run by its server, the output in a dialog (0505).
 
-    `status` became console-only (0504); `config` stays on the home page and its text
-    lands in `/console/config/`, then *Back to the home page*.
+    `status` became console-only (0504); `config` printed in `/console/config/` (0567),
+    now in the home page's own dialog, closed to find the home page again.
 
     Args:
         page: The tab, on the home page.
 
     Returns:
-        The page's address and text, whether it showed an error, the time it took.
+        The address, the dialog's text, whether it failed, the time it took.
     """
     start = time.monotonic()
     page.evaluate(RUN_JS, "config")
-    page.wait_for_selector(PAGE_READY, timeout=STEP_MS)
-    said = page.locator("main pre").inner_text(timeout=SHOWN_MS)
+    page.wait_for_selector("#inlineStatus:not([aria-busy])", timeout=STEP_MS)
+    said = page.locator("#inlineOut").inner_text(timeout=SHOWN_MS)
     took = (time.monotonic() - start) * 1000
     url = page.url
-    error = page.locator("main .error").count() > 0
-    page.click(PAGE_READY)
+    error = not page.locator("#inlineTerm").is_visible()
+    page.click("#runDlg [data-close] >> nth=-1")
     home_shown(page, SHOWN_MS)
     return {"url": url, "said": said, "error": error, "took_ms": round(took)}
 

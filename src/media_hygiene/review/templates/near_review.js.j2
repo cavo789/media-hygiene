@@ -187,9 +187,11 @@
     }
   };
 
-  const decide = (ranks, action, then) => {
+  const decide = (ranks, action, then) => decideEach(ranks.map((rank) => ({ group: rank, action: action })), then);
+
+  // Several groups, each with its own action (null: back to undecided), in one write.
+  const decideEach = (choices, then) => {
     setStatus(T.saving, "");
-    const choices = ranks.map((rank) => ({ group: rank, action: action }));
     fetch(decidePath, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ choices: choices }) })
       .then((response) => response.json().then((body) => ({ ok: response.ok, status: response.status, body: body })))
       .then((reply) => {
@@ -197,10 +199,10 @@
           setStatus(reply.body.error || fill(T.failed, { status: reply.status }), "error");
           return;
         }
-        if (action) paced(ranks.filter((rank) => groups[rank].action === "").length);
-        for (const rank of ranks) {
-          groups[rank].action = action || "";
-          disk.delete(rank);
+        paced(choices.filter((choice) => choice.action && groups[choice.group].action === "").length);
+        for (const choice of choices) {
+          groups[choice.group].action = choice.action || "";
+          disk.delete(choice.group);
         }
         for (const entry of reply.body.file.entries) disk.set(entry.group, entry);
         setStatus(fill(T.proofOk, { time: clock(reply.body.file.modified) }), "saved");
@@ -220,7 +222,10 @@
     });
   };
 
+{% include "near_sheet.js.j2" %}
+
   document.addEventListener("keydown", (event) => {
+    if (event.defaultPrevented || sheetKey(event)) return;
     if (event.defaultPrevented || byId("viewer").classList.contains("open")) return; // the large view's keys
     if (event.ctrlKey || event.metaKey || event.altKey || groups.length === 0) return;
     if (event.target instanceof HTMLSelectElement) return;
@@ -231,6 +236,7 @@
     }
     const key = event.key.toLowerCase();
     const rank = current();
+    if (sheet) return; // the sheet's keys only (sheetKey)
     if (event.key === "ArrowRight") decide([rank], "planned", () => go(1));
     else if (key === "w") {
       if (groups[rank].swappable) decide([rank], "swap", () => go(1));
@@ -267,6 +273,7 @@
       arrange(saved);
       at = 0;
       render();
+      showSheetButton();
     })
     .catch(() => setStatus(T.offline, "error"));
 })();

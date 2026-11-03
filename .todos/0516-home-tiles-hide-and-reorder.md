@@ -9,7 +9,7 @@
 
 After 0515 (9 tiles, 3 × 3), let the user hide, move… the blocks of *Where you are*.
 
-## Questions to settle first
+## Questions to settle first (settled 2026-11-03, see Decided)
 
 1. **Where the choice lives.** Browser storage (per browser, lost with site data, the phone
    would differ) or the tool folders (survives, same on every browser)? `/config` holds only

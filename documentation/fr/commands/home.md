@@ -155,6 +155,23 @@ qui a ouvert la page :
   votre dossier des rapports et s'arrête avec `199`. `mh` lit ce fichier une fois, le retire, et
   lance ces mots : `Noël 2025` reste un seul mot. Avec des rapports dans un volume nommé, ou un
   `mh` plus ancien, la page donne la commande à copier à la place.
+- **Une étape courte qui ne demande rien** (*Voir chaque réglage et d'où il vient* `config`,
+  *Sauvegarder l'index et les réglages* `backup`, *Voir ce qu'a fait chaque exécution*
+  `history`, *Ne garder que les rapports récents* `reports --prune`) : la page d'accueil la
+  lance **elle-même**, quel que soit le `mh` qui l'a ouverte, et montre ce qu'elle a écrit dans
+  une fenêtre (*Tourne dans la page*, puis *Terminé. Ce qu'elle a écrit :*) : aucune fenêtre
+  où basculer. Une à la fois (*Une autre étape tourne : attendez sa fin.*) ; une étape qui
+  dépasse 2 minutes est arrêtée ; une erreur ne montre que son message.
+- **Une étape longue** (`audit`, `clean`, `import`…) tourne dans la fenêtre de `mh` pendant que
+  la page reste ouverte : sa fenêtre montre l'étape en cours, une barre, combien de fichiers sont
+  faits et combien par seconde. Fermez ou rechargez l'onglet entre-temps : l'étape continue, et
+  la page, rouverte, la montre à nouveau (*Une étape tourne encore*) jusqu'à sa fin.
+- **Des choix en attente sur plusieurs pages** (séries en rafale, quasi-doublons, paires de
+  dossiers, photos indésirables, fichiers disparus, `search`) : la page d'accueil dit combien
+  attendent (*Choix en attente d'application : 3*), chaque page nommée avec son nombre et un
+  lien vers elle, et **Tout appliquer** lance un seul `clean --decisions` pour tous : une seule
+  exécution, donc un seul `mh undo` les reprend tous. Le nombre est relu dans le fichier des
+  décisions à chaque fois ; une fois appliqués, il disparaît.
 - **⚠️ Définitif** (`purge`, `clean --delete`, `import --phone --free`) : la page demande d'abord ; `mh`
   redemande dans sa fenêtre avant de toucher quoi que ce soit.
 - **Sinon** (`mh home` tapé, un `mh` plus ancien, ou `docker run` seul) : le bouton copie la

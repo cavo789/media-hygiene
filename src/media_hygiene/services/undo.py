@@ -7,36 +7,31 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import (
     JournalWriter,
-    done_states,
     journal_file,
     read_journal,
 )
-from media_hygiene.actions.kinds import REMOVED_COPIES, ActionKind, Phase
+from media_hygiene.actions.kinds import Phase
 from media_hygiene.actions.outcome import combine
 from media_hygiene.actions.plan_runs import runs_of_plan
 from media_hygiene.actions.runs import list_run_ids, run_phase
 from media_hygiene.actions.undo import UndoExecutor
+from media_hygiene.actions.undo_pick import RunPick, picked_entries
 from media_hygiene.console.links_view import show_links
 from media_hygiene.errors import JournalError, MountError
 from media_hygiene.i18n import _
-from media_hygiene.index.former_names import forget_former
-from media_hygiene.index.parked import unpark
-from media_hygiene.index.repository import FactsRepository
-from media_hygiene.index.touched_folders import forget_listings
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.drive_letter import found_line, relocate, tidy
 from media_hygiene.services.quarantines import letter_changes
 from media_hygiene.services.shrink_links import renamed
 from media_hygiene.services.sort_links import follow_links
+from media_hygiene.services.undo_index import follow_moves_back
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
-    from pathlib import Path
 
     from media_hygiene.actions.outcome import Outcome
     from media_hygiene.actions.plan_runs import PlanRuns
     from media_hygiene.scan.progress import ProgressSink
-    from media_hygiene.services.drive_letter import LetterChange
     from media_hygiene.services.runtime import Runtime
 
 
@@ -132,6 +127,21 @@ def undo_run(runtime: Runtime, run_id: str, progress: ProgressSink) -> Outcome:
     Returns:
         What was restored, skipped and why.
     """
+    return undo_pick(runtime, RunPick(run_id), progress)
+
+
+def undo_pick(runtime: Runtime, pick: RunPick, progress: ProgressSink) -> Outcome:
+    """Restore the files picked of a run (every one without a pick), journaled.
+
+    Args:
+        runtime: Settings, mount points and output.
+        pick: The run, and the actions to reverse (0525: a few quarantined files).
+        progress: Where to report progress.
+
+    Returns:
+        What was restored, skipped and why.
+    """
+    run_id = pick.run_id
     file = journal_file(runtime.locations.journal_dir, run_id)
     changes = letter_changes(runtime, run_id)
     for change in changes:
@@ -139,62 +149,10 @@ def undo_run(runtime: Runtime, run_id: str, progress: ProgressSink) -> Outcome:
     entries, refused = relocate(read_journal(file), changes)
     with JournalWriter.open(file) as journal:
         executor = UndoExecutor(journal, progress, runtime.settings.clean.workers)
-        outcome = executor.run(entries)
+        outcome = executor.run(picked_entries(entries, pick.seqs))
     for change in changes:
         tidy(change, run_id)
-    back = _follow_moves_back(runtime, (file, run_id), changes)
+    back = follow_moves_back(runtime, (file, run_id), changes)
     back += renamed(file, Phase.UNDO)  # a video `shrink` renamed (0418)
     show_links(runtime.output, follow_links(runtime, back))
     return replace(outcome, skipped=(*outcome.skipped, *refused))
-
-
-def _follow_moves_back(
-    runtime: Runtime, run: tuple[Path, str], changes: Sequence[LetterChange]
-) -> list[tuple[str, str]]:
-    """Update the index: files moved back by `undo` keep their facts.
-
-    The index knows them by the paths of the run, under the drive's old letter. A
-    copy back under its own name is no longer remembered by its kept file.
-
-    Args:
-        runtime: Settings, mount points and output.
-        run: The journal of the run, and the run.
-        changes: The drives of the run that changed letter since.
-
-    Returns:
-        The files moved back: where the run had put them, where they are now.
-    """
-    index = runtime.index_file
-    done = done_states(read_journal(run[0]), Phase.UNDO)
-    back = [
-        (_known(entry.target, changes), entry.path)
-        for entry in done
-        if entry.action is ActionKind.MOVE and entry.target
-    ]
-    restored = [(_known(e.quarantine, changes), e.path) for e in done if e.quarantine]
-    copies = [
-        _known(entry.path, changes) for entry in done if entry.action in REMOVED_COPIES
-    ]
-    if index is None or not done:
-        return back
-    with FactsRepository.open(index) as repository:
-        repository.move(back)
-        unpark(repository.connection, restored)  # set aside by a clean (0156)
-        forget_former(repository.connection, run[1], copies)
-        forget_listings(repository.connection, done)  # the folders read again
-    return back
-
-
-def _known(path: str, changes: Sequence[LetterChange]) -> str:
-    """The path the index knows a file by: under the drive's letter of the run.
-
-    Args:
-        path: A path the undo used, under today's letter.
-        changes: The drives of the run that changed letter.
-
-    Returns:
-        The path under the old letter.
-    """
-    for change in changes:
-        path = change.back(path) or path
-    return path

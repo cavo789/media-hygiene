@@ -24,6 +24,16 @@ def _dialogs() -> dict[str, str]:
     """
     return {
         "toFill": _("To fill in"),
+        "inlineRuns": _("Runs in the page"),
+        "inlineWait": _("Running, a few seconds…"),
+        "inlineDone": _("Done. What it wrote:"),
+        "inlineFailed": _("It stopped on an error. What it wrote:"),
+        "inlineBusy": _("Another step runs: wait for its end."),
+        "stillRuns": _("A step still runs"),
+        "theStep": _("The step"),
+        "perSecond": _("{rate} files/s"),
+        "pendingChoices": _("Choices waiting to be applied: {count}"),
+        "applyAll": _("Apply all"),
         "formNote": _(
             "What you type here replaces the console menu's (type it yourself)."
         ),

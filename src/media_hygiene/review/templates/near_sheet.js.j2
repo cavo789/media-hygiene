@@ -1,0 +1,133 @@
+{# Included in near_review.js.j2 (0529): the contact sheet of the near duplicates, as the one of
+   the bursts (review_sheet.js.j2, shared parts in sheet_fit.js.j2): the sure groups still
+   undecided when it opened, one compact row each, the kept version framed. A click on the
+   other version flips the row (that version kept, W), a click on the kept one flips it back;
+   nothing is saved until Enter, which decides the rows shown as they are, in one write, then
+   shows the next screen; Z takes that screen back; a double click shows the version large;
+   Esc closes the sheet. #}
+{% include "sheet_fit.js.j2" %}
+  let sheet = false;
+  let sheetRanks = [];  // the sure groups still undecided when the sheet opened, in order
+  let sheetFrom = 0;  // the first row of the screen, in `sheetRanks`
+  let sheetSize = sheetFirst;
+  const flips = new Set();  // ranks shown with the other version kept, not saved yet
+
+  const sheetTodo = () => order.filter((rank) => groups[rank].sure && groups[rank].action === "");
+  const screen = () => sheetRanks.slice(sheetFrom, sheetFrom + sheetSize);
+
+  const showSheetButton = () => {
+    const todo = sheetTodo().length;
+    byId("sheetOpen").disabled = todo === 0;
+    byId("sheetOpen").textContent = fill(T.sheetOpen, { count: todo });
+  };
+
+  const setSheet = (on) => {
+    sheet = on;
+    document.body.classList.toggle("sheet", on);
+    if (!on) {
+      showSheetButton();
+      render();
+    }
+  };
+
+  const sheetThumb = (rank, version, role, slot) => {
+    const figure = document.createElement("figure");
+    figure.className = "sheetThumb " + role;
+    figure.title = version.name;
+    if (version.preview) figure.append(Object.assign(document.createElement("img"), { src: version.preview, alt: version.name, loading: "lazy" }));
+    else figure.append(line("div", T.video, "clip"));
+    figure.append(line("figcaption", version.name));
+    const group = groups[rank];
+    flipOrOpenOn(figure, () => {
+      if (role === "lock") setStatus(T.protected, "");
+      else if (slot === 0 && flips.has(rank)) flips.delete(rank);
+      else if (slot === 1 && !flips.has(rank) && group.swappable) flips.add(rank);
+      else if (slot === 1 && !group.swappable) setStatus(T.noSwap, "error");
+      else if (slot > 1) setStatus(T.sheetFirstOnly, "");
+      drawSheet();
+    }, () => {
+      const versions = [group.kept, ...group.copies].filter((each) => each.preview);
+      showLarge(versions.map((each, index) => ({ key: String(index), name: each.name, preview: each.preview, original: each.original, folder: each.folder, facts: each.details })), versions.map(() => document.createElement("figure")));
+      largeAt(Math.max(0, versions.indexOf(version)));
+    });
+    return figure;
+  };
+
+  const sheetRow = (rank) => {
+    const group = groups[rank];
+    const shown = group.action || (flips.has(rank) ? "swap" : "planned");
+    const role = roles(Object.assign({}, group, { action: shown }));
+    const row = line("div", "", "sheetRow" + (group.action ? " seen" : ""));
+    row.append(line("div", group.pair + " · " + group.why, "sheetWhy"));
+    row.append(sheetThumb(rank, group.kept, role.keptRole, 0));
+    group.copies.forEach((version, index) => row.append(sheetThumb(rank, version, role.copyRole(index), index + 1)));
+    for (const version of group.protected) row.append(sheetThumb(rank, version, "lock", -1));
+    return row;
+  };
+
+  const drawSheet = () => {
+    const rows = screen();
+    const left = rows.filter((rank) => groups[rank].action === "").length;
+    byId("sheetInfo").textContent = fill(T.sheetPage, { page: Math.floor(sheetFrom / sheetSize) + 1, pages: Math.max(1, Math.ceil(sheetRanks.length / sheetSize)) })
+      + " · " + (left > 0 ? fill(T.sheetPending, { count: left }) : T.sheetSeen);
+    byId("sheetRows").replaceChildren(...rows.map(sheetRow));
+    showTotals();
+  };
+
+  const fitSheet = () => {
+    const fitting = rowsFitting(byId("sheetRows"));
+    if (fitting === sheetSize) return;
+    sheetSize = fitting;
+    drawSheet();
+  };
+
+  const openSheet = () => {
+    sheetRanks = sheetTodo();
+    if (sheetRanks.length === 0) return;
+    sheetFrom = 0;
+    sheetSize = sheetFirst;
+    flips.clear();
+    setSheet(true);
+    drawSheet();
+    fitSheet();
+  };
+
+  const nextScreen = () => {
+    if (sheetFrom + sheetSize >= sheetRanks.length) {
+      setSheet(false);
+      setStatus(T.sheetEnd, "saved");
+      return;
+    }
+    sheetFrom += sheetSize;
+    drawSheet();
+  };
+
+  // Enter: the rows of the screen still undecided, as shown, in one write.
+  const validateScreen = () => {
+    const choices = screen().filter((rank) => groups[rank].action === "")
+      .map((rank) => ({ group: rank, action: flips.has(rank) ? "swap" : "planned" }));
+    if (choices.length === 0) nextScreen();
+    else decideEach(choices, nextScreen);
+  };
+
+  // Z: the rows of the screen back to undecided, shown as proposed again.
+  const takeScreenBack = () => {
+    const ranks = screen().filter((rank) => groups[rank].action !== "");
+    for (const rank of screen()) flips.delete(rank);
+    if (ranks.length === 0) drawSheet();
+    else decide(ranks, null, drawSheet);
+  };
+
+  // The sheet's keys while it is open; true when the key was one of them.
+  const sheetKey = (event) => {
+    if (!sheet || byId("viewer").classList.contains("open") || event.ctrlKey || event.metaKey || event.altKey) return false;
+    const actions = { Enter: validateScreen, z: takeScreenBack, Z: takeScreenBack, Escape: () => setSheet(false) };
+    if (!(event.key in actions)) return false;
+    event.preventDefault();
+    actions[event.key]();
+    return true;
+  };
+
+  byId("sheetOpen").addEventListener("click", openSheet);
+  byId("sheetClose").addEventListener("click", () => setSheet(false));
+  window.addEventListener("resize", () => { if (sheet) fitSheet(); });

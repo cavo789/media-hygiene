@@ -4,7 +4,6 @@
 - **Batch**: launcher
 - **Depends**: —
 - **Files**: `src/media_hygiene/console/output.py`, `tests/unit/test_console_*.py`
-- **Needs maintainer**: a check in Windows PowerShell 5.1 that a long line now wraps at the window's width
 
 ## Asked (maintainer, 2026-10-30)
 
@@ -37,3 +36,14 @@ cut the same way.
   line break inside.
 - On the maintainer's PC, a long message of `mh update` / `mh audit` fills the window and
   wraps at its edge, not at column 80.
+
+## Checked (maintainer, 2026-11-03, image 32cafce7)
+
+`mh people --help` in a window much wider than 80 columns: long lines reach the window's edge.
+Not conclusive for this TODO: `--help` is drawn by Typer, not by `console/output.py`. The
+unit test of "Done when" settles the rest without the maintainer (a 200-character message to a
+non-terminal stream); a real check is still a long message of a run without `-t` (`mh audit`).
+`mh audit` too (maintainer, same day): wraps at the edge. Read after: `audit` and `--help` run
+with `-it` (`safety.DATA_COMMANDS` lists the commands run without a terminal: `launcher`,
+`menu`, the phone and push steps). Only those can cut at 80: the unit test settles it; no
+check left for the maintainer.

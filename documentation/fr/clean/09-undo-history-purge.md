@@ -200,7 +200,9 @@ supprimés exprès*, avec la commande complète. Lancé par `mh`, l'audit vous d
 `mh review --gone` les montre par dossier et par jour, chacune avec son aperçu quand le cache en
 garde un (sinon son nom, sa date, sa taille et son appareil) : `D` supprimé exprès, `M` déplacé
 ailleurs, `G` tout le groupe supprimé exprès. Vos réponses sont enregistrées dans
-`decisions.json` ; le `clean --decisions` suivant retient les fichiers supprimés exprès (rien ne
+`decisions.json`. Ouverte depuis la page d'accueil, la barre montre **Appliquer maintenant**
+dès qu'un fichier est dit supprimé exprès : `mh` lance ce nettoyage pour vous. Le
+`clean --decisions` suivant retient les fichiers supprimés exprès (rien ne
 bouge : une ligne dans le journal, comptée par `history` sous *Supprimés dans l'Explorateur*) et
 oublie les autres. Quand l'un d'eux revient, il est proposé comme un fichier que vous aviez mis
 de côté. `undo` de ce nettoyage les oublie. Un fichier disparu dont le contenu est toujours là

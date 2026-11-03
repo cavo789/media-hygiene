@@ -1,0 +1,50 @@
+{# The script of home.html.j2 for the short steps the server runs itself (0505, `inline_step.py`):
+   no window to switch to, the output in a dialog, one step at a time. #}
+// ---- A short step run in the page ---------------------------------------------------------
+let inlineBusy = false;
+function runInline(action, fields) {
+  if (inlineBusy) { toast(T.inlineBusy); return; }
+  inlineBusy = true;
+  const dialog = $("#runDlg");
+  dialog.innerHTML = `<div class="dlg">
+    <div class="dlg-head"><div><p class="eyebrow">${icon("play")} ${esc(T.inlineRuns)}</p><h2 id="runTitle">${esc(action.title)}</h2></div>${closeButton()}</div>
+    <p class="dlg-text" role="status" id="inlineStatus" aria-busy="true">${esc(T.inlineWait)}</p>
+    <div class="term" id="inlineTerm" hidden><pre class="term-body" id="inlineOut"></pre></div>
+    <div class="dlg-foot"><button class="btn btn-primary" type="button" data-close>${esc(T.close)}</button></div>
+  </div>`;
+  showDialog(dialog);
+  const status = $("#inlineStatus", dialog);
+  post(P.inline, { name: action.name, fields: fields })
+    .then((reply) => {
+      status.removeAttribute("aria-busy");
+      if (!reply.ok) { status.textContent = reply.body.error || fill(T.failed, { status: reply.status }); return; }
+      status.textContent = reply.body.ok ? T.inlineDone : T.inlineFailed;
+      $("#inlineOut", dialog).textContent = reply.body.output || "";
+      $("#inlineTerm", dialog).hidden = !reply.body.output;
+    })
+    .catch(() => stopped())
+    .finally(() => { inlineBusy = false; reload(); });
+}
+// ---- A step still running in the window of mh, the page reopened (0514) ----------------------
+// The tab closed or reloaded: the step goes on in mh's window; the page shows it again, followed.
+function resumeStep() {
+  if (!RELAYS || REMOTE || !P.step) return;
+  fetch(P.step, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : null))
+    .then((step) => {
+      if (!step || !step.id || !["waiting", "running"].includes(step.state)) return;
+      openRun({ title: T.stillRuns, kind: "console" }, T.theStep, null, step.id);
+    })
+    .catch(() => { /* no state: nothing to show */ });
+}
+resumeStep();
+// ---- Choices waiting on the pages, one Apply all (0522) -----------------------------------
+// Read from decisions.json by the server at each state: once applied, the file is archived and
+// the banner goes. One `clean --decisions` run for every page, so one `mh undo` takes it back.
+function pendingBanner() {
+  const pending = S.pending;
+  if (!pending || !pending.total || !BY_ID.apply) return "";
+  const pages = pending.pages.map((page) => `<a href="${esc(page.url)}" data-pending-page>${esc(page.label)} (${page.count})</a>`).join(" · ");
+  const said = fill(T.pendingChoices, { count: pending.total });
+  return `<div class="banner" role="status" id="pendingBanner">${icon("check")}<p class="grow"><strong>${esc(said)}</strong><br>${pages}</p><button class="btn btn-primary" type="button" data-run="apply">${icon("check")} ${esc(T.applyAll)}</button></div>`;
+}

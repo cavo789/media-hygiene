@@ -143,6 +143,21 @@ opened the page:
   the words into `.mh-step.json` of your reports folder and ends with `199`. `mh` reads that file
   once, removes it, and runs those words: `Christmas 2025` stays one word. With reports in a
   named volume, or an older `mh`, the page gives the command to copy instead.
+- **A short step that asks nothing** (*See each setting and where it comes from* `config`,
+  *Back up the index and the settings* `backup`, *See what each run did* `history`, *Keep only
+  the recent reports* `reports --prune`): the home page runs it **itself**, whatever `mh`
+  opened it, and shows what it wrote in a dialog (*Runs in the page*, then *Done. What it
+  wrote:*): no window to switch to. One at a time (*Another step runs: wait for its end.*); a
+  step past 2 minutes is stopped; an error shows its message only.
+- **A long step** (`audit`, `clean`, `import`…) runs in the window of `mh` while the page stays
+  open: its dialog shows the stage, a bar, how many files are done and how many a second. Close
+  or reload the tab meanwhile: the step goes on, and the page, opened again, shows it again
+  (*A step still runs*) until its end.
+- **Choices waiting on several pages** (burst series, near duplicates, folder pairs, unwanted
+  photos, files gone, `search`): the home page says how many wait (*Choices waiting to be
+  applied: 3*), each page named with its count and a link to it, and **Apply all** runs one
+  `clean --decisions` for all of them: one run, so one `mh undo` takes them all back. The count
+  is read from the decisions file each time; once applied, it is gone.
 - **⚠️ For good** (`purge`, `clean --delete`, `import --phone --free`): the page asks first; `mh` asks
   again in its window before touching anything.
 - **Otherwise** (`mh home` typed, an older `mh`, or `docker run` alone): the button copies the

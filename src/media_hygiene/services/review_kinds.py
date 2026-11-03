@@ -126,7 +126,7 @@ def _junk(runtime: Runtime, findings: AuditFindings, target: Path) -> ReviewPage
 
 
 def _gone(runtime: Runtime, findings: AuditFindings, target: Path) -> ReviewPage | None:
-    """`review --gone`: answers only, nothing to apply.
+    """`review --gone`: the answers, applied by *Apply now* (0511).
 
     Args:
         runtime: Settings, mount points and output.
@@ -141,7 +141,8 @@ def _gone(runtime: Runtime, findings: AuditFindings, target: Path) -> ReviewPage
     session = gone_reviewing.open_gone_review(runtime, findings, target)
     api = (GONE_DECIDE_PATH, GONE_FILE_PATH)
     app = partial(GoneApp, session)
-    return ReviewPage(gone_reviewing.PAGE_TEMPLATE, session.place, api, app)
+    offer = ApplyOffer(None, lambda: session.decided[1] > 0)  # deleted on purpose
+    return ReviewPage(gone_reviewing.PAGE_TEMPLATE, session.place, api, app, offer)
 
 
 def _bursts(

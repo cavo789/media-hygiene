@@ -77,6 +77,7 @@ def clean_steps() -> tuple[Step, ...]:
             icon="history",
             keywords=_("history journal runs"),
             doc=Doc("commands/history/"),
+            inline=True,
         ),
         Step(
             "undo",
@@ -89,6 +90,24 @@ def clean_steps() -> tuple[Step, ...]:
             keywords=_("undo restore put back revert mistake"),
             doc=Doc("commands/undo/"),
             slot=Slot.UNDO,
+        ),
+        Step(
+            "undo-pick",
+            Space.HISTORY,
+            _("Put back a few photos of the quarantine"),
+            _(
+                "The quarantine as tiles: pick the photos, they go back where they "
+                "were."
+            ),
+            "undo --pick",
+            Risk.UNDO,
+            Kind.PAGE,
+            icon="undo",
+            keywords=_("quarantine restore put back photo pick"),
+            doc=Doc(
+                "commands/undo/", "#put-back-a-few-photos", "#remettre-quelques-photos"
+            ),
+            optional=True,
         ),
         Step(
             "review",
@@ -143,6 +162,7 @@ def clean_area() -> Area:
     """
     guide = ("audit", "open", "clean", "history", "undo", "review", "apply", "purge")
     further = (
+        "undo-pick",
         "review-near",
         "review-pairs",
         "review-junk",

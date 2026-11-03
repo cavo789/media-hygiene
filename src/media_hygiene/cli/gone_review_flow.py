@@ -4,9 +4,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from media_hygiene.cli.apply_step import end_on_applied, page_apply
 from media_hygiene.cli.review_next import CleanNext, tell_choices_and_clean
 from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _, ngettext
+from media_hygiene.review.apply_api import ReviewStart
 from media_hygiene.services import gone_reviewing
 
 if TYPE_CHECKING:
@@ -31,7 +33,9 @@ def run_gone(run: ReviewRun, findings: AuditFindings) -> None:
         return
     session = gone_reviewing.open_gone_review(runtime, findings, run.target)
     tell_gone_opened(runtime, session)
-    gone_reviewing.serve_gone_review(runtime, session, run.port)
+    # Opened from the home page: `mh` runs the step *Apply now* ends on (0511).
+    start = ReviewStart(run.port, page_apply(runtime))
+    end_on_applied(runtime, gone_reviewing.serve_gone_review(runtime, session, start))
     _tell_gone_stopped(run, session)
 
 

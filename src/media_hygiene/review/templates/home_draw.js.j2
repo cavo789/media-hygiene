@@ -190,7 +190,7 @@ function viewHome() {
   if (REMOTE) return familyHome();
   const given = S.given.map((line) => `<p class="callout callout-info">${icon("folder")}<span>${esc(line)}</span></p>`).join("");
   const broken = S.settings_error ? `<p class="callout callout-warn" id="settingsError" role="alert">${icon("info")}<span>${esc(S.settings_error)}</span></p>` : "";
-  return `${staleBanner()}${updateBanner()}
+  return `${staleBanner()}${updateBanner()}${pendingBanner()}
     <div class="page-head"><h1>${esc(T.whereYourPhotos)}</h1><p>${esc(T.readNow)}</p></div>
     ${broken}${given}<div id="lateEvents" aria-live="polite">${lateLines()}</div>
     <section class="block" aria-labelledby="cycleTitle">

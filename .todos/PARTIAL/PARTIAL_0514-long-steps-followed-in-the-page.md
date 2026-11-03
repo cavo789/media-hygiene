@@ -32,3 +32,28 @@ Part 3 of 0513 (one interface). Today these `Kind.CONSOLE` steps send the user t
 
 Before: 8 everyday steps, the heaviest ones, are run and followed in PowerShell. After: in
 the page, with the same progress and the same questions.
+
+## Status — PARTIAL (2026-11-03)
+
+### Done
+
+- Point 2 (part): the follow dialog of a console step `mh` runs beside the server shows the
+  stage title, a `<progress>` bar, done / total, files a second (from two polls) and the file
+  (`showProgress`, `home_run.js.j2`).
+- Point 4: the tab closed or reloaded, the step goes on in `mh`'s window; the page, opened
+  again, finds it on `GET /api/step` and follows it again (`resumeStep`, `home_inline.js.j2`).
+- Tests `tests/unit/test_step_resume.py`; docs EN + FR (`commands/home.md`); FR translations.
+
+### Not done
+
+- Points 1, 2 (Stop), 3, 5: run the long steps in the home container itself, a Stop button,
+  the questions asked in the page then `--yes`, the summary and 👉 line in the panel.
+  **Reason:** the home server's container mounts the photos read-only and the writing steps
+  run in a container of their own started by `mh.ps1` (`step_progress.py`, `mh.ps1.j2` `:ro`
+  mode per command) — a mounts design the maintainer chose. Running `clean` from the page
+  means either the home container gets read-write mounts (loses: the read-only guarantee of
+  every page) or `mh.ps1` runs the step detached with its output and a stop file shared through
+  the reports folder (PowerShell 5.1, to measure on Windows). **Needs maintainer**: which way.
+- Point 3 also drops `mh`'s second question before acting (the page's confirm would replace
+  it): a safety design choice to confirm first.
+- `docs_screenshots` should run (follow dialog changed).

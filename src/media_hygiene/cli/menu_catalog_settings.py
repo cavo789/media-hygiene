@@ -82,6 +82,7 @@ def settings_steps() -> tuple[Step, ...]:
             icon="sliders",
             keywords=_("configuration settings config toml ai model"),
             doc=Doc("commands/config/"),
+            inline=True,
         ),
         Step(
             "config-tidy",

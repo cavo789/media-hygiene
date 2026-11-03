@@ -28,7 +28,8 @@ if TYPE_CHECKING:
 TAGS_PATH: Final = "/api/tags"
 PEOPLE_PATH: Final = "/api/people"  # the face scan of `people` (0424)
 MEANING_PATH: Final = "/api/meaning"  # search by meaning, `[tags] meaning` (0425)
-RUN_PATHS: Final = frozenset({TAGS_PATH, PEOPLE_PATH, MEANING_PATH})
+INLINE_PATH: Final = "/api/inline"  # a short step run by the server (0505)
+RUN_PATHS: Final = frozenset({TAGS_PATH, PEOPLE_PATH, MEANING_PATH, INLINE_PATH})
 RUN_NAMES: Final = {"tags": TAGS_PATH, "people": PEOPLE_PATH, "meaning": MEANING_PATH}
 TAGS_RUN: Final = frozenset({TAGS_PATH})  # the page without faces nor meaning
 _MAX_MINUTES: Final = 24 * 60

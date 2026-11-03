@@ -1,0 +1,66 @@
+{% extends "page_frame.html.j2" %}
+{# The quarantine as tiles, served by `media-hygiene undo --pick` (0525). Every file a run set
+   aside and still in a quarantine (each drive's), grouped by run, newest first. A page of photos
+   to pick like `browse` (`pick_*`, skill photo-picking-pages): the same gestures pick; ↩ Restore
+   puts the picked files back where they were, a partial undo of their runs, journaled: `undo`
+   of a run still brings back the rest. After each restore the page shows what is on the disk,
+   read again. No Delete key: nothing is set aside here. #}
+{% set texts = {
+  "status": _("{count} files in the quarantine, from {runs} runs"),
+  "empty": _("The quarantine is empty: nothing to restore."),
+  "run": _("Run {run}"),
+  "count": _("{count} files"),
+  "restoring": _("Putting back…"),
+  "back": _("Back on the disk, read again at {time}: {count} files."),
+  "left": _("Not restored: {reasons}"),
+  "notSaved": _("Nothing was restored: {error}"),
+  "failed": _("Nothing was restored (error {status})."),
+  "offline": _("The page is not running any more: type mh undo --pick again."),
+  "picked": [ngettext("{n} file picked", "{n} files picked", 1), ngettext("{n} file picked", "{n} files picked", 2)],
+  "aside": "",
+  "tick": _("Pick this file"),
+  "saving": _("Putting back…"),
+} %}
+{% set page_name = _("The quarantine") %}
+{% set pick_all = _("every file of the page") %}
+{% set pick_marks = false %}
+{% set pick_first = "quarantine_restore.html.j2" %}
+{% set keys_safe = _("Restoring puts each file back where it was, never over another one, and journals it; 'mh undo' of its run still brings back the others.") %}
+{% block style %}
+{% include "pick_grid.css.j2" %}
+  main#grid { display: block; }
+  #toc { overflow: auto; }
+  #setAside, #takeBack { display: none; }  /* nothing is set aside here: Restore instead */
+  .run { margin-bottom: 18px; }
+  .run h2 { margin: 0 0 8px; font-size: 1rem; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+  .file .empty { font-size: 2rem; }
+  #chosen.saved { color: var(--ok); } #chosen.error { color: var(--bad); }
+  #runs { margin: 6px 0 0; padding: 0; list-style: none; }
+  #runs li { display: flex; justify-content: space-between; gap: 8px; }
+  #runs a { color: var(--accent); text-decoration: none; overflow-wrap: anywhere; }
+{% endblock %}
+{% block side %}
+    <section id="toc" aria-label="{{ page_name }}">
+      <p class="muted">{{ _("The files the runs of clean set aside, as they lie in the quarantine. Pick the ones to put back: each goes back to the folder it came from.") }}</p>
+      <h2>🗂 {{ _("Runs") }}</h2>
+      <ul id="runs"></ul>
+    </section>
+{% endblock %}
+{% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
+{% block more_keys %}{% include "pick_keys_more.html.j2" %}{% endblock %}
+{% block bar %}
+    {% include "pick_acting.html.j2" %}
+{% endblock %}
+{% block content %}
+  <main id="grid"></main>
+{% endblock %}
+{% block after %}
+{% include "pick_viewer.html.j2" %}
+<script>
+{% include "pick_grid.js.j2" %}
+{% include "pick_viewer.js.j2" %}
+{% include "pick_band.js.j2" %}
+{% include "quarantine.js.j2" %}
+</script>
+{% endblock %}

@@ -57,6 +57,15 @@ class AlbumExecutor:
         self._tally = tally
         self._changes = JournaledChanges(context, tally)
 
+    @property
+    def changes(self) -> JournaledChanges:
+        """The numbered, journaled changes of the run, for a step after the links.
+
+        Returns:
+            Them.
+        """
+        return self._changes
+
     def run(self, plan: AlbumPlan, stop: Callable[[], bool]) -> AlbumRun:
         """Make the album.
 

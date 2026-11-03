@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.index.gone_rows import gone_records
 from media_hygiene.index.repository import FactsRepository
+from media_hygiene.review.apply_api import ApplyOffer
 from media_hygiene.review.gone_app import GONE_DECIDE_PATH, GONE_FILE_PATH, GoneApp
 from media_hygiene.review.gone_session import GonePages, GoneSession
 from media_hygiene.review.gone_views import GoneStateBuilder, ordered
@@ -24,6 +25,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.index.gone_rows import GoneRecord
     from media_hygiene.plan.models import AuditFindings
+    from media_hygiene.review.apply_api import ReviewStart
     from media_hygiene.services.runtime import Runtime
 
 PAGE_TEMPLATE: Final = "gone_review.html.j2"
@@ -70,14 +72,24 @@ def open_gone_review(
     return session
 
 
-def serve_gone_review(runtime: Runtime, session: GoneSession, port: int) -> None:
+def serve_gone_review(
+    runtime: Runtime, session: GoneSession, start: ReviewStart
+) -> int:
     """Serve the page until Ctrl+C; every answer is saved as it is made.
 
     Args:
         runtime: Settings, mount points and output.
         session: The review.
-        port: The port to listen on, inside the container (0: any free one).
+        start: The port to listen on, inside the container (0: any free one), and
+            the step *Apply now* ends on (0511).
+
+    Returns:
+        As `serve_review_page`.
     """
     api = (GONE_DECIDE_PATH, GONE_FILE_PATH)
-    page = ReviewPage(PAGE_TEMPLATE, session.place, api, partial(GoneApp, session))
-    serve_review_page(runtime, page, port)
+    # Pending once some file is answered "deleted on purpose" (0511).
+    offer = ApplyOffer(start.apply, lambda: session.decided[1] > 0)
+    page = ReviewPage(
+        PAGE_TEMPLATE, session.place, api, partial(GoneApp, session), offer
+    )
+    return serve_review_page(runtime, page, start.port)

@@ -145,6 +145,8 @@
 #  41. the chain in its new order: copies before tags, the import's bursts page, its slideshow (0480)
 #  42. a page on port 8088 stopped, then the port watched: PID 0 seen? seconds until free (0503); docker run binds meanwhile? (0543)
 #      (two yes/no questions, by hand)                                               (0359)
+#  43. the hand-over of a page step (0583): a page on 8088 ends, the next page started at once
+#      (as before) or once Docker removed the first container (after): seconds to bind
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
 # end (-Keep to keep it); C:\Photos itself is only read. Build the image from the branch to
@@ -3498,6 +3500,43 @@ if (Wanted 42) {
         $seconds = [math]::Round($clock.Elapsed.TotalSeconds, 1)
         Log "   42.$round listening before stop: $ready; free after: $seconds s; PIDs seen after stop: $($pids -join ', ')"
         Log "   42.$round $tried (0543)"
+    }
+    $ErrorActionPreference = $saved
+}
+
+if (Wanted 43) {
+    # 0583: a page step chosen on the home page ends the home container, then the step's page
+    # binds 8088. Before: docker run at once, tried again each second (0543). After: docker
+    # run once `docker container inspect` says the first container is gone.
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 43. hand-over of port 8088 between two pages: at once vs once removed (0583)"
+    foreach ($mode in "at-once", "once-removed") {
+        for ($round = 1; $round -le 3; $round++) {
+            $first = "$(docker run -d --rm -p 127.0.0.1:8088:8088 --entrypoint python $Image -m http.server 8088 2>&1)".Trim()
+            Start-Sleep -Seconds 2
+            $clock = [Diagnostics.Stopwatch]::StartNew()
+            $null = docker stop -t 0 $first 2>&1
+            $removed = ''
+            if ($mode -eq "once-removed") {
+                for ($i = 0; $i -lt 50; $i++) {
+                    $null = docker container inspect $first 2>&1
+                    if ($LASTEXITCODE -ne 0) { break }
+                    Start-Sleep -Milliseconds 100
+                }
+                $removed = " (removed after $([math]::Round($clock.Elapsed.TotalSeconds, 1)) s)"
+            }
+            $tries = 0
+            $bound = $false
+            while (-not $bound -and $clock.Elapsed.TotalSeconds -lt 30) {
+                $tries++
+                $next = @(docker run -d --rm -p 127.0.0.1:8088:8088 --entrypoint python $Image -m http.server 8088 2>&1 | ForEach-Object { "$_" })
+                if ($LASTEXITCODE -eq 0) { $bound = $true; $null = docker stop -t 0 ("$($next[-1])".Trim()) 2>&1 } else { Start-Sleep -Milliseconds 1000 }
+            }
+            Log ("   43.$mode.$round bound: $bound after $([math]::Round($clock.Elapsed.TotalSeconds, 1)) s, $tries docker run$removed")
+            Start-Sleep -Seconds 3
+        }
     }
     $ErrorActionPreference = $saved
 }

@@ -19,6 +19,7 @@ function proceed(action, body, command) {
 function launch(action, body, command) {
   if (REMOTE && PHONE_PAGES[action.command]) { goTo(PHONE_PAGES[action.command]); return; }
   if (REMOTE) { toast(T.onThePc); return; }
+  if (action.inline && P.inline) { runInline(action, {}); return; }  // 0505: here, its output in a dialog
   if (!RELAYS) { copyBox(command); return; }
   // At once, before the server answers: the click is seen, never "nothing happens" (0277).
   const clicked = document.activeElement;
@@ -89,6 +90,7 @@ function openForm(action) {
     const error = $("#formError", dialog);
     if (Object.values(given).some((value) => !value)) { error.textContent = T.fillEach; error.hidden = false; return; }
     if (REMOTE) { dialog.close(); toast(T.onThePc); return; }
+    if (action.inline && P.inline) { dialog.close(); runInline(action, given); return; }
     if (!RELAYS) { dialog.close(); copyBox(action.command); return; }
     // The server checks each value and says why it refuses one: the form stays open.
     toast(fill(T.starting, { window: WINDOW }));
@@ -143,12 +145,20 @@ function openRun(action, command, run, kept) {
   if (kept) followStep(kept, command);
   else waitForComeBack(action.kind === "page", run);
 }
-// How far a step that writes is (0361: `.mh-step-progress.json`): done / total, its file.
+// How far a step that writes is (0361: `.mh-step-progress.json`): its stage, a bar, done / total,
+// files a second (from two polls, 0514), its file.
+const pace = { done: 0, at: 0 };
 function showProgress(progress) {
   const line = $("#runProgress");
   if (!line || !progress) return;
+  const now = Date.now();
+  const rate = pace.at && progress.done > pace.done ? ((progress.done - pace.done) * 1000) / (now - pace.at) : 0;
+  if (progress.done !== pace.done) { pace.done = progress.done; pace.at = now; } else if (!pace.at) pace.at = now;
   const count = progress.total ? `${progress.done} / ${progress.total}` : `${progress.done}`;
-  line.textContent = progress.current ? `${count} · ${progress.current}` : count;
+  const speed = rate ? ` · ${fill(T.perSecond, { rate: rate.toFixed(1) })}` : "";
+  const bar = progress.total ? `<progress max="${progress.total}" value="${progress.done}"></progress> ` : "";
+  const stage = progress.title ? `<strong>${esc(progress.title)}</strong><br>` : "";
+  line.innerHTML = `${stage}${bar}${esc(count)}${esc(speed)}${progress.current ? ` · ${esc(progress.current)}` : ""}`;
 }
 // A page this very server serves (0356): a plain link, its Back comes to this section.
 function goTo(page) {

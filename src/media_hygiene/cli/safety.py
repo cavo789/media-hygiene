@@ -43,7 +43,7 @@ PHOTO_READERS: Final = frozenset(
 GO_PAGES: Final = frozenset({"search", "home"})
 # The commands serving a page in the browser, on the port published by `-p`.
 PAGE_COMMANDS: Final = frozenset(
-    {"review", "places", "search", "people", "home"} | {"slideshow", "shrink"}
+    {"review", "places", "search", "people", "home"} | {"slideshow", "shrink", "undo"}
 )
 # The read-only steps a page of the home server shows (0567): no question, no page.
 PAGE_CAPTURED: Final = frozenset({"status", "reports", "inventory", "config"})

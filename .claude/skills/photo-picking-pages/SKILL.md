@@ -119,5 +119,7 @@ opened from the home page.
    server renders `apply_offered` and `apply_path` (`apply_now.html.j2` shows nothing without
    them — the template alone proves nothing), and a test asks the page served for
    `id="applyNow"`. A page served under another page's server (`/person`) takes that page's
-   step (`person/door.py`, `host_apply`). Missed on `/person`, 2026-10-24.
+   step (`person/door.py`, `host_apply`). Missed on `/person`, 2026-10-24. The rule also binds
+   pages without tiles that record a choice `clean --decisions` applies (`review --intruders`,
+   `review --gone`); `tests/unit/test_apply_on_every_review.py` checks every review (0511).
 5. When filing a TODO for a page of tiles, name this skill and the gestures it must offer.

@@ -1,0 +1,34 @@
+{# The contact sheet's shared parts (0520, 0529), included by review_sheet.js.j2 (bursts) and
+   near_sheet.js.j2 (near duplicates): how many rows a screen holds, and the click that flips a
+   shot while a double click shows it large. #}
+  // Rows a screen: as many as the window holds (0581), measured on the rows drawn; at least
+  // `sheetFewest`; `sheetFirst` while nothing was measured yet.
+  const sheetFewest = 3;
+  const sheetFirst = 20;
+  const flipDelay = 250;  // ms: a click waits this long, in case it is a double click
+
+  // The rows that fit below the bar, from the height the rows drawn take each.
+  const sheetFit = (rows, top, height) => {
+    const each = rows.length ? (rows[rows.length - 1].getBoundingClientRect().bottom - rows[0].getBoundingClientRect().top) / rows.length : 0;
+    return each > 0 ? Math.max(sheetFewest, Math.floor((height - top) / each)) : sheetFirst;
+  };
+  const rowsFitting = (box) => {
+    const rows = [...box.children];
+    return sheetFit(rows, Math.max(0, rows.length ? rows[0].getBoundingClientRect().top : 0), window.innerHeight);
+  };
+
+  // A click runs `flip` after `flipDelay`; a double click, which also clicks twice, cancels it
+  // and runs `open` (the shot large).
+  let flipping = null;
+  const flipOrOpenOn = (node, flip, open) => {
+    node.addEventListener("click", (event) => {
+      event.stopPropagation();
+      window.clearTimeout(flipping);
+      flipping = window.setTimeout(flip, flipDelay);
+    });
+    node.addEventListener("dblclick", (event) => {
+      event.stopPropagation();
+      window.clearTimeout(flipping);
+      open();
+    });
+  };

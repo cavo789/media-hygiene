@@ -994,6 +994,9 @@ msgstr "Un diaporama passait sur la télé : remplacé par celui-ci."
 msgid "A step is running in the window of mh: wait for its end."
 msgstr "Une étape tourne dans la fenêtre de mh : attendez sa fin."
 
+msgid "A step still runs"
+msgstr "Une étape tourne encore"
+
 #, python-brace-format
 msgid "A step to type yourself takes words only you know: {url}"
 msgstr ""
@@ -1460,6 +1463,9 @@ msgstr ""
 "Une autre commande mh tourne (une page, un audit) : fermez-la d'abord, "
 "l'index pourrait être écrit pendant ce temps. Rien n'a été changé."
 
+msgid "Another step runs: wait for its end."
+msgstr "Une autre étape tourne : attendez sa fin."
+
 msgid ""
 "Answered: the files marked 🗑️ are remembered with 'clean --decisions', "
 "set aside if they come back; the others are forgotten."
@@ -1475,6 +1481,9 @@ msgstr "N'importe quel dossier"
 
 msgid "Apply"
 msgstr "Appliquer"
+
+msgid "Apply all"
+msgstr "Tout appliquer"
 
 msgid "Apply it? (y/n)"
 msgstr "L'appliquer ? (o/n)"
@@ -1624,6 +1633,10 @@ msgstr ""
 
 msgid "Back after being set aside"
 msgstr "Revenus après une mise de côté"
+
+#, python-brace-format
+msgid "Back on the disk, read again at {time}: {count} files."
+msgstr "De retour sur le disque, relu à {time} : {count} fichiers."
 
 msgid "Back on the map: taken out of config.toml."
 msgstr "De retour sur la carte : retiré de config.toml."
@@ -1976,6 +1989,10 @@ msgstr "Choix de la page de revue repris aussi : {count}."
 msgid "Choices on {count} series undone."
 msgstr "Choix sur {count} séries annulés."
 
+#, python-brace-format
+msgid "Choices waiting to be applied: {count}"
+msgstr "Choix en attente d'application : {count}"
+
 msgid "Choose a folder of photos or videos to add"
 msgstr "Choisissez un dossier de photos ou de vidéos à ajouter"
 
@@ -2217,6 +2234,13 @@ msgid "Confirmed by you on the people page: it is a face of reference."
 msgstr ""
 "Confirmé par vous dans la page des personnes : c'est un visage de "
 "référence."
+
+msgid "Contact sheet"
+msgstr "Planche contact"
+
+#, python-brace-format
+msgid "Contact sheet of the sure groups ({count})"
+msgstr "Planche contact des groupes sûrs ({count})"
 
 #, python-brace-format
 msgid "Contact sheet, screen {page} of {pages}"
@@ -2842,6 +2866,9 @@ msgstr ""
 "Fini sur la page des rafales ? Appuyez sur Entrée : les prises écartées "
 "vont en quarantaine (mh undo les remet)."
 
+msgid "Done. What it wrote:"
+msgstr "Terminé. Ce qu'elle a écrit :"
+
 msgid "Done: open Media Hygiene"
 msgstr "C'est fait : ouvrir Média Hygiène"
 
@@ -3151,6 +3178,14 @@ msgstr "Entrée"
 
 #, python-brace-format
 msgid ""
+"Enter decides the groups still to see here as shown ({count}), then the "
+"next screen; Z takes the screen back."
+msgstr ""
+"Entrée décide les groupes encore à voir ici tels qu'affichés ({count}), "
+"puis l'écran suivant ; Z reprend l'écran."
+
+#, python-brace-format
+msgid ""
 "Enter runs step {number} ({command}). Another number runs that step. "
 "Ctrl+C leaves."
 msgstr ""
@@ -3381,6 +3416,9 @@ msgstr "Tous les groupes ont été décidés."
 msgid "Every group of this folder pair is decided already."
 msgstr "Chaque groupe de cette paire de dossiers est déjà décidé."
 
+msgid "Every group of this screen is decided: Enter shows the next screen."
+msgstr "Chaque groupe de cet écran est décidé : Entrée montre l'écran suivant."
+
 msgid "Every group to check has been decided."
 msgstr "Chaque groupe à vérifier a été décidé."
 
@@ -3449,6 +3487,13 @@ msgid ""
 msgstr ""
 "Chaque étape des guides avec sa commande, la prochaine en premier : ce "
 "que montre 'mh' seul, Entrée la lance."
+
+msgid ""
+"Every sure group of the contact sheet has been seen; the groups to check "
+"stay for one at a time."
+msgstr ""
+"Chaque groupe sûr de la planche contact a été vu ; les groupes à vérifier"
+" restent pour un à la fois."
 
 msgid ""
 "Every word must be found: type one to three words (beach, cake candles), "
@@ -3633,6 +3678,9 @@ msgstr "Des fichiers ont changé depuis la revue : relancez « review --near ».
 
 msgid "Files changed since the review: run 'review' again."
 msgstr "Des fichiers ont changé depuis le tri : relancez 'review'."
+
+msgid "Files gone"
+msgstr "Fichiers disparus"
 
 msgid "Files gone review"
 msgstr "Revue des fichiers disparus"
@@ -4590,6 +4638,9 @@ msgstr ""
 "Elle partage des jours avec {rules} : la première listée dans config.toml"
 " l'emporte ces jours-là."
 
+msgid "It stopped on an error. What it wrote:"
+msgstr "Arrêtée sur une erreur. Ce qu'elle a écrit :"
+
 msgid "It was then:"
 msgstr "Il était alors :"
 
@@ -5308,6 +5359,12 @@ msgstr ""
 "Déplacer les photos choisies dans le dossier de l'événement, journalisé :"
 " undo les remet en place"
 
+#, python-brace-format
+msgid "Move the {n} album folder made in {folder}"
+msgid_plural "Move the {n} album folders made in {folder}"
+msgstr[0] "Déplacer le {n} dossier d'album créé dans {folder}"
+msgstr[1] "Déplacer les {n} dossiers d'album créés dans {folder}"
+
 msgid "Move them now"
 msgstr "Les déplacer maintenant"
 
@@ -5390,6 +5447,9 @@ msgid "Moving an unwanted photo you set aside to the quarantine: {path}"
 msgstr ""
 "Déplacement en quarantaine d'une photo indésirable que vous avez mise de "
 "côté : {path}"
+
+msgid "Moving…"
+msgstr "Déplacement…"
 
 msgid "My folders"
 msgstr "Mes dossiers"
@@ -6292,6 +6352,10 @@ msgid "Not readable"
 msgstr "Illisible"
 
 #, python-brace-format
+msgid "Not restored: {reasons}"
+msgstr "Pas remis : {reasons}"
+
+#, python-brace-format
 msgid "Not saved (error {status})."
 msgstr "Non enregistré (erreur {status})."
 
@@ -6586,6 +6650,14 @@ msgstr ""
 "rapport sert à regarder les photos."
 
 #, python-brace-format
+msgid "Nothing was restored (error {status})."
+msgstr "Rien n'a été remis (erreur {status})."
+
+#, python-brace-format
+msgid "Nothing was restored: {error}"
+msgstr "Rien n'a été remis : {error}"
+
+#, python-brace-format
 msgid "Nothing was saved: {error}"
 msgstr "Rien n'a été enregistré : {error}"
 
@@ -6681,6 +6753,13 @@ msgstr ""
 "code : tapez-le sur la télécommande du téléphone."
 
 msgid ""
+"On the contact sheet, a click keeps the first other version; for another "
+"one, open the group alone (Esc)."
+msgstr ""
+"Sur la planche contact, un clic garde la première autre version ; pour "
+"une autre, ouvrez le groupe seul (Échap)."
+
+msgid ""
 "On the home Wi-Fi only, while mh runs on the PC. Your photos are only "
 "read: taking a photo out of an album, or adding it to another one, "
 "changes the albums file alone."
@@ -6748,6 +6827,9 @@ msgstr ""
 "Une seule fois, après une mise à jour : dates, lieux et appareils "
 "enregistrés dans les fichiers. Les images ne sont pas décodées à nouveau,"
 " seul leur en-tête est lu."
+
+msgid "One group at a time (Esc)"
+msgstr "Un groupe à la fois (Échap)"
 
 msgid "One name, without / nor \\"
 msgstr "Un seul nom, sans / ni \\"
@@ -7047,6 +7129,13 @@ msgstr ""
 "Ouvrir la page sur ce dossier (une partie de son chemin, comme 'Chemin "
 "contient' le prend), par exemple un dossier que 'status' liste comme "
 "restant à trier."
+
+msgid ""
+"Open the quarantine in the browser, as tiles, and put back only the "
+"photos you pick; 'undo' of their run still brings back the rest."
+msgstr ""
+"Ouvrir la quarantaine dans le navigateur, en vignettes, et ne remettre "
+"que les photos choisies ; 'undo' de leur exécution remet encore le reste."
 
 msgid "Open the report"
 msgstr "Ouvrir le rapport"
@@ -7644,6 +7733,9 @@ msgstr ""
 "Remettez-en une copie, ou déplacez-le ailleurs pour commencer de nouveaux"
 " albums."
 
+msgid "Put back a few photos of the quarantine"
+msgstr "Remettre quelques photos de la quarantaine"
+
 #, python-brace-format
 msgid "Put back in the backup: {count} file, read back."
 msgid_plural "Put back in the backup: {count} files, read back."
@@ -7656,12 +7748,22 @@ msgstr "Remettre les fichiers de la dernière exécution"
 msgid "Put every intruder file back"
 msgstr "Remettre tous les fichiers intrus"
 
+msgid ""
+"Put the picked files back where they were, journaled (Enter opens the "
+"large view)"
+msgstr ""
+"Remettre les fichiers choisis là où ils étaient, journalisé (Entrée ouvre"
+" la grande vue)"
+
 msgid "Put this face back"
 msgstr "Remettre ce visage"
 
 #, python-brace-format
 msgid "Putting back: {path}"
 msgstr "Remise en place : {path}"
+
+msgid "Putting back…"
+msgstr "Remise en place…"
 
 msgid "Quality"
 msgstr "Qualité"
@@ -7999,6 +8101,9 @@ msgstr ""
 msgid "Restore the index"
 msgstr "Remettre l'index"
 
+msgid "Restore the picked files"
+msgstr "Remettre les fichiers choisis"
+
 msgid ""
 "Restore the settings (config.toml, people) too; the index alone by "
 "default."
@@ -8011,6 +8116,14 @@ msgstr "Restaurés"
 
 msgid "Restoring"
 msgstr "Restauration"
+
+msgid ""
+"Restoring puts each file back where it was, never over another one, and "
+"journals it; 'mh undo' of its run still brings back the others."
+msgstr ""
+"Remettre replace chaque fichier là où il était, jamais par-dessus un "
+"autre, et le journalise ; 'mh undo' de son exécution remet encore les "
+"autres."
 
 msgid "Results"
 msgstr "Résultats"
@@ -8353,6 +8466,10 @@ msgid "Run {run_id} of the same sort was already undone: left aside."
 msgstr "Le passage {run_id} du même tri a déjà été annulé : laissé de côté."
 
 #, python-brace-format
+msgid "Run {run}"
+msgstr "Exécution {run}"
+
+#, python-brace-format
 msgid "Run {run} stays in the quarantine."
 msgstr "L'exécution {run} reste dans la quarantaine."
 
@@ -8370,8 +8487,17 @@ msgstr ""
 "En cours dans la fenêtre où mh tourne : {command}. Cette page reste "
 "ouverte."
 
+msgid "Running, a few seconds…"
+msgstr "En cours, quelques secondes…"
+
+msgid "Runs"
+msgstr "Exécutions"
+
 msgid "Runs (newest first)"
 msgstr "Exécutions (les plus récentes d'abord)"
+
+msgid "Runs in the page"
+msgstr "Tourne dans la page"
 
 msgid "Runs to undo (newest first)"
 msgstr "Passages à annuler (les plus récents d'abord)"
@@ -9336,6 +9462,10 @@ msgstr "Arrêté (Ctrl+C)."
 msgid "Stopped (code {code}): {command}."
 msgstr "Arrêté (code {code}) : {command}."
 
+#, python-brace-format
+msgid "Stopped after {seconds} s: run it from the console instead."
+msgstr "Arrêtée après {seconds} s : lancez-la plutôt depuis la console."
+
 msgid "Stopped before the end, as asked."
 msgstr "Arrêté avant la fin, comme demandé."
 
@@ -9586,14 +9716,6 @@ msgstr ""
 "Les actions favorites de la page d'accueil, dans leur ordre : la page "
 "écrit cette liste quand vous cliquez sur une étoile ou déplacez une "
 "carte. Vide : trois sont suggérées (search, import, audit)."
-
-#, python-brace-format
-msgid ""
-"The album folders made before stay in {folder}: make each one again (mh "
-"album <name> --apply) to have it in the new folder."
-msgstr ""
-"Les dossiers d'albums déjà faits restent dans {folder} : refaites chacun "
-"(mh album <nom> --apply) pour l'avoir dans le nouveau dossier."
 
 msgid "The album stopped at the first link refused by the disk."
 msgstr "L'album s'est arrêté au premier lien refusé par le disque."
@@ -10049,6 +10171,14 @@ msgid "The files the classify rule of this name decided."
 msgstr "Les fichiers que la règle de classify de ce nom a décidés."
 
 msgid ""
+"The files the runs of clean set aside, as they lie in the quarantine. "
+"Pick the ones to put back: each goes back to the folder it came from."
+msgstr ""
+"Les fichiers que les exécutions de clean ont mis de côté, tels qu'ils "
+"sont dans la quarantaine. Choisissez ceux à remettre : chacun retourne "
+"dans le dossier d'où il vient."
+
+msgid ""
 "The first folder is protected, or both copies lie in one folder: W is not"
 " possible."
 msgstr ""
@@ -10444,6 +10574,9 @@ msgstr "La page ne tourne plus : relancez people."
 msgid "The page is not running any more: type mh import --phone again."
 msgstr "La page ne tourne plus : tapez à nouveau mh import --phone."
 
+msgid "The page is not running any more: type mh undo --pick again."
+msgstr "La page ne tourne plus : tapez à nouveau mh undo --pick."
+
 msgid "The page of the tool this server shows"
 msgstr "La page de l'outil que ce serveur affiche"
 
@@ -10642,6 +10775,14 @@ msgstr ""
 msgid "The proposal is already made: → is enough when it suits you."
 msgstr "La proposition est déjà faite : → suffit quand elle vous convient."
 
+msgid "The quarantine"
+msgstr "La quarantaine"
+
+msgid "The quarantine as tiles: pick the photos, they go back where they were."
+msgstr ""
+"La quarantaine en vignettes : choisissez les photos, elles retournent là "
+"où elles étaient."
+
 #, python-brace-format
 msgid "The quarantine could not be erased: {reason}."
 msgstr "La quarantaine n'a pas pu être effacée : {reason}."
@@ -10649,8 +10790,20 @@ msgstr "La quarantaine n'a pas pu être effacée : {reason}."
 msgid "The quarantine is empty."
 msgstr "La quarantaine est vide."
 
+msgid "The quarantine is empty: nothing to restore."
+msgstr "La quarantaine est vide : rien à remettre."
+
 msgid "The quarantine is empty: nothing waits to be freed."
 msgstr "La quarantaine est vide : rien n'attend d'être libéré."
+
+#, python-brace-format
+msgid ""
+"The quarantine is ready, open {url} in your browser. Each photo restored "
+"goes back at once, journaled. Ctrl+C stops the page."
+msgstr ""
+"La quarantaine est prête, ouvrez {url} dans votre navigateur. Chaque "
+"photo remise retourne aussitôt à sa place, journalisée. Ctrl+C arrête la "
+"page."
 
 msgid "The quarantine, run by run"
 msgstr "La quarantaine, par exécution"
@@ -10906,6 +11059,9 @@ msgstr "Le diaporama ne tourne plus : relancez-le sur le PC."
 msgid "The sort runs of this plan"
 msgstr "Les tris de ce plan"
 
+msgid "The step"
+msgstr "L'étape"
+
 #, python-brace-format
 msgid "The step you choose also analyses: {folder}"
 msgstr "L'étape choisie analyse aussi : {folder}"
@@ -10928,6 +11084,11 @@ msgstr ""
 "choisit l'une de ces catégories, ou aucune ; il n'est sûr que si les "
 "photos d'un événement sont d'accord. per_photo = true décrit chaque photo"
 " au lieu de quelques-unes par événement : bien plus long."
+
+msgid "The sure groups still undecided, many a screen: Enter decides what you see"
+msgstr ""
+"Les groupes sûrs encore à décider, nombreux par écran : Entrée décide ce "
+"que vous voyez"
 
 #, python-brace-format
 msgid "The target {path} is not mounted."
@@ -11374,6 +11535,9 @@ msgstr "Cette photo est dans un dossier protégé : elle ne bouge jamais."
 msgid "This step already runs: wait for its end, or stop it."
 msgstr "Cette étape tourne déjà : attendez sa fin, ou arrêtez-la."
 
+msgid "This step does not run in the page."
+msgstr "Cette étape ne tourne pas dans la page."
+
 msgid "This step takes no words."
 msgstr "Cette étape ne prend pas de mots."
 
@@ -11597,6 +11761,10 @@ msgstr "Pour trier par lieu et par voyage ; aucune position ne quitte le PC."
 
 msgid "To undo it all:"
 msgstr "Pour tout annuler :"
+
+#, python-brace-format
+msgid "To undo: {commands}"
+msgstr "Pour annuler : {commands}"
 
 msgid "Today"
 msgstr "Aujourd'hui"
@@ -11847,6 +12015,9 @@ msgstr "Décocher : reste sur le téléphone"
 
 msgid "Until mh stops; never the internet."
 msgstr "Jusqu'à l'arrêt de mh ; jamais sur Internet."
+
+msgid "Unwanted photos"
+msgstr "Photos indésirables"
 
 msgid "Unwanted photos review"
 msgstr "Revue des photos indésirables"
@@ -12909,11 +13080,11 @@ msgstr "flou"
 msgid "board ⇄ one series"
 msgstr "planche ⇄ une série"
 
-msgid "board, contact sheet: validate the rows shown, next screen"
-msgstr "tableau, planche contact : valider les lignes affichées, écran suivant"
-
 msgid "board: pin the large preview of the shot under the mouse"
 msgstr "planche : épingler le grand aperçu de la photo sous la souris"
+
+msgid "board: validate the rows shown, next screen"
+msgstr "tableau : valider les lignes affichées, écran suivant"
 
 msgid "bright"
 msgstr "clair"
@@ -13102,6 +13273,20 @@ msgstr[1] ""
 
 msgid "configuration settings config toml ai model"
 msgstr "configuration réglages config toml ia modèle"
+
+msgid "contact sheet: flip the shot, kept or aside"
+msgstr "planche contact : inverser la photo, gardée ou à l'écart"
+
+msgid "contact sheet: take the screen back"
+msgstr "planche contact : reprendre l'écran"
+
+msgid "contact sheet: the shot large"
+msgstr "planche contact : la photo en grand"
+
+msgid "contact sheet: validate the rows shown as they are, next screen"
+msgstr ""
+"planche contact : valider les lignes affichées telles quelles, écran "
+"suivant"
 
 msgid "counts"
 msgstr "comptages"
@@ -14279,6 +14464,9 @@ msgstr "purger libérer place quarantaine effacer vider définitivement"
 
 msgid "purged from the quarantine"
 msgstr "purgés de la quarantaine"
+
+msgid "quarantine restore put back photo pick"
+msgstr "quarantaine remettre restaurer photo choisir"
 
 msgid "reference-commands/"
 msgstr "fr/reference-commands/"
@@ -15788,6 +15976,10 @@ msgstr[1] ""
 "lieux."
 
 #, python-brace-format
+msgid "{count} files"
+msgstr "{count} fichiers"
+
+#, python-brace-format
 msgid ""
 "{count} files ({size} GB) of {folder} are in OneDrive's cloud only: "
 "reading them downloads them onto this PC ({free} GB free on {drive}). To "
@@ -15809,6 +16001,10 @@ msgstr "{count} fichiers ont une copie identique : laissés de côté."
 #, python-brace-format
 msgid "{count} files have no word to write."
 msgstr "{count} fichiers n'ont aucun mot à écrire."
+
+#, python-brace-format
+msgid "{count} files in the quarantine, from {runs} runs"
+msgstr "{count} fichiers en quarantaine, de {runs} exécutions"
 
 #, python-brace-format
 msgid "{count} files in the quarantine: check, then free the room."
@@ -17120,6 +17316,22 @@ msgstr[0] "{n} télé"
 msgstr[1] "{n} télés"
 
 #, python-brace-format
+msgid "{n} album folder was made in {folder}: move it to the new folder?"
+msgid_plural "{n} album folders were made in {folder}: move them to the new folder?"
+msgstr[0] ""
+"{n} dossier d'album a été créé dans {folder} : le déplacer vers le "
+"nouveau dossier ?"
+msgstr[1] ""
+"{n} dossiers d'album ont été créés dans {folder} : les déplacer vers le "
+"nouveau dossier ?"
+
+#, python-brace-format
+msgid "{n} album made again in the new folder."
+msgid_plural "{n} albums made again in the new folder."
+msgstr[0] "{n} album refait dans le nouveau dossier."
+msgstr[1] "{n} albums refaits dans le nouveau dossier."
+
+#, python-brace-format
 msgid "{n} already there"
 msgstr "{n} déjà en place"
 
@@ -17232,6 +17444,16 @@ msgstr[0] ""
 msgstr[1] ""
 "{n} fichiers de l'album sont manquants (déplacés hors des dossiers "
 "analysés, ou supprimés) : pas montrés."
+
+#, python-brace-format
+msgid "{n} file of {folder} was not made by media-hygiene: it stays ({files})."
+msgid_plural "{n} files of {folder} were not made by media-hygiene: they stay ({files})."
+msgstr[0] ""
+"{n} fichier de {folder} n'a pas été créé par media-hygiene : il reste "
+"({files})."
+msgstr[1] ""
+"{n} fichiers de {folder} n'ont pas été créés par media-hygiene : ils "
+"restent ({files})."
 
 #, python-brace-format
 msgid "{n} file picked"
@@ -17791,6 +18013,10 @@ msgstr ""
 "{protected} (folders.protected) et {excluded} (folders.excluded) sont un "
 "même dossier ou l'un dans l'autre : un dossier protégé est lu, un dossier"
 " exclu ne l'est pas ; donnez-leur un seul rôle"
+
+#, python-brace-format
+msgid "{rate} files/s"
+msgstr "{rate} fichiers/s"
 
 #, python-brace-format
 msgid "{rate} photos a minute, about {time} left."
