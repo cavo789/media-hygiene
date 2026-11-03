@@ -1820,6 +1820,13 @@ msgstr[1] ""
 msgid "Confirmed by you on the people page: it is a face of reference."
 msgstr ""
 
+msgid "Contact sheet"
+msgstr ""
+
+#, python-brace-format
+msgid "Contact sheet of the sure groups ({count})"
+msgstr ""
+
 #, python-brace-format
 msgid "Contact sheet, screen {page} of {pages}"
 msgstr ""
@@ -2587,6 +2594,12 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"Enter decides the groups still to see here as shown ({count}), then the "
+"next screen; Z takes the screen back."
+msgstr ""
+
+#, python-brace-format
+msgid ""
 "Enter runs step {number} ({command}). Another number runs that step. "
 "Ctrl+C leaves."
 msgstr ""
@@ -2766,6 +2779,9 @@ msgstr ""
 msgid "Every group of this folder pair is decided already."
 msgstr ""
 
+msgid "Every group of this screen is decided: Enter shows the next screen."
+msgstr ""
+
 msgid "Every group to check has been decided."
 msgstr ""
 
@@ -2822,6 +2838,11 @@ msgstr ""
 msgid ""
 "Every step of the guides with its command, the next one first: what 'mh' "
 "alone shows, Enter runs it."
+msgstr ""
+
+msgid ""
+"Every sure group of the contact sheet has been seen; the groups to check "
+"stay for one at a time."
 msgstr ""
 
 msgid ""
@@ -5570,6 +5591,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"On the contact sheet, a click keeps the first other version; for another "
+"one, open the group alone (Esc)."
+msgstr ""
+
+msgid ""
 "On the home Wi-Fi only, while mh runs on the PC. Your photos are only "
 "read: taking a photo out of an album, or adding it to another one, "
 "changes the albums file alone."
@@ -5614,6 +5640,9 @@ msgstr ""
 msgid ""
 "Once, after an update: dates, places and devices recorded in the files. "
 "Images are not decoded again, only their header is read."
+msgstr ""
+
+msgid "One group at a time (Esc)"
 msgstr ""
 
 msgid "One name, without / nor \\"
@@ -9081,6 +9110,9 @@ msgid ""
 "longer."
 msgstr ""
 
+msgid "The sure groups still undecided, many a screen: Enter decides what you see"
+msgstr ""
+
 #, python-brace-format
 msgid "The target {path} is not mounted."
 msgstr ""
@@ -10740,10 +10772,10 @@ msgstr ""
 msgid "board ⇄ one series"
 msgstr ""
 
-msgid "board, contact sheet: validate the rows shown, next screen"
+msgid "board: pin the large preview of the shot under the mouse"
 msgstr ""
 
-msgid "board: pin the large preview of the shot under the mouse"
+msgid "board: validate the rows shown, next screen"
 msgstr ""
 
 msgid "bright"
@@ -10911,6 +10943,18 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "configuration settings config toml ai model"
+msgstr ""
+
+msgid "contact sheet: flip the shot, kept or aside"
+msgstr ""
+
+msgid "contact sheet: take the screen back"
+msgstr ""
+
+msgid "contact sheet: the shot large"
+msgstr ""
+
+msgid "contact sheet: validate the rows shown as they are, next screen"
 msgstr ""
 
 msgid "counts"

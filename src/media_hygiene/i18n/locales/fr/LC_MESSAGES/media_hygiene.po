@@ -2231,6 +2231,13 @@ msgstr ""
 "Confirmé par vous dans la page des personnes : c'est un visage de "
 "référence."
 
+msgid "Contact sheet"
+msgstr "Planche contact"
+
+#, python-brace-format
+msgid "Contact sheet of the sure groups ({count})"
+msgstr "Planche contact des groupes sûrs ({count})"
+
 #, python-brace-format
 msgid "Contact sheet, screen {page} of {pages}"
 msgstr "Planche contact, écran {page} sur {pages}"
@@ -3167,6 +3174,14 @@ msgstr "Entrée"
 
 #, python-brace-format
 msgid ""
+"Enter decides the groups still to see here as shown ({count}), then the "
+"next screen; Z takes the screen back."
+msgstr ""
+"Entrée décide les groupes encore à voir ici tels qu'affichés ({count}), "
+"puis l'écran suivant ; Z reprend l'écran."
+
+#, python-brace-format
+msgid ""
 "Enter runs step {number} ({command}). Another number runs that step. "
 "Ctrl+C leaves."
 msgstr ""
@@ -3397,6 +3412,9 @@ msgstr "Tous les groupes ont été décidés."
 msgid "Every group of this folder pair is decided already."
 msgstr "Chaque groupe de cette paire de dossiers est déjà décidé."
 
+msgid "Every group of this screen is decided: Enter shows the next screen."
+msgstr "Chaque groupe de cet écran est décidé : Entrée montre l'écran suivant."
+
 msgid "Every group to check has been decided."
 msgstr "Chaque groupe à vérifier a été décidé."
 
@@ -3465,6 +3483,13 @@ msgid ""
 msgstr ""
 "Chaque étape des guides avec sa commande, la prochaine en premier : ce "
 "que montre 'mh' seul, Entrée la lance."
+
+msgid ""
+"Every sure group of the contact sheet has been seen; the groups to check "
+"stay for one at a time."
+msgstr ""
+"Chaque groupe sûr de la planche contact a été vu ; les groupes à vérifier"
+" restent pour un à la fois."
 
 msgid ""
 "Every word must be found: type one to three words (beach, cake candles), "
@@ -6712,6 +6737,13 @@ msgstr ""
 "code : tapez-le sur la télécommande du téléphone."
 
 msgid ""
+"On the contact sheet, a click keeps the first other version; for another "
+"one, open the group alone (Esc)."
+msgstr ""
+"Sur la planche contact, un clic garde la première autre version ; pour "
+"une autre, ouvrez le groupe seul (Échap)."
+
+msgid ""
 "On the home Wi-Fi only, while mh runs on the PC. Your photos are only "
 "read: taking a photo out of an album, or adding it to another one, "
 "changes the albums file alone."
@@ -6779,6 +6811,9 @@ msgstr ""
 "Une seule fois, après une mise à jour : dates, lieux et appareils "
 "enregistrés dans les fichiers. Les images ne sont pas décodées à nouveau,"
 " seul leur en-tête est lu."
+
+msgid "One group at a time (Esc)"
+msgstr "Un groupe à la fois (Échap)"
 
 msgid "One name, without / nor \\"
 msgstr "Un seul nom, sans / ni \\"
@@ -10965,6 +11000,11 @@ msgstr ""
 "photos d'un événement sont d'accord. per_photo = true décrit chaque photo"
 " au lieu de quelques-unes par événement : bien plus long."
 
+msgid "The sure groups still undecided, many a screen: Enter decides what you see"
+msgstr ""
+"Les groupes sûrs encore à décider, nombreux par écran : Entrée décide ce "
+"que vous voyez"
+
 #, python-brace-format
 msgid "The target {path} is not mounted."
 msgstr "La cible {path} n'est pas montée."
@@ -12955,11 +12995,11 @@ msgstr "flou"
 msgid "board ⇄ one series"
 msgstr "planche ⇄ une série"
 
-msgid "board, contact sheet: validate the rows shown, next screen"
-msgstr "tableau, planche contact : valider les lignes affichées, écran suivant"
-
 msgid "board: pin the large preview of the shot under the mouse"
 msgstr "planche : épingler le grand aperçu de la photo sous la souris"
+
+msgid "board: validate the rows shown, next screen"
+msgstr "tableau : valider les lignes affichées, écran suivant"
 
 msgid "bright"
 msgstr "clair"
@@ -13148,6 +13188,20 @@ msgstr[1] ""
 
 msgid "configuration settings config toml ai model"
 msgstr "configuration réglages config toml ia modèle"
+
+msgid "contact sheet: flip the shot, kept or aside"
+msgstr "planche contact : inverser la photo, gardée ou à l'écart"
+
+msgid "contact sheet: take the screen back"
+msgstr "planche contact : reprendre l'écran"
+
+msgid "contact sheet: the shot large"
+msgstr "planche contact : la photo en grand"
+
+msgid "contact sheet: validate the rows shown as they are, next screen"
+msgstr ""
+"planche contact : valider les lignes affichées telles quelles, écran "
+"suivant"
 
 msgid "counts"
 msgstr "comptages"
@@ -17168,8 +17222,12 @@ msgstr[1] "{n} télés"
 #, python-brace-format
 msgid "{n} album folder was made in {folder}: move it to the new folder?"
 msgid_plural "{n} album folders were made in {folder}: move them to the new folder?"
-msgstr[0] "{n} dossier d'album a été créé dans {folder} : le déplacer vers le nouveau dossier ?"
-msgstr[1] "{n} dossiers d'album ont été créés dans {folder} : les déplacer vers le nouveau dossier ?"
+msgstr[0] ""
+"{n} dossier d'album a été créé dans {folder} : le déplacer vers le "
+"nouveau dossier ?"
+msgstr[1] ""
+"{n} dossiers d'album ont été créés dans {folder} : les déplacer vers le "
+"nouveau dossier ?"
 
 #, python-brace-format
 msgid "{n} album made again in the new folder."
@@ -17294,8 +17352,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} file of {folder} was not made by media-hygiene: it stays ({files})."
 msgid_plural "{n} files of {folder} were not made by media-hygiene: they stay ({files})."
-msgstr[0] "{n} fichier de {folder} n'a pas été créé par media-hygiene : il reste ({files})."
-msgstr[1] "{n} fichiers de {folder} n'ont pas été créés par media-hygiene : ils restent ({files})."
+msgstr[0] ""
+"{n} fichier de {folder} n'a pas été créé par media-hygiene : il reste "
+"({files})."
+msgstr[1] ""
+"{n} fichiers de {folder} n'ont pas été créés par media-hygiene : ils "
+"restent ({files})."
 
 #, python-brace-format
 msgid "{n} file picked"

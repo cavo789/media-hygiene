@@ -100,6 +100,14 @@ rafales douteuses restent à voir une à une (`P`). Chaque rafale est vue, à en
 minute (estimé : 2 à 3 s par écran). `V` reste le chemin rapide : il les valide toutes sans les
 montrer.
 
+**Les quasi-doublons sûrs sur une planche contact** (`review --near`) : *📇 Planche contact des
+groupes sûrs (N)*, à gauche, montre de la même façon les groupes sûrs encore à décider, avec les
+mêmes touches : une ligne par groupe, la version gardée encadrée de vert, les autres en pointillé
+et atténuées. Un clic sur l'autre version la garde à la place (comme `W`), un clic sur la version
+gardée l'annule ; **Entrée** décide les lignes affichées telles quelles, en une écriture, puis
+montre l'écran suivant ; un double clic montre une version en grand ; `Z` reprend l'écran ;
+`Échap` revient à un groupe à la fois. Les groupes à vérifier restent pour un à la fois.
+
 **Où vous en êtes** (`review`, `--near`, `--pairs`) : la barre dit combien de cas restent et,
 une fois dix décidés dans cette session, combien de temps environ à votre rythme (*1 240
 restants, environ 4 min à votre rythme* ; une pause de plus d'une minute ne compte pas) ; puis la

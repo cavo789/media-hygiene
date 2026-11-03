@@ -1,0 +1,19 @@
+{# The contact sheet's look shared by every page that has one (0529): its keys shown only while
+   it is open; compact rows, the kept shot framed, those going aside dashed and dimmed. #}
+  body:not(.sheet) #keys .sheet-only { display: none; }
+  body.sheet #keys .not-sheet { display: none; }
+  .sheetRows .sheetRow { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-end; margin: 0 0 4px;
+                         padding: 3px 6px; background: var(--card); border: 2px solid var(--line); border-radius: 10px; }
+  .sheetRow.seen { opacity: .6; }
+  .sheetRow .sheetWhy { flex-basis: 100%; font-size: .8rem; color: var(--muted); }
+  .sheetThumb { flex: none; margin: 0; padding: 3px; cursor: pointer; text-align: center;
+                border: 3px solid var(--line); border-radius: 8px; }
+  .sheetThumb img { display: block; height: 96px; width: auto; max-width: 160px; object-fit: contain;
+                    border-radius: 4px; background: var(--bg); }
+  .sheetThumb .clip { height: 96px; width: 120px; display: grid; place-items: center; font-size: .75rem; }
+  .sheetThumb figcaption { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+                           font-size: .75rem; color: var(--muted); }
+  .sheetThumb.keep { border-color: var(--ok); }
+  .sheetThumb.move { border-style: dashed; border-color: var(--bad); }
+  .sheetThumb.move img { opacity: .55; height: 64px; max-width: 110px; }
+  .sheetThumb.lock { border-color: var(--warn); cursor: not-allowed; }

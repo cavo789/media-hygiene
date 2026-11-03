@@ -114,6 +114,7 @@
 {% include "review_tree.css.j2" %}
 {% include "review_compare.css.j2" %}
 {% include "review_board.css.j2" %}
+{% include "contact_sheet.css.j2" %}
   #status.error { color: var(--bad); font-weight: 600; } #status.saved { color: var(--ok); }
   #status.pending { color: var(--warn); font-weight: 600; }
   #pending { margin: 0 0 12px; padding: 8px 12px; font-weight: 600; color: var(--warn);
@@ -174,7 +175,8 @@
       <dt><kbd>Z</kbd></dt><dd>{{ _("undo the last choice") }}</dd>
       <dt><kbd>C</kbd></dt><dd>{{ _("compare the shots at 100 %%") }}</dd>
       <dt><kbd>P</kbd></dt><dd>{{ _("board ⇄ one series") }}</dd>
-      <dt class="board-only"><kbd>Enter</kbd></dt><dd class="board-only">{{ _("board, contact sheet: validate the rows shown, next screen") }}</dd>
+      <dt class="board-only not-sheet"><kbd>Enter</kbd></dt><dd class="board-only not-sheet">{{ _("board: validate the rows shown, next screen") }}</dd>
+{% include "sheet_keys.html.j2" %}
       <dt class="board-only"><kbd>␣</kbd></dt><dd class="board-only">{{ _("board: pin the large preview of the shot under the mouse") }}</dd>
 {% include "pick_keys_more.html.j2" %}
 {% endblock %}

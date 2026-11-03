@@ -97,6 +97,14 @@ screen back. The line on top says how many doubtful series are left to see one b
 Each series is seen, at about 400 a minute (estimated: 2 to 3 s a screen). `V` stays the fast
 path: it validates them all without showing them.
 
+**The sure near duplicates on a contact sheet** (`review --near`): *📇 Contact sheet of the sure
+groups (N)*, on the left, shows the sure groups still undecided the same way, with the same keys:
+one row a group, the kept version framed in green, the other versions dashed and dimmed. A click
+on the other version keeps it instead (as `W`), a click on the kept one takes that back;
+**Enter** decides the rows shown as they are, in one write, then shows the next screen; a double
+click shows a version large; `Z` takes the screen back; `Esc` goes back to one group at a time.
+The groups to check stay for one at a time.
+
 **How far you are** (`review`, `--near`, `--pairs`): the bar says how many cases are left and,
 once ten are decided in this session, about how long they take at your pace (*1 240 left, about
 4 min at your pace*; a pause of more than a minute does not count); then the share of the total
