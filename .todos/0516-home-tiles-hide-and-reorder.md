@@ -31,3 +31,7 @@ After 0515 (9 tiles, 3 × 3), let the user hide, move… the blocks of *Where yo
 2. The edit mode, saved and read back, *Reset*.
 3. Tests: order applied, hidden, unknown id, a new tile appears, reset, a save read back.
 4. Docs EN + FR (home page chapter); `docs_screenshots` should then run — not run by the TODO.
+
+## Decided (2026-11-03)
+
+By the maintainer: the choice lives in `config.toml` `[home] tiles` (tomlkit, comments kept, atomic, read back from disk). Tiles only; a hidden tile stays hidden even when it asks for action. The phone shows the PC's layout, never edits it.
