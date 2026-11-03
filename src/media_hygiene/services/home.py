@@ -1,8 +1,7 @@
 """Serve the home page until Ctrl+C, or until the user chooses a step.
 
 A step chosen is run by `mh` in the terminal (`home_step`, `step_watch`) when `mh` set
-`MEDIA_HYGIENE_LAUNCHER_STEPS`, else the page copies the command. It serves `search`
-and `browse` too. Photos read-only; its tab closed ends it.
+`MEDIA_HYGIENE_LAUNCHER_STEPS`, else the page copies it; `search`, `browse` too.
 """
 
 from __future__ import annotations
@@ -24,7 +23,7 @@ from media_hygiene.review.ending import (
     EndingDoor,
     serve_until_ended,
 )
-from media_hygiene.review.home_app import AUDIT_PATH, HomeApp
+from media_hygiene.review.home_app import AUDIT_PATH, FAVOURITES_PATH, HomeApp
 from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.review.home_tags_api import RUN_NAMES, TAGS_RUN
 from media_hygiene.review.home_texts import home_texts
@@ -87,6 +86,7 @@ def home_page(
             "state": STATE_PATH,
             "step": STEP_PATH,
             "audit": AUDIT_PATH,
+            "favourites": FAVOURITES_PATH,
             **{name: path if path in runs else "" for name, path in RUN_NAMES.items()},
             "alive": PRESENCE_PATH,
             "stop": STOP_PATH,
@@ -143,6 +143,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         relays_fields=relays and launcher_relays_fields(),
         keeps=relays and keeps_server(),
         runs={path: HomeTags(run) for path, run in sources.runs.items()},
+        config_file=runtime.locations.config_file,
     )
 
     def ready(port: int) -> None:

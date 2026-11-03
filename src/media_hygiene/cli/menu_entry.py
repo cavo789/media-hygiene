@@ -118,6 +118,7 @@ class Step:  # pylint: disable=too-many-instance-attributes  # one per catalog c
     windows: bool = False  # Windows PowerShell only: not in the bash `mh`
     planned: bool = False  # shown, not runnable yet
     confirm: tuple[str, str] | None = None  # its own confirmation: title, text (0311)
+    web: bool = True  # False: `mh menu` only, the home page already shows it (0504)
 
     @property
     def verb(self) -> str:

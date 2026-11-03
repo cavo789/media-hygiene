@@ -255,8 +255,10 @@ function nextAudit(wait) {
   window.clearTimeout(audit.timer);
   audit.timer = window.setTimeout(pollAudit, wait);
 }
+// The audit run in the page lives on the Clean stage (0483), no longer on the home page.
+const AUDIT_SPACE = "clean";
 function showAudit() {
-  if (view.id !== HOME) go(HOME, false);
+  if (view.id !== AUDIT_SPACE) go(AUDIT_SPACE, false);
   const here = $("#auditHere");
   if (here) here.scrollIntoView({ behavior: reduced.matches ? "auto" : "smooth", block: "center" });
 }
@@ -272,7 +274,7 @@ const pollAudit = () => fetch(P.audit, { cache: "no-store" })
   // Only a run followed says the page stopped; between runs, a step may hold the server.
   .catch(() => { if (audit.last && audit.last.phase === "running") stopped(); else nextAudit(IDLE_MS); });
 function askAudit(action) {
-  if (action === "start" && view.id !== HOME) go(HOME, false);
+  if (action === "start" && view.id !== AUDIT_SPACE) go(AUDIT_SPACE, false);
   post(P.audit, { action: action })
     .then((reply) => {
       if (!reply.ok) toast(reply.body.error || T.auditBusy);
@@ -345,7 +347,7 @@ function fillPalette() {
     ? entries.map((entry) => {
       if (entry.header) return `<li class="palette-group" role="presentation">${esc(entry.header)}</li>`;
       at += 1;
-      return `<li class="palette-opt" role="option" id="po-${at}" data-k="${at}" aria-selected="false">${icon(entry.icon)}<span class="po-title">${esc(entry.title)}</span>${entry.risk ? riskPill(entry.risk) : ""}<span class="po-sub">${esc(entry.sub)}</span></li>`;
+      return `<li class="palette-opt" role="option" id="po-${at}" data-k="${at}" aria-selected="false">${icon(entry.icon)}<span class="po-title">${esc(entry.title)}</span>${entry.risk ? riskPill(entry.risk) : ""}<span class="po-sub">${esc(entry.sub)}</span>${entry.type === "run" ? starButton(entry.id) : ""}</li>`;
     }).join("")
     : `<li class="palette-empty" role="presentation">${esc(T.nothingMatches)}</li>`;
   markActive();

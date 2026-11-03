@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from media_hygiene.i18n import _
 from media_hygiene.review.home_texts_family import family_texts
+from media_hygiene.review.home_texts_favs import favourite_texts
 from media_hygiene.review.home_texts_marked import marked_texts
 from media_hygiene.review.home_texts_run import run_texts
 from media_hygiene.review.home_texts_runs import runs_texts
@@ -30,6 +31,7 @@ def home_texts() -> dict[str, str]:
         **tags_texts(),
         **runs_texts(),
         **family_texts(),
+        **favourite_texts(),
     }
 
 

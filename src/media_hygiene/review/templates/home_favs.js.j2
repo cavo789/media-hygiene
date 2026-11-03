@@ -1,0 +1,96 @@
+// ---- Favourites (0484): the actions starred (☆ on each action and in the palette), a row of
+// large cards on the home page, reordered by dragging (mouse or touch) or Alt+←/→. The list
+// is written into config.toml by the server, then the state is read again from the disk.
+// A phone is read-only: no star, no move.
+const favs = { busy: false, drag: null };
+const canStar = () => !REMOTE && Boolean(P.favourites);
+const starred = () => (S.suggested ? [] : S.favourites.filter((name) => BY_ID[name]));
+function starButton(name) {
+  if (!canStar()) return "";
+  const on = starred().includes(name);
+  const label = on ? T.favRemove : T.favAdd;
+  return `<button class="star${on ? " is-on" : ""}" type="button" data-star="${esc(name)}" aria-pressed="${on}" aria-label="${esc(label)}" title="${esc(label)}">${on ? "★" : "☆"}</button>`;
+}
+function favouritesRow() {
+  const names = S.favourites.filter((name) => BY_ID[name]);
+  if (REMOTE || !names.length) return "";
+  const movable = !S.suggested && canStar();
+  const cards = names.map((name) => {
+    const action = BY_ID[name];
+    const grip = movable ? `<span class="fav-grip" aria-hidden="true" title="${esc(T.favMove)}">⋮⋮</span>` : "";
+    return `<li class="fav-card" data-fav="${esc(name)}"><button class="fav-main" type="button" data-run="${esc(name)}"${movable ? ' aria-keyshortcuts="Alt+ArrowLeft Alt+ArrowRight"' : ""}><span class="fav-icon" aria-hidden="true">${icon(action.icon)}</span><span class="fav-title">${esc(action.title)}</span></button>${grip}</li>`;
+  }).join("");
+  return `<section class="block" aria-labelledby="favTitle">
+    <div class="section-head"><h2 id="favTitle">${esc(T.favTitle)}</h2><p class="section-note">${esc(S.suggested ? T.favSuggested : T.favNote)}</p></div>
+    <ol class="favs" id="favList">${cards}</ol>
+  </section>`;
+}
+function saveFavourites(names, focusName) {
+  if (favs.busy) { toast(T.favBusy); return; }
+  favs.busy = true;
+  post(P.favourites, { names: names })
+    .then((reply) => {
+      if (!reply.ok) { toast(reply.body.error || T.favFailed); return null; }
+      return reload();  // drawn from config.toml read again, never from the list sent
+    })
+    .then(() => {
+      if (palette.dialog && palette.dialog.open) fillPalette();
+      const card = focusName ? $(`.fav-card[data-fav="${CSS.escape(focusName)}"] .fav-main`) : null;
+      if (card) card.focus();
+    })
+    .catch(() => stopped())
+    .finally(() => { favs.busy = false; });
+}
+function toggleStar(name) {
+  const now = starred();
+  saveFavourites(now.includes(name) ? now.filter((other) => other !== name) : [...now, name], null);
+}
+const domOrder = () => $$("#favList .fav-card").map((card) => card.dataset.fav);
+// A star is its own button, even inside a palette's line: it never runs the action.
+document.addEventListener("click", (event) => {
+  const star = event.target.closest("[data-star]");
+  if (!star) return;
+  event.preventDefault();
+  event.stopPropagation();
+  toggleStar(star.dataset.star);
+}, true);
+document.addEventListener("keydown", (event) => {
+  if (!event.altKey || (event.key !== "ArrowLeft" && event.key !== "ArrowRight")) return;
+  const card = event.target.closest(".fav-card");
+  if (!card || S.suggested || !canStar()) return;
+  event.preventDefault();  // Alt+← is the browser's Back too
+  const names = domOrder();
+  const at = names.indexOf(card.dataset.fav);
+  const to = at + (event.key === "ArrowLeft" ? -1 : 1);
+  if (to < 0 || to >= names.length) return;
+  names.splice(to, 0, names.splice(at, 1)[0]);
+  saveFavourites(names, card.dataset.fav);
+});
+// Dragging by the grip: pointer events, the same for a mouse and a finger.
+document.addEventListener("pointerdown", (event) => {
+  const grip = event.target.closest(".fav-grip");
+  if (!grip || S.suggested) return;
+  event.preventDefault();
+  favs.drag = { card: grip.closest(".fav-card"), before: domOrder().join(" ") };
+  favs.drag.card.classList.add("is-dragging");
+  grip.setPointerCapture(event.pointerId);
+});
+document.addEventListener("pointermove", (event) => {
+  if (!favs.drag) return;
+  const under = document.elementFromPoint(event.clientX, event.clientY);
+  const over = under ? under.closest("#favList .fav-card") : null;
+  if (!over || over === favs.drag.card) return;
+  const box = over.getBoundingClientRect();
+  const after = event.clientX > box.left + box.width / 2;
+  over.parentNode.insertBefore(favs.drag.card, after ? over.nextSibling : over);
+});
+const endDrag = () => {
+  if (!favs.drag) return;
+  const { card, before } = favs.drag;
+  favs.drag = null;
+  card.classList.remove("is-dragging");
+  const names = domOrder();
+  if (names.join(" ") !== before) saveFavourites(names, card.dataset.fav);
+};
+document.addEventListener("pointerup", endDrag);
+document.addEventListener("pointercancel", endDrag);

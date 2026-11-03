@@ -173,6 +173,13 @@ screen_px = 1920
 interval_seconds = 8
 
 
+[home]
+{{ comment(_("The actions starred on the home page, in their order: the page writes this list when you click a star or move a card. Empty: three are suggested (search, import, audit).")) }}
+favorites = []
+{{ comment(_("The title a paired phone's page shows, e.g. the family's name; empty: Our photos.")) }}
+family_title = ""
+
+
 [imports]
 {{ comment(_("What runs after an import, in this order; remove a step to switch it off. audit: the new files join your library (first while another step is on). copies: the new files that are exact copies of another go to the quarantine (mh undo puts them back). bursts: the page of the import's burst series opens while the next steps run. tags: the local AI model describes the new photos (skipped when it is not running). places: the new spots named online, after its own question.")) }}
 then = ["audit", "copies", "bursts", "tags", "places"]

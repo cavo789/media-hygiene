@@ -21,3 +21,13 @@ all four entrances and the title setting.
 
 A paired phone sees today's memories from the index; every figure comes from the index; no
 external resource, no endless animation. Docs en + fr.
+
+## Status — PARTIAL (2026-11-03)
+
+Done: `[home] family_title` (`config/home_settings.py`, empty by default, the family view's
+`<h1>` falls back to "Our photos"), in `config.toml.j2`, docs en + fr, a test.
+
+Left: *On this day* (a month-day query over the index, its API in the phone's list, the
+thumbnails), and the *Latest additions*, *Slideshow on the TV*, *Map* entrances. The *Map*
+entrance needs a decision: the places page writes `config.toml`, a phone is read-only —
+a read-only map for the phone, or no map there?

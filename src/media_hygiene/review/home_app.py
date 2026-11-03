@@ -8,6 +8,7 @@ come from the door every page shares, `ending`),
 `GET /api/audit` the progress of the audit run by the page, and `POST /api/audit`
 starts it (one at a time) or stops it, `/api/tags` the same for `tags`
 (`home_tags_api`, 0343), `/api/people` and `/api/meaning` for faces and meaning;
+`POST /api/favourites` saves the starred actions (0484);
 `POST /api/alive` says a tab still shows the page (0261, `presence`). `POST /api/step`
 ends the server with `STEP_EXIT_BASE + n` for step `n`, which `mh` then runs in the
 terminal (`home_step`): only when the launcher said it does
@@ -26,6 +27,7 @@ from typing import TYPE_CHECKING, Final, override
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 from media_hygiene.i18n import _
+from media_hygiene.review.home_favourites_api import favourites_response
 from media_hygiene.review.home_step import StepDoor, step_response
 from media_hygiene.review.home_tags_api import tags_response, tags_state
 from media_hygiene.review.home_views import REPORTS_PREFIX
@@ -48,6 +50,7 @@ if TYPE_CHECKING:
     from media_hygiene.services.home_tags import HomeTags
 
 AUDIT_PATH: Final = "/api/audit"
+FAVOURITES_PATH: Final = "/api/favourites"
 _GET, _POST = "GET", "POST"
 
 
@@ -81,6 +84,7 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
     keeps: bool = False  # and runs a console step with the server up (`step_watch`)
     # Read-only steps run in the page by path: tags (0343), faces (0424), meaning (0425)
     runs: Mapping[str, HomeTags] = field(default_factory=dict)
+    config_file: Path | None = None  # where the starred actions are written (0484)
 
     @override
     async def answer(self, request: Request) -> Response:
@@ -92,10 +96,23 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
         Returns:
             The response.
         """
-        path = request.path
         if request.method == _GET:
-            return await self._read(path)
-        if path == STEP_PATH and request.method == _POST:
+            return await self._read(request.path)
+        if request.method == _POST:
+            return await self._write(request)
+        return Response(HTTPStatus.METHOD_NOT_ALLOWED)
+
+    async def _write(self, request: Request) -> Response:
+        """Answer a `POST`: a step chosen, the audit, a run, the stars, the presence.
+
+        Args:
+            request: The request.
+
+        Returns:
+            The response; 405 for any other path.
+        """
+        path = request.path
+        if path == STEP_PATH:
             door = StepDoor(
                 self.state,
                 self.ending,
@@ -105,11 +122,13 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
                 keeps=self.keeps,
             )
             return await step_response(door, request)
-        if path == AUDIT_PATH and request.method == _POST:
+        if path == AUDIT_PATH:
             return await self._audit(request)
-        if path in self.runs and request.method == _POST:
+        if path in self.runs:
             return await tags_response(self.runs[path], request)
-        if path == PRESENCE_PATH and request.method == _POST:
+        if path == FAVOURITES_PATH and self.config_file is not None:
+            return await favourites_response(self.config_file, request)
+        if path == PRESENCE_PATH:
             return await presence_response(self.presence, request)
         return Response(HTTPStatus.METHOD_NOT_ALLOWED)
 

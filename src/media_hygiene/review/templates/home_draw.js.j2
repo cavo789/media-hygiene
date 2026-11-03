@@ -84,9 +84,9 @@ function hero() {
   if (!action) {
     const firsts = ["phone", "search"].filter((name) => BY_ID[name]);
     const buttons = firsts.map((name, at) => `<button class="btn ${at ? "" : "btn-primary "}btn-lg"${at ? "" : ' id="heroRun"'} type="button" data-run="${name}">${icon(BY_ID[name].icon)} ${esc(BY_ID[name].title)}</button>`).join("");
-    return `<section class="hero is-calm" aria-labelledby="heroTitle"><div class="hero-body"><span class="hero-tag is-ok">${icon("check")} ${esc(T.allApplied)}</span><h2 id="heroTitle">${esc(T.allInOrder)}</h2><p class="hero-why">${esc(T.allInOrderWhy)}</p><div class="hero-actions">${buttons}</div></div>${art}</section>`;
+    return `<section class="hero is-calm is-compact" aria-labelledby="heroTitle"><div class="hero-body"><span class="hero-tag is-ok">${icon("check")} ${esc(T.allApplied)}</span><h2 id="heroTitle">${esc(T.allInOrder)}</h2><p class="hero-why">${esc(T.allInOrderWhy)}</p><div class="hero-actions">${buttons}</div></div>${art}</section>`;
   }
-  return `<section class="hero" aria-labelledby="heroTitle">
+  return `<section class="hero is-compact" aria-labelledby="heroTitle">
     <div class="hero-body">
       <span class="hero-tag">${icon("arrow-right")} ${esc(T.nextStep)}</span>
       <p class="eyebrow">${esc(S.proposed.where)}</p>
@@ -126,7 +126,8 @@ const TILE_PILL = () => ({
 const tile = (t) => `<button class="tile" type="button" data-go="${esc(t.space)}"><span class="tile-top"><span class="eyebrow">${esc(t.label)}</span>${TILE_PILL()[t.pill] || ""}</span><span class="tile-value">${esc(t.value)}</span><span class="tile-sub">${esc(t.sub)}</span></button>`;
 function findingRow(row) {
   const action = row.action ? BY_ID[row.action] : null;
-  const button = action ? `<button class="btn btn-sm" type="button" data-run="${esc(action.name)}">${esc(action.title)}</button>` : "";
+  const report = row.action === "open" && S.index ? `<a class="btn btn-sm" href="${esc(S.index)}" target="_blank" rel="noopener">${esc(T.openReport)}</a>` : "";
+  const button = action ? `<button class="btn btn-sm" type="button" data-run="${esc(action.name)}">${esc(action.title)}</button>` : report;
   return `<li class="finding${row.ok ? " is-ok" : ""}"><span class="finding-icon" aria-hidden="true">${icon(row.ok ? "check" : row.icon)}</span><div><p class="finding-title">${esc(row.title)}</p><p class="finding-sub">${esc(row.sub)}</p></div>${button}</li>`;
 }
 function findings() {
@@ -169,7 +170,7 @@ function auditPanel() {
 function familyHome() {
   const finds = S.actions.filter((action) => PHONE_PAGES[action.command]);
   const buttons = finds.map((action) => `<button class="btn btn-primary" type="button" data-run="${esc(action.name)}">${icon(action.icon)} ${esc(action.title)}</button>`).join("");
-  return `<div class="page-head"><h1>${esc(T.familyTitle)}</h1><p>${esc(T.familyNote)}</p></div>
+  return `<div class="page-head"><h1>${esc(S.family_title || T.familyTitle)}</h1><p>${esc(T.familyNote)}</p></div>
     <section class="block" aria-labelledby="familyFind">
       <div class="section-head"><h2 id="familyFind">${esc(T.familyFind)}</h2></div>
       <div class="audit-controls">${buttons}</div>
@@ -191,18 +192,19 @@ function viewHome() {
   const broken = S.settings_error ? `<p class="callout callout-warn" id="settingsError" role="alert">${icon("info")}<span>${esc(S.settings_error)}</span></p>` : "";
   return `${staleBanner()}${updateBanner()}
     <div class="page-head"><h1>${esc(T.whereYourPhotos)}</h1><p>${esc(T.readNow)}</p></div>
-    ${broken}${given}${hero()}${REMOTE ? EXTRAS.albums() : ""}<div id="lateEvents" aria-live="polite">${lateLines()}</div>
+    ${broken}${given}<div id="lateEvents" aria-live="polite">${lateLines()}</div>
     <section class="block" aria-labelledby="cycleTitle">
       <div class="section-head"><h2 id="cycleTitle">${esc(T.cycle)}</h2><p class="section-note">${esc(T.cycleNote)}</p></div>
       <ol class="cycle">${STAGES.map(station).join("")}</ol>
       <p class="cycle-loop">${icon("loop")}<span>${T.cycleLoop}</span></p>
     </section>
+    ${favouritesRow()}${hero()}
     <section class="block" aria-labelledby="whereTitle">
       <div class="section-head"><h2 id="whereTitle">${esc(T.whereYouAre)}</h2><p class="section-note">${esc(T.tilesNote)}</p></div>
       <div class="tiles">${S.tiles.map(tile).join("")}</div>
     </section>
     ${S.findings ? findings() : welcome()}
-    <div class="duo">${recentReports()}${auditPanel()}</div>`;
+    ${recentReports()}`;
 }
 
 // ---- Spaces -----------------------------------------------------------------------------
@@ -218,7 +220,7 @@ function stepRow(action, number, numbered) {
       <p class="step-text">${esc(st.available || st.planned ? action.text : st.reason)}</p>
       <div class="step-meta">${pillsOf(action)}${cmdChip(action.command)}</div>
     </div>
-    <div class="step-actions">${actionButton(action, st)}${docLinks(action)}</div>
+    <div class="step-actions">${actionButton(action, st)}${docLinks(action)}${starButton(action.name)}</div>
   </li>`;
 }
 function card(action) {
@@ -228,7 +230,7 @@ function card(action) {
     <p class="step-text">${esc(st.available || st.planned ? action.text : st.reason)}</p>
     ${pillsOf(action)}
     ${cmdChip(action.command)}
-    <div class="tool-foot">${actionButton(action, st)}${docLinks(action)}</div>
+    <div class="tool-foot">${actionButton(action, st)}${docLinks(action)}${starButton(action.name)}</div>
   </article>`;
 }
 function groupHtml(group, cards) {
@@ -269,6 +271,7 @@ const EXTRAS = {
   quarantine: () => (S.quarantine.length
     ? `<div class="table-wrap"><table><caption class="table-caption">${esc(T.quarantineByRun)}</caption><thead><tr><th scope="col">${esc(T.run)}</th><th scope="col">${esc(T.files)}</th><th scope="col">${esc(T.room)}</th><th scope="col">${esc(T.since)}</th></tr></thead><tbody>${S.quarantine.map((q) => `<tr><td><code>${esc(q.run_id)}</code></td><td class="num">${esc(q.files)}</td><td class="num">${esc(q.size)}</td><td>${esc(q.since)}</td></tr>`).join("")}</tbody></table></div>`
     : `<p class="muted">${esc(T.quarantineEmpty)}</p>`),
+  auditHere: auditPanel,
   reportsList: () => `<ul class="report-list">${reportItems(true)}</ul>`,
   folders: () => `<div class="table-wrap"><table><caption class="table-caption">${esc(T.foldersKnown)}</caption><thead><tr><th scope="col">${esc(T.folder)}</th><th scope="col">${esc(T.role)}</th><th scope="col">${esc(T.state)}</th></tr></thead><tbody>${S.folders.map((f) => `<tr><td><code>${esc(f.path)}</code></td><td>${esc(f.role)}</td><td>${f.ok ? `<span class="pill pill-done">${icon("check")} ${esc(f.note)}</span>` : `<span class="pill pill-planned">${icon("alert")} ${esc(f.note)}</span>`}</td></tr>`).join("")}</tbody></table></div>`,
   update: () => `<p class="setting-line">${S.update ? `<strong>${esc(fill(T.newVersion, { version: S.update.version }))}</strong> (${esc(fill(T.youHave, { version: S.version }))}).` : `<strong>Media Hygiene ${esc(S.version)}</strong> ${esc(T.isLatest)}`} ${T.updateCheck}</p>`,

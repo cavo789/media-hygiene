@@ -1142,6 +1142,9 @@ msgstr "Ajouter à un album"
 msgid "Add to the album"
 msgstr "Ajouter à l'album"
 
+msgid "Add to the favourites"
+msgstr "Ajouter aux favoris"
+
 msgid "Add your photo folder: mh folders add <folder>."
 msgstr "Ajoutez votre dossier de photos : mh folders add <dossier>."
 
@@ -2825,12 +2828,22 @@ msgstr ""
 "{seconds} s."
 
 msgid ""
+"Drag a card to move it, or Alt+← and Alt+→ on it; the ☆ of an action adds"
+" or removes it."
+msgstr ""
+"Faites glisser une carte pour la déplacer, ou Alt+← et Alt+→ dessus ; le "
+"☆ d'une action l'ajoute ou la retire."
+
+msgid ""
 "Drag the pin where these photos were taken, then save: 'xmp' writes that "
 "position into their sidecars ([tags] xmp_folder_gps = true)."
 msgstr ""
 "Faites glisser le repère là où ces photos ont été prises, puis "
 "enregistrez : 'xmp' écrit cette position dans leurs fichiers .xmp ([tags]"
 " xmp_folder_gps = true)."
+
+msgid "Drag to move"
+msgstr "Glisser pour déplacer"
 
 msgid "Drone"
 msgstr "Drone"
@@ -2925,11 +2938,10 @@ msgid ""
 " with %(option)s: the files set aside go to the quarantine, and 'undo' "
 "brings them back."
 msgstr ""
-"Chaque choix est enregistré aussitôt dans %(place)s ; rien ne bouge avant "
-"Appliquer. "
-"Terminé ? Ctrl+C dans le terminal arrête la page ; lancez ensuite la même"
-" commande 'clean' avec %(option)s : les fichiers mis de côté vont en "
-"quarantaine, et 'undo' les ramène."
+"Chaque choix est enregistré aussitôt dans %(place)s ; rien ne bouge avant"
+" Appliquer. Terminé ? Ctrl+C dans le terminal arrête la page ; lancez "
+"ensuite la même commande 'clean' avec %(option)s : les fichiers mis de "
+"côté vont en quarantaine, et 'undo' les ramène."
 
 msgid ""
 "Each rule has a name and a \"match\": existing_folder (a folder name you "
@@ -7426,8 +7438,8 @@ msgstr "Proposé {when}"
 
 msgid "Protected and backup folders are left out: they are never changed."
 msgstr ""
-"Les dossiers protégés et de sauvegarde sont laissés de côté : ils ne sont "
-"jamais modifiés."
+"Les dossiers protégés et de sauvegarde sont laissés de côté : ils ne sont"
+" jamais modifiés."
 
 msgid "Protected: never changed; identical files elsewhere are set aside."
 msgstr ""
@@ -7496,6 +7508,10 @@ msgstr ""
 
 msgid "Quarantine"
 msgstr "Quarantaine"
+
+#, python-brace-format
+msgid "Quarantine of {drive}"
+msgstr "Quarantaine de {drive}"
 
 #, python-brace-format
 msgid "Quarantine purged: {size} freed."
@@ -7718,6 +7734,9 @@ msgstr "Retirer Media Hygiene du clic droit"
 
 msgid "Remove a folder"
 msgstr "Retirer un dossier"
+
+msgid "Remove from the favourites"
+msgstr "Retirer des favoris"
 
 msgid "Remove the ticked entries (a copy is kept first):"
 msgstr "Retirer les entrées cochées (une copie est gardée d'abord) :"
@@ -9333,6 +9352,15 @@ msgstr ""
 msgid "The TV is paired: it shows the photo now."
 msgstr "La télé est appairée : elle montre la photo maintenant."
 
+msgid ""
+"The actions starred on the home page, in their order: the page writes "
+"this list when you click a star or move a card. Empty: three are "
+"suggested (search, import, audit)."
+msgstr ""
+"Les actions favorites de la page d'accueil, dans leur ordre : la page "
+"écrit cette liste quand vous cliquez sur une étoile ou déplacez une "
+"carte. Vide : trois sont suggérées (search, import, audit)."
+
 msgid "The album stopped at the first link refused by the disk."
 msgstr "L'album s'est arrêté au premier lien refusé par le disque."
 
@@ -9740,6 +9768,12 @@ msgstr ""
 
 msgid "The faces you confirmed as this person's."
 msgstr "Les visages que vous avez confirmés comme ceux de cette personne."
+
+msgid "The favourites are being saved: one moment."
+msgstr "Les favoris s'enregistrent : un instant."
+
+msgid "The favourites could not be saved in config.toml."
+msgstr "Les favoris n'ont pas pu être enregistrés dans config.toml."
 
 msgid ""
 "The file does not say when it was taken (a scan, a screenshot): a search "
@@ -10646,6 +10680,13 @@ msgstr ""
 "Le terminal prend le relais : répondez-y à sa question. Cette page se "
 "ferme."
 
+msgid ""
+"The title a paired phone's page shows, e.g. the family's name; empty: Our"
+" photos."
+msgstr ""
+"Le titre que montre la page d'un téléphone appairé, par exemple le nom de la "
+"famille ; vide : Nos photos."
+
 msgid "The tool only sees the folders you give it with -v."
 msgstr "L'outil ne voit que les dossiers que vous lui donnez avec -v."
 
@@ -11117,6 +11158,11 @@ msgstr ""
 
 msgid "Those deleted in the Explorer since an audit: on purpose, or lost?"
 msgstr "Celles effacées dans l'Explorateur depuis un audit : voulu, ou perdu ?"
+
+msgid "Three suggestions: the ☆ of any action makes it one of your favourites."
+msgstr ""
+"Trois suggestions : le ☆ de n'importe quelle action en fait un de vos "
+"favoris."
 
 msgid "Three things to know before you start"
 msgstr "Trois choses à savoir avant de commencer"
@@ -12178,6 +12224,9 @@ msgstr ""
 "appareils) sont écrits par la page de recherche, jamais à la main : "
 "Déplacer vers un événement…, ou les événements trouvés dans vos dossiers,"
 " onglet Événements."
+
+msgid "Your favourites"
+msgstr "Vos favoris"
 
 msgid "Your folders"
 msgstr "Vos dossiers"

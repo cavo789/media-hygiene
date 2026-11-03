@@ -8,11 +8,17 @@ nothing else is read, nothing is scanned.
 from __future__ import annotations
 
 import os
+from dataclasses import replace
 from importlib.metadata import version
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.home_actions import home_actions, home_next
 from media_hygiene.cli.home_cycle import CycleFacts, home_spaces
+from media_hygiene.cli.home_favourites import (
+    SUGGESTED,
+    read_favourites,
+    shown_favourites,
+)
 from media_hygiene.cli.home_findings import home_findings
 from media_hygiene.cli.home_folders import home_folders
 from media_hygiene.cli.home_reports import audit_previews, latest_reports
@@ -36,6 +42,7 @@ from media_hygiene.services.status import read_status
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from media_hygiene.cli.menu_steps import Menu
     from media_hygiene.services.runtime import Runtime
 
 
@@ -57,20 +64,24 @@ def home_state(runtime: Runtime) -> HomeState:
     purge_days = runtime.settings.clean.purge_hint_days
     windows = windows_menu()
     menu = build_menu(status, purge_days, windows=windows)
+    page = _on_page(menu)
     areas = full_catalog().areas
     update = home_update(runtime, menu)
     reports = _reports_dir(runtime)
+    actions = home_actions(page)
+    known = {action.name for action in actions}
+    starred = shown_favourites(read_favourites(runtime.locations.config_file), known)
     return HomeState(
         version=version(APP_NAME),
         lines=status_lines(status),
-        spaces=home_spaces(areas, CycleFacts(status, menu, newer=update is not None)),
-        actions=home_actions(menu),
+        spaces=home_spaces(areas, CycleFacts(status, page, newer=update is not None)),
+        actions=actions,
         docs=HomeLink(
             url=served_url(_DOCS_HOME), url_en=served_url(_DOCS_HOME, Locale.EN)
         ),
         docs_index=served_index(),
         given=_given(),
-        proposed=home_next(menu, next_step(status, purge_days), areas),
+        proposed=home_next(page, next_step(status, purge_days), areas),
         tiles=home_tiles(status),
         findings=home_findings(status, backups=bool(runtime.settings.folders.backups)),
         folders=home_folders(runtime),
@@ -85,7 +96,24 @@ def home_state(runtime: Runtime) -> HomeState:
         stale=say_stamp(),
         windows=windows,
         ai=bool(runtime.settings.classify.ai.model),
+        favourites=starred or shown_favourites(SUGGESTED, known),
+        suggested=not starred,
+        family_title=runtime.settings.home.family_title,
     )
+
+
+def _on_page(menu: Menu) -> Menu:
+    """The menu without the steps the page already shows (0504): `mh menu` keeps them.
+
+    Args:
+        menu: Every action, numbered.
+
+    Returns:
+        The same numbers, the steps marked `web=False` left out.
+    """
+    steps = tuple(line for line in menu.steps if line.step.web)
+    proposed = menu.proposed if menu.proposed in steps else None
+    return replace(menu, steps=steps, proposed=proposed)
 
 
 def _reports_dir(runtime: Runtime) -> Path | None:

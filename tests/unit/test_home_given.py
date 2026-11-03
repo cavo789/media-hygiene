@@ -82,10 +82,10 @@ def test_the_folders_variable_is_not_carried_to_the_next_commands(
 
 
 def test_the_given_folders_are_drawn_first() -> None:
-    """Above the next step, each folder in its own callout."""
+    """At the top of the page, each folder in its own callout."""
     page = home_page(relays_steps=True).decode()
     assert "S.given.map((line) =>" in page
-    assert page.index("${given}${hero()}") > 0
+    assert page.index("${broken}${given}") > 0
 
 
 @pytest.mark.parametrize(

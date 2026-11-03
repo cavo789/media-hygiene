@@ -886,6 +886,9 @@ msgstr ""
 msgid "Add to the album"
 msgstr ""
 
+msgid "Add to the favourites"
+msgstr ""
+
 msgid "Add your photo folder: mh folders add <folder>."
 msgstr ""
 
@@ -2306,8 +2309,16 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Drag a card to move it, or Alt+← and Alt+→ on it; the ☆ of an action adds"
+" or removes it."
+msgstr ""
+
+msgid ""
 "Drag the pin where these photos were taken, then save: 'xmp' writes that "
 "position into their sidecars ([tags] xmp_folder_gps = true)."
+msgstr ""
+
+msgid "Drag to move"
 msgstr ""
 
 msgid "Drone"
@@ -6187,6 +6198,10 @@ msgid "Quarantine"
 msgstr ""
 
 #, python-brace-format
+msgid "Quarantine of {drive}"
+msgstr ""
+
+#, python-brace-format
 msgid "Quarantine purged: {size} freed."
 msgstr ""
 
@@ -6376,6 +6391,9 @@ msgid "Remove Media Hygiene from the right-click"
 msgstr ""
 
 msgid "Remove a folder"
+msgstr ""
+
+msgid "Remove from the favourites"
 msgstr ""
 
 msgid "Remove the ticked entries (a copy is kept first):"
@@ -7743,6 +7761,12 @@ msgstr ""
 msgid "The TV is paired: it shows the photo now."
 msgstr ""
 
+msgid ""
+"The actions starred on the home page, in their order: the page writes "
+"this list when you click a star or move a card. Empty: three are "
+"suggested (search, import, audit)."
+msgstr ""
+
 msgid "The album stopped at the first link refused by the disk."
 msgstr ""
 
@@ -8073,6 +8097,12 @@ msgid ""
 msgstr ""
 
 msgid "The faces you confirmed as this person's."
+msgstr ""
+
+msgid "The favourites are being saved: one moment."
+msgstr ""
+
+msgid "The favourites could not be saved in config.toml."
 msgstr ""
 
 msgid ""
@@ -8791,6 +8821,11 @@ msgstr ""
 msgid "The terminal takes over: answer its question there. This page closes."
 msgstr ""
 
+msgid ""
+"The title a paired phone's page shows, e.g. the family's name; empty: Our"
+" photos."
+msgstr ""
+
 msgid "The tool only sees the folders you give it with -v."
 msgstr ""
 
@@ -9166,6 +9201,9 @@ msgid ""
 msgstr ""
 
 msgid "Those deleted in the Explorer since an audit: on purpose, or lost?"
+msgstr ""
+
+msgid "Three suggestions: the ☆ of any action makes it one of your favourites."
 msgstr ""
 
 msgid "Three things to know before you start"
@@ -10045,6 +10083,9 @@ msgid ""
 "Your events (match = \"date_range\": a name, its days, its cameras) are "
 "written by the search page, never by hand: Move to an event…, or the "
 "events found in your folders on the Events tab."
+msgstr ""
+
+msgid "Your favourites"
 msgstr ""
 
 msgid "Your folders"
