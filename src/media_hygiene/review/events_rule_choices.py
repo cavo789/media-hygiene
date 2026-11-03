@@ -12,15 +12,15 @@ from typing import TYPE_CHECKING, Final
 
 from pydantic import BaseModel, ConfigDict
 
-from media_hygiene.review.sort_rule import RuleIn
+from media_hygiene.review.events_rule import RuleIn
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
 
-    from media_hygiene.review.sort_batch import SortBatchSession
-    from media_hygiene.review.sort_choosing import RuleSaved
-    from media_hygiene.review.sort_rule import RulePreview
-    from media_hygiene.review.sort_rules_view import RulesView
+    from media_hygiene.review.events_batch import SortBatchSession
+    from media_hygiene.review.events_choosing import RuleSaved
+    from media_hygiene.review.events_rule import RulePreview
+    from media_hygiene.review.events_rules_view import RulesView
 
 RULE_PREVIEW_PATH: Final = "/api/rule/preview"
 RULE_PATH: Final = "/api/rule"

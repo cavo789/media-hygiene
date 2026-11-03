@@ -25,7 +25,7 @@ if TYPE_CHECKING:
     from media_hygiene.classify.page_values import EventValue
     from media_hygiene.classify.workbook.edits import Decision
     from media_hygiene.classify.worklist import WorkItem
-    from media_hygiene.review.sort_files import SortSource
+    from media_hygiene.review.events_files import SortSource
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 

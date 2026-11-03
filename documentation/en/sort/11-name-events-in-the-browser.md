@@ -201,8 +201,8 @@ of the event, which you can widen), its folder, and `keep_folders = true` so tha
 folders stay below it. Before saving, the dialog says what the rule would take on this
 proposal: "236 files: 6 of this event, 230 of other events or folders on the same days.
 Elsewhere: Photos Chloé (230)", and the rules whose days it shares (the first listed wins on
-those days). Saved, the rule is written into `config.toml` just above *Existing folders*, your
-comments kept, read back from the disk and said with its time; the event's folder is chosen at
+those days). Saved, the rule is written into `/config/events/<year>.toml` (the year it starts;
+`config.toml` stays as you wrote it), applied just above *Existing folders*, read back from the disk and said with its time; the event's folder is chosen at
 the same time, so *Sort this event now* works at once. The left column then names the rule
 that decides the event's files: *Rule: Montenegro (2019-07-12..2019-07-19)*.
 

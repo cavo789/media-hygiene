@@ -57,10 +57,10 @@ def test_the_preview_counts_what_the_rule_would_take(locations: Locations) -> No
 def test_a_rule_saved_is_read_back_and_applied_by_the_next_classify(
     locations: Locations,
 ) -> None:
-    """Above Existing folders, comments kept; the event chosen; classify applies it."""
+    """In events/2016.toml (0578), above Existing folders; classify applies it."""
     write_default_config(locations.config_file, Locale.EN)
-    comments = locations.config_file.read_text("utf-8").count("\n#")
     runtime, _workbook = classified(locations)
+    before = locations.config_file.read_bytes()
     app = reopened(runtime)
 
     async def save() -> tuple[Response, Response]:
@@ -76,8 +76,9 @@ def test_a_rule_saved_is_read_back_and_applied_by_the_next_classify(
     assert answer["view"]["card"]["page"]["category"] == FOLDER
     assert again.status is HTTPStatus.UNPROCESSABLE_ENTITY
     assert "already named" in json.loads(again.body)["error"]
-    text = locations.config_file.read_text("utf-8")
-    assert text.count("\n#") == comments
+    assert locations.config_file.read_bytes() == before  # 0578: config.toml untouched
+    year = locations.config_file.parent / "events" / "2016.toml"
+    assert "Kermesse" in year.read_text("utf-8")
     names = [rule.name for rule in read_rules(locations.config_file)]
     assert names.index("Kermesse") == names.index("Existing folders") - 1
     rule = next(r for r in read_rules(locations.config_file) if r.name == "Kermesse")

@@ -9,21 +9,23 @@ from typing import TYPE_CHECKING, Final
 from pydantic import BaseModel, ConfigDict
 
 from media_hygiene.actions.sort_resume import plan_runs
+from media_hygiene.classify.event_store import holder
 from media_hygiene.classify.page_values import EventValue
-from media_hygiene.classify.rules_edit import remove_rules, replace_rule
-from media_hygiene.classify.rules_file import add_rule, read_rules
+from media_hygiene.classify.remember_rule import remember_rule
+from media_hygiene.classify.rules_edit import remove_rules
+from media_hygiene.classify.rules_file import read_rules
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
-from media_hygiene.review.sort_destination import Destination, destination
-from media_hygiene.review.sort_files import RuleBook, file_decisions, movable_rows
-from media_hygiene.review.sort_progress import ProgressView, run_lines, sort_progress
-from media_hygiene.review.sort_rule import RuleIn, RulePreview, preview
-from media_hygiene.review.sort_rules_view import RulesView, rules_view
-from media_hygiene.review.sort_session import SortSession
-from media_hygiene.review.sort_state import EventView
+from media_hygiene.review.events_destination import Destination, destination
+from media_hygiene.review.events_files import RuleBook, file_decisions, movable_rows
+from media_hygiene.review.events_progress import ProgressView, run_lines, sort_progress
+from media_hygiene.review.events_rule import RuleIn, RulePreview, preview
+from media_hygiene.review.events_rules_view import RulesView, rules_view
+from media_hygiene.review.events_session import SortSession
+from media_hygiene.review.events_state import EventView
 
 if TYPE_CHECKING:
-    from media_hygiene.review.sort_files import SendFiles
+    from media_hygiene.review.events_files import SendFiles
 
 _NANOSECONDS: Final = 1_000_000_000
 
@@ -100,7 +102,7 @@ class SortChoosing(SortSession):
         return preview(self._source.plan, asked, self._source.book.rules)
 
     def save_rule(self, asked: RuleIn) -> RuleSaved:
-        """Write a rule into `config.toml`, read it back, and choose the event's folder.
+        """Write a rule into `events/` (0578), read it back, and choose the folder.
 
         Args:
             asked: The rule, as validated in the page's dialog.
@@ -117,11 +119,7 @@ class SortChoosing(SortSession):
         if config is None:
             raise ConfigError(_("This page cannot write config.toml."))
         rule = asked.rule()
-        held = (
-            replace_rule(config, asked.replaces, rule)
-            if asked.replaces
-            else add_rule(config, rule)
-        )
+        held = remember_rule(config, asked.replaces, rule)
         book = RuleBook(config, read_rules(config))
         self._source = replace(self._source, book=book)
         value = EventValue(name=held.name, category=held.category)
@@ -131,7 +129,9 @@ class SortChoosing(SortSession):
             if asked.replaces
             else self.choose_event(asked.event, value)
         )
-        written = config.stat().st_mtime_ns / _NANOSECONDS
+        written = (
+            holder(config.parent, held.name) or config
+        ).stat().st_mtime_ns / _NANOSECONDS
         return RuleSaved(
             name=held.name,
             dates=held.dates,

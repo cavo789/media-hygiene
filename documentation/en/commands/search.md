@@ -75,7 +75,9 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   disk and shown; a role clashing with another (a backup inside a protected folder, a protected folder inside an
   excluded one or the reverse) is refused
   with the reason. Run the audit again afterwards: its proposals used the former roles. A folder
-  with a role that was renamed or deleted in Explorer is listed under the tree, with **Remove**.
+  with a role that was renamed or deleted in Explorer is listed under the tree, with **Remove**;
+  renamed, and the next audit not run yet, the folder now holding the same files is found in the
+  cache and offered: **Carry the role to …** moves the role there (two such folders: both offered).
 
 - **Search**: type the words, then Enter; the keys then go to the grid, `/` comes back to the
   field. *How to write a search* recalls the phrases ("bord de mer"), the starts of words
@@ -237,8 +239,8 @@ wedding*), computed by the `classify` engine with your rules and the one typed (
 written, nothing moves); then the photos of those days it leaves to another rule (a screenshot,
 a photo of another event), greyed, and said in words above the grid (*30 photos of these days
 stay with the rule 'Anniversaire de Tom 2009'*). Seeing them, correct the days
-(only 5 August) or the folder, then **Save the rule**: it is written into `config.toml`, above
-*Existing folders*, read back from the disk and said. The next `classify` applies it.
+(only 5 August) or the folder, then **Save the rule**: it is written into `events/<year>.toml` (the
+year it starts; `config.toml` stays as you wrote it), applied above *Existing folders*, read back from the disk and said. The next `classify` applies it.
 
 **Update a rule…** in the same dialog lists the date rules of `config.toml`, the latest first:
 one chosen fills the dialog, and saving replaces it in place (its place in the list, which

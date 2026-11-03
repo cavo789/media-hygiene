@@ -19,7 +19,7 @@ from media_hygiene.i18n import _
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from media_hygiene.review.sort_rules_view import RuleLine
+    from media_hygiene.review.events_rules_view import RuleLine
 
 _RANGE: Final = ".."
 _NO_DAY: Final = 1  # after every real day, negated

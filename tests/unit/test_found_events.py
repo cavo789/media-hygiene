@@ -28,8 +28,8 @@ from media_hygiene.search.found_desk import FOUND_PATH, FoundDesk
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+    from media_hygiene.review.events_batch import SortBatchSession
     from media_hygiene.review.http import Request
-    from media_hygiene.review.sort_batch import SortBatchSession
     from media_hygiene.search.fts import SearchIndex
 
 _GAP = 18.0

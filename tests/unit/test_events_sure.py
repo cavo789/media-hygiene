@@ -18,10 +18,10 @@ from media_hygiene.classify.workbook.edits import Edits, EventEdit, resolve
 from media_hygiene.classify.worklist import work_list
 from media_hygiene.errors import DecisionsError
 from media_hygiene.paths.host_paths import HostPathMapper
-from media_hygiene.review import sort_batch
-from media_hygiene.review.sort_batch import SortBatchSession, SureBatch
-from media_hygiene.review.sort_files import SortSource
-from media_hygiene.review.sort_sure import reach, sure_value
+from media_hygiene.review import events_batch
+from media_hygiene.review.events_batch import SortBatchSession, SureBatch
+from media_hygiene.review.events_files import SortSource
+from media_hygiene.review.events_sure import reach, sure_value
 from tests.support.plans import plan_of, row
 from tests.support.sort_review import app_of, call
 
@@ -170,7 +170,7 @@ def test_a_file_that_does_not_hold_the_batch_is_said(
     """Read back without the batch (a sync tool put an old copy back): refused."""
     session = session_in(tmp_path)
     monkeypatch.setattr(
-        sort_batch,
+        events_batch,
         "read_page_decisions",
         lambda _path, plan_id: PageDecisions(plan_id=plan_id),
     )

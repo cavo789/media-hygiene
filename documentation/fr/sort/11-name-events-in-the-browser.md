@@ -217,8 +217,9 @@ et `keep_folders = true` pour que vos propres dossiers restent en dessous. Avant
 d'enregistrer, la boîte dit ce que la règle prendrait sur cette proposition : « 236 fichiers : 6
 de cet événement, 230 d'autres événements ou dossiers les mêmes jours. Ailleurs : Photos Chloé
 (230) », et les règles dont elle partage des jours (la première listée l'emporte ces jours-là).
-Enregistrée, la règle est écrite dans `config.toml` juste au-dessus de *Dossiers existants*,
-vos commentaires conservés, relue sur le disque et annoncée avec son heure ; le dossier de
+Enregistrée, la règle est écrite dans `/config/events/<année>.toml` (l'année où elle
+commence ; `config.toml` reste tel que vous l'avez écrit), appliquée juste au-dessus de
+*Dossiers existants*, relue sur le disque et annoncée avec son heure ; le dossier de
 l'événement est choisi en même temps, si bien que *Trier cet événement maintenant* marche tout
 de suite. La colonne de gauche nomme ensuite la règle qui décide les fichiers de l'événement :
 *Règle : Montenegro (2019-07-12..2019-07-19)*.

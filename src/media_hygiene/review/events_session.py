@@ -21,14 +21,14 @@ from media_hygiene.classify.page_values import EventValue
 from media_hygiene.classify.worklist import work_list
 from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
-from media_hygiene.review.sort_state import EventView, SortState, categories_used
-from media_hygiene.review.sort_views import CardMaker
+from media_hygiene.review.events_state import EventView, SortState, categories_used
+from media_hygiene.review.events_views import CardMaker
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.classify.worklist import WorkItem
-    from media_hygiene.review.sort_files import SortSource
+    from media_hygiene.review.events_files import SortSource
 
 
 class SortSession:

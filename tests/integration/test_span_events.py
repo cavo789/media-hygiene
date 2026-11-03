@@ -19,7 +19,7 @@ from media_hygiene.search.span_events import SPAN_FILES_PATH, SPAN_PATH, SpanEve
 from media_hygiene.search.span_left import left_answer
 
 if TYPE_CHECKING:
-    from media_hygiene.review.sort_batch import SortBatchSession
+    from media_hygiene.review.events_batch import SortBatchSession
 
 _GAP_HOURS = 18.0
 _ROWS = (

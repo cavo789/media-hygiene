@@ -27,8 +27,8 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from media_hygiene.classify.models import MediaInput
+    from media_hygiene.review.events_batch import SortBatchSession
     from media_hygiene.review.http import Request
-    from media_hygiene.review.sort_batch import SortBatchSession
     from media_hygiene.search.fts import SearchIndex
 
 

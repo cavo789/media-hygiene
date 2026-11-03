@@ -1488,6 +1488,10 @@ msgstr ""
 msgid "Cannot save the decisions file: {error}."
 msgstr ""
 
+#, python-brace-format
+msgid "Carry the role to {folder}"
+msgstr ""
+
 msgid "Carry the words into other photo software"
 msgstr ""
 

@@ -15,7 +15,7 @@ from tests.support.sort_review import classified
 
 if TYPE_CHECKING:
     from media_hygiene.paths.locations import Locations
-    from media_hygiene.review.sort_batch import SortBatchSession
+    from media_hygiene.review.events_batch import SortBatchSession
 
 _NO_PLAN = "no plan"
 

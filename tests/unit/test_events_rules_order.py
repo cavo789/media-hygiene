@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from media_hygiene.review.sort_rules_order import group_of, shown_order
-from media_hygiene.review.sort_rules_view import RuleLine
+from media_hygiene.review.events_rules_order import group_of, shown_order
+from media_hygiene.review.events_rules_view import RuleLine
 
 
 def _line(name: str, match: str, position: int, **more: object) -> RuleLine:

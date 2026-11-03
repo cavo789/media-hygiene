@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, ConfigDict
 
-from media_hygiene.review.sort_sides import Side
+from media_hygiene.review.events_sides import Side
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 
@@ -26,7 +26,7 @@ class EventCard(BaseModel):
     prefix: str  # the part of the proposed folder before its category: `2011/`
     band: str
     why: str
-    sure: bool  # one click may accept its proposal: `sort_sure`
+    sure: bool  # one click may accept its proposal: `events_sure`
     moves: int  # files accepting the proposal moves
     kept: int  # files that keep a folder the user named
     kept_folders: tuple[str, ...]  # those folders, their last part

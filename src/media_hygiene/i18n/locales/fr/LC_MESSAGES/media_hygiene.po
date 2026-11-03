@@ -1840,6 +1840,10 @@ msgstr "Impossible d'enregistrer le fichier des albums : {error}."
 msgid "Cannot save the decisions file: {error}."
 msgstr "Impossible d'enregistrer le fichier de décisions : {error}."
 
+#, python-brace-format
+msgid "Carry the role to {folder}"
+msgstr "Porter le rôle sur {folder}"
+
 msgid "Carry the words into other photo software"
 msgstr "Emporter les mots dans d'autres logiciels photo"
 

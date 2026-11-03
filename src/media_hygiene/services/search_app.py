@@ -141,7 +141,9 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
     )
     chosen = chosen_desk(runtime, search)
     roots = shown_roots(runtime)
-    roles = RoleDesk(runtime.locations.config_file, runtime.mapper, roots)
+    roles = RoleDesk(
+        runtime.locations.config_file, runtime.mapper, roots, search.connection
+    )
     albums_at = AlbumRootDesk(roles)
     folders = FolderDesk(search, runtime.mapper, roots, chosen, roles, albums_at)
     place = SearchPlace(

@@ -9,18 +9,18 @@ from pydantic import BaseModel, ConfigDict
 
 from media_hygiene.classify.page_values import EventValue
 from media_hygiene.classify.workbook.validation import folder_of
-from media_hygiene.review.sort_batch import SureBatch
-from media_hygiene.review.sort_files import SendFiles
-from media_hygiene.review.sort_rule_choices import RULE_CHOICES
+from media_hygiene.review.events_batch import SureBatch
+from media_hygiene.review.events_files import SendFiles
+from media_hygiene.review.events_rule_choices import RULE_CHOICES
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
 
-    from media_hygiene.review.sort_batch import BatchAnswer, SortBatchSession
-    from media_hygiene.review.sort_choosing import SortChoosing
-    from media_hygiene.review.sort_destination import Destination
-    from media_hygiene.review.sort_session import SortSession
-    from media_hygiene.review.sort_state import EventView
+    from media_hygiene.review.events_batch import BatchAnswer, SortBatchSession
+    from media_hygiene.review.events_choosing import SortChoosing
+    from media_hygiene.review.events_destination import Destination
+    from media_hygiene.review.events_session import SortSession
+    from media_hygiene.review.events_state import EventView
 
 EVENT_PATH: Final = "/api/event"
 FILES_PATH: Final = "/api/files"

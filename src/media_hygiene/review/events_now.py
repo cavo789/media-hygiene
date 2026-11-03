@@ -17,8 +17,8 @@ from pydantic import BaseModel, ConfigDict, ValidationError
 
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
+from media_hygiene.review.events_state import EventView
 from media_hygiene.review.serving import json_response, refused_post
-from media_hygiene.review.sort_state import EventView
 
 if TYPE_CHECKING:
     from collections.abc import Callable

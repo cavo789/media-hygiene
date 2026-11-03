@@ -17,9 +17,9 @@ from media_hygiene.classify.names import band_name
 from media_hygiene.classify.page_overlay import Verdict, value_text, verdict
 from media_hygiene.classify.page_values import EventValue, FileValue
 from media_hygiene.classify.workbook.own_folders import owns_folder
-from media_hygiene.review.sort_cards import EventCard, PhotoCard
-from media_hygiene.review.sort_sides import event_side
-from media_hygiene.review.sort_sure import reach, sure_value
+from media_hygiene.review.events_cards import EventCard, PhotoCard
+from media_hygiene.review.events_sides import event_side
+from media_hygiene.review.events_sure import reach, sure_value
 
 if TYPE_CHECKING:
     from collections.abc import Collection, Mapping
@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     from media_hygiene.classify.plan_file import PlanRow
     from media_hygiene.classify.workbook.edits import Edits
     from media_hygiene.classify.worklist import WorkItem
-    from media_hygiene.review.sort_files import SortSource
+    from media_hygiene.review.events_files import SortSource
 
 _SHOWN_FOLDERS: Final = 3
 _PERCENT: Final = 100

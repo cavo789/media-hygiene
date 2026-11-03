@@ -79,7 +79,9 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   le disque et affiché ; un rôle en conflit avec un autre (une sauvegarde dans un dossier
   protégé, un dossier protégé dans un dossier exclu ou l'inverse) est refusé avec la raison. Relancez l'audit ensuite : ses propositions suivaient les
   anciens rôles. Un dossier avec un rôle renommé ou supprimé dans l'Explorateur est listé sous
-  l'arbre, avec **Supprimer**.
+  l'arbre, avec **Supprimer** ; renommé, et le prochain audit pas encore lancé, le dossier qui
+  contient maintenant les mêmes fichiers est retrouvé dans le cache et proposé : **Porter le rôle
+  sur …** y déplace le rôle (deux tels dossiers : les deux sont proposés).
 
 - **Chercher** : tapez les mots, puis Entrée ; les touches vont alors à la grille, `/` revient au
   champ. *Comment écrire une recherche* rappelle les expressions ("bord de mer"), les débuts de
@@ -252,8 +254,8 @@ règles et celle tapée (rien n'est écrit, rien ne bouge) ; puis les photos de 
 laisse à une autre règle (une capture d'écran, une photo d'un autre événement), grisées, et dites
 en mots au-dessus de la grille (*30 photos de ces jours restent avec la règle 'Anniversaire de Tom
 2009'*). En les voyant, corrigez les jours (seulement le 5 août) ou le dossier, puis
-**Enregistrer la règle** : elle est écrite dans `config.toml`, au-dessus de *Dossiers existants*,
-relue sur le disque et affichée. Le prochain `classify` l'applique.
+**Enregistrer la règle** : elle est écrite dans `events/<année>.toml` (l'année où elle commence ;
+`config.toml` reste tel que vous l'avez écrit), appliquée au-dessus de *Dossiers existants*, relue sur le disque et affichée. Le prochain `classify` l'applique.
 
 **Mettre à jour une règle…**, dans la même boîte, liste les règles de dates de `config.toml`, la
 plus récente d'abord : en choisir une remplit la boîte, et l'enregistrer la remplace sur place (sa

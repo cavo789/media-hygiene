@@ -27,9 +27,9 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from media_hygiene.paths.host_paths import HostPathMapper
-    from media_hygiene.review.sort_batch import SortBatchSession
-    from media_hygiene.review.sort_cards import PhotoCard
-    from media_hygiene.review.sort_now import Sorter
+    from media_hygiene.review.events_batch import SortBatchSession
+    from media_hygiene.review.events_cards import PhotoCard
+    from media_hygiene.review.events_now import Sorter
     from media_hygiene.search.found_desk import FoundDesk
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.search.late_desk import LateDesk

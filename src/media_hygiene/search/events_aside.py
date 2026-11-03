@@ -10,7 +10,7 @@ import json
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from media_hygiene.review.sort_batch import SortBatchSession
+    from media_hygiene.review.events_batch import SortBatchSession
     from media_hygiene.search.events_desk import EventsDesk
 
 

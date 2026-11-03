@@ -1,6 +1,6 @@
 """The sure proposals of the sort review, accepted or taken back in one write.
 
-The page asks for the events whose proposal is sure (`sort_sure`); each one still open
+The page asks for the events whose proposal is sure (`events_sure`); each one still open
 (nothing chosen here nor in the workbook) is recorded as Enter would record it, with
 the workbook's value it saw as `base`. The file is then read back from the disk: the
 page shows what the disk holds, never what was meant to be written.
@@ -21,11 +21,11 @@ from media_hygiene.classify.page_decisions import (
 from media_hygiene.classify.page_values import EventValue
 from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
-from media_hygiene.review.sort_cards import EventCard
-from media_hygiene.review.sort_choosing import SortChoosing
-from media_hygiene.review.sort_session import now
-from media_hygiene.review.sort_sure import sure_value
-from media_hygiene.review.sort_views import CardMaker
+from media_hygiene.review.events_cards import EventCard
+from media_hygiene.review.events_choosing import SortChoosing
+from media_hygiene.review.events_session import now
+from media_hygiene.review.events_sure import sure_value
+from media_hygiene.review.events_views import CardMaker
 
 if TYPE_CHECKING:
     from collections.abc import Mapping

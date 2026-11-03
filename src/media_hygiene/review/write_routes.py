@@ -14,6 +14,15 @@ from media_hygiene.people.app import CHANGE_PATH
 from media_hygiene.places.posts import ASIDE_PATH, SAVE_PATH
 from media_hygiene.review.app import DECIDE_PATH
 from media_hygiene.review.ending import STOP_PATH
+from media_hygiene.review.events_choices import (
+    DESTINATION_PATH,
+    EVENT_PATH,
+    FILES_PATH,
+    FORGET_PATH,
+    SURE_PATH,
+)
+from media_hygiene.review.events_now import SORT_NOW_PATH
+from media_hygiene.review.events_rule_choices import RULE_PATH, RULES_REMOVE_PATH
 from media_hygiene.review.gone_app import GONE_DECIDE_PATH
 from media_hygiene.review.home_app import AUDIT_PATH
 from media_hygiene.review.home_tags_api import RUN_PATHS
@@ -25,15 +34,6 @@ from media_hygiene.review.pairs_app import PAIRS_DECIDE_PATH
 from media_hygiene.review.phone_app import FREE_PATH, PHONE_DECIDE_PATH
 from media_hygiene.review.scan_scope_api import SCOPE_PATH
 from media_hygiene.review.shrink_app import CHOOSE_PATH, LIGHTEN_PATH
-from media_hygiene.review.sort_choices import (
-    DESTINATION_PATH,
-    EVENT_PATH,
-    FILES_PATH,
-    FORGET_PATH,
-    SURE_PATH,
-)
-from media_hygiene.review.sort_now import SORT_NOW_PATH
-from media_hygiene.review.sort_rule_choices import RULE_PATH, RULES_REMOVE_PATH
 from media_hygiene.review.step_watch import STEP_PATH
 from media_hygiene.review.unwanted_app import JUNK_DECIDE_PATH
 from media_hygiene.search.chosen_api import CHOSEN_PATH

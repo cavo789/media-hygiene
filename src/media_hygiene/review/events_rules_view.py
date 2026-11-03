@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING
 from pydantic import BaseModel, ConfigDict
 
 from media_hygiene.classify.rules.kinds import BUILT_IN, RuleMatch
-from media_hygiene.review.sort_rules_order import group_of, shown_order
+from media_hygiene.review.events_rules_order import group_of, shown_order
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -64,7 +64,7 @@ def rules_view(
         run: The classify run's folder name.
 
     Returns:
-        The view: by kind, then the latest period first (`sort_rules_order`).
+        The view: by kind, then the latest period first (`events_rules_order`).
     """
     decided = Counter(row.rule for row in plan.rows if row.rule)
     by_event: dict[str, Counter[str]] = {}

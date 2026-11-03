@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.classify.page_decisions import read_page_decisions
 from media_hygiene.classify.plan_file import ClassifyPlan
 from media_hygiene.classify.workbook.edits import Edits, EventEdit, resolve
-from media_hygiene.review.sort_destination import host_folder
+from media_hygiene.review.events_destination import host_folder
 from tests.support.sort_review import call, classified, first_event, reopened
 from tests.support.sorting import EVENT_NAME, PARTY_SHOTS
 

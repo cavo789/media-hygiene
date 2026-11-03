@@ -14,15 +14,15 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.errors import WorkbookError
 from media_hygiene.i18n import _
-from media_hygiene.review.sort_now import SortedNow
+from media_hygiene.review.events_now import SortedNow
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.aside_paths import set_aside
 from media_hygiene.services.sort import SortService
 from media_hygiene.services.sort_inputs import find_workbook, load_inputs
 
 if TYPE_CHECKING:
-    from media_hygiene.review.sort_batch import SortBatchSession
-    from media_hygiene.review.sort_now import Sorter
+    from media_hygiene.review.events_batch import SortBatchSession
+    from media_hygiene.review.events_now import Sorter
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.services.sort_inputs import SortInputs
     from media_hygiene.services.sort_models import SortResult
