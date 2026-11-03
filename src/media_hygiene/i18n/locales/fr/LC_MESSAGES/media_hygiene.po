@@ -1634,6 +1634,10 @@ msgstr ""
 msgid "Back after being set aside"
 msgstr "Revenus après une mise de côté"
 
+#, python-brace-format
+msgid "Back on the disk, read again at {time}: {count} files."
+msgstr "De retour sur le disque, relu à {time} : {count} fichiers."
+
 msgid "Back on the map: taken out of config.toml."
 msgstr "De retour sur la carte : retiré de config.toml."
 
@@ -6348,6 +6352,10 @@ msgid "Not readable"
 msgstr "Illisible"
 
 #, python-brace-format
+msgid "Not restored: {reasons}"
+msgstr "Pas remis : {reasons}"
+
+#, python-brace-format
 msgid "Not saved (error {status})."
 msgstr "Non enregistré (erreur {status})."
 
@@ -6640,6 +6648,14 @@ msgid ""
 msgstr ""
 "Rien n'a été déplacé. Modifiez classify.xlsx, à côté de cette page ; ce "
 "rapport sert à regarder les photos."
+
+#, python-brace-format
+msgid "Nothing was restored (error {status})."
+msgstr "Rien n'a été remis (erreur {status})."
+
+#, python-brace-format
+msgid "Nothing was restored: {error}"
+msgstr "Rien n'a été remis : {error}"
 
 #, python-brace-format
 msgid "Nothing was saved: {error}"
@@ -7113,6 +7129,13 @@ msgstr ""
 "Ouvrir la page sur ce dossier (une partie de son chemin, comme 'Chemin "
 "contient' le prend), par exemple un dossier que 'status' liste comme "
 "restant à trier."
+
+msgid ""
+"Open the quarantine in the browser, as tiles, and put back only the "
+"photos you pick; 'undo' of their run still brings back the rest."
+msgstr ""
+"Ouvrir la quarantaine dans le navigateur, en vignettes, et ne remettre "
+"que les photos choisies ; 'undo' de leur exécution remet encore le reste."
 
 msgid "Open the report"
 msgstr "Ouvrir le rapport"
@@ -7710,6 +7733,9 @@ msgstr ""
 "Remettez-en une copie, ou déplacez-le ailleurs pour commencer de nouveaux"
 " albums."
 
+msgid "Put back a few photos of the quarantine"
+msgstr "Remettre quelques photos de la quarantaine"
+
 #, python-brace-format
 msgid "Put back in the backup: {count} file, read back."
 msgid_plural "Put back in the backup: {count} files, read back."
@@ -7722,12 +7748,22 @@ msgstr "Remettre les fichiers de la dernière exécution"
 msgid "Put every intruder file back"
 msgstr "Remettre tous les fichiers intrus"
 
+msgid ""
+"Put the picked files back where they were, journaled (Enter opens the "
+"large view)"
+msgstr ""
+"Remettre les fichiers choisis là où ils étaient, journalisé (Entrée ouvre"
+" la grande vue)"
+
 msgid "Put this face back"
 msgstr "Remettre ce visage"
 
 #, python-brace-format
 msgid "Putting back: {path}"
 msgstr "Remise en place : {path}"
+
+msgid "Putting back…"
+msgstr "Remise en place…"
 
 msgid "Quality"
 msgstr "Qualité"
@@ -8065,6 +8101,9 @@ msgstr ""
 msgid "Restore the index"
 msgstr "Remettre l'index"
 
+msgid "Restore the picked files"
+msgstr "Remettre les fichiers choisis"
+
 msgid ""
 "Restore the settings (config.toml, people) too; the index alone by "
 "default."
@@ -8077,6 +8116,14 @@ msgstr "Restaurés"
 
 msgid "Restoring"
 msgstr "Restauration"
+
+msgid ""
+"Restoring puts each file back where it was, never over another one, and "
+"journals it; 'mh undo' of its run still brings back the others."
+msgstr ""
+"Remettre replace chaque fichier là où il était, jamais par-dessus un "
+"autre, et le journalise ; 'mh undo' de son exécution remet encore les "
+"autres."
 
 msgid "Results"
 msgstr "Résultats"
@@ -8419,6 +8466,10 @@ msgid "Run {run_id} of the same sort was already undone: left aside."
 msgstr "Le passage {run_id} du même tri a déjà été annulé : laissé de côté."
 
 #, python-brace-format
+msgid "Run {run}"
+msgstr "Exécution {run}"
+
+#, python-brace-format
 msgid "Run {run} stays in the quarantine."
 msgstr "L'exécution {run} reste dans la quarantaine."
 
@@ -8438,6 +8489,9 @@ msgstr ""
 
 msgid "Running, a few seconds…"
 msgstr "En cours, quelques secondes…"
+
+msgid "Runs"
+msgstr "Exécutions"
 
 msgid "Runs (newest first)"
 msgstr "Exécutions (les plus récentes d'abord)"
@@ -10117,6 +10171,14 @@ msgid "The files the classify rule of this name decided."
 msgstr "Les fichiers que la règle de classify de ce nom a décidés."
 
 msgid ""
+"The files the runs of clean set aside, as they lie in the quarantine. "
+"Pick the ones to put back: each goes back to the folder it came from."
+msgstr ""
+"Les fichiers que les exécutions de clean ont mis de côté, tels qu'ils "
+"sont dans la quarantaine. Choisissez ceux à remettre : chacun retourne "
+"dans le dossier d'où il vient."
+
+msgid ""
 "The first folder is protected, or both copies lie in one folder: W is not"
 " possible."
 msgstr ""
@@ -10512,6 +10574,9 @@ msgstr "La page ne tourne plus : relancez people."
 msgid "The page is not running any more: type mh import --phone again."
 msgstr "La page ne tourne plus : tapez à nouveau mh import --phone."
 
+msgid "The page is not running any more: type mh undo --pick again."
+msgstr "La page ne tourne plus : tapez à nouveau mh undo --pick."
+
 msgid "The page of the tool this server shows"
 msgstr "La page de l'outil que ce serveur affiche"
 
@@ -10710,6 +10775,14 @@ msgstr ""
 msgid "The proposal is already made: → is enough when it suits you."
 msgstr "La proposition est déjà faite : → suffit quand elle vous convient."
 
+msgid "The quarantine"
+msgstr "La quarantaine"
+
+msgid "The quarantine as tiles: pick the photos, they go back where they were."
+msgstr ""
+"La quarantaine en vignettes : choisissez les photos, elles retournent là "
+"où elles étaient."
+
 #, python-brace-format
 msgid "The quarantine could not be erased: {reason}."
 msgstr "La quarantaine n'a pas pu être effacée : {reason}."
@@ -10717,8 +10790,20 @@ msgstr "La quarantaine n'a pas pu être effacée : {reason}."
 msgid "The quarantine is empty."
 msgstr "La quarantaine est vide."
 
+msgid "The quarantine is empty: nothing to restore."
+msgstr "La quarantaine est vide : rien à remettre."
+
 msgid "The quarantine is empty: nothing waits to be freed."
 msgstr "La quarantaine est vide : rien n'attend d'être libéré."
+
+#, python-brace-format
+msgid ""
+"The quarantine is ready, open {url} in your browser. Each photo restored "
+"goes back at once, journaled. Ctrl+C stops the page."
+msgstr ""
+"La quarantaine est prête, ouvrez {url} dans votre navigateur. Chaque "
+"photo remise retourne aussitôt à sa place, journalisée. Ctrl+C arrête la "
+"page."
 
 msgid "The quarantine, run by run"
 msgstr "La quarantaine, par exécution"
@@ -14380,6 +14465,9 @@ msgstr "purger libérer place quarantaine effacer vider définitivement"
 msgid "purged from the quarantine"
 msgstr "purgés de la quarantaine"
 
+msgid "quarantine restore put back photo pick"
+msgstr "quarantaine remettre restaurer photo choisir"
+
 msgid "reference-commands/"
 msgstr "fr/reference-commands/"
 
@@ -15888,6 +15976,10 @@ msgstr[1] ""
 "lieux."
 
 #, python-brace-format
+msgid "{count} files"
+msgstr "{count} fichiers"
+
+#, python-brace-format
 msgid ""
 "{count} files ({size} GB) of {folder} are in OneDrive's cloud only: "
 "reading them downloads them onto this PC ({free} GB free on {drive}). To "
@@ -15909,6 +16001,10 @@ msgstr "{count} fichiers ont une copie identique : laissés de côté."
 #, python-brace-format
 msgid "{count} files have no word to write."
 msgstr "{count} fichiers n'ont aucun mot à écrire."
+
+#, python-brace-format
+msgid "{count} files in the quarantine, from {runs} runs"
+msgstr "{count} fichiers en quarantaine, de {runs} exécutions"
 
 #, python-brace-format
 msgid "{count} files in the quarantine: check, then free the room."

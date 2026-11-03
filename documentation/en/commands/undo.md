@@ -62,12 +62,29 @@ the runs come from [`history`](history.md), [`status`](status.md) and the last l
 | `album` | Its links, its `.media-hygiene-album` file and its folders go; the originals are not touched. |
 | `xmp` | The sidecars it created go; those it completed are put back byte for byte. |
 
+## Put back a few photos
+
+`mh undo --pick` opens the quarantine in the browser, as tiles: every file the runs set aside and
+still there (each drive's quarantine), grouped by run, newest first. Pick photos as on every page
+of tiles: a click picks one, Ctrl+click adds or takes out one, Shift+click every file from the
+last one clicked, a drag draws a rectangle, Ctrl+A picks every file shown, I inverts the
+picking, Enter or a double click shows a photo large. **↩ Restore the picked files** puts them
+back where they were: a partial undo of their runs, journaled, with the same guards as `undo` (a
+drive whose quarantine is not mounted is refused). The page then shows the quarantine as read
+again from the disk; `mh undo <run>` later still brings back the rest of the run.
+
+```powershell
+mh undo --pick
+```
+
 ## Options
 
 | Option | What it does |
 |---|---|
 | `RUN` | The run to undo (see `history`); the latest one by default. For a sort, every run of the same workbook. |
 | `--yes`, `-y` | Do not ask before undoing several runs of a sort. |
+| `--pick` | Open the quarantine as tiles and put back only the photos picked ([above](#put-back-a-few-photos)). |
+| `--port` | The port of that page (default: `[review] port`). |
 
 ## Good to know
 

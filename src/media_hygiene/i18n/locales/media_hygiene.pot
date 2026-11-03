@@ -1298,6 +1298,10 @@ msgstr ""
 msgid "Back after being set aside"
 msgstr ""
 
+#, python-brace-format
+msgid "Back on the disk, read again at {time}: {count} files."
+msgstr ""
+
 msgid "Back on the map: taken out of config.toml."
 msgstr ""
 
@@ -5257,6 +5261,10 @@ msgid "Not readable"
 msgstr ""
 
 #, python-brace-format
+msgid "Not restored: {reasons}"
+msgstr ""
+
+#, python-brace-format
 msgid "Not saved (error {status})."
 msgstr ""
 
@@ -5507,6 +5515,14 @@ msgstr ""
 msgid ""
 "Nothing was moved. Edit classify.xlsx next to this page; this report is "
 "where you look at the photos."
+msgstr ""
+
+#, python-brace-format
+msgid "Nothing was restored (error {status})."
+msgstr ""
+
+#, python-brace-format
+msgid "Nothing was restored: {error}"
 msgstr ""
 
 #, python-brace-format
@@ -5862,6 +5878,11 @@ msgstr ""
 msgid ""
 "Open the page on this folder (a part of its path, as 'Path contains' "
 "takes it), e.g. a folder 'status' lists as left to sort."
+msgstr ""
+
+msgid ""
+"Open the quarantine in the browser, as tiles, and put back only the "
+"photos you pick; 'undo' of their run still brings back the rest."
 msgstr ""
 
 msgid "Open the report"
@@ -6377,6 +6398,9 @@ msgstr ""
 msgid "Put back a copy of it, or move it away to start new albums."
 msgstr ""
 
+msgid "Put back a few photos of the quarantine"
+msgstr ""
+
 #, python-brace-format
 msgid "Put back in the backup: {count} file, read back."
 msgid_plural "Put back in the backup: {count} files, read back."
@@ -6389,11 +6413,19 @@ msgstr ""
 msgid "Put every intruder file back"
 msgstr ""
 
+msgid ""
+"Put the picked files back where they were, journaled (Enter opens the "
+"large view)"
+msgstr ""
+
 msgid "Put this face back"
 msgstr ""
 
 #, python-brace-format
 msgid "Putting back: {path}"
+msgstr ""
+
+msgid "Putting back…"
 msgstr ""
 
 msgid "Quality"
@@ -6685,6 +6717,9 @@ msgstr ""
 msgid "Restore the index"
 msgstr ""
 
+msgid "Restore the picked files"
+msgstr ""
+
 msgid ""
 "Restore the settings (config.toml, people) too; the index alone by "
 "default."
@@ -6694,6 +6729,11 @@ msgid "Restored"
 msgstr ""
 
 msgid "Restoring"
+msgstr ""
+
+msgid ""
+"Restoring puts each file back where it was, never over another one, and "
+"journals it; 'mh undo' of its run still brings back the others."
 msgstr ""
 
 msgid "Results"
@@ -6968,6 +7008,10 @@ msgid "Run {run_id} of the same sort was already undone: left aside."
 msgstr ""
 
 #, python-brace-format
+msgid "Run {run}"
+msgstr ""
+
+#, python-brace-format
 msgid "Run {run} stays in the quarantine."
 msgstr ""
 
@@ -6982,6 +7026,9 @@ msgid "Running in the window where mh runs: {command}. This page stays open."
 msgstr ""
 
 msgid "Running, a few seconds…"
+msgstr ""
+
+msgid "Runs"
 msgstr ""
 
 msgid "Runs (newest first)"
@@ -8407,6 +8454,11 @@ msgid "The files the classify rule of this name decided."
 msgstr ""
 
 msgid ""
+"The files the runs of clean set aside, as they lie in the quarantine. "
+"Pick the ones to put back: each goes back to the folder it came from."
+msgstr ""
+
+msgid ""
 "The first folder is protected, or both copies lie in one folder: W is not"
 " possible."
 msgstr ""
@@ -8728,6 +8780,9 @@ msgstr ""
 msgid "The page is not running any more: type mh import --phone again."
 msgstr ""
 
+msgid "The page is not running any more: type mh undo --pick again."
+msgstr ""
+
 msgid "The page of the tool this server shows"
 msgstr ""
 
@@ -8884,6 +8939,12 @@ msgstr ""
 msgid "The proposal is already made: → is enough when it suits you."
 msgstr ""
 
+msgid "The quarantine"
+msgstr ""
+
+msgid "The quarantine as tiles: pick the photos, they go back where they were."
+msgstr ""
+
 #, python-brace-format
 msgid "The quarantine could not be erased: {reason}."
 msgstr ""
@@ -8891,7 +8952,16 @@ msgstr ""
 msgid "The quarantine is empty."
 msgstr ""
 
+msgid "The quarantine is empty: nothing to restore."
+msgstr ""
+
 msgid "The quarantine is empty: nothing waits to be freed."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The quarantine is ready, open {url} in your browser. Each photo restored "
+"goes back at once, journaled. Ctrl+C stops the page."
 msgstr ""
 
 msgid "The quarantine, run by run"
@@ -12042,6 +12112,9 @@ msgstr ""
 msgid "purged from the quarantine"
 msgstr ""
 
+msgid "quarantine restore put back photo pick"
+msgstr ""
+
 msgid "reference-commands/"
 msgstr ""
 
@@ -13308,6 +13381,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} files"
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "{count} files ({size} GB) of {folder} are in OneDrive's cloud only: "
 "reading them downloads them onto this PC ({free} GB free on {drive}). To "
@@ -13324,6 +13401,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{count} files have no word to write."
+msgstr ""
+
+#, python-brace-format
+msgid "{count} files in the quarantine, from {runs} runs"
 msgstr ""
 
 #, python-brace-format

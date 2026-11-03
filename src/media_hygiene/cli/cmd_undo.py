@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Annotated
 
 import typer
 
-from media_hygiene.cli import folder_options
+from media_hygiene.cli import folder_options, review_options
 from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.constants import ExitCode
 from media_hygiene.i18n import _, ngettext
@@ -44,6 +44,17 @@ def undo_command(  # pylint: disable=too-many-arguments
         ),
     ] = False,
     backup: Annotated[list[str] | None, folder_options.kept_backup()] = None,
+    pick: Annotated[
+        bool,
+        typer.Option(
+            "--pick",
+            help=_(
+                "Open the quarantine in the browser, as tiles, and put back only the "
+                "photos you pick; 'undo' of their run still brings back the rest."
+            ),
+        ),
+    ] = False,
+    page_port: Annotated[int | None, review_options.port()] = None,
 ) -> None:
     """Restore every file a run deleted, quarantined or moved.
 
@@ -52,6 +63,8 @@ def undo_command(  # pylint: disable=too-many-arguments
         backup: `--backup` folders, read-only on purpose: never refused (0262).
         run_id: Run identifier, or None for the latest run.
         yes: `--yes`, skip the confirmation.
+        pick: `--pick`, the quarantine as tiles, the photos picked put back (0525).
+        page_port: `--port`, the port of that page.
 
     Raises:
         typer.Exit: The user declined.
@@ -65,6 +78,15 @@ def undo_command(  # pylint: disable=too-many-arguments
 
     runtime = runtime_of(ctx).with_overrides(folder_options.backup_layer(backup))
     output = runtime.output
+    if pick:
+        from media_hygiene.services.quarantine_serving import serve_quarantine
+
+        with user_errors(output):
+            resolve_run_id(runtime, None)  # a journal, and a run in it
+            code = serve_quarantine(
+                runtime, review_options.page_port(runtime, page_port)
+            )
+        raise typer.Exit(code)
     with user_errors(output):
         run = resolve_run_id(runtime, run_id)
         plan = runs_to_undo(runtime, run)

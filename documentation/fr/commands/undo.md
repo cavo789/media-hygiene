@@ -64,12 +64,31 @@ et des dernières lignes de chaque exécution.
 | `album` | Ses liens, son fichier `.media-hygiene-album` et ses dossiers disparaissent ; les originaux ne sont pas touchés. |
 | `xmp` | Les fichiers compagnons qu'il a créés disparaissent ; ceux qu'il a complétés sont remis octet pour octet. |
 
+## Remettre quelques photos
+
+`mh undo --pick` ouvre la quarantaine dans le navigateur, en vignettes : chaque fichier que les
+exécutions ont mis de côté et qui y est encore (la quarantaine de chaque disque), groupés par
+exécution, la plus récente d'abord. On choisit les photos comme sur toutes les pages de
+vignettes : un clic en choisit une, Ctrl+clic en ajoute ou en retire une, Maj+clic tous les
+fichiers depuis le dernier cliqué, un glisser trace un rectangle, Ctrl+A choisit tous les
+fichiers affichés, I inverse le choix, Entrée ou un double clic montre une photo en grand.
+**↩ Remettre les fichiers choisis** les replace là où ils étaient : une annulation partielle de
+leurs exécutions, journalisée, avec les mêmes garde-fous que `undo` (un disque dont la quarantaine
+n'est pas montée est refusé). La page montre ensuite la quarantaine relue sur le disque ;
+`mh undo <exécution>` remet plus tard le reste de l'exécution.
+
+```powershell
+mh undo --pick
+```
+
 ## Options
 
 | Option | Rôle |
 |---|---|
 | `EXÉCUTION` | L'exécution à annuler (voir `history`) ; la plus récente par défaut. Pour un tri, toutes les exécutions du même classeur. |
 | `--yes`, `-y` | Ne pas demander avant d'annuler plusieurs exécutions d'un tri. |
+| `--pick` | Ouvrir la quarantaine en vignettes et ne remettre que les photos choisies ([plus haut](#remettre-quelques-photos)). |
+| `--port` | Le port de cette page (par défaut : `[review] port`). |
 
 ## Bon à savoir
 

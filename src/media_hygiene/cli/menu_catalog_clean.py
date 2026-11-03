@@ -92,6 +92,24 @@ def clean_steps() -> tuple[Step, ...]:
             slot=Slot.UNDO,
         ),
         Step(
+            "undo-pick",
+            Space.HISTORY,
+            _("Put back a few photos of the quarantine"),
+            _(
+                "The quarantine as tiles: pick the photos, they go back where they "
+                "were."
+            ),
+            "undo --pick",
+            Risk.UNDO,
+            Kind.PAGE,
+            icon="undo",
+            keywords=_("quarantine restore put back photo pick"),
+            doc=Doc(
+                "commands/undo/", "#put-back-a-few-photos", "#remettre-quelques-photos"
+            ),
+            optional=True,
+        ),
+        Step(
             "review",
             Space.CLEAN,
             _("Choose the best shots of each burst"),
@@ -144,6 +162,7 @@ def clean_area() -> Area:
     """
     guide = ("audit", "open", "clean", "history", "undo", "review", "apply", "purge")
     further = (
+        "undo-pick",
         "review-near",
         "review-pairs",
         "review-junk",
