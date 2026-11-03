@@ -168,10 +168,14 @@ async function loadDated() {
 }
 
 function openRule() {
+  const first = asked.day_from || asked.day_to;
+  openRuleFor(first, asked.day_to || first);
+}
+// The dialog on a period: the search's, or an event's of the Events tab (0574).
+function openRuleFor(first, last) {
   ruleReplaces = "";
   leftHere.clear();
-  const first = asked.day_from || asked.day_to;
-  ruleFill({ first: first, last: asked.day_to || first, category: "" });
+  ruleFill({ first: first, last: last, category: "" });
   ruleEl("ruleDlg").classList.add("aside");
   ruleEl("ruleDlg").show();
   ruleEl("ruleName").focus();

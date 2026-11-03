@@ -29,6 +29,7 @@ from media_hygiene.search.events_desk import EVENTS_PATH
 from media_hygiene.search.found_desk import FOUND_PATH
 from media_hygiene.search.late_desk import LATE_PATH, LATE_REFUSE_PATH
 from media_hygiene.search.span_events import SPAN_FILES_PATH, SPAN_PATH
+from media_hygiene.search.span_left import LEFT_PATH, left_answer
 
 if TYPE_CHECKING:
     from media_hygiene.review.http import Request
@@ -58,6 +59,7 @@ SORT_POSTS: Final = frozenset(
         *(sort_path(path) for path in (*CHOICES, SORT_NOW_PATH)),
         FOUND_PATH,
         LATE_REFUSE_PATH,
+        LEFT_PATH,
     }
 )
 SORT_GETS: Final = frozenset(sort_path(path) for path in (RULES_PATH, PROGRESS_PATH))
@@ -118,6 +120,8 @@ async def sort_post(desk: EventsDesk | None, request: Request) -> Response:
             if late is None
             else late.refuse(request.body)
         )
+    if request.path == LEFT_PATH:  # 0574: needs no plan
+        return left_answer(desk.span if desk is not None else None, request.body)
     if request.path == FOUND_PATH:  # 0557: needs no plan
         found = desk.found if desk is not None else None
         return (

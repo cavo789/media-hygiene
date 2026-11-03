@@ -45,3 +45,11 @@ intro text, which contradicts the sentence below it.
 
 `documentation/en|fr/commands/search.md` (Move dialog section); a `docs_screenshots` run
 afterwards (dialog capture changes).
+
+## Status — DONE (2026-11-03)
+
+- `MoveIn.remember` (False by default); the dialog's box *Also remember it as an event
+  (events/)*, unticked at each opening; unticked: nothing written, the line says so; ticked:
+  the event foreseen, then written and read back, with the undo note. Intro text fixed.
+- Tests `tests/unit/test_move_go_remember.py` (tree byte-identical unticked, rule read back
+  ticked, the box in the dialog). Docs en + fr; `docs_screenshots` to run.

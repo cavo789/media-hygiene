@@ -17,7 +17,7 @@ photos, sa proposition, et un champ pour le nommer**, le tout au clavier.
 C'est facultatif : le classeur seul suffit, et les deux s'utilisent ensemble. La page ne touche
 ni aux photos ni au classeur ; c'est `sort` ([étape 7](07-sort.md)) qui applique vos choix.
 
-> **Depuis 0572** l'onglet 🗂 Événements ne lit plus le plan de `classify` : il regroupe les fichiers pas encore triés de la période cherchée, que vous déplacez avec **📂 Déplacer vers un événement…** — [comment](../commands/search.md#les-événements-du-dernier-classify). Les étapes ci-dessous, tirées du plan, décrivent l'ancien onglet.
+> **Depuis 0572** l'onglet 🗂 Événements ne lit plus le plan de `classify` : il regroupe les fichiers pas encore triés de la période cherchée. Cliquez un événement : sa fiche dit en une phrase où vont ses fichiers, puis **Trier ici maintenant** (déplacés, notés au journal, puis l'événement suivant), **Un autre dossier…** (le **📂 Déplacer vers un événement…** de la barre) ou **Ne pas trier cet événement** — [comment](../commands/search.md#les-événements-du-dernier-classify). Les étapes ci-dessous, tirées du plan, décrivent l'ancien onglet.
 
 ## Lancer la page
 

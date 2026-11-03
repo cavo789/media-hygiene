@@ -92,7 +92,13 @@ def events_desk(
         partial(sorter_of, runtime),
         found,
         LateDesk(search, runtime.mapper, runtime.locations.config_file, chosen.paths),
-        SpanEvents(search, runtime.mapper, chosen.paths, event_gap_hours(runtime)),
+        SpanEvents(
+            search,
+            runtime.mapper,
+            chosen.paths,
+            event_gap_hours(runtime),
+            runtime.locations.config_file.parent,
+        ),
     )
 
 

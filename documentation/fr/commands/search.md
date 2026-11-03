@@ -100,7 +100,9 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   que la recherche trouve, pas seulement les 240 affichés ; **🔀 Inverser la sélection** (ou I)
   choisit les autres.
 - **La barre** a deux lignes qui ne bougent jamais, quoi qu'on choisisse ou trouve : en haut, où
-  vous en êtes (le nombre), **📺 Sur la télé**, **Trier par** et la taille des vignettes **S**
+  vous en êtes (le nombre, puis chaque filtre actif en pastille — un mot, la période, le chemin,
+  le dossier, *pas encore*, 📷 — dont la **✕** le retire et relance la recherche ; celles qui
+  ne tiennent pas se replient en **+N**, un clic les liste sous la barre), **📺 Sur la télé**, **Trier par** et la taille des vignettes **S**
   (les photos seules), **M**, **L** (tous les mots), gardée pour ce navigateur ; en dessous, que
   faire des fichiers choisis — grisé tant qu'aucun ne l'est : d'abord
   **📂 Déplacer vers un événement…** (plein : l'action principale), **🔀 Inverser**, et en
@@ -180,33 +182,33 @@ la grille (jamais celles de l'onglet Photos : en cas d'erreur la grille reste vi
 pourquoi) ; choisissez-les, puis **📂 Déplacer vers un événement…** les déplace. L'adresse `/events` ouvre la page
 sur cet onglet ; ← et → passent d'un onglet à l'autre quand l'un d'eux a le focus.
 
-Les choix ci-dessous (dossier, nom, propositions sûres, règles, *Trier cet événement maintenant*)
-appartiennent à l'ancienne liste, tirée du plan : ils ne s'affichent plus dans l'onglet et seront
-retirés.
+**La fiche d'un événement** dit d'abord, en une phrase, où vont ses fichiers : *Ces 10
+fichiers iront dans C:\Photos\2019\2019-07\Juillet* (celui de vos dossiers qui en contient le
+plus, sous l'année et le mois du plus ancien ; les fichiers mis de côté ne sont jamais comptés ni
+déplacés). Puis trois boutons :
 
-Choisissez au clavier, comme dans l'ancienne page ; chaque choix est **enregistré aussitôt** dans
-`sort-decisions.json` à côté du plan, relu sur le disque, avec ce que disait le classeur au moment
-du choix (une modification ultérieure du même événement dans le classeur est un conflit, montré
-en rouge, jamais tranché en silence). Le classeur lui-même n'est jamais modifié.
+- **Trier ici maintenant** les y déplace, noté au journal (`undo` les remet), puis montre
+  l'événement suivant à décider ;
+- **Un autre dossier…** ouvre la boîte **📂 Déplacer vers un événement…** de la barre sur les
+  photos choisies, ou sur tout l'événement quand aucune ne l'est : un autre nom, un dossier
+  source décoché. Pour laisser certaines photos où elles sont, choisissez seulement les autres
+  (ou mettez-les de côté) ;
+- **Ne pas trier cet événement** : ses fichiers restent où ils sont, l'événement compté comme
+  décidé (⏸ dans la liste), enregistré par identifiant de contenu dans `events/left.toml` et
+  relu. Passer un événement avec → n'est pas ceci : un événement passé reste à décider.
 
-**💡 Nom proposé** : sous le champ du nom, la fiche en propose un d'après ce que l'index sait,
-sans aucun appel à l'IA : le lieu (un de vos lieux, sinon la ville) et une activité que la
-plupart des photos décrites partagent (*Promenade à Liège*), sinon le lieu et le jour (*Liège —
-29 octobre*), sinon le jour seul. **Prendre ce nom** l'enregistre en un clic ; rien n'est trié
-tant que vous ne le choisissez pas.
+**Annuler mon choix** s'affiche dès qu'un choix est enregistré : l'événement est de nouveau à
+décider. *📌 Retenir comme règle*, un lien sous les boutons, ouvre la boîte des règles sur les
+jours de l'événement (il ne déplace rien).
 
 | Touche | Ce qu'elle fait |
 |---|---|
-| **F**, puis **Entrée** | taper le dossier de l'événement, l'enregistrer, puis l'événement suivant à décider |
-| **E** | changer le nom de l'événement (par défaut, le dernier dossier) |
-| **N** / **P**, **U** | événement suivant ou précédent, suivant à décider |
-| **O** / **S** | les photos choisies : vers un autre dossier, ou laissées où elles sont |
-| **Maj+S** | laisser tout l'événement où il est |
-| **T** | reprendre le choix fait ici (des photos choisies, sinon de l'événement) |
-| **V**, **Maj+Z** | accepter d'un coup toutes les propositions sûres, reprendre ce lot |
-| **R** | *Retenir comme règle* : les jours et le dossier de l'événement écrits dans `config.toml` |
-| **M** | *Trier cet événement maintenant* : où va chaque fichier, puis un seul GO ; journalisé, `undo` le remet |
-| **Suppr**, **⌫** | mettre de côté les photos choisies, les en sortir (comme sur toute page de photos) |
+| **N** / **P**, **U** | événement suivant ou précédent (passé : il reste à décider), suivant à décider |
+| **M** | *Trier ici maintenant* |
+| **O** | *Un autre dossier…* |
+| **Maj+S** | *Ne pas trier cet événement* |
+| **T** | *Annuler mon choix* |
+| **Suppr**, **⌫** | mettre de côté les photos choisies, les en ressortir (comme sur toute page de photos) |
 
 **📌 Vos règles** liste chaque règle de `config.toml` avec les fichiers qu'elle a décidés :
 retirez celles qui ne décident rien, changez une règle de nom de dossier en dates.
@@ -231,8 +233,12 @@ nombre. Un dossier que vous avez nommé d'après un **autre** événement (`Sain
 nom, une soirée) est **décoché** : ses photos restent où elles sont, sauf si vous le cochez. Un
 dossier de dates, le dossier d'un membre de la famille, le `DCIM` d'un téléphone sont cochés.
 **Déplacer ces N fichiers maintenant** déplace exactement ceux cochés, noté au journal, vérifié à
-leur nouvelle place, dit tel que relu (*'mh undo …' les remet*). Aucune règle n'est écrite : le
-prochain `classify` les trouve à leur place. Les photos ajoutées depuis le dernier `classify`
+leur nouvelle place, dit tel que relu (*'mh undo …' les remet*). Rien d'autre n'est écrit : aucune
+règle dans `config.toml`, aucun événement dans `events/`, le prochain `classify` les trouve à leur
+place. Seulement si vous cochez **Aussi le retenir comme événement (events/)**, décochée à chaque
+ouverture (un rangement n'est pas un événement), l'événement est retenu aussi : son nom, ses jours
+et ses appareils, relus et montrés après le déplacement. `undo` remet les fichiers mais garde cet
+événement : retirez-le de `events/` à la main. Les photos ajoutées depuis le dernier `classify`
 (un téléphone importé, puis audité) sont déplacées aussi : pas besoin d'un nouveau `classify`.
 
 ## Faire d'une période une règle

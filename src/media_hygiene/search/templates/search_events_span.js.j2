@@ -12,6 +12,7 @@
   const loadSpans = async () => {
     hideOutsideSpan();
     byId("eventCard").hidden = true;
+    byId("spanChoice").hidden = true;
     byId("eventsSaid").textContent = TEXTS.spanLoading;
     const period = encodeURIComponent(($("from").value || "") + ".." + ($("to").value || ""));
     const answer = await ask(SPAN_PATHS.list + period);
@@ -31,6 +32,7 @@
     byId("position").textContent = fill(T.position, { number: index + 1, total: events.length });
     byId("eventTitle").textContent = card.title;
     byId("eventSummary").textContent = counted(TEXTS.eventFiles, card.files) + " · " + card.span_text;
+    spanDraw(card);  // the sentence and the three buttons (0574)
     listEvents();
     showFiles([], false);  // the grid is the event's from now on, even while it loads
     total = 0;
@@ -43,4 +45,5 @@
     total = view.total;
     showFiles(view.hits, false);
     setStatus(view.hits.length ? "" : TEXTS.spanEmpty, view.hits.length ? "" : "error");
+    spanPropose(index);
   };

@@ -60,3 +60,20 @@ from the index and hides the card's folder and name fields and its six buttons. 
 **rewritten for that index-based card**: before coding, read what the tab shows today and apply
 the goal above to it (say in one sentence where the files go, at most three buttons, the bar's
 gestures). The plan-based card does not come back.
+
+## Status — DONE (2026-11-03)
+
+- The card of an index event (`#spanChoice`, `search_events_span_card.js.j2`): one sentence
+  from the move view (`goes_said`, ngettext, host path; set-aside files left out by
+  `_picked`), then **Sort here now** (the move, journaled, the list read again, the next
+  event to decide), **Another folder…** (the bar's *Move to an event…*, the whole event when
+  nothing is picked), **Do not sort this event** (content ids in `/config/events/left.toml`,
+  read back, `⏸` in the list; `POST /api/events/left`, `span_left.py`); **Undo my choice**
+  only when the event is left; *Remember as a rule* a link opening the rule dialog on the
+  event's days.
+- Point 4 decided: *Leave where they are* (S) dropped — picking only the others (or setting
+  them aside) covers it.
+- Keys in the ⌨ panel (`search_events_keys.html.j2`): N/P, U, M, O, Shift+S, T, ⌫.
+- Docs en + fr (`commands/search.md`, the `sort/11` note); `docs_screenshots` to run.
+- Not done: no browser test (syntax checked with `node --check`); the plan-based templates
+  stay hidden (0572's follow-up).

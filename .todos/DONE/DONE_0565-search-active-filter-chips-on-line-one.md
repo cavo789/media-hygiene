@@ -18,3 +18,10 @@ the bar, next to the count. The bar stays at 2 lines.
 - Too many chips for the width: the extra ones fold into `+N` (a click shows them). The bar
   never grows and the grid never moves (skill `photo-picking-pages`).
 - Docs en + fr; `docs_screenshots` should run.
+
+## Status — DONE (2026-11-03)
+
+- `search_chips.js.j2`: a chip per active filter (each word, the period, the path, the tree
+  folder, Sorted, Show) after the count on line 1; ✕ clears it and searches again; chips past
+  the width fold into `+N`, whose click floats them under the bar. Docs en + fr;
+  `docs_screenshots` to run. No browser test (syntax checked with `node --check`).

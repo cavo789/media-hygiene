@@ -325,6 +325,7 @@ async function search(event, again) {
   }
   const found = await answer.json();
   asked = body;
+  showChips(body);  // the active filters, removable (0565)
   if (!again) keepInHistory();
   offerRule();
   total = found.total;

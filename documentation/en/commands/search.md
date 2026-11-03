@@ -94,7 +94,9 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   in the bar takes every file the search finds, not only the 240 shown; **🔀 Invert the picking**
   (or I) picks the others.
 - **The bar** has two lines that never move, whatever is picked or found: on top, where you are
-  (the count), **📺 On the TV**, **Sort by** and the thumbnail size **S** (photos only), **M**,
+  (the count, then each active filter as a chip — a word, the period, the path, the folder,
+  *not yet*, 📷 — whose **✕** removes it and searches again; those that do not fit fold into
+  **+N**, a click lists them under the bar), **📺 On the TV**, **Sort by** and the thumbnail size **S** (photos only), **M**,
   **L** (every word), kept for this browser; below, what to do with the files picked — greyed
   while none is: first **📂 Move to an event…** (filled: the main action), **🔀 Invert**, and
   last, apart and red, **🗑 Put aside**; the album with **➕** and **➖**, **📺 Share**,
@@ -167,30 +169,31 @@ photos fill the grid (never the Photos tab's: on an error the grid stays empty a
 why); pick them, then **📂 Move to an event…** moves them. The address `/events` opens the page on this
 tab; ← and → move between the two tabs once one has the focus.
 
-The choices below (folder, name, sure proposals, rules, *Sort this event now*) belong to the
-former, plan-based list: they no longer show in the tab and will be retired.
+**The card of an event** says first, in one sentence, where its files go: *These 10 files will
+go to C:\Photos\2019\2019-07\Juillet* (the folder of yours holding most of them, under the
+year and month of the earliest; the files set aside are never counted nor moved). Then three
+buttons:
 
-Choose with the keyboard, as in the old page; every choice is **saved at once** in
-`sort-decisions.json` next to the plan, read back from the disk, with what the workbook said
-when you chose (a later edit of the same event in the workbook is a conflict, shown in red,
-never settled silently). The workbook itself is never changed.
+- **Sort here now** moves them there, journaled (`undo` puts them back), then shows the next
+  event to decide;
+- **Another folder…** opens the bar's **📂 Move to an event…** dialog on the photos picked, or
+  on the whole event when none is picked: another name, a source folder unticked. To leave
+  some photos where they are, pick only the others (or set them aside);
+- **Do not sort this event**: its files stay where they are, the event counted as decided
+  (⏸ in the list), saved by content id in `events/left.toml` and read back. Skipping an event
+  with → is not this: a skipped event stays to decide.
 
-**💡 Proposed name**: under the name field, the card proposes one from what the index knows,
-without any AI call: the place (a place of yours, else the town) and an activity most of the
-described photos share (*Walk in Liège*), else the place and the day (*Liège — 29 October*), else
-the day alone. **Use this name** saves it in one click; nothing is sorted until you choose to.
+**Undo my choice** shows once a choice is saved: the event is to decide again. *📌 Remember as
+a rule*, a link under the buttons, opens the rule dialog on the event's days (it moves
+nothing).
 
 | Key | What it does |
 |---|---|
-| **F**, then **Enter** | type the event's folder, save it, then the next event to decide |
-| **E** | change the event's name (by default, the last folder) |
-| **N** / **P**, **U** | next or previous event, next one to decide |
-| **O** / **S** | the picked photos: to another folder, or left where they are |
-| **Shift+S** | leave the whole event where it is |
-| **T** | take back the choice made here (of the picked photos, else of the event) |
-| **V**, **Shift+Z** | accept every sure proposal at once, take that batch back |
-| **R** | *Remember as a rule*: the event's days and folder written into `config.toml` |
-| **M** | *Sort this event now*: where each file goes, then one GO; journaled, `undo` puts it back |
+| **N** / **P**, **U** | next or previous event (skipped: it stays to decide), next one to decide |
+| **M** | *Sort here now* |
+| **O** | *Another folder…* |
+| **Shift+S** | *Do not sort this event* |
+| **T** | *Undo my choice* |
 | **Delete**, **⌫** | set the picked photos aside, take them back out (as on every page of photos) |
 
 **📌 Your rules** lists every rule of `config.toml` with the files it decided: remove the ones that
@@ -216,7 +219,11 @@ count. A folder you named after **another** event (`Saint Nicolas 2009`: a name,
 **unticked**: its photos stay where they are, unless you tick it. A folder of dates, a family
 member's folder, a phone's `DCIM` are ticked. **Move these N files now** moves exactly the ticked
 ones, journaled, checked at their new place, said as read back (*'mh undo …' puts them back*).
-No rule is written: the next `classify` finds them in place. Photos added since the
+Nothing else is written: no rule in `config.toml`, no event in `events/`, the next `classify`
+finds them in place. Only when you tick **Also remember it as an event (events/)**, unticked
+at each opening (a filing is not an event), is the event remembered too: its name, its days and
+its cameras, read back and shown after the move. `undo` puts the files back but keeps that event:
+remove it from `events/` by hand. Photos added since the
 latest `classify` (a phone imported, then audited) move too: no new `classify` is needed.
 
 ## Make a period a rule

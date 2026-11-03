@@ -1022,6 +1022,9 @@ msgid ""
 "review); they do not come back into your library."
 msgstr ""
 
+msgid "Also remember it as an event (events/)"
+msgstr ""
+
 msgid "Altitude (m)"
 msgstr ""
 
@@ -1104,6 +1107,12 @@ msgstr ""
 msgid ""
 "Another folder? mh folders add <folder>. A new version? mh update. Both "
 "rewrite this file."
+msgstr ""
+
+msgid "Another folder…"
+msgstr ""
+
+msgid "Another folder…: the photos picked, else the whole event"
 msgstr ""
 
 msgid ""
@@ -1535,6 +1544,12 @@ msgid "Choice on series {number} undone."
 msgstr ""
 
 #, python-brace-format
+msgid "Choice taken back, read back: this file is to decide again."
+msgid_plural "Choice taken back, read back: these {n} files are to decide again."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "Choices of the review page carried over too: {count}."
 msgstr ""
 
@@ -1557,6 +1572,11 @@ msgid "Choose an event."
 msgstr ""
 
 msgid "Choose another decision for this pair, or leave it as planned."
+msgstr ""
+
+msgid ""
+"Choose another folder for the photos picked, or for the whole event when "
+"none is picked"
 msgstr ""
 
 msgid ""
@@ -2188,6 +2208,12 @@ msgstr ""
 msgid "Do not show"
 msgstr ""
 
+msgid "Do not sort this event"
+msgstr ""
+
+msgid "Do not sort this event: its files stay where they are"
+msgstr ""
+
 msgid ""
 "Do not tap Open after the download: Android refuses it (\"cannot install "
 "CA certificates\"). Use the phone's Settings app instead, not Chrome's "
@@ -2636,6 +2662,9 @@ msgid "Every copy"
 msgstr ""
 
 msgid "Every entry of config.toml points at something."
+msgstr ""
+
+msgid "Every event of the list is decided."
 msgstr ""
 
 msgid "Every file of this event is already in its folder: nothing to move."
@@ -3691,7 +3720,15 @@ msgid ""
 " --carry-over, or start fresh with --no-carry-over."
 msgstr ""
 
+msgid "Its files are not hashed yet: run an audit, then choose again."
+msgstr ""
+
 msgid "Its files moved, the room freed, what can still be undone."
+msgstr ""
+
+msgid ""
+"Its files stay where they are, the event counted as decided. Skipping it "
+"with → is not this: a skipped event stays to decide."
 msgstr ""
 
 msgid ""
@@ -4242,6 +4279,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Move the files of this event to the folder said above, journaled: undo "
+"puts them back. Then the next event to decide."
+msgstr ""
+
+msgid ""
 "Move the photos and videos as the edited classify workbook says "
 "(journaled, undoable)."
 msgstr ""
@@ -4552,6 +4594,9 @@ msgstr ""
 msgid "No DCIM folder on {name}: no photo to copy."
 msgstr ""
 
+msgid "No Events tab here."
+msgstr ""
+
 msgid "No TV shows this code: type the code the TV shows now."
 msgstr ""
 
@@ -4687,6 +4732,9 @@ msgstr ""
 msgid "No file has words yet: nothing can be found."
 msgstr ""
 
+msgid "No file of this event can move: they are set aside, or gone."
+msgstr ""
+
 msgid "No folder chosen: nothing changed."
 msgstr ""
 
@@ -4694,6 +4742,9 @@ msgid "No folder for the albums: neither album.root nor classify.target is set."
 msgstr ""
 
 msgid "No folder in the index: run 'audit' first, with the same /cache mount."
+msgstr ""
+
+msgid "No folder is proposed for these files: choose one with Another folder…."
 msgstr ""
 
 msgid "No folder named after a town, or placed, holds photos without GPS."
@@ -5101,6 +5152,9 @@ msgstr ""
 msgid "Not this person: mark this face; the next button of the group saves it"
 msgstr ""
 
+msgid "Not to sort: its files stay where they are."
+msgstr ""
+
 msgid "Not touched by this clean"
 msgstr ""
 
@@ -5466,6 +5520,9 @@ msgid "One thing only is for good:"
 msgstr ""
 
 msgid "One zip outside Docker's cache: a Docker reset loses nothing."
+msgstr ""
+
+msgid "Only a filing: nothing is written to config.toml nor events/."
 msgstr ""
 
 msgid "Only a photo of the album can be its cover."
@@ -6319,6 +6376,9 @@ msgstr ""
 msgid "Reading the tool folders…"
 msgstr ""
 
+msgid "Reading where its files go…"
+msgstr ""
+
 msgid "Reading where the photos picked lie…"
 msgstr ""
 
@@ -6405,6 +6465,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Remove these rules from config.toml? {names}"
+msgstr ""
+
+msgid "Remove this filter and search again"
 msgstr ""
 
 #, python-brace-format
@@ -6860,6 +6923,12 @@ msgstr ""
 
 msgid "Saved in config.toml: this name is no town."
 msgstr ""
+
+#, python-brace-format
+msgid "Saved in events/left.toml, read back: this file stays where it is."
+msgid_plural "Saved in events/left.toml, read back: these {n} files stay where they are."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "Saved in {file}: {folder} is now {role}."
@@ -7382,6 +7451,12 @@ msgid "Sort"
 msgstr ""
 
 msgid "Sort by"
+msgstr ""
+
+msgid "Sort here now"
+msgstr ""
+
+msgid "Sort here now: move its files to the folder said, then the next event"
 msgstr ""
 
 msgid "Sort in short"
@@ -8051,6 +8126,9 @@ msgstr ""
 msgid "The event is not remembered: {reason}"
 msgstr ""
 
+msgid "The event is to decide again"
+msgstr ""
+
 msgid "The event shown"
 msgstr ""
 
@@ -8405,6 +8483,9 @@ msgstr ""
 msgid "The new name of {name}:"
 msgstr ""
 
+msgid "The other active filters"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "The page does not open? docker run must publish the same port on both "
@@ -8522,7 +8603,7 @@ msgstr ""
 
 msgid ""
 "The photos picked go to the event's folder, under their year and month, "
-"journaled: 'undo' puts them back. No rule is written."
+"journaled: 'undo' puts them back."
 msgstr ""
 
 #, python-brace-format
@@ -9061,6 +9142,12 @@ msgstr ""
 msgid "This file is not an mh backup: its manifest is missing or unreadable."
 msgstr ""
 
+#, python-brace-format
+msgid "This file will go to {folder}."
+msgid_plural "These {n} files will go to {folder}."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid ""
 "This folder is an album of media-hygiene: hard links, second names of "
 "photos kept elsewhere, which take no space. The audits skip it. 'media-"
@@ -9481,6 +9568,12 @@ msgid ""
 msgstr ""
 
 msgid "Undo"
+msgstr ""
+
+msgid "Undo my choice"
+msgstr ""
+
+msgid "Undo my choice: the event is to decide again"
 msgstr ""
 
 msgid ""
@@ -9947,6 +10040,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Write this event down as a rule: its days, its folder; the next classify "
+"runs apply it"
+msgstr ""
+
+msgid ""
 "Write this period down as a date rule of config.toml, after seeing the "
 "photos it would take and where each one would go"
 msgstr ""
@@ -10303,9 +10401,6 @@ msgstr ""
 msgid "about {time} left at your pace"
 msgstr ""
 
-msgid "accept every sure proposal at once"
-msgstr ""
-
 msgid "accept the proposal, next"
 msgstr ""
 
@@ -10482,9 +10577,6 @@ msgstr ""
 msgid ""
 "category {name}: a category lists extensions, not categories; for the "
 "extension, write .{value}"
-msgstr ""
-
-msgid "change the name of the event (by default, the last folder)"
 msgstr ""
 
 msgid "changed, not saved yet: Enter saves it, Esc drops it"
@@ -11031,9 +11123,6 @@ msgstr ""
 msgid "leave the pair alone, then next"
 msgstr ""
 
-msgid "leave the whole event where it is"
-msgstr ""
-
 msgid "leaves the phone"
 msgstr ""
 
@@ -11348,7 +11437,7 @@ msgstr ""
 msgid "next group to check, undecided"
 msgstr ""
 
-msgid "next or previous event (its ← → buttons)"
+msgid "next or previous event (its ← → buttons): skipped, it stays to decide"
 msgstr ""
 
 msgid "next series still to see"
@@ -11397,9 +11486,6 @@ msgid "no indexed path matches '{pattern}'"
 msgstr ""
 
 msgid "no indexed photo was taken on these dates"
-msgstr ""
-
-msgid "no photo framed: save the folder, then the next event to decide"
 msgstr ""
 
 msgid "no photo of this camera was taken on these dates"
@@ -11684,9 +11770,6 @@ msgstr ""
 msgid "reference-safety/"
 msgstr ""
 
-msgid "remember this event as a rule of config.toml"
-msgstr ""
-
 msgid "remove folder forget"
 msgstr ""
 
@@ -11818,9 +11901,6 @@ msgstr ""
 msgid "sort the burst series with the keyboard, in 'review'."
 msgstr ""
 
-msgid "sort this event now: move its files, the others left for later"
-msgstr ""
-
 msgid "sorted"
 msgstr ""
 
@@ -11875,12 +11955,6 @@ msgid "swap the folders, then next"
 msgstr ""
 
 msgid "tags gives them some"
-msgstr ""
-
-msgid "take back the choice made here (of the picked photos, else of the event)"
-msgstr ""
-
-msgid "take back the last batch of sure proposals"
 msgstr ""
 
 msgid "take it back out of the set aside"
@@ -12057,9 +12131,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "the person set aside on {date}"
-msgstr ""
-
-msgid "the picked photos: to another folder, or left where they are"
 msgstr ""
 
 msgid "the previous or next one not set aside"
@@ -12314,13 +12385,15 @@ msgstr ""
 msgid "type a new search"
 msgstr ""
 
-msgid "type the folder of the event"
-msgstr ""
-
 msgid "typed by hand"
 msgstr ""
 
 msgid "unanswered"
+msgstr ""
+
+msgid ""
+"undo puts the files back but keeps the event: remove it from events/ by "
+"hand."
 msgstr ""
 
 msgid "undo restore put back revert mistake"
@@ -14052,8 +14125,8 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "{n} events of files not sorted yet (not in a YYYY/YYYY-MM/<name> folder),"
-" cut where no photo was taken for {hours} hours. Pick photos, then Move "
-"to an event…"
+" cut where no photo was taken for {hours} hours. Click one: where its "
+"files go, then Sort here now."
 msgstr ""
 
 #, python-brace-format

@@ -1,0 +1,92 @@
+{# The card of an event made from the index (0574), inside `search_events.js.j2`'s scope
+   after `search_events_span.js.j2`: one sentence says where its files go (the move
+   view's `goes`, the files set aside never counted), then *Sort here now* (the move,
+   journaled, then the next event to decide), *Another folder…* (the bar's *Move to an
+   event…* on the picked photos, else the whole event), *Do not sort this event* (kept in
+   `events/left.toml`, read back) and *Undo my choice* when one is saved. #}
+  let spanView = null;  // where the event shown goes: the move view's answer
+  const spanTicked = () => (spanView ? spanView.sources.filter((source) => source.ticked).flatMap((source) => source.keys) : []);
+  const spanSay = (text) => { byId("spanGoes").textContent = text; };
+  const spanDraw = (card) => {
+    byId("spanChoice").hidden = false;
+    byId("spanLeave").hidden = card.left;
+    byId("spanUndo").hidden = !card.left;
+    byId("spanSort").disabled = true;
+    spanView = null;
+    spanSay(TEXTS.spanReading);
+  };
+  const spanPropose = async (index) => {
+    const keys = files.map((file) => file.key);
+    const leftSaid = events[index].left ? TEXTS.spanLeftSaid + " " : "";
+    if (!keys.length) { spanSay(leftSaid + TEXTS.spanNothing); return; }
+    const sent = await rulePost(MOVE_PATHS.view, { keys: keys, name: "" });
+    if (index !== current) return;  // another event was asked for meanwhile
+    if (!sent) { spanSay(T.offline); return; }
+    if (!sent.response.ok) { spanSay(sent.answer.error || fill(T.failed, { status: sent.response.status })); return; }
+    spanView = sent.answer;
+    spanSay(leftSaid + spanView.goes + (spanView.ignored ? " " + spanView.ignored : ""));
+    byId("spanSort").disabled = !spanView.target || !spanTicked().length;
+  };
+  // The next event to decide from `from` on: neither sorted (gone from the list) nor left.
+  const spanNext = (from) => {
+    const next = events.findIndex((card, index) => index >= from && !card.left);
+    if (next < 0) { setStatus(TEXTS.spanAllDecided); return; }
+    loadSpan(next);
+  };
+  // After a move: the list read again (the files moved are no longer in it), then the
+  // event now at the same place, or `then`.
+  const spanAfterMove = async (at, sameEvent) => {
+    await loadSpans();
+    if (!events.length) return;
+    if (sameEvent) loadSpan(Math.min(at, events.length - 1)); else spanNext(at);
+  };
+  const spanSort = async () => {
+    const keys = spanTicked();
+    if (!spanView || !keys.length || byId("spanSort").disabled) return;
+    byId("spanSort").disabled = true;
+    setStatus(TEXTS.goRunning);
+    const sent = await rulePost(MOVE_PATHS.move, { keys: keys, name: spanView.name });
+    if (!sent) { setStatus(T.offline, "error"); byId("spanSort").disabled = false; return; }
+    const { response, answer } = sent;
+    if (!response.ok) { setStatus(answer.error || fill(T.failed, { status: response.status }), "error"); byId("spanSort").disabled = false; return; }
+    const broken = Boolean(answer.run_id) && !answer.intact;
+    const said = [!answer.run_id ? TEXTS.goNothing : broken ? fill(TEXTS.goBroken, { run: answer.run_id })
+      : fill(TEXTS.goDone, { moved: answer.moved, verified: answer.verified, run: answer.run_id, time: new Date().toLocaleTimeString() }), answer.ignored || ""].join(" ").trim();
+    told(said, broken);
+    spanAfterMove(current, false);
+  };
+  const spanOther = () => {
+    if (!picked.size) { for (const file of files) picked.add(file.key); showPicked(); }  // none picked: the whole event
+    byId("moveOpen").click();
+  };
+  const spanChoose = async (left) => {
+    const index = current;
+    if (index < 0) return;
+    setStatus(T.saving);
+    const sent = await rulePost(SPAN_PATHS.left, { event: events[index].id, left: left });
+    if (!sent) { setStatus(T.offline, "error"); return; }
+    if (!sent.response.ok) { setStatus(sent.answer.error || fill(T.failed, { status: sent.response.status }), "error"); return; }
+    events[index] = { ...events[index], left: sent.answer.left };  // as read back from the disk
+    listEvents();
+    if (index !== current) return;
+    setStatus(sent.answer.said, "saved");
+    if (sent.answer.left) spanNext(index + 1); else loadSpan(index);
+  };
+  const spanLeave = () => spanChoose(true);
+  const spanUndo = () => { if (current >= 0 && events[current].left) spanChoose(false); };
+  const spanRule = (event) => {
+    event.preventDefault();
+    const card = events[current];
+    if (card) openRuleFor(card.first.slice(0, 10), card.last.slice(0, 10));
+  };
+  // Moved with *Another folder…*: the list read again, the same place (0574).
+  window.mhSpan = { moved: () => {
+    if (byId("events").hidden || current < 0 || !events[current] || !events[current].span) return false;
+    spanAfterMove(current, true);
+    return true;
+  } };
+  const SPAN_KEYS = { n: () => go(1), PageDown: () => go(1), p: () => go(-1), PageUp: () => go(-1), u: () => spanNext(current + 1),
+    m: spanSort, o: spanOther, S: spanLeave, t: spanUndo };
+  for (const [button, action] of Object.entries({ spanSort: spanSort, spanOther: spanOther, spanLeave: spanLeave, spanUndo: spanUndo, spanRule: spanRule })) {
+    byId(button).addEventListener("click", action);
+  }

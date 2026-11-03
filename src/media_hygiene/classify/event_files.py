@@ -64,7 +64,7 @@ def read_refused(config_dir: Path, rule: ClassifyRule) -> frozenset[str]:
     Raises:
         ConfigError: The linked file is missing, outside the folder, or not TOML.
     """
-    return _ids(config_dir, rule.file, REFUSED) if rule.file else frozenset()
+    return read_ids(config_dir, rule.file, REFUSED) if rule.file else frozenset()
 
 
 def add_refused(
@@ -85,10 +85,10 @@ def add_refused(
     """
     config_dir = config_file.parent
     relative = event_file(rule)
-    held = _ids(config_dir, rule.file, REFUSED) if rule.file else frozenset()
+    held = read_ids(config_dir, rule.file, REFUSED) if rule.file else frozenset()
     if not ids or held.issuperset(ids):
         return held
-    _write_ids(config_dir, relative, (REFUSED, held | set(ids)))
+    write_ids(config_dir, relative, (REFUSED, held | set(ids)))
     if not rule.file:
         replace_rule(config_file, rule.name, rule.model_copy(update={"file": relative}))
     linked = next(item for item in read_rules(config_file) if item.name == rule.name)
@@ -106,7 +106,7 @@ def read_not_events(config_dir: Path) -> frozenset[str]:
     """
     if not (config_dir / NOT_EVENTS).is_file():
         return frozenset()
-    return _ids(config_dir, NOT_EVENTS, FOLDERS)
+    return read_ids(config_dir, NOT_EVENTS, FOLDERS)
 
 
 def add_not_events(config_dir: Path, ids: Collection[str]) -> frozenset[str]:
@@ -121,7 +121,7 @@ def add_not_events(config_dir: Path, ids: Collection[str]) -> frozenset[str]:
     """
     held = read_not_events(config_dir)
     if ids and not held.issuperset(ids):
-        _write_ids(config_dir, NOT_EVENTS, (FOLDERS, held | set(ids)))
+        write_ids(config_dir, NOT_EVENTS, (FOLDERS, held | set(ids)))
     return read_not_events(config_dir)
 
 
@@ -137,11 +137,11 @@ def take_back_not_events(config_dir: Path, ids: Collection[str]) -> frozenset[st
     """
     held = read_not_events(config_dir)
     if held & set(ids):
-        _write_ids(config_dir, NOT_EVENTS, (FOLDERS, set(held - set(ids))))
+        write_ids(config_dir, NOT_EVENTS, (FOLDERS, set(held - set(ids))))
     return read_not_events(config_dir)
 
 
-def _ids(config_dir: Path, relative: str, key: str) -> frozenset[str]:
+def read_ids(config_dir: Path, relative: str, key: str) -> frozenset[str]:
     """The ids of a linked file.
 
     Args:
@@ -164,7 +164,7 @@ def _ids(config_dir: Path, relative: str, key: str) -> frozenset[str]:
     return frozenset(str(item) for item in written)
 
 
-def _write_ids(
+def write_ids(
     config_dir: Path, relative: str, content: tuple[str, Collection[str]]
 ) -> None:
     """Write one list of ids, sorted, atomically.

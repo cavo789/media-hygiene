@@ -45,6 +45,7 @@ from media_hygiene.search.rule_desk import (
 )
 from media_hygiene.search.rule_go import RULE_GO_PATH
 from media_hygiene.search.span_events import SPAN_FILES_PATH, SPAN_PATH
+from media_hygiene.search.span_left import LEFT_PATH
 from media_hygiene.search.tag_desk import HAND_TAG_PATH
 from media_hygiene.search.views import FIRST_HITS
 from media_hygiene.services.albums import album_desk
@@ -121,7 +122,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "hand_tag_path": HAND_TAG_PATH,
         "folder_query": FOLDER_QUERY,
         "events_path": EVENTS_PATH,
-        "span_paths": {"list": SPAN_PATH, "files": SPAN_FILES_PATH},
+        "span_paths": {"list": SPAN_PATH, "files": SPAN_FILES_PATH, "left": LEFT_PATH},
         "found_path": FOUND_PATH,
         "late_path": LATE_PATH,
         "late_refuse_path": LATE_REFUSE_PATH,

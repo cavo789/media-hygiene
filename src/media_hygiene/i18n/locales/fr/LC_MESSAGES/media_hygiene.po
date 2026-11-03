@@ -1304,6 +1304,9 @@ msgstr ""
 "auparavant (un nettoyage ou une revue) ; ils ne reviennent pas dans votre"
 " photothèque."
 
+msgid "Also remember it as an event (events/)"
+msgstr "Aussi le retenir comme événement (events/)"
+
 msgid "Altitude (m)"
 msgstr "Altitude (m)"
 
@@ -1407,6 +1410,12 @@ msgid ""
 msgstr ""
 "Un autre dossier ? mh folders add <dossier>. Une nouvelle version ? mh "
 "update. Les deux réécrivent ce fichier."
+
+msgid "Another folder…"
+msgstr "Un autre dossier…"
+
+msgid "Another folder…: the photos picked, else the whole event"
+msgstr "Un autre dossier… : les photos choisies, sinon tout l'événement"
 
 msgid ""
 "Another mh command is running (a page, an audit): close it first, the "
@@ -1905,6 +1914,12 @@ msgid "Choice on series {number} undone."
 msgstr "Choix sur la série {number} annulé."
 
 #, python-brace-format
+msgid "Choice taken back, read back: this file is to decide again."
+msgid_plural "Choice taken back, read back: these {n} files are to decide again."
+msgstr[0] "Choix annulé, relu : ce fichier est de nouveau à décider."
+msgstr[1] "Choix annulé, relu : ces {n} fichiers sont de nouveau à décider."
+
+#, python-brace-format
 msgid "Choices of the review page carried over too: {count}."
 msgstr "Choix de la page de revue repris aussi : {count}."
 
@@ -1932,6 +1947,13 @@ msgstr "Choisissez un événement."
 
 msgid "Choose another decision for this pair, or leave it as planned."
 msgstr "Choisissez une autre décision pour cette paire, ou laissez-la comme prévu."
+
+msgid ""
+"Choose another folder for the photos picked, or for the whole event when "
+"none is picked"
+msgstr ""
+"Choisir un autre dossier pour les photos choisies, ou pour tout "
+"l'événement quand aucune ne l'est"
 
 msgid ""
 "Choose another target with 'classify --target', then edit its new "
@@ -2670,6 +2692,12 @@ msgstr ""
 msgid "Do not show"
 msgstr "Ne pas montrer"
 
+msgid "Do not sort this event"
+msgstr "Ne pas trier cet événement"
+
+msgid "Do not sort this event: its files stay where they are"
+msgstr "Ne pas trier cet événement : ses fichiers restent où ils sont"
+
 msgid ""
 "Do not tap Open after the download: Android refuses it (\"cannot install "
 "CA certificates\"). Use the phone's Settings app instead, not Chrome's "
@@ -3255,6 +3283,9 @@ msgstr "Toutes les copies"
 
 msgid "Every entry of config.toml points at something."
 msgstr "Chaque entrée de config.toml pointe sur quelque chose."
+
+msgid "Every event of the list is decided."
+msgstr "Chaque événement de la liste est décidé."
 
 msgid "Every file of this event is already in its folder: nothing to move."
 msgstr ""
@@ -4517,8 +4548,20 @@ msgstr ""
 "Ses modifications ne seraient pas reprises : réparez {path}, désignez-en "
 "un autre avec --carry-over, ou repartez de zéro avec --no-carry-over."
 
+msgid "Its files are not hashed yet: run an audit, then choose again."
+msgstr ""
+"Ses fichiers ne sont pas encore empreintés : lancez un audit, puis "
+"choisissez à nouveau."
+
 msgid "Its files moved, the room freed, what can still be undone."
 msgstr "Ses fichiers déplacés, la place libérée, ce qui reste annulable."
+
+msgid ""
+"Its files stay where they are, the event counted as decided. Skipping it "
+"with → is not this: a skipped event stays to decide."
+msgstr ""
+"Ses fichiers restent où ils sont, l'événement compté comme décidé. Le "
+"passer avec → n'est pas ceci : un événement passé reste à décider."
 
 msgid ""
 "Its messages are above. Run 'crosscheck' again, or 'crosscheck --print-"
@@ -5156,6 +5199,13 @@ msgstr ""
 "écrit."
 
 msgid ""
+"Move the files of this event to the folder said above, journaled: undo "
+"puts them back. Then the next event to decide."
+msgstr ""
+"Déplacer les fichiers de cet événement dans le dossier dit ci-dessus, "
+"noté au journal : undo les remet. Puis l'événement suivant à décider."
+
+msgid ""
 "Move the photos and videos as the edited classify workbook says "
 "(journaled, undoable)."
 msgstr ""
@@ -5527,6 +5577,9 @@ msgstr "Pas encore de résultats Czkawka : lancez d'abord Czkawka (PowerShell) :
 msgid "No DCIM folder on {name}: no photo to copy."
 msgstr "Aucun dossier DCIM sur {name} : aucune photo à copier."
 
+msgid "No Events tab here."
+msgstr "Pas d'onglet Événements ici."
+
 msgid "No TV shows this code: type the code the TV shows now."
 msgstr ""
 "Aucune télé n'affiche ce code : tapez le code que la télé affiche "
@@ -5692,6 +5745,11 @@ msgstr ""
 msgid "No file has words yet: nothing can be found."
 msgstr "Aucun fichier n'a encore de mots : rien ne peut être trouvé."
 
+msgid "No file of this event can move: they are set aside, or gone."
+msgstr ""
+"Aucun fichier de cet événement ne peut être déplacé : ils sont mis de "
+"côté, ou partis."
+
 msgid "No folder chosen: nothing changed."
 msgstr "Aucun dossier choisi : rien n'a changé."
 
@@ -5704,6 +5762,11 @@ msgid "No folder in the index: run 'audit' first, with the same /cache mount."
 msgstr ""
 "Aucun dossier dans l'index : lancez d'abord 'audit', avec le même montage"
 " /cache."
+
+msgid "No folder is proposed for these files: choose one with Another folder…."
+msgstr ""
+"Aucun dossier n'est proposé pour ces fichiers : choisissez-en un avec Un "
+"autre dossier…."
 
 msgid "No folder named after a town, or placed, holds photos without GPS."
 msgstr ""
@@ -6174,6 +6237,9 @@ msgstr ""
 "Pas cette personne : marquer ce visage ; le prochain bouton du groupe "
 "l'enregistre"
 
+msgid "Not to sort: its files stay where they are."
+msgstr "À ne pas trier : ses fichiers restent où ils sont."
+
 msgid "Not touched by this clean"
 msgstr "Laissé par ce nettoyage"
 
@@ -6619,6 +6685,9 @@ msgstr "Une seule chose est définitive :"
 
 msgid "One zip outside Docker's cache: a Docker reset loses nothing."
 msgstr "Un zip hors du cache de Docker : une remise à zéro de Docker ne perd rien."
+
+msgid "Only a filing: nothing is written to config.toml nor events/."
+msgstr "Un simple rangement : rien n'est écrit dans config.toml ni dans events/."
 
 msgid "Only a photo of the album can be its cover."
 msgstr "Seule une photo de l'album peut en être la couverture."
@@ -7647,6 +7716,9 @@ msgstr "Lecture des métadonnées des fichiers déjà en cache"
 msgid "Reading the tool folders…"
 msgstr "Lecture des dossiers de l'outil…"
 
+msgid "Reading where its files go…"
+msgstr "Lecture de l'endroit où vont ses fichiers…"
+
 msgid "Reading where the photos picked lie…"
 msgstr "Lecture de l'emplacement des photos choisies…"
 
@@ -7748,6 +7820,9 @@ msgstr "Supprimer les {count} règles qui n'ont rien décidé"
 #, python-brace-format
 msgid "Remove these rules from config.toml? {names}"
 msgstr "Supprimer ces règles de config.toml ? {names}"
+
+msgid "Remove this filter and search again"
+msgstr "Retirer ce filtre et relancer la recherche"
 
 #, python-brace-format
 msgid "Removed from config.toml, read back at {time}: {names}."
@@ -8307,6 +8382,14 @@ msgstr "Enregistré dans config.toml."
 
 msgid "Saved in config.toml: this name is no town."
 msgstr "Enregistré dans config.toml : ce nom n'est pas une ville."
+
+#, python-brace-format
+msgid "Saved in events/left.toml, read back: this file stays where it is."
+msgid_plural "Saved in events/left.toml, read back: these {n} files stay where they are."
+msgstr[0] "Enregistré dans events/left.toml, relu : ce fichier reste où il est."
+msgstr[1] ""
+"Enregistré dans events/left.toml, relu : ces {n} fichiers restent où ils "
+"sont."
 
 #, python-brace-format
 msgid "Saved in {file}: {folder} is now {role}."
@@ -8917,6 +9000,14 @@ msgstr "Tri"
 
 msgid "Sort by"
 msgstr "Trier par"
+
+msgid "Sort here now"
+msgstr "Trier ici maintenant"
+
+msgid "Sort here now: move its files to the folder said, then the next event"
+msgstr ""
+"Trier ici maintenant : déplacer ses fichiers dans le dossier dit, puis "
+"l'événement suivant"
 
 msgid "Sort in short"
 msgstr "Trier en bref"
@@ -9706,6 +9797,9 @@ msgstr "L'événement « {name} » est retenu : {dates}."
 msgid "The event is not remembered: {reason}"
 msgstr "L'événement n'est pas retenu : {reason}"
 
+msgid "The event is to decide again"
+msgstr "L'événement est de nouveau à décider"
+
 msgid "The event shown"
 msgstr "L'événement affiché"
 
@@ -10149,6 +10243,9 @@ msgstr "Les quasi-doublons et les vidéos réencodées seuls, sur une page"
 msgid "The new name of {name}:"
 msgstr "Le nouveau nom de {name} :"
 
+msgid "The other active filters"
+msgstr "Les autres filtres actifs"
+
 #, python-brace-format
 msgid ""
 "The page does not open? docker run must publish the same port on both "
@@ -10289,11 +10386,10 @@ msgstr "Les photos du diaporama : touchez-en une pour la montrer sur la télé"
 
 msgid ""
 "The photos picked go to the event's folder, under their year and month, "
-"journaled: 'undo' puts them back. No rule is written."
+"journaled: 'undo' puts them back."
 msgstr ""
 "Les photos choisies vont dans le dossier de l'événement, sous leur année "
-"et leur mois, noté au journal : 'undo' les remet. Aucune règle n'est "
-"écrite."
+"et leur mois, noté au journal : 'undo' les remet."
 
 #, python-brace-format
 msgid "The photos you gave the word {word}; config.toml links this file."
@@ -10684,8 +10780,8 @@ msgid ""
 "The title a paired phone's page shows, e.g. the family's name; empty: Our"
 " photos."
 msgstr ""
-"Le titre que montre la page d'un téléphone appairé, par exemple le nom de la "
-"famille ; vide : Nos photos."
+"Le titre que montre la page d'un téléphone appairé, par exemple le nom de"
+" la famille ; vide : Nos photos."
 
 msgid "The tool only sees the folders you give it with -v."
 msgstr "L'outil ne voit que les dossiers que vous lui donnez avec -v."
@@ -10990,6 +11086,12 @@ msgid "This file is not an mh backup: its manifest is missing or unreadable."
 msgstr ""
 "Ce fichier n'est pas une sauvegarde de mh : son manifeste manque ou est "
 "illisible."
+
+#, python-brace-format
+msgid "This file will go to {folder}."
+msgid_plural "These {n} files will go to {folder}."
+msgstr[0] "Ce fichier ira dans {folder}."
+msgstr[1] "Ces {n} fichiers iront dans {folder}."
 
 msgid ""
 "This folder is an album of media-hygiene: hard links, second names of "
@@ -11494,6 +11596,12 @@ msgstr ""
 
 msgid "Undo"
 msgstr "Annuler"
+
+msgid "Undo my choice"
+msgstr "Annuler mon choix"
+
+msgid "Undo my choice: the event is to decide again"
+msgstr "Annuler mon choix : l'événement est de nouveau à décider"
 
 msgid ""
 "Undo the change in Excel (Ctrl+Z), restore a copy of the workbook, or run"
@@ -12051,6 +12159,13 @@ msgstr ""
 "dossier ; les prochains classify l'appliquent (R)"
 
 msgid ""
+"Write this event down as a rule: its days, its folder; the next classify "
+"runs apply it"
+msgstr ""
+"Noter cet événement comme règle : ses jours, son dossier ; les prochains "
+"classify l'appliquent"
+
+msgid ""
 "Write this period down as a date rule of config.toml, after seeing the "
 "photos it would take and where each one would go"
 msgstr ""
@@ -12481,9 +12596,6 @@ msgstr "encore ~{time}"
 msgid "about {time} left at your pace"
 msgstr "environ {time} restantes à votre rythme"
 
-msgid "accept every sure proposal at once"
-msgstr "accepter d’un coup toutes les propositions sûres"
-
 msgid "accept the proposal, next"
 msgstr "accepter la proposition, puis suivante"
 
@@ -12669,9 +12781,6 @@ msgid ""
 msgstr ""
 "catégorie {name} : une catégorie liste des extensions, pas des catégories"
 " ; pour l'extension, écrivez .{value}"
-
-msgid "change the name of the event (by default, the last folder)"
-msgstr "changer le nom de l'événement (par défaut, le dernier dossier)"
 
 msgid "changed, not saved yet: Enter saves it, Esc drops it"
 msgstr "modifié, pas encore enregistré : Entrée l'enregistre, Échap l'abandonne"
@@ -13260,9 +13369,6 @@ msgstr "laisser le groupe tel quel, puis suivant"
 msgid "leave the pair alone, then next"
 msgstr "ne pas toucher à la paire, puis suivante"
 
-msgid "leave the whole event where it is"
-msgstr "laisser tout l'événement où il est"
-
 msgid "leaves the phone"
 msgstr "quitte le téléphone"
 
@@ -13629,8 +13735,10 @@ msgstr "groupe suivant sans réponse"
 msgid "next group to check, undecided"
 msgstr "groupe suivant à vérifier, non décidé"
 
-msgid "next or previous event (its ← → buttons)"
-msgstr "événement suivant ou précédent (ses boutons ← →)"
+msgid "next or previous event (its ← → buttons): skipped, it stays to decide"
+msgstr ""
+"événement suivant ou précédent (ses boutons ← →) : passé, il reste à "
+"décider"
 
 msgid "next series still to see"
 msgstr "série suivante à voir"
@@ -13679,11 +13787,6 @@ msgstr "aucun chemin de l'index ne correspond à '{pattern}'"
 
 msgid "no indexed photo was taken on these dates"
 msgstr "aucune photo indexée n'a été prise à ces dates"
-
-msgid "no photo framed: save the folder, then the next event to decide"
-msgstr ""
-"aucune photo encadrée : enregistrer le dossier, puis l'événement suivant "
-"à décider"
 
 msgid "no photo of this camera was taken on these dates"
 msgstr "aucune photo de cet appareil n'a été prise à ces dates"
@@ -13979,9 +14082,6 @@ msgstr "fr/reference-commands/"
 msgid "reference-safety/"
 msgstr "fr/reference-safety/"
 
-msgid "remember this event as a rule of config.toml"
-msgstr "retenir cet événement comme règle de config.toml"
-
 msgid "remove folder forget"
 msgstr "retirer dossier oublier"
 
@@ -14125,11 +14225,6 @@ msgstr "trier déplacer ranger appliquer classeur"
 msgid "sort the burst series with the keyboard, in 'review'."
 msgstr "triez les rafales au clavier, dans 'review'."
 
-msgid "sort this event now: move its files, the others left for later"
-msgstr ""
-"trier cet événement maintenant : déplacer ses fichiers, les autres "
-"attendent"
-
 msgid "sorted"
 msgstr "triées"
 
@@ -14185,12 +14280,6 @@ msgstr "inverser les dossiers, puis suivante"
 
 msgid "tags gives them some"
 msgstr "tags leur en donne"
-
-msgid "take back the choice made here (of the picked photos, else of the event)"
-msgstr "reprendre le choix fait ici (des photos choisies, sinon de l'événement)"
-
-msgid "take back the last batch of sure proposals"
-msgstr "reprendre le dernier lot de propositions sûres"
 
 msgid "take it back out of the set aside"
 msgstr "la reprendre de ce qui est mis de côté"
@@ -14379,9 +14468,6 @@ msgstr "l'autre nom ressemble à une copie"
 #, python-brace-format
 msgid "the person set aside on {date}"
 msgstr "la personne mise de côté le {date}"
-
-msgid "the picked photos: to another folder, or left where they are"
-msgstr "les photos choisies : dans un autre dossier, ou laissées où elles sont"
 
 msgid "the previous or next one not set aside"
 msgstr "la précédente ou la suivante pas mise de côté"
@@ -14697,14 +14783,18 @@ msgstr "tapez un nom, p. ex. Crète 2023"
 msgid "type a new search"
 msgstr "taper une nouvelle recherche"
 
-msgid "type the folder of the event"
-msgstr "taper le dossier de l'événement"
-
 msgid "typed by hand"
 msgstr "tapé à la main"
 
 msgid "unanswered"
 msgstr "sans réponse"
+
+msgid ""
+"undo puts the files back but keeps the event: remove it from events/ by "
+"hand."
+msgstr ""
+"undo remet les fichiers mais garde l'événement : retirez-le de events/ à "
+"la main."
 
 msgid "undo restore put back revert mistake"
 msgstr "annuler restaurer remettre revenir défaire erreur"
@@ -16833,12 +16923,12 @@ msgstr "{n} événements trouvés dans vos dossiers"
 #, python-brace-format
 msgid ""
 "{n} events of files not sorted yet (not in a YYYY/YYYY-MM/<name> folder),"
-" cut where no photo was taken for {hours} hours. Pick photos, then Move "
-"to an event…"
+" cut where no photo was taken for {hours} hours. Click one: where its "
+"files go, then Sort here now."
 msgstr ""
 "{n} événements de fichiers pas encore triés (hors d'un dossier AAAA/AAAA-"
 "MM/<nom>), coupés là où aucune photo n'a été prise pendant {hours} "
-"heures. Choisissez des photos, puis Déplacer vers un événement…"
+"heures. Cliquez-en un : où vont ses fichiers, puis Trier ici maintenant."
 
 #, python-brace-format
 msgid "{n} face"
