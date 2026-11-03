@@ -756,6 +756,20 @@ msgstr ""
 "ces photos."
 
 msgid ""
+"A link that opens this album alone, read-only, for 24 hours, on a phone "
+"of the home Wi-Fi"
+msgstr ""
+"Un lien qui ouvre cet album seul, en lecture seule, pendant 24 heures, "
+"sur un téléphone du Wi-Fi de la maison"
+
+msgid ""
+"A link works only on the home Wi-Fi: start Media Hygiene with 'mh --lan',"
+" then share again."
+msgstr ""
+"Un lien ne marche que sur le Wi-Fi de la maison : lancez Media Hygiene "
+"avec « mh --lan », puis partagez à nouveau."
+
+msgid ""
 "A local model looks at each photo on this computer's processor, so that "
 "search finds photos by what they show. Nothing is sent; only the cache is"
 " written."
@@ -1092,6 +1106,9 @@ msgstr ""
 "folders remove <dossier>. Une sauvegarde, comparée, jamais modifiée : mh "
 "folders add --backup <dossier>."
 
+msgid "Add photos"
+msgstr "Ajouter des photos"
+
 msgid "Add photos to an album in search."
 msgstr "Ajoutez des photos à un album dans search."
 
@@ -1138,6 +1155,9 @@ msgstr ""
 
 msgid "Add to an album"
 msgstr "Ajouter à un album"
+
+msgid "Add to another album"
+msgstr "Ajouter à un autre album"
 
 msgid "Add to the album"
 msgstr "Ajouter à l'album"
@@ -1591,6 +1611,9 @@ msgstr "Revenus après une mise de côté"
 
 msgid "Back on the map: taken out of config.toml."
 msgstr "De retour sur la carte : retiré de config.toml."
+
+msgid "Back to the album"
+msgstr "Revenir à l'album"
 
 msgid "Back to the home page"
 msgstr "Retour à l'accueil"
@@ -2250,6 +2273,9 @@ msgstr "Copier la commande"
 #, python-brace-format
 msgid "Copy the command {command}"
 msgstr "Copier la commande {command}"
+
+msgid "Copy the link"
+msgstr "Copier le lien"
 
 msgid "Copy the new photos of the phone"
 msgstr "Copier les nouvelles photos du téléphone"
@@ -4415,8 +4441,14 @@ msgstr "Importer un disque USB, une carte SD ou n'importe quel dossier"
 msgid "Import photos"
 msgstr "Importer des photos"
 
+msgid "In the album"
+msgstr "Dans l'album"
+
 msgid "In the album already"
 msgstr "Déjà dans l'album"
+
+msgid "In the album or not"
+msgstr "Dans l'album ou non"
 
 #, python-brace-format
 msgid "In the file: {aside} set aside, {kept} kept, {none} undecided."
@@ -4882,6 +4914,9 @@ msgstr ""
 #, python-brace-format
 msgid "Line {number} of {path} is corrupt."
 msgstr "La ligne {number} de {path} est corrompue."
+
+msgid "Link copied."
+msgstr "Lien copié."
 
 msgid "Linked"
 msgstr "Liés"
@@ -5601,6 +5636,10 @@ msgstr ""
 "maintenant."
 
 #, python-brace-format
+msgid "No album is named {name}."
+msgstr "Aucun album ne s'appelle {name}."
+
+#, python-brace-format
 msgid "No album named {name}."
 msgstr "Aucun album nommé {name}."
 
@@ -6164,6 +6203,9 @@ msgid "Not found: renamed or moved? Rename it back, or forget its position."
 msgstr ""
 "Introuvable : renommé ou déplacé ? Rendez-lui son nom, ou oubliez sa "
 "position."
+
+msgid "Not in the album"
+msgstr "Pas dans l'album"
 
 #, python-brace-format
 msgid ""
@@ -7018,6 +7060,14 @@ msgid "Opening in the window where mh runs: {command}."
 msgstr "Ouverture dans la fenêtre où tourne mh : {command}."
 
 #, python-brace-format
+msgid ""
+"Opens this album alone, read-only, for {hours} hours, on the home Wi-Fi "
+"while mh runs; a restart of mh stops it."
+msgstr ""
+"Ouvre cet album seul, en lecture seule, pendant {hours} heures, sur le "
+"Wi-Fi de la maison tant que mh tourne ; un redémarrage de mh l'arrête."
+
+#, python-brace-format
 msgid "Option {name} needs a value."
 msgstr "L'option {name} demande une valeur."
 
@@ -7321,6 +7371,9 @@ msgstr "Choisir les {total} fichiers trouvés"
 
 msgid "Pick none"
 msgstr "Ne rien choisir"
+
+msgid "Pick one photo, not a video, to make it the cover."
+msgstr "Choisissez une seule photo, pas une vidéo, pour en faire la couverture."
 
 msgid ""
 "Pick the intruder files (zip, docx, pdf… in your photo folders) to set "
@@ -8574,6 +8627,13 @@ msgstr "Recherche arrêtée ; vos photos n'ont pas été modifiées."
 msgid "Search your photos"
 msgstr "Chercher dans vos photos"
 
+msgid ""
+"Search your photos, aimed at this album: its dates, its name in the album"
+" field"
+msgstr ""
+"Chercher vos photos pour cet album : ses dates, son nom dans le champ de "
+"l'album"
+
 msgid "Searching OpenStreetMap…"
 msgstr "Recherche sur OpenStreetMap…"
 
@@ -8814,6 +8874,9 @@ msgstr "Trancher les quasi-doublons"
 msgid "Share"
 msgstr "Partager"
 
+msgid "Share by link"
+msgstr "Partager par un lien"
+
 msgid "Share of the work, cumulated"
 msgstr "Part du travail, cumulée"
 
@@ -8822,6 +8885,11 @@ msgstr "Partager sur la télé"
 
 msgid "Share your photos"
 msgstr "Partager vos photos"
+
+msgid "Shared with you for 24 hours: look, nothing here can be changed."
+msgstr ""
+"Partagé avec vous pendant 24 heures : regardez, rien ici ne peut être "
+"modifié."
 
 msgid "Sharpness"
 msgstr "Netteté"
@@ -9215,6 +9283,9 @@ msgstr "Encore annulable : {what}"
 msgid "Stop after this photo"
 msgstr "Arrêter après cette photo"
 
+msgid "Stop sharing"
+msgstr "Arrêter le partage"
+
 msgid "Stop the audit"
 msgstr "Arrêter l'audit"
 
@@ -9381,8 +9452,19 @@ msgstr "Reprendre le choix fait ici (T)"
 msgid "Take back the last batch of sure proposals (Shift+Z)"
 msgstr "Reprendre le dernier lot de propositions sûres (Maj+Z)"
 
+#, python-brace-format
+msgid ""
+"Take every photo out of {name}? The album will be empty and removed. The "
+"photos themselves stay where they are."
+msgstr ""
+"Retirer toutes les photos de {name} ? L'album sera vide et supprimé. Les "
+"photos elles-mêmes restent où elles sont."
+
 msgid "Take it back: its GPS decides again"
 msgstr "La reprendre : son GPS décide à nouveau"
+
+msgid "Take out"
+msgstr "Retirer"
 
 msgid "Take out of the album"
 msgstr "Retirer de l'album"
@@ -9396,6 +9478,9 @@ msgstr "Retirer de la mise de côté (Retour arrière en grand)"
 #, python-brace-format
 msgid "Take the batch back ({events})"
 msgstr "Reprendre le lot ({events})"
+
+msgid "Take the picked files out of the album: the photos stay where they are"
+msgstr "Retirer de l'album les fichiers choisis : les photos restent où elles sont"
 
 #, python-brace-format
 msgid "Take the whole event: {first} to {last}"
@@ -9488,6 +9573,10 @@ msgstr ""
 #, python-brace-format
 msgid "The album {name} is empty: removed from {place}."
 msgstr "L'album {name} est vide : retiré de {place}."
+
+#, python-brace-format
+msgid "The album {name} is empty: removed."
+msgstr "L'album {name} est vide : supprimé."
 
 msgid "The album's name"
 msgstr "Nom de l'album"
@@ -10162,6 +10251,12 @@ msgid ""
 msgstr ""
 "Les rangements de {path} qui diffèrent de la convention de tri (année"
 "/année-mois/événement) :"
+
+msgid "The link"
+msgstr "Le lien"
+
+msgid "The link opens nothing any more."
+msgstr "Le lien n'ouvre plus rien."
 
 msgid "The local model of [classify.ai] also describes the photos"
 msgstr "Le modèle local de [classify.ai] décrit aussi les photos"
@@ -11425,6 +11520,9 @@ msgstr "À déplacer"
 msgid "To place"
 msgstr "À placer"
 
+msgid "To prepare the copies to send, type in the terminal:"
+msgstr "Pour préparer les copies à envoyer, tapez dans le terminal :"
+
 #, python-brace-format
 msgid ""
 "To prepare {name} for sending (resized copies without the GPS position, a"
@@ -11572,6 +11670,11 @@ msgstr "Tapez un nom pour filtrer les dossiers"
 
 msgid "Type a word, pick a photo."
 msgstr "Tapez un mot, choisissez une photo."
+
+msgid "Type an album in the bar: its files are marked, kept or left out"
+msgstr ""
+"Tapez un album dans la barre : ses fichiers sont marqués, gardés ou "
+"écartés"
 
 msgid "Type an album's name in the bar first."
 msgstr "Tapez d'abord le nom d'un album dans la barre."
@@ -12452,6 +12555,13 @@ msgstr "Vos photos et vidéos n'ont pas été touchées."
 msgid "Your photos and videos, sorted and without duplicates."
 msgstr "Vos photos et vidéos, triées et sans doublons."
 
+msgid ""
+"Your photos are only read: taking a photo out of an album, or adding it "
+"to another one, changes the albums file alone."
+msgstr ""
+"Vos photos sont seulement lues : retirer une photo d'un album, ou "
+"l'ajouter à un autre, ne change que le fichier des albums."
+
 msgid "Your photos, in order"
 msgstr "Vos photos, en ordre"
 
@@ -13065,6 +13175,9 @@ msgstr "environnement"
 
 msgid "every file from the last one clicked"
 msgstr "tous les fichiers depuis le dernier cliqué"
+
+msgid "every file of the album"
+msgstr "tous les fichiers de l'album"
 
 msgid "every file of the page"
 msgstr "tous les fichiers de la page"
@@ -17623,7 +17736,10 @@ msgid ""
 "{protected} (folders.protected) and {excluded} (folders.excluded) are one"
 " folder or one inside the other: a protected folder is read, an excluded "
 "one is not; give them one role"
-msgstr "{protected} (folders.protected) et {excluded} (folders.excluded) sont un même dossier ou l'un dans l'autre : un dossier protégé est lu, un dossier exclu ne l'est pas ; donnez-leur un seul rôle"
+msgstr ""
+"{protected} (folders.protected) et {excluded} (folders.excluded) sont un "
+"même dossier ou l'un dans l'autre : un dossier protégé est lu, un dossier"
+" exclu ne l'est pas ; donnez-leur un seul rôle"
 
 #, python-brace-format
 msgid "{rate} photos a minute, about {time} left."
@@ -17984,6 +18100,9 @@ msgstr[1] ""
 
 msgid "▶ Play"
 msgstr "▶ Lecture"
+
+msgid "✓ in the album"
+msgstr "✓ dans l'album"
 
 msgid "✔ Probably: the event's camera"
 msgstr "✔ Probablement : l'appareil de l'événement"

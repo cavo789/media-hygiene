@@ -41,13 +41,25 @@ Depuis la page, sur le PC (un téléphone regarde seulement : les albums changen
 - **✏️ Renommer** un album : un nom qu'a déjà un autre album (quelles que soient ses majuscules)
   est refusé ; `slideshow`, `share` et `album --album` le connaissent aussitôt sous son nouveau
   nom. Un dossier de liens déjà créé par `mh album` garde son ancien nom ;
-- **➖ Retirer de l'album** une photo : elle sort de la liste, le fichier reste où il est ;
-- **➕ Ajouter à un album** une photo, à un autre album : choisissez-le dans la liste de vos
-  albums (le plus récent en premier), ou tapez un nouveau nom en dessous pour en créer un ; un nom
-  tapé avec d'autres majuscules est le même album ;
-- **🖼 Utiliser comme couverture** une photo : la liste des albums la montre désormais, après un
-  redémarrage aussi. La couverture suit sa photo quand le fichier est déplacé ; retirée de
-  l'album, la couverture redevient celle que `mh` choisit (la photo la plus nette du premier jour).
+- ouvrir un album : sur le PC, ses photos et vidéos sont des vignettes à choisir, comme sur la
+  page de recherche : un clic en choisit une, Ctrl+clic ou sa case ☑ en ajoute ou en retire une,
+  Maj+clic une plage, un glisser un rectangle, Ctrl+A tous les fichiers de l'album, I les autres
+  à la place ; Entrée ou un double clic l'ouvre en grand. La barre agit sur les fichiers choisis :
+  - **➖ Retirer** : ils sortent de l'album d'un coup, les fichiers restent où ils sont ; retirer
+    tous les fichiers demande d'abord (l'album, vide, est supprimé) ;
+  - **➕ Album** : les ajouter à un autre album, choisi dans la liste de vos albums ou tapé (un
+    nouveau nom le crée ; un nom tapé avec d'autres majuscules est le même album) ;
+  - **🖼** (*Utiliser comme couverture*, une photo choisie) : la liste des albums la montre
+    désormais, après un redémarrage aussi. La couverture suit sa photo quand le fichier est
+    déplacé ; retirée de l'album, la couverture redevient celle que `mh` choisit (la photo la
+    plus nette du premier jour) ;
+  - **✉️ Envoyer** : la commande qui prépare les copies à envoyer (`mh share --album`) ; une
+    partie de l'album choisie est d'abord enregistrée dans un album à elle, au nom du jour ;
+  - **📺 Sur la télé** : les fichiers choisis, ou tout l'album, sur la télé jumelée ;
+- **➕ Ajouter des photos** à un album ouvert : la [recherche](commands/search.md) s'ouvre dans le
+  même onglet, l'album tapé dans son champ **Album**, la période autour des dates de l'album (un
+  jour de part et d'autre) ; les fichiers déjà dans l'album sont marqués, **← l'album** revient
+  ici.
 
 Seul `albums.json` change. Rien d'autre n'est possible ici : aucun fichier n'est supprimé, déplacé
 ni envoyé.
@@ -57,6 +69,16 @@ ni envoyé.
 Avec `mh --lan`, un téléphone jumelé par son code sur le Wi-Fi de la maison ouvre la même page,
 tant que `mh` tourne sur le PC. Il ne voit que les images des albums, à la taille d'un téléphone,
 jamais une autre photo de la bibliothèque ni un original. Il ne change rien : ni *➖*, ni *➕*, ni *🖼*, ni *🗑*, ni *✏️*.
+
+### Par un lien, sur le téléphone de quelqu'un d'autre
+
+Avec `mh --lan`, **🔗 Partager par un lien** sur un album ouvert sur le PC donne un lien et son QR
+code : un invité sur le Wi-Fi de la maison ouvre cet album seul, en lecture seule (ses photos et
+vidéos, à la taille d'un téléphone), sans jumeler son téléphone, pendant 24 heures. **📋 Copier le
+lien** le copie ; **⏹ Arrêter le partage** l'arrête aussitôt, comme un redémarrage de `mh` (le
+lien n'est gardé qu'en mémoire). Le lien n'ouvre rien d'autre : ni un autre album, ni une autre
+photo, ni un original, ni la page d'accueil. Sans `mh --lan`, le bouton dit de le lancer : un
+lien ne marche que sur le Wi-Fi de la maison.
 
 ## Les albums et les dossiers de liens
 

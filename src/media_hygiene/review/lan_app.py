@@ -34,16 +34,18 @@ from media_hygiene.review.lan_paths import LAN_PATH, phone_marked, phone_may
 from media_hygiene.review.lan_phones_api import PHONE_PATHS, for_good, phones_answer
 from media_hygiene.review.lan_show import phone_step
 from media_hygiene.review.local_app import PAGE_PATH
-from media_hygiene.review.serving import json_response
+from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.shared_routes import asset_or_page
 from media_hygiene.review.step_watch import STEP_PATH
 from media_hygiene.services.reviewing import HOST_LOOPBACK
 from media_hygiene.share import album_page as albums
+from media_hygiene.share.album_link_door import ALBUM_LINK_PATH, LINK_PREFIX
 
 if TYPE_CHECKING:
     from media_hygiene.review.ending import Handling
     from media_hygiene.review.lan import LanAccess
     from media_hygiene.review.lan_phones import PhoneBook
+    from media_hygiene.share.album_link_door import AlbumLinkDoor
 
 _GET, _POST = "GET", "POST"
 
@@ -58,6 +60,7 @@ class LanApp:
     pairing: Pairing = field(default_factory=Pairing)
     phones: PhoneBook | None = None  # under HTTPS: phones paired for good (0431)
     originals: bool = False  # `[review] lan_phone_originals` (0427)
+    links: AlbumLinkDoor | None = None  # one album by a 24 h link, unpaired (0462)
 
     async def handle(self, request: Request) -> Response:
         """Let the loopback through; pair, filter and pass on a phone's requests.
@@ -72,14 +75,26 @@ class LanApp:
             return await self._pc(request)
         if not self.lan.names_me(request):  # whatever `Host` it forged (0384)
             return Response(HTTPStatus.FORBIDDEN)
-        public = self._public(request)
-        if public is not None:  # the pairing, the app's shell (0432)
-            return public
-        if not self._is_paired(request):
-            if request.method == _GET:
-                return pair_page(HTTPStatus.UNAUTHORIZED, closed=self.pairing.closed)
-            return Response(HTTPStatus.FORBIDDEN)
-        return await self._paired(request)
+        if self.links is not None and request.path.startswith(LINK_PREFIX):
+            return await self.links.answer(request)  # before pairing: the token is all
+        # the pairing, the app's shell (0432); else the pairing page if unpaired
+        answer = self._public(request) or self._unpaired(request)
+        return answer if answer is not None else await self._paired(request)
+
+    def _unpaired(self, request: Request) -> Response | None:
+        """Refuse a phone not paired: the pairing page for a `GET`, 403 otherwise.
+
+        Args:
+            request: A request of the home network's door.
+
+        Returns:
+            The refusal; None for a paired phone.
+        """
+        if self._is_paired(request):
+            return None
+        if request.method == _GET:
+            return pair_page(HTTPStatus.UNAUTHORIZED, closed=self.pairing.closed)
+        return Response(HTTPStatus.FORBIDDEN)
 
     async def _pc(self, request: Request) -> Response:
         """Answer the PC: the card, its paired phones, or the home page.
@@ -92,6 +107,10 @@ class LanApp:
         """
         if is_local(request) and request.path == LAN_PATH:
             return lan_response(self.lan, phones=self.phones is not None)
+        link = request.method == _POST and request.path == ALBUM_LINK_PATH
+        if is_local(request) and link and self.links is not None:
+            refused = refused_post(request)  # the PC's page alone makes a link
+            return refused or await self.links.make(request, self.lan)
         if (
             is_local(request)
             and request.path in PHONE_PATHS

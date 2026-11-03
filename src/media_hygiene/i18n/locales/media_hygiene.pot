@@ -603,6 +603,16 @@ msgid ""
 msgstr ""
 
 msgid ""
+"A link that opens this album alone, read-only, for 24 hours, on a phone "
+"of the home Wi-Fi"
+msgstr ""
+
+msgid ""
+"A link works only on the home Wi-Fi: start Media Hygiene with 'mh --lan',"
+" then share again."
+msgstr ""
+
+msgid ""
 "A local model looks at each photo on this computer's processor, so that "
 "search finds photos by what they show. Nothing is sent; only the cache is"
 " written."
@@ -846,6 +856,9 @@ msgid ""
 "<folder>."
 msgstr ""
 
+msgid "Add photos"
+msgstr ""
+
 msgid "Add photos to an album in search."
 msgstr ""
 
@@ -881,6 +894,9 @@ msgid ""
 msgstr ""
 
 msgid "Add to an album"
+msgstr ""
+
+msgid "Add to another album"
 msgstr ""
 
 msgid "Add to the album"
@@ -1258,6 +1274,9 @@ msgid "Back after being set aside"
 msgstr ""
 
 msgid "Back on the map: taken out of config.toml."
+msgstr ""
+
+msgid "Back to the album"
 msgstr ""
 
 msgid "Back to the home page"
@@ -1833,6 +1852,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Copy the command {command}"
+msgstr ""
+
+msgid "Copy the link"
 msgstr ""
 
 msgid "Copy the new photos of the phone"
@@ -3606,7 +3628,13 @@ msgstr ""
 msgid "Import photos"
 msgstr ""
 
+msgid "In the album"
+msgstr ""
+
 msgid "In the album already"
+msgstr ""
+
+msgid "In the album or not"
 msgstr ""
 
 #, python-brace-format
@@ -4011,6 +4039,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Line {number} of {path} is corrupt."
+msgstr ""
+
+msgid "Link copied."
 msgstr ""
 
 msgid "Linked"
@@ -4616,6 +4647,10 @@ msgid "No TV shows this code: type the code the TV shows now."
 msgstr ""
 
 #, python-brace-format
+msgid "No album is named {name}."
+msgstr ""
+
+#, python-brace-format
 msgid "No album named {name}."
 msgstr ""
 
@@ -5087,6 +5122,9 @@ msgid "Not found"
 msgstr ""
 
 msgid "Not found: renamed or moved? Rename it back, or forget its position."
+msgstr ""
+
+msgid "Not in the album"
 msgstr ""
 
 #, python-brace-format
@@ -5776,6 +5814,12 @@ msgid "Opening in the window where mh runs: {command}."
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"Opens this album alone, read-only, for {hours} hours, on the home Wi-Fi "
+"while mh runs; a restart of mh stops it."
+msgstr ""
+
+#, python-brace-format
 msgid "Option {name} needs a value."
 msgstr ""
 
@@ -6033,6 +6077,9 @@ msgid "Pick all {total} files found"
 msgstr ""
 
 msgid "Pick none"
+msgstr ""
+
+msgid "Pick one photo, not a video, to make it the cover."
 msgstr ""
 
 msgid ""
@@ -7080,6 +7127,11 @@ msgstr ""
 msgid "Search your photos"
 msgstr ""
 
+msgid ""
+"Search your photos, aimed at this album: its dates, its name in the album"
+" field"
+msgstr ""
+
 msgid "Searching OpenStreetMap…"
 msgstr ""
 
@@ -7299,6 +7351,9 @@ msgstr ""
 msgid "Share"
 msgstr ""
 
+msgid "Share by link"
+msgstr ""
+
 msgid "Share of the work, cumulated"
 msgstr ""
 
@@ -7306,6 +7361,9 @@ msgid "Share on the TV"
 msgstr ""
 
 msgid "Share your photos"
+msgstr ""
+
+msgid "Shared with you for 24 hours: look, nothing here can be changed."
 msgstr ""
 
 msgid "Sharpness"
@@ -7644,6 +7702,9 @@ msgstr ""
 msgid "Stop after this photo"
 msgstr ""
 
+msgid "Stop sharing"
+msgstr ""
+
 msgid "Stop the audit"
 msgstr ""
 
@@ -7782,7 +7843,16 @@ msgstr ""
 msgid "Take back the last batch of sure proposals (Shift+Z)"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Take every photo out of {name}? The album will be empty and removed. The "
+"photos themselves stay where they are."
+msgstr ""
+
 msgid "Take it back: its GPS decides again"
+msgstr ""
+
+msgid "Take out"
 msgstr ""
 
 msgid "Take out of the album"
@@ -7796,6 +7866,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Take the batch back ({events})"
+msgstr ""
+
+msgid "Take the picked files out of the album: the photos stay where they are"
 msgstr ""
 
 #, python-brace-format
@@ -7875,6 +7948,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "The album {name} is empty: removed from {place}."
+msgstr ""
+
+#, python-brace-format
+msgid "The album {name} is empty: removed."
 msgstr ""
 
 msgid "The album's name"
@@ -8417,6 +8494,12 @@ msgstr ""
 msgid ""
 "The layouts of {path} that differ from the sort convention (year/year-"
 "month/event):"
+msgstr ""
+
+msgid "The link"
+msgstr ""
+
+msgid "The link opens nothing any more."
 msgstr ""
 
 msgid "The local model of [classify.ai] also describes the photos"
@@ -9436,6 +9519,9 @@ msgstr ""
 msgid "To place"
 msgstr ""
 
+msgid "To prepare the copies to send, type in the terminal:"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "To prepare {name} for sending (resized copies without the GPS position, a"
@@ -9555,6 +9641,9 @@ msgid "Type a name to filter the folders"
 msgstr ""
 
 msgid "Type a word, pick a photo."
+msgstr ""
+
+msgid "Type an album in the bar: its files are marked, kept or left out"
 msgstr ""
 
 msgid "Type an album's name in the bar first."
@@ -10275,6 +10364,11 @@ msgstr ""
 msgid "Your photos and videos, sorted and without duplicates."
 msgstr ""
 
+msgid ""
+"Your photos are only read: taking a photo out of an album, or adding it "
+"to another one, changes the albums file alone."
+msgstr ""
+
 msgid "Your photos, in order"
 msgstr ""
 
@@ -10842,6 +10936,9 @@ msgid "environment"
 msgstr ""
 
 msgid "every file from the last one clicked"
+msgstr ""
+
+msgid "every file of the album"
 msgstr ""
 
 msgid "every file of the page"
@@ -15069,6 +15166,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "▶ Play"
+msgstr ""
+
+msgid "✓ in the album"
 msgstr ""
 
 msgid "✔ Probably: the event's camera"

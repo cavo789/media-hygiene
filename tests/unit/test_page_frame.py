@@ -113,6 +113,7 @@ _MAIN_KEY: Final = {
     "search.html.j2": "every file from the last one clicked",
     "phone_review.html.j2": "every file from the last one clicked",
     "person.html.j2": "every file from the last one clicked",
+    "album_edit.html.j2": "every file from the last one clicked",
 }
 
 

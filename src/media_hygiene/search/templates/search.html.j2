@@ -40,6 +40,7 @@
   "allFound": _("Pick all {total} files found"),
   "allPicked": _("All {total} files found are picked"),
   "aside": _("marked to set aside"),
+  "inAlbum": _("✓ in the album"),
   "asideOpen": _("Show only the files set aside (🗑 in Show)"),
   "tick": _("Pick this file"),
   "noAlbum": _("Type the album's name in the bar first: then A adds the file shown."),
@@ -135,6 +136,7 @@
 {% set pick_add = "🗑 " + _("Put aside") %}
 {% block style %}
 {% include "pick_grid.css.j2" %}
+  .inAlbum .inAlbumMark { color: var(--good, var(--accent)); font-size: .8rem; font-weight: 600; }
   /* The field and its filters, one under the other, in the left column: as tall as they
      are, scrolled on their own once the open tree of folders is taller than the window. */
   #toc { flex: 0 1 auto; }
@@ -296,6 +298,12 @@
           </div>
         </details>
       </div>
+      <label id="albumInLabel">{{ _("Album") }}
+        <select id="albumIn" disabled title="{{ _('Type an album in the bar: its files are marked, kept or left out') }}">
+          <option value="">{{ _("In the album or not") }}</option>
+          <option value="in">{{ _("In the album") }}</option>
+          <option value="out">{{ _("Not in the album") }}</option>
+        </select></label>
       <label id="folderLabel" class="comboBox">{{ _("Path contains") }}<input id="folder" type="text" autocomplete="off"
                role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="folderList"
                title="{{ _('A part of the path. * is any characters, ? one character, /regex/ a regular expression: *.mov, /\\.(mov|mp4)$/') }}"

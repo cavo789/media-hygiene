@@ -11,6 +11,7 @@ from media_hygiene.console.formatting import human_size
 from media_hygiene.constants import MediaKind
 from media_hygiene.review.videos import video_path
 from media_hygiene.scan.filters import media_kind
+from media_hygiene.search.album_filter import AlbumAimed
 from media_hygiene.search.exif_facts import modified_day
 from media_hygiene.search.folder_order import Shown
 from media_hygiene.search.query import Filters, Order, SearchQuery, Sorting, parse_terms
@@ -51,6 +52,7 @@ class SearchAsked(BaseModel):
     within: str = Field(default="", max_length=_MAX_TEXT)  # a folder of the tree (0348)
     more: int = Field(default=0, ge=0, le=_MOST)  # *Show more* (0408)
     aside: bool = False  # **Show** 🗑: the files set aside only (0464)
+    album: AlbumAimed | None = None  # the album in the field (0501)
 
     @property
     def shown(self) -> int:

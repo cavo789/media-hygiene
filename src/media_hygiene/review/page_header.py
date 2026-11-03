@@ -50,6 +50,7 @@ PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
         "shrink.html.j2": "shrink",
         "history.html.j2": "history",
         "album.html.j2": ALBUMS_DOC,
+        "album_edit.html.j2": ALBUMS_DOC,
     }
 )
 # The pages in the home page's frame (0491: the shell; 0492-0496 moved them); the
@@ -59,6 +60,7 @@ PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
 SHELL_PAGES: Final[Mapping[str, bool]] = MappingProxyType(
     {
         "album.html.j2": False,
+        "album_edit.html.j2": True,
         "search.html.j2": True,
         "review.html.j2": True,
         "near_review.html.j2": True,
@@ -78,6 +80,7 @@ SHELL_PAGES: Final[Mapping[str, bool]] = MappingProxyType(
 _PAGE_SPACES: Final = MappingProxyType(
     {
         "album.html.j2": Space.SHARE,
+        "album_edit.html.j2": Space.SHARE,
         "people.html.j2": Space.FIND,
         "person.html.j2": Space.FIND,
     }

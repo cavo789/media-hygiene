@@ -134,3 +134,43 @@ def test_the_pages_carry_the_album_bar(
         assert b'id="albumTv"' in answer.body
         assert b"/api/albums" in answer.body
         assert b'id="setAside"' in answer.body
+
+
+def _keys(answer: Response) -> list[int]:
+    """The keys of the files a search found."""
+    return [hit["key"] for hit in json.loads(answer.body)["hits"]]
+
+
+def test_a_search_aimed_at_an_album_marks_keeps_or_leaves_out_its_files(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0501: In the album, Not in the album; each file found says if it is in it."""
+    assert run(cli, "tags", "--no-describe").exit_code == 0
+    found = _keys(serve_search(cli, monkeypatch, [("POST /api/search", _DURBUY)])[0])
+    assert len(found) == 3
+    inside, *others = found
+
+    def aimed(value: bool | None) -> dict[str, object]:  # noqa: FBT001
+        return {**_DURBUY, "album": {"name": _ALBUM.upper(), "inside": value}}
+
+    answers = serve_search(
+        cli,
+        monkeypatch,
+        [
+            _add(keys=[str(inside)], search=_DURBUY),
+            ("POST /api/search", aimed(None)),
+            ("POST /api/search", aimed(value=True)),
+            ("POST /api/search", aimed(value=False)),
+        ],
+    )
+    marks = {hit["key"]: hit["inAlbum"] for hit in json.loads(answers[1].body)["hits"]}
+    assert marks == {key: key == inside for key in found}
+    assert _keys(answers[2]) == [inside]
+    assert json.loads(answers[2].body)["total"] == 1
+    assert sorted(_keys(answers[3])) == sorted(others)
+    assert (
+        "inAlbum"
+        not in json.loads(
+            serve_search(cli, monkeypatch, [("POST /api/search", _DURBUY)])[0].body
+        )["hits"][0]
+    )

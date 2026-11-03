@@ -398,6 +398,14 @@ fichiers trouvés**), puis **➕ Ajouter à l'album**.
   dossiers d'albums déjà faits restent où ils sont : refaites chacun pour l'avoir dans le nouveau.
 - **Retirer de l'album** retire les photos choisies de l'album tapé ; un album laissé vide est
   supprimé.
+- **Album** dans la colonne de gauche, une fois un album tapé : *Dans l'album* ne montre que ses
+  fichiers, *Pas dans l'album* les autres ; dans les deux cas, un fichier déjà dedans affiche
+  **✓ dans l'album** sur sa vignette, l'ajout en double se voit (ajouter deux fois ne change rien de
+  toute façon). *Choisir les N trouvés* n'est pas proposé avec ces filtres : les boutons agissent
+  sur les vignettes affichées.
+- **➕ Ajouter des photos** d'un album ouvert sur la [page des albums](../reference-albums.md)
+  ouvre cette page avec l'album tapé, la période autour de ses dates et **← l'album** pour y
+  revenir.
 - Une photo déplacée depuis, par [`sort`](sort.md), par [`undo`](undo.md), ou dans un dossier
   renommé dans l'Explorateur (une fois qu'un audit l'a vu), est retrouvée par son contenu :
   l'album la suit. Une photo introuvable (supprimée, ou en quarantaine) reste dans l'album, listée

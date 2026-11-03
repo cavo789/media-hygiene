@@ -34,7 +34,10 @@
   "undo": _("Undo"),
 } %}
 {% set page_name = texts.albums %}
-<html lang="{{ _('en') }}">
+{# `link` (0462): one album opened by a 24 h link on someone else's phone: read-only (as a
+   phone), that album alone, no way to the home page nor to the list. #}
+{% set link = album_link is sameas true %}
+<html lang="{{ _('en') }}"{% if link %} data-phone data-link{% endif %}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -101,12 +104,16 @@
 </style>
 </head>
 <body>
-{% include "page_header.html.j2" %}
+{% if not link %}{% include "page_header.html.j2" %}{% endif %}
 <div class="heading">
   <a class="back" id="back" href="#" hidden>← {{ texts.albums }}</a>
   <h2 id="title">{{ texts.albums }}</h2>
 </div>
+{% if link %}
+<p class="note">🔒 {{ _("Shared with you for 24 hours: look, nothing here can be changed.") }}</p>
+{% else %}
 <p class="note phone-only">🔒 {{ _("On the phone, everything is read-only: albums change on the PC.") }}</p>
+{% endif %}
 <p class="note pc-only">🔒 {{ _("On the home Wi-Fi only, while mh runs on the PC. Your photos are only read: taking a photo out of an album, or adding it to another one, changes the albums file alone.") }}</p>
 <p class="note error" id="problem" role="alert" hidden></p>
 <main id="main"></main>
@@ -137,6 +144,6 @@
 </script>
 {# Served by the home server in the home page's tab: its pings keep that server running (0341);
    the bar's way back, a plain link (home_link.html.j2 includes presence.html.j2). #}
-{% include "home_link.html.j2" %}
+{% if not link %}{% include "home_link.html.j2" %}{% endif %}
 </body>
 </html>

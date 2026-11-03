@@ -3,6 +3,9 @@
 // previous one, a tap closes it (the phone's Back button too). The next pictures are loaded
 // in advance. Changes go to POST P.change, read back from the disk by the server (0295).
 const P = {{ paths | tojson }};
+// Opened by an album's link (0462): that album alone, its view under `/a/<token>`.
+const LINK = document.documentElement.hasAttribute("data-link") ? location.pathname.replace(/\/$/, "") : "";
+if (LINK) P.album = `${LINK}/api/album/`;
 const T = {{ texts | tojson }};
 const LANG = document.documentElement.lang;
 const SWIPE_PX = 50; // a move shorter than this is a tap
@@ -61,6 +64,9 @@ function dayLabel(day) {
   if (!day) return T.undated;
   return new Intl.DateTimeFormat(LANG, { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(dateOf(day));
 }
+// The PC opens an album as tiles to pick and take out (0500); a phone, the swipe view.
+const opened = (name) => (document.documentElement.hasAttribute("data-phone")
+  ? `#a/${encodeURIComponent(name)}` : `${P.edit_page}?album=${encodeURIComponent(name)}`);
 const said = (parts) => parts.filter(Boolean).map(esc).join(" · ");
 
 async function showList() {
@@ -76,7 +82,7 @@ async function showList() {
     <div class="shelf">${view.albums.map((each) => `<div class="card">
       <label class="tick pc-only"><input type="checkbox" data-tick="${esc(each.name)}" aria-label="${esc(fill(T.tick, { name: each.name }))}"></label>
       <button type="button" class="rename pc-only" data-rename="${esc(each.name)}" title="${esc(T.rename)}" aria-label="${esc(T.rename)}">✏️</button>
-      <a href="#a/${encodeURIComponent(each.name)}">
+      <a href="${opened(each.name)}">
       ${each.cover ? `<img src="${esc(each.cover.thumb)}" alt="" loading="lazy">` : `<span class="blank" aria-hidden="true">🖼</span>`}
       <p class="name">${esc(each.name)}</p>
       <p class="sub">${said([plural(T.photos, each.count), span(each), each.place])}</p>
@@ -105,7 +111,7 @@ function rename(button) { // the name becomes a field in its card, never a brows
   card.querySelector("[data-renaming] input").select();
 }
 async function showAlbum(name) {
-  $("back").hidden = false;
+  $("back").hidden = Boolean(LINK);
   const view = await ask(P.album + encodeURIComponent(name));
   if (!view) return;
   album = view;
@@ -132,7 +138,8 @@ function tile(item, number) {
 function route() {
   closeViewer(true);
   const hash = location.hash.slice(1);
-  if (hash.startsWith("a/")) showAlbum(decodeURIComponent(hash.slice(2)));
+  if (LINK) showAlbum("");
+  else if (hash.startsWith("a/")) showAlbum(decodeURIComponent(hash.slice(2)));
   else showList();
 }
 

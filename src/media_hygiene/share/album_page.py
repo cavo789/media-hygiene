@@ -3,7 +3,8 @@
 Served by the home page's server, in front of it, to the PC and to a phone paired by
 `mh --lan` (`review.lan_app` lets these paths through, `Origin` checked):
 
-- `GET /albums`: the page; `GET /api/album-list`: every album, its cover, dates and
+- `GET /albums`: the page; `GET /albums/edit?album=<name>`: one album as tiles to
+  pick (the PC only, 0500); `GET /api/album-list`: every album, its cover, dates and
   place; `GET /api/album/<name>`: one album, its photos and videos by day;
 - `GET /thumb/<key>.jpg`, `/tv/<key>.jpg` (the picture sized for a phone) and
   `/film/<key>.<ext>`: the files **of an album** only to a phone, never another file
@@ -34,9 +35,12 @@ if TYPE_CHECKING:
     from media_hygiene.review.ending import Handling
     from media_hygiene.review.http import Request
     from media_hygiene.share.album_api import AlbumDesk
+    from media_hygiene.share.album_link_door import AlbumLinkDoor
     from media_hygiene.share.album_shelf import AlbumShelf, Keyed, Shown
 
 ALBUMS_PAGE: Final = "/albums"
+# One album as tiles to pick and take out, on the PC only (0500): no phone reads it.
+ALBUM_EDIT_PAGE: Final = "/albums/edit"
 ALBUM_LIST_PATH: Final = "/api/album-list"
 ALBUM_PREFIX: Final = "/api/album/"
 # The page's own change, never `/api/albums`: that one is the pages' behind (search).
@@ -59,6 +63,8 @@ class AlbumParts:
     shelf: AlbumShelf
     desk: AlbumDesk
     shown: Shown  # shared with the desk: a change names an album's files only
+    edit: bytes = b""  # one album as tiles to pick (0500)
+    links: AlbumLinkDoor | None = None  # its 24 h links, under `mh --lan` (0462)
 
 
 @dataclass(frozen=True, slots=True)
@@ -98,8 +104,9 @@ class AlbumPages:
             a file in no album.
         """
         path = request.path
-        if path == ALBUMS_PAGE:
-            page = self.parts.page
+        if path in {ALBUMS_PAGE, ALBUM_EDIT_PAGE}:
+            parts = self.parts
+            page = parts.page if path == ALBUMS_PAGE else parts.edit
             return Response(HTTPStatus.OK, page, ContentType.HTML, policy=NEAR_POLICY)
         if path == ALBUM_LIST_PATH:
             return await self._read(None)

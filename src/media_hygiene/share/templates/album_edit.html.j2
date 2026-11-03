@@ -1,0 +1,86 @@
+{% extends "page_frame.html.j2" %}
+{# One album opened on the PC (0500): its photos and videos as tiles to pick, like browse and
+   search (`pick_*` in review/templates). The bar acts on the picking: ➖ *Take out of the
+   album* (one request), *Add to another album*, *Use as cover* (one photo), ✉️ *Send*, 📺 *On
+   the TV*. Only `albums.json` changes, read back from the disk; the photos stay where they
+   are. The phone keeps the read-only swipe view of `album.html.j2`. Its script is
+   `album_edit.js.j2`; the album comes from `?album=`. #}
+{% set texts = {
+  "offline": _("Media Hygiene does not answer: the albums show while mh runs on the PC, on the home Wi-Fi."),
+  "failed": _("The albums cannot be read (error {status})."),
+  "picked": [ngettext("{n} file picked", "{n} files picked", 1), ngettext("{n} file picked", "{n} files picked", 2)],
+  "aside": _("marked to set aside"),
+  "tick": _("Pick this file"),
+  "saving": _("Saving…"),
+  "notSaved": _("Nothing was saved: {error}"),
+  "noAlbum": _("Type the album's name in the bar first: then A adds the file shown."),
+  "photos": [ngettext("{n} photo or video", "{n} photos and videos", 1), ngettext("{n} photo or video", "{n} photos and videos", 2)],
+  "missing": [ngettext("{n} file missing: moved out of the folders analysed, or deleted.", "{n} files missing: moved out of the folders analysed, or deleted.", 1), ngettext("{n} file missing: moved out of the folders analysed, or deleted.", "{n} files missing: moved out of the folders analysed, or deleted.", 2)],
+  "undated": _("Without a date"),
+  "emptyAsk": _("Take every photo out of {name}? The album will be empty and removed. The photos themselves stay where they are."),
+  "gone": _("The album {name} is empty: removed."),
+  "unknown": _("No album is named {name}."),
+  "oneCover": _("Pick one photo, not a video, to make it the cover."),
+  "send": _("To prepare the copies to send, type in the terminal:"),
+  "linkMade": _("Opens this album alone, read-only, for {hours} hours, on the home Wi-Fi while mh runs; a restart of mh stops it."),
+  "linkLan": _("A link works only on the home Wi-Fi: start Media Hygiene with 'mh --lan', then share again."),
+  "linkStopped": _("The link opens nothing any more."),
+  "linkCopied": _("Link copied."),
+} %}
+{% set page_name = _("Albums") %}
+{% set pick_all = _("every file of the album") %}
+{% set pick_marks = false %}
+{% set pick_album = false %}
+{% set pick_add = "➖ " + _("Take out") %}
+{% set pick_add_title = _("Take the picked files out of the album: the photos stay where they are") %}
+{% set pick_first = "album_edit_bar.html.j2" %}
+{% set keys_safe = _("Your photos are only read: taking a photo out of an album, or adding it to another one, changes the albums file alone.") %}
+{% block style %}
+{% include "pick_grid.css.j2" %}
+  #bar { min-height: 6rem; align-content: flex-start; } /* two lines, picked or not: the grid never moves */
+  #linkQr svg { width: 160px; height: 160px; }
+  #linkUrl { width: 100%; font: inherit; }
+  #albumFacts { color: var(--muted); font-size: .9rem; overflow-wrap: anywhere; }
+  #otherAlbum { padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--text); }
+  #otherAlbum input { padding: 4px 8px; font: inherit; }
+{% endblock %}
+{% block side %}
+    <p><a id="backList" href="{{ paths.list_page }}">← {{ _("Albums") }}</a></p>
+    <h2 id="albumTitle"></h2>
+    <p id="albumFacts"></p>
+    <p><button id="linkMake" class="plain" type="button" title="{{ _('A link that opens this album alone, read-only, for 24 hours, on a phone of the home Wi-Fi') }}">🔗 {{ _("Share by link") }}</button></p>
+    <div id="linkBox" hidden>
+      <div id="linkQr"></div>
+      <input id="linkUrl" type="text" readonly aria-label="{{ _('The link') }}">
+      <button id="linkCopy" class="plain" type="button">📋 {{ _("Copy the link") }}</button>
+      <button id="linkStop" class="plain" type="button">⏹ {{ _("Stop sharing") }}</button>
+    </div>
+    <p id="linkSaid" role="status"></p>
+    <p><a id="addPhotos" class="button" href="{{ paths.search_page }}" title="{{ _('Search your photos, aimed at this album: its dates, its name in the album field') }}">➕ {{ _("Add photos") }}</a></p>
+{% endblock %}
+{% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
+{% block more_keys %}{% include "pick_keys_more.html.j2" %}{% endblock %}
+{% block bar %}
+    {% include "pick_acting.html.j2" %}
+{% endblock %}
+{% block content %}
+  <main id="grid"></main>
+{% endblock %}
+{% block after %}
+<dialog id="otherAlbum" aria-labelledby="otherTitle">
+  <form id="otherForm" method="dialog">
+    <h2 id="otherTitle">{{ _("Add to another album") }}</h2>
+    <input id="otherName" list="otherNames" maxlength="80" autocomplete="off" placeholder="{{ _('e.g. Crete 2023') }}" aria-label="{{ _('Album') }}">
+    <datalist id="otherNames"></datalist>
+    <button type="submit">➕ {{ _("Add to the album") }}</button>
+    <button id="otherClose" class="plain" type="button" aria-label="{{ _('Close') }}">✕</button>
+  </form>
+</dialog>
+{% include "pick_viewer.html.j2" %}
+<script>
+{% include "pick_grid.js.j2" %}
+{% include "pick_viewer.js.j2" %}
+{% include "pick_band.js.j2" %}
+{% include "album_edit.js.j2" %}
+</script>
+{% endblock %}

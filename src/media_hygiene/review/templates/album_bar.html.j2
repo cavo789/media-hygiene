@@ -12,7 +12,8 @@
    albums is not said on opening (the field offers them), only what each change saved.
    `album_short` (the search's fixed bar, 0463): emoji and a short word, the whole label in the
    tooltip. The field starts empty on each page: a name kept from an earlier visit would send
-   today's picking into yesterday's album. #}
+   today's picking into yesterday's album; but `?album=` (0501: *Add photos* of the albums
+   page) fills it once, with a way back to that album. #}
 {% if albums_path %}
 {% set album_quiet = album_compact | default(false) %}
 <style>
@@ -40,6 +41,7 @@
   <button id="albumTv" class="plain" type="button" disabled>📺 {{ _("Share on the TV") }}</button>
   <button id="albumSend" class="plain" type="button" disabled>📨 {{ _("Prepare for sending") }}</button>
 {% endif %}
+  <a id="albumBack" href="#" hidden title="{{ _('Back to the album') }}"></a>
 </div>
 <p id="albumSaid" role="status"></p>
 {% if album_root_path | default("") %}
@@ -204,6 +206,15 @@
     }
     say(TEXTS.send, 'mh share --album "{name}"');
   });
+  // `?album=<name>` (0501): opened by the albums page's *Add photos*, the field filled once
+  // (never remembered: the next page starts empty) and a way back to that album.
+  const aimed = new URLSearchParams(window.location.search).get("album");
+  if (aimed) {
+    $("albumName").value = aimed;
+    $("albumBack").href = "/albums/edit?album=" + encodeURIComponent(aimed); // share/album_page.py
+    $("albumBack").textContent = "← " + aimed;
+    $("albumBack").hidden = false;
+  }
   fetch(ALBUMS_PATH).then(async (answer) => show(answer, await answer.json(), true)).catch(() => { /* the page says it */ });
 })();
 </script>

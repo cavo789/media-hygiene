@@ -26,6 +26,7 @@ _KEPT: Final = {
     "search/templates/events_rule.js.j2": 1,  # rules removed from config.toml
     "search/templates/events_choice.js.j2": 1,  # leaving with unsaved choices
     "share/templates/album.js.j2": 2,  # an album deleted, a photo taken out
+    "share/templates/album_edit.js.j2": 1,  # all taken out: album removed
 }
 
 

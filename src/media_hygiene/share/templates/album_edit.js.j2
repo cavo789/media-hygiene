@@ -1,0 +1,184 @@
+{# The script of one album opened on the PC (`album_edit.html.j2`, 0500). The picking, the
+   bar and the large view are `pick_grid.js.j2`'s and `pick_viewer.js.j2`'s; a pick here
+   means "this file of the album": `saveChoice` takes the picking out of the album in one
+   request (`remove` with the keys), read back from the disk. #}
+const TEXTS = {{ texts | tojson }};
+const ROUTES = {{ paths | tojson }}; // album, change, list, list_page
+const NAME = new URLSearchParams(window.location.search).get("album") || "";
+const LANG = document.documentElement.lang;
+let album = null; // the album as the server last read it
+
+function dayLabel(day) {
+  if (!day) return TEXTS.undated;
+  return new Intl.DateTimeFormat(LANG, { day: "numeric", month: "long", year: "numeric" }).format(new Date(day + "T12:00:00"));
+}
+
+function card(file, index) {
+  const node = element("article");
+  const picture = element("img");
+  picture.loading = "lazy";
+  picture.draggable = false; // a drag draws a rectangle (`pick_band.js.j2`)
+  picture.alt = file.name;
+  picture.src = file.thumb;
+  const meta = element("div", "meta");
+  meta.append(element("div", "name", file.name));
+  node.append(file.thumb ? picture : element("div", "empty", "▶ " + (file.format || "")), meta);
+  return wireCard(node, index);
+}
+
+function scope() {
+  return {};
+}
+
+// The album's files as tiles: each one carries what the large view shows.
+function listed(view) {
+  return view.days.flatMap((day) => day.items.map((item) => ({
+    key: String(item.key),
+    name: dayLabel(day.day),
+    date: [dayLabel(day.day), day.place].filter(Boolean).join(" · "),
+    thumb: item.thumb,
+    preview: item.photo,
+    original: item.photo || item.film,
+    video: item.film,
+    format: item.format,
+    photo: Boolean(item.photo),
+  })));
+}
+
+function sayLine(text, bad) {
+  $("chosen").className = bad ? "error" : "";
+  $("chosen").textContent = text;
+  $("chosen").title = text;
+  $("viewerSaid").className = $("chosen").className;
+  $("viewerSaid").textContent = text;
+}
+
+// The album read again from the disk; gone (emptied): back to the list of the albums.
+async function reopen(again) {
+  const answer = await ask(ROUTES.album + encodeURIComponent(NAME));
+  if (!answer) { failed(null); return; }
+  if (answer.status === 404) {
+    showFiles([]);
+    $("status").textContent = fill(TEXTS.unknown, { name: NAME });
+    return;
+  }
+  if (!answer.ok) { failed(answer); return; }
+  album = await answer.json();
+  showFiles(listed(album), again);
+  $("albumTitle").textContent = album.name;
+  const facts = [counted(TEXTS.photos, album.count), album.place];
+  if (album.missing) facts.push(counted(TEXTS.missing, album.missing));
+  $("albumFacts").textContent = facts.filter(Boolean).join(" · ");
+  $("status").textContent = counted(TEXTS.photos, files.length);
+  addPhotosLink();
+}
+
+// ➕ Add photos (0501): the search, same tab, the album in its field, the period around
+// the album's dates (a day either side), and a way back here.
+const AROUND_DAYS = 1;
+function aroundDay(day, step) {
+  const moved = new Date(day + "T12:00:00");
+  moved.setDate(moved.getDate() + step);
+  return moved.toLocaleDateString("sv"); // YYYY-MM-DD
+}
+function addPhotosLink() {
+  const asked = new URLSearchParams({ album: NAME });
+  if (album && album.first) {
+    asked.set("from", aroundDay(album.first, -AROUND_DAYS));
+    asked.set("to", aroundDay(album.last, AROUND_DAYS));
+  }
+  $("addPhotos").href = ROUTES.search_page + "?" + asked;
+}
+
+async function change(body) {
+  sayLine(TEXTS.saving, false);
+  const answer = await ask(ROUTES.change, body);
+  if (!answer) { failed(null); return null; }
+  const state = await answer.json().catch(() => ({}));
+  if (!answer.ok) { sayLine(fill(TEXTS.notSaved, { error: state.error || answer.status }), true); return null; }
+  sayLine(state.message, false);
+  return state;
+}
+
+// ➖ Take out of the album: the picking, in one request; every file asks first.
+saveChoice = async (action, keys) => {
+  if (action !== "add" || !keys.length) return false;
+  const emptied = keys.length >= files.length;
+  if (emptied && !window.confirm(fill(TEXTS.emptyAsk, { name: NAME }))) { sayLine("", false); return false; }
+  const state = await change({ action: "remove", album: NAME, keys: keys });
+  if (!state) return false;
+  if (!state.albums.some((each) => each.name === NAME)) {
+    sayLine(fill(TEXTS.gone, { name: NAME }), false);
+    window.location.href = ROUTES.list_page;
+    return false;
+  }
+  return true;
+};
+deleteKeySets = false;
+delete VIEWER_KEYS.Delete; // nothing is set aside here
+delete VIEWER_KEYS.Backspace;
+delete VIEWER_KEYS.a;
+
+async function openOther() {
+  if (!picked.size) return;
+  const answer = await ask(ROUTES.list);
+  const view = answer && answer.ok ? await answer.json() : { albums: [] };
+  $("otherNames").replaceChildren(...view.albums.filter((each) => each.name !== NAME).map((each) => {
+    const option = element("option");
+    option.value = each.name;
+    return option;
+  }));
+  $("otherName").value = "";
+  $("otherAlbum").showModal();
+}
+
+async function addToOther(event) {
+  event.preventDefault();
+  const wanted = $("otherName").value.trim();
+  if (!wanted) return;
+  $("otherAlbum").close();
+  await change({ action: "add", album: wanted, keys: [...picked] });
+}
+
+async function makeCover() {
+  const chosen = files.filter((file) => picked.has(file.key));
+  if (chosen.length !== 1 || !chosen[0].photo) { sayLine(TEXTS.oneCover, true); return; }
+  if (await change({ action: "cover", album: NAME, keys: [chosen[0].key] })) await reopen(true);
+}
+
+// ✉️ Send: `share` makes the copies of one album; a part of it is saved first in its own.
+async function send() {
+  let name = NAME;
+  if (picked.size && picked.size < files.length) {
+    name = NAME + " " + new Date().toLocaleDateString("sv"); // YYYY-MM-DD, the local day
+    if (!(await change({ action: "add", album: name, keys: [...picked] }))) return;
+  }
+  const line = $("chosen");
+  const code = element("code", "", 'mh share --album "' + name + '"');
+  line.className = "";
+  line.replaceChildren(TEXTS.send + " ", code);
+}
+
+// 🔗 Share by link (0462): under `mh --lan` only; the link, its QR code, *Stop sharing*.
+async function shareByLink(action) {
+  const answer = await ask(ROUTES.link, { action: action, album: NAME });
+  const state = answer && answer.ok ? await answer.json().catch(() => null) : null;
+  $("linkBox").hidden = !(state && state.url);
+  if (!state) { $("linkSaid").textContent = TEXTS.linkLan; return; }
+  if (!state.url) { $("linkSaid").textContent = TEXTS.linkStopped; return; }
+  $("linkQr").innerHTML = state.qr; // an SVG drawn by the server (segno)
+  $("linkUrl").value = state.url;
+  $("linkSaid").textContent = fill(TEXTS.linkMade, { hours: state.hours });
+}
+async function copyLink() {
+  try { await navigator.clipboard.writeText($("linkUrl").value); $("linkSaid").textContent = TEXTS.linkCopied; } catch (error) { $("linkUrl").select(); }
+}
+$("linkMake").addEventListener("click", () => shareByLink("make"));
+$("linkStop").addEventListener("click", () => shareByLink("stop"));
+$("linkCopy").addEventListener("click", copyLink);
+$("toOther").addEventListener("click", openOther);
+$("otherForm").addEventListener("submit", addToOther);
+$("otherClose").addEventListener("click", () => $("otherAlbum").close());
+$("makeCover").addEventListener("click", makeCover);
+$("sendAlbum").addEventListener("click", send);
+reopen(false);

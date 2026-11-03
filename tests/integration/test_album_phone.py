@@ -12,6 +12,7 @@ import json
 import sqlite3
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import closing
+from dataclasses import replace
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final, override
 from urllib.parse import quote
@@ -26,6 +27,9 @@ from media_hygiene.review.lan_app import LanApp
 from media_hygiene.review.local_app import LocalApp
 from media_hygiene.services.album_pages import album_page, album_pages
 from media_hygiene.services.albums import album_store
+from media_hygiene.services.home_pages import HomeServer
+from media_hygiene.share.album_links import LINK_HOURS, AlbumLinks
+from media_hygiene.share.album_page import AlbumPages
 from media_hygiene.share.album_store import AlbumChange
 from media_hygiene.share.album_view import album_view
 from media_hygiene.share.albums import ALBUMS_FILE, read_albums
@@ -40,6 +44,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.paths.locations import Locations
     from media_hygiene.services.runtime import Runtime
+    from media_hygiene.share.album_link_door import AlbumLinkDoor
     from media_hygiene.share.album_view import AlbumSeen, TownOf
 
 _PORT: Final = 8765
@@ -77,7 +82,7 @@ def phone_door(
     album_store(runtime).add(AlbumChange(_ALBUM, (photos[0][1], photos[1][1])))
     home = _Home()
     with ThreadPoolExecutor(2) as pool:
-        pages = album_pages(runtime, home, pool)
+        pages = album_pages(runtime, home, HomeServer(None, Ending(), pool))
         yield LanApp(pages, _ACCESS, b"<p>phone</p>"), home, runtime
 
 
@@ -381,3 +386,184 @@ def test_the_page_picks_the_album_from_a_list_never_a_prompt() -> None:
     assert 'id="sheetAlbums"' in page
     assert 'id="sheetName"' in page
     assert "Use as cover" in page
+
+
+def _pc_get(path: str) -> Request:
+    return Request("GET", path, {"host": f"127.0.0.1:{_PORT}"})
+
+
+def test_the_pc_opens_an_album_as_tiles_to_pick(
+    phone_door: tuple[LanApp, _Home, Runtime],
+) -> None:
+    """0500: `/albums/edit` is a page of tiles to pick, its bar acts on the picking."""
+    door, _home, _runtime = phone_door
+    page = _ask(door, _pc_get("/albums/edit")).body.decode()
+    assert page.count('"use strict";') == 1  # pick_grid.js.j2, once
+    for part in ('id="setAside"', "Take out of the album", 'id="toOther"'):
+        assert part in page, part
+    for part in ('id="makeCover"', 'id="sendAlbum"', 'id="tvSend"', 'id="viewer"'):
+        assert part in page, part
+    assert 'data-path="/api/album-change"' in page  # 📺 posts the album's own files
+    listing = album_page().decode()
+    assert "/albums/edit" in listing  # the PC's list opens it
+
+
+def test_a_phone_never_gets_the_page_to_edit_an_album(
+    phone_door: tuple[LanApp, _Home, Runtime],
+) -> None:
+    """0500: the phone keeps its read-only swipe view; the edit page is the PC's."""
+    door, _home, _runtime = phone_door
+    reply = _ask(door, _phone("/albums/edit"))
+    assert b'id="toOther"' not in reply.body
+
+
+def test_the_picking_leaves_the_album_in_one_request(
+    phone_door: tuple[LanApp, _Home, Runtime],
+) -> None:
+    """0500: every file picked out at once; the album emptied is removed, read back."""
+    door, _home, runtime = phone_door
+    keys = [str(key) for key in _keys(_album(door))]
+    answer = _post(door, {"action": "remove", "album": _ALBUM, "keys": keys})
+    assert answer["albums"] == []
+    saved = read_albums(runtime.locations.reports_dir / ALBUMS_FILE)
+    assert not saved.albums
+
+
+def test_the_tv_of_an_album_page_says_why_it_cannot_yet(
+    phone_door: tuple[LanApp, _Home, Runtime],
+) -> None:
+    """0500: 📺 reaches the home server's TV; no slideshow listening: it says so."""
+    door, _home, _runtime = phone_door
+    keys = [str(key) for key in _keys(_album(door))]
+    body = {"action": "tv", "album": "", "keys": keys}
+    reply = _ask(door, _pc("/api/album-change", body))
+    assert reply.status == HTTPStatus.NOT_FOUND
+    assert "home page" in json.loads(reply.body)["error"]
+
+
+class _Clock:
+    """A clock a test moves on."""
+
+    def __init__(self) -> None:
+        self.now = 0.0
+
+    def __call__(self) -> float:
+        return self.now
+
+
+def _linked(door: LanApp, clock: _Clock | None = None) -> tuple[LanApp, AlbumLinkDoor]:
+    """The same door, with the albums' links (0462), on a clock of the test's."""
+    pages = door.home
+    assert isinstance(pages, AlbumPages)
+    links = pages.parts.links
+    assert links is not None
+    if clock is not None:
+        links = replace(links, links=AlbumLinks(clock))
+    return replace(door, links=links), links
+
+
+def _unpaired(path: str) -> Request:
+    return _phone(path, paired=False)
+
+
+def _make_link(door: LanApp, album: str = _ALBUM) -> dict[str, object]:
+    local = f"127.0.0.1:{_PORT}"
+    headers = {
+        "host": local,
+        "content-type": ContentType.JSON,
+        "origin": f"http://{local}",
+    }
+    body = json.dumps({"action": "make", "album": album}).encode()
+    return _json(_ask(door, Request("POST", "/api/album-link", headers, body)))
+
+
+def test_an_album_link_opens_that_album_alone_unpaired(
+    phone_door: tuple[LanApp, _Home, Runtime],
+) -> None:
+    """0462: the page read-only, the view, the pictures; no other key, no pairing."""
+    door, _home, runtime = phone_door
+    door, _links = _linked(door)
+    made = _make_link(door)
+    assert made["hours"] == LINK_HOURS
+    assert "<svg" in str(made["qr"])
+    url = str(made["url"])
+    assert url.startswith(_ORIGIN + "/a/")
+    at = url.removeprefix(_ORIGIN)
+    page = _ask(door, _unpaired(at))
+    assert page.status == HTTPStatus.OK
+    assert b"data-link" in page.body
+    assert b'id="homeLink"' not in page.body  # no way to the home page
+    view = _json(_ask(door, _unpaired(f"{at}/api/album/x")))
+    keys = _keys(view)
+    first_item = view["days"][0]["items"][0]  # type: ignore[index]
+    assert str(first_item["thumb"]).startswith(f"{at}/thumb/")
+    shown = _ask(door, _unpaired(f"{at}/thumb/{keys[0]}{_JPEG}"))
+    assert shown.status == HTTPStatus.OK
+    assert shown.body.startswith(b"\xff\xd8")
+    _nothing_else(door, at, next(k for k, _p in _photos(runtime) if k not in keys))
+    # the token never pairs: the home page still asks for the code
+    assert _ask(door, _unpaired("/")).status == HTTPStatus.UNAUTHORIZED
+
+
+def _nothing_else(door: LanApp, at: str, other: int) -> None:
+    """A key of no album, another path, a `POST`: 404 through the link."""
+    for path in (f"{at}/thumb/{other}{_JPEG}", f"{at}/tv/{other}{_JPEG}", f"{at}/x"):
+        assert _ask(door, _unpaired(path)).status == HTTPStatus.NOT_FOUND
+    posted = _phone(f"{at}/api/album-change", {"action": "remove"}, paired=False)
+    assert _ask(door, posted).status == HTTPStatus.NOT_FOUND
+
+
+def test_a_link_of_one_album_never_shows_another(
+    phone_door: tuple[LanApp, _Home, Runtime],
+) -> None:
+    """0462: album B's files through album A's link: 404."""
+    door, _home, runtime = phone_door
+    photos = _photos(runtime)
+    album_store(runtime).add(AlbumChange("Kids", (photos[-1][1],)))
+    door, _links = _linked(door)
+    kids = _keys(_json(_ask(door, _phone("/api/album/Kids"))))
+    at = str(_make_link(door)["url"]).removeprefix(_ORIGIN)
+    answer = _ask(door, _unpaired(f"{at}/thumb/{kids[0]}{_JPEG}"))
+    assert answer.status == HTTPStatus.NOT_FOUND
+
+
+def test_an_unknown_expired_or_stopped_link_opens_nothing(
+    phone_door: tuple[LanApp, _Home, Runtime],
+) -> None:
+    """0462: the same 404 for each; *Stop sharing* and the 24 h end it."""
+    door, _home, _runtime = phone_door
+    clock = _Clock()
+    door, _links = _linked(door, clock)
+    assert _ask(door, _unpaired("/a/nothing")).status == HTTPStatus.NOT_FOUND
+    at = str(_make_link(door)["url"]).removeprefix(_ORIGIN)
+    assert _ask(door, _unpaired(at)).status == HTTPStatus.OK
+    clock.now = LINK_HOURS * 3600 + 1
+    assert _ask(door, _unpaired(at)).status == HTTPStatus.NOT_FOUND
+    at = str(_make_link(door)["url"]).removeprefix(_ORIGIN)
+    local = f"127.0.0.1:{_PORT}"
+    headers = {
+        "host": local,
+        "content-type": ContentType.JSON,
+        "origin": f"http://{local}",
+    }
+    stop = json.dumps({"action": "stop", "album": _ALBUM}).encode()
+    assert _json(_ask(door, Request("POST", "/api/album-link", headers, stop)))[
+        "stopped"
+    ]
+    assert _ask(door, _unpaired(at)).status == HTTPStatus.NOT_FOUND
+
+
+def test_only_the_pc_makes_a_link_and_a_forged_host_gets_nothing(
+    phone_door: tuple[LanApp, _Home, Runtime],
+) -> None:
+    """0462: `POST /api/album-link` from the home network, paired or not: refused."""
+    door, _home, _runtime = phone_door
+    door, links = _linked(door)
+    asked = {"action": "make", "album": _ALBUM}
+    for paired in (True, False):
+        reply = _ask(door, _phone("/api/album-link", asked, paired=paired))
+        assert reply.status == HTTPStatus.FORBIDDEN
+    assert links.links.shared(_ALBUM) is None
+    at = str(_make_link(door)["url"]).removeprefix(_ORIGIN)
+    forged = Request("GET", at, {"host": f"127.0.0.1:{_PORT}"}, door=Door.LAN)
+    assert _ask(door, forged).status == HTTPStatus.FORBIDDEN
