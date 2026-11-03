@@ -8638,14 +8638,6 @@ msgstr ""
 "écartées : {shots}"
 
 #, python-brace-format
-msgid ""
-"Series still to see in {folder}: {series}. Validate them as shown, "
-"{aside}, the others kept?"
-msgstr ""
-"Séries encore à voir dans {folder} : {series}. Les valider comme affiché,"
-" {aside}, les autres gardées ?"
-
-#, python-brace-format
 msgid "Series {number}"
 msgstr "Série {number}"
 
@@ -16722,6 +16714,11 @@ msgstr[1] ""
 "sauvegarde ({size})."
 
 #, python-brace-format
+msgid "{folder}: {series} validated as shown, {aside}, the others kept."
+msgstr ""
+"{folder} : {series} validées comme affiché, {aside}, les autres gardées."
+
+#, python-brace-format
 msgid "{found} photos and videos found: the first {shown} by date are shown."
 msgstr ""
 "{found} photos et vidéos trouvées : les {shown} premières par date sont "
@@ -17359,11 +17356,11 @@ msgstr "{pair} — groupes : {count}, non décidés : {left}"
 
 #, python-brace-format
 msgid ""
-"{pair} — undecided groups: {count}. As planned, their copies to the "
-"quarantine? Each group can still be decided again."
+"{pair} — {count} undecided groups decided as planned: their copies go to "
+"the quarantine at the next clean."
 msgstr ""
-"{pair} — groupes non décidés : {count}. Comme prévu, leurs copies en "
-"quarantaine ? Chaque groupe peut encore être décidé autrement."
+"{pair} — {count} groupes non décidés réglés comme prévu : leurs copies "
+"iront en quarantaine au prochain nettoyage."
 
 #, python-brace-format
 msgid "{path} belongs to another classify run."
@@ -17609,13 +17606,11 @@ msgstr "{series} à regarder une à une"
 
 #, python-brace-format
 msgid ""
-"{series}: only the sharpest shot (and those of protected folders) would "
-"stay, {aside}, saved in one write. Series to look at, still to see: "
-"{left}. Validate them? Z takes the whole batch back."
+"{series} validated: only the sharpest shot (and those of protected "
+"folders) stays, {aside}. Series to look at, still to see: {left}."
 msgstr ""
-"{series} : seule la photo la plus nette (et celles des dossiers protégés)"
-" resterait, {aside}, enregistré en une seule écriture. Séries à regarder,"
-" encore à voir : {left}. Les valider ? Z annule tout le lot."
+"{series} validées : seule la photo la plus nette (et celles des dossiers "
+"protégés) reste, {aside}. Séries à regarder, encore à voir : {left}."
 
 #, python-brace-format
 msgid ""

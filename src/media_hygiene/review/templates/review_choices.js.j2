@@ -85,6 +85,7 @@
   };
 
   const undo = async () => {
+    window.mhUndoToast.hide();
     const last = history.pop();
     if (!last) {
       setStatus(T.nothingToUndo);
@@ -100,13 +101,15 @@
   };
 
   // Every series still to see in a folder, validated as moving on would, in one write.
-  const validate = (ranks, folder) => {
+  const validate = async (ranks, folder) => {
     const todo = ranks.filter((index) => !series[index].reviewed);
     if (todo.length === 0) {
       setStatus(T.validateNone);
       return;
     }
     const aside = todo.reduce((count, index) => count + proposal(series[index]).length, 0);
-    if (!window.confirm(fill(T.validateAsk, { series: counted(T.nSeries, todo.length), folder: folder, aside: counted(T.nProposed, aside) }))) return;
-    record(todo.map((index) => [index, proposal(series[index])]));
+    // Taken back in one click (0521): no question first, the toast's Undo (or Z) instead.
+    if (await record(todo.map((index) => [index, proposal(series[index])]))) {
+      window.mhUndoToast(fill(T.validateDone, { series: counted(T.nSeries, todo.length), folder: folder, aside: counted(T.nProposed, aside) }), undo);
+    }
   };

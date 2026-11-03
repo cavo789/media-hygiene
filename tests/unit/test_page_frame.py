@@ -73,12 +73,14 @@ def _from_home(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_each_framed_page_holds_the_parts_once(template: str) -> None:
     """The bar and the way home, `#side`, `#bar`; nothing else above the content."""
     page = render_page(template)
-    assert page.count('class="mh-bar"') == 1
+    # The thin bar, or the home page's frame (0491-0496) and its top bar.
+    shelled = page.count('id="mhShellSide"')
+    assert page.count('class="mh-bar"') + shelled == 1
     assert page.count('id="homeLink"') == 1
     assert page.count('id="homeClosed"') == 1  # home_link.html.j2
     assert page.count('<aside id="side">') == 1
     assert page.count('<header id="bar">') == 1
-    assert len(re.findall(r"<header\b", page)) == 1  # no second header
+    assert len(re.findall(r"<header\b", page)) == 1 + shelled  # no second header
     assert "<footer" not in page
     assert page.count("<!DOCTYPE html>") == 1
     content = page.split('<div id="content">')[1]

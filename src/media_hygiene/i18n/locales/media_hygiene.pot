@@ -7138,12 +7138,6 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
-msgid ""
-"Series still to see in {folder}: {series}. Validate them as shown, "
-"{aside}, the others kept?"
-msgstr ""
-
-#, python-brace-format
 msgid "Series {number}"
 msgstr ""
 
@@ -13947,6 +13941,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{folder}: {series} validated as shown, {aside}, the others kept."
+msgstr ""
+
+#, python-brace-format
 msgid "{found} photos and videos found: the first {shown} by date are shown."
 msgstr ""
 
@@ -14519,8 +14517,8 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"{pair} — undecided groups: {count}. As planned, their copies to the "
-"quarantine? Each group can still be decided again."
+"{pair} — {count} undecided groups decided as planned: their copies go to "
+"the quarantine at the next clean."
 msgstr ""
 
 #, python-brace-format
@@ -14745,9 +14743,8 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"{series}: only the sharpest shot (and those of protected folders) would "
-"stay, {aside}, saved in one write. Series to look at, still to see: "
-"{left}. Validate them? Z takes the whole batch back."
+"{series} validated: only the sharpest shot (and those of protected "
+"folders) stays, {aside}. Series to look at, still to see: {left}."
 msgstr ""
 
 #, python-brace-format

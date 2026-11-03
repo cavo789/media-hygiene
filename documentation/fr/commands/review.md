@@ -138,6 +138,11 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
 
 ## Bon à savoir
 
+- **Le menu de la page d'accueil reste à gauche**, replié sur ses icônes (*Nettoyer* en
+  surbrillance ; ☰ le déplie), pour que la grille garde ses colonnes.
+- **Aucune question avant un lot** : *Valider* un dossier, *Valider les séries évidentes* ou G
+  (une paire de dossiers comme prévu) enregistrent tout de suite ; une ligne en bas dit ce qui a
+  été enregistré, avec **↶ Annuler** pendant 8 secondes (Z fait de même).
 - **Depuis la page d'accueil, tout de suite** : les rafales, *Trancher les quasi-doublons*, les
   paires de dossiers, les photos indésirables et les fichiers disparus s'ouvrent dans le serveur
   même de la page d'accueil, sans démarrer un autre conteneur ; l'audit est relu depuis le cache

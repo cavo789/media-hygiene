@@ -133,6 +133,11 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
 
 ## Good to know
 
+- **The home page's menu stays on the left**, folded to its icons (*Clean up* highlighted; ☰
+  unfolds it), so the grid keeps its columns.
+- **No question before a batch**: *Validate* a folder, *Validate the obvious series* or G (a
+  folder pair as planned) save at once; a line at the bottom says what was saved, with
+  **↶ Undo** for 8 seconds (Z does the same).
 - **From the home page, at once**: the burst series, *Settle the near duplicates*, the folder
   pairs, the unwanted photos and the files gone open in the home page's own server, without
   starting another container; the audit is read again from the cache each time the page opens.

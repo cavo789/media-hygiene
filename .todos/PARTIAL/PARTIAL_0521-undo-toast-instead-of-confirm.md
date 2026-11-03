@@ -25,3 +25,24 @@
 
 No `window.confirm` remains on a reversible action (test listing the allowed ones), the toast is
 one shared template, and its Undo is proven by reading the decisions file / journal back.
+
+## Status — PARTIAL (2026-11-03)
+
+### Done
+- Shared toast `review/templates/undo_toast.html.j2` (`window.mhUndoToast(text, undo, {keys})`,
+  `UNDO_TOAST_MS = 8000`, ↶ Undo button, Z when the page's own Z does not already undo).
+- No `window.confirm` any more on: validating a folder's series (`review_choices.js.j2`), the
+  obvious series (`review_obvious.js.j2`), a near-duplicate folder pair as planned
+  (`near_review.js.j2`, G). Their Undo writes `decisions.json` again through the page's usual
+  route, which reads the file back (the review's history / `decide(ranks, null)`).
+- `tests/unit/test_undo_toast.py` lists every confirmation left, with why.
+
+### Not done
+- Moving files to an event (`search_rule.js.j2` goAsk) and *Apply now*: the toast's Undo
+  would have to run `mh undo <run>` from the page; no such route exists yet.
+  **Reason:** needs a POST undo route on the search/home server (journal undo of one run),
+  its own TODO-sized work.
+- Places (a place given photos, a place deleted) and albums (deleted, a photo taken out):
+  config.toml / albums.json edits whose Undo needs the previous content kept and re-sent.
+  **Reason:** reversibility to check and an undo per page to write; kept confirmed meanwhile.
+- `apply_now.html.j2` itself never used `confirm` (mh asks in its terminal): nothing to remove.

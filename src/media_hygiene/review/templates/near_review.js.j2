@@ -209,7 +209,11 @@
   const decidePair = (pair) => {
     const ranks = groups.map((group, rank) => rank).filter((rank) => groups[rank].pair === pair && groups[rank].action === "");
     if (ranks.length === 0) setStatus(T.pairNone, "");
-    else if (window.confirm(fill(T.pairAsk, { pair: pair, count: ranks.length }))) decide(ranks, "planned");
+    // Taken back in one click (0521): no question first; the toast's Undo (or Z) clears them again.
+    else decide(ranks, "planned", () => {
+      render();
+      window.mhUndoToast(fill(T.pairDone, { pair: pair, count: ranks.length }), () => decide(ranks, null), { keys: true });
+    });
   };
 
   document.addEventListener("keydown", (event) => {

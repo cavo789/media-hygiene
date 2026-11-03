@@ -5,6 +5,11 @@
   const THEME_KEY = "mh-home-theme";
   const root = document.documentElement;
   const menu = document.getElementById("mhShellMenu");
+  // The top bar's height, for the page's sticky parts under it (shell.css.j2); it wraps on a narrow window.
+  const top = document.querySelector(".mh-shell-top");
+  const measure = () => root.style.setProperty("--mh-shell-top-h", top.offsetHeight + "px");
+  if ("ResizeObserver" in window) new ResizeObserver(measure).observe(top);
+  measure();
   menu.addEventListener("click", () => {
     const open = root.classList.toggle("mh-shell-open");
     menu.setAttribute("aria-expanded", String(open));

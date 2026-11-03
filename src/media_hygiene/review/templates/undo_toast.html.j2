@@ -1,0 +1,49 @@
+{# The toast of a reversible choice (0521), included by every page whose batch choices used to ask
+   `window.confirm`: a choice taken back in one click asks nothing first. The page saves, reads its
+   file back, then calls `window.mhUndoToast(text, undo)`: "12 photos set aside — Undo" stays
+   UNDO_TOAST_MS, its Undo (or Z, when `keys` is set: a page whose own Z does not already undo it)
+   runs `undo`, which writes the file again and reads it back as any choice does. A confirmation
+   stays only where nothing takes the action back (test_undo_toast lists them). #}
+<div id="mhUndoToast" role="status" aria-live="polite" hidden>
+  <span id="mhUndoText"></span>
+  <button id="mhUndoButton" type="button">↶ {{ _("Undo") }}</button>
+</div>
+<style>
+  #mhUndoToast { position: fixed; z-index: 45; left: 50%; bottom: 16px; transform: translateX(-50%);
+                 display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; max-width: calc(100vw - 32px);
+                 padding: 10px 14px; border-radius: 10px; color: #fff; background: rgba(0, 0, 0, .85);
+                 box-shadow: 0 4px 18px rgb(0 0 0 / 30%); }
+  #mhUndoToast[hidden] { display: none; }
+  #mhUndoToast button { min-height: 36px; padding: 4px 12px; color: #fff; background: transparent;
+                        border: 1px solid rgba(255, 255, 255, .5); border-radius: 8px; font: inherit; cursor: pointer; }
+</style>
+<script>
+(() => {
+  const UNDO_TOAST_MS = 8000;  // long enough to read the line and reach the button
+  const toast = document.getElementById("mhUndoToast");
+  const button = document.getElementById("mhUndoButton");
+  let pending = null;
+  let timer = 0;
+  let keys = false;
+  const hide = () => { toast.hidden = true; pending = null; window.clearTimeout(timer); };
+  const run = () => { const undo = pending; hide(); if (undo) undo(); };
+  window.mhUndoToast = (text, undo, options = {}) => {
+    document.getElementById("mhUndoText").textContent = text;
+    pending = undo;
+    keys = Boolean(options.keys);
+    toast.hidden = false;
+    window.clearTimeout(timer);
+    timer = window.setTimeout(hide, UNDO_TOAST_MS);
+  };
+  window.mhUndoToast.hide = hide;
+  button.addEventListener("click", run);
+  document.addEventListener("keydown", (event) => {
+    if (!pending || !keys || event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
+    if (event.key.toLowerCase() !== "z") return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    run();
+  }, true);
+})();
+</script>

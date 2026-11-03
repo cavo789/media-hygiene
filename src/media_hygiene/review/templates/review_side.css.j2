@@ -8,8 +8,9 @@
   /* No header above the columns (the bar is the right column's): the left one stays at the top
      of the window, short enough to show its keys whole under the page's header (44 px) on a
      page too short to scroll. */
-  #side { position: sticky; top: 8px; display: flex; flex-direction: column; gap: 10px;
-          height: calc(100vh - 60px); margin: 8px 0 8px 16px; }
+  /* In the home page's frame (0491), under its sticky top bar (`--mh-shell-top-h`, shell.js.j2). */
+  #side { position: sticky; top: calc(var(--mh-shell-top-h, 0px) + 8px); display: flex; flex-direction: column; gap: 10px;
+          height: calc(100vh - var(--mh-side-gap, 60px)); margin: 8px 0 8px 16px; }
   #toc { flex: 1; min-height: 0; overflow: auto; padding: 10px 12px; background: var(--card);
          border: 1px solid var(--line); border-radius: 10px; font-size: .85rem; }
   #toc h2 { font-size: 1rem; margin: 0 0 6px; }
