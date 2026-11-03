@@ -44,6 +44,6 @@ saves of the home page failed in the real image (unit tests call `HomeApp` direc
 
 ## Acceptance
 
-- [ ] Starring works (fix above; to confirm on the maintainer's PC) on the maintainer's setup, the star read back from disk
+- [x] Starring works (confirmed by the maintainer 2026-11-03, star and reordering kept) on the maintainer's setup, the star read back from disk
 - [ ] A failing save says why
 - [ ] No save through `toml_edit` drops a key it did not write (tests above)
