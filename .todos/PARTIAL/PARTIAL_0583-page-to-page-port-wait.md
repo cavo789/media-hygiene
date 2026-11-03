@@ -89,3 +89,8 @@ redone at every opening. The "eternity" is now the face work before the page, no
 Next: time each phase (`py-spy` on a synthetic index of 20 000 faces, `measure-before-ranking`);
 candidates: keep the groups in the cache and regroup only the new faces; open the page first and
 show "analysing 108 new photos…" in it instead of in the console.
+
+Timed by the maintainer (stopwatch): **32.1 s** from the click to the page. About 17 s of it is
+the analysis of the 108 new photos (*computed*: 108 × 0.16 s); the other ≈ 15 s (*estimated*, by
+difference) are the container start, the grouping of the 20 315 faces and the page's start. Both
+halves are worth the work: with no new photo, the opening would still take ≈ 15 s.
