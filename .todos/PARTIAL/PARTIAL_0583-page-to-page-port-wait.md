@@ -79,3 +79,13 @@ container ended, or once Docker removed it (removal 0.4 s). The race this TODO's
 **not reproduced** by the script: the wait added by the fix costs ≈ 0.4 s and gains nothing
 measured here. The real cause of the "eternity" stays to be found from a real click on
 `mh people` from the home page (console lines + time), with the image of this branch.
+
+## A real click on `mh people` from home (maintainer, 2026-11-03, image 32cafce7)
+
+No "port 8088 busy" line any more (the two lines of the report are gone). What the console shows
+between the click and the page: the 108 new photos analysed (6 faces, 0.16 s per photo → ≈ 17 s,
+*computed from the console*), then the grouping of **20 315 faces of 38 513 photos** into 155 groups,
+redone at every opening. The "eternity" is now the face work before the page, not the port.
+Next: time each phase (`py-spy` on a synthetic index of 20 000 faces, `measure-before-ranking`);
+candidates: keep the groups in the cache and regroup only the new faces; open the page first and
+show "analysing 108 new photos…" in it instead of in the console.
