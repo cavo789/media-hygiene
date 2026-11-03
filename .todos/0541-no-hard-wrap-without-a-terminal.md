@@ -43,3 +43,7 @@ cut the same way.
 Not conclusive for this TODO: `--help` is drawn by Typer, not by `console/output.py`. The
 unit test of "Done when" settles the rest without the maintainer (a 200-character message to a
 non-terminal stream); a real check is still a long message of a run without `-t` (`mh audit`).
+`mh audit` too (maintainer, same day): wraps at the edge. Read after: `audit` and `--help` run
+with `-it` (`safety.DATA_COMMANDS` lists the commands run without a terminal: `launcher`,
+`menu`, the phone and push steps). Only those can cut at 80: the unit test settles it; no
+check left for the maintainer.
