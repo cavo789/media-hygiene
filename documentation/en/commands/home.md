@@ -99,6 +99,12 @@ Opened by a right-click on a folder (or `mh --photos "E:\Folder"`), the page nam
 first: *This page also analyses: E:\Folder*; the audit of the page and every step run from it
 analyse it too.
 
+The audit panel says what the audit analyses and ignores: *Analysed: photos, RAW, videos ·
+ignored folders: …* (`[scan] extensions` and `excluded_names` of `config.toml`). *Change*
+offers the kinds as checkboxes and the folder names as a list, one per line (`*` allowed); *Save*
+writes `config.toml` (your comments kept) and shows what the file holds once read back. The last
+audit was made with the former settings: the page says so and offers *Run the audit again*.
+
 ## Run a step
 
 The page never changes your photos itself. What a step's button does depends on the `mh` that

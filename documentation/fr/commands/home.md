@@ -106,6 +106,13 @@ Ouverte par un clic droit sur un dossier (ou `mh --photos "E:\Dossier"`), la pag
 dossier en premier : *Cette page analyse aussi : E:\Dossier* ; l'audit de la page et chaque
 étape lancée depuis elle l'analysent aussi.
 
+Le panneau de l'audit dit ce que l'audit analyse et ignore : *Analysés : photos, RAW, vidéos ·
+dossiers ignorés : …* (`[scan] extensions` et `excluded_names` de `config.toml`). *Modifier*
+propose les sortes de fichiers en cases à cocher et les noms de dossiers en liste, un par ligne
+(`*` permis) ; *Enregistrer* écrit `config.toml` (vos commentaires gardés) et montre ce que le
+fichier contient, relu sur le disque. Le dernier audit a été fait avec les anciens réglages : la
+page le dit et propose *Relancer l'audit*.
+
 ## Lancer une étape
 
 La page ne modifie jamais vos photos elle-même. Ce que fait le bouton d'une étape dépend du `mh`

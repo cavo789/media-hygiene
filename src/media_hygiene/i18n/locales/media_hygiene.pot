@@ -1086,6 +1086,9 @@ msgid ""
 "estimate of a full run, and stop."
 msgstr ""
 
+msgid "Analysed:"
+msgstr ""
+
 msgid "And the state of each folder mounted."
 msgstr ""
 
@@ -3058,6 +3061,9 @@ msgid ""
 "--exclude."
 msgstr ""
 
+msgid "Folder names ignored wherever they are, one per line (* allowed)"
+msgstr ""
+
 msgid ""
 "Folder names never analysed, wherever they are, on every disk: they add "
 "to the system and trash folders always skipped ('media-hygiene config' "
@@ -3849,6 +3855,9 @@ msgid "Kind of file"
 msgstr ""
 
 msgid "Kinds of files"
+msgstr ""
+
+msgid "Kinds of files analysed"
 msgstr ""
 
 msgid ""
@@ -6759,6 +6768,9 @@ msgstr ""
 msgid "Run the Czkawka command again; it writes this file with -C."
 msgstr ""
 
+msgid "Run the audit again"
+msgstr ""
+
 msgid "Run the audit first (Clean, step 1)."
 msgstr ""
 
@@ -6891,6 +6903,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Save {url} as {path} by hand, then run the command again."
+msgstr ""
+
+msgid "Saved in config.toml, read back from the disk."
 msgstr ""
 
 #, python-brace-format
@@ -8382,6 +8397,11 @@ msgid "The largest clusters without a name"
 msgstr ""
 
 msgid ""
+"The last audit was made with the former settings: run the audit again "
+"before cleaning."
+msgstr ""
+
+msgid ""
 "The last audit's proposals were made with the former roles: run the audit"
 " again before cleaning."
 msgstr ""
@@ -8850,6 +8870,9 @@ msgstr ""
 msgid "The settings changed but cannot be read; the last good ones stay: {error}"
 msgstr ""
 
+msgid "The settings could not be saved in config.toml."
+msgstr ""
+
 #, python-brace-format
 msgid "The sheet '{name}' was renamed or deleted."
 msgstr ""
@@ -9310,6 +9333,9 @@ msgid "Tick all"
 msgstr ""
 
 msgid "Tick an extension or a folder."
+msgstr ""
+
+msgid "Tick at least one kind of file to analyse."
 msgstr ""
 
 msgid "Tick at least one photo."
@@ -10430,6 +10456,10 @@ msgstr ""
 msgid "alphabetical order (nothing else differs)"
 msgstr ""
 
+#, python-brace-format
+msgid "also kept, written in config.toml: {list}"
+msgstr ""
+
 msgid "among the blurriest of your photos"
 msgstr ""
 
@@ -10938,6 +10968,9 @@ msgid "iPhone, iPad"
 msgstr ""
 
 msgid "if the cache is ever lost: mh restore."
+msgstr ""
+
+msgid "ignored folders:"
 msgstr ""
 
 #, python-brace-format
@@ -11517,6 +11550,9 @@ msgstr ""
 msgid "nobody named {name} on this photo"
 msgstr ""
 
+msgid "none but the system ones"
+msgstr ""
+
 msgid "none: the whole group aside, then next"
 msgstr ""
 
@@ -11679,6 +11715,9 @@ msgid "phone smartphone iphone android usb cable copy dcim"
 msgstr ""
 
 msgid "photo"
+msgstr ""
+
+msgid "photos"
 msgstr ""
 
 msgid "photos have words"
@@ -12464,6 +12503,9 @@ msgid "video tags"
 msgstr ""
 
 msgid "video: open the original"
+msgstr ""
+
+msgid "videos"
 msgstr ""
 
 msgid "videos heavy lighten compress space mjpeg"

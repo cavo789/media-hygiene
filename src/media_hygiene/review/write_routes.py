@@ -22,6 +22,7 @@ from media_hygiene.review.lan_phones_api import PHONE_PATHS
 from media_hygiene.review.near_app import NEAR_DECIDE_PATH
 from media_hygiene.review.pairs_app import PAIRS_DECIDE_PATH
 from media_hygiene.review.phone_app import FREE_PATH, PHONE_DECIDE_PATH
+from media_hygiene.review.scan_scope_api import SCOPE_PATH
 from media_hygiene.review.shrink_app import CHOOSE_PATH, LIGHTEN_PATH
 from media_hygiene.review.sort_choices import (
     DESTINATION_PATH,
@@ -75,5 +76,5 @@ CHANGES: Final = (
     _DECISIONS
     | _SORTING
     | _PC_ONLY
-    | {CHOSEN_PATH, PEOPLE_REJECT_PATH, CHANGE_PATH, SAVE_PATH, ASIDE_PATH}
+    | {CHOSEN_PATH, PEOPLE_REJECT_PATH, CHANGE_PATH, SAVE_PATH, ASIDE_PATH, SCOPE_PATH}
 )

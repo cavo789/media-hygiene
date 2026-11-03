@@ -159,7 +159,7 @@ const recentReports = () => `<section class="panel" aria-labelledby="reportsTitl
 function auditPanel() {
   return `<section class="panel audit-here" id="auditHere" aria-labelledby="auditHereTitle">
     <div class="panel-head"><h2 class="panel-title" id="auditHereTitle">${esc(T.auditHere)}</h2>${riskPill("safe")}</div>
-    <p class="muted">${esc(T.auditHereText)}</p>
+    <p class="muted">${esc(T.auditHereText)}</p>${scopeHtml()}
     <div class="audit-controls"><button class="btn" type="button" data-act="audit-here" id="auditStart">${icon("play")} ${esc(T.auditNow)}</button><button class="btn btn-ghost" type="button" data-act="audit-stop" id="auditStop" hidden>${esc(T.auditStop)}</button></div>
     <ol class="progress-steps" id="auditSteps" hidden></ol>
     <p class="pcurrent" id="auditCurrent" aria-live="polite"></p>

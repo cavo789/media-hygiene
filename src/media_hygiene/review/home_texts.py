@@ -1,8 +1,7 @@
 """The texts of the home page, translated: the shell, the home view and the spaces.
 
-The page reads them as `T.<key>`; a few hold markup (`<kbd>`, `<strong>`, a link),
-built here around the translated text escaped. `home_texts_run.py` holds the texts of
-the steps run, of the dialogs and of the palette.
+The page reads them as `T.<key>`; a few hold markup (`<kbd>`, a link), built around
+the translated text escaped; the other `home_texts_*` hold those of each part.
 """
 
 from __future__ import annotations
@@ -13,6 +12,7 @@ from media_hygiene.review.home_texts_favs import favourite_texts
 from media_hygiene.review.home_texts_marked import marked_texts
 from media_hygiene.review.home_texts_run import run_texts
 from media_hygiene.review.home_texts_runs import runs_texts
+from media_hygiene.review.home_texts_scope import scope_texts
 from media_hygiene.review.home_texts_tags import tags_texts
 
 
@@ -32,6 +32,7 @@ def home_texts() -> dict[str, str]:
         **runs_texts(),
         **family_texts(),
         **favourite_texts(),
+        **scope_texts(),
     }
 
 

@@ -1386,6 +1386,9 @@ msgstr ""
 "Analyser ce nombre de photos prises au hasard, afficher le temps par "
 "photo et l'estimation d'une exécution complète, puis s'arrêter."
 
+msgid "Analysed:"
+msgstr "Analysés :"
+
 msgid "And the state of each folder mounted."
 msgstr "Et l'état de chaque dossier monté."
 
@@ -3753,6 +3756,9 @@ msgstr ""
 "(répétable). S'ajoute aux dossiers système déjà ignorés. Pour un dossier "
 "précis, utilisez --exclude."
 
+msgid "Folder names ignored wherever they are, one per line (* allowed)"
+msgstr "Noms de dossiers ignorés où qu'ils soient, un par ligne (* permis)"
+
 msgid ""
 "Folder names never analysed, wherever they are, on every disk: they add "
 "to the system and trash folders always skipped ('media-hygiene config' "
@@ -4703,6 +4709,9 @@ msgstr "Genre de fichier"
 
 msgid "Kinds of files"
 msgstr "Types de fichiers"
+
+msgid "Kinds of files analysed"
+msgstr "Sortes de fichiers analysées"
 
 msgid ""
 "Labels of the 'inventory' export, computed when it is written: change a "
@@ -8184,6 +8193,9 @@ msgstr "Lancez docker avec -it, ou ajoutez --yes."
 msgid "Run the Czkawka command again; it writes this file with -C."
 msgstr "Relancez la commande Czkawka ; elle écrit ce fichier avec -C."
 
+msgid "Run the audit again"
+msgstr "Relancer l'audit"
+
 msgid "Run the audit first (Clean, step 1)."
 msgstr "Lancez d'abord l'audit (Nettoyage, étape 1)."
 
@@ -8347,6 +8359,10 @@ msgstr "Enregistrer cette position"
 #, python-brace-format
 msgid "Save {url} as {path} by hand, then run the command again."
 msgstr "Enregistrez {url} sous {path} à la main, puis relancez la commande."
+
+#, python-brace-format
+msgid "Saved in config.toml, read back from the disk."
+msgstr "Enregistré dans config.toml, relu sur le disque."
 
 #, python-brace-format
 msgid "Saved in config.toml, read back: nobody is named {name}."
@@ -10120,6 +10136,11 @@ msgid "The largest clusters without a name"
 msgstr "Les plus grands groupes sans nom"
 
 msgid ""
+"The last audit was made with the former settings: run the audit again "
+"before cleaning."
+msgstr "Le dernier audit a été fait avec les anciens réglages : relancez l'audit avant de nettoyer."
+
+msgid ""
 "The last audit's proposals were made with the former roles: run the audit"
 " again before cleaning."
 msgstr ""
@@ -10711,6 +10732,9 @@ msgstr ""
 "Les réglages ont changé mais ne se lisent pas ; les derniers bons restent"
 " : {error}"
 
+msgid "The settings could not be saved in config.toml."
+msgstr "Les réglages n'ont pas pu être enregistrés dans config.toml."
+
 #, python-brace-format
 msgid "The sheet '{name}' was renamed or deleted."
 msgstr "La feuille « {name} » a été renommée ou supprimée."
@@ -11284,6 +11308,9 @@ msgstr "Tout cocher"
 
 msgid "Tick an extension or a folder."
 msgstr "Cochez une extension ou un dossier."
+
+msgid "Tick at least one kind of file to analyse."
+msgstr "Cochez au moins une sorte de fichiers à analyser."
 
 msgid "Tick at least one photo."
 msgstr "Cochez au moins une photo."
@@ -12625,6 +12652,10 @@ msgstr "les {count} gardées"
 msgid "alphabetical order (nothing else differs)"
 msgstr "l'ordre alphabétique (rien d'autre ne diffère)"
 
+#, python-brace-format
+msgid "also kept, written in config.toml: {list}"
+msgstr "gardés aussi, écrits dans config.toml : {list}"
+
 msgid "among the blurriest of your photos"
 msgstr "parmi les plus floues de vos photos"
 
@@ -13165,6 +13196,9 @@ msgstr "iPhone, iPad"
 
 msgid "if the cache is ever lost: mh restore."
 msgstr "si le cache est un jour perdu : mh restore."
+
+msgid "ignored folders:"
+msgstr "dossiers ignorés :"
 
 #, python-brace-format
 msgid ""
@@ -13817,6 +13851,9 @@ msgstr "il ne reste aucune photo gardée de sa série"
 msgid "nobody named {name} on this photo"
 msgstr "personne ne s'appelle {name} sur cette photo"
 
+msgid "none but the system ones"
+msgstr "aucun, sauf ceux du système"
+
 msgid "none: the whole group aside, then next"
 msgstr "aucune : tout le groupe écarté, puis suivant"
 
@@ -13990,6 +14027,9 @@ msgstr "téléphone smartphone iphone android usb câble copier dcim"
 
 msgid "photo"
 msgstr "photo"
+
+msgid "photos"
+msgstr "photos"
 
 msgid "photos have words"
 msgstr "photos ont des mots"
@@ -14867,6 +14907,9 @@ msgstr "balises de la vidéo"
 
 msgid "video: open the original"
 msgstr "vidéo : ouvrez l'original"
+
+msgid "videos"
+msgstr "vidéos"
 
 msgid "videos heavy lighten compress space mjpeg"
 msgstr "vidéos lourdes alléger compresser place mjpeg"
@@ -17990,7 +18033,9 @@ msgstr ""
 "propos du téléphone > Nom de l'appareil), puis rebranchez-le."
 
 msgid "📁 Where should your albums go? Pick a folder on the disk of your photos."
-msgstr "📁 Où mettre vos albums ? Choisissez un dossier sur le disque de vos photos."
+msgstr ""
+"📁 Où mettre vos albums ? Choisissez un dossier sur le disque de vos "
+"photos."
 
 #, python-brace-format
 msgid "📁 Your albums go to {folder}."

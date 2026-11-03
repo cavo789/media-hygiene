@@ -8,7 +8,8 @@ come from the door every page shares, `ending`),
 `GET /api/audit` the progress of the audit run by the page, and `POST /api/audit`
 starts it (one at a time) or stops it, `/api/tags` the same for `tags`
 (`home_tags_api`, 0343), `/api/people` and `/api/meaning` for faces and meaning;
-`POST /api/favourites` saves the starred actions (0484);
+`POST /api/favourites` saves the starred actions (0484), `/api/scan-scope` what
+the audit analyses (0535);
 `POST /api/alive` says a tab still shows the page (0261, `presence`). `POST /api/step`
 ends the server with `STEP_EXIT_BASE + n` for step `n`, which `mh` then runs in the
 terminal (`home_step`): only when the launcher said it does
@@ -35,6 +36,7 @@ from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH, LocalApp
 from media_hygiene.review.presence import PRESENCE_PATH, presence_response
 from media_hygiene.review.report_files import report_response
+from media_hygiene.review.scan_scope_api import SCOPE_PATH, scope_route
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.step_watch import STEP_PATH, step_state
 
@@ -96,6 +98,8 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
         Returns:
             The response.
         """
+        if request.path == SCOPE_PATH and self.config_file is not None:  # 0535
+            return await scope_route(self.config_file, request)
         if request.method == _GET:
             return await self._read(request.path)
         if request.method == _POST:

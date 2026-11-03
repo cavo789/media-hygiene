@@ -1,8 +1,4 @@
-"""Serve the home page until Ctrl+C, or until the user chooses a step.
-
-A step chosen is run by `mh` in the terminal (`home_step`, `step_watch`) when `mh` set
-`MEDIA_HYGIENE_LAUNCHER_STEPS`, else the page copies it; `search`, `browse` too.
-"""
+"""Serve the home page until Ctrl+C or a step chosen (`home_step`, `step_watch`)."""
 
 from __future__ import annotations
 
@@ -34,6 +30,7 @@ from media_hygiene.review.lan_phones import phone_book
 from media_hygiene.review.lan_problem import with_problem
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.presence import ALIVE_SECONDS, PRESENCE_PATH, Presence
+from media_hygiene.review.scan_scope_api import SCOPE_PATH
 from media_hygiene.review.step_watch import STEP_PATH, keeps_server
 from media_hygiene.search.late_desk import LATE_PATH
 from media_hygiene.services.album_pages import album_pages
@@ -87,6 +84,7 @@ def home_page(
             "step": STEP_PATH,
             "audit": AUDIT_PATH,
             "favourites": FAVOURITES_PATH,
+            "scope": SCOPE_PATH,
             **{name: path if path in runs else "" for name, path in RUN_NAMES.items()},
             "alive": PRESENCE_PATH,
             "stop": STOP_PATH,
