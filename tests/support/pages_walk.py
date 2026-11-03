@@ -29,8 +29,6 @@ ROUNDS: Final = (
     10  # returns from a page of its own server, in a row (0354: 1 in 3 failed)
 )
 REVIEWS: Final = ("review", "review-pairs", "review-junk")
-MARK_JS: Final = "() => { window.mhWalk = 1; }"
-MARKED_JS: Final = "() => window.mhWalk === 1"
 # The page's script lives in a closure (no globals): the walk asks what the page asks
 # (/api/state) and clicks what the page draws (a `data-run` button, its one dispatcher).
 AVAILABLE_JS: Final = """(name) => fetch('/api/state', { cache: 'no-store' })
@@ -46,7 +44,6 @@ RUN_JS: Final = """(name) => {
 }"""
 STOPPED: Final = "#mhStopped"  # presence.html.j2's overlay
 FAILED_FETCH_JS: Final = "() => fetch('/api/state').catch(() => null)"
-STEP_JS: Final = "() => fetch('/api/step', { cache: 'no-store' }).then((r) => r.json())"
 # The search page timed by the browser: its navigation, its first answer of /api/search.
 TIMING_JS: Final = """() => {
   const nav = performance.getEntriesByType("navigation")[0];
@@ -107,27 +104,27 @@ def open_from_home(page: Page, name: str) -> dict[str, Any]:
 
 
 def console_step(page: Page) -> dict[str, Any]:
-    """`status` from the home page: it runs in the window of mh, the page stays.
+    """`config` from the home page: its output in a page of the home server (0567).
+
+    `status` became console-only (0504); `config` stays on the home page and its text
+    lands in `/console/config/`, then *Back to the home page*.
 
     Args:
         page: The tab, on the home page.
 
     Returns:
-        What the dialog said, the step's end, the time it took.
+        The page's address and text, whether it showed an error, the time it took.
     """
-    page.evaluate(MARK_JS)
     start = time.monotonic()
-    page.evaluate(RUN_JS, "status")
-    said = page.locator("#runDlg [role=status]").inner_text(timeout=SHOWN_MS)
-    page.wait_for_selector("#runDlg", state="hidden", timeout=STEP_MS)
+    page.evaluate(RUN_JS, "config")
+    page.wait_for_selector(PAGE_READY, timeout=STEP_MS)
+    said = page.locator("main pre").inner_text(timeout=SHOWN_MS)
     took = (time.monotonic() - start) * 1000
-    step: dict[str, Any] = page.evaluate(STEP_JS)
-    return {
-        "said": said,
-        "step": step,
-        "stayed": page.evaluate(MARKED_JS),  # never reloaded nor closed
-        "took_ms": round(took),
-    }
+    url = page.url
+    error = page.locator("main .error").count() > 0
+    page.click(PAGE_READY)
+    home_shown(page, SHOWN_MS)
+    return {"url": url, "said": said, "error": error, "took_ms": round(took)}
 
 
 def own_server_rounds(page: Page) -> dict[str, Any]:
