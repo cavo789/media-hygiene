@@ -37,6 +37,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.http import Response
 
 ROLE_PATH: Final = "/api/folder-role"
+ALBUM_ROOT_PATH: Final = "/api/album-root"  # `album_root_desk` (0534)
 ROLES: Final = ("protected", "preferred", "backups", "excluded")
 _TABLE: Final = "folders"
 _MAX_PATH: Final = 4096

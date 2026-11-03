@@ -22,3 +22,22 @@ set: shown in the bar with *Change* (what happens to existing albums when it cha
 By the maintainer, review of the 2026-11-02 iterate: when the albums folder changes, the album
 link folders are **recreated in the new folder**; the old folder is emptied of its links only
 (never a photo, never a file the tool did not make), and `albums.json` keeps the albums.
+
+## Status — PARTIAL (2026-11-03)
+
+### Done
+- The album bar of `search`/`browse` says where the albums go (`[album] root`, else `Albums` in
+  `[classify] target`), read from `config.toml`; empty, it asks "Where should your albums go?";
+  *📁 Change* opens a folder field. `GET`/`POST /api/album-root` (`search/album_root_desk.py`):
+  refused (409, file untouched) outside the mounted folders, inside a protected one, or
+  read-only; saved with `toml_edit`, read back and said. Tests `tests/unit/test_album_root_desk.py`.
+  Docs `commands/search.md` EN + FR.
+
+### Not done
+- The decided move: album link folders recreated in the new folder, the old one emptied of its
+  links only. **Reason:** needs a journaled run (links made then removed, undoable), out of a
+  page request; filed as 0582. Until then the answer says the folders made before stay, and to
+  run `mh album <name> --apply` again.
+- A tree folder chooser (the field is a typed path). **Reason:** the search tree lists the
+  library folders only; an album folder is often a new one.
+- `docs_screenshots` to refresh the search captures (not run: heavy).

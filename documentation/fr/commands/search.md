@@ -390,6 +390,12 @@ fichiers trouvés**), puis **➕ Ajouter à l'album**.
   n'a été copiée ni déplacée.*
 - Ce n'est **pas** la mise de côté : *Mettre de côté* prépare un retrait, *Ajouter à l'album* un
   partage. Aucun des deux ne touche jamais la liste de l'autre.
+- **📁 Vos albums vont dans …** sous la barre dit où les dossiers d'albums (`mh album <nom>
+  --apply`) sont faits : `[album] root` de `config.toml`, sinon `Albums` dans la photothèque
+  triée. Non réglé, la barre demande *Où mettre vos albums ?* ; **📁 Changer** le règle. Le
+  dossier doit être dans un dossier monté, hors des dossiers protégés, et accessible en écriture ;
+  il est enregistré dans `config.toml` (vos commentaires gardés) et affiché tel que relu. Les
+  dossiers d'albums déjà faits restent où ils sont : refaites chacun pour l'avoir dans le nouveau.
 - **Retirer de l'album** retire les photos choisies de l'album tapé ; un album laissé vide est
   supprimé.
 - Une photo déplacée depuis, par [`sort`](sort.md), par [`undo`](undo.md), ou dans un dossier

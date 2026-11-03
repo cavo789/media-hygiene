@@ -2,8 +2,7 @@
 
 `GET /` serves the page opened (`/search`, `/browse`, `/events`); `POST /api/search` the
 files found; `/thumb/`, `/preview/`, `/original/` the pictures; `/api/chosen`, albums,
-*Apply now*, folders, period rules, the Events view, the words typed by hand (0555).
-Loopback hosts only, JSON bodies only, the page's origin.
+*Apply now*, folders, period rules, Events, words typed by hand (0555). Loopback only.
 """
 
 from __future__ import annotations
@@ -18,12 +17,13 @@ from media_hygiene.review.home_views import APPLY_PATH
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
 from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_response
+from media_hygiene.search.album_root_desk import folder_gets
 from media_hygiene.search.asked import read_asked
 from media_hygiene.search.chosen_api import CHOSEN_PATH
 from media_hygiene.search.coverage import CoverageKept
 from media_hygiene.search.events_choose import SORT_POSTS, events_get, sort_post
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
-from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS, FOLDERS_PATH
+from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS
 from media_hygiene.search.hits import with_facts
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH
 from media_hygiene.search.people_why import (
@@ -159,7 +159,7 @@ class SearchApp:
         states = {
             CHOSEN_PATH: self.place.chosen.state,
             ALBUMS_PATH: self.place.albums.state,
-            FOLDERS_PATH: self.place.folders.tree,
+            **folder_gets(self.place.folders),
             PERIOD_RULES_PATH: self.place.rules.state,
         }
         if path in states:

@@ -1807,6 +1807,9 @@ msgstr "Catégories"
 msgid "Category"
 msgstr "Catégorie"
 
+msgid "Change"
+msgstr "Changer"
+
 #, python-brace-format
 msgid "Changed your mind? 'media-hygiene undo {run_id}' moves everything back:"
 msgstr "Vous changez d'avis ? 'media-hygiene undo {run_id}' remet tout en place :"
@@ -8392,6 +8395,10 @@ msgstr[1] ""
 "sont."
 
 #, python-brace-format
+msgid "Saved in {file}: your albums now go to {folder}."
+msgstr "Enregistré dans {file} : vos albums vont désormais dans {folder}."
+
+#, python-brace-format
 msgid "Saved in {file}: {folder} is now {role}."
 msgstr "Enregistré dans {file} : {folder} est maintenant {role}."
 
@@ -9443,6 +9450,14 @@ msgstr ""
 "Les actions favorites de la page d'accueil, dans leur ordre : la page "
 "écrit cette liste quand vous cliquez sur une étoile ou déplacez une "
 "carte. Vide : trois sont suggérées (search, import, audit)."
+
+#, python-brace-format
+msgid ""
+"The album folders made before stay in {folder}: make each one again (mh "
+"album <name> --apply) to have it in the new folder."
+msgstr ""
+"Les dossiers d'albums déjà faits restent dans {folder} : refaites chacun "
+"(mh album <nom> --apply) pour l'avoir dans le nouveau dossier."
 
 msgid "The album stopped at the first link refused by the disk."
 msgstr "L'album s'est arrêté au premier lien refusé par le disque."
@@ -11883,6 +11898,9 @@ msgstr ""
 "{month_name}, {day}, {category}, {event}, {event_start}, {place}, "
 "{country}, {region}, {city}."
 
+msgid "Where should your albums go?"
+msgstr "Où mettre vos albums ?"
+
 #, python-brace-format
 msgid "Where sure files go, e.g. '{year}/{year_month}/{category}'."
 msgstr "Où vont les fichiers sûrs, par exemple '{year}/{year_month}/{category}'."
@@ -12995,6 +13013,9 @@ msgstr "doublons copies analyser scanner vérifier abîmés cassés illisibles"
 
 msgid "e.g. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/"
 msgstr "p. ex. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/"
+
+msgid "e.g. C:\\Photos\\Albums"
+msgstr "p. ex. C:\\Photos\\Albums"
 
 msgid "e.g. Crete 2023"
 msgstr "p. ex. Crète 2023"
@@ -16715,8 +16736,7 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid "{folder}: {series} validated as shown, {aside}, the others kept."
-msgstr ""
-"{folder} : {series} validées comme affiché, {aside}, les autres gardées."
+msgstr "{folder} : {series} validées comme affiché, {aside}, les autres gardées."
 
 #, python-brace-format
 msgid "{found} photos and videos found: the first {shown} by date are shown."
@@ -17968,6 +17988,13 @@ msgstr ""
 "modèle partageraient son dossier. Donnez-lui un nom à lui (Samsung : "
 "Paramètres > À propos du téléphone > Modifier ; Pixel : Paramètres > À "
 "propos du téléphone > Nom de l'appareil), puis rebranchez-le."
+
+msgid "📁 Where should your albums go? Pick a folder on the disk of your photos."
+msgstr "📁 Où mettre vos albums ? Choisissez un dossier sur le disque de vos photos."
+
+#, python-brace-format
+msgid "📁 Your albums go to {folder}."
+msgstr "📁 Vos albums vont dans {folder}."
 
 msgid "📍 The GPS positions were kept, as asked."
 msgstr "📍 Les positions GPS ont été gardées, comme demandé."

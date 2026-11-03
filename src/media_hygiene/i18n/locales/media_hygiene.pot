@@ -1459,6 +1459,9 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
+msgid "Change"
+msgstr ""
+
 #, python-brace-format
 msgid "Changed your mind? 'media-hygiene undo {run_id}' moves everything back:"
 msgstr ""
@@ -6931,6 +6934,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "Saved in {file}: your albums now go to {folder}."
+msgstr ""
+
+#, python-brace-format
 msgid "Saved in {file}: {folder} is now {role}."
 msgstr ""
 
@@ -7834,6 +7841,12 @@ msgid ""
 "The actions starred on the home page, in their order: the page writes "
 "this list when you click a star or move a card. Empty: three are "
 "suggested (search, import, audit)."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The album folders made before stay in {folder}: make each one again (mh "
+"album <name> --apply) to have it in the new folder."
 msgstr ""
 
 msgid "The album stopped at the first link refused by the disk."
@@ -9821,6 +9834,9 @@ msgid ""
 "{event}, {event_start}, {place}, {country}, {region}, {city}."
 msgstr ""
 
+msgid "Where should your albums go?"
+msgstr ""
+
 #, python-brace-format
 msgid "Where sure files go, e.g. '{year}/{year_month}/{category}'."
 msgstr ""
@@ -10774,6 +10790,9 @@ msgid "duplicates copies analyse scan check damaged broken unreadable"
 msgstr ""
 
 msgid "e.g. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/"
+msgstr ""
+
+msgid "e.g. C:\\Photos\\Albums"
 msgstr ""
 
 msgid "e.g. Crete 2023"
@@ -15042,6 +15061,13 @@ msgid ""
 "model would share its folder. Give it a name of its own (Samsung: "
 "Settings > About phone > Edit; Pixel: Settings > About phone > Device "
 "name), then plug it in again."
+msgstr ""
+
+msgid "📁 Where should your albums go? Pick a folder on the disk of your photos."
+msgstr ""
+
+#, python-brace-format
+msgid "📁 Your albums go to {folder}."
 msgstr ""
 
 msgid "📍 The GPS positions were kept, as asked."

@@ -363,6 +363,12 @@ to the album**.
   files, saved in …. Only this file changed: no photo was copied or moved.*
 - It is **not** the set aside: *Set aside* prepares a removal, *Add to the album* a share. Neither
   ever touches the other's list.
+- **📁 Your albums go to …** under the bar says where the album folders (`mh album <name>
+  --apply`) are made: `[album] root` of `config.toml`, else `Albums` in the sorted library.
+  Not set, the bar asks *Where should your albums go?*; **📁 Change** sets it. The folder must be
+  in a mounted folder, outside the protected ones, and writable; it is saved in `config.toml`
+  (your comments kept) and shown as read back. Album folders made before stay where they are:
+  make each one again to have it in the new folder.
 - **Take out of the album** takes the picked photos out of the album typed; an album left empty
   is removed.
 - A photo moved since, by [`sort`](sort.md), by [`undo`](undo.md), or in a folder renamed in the

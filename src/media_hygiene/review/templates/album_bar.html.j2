@@ -42,6 +42,45 @@
 {% endif %}
 </div>
 <p id="albumSaid" role="status"></p>
+{% if album_root_path | default("") %}
+{# Where the albums go (0534): `[album] root` read back from `config.toml`; empty, asked. #}
+<p id="albumRoot"><span id="albumRootSaid"></span>
+  <button id="albumRootChange" class="plain" type="button">📁 {{ _("Change") }}</button></p>
+<form id="albumRootForm" hidden>
+  <label for="albumRootField">{{ _("Where should your albums go?") }}</label>
+  <input id="albumRootField" maxlength="4096" autocomplete="off" placeholder="{{ _('e.g. C:\\Photos\\Albums') }}">
+  <button type="submit">{{ _("Save") }}</button>
+</form>
+<script>
+(() => {
+  const PATH = {{ album_root_path | tojson }};
+  const TEXTS = {{ {
+    "at": _("📁 Your albums go to {folder}."),
+    "none": _("📁 Where should your albums go? Pick a folder on the disk of your photos."),
+    "notSaved": _("Nothing was saved: {error}"),
+  } | tojson }};
+  const $ = (id) => document.getElementById(id);
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  const show = (state, said) => {
+    $("albumRootSaid").textContent = said || (state.used ? fill(TEXTS.at, { folder: state.used }) : TEXTS.none);
+    $("albumRootField").value = state.root || state.used || "";
+    $("albumRootForm").hidden = Boolean(said || state.used);
+  };
+  $("albumRootChange").addEventListener("click", () => { $("albumRootForm").hidden = !$("albumRootForm").hidden; });
+  $("albumRootForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const answer = await fetch(PATH, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ root: $("albumRootField").value }),
+    }).catch(() => null);
+    const state = answer ? await answer.json().catch(() => ({})) : {};
+    if (answer && answer.ok) show(state, state.said);
+    else $("albumRootSaid").textContent = fill(TEXTS.notSaved, { error: state.error || "" });
+  });
+  fetch(PATH).then((answer) => answer.json()).then((state) => show(state)).catch(() => { /* the bar says it */ });
+})();
+</script>
+{% endif %}
 <p id="albumTvLine" hidden></p>
 <details id="albumMissing" hidden><summary></summary><ul></ul></details>
 <script>
