@@ -35,7 +35,3 @@ After 0515 (9 tiles, 3 × 3), let the user hide, move… the blocks of *Where yo
 ## Decided (2026-11-03)
 
 By the maintainer: the choice lives in `config.toml` `[home] tiles` (tomlkit, comments kept, atomic, read back from disk). Tiles only; a hidden tile stays hidden even when it asks for action. The phone shows the PC's layout, never edits it.
-
-## Decided (2026-11-03, iterate)
-
-By the maintainer: stored in config.toml `[home] tiles` (tomlkit, read back); tiles only; the phone shows the layout, never edits it; a hidden tile asking for action stays hidden.

@@ -45,7 +45,3 @@ Same layout and keys as the other tile pages (skill `photo-picking-pages`).
 ## Decided (2026-11-03)
 
 By the maintainer: also remove the tag from the XMP sidecars already written; several tags at once (a list of the most frequent tags, tick the useless ones). No "merge into another tag".
-
-## Decided (2026-11-03, iterate)
-
-By the maintainer: also remove the dropped tag from the XMP sidecars already written; several tags at once (frequent tags, tick the useless ones); no "merge into another tag".
