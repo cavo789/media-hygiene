@@ -148,3 +148,15 @@ def test_unreadable_folders_list_nothing() -> None:
         assert shell_folders() is None
     finally:
         forget_folders()
+
+
+@pytest.mark.usefixtures("folders")
+def test_your_folders_show_on_a_paired_phone_read_only() -> None:
+    """Review 2026-11-05: the phone page lists them too, never a button or a form."""
+    page = render_page("phone_review.html.j2")
+    start = page.index('<details class="mh-shell-folders')
+    block = page[start : page.index("</details>", start)]
+    assert "pc-only" not in block
+    assert r"C:\Photos" in block
+    assert "<button" not in block
+    assert "<form" not in block

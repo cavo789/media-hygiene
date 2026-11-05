@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Final
 
 from media_hygiene.cli.menu_catalog import catalog
@@ -45,3 +46,16 @@ def test_purge_reaches_the_quarantine_in_one_click_of_the_home_page() -> None:
 def test_the_stale_sort_wording_is_gone() -> None:
     """The Events tab lists the index's events, not the plan's (0572)."""
     assert "on the page or in the workbook" not in catalog().step("sort").text
+
+
+def test_see_them_first_asks_once_per_browser_session() -> None:
+    """Review 2026-11-05: sessionStorage remembers it, guarded; no storage, it asks."""
+    script = (
+        Path(__file__).resolve().parents[2]
+        / "src/media_hygiene/review/templates/home_run.js.j2"
+    ).read_text("utf-8")
+    assert "if (twin && !twinSeen(action))" in script
+    seen = script[script.index("function twinSeen") : script.index("function openTwin")]
+    assert "sessionStorage" in seen
+    assert "try {" in seen
+    assert "catch" in seen

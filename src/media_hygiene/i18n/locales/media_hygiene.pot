@@ -7279,7 +7279,7 @@ msgstr ""
 
 msgid ""
 "Run the regular chores in one go, as listed in config.toml: audit, copies"
-" set aside, old quarantine purged, reports; each asks as usual."
+" set aside, reports; each asks as usual."
 msgstr ""
 
 msgid "Run the regular upkeep"
@@ -8609,8 +8609,8 @@ msgid "The choices did not read back as written: nothing moved."
 msgstr ""
 
 msgid ""
-"The chores of [routine], in order: audit, copies set aside, old "
-"quarantine purged, reports. Each asks as usual."
+"The chores of [routine], in order: audit, copies set aside, reports. Each"
+" asks as usual."
 msgstr ""
 
 msgid ""

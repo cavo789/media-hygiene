@@ -21,8 +21,8 @@ def clean_more_steps() -> tuple[Step, ...]:
             Space.CLEAN,
             _("Run the regular upkeep"),
             _(
-                "The chores of [routine], in order: audit, copies set aside, old "
-                "quarantine purged, reports. Each asks as usual."
+                "The chores of [routine], in order: audit, copies set aside, "
+                "reports. Each asks as usual."
             ),
             "upkeep",
             Risk.FINAL,

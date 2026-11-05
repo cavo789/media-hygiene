@@ -8,8 +8,9 @@
 
 `upkeep` runs the steps listed in `[routine]` of `config.toml`, in this order: `audit` (reads the
 library again, only what changed), `copies` (`clean`: the exact copies to the quarantine, after its
-question; `mh undo` puts them back), `purge` (the quarantine runs older than `purge_hint_days`,
-after the question of `purge` for each), `reports` (the list refreshed). It ends on one 👉 line:
+question; `mh undo` puts them back), `reports` (the list refreshed); `purge` (the quarantine runs
+older than `purge_hint_days`, after the question of `purge` for each) runs only if you add it to
+`steps`, otherwise run [`purge`](purge.md) on its own. It ends on one 👉 line:
 what still waits for you. On the [home page](home.md): *Run the regular upkeep*, in Clean up.
 
 ## At a glance

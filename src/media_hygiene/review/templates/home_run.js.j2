@@ -7,13 +7,22 @@ function onRun(name) {
   const st = statusOf(action);
   if (!st.available) { toast(st.reason); return; }
   // A fast path offers what shows its files first; going on stays one click (0593).
+  // Once per browser session and fast path, not before every launch (review 2026-11-05).
   const twin = !REMOTE && action.twin_text && (action.twin_page || BY_ID[action.twin_step]);
-  if (twin) { openTwin(action); return; }
+  if (twin && !twinSeen(action)) { openTwin(action); return; }
   goOn(action);
 }
 function goOn(action) {
   if (action.fields.length) { openForm(action); return; }
   proceed(action, { number: action.number, command: action.command }, action.command);
+}
+function twinSeen(action) {
+  const key = `mh-see-first:${action.number}`;
+  try {
+    if (sessionStorage.getItem(key)) return true;
+    sessionStorage.setItem(key, "1");
+  } catch (error) { /* no storage: the question each time */ }
+  return false;
 }
 function openTwin(action) {
   const dialog = $("#confirmDlg");

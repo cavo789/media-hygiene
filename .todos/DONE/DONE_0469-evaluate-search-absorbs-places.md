@@ -44,3 +44,7 @@ place has no photos picked. Without the map, they lose drawing a place, the only
 home server. What `library` can absorb it already has: choosing and filling a place. Perhaps add a
 link *Draw a new place* in the *📍 Place…* dialog (cost: a line, proposed, not done). Decision: the
 maintainer's.
+
+## Decided (2026-11-05, review of feedback-2026-11-05-iterate)
+
+Keep the page (maintainer). For `slideshow`: the verb is hidden from `mh --help`, still callable.

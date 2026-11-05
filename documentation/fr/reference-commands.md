@@ -65,7 +65,6 @@ exemples et son `--help`.
 | [`inventory`](commands/inventory.md) | Exporte chaque photo et vidéo avec ce que les audits en ont appris vers un classeur Excel (ou un fichier CSV), depuis le cache seul : aucun fichier n'est lu. | [Référence](reference-inventory.md) |
 | [`tags`](commands/tags.md) | Donne à chaque photo et vidéo des mots pour la retrouver : les mots parlants de ses dossiers et de son nom de fichier, sa date (année, mois, saison, fêtes), son lieu, et ce qu'y voit un modèle de vision local (facultatif ; une vidéo par l'image du milieu). Gardés dans le cache, jamais écrits dans les photos. | [Référence](reference-tags.md) |
 | [`library`](commands/library.md) | Retrouve des photos par leurs mots (ceux de `tags`) et les noms donnés dans `people` (`person:"…"`) dans votre navigateur, avec filtres et aperçus ; avec des mots, affiche les premiers résultats en tableau. Les photos choisies peuvent être mises de côté pour `clean --decisions`. N'écrit jamais dans vos dossiers. | [Référence](reference-tags.md#retrouver-une-photo-par-ses-mots--library) |
-| [`slideshow`](commands/slideshow.md) | Montre les photos d'un dossier, d'une recherche ou les fichiers mis de côté sur la télé (son navigateur, ou celui d'un Chromecast), le téléphone comme télécommande : suivante, précédente, une photo touchée, lecture et pause, « ne pas montrer ». Avec `mh slideshow --lan`, pour le réseau de la maison seulement, la télé appairée par un code qu'elle affiche. N'écrit jamais dans vos dossiers. | [Commandes](commands/slideshow.md) |
 | [`share`](commands/share.md) | Prépare un album pour l'envoyer : une copie de chaque photo, redressée, son grand côté à 2048 pixels, sans sa position GPS (`--keep-gps` la garde), dans un dossier au nom de l'album et son zip, dans `media-hygiene\Shares` ; les vidéos sont laissées de côté et comptées. N'écrit jamais dans vos dossiers. | [Commandes](commands/share.md) |
 | [`people`](commands/people.md) | Trouve les visages des photos, regroupe ceux qui se ressemblent, et vous les fait nommer dans votre navigateur (les noms vont dans `config.toml` ; `library` les retrouve). Les visages restent dans le cache, jamais envoyés nulle part ; `--forget` les supprime tous. N'écrit jamais dans vos dossiers. | [Référence](reference-people.md), [Trier, 10](sort/10-sort-by-person.md) |
 
@@ -85,12 +84,13 @@ exemples et son `--help`.
 | [`backup`](commands/backup.md) | Écrit l'index (ce que les audits, `tags` et `people` ont appris) et les réglages dans un zip de `media-hygiene\backups`, relu ; les 3 plus récents gardés. Ne lit jamais vos photos. | [Commandes](commands/backup.md) |
 | [`restore`](commands/restore.md) | Remet une sauvegarde de l'index (les réglages aussi avec `--config`), après l'avoir vérifiée en entier et avoir sauvegardé l'index remplacé. Ne lit jamais vos photos. | [Commandes](commands/restore.md) |
 
-**Pages : ouvertes depuis la page d'accueil** (absentes de `mh --help` : elles ne font qu'ouvrir une page ; tapées, `mh places` et `mh home` marchent toujours, pour un script ou sans la page d'accueil)
+**Pages : ouvertes depuis la page d'accueil** (absentes de `mh --help` : elles ne font qu'ouvrir une page ; tapées, `mh places`, `mh home` et `mh slideshow` marchent toujours, pour un script ou sans la page d'accueil)
 
 | Commande | Rôle | Guide |
 |---|---|---|
 | [`home`](commands/home.md) | La page d'accueil dans votre navigateur : ce que dit `status`, l'étape suivante en gros bouton, chaque étape des guides numérotée comme dans `mh menu`, les rapports et quelques aperçus ; lance l'audit dans la page, sa progression affichée. Le bouton d'une étape la confie à `mh` dans le terminal. N'écrit jamais dans vos dossiers. | [Commandes](commands/home.md) |
 | [`places`](commands/places.md) | Montre sur une carte dans votre navigateur où les photos ont été prises, et nomme vos lieux ; enregistrés dans `config.toml`. N'écrit jamais dans vos dossiers. | [Trier, 9](sort/09-places-from-gps.md) |
+| [`slideshow`](commands/slideshow.md) | Montre les photos d'un dossier, d'une recherche ou les fichiers mis de côté sur la télé (son navigateur, ou celui d'un Chromecast), le téléphone comme télécommande : suivante, précédente, une photo touchée, lecture et pause, « ne pas montrer ». Avec `mh slideshow --lan`, pour le réseau de la maison seulement, la télé appairée par un code qu'elle affiche. N'écrit jamais dans vos dossiers. | [Commandes](commands/slideshow.md) |
 
 ## Options
 

@@ -44,3 +44,7 @@ removed.
 **Recommendation: keep `people`**, and add that list of names to `library`'s left column if wanted
 (to file on the maintainer's word). Its verb stays in `--help`: it computes. Decision: the
 maintainer's.
+
+## Decided (2026-11-05, review of feedback-2026-11-05-iterate)
+
+Keep the page (maintainer). For `slideshow`: the verb is hidden from `mh --help`, still callable.

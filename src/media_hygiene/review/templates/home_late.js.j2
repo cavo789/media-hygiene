@@ -23,6 +23,13 @@ document.addEventListener("click", (event) => {
   try {
     const now = Date.now();
     sessionStorage.setItem("mh-tidy", JSON.stringify({ started: now, limit: now + TIDY_MS }));
+    // The orders the user had, put back when the session ends (review 2026-11-05).
+    if (localStorage.getItem("mh-tidy-before") === null) {
+      localStorage.setItem("mh-tidy-before", JSON.stringify({
+        "media-hygiene:review:order": localStorage.getItem("media-hygiene:review:order"),
+        "near-order": localStorage.getItem("near-order"),
+      }));
+    }
     localStorage.setItem("media-hygiene:review:order", "space");
     localStorage.setItem("near-order", "gain");
   } catch (error) { /* no storage: the review alone, no session */ }

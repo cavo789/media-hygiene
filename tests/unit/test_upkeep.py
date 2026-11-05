@@ -54,9 +54,18 @@ def _ran(runtime: Any, code: int = 0) -> list[tuple[str, ...]]:  # noqa: ANN401
     return ran
 
 
-def test_every_step_in_order_and_only_the_old_run_purged() -> None:
-    """The default list; the recent quarantine stays."""
+def test_the_default_list_leaves_purge_out() -> None:
+    """Review 2026-11-05: purge runs on its own, not in the routine by default."""
     assert _ran(_runtime(*RoutineSettings().steps)) == [
+        ("audit",),
+        ("clean",),
+        ("reports",),
+    ]
+
+
+def test_every_step_in_order_and_only_the_old_run_purged() -> None:
+    """Every step asked; the recent quarantine stays."""
+    assert _ran(_runtime(*RoutineStep)) == [
         ("audit",),
         ("clean",),
         ("purge", "old"),
@@ -92,7 +101,7 @@ def test_each_writing_step_names_its_count_and_its_page(
     )
     monkeypatch.setattr(upkeep, "read_status", lambda _r: status)
     said: list[str] = []
-    runtime = _runtime(*RoutineSettings().steps)
+    runtime = _runtime(*RoutineStep)
     runtime.output.info = said.append
     upkeep.run_upkeep(runtime, lambda _words: 0)
     assert any("12" in line and "mh reports" in line for line in said)

@@ -37,3 +37,7 @@ is judged against its pair, and a filter would show both copies with no link bet
 action could set both aside.
 
 **Recommendation: keep.** Decision: the maintainer's.
+
+## Decided (2026-11-05, review of feedback-2026-11-05-iterate)
+
+Keep the page (maintainer). For `slideshow`: the verb is hidden from `mh --help`, still callable.

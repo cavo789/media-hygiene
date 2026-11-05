@@ -64,7 +64,6 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`inventory`](commands/inventory.md) | Export every photo and video with what the audits learnt to an Excel workbook (or a CSV file), from the cache alone: no file is read. | [Reference](reference-inventory.md) |
 | [`tags`](commands/tags.md) | Give every photo and video words to find it by: the meaningful words of its folders and of its file name, its date (year, month, season, holidays), its place, and what a local vision model sees (optional; a video by its middle frame). Kept in the cache, never written into the photos. | [Reference](reference-tags.md) |
 | [`library`](commands/library.md) | Find photos by their words (those of `tags`) and the names given in `people` (`person:"…"`) in your browser, with filters and previews; with words, print the first matches as a table. Photos picked can be set aside for `clean --decisions`. Never writes to your folders. | [Reference](reference-tags.md#find-a-photo-by-its-words-library) |
-| [`slideshow`](commands/slideshow.md) | Show the photos of a folder, a search or the files set aside on the TV (its browser, or a Chromecast's), the phone as a remote: next, previous, a photo tapped, play and pause, "do not show". With `mh slideshow --lan`, for the home network only, the TV paired by a code it shows. Never writes to your folders. | [Commands](commands/slideshow.md) |
 | [`share`](commands/share.md) | Prepare an album for sending: a copy of each photo, upright, its long side at 2048 pixels, without its GPS position (`--keep-gps` keeps it), in a folder named after the album and its zip, in `media-hygiene\Shares`; the videos are left out and counted. Never writes to your folders. | [Commands](commands/share.md) |
 | [`people`](commands/people.md) | Find the faces in the photos, group those that look alike, and name them in your browser (the names go into `config.toml`; `library` finds them). The faces stay in the cache, never sent anywhere; `--forget` deletes them all. Never writes to your folders. | [Reference](reference-people.md), [Sorting, 10](sort/10-sort-by-person.md) |
 
@@ -84,12 +83,13 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`backup`](commands/backup.md) | Write the index (what the audits, `tags` and `people` learnt) and the settings into one zip in `media-hygiene\backups`, read back; the 3 most recent kept. Never reads your photos. | [Commands](commands/backup.md) |
 | [`restore`](commands/restore.md) | Put back a backup of the index (the settings too with `--config`), after checking it whole and backing up the index replaced. Never reads your photos. | [Commands](commands/restore.md) |
 
-**Pages: opened from the home page** (not listed by `mh --help`: they only open a page; typed, `mh places` and `mh home` still work, for a script or without the home page)
+**Pages: opened from the home page** (not listed by `mh --help`: they only open a page; typed, `mh places`, `mh home` and `mh slideshow` still work, for a script or without the home page)
 
 | Command | What it does | Guide |
 |---|---|---|
 | [`home`](commands/home.md) | The home page in your browser: what `status` says, the next step as a big button, every step of the guides as `mh menu` numbers them, the reports and a few previews; runs the audit in the page, its progress shown. A step's button hands it to `mh` in the terminal. Never writes to your folders. | [Commands](commands/home.md) |
 | [`places`](commands/places.md) | Show where the photos were taken on a map in your browser, and name your places; saved into `config.toml`. Never writes to your folders. | [Sorting, 9](sort/09-places-from-gps.md) |
+| [`slideshow`](commands/slideshow.md) | Show the photos of a folder, a search or the files set aside on the TV (its browser, or a Chromecast's), the phone as a remote: next, previous, a photo tapped, play and pause, "do not show". With `mh slideshow --lan`, for the home network only, the TV paired by a code it shows. Never writes to your folders. | [Commands](commands/slideshow.md) |
 
 ## Options
 

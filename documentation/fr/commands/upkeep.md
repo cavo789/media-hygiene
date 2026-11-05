@@ -8,8 +8,9 @@
 
 `upkeep` lance les étapes de `[routine]` dans `config.toml`, dans cet ordre : `audit` (relit la
 bibliothèque, seulement ce qui a changé), `copies` (`clean` : les copies exactes en quarantaine,
-après sa question ; `mh undo` les remet), `purge` (les exécutions en quarantaine plus vieilles que
-`purge_hint_days`, après la question de `purge` pour chacune), `reports` (la liste rafraîchie). Elle
+après sa question ; `mh undo` les remet), `reports` (la liste rafraîchie) ; `purge` (les exécutions
+en quarantaine plus vieilles que `purge_hint_days`, après la question de `purge` pour chacune) ne
+tourne que si vous l'ajoutez à `steps`, sinon lancez [`purge`](purge.md) à part. Elle
 finit sur une ligne 👉 : ce qui vous attend encore. Sur la [page d'accueil](home.md) : *Lancer
 l'entretien régulier*, dans Nettoyer.
 
