@@ -384,8 +384,8 @@ def test_the_tv_is_served_by_the_plain_door_and_the_remote_is_not(
     picture = asyncio.run(door.handle(_plain("/tv/1.jpg", token)))
     assert picture.status is HTTPStatus.OK
     again = asyncio.run(door.handle(_plain("/", token)))
-    assert again.status is HTTPStatus.SEE_OTHER  # a paired TV goes straight on
-    assert "Location: /screen" in again.headers
+    assert again.status is HTTPStatus.OK  # a paired TV meets the welcome too
+    assert b'href="/screen"' in again.body  # its 📺 tile leads on
 
 
 def test_the_welcome_page_carries_the_family_title(app: SlideshowApp) -> None:

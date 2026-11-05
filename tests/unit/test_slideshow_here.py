@@ -155,7 +155,8 @@ def test_the_tv_paired_once_follows_the_next_album(here: SlideshowHere) -> None:
     assert moved["version"] > version
     assert _tv(here, "/tv/3.jpg", token).status is HTTPStatus.OK
     paired_home = _tv(here, "/", token)
-    assert paired_home.status is HTTPStatus.SEE_OTHER  # a paired TV skips the welcome
+    assert paired_home.status is HTTPStatus.OK  # a paired TV meets the welcome too
+    assert b'id="idle"' in _tv(here, "/screen", token).body  # says what to do meanwhile
     assert _tv(here, "/").status is HTTPStatus.OK  # a stranger still meets it
     forged = Request("GET", "/screen", {"host": "evil.example"}, b"", SocketDoor.LAN)
     assert asyncio.run(here.tv(forged)).status is HTTPStatus.FORBIDDEN

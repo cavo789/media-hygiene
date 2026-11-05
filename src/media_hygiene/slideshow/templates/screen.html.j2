@@ -35,6 +35,7 @@ html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
 #pairing strong { display: block; margin: 24px 0; margin: 4vh 0; font: bold 120px/1 monospace; font-size: 20vh; letter-spacing: 0.1em; white-space: nowrap; color: #fff; }
 #pairing .phone { margin-top: 36px; margin-top: 6vh; color: #aaa; }
 #pairing .phone code { display: block; font: bold 40px/1.4 monospace; font-size: 6vh; white-space: nowrap; color: #fff; }
+#idle { position: absolute; z-index: 4; top: 30%; left: 5%; right: 5%; text-align: center; color: #ddd; font: 28px/1.5 sans-serif; font-size: 4vh; }
 .hidden { display: none; }
 #card { position: absolute; z-index: 5; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; background: #000; }
 #card img { position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; -webkit-filter: blur(24px) brightness(0.45); filter: blur(24px) brightness(0.45); }
@@ -52,6 +53,7 @@ html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
 <div id="card" class="hidden"><img id="cardPhoto" alt=""><div><h1 id="cardName"></h1><p id="cardPeriod"></p><p id="cardPlace"></p></div></div>
 <div id="banner" class="hidden"></div>
 <div id="where" class="quiet"></div>
+<div id="idle"><p>{{ _("No slideshow yet: on the phone, open Media Hygiene and choose an album under Show an album on the TV. It appears here by itself.") }}</p></div>
 <div id="pairing" class="hidden">
   <p>{{ _("On the phone's remote, type the code of this TV:") }}</p>
   <strong id="code"></strong>

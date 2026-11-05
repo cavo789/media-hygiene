@@ -106,8 +106,9 @@ diaporama : une télé rechargée ne perd rien, arrêter `mh` y met fin.
 2. Tapez l'adresse du PC sur le port **8089**, par exemple `http://192.168.1.20:8089/` (la
    télécommande du téléphone est sur 8088, en `https`) : une page d'accueil s'ouvre, appuyez sur
    **OK** sur **📺 C'est la télé** (son autre tuile, **📱 Installer sur mon téléphone**, mène un
-   téléphone aux étapes du certificat). Une télé déjà appairée va droit à sa page ;
-   `http://192.168.1.20:8089/screen` saute aussi l'accueil. C'est du `http` simple, sur votre
+   téléphone aux étapes du certificat). Mettez plutôt
+   `http://192.168.1.20:8089/screen` en favori pour sauter l'accueil ; sans diaporama en cours,
+   la télé dit quoi faire sur le téléphone. C'est du `http` simple, sur votre
    réseau de la maison : une télé ne peut pas installer le certificat du PC, et rien ne part sur
    Internet. Cette adresse ne sert que les pages de la télé, jamais la télécommande.
 3. **Mettez-la en favori** : la fois suivante, le favori suffit (voyez
