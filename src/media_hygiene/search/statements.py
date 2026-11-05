@@ -11,7 +11,7 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.search.days import NAME as DAY
+from media_hygiene.search.known_day import KNOWN_DAY, UNDATED
 from media_hygiene.search.path_match import condition as path_condition
 from media_hygiene.search.query import Order, Sorting, match_expression
 from media_hygiene.tags.models import TagSource
@@ -68,15 +68,12 @@ ANY_WORD: Final = f"SELECT 1 FROM temp.{TABLE} LIMIT 1"  # noqa: S608  # tags or
 _FROM: Final = f" FROM temp.{TABLE} JOIN files ON files.rowid = {TABLE}.rowid"
 # Without words, every file of the index, those `tags` has not described yet too (0451).
 _FILES: Final = " FROM files"
-HITS: Final = (
-    "SELECT files.rowid, files.path, files.size, files.mtime_ns,"
-    f" {DAY}(files.media_date)"
-)
+HITS: Final = f"SELECT files.rowid, files.path, files.size, files.mtime_ns, {KNOWN_DAY}"
 COUNT: Final = "SELECT COUNT(*)"
 MATCHES: Final = f"{TABLE} MATCH ?"
 # `media_day` reads every form a date is written in (`search/days.py`).
-YEARS: Final = f"CAST(substr({DAY}(files.media_date), 1, 4) AS INTEGER) BETWEEN ? AND ?"
-DAYS: Final = f"{DAY}(files.media_date) BETWEEN ? AND ?"  # ISO days compare as text
+YEARS: Final = f"CAST(substr({KNOWN_DAY}, 1, 4) AS INTEGER) BETWEEN ? AND ?"
+DAYS: Final = f"{KNOWN_DAY} BETWEEN ? AND ?"  # ISO days compare as text
 # `fold` is Python's `casefold`: SQLite's `lower` knows ASCII only.
 FOLD: Final = "fold"
 PLACE: Final = "mh_place"  # the state a path says (`convention.place_of_path`, 0407)
@@ -94,10 +91,7 @@ _LENGTH: Final = (
 # **Sort by** (0347), as the folder view sorts: ties by path, undated last.
 BY_ORDER: Final = {
     Order.NAME: f" ORDER BY {FOLD}(files.path)",
-    Order.DATE: (
-        f" ORDER BY {DAY}(files.media_date) IS NULL, {DAY}(files.media_date),"
-        f" {FOLD}(files.path)"
-    ),
+    Order.DATE: (f" ORDER BY {KNOWN_DAY} IS NULL, {KNOWN_DAY}, {FOLD}(files.path)"),
     Order.SIZE: f" ORDER BY files.size DESC, {FOLD}(files.path)",
     Order.RATE: (
         f" ORDER BY {_RATE} IS NULL, {_RATE} DESC, files.size DESC, {FOLD}(files.path)"
@@ -107,7 +101,7 @@ BY_ORDER: Final = {
 BEST_FIRST: Final = f" ORDER BY {TABLE}.rank"
 # EXIF writes `2019:07:14` or `14/07/2019`, videos `2019-07-14T…`: one day each;
 # undated files (NULL) come last.
-NEWEST_FIRST: Final = f" ORDER BY {DAY}(files.media_date) DESC, files.path"
+NEWEST_FIRST: Final = f" ORDER BY {KNOWN_DAY} DESC, files.path"
 LIMIT: Final = " LIMIT ?"
 WHERE: Final = " WHERE "
 AND: Final = " AND "
@@ -119,7 +113,7 @@ VERSIONS: Final = "SELECT files.path, files.size, files.mtime_ns"
 KEYS: Final = "SELECT files.rowid" + _FROM
 FILE_KEYS: Final = "SELECT files.rowid FROM files"
 HIT_OF: Final = (
-    f"SELECT rowid, path, size, mtime_ns, {DAY}(media_date) FROM files"  # noqa: S608
+    f"SELECT rowid, path, size, mtime_ns, {KNOWN_DAY} FROM files"  # noqa: S608
     " WHERE rowid = ?"
 )
 PROBE: Final = f"SELECT 1 FROM temp.{TABLE} WHERE {TABLE} MATCH ? LIMIT 1"  # noqa: S608
@@ -127,7 +121,7 @@ PROBE: Final = f"SELECT 1 FROM temp.{TABLE} WHERE {TABLE} MATCH ? LIMIT 1"  # no
 # paths between `<folder>/` and `<folder>0`, `0` following `/`: the primary key).
 ALL_FILES: Final = "SELECT path, size FROM files"
 FOLDER_FILES: Final = (
-    f"SELECT rowid, path, size, {DAY}(media_date) FROM files"  # noqa: S608
+    f"SELECT rowid, path, size, {KNOWN_DAY} FROM files"  # noqa: S608
     " WHERE path > ? AND path < ?"
 )
 
@@ -167,6 +161,8 @@ def conditions(query: SearchQuery) -> tuple[list[str], list[object]]:
         chosen.append(DAYS)
         parameters.extend(day.isoformat() for day in filters.days)
     _places(filters, chosen, parameters)
+    if filters.undated:
+        chosen.append(UNDATED)
     if filters.kind != "all":
         chosen.append(SHOWN)
         parameters.append(filters.kind)

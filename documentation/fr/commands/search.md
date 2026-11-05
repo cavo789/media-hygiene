@@ -392,6 +392,29 @@ contenu à la fin du prochain `audit`. [`xmp`](xmp.md) écrit ces mots dans les 
 les autres (`hand` dans `[tags] xmp_sources`, actif par défaut). Sans `/config` accessible en
 écriture, rien n'est enregistré et la barre dit pourquoi.
 
+## Les photos sans date ou sans lieu
+
+**Sans** dans la colonne de gauche garde les fichiers dont l'index ne connaît ni la date (📅) ni la
+position (📍) ; les vignettes arrivent **groupées** par dossier, puis par noms proches (`IMG_00…`),
+chaque groupe avec **Choisir ce groupe**. Les autres gestes restent les mêmes.
+
+**📅 Date…** dans la barre propose le jour que dit le nom du dossier et les jours des photos
+voisines ; choisissez-en un ou tapez-en un autre, puis **Écrire ce jour**. Le jour va dans le fichier
+`.xmp` de chaque photo (`photoshop:DateCreated`), jamais dans la photo, journalisé comme
+[`xmp`](xmp.md) : `mh undo <run>`, donné dans la ligne, l'annule. Les fichiers `.xmp` sont relus : la
+barre dit combien contiennent le jour, les vignettes le montrent et le compte baisse. Une photo qui
+a sa propre date, dans un dossier protégé, ou avec une date d'une autre application est laissée, et
+c'est dit. Pour l'instant, ce jour ne compte que dans `search` : `classify` et `sort` lisent toujours
+la date du fichier.
+
+**Lieu** dans la colonne de gauche liste vos lieux avec leur nombre de photos : une photo est dans
+un lieu par son GPS (le cercle ou la zone dessinés sur [`places`](places.md)) ou parce que vous l'y
+avez mise. **📍 Lieu…** dans la barre écrit les photos choisies dans `/config/places/<nom>.toml`,
+relit le fichier et dit combien il en contient. Une photo déjà là par son GPS n'est pas écrite ; une
+photo d'un autre lieu le quitte ; des copies identiques comptent pour une seule photo, par leur
+contenu. Un nouveau lieu se dessine sur [`places`](places.md). Un mot comme `place:Durbuy` suit au
+prochain [`tags`](tags.md).
+
 ## Mettre des photos dans un album
 
 Pour montrer des photos à d'autres (sur la télé avec [`slideshow`](slideshow.md)), rassemblez-les

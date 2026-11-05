@@ -1,0 +1,33 @@
+{# *📅 Date…* (0531) and *📍 Place…* (0553): their scripts are `search_gaps.js.j2`; their look the tag dialog's. #}
+<style>
+  #dateDlg, #placeDlg { max-width: min(28rem, 94vw); color: var(--text); background: var(--card);
+            border: 1px solid var(--line); border-radius: 10px; }
+  #dateDlg::backdrop, #placeDlg::backdrop { background: rgb(0 0 0 / 50%); }
+  #dateDlg h2, #placeDlg h2 { margin: 0 0 6px; }
+  #dateDlg menu, #placeDlg menu { display: flex; gap: 8px; justify-content: end; padding: 0; }
+  #dateSeen { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+  #dateSaid.error, #placeSaid.error { color: var(--bad); }
+</style>
+<dialog id="dateDlg" aria-labelledby="dateTitle" data-path="{{ date_path }}"
+        data-failed="{{ _('Not saved: {error}') }}"
+        data-group="{{ _('Pick this group') }}">
+  <form id="dateForm" method="dialog" autocomplete="off">
+    <h2 id="dateTitle">📅 {{ _("Give the photos picked a day") }}</h2>
+    <p class="muted">{{ _("Written into their .xmp sidecars, never into the photos; journaled: 'mh undo' takes it back. A photo with its own date stays as it is.") }}</p>
+    <div id="dateSeen" role="group" aria-label="{{ _('Days proposed: the folder name, the neighbours') }}"></div>
+    <label>{{ _("Day") }} <input id="dateDay" type="date" required></label>
+    <p id="dateSaid" class="muted" role="status"></p>
+    <menu><button type="button" id="dateNo" class="plain">{{ _("Cancel") }}</button><button type="submit" id="dateGo">{{ _("Write this day") }}</button></menu>
+  </form>
+</dialog>
+<dialog id="placeDlg" aria-labelledby="placeTitle" data-path="{{ place_path }}"
+        data-failed="{{ _('Not saved: {error}') }}"
+        data-none="{{ _('No place yet: name your places on the places page.') }}">
+  <form id="placeForm" method="dialog" autocomplete="off">
+    <h2 id="placeTitle">📍 {{ _("Put the photos picked in a place") }}</h2>
+    <p class="muted">{{ _("Kept in your settings, one file per place. A photo already there by its GPS is not written again; a photo of another place leaves it.") }}</p>
+    <label>{{ _("Place") }} <select id="placeWhich" required></select></label>
+    <p id="placeSaid" class="muted" role="status"></p>
+    <menu><button type="button" id="placeNo" class="plain">{{ _("Cancel") }}</button><button type="submit" id="placeGo">{{ _("Put them there") }}</button></menu>
+  </form>
+</dialog>

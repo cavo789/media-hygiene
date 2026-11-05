@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.search import statements as sql
 from media_hygiene.search.hits import given_too
+from media_hygiene.search.known_day import CLEAR_DAYS, PUT_DAY
 from media_hygiene.search.meaning_index import MeaningIndex
 from media_hygiene.tags.models import TagSource
 
@@ -37,3 +38,15 @@ class HandIndex(MeaningIndex):
         )
         self._connection.commit()  # no transaction left open: a move writes the index
         self.built = None
+
+    def give_days(self, days: Mapping[Path, str]) -> None:
+        """Give the files without a date the days of their sidecars (0531).
+
+        Args:
+            days: The day of each file, as its sidecar holds it now.
+        """
+        self._connection.execute(CLEAR_DAYS)
+        self._connection.executemany(
+            PUT_DAY, [(str(path), day) for path, day in days.items()]
+        )
+        self._connection.commit()

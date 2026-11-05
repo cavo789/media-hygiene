@@ -12,10 +12,12 @@ if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.review.apply_api import ApplyDesk
     from media_hygiene.search.chosen_api import ChosenDesk
+    from media_hygiene.search.date_desk import DateDesk
     from media_hygiene.search.events_desk import EventsDesk
     from media_hygiene.search.folders import FolderDesk
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.search.people_desk import PeopleDesk
+    from media_hygiene.search.place_desk import PlaceDesk
     from media_hygiene.search.rule_desk import RuleDesk
     from media_hygiene.search.sort_folder_desk import SortSetup
     from media_hygiene.search.tag_desk import TagDesk
@@ -39,3 +41,5 @@ class SearchPlace:  # pylint: disable=too-many-instance-attributes
     events: EventsDesk | None = None  # the *🗂 Events* view (0437)
     tags: TagDesk | None = None  # *🏷 Tag…*, the words typed by hand (0555)
     sort_setup: SortSetup | None = None  # target, layouts, `leave` (0533)
+    dates: DateDesk | None = None  # *📅 Date…*, into the sidecars (0531)
+    places: PlaceDesk | None = None  # the Place filter, *📍 Place…* (0553)

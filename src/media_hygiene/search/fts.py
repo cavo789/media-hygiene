@@ -19,6 +19,7 @@ from media_hygiene.index.tag_rows import TagStore
 from media_hygiene.search import statements as sql
 from media_hygiene.search.functions import register
 from media_hygiene.search.hits import Given, given_too, hit_of
+from media_hygiene.search.known_day import CREATE_DAYS
 from media_hygiene.search.models import Found
 from media_hygiene.search.query import match_expression
 from media_hygiene.tags.models import TagSource
@@ -48,6 +49,7 @@ class SearchIndex:
         self.stop_words: frozenset[str] = frozenset()  # `[tags]`, folded (0345)
         register(connection)
         connection.execute(sql.CREATE_PEOPLE)
+        connection.execute(CREATE_DAYS)
 
     @classmethod
     def open(cls, index_file: Path) -> Self:

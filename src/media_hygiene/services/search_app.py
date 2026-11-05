@@ -22,6 +22,7 @@ from media_hygiene.search.app import (
 )
 from media_hygiene.search.aside_filter import AsideFilter
 from media_hygiene.search.chosen_api import CHOSEN_PATH, ChosenDesk
+from media_hygiene.search.date_desk import DATE_PATH
 from media_hygiene.search.events_choose import SORT_PATHS
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH, EVENTS_PATH
 from media_hygiene.search.folder_role_desk import ALBUM_ROOT_PATH, ROLE_PATH, RoleDesk
@@ -39,6 +40,7 @@ from media_hygiene.search.move_go import MOVE_PATH, MOVE_VIEW_PATH
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH, PeopleDesk
 from media_hygiene.search.people_why import PEOPLE_WHY_PATH
 from media_hygiene.search.place import SearchPlace
+from media_hygiene.search.place_desk import PLACE_PATH
 from media_hygiene.search.rule_desk import (
     PERIOD_RULES_PATH,
     RULE_SAVE_PATH,
@@ -54,6 +56,7 @@ from media_hygiene.search.views import FIRST_HITS
 from media_hygiene.services.albums import album_desk
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
 from media_hygiene.services.rule_trial import event_gap_hours
+from media_hygiene.services.search_dates import date_desk, place_desk
 from media_hygiene.services.search_desks import (
     events_desk,
     names_place,
@@ -127,6 +130,8 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "rule_go_path": RULE_GO_PATH,
         "move_paths": {"view": MOVE_VIEW_PATH, "move": MOVE_PATH},
         "hand_tag_path": HAND_TAG_PATH,
+        "date_path": DATE_PATH,
+        "place_path": PLACE_PATH,
         "folder_query": FOLDER_QUERY,
         "events_path": EVENTS_PATH,
         "span_paths": {"list": SPAN_PATH, "files": SPAN_FILES_PATH, "left": LEFT_PATH},
@@ -173,6 +178,8 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         events_desk(runtime, search, chosen),
         tag_desk(runtime, search),
         sort_setup(runtime, roles, search.connection),
+        date_desk(runtime, search, chosen),
+        place_desk(runtime, search, chosen),
     )
     return SearchApp(place, pages, build.executor)
 

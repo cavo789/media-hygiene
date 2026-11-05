@@ -321,7 +321,8 @@ async function search(event, again) {
   const body = {
     text: $("text").value, day_from: $("from").value || null, day_to: $("to").value || null,
     folder: $("folder").value, source: null, sorting: $("sorting").value,
-    order: $("order").value, kind: asideListed() ? "all" : $("kind").value, aside: asideListed(), within: within ? within.inside : "",
+    order: $("missing").value !== "all" ? "name" : $("order").value, missing: $("missing").value, place: $("placeIn").value,
+    kind: asideListed() ? "all" : $("kind").value, aside: asideListed(), within: within ? within.inside : "",
     more: more, album: albumAimed(),
   };
   const lateBefore = window.mhLate ? window.mhLate.opened : 0;
@@ -340,7 +341,8 @@ async function search(event, again) {
   offerRule();
   // An album kept or left out (0501) narrows the files shown, not *Pick all N found*'s
   // search: that one is not offered then, every action stays on the tiles shown.
-  total = body.album && body.album.inside !== null ? found.hits.length : found.total;
+  const narrowed = (body.album && body.album.inside !== null) || body.place || body.missing === "place";
+  total = narrowed ? found.hits.length : found.total;
   showFiles(found.hits, again);
   $("more").hidden = found.total <= found.hits.length;
   covered(found.coverage);
@@ -445,7 +447,7 @@ for (const id of ["kind", "size"]) {
 }
 showSize();
 $("size").addEventListener("change", () => { remember("size"); showSize(); });  // no new search
-$("sorting").addEventListener("change", () => search(null));  // what is left to sort (0407)
+for (const id of ["sorting", "missing", "placeIn"]) $(id).addEventListener("change", () => search(null));  // 0407, 0531, 0553
 // 🗑 (0464): the files set aside only; the counter opens it, ✕ leaves it. Never kept.
 const asideListed = () => $("kind").value === "aside";
 $("kind").addEventListener("change", () => {

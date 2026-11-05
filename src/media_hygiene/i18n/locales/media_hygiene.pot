@@ -190,6 +190,10 @@ msgid ""
 "they are:"
 msgstr ""
 
+#, python-brace-format
+msgid "'mh undo {run}' takes it back."
+msgstr ""
+
 msgid ""
 "'purge' erases for good: these files cannot come back, not even with "
 "'undo'. It is, with 'clean --delete', the only way the tool removes "
@@ -1666,6 +1670,9 @@ msgstr ""
 msgid "Choose every draft shown"
 msgstr ""
 
+msgid "Choose one of your places, pick a photo."
+msgstr ""
+
 msgid ""
 "Choose other folders (shorter names) in the workbook, save it, and run "
 "'sort' again."
@@ -2069,10 +2076,19 @@ msgstr ""
 msgid "Dates from"
 msgstr ""
 
+msgid "Date…"
+msgstr ""
+
+msgid "Day"
+msgstr ""
+
 msgid "Days"
 msgstr ""
 
 msgid "Days of every year"
+msgstr ""
+
+msgid "Days proposed: the folder name, the neighbours"
 msgstr ""
 
 msgid "December"
@@ -2838,6 +2854,9 @@ msgid ""
 "them back."
 msgstr ""
 
+msgid "Every place"
+msgstr ""
+
 msgid "Every report"
 msgstr ""
 
@@ -3453,6 +3472,12 @@ msgstr ""
 msgid "Give the album a plain name, e.g. \"Christmas\" or \"Best of 2016\"."
 msgstr ""
 
+msgid "Give the photos picked a day"
+msgstr ""
+
+msgid "Give the photos picked a day, in their .xmp sidecars"
+msgstr ""
+
 msgid "Give the photos picked a word of yours, kept in your settings"
 msgstr ""
 
@@ -3963,6 +3988,11 @@ msgid "Kept"
 msgstr ""
 
 msgid "Kept in"
+msgstr ""
+
+msgid ""
+"Kept in your settings, one file per place. A photo already there by its "
+"GPS is not written again; a photo of another place leaves it."
 msgstr ""
 
 #, python-brace-format
@@ -5105,6 +5135,9 @@ msgid ""
 msgstr ""
 
 msgid "No place yet: click a circle or the map."
+msgstr ""
+
+msgid "No place yet: name your places on the places page."
 msgstr ""
 
 msgid "No position for this event."
@@ -6279,6 +6312,9 @@ msgstr ""
 msgid "Pick this file"
 msgstr ""
 
+msgid "Pick this group"
+msgstr ""
+
 msgid "Pick this photo"
 msgstr ""
 
@@ -6316,6 +6352,12 @@ msgid "Place of {folder} written back in config.toml."
 msgstr ""
 
 msgid "Placed"
+msgstr ""
+
+msgid "Places cannot be saved: /config is not mounted, or read-only."
+msgstr ""
+
+msgid "Place…"
 msgstr ""
 
 msgid "Planned"
@@ -6492,9 +6534,18 @@ msgstr ""
 msgid "Put every intruder file back"
 msgstr ""
 
+msgid "Put the photos picked in a place"
+msgstr ""
+
+msgid "Put the photos picked in one of your places"
+msgstr ""
+
 msgid ""
 "Put the picked files back where they were, journaled (Enter opens the "
 "large view)"
+msgstr ""
+
+msgid "Put them there"
 msgstr ""
 
 msgid "Put this face back"
@@ -8597,6 +8648,11 @@ msgid "The files the classify rule of this name decided."
 msgstr ""
 
 msgid ""
+"The files the index knows no date or no position for: pick a group, then "
+"give it one"
+msgstr ""
+
+msgid ""
 "The files the runs of clean set aside, as they lie in the quarantine. "
 "Pick the ones to put back: each goes back to the folder it came from."
 msgstr ""
@@ -9017,6 +9073,9 @@ msgstr ""
 msgid ""
 "The photos have vectors, but the model of search by meaning is not in the"
 " cache: the words alone answer."
+msgstr ""
+
+msgid "The photos of one of your places: by their GPS, or given by hand"
 msgstr ""
 
 msgid "The photos of the show: tap one to show it on the TV"
@@ -10458,7 +10517,13 @@ msgstr ""
 msgid "With tidy: tick the date_range rules with no photo too."
 msgstr ""
 
+msgid "Without"
+msgstr ""
+
 msgid "Without a date"
+msgstr ""
+
+msgid "Without a place"
 msgstr ""
 
 msgid "Word"
@@ -10543,6 +10608,9 @@ msgstr ""
 msgid "Write these layouts into {path}?"
 msgstr ""
 
+msgid "Write this day"
+msgstr ""
+
 msgid ""
 "Write this event down as a rule of config.toml: its days, its folder; the"
 " next classify runs apply it (R)"
@@ -10570,6 +10638,11 @@ msgstr ""
 msgid ""
 "Written into config.toml, above Existing folders: every classify run "
 "applies it, to the photos added later too."
+msgstr ""
+
+msgid ""
+"Written into their .xmp sidecars, never into the photos; journaled: 'mh "
+"undo' takes it back. A photo with its own date stays as it is."
 msgstr ""
 
 msgid "Year"
@@ -11363,6 +11436,9 @@ msgid "entirely a copy: holds nothing else"
 msgstr ""
 
 msgid "environment"
+msgstr ""
+
+msgid "every file"
 msgstr ""
 
 msgid "every file from the last one clicked"
@@ -14287,6 +14363,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{day} written beside {n} photo, read back from its sidecar."
+msgid_plural "{day} written beside {n} photos, read back from their sidecars."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{day} {month}"
 msgstr ""
 
@@ -14731,6 +14813,12 @@ msgid "{n} already there"
 msgstr ""
 
 #, python-brace-format
+msgid "{n} already there by its GPS: not written."
+msgid_plural "{n} already there by their GPS: not written."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} attributed face ({people})"
 msgid_plural "{n} attributed faces ({people})"
 msgstr[0] ""
@@ -14739,6 +14827,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} choice of the batch taken back"
 msgid_plural "{n} choices of the batch taken back"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} could not be written."
+msgid_plural "{n} could not be written."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -14910,6 +15004,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} has its own date: left."
+msgid_plural "{n} have their own date: left."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} identical file, {size}"
 msgid_plural "{n} identical files, {size}"
 msgstr[0] ""
@@ -14918,6 +15018,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} ignored group is not shown."
 msgid_plural "{n} ignored groups are not shown."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} in a protected folder: left."
+msgid_plural "{n} in a protected folder: left."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -15018,6 +15124,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} photo saved in {place}, read back from the disk."
+msgid_plural "{n} photos saved in {place}, read back from the disk."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} photo set aside, hidden"
 msgid_plural "{n} photos set aside, hidden"
 msgstr[0] ""
@@ -15086,6 +15198,12 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} shot set aside"
 msgid_plural "{n} shots set aside"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} sidecar of another application: left."
+msgid_plural "{n} sidecars of another application: left."
 msgstr[0] ""
 msgstr[1] ""
 

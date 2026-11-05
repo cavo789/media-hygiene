@@ -233,6 +233,7 @@
   #bar #albumBar { flex: 0 0 auto; flex-basis: auto; flex-wrap: nowrap; margin: 0; }
   #bar #albumBar label { display: none; }
   #bar #albumBar input { width: 11em; }
+  .groupHead { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; margin: 8px 0 0; font-weight: 600; overflow-wrap: anywhere; }
   #bar > p#moveBar { flex-basis: auto; margin: 0; }
   #bar > #chosen { flex: 0 1 34ch; min-width: 0; cursor: pointer; overflow: hidden; text-overflow: ellipsis; }
   #asideLeave { min-width: 1.6em; }
@@ -327,6 +328,17 @@
         <button type="button" data-for="sorting" data-value="sorted" aria-pressed="false" title="{{ _('sorted (year, then year-month)') }}">{{ _("sorted") }}</button>
         <button type="button" data-for="sorting" data-value="left" aria-pressed="false" title="{{ _('not sorted yet') }}">{{ _("not yet") }}</button>
       </div>
+      <span class="segLabel" title="{{ _('The files the index knows no date or no position for: pick a group, then give it one') }}">{{ _("Without") }}</span>
+      <div class="seg" role="group" aria-label="{{ _('Without') }}">
+        <input type="hidden" id="missing" value="all">
+        <button type="button" data-for="missing" data-value="all" aria-pressed="true" title="{{ _('every file') }}">{{ _("All") }}</button>
+        <button type="button" data-for="missing" data-value="date" aria-pressed="false" title="{{ _('Without a date') }}">📅</button>
+        <button type="button" data-for="missing" data-value="place" aria-pressed="false" title="{{ _('Without a place') }}">📍</button>
+      </div>
+      <label id="placeInLabel">{{ _("Place") }}
+        <select id="placeIn" title="{{ _('The photos of one of your places: by their GPS, or given by hand') }}">
+          <option value="">{{ _("Every place") }}</option>
+        </select></label>
       <p id="withinLine" hidden>📁 <span id="withinName"></span>
         <button type="button" id="withinClear" class="plain" title="{{ _('Search every folder again') }}">✕</button></p>
       <button type="submit" id="go" title="{{ _('Search (Enter; / comes back to Words)') }}">🔍 {{ _("Search") }}</button>
@@ -380,7 +392,9 @@
     </div>
     {% set album_compact = true %}
     {% include "album_bar.html.j2" %}
-    <p id="moveBar"><button type="button" id="tagOpen" class="plain" disabled title="{{ _('Give the photos picked a word of yours, kept in your settings') }}">🏷 {{ _("Tag…") }}</button></p>
+    <p id="moveBar"><button type="button" id="tagOpen" class="plain" disabled title="{{ _('Give the photos picked a word of yours, kept in your settings') }}">🏷 {{ _("Tag…") }}</button>
+      <button type="button" id="dateOpen" class="plain" disabled title="{{ _('Give the photos picked a day, in their .xmp sidecars') }}">📅 {{ _("Date…") }}</button>
+      <button type="button" id="placeOpen" class="plain" disabled title="{{ _('Put the photos picked in one of your places') }}">📍 {{ _("Place…") }}</button></p>
 {% endblock %}
 {% block content %}
   <main id="grid"></main>
@@ -393,6 +407,7 @@
 {% include "move_dialog.html.j2" %}
 {% include "folder_role_dialog.html.j2" %}
 {% include "hand_tag_dialog.html.j2" %}
+{% include "gap_dialogs.html.j2" %}
 {% include "search_events_dialogs.html.j2" %}
 {% include "search_sort_setup.html.j2" %}
 <div id="why" role="dialog" aria-modal="true" aria-labelledby="whyTitle" hidden>
@@ -417,6 +432,7 @@
 {% include "rule_dialog.js.j2" %}
 {% include "move_dialog.js.j2" %}
 {% include "hand_tag.js.j2" %}
+{% include "search_gaps.js.j2" %}
 {% include "search_rule.js.j2" %}
 {% include "search_events.js.j2" %}
 {% include "search_events_found.js.j2" %}

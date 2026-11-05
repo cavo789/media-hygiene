@@ -365,6 +365,27 @@ once; a folder renamed in Explorer is found again by the content id at the end o
 `[tags] xmp_sources`, on by default). Without a writable `/config`, nothing is saved and the bar
 says why.
 
+## Photos without a date or a place
+
+**Without** in the left column keeps the files the index knows no date (📅) or no position (📍)
+for; the tiles come **grouped** by folder, then by close names (`IMG_00…`), each group with
+**Pick this group**. The other gestures stay the same.
+
+**📅 Date…** in the bar proposes the day the folder's name says and the days of the
+neighbouring photos; choose one or type another, then **Write this day**. The day goes into each
+photo's `.xmp` sidecar (`photoshop:DateCreated`), never into the photo, journaled like
+[`xmp`](xmp.md): `mh undo <run>`, given in the line, takes it back. The sidecars are read back: the
+bar says how many hold the day, the tiles show it and the count drops. A photo with its own date,
+in a protected folder, or with a date from another application is left, and said. For now the
+day counts in `search` only: `classify` and `sort` still read the file's own date.
+
+**Place** in the left column lists your places with their number of photos: a photo is in a place
+by its GPS (the circle or area drawn on [`places`](places.md)) or because you put it there.
+**📍 Place…** in the bar writes the photos picked into `/config/places/<name>.toml`, reads the file
+back and says how many it holds. A photo already there by its GPS is not written; a photo of another
+place leaves it; identical copies count as one photo, by their content. A new place is
+drawn on [`places`](places.md). A word like `place:Durbuy` follows at the next [`tags`](tags.md).
+
 ## Put photos in an album
 
 To show photos to others (on the TV with [`slideshow`](slideshow.md)), gather them in an

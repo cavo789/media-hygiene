@@ -59,3 +59,16 @@ def _year_first_day(head: str) -> str | None:
     except ValueError:
         return None
     return day.isoformat()
+
+
+def days_named(days: tuple[date, date]) -> str:
+    """Write a period as a `date_range` rule does.
+
+    Args:
+        days: The first and last day.
+
+    Returns:
+        `2017-08-05..2017-08-06`, or `2017-08-05` for one day.
+    """
+    first, last = (day.isoformat() for day in days)
+    return first if first == last else f"{first}..{last}"
