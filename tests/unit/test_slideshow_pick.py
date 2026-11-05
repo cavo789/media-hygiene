@@ -87,7 +87,7 @@ def test_a_folder_and_its_subfolders_oldest_first(
 
 
 def test_a_search(runtime: Runtime, tmp_path: Path) -> None:
-    """The words of `search`: the photo of the cat only."""
+    """The words of `library`: the photo of the cat only."""
     assert _keys(runtime, tmp_path, Pick(words="chat")) == (6,)
 
 

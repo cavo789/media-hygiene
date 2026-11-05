@@ -7,10 +7,10 @@
 **Give an album its own folder in the Explorer ("Crete 2023", "My best photos") without copying
 a photo: no extra space used.**
 
-An **album** is the named list of photos you make in [`search`](search.md#put-photos-in-an-album),
-[the folders of `search`](search.md#walk-through-your-folders) or the burst review, saved in `albums.json`. It has several uses, all under
+An **album** is the named list of photos you make in [`library`](library.md#put-photos-in-an-album),
+[the folders of `library`](library.md#walk-through-your-folders) or the burst review, saved in `albums.json`. It has several uses, all under
 *Share* in the home page and `mh menu`. An album is **a selection to keep** and show again: to
-show photos on the TV once, no album is needed (**📺 On the TV** in the bar of `search`, see [`slideshow`](slideshow.md)).
+show photos on the TV once, no album is needed (**📺 On the TV** in the bar of `library`, see [`slideshow`](slideshow.md)).
 
 | Use | Command |
 |---|---|
@@ -78,7 +78,7 @@ plan **instead of** `albums.json`; given together, every option must match: `--c
 
 | Option | What it does |
 |---|---|
-| `NAME` | The album's name, as `search` saved it: the folder holding its links (required). |
+| `NAME` | The album's name, as `library` saved it: the folder holding its links (required). |
 | `--category NAME` | Instead of a saved album: the files of this category, as the edited `classify` workbook says. |
 | `--event EVENT` | The files of this event: its id (Events sheet) or its name. |
 | `--rule NAME` | The files the `[[classify.rules]]` entry of this name decided. |
@@ -105,7 +105,7 @@ plan **instead of** `albums.json`; given together, every option must match: `--c
 
 ## Go further
 
-- [`search`: put photos in an album](search.md#put-photos-in-an-album)
+- [`library`: put photos in an album](library.md#put-photos-in-an-album)
 - [`share`: the album ready to send](share.md)
 - [Sorting, step 12: albums](../sort/12-albums.md)
 

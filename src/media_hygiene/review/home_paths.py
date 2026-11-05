@@ -1,7 +1,7 @@
 """Every path the home page's own app answers (`HomeApp`).
 
-The home server sends these to `HomeApp`, every other path to `search`: a path missing
-here got a 405 from `search` (the ☆ favourites, the scan scope, the import steps: 0584).
+The home server sends these to `HomeApp`, every other path to `library`: a path missing
+here got a 405 from it (the ☆ favourites, the scan scope, the import steps: 0584).
 """
 
 from __future__ import annotations

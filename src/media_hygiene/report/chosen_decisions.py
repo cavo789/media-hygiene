@@ -1,4 +1,4 @@
-r"""The `chosen` key of the decisions file: the files set aside in `search`.
+r"""The `chosen` key of the decisions file: the files set aside in `library`.
 
 ```json
 "chosen": [{"path": "C:\\Photos\\IMG_3.jpg", "size": 2048,
@@ -20,7 +20,7 @@ _FROZEN = ConfigDict(frozen=True, extra="forbid")
 
 
 class ChosenFile(BaseModel):
-    """One file set aside in `search`, in host path, as the index knew it."""
+    """One file set aside in `library`, in host path, as the index knew it."""
 
     model_config = _FROZEN
 

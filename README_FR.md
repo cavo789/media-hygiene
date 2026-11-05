@@ -67,7 +67,7 @@ rafales et les quasi-doublons seulement si vous le demandez.
 
 **Nous le garantissons : ces commandes ne modifient, ne déplacent ni ne suppriment jamais une
 photo ou une vidéo** — `audit`, `crosscheck`, `classify`, `review`, `places`,
-`inventory`, `tags`, `search`, `people`, `history`, `reports`, `config`, `status`, `launcher`. Elles n'écrivent que leurs propres fichiers
+`inventory`, `tags`, `library`, `people`, `history`, `reports`, `config`, `status`, `launcher`. Elles n'écrivent que leurs propres fichiers
 (rapports, cache, `config.toml`). Lancez-les avec vos dossiers montés en `:ro` : le système
 lui-même interdit alors toute modification.
 
@@ -162,7 +162,7 @@ puis les dossiers dont elle a besoin, ses options, des exemples : [`audit`](http
 [`sort`](https://cavo789.github.io/media-hygiene/fr/commands/sort/),
 [`album`](https://cavo789.github.io/media-hygiene/fr/commands/album/), [`places`](https://cavo789.github.io/media-hygiene/fr/commands/places/),
 [`inventory`](https://cavo789.github.io/media-hygiene/fr/commands/inventory/), [`tags`](https://cavo789.github.io/media-hygiene/fr/commands/tags/),
-[`search`](https://cavo789.github.io/media-hygiene/fr/commands/search/), [`xmp`](https://cavo789.github.io/media-hygiene/fr/commands/xmp/),
+[`library`](https://cavo789.github.io/media-hygiene/fr/commands/library/), [`xmp`](https://cavo789.github.io/media-hygiene/fr/commands/xmp/),
 [`people`](https://cavo789.github.io/media-hygiene/fr/commands/people/). Vous hésitez ?
 [Quelle commande ?](https://cavo789.github.io/media-hygiene/fr/reference-commands/#quelle-commande-)
 

@@ -1,4 +1,4 @@
-"""0356: the home server serves `search` and `browse` itself: a click is a link."""
+"""0356: the home server serves `library` and `browse` itself: a click is a link."""
 
 from __future__ import annotations
 

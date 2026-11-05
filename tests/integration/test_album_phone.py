@@ -188,7 +188,7 @@ def test_a_phones_thumbnail_of_a_file_of_no_album_goes_on_to_search(
 def test_the_pc_gets_the_search_thumbnail_of_a_file_of_no_album(
     phone_door: tuple[LanApp, _Home, Runtime],
 ) -> None:
-    """`search` and `browse` share `/thumb/`: another key goes on to them (0356)."""
+    """`library` and `browse` share `/thumb/`: another key goes on to them (0356)."""
     door, home, runtime = phone_door
     shown = set(_keys(_album(door)))
     other = next(key for key, _path in _photos(runtime) if key not in shown)
@@ -260,7 +260,7 @@ def test_the_pc_changes_an_album_and_nothing_else(
 def test_a_search_page_behind_keeps_its_own_album_changes(
     phone_door: tuple[LanApp, _Home, Runtime],
 ) -> None:
-    """`POST /api/albums` of `search` served behind goes on to it, never to this page.
+    """`POST /api/albums` of `library` served behind goes on to it, never to this page.
 
     The albums page took it, knew none of the search's keys, and said the album empty.
     """

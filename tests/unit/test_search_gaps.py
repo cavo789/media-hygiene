@@ -23,6 +23,7 @@ from media_hygiene.search.date_propose import folder_day, proposals
 from media_hygiene.search.hand_index import HandIndex
 from media_hygiene.search.place_book import PlaceBook
 from media_hygiene.search.place_desk import PlaceDesk
+from media_hygiene.search.place_neighbours import among, neighbours
 from media_hygiene.search.query import Filters, Order, SearchQuery
 from media_hygiene.search.sidecar_days import days_of, undated_days
 from media_hygiene.search.views import SearchAsked
@@ -221,4 +222,84 @@ def test_a_place_refused(tmp_path: Path) -> None:
     closed = PlaceDesk(index, desk.mapper, desk.book, False, frozenset)  # noqa: FBT003
     good = json.dumps({"action": "give", "keys": [1], "place": "Durbuy"}).encode()
     assert closed.answer(good).status is HTTPStatus.CONFLICT
+    index.connection.close()
+
+
+def _neighbours_index(tmp_path: Path) -> tuple[HandIndex, Path]:
+    """`a1`-`a3` of one day and folder (`a3` by its sidecar), `b` another day."""
+    folder = tmp_path / "Trip"
+    folder.mkdir()
+    day = "2019:07:14 10:00:00"
+    rows = (("a1.jpg", day), ("a2.jpg", day), ("a3.jpg", None), ("b.jpg", "2019:07:15"))
+    file = tmp_path / "index.sqlite"
+    with closing(sqlite3.connect(file)) as connection:
+        prepare(connection)
+        for rank, (name, taken) in enumerate(rows, start=1):
+            path = folder / name
+            path.write_bytes(name.encode())
+            connection.execute(
+                "INSERT INTO files (rowid, path, size, mtime_ns, media_date,"
+                " full_digest, partial_digest) VALUES (?, ?, ?, 1, ?, ?, '')",
+                (rank, str(path), len(name), taken, f"{rank:x}" * 64),
+            )
+        connection.commit()
+    content = with_day(None, "2019-07-14", _TOOL)
+    assert content is not None
+    (folder / "a3.jpg.xmp").write_bytes(content)
+    return HandIndex.open(file), folder
+
+
+def test_the_same_day_and_folder_only_never_placed_nor_set_aside(
+    tmp_path: Path,
+) -> None:
+    """0554: named, not written; a located, placed or undated one is not proposed."""
+    index, folder = _neighbours_index(tmp_path)
+    connection = index.connection
+    given = [folder / "a1.jpg"]
+    assert neighbours(connection, given, frozenset(given)) == {
+        folder / "a2.jpg": 2,
+        folder / "a3.jpg": 3,
+    }
+    out = frozenset({*given, folder / "a2.jpg"})
+    assert neighbours(connection, given, out) == {folder / "a3.jpg": 3}
+    (folder / "a3.jpg.xmp").unlink()
+    assert not neighbours(connection, [folder / "a3.jpg"], frozenset())
+    connection.close()
+
+
+def test_the_answer_offers_them_and_writes_only_those_given(tmp_path: Path) -> None:
+    """The give names the others; the file holds the photo picked, then the Yes."""
+    index, folder = _index(tmp_path)  # a1, a3 undated: their day by the sidecars
+    config = tmp_path / "config.toml"
+    durbuy = PersonalPlace(name="Durbuy", latitude=50.35, longitude=5.45, radius_m=500)
+    save_places(config, [PlaceEdit(None, durbuy)])
+    points = {folder / "a2.jpg": Point(50.35, 5.45)}
+    book = PlaceBook(index.connection, config, lambda: points)
+    desk = PlaceDesk(index, HostPathMapper(tmp_path), book, True, frozenset)  # noqa: FBT003
+    content = with_day(None, "2019-07-14", _TOOL)
+    assert content is not None
+    (folder / "a1.jpg.xmp").write_bytes(content)
+    (folder / "a3.jpg.xmp").write_bytes(content)
+    body = {"action": "give", "keys": [1], "place": "Durbuy"}
+    told = json.loads(desk.answer(json.dumps(body).encode()).body)
+    assert told["near"] == [3]  # a2 lies in Durbuy by its GPS
+    linked = tomllib.loads((tmp_path / "places" / "Durbuy.toml").read_text("utf-8"))
+    assert [Path(p["path"]).name for p in linked["photos"]] == ["a1.jpg"]
+    aside = PlaceDesk(
+        index, desk.mapper, desk.book, True,  # noqa: FBT003
+        lambda: frozenset({desk.mapper.to_host(folder / "a3.jpg")}),
+    )  # fmt: skip
+    body["keys"] = [2]
+    assert json.loads(aside.answer(json.dumps(body).encode()).body)["near"] == []
+    index.connection.close()
+
+
+def test_a_search_among_the_keys_lists_them_alone(tmp_path: Path) -> None:
+    """The tiles of the offer: these photos, whatever else is in the index."""
+    index, folder = _index(tmp_path)
+    query = among(index, SearchQuery((), Filters(order=Order.NAME)), (1, 3))
+    assert [hit.photo.path for hit in index.find(query, 10).hits] == [
+        folder / "a1.jpg",
+        folder / "a3.jpg",
+    ]
     index.connection.close()

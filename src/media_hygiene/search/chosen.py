@@ -1,4 +1,4 @@
-"""The files set aside from a page (`search`, `browse`): the `chosen` key, on disk.
+"""The files set aside from a page (`library`, `browse`): the `chosen` key, on disk.
 
 Independent of how the files were listed: a selection is a set of file versions
 (path, size, modification time) and the search that found them. Each change is saved

@@ -22,7 +22,7 @@ docker run --rm -it `
 are sent to its url, and only there.
 ```
 
-Then [`search`](#find-a-photo-by-its-words-search) finds the photos by these words in your
+Then [`library`](#find-a-photo-by-its-words-library) finds the photos by these words in your
 browser, and [`inventory`](reference-inventory.md) lists them in its last column, **Tags**.
 [`xmp`](#carry-the-words-with-the-photos-xmp) writes them into `.xmp` sidecars that other
 applications read.
@@ -38,7 +38,7 @@ applications read.
 | Date | The year, the month, the season (turned around below the equator), the holidays (Christmas, New Year, Saint Nicholas, Valentine's Day, Halloween, Easter) and the names of your own `calendar` and `date_range` rules ([sorting, step 6](sort/06-write-down-what-you-know.md#dates)). A photo without a date takes the year of its folder (`Avril 2007`). | Seconds |
 | Place | The name of your place when the GPS position lies in one ([sorting, step 9](sort/09-places-from-gps.md)), then the nearest town and its country, offline (GeoNames), when it lies within `town_km` (20 km). | Seconds |
 | Vision model | A short sentence and 5 to 10 words about what the photo shows (optional, below). | About 2 s per photo |
-| Person | The names of the people on the photo, once you named their group in [`people`](reference-people.md#name-the-groups). Made by `search` at each start from the faces and `config.toml`: `tags` does not compute them, and they are never written into the `.xmp` sidecars. | None for `tags` |
+| Person | The names of the people on the photo, once you named their group in [`people`](reference-people.md#name-the-groups). Made by `library` at each start from the faces and `config.toml`: `tags` does not compute them, and they are never written into the `.xmp` sidecars. | None for `tags` |
 
 These words are computed again at every run: rename a folder or a file, or add a rule, run `tags`
 again.
@@ -118,13 +118,13 @@ docker run --rm -it ... cavo789/media-hygiene tags --path "C:\Photos\2022"
 
 Only the photos below that folder (repeat `--path` for several).
 
-## Find a photo by its words: `search`
+## Find a photo by its words: `library`
 
 ```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v media-hygiene-cache:/cache `
-  cavo789/media-hygiene search
+  cavo789/media-hygiene library
 ```
 
 Open <http://127.0.0.1:8088/>: one field, a grid of the photos found, best first, each with its
@@ -148,14 +148,14 @@ the small previews of the grid are kept in `/cache`.
 Without a browser (WSL, a script), give the words: `search durbuy ours` prints the first 20
 files as a table (`--limit N` for more). The search reads the cache only: run `tags` again after
 an audit to find the new photos. Nothing found? See
-[Tips for finding a photo](commands/search.md#tips-for-finding-a-photo).
+[Tips for finding a photo](commands/library.md#tips-for-finding-a-photo).
 
 ## Find a photo by what it shows: `--meaning`
 
 Words find what someone named: a folder, a file, a model's sentence. A photo of a cat on a sofa
 in `2019/Divers` has no word "cat". With `--meaning` (or `meaning = true` in `[tags]`), `tags`
 also lets a model look at each photo, **on this computer's processor** (CLIP ViT-B/32 and its
-multilingual text model: no Ollama, no GPU, nothing sent), and `search` then ranks the photos by
+multilingual text model: no Ollama, no GPU, nothing sent), and `library` then ranks the photos by
 what they show, in French or in English:
 
 ```powershell
@@ -174,7 +174,7 @@ docker run --rm -it ... cavo789/media-hygiene tags --meaning   # 🤖 a model ru
   maintainer's PC): about 1 minute per 1,000 photos, 10 minutes per 10,000 (estimated from it).
   Identical copies are looked at once; a photo edited since is looked at again; videos are not.
   Ctrl+C stops between two photos, and the next run goes on.
-- **The search**: `search` uses the vectors as soon as the cache holds them, whatever
+- **The search**: `library` uses the vectors as soon as the cache holds them, whatever
   `[tags] meaning` says; the words still count, merged with the meaning (reciprocal rank
   fusion). It finds at most `meaning_results` photos (200), the closest first. A search among
   one source (`vision:`, the source filter) or of names and places only stays a search of words.
@@ -262,5 +262,5 @@ A list of `stop_words` written here replaces the built-in one; the commented lin
 
 Writing the words into a JPEG changes its bytes: its fingerprint, its date, and two identical
 copies would stop being identical when only one is tagged. That would break what this tool is
-built on, and risk the originals. The words stay in the cache, where `search` and `inventory`
+built on, and risk the originals. The words stay in the cache, where `library` and `inventory`
 read them, and go into sidecars next to the photos only when you ask (`xmp`).

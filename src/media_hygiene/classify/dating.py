@@ -95,6 +95,7 @@ def _chain(file: MediaInput, context: DatingContext) -> Dating:
             video_date(metadata.recorded_at if metadata else None, context.zone),
             DateSource.VIDEO,
         ),
+        (file.sidecar_day, DateSource.SIDECAR),
         (
             takeout_date(file.takeout.taken_at if file.takeout else None, context.zone),
             DateSource.TAKEOUT,

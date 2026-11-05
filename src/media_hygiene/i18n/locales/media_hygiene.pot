@@ -458,6 +458,9 @@ msgstr ""
 msgid "/config is not mounted: there is no config.toml to complete."
 msgstr ""
 
+msgid "1 other photo of the same day and folder: same place?"
+msgstr ""
+
 msgid "10 minutes done"
 msgstr ""
 
@@ -999,6 +1002,9 @@ msgstr ""
 msgid "All clean"
 msgstr ""
 
+msgid "All picked: take out the exceptions, then 📍 Place…"
+msgstr ""
+
 msgid "All reports"
 msgstr ""
 
@@ -1059,7 +1065,7 @@ msgstr[1] ""
 
 msgid ""
 "Also let a model look at each photo on this computer's processor (CLIP, "
-"once, about 1 minute per 1,000 photos), so that 'search' finds what a "
+"once, about 1 minute per 1,000 photos), so that 'library' finds what a "
 "photo shows. Default: [tags] meaning."
 msgstr ""
 
@@ -1206,8 +1212,8 @@ msgstr ""
 msgid ""
 "Apply the choices made in the browser: decisions.json downloaded from an "
 "audit report (swap or leave alone some folder pairs) or written by "
-"'review' (burst shots set aside, near duplicates decided) or by 'search' "
-"(photos set aside). A relative path is read from the folder mounted on "
+"'review' (burst shots set aside, near duplicates decided) or by 'library'"
+" (photos set aside). A relative path is read from the folder mounted on "
 "/reports. The file is refused if the folders, the pairs or the series "
 "changed. Alone, --decisions reads decisions.json."
 msgstr ""
@@ -1599,7 +1605,7 @@ msgstr ""
 
 msgid ""
 "Check their dates, their patterns and their order in config.toml; the 🗂 "
-"Events tab of 'search' lists them under Your rules, with a button to "
+"Events tab of 'library' lists them under Your rules, with a button to "
 "remove those that match nothing any more."
 msgstr ""
 
@@ -1661,8 +1667,8 @@ msgid "Choose a vision model in [classify.ai] model, e.g. qwen2.5vl."
 msgstr ""
 
 msgid ""
-"Choose again in the 🗂 Events tab of 'search' (it shows both), or set the "
-"workbook cells back, then run 'sort' again."
+"Choose again in the 🗂 Events tab of 'library' (it shows both), or set the"
+" workbook cells back, then run 'sort' again."
 msgstr ""
 
 msgid "Choose an event."
@@ -3139,9 +3145,6 @@ msgstr ""
 msgid "Find a photo"
 msgstr ""
 
-msgid "Find a photo by its words"
-msgstr ""
-
 msgid "Find a town"
 msgstr ""
 
@@ -4186,6 +4189,15 @@ msgstr ""
 msgid "Lens: {lens}"
 msgstr ""
 
+msgid "Library"
+msgstr ""
+
+msgid "Library stopped; your photos were not changed."
+msgstr ""
+
+msgid "Library: find a photo"
+msgstr ""
+
 msgid "Light"
 msgstr ""
 
@@ -4857,6 +4869,9 @@ msgstr ""
 msgid ""
 "Next, 'purge' erases {count} files for good: 'mh undo --pick' shows them "
 "as photos first; its question comes next."
+msgstr ""
+
+msgid "No"
 msgstr ""
 
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
@@ -6321,10 +6336,10 @@ msgstr ""
 
 msgid ""
 "Photos and videos you set aside by a choice (burst shots, near "
-"duplicates, files set aside in 'search' or 'review --junk') and that come"
-" back, whatever their name (a phone backup): the audit recognises them "
-"from the journal and 'clean' sets them aside again. false never looks for"
-" them."
+"duplicates, files set aside in 'library' or 'review --junk') and that "
+"come back, whatever their name (a phone backup): the audit recognises "
+"them from the journal and 'clean' sets them aside again. false never "
+"looks for them."
 msgstr ""
 
 msgid ""
@@ -7282,6 +7297,9 @@ msgstr ""
 msgid "Same Wi-Fi, open:"
 msgstr ""
 
+msgid "Same day and folder"
+msgstr ""
+
 msgid "Same moment"
 msgstr ""
 
@@ -7509,9 +7527,6 @@ msgstr ""
 msgid ""
 "Search ready, open {url} in your browser. Ctrl+C stops it; your photos "
 "are not changed."
-msgstr ""
-
-msgid "Search stopped; your photos were not changed."
 msgstr ""
 
 msgid "Search your photos"
@@ -8262,7 +8277,7 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Tags: {files} files have words, {seen} of them from the vision model; "
-"'search' finds them."
+"'library' finds them."
 msgstr ""
 
 msgid "Tag…"
@@ -8857,6 +8872,9 @@ msgstr ""
 msgid "The folders mh knows"
 msgstr ""
 
+msgid "The former name of 'library'."
+msgstr ""
+
 msgid "The full list"
 msgstr ""
 
@@ -8870,7 +8888,7 @@ msgstr ""
 msgid ""
 "The guesses, the files no rule decides, the undated and the received "
 "ones: an empty layout leaves them where they are until you decide in "
-"'search' (its 🗂 Events tab), so the tool never writes a folder name of "
+"'library' (its 🗂 Events tab), so the tool never writes a folder name of "
 "its own."
 msgstr ""
 
@@ -10810,7 +10828,7 @@ msgstr ""
 
 msgid ""
 "You had set these photos and videos aside (a burst shot, a near "
-"duplicate, a file chosen in 'search' or 'review --junk'); the same "
+"duplicate, a file chosen in 'library' or 'review --junk'); the same "
 "content is back, whatever its name now (a phone backup, a copy). 'clean' "
 "moves them to the quarantine again, with the rest of its plan. To keep "
 "one after all: 'undo' that clean, and it is no longer proposed."
@@ -10883,8 +10901,8 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
-msgid "Your decisions — {count} file chosen in 'search' is set aside."
-msgid_plural "Your decisions — {count} files chosen in 'search' are set aside."
+msgid "Your decisions — {count} file chosen in 'library' is set aside."
+msgid_plural "Your decisions — {count} files chosen in 'library' are set aside."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -11933,6 +11951,9 @@ msgstr ""
 msgid "less than {limit} is expected, not {value}"
 msgstr ""
 
+msgid "library search look for find photo"
+msgstr ""
+
 msgid "lighten the chosen now (the terminal asks first)"
 msgstr ""
 
@@ -12649,9 +12670,6 @@ msgstr ""
 msgid "screenshot or document"
 msgstr ""
 
-msgid "search look for find photo"
-msgstr ""
-
 msgid "seen by the model"
 msgstr ""
 
@@ -12664,7 +12682,7 @@ msgstr ""
 msgid "set aside again after it came back"
 msgstr ""
 
-msgid "set aside in 'search'"
+msgid "set aside in 'library'"
 msgstr ""
 
 msgid "set aside the copies"
@@ -12683,6 +12701,9 @@ msgid "sharpness"
 msgstr ""
 
 msgid "shortcut desktop icon start"
+msgstr ""
+
+msgid "sidecar (.xmp)"
 msgstr ""
 
 msgid "size, largest first"
@@ -13144,7 +13165,7 @@ msgstr ""
 msgid ""
 "true: 'tags' also lets a model look at each photo (CLIP, on this "
 "computer's processor: no GPU, nothing sent), once, about 1 minute per "
-"1,000 photos, so that 'search' finds what a photo shows even without a "
+"1,000 photos, so that 'library' finds what a photo shows even without a "
 "word for it (\"a cat on a sofa\"). The model (894 MB) is downloaded into "
 "the cache the first time. It sees what is on a photo, never who nor "
 "where: names come from 'people', places from the GPS."
@@ -15231,6 +15252,10 @@ msgid "{n} other photo looks like the person you set aside on {date}"
 msgid_plural "{n} other photos look like the person you set aside on {date}"
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} other photos of the same day and folder: same place?"
+msgstr ""
 
 #, python-brace-format
 msgid "{n} person"

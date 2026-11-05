@@ -1,4 +1,4 @@
-"""`search`: a person's chip: its cross takes the name off, *Put back*, *Why*."""
+"""`library`: a person's chip: its cross takes the name off, *Put back*, *Why*."""
 
 from __future__ import annotations
 

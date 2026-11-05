@@ -79,17 +79,17 @@ them to the files on its first save.
 Each face is written by its photo and its number in it, never by its group: a new grouping (new
 photos, another `similarity`) keeps every name. The other faces get the name of the **nearest
 confirmed face**, when they look alike enough (`similarity`); below that, they stay unnamed.
-These **attributed** faces count for `search` and `classify` like the verified ones: the page
+These **attributed** faces count for `library` and `classify` like the verified ones: the page
 shows them apart so that you can check them.
 
-## Find them: `search`
+## Find them: `library`
 
-Once named, people are words of [`search`](commands/search.md), with nothing else to run:
+Once named, people are words of [`library`](commands/library.md), with nothing else to run:
 
 ```powershell
 docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" -v media-hygiene-cache:/cache `
   -v "$HOME\media-hygiene\config:/config" `
-  cavo789/media-hygiene search Chloé montagne
+  cavo789/media-hygiene library Chloé montagne
 ```
 
 `Chloé montagne` finds the photos with Chloé where "montagne" comes from any source (folder,
@@ -125,7 +125,7 @@ An event goes to the rule when at least **10 %** of its photos show Chloé (`min
 she may be the one taking the pictures); a photo outside any event goes when it shows her.
 `names = ["Chloé", "Manon"]` takes the events with either of them; add `all = true` for those
 with both. The names are those of the page: the faces confirmed, and the faces close enough to
-them (attributed), as `search` finds them. A name nobody has yet stops `classify`
+them (attributed), as `library` finds them. A name nobody has yet stops `classify`
 before anything is read, and names the rule.
 
 The whole path, from the first `people` to the sorted folders, step by step: [sorting, step
@@ -200,7 +200,7 @@ you mounted it); repeat it for several folders.
 
 They choose which faces are grouped, and how: changing them analyses nothing again. `min_face`
 and `min_sharpness` decide which faces count **at all**, not only which are grouped: a face left
-out of the page is named by nobody (in `search`, `classify`, the inventory, the XMP sidecars), so
+out of the page is named by nobody (in `library`, `classify`, the inventory, the XMP sidecars), so
 no name is ever given that you cannot see and correct; a face you confirmed keeps its name. To try
 another value once: `-e MEDIA_HYGIENE_PEOPLE__SIMILARITY=0.45`.
 

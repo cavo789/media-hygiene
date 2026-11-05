@@ -380,7 +380,7 @@ Each command of the clean, and the step of this page that shows it:
 
 The other commands have their own path: to give your photos a tidy tree, by year, event, place
 or person (`classify`, `sort`, `album`): **[sort in short](../sort/quick-guide.md)**; to find a
-photo by a word ("Chloé in the mountains": `people`, `tags`, `search`, `xmp`, `inventory`):
+photo by a word ("Chloé in the mountains": `people`, `tags`, `library`, `xmp`, `inventory`):
 **[find in short](../find/quick-guide.md)**. A word escapes you? [Words of this
 guide](../reference-glossary.md). An error message? [Troubleshooting](../reference-troubleshooting.md).
 

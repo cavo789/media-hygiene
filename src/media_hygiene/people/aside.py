@@ -2,7 +2,7 @@
 
 The page sends the faces it shows of one group, every one of them, those taken out by
 their cross left out: each of their photos is set aside once, others on it or not (to
-forget someone is to remove the photos they are on). Saved like `search` and `browse`
+forget someone is to remove the photos they are on). Saved like `library` and `browse`
 do, in the `chosen` key of the decisions file, read back from the disk; the next
 `clean --decisions` moves them to the quarantine, `undo` brings them back. The faces
 sent are remembered in the cache (`remembered`, TODO 0328): a new person, or one set

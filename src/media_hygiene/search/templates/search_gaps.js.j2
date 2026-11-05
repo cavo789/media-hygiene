@@ -109,7 +109,9 @@ $("placeOpen").addEventListener("click", async () => {
   $("placeSaid").className = "muted";
   $("placeSaid").textContent = "";
   $("placeDlg").showModal();
+  const aimed = window.mhNear ? window.mhNear.place : "";  // 0554: the place just given
   const places = await readPlaces();
+  if (aimed) $("placeWhich").value = aimed;
   $("placeGo").disabled = !places.length;
   if (!places.length) $("placeSaid").textContent = $("placeDlg").dataset.none;
 });
@@ -117,11 +119,48 @@ $("placeNo").addEventListener("click", () => $("placeDlg").close());
 $("placeForm").addEventListener("submit", async (event) => {
   event.preventDefault();
   $("placeGo").disabled = true;
-  const { ok, result } = await gapPost(PLACE_PATH, { action: "give", keys: [...picked], place: $("placeWhich").value });
+  const place = $("placeWhich").value;
+  const { ok, result } = await gapPost(PLACE_PATH, { action: "give", keys: [...picked], place: place });
   $("placeGo").disabled = false;
   if (!ok) { gapSaid($("placeSaid"), $("placeDlg"), result); return; }
   showPlaces(result.places);
-  gapDone($("placeDlg"), result.saved);
+  const chosenNear = Boolean(window.mhNear);  // the neighbours themselves: the offer ends here
+  window.mhNear = null;
+  if (chosenNear || !result.near.length) { gapDone($("placeDlg"), result.saved); return; }
+  $("placeWhich").value = place;
+  offerNear(result);
+});
+
+// 0554: the photos of the same day and folder, offered; nothing is placed without a Yes.
+let nearOffered = null;
+function placeButtons(asking) {
+  $("placeAsk").hidden = !asking;
+  $("placeNear").hidden = asking;
+  $("placeWhich").disabled = !asking;
+}
+function offerNear(result) {
+  const dialog = $("placeDlg").dataset;
+  const count = result.near.length;
+  nearOffered = { keys: result.near, place: $("placeWhich").value, saved: result.saved };
+  $("placeSaid").className = "muted";
+  $("placeSaid").textContent = result.saved + " " + (count === 1 ? dialog.nearOne : fill(dialog.near, { n: count }));
+  placeButtons(false);
+}
+$("placeDlg").addEventListener("close", () => placeButtons(true));
+$("nearNo").addEventListener("click", () => gapDone($("placeDlg"), nearOffered.saved));
+$("nearSee").addEventListener("click", async () => {
+  const offered = nearOffered;
+  window.mhNear = offered;
+  $("placeDlg").close();
+  await search(null);
+  picked.clear();
+  everything = false;
+  for (const file of files) picked.add(file.key);
+  showPicked();
+  $("placeWhich").value = offered.place;
+  $("chosen").className = "";
+  $("chosen").textContent = offered.saved + " " + $("placeDlg").dataset.nearHint;
+  $("chosen").title = $("chosen").textContent;
 });
 // The dialogs' keys stay theirs: the grid's keys never fire behind them.
 for (const id of ["dateDlg", "placeDlg"]) $(id).addEventListener("keydown", (event) => event.stopPropagation());

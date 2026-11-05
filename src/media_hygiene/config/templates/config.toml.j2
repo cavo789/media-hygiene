@@ -97,7 +97,7 @@ workers = 4
 {{ comment(_("Space 'clean' leaves free on the quarantine's drive when it copies files there from another drive, in GB (0 or more): a full system drive breaks Windows. 0 keeps no margin.")) }}
 quarantine_headroom_gb = 1.0
 
-{{ comment(_("Photos and videos you set aside by a choice (burst shots, near duplicates, files set aside in 'search' or 'review --junk') and that come back, whatever their name (a phone backup): the audit recognises them from the journal and 'clean' sets them aside again. false never looks for them.")) }}
+{{ comment(_("Photos and videos you set aside by a choice (burst shots, near duplicates, files set aside in 'library' or 'review --junk') and that come back, whatever their name (a phone backup): the audit recognises them from the journal and 'clean' sets them aside again. false never looks for them.")) }}
 returned = true
 
 
@@ -274,7 +274,7 @@ town_km = 20
 xmp_sources = ["vision", "place", "hand"]
 {{ comment(_("true: a photo without GPS in a folder named after a town (2019/Douarnenez) gets the position of that town's centre in its sidecar, so that other applications show it on their map. Approximate: off by default.")) }}
 xmp_folder_gps = false
-{{ comment(_("true: 'tags' also lets a model look at each photo (CLIP, on this computer's processor: no GPU, nothing sent), once, about 1 minute per 1,000 photos, so that 'search' finds what a photo shows even without a word for it (\"a cat on a sofa\"). The model (894 MB) is downloaded into the cache the first time. It sees what is on a photo, never who nor where: names come from 'people', places from the GPS."), "--meaning") }}
+{{ comment(_("true: 'tags' also lets a model look at each photo (CLIP, on this computer's processor: no GPU, nothing sent), once, about 1 minute per 1,000 photos, so that 'library' finds what a photo shows even without a word for it (\"a cat on a sofa\"). The model (894 MB) is downloaded into the cache the first time. It sees what is on a photo, never who nor where: names come from 'people', places from the GPS."), "--meaning") }}
 meaning = false
 {{ comment(_("How many processor threads the model uses.")) }}
 meaning_threads = 4
@@ -306,7 +306,7 @@ leave = []
 
 {{ comment(_("Where files go. The convention: year, then year-month, then the event's name (2009/2009-11/Tom's birthday), the month of the event's start, 00 when only the year is known. A file directly in a year-month folder was looked at: nothing special that month. Placeholders: {year}, {year_month}, {quarter}, {month}, {month_name}, {day}, {category}, {event}, {event_start}, {place}, {country}, {region}, {city}."), "--layout") }}
 layout = "{year}/{year_month}/{category}"
-{{ comment(_("The guesses, the files no rule decides, the undated and the received ones: an empty layout leaves them where they are until you decide in 'search' (its 🗂 Events tab), so the tool never writes a folder name of its own.")) }}
+{{ comment(_("The guesses, the files no rule decides, the undated and the received ones: an empty layout leaves them where they are until you decide in 'library' (its 🗂 Events tab), so the tool never writes a folder name of its own.")) }}
 unsure_layout = ""
 manual_layout = ""
 undated_layout = ""

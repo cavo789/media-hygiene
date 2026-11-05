@@ -1,4 +1,4 @@
-"""The pages of `search` and `browse`, one server of their own.
+"""The pages of `library` and `browse`, one server of their own.
 
 The app itself (`search_app`) is the one the home server serves too (0356). This server
 runs until Ctrl+C, or until *Apply now* (`browse` opened from the home page) ends it on

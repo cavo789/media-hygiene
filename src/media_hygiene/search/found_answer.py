@@ -15,6 +15,7 @@ from media_hygiene.search.album_filter import aimed_query, album_paths, marked
 from media_hygiene.search.asked import read_asked
 from media_hygiene.search.date_desk import DATE_PATH
 from media_hygiene.search.hits import with_facts
+from media_hygiene.search.place_neighbours import among
 from media_hygiene.search.reading import read_query, search_note
 from media_hygiene.search.views import found_view
 from media_hygiene.share.album_api import ALBUMS_PATH
@@ -44,6 +45,8 @@ def found_answer(place: SearchPlace, coverage: CoverageKept, body: bytes) -> Res
         return asked
     query = read_query(place.index, asked.query())
     query = place.chosen.narrow(query, asked.aside)
+    if asked.near:
+        query = among(place.index, query, asked.near)  # 0554
     if asked.missing == "date" and place.dates is not None:
         place.dates.read_again()  # a sidecar written or undone elsewhere counts
     aimed = asked.album

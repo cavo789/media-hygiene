@@ -1,4 +1,4 @@
-"""Albums from `search` and `browse` (0295): apart from *Set aside*, saved, read back.
+"""Albums from `library` and `browse` (0295): apart from *Set aside*, saved, read back.
 
 An album and the files set aside never touch each other's list; an album's file sent
 to the quarantine by `clean --decisions` is said missing, and is back after `undo`.

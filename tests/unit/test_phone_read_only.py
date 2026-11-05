@@ -198,7 +198,7 @@ def test_a_phones_spaces_list_only_the_pages_it_opens() -> None:
     """A phone's *Find* lists search and browse, never Excel nor a PC step."""
     phone = home.home_page(remote=True).decode()
     assert "(!REMOTE || PHONE_PAGES[BY_ID[name].command])" in phone
-    assert '"mh search"' in phone
+    assert '"mh library"' in phone
     assert (
         "S.actions.filter((action) => !REMOTE || PHONE_PAGES[action.command])" in phone
     )

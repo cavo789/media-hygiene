@@ -2,7 +2,7 @@
 
 The names of a rule must be people of `[[people.person]]` (case and accents aside): a
 rule naming nobody is refused before anything is read, naming itself. The people of
-each photo are then read once from the faces of the index, as `search` reads them.
+each photo are then read once from the faces of the index, as `library` reads them.
 Without a `person` rule, nothing is read.
 """
 

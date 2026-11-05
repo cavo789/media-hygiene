@@ -13,7 +13,7 @@ nothing is copied, no space is used. Every move is journaled and `undo` puts eve
 
 **When**: once you have reviewed the proposal ([sorting, step
 5](../sort/05-review-the-proposal.md)) and, if you wish, named the events with
-[the 🗂 Events tab of `search`](search.md#the-events-of-the-latest-classify). **Save and close the workbook first.**
+[the 🗂 Events tab of `library`](library.md#the-events-of-the-latest-classify). **Save and close the workbook first.**
 
 **Try it**:
 
@@ -84,11 +84,11 @@ the source folders it will remove, then asks.
 - **Nothing lost, proven**: the files and sizes of the source and target folders are counted
   before and after, and must match.
 - **One event at a time**: `--event` (or *Sort this event now* in
-  [the 🗂 Events tab of `search`](search.md#the-events-of-the-latest-classify)) sorts one event; a later `sort` of the whole workbook skips
+  [the 🗂 Events tab of `library`](library.md#the-events-of-the-latest-classify)) sorts one event; a later `sort` of the whole workbook skips
   its files, already moved. Each run has its own `undo`.
 - **Everything stays linked**: right after moving, `sort` rewrites every file of yours that names
   photos by path — the names given to faces (`people\*.toml`), `albums.json`, `decisions.json`
-  (burst series, files chosen in `search`; a folder pair whose folder is gone is dropped) and the
+  (burst series, files chosen in `library`; a folder pair whose folder is gone is dropped) and the
   videos chosen in `shrink --try` — then reads them back and says so in one line. They no longer
   depend on the cache: you can delete it. `undo` puts the old paths back the same way.
   A folder placed on the map (`[[places.folders]]`) that the run emptied follows its photos

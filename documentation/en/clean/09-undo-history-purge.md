@@ -122,7 +122,7 @@ It is, with 'clean --delete', the only way the tool removes content.
   cloud's synced folder, checks every byte, then empties it — see
   [`purge`](../commands/purge.md).
 
-Where does the rest of the space go? **⚖ Heaviest files** in [the folders of `search`](../commands/search.md#walk-through-your-folders)
+Where does the rest of the space go? **⚖ Heaviest files** in [the folders of `library`](../commands/library.md#walk-through-your-folders)
 lists the heaviest files of the whole library, the videos first; [`shrink`](../commands/shrink.md)
 lightens the videos of old cameras, the originals in the quarantine.
 
@@ -144,7 +144,7 @@ folders as for `clean` (or type `mh status`): a folder not mounted is said, neve
 
 ## What you set aside stays set aside
 
-You set burst shots aside, near duplicates, photos chosen in [`search`](../commands/search.md) or
+You set burst shots aside, near duplicates, photos chosen in [`library`](../commands/library.md) or
 [`review --junk`](../commands/review.md); months later, a phone backup brings them back, under
 other names. The journal remembers the content of every file set aside by such a choice (its
 size and SHA-256), even after `purge`: the next audit recognises them, whatever their name now,

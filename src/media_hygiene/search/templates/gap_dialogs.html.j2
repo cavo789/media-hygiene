@@ -5,6 +5,7 @@
   #dateDlg::backdrop, #placeDlg::backdrop { background: rgb(0 0 0 / 50%); }
   #dateDlg h2, #placeDlg h2 { margin: 0 0 6px; }
   #dateDlg menu, #placeDlg menu { display: flex; gap: 8px; justify-content: end; padding: 0; }
+  #placeDlg menu[hidden] { display: none; }
   #dateSeen { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
   #dateSaid.error, #placeSaid.error { color: var(--bad); }
 </style>
@@ -22,12 +23,17 @@
 </dialog>
 <dialog id="placeDlg" aria-labelledby="placeTitle" data-path="{{ place_path }}"
         data-failed="{{ _('Not saved: {error}') }}"
-        data-none="{{ _('No place yet: name your places on the places page.') }}">
+        data-none="{{ _('No place yet: name your places on the places page.') }}"
+        data-near="{{ _('{n} other photos of the same day and folder: same place?') }}"
+        data-near-one="{{ _('1 other photo of the same day and folder: same place?') }}"
+        data-near-chip="{{ _('Same day and folder') }}"
+        data-near-hint="{{ _('All picked: take out the exceptions, then 📍 Place…') }}">
   <form id="placeForm" method="dialog" autocomplete="off">
     <h2 id="placeTitle">📍 {{ _("Put the photos picked in a place") }}</h2>
     <p class="muted">{{ _("Kept in your settings, one file per place. A photo already there by its GPS is not written again; a photo of another place leaves it.") }}</p>
     <label>{{ _("Place") }} <select id="placeWhich" required></select></label>
     <p id="placeSaid" class="muted" role="status"></p>
-    <menu><button type="button" id="placeNo" class="plain">{{ _("Cancel") }}</button><button type="submit" id="placeGo">{{ _("Put them there") }}</button></menu>
+    <menu id="placeAsk"><button type="button" id="placeNo" class="plain">{{ _("Cancel") }}</button><button type="submit" id="placeGo">{{ _("Put them there") }}</button></menu>
+    <menu id="placeNear" hidden><button type="button" id="nearNo" class="plain">{{ _("No") }}</button><button type="button" id="nearSee">{{ _("See them") }}</button></menu>
   </form>
 </dialog>

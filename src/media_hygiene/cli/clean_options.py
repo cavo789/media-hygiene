@@ -58,7 +58,7 @@ def delete() -> OptionInfo:
 
 
 def decisions() -> OptionInfo:
-    """`--decisions`: apply the decisions of a report, of `review` or of `search`.
+    """`--decisions`: apply the decisions of a report, of `review` or of `library`.
 
     Returns:
         The option definition.
@@ -68,7 +68,7 @@ def decisions() -> OptionInfo:
             "Apply the choices made in the browser: decisions.json downloaded "
             "from an audit report (swap or leave alone some folder pairs) or "
             "written by 'review' (burst shots set aside, near duplicates decided) "
-            "or by 'search' (photos set aside). "
+            "or by 'library' (photos set aside). "
             "A relative path is read from the folder mounted on /reports. The "
             "file is refused if the folders, the pairs or the series changed. "
             "Alone, --decisions reads decisions.json."

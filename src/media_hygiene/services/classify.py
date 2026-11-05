@@ -10,6 +10,7 @@ import asyncio
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
+from media_hygiene.classify.dates import zone_of
 from media_hygiene.classify.engine import classify
 from media_hygiene.constants import MediaKind
 from media_hygiene.i18n import _
@@ -25,6 +26,7 @@ from media_hygiene.services.classify_inputs import (
     duplicates,
     media_input,
     root_of,
+    with_sidecar_days,
 )
 from media_hygiene.services.classify_people import with_people
 from media_hygiene.services.classify_scope import run_scope
@@ -155,10 +157,13 @@ class ClassifyService:
             finder = BrokenFileFinder(ScanDeps(repository, self._progress), tools)
             integrity = asyncio.run(finder.find(files))
             broken = {item.file.path for item in integrity.broken}
-            return [
-                media_input(
-                    file, root_of(file.path, (*target, *roots), runtime), repository
-                )
-                for file in files
-                if file.path not in broken
-            ]
+            return with_sidecar_days(
+                [
+                    media_input(
+                        file, root_of(file.path, (*target, *roots), runtime), repository
+                    )
+                    for file in files
+                    if file.path not in broken
+                ],
+                zone_of(runtime.settings.classify.timezone),
+            )

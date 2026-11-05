@@ -52,7 +52,7 @@ With Files On-Demand, a photo can live in OneDrive's cloud only: Windows 11 ofte
 it, so analysing that folder downloads all of it.
 
 On Windows, `mh` checks first. Before a command that reads your photos (`audit`, `review`,
-`clean`, `crosscheck`, `classify`, `tags`, `people`, `search`), for each photo folder under
+`clean`, `crosscheck`, `classify`, `tags`, `people`, `library`), for each photo folder under
 OneDrive (the folders named by the `OneDrive`, `OneDriveConsumer` and `OneDriveCommercial`
 variables), it counts the files Windows marks as not stored on the PC (the attributes
 *recall on data access* and *offline*: listing them reads no photo), then asks:

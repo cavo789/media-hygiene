@@ -113,7 +113,7 @@ def test_the_kept_file_deleted_forgets_them(locations: Locations) -> None:
 def test_search_finds_the_kept_photo_by_a_removed_folder_word(
     locations: Locations,
 ) -> None:
-    """`tags` makes words of the removed copies' folders; `search` finds them."""
+    """`tags` makes words of the removed copies' folders; `library` finds them."""
     build_demo(locations.data_dir)
     runtime = make_runtime(locations)
     run_id = clean(runtime)

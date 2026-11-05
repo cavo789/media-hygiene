@@ -112,7 +112,7 @@ gain already seen (*62 % of the 40 GB seen*). The order *space freed, largest fi
 by the browser) brings the biggest gain to the first screens; on `--pairs`, the other order is
 *by folder pair*.
 
-**Pick the shots as in [the folders of `search`](search.md#walk-through-your-folders)** (`review` and `review --junk`): a click picks one
+**Pick the shots as in [the folders of `library`](library.md#walk-through-your-folders)** (`review` and `review --junk`): a click picks one
 shot; the ☑ box (or Ctrl+click) adds or removes one; Shift+click picks every shot from the last
 one clicked; a rectangle dragged with the mouse picks what it touches (with Ctrl, it adds);
 Ctrl+A the whole series or group; **Invert the picking** (or I) picks the others. `Delete` or
@@ -174,8 +174,8 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
 - **👤 this person**, under each shot, opens in a new tab every photo of someone on that shot,
   to set them all aside: see [`people`](people.md#from-any-page-set-a-person-aside).
 - The burst review has an **Album** field too: **➕ Add to the album** puts the picked shots in
-  that album, as in `search`, apart from your decisions. See
-  [Put photos in an album](search.md#put-photos-in-an-album).
+  that album, as in `library`, apart from your decisions. See
+  [Put photos in an album](library.md#put-photos-in-an-album).
 - *port is already allocated*? Another program uses 8088: `-p 127.0.0.1:9000:9000` and
   `review --port 9000`.
 

@@ -16,7 +16,7 @@ NAMES = sorted(command[0] for command in commands())
 def test_every_command_has_its_page(locale: str) -> None:
     """One page per command, and no page for a command that does not exist."""
     pages = {page.stem for page in (DOCUMENTATION / locale / "commands").glob("*.md")}
-    assert pages == set(NAMES)
+    assert pages - {"search"} == set(NAMES)  # search.md: the stub of a former name
 
 
 @pytest.mark.parametrize("name", NAMES)

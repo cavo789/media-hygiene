@@ -558,6 +558,9 @@ msgstr "/fr/"
 msgid "/config is not mounted: there is no config.toml to complete."
 msgstr "/config n'est pas monté : il n'y a pas de config.toml à compléter."
 
+msgid "1 other photo of the same day and folder: same place?"
+msgstr "1 autre photo du même jour et du même dossier : même lieu ?"
+
 msgid "10 minutes done"
 msgstr "10 minutes écoulées"
 
@@ -1269,6 +1272,9 @@ msgstr "Tout"
 msgid "All clean"
 msgstr "Propre"
 
+msgid "All picked: take out the exceptions, then 📍 Place…"
+msgstr "Toutes choisies : retirez les exceptions, puis 📍 Lieu…"
+
 msgid "All reports"
 msgstr "Tous les rapports"
 
@@ -1337,12 +1343,12 @@ msgstr[1] ""
 
 msgid ""
 "Also let a model look at each photo on this computer's processor (CLIP, "
-"once, about 1 minute per 1,000 photos), so that 'search' finds what a photo "
-"shows. Default: [tags] meaning."
+"once, about 1 minute per 1,000 photos), so that 'library' finds what a photo"
+" shows. Default: [tags] meaning."
 msgstr ""
 "Laisser aussi un modèle regarder chaque photo sur le processeur de cet "
 "ordinateur (CLIP, une seule fois, environ 1 minute pour 1 000 photos), pour "
-"que 'search' trouve ce qu'une photo montre. Par défaut : [tags] meaning."
+"que 'library' trouve ce qu'une photo montre. Par défaut : [tags] meaning."
 
 #, python-brace-format
 msgid ""
@@ -1513,15 +1519,15 @@ msgstr "Appliquer maintenant, choisi sur la page : {command}"
 msgid ""
 "Apply the choices made in the browser: decisions.json downloaded from an "
 "audit report (swap or leave alone some folder pairs) or written by 'review' "
-"(burst shots set aside, near duplicates decided) or by 'search' (photos set "
-"aside). A relative path is read from the folder mounted on /reports. The "
+"(burst shots set aside, near duplicates decided) or by 'library' (photos set"
+" aside). A relative path is read from the folder mounted on /reports. The "
 "file is refused if the folders, the pairs or the series changed. Alone, "
 "--decisions reads decisions.json."
 msgstr ""
 "Appliquer les choix faits dans le navigateur : decisions.json téléchargé "
 "depuis un rapport d'audit (paires de dossiers inversées ou laissées telles "
 "quelles), écrit par 'review' (photos de rafale écartées, quasi-doublons "
-"décidés) ou par 'search' (photos mises de côté). Un chemin relatif est lu "
+"décidés) ou par 'library' (photos mises de côté). Un chemin relatif est lu "
 "dans le dossier monté sur /reports. Le fichier est refusé si les dossiers, "
 "les paires ou les séries ont changé. Seul, --decisions lit decisions.json."
 
@@ -1961,11 +1967,11 @@ msgstr ""
 
 msgid ""
 "Check their dates, their patterns and their order in config.toml; the 🗂 "
-"Events tab of 'search' lists them under Your rules, with a button to remove "
-"those that match nothing any more."
+"Events tab of 'library' lists them under Your rules, with a button to remove"
+" those that match nothing any more."
 msgstr ""
 "Vérifiez leurs dates, leurs motifs et leur ordre dans config.toml ; l'onglet"
-" 🗂 Événements de 'search' les liste sous Vos règles, avec un bouton pour "
+" 🗂 Événements de 'library' les liste sous Vos règles, avec un bouton pour "
 "retirer celles qui ne correspondent plus à rien."
 
 #, python-brace-format
@@ -2039,10 +2045,10 @@ msgstr ""
 "qwen2.5vl."
 
 msgid ""
-"Choose again in the 🗂 Events tab of 'search' (it shows both), or set the "
+"Choose again in the 🗂 Events tab of 'library' (it shows both), or set the "
 "workbook cells back, then run 'sort' again."
 msgstr ""
-"Choisissez à nouveau dans l'onglet 🗂 Événements de 'search' (il montre les "
+"Choisissez à nouveau dans l'onglet 🗂 Événements de 'library' (il montre les "
 "deux), ou remettez les cellules du classeur, puis relancez 'sort'."
 
 msgid "Choose an event."
@@ -3821,9 +3827,6 @@ msgstr "Retrouver"
 msgid "Find a photo"
 msgstr "Retrouver une photo"
 
-msgid "Find a photo by its words"
-msgstr "Retrouver une photo par ses mots"
-
 msgid "Find a town"
 msgstr "Chercher une ville"
 
@@ -5058,6 +5061,15 @@ msgstr "Objectif"
 msgid "Lens: {lens}"
 msgstr "Objectif : {lens}"
 
+msgid "Library"
+msgstr "Photothèque"
+
+msgid "Library stopped; your photos were not changed."
+msgstr "Photothèque arrêtée ; vos photos n'ont pas été modifiées."
+
+msgid "Library: find a photo"
+msgstr "Photothèque : retrouver une photo"
+
 msgid "Light"
 msgstr "Clair"
 
@@ -5851,6 +5863,9 @@ msgid ""
 msgstr ""
 "Ensuite, 'purge' efface {count} fichiers pour de bon : 'mh undo --pick' les "
 "montre en photos d'abord ; sa question vient juste après."
+
+msgid "No"
+msgstr "Non"
 
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
 msgstr ""
@@ -7606,12 +7621,12 @@ msgstr "Photos et vidéos avec une position GPS"
 
 msgid ""
 "Photos and videos you set aside by a choice (burst shots, near duplicates, "
-"files set aside in 'search' or 'review --junk') and that come back, whatever"
-" their name (a phone backup): the audit recognises them from the journal and"
-" 'clean' sets them aside again. false never looks for them."
+"files set aside in 'library' or 'review --junk') and that come back, "
+"whatever their name (a phone backup): the audit recognises them from the "
+"journal and 'clean' sets them aside again. false never looks for them."
 msgstr ""
 "Photos et vidéos que vous avez mises de côté par un choix (photos de rafale,"
-" quasi-doublons, fichiers mis de côté dans 'search' ou 'review --junk') et "
+" quasi-doublons, fichiers mis de côté dans 'library' ou 'review --junk') et "
 "qui reviennent, quel que soit leur nom (une sauvegarde de téléphone) : "
 "l'audit les reconnaît grâce au journal et 'clean' les remet de côté. false "
 "ne les cherche jamais."
@@ -8765,6 +8780,9 @@ msgstr "SHA-256"
 msgid "Same Wi-Fi, open:"
 msgstr "Même Wi-Fi, ouvrez :"
 
+msgid "Same day and folder"
+msgstr "Même jour, même dossier"
+
 msgid "Same moment"
 msgstr "Même moment"
 
@@ -9055,9 +9073,6 @@ msgstr ""
 "Recherche prête, ouvrez {url} dans votre navigateur. Ctrl+C l'arrête ; vos "
 "photos ne sont pas modifiées."
 
-msgid "Search stopped; your photos were not changed."
-msgstr "Recherche arrêtée ; vos photos n'ont pas été modifiées."
-
 msgid "Search your photos"
 msgstr "Chercher dans vos photos"
 
@@ -9094,7 +9109,6 @@ msgstr "Secondes"
 msgid "See each setting and where it comes from"
 msgstr "Voir chaque réglage et d'où il vient"
 
-#, python-brace-format
 msgid "See every photo of the quarantine, put some back"
 msgstr "Voir toutes les photos de la quarantaine, en remettre"
 
@@ -9924,10 +9938,10 @@ msgstr "Les mots-clés tournent déjà : attendez la fin, ou arrêtez-les."
 #, python-brace-format
 msgid ""
 "Tags: {files} files have words, {seen} of them from the vision model; "
-"'search' finds them."
+"'library' finds them."
 msgstr ""
 "Tags : {files} fichiers ont des mots, dont {seen} du modèle de vision ; "
-"'search' les retrouve."
+"'library' les retrouve."
 
 msgid "Tag…"
 msgstr "Étiqueter…"
@@ -10650,6 +10664,9 @@ msgstr "Le dossier, tel que l'Explorateur le montre"
 msgid "The folders mh knows"
 msgstr "Les dossiers que mh connaît"
 
+msgid "The former name of 'library'."
+msgstr "L'ancien nom de 'library'."
+
 msgid "The full list"
 msgstr "La liste complète"
 
@@ -10662,13 +10679,13 @@ msgstr "Les suppositions"
 
 msgid ""
 "The guesses, the files no rule decides, the undated and the received ones: "
-"an empty layout leaves them where they are until you decide in 'search' (its"
-" 🗂 Events tab), so the tool never writes a folder name of its own."
+"an empty layout leaves them where they are until you decide in 'library' "
+"(its 🗂 Events tab), so the tool never writes a folder name of its own."
 msgstr ""
 "Les suppositions, les fichiers qu'aucune règle ne décide, ceux sans date et "
 "ceux reçus : une disposition vide les laisse où ils sont jusqu'à ce que vous"
-" décidiez dans 'search' (son onglet 🗂 Événements), pour que l'outil n'écrive"
-" jamais un nom de dossier de lui-même."
+" décidiez dans 'library' (son onglet 🗂 Événements), pour que l'outil "
+"n'écrive jamais un nom de dossier de lui-même."
 
 msgid "The guide"
 msgstr "Le parcours"
@@ -13035,13 +13052,13 @@ msgstr "Vous êtes ici"
 
 msgid ""
 "You had set these photos and videos aside (a burst shot, a near duplicate, a"
-" file chosen in 'search' or 'review --junk'); the same content is back, "
+" file chosen in 'library' or 'review --junk'); the same content is back, "
 "whatever its name now (a phone backup, a copy). 'clean' moves them to the "
 "quarantine again, with the rest of its plan. To keep one after all: 'undo' "
 "that clean, and it is no longer proposed."
 msgstr ""
 "Vous aviez mis ces photos et vidéos de côté (une photo de rafale, un quasi-"
-"doublon, un fichier choisi dans 'search' ou 'review --junk') ; le même "
+"doublon, un fichier choisi dans 'library' ou 'review --junk') ; le même "
 "contenu est revenu, quel que soit son nom aujourd'hui (une sauvegarde de "
 "téléphone, une copie). 'clean' les remet en quarantaine, avec le reste de "
 "son plan. Pour en garder une finalement : 'undo' de ce nettoyage, et elle "
@@ -13130,13 +13147,13 @@ msgstr ""
 " : {skipped}, paires gardant les deux noms (liens) : {linked}."
 
 #, python-brace-format
-msgid "Your decisions — {count} file chosen in 'search' is set aside."
+msgid "Your decisions — {count} file chosen in 'library' is set aside."
 msgid_plural ""
-"Your decisions — {count} files chosen in 'search' are set aside."
+"Your decisions — {count} files chosen in 'library' are set aside."
 msgstr[0] ""
-"Vos décisions — {count} fichier choisi dans 'search' est mis de côté."
+"Vos décisions — {count} fichier choisi dans 'library' est mis de côté."
 msgstr[1] ""
-"Vos décisions — {count} fichiers choisis dans 'search' sont mis de côté."
+"Vos décisions — {count} fichiers choisis dans 'library' sont mis de côté."
 
 #, python-brace-format
 msgid "Your decisions — {count} intruder file is set aside."
@@ -14298,6 +14315,9 @@ msgstr "moins d'une minute"
 msgid "less than {limit} is expected, not {value}"
 msgstr "une valeur inférieure à {limit} est attendue, pas {value}"
 
+msgid "library search look for find photo"
+msgstr "photothèque library search chercher trouver photo"
+
 msgid "lighten the chosen now (the terminal asks first)"
 msgstr "alléger maintenant celles choisies (le terminal demande d'abord)"
 
@@ -15094,9 +15114,6 @@ msgstr ""
 msgid "screenshot or document"
 msgstr "capture d'écran ou document"
 
-msgid "search look for find photo"
-msgstr "chercher rechercher trouver retrouver photo"
-
 msgid "seen by the model"
 msgstr "vu par le modèle"
 
@@ -15111,8 +15128,8 @@ msgstr "écartée"
 msgid "set aside again after it came back"
 msgstr "remis de côté après son retour"
 
-msgid "set aside in 'search'"
-msgstr "mis de côté dans 'search'"
+msgid "set aside in 'library'"
+msgstr "mis de côté dans 'library'"
 
 msgid "set aside the copies"
 msgstr "mettre de côté les copies"
@@ -15131,6 +15148,9 @@ msgstr "netteté"
 
 msgid "shortcut desktop icon start"
 msgstr "raccourci bureau icône démarrer"
+
+msgid "sidecar (.xmp)"
+msgstr "fichier compagnon (.xmp)"
 
 msgid "size, largest first"
 msgstr "taille, la plus grande d'abord"
@@ -15648,18 +15668,18 @@ msgstr "true ou false est attendu, pas {value}"
 msgid ""
 "true: 'tags' also lets a model look at each photo (CLIP, on this computer's "
 "processor: no GPU, nothing sent), once, about 1 minute per 1,000 photos, so "
-"that 'search' finds what a photo shows even without a word for it (\"a cat "
+"that 'library' finds what a photo shows even without a word for it (\"a cat "
 "on a sofa\"). The model (894 MB) is downloaded into the cache the first "
 "time. It sees what is on a photo, never who nor where: names come from "
 "'people', places from the GPS."
 msgstr ""
 "true : 'tags' laisse aussi un modèle regarder chaque photo (CLIP, sur le "
 "processeur de cet ordinateur : pas de carte graphique, rien n'est envoyé), "
-"une seule fois, environ 1 minute pour 1 000 photos, pour que 'search' trouve"
-" ce qu'une photo montre même sans un mot pour le dire (\"un chat sur un "
-"canapé\"). Le modèle (894 Mo) est téléchargé dans le cache la première fois."
-" Il voit ce qui est sur une photo, jamais qui ni où : les noms viennent de "
-"'people', les lieux du GPS."
+"une seule fois, environ 1 minute pour 1 000 photos, pour que 'library' "
+"trouve ce qu'une photo montre même sans un mot pour le dire (\"un chat sur "
+"un canapé\"). Le modèle (894 Mo) est téléchargé dans le cache la première "
+"fois. Il voit ce qui est sur une photo, jamais qui ni où : les noms viennent"
+" de 'people', les lieux du GPS."
 
 msgid ""
 "true: a paired phone may download the originals of photos and videos (full "
@@ -18236,6 +18256,10 @@ msgid "{n} other photo looks like the person you set aside on {date}"
 msgid_plural "{n} other photos look like the person you set aside on {date}"
 msgstr[0] "{n} autre photo ressemble à la personne mise de côté le {date}"
 msgstr[1] "{n} autres photos ressemblent à la personne mise de côté le {date}"
+
+#, python-brace-format
+msgid "{n} other photos of the same day and folder: same place?"
+msgstr "{n} autres photos du même jour et du même dossier : même lieu ?"
 
 #, python-brace-format
 msgid "{n} person"

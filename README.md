@@ -64,7 +64,7 @@ near duplicates only when you ask for it.
 
 **We guarantee it: these commands never modify, move nor delete a photo or a video** —
 `audit`, `crosscheck`, `classify`, `review`, `places`, `inventory`, `tags`,
-`search`, `people`, `history`, `reports`, `config`, `status`, `launcher`. They only write their own files (reports, cache, `config.toml`). Run them
+`library`, `people`, `history`, `reports`, `config`, `status`, `launcher`. They only write their own files (reports, cache, `config.toml`). Run them
 with your folders mounted `:ro`: then the operating system itself forbids any change.
 
 **The commands that act never erase anything.** `sort` moves files (on one disk, a simple
@@ -156,7 +156,7 @@ the folders it needs, its options, examples:
 [`sort`](https://cavo789.github.io/media-hygiene/commands/sort/),
 [`album`](https://cavo789.github.io/media-hygiene/commands/album/), [`places`](https://cavo789.github.io/media-hygiene/commands/places/),
 [`inventory`](https://cavo789.github.io/media-hygiene/commands/inventory/), [`tags`](https://cavo789.github.io/media-hygiene/commands/tags/),
-[`search`](https://cavo789.github.io/media-hygiene/commands/search/), [`xmp`](https://cavo789.github.io/media-hygiene/commands/xmp/),
+[`library`](https://cavo789.github.io/media-hygiene/commands/library/), [`xmp`](https://cavo789.github.io/media-hygiene/commands/xmp/),
 [`people`](https://cavo789.github.io/media-hygiene/commands/people/). Not sure which one?
 [Which command?](https://cavo789.github.io/media-hygiene/reference-commands/#which-command)
 

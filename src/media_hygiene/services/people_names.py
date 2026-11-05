@@ -1,7 +1,7 @@
 """What a `people` run ends with: the groups, the counts, and who is on how many photos.
 
 A person's photos are those with a face confirmed as theirs, or close enough to one
-(`people.naming`): the same faces `search` finds by name.
+(`people.naming`): the same faces `library` finds by name.
 """
 
 from __future__ import annotations

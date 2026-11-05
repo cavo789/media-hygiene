@@ -1,7 +1,7 @@
 """`[home]` — the home page's own choices (0484).
 
 `favorites`: the actions starred on the home page, in their order, by their name in
-the catalog (`search`, `import`…). The page writes it (`cli/home_favourites.py`); a
+the catalog (`library`, `import`…). The page writes it (`cli/home_favourites.py`); a
 name this version does not know (a verb renamed or removed) is ignored, not an error.
 `family_title`: the title a paired phone's family view shows (0461); empty: "Our
 photos".

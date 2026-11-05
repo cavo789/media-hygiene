@@ -1,4 +1,4 @@
-"""The app of `search` and `browse`: for their own server, or the home's (0356).
+"""The app of `library` and `browse`: for their own server, or the home's (0356).
 
 Both read the index; the files set aside on either are written into `decisions.json`
 of the reports folder, checked writable before each save, for `clean --decisions`.

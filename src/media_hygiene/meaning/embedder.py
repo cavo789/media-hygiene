@@ -2,7 +2,7 @@
 
 `onnxruntime` (in the image for the faces) and `tokenizers` are imported by name when
 a model loads: no other command pays for them, and a build without them says so in
-one sentence. The image side serves `tags`, the text side `search`: each loads only
+one sentence. The image side serves `tags`, the text side `library`: each loads only
 what it needs (the text model alone is 539 MB).
 """
 
@@ -46,7 +46,7 @@ class ImageReader(Protocol):
 
 
 class TextReader(Protocol):
-    """What `search` asks of the model: the vector of a search."""
+    """What `library` asks of the model: the vector of a search."""
 
     def text(self, query: str) -> NDArray[np.float32]:
         """The unit vector of a search, in the space of the pictures.

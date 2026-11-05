@@ -7,7 +7,9 @@ found by its name, so a file moved with its sidecar (`sort`, Explorer) keeps its
 
 from __future__ import annotations
 
+import contextlib
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
@@ -21,6 +23,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
 _XMP: Final = ".xmp"
+_NOON: Final = 12
 
 
 def days_of(paths: Iterable[Path]) -> dict[Path, str]:
@@ -43,6 +46,22 @@ def days_of(paths: Iterable[Path]) -> dict[Path, str]:
             if (day := _day_beside(file, {folder: names})) is not None:
                 days[file] = day
     return days
+
+
+def moments_of(paths: Iterable[Path]) -> dict[Path, datetime]:
+    """The same days as dates, at noon, as a file name without a time gives them.
+
+    Args:
+        paths: The files.
+
+    Returns:
+        The date of each file whose sidecar says a real day.
+    """
+    moments: dict[Path, datetime] = {}
+    for path, day in days_of(paths).items():
+        with contextlib.suppress(ValueError):  # `2019-13-45` names no day
+            moments[path] = datetime.fromisoformat(day).replace(hour=_NOON)
+    return moments
 
 
 def _names_with_sidecars(folder: Path) -> list[str]:

@@ -67,7 +67,7 @@ def tags_command(  # pylint: disable=too-many-arguments
             "--meaning",
             help=_(
                 "Also let a model look at each photo on this computer's processor "
-                "(CLIP, once, about 1 minute per 1,000 photos), so that 'search' "
+                "(CLIP, once, about 1 minute per 1,000 photos), so that 'library' "
                 "finds what a photo shows. Default: [tags] meaning."
             ),
         ),
@@ -106,5 +106,5 @@ def tags_command(  # pylint: disable=too-many-arguments
                 "find your photos by these words in your browser; 'inventory' "
                 "lists them in its last column."
             ),
-            NextVerb(carried(runtime, "search"), port=runtime.settings.review.port),
+            NextVerb(carried(runtime, "library"), port=runtime.settings.review.port),
         )

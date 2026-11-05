@@ -2,7 +2,7 @@
 
 `[people] min_face` and `min_sharpness` mean the same thing everywhere (TODO 0316): a
 face smaller or blurrier is never grouped on the people page, so it is never named
-either, by `search`, `classify`, the inventory or the XMP sidecars, unless the user
+either, by `library`, `classify`, the inventory or the XMP sidecars, unless the user
 confirmed it: a name nobody can see is a name nobody can correct.
 """
 

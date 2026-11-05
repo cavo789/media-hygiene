@@ -137,7 +137,7 @@ It ends with what it read back from the folder: *New photos and videos copied: 2
 files of the phone, not of the copy). Then it runs the steps of `[imports] then` in
 `config.toml` (one box per step under *Copy the new photos of the phone* on the home page: a box switched
 writes the file, and the page shows what it read back), said first (*After the import: audit > copies > bursts > tags > places*): **audit**, so that the new
-files join your library and [`search`](search.md) (in the home page when it is open and the audit
+files join your library and [`library`](library.md) (in the home page when it is open and the audit
 is the only step, else in the console); **copies** (the new files that are exact copies of
 another, the same photo twice or one your library already holds, go to the quarantine like a
 [`clean`](clean.md), before the tags: *🧹 3 copies among the new files set aside*, `mh undo` puts
@@ -182,7 +182,7 @@ of the left column:
   this version gives no date: *purged since*).
 
 A ticked file carries a red *🗑️ leaves the phone* label. To change what is ticked, the page works
-as [the folders of `search`](search.md#walk-through-your-folders):
+as [the folders of `library`](library.md#walk-through-your-folders):
 
 - **Pick**: a click picks one file; the ☑ box of each thumbnail (or Ctrl+click) adds or removes
   one; Shift+click picks every file from the last one clicked; a rectangle dragged with the mouse

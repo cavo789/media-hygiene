@@ -13,7 +13,7 @@ action of the tool a click or <kbd>Ctrl</kbd>+<kbd>K</kbd> away.**
 terminal, laid out as the cycle of your photos: **Import** (a phone, your NAS or an old disk),
 **Clean**, **Sort**, **Find**, **Back up** (planned); then, apart from the cycle, **Share**
 (your photos on the TV: [`slideshow`](slideshow.md), a folder or an
-[album](search.md#put-photos-in-an-album)) and three tools: **History and undo**,
+[album](library.md#put-photos-in-an-album)) and three tools: **History and undo**,
 **Reports**, **Settings**. Each space has its page: its guide, numbered, then "Go further". Every
 action shows its `mh` command, copyable, and links to its chapter of this documentation. The
 page can also run the audit itself, its progress shown in the page.
@@ -123,7 +123,7 @@ seeing them*):
 | Fast path | What shows the files first |
 |---|---|
 | `clean`, `clean --delete` | The audit's report; `review --near` for `--tier near`, `near-all` |
-| `sort` | The classify report; 🗂 Events of `search`, one event at a time |
+| `sort` | The classify report; 🗂 Events of `library`, one event at a time |
 | `undo` | `undo --pick` |
 | `purge` | `undo --pick` |
 | `import`, `import <folder>` | `import --pick` |
@@ -190,7 +190,7 @@ opened the page:
   or reload the tab meanwhile: the step goes on, and the page, opened again, shows it again
   (*A step still runs*) until its end.
 - **Choices waiting on several pages** (burst series, near duplicates, folder pairs, unwanted
-  photos, files gone, `search`): the home page says how many wait (*Choices waiting to be
+  photos, files gone, `library`): the home page says how many wait (*Choices waiting to be
   applied: 3*), each page named with its count and a link to it, and **Apply all** runs one
   `clean --decisions` for all of them: one run, so one `mh undo` takes them all back. The count
   is read from the decisions file each time; once applied, it is gone.
@@ -201,8 +201,8 @@ opened the page:
   `mh` runs, paste the command there (right click) and press Enter. When the browser refuses to
   copy (an address other than `127.0.0.1` or `localhost`), the command is selected: press Ctrl+C.
 
-Every other page ([`review`](review.md), [the 🗂 Events tab of `search`](search.md#the-events-of-the-latest-classify),
-[`places`](places.md), [`search`](search.md), [`people`](people.md))
+Every other page ([`review`](review.md), [the 🗂 Events tab of `library`](library.md#the-events-of-the-latest-classify),
+[`places`](places.md), [`library`](library.md), [`people`](people.md))
 wears the home page's look and theme, under a bar: **Documentation** opens that page's chapter,
 next to its French twin (*En français*). When the home page opened it, the page shows in the
 **same tab** (no new tab), and **⌂ Back to the home page** closes it (what you decided there is
@@ -341,7 +341,7 @@ At home, show an album to the family **on your own phone**, without the TV: pair
 `mh --lan` (above), then open **Open the albums** on its home page (or, on the PC, *Share ›
 Your albums*). The relatives look at your screen and pair nothing.
 
-- **The list**: each [album](search.md#put-photos-in-an-album), its cover, its dates, its
+- **The list**: each [album](library.md#put-photos-in-an-album), its cover, its dates, its
   place and how many photos it holds.
 - **An album**, as the big photo apps show it: a **cover** (the sharpest photo of the first
   day), the album's name, its dates and its place (named offline, from the photos' GPS), then

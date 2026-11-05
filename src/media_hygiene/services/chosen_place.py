@@ -1,6 +1,6 @@
 """Where the pages save the files set aside: `decisions.json` of the reports folder.
 
-Shared by `search`, `browse` and `people`: one `chosen` key, one `clean --decisions`.
+Shared by `library`, `browse` and `people`: one `chosen` key, one `clean --decisions`.
 The reports folder is checked writable before each save, never trusted from the start.
 """
 

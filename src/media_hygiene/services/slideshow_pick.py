@@ -1,6 +1,6 @@
 """What `slideshow` shows: a folder, the files a search finds, or an album (0295).
 
-Read from the index alone, as `browse` and `search` do: a photo the last audit did not
+Read from the index alone, as `browse` and `library` do: a photo the last audit did not
 see is not shown. Photos and videos (0292: a video's codec and length from what the
 audit's `ffprobe` read), oldest first, the undated ones last; at most `MAX_SLIDES`,
 the first ones by date. An album's files are followed if they moved
@@ -53,7 +53,7 @@ class Pick:
     """What the command was asked to show: one of the four."""
 
     folder: str | None = None  # as the Explorer shows it
-    words: str | None = None  # a search, as typed in `search`
+    words: str | None = None  # a search, as typed in `library`
     album: str | None = None  # an album's name (`albums.json`)
     files: tuple[Path, ...] | None = None  # picked on a page, in the container (0454)
     shelf: Shelf | None = None  # the albums already read and followed (0547)

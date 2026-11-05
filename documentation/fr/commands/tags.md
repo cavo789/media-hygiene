@@ -10,7 +10,7 @@ lieu, ce qu'elle montre), sans toucher aux fichiers.**
 `tags` donne à chaque photo et vidéo **des mots pour la retrouver** : les mots parlants de ses
 dossiers (« Durbuy », « ours ») et de son nom, sa date (année, mois, saison, fêtes), son lieu,
 et, si vous le voulez, ce qu'y voit un [modèle de vision](../reference-glossary.md#modèle-de-vision) local (« gâteau », « bougie », « neige
-»). Les mots restent **dans le cache**, jamais dans vos photos ; [`search`](search.md) les
+»). Les mots restent **dans le cache**, jamais dans vos photos ; [`library`](library.md) les
 retrouve, [`xmp`](xmp.md) les écrit dans des [fichiers compagnons](../reference-glossary.md#fichier-compagnon).
 
 **Quand** : après un audit lancé avec le cache ; à nouveau après de nouvelles photos ou un
@@ -86,7 +86,7 @@ chaque photo est gardée aussitôt dans le cache, le passage suivant continue.
 | 🤖 `--sample N` | **Avec une IA locale seulement.** Décrire N photos prises au hasard avec le modèle, afficher leurs mots, le temps par photo et l'estimation d'une exécution complète, puis s'arrêter. |
 | 🤖 `--no-describe` | **Avec une IA locale seulement.** Ne rien demander de nouveau au modèle : les mots des dossiers, noms, dates et lieux, et les descriptions déjà dans le cache. |
 | 🤖 `--yes`, `-y` | **Avec une IA locale seulement.** Décrire les photos sans demander, quel que soit leur nombre (au-delà de 200, il demande d'abord). |
-| 🤖 `--meaning` | Un modèle sur le processeur de cet ordinateur (CLIP : ni Ollama, ni carte graphique, rien n'est envoyé) regarde chaque photo une fois, environ 1 minute pour 1 000 photos, pour que [`search`](search.md) trouve ce qu'une photo montre ([recherche par le sens](../reference-tags.md#retrouver-une-photo-par-ce-quelle-montre----meaning)). Le modèle (894 Mo) est téléchargé dans le cache la première fois. Par défaut : `[tags] meaning`. |
+| 🤖 `--meaning` | Un modèle sur le processeur de cet ordinateur (CLIP : ni Ollama, ni carte graphique, rien n'est envoyé) regarde chaque photo une fois, environ 1 minute pour 1 000 photos, pour que [`library`](library.md) trouve ce qu'une photo montre ([recherche par le sens](../reference-tags.md#retrouver-une-photo-par-ce-quelle-montre----meaning)). Le modèle (894 Mo) est téléchargé dans le cache la première fois. Par défaut : `[tags] meaning`. |
 
 ## Bon à savoir
 
@@ -114,7 +114,7 @@ chaque photo est gardée aussitôt dans le cache, le passage suivant continue.
 - [Retrouver en bref](../find/quick-guide.md)
 - [Les tags](../reference-tags.md) : chaque source, les réglages, la longue exécution.
 - [Trier, étape 8 : un modèle de vision local](../sort/08-subjects-from-a-local-model.md)
-- Ensuite : [`search`](search.md), [`xmp`](xmp.md), [`inventory`](inventory.md).
+- Ensuite : [`library`](library.md), [`xmp`](xmp.md), [`inventory`](inventory.md).
 
 ## L'aide intégrée
 
@@ -138,7 +138,7 @@ chaque photo est gardée aussitôt dans le cache, le passage suivant continue.
 │ --meaning                 Laisser aussi un modèle regarder chaque photo sur  │
 │                           le processeur de cet ordinateur (CLIP, une seule   │
 │                           fois, environ 1 minute pour 1 000 photos), pour    │
-│                           que 'search' trouve ce qu'une photo montre. Par    │
+│                           que 'library' trouve ce qu'une photo montre. Par    │
 │                           défaut :  meaning.                                 │
 │ --help     -h             Affiche ce message et quitte.                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯

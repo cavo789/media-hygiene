@@ -21,7 +21,8 @@ from media_hygiene.services.launcher_menu import shell_safe
 # The commands reading the photos' contents; `status`, `history`, `config`, `reports`,
 # `menu` and `inventory` read the tool's own folders only.
 CLOUD_READERS: Final = frozenset(
-    {"audit", "review", "clean", "crosscheck", "classify", "tags", "people", "search"}
+    {"audit", "review", "clean", "crosscheck", "classify", "tags", "people"}
+    | {"library", "search"}
 )
 # Where the OneDrive client says its folders are, one variable per account kind.
 ONEDRIVE_ROOTS: Final = ("OneDrive", "OneDriveConsumer", "OneDriveCommercial")

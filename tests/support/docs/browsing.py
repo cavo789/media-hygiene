@@ -1,4 +1,4 @@
-"""The steps played in a browser: the reviews (bursts, near, pairs), `search`."""
+"""The steps played in a browser: the reviews (bursts, near, pairs), `library`."""
 
 from __future__ import annotations
 
@@ -67,9 +67,9 @@ def served_pages(demo: Demo, shots: Path) -> Captures:
     # The words of the folders and dates: no vision model in the documentation.
     run(demo, Command(("tags", "--no-describe")))
     word = demo.library.names.birthday.rsplit("/", maxsplit=1)[-1].casefold()
-    _serve(demo, ("search", "--", "search", word), shots)
+    _serve(demo, ("library", "--", "search", word), shots)
     folder = demo.library.names.birthday.rsplit("/", maxsplit=1)[-1]
-    _serve(demo, ("search", "--", "browse", folder), shots)
+    _serve(demo, ("library", "--", "browse", folder), shots)
     _serve(demo, ("home", "--", "home"), shots)
     return captures
 

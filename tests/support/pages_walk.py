@@ -86,7 +86,7 @@ def open_from_home(page: Page, name: str) -> dict[str, Any]:
 
     Args:
         page: The tab, on the home page.
-        name: The step (`search`, `browse`).
+        name: The step (`library`, `browse`).
 
     Returns:
         The timings, in ms.

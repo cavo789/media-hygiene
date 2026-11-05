@@ -63,7 +63,7 @@ STEP_PATH: Final = "/api/step"  # `POST` a step (`home_step`), `GET` where it is
 # The pages the home server serves itself (0356): a click on them is a plain link.
 SERVED_HERE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
     {
-        ("search",): SEARCH_PAGE_PATH,
+        ("library",): SEARCH_PAGE_PATH,
         **SERVED_MORE,
         ("review", "--near"): NEAR_REVIEW_PAGE,  # 0357
         ("review", "--pairs"): PAIRS_PAGE,  # 0417, as the next three

@@ -102,7 +102,7 @@ def conflict_error(
     return WorkbookError(
         "\n".join((message, *lines)),
         _(
-            "Choose again in the 🗂 Events tab of 'search' (it shows both), "
+            "Choose again in the 🗂 Events tab of 'library' (it shows both), "
             "or set the workbook "
             "cells back, then run 'sort' again."
         ),

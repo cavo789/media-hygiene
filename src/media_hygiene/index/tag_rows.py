@@ -27,7 +27,7 @@ _INSERT: Final = (
     "INSERT OR REPLACE INTO tags (path, size, mtime_ns, source, value, model, kind)"
     " VALUES (?, ?, ?, ?, ?, ?, ?)"
 )
-# An index of version 6 opened read-only (`search`) has no `kind` yet: read as ''.
+# An index of version 6 opened read-only (`library`) has no `kind` yet: read as ''.
 _OF: Final = (
     "SELECT source, value, model, {kind} FROM tags"
     " WHERE path = ? AND size = ? AND mtime_ns = ? ORDER BY rowid"

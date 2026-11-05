@@ -6,7 +6,7 @@ You reviewed the proposal and edited the workbook ([step 5](05-review-the-propos
 now moves the files where the workbook puts them. Like `clean`, every move is journaled and
 `undo` puts everything back.
 
-`sort` moves every file of the plan without showing it: the classify report shows them first (*See them first* on the home page), 🗂 Events of `search` one event at a time.
+`sort` moves every file of the plan without showing it: the classify report shows them first (*See them first* on the home page), 🗂 Events of `library` one event at a time.
 
 ## Run it
 
@@ -117,7 +117,7 @@ hundreds of empty `July 2016` folders behind. A folder holding only `Thumbs.db`,
 mounted folders, protected and excluded folders are never removed. `--keep-empty-folders` keeps
 them all.
 
-Sorted, and still short of space? **⚖ Heaviest files** in [the folders of `search`](../commands/search.md#walk-through-your-folders) lists
+Sorted, and still short of space? **⚖ Heaviest files** in [the folders of `library`](../commands/library.md#walk-through-your-folders) lists
 the heaviest files of the whole library, the videos first.
 
 ## Nothing lost, proven

@@ -2,7 +2,7 @@
 
 An explicit list, every other path refused (`lan_app`): the home page's reads, the
 audit's progress (never its start: an audit follows a change made on the PC, 0427),
-the albums (0297), and `search`/`browse` served by the home server (0356) with their
+the albums (0297), and `library`/`browse` served by the home server (0356) with their
 pictures, and the presence (0416: an open phone keeps the server up). Their
 searches and folder lists are `POST` but change nothing; what
 writes (*set aside*, *Apply now*, a move, a rule, a name refused) stays the PC's
@@ -63,7 +63,7 @@ POST_PATHS: Final = _SAYS | FOLDER_POSTS | _SHOW_POSTS
 # an album saved on the PC, on the TV (`lan_show`). Every other step stays the PC's.
 PHONE_STEPS: Final = frozenset({ALBUM_STEP})
 # The steps a phone opens as pages instead of asking the PC to run them.
-PHONE_PAGES: Final = {"mh search": SEARCH_PAGE_PATH}
+PHONE_PAGES: Final = {"mh library": SEARCH_PAGE_PATH}
 _GET, _POST = "GET", "POST"
 # The controls of a page of photos to pick that write, hidden on a phone (0429).
 PHONE_HIDDEN: Final = (

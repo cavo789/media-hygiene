@@ -56,6 +56,7 @@ class SearchAsked(BaseModel):
     album: AlbumAimed | None = None  # the album in the field (0501)
     missing: Literal["all", "date", "place"] = "all"  # what they lack (0531)
     place: str = Field(default="", max_length=_MAX_TEXT)  # one of my places (0553)
+    near: tuple[int, ...] = Field(default=(), max_length=_MOST)  # 0554: these only
 
     @property
     def shown(self) -> int:

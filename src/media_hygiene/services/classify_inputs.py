@@ -6,14 +6,17 @@ from collections import Counter
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, Protocol
 
+from media_hygiene.classify.dates import exif_date, video_date
 from media_hygiene.classify.models import MediaInput
 from media_hygiene.index.former_names import former_of
 from media_hygiene.index.takeout_rows import takeout_of
 from media_hygiene.paths.host_paths import is_within
 from media_hygiene.scan.metadata import MediaMetadata
+from media_hygiene.search.sidecar_days import moments_of
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from datetime import tzinfo
     from pathlib import Path
 
     from media_hygiene.classify.engine import Scope
@@ -63,6 +66,40 @@ def media_input(file: MediaFile, root: Path, index: FactsRepository) -> MediaInp
     found = input_of(file, root, index.get(file))
     found = replace(found, former=former_of(index.connection, file.path))
     return with_takeout(found, takeout_of(index.connection, file.path))
+
+
+def with_sidecar_days(files: Sequence[MediaInput], zone: tzinfo) -> list[MediaInput]:
+    """Give each file without a date of its own the day its `.xmp` holds (0597).
+
+    Read at each run, never kept: a sidecar written, undone or moved counts at once.
+    Only the folders of undated files are listed.
+
+    Args:
+        files: The inputs.
+        zone: The zone of a video's date.
+
+    Returns:
+        The inputs, in order.
+    """
+    undated = [file.path for file in files if not _dated(file, zone)]
+    moments = moments_of(undated) if undated else {}
+    return [replace(file, sidecar_day=moments.get(file.path)) for file in files]
+
+
+def _dated(file: MediaInput, zone: tzinfo) -> bool:
+    """Tell whether a file holds its own date.
+
+    Args:
+        file: The input.
+        zone: The zone of a video's date.
+
+    Returns:
+        True for a real EXIF or video date.
+    """
+    recorded = file.metadata.recorded_at if file.metadata else None
+    return exif_date(file.taken_at) is not None or (
+        video_date(recorded, zone) is not None
+    )
 
 
 def with_takeout(file: MediaInput, takeout: TakeoutFacts | None) -> MediaInput:

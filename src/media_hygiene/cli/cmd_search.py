@@ -1,4 +1,4 @@
-"""`media-hygiene search`: find photos by their words, in the browser or the console."""
+"""`media-hygiene library`: find photos by their words, in a page or the console."""
 
 # pylint: disable=import-outside-toplevel  # lazy: a command loads its code when it runs
 
@@ -89,12 +89,12 @@ def search_command(  # pylint: disable=too-many-arguments,too-many-locals
                         "the same search in your browser, with the pictures and "
                         "filters."
                     ),
-                    NextVerb(carried(runtime, "search"), port=port),
+                    NextVerb(carried(runtime, "library"), port=port),
                 )
             return
         chosen = serve_search(runtime, search, SearchOpen(port, folder or ""))
         output.blank()
-        output.success(_("Search stopped; your photos were not changed."))
+        output.success(_("Library stopped; your photos were not changed."))
         if chosen:
             suggest_clean(runtime, chosen)
 

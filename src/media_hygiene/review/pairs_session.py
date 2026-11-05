@@ -1,6 +1,6 @@
 """A `review --pairs` in progress: the decided folder pairs, saved after every choice.
 
-The decisions file is shared with the other reviews and `search`: this one keeps what
+The decisions file is shared with the other reviews and `library`: this one keeps what
 it finds there and writes the `pairs` key (the report's download writes it too).
 Reopened on the same folders, it resumes; a pair that no longer exists is dropped.
 """

@@ -139,11 +139,11 @@ class AsideMoves:
     def _chosen(
         self, file: MediaFile, kind: ActionKind = ActionKind.QUARANTINE_CHOSEN
     ) -> None:
-        """Move one file set aside in `search` or `review --junk` to the quarantine.
+        """Move one file set aside in `library` or `review --junk` to the quarantine.
 
         Args:
             file: The file, as the index knew it when it was chosen.
-            kind: The action journaled: chosen in `search`, or unwanted.
+            kind: The action journaled: chosen in `library`, or unwanted.
         """
         blocker = chosen_blocker(file)
         if blocker is not None:

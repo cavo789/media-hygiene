@@ -86,7 +86,7 @@ def command_table(analyse: str, act: str) -> tuple[tuple[str, str, str], ...]:
             ),
         ),
         (
-            "search",
+            "library",
             act,
             _(
                 "Find photos by their words in your browser (or as a table): "

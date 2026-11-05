@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 
 
 def _set_aside_in_search(locations: Locations) -> None:
-    """The screenshot set aside in `search`, beside the junk review's choice."""
+    """The screenshot set aside in `library`, beside the junk review's choice."""
     file = locations.reports_dir / "decisions.json"
     shot = locations.data_dir / SCREENSHOT
     said = json.loads(file.read_text("utf-8"))

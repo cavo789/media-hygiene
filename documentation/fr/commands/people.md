@@ -95,7 +95,7 @@ Dans la page, tapez un nom sur un groupe et appuyez sur Entrée : le nom est enr
 visage erroné, `i` ignore un groupe d'inconnus, Chaque personne s'affiche ensuite deux fois au plus : **Chloé ✓ vérifié**, les visages que
 vous avez confirmés, et **Chloé attribué**, les visages qui lui sont donnés parce qu'ils leur
 ressemblent ; `y` confirme les visages attribués affichés, qui passent dans vérifié. Les
-exécutions suivantes gardent tous les noms, et [`search`](search.md) retrouve les personnes par
+exécutions suivantes gardent tous les noms, et [`library`](library.md) retrouve les personnes par
 leur nom : `search Chloé montagne`, `search person:chloe`. Les noms suivent les photos que
 [`sort`](sort.md) déplace (et qu'`undo` remet en place) ; `config.toml` est mis à jour la
 prochaine fois que la page enregistre un nom. Chaque nom est une entrée
@@ -143,7 +143,7 @@ lui-même :
    confirmées avec les autres. Leur section dit *N photos mises de côté, masquées* :
    **Afficher** les remontre, estompées, chacune avec ↺ pour reprendre celle-là ; **Retirer de
    la mise de côté** les reprend toutes. Il en va de même des photos mises de côté depuis une
-   autre page ([`search`](search.md)), jusqu'à ce que `clean --decisions`
+   autre page ([`library`](library.md)), jusqu'à ce que `clean --decisions`
    les déplace.
 3. Ouverte depuis la page d'accueil (`mh`), **Appliquer maintenant** ferme la page et lance
    [`clean --decisions`](clean.md), qui demande d'abord. Sinon, la commande le propose quand vous
@@ -166,15 +166,15 @@ laisse sa photo dans la section de quelqu'un d'autre. Cliquez sur le visage : la
 montre la photo avec **Mettre cette photo de côté** (ou la touche Suppr) ; Retour arrière la
 reprend.
 
-Le même `decisions.json` garde ce que [`search`](search.md#mettre-des-photos-de-côté) et
+Le même `decisions.json` garde ce que [`library`](library.md#mettre-des-photos-de-côté) et
 [`review`](review.md) ont mis de côté : un seul `clean --decisions` applique tout. Une photo
 modifiée depuis votre choix reste en place.
 
 ## Depuis n'importe quelle page : mettre une personne de côté
 
 Une photo montre quelqu'un que vous ne voulez plus voir, sur n'importe quelle page (`review`,
-`search`) : **👤 cette personne** sous une photo de `review`, ou **👤 Mettre une
-personne de côté** dans la grande vue de `search`, ouvre la page *Mettre une
+`library`) : **👤 cette personne** sous une photo de `review`, ou **👤 Mettre une
+personne de côté** dans la grande vue de `library`, ouvre la page *Mettre une
 personne de côté* dans un nouvel onglet, sur cette photo. Vous pouvez aussi l'ouvrir vous-même à
 `/person` sur l'adresse de l'une de ces pages et y coller le chemin d'une photo
 (`C:\Photos\…\IMG_1234.jpg`).
@@ -182,7 +182,7 @@ personne de côté* dans un nouvel onglet, sur cette photo. Vous pouvez aussi l'
 1. La page montre les visages trouvés sur cette photo par `audit --people` ; cliquez sur le bon
    (un visage seul est pris d'office).
 2. À droite, les photos de cette personne, les plus ressemblantes d'abord, en grille à choisir
-   comme dans [les dossiers de `search`](search.md#parcourir-vos-dossiers) : clic, Ctrl, Maj, rectangle, Ctrl+A, I, Suppr, la grande vue
+   comme dans [les dossiers de `library`](library.md#parcourir-vos-dossiers) : clic, Ctrl, Maj, rectangle, Ctrl+A, I, Suppr, la grande vue
    et ses touches. Si elles ressemblent à quelqu'un mis de côté avant, la barre le dit (*la
    personne mise de côté le <date>*) : ce que vous mettez de côté maintenant rejoint cette
    personne.
@@ -221,7 +221,7 @@ SHA-256 : il n'envoie rien sur vos photos.
 ## Bon à savoir
 
 - Les réglages `[people]` (`similarity`, `min_face`, `min_sharpness`) changent le regroupement,
-  et les visages trop petits ou trop flous pour la page ne sont nommés nulle part (`search`,
+  et les visages trop petits ou trop flous pour la page ne sont nommés nulle part (`library`,
   `classify`, XMP), sauf si vous les avez confirmés : rien n'est analysé à nouveau.
 - `audit --people` cherche les visages juste après un audit, une fois que vous avez accepté le
   temps que ça prend ; `with_audit = true` dans `[people]` le fait à chaque audit.

@@ -112,7 +112,7 @@ def change_blocker(file: MediaFile) -> str | None:
 
 
 def chosen_blocker(file: MediaFile) -> str | None:
-    """Explain why a file set aside in `search` must not be moved, or return None.
+    """Explain why a file set aside in `library` must not be moved, or return None.
 
     It must be exactly the file the index knew when it was chosen.
 

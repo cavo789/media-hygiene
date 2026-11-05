@@ -9,9 +9,9 @@ Served by the home page's server, in front of it, to the PC and to a phone paire
 - `GET /thumb/<key>.jpg`, `/tv/<key>.jpg` (the picture sized for a phone) and
   `/film/<key>.<ext>`: the files **of an album** only to a phone, never another file
   of the library, nor an original; the PC's request of another key goes on to the
-  pages behind (`search` and `browse` share `/thumb/`, 0356);
+  pages behind (`library` and `browse` share `/thumb/`, 0356);
 - `POST /api/album-change`: a file of an album added to an album or taken out (0295
-  item 4; no photo touched). Its own path: `search` and `browse`, served behind, keep
+  item 4; no photo touched). Its own path: `library` and `browse`, served behind, keep
   `POST /api/albums` for the files they pick.
 """
 

@@ -36,6 +36,7 @@ function activeFilters(body) {
   if (body.sorting !== "all") filters.push({ text: pressedLabel("sorting"), off: () => segmented("sorting", "all") });
   if (body.kind !== "all" && !body.aside) filters.push({ text: pressedLabel("kind"), off: () => { segmented("kind", "all"); remember("kind"); } });
   if (body.missing !== "all") filters.push({ text: pressedLabel("missing"), off: () => segmented("missing", "all") });
+  if (body.near) filters.push({ text: "📍 " + $("placeDlg").dataset.nearChip, off: () => { window.mhNear = null; } });
   if (body.place) filters.push({ text: "📍 " + body.place, off: () => { $("placeIn").value = ""; } });
   return filters;
 }

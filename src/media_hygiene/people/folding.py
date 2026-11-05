@@ -10,7 +10,7 @@ _DECOMPOSED: Final = "NFKD"
 
 
 def folded(text: str) -> str:
-    """A name without case nor accents, as `search` and `classify` compare them.
+    """A name without case nor accents, as `library` and `classify` compare them.
 
     Args:
         text: The name.

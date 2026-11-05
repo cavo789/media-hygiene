@@ -65,7 +65,7 @@ def command_functions() -> dict[str, Callable[..., None]]:
         "upkeep": upkeep_command,
         "reports": reports_command,
         "review": review_command,
-        "search": search_command,
+        "library": search_command,
         "restore": restore_command,
         "share": share_command,
         "shrink": shrink_command,

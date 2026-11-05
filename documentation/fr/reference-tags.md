@@ -23,7 +23,7 @@ docker run --rm -it `
 montrent les photos : elles sont envoyées à son url, et seulement là.
 ```
 
-Ensuite, [`search`](#retrouver-une-photo-par-ses-mots--search) retrouve les photos par ces mots
+Ensuite, [`library`](#retrouver-une-photo-par-ses-mots--library) retrouve les photos par ces mots
 dans votre navigateur, et [`inventory`](reference-inventory.md) les liste dans sa dernière
 colonne, **Tags**. [`xmp`](#emporter-les-mots-avec-les-photos--xmp) les écrit dans des fichiers compagnons `.xmp` que
 d'autres applications lisent.
@@ -39,7 +39,7 @@ d'autres applications lisent.
 | Date | L'année, le mois, la saison (inversée sous l'équateur), les fêtes (Noël, Nouvel an, Saint-Nicolas, Saint-Valentin, Halloween, Pâques) et les noms de vos propres règles `calendar` et `date_range` ([trier, étape 6](sort/06-write-down-what-you-know.md#les-dates)). Une photo sans date prend l'année de son dossier (`Avril 2007`). | Secondes |
 | Lieu | Le nom de votre lieu quand la position GPS s'y trouve ([trier, étape 9](sort/09-places-from-gps.md)), puis la ville la plus proche et son pays, hors ligne (GeoNames), quand elle est à moins de `town_km` (20 km). | Secondes |
 | Modèle de vision | Une courte phrase et 5 à 10 mots sur ce que montre la photo (facultatif, ci-dessous). | Environ 2 s par photo |
-| Personne | Les noms des personnes sur la photo, une fois leur groupe nommé dans [`people`](reference-people.md#nommer-les-groupes). Calculés par `search` à chaque lancement, depuis les visages et `config.toml` : `tags` ne les calcule pas, et ils ne sont jamais écrits dans les fichiers compagnons `.xmp`. | Aucun pour `tags` |
+| Personne | Les noms des personnes sur la photo, une fois leur groupe nommé dans [`people`](reference-people.md#nommer-les-groupes). Calculés par `library` à chaque lancement, depuis les visages et `config.toml` : `tags` ne les calcule pas, et ils ne sont jamais écrits dans les fichiers compagnons `.xmp`. | Aucun pour `tags` |
 
 Ces mots sont recalculés à chaque passage : renommez un dossier ou un fichier, ou ajoutez une
 règle, relancez `tags`.
@@ -121,7 +121,7 @@ docker run --rm -it ... cavo789/media-hygiene --locale fr tags --path "C:\Photos
 
 Seulement les photos sous ce dossier (répétez `--path` pour plusieurs).
 
-## Retrouver une photo par ses mots : `search`
+## Retrouver une photo par ses mots : `library`
 
 ```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
@@ -152,7 +152,7 @@ la grille sont gardés dans `/cache`.
 Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche les 20 premiers
 fichiers en tableau (`--limit N` pour plus). La recherche ne lit que le cache : relancez `tags`
 après un audit pour retrouver les nouvelles photos. Rien trouvé ? Voyez
-[Conseils pour retrouver une photo](commands/search.md#conseils-pour-retrouver-une-photo).
+[Conseils pour retrouver une photo](commands/library.md#conseils-pour-retrouver-une-photo).
 
 ## Retrouver une photo par ce qu'elle montre : `--meaning`
 
@@ -160,7 +160,7 @@ Les mots trouvent ce que quelqu'un a nommé : un dossier, un fichier, la phrase 
 photo d'un chat sur un canapé dans `2019/Divers` n'a pas le mot « chat ». Avec `--meaning` (ou
 `meaning = true` dans `[tags]`), `tags` laisse aussi un modèle regarder chaque photo, **sur le
 processeur de cet ordinateur** (CLIP ViT-B/32 et son modèle de texte multilingue : ni Ollama, ni
-carte graphique, rien n'est envoyé), et `search` classe ensuite les photos par ce qu'elles
+carte graphique, rien n'est envoyé), et `library` classe ensuite les photos par ce qu'elles
 montrent, en français ou en anglais :
 
 ```powershell
@@ -182,7 +182,7 @@ docker run --rm -it ... cavo789/media-hygiene tags --meaning   # 🤖 un modèle
   10 minutes pour 10 000 (estimé à partir de là). Les copies identiques sont regardées une fois ;
   une photo retouchée depuis est regardée à nouveau ; les vidéos, non. Ctrl+C arrête entre deux
   photos, et la fois suivante reprend.
-- **La recherche** : `search` utilise les vecteurs dès que le cache les contient, quoi que dise
+- **La recherche** : `library` utilise les vecteurs dès que le cache les contient, quoi que dise
   `[tags] meaning` ; les mots comptent toujours, fusionnés avec le sens (fusion des rangs
   réciproques). Elle trouve au plus `meaning_results` photos (200), les plus proches d'abord. Une
   recherche dans une seule source (`vision:`, le filtre de source) ou de noms et de lieux
@@ -273,6 +273,6 @@ Une liste `stop_words` écrite ici remplace celle intégrée ; la ligne comment�
 
 Écrire les mots dans un JPEG change ses octets : son empreinte, sa date, et deux copies
 identiques cesseraient de l'être si une seule était étiquetée. Cela casserait ce sur quoi cet
-outil repose, et mettrait les originaux en risque. Les mots restent dans le cache, où `search`
+outil repose, et mettrait les originaux en risque. Les mots restent dans le cache, où `library`
 et `inventory` les lisent, et ne vont dans des fichiers compagnons à côté des photos que si vous
 le demandez (`xmp`).

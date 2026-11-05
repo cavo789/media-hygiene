@@ -177,7 +177,7 @@ Quarantaine : vide.
    22 mh tags                                         Donner des   🔒
                                                       mots à vos
                                                       photos
-   23 mh search                                       Retrouver    🔒
+   23 mh library                                       Retrouver    🔒
                                                       une photo
                                                       par ses mots
       Pour aller plus loin

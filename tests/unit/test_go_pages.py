@@ -10,7 +10,7 @@ def test_the_go_pages_are_writers_never_read_only() -> None:
     """Search and home: out of the `:ro` list, said apart."""
     names = {info.name for info in build_app().registered_commands}
     writers = {name for name in names if name not in READ_ONLY_COMMANDS}
-    assert {"search", "home"} == GO_PAGES
+    assert {"library", "search", "home"} == GO_PAGES
     assert writers >= GO_PAGES
     assert not GO_PAGES & PHOTO_READERS
 

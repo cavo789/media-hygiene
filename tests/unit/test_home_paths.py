@@ -12,7 +12,7 @@ _COMPARED = re.compile(r"path == ([A-Z_]+_PATH)\b")
 
 
 def test_every_path_home_app_answers_is_a_home_path() -> None:
-    """A path `HomeApp` answers but the home server sends to `search` gets a 405."""
+    """A path `HomeApp` answers but the home server sends to `library` gets a 405."""
     source = inspect.getsource(home_app.HomeApp)
     names = set(_COMPARED.findall(source))
     assert names, "no path found: the pattern no longer matches HomeApp"

@@ -1,8 +1,8 @@
-"""`search` and `browse` served by the home server itself (0356).
+"""`library` and `browse` served by the home server itself (0356).
 
 A click on either used to stop the home server and start a container: 7.6 to 8.7 s
 (measured on Windows, step 35 of `mh-measure.ps1`). Now the home server answers every
-path not its own with the app of `search` (`search_app`), built at the first request,
+path not its own with the app of `library` (`search_app`), built at the first request,
 again once the settings changed (`FreshRuntime`, 0358); no index: its pages say why.
 """
 
@@ -60,7 +60,7 @@ class HomeServer:
 
 
 class SearchHere:
-    """The app of `search` and `browse`, built once, at the first request of either."""
+    """The app of `library` and `browse`, built once, at the first request of either."""
 
     def __init__(self, runtime: Runtime, server: HomeServer) -> None:
         """Remember how to build it.
@@ -130,7 +130,7 @@ class SearchHere:
 
 @dataclass(frozen=True, slots=True)
 class HomeWithPages:  # pylint: disable=too-many-instance-attributes
-    """The home page's paths to the home page, every other one to `search`/`browse`."""
+    """The home page's paths to the home page, every other one to `library`/`browse`."""
 
     home: Handling
     pages: SearchHere
@@ -170,7 +170,7 @@ class HomeWithPages:  # pylint: disable=too-many-instance-attributes
 def home_with_pages(
     runtime: Runtime, home: Handling, server: HomeServer
 ) -> Iterator[HomeWithPages]:
-    """The home page serving `search` and `browse` too, their index closed after.
+    """The home page serving `library` and `browse` too, their index closed after.
 
     Args:
         runtime: Settings, mount points and output.

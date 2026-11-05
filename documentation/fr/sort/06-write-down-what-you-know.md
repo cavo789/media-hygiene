@@ -93,7 +93,7 @@ telle règle pour l'événement affiché, après avoir dit ce qu'elle prendrait
 jour près ; *📌 En faire une règle* montre alors les photos que la règle prendrait, chacune avec
 l'endroit où elle irait, et celles des mêmes jours qu'elle laisse à une autre règle : corrigez les
 jours ou le dossier en les voyant, puis enregistrez
-([`search`](../commands/search.md#faire-dune-période-une-règle)). *Mettre à jour une règle…* fait de
+([`library`](../commands/library.md#faire-dune-période-une-règle)). *Mettre à jour une règle…* fait de
 même pour une règle de dates déjà écrite.
 
 **Un voyage déjà trié dans vos dossiers.** Une règle de dates au-dessus de *Dossiers existants*
@@ -188,7 +188,7 @@ jamais. `score = 0` sur la règle la désactive.
 ### Les personnes
 
 Une règle `person` lit les visages nommés avec [`people`](../reference-people.md) : les visages
-confirmés dans la page, et ceux qui leur ressemblent assez, comme `search` les trouve. Lancez
+confirmés dans la page, et ceux qui leur ressemblent assez, comme `library` les trouve. Lancez
 d'abord `people` et nommez les groupes : l'[étape 10](10-sort-by-person.md) montre tout le
 chemin.
 
@@ -315,7 +315,7 @@ Les règles qui n'ont rien décidé sont nommées après le tableau : une faute 
 expression régulière, une mauvaise année, ou simplement rien de ce genre dans vos dossiers.
 
 **Garder la liste vivante : *Vos règles*.** Sur la page des événements
-([l'onglet 🗂 Événements de `search`](../commands/search.md#les-événements-du-dernier-classify)), **📌 Vos règles** liste chaque règle de
+([l'onglet 🗂 Événements de `library`](../commands/library.md#les-événements-du-dernier-classify)), **📌 Vos règles** liste chaque règle de
 `config.toml`, avec les fichiers qu'elle a décidés lors du `classify` que montre la page et, pour
 une règle sur un nom de dossier, les jours de l'événement qui contient la plupart de ses
 fichiers. Elles sont affichées par type (*Dates*, *Noms de dossiers et de fichiers*, *Jours de

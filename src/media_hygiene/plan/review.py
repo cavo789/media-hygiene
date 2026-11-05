@@ -5,7 +5,7 @@ kept in `kept_in`. A review can swap a pair (keep the copies of `removed_from`, 
 the one of `kept_in`), skip it (delete nothing of the pair) or link it (each copy of
 `removed_from` keeps its name, made a hard link to its kept file, 0213). Several
 decisions may touch one group: a copy some decision keeps is never deleted. The shots
-of a burst series a review set aside, and the files set aside in `search`, are moved
+of a burst series a review set aside, and the files set aside in `library`, are moved
 to the quarantine.
 """
 
@@ -62,7 +62,7 @@ class ReviewChoices:
 
     pairs: tuple[PairChoice, ...] = ()
     bursts: tuple[BurstChoice, ...] = ()
-    chosen: tuple[MediaFile, ...] = ()  # set aside in `search`
+    chosen: tuple[MediaFile, ...] = ()  # set aside in `library`
     unwanted: tuple[MediaFile, ...] = ()  # set aside in `review --junk`
     gone: tuple[GoneAnswer, ...] = ()  # answered in `review --gone`
 

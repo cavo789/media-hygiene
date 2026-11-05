@@ -19,6 +19,7 @@ from media_hygiene.places.config_photos import give_photos, read_place_photos
 from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.serving import json_response
 from media_hygiene.search.aside_filter import AsideFilter
+from media_hygiene.search.place_neighbours import neighbours
 from media_hygiene.search.tag_desk import ref_of
 
 if TYPE_CHECKING:
@@ -100,28 +101,30 @@ class PlaceDesk:
             said = exc.errors()[0]["msg"] if exc.errors() else str(exc)
             return json_response(HTTPStatus.BAD_REQUEST, {"error": said})
         try:
-            said = ""
+            said, near = "", list[int]()
             if asked.action == "give":
                 if not self.writable:
                     message = _(
                         "Places cannot be saved: /config is not mounted, or read-only."
                     )
                     return json_response(HTTPStatus.CONFLICT, {"error": message})
-                said = self._give(asked)
+                said, near = self._give(asked)
             members = self.book.members()
         except (ValueError, OSError) as exc:
             return save_refused(exc)
         rows = [{"name": n, "count": len(members.of(n))} for n in members.names]
-        return json_response(HTTPStatus.OK, {"places": rows, "saved": said})
+        return json_response(
+            HTTPStatus.OK, {"places": rows, "saved": said, "near": near}
+        )
 
-    def _give(self, asked: PlaceAsked) -> str:
+    def _give(self, asked: PlaceAsked) -> tuple[str, list[int]]:
         """Write the photos not in the place yet, then count them in the file.
 
         Args:
             asked: The keys and the place.
 
         Returns:
-            The line to say.
+            The line to say, and the keys of the photos it may suit too (0554).
 
         Raises:
             ValueError: No such place, or no photo picked.
@@ -161,7 +164,21 @@ class PlaceDesk:
                 "{n} already there by their GPS: not written.",
                 len(by_gps),
             ).format(n=len(by_gps))
-        return said
+        return said, self._near([found[key] for key in keys])
+
+    def _near(self, given: list[Path]) -> list[int]:
+        """The keys of the photos a place given may suit too (0554).
+
+        Args:
+            given: The photos given.
+
+        Returns:
+            Those of the same day and folder, without a place, not set aside.
+        """
+        placed = self.book.members().placed()
+        near = neighbours(self.index.connection, given, placed)
+        shown = AsideFilter(self.aside, self.mapper).keep(near).files
+        return [near[path] for path in shown]
 
 
 def _by_gps(members: PlaceMembers, name: str, path: Path) -> bool:

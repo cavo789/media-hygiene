@@ -6,18 +6,18 @@
 school fair, a weekend), gathered by `classify` from one folder or phone to another. Its name
 becomes **the folder where `sort` puts all its photos**: named `Kermesse`, it goes to
 `2016/2016-07/Kermesse`; without a name, its files stay where they are. What moves on the disk, name or
-category: [the 🗂 Events tab of `search`, what it is for](../commands/search.md#the-events-of-the-latest-classify).
+category: [the 🗂 Events tab of `library`, what it is for](../commands/library.md#the-events-of-the-latest-classify).
 
 The workbook of [step 5](05-review-the-proposal.md) is good for renaming in bulk, not for
 *looking* at photos: naming an event means reading the report in one window and typing in the
-other. With hundreds of events, that is hundreds of back-and-forths. The 🗂 Events tab of `search` puts both in
+other. With hundreds of events, that is hundreds of back-and-forths. The 🗂 Events tab of `library` puts both in
 one page of your browser: **one event at a time, its photos, its proposal, and a field to name
 it**, all with the keyboard.
 
 It is optional: the workbook alone is enough, and both can be used together. The page never
 touches a photo nor the workbook; `sort` ([step 7](07-sort.md)) applies your choices.
 
-> **Since 0572** the 🗂 Events tab no longer reads the `classify` plan: it groups the files not sorted yet of the period searched. Click an event: its card says in one sentence where its files go, then **Sort here now** (moved, journaled, then the next event), **Another folder…** (the bar's **📂 Move to an event…**) or **Do not sort this event** — [how](../commands/search.md#the-events-of-the-latest-classify). The plan-based steps below describe the former tab.
+> **Since 0572** the 🗂 Events tab no longer reads the `classify` plan: it groups the files not sorted yet of the period searched. Click an event: its card says in one sentence where its files go, then **Sort here now** (moved, journaled, then the next event), **Another folder…** (the bar's **📂 Move to an event…**) or **Do not sort this event** — [how](../commands/library.md#the-events-of-the-latest-classify). The plan-based steps below describe the former tab.
 
 ## Start the page
 
@@ -26,7 +26,7 @@ the same reports folder, which `mh` mounts (read-only is enough for the photos: 
 shows them):
 
 ```powershell
-mh search
+mh library
 ```
 
 <details>
@@ -36,7 +36,7 @@ mh search
 docker run --rm -it -p 127.0.0.1:8088:8088 `
   -v "C:\Photos:/data/c/Photos:ro" `
   -v "$HOME\media-hygiene\reports:/reports" `
-  cavo789/media-hygiene search
+  cavo789/media-hygiene library
 ```
 
 </details>
@@ -99,7 +99,7 @@ whether to save it, closing the tab warns.
 | <kbd>S</kbd> | Leave the picked photos (else the framed one) where they are. |
 | <kbd>Delete</kbd> | Take back the choice made here: of the picked photos, else of the event. The workbook decides again. |
 
-The photos are picked as in [the folders of `search`](../commands/search.md#walk-through-your-folders): a click picks one photo; the ☑ box
+The photos are picked as in [the folders of `library`](../commands/library.md#walk-through-your-folders): a click picks one photo; the ☑ box
 of each thumbnail (or Ctrl+click) adds or removes one; Shift+click picks every photo from the last
 one clicked; a rectangle dragged with the mouse over the grid picks what it touches (with Ctrl, it
 adds to the picking); Ctrl+A every photo of the event. **Invert the picking** (or I) picks the
@@ -214,7 +214,7 @@ files of this event only, as [`sort --event`](../commands/sort.md) does: journal
 its own `undo`. The status line gives what the disk holds after the run: the files moved and
 checked at their new place. The event then shows *sorted*, and <kbd>U</kbd> and *Only the events
 to decide* skip it; a later `sort` of the whole workbook skips its files. The photos must be
-mounted without `:ro`, with a `/journal` (`mh search` does it): otherwise the page says
+mounted without `:ro`, with a `/journal` (`mh library` does it): otherwise the page says
 what is missing, and nothing moves.
 
 **Check first, then GO.** Each photo of the event says where it is and where it goes, as `sort`
@@ -222,7 +222,7 @@ will move it. Before moving, *Check, then sort* lists them by folder (*14 → �
 et Magda*, the files that stay apart); **I checked: sort these N files** is the GO. To leave
 photos out, pick them and press <kbd>S</kbd> first. Start with a small event: you see what the
 tool does, file by file, before trusting it with more. A period or a rule can be sorted the same
-way from the search page ([`search`](../commands/search.md#make-a-period-a-rule)).
+way from the search page ([`library`](../commands/library.md#make-a-period-a-rule)).
 
 ## Follow the progress
 

@@ -44,14 +44,14 @@ def find_steps() -> tuple[Step, ...]:
         Step(
             "search",
             space,
-            _("Find a photo by its words"),
+            _("Library: find a photo"),
             _("A word, a place, a year, a person: with previews, in the browser."),
-            "search",
+            "library",
             Risk.SAFE,
             Kind.PAGE,
             icon="search",
-            keywords=_("search look for find photo"),
-            doc=Doc("commands/search/"),
+            keywords=_("library search look for find photo"),
+            doc=Doc("commands/library/"),
         ),
         Step(
             "xmp",

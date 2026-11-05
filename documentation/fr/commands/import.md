@@ -151,7 +151,7 @@ les étapes de `[imports] then` dans `config.toml` (une case par étape sous *Co
 téléphone* dans la page d'accueil : une case changée écrit le fichier, et la page montre ce
 qu'elle a relu), annoncées d'abord (*Après l'import : audit >
 copies > bursts > tags > places*) : **audit**, pour que les nouveaux fichiers rejoignent votre photothèque et
-[`search`](search.md) (dans la page d'accueil quand elle est ouverte et que l'audit est seul,
+[`library`](library.md) (dans la page d'accueil quand elle est ouverte et que l'audit est seul,
 sinon dans la console) ; **copies** (les nouveaux fichiers identiques à un autre, la même photo
 deux fois ou une que votre photothèque a déjà, vont en quarantaine comme avec
 [`clean`](clean.md), avant les tags : *🧹 3 copies parmi les nouveaux fichiers mises de côté*,
@@ -200,7 +200,7 @@ PC le détient, expliqué en haut de la colonne de gauche :
   purge plus ancienne que cette version ne donne pas de date : *purgé depuis*).
 
 Un fichier coché porte une étiquette rouge *🗑️ quitte le téléphone*. Pour changer ce qui est coché,
-la page fonctionne comme [les dossiers de `search`](search.md#parcourir-vos-dossiers) :
+la page fonctionne comme [les dossiers de `library`](library.md#parcourir-vos-dossiers) :
 
 - **Choisir** : un clic choisit un fichier ; la case ☑ de chaque vignette (ou Ctrl+clic) en
   ajoute ou en retire un ; Maj+clic choisit tous les fichiers depuis le dernier cliqué ; un

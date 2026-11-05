@@ -1,4 +1,4 @@
-"""`search`: find photos by their words, or walk through the folders.
+"""`library`: find photos by their words, or walk through the folders.
 
 The index (`/cache`) is read, never written: the full-text table lives in memory. The
 browser page is served like `review`, until Ctrl+C; the grid's previews are kept in
@@ -47,7 +47,7 @@ def open_search(runtime: Runtime, *, words: bool = True) -> SearchIndex:
 
     Args:
         runtime: Settings, mount points and output.
-        words: Whether the words matter (`search`); the folder view needs none.
+        words: Whether the words matter (`library`); the folder view needs none.
 
     Returns:
         The search, to close after use.
@@ -144,7 +144,7 @@ def serve_search(runtime: Runtime, search: SearchIndex, opened: SearchOpen) -> i
 
 @dataclass(frozen=True, slots=True)
 class SearchOpen:
-    """`search` without words: its port, and the folder the page opens on (0405)."""
+    """`library` without words: its port, and the folder the page opens on (0405)."""
 
     port: int
     folder: str = ""  # a part of the path, as *Path contains* takes it
