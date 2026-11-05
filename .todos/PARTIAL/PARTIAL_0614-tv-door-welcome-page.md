@@ -28,3 +28,15 @@ server, the plain door's `/` redirects to the **phone's** install steps
 `http://<PC>:8089/` on a TV shows the page in both servers; OK on the first tile opens
 `/screen`; a paired TV skips it; tests per server; docs en + fr (the TV address now without
 `/screen`); `docs_screenshots` to run.
+
+## Status — PARTIAL (2026-11-05)
+
+### Done
+- `/` on the plain door (8089) shows a welcome page in both servers (home server and `mh slideshow`): meerkat (app icon, `/app-icon-192.png`), `[home] family_title` (fallback "Our photos"), two remote-driven tiles (📺 → `/screen`, 📱 → `/phone`); a paired TV still goes straight to `/screen`. Commit c02b34d9; tests for both servers; docs en + fr; i18n.
+
+### Not done
+- The line of index facts (photos, years covered).
+  **Reason:** needs a new index query; left out to keep the change small.
+- The *On this day* background.
+  **Reason:** waits for 0461.
+- Arrow keys and focus not tried on a real TV browser; `docs_screenshots` to run.
