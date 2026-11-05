@@ -72,7 +72,13 @@ def serve_slideshow(runtime: Runtime, start: ShowStart) -> int:
                 ending = Ending()
                 asyncio.run(
                     serve_until_ended(
-                        EndingDoor(app, ending, plain=TvDoor(app).handle),
+                        EndingDoor(
+                            app,
+                            ending,
+                            plain=TvDoor(
+                                app, runtime.settings.home.family_title
+                            ).handle,
+                        ),
                         start.port,
                         ready,
                     )

@@ -134,7 +134,12 @@ def test_the_tv_paired_once_follows_the_next_album(here: SlideshowHere) -> None:
     waiting = _tv(here, "/screen")
     assert waiting.status is HTTPStatus.OK
     assert b'http-equiv="refresh"' in waiting.body
-    assert _tv(here, "/").status is HTTPStatus.SEE_OTHER  # the phones' steps
+    welcome = _tv(here, "/")  # the TV's welcome page (0614)
+    assert welcome.status is HTTPStatus.OK
+    assert b'href="/screen"' in welcome.body
+    assert b'href="/phone"' in welcome.body
+    assert b'src="/app-icon-192.png"' in welcome.body
+    assert _tv(here, "/app-icon-192.png").body.startswith(b"\x89PNG")
     _pc(here, "/slideshow/album/Crete")
     page = _tv(here, "/screen")
     token = _token(page)
@@ -149,6 +154,9 @@ def test_the_tv_paired_once_follows_the_next_album(here: SlideshowHere) -> None:
     assert moved["photo"] == "tv/3.jpg"  # no new code: still paired
     assert moved["version"] > version
     assert _tv(here, "/tv/3.jpg", token).status is HTTPStatus.OK
+    paired_home = _tv(here, "/", token)
+    assert paired_home.status is HTTPStatus.SEE_OTHER  # a paired TV skips the welcome
+    assert _tv(here, "/").status is HTTPStatus.OK  # a stranger still meets it
     forged = Request("GET", "/screen", {"host": "evil.example"}, b"", SocketDoor.LAN)
     assert asyncio.run(here.tv(forged)).status is HTTPStatus.FORBIDDEN
 

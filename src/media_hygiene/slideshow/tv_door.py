@@ -3,8 +3,9 @@
 A TV cannot install the PC's authority (0430), and a phone that installed the app
 must not meet the slideshow in plain HTTP (its app took the link over). So the phone's
 remote is HTTPS, and the TV comes by the plain door (`LAN_CA_PORT`): its address `/`
-leads to the screen page; then only what a TV asks (its code, the show, its pictures
-and films). Nothing of the remote, no phone pairing: a phone there gets 404.
+is the welcome page (0614), a paired TV goes on to the screen page; then only what a
+TV asks (its code, the show, its pictures and films). Nothing of the remote, no phone
+pairing: a phone there gets 404.
 """
 
 from __future__ import annotations
@@ -18,6 +19,7 @@ from media_hygiene.review.lan_card import TV_SCREEN
 from media_hygiene.review.videos import NEAR_POLICY
 from media_hygiene.slideshow.door import Visitor, screen_cookie, screen_token
 from media_hygiene.slideshow.screen_api import ScreenDesk
+from media_hygiene.slideshow.tv_welcome import WELCOME_PATHS, welcome
 
 if TYPE_CHECKING:
     from media_hygiene.review.http import Request
@@ -55,11 +57,30 @@ def screen_page(app: SlideshowApp, request: Request, visitor: Visitor) -> Respon
     )
 
 
+def _front(path: str, visitor: Visitor, family_title: str) -> Response | None:
+    """The welcome page and its meerkat; a paired TV goes on to its page (0614).
+
+    Args:
+        path: The path asked.
+        visitor: Who asks.
+        family_title: The welcome page's title.
+
+    Returns:
+        The answer, or None for another path.
+    """
+    if path == TV_HOME and visitor is Visitor.SCREEN:
+        return Response(HTTPStatus.SEE_OTHER, headers=(f"Location: {SCREEN_PATH}",))
+    if path in WELCOME_PATHS:
+        return welcome(path, family_title)
+    return None
+
+
 @dataclass(frozen=True, slots=True)
 class TvDoor:
     """Answers the plain door: the TV's pages only."""
 
     app: SlideshowApp
+    family_title: str = ""  # `[home] family_title`, the welcome page's title
 
     async def handle(self, request: Request) -> Response:
         """Answer a TV, or a stranger about to become one.
@@ -68,14 +89,16 @@ class TvDoor:
             request: A request of the plain door (marked as the home network's).
 
         Returns:
-            The screen page, the show, a picture; 403 or 404 for anything else.
+            The welcome page, the screen page, the show, a picture; 403 or 404 for
+            anything else.
         """
         app = self.app
         visitor = app.door.tv_visitor(request)
         if visitor is Visitor.OUTSIDER or request.method != _GET:
             return Response(HTTPStatus.FORBIDDEN)
-        if request.path == TV_HOME:
-            return Response(HTTPStatus.SEE_OTHER, headers=(f"Location: {SCREEN_PATH}",))
+        front = _front(request.path, visitor, self.family_title)
+        if front is not None:
+            return front
         if request.path == SCREEN_PATH:
             return screen_page(app, request, visitor)
         screen = ScreenDesk(app.desk, visitor, screen_token(request))

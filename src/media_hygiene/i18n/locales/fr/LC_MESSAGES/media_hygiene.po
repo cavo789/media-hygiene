@@ -4705,6 +4705,9 @@ msgstr "Index remis depuis {name}, relu :"
 msgid "Install it with: ollama pull {model}"
 msgstr "Installez-le avec : ollama pull {model}"
 
+msgid "Install on my phone"
+msgstr "Installer sur mon téléphone"
+
 msgid "Install the new version"
 msgstr "Installer la nouvelle version"
 
@@ -11997,6 +12000,9 @@ msgstr "Ce n'est pas un classeur de 'classify', ou il a été abîmé."
 
 msgid "This is not the code shown on the PC: type it again."
 msgstr "Ce n'est pas le code affiché sur le PC : tapez-le à nouveau."
+
+msgid "This is the TV"
+msgstr "C'est la télé"
 
 msgid "This is the first event."
 msgstr "C'est le premier événement."

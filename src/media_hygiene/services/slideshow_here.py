@@ -6,8 +6,8 @@ the new server, the TV paired again at every show. Now `GET /slideshow/album/<na
 starts the album's show here and leads to its remote at once; the TVs (`Screens`) and
 the pages waiting (`Changes`) belong to the home server, so a TV paired once stays
 paired while it runs, and a new show reaches it by itself (its version is above the
-last one's). The TV comes by the plain door at `/screen` (`tv`); `/` of that door stays
-the certificate's steps. One show at a time; `/slideshow/folder/<path>`: 0598.
+last one's). The TV's plain door: `/screen`, `/` its welcome page (0614). One show at a
+time; `/slideshow/folder/<path>`: 0598.
 """
 
 from __future__ import annotations
@@ -24,7 +24,6 @@ from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.album_show import ALBUM_SHOW, FOLDER_SHOW, SLIDESHOW_PAGE
 from media_hygiene.review.http import ContentType, Response
-from media_hygiene.review.lan_ca_page import PHONE_STEPS
 from media_hygiene.review.lan_phones import phone_book
 from media_hygiene.services.search import open_search
 from media_hygiene.services.slideshow import shown_slides
@@ -38,7 +37,8 @@ from media_hygiene.slideshow.films import show_films
 from media_hygiene.slideshow.screens import screens_of
 from media_hygiene.slideshow.show import Show
 from media_hygiene.slideshow.slides import Timing
-from media_hygiene.slideshow.tv_door import TV_HOME, TvDoor
+from media_hygiene.slideshow.tv_door import TvDoor
+from media_hygiene.slideshow.tv_welcome import WELCOME_PATHS, welcome
 
 if TYPE_CHECKING:
     from media_hygiene.review.http import Request
@@ -110,21 +110,22 @@ class SlideshowHere:
         return await self.app.handle(dataclasses.replace(request, path=path))
 
     async def tv(self, request: Request) -> Response:
-        """Answer the plain door: the TV's pages, the steps of the certificate at `/`.
+        """Answer the plain door: the TV's pages, its welcome page at `/`.
 
         Args:
             request: A request of the plain door.
 
         Returns:
             The TV's page (one that waits while nothing is shown), its show, its
-            pictures; 303 to the steps for `/`.
+            pictures; the welcome page at `/`.
         """
-        if request.path == TV_HOME:  # the phones' address (`lan_card`), not the TV's
-            return Response(HTTPStatus.SEE_OTHER, headers=(f"Location: {PHONE_STEPS}",))
+        title = self._fresh.runtime().settings.home.family_title
         if self.app is not None:
-            return await TvDoor(self.app).handle(request)
+            return await TvDoor(self.app, title).handle(request)
         if self.door.tv_visitor(request) is Visitor.OUTSIDER:
             return Response(HTTPStatus.FORBIDDEN)
+        if request.path in WELCOME_PATHS:
+            return welcome(request.path, title)
         environment = translated_environment(_TEMPLATES, escaped=("html", "j2"))
         page = environment.get_template("tv_wait.html.j2").render(
             refresh_seconds=_TV_WAIT_SECONDS

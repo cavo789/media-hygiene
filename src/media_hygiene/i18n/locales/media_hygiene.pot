@@ -3865,6 +3865,9 @@ msgstr ""
 msgid "Install it with: ollama pull {model}"
 msgstr ""
 
+msgid "Install on my phone"
+msgstr ""
+
 msgid "Install the new version"
 msgstr ""
 
@@ -9933,6 +9936,9 @@ msgid "This is not a classify workbook, or it was damaged."
 msgstr ""
 
 msgid "This is not the code shown on the PC: type it again."
+msgstr ""
+
+msgid "This is the TV"
 msgstr ""
 
 msgid "This is the first event."

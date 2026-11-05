@@ -93,8 +93,11 @@ show: a TV reloaded loses nothing, stopping `mh` ends it.
    web browser app on it, open it.
    **The TV's own browser** (a Samsung *Smart Hub*: the **Internet** app) works too, slower, and
    shows the photos only: the videos need the Chromecast's browser.
-2. Type the address the window gives, for example `http://192.168.1.20:8089/screen` (port **8089**: the
-   phone's remote is on 8088, in `https`). It is plain `http`, on your home network: a TV cannot
+2. Type the PC's address on port **8089**, for example `http://192.168.1.20:8089/` (the
+   phone's remote is on 8088, in `https`): a welcome page opens, press **OK** on **📺 This is the
+   TV** (its other tile, **📱 Install on my phone**, leads a phone to the certificate's steps). A
+   TV already paired goes straight to its page; `http://192.168.1.20:8089/screen` skips the
+   welcome too. It is plain `http`, on your home network: a TV cannot
    install the PC's certificate, and nothing goes on the internet. That address serves the TV's
    pages only, never the remote.
 3. **Bookmark it**: next time, the bookmark is enough (see [A stable address](#a-stable-address)).

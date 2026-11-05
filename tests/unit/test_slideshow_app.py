@@ -9,6 +9,7 @@ refused. Only the show's photos are served, never an original.
 from __future__ import annotations
 
 import asyncio
+import dataclasses
 import json
 import sqlite3
 from concurrent.futures import ThreadPoolExecutor
@@ -369,8 +370,9 @@ def test_the_tv_is_served_by_the_plain_door_and_the_remote_is_not(
     tv = TvDoor(app)
     door = CaDoor(tmp_path, f"https://{_LAN_HOST}", tv.handle)
     home = asyncio.run(door.handle(_plain("/")))
-    assert home.status is HTTPStatus.SEE_OTHER
-    assert "Location: /screen" in home.headers
+    assert home.status is HTTPStatus.OK  # the welcome page (0614)
+    assert b'href="/screen"' in home.body
+    assert f'href="{PHONE_STEPS}"'.encode() in home.body
     page = asyncio.run(door.handle(_plain("/screen")))
     assert page.body == _SCREEN
     token = f"{SCREEN_COOKIE}={_screen_token(page)}"
@@ -381,6 +383,22 @@ def test_the_tv_is_served_by_the_plain_door_and_the_remote_is_not(
     assert shown["photo"] == "tv/1.jpg"
     picture = asyncio.run(door.handle(_plain("/tv/1.jpg", token)))
     assert picture.status is HTTPStatus.OK
+    again = asyncio.run(door.handle(_plain("/", token)))
+    assert again.status is HTTPStatus.SEE_OTHER  # a paired TV goes straight on
+    assert "Location: /screen" in again.headers
+
+
+def test_the_welcome_page_carries_the_family_title(app: SlideshowApp) -> None:
+    """`[home] family_title` names the page; empty, the family view's default."""
+    door = dataclasses.replace(TvDoor(app), family_title="Les Dupont")
+    titled = asyncio.run(door.handle(_plain("/")))
+    assert b"Les Dupont</h1>" in titled.body
+    plain = asyncio.run(TvDoor(app).handle(_plain("/")))
+    assert b"Our photos</h1>" in plain.body
+    assert b'<img src="/app-icon-192.png"' in plain.body  # the meerkat
+    meerkat = asyncio.run(TvDoor(app).handle(_plain("/app-icon-192.png")))
+    assert meerkat.status is HTTPStatus.OK
+    assert meerkat.body.startswith(b"\x89PNG")
 
 
 def test_the_plain_door_serves_nothing_of_the_remote(
