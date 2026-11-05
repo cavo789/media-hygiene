@@ -84,3 +84,7 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
 - An action never touches what is not shown: it acts on the rows or tiles visible (a filter
   narrows what a button posts), or on a set whose size the button states ("Confirm these 20",
   "every 1 234 found"). Hidden rows stay to decide, untouched.
+- Seeing first (0524): every action on the library has a path that shows the photos it will
+  touch before it runs, offered first (menu, home page, 👉 What next, docs); the fast paths
+  (workbook, validate all, the console verbs) stay, named as such, for large collections, and say in one line
+  what they skip. A new fast path without its visual twin is a bug.

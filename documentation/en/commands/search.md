@@ -202,6 +202,18 @@ nothing).
 **📌 Your rules** lists every rule of `config.toml` with the files it decided: remove the ones that
 decide nothing, turn a folder-name rule into dates.
 
+**📐 Where and how to sort** chooses, on your photos, what the next `classify` proposes: the folder
+receiving the tree (`[classify] target`; empty: each folder is sorted in place) and its shape,
+*Year / Year-month / Event* or *Year / Month only*, each with the tree it gives (from your latest
+`classify`, else from the dates of your photos, without the names of the events). The files the sort
+is less sure of stay where they are unless you choose a shape for them too. Saved in `config.toml`
+(your comments kept), read back and shown; nothing moves. A layout of your own stays offered.
+*Sort here now* and *Move to an event…* keep filing in `YYYY/YYYY-MM/<name>` next to the photos.
+
+The **⋯** of a folder (📁 My folders) adds, beside its role, *Never sorted* (`[classify] leave`) and
+the name of the person whose photos it holds (`person_folders`): the folder's name must hold it.
+A folder left out, then renamed in Explorer, is listed as gone with *Remove*, in the dialog above.
+
 ## Move photos to an event, without a rule
 
 For a one-off event, a rule is not needed: search its days (or words), **pick** the photos (as

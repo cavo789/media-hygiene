@@ -34,6 +34,8 @@ from media_hygiene.search.people_why import (
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.search.rule_desk import PERIOD_RULES_PATH, RULE_POSTS
 from media_hygiene.search.rule_go import GO_PATHS, go_answer
+from media_hygiene.search.sort_folder_desk import SORT_FOLDER_PATH
+from media_hygiene.search.sort_setup_desk import SETUP_PATH
 from media_hygiene.search.tag_desk import HAND_TAG_PATH as HAND
 from media_hygiene.share.album_api import ALBUMS_PATH
 
@@ -50,7 +52,14 @@ SEARCH_PAGE_PATH: Final = "/search"
 SEARCH_PATH: Final = "/api/search"
 _GET, _POST = "GET", "POST"
 _POSTED: Final = frozenset({SEARCH_PATH, CHOSEN_PATH, *FOLDER_POSTS, APPLY_PATH, HAND})
-_POSTED_TOO: Final = SORT_POSTS | {ALBUMS_PATH, PEOPLE_REJECT_PATH, PEOPLE_WHY_PATH}
+_POSTED_TOO: Final = (
+    SORT_POSTS
+    | {ALBUMS_PATH, PEOPLE_REJECT_PATH, PEOPLE_WHY_PATH}
+    | {
+        SETUP_PATH,
+        SORT_FOLDER_PATH,
+    }
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -130,6 +139,7 @@ class SearchApp:
             PEOPLE_WHY_PATH: partial(why_answer, self.place.names),
             **self.place.rules.posts(),
             **({HAND: self.place.tags.answer} if self.place.tags else {}),
+            **(self.place.sort_setup.posts() if self.place.sort_setup else {}),
         }
         if request.path in answers:
             return answers[request.path](request.body)
@@ -158,6 +168,7 @@ class SearchApp:
             ALBUMS_PATH: self.place.albums.state,
             **folder_gets(self.place.folders),
             PERIOD_RULES_PATH: self.place.rules.state,
+            **(self.place.sort_setup.gets() if self.place.sort_setup else {}),
         }
         if path in states:
             return states[path]()

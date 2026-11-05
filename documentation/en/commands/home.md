@@ -122,6 +122,11 @@ apply.
 
 ## Run a step
 
+The goal is one interface: everything from this page, PowerShell only to start `mh`. The pages,
+and the steps that answer in a dialog, are there already; the others still ask you to switch to the
+PowerShell window, as said below, until they move here too. The console stays a full interface,
+for scripts and for those who prefer it: it will not be removed.
+
 The page never changes your photos itself. What a step's button does depends on the `mh` that
 opened the page:
 

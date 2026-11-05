@@ -27,7 +27,7 @@ from media_hygiene.services.missing_mount import missing_mount
 from media_hygiene.services.places_build import places_app
 from media_hygiene.services.places_index import OpenedMap, located_files, read_index
 from media_hygiene.services.reviewing import address_tip, page_url
-from media_hygiene.services.search_app import shown_roots
+from media_hygiene.services.search_desks import shown_roots
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:

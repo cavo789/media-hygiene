@@ -22,6 +22,11 @@
       <label><input type="radio" name="role" value="backups"> <span>💾 {{ _("Backup: only compared, never changed and never the reason a copy goes.") }}</span></label>
       <label><input type="radio" name="role" value="excluded"> <span>🚫 {{ _("Excluded: not read at all by the audit.") }}</span></label>
     </fieldset>
+    <fieldset class="writes">
+      <label><input type="checkbox" id="roleLeave"> <span>{{ _("Never sorted: analysed and cleaned as usual, left where it is.") }}</span></label>
+      <label for="rolePerson">{{ _("These are a person's photos, the name as the folder says it:") }}</label>
+      <input id="rolePerson" maxlength="200" autocomplete="off">
+    </fieldset>
     <p id="roleSaid" role="status"></p>
     <p id="roleStale" class="muted" hidden></p>
     <menu>

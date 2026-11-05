@@ -12,7 +12,7 @@ import pytest
 
 from media_hygiene.cli.commands import commands
 from media_hygiene.cli.menu_catalog import catalog, named
-from media_hygiene.cli.menu_entry import FieldKind, Space
+from media_hygiene.cli.menu_entry import FieldKind, Kind, Space
 from media_hygiene.cli.review_modes import ReviewMode
 from media_hygiene.services.launcher_host import HOST_COMMANDS
 from tests.unit.test_documentation import DOCUMENTATION, anchors
@@ -21,6 +21,16 @@ CATALOG = catalog()
 ACTIVE = [step for step in CATALOG.steps if not step.planned]
 VERBS = {named(step)[0] for step in ACTIVE}
 EVERY_VERB = sorted({command[0] for command in commands()} | set(HOST_COMMANDS))
+EVERY_VERB = sorted({command[0] for command in commands()} | set(HOST_COMMANDS))
+# One interface (0513): the steps of the home page still sending the user to the window
+# of `mh`. Only shrinks: 0586 (writing steps), 0506 (host steps), 0505 (short ones).
+STILL_IN_THE_WINDOW = frozenset({
+    "album", "apply", "audit", "classify", "clean", "clean-delete", "config-tidy",
+    "crosscheck", "explorer", "explorer-remove", "folders-add", "folders-remove",
+    "import", "import-folder", "inventory", "launcher", "nas-add", "people-forget",
+    "phone", "phone-free", "purge", "push", "push-to", "restore", "share", "shortcut",
+    "sort", "tags", "undo", "update", "upkeep", "xmp",
+})  # fmt: skip
 
 
 @pytest.mark.parametrize("verb", EVERY_VERB)
@@ -156,3 +166,15 @@ def test_an_album_is_picked_from_the_list_never_typed() -> None:
     ]
     assert len(albums) >= 3
     assert all(field.kind is FieldKind.ALBUM for field in albums)
+
+
+def test_the_steps_leaving_the_page_only_shrink() -> None:
+    """Every step shown on the page runs in it, but those listed, until none is left."""
+    leaving = {
+        step.name
+        for step in ACTIVE
+        if step.web and step.kind is not Kind.PAGE and not step.inline
+    }
+    assert leaving == STILL_IN_THE_WINDOW, (
+        "update STILL_IN_THE_WINDOW (and the count of 0513): new steps run in the page"
+    )

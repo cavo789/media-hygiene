@@ -850,6 +850,10 @@ msgstr ""
 "Une partie du chemin. * remplace n'importe quels caractères, ? un seul, "
 "/regex/ est une expression régulière : *.mov, /\\.(mov|mp4)$/"
 
+#, python-brace-format
+msgid "A person's folders: {name}"
+msgstr "Dossiers d'une personne : {name}"
+
 msgid ""
 "A phone over USB instead of a folder: Windows only, the mh of PowerShell "
 "copies its new photos itself; --free then makes room on it."
@@ -3943,6 +3947,11 @@ msgstr ""
 "<source> » dans votre premier dossier de photos (From NAS, From E), ses "
 "dossiers gardés en dessous."
 
+msgid "Folder receiving the tree (empty: each of your folders is sorted in place)"
+msgstr ""
+"Dossier qui reçoit l'arborescence (vide : chacun de vos dossiers est trié"
+" sur place)"
+
 msgid ""
 "Folder to import from (host path): your NAS, a USB disk, an SD card, an "
 "old disk; only read. Default: your backup folders."
@@ -3961,6 +3970,9 @@ msgstr "Dossiers"
 
 msgid "Folders analysed:"
 msgstr "Dossiers analysés :"
+
+msgid "Folders left out, folders of a person"
+msgstr "Dossiers laissés de côté, dossiers d'une personne"
 
 msgid "Folders left, the largest first:"
 msgstr "Dossiers restants, les plus gros d'abord :"
@@ -4959,6 +4971,10 @@ msgstr ""
 "(avant la période ; --since all les prend)."
 
 #, python-brace-format
+msgid "Left out: {folder}"
+msgstr "Laissé de côté : {folder}"
+
+#, python-brace-format
 msgid ""
 "Left out: {small} faces smaller than {pixels} pixels, {blurry} blurrier "
 "than {sharpness}."
@@ -5667,6 +5683,9 @@ msgstr ""
 "Ne plus jamais proposer les photos choisies à cet événement (gardé dans "
 "/config/events/)"
 
+msgid "Never sorted: analysed and cleaned as usual, left where it is."
+msgstr "Jamais trié : analysé et nettoyé comme d'habitude, laissé où il est."
+
 msgid "Never what you set aside or deleted on purpose; each copy is checked."
 msgstr ""
 "Jamais ce que vous avez écarté ou supprimé exprès ; chaque copie est "
@@ -5926,6 +5945,9 @@ msgid "No file of this event can move: they are set aside, or gone."
 msgstr ""
 "Aucun fichier de cet événement ne peut être déplacé : ils sont mis de "
 "côté, ou partis."
+
+msgid "No file would go there."
+msgstr "Aucun fichier n'irait là."
 
 msgid "No folder chosen: nothing changed."
 msgstr "Aucun dossier choisi : rien n'a changé."
@@ -6281,6 +6303,9 @@ msgstr "Aucune : c'est propre"
 msgid "None: the folder is read and cleaned like the others."
 msgstr "Aucun : le dossier est lu et nettoyé comme les autres."
 
+msgid "Not a choice of the page."
+msgstr "Ce n'est pas un choix de la page."
+
 msgid "Not a place worth a name: hide it from the map"
 msgstr "Pas un lieu qui mérite un nom : le cacher de la carte"
 
@@ -6561,6 +6586,13 @@ msgstr "Rien ne correspond. Essayez doublons, téléphone, NAS ou annuler."
 msgid "Nothing moved: every file is already in its place, or stays where it is."
 msgstr "Rien n'a bougé : chaque fichier est déjà à sa place, ou reste où il est."
 
+msgid ""
+"Nothing moves here: the next classify proposes with these choices, and "
+"you see its proposal before anything moves."
+msgstr ""
+"Rien ne bouge ici : le prochain classify propose avec ces choix, et vous "
+"voyez sa proposition avant que quoi que ce soit ne bouge."
+
 msgid "Nothing moves without you."
 msgstr "Rien ne bouge sans vous."
 
@@ -6799,6 +6831,9 @@ msgstr ""
 "Sur la planche contact, un clic garde la première autre version ; pour "
 "une autre, ouvrez le groupe seul (Échap)."
 
+msgid "On the dates of your photos: the events are named by classify."
+msgstr "D'après les dates de vos photos : classify nommera les événements."
+
 msgid ""
 "On the home Wi-Fi only, while mh runs on the PC. Your photos are only "
 "read: taking a photo out of an album, or adding it to another one, "
@@ -6818,6 +6853,11 @@ msgstr ""
 
 msgid "On this page"
 msgstr "Dans cette page"
+
+msgid "On your latest classify: what it proposes next may differ a little."
+msgstr ""
+"D'après votre dernier classify : sa prochaine proposition peut différer "
+"un peu."
 
 msgid "On your phone"
 msgstr "Sur votre téléphone"
@@ -8694,6 +8734,20 @@ msgstr[1] ""
 "sont."
 
 #, python-brace-format
+msgid ""
+"Saved in {file}. Nothing moved: the next classify proposes with these "
+"choices."
+msgstr ""
+"Enregistré dans {file}. Rien n'a bougé : le prochain classify propose "
+"avec ces choix."
+
+#, python-brace-format
+msgid "Saved in {file}. Nothing moved: the next classify takes it into account."
+msgstr ""
+"Enregistré dans {file}. Rien n'a bougé : le prochain classify en tient "
+"compte."
+
+#, python-brace-format
 msgid "Saved in {file}: your albums now go to {folder}."
 msgstr "Enregistré dans {file} : vos albums vont désormais dans {folder}."
 
@@ -9048,6 +9102,9 @@ msgid ""
 msgstr ""
 "Écarter des photos de rafale, une série à la fois, au clavier dans votre "
 "navigateur ; 'clean --decisions' les déplace ensuite."
+
+msgid "Set from the ⋯ of a folder, under 📁 My folders."
+msgstr "À régler depuis le ⋯ d'un dossier, sous 📁 Mes dossiers."
 
 msgid "Set the extra copies aside"
 msgstr "Mettre les copies en trop de côté"
@@ -10254,6 +10311,9 @@ msgstr ""
 msgid "The files given at least these stars in Windows (1 to 5)."
 msgstr "Les fichiers qui ont au moins ces étoiles dans Windows (1 à 5)."
 
+msgid "The files no rule decides"
+msgstr "Les fichiers qu'aucune règle ne décide"
+
 msgid "The files of this event: its id or its name."
 msgstr "Les fichiers de cet événement : son identifiant ou son nom."
 
@@ -10283,6 +10343,9 @@ msgstr ""
 "Les fichiers que les exécutions de clean ont mis de côté, tels qu'ils "
 "sont dans la quarantaine. Choisissez ceux à remettre : chacun retourne "
 "dans le dossier d'où il vient."
+
+msgid "The files the sort is less sure of"
+msgstr "Les fichiers dont le tri est moins sûr"
 
 msgid ""
 "The first folder is protected, or both copies lie in one folder: W is not"
@@ -10323,6 +10386,13 @@ msgid ""
 msgstr ""
 "Le dossier de l'import, tel que l'Explorateur l'affiche (monté en lecture"
 " seule) : ses copies prouvent les fichiers qu'il a importés."
+
+msgid ""
+"The folder receiving the sorted tree and its shape, with a preview on "
+"your photos"
+msgstr ""
+"Le dossier qui reçoit l'arborescence triée et sa forme, avec un aperçu "
+"sur vos photos"
 
 msgid ""
 "The folder the files ticked were just copied into from the phone, as "
@@ -10373,6 +10443,9 @@ msgstr "La liste complète"
 #, python-brace-format
 msgid "The groups could not be read (error {status})."
 msgstr "Les groupes n'ont pas pu être lus (erreur {status})."
+
+msgid "The guesses"
+msgstr "Les suppositions"
 
 msgid ""
 "The guesses, the files no rule decides, the undated and the received "
@@ -10599,6 +10672,14 @@ msgstr "Le modèle {name} téléchargé n'est pas le fichier attendu."
 
 msgid "The most recent backup, the index in place backed up first."
 msgstr "La sauvegarde la plus récente, l'index en place sauvegardé d'abord."
+
+#, python-brace-format
+msgid ""
+"The name of this folder does not hold '{name}': the sort would not see it"
+" as theirs."
+msgstr ""
+"Le nom de ce dossier ne contient pas « {name} » : le tri ne le verrait "
+"pas comme le sien."
 
 msgid "The name shown and the folder's path; Esc empties the box."
 msgstr "Le nom affiché et le chemin du dossier ; Échap vide la zone."
@@ -11125,6 +11206,9 @@ msgstr ""
 msgid "The settings could not be saved in config.toml."
 msgstr "Les réglages n'ont pas pu être enregistrés dans config.toml."
 
+msgid "The shape of the tree"
+msgstr "La forme de l'arborescence"
+
 #, python-brace-format
 msgid "The sheet '{name}' was renamed or deleted."
 msgstr "La feuille « {name} » a été renommée ou supprimée."
@@ -11442,6 +11526,9 @@ msgstr "Cette série n'existe pas."
 msgid "There is no such shot in this series."
 msgstr "Cette photo n'existe pas dans la série."
 
+msgid "These are a person's photos, the name as the folder says it:"
+msgstr "Ce sont les photos d'une personne, son nom tel que le dossier le dit :"
+
 #, python-brace-format
 msgid ""
 "These decisions were made on other folders ({theirs}); this run analyses "
@@ -11463,6 +11550,9 @@ msgstr "Ces dossiers sont montés en lecture seule : {folders}."
 
 msgid "These photos are left as they are: no choice applies to them."
 msgstr "Ces photos sont laissées telles quelles : aucun choix ne s'y applique."
+
+msgid "They stay where they are"
+msgstr "Ils restent où ils sont"
 
 msgid "This browser cannot play this video: open the original."
 msgstr "Ce navigateur ne sait pas lire cette vidéo : ouvrez l'original."
@@ -11581,6 +11671,9 @@ msgstr "C'est la dernière paire : arrêtez la revue avec Ctrl+C dans le termina
 
 msgid "This is the last series: stop the review with Ctrl+C in the terminal."
 msgstr "C'est la dernière série : arrêtez le tri avec Ctrl+C dans le terminal."
+
+msgid "This layout is not one of the page's."
+msgstr "Cette forme n'est pas une de celles de la page."
 
 msgid "This mh does not run the steps of the page: type the command."
 msgstr "Ce mh ne lance pas les étapes de la page : tapez la commande."
@@ -12029,6 +12122,14 @@ msgstr ""
 msgid "Undated"
 msgstr "Sans date"
 
+msgid "Undated files from a camera (filed by their modified date)"
+msgstr ""
+"Fichiers sans date venant d'un appareil (classés selon leur date de "
+"modification)"
+
+msgid "Undated files received (filed by their modified date)"
+msgstr "Fichiers sans date reçus (classés selon leur date de modification)"
+
 msgid "Undecided: 'clean' does as planned, the copies of the second folder go."
 msgstr ""
 "Non décidée : 'clean' fait comme prévu, les copies du second dossier "
@@ -12343,6 +12444,9 @@ msgid "Where am I? The last audit, the quarantine, what is left: no scan."
 msgstr ""
 "Où en suis-je ? Le dernier audit, la quarantaine, ce qu'il reste : sans "
 "analyse."
+
+msgid "Where and how to sort"
+msgstr "Où et comment trier"
 
 #, python-brace-format
 msgid ""
@@ -12667,6 +12771,12 @@ msgstr ""
 msgid "Year"
 msgstr "Année"
 
+msgid "Year / Month only"
+msgstr "Année / Mois seulement"
+
+msgid "Year / Year-month / Event"
+msgstr "Année / Année-mois / Événement"
+
 msgid "Years"
 msgstr "Années"
 
@@ -12835,6 +12945,13 @@ msgstr "Vos dossiers, les plus récents d'abord"
 msgid "Your folders, the update, Windows and the advanced settings."
 msgstr "Vos dossiers, la mise à jour, Windows et les réglages avancés."
 
+msgid ""
+"Your latest proposal used another shape: run classify again to see this "
+"one."
+msgstr ""
+"Votre dernière proposition utilisait une autre forme : relancez classify "
+"pour voir celle-ci."
+
 #, python-brace-format
 msgid ""
 "Your names for the towns: the towns are named after GeoNames, in English "
@@ -12884,6 +13001,10 @@ msgstr ""
 
 msgid "Your own rules go here, above the folders, for instance:"
 msgstr "Vos propres règles vont ici, au-dessus des dossiers, par exemple :"
+
+#, python-brace-format
+msgid "Your own: {layout}"
+msgstr "La vôtre : {layout}"
 
 msgid "Your photo folders:"
 msgstr "Vos dossiers de photos :"
@@ -13522,6 +13643,9 @@ msgstr "p. ex. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/"
 msgid "e.g. C:\\Photos\\Albums"
 msgstr "p. ex. C:\\Photos\\Albums"
 
+msgid "e.g. C:\\Photos\\Sorted"
+msgstr "p. ex. C:\\Photos\\Tri"
+
 msgid "e.g. Crete 2023"
 msgstr "p. ex. Crète 2023"
 
@@ -13646,6 +13770,9 @@ msgstr "plein écran, ou retour"
 #, python-brace-format, python-format
 msgid "gap {gap} %%"
 msgstr "écart {gap} %%"
+
+msgid "gone (renamed or deleted?)"
+msgstr "disparu (renommé ou supprimé ?)"
 
 msgid "gone deleted lost explorer"
 msgstr "disparues effacées perdues explorateur"
@@ -17066,6 +17193,10 @@ msgid "{files} files, {copies} extra copies ({size}), {broken} broken."
 msgstr "{files} fichiers, {copies} copies en trop ({size}), {broken} illisibles."
 
 #, python-brace-format
+msgid "{files} in {folders}:"
+msgstr "{files} dans {folders} :"
+
+#, python-brace-format
 msgid ""
 "{files} to check for the first time: {about}. The cache is not kept: the "
 "next audit checks them all again (see the tip at the end)."
@@ -18000,6 +18131,10 @@ msgid "{path} is inside a protected folder: nothing is ever added there."
 msgstr "{path} est dans un dossier protégé : rien n'y est jamais ajouté."
 
 #, python-brace-format
+msgid "{path} is inside {folder}, a folder the sort never touches."
+msgstr "{path} est dans {folder}, un dossier que le tri ne touche jamais."
+
+#, python-brace-format
 msgid "{path} is left as it is: no choice applies to it."
 msgstr "{path} est laissé tel quel : aucun choix ne s'y applique."
 
@@ -18038,6 +18173,10 @@ msgid ""
 msgstr ""
 "{path} n'est pas dans un dossier monté : un album créé là disparaîtrait "
 "avec le conteneur."
+
+#, python-brace-format
+msgid "{path} is not in a mounted folder: the sort could not write there."
+msgstr "{path} n'est pas dans un dossier monté : le tri ne pourrait pas y écrire."
 
 #, python-brace-format
 msgid "{path} is not the quarantine of a run"
@@ -18472,6 +18611,10 @@ msgstr ""
 #, python-format
 msgid "… and %(count)s more."
 msgstr "… et %(count)s de plus."
+
+#, python-brace-format
+msgid "… and more: {folders}"
+msgstr "… et encore : {folders}"
 
 #, python-brace-format
 msgid "… and {count} more."

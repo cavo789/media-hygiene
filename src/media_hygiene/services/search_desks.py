@@ -22,6 +22,8 @@ from media_hygiene.services.sort_event import sorter_of
 from media_hygiene.services.sort_reviewing import open_sort_review
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from media_hygiene.search.chosen_api import ChosenDesk
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.services.runtime import Runtime
@@ -115,3 +117,19 @@ def tag_desk(runtime: Runtime, search: SearchIndex) -> TagDesk | None:
     if not isinstance(search, HandIndex):
         return None
     return TagDesk(search, runtime.mapper, names_file(runtime))
+
+
+def shown_roots(runtime: Runtime) -> tuple[Path, ...]:
+    """The top folders of the tree: the mounted ones, or the drives of `/data`.
+
+    Args:
+        runtime: Settings, mount points and output.
+
+    Returns:
+        Them, in the container.
+    """
+    data_dir = runtime.locations.data_dir
+    roots = runtime.mounts.data_roots(data_dir)
+    if roots == (data_dir,) and data_dir.is_dir():
+        return tuple(sorted(child for child in data_dir.iterdir() if child.is_dir()))
+    return roots

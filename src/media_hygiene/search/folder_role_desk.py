@@ -110,7 +110,7 @@ class RoleDesk:
         listed: list[dict[str, object]] = []
         for role in ROLES:
             for path in table.get(role, []):
-                where = self._where(str(path))
+                where = self.where(str(path))
                 carry = self._carry(str(path)) if where == "missing" else []
                 shown = {"path": str(path), "role": role, "where": where}
                 listed.append({**shown, "carry": carry})
@@ -130,7 +130,7 @@ class RoleDesk:
         found = carried_to(self.index, self.mapper.to_container(folder))
         return [self.mapper.to_host(path) for path in found]
 
-    def _where(self, folder: str) -> Where:
+    def where(self, folder: str) -> Where:
         """Tell whether a folder with a role is here, gone, or not mounted.
 
         Args:

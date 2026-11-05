@@ -131,6 +131,12 @@ la barre. Rien ne bouge avant que vous appliquiez.
 
 ## Lancer une étape
 
+L'objectif est une seule interface : tout depuis cette page, PowerShell seulement pour démarrer
+`mh`. Les pages, et les étapes qui répondent dans une boîte de dialogue, y sont déjà ; les autres vous
+demandent encore de passer à la fenêtre PowerShell, comme dit ci-dessous, jusqu'à ce qu'elles arrivent
+ici aussi. La console reste une interface complète, pour les scripts et pour qui la préfère : elle ne
+sera pas retirée.
+
 La page ne modifie jamais vos photos elle-même. Ce que fait le bouton d'une étape dépend du `mh`
 qui a ouvert la page :
 

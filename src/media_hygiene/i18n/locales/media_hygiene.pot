@@ -669,6 +669,10 @@ msgid ""
 "regular expression: *.mov, /\\.(mov|mp4)$/"
 msgstr ""
 
+#, python-brace-format
+msgid "A person's folders: {name}"
+msgstr ""
+
 msgid ""
 "A phone over USB instead of a folder: Windows only, the mh of PowerShell "
 "copies its new photos itself; --free then makes room on it."
@@ -3221,6 +3225,9 @@ msgid ""
 " first photo folder (From NAS, From E), its folders kept below it."
 msgstr ""
 
+msgid "Folder receiving the tree (empty: each of your folders is sorted in place)"
+msgstr ""
+
 msgid ""
 "Folder to import from (host path): your NAS, a USB disk, an SD card, an "
 "old disk; only read. Default: your backup folders."
@@ -3233,6 +3240,9 @@ msgid "Folders"
 msgstr ""
 
 msgid "Folders analysed:"
+msgstr ""
+
+msgid "Folders left out, folders of a person"
 msgstr ""
 
 msgid "Folders left, the largest first:"
@@ -4088,6 +4098,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "Left out: {folder}"
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "Left out: {small} faces smaller than {pixels} pixels, {blurry} blurrier "
 "than {sharpness}."
@@ -4682,6 +4696,9 @@ msgid ""
 "/config/events/)"
 msgstr ""
 
+msgid "Never sorted: analysed and cleaned as usual, left where it is."
+msgstr ""
+
 msgid "Never what you set aside or deleted on purpose; each copy is checked."
 msgstr ""
 
@@ -4900,6 +4917,9 @@ msgid "No file has words yet: nothing can be found."
 msgstr ""
 
 msgid "No file of this event can move: they are set aside, or gone."
+msgstr ""
+
+msgid "No file would go there."
 msgstr ""
 
 msgid "No folder chosen: nothing changed."
@@ -5205,6 +5225,9 @@ msgstr ""
 msgid "None: the folder is read and cleaned like the others."
 msgstr ""
 
+msgid "Not a choice of the page."
+msgstr ""
+
 msgid "Not a place worth a name: hide it from the map"
 msgstr ""
 
@@ -5442,6 +5465,11 @@ msgstr ""
 msgid "Nothing moved: every file is already in its place, or stays where it is."
 msgstr ""
 
+msgid ""
+"Nothing moves here: the next classify proposes with these choices, and "
+"you see its proposal before anything moves."
+msgstr ""
+
 msgid "Nothing moves without you."
 msgstr ""
 
@@ -5649,6 +5677,9 @@ msgid ""
 "one, open the group alone (Esc)."
 msgstr ""
 
+msgid "On the dates of your photos: the events are named by classify."
+msgstr ""
+
 msgid ""
 "On the home Wi-Fi only, while mh runs on the PC. Your photos are only "
 "read: taking a photo out of an album, or adding it to another one, "
@@ -5662,6 +5693,9 @@ msgid "On the phone, everything is read-only: albums change on the PC."
 msgstr ""
 
 msgid "On this page"
+msgstr ""
+
+msgid "On your latest classify: what it proposes next may differ a little."
 msgstr ""
 
 msgid "On your phone"
@@ -7207,6 +7241,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid ""
+"Saved in {file}. Nothing moved: the next classify proposes with these "
+"choices."
+msgstr ""
+
+#, python-brace-format
+msgid "Saved in {file}. Nothing moved: the next classify takes it into account."
+msgstr ""
+
+#, python-brace-format
 msgid "Saved in {file}: your albums now go to {folder}."
 msgstr ""
 
@@ -7506,6 +7550,9 @@ msgstr ""
 msgid ""
 "Set burst shots aside, one series at a time, with the keyboard in your "
 "browser; 'clean --decisions' then moves them."
+msgstr ""
+
+msgid "Set from the ⋯ of a folder, under 📁 My folders."
 msgstr ""
 
 msgid "Set the extra copies aside"
@@ -8528,6 +8575,9 @@ msgstr ""
 msgid "The files given at least these stars in Windows (1 to 5)."
 msgstr ""
 
+msgid "The files no rule decides"
+msgstr ""
+
 msgid "The files of this event: its id or its name."
 msgstr ""
 
@@ -8549,6 +8599,9 @@ msgstr ""
 msgid ""
 "The files the runs of clean set aside, as they lie in the quarantine. "
 "Pick the ones to put back: each goes back to the folder it came from."
+msgstr ""
+
+msgid "The files the sort is less sure of"
 msgstr ""
 
 msgid ""
@@ -8581,6 +8634,11 @@ msgstr ""
 msgid ""
 "The folder of the import, as Explorer shows it (mounted read-only): its "
 "copies prove the files it imported."
+msgstr ""
+
+msgid ""
+"The folder receiving the sorted tree and its shape, with a preview on "
+"your photos"
 msgstr ""
 
 msgid ""
@@ -8622,6 +8680,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "The groups could not be read (error {status})."
+msgstr ""
+
+msgid "The guesses"
 msgstr ""
 
 msgid ""
@@ -8805,6 +8866,12 @@ msgid "The model {name} downloaded is not the expected file."
 msgstr ""
 
 msgid "The most recent backup, the index in place backed up first."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The name of this folder does not hold '{name}': the sort would not see it"
+" as theirs."
 msgstr ""
 
 msgid "The name shown and the folder's path; Esc empties the box."
@@ -9218,6 +9285,9 @@ msgstr ""
 msgid "The settings could not be saved in config.toml."
 msgstr ""
 
+msgid "The shape of the tree"
+msgstr ""
+
 #, python-brace-format
 msgid "The sheet '{name}' was renamed or deleted."
 msgstr ""
@@ -9468,6 +9538,9 @@ msgstr ""
 msgid "There is no such shot in this series."
 msgstr ""
 
+msgid "These are a person's photos, the name as the folder says it:"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "These decisions were made on other folders ({theirs}); this run analyses "
@@ -9484,6 +9557,9 @@ msgid "These folders are mounted read-only: {folders}."
 msgstr ""
 
 msgid "These photos are left as they are: no choice applies to them."
+msgstr ""
+
+msgid "They stay where they are"
 msgstr ""
 
 msgid "This browser cannot play this video: open the original."
@@ -9579,6 +9655,9 @@ msgid "This is the last pair: stop the review with Ctrl+C in the terminal."
 msgstr ""
 
 msgid "This is the last series: stop the review with Ctrl+C in the terminal."
+msgstr ""
+
+msgid "This layout is not one of the page's."
 msgstr ""
 
 msgid "This mh does not run the steps of the page: type the command."
@@ -9956,6 +10035,12 @@ msgstr ""
 msgid "Undated"
 msgstr ""
 
+msgid "Undated files from a camera (filed by their modified date)"
+msgstr ""
+
+msgid "Undated files received (filed by their modified date)"
+msgstr ""
+
 msgid "Undecided: 'clean' does as planned, the copies of the second folder go."
 msgstr ""
 
@@ -10232,6 +10317,9 @@ msgstr ""
 msgid "Where am I? The last audit, the quarantine, what is left: no scan."
 msgstr ""
 
+msgid "Where and how to sort"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Where files go. The convention: year, then year-month, then the event's "
@@ -10487,6 +10575,12 @@ msgstr ""
 msgid "Year"
 msgstr ""
 
+msgid "Year / Month only"
+msgstr ""
+
+msgid "Year / Year-month / Event"
+msgstr ""
+
 msgid "Years"
 msgstr ""
 
@@ -10623,6 +10717,11 @@ msgstr ""
 msgid "Your folders, the update, Windows and the advanced settings."
 msgstr ""
 
+msgid ""
+"Your latest proposal used another shape: run classify again to see this "
+"one."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Your names for the towns: the towns are named after GeoNames, in English "
@@ -10651,6 +10750,10 @@ msgid ""
 msgstr ""
 
 msgid "Your own rules go here, above the folders, for instance:"
+msgstr ""
+
+#, python-brace-format
+msgid "Your own: {layout}"
 msgstr ""
 
 msgid "Your photo folders:"
@@ -11237,6 +11340,9 @@ msgstr ""
 msgid "e.g. C:\\Photos\\Albums"
 msgstr ""
 
+msgid "e.g. C:\\Photos\\Sorted"
+msgstr ""
+
 msgid "e.g. Crete 2023"
 msgstr ""
 
@@ -11356,6 +11462,9 @@ msgstr ""
 
 #, python-brace-format, python-format
 msgid "gap {gap} %%"
+msgstr ""
+
+msgid "gone (renamed or deleted?)"
 msgstr ""
 
 msgid "gone deleted lost explorer"
@@ -14264,6 +14373,10 @@ msgid "{files} files, {copies} extra copies ({size}), {broken} broken."
 msgstr ""
 
 #, python-brace-format
+msgid "{files} in {folders}:"
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "{files} to check for the first time: {about}. The cache is not kept: the "
 "next audit checks them all again (see the tip at the end)."
@@ -15083,6 +15196,10 @@ msgid "{path} is inside a protected folder: nothing is ever added there."
 msgstr ""
 
 #, python-brace-format
+msgid "{path} is inside {folder}, a folder the sort never touches."
+msgstr ""
+
+#, python-brace-format
 msgid "{path} is left as it is: no choice applies to it."
 msgstr ""
 
@@ -15116,6 +15233,10 @@ msgstr ""
 msgid ""
 "{path} is not in a mounted folder: an album made there would vanish with "
 "the container."
+msgstr ""
+
+#, python-brace-format
+msgid "{path} is not in a mounted folder: the sort could not write there."
 msgstr ""
 
 #, python-brace-format
@@ -15494,6 +15615,10 @@ msgstr ""
 
 #, python-format
 msgid "… and %(count)s more."
+msgstr ""
+
+#, python-brace-format
+msgid "… and more: {folders}"
 msgstr ""
 
 #, python-brace-format
