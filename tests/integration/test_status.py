@@ -26,7 +26,7 @@ def test_status_follows_the_clean_path(cli: CliRunner) -> None:
     assert "Quarantine: 12 files" in cleaned
     assert "Runs you can still undo:" in cleaned
     assert "media-hygiene undo " in cleaned
-    assert "'purge' frees its space" in cleaned
+    assert "'purge' frees the quarantine's space" in " ".join(cleaned.split())
     assert "media-hygiene purge " in cleaned
     assert run(cli, "purge", "--yes").exit_code == 0
     purged = run(cli, "status").output
