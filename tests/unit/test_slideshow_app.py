@@ -395,10 +395,15 @@ def test_the_welcome_page_carries_the_family_title(app: SlideshowApp) -> None:
     assert b"Les Dupont</h1>" in titled.body
     plain = asyncio.run(TvDoor(app).handle(_plain("/")))
     assert b"Our photos</h1>" in plain.body
-    assert b'<img src="/app-icon-192.png"' in plain.body  # the meerkat
-    meerkat = asyncio.run(TvDoor(app).handle(_plain("/app-icon-192.png")))
+    meerkat_path = "/assets/images/meerkat-lookout.webp"
+    assert f'<img src="{meerkat_path}"'.encode() in plain.body  # the meerkat
+    meerkat = asyncio.run(TvDoor(app).handle(_plain(meerkat_path)))
     assert meerkat.status is HTTPStatus.OK
-    assert meerkat.body.startswith(b"\x89PNG")
+    assert meerkat.body[8:12] == b"WEBP"
+    font = "/assets/fonts/source-sans-3-latin-wght-normal.woff2"
+    assert asyncio.run(TvDoor(app).handle(_plain(font))).body.startswith(b"wOF2")
+    other = "/assets/images/avatar.webp"  # nothing else of the assets folder
+    assert asyncio.run(TvDoor(app).handle(_plain(other))).status is HTTPStatus.NOT_FOUND
 
 
 def test_the_plain_door_serves_nothing_of_the_remote(

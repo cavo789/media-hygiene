@@ -262,7 +262,7 @@ tap on an album shows it on the TV. A tap starts that
 [slideshow](slideshow.md) in the home page's own server, and the phone opens its remote at once.
 It only shows: nothing is written, nothing moves. No album saved: the folder and the month are
 still there.
-The TV's bookmark (`http://<PC address>:8089/`: a welcome page, **📺 This is the TV**, then its
+The TV's bookmark (`http://<PC address>:8089/`: a welcome page, **📺 Slideshow**, then its
 page) waits for a show and stays paired while
 `mh` runs.
 

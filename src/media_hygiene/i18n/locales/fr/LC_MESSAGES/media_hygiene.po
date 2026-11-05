@@ -2132,6 +2132,9 @@ msgstr ""
 "Choisissez les dossiers qui gardent leurs copies : folders.preferred dans"
 " config.toml, ou --prefer."
 
+msgid "Choose with the remote's arrows, then OK."
+msgstr "Choisissez avec les flèches de la télécommande, puis OK."
+
 msgid "Choosing categories"
 msgstr "Choix des catégories"
 
@@ -8771,8 +8774,7 @@ msgid ""
 " set aside, reports; each asks as usual."
 msgstr ""
 "Lance l'entretien régulier d'un coup, comme listé dans config.toml : "
-"audit, copies mises de côté, rapports ; "
-"chacun demande comme d'habitude."
+"audit, copies mises de côté, rapports ; chacun demande comme d'habitude."
 
 msgid "Run the regular upkeep"
 msgstr "Lancer l'entretien régulier"
@@ -12000,9 +12002,6 @@ msgstr "Ce n'est pas un classeur de 'classify', ou il a été abîmé."
 
 msgid "This is not the code shown on the PC: type it again."
 msgstr "Ce n'est pas le code affiché sur le PC : tapez-le à nouveau."
-
-msgid "This is the TV"
-msgstr "C'est la télé"
 
 msgid "This is the first event."
 msgstr "C'est le premier événement."

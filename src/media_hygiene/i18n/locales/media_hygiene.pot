@@ -1733,6 +1733,9 @@ msgid ""
 " or --prefer."
 msgstr ""
 
+msgid "Choose with the remote's arrows, then OK."
+msgstr ""
+
 msgid "Choosing categories"
 msgstr ""
 
@@ -9936,9 +9939,6 @@ msgid "This is not a classify workbook, or it was damaged."
 msgstr ""
 
 msgid "This is not the code shown on the PC: type it again."
-msgstr ""
-
-msgid "This is the TV"
 msgstr ""
 
 msgid "This is the first event."

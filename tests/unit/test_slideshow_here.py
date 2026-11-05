@@ -138,8 +138,9 @@ def test_the_tv_paired_once_follows_the_next_album(here: SlideshowHere) -> None:
     assert welcome.status is HTTPStatus.OK
     assert b'href="/screen"' in welcome.body
     assert b'href="/phone"' in welcome.body
-    assert b'src="/app-icon-192.png"' in welcome.body
-    assert _tv(here, "/app-icon-192.png").body.startswith(b"\x89PNG")
+    assert b'src="/assets/images/meerkat-lookout.webp"' in welcome.body
+    meerkat = _tv(here, "/assets/images/meerkat-lookout.webp").body
+    assert meerkat[8:12] == b"WEBP"
     _pc(here, "/slideshow/album/Crete")
     page = _tv(here, "/screen")
     token = _token(page)

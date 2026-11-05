@@ -286,7 +286,7 @@ un album le montre sur la télé.
 Un appui lance ce [diaporama](slideshow.md) dans le serveur même de la page d'accueil, et le
 téléphone ouvre aussitôt sa télécommande. Il ne fait que montrer : rien n'est écrit, rien ne
 bouge. Aucun album enregistré : le dossier et le mois restent là. Le favori de la télé
-(`http://<adresse du PC>:8089/` : une page d'accueil, **📺 C'est la télé**, puis sa page) attend un diaporama et reste appairé tant que `mh` tourne.
+(`http://<adresse du PC>:8089/` : une page d'accueil, **📺 Diaporama**, puis sa page) attend un diaporama et reste appairé tant que `mh` tourne.
 
 L'étape *Montrer vos photos sur la télé*, choisie sur le PC, ouvre aussi le [diaporama](slideshow.md)
 au réseau de la maison : le téléphone déjà appairé recharge sa page et obtient la télécommande du
