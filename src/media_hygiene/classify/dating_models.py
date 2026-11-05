@@ -15,6 +15,7 @@ class DateSource(StrEnum):
 
     EXIF = "exif"
     VIDEO = "video"
+    SIDECAR = "sidecar"  # the day an `.xmp` beside an undated file holds (0597)
     TAKEOUT = "takeout"  # the `.json` of a Google Photos Takeout
     NAME = "name"
     FOLDER = "folder"

@@ -2,7 +2,7 @@
 
 The copies of a pair keeping both names become hard links (`clean_links`, 0213).
 What is moved because a person or the tier chose so (near duplicates, burst shots,
-files chosen in `search`) is planned by `clean_aside`.
+files chosen in `library`) is planned by `clean_aside`.
 """
 
 from __future__ import annotations

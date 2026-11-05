@@ -20,10 +20,11 @@ from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_respons
 from media_hygiene.search.album_root_desk import folder_gets
 from media_hygiene.search.chosen_api import CHOSEN_PATH
 from media_hygiene.search.coverage import CoverageKept
+from media_hygiene.search.date_desk import DATE_PATH
 from media_hygiene.search.events_choose import SORT_POSTS, events_get, sort_post
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
 from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS
-from media_hygiene.search.found_answer import found_answer
+from media_hygiene.search.found_answer import awaited_answer, found_answer
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH
 from media_hygiene.search.people_why import (
     FACE_CROP_PREFIX,
@@ -32,8 +33,11 @@ from media_hygiene.search.people_why import (
     why_answer,
 )
 from media_hygiene.search.pictures import Pictures
+from media_hygiene.search.place_desk import PLACE_PATH
 from media_hygiene.search.rule_desk import PERIOD_RULES_PATH, RULE_POSTS
 from media_hygiene.search.rule_go import GO_PATHS, go_answer
+from media_hygiene.search.sort_folder_desk import SORT_FOLDER_PATH
+from media_hygiene.search.sort_setup_desk import SETUP_PATH
 from media_hygiene.search.tag_desk import HAND_TAG_PATH as HAND
 from media_hygiene.share.album_api import ALBUMS_PATH
 
@@ -50,7 +54,16 @@ SEARCH_PAGE_PATH: Final = "/search"
 SEARCH_PATH: Final = "/api/search"
 _GET, _POST = "GET", "POST"
 _POSTED: Final = frozenset({SEARCH_PATH, CHOSEN_PATH, *FOLDER_POSTS, APPLY_PATH, HAND})
-_POSTED_TOO: Final = SORT_POSTS | {ALBUMS_PATH, PEOPLE_REJECT_PATH, PEOPLE_WHY_PATH}
+_POSTED_TOO: Final = (
+    SORT_POSTS
+    | {ALBUMS_PATH, PEOPLE_REJECT_PATH, PEOPLE_WHY_PATH}
+    | {
+        SETUP_PATH,
+        SORT_FOLDER_PATH,
+        DATE_PATH,
+        PLACE_PATH,
+    }
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -114,10 +127,8 @@ class SearchApp:
         Returns:
             The response.
         """
-        if request.path == APPLY_PATH:
-            return await self.place.apply.answer()
-        if request.path == ALBUMS_PATH:
-            return await self.place.albums.answer(request.body)
+        if (awaited := awaited_answer(self.place, request)) is not None:
+            return await awaited
         if request.path in GO_PATHS | SORT_POSTS:  # a rule's GO, the Events (0438)
             return await (
                 sort_post(self.place.events, request)
@@ -130,6 +141,8 @@ class SearchApp:
             PEOPLE_WHY_PATH: partial(why_answer, self.place.names),
             **self.place.rules.posts(),
             **({HAND: self.place.tags.answer} if self.place.tags else {}),
+            **({PLACE_PATH: self.place.places.answer} if self.place.places else {}),
+            **(self.place.sort_setup.posts() if self.place.sort_setup else {}),
         }
         if request.path in answers:
             return answers[request.path](request.body)
@@ -158,6 +171,7 @@ class SearchApp:
             ALBUMS_PATH: self.place.albums.state,
             **folder_gets(self.place.folders),
             PERIOD_RULES_PATH: self.place.rules.state,
+            **(self.place.sort_setup.gets() if self.place.sort_setup else {}),
         }
         if path in states:
             return states[path]()

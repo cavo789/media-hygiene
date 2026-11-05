@@ -31,6 +31,7 @@ from media_hygiene.cli.cmd_sort import sort_command
 from media_hygiene.cli.cmd_status import status_command
 from media_hygiene.cli.cmd_tags import tags_command
 from media_hygiene.cli.cmd_undo import undo_command
+from media_hygiene.cli.cmd_upkeep import upkeep_command
 from media_hygiene.cli.cmd_xmp import xmp_command
 
 if TYPE_CHECKING:
@@ -61,9 +62,10 @@ def command_functions() -> dict[str, Callable[..., None]]:
         "people": people_command,
         "places": places_command,
         "purge": purge_command,
+        "upkeep": upkeep_command,
         "reports": reports_command,
         "review": review_command,
-        "search": search_command,
+        "library": search_command,
         "restore": restore_command,
         "share": share_command,
         "shrink": shrink_command,

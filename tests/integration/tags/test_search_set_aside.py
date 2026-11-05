@@ -1,4 +1,4 @@
-"""`search`: files picked on the page set aside, then moved by `clean --decisions`."""
+"""`library`: files picked on the page set aside, then moved by `clean --decisions`."""
 
 from __future__ import annotations
 
@@ -107,7 +107,7 @@ def test_clean_moves_exactly_the_chosen_files_and_undo_brings_them_back(
     result = run(cli, "clean", "--yes", "--decisions", "decisions.json")
     assert result.exit_code == 0, result.output
     said = " ".join(result.output.split())
-    assert "3 files chosen in 'search' are set aside" in said
+    assert "3 files chosen in 'library' are set aside" in said
     assert "Skipped (left untouched) │ 1" in said
     (report,) = locations.reports_dir.glob("*-clean/report.html")
     assert "changed since you chose it" in report.read_text(encoding="utf-8")

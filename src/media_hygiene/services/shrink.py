@@ -29,7 +29,7 @@ from media_hygiene.services.journaled_run import new_run
 from media_hygiene.services.missing_mount import missing_mount, typed_again
 from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.quarantine_space import quarantine_route
-from media_hygiene.services.search_app import shown_roots
+from media_hygiene.services.search_desks import shown_roots
 from media_hygiene.services.shrink_index import park_originals
 from media_hygiene.services.shrink_links import renamed
 from media_hygiene.services.shrink_tools import encoding_tools

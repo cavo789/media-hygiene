@@ -21,6 +21,7 @@ from media_hygiene.cli.menu_catalog_share import share_area, share_steps
 from media_hygiene.cli.menu_catalog_sort import sort_area, sort_steps
 from media_hygiene.cli.menu_catalog_tools import tools_areas, tools_steps
 from media_hygiene.cli.menu_entry import Area, Group, Risk, Space, Step
+from media_hygiene.cli.menu_twins import with_twin_lines
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -58,15 +59,17 @@ def catalog() -> Catalog:
     Returns:
         The catalog, the spaces in the cycle's order, then the tools.
     """
-    steps = (
-        *import_steps(),
-        *clean_steps(),
-        *clean_more_steps(),
-        *sort_steps(),
-        *find_steps(),
-        *share_steps(),
-        *tools_steps(),
-        *settings_steps(),
+    steps = with_twin_lines(
+        (
+            *import_steps(),
+            *clean_steps(),
+            *clean_more_steps(),
+            *sort_steps(),
+            *find_steps(),
+            *share_steps(),
+            *tools_steps(),
+            *settings_steps(),
+        )
     )
     areas = (
         import_area(),

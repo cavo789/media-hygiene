@@ -87,7 +87,7 @@ def test_a_place_word_keeps_its_kind() -> None:
 
 
 def test_place_words_of_version_6_have_no_kind(tmp_path: Path) -> None:
-    """Read-only (`search`): kind unknown; opened for writing: the column is added."""
+    """Read-only (`library`): kind unknown; opened for writing: the column is added."""
     index = tmp_path / "index.sqlite"
     with closing(sqlite3.connect(index)) as connection:
         connection.execute(_VERSION_6_TAGS)

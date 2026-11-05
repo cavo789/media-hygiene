@@ -10,8 +10,8 @@ one folder, without undoing the tree `sort` built.
 for the same file: the photo is neither copied nor moved, and takes no extra space. It is
 optional, and changes nothing until you add `--apply`.
 
-An album is first a list you make by hand (see [Albums](../reference-albums.md)) in [`search`](../commands/search.md#put-photos-in-an-album)
-or [the folders of `search`](../commands/search.md#walk-through-your-folders): `album "Crete 2023"` gives it its folder
+An album is first a list you make by hand (see [Albums](../reference-albums.md)) in [`library`](../commands/library.md#put-photos-in-an-album)
+or [the folders of `library`](../commands/library.md#walk-through-your-folders): `album "Crete 2023"` gives it its folder
 ([`album`](../commands/album.md)). This step gathers instead a selection of the `classify` plan,
 without picking the photos one by one.
 

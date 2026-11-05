@@ -78,7 +78,7 @@ def clip_known(cache_dir: Path) -> ClipFiles:
         cache_dir: The `/cache` mount point.
 
     Returns:
-        Their paths (`search` reads them as they are: it never downloads).
+        Their paths (`library` reads them as they are: it never downloads).
     """
     folder = models_dir(cache_dir)
     return ClipFiles(

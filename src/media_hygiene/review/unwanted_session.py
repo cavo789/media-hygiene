@@ -1,6 +1,6 @@
 """A `review --junk` in progress: the photos decided, saved after every choice.
 
-The decisions file is shared with the other reviews and `search`: this one keeps what
+The decisions file is shared with the other reviews and `library`: this one keeps what
 it finds there and writes the `unwanted` key, every photo decided (set aside or kept).
 Reopened, it resumes; a decision about a photo no longer listed, or changed since
 (size, date), is dropped.

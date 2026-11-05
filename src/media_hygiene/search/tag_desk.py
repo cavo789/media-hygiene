@@ -30,6 +30,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.review.http import Response
+    from media_hygiene.search.fts import SearchIndex
     from media_hygiene.search.hand_index import HandIndex
 
 HAND_TAG_PATH: Final = "/api/hand-tag"
@@ -154,15 +155,27 @@ class TagDesk:
             key: A key of the search.
 
         Returns:
-            The reference; None for an unknown key, or a file that cannot be read.
+            The reference, or None.
         """
-        photo = self.index.source_of(key)
-        if photo is None:
-            return None
-        row = self.index.connection.execute(_DIGEST, (key,)).fetchone()
-        sha = digest_of(Candidate(photo.path, photo.size, row[0] if row else None))
-        if sha is None:
-            return None
-        return PhotoRef(
-            path=self.mapper.to_host(photo.path), id=content_id(sha, photo.size)
-        )
+        return ref_of(self.index, self.mapper, key)
+
+
+def ref_of(index: SearchIndex, mapper: HostPathMapper, key: int) -> PhotoRef | None:
+    """A photo as `{path, id}`: its digest the index's, else read once.
+
+    Args:
+        index: The open search.
+        mapper: Writes its path as the user knows it.
+        key: A key of the search.
+
+    Returns:
+        The reference; None for an unknown key, or a file that cannot be read.
+    """
+    photo = index.source_of(key)
+    if photo is None:
+        return None
+    row = index.connection.execute(_DIGEST, (key,)).fetchone()
+    sha = digest_of(Candidate(photo.path, photo.size, row[0] if row else None))
+    if sha is None:
+        return None
+    return PhotoRef(path=mapper.to_host(photo.path), id=content_id(sha, photo.size))

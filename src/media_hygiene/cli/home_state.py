@@ -22,8 +22,9 @@ from media_hygiene.cli.home_favourites import (
 from media_hygiene.cli.home_findings import home_findings
 from media_hygiene.cli.home_folders import home_folders
 from media_hygiene.cli.home_pending import home_pending
-from media_hygiene.cli.home_reports import audit_previews, latest_reports
+from media_hygiene.cli.home_reports import latest_reports
 from media_hygiene.cli.home_runs import home_quarantine, home_undo, home_update
+from media_hygiene.cli.home_tile_order import arranged, read_tiles
 from media_hygiene.cli.home_tiles import home_tiles
 from media_hygiene.cli.menu_entry import Doc
 from media_hygiene.cli.menu_steps import build_menu, full_catalog
@@ -72,6 +73,8 @@ def home_state(runtime: Runtime) -> HomeState:
     actions = home_actions(page)
     known = {action.name for action in actions}
     starred = shown_favourites(read_favourites(runtime.locations.config_file), known)
+    config = runtime.locations.config_file
+    tiles, hidden = arranged(home_tiles(status), read_tiles(config))
     return HomeState(
         version=version(APP_NAME),
         lines=status_lines(status),
@@ -83,7 +86,8 @@ def home_state(runtime: Runtime) -> HomeState:
         docs_index=served_index(),
         given=_given(),
         proposed=home_next(page, next_step(status, purge_days), areas),
-        tiles=home_tiles(status),
+        tiles=tiles,
+        hidden_tiles=hidden,
         findings=home_findings(status, backups=bool(runtime.settings.folders.backups)),
         folders=home_folders(runtime),
         quarantine=home_quarantine(status),
@@ -92,7 +96,6 @@ def home_state(runtime: Runtime) -> HomeState:
         index=f"{REPORTS_PREFIX}{REPORT_INDEX_FILE_NAME}"
         if reports and (reports / REPORT_INDEX_FILE_NAME).is_file()
         else None,
-        previews=audit_previews(reports) if reports else (),
         update=update,
         stale=say_stamp(),
         windows=windows,

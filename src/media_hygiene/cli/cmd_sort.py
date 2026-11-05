@@ -128,11 +128,13 @@ def _confirm(runtime: Runtime, prepared: Prepared, *, yes: bool) -> bool:
         True when the sort may proceed.
 
     """
+    from media_hygiene.cli.fast_lines import tell_sort_twin
     from media_hygiene.cli.terminal import require_terminal
 
     if yes or not runtime.settings.sort.confirm:
         return True
     require_terminal(sys.stdin)
+    tell_sort_twin(runtime)
     plan = prepared.plan
     return runtime.output.confirm(
         _("Move {count} files into {folders} folders?").format(

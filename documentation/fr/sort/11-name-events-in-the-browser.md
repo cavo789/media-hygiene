@@ -6,18 +6,18 @@
 photos d'un même moment (une kermesse, un week-end), réunies par `classify` d'un dossier ou d'un
 téléphone à l'autre. Son nom devient **le dossier où `sort` range toutes ses photos** : nommé
 `Kermesse`, il va dans `2016/2016-07/Kermesse` ; sans nom, ses fichiers restent où ils sont. Ce qui bouge
-sur le disque, nom ou catégorie : [l'onglet 🗂 Événements de `search`, à quoi ça sert](../commands/search.md#les-événements-du-dernier-classify).
+sur le disque, nom ou catégorie : [l'onglet 🗂 Événements de `library`, à quoi ça sert](../commands/library.md#les-événements-du-dernier-classify).
 
 Le classeur de l'[étape 5](05-review-the-proposal.md) est fait pour renommer en masse, pas pour
 *regarder* les photos : nommer un événement, c'est lire le rapport dans une fenêtre et taper dans
 l'autre. Avec des centaines d'événements, cela fait des centaines d'allers-retours.
-L'onglet 🗂 Événements de `search` réunit les deux dans une page de votre navigateur : **un événement à la fois, ses
+L'onglet 🗂 Événements de `library` réunit les deux dans une page de votre navigateur : **un événement à la fois, ses
 photos, sa proposition, et un champ pour le nommer**, le tout au clavier.
 
 C'est facultatif : le classeur seul suffit, et les deux s'utilisent ensemble. La page ne touche
 ni aux photos ni au classeur ; c'est `sort` ([étape 7](07-sort.md)) qui applique vos choix.
 
-> **Depuis 0572** l'onglet 🗂 Événements ne lit plus le plan de `classify` : il regroupe les fichiers pas encore triés de la période cherchée. Cliquez un événement : sa fiche dit en une phrase où vont ses fichiers, puis **Trier ici maintenant** (déplacés, notés au journal, puis l'événement suivant), **Un autre dossier…** (le **📂 Déplacer vers un événement…** de la barre) ou **Ne pas trier cet événement** — [comment](../commands/search.md#les-événements-du-dernier-classify). Les étapes ci-dessous, tirées du plan, décrivent l'ancien onglet.
+> **Depuis 0572** l'onglet 🗂 Événements ne lit plus le plan de `classify` : il regroupe les fichiers pas encore triés de la période cherchée. Cliquez un événement : sa fiche dit en une phrase où vont ses fichiers, puis **Trier ici maintenant** (déplacés, notés au journal, puis l'événement suivant), **Un autre dossier…** (le **📂 Déplacer vers un événement…** de la barre) ou **Ne pas trier cet événement** — [comment](../commands/library.md#les-événements-du-dernier-classify). Les étapes ci-dessous, tirées du plan, décrivent l'ancien onglet.
 
 ## Lancer la page
 
@@ -26,7 +26,7 @@ dossiers et le même dossier de rapports, que `mh` monte (la lecture seule suffi
 la page ne fait que les montrer) :
 
 ```powershell
-mh search
+mh library
 ```
 
 <details>
@@ -101,7 +101,7 @@ demande s'il faut l'enregistrer, fermer l'onglet prévient.
 | <kbd>S</kbd> | Laisser les photos choisies (sinon celle encadrée) où elles sont. |
 | <kbd>Suppr</kbd> | Reprendre le choix fait ici : des photos choisies, sinon de l'événement. Le classeur décide à nouveau. |
 
-Les photos se choisissent comme dans [les dossiers de `search`](../commands/search.md#parcourir-vos-dossiers) : un clic choisit une
+Les photos se choisissent comme dans [les dossiers de `library`](../commands/library.md#parcourir-vos-dossiers) : un clic choisit une
 photo ; la case ☑ de chaque vignette (ou Ctrl+clic) en ajoute ou en retire une ; Maj+clic choisit
 toutes les photos depuis la dernière cliquée ; un rectangle tiré à la souris sur la grille choisit
 ce qu'il touche (avec Ctrl, il s'ajoute au choix) ; Ctrl+A toutes les photos de l'événement.
@@ -234,7 +234,7 @@ champ) et demande, puis déplace les fichiers de cet événement seulement, comm
 déplacés et vérifiés à leur nouvelle place. L'événement s'affiche ensuite *trié*, et <kbd>U</kbd>
 et *Seulement les événements à décider* le sautent ; un `sort` ultérieur de tout le classeur
 saute ses fichiers. Les photos doivent être montées sans `:ro`, avec un `/journal`
-(`mh search` le fait) : sinon la page dit ce qui manque, et rien ne bouge.
+(`mh library` le fait) : sinon la page dit ce qui manque, et rien ne bouge.
 
 **Vérifier d'abord, puis GO.** Chaque photo de l'événement dit où elle est et où elle va, tel
 que `sort` la déplacera. Avant de déplacer, *Vérifier, puis trier* les liste par dossier
@@ -242,7 +242,7 @@ que `sort` la déplacera. Avant de déplacer, *Vérifier, puis trier* les liste 
 ces N fichiers** est le GO. Pour laisser des photos de côté, choisissez-les et appuyez d'abord sur
 <kbd>S</kbd>. Commencez par un petit événement : vous voyez ce que fait l'outil, fichier par
 fichier, avant de lui en confier plus. Une période ou une règle se trie de la même façon depuis
-la page de recherche ([`search`](../commands/search.md#faire-dune-période-une-règle)).
+la page de recherche ([`library`](../commands/library.md#faire-dune-période-une-règle)).
 
 ## Suivre l'avancement
 

@@ -6,6 +6,8 @@ Vous avez revu la proposition et modifié le classeur ([étape 5](05-review-the-
 `sort` déplace maintenant les fichiers là où le classeur les met. Comme pour `clean`, chaque
 déplacement est journalisé et `undo` remet tout en place.
 
+`sort` déplace tous les fichiers du plan sans les montrer : le rapport de `classify` les montre d'abord (*Les voir d'abord* sur la page d'accueil), 🗂 Événements de `library` un événement à la fois.
+
 ## Le lancer
 
 Enregistrez et fermez d'abord le classeur. Lancez ensuite `sort` : `mh` monte pour lui vos
@@ -124,7 +126,7 @@ chose reste, et `sort` dit combien restent et pourquoi. Vos dossiers montés, le
 et exclus ne sont jamais supprimés. `--keep-empty-folders` les garde tous.
 
 Trié, et toujours à court de place ? **⚖ Fichiers les plus lourds** dans
-[les dossiers de `search`](../commands/search.md#parcourir-vos-dossiers) liste les fichiers les plus lourds de toute la photothèque, les
+[les dossiers de `library`](../commands/library.md#parcourir-vos-dossiers) liste les fichiers les plus lourds de toute la photothèque, les
 vidéos d'abord.
 
 ## Rien de perdu, preuve à l'appui

@@ -1,0 +1,48 @@
+{# "10 minutes of tidying" (0528), in the bar of the burst and near-duplicate reviews, shown only
+   while the tab holds a session (started by the home page's tile, sessionStorage): the time, the
+   next page, Stop. The gain is the bar's own line (`#eta`, "62 % of the 40 GB seen", 0527). At the
+   limit, a question: go on, or stop on the summary, *Apply now* beside it, and one What next. #}
+<span id="tidyBar" hidden>⏱ <span id="tidyClock"></span> <a id="tidyNext" href="{{ tidy_next }}">{{ _("Next page") }}</a> <button id="tidyStop" class="plain" type="button">{{ _("Stop") }}</button></span>
+<span id="tidyOver" role="status" hidden></span>
+<dialog id="tidyAsk" aria-labelledby="tidyAskTitle">
+  <h2 id="tidyAskTitle">{{ _("10 minutes done") }}</h2>
+  <p id="tidyAskGain"></p>
+  <button id="tidyOn" class="plain" type="button">{{ _("Go on for 10 minutes") }}</button>
+  <button id="tidyEnd" type="button">{{ _("Stop here") }}</button>
+</dialog>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  let timer = 0;
+  const KEY = "mh-tidy";
+  const MINUTES = 10;  // the session's length, few settings rule
+  const OVER = {{ _("Session over. {gain} What next: Apply now if it shows here, then back to the home page.") | tojson }};
+  const byId = (id) => document.getElementById(id);
+  const read = () => { try { return JSON.parse(sessionStorage.getItem(KEY)); } catch { return null; } };
+  const session = read();
+  if (!session) return;
+  const nextPage = byId("tidyNext").getAttribute("href");
+  if (byId("tidyNothing")) { if (nextPage) window.location.replace(nextPage); else stop(); return; }
+  if (!nextPage) byId("tidyNext").hidden = true;
+  const gain = () => (byId("eta") ? byId("eta").textContent : "");
+  function stop() {
+    try { sessionStorage.removeItem(KEY); } catch { /* the session ends with the tab */ }
+    window.clearInterval(timer);
+    byId("tidyBar").hidden = true;
+    byId("tidyOver").textContent = OVER.replace("{gain}", gain());
+    byId("tidyOver").hidden = false;
+  }
+  const save = () => { try { sessionStorage.setItem(KEY, JSON.stringify(session)); } catch { /* this page only */ } };
+  const tick = () => {
+    const left = session.limit - Date.now();
+    const seconds = Math.floor((Date.now() - session.started) / 1000);
+    byId("tidyClock").textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+    if (left <= 0 && !byId("tidyAsk").open) { byId("tidyAskGain").textContent = gain(); byId("tidyAsk").showModal(); }
+  };
+  timer = window.setInterval(tick, 1000);
+  byId("tidyBar").hidden = false;
+  byId("tidyStop").addEventListener("click", stop);
+  byId("tidyEnd").addEventListener("click", () => { byId("tidyAsk").close(); stop(); });
+  byId("tidyOn").addEventListener("click", () => { session.limit = Date.now() + MINUTES * 60000; save(); byId("tidyAsk").close(); });
+  tick();
+});
+</script>

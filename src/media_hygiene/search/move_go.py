@@ -24,6 +24,7 @@ from media_hygiene.search import statements as sql
 from media_hygiene.search.aside_filter import AsideFilter
 from media_hygiene.search.move_steps import moved_now, viewed
 from media_hygiene.search.rule_models import refused_rule
+from media_hygiene.search.sidecar_days import moments_of
 from media_hygiene.services.selection_models import Picked
 
 if TYPE_CHECKING:
@@ -107,6 +108,7 @@ def _picked(desk: RuleDesk, keys: tuple[int, ...]) -> tuple[Picked, str]:
         written = row[0] if row else None
         if when := exif_datetime(written) or video_date(written, zone):  # a video: ISO
             days[path] = when
+    days |= moments_of(path for path in paths.values() if path not in days)  # 0597
     return Picked(paths, days), kept.said
 
 

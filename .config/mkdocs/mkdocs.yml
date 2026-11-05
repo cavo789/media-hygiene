@@ -120,7 +120,10 @@ nav:
       - reference-commands.md
       - commands/album.md
       - commands/audit.md
+      - commands/library.md
+      - commands/search.md
       - commands/push.md
+      - commands/upkeep.md
       - commands/backup.md
       - commands/classify.md
       - commands/clean.md
@@ -138,7 +141,6 @@ nav:
       - commands/reports.md
       - commands/restore.md
       - commands/review.md
-      - commands/search.md
       - commands/share.md
       - commands/shrink.md
       - commands/slideshow.md

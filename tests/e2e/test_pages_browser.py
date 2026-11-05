@@ -178,6 +178,7 @@ def test_pages_of_mh_alone_in_a_real_browser(
     assert walk["search"]["click_to_shown_ms"] < _SHOWN_MS, walk["search"]
     assert walk["search"]["back_home_ms"] < _BACK_MS, walk["search"]
     assert walk["search"]["first_search_ms"] is not None
+    assert walk["search"]["state_kept"], walk["search"]  # 0442
     assert _started(walk["clicks_from"], walk["clicks_until"]) == []
     console = walk["console"]
     assert not console["url"].rstrip("/").endswith("/console/config"), console

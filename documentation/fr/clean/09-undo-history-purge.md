@@ -100,8 +100,8 @@ restaurés), puis refait.
 
 La quarantaine garde ce que `clean` a déplacé : les copies en trop, les fichiers illisibles, les
 fichiers compagnons orphelins et, si vous l'avez demandé, quasi-doublons et photos de rafale.
-Leur place n'est libérée que maintenant : une fois que vous les avez vérifiés (ouvrez le dossier
-de quarantaine dans l'Explorateur), `purge` les supprime **pour de bon**. C'est la seule commande
+Leur place n'est libérée que maintenant : une fois que vous les avez vus en photos (`mh undo --pick`,
+ou *Les voir d'abord* sur la page d'accueil), `purge` les supprime **pour de bon**. C'est la seule commande
 qui efface du contenu (avec `clean --delete`, si vous l'utilisez), et elle le dit avant de
 demander :
 
@@ -130,7 +130,7 @@ contenu.
   [`purge`](../commands/purge.md).
 
 Où va le reste de la place ? **⚖ Fichiers les plus lourds** dans
-[les dossiers de `search`](../commands/search.md#parcourir-vos-dossiers) liste les fichiers les plus lourds de toute la photothèque, les
+[les dossiers de `library`](../commands/library.md#parcourir-vos-dossiers) liste les fichiers les plus lourds de toute la photothèque, les
 vidéos d'abord ; [`shrink`](../commands/shrink.md) allège les vidéos des anciens appareils,
 les originaux en quarantaine.
 
@@ -154,7 +154,7 @@ non monté est signalé, jamais une erreur.
 ## Ce que vous avez mis de côté reste de côté
 
 Vous avez mis de côté des photos de rafale, des quasi-doublons, des photos choisies dans
-[`search`](../commands/search.md) ou [`review --junk`](../commands/review.md) ; des mois plus
+[`library`](../commands/library.md) ou [`review --junk`](../commands/review.md) ; des mois plus
 tard, une sauvegarde de téléphone les ramène, sous d'autres noms. Le journal se souvient du
 contenu de chaque fichier mis de côté par un tel choix (sa taille et son SHA-256), même après
 `purge` : l'audit suivant les reconnaît, quel que soit leur nom aujourd'hui, et le dit sur une

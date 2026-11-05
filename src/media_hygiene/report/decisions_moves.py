@@ -1,6 +1,6 @@
 """`decisions.json` follows the files `sort` or `undo` moved (0382).
 
-The burst series, the near duplicates, the files chosen in `search`, the unwanted and
+The burst series, the near duplicates, the files chosen in `library`, the unwanted and
 the gone ones name files by their host path: each one moved is renamed in place, its
 size and date kept (a move changes neither). The folder pairs name folders: a pair
 whose folder no longer exists is dropped, and counted. `roots` gain the folder a moved

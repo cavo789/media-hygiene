@@ -11,17 +11,17 @@ from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.search.album_root_desk import AlbumRootDesk, folder_gets
 from media_hygiene.search.folder_role_desk import ALBUM_ROOT_PATH, RoleDesk
 from media_hygiene.search.folders import FOLDERS_PATH, FolderDesk
+from tests.support.role_config import PROTECTED_CONFIG
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-_CONFIG = """# my comment
-[folders]
-protected = ['C:\\\\Photos\\\\Master']
-
-[classify]
+_CONFIG = (
+    PROTECTED_CONFIG
+    + """[classify]
 target = 'C:\\\\Photos\\\\Sorted'
 """
+)
 
 
 def _desk(tmp_path: Path) -> AlbumRootDesk:

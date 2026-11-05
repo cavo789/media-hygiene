@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.menu_entry import Risk
+from media_hygiene.cli.menu_twins import twins
 from media_hygiene.constants import Locale
 from media_hygiene.docs.served import served_url
 from media_hygiene.i18n import _
@@ -63,6 +64,7 @@ def _action(line: MenuStep) -> HomeAction:
     """
     step = line.step
     shown = line.command or step.typed or step.command
+    twin = twins().get(step.name)
     return HomeAction(
         name=step.name,
         space=step.space.value,
@@ -83,6 +85,9 @@ def _action(line: MenuStep) -> HomeAction:
         windows=step.windows,
         planned=step.planned,
         inline=step.inline,
+        twin_text=twin.says if twin else "",
+        twin_step=twin.step if twin else "",
+        twin_page=twin.page if twin else "",
         confirm_title=step.confirm[0] if step.confirm else "",
         confirm_text=step.confirm[1] if step.confirm else "",
         fields=tuple(

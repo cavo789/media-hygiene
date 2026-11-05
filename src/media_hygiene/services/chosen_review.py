@@ -1,4 +1,4 @@
-"""`clean --decisions`: the files set aside in `search`, checked before the clean.
+"""`clean --decisions`: the files set aside in `library`, checked before the clean.
 
 Each file is named by its host path and the version the index knew. None may lie in a
 protected folder: that refuses the whole file, like a burst shot. A file changed or
@@ -78,7 +78,7 @@ def named_files(runtime: Runtime, named: Sequence[NamedFile]) -> tuple[MediaFile
 def chosen_files(
     runtime: Runtime, chosen: tuple[ChosenFile, ...]
 ) -> tuple[MediaFile, ...]:
-    """Translate the files chosen in `search` into files of the container.
+    """Translate the files chosen in `library` into files of the container.
 
     Args:
         runtime: Settings, mount points and output.
@@ -95,8 +95,8 @@ def chosen_files(
     searched = len(files) - intruders
     if searched:
         said = ngettext(
-            "Your decisions — {count} file chosen in 'search' is set aside.",
-            "Your decisions — {count} files chosen in 'search' are set aside.",
+            "Your decisions — {count} file chosen in 'library' is set aside.",
+            "Your decisions — {count} files chosen in 'library' are set aside.",
             searched,
         )
         runtime.output.info(said.format(count=searched))

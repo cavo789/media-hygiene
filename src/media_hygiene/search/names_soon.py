@@ -1,6 +1,6 @@
 """The names of the people on each photo, read in a thread while the page opens (0354).
 
-Reading the faces and naming them took 1.8 s at each start of `search` (11,457 photos
+Reading the faces and naming them took 1.8 s at each start of `library` (11,457 photos
 named, measured on Windows): the server waited for it before answering. A thread now
 reads them on a connection of its own while the server starts and the browser loads
 the page; the first search waits for what is left (`MeaningIndex`). On a server living

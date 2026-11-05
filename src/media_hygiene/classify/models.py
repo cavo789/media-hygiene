@@ -82,6 +82,7 @@ class MediaInput:  # pylint: disable=too-many-instance-attributes
     digest: str | None = None
     takeout: TakeoutFacts | None = None
     former: tuple[FormerCopy, ...] = ()  # the copies `clean` removed (0207)
+    sidecar_day: datetime | None = None  # undated: its `.xmp` says (0597)
 
     @property
     def taken_at(self) -> str | None:

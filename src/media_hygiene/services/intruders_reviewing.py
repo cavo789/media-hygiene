@@ -88,16 +88,15 @@ class IntrudersDeskOnDisk:
         return intruders_set_aside(runtime)
 
 
-def serve_intruders_review(runtime: Runtime, start: ReviewStart) -> int:
-    """Serve the page until Ctrl+C; every pick is saved as it is made.
+def intruders_page(runtime: Runtime, offer: ApplyOffer) -> ReviewPage:
+    """The page, for its own server or the home server's (0594).
 
     Args:
         runtime: Settings, mount points and output.
-        start: The port to listen on, inside the container (0: any free one), and
-            the step *Apply now* ends on (0510).
+        offer: *Apply now* of the page (0510).
 
     Returns:
-        As `serve_review_page`.
+        The page.
     """
     desk = IntrudersDeskOnDisk(runtime)
 
@@ -113,7 +112,21 @@ def serve_intruders_review(runtime: Runtime, start: ReviewStart) -> int:
         return IntrudersApp(desk, page)
 
     api = (INTRUDERS_PATH, FILE_PATH)
+    return ReviewPage(_PAGE_TEMPLATE, intruders_place(runtime), api, app, offer)
+
+
+def serve_intruders_review(runtime: Runtime, start: ReviewStart) -> int:
+    """Serve the page until Ctrl+C; every pick is saved as it is made.
+
+    Args:
+        runtime: Settings, mount points and output.
+        start: The port to listen on, inside the container (0: any free one), and
+            the step *Apply now* ends on (0510).
+
+    Returns:
+        As `serve_review_page`.
+    """
     # Pending once some intruder file is set aside in the decisions file (0510).
     offer = ApplyOffer(start.apply, lambda: bool(intruders_set_aside(runtime)))
-    page = ReviewPage(_PAGE_TEMPLATE, intruders_place(runtime), api, app, offer)
+    page = intruders_page(runtime, offer)
     return serve_review_page(runtime, page, start.port)

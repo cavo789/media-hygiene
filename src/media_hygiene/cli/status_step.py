@@ -88,18 +88,18 @@ def _quarantine_or_sort(status: Status, purge_hint_days: int) -> NextStep | None
     if old:
         run_id = old[-1].run_id
         text = _(
-            "the quarantine of {run_id} is more than {days} days old: once checked, "
-            "'purge' frees its space."
+            "the quarantine of {run_id} is more than {days} days old: once seen with "
+            "'undo --pick', 'purge' frees its space."
         ).format(run_id=run_id, days=purge_hint_days)
         return NextStep(Slot.PURGE, text, f"purge {run_id}", CHANGING)
     if to_import(status):
-        text = _("your backup holds files the PC lacks: 'import' copies them back.")
-        return NextStep(Slot.IMPORT, text, "import", CHANGING)
+        text = _("your backup holds files the PC lacks: see them, then copy them back.")
+        return NextStep(Slot.IMPORT, text, "import --pick", CHANGING, page=True)
     if status.sort.proposed is not None and not status.sort.sorted:
         text = _("the classify proposal waits: 'sort' applies the edited workbook.")
         return NextStep(Slot.SORT, text, "sort", CHANGING)
     if runs:
-        text = _("once you have checked the quarantine, 'purge' frees its space.")
+        text = _("once seen with 'undo --pick', 'purge' frees the quarantine's space.")
         return NextStep(Slot.PURGE, text, f"purge {runs[0].run_id}", CHANGING)
     return None
 

@@ -1,0 +1,41 @@
+{# *📐 Where and how to sort* (0533): the target, a named layout with the tree it gives on
+   the user's photos, the same for the files the sort is less sure of. Saved in `[classify]`
+   of config.toml, read back and shown. Script: `search_sort_setup.js.j2`. #}
+<style>
+  #setupDlg { width: min(44rem, 94vw); color: var(--text); background: var(--card);
+              border: 1px solid var(--line); border-radius: 10px; }
+  #setupDlg::backdrop { background: rgb(0 0 0 / 50%); }
+  #setupDlg h2 { margin: 0 0 6px; } #setupDlg menu { display: flex; gap: 8px; justify-content: end; padding: 0; }
+  #setupDlg label { display: block; margin: 8px 0 2px; } #setupDlg input, #setupDlg select { width: 100%; }
+  #setupDlg .tree { font-size: .85em; margin: 4px 0 8px; overflow-wrap: anywhere; }
+  #setupDlg .tree div small { color: var(--muted); }
+  #setupSaid.error { color: var(--bad); } #setupSaid.saved { color: var(--ok); }
+  #setupLeave button, #setupPeople button { margin-left: 8px; }
+</style>
+<dialog id="setupDlg" aria-labelledby="setupTitle">
+  <form id="setupForm" method="dialog" autocomplete="off">
+    <h2 id="setupTitle">📐 {{ _("Where and how to sort") }}</h2>
+    <p class="muted">{{ _("Nothing moves here: the next classify proposes with these choices, and you see its proposal before anything moves.") }}</p>
+    <label for="setupTarget">{{ _("Folder receiving the tree (empty: each of your folders is sorted in place)") }}</label>
+    <input id="setupTarget" maxlength="4096" placeholder="{{ _('e.g. C:\\Photos\\Sorted') }}">
+    <label for="setup-layout">{{ _("The shape of the tree") }}</label>
+    <select id="setup-layout"></select>
+    <div id="tree-layout" class="tree"></div>
+    <p id="setupOrigin" class="muted small"></p>
+    <details><summary>{{ _("The files the sort is less sure of") }}</summary>
+      <label for="setup-unsure_layout">{{ _("The guesses") }}</label><select id="setup-unsure_layout"></select><div id="tree-unsure_layout" class="tree"></div>
+      <label for="setup-manual_layout">{{ _("The files no rule decides") }}</label><select id="setup-manual_layout"></select><div id="tree-manual_layout" class="tree"></div>
+      <label for="setup-undated_layout">{{ _("Undated files from a camera (filed by their modified date)") }}</label><select id="setup-undated_layout"></select><div id="tree-undated_layout" class="tree"></div>
+      <label for="setup-received_layout">{{ _("Undated files received (filed by their modified date)") }}</label><select id="setup-received_layout"></select><div id="tree-received_layout" class="tree"></div>
+    </details>
+    <details id="setupLists"><summary>{{ _("Folders left out, folders of a person") }}</summary>
+      <p class="muted small">{{ _("Set from the ⋯ of a folder, under 📁 My folders.") }}</p>
+      <ul id="setupLeave"></ul><ul id="setupPeople"></ul>
+    </details>
+    <p id="setupSaid" role="status"></p>
+    <menu>
+      <button type="button" id="setupSave">{{ _("Save") }}</button>
+      <button type="submit" class="plain">{{ _("Close") }} (Esc)</button>
+    </menu>
+  </form>
+</dialog>

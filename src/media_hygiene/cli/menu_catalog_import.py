@@ -2,6 +2,11 @@ r"""Stage 1, import: the photos of a phone, then what only a folder (a NAS) hold
 
 from __future__ import annotations
 
+from media_hygiene.cli.menu_catalog_pick import (
+    folder_field,
+    import_folder_pick_step,
+    import_pick_step,
+)
 from media_hygiene.cli.menu_entry import (
     Area,
     Doc,
@@ -13,10 +18,13 @@ from media_hygiene.cli.menu_entry import (
     Space,
     Step,
 )
-from media_hygiene.cli.status_step import Slot
 from media_hygiene.i18n import _
 
 FOLDERS_PAGE = "start/03-several-folders/"
+PICK_ANCHORS = (
+    "#see-them-first-mh-import---pick",
+    "#les-voir-dabord--mh-import---pick",
+)
 
 
 def import_steps() -> tuple[Step, ...]:
@@ -102,6 +110,7 @@ def import_steps() -> tuple[Step, ...]:
                 ),
             ),
         ),
+        import_pick_step(),
         Step(
             "import",
             space,
@@ -112,8 +121,9 @@ def import_steps() -> tuple[Step, ...]:
             icon="import",
             keywords=_("nas get back restore backup copy missing usb disk"),
             doc=Doc("commands/import/"),
-            slot=Slot.IMPORT,
+            optional=True,
         ),
+        import_folder_pick_step(),
         Step(
             "import-folder",
             space,
@@ -127,14 +137,7 @@ def import_steps() -> tuple[Step, ...]:
             icon="import",
             keywords=_("usb disk card sd camera folder import copy"),
             doc=Doc("commands/import/"),
-            fields=(
-                Field(
-                    "path",
-                    _("The folder, as the Explorer shows it"),
-                    r"E:\DCIM",
-                    kind=FieldKind.FOLDER,
-                ),
-            ),
+            fields=(folder_field(),),
         ),
         Step(
             "folders-add",
@@ -174,9 +177,13 @@ def import_area() -> Area:
         (
             Group(_("From a phone"), ("phone", "phone-free"), numbered=True),
             Group(
-                _("From your NAS or an old disk"), ("nas-add", "import"), numbered=True
+                _("From your NAS or an old disk"),
+                ("nas-add", "import-pick", "import"),
+                numbered=True,
             ),
-            Group(_("Go further"), ("import-folder", "folders-add")),
+            Group(
+                _("Go further"), ("import-folder-pick", "import-folder", "folders-add")
+            ),
         ),
         Doc(FOLDERS_PAGE),
         _("3. Several folders and disks"),

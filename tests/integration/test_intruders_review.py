@@ -118,7 +118,7 @@ def test_a_folder_ticked_takes_its_subfolders(
 def test_put_back_keeps_the_files_of_the_other_pages(
     media: MediaFactory, locations: Locations
 ) -> None:
-    """Back: the intruders leave the file; a photo chosen in `search` stays."""
+    """Back: the intruders leave the file; a photo chosen in `library` stays."""
     photos = _tree(media, locations)
     runtime = make_runtime(locations, _PROTECTED)
     stat = (photos / "a.jpg").stat()

@@ -125,7 +125,6 @@ def _home() -> dict[str, str]:
         "tilesNote": _("Each tile leads to its space."),
         "toDo": _("To do"),
         "toCheck": _("To check"),
-        "previews": _("Copies, previewed"),
         "openReport": _("Open the report"),
         "threeThings": _("Three things to know before you start"),
         "recentReports": _("Recent reports"),

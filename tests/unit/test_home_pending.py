@@ -52,3 +52,21 @@ def test_the_page_offers_apply_all() -> None:
     page = home_page().decode()
     assert "function pendingBanner()" in page
     assert '"applyAll"' in page
+
+
+def test_intruders_and_people_are_named_apart_from_the_library(tmp_path: Path) -> None:
+    """All three lie in `chosen`: their `found_by` names their page (0587)."""
+    chosen = [
+        {"path": "C:\\a.zip", "size": 1, "mtime_ns": 1, "found_by": "intruder"},
+        {"path": "C:\\b.jpg", "size": 1, "mtime_ns": 1, "found_by": "people:Ex"},
+        {"path": "C:\\c.jpg", "size": 1, "mtime_ns": 1, "found_by": "2017"},
+    ]
+    _write(tmp_path, {"chosen": chosen})
+    pending = home_pending(tmp_path)
+    assert pending is not None
+    assert pending.total == len(chosen)
+    assert [(page.label, page.count, bool(page.url)) for page in pending.pages] == [
+        ("Intruder files", 1, True),
+        ("People", 1, False),  # its own server: named, no dead link
+        ("Library", 1, True),
+    ]

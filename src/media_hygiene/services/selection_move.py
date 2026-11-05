@@ -24,7 +24,7 @@ from media_hygiene.services.plan_rows_index import (
     PlanRows,
     parent_of,
     plan_rows,
-    taken_at,
+    planned_date,
 )
 from media_hygiene.services.selection_models import (
     MoveView,
@@ -175,7 +175,7 @@ class SelectionMover:
         dates = [
             when
             for path in chosen.paths.values()
-            if (when := taken_at(rows.by_path.get(self.runtime.mapper.to_host(path))))
+            if (when := planned_date(rows, self.runtime.mapper.to_host(path)))
             or (when := chosen.days.get(path))
         ]
         if not dates:

@@ -16,3 +16,14 @@ function askLate() {
     .then((view) => { lateEvents = view.events || []; const place = $("#lateEvents"); if (place) place.innerHTML = lateLines(); })
     .catch(() => {});
 }
+// "10 minutes of tidying" (0528): the session of this tab starts here; each review, biggest gain first.
+const TIDY_MS = 600000;
+document.addEventListener("click", (event) => {
+  if (!event.target.closest("[data-tidy]")) return;
+  try {
+    const now = Date.now();
+    sessionStorage.setItem("mh-tidy", JSON.stringify({ started: now, limit: now + TIDY_MS }));
+    localStorage.setItem("media-hygiene:review:order", "space");
+    localStorage.setItem("near-order", "gain");
+  } catch (error) { /* no storage: the review alone, no session */ }
+}, true);

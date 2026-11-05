@@ -21,8 +21,8 @@ n'importe quels dossiers. C'est ce qu'on montre aux autres : sur la télé avec
 
 ## Remplir un album
 
-Dans [`search`](commands/search.md#mettre-des-photos-dans-un-album) ou
-[les dossiers de `search`](commands/search.md#parcourir-vos-dossiers), choisissez les photos, tapez le nom de l'album dans **Album** (les
+Dans [`library`](commands/library.md#mettre-des-photos-dans-un-album) ou
+[les dossiers de `library`](commands/library.md#parcourir-vos-dossiers), choisissez les photos, tapez le nom de l'album dans **Album** (les
 albums déjà faits sont proposés ; un nouveau nom le crée), puis **➕ Ajouter à l'album**. La page
 dit ce qu'elle a enregistré, relu depuis le disque.
 
@@ -56,7 +56,7 @@ Depuis la page, sur le PC (un téléphone regarde seulement : les albums changen
   - **✉️ Envoyer** : la commande qui prépare les copies à envoyer (`mh share --album`) ; une
     partie de l'album choisie est d'abord enregistrée dans un album à elle, au nom du jour ;
   - **📺 Sur la télé** : les fichiers choisis, ou tout l'album, sur la télé jumelée ;
-- **➕ Ajouter des photos** à un album ouvert : la [recherche](commands/search.md) s'ouvre dans le
+- **➕ Ajouter des photos** à un album ouvert : la [recherche](commands/library.md) s'ouvre dans le
   même onglet, l'album tapé dans son champ **Album**, la période autour des dates de l'album (un
   jour de part et d'autre) ; les fichiers déjà dans l'album sont marqués, **← l'album** revient
   ici.
@@ -89,7 +89,7 @@ ne fabrique jamais ce dossier.
 
 ## Pour aller plus loin
 
-- [`search` : mettre des photos dans un album](commands/search.md#mettre-des-photos-dans-un-album)
+- [`library` : mettre des photos dans un album](commands/library.md#mettre-des-photos-dans-un-album)
 - [`slideshow`](commands/slideshow.md), [`share`](commands/share.md), [`album`](commands/album.md)
 
 ---

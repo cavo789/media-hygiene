@@ -88,7 +88,7 @@ def save_folders(config_file: Path, positions: Sequence[FolderPosition | str]) -
     rows = places.get(_FOLDERS)
     if not isinstance(rows, AoT):
         rows = tomlkit.aot()
-        places.append(_FOLDERS, rows)
+        places[_FOLDERS] = rows
     for position in positions:
         folder = position if isinstance(position, str) else position.folder
         for rank in reversed(range(len(rows.body))):

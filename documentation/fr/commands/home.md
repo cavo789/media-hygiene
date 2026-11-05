@@ -13,7 +13,7 @@ chaque action de l'outil à un clic ou à <kbd>Ctrl</kbd>+<kbd>K</kbd>.**
 dans le terminal, rangé comme le cycle de vos photos : **Importer** (un téléphone, votre NAS ou
 un ancien disque), **Nettoyer**, **Trier**, **Retrouver**, **Sauvegarder** (prévu) ; puis, à part du cycle, **Partager**
 (vos photos sur la télé : [`slideshow`](slideshow.md), un dossier ou un
-[album](search.md#mettre-des-photos-dans-un-album)) et trois outils : **Historique et annulation**,
+[album](library.md#mettre-des-photos-dans-un-album)) et trois outils : **Historique et annulation**,
 **Rapports**, **Réglages**. Chaque espace a sa page : son
 parcours, numéroté, puis « Pour aller plus loin ». Chaque action montre sa commande `mh`, à
 copier, et mène à son chapitre de cette documentation. La page peut aussi lancer l'audit
@@ -77,11 +77,17 @@ docker run --rm -it `
   dans `mh menu`. Quand tout est appliqué, la page le dit.
 - **Où vous en êtes** : une tuile par fait (le dernier audit, les copies en trop, la
   quarantaine, les fichiers seulement sur le NAS, le tri, les mots, les visages), chacune mène à
-  son espace.
+  son espace. **Modifier** masque une tuile (✕) ou la déplace (← →) ; **Rétablir** remet
+  l'ordre par défaut. Le choix est enregistré aussitôt dans `config.toml` (`[home] tiles`), relu
+  et affiché ; une tuile masquée le reste, même si elle demande quelque chose. Un téléphone
+  montre la disposition du PC et ne peut pas la changer.
 - **Ce que le dernier audit a trouvé** : chaque constat avec son bouton (*9 copies
-  identiques* : **Mettre les copies en trop de côté** ; *3 fichiers illisibles* : le rapport), et
-  quelques aperçus de son rapport. Avant tout audit : trois choses à savoir (rien ne bouge sans
+  identiques* : **Mettre les copies en trop de côté** ; *3 fichiers illisibles* : le rapport).
+  Avant tout audit : trois choses à savoir (rien ne bouge sans
   vous, tout ce qui bouge s'annule, une seule chose est définitive).
+- **Photos au hasard** : une dizaine de photos tirées de votre index à chaque visite, pour le
+  plaisir de les voir ; un clic ouvre la bibliothèque sur le dossier de la photo. Sans index, pas
+  de bloc.
 - **Rapports récents**.
 - **Auditer dans cette page** 🔒, en haut de l'étape *Nettoyer* (sa première étape, l'audit, a
   aussi **Dans cette page**) : **Auditer maintenant** lit vos
@@ -113,7 +119,45 @@ propose les sortes de fichiers en cases à cocher et les noms de dossiers en lis
 fichier contient, relu sur le disque. Le dernier audit a été fait avec les anciens réglages : la
 page le dit et propose *Relancer l'audit*.
 
+## Place sur le disque
+
+La tuile *Place sur le disque* ouvre une page avec la place que prennent les aperçus et la
+quarantaine. Chaque limite est à côté de son effet, écrite dans `config.toml` et relue avant d'être
+affichée : *Garder au plus (Go)* (`[cache] previews_max_gb`) et *Proposer la purge après (jours)*
+(`[clean] purge_hint_days`). *Vider les aperçus* annonce la place libérée ; ils sont refaits à
+l'affichage. Chaque exécution de la quarantaine a son lien *Voir les photos*, ses fichiers en vignettes
+([`undo --pick`](undo.md#remettre-quelques-photos)) ; elle se purge depuis *Historique et annulation*, où `purge`
+propose la même page, puis demande.
+
+## Chemins rapides et ce qui montre les fichiers d'abord
+
+Ces commandes agissent sur des fichiers sans les montrer ; elles restent, pour les grandes collections.
+Chacune le dit en une ligne avant sa question, et la page d'accueil propose la page d'abord (*Les voir
+d'abord*, ou *Continuer sans les voir*) :
+
+| Chemin rapide | Ce qui montre les fichiers d'abord |
+|---|---|
+| `clean`, `clean --delete` | Le rapport de l'audit ; `review --near` pour `--tier near`, `near-all` |
+| `sort` | Le rapport de `classify` ; 🗂 Événements de `library`, un événement à la fois |
+| `undo` | `undo --pick` |
+| `purge` | `undo --pick` |
+| `import`, `import <dossier>` | `import --pick` |
+| `upkeep` | Le rapport, puis la ligne que chaque étape dit d'abord |
+
+## 10 minutes de rangement
+
+La tuile *10 minutes de rangement* ouvre les rafales puis les quasi-doublons, le plus gros gain
+d'abord. La barre compte le temps à côté de la part du gain déjà vue, et *Page suivante* avance. À
+10 minutes, elle demande : continuer, ou s'arrêter sur le bilan, *Appliquer maintenant* restant dans
+la barre. Rien ne bouge avant que vous appliquiez.
+
 ## Lancer une étape
+
+L'objectif est une seule interface : tout depuis cette page, PowerShell seulement pour démarrer
+`mh`. Les pages, et les étapes qui répondent dans une boîte de dialogue, y sont déjà ; les autres vous
+demandent encore de passer à la fenêtre PowerShell, comme dit ci-dessous, jusqu'à ce qu'elles arrivent
+ici aussi. La console reste une interface complète, pour les scripts et pour qui la préfère : elle ne
+sera pas retirée.
 
 La page ne modifie jamais vos photos elle-même. Ce que fait le bouton d'une étape dépend du `mh`
 qui a ouvert la page :
@@ -167,7 +211,7 @@ qui a ouvert la page :
   faits et combien par seconde. Fermez ou rechargez l'onglet entre-temps : l'étape continue, et
   la page, rouverte, la montre à nouveau (*Une étape tourne encore*) jusqu'à sa fin.
 - **Des choix en attente sur plusieurs pages** (séries en rafale, quasi-doublons, paires de
-  dossiers, photos indésirables, fichiers disparus, `search`) : la page d'accueil dit combien
+  dossiers, photos indésirables, fichiers disparus, fichiers intrus, les visages de `people`, `library`) : la page d'accueil dit combien
   attendent (*Choix en attente d'application : 3*), chaque page nommée avec son nombre et un
   lien vers elle, et **Tout appliquer** lance un seul `clean --decisions` pour tous : une seule
   exécution, donc un seul `mh undo` les reprend tous. Le nombre est relu dans le fichier des
@@ -180,8 +224,8 @@ qui a ouvert la page :
   refuse de copier (une adresse autre que `127.0.0.1` ou `localhost`), la commande est
   sélectionnée : faites Ctrl+C.
 
-Chaque autre page ([`review`](review.md), [l'onglet 🗂 Événements de `search`](search.md#les-événements-du-dernier-classify),
-[`places`](places.md), [`search`](search.md), [`people`](people.md))
+Chaque autre page ([`review`](review.md), [l'onglet 🗂 Événements de `library`](library.md#les-événements-du-dernier-classify),
+[`places`](places.md), [`library`](library.md), [`people`](people.md))
 prend l'allure et le thème de la page d'accueil, sous une barre : **Documentation** ouvre le
 chapitre de cette page, à côté de son jumeau anglais (*In English*). Quand la page d'accueil l'a
 ouverte, la page s'affiche dans **le même onglet** (pas de nouvel onglet), et **⌂ Retour à
@@ -331,7 +375,7 @@ appairez-le une fois avec `mh --lan` (ci-dessus), puis touchez **Ouvrir les albu
 d'accueil (ou, sur le PC, *Partager › Vos albums*). Les proches regardent votre écran et
 n'appairent rien.
 
-- **La liste** : chaque [album](search.md#mettre-des-photos-dans-un-album), sa couverture, ses
+- **La liste** : chaque [album](library.md#mettre-des-photos-dans-un-album), sa couverture, ses
   dates, son lieu et combien de photos il contient.
 - **Un album**, comme le montrent les grandes applications de photos : une **couverture** (la
   photo la plus nette du premier jour), le nom de l'album, ses dates et son lieu (nommé hors

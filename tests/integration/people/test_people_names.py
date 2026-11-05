@@ -172,7 +172,7 @@ def test_forget_asks_before_deleting_the_names(
 def test_a_face_too_small_for_the_page_is_named_by_nobody(
     cli: CliRunner, apps: list[object], locations: Locations
 ) -> None:
-    """Page, `people` counts and `search` agree: a 30 px face is no one's (0316)."""
+    """Page, `people` counts and `library` agree: a 30 px face is no one's (0316)."""
     coloured(locations.data_dir / "c" / "Holidays" / "tiny.png", 0, (30, 30))
     assert run(cli, "audit").exit_code == 0
     saved = name_largest(cli, apps)

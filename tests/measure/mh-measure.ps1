@@ -146,6 +146,8 @@
 #  42. a page on port 8088 stopped, then the port watched: PID 0 seen? seconds until free (0503); docker run binds meanwhile? (0543)
 #      (two yes/no questions, by hand)                                               (0359)
 #  43. the hand-over of a page step (0583): a page on 8088 ends, the next page started at once
+#  44. back to the home page (0442): /api/state of your real mh timed from the PC, then the phone by stopwatch
+#  45. the pages of 0590-0594 on Windows: import --pick on a folder, then the quarantine in one click, by hand
 #      (as before) or once Docker removed the first container (after): seconds to bind
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
@@ -3539,6 +3541,49 @@ if (Wanted 43) {
         }
     }
     $ErrorActionPreference = $saved
+}
+
+# --- 44: back to the home page, under a second (0442) ------------------------------------------
+# By hand: mh --lan running in another window (image of the branch), the phone paired. Five reads
+# of /api/state from the PC tell what the page still waits for behind; the phone says the rest.
+if (Wanted 44) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 44. back to the home page (0442)"
+    Write-Host "44 : dans une AUTRE fenetre, lancez mh --lan (image de la branche), telephone appaire."
+    $null = Read-Host "Entree quand la page d'accueil est ouverte"
+    for ($try = 1; $try -le 5; $try++) {
+        $clock = [Diagnostics.Stopwatch]::StartNew()
+        try {
+            $answer = Invoke-WebRequest -UseBasicParsing -TimeoutSec 60 -Uri "http://127.0.0.1:8088/api/state"
+            Log ("   44a.$try GET /api/state: {0:N2} s, {1} bytes" -f $clock.Elapsed.TotalSeconds, $answer.RawContentLength)
+        } catch {
+            Log "   44a.$try GET /api/state failed: $($_.Exception.Message)"
+        }
+    }
+    $backHome = Read-Host "44b. Telephone, page de recherche puis 'Retour a l'accueil', 3 fois au chronometre : les secondes jusqu'a la page dessinee (ex. 0.6 0.7 0.5)"
+    $backPhone = Read-Host "44c. Pareil avec le bouton Retour du telephone, 3 fois"
+    $splash = Read-Host "44d. Le suricate de demarrage est-il encore apparu au retour ? (o/n)"
+    $mark = Read-Host "44e. La petite mention 'Mise a jour...' apparait-elle puis disparait-elle ? (o/n)"
+    Log "   44b. Back to home, stopwatch, seconds (before: 8.6 mean): $backHome"
+    Log "   44c. the phone's Back, stopwatch, seconds (before: 8.5 mean): $backPhone"
+    Log "   44d. splash seen on the way back: $splash"
+    Log "   44e. the updating mark shown then gone: $mark"
+    $ErrorActionPreference = $saved
+}
+
+# --- 45: import --pick and the quarantine's page on Windows (0590, 0591, 0594) ------------------
+# By hand: only your eyes tell the tiles are right; nothing is copied unless you press Copy.
+if (Wanted 45) {
+    Log ""
+    Log "== 45. import --pick, quarantine page (0590, 0591, 0594)"
+    Write-Host "45 : dans une AUTRE fenetre (image de la branche) : mh import --pick <un dossier avec des photos>."
+    $tilesSeen = Read-Host "Les vignettes s'affichent, Ecarter puis Reprendre marchent, le dossier reste intact ? (o/n)"
+    Log "   45a. import --pick, tiles and leave out: $tilesSeen"
+    Write-Host "45 : puis mh, page d'accueil, Historique, Liberer la place : cliquez Les voir d'abord."
+    $oneClick = Read-Host "La quarantaine s'ouvre sans redemarrage ni fenetre de console ? (o/n)"
+    Log "   45b. purge, See them first, served without a restart: $oneClick"
 }
 
 # --- clean up -------------------------------------------------------------------------------

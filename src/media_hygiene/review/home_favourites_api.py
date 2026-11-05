@@ -8,7 +8,10 @@ is the list `config.toml` holds once written.
 from __future__ import annotations
 
 import asyncio
+import logging
 import re
+from dataclasses import dataclass
+from functools import partial
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
@@ -20,10 +23,12 @@ from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response, refused_post
 
 if TYPE_CHECKING:
+    from collections.abc import Callable, Sequence
     from pathlib import Path
 
     from media_hygiene.review.http import Request
 
+_LOGGER: Final = logging.getLogger(__name__)
 _NAME: Final = re.compile(r"[a-z0-9-]{1,40}")  # an action's name in the catalog
 
 
@@ -35,6 +40,16 @@ class _Starred(BaseModel):
     names: tuple[str, ...] = Field(max_length=MOST)
 
 
+@dataclass(frozen=True, slots=True)
+class SavedList:
+    """A list of `[home]` the page sends whole: how to save it, what to say if not."""
+
+    save: Callable[[Sequence[str]], tuple[str, ...]]
+    answer_key: str
+    unwritable: Callable[[], str]
+    unreadable: Callable[[], str]
+
+
 async def favourites_response(config_file: Path, request: Request) -> Response:
     """Save the starred actions and answer what the file now holds.
 
@@ -43,8 +58,30 @@ async def favourites_response(config_file: Path, request: Request) -> Response:
         request: `POST /api/favourites`, `{"names": [...]}`.
 
     Returns:
-        `{"favourites": [...]}` read back from the disk; 400 on a bad body, 500 (its
-        message, never a trace) when the file cannot be written.
+        `{"favourites": [...]}`, as `saved_list_response`.
+    """
+    kind = SavedList(
+        partial(save_favourites, config_file),
+        "favourites",
+        lambda: _("config.toml cannot be written: the favourites were not saved."),
+        lambda: _(
+            "config.toml cannot be read (a mistake in the file?):"
+            " the favourites were not saved."
+        ),
+    )
+    return await saved_list_response(kind, request)
+
+
+async def saved_list_response(kind: SavedList, request: Request) -> Response:
+    """Save a list of words and answer what the file now holds.
+
+    Args:
+        kind: The list.
+        request: The `POST`, `{"names": [...]}`.
+
+    Returns:
+        The list read back from the disk; 400 on a bad body, 500 (which case, never a
+        trace; the exception goes to the log) when the save fails.
     """
     refused = refused_post(request)
     if refused is not None:
@@ -55,11 +92,18 @@ async def favourites_response(config_file: Path, request: Request) -> Response:
         return Response(HTTPStatus.BAD_REQUEST)
     names = tuple(name for name in asked.names if _valid(name))
     try:
-        saved = await asyncio.to_thread(save_favourites, config_file, names)
-    except OSError, ValueError:
-        message = _("The favourites could not be saved in config.toml.")
-        return json_response(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": message})
-    return json_response(HTTPStatus.OK, {"favourites": list(saved)})
+        saved = await asyncio.to_thread(kind.save, names)
+    except OSError:
+        _LOGGER.exception("%s: not saved", kind.answer_key)
+        return json_response(
+            HTTPStatus.INTERNAL_SERVER_ERROR, {"error": kind.unwritable()}
+        )
+    except ValueError:  # its TOML, its encoding, a `home` that is not a table
+        _LOGGER.exception("%s: not saved", kind.answer_key)
+        return json_response(
+            HTTPStatus.INTERNAL_SERVER_ERROR, {"error": kind.unreadable()}
+        )
+    return json_response(HTTPStatus.OK, {kind.answer_key: list(saved)})
 
 
 def _valid(name: str) -> bool:

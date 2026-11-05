@@ -12,8 +12,8 @@ un second nom pour le même fichier : la photo n'est ni copiée ni déplacée, e
 place en plus. C'est facultatif, et rien ne change tant que vous n'ajoutez pas `--apply`.
 
 Un album est d'abord une liste que vous faites à la main (voir [Les albums](../reference-albums.md)) dans
-[`search`](../commands/search.md#mettre-des-photos-dans-un-album) ou
-[les dossiers de `search`](../commands/search.md#parcourir-vos-dossiers) : `album "Crète 2023"` lui donne son dossier
+[`library`](../commands/library.md#mettre-des-photos-dans-un-album) ou
+[les dossiers de `library`](../commands/library.md#parcourir-vos-dossiers) : `album "Crète 2023"` lui donne son dossier
 ([`album`](../commands/album.md)). Cette étape rassemble plutôt une sélection du plan de
 `classify`, sans choisir les photos une à une.
 

@@ -86,7 +86,7 @@ def merge_places(doc: XmpDoc, places: XmpPlaces) -> None:
         # rewritten only when it changes.
         if current != text_of(doc.find(tracked)) or current == value:
             continue
-        _set(doc, (field, tracked), value)
+        set_tracked(doc, (field, tracked), value)
 
 
 def places_snapshot(doc: XmpDoc) -> tuple[str, ...]:
@@ -121,7 +121,7 @@ def simple_value(doc: XmpDoc, name: str) -> str:
     return text_of(doc.find(name))
 
 
-def _set(doc: XmpDoc, names: tuple[str, str], value: str) -> None:
+def set_tracked(doc: XmpDoc, names: tuple[str, str], value: str) -> None:
     """Write (or take back) one field, and remember it.
 
     Args:

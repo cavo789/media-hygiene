@@ -85,7 +85,7 @@ mh audit
   un dossier `media-hygiene`. `mh folders add` avec un dossier d'un nouveau disque ajoute aussi sa
   quarantaine.
 - **Le port de la page du navigateur** (`-p 127.0.0.1:8088:8088`) pour `review`,
-  `places`, `search` et `people`, et **votre navigateur s'ouvre sur cette page** dès qu'elle
+  `places`, `library` et `people`, et **votre navigateur s'ouvre sur cette page** dès qu'elle
   répond : aucune adresse à copier. Ctrl+C dans la fenêtre l'arrête toujours.
 - **Votre ordinateur reste éveillé pendant les commandes longues** (`audit`, `clean`,
   `inventory`, `classify`, `sort`, `tags`, `people`, `undo`) : Windows ne se met pas en veille

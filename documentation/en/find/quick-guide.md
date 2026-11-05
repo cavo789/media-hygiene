@@ -12,7 +12,7 @@ moves**: your photos stay where they are, sorted or not, unless you set some asi
 
 - [0 · Before you start](#0-before-you-start)
 - [3 · Give your photos words](#3-give-your-photos-words)
-- [4 · Find a photo](#4-find-a-photo-search)
+- [4 · Find a photo](#4-find-a-photo-library)
 
 </div>
 
@@ -25,7 +25,7 @@ else works.
 
 <span class="mh-badge mh-once">⏱ Once</span>
 
-`search` finds what the audit has read. Write `mh` once ([clean in short, step
+`library` finds what the audit has read. Write `mh` once ([clean in short, step
 0](../clean/quick-guide.md#0-once-write-the-mh-command)), then audit your folders:
 
 ```powershell
@@ -111,12 +111,12 @@ your photos.
     Ctrl+C stops, the next run resumes, the most recent first. Without a model, `tags` says so in
     one line and keeps to folders, names, dates and places. More: [tags](../reference-tags.md).
 
-## 4. Find a photo: `search`
+## 4. Find a photo: `library`
 
 <span class="mh-badge mh-safe">🔒 Photos untouched</span>
 
 ```powershell
-mh search
+mh library
 ```
 
 Your browser opens on the page (if not: `http://127.0.0.1:8088/`): type what you remember, the grid shows the photos, the best first;
@@ -135,8 +135,8 @@ Enter enlarges one.
 ??? info "Details"
 
     Filters beside the field: years, part of the path, one source of words. Without a browser,
-    `mh search Chloé mountain` prints the first results as a table. More:
-    [`search`](../commands/search.md).
+    `mh library Chloé mountain` prints the first results as a table. More:
+    [`library`](../commands/library.md).
 
 ??? tip "Remove every photo of someone: set them aside"
 
@@ -151,16 +151,16 @@ Enter enlarges one.
 
     It says how many files and bytes go, asks, then moves them to the quarantine, journaled:
     `mh undo` brings them back, `mh purge` frees the space. More: [set photos
-    aside](../commands/search.md#set-photos-aside).
+    aside](../commands/library.md#set-photos-aside).
 
-## 5. Walk through your folders: `search` (optional)
+## 5. Walk through your folders: `library` (optional)
 
 <span class="mh-badge mh-optional">Optional</span> <span class="mh-badge mh-undo">↩️ Can be undone</span>
 
 To look through a folder and remove a few photos, as in Explorer, but undoably:
 
 ```powershell
-mh search
+mh library
 ```
 
 Your browser opens on the page (if not: `http://127.0.0.1:8088/`); **📁 Folders** shows the tree of your folders on
@@ -172,7 +172,7 @@ the quarantine, journaled.
 ??? info "Details"
 
     No words needed: the page shows what the audit read. **🔎 Words** goes back to the
-    search. More: [the folders of `search`](../commands/search.md#walk-through-your-folders).
+    search. More: [the folders of `library`](../commands/library.md#walk-through-your-folders).
 
 ## 6. Carry the words into other photo software (optional)
 
@@ -226,8 +226,8 @@ Each command of the search, and the step of this page that shows it:
 | [`people`](../commands/people.md) | 1 | Finds and names the faces; `--forget` deletes them. |
 | [`places`](../commands/places.md) | 2 | Names your places on a map. |
 | [`tags`](../commands/tags.md) | 3 | Gives words to each photo and video; 🤖 what they show, with a local AI only. |
-| [`search`](../commands/search.md) | 4 | Finds a photo by a word, a place, a year, a person; sets photos aside. |
-| [`search` 📁 Folders](../commands/search.md#walk-through-your-folders) | 5 | Walks through your folders, as in Explorer; sets photos aside. |
+| [`library`](../commands/library.md) | 4 | Finds a photo by a word, a place, a year, a person; sets photos aside. |
+| [`library` 📁 Folders](../commands/library.md#walk-through-your-folders) | 5 | Walks through your folders, as in Explorer; sets photos aside. |
 | [`clean`](../commands/clean.md) | 4, 5 | `--decisions`: moves the photos set aside to the quarantine. |
 | [`xmp`](../commands/xmp.md) | 6 | Writes the words into `.xmp` sidecars. |
 | [`undo`](../commands/undo.md) | 4, 5, 6 | Brings back the photos set aside; removes the `.xmp` files written. |
@@ -244,7 +244,7 @@ guide](../reference-glossary.md). An error message? [Troubleshooting](../referen
 
     For the ones that modify nothing (`audit`, `tags`, `inventory`, and `xmp` without
     `--apply`), read-only; add `-p 127.0.0.1:8088:8088` after `-it` for the ones that open a page
-    (`people`, `places`, `search`):
+    (`people`, `places`, `library`):
 
     ```powershell
     docker run --rm -it `

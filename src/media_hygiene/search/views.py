@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import date
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Final, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -12,6 +12,7 @@ from media_hygiene.constants import MediaKind
 from media_hygiene.review.videos import video_path
 from media_hygiene.scan.filters import media_kind
 from media_hygiene.search.album_filter import AlbumAimed
+from media_hygiene.search.days import days_named
 from media_hygiene.search.exif_facts import modified_day
 from media_hygiene.search.folder_order import Shown
 from media_hygiene.search.query import Filters, Order, SearchQuery, Sorting, parse_terms
@@ -53,6 +54,9 @@ class SearchAsked(BaseModel):
     more: int = Field(default=0, ge=0, le=_MOST)  # *Show more* (0408)
     aside: bool = False  # **Show** 🗑: the files set aside only (0464)
     album: AlbumAimed | None = None  # the album in the field (0501)
+    missing: Literal["all", "date", "place"] = "all"  # what they lack (0531)
+    place: str = Field(default="", max_length=_MAX_TEXT)  # one of my places (0553)
+    near: tuple[int, ...] = Field(default=(), max_length=_MOST)  # 0554: these only
 
     @property
     def shown(self) -> int:
@@ -79,6 +83,7 @@ class SearchAsked(BaseModel):
             kind=self.kind,
             order=self.order,
             within=self.within.rstrip("/"),
+            undated=self.missing == "date",
         )
         return SearchQuery(parse_terms(self.text), filters)
 
@@ -106,7 +111,7 @@ class SearchAsked(BaseModel):
         parts = (
             str.strip(self.text),
             f"{years[0]}-{years[1]}" if years else "",
-            _days_named(days) if days else "",
+            days_named(days) if days else "",
             str.strip(self.folder),
             query.filters.source.value if query.filters.source else "",
             "" if self.sorting is Sorting.ALL else self.sorting.value,
@@ -126,19 +131,6 @@ def _range[T: (int, date)](first: T | None, last: T | None) -> tuple[T, T] | Non
     """
     bounds = [bound for bound in (first, last) if bound is not None]
     return (min(bounds), max(bounds)) if bounds else None
-
-
-def _days_named(days: tuple[date, date]) -> str:
-    """Write a period as a `date_range` rule does.
-
-    Args:
-        days: The first and last day.
-
-    Returns:
-        `2017-08-05..2017-08-06`, or `2017-08-05` for one day.
-    """
-    first, last = (day.isoformat() for day in days)
-    return first if first == last else f"{first}..{last}"
 
 
 def found_view(
@@ -182,7 +174,8 @@ def _hit_view(hit: Hit, mapper: HostPathMapper) -> dict[str, object]:
         "size": human_size(hit.photo.size),  # shown as the folder view does (0347)
         "bytes": hit.photo.size,
         "facts": hit.facts,  # a video's length, bit rate, codec (0408)
-        "taken": hit.taken,  # the date and time taken, for the tile's tooltip (0433)
+        "taken": hit.taken
+        or hit.date,  # the date and time taken, for the tile's tooltip (0433)
         "modified": modified_day(hit.photo.mtime_ns),  # as Explorer shows it
         "exif": list(hit.exif),  # the large view's facts (key I)
         "seconds": hit.seconds,  # a video's length: its badge (0434)

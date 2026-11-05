@@ -6,8 +6,29 @@ function onRun(name) {
   if (!action) return;
   const st = statusOf(action);
   if (!st.available) { toast(st.reason); return; }
+  // A fast path offers what shows its files first; going on stays one click (0593).
+  const twin = !REMOTE && action.twin_text && (action.twin_page || BY_ID[action.twin_step]);
+  if (twin) { openTwin(action); return; }
+  goOn(action);
+}
+function goOn(action) {
   if (action.fields.length) { openForm(action); return; }
   proceed(action, { number: action.number, command: action.command }, action.command);
+}
+function openTwin(action) {
+  const dialog = $("#confirmDlg");
+  dialog.innerHTML = `<div class="dlg">
+    <div class="dlg-head"><div><p class="eyebrow">${icon("eye")} ${esc(T.seeFirst)}</p><h2 id="confirmTitle">${esc(action.title)}</h2></div>${closeButton()}</div>
+    <p class="dlg-text">${esc(action.twin_text)}</p>
+    <div class="dlg-foot"><button class="btn" type="button" id="twinGo">${esc(T.goOnWithout)}</button><button class="btn btn-primary" type="button" id="twinSee" autofocus>${icon("eye")} ${esc(T.seeFirst)}</button></div>
+  </div>`;
+  $("#twinGo", dialog).addEventListener("click", () => { dialog.close(); goOn(action); });
+  $("#twinSee", dialog).addEventListener("click", () => {
+    dialog.close();
+    if (action.twin_page) goTo(action.twin_page);
+    else onRun(action.twin_step);
+  });
+  showDialog(dialog);
 }
 // Only what may be lost for good asks first, in the page; mh asks again before acting. A step
 // whose erasing happens later, on its own page, says so instead (`confirm_title`, 0311).

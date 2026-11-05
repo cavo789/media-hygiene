@@ -76,7 +76,7 @@ class SlideshowHere:
         self._stack = ExitStack()  # the index, opened at the first show
         self._search: tuple[SearchIndex, Runtime] | None = None
         self.app: SlideshowApp | None = None
-        # 📺 On the TV of `search` and `browse` (0454)
+        # 📺 On the TV of `library` and `browse` (0454)
         server.tv.start = partial(selected, self._begin)
 
     async def handle(self, request: Request) -> Response:
@@ -147,7 +147,7 @@ class SlideshowHere:
     def _begin(self, pick: Pick) -> bool:
         """Start a show, in place of the one shown.
 
-        On the server's own thread, as `search`: the index is opened there.
+        On the server's own thread, as `library`: the index is opened there.
 
         Args:
             pick: What to show.

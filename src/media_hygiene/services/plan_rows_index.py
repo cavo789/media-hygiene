@@ -43,6 +43,20 @@ def plan_rows(plan: ClassifyPlan) -> PlanRows:
     )
 
 
+def planned_date(rows: PlanRows, host: str) -> datetime | None:
+    """The date the plan holds, but a sidecar's: the disk says it, undone or not (0597).
+
+    Args:
+        rows: The plan's rows.
+        host: A file's host path.
+
+    Returns:
+        The date, or None.
+    """
+    row = rows.by_path.get(host)
+    return None if row and row.date_source is DateSource.SIDECAR else taken_at(row)
+
+
 def parent_of(host: str) -> str:
     r"""The folder of a host path, whatever its separators (`C:\x`, `/home/x`).
 

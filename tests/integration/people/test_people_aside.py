@@ -73,7 +73,7 @@ def test_the_photos_of_a_group_are_set_aside_read_back_and_taken_back(
     assert largest(app)["aside"] == len(kept)
     chosen = read_decisions(locations.reports_dir / "decisions.json").chosen
     assert len(chosen) == len(kept)
-    assert {file.found_by for file in chosen} == {"Ex"}
+    assert {file.found_by for file in chosen} == {"people:Ex"}
     back = answer(app, "POST /api/aside", {"action": "remove", "faces": faces})
     assert back["aside"] == {"count": 0, "size": "0", "message": "Nothing set aside."}
     assert largest(app)["aside"] == 0

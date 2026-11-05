@@ -148,7 +148,7 @@ def browse(page: Page, name: str) -> None:
         page: The browser tab.
         name: The last part of the folder to open (its path ends with it).
     """
-    page.goto(f"{SERVED}browse")  # `search`, its folders open (0408, 0465)
+    page.goto(f"{SERVED}browse")  # `library`, its folders open (0408, 0465)
     page.wait_for_selector("#tree .folder")
     page.evaluate(
         "document.querySelectorAll('#tree ul[hidden]')"

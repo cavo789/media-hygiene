@@ -114,7 +114,7 @@ _STATES: Final[dict[str, tuple[Callable[[Runtime], None], Slot | None, str]]] = 
     "old quarantine": (_old_quarantine, Slot.PURGE, f"purge {_OLD_RUN}"),
     "proposal": (_proposal, Slot.SORT, "sort"),
     "nothing left": (_nothing_left, None, ""),
-    "backup only": (_backup_only, Slot.IMPORT, "import"),
+    "backup only": (_backup_only, Slot.IMPORT, "import --pick"),
 }
 
 

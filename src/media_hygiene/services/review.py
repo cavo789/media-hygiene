@@ -3,7 +3,7 @@
 The decisions file is read before the audit (a wrong path fails at once) and checked
 after it: made on the same folders, about pairs and burst series that still exist, and
 never asking to delete the copies of a protected folder. Anything else refuses the
-whole file. The files chosen in `search` need no audit: a file holding only them is
+whole file. The files chosen in `library` need no audit: a file holding only them is
 not checked for its folders (`services.chosen_review`).
 """
 

@@ -6,6 +6,7 @@ import sys
 from typing import TYPE_CHECKING
 
 from media_hygiene.cli.clean_space import check_quarantine_room
+from media_hygiene.cli.fast_lines import tell_clean_twin
 from media_hygiene.cli.terminal import require_terminal
 from media_hygiene.console.formatting import human_number, human_size
 from media_hygiene.console.link_view import link_phrases, tell_links
@@ -34,6 +35,7 @@ def confirm_clean(runtime: Runtime, plan: CleanPlan, yes: bool) -> bool:  # noqa
     if yes or not runtime.settings.clean.confirm:
         return True
     require_terminal(sys.stdin)
+    tell_clean_twin(runtime, near=bool(plan.near_count))
     return runtime.output.confirm(_question(plan))
 
 

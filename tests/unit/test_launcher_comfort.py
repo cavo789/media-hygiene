@@ -168,7 +168,8 @@ def test_powershell_keeps_awake_and_titles_long_commands_only() -> None:
 def test_powershell_opens_the_browser_for_pages_only() -> None:
     """0178: a job waits for the page, then `Start-Process`; removed at the end."""
     text = _powershell()
-    assert "$page = if ($command -in @('review'))" in text
+    assert "$page = if ($command -in @('review') -or" in text
+    assert "$command -eq 'import' -and $rest -contains '--pick'" in text
     job = text.index("if ($page) {")
     start = text.index("Start-Job -ArgumentList 'http://127.0.0.1:8088/', 5")
     assert job < start < text.index("Start-Process $url") < text.index("docker run")

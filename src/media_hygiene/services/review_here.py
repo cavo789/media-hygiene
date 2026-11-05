@@ -16,15 +16,18 @@ import asyncio
 import dataclasses
 from http import HTTPStatus
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.errors import DecisionsError, MountError
+from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.apply_api import ApplyDesk, ApplyingApp, ApplyOffer
 from media_hygiene.review.apply_relay import home_relay
-from media_hygiene.review.http import Request, Response
+from media_hygiene.review.http import ContentType, Request, Response
 from media_hygiene.review.local_app import PAGE_PATH
+from media_hygiene.review.page_header import headed_page
 from media_hygiene.review.place import DEFAULT_DECISIONS
+from media_hygiene.review.step_watch import BURSTS_PAGE, NEAR_REVIEW_PAGE
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.data_checks import refuse_empty_data
@@ -37,6 +40,10 @@ if TYPE_CHECKING:
     from media_hygiene.services.fresh_runtime import FreshRuntime
     from media_hygiene.services.home_pages import HomeServer
     from media_hygiene.services.review_kinds import ReviewKind
+
+
+_TEMPLATES: Final = "media_hygiene.review"
+_TIDY_NEXT: Final = {BURSTS_PAGE: NEAR_REVIEW_PAGE}  # the order of a tidying session
 
 
 class ReviewHere:
@@ -88,10 +95,21 @@ class ReviewHere:
             except (MountError, DecisionsError) as exc:
                 return Response(HTTPStatus.CONFLICT, str(exc).encode())
             if self._app is None:
-                return Response(HTTPStatus.OK, self.kind.empty().encode())
+                return Response(HTTPStatus.OK, self._nothing(), ContentType.HTML)
         if self._app is None:
             return Response(HTTPStatus.NOT_FOUND)
         return await self._app.handle(dataclasses.replace(request, path=path))
+
+    def _nothing(self) -> bytes:
+        """The page of a review with nothing to review; a tidying session goes on.
+
+        Returns:
+            It, in the language in use.
+        """
+        environment = translated_environment(_TEMPLATES, escaped=("html", "j2"))
+        following = _TIDY_NEXT.get(self.kind.page, "")
+        values = {"said": self.kind.empty(), "tidy_next": following}
+        return headed_page(environment, "tidy_empty.html.j2", values)
 
     def _build(self) -> Handling | None:
         """Audit from the index, open the session, resume the decisions file.

@@ -91,7 +91,7 @@ back and shown. `x` picks several groups to name at once, × takes a wrong face 
 a group of strangers. Each person then shows twice at most: **Chloé ✓ verified**, the faces you
 confirmed, and **Chloé attributed**, the faces given to her because they look like those; `y`
 confirms the attributed faces shown, which move to verified. The next runs keep every name, and
-[`search`](search.md) finds the people by name: `search Chloé montagne`, `search person:chloe`.
+[`library`](library.md) finds the people by name: `search Chloé montagne`, `search person:chloe`.
 The names follow the photos [`sort`](sort.md) moves (and `undo` moves back); `config.toml` is
 updated the next time the page saves a name.
 Each name is a `[[people.person]]` entry of `config.toml`. Details:
@@ -135,7 +135,7 @@ To forget someone (a former partner, say), remove the photos they are on from th
    counted, never confirmed with the others. Their section says *N photos set aside, hidden*:
    **Show** draws them again, dimmed, each with ↺ to take that one back; **Take out of the set
    aside** takes them all back. The same goes for photos set aside on any other page
-   ([`search`](search.md)), until `clean --decisions` moves them.
+   ([`library`](library.md)), until `clean --decisions` moves them.
 3. Opened from the home page (`mh`), **Apply now** closes the page and runs
    [`clean --decisions`](clean.md), which asks first. Otherwise, the command proposes it when you
    stop the page. It moves the photos to the quarantine, journaled; [`undo`](undo.md) puts them
@@ -155,22 +155,22 @@ forgets them with every other face.
 its photo in someone else's section. Click the face: the large view shows the photo with **Set
 this photo aside** (or the Delete key); Backspace takes it back.
 
-The same `decisions.json` keeps what [`search`](search.md#set-photos-aside) and
+The same `decisions.json` keeps what [`library`](library.md#set-photos-aside) and
 [`review`](review.md) set aside: one `clean --decisions` applies everything. A photo changed
 since you chose it is left in place.
 
 ## From any page: set a person aside
 
-A photo shows someone you never want to see again, on any page (`review`, `search`):
+A photo shows someone you never want to see again, on any page (`review`, `library`):
 **👤 this person** under a shot of `review`, or **👤 Set a person aside** in the large view of
-`search`, opens the page *Set a person aside* in a new tab, on that photo. You can
+`library`, opens the page *Set a person aside* in a new tab, on that photo. You can
 also open it yourself at `/person` on the address of any of these pages and paste the path of a
 photo (`C:\Photos\…\IMG_1234.jpg`).
 
 1. The page shows the faces found on that photo by `audit --people`; click the right one (one
    face alone is taken at once).
 2. On the right, the photos of that person, the closest first, as a grid to pick like in
-   [the folders of `search`](search.md#walk-through-your-folders): click, Ctrl, Shift, rectangle, Ctrl+A, I, Delete, the large view and
+   [the folders of `library`](library.md#walk-through-your-folders): click, Ctrl, Shift, rectangle, Ctrl+A, I, Delete, the large view and
    its keys. If they look like someone you set aside before, the bar says so (*the person set
    aside on <date>*): what you set aside now joins that person.
 3. Delete (or **Set aside the picked files**) saves them at once in `decisions.json`, read back
@@ -206,7 +206,7 @@ models from OpenCV Zoo, checked by their SHA-256: it sends nothing about your ph
 ## Good to know
 
 - The settings `[people]` (`similarity`, `min_face`, `min_sharpness`) change the grouping, and
-  the faces too small or too blurry for the page are named by nobody anywhere (`search`,
+  the faces too small or too blurry for the page are named by nobody anywhere (`library`,
   `classify`, XMP), unless you confirmed them: nothing is analysed again.
 - `audit --people` looks for the faces right after an audit, once you agreed to the time it
   takes; `with_audit = true` in `[people]` does it at every audit.

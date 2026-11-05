@@ -1,8 +1,8 @@
-"""`search` and `browse` served by the home server itself (0356).
+"""`library` and `browse` served by the home server itself (0356).
 
 A click on either used to stop the home server and start a container: 7.6 to 8.7 s
 (measured on Windows, step 35 of `mh-measure.ps1`). Now the home server answers every
-path not its own with the app of `search` (`search_app`), built at the first request,
+path not its own with the app of `library` (`search_app`), built at the first request,
 again once the settings changed (`FreshRuntime`, 0358); no index: its pages say why.
 """
 
@@ -22,7 +22,9 @@ from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
 from media_hygiene.search.folders import BROWSE_PATH
 from media_hygiene.services.console_here import ReadOnlyHere
+from media_hygiene.services.disk_here import DiskHere
 from media_hygiene.services.fresh_runtime import FreshRuntime
+from media_hygiene.services.pages_here import pages_here
 from media_hygiene.services.places_here import PLACES_PREFIX, PlacesHere
 from media_hygiene.services.review_here import ReviewHere
 from media_hygiene.services.review_kinds import REVIEWS
@@ -40,6 +42,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.http import Request
     from media_hygiene.review.lan import LanAccess
     from media_hygiene.search.app import SearchApp
+    from media_hygiene.services.prefixed_page import ServedPage
     from media_hygiene.services.runtime import Runtime
 
 _SEARCH_PAGES: Final = frozenset({SEARCH_PAGE_PATH, BROWSE_PATH, EVENTS_PAGE_PATH})
@@ -57,7 +60,7 @@ class HomeServer:
 
 
 class SearchHere:
-    """The app of `search` and `browse`, built once, at the first request of either."""
+    """The app of `library` and `browse`, built once, at the first request of either."""
 
     def __init__(self, runtime: Runtime, server: HomeServer) -> None:
         """Remember how to build it.
@@ -126,8 +129,8 @@ class SearchHere:
 
 
 @dataclass(frozen=True, slots=True)
-class HomeWithPages:
-    """The home page's paths to the home page, every other one to `search`/`browse`."""
+class HomeWithPages:  # pylint: disable=too-many-instance-attributes
+    """The home page's paths to the home page, every other one to `library`/`browse`."""
 
     home: Handling
     pages: SearchHere
@@ -135,6 +138,8 @@ class HomeWithPages:
     history: ReadOnlyHere  # `/history/` (0350), `/console/<step>/` (0567)
     slideshow: SlideshowHere  # `/slideshow/…`, its TV on the plain door (0417)
     places: PlacesHere  # `/places/…` (0417)
+    disk: DiskHere  # `/disk-space/` (0539)
+    more: tuple[ServedPage, ...]  # `/quarantine/`, `/import/` (0591, 0590)
 
     async def handle(self, request: Request) -> Response:
         """Route a request.
@@ -148,9 +153,10 @@ class HomeWithPages:
         path = request.path
         if path in HOME_PATHS or path.startswith(REPORTS_PREFIX):
             return await self.home.handle(request)
-        review = next((each for each in self.reviews if each.serves(path)), None)
-        if review is not None:
-            return await review.handle(request)
+        served: tuple[ServedPage, ...] = (*self.reviews, self.disk, *self.more)
+        page = next((each for each in served if each.serves(path)), None)
+        if page is not None:
+            return await page.handle(request)
         if path == PLACES_PREFIX or path.startswith(f"{PLACES_PREFIX}/"):
             return await self.places.handle(request)
         if path == SLIDESHOW_PREFIX or path.startswith(f"{SLIDESHOW_PREFIX}/"):
@@ -164,7 +170,7 @@ class HomeWithPages:
 def home_with_pages(
     runtime: Runtime, home: Handling, server: HomeServer
 ) -> Iterator[HomeWithPages]:
-    """The home page serving `search` and `browse` too, their index closed after.
+    """The home page serving `library` and `browse` too, their index closed after.
 
     Args:
         runtime: Settings, mount points and output.
@@ -186,6 +192,8 @@ def home_with_pages(
             ReadOnlyHere(fresh),
             slideshow,
             PlacesHere(fresh, server),
+            DiskHere(fresh),
+            pages_here(fresh, server.executor),
         )
     finally:
         slideshow.close()

@@ -78,6 +78,7 @@ class Filters:  # pylint: disable=too-many-instance-attributes  # one per page f
         None  # these container paths only: the set aside (0464)
     )
     without: tuple[str, ...] = ()  # never these container paths: an album's (0501)
+    undated: bool = False  # no date, the file's nor its sidecar's (0531)
 
 
 @dataclass(frozen=True, slots=True)

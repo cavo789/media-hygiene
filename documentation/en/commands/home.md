@@ -13,7 +13,7 @@ action of the tool a click or <kbd>Ctrl</kbd>+<kbd>K</kbd> away.**
 terminal, laid out as the cycle of your photos: **Import** (a phone, your NAS or an old disk),
 **Clean**, **Sort**, **Find**, **Back up** (planned); then, apart from the cycle, **Share**
 (your photos on the TV: [`slideshow`](slideshow.md), a folder or an
-[album](search.md#put-photos-in-an-album)) and three tools: **History and undo**,
+[album](library.md#put-photos-in-an-album)) and three tools: **History and undo**,
 **Reports**, **Settings**. Each space has its page: its guide, numbered, then "Go further". Every
 action shows its `mh` command, copyable, and links to its chapter of this documentation. The
 page can also run the audit itself, its progress shown in the page.
@@ -71,11 +71,16 @@ docker run --rm -it `
   button has the focus when the page opens: <kbd>Enter</kbd> runs it, as in `mh menu`. When
   everything is applied, the page says so.
 - **Where you are**: one tile per fact (the last audit, the extra copies, the quarantine, the
-  files only on the NAS, the sort, the words, the faces), each leading to its space.
+  files only on the NAS, the sort, the words, the faces), each leading to its space. **Edit**
+  hides a tile (✕) or moves it (← →); **Reset** brings the default back. The choice is saved at
+  once in `config.toml` (`[home] tiles`), read back and shown; a hidden tile stays hidden, even
+  when it asks for something. A phone shows the PC's arrangement and cannot change it.
 - **What the last audit found**: each finding with its button (*9 identical copies*: **Set the
-  extra copies aside**; *3 unreadable files*: the report), and a few previews of its report.
+  extra copies aside**; *3 unreadable files*: the report).
   Before any audit: three things to know (nothing moves without you, everything that moves can
   be undone, one thing only is for good).
+- **Random photos**: about ten photos drawn from your index at each visit, to look at; a click
+  opens the Library on that photo's folder. No index, no block.
 - **Recent reports**.
 - **Audit in this page** 🔒, at the top of the *Clean* stage (its first step, the audit, has
   **In this page** too): **Audit now** reads your folders as
@@ -105,7 +110,43 @@ offers the kinds as checkboxes and the folder names as a list, one per line (`*`
 writes `config.toml` (your comments kept) and shows what the file holds once read back. The last
 audit was made with the former settings: the page says so and offers *Run the audit again*.
 
+## Disk space
+
+The *Disk space* tile opens a page with the room the previews and the quarantine take. Each limit
+sits next to its effect, saved into `config.toml` and read back before being shown: *Keep at most
+(GB)* (`[cache] previews_max_gb`) and *Suggest purging after (days)* (`[clean] purge_hint_days`).
+*Empty the previews* states the size it frees; they are made again when shown. Each run of the
+quarantine has its *See the photos* link, its files as tiles ([`undo --pick`](undo.md#put-back-a-few-photos)); it is
+purged from *History and undo*, where `purge` offers the same page, then asks.
+
+## Fast paths and what shows the files first
+
+These verbs act on files they do not show; they stay, for large collections. Each says so in one line
+before its question, and the home page offers the page first (*See them first*, or *Go on without
+seeing them*):
+
+| Fast path | What shows the files first |
+|---|---|
+| `clean`, `clean --delete` | The audit's report; `review --near` for `--tier near`, `near-all` |
+| `sort` | The classify report; 🗂 Events of `library`, one event at a time |
+| `undo` | `undo --pick` |
+| `purge` | `undo --pick` |
+| `import`, `import <folder>` | `import --pick` |
+| `upkeep` | The report, then the line each step says first |
+
+## 10 minutes of tidying
+
+The *10 minutes of tidying* tile opens the bursts then the near duplicates, biggest gain first. The
+bar counts the time beside the share of the gain seen, and *Next page* moves on. At 10 minutes it
+asks: go on, or stop on the summary, with *Apply now* still in the bar. Nothing moves before you
+apply.
+
 ## Run a step
+
+The goal is one interface: everything from this page, PowerShell only to start `mh`. The pages,
+and the steps that answer in a dialog, are there already; the others still ask you to switch to the
+PowerShell window, as said below, until they move here too. The console stays a full interface,
+for scripts and for those who prefer it: it will not be removed.
 
 The page never changes your photos itself. What a step's button does depends on the `mh` that
 opened the page:
@@ -154,7 +195,7 @@ opened the page:
   or reload the tab meanwhile: the step goes on, and the page, opened again, shows it again
   (*A step still runs*) until its end.
 - **Choices waiting on several pages** (burst series, near duplicates, folder pairs, unwanted
-  photos, files gone, `search`): the home page says how many wait (*Choices waiting to be
+  photos, files gone, intruder files, the faces of `people`, `library`): the home page says how many wait (*Choices waiting to be
   applied: 3*), each page named with its count and a link to it, and **Apply all** runs one
   `clean --decisions` for all of them: one run, so one `mh undo` takes them all back. The count
   is read from the decisions file each time; once applied, it is gone.
@@ -165,8 +206,8 @@ opened the page:
   `mh` runs, paste the command there (right click) and press Enter. When the browser refuses to
   copy (an address other than `127.0.0.1` or `localhost`), the command is selected: press Ctrl+C.
 
-Every other page ([`review`](review.md), [the 🗂 Events tab of `search`](search.md#the-events-of-the-latest-classify),
-[`places`](places.md), [`search`](search.md), [`people`](people.md))
+Every other page ([`review`](review.md), [the 🗂 Events tab of `library`](library.md#the-events-of-the-latest-classify),
+[`places`](places.md), [`library`](library.md), [`people`](people.md))
 wears the home page's look and theme, under a bar: **Documentation** opens that page's chapter,
 next to its French twin (*En français*). When the home page opened it, the page shows in the
 **same tab** (no new tab), and **⌂ Back to the home page** closes it (what you decided there is
@@ -305,7 +346,7 @@ At home, show an album to the family **on your own phone**, without the TV: pair
 `mh --lan` (above), then open **Open the albums** on its home page (or, on the PC, *Share ›
 Your albums*). The relatives look at your screen and pair nothing.
 
-- **The list**: each [album](search.md#put-photos-in-an-album), its cover, its dates, its
+- **The list**: each [album](library.md#put-photos-in-an-album), its cover, its dates, its
   place and how many photos it holds.
 - **An album**, as the big photo apps show it: a **cover** (the sharpest photo of the first
   day), the album's name, its dates and its place (named offline, from the photos' GPS), then

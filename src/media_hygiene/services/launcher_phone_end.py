@@ -1,6 +1,6 @@
 """The end of `mh import --phone`: what it skipped, then the audit it runs (0451).
 
-The files copied join the library, and `search`, only through an audit: the import
+The files copied join the library, and `library`, only through an audit: the import
 runs it rather than telling the user to. When the home page is open on the port of the
 pages, it is asked (`POST /api/audit`): the page shows the run, then reloads on its
 summary; else `mh audit` runs in the console.

@@ -1,6 +1,6 @@
 """A `review --gone` in progress: the files gone answered, saved after every answer.
 
-The decisions file is shared with the other reviews and `search`: this one keeps what
+The decisions file is shared with the other reviews and `library`: this one keeps what
 it finds there and writes the `gone` key, every file answered (deleted on purpose, or
 moved elsewhere). Reopened, it resumes; an answer about a file no longer recorded as
 gone is dropped. After each answer the file is read back from the disk: the page

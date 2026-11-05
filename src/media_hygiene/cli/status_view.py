@@ -196,5 +196,5 @@ def _tags(files: int, seen: int) -> str:
     """
     return _(
         "Tags: {files} files have words, {seen} of them from the vision model; "
-        "'search' finds them."
+        "'library' finds them."
     ).format(files=human_number(files), seen=human_number(seen))

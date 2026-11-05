@@ -396,7 +396,7 @@ Chaque commande du nettoyage, et l'étape de cette page qui la montre :
 Les autres commandes ont leur propre parcours : pour donner à vos photos une arborescence bien
 rangée, par année, événement, lieu ou personne (`classify`, `sort`, `album`) : **[trier en
 bref](../sort/quick-guide.md)** ; pour retrouver une photo par un mot (« Chloé à la montagne » :
-`people`, `tags`, `search`, `xmp`, `inventory`) : **[retrouver en bref](../find/quick-guide.md)**. Un mot vous échappe ? [Les mots de ce
+`people`, `tags`, `library`, `xmp`, `inventory`) : **[retrouver en bref](../find/quick-guide.md)**. Un mot vous échappe ? [Les mots de ce
 guide](../reference-glossary.md). Un message d'erreur ? [Dépannage](../reference-troubleshooting.md).
 
 ??? note "Sans `mh` : les commandes complètes"

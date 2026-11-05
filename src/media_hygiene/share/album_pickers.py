@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class SearchPicker:
-    """`search` and `browse`: keys of the index, or every file a search finds."""
+    """`library` and `browse`: keys of the index, or every file a search finds."""
 
     index: SearchIndex
     aside: AsideFilter | None = None  # drops the files set aside (0518)

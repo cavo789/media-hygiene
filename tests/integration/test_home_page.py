@@ -146,8 +146,6 @@ def test_the_state_is_what_status_and_the_menu_say(
     assert state.proposed.command == f"mh {menu.proposed.command}"
     assert [report.label for report in state.reports] == ["Last audit"]
     assert state.index == "/reports/index.html"
-    assert state.previews
-    assert all(url.startswith("/reports/") for url in state.previews)
 
 
 def test_a_step_ends_the_server_with_100_plus_its_number(
@@ -269,7 +267,7 @@ def test_every_step_button_sends_the_step_it_shows(
 def test_the_page_its_state_and_the_reports_are_served(
     cli: CliRunner, locations: Locations
 ) -> None:
-    """The page, its state, a report and a preview; nothing outside the reports."""
+    """The page, its state and a report; nothing outside the reports."""
     runtime = audited(cli, locations)
     state = home_state(runtime)
     assert state.reports
@@ -279,7 +277,6 @@ def test_the_page_its_state_and_the_reports_are_served(
             Call("GET", "/"),
             Call("GET", "/api/state"),
             Call("GET", state.reports[0].url),
-            Call("GET", state.previews[0]),
             Call("GET", "/reports/"),
             Call("GET", "/reports/%2e%2e/config/config.toml"),
             Call("GET", "/reports/nothing.html"),
@@ -287,14 +284,13 @@ def test_the_page_its_state_and_the_reports_are_served(
             Call("POST", "/", b"{}", JSON_HEADERS),
         ],
     )
-    page, served, report, preview, index, outside, missing, nowhere, post = replies
+    page, served, report, index, outside, missing, nowhere, post = replies
     assert code is None
     assert page.status == 200
     assert b"/api/step" in page.body
     assert served.json() == json.loads(state.model_dump_json())
     assert report.status == 200
     assert report.headers["content-type"].startswith("text/html")
-    assert preview.headers["content-type"] == "image/jpeg"
     assert index.status == 200
     assert (outside.status, missing.status, nowhere.status) == (404, 404, 404)
     assert post.status == 405

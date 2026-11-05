@@ -318,10 +318,12 @@ async function search(event, again) {
   if (event) event.preventDefault();
   steppable();  // ◀ ▶ follow every way the dates change (cards, 📅, Back, a word)
   if (!again) more = 0;
-  const body = {
+  const near = window.mhNear;  // 0554: those photos alone, whatever the filters of the form
+  const body = near ? { near: near.keys, order: "name", more: more, text: "", folder: "", sorting: "all", kind: "all", missing: "all", place: "", within: "", aside: false, album: null, day_from: null, day_to: null, source: null } : {
     text: $("text").value, day_from: $("from").value || null, day_to: $("to").value || null,
     folder: $("folder").value, source: null, sorting: $("sorting").value,
-    order: $("order").value, kind: asideListed() ? "all" : $("kind").value, aside: asideListed(), within: within ? within.inside : "",
+    order: $("missing").value !== "all" ? "name" : $("order").value, missing: $("missing").value, place: $("placeIn").value,
+    kind: asideListed() ? "all" : $("kind").value, aside: asideListed(), within: within ? within.inside : "",
     more: more, album: albumAimed(),
   };
   const lateBefore = window.mhLate ? window.mhLate.opened : 0;
@@ -336,11 +338,12 @@ async function search(event, again) {
   const found = await answer.json();
   asked = body;
   showChips(body);  // the active filters, removable (0565)
-  if (!again) keepInHistory();
+  if (!again && !near) keepInHistory();
   offerRule();
   // An album kept or left out (0501) narrows the files shown, not *Pick all N found*'s
   // search: that one is not offered then, every action stays on the tiles shown.
-  total = body.album && body.album.inside !== null ? found.hits.length : found.total;
+  const narrowed = (body.album && body.album.inside !== null) || body.place || body.missing === "place" || near;
+  total = narrowed ? found.hits.length : found.total;
   showFiles(found.hits, again);
   $("more").hidden = found.total <= found.hits.length;
   covered(found.coverage);
@@ -445,7 +448,7 @@ for (const id of ["kind", "size"]) {
 }
 showSize();
 $("size").addEventListener("change", () => { remember("size"); showSize(); });  // no new search
-$("sorting").addEventListener("change", () => search(null));  // what is left to sort (0407)
+for (const id of ["sorting", "missing", "placeIn"]) $(id).addEventListener("change", () => search(null));  // 0407, 0531, 0553
 // 🗑 (0464): the files set aside only; the counter opens it, ✕ leaves it. Never kept.
 const asideListed = () => $("kind").value === "aside";
 $("kind").addEventListener("change", () => {
@@ -473,7 +476,7 @@ if (window.IntersectionObserver) {
   }, { rootMargin: "400px" }).observe($("moreLine"));
 }
 $("text").focus();
-// `mh search --folder <folder>` (0405): the page opens on a folder left to sort.
+// `mh library --folder <folder>` (0405): the page opens on a folder left to sort.
 const openedOn = new URLSearchParams(window.location.search).get({{ folder_query | tojson }});
 if (openedOn) $("folder").value = openedOn;
 // *Add photos* of the albums page (0501): the period around the album's dates.
@@ -499,6 +502,7 @@ function keepInHistory() {
 }
 window.addEventListener("popstate", async (event) => {
   if (!event.state || !("folder" in event.state)) return;
+  window.mhNear = null;
   for (const id of ["text", "from", "to", "folder"]) $(id).value = event.state[id];
   pathClearable();
   restoring = true;

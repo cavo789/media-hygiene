@@ -132,12 +132,12 @@ otherwise both copies are sorted.
 - [The inventory workbook](reference-inventory.md): every photo and video with what the audits
   learnt, in Excel, from the cache alone (`inventory`).
 - [Tags](reference-tags.md): words to find photos by, from their folders, names, dates and places, and
-  from a local vision model (`tags`), kept in the cache; `search` finds them in your browser,
+  from a local vision model (`tags`), kept in the cache; `library` finds them in your browser,
   `xmp` writes them into `.xmp` sidecars.
 - [People](reference-people.md): find the faces in the photos, group those alike and name them
-  in your browser (`people`), then find someone with `search`; kept in the cache, never sent
+  in your browser (`people`), then find someone with `library`; kept in the cache, never sent
   anywhere.
-- [Albums](reference-albums.md): what an album is here, how to fill one from `search`, and what the albums page shows and allows, on the PC and on a phone.
+- [Albums](reference-albums.md): what an album is here, how to fill one from `library`, and what the albums page shows and allows, on the PC and on a phone.
 - [Advanced usage](reference-advanced.md): limit the processors used (`PYTHON_CPU_COUNT`).
 
 ## For developers

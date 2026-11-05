@@ -1,6 +1,9 @@
 """The choices waiting in `decisions.json`, page by page, for the home page (0522).
 
-Every review page and `search` write their choices into the one decisions file of the
+Intruder files and the people page's photos lie in its `chosen` key too (0587): their
+`found_by` tells them from `library`'s, so each page is named with its own count.
+
+Every review page and `library` write their choices into the one decisions file of the
 reports folder, each under its own key; one `clean --decisions` (the home page's
 `apply` step) applies them all in one journal run, so one `mh undo` takes them all back.
 The home page shows how many wait on which page, read from disk each time: once applied,
@@ -16,9 +19,11 @@ from media_hygiene.i18n import _
 from media_hygiene.plan.near_review import NearAction
 from media_hygiene.plan.review import PairAction
 from media_hygiene.report.burst_decisions import BurstStatus
+from media_hygiene.report.chosen_decisions import PEOPLE_FOUND_BY
 from media_hygiene.report.decisions import read_decisions
 from media_hygiene.review.home_parts import HomePending, PendingPage
 from media_hygiene.review.place import DEFAULT_DECISIONS
+from media_hygiene.review.served_more import INTRUDERS_PAGE
 from media_hygiene.review.step_watch import (
     BURSTS_PAGE,
     GONE_PAGE,
@@ -27,6 +32,7 @@ from media_hygiene.review.step_watch import (
     PAIRS_PAGE,
 )
 from media_hygiene.search.app import SEARCH_PAGE_PATH
+from media_hygiene.services.intruder_pick import FOUND_BY as INTRUDER
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -69,6 +75,8 @@ def _pages(file: DecisionsFile) -> tuple[PendingPage, ...]:
         for burst in file.bursts
         if burst.status is BurstStatus.DONE
     )
+    intruders = sum(item.found_by == INTRUDER for item in file.chosen)
+    people = sum(item.found_by.startswith(PEOPLE_FOUND_BY) for item in file.chosen)
     return (
         PendingPage(label=_("Burst series"), count=bursts, url=BURSTS_PAGE),
         PendingPage(
@@ -91,5 +99,11 @@ def _pages(file: DecisionsFile) -> tuple[PendingPage, ...]:
             count=sum(entry.deleted for entry in file.gone),
             url=GONE_PAGE,
         ),
-        PendingPage(label=_("Search"), count=len(file.chosen), url=SEARCH_PAGE_PATH),
+        PendingPage(label=_("Intruder files"), count=intruders, url=INTRUDERS_PAGE),
+        PendingPage(label=_("People"), count=people),  # its own server: no link here
+        PendingPage(
+            label=_("Library"),
+            count=len(file.chosen) - intruders - people,
+            url=SEARCH_PAGE_PATH,
+        ),
     )

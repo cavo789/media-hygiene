@@ -139,12 +139,12 @@ Nettoyez d'abord les doublons : sinon les deux copies sont triées.
 - [Le classeur d'inventaire](reference-inventory.md) : chaque photo et vidéo avec ce que les
   audits en ont appris, dans Excel, depuis le cache seul (`inventory`).
 - [Les tags](reference-tags.md) : des mots pour retrouver les photos, tirés de leurs dossiers,
-  noms, dates et lieux, et d'un modèle de vision local (`tags`), gardés dans le cache ; `search` les
+  noms, dates et lieux, et d'un modèle de vision local (`tags`), gardés dans le cache ; `library` les
   retrouve dans votre navigateur, `xmp` les écrit dans des fichiers compagnons `.xmp`.
 - [Les personnes](reference-people.md) : trouver les visages des photos, regrouper ceux qui se
   ressemblent et les nommer dans votre navigateur (`people`), puis retrouver quelqu'un avec
-  `search` ; gardés dans le cache, jamais envoyés.
-- [Les albums](reference-albums.md) : ce qu'est un album ici, comment le remplir depuis `search`, et ce que la page des albums montre et permet, sur le PC et sur un téléphone.
+  `library` ; gardés dans le cache, jamais envoyés.
+- [Les albums](reference-albums.md) : ce qu'est un album ici, comment le remplir depuis `library`, et ce que la page des albums montre et permet, sur le PC et sur un téléphone.
 - [Utilisation avancée](reference-advanced.md) : limiter les processeurs utilisés
   (`PYTHON_CPU_COUNT`).
 

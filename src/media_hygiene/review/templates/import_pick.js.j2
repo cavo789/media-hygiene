@@ -1,0 +1,110 @@
+{# The script of import_pick.html.j2, after the shared `pick_*` scripts. ⊘ and ↩ save what is
+   left out, the marks read back in the answer; 📥 posts the count it states, then follows the
+   copy on the state. #}
+const TEXTS = {{ texts | tojson }};
+const STATE_PATH = {{ state_path | tojson }};
+const LEAVE_PATH = {{ leave_path | tojson }};
+const COPY_PATH = {{ copy_path | tojson }};
+const CHOSEN_PATH = ""; // unused: `saveChoice` saves
+const FOLLOW_MS = 700;
+const LANG = document.documentElement.lang;
+let tiles = [];
+
+const number = (value) => value.toLocaleString(LANG);
+const toCopy = () => tiles.filter((tile) => !tile.left_out).length;
+
+function say(text, kind) {
+  for (const id of ["chosen", "viewerSaid"]) {
+    $(id).className = kind || "";
+    $(id).textContent = text;
+  }
+}
+
+function listing() {
+  return tiles.map((tile) => ({
+    key: tile.key, name: tile.name, preview: tile.preview, original: tile.original,
+    chosen: tile.left_out, video: tile.video, size: tile.size, folder: tile.folder,
+  }));
+}
+
+function card(file, index) {
+  const tile = tiles[index];
+  const node = element("article");
+  let picture = element("div", "empty", tile.video ? "🎬" : "📷");
+  if (!tile.video) {
+    picture = element("img");
+    picture.loading = "lazy";
+    picture.draggable = false; // a drag draws a rectangle (`pick_band.js.j2`)
+    picture.alt = tile.name;
+    picture.src = tile.preview;
+    picture.addEventListener("error", () => picture.replaceWith(element("div", "empty", "📷")));
+  }
+  const meta = element("div", "meta");
+  meta.append(element("div", "name", tile.name), element("div", "muted", tile.folder), element("div", "muted", tile.size));
+  node.append(picture, meta);
+  return wireCard(node, index);
+}
+
+function paint() {
+  const out = tiles.length - toCopy();
+  $("status").textContent = tiles.length ? fill(TEXTS.status, { count: number(tiles.length), out: number(out) }) : TEXTS.empty;
+  $("copyNow").hidden = toCopy() === 0;
+  $("copyNow").textContent = "📥 " + fill(TEXTS.copy, { count: number(toCopy()) });
+}
+
+function scope() {
+  return {};
+}
+
+function reopen(again) {
+  showFiles(listing(), again === true);
+  paint();
+}
+
+saveChoice = async (action, keys) => {
+  if (keys.length === 0) return false;
+  const answer = await ask(LEAVE_PATH, { keys: keys, out: action === "add" });
+  if (!answer) { say(TEXTS.offline, "error"); return false; }
+  const reply = await answer.json().catch(() => ({}));
+  if (!answer.ok) {
+    say(reply.error ? fill(TEXTS.notSaved, { error: reply.error }) : fill(TEXTS.failed, { status: answer.status }), "error");
+    return false;
+  }
+  tiles = reply.tiles;
+  say(fill(TEXTS.saved, { time: new Date().toLocaleTimeString(LANG), count: number(tiles.length - toCopy()) }), "saved");
+  return true;
+};
+deleteKeySets = false; // Delete means nothing here: nothing is set aside
+delete VIEWER_KEYS.Delete;
+delete VIEWER_KEYS.Backspace;
+delete VIEWER_KEYS.a;
+
+function follow(state) {
+  if (state.copying) {
+    $("copyNow").disabled = true;
+    say(fill(TEXTS.copying, { done: number(state.done), total: number(state.total) }), "");
+    window.setTimeout(() => ask(STATE_PATH).then(async (answer) => {
+      if (!answer || !answer.ok) { say(TEXTS.offline, "error"); return; }
+      follow(await answer.json());
+    }), FOLLOW_MS);
+    return;
+  }
+  $("copyNow").disabled = false;
+  tiles = state.tiles;
+  reopen(false);
+  if (state.failure) say(fill(TEXTS.failure, { error: state.failure }), "error");
+  else if (state.result) say(fill(TEXTS.copied, { count: number(state.result.copied), failed: number(state.result.failed), run: state.result.run_id }), state.result.failed ? "error" : "saved");
+}
+
+$("copyNow").addEventListener("click", async () => {
+  const answer = await ask(COPY_PATH, { count: toCopy() });
+  if (!answer) { say(TEXTS.offline, "error"); return; }
+  const reply = await answer.json().catch(() => ({}));
+  if (!answer.ok) { say(reply.error || fill(TEXTS.failed, { status: answer.status }), "error"); return; }
+  follow(reply);
+});
+
+ask(STATE_PATH).then(async (answer) => {
+  if (!answer || !answer.ok) { say(TEXTS.offline, "error"); return; }
+  follow(await answer.json());
+});

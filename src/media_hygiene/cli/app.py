@@ -9,6 +9,7 @@ from media_hygiene.cli.cmd_phone_free import phone_done_command, phone_prove_com
 from media_hygiene.cli.cmd_phone_plan import phone_plan_command
 from media_hygiene.cli.cmd_phone_review import phone_review_command
 from media_hygiene.cli.cmd_push_step import push_step_command
+from media_hygiene.cli.cmd_search import search_command
 from media_hygiene.cli.commands import PAGE_ONLY, commands
 from media_hygiene.cli.localized import LocalizedCommand, LocalizedGroup
 from media_hygiene.cli.root import root_callback
@@ -131,6 +132,7 @@ def build_app() -> typer.Typer:
             _("For mh push: one step of a backup, its lines on stdin and stdout."),
             push_step_command,
         ),
+        ("search", _("The former name of 'library'."), search_command),  # 0486
     )
     for name, help_text, function in plumbing:
         app.command(

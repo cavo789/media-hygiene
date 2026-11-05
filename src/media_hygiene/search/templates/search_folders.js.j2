@@ -64,6 +64,7 @@ function openRole(node) {
     radio.checked = radio.value === (now ? now.role : "none");
   }
   $("roleSaid").textContent = ""; $("roleSaid").className = ""; $("roleStale").hidden = true;
+  window.mhSortFolder.show(node.path);
   $("roleDlg").showModal();
 }
 
@@ -83,9 +84,12 @@ async function saveRole(folder, role, former = "") {
   $("coverage").hidden = false; $("coverage").textContent = read.said + " " + read.stale;
   loadFolders();
 }
-$("roleSave").addEventListener("click", () => {
+$("roleSave").addEventListener("click", async () => {
   const picked = document.querySelector("#roleDlg input[name=role]:checked");
-  if (roleFolder && picked) saveRole(roleFolder, picked.value);
+  if (!roleFolder || !picked) return;
+  const refused = await window.mhSortFolder.save(roleFolder);  // leave, a person (0533)
+  if (refused) { $("roleSaid").textContent = refused; $("roleSaid").className = "error"; return; }
+  saveRole(roleFolder, picked.value);
 });
 
 $("folders").addEventListener("toggle", () => { if ($("folders").open && !$("tree").children.length) loadFolders(); });

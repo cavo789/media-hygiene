@@ -26,6 +26,7 @@ _EXIF_FORMATS: Final = ("%Y:%m:%d %H:%M:%S", "%d/%m/%Y %H:%M:%S", "%Y-%m-%d %H:%
 CONFIDENCE: Final = {
     DateSource.EXIF: 100,
     DateSource.VIDEO: 100,
+    DateSource.SIDECAR: 95,  # typed by the user, or by another photo software
     DateSource.TAKEOUT: 95,  # Google's record: from the file, or from its upload
     DateSource.NAME: 90,
     DateSource.FOLDER: 70,
@@ -153,8 +154,7 @@ def zone_of(name: str) -> tzinfo:
             return ZoneInfo(name)
         except ZoneInfoNotFoundError, ValueError:
             return UTC
-    local = datetime.now().astimezone().tzinfo
-    return local or UTC
+    return datetime.now().astimezone().tzinfo or UTC
 
 
 def clock_not_set(files: Sequence[MediaInput], rules: FolderRules) -> frozenset[str]:

@@ -82,12 +82,12 @@ Chaque visage est écrit par sa photo et son numéro dans la photo, jamais par s
 nouveau regroupement (de nouvelles photos, un autre `similarity`) garde tous les noms. Les autres
 visages reçoivent le nom du **visage confirmé le plus proche**, s'ils lui ressemblent assez
 (`similarity`) ; en dessous, ils restent sans nom. Ces visages **attribués** comptent pour
-`search` et `classify` comme les vérifiés : la page les montre à part pour que vous les
+`library` et `classify` comme les vérifiés : la page les montre à part pour que vous les
 vérifiiez.
 
-## Les retrouver : `search`
+## Les retrouver : `library`
 
-Une fois nommées, les personnes sont des mots de [`search`](commands/search.md), sans rien
+Une fois nommées, les personnes sont des mots de [`library`](commands/library.md), sans rien
 lancer d'autre :
 
 ```powershell
@@ -131,7 +131,7 @@ Un événement va à la règle quand au moins **10 %** de ses photos montrent Ch
 (`min_share = 10` : c'est peut-être elle qui prend les photos) ; une photo hors de tout
 événement y va quand elle la montre. `names = ["Chloé", "Manon"]` prend les événements avec
 l'une ou l'autre ; ajoutez `all = true` pour ceux avec les deux. Les noms sont ceux de la page :
-les visages confirmés, et les visages assez proches d'eux (attribués), comme `search` les
+les visages confirmés, et les visages assez proches d'eux (attribués), comme `library` les
 trouve. Un nom que personne ne porte encore arrête `classify` avant toute
 lecture, et nomme la règle.
 
@@ -212,7 +212,7 @@ l'hôte, tel que vous l'avez monté) ; à répéter pour plusieurs dossiers.
 Ils choisissent quels visages sont regroupés, et comment : les changer ne fait rien analyser à
 nouveau. `min_face` et `min_sharpness` décident quels visages comptent **tout court**, pas
 seulement lesquels sont regroupés : un visage laissé hors de la page n'est le visage de personne
-(dans `search`, `classify`, l'inventaire, les fichiers XMP), aucun nom n'est donc donné que vous ne
+(dans `library`, `classify`, l'inventaire, les fichiers XMP), aucun nom n'est donc donné que vous ne
 puissiez voir et corriger ; un visage que vous avez confirmé garde son nom. Pour essayer une autre valeur une fois :
 `-e MEDIA_HYGIENE_PEOPLE__SIMILARITY=0.45`.
 

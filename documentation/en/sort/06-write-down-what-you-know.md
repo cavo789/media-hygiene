@@ -89,7 +89,7 @@ rule for the event shown, after saying what it would take
 **Seen before it is written.** On the search page, two calendars give a period to the day;
 *📌 Make it a rule* then shows the photos the rule would take, each with where it would go, and
 those of the same days it leaves to another rule: correct the days or the folder while seeing
-them, then save ([`search`](../commands/search.md#make-a-period-a-rule)). *Update a rule…* does
+them, then save ([`library`](../commands/library.md#make-a-period-a-rule)). *Update a rule…* does
 the same for a date rule already written.
 
 **A trip you already sorted into folders.** A date rule above *Existing folders* takes every
@@ -180,7 +180,7 @@ you named yourself never moves. `score = 0` on the rule turns it off.
 ### People
 
 A `person` rule reads the faces you named with [`people`](../reference-people.md): the faces
-confirmed on the page, and those close enough to them, as `search` finds them. Run `people` and
+confirmed on the page, and those close enough to them, as `library` finds them. Run `people` and
 name the groups first: [step 10](10-sort-by-person.md) shows the whole path.
 
 ```toml
@@ -299,7 +299,7 @@ The rules that decided nothing are named after the table: a typo in a regular ex
 wrong year, or simply nothing of that kind in your folders.
 
 **Keep the list alive: *Your rules*.** On the page of the events
-([the 🗂 Events tab of `search`](../commands/search.md#the-events-of-the-latest-classify)), **📌 Your rules** lists every rule of
+([the 🗂 Events tab of `library`](../commands/library.md#the-events-of-the-latest-classify)), **📌 Your rules** lists every rule of
 `config.toml`, with the files it decided at the `classify` run the page shows and, for a
 folder-name rule, the days of the event holding most of its files. They are shown by kind
 (*Dates*, *Folder and file names*, *Days of every year*… your own folders last), each kind

@@ -20,7 +20,7 @@ send with [`share`](commands/share.md), or as a folder of the Explorer with
 
 ## Fill an album
 
-In [`search`](commands/search.md#put-photos-in-an-album) or [the folders of `search`](commands/search.md#walk-through-your-folders), pick
+In [`library`](commands/library.md#put-photos-in-an-album) or [the folders of `library`](commands/library.md#walk-through-your-folders), pick
 the photos, type the album's name in **Album** (the albums already made are proposed; a new name
 creates it), then **➕ Add to the album**. The page says what it saved, read back from the disk.
 
@@ -53,7 +53,7 @@ From the page, on the PC (a phone only looks: albums change on the PC), you can:
   - **✉️ Send**: the command that prepares the copies to send (`mh share --album`); a part of the
     album picked is saved first in an album of its own, named after the day;
   - **📺 On the TV**: the files picked, or the whole album, on the paired TV;
-- **➕ Add photos** to an album opened: the [search](commands/search.md) opens in the same tab,
+- **➕ Add photos** to an album opened: the [search](commands/library.md) opens in the same tab,
   the album typed in its **Album** field, the period around the album's dates (a day either
   side); the files already in the album are marked, **← the album** comes back here.
 
@@ -82,7 +82,7 @@ folder is one more way to use it, and `undo` removes it. The albums page never m
 
 ## Go further
 
-- [`search`: put photos in an album](commands/search.md#put-photos-in-an-album)
+- [`library`: put photos in an album](commands/library.md#put-photos-in-an-album)
 - [`slideshow`](commands/slideshow.md), [`share`](commands/share.md), [`album`](commands/album.md)
 
 ---

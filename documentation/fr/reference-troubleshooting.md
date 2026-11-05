@@ -55,7 +55,7 @@ place souvent *Images* dans OneDrive quand il est installé avec un compte Micro
 fichier le télécharge ; analyser ce dossier le télécharge donc en entier.
 
 Sous Windows, `mh` vérifie d'abord. Avant une commande qui lit vos photos (`audit`, `review`,
-`clean`, `crosscheck`, `classify`, `tags`, `people`, `search`), pour chaque dossier de photos
+`clean`, `crosscheck`, `classify`, `tags`, `people`, `library`), pour chaque dossier de photos
 situé dans OneDrive (les dossiers donnés par les variables `OneDrive`, `OneDriveConsumer` et
 `OneDriveCommercial`), il compte les fichiers que Windows marque comme absents du PC (les
 attributs *rappel à l'accès aux données* et *hors connexion* : les lister ne lit aucune photo),

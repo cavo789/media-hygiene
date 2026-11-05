@@ -9,7 +9,7 @@ from typing import Annotated
 
 import typer
 
-from media_hygiene.cli import folder_options
+from media_hygiene.cli import folder_options, review_options
 from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.i18n import _, ngettext
 
@@ -65,6 +65,17 @@ def import_command(  # pylint: disable=too-many-arguments
             show_default=False,
         ),
     ] = None,
+    pick: Annotated[
+        bool,
+        typer.Option(
+            "--pick",
+            help=_(
+                "See the files as photos in the browser first: unpick those you do "
+                "not want, then copy from the page."
+            ),
+        ),
+    ] = False,
+    page_port: Annotated[int | None, review_options.port()] = None,
 ) -> None:
     """Copy what only a folder holds, never what you set aside or deleted before.
 
@@ -76,6 +87,8 @@ def import_command(  # pylint: disable=too-many-arguments
         backup: `--backup` folders, compared and never changed.
         phone: `--phone`, handled by `mh.ps1` before Docker (0379): refused here.
         since: `--since`, only the files of a period (0476).
+        pick: `--pick`, the files as tiles first, copied from the page (0590).
+        page_port: `--port`, the port of that page.
 
     Raises:
         typer.Exit: The user declined, or `--phone` reached the container.
@@ -121,6 +134,18 @@ def import_command(  # pylint: disable=too-many-arguments
     if not plan.jobs:
         output.success(_("Nothing to import: every file of the folder is dealt with."))
         return
+    if pick:
+        from media_hygiene.services.import_pick_serving import serve_import_pick
+
+        port = review_options.page_port(runtime, page_port)
+        raise typer.Exit(serve_import_pick(runtime, plan, port))
+    if not yes:
+        output.info(
+            _(
+                "👁 Copies them without showing them: 'import --pick' shows them as "
+                "photos first."
+            )
+        )
     if not yes and not typer.confirm(_("Copy them into your photos?"), default=True):
         raise typer.Exit
     output.info(

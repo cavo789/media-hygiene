@@ -72,3 +72,17 @@ only to start mh.
 ## Decided (2026-11-03, iterate)
 
 By the maintainer: a long step started from the page goes on when the tab is closed (the page shows it again when reopened); the console stays a full interface, never removed.
+
+## Status — PARTIAL (2026-11-05)
+
+### Done
+- The counting test: `test_the_steps_leaving_the_page_only_shrink` (`tests/unit/test_menu_catalog.py`,
+  `STILL_IN_THE_WINDOW`): 32 of the 49 steps the page shows still leave it (measured from the catalog;
+  21 console, 11 host). Was 39 of 52 by the older count, which included `PAGE`'s restarts and `web=False`.
+- Docs EN + FR (`commands/home.md`): the goal, what remains, the console stays a full interface.
+- Cause 1 filed (0494 landed): 0594.
+
+### Not done
+- The 32 steps. **Reason:** an umbrella; the work is 0586 (writing steps, needs a Windows run), 0506
+  (host steps), 0512 (typed pages), 0594 (page steps), remainder of 0505. Close when the list is empty.
+- The chapter saying "everything from here": it would be false before that.

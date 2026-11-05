@@ -1,4 +1,4 @@
-"""The app of `search` and `browse`: for their own server, or the home's (0356).
+"""The app of `library` and `browse`: for their own server, or the home's (0356).
 
 Both read the index; the files set aside on either are written into `decisions.json`
 of the reports folder, checked writable before each save, for `clean --decisions`.
@@ -22,6 +22,7 @@ from media_hygiene.search.app import (
 )
 from media_hygiene.search.aside_filter import AsideFilter
 from media_hygiene.search.chosen_api import CHOSEN_PATH, ChosenDesk
+from media_hygiene.search.date_desk import DATE_PATH
 from media_hygiene.search.events_choose import SORT_PATHS
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH, EVENTS_PATH
 from media_hygiene.search.folder_role_desk import ALBUM_ROOT_PATH, ROLE_PATH, RoleDesk
@@ -39,12 +40,15 @@ from media_hygiene.search.move_go import MOVE_PATH, MOVE_VIEW_PATH
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH, PeopleDesk
 from media_hygiene.search.people_why import PEOPLE_WHY_PATH
 from media_hygiene.search.place import SearchPlace
+from media_hygiene.search.place_desk import PLACE_PATH
 from media_hygiene.search.rule_desk import (
     PERIOD_RULES_PATH,
     RULE_SAVE_PATH,
     RULE_TRIAL_PATH,
 )
 from media_hygiene.search.rule_go import RULE_GO_PATH
+from media_hygiene.search.sort_folder_desk import SORT_FOLDER_PATH
+from media_hygiene.search.sort_setup_desk import SETUP_PATH
 from media_hygiene.search.span_events import SPAN_FILES_PATH, SPAN_PATH
 from media_hygiene.search.span_left import LEFT_PATH
 from media_hygiene.search.tag_desk import HAND_TAG_PATH
@@ -52,12 +56,15 @@ from media_hygiene.search.views import FIRST_HITS
 from media_hygiene.services.albums import album_desk
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
 from media_hygiene.services.rule_trial import event_gap_hours
+from media_hygiene.services.search_dates import date_desk, place_desk
 from media_hygiene.services.search_desks import (
     events_desk,
     names_place,
     rule_desk,
+    shown_roots,
     tag_desk,
 )
+from media_hygiene.services.sort_setup_here import sort_setup
 from media_hygiene.share.album_api import ALBUMS_PATH
 from media_hygiene.share.album_pickers import SearchPicker
 
@@ -108,6 +115,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "search_page": SEARCH_PAGE_PATH,
         "folders_path": FOLDERS_PATH,
         "role_path": ROLE_PATH,
+        "setup_paths": {"setup": SETUP_PATH, "folder": SORT_FOLDER_PATH},
         "album_root_path": ALBUM_ROOT_PATH,
         "folder_path": FOLDER_PATH,
         "heaviest_path": HEAVIEST_PATH,
@@ -122,6 +130,8 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "rule_go_path": RULE_GO_PATH,
         "move_paths": {"view": MOVE_VIEW_PATH, "move": MOVE_PATH},
         "hand_tag_path": HAND_TAG_PATH,
+        "date_path": DATE_PATH,
+        "place_path": PLACE_PATH,
         "folder_query": FOLDER_QUERY,
         "events_path": EVENTS_PATH,
         "span_paths": {"list": SPAN_PATH, "files": SPAN_FILES_PATH, "left": LEFT_PATH},
@@ -167,6 +177,9 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         rule_desk(runtime, search, chosen),
         events_desk(runtime, search, chosen),
         tag_desk(runtime, search),
+        sort_setup(runtime, roles, search.connection),
+        date_desk(runtime, search, chosen),
+        place_desk(runtime, search, chosen),
     )
     return SearchApp(place, pages, build.executor)
 
@@ -182,19 +195,3 @@ def chosen_desk(runtime: Runtime, search: SearchIndex) -> ChosenDesk:
         The desk answering the pages about them.
     """
     return ChosenDesk(chosen_store(runtime), search, partial(reports_ready, runtime))
-
-
-def shown_roots(runtime: Runtime) -> tuple[Path, ...]:
-    """The top folders of the tree: the mounted ones, or the drives of `/data`.
-
-    Args:
-        runtime: Settings, mount points and output.
-
-    Returns:
-        Them, in the container.
-    """
-    data_dir = runtime.locations.data_dir
-    roots = runtime.mounts.data_roots(data_dir)
-    if roots == (data_dir,) and data_dir.is_dir():
-        return tuple(sorted(child for child in data_dir.iterdir() if child.is_dir()))
-    return roots

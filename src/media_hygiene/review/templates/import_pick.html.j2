@@ -1,0 +1,58 @@
+{% extends "page_frame.html.j2" %}
+{# The files only a folder holds, before the copy (0590, `import --pick`). A page of photos to
+   pick like `browse` (`pick_*`, skill photo-picking-pages): the gestures pick; ⊘ leaves the
+   files picked out, ↩ brings them back, saved and read back from the disk. 📥 Copy states its
+   count, what the server checks: only what is shown and not left out is copied. Nothing is set
+   aside here: no *Apply now*. The folder is only read. #}
+{% set texts = {
+  "status": _("{count} files only this folder holds, {out} left out"),
+  "empty": _("Nothing to copy: every file of the folder is dealt with."),
+  "copy": _("Copy these {count} files"),
+  "copying": _("Copying: {done} of {total}…"),
+  "copied": _("Read back from the disk: {count} copies made, {failed} failed. mh undo {run} removes them. Audit again so that they join your library."),
+  "failure": _("The copy stopped: {error}"),
+  "saved": _("Read back from the disk at {time}: {count} files left out."),
+  "notSaved": _("Nothing was saved: {error}"),
+  "failed": _("Nothing was saved (error {status})."),
+  "offline": _("The page is not running any more: type mh import --pick again."),
+  "picked": [ngettext("{n} file picked", "{n} files picked", 1), ngettext("{n} file picked", "{n} files picked", 2)],
+  "aside": "⊘ " ~ _("left out"),
+  "tick": _("Pick this file"),
+  "saving": _("Saving…"),
+} %}
+{% set page_name = _("Files to import") %}
+{% set pick_all = _("every file of the page") %}
+{% set pick_marks = false %}
+{% set pick_add = "⊘ " ~ _("Leave out") %}
+{% set pick_add_title = _("They are not copied; the folder keeps them") %}
+{% set pick_remove = "↩ " ~ _("Bring back") %}
+{% set keys_safe = _("The folder is only read. Nothing is copied before the Copy button; each copy is compared with its source and journaled: 'mh undo' removes the copies.") %}
+{% block style %}
+{% include "pick_grid.css.j2" %}
+  #chosen.saved { color: var(--ok); } #chosen.error { color: var(--bad); }
+  .file .empty { font-size: 2rem; }
+  #copyLine { flex-basis: 100%; min-height: 2.4em; }  /* its own line: the grid never moves on a pick */
+{% endblock %}
+{% block side %}
+    <section id="toc" aria-label="{{ page_name }}">
+      <p class="muted">{{ _("What your photos lack, compared by content; never what you set aside or deleted before. Leave out what you do not want: the rest is copied, each file in its folder below From <source>.") }}</p>
+    </section>
+{% endblock %}
+{% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
+{% block more_keys %}{% include "pick_keys_more.html.j2" %}{% endblock %}
+{% block bar %}
+    {% include "pick_acting.html.j2" %}
+    <span id="copyLine"><button id="copyNow" class="primary" type="button" hidden></button></span>
+{% endblock %}
+{% block content %}
+  <main id="grid"></main>
+{% endblock %}
+{% block after %}
+{% include "pick_viewer.html.j2" %}
+<script>
+{% include "pick_grid.js.j2" %}
+{% include "pick_viewer.js.j2" %}
+{% include "pick_band.js.j2" %}
+{% include "import_pick.js.j2" %}
+</script>
+{% endblock %}

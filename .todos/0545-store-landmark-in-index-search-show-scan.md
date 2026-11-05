@@ -4,7 +4,6 @@
 - **Batch**: unassigned
 - **Depends**: —
 - **Files**: src/media_hygiene/services/slideshow_places.py, src/media_hygiene/geo/landmarks.py, src/media_hygiene/index/, src/media_hygiene/review/templates/pick_*, search, src/media_hygiene/classify/folder_towns.py, src/media_hygiene/geo/gazetteer.py
-- **Needs maintainer**: the questions below, asked when the TODO runs
 
 ## Context
 
@@ -68,3 +67,14 @@ Bueren will never find the photo".
 - [ ] Search finds a photo by its landmark or its town; tiles and large view show it
 - [ ] A scan fills it for the existing GPS photos, offline; tests for moves/renames
 - [ ] Both languages of the docs updated; `docs_screenshots` flagged as stale
+
+## Decided (2026-11-05, maintainer, start of /todo:iterate)
+
+
+- Label and folder names: town + admin2 (Colmar · Haut-Rhin); a folder "Alsace" still comes from
+  the user's own `[[classify.places]]`.
+- Filled automatically by `audit`/`import` for new photos, plus a visible action on a page for the
+  existing collection, with a progress line.
+- The building shown (item 7) is not in this TODO: see 0589 (🤖 local vision); 0489 stays the
+  manual way.
+- The 200 m radius stays a constant.

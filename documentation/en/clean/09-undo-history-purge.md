@@ -96,7 +96,7 @@ clean was fully undone (36 files restored), then cleaned again.
 
 The quarantine keeps what `clean` moved: the extra copies, unreadable files, orphan sidecars,
 and, if you asked, near duplicates and burst shots. Their space is freed only now: once you have
-checked them (open the quarantine folder in the Explorer), `purge` deletes them **for good**.
+seen them as photos (`mh undo --pick`, or *See them first* on the home page), `purge` deletes them **for good**.
 It is the only command that erases content (with `clean --delete`, if you use it), and it says
 so before asking:
 
@@ -122,7 +122,7 @@ It is, with 'clean --delete', the only way the tool removes content.
   cloud's synced folder, checks every byte, then empties it — see
   [`purge`](../commands/purge.md).
 
-Where does the rest of the space go? **⚖ Heaviest files** in [the folders of `search`](../commands/search.md#walk-through-your-folders)
+Where does the rest of the space go? **⚖ Heaviest files** in [the folders of `library`](../commands/library.md#walk-through-your-folders)
 lists the heaviest files of the whole library, the videos first; [`shrink`](../commands/shrink.md)
 lightens the videos of old cameras, the originals in the quarantine.
 
@@ -144,7 +144,7 @@ folders as for `clean` (or type `mh status`): a folder not mounted is said, neve
 
 ## What you set aside stays set aside
 
-You set burst shots aside, near duplicates, photos chosen in [`search`](../commands/search.md) or
+You set burst shots aside, near duplicates, photos chosen in [`library`](../commands/library.md) or
 [`review --junk`](../commands/review.md); months later, a phone backup brings them back, under
 other names. The journal remembers the content of every file set aside by such a choice (its
 size and SHA-256), even after `purge`: the next audit recognises them, whatever their name now,

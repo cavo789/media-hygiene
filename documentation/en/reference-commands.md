@@ -19,17 +19,18 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | see what each run did | [`history`](commands/history.md) |
 | put back every file of a run, exactly where it was | [`undo`](commands/undo.md) |
 | get the space back for good, once I checked the quarantine | [`purge`](commands/purge.md) |
+| run the regular chores in one go | [`upkeep`](commands/upkeep.md) |
 | be sure of the duplicates before deleting family photos | [`crosscheck`](commands/crosscheck.md) |
 | find every report again, delete the old ones | [`reports`](commands/reports.md) |
 | get a tidy tree proposed, by year, event, place or person, and correct it first | [`classify`](commands/classify.md) |
-| name my events while looking at their photos | [`search`](commands/search.md#the-events-of-the-latest-classify), its 🗂 Events |
+| name my events while looking at their photos | [`library`](commands/library.md#the-events-of-the-latest-classify), its 🗂 Events |
 | move my photos into the tree I approved, undoable | [`sort`](commands/sort.md) |
 | make an album a folder of the Explorer, without a copy | [`album`](commands/album.md) |
 | name my places on a map, to sort by place and by trip | [`places`](commands/places.md), then `classify` |
-| find the photos of someone by name, sort them by who is on them | [`people`](commands/people.md), then `search` or `classify` |
+| find the photos of someone by name, sort them by who is on them | [`people`](commands/people.md), then `library` or `classify` |
 | give my photos and videos words to search for | [`tags`](commands/tags.md) |
-| find a photo by a word, a place, a year, a person | [`search`](commands/search.md) |
-| look through my folders and remove photos, without Explorer, undoably | [the folders of `search`](commands/search.md#walk-through-your-folders), then `clean --decisions` |
+| find a photo by a word, a place, a year, a person | [`library`](commands/library.md) |
+| look through my folders and remove photos, without Explorer, undoably | [the folders of `library`](commands/library.md#walk-through-your-folders), then `clean --decisions` |
 | show the holiday photos on the TV, choosing the next one from my phone | [`slideshow`](commands/slideshow.md) |
 | send an album by mail or to a social network, resized and without the GPS position | [`share`](commands/share.md) |
 | see my words in digiKam, darktable, Lightroom or Immich | [`xmp`](commands/xmp.md) |
@@ -62,10 +63,10 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`classify`](commands/classify.md) | Propose where every photo and video should go: year, event, category. Never writes to your folders; writes a workbook to edit and a report to `/reports`. | [Sorting, 4](sort/04-classify.md), [5](sort/05-review-the-proposal.md), [6](sort/06-write-down-what-you-know.md), [8](sort/08-subjects-from-a-local-model.md), [10](sort/10-sort-by-person.md) |
 | [`inventory`](commands/inventory.md) | Export every photo and video with what the audits learnt to an Excel workbook (or a CSV file), from the cache alone: no file is read. | [Reference](reference-inventory.md) |
 | [`tags`](commands/tags.md) | Give every photo and video words to find it by: the meaningful words of its folders and of its file name, its date (year, month, season, holidays), its place, and what a local vision model sees (optional; a video by its middle frame). Kept in the cache, never written into the photos. | [Reference](reference-tags.md) |
-| [`search`](commands/search.md) | Find photos by their words (those of `tags`) and the names given in `people` (`person:"…"`) in your browser, with filters and previews; with words, print the first matches as a table. Photos picked can be set aside for `clean --decisions`. Never writes to your folders. | [Reference](reference-tags.md#find-a-photo-by-its-words-search) |
+| [`library`](commands/library.md) | Find photos by their words (those of `tags`) and the names given in `people` (`person:"…"`) in your browser, with filters and previews; with words, print the first matches as a table. Photos picked can be set aside for `clean --decisions`. Never writes to your folders. | [Reference](reference-tags.md#find-a-photo-by-its-words-library) |
 | [`slideshow`](commands/slideshow.md) | Show the photos of a folder, a search or the files set aside on the TV (its browser, or a Chromecast's), the phone as a remote: next, previous, a photo tapped, play and pause, "do not show". With `mh slideshow --lan`, for the home network only, the TV paired by a code it shows. Never writes to your folders. | [Commands](commands/slideshow.md) |
 | [`share`](commands/share.md) | Prepare an album for sending: a copy of each photo, upright, its long side at 2048 pixels, without its GPS position (`--keep-gps` keeps it), in a folder named after the album and its zip, in `media-hygiene\Shares`; the videos are left out and counted. Never writes to your folders. | [Commands](commands/share.md) |
-| [`people`](commands/people.md) | Find the faces in the photos, group those that look alike, and name them in your browser (the names go into `config.toml`; `search` finds them). The faces stay in the cache, never sent anywhere; `--forget` deletes them all. Never writes to your folders. | [Reference](reference-people.md), [Sorting, 10](sort/10-sort-by-person.md) |
+| [`people`](commands/people.md) | Find the faces in the photos, group those that look alike, and name them in your browser (the names go into `config.toml`; `library` finds them). The faces stay in the cache, never sent anywhere; `--forget` deletes them all. Never writes to your folders. | [Reference](reference-people.md), [Sorting, 10](sort/10-sort-by-person.md) |
 
 **Act: moves, writes or deletes files** (journaled, undoable)
 
@@ -75,7 +76,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`undo [RUN]`](commands/undo.md) | Restore every file of a run (the latest by default); for an album, remove its links; for `xmp`, its sidecars. | [Cleaning, 9](clean/09-undo-history-purge.md) |
 | [`purge [RUN]`](commands/purge.md) | Erase the quarantine of a run for good (of every run by default): the only command that erases content, with `clean --delete`. | [Cleaning, 9](clean/09-undo-history-purge.md) |
 | [`sort [WORKBOOK]`](commands/sort.md) | Check the edited workbook of `classify`, confirm, then move the files where it says; journaled, undoable, proven. | [Sorting, 7](sort/07-sort.md) |
-| [`album NAME`](commands/album.md) | Make the folder of an album (saved in `search` or the burst review) as hard links: nothing copied nor moved, no space used. `--category`, `--event`, `--rule`, `--rating` gather a selection of the `classify` plan instead. Shows the album; `--apply` makes the links. | [Sorting, 12](sort/12-albums.md) |
+| [`album NAME`](commands/album.md) | Make the folder of an album (saved in `library` or the burst review) as hard links: nothing copied nor moved, no space used. `--category`, `--event`, `--rule`, `--rating` gather a selection of the `classify` plan instead. Shows the album; `--apply` makes the links. | [Sorting, 12](sort/12-albums.md) |
 | [`xmp`](commands/xmp.md) | Write the words of `tags` into `.xmp` sidecars next to the photos, for digiKam, darktable, Lightroom or Immich; never into a photo. Shows what it would write; `--apply` writes. | [Reference](reference-tags.md#carry-the-words-with-the-photos-xmp) |
 | [`import`](commands/import.md) | Copy into your photos what only a folder holds (your NAS, a USB disk, an SD card), never what you set aside or deleted before; near copies listed apart; each copy proven; the backup only read. | [Commands](commands/import.md) |
 | [`shrink`](commands/shrink.md) | List the heavy videos worth lightening (old cameras, MJPEG), with the space each would free; `--apply` re-encodes them in H.264, each one checked (length, sound, date, place), the original in the quarantine. | [Commands](commands/shrink.md) |
@@ -113,7 +114,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--near` | `review` | Decide the near duplicates group by group (as planned, keep the other version, leave alone, keep none) instead of sorting the burst series. [Cleaning, step 11](clean/11-near-duplicates.md#decide-in-your-browser-review---near) |
 | `--delete` | `clean` | Delete the exact copies for good, after a byte comparison, instead of moving them to the quarantine; `undo` rebuilds them from the kept copy. [Cleaning, step 8](clean/08-clean.md#need-the-space-at-once---delete) |
 | `--decisions FILE` | `clean`, `review` | `clean`: apply the folder-pair decisions of a report, the burst shots set aside with `review` and the near-duplicate groups decided with `review --near` (with `--tier near`). `review`: the file the choices are saved in, `decisions.json` by default. A relative path is read from `/reports`. Once applied by `clean`, the file is renamed `decisions.applied-<run>.json`. [Cleaning, step 10](clean/10-review-bursts.md), [cleaning, step 12](clean/12-decide-pair-by-pair.md) |
-| `--port PORT` | `review`, `places`, `search`, `people`, `home`, `slideshow` | Port of the page, `[review] port` of `config.toml` by default (`8088`); publish the same one: `-p 127.0.0.1:8088:8088`. |
+| `--port PORT` | `review`, `places`, `library`, `people`, `home`, `slideshow` | Port of the page, `[review] port` of `config.toml` by default (`8088`); publish the same one: `-p 127.0.0.1:8088:8088`. |
 | `--prune N` | `reports` | Keep the N most recent reports, delete the others. |
 | `--photos "C:\Photos"` | `launcher` | A folder of photos and videos, as Explorer shows it; repeat it for several folders. No `-v` needed. [Clean in short, 0](clean/quick-guide.md#0-once-write-the-mh-command) |
 | `--quarantine "D:\quarantine"` | `launcher` | Where the copies set aside go; best on the photos' disk. Default: `$HOME\media-hygiene\quarantine`. |
@@ -131,7 +132,7 @@ Global options go **before** the command: `cavo789/media-hygiene --locale fr aud
 | `--path PATH` | `tags`, `xmp`, `people` | Only the photos below this folder (host path); repeat it for several. [Tags](reference-tags.md#one-folder-first---path) |
 | `--sample N` | `people` | Analyse N random photos, print the time per photo and the estimate of a full run, and stop. [People](reference-people.md#measure-first---sample) |
 | `--forget` | `people` | Delete every face from the cache, then show that none is left; asks before deleting the names of `config.toml` too. [People](reference-people.md#your-privacy) |
-| `--limit N` | `search` | With words: list at most N files (20 by default). [Tags](reference-tags.md#find-a-photo-by-its-words-search) |
+| `--limit N` | `library` | With words: list at most N files (20 by default). [Tags](reference-tags.md#find-a-photo-by-its-words-library) |
 | `--format xlsx\|csv` | `inventory` | `xlsx` (default): a workbook with the Files and Summary sheets. `csv`: the Files sheet only, like `plan.csv`. [Inventory](reference-inventory.md#a-csv-file-instead) |
 | `--keep-empty-folders` | `sort` | Keep the source folders the sort leaves empty. [Sorting, step 7](sort/07-sort.md#folders-left-empty) |
 | `--category NAME` | `album` | Instead of a saved album: the files of this category, as the edited workbook says (an event named in the workbook gives its name). [Sorting, step 12](sort/12-albums.md#choose-what-the-album-gathers) |

@@ -5,7 +5,7 @@ model and one server for the whole tool. Without a model, `tags` computes the wo
 of the folders, names, dates and places only.
 
 `meaning` (off by default, TODO 0263): `tags` also gives each photo the vector of a
-CLIP model run on the CPU, and `search` then ranks the photos by what they show.
+CLIP model run on the CPU, and `library` then ranks the photos by what they show.
 `meaning_threads`: 4 measured (0221, 0.057 s per photo); `meaning_results`: how many
 photos, the closest first, a search by meaning finds at most.
 """

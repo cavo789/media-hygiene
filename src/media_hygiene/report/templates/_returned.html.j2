@@ -2,7 +2,7 @@
 {% set back = report.returned %}
 {% if back.items %}
 <h2 id="returned">↩️ {{ _("Back after being set aside") }}</h2>
-<p class="note">{{ _("You had set these photos and videos aside (a burst shot, a near duplicate, a file chosen in 'search' or 'review --junk'); the same content is back, whatever its name now (a phone backup, a copy). 'clean' moves them to the quarantine again, with the rest of its plan. To keep one after all: 'undo' that clean, and it is no longer proposed.") }}</p>
+<p class="note">{{ _("You had set these photos and videos aside (a burst shot, a near duplicate, a file chosen in 'library' or 'review --junk'); the same content is back, whatever its name now (a phone backup, a copy). 'clean' moves them to the quarantine again, with the rest of its plan. To keep one after all: 'undo' that clean, and it is no longer proposed.") }}</p>
 {% for item in back.items %}
 <div class="group">
   <div class="thumb">{% if item.thumbnail %}<img src="{{ item.thumbnail }}" alt="" loading="lazy">{% else %}🎞️{% endif %}</div>

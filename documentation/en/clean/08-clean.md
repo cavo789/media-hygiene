@@ -7,6 +7,8 @@ space. `clean` moves the extra copies to the quarantine â€” nothing is erased â€
 trace of everything so that you can change your mind. Once you have checked, `purge` frees the
 space ([step 9](09-undo-history-purge.md)).
 
+Before this step, `clean` says it acts on files without showing them: the [report](04-html-report.md) shows them first (*See them first* on the home page).
+
 ## Before the first clean
 
 - **Start small**: clean one subfolder first, check the result, then widen.
@@ -161,7 +163,7 @@ docker run --rm -it `
 | Unreadable file (truncated, damaged) | **Moved** to the quarantine. |
 | Orphan [sidecar](../reference-sidecars.md) | Moved to the quarantine. |
 | Near duplicates, burst shots | **Untouched**: only if you ask ([step 10](10-review-bursts.md), [step 11](11-near-duplicates.md)). |
-| Photos set aside in [`search`](../commands/search.md#set-photos-aside) or [`people`](../commands/people.md#remove-every-photo-of-someone) | **Moved** to the quarantine by `clean --decisions`, which applies them with the decisions of `review`; the question says how many and their size, apart from the duplicates. A photo changed since you chose it is skipped. |
+| Photos set aside in [`library`](../commands/library.md#set-photos-aside) or [`people`](../commands/people.md#remove-every-photo-of-someone) | **Moved** to the quarantine by `clean --decisions`, which applies them with the decisions of `review`; the question says how many and their size, apart from the duplicates. A photo changed since you chose it is skipped. |
 | Files of a protected folder | Untouched, always. |
 | A folder left empty | **Removed**, then its parent if empty in turn; `Thumbs.db`, `desktop.ini` or `.DS_Store` alone does not keep it (moved to the quarantine first). `undo` recreates it. Never a folder you mounted, a protected, backup or excluded one, nor one already empty before. [More](../commands/clean.md#what-happens-to-each-file) |
 
@@ -171,7 +173,7 @@ the original paths below it: `quarantine\<run>\d\Old disk\2020\IMG_1203.jpg`.
 **What a removed copy's folder said stays searchable on the kept photo.** When `clean` removes
 a copy, the photo kept remembers the folder and the name that copy had (`Mariage Julie 2015`):
 [`tags`](../reference-tags.md#where-the-words-come-from) turns them into words that
-[`search`](../commands/search.md) finds (`former:julie`), and
+[`library`](../commands/library.md) finds (`former:julie`), and
 [`classify`](../sort/04-classify.md) reads that folder when the photo's own folder says nothing
 (`DCIM`). `undo` takes them back off: the copy has its own name again.
 

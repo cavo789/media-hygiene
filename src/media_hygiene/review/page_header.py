@@ -37,6 +37,12 @@ ALBUMS_DOC: Final = Doc("reference-albums/")
 PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
     {
         "review.html.j2": "review",
+        "disk_space.html.j2": Doc(
+            "commands/home/", "#disk-space", "#place-sur-le-disque"
+        ),
+        "tidy_empty.html.j2": Doc(
+            "commands/home/", "#10-minutes-of-tidying", "#10-minutes-de-rangement"
+        ),
         "near_review.html.j2": "review-near",
         "pairs_review.html.j2": "review-pairs",
         "unwanted_review.html.j2": "review-junk",
@@ -51,6 +57,7 @@ PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
         "shrink.html.j2": "shrink",
         "history.html.j2": "history",
         "quarantine.html.j2": "undo-pick",
+        "import_pick.html.j2": "import-pick",
         **{f"console_{name}.html.j2": name for name in PAGE_CAPTURED},
         "album.html.j2": ALBUMS_DOC,
         "album_edit.html.j2": ALBUMS_DOC,
@@ -63,6 +70,8 @@ PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
 SHELL_PAGES: Final[Mapping[str, bool]] = MappingProxyType(
     {
         "album.html.j2": False,
+        "disk_space.html.j2": False,
+        "tidy_empty.html.j2": False,
         "album_edit.html.j2": True,
         "search.html.j2": True,
         "review.html.j2": True,
@@ -72,6 +81,7 @@ SHELL_PAGES: Final[Mapping[str, bool]] = MappingProxyType(
         "intruders_review.html.j2": True,
         "unwanted_review.html.j2": True,
         "quarantine.html.j2": True,
+        "import_pick.html.j2": True,
         "people.html.j2": True,
         "person.html.j2": True,
         "places.html.j2": True,

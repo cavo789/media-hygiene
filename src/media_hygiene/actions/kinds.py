@@ -20,7 +20,7 @@ class ActionKind(StrEnum):
     QUARANTINE_DUPLICATE = "quarantine-duplicate"
     QUARANTINE_SIDECAR = "quarantine-sidecar"
     QUARANTINE_BURST = "quarantine-burst"
-    # A file set aside in `search` (`clean --decisions`).
+    # A file set aside in `library` (`clean --decisions`).
     QUARANTINE_CHOSEN = "quarantine-chosen"
     # A photo set aside in `review --junk` (`clean --decisions`).
     QUARANTINE_UNWANTED = "quarantine-unwanted"

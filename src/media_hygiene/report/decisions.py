@@ -17,7 +17,7 @@ report leaves out the pairs left as planned; `review --pairs` lists them as `pla
 burst series from the start, `todo` until seen, then `done`; a series kept whole has an
 empty `discarded`, a series set aside whole an empty `kept`. Without `status` (older
 file, report), it is done.
-`chosen` lists the files set aside in `search` (`chosen_decisions`): they need no
+`chosen` lists the files set aside in `library` (`chosen_decisions`): they need no
 audit, so a file holding nothing else is not refused for its `roots`. `unwanted` lists
 the photos `review --junk` decided (`unwanted_decisions`), `gone` the files gone that
 `review --gone` decided (`gone_decisions`): they need no audit either.
@@ -66,13 +66,13 @@ class DecisionsFile(BaseModel):
     pairs: tuple[PairDecision, ...] = ()
     bursts: BurstDecisions = ()  # `review` (`burst_decisions`)
     near: NearGroups = ()  # `review --near` (`near_decisions`)
-    chosen: ChosenFiles = ()  # `search`, `browse` (`chosen_decisions`)
+    chosen: ChosenFiles = ()  # `library`, `browse` (`chosen_decisions`)
     unwanted: UnwantedEntries = ()  # `review --junk` (`unwanted_decisions`)
     gone: GoneEntries = ()  # `review --gone` (`gone_decisions`)
 
     @property
     def only_chosen(self) -> bool:
-        """Tell whether the file holds files chosen in `search`, and nothing else.
+        """Tell whether the file holds files chosen in `library`, and nothing else.
 
         They are named one by one, with their size and date: they do not depend
         on the folders an audit analysed. So are the files gone (`review --gone`).

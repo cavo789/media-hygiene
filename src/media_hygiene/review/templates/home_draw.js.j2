@@ -123,7 +123,9 @@ const TILE_PILL = () => ({
   check: `<span class="pill pill-planned">${esc(T.toCheck)}</span>`,
   planned: `<span class="pill pill-planned">${esc(T.planned)}</span>`,
 });
-const tile = (t) => `<button class="tile" type="button" data-go="${esc(t.space)}"><span class="tile-top"><span class="eyebrow">${esc(t.label)}</span>${TILE_PILL()[t.pill] || ""}</span><span class="tile-value">${esc(t.value)}</span><span class="tile-sub">${esc(t.sub)}</span></button>`;
+const pageTile = (t) => (REMOTE ? "" : `<a class="tile" href="${esc(t.url)}"${t.tidy ? " data-tidy" : ""}><span class="tile-top"><span class="eyebrow">${esc(t.label)}</span></span><span class="tile-value">${esc(t.value)}</span><span class="tile-sub">${esc(t.sub)}</span></a>`);
+const tile = (t) => (t.url ? pageTile(t) : spaceTile(t));
+const spaceTile = (t) => `<button class="tile" type="button" data-go="${esc(t.space)}"><span class="tile-top"><span class="eyebrow">${esc(t.label)}</span>${TILE_PILL()[t.pill] || ""}</span><span class="tile-value">${esc(t.value)}</span><span class="tile-sub">${esc(t.sub)}</span></button>`;
 function findingRow(row) {
   const action = row.action ? BY_ID[row.action] : null;
   const report = row.action === "open" && S.index ? `<a class="btn btn-sm" href="${esc(S.index)}" target="_blank" rel="noopener">${esc(T.openReport)}</a>` : "";
@@ -132,12 +134,9 @@ function findingRow(row) {
 }
 function findings() {
   const found = S.findings;
-  const thumbs = S.previews.map((url) => `<figure class="thumb"><img src="${esc(url)}" alt="" loading="lazy" decoding="async"></figure>`).join("");
-  const open = S.index ? `<a class="link-btn" href="${esc(S.index)}" target="_blank" rel="noopener">${esc(T.openReport)} ${icon("external")}</a>` : "";
-  const previews = thumbs ? `<div class="previews-card"><div class="previews-head"><h3>${esc(T.previews)}</h3>${open}</div><div class="thumbs">${thumbs}</div></div>` : "";
   return `<section class="block" aria-labelledby="foundTitle">
     <div class="section-head"><h2 id="foundTitle">${esc(found.title)}</h2><p class="section-note">${esc(found.note)}</p></div>
-    <div class="findings"><ul class="finding-list">${found.rows.map(findingRow).join("")}</ul>${previews}</div>
+    <div class="findings"><ul class="finding-list">${found.rows.map(findingRow).join("")}</ul></div>
   </section>`;
 }
 function welcome() {
@@ -200,10 +199,10 @@ function viewHome() {
     </section>
     ${favouritesRow()}${hero()}
     <section class="block" aria-labelledby="whereTitle">
-      <div class="section-head"><h2 id="whereTitle">${esc(T.whereYouAre)}</h2><p class="section-note">${esc(T.tilesNote)}</p></div>
-      <div class="tiles">${S.tiles.map(tile).join("")}</div>
+      ${tilesBlock()}
     </section>
     ${S.findings ? findings() : welcome()}
+    <div id="randomPhotos">${samplesBlock()}</div>
     ${recentReports()}`;
 }
 

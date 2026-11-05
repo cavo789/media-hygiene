@@ -1,0 +1,173 @@
+{# What a file lacks (0531, 0553): the groups of files without a date or a place, *📅 Date…*
+   and *📍 Place…*. Every answer is read back by the server; the search runs again, so the
+   tiles and the count come from the disk. #}
+const DATE_PATH = $("dateDlg").dataset.path;
+const PLACE_PATH = $("placeDlg").dataset.path;
+
+// Close names: the same name once its number and extension are gone (IMG_0012.jpg → IMG_).
+const groupOf = (file) => file.folder + "\u0000" + file.name.replace(/[\d\s_().-]*\.[^.]*$/, "");
+
+function groupHead(label, indexes) {
+  const head = element("p", "groupHead", label + " (" + indexes.length + ") ");
+  const button = element("button", "plain", $("dateDlg").dataset.group);
+  button.type = "button";
+  // Never a rectangle nor a pick of the grid: the button picks its group only.
+  for (const kind of ["pointerdown", "mousedown"]) button.addEventListener(kind, (event) => event.stopPropagation());
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    picked.clear();
+    everything = false;
+    for (const index of indexes) picked.add(files[index].key);
+    showPicked();
+  });
+  head.append(button);
+  return head;
+}
+
+// The cards stay in `cards`' order, between their headings: the keys and gestures are the same.
+function placeCards(list) {
+  if ($("missing").value === "all") { $("grid").replaceChildren(...list); return; }
+  const groups = new Map();
+  files.forEach((file, index) => {
+    const key = groupOf(file);
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(index);
+  });
+  const nodes = [];
+  for (const [key, indexes] of groups) {
+    const [folder, stem] = key.split("\u0000");
+    nodes.push(groupHead(stem ? folder + " · " + stem : folder, indexes), ...indexes.map((index) => list[index]));
+  }
+  $("grid").replaceChildren(...nodes);
+}
+
+async function gapPost(path, body) {
+  const answer = await ask(path, body);
+  if (!answer) return { ok: false, result: { error: TEXTS.offline } };
+  return { ok: answer.ok, result: await answer.json().catch(() => ({})) };
+}
+
+function gapSaid(line, dialog, result) {
+  line.className = "error";
+  line.textContent = fill(dialog.dataset.failed, { error: result.error || result.message || "" });
+}
+
+function gapDone(dialog, said) {
+  dialog.close();
+  $("chosen").className = "";
+  $("chosen").textContent = said;
+  $("chosen").title = said;
+  search(null);
+}
+
+$("dateOpen").addEventListener("click", async () => {
+  if (!picked.size) return;
+  $("dateSaid").textContent = "";
+  $("dateDay").value = "";
+  $("dateSeen").replaceChildren();
+  $("dateDlg").showModal();
+  const { ok, result } = await gapPost(DATE_PATH, { action: "propose", keys: [...picked] });
+  if (!ok) { gapSaid($("dateSaid"), $("dateDlg"), result); return; }
+  for (const day of result.days) {
+    const button = element("button", "plain", day);
+    button.type = "button";
+    button.addEventListener("click", () => { $("dateDay").value = day; });
+    $("dateSeen").append(button);
+  }
+  if (result.days.length) $("dateDay").value = result.days[0];
+});
+$("dateNo").addEventListener("click", () => $("dateDlg").close());
+$("dateForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  $("dateGo").disabled = true;
+  const { ok, result } = await gapPost(DATE_PATH, { action: "set", keys: [...picked], day: $("dateDay").value });
+  $("dateGo").disabled = false;
+  if (ok) gapDone($("dateDlg"), result.saved); else gapSaid($("dateSaid"), $("dateDlg"), result);
+});
+
+function showPlaces(places) {
+  const kept = $("placeIn").value;
+  $("placeIn").replaceChildren($("placeIn").options[0]);
+  $("placeWhich").replaceChildren();
+  for (const place of places) {
+    const label = place.name + " (" + place.count + ")";
+    $("placeIn").append(new Option(label, place.name));
+    $("placeWhich").append(new Option(label, place.name));
+  }
+  $("placeIn").value = kept;
+}
+
+async function readPlaces() {
+  const { ok, result } = await gapPost(PLACE_PATH, { action: "list" });
+  if (ok) showPlaces(result.places);
+  return ok ? result.places : [];
+}
+readPlaces();
+
+$("placeOpen").addEventListener("click", async () => {
+  if (!picked.size) return;
+  $("placeSaid").className = "muted";
+  $("placeSaid").textContent = "";
+  $("placeDlg").showModal();
+  const aimed = window.mhNear ? window.mhNear.place : "";  // 0554: the place just given
+  const places = await readPlaces();
+  if (aimed) $("placeWhich").value = aimed;
+  $("placeGo").disabled = !places.length;
+  if (!places.length) $("placeSaid").textContent = $("placeDlg").dataset.none;
+});
+$("placeNo").addEventListener("click", () => $("placeDlg").close());
+$("placeForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  $("placeGo").disabled = true;
+  const place = $("placeWhich").value;
+  const { ok, result } = await gapPost(PLACE_PATH, { action: "give", keys: [...picked], place: place });
+  $("placeGo").disabled = false;
+  if (!ok) { gapSaid($("placeSaid"), $("placeDlg"), result); return; }
+  showPlaces(result.places);
+  const chosenNear = Boolean(window.mhNear);  // the neighbours themselves: the offer ends here
+  window.mhNear = null;
+  if (chosenNear || !result.near.length) { gapDone($("placeDlg"), result.saved); return; }
+  $("placeWhich").value = place;
+  offerNear(result);
+});
+
+// 0554: the photos of the same day and folder, offered; nothing is placed without a Yes.
+let nearOffered = null;
+function placeButtons(asking) {
+  $("placeAsk").hidden = !asking;
+  $("placeNear").hidden = asking;
+  $("placeWhich").disabled = !asking;
+}
+function offerNear(result) {
+  const dialog = $("placeDlg").dataset;
+  const count = result.near.length;
+  nearOffered = { keys: result.near, place: $("placeWhich").value, saved: result.saved };
+  $("placeSaid").className = "muted";
+  $("placeSaid").textContent = result.saved + " " + (count === 1 ? dialog.nearOne : fill(dialog.near, { n: count }));
+  placeButtons(false);
+}
+$("placeDlg").addEventListener("close", () => placeButtons(true));
+$("nearNo").addEventListener("click", () => gapDone($("placeDlg"), nearOffered.saved));
+$("nearSee").addEventListener("click", async () => {
+  const offered = nearOffered;
+  window.mhNear = offered;
+  $("placeDlg").close();
+  await search(null);
+  picked.clear();
+  everything = false;
+  for (const file of files) picked.add(file.key);
+  showPicked();
+  $("placeWhich").value = offered.place;
+  $("chosen").className = "";
+  $("chosen").textContent = offered.saved + " " + $("placeDlg").dataset.nearHint;
+  $("chosen").title = $("chosen").textContent;
+});
+// The dialogs' keys stay theirs: the grid's keys never fire behind them.
+for (const id of ["dateDlg", "placeDlg"]) $(id).addEventListener("keydown", (event) => event.stopPropagation());
+
+// The buttons follow the picking, as *Tag…* does.
+const gapPickedBefore = window.mhAlbumPicked;
+window.mhAlbumPicked = (count) => {
+  if (gapPickedBefore) gapPickedBefore(count);
+  $("dateOpen").disabled = $("placeOpen").disabled = !picked.size || everything;
+};

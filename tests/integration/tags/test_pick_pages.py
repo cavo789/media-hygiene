@@ -1,4 +1,4 @@
-"""`search`, `browse`, the reviews: one page of photos to pick, same keys and bar."""
+"""`library`, `browse`, the reviews: one page of photos to pick, same keys and bar."""
 
 from __future__ import annotations
 

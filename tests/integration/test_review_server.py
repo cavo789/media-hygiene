@@ -193,7 +193,7 @@ def test_decisions_of_other_folders_or_series_are_not_resumed(
         review_session(locations)
     chosen = {"path": "E:\\x.jpg", "size": 1, "mtime_ns": 1}
     target.write_text(json.dumps({"version": 1, "roots": ["E:\\"], "chosen": [chosen]}))
-    review_session(locations)  # files chosen in `search` need no audit: resumed
+    review_session(locations)  # files chosen in `library` need no audit: resumed
     assert read_decisions(target).chosen[0].path == "E:\\x.jpg"
     gone = {"kept": [f"{BURST_HOST}\\IMG_0.jpg"], "discarded": ["C:\\gone.jpg"]}
     target.write_text(json.dumps({"version": 1, "roots": ["C:\\"], "bursts": [gone]}))

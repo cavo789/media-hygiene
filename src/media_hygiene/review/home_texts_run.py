@@ -24,6 +24,7 @@ def _dialogs() -> dict[str, str]:
     """
     return {
         "toFill": _("To fill in"),
+        "updating": _("Updating…"),
         "inlineRuns": _("Runs in the page"),
         "inlineWait": _("Running, a few seconds…"),
         "inlineDone": _("Done. What it wrote:"),
@@ -48,6 +49,8 @@ def _dialogs() -> dict[str, str]:
             "{command} runs in {window}: answer it if it asks something, then this "
             "page comes back by itself."
         ),
+        "seeFirst": _("See them first"),
+        "goOnWithout": _("Go on without seeing them"),
         "runsPage": _(
             "{command} opens its page here, in this tab; its ⌂ Back to the home page "
             "brings you back to this very place."

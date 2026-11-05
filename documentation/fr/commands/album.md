@@ -8,10 +8,10 @@
 photos ») sans copier une photo : aucune place en plus.**
 
 Un **album** est la liste nommée de photos que vous faites dans
-[`search`](search.md#mettre-des-photos-dans-un-album), [les dossiers de `search`](search.md#parcourir-vos-dossiers) ou la revue des
+[`library`](library.md#mettre-des-photos-dans-un-album), [les dossiers de `library`](library.md#parcourir-vos-dossiers) ou la revue des
 rafales, enregistrée dans `albums.json`. Il a plusieurs usages, tous sous *Partager* dans la page
 d'accueil et `mh menu`. Un album est **une sélection à garder** et à remontrer : pour montrer des
-photos une fois sur la télé, pas besoin d'album (**📺 Sur la télé** dans la barre de `search`, voir [`slideshow`](slideshow.md)).
+photos une fois sur la télé, pas besoin d'album (**📺 Sur la télé** dans la barre de `library`, voir [`slideshow`](slideshow.md)).
 
 | Usage | Commande |
 |---|---|
@@ -79,7 +79,7 @@ Plus : [Trier, étape 12](../sort/12-albums.md#choisir-ce-que-lalbum-rassemble).
 
 | Option | Rôle |
 |---|---|
-| `NOM` | Le nom de l'album, tel que `search` l'ont enregistré : le dossier qui contient ses liens (obligatoire). |
+| `NOM` | Le nom de l'album, tel que `library` l'ont enregistré : le dossier qui contient ses liens (obligatoire). |
 | `--category NOM` | Au lieu d'un album enregistré : les fichiers de cette catégorie, d'après le classeur de `classify` modifié. |
 | `--event ÉVÉNEMENT` | Les fichiers de cet événement : son identifiant (feuille Événements) ou son nom. |
 | `--rule NOM` | Les fichiers que l'entrée `[[classify.rules]]` de ce nom a décidés. |
@@ -107,7 +107,7 @@ Plus : [Trier, étape 12](../sort/12-albums.md#choisir-ce-que-lalbum-rassemble).
 
 ## Pour aller plus loin
 
-- [`search` : mettre des photos dans un album](search.md#mettre-des-photos-dans-un-album)
+- [`library` : mettre des photos dans un album](library.md#mettre-des-photos-dans-un-album)
 - [`share` : l'album prêt à envoyer](share.md)
 - [Trier, étape 12 : les albums](../sort/12-albums.md)
 

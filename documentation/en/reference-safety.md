@@ -15,11 +15,11 @@ modified, moved nor deleted**.
 |---|---|
 | `audit`, `crosscheck` | The HTML report (`/reports`) and the cache (`/cache`). |
 | `classify` | The proposal and its workbook (`/reports`), the cache. |
-| `review`, `search` (🗂 Events) | Your choices, in a small `.json` file next to the report (`/reports`). |
+| `review`, `library` (🗂 Events) | Your choices, in a small `.json` file next to the report (`/reports`). |
 | `places` | The places you name, in `config.toml` (`/config`). |
 | `inventory` | The workbook (`/reports`), read from the cache alone. |
 | `tags`, `people` | The words and the faces, in the cache (`/cache`): never in your photos. |
-| `search` | The small previews of its page, in the cache (`/cache`). |
+| `library` | The small previews of its page, in the cache (`/cache`). |
 | `history`, `reports`, `config`, `status`, `launcher` | Nothing in your folders (`reports --prune` deletes old reports only). |
 
 All of them work with your photo folders mounted **read-only**: add `:ro` to their `-v`

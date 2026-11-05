@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.home_stage_lines import backup_only, extra_copies
+from media_hygiene.cli.home_tiles_pages import page_tiles
 from media_hygiene.cli.menu_entry import Space
 from media_hygiene.cli.status_view import ago
 from media_hygiene.console.formatting import human_number, human_size
@@ -28,7 +29,7 @@ def home_tiles(status: Status) -> tuple[HomeTile, ...]:
     Returns:
         Last audit, extra copies, quarantine, NAS, sort, words, faces, backup.
     """
-    return (*_clean_tiles(status), *_later_tiles(status))
+    return (*_clean_tiles(status), *_later_tiles(status), *page_tiles(status))
 
 
 def _clean_tiles(status: Status) -> tuple[HomeTile, ...]:
@@ -45,6 +46,7 @@ def _clean_tiles(status: Status) -> tuple[HomeTile, ...]:
     runs = status.quarantine.runs
     nas = backup_only(status)
     audit = HomeTile(
+        id="audit",
         label=_("Last audit"),
         value=ago(summary.created_at) if summary else _("Never"),
         sub=audited(summary) if summary else _("It changes nothing in your photos"),
@@ -52,6 +54,7 @@ def _clean_tiles(status: Status) -> tuple[HomeTile, ...]:
         pill=Pill.OK if summary else Pill.TODO,
     )
     copies = HomeTile(
+        id="copies",
         label=_("Extra copies"),
         value=human_number(extra) if summary else _DASH,
         sub=_copies_sub(summary, extra),
@@ -59,6 +62,7 @@ def _clean_tiles(status: Status) -> tuple[HomeTile, ...]:
         pill=(Pill.TODO if extra else Pill.OK) if summary else Pill.NONE,
     )
     quarantine = HomeTile(
+        id="quarantine",
         label=_("Quarantine"),
         value=human_size(status.quarantine.size) if runs else _("Empty"),
         sub=_("{count} files, since {when}").format(
@@ -70,6 +74,7 @@ def _clean_tiles(status: Status) -> tuple[HomeTile, ...]:
         pill=Pill.CHECK if runs else Pill.NONE,
     )
     only = HomeTile(
+        id="nas",
         label=_("Only on the NAS"),
         value=human_number(nas) if summary else _DASH,
         sub=_("Files the PC lacks") if nas else _("The PC has it all"),
@@ -93,6 +98,7 @@ def _later_tiles(status: Status) -> tuple[HomeTile, ...]:
     faces = status.faces
     return (
         HomeTile(
+            id="sort",
             label=_("Sort"),
             value=(_("Sorted") if sort.sorted else _("To apply"))
             if sort.proposed
@@ -106,6 +112,7 @@ def _later_tiles(status: Status) -> tuple[HomeTile, ...]:
             else Pill.NONE,
         ),
         HomeTile(
+            id="words",
             label=_("Words"),
             value=human_number(words) if words else _DASH,
             sub=_("photos have words") if words else _("tags gives them some"),
@@ -113,6 +120,7 @@ def _later_tiles(status: Status) -> tuple[HomeTile, ...]:
             pill=Pill.OK if words else Pill.NONE,
         ),
         HomeTile(
+            id="faces",
             label=_("Faces"),
             value=human_number(faces[1]) if faces else _DASH,
             sub=_("faces found") if faces else _("Not looked for yet"),
@@ -120,6 +128,7 @@ def _later_tiles(status: Status) -> tuple[HomeTile, ...]:
             pill=Pill.OK if faces else Pill.NONE,
         ),
         HomeTile(
+            id="backup",
             label=_("Backup"),
             value=ago(status.backed_up) if status.backed_up else _DASH,
             sub=_("Last mh push") if status.backed_up else _("mh push copies it"),

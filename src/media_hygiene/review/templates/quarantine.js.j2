@@ -6,7 +6,9 @@ const STATE_PATH = {{ state_path | tojson }};
 const RESTORE_PATH = {{ restore_path | tojson }};
 const CHOSEN_PATH = ""; // unused: `saveChoice` restores
 const LANG = document.documentElement.lang;
+const ONLY_RUN = new URLSearchParams(window.location.search).get("run"); // from Disk space, *Purge* (0591)
 let tiles = [];
+const shownOf = (all) => (ONLY_RUN ? all.filter((tile) => tile.run === ONLY_RUN) : all);
 
 const number = (value) => value.toLocaleString(LANG);
 const runsOf = () => [...new Set(tiles.map((tile) => tile.run))];
@@ -54,6 +56,7 @@ function placeCards(made) {
 
 function paint() {
   $("status").textContent = tiles.length ? fill(TEXTS.status, { count: number(tiles.length), runs: number(runsOf().length) }) : TEXTS.empty;
+  $("everyRun").hidden = !ONLY_RUN;
   $("runs").replaceChildren(...runsOf().map((run, rank) => {
     const item = element("li");
     const link = element("a", "", run);
@@ -91,7 +94,7 @@ saveChoice = async (action, keys) => {
     say(reply.error ? fill(TEXTS.notSaved, { error: reply.error }) : fill(TEXTS.failed, { status: answer.status }), "error");
     return false;
   }
-  tiles = reply.state.tiles;
+  tiles = shownOf(reply.state.tiles);
   let text = fill(TEXTS.back, { time: new Date().toLocaleTimeString(LANG), count: number(reply.back.length) });
   if (reply.left.length) text += " " + fill(TEXTS.left, { reasons: reply.left.join(" · ") });
   say(text, reply.left.length ? "error" : "saved");
@@ -107,6 +110,6 @@ $("restore").addEventListener("click", () => choose("add"));
 
 ask(STATE_PATH).then(async (answer) => {
   if (!answer || !answer.ok) { say(TEXTS.offline, "error"); return; }
-  tiles = (await answer.json()).tiles;
+  tiles = shownOf((await answer.json()).tiles);
   reopen();
 });

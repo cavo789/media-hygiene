@@ -13,7 +13,7 @@ que vous mettez de côté (étape 4).
 
 - [0 · Avant de commencer](#0-avant-de-commencer)
 - [3 · Donner des mots](#3-donner-des-mots-à-vos-photos)
-- [4 · Retrouver une photo](#4-retrouver-une-photo--search)
+- [4 · Retrouver une photo](#4-retrouver-une-photo--library)
 
 </div>
 
@@ -26,7 +26,7 @@ lui, tout le reste fonctionne.
 
 <span class="mh-badge mh-once">⏱ Une fois</span>
 
-`search` retrouve ce que l'audit a lu. Écrivez `mh` une fois ([nettoyer en bref, étape
+`library` retrouve ce que l'audit a lu. Écrivez `mh` une fois ([nettoyer en bref, étape
 0](../clean/quick-guide.md#0-une-seule-fois--écrire-la-commande-mh)), puis auditez vos dossiers :
 
 ```powershell
@@ -117,12 +117,12 @@ vos photos.
     une ligne et s'en tient aux dossiers, noms, dates et lieux. Plus : [les
     tags](../reference-tags.md).
 
-## 4. Retrouver une photo : `search`
+## 4. Retrouver une photo : `library`
 
 <span class="mh-badge mh-safe">🔒 Photos intactes</span>
 
 ```powershell
-mh search
+mh library
 ```
 
 Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`) : tapez ce dont vous vous souvenez, la grille montre les photos,
@@ -141,8 +141,8 @@ les meilleures d'abord ; Entrée en agrandit une.
 ??? info "Détails"
 
     Filtres à côté du champ : années, une partie du chemin, une source de mots. Sans navigateur,
-    `mh search Chloé montagne` affiche les premiers résultats en tableau. Plus :
-    [`search`](../commands/search.md).
+    `mh library Chloé montagne` affiche les premiers résultats en tableau. Plus :
+    [`library`](../commands/library.md).
 
 ??? tip "Retirer toutes les photos de quelqu'un : les mettre de côté"
 
@@ -158,9 +158,9 @@ les meilleures d'abord ; Entrée en agrandit une.
 
     Il dit combien de fichiers et d'octets partent, demande, puis les déplace en quarantaine,
     journalisé : `mh undo` les remet, `mh purge` libère la place. Plus : [mettre des photos de
-    côté](../commands/search.md#mettre-des-photos-de-côté).
+    côté](../commands/library.md#mettre-des-photos-de-côté).
 
-## 5. Parcourir vos dossiers : `search` (facultatif)
+## 5. Parcourir vos dossiers : `library` (facultatif)
 
 <span class="mh-badge mh-optional">Facultatif</span> <span class="mh-badge mh-undo">↩️ Annulable</span>
 
@@ -168,7 +168,7 @@ Pour parcourir un dossier et retirer quelques photos, comme dans l'Explorateur, 
 annulable :
 
 ```powershell
-mh search
+mh library
 ```
 
 Votre navigateur s'ouvre sur la page (sinon : `http://127.0.0.1:8088/`) ; **📁 Dossiers** montre l'arborescence de vos
@@ -180,7 +180,7 @@ enregistrées dans `decisions.json` de vos rapports, rien ne bouge encore. Ensui
 ??? info "Détails"
 
     Pas besoin de mots : la page montre ce que l'audit a lu. **🔎 Mots** ramène à la
-    recherche. Plus : [les dossiers de `search`](../commands/search.md#parcourir-vos-dossiers).
+    recherche. Plus : [les dossiers de `library`](../commands/library.md#parcourir-vos-dossiers).
 
 ## 6. Emporter les mots dans un autre logiciel photo (facultatif)
 
@@ -235,8 +235,8 @@ Chaque commande de la recherche, et l'étape de cette page qui la montre :
 | [`people`](../commands/people.md) | 1 | Trouve et nomme les visages ; `--forget` les supprime. |
 | [`places`](../commands/places.md) | 2 | Nomme vos lieux sur une carte. |
 | [`tags`](../commands/tags.md) | 3 | Donne des mots à chaque photo et vidéo ; 🤖 ce qu'elles montrent, avec une IA locale seulement. |
-| [`search`](../commands/search.md) | 4 | Retrouve une photo par un mot, un lieu, une année, une personne ; met des photos de côté. |
-| [`search` 📁 Dossiers](../commands/search.md#parcourir-vos-dossiers) | 5 | Parcourt vos dossiers, comme dans l'Explorateur ; met des photos de côté. |
+| [`library`](../commands/library.md) | 4 | Retrouve une photo par un mot, un lieu, une année, une personne ; met des photos de côté. |
+| [`library` 📁 Dossiers](../commands/library.md#parcourir-vos-dossiers) | 5 | Parcourt vos dossiers, comme dans l'Explorateur ; met des photos de côté. |
 | [`clean`](../commands/clean.md) | 4, 5 | `--decisions` : déplace en quarantaine les photos mises de côté. |
 | [`xmp`](../commands/xmp.md) | 6 | Écrit les mots dans des fichiers compagnons `.xmp`. |
 | [`undo`](../commands/undo.md) | 4, 5, 6 | Remet les photos mises de côté ; retire les fichiers `.xmp` écrits. |
@@ -253,7 +253,7 @@ guide](../reference-glossary.md). Un message d'erreur ? [Dépannage](../referenc
 
     Pour celles qui ne modifient rien (`audit`, `tags`, `inventory`, et `xmp` sans `--apply`), en
     lecture seule ; ajoutez `-p 127.0.0.1:8088:8088` après `-it` pour celles qui ouvrent une page
-    (`people`, `places`, `search`) :
+    (`people`, `places`, `library`) :
 
     ```powershell
     docker run --rm -it `

@@ -13,6 +13,7 @@ from media_hygiene.review.ending import Ending
 from media_hygiene.review.http import Request
 from media_hygiene.services import home_pages
 from media_hygiene.services.console_here import ReadOnlyHere
+from media_hygiene.services.disk_here import DiskHere
 from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.home_pages import HomeServer, SearchHere
 from tests.support.runtime import make_locations, make_runtime
@@ -102,6 +103,8 @@ def test_search_without_index_says_why(
         ReadOnlyHere(cast("FreshRuntime", None)),
         cast("SlideshowHere", None),
         cast("PlacesHere", None),
+        DiskHere(cast("FreshRuntime", None)),
+        (),
     )
     request = Request("GET", "/search", {"host": "127.0.0.1"})
     answer = asyncio.run(pages.handle(request))

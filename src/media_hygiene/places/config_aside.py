@@ -80,7 +80,7 @@ def set_aside(config_file: Path, spot: IgnoredSpot) -> None:
     rows = places.get(_IGNORED)
     if not isinstance(rows, AoT):
         rows = tomlkit.aot()
-        places.append(_IGNORED, rows)
+        places[_IGNORED] = rows
     table = tomlkit.table()
     table["latitude"] = round(spot.latitude, DECIMALS)
     table["longitude"] = round(spot.longitude, DECIMALS)

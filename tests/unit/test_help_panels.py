@@ -117,7 +117,8 @@ def test_help_lists_only_the_verbs_with_a_console_use() -> None:
     assert hidden >= PAGE_ONLY
     visible = {info.name for info in infos if not info.hidden}
     assert visible == {name for name, *_ in commands()} - PAGE_ONLY
-    assert {"review", "search", "slideshow", "people", "shrink"} <= visible
+    assert "search" in hidden  # the former name of `library`
+    assert {"review", "library", "slideshow", "people", "shrink"} <= visible
 
 
 @pytest.mark.parametrize("name", sorted(PAGE_ONLY))

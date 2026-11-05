@@ -282,7 +282,7 @@ def test_names_soon_reads_the_index_in_its_own_thread(tmp_path: Path) -> None:
 
 
 def test_tagged_says_at_once_whether_a_file_has_a_word(tmp_path: Path) -> None:
-    """The start of `search` checks it without waiting for the names (0354)."""
+    """The start of `library` checks it without waiting for the names (0354)."""
     with MeaningIndex.open(_index(tmp_path)) as search:
         assert search.tagged
     empty = tmp_path / "empty"

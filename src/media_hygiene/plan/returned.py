@@ -1,6 +1,6 @@
 """Files set aside by a choice that came back (a phone backup): proposed again (0216).
 
-A burst shot, a near duplicate, a file chosen in `search` or an unwanted photo set
+A burst shot, a near duplicate, a file chosen in `library` or an unwanted photo set
 aside is remembered by its content (size, SHA-256) in the journals; a file of the
 same content found again, whatever its name, is "back after being set aside".
 `clean` moves it to the quarantine again, with the rest of its plan.

@@ -1,4 +1,4 @@
-"""`media-hygiene search`: a table in the console, the page in the browser."""
+"""`media-hygiene library`: a table in the console, the page in the browser."""
 
 from __future__ import annotations
 
@@ -153,8 +153,18 @@ def test_the_page_refuses_other_hosts_and_bodies(
 
 
 def test_status_counts_the_files_with_words(cli: CliRunner) -> None:
-    """`status` says how many files have words, and that `search` finds them."""
+    """`status` says how many files have words, and that `library` finds them."""
     assert "Tags:" not in run(cli, "status").output
     assert run(cli, "tags", "--no-describe").exit_code == 0
     said = " ".join(run(cli, "status").output.split())
     assert "Tags: 19 files have words, 0 of them from the vision model" in said
+
+
+def test_the_former_name_still_runs_hidden(cli: CliRunner) -> None:
+    """0486: `library` in `--help`, `search` kept for scripts and habits."""
+    assert run(cli, "tags", "--no-describe").exit_code == 0
+    assert (
+        run(cli, "library", "zebra").exit_code
+        == run(cli, "search", "zebra").exit_code
+        == 0
+    )

@@ -147,7 +147,7 @@ def _write_links(
         if PHOTOS in table:
             del table[PHOTOS]  # moved to the file
         fresh.append(table)
-    table_of(document, place.section).append(place.key, fresh)
+    table_of(document, place.section)[place.key] = fresh
     return before
 
 

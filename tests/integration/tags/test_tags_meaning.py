@@ -1,4 +1,4 @@
-"""`tags --meaning`, then `search` by what the photos show: the colour model.
+"""`tags --meaning`, then `library` by what the photos show: the colour model.
 
 The real model is never downloaded here (a measure does that, never CI): the files
 are faked, and the model is `tests.support.meaning`: a picture's vector is its colour.

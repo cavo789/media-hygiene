@@ -1,4 +1,4 @@
-"""`search` ranks by meaning when `tags` gave the photos their vectors (TODO 0263).
+"""`library` ranks by meaning when `tags` gave the photos their vectors (TODO 0263).
 
 Whatever `[tags] meaning` says: the vectors are in the index, so they are used. The
 model is read from the cache, never downloaded by a search (the cache may be

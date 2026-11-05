@@ -29,10 +29,10 @@ type Captures = dict[str, str]
 
 COMMANDS: Final = ("audit", "review", "clean", "undo", "history", "reports", "purge")
 COMMANDS_TOO: Final = ("crosscheck", "config", "classify", "sort", "album", "inventory",
-                       "places", "status", "launcher", "tags", "search",
+                       "places", "status", "launcher", "tags", "library",
                        "people", "xmp", "menu", "home", "import",
                        "push", "slideshow", "share", "shrink", "backup",
-                       "restore")  # fmt: skip
+                       "restore", "upkeep")  # fmt: skip
 _WINDOWS: Final[Mapping[Locale, Window]] = {
     Locale.EN: Window("Audit summary", "'clean'", "media-hygiene audit"),
     Locale.FR: Window(

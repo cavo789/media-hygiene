@@ -36,11 +36,22 @@ class HomeLink(Frozen):
 class HomeTile(Frozen):
     """A "where you are" tile: it leads to its space."""
 
+    id: str  # stable: `[home] tiles` names it (0516)
     label: str
     value: str
     sub: str
     space: str
     pill: Pill = Pill.NONE
+    url: str = ""  # leads to this page instead of the space (never on a phone)
+    tidy: bool = False  # starts the "10 minutes of tidying" session (0528)
+
+
+class HomeSample(Frozen):
+    """A random photo (0485): its thumbnail, its folder, the Library opened on it."""
+
+    thumb: str
+    folder: str
+    url: str
 
 
 class HomeFinding(Frozen):
@@ -110,7 +121,7 @@ class PendingPage(Frozen):
 
     label: str  # e.g. "Burst series", translated
     count: int
-    url: str  # the page, served by the home server
+    url: str = ""  # the page, when the home server serves it; empty: named, no link
 
 
 class HomePending(Frozen):

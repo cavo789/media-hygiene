@@ -1,6 +1,6 @@
 """The files picked on a page of tiles, shown on the TV by the home server (0454).
 
-📺 *On the TV*, in the bar of `search` and `browse`, sends the files picked (or every
+📺 *On the TV*, in the bar of `library` and `browse`, sends the files picked (or every
 file the page shows) through the page's albums API (`action: "tv"`): the page's own
 picker turns its keys into files of the index, never a path from the request, and
 caps them as an album (`MAX_ADDED`). The home server's slideshow (`slideshow_here`)

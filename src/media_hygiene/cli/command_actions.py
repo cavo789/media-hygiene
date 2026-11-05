@@ -86,6 +86,14 @@ def action_commands(act: str) -> tuple[tuple[str, str, str], ...]:
             ),
         ),
         (
+            "upkeep",
+            act,
+            _(
+                "Run the regular chores in one go, as listed in config.toml: audit, "
+                "copies set aside, old quarantine purged, reports; each asks as usual."
+            ),
+        ),
+        (
             "purge",
             act,
             _(

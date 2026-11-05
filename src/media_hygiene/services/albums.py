@@ -1,6 +1,6 @@
 """The albums of a run: `albums.json` in the reports folder, followed through the index.
 
-Shared by the pages that add to an album (`search`, `browse`, the burst review) and by
+Shared by the pages that add to an album (`library`, `browse`, the burst review) and by
 `slideshow --album`. The reports folder is checked writable before each save.
 """
 

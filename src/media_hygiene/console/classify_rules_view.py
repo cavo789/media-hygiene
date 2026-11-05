@@ -37,7 +37,7 @@ def show_unused_rules(output: Output, classification: Classification) -> None:
             output.tip(
                 _(
                     "Check their dates, their patterns and their order in config.toml; "
-                    "the 🗂 Events tab of 'search' lists them under Your rules, "
+                    "the 🗂 Events tab of 'library' lists them under Your rules, "
                     "with a button to remove "
                     "those that match nothing any more."
                 )

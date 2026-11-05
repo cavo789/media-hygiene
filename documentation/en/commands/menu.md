@@ -150,7 +150,7 @@ Quarantine: empty.
       The guide
    22 mh tags                                         Give your      🔒
                                                       photos words
-   23 mh search                                       Find a photo   🔒
+   23 mh library                                       Find a photo   🔒
                                                       by its words
       Go further
    25 mh xmp                                          Carry the      ↩️ optional

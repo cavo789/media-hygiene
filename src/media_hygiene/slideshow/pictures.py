@@ -1,6 +1,6 @@
 """The pictures of the show: the phone's thumbnails, the TV's pictures. Its files only.
 
-`/thumb/<key>.jpg` is the grid's thumbnail of `search` (kept in the cache folder);
+`/thumb/<key>.jpg` is the grid's thumbnail of `library` (kept in the cache folder);
 `/tv/<key>.jpg` the TV's picture (`screen_jpeg`); `/film/<key>.<ext>` a video, as it
 is (`films`). Only the keys of the show are answered: a phone or a TV never reaches
 another file of the library, nor the original of a photo.

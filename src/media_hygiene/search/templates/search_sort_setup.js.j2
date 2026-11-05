@@ -1,0 +1,136 @@
+{# *📐 Where and how to sort* (0533), and what a folder's menu adds to its role: left out of
+   the sort, a person's. Everything shown comes from the answers, read from config.toml. #}
+const SETUP_PATHS = {{ setup_paths | tojson }};
+(() => {
+  const T = {
+    stay: {{ _("They stay where they are") | tojson }},
+    own: {{ _("Your own: {layout}") | tojson }},
+    tree: {{ _("{files} in {folders}:") | tojson }},
+    nFiles: [{{ ngettext("{n} file", "{n} files", 1) | tojson }}, {{ ngettext("{n} file", "{n} files", 2) | tojson }}],
+    nFolders: [{{ ngettext("{n} folder", "{n} folders", 1) | tojson }}, {{ ngettext("{n} folder", "{n} folders", 2) | tojson }}],
+    none: {{ _("No file would go there.") | tojson }},
+    more: {{ _("… and more: {folders}") | tojson }},
+    fromPlan: {{ _("On your latest classify: what it proposes next may differ a little.") | tojson }},
+    fromIndex: {{ _("On the dates of your photos: the events are named by classify.") | tojson }},
+    stale: {{ _("Your latest proposal used another shape: run classify again to see this one.") | tojson }},
+    gone: {{ _("gone (renamed or deleted?)") | tojson }},
+    remove: {{ _("Remove") | tojson }},
+    left: {{ _("Left out: {folder}") | tojson }},
+    person: {{ _("A person's folders: {name}") | tojson }},
+  };
+  const FIELDS = ["layout", "unsure_layout", "manual_layout", "undated_layout", "received_layout"];
+  let state = null;
+  let comboDone = false;
+  const said = (text, kind) => { $("setupSaid").textContent = text; $("setupSaid").className = kind || ""; };
+  const treeOf = (key, layout) => {
+    const box = $(`tree-${key}`);
+    box.replaceChildren();
+    const shown = layout ? state.previews[key][layout] : null;
+    if (!shown) return;
+    if (!shown.files) { box.textContent = T.none; return; }
+    box.append(element("p", "muted", fill(T.tree, { files: counted(T.nFiles, shown.files), folders: counted(T.nFolders, shown.folders) })));
+    let before = [];
+    for (const [folder, files] of shown.lines) {
+      const parts = folder.split("/");
+      parts.forEach((part, depth) => {
+        if (part === before[depth] && parts.slice(0, depth).join("/") === before.slice(0, depth).join("/")) return;
+        const line = element("div", "", `${depth ? "└ " : ""}${part} `);
+        line.style.paddingLeft = `${depth}em`;
+        if (depth === parts.length - 1) line.append(element("small", "", `(${files})`));
+        box.append(line);
+      });
+      before = parts;
+    }
+    if (shown.folders > shown.lines.length) box.append(element("div", "muted", fill(T.more, { folders: counted(T.nFolders, shown.folders - shown.lines.length) })));
+  };
+  const drawLists = (lists) => {
+    $("setupLeave").replaceChildren(...lists.leave.map((item) => {
+      const line = element("li", "", fill(T.left, { folder: item.path }) + (item.where === "missing" ? ` — ${T.gone}` : ""));
+      const remove = element("button", "plain", T.remove);
+      remove.type = "button";
+      remove.addEventListener("click", () => change({ folder: item.path, leave: false }));
+      line.append(remove);
+      return line;
+    }));
+    $("setupPeople").replaceChildren(...lists.people.map((name) => {
+      const line = element("li", "", fill(T.person, { name }));
+      const remove = element("button", "plain", T.remove);
+      remove.type = "button";
+      remove.addEventListener("click", () => change({ forget: name }));
+      line.append(remove);
+      return line;
+    }));
+  };
+  const change = async (body) => {
+    const answer = await ask(SETUP_PATHS.folder, body);
+    const read = answer ? await answer.json().catch(() => ({})) : {};
+    if (!answer || !answer.ok) return { error: read.error || TEXTS.offline };
+    drawLists(read);
+    said(read.said, "saved");
+    return read;
+  };
+  const draw = (read) => {
+    state = read;
+    $("setupTarget").value = read.target;
+    for (const key of FIELDS) {
+      const select = $(`setup-${key}`);
+      const now = read.layouts[key];
+      const options = [...(key === "layout" ? [] : [{ layout: "", name: T.stay }]), ...read.models];
+      if (!options.some((model) => model.layout === now)) options.push({ layout: now, name: fill(T.own, { layout: now }) });
+      select.replaceChildren(...options.map((model) => {
+        const option = element("option", "", model.name);
+        option.value = model.layout;
+        return option;
+      }));
+      select.value = now;
+      treeOf(key, now);
+    }
+    const stale = read.from_plan && read.plan_layout !== read.layouts.layout;
+    $("setupOrigin").textContent = (read.from_plan ? T.fromPlan : T.fromIndex) + (stale ? ` ${T.stale}` : "");
+  };
+  const open = async () => {
+    said("");
+    const [setup, lists] = await Promise.all([ask(SETUP_PATHS.setup), ask(SETUP_PATHS.folder)]);
+    if (!setup || !setup.ok || !lists || !lists.ok) { setStatusOffline(); return; }
+    draw(await setup.json());
+    drawLists(await lists.json());
+    const folders = await folderList();
+    if (!comboDone) comboAttach($("setupTarget"), () => folders.map((node) => ({ label: node.path, value: node.path })));
+    comboDone = true;
+    $("setupDlg").showModal();
+  };
+  const setStatusOffline = () => { $("coverage").hidden = false; $("coverage").textContent = TEXTS.offline; };
+  for (const key of FIELDS) $(`setup-${key}`).addEventListener("change", (event) => treeOf(key, event.target.value));
+  $("setupOpen").addEventListener("click", open);
+  $("setupSave").addEventListener("click", async () => {
+    said(TEXTS.roleSaving);
+    const layouts = Object.fromEntries(FIELDS.map((key) => [key, $(`setup-${key}`).value]));
+    const answer = await ask(SETUP_PATHS.setup, { target: $("setupTarget").value, layouts });
+    const read = answer ? await answer.json().catch(() => ({})) : {};
+    if (!answer || !answer.ok) { said(read.error || TEXTS.offline, "error"); return; }
+    draw(read);
+    said(read.said, "saved");
+  });
+  // The folder's menu: what the sort does with it, beside its role.
+  window.mhSortFolder = {
+    async show(path) {
+      $("roleLeave").checked = false; $("rolePerson").value = "";
+      const answer = await ask(SETUP_PATHS.folder);
+      if (answer && answer.ok) {
+        const read = await answer.json();
+        $("roleLeave").checked = read.leave.some((item) => item.path === path);
+      }
+      $("roleLeave").dataset.was = String($("roleLeave").checked);
+    },
+    async save(path) {
+      const leave = $("roleLeave").checked;
+      const person = $("rolePerson").value.trim();
+      const body = { folder: path, ...(String(leave) === $("roleLeave").dataset.was ? {} : { leave }), ...(person ? { person } : {}) };
+      if (body.leave === undefined && !person) return null;
+      const read = await change(body);
+      if (read.error) return read.error;
+      $("roleLeave").dataset.was = String(leave);
+      return null;
+    },
+  };
+})();

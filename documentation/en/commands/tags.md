@@ -10,7 +10,7 @@ shows), without touching the files.**
 `tags` gives every photo and video **words to find it by**: the meaningful words of its folders
 ("Durbuy", "bear") and of its name, its date (year, month, season, holidays), its place, and, if
 you wish, what a local [vision model](../reference-glossary.md#vision-model) sees ("cake", "candles", "snow"). The words stay **in the
-cache**, never in your photos; [`search`](search.md) finds them, [`xmp`](xmp.md) writes them
+cache**, never in your photos; [`library`](library.md) finds them, [`xmp`](xmp.md) writes them
 into [sidecars](../reference-glossary.md#sidecar).
 
 **When**: after an audit run with the cache; again after new photos or a renamed folder.
@@ -84,7 +84,7 @@ whole collection, estimated); each photo is kept in the cache at once, so the ne
 | 🤖 `--sample N` | **With a local AI only.** Describe N random photos with the model, print their words, the time per photo and the estimate of a full run, and stop. |
 | 🤖 `--no-describe` | **With a local AI only.** Ask the model nothing new: the words of the folders, names, dates and places, and the descriptions already in the cache. |
 | 🤖 `--yes`, `-y` | **With a local AI only.** Describe the photos without asking, however many (above 200, it asks first). |
-| 🤖 `--meaning` | A model on this computer's processor (CLIP: no Ollama, no GPU, nothing sent) looks at each photo once, about 1 minute per 1,000 photos, so that [`search`](search.md) finds what a photo shows ([search by meaning](../reference-tags.md#find-a-photo-by-what-it-shows---meaning)). The model (894 MB) is downloaded into the cache the first time. Default: `[tags] meaning`. |
+| 🤖 `--meaning` | A model on this computer's processor (CLIP: no Ollama, no GPU, nothing sent) looks at each photo once, about 1 minute per 1,000 photos, so that [`library`](library.md) finds what a photo shows ([search by meaning](../reference-tags.md#find-a-photo-by-what-it-shows---meaning)). The model (894 MB) is downloaded into the cache the first time. Default: `[tags] meaning`. |
 
 ## Good to know
 
@@ -110,7 +110,7 @@ whole collection, estimated); each photo is kept in the cache at once, so the ne
 - [Find in short](../find/quick-guide.md)
 - [Tags](../reference-tags.md): every source, the settings, the long run.
 - [Sorting, step 8: a local vision model](../sort/08-subjects-from-a-local-model.md)
-- Next: [`search`](search.md), [`xmp`](xmp.md), [`inventory`](inventory.md).
+- Next: [`library`](library.md), [`xmp`](xmp.md), [`inventory`](inventory.md).
 
 ## The built-in help
 
@@ -131,7 +131,7 @@ whole collection, estimated); each photo is kept in the cache at once, so the ne
 │                           every file of the index.                           │
 │ --meaning                 Also let a model look at each photo on this        │
 │                           computer's processor (CLIP, once, about 1 minute   │
-│                           per 1,000 photos), so that 'search' finds what a   │
+│                           per 1,000 photos), so that 'library' finds what a   │
 │                           photo shows. Default:  meaning.                    │
 │ --help     -h             Show this message and exit.                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
