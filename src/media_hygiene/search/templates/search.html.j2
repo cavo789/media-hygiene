@@ -73,7 +73,7 @@
   "leftTo": _("left to the rule {rule}"),
   "leftHere": _("left where it is: not sorted with the others"),
   "goSort": [ngettext("I checked: sort this file", "I checked: sort these {n} files", 1), ngettext("I checked: sort this file", "I checked: sort these {n} files", 2)],
-  "goAsk": _("Sort these {n} files now? {folders}. They are moved at once, journaled: 'undo' puts them back."),
+  "goMoved": _("{n} files moved: {folders}."),
   "goRunning": _("Sorting the files of the rule: the plan of classify is read, the files moved, then checked at their new place…"),
   "goAlready": _("{n} files were sorted already by an earlier run: left where they are."),
   "goDone": _("{moved} moved, {verified} checked at their new place (run {run}, at {time}): 'mh undo {run}' puts them back."),
@@ -371,6 +371,7 @@
     </details>
     </section>
     {% include "search_events.html.j2" %}
+    {% include "undo_toast.html.j2" %}
 {% endblock %}
 {% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
 {% block more_keys %}{% include "pick_keys_more.html.j2" %}

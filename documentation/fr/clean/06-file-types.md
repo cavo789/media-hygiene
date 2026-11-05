@@ -12,7 +12,7 @@ Les fichiers sont reconnus à leur extension, quelle que soit sa casse :
 
 | Type | Extensions |
 |---|---|
-| Images | avif, bmp, gif, heic, heif, jpe, jpeg, jpg, png, tif, tiff, webp |
+| Images | avif, bmp, gif, heic, heif, jpe, jpeg, jpg, mpo, png, tif, tiff, webp |
 | RAW (décodés par LibRaw, aperçu tiré du JPEG intégré par l'appareil) | arw, cr2, cr3, dng, nef, orf, pef, raf, rw2, srw |
 | Vidéos | 3g2, 3gp, avi, flv, m2ts, m4v, mkv, mov, mp4, mpeg, mpg, mts, ts, webm, wmv |
 

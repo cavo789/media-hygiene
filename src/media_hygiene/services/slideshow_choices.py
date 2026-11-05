@@ -23,6 +23,8 @@ from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.serving import json_response
 from media_hygiene.search import statements as sql
 from media_hygiene.search.days import NAME as DAY
+from media_hygiene.services.slideshow_folders import labelled, newest_first
+from media_hygiene.services.slideshow_random_pick import RandomAsk, random_files
 from media_hygiene.services.slideshow_selection import selected
 from media_hygiene.share.album_api import too_many
 
@@ -35,9 +37,10 @@ if TYPE_CHECKING:
     from media_hygiene.services.slideshow_pick import Pick
 
 CHOICES_PATH: Final = "/choices"  # GET: the folders and the months
-CHOOSE_PATH: Final = "/choose"  # POST: `{"folder": …}` or `{"first": …, "last": …}`
+CHOOSE_PATH: Final = (
+    "/choose"  # POST: `{"folder": …}`, `{"first": …, "last": …}`, `{"random": …}`
+)
 _AFTER_SLASH: Final = "0"  # the character after `/`: ends the range of a folder
-_PATHS: Final = "SELECT path FROM files"
 _MONTHS: Final = (
     f"SELECT DISTINCT substr({DAY}(media_date), 1, 7) AS month FROM files"  # noqa: S608
     " WHERE month IS NOT NULL ORDER BY month DESC"
@@ -54,6 +57,7 @@ class Chosen(BaseModel):
     folder: str | None = None
     first: date | None = None
     last: date | None = None
+    random: RandomAsk | None = None  # a random show through time (0508)
 
 
 @dataclass(frozen=True, slots=True)
@@ -74,7 +78,10 @@ class Chooser:
         """
         if request.method == "GET" and request.path == CHOICES_PATH:
             runtime, search = self.opened()
-            listed = sorted(_folders(runtime, search), key=str.casefold)
+            listed = [
+                {"value": name, "label": label}
+                for name, label in labelled(newest_first(runtime, search))
+            ]
             months = [row[0] for row in search.connection.execute(_MONTHS)]
             return json_response(HTTPStatus.OK, {"folders": listed, "months": months})
         if request.method != "POST" or request.path != CHOOSE_PATH:
@@ -97,6 +104,11 @@ class Chooser:
             The remote's page; 409 with the reason when nothing is shown.
         """
         runtime, search = self.opened()
+        if chosen.random is not None:
+            files = random_files(runtime, search, chosen.random)
+            if not files:
+                return _refused(_("No dated photo to show at random."))
+            return selected(self.begin, files, ordered=True)
         if chosen.folder is not None:
             inside = _folders(runtime, search).get(chosen.folder[:_MAX_TEXT])
             if inside is None:
@@ -125,10 +137,7 @@ def _folders(runtime: Runtime, search: SearchIndex) -> dict[str, Path]:
     Returns:
         By its name as the Explorer shows it, the folder in the container.
     """
-    data = runtime.locations.data_dir
-    mapper = runtime.mapper
-    parents = {Path(row[0]).parent for row in search.connection.execute(_PATHS)}
-    return {mapper.to_host(each): each for each in parents if each.is_relative_to(data)}
+    return dict(newest_first(runtime, search))
 
 
 def _refused(message: str) -> Response:

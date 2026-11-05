@@ -125,7 +125,9 @@ const TILE_PILL = () => ({
 });
 const pageTile = (t) => (REMOTE ? "" : `<a class="tile" href="${esc(t.url)}"${t.tidy ? " data-tidy" : ""}><span class="tile-top"><span class="eyebrow">${esc(t.label)}</span></span><span class="tile-value">${esc(t.value)}</span><span class="tile-sub">${esc(t.sub)}</span></a>`);
 const tile = (t) => (t.url ? pageTile(t) : spaceTile(t));
-const spaceTile = (t) => `<button class="tile" type="button" data-go="${esc(t.space)}"><span class="tile-top"><span class="eyebrow">${esc(t.label)}</span>${TILE_PILL()[t.pill] || ""}</span><span class="tile-value">${esc(t.value)}</span><span class="tile-sub">${esc(t.sub)}</span></button>`;
+// A tile with a step opens that action's page, as its button does (0515); else its space.
+const tileTarget = (t) => (t.step && BY_ID[t.step] ? `data-run="${esc(t.step)}"` : `data-go="${esc(t.space)}"`);
+const spaceTile = (t) => `<button class="tile" type="button" ${tileTarget(t)}><span class="tile-top"><span class="eyebrow">${esc(t.label)}</span>${TILE_PILL()[t.pill] || ""}</span><span class="tile-value">${esc(t.value)}</span><span class="tile-sub">${esc(t.sub)}</span></button>`;
 function findingRow(row) {
   const action = row.action ? BY_ID[row.action] : null;
   const report = row.action === "open" && S.index ? `<a class="btn btn-sm" href="${esc(S.index)}" target="_blank" rel="noopener">${esc(T.openReport)}</a>` : "";

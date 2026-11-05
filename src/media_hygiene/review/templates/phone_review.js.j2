@@ -29,7 +29,7 @@ let disk = new Set(); // the ranks ticked in the file, as read back from the dis
 let synced = false;   // the ticks shown are those read back: the red button may delete
 
 const number = (value) => value.toLocaleString(LANG);
-const clock = (iso) => new Date(iso).toLocaleTimeString(LANG);
+const savedAt = (iso) => new Date(iso).toLocaleTimeString(LANG);
 function size(bytes) {
   let value = bytes;
   let unit = 0;
@@ -189,7 +189,7 @@ async function decide(changes, left) {
     return false;
   }
   readBack(reply.file);
-  const proof = fill(TEXTS.proofOk, { time: clock(reply.file.modified), ticked: number(disk.size) });
+  const proof = fill(TEXTS.proofOk, { time: savedAt(reply.file.modified), ticked: number(disk.size) });
   say(left ? proof + " " + counted(TEXTS.asideLeft, left) : proof, "saved");
   return true;
 }
@@ -301,7 +301,7 @@ Promise.all([ask(STATE_PATH), ask(FILE_PATH)])
     if (read.error) say(read.error, "error");
     else {
       readBack(read);
-      say(fill(TEXTS.loaded, { time: clock(read.modified), ticked: number(disk.size) }), "saved");
+      say(fill(TEXTS.loaded, { time: savedAt(read.modified), ticked: number(disk.size) }), "saved");
     }
     reopen(false);
   });

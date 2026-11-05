@@ -490,23 +490,45 @@ function tvAlbums() {
     .catch(() => { tvList = null; box.innerHTML = `<p class="muted">${esc(T.tvNone)}</p>`; })
     .finally(tvChoices);
 }
-// ---- A folder or a month on the TV (0455): the lists come from the index, read-only -----------
+// ---- A folder or a month on the TV (0455): from the index, read-only; newest folders first (0507)
 function tvChoices() {
   const box = $("#tvChoices");
   if (!box || !P.tvChoices) return;
   fetch(P.tvChoices, { cache: "no-store" })
     .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
     .then((lists) => {
-      const options = (values) => values.map((value) => `<option value="${esc(value)}">${esc(value)}</option>`).join("");
+      // A folder: its short label shown, its full name sent (0507); a month: as is.
+      const options = (values) => values.map((each) => (typeof each === "string" ? { value: each, label: each } : each))
+        .map((each) => `<option value="${esc(each.value)}" title="${esc(each.value)}">${esc(each.label)}</option>`).join("");
       const pick = (id, label, values) => (values.length
         ? `<div class="tv-choice"><label class="muted" for="${id}">${esc(label)}</label><select id="${id}">${options(values)}</select><button class="btn btn-primary" type="button" data-choose="${id}">${icon("play")} ${esc(T.tvShow)}</button></div>`
         : "");
-      box.innerHTML = pick("tvFolder", T.tvFolder, lists.folders || []) + pick("tvMonth", T.tvMonth, lists.months || []);
+      box.innerHTML = tvRandomBox() + pick("tvFolder", T.tvFolder, lists.folders || []) + pick("tvMonth", T.tvMonth, lists.months || []);
       $$("[data-choose]", box).forEach((button) => button.addEventListener("click", () => tvChoose(button.dataset.choose)));
+      $("#tvEra", box).addEventListener("change", () => { $("#tvPeriod", box).hidden = $("#tvEra", box).value !== "period"; });
     })
     .catch(() => { box.innerHTML = ""; });
 }
+// 🎲 At random (0508): a length and, optionally, the years; the PC chooses the photos.
+function tvRandomBox() {
+  const option = (value, label, chosen) => `<option value="${value}"${chosen ? " selected" : ""}>${esc(label)}</option>`;
+  const year = (id, label) => `<label class="muted" for="${id}">${esc(label)}</label><input id="${id}" type="number" inputmode="numeric" min="1800" max="2200" value="${new Date().getFullYear()}">`;
+  return `<div class="tv-choice"><p class="muted">${esc(T.tvRandomNote)}</p>`
+    + `<label class="muted" for="tvLength">${esc(T.tvLength)}</label><select id="tvLength">${option(30, T.tvMinutes30)}${option(60, T.tvMinutes60, true)}${option(120, T.tvMinutes120)}</select>`
+    + `<label class="muted" for="tvEra">${esc(T.tvEra)}</label><select id="tvEra">${option("all", T.tvEraAll, true)}${option("five", T.tvEraFive)}${option("period", T.tvEraPeriod)}</select>`
+    + `<span id="tvPeriod" hidden>${year("tvFirst", T.tvEraFirst)}${year("tvLast", T.tvEraLast)}</span>`
+    + `<button class="btn btn-primary" type="button" data-choose="tvRandom">${esc(T.tvRandom)}</button></div>`;
+}
+function tvRandomBody() {
+  const asked = { minutes: Number($("#tvLength").value) };
+  const era = $("#tvEra").value;
+  const now = new Date().getFullYear();
+  if (era === "five") { asked.first_year = now - 4; asked.last_year = now; }
+  if (era === "period") { asked.first_year = Number($("#tvFirst").value); asked.last_year = Number($("#tvLast").value); }
+  return { random: asked };
+}
 function tvChoose(id) {
+  if (id === "tvRandom") { tvSend(tvRandomBody()); return; }
   const value = $(`#${id}`).value;
   let body = { folder: value };
   if (id === "tvMonth") {
@@ -514,6 +536,9 @@ function tvChoose(id) {
     const last = new Date(Date.UTC(year, month, 0)).getUTCDate();
     body = { first: `${value}-01`, last: `${value}-${String(last).padStart(2, "0")}` };
   }
+  tvSend(body);
+}
+function tvSend(body) {
   $$("[data-choose]").forEach((button) => { button.disabled = true; });
   toast(T.tvStarting);
   post(P.tvChoose, body)

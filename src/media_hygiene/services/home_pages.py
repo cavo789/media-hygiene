@@ -1,9 +1,8 @@
 """`library` and `browse` served by the home server itself (0356).
 
 A click on either used to stop the home server and start a container: 7.6 to 8.7 s
-(measured on Windows, step 35 of `mh-measure.ps1`). Now the home server answers every
-path not its own with the app of `library` (`search_app`), built at the first request,
-again once the settings changed (`FreshRuntime`, 0358); no index: its pages say why.
+(measured, step 35 of `mh-measure.ps1`). Now the home server answers every path not its
+own with `library`'s app, rebuilt once the settings changed (0358); `/people/`: 0600.
 """
 
 from __future__ import annotations
@@ -25,6 +24,7 @@ from media_hygiene.services.console_here import ReadOnlyHere
 from media_hygiene.services.disk_here import DiskHere
 from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.pages_here import pages_here
+from media_hygiene.services.people_here import people_door
 from media_hygiene.services.places_here import PLACES_PREFIX, PlacesHere
 from media_hygiene.services.review_here import ReviewHere
 from media_hygiene.services.review_kinds import REVIEWS
@@ -186,7 +186,7 @@ def home_with_pages(
     slideshow = SlideshowHere(fresh, server)
     try:
         yield HomeWithPages(
-            home,
+            people_door(home, fresh),
             pages,
             reviews,
             ReadOnlyHere(fresh),

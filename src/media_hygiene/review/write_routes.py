@@ -40,6 +40,7 @@ from media_hygiene.search.chosen_api import CHOSEN_PATH
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH
 from media_hygiene.search.rule_desk import RULE_SAVE_PATH
 from media_hygiene.search.rule_go import GO_PATHS
+from media_hygiene.search.undo_api import UNDO_PATH
 
 # The `POST`s that set aside, apply, move, save a rule, a name, a decision file or
 # `config.toml`, run a step or the audit, stop the server.
@@ -71,7 +72,7 @@ _SORTING: Final = frozenset(
     }
 )
 _PC_ONLY: Final = frozenset(
-    {STOP_PATH, STEP_PATH, AUDIT_PATH, APPLY_PATH, *RUN_PATHS, *PHONE_PATHS}
+    {STOP_PATH, STEP_PATH, AUDIT_PATH, APPLY_PATH, UNDO_PATH, *RUN_PATHS, *PHONE_PATHS}
 )
 CHANGES: Final = (
     _DECISIONS

@@ -96,6 +96,8 @@ class ReportWriter:
         summary = view.header.summary.model_copy(
             update={
                 "backup_only": backup_only(record.findings.backups),
+                "intruder_files": len(record.findings.intruders),
+                "intruder_bytes": sum(item.size for item in record.findings.intruders),
                 "roots": tuple(str(root) for root in record.findings.roots),
                 **asked_flags(record.asked),  # 0309
             }

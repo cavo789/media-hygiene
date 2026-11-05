@@ -159,7 +159,7 @@ class Sizes(IntEnum):
 
 
 IMAGE_EXTENSIONS: Final = frozenset(
-    {".avif", ".bmp", ".gif", ".heic", ".heif", ".jpe", ".jpeg", ".jpg"}
+    {".avif", ".bmp", ".gif", ".heic", ".heif", ".jpe", ".jpeg", ".jpg", ".mpo"}
     | {".png", ".tif", ".tiff", ".webp"},
 )
 RAW_EXTENSIONS: Final = frozenset(

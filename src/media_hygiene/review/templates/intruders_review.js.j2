@@ -44,7 +44,14 @@
       box.setAttribute("aria-label", item.key);
       const first = document.createElement("td");
       first.append(box);
-      tr.append(first, cell(item.key), cell(number(item.count), "num"), cell(item.size, "num"));
+      const name = cell(item.key);
+      if (item.hint) {
+        const hint = document.createElement("span");
+        hint.className = "hint";
+        hint.textContent = T.hints[item.hint];
+        name.append(hint);
+      }
+      tr.append(first, name, cell(number(item.count), "num"), cell(item.size, "num"));
       tr.addEventListener("click", (event) => { if (event.target !== box) box.checked = !box.checked; refresh(); });
       box.addEventListener("change", refresh);
       return tr;

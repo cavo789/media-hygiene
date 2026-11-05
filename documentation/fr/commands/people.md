@@ -88,6 +88,11 @@ et le passage suivant reprend là où il s'était arrêté (les visages de chaqu
 aussitôt dans le cache). La page des personnes montre ensuite les groupes. Seul le cache est
 écrit : vos photos ne sont pas modifiées.
 
+Une fois tous les visages trouvés, l'étape `people` elle-même ouvre les groupes **dans le serveur
+même de la page d'accueil** (`/people/`) : pas d'attente, la page d'accueil continue. S'il reste
+des visages à trouver, l'étape tourne comme avant dans la fenêtre de `mh` (sa barre de
+progression, puis la page).
+
 ## Nommer les groupes
 
 Dans la page, tapez un nom sur un groupe et appuyez sur Entrée : le nom est enregistré dans

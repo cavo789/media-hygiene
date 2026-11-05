@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     from media_hygiene.search.rule_desk import RuleDesk
     from media_hygiene.search.sort_folder_desk import SortSetup
     from media_hygiene.search.tag_desk import TagDesk
+    from media_hygiene.services.page_undo import PageUndo
     from media_hygiene.share.album_api import AlbumDesk
 
 
@@ -43,3 +44,4 @@ class SearchPlace:  # pylint: disable=too-many-instance-attributes
     sort_setup: SortSetup | None = None  # target, layouts, `leave` (0533)
     dates: DateDesk | None = None  # *📅 Date…*, into the sidecars (0531)
     places: PlaceDesk | None = None  # the Place filter, *📍 Place…* (0553)
+    undo: PageUndo | None = None  # the Undo of a move or of *Apply now* (0601)

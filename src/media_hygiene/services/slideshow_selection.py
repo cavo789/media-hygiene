@@ -48,18 +48,21 @@ class TvSlot:
         return self.start(files)
 
 
-def selected(begin: Callable[[Pick], bool], files: tuple[Path, ...]) -> Response:
+def selected(
+    begin: Callable[[Pick], bool], files: tuple[Path, ...], *, ordered: bool = False
+) -> Response:
     """Show the files picked on a page, in place of the show running.
 
     Args:
         begin: Starts a show; True when it replaced one.
         files: The files, in the container, read from the index.
+        ordered: True to keep the files' order (a random show), else oldest first.
 
     Returns:
         The remote's page and whether a show was replaced; 409 with the reason.
     """
     try:
-        replaced = begin(Pick(files=files))
+        replaced = begin(Pick(files=files, ordered=ordered))
     except MediaHygieneError as exc:
         return json_response(HTTPStatus.CONFLICT, {"error": why(exc)})
     return json_response(HTTPStatus.OK, {"page": SLIDESHOW_PAGE, "replaced": replaced})

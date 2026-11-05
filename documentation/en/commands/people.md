@@ -84,6 +84,10 @@ the time left and the faces of the last photo; **Stop after this photo** ends it
 scan goes on where it stopped (each photo's faces are kept in the cache at once). The people
 page then shows the groups. Only the cache is written: your photos are not changed.
 
+Once every face is found, the `people` step itself opens the groups **in the home page's own
+server** (`/people/`): no wait, the home page keeps running. With faces still to find, the step
+runs in the window of `mh` as before (its progress bar, then the page).
+
 ## Name the groups
 
 On the page, type a name on a group and press Enter: the name is saved into `config.toml`, read

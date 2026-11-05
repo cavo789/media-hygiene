@@ -268,11 +268,12 @@ and press **Leave the picked files where they are** (greyed, crossed out). When 
 from several folders, they are listed by source folder, one tick box each, a folder you named
 after another event unticked. **Once a photo is left out, *Save the rule* is off**: a selection
 with exceptions is a move, not a rule (saved, the rule would take them again at every
-`classify`); the dialog says how many were left. It asks once (the
-count, the folders, the undo line), then writes them as your choices of the latest `classify`
+`classify`); the dialog says how many were left. It asks nothing first: it writes them as your choices of the latest `classify`
 run (`sort-decisions.json`) and runs `sort` cut to those files: journaled, checked at their new
 place, said as read back from the disk (*14 moved, 14 checked at their new place (run …):
-'mh undo …' puts them back*); the tiles then show their new place. A photo the latest
+'mh undo …' puts them back*); the tiles then show their new place, and a toast offers
+**↶ Undo** for 8 seconds: the page runs `mh undo` of that run itself and says how many files it
+found back where they were. *Apply now* on this page offers the same Undo once its step ended. A photo the latest
 `classify` run does not know (added since) is left where it is and counted: run `classify`
 again. Nothing moves without that GO.
 

@@ -7,7 +7,7 @@
 {% set shell = header.shell %}
 <script>
 {% include "theme_choice.js.j2" %}
-document.documentElement.classList.add("mh-shelled"{% if shell.compact %}, "mh-shell-compact"{% endif %});
+document.documentElement.classList.add("mh-shelled"{% if shell.compact %}, "mh-shell-compact"{% endif %}{% if shell.drawer %}, "mh-shell-drawer"{% endif %});
 </script>
 <style>
 {% include "shell.css.j2" %}

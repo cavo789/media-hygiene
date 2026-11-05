@@ -32,6 +32,20 @@ a.mh-shell-link:hover { background: var(--mh-frame-raise); }
 .mh-shell-sign { margin-top: auto; padding: 12px 6px 0; border-top: 1px solid var(--mh-frame-line); font-size: .84rem;
   color: var(--mh-frame-soft); }
 .mh-shell-sign p { margin: 0 0 8px; }
+.mh-shell-folders { border-top: 1px solid var(--mh-frame-line); padding-top: 8px; margin-top: 8px; }
+.mh-shell-folders summary { display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 6px 10px;
+  border-radius: 10px; cursor: pointer; list-style: none; font-weight: 600; }
+.mh-shell-folders summary::-webkit-details-marker { display: none; }
+.mh-shell-folders summary:hover { background: var(--mh-frame-raise); }
+.mh-shell-chev { margin-left: auto; transition: transform .15s; }
+.mh-shell-folders[open] .mh-shell-chev { transform: rotate(90deg); }
+.mh-shell-folder-warn { width: 8px; height: 8px; border-radius: 50%; background: var(--mh-apricot); }
+.mh-shell-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.mh-shell-folder-list { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 2px; }
+.mh-shell-folder-list li { padding: 6px 10px 6px 40px; }
+.mh-shell-folder-path { display: block; font: 500 .78rem/1.35 var(--mk-font-mono); overflow-wrap: anywhere; }
+.mh-shell-folder-role { display: block; font-size: .8rem; color: var(--mh-frame-soft); }
+.mh-shell-folder-role.is-warn { color: var(--mh-apricot); }
 .mh-shell-theme { display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: var(--mh-frame-raise); }
 .mh-shell-theme button { flex: 1; min-height: 32px; border: 0; border-radius: 8px; background: transparent;
   color: var(--mh-frame-soft); font: 600 .8rem/1 var(--mk-font-text); cursor: pointer; }
@@ -63,3 +77,8 @@ a.mh-shell-link:hover { background: var(--mh-frame-raise); }
   .mh-shell-open .mh-shell-side { transform: none; box-shadow: 0 0 24px #0006; }
   .mh-shell-compact:not(.mh-shell-open) .mh-shell-side .mh-shell-label { display: revert; }
 }
+/* The phone's page (0497): the phone layout at every width. */
+:root.mh-shell-drawer { --mh-shell-w: 0px; }
+.mh-shell-drawer .mh-shell-menu { display: inline-grid; place-items: center; }
+.mh-shell-drawer .mh-shell-side { width: 248px; transform: translateX(-100%); transition: transform .2s; }
+.mh-shell-drawer.mh-shell-open .mh-shell-side { transform: none; box-shadow: 0 0 24px #0006; }

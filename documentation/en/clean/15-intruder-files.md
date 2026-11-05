@@ -12,7 +12,13 @@ compared. The audit counts them and says so at its end:
 
 Companions are never intruders: sidecars (`.xmp`, `.aae`), Takeout `.json`, `Thumbs.db`,
 `desktop.ini`… (`[scan] companions` in `config.toml`). Protected and backup folders are left
-out: they are never changed.
+out: they are never changed. A `.mpo` (the 3D or multi-picture JPEG of some cameras) is a
+photo, not an intruder.
+
+Three ways lead to the page: the command below, the report's *Intruder files* section (its
+command to copy, or its button when the home page serves the report), and the **Intruder
+files** tile of *Where you are* on the home page, which shows their weight at the last audit:
+a click opens the page (with none, it opens the Clean space).
 
 ## Step 1: tick them
 
@@ -32,6 +38,13 @@ and size, and its red button carries that count (**Set these 12 files aside**):
 While an extension is ticked, the folder table lists only the folders that hold some, each with
 the count and size of that extension: you see where they are. A folder ticked works the same way
 on the extension table. Untick everything to see every row again.
+
+Next to some extensions, a muted hint: *a cache, rebuilt by the device or the app* (`.ithmb`,
+the thumbnails an iPod or iPhone sync writes: iTunes writes them again at the next sync), or
+*keep it unless you have it elsewhere* (archives such as `.zip` or `.7z`, documents, audio,
+image editors' projects). Any other extension gets none. It is a hint, never a verdict, and
+never "delete": only you know whether a zip was extracted or a document is the only copy, and
+what you pick goes to the quarantine, where `undo` finds it.
 
 **Nothing moves here.** A docx may matter: nothing is set aside without you. Each pick is saved
 at once in `decisions.json` of the reports folder; the list under the tables is that file, read

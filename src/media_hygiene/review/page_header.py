@@ -22,6 +22,7 @@ from media_hygiene.docs.served import served_url
 from media_hygiene.i18n import _, active_locale
 from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.review.shell import Shell, ShellAsk, page_shell
+from media_hygiene.review.shell_folders import ShellFolders, shell_folders
 from media_hygiene.review.step_watch import keeps_server
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 
@@ -63,10 +64,10 @@ PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
         "album_edit.html.j2": ALBUMS_DOC,
     }
 )
-# The pages in the home page's frame (0491: the shell; 0492-0496 moved them); the
-# phone's page keeps the thin bar (read-only, its own layout). Value: a tile page or a
-# map with its own left column (the sidebar folded to its icons, the grid keeps its
-# columns).
+# The pages in the home page's frame (0491: the shell; 0492-0496 moved them, 0497 the
+# phone's page); the TV slideshow stays full screen, with no frame. Value: a tile page
+# or a map with its own left column (the sidebar folded to its icons, the grid keeps
+# its columns).
 SHELL_PAGES: Final[Mapping[str, bool]] = MappingProxyType(
     {
         "album.html.j2": False,
@@ -85,11 +86,14 @@ SHELL_PAGES: Final[Mapping[str, bool]] = MappingProxyType(
         "people.html.j2": True,
         "person.html.j2": True,
         "places.html.j2": True,
+        "phone_review.html.j2": False,  # the drawer below, not the rail
         "history.html.j2": False,
         **dict.fromkeys((f"console_{name}.html.j2" for name in PAGE_CAPTURED), False),
         "shrink.html.j2": False,
     }
 )
+# The pages in the frame's phone layout at every width (0497): the top bar and ☰ only.
+_DRAWER_PAGES: Final = frozenset({"phone_review.html.j2"})
 # A page whose space is not its action's: no action opens it, or the faces are found
 # (0495: *Find*, while `people` is listed under *Sort*).
 _PAGE_SPACES: Final = MappingProxyType(
@@ -118,6 +122,7 @@ class PageHeader:  # pylint: disable=too-many-instance-attributes  # one per lin
     shared: bool = False  # served by the home server itself (0356): a plain link back
     assets: str = ASSETS_PREFIX
     shell: Shell | None = None  # in the home page's frame (0491)
+    folders: ShellFolders | None = None  # its *Your folders* (0579)
 
     @property
     def twin_lang(self) -> str:
@@ -158,10 +163,18 @@ def page_header(template: str) -> PageHeader:
         home=bool(os.environ.get(LAUNCHER_STEPS_VARIABLE)),
         shared=keeps_server(),
         shell=(
-            page_shell(ShellAsk(space, compact=SHELL_PAGES[template]), _("Home page"))
+            page_shell(
+                ShellAsk(
+                    space,
+                    compact=SHELL_PAGES[template],
+                    drawer=template in _DRAWER_PAGES,
+                ),
+                _("Home page"),
+            )
             if template in SHELL_PAGES
             else None
         ),
+        folders=shell_folders() if template in SHELL_PAGES else None,
     )
 
 

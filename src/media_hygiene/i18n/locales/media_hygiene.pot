@@ -458,6 +458,9 @@ msgstr ""
 msgid "/config is not mounted: there is no config.toml to complete."
 msgstr ""
 
+msgid "1 h"
+msgstr ""
+
 msgid "1 other photo of the same day and folder: same place?"
 msgstr ""
 
@@ -467,7 +470,13 @@ msgstr ""
 msgid "10 minutes of tidying"
 msgstr ""
 
+msgid "2 h"
+msgstr ""
+
 msgid "3. Several folders and disks"
+msgstr ""
+
+msgid "30 min"
 msgstr ""
 
 msgid "4. The HTML report"
@@ -561,6 +570,9 @@ msgstr ""
 msgid "A double click opens the home page."
 msgstr ""
 
+msgid "A few photos of each event, chapter by chapter, from one era to the next."
+msgstr ""
+
 msgid "A file changed by another program meanwhile also changes the counts."
 msgstr ""
 
@@ -620,6 +632,12 @@ msgid ""
 msgstr ""
 
 msgid ""
+"A hint, never a verdict: only you know whether a zip was extracted or a "
+"document is the only copy. What you pick goes to the quarantine, and "
+"'undo' brings it back."
+msgstr ""
+
+msgid ""
 "A link that opens this album alone, read-only, for 24 hours, on a phone "
 "of the home Wi-Fi"
 msgstr ""
@@ -674,6 +692,9 @@ msgstr ""
 msgid ""
 "A part of the path. * is any characters, ? one character, /regex/ a "
 "regular expression: *.mov, /\\.(mov|mp4)$/"
+msgstr ""
+
+msgid "A period"
 msgstr ""
 
 #, python-brace-format
@@ -3015,6 +3036,9 @@ msgstr ""
 msgid "Faces"
 msgstr ""
 
+msgid "Faces are still to be found: run 'mh people' in the terminal."
+msgstr ""
+
 msgid ""
 "Faces blurrier than this sharpness (variance of the Laplacian of the "
 "face) are left out: never grouped, never named, unless you confirmed "
@@ -4192,6 +4216,9 @@ msgid ""
 "than {sharpness}."
 msgstr ""
 
+msgid "Length"
+msgstr ""
+
 msgid "Lens"
 msgstr ""
 
@@ -4995,6 +5022,9 @@ msgstr ""
 msgid "No date taken"
 msgstr ""
 
+msgid "No dated photo to show at random."
+msgstr ""
+
 msgid "No decision in the file: as planned."
 msgstr ""
 
@@ -5341,6 +5371,9 @@ msgstr ""
 msgid "Nobody is named {names} yet: name their group on the 'people' page first."
 msgstr ""
 
+msgid "None"
+msgstr ""
+
 msgid "None of these files is taken by the rule: nothing to sort."
 msgstr ""
 
@@ -5487,6 +5520,10 @@ msgid "Not touched by this clean"
 msgstr ""
 
 msgid "Not touched by this clean (decide later, if you want)"
+msgstr ""
+
+#, python-brace-format
+msgid "Not undone: {error}"
 msgstr ""
 
 #, python-brace-format
@@ -5940,6 +5977,9 @@ msgstr[1] ""
 msgid "Only on the NAS"
 msgstr ""
 
+msgid "Only photos and videos"
+msgstr ""
+
 msgid "Only set aside the new files that are exact copies."
 msgstr ""
 
@@ -5994,6 +6034,10 @@ msgstr ""
 msgid ""
 "Only the first files of these days were tried: a shorter period shows "
 "them all."
+msgstr ""
+
+#, python-brace-format
+msgid "Only the last run can be undone from this page: {run_id}."
 msgstr ""
 
 msgid ""
@@ -6410,6 +6454,9 @@ msgid ""
 "Pick the intruder files (zip, docx, pdf… in your photo folders) to set "
 "aside, per extension and per folder, instead of the burst series; 'clean "
 "--decisions' moves them to the quarantine."
+msgstr ""
+
+msgid "Pick the ones to set aside"
 msgstr ""
 
 msgid "Pick the others: the ones picked are left (I)"
@@ -7190,6 +7237,10 @@ msgid ""
 msgstr ""
 
 msgid "Run 'media-hygiene history' to list the runs."
+msgstr ""
+
+#, python-brace-format
+msgid "Run 'media-hygiene undo {run_id}' in the terminal."
 msgstr ""
 
 msgid "Run 'people' to see the groups in your browser and name them."
@@ -8016,12 +8067,6 @@ msgid "Sort the bursts"
 msgstr ""
 
 msgid "Sort the photos"
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Sort these {n} files now? {folders}. They are moved at once, journaled: "
-"'undo' puts them back."
 msgstr ""
 
 msgid "Sort this event now"
@@ -9012,6 +9057,9 @@ msgstr ""
 msgid "The largest clusters without a name"
 msgstr ""
 
+msgid "The last 5 years"
+msgstr ""
+
 msgid ""
 "The last audit was made with the former settings: run the audit again "
 "before cleaning."
@@ -9139,6 +9187,9 @@ msgid "The new name of {name}:"
 msgstr ""
 
 msgid "The other active filters"
+msgstr ""
+
+msgid "The page cannot reach mh: is it still running?"
 msgstr ""
 
 #, python-brace-format
@@ -10340,6 +10391,10 @@ msgid "Undoable"
 msgstr ""
 
 #, python-brace-format
+msgid "Undone: {back} of {meant} files are back where they were (run {run})."
+msgstr ""
+
+#, python-brace-format
 msgid "Unexpected error during {command}: {kind}: {message}"
 msgstr ""
 
@@ -11110,6 +11165,9 @@ msgid "a backup"
 msgstr ""
 
 msgid "a burst shot you set aside"
+msgstr ""
+
+msgid "a cache, rebuilt by the device or the app"
 msgstr ""
 
 msgid "a circle holding no cluster now"
@@ -11916,6 +11974,9 @@ msgid "keep all"
 msgstr ""
 
 msgid "keep both names (links, one drive), then next"
+msgstr ""
+
+msgid "keep it unless you have it elsewhere"
 msgstr ""
 
 msgid "keep nothing"
@@ -13175,6 +13236,9 @@ msgstr ""
 msgid "tiny image"
 msgstr ""
 
+msgid "to"
+msgstr ""
+
 msgid "to check first"
 msgstr ""
 
@@ -13759,6 +13823,12 @@ msgid ""
 msgid_plural ""
 "{count} files answered earlier are no longer recorded as gone: their "
 "answers are dropped."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} file at the last audit, to set aside?"
+msgid_plural "{count} files at the last audit, to set aside?"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -15188,6 +15258,10 @@ msgid "{n} files are not in the index yet: run an audit, then move them."
 msgstr ""
 
 #, python-brace-format
+msgid "{n} files moved: {folders}."
+msgstr ""
+
+#, python-brace-format
 msgid "{n} files of these days stay with another rule: shown after, marked."
 msgstr ""
 
@@ -16025,6 +16099,9 @@ msgid "❚❚ Pause"
 msgstr ""
 
 msgid "🌐 name the places"
+msgstr ""
+
+msgid "🎲 At random"
 msgstr ""
 
 #, python-brace-format

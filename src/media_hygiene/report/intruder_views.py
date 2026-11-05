@@ -20,7 +20,7 @@ from media_hygiene.report.csv_export import (
     list_separator,
     spreadsheet_text,
 )
-from media_hygiene.scan.intruders import tally
+from media_hygiene.scan.intruders import hint, tally
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -41,6 +41,7 @@ class IntruderRow:
     name: str
     count: int
     size: int
+    hint: str = ""  # `cache`, `keep` or none: extensions only (0509)
 
 
 @dataclass(frozen=True, slots=True)
@@ -77,7 +78,7 @@ def intruder_section(
         count=len(intruders),
         size=sum(item.size for item in intruders),
         extensions=tuple(
-            IntruderRow(key, count, size)
+            IntruderRow(key, count, size, hint(key))
             for key, count, size in tally(intruders).heaviest(MAX_INTRUDER_ROWS)
         ),
         folders=folders,

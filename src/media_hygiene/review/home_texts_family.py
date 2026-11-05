@@ -33,6 +33,20 @@ def family_texts() -> dict[str, str]:
         "tvFolder": _("A folder"),
         "tvMonth": _("A month"),
         "tvShow": _("Show"),
+        "tvRandom": _("🎲 At random"),
+        "tvRandomNote": _(
+            "A few photos of each event, chapter by chapter, from one era to the next."
+        ),
+        "tvLength": _("Length"),
+        "tvMinutes30": _("30 min"),
+        "tvMinutes60": _("1 h"),
+        "tvMinutes120": _("2 h"),
+        "tvEra": _("Years"),
+        "tvEraAll": _("Everything"),
+        "tvEraFive": _("The last 5 years"),
+        "tvEraPeriod": _("A period"),
+        "tvEraFirst": _("From"),
+        "tvEraLast": _("to"),
         "tvStarting": _("The show starts on the PC…"),
         "tvLate": _("The show did not start: look at the window of mh on the PC."),
     }

@@ -13,7 +13,13 @@ mettre de côté.
 
 Les compagnons ne sont jamais des intrus : fichiers annexes (`.xmp`, `.aae`), `.json` de
 Takeout, `Thumbs.db`, `desktop.ini`… (`[scan] companions` dans `config.toml`). Les dossiers
-protégés et de sauvegarde sont laissés de côté : ils ne sont jamais modifiés.
+protégés et de sauvegarde sont laissés de côté : ils ne sont jamais modifiés. Un `.mpo` (le JPEG
+3D ou multi-images de certains appareils) est une photo, pas un intrus.
+
+Trois chemins mènent à la page : la commande ci-dessous, la section *Fichiers intrus* du rapport
+(sa commande à copier, ou son bouton quand la page d'accueil sert le rapport), et la tuile
+**Fichiers intrus** de *Où vous en êtes* sur la page d'accueil, qui montre leur poids au dernier
+audit : un clic ouvre la page (sans intrus, il ouvre l'espace Nettoyer).
 
 ## Étape 1 : les cocher
 
@@ -34,6 +40,14 @@ côté**) :
 Tant qu'une extension est cochée, le tableau des dossiers ne liste que ceux qui en contiennent,
 chacun avec le nombre et la taille de cette extension : vous voyez où ils sont. Un dossier coché
 fait de même sur le tableau des extensions. Décochez tout pour revoir toutes les lignes.
+
+À côté de certaines extensions, un indice discret : *un cache, recréé par l'appareil ou
+l'application* (`.ithmb`, les miniatures qu'écrit la synchronisation d'un iPod ou d'un iPhone :
+iTunes les réécrit à la synchronisation suivante), ou *à garder, sauf si vous l'avez ailleurs*
+(archives comme `.zip` ou `.7z`, documents, audio, projets de logiciels d'image). Toute autre
+extension n'en a pas. C'est un indice, jamais un verdict, et jamais « supprimer » : vous seul
+savez si un zip a été extrait ou si un document est le seul exemplaire, et ce que vous
+choisissez va en quarantaine, où `undo` le retrouve.
 
 **Rien ne bouge ici.** Un docx peut compter : rien n'est mis de côté sans vous. Chaque choix est
 enregistré aussitôt dans `decisions.json` du dossier des rapports ; la liste sous les tableaux

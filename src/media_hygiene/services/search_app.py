@@ -1,7 +1,6 @@
 """The app of `library` and `browse`: for their own server, or the home's (0356).
 
-Both read the index; the files set aside on either are written into `decisions.json`
-of the reports folder, checked writable before each save, for `clean --decisions`.
+Both read the index; what is set aside goes to `decisions.json` (checked writable).
 """
 
 from __future__ import annotations
@@ -52,9 +51,11 @@ from media_hygiene.search.sort_setup_desk import SETUP_PATH
 from media_hygiene.search.span_events import SPAN_FILES_PATH, SPAN_PATH
 from media_hygiene.search.span_left import LEFT_PATH
 from media_hygiene.search.tag_desk import HAND_TAG_PATH
+from media_hygiene.search.undo_api import UNDO_PATH
 from media_hygiene.search.views import FIRST_HITS
 from media_hygiene.services.albums import album_desk
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
+from media_hygiene.services.page_undo import PageUndo
 from media_hygiene.services.rule_trial import event_gap_hours
 from media_hygiene.services.search_dates import date_desk, place_desk
 from media_hygiene.services.search_desks import (
@@ -121,6 +122,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "heaviest_path": HEAVIEST_PATH,
         "heaviest_first": FIRST_SHOWN,
         "apply_path": APPLY_PATH,
+        "undo_path": UNDO_PATH,
         "albums_path": ALBUMS_PATH,
         "people_reject_path": PEOPLE_REJECT_PATH,
         "people_why_path": PEOPLE_WHY_PATH,
@@ -180,6 +182,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         sort_setup(runtime, roles, search.connection),
         date_desk(runtime, search, chosen),
         place_desk(runtime, search, chosen),
+        PageUndo(runtime),
     )
     return SearchApp(place, pages, build.executor)
 

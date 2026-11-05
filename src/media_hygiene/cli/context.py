@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
+from functools import partial
 from typing import TYPE_CHECKING
 
 import typer
 from rich.markup import escape
 
 from media_hygiene.cli.error_view import follow_up
+from media_hygiene.cli.home_folders import home_folders
 from media_hygiene.cli.safety import announce_read_only
 from media_hygiene.config.loader import load_settings, write_default_config
 from media_hygiene.config.zone import apply_timezone
@@ -20,6 +22,7 @@ from media_hygiene.i18n import _
 from media_hygiene.paths.locations import Locations
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.paths.mounts import MountTable
+from media_hygiene.review.shell_folders import register_folders
 from media_hygiene.services.runtime import Runtime
 from media_hygiene.services.writable import writable_tip
 
@@ -88,6 +91,9 @@ def build_runtime(cli_layer: Layer, *, stderr: bool = False) -> Runtime:
     runtime = Runtime(loaded, locations, MountTable.current(), output, cli_layer)
     if runtime.persistent(MountKind.CONFIG):
         _create_default_config(runtime)
+    register_folders(
+        partial(home_folders, runtime)
+    )  # the frame's *Your folders* (0579)
     return runtime
 
 

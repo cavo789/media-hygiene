@@ -70,8 +70,10 @@ docker run --rm -it `
   command: *the last audit found extra copies: 'clean' sets them aside*, **mh clean**. Its
   button has the focus when the page opens: <kbd>Enter</kbd> runs it, as in `mh menu`. When
   everything is applied, the page says so.
-- **Where you are**: one tile per fact (the last audit, the extra copies, the quarantine, the
-  files only on the NAS, the sort, the words, the faces), each leading to its space. **Edit**
+- **Where you are**: one tile per fact (the last audit, the extra copies, the intruder files,
+  the quarantine, the files only on the NAS, the sort, the words, the faces), each leading to
+  its space; a tile whose figure one page shows opens that page: *Intruder files* the page that
+  sets them aside, *Faces* the `people` page, *Words* the Library (once there is something). **Edit**
   hides a tile (✕) or moves it (← →); **Reset** brings the default back. The choice is saved at
   once in `config.toml` (`[home] tiles`), read back and shown; a hidden tile stays hidden, even
   when it asks for something. A phone shows the PC's arrangement and cannot change it.
@@ -95,7 +97,8 @@ docker run --rm -it `
   and the quarantine run by run; *Settings* your folders, the update, Windows, the local AI,
   privacy, the advanced actions and *About*.
 - **What the page already shows stays in the console**: your folders (each found or not, the
-  quarantine of each drive) are in *Your folders* of the sidebar and of *Settings*, so the page
+  quarantine of each drive) are in *Your folders* of the sidebar, on every page that wears it,
+  and of *Settings*, so the page
   does not offer `mh folders`; nor `mh home`, `mh status`, `mh menu` (this page itself), nor
   `mh open` and `mh reports` (the page's *Every report* link opens the same index, always
   current). `mh menu` and `mh --help` keep them.
@@ -249,8 +252,10 @@ nothing, on every address. While the phone shows a page, `mh` keeps running even
 PC's tab closed; once `mh` stops, the phone's page says so.
 Every other step stays on the PC (*Run this step on the PC*): its questions are asked in the
 window of `mh`, which nobody sees from the sofa. One exception: **Show on the TV**, on the
-phone's page, offers three choices: an album saved on the PC, **a folder** (one of the folders
-analysed) or **a month** (by the date the audit read). However many albums, the page stays
+phone's page, offers four choices: **🎲 At random** (a long show through the years, see
+[slideshow](slideshow.md)), an album saved on the PC, **a folder** (one of the folders
+analysed, the most recent photos first, shown by its last part: `2024-08 Holidays`) or, below
+it, **a month** (by the date the audit read, across every folder). However many albums, the page stays
 short: one **Albums (N)** button and, above it, the 3 albums this phone showed last; the albums
 page it opens lists them all with a box to find one by its name, the last shown first, and a
 tap on an album shows it on the TV. A tap starts that

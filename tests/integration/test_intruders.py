@@ -69,7 +69,10 @@ def test_the_audit_says_it_and_the_report_lists_them(
     said = " ".join(result.output.split())
     assert "🧹 3 files that are not photos or videos (zip, pdf)" in said
     (folder,) = (p.parent for p in locations.reports_dir.glob("*-audit/report.html"))
-    assert "Intruder files" in (folder / "report.html").read_text(encoding="utf-8")
+    page = (folder / "report.html").read_text(encoding="utf-8")
+    assert "Intruder files" in page
+    assert "mh review --intruders" in page  # the page that sets them aside (0509)
+    assert "keep it unless you have it elsewhere" in page  # .zip, .pdf
     rows = (folder / "intruders.csv").read_text(encoding="utf-8-sig").splitlines()
     assert len(rows) == 4
     assert any("b.zip" in row for row in rows)
