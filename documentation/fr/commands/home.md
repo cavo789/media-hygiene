@@ -77,11 +77,17 @@ docker run --rm -it `
   dans `mh menu`. Quand tout est appliqué, la page le dit.
 - **Où vous en êtes** : une tuile par fait (le dernier audit, les copies en trop, la
   quarantaine, les fichiers seulement sur le NAS, le tri, les mots, les visages), chacune mène à
-  son espace.
+  son espace. **Modifier** masque une tuile (✕) ou la déplace (← →) ; **Rétablir** remet
+  l'ordre par défaut. Le choix est enregistré aussitôt dans `config.toml` (`[home] tiles`), relu
+  et affiché ; une tuile masquée le reste, même si elle demande quelque chose. Un téléphone
+  montre la disposition du PC et ne peut pas la changer.
 - **Ce que le dernier audit a trouvé** : chaque constat avec son bouton (*9 copies
-  identiques* : **Mettre les copies en trop de côté** ; *3 fichiers illisibles* : le rapport), et
-  quelques aperçus de son rapport. Avant tout audit : trois choses à savoir (rien ne bouge sans
+  identiques* : **Mettre les copies en trop de côté** ; *3 fichiers illisibles* : le rapport).
+  Avant tout audit : trois choses à savoir (rien ne bouge sans
   vous, tout ce qui bouge s'annule, une seule chose est définitive).
+- **Photos au hasard** : une dizaine de photos tirées de votre index à chaque visite, pour le
+  plaisir de les voir ; un clic ouvre la bibliothèque sur le dossier de la photo. Sans index, pas
+  de bloc.
 - **Rapports récents**.
 - **Auditer dans cette page** 🔒, en haut de l'étape *Nettoyer* (sa première étape, l'audit, a
   aussi **Dans cette page**) : **Auditer maintenant** lit vos
@@ -205,7 +211,7 @@ qui a ouvert la page :
   faits et combien par seconde. Fermez ou rechargez l'onglet entre-temps : l'étape continue, et
   la page, rouverte, la montre à nouveau (*Une étape tourne encore*) jusqu'à sa fin.
 - **Des choix en attente sur plusieurs pages** (séries en rafale, quasi-doublons, paires de
-  dossiers, photos indésirables, fichiers disparus, `library`) : la page d'accueil dit combien
+  dossiers, photos indésirables, fichiers disparus, fichiers intrus, les visages de `people`, `library`) : la page d'accueil dit combien
   attendent (*Choix en attente d'application : 3*), chaque page nommée avec son nombre et un
   lien vers elle, et **Tout appliquer** lance un seul `clean --decisions` pour tous : une seule
   exécution, donc un seul `mh undo` les reprend tous. Le nombre est relu dans le fichier des

@@ -222,12 +222,13 @@ function start() {
     .then((response) => { if (!response.ok) throw new Error(String(response.status)); return response.text(); })
     .then((text) => {
       keepState(text);
-      if (drawn && text === kept) { shown(); askLate(); return; }
+      if (drawn && text === kept) { shown(); askLate(); askSamples(); return; }
       const focused = document.activeElement && document.activeElement.id;
       S = JSON.parse(text);
       shown();
       if (drawn) { index(); render(); if (focused) { const again = document.getElementById(focused); if (again) again.focus({ preventScroll: true }); } } else begin();
       askLate();
+      askSamples();
     })
     .catch(() => { forgetState(); shown(); stopped(); });
 }

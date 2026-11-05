@@ -17,6 +17,7 @@ from typing import Annotated
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
+PEOPLE_FOUND_BY = "people:"  # + the group: `found_by` of the photos of a group of faces
 
 
 class ChosenFile(BaseModel):

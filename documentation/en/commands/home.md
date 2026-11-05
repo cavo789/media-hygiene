@@ -71,11 +71,16 @@ docker run --rm -it `
   button has the focus when the page opens: <kbd>Enter</kbd> runs it, as in `mh menu`. When
   everything is applied, the page says so.
 - **Where you are**: one tile per fact (the last audit, the extra copies, the quarantine, the
-  files only on the NAS, the sort, the words, the faces), each leading to its space.
+  files only on the NAS, the sort, the words, the faces), each leading to its space. **Edit**
+  hides a tile (✕) or moves it (← →); **Reset** brings the default back. The choice is saved at
+  once in `config.toml` (`[home] tiles`), read back and shown; a hidden tile stays hidden, even
+  when it asks for something. A phone shows the PC's arrangement and cannot change it.
 - **What the last audit found**: each finding with its button (*9 identical copies*: **Set the
-  extra copies aside**; *3 unreadable files*: the report), and a few previews of its report.
+  extra copies aside**; *3 unreadable files*: the report).
   Before any audit: three things to know (nothing moves without you, everything that moves can
   be undone, one thing only is for good).
+- **Random photos**: about ten photos drawn from your index at each visit, to look at; a click
+  opens the Library on that photo's folder. No index, no block.
 - **Recent reports**.
 - **Audit in this page** 🔒, at the top of the *Clean* stage (its first step, the audit, has
   **In this page** too): **Audit now** reads your folders as
@@ -190,7 +195,7 @@ opened the page:
   or reload the tab meanwhile: the step goes on, and the page, opened again, shows it again
   (*A step still runs*) until its end.
 - **Choices waiting on several pages** (burst series, near duplicates, folder pairs, unwanted
-  photos, files gone, `library`): the home page says how many wait (*Choices waiting to be
+  photos, files gone, intruder files, the faces of `people`, `library`): the home page says how many wait (*Choices waiting to be
   applied: 3*), each page named with its count and a link to it, and **Apply all** runs one
   `clean --decisions` for all of them: one run, so one `mh undo` takes them all back. The count
   is read from the decisions file each time; once applied, it is gone.

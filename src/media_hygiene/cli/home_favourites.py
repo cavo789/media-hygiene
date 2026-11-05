@@ -36,8 +36,21 @@ def read_favourites(config_file: Path) -> tuple[str, ...]:
     Returns:
         The names, each once; none when the key is missing or not a list of words.
     """
+    return read_home_list(config_file, KEY)
+
+
+def read_home_list(config_file: Path, key: str) -> tuple[str, ...]:
+    """A list of words of `[home]`, in its order.
+
+    Args:
+        config_file: `config.toml`; missing: none.
+        key: The list's name.
+
+    Returns:
+        The words, each once; none when the key is missing or not a list of words.
+    """
     try:
-        value: object = loaded(config_file).get(SECTION, {}).get(KEY, [])
+        value: object = loaded(config_file).get(SECTION, {}).get(key, [])
     except OSError, tomllib.TOMLDecodeError:
         return ()
     if not isinstance(value, list):
@@ -56,14 +69,30 @@ def save_favourites(config_file: Path, names: Sequence[str]) -> tuple[str, ...]:
     Returns:
         The list the file now holds.
     """
+    return save_home_list(config_file, KEY, names)
+
+
+def save_home_list(
+    config_file: Path, key: str, names: Sequence[str]
+) -> tuple[str, ...]:
+    """Write a list of `[home]`, keeping every comment, then read it back from the disk.
+
+    Args:
+        config_file: `config.toml`.
+        key: The list's name.
+        names: Its words, in their order.
+
+    Returns:
+        The list the file now holds.
+    """
     document = document_of(config_file)
-    table_of(document, SECTION)[KEY] = _array(names)
+    table_of(document, SECTION)[key] = _array(names)
     text = tomlkit.dumps(document)
     tomllib.loads(text)  # never write a file the next run cannot read
     temporary = config_file.with_name(f"{config_file.name}.tmp")
     temporary.write_text(text, ENCODING)
     temporary.replace(config_file)
-    return read_favourites(config_file)
+    return read_home_list(config_file, key)
 
 
 def _array(names: Sequence[str]) -> Array:

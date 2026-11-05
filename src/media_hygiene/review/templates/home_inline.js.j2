@@ -44,7 +44,7 @@ resumeStep();
 function pendingBanner() {
   const pending = S.pending;
   if (!pending || !pending.total || !BY_ID.apply) return "";
-  const pages = pending.pages.map((page) => `<a href="${esc(page.url)}" data-pending-page>${esc(page.label)} (${page.count})</a>`).join(" · ");
+  const pages = pending.pages.map((page) => (page.url ? `<a href="${esc(page.url)}" data-pending-page>${esc(page.label)} (${page.count})</a>` : `${esc(page.label)} (${page.count})`)).join(" · ");
   const said = fill(T.pendingChoices, { count: pending.total });
   return `<div class="banner" role="status" id="pendingBanner">${icon("check")}<p class="grow"><strong>${esc(said)}</strong><br>${pages}</p><button class="btn btn-primary" type="button" data-run="apply">${icon("check")} ${esc(T.applyAll)}</button></div>`;
 }

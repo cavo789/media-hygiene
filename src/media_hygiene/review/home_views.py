@@ -131,13 +131,13 @@ class HomeState(Frozen):  # one field per part of the page
     given: tuple[str, ...] = ()  # the folders `mh --photos` added, one line each
     proposed: HomeNext | None = None
     tiles: tuple[HomeTile, ...] = ()
+    hidden_tiles: tuple[HomeTile, ...] = ()  # `[home] tiles`, to bring back (0516)
     findings: HomeFindings | None = None
     folders: tuple[HomeFolder, ...] = ()
     quarantine: tuple[HomeQuarantine, ...] = ()
     undo: HomeUndo | None = None
     reports: tuple[HomeReport, ...] = ()
     index: str | None = None  # `/reports/index.html`, when it exists
-    previews: tuple[str, ...] = ()  # thumbnails of the last audit's report
     update: HomeUpdate | None = None  # a newer version, from Docker Hub (0267)
     stale: str = ""  # `mh` written by another image: the console's line (0368)
     windows: bool = True  # the Windows actions are offered

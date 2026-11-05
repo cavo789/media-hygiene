@@ -1916,9 +1916,6 @@ msgstr ""
 msgid "Copies without showing the files: the page shows them first."
 msgstr ""
 
-msgid "Copies, previewed"
-msgstr ""
-
 msgid "Copy and paste this command to run it again."
 msgstr ""
 
@@ -2489,6 +2486,9 @@ msgstr ""
 msgid "Drag to move"
 msgstr ""
 
+msgid "Drawn at each visit; a click opens the Library on its folder."
+msgstr ""
+
 msgid "Drone"
 msgstr ""
 
@@ -2600,6 +2600,9 @@ msgid "Each setting and where it comes from"
 msgstr ""
 
 msgid "Each tile leads to its space."
+msgstr ""
+
+msgid "Edit"
 msgstr ""
 
 msgid "Edit carried over from the workbook"
@@ -3650,7 +3653,14 @@ msgid ""
 "(a cluster stays unnamed)."
 msgstr ""
 
+msgid "Hidden:"
+msgstr ""
+
 msgid "Hide"
+msgstr ""
+
+#, python-brace-format
+msgid "Hide {tile}"
 msgstr ""
 
 msgid "Hike"
@@ -4570,6 +4580,14 @@ msgstr ""
 
 #, python-brace-format
 msgid "Move {count} files into {folders} folders?"
+msgstr ""
+
+#, python-brace-format
+msgid "Move {tile} after"
+msgstr ""
+
+#, python-brace-format
+msgid "Move {tile} before"
 msgstr ""
 
 msgid "Moved"
@@ -6040,6 +6058,10 @@ msgstr ""
 msgid "Open the Download folder and tap media-hygiene-ca.crt."
 msgstr ""
 
+#, python-brace-format
+msgid "Open the Library on {folder}"
+msgstr ""
+
 msgid "Open the albums"
 msgstr ""
 
@@ -6699,6 +6721,9 @@ msgstr ""
 msgid "Radius, in metres"
 msgstr ""
 
+msgid "Random photos"
+msgstr ""
+
 msgid "Random sample"
 msgstr ""
 
@@ -6933,6 +6958,9 @@ msgid "Reports"
 msgstr ""
 
 msgid "Reports (newest first)"
+msgstr ""
+
+msgid "Reset"
 msgstr ""
 
 msgid ""
@@ -7881,6 +7909,10 @@ msgid "Show this message and exit."
 msgstr ""
 
 msgid "Show your photos on the TV"
+msgstr ""
+
+#, python-brace-format
+msgid "Show {tile}"
 msgstr ""
 
 msgid ""
@@ -9557,6 +9589,16 @@ msgid "The target {path} is not mounted."
 msgstr ""
 
 msgid "The terminal takes over: answer its question there. This page closes."
+msgstr ""
+
+#, python-brace-format
+msgid "The tiles could not be saved in config.toml (error {status})."
+msgstr ""
+
+msgid ""
+"The tiles of Where you are, in their order, a minus before those hidden, "
+"e.g. [\"copies\", \"-faces\"]: the page writes this list (its Edit "
+"button). A tile not named comes last. Empty: the default."
 msgstr ""
 
 msgid ""
@@ -11426,7 +11468,15 @@ msgid ""
 "not saved."
 msgstr ""
 
+msgid ""
+"config.toml cannot be read (a mistake in the file?): the tiles were not "
+"saved."
+msgstr ""
+
 msgid "config.toml cannot be written: the favourites were not saved."
+msgstr ""
+
+msgid "config.toml cannot be written: the tiles were not saved."
 msgstr ""
 
 #, python-brace-format
@@ -15960,6 +16010,9 @@ msgid "✓ in the album"
 msgstr ""
 
 msgid "✔ Probably: the event's camera"
+msgstr ""
+
+msgid "✕ hides a tile, ← and → move it; saved at once."
 msgstr ""
 
 #, python-brace-format

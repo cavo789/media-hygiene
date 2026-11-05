@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import Final
 
 from media_hygiene.review.home_app import AUDIT_PATH, FAVOURITES_PATH
+from media_hygiene.review.home_more_api import MORE_PATHS
 from media_hygiene.review.home_tags_api import RUN_PATHS
 from media_hygiene.review.import_steps_api import IMPORT_STEPS_PATH
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH
@@ -18,5 +19,5 @@ from media_hygiene.review.step_watch import STEP_PATH
 
 HOME_PATHS: Final = frozenset(
     {PAGE_PATH, STATE_PATH, STEP_PATH, AUDIT_PATH, FAVOURITES_PATH, PRESENCE_PATH}
-    | {SCOPE_PATH, IMPORT_STEPS_PATH, *RUN_PATHS}
+    | {SCOPE_PATH, IMPORT_STEPS_PATH, *RUN_PATHS, *MORE_PATHS.values()}
 )

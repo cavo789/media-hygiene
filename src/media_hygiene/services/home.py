@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.console.formatting import separators
@@ -21,6 +20,7 @@ from media_hygiene.review.ending import (
 )
 from media_hygiene.review.home_app import AUDIT_PATH, FAVOURITES_PATH, HomeApp
 from media_hygiene.review.home_assets import ASSETS_PREFIX
+from media_hygiene.review.home_more_api import MORE_PATHS
 from media_hygiene.review.home_tags_api import INLINE_PATH, RUN_NAMES, TAGS_RUN
 from media_hygiene.review.home_texts import home_texts
 from media_hygiene.review.import_steps_api import IMPORT_STEPS_PATH
@@ -47,13 +47,7 @@ from media_hygiene.share.album_page import ALBUM_LIST_PATH, ALBUMS_PAGE
 from media_hygiene.slideshow.routes import SLIDES_PATH
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Mapping
-
-    from media_hygiene.console.page_progress import PageProgress
-    from media_hygiene.review.apply_api import ApplyStep
-    from media_hygiene.review.home_views import HomeState
-    from media_hygiene.services.home_audit import AuditResult
-    from media_hygiene.services.home_tags_models import TagsRunner
+    from media_hygiene.services.home_sources import HomeSources
     from media_hygiene.services.runtime import Runtime
 
 _PACKAGE: Final = "media_hygiene.review"
@@ -83,6 +77,7 @@ def home_page(
             "inline": INLINE_PATH,  # a short step run here (0505)
             "audit": AUDIT_PATH,
             "favourites": FAVOURITES_PATH,
+            **MORE_PATHS,
             "scope": SCOPE_PATH,
             "importSteps": IMPORT_STEPS_PATH,  # [imports] then (0481)
             **{name: path if path in runs else "" for name, path in RUN_NAMES.items()},
@@ -104,16 +99,6 @@ def home_page(
         window=mh_window(),
         thousands=separators()[0],
     ).encode()
-
-
-@dataclass(frozen=True, slots=True)
-class HomeSources:
-    """Where the home page's content comes from: the tool folders, and its audit."""
-
-    state: Callable[[], HomeState]
-    audit: Callable[[PageProgress], AuditResult]
-    apply: Callable[[], ApplyStep | None] | None = None  # browse's *Apply now* (0356)
-    runs: Mapping[str, TagsRunner] = field(default_factory=dict)  # by path (0343)
 
 
 def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
@@ -142,6 +127,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         keeps=relays and keeps_server(),
         runs={path: HomeTags(run) for path, run in sources.runs.items()},
         config_file=runtime.locations.config_file,
+        samples=sources.samples,
     )
 
     def ready(port: int) -> None:

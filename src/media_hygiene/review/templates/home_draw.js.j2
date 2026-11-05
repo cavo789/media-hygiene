@@ -134,12 +134,9 @@ function findingRow(row) {
 }
 function findings() {
   const found = S.findings;
-  const thumbs = S.previews.map((url) => `<figure class="thumb"><img src="${esc(url)}" alt="" loading="lazy" decoding="async"></figure>`).join("");
-  const open = S.index ? `<a class="link-btn" href="${esc(S.index)}" target="_blank" rel="noopener">${esc(T.openReport)} ${icon("external")}</a>` : "";
-  const previews = thumbs ? `<div class="previews-card"><div class="previews-head"><h3>${esc(T.previews)}</h3>${open}</div><div class="thumbs">${thumbs}</div></div>` : "";
   return `<section class="block" aria-labelledby="foundTitle">
     <div class="section-head"><h2 id="foundTitle">${esc(found.title)}</h2><p class="section-note">${esc(found.note)}</p></div>
-    <div class="findings"><ul class="finding-list">${found.rows.map(findingRow).join("")}</ul>${previews}</div>
+    <div class="findings"><ul class="finding-list">${found.rows.map(findingRow).join("")}</ul></div>
   </section>`;
 }
 function welcome() {
@@ -202,10 +199,10 @@ function viewHome() {
     </section>
     ${favouritesRow()}${hero()}
     <section class="block" aria-labelledby="whereTitle">
-      <div class="section-head"><h2 id="whereTitle">${esc(T.whereYouAre)}</h2><p class="section-note">${esc(T.tilesNote)}</p></div>
-      <div class="tiles">${S.tiles.map(tile).join("")}</div>
+      ${tilesBlock()}
     </section>
     ${S.findings ? findings() : welcome()}
+    <div id="randomPhotos">${samplesBlock()}</div>
     ${recentReports()}`;
 }
 

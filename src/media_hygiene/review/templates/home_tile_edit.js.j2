@@ -1,0 +1,73 @@
+// The tiles of *Where you are* (0516): the user hides and moves them, each change written into
+// `[home] tiles`, then the state read again from the disk. A phone shows the PC's layout, no edit.
+// The random photos (0485): asked once per load, never with the state; no photo, no block.
+const tileEdit = { on: false, busy: false };
+const canEditTiles = () => !REMOTE && Boolean(P.tiles);
+const tileWords = () => [...S.tiles.map((t) => t.id), ...S.hidden_tiles.map((t) => `-${t.id}`)];
+function editTile(t, at) {
+  const button = (attr, label, text, off) => `<button class="btn btn-sm" type="button" ${attr} aria-label="${esc(fill(label, { tile: t.label }))}"${off ? " disabled" : ""}>${text}</button>`;
+  return `<div class="tile is-edit" data-tile="${esc(t.id)}"><span class="tile-top"><span class="eyebrow">${esc(t.label)}</span></span><span class="tile-value">${esc(t.value)}</span><span class="tile-sub">${esc(t.sub)}</span><span class="tile-edit">${button('data-tile-move="-1"', T.tileLeft, "←", at === 0)}${button('data-tile-move="1"', T.tileRight, "→", at === S.tiles.length - 1)}${button("data-tile-hide", T.tileHide, "✕", false)}</span></div>`;
+}
+function tilesBlock() {
+  const edit = tileEdit.on && canEditTiles();
+  const toggle = canEditTiles() ? `<button class="btn btn-sm" type="button" id="tilesToggle">${esc(edit ? T.tilesDone : T.tilesEdit)}</button>` : "";
+  const reset = edit ? `<button class="btn btn-sm" type="button" id="tilesReset">${esc(T.tilesReset)}</button>` : "";
+  const hidden = edit && S.hidden_tiles.length
+    ? `<p class="tiles-hidden">${esc(T.tilesHidden)} ${S.hidden_tiles.map((t) => `<button class="btn btn-sm" type="button" data-tile-show="${esc(t.id)}" aria-label="${esc(fill(T.tileShow, { tile: t.label }))}">+ ${esc(t.label)}</button>`).join("")}</p>`
+    : "";
+  return `<div class="section-head"><h2 id="whereTitle">${esc(T.whereYouAre)}</h2><p class="section-note">${esc(edit ? T.tilesEditNote : T.tilesNote)}</p><span class="section-actions">${reset}${toggle}</span></div>
+      <div class="tiles">${(edit ? S.tiles.map(editTile) : S.tiles.map(tile)).join("")}</div>${hidden}`;
+}
+function saveTiles(words, focus) {
+  if (tileEdit.busy) return;
+  tileEdit.busy = true;
+  post(P.tiles, { names: words })
+    .then((reply) => {
+      if (!reply.ok) { toast(reply.body.error || fill(T.tilesFailed, { status: reply.status })); return null; }
+      return reload();  // drawn from config.toml read again, never from the list sent
+    })
+    .then(() => {
+      const target = focus ? $(focus) : null;
+      if (target && !target.disabled) target.focus();
+      else { const back = $("#tilesToggle"); if (back) back.focus(); }
+    })
+    .catch(() => stopped())
+    .finally(() => { tileEdit.busy = false; });
+}
+document.addEventListener("click", (event) => {
+  const hit = event.target.closest("#tilesToggle, #tilesReset, [data-tile-move], [data-tile-hide], [data-tile-show]");
+  if (!hit) return;
+  event.preventDefault();
+  if (hit.id === "tilesToggle") { tileEdit.on = !tileEdit.on; renderMain(); const back = $("#tilesToggle"); if (back) back.focus(); return; }
+  if (hit.id === "tilesReset") { saveTiles([], null); return; }
+  if (hit.dataset.tileShow) { saveTiles([...S.tiles.map((t) => t.id), hit.dataset.tileShow, ...tileWords().filter((word) => word.startsWith("-") && word !== `-${hit.dataset.tileShow}`)], `[data-tile="${CSS.escape(hit.dataset.tileShow)}"] [data-tile-hide]`); return; }
+  const id = hit.closest("[data-tile]").dataset.tile;
+  const words = tileWords();
+  const at = words.indexOf(id);
+  if ("tileHide" in hit.dataset) { words[at] = `-${id}`; words.push(words.splice(at, 1)[0]); saveTiles(words, null); return; }
+  const by = Number(hit.dataset.tileMove);
+  words.splice(at + by, 0, words.splice(at, 1)[0]);
+  saveTiles(words, `[data-tile="${CSS.escape(id)}"] [data-tile-move="${by}"]`);
+});
+
+let samples = [];
+function samplesBlock() {
+  if (!samples.length) return "";
+  const items = samples.map((photo) => `<li><a class="sample" href="${esc(photo.url)}" title="${esc(photo.folder)}" aria-label="${esc(fill(T.sampleOpen, { folder: photo.folder }))}"><img src="${esc(photo.thumb)}" alt="" loading="lazy" decoding="async"></a></li>`).join("");
+  return `<section class="block" aria-labelledby="samplesTitle">
+      <div class="section-head"><h2 id="samplesTitle">${esc(T.samplesTitle)}</h2><p class="section-note">${esc(T.samplesNote)}</p></div>
+      <ul class="samples">${items}</ul>
+    </section>`;
+}
+function askSamples() {
+  if (REMOTE || !P.samples) return;
+  fetch(P.samples, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : { samples: [] }))
+    .then((view) => { samples = view.samples || []; const place = $("#randomPhotos"); if (place) place.innerHTML = samplesBlock(); })
+    .catch(() => {});
+}
+// A thumbnail that cannot be made (the file went since the draw): its tile goes.
+document.addEventListener("error", (event) => {
+  const tile = event.target.closest && event.target.closest(".sample");
+  if (tile) tile.parentNode.remove();
+}, true);

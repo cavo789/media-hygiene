@@ -2331,9 +2331,6 @@ msgstr ""
 msgid "Copies without showing the files: the page shows them first."
 msgstr "Copie sans montrer les fichiers : la page les montre d'abord."
 
-msgid "Copies, previewed"
-msgstr "Des copies, en aperçu"
-
 msgid "Copy and paste this command to run it again."
 msgstr "Copiez-collez cette commande pour relancer."
 
@@ -3017,6 +3014,10 @@ msgstr ""
 msgid "Drag to move"
 msgstr "Glisser pour déplacer"
 
+msgid "Drawn at each visit; a click opens the Library on its folder."
+msgstr ""
+"Tirées à chaque visite ; un clic ouvre la bibliothèque sur leur dossier."
+
 msgid "Drone"
 msgstr "Drone"
 
@@ -3171,6 +3172,9 @@ msgstr "Chaque réglage et d'où il vient"
 
 msgid "Each tile leads to its space."
 msgstr "Chaque tuile mène à son espace."
+
+msgid "Edit"
+msgstr "Modifier"
 
 msgid "Edit carried over from the workbook"
 msgstr "Modification reprise du classeur"
@@ -4433,8 +4437,15 @@ msgstr ""
 "Cachés de la carte et des listes ; « classify » les lit comme avant (un "
 "groupe reste sans nom)."
 
+msgid "Hidden:"
+msgstr "Masquées :"
+
 msgid "Hide"
 msgstr "Masquer"
+
+#, python-brace-format
+msgid "Hide {tile}"
+msgstr "Masquer {tile}"
 
 msgid "Hike"
 msgstr "Randonnée"
@@ -5502,6 +5513,14 @@ msgstr "Déplacer vers un événement…"
 #, python-brace-format
 msgid "Move {count} files into {folders} folders?"
 msgstr "Déplacer {count} fichiers dans {folders} dossiers ?"
+
+#, python-brace-format
+msgid "Move {tile} after"
+msgstr "Déplacer {tile} après"
+
+#, python-brace-format
+msgid "Move {tile} before"
+msgstr "Déplacer {tile} avant"
 
 msgid "Moved"
 msgstr "Déplacés"
@@ -7289,6 +7308,10 @@ msgstr ""
 msgid "Open the Download folder and tap media-hygiene-ca.crt."
 msgstr "Ouvrez le dossier Download et touchez media-hygiene-ca.crt."
 
+#, python-brace-format
+msgid "Open the Library on {folder}"
+msgstr "Ouvrir la bibliothèque sur {folder}"
+
 msgid "Open the albums"
 msgstr "Ouvrir les albums"
 
@@ -8052,6 +8075,9 @@ msgstr "Fichier RAW impossible à décoder"
 msgid "Radius, in metres"
 msgstr "Rayon, en mètres"
 
+msgid "Random photos"
+msgstr "Photos au hasard"
+
 msgid "Random sample"
 msgstr "Échantillon aléatoire"
 
@@ -8325,6 +8351,9 @@ msgstr "Rapports"
 
 msgid "Reports (newest first)"
 msgstr "Rapports (du plus récent au plus ancien)"
+
+msgid "Reset"
+msgstr "Rétablir"
 
 msgid ""
 "Resized copies without the GPS position, a folder and a zip: for a mail, a "
@@ -9477,6 +9506,10 @@ msgstr "Affiche ce message et quitte."
 
 msgid "Show your photos on the TV"
 msgstr "Montrer vos photos sur la télé"
+
+#, python-brace-format
+msgid "Show {tile}"
+msgstr "Afficher {tile}"
 
 msgid ""
 "Shown by kind and date, the latest first; config.toml keeps its own order, "
@@ -11519,6 +11552,22 @@ msgstr "La cible {path} n'est pas montée."
 msgid "The terminal takes over: answer its question there. This page closes."
 msgstr ""
 "Le terminal prend le relais : répondez-y à sa question. Cette page se ferme."
+
+#, python-brace-format
+msgid "The tiles could not be saved in config.toml (error {status})."
+msgstr ""
+"Les tuiles n'ont pas pu être enregistrées dans config.toml (erreur "
+"{status})."
+
+msgid ""
+"The tiles of Where you are, in their order, a minus before those hidden, "
+"e.g. [\"copies\", \"-faces\"]: the page writes this list (its Edit button). "
+"A tile not named comes last. Empty: the default."
+msgstr ""
+"Les tuiles de « Où vous en êtes », dans leur ordre, un moins devant celles "
+"masquées, par ex. [\"copies\", \"-faces\"] : la page écrit cette liste (son "
+"bouton Modifier). Une tuile non citée vient en dernier. Vide : la "
+"disposition par défaut."
 
 msgid ""
 "The title a paired phone's page shows, e.g. the family's name; empty: Our "
@@ -13745,9 +13794,20 @@ msgstr ""
 "config.toml est illisible (une erreur dans le fichier ?) : les favoris ne "
 "sont pas enregistrés."
 
+msgid ""
+"config.toml cannot be read (a mistake in the file?): the tiles were not "
+"saved."
+msgstr ""
+"config.toml ne peut pas être lu (une erreur dans le fichier ?) : les tuiles "
+"n'ont pas été enregistrées."
+
 msgid "config.toml cannot be written: the favourites were not saved."
 msgstr ""
 "config.toml ne peut pas être écrit : les favoris ne sont pas enregistrés."
+
+msgid "config.toml cannot be written: the tiles were not saved."
+msgstr ""
+"config.toml ne peut pas être écrit : les tuiles n'ont pas été enregistrées."
 
 #, python-brace-format
 msgid "config.toml could not be updated: {reason}"
@@ -19060,6 +19120,9 @@ msgstr "✓ dans l'album"
 
 msgid "✔ Probably: the event's camera"
 msgstr "✔ Probablement : l'appareil de l'événement"
+
+msgid "✕ hides a tile, ← and → move it; saved at once."
+msgstr "✕ masque une tuile, ← et → la déplacent ; enregistré aussitôt."
 
 #, python-brace-format
 msgid "✨ All done: {count} new photo or video in your library."

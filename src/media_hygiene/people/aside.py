@@ -22,6 +22,7 @@ from media_hygiene.errors import MediaHygieneError
 from media_hygiene.index.aside_faces import AsideFaces
 from media_hygiene.index.descriptions import PhotoVersion
 from media_hygiene.people.remembered import new_aside
+from media_hygiene.report.chosen_decisions import PEOPLE_FOUND_BY
 from media_hygiene.review.http import Response
 from media_hygiene.search.chosen import Selection
 from media_hygiene.search.chosen_api import chosen_refused, chosen_said, chosen_unsaved
@@ -135,7 +136,8 @@ class AsideDesk:
                 self.memory.forget(face.embedding for face in faces)
             return said
         photos = tuple(version for path in sorted(paths) if (version := _version(path)))
-        saved = self.store.add(Selection(photos, asked.label.strip()))
+        found_by = f"{PEOPLE_FOUND_BY}{asked.label.strip()}"
+        saved = self.store.add(Selection(photos, found_by))
         said = chosen_said(saved, self.store.place.host)
         if self.memory is None or not asked.remember:
             return said
