@@ -3,7 +3,7 @@
 A TV cannot install the PC's authority (0430), and a phone that installed the app
 must not meet the slideshow in plain HTTP (its app took the link over). So the phone's
 remote is HTTPS, and the TV comes by the plain door (`LAN_CA_PORT`): its address `/`
-is the welcome page (0614), a paired TV goes on to the screen page; then only what a
+is the welcome page (0614), paired TV or not (its 📺 tile leads on); then only what a
 TV asks (its code, the show, its pictures and films). Nothing of the remote, no phone
 pairing: a phone there gets 404.
 """
@@ -26,7 +26,6 @@ if TYPE_CHECKING:
     from media_hygiene.slideshow.app import SlideshowApp
 
 SCREEN_PATH: Final = TV_SCREEN
-TV_HOME: Final = "/"
 _GET: Final = "GET"
 
 
@@ -57,19 +56,16 @@ def screen_page(app: SlideshowApp, request: Request, visitor: Visitor) -> Respon
     )
 
 
-def _front(path: str, visitor: Visitor, family_title: str) -> Response | None:
-    """The welcome page and its meerkat; a paired TV goes on to its page (0614).
+def _front(path: str, family_title: str) -> Response | None:
+    """The welcome page and its meerkat, for every TV, paired or not (0614).
 
     Args:
         path: The path asked.
-        visitor: Who asks.
         family_title: The welcome page's title.
 
     Returns:
         The answer, or None for another path.
     """
-    if path == TV_HOME and visitor is Visitor.SCREEN:
-        return Response(HTTPStatus.SEE_OTHER, headers=(f"Location: {SCREEN_PATH}",))
     if path in WELCOME_PATHS:
         return welcome(path, family_title)
     return None
@@ -96,7 +92,7 @@ class TvDoor:
         visitor = app.door.tv_visitor(request)
         if visitor is Visitor.OUTSIDER or request.method != _GET:
             return Response(HTTPStatus.FORBIDDEN)
-        front = _front(request.path, visitor, self.family_title)
+        front = _front(request.path, self.family_title)
         if front is not None:
             return front
         if request.path == SCREEN_PATH:

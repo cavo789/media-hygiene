@@ -97,9 +97,9 @@ show: a TV reloaded loses nothing, stopping `mh` ends it.
    shows the photos only: the videos need the Chromecast's browser.
 2. Type the PC's address on port **8089**, for example `http://192.168.1.20:8089/` (the
    phone's remote is on 8088, in `https`): a welcome page opens, press **OK** on **📺 This is the
-   TV** (its other tile, **📱 Install on my phone**, leads a phone to the certificate's steps). A
-   TV already paired goes straight to its page; `http://192.168.1.20:8089/screen` skips the
-   welcome too. It is plain `http`, on your home network: a TV cannot
+   TV** (its other tile, **📱 Install on my phone**, leads a phone to the certificate's steps). Bookmark
+   `http://192.168.1.20:8089/screen` instead to skip the welcome; with no slideshow running,
+   the TV says what to do on the phone. It is plain `http`, on your home network: a TV cannot
    install the PC's certificate, and nothing goes on the internet. That address serves the TV's
    pages only, never the remote.
 3. **Bookmark it**: next time, the bookmark is enough (see [A stable address](#a-stable-address)).

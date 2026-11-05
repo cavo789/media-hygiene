@@ -19,6 +19,7 @@
   var front = { layer: document.getElementById("layerA"), photo: document.getElementById("photoA") };
   var back = { layer: document.getElementById("layerB"), photo: document.getElementById("photoB") };
   var pairing = document.getElementById("pairing");
+  var idle = document.getElementById("idle");
   var codeText = document.getElementById("code");
   var film = document.getElementById("film");
   var filmLayer = document.getElementById("layerF");
@@ -206,6 +207,9 @@
   }
 
   function showAnswer(answer) {
+    if (answer.photo || answer.film) {
+      idle.className = "hidden";
+    }
     telling(answer);
     placing(answer);
     if (answer.film && films) {
@@ -242,6 +246,7 @@
     codeText.innerHTML = "";
     codeText.appendChild(document.createTextNode(code));
     pairing.className = "";
+    idle.className = "hidden";
     fitCode();
   }
 
