@@ -181,6 +181,7 @@
 {% include "pick_keys_more.html.j2" %}
 {% endblock %}
 {% block bar %}
+  {% set tidy_next = "/review/near/" %}{% include "tidy_bar.html.j2" %}
   <button type="button" id="view" title="{{ _('Switch between the board and one series at a time (P)') }}"></button>
   <strong id="position"></strong>
   <span id="totals" class="muted"></span>

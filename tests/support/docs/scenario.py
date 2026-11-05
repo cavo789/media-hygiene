@@ -32,7 +32,7 @@ COMMANDS_TOO: Final = ("crosscheck", "config", "classify", "sort", "album", "inv
                        "places", "status", "launcher", "tags", "search",
                        "people", "xmp", "menu", "home", "import",
                        "push", "slideshow", "share", "shrink", "backup",
-                       "restore")  # fmt: skip
+                       "restore", "upkeep")  # fmt: skip
 _WINDOWS: Final[Mapping[Locale, Window]] = {
     Locale.EN: Window("Audit summary", "'clean'", "media-hygiene audit"),
     Locale.FR: Window(

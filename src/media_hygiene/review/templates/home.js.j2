@@ -26,6 +26,7 @@ const HOME = "home";
 const FAMILY_STAGE = "find";  // the one stage a paired phone sees (0293)
 const STORE_PREFIX = "mh-home-";
 let S = null;
+let wired = false;
 
 const esc = (text) => String(text).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const icon = (name) => `<svg class="i" aria-hidden="true" focusable="false"><use href="#i-${esc(name)}"></use></svg>`;
@@ -121,9 +122,22 @@ function render() {
 }
 // The state, read again from the tool folders (after the audit of the page, a step's end).
 const reload = () => fetch(P.state, { cache: "no-store" })
-  .then((response) => response.json())
-  .then((state) => { S = state; index(); render(); })
+  .then((response) => response.text())
+  .then((text) => { S = JSON.parse(text); keepState(text); index(); render(); })
   .catch(() => stopped());
+// The last state of this tab (0442): back on the page it is drawn at once, then refreshed
+// behind. A per-tab convenience: without storage, the splash as before. Choosing a step reads
+// the state again on the server, so what is drawn for this moment can never run a stale step.
+const STATE_KEY = `mh-home-state-${document.documentElement.lang}`;
+function keepState(text) {
+  try { sessionStorage.setItem(STATE_KEY, text); } catch (error) { /* refused or full: the splash next time */ }
+}
+function keptState() {
+  try { return sessionStorage.getItem(STATE_KEY); } catch (error) { return null; }
+}
+function forgetState() {
+  try { sessionStorage.removeItem(STATE_KEY); } catch (error) { /* nothing kept */ }
+}
 
 // ---- Events -----------------------------------------------------------------------------
 function wire() {
@@ -189,17 +203,33 @@ function wire() {
   wirePalette();
 }
 
-// The page shows at once, its meerkat waiting for the state: reading the tool folders can be
-// slow through Docker Desktop (0277). The tab says it is there from the start (0261).
+// The first load shows the meerkat waiting for the state: reading the tool folders can be slow
+// through Docker Desktop (0277). Afterwards the last state is drawn at once, marked as updating,
+// and drawn again only if the answer differs (0442). The tab says it is there from the start (0261).
 function start() {
   wirePresence();  // a paired phone keeps the PC's server alive too (0416)
   if (!REMOTE) showLan();
-  const slow = window.setTimeout(() => { $("#loadingSlow").hidden = false; }, LOADING_SLOW_MS);
-  const shown = () => { window.clearTimeout(slow); $("#loading").hidden = true; };
+  const kept = keptState();
+  let drawn = false;
+  if (kept) {
+    try { S = JSON.parse(kept); begin(); drawn = true; } catch (error) { forgetState(); S = null; }
+  }
+  if (!drawn) $("#loading").hidden = false;
+  $("#updating").hidden = !drawn;
+  const slow = drawn ? 0 : window.setTimeout(() => { $("#loadingSlow").hidden = false; }, LOADING_SLOW_MS);
+  const shown = () => { window.clearTimeout(slow); $("#loading").hidden = true; $("#updating").hidden = true; };
   fetch(P.state, { cache: "no-store" })
-    .then((response) => { if (!response.ok) throw new Error(String(response.status)); return response.json(); })
-    .then((state) => { S = state; shown(); begin(); askLate(); })
-    .catch(() => { shown(); stopped(); });
+    .then((response) => { if (!response.ok) throw new Error(String(response.status)); return response.text(); })
+    .then((text) => {
+      keepState(text);
+      if (drawn && text === kept) { shown(); askLate(); return; }
+      const focused = document.activeElement && document.activeElement.id;
+      S = JSON.parse(text);
+      shown();
+      if (drawn) { index(); render(); if (focused) { const again = document.getElementById(focused); if (again) again.focus({ preventScroll: true }); } } else begin();
+      askLate();
+    })
+    .catch(() => { forgetState(); shown(); stopped(); });
 }
 // The PC's page under mh --lan: the address, the code and the QR code a phone needs (0269).
 // GET P.lan answers the loopback only, and only under mh --lan (else 404: nothing shown).
@@ -264,7 +294,7 @@ function begin() {
   applyTheme(store.get("theme", "auto"), false);
   const wanted = decodeURIComponent((location.hash || "").slice(1));
   view.id = SPACE[wanted] ? wanted : HOME;
-  wire();
+  if (!wired) { wired = true; wire(); }
   render();
   setNav(false, false);
   // Enter runs the next step, as in `mh menu`: its button has the focus.

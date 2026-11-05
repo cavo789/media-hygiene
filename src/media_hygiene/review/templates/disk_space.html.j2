@@ -1,0 +1,85 @@
+{% extends "page_frame.html.j2" %}
+{# Disk space (0539): the previews and the quarantine, each limit next to its effect, saved
+   into config.toml and read back from the disk before being shown. Nothing of the photos is
+   touched here; the quarantine is seen and purged from the home page's History (its own question). #}
+{% set page_name = _("Disk space") %}
+{% set keys_safe = _("Your photos are not touched here. Previews are made again when shown.") %}
+{% block style %}
+  main section { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 14px; margin-bottom: 14px; }
+  main label { display: block; margin: 8px 0; }
+  main input { width: 7em; }
+  main table { border-collapse: collapse; width: 100%; }
+  main th, main td { padding: 4px 8px; border-bottom: 1px solid var(--line); text-align: left; }
+  main .table-wrap { overflow-x: auto; }
+{% endblock %}
+{% block bar %}
+  <strong>{{ page_name }}</strong>
+  <span id="said" role="status"></span>
+{% endblock %}
+{% block content %}
+<main>
+  <section aria-labelledby="previewsTitle">
+    <h2 id="previewsTitle">{{ _("Previews") }}: <span id="previewsSize"></span></h2>
+    <label>{{ _("Keep at most (GB)") }} <input id="maxGb" type="number" min="0.1" step="0.1"></label>
+    <button id="saveGb" type="button">{{ _("Save") }}</button>
+    <button id="empty" class="plain" type="button"></button>
+  </section>
+  <section aria-labelledby="quarantineTitle">
+    <h2 id="quarantineTitle">{{ _("Quarantine") }}: <span id="quarantineSize"></span></h2>
+    <label>{{ _("Suggest purging after (days)") }} <input id="days" type="number" min="1" step="1"></label>
+    <button id="saveDays" type="button">{{ _("Save") }}</button>
+    <div class="table-wrap"><table>
+      <thead><tr><th>{{ _("Run") }}</th><th>{{ _("Files") }}</th><th>{{ _("Size") }}</th><th>{{ _("Since") }}</th><th></th></tr></thead>
+      <tbody id="runs"></tbody>
+    </table></div>
+    <p><a href="/#history">{{ _("See the photos, put some back or purge: History and undo") }}</a></p>
+  </section>
+</main>
+{% endblock %}
+{% block after %}
+<script>
+(() => {
+  "use strict";
+  const TEXTS = {{ {
+    "empty": _("Empty the previews ({size})"),
+    "nothing": _("No preview kept"),
+    "saved": _("Read back from config.toml: {gb} GB, {days} days."),
+    "emptied": _("Previews now: {size}."),
+    "old": _("Worth purging"),
+    "failed": _("The page failed (error {status})."),
+  } | tojson }};
+  const byId = (id) => document.getElementById(id);
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  const draw = (state) => {
+    byId("previewsSize").textContent = state.previews_size;
+    byId("quarantineSize").textContent = state.quarantine_size;
+    byId("maxGb").value = state.limits.previews_max_gb;
+    byId("days").value = state.limits.purge_hint_days;
+    byId("empty").textContent = state.previews_empty ? TEXTS.nothing : fill(TEXTS.empty, { size: state.previews_size });
+    byId("empty").disabled = state.previews_empty;
+    byId("runs").replaceChildren(...state.runs.map((run) => {
+      const row = document.createElement("tr");
+      for (const value of [run.run_id, run.files, run.size, run.since, run.old ? TEXTS.old : ""]) {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.append(cell);
+      }
+      return row;
+    }));
+  };
+  const post = async (path, body, done) => {
+    const answer = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const value = await answer.json().catch(() => ({}));
+    if (!answer.ok) { byId("said").textContent = value.error || fill(TEXTS.failed, { status: answer.status }); return; }
+    draw(value);
+    byId("said").textContent = done(value);
+  };
+  const saveLimits = () => post("api/limits", { previews_max_gb: Number(byId("maxGb").value), purge_hint_days: Number(byId("days").value) },
+    (state) => fill(TEXTS.saved, { gb: state.limits.previews_max_gb, days: state.limits.purge_hint_days }));
+  byId("saveGb").addEventListener("click", saveLimits);
+  byId("saveDays").addEventListener("click", saveLimits);
+  byId("empty").addEventListener("click", () => post("api/empty", {}, (state) => fill(TEXTS.emptied, { size: state.previews_size })));
+  fetch("api/state", { cache: "no-store" }).then((answer) => answer.json()).then(draw);
+})();
+</script>
+{% endblock %}

@@ -250,6 +250,10 @@ msgid "'{category}' is not a category: no placeholder, not empty"
 msgstr ""
 
 #, python-brace-format
+msgid "'{command}' stopped (code {code}): the next steps did not run."
+msgstr ""
+
+#, python-brace-format
 msgid "'{key}' in the variable {name}"
 msgstr ""
 
@@ -448,6 +452,12 @@ msgid "/"
 msgstr ""
 
 msgid "/config is not mounted: there is no config.toml to complete."
+msgstr ""
+
+msgid "10 minutes done"
+msgstr ""
+
+msgid "10 minutes of tidying"
 msgstr ""
 
 msgid "3. Several folders and disks"
@@ -1441,6 +1451,9 @@ msgstr ""
 msgid "Burst series review"
 msgstr ""
 
+msgid "Bursts then near duplicates, biggest gain first"
+msgstr ""
+
 msgid "By year, event, place or person, in a workbook you correct."
 msgstr ""
 
@@ -2255,6 +2268,9 @@ msgstr ""
 msgid "Did you mean {names}?"
 msgstr ""
 
+msgid "Disk space"
+msgstr ""
+
 msgid "Display"
 msgstr ""
 
@@ -2579,6 +2595,10 @@ msgid "Empty the path"
 msgstr ""
 
 msgid "Empty the path, then the list of your folders again"
+msgstr ""
+
+#, python-brace-format
+msgid "Empty the previews ({size})"
 msgstr ""
 
 msgid "Empty, or a disk unplugged"
@@ -3466,6 +3486,9 @@ msgid ""
 "would be set aside or replaced."
 msgstr ""
 
+msgid "Go on for 10 minutes"
+msgstr ""
+
 msgid "Go on with the clean?"
 msgstr ""
 
@@ -3879,6 +3902,9 @@ msgid "KB"
 msgstr ""
 
 msgid "Keep"
+msgstr ""
+
+msgid "Keep at most (GB)"
 msgstr ""
 
 msgid "Keep both names (link)"
@@ -4705,6 +4731,9 @@ msgstr ""
 msgid "Next event (N)"
 msgstr ""
 
+msgid "Next page"
+msgstr ""
+
 msgid "Next page →"
 msgstr ""
 
@@ -5062,6 +5091,9 @@ msgid "No position for this event."
 msgstr ""
 
 msgid "No preview"
+msgstr ""
+
+msgid "No preview kept"
 msgstr ""
 
 #, python-brace-format
@@ -5452,6 +5484,9 @@ msgstr ""
 msgid "Nothing to do yet."
 msgstr ""
 
+msgid "Nothing to do: [routine] steps is empty."
+msgstr ""
+
 msgid "Nothing to get back."
 msgstr ""
 
@@ -5465,6 +5500,9 @@ msgid "Nothing to move: every file is where the plan puts it."
 msgstr ""
 
 msgid "Nothing to put back."
+msgstr ""
+
+msgid "Nothing to review"
 msgstr ""
 
 #, python-brace-format
@@ -6323,6 +6361,13 @@ msgstr ""
 msgid "Preparing the photos of the album {name}…"
 msgstr ""
 
+msgid "Previews"
+msgstr ""
+
+#, python-brace-format
+msgid "Previews now: {size}."
+msgstr ""
+
 msgid "Previous"
 msgstr ""
 
@@ -6440,6 +6485,9 @@ msgstr ""
 msgid "Quarantine"
 msgstr ""
 
+msgid "Quarantine and previews, their limits"
+msgstr ""
+
 #, python-brace-format
 msgid "Quarantine of {drive}"
 msgstr ""
@@ -6514,6 +6562,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "Read as: {words}."
+msgstr ""
+
+#, python-brace-format
+msgid "Read back from config.toml: {gb} GB, {days} days."
 msgstr ""
 
 #, python-brace-format
@@ -6959,6 +7011,14 @@ msgstr ""
 msgid "Run the audit first (Clean, step 1)."
 msgstr ""
 
+msgid ""
+"Run the regular chores in one go, as listed in config.toml: audit, copies"
+" set aside, old quarantine purged, reports; each asks as usual."
+msgstr ""
+
+msgid "Run the regular upkeep"
+msgstr ""
+
 msgid "Run the same command again to continue: the files moved are skipped."
 msgstr ""
 
@@ -7305,6 +7365,9 @@ msgstr ""
 msgid "See the files"
 msgstr ""
 
+msgid "See the photos, put some back or purge: History and undo"
+msgstr ""
+
 msgid "See them"
 msgstr ""
 
@@ -7364,6 +7427,12 @@ msgstr ""
 
 #, python-brace-format
 msgid "Series {number} of {total}"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Session over. {gain} What next: Apply now if it shows here, then back to "
+"the home page."
 msgstr ""
 
 msgid "Set [classify.ai] model in config.toml, or remove the rule."
@@ -7843,7 +7912,13 @@ msgstr ""
 msgid "Still undoable: {what}"
 msgstr ""
 
+msgid "Stop"
+msgstr ""
+
 msgid "Stop after this photo"
+msgstr ""
+
+msgid "Stop here"
 msgstr ""
 
 msgid "Stop sharing"
@@ -7905,6 +7980,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Subject"
+msgstr ""
+
+msgid "Suggest purging after (days)"
 msgstr ""
 
 msgid "Summary"
@@ -8042,6 +8120,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "Taken: {when}"
+msgstr ""
+
+#, python-brace-format
+msgid "That could not be done: {reason}"
 msgstr ""
 
 msgid "The Explorer's menu is as it was."
@@ -8227,6 +8309,11 @@ msgid "The check of the phone failed: nothing more was deleted."
 msgstr ""
 
 msgid "The choices did not read back as written: nothing moved."
+msgstr ""
+
+msgid ""
+"The chores of [routine], in order: audit, copies set aside, old "
+"quarantine purged, reports. Each asks as usual."
 msgstr ""
 
 msgid ""
@@ -8424,7 +8511,13 @@ msgstr ""
 msgid "The favourites are being saved: one moment."
 msgstr ""
 
-msgid "The favourites could not be saved in config.toml."
+msgid ""
+"The favourites can only be saved from this PC's own address "
+"(http://localhost)."
+msgstr ""
+
+#, python-brace-format
+msgid "The favourites could not be saved in config.toml (error {status})."
 msgstr ""
 
 msgid ""
@@ -9971,6 +10064,13 @@ msgstr ""
 msgid "Updated: {before} → {after}. What changed: {notes}"
 msgstr ""
 
+msgid "Updating…"
+msgstr ""
+
+#, python-brace-format
+msgid "Upkeep: {step}"
+msgstr ""
+
 msgid "Usage:"
 msgstr ""
 
@@ -10026,6 +10126,14 @@ msgid ""
 msgstr ""
 
 msgid "Wedding"
+msgstr ""
+
+msgid ""
+"What 'upkeep' runs, in this order; remove a step to switch it off. audit:"
+" the library read again. copies: the exact copies go to the quarantine, "
+"after clean's question (mh undo puts them back). purge: the quarantine "
+"runs older than purge_hint_days, after purge's question. reports: the "
+"list refreshed."
 msgstr ""
 
 msgid "What an album is, and what this page does"
@@ -10319,6 +10427,9 @@ msgstr ""
 msgid "Workbook: {path}"
 msgstr ""
 
+msgid "Worth purging"
+msgstr ""
+
 msgid "Write 'mh', a short command holding your folders: mh audit, mh clean."
 msgstr ""
 
@@ -10549,6 +10660,9 @@ msgid "Your photos and videos were not touched."
 msgstr ""
 
 msgid "Your photos and videos, sorted and without duplicates."
+msgstr ""
+
+msgid "Your photos are not touched here. Previews are made again when shown."
 msgstr ""
 
 msgid ""
@@ -10973,6 +11087,14 @@ msgid "compare the shots at 100 %%"
 msgstr ""
 
 msgid "config.toml"
+msgstr ""
+
+msgid ""
+"config.toml cannot be read (a mistake in the file?): the favourites were "
+"not saved."
+msgstr ""
+
+msgid "config.toml cannot be written: the favourites were not saved."
 msgstr ""
 
 #, python-brace-format
@@ -12777,6 +12899,9 @@ msgid "up to date"
 msgstr ""
 
 msgid "update version new upgrade docker"
+msgstr ""
+
+msgid "upkeep routine chores regular maintenance"
 msgstr ""
 
 msgid "usage policy"

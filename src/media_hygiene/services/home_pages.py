@@ -22,6 +22,7 @@ from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
 from media_hygiene.search.folders import BROWSE_PATH
 from media_hygiene.services.console_here import ReadOnlyHere
+from media_hygiene.services.disk_here import DiskHere
 from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.places_here import PLACES_PREFIX, PlacesHere
 from media_hygiene.services.review_here import ReviewHere
@@ -135,6 +136,7 @@ class HomeWithPages:
     history: ReadOnlyHere  # `/history/` (0350), `/console/<step>/` (0567)
     slideshow: SlideshowHere  # `/slideshow/…`, its TV on the plain door (0417)
     places: PlacesHere  # `/places/…` (0417)
+    disk: DiskHere  # `/disk-space/` (0539)
 
     async def handle(self, request: Request) -> Response:
         """Route a request.
@@ -148,9 +150,10 @@ class HomeWithPages:
         path = request.path
         if path in HOME_PATHS or path.startswith(REPORTS_PREFIX):
             return await self.home.handle(request)
-        review = next((each for each in self.reviews if each.serves(path)), None)
-        if review is not None:
-            return await review.handle(request)
+        served: tuple[ReviewHere | DiskHere, ...] = (*self.reviews, self.disk)
+        page = next((each for each in served if each.serves(path)), None)
+        if page is not None:
+            return await page.handle(request)
         if path == PLACES_PREFIX or path.startswith(f"{PLACES_PREFIX}/"):
             return await self.places.handle(request)
         if path == SLIDESHOW_PREFIX or path.startswith(f"{SLIDESHOW_PREFIX}/"):
@@ -186,6 +189,7 @@ def home_with_pages(
             ReadOnlyHere(fresh),
             slideshow,
             PlacesHere(fresh, server),
+            DiskHere(fresh),
         )
     finally:
         slideshow.close()

@@ -19,6 +19,7 @@ from media_hygiene.config.people_settings import PeopleSettings
 from media_hygiene.config.places_settings import PlacesSettings
 from media_hygiene.config.push_settings import PushSettings
 from media_hygiene.config.review_settings import ReviewSettings
+from media_hygiene.config.routine_settings import RoutineSettings
 from media_hygiene.config.scan_settings import ScanSettings
 from media_hygiene.config.share_settings import ShareSettings
 from media_hygiene.config.shrink_settings import ShrinkSettings
@@ -171,4 +172,5 @@ class Settings(BaseModel):
     share: ShareSettings = ShareSettings()
     shrink: ShrinkSettings = ShrinkSettings()
     imports: ImportSettings = ImportSettings()
+    routine: RoutineSettings = RoutineSettings()
     home: HomeSettings = HomeSettings()

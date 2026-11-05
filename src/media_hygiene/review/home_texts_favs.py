@@ -24,5 +24,11 @@ def favourite_texts() -> dict[str, str]:
         "favRemove": _("Remove from the favourites"),
         "favMove": _("Drag to move"),
         "favBusy": _("The favourites are being saved: one moment."),
-        "favFailed": _("The favourites could not be saved in config.toml."),
+        "favFailed": _(
+            "The favourites could not be saved in config.toml (error {status})."
+        ),
+        "favForbidden": _(
+            "The favourites can only be saved from this PC's own address"
+            " (http://localhost)."
+        ),
     }

@@ -35,6 +35,7 @@
 <body>
 {% include "home_icons.svg.j2" %}
 {% include "splash.html.j2" %}
+<p class="updating" id="updating" role="status" hidden>{{ texts.updating }}</p>
 <a class="skip" href="#main">{{ texts.skip }}</a>
 <div class="app" id="app">
   <aside class="sidebar" id="sidebar" aria-label="{{ texts.sidebar }}">

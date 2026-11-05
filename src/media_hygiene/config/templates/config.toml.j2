@@ -185,6 +185,11 @@ family_title = ""
 then = ["audit", "copies", "bursts", "tags", "places"]
 
 
+[routine]
+{{ comment(_("What 'upkeep' runs, in this order; remove a step to switch it off. audit: the library read again. copies: the exact copies go to the quarantine, after clean's question (mh undo puts them back). purge: the quarantine runs older than purge_hint_days, after purge's question. reports: the list refreshed.")) }}
+steps = ["audit", "copies", "purge", "reports"]
+
+
 [share]
 {{ comment(_("'share' makes copies of an album to send them, in your folder media-hygiene\\Shares: each photo upright, its long side fitted into long_side_px pixels, JPEG quality quality (30 to 95). Your photos are only read.")) }}
 long_side_px = 2048

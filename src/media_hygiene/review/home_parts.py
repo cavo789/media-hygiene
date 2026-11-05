@@ -41,6 +41,8 @@ class HomeTile(Frozen):
     sub: str
     space: str
     pill: Pill = Pill.NONE
+    url: str = ""  # leads to this page instead of the space (never on a phone)
+    tidy: bool = False  # starts the "10 minutes of tidying" session (0528)
 
 
 class HomeFinding(Frozen):

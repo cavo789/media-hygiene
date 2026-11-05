@@ -23,6 +23,10 @@ SEARCH_API: Final = "/api/search"
 HOME_READY: Final = "#runDlg"  # the home page's own dialog: no other page has it
 HOME_DRAWN: Final = "#loading"  # hidden once /api/state answered and the page is drawn
 PAGE_READY: Final = "#homeLink"  # *Back to the home page*, on every page mh opened
+_STATE_KEPT: Final = (
+    "Object.keys(sessionStorage).some((key) => key.startsWith('mh-home-state-'))"
+    " && document.getElementById('loading').hidden"
+)
 SHOWN_MS: Final = 30_000  # a page served by the home server (search, browse)
 STEP_MS: Final = 120_000  # a console step, or a page of its own server
 ROUNDS: Final = (
@@ -100,7 +104,13 @@ def open_from_home(page: Page, name: str) -> dict[str, Any]:
     page.click(PAGE_READY)
     home_shown(page, SHOWN_MS)
     back = (time.monotonic() - start) * 1000
-    return {**measured, "click_to_shown_ms": round(shown), "back_home_ms": round(back)}
+    kept = page.evaluate(_STATE_KEPT)  # 0442: the state of this tab, no splash back
+    return {
+        **measured,
+        "click_to_shown_ms": round(shown),
+        "back_home_ms": round(back),
+        "state_kept": kept,
+    }
 
 
 def console_step(page: Page) -> dict[str, Any]:

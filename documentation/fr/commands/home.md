@@ -113,6 +113,22 @@ propose les sortes de fichiers en cases à cocher et les noms de dossiers en lis
 fichier contient, relu sur le disque. Le dernier audit a été fait avec les anciens réglages : la
 page le dit et propose *Relancer l'audit*.
 
+## Place sur le disque
+
+La tuile *Place sur le disque* ouvre une page avec la place que prennent les aperçus et la
+quarantaine. Chaque limite est à côté de son effet, écrite dans `config.toml` et relue avant d'être
+affichée : *Garder au plus (Go)* (`[cache] previews_max_gb`) et *Proposer la purge après (jours)*
+(`[clean] purge_hint_days`). *Vider les aperçus* annonce la place libérée ; ils sont refaits à
+l'affichage. La quarantaine se regarde, se remet ou se purge depuis *Historique et annulation*, où
+`purge` demande d'abord.
+
+## 10 minutes de rangement
+
+La tuile *10 minutes de rangement* ouvre les rafales puis les quasi-doublons, le plus gros gain
+d'abord. La barre compte le temps à côté de la part du gain déjà vue, et *Page suivante* avance. À
+10 minutes, elle demande : continuer, ou s'arrêter sur le bilan, *Appliquer maintenant* restant dans
+la barre. Rien ne bouge avant que vous appliquiez.
+
 ## Lancer une étape
 
 La page ne modifie jamais vos photos elle-même. Ce que fait le bouton d'une étape dépend du `mh`

@@ -8,6 +8,7 @@ is the list `config.toml` holds once written.
 from __future__ import annotations
 
 import asyncio
+import logging
 import re
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
@@ -24,6 +25,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.review.http import Request
 
+_LOGGER: Final = logging.getLogger(__name__)
 _NAME: Final = re.compile(r"[a-z0-9-]{1,40}")  # an action's name in the catalog
 
 
@@ -43,8 +45,8 @@ async def favourites_response(config_file: Path, request: Request) -> Response:
         request: `POST /api/favourites`, `{"names": [...]}`.
 
     Returns:
-        `{"favourites": [...]}` read back from the disk; 400 on a bad body, 500 (its
-        message, never a trace) when the file cannot be written.
+        `{"favourites": [...]}` read back from the disk; 400 on a bad body, 500 (which
+        case, never a trace; the exception goes to the log) when the save fails.
     """
     refused = refused_post(request)
     if refused is not None:
@@ -56,8 +58,16 @@ async def favourites_response(config_file: Path, request: Request) -> Response:
     names = tuple(name for name in asked.names if _valid(name))
     try:
         saved = await asyncio.to_thread(save_favourites, config_file, names)
-    except OSError, ValueError:
-        message = _("The favourites could not be saved in config.toml.")
+    except OSError:
+        _LOGGER.exception("favourites: %s", config_file)
+        message = _("config.toml cannot be written: the favourites were not saved.")
+        return json_response(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": message})
+    except ValueError:  # its TOML, its encoding, a `home` that is not a table
+        _LOGGER.exception("favourites: %s", config_file)
+        message = _(
+            "config.toml cannot be read (a mistake in the file?):"
+            " the favourites were not saved."
+        )
         return json_response(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": message})
     return json_response(HTTPStatus.OK, {"favourites": list(saved)})
 

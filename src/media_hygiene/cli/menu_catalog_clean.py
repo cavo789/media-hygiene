@@ -162,6 +162,7 @@ def clean_area() -> Area:
     """
     guide = ("audit", "open", "clean", "history", "undo", "review", "apply", "purge")
     further = (
+        "upkeep",
         "undo-pick",
         "review-near",
         "review-pairs",

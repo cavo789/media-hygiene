@@ -105,6 +105,21 @@ offers the kinds as checkboxes and the folder names as a list, one per line (`*`
 writes `config.toml` (your comments kept) and shows what the file holds once read back. The last
 audit was made with the former settings: the page says so and offers *Run the audit again*.
 
+## Disk space
+
+The *Disk space* tile opens a page with the room the previews and the quarantine take. Each limit
+sits next to its effect, saved into `config.toml` and read back before being shown: *Keep at most
+(GB)* (`[cache] previews_max_gb`) and *Suggest purging after (days)* (`[clean] purge_hint_days`).
+*Empty the previews* states the size it frees; they are made again when shown. The quarantine is
+seen, put back or purged from *History and undo*, where `purge` asks first.
+
+## 10 minutes of tidying
+
+The *10 minutes of tidying* tile opens the bursts then the near duplicates, biggest gain first. The
+bar counts the time beside the share of the gain seen, and *Next page* moves on. At 10 minutes it
+asks: go on, or stop on the summary, with *Apply now* still in the bar. Nothing moves before you
+apply.
+
 ## Run a step
 
 The page never changes your photos itself. What a step's button does depends on the `mh` that

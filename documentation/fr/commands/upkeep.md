@@ -1,0 +1,63 @@
+# `upkeep` : l'entretien régulier d'un coup
+
+[Documentation](../README.md) › [Commandes](../reference-commands.md) › `upkeep` · 🇬🇧 [English](../../en/commands/upkeep.md)
+
+## En bref
+
+**Un clic, ou une commande, pour ce que vous faites toutes les quelques semaines.**
+
+`upkeep` lance les étapes de `[routine]` dans `config.toml`, dans cet ordre : `audit` (relit la
+bibliothèque, seulement ce qui a changé), `copies` (`clean` : les copies exactes en quarantaine,
+après sa question ; `mh undo` les remet), `purge` (les exécutions en quarantaine plus vieilles que
+`purge_hint_days`, après la question de `purge` pour chacune), `reports` (la liste rafraîchie). Elle
+finit sur une ligne 👉 : ce qui vous attend encore. Sur la [page d'accueil](home.md) : *Lancer
+l'entretien régulier*, dans Nettoyer.
+
+## D'un coup d'œil
+
+| | |
+|---|---|
+| Vos photos | ⚠️ `copies` déplace des fichiers en quarantaine, `purge` efface les vieilles quarantaines : chacune demande d'abord. |
+| Il faut | Les mêmes options `-v` que `clean` (ou `mh upkeep`). |
+| Écrit | Ce qu'écrit chaque étape. |
+| Annuler | `mh undo` pour les copies ; **rien** après une purge. |
+| Avec `mh` | `mh upkeep`. |
+
+## Lancer
+
+```powershell
+mh upkeep
+```
+
+Pour couper une étape, retirez-la de la liste :
+
+```toml
+[routine]
+steps = ["audit", "copies", "reports"]
+```
+
+Une étape qui échoue arrête la chaîne ; ce qui précède reste fait.
+
+## Bon à savoir
+
+Répondre *non* à une question ne saute que cette étape.
+
+## Pour aller plus loin
+
+- [`clean`](clean.md), [`purge`](purge.md), [`audit`](audit.md)
+
+## L'aide intégrée
+
+<details>
+<summary><code>upkeep --help</code></summary>
+
+<!-- capture: help-upkeep.txt -->
+```text
+ Utilisation : media-hygiene upkeep [OPTIONS]
+
+ Lance l'entretien régulier d'un coup, comme listé dans config.toml : audit,
+ copies mises de côté, vieille quarantaine purgée, rapports ; chacun demande
+ comme d'habitude.
+```
+
+</details>

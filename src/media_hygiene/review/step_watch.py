@@ -51,6 +51,7 @@ class WatchFiles:
 
 WATCH: Final = WatchFiles()
 NEAR_REVIEW_PAGE: Final = "/review/near/"  # `services/review_here`
+DISK_PAGE: Final = "/disk-space/"  # `services/disk_here` (0539)
 HISTORY_PAGE: Final = "/history/"  # `services/history_here` (0350)
 PAIRS_PAGE: Final = (
     "/review/pairs/"  # `services/review_kinds` (0417), as the next three

@@ -19,6 +19,7 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 | voir ce que chaque exécution a fait | [`history`](commands/history.md) |
 | remettre chaque fichier d'une exécution exactement où il était | [`undo`](commands/undo.md) |
 | récupérer la place pour de bon, une fois la quarantaine vérifiée | [`purge`](commands/purge.md) |
+| lancer l'entretien régulier d'un coup | [`upkeep`](commands/upkeep.md) |
 | être sûr des doublons avant de supprimer des photos de famille | [`crosscheck`](commands/crosscheck.md) |
 | retrouver tous les rapports, supprimer les anciens | [`reports`](commands/reports.md) |
 | obtenir une arborescence bien rangée, par année, événement, lieu ou personne, et la corriger d'abord | [`classify`](commands/classify.md) |

@@ -37,6 +37,12 @@ ALBUMS_DOC: Final = Doc("reference-albums/")
 PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
     {
         "review.html.j2": "review",
+        "disk_space.html.j2": Doc(
+            "commands/home/", "#disk-space", "#place-sur-le-disque"
+        ),
+        "tidy_empty.html.j2": Doc(
+            "commands/home/", "#10-minutes-of-tidying", "#10-minutes-de-rangement"
+        ),
         "near_review.html.j2": "review-near",
         "pairs_review.html.j2": "review-pairs",
         "unwanted_review.html.j2": "review-junk",
@@ -63,6 +69,8 @@ PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
 SHELL_PAGES: Final[Mapping[str, bool]] = MappingProxyType(
     {
         "album.html.j2": False,
+        "disk_space.html.j2": False,
+        "tidy_empty.html.j2": False,
         "album_edit.html.j2": True,
         "search.html.j2": True,
         "review.html.j2": True,

@@ -17,6 +17,21 @@ def clean_more_steps() -> tuple[Step, ...]:
     space = Space.CLEAN
     return (
         Step(
+            "upkeep",
+            Space.CLEAN,
+            _("Run the regular upkeep"),
+            _(
+                "The chores of [routine], in order: audit, copies set aside, old "
+                "quarantine purged, reports. Each asks as usual."
+            ),
+            "upkeep",
+            Risk.FINAL,
+            icon="broom",
+            keywords=_("upkeep routine chores regular maintenance"),
+            doc=Doc("commands/upkeep/"),
+            optional=True,
+        ),
+        Step(
             "review-near",
             space,
             _("Settle the near duplicates"),

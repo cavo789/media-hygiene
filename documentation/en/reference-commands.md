@@ -19,6 +19,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | see what each run did | [`history`](commands/history.md) |
 | put back every file of a run, exactly where it was | [`undo`](commands/undo.md) |
 | get the space back for good, once I checked the quarantine | [`purge`](commands/purge.md) |
+| run the regular chores in one go | [`upkeep`](commands/upkeep.md) |
 | be sure of the duplicates before deleting family photos | [`crosscheck`](commands/crosscheck.md) |
 | find every report again, delete the old ones | [`reports`](commands/reports.md) |
 | get a tidy tree proposed, by year, event, place or person, and correct it first | [`classify`](commands/classify.md) |

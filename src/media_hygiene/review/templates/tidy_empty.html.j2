@@ -1,0 +1,10 @@
+{% extends "page_frame.html.j2" %}
+{# A review with nothing to review (0528): what it says; in a tidying session, on to the next page. #}
+{% set page_name = _("Nothing to review") %}
+{% block bar %}
+  <strong>{{ page_name }}</strong>
+  {% include "tidy_bar.html.j2" %}
+{% endblock %}
+{% block content %}
+<main id="tidyNothing"><p>{{ said }}</p></main>
+{% endblock %}

@@ -30,7 +30,7 @@ function saveFavourites(names, focusName) {
   favs.busy = true;
   post(P.favourites, { names: names })
     .then((reply) => {
-      if (!reply.ok) { toast(reply.body.error || T.favFailed); return null; }
+      if (!reply.ok) { toast(reply.status === 403 ? T.favForbidden : reply.body.error || fill(T.favFailed, { status: reply.status })); return null; }
       return reload();  // drawn from config.toml read again, never from the list sent
     })
     .then(() => {

@@ -328,6 +328,12 @@ msgid "'{category}' is not a category: no placeholder, not empty"
 msgstr "« {category} » n'est pas une catégorie : ni accolades, ni vide"
 
 #, python-brace-format
+msgid "'{command}' stopped (code {code}): the next steps did not run."
+msgstr ""
+"'{command}' s'est arrêtée (code {code}) : les étapes suivantes n'ont pas "
+"tourné."
+
+#, python-brace-format
 msgid "'{key}' in the variable {name}"
 msgstr "« {key} » dans la variable {name}"
 
@@ -543,6 +549,12 @@ msgstr "/fr/"
 
 msgid "/config is not mounted: there is no config.toml to complete."
 msgstr "/config n'est pas monté : il n'y a pas de config.toml à compléter."
+
+msgid "10 minutes done"
+msgstr "10 minutes écoulées"
+
+msgid "10 minutes of tidying"
+msgstr "10 minutes de rangement"
 
 msgid "3. Several folders and disks"
 msgstr "3. Plusieurs dossiers et disques"
@@ -1789,6 +1801,9 @@ msgstr "Rafales (déplacées seulement si écartées avec 'review')"
 msgid "Burst series review"
 msgstr "Tri des rafales"
 
+msgid "Bursts then near duplicates, biggest gain first"
+msgstr "Rafales puis quasi-doublons, le plus gros gain d'abord"
+
 msgid "By year, event, place or person, in a workbook you correct."
 msgstr ""
 "Par année, événement, lieu ou personne, dans un classeur que vous "
@@ -2738,6 +2753,9 @@ msgstr "Vouliez-vous dire « {key} » ?"
 msgid "Did you mean {names}?"
 msgstr "Vouliez-vous dire {names} ?"
 
+msgid "Disk space"
+msgstr "Place sur le disque"
+
 msgid "Display"
 msgstr "Affichage"
 
@@ -3157,6 +3175,10 @@ msgstr "Vider le chemin"
 
 msgid "Empty the path, then the list of your folders again"
 msgstr "Vider le chemin, puis revoir la liste de vos dossiers"
+
+#, python-brace-format
+msgid "Empty the previews ({size})"
+msgstr "Vider les aperçus ({size})"
 
 msgid "Empty, or a disk unplugged"
 msgstr "Vide, ou un disque débranché"
@@ -4248,6 +4270,9 @@ msgstr ""
 "Continuer même si plus de stop_above_percent (config.toml) de la "
 "sauvegarde serait mis de côté ou remplacé."
 
+msgid "Go on for 10 minutes"
+msgstr "Continuer 10 minutes"
+
 msgid "Go on with the clean?"
 msgstr "Lancer le nettoyage ?"
 
@@ -4727,6 +4752,9 @@ msgstr "Ko"
 
 msgid "Keep"
 msgstr "Garder"
+
+msgid "Keep at most (GB)"
+msgstr "Garder au plus (Go)"
 
 msgid "Keep both names (link)"
 msgstr "Garder les deux noms (lien)"
@@ -5696,6 +5724,9 @@ msgstr "Événement suivant"
 msgid "Next event (N)"
 msgstr "Événement suivant (N)"
 
+msgid "Next page"
+msgstr "Page suivante"
+
 msgid "Next page →"
 msgstr "Page suivante →"
 
@@ -6119,6 +6150,9 @@ msgstr "Aucune position pour cet événement."
 
 msgid "No preview"
 msgstr "Pas d'aperçu"
+
+msgid "No preview kept"
+msgstr "Aucun aperçu gardé"
 
 #, python-brace-format
 msgid "No program here opens a page: open {index} yourself."
@@ -6574,6 +6608,9 @@ msgstr "Rien à nettoyer : aucun doublon et aucun fichier cassé."
 msgid "Nothing to do yet."
 msgstr "Rien à faire pour l'instant."
 
+msgid "Nothing to do: [routine] steps is empty."
+msgstr "Rien à faire : steps de [routine] est vide."
+
 msgid "Nothing to get back."
 msgstr "Rien à récupérer."
 
@@ -6588,6 +6625,9 @@ msgstr "Rien à déplacer : chaque fichier est là où le plan le met."
 
 msgid "Nothing to put back."
 msgstr "Rien à remettre."
+
+msgid "Nothing to review"
+msgstr "Rien à examiner"
 
 #, python-brace-format
 msgid ""
@@ -7646,6 +7686,13 @@ msgstr "Préparation de l'accueil…"
 msgid "Preparing the photos of the album {name}…"
 msgstr "Préparation des photos de l'album {name}…"
 
+msgid "Previews"
+msgstr "Aperçus"
+
+#, python-brace-format
+msgid "Previews now: {size}."
+msgstr "Aperçus maintenant : {size}."
+
 msgid "Previous"
 msgstr "Précédente"
 
@@ -7780,6 +7827,9 @@ msgstr ""
 msgid "Quarantine"
 msgstr "Quarantaine"
 
+msgid "Quarantine and previews, their limits"
+msgstr "Quarantaine et aperçus, leurs limites"
+
 #, python-brace-format
 msgid "Quarantine of {drive}"
 msgstr "Quarantaine de {drive}"
@@ -7865,6 +7915,10 @@ msgstr "Réencode chaque vidéo, puis la vérifie avant de la garder."
 #, python-brace-format
 msgid "Read as: {words}."
 msgstr "Lu ainsi : {words}."
+
+#, python-brace-format
+msgid "Read back from config.toml: {gb} GB, {days} days."
+msgstr "Relu dans config.toml : {gb} Go, {days} jours."
 
 #, python-brace-format
 msgid "Read back from config.toml: {names} names, {ignored} faces ignored."
@@ -8405,6 +8459,17 @@ msgstr "Relancer l'audit"
 msgid "Run the audit first (Clean, step 1)."
 msgstr "Lancez d'abord l'audit (Nettoyage, étape 1)."
 
+msgid ""
+"Run the regular chores in one go, as listed in config.toml: audit, copies"
+" set aside, old quarantine purged, reports; each asks as usual."
+msgstr ""
+"Lance l'entretien régulier d'un coup, comme listé dans config.toml : "
+"audit, copies mises de côté, vieille quarantaine purgée, rapports ; "
+"chacun demande comme d'habitude."
+
+msgid "Run the regular upkeep"
+msgstr "Lancer l'entretien régulier"
+
 msgid "Run the same command again to continue: the files moved are skipped."
 msgstr ""
 "Relancez la même commande pour continuer : les fichiers déjà déplacés "
@@ -8826,6 +8891,9 @@ msgstr "Voir chaque réglage et d'où il vient"
 msgid "See the files"
 msgstr "Voir les fichiers"
 
+msgid "See the photos, put some back or purge: History and undo"
+msgstr "Voir les photos, en remettre ou purger : Historique et annulation"
+
 msgid "See them"
 msgstr "Les voir"
 
@@ -8888,6 +8956,14 @@ msgstr "Série {number}"
 #, python-brace-format
 msgid "Series {number} of {total}"
 msgstr "Série {number} sur {total}"
+
+#, python-brace-format
+msgid ""
+"Session over. {gain} What next: Apply now if it shows here, then back to "
+"the home page."
+msgstr ""
+"Séance terminée. {gain} Et ensuite : Appliquer maintenant s'il s'affiche "
+"ici, puis retour à l'accueil."
 
 msgid "Set [classify.ai] model in config.toml, or remove the rule."
 msgstr "Indiquez [classify.ai] model dans config.toml, ou retirez la règle."
@@ -9439,8 +9515,14 @@ msgstr ""
 msgid "Still undoable: {what}"
 msgstr "Encore annulable : {what}"
 
+msgid "Stop"
+msgstr "Arrêter"
+
 msgid "Stop after this photo"
 msgstr "Arrêter après cette photo"
+
+msgid "Stop here"
+msgstr "Arrêter ici"
 
 msgid "Stop sharing"
 msgstr "Arrêter le partage"
@@ -9517,6 +9599,9 @@ msgstr[1] ""
 
 msgid "Subject"
 msgstr "Sujet"
+
+msgid "Suggest purging after (days)"
+msgstr "Proposer la purge après (jours)"
 
 msgid "Summary"
 msgstr "Résumé"
@@ -9669,6 +9754,10 @@ msgstr "Retirée de config.toml : son GPS décide à nouveau."
 #, python-brace-format
 msgid "Taken: {when}"
 msgstr "Prise le : {when}"
+
+#, python-brace-format
+msgid "That could not be done: {reason}"
+msgstr "Impossible : {reason}"
 
 msgid "The Explorer's menu is as it was."
 msgstr "Le menu de l'Explorateur redevient comme avant."
@@ -9896,6 +9985,13 @@ msgstr "La vérification du téléphone a échoué : rien de plus n'a été supp
 
 msgid "The choices did not read back as written: nothing moved."
 msgstr "Les choix ne se relisent pas tels qu'écrits : rien n'a bougé."
+
+msgid ""
+"The chores of [routine], in order: audit, copies set aside, old "
+"quarantine purged, reports. Each asks as usual."
+msgstr ""
+"Les tâches de [routine], dans l'ordre : audit, copies mises de côté, "
+"vieille quarantaine purgée, rapports. Chacune demande comme d'habitude."
 
 msgid ""
 "The circles are your photos with a GPS position, larger where there are "
@@ -10135,8 +10231,18 @@ msgstr "Les visages que vous avez confirmés comme ceux de cette personne."
 msgid "The favourites are being saved: one moment."
 msgstr "Les favoris s'enregistrent : un instant."
 
-msgid "The favourites could not be saved in config.toml."
-msgstr "Les favoris n'ont pas pu être enregistrés dans config.toml."
+msgid ""
+"The favourites can only be saved from this PC's own address "
+"(http://localhost)."
+msgstr ""
+"Les favoris ne s'enregistrent que depuis l'adresse de ce PC "
+"(http://localhost)."
+
+#, python-brace-format
+msgid "The favourites could not be saved in config.toml (error {status})."
+msgstr ""
+"Les favoris n'ont pas pu être enregistrés dans config.toml (erreur "
+"{status})."
 
 msgid ""
 "The file does not say when it was taken (a scan, a screenshot): a search "
@@ -12043,6 +12149,13 @@ msgstr "Mettez l'image à jour : mh update."
 msgid "Updated: {before} → {after}. What changed: {notes}"
 msgstr "Mis à jour : {before} → {after}. Ce qui a changé : {notes}"
 
+msgid "Updating…"
+msgstr "Mise à jour…"
+
+#, python-brace-format
+msgid "Upkeep: {step}"
+msgstr "Entretien : {step}"
+
 msgid "Usage:"
 msgstr "Utilisation :"
 
@@ -12103,6 +12216,19 @@ msgstr ""
 
 msgid "Wedding"
 msgstr "Mariage"
+
+msgid ""
+"What 'upkeep' runs, in this order; remove a step to switch it off. audit:"
+" the library read again. copies: the exact copies go to the quarantine, "
+"after clean's question (mh undo puts them back). purge: the quarantine "
+"runs older than purge_hint_days, after purge's question. reports: the "
+"list refreshed."
+msgstr ""
+"Ce que lance 'upkeep', dans cet ordre ; retirez une étape pour la couper."
+" audit : la bibliothèque relue. copies : les copies exactes vont en "
+"quarantaine, après la question de clean (mh undo les remet). purge : les "
+"exécutions en quarantaine plus vieilles que purge_hint_days, après la "
+"question de purge. reports : la liste rafraîchie."
 
 msgid "What an album is, and what this page does"
 msgstr "Ce qu'est un album, et ce que fait cette page"
@@ -12462,6 +12588,9 @@ msgstr ""
 msgid "Workbook: {path}"
 msgstr "Classeur : {path}"
 
+msgid "Worth purging"
+msgstr "À purger"
+
 msgid "Write 'mh', a short command holding your folders: mh audit, mh clean."
 msgstr ""
 "Écrit 'mh', une commande courte qui retient vos dossiers : mh audit, mh "
@@ -12764,6 +12893,11 @@ msgstr "Vos photos et vidéos n'ont pas été touchées."
 
 msgid "Your photos and videos, sorted and without duplicates."
 msgstr "Vos photos et vidéos, triées et sans doublons."
+
+msgid "Your photos are not touched here. Previews are made again when shown."
+msgstr ""
+"Vos photos ne sont pas touchées ici. Les aperçus sont refaits à "
+"l'affichage."
 
 msgid ""
 "Your photos are only read: taking a photo out of an album, or adding it "
@@ -13223,6 +13357,16 @@ msgstr "comparer les photos à 100 %%"
 
 msgid "config.toml"
 msgstr "config.toml"
+
+msgid ""
+"config.toml cannot be read (a mistake in the file?): the favourites were "
+"not saved."
+msgstr ""
+"config.toml est illisible (une erreur dans le fichier ?) : les favoris ne"
+" sont pas enregistrés."
+
+msgid "config.toml cannot be written: the favourites were not saved."
+msgstr "config.toml ne peut pas être écrit : les favoris ne sont pas enregistrés."
 
 #, python-brace-format
 msgid "config.toml could not be updated: {reason}"
@@ -15221,6 +15365,9 @@ msgstr "à jour"
 
 msgid "update version new upgrade docker"
 msgstr "mise à jour version nouvelle update docker"
+
+msgid "upkeep routine chores regular maintenance"
+msgstr "entretien routine tâches régulier maintenance"
 
 msgid "usage policy"
 msgstr "conditions d'utilisation"

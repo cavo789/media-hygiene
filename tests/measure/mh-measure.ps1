@@ -146,6 +146,7 @@
 #  42. a page on port 8088 stopped, then the port watched: PID 0 seen? seconds until free (0503); docker run binds meanwhile? (0543)
 #      (two yes/no questions, by hand)                                               (0359)
 #  43. the hand-over of a page step (0583): a page on 8088 ends, the next page started at once
+#  44. back to the home page (0442): /api/state of your real mh timed from the PC, then the phone by stopwatch
 #      (as before) or once Docker removed the first container (after): seconds to bind
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
@@ -3538,6 +3539,36 @@ if (Wanted 43) {
             Start-Sleep -Seconds 3
         }
     }
+    $ErrorActionPreference = $saved
+}
+
+# --- 44: back to the home page, under a second (0442) ------------------------------------------
+# By hand: mh --lan running in another window (image of the branch), the phone paired. Five reads
+# of /api/state from the PC tell what the page still waits for behind; the phone says the rest.
+if (Wanted 44) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 44. back to the home page (0442)"
+    Write-Host "44 : dans une AUTRE fenetre, lancez mh --lan (image de la branche), telephone appaire."
+    $null = Read-Host "Entree quand la page d'accueil est ouverte"
+    for ($try = 1; $try -le 5; $try++) {
+        $clock = [Diagnostics.Stopwatch]::StartNew()
+        try {
+            $answer = Invoke-WebRequest -UseBasicParsing -TimeoutSec 60 -Uri "http://127.0.0.1:8088/api/state"
+            Log ("   44a.$try GET /api/state: {0:N2} s, {1} bytes" -f $clock.Elapsed.TotalSeconds, $answer.RawContentLength)
+        } catch {
+            Log "   44a.$try GET /api/state failed: $($_.Exception.Message)"
+        }
+    }
+    $backHome = Read-Host "44b. Telephone, page de recherche puis 'Retour a l'accueil', 3 fois au chronometre : les secondes jusqu'a la page dessinee (ex. 0.6 0.7 0.5)"
+    $backPhone = Read-Host "44c. Pareil avec le bouton Retour du telephone, 3 fois"
+    $splash = Read-Host "44d. Le suricate de demarrage est-il encore apparu au retour ? (o/n)"
+    $mark = Read-Host "44e. La petite mention 'Mise a jour...' apparait-elle puis disparait-elle ? (o/n)"
+    Log "   44b. Back to home, stopwatch, seconds (before: 8.6 mean): $backHome"
+    Log "   44c. the phone's Back, stopwatch, seconds (before: 8.5 mean): $backPhone"
+    Log "   44d. splash seen on the way back: $splash"
+    Log "   44e. the updating mark shown then gone: $mark"
     $ErrorActionPreference = $saved
 }
 

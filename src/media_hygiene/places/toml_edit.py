@@ -11,12 +11,15 @@ import tomllib
 from typing import TYPE_CHECKING, Final
 
 import tomlkit
-from tomlkit.items import String, Table
+from tomlkit.container import OutOfOrderTableProxy
+from tomlkit.items import InlineTable, String, Table
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     from tomlkit.toml_document import TOMLDocument
+
+type AnyTable = Table | InlineTable | OutOfOrderTableProxy
 
 ENCODING: Final = "utf-8"
 DECIMALS: Final = 6  # about 10 cm
@@ -49,8 +52,12 @@ def document_of(config_file: Path) -> TOMLDocument:
     return tomlkit.parse(text)
 
 
-def table_of(document: TOMLDocument, name: str) -> Table:
+def table_of(document: TOMLDocument, name: str) -> AnyTable:
     """A top-level table of the document, added at its end when missing.
+
+    Whatever way the user wrote it, the table found is edited in place and every key
+    stays: a table split by another section (`OutOfOrderTableProxy`), dotted keys, an
+    inline table, a parent of `[name.child]` only (0584).
 
     Args:
         document: The document.
@@ -58,10 +65,16 @@ def table_of(document: TOMLDocument, name: str) -> Table:
 
     Returns:
         The table.
+
+    Raises:
+        ValueError: The name holds something else (`home = 3`): never overwritten.
     """
     found = document.get(name)
-    if isinstance(found, Table):
+    if isinstance(found, Table | InlineTable | OutOfOrderTableProxy):
         return found
+    if found is not None:
+        message = f"[{name}] of config.toml is not a table"
+        raise ValueError(message)
     table = tomlkit.table()
     document[name] = table
     return table
