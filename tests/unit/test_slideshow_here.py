@@ -21,6 +21,7 @@ from media_hygiene.review.album_show import album_answer, shown_here
 from media_hygiene.review.doors import LAN_CA_PORT
 from media_hygiene.review.doors import Door as SocketDoor
 from media_hygiene.review.ending import Ending
+from media_hygiene.review.home_step import StepDoor, step_response
 from media_hygiene.review.http import Request
 from media_hygiene.review.lan import COOKIE_NAME, LanAccess
 from media_hygiene.review.lan_paths import phone_may
@@ -42,6 +43,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
     from pathlib import Path
 
+    from media_hygiene.review.home_views import HomeState
     from media_hygiene.review.http import Response
     from media_hygiene.services.runtime import Runtime
 
@@ -66,7 +68,9 @@ def here(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[SlideshowH
             yield search
 
     def picked(_runtime: Runtime, _search: SearchIndex, pick: object) -> Picked:
-        album = getattr(pick, "album", "")
+        album = getattr(pick, "album", "") or ""
+        if getattr(pick, "folder", None):  # a folder of the library (0598)
+            album = "Rome"
         if album not in _ALBUMS:
             raise MediaHygieneError(_NO_ALBUM)
         slides = tuple(Slide(key) for key in _ALBUMS[album])
@@ -194,3 +198,38 @@ def test_a_phone_paired_on_the_slideshow_is_paired_for_good(tmp_path: Path) -> N
     wrong = door.pair_phone(Request("GET", "/pair/0", headers, b"", SocketDoor.LAN))
     assert wrong.status is HTTPStatus.FORBIDDEN
     assert len(phones.listed()) == 1
+
+
+def _no_state() -> HomeState:
+    """Never read: a folder's step needs no state of the home page."""
+    raise AssertionError
+
+
+def test_a_folder_of_the_library_is_shown_without_ending_the_server(
+    here: SlideshowHere, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0598: a folder already mounted leads to `/slideshow/folder/…`, the server kept.
+
+    A folder outside every mount keeps today's path: `mh` mounts it, then runs the step.
+    """
+    data = tmp_path / "data"
+    (data / "c" / "Photos" / "Rome 2024").mkdir(parents=True)
+    monkeypatch.setenv("MEDIA_HYGIENE_DATA_DIR", str(data))
+    ending = Ending()
+    door = StepDoor(_no_state, ending, tmp_path, relays_steps=True, keeps=True)
+    body = {"name": "slideshow", "fields": {"path": "C:\\Photos\\Rome 2024"}}
+    headers = _PC | {
+        "content-type": "application/json",
+        "origin": "http://127.0.0.1:8088",
+    }
+    request = Request("POST", "/api/step", headers, json.dumps(body).encode())
+    answer = asyncio.run(step_response(door, request))
+    page = json.loads(answer.body)["page"]
+    assert page == "/slideshow/folder/C%3A%5CPhotos%5CRome%202024"
+    assert ending.asked is None  # the home server goes on
+    started = _pc(here, page)
+    assert started.status is HTTPStatus.SEE_OTHER
+    slides = json.loads(_pc(here, "/slideshow/api/slides").body)["slides"]
+    assert [slide["thumb"] for slide in slides] == ["thumb/3.jpg"]
+    assert shown_here("slideshow", {"path": "E:\\Elsewhere"}) is None
+    assert shown_here("slideshow", {"path": " "}) is None

@@ -39,6 +39,7 @@ from media_hygiene.search.rule_go import GO_PATHS, go_answer
 from media_hygiene.search.sort_folder_desk import SORT_FOLDER_PATH
 from media_hygiene.search.sort_setup_desk import SETUP_PATH
 from media_hygiene.search.tag_desk import HAND_TAG_PATH as HAND
+from media_hygiene.search.undo_api import UNDO_PATH, latest_answer, undo_answer
 from media_hygiene.share.album_api import ALBUMS_PATH
 
 if TYPE_CHECKING:
@@ -53,7 +54,9 @@ PAGE_PATH: Final = "/"
 SEARCH_PAGE_PATH: Final = "/search"
 SEARCH_PATH: Final = "/api/search"
 _GET, _POST = "GET", "POST"
-_POSTED: Final = frozenset({SEARCH_PATH, CHOSEN_PATH, *FOLDER_POSTS, APPLY_PATH, HAND})
+_POSTED: Final = frozenset(
+    {SEARCH_PATH, CHOSEN_PATH, *FOLDER_POSTS, APPLY_PATH, HAND, UNDO_PATH}
+)
 _POSTED_TOO: Final = (
     SORT_POSTS
     | {ALBUMS_PATH, PEOPLE_REJECT_PATH, PEOPLE_WHY_PATH}
@@ -129,6 +132,8 @@ class SearchApp:
         """
         if (awaited := awaited_answer(self.place, request)) is not None:
             return await awaited
+        if request.path == UNDO_PATH and self.place.undo is not None:  # 0601
+            return await undo_answer(self.place.undo, request.body)
         if request.path in GO_PATHS | SORT_POSTS:  # a rule's GO, the Events (0438)
             return await (
                 sort_post(self.place.events, request)
@@ -166,11 +171,16 @@ class SearchApp:
             return Response(
                 HTTPStatus.OK, self.pages.search, ContentType.HTML, policy=NEAR_POLICY
             )
-        states = {
+        states: dict[str, Callable[[], Response]] = {
             CHOSEN_PATH: self.place.chosen.state,
             ALBUMS_PATH: self.place.albums.state,
             **folder_gets(self.place.folders),
             PERIOD_RULES_PATH: self.place.rules.state,
+            **(
+                {UNDO_PATH: partial(latest_answer, self.place.undo)}
+                if self.place.undo
+                else {}
+            ),
             **(self.place.sort_setup.gets() if self.place.sort_setup else {}),
         }
         if path in states:

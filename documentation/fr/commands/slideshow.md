@@ -65,7 +65,9 @@ dossiers ; son bouton **📺 Partager sur la télé** donne cette commande, copi
 plus : il montrait les fichiers mis de côté, promis à la quarantaine ; donné, il dit d'utiliser
 `--album`. Depuis la
 [page d'accueil](home.md) ouverte par `mh --lan`, l'étape *Montrer vos photos sur la télé* demande
-le dossier et ouvre le diaporama de la même façon ; *Montrer un album sur la télé* demande le nom de
+le dossier : un dossier que `mh` voit déjà (votre photothèque, une sauvegarde) s'ouvre **dans le
+serveur même de la page d'accueil**, comme un album ; tout autre dossier demande son propre
+montage : `mh` ferme la page d'accueil, le monte et lance le diaporama ; *Montrer un album sur la télé* demande le nom de
 l'album et ouvre le diaporama **dans le serveur même de la page d'accueil** : la page d'accueil
 continue, la télécommande s'ouvre aussitôt (`/slideshow/`). Un téléphone appairé le lance aussi,
 depuis le canapé : sur la page d'accueil du téléphone, **Montrer sur la télé** propose un album

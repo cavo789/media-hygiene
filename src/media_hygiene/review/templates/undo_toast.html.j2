@@ -36,6 +36,24 @@
     timer = window.setTimeout(hide, UNDO_TOAST_MS);
   };
   window.mhUndoToast.hide = hide;
+  // `mh undo <run>` from the page (0601), where its server answers `undo_path`: the files
+  // looked for again where they were; the sentence says what the disk holds.
+  const UNDO_PATH = {{ (undo_path | default(none)) | tojson }};
+  const UNDO_TEXTS = {{ {
+    "undone": _("Undone: {back} of {meant} files are back where they were (run {run})."),
+    "notUndone": _("Not undone: {error}"),
+    "offline": _("The page cannot reach mh: is it still running?"),
+  } | tojson }};
+  const fillUndo = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  window.mhUndoRun = async (run) => {
+    if (!UNDO_PATH) return "";
+    const response = await fetch(UNDO_PATH, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ run }) })
+      .catch(() => null);
+    if (!response) return UNDO_TEXTS.offline;
+    const answer = await response.json().catch(() => ({}));
+    if (!response.ok) return fillUndo(UNDO_TEXTS.notUndone, { error: answer.error || response.status });
+    return fillUndo(UNDO_TEXTS.undone, { back: answer.back, meant: answer.meant, run: answer.run_id });
+  };
   button.addEventListener("click", run);
   document.addEventListener("keydown", (event) => {
     if (!pending || !keys || event.ctrlKey || event.metaKey || event.altKey) return;

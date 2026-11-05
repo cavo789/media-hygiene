@@ -3036,6 +3036,9 @@ msgstr ""
 msgid "Faces"
 msgstr ""
 
+msgid "Faces are still to be found: run 'mh people' in the terminal."
+msgstr ""
+
 msgid ""
 "Faces blurrier than this sharpness (variance of the Laplacian of the "
 "face) are left out: never grouped, never named, unless you confirmed "
@@ -5520,6 +5523,10 @@ msgid "Not touched by this clean (decide later, if you want)"
 msgstr ""
 
 #, python-brace-format
+msgid "Not undone: {error}"
+msgstr ""
+
+#, python-brace-format
 msgid "Not {name}"
 msgstr ""
 
@@ -6027,6 +6034,10 @@ msgstr ""
 msgid ""
 "Only the first files of these days were tried: a shorter period shows "
 "them all."
+msgstr ""
+
+#, python-brace-format
+msgid "Only the last run can be undone from this page: {run_id}."
 msgstr ""
 
 msgid ""
@@ -7228,6 +7239,10 @@ msgstr ""
 msgid "Run 'media-hygiene history' to list the runs."
 msgstr ""
 
+#, python-brace-format
+msgid "Run 'media-hygiene undo {run_id}' in the terminal."
+msgstr ""
+
 msgid "Run 'people' to see the groups in your browser and name them."
 msgstr ""
 
@@ -8052,12 +8067,6 @@ msgid "Sort the bursts"
 msgstr ""
 
 msgid "Sort the photos"
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Sort these {n} files now? {folders}. They are moved at once, journaled: "
-"'undo' puts them back."
 msgstr ""
 
 msgid "Sort this event now"
@@ -9178,6 +9187,9 @@ msgid "The new name of {name}:"
 msgstr ""
 
 msgid "The other active filters"
+msgstr ""
+
+msgid "The page cannot reach mh: is it still running?"
 msgstr ""
 
 #, python-brace-format
@@ -10376,6 +10388,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Undoable"
+msgstr ""
+
+#, python-brace-format
+msgid "Undone: {back} of {meant} files are back where they were (run {run})."
 msgstr ""
 
 #, python-brace-format
@@ -15239,6 +15255,10 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid "{n} files are not in the index yet: run an audit, then move them."
+msgstr ""
+
+#, python-brace-format
+msgid "{n} files moved: {folders}."
 msgstr ""
 
 #, python-brace-format

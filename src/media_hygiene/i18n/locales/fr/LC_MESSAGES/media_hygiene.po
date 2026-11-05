@@ -793,8 +793,8 @@ msgid ""
 "document is the only copy. What you pick goes to the quarantine, and "
 "'undo' brings it back."
 msgstr ""
-"Un indice, jamais un verdict : vous seul savez si un zip a été extrait ou "
-"si un document est le seul exemplaire. Ce que vous choisissez va en "
+"Un indice, jamais un verdict : vous seul savez si un zip a été extrait ou"
+" si un document est le seul exemplaire. Ce que vous choisissez va en "
 "quarantaine, et 'undo' le ramène."
 
 msgid ""
@@ -3709,6 +3709,11 @@ msgstr "Ouverture (f/)"
 
 msgid "Faces"
 msgstr "Visages"
+
+msgid "Faces are still to be found: run 'mh people' in the terminal."
+msgstr "Des visages restent à trouver : lancez 'mh people' dans le terminal."
+"Cette page ne peut pas déplacer de fichiers : lancez 'sort' dans le "
+"terminal."
 
 msgid ""
 "Faces blurrier than this sharpness (variance of the Laplacian of the "
@@ -6638,6 +6643,10 @@ msgid "Not touched by this clean (decide later, if you want)"
 msgstr "Laissé par ce nettoyage (à décider plus tard, si vous voulez)"
 
 #, python-brace-format
+msgid "Not undone: {error}"
+msgstr "Pas annulé : {error}"
+
+#, python-brace-format
 msgid "Not {name}"
 msgstr "Pas {name}"
 
@@ -7278,6 +7287,12 @@ msgid ""
 msgstr ""
 "Seuls les premiers fichiers de ces jours ont été essayés : une période "
 "plus courte les montre tous."
+
+#, python-brace-format
+msgid "Only the last run can be undone from this page: {run_id}."
+msgstr ""
+"Seule la dernière exécution peut être annulée depuis cette page : "
+"{run_id}."
 
 msgid ""
 "Only the phone's DCIM folder is listed (the camera's photos and videos): "
@@ -8706,6 +8721,10 @@ msgstr ""
 msgid "Run 'media-hygiene history' to list the runs."
 msgstr "Lancez 'media-hygiene history' pour lister les exécutions."
 
+#, python-brace-format
+msgid "Run 'media-hygiene undo {run_id}' in the terminal."
+msgstr "Lancez 'media-hygiene undo {run_id}' dans le terminal."
+
 msgid "Run 'people' to see the groups in your browser and name them."
 msgstr "Lancez 'people' pour voir les groupes dans votre navigateur et les nommer."
 
@@ -9677,14 +9696,6 @@ msgstr "Trier les rafales"
 
 msgid "Sort the photos"
 msgstr "Trier les photos"
-
-#, python-brace-format
-msgid ""
-"Sort these {n} files now? {folders}. They are moved at once, journaled: "
-"'undo' puts them back."
-msgstr ""
-"Trier ces {n} fichiers maintenant ? {folders}. Ils sont déplacés "
-"aussitôt, journalisés : 'undo' les remet."
 
 msgid "Sort this event now"
 msgstr "Trier cet événement maintenant"
@@ -11036,6 +11047,9 @@ msgstr "Le nouveau nom de {name} :"
 
 msgid "The other active filters"
 msgstr "Les autres filtres actifs"
+
+msgid "The page cannot reach mh: is it still running?"
+msgstr "La page ne joint plus mh : tourne-t-il encore ?"
 
 #, python-brace-format
 msgid ""
@@ -12519,6 +12533,12 @@ msgstr[1] "Annuler ces {count} passages et remettre {moved} fichiers en place ?"
 
 msgid "Undoable"
 msgstr "Annulable"
+
+#, python-brace-format
+msgid "Undone: {back} of {meant} files are back where they were (run {run})."
+msgstr ""
+"Annulé : {back} fichiers sur {meant} sont revenus à leur place (exécution"
+" {run})."
 
 #, python-brace-format
 msgid "Unexpected error during {command}: {kind}: {message}"
@@ -18204,6 +18224,10 @@ msgid "{n} files are not in the index yet: run an audit, then move them."
 msgstr ""
 "{n} fichiers ne sont pas encore dans l'index : lancez un audit, puis "
 "déplacez-les."
+
+#, python-brace-format
+msgid "{n} files moved: {folders}."
+msgstr "{n} fichiers déplacés : {folders}."
 
 #, python-brace-format
 msgid "{n} files of these days stay with another rule: shown after, marked."

@@ -286,11 +286,14 @@ sont** (grisées, barrées). Quand les photos viennent de plusieurs dossiers, el
 dossier source, une case chacun, un dossier que vous avez nommé d'après un autre événement
 décoché. **Dès qu'une photo est laissée de côté, *Enregistrer la règle* est désactivé** : une
 sélection avec des exceptions est un déplacement, pas une règle (enregistrée, la règle les
-reprendrait à chaque `classify`) ; la boîte dit combien ont été laissées. La page demande une fois (le nombre, les dossiers, la ligne
-d'annulation), puis les écrit comme vos choix du dernier passage de `classify`
+reprendrait à chaque `classify`) ; la boîte dit combien ont été laissées. La page ne demande
+rien d'abord : elle les écrit comme vos choix du dernier passage de `classify`
 (`sort-decisions.json`) et lance `sort` limité à ces fichiers : noté au journal, vérifié à leur
 nouvelle place, dit tel que relu sur le disque (*14 déplacés, 14 vérifiés à leur nouvelle place
-(passage …) : 'mh undo …' les remet*) ; les vignettes montrent ensuite leur nouvelle place. Une
+(passage …) : 'mh undo …' les remet*) ; les vignettes montrent ensuite leur nouvelle place, et
+un bandeau offre **↶ Annuler** pendant 8 secondes : la page lance elle-même `mh undo` de ce
+passage et dit combien de fichiers elle a retrouvés à leur place. *Appliquer maintenant* sur
+cette page offre la même annulation une fois son étape terminée. Une
 photo que le dernier `classify` ne connaît pas (ajoutée depuis) est laissée en place et comptée :
 relancez `classify`. Rien ne bouge sans ce GO.
 

@@ -112,7 +112,6 @@ ruleEl("ruleGo").addEventListener("click", async () => {
   const groups = new Map();
   for (const hit of going) groups.set(hit.to, (groups.get(hit.to) || 0) + 1);
   const folders = [...groups].map(([folder, n]) => n + " → " + folder).join(" · ");
-  if (!window.confirm(fill(TEXTS.goAsk, { n: going.length, folders: folders }))) return;
   ruleEl("ruleGo").disabled = true;
   told(TEXTS.goRunning, false);
   const sent = await rulePost(RULE_GO_PATH, { ...ruleValues(), replaces: ruleReplaces, keys: going.map((hit) => hit.key) });
@@ -130,6 +129,15 @@ ruleEl("ruleGo").addEventListener("click", async () => {
   told(said, Boolean(answer.run_id) && !answer.intact);
   ruleSay(said, false);
   ruleEl("rulePreview").className = "saved";
+  // No question first (0601): the move is taken back from its toast, `mh undo` of its run.
+  if (answer.run_id && window.mhUndoToast) {
+    window.mhUndoToast(fill(TEXTS.goMoved, { n: answer.moved, folders: folders }), async () => {
+      const back = await window.mhUndoRun(answer.run_id);
+      await tryRule();  // the tiles back at their place, read from the index
+      told(back, false);
+      ruleSay(back, false);
+    });
+  }
 });
 
 function showWiden(events) {

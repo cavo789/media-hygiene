@@ -6,9 +6,8 @@ the new server, the TV paired again at every show. Now `GET /slideshow/album/<na
 starts the album's show here and leads to its remote at once; the TVs (`Screens`) and
 the pages waiting (`Changes`) belong to the home server, so a TV paired once stays
 paired while it runs, and a new show reaches it by itself (its version is above the
-last one's). The TV comes by the plain door at `/screen` (`tv`), no prefix there; `/`
-of that door stays the certificate's steps for the phones. One show at a time: a new
-album replaces the one shown.
+last one's). The TV comes by the plain door at `/screen` (`tv`); `/` of that door stays
+the certificate's steps. One show at a time; `/slideshow/folder/<path>`: 0598.
 """
 
 from __future__ import annotations
@@ -23,7 +22,7 @@ from urllib.parse import unquote
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
-from media_hygiene.review.album_show import ALBUM_SHOW, SLIDESHOW_PAGE
+from media_hygiene.review.album_show import ALBUM_SHOW, FOLDER_SHOW, SLIDESHOW_PAGE
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.lan_ca_page import PHONE_STEPS
 from media_hygiene.review.lan_phones import phone_book
@@ -51,8 +50,8 @@ if TYPE_CHECKING:
 
 SLIDESHOW_PREFIX: Final = SLIDESHOW_PAGE.removesuffix("/")
 _ALBUM_PATH: Final = f"/{ALBUM_SHOW}"
-# The TV's page with no show yet asks again this often (a TV browser: a meta refresh).
-_TV_WAIT_SECONDS: Final = 5
+_FOLDER_PATH: Final = f"/{FOLDER_SHOW}"
+_TV_WAIT_SECONDS: Final = 5  # the TV's page with no show asks again (meta refresh)
 _TEMPLATES: Final = "media_hygiene.slideshow"
 
 
@@ -90,10 +89,13 @@ class SlideshowHere:
         """
         path = request.path.removeprefix(SLIDESHOW_PREFIX)
         if not path:  # its paths are relative to `/slideshow/`
-            location = f"Location: {SLIDESHOW_PAGE}"
-            return Response(HTTPStatus.SEE_OTHER, headers=(location,))
+            return Response(
+                HTTPStatus.SEE_OTHER, headers=(f"Location: {SLIDESHOW_PAGE}",)
+            )
         if request.method == "GET" and path.startswith(_ALBUM_PATH):
-            return self._start(unquote(path.removeprefix(_ALBUM_PATH)))
+            return self._start(Pick(album=unquote(path.removeprefix(_ALBUM_PATH))))
+        if request.method == "GET" and path.startswith(_FOLDER_PATH):
+            return self._start(Pick(folder=unquote(path.removeprefix(_FOLDER_PATH))))
         chosen = Chooser(self._opened, self._begin).answer(  # a folder, a month: 0455
             dataclasses.replace(request, path=path)
         )
@@ -129,25 +131,23 @@ class SlideshowHere:
         )
         return Response(HTTPStatus.OK, page.encode(), ContentType.HTML)
 
-    def _start(self, album: str) -> Response:
-        """Start an album's show, in place of the one shown; then its remote.
+    def _start(self, pick: Pick) -> Response:
+        """Start an album's or a folder's show, in place of the one shown; its remote.
 
         Args:
-            album: The album's name, as saved.
+            pick: The album's name, as saved, or the folder as the Explorer shows it.
 
         Returns:
             303 to the remote; 409 with the reason when there is nothing to show.
         """
         try:
-            self._begin(Pick(album=album))
+            self._begin(pick)
         except MediaHygieneError as exc:
             return Response(HTTPStatus.CONFLICT, why(exc).encode())
         return Response(HTTPStatus.SEE_OTHER, headers=(f"Location: {SLIDESHOW_PAGE}",))
 
     def _begin(self, pick: Pick) -> bool:
-        """Start a show, in place of the one shown.
-
-        On the server's own thread, as `library`: the index is opened there.
+        """Start a show, in place of the one shown, on the server's own thread.
 
         Args:
             pick: What to show.

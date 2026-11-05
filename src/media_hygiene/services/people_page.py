@@ -14,43 +14,25 @@ import asyncio
 import contextlib
 from dataclasses import dataclass
 from functools import partial
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
-from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.paths.mounts import is_writable
-from media_hygiene.people.alike import AlikeFinder
-from media_hygiene.people.app import (
-    CHANGE_PATH,
-    GROUPS_PATH,
-    SAMPLE_PREFIX,
-    SECTION_PREFIX,
-    PeopleApp,
-)
-from media_hygiene.people.aside import ASIDE_PATH, AsideDesk
-from media_hygiene.people.board import PeopleBoard
-from media_hygiene.people.pictures import FACE_PREFIX, PHOTO_PREFIX
-from media_hygiene.people.remembered import AsideMemory
-from media_hygiene.people.roster import NamesFile, Roster
-from media_hygiene.people.views import STRIP
 from media_hygiene.person.door import with_person
-from media_hygiene.review.apply_api import APPLY_PATH, ApplyOffer, applying_door
+from media_hygiene.review.apply_api import ApplyOffer, applying_door
 from media_hygiene.review.ending import serve_until_ended
-from media_hygiene.review.page_header import page_header
-from media_hygiene.services.chosen_place import chosen_store, reports_ready
+from media_hygiene.services.people_app_build import PeopleBuild, people_app
 from media_hygiene.services.reviewing import address_tip, page_url
 
 if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
 
+    from media_hygiene.people.roster import Roster
     from media_hygiene.review.apply_api import ApplyStep
     from media_hygiene.services.people_names import PeopleResult
     from media_hygiene.services.runtime import Runtime
-
-_PACKAGE: Final = "media_hygiene.people"
-_PAGE_TEMPLATE: Final = "people.html.j2"
 
 
 @dataclass(frozen=True, slots=True)
@@ -83,61 +65,19 @@ def serve_people(
         How many files are set aside when the page stops, read from the disk, and
         the exit code the page asked for.
     """
-    environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
-    page = environment.get_template(_PAGE_TEMPLATE).render(
-        header=page_header(_PAGE_TEMPLATE),
-        groups_path=GROUPS_PATH,
-        section_prefix=SECTION_PREFIX,
-        sample_prefix=SAMPLE_PREFIX,
-        strip=STRIP,
-        change_path=CHANGE_PATH,
-        aside_path=ASIDE_PATH,
-        face_prefix=FACE_PREFIX,
-        photo_prefix=PHOTO_PREFIX,
-        apply_path=APPLY_PATH,
-        apply_offered=start.apply is not None,
-    )
-    names = NamesFile(_names_file(runtime), runtime.settings.people, result.moves)
-    board = PeopleBoard.of(result.groups, result.every)
-    roster = Roster(board, result.every, names)
-    aside, alike = _aside_desks(runtime, board)
-    offer = ApplyOffer(start.apply, lambda: bool(aside.paths()))
     code = 0
-    with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        app = PeopleApp(
-            roster,
-            runtime.mapper,
-            page.encode(),
-            executor,
-            runtime.previews_dir,
-            aside,
-            alike,
-        )
+    with runtime.executor_factory() as executor:
+        build = PeopleBuild(executor, _names_file(runtime), start.apply is not None)
+        app, aside = people_app(runtime, result, build)
+        offer = ApplyOffer(start.apply, lambda: bool(aside.paths()))
+        roster = app.roster
         door = applying_door(app, offer, runtime.locations.reports_dir)
         door = with_person(door, runtime, executor)
-        code = asyncio.run(
-            serve_until_ended(door, start.port, partial(_announce, runtime, roster))
-        )
+        with contextlib.suppress(KeyboardInterrupt):
+            code = asyncio.run(
+                serve_until_ended(door, start.port, partial(_announce, runtime, roster))
+            )
     return PeopleServed(len(aside.paths()), code)
-
-
-def _aside_desks(
-    runtime: Runtime, board: PeopleBoard
-) -> tuple[AsideDesk, AlikeFinder | None]:
-    """Where the photos set aside go, and who looks like the people set aside.
-
-    Args:
-        runtime: Mount points.
-        board: Every face of the page.
-
-    Returns:
-        The desk saving the photos and remembering the faces; the finder of the
-        faces like theirs, None without a persistent cache.
-    """
-    memory = AsideMemory.of(runtime)
-    ready = partial(reports_ready, runtime)
-    aside = AsideDesk(chosen_store(runtime), ready, memory)
-    return aside, None if memory is None else AlikeFinder(board, memory)
 
 
 def names_file(runtime: Runtime) -> Path | None:

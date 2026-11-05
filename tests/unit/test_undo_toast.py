@@ -22,7 +22,6 @@ _CONFIRM: Final = re.compile(r"window\.confirm\(")
 _KEPT: Final = {
     "places/templates/places.html.j2": 2,  # a place given photos / deleted
     "review/templates/phone_review.js.j2": 2,  # the phone page (phone rule)
-    "search/templates/search_rule.js.j2": 1,  # files moved to an event
     "search/templates/events_rule.js.j2": 1,  # rules removed from config.toml
     "search/templates/events_choice.js.j2": 1,  # leaving with unsaved choices
     "share/templates/album.js.j2": 2,  # an album deleted, a photo taken out
