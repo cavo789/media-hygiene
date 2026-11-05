@@ -95,7 +95,8 @@ docker run --rm -it `
   and the quarantine run by run; *Settings* your folders, the update, Windows, the local AI,
   privacy, the advanced actions and *About*.
 - **What the page already shows stays in the console**: your folders (each found or not, the
-  quarantine of each drive) are in *Your folders* of the sidebar and of *Settings*, so the page
+  quarantine of each drive) are in *Your folders* of the sidebar, on every page that wears it,
+  and of *Settings*, so the page
   does not offer `mh folders`; nor `mh home`, `mh status`, `mh menu` (this page itself), nor
   `mh open` and `mh reports` (the page's *Every report* link opens the same index, always
   current). `mh menu` and `mh --help` keep them.

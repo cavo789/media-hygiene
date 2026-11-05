@@ -103,7 +103,8 @@ docker run --rm -it `
   la quarantaine par exécution ; *Réglages* vos dossiers, la mise à jour, Windows, l'IA locale,
   la vie privée, les actions avancées et *À propos*.
 - **Ce que la page montre déjà reste dans la console** : vos dossiers (chacun trouvé ou non, la
-  quarantaine de chaque disque) sont dans *Vos dossiers* de la barre latérale et des *Réglages* :
+  quarantaine de chaque disque) sont dans *Vos dossiers* de la barre latérale, sur chaque page
+  qui la porte, et des *Réglages* :
   la page ne propose donc pas `mh folders` ; ni `mh home`, `mh status`, `mh menu` (cette page
   même), ni `mh open` et `mh reports` (le lien *Tous les rapports* de la page ouvre le même
   index, toujours à jour). `mh menu` et `mh --help` les gardent.

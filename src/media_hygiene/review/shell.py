@@ -47,6 +47,7 @@ class Shell:
     tools: tuple[ShellLink, ...]
     version: str
     compact: bool = False  # a tile page: the sidebar folded to its icons
+    drawer: bool = False  # the phone layout at every width: top bar and ☰ (0497)
 
 
 @dataclass(frozen=True, slots=True)
@@ -55,6 +56,7 @@ class ShellAsk:
 
     space: Space | None  # its space, highlighted; None: none
     compact: bool = False
+    drawer: bool = False  # the sidebar off-canvas, opened by ☰ (the phone's page)
 
 
 def page_shell(ask: ShellAsk, home_title: str) -> Shell:
@@ -93,4 +95,5 @@ def page_shell(ask: ShellAsk, home_title: str) -> Shell:
         tools=links(stage=False),
         version=version(APP_NAME),
         compact=ask.compact,
+        drawer=ask.drawer,
     )

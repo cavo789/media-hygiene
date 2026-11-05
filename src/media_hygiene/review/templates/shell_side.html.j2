@@ -20,6 +20,16 @@
     <p class="mh-shell-group mh-shell-label">{{ _("Tools") }}</p>
     <ul class="mh-shell-list">{% for link in shell.tools %}{{ entry(link) }}{% endfor %}</ul>
   </nav>
+  {% if header.folders %}{# Your folders (0579): the home page's list, its order, its badges. #}
+  <details class="mh-shell-folders mh-shell-label pc-only">
+    <summary><svg class="mh-i" aria-hidden="true"><use href="#i-folder"></use></svg><span>{{ _("Your folders ({count})").format(count=header.folders.folders | length) }}</span>
+    {%- if header.folders.warn %}<span class="mh-shell-folder-warn"><span class="mh-shell-hidden">{{ _("a folder not found") }}</span></span>{% endif -%}
+    <svg class="mh-i mh-shell-chev" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
+    <ul class="mh-shell-folder-list">{% for folder in header.folders.folders %}
+      <li><span class="mh-shell-folder-path">{{ folder.path }}</span><span class="mh-shell-folder-role{% if not folder.ok %} is-warn{% endif %}">{{ folder.role }} · {{ folder.note }}</span></li>{% endfor %}
+    </ul>
+  </details>
+  {% endif %}
   <div class="mh-shell-sign mh-shell-label">
     <p>Media Hygiene {{ shell.version }}</p>
     <div class="mh-shell-theme" role="group" aria-label="{{ _('Display') }}">

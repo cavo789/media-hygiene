@@ -9,13 +9,22 @@ its top bar.
 from __future__ import annotations
 
 import re
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
 import pytest
 
+from media_hygiene.review.home_parts import HomeFolder
 from media_hygiene.review.page_header import PAGE_STEPS, SHELL_PAGES
+from media_hygiene.review.shell_folders import (
+    forget_folders,
+    register_folders,
+    shell_folders,
+)
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 from tests.support.page_render import render_page
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 _CURRENT: Final = re.compile(r'data-space="([a-z]+)" aria-current="page"')
 _SPACES: Final = {
@@ -32,11 +41,11 @@ _SPACES: Final = {
     "history.html.j2": "history",
     "shrink.html.j2": "clean",
 }
-# What keeps the thin bar: the phone's page (read-only) and the slideshow (full screen).
-_THIN: Final = {"phone_review.html.j2", "slideshow.html.j2"}
+# What keeps the thin bar: the TV slideshow (full screen, 0497).
+_THIN: Final = {"slideshow.html.j2"}
 
 
-def test_every_page_but_the_phones_and_the_slideshow_is_in_the_frame() -> None:
+def test_every_page_but_the_slideshow_is_in_the_frame() -> None:
     """0493-0496 moved them all; what stays out is named."""
     assert set(PAGE_STEPS) - set(SHELL_PAGES) == _THIN
 
@@ -83,3 +92,59 @@ def test_the_shell_uses_no_key_a_review_needs() -> None:
     page = render_page("review.html.j2")
     script = page.split('id="mhShellMenu"')[1].split("</script>")[0]
     assert "keydown" not in script
+
+
+def test_the_phones_page_wears_the_drawer() -> None:
+    """0497: the top bar and ☰ at every width; the slideshow keeps no frame."""
+    page = render_page("phone_review.html.j2")
+    assert page.count('id="mhShellSide"') == 1
+    assert '"mh-shelled", "mh-shell-drawer"' in page
+    assert ":root.mh-shell-drawer { --mh-shell-w: 0px; }" in page
+    assert 'id="mhShellSide"' not in render_page("slideshow.html.j2")
+    # pick_grid's `function clock` and a `const clock` in one script: a SyntaxError.
+    assert "const clock" not in page
+
+
+_FOLDERS: Final = (
+    HomeFolder(path=r"C:\Photos", role="Photos", note="12 entries at its top"),
+    HomeFolder(path=r"E:\Old", role="Photos", note="Not found", ok=False),
+)
+
+
+@pytest.fixture
+def folders() -> Iterator[None]:
+    """A run that registered its folders, forgotten afterwards."""
+    register_folders(lambda: _FOLDERS)
+    yield
+    forget_folders()
+
+
+@pytest.mark.usefixtures("folders")
+@pytest.mark.parametrize("template", sorted(SHELL_PAGES))
+def test_every_page_in_the_frame_lists_your_folders(template: str) -> None:
+    """0579: the home page's list, in its order, with its warning badges."""
+    page = render_page(template)
+    assert page.count('class="mh-shell-folders') == 1
+    assert page.index(r"C:\Photos") < page.index(r"E:\Old")
+    assert 'class="mh-shell-folder-warn"' in page
+    assert page.count('class="mh-shell-folder-role is-warn"') == 1
+
+
+@pytest.mark.parametrize("template", ["search.html.j2", "history.html.j2"])
+def test_a_page_without_state_lists_no_folders(template: str) -> None:
+    """Nothing registered: no list, no error."""
+    forget_folders()
+    assert 'class="mh-shell-folders' not in render_page(template)
+
+
+def test_unreadable_folders_list_nothing() -> None:
+    """A folder that cannot be read: the page renders without the list."""
+
+    def broken() -> tuple[HomeFolder, ...]:
+        raise OSError
+
+    register_folders(broken)
+    try:
+        assert shell_folders() is None
+    finally:
+        forget_folders()
