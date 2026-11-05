@@ -110,8 +110,24 @@ audit was made with the former settings: the page says so and offers *Run the au
 The *Disk space* tile opens a page with the room the previews and the quarantine take. Each limit
 sits next to its effect, saved into `config.toml` and read back before being shown: *Keep at most
 (GB)* (`[cache] previews_max_gb`) and *Suggest purging after (days)* (`[clean] purge_hint_days`).
-*Empty the previews* states the size it frees; they are made again when shown. The quarantine is
-seen, put back or purged from *History and undo*, where `purge` asks first.
+*Empty the previews* states the size it frees; they are made again when shown. Each run of the
+quarantine has its *See the photos* link, its files as tiles ([`undo --pick`](undo.md#put-back-a-few-photos)); it is
+purged from *History and undo*, where `purge` offers the same page, then asks.
+
+## Fast paths and what shows the files first
+
+These verbs act on files they do not show; they stay, for large collections. Each says so in one line
+before its question, and the home page offers the page first (*See them first*, or *Go on without
+seeing them*):
+
+| Fast path | What shows the files first |
+|---|---|
+| `clean`, `clean --delete` | The audit's report; `review --near` for `--tier near`, `near-all` |
+| `sort` | The classify report; 🗂 Events of `search`, one event at a time |
+| `undo` | `undo --pick` |
+| `purge` | `undo --pick` |
+| `import`, `import <folder>` | `import --pick` |
+| `upkeep` | The report, then the line each step says first |
 
 ## 10 minutes of tidying
 

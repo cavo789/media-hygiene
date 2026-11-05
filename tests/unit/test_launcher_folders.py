@@ -299,7 +299,7 @@ def test_bash_folders_has_no_dialog_and_keeps_its_usage(tmp_path: Path) -> None:
     """The bash `mh` (non-goal of 0201): `add` alone is a usage error, as before."""
     script = tmp_path / "mh.sh"
     script.write_text(render_script(launcher_script(_runtime(), Shell.BASH, _COMMANDS)))
-    assert "pick" not in script.read_text()
+    assert "pick" not in script.read_text().replace("--pick", "").replace("import", "")
     assert "a window to choose it" not in script.read_text()
 
 

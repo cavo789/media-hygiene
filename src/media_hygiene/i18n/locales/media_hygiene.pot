@@ -6,11 +6,11 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"   {count} file is only in it, never in your photos ({size}): 'import' "
-"copies it into them."
+"   {count} file is only in it, never in your photos ({size}): 'import "
+"--pick' shows it, then copies it."
 msgid_plural ""
-"   {count} files are only in it, never in your photos ({size}): 'import' "
-"copies them into them."
+"   {count} files are only in it, never in your photos ({size}): 'import "
+"--pick' shows them, then copies them."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1231,6 +1231,12 @@ msgid ""
 " you changed at work."
 msgstr ""
 
+msgid "As photos: only what your photos lack; the folder is only read."
+msgstr ""
+
+msgid "As photos: unpick what you do not want, then copy; each copy checked."
+msgstr ""
+
 msgid "As planned"
 msgstr ""
 
@@ -1419,6 +1425,9 @@ msgstr ""
 msgid "Brightness"
 msgstr ""
 
+msgid "Bring back"
+msgstr ""
+
 msgid "Broken"
 msgstr ""
 
@@ -1533,6 +1542,11 @@ msgid "Categories"
 msgstr ""
 
 msgid "Category"
+msgstr ""
+
+msgid ""
+"Chains the steps without showing the files; each names its page before it"
+" runs, the report shows them first."
 msgstr ""
 
 msgid "Change"
@@ -1893,6 +1907,9 @@ msgstr ""
 msgid "Copies not found when read back: {count}. Type mh import --phone again."
 msgstr ""
 
+msgid "Copies without showing the files: the page shows them first."
+msgstr ""
+
 msgid "Copies, previewed"
 msgstr ""
 
@@ -1945,6 +1962,10 @@ msgstr ""
 msgid "Copy them into your photos?"
 msgstr ""
 
+#, python-brace-format
+msgid "Copy these {count} files"
+msgstr ""
+
 msgid ""
 "Copy to your NAS only what it lacks, at Windows' speed. A photo deleted "
 "by mistake on the PC is never deleted from the NAS."
@@ -1954,6 +1975,10 @@ msgid "Copy without asking first."
 msgstr ""
 
 msgid "Copying"
+msgstr ""
+
+#, python-brace-format
+msgid "Copying: {done} of {total}…"
 msgstr ""
 
 msgid "Correct it, then run the same command again."
@@ -2676,6 +2701,14 @@ msgstr ""
 msgid "Erased from .removed (older than {days} days): {count} runs"
 msgstr ""
 
+msgid "Erases the copies without showing them: the report shows them first."
+msgstr ""
+
+msgid ""
+"Erases without showing the files: the quarantine's page shows the photos "
+"first."
+msgstr ""
+
 msgid "Error"
 msgstr ""
 
@@ -3074,6 +3107,9 @@ msgid ""
 "Files the system leaves behind: a folder holding nothing else is removed "
 "once 'sort' or 'clean' emptied it, these files going to the quarantine "
 "first. 'sort --keep-empty-folders' keeps every folder a sort empties."
+msgstr ""
+
+msgid "Files to import"
 msgstr ""
 
 msgid "Files to move"
@@ -3525,6 +3561,9 @@ msgid "Go on for 10 minutes"
 msgstr ""
 
 msgid "Go on with the clean?"
+msgstr ""
+
+msgid "Go on without seeing them"
 msgstr ""
 
 msgid "Go to"
@@ -4103,6 +4142,9 @@ msgstr ""
 msgid "Leave everything on the phone"
 msgstr ""
 
+msgid "Leave out"
+msgstr ""
+
 msgid "Leave the picked files where they are"
 msgstr ""
 
@@ -4544,6 +4586,14 @@ msgstr ""
 msgid "Moved to the quarantine from"
 msgstr ""
 
+msgid ""
+"Moves every file of the plan without showing it: the classify report "
+"shows them first."
+msgstr ""
+
+msgid "Moves the copies without showing them: the report shows them first."
+msgstr ""
+
 #, python-brace-format
 msgid "Moving a burst shot set aside to the quarantine: {path}"
 msgstr ""
@@ -4795,6 +4845,18 @@ msgid "Next time, type it directly: {command}"
 msgstr ""
 
 msgid "Next to do (g)"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Next, 'clean' sets about {count} copies aside: the report shows them "
+"first ('mh reports' lists it); its question comes next."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Next, 'purge' erases {count} files for good: 'mh undo --pick' shows them "
+"as photos first; its question comes next."
 msgstr ""
 
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
@@ -5542,6 +5604,9 @@ msgstr ""
 msgid "Nothing to clean: no duplicate and no broken file."
 msgstr ""
 
+msgid "Nothing to copy: every file of the folder is dealt with."
+msgstr ""
+
 msgid "Nothing to do yet."
 msgstr ""
 
@@ -5622,6 +5687,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "Nothing was restored: {error}"
+msgstr ""
+
+#, python-brace-format
+msgid "Nothing was saved (error {status})."
 msgstr ""
 
 #, python-brace-format
@@ -6499,6 +6568,9 @@ msgstr ""
 msgid "Proving identity (full SHA-256)"
 msgstr ""
 
+msgid "Purge: History and undo"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Purged on {date}: it is nowhere else. Deleted from the phone, it is lost "
@@ -6549,6 +6621,11 @@ msgid "Put them there"
 msgstr ""
 
 msgid "Put this face back"
+msgstr ""
+
+msgid ""
+"Puts a whole run back without showing it: the quarantine's page shows the"
+" photos first."
 msgstr ""
 
 #, python-brace-format
@@ -6655,6 +6732,16 @@ msgstr ""
 
 #, python-brace-format
 msgid "Read back from config.toml: {names} names, {ignored} faces ignored."
+msgstr ""
+
+#, python-brace-format
+msgid "Read back from the disk at {time}: {count} files left out."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Read back from the disk: {count} copies made, {failed} failed. mh undo "
+"{run} removes them. Audit again so that they join your library."
 msgstr ""
 
 #, python-brace-format
@@ -7457,19 +7544,36 @@ msgstr ""
 msgid "See each setting and where it comes from"
 msgstr ""
 
+msgid "See every photo of the quarantine, put some back"
+msgstr ""
+
 msgid "See the files"
 msgstr ""
 
-msgid "See the photos, put some back or purge: History and undo"
+msgid ""
+"See the files as photos in the browser first: unpick those you do not "
+"want, then copy from the page."
+msgstr ""
+
+msgid "See the photos"
 msgstr ""
 
 msgid "See them"
+msgstr ""
+
+msgid "See them first"
+msgstr ""
+
+msgid "See what a USB disk, an SD card or a folder holds, then copy it"
 msgstr ""
 
 msgid "See what changes"
 msgstr ""
 
 msgid "See what each run did"
+msgstr ""
+
+msgid "See what only the NAS or the disk holds, then copy it"
 msgstr ""
 
 msgid "See your folders"
@@ -7707,6 +7811,9 @@ msgid "Show every face of the group, to take out those of someone else"
 msgstr ""
 
 msgid "Show every place of the photos"
+msgstr ""
+
+msgid "Show every run"
 msgstr ""
 
 msgid "Show every setting, where it comes from, and the mount points."
@@ -8480,6 +8587,10 @@ msgid "The copy of the import has the same name and size."
 msgstr ""
 
 #, python-brace-format
+msgid "The copy stopped: {error}"
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "The copy to {other} failed: the archive stays on this PC only, in the "
 "folder backups of mh."
@@ -8623,6 +8734,9 @@ msgid ""
 "by date does not find it."
 msgstr ""
 
+msgid "The files changed since the page was shown: nothing copied."
+msgstr ""
+
 msgid "The files given at least these stars in Windows (1 to 5)."
 msgstr ""
 
@@ -8636,6 +8750,12 @@ msgstr ""
 msgid ""
 "The files of {name} no longer found (moved without the index, or set "
 "aside then applied)"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The files only this folder holds are ready, open {url} in your browser. "
+"Nothing is copied before the page's button. Ctrl+C stops the page."
 msgstr ""
 
 msgid "The files robocopy copied stay in the backup."
@@ -8681,6 +8801,12 @@ msgid "The first video out of {count}"
 msgid_plural "The first {n} videos out of {count}"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid ""
+"The folder is only read. Nothing is copied before the Copy button; each "
+"copy is compared with its source and journaled: 'mh undo' removes the "
+"copies."
+msgstr ""
 
 msgid ""
 "The folder of the import, as Explorer shows it (mounted read-only): its "
@@ -8996,6 +9122,9 @@ msgstr ""
 msgid "The page is not running any more: type mh import --phone again."
 msgstr ""
 
+msgid "The page is not running any more: type mh import --pick again."
+msgstr ""
+
 msgid "The page is not running any more: type mh undo --pick again."
 msgstr ""
 
@@ -9151,8 +9280,8 @@ msgid "The previous image still takes {size} MB: docker image prune frees it."
 msgstr ""
 
 msgid ""
-"The proposal can be changed first, on the page or in the workbook; then "
-"it asks and moves: undoable, proven."
+"The proposal can be changed first in the workbook; then it asks and "
+"moves: undoable, proven."
 msgstr ""
 
 msgid "The proposal is already made: → is enough when it suits you."
@@ -9616,6 +9745,9 @@ msgid "These folders are mounted read-only: {folders}."
 msgstr ""
 
 msgid "These photos are left as they are: no choice applies to them."
+msgstr ""
+
+msgid "They are not copied; the folder keeps them"
 msgstr ""
 
 msgid "They stay where they are"
@@ -10344,6 +10476,12 @@ msgid "What you set aside in the browser goes to the quarantine."
 msgstr ""
 
 msgid "What you type here replaces the console menu's (type it yourself)."
+msgstr ""
+
+msgid ""
+"What your photos lack, compared by content; never what you set aside or "
+"deleted before. Leave out what you do not want: the rest is copied, each "
+"file in its folder below From <source>."
 msgstr ""
 
 #, python-brace-format
@@ -11775,6 +11913,9 @@ msgstr ""
 msgid "left as it is"
 msgstr ""
 
+msgid "left out"
+msgstr ""
+
 #, python-brace-format
 msgid "left to the rule {rule}"
 msgstr ""
@@ -12055,6 +12196,9 @@ msgstr ""
 msgid "nas get back restore backup copy missing usb disk"
 msgstr ""
 
+msgid "nas get back see photos pick backup copy missing"
+msgstr ""
+
 msgid "nas synology backup old disk share network smb"
 msgstr ""
 
@@ -12214,7 +12358,7 @@ msgstr ""
 msgid "on another disk or mount: no link possible"
 msgstr ""
 
-msgid "once you have checked the quarantine, 'purge' frees its space."
+msgid "once seen with 'undo --pick', 'purge' frees the quarantine's space."
 msgstr ""
 
 msgid "once you have checked, 'purge' frees the space of the files set aside."
@@ -12802,8 +12946,8 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
-"the quarantine of {run_id} is more than {days} days old: once checked, "
-"'purge' frees its space."
+"the quarantine of {run_id} is more than {days} days old: once seen with "
+"'undo --pick', 'purge' frees its space."
 msgstr ""
 
 msgid "the restored copy does not match the original"
@@ -13095,6 +13239,9 @@ msgstr ""
 msgid "usb disk card sd camera folder import copy"
 msgstr ""
 
+msgid "usb disk card sd camera folder see photos pick"
+msgstr ""
+
 msgid "validate"
 msgstr ""
 
@@ -13190,7 +13337,7 @@ msgstr ""
 msgid "you have {version}"
 msgstr ""
 
-msgid "your backup holds files the PC lacks: 'import' copies them back."
+msgid "your backup holds files the PC lacks: see them, then copy them back."
 msgstr ""
 
 msgid "your computer's, read at each run"
@@ -13731,6 +13878,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{count} files only on the NAS"
+msgstr ""
+
+#, python-brace-format
+msgid "{count} files only this folder holds, {out} left out"
 msgstr ""
 
 #, python-brace-format
@@ -15808,6 +15959,34 @@ msgstr[1] ""
 msgid ""
 "👀 Not identical files: look at them before answering, every one on a "
 "single page: {path} (Ctrl+click opens it)."
+msgstr ""
+
+msgid "👁 A whole run: 'undo --pick' shows the photos and puts back only a few."
+msgstr ""
+
+msgid ""
+"👁 Acts on them without showing them: 'review --near' shows the near "
+"duplicates first, the report the copies ('mh reports' lists it)."
+msgstr ""
+
+msgid ""
+"👁 Acts on them without showing them: the report shows them first ('mh "
+"reports' lists it)."
+msgstr ""
+
+msgid ""
+"👁 Copies them without showing them: 'import --pick' shows them as photos "
+"first."
+msgstr ""
+
+msgid ""
+"👁 Moves them without showing them: the classify report shows them first "
+"('mh reports' lists it)."
+msgstr ""
+
+msgid ""
+"👁 See these files as photos first: 'undo --pick' (nothing is erased "
+"there)."
 msgstr ""
 
 msgid ""

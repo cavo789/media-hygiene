@@ -15,6 +15,7 @@ from media_hygiene.actions.archive_copy import (
 )
 from media_hygiene.actions.archived import archive_record, note_archived
 from media_hygiene.actions.purge import folder_size
+from media_hygiene.cli.fast_lines import tell_purge_twin
 from media_hygiene.console.formatting import human_number, human_size
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
@@ -63,6 +64,7 @@ def purge_question(runtime: Runtime, asked: PurgeQuestion) -> str:
     )
     if not asked.yes:  # a script: nobody reads it
         show_archive_hint(runtime)
+        tell_purge_twin(runtime)
     return _("Erase the quarantine of {runs} ({count} files, {size})?").format(
         runs=runs, count=asked.count, size=asked.size
     )

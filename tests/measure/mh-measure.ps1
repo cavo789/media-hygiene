@@ -147,6 +147,7 @@
 #      (two yes/no questions, by hand)                                               (0359)
 #  43. the hand-over of a page step (0583): a page on 8088 ends, the next page started at once
 #  44. back to the home page (0442): /api/state of your real mh timed from the PC, then the phone by stopwatch
+#  45. the pages of 0590-0594 on Windows: import --pick on a folder, then the quarantine in one click, by hand
 #      (as before) or once Docker removed the first container (after): seconds to bind
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
@@ -3570,6 +3571,19 @@ if (Wanted 44) {
     Log "   44d. splash seen on the way back: $splash"
     Log "   44e. the updating mark shown then gone: $mark"
     $ErrorActionPreference = $saved
+}
+
+# --- 45: import --pick and the quarantine's page on Windows (0590, 0591, 0594) ------------------
+# By hand: only your eyes tell the tiles are right; nothing is copied unless you press Copy.
+if (Wanted 45) {
+    Log ""
+    Log "== 45. import --pick, quarantine page (0590, 0591, 0594)"
+    Write-Host "45 : dans une AUTRE fenetre (image de la branche) : mh import --pick <un dossier avec des photos>."
+    $tilesSeen = Read-Host "Les vignettes s'affichent, Ecarter puis Reprendre marchent, le dossier reste intact ? (o/n)"
+    Log "   45a. import --pick, tiles and leave out: $tilesSeen"
+    Write-Host "45 : puis mh, page d'accueil, Historique, Liberer la place : cliquez Les voir d'abord."
+    $oneClick = Read-Host "La quarantaine s'ouvre sans redemarrage ni fenetre de console ? (o/n)"
+    Log "   45b. purge, See them first, served without a restart: $oneClick"
 }
 
 # --- clean up -------------------------------------------------------------------------------

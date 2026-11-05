@@ -61,6 +61,10 @@
         # The port mh publishes is the one the page listens on, config.toml changed or not (0260).
         *" $command "*) page=(-p "127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}" -e "MEDIA_HYGIENE_REVIEW__PORT={{ script.commands.port }}") ;;
     esac
+    # `import --pick` serves a page; plain `import` stays in the console (0590).
+    if [[ "$command" == import && " $* " == *" --pick "* ]]; then
+        page=(-p "127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}" -e "MEDIA_HYGIENE_REVIEW__PORT={{ script.commands.port }}")
+    fi
     if [[ -n "${page[*]}" ]]; then
         # A page left by a closed terminal holds the port: stopped when its shell is gone (0250).
         _{{ function }}_page_free || return 1

@@ -39,6 +39,11 @@ A step that fails stops the chain; what came before stays done.
 
 ## Good to know
 
+Before each step that changes files, a line gives its count and the page that shows them:
+*Next, 'clean' sets about 12 copies aside: the report shows them first*, *Next, 'purge' erases 41
+files for good: 'mh undo --pick' shows them as photos first*. Going straight on stays one key: the
+step's own question.
+
 Answering *no* to a question skips that step only.
 
 ## Go further

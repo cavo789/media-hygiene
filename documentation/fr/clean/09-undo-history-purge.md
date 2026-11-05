@@ -100,8 +100,8 @@ restaurés), puis refait.
 
 La quarantaine garde ce que `clean` a déplacé : les copies en trop, les fichiers illisibles, les
 fichiers compagnons orphelins et, si vous l'avez demandé, quasi-doublons et photos de rafale.
-Leur place n'est libérée que maintenant : une fois que vous les avez vérifiés (ouvrez le dossier
-de quarantaine dans l'Explorateur), `purge` les supprime **pour de bon**. C'est la seule commande
+Leur place n'est libérée que maintenant : une fois que vous les avez vus en photos (`mh undo --pick`,
+ou *Les voir d'abord* sur la page d'accueil), `purge` les supprime **pour de bon**. C'est la seule commande
 qui efface du contenu (avec `clean --delete`, si vous l'utilisez), et elle le dit avant de
 demander :
 

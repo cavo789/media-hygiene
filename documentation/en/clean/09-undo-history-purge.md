@@ -96,7 +96,7 @@ clean was fully undone (36 files restored), then cleaned again.
 
 The quarantine keeps what `clean` moved: the extra copies, unreadable files, orphan sidecars,
 and, if you asked, near duplicates and burst shots. Their space is freed only now: once you have
-checked them (open the quarantine folder in the Explorer), `purge` deletes them **for good**.
+seen them as photos (`mh undo --pick`, or *See them first* on the home page), `purge` deletes them **for good**.
 It is the only command that erases content (with `clean --delete`, if you use it), and it says
 so before asking:
 

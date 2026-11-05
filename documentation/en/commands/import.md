@@ -36,6 +36,23 @@ mh import --phone    # a phone over USB, Windows only: below
 | Undo | [`undo <run>`](undo.md) removes the copies (a copy you edited since is kept). |
 | With `mh` | `mh import`, `mh import E:\DCIM`, `mh import --yes`. |
 
+## See them first: `mh import --pick`
+
+The page to start with: the files only the folder holds, **as photos**, before anything is copied.
+Pick photos as on every page of tiles: a click picks one, Ctrl+click adds or takes out one,
+Shift+click every file from the last one clicked, a drag draws a rectangle, Ctrl+A picks every
+file shown, I inverts the picking, Enter or a double click shows a photo large. **⊘ Leave out** keeps them out of the copy (saved, read back from the disk, in
+`import-left-out.json` of the reports folder: still left out next time, until **↩ Bring back**). **📥 Copy these N files** states its count and copies those: each one checked, journaled,
+`mh undo <run>` removes them. The folder is only read.
+
+```powershell
+mh import --pick            # your backup folders; on the home page: See what only the NAS holds
+mh import --pick E:\DCIM    # that folder only
+```
+
+Plain `mh import` stays the fast path, for a large collection: it copies them all without showing
+them, and says so.
+
 ## What is copied, what is not
 
 `import` audits first, with the backup, then sorts what only the backup holds:
@@ -221,6 +238,7 @@ happens (a run of kind `phone` in `mh history`).
 |---|---|
 | `FOLDER` | The folder to import from (host path), instead of your backup folders: an SD card, a USB disk. Only read for this run, never added to `mh`. |
 | `--to PATH` | Folder receiving the copies (host path); default: `From <source>` in your first photo folder. |
+| `--pick` | [The files as photos first](#see-them-first-mh-import---pick), copied from the page. |
 | `--yes`, `-y` | Copy without asking first. |
 | `--backup PATH` | The backup folder to import from, when not in `config.toml` (`mh` passes yours). |
 | `--phone` | A phone over USB instead of a folder, Windows only: the `mh` of PowerShell copies its new photos itself ([above](#from-a-phone-mh-import---phone)); with it, `--only <folder of DCIM>` and `--free`. |

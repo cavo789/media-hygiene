@@ -32,10 +32,13 @@ def _two_runs(monkeypatch: pytest.MonkeyPatch) -> None:
     """A quarantine with one old run and one recent."""
     now = datetime.now(UTC)
     runs = (
-        SimpleNamespace(run_id="old", started=now - timedelta(days=40)),
-        SimpleNamespace(run_id="new", started=now),
+        SimpleNamespace(run_id="old", started=now - timedelta(days=40), files=3),
+        SimpleNamespace(run_id="new", started=now, files=1),
     )
-    status = SimpleNamespace(quarantine=SimpleNamespace(runs=runs))
+    status = SimpleNamespace(
+        quarantine=SimpleNamespace(runs=runs),
+        analysis=SimpleNamespace(summary=None),
+    )
     monkeypatch.setattr(upkeep, "read_status", lambda _r: status)
 
 
@@ -75,3 +78,23 @@ def test_an_empty_list_runs_nothing() -> None:
 def test_a_failure_stops_the_chain() -> None:
     """What follows a failed step does not run."""
     assert _ran(_runtime(*RoutineSettings().steps), code=1) == [("audit",)]
+
+
+def test_each_writing_step_names_its_count_and_its_page(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """0592: `clean` and `purge`, the count then the page; no step removed."""
+    now = datetime.now(UTC)
+    runs = (SimpleNamespace(run_id="old", started=now - timedelta(days=40), files=7),)
+    status = SimpleNamespace(
+        quarantine=SimpleNamespace(runs=runs),
+        analysis=SimpleNamespace(summary=SimpleNamespace(duplicate_files=12)),
+    )
+    monkeypatch.setattr(upkeep, "read_status", lambda _r: status)
+    said: list[str] = []
+    runtime = _runtime(*RoutineSettings().steps)
+    runtime.output.info = said.append
+    upkeep.run_upkeep(runtime, lambda _words: 0)
+    assert any("12" in line and "mh reports" in line for line in said)
+    assert any("7" in line and "undo --pick" in line for line in said)
+    assert len(said) == 2  # audit and reports change no file

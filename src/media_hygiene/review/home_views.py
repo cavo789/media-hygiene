@@ -75,6 +75,9 @@ class HomeAction(Frozen):  # one field per thing the page draws
     )
     confirm_text: str = ""
     inline: bool = False  # run by the home server, its output in a dialog (0505)
+    twin_text: str = ""  # a fast path: what it skips (0593)
+    twin_step: str = ""  # the step that shows the files first
+    twin_page: str = ""  # or the page
 
 
 class HomeGroup(Frozen):

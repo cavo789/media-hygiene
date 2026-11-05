@@ -104,6 +104,7 @@ def test_search_without_index_says_why(
         cast("SlideshowHere", None),
         cast("PlacesHere", None),
         DiskHere(cast("FreshRuntime", None)),
+        (),
     )
     request = Request("GET", "/search", {"host": "127.0.0.1"})
     answer = asyncio.run(pages.handle(request))

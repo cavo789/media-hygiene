@@ -51,7 +51,7 @@ def home_findings(status: Status, *, backups: bool) -> HomeFindings | None:
                     count=human_number(nas)
                 ),
                 sub=_("The PC lacks them; never those you set aside on purpose."),
-                action="import",
+                action="import-pick",
             )
         )
     elif backups:

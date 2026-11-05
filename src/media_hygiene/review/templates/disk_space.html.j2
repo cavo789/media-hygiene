@@ -1,7 +1,7 @@
 {% extends "page_frame.html.j2" %}
 {# Disk space (0539): the previews and the quarantine, each limit next to its effect, saved
    into config.toml and read back from the disk before being shown. Nothing of the photos is
-   touched here; the quarantine is seen and purged from the home page's History (its own question). #}
+   touched here; each run's photos are one click away (`/quarantine/?run=`, 0591); purged from History. #}
 {% set page_name = _("Disk space") %}
 {% set keys_safe = _("Your photos are not touched here. Previews are made again when shown.") %}
 {% block style %}
@@ -29,10 +29,10 @@
     <label>{{ _("Suggest purging after (days)") }} <input id="days" type="number" min="1" step="1"></label>
     <button id="saveDays" type="button">{{ _("Save") }}</button>
     <div class="table-wrap"><table>
-      <thead><tr><th>{{ _("Run") }}</th><th>{{ _("Files") }}</th><th>{{ _("Size") }}</th><th>{{ _("Since") }}</th><th></th></tr></thead>
+      <thead><tr><th>{{ _("Run") }}</th><th>{{ _("Files") }}</th><th>{{ _("Size") }}</th><th>{{ _("Since") }}</th><th></th><th></th></tr></thead>
       <tbody id="runs"></tbody>
     </table></div>
-    <p><a href="/#history">{{ _("See the photos, put some back or purge: History and undo") }}</a></p>
+    <p><a href="/quarantine/">{{ _("See every photo of the quarantine, put some back") }}</a> · <a href="/#history">{{ _("Purge: History and undo") }}</a></p>
   </section>
 </main>
 {% endblock %}
@@ -46,6 +46,7 @@
     "saved": _("Read back from config.toml: {gb} GB, {days} days."),
     "emptied": _("Previews now: {size}."),
     "old": _("Worth purging"),
+    "see": _("See the photos"),
     "failed": _("The page failed (error {status})."),
   } | tojson }};
   const byId = (id) => document.getElementById(id);
@@ -64,6 +65,12 @@
         cell.textContent = value;
         row.append(cell);
       }
+      const see = document.createElement("td");
+      const link = document.createElement("a");
+      link.href = `/quarantine/?run=${encodeURIComponent(run.run_id)}`;
+      link.textContent = TEXTS.see;
+      see.append(link);
+      row.append(see);
       return row;
     }));
   };

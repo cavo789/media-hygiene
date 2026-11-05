@@ -24,17 +24,17 @@ msgstr "   Rien à en récupérer :"
 
 #, python-brace-format
 msgid ""
-"   {count} file is only in it, never in your photos ({size}): 'import' "
-"copies it into them."
+"   {count} file is only in it, never in your photos ({size}): 'import "
+"--pick' shows it, then copies it."
 msgid_plural ""
-"   {count} files are only in it, never in your photos ({size}): 'import' "
-"copies them into them."
+"   {count} files are only in it, never in your photos ({size}): 'import "
+"--pick' shows them, then copies them."
 msgstr[0] ""
-"   {count} fichier est seulement là, jamais dans vos photos ({size}) : "
-"'import' le copie dedans."
+"   {count} fichier n'est que là, jamais dans vos photos ({size}) : 'import "
+"--pick' le montre, puis le copie."
 msgstr[1] ""
-"   {count} fichiers sont seulement là, jamais dans vos photos ({size}) : "
-"'import' les copie dedans."
+"   {count} fichiers ne sont que là, jamais dans vos photos ({size}) : "
+"'import --pick' les montre, puis les copie."
 
 #, python-brace-format
 msgid "   {path} — {codec}, {pixels}, {minutes} min: {size} → ~{after}"
@@ -1546,6 +1546,16 @@ msgstr ""
 "Tel que décidé par l'exécution de classify {run} : relancez classify pour "
 "voir à l'œuvre les règles que vous avez changées."
 
+msgid "As photos: only what your photos lack; the folder is only read."
+msgstr ""
+"En photos : seulement ce qui manque à vos photos ; le dossier est seulement "
+"lu."
+
+msgid "As photos: unpick what you do not want, then copy; each copy checked."
+msgstr ""
+"En photos : écartez ce que vous ne voulez pas, puis copiez ; chaque copie "
+"est vérifiée."
+
 msgid "As planned"
 msgstr "Comme prévu"
 
@@ -1762,6 +1772,9 @@ msgstr "Planche"
 msgid "Brightness"
 msgstr "Luminosité"
 
+msgid "Bring back"
+msgstr "Reprendre"
+
 msgid "Broken"
 msgstr "Cassés"
 
@@ -1880,6 +1893,13 @@ msgstr "Catégories"
 
 msgid "Category"
 msgstr "Catégorie"
+
+msgid ""
+"Chains the steps without showing the files; each names its page before it "
+"runs, the report shows them first."
+msgstr ""
+"Enchaîne les étapes sans montrer les fichiers ; chacune nomme sa page avant "
+"de s'exécuter, le rapport les montre d'abord."
 
 msgid "Change"
 msgstr "Changer"
@@ -2302,6 +2322,9 @@ msgstr ""
 "Copies introuvables à la relecture : {count}. Tapez de nouveau mh import "
 "--phone."
 
+msgid "Copies without showing the files: the page shows them first."
+msgstr "Copie sans montrer les fichiers : la page les montre d'abord."
+
 msgid "Copies, previewed"
 msgstr "Des copies, en aperçu"
 
@@ -2363,6 +2386,10 @@ msgstr ""
 msgid "Copy them into your photos?"
 msgstr "Les copier dans vos photos ?"
 
+#, python-brace-format
+msgid "Copy these {count} files"
+msgstr "Copier ces {count} fichiers"
+
 msgid ""
 "Copy to your NAS only what it lacks, at Windows' speed. A photo deleted by "
 "mistake on the PC is never deleted from the NAS."
@@ -2375,6 +2402,10 @@ msgstr "Copier sans demander d'abord."
 
 msgid "Copying"
 msgstr "Copie"
+
+#, python-brace-format
+msgid "Copying: {done} of {total}…"
+msgstr "Copie : {done} sur {total}…"
 
 msgid "Correct it, then run the same command again."
 msgid_plural "Correct them, then run the same command again."
@@ -3257,6 +3288,16 @@ msgstr "Effacer la quarantaine de {runs} ({count} fichiers, {size}) ?"
 msgid "Erased from .removed (older than {days} days): {count} runs"
 msgstr "Effacés de .removed (plus de {days} jours) : {count} passages"
 
+msgid "Erases the copies without showing them: the report shows them first."
+msgstr "Efface les copies sans les montrer : le rapport les montre d'abord."
+
+msgid ""
+"Erases without showing the files: the quarantine's page shows the photos "
+"first."
+msgstr ""
+"Efface sans montrer les fichiers : la page de la quarantaine montre les "
+"photos d'abord."
+
 msgid "Error"
 msgstr "Erreur"
 
@@ -3749,6 +3790,9 @@ msgstr ""
 " supprimé une fois vidé par 'sort' ou 'clean', ces fichiers partant d'abord "
 "en quarantaine. 'sort --keep-empty-folders' garde tous les dossiers qu'un "
 "tri vide."
+
+msgid "Files to import"
+msgstr "Fichiers à importer"
 
 msgid "Files to move"
 msgstr "Fichiers à déplacer"
@@ -4299,6 +4343,9 @@ msgstr "Continuer 10 minutes"
 
 msgid "Go on with the clean?"
 msgstr "Lancer le nettoyage ?"
+
+msgid "Go on without seeing them"
+msgstr "Continuer sans les voir"
 
 msgid "Go to"
 msgstr "Aller à"
@@ -4963,6 +5010,9 @@ msgstr "Ne pas toucher"
 msgid "Leave everything on the phone"
 msgstr "Tout laisser sur le téléphone"
 
+msgid "Leave out"
+msgstr "Écarter"
+
 msgid "Leave the picked files where they are"
 msgstr "Laisser les fichiers choisis où ils sont"
 
@@ -5471,6 +5521,16 @@ msgstr "Déplacés en quarantaine"
 msgid "Moved to the quarantine from"
 msgstr "Déplacées en quarantaine depuis"
 
+msgid ""
+"Moves every file of the plan without showing it: the classify report shows "
+"them first."
+msgstr ""
+"Déplace tous les fichiers du plan sans les montrer : le rapport de classify "
+"les montre d'abord."
+
+msgid "Moves the copies without showing them: the report shows them first."
+msgstr "Déplace les copies sans les montrer : le rapport les montre d'abord."
+
 #, python-brace-format
 msgid "Moving a burst shot set aside to the quarantine: {path}"
 msgstr "Mise en quarantaine d'une photo de rafale écartée : {path}"
@@ -5775,6 +5835,22 @@ msgstr "La prochaine fois, tapez-la directement : {command}"
 
 msgid "Next to do (g)"
 msgstr "Prochain à faire (g)"
+
+#, python-brace-format
+msgid ""
+"Next, 'clean' sets about {count} copies aside: the report shows them first "
+"('mh reports' lists it); its question comes next."
+msgstr ""
+"Ensuite, 'clean' met de côté environ {count} copies : le rapport les montre "
+"d'abord ('mh reports' le liste) ; sa question vient juste après."
+
+#, python-brace-format
+msgid ""
+"Next, 'purge' erases {count} files for good: 'mh undo --pick' shows them as "
+"photos first; its question comes next."
+msgstr ""
+"Ensuite, 'purge' efface {count} fichiers pour de bon : 'mh undo --pick' les "
+"montre en photos d'abord ; sa question vient juste après."
 
 msgid "No Czkawka results yet: run Czkawka first (PowerShell):"
 msgstr ""
@@ -6661,6 +6737,9 @@ msgstr "Rien à ajouter : l'album contient déjà chaque fichier trouvé."
 msgid "Nothing to clean: no duplicate and no broken file."
 msgstr "Rien à nettoyer : aucun doublon et aucun fichier cassé."
 
+msgid "Nothing to copy: every file of the folder is dealt with."
+msgstr "Rien à copier : tous les fichiers du dossier sont traités."
+
 msgid "Nothing to do yet."
 msgstr "Rien à faire pour l'instant."
 
@@ -6751,6 +6830,10 @@ msgstr "Rien n'a été remis (erreur {status})."
 #, python-brace-format
 msgid "Nothing was restored: {error}"
 msgstr "Rien n'a été remis : {error}"
+
+#, python-brace-format
+msgid "Nothing was saved (error {status})."
+msgstr "Rien n'a été enregistré (erreur {status})."
 
 #, python-brace-format
 msgid "Nothing was saved: {error}"
@@ -7822,6 +7905,9 @@ msgstr ""
 msgid "Proving identity (full SHA-256)"
 msgstr "Preuve d'identité (SHA-256 complet)"
 
+msgid "Purge: History and undo"
+msgstr "Purger : Historique et annulation"
+
 #, python-brace-format
 msgid ""
 "Purged on {date}: it is nowhere else. Deleted from the phone, it is lost for"
@@ -7881,6 +7967,13 @@ msgstr "Les y mettre"
 
 msgid "Put this face back"
 msgstr "Remettre ce visage"
+
+msgid ""
+"Puts a whole run back without showing it: the quarantine's page shows the "
+"photos first."
+msgstr ""
+"Remet toute une exécution sans la montrer : la page de la quarantaine montre"
+" les photos d'abord."
 
 #, python-brace-format
 msgid "Putting back: {path}"
@@ -7999,6 +8092,18 @@ msgstr "Relu dans config.toml : {gb} Go, {days} jours."
 #, python-brace-format
 msgid "Read back from config.toml: {names} names, {ignored} faces ignored."
 msgstr "Relu dans config.toml : {names} noms, {ignored} visages ignorés."
+
+#, python-brace-format
+msgid "Read back from the disk at {time}: {count} files left out."
+msgstr "Relu sur le disque à {time} : {count} fichiers écartés."
+
+#, python-brace-format
+msgid ""
+"Read back from the disk: {count} copies made, {failed} failed. mh undo {run}"
+" removes them. Audit again so that they join your library."
+msgstr ""
+"Relu sur le disque : {count} copies faites, {failed} en échec. mh undo {run}"
+" les retire. Refaites un audit pour qu'elles rejoignent votre photothèque."
 
 #, python-brace-format
 msgid "Read back from the index: {faces} faces left."
@@ -8989,20 +9094,42 @@ msgstr "Secondes"
 msgid "See each setting and where it comes from"
 msgstr "Voir chaque réglage et d'où il vient"
 
+#, python-brace-format
+msgid "See every photo of the quarantine, put some back"
+msgstr "Voir toutes les photos de la quarantaine, en remettre"
+
 msgid "See the files"
 msgstr "Voir les fichiers"
 
-msgid "See the photos, put some back or purge: History and undo"
-msgstr "Voir les photos, en remettre ou purger : Historique et annulation"
+msgid ""
+"See the files as photos in the browser first: unpick those you do not want, "
+"then copy from the page."
+msgstr ""
+"Voir d'abord les fichiers en photos dans le navigateur : écartez ceux que "
+"vous ne voulez pas, puis copiez depuis la page."
+
+msgid "See the photos"
+msgstr "Voir les photos"
 
 msgid "See them"
 msgstr "Les voir"
+
+msgid "See them first"
+msgstr "Les voir d'abord"
+
+msgid "See what a USB disk, an SD card or a folder holds, then copy it"
+msgstr ""
+"Voir ce que contient un disque USB, une carte SD ou un dossier, puis le "
+"copier"
 
 msgid "See what changes"
 msgstr "Voir ce qui change"
 
 msgid "See what each run did"
 msgstr "Voir ce qu'a fait chaque exécution"
+
+msgid "See what only the NAS or the disk holds, then copy it"
+msgstr "Voir ce que seul le NAS ou le disque contient, puis le copier"
 
 msgid "See your folders"
 msgstr "Voir vos dossiers"
@@ -9272,6 +9399,9 @@ msgstr ""
 
 msgid "Show every place of the photos"
 msgstr "Montrer tous les lieux des photos"
+
+msgid "Show every run"
+msgstr "Montrer toutes les exécutions"
 
 msgid "Show every setting, where it comes from, and the mount points."
 msgstr "Affiche chaque réglage, son origine, et les points de montage."
@@ -10182,6 +10312,10 @@ msgid "The copy of the import has the same name and size."
 msgstr "La copie de l'import a le même nom et la même taille."
 
 #, python-brace-format
+msgid "The copy stopped: {error}"
+msgstr "La copie s'est arrêtée : {error}"
+
+#, python-brace-format
 msgid ""
 "The copy to {other} failed: the archive stays on this PC only, in the folder"
 " backups of mh."
@@ -10359,6 +10493,10 @@ msgstr ""
 "Le fichier ne dit pas quand il a été pris (un scan, une capture d'écran) : "
 "une recherche par date ne le trouve pas."
 
+msgid "The files changed since the page was shown: nothing copied."
+msgstr ""
+"Les fichiers ont changé depuis l'affichage de la page : rien n'est copié."
+
 msgid "The files given at least these stars in Windows (1 to 5)."
 msgstr "Les fichiers qui ont au moins ces étoiles dans Windows (1 à 5)."
 
@@ -10375,6 +10513,15 @@ msgid ""
 msgstr ""
 "Les fichiers de {name} introuvables (déplacés hors de l'index, ou mis de "
 "côté puis appliqués)"
+
+#, python-brace-format
+msgid ""
+"The files only this folder holds are ready, open {url} in your browser. "
+"Nothing is copied before the page's button. Ctrl+C stops the page."
+msgstr ""
+"Les fichiers que seul ce dossier contient sont prêts, ouvrez {url} dans "
+"votre navigateur. Rien n'est copié avant le bouton de la page. Ctrl+C arrête"
+" la page."
 
 msgid "The files robocopy copied stay in the backup."
 msgstr "Les fichiers copiés par robocopy restent dans la sauvegarde."
@@ -10430,6 +10577,14 @@ msgid "The first video out of {count}"
 msgid_plural "The first {n} videos out of {count}"
 msgstr[0] "La première vidéo sur {count}"
 msgstr[1] "Les {n} premières vidéos sur {count}"
+
+msgid ""
+"The folder is only read. Nothing is copied before the Copy button; each copy"
+" is compared with its source and journaled: 'mh undo' removes the copies."
+msgstr ""
+"Le dossier est seulement lu. Rien n'est copié avant le bouton Copier ; "
+"chaque copie est comparée à sa source et journalisée : 'mh undo' retire les "
+"copies."
 
 msgid ""
 "The folder of the import, as Explorer shows it (mounted read-only): its "
@@ -10818,6 +10973,9 @@ msgstr "La page ne tourne plus : relancez people."
 msgid "The page is not running any more: type mh import --phone again."
 msgstr "La page ne tourne plus : tapez à nouveau mh import --phone."
 
+msgid "The page is not running any more: type mh import --pick again."
+msgstr "La page ne tourne plus : retapez mh import --pick."
+
 msgid "The page is not running any more: type mh undo --pick again."
 msgstr "La page ne tourne plus : tapez à nouveau mh undo --pick."
 
@@ -11013,11 +11171,11 @@ msgstr ""
 "L'image précédente occupe encore {size} Mo : docker image prune la libère."
 
 msgid ""
-"The proposal can be changed first, on the page or in the workbook; then it "
-"asks and moves: undoable, proven."
+"The proposal can be changed first in the workbook; then it asks and moves: "
+"undoable, proven."
 msgstr ""
-"La proposition peut d'abord être changée, sur la page ou dans le classeur ; "
-"puis il demande et déplace : annulable, prouvé."
+"La proposition peut d'abord être changée dans le classeur ; puis il demande "
+"et déplace : annulable, prouvé."
 
 msgid "The proposal is already made: → is enough when it suits you."
 msgstr "La proposition est déjà faite : → suffit quand elle vous convient."
@@ -11604,6 +11762,9 @@ msgstr "Ces dossiers sont montés en lecture seule : {folders}."
 msgid "These photos are left as they are: no choice applies to them."
 msgstr ""
 "Ces photos sont laissées telles quelles : aucun choix ne s'y applique."
+
+msgid "They are not copied; the folder keeps them"
+msgstr "Ils ne sont pas copiés ; le dossier les garde"
 
 msgid "They stay where they are"
 msgstr "Ils restent où ils sont"
@@ -12468,6 +12629,15 @@ msgid "What you type here replaces the console menu's (type it yourself)."
 msgstr ""
 "Ce que vous tapez ici remplace le « à taper vous-même » du menu de la "
 "console."
+
+msgid ""
+"What your photos lack, compared by content; never what you set aside or "
+"deleted before. Leave out what you do not want: the rest is copied, each "
+"file in its folder below From <source>."
+msgstr ""
+"Ce qui manque à vos photos, comparé par le contenu ; jamais ce que vous avez"
+" mis de côté ou supprimé avant. Écartez ce que vous ne voulez pas : le reste"
+" est copié, chaque fichier dans son dossier sous From <source>."
 
 #, python-brace-format
 msgid "What {file} holds for this group"
@@ -14108,6 +14278,9 @@ msgstr "quitte le téléphone"
 msgid "left as it is"
 msgstr "laissé tel quel"
 
+msgid "left out"
+msgstr "écarté"
+
 #, python-brace-format
 msgid "left to the rule {rule}"
 msgstr "laissé à la règle {rule}"
@@ -14442,6 +14615,9 @@ msgstr "nommer les événements jusqu'à celui-ci couvre {share} %% du travail"
 msgid "nas get back restore backup copy missing usb disk"
 msgstr "nas récupérer restaurer sauvegarde copier manquant usb disque"
 
+msgid "nas get back see photos pick backup copy missing"
+msgstr "nas récupérer voir photos choisir sauvegarde copie manquant"
+
 msgid "nas synology backup old disk share network smb"
 msgstr "nas synology sauvegarde ancien disque partage réseau smb"
 
@@ -14604,8 +14780,9 @@ msgstr "sur une vidéo cliquée : lecture, avance ; Échap rend les touches"
 msgid "on another disk or mount: no link possible"
 msgstr "sur un autre disque ou montage : aucun lien possible"
 
-msgid "once you have checked the quarantine, 'purge' frees its space."
-msgstr "une fois la quarantaine vérifiée, 'purge' libère sa place."
+msgid "once seen with 'undo --pick', 'purge' frees the quarantine's space."
+msgstr ""
+"une fois vue avec 'undo --pick', 'purge' libère la place de la quarantaine."
 
 msgid "once you have checked, 'purge' frees the space of the files set aside."
 msgstr "une fois vérifié, 'purge' libère la place des fichiers mis de côté."
@@ -15232,11 +15409,11 @@ msgstr "la précédente ou la suivante pas mise de côté"
 
 #, python-brace-format
 msgid ""
-"the quarantine of {run_id} is more than {days} days old: once checked, "
-"'purge' frees its space."
+"the quarantine of {run_id} is more than {days} days old: once seen with "
+"'undo --pick', 'purge' frees its space."
 msgstr ""
-"la quarantaine de {run_id} a plus de {days} jours : une fois vérifiée, "
-"'purge' libère sa place."
+"la quarantaine de {run_id} a plus de {days} jours : une fois vue avec 'undo "
+"--pick', 'purge' libère sa place."
 
 msgid "the restored copy does not match the original"
 msgstr "la copie restaurée ne correspond pas à l'original"
@@ -15589,6 +15766,9 @@ msgstr "conditions d'utilisation"
 msgid "usb disk card sd camera folder import copy"
 msgstr "usb disque carte sd appareil dossier importer copier"
 
+msgid "usb disk card sd camera folder see photos pick"
+msgstr "usb disque carte sd appareil dossier voir photos choisir"
+
 msgid "validate"
 msgstr "valider"
 
@@ -15690,10 +15870,10 @@ msgstr "oui"
 msgid "you have {version}"
 msgstr "vous avez {version}"
 
-msgid "your backup holds files the PC lacks: 'import' copies them back."
+msgid "your backup holds files the PC lacks: see them, then copy them back."
 msgstr ""
-"votre sauvegarde garde des fichiers que le PC n'a pas : 'import' les "
-"recopie."
+"votre sauvegarde contient des fichiers absents du PC : voyez-les, puis "
+"recopiez-les."
 
 msgid "your computer's, read at each run"
 msgstr "celui de l'ordinateur, lu à chaque lancement"
@@ -16391,6 +16571,10 @@ msgstr "{count} fichiers de dossiers protégés : jamais écrits."
 #, python-brace-format
 msgid "{count} files only on the NAS"
 msgstr "{count} fichiers seulement sur le NAS"
+
+#, python-brace-format
+msgid "{count} files only this folder holds, {out} left out"
+msgstr "{count} fichiers que seul ce dossier contient, {out} écartés"
 
 #, python-brace-format
 msgid "{count} files to get back from the NAS"
@@ -18880,6 +19064,45 @@ msgid ""
 msgstr ""
 "👀 Ce ne sont pas des fichiers identiques : regardez-les avant de répondre, "
 "tous sur une seule page : {path} (Ctrl+clic l'ouvre)."
+
+msgid ""
+"👁 A whole run: 'undo --pick' shows the photos and puts back only a few."
+msgstr ""
+"👁 Toute une exécution : 'undo --pick' montre les photos et n'en remet que "
+"quelques-unes."
+
+msgid ""
+"👁 Acts on them without showing them: 'review --near' shows the near "
+"duplicates first, the report the copies ('mh reports' lists it)."
+msgstr ""
+"👁 Agit sans les montrer : 'review --near' montre d'abord les quasi-doublons,"
+" le rapport les copies ('mh reports' le liste)."
+
+msgid ""
+"👁 Acts on them without showing them: the report shows them first ('mh "
+"reports' lists it)."
+msgstr ""
+"👁 Agit sans les montrer : le rapport les montre d'abord ('mh reports' le "
+"liste)."
+
+msgid ""
+"👁 Copies them without showing them: 'import --pick' shows them as photos "
+"first."
+msgstr ""
+"👁 Les copie sans les montrer : 'import --pick' les montre en photos d'abord."
+
+msgid ""
+"👁 Moves them without showing them: the classify report shows them first ('mh"
+" reports' lists it)."
+msgstr ""
+"👁 Les déplace sans les montrer : le rapport de classify les montre d'abord "
+"('mh reports' le liste)."
+
+msgid ""
+"👁 See these files as photos first: 'undo --pick' (nothing is erased there)."
+msgstr ""
+"👁 Voyez d'abord ces fichiers en photos : 'undo --pick' (rien n'y est "
+"effacé)."
 
 msgid ""
 "👉 The home page audits the new files now: follow it there, it shows them "

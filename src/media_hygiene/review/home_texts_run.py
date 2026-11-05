@@ -49,6 +49,8 @@ def _dialogs() -> dict[str, str]:
             "{command} runs in {window}: answer it if it asks something, then this "
             "page comes back by itself."
         ),
+        "seeFirst": _("See them first"),
+        "goOnWithout": _("Go on without seeing them"),
         "runsPage": _(
             "{command} opens its page here, in this tab; its ⌂ Back to the home page "
             "brings you back to this very place."

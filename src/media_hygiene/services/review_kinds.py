@@ -13,11 +13,11 @@ from functools import partial
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
-from media_hygiene.review.app import DECIDE_PATH, FILE_PATH, ReviewApp
 from media_hygiene.review.apply_api import ApplyOffer
 from media_hygiene.review.gone_app import GONE_DECIDE_PATH, GONE_FILE_PATH, GoneApp
 from media_hygiene.review.near_app import NEAR_DECIDE_PATH, NEAR_FILE_PATH, NearApp
 from media_hygiene.review.pairs_app import PAIRS_DECIDE_PATH, PAIRS_FILE_PATH, PairsApp
+from media_hygiene.review.served_more import INTRUDERS_PAGE
 from media_hygiene.review.step_watch import (
     BURSTS_PAGE,
     GONE_PAGE,
@@ -34,20 +34,16 @@ from media_hygiene.services import (
     gone_reviewing,
     near_reviewing,
     pairs_reviewing,
-    reviewing,
     unwanted_reviewing,
 )
-from media_hygiene.services.albums import album_desk
-from media_hygiene.services.aside_paths import review_picker
+from media_hygiene.services.review_kinds_more import bursts, intruders
 from media_hygiene.services.review_serving import ReviewPage
 
 if TYPE_CHECKING:
     from collections.abc import Callable
-    from concurrent.futures import Executor
     from pathlib import Path
 
     from media_hygiene.plan.models import AuditFindings
-    from media_hygiene.review.local_app import LocalApp
     from media_hygiene.services.runtime import Runtime
 
 type Opening = Callable[[Runtime, AuditFindings, Path], ReviewPage | None]
@@ -145,42 +141,6 @@ def _gone(runtime: Runtime, findings: AuditFindings, target: Path) -> ReviewPage
     return ReviewPage(gone_reviewing.PAGE_TEMPLATE, session.place, api, app, offer)
 
 
-def _bursts(
-    runtime: Runtime, findings: AuditFindings, target: Path
-) -> ReviewPage | None:
-    """`review`: the burst series, their albums too.
-
-    Args:
-        runtime: Settings, mount points and output.
-        findings: The audit just run.
-        target: The decisions file.
-
-    Returns:
-        Its page; None without burst series.
-    """
-    if not findings.similar.bursts:
-        return None
-    session = reviewing.open_review(runtime, findings, target)
-    albums = album_desk(runtime, review_picker(runtime, session))
-
-    def app(page: bytes, executor: Executor, previews: Path | None) -> LocalApp:
-        """The burst review's app, with its albums.
-
-        Args:
-            page: The page.
-            executor: The worker pool.
-            previews: The previews' cache folder.
-
-        Returns:
-            The app.
-        """
-        return ReviewApp(session, page, executor, previews, albums)
-
-    offer = ApplyOffer(None, lambda: session.progress[1] > 0)
-    api = (DECIDE_PATH, FILE_PATH)
-    return ReviewPage(reviewing.PAGE_TEMPLATE, session.place, api, app, offer)
-
-
 REVIEWS: Final = (
     ReviewKind(
         NEAR_REVIEW_PAGE, lambda: _("No near duplicates: nothing to review."), _near
@@ -196,5 +156,8 @@ REVIEWS: Final = (
         lambda: _("No photo nor video has disappeared: nothing to review."),
         _gone,
     ),
-    ReviewKind(BURSTS_PAGE, lambda: _("No burst series: nothing to review."), _bursts),
+    ReviewKind(BURSTS_PAGE, lambda: _("No burst series: nothing to review."), bursts),
+    ReviewKind(
+        INTRUDERS_PAGE, lambda: _("No intruder file: nothing to pick."), intruders
+    ),
 )

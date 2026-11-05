@@ -10,8 +10,8 @@
 quarantine of a run, or of every run, **for good**. It is the only command that erases content
 (with `clean --delete`, if you use it), and it says so before asking.
 
-**When**: once you have opened the quarantine folder in the Explorer, checked what it holds, and
-need the space; [`status`](status.md) reminds you of a quarantine older than 30 days.
+**When**: once you have seen what the quarantine holds, as photos ([`mh undo --pick`](undo.md#put-back-a-few-photos);
+on the home page, *Free the room of the quarantine* offers it first, and *Disk space* has a link per run), and need the space; [`status`](status.md) reminds you of a quarantine older than 30 days.
 
 **Try it**:
 

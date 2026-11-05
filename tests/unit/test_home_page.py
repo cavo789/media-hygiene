@@ -56,7 +56,7 @@ _JSON: Final = {"host": "127.0.0.1", "content-type": "application/json"}
 _EXPECTED: Final = {
     "first run": ("audit", {"clean": "here"}),
     "audit done": ("clean", {"clean": "here", "import": "todo"}),
-    "after clean": ("import", {"import": "here", "clean": "todo"}),
+    "after clean": ("import-pick", {"import": "here", "clean": "todo"}),
     "after import": ("purge", {"import": "done", "clean": "here"}),
     "quarantine freed": (None, {"clean": "done"}),
     "proposal waiting": ("sort", {"sort": "here", "clean": "done"}),
@@ -113,7 +113,11 @@ def test_the_counts_and_the_reasons_come_from_the_tool_folders(tmp_path: Path) -
     assert tiles["Extra copies"].value == "2,941"
     assert tiles["Only on the NAS"].value == "214"
     assert state.findings is not None
-    assert [row.action for row in state.findings.rows] == ["clean", "open", "import"]
+    assert [row.action for row in state.findings.rows] == [
+        "clean",
+        "open",
+        "import-pick",
+    ]
     undo = state.action("undo")
     assert undo is not None
     assert not undo.available

@@ -7,6 +7,8 @@ space. `clean` moves the extra copies to the quarantine â€” nothing is erased â€
 trace of everything so that you can change your mind. Once you have checked, `purge` frees the
 space ([step 9](09-undo-history-purge.md)).
 
+Before this step, `clean` says it acts on files without showing them: the [report](04-html-report.md) shows them first (*See them first* on the home page).
+
 ## Before the first clean
 
 - **Start small**: clean one subfolder first, check the result, then widen.

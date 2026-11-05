@@ -45,6 +45,7 @@ def _needs() -> dict[str, Need]:
     audit = _audit_seen
     return {
         "import": _import,
+        "import-pick": _import,
         "open": lambda status: (
             None
             if status.analysis.summary is not None

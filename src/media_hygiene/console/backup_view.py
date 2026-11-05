@@ -77,10 +77,10 @@ def _holds(backup: BackupCoverage) -> str:
     fresh = backup.to_import
     if fresh:
         line = ngettext(
-            "   {count} file is only in it, never in your photos ({size}): 'import' "
-            "copies it into them.",
-            "   {count} files are only in it, never in your photos ({size}): 'import' "
-            "copies them into them.",
+            "   {count} file is only in it, never in your photos ({size}): "
+            "'import --pick' shows it, then copies it.",
+            "   {count} files are only in it, never in your photos ({size}): "
+            "'import --pick' shows them, then copies them.",
             len(fresh),
         ).format(
             count=human_number(len(fresh)),

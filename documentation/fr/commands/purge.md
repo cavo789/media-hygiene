@@ -11,7 +11,8 @@ quarantaine.**
 de bon** la quarantaine d'une exécution, ou de toutes. C'est la seule commande qui efface du
 contenu (avec `clean --delete`, si vous l'utilisez), et elle le dit avant de demander.
 
-**Quand** : une fois le dossier de la quarantaine ouvert dans l'Explorateur et vérifié, quand
+**Quand** : une fois vu ce que la quarantaine contient, en photos ([`mh undo --pick`](undo.md#remettre-quelques-photos) ;
+sur la page d'accueil, *Libérer la place de la quarantaine* le propose d'abord, et *Place sur le disque* a un lien par exécution), quand
 vous avez besoin de la place ; [`status`](status.md) vous rappelle une quarantaine de plus de 30
 jours.
 

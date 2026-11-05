@@ -40,6 +40,11 @@ Une étape qui échoue arrête la chaîne ; ce qui précède reste fait.
 
 ## Bon à savoir
 
+Avant chaque étape qui change des fichiers, une ligne donne leur nombre et la page qui les montre :
+*Ensuite, 'clean' met de côté environ 12 copies : le rapport les montre d'abord*, *Ensuite, 'purge'
+efface 41 fichiers pour de bon : 'mh undo --pick' les montre en photos d'abord*. Continuer tout droit
+reste une touche : la question de l'étape.
+
 Répondre *non* à une question ne saute que cette étape.
 
 ## Pour aller plus loin

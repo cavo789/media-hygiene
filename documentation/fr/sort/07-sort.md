@@ -6,6 +6,8 @@ Vous avez revu la proposition et modifié le classeur ([étape 5](05-review-the-
 `sort` déplace maintenant les fichiers là où le classeur les met. Comme pour `clean`, chaque
 déplacement est journalisé et `undo` remet tout en place.
 
+`sort` déplace tous les fichiers du plan sans les montrer : le rapport de `classify` les montre d'abord (*Les voir d'abord* sur la page d'accueil), 🗂 Événements de `search` un événement à la fois.
+
 ## Le lancer
 
 Enregistrez et fermez d'abord le classeur. Lancez ensuite `sort` : `mh` monte pour lui vos

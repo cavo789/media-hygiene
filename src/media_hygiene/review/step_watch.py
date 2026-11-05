@@ -24,6 +24,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.cli.safety import PAGE_CAPTURED, PAGE_COMMANDS
 from media_hygiene.i18n import _
 from media_hygiene.review.home_fields import write_whole
+from media_hygiene.review.served_more import SERVED_MORE
 from media_hygiene.review.serving import json_response
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
@@ -53,9 +54,7 @@ WATCH: Final = WatchFiles()
 NEAR_REVIEW_PAGE: Final = "/review/near/"  # `services/review_here`
 DISK_PAGE: Final = "/disk-space/"  # `services/disk_here` (0539)
 HISTORY_PAGE: Final = "/history/"  # `services/history_here` (0350)
-PAIRS_PAGE: Final = (
-    "/review/pairs/"  # `services/review_kinds` (0417), as the next three
-)
+PAIRS_PAGE: Final = "/review/pairs/"  # `services/review_kinds` (0417), + the next 3
 JUNK_PAGE: Final = "/review/junk/"
 GONE_PAGE: Final = "/review/gone/"
 BURSTS_PAGE: Final = "/review/bursts/"
@@ -65,6 +64,7 @@ STEP_PATH: Final = "/api/step"  # `POST` a step (`home_step`), `GET` where it is
 SERVED_HERE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
     {
         ("search",): SEARCH_PAGE_PATH,
+        **SERVED_MORE,
         ("review", "--near"): NEAR_REVIEW_PAGE,  # 0357
         ("review", "--pairs"): PAIRS_PAGE,  # 0417, as the next three
         ("review", "--junk"): JUNK_PAGE,
@@ -118,7 +118,7 @@ def runs_beside(words: tuple[str, ...]) -> bool:
     Returns:
         True for a console step.
     """
-    return bool(words) and words[0] not in PAGE_COMMANDS
+    return bool(words) and words[0] not in PAGE_COMMANDS and "--pick" not in words
 
 
 def busy(folder: Path) -> Response | None:

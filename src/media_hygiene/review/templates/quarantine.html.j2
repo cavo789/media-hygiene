@@ -45,6 +45,7 @@
       <p class="muted">{{ _("The files the runs of clean set aside, as they lie in the quarantine. Pick the ones to put back: each goes back to the folder it came from.") }}</p>
       <h2>🗂 {{ _("Runs") }}</h2>
       <ul id="runs"></ul>
+      <p id="everyRun" hidden><a href="./">{{ _("Show every run") }}</a></p>
     </section>
 {% endblock %}
 {% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}

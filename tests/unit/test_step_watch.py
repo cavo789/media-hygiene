@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.home_views import HomeState
 
 _JSON: Final = {"host": "127.0.0.1", "content-type": "application/json"}
-_STEPS: Final = {3: "mh tags", 4: "mh review --intruders", 5: "mh search"}
+_STEPS: Final = {3: "mh tags", 4: "mh shrink --try", 5: "mh search"}
 
 
 class _Menu:
@@ -84,7 +84,7 @@ def test_a_second_step_waits_for_the_first(tmp_path: Path) -> None:
     assert "running in the window of mh" in str(body["error"])
     (tmp_path / WATCH.now).unlink()
     (tmp_path / WATCH.running).write_text('{"id": "x"}', "utf-8")
-    command = {"number": 4, "command": "mh review --intruders"}
+    command = {"number": 4, "command": "mh shrink --try"}
     assert _post(door, command)[0] == HTTPStatus.CONFLICT
     assert ending.asked is None
 
@@ -92,14 +92,14 @@ def test_a_second_step_waits_for_the_first(tmp_path: Path) -> None:
 def test_a_page_step_still_ends_the_server(tmp_path: Path) -> None:
     """A page needs the port: its words in the one-shot file, the fields code.
 
-    `review` alone is served by the home server since 0417: `--intruders` is not.
+    `--intruders` is served by the home server since 0594: `shrink --try` is not.
     """
     door, ending = _door(tmp_path)
-    status, _body = _post(door, {"number": 4, "command": "mh review --intruders"})
+    status, _body = _post(door, {"number": 4, "command": "mh shrink --try"})
     assert status == HTTPStatus.OK
     assert ending.asked == STEP_EXIT_BASE + FIELDS_STEP
     written = json.loads((tmp_path / STEP_FILE_NAME).read_text("utf-8"))
-    assert written == {"words": ["review", "--intruders"]}
+    assert written == {"words": ["shrink", "--try"]}
     assert not (tmp_path / WATCH.now).exists()
 
 

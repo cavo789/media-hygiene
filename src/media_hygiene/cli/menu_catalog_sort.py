@@ -68,8 +68,8 @@ def sort_steps() -> tuple[Step, ...]:
             space,
             _("Move the photos into the proposed folders"),
             _(
-                "The proposal can be changed first, on the page or in the workbook; "
-                "then it asks and moves: undoable, proven."
+                "The proposal can be changed first in the workbook; then it asks "
+                "and moves: undoable, proven."
             ),
             "sort",
             Risk.UNDO,

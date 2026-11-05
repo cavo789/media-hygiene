@@ -6,6 +6,8 @@ You reviewed the proposal and edited the workbook ([step 5](05-review-the-propos
 now moves the files where the workbook puts them. Like `clean`, every move is journaled and
 `undo` puts everything back.
 
+`sort` moves every file of the plan without showing it: the classify report shows them first (*See them first* on the home page), 🗂 Events of `search` one event at a time.
+
 ## Run it
 
 Save and close the workbook first. Then run `sort`: `mh` mounts your folders **without** `:ro`

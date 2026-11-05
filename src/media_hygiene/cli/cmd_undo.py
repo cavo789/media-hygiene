@@ -69,6 +69,7 @@ def undo_command(  # pylint: disable=too-many-arguments
     Raises:
         typer.Exit: The user declined.
     """
+    from media_hygiene.cli.fast_lines import tell_undo_twin
     from media_hygiene.console.incidents_view import show_failed, show_skipped
     from media_hygiene.console.progress import RichProgress
     from media_hygiene.console.tables import outcome_table
@@ -87,6 +88,8 @@ def undo_command(  # pylint: disable=too-many-arguments
                 runtime, review_options.page_port(runtime, page_port)
             )
         raise typer.Exit(code)
+    if not yes:
+        tell_undo_twin(runtime)
     with user_errors(output):
         run = resolve_run_id(runtime, run_id)
         plan = runs_to_undo(runtime, run)

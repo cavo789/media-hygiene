@@ -7,6 +7,8 @@ au ménage. `clean` déplace les copies en trop en quarantaine — rien n'est ef
 trace écrite de tout, pour que vous puissiez changer d'avis. Une fois que vous avez vérifié,
 `purge` libère la place ([étape 9](09-undo-history-purge.md)).
 
+Avant cette étape, `clean` dit qu'il agit sans montrer les fichiers : le [rapport](04-html-report.md) les montre d'abord (*Les voir d'abord* sur la page d'accueil).
+
 ## Avant le premier nettoyage
 
 - **Commencez petit** : nettoyez d'abord un sous-dossier, vérifiez le résultat, puis élargissez.

@@ -38,6 +38,26 @@ mh import --phone    # un téléphone en USB, Windows seulement : plus bas
 | Annuler | [`undo <run>`](undo.md) retire les copies (une copie modifiée depuis est gardée). |
 | Avec `mh` | `mh import`, `mh import E:\DCIM`, `mh import --yes`. |
 
+## Les voir d'abord : `mh import --pick`
+
+La page par laquelle commencer : les fichiers que seul le dossier contient, **en photos**, avant
+toute copie. Choisissez les photos comme sur toutes les pages de vignettes : un clic en choisit
+une, Ctrl+clic en ajoute ou en retire une, Maj+clic tous les fichiers depuis le dernier cliqué,
+un glisser trace un rectangle, Ctrl+A choisit tous les fichiers affichés, I inverse le choix,
+Entrée ou un double clic montre une photo en grand. **⊘ Écarter** les
+retire de la copie (enregistré, relu sur le disque, dans `import-left-out.json` du dossier des
+rapports : toujours écartés la fois suivante, jusqu'à **↩ Reprendre**). **📥 Copier ces N
+fichiers** annonce son nombre et copie ceux-là : chacun vérifié, journalisé, `mh undo <exécution>`
+les retire. Le dossier est seulement lu.
+
+```powershell
+mh import --pick            # vos dossiers de sauvegarde ; sur la page d'accueil : Voir ce que seul le NAS contient
+mh import --pick E:\DCIM    # ce dossier seulement
+```
+
+`mh import` tout court reste le chemin rapide, pour une grande collection : il les copie tous sans
+les montrer, et le dit.
+
 ## Ce qui est copié, ce qui ne l'est pas
 
 `import` fait d'abord un audit, avec la sauvegarde, puis trie ce qu'elle est seule à contenir :
@@ -239,6 +259,7 @@ suppression est écrite au journal avant et après (un passage de type `phone` d
 |---|---|
 | `DOSSIER` | Le dossier d'où importer (chemin de l'hôte), au lieu de vos dossiers de sauvegarde : une carte SD, un disque USB. Seulement lu pour ce passage, jamais ajouté à `mh`. |
 | `--to CHEMIN` | Dossier qui reçoit les copies (chemin de l'hôte) ; par défaut : `From <source>` dans votre premier dossier de photos. |
+| `--pick` | [Les fichiers en photos d'abord](#les-voir-dabord--mh-import---pick), copiés depuis la page. |
 | `--yes`, `-y` | Copier sans demander. |
 | `--backup CHEMIN` | Le dossier de sauvegarde d'où importer, s'il n'est pas dans `config.toml` (`mh` passe les vôtres). |
 | `--phone` | Un téléphone en USB au lieu d'un dossier, Windows seulement : le `mh` de PowerShell copie lui-même ses nouvelles photos ([plus haut](#depuis-un-téléphone--mh-import---phone)) ; avec lui, `--only <dossier de DCIM>` et `--free`. |

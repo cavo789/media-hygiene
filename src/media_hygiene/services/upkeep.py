@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.cli.status_view import days_since
 from media_hygiene.config.routine_settings import RoutineStep
+from media_hygiene.console.formatting import human_number
 from media_hygiene.i18n import _
 from media_hygiene.services.status import read_status
 
@@ -72,6 +73,44 @@ def commands_of(runtime: Runtime, step: RoutineStep) -> tuple[tuple[str, ...], .
     return (_SIMPLE[step],)
 
 
+def _ahead(runtime: Runtime, step: RoutineStep) -> str:
+    """What a writing step is about to touch, and the page that shows it (0592).
+
+    Read again here: the audit before it may have changed the count.
+
+    Args:
+        runtime: Settings, mount points and output.
+        step: The step.
+
+    Returns:
+        The line; empty for a step that changes no file, or has nothing to do.
+    """
+    status = read_status(runtime)
+    if step is RoutineStep.COPIES:
+        summary = status.analysis.summary
+        count = summary.duplicate_files if summary is not None else 0
+        return (
+            _(
+                "Next, 'clean' sets about {count} copies aside: the report shows them "
+                "first ('mh reports' lists it); its question comes next."
+            ).format(count=human_number(count))
+            if count
+            else ""
+        )
+    if step is RoutineStep.PURGE:
+        old = set(old_runs(runtime))
+        count = sum(r.files for r in status.quarantine.runs if r.run_id in old)
+        return (
+            _(
+                "Next, 'purge' erases {count} files for good: 'mh undo --pick' shows "
+                "them as photos first; its question comes next."
+            ).format(count=human_number(count))
+            if count
+            else ""
+        )
+    return ""
+
+
 def run_upkeep(runtime: Runtime, run: StepRunner = run_command) -> int:
     """Run the steps of `[routine]`, in order.
 
@@ -87,6 +126,9 @@ def run_upkeep(runtime: Runtime, run: StepRunner = run_command) -> int:
         runtime.output.info(_("Nothing to do: [routine] steps is empty."))
     for step in steps:
         runtime.output.title(_("Upkeep: {step}").format(step=step.value))
+        ahead = _ahead(runtime, step)
+        if ahead:
+            runtime.output.info(ahead)
         for command in commands_of(runtime, step):
             code = run(command)
             if code:

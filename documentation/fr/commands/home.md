@@ -119,8 +119,24 @@ La tuile *Place sur le disque* ouvre une page avec la place que prennent les ape
 quarantaine. Chaque limite est à côté de son effet, écrite dans `config.toml` et relue avant d'être
 affichée : *Garder au plus (Go)* (`[cache] previews_max_gb`) et *Proposer la purge après (jours)*
 (`[clean] purge_hint_days`). *Vider les aperçus* annonce la place libérée ; ils sont refaits à
-l'affichage. La quarantaine se regarde, se remet ou se purge depuis *Historique et annulation*, où
-`purge` demande d'abord.
+l'affichage. Chaque exécution de la quarantaine a son lien *Voir les photos*, ses fichiers en vignettes
+([`undo --pick`](undo.md#remettre-quelques-photos)) ; elle se purge depuis *Historique et annulation*, où `purge`
+propose la même page, puis demande.
+
+## Chemins rapides et ce qui montre les fichiers d'abord
+
+Ces commandes agissent sur des fichiers sans les montrer ; elles restent, pour les grandes collections.
+Chacune le dit en une ligne avant sa question, et la page d'accueil propose la page d'abord (*Les voir
+d'abord*, ou *Continuer sans les voir*) :
+
+| Chemin rapide | Ce qui montre les fichiers d'abord |
+|---|---|
+| `clean`, `clean --delete` | Le rapport de l'audit ; `review --near` pour `--tier near`, `near-all` |
+| `sort` | Le rapport de `classify` ; 🗂 Événements de `search`, un événement à la fois |
+| `undo` | `undo --pick` |
+| `purge` | `undo --pick` |
+| `import`, `import <dossier>` | `import --pick` |
+| `upkeep` | Le rapport, puis la ligne que chaque étape dit d'abord |
 
 ## 10 minutes de rangement
 
