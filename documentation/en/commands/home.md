@@ -262,7 +262,8 @@ tap on an album shows it on the TV. A tap starts that
 [slideshow](slideshow.md) in the home page's own server, and the phone opens its remote at once.
 It only shows: nothing is written, nothing moves. No album saved: the folder and the month are
 still there.
-The TV's bookmark (`http://<PC address>:8089/screen`) waits for a show and stays paired while
+The TV's bookmark (`http://<PC address>:8089/`: a welcome page, **📺 This is the TV**, then its
+page) waits for a show and stays paired while
 `mh` runs.
 
 The *Show your photos on the TV* step, chosen on the PC, opens the [slideshow](slideshow.md) to
@@ -279,7 +280,8 @@ the home network too: the phone already paired reloads its page and gets the sli
 ### Once per phone: install the certificate
 
 The PC's card says *First time on this phone? Install the certificate first:*
-`http://192.168.1.20:8089/`. Open it on the phone, tap **Download the certificate**, then:
+`http://192.168.1.20:8089/`. Open it on the phone (the TV's welcome page: tap **📱 Install on my
+phone**), tap **Download the certificate**, then:
 
 - **Android**: in the **phone's Settings app** (the gear on the home screen, not Chrome's
   settings). Do not tap *Open* after the download: Android 11 and later refuse it (*cannot
