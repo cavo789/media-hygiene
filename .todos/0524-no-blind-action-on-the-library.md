@@ -4,7 +4,6 @@
 - **Batch**: one-interface
 - **Depends**: —
 - **Files**: `src/media_hygiene/review/templates/review_obvious.js.j2`, `src/media_hygiene/classify/workbook/`, `src/media_hygiene/review/sort_*.py`, `src/media_hygiene/cli/menu_catalog_*.py`, `.claude/rules/workflow.md`, `documentation/en/`, `documentation/fr/`
-- **Needs maintainer**: the inventory reviewed (which paths lack a visual twin).
 
 ## Asked (maintainer, 2026-10-30)
 
@@ -37,3 +36,8 @@ offered first.
 
 The inventory is in this TODO, the rule is in `workflow.md`, and one TODO per path lacking a
 visual twin is filed. No fast path is removed.
+
+## Decided (2026-11-05, maintainer, start of /todo:iterate)
+
+Run it unattended: write the inventory, the rule and the follow-up TODOs; the maintainer reviews
+the inventory afterwards, on the pull request. No fast path is removed.
