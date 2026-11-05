@@ -16,7 +16,7 @@ import pytest
 from media_hygiene.review.ending import Ending
 from media_hygiene.review.http import Request, Response
 from media_hygiene.search.fts import SearchIndex
-from media_hygiene.services import slideshow_choices, slideshow_here
+from media_hygiene.services import slideshow_choices, slideshow_folders, slideshow_here
 from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.home_pages import HomeServer
 from media_hygiene.services.slideshow_here import SlideshowHere
@@ -25,7 +25,7 @@ from tests.support.indexed_photos import indexed_photos
 from tests.support.runtime import make_locations, make_runtime
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterator, Mapping
     from pathlib import Path
 
     from media_hygiene.services.runtime import Runtime
@@ -77,7 +77,7 @@ def _ask(here: SlideshowHere, request: Request) -> Response:
     return asyncio.run(here.handle(request))
 
 
-def _choose(here: SlideshowHere, body: dict[str, str]) -> Response:
+def _choose(here: SlideshowHere, body: Mapping[str, object]) -> Response:
     payload = json.dumps(body).encode()
     return _ask(here, Request("POST", "/slideshow/choose", _HOST, payload))
 
@@ -92,14 +92,15 @@ def test_the_choices_list_the_folders_analysed_and_the_months(
 ) -> None:
     """Two folders under the data mount (not the one outside), months newest first."""
     lists = json.loads(_ask(here, Request("GET", "/slideshow/choices", _HOST)).body)
-    assert [name.rsplit("\\", 1)[-1] for name in lists["folders"]] == ["Home", "Trip"]
+    assert [each["label"] for each in lists["folders"]] == ["Trip", "Home"]
+    assert lists["folders"][0]["value"].endswith("\\Trip")
     assert lists["months"] == ["2025-12", "2025-11"]
 
 
 def test_a_folder_shows_exactly_its_files(here: SlideshowHere) -> None:
     """Trip: its three photos, oldest first; the remote's page."""
     lists = json.loads(_ask(here, Request("GET", "/slideshow/choices", _HOST)).body)
-    trip = next(name for name in lists["folders"] if name.endswith("Trip"))
+    trip = next(each["value"] for each in lists["folders"] if each["label"] == "Trip")
     answer = _choose(here, {"folder": trip})
     assert answer.status is HTTPStatus.OK
     assert json.loads(answer.body)["page"] == "/slideshow/"
@@ -162,3 +163,75 @@ def test_more_files_than_the_cap_are_refused(
     answer = _choose(here, {"first": "2025-11-01", "last": "2025-12-31"})
     assert answer.status is HTTPStatus.CONFLICT
     assert here.app is None
+
+
+def _folders_of(tmp_path: Path, rows: list[tuple[str, str | None, int]]) -> list[str]:
+    """The labels `/choices` lists for files (relative path, date, mtime)."""
+    runtime = make_runtime(make_locations(tmp_path))
+    index = tmp_path / "index.sqlite"
+    indexed_photos(index, runtime.locations.data_dir / "c" / "seed", 0)
+    with closing(sqlite3.connect(index)) as connection:
+        for relative, when, mtime in rows:
+            connection.execute(
+                "INSERT INTO files (path, size, mtime_ns, media_date)"
+                " VALUES (?, 1, ?, ?)",
+                (str(runtime.locations.data_dir / "c" / relative), mtime, when),
+            )
+        connection.commit()
+    with SearchIndex.open(index) as search:
+        listed = slideshow_folders.newest_first(runtime, search)
+        return [label for _name, label in slideshow_folders.labelled(listed)]
+
+
+def test_folders_are_listed_by_their_newest_photo(tmp_path: Path) -> None:
+    """Zzz (2026) before aaa (2019); undated last, newest change first, then name."""
+    labels = _folders_of(
+        tmp_path,
+        [
+            ("aaa/1.jpg", "2019:05:01 10:00:00", 9),
+            ("zzz/1.jpg", "2026:01:01 10:00:00", 1),
+            ("zzz/2.jpg", None, 1),
+            ("old/1.jpg", None, 5),
+            ("bbb/1.jpg", None, 1),
+            ("ccc/1.jpg", None, 1),
+        ],
+    )
+    assert labels == ["zzz", "aaa", "old", "bbb", "ccc"]
+
+
+def test_two_folders_with_the_same_last_part_show_their_parent(tmp_path: Path) -> None:
+    """2024/Holidays and 2025/Holidays: told apart by their parent."""
+    labels = _folders_of(
+        tmp_path,
+        [
+            ("2024/Holidays/1.jpg", "2024:08:01 10:00:00", 1),
+            ("2025/Holidays/1.jpg", "2025:08:01 10:00:00", 1),
+            ("Home/1.jpg", "2020:01:01 10:00:00", 1),
+        ],
+    )
+    assert labels == ["2025\\Holidays", "2024\\Holidays", "Home"]
+
+
+def test_a_random_show_takes_dated_photos_only(here: SlideshowHere) -> None:
+    """At random (0508): the three dated photos of Trip, never the undated ones."""
+    answer = _choose(here, {"random": {"minutes": 30}})
+    assert answer.status is HTTPStatus.OK
+    assert sorted(_shown(here)) == [1, 2, 3]
+
+
+def test_a_random_show_outside_the_years_is_refused(here: SlideshowHere) -> None:
+    """No dated photo in 2001: a line, no show."""
+    body = {"random": {"minutes": 60, "first_year": 2001, "last_year": 2001}}
+    answer = _choose(here, body)
+    assert answer.status is HTTPStatus.CONFLICT
+    assert json.loads(answer.body)["error"]
+    assert here.app is None
+
+
+@pytest.mark.parametrize("minutes", [5, 600])
+def test_a_random_length_out_of_range_is_refused(
+    here: SlideshowHere, minutes: int
+) -> None:
+    """Only the lengths the phone offers, roughly."""
+    answer = _choose(here, {"random": {"minutes": minutes}})
+    assert answer.status is HTTPStatus.BAD_REQUEST

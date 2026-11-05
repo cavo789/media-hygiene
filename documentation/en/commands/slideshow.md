@@ -65,10 +65,18 @@ files set aside, meant for the quarantine; given, it says to use `--album`. From
 folder and opens the show the same way; *Show an album on the TV* asks for the album's name
 and opens the show **in the home page's own server**: the home page keeps running, the remote
 opens at once (`/slideshow/`). A paired phone starts it too, from the sofa: on the phone's home
-page, **Show on the TV** offers an album saved on the PC, a folder (one of the folders analysed)
-or a month (by the date the audit read); a tap opens the remote at once (no code), read-only. The TV, at its bookmark, waits for a show while none runs and shows it by itself; it
+page, **Show on the TV** offers an album saved on the PC, a folder (one of the folders analysed,
+the folder of the most recent photos first) or a month (by the date the audit read); a tap opens the remote at once (no code), read-only. The TV, at its bookmark, waits for a show while none runs and shows it by itself; it
 is paired once (its code typed on the remote) and **stays paired while `mh` runs**: another album
 reaches it without a new code. No album saved: a folder or a month is always there.
+
+**🎲 At random**, at the top of the phone's TV choices, shows the whole collection for a long meal without
+looping: the PC cuts the dated photos into events (the gaps of `[classify]`), takes one year,
+4 to 6 of its events oldest first and about 10 photos of each, spread over the event; then a
+neighbouring year (1 to 3 years away), now and then a larger jump, a year coming back only once
+every other one was shown. Photos only: no video, no undated photo, no screenshot nor document,
+nothing set aside. Its two choices: the **length** (30 min, 1 h, 2 h: 1 h at 8 s a photo is about
+450 photos) and the **years** (everything, the last 5 years, or a period). Each tap is a new show.
 
 **From any page of tiles, no album needed**: in [`library`](library.md)
 opened from the home page, **📺 On the TV** in the bar shows the photos and videos picked, or,

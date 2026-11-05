@@ -273,8 +273,10 @@ déplacement restent au PC). Seul un téléphone appairé les atteint : tout aut
 PC fermé ; une fois `mh` arrêté, la page du téléphone le dit.
 Toute autre étape reste sur le PC (*Lancez cette étape sur le PC*) : ses questions sont posées
 dans la fenêtre de `mh`, que personne ne voit depuis le canapé. Une exception :
-**Montrer sur la télé**, sur la page du téléphone, propose trois choix : un album enregistré sur
-le PC, **un dossier** (un des dossiers analysés) ou **un mois** (selon la date lue par l'audit).
+**Montrer sur la télé**, sur la page du téléphone, propose quatre choix : **🎲 Au hasard** (un long diaporama à travers les années, voir
+[slideshow](slideshow.md)), un album enregistré sur
+le PC, **un dossier** (un des dossiers analysés, les photos les plus récentes d'abord, montré par sa
+fin : `2024-08 Vacances`) ou, en dessous, **un mois** (selon la date lue par l'audit, tous dossiers confondus).
 Quel que soit le nombre d'albums, la page reste courte : un bouton **Albums (N)** et, devant lui,
 les 3 albums que ce téléphone a montrés en dernier ; la page des albums qu'il ouvre les liste
 tous, avec une case pour en trouver un par son nom, les derniers montrés d'abord, et un appui sur

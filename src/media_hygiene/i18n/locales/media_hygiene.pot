@@ -458,6 +458,9 @@ msgstr ""
 msgid "/config is not mounted: there is no config.toml to complete."
 msgstr ""
 
+msgid "1 h"
+msgstr ""
+
 msgid "1 other photo of the same day and folder: same place?"
 msgstr ""
 
@@ -467,7 +470,13 @@ msgstr ""
 msgid "10 minutes of tidying"
 msgstr ""
 
+msgid "2 h"
+msgstr ""
+
 msgid "3. Several folders and disks"
+msgstr ""
+
+msgid "30 min"
 msgstr ""
 
 msgid "4. The HTML report"
@@ -559,6 +568,9 @@ msgid ""
 msgstr ""
 
 msgid "A double click opens the home page."
+msgstr ""
+
+msgid "A few photos of each event, chapter by chapter, from one era to the next."
 msgstr ""
 
 msgid "A file changed by another program meanwhile also changes the counts."
@@ -674,6 +686,9 @@ msgstr ""
 msgid ""
 "A part of the path. * is any characters, ? one character, /regex/ a "
 "regular expression: *.mov, /\\.(mov|mp4)$/"
+msgstr ""
+
+msgid "A period"
 msgstr ""
 
 #, python-brace-format
@@ -4192,6 +4207,9 @@ msgid ""
 "than {sharpness}."
 msgstr ""
 
+msgid "Length"
+msgstr ""
+
 msgid "Lens"
 msgstr ""
 
@@ -4993,6 +5011,9 @@ msgid "No config.toml created: the container cannot write to {folder}."
 msgstr ""
 
 msgid "No date taken"
+msgstr ""
+
+msgid "No dated photo to show at random."
 msgstr ""
 
 msgid "No decision in the file: as planned."
@@ -9010,6 +9031,9 @@ msgid ""
 msgstr ""
 
 msgid "The largest clusters without a name"
+msgstr ""
+
+msgid "The last 5 years"
 msgstr ""
 
 msgid ""
@@ -13175,6 +13199,9 @@ msgstr ""
 msgid "tiny image"
 msgstr ""
 
+msgid "to"
+msgstr ""
+
 msgid "to check first"
 msgstr ""
 
@@ -16025,6 +16052,9 @@ msgid "❚❚ Pause"
 msgstr ""
 
 msgid "🌐 name the places"
+msgstr ""
+
+msgid "🎲 At random"
 msgstr ""
 
 #, python-brace-format

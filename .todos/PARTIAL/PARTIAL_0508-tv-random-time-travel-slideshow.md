@@ -82,3 +82,18 @@ chronological order, with no manual choice on the phone beyond one tap.
 
 `slideshow.md` and `home.md` (en + fr): the random show, how it chooses, its two choices;
 `i18n_update` + French; `docs_screenshots` to run if a capture shows the phone's TV choices.
+
+## Status (2026-11-05): PARTIAL
+
+Done: `services/slideshow_random.py` (seeded walk: events by `find_events`, a year per
+chapter, 4–6 events oldest first, ~10 photos spread over each, neighbour years with a rare
+jump, a year back only after a full round), `slideshow_random_pick.py` (photos only, dated,
+under `/data`, not set aside, not `is_screenshot`), "🎲 At random" on the phone (length,
+years), `Pick.ordered`, docs en + fr, tests `test_slideshow_random.py` and `test_tv_choices.py`.
+
+Remains:
+- one shot per burst series / near-duplicate group, the sharpest first (the search index
+  holds no burst or sharpness facts: read the audit index's `VisualFacts`);
+- the `[review.unwanted]` thresholds (tiny, dark, white, blurred) through `unwanted_limits`;
+- a title card per detected event (today: per folder run, `slideshow_story`);
+- the maintainer's phone and TV check; `docs_screenshots`.

@@ -57,6 +57,7 @@ class Pick:
     album: str | None = None  # an album's name (`albums.json`)
     files: tuple[Path, ...] | None = None  # picked on a page, in the container (0454)
     shelf: Shelf | None = None  # the albums already read and followed (0547)
+    ordered: bool = False  # `files` in the show's order (a random show, 0508)
 
 
 @dataclass(frozen=True, slots=True)
@@ -112,13 +113,12 @@ def picked_slides(runtime: Runtime, search: SearchIndex, pick: Pick) -> Picked:
         rows = (
             row for path in inside for row in connection.execute(_BY_PATH, (str(path),))
         )
-    photos = sorted(
-        (
-            (day is None, day or "", path.casefold(), key, Path(path))
-            for key, path, day in rows
-            if media_kind(Path(path)) in _SHOWN
-        ),
-    )
+    photos = [
+        (day is None, day or "", path.casefold(), key, Path(path))
+        for key, path, day in rows
+        if media_kind(Path(path)) in _SHOWN
+    ]
+    photos.sort(key=lambda row: row if not pick.ordered else ())
     slides = told_slides(
         runtime,
         connection,
