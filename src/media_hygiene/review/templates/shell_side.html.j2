@@ -20,8 +20,8 @@
     <p class="mh-shell-group mh-shell-label">{{ _("Tools") }}</p>
     <ul class="mh-shell-list">{% for link in shell.tools %}{{ entry(link) }}{% endfor %}</ul>
   </nav>
-  {% if header.folders %}{# Your folders (0579): the home page's list, its order, its badges. #}
-  <details class="mh-shell-folders mh-shell-label pc-only">
+  {% if header.folders %}{# Your folders (0579): the home page's list, its order, its badges; on a paired phone too, a read-only list (review 2026-11-05). #}
+  <details class="mh-shell-folders mh-shell-label">
     <summary><svg class="mh-i" aria-hidden="true"><use href="#i-folder"></use></svg><span>{{ _("Your folders ({count})").format(count=header.folders.folders | length) }}</span>
     {%- if header.folders.warn %}<span class="mh-shell-folder-warn"><span class="mh-shell-hidden">{{ _("a folder not found") }}</span></span>{% endif -%}
     <svg class="mh-i mh-shell-chev" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>

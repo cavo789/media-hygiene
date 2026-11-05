@@ -37,3 +37,7 @@ where a series starts and leaves the judging to the eye of the user over thousan
 
 **Recommendation: keep.** Search can link to it, not replace it: about four filters' worth of
 page for a worse flow. Decision: the maintainer's.
+
+## Decided (2026-11-05, review of feedback-2026-11-05-iterate)
+
+Keep the page (maintainer). For `slideshow`: the verb is hidden from `mh --help`, still callable.

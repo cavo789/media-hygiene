@@ -37,3 +37,7 @@ already is; the engine stays whatever the decision.
 **Recommendation: keep the engine and its pages.** To decide with the "CLI only if useful in
 console" rule: should the verb stay in `mh --help`, or the home page's **Share** alone lead to it?
 Decision: the maintainer's.
+
+## Decided (2026-11-05, review of feedback-2026-11-05-iterate)
+
+Keep the page (maintainer). For `slideshow`: the verb is hidden from `mh --help`, still callable.

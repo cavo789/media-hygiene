@@ -2,6 +2,8 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `slideshow` · 🇬🇧 [English](../../en/commands/slideshow.md)
 
+> `mh --help` ne la liste plus : elle ne fait qu'ouvrir une page. Tapée, `mh slideshow` marche toujours, pour un script ou un raccourci.
+
 ## En bref
 
 **Les photos des vacances sur la télé du salon, la famille dans le canapé, la photo suivante

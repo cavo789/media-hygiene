@@ -19,13 +19,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const byId = (id) => document.getElementById(id);
   const read = () => { try { return JSON.parse(sessionStorage.getItem(KEY)); } catch { return null; } };
   const session = read();
-  if (!session) return;
+  // The review orders the user had before the session, put back once it ends (or its tab closed).
+  const restore = () => {
+    try {
+      const before = JSON.parse(localStorage.getItem("mh-tidy-before"));
+      if (!before) return;
+      for (const [name, value] of Object.entries(before)) {
+        if (value === null) localStorage.removeItem(name); else localStorage.setItem(name, value);
+      }
+      localStorage.removeItem("mh-tidy-before");
+    } catch { /* no storage: nothing was changed */ }
+  };
+  if (!session) { restore(); return; }
   const nextPage = byId("tidyNext").getAttribute("href");
   if (byId("tidyNothing")) { if (nextPage) window.location.replace(nextPage); else stop(); return; }
   if (!nextPage) byId("tidyNext").hidden = true;
   const gain = () => (byId("eta") ? byId("eta").textContent : "");
   function stop() {
     try { sessionStorage.removeItem(KEY); } catch { /* the session ends with the tab */ }
+    restore();
     window.clearInterval(timer);
     byId("tidyBar").hidden = true;
     byId("tidyOver").textContent = OVER.replace("{gain}", gain());

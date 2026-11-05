@@ -27,7 +27,11 @@ class RoutineSettings(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    steps: tuple[RoutineStep, ...] = tuple(RoutineStep)
+    steps: tuple[RoutineStep, ...] = (
+        RoutineStep.AUDIT,
+        RoutineStep.COPIES,
+        RoutineStep.REPORTS,
+    )  # purge is opt-in: it runs on its own (review 2026-11-05)
 
     @field_validator("steps")
     @classmethod

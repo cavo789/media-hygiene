@@ -111,14 +111,15 @@ def test_local_ai_options_stand_apart(name: str) -> None:
 
 
 def test_help_lists_only_the_verbs_with_a_console_use() -> None:
-    """`browse`, `home`, `places` only open a page: hidden, kept."""
+    """`home`, `places`, `slideshow` only open a page: hidden, kept."""
     infos = build_app().registered_commands
     hidden = {info.name for info in infos if info.hidden}
     assert hidden >= PAGE_ONLY
     visible = {info.name for info in infos if not info.hidden}
     assert visible == {name for name, *_ in commands()} - PAGE_ONLY
     assert "search" in hidden  # the former name of `library`
-    assert {"review", "library", "slideshow", "people", "shrink"} <= visible
+    assert {"review", "library", "people", "shrink"} <= visible
+    assert "slideshow" in hidden  # review 2026-11-05
 
 
 @pytest.mark.parametrize("name", sorted(PAGE_ONLY))

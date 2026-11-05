@@ -2,6 +2,8 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `slideshow` · 🇫🇷 [Français](../../fr/commands/slideshow.md)
 
+> `mh --help` no longer lists it: it only opens a page. Typed, `mh slideshow` still works, for a script or a shortcut.
+
 ## In short
 
 **The holiday photos on the living-room TV, the family on the sofa, the next photo chosen from
