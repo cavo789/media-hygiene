@@ -75,9 +75,11 @@ docker run --rm -it `
   lance et sa commande : *le dernier audit a trouvé des copies en trop : 'clean' les met de
   côté*, **mh clean**. Son bouton a le focus à l'ouverture : <kbd>Entrée</kbd> la lance, comme
   dans `mh menu`. Quand tout est appliqué, la page le dit.
-- **Où vous en êtes** : une tuile par fait (le dernier audit, les copies en trop, la
-  quarantaine, les fichiers seulement sur le NAS, le tri, les mots, les visages), chacune mène à
-  son espace. **Modifier** masque une tuile (✕) ou la déplace (← →) ; **Rétablir** remet
+- **Où vous en êtes** : une tuile par fait (le dernier audit, les copies en trop, les fichiers
+  intrus, la quarantaine, les fichiers seulement sur le NAS, le tri, les mots, les visages),
+  chacune mène à son espace ; une tuile dont une page montre le chiffre ouvre cette page :
+  *Fichiers intrus* la page qui les met de côté, *Visages* la page `people`, *Mots* la
+  Bibliothèque (dès qu'il y a quelque chose). **Modifier** masque une tuile (✕) ou la déplace (← →) ; **Rétablir** remet
   l'ordre par défaut. Le choix est enregistré aussitôt dans `config.toml` (`[home] tiles`), relu
   et affiché ; une tuile masquée le reste, même si elle demande quelque chose. Un téléphone
   montre la disposition du PC et ne peut pas la changer.

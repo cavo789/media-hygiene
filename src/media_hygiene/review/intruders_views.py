@@ -13,7 +13,7 @@ from pydantic import BaseModel, ConfigDict
 
 from media_hygiene.console.formatting import human_size
 from media_hygiene.report.chosen_decisions import ChosenFile
-from media_hygiene.scan.intruders import tally
+from media_hygiene.scan.intruders import hint, tally
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
@@ -32,6 +32,7 @@ class IntruderRow(BaseModel):
     key: str  # `.zip`, or a folder as the user knows it (host path)
     count: int
     size: str  # human, e.g. `12 MB`
+    hint: str = ""  # `cache`, `keep` or none: extensions only (0509)
 
 
 class IntruderEntry(BaseModel):
@@ -66,10 +67,10 @@ def _rows(counted: Tally, name: Callable[[str], str]) -> tuple[IntruderRow, ...]
         name: Turns a key into what the page shows and posts back.
 
     Returns:
-        The rows.
+        The rows; an extension's carries its hint (a folder's key has none).
     """
     return tuple(
-        IntruderRow(key=name(key), count=count, size=human_size(size))
+        IntruderRow(key=name(key), count=count, size=human_size(size), hint=hint(key))
         for key, count, size in counted.heaviest(len(counted.size))
     )
 

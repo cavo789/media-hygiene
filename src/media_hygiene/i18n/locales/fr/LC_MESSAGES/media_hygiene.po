@@ -704,8 +704,8 @@ msgstr "Un double-clic ouvre la page d'accueil."
 
 msgid "A few photos of each event, chapter by chapter, from one era to the next."
 msgstr ""
-"Quelques photos de chaque événement, chapitre après chapitre, d'une époque "
-"à l'autre."
+"Quelques photos de chaque événement, chapitre après chapitre, d'une "
+"époque à l'autre."
 
 msgid "A file changed by another program meanwhile also changes the counts."
 msgstr ""
@@ -787,6 +787,15 @@ msgstr ""
 "Un lien physique reste sur le disque et dans le dossier monté de son "
 "fichier : réglez album.root sur un dossier situé dans celui monté pour "
 "ces photos."
+
+msgid ""
+"A hint, never a verdict: only you know whether a zip was extracted or a "
+"document is the only copy. What you pick goes to the quarantine, and "
+"'undo' brings it back."
+msgstr ""
+"Un indice, jamais un verdict : vous seul savez si un zip a été extrait ou "
+"si un document est le seul exemplaire. Ce que vous choisissez va en "
+"quarantaine, et 'undo' le ramène."
 
 msgid ""
 "A link that opens this album alone, read-only, for 24 hours, on a phone "
@@ -6458,6 +6467,9 @@ msgstr ""
 "Personne ne s'appelle encore {names} : nommez d'abord son groupe sur la "
 "page de 'people'."
 
+msgid "None"
+msgstr "Aucun"
+
 msgid "None of these files is taken by the rule: nothing to sort."
 msgstr "Aucun de ces fichiers n'est pris par la règle : rien à trier."
 
@@ -7182,6 +7194,9 @@ msgstr[1] ""
 msgid "Only on the NAS"
 msgstr "Seulement sur le NAS"
 
+msgid "Only photos and videos"
+msgstr "Rien que des photos et des vidéos"
+
 msgid "Only set aside the new files that are exact copies."
 msgstr "Seulement mettre de côté les nouveaux fichiers identiques à un autre."
 
@@ -7762,6 +7777,9 @@ msgstr ""
 "Choisir les fichiers intrus (zip, docx, pdf… dans vos dossiers photos) à "
 "mettre de côté, par extension et par dossier, au lieu des rafales ; "
 "'clean --decisions' les déplace en quarantaine."
+
+msgid "Pick the ones to set aside"
+msgstr "Choisir ceux à mettre de côté"
 
 msgid "Pick the others: the ones picked are left (I)"
 msgstr "Choisir les autres : ceux choisis sont laissés (I)"
@@ -13452,6 +13470,9 @@ msgstr "une sauvegarde"
 msgid "a burst shot you set aside"
 msgstr "une photo de rafale que vous avez mise de côté"
 
+msgid "a cache, rebuilt by the device or the app"
+msgstr "un cache, recréé par l'appareil ou l'application"
+
 msgid "a circle holding no cluster now"
 msgstr "un cercle qui ne contient plus aucun groupe"
 
@@ -14314,6 +14335,9 @@ msgstr "tout garder"
 
 msgid "keep both names (links, one drive), then next"
 msgstr "garder les deux noms (liens, un même lecteur), puis suivante"
+
+msgid "keep it unless you have it elsewhere"
+msgstr "à garder, sauf si vous l'avez ailleurs"
 
 msgid "keep nothing"
 msgstr "ne rien garder"
@@ -16417,6 +16441,12 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} fichiers répondus plus tôt ne sont plus notés comme disparus : "
 "leurs réponses sont abandonnées."
+
+#, python-brace-format
+msgid "{count} file at the last audit, to set aside?"
+msgid_plural "{count} files at the last audit, to set aside?"
+msgstr[0] "{count} fichier au dernier audit, à mettre de côté ?"
+msgstr[1] "{count} fichiers au dernier audit, à mettre de côté ?"
 
 #, python-brace-format
 msgid ""

@@ -94,6 +94,9 @@ class ReportSummary(BaseModel):
     # A clean's options: near duplicates moved (`--tier near`), bursts (`--decisions`).
     near_tier: bool = False
     bursts_decided: bool = False
+    # Neither photos nor videos, protected and backups left out (0515): the home tile.
+    intruder_files: int = 0
+    intruder_bytes: int = 0
 
     @property
     def nothing_to_clean(self) -> bool:

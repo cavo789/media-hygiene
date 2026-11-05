@@ -35,6 +35,36 @@ DEFAULT_COMPANIONS: Final = (
 )
 NO_EXTENSION: Final = "(none)"
 
+# A cautious hint per extension (0509), never a verdict: the tool cannot know whether a
+# zip was extracted or a document is the only copy. Even a cache is set aside, never
+# deleted (the quarantine keeps `undo` possible). Checked sources, 2026-11-05:
+# `.ithmb`: iPod/iPhone photo thumbnails, re-created by iTunes at the next sync
+# (fileinfo.com/extension/ithmb; discussions.apple.com/thread/1771518).
+HINT_CACHE: Final = "cache"  # rebuilt by the device or the app
+HINT_KEEP: Final = "keep"  # keep unless you have it elsewhere
+_CACHES: Final = frozenset({".ithmb"})
+_KEEPS: Final = frozenset(
+    {".zip", ".7z", ".rar", ".tar", ".gz"}  # archives: extracted elsewhere?
+    | {".doc", ".docx", ".odt", ".pdf", ".rtf", ".txt"}  # documents
+    | {".xls", ".xlsx", ".ods", ".ppt", ".pptx", ".odp"}  # spreadsheets, slides
+    | {".mp3", ".wav", ".m4a", ".flac", ".ogg", ".wma"}  # audio
+    | {".psd", ".xcf"}  # image editors' projects
+)
+
+
+def hint(extension: str) -> str:
+    """The cautious hint of an extension: `cache`, `keep`, or none.
+
+    Args:
+        extension: Lowercase with its dot, e.g. `.ithmb`.
+
+    Returns:
+        `HINT_CACHE`, `HINT_KEEP`, or an empty string when nothing is known.
+    """
+    if extension in _CACHES:
+        return HINT_CACHE
+    return HINT_KEEP if extension in _KEEPS else ""
+
 
 @dataclass(frozen=True, slots=True)
 class Intruder:

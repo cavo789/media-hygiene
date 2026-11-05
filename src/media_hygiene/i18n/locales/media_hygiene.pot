@@ -632,6 +632,12 @@ msgid ""
 msgstr ""
 
 msgid ""
+"A hint, never a verdict: only you know whether a zip was extracted or a "
+"document is the only copy. What you pick goes to the quarantine, and "
+"'undo' brings it back."
+msgstr ""
+
+msgid ""
 "A link that opens this album alone, read-only, for 24 hours, on a phone "
 "of the home Wi-Fi"
 msgstr ""
@@ -5362,6 +5368,9 @@ msgstr ""
 msgid "Nobody is named {names} yet: name their group on the 'people' page first."
 msgstr ""
 
+msgid "None"
+msgstr ""
+
 msgid "None of these files is taken by the rule: nothing to sort."
 msgstr ""
 
@@ -5961,6 +5970,9 @@ msgstr[1] ""
 msgid "Only on the NAS"
 msgstr ""
 
+msgid "Only photos and videos"
+msgstr ""
+
 msgid "Only set aside the new files that are exact copies."
 msgstr ""
 
@@ -6431,6 +6443,9 @@ msgid ""
 "Pick the intruder files (zip, docx, pdf… in your photo folders) to set "
 "aside, per extension and per folder, instead of the burst series; 'clean "
 "--decisions' moves them to the quarantine."
+msgstr ""
+
+msgid "Pick the ones to set aside"
 msgstr ""
 
 msgid "Pick the others: the ones picked are left (I)"
@@ -11136,6 +11151,9 @@ msgstr ""
 msgid "a burst shot you set aside"
 msgstr ""
 
+msgid "a cache, rebuilt by the device or the app"
+msgstr ""
+
 msgid "a circle holding no cluster now"
 msgstr ""
 
@@ -11940,6 +11958,9 @@ msgid "keep all"
 msgstr ""
 
 msgid "keep both names (links, one drive), then next"
+msgstr ""
+
+msgid "keep it unless you have it elsewhere"
 msgstr ""
 
 msgid "keep nothing"
@@ -13786,6 +13807,12 @@ msgid ""
 msgid_plural ""
 "{count} files answered earlier are no longer recorded as gone: their "
 "answers are dropped."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} file at the last audit, to set aside?"
+msgid_plural "{count} files at the last audit, to set aside?"
 msgstr[0] ""
 msgstr[1] ""
 

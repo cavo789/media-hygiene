@@ -70,8 +70,10 @@ docker run --rm -it `
   command: *the last audit found extra copies: 'clean' sets them aside*, **mh clean**. Its
   button has the focus when the page opens: <kbd>Enter</kbd> runs it, as in `mh menu`. When
   everything is applied, the page says so.
-- **Where you are**: one tile per fact (the last audit, the extra copies, the quarantine, the
-  files only on the NAS, the sort, the words, the faces), each leading to its space. **Edit**
+- **Where you are**: one tile per fact (the last audit, the extra copies, the intruder files,
+  the quarantine, the files only on the NAS, the sort, the words, the faces), each leading to
+  its space; a tile whose figure one page shows opens that page: *Intruder files* the page that
+  sets them aside, *Faces* the `people` page, *Words* the Library (once there is something). **Edit**
   hides a tile (✕) or moves it (← →); **Reset** brings the default back. The choice is saved at
   once in `config.toml` (`[home] tiles`), read back and shown; a hidden tile stays hidden, even
   when it asks for something. A phone shows the PC's arrangement and cannot change it.

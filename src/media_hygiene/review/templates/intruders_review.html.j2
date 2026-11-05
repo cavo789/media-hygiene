@@ -20,6 +20,7 @@
   "count": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
   "button": [ngettext("Set this {n} file aside", "Set these {n} files aside", 1), ngettext("Set this {n} file aside", "Set these {n} files aside", 2)],
   "buttonNone": _("Set the files ticked aside"),
+  "hints": {"cache": _("a cache, rebuilt by the device or the app"), "keep": _("keep it unless you have it elsewhere")},
   "units": [_("B"), _("KB"), _("MB"), _("GB"), _("TB")],
 } %}
 {% set page_name = _("Intruder files") %}
@@ -36,6 +37,7 @@
   #bar button.danger { color: #fff; background: var(--bad); border-color: var(--bad); font-weight: 600; margin-left: 12px; }
   #bar button:disabled { opacity: .5; cursor: not-allowed; }
   tr.ticked-off td { color: var(--muted); font-style: italic; }
+  td .hint { color: var(--muted); font-style: italic; margin-left: 8px; }
   #aside li { overflow-wrap: anywhere; }
 {% endblock %}
 {% block side %}
@@ -56,6 +58,7 @@
 {% block content %}
 <main>
   <h2>{{ _("Per extension") }}</h2>
+  <p class="muted">{{ _("A hint, never a verdict: only you know whether a zip was extracted or a document is the only copy. What you pick goes to the quarantine, and 'undo' brings it back.") }}</p>
   <table><thead><tr><th></th><th>{{ _("Extension") }}</th><th class="num">{{ _("Files") }}</th><th class="num">{{ _("Size") }}</th></tr></thead><tbody id="extensions"></tbody></table>
   <h2>{{ _("Per folder") }}</h2>
   <table><thead><tr><th></th><th>{{ _("Folder") }}</th><th class="num">{{ _("Files") }}</th><th class="num">{{ _("Size") }}</th></tr></thead><tbody id="folders"></tbody></table>

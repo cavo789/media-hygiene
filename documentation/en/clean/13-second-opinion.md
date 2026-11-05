@@ -49,7 +49,7 @@ image (the community image `jlesage/czkawka`, about 500 MB), with your folders. 
 docker run --rm -it -v "C:\Photos:/data/c/Photos:ro" -v "D:\Old disk:/data/d/Old disk:ro" `
   -v "$HOME\media-hygiene\reports:/out" `
   jlesage/czkawka:v26.09.2 czkawka_cli dup -d /data -m 1 -W -N -C /out/czkawka.json `
-  -x 3g2,3gp,arw,avi,avif,bmp,cr2,cr3,dng,flv,gif,heic,heif,jpe,jpeg,jpg,m2ts,m4v,mkv,mov,mp4,mpeg,mpg,mts,nef,orf,pef,png,raf,rw2,srw,tif,tiff,ts,webm,webp,wmv
+  -x 3g2,3gp,arw,avi,avif,bmp,cr2,cr3,dng,flv,gif,heic,heif,jpe,jpeg,jpg,m2ts,m4v,mkv,mov,mp4,mpeg,mpg,mpo,mts,nef,orf,pef,png,raf,rw2,srw,tif,tiff,ts,webm,webp,wmv
 ```
 
 From WSL, write your folders as `/mnt/c/...` instead of `C:\...`. Once it has run,

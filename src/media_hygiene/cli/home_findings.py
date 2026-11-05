@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.cli.home_stage_lines import backup_only, extra_copies
-from media_hygiene.cli.home_tiles import audited
+from media_hygiene.cli.home_tiles_clean import audited
 from media_hygiene.cli.status_view import ago
 from media_hygiene.console.formatting import human_number, human_size
 from media_hygiene.constants import RunKind
