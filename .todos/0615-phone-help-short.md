@@ -21,6 +21,18 @@ faced with Docker text they conclude "not what I'm looking for" and stop reading
 - Check the other help links reachable from the phone (albums, share) for the same problem; list
   them in the report, fix those that are cheap.
 
+## Decided (maintainer, 2026-11-05): ask the reader what they look for
+
+The slideshow page opens on a choice, before any explanation — "What are you looking for?" —
+each answer jumping straight to its chapter:
+
+- 📱 I'm on the phone and want the TV's address → the TV's address and how to open it;
+- 📺 The slideshow is on, how do I drive it? → the remote's gestures;
+- 💻 I'm on the PC and start from zero → launching it (the `docker`/`mh` lines live only there).
+
+The help link of the phone view lands on the phone's answer directly (anchor). Apply the same
+"what are you looking for?" opening to the other long command pages reachable from the phone.
+
 ## Acceptance
 
 From the phone view, the slideshow's help shows no `docker`/`mh` command and fits one phone
