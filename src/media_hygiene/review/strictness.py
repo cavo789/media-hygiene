@@ -8,16 +8,19 @@ next to what the file holds. Only `save` writes, and the answer is the file read
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import partial
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
-from pydantic import BaseModel, ConfigDict, ValidationError
+from pydantic import BaseModel, ConfigDict
 
+from media_hygiene.errors import DecisionsError
 from media_hygiene.places.toml_edit import document_of, table_of, write_document
-from media_hygiene.review.config_saving import save_refused
+from media_hygiene.review.config_saving import refusal
+from media_hygiene.review.decide_route import decide_route
 from media_hygiene.review.http import Response
-from media_hygiene.review.serving import json_response, refused_post
-from media_hygiene.review.strictness_file import saved_values
+from media_hygiene.review.serving import json_response
+from media_hygiene.review.strictness_file import moved_names, saved_values
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
@@ -29,8 +32,6 @@ if TYPE_CHECKING:
     from media_hygiene.review.http import Request
 
 STRICTNESS_PATH: Final = "/api/strictness"
-# Names said on the page, per direction: the count says the rest.
-NAMES_SHOWN: Final = 12
 _GET, _POST = "GET", "POST"
 
 type Value = float | bool
@@ -106,8 +107,8 @@ class Strictness[S: BaseModel]:
         after = self._apply(tried)
         self._tried = tried
         answer: dict[str, object] = {
-            "entered": _names(after, before),
-            "left": _names(before, after),
+            "entered": moved_names(after, before),
+            "left": moved_names(before, after),
         }
         if save:
             read = self._write(tried)
@@ -149,23 +150,6 @@ class Strictness[S: BaseModel]:
         return {name: every[name] for name in self._place.names}
 
 
-def _names(first: Mapping[str, str], second: Mapping[str, str]) -> dict[str, object]:
-    """Who is in the first listing and not in the second.
-
-    Args:
-        first: File name by path.
-        second: File name by path.
-
-    Returns:
-        Their `count`, and the first `names`.
-    """
-    found = sorted(path for path in first if path not in second)
-    return {
-        "count": len(found),
-        "names": [first[path] for path in found[:NAMES_SHOWN]],
-    }
-
-
 def strictness_route[S: BaseModel](
     request: Request, strictness: Strictness[S]
 ) -> Response:
@@ -183,16 +167,24 @@ def strictness_route[S: BaseModel](
         return json_response(HTTPStatus.OK, strictness.current())
     if request.method != _POST:
         return Response(HTTPStatus.METHOD_NOT_ALLOWED)
-    refused = refused_post(request)
-    if refused is not None:
-        return refused
+    return decide_route(request, partial(_tuned, strictness))
+
+
+def _tuned[S: BaseModel](strictness: Strictness[S], body: bytes) -> dict[str, object]:
+    """Read a body and tune the thresholds, a refused value told as a refused choice.
+
+    Args:
+        strictness: The thresholds of the review.
+        body: The JSON body the page posted.
+
+    Returns:
+        What `Strictness.tune` answers.
+
+    Raises:
+        DecisionsError: A refused value, with its reason.
+    """
+    asked = _Asked.model_validate_json(body)
     try:
-        asked = _Asked.model_validate_json(request.body)
-    except ValidationError:
-        return Response(HTTPStatus.BAD_REQUEST)
-    try:
-        return json_response(
-            HTTPStatus.OK, strictness.tune(asked.values, save=asked.save)
-        )
-    except (ValueError, TypeError, OSError) as exc:
-        return save_refused(exc)
+        return strictness.tune(asked.values, save=asked.save)
+    except (ValueError, TypeError) as exc:
+        raise DecisionsError(refusal(exc)) from exc

@@ -35,10 +35,21 @@ def save_refused(error: ValueError | TypeError | OSError) -> Response:
         message = _("Cannot save config.toml: {error}.")
         text = message.format(error=error.strerror or error)
         return json_response(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": text})
+    return json_response(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": refusal(error)})
+
+
+def refusal(error: ValueError | TypeError) -> str:
+    """Say why a value was refused.
+
+    Args:
+        error: A refused value (pydantic's or the project's).
+
+    Returns:
+        "Not saved: ...", translated.
+    """
     reason = str(error)
     if isinstance(error, ValidationError):
         reason = "; ".join(
             str(item["msg"]).removeprefix(_VALUE_ERROR) for item in error.errors()
         )
-    message = _("Not saved: {reason}.").format(reason=reason)
-    return json_response(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": message})
+    return _("Not saved: {reason}.").format(reason=reason)

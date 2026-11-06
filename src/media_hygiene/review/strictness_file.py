@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
 from media_hygiene.places.toml_edit import loaded
@@ -10,6 +10,29 @@ from media_hygiene.places.toml_edit import loaded
 if TYPE_CHECKING:
     from collections.abc import Mapping
     from pathlib import Path
+
+
+# Names said on the page, per direction: the count says the rest.
+NAMES_SHOWN: Final = 12
+
+
+def moved_names(
+    first: Mapping[str, str], second: Mapping[str, str]
+) -> dict[str, object]:
+    """Who is in the first listing and not in the second.
+
+    Args:
+        first: File name by path.
+        second: File name by path.
+
+    Returns:
+        Their `count`, and the first `names`.
+    """
+    found = sorted(path for path in first if path not in second)
+    return {
+        "count": len(found),
+        "names": [first[path] for path in found[:NAMES_SHOWN]],
+    }
 
 
 def saved_values(
