@@ -1295,6 +1295,9 @@ msgstr ""
 msgid "Archived: {count} files, {size} in {folder}."
 msgstr ""
 
+msgid "Archives, newest first:"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "As decided by the classify run {run}: run classify again to see the rules"
@@ -13609,6 +13612,9 @@ msgid "the words you gave the photos with 🏷 Tag…, kept in your settings."
 msgstr ""
 
 msgid "the year, month, season and holidays of the date taken."
+msgstr ""
+
+msgid "this PC"
 msgstr ""
 
 msgid "this category is no longer proposed"

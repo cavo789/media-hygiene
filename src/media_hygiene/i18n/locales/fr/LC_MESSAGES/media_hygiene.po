@@ -20230,3 +20230,9 @@ msgstr[1] ""
 "🧹 {count} fichiers qui ne sont ni des photos ni des vidéos ({extensions}) "
 "occupent {size} dans vos dossiers photos : voir « Fichiers intrus » dans le "
 "rapport ; 'review --intruders' choisit ceux à mettre de côté."
+
+msgid "Archives, newest first:"
+msgstr "Archives, de la plus récente à la plus ancienne :"
+
+msgid "this PC"
+msgstr "ce PC"

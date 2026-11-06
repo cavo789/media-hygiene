@@ -6,9 +6,11 @@ itself, to another folder: the one of `--to` (`backup`) or `--from` (`restore`),
 `<push target>\.mh-backups` when `mh push` has a target (the NAS: the archives survive a
 lost disk). Windows copies, as for `mh push`: the container never needs the NAS's
 password. A folder that cannot be opened is said, the PC copy kept (never a silent
-failure); one typed with `--to`/`--from` stops the command instead. While another `mh`
-container runs (a page, an audit), both commands are refused: the index may be written
-under them. The home page waiting in the background is not counted: it runs the step.
+failure); one typed with `--to`/`--from` stops the command instead. A backup only
+reads, with SQLite's own copy, so it runs beside a page (0569). A restore overwrites the
+index: it is refused while another `mh` container runs (a page, an audit), the home page
+waiting in the background excepted (it runs the step), and lists the archives of both
+folders first, newest first.
 """
 
 from __future__ import annotations
@@ -41,10 +43,19 @@ class KeepTexts:
 
 
 @dataclass(frozen=True, slots=True)
+class ListTexts:
+    """The lines of the archives listed before a restore (0569)."""
+
+    listed: str
+    this_pc: str
+
+
+@dataclass(frozen=True, slots=True)
 class KeepPlace:
     """The names the scripts need to find, copy and rotate the archives."""
 
     texts: KeepTexts
+    listing: ListTexts
     file: str = TARGET_FILE
     folder: str = TARGET_FOLDER
     prefix: str = PREFIX
@@ -89,5 +100,6 @@ def keep_place() -> KeepPlace:
                 ),
                 "other",
             ),
-        )
+        ),
+        ListTexts(listed=say(_("Archives, newest first:")), this_pc=say(_("this PC"))),
     )

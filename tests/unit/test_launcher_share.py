@@ -87,6 +87,11 @@ def test_powershell_copies_the_archives_off_the_pc(tmp_path: Path) -> None:
     assert "if ($typed) { $global:LASTEXITCODE = 2; return $null }" in text
     # Another mh container: refused, but the home page waiting for this step.
     assert 'docker ps -q --filter "ancestor=' in text
+    # Only a restore is refused beside a page, after listing both folders (0569).
+    guard = text[text.index("if ($command -eq 'restore') {\n        $waiting") :]
+    assert guard.index("ancestor=") < guard.index("_mh_keep_list")
+    assert "function global:_mh_keep_list" in text
+    assert "Sort-Object LastWriteTime -Descending" in text
     # A copy is whole or absent: written under .part, its size checked, then renamed.
     assert '$draft = "$there.part"' in text
     assert "if ((Get-Item -LiteralPath $draft).Length -ne $file.Length)" in text
