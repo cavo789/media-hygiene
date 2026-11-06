@@ -23,6 +23,7 @@ from media_hygiene.review.import_chain_api import (
     import_chain_route,
 )
 from media_hygiene.review.import_steps_api import IMPORT_STEPS_PATH, import_steps_route
+from media_hygiene.review.lan_switch_api import LAN_SWITCH_PATH, lan_switch_route
 from media_hygiene.review.scan_scope_api import SCOPE_PATH, scope_route
 
 if TYPE_CHECKING:
@@ -59,18 +60,36 @@ async def more_response(more: HomeMore, request: Request) -> Response | None:
     """
     if request.path == IMPORT_CHAIN_PATH and more.chain is not None:
         return await import_chain_route(more.chain, request)
-    config_file = more.config_file
-    if config_file is not None:
-        if request.path == SCOPE_PATH:  # 0535
-            return await scope_route(config_file, request)
-        if request.path == IMPORT_STEPS_PATH:  # 0481
-            return await import_steps_route(config_file, request)
-        if request.path == TILES_PATH and request.method == _POST:
-            return await saved_list_response(_tiles_list(config_file), request)
+    if more.config_file is not None:
+        saved = await _saved_route(more.config_file, request)
+        if saved is not None:
+            return saved
     if request.path == SAMPLES_PATH and more.samples is not None:
         drawn = await asyncio.to_thread(more.samples)
         said = {"samples": [sample.model_dump() for sample in drawn]}
         return Response(HTTPStatus.OK, json.dumps(said).encode(), ContentType.JSON)
+    return None
+
+
+async def _saved_route(config_file: Path, request: Request) -> Response | None:
+    """Answer a route that writes `config.toml`.
+
+    Args:
+        config_file: `config.toml`.
+        request: The request.
+
+    Returns:
+        The response; None for any other path.
+    """
+    routes = {
+        SCOPE_PATH: scope_route,  # 0535
+        LAN_SWITCH_PATH: lan_switch_route,  # 0605
+        IMPORT_STEPS_PATH: import_steps_route,  # 0481
+    }
+    if request.path in routes:
+        return await routes[request.path](config_file, request)
+    if request.path == TILES_PATH and request.method == _POST:
+        return await saved_list_response(_tiles_list(config_file), request)
     return None
 
 

@@ -1260,6 +1260,9 @@ msgstr ""
 msgid "Any folder"
 msgstr ""
 
+msgid "Applies the next time mh starts: the open page keeps its door."
+msgstr ""
+
 msgid "Apply"
 msgstr ""
 
@@ -1468,6 +1471,9 @@ msgid "Backup, never changed"
 msgstr ""
 
 msgid "Backup: only compared, never changed and never the reason a copy goes."
+msgstr ""
+
+msgid "Bad request."
 msgstr ""
 
 msgid "Band"
@@ -6069,6 +6075,12 @@ msgstr ""
 msgid "Of which unwanted"
 msgstr ""
 
+msgid "Off: a paired phone sees the previews only, never the originals."
+msgstr ""
+
+msgid "Off: this page stays on this PC only."
+msgstr ""
+
 msgid ""
 "Old camera clips re-encoded, about four times lighter: compare before and"
 " after in the browser, then lighten; each original in the quarantine."
@@ -6152,6 +6164,16 @@ msgstr ""
 msgid ""
 "On your phone, on the same Wi-Fi: scan this code, or open the address and"
 " type the code."
+msgstr ""
+
+msgid ""
+"On: a paired phone downloads photos and videos at full size, GPS position"
+" included. It never changes anything."
+msgstr ""
+
+msgid ""
+"On: a phone on the same Wi-Fi can open this page after typing a code. "
+"Never the internet."
 msgstr ""
 
 msgid ""
@@ -6440,6 +6462,9 @@ msgstr ""
 msgid "Open this page in Safari, download the certificate, allow the profile."
 msgstr ""
 
+msgid "Open this page to phones"
+msgstr ""
+
 msgid "Open this section (o)"
 msgstr ""
 
@@ -6655,6 +6680,12 @@ msgid "Phone only"
 msgstr ""
 
 msgid "Phone, NAS: whenever you want"
+msgstr ""
+
+msgid "Phones may download the originals"
+msgstr ""
+
+msgid "Phones on the home Wi-Fi"
 msgstr ""
 
 msgid "Phones paired for good"

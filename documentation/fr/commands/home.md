@@ -281,7 +281,7 @@ tout le cycle. Son titre est le vôtre avec `[home] family_title = "Les Dupont"`
 
 🔒 **Le téléphone ne fait que lire : tout changement se fait sur le PC.** Depuis le téléphone : la page, où vous en êtes, les rapports, l'avancement d'un audit lancé sur le PC,
 [vos albums](#vos-albums-sur-le-téléphone), ainsi que **la recherche** et **le parcours** (leurs
-photos ouvertes à la taille du téléphone, et leurs vidéos ; les originaux seulement avec `lan_phone_originals = true` sous `[review]` de `config.toml`, désactivé par défaut : pleine taille, position GPS comprise ; *mettre de côté*, *Appliquer maintenant* et un
+photos ouvertes à la taille du téléphone, et leurs vidéos ; les originaux seulement quand l'interrupteur *Les téléphones peuvent télécharger les originaux* de la barre latérale de la page d'accueil est activé (`lan_phone_originals` sous `[review]` de `config.toml`), désactivé par défaut : pleine taille, position GPS comprise ; *mettre de côté*, *Appliquer maintenant* et un
 déplacement restent au PC). Seul un téléphone appairé les atteint : tout autre appareil du Wi-Fi
 (un invité, une télé) reçoit la page d'appairage, ou rien, à toute adresse. Tant que le téléphone montre une page, `mh` continue même onglet du
 PC fermé ; une fois `mh` arrêté, la page du téléphone le dit.
@@ -361,7 +361,7 @@ cochez **Réseaux privés**, puis **Autoriser**.
 
 ### Garder la page sur ce PC seulement
 
-Pas de téléphone à la maison, ou vous n'en voulez pas ? Coupez-le une fois, dans `config.toml` :
+Pas de téléphone à la maison, ou vous n'en voulez pas ? Coupez-le une fois avec l'interrupteur **Ouvrir cette page aux téléphones** de la barre latérale de la page d'accueil (il écrit `config.toml`, le relit, et s'applique au prochain démarrage de `mh`), ou à la main dans `config.toml` :
 
 1. Dans Windows PowerShell, ouvrez le fichier (`mh config` le crée la première fois) :
 

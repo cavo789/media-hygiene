@@ -30,6 +30,7 @@ from media_hygiene.review.home_views import APPLY_PATH
 from media_hygiene.review.import_chain_api import IMPORT_CHAIN_PATH
 from media_hygiene.review.import_steps_api import IMPORT_STEPS_PATH
 from media_hygiene.review.lan_phones_api import PHONE_PATHS
+from media_hygiene.review.lan_switch_api import LAN_SWITCH_PATH
 from media_hygiene.review.near_app import NEAR_DECIDE_PATH
 from media_hygiene.review.pairs_app import PAIRS_DECIDE_PATH
 from media_hygiene.review.phone_app import FREE_PATH, PHONE_DECIDE_PATH
@@ -81,6 +82,6 @@ CHANGES: Final = (
     | _SORTING
     | _PC_ONLY
     | {CHOSEN_PATH, PEOPLE_REJECT_PATH, CHANGE_PATH, SAVE_PATH, ASIDE_PATH, SCOPE_PATH}
-    | {IMPORT_STEPS_PATH, IMPORT_CHAIN_PATH, DISK_PURGE_PATH}
+    | {IMPORT_STEPS_PATH, IMPORT_CHAIN_PATH, DISK_PURGE_PATH, LAN_SWITCH_PATH}
     | {f"{SHRINK_PAGE}{path.lstrip('/')}" for path in (CHOOSE_PATH, LIGHTEN_PATH)}
 )

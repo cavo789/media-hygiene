@@ -28,6 +28,7 @@ from media_hygiene.review.import_steps_api import IMPORT_STEPS_PATH
 from media_hygiene.review.lan import lan_access
 from media_hygiene.review.lan_paths import LAN_PATH, PHONE_PAGES
 from media_hygiene.review.lan_problem import with_problem
+from media_hygiene.review.lan_switch_api import LAN_SWITCH_PATH
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.presence import ALIVE_SECONDS, PRESENCE_PATH, Presence
 from media_hygiene.review.scan_scope_api import SCOPE_PATH
@@ -81,6 +82,7 @@ def home_page(
             "favourites": FAVOURITES_PATH,
             **MORE_PATHS,
             "scope": SCOPE_PATH,
+            "lanSwitch": LAN_SWITCH_PATH,  # [review] lan on the page (0605)
             "importSteps": IMPORT_STEPS_PATH,  # [imports] then (0481)
             "importChain": IMPORT_CHAIN_PATH,  # where it is (0604)
             **{name: path if path in runs else "" for name, path in RUN_NAMES.items()},

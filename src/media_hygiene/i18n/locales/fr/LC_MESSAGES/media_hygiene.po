@@ -1587,6 +1587,10 @@ msgstr "Toutes les dates"
 msgid "Any folder"
 msgstr "N'importe quel dossier"
 
+msgid "Applies the next time mh starts: the open page keeps its door."
+msgstr ""
+"S'applique au prochain démarrage de mh : la page ouverte garde sa porte."
+
 msgid "Apply"
 msgstr "Appliquer"
 
@@ -1830,6 +1834,9 @@ msgid "Backup: only compared, never changed and never the reason a copy goes."
 msgstr ""
 "Sauvegarde : seulement comparée, jamais modifiée et jamais la raison du "
 "départ d'une copie."
+
+msgid "Bad request."
+msgstr "Requête incorrecte."
 
 msgid "Band"
 msgstr "Bande"
@@ -7279,6 +7286,14 @@ msgstr "Dont revenus"
 msgid "Of which unwanted"
 msgstr "Dont indésirables"
 
+msgid "Off: a paired phone sees the previews only, never the originals."
+msgstr ""
+"Désactivé : un téléphone appairé ne voit que les aperçus, jamais les "
+"originaux."
+
+msgid "Off: this page stays on this PC only."
+msgstr "Désactivé : cette page reste sur ce PC seulement."
+
 msgid ""
 "Old camera clips re-encoded, about four times lighter: compare before and "
 "after in the browser, then lighten; each original in the quarantine."
@@ -7388,6 +7403,20 @@ msgid ""
 msgstr ""
 "Sur votre téléphone, sur le même Wi-Fi : scannez ce code, ou ouvrez "
 "l'adresse et tapez le code."
+
+msgid ""
+"On: a paired phone downloads photos and videos at full size, GPS position "
+"included. It never changes anything."
+msgstr ""
+"Activé : un téléphone appairé télécharge photos et vidéos en pleine taille, "
+"position GPS comprise. Il ne modifie jamais rien."
+
+msgid ""
+"On: a phone on the same Wi-Fi can open this page after typing a code. Never "
+"the internet."
+msgstr ""
+"Activé : un téléphone du même Wi-Fi peut ouvrir cette page après avoir tapé "
+"un code. Jamais Internet."
 
 msgid ""
 "Once a day at most, ask Docker Hub whether a newer version is published, to "
@@ -7771,6 +7800,9 @@ msgstr ""
 "Ouvrez cette page dans Safari, téléchargez le certificat, autorisez le "
 "profil."
 
+msgid "Open this page to phones"
+msgstr "Ouvrir cette page aux téléphones"
+
 msgid "Open this section (o)"
 msgstr "Ouvrir cette section (o)"
 
@@ -8012,6 +8044,13 @@ msgstr "Téléphone seul"
 
 msgid "Phone, NAS: whenever you want"
 msgstr "Téléphone, NAS : quand vous voulez"
+
+msgid "Phones may download the originals"
+msgstr "Les téléphones peuvent télécharger les originaux"
+
+#, python-brace-format
+msgid "Phones on the home Wi-Fi"
+msgstr "Téléphones du Wi-Fi de la maison"
 
 msgid "Phones paired for good"
 msgstr "Téléphones appairés pour de bon"

@@ -257,7 +257,7 @@ up) and the tools are not shown there, the PC keeps the whole cycle. Its title i
 
 🔒 **The phone is read-only: every change is made on the PC.** From the phone: the page, where you are, the reports, the progress of an audit started on the PC,
 [your albums](#your-albums-on-the-phone), and **search** (its photos opened at
-the phone's size, and their videos; the originals only with `lan_phone_originals = true` under `[review]` of `config.toml`, off by default: full size, GPS position included; *set aside*, *Apply now* and a move stay the PC's). Only a paired
+the phone's size, and their videos; the originals only when the *Phones may download the originals* switch of the home page's sidebar is on (`lan_phone_originals` under `[review]` of `config.toml`), off by default: full size, GPS position included; *set aside*, *Apply now* and a move stay the PC's). Only a paired
 phone reaches them: any other device of the Wi-Fi (a guest, a TV) gets the pairing page, or
 nothing, on every address. While the phone shows a page, `mh` keeps running even with the
 PC's tab closed; once `mh` stops, the phone's page says so.
@@ -334,7 +334,7 @@ Windows may ask about Docker Desktop once: tick **Private networks**, then **All
 
 ### Keep the page on this PC only
 
-No phone at home, or you do not want one? Turn it off once, in `config.toml`:
+No phone at home, or you do not want one? Turn it off once with the **Open this page to phones** switch in the home page's sidebar (it writes `config.toml`, reads it back, and applies the next time `mh` starts), or by hand in `config.toml`:
 
 1. In Windows PowerShell, open the file (`mh config` creates it the first time):
 

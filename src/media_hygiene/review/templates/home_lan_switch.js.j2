@@ -1,0 +1,33 @@
+// [review] lan and lan_phone_originals (0605): read from config.toml on the disk; a click
+// writes both and draws what was read back. They apply at the next start of mh.
+function drawLanSwitch(held) {
+  $("#lanOn").checked = held.lan;
+  $("#lanOriginals").checked = held.originals;
+  $("#lanOnNote").textContent = held.lan ? T.lanSwitchOnYes : T.lanSwitchOnNo;
+  $("#lanOriginalsNote").textContent = held.originals ? T.lanSwitchOriginalsYes : T.lanSwitchOriginalsNo;
+  $("#lanSwitch").hidden = false;
+}
+function loadLanSwitch() {
+  if (!P.lanSwitch || REMOTE) return;
+  fetch(P.lanSwitch, { cache: "no-store" })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((answer) => { if (answer) drawLanSwitch(answer.lan); })
+    .catch(() => {});
+}
+function saveLanSwitch() {
+  const boxes = [$("#lanOn"), $("#lanOriginals")];
+  boxes.forEach((box) => { box.disabled = true; });
+  post(P.lanSwitch, { lan: boxes[0].checked, originals: boxes[1].checked })
+    .then((reply) => {
+      if (!reply.ok) { toast(reply.body.error || T.lanSwitchFailed); loadLanSwitch(); return; }
+      drawLanSwitch(reply.body.lan);  // what config.toml holds now, read back
+      $("#lanLater").textContent = reply.body.later;
+      toast(T.lanSwitchSaved);
+    })
+    .catch(() => stopped())
+    .finally(() => { boxes.forEach((box) => { box.disabled = false; }); });
+}
+document.addEventListener("change", (event) => {
+  if (event.target.id === "lanOn" || event.target.id === "lanOriginals") saveLanSwitch();
+});
+loadLanSwitch();
