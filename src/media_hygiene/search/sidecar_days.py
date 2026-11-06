@@ -13,7 +13,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.search.known_day import OWN_UNDATED
+from media_hygiene.classify.hand_days import ready
+from media_hygiene.search.days import NAME as DAY
+from media_hygiene.search.days import media_day
+from media_hygiene.search.known_day import CLEAR_DAYS, OWN_UNDATED, PUT_DAY
 from media_hygiene.services.xmp_sidecars import sidecar_of
 from media_hygiene.tags.xmp_date import sidecar_day
 from media_hygiene.tags.xmp_doc import XmpError
@@ -107,3 +110,19 @@ def undated_days(connection: sqlite3.Connection) -> dict[Path, str]:
         The day of each file whose sidecar says one.
     """
     return days_of(Path(row[0]) for row in connection.execute(OWN_UNDATED))
+
+
+def read_days_again(connection: sqlite3.Connection) -> None:
+    """Read every sidecar's day again into the search's temporary table (0618).
+
+    The event finders (`late_files`, `found_folders`) read it at each ask: a day set,
+    undone, or a file or sidecar moved since counts at once.
+
+    Args:
+        connection: The open index.
+    """
+    connection.create_function(DAY, 1, media_day, deterministic=True)  # a bare index
+    days = undated_days(connection)
+    ready(connection).execute(CLEAR_DAYS)
+    connection.executemany(PUT_DAY, [(str(path), day) for path, day in days.items()])
+    connection.commit()  # no transaction left open: a move writes the index

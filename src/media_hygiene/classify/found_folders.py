@@ -16,6 +16,7 @@ from pathlib import PurePosixPath
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.convention import Place, shape_of
+from media_hygiene.classify.hand_days import SIDECAR_DAY, known, ready
 from media_hygiene.classify.own_events import one_moment
 
 if TYPE_CHECKING:
@@ -24,7 +25,9 @@ if TYPE_CHECKING:
 
     from media_hygiene.classify.folders import FolderRules
 
-_ROWS: Final = "SELECT rowid, path, media_date, camera, full_digest FROM files"
+_ROWS: Final = (
+    f"SELECT rowid, path, media_date, camera, full_digest, {SIDECAR_DAY} FROM files"  # noqa: S608
+)
 _DAY: Final = slice(0, 10)  # `YYYY:MM:DD` (EXIF) or `YYYY-MM-DD` (ISO)
 _TIME: Final = slice(10, 19)  # ` HH:MM:SS` or `THH:MM:SS`
 _BELOW_MONTH: Final = 3  # year, month, the event's name
@@ -104,13 +107,14 @@ def found_folders(
     gathered: dict[tuple[str, str], _Gathered] = defaultdict(
         lambda: _Gathered([], [], set(), set())
     )
-    for key, path, written, camera, digest in connection.execute(_ROWS):
+    for key, path, written, camera, digest, hand in ready(connection).execute(_ROWS):
         place = event_folder_of(str(path))
         if place is None:
             continue
         held = gathered[place]
         held.keys.append(int(key))
-        if (when := moment(written) if written else None) is not None:
+        own = moment(written) if written else None
+        if (when := known(own, hand and moment(hand))) is not None:
             held.when.append(when)
         if camera and str(camera).strip():
             held.cameras.add(str(camera).strip())

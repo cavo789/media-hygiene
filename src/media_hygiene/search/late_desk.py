@@ -35,6 +35,7 @@ from media_hygiene.search.event_match import label
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
 from media_hygiene.search.late_aside import without_aside
 from media_hygiene.search.late_tiles import late_tiles
+from media_hygiene.search.sidecar_days import read_days_again
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -169,6 +170,7 @@ class LateDesk:
         """
         rules = read_rules(self.config_file)
         refused = refused_by_event(self.config_file.parent, rules)
+        read_days_again(self.index.connection)  # a day set by hand counts (0618)
         found = late_files(self.index.connection, rules, refused)
         aside = (self.mapper, self.chosen())
         return rules, without_aside(self.index.connection, found, aside)

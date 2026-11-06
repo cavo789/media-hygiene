@@ -8,10 +8,11 @@ holding most of the files of the event's days and cameras. None found: the page 
 from __future__ import annotations
 
 from collections import Counter
-from datetime import date
 from pathlib import PurePosixPath
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.classify.found_folders import moment
+from media_hygiene.classify.hand_days import SIDECAR_DAY, known, ready
 from media_hygiene.classify.rules.calendar import parse_one_off
 
 if TYPE_CHECKING:
@@ -19,10 +20,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.config.classify_rules import ClassifyRule
 
-_DATED: Final = (
-    "SELECT path, media_date, camera FROM files WHERE media_date IS NOT NULL"
-)
-_DAY: Final = slice(0, 10)  # `YYYY:MM:DD` (EXIF) or `YYYY-MM-DD` (a video, ISO)
+_DATED: Final = f"SELECT path, media_date, camera, {SIDECAR_DAY} FROM files"  # noqa: S608
 
 
 def event_folder(
@@ -39,16 +37,13 @@ def event_folder(
         The folder; None when no indexed file of its days and cameras is found.
     """
     period = parse_one_off(rule.dates)
-    known = {device.casefold() for device in rule.devices}
+    cameras = {device.casefold() for device in rule.devices}
     folders: Counter[str] = Counter()
-    for path, written, camera in connection.execute(_DATED):
-        try:
-            day = date.fromisoformat(str(written)[_DAY].replace(":", "-"))
-        except ValueError:
+    for path, written, camera, hand in ready(connection).execute(_DATED):
+        when = known(moment(written) if written else None, hand and moment(hand))
+        if when is None or not period.contains(when.date()):
             continue
-        if not period.contains(day):
-            continue
-        if known and str(camera or "").strip().casefold() not in known:
+        if cameras and str(camera or "").strip().casefold() not in cameras:
             continue
         folders[str(PurePosixPath(path).parent)] += 1
     if expected in folders:
