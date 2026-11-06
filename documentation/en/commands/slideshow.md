@@ -146,6 +146,8 @@ the steps are the [home page's](home.md#once-per-phone-install-the-certificate).
 
 - **◀** and **▶**: the previous and next photos; **▶ Play** / **❚❚ Pause**, and **Each photo**: how
   long a photo stays while playing.
+  **Keep as the default** (PC only) writes that pace to `[slideshow] interval_seconds`, shows what
+  `config.toml` holds as read back, and applies to the next shows.
 - A tap on a thumbnail shows that photo on the TV.
 - **Do not show** sets the photo on the TV out of the show (the TV moves on); a thumbnail's own
   button does the same for any photo, and **Show again** sets it back.

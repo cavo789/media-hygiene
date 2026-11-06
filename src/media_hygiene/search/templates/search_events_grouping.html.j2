@@ -1,0 +1,46 @@
+{# How photos are grouped into events (0606): `[classify] merge_gap_hours`, `min_event_size`,
+   `trip_min_km`, set where the events are listed, saved in config.toml and shown as read back.
+   PC only (hidden off the loopback). The events listed stay as they are until the next
+   `classify` (said on the page): no preview here, the grouping is computed by that run. #}
+<details id="grouping" hidden class="grouping">
+  <summary>{{ _("Group the photos into more or fewer events") }}</summary>
+  <p class="muted">{{ _("Fewer events: a longer gap, a larger minimum, a longer distance for a trip. More events: the opposite. The list below changes at the next classify.") }}</p>
+  <form id="groupingForm" autocomplete="off">
+    <label>{{ _("Gap that merges two days into one event (hours)") }} <input type="number" id="gMerge" name="merge_gap_hours" min="0" max="720" step="any" required></label>
+    <label>{{ _("Fewest photos in an event") }} <input type="number" id="gMin" name="min_event_size" min="1" max="10000" step="1" required></label>
+    <label>{{ _("Shortest trip (km from home)") }} <input type="number" id="gTrip" name="trip_min_km" min="1" max="20000" step="any" required></label>
+    <button type="submit" class="plain writes">{{ _("Save these three") }}</button>
+  </form>
+  <p id="groupingSaid" role="status" aria-live="polite"></p>
+</details>
+<script>
+(() => {
+  if (!["127.0.0.1", "localhost", "[::1]"].includes(location.hostname)) return;
+  const PATH = "/api/setting-events";
+  const box = document.getElementById("grouping");
+  const said = document.getElementById("groupingSaid");
+  const fields = { merge_gap_hours: "gMerge", min_event_size: "gMin", trip_min_km: "gTrip" };
+  const draw = (values) => {
+    for (const [key, id] of Object.entries(fields)) document.getElementById(id).value = values[key];
+    box.hidden = false;
+  };
+  const fail = () => { said.textContent = {{ _("The settings could not be saved in config.toml.") | tojson }}; };
+  fetch(PATH, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : null))
+    .then((answer) => { if (answer) draw(answer.values); })
+    .catch(() => {});
+  document.getElementById("groupingForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const body = {};
+    for (const [key, id] of Object.entries(fields)) body[key] = Number(document.getElementById(id).value);
+    fetch(PATH, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      .then((response) => response.json().then((reply) => ({ ok: response.ok, reply })))
+      .then((result) => {
+        if (!result.ok) { said.textContent = result.reply.error || ""; return; }
+        draw(result.reply.values);  // what config.toml holds now, read back
+        said.textContent = {{ _("Saved in config.toml, read back from the disk.") | tojson }} + " " + {{ _("Run classify again to regroup the events.") | tojson }};
+      })
+      .catch(fail);
+  });
+})();
+</script>

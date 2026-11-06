@@ -182,6 +182,8 @@ fichiers en tableau.
 
 ## Les événements du dernier classify
 
+La section **Regrouper les photos en plus ou moins d'événements** de cet onglet (PC seulement) règle `merge_gap_hours`, `min_event_size` et `trip_min_km` de `[classify]` : enregistrés dans `config.toml`, montrés tels que relus sur le disque, appliqués par le prochain [`classify`](classify.md) (la liste ne change pas avant).
+
 L'onglet **🗂 Événements**, en haut de la colonne de gauche à côté de **🔎 Photos**, n'a besoin
 d'aucun [`classify`](classify.md) : il regroupe **les fichiers pas encore triés** de la période
 de la recherche (*Du* / *Au* ; aucune : toutes les dates) selon le moment de la prise de vue, un

@@ -61,6 +61,16 @@ answer is kept in the cache at once). Reopening the page during a run shows the 
 cache is written: your photos are not changed. If Ollama cannot be reached, the page says so in
 one line.
 
+🤖 The same dialog shows the local AI's state: found or not at `[classify.ai] url`, the models the
+server has installed, and a list to pick the one that looks at your photos (*None* turns it off:
+no photo is ever sent). The choice is written to `config.toml` and shown as read back from the
+disk; it applies the next time `mh` starts. Only on the PC.
+
+🤖 The same dialog shows the local AI's state: found or not at `[classify.ai] url`, the models
+the server has installed, and a list to choose the one that looks at your photos (*None* turns it
+off: no photo is ever sent). The choice is written to `config.toml` and shown as read back from
+the disk; it applies the next time `mh` starts. Only on the PC.
+
 With search by meaning on (`[tags] meaning = true`), the end of this dialog offers **Build
 search by meaning**: the same figures, **Look now** / **Look for 1 h** / **Not now**, the
 progress and **Stop after this photo**. The model runs on your computer's processor (hours on a

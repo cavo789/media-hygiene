@@ -57,6 +57,7 @@ docker run --rm -it `
 
 ## Ce que montre la page
 
+- **La langue** : une liste *Langue* dans la colonne de gauche de la page d'accueil et dans la barre du haut de chaque autre page (PC seulement) écrit `[general] locale` de `config.toml` et dit ce que le fichier contient, relu sur le disque ; elle s'applique au prochain démarrage de `mh`.
 - **Le menu de gauche** : les cinq étapes du cycle, **Partager** (un but, pas une étape : sans numéro) et les outils, chacun avec son compte (*9*
   copies à mettre de côté, *214* fichiers que seul le NAS garde), *Vos dossiers* (chacun trouvé
   ou non), la version (*0.5.0 disponible* quand une plus récente est publiée,

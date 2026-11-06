@@ -20418,3 +20418,68 @@ msgstr[1] ""
 "🧹 {count} fichiers qui ne sont ni des photos ni des vidéos ({extensions}) "
 "occupent {size} dans vos dossiers photos : voir « Fichiers intrus » dans le "
 "rapport ; 'review --intruders' choisit ceux à mettre de côté."
+
+msgid "Applies the next time mh starts: the open page keeps its settings."
+msgstr "S'applique au prochain démarrage de mh : la page ouverte garde ses réglages."
+
+#, python-brace-format
+msgid "Default in config.toml: {n} s"
+msgstr "Valeur par défaut dans config.toml : {n} s"
+
+msgid "Fewer events: a longer gap, a larger minimum, a longer distance for a trip. More events: the opposite. The list below changes at the next classify."
+msgstr "Moins d'événements : un écart plus long, un minimum plus grand, une distance plus longue pour un voyage. Plus d'événements : l'inverse. La liste ci-dessous change au prochain classify."
+
+msgid "Fewest photos in an event"
+msgstr "Nombre minimum de photos d'un événement"
+
+#, python-brace-format
+msgid "Found at {url}: {n} models installed."
+msgstr "Trouvée à {url} : {n} modèles installés."
+
+msgid "Gap that merges two days into one event (hours)"
+msgstr "Écart qui réunit deux jours en un seul événement (heures)"
+
+msgid "Group the photos into more or fewer events"
+msgstr "Regrouper les photos en plus ou moins d'événements"
+
+msgid "Keep as the default"
+msgstr "Garder comme valeur par défaut"
+
+msgid "Language"
+msgstr "Langue"
+
+msgid "Model that looks at the photos"
+msgstr "Modèle qui regarde les photos"
+
+msgid "None (off)"
+msgstr "Aucun (désactivé)"
+
+#, python-brace-format
+msgid "Nothing answers at {url}. Start Ollama there, or change [classify.ai] url."
+msgstr "Rien ne répond à {url}. Lancez Ollama à cette adresse, ou changez [classify.ai] url."
+
+msgid "Off: no photo is ever sent to a model."
+msgstr "Désactivée : aucune photo n'est jamais envoyée à un modèle."
+
+msgid "Run classify again to regroup the events."
+msgstr "Relancez classify pour regrouper les événements."
+
+msgid "Save these three"
+msgstr "Enregistrer ces trois valeurs"
+
+msgid "Saved in config.toml, read back from the disk: off."
+msgstr "Enregistré dans config.toml, relu sur le disque : désactivée."
+
+#, python-brace-format
+msgid "Saved in config.toml, read back from the disk: {model}."
+msgstr "Enregistré dans config.toml, relu sur le disque : {model}."
+
+#, python-brace-format
+msgid "Saved in config.toml, read back from the disk: {n} s each photo, for the next shows."
+msgstr "Enregistré dans config.toml, relu sur le disque : {n} s par photo, pour les prochains diaporamas."
+
+msgid "Shortest trip (km from home)"
+msgstr "Voyage le plus court (km depuis la maison)"
+
+msgid "🤖 Local AI"
+msgstr "🤖 IA locale"

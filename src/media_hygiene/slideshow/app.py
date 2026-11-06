@@ -28,6 +28,7 @@ from media_hygiene.review.lan import PAIR_PREFIX
 from media_hygiene.review.lan_card import lan_response
 from media_hygiene.review.lan_paths import LAN_PATH
 from media_hygiene.review.local_app import PAGE_PATH
+from media_hygiene.review.page_settings import SETTING_PATHS, setting_response
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.shared_routes import asset_or_page
 from media_hygiene.review.videos import NEAR_POLICY
@@ -86,6 +87,25 @@ class SlideshowApp:
         answer = await screen.answer(request)
         if answer is not None:
             return answer
+        if request.path in SETTING_PATHS:  # the pace as default (0607): the PC's alone
+            if visitor is not Visitor.PC:
+                return Response(
+                    HTTPStatus.FORBIDDEN,
+                    _("The phone is read-only: change this on the PC.").encode(),
+                )
+            return await setting_response(request)
+        return await self._visitor_page(request, visitor)
+
+    async def _visitor_page(self, request: Request, visitor: Visitor) -> Response:
+        """Answer the phone, the PC or a stranger once the show's own routes have not.
+
+        Args:
+            request: The request.
+            visitor: Who sent it.
+
+        Returns:
+            The response.
+        """
         if visitor is Visitor.PHONE:
             return await asset_or_page(self.door.local(request), self._remote)
         if visitor is Visitor.PC:

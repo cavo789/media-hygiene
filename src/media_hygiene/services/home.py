@@ -10,6 +10,7 @@ from media_hygiene.console.formatting import separators
 from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.person.door import with_person
+from media_hygiene.review.ai_state_api import AI_STATE_PATH
 from media_hygiene.review.album_show import TV_CHOICES, TV_CHOOSE
 from media_hygiene.review.ending import (
     STOP_PATH,
@@ -82,6 +83,7 @@ def home_page(
             "favourites": FAVOURITES_PATH,
             **MORE_PATHS,
             "scope": SCOPE_PATH,
+            "aiState": AI_STATE_PATH,  # [classify.ai] model on the tags dialog (0608)
             "lanSwitch": LAN_SWITCH_PATH,  # [review] lan on the page (0605)
             "importSteps": IMPORT_STEPS_PATH,  # [imports] then (0481)
             "importChain": IMPORT_CHAIN_PATH,  # where it is (0604)

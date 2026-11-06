@@ -160,6 +160,9 @@ connexion n'est pas privée installe d'abord le certificat du PC, une fois : la 
 
 - **◀** et **▶** : les photos précédente et suivante ; **▶ Lecture** / **❚❚ Pause**, et
   **Chaque photo** : combien de temps une photo reste pendant la lecture.
+  **Garder comme valeur par défaut** (PC seulement) écrit ce rythme dans `[slideshow]
+  interval_seconds`, montre ce que `config.toml` contient une fois relu, et vaut pour les prochains
+  diaporamas.
 - Une vignette touchée montre cette photo sur la télé.
 - **Ne pas montrer** retire du diaporama la photo sur la télé (la télé passe à la suivante) ; le
   bouton d'une vignette fait de même pour n'importe quelle photo, et **Remontrer** la remet.

@@ -1,0 +1,26 @@
+{# The pace as the default of the next shows (0607): `[slideshow] interval_seconds`, saved from the
+   PC's remote, read back from config.toml and said. The running show keeps its own pace. #}
+(() => {
+  const button = document.getElementById("paceDefault");
+  if (!["127.0.0.1", "localhost", "[::1]"].includes(location.hostname)) return;
+  const said = document.getElementById("paceSaved");
+  const select = document.getElementById("seconds");
+  const PATH = "/api/setting-slideshow";
+  const fail = () => { said.textContent = {{ _("The settings could not be saved in config.toml.") | tojson }}; };
+  button.hidden = false;
+  fetch(PATH, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : null))
+    .then((answer) => { if (answer) said.textContent = {{ _("Default in config.toml: {n} s") | tojson }}.replace("{n}", answer.values.interval_seconds); })
+    .catch(() => {});
+  button.addEventListener("click", () => {
+    button.disabled = true;
+    fetch(PATH, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ interval_seconds: Number(select.value) }) })
+      .then((response) => response.json().then((body) => ({ ok: response.ok, body })))
+      .then((reply) => {
+        if (!reply.ok) { fail(); return; }
+        said.textContent = {{ _("Saved in config.toml, read back from the disk: {n} s each photo, for the next shows.") | tojson }}.replace("{n}", reply.body.values.interval_seconds);
+      })
+      .catch(fail)
+      .finally(() => { button.disabled = false; });
+  });
+})();

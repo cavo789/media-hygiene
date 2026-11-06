@@ -172,6 +172,8 @@ as a table.
 
 ## The events of the latest classify
 
+The **Group the photos into more or fewer events** section of that tab (PC only) sets `merge_gap_hours`, `min_event_size` and `trip_min_km` of `[classify]`: saved in `config.toml`, shown as read back from the disk, applied by the next [`classify`](classify.md) (the list does not change before).
+
 The **🗂 Events** tab, on top of the left column next to **🔎 Photos**, needs no
 [`classify`](classify.md) run: it groups **the files not sorted yet** of the period of the
 search (*From* / *To*; none: every date) by the time they were taken, a new event wherever

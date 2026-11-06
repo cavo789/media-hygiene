@@ -110,9 +110,11 @@
         <option value="{{ seconds }}">{{ texts.seconds.replace("{n}", seconds | string) }}</option>
 {% endfor %}
       </select></label>
+    <button id="paceDefault" class="plain" type="button" hidden>{{ _("Keep as the default") }}</button>
     <button id="out" class="plain" type="button">{{ _("Do not show") }}</button>
     <button id="stop" class="plain" type="button">{{ _("■ Stop") }}</button>
   </div>
+  <p id="paceSaved" role="status"></p>
   <p id="over" class="card" role="status" hidden>{{ _("The slideshow is over: the TV says so.") }}{% if presence_kept | default(false) %} <a href="/">{{ _("Choose another show") }}</a>{% endif %}</p>
   <div class="telling" role="group" aria-label="{{ _('Where the event is told') }}">
     <span>{{ _("The event's name:") }}</span>
@@ -148,6 +150,7 @@
 <script>
 {% include "slideshow.js.j2" %}
 {% include "slideshow_story.js.j2" %}
+{% include "slideshow_pace.js.j2" %}
 </script>
 {# In the home server (0417) the remote says it is alive: the home page's tab may leave for it. #}
 {% set presence_probe = not (presence_kept | default(false)) %}{% include "presence.html.j2" %}

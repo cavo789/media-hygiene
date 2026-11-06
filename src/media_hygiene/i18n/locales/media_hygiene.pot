@@ -1263,6 +1263,9 @@ msgstr ""
 msgid "Applies the next time mh starts: the open page keeps its door."
 msgstr ""
 
+msgid "Applies the next time mh starts: the open page keeps its settings."
+msgstr ""
+
 msgid "Apply"
 msgstr ""
 
@@ -2281,6 +2284,10 @@ msgstr ""
 msgid "Decoder message"
 msgstr ""
 
+#, python-brace-format
+msgid "Default in config.toml: {n} s"
+msgstr ""
+
 msgid "Delete"
 msgstr ""
 
@@ -3199,8 +3206,17 @@ msgid "February"
 msgstr ""
 
 msgid ""
+"Fewer events: a longer gap, a larger minimum, a longer distance for a "
+"trip. More events: the opposite. The list below changes at the next "
+"classify."
+msgstr ""
+
+msgid ""
 "Fewer words, or the start of a word with a star (anniv*), find more; "
 "place:durbuy looks among the places only."
+msgstr ""
+
+msgid "Fewest photos in an event"
 msgstr ""
 
 msgid "File"
@@ -3554,6 +3570,10 @@ msgid "Found"
 msgstr ""
 
 #, python-brace-format
+msgid "Found at {url}: {n} models installed."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "Found by media-hygiene only: {ours}. Found by Czkawka only: {theirs}. The"
 " terminal lists them."
@@ -3624,6 +3644,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "GPS: {where}"
+msgstr ""
+
+msgid "Gap that merges two days into one event (hours)"
 msgstr ""
 
 msgid ""
@@ -3768,6 +3791,9 @@ msgid "Grandma's birthday"
 msgstr ""
 
 msgid "Group"
+msgstr ""
+
+msgid "Group the photos into more or fewer events"
 msgstr ""
 
 #, python-brace-format
@@ -4172,6 +4198,9 @@ msgstr ""
 msgid "Keep"
 msgstr ""
 
+msgid "Keep as the default"
+msgstr ""
+
 msgid "Keep at most (GB)"
 msgstr ""
 
@@ -4276,6 +4305,9 @@ msgstr ""
 msgid ""
 "Landmark, town and regions, for the photos with a GPS position: offline, "
 "nothing leaves this PC. Then a search finds them."
+msgstr ""
+
+msgid "Language"
 msgstr ""
 
 msgid ""
@@ -4686,6 +4718,9 @@ msgid "Missing option"
 msgstr ""
 
 msgid "Missing parameter"
+msgstr ""
+
+msgid "Model that looks at the photos"
 msgstr ""
 
 msgid "Modified (UTC)"
@@ -5651,6 +5686,9 @@ msgstr ""
 msgid "None"
 msgstr ""
 
+msgid "None (off)"
+msgstr ""
+
 msgid "None of these files is taken by the rule: nothing to sort."
 msgstr ""
 
@@ -5822,6 +5860,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "Notes carried over too: {count}."
+msgstr ""
+
+#, python-brace-format
+msgid "Nothing answers at {url}. Start Ollama there, or change [classify.ai] url."
 msgstr ""
 
 msgid "Nothing chosen yet."
@@ -6076,6 +6118,9 @@ msgid "Of which unwanted"
 msgstr ""
 
 msgid "Off: a paired phone sees the previews only, never the originals."
+msgstr ""
+
+msgid "Off: no photo is ever sent to a model."
 msgstr ""
 
 msgid "Off: this page stays on this PC only."
@@ -7609,6 +7654,9 @@ msgstr ""
 msgid "Run any command once: it creates the file, complete and commented."
 msgstr ""
 
+msgid "Run classify again to regroup the events."
+msgstr ""
+
 msgid "Run docker with -it, or add --yes."
 msgstr ""
 
@@ -7775,6 +7823,9 @@ msgstr ""
 msgid "Save the rule"
 msgstr ""
 
+msgid "Save these three"
+msgstr ""
+
 msgid "Save this position"
 msgstr ""
 
@@ -7783,6 +7834,19 @@ msgid "Save {url} as {path} by hand, then run the command again."
 msgstr ""
 
 msgid "Saved in config.toml, read back from the disk."
+msgstr ""
+
+msgid "Saved in config.toml, read back from the disk: off."
+msgstr ""
+
+#, python-brace-format
+msgid "Saved in config.toml, read back from the disk: {model}."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Saved in config.toml, read back from the disk: {n} s each photo, for the "
+"next shows."
 msgstr ""
 
 #, python-brace-format
@@ -8242,6 +8306,9 @@ msgid "Shared with you for 24 hours: look, nothing here can be changed."
 msgstr ""
 
 msgid "Sharpness"
+msgstr ""
+
+msgid "Shortest trip (km from home)"
 msgstr ""
 
 msgid ""
@@ -17026,6 +17093,9 @@ msgstr ""
 msgid ""
 "🤖 Describing the new photos with the local AI model (mh tags); skipped if"
 " it is not running:"
+msgstr ""
+
+msgid "🤖 Local AI"
 msgstr ""
 
 msgid "🤖 Local AI (Ollama), optional: a model set in config.toml"
