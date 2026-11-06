@@ -20,6 +20,7 @@ from media_hygiene.search.move_event import (
     goes_said,
     remember_event,
 )
+from media_hygiene.services.month_move import month_view, move_to_months
 from media_hygiene.services.selection_models import event_path
 
 if TYPE_CHECKING:
@@ -69,6 +70,39 @@ async def moved_now(desk: RuleDesk, asked: MoveIn, chosen: Picked) -> dict[str, 
         moved = moved_of(desk, event_path(asked.name), chosen)
         config = mover_of(desk).runtime.locations.config_file
         answer["remembered"] = remember_event(config, moved)
+    return answer
+
+
+async def month_viewed(
+    desk: RuleDesk, _asked: MoveIn, chosen: Picked
+) -> dict[str, object]:
+    """Where each file picked would go in *Move to their month* (0623).
+
+    Args:
+        desk: The rule's desk, its mover set.
+        chosen: The files picked.
+
+    Returns:
+        The months, the files already there, those without a date.
+    """
+    view = await asyncio.to_thread(month_view, mover_of(desk), chosen)
+    return view.model_dump()
+
+
+async def month_moved(
+    desk: RuleDesk, _asked: MoveIn, chosen: Picked
+) -> dict[str, object]:
+    """Move each file picked to its own month (0623).
+
+    Args:
+        desk: The rule's desk, its mover set.
+        chosen: The files picked.
+
+    Returns:
+        The run read back, and what stayed, said.
+    """
+    answer = await asyncio.to_thread(move_to_months, mover_of(desk), chosen)
+    desk.index.built = None  # this page moved files: its next search reads them
     return answer
 
 

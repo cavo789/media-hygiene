@@ -148,7 +148,7 @@ les meilleures d'abord ; Entrée en agrandit une.
 
     <span class="mh-badge mh-undo">↩️ Annulable</span> Cherchez-les (`person:"Mamie Jeanne"`),
     choisissez-les (un clic ou Espace ; **Choisir les N fichiers trouvés** prend tous les fichiers
-    trouvés, pas seulement ceux affichés), puis **Mettre de côté les fichiers choisis** : le choix est enregistré
+    trouvés, pas seulement ceux affichés), puis **🗑 Mettre de côté** : le choix est enregistré
     aussitôt dans `decisions.json` de vos rapports, rien ne bouge encore. Arrêtez la page
     (Ctrl+C), puis :
 

@@ -8,17 +8,13 @@
    *Prepare for sending* the one that makes its copies to send (`share --album`, 0296):
    with files picked, they are added first to the album typed, or to one named after the
    day when none is (no album to make beforehand).
-   `album_compact` (browse's one bar, 0305): the field says how to start, and the list of the
-   albums is not said on opening (the field offers them), only what each change saved.
-   `album_short` (the search's fixed bar, 0463): emoji and a short word, the whole label in the
-   tooltip. The field starts empty on each page: a name kept from an earlier visit would send
+   A small panel (`.barPanel`): the field, what to do with the album, where the albums go. Once
+   named, the album shows on the panel's button and ➕ beside it adds in one click. The field
+   starts empty on each page: a name kept from an earlier visit would send
    today's picking into yesterday's album; but `?album=` (0501: *Add photos* of the albums
    page) fills it once, with a way back to that album. #}
 {% if albums_path %}
-{% set album_quiet = album_compact | default(false) %}
 <style>
-  #albumBar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
-  #albumBar input { width: 14em; }
   #albumSaid { font-size: .85rem; margin: 6px 0 0; }
   #albumSaid.error { color: var(--bad); font-weight: 600; }
   #albumTvLine { font-size: .85rem; margin: 6px 0 0; }
@@ -26,24 +22,23 @@
   #albumMissing { font-size: .8rem; color: var(--muted); }
 {% include "combo_list.css.j2" %}
 </style>
-<div id="albumBar">
-  <label for="albumName">{{ _("Album") }}</label>
-  <input id="albumName" maxlength="80" autocomplete="off"
-         placeholder="{{ _('type a name, e.g. Crete 2023') if album_quiet else _('e.g. Crete 2023') }}">
-{% if album_short | default(false) %}
-  <button id="albumAdd" type="button" disabled title="{{ _('Add to the album') }}" aria-label="{{ _('Add to the album') }}">➕</button>
-  <button id="albumRemove" class="plain" type="button" disabled title="{{ _('Take out of the album') }}" aria-label="{{ _('Take out of the album') }}">➖</button>
-  <button id="albumTv" class="plain" type="button" disabled title="{{ _('Share on the TV') }}">📺 {{ _("Share") }}</button>
-  <button id="albumSend" class="plain" type="button" disabled title="{{ _('Prepare for sending') }}">✉️ {{ _("Send") }}</button>
-{% else %}
-  <button id="albumAdd" type="button" disabled>➕ {{ _("Add to the album") }}</button>
-  <button id="albumRemove" class="plain" type="button" disabled>{{ _("Take out of the album") }}</button>
-  <button id="albumTv" class="plain" type="button" disabled>📺 {{ _("Share on the TV") }}</button>
-  <button id="albumSend" class="plain" type="button" disabled>📨 {{ _("Prepare for sending") }}</button>
-{% endif %}
+<details id="albumBar" class="barPanel">
+  <summary id="albumOpen" class="plain" title="{{ _('Add to an album, show it on the TV, prepare it for sending') }}">📚 <span id="albumShown">{{ _("Album") }}</span> ▾</summary>
+  <div class="panelBody">
+  <span class="panelRow panelHead">
+    <label for="albumName">{{ _("Album") }}</label>
+    {% if header is defined and header.albums %}<a href="{{ header.albums }}" target="_blank" rel="noopener">{{ _("Help") }}</a>{% endif %}
+  </span>
+  <input id="albumName" maxlength="80" autocomplete="off" placeholder="{{ _('type a name, e.g. Crete 2023') }}">
+  <span class="panelRow">
+    <button id="albumAdd" type="button" disabled>➕ {{ _("Add to the album") }}</button>
+    <button id="albumRemove" class="plain" type="button" disabled>{{ _("Take out of the album") }}</button>
+  </span>
+  <span class="panelRow">
+    <button id="albumTv" class="plain" type="button" disabled>📺 {{ _("Share on the TV") }}</button>
+    <button id="albumSend" class="plain" type="button" disabled>📨 {{ _("Prepare for sending") }}</button>
+  </span>
   <a id="albumBack" href="#" hidden title="{{ _('Back to the album') }}"></a>
-</div>
-<p id="albumSaid" role="status"></p>
 {% if album_root_path | default("") %}
 {# Where the albums go (0534): `[album] root` read back from `config.toml`; empty, asked. #}
 <p id="albumRoot"><span id="albumRootSaid"></span>
@@ -51,7 +46,7 @@
   <button id="albumRootMove" type="button" hidden></button></p>
 <form id="albumRootForm" hidden>
   <label for="albumRootField">{{ _("Where should your albums go?") }}</label>
-  <input id="albumRootField" maxlength="4096" autocomplete="off" placeholder="{{ _('e.g. C:\\Photos\\Albums') }}">
+  <input id="albumRootField" aria-label="{{ _('Where should your albums go?') }}" maxlength="4096" autocomplete="off" placeholder="{{ _('e.g. C:\\Photos\\Albums') }}">
   <button type="submit">{{ _("Save") }}</button>
 </form>
 <script>
@@ -104,12 +99,17 @@
 })();
 </script>
 {% endif %}
+  </div>
+</details>
+<button id="albumQuick" class="plain" type="button" hidden title="{{ _('Add to the album') }}" aria-label="{{ _('Add to the album') }}">➕</button>
+<p id="albumSaid" role="status"></p>
 <p id="albumTvLine" hidden></p>
 <details id="albumMissing" hidden><summary></summary><ul></ul></details>
 <script>
 (() => {
 {% include "combo_list.js.j2" %}
   const ALBUMS_PATH = {{ albums_path | tojson }};
+  const ALBUM_WORD = {{ _("Album") | tojson }};
   const TEXTS = {{ {
     "saving": _("Saving…"),
     "notSaved": _("Nothing was saved: {error}"),
@@ -120,7 +120,6 @@
     "sendName": _("Last sent"),
     "send": _("To prepare {name} for sending (resized copies without the GPS position, a folder and a zip): close this page (Ctrl+C in the window where mh runs), then type (copied):"),
   } | tojson }};
-  const QUIET = {{ album_quiet | tojson }};
   const $ = (id) => document.getElementById(id);
   const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
   const plural = new Intl.PluralRules(document.documentElement.lang);
@@ -136,12 +135,15 @@
     $("albumRemove").disabled = !(named() && pickedCount);
     $("albumTv").disabled = !named();
     $("albumSend").disabled = !(named() || pickedCount);
+    $("albumShown").textContent = $("albumName").value.trim() || ALBUM_WORD;
+    $("albumQuick").hidden = !typed;
+    $("albumQuick").disabled = !pickedCount;
   };
 
   const show = (answer, state, opening) => {
     const line = $("albumSaid");
     line.className = answer.ok ? "" : "error";
-    if (!(opening && QUIET && answer.ok)) {
+    if (!(opening && answer.ok)) {
       line.textContent = answer.ok ? state.message : fill(TEXTS.notSaved, { error: state.error || answer.status });
     }
     if (!answer.ok) return;
@@ -208,6 +210,7 @@
   comboAttach($("albumName"), () => albums.map((album) => ({ label: album.name, value: album.name, count: counted(TEXTS.count, album.count) })));
   $("albumName").addEventListener("input", () => { forget(); buttons(); });
   $("albumAdd").addEventListener("click", () => send("add"));
+  $("albumQuick").addEventListener("click", () => send("add"));
   $("albumRemove").addEventListener("click", () => send("remove"));
   $("albumTv").addEventListener("click", () => say(TEXTS.tv, 'mh slideshow --album "{name}" --lan'));
   $("albumSend").addEventListener("click", async () => {
@@ -241,6 +244,7 @@
     $("albumBack").href = "/albums/edit?album=" + encodeURIComponent(aimed); // share/album_page.py
     $("albumBack").textContent = "← " + aimed;
     $("albumBack").hidden = false;
+    buttons();
   }
   fetch(ALBUMS_PATH).then(async (answer) => show(answer, await answer.json(), true)).catch(() => { /* the page says it */ });
 })();

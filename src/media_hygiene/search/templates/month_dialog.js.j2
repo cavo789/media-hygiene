@@ -1,0 +1,88 @@
+{# *Move to their month…* (0623), after `move_dialog.js.j2`: the view, then the move of the
+   same keys; the server sorts them out again, each time from the disk. #}
+(() => {
+  const el = (id) => document.getElementById(id);
+  const MOST_TILES = 24;  // a month's strip: its count says the rest
+  let keys = [];
+
+  function say(text, kind) {
+    el("monthSaid").textContent = text;
+    el("monthSaid").className = kind || "muted";
+  }
+
+  function row(text, listed) {
+    const item = element("li", "", "");
+    item.append(element("b", "count", counted(TEXTS.nFiles, listed.length)), " — " + text);
+    const strip = element("div", "monthTiles", "");
+    const shown = new Map(files.map((file) => [file.key, file]));
+    for (const key of listed.slice(0, MOST_TILES)) {
+      const file = shown.get(key);
+      if (!file) continue;
+      const picture = document.createElement("img");
+      picture.loading = "lazy";
+      picture.alt = file.name || "";
+      picture.src = file.thumb || file.preview;
+      strip.append(picture);
+    }
+    item.append(strip);
+    return item;
+  }
+
+  function goButton(moves) {
+    el("monthGo").disabled = !moves;
+    el("monthGo").textContent = counted(TEXTS.moveNow, moves);
+  }
+
+  async function open() {
+    if (!picked.size || everything) return;
+    keys = [...picked];
+    el("monthRows").replaceChildren();
+    el("monthNo").textContent = el("monthNo").dataset.cancel;
+    goButton(0);
+    say(TEXTS.moveReading, "");
+    el("monthDlg").showModal();
+    const sent = await rulePost(MOVE_PATHS.monthView, { keys: keys });
+    if (!sent) { say(TEXTS.offline, "error"); return; }
+    const { response, answer } = sent;
+    if (!response.ok) { say(answer.error || fill(TEXTS.failed, { status: response.status }), "error"); return; }
+    const list = el("monthRows");
+    const rows = answer.months.map((month) => row("→ " + month.target, month.keys));
+    if (answer.there.length) rows.push(row(list.dataset.there, answer.there));
+    if (answer.undated.length) rows.push(row(list.dataset.undated, answer.undated));
+    list.replaceChildren(...rows);
+    say(answer.ignored || "", "");
+    goButton(answer.moves);
+  }
+
+  async function go() {
+    el("monthGo").disabled = true;
+    say(TEXTS.goRunning, "");
+    const sent = await rulePost(MOVE_PATHS.month, { keys: keys });
+    if (!sent) { say(TEXTS.offline, "error"); el("monthGo").disabled = false; return; }
+    const { response, answer } = sent;
+    if (!response.ok) { say(answer.error || fill(TEXTS.failed, { status: response.status }), "error"); el("monthGo").disabled = false; return; }
+    const parts = [!answer.run_id ? TEXTS.goNothing : !answer.intact ? fill(TEXTS.goBroken, { run: answer.run_id })
+      : fill(TEXTS.goDone, { moved: answer.moved, verified: answer.verified, run: answer.run_id, time: new Date().toLocaleTimeString() })];
+    if (answer.already) parts.push(fill(TEXTS.goAlready, { n: answer.already }));
+    if (answer.unknown) parts.push(fill(TEXTS.goUnknown, { n: answer.unknown }));
+    if (answer.fixed) parts.push(counted(TEXTS.goFixed, answer.fixed));
+    parts.push(...(answer.links || []), answer.kept, answer.ignored);
+    const said = parts.filter(Boolean).join(" ");
+    const broken = Boolean(answer.run_id) && !answer.intact;
+    say(said, broken ? "error" : "saved");
+    el("monthNo").textContent = el("monthNo").dataset.close;
+    told(said, broken);
+    if (!answer.run_id) return;
+    if (!(window.mhLate && window.mhLate.moved()) && !(window.mhSpan && window.mhSpan.moved())) search(null);
+  }
+
+  el("monthOpen").addEventListener("click", open);
+  el("monthGo").addEventListener("click", go);
+  el("monthNo").addEventListener("click", () => el("monthDlg").close());
+  el("monthDlg").addEventListener("keydown", (event) => event.stopPropagation());
+  const pickedBefore = window.mhAlbumPicked;
+  window.mhAlbumPicked = (count) => {
+    if (pickedBefore) pickedBefore(count);
+    el("monthOpen").disabled = !picked.size || everything;
+  };
+})();

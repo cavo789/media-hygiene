@@ -61,7 +61,7 @@ class SelectionMover:
         Raises:
             ValueError: No picked photo has a date: no month to put it in.
         """
-        rows = self._rows()
+        rows = self.rows()
         groups: dict[str, list[int]] = defaultdict(list)
         names: dict[str, str] = {}
         for key, path in sorted(chosen.paths.items()):
@@ -137,11 +137,11 @@ class SelectionMover:
         if not typed:
             raise ValueError(_("Type the event's name first."))
         fresh = self.runtime.with_overrides({})  # the page saves target and layout
-        place = EventPlace(fresh, self._rows(), chosen)
+        place = EventPlace(fresh, self.rows(), chosen)
         folders = dict.fromkeys(chosen.paths.values(), place.folder(typed))
         return moved_group(fresh, GroupMove(folders, typed, place.root()))
 
-    def _rows(self) -> PlanRows:
+    def rows(self) -> PlanRows:
         """The rows of the latest classify plan, read once per version of its workbook.
 
         Returns:

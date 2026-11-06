@@ -331,3 +331,4 @@ async function toTv(button) {
   if (remote) remote.location = state.page; else window.location = state.page;
 }
 if ($("tvSend")) $("tvSend").addEventListener("click", () => toTv($("tvSend")));
+{% include "pick_bar_panel.js.j2" %}

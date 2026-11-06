@@ -178,7 +178,7 @@ photo (`C:\Photos\…\IMG_1234.jpg`).
    [the folders of `library`](library.md#walk-through-your-folders): click, Ctrl, Shift, rectangle, Ctrl+A, I, Delete, the large view and
    its keys. If they look like someone you set aside before, the bar says so (*the person set
    aside on <date>*): what you set aside now joins that person.
-3. Delete (or **Set aside the picked files**) saves them at once in `decisions.json`, read back
+3. Delete (or **🗑 Put aside**) saves them at once in `decisions.json`, read back
    and shown, and remembers the face, as [above](#remove-every-photo-of-someone): the people
    page will show the photos that look like it. Opened from a page `mh` opened from the home
    page, **Apply now** in the bar runs `clean --decisions` like on that page.

@@ -107,9 +107,9 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   ne tiennent pas se replient en **+N**, un clic les liste sous la barre), **📺 Sur la télé**, **Trier par** et la taille des vignettes **S**
   (les photos seules), **M**, **L** (tous les mots), gardée pour ce navigateur ; en dessous, que
   faire des fichiers choisis — grisé tant qu'aucun ne l'est : d'abord
-  **📂 Déplacer vers un événement…** (plein : l'action principale), **🔀 Inverser**, et en
-  dernier, à part et en rouge, **🗑 Mettre de côté** ; l'album avec **➕** et **➖**,
-  **📺 Partager**, **✉️ Envoyer**, puis ce qui est mis de côté et **✅ Appliquer**. Pointez un bouton pour son
+  **📂 Déplacer vers un événement…** (plein : l'action principale), **🗓 Déplacer vers leur mois…**, **🔀 Inverser**, deux petits panneaux, **🏷 Décrire** (étiquette,
+  date, lieu) et **📚 Album**, puis, tout à droite comme sur chaque page de vignettes,
+  **🗑 Mettre de côté** en rouge et **✅ Appliquer**. Pointez un bouton pour son
   nom complet et sa touche. **✅ Appliquer** le rappelle aussi : 🔒 rien ne bouge sans votre GO ;
   chaque déplacement est journalisé, `undo` le défait. Un fichier mis de côté compte comme
   disparu pour toute action sauf *Reprendre* : choisi avec les autres (Ctrl+A, Maj, le
@@ -178,10 +178,11 @@ d'aucun [`classify`](classify.md) : il regroupe **les fichiers pas encore triés
 de la recherche (*Du* / *Au* ; aucune : toutes les dates) selon le moment de la prise de vue, un
 nouvel événement là où aucune photo n'a été prise pendant le plus long écart de `classify`
 (18 heures par défaut), sans règles ni IA. *Pas encore trié* veut dire exactement le *Pas encore*
-de la recherche : hors d'un dossier `AAAA\AAAA-MM\<nom>`, quoi qui l'y ait mis ; un fichier que
+de la recherche : ni dans un dossier `AAAA\AAAA-MM\<nom>`, ni directement dans
+`AAAA\AAAA-MM`, quoi qui l'y ait mis ; un fichier que
 vous triez quitte la liste à la recherche suivante. Cliquez un événement : ses photos remplissent
 la grille (jamais celles de l'onglet Photos : en cas d'erreur la grille reste vide et la barre dit
-pourquoi) ; choisissez-les, puis **📂 Déplacer vers un événement…** les déplace. L'adresse `/events` ouvre la page
+pourquoi) ; choisissez-les, puis **📂 Déplacer vers un événement…** ou **🗓 Déplacer vers leur mois…** les déplace. L'adresse `/events` ouvre la page
 sur cet onglet ; ← et → passent d'un onglet à l'autre quand l'un d'eux a le focus.
 
 **La fiche d'un événement** dit d'abord, en une phrase, où vont ses fichiers : *Ces 10
@@ -229,6 +230,23 @@ Le **⋯** d'un dossier (📁 Mes dossiers) ajoute, à côté de son rôle, *Jam
 le nom de la personne dont il contient les photos (`person_folders`) : le nom du dossier doit le contenir.
 Un dossier laissé de côté puis renommé dans l'Explorateur est listé comme disparu, avec *Supprimer*, dans
 la boîte ci-dessus.
+
+## Déplacer des photos vers leur mois, sans événement
+
+Certaines photos n'ont pas d'événement qui vaille un nom. Choisissez-les, sur l'onglet 🔎 Photos
+ou 🗂 Événements, puis **🗓 Déplacer vers leur mois…** : aucun nom demandé, aucun dossier
+d'événement. **Chaque photo va dans son propre mois** (*C:\Photos\2016\2016-07*), alors qu'un
+événement prend pour toutes le mois de la plus ancienne, sous
+le dossier choisi dans **📐 Où et comment trier** ou la racine de la photo. Un fichier directement dans son mois compte comme trié : il
+quitte *Pas encore trié*. La boîte montre d'abord les photos mois par mois, avec celles qui
+restent, et le bouton dit combien partent :
+
+- une photo **sans date** reste où elle est, jamais devinée, et le résultat la compte ;
+- une photo **déjà dans son mois** est comptée, pas déplacée. Une photo dans un événement de ce
+  mois (*2016\2016-07\Kermesse*) ne l'est pas : elle sort de l'événement, puisque vous l'avez choisie.
+
+Le déplacement est journalisé et relu : `undo` les remet en place. 🔒 Rien ne bouge avant
+**Déplacer ces N fichiers maintenant**.
 
 ## Déplacer des photos vers un événement, sans règle
 
@@ -328,8 +346,7 @@ Pour retirer toutes les photos de quelqu'un, la page
 [`people`](people.md#retirer-toutes-les-photos-de-quelquun) le fait depuis son groupe de visages.
 Pour celles d'un évènement, ou tout autre choix : cherchez-les (`person:"Anne"`, une année, un
 mot), choisissez-les (Ctrl+A, puis **Choisir les N fichiers trouvés** : tous les fichiers que la
-recherche trouve, pas seulement les 240 affichés), puis Suppr ou **Mettre de côté les fichiers
-choisis**.
+recherche trouve, pas seulement les 240 affichés), puis Suppr ou **🗑 Mettre de côté**.
 
 - Rien n'est supprimé depuis la page. Le choix est enregistré aussitôt dans `decisions.json` de
   vos rapports, relu sur le disque et affiché avec son nombre et sa taille : *37 fichiers mis de
@@ -428,9 +445,11 @@ laisse telles quelles. Une photo sans jour connu n'est liée à rien et ne propo
 ## Mettre des photos dans un album
 
 Pour montrer des photos à d'autres (sur la télé avec [`slideshow`](slideshow.md)), rassemblez-les
-dans un **album** : une liste nommée, *Crète 2023*, de photos de n'importe quels dossiers. Tapez son
-nom dans **Album** (les albums déjà faits sont proposés), choisissez les photos (ou **Choisir les N
-fichiers trouvés**), puis **➕ Ajouter à l'album**.
+dans un **album** : une liste nommée, *Crète 2023*, de photos de n'importe quels dossiers. Ouvrez
+le panneau **📚 Album** de la barre, tapez son nom (les albums déjà faits sont proposés), choisissez
+les photos (ou **Choisir les N fichiers trouvés**), puis **➕ Ajouter à l'album**. L'album nommé
+s'affiche ensuite sur le bouton, et **➕** à côté ajoute d'autres photos en un clic ; le panneau offre
+aussi **📺 Partager sur la télé** et **📨 Préparer l'envoi**.
 
 - Un album est une liste de références, rien d'autre : aucune photo n'est copiée, déplacée ni
   modifiée. Il est enregistré aussitôt dans `albums.json` de vos rapports, à côté de
@@ -439,7 +458,7 @@ fichiers trouvés**), puis **➕ Ajouter à l'album**.
   n'a été copiée ni déplacée.*
 - Ce n'est **pas** la mise de côté : *Mettre de côté* prépare un retrait, *Ajouter à l'album* un
   partage. Aucun des deux ne touche jamais la liste de l'autre.
-- **📁 Vos albums vont dans …** sous la barre dit où les dossiers d'albums (`mh album <nom>
+- **📁 Vos albums vont dans …**, dans ce panneau, dit où les dossiers d'albums (`mh album <nom>
   --apply`) sont faits : `[album] root` de `config.toml`, sinon `Albums` dans la photothèque
   triée. Non réglé, la barre demande *Où mettre vos albums ?* ; **📁 Changer** le règle. Le
   dossier doit être dans un dossier monté, hors des dossiers protégés, et accessible en écriture ;
@@ -552,7 +571,7 @@ recherche*.
   servie par la page d'accueil elle-même : aucun autre conteneur ne démarre, l'index reste ouvert
   pour la session. *⌂ Retour à l'accueil* est un simple lien (le bouton Précédent du navigateur
   marche aussi). Tapée seule (`mh library`), elle démarre toujours sa propre page.
-- Sans `/reports` (ou avec un dossier où l'outil ne peut pas écrire), **Mettre de côté les fichiers choisis** dit
+- Sans `/reports` (ou avec un dossier où l'outil ne peut pas écrire), **🗑 Mettre de côté** dit
   pourquoi et n'enregistre rien ; la recherche elle-même fonctionne.
 - La recherche ne lit que le cache : relancez [`audit`](audit.md) puis [`tags`](tags.md) pour
   trouver les nouvelles photos.

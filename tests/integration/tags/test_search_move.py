@@ -169,3 +169,33 @@ def test_the_heaviest_files_are_those_of_the_folder_view(
     first = [card["key"] for card in json.loads(heavy.body)["files"]]
     assert first
     assert [hit["key"] for hit in json.loads(found.body)["hits"]][: len(first)] == first
+
+
+def test_the_month_move_is_offered_shown_then_done_on_the_page(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0623: the button and its dialog served; the view states what the move does."""
+    assert run(cli, "tags", "--no-describe").exit_code == 0
+    assert run(cli, "classify").exit_code == 0
+    answers = serve_search(
+        cli, monkeypatch, [("GET /search", None), ("POST /api/search", _DAY)]
+    )
+    page, found = answers[0], answers[1]
+    for part in ('id="monthOpen"', 'id="monthDlg"', "/api/move/month/view"):
+        assert part in page.body.decode()
+    keys = [hit["key"] for hit in json.loads(found.body)["hits"]]
+    answers = serve_search(
+        cli,
+        monkeypatch,
+        [
+            ("POST /api/move/month/view", {"keys": keys}),
+            ("POST /api/move/month", {"keys": keys}),
+        ],
+    )
+    view, done = answers[0], answers[1]
+    assert (view.status, done.status) == (200, 200)
+    shown = json.loads(view.body)
+    assert shown["moves"] + len(shown["there"]) + len(shown["undated"]) == len(keys)
+    assert shown["months"][0]["target"].endswith("2022\\2022-12")
+    assert json.loads(done.body)["moved"] >= shown["moves"] > 0
+    assert list(locations.data_dir.rglob("2022/2022-12/*.*"))

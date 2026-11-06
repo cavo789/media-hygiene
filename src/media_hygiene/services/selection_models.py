@@ -50,6 +50,26 @@ class MoveView(BaseModel):
     sources: tuple[SourceFolder, ...]
 
 
+class MonthGroup(BaseModel):
+    """The photos picked that go to one month (0623)."""
+
+    model_config = ConfigDict(frozen=True)
+
+    target: str  # the destination, as Windows writes it
+    keys: tuple[int, ...]
+
+
+class MonthView(BaseModel):
+    """What *Move to their month* would do with the photos picked (0623)."""
+
+    model_config = ConfigDict(frozen=True)
+
+    months: tuple[MonthGroup, ...]
+    there: tuple[int, ...]  # already in their month: not moved
+    undated: tuple[int, ...]  # no date, none guessed: not moved
+    moves: int
+
+
 def event_path(name: str) -> str:
     r"""The event's folder below the month: one name, or sub-folders (`France\Morzine`).
 

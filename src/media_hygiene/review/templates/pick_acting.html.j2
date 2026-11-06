@@ -14,7 +14,7 @@
   {% if pick_first is string and pick_first.endswith(".html.j2") %}{% include pick_first %}{% endif %}
   <button id="takeBack" class="plain" type="button" hidden title="{{ _('Take out of the set aside (Backspace in the large view)') }}">{{ pick_remove | default("↩ " + _("Take out of the set aside")) }}</button>
   <button id="invert" class="plain" type="button" title="{{ _('Pick the others: the ones picked are left (I)') }}">🔀 {{ _("Invert the picking") }}</button>
-  <button id="setAside" class="danger" type="button" title="{{ pick_add_title | default(_('Set aside the picked files (Delete)')) }}">{{ pick_add | default("🗑 " + _("Set aside the picked files")) }}</button>
+  <button id="setAside" class="danger" type="button" title="{{ pick_add_title | default(_('Set aside the picked files (Delete)')) }}">{{ pick_add | default("🗑 " + _("Put aside")) }}</button>
 </span>
 {% if tv_here | default(false) %}
 <button id="tvSend" class="plain" type="button" data-path="{{ albums_path }}"

@@ -68,7 +68,7 @@ def _match(runtime: Runtime, plan: ClassifyPlan, group: GroupMove) -> Matched:
     for path, folder in group.folders.items():
         host = runtime.mapper.to_host(path)
         row = by_host.get(host)
-        if row is None and host in now and _sits_in(host, folder, root):
+        if row is None and host in now and sits_in(host, folder, root):
             already += 1
             continue
         if row is None:  # unknown, or moved by an earlier run elsewhere: from here
@@ -81,7 +81,7 @@ def _match(runtime: Runtime, plan: ClassifyPlan, group: GroupMove) -> Matched:
     return Matched(rows, already, fixed, tuple(strangers))
 
 
-def _sits_in(host: str, folder: str, root: str | None) -> bool:
+def sits_in(host: str, folder: str, root: str | None) -> bool:
     """Tell whether a file is in the folder asked already.
 
     Args:

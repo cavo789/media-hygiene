@@ -17,7 +17,6 @@
      secondary outline (`plain`), danger red, never the accent, apart at the end of the bar. */
   button.plain { color: var(--accent); background: transparent; }
   button.danger { color: #fff; background: var(--bad); border-color: var(--bad); font-weight: 600; }
-  #acting #setAside { margin-left: 18px; }
   button:disabled { opacity: .45; cursor: default; }
   /* As tall as a button: the line says where you are, then what to do, at the same height. */
   #lead, #acting { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center;
@@ -28,10 +27,7 @@
      size come first; the whole sentence on hover). */
   #chosen { flex: 1 1 220px; min-width: 0; font-size: .85rem; white-space: nowrap;
             overflow: hidden; text-overflow: ellipsis; }
-  /* The albums on a line of their own: the bar keeps its height whether files are picked or
-     not, so the grid never jumps under the mouse when a rectangle starts. */
-  #bar #albumBar { flex-basis: 100%; margin: 0; }
-  #bar #albumBar input { width: 17em; }
+{% include "pick_bar.css.j2" %}
   #views { display: flex; gap: 6px; flex: none; }
   #views > * { flex: 1; padding: 6px; text-align: center; background: var(--card);
                border: 1px solid var(--line); border-radius: 8px; }

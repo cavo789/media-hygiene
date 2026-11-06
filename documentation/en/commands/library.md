@@ -102,9 +102,9 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   *not yet*, 📷 — whose **✕** removes it and searches again; those that do not fit fold into
   **+N**, a click lists them under the bar), **📺 On the TV**, **Sort by** and the thumbnail size **S** (photos only), **M**,
   **L** (every word), kept for this browser; below, what to do with the files picked — greyed
-  while none is: first **📂 Move to an event…** (filled: the main action), **🔀 Invert**, and
-  last, apart and red, **🗑 Put aside**; the album with **➕** and **➖**, **📺 Share**,
-  **✉️ Send**, then what is set aside and **✅ Apply**. Point at a button for its
+  while none is: first **📂 Move to an event…** (filled: the main action), **🗓 Move to their month…**, **🔀 Invert**, two small panels, **🏷 Describe** (tag, date, place)
+  and **📚 Album**, then, at the far right as on every page of tiles, **🗑 Put aside** in red and
+  **✅ Apply**. Point at a button for its
   whole name and its key. **✅ Apply** says it too: 🔒 nothing moves without your GO; every move
   is journaled, `undo` puts it back. A file set aside counts as gone for every action but
   *Take back*: picked with the others (Ctrl+A, Shift, the rectangle), it stays out of the
@@ -167,10 +167,10 @@ The **🗂 Events** tab, on top of the left column next to **🔎 Photos**, need
 [`classify`](classify.md) run: it groups **the files not sorted yet** of the period of the
 search (*From* / *To*; none: every date) by the time they were taken, a new event wherever
 no photo was taken for `classify`'s longest gap (18 hours by default), without rules nor AI.
-*Not sorted yet* means exactly the search's *Not yet*: not in a `YYYY\YYYY-MM\<name>` folder,
-whoever put it there; a file you sort leaves the list at the next search. Click an event: its
+*Not sorted yet* means exactly the search's *Not yet*: neither in a `YYYY\YYYY-MM\<name>` folder nor directly in
+`YYYY\YYYY-MM`, whoever put it there; a file you sort leaves the list at the next search. Click an event: its
 photos fill the grid (never the Photos tab's: on an error the grid stays empty and the bar says
-why); pick them, then **📂 Move to an event…** moves them. The address `/events` opens the page on this
+why); pick them, then **📂 Move to an event…** or **🗓 Move to their month…** moves them. The address `/events` opens the page on this
 tab; ← and → move between the two tabs once one has the focus.
 
 **The card of an event** says first, in one sentence, where its files go: *These 10 files will
@@ -216,6 +216,22 @@ is less sure of stay where they are unless you choose a shape for them too. Save
 The **⋯** of a folder (📁 My folders) adds, beside its role, *Never sorted* (`[classify] leave`) and
 the name of the person whose photos it holds (`person_folders`): the folder's name must hold it.
 A folder left out, then renamed in Explorer, is listed as gone with *Remove*, in the dialog above.
+
+## Move photos to their month, without an event
+
+Some photos have no event worth naming. Pick them, on the 🔎 Photos or 🗂 Events tab, then
+**🗓 Move to their month…**: no name asked, no event folder. **Each photo goes to its own month**
+(*C:\Photos\2016\2016-07*), where an event takes the earliest photo's month for all, below
+the folder chosen in **📐 Where and how to sort** or the photo's root. A file directly in its month counts as sorted: it leaves
+*Not sorted yet*. The dialog first shows the photos month by month, with those that stay, and
+the button states how many move:
+
+- a photo **without a date** stays where it is, never guessed, and the result counts it;
+- a photo **already in its month** is counted and not moved. A photo in an event of that month
+  (*2016\2016-07\Kermesse*) is not: it moves out of the event, since you picked it.
+
+The move is journaled and read back: `undo` puts them back. 🔒 Nothing moves before **Move these
+N files now**.
 
 ## Move photos to an event, without a rule
 
@@ -306,7 +322,7 @@ old `browse` command did only this; `/browse` still opens the same page).
 To remove every photo of someone, the [`people`](people.md#remove-every-photo-of-someone) page
 does it from their group of faces. To remove those of an event, or any other choice: search them
 (`person:"Ann"`, a year, a word), pick them (Ctrl+A, then **Pick all N files found**: every file
-the search finds, not only the 240 shown), then Delete or **Set aside the picked files**.
+the search finds, not only the 240 shown), then Delete or **🗑 Put aside**.
 
 - Nothing is deleted from the page. The choice is saved at once in `decisions.json` of your
   reports, read back from the disk and shown with its count and size: *37 files set aside
@@ -399,9 +415,10 @@ leaves them as they are. A photo without a known day ties to nothing and offers 
 ## Put photos in an album
 
 To show photos to others (on the TV with [`slideshow`](slideshow.md)), gather them in an
-**album**: a named list, *Crete 2023*, of photos from any folders. Type its name in **Album** (the
-albums already made are proposed), pick the photos (or **Pick all N files found**), then **➕ Add
-to the album**.
+**album**: a named list, *Crete 2023*, of photos from any folders. Open the bar's **📚 Album** panel, type its name
+(the albums already made are proposed), pick the photos (or **Pick all N files found**), then **➕ Add
+to the album**. The album named then shows on the button, and **➕** beside it adds more photos in one
+click; the panel also offers **📺 Share on the TV** and **📨 Prepare for sending**.
 
 - An album is a list of references, nothing else: no photo is copied, moved or changed. It is
   saved at once in `albums.json` of your reports, next to `decisions.json` (not in the cache:
@@ -409,7 +426,7 @@ to the album**.
   files, saved in …. Only this file changed: no photo was copied or moved.*
 - It is **not** the set aside: *Set aside* prepares a removal, *Add to the album* a share. Neither
   ever touches the other's list.
-- **📁 Your albums go to …** under the bar says where the album folders (`mh album <name>
+- **📁 Your albums go to …**, in that panel, says where the album folders (`mh album <name>
   --apply`) are made: `[album] root` of `config.toml`, else `Albums` in the sorted library.
   Not set, the bar asks *Where should your albums go?*; **📁 Change** sets it. The folder must be
   in a mounted folder, outside the protected ones, and writable; it is saved in `config.toml`
@@ -515,7 +532,7 @@ search by meaning. The page keeps these tips short, in *How to write a search*.
   the home page itself: no other container starts, the index stays open for the session.
   *⌂ Back to the home page* is a plain link (the browser's Back works too). Typed alone
   (`mh library`), it still starts its own page.
-- Without `/reports` (or with a folder the tool cannot write to), **Set aside the picked files** says why and
+- Without `/reports` (or with a folder the tool cannot write to), **🗑 Put aside** says why and
   saves nothing; the search itself works.
 - The search reads the cache only: run [`audit`](audit.md) then [`tags`](tags.md) again to find
   the new photos.

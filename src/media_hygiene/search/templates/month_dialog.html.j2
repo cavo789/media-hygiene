@@ -1,0 +1,22 @@
+{# *Move to their month…* (0623): each photo picked goes to its own `YYYY\YYYY-MM`, no name
+   asked, no event folder. The dialog shows the tiles month by month, then those that stay
+   (already in their month, no date); the button states how many move. Its script is
+   `month_dialog.js.j2`; the look of its list is the move dialog's (`.sources`). #}
+<style>
+  #monthDlg { max-width: min(36rem, 94vw); max-height: 92dvh; box-sizing: border-box; color: var(--text);
+              background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
+  #monthDlg::backdrop { background: rgb(0 0 0 / 50%); }
+  #monthDlg h2 { margin: 0 0 6px; }
+  #monthDlg menu { display: flex; gap: 8px; justify-content: end; padding: 0; margin: 8px 0 0; }
+  #monthDlg li { padding: 4px 8px; overflow-wrap: anywhere; }
+  #monthDlg .monthTiles { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  #monthDlg .monthTiles img { width: 56px; height: 56px; object-fit: cover; border-radius: 4px; }
+  #monthSaid.error { color: var(--bad); } #monthSaid.saved { color: var(--ok); }
+</style>
+<dialog id="monthDlg" aria-labelledby="monthTitle">
+  <h2 id="monthTitle">🗓 {{ _("Move to their month") }}</h2>
+  <p class="muted">{{ _("Each photo picked goes to its own month, with no event folder, journaled: 'undo' puts them back.") }}</p>
+  <ul id="monthRows" class="sources" data-there="{{ _('already in their month: not moved') }}" data-undated="{{ _('no date: left where they are') }}"></ul>
+  <p id="monthSaid" class="muted" role="status"></p>
+  <menu><button type="button" id="monthNo" class="plain" data-cancel="{{ _('Cancel') }}" data-close="{{ _('Close') }}">{{ _("Cancel") }}</button><button type="button" id="monthGo" disabled>{{ _("Move them now") }}</button></menu>
+</dialog>

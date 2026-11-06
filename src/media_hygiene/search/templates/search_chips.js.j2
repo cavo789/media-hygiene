@@ -59,18 +59,23 @@ function chipOf(filter) {
 }
 
 function showChips(body) {
-  const filters = activeFilters(body);
-  chipsLine.replaceChildren(...filters.map(chipOf));
-  chipsFolded.replaceChildren();
+  chipsLine.replaceChildren(...activeFilters(body).map(chipOf));
   chipsFolded.hidden = true;
+  foldChips();
+}
+
+// Measured again each time the line changes width (the count, the set aside line, the window).
+function foldChips() {
+  chipsLine.append(...chipsFolded.children);
   chipsMore.hidden = true;
   const right = $("lead").getBoundingClientRect().right;
   const chips = [...chipsLine.children];
   const first = chips.findIndex((chip) => chip.getBoundingClientRect().right > right);
-  if (first < 0) return;
+  if (first < 0) { chipsFolded.hidden = true; return; }
   const folded = chips.slice(Math.max(0, first - 1));  // room left for `+N`
   chipsFolded.append(...folded);
   chipsMore.textContent = "+" + folded.length;
   chipsMore.hidden = false;
 }
+new ResizeObserver(foldChips).observe($("lead"));
 chipsMore.addEventListener("click", () => { chipsFolded.hidden = !chipsFolded.hidden; });

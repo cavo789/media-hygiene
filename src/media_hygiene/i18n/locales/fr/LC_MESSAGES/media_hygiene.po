@@ -1208,6 +1208,9 @@ msgstr ""
 msgid "Add to an album"
 msgstr "Ajouter à un album"
 
+msgid "Add to an album, show it on the TV, prepare it for sending"
+msgstr "Ajouter à un album, le montrer sur la télé, le préparer pour l'envoi"
+
 msgid "Add to another album"
 msgstr "Ajouter à un autre album"
 
@@ -1539,9 +1542,6 @@ msgstr "Tout appliquer"
 
 msgid "Apply it? (y/n)"
 msgstr "L'appliquer ? (o/n)"
-
-msgid "Apply now"
-msgstr "Appliquer maintenant"
 
 #, python-brace-format
 msgid "Apply now, chosen on the page: {command}"
@@ -2795,6 +2795,9 @@ msgstr "Suppression d'une copie en double : {path}"
 msgid "Deleting an empty file (0 bytes): {path}"
 msgstr "Suppression d'un fichier vide (0 octet) : {path}"
 
+msgid "Describe"
+msgstr "Décrire"
+
 msgid "Describe for 1 h"
 msgstr "Décrire pendant 1 h"
 
@@ -3144,6 +3147,13 @@ msgstr ""
 
 msgid "Each photo"
 msgstr "Chaque photo"
+
+msgid ""
+"Each photo picked goes to its own month, with no event folder, journaled:"
+" 'undo' puts them back."
+msgstr ""
+"Chaque photo choisie va dans son propre mois, sans dossier d'événement, "
+"journalisé : « undo » les remet en place."
 
 #, python-format
 msgid ""
@@ -4340,6 +4350,9 @@ msgstr "Donner un jour aux photos choisies"
 msgid "Give the photos picked a day, in their .xmp sidecars"
 msgstr "Donner un jour aux photos choisies, dans leurs fichiers .xmp"
 
+msgid "Give the photos picked a tag, a day or a place"
+msgstr "Donner aux photos choisies une étiquette, une date ou un lieu"
+
 msgid "Give the photos picked a word of yours, kept in your settings"
 msgstr "Donner aux photos choisies un mot à vous, gardé dans vos réglages"
 
@@ -4475,6 +4488,9 @@ msgstr "Dossiers les plus lourds"
 
 msgid "Height"
 msgstr "Hauteur"
+
+msgid "Help"
+msgstr "Aide"
 
 msgid ""
 "Hidden from the map and from the lists; 'classify' reads them as before "
@@ -5509,6 +5525,13 @@ msgstr ""
 "hygiene\\config:/config\"."
 
 msgid ""
+"Move each photo picked to its own month, year then year-month, with no "
+"event folder"
+msgstr ""
+"Déplacer chaque photo choisie dans son propre mois, année puis année-"
+"mois, sans dossier d'événement"
+
+msgid ""
 "Move the [classify] layouts of your config.toml to the sort convention "
 "year/year-month/event: shows each change, asks, writes."
 msgstr ""
@@ -5567,6 +5590,12 @@ msgstr "Déplacer vers un événement"
 
 msgid "Move to an event…"
 msgstr "Déplacer vers un événement…"
+
+msgid "Move to their month"
+msgstr "Déplacer vers leur mois"
+
+msgid "Move to their month…"
+msgstr "Déplacer vers leur mois…"
 
 #, python-brace-format
 msgid "Move {count} files into {folders} folders?"
@@ -5687,6 +5716,11 @@ msgstr "Nom"
 
 msgid "Name (it becomes a folder name)"
 msgstr "Nom (il devient un nom de dossier)"
+
+msgid "Name an album under 📚 Album: its files are marked, kept or left out"
+msgstr ""
+"Nommez un album sous 📚 Album : ses fichiers sont marqués, gardés ou "
+"écartés"
 
 msgid "Name another file with --decisions, or mount the same folders."
 msgstr "Indiquez un autre fichier avec --decisions, ou montez les mêmes dossiers."
@@ -7456,6 +7490,11 @@ msgstr ""
 
 msgid "Open this section (o)"
 msgstr "Ouvrir cette section (o)"
+
+msgid "Open 📚 Album and type its name first: then A adds the file shown."
+msgstr ""
+"Ouvrez d'abord 📚 Album et tapez son nom : A ajoute alors le fichier "
+"affiché."
 
 msgid "OpenStreetMap contributors"
 msgstr "contributeurs d'OpenStreetMap"
@@ -9370,9 +9409,6 @@ msgstr ""
 "Mis de côté le {date}, encore récupérable avec mh undo {run} jusqu'à mh "
 "purge."
 
-msgid "Set aside the picked files"
-msgstr "Mettre de côté les fichiers choisis"
-
 msgid "Set aside the picked files (Delete)"
 msgstr "Mettre de côté les fichiers choisis (Suppr)"
 
@@ -9683,8 +9719,8 @@ msgid ""
 "the folder named after the event, even with Year / Month only."
 msgstr ""
 "Trier ici maintenant et Déplacer vers un événement appliquent ces choix "
-"tout de suite et gardent le dossier au nom de l'événement, même avec Année "
-"/ Mois seul."
+"tout de suite et gardent le dossier au nom de l'événement, même avec "
+"Année / Mois seul."
 
 msgid "Sort here now: move its files to the folder said, then the next event"
 msgstr ""
@@ -12440,11 +12476,6 @@ msgstr "Tapez un nom pour filtrer les dossiers"
 msgid "Type a word, pick a photo."
 msgstr "Tapez un mot, choisissez une photo."
 
-msgid "Type an album in the bar: its files are marked, kept or left out"
-msgstr ""
-"Tapez un album dans la barre : ses fichiers sont marqués, gardés ou "
-"écartés"
-
 msgid "Type an album's name in the bar first."
 msgstr "Tapez d'abord le nom d'un album dans la barre."
 
@@ -13619,6 +13650,9 @@ msgstr "les {count} gardées"
 
 msgid "alphabetical order (nothing else differs)"
 msgstr "l'ordre alphabétique (rien d'autre ne diffère)"
+
+msgid "already in their month: not moved"
+msgstr "déjà dans leur mois : pas déplacés"
 
 #, python-brace-format
 msgid "also kept, written in config.toml: {list}"
@@ -14844,6 +14878,9 @@ msgstr "sans date"
 
 msgid "no date taken"
 msgstr "pas de date de prise"
+
+msgid "no date: left where they are"
+msgstr "sans date : restent où ils sont"
 
 msgid "no double quote"
 msgstr "pas de guillemet double"
@@ -18134,6 +18171,18 @@ msgid "{n} file goes to"
 msgid_plural "{n} files go to"
 msgstr[0] "{n} fichier va dans"
 msgstr[1] "{n} fichiers vont dans"
+
+#, python-brace-format
+msgid "{n} file has no date: left where it is."
+msgid_plural "{n} files have no date: left where they are."
+msgstr[0] "{n} fichier n'a pas de date : il reste où il est."
+msgstr[1] "{n} fichiers n'ont pas de date : ils restent où ils sont."
+
+#, python-brace-format
+msgid "{n} file is already in its month: not moved."
+msgid_plural "{n} files are already in their month: not moved."
+msgstr[0] "{n} fichier est déjà dans son mois : pas déplacé."
+msgstr[1] "{n} fichiers sont déjà dans leur mois : pas déplacés."
 
 #, python-brace-format
 msgid "{n} file keeps its own folder"

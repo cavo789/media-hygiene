@@ -33,6 +33,18 @@ if TYPE_CHECKING:
 _NAMING: Final = frozenset({"category", "event"})  # the placeholders holding the name
 
 
+def month_folder(when: datetime) -> str:
+    """The year and month folders of a date.
+
+    Args:
+        when: The date.
+
+    Returns:
+        `YYYY/YYYY-MM`.
+    """
+    return f"{when.year:04d}/{when.year:04d}-{when.month:02d}"
+
+
 def event_folder(layout: str, when: datetime, name: str) -> str:
     """The event's folder below its root.
 
@@ -66,6 +78,18 @@ class EventPlace:
     rows: PlanRows
     chosen: Picked
 
+    def dated(self, path: Path) -> datetime | None:
+        """When a file was taken: the plan's date, else the index's.
+
+        Args:
+            path: Its container path.
+
+        Returns:
+            The date; None: the file has none, nothing is guessed.
+        """
+        host = self.runtime.mapper.to_host(path)
+        return planned_date(self.rows, host) or self.chosen.days.get(path)
+
     def earliest(self) -> datetime:
         """The earliest photo's date: the plan's, else the index's.
 
@@ -75,12 +99,8 @@ class EventPlace:
         Raises:
             ValueError: None of them has a date.
         """
-        mapper = self.runtime.mapper
         dates = [
-            when
-            for path in self.chosen.paths.values()
-            if (when := planned_date(self.rows, mapper.to_host(path)))
-            or (when := self.chosen.days.get(path))
+            when for path in self.chosen.paths.values() if (when := self.dated(path))
         ]
         if not dates:
             raise ValueError(
@@ -94,8 +114,7 @@ class EventPlace:
         Returns:
             The year and month folders.
         """
-        first = self.earliest()
-        return f"{first.year:04d}/{first.year:04d}-{first.month:02d}"
+        return month_folder(self.earliest())
 
     def folder(self, name: str) -> str:
         """The folder below the root.
@@ -129,7 +148,18 @@ class EventPlace:
         """
         if not name:
             return ""
-        relative = PureWindowsPath(*self.folder(name).split("/"))
+        return self.below(self.folder(name))
+
+    def below(self, folder: str) -> str:
+        r"""A folder below the root, as the user will see it in Explorer.
+
+        Args:
+            folder: `/` between its parts.
+
+        Returns:
+            `<target>\2009\2009-11`, else below the root of most photos.
+        """
+        relative = PureWindowsPath(*folder.split("/"))
         mapper = self.runtime.mapper
         target = self.root()
         if target is not None:

@@ -142,7 +142,7 @@ Enter enlarges one.
 
     <span class="mh-badge mh-undo">↩️ Can be undone</span> Search them (`person:"Granny Jane"`),
     pick them (a click or Space; **Pick all N files found** takes every file found, not only
-    those shown), then **Set aside the picked files**: the choice is saved at once in `decisions.json` of your
+    those shown), then **🗑 Put aside**: the choice is saved at once in `decisions.json` of your
     reports, nothing moves yet. Stop the page (Ctrl+C), then:
 
     ```powershell

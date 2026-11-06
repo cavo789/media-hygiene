@@ -193,7 +193,7 @@ personne de côté* dans un nouvel onglet, sur cette photo. Vous pouvez aussi l'
    et ses touches. Si elles ressemblent à quelqu'un mis de côté avant, la barre le dit (*la
    personne mise de côté le <date>*) : ce que vous mettez de côté maintenant rejoint cette
    personne.
-3. Suppr (ou **Mettre de côté les fichiers choisis**) les enregistre aussitôt dans
+3. Suppr (ou **🗑 Mettre de côté**) les enregistre aussitôt dans
    `decisions.json`, relu et affiché, et retient le visage, comme
    [plus haut](#retirer-toutes-les-photos-de-quelquun) : la page people montrera les photos qui
    lui ressemblent. Si la page qui la sert a été ouverte par `mh` depuis l'accueil,

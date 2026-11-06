@@ -123,6 +123,7 @@ class PageHeader:  # pylint: disable=too-many-instance-attributes  # one per lin
     assets: str = ASSETS_PREFIX
     shell: Shell | None = None  # in the home page's frame (0491)
     folders: ShellFolders | None = None  # its *Your folders* (0579)
+    albums: str = ""  # the chapter of the album panel's *Help*
 
     @property
     def twin_lang(self) -> str:
@@ -157,6 +158,7 @@ def page_header(template: str) -> PageHeader:
     twin = Locale.EN if here is Locale.FR else Locale.FR
     return PageHeader(
         doc=served_url(doc, here),
+        albums=served_url(ALBUMS_DOC, here),
         twin=served_url(doc, twin),
         twin_locale=twin,
         twin_label=_TWIN_LABELS[twin],

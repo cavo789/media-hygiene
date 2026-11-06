@@ -6,7 +6,8 @@ moves the keys ticked to `YYYY/YYYY-MM/<name>` in a thread (`services.selection_
 the journaled sort of a group), and answers the run read back. A plain filing writes
 nothing else (0573): only when the dialog's box *Also remember it as an event* is
 ticked (`remember`, never by default) is the event remembered in `events/` on the same
-action (`move_event`, 0556).
+action (`move_event`, 0556). `MONTH_*_PATH`: *Move to their month* (0623), no name, each
+photo to its own month.
 """
 
 from __future__ import annotations
@@ -22,7 +23,12 @@ from media_hygiene.i18n import _
 from media_hygiene.review.serving import json_response
 from media_hygiene.search import statements as sql
 from media_hygiene.search.aside_filter import AsideFilter
-from media_hygiene.search.move_steps import moved_now, viewed
+from media_hygiene.search.move_steps import (
+    month_moved,
+    month_viewed,
+    moved_now,
+    viewed,
+)
 from media_hygiene.search.rule_models import refused_rule
 from media_hygiene.search.sidecar_days import moments_of
 from media_hygiene.services.selection_models import Picked
@@ -36,6 +42,14 @@ if TYPE_CHECKING:
 
 MOVE_VIEW_PATH: Final = "/api/move/view"
 MOVE_PATH: Final = "/api/move"
+MONTH_VIEW_PATH: Final = "/api/move/month/view"
+MONTH_PATH: Final = "/api/move/month"
+MOVE_PATHS: Final = {
+    "view": MOVE_VIEW_PATH,
+    "move": MOVE_PATH,
+    "monthView": MONTH_VIEW_PATH,
+    "month": MONTH_PATH,
+}
 _MOST: Final = 20_000  # photos picked at once: a few years of a family
 _LONGEST: Final = 200  # characters of a folder name: Windows' limit is the whole path
 
@@ -55,7 +69,7 @@ async def move_answer(desk: RuleDesk, path: str, body: bytes) -> Response:
 
     Args:
         desk: The rule's desk: the index and the mover.
-        path: `MOVE_VIEW_PATH` or `MOVE_PATH`.
+        path: One of `MOVE_PATHS`.
         body: The keys and the name.
 
     Returns:
@@ -69,10 +83,14 @@ async def move_answer(desk: RuleDesk, path: str, body: bytes) -> Response:
     if desk.mover is None:
         return _conflict(_("This page cannot move files: run 'sort' in the terminal."))
     chosen, ignored = _picked(desk, asked.keys)
+    steps = {
+        MOVE_VIEW_PATH: viewed,
+        MOVE_PATH: moved_now,
+        MONTH_VIEW_PATH: month_viewed,
+        MONTH_PATH: month_moved,
+    }
     try:
-        answer = await (viewed if path == MOVE_VIEW_PATH else moved_now)(
-            desk, asked, chosen
-        )
+        answer = await steps[path](desk, asked, chosen)
     except ValueError as exc:
         return _conflict(" ".join(filter(None, (str(exc), ignored))))
     except MediaHygieneError as exc:

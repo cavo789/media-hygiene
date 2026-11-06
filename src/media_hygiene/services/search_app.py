@@ -35,7 +35,7 @@ from media_hygiene.search.folders import (
 from media_hygiene.search.found_desk import FOUND_PATH
 from media_hygiene.search.heaviest import FIRST_SHOWN, HEAVIEST_PATH
 from media_hygiene.search.late_desk import LATE_PATH, LATE_REFUSE_PATH
-from media_hygiene.search.move_go import MOVE_PATH, MOVE_VIEW_PATH
+from media_hygiene.search.move_go import MOVE_PATHS
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH, PeopleDesk
 from media_hygiene.search.people_why import PEOPLE_WHY_PATH
 from media_hygiene.search.place import SearchPlace
@@ -130,7 +130,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "rule_save_path": RULE_SAVE_PATH,
         "period_rules_path": PERIOD_RULES_PATH,
         "rule_go_path": RULE_GO_PATH,
-        "move_paths": {"view": MOVE_VIEW_PATH, "move": MOVE_PATH},
+        "move_paths": MOVE_PATHS,
         "hand_tag_path": HAND_TAG_PATH,
         "date_path": DATE_PATH,
         "place_path": PLACE_PATH,

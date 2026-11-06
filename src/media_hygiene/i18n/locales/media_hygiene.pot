@@ -941,6 +941,9 @@ msgstr ""
 msgid "Add to an album"
 msgstr ""
 
+msgid "Add to an album, show it on the TV, prepare it for sending"
+msgstr ""
+
 msgid "Add to another album"
 msgstr ""
 
@@ -1221,9 +1224,6 @@ msgid "Apply all"
 msgstr ""
 
 msgid "Apply it? (y/n)"
-msgstr ""
-
-msgid "Apply now"
 msgstr ""
 
 #, python-brace-format
@@ -2302,6 +2302,9 @@ msgstr ""
 msgid "Deleting an empty file (0 bytes): {path}"
 msgstr ""
 
+msgid "Describe"
+msgstr ""
+
 msgid "Describe for 1 h"
 msgstr ""
 
@@ -2585,6 +2588,11 @@ msgid ""
 msgstr ""
 
 msgid "Each photo"
+msgstr ""
+
+msgid ""
+"Each photo picked goes to its own month, with no event folder, journaled:"
+" 'undo' puts them back."
 msgstr ""
 
 #, python-format
@@ -3547,6 +3555,9 @@ msgstr ""
 msgid "Give the photos picked a day, in their .xmp sidecars"
 msgstr ""
 
+msgid "Give the photos picked a tag, a day or a place"
+msgstr ""
+
 msgid "Give the photos picked a word of yours, kept in your settings"
 msgstr ""
 
@@ -3673,6 +3684,9 @@ msgid "Heaviest folders"
 msgstr ""
 
 msgid "Height"
+msgstr ""
+
+msgid "Help"
 msgstr ""
 
 msgid ""
@@ -4563,6 +4577,11 @@ msgid "Mount your folder, e.g. -v \"$HOME\\media-hygiene\\config:/config\"."
 msgstr ""
 
 msgid ""
+"Move each photo picked to its own month, year then year-month, with no "
+"event folder"
+msgstr ""
+
+msgid ""
 "Move the [classify] layouts of your config.toml to the sort convention "
 "year/year-month/event: shows each change, asks, writes."
 msgstr ""
@@ -4609,6 +4628,12 @@ msgid "Move to an event"
 msgstr ""
 
 msgid "Move to an event…"
+msgstr ""
+
+msgid "Move to their month"
+msgstr ""
+
+msgid "Move to their month…"
 msgstr ""
 
 #, python-brace-format
@@ -4715,6 +4740,9 @@ msgid "Name"
 msgstr ""
 
 msgid "Name (it becomes a folder name)"
+msgstr ""
+
+msgid "Name an album under 📚 Album: its files are marked, kept or left out"
 msgstr ""
 
 msgid "Name another file with --decisions, or mount the same folders."
@@ -6168,6 +6196,9 @@ msgid "Open this page in Safari, download the certificate, allow the profile."
 msgstr ""
 
 msgid "Open this section (o)"
+msgstr ""
+
+msgid "Open 📚 Album and type its name first: then A adds the file shown."
 msgstr ""
 
 msgid "OpenStreetMap contributors"
@@ -7784,9 +7815,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "Set aside on {date}, still recoverable with mh undo {run} until mh purge."
-msgstr ""
-
-msgid "Set aside the picked files"
 msgstr ""
 
 msgid "Set aside the picked files (Delete)"
@@ -10312,9 +10340,6 @@ msgstr ""
 msgid "Type a word, pick a photo."
 msgstr ""
 
-msgid "Type an album in the bar: its files are marked, kept or left out"
-msgstr ""
-
 msgid "Type an album's name in the bar first."
 msgstr ""
 
@@ -11289,6 +11314,9 @@ msgid "all {count} kept"
 msgstr ""
 
 msgid "alphabetical order (nothing else differs)"
+msgstr ""
+
+msgid "already in their month: not moved"
 msgstr ""
 
 #, python-brace-format
@@ -12401,6 +12429,9 @@ msgid "no date"
 msgstr ""
 
 msgid "no date taken"
+msgstr ""
+
+msgid "no date: left where they are"
 msgstr ""
 
 msgid "no double quote"
@@ -15183,6 +15214,18 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} file goes to"
 msgid_plural "{n} files go to"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} file has no date: left where it is."
+msgid_plural "{n} files have no date: left where they are."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} file is already in its month: not moved."
+msgid_plural "{n} files are already in their month: not moved."
 msgstr[0] ""
 msgstr[1] ""
 

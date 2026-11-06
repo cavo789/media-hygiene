@@ -26,6 +26,7 @@ Any package's pages reach them (`i18n/templates.py`: the package's `templates/`,
 | `pick_keys.html.j2`, `pick_keys_more.html.j2` | The rows of the ⌨ panel (the frame's `keys` and `more_keys` blocks); `pick_all` (set at the top of the page) says what Ctrl+A picks |
 | `pick_acting.html.j2` | The start of the bar: where you are, or once something is picked ✕, the count, *Pick all N found*, *Set aside*, *Take out*, *Invert*; the saved line; *Apply now* |
 | `pick_viewer.html.j2` | The large view and its `?` list of keys |
+| `pick_bar.css.j2`, `pick_bar_panel.js.j2` | The bar's two lines and its small panels |
 | `pick_grid.js.j2` | State, gestures, the bar, the saving (`CHOSEN_PATH`), the grid's keys; starts the strict mode, so it is included **first** |
 | `pick_viewer.js.j2` | The large view's keys (`VIEWER_KEYS`) and its saves |
 | `pick_band.js.j2` | The mouse rectangle |
@@ -58,7 +59,9 @@ before including `pick_acting.html.j2`), *Set aside* last.
 page served). `page_header.html.j2` on top. Left column: the tabs, then what leads to the photos (a
 folder tree, a search form, a list of groups), then ⌨ keys. Right: **one** sticky bar, then the
 grid. Nothing else above the grid: no line of hints (they go in the keys panel or a
-`<details>`), no second header. The album field always has its own line in the bar, and both lines
+`<details>`), no second header. The bar has two lines on every page (`pick_bar.css.j2`): what you look at, then what you do with
+the picking, greyed while nothing is picked; *Set aside* then *Apply* close line 2 at its right end,
+and what is not needed all the time goes in a small panel (`.barPanel`: album, describe). Both lines
 keep their height whether something is picked or not: **the grid never moves** when a pick starts
 (otherwise a rectangle misses what is under the mouse — measured on `search`, 2026-10-23).
 

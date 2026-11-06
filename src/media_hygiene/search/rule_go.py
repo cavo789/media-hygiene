@@ -18,7 +18,7 @@ from pydantic import ValidationError
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.review.serving import json_response
-from media_hygiene.search.move_go import MOVE_PATH, MOVE_VIEW_PATH, move_answer
+from media_hygiene.search.move_go import MOVE_PATHS, move_answer
 from media_hygiene.search.rule_models import PeriodRuleIn, refused_rule
 
 if TYPE_CHECKING:
@@ -30,7 +30,7 @@ if TYPE_CHECKING:
 
 RULE_GO_PATH: Final = "/api/period-rule/go"
 # The posts that sort (in a thread): the rule's GO, and the move of a selection (0403).
-GO_PATHS: Final = frozenset({RULE_GO_PATH, MOVE_VIEW_PATH, MOVE_PATH})
+GO_PATHS: Final = frozenset({RULE_GO_PATH, *MOVE_PATHS.values()})
 
 
 class PeriodGoIn(PeriodRuleIn):

@@ -126,7 +126,7 @@ déplace avec `↑` / `↓`.
 **Voir une photo en grand** sur chaque tri : Entrée ou un double clic ; `←` / `→` la précédente
 ou la suivante, `F` plein écran, `?` toutes les touches, `Échap` ferme. Sur `review` et
 `review --junk`, `Suppr` écarte la photo affichée et `⌫` la reprend ; sur `review`, `A` l'ajoute
-à l'album nommé dans la barre. Sur `--near`, `--gone` et `--pairs`, la grande vue montre
+à l'album nommé sous **📚 Album**. Sur `--near`, `--gone` et `--pairs`, la grande vue montre
 seulement (rien à choisir).
 
 `review --gone` : `D` supprimé exprès, `M` déplacé ailleurs (le fichier sous le curseur, puis le

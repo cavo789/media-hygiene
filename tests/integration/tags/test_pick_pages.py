@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 # The shared parts, as each one shows in the page served (review/templates/pick_*).
 _SHARED = (
     *PICK_PARTS,
-    "#bar #albumBar { flex-basis: 100%",  # pick_grid.css.j2: the bar keeps its height
+    '#bar::before { content: ""; order: 2',  # pick_bar.css.j2: the same two lines
     '<select id="order">',  # pick_order.html.j2: Sort by (0347)
 )
 
@@ -45,6 +45,18 @@ def test_both_pages_are_built_from_the_same_parts(
         assert (
             page.count('<select id="kind">') + page.count('id="kind" value="all"') == 1
         )
+
+
+def test_set_aside_and_apply_end_the_second_line_of_every_page(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The shared rules fix their place; the album and the rest are panels."""
+    page = _pages(cli, monkeypatch)[0]
+    assert "#acting > #setAside { order: 6; margin-left: auto; }" in page
+    assert "#bar > #applyBar { order: 7;" in page
+    assert '<details id="albumBar" class="barPanel">' in page
+    assert "reference-albums/" in page.split('id="albumBar"')[1].split("albumName")[1]
+    assert '<details id="moveBar" class="barPanel closesOnChoice">' in page
 
 
 def test_the_search_keeps_its_field_on_the_left_and_one_bar_above(

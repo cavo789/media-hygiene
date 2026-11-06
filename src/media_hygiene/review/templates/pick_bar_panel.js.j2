@@ -1,0 +1,28 @@
+{# The bar's small panels (`.barPanel`, `pick_bar.css.j2`): one open at a time, closed by Esc
+   (before any page key), a click elsewhere, or a choice in a `closesOnChoice` panel; kept on
+   screen on a narrow window. #}
+(() => {
+  const panels = () => [...document.querySelectorAll(".barPanel")];
+  const closeAll = (except) => { for (const panel of panels()) if (panel !== except) panel.open = false; };
+  document.addEventListener("toggle", (event) => {
+    const panel = event.target;
+    if (!panel.classList?.contains("barPanel") || !panel.open) return;
+    closeAll(panel);
+    const body = panel.querySelector(".panelBody");
+    body.style.left = "";
+    const over = body.getBoundingClientRect().right - document.documentElement.clientWidth;
+    if (over > 0) body.style.left = -(over + 8) + "px";
+    body.querySelector("input")?.focus();
+  }, true);
+  document.addEventListener("pointerdown", (event) => { closeAll(event.target.closest?.(".barPanel")); });
+  document.addEventListener("click", (event) => {
+    const panel = event.target.closest?.(".closesOnChoice");
+    if (panel && event.target.closest("button")) panel.open = false;
+  });
+  document.addEventListener("keydown", (event) => {
+    const open = panels().find((panel) => panel.open);
+    if (event.key !== "Escape" || !open) return;
+    event.stopImmediatePropagation();
+    open.open = false;
+  }, true);
+})();
