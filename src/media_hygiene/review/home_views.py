@@ -36,6 +36,7 @@ SIGNAL_EXIT_BASE: Final = 128
 REPORTS_PREFIX: Final = "/reports/"
 # *Apply now* of browse and the reviews (`apply_api`): here, a leaf `search.app` reads.
 APPLY_PATH: Final = "/api/apply"
+UNDO_PATH: Final = "/api/undo-run"  # the ↶ Undo of a run (`search.undo_api`, 0601)
 
 
 class HomeField(Frozen):

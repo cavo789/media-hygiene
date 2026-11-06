@@ -140,8 +140,9 @@ To forget someone (a former partner, say), remove the photos they are on from th
    **Show** draws them again, dimmed, each with ↺ to take that one back; **Take out of the set
    aside** takes them all back. The same goes for photos set aside on any other page
    ([`library`](library.md)), until `clean --decisions` moves them.
-3. Opened from the home page (`mh`), **Apply now** closes the page and runs
-   [`clean --decisions`](clean.md), which asks first. Otherwise, the command proposes it when you
+3. Opened from the home page (`mh`), **Apply now** runs [`clean --decisions`](clean.md), which
+   asks first; served by the home page, the page stays open and offers **↶ Undo** of that run once
+   it ended, the files then looked for where they were. Otherwise, the command proposes it when you
    stop the page. It moves the photos to the quarantine, journaled; [`undo`](undo.md) puts them
    back, [`purge`](purge.md) frees the space.
 

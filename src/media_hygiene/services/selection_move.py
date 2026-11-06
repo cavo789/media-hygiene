@@ -1,8 +1,9 @@
 """*Move to an event…* on the search page (0403): photos picked, moved without a rule.
 
 A selection with exceptions is a move, not a rule: the user picks photos (a period, a
-search), types the event's name, and they go to `YYYY/YYYY-MM/<name>` (the month of
-the earliest one, 0400), below their sort root. Before the GO the page shows them by
+search), types the event's name, and they go to the layout's folder holding that name
+(the month of the earliest one, 0400), below the target chosen or their root
+(`event_place`, 0596). Before the GO the page shows them by
 source folder, one tick box each: a folder the user named after **another** event
 (`own_events.named_event`: a meaningful name, one moment) is unticked by default; a
 generic folder, another family member's, loose files are ticked. The proposed name is
@@ -14,18 +15,14 @@ from __future__ import annotations
 
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
-from pathlib import Path, PureWindowsPath
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.own_events import folder_rules, named_event
 from media_hygiene.i18n import _
-from media_hygiene.services.group_sort import sorted_group
-from media_hygiene.services.plan_rows_index import (
-    PlanRows,
-    parent_of,
-    plan_rows,
-    planned_date,
-)
+from media_hygiene.services.event_place import EventPlace
+from media_hygiene.services.group_sort import moved_group
+from media_hygiene.services.group_sort_models import GroupMove
+from media_hygiene.services.plan_rows_index import PlanRows, parent_of, plan_rows
 from media_hygiene.services.selection_models import (
     MoveView,
     Picked,
@@ -37,6 +34,7 @@ from media_hygiene.services.sort_inputs import find_workbook, plan_of
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
+    from pathlib import Path
 
     from media_hygiene.classify.folders import FolderRules
     from media_hygiene.services.runtime import Runtime
@@ -70,19 +68,16 @@ class SelectionMover:
             folder = parent_of(self.runtime.mapper.to_host(path))
             groups[folder].append(key)
             names[folder] = path.parent.name
-        settings = self.runtime.settings
-        rules = folder_rules(
-            settings.classify, [p.name for p in settings.people.person]
-        )
-        named = self._named(names, rows, rules)
+        named = self._named(names, rows, self._rules())
         largest = Counter({f: len(groups[f]) for f in named}).most_common(1)
-        proposed = named[largest[0][0]] if largest else sole_label(names, rules)
+        proposed = named[largest[0][0]] if largest else sole_label(names, self._rules())
         typed = event_path(name or proposed)
+        place = EventPlace(self.runtime.with_overrides({}), rows, chosen)
         return MoveView(
             proposed=proposed,
-            month=self._month(rows, chosen),
+            month=place.month(),
             name=typed,
-            target=self._target(rows, chosen, typed),
+            target=place.shown(typed),
             sources=tuple(
                 SourceFolder(
                     folder=folder,
@@ -94,6 +89,15 @@ class SelectionMover:
                 for folder, keys in groups.items()
             ),
         )
+
+    def _rules(self) -> FolderRules:
+        """What tells a generic folder name and a person's.
+
+        Returns:
+            The rules of the settings.
+        """
+        settings = self.runtime.settings
+        return folder_rules(settings.classify, [p.name for p in settings.people.person])
 
     def _named(
         self, names: Mapping[str, str], rows: PlanRows, rules: FolderRules
@@ -132,58 +136,10 @@ class SelectionMover:
         typed = event_path(name)
         if not typed:
             raise ValueError(_("Type the event's name first."))
-        folder = self._month(self._rows(), chosen) + "/" + typed
-        return sorted_group(
-            self.runtime, dict.fromkeys(chosen.paths.values(), folder), typed
-        )
-
-    def _target(self, rows: PlanRows, chosen: Picked, name: str) -> str:
-        r"""The destination as the user will see it in Explorer.
-
-        Args:
-            rows: The plan's rows.
-            chosen: The photos picked.
-            name: The event's name.
-
-        Returns:
-            `2009\2009-11\<name>` below the root of most photos; empty without a name.
-        """
-        if not name:
-            return ""
-        roots = Counter(
-            row.root
-            for path in chosen.paths.values()
-            if (row := rows.by_path.get(self.runtime.mapper.to_host(path)))
-        ).most_common(1)
-        month = self._month(rows, chosen).split("/")
-        relative = PureWindowsPath(*month, *name.split("/"))
-        return str(PureWindowsPath(roots[0][0]) / relative) if roots else str(relative)
-
-    def _month(self, rows: PlanRows, chosen: Picked) -> str:
-        """`YYYY/YYYY-MM` of the earliest photo picked: plan's date, else the index's.
-
-        Args:
-            rows: The plan's rows.
-            chosen: The photos picked.
-
-        Returns:
-            The year and month folders.
-
-        Raises:
-            ValueError: None of them has a date.
-        """
-        dates = [
-            when
-            for path in chosen.paths.values()
-            if (when := planned_date(rows, self.runtime.mapper.to_host(path)))
-            or (when := chosen.days.get(path))
-        ]
-        if not dates:
-            raise ValueError(
-                _("None of these photos has a date: no month to put them in.")
-            )
-        first = min(dates)
-        return f"{first.year:04d}/{first.year:04d}-{first.month:02d}"
+        fresh = self.runtime.with_overrides({})  # the page saves target and layout
+        place = EventPlace(fresh, self._rows(), chosen)
+        folders = dict.fromkeys(chosen.paths.values(), place.folder(typed))
+        return moved_group(fresh, GroupMove(folders, typed, place.root()))
 
     def _rows(self) -> PlanRows:
         """The rows of the latest classify plan, read once per version of its workbook.

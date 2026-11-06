@@ -46,7 +46,9 @@
     latestRun().then((run) => {
       if (!run || run === before || !window.mhUndoToast) return;
       window.mhUndoToast(text, async () => {
-        said.textContent = await window.mhUndoRun(run);
+        const undone = await window.mhUndoRun(run);
+        said.textContent = undone;
+        try { window.sessionStorage.setItem(ENDED_KEY, undone); } catch { /* private mode */ }
         window.location.reload();
       });
     });

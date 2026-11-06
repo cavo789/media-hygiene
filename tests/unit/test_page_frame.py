@@ -18,6 +18,7 @@ from media_hygiene.review.page_header import PAGE_STEPS
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 from tests.support.page_render import FRAME_EXTENDS, render_page
 
+_TOAST: Final = re.compile(r'<div id="mhUndoToast".*?</script>', re.DOTALL)
 _SRC: Final = Path(__file__).resolve().parents[2] / "src" / "media_hygiene"
 _FRAME: Final = "page_frame.html.j2"
 
@@ -94,7 +95,8 @@ def test_a_page_with_keys_shows_them_at_the_bottom_of_the_left_column(
 ) -> None:
     """`keydown` handled: the ⌨ panel, once, last in `#side`; none without keys."""
     page = render_page(template)
-    has_keys = '"keydown"' in page
+    # The Undo toast's own Z (`undo_toast.html.j2`) is no key panel's business.
+    has_keys = '"keydown"' in _TOAST.sub("", page)
     assert page.count('id="keys"') == int(has_keys), template
     if has_keys:
         side = page.split('<aside id="side">')[1].split("</aside>")[0]

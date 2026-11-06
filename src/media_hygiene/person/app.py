@@ -28,11 +28,13 @@ from media_hygiene.person.routes import (
     LOOK_PATH,
     PAGE_PATH,
     PHOTO_PATH,
+    UNDO_PATH,
 )
 from media_hygiene.person.second_look import LookJob, second_look
 from media_hygiene.person.shelf import ShelfFace
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post
+from media_hygiene.search.undo_api import undo_route
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -89,6 +91,9 @@ class PersonApp:
         if not is_local(request):
             return Response(HTTPStatus.FORBIDDEN)
         path = request.path.split("?", 1)[0]
+        undo = self.apply.offer.undo if self.apply else None
+        if path == UNDO_PATH and undo is not None:
+            return await undo_route(undo, request)
         if request.method == _POST:
             return refused_post(request) or await self._post(path, request.body)
         if path == PAGE_PATH:

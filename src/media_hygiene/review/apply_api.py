@@ -20,10 +20,11 @@ from media_hygiene.constants import ExitCode
 from media_hygiene.i18n import _
 from media_hygiene.review.apply_relay import ApplyRelay, relayed
 from media_hygiene.review.ending import Ending, EndingDoor
-from media_hygiene.review.home_views import APPLY_PATH
+from media_hygiene.review.home_views import APPLY_PATH, UNDO_PATH
 from media_hygiene.review.http import Response, is_local
 from media_hygiene.review.presence import Presence
 from media_hygiene.review.serving import json_response, refused_post
+from media_hygiene.search.undo_api import undo_route
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -31,6 +32,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.review.ending import Handling
     from media_hygiene.review.http import Request
+    from media_hygiene.services.page_undo import PageUndo
 
 __all__ = [
     "APPLY_PATH",  # defined in `home_views`, a leaf `search.app` imports too
@@ -58,6 +60,7 @@ class ApplyOffer:
 
     step: Callable[[], ApplyStep | None] | None  # None: not opened from the home page
     pending: Callable[[], bool]  # something is set aside (or decided) in the file
+    undo: PageUndo | None = None  # the page stays open: its toast undoes the run (0621)
 
 
 @dataclass(frozen=True, slots=True)
@@ -124,6 +127,9 @@ class ApplyingApp:
         Returns:
             The response.
         """
+        undo = self.desk.offer.undo
+        if request.path == UNDO_PATH and undo is not None:
+            return await undo_route(undo, request)
         if request.path != APPLY_PATH:
             return await self.app.handle(request)
         if not is_local(request):

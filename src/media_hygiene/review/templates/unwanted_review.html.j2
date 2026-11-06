@@ -98,6 +98,7 @@
 </main>
 {% endblock %}
 {% block after %}
+{% include "undo_toast.html.j2" %}
 {% include "pick_viewer.html.j2" %}
 <script>
 {% include "pick_grid.js.j2" %}

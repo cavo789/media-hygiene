@@ -175,9 +175,10 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
 - **Ouvertes depuis l'[accueil](home.md)**, les pages des rafales, des quasi-doublons, des
   paires de dossiers et des photos indésirables montrent un bouton **Appliquer maintenant** dès
   que quelque chose est écarté ou décidé (`--gone` n'en a pas : ses réponses ne déplacent aucun
-  fichier) : la
-  page se ferme et `mh` lance l'étape de l'accueil qui applique vos choix (sa question habituelle
-  d'abord), puis l'accueil revient. Ouvertes par `mh review` seul : pas de bouton, tapez la
+  fichier) : `mh` lance l'étape de l'accueil qui applique vos choix (sa question habituelle
+  d'abord). Servie par l'accueil, la page reste ouverte et propose **↶ Annuler** de ce passage une
+  fois fini, les fichiers étant alors recherchés là où ils étaient et comptés ; servie à part, elle se
+  ferme et l'accueil revient. Ouvertes par `mh review` seul : pas de bouton, tapez la
   commande `clean`.
 - Une photo d'un **dossier protégé** n'est jamais proposée ni écartée.
 - **👤 cette personne**, sous chaque photo, ouvre dans un nouvel onglet toutes les photos de

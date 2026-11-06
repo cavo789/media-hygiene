@@ -13,6 +13,7 @@ from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.report.decisions import DecisionsFile, read_decisions
 from media_hygiene.review.apply_api import APPLY_PATH
+from media_hygiene.review.home_views import UNDO_PATH
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.page_header import page_header
 from media_hygiene.review.place import decisions_flag
@@ -51,6 +52,7 @@ def review_page(template: str, place: DecisionsPlace, api: tuple[str, str]) -> b
             # Opened from the home page: *Apply now*, where the page includes it (0288).
             apply_offered=header.home,
             apply_path=APPLY_PATH.removeprefix("/"),
+            undo_path=UNDO_PATH.removeprefix("/"),
             state_path=STATE_PATH.removeprefix("/"),
             decide_path=decide_path.removeprefix("/"),
             file_path=file_path.removeprefix("/"),

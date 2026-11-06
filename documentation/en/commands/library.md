@@ -209,7 +209,9 @@ receiving the tree (`[classify] target`; empty: each folder is sorted in place) 
 `classify`, else from the dates of your photos, without the names of the events). The files the sort
 is less sure of stay where they are unless you choose a shape for them too. Saved in `config.toml`
 (your comments kept), read back and shown; nothing moves. A layout of your own stays offered.
-*Sort here now* and *Move to an event…* keep filing in `YYYY/YYYY-MM/<name>` next to the photos.
+*Sort here now* and *Move to an event…* use these two choices at once: the files go below that folder
+(empty: below their own), in that shape, and always in a folder named after the event, even with
+*Year / Month only*: you named it.
 
 The **⋯** of a folder (📁 My folders) adds, beside its role, *Never sorted* (`[classify] leave`) and
 the name of the person whose photos it holds (`person_folders`): the folder's name must hold it.

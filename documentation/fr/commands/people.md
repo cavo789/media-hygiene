@@ -150,8 +150,10 @@ lui-même :
    la mise de côté** les reprend toutes. Il en va de même des photos mises de côté depuis une
    autre page ([`library`](library.md)), jusqu'à ce que `clean --decisions`
    les déplace.
-3. Ouverte depuis la page d'accueil (`mh`), **Appliquer maintenant** ferme la page et lance
-   [`clean --decisions`](clean.md), qui demande d'abord. Sinon, la commande le propose quand vous
+3. Ouverte depuis la page d'accueil (`mh`), **Appliquer maintenant** lance
+   [`clean --decisions`](clean.md), qui demande d'abord ; servie par l'accueil, la page reste ouverte
+   et propose **↶ Annuler** de ce passage une fois fini, les fichiers étant alors recherchés là où ils
+   étaient. Sinon, la commande le propose quand vous
    arrêtez la page. Il déplace les photos en quarantaine, journalisé ; [`undo`](undo.md) les
    remet, [`purge`](purge.md) libère la place.
 

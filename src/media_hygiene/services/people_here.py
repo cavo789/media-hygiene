@@ -17,10 +17,13 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.review.apply_api import ApplyDesk, ApplyingApp, ApplyOffer
+from media_hygiene.review.apply_relay import home_relay
 from media_hygiene.review.home_app import HomeApp
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.step_watch import STEP_PATH
 from media_hygiene.services.next_command import LAUNCHER_FUNCTION
+from media_hygiene.services.page_undo import PageUndo
 from media_hygiene.services.people import PeopleStep
 from media_hygiene.services.people_app_build import PeopleBuild, people_app
 from media_hygiene.services.people_files import require_people_index
@@ -28,12 +31,10 @@ from media_hygiene.services.people_page import names_file
 from media_hygiene.services.prefixed_page import PrefixedPage
 
 if TYPE_CHECKING:
-    from concurrent.futures import Executor
-
-    from media_hygiene.people.app import PeopleApp
     from media_hygiene.review.ending import Handling
     from media_hygiene.review.http import Request, Response
     from media_hygiene.services.fresh_runtime import FreshRuntime
+    from media_hygiene.services.home_pages import HomeServer
     from media_hygiene.services.runtime import Runtime
 
 PEOPLE_PAGE: Final = "/people/"
@@ -61,12 +62,12 @@ def faces_found(runtime: Runtime) -> bool:
     return bool(work.photos) and not work.missing
 
 
-def _built(runtime: Runtime, executor: Executor) -> PeopleApp:
-    """The page's app on the faces of the index, none left to find.
+def _built(runtime: Runtime, server: HomeServer) -> ApplyingApp:
+    """The page's app on the faces of the index, none left to find, with *Apply now*.
 
     Args:
         runtime: The server's settings now.
-        executor: The worker pool.
+        server: The home server's *Apply now*, end and pool.
 
     Returns:
         The app.
@@ -81,8 +82,12 @@ def _built(runtime: Runtime, executor: Executor) -> PeopleApp:
                 _("Faces are still to be found: run 'mh people' in the terminal.")
             )
         result = step.result(work)
-    build = PeopleBuild(executor, names_file(runtime), relative=True)
-    return people_app(runtime, result, build)[0]
+    offered = server.apply is not None
+    build = PeopleBuild(server.executor, names_file(runtime), offered, relative=True)
+    app, aside = people_app(runtime, result, build)
+    offer = ApplyOffer(server.apply, lambda: bool(aside.paths()), PageUndo(runtime))
+    relay = home_relay(runtime.locations.reports_dir)
+    return ApplyingApp(app, ApplyDesk(offer, server.ending, relay))
 
 
 @dataclass(frozen=True, slots=True)
@@ -118,17 +123,17 @@ class PeopleStepDoor:
         return json_response(HTTPStatus.OK, {"page": PEOPLE_PAGE, "command": command})
 
 
-def people_here(fresh: FreshRuntime, executor: Executor) -> PrefixedPage:
+def people_here(fresh: FreshRuntime, server: HomeServer) -> PrefixedPage:
     """The people page under `/people/`.
 
     Args:
         fresh: The server's settings, read again when their files change.
-        executor: The worker pool.
+        server: The home server's *Apply now*, end and pool.
 
     Returns:
         The page.
     """
-    return PrefixedPage(PEOPLE_PAGE, fresh, lambda runtime: _built(runtime, executor))
+    return PrefixedPage(PEOPLE_PAGE, fresh, lambda runtime: _built(runtime, server))
 
 
 def people_door(home: Handling, fresh: FreshRuntime) -> Handling:

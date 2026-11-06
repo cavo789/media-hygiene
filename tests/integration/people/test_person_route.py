@@ -18,6 +18,7 @@ from media_hygiene.report.decisions import read_decisions
 from media_hygiene.review.apply_api import ApplyOffer, ApplyStep, applying_door
 from media_hygiene.review.http import Request, Response
 from media_hygiene.services import people_models
+from media_hygiene.services.page_undo import PageUndo
 from tests.support.cli import run
 from tests.support.faces import face_of
 from tests.support.json_calls import JSON, answer, call
@@ -229,6 +230,23 @@ def test_apply_now_shows_when_the_page_serving_it_was_opened_from_home(
     assert (
         call(alone.person, "POST /person/api/apply", {}).status is HTTPStatus.NOT_FOUND
     )
+
+
+def test_the_person_page_undoes_the_run_of_its_host(locations: Locations) -> None:
+    """A host that stays open: toast and route; no Undo given: neither (0621)."""
+    runtime = make_runtime(locations)
+    offer = ApplyOffer(
+        lambda: ApplyStep(7, "mh clean"), lambda: True, PageUndo(runtime)
+    )
+    door = with_person(applying_door(Nothing(), offer), runtime, thread_pool())
+    person = door.person
+    assert isinstance(person, PersonApp)
+    page = call(person, "GET /person").body
+    assert b'id="mhUndoToast"' in page
+    assert b'"/person/api/undo-run"' in page
+    latest = call(person, "GET /person/api/undo-run")
+    assert latest.status is HTTPStatus.OK
+    assert b'"run_id"' in latest.body
 
 
 def test_each_photo_found_opens_the_page_again_on_itself(person: PersonApp) -> None:

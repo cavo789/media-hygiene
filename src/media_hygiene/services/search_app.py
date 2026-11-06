@@ -166,7 +166,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         chosen,
         folders,
         ApplyDesk(
-            ApplyOffer(build.apply, lambda: bool(chosen.paths())),
+            ApplyOffer(build.apply, lambda: bool(chosen.paths()), PageUndo(runtime)),
             build.ending,
             build.relay,
         ),

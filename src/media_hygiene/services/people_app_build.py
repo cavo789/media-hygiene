@@ -26,6 +26,7 @@ from media_hygiene.people.remembered import AsideMemory
 from media_hygiene.people.roster import NamesFile, Roster
 from media_hygiene.people.views import STRIP
 from media_hygiene.review.apply_api import APPLY_PATH
+from media_hygiene.review.home_views import UNDO_PATH
 from media_hygiene.review.page_header import page_header
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
 
@@ -68,6 +69,7 @@ def people_page(build: PeopleBuild) -> bytes:
         "face_prefix": FACE_PREFIX,
         "photo_prefix": PHOTO_PREFIX,
         "apply_path": APPLY_PATH,
+        "undo_path": UNDO_PATH,
     }
     if build.relative:
         paths = {name: path.removeprefix("/") for name, path in paths.items()}

@@ -12,21 +12,21 @@ from media_hygiene.services.prefixed_page import PrefixedPage
 from media_hygiene.services.quarantine_serving import quarantine_page
 
 if TYPE_CHECKING:
-    from concurrent.futures import Executor
-
     from media_hygiene.services.fresh_runtime import FreshRuntime
+    from media_hygiene.services.home_pages import HomeServer
 
 
-def pages_here(fresh: FreshRuntime, executor: Executor) -> tuple[PrefixedPage, ...]:
+def pages_here(fresh: FreshRuntime, server: HomeServer) -> tuple[PrefixedPage, ...]:
     """The quarantine's page, the import's, the people's.
 
     Args:
         fresh: The server's settings, read again when their files change.
-        executor: The worker pool.
+        server: The home server's *Apply now*, end and pool.
 
     Returns:
         The pages.
     """
+    executor = server.executor
     return (
         PrefixedPage(
             QUARANTINE_PAGE,
@@ -36,5 +36,5 @@ def pages_here(fresh: FreshRuntime, executor: Executor) -> tuple[PrefixedPage, .
         PrefixedPage(
             IMPORT_PAGE, fresh, lambda runtime: planned_app(runtime, executor)
         ),
-        people_here(fresh, executor),
+        people_here(fresh, server),
     )
