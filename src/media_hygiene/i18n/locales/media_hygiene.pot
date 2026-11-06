@@ -8076,6 +8076,9 @@ msgstr ""
 msgid "See the photos"
 msgstr ""
 
+msgid "See the places on a map"
+msgstr ""
+
 msgid "See them"
 msgstr ""
 
@@ -9751,6 +9754,9 @@ msgstr ""
 msgid ""
 "The period of the import: today, week, month, all or a day; default: "
 "since the last import."
+msgstr ""
+
+msgid "The phone is read-only: change this on the PC."
 msgstr ""
 
 msgid ""

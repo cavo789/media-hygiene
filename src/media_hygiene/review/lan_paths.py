@@ -23,6 +23,7 @@ from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.review.http import ContentType
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH
 from media_hygiene.review.presence import PRESENCE_PATH
+from media_hygiene.review.step_watch import PLACES_PAGE
 from media_hygiene.review.videos import VIDEO_PREFIX
 from media_hygiene.search.app import SEARCH_PAGE_PATH, SEARCH_PATH
 from media_hygiene.search.chosen_api import CHOSEN_PATH
@@ -50,6 +51,7 @@ _SHOW: Final = SLIDESHOW_PAGE.removesuffix("/")
 SHOW_CARD: Final = f"{_SHOW}{LAN_PATH}"
 READ_PREFIXES: Final = (
     SLIDESHOW_PAGE,
+    PLACES_PAGE,  # the map to look at (0613): its `POST`s, which save, stay the PC's
     *_HOME_PREFIXES,
     *_SEARCH_PREFIXES,
     *albums.PHONE_READ_PREFIXES,
@@ -66,7 +68,7 @@ POST_PATHS: Final = _SAYS | FOLDER_POSTS | _SHOW_POSTS
 # an album saved on the PC, on the TV (`lan_show`). Every other step stays the PC's.
 PHONE_STEPS: Final = frozenset({ALBUM_STEP})
 # The steps a phone opens as pages instead of asking the PC to run them.
-PHONE_PAGES: Final = {"mh library": SEARCH_PAGE_PATH}
+PHONE_PAGES: Final = {"mh library": SEARCH_PAGE_PATH, "mh places": PLACES_PAGE}
 _GET, _POST = "GET", "POST"
 # The controls of a page of photos to pick that write, hidden on a phone (0429).
 PHONE_HIDDEN: Final = (

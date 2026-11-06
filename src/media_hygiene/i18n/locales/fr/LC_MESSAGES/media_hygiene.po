@@ -9647,6 +9647,9 @@ msgstr ""
 msgid "See the photos"
 msgstr "Voir les photos"
 
+msgid "See the places on a map"
+msgstr "Voir les lieux sur une carte"
+
 msgid "See them"
 msgstr "Les voir"
 
@@ -11633,6 +11636,9 @@ msgid ""
 msgstr ""
 "La période de l'import : today, week, month, all ou un jour ; par défaut : "
 "depuis le dernier import."
+
+msgid "The phone is read-only: change this on the PC."
+msgstr "Le téléphone est en lecture seule : changez cela sur le PC."
 
 msgid ""
 "The phone is read-only: the reports, the albums and the search. Open this "

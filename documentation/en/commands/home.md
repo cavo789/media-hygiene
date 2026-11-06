@@ -252,7 +252,7 @@ PC only? See [Keep the page on this PC only](#keep-the-page-on-this-pc-only) bel
    opens on it without a code. Without HTTPS, until `mh` stops only.
 
 On the phone, the home page is the family's door, **Our photos**: *Find a photo* (search and
-your folders), the albums and where you are; the stages that change photos (import, clean, sort, back
+your folders), the albums, *See the places on a map* (read-only: look at the places and their photos, nothing is saved) and where you are; the stages that change photos (import, clean, sort, back
 up) and the tools are not shown there, the PC keeps the whole cycle. Its title is yours with
 `[home] family_title = "The Smiths"` in `config.toml` (empty: *Our photos*).
 

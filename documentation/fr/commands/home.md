@@ -275,7 +275,7 @@ plus bas.
    `mh --lan` suivant s'y ouvre sans code. Sans HTTPS, jusqu'à l'arrêt de `mh` seulement.
 
 Sur le téléphone, la page d'accueil est la porte de la famille, **Nos photos** : *Retrouver une
-photo* (la recherche et le parcours), les albums et où vous en êtes ; les étapes qui changent les
+photo* (la recherche et le parcours), les albums, *Voir les lieux sur une carte* (en lecture seule : regarder les lieux et leurs photos, rien n'est enregistré) et où vous en êtes ; les étapes qui changent les
 photos (importer, nettoyer, trier, sauvegarder) et les outils n'y sont pas montrés, le PC garde
 tout le cycle. Son titre est le vôtre avec `[home] family_title = "Les Dupont"` dans
 `config.toml` (vide : *Nos photos*).

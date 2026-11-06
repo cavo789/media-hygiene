@@ -167,10 +167,12 @@ function auditPanel() {
     <div id="auditEnd"></div>
   </section>`;
 }
+// The phone's own wording: the map there is looked at, not edited (0613).
+const PHONE_TITLES = { "mh places": T.mapLook };
 // A paired phone's home (0293): the family's door, read-only, the photos first.
 function familyHome() {
   const finds = S.actions.filter((action) => PHONE_PAGES[action.command]);
-  const buttons = finds.map((action) => `<button class="btn btn-primary" type="button" data-run="${esc(action.name)}">${icon(action.icon)} ${esc(action.title)}</button>`).join("");
+  const buttons = finds.map((action) => `<button class="btn btn-primary" type="button" data-run="${esc(action.name)}">${icon(action.icon)} ${esc(PHONE_TITLES[action.command] || action.title)}</button>`).join("");
   return `<div class="page-head"><h1>${esc(S.family_title || T.familyTitle)}</h1><p>${esc(T.familyNote)}</p></div>
     <section class="block" aria-labelledby="familyFind">
       <div class="section-head"><h2 id="familyFind">${esc(T.familyFind)}</h2></div>
