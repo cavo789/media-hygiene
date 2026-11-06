@@ -164,6 +164,9 @@ data (GDPR, article 9). The tool treats them so:
 - they stay in the index of the cache (`/cache`), never in your photos, never in the reports;
 - nothing is sent anywhere: the models run on your computer, the page is served on `127.0.0.1`
   only, and the faces it shows are cut from the photos on request, never saved;
+- the telemetry of the ONNX Runtime library, which runs the models, is on by default in its
+  official builds (its `Privacy.md` says so): since November 2026 we turn it off
+  (`ORT_DISABLE_TELEMETRY`), so that this promise holds;
 - the only access to the network is the **one-time download of the two models** from OpenCV Zoo
   on GitHub, checked by their SHA-256. It sends nothing about your photos. Without network, the
   error names the two files to save by hand into the `models` folder of the cache;
