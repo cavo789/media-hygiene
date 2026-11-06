@@ -23,11 +23,12 @@ class Show:  # pylint: disable=too-many-instance-attributes
 
     `position` is the place of the photo on the TV in `slides`, None when nothing is
     shown (an empty selection, every photo set out). `films` is False once every TV
-    paired shows photos only (a 2012 TV's own browser): its videos are passed over.
+    paired shows photos only (a 2012 TV's own browser). `ended`: a phone stopped it.
     """
 
     __slots__ = (
         "_deadline",
+        "ended",
         "films",
         "playing",
         "position",
@@ -48,7 +49,7 @@ class Show:  # pylint: disable=too-many-instance-attributes
         self.timing = timing
         self.playing = False
         self.skipped: set[int] = set()
-        self.films = True
+        self.films, self.ended = True, False
         self.version = 1
         self.position: int | None = self._order.step(None, 1)  # the first shown
         self._deadline = 0.0

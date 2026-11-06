@@ -17,7 +17,6 @@ One `/todo:run NNNN` each, highest priority first.
 | ID | Priority | Title | Batch |
 |---|---|---|---|
 | 0630 | Medium | Import chain from the page: the burst review shows the import's new series only | import |
-| 0633 | Medium | The phone's remote has a Stop button for the slideshow | phone |
 | 0498 | Low | The HTML reports in the home page's look | page-shell |
 | 0526 | Low | Sort trial on one month before the whole library | sort |
 | 0566 | Low | Places map: a merged town shows a few photos of each folder | places |

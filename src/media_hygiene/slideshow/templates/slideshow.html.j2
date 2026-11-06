@@ -7,6 +7,7 @@
    Videos (0292) are marked ▶; one the TV cannot play is labelled, never sent to it. The event of
    the photo shown (0448: its folder's name, its month, its place) is said under the controls;
    three buttons choose where it is told: the TV and the phone, the phone only, nowhere. The
+   ■ Stop (0633) ends the show: the TV says so, the remote offers another. The
    storyteller's notes (0449): the photo larger, its time, description and words, the next photo,
    the event's positions over its towns (offline), or over `[places] tiles` when set, and three show controls. #}
 {% set texts = {
@@ -110,7 +111,9 @@
 {% endfor %}
       </select></label>
     <button id="out" class="plain" type="button">{{ _("Do not show") }}</button>
+    <button id="stop" class="plain" type="button">{{ _("■ Stop") }}</button>
   </div>
+  <p id="over" class="card" role="status" hidden>{{ _("The slideshow is over: the TV says so.") }}{% if presence_kept | default(false) %} <a href="/">{{ _("Choose another show") }}</a>{% endif %}</p>
   <div class="telling" role="group" aria-label="{{ _('Where the event is told') }}">
     <span>{{ _("The event's name:") }}</span>
     <button class="plain" type="button" data-where="tv" aria-pressed="false">{{ _("TV and phone") }}</button>

@@ -206,7 +206,23 @@
     document.getElementById("where").className = answer.where ? "" : "quiet";
   }
 
+  // A show stopped from a phone (0633): the screen goes black and says so.
+  function over() {
+    stopFilm();
+    show("");
+    told = 0;
+    hideTelling();
+    placing({ where: "" });
+    document.getElementById("idleWait").className = "hidden";
+    document.getElementById("idleOver").className = "";
+    idle.className = "";
+  }
+
   function showAnswer(answer) {
+    if (answer.ended) {
+      over();
+      return;
+    }
     if (answer.photo || answer.film) {
       idle.className = "hidden";
     }

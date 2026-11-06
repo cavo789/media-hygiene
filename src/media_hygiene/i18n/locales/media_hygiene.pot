@@ -1755,6 +1755,9 @@ msgid ""
 "none is picked"
 msgstr ""
 
+msgid "Choose another show"
+msgstr ""
+
 msgid ""
 "Choose another target with 'classify --target', then edit its new "
 "workbook."
@@ -9957,6 +9960,14 @@ msgstr ""
 msgid "The slideshow is not running any more: start it again on the PC."
 msgstr ""
 
+msgid ""
+"The slideshow is over. Choose another show on the phone: it appears here "
+"by itself."
+msgstr ""
+
+msgid "The slideshow is over: the TV says so."
+msgstr ""
+
 msgid "The sort runs of this plan"
 msgstr ""
 
@@ -16653,6 +16664,9 @@ msgid_plural ""
 " back to the quarantine."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "■ Stop"
+msgstr ""
 
 msgid "▶ Play"
 msgstr ""

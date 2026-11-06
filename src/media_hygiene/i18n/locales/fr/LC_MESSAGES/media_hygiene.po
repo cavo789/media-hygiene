@@ -2163,6 +2163,9 @@ msgstr ""
 "Choisir un autre dossier pour les photos choisies, ou pour tout "
 "l'événement quand aucune ne l'est"
 
+msgid "Choose another show"
+msgstr "Choisir un autre diaporama"
+
 msgid ""
 "Choose another target with 'classify --target', then edit its new "
 "workbook."
@@ -7627,7 +7630,9 @@ msgstr ""
 "de l'index."
 
 msgid "Only the series holding a new photo of the last import."
-msgstr "Seulement les rafales qui contiennent une nouvelle photo du dernier import."
+msgstr ""
+"Seulement les rafales qui contiennent une nouvelle photo du dernier "
+"import."
 
 msgid "Only the series still to see"
 msgstr "Seulement les séries à voir"
@@ -11993,6 +11998,16 @@ msgstr "Le diaporama a échoué (erreur {status})."
 
 msgid "The slideshow is not running any more: start it again on the PC."
 msgstr "Le diaporama ne tourne plus : relancez-le sur le PC."
+
+msgid ""
+"The slideshow is over. Choose another show on the phone: it appears here "
+"by itself."
+msgstr ""
+"Le diaporama est fini. Choisissez-en un autre sur le téléphone : il "
+"apparaît ici tout seul."
+
+msgid "The slideshow is over: the TV says so."
+msgstr "Le diaporama est fini : la télé l'affiche."
 
 msgid "The sort runs of this plan"
 msgstr "Les tris de ce plan"
@@ -19827,6 +19842,9 @@ msgstr[1] ""
 "↩️ {count} photos et vidéos que vous aviez déjà mises de côté sont "
 "revenues ({size}) : retour en quarantaine."
 
+msgid "■ Stop"
+msgstr "■ Arrêter"
+
 msgid "▶ Play"
 msgstr "▶ Lecture"
 
@@ -19992,8 +20010,8 @@ msgid ""
 "📸 A page of mh is open on this PC: on its home page, the last import's "
 "line opens the burst series of the new photos only."
 msgstr ""
-"📸 Une page de mh est ouverte sur ce PC : sur sa page d'accueil, la ligne"
-" du dernier import ouvre les rafales des seules nouvelles photos."
+"📸 Une page de mh est ouverte sur ce PC : sur sa page d'accueil, la ligne "
+"du dernier import ouvre les rafales des seules nouvelles photos."
 
 msgid "📸 Its burst series"
 msgstr "📸 Ses rafales"

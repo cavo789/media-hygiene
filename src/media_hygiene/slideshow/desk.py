@@ -46,6 +46,7 @@ class Action(StrEnum):
     TELL = "tell"  # tell the events `where` (0448)
     EVENT = "event"  # back to the start of this event (0449)
     NEXT_EVENT = "next_event"  # the first photo of the next event (0449)
+    STOP = "stop"  # end the show: the TV says so, the remote offers another (0633)
 
 
 class ShowAsked(BaseModel):
@@ -137,6 +138,7 @@ class Desk:
             "chapter": None if chapter is None else chapter.view(),
             "where": "" if current is None else current.place,  # the TV's corner (0545)
             "story": story_view(show),
+            "ended": show.ended,  # stopped by a phone (0633)
         }
 
     def ask(self, body: bytes) -> Response:
@@ -153,7 +155,10 @@ class Desk:
             asked = ShowAsked.model_validate_json(body)
         except ValidationError:
             return Response(HTTPStatus.BAD_REQUEST)
-        if not self._apply(asked):
+        if self.show.ended or asked.action is Action.STOP:  # an ended show stays ended
+            self.show.ended = True
+            self.show.play(playing=False)
+        elif not self._apply(asked):
             return Response(HTTPStatus.NOT_FOUND)
         self.changes.notify()
         return json_response(HTTPStatus.OK, self.state())
@@ -165,14 +170,14 @@ class Desk:
             asked: The action, its photo, its interval.
 
         Returns:
-            False for a photo not in the show.
+            False for a photo not in the show; a show ended takes no other action.
         """
         show = self.show
         key = -1 if asked.key is None else asked.key
         match asked.action:
             case Action.NEXT | Action.PREVIOUS:
                 show.move(1 if asked.action is Action.NEXT else -1)
-            case Action.PLAY | Action.PAUSE:
+            case Action.PLAY | Action.PAUSE | Action.STOP:  # STOP: `ask` ends it
                 show.play(playing=asked.action is Action.PLAY)
             case Action.PACE:
                 seconds = asked.seconds or show.timing.interval

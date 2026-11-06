@@ -186,3 +186,17 @@ def test_a_page_waiting_too_long_gets_the_show_unchanged() -> None:
     seen = desk.show.version
     asyncio.run(desk.settle(seen, limit=0.01))
     assert desk.show.version == seen
+
+
+def test_stop_ends_the_show_and_it_takes_no_other_action() -> None:
+    """A phone's Stop (0633): paused, ended for every page; nothing moves it."""
+    desk = _desk(_show())
+    _ask(desk, {"action": "play"})
+    status, state = _ask(desk, {"action": "stop"})
+    assert status is HTTPStatus.OK
+    assert state["ended"] is True
+    assert state["playing"] is False
+    after = _ask(desk, {"action": "next"})[1]
+    assert after["ended"] is True
+    assert after["current"] == state["current"]
+    assert _ask(desk, {"action": "play"})[1]["playing"] is False

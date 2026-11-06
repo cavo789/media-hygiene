@@ -20,7 +20,7 @@ The TV shows a code? Type it on the phone.
 
 - **▶** and **◀**: next and previous photo. A tap on a thumbnail shows that one.
 - **❚❚ Pause** stops on the photo; **▶ Play** goes on.
-- To end: choose another show here; the PC alone stops the slideshow.
+- **■ Stop** ends the show: the TV says the slideshow is over. Then **Choose another show** brings you back here. Stop changes no photo and no setting.
 
 [Everything about the slideshow (PC)](#run-it).
 

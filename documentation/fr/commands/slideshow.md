@@ -20,7 +20,7 @@ télé**, touchez un album, un dossier ou un mois. La télé montre un code ? Ta
 
 - **▶** et **◀** : photo suivante et précédente. Une vignette touchée montre celle-là.
 - **❚❚ Pause** s'arrête sur la photo ; **▶ Lecture** repart.
-- Pour finir : choisissez un autre diaporama ici ; seul le PC arrête le diaporama.
+- **■ Arrêter** met fin au diaporama : la télé dit qu'il est fini. Puis **Choisir un autre diaporama** vous ramène ici. Arrêter ne change aucune photo ni aucun réglage.
 
 [Tout sur le diaporama (PC)](#lancer).
 

@@ -127,6 +127,7 @@ def screen_view(desk: Desk) -> dict[str, object]:
         "code": "",
         "chapter": told_chapter(desk),
         "where": told_place_of(desk),
+        "ended": show.ended,  # stopped by a phone (0633): the TV says so
     }
 
 
