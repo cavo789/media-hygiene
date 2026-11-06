@@ -38,6 +38,7 @@ from media_hygiene.services.data_checks import (
 )
 from media_hygiene.services.listing import tell_followed
 from media_hygiene.services.near_checks import NearTools, checked_similar
+from media_hygiene.services.photo_refs_audit import relocate_after_audit
 from media_hygiene.services.policy import backup_folders, keep_policy, scan_filters
 from media_hygiene.services.returned import JournalFindings, returned_finder
 from media_hygiene.services.spot_fill import fill_spots
@@ -109,6 +110,7 @@ class AuditService:
         sidecars = sidecars_in_scope(
             library.sidecars, policy, alone=not runtime.settings.scan.extensions
         )
+        relocate_after_audit(runtime)  # renamed in Explorer: 0551, 0570
         return AuditFindings(
             roots=roots,
             plan=replace(

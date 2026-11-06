@@ -9632,7 +9632,7 @@ msgid "The photo, full screen"
 msgstr ""
 
 #, python-brace-format
-msgid "The photos given a place or a word were not followed ({reason})."
+msgid "The photos given a place, a word or a name were not followed ({reason})."
 msgstr ""
 
 #, python-brace-format
@@ -14637,6 +14637,26 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} named face"
 msgid_plural "{count} named faces"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} named face is on a photo renamed outside: its path is updated, "
+"read back from the disk."
+msgid_plural ""
+"{count} named faces are on photos renamed outside: their path is updated,"
+" read back from the disk."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} named face was on a photo edited since: another photo, its name "
+"is forgotten."
+msgid_plural ""
+"{count} named faces were on photos edited since: other photos, their "
+"names are forgotten."
 msgstr[0] ""
 msgstr[1] ""
 

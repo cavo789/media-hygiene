@@ -1,10 +1,12 @@
-"""At the end of an `audit`: the photos given a place or a word, renamed outside, found.
+"""At the end of every audit: the photos given a place, a word or a name, found again.
 
 A folder renamed in Explorer leaves `path` stale in `places/<name>.toml`: the index,
 just refreshed, holds every file with its size; among those of each listed id's size,
 the digest decides (the index's, else read once from the disk: only files of a listed
 size are read, never the collection). The `path` is rewritten, read back, and said in
-one line (0551). A file that cannot be rewritten is said too; the audit stays done.
+one line (0551). The named faces too (0570, `face_refs_audit`), after `mh audit`,
+`import` and the home page's audit alike: `AuditService.run` calls this. A file
+that cannot be rewritten is said too; the audit stays done.
 """
 
 from __future__ import annotations
@@ -19,6 +21,14 @@ from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.places.photo_moves import ids_wanted, relocate_place_photos
+from media_hygiene.services.face_refs_audit import (
+    FaceSources,
+    FaceTally,
+    face_files,
+    rewrite_file,
+    wanted_ids,
+)
+from media_hygiene.services.face_refs_said import say_faces
 from media_hygiene.tags.hand_edit import hand_ids, relocate_hand_tags
 
 if TYPE_CHECKING:
@@ -35,10 +45,11 @@ def relocate_after_audit(runtime: Runtime) -> None:
     Args:
         runtime: Settings, mount points and output.
     """
-    config_file = runtime.locations.config_file
+    config_file, tally = runtime.locations.config_file, FaceTally()
     try:
-        wanted = ids_wanted(config_file) | hand_ids(config_file)
-        if not wanted:
+        faces = face_files(config_file.parent)
+        wanted = ids_wanted(config_file) | hand_ids(config_file) | wanted_ids(faces)
+        if not wanted and not faces:
             return
         with FactsRepository.open(runtime.index_file) as repository:
             found = located(repository.connection, wanted)
@@ -48,13 +59,17 @@ def relocate_after_audit(runtime: Runtime) -> None:
         }
         count = relocate_place_photos(config_file, hosts)
         worded = relocate_hand_tags(config_file, hosts)  # the words typed (0555)
+        for file in faces:  # the named faces (0570)
+            rewrite_file(file, FaceSources(hosts, runtime.mapper), tally)
     except (OSError, ValueError, sqlite3.Error, MediaHygieneError) as exc:
         runtime.output.info(
             _(
-                "The photos given a place or a word were not followed ({reason})."
+                "The photos given a place, a word or a name were not followed "
+                "({reason})."
             ).format(reason=exc)
         )
         return
+    say_faces(runtime, tally)
     if count:
         runtime.output.info(
             ngettext(

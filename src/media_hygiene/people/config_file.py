@@ -29,6 +29,7 @@ from media_hygiene.config.people_settings import PeopleSettings, Person
 from media_hygiene.people.person_files import Links, remove_unlinked, write_files
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
     from pathlib import Path
 
     from tomlkit.toml_document import TOMLDocument
@@ -58,12 +59,15 @@ def read_people(config_file: Path) -> PeopleSettings:
     return PeopleSettings.model_validate(section)
 
 
-def save_people(config_file: Path, wanted: PeopleSettings) -> None:
+def save_people(
+    config_file: Path, wanted: PeopleSettings, moves: Mapping[str, str] | None = None
+) -> None:
     """Write the names and the ignored faces, leaving every other setting as it is.
 
     Args:
         config_file: `config.toml`, created when missing.
         wanted: The section; only `person` and `ignored` are written.
+        moves: New container path by old one of a run's moves (the ids follow).
 
     Raises:
         ValueError: The file is not TOML, or the result would not load.
@@ -73,7 +77,7 @@ def save_people(config_file: Path, wanted: PeopleSettings) -> None:
     document = tomlkit.parse(text)
     section = _section(document)
     before = _links(tomllib.loads(text).get(SECTION, {}))
-    links = write_files(config_file.parent, wanted)
+    links = write_files(config_file.parent, wanted, moves)
     if IGNORED in section:
         del section[IGNORED]
     if links.ignored:
