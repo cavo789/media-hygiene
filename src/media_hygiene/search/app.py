@@ -17,13 +17,12 @@ from media_hygiene.review.home_views import APPLY_PATH
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import refused_post, serve_connection
 from media_hygiene.review.videos import NEAR_POLICY, VIDEO_PREFIX, video_response
-from media_hygiene.search.album_root_desk import folder_gets
 from media_hygiene.search.chosen_api import CHOSEN_PATH
 from media_hygiene.search.coverage import CoverageKept
 from media_hygiene.search.date_desk import DATE_PATH
 from media_hygiene.search.events_choose import SORT_POSTS, events_get, sort_post
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
-from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS
+from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS, FOLDERS_PATH
 from media_hygiene.search.found_answer import awaited_answer, found_answer
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH
 from media_hygiene.search.people_why import (
@@ -174,7 +173,7 @@ class SearchApp:
         states: dict[str, Callable[[], Response]] = {
             CHOSEN_PATH: self.place.chosen.state,
             ALBUMS_PATH: self.place.albums.state,
-            **folder_gets(self.place.folders),
+            FOLDERS_PATH: self.place.folders.tree,
             PERIOD_RULES_PATH: self.place.rules.state,
             **(
                 {UNDO_PATH: partial(latest_answer, self.place.undo)}

@@ -43,6 +43,12 @@
   #albumFacts { color: var(--muted); font-size: .9rem; overflow-wrap: anywhere; }
   #otherAlbum { padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--text); }
   #otherAlbum input { padding: 4px 8px; font: inherit; }
+  #makeDialog { max-width: min(38em, 92vw); padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--text); overflow-wrap: anywhere; }
+  #makeDialog h2 { margin-top: 0; }
+  #makeDialog input { width: 100%; box-sizing: border-box; padding: 4px 8px; font: inherit; }
+  #makeDialog .warn { color: var(--muted); font-size: .9rem; }
+  #makeDialog .error { color: var(--bad); font-weight: 600; }
+  #makeFolderForm[hidden], #makeGo[hidden] { display: none; }
 {% endblock %}
 {% block side %}
     <p><a id="backList" href="{{ paths.list_page }}">← {{ _("Albums") }}</a></p>
@@ -56,6 +62,7 @@
       <button id="linkStop" class="plain" type="button">⏹ {{ _("Stop sharing") }}</button>
     </div>
     <p id="linkSaid" role="status"></p>
+    <p><button id="folderMake" class="plain" type="button" title="{{ _('No photo is copied, no extra space, no duplicate') }}">📁 {{ _("Make the folder in Explorer") }}</button></p>
     <p><a id="addPhotos" class="button" href="{{ paths.search_page }}" title="{{ _('Search your photos, aimed at this album: its dates, its name in the album field') }}">➕ {{ _("Add photos") }}</a></p>
 {% endblock %}
 {% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
@@ -76,11 +83,13 @@
     <button id="otherClose" class="plain" type="button" aria-label="{{ _('Close') }}">✕</button>
   </form>
 </dialog>
+{% include "album_make.html.j2" %}
 {% include "pick_viewer.html.j2" %}
 <script>
 {% include "pick_grid.js.j2" %}
 {% include "pick_viewer.js.j2" %}
 {% include "pick_band.js.j2" %}
 {% include "album_edit.js.j2" %}
+{% include "album_make.js.j2" %}
 </script>
 {% endblock %}

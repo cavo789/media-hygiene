@@ -13,6 +13,7 @@ from media_hygiene.index.meaning_rows import MeaningStore, vector_count, vectors
 from media_hygiene.index.parked import park, unpark
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.meaning.clip import MODEL
+from media_hygiene.meaning.pace import PhotoPace
 from tests.support.meaning import colour_vector
 
 _BLUE = colour_vector((60, 120, 230))
@@ -37,14 +38,14 @@ def test_a_vector_is_kept_for_one_version_and_one_model(tmp_path: Path) -> None:
     with _repository(tmp_path) as repository:
         store = MeaningStore(repository.connection, MODEL)
         assert store.missing((_PHOTO, _OTHER)) == (_PHOTO, _OTHER)
-        assert store.seconds_per_photo() is None
+        assert store.pace() is None
         store.put(_PHOTO, _BLUE, 0.05)
         store.put(_OTHER, _WHITE, 0.0)  # a copy: no time of its own
         assert not store.missing((_PHOTO, _OTHER))
         edited = PhotoVersion(_PHOTO.path, 11, 7)
         assert store.missing((edited,)) == (edited,)
         assert MeaningStore(repository.connection, "other").missing((_PHOTO,))
-        assert store.seconds_per_photo() == 0.05
+        assert store.pace() == PhotoPace(0.05)  # the copy does not lower it
         keys, matrix = vectors(repository.connection, MODEL)
         assert len(keys) == 2
         assert np.allclose(matrix[0], _BLUE)

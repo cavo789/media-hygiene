@@ -84,7 +84,7 @@ Every option has its line in the `[classify]` section of `config.toml`; the rule
 cavo789/media-hygiene classify --year 2016 --layout "{year}/{month}"
 
 # Build the tree in another (mounted) folder, leave the albums alone
-cavo789/media-hygiene classify --target "D:\Photos sorted" --leave "C:\Photos\Albums"
+cavo789/media-hygiene classify --target "D:\Photos sorted" --leave "C:\Photos\_Albums"
 
 # How long would the local model take?
 cavo789/media-hygiene classify --sample 20

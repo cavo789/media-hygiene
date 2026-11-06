@@ -137,8 +137,8 @@ def _view(draft: Draft, mapper: HostPathMapper, picked: frozenset[int]) -> Draft
     frames = tuple(
         FrameView(
             at=round(look.duration * share, 1),
-            before=f"{FRAME_PREFIX}{number}-a-{index}.jpg",
-            after=f"{FRAME_PREFIX}{number}-b-{index}.jpg",
+            before=f"{FRAME_PREFIX[1:]}{number}-a-{index}.jpg",
+            after=f"{FRAME_PREFIX[1:]}{number}-b-{index}.jpg",
         )
         for index, share in enumerate(INSTANTS)
     )
@@ -147,7 +147,7 @@ def _view(draft: Draft, mapper: HostPathMapper, picked: frozenset[int]) -> Draft
         update={
             "after": draft.size,
             "gain": gain,
-            "video": f"{DRAFT_PREFIX}{number}.mp4",
+            "video": f"{DRAFT_PREFIX[1:]}{number}.mp4",
             "frames": frames,
         }
     )

@@ -12,7 +12,7 @@ from media_hygiene.review.home_fields import STEP_FILE_NAME
 from media_hygiene.review.home_step import StepDoor, step_response
 from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
 from media_hygiene.review.http import Request
-from media_hygiene.review.step_watch import WATCH, StepState, step_state
+from media_hygiene.review.step_watch import WATCH, StepState, served_here, step_state
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.home_views import HomeState
 
 _JSON: Final = {"host": "127.0.0.1", "content-type": "application/json"}
-_STEPS: Final = {3: "mh tags", 4: "mh shrink --try", 5: "mh library"}
+_STEPS: Final = {3: "mh tags", 4: "mh shrink --try --lighter", 5: "mh library"}
 
 
 class _Menu:
@@ -84,7 +84,7 @@ def test_a_second_step_waits_for_the_first(tmp_path: Path) -> None:
     assert "running in the window of mh" in str(body["error"])
     (tmp_path / WATCH.now).unlink()
     (tmp_path / WATCH.running).write_text('{"id": "x"}', "utf-8")
-    command = {"number": 4, "command": "mh shrink --try"}
+    command = {"number": 4, "command": "mh shrink --try --lighter"}
     assert _post(door, command)[0] == HTTPStatus.CONFLICT
     assert ending.asked is None
 
@@ -92,14 +92,14 @@ def test_a_second_step_waits_for_the_first(tmp_path: Path) -> None:
 def test_a_page_step_still_ends_the_server(tmp_path: Path) -> None:
     """A page needs the port: its words in the one-shot file, the fields code.
 
-    `--intruders` is served by the home server since 0594: `shrink --try` is not.
+    `shrink --try` is served by the home server since 0599; with an option it is not.
     """
     door, ending = _door(tmp_path)
-    status, _body = _post(door, {"number": 4, "command": "mh shrink --try"})
+    status, _body = _post(door, {"number": 4, "command": "mh shrink --try --lighter"})
     assert status == HTTPStatus.OK
     assert ending.asked == STEP_EXIT_BASE + FIELDS_STEP
     written = json.loads((tmp_path / STEP_FILE_NAME).read_text("utf-8"))
-    assert written == {"words": ["shrink", "--try"]}
+    assert written == {"words": ["shrink", "--try", "--lighter"]}
     assert not (tmp_path / WATCH.now).exists()
 
 
@@ -134,3 +134,9 @@ def test_a_page_served_here_is_a_plain_link(tmp_path: Path) -> None:
     assert ending.asked is None
     assert not (tmp_path / STEP_FILE_NAME).exists()
     assert not (tmp_path / WATCH.now).exists()
+
+
+def test_the_try_of_shrink_is_served_here_without_ending() -> None:
+    """0599: its plain form is a page of this server, the server stays up."""
+    assert served_here(("shrink", "--try")) == "/shrink/"
+    assert served_here(("shrink", "--try", "--lighter")) is None

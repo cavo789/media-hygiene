@@ -10,6 +10,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.cli.menu_catalog_share import DRIVE_HELP
+from media_hygiene.docs.served import served_url
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.lan_paths import LAN_PATH
 from media_hygiene.review.local_app import PAGE_PATH
@@ -96,7 +98,13 @@ def show_app(runtime: Runtime, desk: Desk, serving: Serving) -> SlideshowApp:
     phone_url = "" if lan is None else f"{lan.origin}{serving.remote}"  # on the TV
     pages = ShowPages(
         headed_page(
-            environment, _REMOTE_TEMPLATE, {**paths, "presence_kept": serving.kept}
+            environment,
+            _REMOTE_TEMPLATE,
+            {
+                **paths,
+                "presence_kept": serving.kept,
+                "phone_help": served_url(DRIVE_HELP),
+            },
         ),
         environment.get_template(_SCREEN_TEMPLATE)
         .render(**paths, phone_url=phone_url, **_TELLING)

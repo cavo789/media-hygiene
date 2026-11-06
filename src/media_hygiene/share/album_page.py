@@ -35,6 +35,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.ending import Handling
     from media_hygiene.review.http import Request
     from media_hygiene.share.album_api import AlbumDesk
+    from media_hygiene.share.album_folder_door import AlbumFolderDoor
     from media_hygiene.share.album_link_door import AlbumLinkDoor
     from media_hygiene.share.album_shelf import AlbumShelf, Keyed, Shown
 
@@ -65,6 +66,7 @@ class AlbumParts:
     shown: Shown  # shared with the desk: a change names an album's files only
     edit: bytes = b""  # one album as tiles to pick (0500)
     links: AlbumLinkDoor | None = None  # its 24 h links, under `mh --lan` (0462)
+    folder: AlbumFolderDoor | None = None  # the albums' folder, the PC's (0625)
 
 
 @dataclass(frozen=True, slots=True)
@@ -85,6 +87,10 @@ class AlbumPages:
         """
         if not is_local(request):
             return await self.home.handle(request)
+        door = self.parts.folder
+        made = None if door is None else await door.answer(request)
+        if made is not None:
+            return made
         if request.method == _POST and request.path in PHONE_WRITES:
             refused = refused_post(request)
             if refused is not None:

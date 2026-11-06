@@ -16,11 +16,17 @@ from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.page_header import ALBUMS_DOC, page_header
+from media_hygiene.search.album_make_desk import ALBUM_MAKE_PATH, AlbumMakeDesk
+from media_hygiene.search.album_move_desk import ALBUM_MOVE_PATH
+from media_hygiene.search.album_root_desk import ALBUM_ROOT_PATH, album_root_desk
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.aside_filter import AsideFilter, Kept
+from media_hygiene.search.folder_role_desk import RoleDesk
 from media_hygiene.services.album_reader import AlbumReader
 from media_hygiene.services.albums import album_desk
 from media_hygiene.services.aside_paths import set_aside
+from media_hygiene.services.search_desks import shown_roots
+from media_hygiene.share.album_folder_door import AlbumFolderDoor
 from media_hygiene.share.album_link_door import ALBUM_LINK_PATH, AlbumLinkDoor
 from media_hygiene.share.album_page import (
     ALBUM_CHANGE_PATH,
@@ -28,6 +34,7 @@ from media_hygiene.share.album_page import (
     ALBUM_LIST_PATH,
     ALBUM_PREFIX,
     ALBUMS_PAGE,
+    PHONE_HEADER,
     AlbumPages,
     AlbumParts,
 )
@@ -60,8 +67,37 @@ def album_pages(runtime: Runtime, home: Handling, server: HomeServer) -> AlbumPa
     aside = AsideFilter(partial(set_aside, runtime), runtime.mapper)
     desk = album_desk(runtime, partial(_picked, (reader, shown, aside)), server.tv)
     door = AlbumLinkDoor(reader, album_page(link=True))  # used under `mh --lan` (0462)
-    parts = AlbumParts(album_page(), reader, desk, shown, album_edit_page(), door)
+    parts = AlbumParts(
+        album_page(),
+        reader,
+        desk,
+        shown,
+        album_edit_page(),
+        door,
+        _folder_door(runtime),
+    )
     return AlbumPages(home, parts)
+
+
+def _folder_door(runtime: Runtime) -> AlbumFolderDoor:
+    """The albums' folder, said and changed, and an album's folder made (0625).
+
+    Args:
+        runtime: Settings, mount points and output.
+
+    Returns:
+        Its door, for the PC alone.
+    """
+    locations = runtime.locations
+    roles = RoleDesk(locations.config_file, runtime.mapper, shown_roots(runtime))
+    root = album_root_desk(roles, runtime)
+    posts = {
+        ALBUM_ROOT_PATH: root.answer,
+        ALBUM_MAKE_PATH: AlbumMakeDesk(runtime).answer,
+    }
+    if root.move is not None:
+        posts[ALBUM_MOVE_PATH] = root.move.answer
+    return AlbumFolderDoor({ALBUM_ROOT_PATH: root.state}, posts, PHONE_HEADER)
 
 
 def album_page(template: str = _TEMPLATE, *, link: bool = False) -> bytes:
@@ -91,6 +127,8 @@ def album_page(template: str = _TEMPLATE, *, link: bool = False) -> bytes:
                 "edit_page": ALBUM_EDIT_PAGE,
                 "search_page": SEARCH_PAGE_PATH,  # *Add photos* (0501)
                 "link": ALBUM_LINK_PATH,  # 🔗 Share by link (0462)
+                "album_root": ALBUM_ROOT_PATH,  # 📁 Albums folder (0625)
+                "album_make": ALBUM_MAKE_PATH,
             },
             albums_path=ALBUM_CHANGE_PATH,  # 📺 On the TV posts its files there
             tv_here=True,

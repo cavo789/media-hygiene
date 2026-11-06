@@ -198,7 +198,7 @@ Tout est dans la section `[classify]` de `config.toml`
   monté) ; par défaut, chaque dossier monté est réorganisé sur place.
 - `--year 2016`, ou `--year 2015-2017` : une année à la fois, une soirée à la fois. Les
   fichiers datés seulement par le disque attendent un classify sans `--year`.
-- `--leave 'C:\Photos\Albums'` : un dossier jamais trié, toujours analysé et nettoyé.
+- `--leave 'C:\Photos\_Albums'` : un dossier jamais trié, toujours analysé et nettoyé.
 
 Les modèles acceptent `{year}`, `{year_month}`, `{quarter}`, `{month}`, `{month_name}`, `{day}`,
 `{category}`, `{event}` et `{event_start}`. Un modèle vide laisse les fichiers où ils sont.

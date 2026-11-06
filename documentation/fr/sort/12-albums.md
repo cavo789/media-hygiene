@@ -35,15 +35,15 @@ Dans `config.toml` ([le fichier de configuration](../clean/07-configuration-file
 
 ```toml
 [album]
-root = 'C:\Photos\Albums'
+root = 'C:\Photos\_Albums'
 ```
 
-Laissé vide, les albums vont dans un dossier `Albums` du `target` de `[classify]`
+Laissé vide, les albums vont dans un dossier `_Albums` du `target` de `[classify]`
 ([étape 4](04-classify.md#votre-propre-structure)).
 
 Un lien physique ne quitte jamais son disque, **ni le dossier monté avec `-v`** : deux dossiers
 montés séparément sont deux endroits différents pour Docker, même sur le même lecteur. Montez le
-dossier qui contient à la fois vos photos et les albums (`C:\Photos` pour `C:\Photos\Albums`).
+dossier qui contient à la fois vos photos et les albums (`C:\Photos` pour `C:\Photos\_Albums`).
 `album` le vérifie avant de créer quoi que ce soit, et met à part les fichiers qu'il ne peut pas
 lier.
 
@@ -93,7 +93,7 @@ docker run --rm -it `
 ────────────────────────────────── Album Noël ──────────────────────────────────
 Classeur : C:\Users\vous\media-hygiene\reports\20261002-123210-classify\classify.xlsx
 ┌────────────────────────────────┬───────────────────────┐
-│ Dossier de l'album             │ C:\Photos\Albums\Noël │
+│ Dossier de l'album             │ C:\Photos\_Albums\Noël │
 │ Fichiers choisis               │                   212 │
 │ Liens à créer                  │                   212 │
 │ Déjà dans l'album              │                     0 │

@@ -79,6 +79,10 @@ mêmes réglages que `--apply`, et ouvre une page qui montre chacune dès qu'ell
   habituelle, puis les allège comme `--apply` (originaux en quarantaine, journalisé,
   annulable), **en réutilisant chaque brouillon** : rien n'est encodé deux fois. Une vidéo
   déplacée, renommée ou modifiée depuis la page est sautée, avec une ligne.
+- **Depuis la page d'accueil**, la page est servie par le serveur d'accueil, qui reste ouvert :
+  *Alléger maintenant celles choisies* demande une fois dans la page, puis le ré-encodage tourne
+  dans la fenêtre de `mh` (`shrink --chosen --yes`, que la page lance pour vous) et la page le
+  suit. Quitter la page supprime ses brouillons.
 
 ```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
@@ -155,6 +159,7 @@ est dit après chaque vidéo.
 | `--lighter` | 720 lignes au plus, une compression plus forte. |
 | `--try` | Des brouillons des `try_count` premières, comparés dans le navigateur ; alléger depuis la page. |
 | `--apply` | Les alléger ; sans elle, seulement les lister. |
+| `--chosen` | Alléger les vidéos choisies sur la page de la page d'accueil, leurs brouillons réutilisés ; la page le lance. |
 | `--yes`, `-y` | Ne pas demander d'abord. |
 
 ## Bon à savoir

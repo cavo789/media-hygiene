@@ -2,6 +2,13 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `library` · 🇬🇧 [English](../../en/commands/library.md)
 
+## Que cherchez-vous ?
+
+- 📱 [Trouver une photo depuis le téléphone : quoi taper](#ce-que-vous-pouvez-taper)
+- 🖼 [Mettre des photos dans un album](#mettre-des-photos-dans-un-album)
+- 📂 [Parcourir vos dossiers](#parcourir-vos-dossiers)
+- 💻 [Je suis sur le PC et je pars de zéro](#lancer)
+
 ## En bref
 
 **Retrouver une photo par ce dont vous vous souvenez : un mot, un lieu, une année, une
@@ -458,16 +465,7 @@ aussi **📺 Partager sur la télé** et **📨 Préparer l'envoi**.
   n'a été copiée ni déplacée.*
 - Ce n'est **pas** la mise de côté : *Mettre de côté* prépare un retrait, *Ajouter à l'album* un
   partage. Aucun des deux ne touche jamais la liste de l'autre.
-- **📁 Vos albums vont dans …**, dans ce panneau, dit où les dossiers d'albums (`mh album <nom>
-  --apply`) sont faits : `[album] root` de `config.toml`, sinon `Albums` dans la photothèque
-  triée. Non réglé, la barre demande *Où mettre vos albums ?* ; **📁 Changer** le règle. Le
-  dossier doit être dans un dossier monté, hors des dossiers protégés, et accessible en écriture ;
-  il est enregistré dans `config.toml` (vos commentaires gardés) et affiché tel que relu. Si des
-  dossiers d'albums ont été faits dans l'ancien dossier, **Déplacer les N dossiers d'album créés
-  dans …** refait chaque album de `albums.json` dans le nouveau dossier (une exécution par album,
-  annulée par le `mh undo <exécution>` que la réponse donne), puis vide l'ancien dossier des liens
-  que media-hygiene a faits : un fichier que vous y avez mis vous-même reste, signalé, et son
-  dossier aussi.
+- **Où vont les dossiers d'album** se règle sur [la page des albums](album.md#depuis-la-page-des-albums).
 - **Retirer de l'album** retire les photos choisies de l'album tapé ; un album laissé vide est
   supprimé.
 - **Album** dans la colonne de gauche, une fois un album tapé : *Dans l'album* ne montre que ses

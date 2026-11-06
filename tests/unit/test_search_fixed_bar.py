@@ -14,7 +14,8 @@ def _bar(page: str) -> str:
 def test_the_actions_stay_in_the_bar_greyed_while_nothing_is_picked() -> None:
     """The lead and the actions both shown; the script greys them instead of hiding."""
     page = render_page("search.html.j2")
-    assert "#bar > #lead[hidden], #bar > #acting[hidden] { display: flex; }" in page
+    assert "#bar > #lead[hidden] { display: flex; }" in page
+    assert "#bar > #acting, #bar > #acting[hidden] { display: contents; }" in page
     assert (
         'for (const id of ["unpick", "setAside", "invert"]) $(id).disabled = !some;'
         in page

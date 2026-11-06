@@ -25,6 +25,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "  … and {count} more."
+msgstr ""
+
+#, python-brace-format
 msgid "  … and {count} more: the HTML report lists them all."
 msgstr ""
 
@@ -394,6 +398,20 @@ msgid_plural "+ {n} photos placed by hand"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "- A file you put here yourself is never touched."
+msgstr ""
+
+msgid "- A retouch of a photo here changes the original too: it is the same file."
+msgstr ""
+
+msgid "- Deleting a photo here leaves the original where it is."
+msgstr ""
+
+msgid ""
+"- No extra space: each photo of an album is a second name of the same "
+"file (a hard link), not a copy."
+msgstr ""
+
 msgid ""
 "--chosen is gone (it showed the files set aside for the bin): add the "
 "photos to an album in search, then --album \"Crete 2023\"."
@@ -750,6 +768,12 @@ msgstr ""
 msgid ""
 "A result less than min_gain_percent percent smaller is thrown away: the "
 "original stays, and the video is not tried again."
+msgstr ""
+
+msgid ""
+"A retouch of a photo in the folder changes the original too: it is the "
+"same file. The folder must be on the same disk and in the same mounted "
+"folder (-v) as the photos; exFAT refuses hard links."
 msgstr ""
 
 #, python-brace-format
@@ -1304,6 +1328,9 @@ msgid "At home"
 msgstr ""
 
 msgid "Audit"
+msgstr ""
+
+msgid "Audit again so that they join your library."
 msgstr ""
 
 msgid "Audit in this page"
@@ -2729,6 +2756,10 @@ msgstr ""
 msgid "Entry"
 msgstr ""
 
+#, python-brace-format
+msgid "Erase run {run} for good? This cannot be undone, not even by 'undo'."
+msgstr ""
+
 msgid ""
 "Erase the quarantine of a run for good: with 'clean --delete', the only "
 "way the tool removes content."
@@ -2736,6 +2767,16 @@ msgstr ""
 
 #, python-brace-format
 msgid "Erase the quarantine of {runs} ({count} files, {size})?"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Erase these {count} files and {others} other files not shown for good: "
+"frees {size}"
+msgstr ""
+
+#, python-brace-format
+msgid "Erase these {count} files for good: frees {size}"
 msgstr ""
 
 #, python-brace-format
@@ -2748,6 +2789,10 @@ msgstr ""
 msgid ""
 "Erases without showing the files: the quarantine's page shows the photos "
 "first."
+msgstr ""
+
+#, python-brace-format
+msgid "Erasing in the window of mh: {command}"
 msgstr ""
 
 msgid "Error"
@@ -3332,6 +3377,10 @@ msgstr ""
 msgid "Folder whose copies are kept first. Repeat it; the order matters."
 msgstr ""
 
+#, python-brace-format
+msgid "Folder: {folder}"
+msgstr ""
+
 msgid "Folders"
 msgstr ""
 
@@ -3731,7 +3780,7 @@ msgstr ""
 
 msgid ""
 "Host folder holding the albums of 'album': folders of hard links, a "
-"second name for each photo, which take no space. Empty: 'Albums' in the "
+"second name for each photo, which take no space. Empty: '_Albums' in the "
 "[classify] target folder. It must be on the disk of the photos, in the "
 "same mounted folder."
 msgstr ""
@@ -3761,6 +3810,9 @@ msgid ""
 "How 'classify' proposes a tree for your photos and videos. Every value "
 "below is an example: replace it with your own structure. Nothing moves "
 "before 'sort'."
+msgstr ""
+
+msgid "How do I open it on the TV?"
 msgstr ""
 
 msgid "How do we know these are duplicates?"
@@ -3869,6 +3921,10 @@ msgid ""
 msgstr ""
 
 msgid "In the menu on the left and in the palette."
+msgstr ""
+
+#, python-brace-format
+msgid "In the window of mh: {command}"
 msgstr ""
 
 msgid "In this page"
@@ -4261,6 +4317,11 @@ msgstr ""
 msgid "Lighten the heavy videos"
 msgstr ""
 
+msgid ""
+"Lighten the videos chosen on the home page's Lighten page, reusing their "
+"drafts. The page starts it for you."
+msgstr ""
+
 #, python-brace-format
 msgid "Lighten the {count} chosen now"
 msgstr ""
@@ -4269,6 +4330,12 @@ msgid "Lighten them; without it, only list them with the gain expected."
 msgstr ""
 
 msgid "Lighten them?"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Lighten these {count} videos? Each original goes to the quarantine; "
+"'undo' brings it back."
 msgstr ""
 
 msgid "Lighten this one"
@@ -4280,7 +4347,15 @@ msgstr ""
 msgid "Lighten without asking first."
 msgstr ""
 
+msgid ""
+"Lightened. Changed your mind? History and undo, on the home page, brings "
+"the originals back."
+msgstr ""
+
 msgid "Lightening"
+msgstr ""
+
+msgid "Lightening in the window of mh; this page follows it. You may close it."
 msgstr ""
 
 msgid ""
@@ -4416,6 +4491,9 @@ msgid "Make room on the phone"
 msgstr ""
 
 msgid "Make room on the phone: launching erases nothing"
+msgstr ""
+
+msgid "Make the folder in Explorer"
 msgstr ""
 
 msgid "Make the links; without it, only show what the album gathers."
@@ -4950,6 +5028,12 @@ msgid ""
 "as photos first; its question comes next."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Next, in the window of mh, each with its own question: {steps}. The home "
+"page follows them."
+msgstr ""
+
 msgid "No"
 msgstr ""
 
@@ -5148,6 +5232,9 @@ msgstr ""
 msgid "No identical copy"
 msgstr ""
 
+msgid "No import has steps left to run."
+msgstr ""
+
 #, python-brace-format
 msgid "No index in {folder}: no photo to look at yet."
 msgstr ""
@@ -5243,6 +5330,14 @@ msgid "No photo folder: type mh import --phone --to <folder>."
 msgstr ""
 
 msgid "No photo in the cache: run the audit first."
+msgstr ""
+
+msgid "No photo is copied, no extra space, no duplicate"
+msgstr ""
+
+msgid ""
+"No photo is copied, no extra space, no duplicate: each one gets a second "
+"name in the folder, ready to upload to a print service in full quality."
 msgstr ""
 
 msgid "No photo left to analyse: every one is in the cache."
@@ -5884,6 +5979,11 @@ msgid ""
 msgstr ""
 
 msgid "On the dates of your photos: the events are named by classify."
+msgstr ""
+
+msgid ""
+"On the disk of your photos, in the same mounted folder (-v). exFAT "
+"refuses hard links."
 msgstr ""
 
 msgid ""
@@ -6689,7 +6789,7 @@ msgstr ""
 msgid "Proving identity (full SHA-256)"
 msgstr ""
 
-msgid "Purge: History and undo"
+msgid "Purge"
 msgstr ""
 
 #, python-brace-format
@@ -6802,6 +6902,9 @@ msgstr ""
 msgid "RAW file cannot be decoded"
 msgstr ""
 
+msgid "READ-ME - managed by Media Hygiene.txt"
+msgstr ""
+
 msgid "Radius, in metres"
 msgstr ""
 
@@ -6864,8 +6967,20 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"Read back from the disk: run {run} is gone, {freed} freed ({stated} "
+"stated)."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Read back from the disk: run {run} is still in the quarantine. The window"
+" of mh says why."
+msgstr ""
+
+#, python-brace-format
+msgid ""
 "Read back from the disk: {count} copies made, {failed} failed. mh undo "
-"{run} removes them. Audit again so that they join your library."
+"{run} removes them."
 msgstr ""
 
 #, python-brace-format
@@ -7781,7 +7896,7 @@ msgstr ""
 
 msgid ""
 "Set album.root in config.toml, a folder on the disk of your photos, e.g. "
-"root = 'C:\\Photos\\Albums'."
+"root = 'C:\\Photos\\_Albums'."
 msgstr ""
 
 msgid "Set aside"
@@ -8500,6 +8615,9 @@ msgid ""
 "suggested (search, import, audit)."
 msgstr ""
 
+msgid "The album changed since: look again."
+msgstr ""
+
 msgid "The album stopped at the first link refused by the disk."
 msgstr ""
 
@@ -9110,6 +9228,13 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "The last import has no step {from}; its steps: {list}."
+msgstr ""
+
+msgid "The last import's steps:"
+msgstr ""
+
+#, python-brace-format
 msgid "The layouts of {path} follow the sort convention."
 msgstr ""
 
@@ -9654,10 +9779,20 @@ msgid "The step"
 msgstr ""
 
 #, python-brace-format
+msgid "The step ended early (code {code}): the window of mh says why."
+msgstr ""
+
+#, python-brace-format
 msgid "The step you choose also analyses: {folder}"
 msgstr ""
 
+msgid "The steps after an import, again: Windows only, run by mh."
+msgstr ""
+
 msgid "The steps changed since the page was shown: here they are."
+msgstr ""
+
+msgid "The steps of this import are running: wait for their end."
 msgstr ""
 
 msgid "The storyteller's notes"
@@ -9913,6 +10048,9 @@ msgstr ""
 msgid "This build cannot search by meaning: {module} is not installed."
 msgstr ""
 
+msgid "This chain cannot be run from here: type the command in mh."
+msgstr ""
+
 msgid ""
 "This clean moved these copies to the quarantine: 'undo' puts them back. "
 "The version kept is shown first."
@@ -9945,6 +10083,9 @@ msgid "This file will go to {folder}."
 msgid_plural "These {n} files will go to {folder}."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "This folder holds your albums. It is managed by Media Hygiene."
+msgstr ""
 
 msgid ""
 "This folder is an album of media-hygiene: hard links, second names of "
@@ -10041,6 +10182,9 @@ msgstr ""
 msgid ""
 "This rule would take {files}: {mine} of this event, {others} of other "
 "events or folders on the same days."
+msgstr ""
+
+msgid "This run changed since its files were shown: look at them again."
 msgstr ""
 
 msgid "This series is not in the file yet."
@@ -11695,6 +11839,9 @@ msgstr ""
 msgid "does not answer (powered off?)"
 msgstr ""
 
+msgid "done"
+msgstr ""
+
 msgid "double click"
 msgstr ""
 
@@ -11713,10 +11860,10 @@ msgstr ""
 msgid "e.g. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/"
 msgstr ""
 
-msgid "e.g. C:\\Photos\\Albums"
+msgid "e.g. C:\\Photos\\Sorted"
 msgstr ""
 
-msgid "e.g. C:\\Photos\\Sorted"
+msgid "e.g. C:\\Photos\\_Albums"
 msgstr ""
 
 msgid "e.g. Crete 2023"
@@ -11960,6 +12107,9 @@ msgstr ""
 msgid "it reads back different from what was written"
 msgstr ""
 
+msgid "it said why in the window of mh"
+msgstr ""
+
 msgid "its content changed"
 msgstr ""
 
@@ -12104,7 +12254,7 @@ msgstr ""
 msgid "library search look for find photo"
 msgstr ""
 
-msgid "lighten the chosen now (the terminal asks first)"
+msgid "lighten the chosen now (asked first)"
 msgstr ""
 
 msgid "lighten this one, or not"
@@ -12602,6 +12752,9 @@ msgstr ""
 msgid "original"
 msgstr ""
 
+msgid "other albums or files remain in its folder: kept"
+msgstr ""
+
 msgid "other file types"
 msgstr ""
 
@@ -12808,6 +12961,9 @@ msgstr ""
 msgid "run 'clean' to set {size} of copies aside."
 msgstr ""
 
+msgid "running in the window of mh"
+msgstr ""
+
 #, python-brace-format
 msgid "same event, another day ({date}): {rule}"
 msgstr ""
@@ -12918,6 +13074,9 @@ msgid "still in the quarantine"
 msgstr ""
 
 msgid "still to see first"
+msgstr ""
+
+msgid "stopped"
 msgstr ""
 
 msgid "suggestion"
@@ -13459,6 +13618,9 @@ msgid "videos with a date in their tags:"
 msgstr ""
 
 msgid "videos:"
+msgstr ""
+
+msgid "waiting"
 msgstr ""
 
 msgid "what each photo shows, for search by meaning"
@@ -14481,6 +14643,16 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid ""
+"{count} photo the audit listed is not there: deleted since, or its drive "
+"is not mounted."
+msgid_plural ""
+"{count} photos the audit listed are not there: deleted since, or their "
+"drive is not mounted."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
 "{count} photo without GPS gets the position of its folder's town (its "
 "centre, approximate): {towns}."
 msgid_plural ""
@@ -15153,6 +15325,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} already there."
+msgstr ""
+
+#, python-brace-format
 msgid "{n} attributed face ({people})"
 msgid_plural "{n} attributed faces ({people})"
 msgstr[0] ""
@@ -15248,6 +15424,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} file not found."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "{n} file of the album is missing (moved out of the folders analysed, or "
 "deleted): not included."
@@ -15272,6 +15452,10 @@ msgid "{n} file of {folder} was not made by media-hygiene: it stays ({files})."
 msgid_plural "{n} files of {folder} were not made by media-hygiene: they stay ({files})."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} file on another disk or mount: no link possible."
+msgstr ""
 
 #, python-brace-format
 msgid "{n} file picked"
@@ -15316,7 +15500,15 @@ msgid "{n} files moved: {folders}."
 msgstr ""
 
 #, python-brace-format
+msgid "{n} files not found."
+msgstr ""
+
+#, python-brace-format
 msgid "{n} files of these days stay with another rule: shown after, marked."
+msgstr ""
+
+#, python-brace-format
+msgid "{n} files on another disk or mount: no link possible."
 msgstr ""
 
 #, python-brace-format
@@ -15376,6 +15568,26 @@ msgid "{n} in a protected folder: left."
 msgid_plural "{n} in a protected folder: left."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} link failed."
+msgid_plural "{n} links failed."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} link to make."
+msgid_plural "{n} links to make."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} link to remove."
+msgstr ""
+
+#, python-brace-format
+msgid "{n} links to remove."
+msgstr ""
 
 #, python-brace-format
 msgid "{n} min"
@@ -15462,6 +15674,16 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{n} photo or video"
 msgid_plural "{n} photos and videos"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{n} photo or video in {folder}, read back from the disk: nothing copied, "
+"no extra space."
+msgid_plural ""
+"{n} photos and videos in {folder}, read back from the disk: nothing "
+"copied, no extra space."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -16134,6 +16356,10 @@ msgstr[1] ""
 msgid "▶ Play"
 msgstr ""
 
+#, python-brace-format
+msgid "▶ Run again from: {step}"
+msgstr ""
+
 msgid "✓ in the album"
 msgstr ""
 
@@ -16221,11 +16447,17 @@ msgid ""
 "name), then plug it in again."
 msgstr ""
 
-msgid "📁 Where should your albums go? Pick a folder on the disk of your photos."
+#, python-brace-format
+msgid "📁 Albums folder: {folder}"
 msgstr ""
 
 #, python-brace-format
-msgid "📁 Your albums go to {folder}."
+msgid "📁 Make the folder: {n} change"
+msgid_plural "📁 Make the folder: {n} changes"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "📁 Where should your albums go? Pick a folder on the disk of your photos."
 msgstr ""
 
 msgid "📍 The GPS positions were kept, as asked."
@@ -16243,6 +16475,11 @@ msgstr ""
 msgid ""
 "📱 A phone run deleted files from a phone: undo cannot put them back on "
 "it. Each one was first proven on the PC by its content."
+msgstr ""
+
+msgid ""
+"📸 A page of mh is open on this PC: the burst series of the new photos "
+"wait on its burst review (mh review)."
 msgstr ""
 
 msgid ""

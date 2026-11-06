@@ -17,6 +17,11 @@ from media_hygiene.cli.home_tile_order import save_tiles
 from media_hygiene.i18n import _
 from media_hygiene.review.home_favourites_api import SavedList, saved_list_response
 from media_hygiene.review.http import ContentType, Response
+from media_hygiene.review.import_chain_api import (
+    IMPORT_CHAIN_PATH,
+    ChainDoor,
+    import_chain_route,
+)
 from media_hygiene.review.import_steps_api import IMPORT_STEPS_PATH, import_steps_route
 from media_hygiene.review.scan_scope_api import SCOPE_PATH, scope_route
 
@@ -39,6 +44,7 @@ class HomeMore:
 
     config_file: Path | None = None
     samples: Callable[[], tuple[HomeSample, ...]] | None = None
+    chain: ChainDoor | None = None  # 0604
 
 
 async def more_response(more: HomeMore, request: Request) -> Response | None:
@@ -51,6 +57,8 @@ async def more_response(more: HomeMore, request: Request) -> Response | None:
     Returns:
         The response; None for any other path, or a route absent.
     """
+    if request.path == IMPORT_CHAIN_PATH and more.chain is not None:
+        return await import_chain_route(more.chain, request)
     config_file = more.config_file
     if config_file is not None:
         if request.path == SCOPE_PATH:  # 0535

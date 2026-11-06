@@ -61,6 +61,12 @@ _FUNCTIONS: Final = (
     "phone_then",
     "phone_bursts",
     "phone_bursts_end",
+    "phone_bursts_here",
+    "phone_chain",
+    "phone_chain_read",
+    "phone_chain_waiting",
+    "phone_chain_write",
+    "phone_port_busy",
     "phone_said",
     "phone_pick",
     "phone_there",
@@ -125,7 +131,9 @@ def test_the_phone_is_only_read_never_moved_nor_deleted() -> None:
     removals = [
         line
         for line in part.splitlines()
-        if "Remove-Item" in line and "cid" not in line
+        if "Remove-Item" in line
+        and "cid" not in line
+        and "import-bursts.json" not in line
     ]
     assert len(removals) == 3
     assert all(
@@ -533,6 +541,42 @@ def test_the_last_import_day_is_written_after_a_copy() -> None:
     read = main.index("Get-Content -LiteralPath $last")
     assert read < main.index("Set-Content -LiteralPath $last")
     assert "if ($copies -gt 0 -and -not $result.Stopped)" in main
+
+
+def test_the_burst_page_stays_in_the_foreground_without_the_tags() -> None:
+    """0564: tags on, detached; off, the page here then clean, no Press Enter."""
+    then = _body(_script(), "phone_then")
+    detached = then.index(
+        "elseif ($steps -contains 'tags') { $bursts = _mh_phone_bursts"
+    )
+    assert detached < then.index("else { _mh_phone_bursts_here $destination $period }")
+    here = _body(_script(), "phone_bursts_here")
+    assert "mh review --imported $destination --since $period" in here
+    assert "clean --decisions 'import-bursts.json'" in here
+    assert "Read-Host" not in here
+    assert "docker stop" not in here
+
+
+def test_the_chain_says_where_it_is_and_resumes_from_a_step() -> None:
+    """0604: written before each step, stopped on Ctrl+C, skipped up to the step."""
+    script = _script()
+    then = _body(script, "phone_then")
+    assert "if ($skipping -and $step -ne $start) { continue }" in then
+    assert then.index("_mh_phone_chain_write $said") < then.index("; mh audit")
+    assert "$said.state = if ($ended) { 'done' } else { 'stopped' }" in then
+    # A chain resumed at the page keeps the choices made there.
+    assert "if ($start -ne 'bursts') { Remove-Item" in then
+    write = _body(script, "phone_chain_write")
+    assert "import-chain.json" in write
+    assert write.index('"$file.tmp"') < write.index("Move-Item")
+    assert "media-hygiene-cache" in write
+    again = _body(script, "phone_chain {")
+    assert "'--from-step'" in again
+    assert "_mh_phone_then $steps" in again
+    route = script.index("-contains '--chain'")
+    assert route < script.index("foreach ($folder in @(")
+    assert "_mh_phone_chain @more" in script
+    assert "_mh_phone_chain_waiting" in script
 
 
 def test_copies_come_before_the_tags_and_the_bursts_page_beside_them() -> None:

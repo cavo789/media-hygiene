@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
 from media_hygiene.review.quarantine_app import RESTORE_PATH, QuarantineApp
+from media_hygiene.review.served_more import DISK_PURGE_PATH
 from media_hygiene.services.pick_page_serving import pick_page, serve_pick_page
 
 if TYPE_CHECKING:
@@ -22,7 +23,9 @@ def quarantine_page() -> bytes:
     Returns:
         The page, in the language in use.
     """
-    return pick_page(PAGE_TEMPLATE, {"restore_path": RESTORE_PATH})
+    return pick_page(
+        PAGE_TEMPLATE, {"restore_path": RESTORE_PATH, "purge_path": DISK_PURGE_PATH}
+    )
 
 
 def serve_quarantine(runtime: Runtime, port: int) -> int:

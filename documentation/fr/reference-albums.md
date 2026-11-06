@@ -7,6 +7,12 @@ n'importe quels dossiers. C'est ce qu'on montre aux autres : sur la télé avec
 [`slideshow`](commands/slideshow.md), sur un téléphone, prêt à envoyer avec
 [`share`](commands/share.md), ou en dossier de l'Explorateur avec [`album`](commands/album.md).
 
+## Que cherchez-vous ?
+
+- 📱 [Mes albums sur un téléphone](#sur-un-téléphone)
+- 📺 [Un album sur la télé](commands/slideshow.md#ladresse-de-la-télé)
+- 💻 [Je suis sur le PC : remplir un album](#remplir-un-album)
+
 ## Ce qu'est un album ici
 
 - **Une liste de références, rien d'autre.** Aucune photo n'est copiée, déplacée ni modifiée : les
@@ -84,8 +90,7 @@ lien ne marche que sur le Wi-Fi de la maison.
 
 [L'étape 12 du guide du tri](sort/12-albums.md) et [`album`](commands/album.md) transforment un
 album en **dossier de liens physiques** sur le disque, à ouvrir dans l'Explorateur. La liste est la
-même : le dossier est une façon de plus de s'en servir, et `undo` le supprime. La page des albums
-ne fabrique jamais ce dossier.
+même : le dossier est une façon de plus de s'en servir, et `undo` le supprime. Sur le PC, la page d'un album le crée aussi : **📁 Créer le dossier dans l'Explorateur**, montré d'abord.
 
 ## Pour aller plus loin
 

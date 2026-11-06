@@ -54,9 +54,12 @@ function placeCards(made) {
   }));
 }
 
+let drawPurge = () => {}; // `quarantine_purge.js.j2`, from Disk space (0616)
+
 function paint() {
   $("status").textContent = tiles.length ? fill(TEXTS.status, { count: number(tiles.length), runs: number(runsOf().length) }) : TEXTS.empty;
   $("everyRun").hidden = !ONLY_RUN;
+  drawPurge();
   $("runs").replaceChildren(...runsOf().map((run, rank) => {
     const item = element("li");
     const link = element("a", "", run);

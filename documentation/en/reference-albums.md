@@ -7,6 +7,12 @@ what you show to others: on the TV with [`slideshow`](commands/slideshow.md), on
 send with [`share`](commands/share.md), or as a folder of the Explorer with
 [`album`](commands/album.md).
 
+## What are you looking for?
+
+- 📱 [My albums on a phone](#on-a-phone)
+- 📺 [An album on the TV](commands/slideshow.md#the-tvs-address)
+- 💻 [I'm on the PC: fill an album](#fill-an-album)
+
 ## What an album is here
 
 - **A list of references, nothing else.** No photo is copied, moved or changed: the files are
@@ -78,7 +84,7 @@ Without `mh --lan`, the button says to start it: a link works on the home Wi-Fi 
 
 [Step 12 of the sorting guide](sort/12-albums.md) and [`album`](commands/album.md) turn an album
 into a **folder of hard links** on the disk, to open in the Explorer. The list is the same: the
-folder is one more way to use it, and `undo` removes it. The albums page never makes that folder.
+folder is one more way to use it, and `undo` removes it. On the PC, an album's page makes it too: **📁 Make the folder in Explorer**, shown first.
 
 ## Go further
 

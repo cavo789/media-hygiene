@@ -93,7 +93,7 @@ function follow(state) {
   tiles = state.tiles;
   reopen(false);
   if (state.failure) say(fill(TEXTS.failure, { error: state.failure }), "error");
-  else if (state.result) say(fill(TEXTS.copied, { count: number(state.result.copied), failed: number(state.result.failed), run: state.result.run_id }), state.result.failed ? "error" : "saved");
+  else if (state.result) say(fill(TEXTS.copied, { count: number(state.result.copied), failed: number(state.result.failed), run: state.result.run_id }) + " " + (state.result.then.length ? fill(TEXTS.chain, { steps: state.result.then.join(" > ") }) : TEXTS.auditAgain), state.result.failed ? "error" : "saved");
 }
 
 $("copyNow").addEventListener("click", async () => {

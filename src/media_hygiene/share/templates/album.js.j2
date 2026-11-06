@@ -71,14 +71,10 @@ const TV = document.documentElement.hasAttribute("data-phone") && new URLSearchP
 const opened = (name) => (TV ? `${P.home}?tv=${encodeURIComponent(name)}`
   : document.documentElement.hasAttribute("data-phone")
     ? `#a/${encodeURIComponent(name)}` : `${P.edit_page}?album=${encodeURIComponent(name)}`);
-// The albums shown on the TV last first (the home page keeps them on this device), then by name.
-function used() {
-  try { return JSON.parse(localStorage.getItem("mh-home-tvRecent")) || []; } catch { return []; }
-}
+// The albums shown on the TV last first (the PC keeps the date, 0603), then by name.
 function ordered(albums) {
-  const recent = used();
-  const rank = (name) => (recent.includes(name) ? recent.indexOf(name) : recent.length);
-  return [...albums].sort((a, b) => rank(a.name) - rank(b.name) || a.name.localeCompare(b.name, LANG));
+  const shown = (each) => each.last_shown || "";
+  return [...albums].sort((a, b) => shown(b).localeCompare(shown(a)) || a.name.localeCompare(b.name, LANG));
 }
 function narrow() { // the filter box: the cards whose name holds what is typed
   const typed = $("albumFilter").value.trim().toLocaleLowerCase(LANG);

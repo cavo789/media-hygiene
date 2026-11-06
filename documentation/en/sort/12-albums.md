@@ -32,15 +32,15 @@ section names the folder holding the albums; each album is a folder in it:
 
 ```toml
 [album]
-root = 'C:\Photos\Albums'
+root = 'C:\Photos\_Albums'
 ```
 
-Left empty, the albums go to an `Albums` folder in the `target` of `[classify]`
+Left empty, the albums go to an `_Albums` folder in the `target` of `[classify]`
 ([step 4](04-classify.md#your-own-structure)).
 
 A hard link never leaves its disk, **nor the folder mounted with `-v`**: two folders mounted
 separately are two different places for Docker, even on the same drive. Mount the folder that
-holds both your photos and the albums (`C:\Photos` for `C:\Photos\Albums`). `album` checks it
+holds both your photos and the albums (`C:\Photos` for `C:\Photos\_Albums`). `album` checks it
 before anything is made, and lists apart the files it cannot link.
 
 ## Choose what the album gathers
@@ -89,7 +89,7 @@ docker run --rm -it `
 ──────────────────────────────── Album Christmas ───────────────────────────────
 Workbook: C:\Users\you\media-hygiene\reports\20261002-123210-classify\classify.xlsx
 ┌──────────────────────────┬────────────────────────────┐
-│ Album folder             │ C:\Photos\Albums\Christmas │
+│ Album folder             │ C:\Photos\_Albums\Christmas │
 │ Files selected           │                        212 │
 │ Links to make            │                        212 │
 │ In the album already     │                          0 │

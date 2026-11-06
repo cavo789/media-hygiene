@@ -4,25 +4,30 @@ Opt-in (`[tags] meaning`, `tags --meaning`). The model runs here, on the CPU, on
 photo at a time on `[tags] meaning_threads` threads (it holds 1.5 GB: one copy
 only); each vector is committed at once, so Ctrl+C keeps what is done and the next
 run goes on. Identical files (same digest) are looked at once. Photos and the
-previews of RAW files only: a video has no vector.
+previews of RAW files only: a video has no vector. A photo that fails is not
+remembered: it is tried again at each run, as it may be repaired or its drive back,
+which costs 1.3 ms for a format nobody reads (measured on 436 files, 2026-11-06).
 """
 
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import MediaKind
 from media_hygiene.index.meaning_rows import MeaningStore
 from media_hygiene.meaning.clip import MODEL, SECONDS_PER_PHOTO
+from media_hygiene.meaning.pace import PhotoPace
 from media_hygiene.report.thumbnails import unreadable_errors, upright_picture
 from media_hygiene.scan.filters import media_kind
+from media_hygiene.scan.image_check import open_every_picture
 from media_hygiene.services.tag_work import version_of
 
 if TYPE_CHECKING:
     import sqlite3
     from collections.abc import Sequence
+    from pathlib import Path
 
     import numpy as np
     from numpy.typing import NDArray
@@ -42,26 +47,36 @@ class MeaningWork:
     """The photos of a run without a vector, and how long they should take."""
 
     missing: tuple[MediaInput, ...]
-    seconds_per_photo: float
+    pace: PhotoPace
 
     @property
     def estimate(self) -> float:
         """How long looking at the missing photos should take.
 
         Returns:
-            Seconds; identical files counted once.
+            Seconds, from the size of each file; identical files counted once.
         """
-        digests = {file.digest or str(file.path) for file in self.missing}
-        return len(digests) * self.seconds_per_photo
+        sizes = {file.digest or str(file.path): file.size for file in self.missing}
+        return sum(map(self.pace.seconds, sizes.values()))
+
+    @property
+    def seconds_per_photo(self) -> float:
+        """The time of a missing photo, on average: what a page multiplies back.
+
+        Returns:
+            Seconds; the pace's fixed part when nothing is missing.
+        """
+        return self.estimate / len(self.missing) if self.missing else self.pace.base
 
 
 @dataclass(slots=True)
 class MeaningOutcome:
-    """How a run went: photos looked at, undecodable ones, Ctrl+C."""
+    """How a run went: photos looked at, undecodable, not on the disk, Ctrl+C."""
 
     seconds: float = 0.0
     seen: int = 0
-    unreadable: int = 0
+    unreadable: list[Path] = field(default_factory=list)
+    absent: int = 0  # deleted since the audit, or on a drive not mounted now
     stopped: bool = False
 
 
@@ -80,9 +95,9 @@ def meaning_work(
     store = MeaningStore(connection, MODEL)
     photos = [file for file in files if media_kind(file.path) in _SEEN]
     missing = {photo.path for photo in store.missing(map(version_of, photos))}
-    seconds = store.seconds_per_photo() or SECONDS_PER_PHOTO
+    pace = store.pace() or PhotoPace(SECONDS_PER_PHOTO)
     work = tuple(file for file in photos if file.path in missing)
-    return MeaningWork(work, seconds)
+    return MeaningWork(work, pace)
 
 
 def see_photos(
@@ -103,6 +118,7 @@ def see_photos(
     missing, model = work[0].missing, work[1]
     store = MeaningStore(connection, MODEL)
     outcome = MeaningOutcome()
+    open_every_picture()
     shared: dict[str, NDArray[np.float32]] = {}  # digest → vector, for copies
     for file in missing:
         if answering.stopped():
@@ -117,8 +133,11 @@ def see_photos(
         started = time.monotonic()
         try:
             vector = model.image(upright_picture(file.path, _EDGE))
+        except FileNotFoundError, NotADirectoryError:
+            outcome.absent += 1
+            continue
         except unreadable_errors():
-            outcome.unreadable += 1
+            outcome.unreadable.append(file.path)
             continue
         seconds = time.monotonic() - started
         store.put(version_of(file), vector, seconds)

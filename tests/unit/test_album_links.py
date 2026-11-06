@@ -125,7 +125,9 @@ def test_ctrl_c_stops_between_two_links(tmp_path: Path) -> None:
     assert tally.done == 0
     again, _tally = make(tmp_path, plan)
     assert again == AlbumRun()
-    assert len(read_journal(tmp_path / "run.jsonl")) == 6
+    assert (
+        len(read_journal(tmp_path / "run.jsonl")) == 8
+    )  # with the read-me of the root (0626)
 
 
 def test_the_mount_of_a_path_is_the_deepest_one() -> None:

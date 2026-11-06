@@ -1,0 +1,16 @@
+{# 📁 Make the folder in Explorer (0625): the dry run of `album` shown first, its count on the
+   button, then the same run as `album --apply`. Asks where the albums go only when not known. #}
+<dialog id="makeDialog" aria-labelledby="makeTitle">
+  <h2 id="makeTitle">📁 {{ _("Make the folder in Explorer") }}</h2>
+  <p>{{ _("No photo is copied, no extra space, no duplicate: each one gets a second name in the folder, ready to upload to a print service in full quality.") }}</p>
+  <ul id="makeLines"></ul>
+  <p id="makeError" class="error" role="alert" hidden></p>
+  <form id="makeFolderForm" hidden>
+    <label for="makeFolder">{{ _("Where should your albums go?") }}</label>
+    <input id="makeFolder" maxlength="4096" autocomplete="off" placeholder="{{ _('e.g. C:\\Photos\\_Albums') }}">
+    <button type="submit">{{ _("Save") }}</button>
+  </form>
+  <p class="warn">{{ _("A retouch of a photo in the folder changes the original too: it is the same file. The folder must be on the same disk and in the same mounted folder (-v) as the photos; exFAT refuses hard links.") }}</p>
+  <p><button id="makeGo" type="button" hidden></button>
+    <button id="makeClose" class="plain" type="button">{{ _("Close") }}</button></p>
+</dialog>

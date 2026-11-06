@@ -10,6 +10,7 @@ format is said, as on the TV (0292).
 
 from __future__ import annotations
 
+import datetime as dt  # noqa: TC003 - a dataclass field
 from collections import Counter
 from dataclasses import dataclass
 from itertools import groupby
@@ -50,6 +51,7 @@ class AlbumSeen:
     name: str
     picked: Picked
     cover: int | None = None  # the key of the cover the user chose (0371)
+    last_shown: dt.datetime | None = None  # on the TV (0603)
 
 
 def facts_of(connection: sqlite3.Connection, key: int) -> Facts:
@@ -86,8 +88,9 @@ def album_view(
         town_of: Names the town of a position, or None.
 
     Returns:
-        The JSON object: `name`, `count`, `missing`, `first`, `last`, `place`,
-        `cover` (`thumb`, `photo`, or None) and `days` (`day`, `place`, `items`).
+        The JSON object: `name`, `count`, `last_shown`, `missing`, `first`, `last`,
+        `place`, `cover` (`thumb`, `photo`, or None) and `days` (`day`, `place`,
+        `items`).
     """
     slides = seen.picked.slides
     facts = {slide.key: facts_of(connection, slide.key) for slide in slides}
@@ -104,6 +107,7 @@ def album_view(
     return {
         "name": seen.name,
         "count": len(slides),
+        "last_shown": seen.last_shown.isoformat() if seen.last_shown else "",
         "missing": seen.picked.missing,
         "first": dated[0] if dated else "",
         "last": dated[-1] if dated else "",

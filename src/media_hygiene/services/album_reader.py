@@ -153,7 +153,7 @@ class AlbumReader:
             self._runtime, search, Pick(album=album.name, shelf=shelf)
         )
         cover = cover_key(search.connection, album, self._runtime.mapper)
-        return AlbumSeen(album.name, picked, cover)
+        return AlbumSeen(album.name, picked, cover, album.last_shown)
 
     def _town(self, point: Point) -> str | None:
         """The town a photo was taken in, near enough to be named (`[tags] town_km`).

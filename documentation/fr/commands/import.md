@@ -48,7 +48,10 @@ Entrée ou un double clic montre une photo en grand. **⊘ Écarter** les
 retire de la copie (enregistré, relu sur le disque, dans `import-left-out.json` du dossier des
 rapports : toujours écartés la fois suivante, jusqu'à **↩ Reprendre**). **📥 Copier ces N
 fichiers** annonce son nombre et copie ceux-là : chacun vérifié, journalisé, `mh undo <exécution>`
-les retire. Le dossier est seulement lu.
+les retire. Le dossier est seulement lu. Ensuite les étapes de `[imports] then` tournent, comme après
+un téléphone : dans la fenêtre de `mh`, chacune avec sa propre question, suivies sur la page d'accueil
+([plus bas](#depuis-un-téléphone--mh-import---phone)), quand la page a été ouverte depuis la page d'accueil ou dès qu'une
+page tapée en console se termine (Windows ; avec le `mh` de WSL, la page dit de refaire un audit).
 
 ```powershell
 mh import --pick            # vos dossiers de sauvegarde ; sur la page d'accueil : Voir ce que seul le NAS contient
@@ -159,13 +162,23 @@ deux fois ou une que votre photothèque a déjà, vont en quarantaine comme avec
 sur les **rafales des nouvelles photos seulement** pendant que les étapes suivantes tournent ;
 pas de rafale, pas de page) ; **tags** 🤖 (le modèle d'IA local décrit les nouvelles photos ;
 s'il ne tourne pas, `tags` le dit et la suite continue) ; **places** 🌐 (les nouveaux lieux
-nommés en ligne, après leur propre question). Quand la page des rafales était ouverte : *Fini
+nommés en ligne, après leur propre question). Avec `tags` désactivé, rien ne tourne à côté de la
+page des rafales : elle reste au premier plan, et la suite continue à sa fermeture, sans question
+d'abord. Avec `tags` activé, quand la page des rafales était ouverte : *Fini
 sur la page des rafales ? Appuyez sur Entrée*, puis les prises écartées vont en quarantaine
 (`clean --decisions import-bursts.json`, avec sa propre question). Enfin, *✨ Tout est fait : 42
 nouvelles photos et vidéos dans votre photothèque*, le nom proposé pour les nouvelles photos et
 le diaporama de **cet import seulement** : *📺 Votre diaporama « Promenade à Liège » est prêt : mh slideshow --folder "…" --since today*, puis *Le montrer sur la télé
 maintenant ? (o/N)*. Retirez une étape de `then` pour la couper (`then = []` : rien ne tourne). 🔒 Sans `--free`, le téléphone est seulement lu :
 rien n'y est supprimé, déplacé ni renommé.
+
+**Les étapes restent suivies.** Chaque étape écrit où elle en est dans `import-chain.json` (votre
+dossier de cache) : sous *Copier les nouvelles photos du téléphone*, la page d'accueil montre ✅ ce qui a
+tourné, ⏳ l'étape en cours, ⚠ une étape en échec, sans rien demander. Une chaîne arrêtée (Ctrl+C,
+fenêtre fermée : dite arrêtée après 24 heures sans nouvelles) est proposée à nouveau : **▶ Relancer depuis : …**
+sur la page d'accueil, ou en console `mh import --chain` (là où elle s'est arrêtée) ou
+`mh import --chain --from-step tags` (`audit`, `copies`, `bursts`, `tags`, `places`). Les questions
+restent dans la fenêtre de `mh`.
 
 - **Lancez d'abord une fois `mh audit`** : la photothèque est ce que le cache connaît. Sans audit,
   chaque photo du téléphone est nouvelle (il le dit).

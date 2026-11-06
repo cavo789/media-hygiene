@@ -23,7 +23,6 @@ from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
 from media_hygiene.scan.filters import media_kind
 from media_hygiene.search import statements as sql
-from media_hygiene.search.album_move_desk import ALBUM_MOVE_PATH
 from media_hygiene.search.file_card import file_card
 from media_hygiene.search.folder_order import (  # pydantic reads them
     Order,
@@ -31,7 +30,7 @@ from media_hygiene.search.folder_order import (  # pydantic reads them
     is_shown,
     ordered,
 )
-from media_hygiene.search.folder_role_desk import ALBUM_ROOT_PATH, ROLE_PATH
+from media_hygiene.search.folder_role_desk import ROLE_PATH
 from media_hygiene.search.folder_tree import PHOTOS, folder_counts
 from media_hygiene.search.heaviest import (
     HEAVIEST_PATH,
@@ -43,7 +42,6 @@ from media_hygiene.search.heaviest import (
 
 if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
-    from media_hygiene.search.album_root_desk import AlbumRootDesk
     from media_hygiene.search.chosen_api import ChosenDesk
     from media_hygiene.search.folder_role_desk import RoleDesk
     from media_hygiene.search.fts import SearchIndex
@@ -52,9 +50,7 @@ BROWSE_PATH: Final = "/browse"
 FOLDER_QUERY: Final = "folder"  # `/search?folder=…`: the page opens on it (0405)
 FOLDERS_PATH: Final = "/api/folders"
 FOLDER_PATH: Final = "/api/folder"
-FOLDER_POSTS: Final = frozenset(
-    {FOLDER_PATH, HEAVIEST_PATH, ROLE_PATH, ALBUM_ROOT_PATH, ALBUM_MOVE_PATH}
-)
+FOLDER_POSTS: Final = frozenset({FOLDER_PATH, HEAVIEST_PATH, ROLE_PATH})
 _MAX_PATH: Final = 4096
 _AFTER_SLASH: Final = "0"  # the character after `/`: ends the range of a folder
 
@@ -78,7 +74,6 @@ class FolderDesk:
     roots: tuple[Path, ...]  # the mounted folders, in the container
     chosen: ChosenDesk  # to mark the files set aside
     roles: RoleDesk | None = None  # the roles of `[folders]` (0532)
-    album_root: AlbumRootDesk | None = None  # `[album] root` (0534)
 
     def tree(self) -> Response:
         """`GET /api/folders`: every folder under the mounted ones.
@@ -113,20 +108,14 @@ class FolderDesk:
         """Answer a `POST` of the folder view.
 
         Args:
-            path: `FOLDER_PATH`, `HEAVIEST_PATH`, `ROLE_PATH` or `ALBUM_ROOT_PATH`.
+            path: `FOLDER_PATH`, `HEAVIEST_PATH` or `ROLE_PATH`.
             body: The JSON the page sent.
 
         Returns:
             The files of a folder, or the heaviest of the library.
         """
-        moves = None if self.album_root is None else self.album_root.move
-        desks = {
-            ROLE_PATH: self.roles,
-            ALBUM_ROOT_PATH: self.album_root,
-            ALBUM_MOVE_PATH: moves,
-        }
-        if path in desks:
-            desk = desks[path]
+        if path == ROLE_PATH:
+            desk = self.roles
             return Response(HTTPStatus.NOT_FOUND) if desk is None else desk.answer(body)
         if path == HEAVIEST_PATH:
             return self.heaviest(body)

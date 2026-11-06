@@ -92,6 +92,18 @@ def show_title(runtime: Runtime, files: tuple[Path, ...]) -> str:
         connection.close()
 
 
+def day_of(path: Path) -> date | None:
+    """The day of a file, by the same rules as the period.
+
+    Args:
+        path: The file.
+
+    Returns:
+        Its day; None when it has none.
+    """
+    return file_day(path.name, _stamp(path))
+
+
 def _stamp(path: Path) -> str:
     """A file's modified time, ISO, UTC.
 

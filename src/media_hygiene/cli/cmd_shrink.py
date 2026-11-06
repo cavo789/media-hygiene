@@ -55,6 +55,16 @@ def shrink_command(  # pylint: disable=too-many-arguments
             ),
         ),
     ] = False,
+    chosen: Annotated[
+        bool,
+        typer.Option(
+            "--chosen",
+            help=_(
+                "Lighten the videos chosen on the home page's Lighten page, reusing "
+                "their drafts. The page starts it for you."
+            ),
+        ),
+    ] = False,
     yes: Annotated[
         bool,
         typer.Option("--yes", "-y", help=_("Lighten without asking first.")),
@@ -68,10 +78,16 @@ def shrink_command(  # pylint: disable=too-many-arguments
         lighter: `--lighter`, a smaller picture and a stronger compression.
         apply: `--apply`, re-encode them.
         trial: `--try`, drafts compared in the browser first.
+        chosen: `--chosen`, what the home page's try chose (0599).
         yes: `--yes`, no question.
     """
     from media_hygiene.cli.next_steps import carried, suggest
-    from media_hygiene.cli.shrink_flow import Asked, lighten, try_then_lighten
+    from media_hygiene.cli.shrink_flow import (
+        Asked,
+        lighten,
+        lighten_handed,
+        try_then_lighten,
+    )
     from media_hygiene.console.shrink_view import show_candidates
     from media_hygiene.scan.progress import NullProgress
     from media_hygiene.services.next_command import CHANGING, NextVerb
@@ -84,6 +100,9 @@ def shrink_command(  # pylint: disable=too-many-arguments
     asked = "".join(f' --folder "{path}"' for path in folder or ())
     level = f"{' --lighter' if lighter else ''}{asked}"
     with user_errors(output):
+        if chosen:  # before the sweep: its drafts are waiting
+            lighten_handed(runtime, yes=yes)
+            return
         if trial:
             ensure_cache(runtime)  # before the index: the drafts' line, not "audit"
         sweep_drafts(runtime)

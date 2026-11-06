@@ -10,9 +10,7 @@ from media_hygiene.places.toml_edit import document_of, table_of, write_document
 from media_hygiene.search.album_move_desk import AlbumMoveDesk
 from media_hygiene.search.album_root_desk import album_root_desk
 from media_hygiene.search.folder_role_desk import RoleDesk
-from media_hygiene.services.albums import album_store
-from media_hygiene.share.album_store import AlbumChange
-from tests.support.albums import ALBUMS, WEDDING_CATEGORY, classified
+from tests.support.albums import ALBUMS, SAVED_ALBUM, WEDDING_CATEGORY, saved_album
 from tests.support.cli import run
 from tests.support.runtime import make_runtime
 from tests.support.sorting import PHOTOS
@@ -26,7 +24,7 @@ if TYPE_CHECKING:
     from media_hygiene.paths.locations import Locations
 
 _NEW: str = f"{PHOTOS}/Albums 2"
-_NAME: str = "Crete 2023"
+_NAME: str = SAVED_ALBUM
 
 
 def _made(
@@ -42,12 +40,7 @@ def _made(
     Returns:
         The folder of the photos.
     """
-    photos = classified(cli, locations, monkeypatch)
-    files = (
-        photos / WEDDING_CATEGORY / "DSC_0000.jpg",
-        photos / "Divers" / "IMG_9000.jpg",
-    )
-    album_store(make_runtime(locations)).add(AlbumChange(_NAME, files))
+    photos = saved_album(cli, locations, monkeypatch)
     assert run(cli, "album", _NAME, "--apply").exit_code == 0
     monkeypatch.setenv("MEDIA_HYGIENE_ALBUM__ROOT", "C:\\Photos\\Albums 2")
     return photos

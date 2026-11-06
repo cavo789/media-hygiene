@@ -2,7 +2,9 @@
 
 `GET /disk-space/` the page, `GET …/api/state` the sizes and limits read from the disk,
 `POST …/api/limits` writes both limits, `POST …/api/empty` removes the previews: each
-answer is the state read again. JSON only, loopback only: a phone never reaches it.
+answer is the state read again; `POST …/api/purge` hands a run shown on the quarantine's
+page to `mh` (0616), the next states reading it back. JSON only, loopback only: a phone
+never reaches it.
 """
 
 from __future__ import annotations
@@ -19,8 +21,14 @@ from media_hygiene.i18n import _
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.page_header import headed_page
+from media_hygiene.review.served_more import DISK_PURGE_PATH
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.step_watch import DISK_PAGE
+from media_hygiene.services.disk_purge import (
+    PurgeAsking,
+    purge_response,
+    read_back,
+)
 from media_hygiene.services.disk_space import (
     Limits,
     disk_state,
@@ -41,16 +49,19 @@ _TEMPLATES: Final = "media_hygiene.review"
 _LOGGER: Final = logging.getLogger(__name__)
 
 
-def _state_answer(runtime: Runtime) -> Response:
+def _state_answer(runtime: Runtime, asking: PurgeAsking | None = None) -> Response:
     """The state, read from the disk.
 
     Args:
         runtime: Settings and mount points.
+        asking: The last purge asked from the page, to read back.
 
     Returns:
         JSON.
     """
-    body = disk_state(runtime).model_dump_json().encode()
+    purged = None if asking is None else read_back(runtime, asking)
+    state = disk_state(runtime).model_copy(update={"purged": purged})
+    body = state.model_dump_json().encode()
     return Response(HTTPStatus.OK, body, ContentType.JSON)
 
 
@@ -64,12 +75,15 @@ def _page() -> bytes:
     return headed_page(environment, "disk_space.html.j2", {})
 
 
-def _write(runtime: Runtime, request: Request) -> Response:
+def _write(
+    runtime: Runtime, request: Request, asking: PurgeAsking | None = None
+) -> Response:
     """Do what a `POST` asks, then read the state again.
 
     Args:
         runtime: Settings and mount points.
         request: The request.
+        asking: The last purge asked from the page, to read back.
 
     Returns:
         The state; 400 on a bad body, 500 with the sentence when it failed.
@@ -86,15 +100,18 @@ def _write(runtime: Runtime, request: Request) -> Response:
         _LOGGER.exception("disk space: %s", request.path)
         message = _("That could not be done: {reason}").format(reason=exc)
         return json_response(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": message})
-    return _state_answer(runtime)
+    return _state_answer(runtime, asking)
 
 
-def _read(runtime: Runtime, request: Request) -> Response:
+def _read(
+    runtime: Runtime, request: Request, asking: PurgeAsking | None = None
+) -> Response:
     """Answer a `GET`: the page, or the state.
 
     Args:
         runtime: Settings and mount points.
         request: The request.
+        asking: The last purge asked from the page, to read back.
 
     Returns:
         The response; 404 for anything else.
@@ -102,7 +119,7 @@ def _read(runtime: Runtime, request: Request) -> Response:
     if request.method == "GET" and request.path == DISK_PAGE:
         return Response(HTTPStatus.OK, _page(), ContentType.HTML)
     if request.method == "GET" and request.path == _STATE:
-        return _state_answer(runtime)
+        return _state_answer(runtime, asking)
     return Response(HTTPStatus.NOT_FOUND)
 
 
@@ -116,6 +133,7 @@ class DiskHere:
             fresh: The server's settings, read again when their files change.
         """
         self._fresh = fresh
+        self._asking: PurgeAsking | None = None
 
     @staticmethod
     def serves(path: str) -> bool:
@@ -143,9 +161,13 @@ class DiskHere:
         path, runtime = request.path, self._fresh.runtime()
         if path == DISK_PREFIX:
             return Response(HTTPStatus.SEE_OTHER, headers=(f"Location: {DISK_PAGE}",))
+        if request.method == "POST" and path == DISK_PURGE_PATH:
+            answer, asking = await purge_response(runtime, request)
+            self._asking = asking or self._asking
+            return answer
         if request.method == "POST" and path in {_LIMITS, _EMPTY}:
             refused = refused_post(request)
             if refused is not None:
                 return refused
-            return await asyncio.to_thread(_write, runtime, request)
-        return await asyncio.to_thread(_read, runtime, request)
+            return await asyncio.to_thread(_write, runtime, request, self._asking)
+        return await asyncio.to_thread(_read, runtime, request, self._asking)

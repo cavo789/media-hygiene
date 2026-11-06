@@ -7,7 +7,10 @@ from typing import TYPE_CHECKING, Final
 
 from PIL import Image
 
+from media_hygiene.services.albums import album_store
+from media_hygiene.share.album_store import AlbumChange
 from tests.support.cli import run
+from tests.support.runtime import make_runtime
 from tests.support.sorting import PHOTOS, build_library
 
 if TYPE_CHECKING:
@@ -19,6 +22,7 @@ if TYPE_CHECKING:
     from media_hygiene.paths.locations import Locations
 
 ALBUMS: Final = f"{PHOTOS}/Albums"
+SAVED_ALBUM: Final = "Crete 2023"
 WEDDING_CATEGORY: Final = "Mariage"
 _RATING_TAG: Final = 0x4746
 
@@ -76,3 +80,25 @@ def album_files(locations: Locations, name: str) -> dict[str, Path]:
         for path in folder.iterdir()
         if path.is_file() and not path.name.startswith(".")
     }
+
+
+def saved_album(
+    cli: CliRunner, locations: Locations, setenv: pytest.MonkeyPatch
+) -> Path:
+    """A classified library and a saved album of two of its photos, no folder made.
+
+    Args:
+        cli: The runner.
+        locations: The test mount points.
+        setenv: Sets `[album] root`.
+
+    Returns:
+        The folder of the photos.
+    """
+    photos = classified(cli, locations, setenv)
+    picked = (
+        photos / WEDDING_CATEGORY / "DSC_0000.jpg",
+        photos / "Divers" / "IMG_9000.jpg",
+    )
+    album_store(make_runtime(locations)).add(AlbumChange(SAVED_ALBUM, picked))
+    return photos

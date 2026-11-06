@@ -10,23 +10,31 @@ import asyncio
 import json
 import os
 import time
-from typing import TYPE_CHECKING, Final
+from http import HTTPStatus
+from types import SimpleNamespace
+from typing import TYPE_CHECKING, Any, Final
 
 import pytest
 
 from media_hygiene.actions import shrink_draft
 from media_hygiene.cli import shrink_flow
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.review import presence
 from media_hygiene.review.ending import Ending
 from media_hygiene.review.http import Request
 from media_hygiene.review.shrink_app import LIGHTEN_CODE, ShrinkDesk, ShrinkTryApp
+from media_hygiene.review.step_watch import STEP_PATH, WATCH
+from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 from media_hygiene.services.runtime import Runtime
+from media_hygiene.services.shrink_handed import CHOSEN_WORDS
+from media_hygiene.services.shrink_here import ShrinkHere
 from media_hygiene.services.shrink_page import try_page
 from media_hygiene.shrink import draft_bench
 from media_hygiene.shrink.draft_bench import DraftState
 from media_hygiene.shrink.drafts import drafts_root
 from media_hygiene.shrink.try_choices import CHOICES_FILE, read_choices
 from tests.support.cli import run
+from tests.support.runtime import make_runtime
 from tests.support.shrink_clips import CAMERA, NEEDS_X264, audited
 
 if TYPE_CHECKING:
@@ -99,12 +107,12 @@ def _close(app: ShrinkTryApp, trial: Trial) -> int:
     state = json.loads(_ask(app, "/api/state").body)
     (view,) = state["drafts"]
     assert view["gain"] > 0
-    assert view["video"] == "/draft/1.mp4"
+    assert view["video"] == "draft/1.mp4"
     assert len(view["frames"]) == 3
     assert state["file"] is None
     assert _ask(app, "/draft/1.mp4").status == 200
-    assert _ask(app, view["frames"][0]["before"]).body.startswith(b"\xff\xd8")
-    assert _ask(app, view["frames"][2]["after"]).body.startswith(b"\xff\xd8")
+    assert _ask(app, "/" + view["frames"][0]["before"]).body.startswith(b"\xff\xd8")
+    assert _ask(app, "/" + view["frames"][2]["after"]).body.startswith(b"\xff\xd8")
     assert _ask(app, "/draft/2.mp4").status == 404
     assert _ask(app, "/api/shrink/lighten", {}).status == 409  # nothing chosen
     foreign = Request("GET", "/api/state", {"host": "evil.example"})
@@ -291,3 +299,103 @@ def test_without_room_in_the_cache_the_drafts_stop(
     _page(monkeypatch, full)
     assert run(cli, "shrink", "--try").exit_code == 0
     assert _left(locations) == []
+
+
+async def _session(
+    here: ShrinkHere, trial_of: Callable[[], Trial], grace: float
+) -> tuple[int, list[Path]]:
+    """Open the page, leave it: drafts there at first, gone after the grace."""
+    page = await here.handle(Request("GET", "/shrink/", _LOCAL))
+    assert page.status == HTTPStatus.OK
+    await asyncio.to_thread(_settled, trial_of())
+    folder = trial_of().bench.folder
+    assert (folder / "1.mp4").is_file()
+    state = await here.handle(Request("GET", "/shrink/api/state", _LOCAL))
+    assert json.loads(state.body)["drafts"][0]["video"] == "draft/1.mp4"
+    left = Request(
+        "POST", "/shrink/api/alive", _JSON, json.dumps({"leaving": True}).encode()
+    )
+    assert (await here.handle(left)).status == HTTPStatus.OK
+    await asyncio.sleep(grace)
+    return (await here.handle(Request("GET", "/shrink/api/state", _LOCAL))).status, [
+        folder
+    ]
+
+
+def test_left_the_page_removes_the_drafts_and_the_server_stays(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Under the home server: no tab, no drafts, nothing ended but the try."""
+    assert cli is not None
+    monkeypatch.setattr(presence, "LEAVING_GRACE_SECONDS", 0.05)
+    here = _here(locations)
+    status, (folder,) = asyncio.run(_session(here, lambda: _trial_of(here), 1.0))
+    assert status == HTTPStatus.NOT_FOUND  # the try is over, the router still answers
+    assert not folder.exists()
+    assert _left(locations) == []
+
+
+async def _lightening(here: ShrinkHere) -> Response:
+    """Open the page, choose the draft, lighten."""
+    await here.handle(Request("GET", "/shrink/", _LOCAL))
+    await asyncio.to_thread(_settled, _trial_of(here))
+    body = json.dumps({"drafts": [1], "chosen": True}).encode()
+    await here.handle(Request("POST", "/shrink/api/shrink/choose", _JSON, body))
+    return await here.handle(
+        Request("POST", "/shrink/api/shrink/lighten", _JSON, b"{}")
+    )
+
+
+def test_lighten_is_a_step_beside_the_server_and_reuses_the_draft(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Handed over, the server stays; `--chosen` uses the draft, then cleans."""
+
+    def never(_command: tuple[str, ...], _duration: float) -> str | None:
+        message = "encoded twice"
+        raise AssertionError(message)
+
+    monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, WATCH.kept)
+    here = _here(locations)
+    answer = asyncio.run(_lightening(here))
+    assert answer.status == HTTPStatus.OK
+    said = json.loads(answer.body)
+    assert said["kept"] is True
+    assert said["follow"] == STEP_PATH
+    written = json.loads((locations.reports_dir / WATCH.now).read_text("utf-8"))
+    assert written["words"] == list(CHOSEN_WORDS)
+    monkeypatch.setattr(shrink_draft, "encode", never)
+    result = run(cli, *CHOSEN_WORDS)
+    assert result.exit_code == 0, result.output
+    assert "1 video lightened" in " ".join(result.output.split())
+    assert (locations.data_dir / CAMERA).with_suffix(".mp4").is_file()
+    assert _left(locations) == []
+
+
+def test_the_step_chosen_skips_a_video_changed_since_the_page(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Touched after the page: skipped, nothing lightened, drafts gone."""
+    monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, WATCH.kept)
+    here = _here(locations)
+    asyncio.run(_lightening(here))
+    camera = locations.data_dir / CAMERA
+    os.utime(camera, (1, 1))
+    result = run(cli, *CHOSEN_WORDS)
+    assert result.exit_code == 0, result.output
+    assert camera.is_file()
+    assert _left(locations) == []
+
+
+def _here(locations: Locations) -> ShrinkHere:
+    """The prefix of the home server, on the test's mounts."""
+    runtime = make_runtime(locations)
+    fresh: Any = SimpleNamespace(runtime=lambda: runtime)
+    return ShrinkHere(fresh)
+
+
+def _trial_of(here: ShrinkHere) -> Trial:
+    """The try the page holds."""
+    opened = here._open  # noqa: SLF001  # pylint: disable=protected-access
+    assert opened is not None
+    return opened.trial

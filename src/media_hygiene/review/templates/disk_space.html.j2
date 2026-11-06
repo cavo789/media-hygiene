@@ -1,7 +1,8 @@
 {% extends "page_frame.html.j2" %}
 {# Disk space (0539): the previews and the quarantine, each limit next to its effect, saved
    into config.toml and read back from the disk before being shown. Nothing of the photos is
-   touched here; each run's photos are one click away (`/quarantine/?run=`, 0591); purged from History. #}
+   touched here; *Purge* of a run opens its photos first (`/quarantine/?run=…&purge=1`, 0591, 0616),
+   whose page asks, then comes back here (`?purged=`) to say what the disk says. #}
 {% set page_name = _("Disk space") %}
 {% set keys_safe = _("Your photos are not touched here. Previews are made again when shown.") %}
 {% block style %}
@@ -29,10 +30,10 @@
     <label>{{ _("Suggest purging after (days)") }} <input id="days" type="number" min="1" step="1"></label>
     <button id="saveDays" type="button">{{ _("Save") }}</button>
     <div class="table-wrap"><table>
-      <thead><tr><th>{{ _("Run") }}</th><th>{{ _("Files") }}</th><th>{{ _("Size") }}</th><th>{{ _("Since") }}</th><th></th><th></th></tr></thead>
+      <thead><tr><th>{{ _("Run") }}</th><th>{{ _("Files") }}</th><th>{{ _("Size") }}</th><th>{{ _("Since") }}</th><th></th><th></th><th></th></tr></thead>
       <tbody id="runs"></tbody>
     </table></div>
-    <p><a href="/quarantine/">{{ _("See every photo of the quarantine, put some back") }}</a> · <a href="/#history">{{ _("Purge: History and undo") }}</a></p>
+    <p><a href="/quarantine/">{{ _("See every photo of the quarantine, put some back") }}</a> · <a href="/#history">{{ _("History and undo") }}</a></p>
   </section>
 </main>
 {% endblock %}
@@ -47,6 +48,9 @@
     "emptied": _("Previews now: {size}."),
     "old": _("Worth purging"),
     "see": _("See the photos"),
+    "purge": _("Purge"),
+    "purgedYes": _("Read back from the disk: run {run} is gone, {freed} freed ({stated} stated)."),
+    "purgedNo": _("Read back from the disk: run {run} is still in the quarantine. The window of mh says why."),
     "failed": _("The page failed (error {status})."),
   } | tojson }};
   const byId = (id) => document.getElementById(id);
@@ -71,8 +75,19 @@
       link.textContent = TEXTS.see;
       see.append(link);
       row.append(see);
+      const purge = document.createElement("td");
+      const purgeLink = document.createElement("a");
+      purgeLink.href = `/quarantine/?run=${encodeURIComponent(run.run_id)}&purge=1`;
+      purgeLink.textContent = TEXTS.purge;
+      purge.append(purgeLink);
+      row.append(purge);
       return row;
     }));
+    const asked = new URLSearchParams(window.location.search).get("purged");
+    if (asked && state.purged && state.purged.run_id === asked) {
+      const { gone, freed, stated } = state.purged;
+      byId("said").textContent = fill(gone ? TEXTS.purgedYes : TEXTS.purgedNo, { run: asked, freed, stated });
+    }
   };
   const post = async (path, body, done) => {
     const answer = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });

@@ -7,6 +7,8 @@ album made ready to send (0296), and an album's folder of hard links on the disk
 
 from __future__ import annotations
 
+from typing import Final
+
 from media_hygiene.cli.menu_entry import (
     Area,
     Doc,
@@ -19,6 +21,12 @@ from media_hygiene.cli.menu_entry import (
     Step,
 )
 from media_hygiene.i18n import _
+
+# What a phone's help opens (0615): a few lines of the page, never its `docker` lines.
+TV_HELP: Final = Doc("commands/slideshow/", "#the-tvs-address", "#ladresse-de-la-télé")
+DRIVE_HELP: Final = Doc(
+    "commands/slideshow/", "#drive-the-show", "#piloter-le-diaporama"
+)
 
 
 def share_steps() -> tuple[Step, ...]:

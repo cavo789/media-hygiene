@@ -56,4 +56,4 @@ def run_meaning(runtime: Runtime, files: Sequence[MediaInput]) -> None:
             answering = Answering(True, progress, stop.requested)  # noqa: FBT003
             outcome = see_photos(repository.connection, (work, model), answering)
             progress.stop()
-    show_meaning_done(output, outcome)
+    show_meaning_done(output, outcome, runtime.mapper)

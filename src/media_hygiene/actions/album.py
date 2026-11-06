@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.album_links import UNSUPPORTED, why_not
+from media_hygiene.actions.album_readme import readme_of, readme_text, write_new
 from media_hygiene.actions.journaled import JournaledChanges
 from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.outcome import Incident, why
@@ -76,6 +77,9 @@ class AlbumExecutor:
         Returns:
             How the run ended.
         """
+        # The read-me first: `undo` goes backwards, it sees the album's folder gone.
+        make_folders(self._changes, plan.folder.parent)
+        self._read_me(plan.folder.parent)
         make_folders(self._changes, plan.folder)
         self._mark(plan.folder)
         progress = self._context.progress
@@ -150,6 +154,23 @@ class AlbumExecutor:
         self._tally.done += 1
         return ""
 
+    def _read_me(self, root: Path) -> None:
+        """Write the read-me of the albums' folder, once, journaled (0626).
+
+        A failure is counted: the album itself does not need it.
+
+        Args:
+            root: The folder holding the albums.
+        """
+        if readme_of(root) is not None:
+            return  # one read-me, whatever the language it was written in
+        path = root / _("READ-ME - managed by Media Hygiene.txt")
+        entry = self._changes.entry(file_of(path, (0, 0)), ActionKind.MARK_ALBUM)
+        try:
+            self._changes.record(entry, lambda: write_new(path, readme_text()))
+        except OSError as exc:
+            self._tally.failed.append(Incident(path, why(exc)))
+
     def _mark(self, folder: Path) -> None:
         """Write the marker that every scan skips the album for, journaled.
 
@@ -165,15 +186,4 @@ class AlbumExecutor:
             "'media-hygiene undo' removes it; deleting it by hand is safe too."
         )
         entry = self._changes.entry(file_of(marker, (0, 0)), ActionKind.MARK_ALBUM)
-        self._changes.record(entry, lambda: _write_new(marker, text + "\n"))
-
-
-def _write_new(path: Path, text: str) -> None:
-    """Write a new text file, never over an existing one.
-
-    Args:
-        path: The file; it must not exist.
-        text: Its content.
-    """
-    with path.open("x", encoding="utf-8") as stream:
-        stream.write(text)
+        self._changes.record(entry, lambda: write_new(marker, text + "\n"))

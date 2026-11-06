@@ -52,7 +52,7 @@ def test_an_album_holds_photos_of_several_folders_and_nothing_else_changes(
     store.add(AlbumChange("crete 2023", photos[:1]))  # the same album, the same file
     assert [album.name for album in shelf.albums.albums] == ["Crete 2023"]
     saved = json.loads((runtime.locations.reports_dir / ALBUMS_FILE).read_text())
-    assert saved["version"] == 2  # 0371: the chosen covers
+    assert saved["version"] == 3  # 0603: when the TV last showed it
     assert [entry["path"] for entry in saved["albums"][0]["entries"]] == [
         "C:\\Photos\\Day 1\\a.jpg",
         "C:\\Photos\\Day 2\\b.jpg",
@@ -93,7 +93,7 @@ def test_a_file_that_is_not_an_albums_file_is_refused(tmp_path: Path) -> None:
     assert read_albums(target) == AlbumsFile()
     target.write_bytes(codecs.BOM_UTF8 + b'{"version": 1, "albums": []}')
     assert read_albums(target) == AlbumsFile(version=1)  # before 0371, still read
-    target.write_text('{"version": 3}', encoding="utf-8")
+    target.write_text('{"version": 4}', encoding="utf-8")
     with pytest.raises(AlbumsError, match="not a valid albums file"):
         read_albums(target)
     double = {"albums": [{"name": "A"}, {"name": "a"}]}

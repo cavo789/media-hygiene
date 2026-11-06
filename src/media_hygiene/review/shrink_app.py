@@ -1,11 +1,7 @@
-"""The routes of `shrink --try`: the page, its state, the drafts, the frames (0307).
+"""The routes of `shrink --try` (0307): state, drafts (`Range`), frames (A or B).
 
-`GET /api/state` every draft as it stands and the decisions file read from the disk;
-`GET /draft/<n>.mp4` a draft, piece by piece (`Range`); `GET /frame/<n>-<a|b>-<k>.jpg`
-a frame of the original (A) or of the draft (B). `POST /api/shrink/choose` adds or
-removes drafts from `shrink-decisions.json`, answered with the file as read back;
-`POST /api/shrink/lighten` ends the page with `LIGHTEN_CODE`: the command then asks,
-in the terminal, and lightens them, reusing their drafts. Loopback only, JSON only.
+`POST /api/shrink/choose` adds or removes drafts, answered with the file read back;
+`POST /api/shrink/lighten` ends the page (`LIGHTEN_CODE`) or hands `mh` a step (0599).
 """
 
 from __future__ import annotations
@@ -33,6 +29,8 @@ from media_hygiene.review.videos import NEAR_POLICY, streamed
 from media_hygiene.shrink.draft_bench import draft_file, frame_file
 
 if TYPE_CHECKING:
+    from collections.abc import Awaitable, Callable
+
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.review.ending import Ending
     from media_hygiene.review.http import Request
@@ -55,6 +53,7 @@ class ShrinkDesk:
     trial: Trial
     mapper: HostPathMapper
     ending: Ending
+    hand: Callable[[], Awaitable[Response]] | None = None  # the home server's (0599)
 
 
 @dataclass(frozen=True, slots=True)
@@ -166,7 +165,10 @@ class ShrinkTryApp(LocalApp):
             choice, 409 when nothing is chosen, 500 when the file cannot be written.
         """
         if request.path == LIGHTEN_PATH:
-            return self._lighten(await asyncio.to_thread(chosen_count, self.desk.trial))
+            count = await asyncio.to_thread(chosen_count, self.desk.trial)
+            if count and self.desk.hand is not None:
+                return await self.desk.hand()
+            return self._lighten(count)
         if request.path != CHOOSE_PATH:
             return Response(HTTPStatus.NOT_FOUND)
         try:

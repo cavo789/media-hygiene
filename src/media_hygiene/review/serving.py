@@ -141,3 +141,17 @@ def refused_post(request: Request) -> Response | None:
     if origin is not None and origin != f"http://{headers.get('host')}":
         return Response(HTTPStatus.FORBIDDEN)
     return None
+
+
+def refused_write(request: Request) -> Response | None:
+    """`refused_post`, for a route that also answers another method.
+
+    Args:
+        request: The request.
+
+    Returns:
+        405 for a method other than `POST`, else what `refused_post` says.
+    """
+    if request.method != "POST":
+        return Response(HTTPStatus.METHOD_NOT_ALLOWED)
+    return refused_post(request)

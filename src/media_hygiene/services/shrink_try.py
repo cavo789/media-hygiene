@@ -87,6 +87,33 @@ def ensure_cache(runtime: Runtime) -> None:
 
 
 @contextlib.contextmanager
+def try_lock(root: Path) -> Iterator[None]:
+    """Hold the one lock of the drafts folder.
+
+    Args:
+        root: The drafts folder.
+
+    Yields:
+        Nothing, the lock held.
+
+    Raises:
+        MountError: Another `shrink --try` is running on this cache.
+    """
+    try:
+        lock = TryLock(root)
+        lock.__enter__()  # pylint: disable=unnecessary-dunder-call
+    except FileExistsError:
+        raise MountError(
+            _("Another 'shrink --try' is running: one at a time."),
+            _("Close its page first, then try again."),
+        ) from None
+    try:
+        yield
+    finally:
+        lock.__exit__(None, None, None)
+
+
+@contextlib.contextmanager
 def opened_try(runtime: Runtime, jobs: ShrinkJobs) -> Iterator[Trial]:
     """Start the drafts; whatever ends the try, remove them.
 
@@ -103,13 +130,7 @@ def opened_try(runtime: Runtime, jobs: ShrinkJobs) -> Iterator[Trial]:
     root = drafts_root(runtime.locations.cache_dir)
     settings = runtime.settings.shrink
     with contextlib.ExitStack() as stack:
-        try:
-            stack.enter_context(TryLock(root))
-        except FileExistsError:
-            raise MountError(
-                _("Another 'shrink --try' is running: one at a time."),
-                _("Close its page first, then try again."),
-            ) from None
+        stack.enter_context(try_lock(root))
         run = time.strftime(_RUN_NAME)
         folder = root / run
         stack.callback((root / CHOICES_FILE).unlink, missing_ok=True)

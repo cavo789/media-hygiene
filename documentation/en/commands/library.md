@@ -2,6 +2,13 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `library` · 🇫🇷 [Français](../../fr/commands/library.md)
 
+## What are you looking for?
+
+- 📱 [Find a photo from the phone: what to type](#what-you-can-type)
+- 🖼 [Put photos in an album](#put-photos-in-an-album)
+- 📂 [Walk through your folders](#walk-through-your-folders)
+- 💻 [I'm on the PC and start from zero](#run-it)
+
 ## In short
 
 **Find a photo by what you remember of it: a word, a place, a year, a person.** This page is the
@@ -426,15 +433,7 @@ click; the panel also offers **📺 Share on the TV** and **📨 Prepare for sen
   files, saved in …. Only this file changed: no photo was copied or moved.*
 - It is **not** the set aside: *Set aside* prepares a removal, *Add to the album* a share. Neither
   ever touches the other's list.
-- **📁 Your albums go to …**, in that panel, says where the album folders (`mh album <name>
-  --apply`) are made: `[album] root` of `config.toml`, else `Albums` in the sorted library.
-  Not set, the bar asks *Where should your albums go?*; **📁 Change** sets it. The folder must be
-  in a mounted folder, outside the protected ones, and writable; it is saved in `config.toml`
-  (your comments kept) and shown as read back. When album folders were made in the old folder,
-  **Move the N album folders made in …** makes each album of `albums.json` again in the new
-  folder (one run per album, undone by the `mh undo <run>` the answer gives), then empties the
-  old folder of the links media-hygiene made: a file you put there yourself stays, said, and so
-  does its folder.
+- **Where the album folders go** is on [the albums page](album.md#from-the-albums-page).
 - **Take out of the album** takes the picked photos out of the album typed; an album left empty
   is removed.
 - **Album** in the left column, once an album is typed: *In the album* shows only its files, *Not

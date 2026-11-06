@@ -65,6 +65,8 @@
     if [[ "$command" == import && " $* " == *" --pick "* ]]; then
         page=(-p "127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}" -e "MEDIA_HYGIENE_REVIEW__PORT={{ script.commands.port }}")
     fi
+    # `shrink --chosen` runs beside the home server (0599), which holds the port.
+    if [[ " $* " == *" --chosen "* ]]; then page=(); fi
     if [[ -n "${page[*]}" ]]; then
         # A page left by a closed terminal holds the port: stopped when its shell is gone (0250).
         _{{ function }}_page_free || return 1

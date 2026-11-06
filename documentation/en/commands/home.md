@@ -2,6 +2,13 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `home` · 🇫🇷 [Français](../../fr/commands/home.md)
 
+## What are you looking for?
+
+- 📱 [Open this page on a phone](#from-a-phone-on-the-home-wi-fi-mh---lan)
+- 🖼 [My albums on the phone](#your-albums-on-the-phone)
+- 📺 [The TV's address](slideshow.md#the-tvs-address)
+- 💻 [I'm on the PC: run a step](#run-a-step)
+
 > `mh` alone opens this page; `mh home` is still there for a script, but `mh --help` no longer lists it.
 
 ## In short
@@ -119,8 +126,10 @@ The *Disk space* tile opens a page with the room the previews and the quarantine
 sits next to its effect, saved into `config.toml` and read back before being shown: *Keep at most
 (GB)* (`[cache] previews_max_gb`) and *Suggest purging after (days)* (`[clean] purge_hint_days`).
 *Empty the previews* states the size it frees; they are made again when shown. Each run of the
-quarantine has its *See the photos* link, its files as tiles ([`undo --pick`](undo.md#put-back-a-few-photos)); it is
-purged from *History and undo*, where `purge` offers the same page, then asks.
+quarantine has its *See the photos* link, its files as tiles ([`undo --pick`](undo.md#put-back-a-few-photos)),
+and its *Purge* link: the same tiles first, then a button stating how many files it erases and the
+room it frees. It asks once there, `mh` runs [`purge`](purge.md) in its window, and the page comes
+back to say what the disk now says: the run gone, the room freed. With another `mh`, type the command.
 
 ## Fast paths and what shows the files first
 
@@ -256,11 +265,11 @@ phone's page, offers four choices: **🎲 At random** (a long show through the y
 [slideshow](slideshow.md)), an album saved on the PC, **a folder** (one of the folders
 analysed, the most recent photos first, shown by its last part: `2024-08 Holidays`) or, below
 it, **a month** (by the date the audit read, across every folder). However many albums, the page stays
-short: one **Albums (N)** button and, above it, the 3 albums this phone showed last; the albums
+short: one **Albums (N)** button and, above it, the 3 albums last shown on the TV, whichever phone showed them (the PC keeps that date in `albums.json`); the albums
 page it opens lists them all with a box to find one by its name, the last shown first, and a
 tap on an album shows it on the TV. A tap starts that
 [slideshow](slideshow.md) in the home page's own server, and the phone opens its remote at once.
-It only shows: nothing is written, nothing moves. No album saved: the folder and the month are
+It only shows: no photo moves, and the phone itself writes nothing. No album saved: the folder and the month are
 still there.
 The TV's bookmark (`http://<PC address>:8089/`: a welcome page, **📺 Slideshow**, then its
 page) waits for a show and stays paired while

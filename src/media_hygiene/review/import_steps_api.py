@@ -26,7 +26,7 @@ from media_hygiene.places.toml_edit import (
     write_document,
 )
 from media_hygiene.review.http import Response
-from media_hygiene.review.serving import json_response, refused_post
+from media_hygiene.review.serving import json_response, refused_write
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -99,11 +99,7 @@ async def import_steps_route(config_file: Path, request: Request) -> Response:
     if request.method == "GET":
         steps = await asyncio.to_thread(steps_of, config_file)
         return json_response(HTTPStatus.OK, {"steps": steps})
-    refused = (
-        Response(HTTPStatus.METHOD_NOT_ALLOWED)
-        if request.method != "POST"
-        else refused_post(request)
-    )
+    refused = refused_write(request)
     if refused is not None:
         return refused
     try:

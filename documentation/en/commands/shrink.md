@@ -75,6 +75,10 @@ same settings as `--apply`, and opens a page that shows each one as soon as it i
   `--apply` does (originals in the quarantine, journaled, undoable), **reusing each draft**:
   nothing is encoded twice. A video moved, renamed or changed since the page is skipped, with a
   line.
+- **From the home page**, the page is served by the home server, which stays up: *Lighten the
+  chosen now* asks once in the page, then the re-encoding runs in the window of `mh`
+  (`shrink --chosen --yes`, which the page starts for you) and the page follows it. Leaving the
+  page removes its drafts.
 
 ```powershell
 docker run --rm -it -p 127.0.0.1:8088:8088 `
@@ -147,6 +151,7 @@ figures; the list says its estimate, and the real gain is said after each video.
 | `--lighter` | At most 720 lines, a stronger compression. |
 | `--try` | Drafts of the first `try_count` ones, compared in the browser; lighten from the page. |
 | `--apply` | Lighten them; without it, only list them. |
+| `--chosen` | Lighten the videos chosen on the home page's page, their drafts reused; the page starts it. |
 | `--yes`, `-y` | Do not ask first. |
 
 ## Good to know

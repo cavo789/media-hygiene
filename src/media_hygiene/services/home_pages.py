@@ -1,9 +1,4 @@
-"""`library` and `browse` served by the home server itself (0356).
-
-A click on either used to stop the home server and start a container: 7.6 to 8.7 s
-(measured, step 35 of `mh-measure.ps1`). Now the home server answers every path not its
-own with `library`'s app, rebuilt once the settings changed (0358); `/people/`: 0600.
-"""
+"""`library`, `browse` in the home server (0356): every path not its own (0358)."""
 
 from __future__ import annotations
 
@@ -30,6 +25,7 @@ from media_hygiene.services.review_here import ReviewHere
 from media_hygiene.services.review_kinds import REVIEWS
 from media_hygiene.services.search import open_search
 from media_hygiene.services.search_app import SearchBuild, search_app
+from media_hygiene.services.shrink_here import ShrinkHere
 from media_hygiene.services.slideshow_here import SLIDESHOW_PREFIX, SlideshowHere
 from media_hygiene.services.slideshow_selection import TvSlot
 
@@ -183,7 +179,7 @@ def home_with_pages(
     pages = SearchHere(runtime, server)
     fresh = FreshRuntime(runtime)
     reviews = tuple(ReviewHere(kind, fresh, server) for kind in REVIEWS)
-    slideshow = SlideshowHere(fresh, server)
+    slideshow, shrink = SlideshowHere(fresh, server), ShrinkHere(fresh)
     try:
         yield HomeWithPages(
             people_door(home, fresh),
@@ -193,8 +189,9 @@ def home_with_pages(
             slideshow,
             PlacesHere(fresh, server),
             DiskHere(fresh),
-            pages_here(fresh, server),
+            (*pages_here(fresh, server), shrink),
         )
     finally:
         slideshow.close()
+        shrink.close()
         pages.close()

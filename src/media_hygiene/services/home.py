@@ -23,6 +23,7 @@ from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.review.home_more_api import MORE_PATHS
 from media_hygiene.review.home_tags_api import INLINE_PATH, RUN_NAMES, TAGS_RUN
 from media_hygiene.review.home_texts import home_texts
+from media_hygiene.review.import_chain_api import IMPORT_CHAIN_PATH, ChainDoor
 from media_hygiene.review.import_steps_api import IMPORT_STEPS_PATH
 from media_hygiene.review.lan import lan_access
 from media_hygiene.review.lan_paths import LAN_PATH, PHONE_PAGES
@@ -42,6 +43,7 @@ from media_hygiene.services.home_launch import (
 )
 from media_hygiene.services.home_pages import HomeServer, home_with_pages
 from media_hygiene.services.home_tags import HomeTags
+from media_hygiene.services.import_chain import chain_file
 from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.share.album_page import ALBUM_LIST_PATH, ALBUMS_PAGE
 from media_hygiene.slideshow.routes import SLIDES_PATH
@@ -80,6 +82,7 @@ def home_page(
             **MORE_PATHS,
             "scope": SCOPE_PATH,
             "importSteps": IMPORT_STEPS_PATH,  # [imports] then (0481)
+            "importChain": IMPORT_CHAIN_PATH,  # where it is (0604)
             **{name: path if path in runs else "" for name, path in RUN_NAMES.items()},
             "alive": PRESENCE_PATH,
             "stop": STOP_PATH,
@@ -128,6 +131,11 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         runs={path: HomeTags(run) for path, run in sources.runs.items()},
         config_file=runtime.locations.config_file,
         samples=sources.samples,
+        chain=ChainDoor(
+            chain_file(runtime),
+            runtime.locations.reports_dir,
+            relays and keeps_server(),
+        ),
     )
 
     def ready(port: int) -> None:

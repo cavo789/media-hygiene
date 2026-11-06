@@ -2,6 +2,13 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `home` · 🇬🇧 [English](../../en/commands/home.md)
 
+## Que cherchez-vous ?
+
+- 📱 [Ouvrir cette page sur un téléphone](#depuis-un-téléphone-du-wi-fi-de-la-maison--mh---lan)
+- 🖼 [Mes albums sur le téléphone](#vos-albums-sur-le-téléphone)
+- 📺 [L'adresse de la télé](slideshow.md#ladresse-de-la-télé)
+- 💻 [Je suis sur le PC : lancer une étape](#lancer-une-étape)
+
 > `mh` seul ouvre cette page ; `mh home` reste là pour un script, mais `mh --help` ne la liste plus.
 
 ## En bref
@@ -129,8 +136,10 @@ quarantaine. Chaque limite est à côté de son effet, écrite dans `config.toml
 affichée : *Garder au plus (Go)* (`[cache] previews_max_gb`) et *Proposer la purge après (jours)*
 (`[clean] purge_hint_days`). *Vider les aperçus* annonce la place libérée ; ils sont refaits à
 l'affichage. Chaque exécution de la quarantaine a son lien *Voir les photos*, ses fichiers en vignettes
-([`undo --pick`](undo.md#remettre-quelques-photos)) ; elle se purge depuis *Historique et annulation*, où `purge`
-propose la même page, puis demande.
+([`undo --pick`](undo.md#remettre-quelques-photos)), et son lien *Purger* : les mêmes vignettes d'abord, puis un
+bouton qui annonce combien de fichiers il efface et la place qu'il libère. Il demande une fois là, `mh`
+lance [`purge`](purge.md) dans sa fenêtre, et la page revient dire ce que dit le disque : l'exécution
+partie, la place libérée. Avec un autre `mh`, tapez la commande.
 
 ## Chemins rapides et ce qui montre les fichiers d'abord
 
@@ -280,7 +289,7 @@ dans la fenêtre de `mh`, que personne ne voit depuis le canapé. Une exception 
 le PC, **un dossier** (un des dossiers analysés, les photos les plus récentes d'abord, montré par sa
 fin : `2024-08 Vacances`) ou, en dessous, **un mois** (selon la date lue par l'audit, tous dossiers confondus).
 Quel que soit le nombre d'albums, la page reste courte : un bouton **Albums (N)** et, devant lui,
-les 3 albums que ce téléphone a montrés en dernier ; la page des albums qu'il ouvre les liste
+les 3 albums montrés en dernier sur la télé, quel que soit le téléphone (le PC garde cette date dans `albums.json`) ; la page des albums qu'il ouvre les liste
 tous, avec une case pour en trouver un par son nom, les derniers montrés d'abord, et un appui sur
 un album le montre sur la télé.
 Un appui lance ce [diaporama](slideshow.md) dans le serveur même de la page d'accueil, et le

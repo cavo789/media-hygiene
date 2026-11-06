@@ -179,9 +179,14 @@ docker run --rm -it ... cavo789/media-hygiene tags --meaning   # 🤖 un modèle
 - **Une seule fois** : le modèle (894 Mo) est téléchargé dans le cache (`/cache/models`) la
   première fois, après l'avoir annoncé ; puis chaque photo est regardée une fois, environ 0,06 s
   sur 4 fils d'exécution (mesuré sur le PC du mainteneur) : environ 1 minute pour 1 000 photos,
-  10 minutes pour 10 000 (estimé à partir de là). Les copies identiques sont regardées une fois ;
-  une photo retouchée depuis est regardée à nouveau ; les vidéos, non. Ctrl+C arrête entre deux
-  photos, et la fois suivante reprend.
+  10 minutes pour 10 000 (estimé à partir de là ; 34 minutes pour 33 660 photos de 3,3 Mo en
+  moyenne, mesuré là-bas ; les petits fichiers prennent deux fois moins). Le temps annoncé suit la
+  taille de vos fichiers, dès que quelques-uns ont été chronométrés. Les copies identiques sont
+  regardées une fois ; une photo retouchée depuis est regardée à nouveau ; les vidéos, non. Ctrl+C
+  arrête entre deux photos, et la fois suivante reprend.
+- **Les photos laissées de côté** : la fin de l'exécution nomme les photos qu'elle n'a pas pu
+  décoder (les 20 premières) et compte celles que l'audit a listées et qui ne sont plus là
+  (supprimées, ou leur disque non monté). Les unes et les autres sont réessayées la fois suivante.
 - **La recherche** : `library` utilise les vecteurs dès que le cache les contient, quoi que dise
   `[tags] meaning` ; les mots comptent toujours, fusionnés avec le sens (fusion des rangs
   réciproques). Elle trouve au plus `meaning_results` photos (200), les plus proches d'abord. Une

@@ -1,10 +1,11 @@
-r"""Where the albums go, said and changed from the album bar (0534).
+r"""Where the albums go, said and changed from the albums page (0534, 0625).
 
 `GET /api/album-root` says `[album] root` as `config.toml` holds it now, and the folder
-used when it is empty (`Albums` in the `[classify] target`). `POST /api/album-root`
+used when it is empty (`_Albums` in the `[classify] target`). `POST /api/album-root`
 sets it: the folder must be in a mounted folder, outside the protected ones, and
 writable (the checks of `album_folder`); the file is edited with `toml_edit`
-(comments kept, atomic), then read back from the disk before it is said.
+(comments kept, atomic), then read back from the disk before it is said. Folders made
+under the former default (`Albums`) are offered the move too, nothing changed (0626).
 """
 
 from __future__ import annotations
@@ -16,6 +17,7 @@ from typing import TYPE_CHECKING, Final
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from media_hygiene.config.album_settings import AlbumSettings
+from media_hygiene.constants import ALBUMS_DEFAULT_DIR, ALBUMS_FORMER_DIR
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.paths.host_paths import is_within
 from media_hygiene.paths.mounts import is_writable
@@ -28,17 +30,13 @@ from media_hygiene.places.toml_edit import (
 )
 from media_hygiene.review.serving import json_response
 from media_hygiene.search.album_move_desk import AlbumMoveDesk
-from media_hygiene.search.folder_role_desk import ALBUM_ROOT_PATH
-from media_hygiene.search.folders import FOLDERS_PATH
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
-
     from media_hygiene.review.http import Response
     from media_hygiene.search.folder_role_desk import RoleDesk
-    from media_hygiene.search.folders import FolderDesk
     from media_hygiene.services.runtime import Runtime
 
+ALBUM_ROOT_PATH: Final = "/api/album-root"
 _TABLE: Final = "album"
 _MAX_PATH: Final = 4096
 
@@ -69,7 +67,7 @@ class AlbumRootDesk:
         root = str(config.get(_TABLE, {}).get("root", ""))
         target = str(config.get("classify", {}).get("target", ""))
         mapper = self.roles.mapper
-        default = mapper.to_host(mapper.to_container(target) / _("Albums"))
+        default = mapper.to_host(mapper.to_container(target) / ALBUMS_DEFAULT_DIR)
         return {"root": root, "used": root or (default if target else "")}
 
     def state(self) -> Response:
@@ -78,8 +76,26 @@ class AlbumRootDesk:
         Returns:
             The folder of the albums, read from the disk.
         """
-        shown: dict[str, object] = {**self.shown()}
+        now = self.shown()
+        shown: dict[str, object] = {**now}
+        former = self._former()
+        if former and former != now["used"] and self.move is not None:
+            shown |= {"movable": self.move.movable(former), "old": former}
         return json_response(HTTPStatus.OK, shown)
+
+    def _former(self) -> str:
+        """The folder the albums went to by default before 0626.
+
+        Returns:
+            Its host path; empty without a `[classify] target`.
+        """
+        target = str(
+            loaded(self.roles.config_file).get("classify", {}).get("target", "")
+        )
+        if not target:
+            return ""
+        mapper = self.roles.mapper
+        return mapper.to_host(mapper.to_container(target) / ALBUMS_FORMER_DIR)
 
     def answer(self, body: bytes) -> Response:
         """`POST /api/album-root`: save the folder of the albums.
@@ -150,21 +166,6 @@ class AlbumRootDesk:
         if not is_writable(existing):
             return _("The container cannot write to {folders}.").format(folders=root)
         return None
-
-
-def folder_gets(folders: FolderDesk) -> dict[str, Callable[[], Response]]:
-    """The `GET` routes of the folder view: the tree, and the albums' folder.
-
-    Args:
-        folders: The folder view.
-
-    Returns:
-        Each path and what answers it.
-    """
-    gets: dict[str, Callable[[], Response]] = {FOLDERS_PATH: folders.tree}
-    if folders.album_root is not None:
-        gets[ALBUM_ROOT_PATH] = folders.album_root.state
-    return gets
 
 
 def album_root_desk(roles: RoleDesk, runtime: Runtime) -> AlbumRootDesk:

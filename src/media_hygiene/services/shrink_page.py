@@ -42,9 +42,9 @@ def try_page() -> bytes:
     """
     environment = translated_environment(_TEMPLATES, escaped=("html", "j2"))
     paths = {
-        "state_path": STATE_PATH,
-        "choose_path": CHOOSE_PATH,
-        "lighten_path": LIGHTEN_PATH,
+        "state_path": STATE_PATH.lstrip("/"),  # relative: `/` typed, `/shrink/` at home
+        "choose_path": CHOOSE_PATH.lstrip("/"),
+        "lighten_path": LIGHTEN_PATH.lstrip("/"),
     }
     return headed_page(environment, PAGE_TEMPLATE, paths)
 

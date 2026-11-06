@@ -2,9 +2,31 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `slideshow` · 🇫🇷 [Français](../../fr/commands/slideshow.md)
 
-> `mh --help` no longer lists it: it only opens a page. Typed, `mh slideshow` still works, for a script or a shortcut.
+## What are you looking for?
+
+- 📱 [I'm on the phone and want the TV's address](#the-tvs-address)
+- 📺 [The slideshow is on, how do I drive it?](#drive-the-show)
+- 💻 [I'm on the PC and start from zero](#run-it)
+
+## On the sofa
+
+### The TV's address
+
+In the TV's browser, open the PC's address on port 8089, `http://<PC>:8089/`, then **📺 Slideshow**.
+Bookmark it. On the phone's home page, under **Show on the TV**, tap an album, a folder or a month.
+The TV shows a code? Type it on the phone.
+
+### Drive the show
+
+- **▶** and **◀**: next and previous photo. A tap on a thumbnail shows that one.
+- **❚❚ Pause** stops on the photo; **▶ Play** goes on.
+- To end: choose another show here; the PC alone stops the slideshow.
+
+[Everything about the slideshow (PC)](#run-it).
 
 ## In short
+
+> `mh --help` no longer lists it: it only opens a page. Typed, `mh slideshow` still works, for a script or a shortcut.
 
 **The holiday photos on the living-room TV, the family on the sofa, the next photo chosen from
 the phone.**
@@ -40,7 +62,7 @@ docker run --rm -it `
 |---|---|
 | Your photos | 🔒 Never changed: mount them `:ro`. |
 | Needs | `/cache` (the files of the last audit), your folders (to show the photos), the page's port; `/reports` for `--album`. |
-| Writes | The TV's pictures and the phone's thumbnails, in the cache. Nothing else: the show lives in memory. |
+| Writes | The TV's pictures and the phone's thumbnails, in the cache; with an album, the day it was last shown, in `albums.json` (the PC writes it, never the phone). Nothing else: the show lives in memory. |
 | Reaches | The PC only; with `--lan`, the TV and the phones of your home network, never the internet. |
 | With `mh` | `mh slideshow --folder "C:\Photos\2026 Holidays" --lan`. |
 

@@ -190,7 +190,7 @@ and every value there is an example to replace:
   default each mounted folder is reorganised in place.
 - `--year 2016`, or `--year 2015-2017`: one year at a time, one evening at a time. The files
   only the disk dates wait for a run without `--year`.
-- `--leave 'C:\Photos\Albums'`: a folder never sorted, still analysed and cleaned.
+- `--leave 'C:\Photos\_Albums'`: a folder never sorted, still analysed and cleaned.
 
 Layouts accept `{year}`, `{year_month}`, `{quarter}`, `{month}`, `{month_name}`, `{day}`,
 `{category}`, `{event}` and `{event_start}`. An empty layout leaves the files where they are.

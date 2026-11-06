@@ -21,6 +21,7 @@ from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.interrupt import StopRequest
 from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.shrink import ShrinkJobs, ShrinkService
+from media_hygiene.services.shrink_handed import handed_try
 from media_hygiene.services.shrink_page import serve_try
 from media_hygiene.services.shrink_tools import encoding_tools
 from media_hygiene.services.shrink_try import chosen, ensure_cache, opened_try
@@ -28,6 +29,7 @@ from media_hygiene.services.step_progress import shared
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
+    from media_hygiene.services.shrink_try import Chosen
     from media_hygiene.shrink.candidates import Candidate
 
 
@@ -106,14 +108,36 @@ def try_then_lighten(runtime: Runtime, asked: Asked) -> None:
             output.info(_("Try stopped: its drafts are removed, nothing was changed."))
             return
         trial.bench.stop()  # the drafts left to encode: not now
-        picked = chosen(trial)
-        for path in picked.skipped:
-            line = _("{path}: moved, renamed or changed since the page: skipped.")
-            output.warning(line.format(path=runtime.mapper.to_host(Path(path))))
-        if not picked.videos:
-            output.info(_("No video left to lighten: nothing was changed."))
-            return
-        show_candidates(runtime, picked.videos)
-        ready = ShrinkService(runtime, NullProgress()).ensure_ready()
-        jobs = ShrinkJobs(picked.videos, ready, asked.lighter, picked.drafts)
-        lighten(runtime, jobs, yes=asked.yes)
+        _lighten_picked(runtime, chosen(trial), asked)
+
+
+def lighten_handed(runtime: Runtime, *, yes: bool) -> None:
+    """Lighten what the page of the home server chose: `shrink --chosen` (0599).
+
+    Args:
+        runtime: Settings, mount points and output.
+        yes: `--yes`: the page has asked.
+    """
+    with handed_try(runtime) as picked:
+        _lighten_picked(runtime, picked, Asked((), yes=yes))
+
+
+def _lighten_picked(runtime: Runtime, picked: Chosen, asked: Asked) -> None:
+    """Say what is skipped, then lighten what is left, its drafts reused.
+
+    Args:
+        runtime: Settings, mount points and output.
+        picked: The videos chosen that still match.
+        asked: The level, `--yes`.
+    """
+    output = runtime.output
+    for path in picked.skipped:
+        line = _("{path}: moved, renamed or changed since the page: skipped.")
+        output.warning(line.format(path=runtime.mapper.to_host(Path(path))))
+    if not picked.videos:
+        output.info(_("No video left to lighten: nothing was changed."))
+        return
+    show_candidates(runtime, picked.videos)
+    ready = ShrinkService(runtime, NullProgress()).ensure_ready()
+    jobs = ShrinkJobs(picked.videos, ready, asked.lighter, picked.drafts)
+    lighten(runtime, jobs, yes=asked.yes)
