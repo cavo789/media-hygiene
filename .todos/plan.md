@@ -16,7 +16,6 @@ One `/todo:run NNNN` each, highest priority first.
 
 | ID | Priority | Title | Batch |
 |---|---|---|---|
-| 0624 | Medium | *More keys* opens under the shell's vertical menu: its left part is hidden | page-shell |
 | 0627 | Medium | Ctrl+C while the pool's fork server starts prints a traceback, then an "unexpected error" | interrupt |
 | 0630 | Medium | Import chain from the page: the burst review shows the import's new series only | import |
 | 0633 | Medium | The phone's remote has a Stop button for the slideshow | phone |

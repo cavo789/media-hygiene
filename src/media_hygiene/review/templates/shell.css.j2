@@ -4,7 +4,7 @@
 :root { --mh-shell-w: 248px; }
 /* A page's sticky parts (#bar, #side, people's header) sit under the top bar: its height, measured
    by shell.js.j2 (a first guess until then); the page's overlays cover the sidebar too (0493-0496). */
-html.mh-shelled { --mh-shell-top-h: 57px; --mh-side-gap: calc(var(--mh-shell-top-h) + 16px); }
+html.mh-shelled { --mh-shell-left: var(--mh-shell-w); --mh-shell-top-h: 57px; --mh-side-gap: calc(var(--mh-shell-top-h) + 16px); }
 html.mh-shelled #viewer, html.mh-shelled #why, html.mh-shelled #compare, html.mh-shelled #zoom,
 html.mh-shelled #ruleDlg.aside, html.mh-shelled #moreKeys[open] > dl, html.mh-shelled #folders[open] > #tree { z-index: 40; }
 /* Leaflet's panes and controls (z-index 400-1000) stay inside the map, under the top bar. */

@@ -204,7 +204,8 @@
   #folders summary { cursor: pointer; margin: 8px 0 4px; }
   /* Folded to one line (0471): opened, the tree floats over the page like *More keys*,
      the line keeps its place, nothing below it moves; Esc or a folder picked closes it. */
-  #folders[open] > #tree { position: fixed; z-index: 4; left: 16px; width: min(28rem, calc(100vw - 32px));
+  #folders[open] > #tree { position: fixed; z-index: 4; left: calc(var(--mh-shell-left, 0px) + 16px);
+                           width: min(28rem, calc(100vw - var(--mh-shell-left, 0px) - 32px));
                            /* below the shell's header (0595): its ⋯ reachable, never under it */
                            top: calc(var(--mh-shell-top-h, 0px) + 16px); max-height: calc(100vh - var(--mh-shell-top-h, 0px) - 32px); padding: 10px 12px; background: var(--card);
                            border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 4px 18px rgba(0, 0, 0, .3); }
