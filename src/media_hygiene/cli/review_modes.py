@@ -31,6 +31,7 @@ from media_hygiene.services import (
     pairs_reviewing,
     unwanted_reviewing,
 )
+from media_hygiene.services.unwanted_resume import any_decided
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -150,7 +151,8 @@ def _run_junk(run: ReviewRun, findings: AuditFindings) -> None:
         findings: The audit just run.
     """
     runtime = run.runtime
-    if not unwanted_reviewing.audit_unwanted(runtime, findings):
+    listed = unwanted_reviewing.audit_unwanted(runtime, findings)
+    if not listed and not any_decided(runtime, findings, run.target):
         runtime.output.success(_("No photo looks unwanted: nothing to review."))
         return
     session = unwanted_reviewing.open_unwanted_review(runtime, findings, run.target)

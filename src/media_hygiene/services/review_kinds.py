@@ -38,6 +38,7 @@ from media_hygiene.services import (
 )
 from media_hygiene.services.review_kinds_more import bursts, intruders
 from media_hygiene.services.review_serving import ReviewPage
+from media_hygiene.services.unwanted_resume import any_decided
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -111,7 +112,8 @@ def _junk(runtime: Runtime, findings: AuditFindings, target: Path) -> ReviewPage
     Returns:
         Its page; None when no photo looks unwanted.
     """
-    if not unwanted_reviewing.audit_unwanted(runtime, findings):
+    listed = unwanted_reviewing.audit_unwanted(runtime, findings)
+    if not listed and not any_decided(runtime, findings, target):
         return None
     session = unwanted_reviewing.open_unwanted_review(runtime, findings, target)
     offer = ApplyOffer(None, lambda: session.decided[1] > 0)  # set aside only

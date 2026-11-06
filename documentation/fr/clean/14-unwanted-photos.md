@@ -27,7 +27,8 @@ listées.
 
 Chaque groupe a son panneau *trop strict ?* dans la colonne de gauche de la page. Relâchez un
 curseur : les photos sont listées à nouveau aussitôt et une ligne nomme celles qui entrent ou
-sortent ; rien n'est écrit, et une photo déjà décidée reste, telle que décidée. *Garder ces valeurs*
+sortent ; rien n'est écrit, et une photo déjà décidée reste, telle que décidée, y compris quand vous
+revenez plus tard : pour l'ôter de la liste, annulez votre choix. *Garder ces valeurs*
 les écrit dans `config.toml` (vos commentaires restent) et les affiche telles que relues dans le
 fichier. *Revenir aux valeurs enregistrées* annule l'essai. Une valeur fixée par une option ou une
 variable d'environnement reste prioritaire au lancement suivant.

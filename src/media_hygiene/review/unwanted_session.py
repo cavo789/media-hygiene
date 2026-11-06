@@ -1,8 +1,8 @@
 """A `review --junk` in progress: the photos decided, saved after every choice.
 
 The decisions file is shared with the other reviews and `library`: this one writes the
-`unwanted` key. Reopened, it resumes; a decision about a photo no longer listed, or
-changed since (size, date), is dropped.
+`unwanted` key. Reopened, it resumes, even on a reason turned off since (0636); a
+decision about a photo gone, or changed since (size, date), is dropped.
 """
 
 from __future__ import annotations
