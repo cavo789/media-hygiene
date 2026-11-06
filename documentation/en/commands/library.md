@@ -2,6 +2,13 @@
 
 [Documentation](../README.md) › [Commands](../reference-commands.md) › `library` · 🇫🇷 [Français](../../fr/commands/library.md)
 
+## What are you looking for?
+
+- 📱 [Find a photo from the phone: what to type](#what-you-can-type)
+- 🖼 [Put photos in an album](#put-photos-in-an-album)
+- 📂 [Walk through your folders](#walk-through-your-folders)
+- 💻 [I'm on the PC and start from zero](#run-it)
+
 ## In short
 
 **Find a photo by what you remember of it: a word, a place, a year, a person.** This page is the

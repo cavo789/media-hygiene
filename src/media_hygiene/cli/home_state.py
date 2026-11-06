@@ -26,6 +26,7 @@ from media_hygiene.cli.home_reports import latest_reports
 from media_hygiene.cli.home_runs import home_quarantine, home_undo, home_update
 from media_hygiene.cli.home_tile_order import arranged, read_tiles
 from media_hygiene.cli.home_tiles import home_tiles
+from media_hygiene.cli.menu_catalog_share import TV_HELP
 from media_hygiene.cli.menu_entry import Doc
 from media_hygiene.cli.menu_steps import build_menu, full_catalog
 from media_hygiene.cli.status_step import next_step
@@ -83,6 +84,7 @@ def home_state(runtime: Runtime) -> HomeState:
         docs=HomeLink(
             url=served_url(_DOCS_HOME), url_en=served_url(_DOCS_HOME, Locale.EN)
         ),
+        tv_help=served_url(TV_HELP),
         docs_index=served_index(),
         given=_given(),
         proposed=home_next(page, next_step(status, purge_days), areas),

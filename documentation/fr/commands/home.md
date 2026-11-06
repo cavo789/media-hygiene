@@ -2,6 +2,13 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `home` · 🇬🇧 [English](../../en/commands/home.md)
 
+## Que cherchez-vous ?
+
+- 📱 [Ouvrir cette page sur un téléphone](#depuis-un-téléphone-du-wi-fi-de-la-maison--mh---lan)
+- 🖼 [Mes albums sur le téléphone](#vos-albums-sur-le-téléphone)
+- 📺 [L'adresse de la télé](slideshow.md#ladresse-de-la-télé)
+- 💻 [Je suis sur le PC : lancer une étape](#lancer-une-étape)
+
 > `mh` seul ouvre cette page ; `mh home` reste là pour un script, mais `mh --help` ne la liste plus.
 
 ## En bref
@@ -282,7 +289,7 @@ dans la fenêtre de `mh`, que personne ne voit depuis le canapé. Une exception 
 le PC, **un dossier** (un des dossiers analysés, les photos les plus récentes d'abord, montré par sa
 fin : `2024-08 Vacances`) ou, en dessous, **un mois** (selon la date lue par l'audit, tous dossiers confondus).
 Quel que soit le nombre d'albums, la page reste courte : un bouton **Albums (N)** et, devant lui,
-les 3 albums que ce téléphone a montrés en dernier ; la page des albums qu'il ouvre les liste
+les 3 albums montrés en dernier sur la télé, quel que soit le téléphone (le PC garde cette date dans `albums.json`) ; la page des albums qu'il ouvre les liste
 tous, avec une case pour en trouver un par son nom, les derniers montrés d'abord, et un appui sur
 un album le montre sur la télé.
 Un appui lance ce [diaporama](slideshow.md) dans le serveur même de la page d'accueil, et le

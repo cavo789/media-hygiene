@@ -2,9 +2,31 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `slideshow` · 🇬🇧 [English](../../en/commands/slideshow.md)
 
-> `mh --help` ne la liste plus : elle ne fait qu'ouvrir une page. Tapée, `mh slideshow` marche toujours, pour un script ou un raccourci.
+## Que cherchez-vous ?
+
+- 📱 [Je suis sur le téléphone et je veux l'adresse de la télé](#ladresse-de-la-télé)
+- 📺 [Le diaporama tourne, comment le piloter ?](#piloter-le-diaporama)
+- 💻 [Je suis sur le PC et je pars de zéro](#lancer)
+
+## Dans le canapé
+
+### L'adresse de la télé
+
+Dans le navigateur de la télé, ouvrez l'adresse du PC au port 8089, `http://<PC>:8089/`, puis
+**📺 Diaporama**. Gardez-la en favori. Sur la page d'accueil du téléphone, sous **Montrer sur la
+télé**, touchez un album, un dossier ou un mois. La télé montre un code ? Tapez-le sur le téléphone.
+
+### Piloter le diaporama
+
+- **▶** et **◀** : photo suivante et précédente. Une vignette touchée montre celle-là.
+- **❚❚ Pause** s'arrête sur la photo ; **▶ Lecture** repart.
+- Pour finir : choisissez un autre diaporama ici ; seul le PC arrête le diaporama.
+
+[Tout sur le diaporama (PC)](#lancer).
 
 ## En bref
+
+> `mh --help` ne la liste plus : elle ne fait qu'ouvrir une page. Tapée, `mh slideshow` marche toujours, pour un script ou un raccourci.
 
 **Les photos des vacances sur la télé du salon, la famille dans le canapé, la photo suivante
 choisie depuis le téléphone.**
@@ -41,7 +63,7 @@ docker run --rm -it `
 |---|---|
 | Vos photos | 🔒 Jamais modifiées : montez-les en `:ro`. |
 | Demande | `/cache` (les fichiers du dernier audit), vos dossiers (pour montrer les photos), le port de la page ; `/reports` pour `--album`. |
-| Écrit | Les images de la télé et les vignettes du téléphone, dans le cache. Rien d'autre : le diaporama vit en mémoire. |
+| Écrit | Les images de la télé et les vignettes du téléphone, dans le cache ; pour un album, le jour où il a été montré, dans `albums.json` (le PC l'écrit, jamais le téléphone). Rien d'autre : le diaporama vit en mémoire. |
 | Atteint | Le PC seulement ; avec `--lan`, la télé et les téléphones de votre réseau de la maison, jamais Internet. |
 | Avec `mh` | `mh slideshow --folder "C:\Photos\Vacances 2026" --lan`. |
 

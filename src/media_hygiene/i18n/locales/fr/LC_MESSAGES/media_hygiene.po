@@ -4596,6 +4596,9 @@ msgstr ""
 "Chaque valeur ci-dessous est un exemple : remplacez-la par votre propre "
 "structure. Rien ne bouge avant 'sort'."
 
+msgid "How do I open it on the TV?"
+msgstr "Comment l'ouvrir sur la télé ?"
+
 msgid "How do we know these are duplicates?"
 msgstr "Comment sait-on que ce sont des doublons ?"
 

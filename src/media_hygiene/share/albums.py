@@ -6,7 +6,8 @@ delete): an album is the user's choice. Each entry keeps the file's host path, i
 SHA-256 and its size, so a file moved since (by `sort`, `undo`, or the user) is found
 again by its content. Saved at once (a draft, then renamed), read back by the caller.
 Schema 2 (0371): an album may name its cover, by content (SHA-256 and size), so the
-cover follows its file wherever the entry does; schema 1 is still read.
+cover follows its file wherever the entry does; schema 3 (0603): when the TV last showed
+it, written by the PC, so that every phone sees the same shortcuts. Older ones are read.
 """
 
 from __future__ import annotations
@@ -68,6 +69,7 @@ class Album(BaseModel):
     name: str = Field(min_length=1, max_length=MAX_NAME, pattern=NAME_PATTERN)
     entries: tuple[AlbumEntry, ...] = ()
     cover: AlbumCover | None = None  # None: the tool's choice (0371)
+    last_shown: dt.datetime | None = None  # written by the PC, on the TV (0603)
 
     def cover_entry(self) -> AlbumEntry | None:
         """The entry the chosen cover names, if it is still in the album.
@@ -92,7 +94,8 @@ class AlbumsFile(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    version: Literal[1, 2] = 2  # 1: before the chosen covers (0371), still read
+    # 1: before the chosen covers (0371), 2: before `last_shown` (0603), still read
+    version: Literal[1, 2, 3] = 3
     albums: tuple[Album, ...] = ()
 
     @field_validator("albums")

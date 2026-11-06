@@ -3784,6 +3784,9 @@ msgid ""
 "before 'sort'."
 msgstr ""
 
+msgid "How do I open it on the TV?"
+msgstr ""
+
 msgid "How do we know these are duplicates?"
 msgstr ""
 

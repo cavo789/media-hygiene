@@ -7,6 +7,12 @@ n'importe quels dossiers. C'est ce qu'on montre aux autres : sur la télé avec
 [`slideshow`](commands/slideshow.md), sur un téléphone, prêt à envoyer avec
 [`share`](commands/share.md), ou en dossier de l'Explorateur avec [`album`](commands/album.md).
 
+## Que cherchez-vous ?
+
+- 📱 [Mes albums sur un téléphone](#sur-un-téléphone)
+- 📺 [Un album sur la télé](commands/slideshow.md#ladresse-de-la-télé)
+- 💻 [Je suis sur le PC : remplir un album](#remplir-un-album)
+
 ## Ce qu'est un album ici
 
 - **Une liste de références, rien d'autre.** Aucune photo n'est copiée, déplacée ni modifiée : les

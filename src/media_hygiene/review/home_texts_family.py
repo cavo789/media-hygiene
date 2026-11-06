@@ -22,6 +22,7 @@ def family_texts() -> dict[str, str]:
             "The PC starts the show; the TV opens it at its bookmark, this phone "
             "becomes the remote."
         ),
+        "tvHelp": _("How do I open it on the TV?"),
         "tvAll": _("Albums ({n})"),
         "lastSent": _("Last sent"),
         "tvNone": _("No album saved yet: choose a folder or a month below."),

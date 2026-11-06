@@ -7,6 +7,12 @@ what you show to others: on the TV with [`slideshow`](commands/slideshow.md), on
 send with [`share`](commands/share.md), or as a folder of the Explorer with
 [`album`](commands/album.md).
 
+## What are you looking for?
+
+- 📱 [My albums on a phone](#on-a-phone)
+- 📺 [An album on the TV](commands/slideshow.md#the-tvs-address)
+- 💻 [I'm on the PC: fill an album](#fill-an-album)
+
 ## What an album is here
 
 - **A list of references, nothing else.** No photo is copied, moved or changed: the files are

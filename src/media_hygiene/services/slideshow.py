@@ -19,10 +19,12 @@ from media_hygiene.i18n import _, ngettext
 from media_hygiene.review.ending import Ending, EndingDoor, serve_until_ended
 from media_hygiene.review.lan import lan_access
 from media_hygiene.review.lan_phones import phone_book
+from media_hygiene.services.albums import album_store
 from media_hygiene.services.search import open_search
 from media_hygiene.services.slideshow_build import Serving, show_app
 from media_hygiene.services.slideshow_pick import Pick, Picked, picked_slides
 from media_hygiene.services.slideshow_say import announce_slideshow
+from media_hygiene.share.album_shown import note_shown
 from media_hygiene.slideshow.desk import Changes, Desk
 from media_hygiene.slideshow.door import Door
 from media_hygiene.slideshow.screens import screens_of
@@ -109,6 +111,8 @@ def shown_slides(runtime: Runtime, search: SearchIndex, pick: Pick) -> Picked:
                 "photo folders; a search needs 'tags' first."
             ),
         )
+    if pick.album is not None:
+        note_shown(album_store(runtime).place.target, pick.album)
     if picked.found > len(picked.slides):
         runtime.output.warning(
             _(

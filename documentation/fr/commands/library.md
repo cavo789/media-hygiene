@@ -2,6 +2,13 @@
 
 [Documentation](../README.md) › [Commandes](../reference-commands.md) › `library` · 🇬🇧 [English](../../en/commands/library.md)
 
+## Que cherchez-vous ?
+
+- 📱 [Trouver une photo depuis le téléphone : quoi taper](#ce-que-vous-pouvez-taper)
+- 🖼 [Mettre des photos dans un album](#mettre-des-photos-dans-un-album)
+- 📂 [Parcourir vos dossiers](#parcourir-vos-dossiers)
+- 💻 [Je suis sur le PC et je pars de zéro](#lancer)
+
 ## En bref
 
 **Retrouver une photo par ce dont vous vous souvenez : un mot, un lieu, une année, une

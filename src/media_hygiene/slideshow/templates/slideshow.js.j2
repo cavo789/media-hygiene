@@ -10,6 +10,9 @@
   const SCREEN_PATH = {{ screen_path | tojson }};
   const LAN_PATH = {{ lan_path | tojson }};
   const RETRY_MS = 3000;
+  // On a phone, the help is how to drive the show, a few lines; the PC keeps the page (0615).
+  const helpLink = document.querySelector(".mh-doc");
+  if (helpLink && window.matchMedia("(max-width: 700px)").matches) helpLink.href = {{ phone_help | tojson }};
   const LOOPBACK = new Set(["127.0.0.1", "localhost", "[::1]"]);
   const status = document.getElementById("status");
   const grid = document.getElementById("grid");

@@ -310,7 +310,7 @@ def test_the_cover_chosen_on_the_phone_is_shown_saved_and_followed(
     assert isinstance(albums, list)
     assert albums[0]["cover"]["key"] == chosen
     saved = read_albums(runtime.locations.reports_dir / ALBUMS_FILE)
-    assert saved.version == 2
+    assert saved.version == 3
     assert saved.albums[0].cover is not None
     # Taken out of the album: back to the tool's choice, silently.
     _post(door, {"action": "remove", "album": _ALBUM, "keys": [str(chosen)]})
@@ -351,7 +351,7 @@ def test_a_cover_outside_the_album_is_refused(
     assert _ask(door, _pc("/api/album-change", body)).status == HTTPStatus.CONFLICT
 
 
-def test_a_schema_1_albums_file_is_read_then_written_as_2(
+def test_a_schema_1_albums_file_is_read_then_written_as_3(
     phone_door: tuple[LanApp, _Home, Runtime],
 ) -> None:
     """An albums file of before 0371 is read; the next change writes schema 2."""
@@ -363,7 +363,7 @@ def test_a_schema_1_albums_file_is_read_then_written_as_2(
     assert read_albums(target).version == 1
     first = _keys(_album(door))[0]
     _post(door, {"action": "cover", "album": _ALBUM, "keys": [str(first)]})
-    assert read_albums(target).version == 2
+    assert read_albums(target).version == 3
 
 
 def test_adding_to_an_album_of_another_case_adds_to_it(
