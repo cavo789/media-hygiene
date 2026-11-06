@@ -437,6 +437,12 @@ click; the panel also offers **📺 Share on the TV** and **📨 Prepare for sen
   files, saved in …. Only this file changed: no photo was copied or moved.*
 - It is **not** the set aside: *Set aside* prepares a removal, *Add to the album* a share. Neither
   ever touches the other's list.
+- **In one click**: on a card of the 🗂 *Events* tab, **📚 Make an album** makes an album of the
+  event's files, under the name proposed from its place and day, read back and opened in a new
+  tab. After a search, **📚 Make an album of these N results** does the same with every file
+  found, under the words typed (files set aside stay out; at most 3 000 at once, else narrow the
+  search; not offered when a filter narrows the tiles shown). A name already used adds to that
+  album. With a [paired TV](slideshow.md), the card also has **📺 On the TV**.
 - **Where the album folders go** is on [the albums page](album.md#from-the-albums-page).
 - **Take out of the album** takes the picked photos out of the album typed; an album left empty
   is removed.

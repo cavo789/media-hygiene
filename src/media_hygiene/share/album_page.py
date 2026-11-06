@@ -10,6 +10,7 @@ Served by the home page's server, in front of it, to the PC and to a phone paire
   `/film/<key>.<ext>`: the files **of an album** only to a phone, never another file
   of the library, nor an original; the PC's request of another key goes on to the
   pages behind (`library` and `browse` share `/thumb/`, 0356);
+- `GET /api/tv-paired`: whether a TV is paired, for the 📺 of the cards (0523);
 - `POST /api/album-change`: a file of an album added to an album or taken out (0295
   item 4; no photo touched). Its own path: `library` and `browse`, served behind, keep
   `POST /api/albums` for the files they pick.
@@ -18,7 +19,7 @@ Served by the home page's server, in front of it, to the PC and to a phone paire
 from __future__ import annotations
 
 import asyncio
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 from urllib.parse import unquote
@@ -32,6 +33,8 @@ from media_hygiene.slideshow.films import FILM_PREFIX
 from media_hygiene.slideshow.pictures import TV_PREFIX
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from media_hygiene.review.ending import Handling
     from media_hygiene.review.http import Request
     from media_hygiene.share.album_api import AlbumDesk
@@ -46,6 +49,7 @@ ALBUM_LIST_PATH: Final = "/api/album-list"
 ALBUM_PREFIX: Final = "/api/album/"
 # The page's own change, never `/api/albums`: that one is the pages' behind (search).
 ALBUM_CHANGE_PATH: Final = "/api/album-change"
+TV_PAIRED_PATH: Final = "/api/tv-paired"  # `{paired}`: the PC's cards ask it (0523)
 # What a paired phone may ask of the albums (`review.lan_app`): reads, and one write.
 PHONE_READS: Final = frozenset({ALBUMS_PAGE, ALBUM_LIST_PATH})
 PHONE_READ_PREFIXES: Final = (ALBUM_PREFIX, TV_PREFIX, THUMB_PREFIX, FILM_PREFIX)
@@ -57,7 +61,7 @@ _GET, _POST = "GET", "POST"
 
 
 @dataclass(frozen=True, slots=True)
-class AlbumParts:
+class AlbumParts:  # pylint: disable=too-many-instance-attributes  # one per door
     """The page, the albums, and the desk saving their changes."""
 
     page: bytes
@@ -67,6 +71,7 @@ class AlbumParts:
     edit: bytes = b""  # one album as tiles to pick (0500)
     links: AlbumLinkDoor | None = None  # its 24 h links, under `mh --lan` (0462)
     folder: AlbumFolderDoor | None = None  # the albums' folder, the PC's (0625)
+    tv_paired: Callable[[], bool] = field(default=lambda: False)  # 0523
 
 
 @dataclass(frozen=True, slots=True)
@@ -114,6 +119,8 @@ class AlbumPages:
             parts = self.parts
             page = parts.page if path == ALBUMS_PAGE else parts.edit
             return Response(HTTPStatus.OK, page, ContentType.HTML, policy=NEAR_POLICY)
+        if path == TV_PAIRED_PATH:
+            return json_response(HTTPStatus.OK, {"paired": self.parts.tv_paired()})
         if path == ALBUM_LIST_PATH:
             return await self._read(None)
         if path.startswith(ALBUM_PREFIX):

@@ -221,7 +221,9 @@ qui a ouvert la page :
 - **Une étape longue** (`audit`, `clean`, `import`…) tourne dans la fenêtre de `mh` pendant que
   la page reste ouverte : sa fenêtre montre l'étape en cours, une barre, combien de fichiers sont
   faits et combien par seconde. Fermez ou rechargez l'onglet entre-temps : l'étape continue, et
-  la page, rouverte, la montre à nouveau (*Une étape tourne encore*) jusqu'à sa fin.
+  la page, rouverte, la montre à nouveau (*Une étape tourne encore*) jusqu'à sa fin. Le navigateur demande une
+  fois s'il peut vous prévenir : dites oui, et la fin de l'étape s'annonce par une notification
+  pendant que vous êtes sur un autre onglet.
 - **Des choix en attente sur plusieurs pages** (séries en rafale, quasi-doublons, paires de
   dossiers, photos indésirables, fichiers disparus, fichiers intrus, les visages de `people`, `library`) : la page d'accueil dit combien
   attendent (*Choix en attente d'application : 3*), chaque page nommée avec son nombre et un

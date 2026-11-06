@@ -205,7 +205,8 @@ opened the page:
 - **A long step** (`audit`, `clean`, `import`…) runs in the window of `mh` while the page stays
   open: its dialog shows the stage, a bar, how many files are done and how many a second. Close
   or reload the tab meanwhile: the step goes on, and the page, opened again, shows it again
-  (*A step still runs*) until its end.
+  (*A step still runs*) until its end. Your browser asks once whether to notify you: say yes, and
+  the end of the step is told by a notification while you are on another tab.
 - **Choices waiting on several pages** (burst series, near duplicates, folder pairs, unwanted
   photos, files gone, intruder files, the faces of `people`, `library`): the home page says how many wait (*Choices waiting to be
   applied: 3*), each page named with its count and a link to it, and **Apply all** runs one

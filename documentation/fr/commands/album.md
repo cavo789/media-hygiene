@@ -78,6 +78,9 @@ réponse donne la ligne `mh undo <run>`.
 Il lui faut vos photos sans `:ro` et un `/journal` persistant : sinon il le dit en une ligne.
 Retoucher une photo du dossier modifie aussi l'original : c'est le même fichier.
 
+Avec une télé appairée, chaque carte de la page des albums porte un **📺** : un clic lance cet album
+sur la télé et ouvre sa télécommande dans un nouvel onglet ; sans télé appairée, pas de bouton.
+
 La ligne **📁 Dossier des albums** de la page des albums dit le dossier relu dans `config.toml` ;
 **Changer** le règle. La question n'est posée que si aucun dossier n'est connu. Le dossier doit
 être sur le même disque et dans le même `-v` que les photos, hors des dossiers protégés ; exFAT

@@ -51,6 +51,7 @@ function launch(action, body, command) {
   if (REMOTE) { toast(T.onThePc); return; }
   if (action.inline && P.inline) { runInline(action, {}); return; }  // 0505: here, its output in a dialog
   if (!RELAYS) { copyBox(command); return; }
+  if (action.kind !== "page") notifyAsk();  // 0523: inside the click
   // At once, before the server answers: the click is seen, never "nothing happens" (0277).
   const clicked = document.activeElement;
   if (clicked && clicked.matches("button")) clicked.setAttribute("aria-busy", "true");
@@ -209,7 +210,9 @@ function followStep(id, command) {
       }
       $("#runDlg").close();
       const ok = step.code === 0;
-      toast(fill(ok ? T.stepDone : T.stepFailed, { command: command, code: step.code }), ok ? "ok" : "info");
+      const ended = fill(ok ? T.stepDone : T.stepFailed, { command: command, code: step.code });
+      toast(ended, ok ? "ok" : "info");
+      notifyEnd(ended);
       reload();
     })
     .catch(() => { presence.away = true; waitForComeBack(false, null); });

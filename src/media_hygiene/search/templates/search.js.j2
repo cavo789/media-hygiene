@@ -351,6 +351,7 @@ async function search(event, again) {
   if (!found.total) text = TEXTS.none + (body.text.trim() && hardlyDescribed(found.coverage) ? " " + TEXTS.noneWhy : "");
   else if (found.total > found.hits.length) text = fill(TEXTS.shown, { total: found.total, shown: found.hits.length });
   told(found.note ? found.note + " " + text : text, false);
+  offerAlbum(body, narrowed ? 0 : found.total);  // 0523
   // Sent from the field: the keys go to the grid (Ctrl+A, the arrows); "/" comes back.
   if (event && cards.length) document.activeElement.blur();
 }

@@ -1,0 +1,51 @@
+{# One click (0523), the same `POST /api/albums` as the bar's panel. An album of an event's
+   files, or of every file a search finds, under its name: the answer is read back from the
+   disk, then the album opens in its own tab (the search stays; opened before the answer: a
+   browser lets a click open a tab, not a script after it). The button of a search states how
+   many files it takes, and is not offered when a filter narrows what is shown. `tvPaired`:
+   the 📺 of a card shows only with a TV paired. #}
+const ALBUMS_POST = {{ albums_path | tojson }};
+const ALBUM_OPEN = {{ ("/albums/edit" if tv_here | default(false) else "") | tojson }};  // share/album_page.py: the home server only
+const MOST_IN_ALBUM = {{ most_in_album | default(3000) | tojson }};
+const NAME_MOST = 80;  // share/albums.py: MAX_NAME
+const tvPaired = {{ tv_here | default(false) | tojson }}
+  ? fetch({{ tv_paired_path | default("") | tojson }}, { cache: "no-store" }).then((answer) => (answer.ok ? answer.json() : {})).then((said) => Boolean(said.paired)).catch(() => false)
+  : Promise.resolve(false);
+const cleanName = (name) => name.replaceAll('"', "").replace(/\s+/g, " ").trim().slice(0, NAME_MOST).trim();
+
+async function makeAlbum(wanted, sent) {
+  const name = cleanName(wanted);
+  const tab = ALBUM_OPEN ? window.open("", "_blank") : null;
+  told(TEXTS.albumMaking, false);
+  const answer = await ask(ALBUMS_POST, { action: "add", album: name, ...sent });
+  const state = answer ? await answer.json().catch(() => ({})) : {};
+  if (!answer || !answer.ok) {
+    if (tab) tab.close();
+    told(state.error || (answer ? fill(TEXTS.failed, { status: answer.status }) : TEXTS.offline), true);
+    return;
+  }
+  const saved = (state.albums || []).find((album) => album.name.toLowerCase() === name.toLowerCase());
+  if (!saved) {  // every file was set aside: no album
+    if (tab) tab.close();
+    told(TEXTS.albumEmpty, true);
+    return;
+  }
+  told(state.message, false);
+  const page = ALBUM_OPEN + "?album=" + encodeURIComponent(saved.name);
+  if (tab) tab.location = page;
+}
+// What a search is called: its words, else its folder, its place, its dates.
+function searchName(body) {
+  const days = [body.day_from, body.day_to].filter(Boolean);
+  const period = days.length === 2 && days[0] !== days[1] ? days.join(" → ") : days[0];
+  return cleanName(body.text || body.folder || body.within || body.place || period || "") || TEXTS.albumPeriod;
+}
+function offerAlbum(body, found) {
+  const button = $("albumResults");
+  button.hidden = !found || body.aside;
+  button.textContent = counted(TEXTS.albumResults, found);
+}
+$("albumResults").addEventListener("click", () => {
+  const body = scope();
+  makeAlbum(searchName(body), { all: true, search: body });
+});

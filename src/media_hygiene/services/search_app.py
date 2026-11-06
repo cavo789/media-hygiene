@@ -65,7 +65,8 @@ from media_hygiene.services.search_desks import (
     tag_desk,
 )
 from media_hygiene.services.sort_setup_here import sort_setup
-from media_hygiene.share.album_api import ALBUMS_PATH
+from media_hygiene.share.album_api import ALBUMS_PATH, MAX_ADDED
+from media_hygiene.share.album_page import TV_PAIRED_PATH
 from media_hygiene.share.album_pickers import SearchPicker
 
 if TYPE_CHECKING:
@@ -144,6 +145,8 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "event_gap_hours": event_gap_hours(runtime),
         "apply_offered": build.apply is not None,
         "tv_here": build.tv is not None,
+        "tv_paired_path": TV_PAIRED_PATH,  # the shortcuts of the cards (0523)
+        "most_in_album": MAX_ADDED,
     }
     pages = SearchPages(
         headed_page(environment, _SEARCH_TEMPLATE, paths),

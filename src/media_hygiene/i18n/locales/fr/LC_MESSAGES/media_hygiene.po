@@ -875,6 +875,14 @@ msgstr ""
 msgid "A month"
 msgstr "Un mois"
 
+msgid ""
+"A new album named after this search, with every file found; the files set"
+" aside stay out. No photo is copied or moved."
+msgstr ""
+"Un nouvel album au nom de cette recherche, avec chaque fichier trouvé ; "
+"les fichiers mis de côté restent dehors. Aucune photo n'est copiée ni "
+"déplacée."
+
 #, python-brace-format
 msgid "A new version, {version}: {command}"
 msgstr "Une nouvelle version, {version} : {command}"
@@ -1444,6 +1452,13 @@ msgstr "Toujours : leurs positions arrondies sont envoyées à OpenStreetMap"
 #, python-brace-format
 msgid "An album is already named {name}."
 msgstr "Un album s'appelle déjà {name}."
+
+msgid ""
+"An album named after this event, with its files shown, then opened. No "
+"photo is copied or moved."
+msgstr ""
+"Un album au nom de cet événement, avec ses fichiers affichés, puis "
+"ouvert. Aucune photo n'est copiée ni déplacée."
 
 msgid "An album of yours on the big screen; the phone is the remote."
 msgstr "Un de vos albums sur le grand écran ; le téléphone sert de télécommande."
@@ -5441,6 +5456,9 @@ msgstr ""
 "Fait par {author}, l'auteur du blog avonture.be. Le code est sous licence"
 " MIT ; le suricate reste à son auteur."
 
+msgid "Make an album"
+msgstr "Faire un album"
+
 msgid ""
 "Make an album's folder on the disk, as hard links: nothing is copied nor "
 "moved (journaled, undoable)."
@@ -5464,6 +5482,9 @@ msgid "Make the links; without it, only show what the album gathers."
 msgstr ""
 "Crée les liens ; sans cette option, montre seulement ce que l'album "
 "rassemble."
+
+msgid "Making the album…"
+msgstr "Création de l'album…"
 
 #, python-brace-format
 msgid "Manifest: {path}"
@@ -6312,6 +6333,9 @@ msgid "No file of this event can move: they are set aside, or gone."
 msgstr ""
 "Aucun fichier de cet événement ne peut être déplacé : ils sont mis de "
 "côté, ou partis."
+
+msgid "No file to put in an album: they are set aside."
+msgstr "Aucun fichier à mettre dans un album : ils sont mis de côté."
 
 msgid "No file would go there."
 msgstr "Aucun fichier n'irait là."
@@ -9780,6 +9804,11 @@ msgstr ""
 "Montrer sur la télé les fichiers choisis ; rien de choisi : tous ceux de "
 "la page"
 
+msgid "Show the files picked on the TV; nothing picked: every file of this event"
+msgstr ""
+"Montrer sur la télé les fichiers choisis ; rien de choisi : tous les "
+"fichiers de cet événement"
+
 msgid "Show the new groups"
 msgstr "Afficher les nouveaux groupes"
 
@@ -9797,6 +9826,9 @@ msgstr ""
 
 msgid "Show the version and exit."
 msgstr "Affiche la version et quitte."
+
+msgid "Show this album on the TV"
+msgstr "Montrer cet album sur la télé"
 
 msgid "Show this message and exit."
 msgstr "Affiche ce message et quitte."
@@ -17064,6 +17096,12 @@ msgstr ""
 " recherche (une année, un dossier), puis ajoutez à nouveau."
 
 #, python-brace-format
+msgid "{count} files: at most {most} at once. Pick some of them first."
+msgstr ""
+"{count} fichiers : {most} au plus d'un coup. Choisissez-en d'abord une "
+"partie."
+
+#, python-brace-format
 msgid "{count} folder"
 msgid_plural "{count} folders"
 msgstr[0] "{count} dossier"
@@ -19694,6 +19732,12 @@ msgstr "📍 Les positions GPS ont été gardées, comme demandé."
 
 msgid "📍 The GPS positions were removed: --keep-gps keeps them."
 msgstr "📍 Les positions GPS ont été retirées : --keep-gps les garde."
+
+#, python-brace-format
+msgid "📚 Make an album of this result"
+msgid_plural "📚 Make an album of these {n} results"
+msgstr[0] "📚 Faire un album de ce résultat"
+msgstr[1] "📚 Faire un album de ces {n} résultats"
 
 #, python-brace-format
 msgid ""

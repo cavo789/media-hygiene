@@ -469,6 +469,13 @@ aussi **📺 Partager sur la télé** et **📨 Préparer l'envoi**.
   n'a été copiée ni déplacée.*
 - Ce n'est **pas** la mise de côté : *Mettre de côté* prépare un retrait, *Ajouter à l'album* un
   partage. Aucun des deux ne touche jamais la liste de l'autre.
+- **En un clic** : sur une carte de l'onglet 🗂 *Événements*, **📚 Faire un album** crée un album
+  des fichiers de l'événement, au nom proposé d'après son lieu et son jour, relu puis ouvert dans
+  un nouvel onglet. Après une recherche, **📚 Faire un album de ces N résultats** fait de même avec
+  chaque fichier trouvé, au nom des mots tapés (les fichiers mis de côté restent hors de l'album ;
+  3 000 au plus d'un coup, sinon affinez la recherche ; pas proposé quand un filtre réduit les
+  vignettes affichées). Un nom déjà pris ajoute à cet album. Avec une [télé appairée](slideshow.md),
+  la carte offre aussi **📺 Sur la télé**.
 - **Où vont les dossiers d'album** se règle sur [la page des albums](album.md#depuis-la-page-des-albums).
 - **Retirer de l'album** retire les photos choisies de l'album tapé ; un album laissé vide est
   supprimé.

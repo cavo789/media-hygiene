@@ -25,6 +25,7 @@
   };
   const loadSpan = async (index) => {
     current = index;
+    $("albumResults").hidden = true;  // the grid is the event's now, not the search's
     const card = events[index];
     eventShown = card.id;
     hideOutsideSpan();
@@ -42,6 +43,7 @@
     if (!answer || !answer.ok) { setStatus(answer ? fill(TEXTS.spanFailed, { status: answer.status }) : T.offline, "error"); return; }
     const view = await answer.json();
     photoOf = {};
+    spanName = view.suggested || card.title;  // its album's name (0523)
     total = view.total;
     showFiles(view.hits, false);
     setStatus(view.hits.length ? "" : TEXTS.spanEmpty, view.hits.length ? "" : "error");

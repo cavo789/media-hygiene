@@ -693,6 +693,11 @@ msgstr ""
 msgid "A month"
 msgstr ""
 
+msgid ""
+"A new album named after this search, with every file found; the files set"
+" aside stay out. No photo is copied or moved."
+msgstr ""
+
 #, python-brace-format
 msgid "A new version, {version}: {command}"
 msgstr ""
@@ -1140,6 +1145,11 @@ msgstr ""
 
 #, python-brace-format
 msgid "An album is already named {name}."
+msgstr ""
+
+msgid ""
+"An album named after this event, with its files shown, then opened. No "
+"photo is copied or moved."
 msgstr ""
 
 msgid "An album of yours on the big screen; the phone is the remote."
@@ -4503,6 +4513,9 @@ msgid ""
 "the MIT licence; the meerkat stays its author's."
 msgstr ""
 
+msgid "Make an album"
+msgstr ""
+
 msgid ""
 "Make an album's folder on the disk, as hard links: nothing is copied nor "
 "moved (journaled, undoable)."
@@ -4521,6 +4534,9 @@ msgid "Make the folder in Explorer"
 msgstr ""
 
 msgid "Make the links; without it, only show what the album gathers."
+msgstr ""
+
+msgid "Making the album…"
 msgstr ""
 
 #, python-brace-format
@@ -5225,6 +5241,9 @@ msgid "No file has words yet: nothing can be found."
 msgstr ""
 
 msgid "No file of this event can move: they are set aside, or gone."
+msgstr ""
+
+msgid "No file to put in an album: they are set aside."
 msgstr ""
 
 msgid "No file would go there."
@@ -8129,6 +8148,9 @@ msgstr ""
 msgid "Show the files picked on the TV; nothing picked: every file of the page"
 msgstr ""
 
+msgid "Show the files picked on the TV; nothing picked: every file of this event"
+msgstr ""
+
 msgid "Show the new groups"
 msgstr ""
 
@@ -8141,6 +8163,9 @@ msgid ""
 msgstr ""
 
 msgid "Show the version and exit."
+msgstr ""
+
+msgid "Show this album on the TV"
 msgstr ""
 
 msgid "Show this message and exit."
@@ -14304,6 +14329,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "{count} files: at most {most} at once. Pick some of them first."
+msgstr ""
+
+#, python-brace-format
 msgid "{count} folder"
 msgid_plural "{count} folders"
 msgstr[0] ""
@@ -16531,6 +16560,12 @@ msgstr ""
 
 msgid "📍 The GPS positions were removed: --keep-gps keeps them."
 msgstr ""
+
+#, python-brace-format
+msgid "📚 Make an album of this result"
+msgid_plural "📚 Make an album of these {n} results"
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid ""
