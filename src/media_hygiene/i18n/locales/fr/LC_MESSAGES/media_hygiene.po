@@ -1597,7 +1597,11 @@ msgid ""
 " the console's messages follow at their next load. A slideshow, the phone"
 " pages and the review pages already open keep theirs until mh starts "
 "again."
-msgstr "Appliqué tout de suite : cette page se recharge dans cette langue, les autres pages ouvertes et les messages de la console suivent à leur prochain chargement. Un diaporama, les pages du téléphone et les pages de revue déjà ouvertes gardent la leur jusqu'au prochain démarrage de mh."
+msgstr ""
+"Appliqué tout de suite : cette page se recharge dans cette langue, les "
+"autres pages ouvertes et les messages de la console suivent à leur "
+"prochain chargement. Un diaporama, les pages du téléphone et les pages de"
+" revue déjà ouvertes gardent la leur jusqu'au prochain démarrage de mh."
 
 msgid "Applies the next time mh starts: the open page keeps its door."
 msgstr "S'applique au prochain démarrage de mh : la page ouverte garde sa porte."
@@ -3173,6 +3177,10 @@ msgstr "Drone"
 #, python-brace-format
 msgid "Drop it from these photos ({n})"
 msgstr "Le retirer de ces photos ({n})"
+
+
+msgid "Drop the ticked tags…"
+msgstr "Retirer les tags cochés…"
 
 msgid "Dropped tags"
 msgstr "Tags retirés"
@@ -5695,6 +5703,18 @@ msgid "Menu of Media Hygiene"
 msgstr "Menu de Media Hygiene"
 
 #, python-brace-format
+msgid "Merge into…"
+msgstr "Fusionner dans…"
+
+#, python-brace-format
+msgid "Merge on these photos ({n})"
+msgstr "Fusionner sur ces photos ({n})"
+
+#, python-brace-format
+msgid "Merge the tag {word} into another tag"
+msgstr "Fusionner le tag {word} dans un autre tag"
+
+#, python-brace-format
 msgid "Merged ({n})"
 msgstr "Fusionnés ({n})"
 
@@ -7349,7 +7369,10 @@ msgstr "novembre"
 msgid ""
 "Now: {before} events ({beforeFiles} photos). With these values: {after} "
 "events ({afterFiles} photos). Nothing saved yet."
-msgstr "Maintenant : {before} événements ({beforeFiles} photos). Avec ces valeurs : {after} événements ({afterFiles} photos). Rien n'est encore enregistré."
+msgstr ""
+"Maintenant : {before} événements ({beforeFiles} photos). Avec ces valeurs"
+" : {after} événements ({afterFiles} photos). Rien n'est encore "
+"enregistré."
 
 msgid "Nowhere"
 msgstr "Nulle part"
@@ -7414,6 +7437,13 @@ msgstr ""
 
 msgid "On another disk or mount"
 msgstr "Sur un autre disque ou montage"
+
+
+msgid ""
+"On every photo and its .xmp sidecar the word becomes this tag, and 'tags'"
+" names it so from now on. You can restore it from Dropped tags, in the "
+"left column."
+msgstr "Sur chaque photo et son sidecar .xmp, le mot devient ce tag, et 'tags' le nomme ainsi désormais. Vous pouvez le rétablir depuis Tags retirés, dans la colonne de gauche."
 
 msgid "On the PC:"
 msgstr "Sur le PC :"
@@ -11613,6 +11643,12 @@ msgstr "Le modèle {model} n'est pas installé sur {url}."
 msgid "The model {name} downloaded is not the expected file."
 msgstr "Le modèle {name} téléchargé n'est pas le fichier attendu."
 
+
+msgid ""
+"The most frequent tags: tick the useless ones, or merge a synonym into "
+"another tag."
+msgstr "Les tags les plus fréquents : cochez les inutiles, ou fusionnez un synonyme dans un autre tag."
+
 msgid "The most recent backup, the index in place backed up first."
 msgstr "La sauvegarde la plus récente, l'index en place sauvegardé d'abord."
 
@@ -12263,6 +12299,10 @@ msgstr ""
 "Les groupes sûrs encore à décider, nombreux par écran : Entrée décide ce "
 "que vous voyez"
 
+
+msgid "The tag it means:"
+msgstr "Le tag qu'il désigne :"
+
 #, python-brace-format
 msgid "The target {path} is not mounted."
 msgstr "La cible {path} n'est pas montée."
@@ -12305,7 +12345,9 @@ msgstr ""
 "{error}."
 
 msgid "The trip distance is not previewed: it applies at the next classify."
-msgstr "La distance d'un voyage n'est pas prévisualisée : elle s'applique au prochain classify."
+msgstr ""
+"La distance d'un voyage n'est pas prévisualisée : elle s'applique au "
+"prochain classify."
 
 #, python-brace-format
 msgid "The variable {name}"
@@ -13156,6 +13198,10 @@ msgstr ""
 msgid "Type the event's name first."
 msgstr "Tapez d'abord le nom de l'événement."
 
+
+msgid "Type the tag it means."
+msgstr "Tapez le tag qu'il désigne."
+
 #, python-brace-format
 msgid "Type {command}: your browser shows every report."
 msgstr "Tapez {command} : votre navigateur montre tous les rapports."
@@ -13736,6 +13782,10 @@ msgstr ""
 "ici, la liste remplace celle intégrée (français et anglais) : c'est la "
 "liste intégrée complète, modifiez-la plutôt que de partir de quelques "
 "mots."
+
+
+msgid "Words named as another tag, written by Merge into… on the search page."
+msgstr "Mots nommés comme un autre tag, écrits par Fusionner dans… sur la page de recherche."
 
 msgid "Words of folders, names, dates and places"
 msgstr "Mots des dossiers, des noms, des dates et des lieux"
@@ -19992,6 +20042,12 @@ msgid "“{word}” given to {n} photo, read back from the disk."
 msgid_plural "“{word}” given to {n} photos, read back from the disk."
 msgstr[0] "« {word} » donné à {n} photo, relu sur le disque."
 msgstr[1] "« {word} » donné à {n} photos, relu sur le disque."
+
+#, python-brace-format
+msgid ""
+"“{word}” merged into “{target}”, read back from the disk: in the "
+"synonyms, still on {left} photos."
+msgstr "« {word} » fusionné dans « {target} », relu sur le disque : dans les synonymes, encore sur {left} photos."
 
 #, python-brace-format
 msgid ""

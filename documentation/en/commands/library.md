@@ -415,13 +415,21 @@ in the stop words, still on 0 photos.*) and the cards lose the word where they a
   Only what this tool wrote is taken out: the same word written by another application stays, and
   a protected folder is never touched. Without a journal or on read-only folders, the next
   `xmp --apply` takes it out.
-- **What stays**: the model's sentence (a search in quotes can still find the photo through it),
-  a word you typed by hand, a name, a date, a place.
+- **What stays**: the model's sentence, shown under the photo (a search no longer finds the photo
+  through a dropped tag, not even in quotes), a word you typed by hand, a name, a date, a place.
 - **Restore**: **🚫 Dropped tags**, at the bottom of the left column, lists them; **Restore** takes
   the word out of the stop words. Its photos get it again at the next `tags`, without asking the
   model again (the answers are kept), and in their sidecars at the next `xmp --apply`.
 
-One tag at a time.
+**Several at once, or a synonym.** Open **🚫 Dropped tags**: it also lists the most frequent tags
+with their number of photos.
+
+- Tick the useless ones, then **Drop the ticked tags…**: the same dialog shows the photos and the
+  button states their count.
+- **Merge into…** next to a tag (`panneau` → `panneau de signalisation`): the dialog shows its
+  photos, you type the tag it means, and the word becomes that tag in the index and in the `.xmp`
+  sidecars. `[tags] synonyms` in `config.toml` keeps it so at the next `tags`; a merge is listed in
+  **🚫 Dropped tags**, and **Restore** takes it out.
 
 ## Photos without a date or a place
 

@@ -9,19 +9,19 @@ search finds them at once (`HandIndex.give_hand`).
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Final, Literal
+from typing import TYPE_CHECKING, Final
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import ValidationError
 
 from media_hygiene.classify.hand_placed import Candidate, digest_of
-from media_hygiene.config.hand_tags import LONGEST, HandTag
+from media_hygiene.config.hand_tags import HandTag
 from media_hygiene.config.photo_ref import PhotoRef, content_id
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.serving import json_response
+from media_hygiene.search.tag_asked import TagAsked, cleaned
 from media_hygiene.search.tag_cap import too_many_unread
 from media_hygiene.search.tag_drop_desk import DROP_ACTIONS
 from media_hygiene.tags.hand_edit import give_word, take_word
@@ -37,21 +37,7 @@ if TYPE_CHECKING:
     from media_hygiene.search.tag_drop_desk import DropDesk
 
 HAND_TAG_PATH: Final = "/api/hand-tag"
-_MOST: Final = 20_000  # photos picked at once, as *Move to an event…*
 _DIGEST: Final = "SELECT full_digest FROM files WHERE rowid = ?"
-_CONTROL: Final = re.compile(r"[\x00-\x1f\x7f]")
-
-
-class TagAsked(BaseModel):
-    """What the page asks: the words there are, a word given, or taken off."""
-
-    model_config = ConfigDict(frozen=True, extra="forbid")
-
-    action: Literal[
-        "list", "add", "remove", "drop_look", "drop", "dropped", "restore"
-    ] = "list"
-    keys: tuple[int, ...] = Field(default=(), max_length=_MOST)
-    word: str = Field(default="", max_length=LONGEST)
 
 
 @dataclass(frozen=True, slots=True)
@@ -79,9 +65,9 @@ class TagDesk:
         except ValidationError as exc:
             said = exc.errors()[0]["msg"] if exc.errors() else str(exc)
             return json_response(HTTPStatus.BAD_REQUEST, {"error": said})
-        word = " ".join(_CONTROL.sub(" ", asked.word).split())
+        word = cleaned(asked.word)
         if asked.action in DROP_ACTIONS and self.drop is not None:
-            return self.drop.answer(asked.action, word)
+            return self.drop.answer(asked)
         if (refused := self._refused(asked, word)) is not None:
             return refused
         try:

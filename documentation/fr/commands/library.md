@@ -444,13 +444,21 @@ et les cartes perdent le mot sans bouger.
   `mh undo`. Seul ce que cet outil a écrit est retiré : le même mot écrit par une autre application
   reste, et un dossier protégé n'est jamais touché. Sans journal ou sur des dossiers en lecture
   seule, le prochain `xmp --apply` le retire.
-- **Ce qui reste** : la phrase du modèle (une recherche entre guillemets peut encore trouver la photo
-  par elle), un mot tapé à la main, un nom, une date, un lieu.
+- **Ce qui reste** : la phrase du modèle, affichée sous la photo (une recherche ne retrouve plus la
+  photo par un tag retiré, même entre guillemets), un mot tapé à la main, un nom, une date, un lieu.
 - **Rétablir** : **🚫 Tags retirés**, en bas de la colonne de gauche, les liste ; **Rétablir** sort
   le mot des mots écartés. Ses photos le retrouvent au prochain `tags`, sans redemander au modèle
   (les réponses sont gardées), et dans leurs sidecars au prochain `xmp --apply`.
 
-Un tag à la fois.
+**Plusieurs d'un coup, ou un synonyme.** Ouvrez **🚫 Tags retirés** : la liste montre aussi les tags
+les plus fréquents, avec leur nombre de photos.
+
+- Cochez les inutiles, puis **Retirer les tags cochés…** : la même fenêtre montre les photos et le
+  bouton annonce leur nombre.
+- **Fusionner dans…** à côté d'un tag (`panneau` → `panneau de signalisation`) : la fenêtre montre
+  ses photos, vous tapez le tag qu'il désigne, et le mot devient ce tag dans l'index et dans les
+  sidecars `.xmp`. `[tags] synonyms` dans `config.toml` le garde ainsi au prochain `tags` ; une
+  fusion est listée dans **🚫 Tags retirés**, et **Rétablir** la défait.
 
 ## Les photos sans date ou sans lieu
 

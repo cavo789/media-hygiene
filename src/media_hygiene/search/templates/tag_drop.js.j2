@@ -1,8 +1,10 @@
-{# A useless tag dropped everywhere (0546), after `hand_tag.js.j2`: the ⊘ of a chip shows
-   the photos carrying it, then drops it; *Dropped tags* lists them and restores one.
+{# Useless tags dropped everywhere (0546, 0622), after `hand_tag.js.j2`: the ⊘ of a chip,
+   or the frequent tags ticked in *Dropped tags*, show the photos carrying them, then drop
+   them; *Merge into…* names a synonym as another tag; *Dropped tags* lists both, restores.
    Every line said comes from what the server read back from the disk. #}
 const dropEl = (id) => document.getElementById(id);
-let dropWord = "";
+let dropWords = [];
+let dropMerging = false;
 
 // The ⊘ of a chip: never a pick, a rectangle, the large view nor a search.
 function dropButton(word) {
@@ -14,7 +16,7 @@ function dropButton(word) {
   button.addEventListener("click", (event) => {
     event.stopPropagation();
     event.preventDefault();
-    dropLook(word);
+    dropLook([word], false);
   });
   return button;
 }
@@ -27,14 +29,21 @@ function dropSay(said, ok) {
   }
 }
 
-async function dropLook(word) {
-  const { ok, result } = await tagPost({ action: "drop_look", word });
+async function dropLook(words, merging) {
+  const { ok, result } = await tagPost({ action: "drop_look", words });
   if (!ok) { dropSay(fill(dropEl("dropDlg").dataset.given, { error: result.error }), false); return; }
-  dropWord = word;
+  dropWords = result.words;
+  dropMerging = merging;
   const box = dropEl("dropDlg").dataset;
-  dropEl("dropTitle").textContent = fill(box.title, { word });
+  const word = dropWords.join(", ");
+  dropEl("dropTitle").textContent = fill(merging ? box.mergeTitle : box.title, { word });
   dropEl("dropCount").textContent = fill(box.count, { n: result.count });
-  dropEl("dropGo").textContent = fill(box.go, { n: result.count });
+  dropEl("dropGo").textContent = fill(merging ? box.mergeGo : box.go, { n: result.count });
+  dropEl("dropGo").className = merging ? "" : "danger";
+  dropEl("dropInto").hidden = !merging;
+  dropEl("dropWhat").hidden = merging;
+  dropEl("dropTarget").value = "";
+  dropEl("dropTarget").required = merging;
   dropEl("dropSaid").textContent = "";
   dropEl("dropThumbs").replaceChildren(...result.thumbs.map((src) => {
     const picture = element("img", "", "");
@@ -44,10 +53,12 @@ async function dropLook(word) {
     return picture;
   }));
   dropEl("dropDlg").showModal();
+  if (merging) dropEl("dropTarget").focus();
 }
 
-// The word leaves the cards shown (they stay in place), its other sources kept.
-function dropFromCards(word) {
+// The word leaves the cards shown (they stay in place), its other sources kept; merged,
+// the tag it means takes its place.
+function dropFromCards(word, target) {
   const folded = word.toLocaleLowerCase();
   files.forEach((file, index) => {
     const tags = { ...file.tags };
@@ -55,6 +66,7 @@ function dropFromCards(word) {
     for (const source of DROPPABLE_SOURCES) {
       const kept = (tags[source] || []).filter((each) => each.toLocaleLowerCase() !== folded);
       if (tags[source] && kept.length !== tags[source].length) {
+        if (target && !kept.includes(target)) kept.push(target);
         changed = true;
         if (kept.length) tags[source] = kept; else delete tags[source];
       }
@@ -67,18 +79,46 @@ function dropFromCards(word) {
   });
 }
 
-function dropListed(words) {
-  dropEl("dropNone").hidden = words.length > 0;
-  dropEl("dropWords").replaceChildren(...words.map((word) => {
-    const row = element("li", "", word);
-    const back = element("button", "plain", dropEl("dropDlg").dataset.restore);
-    back.type = "button";
-    back.addEventListener("click", async () => {
-      const { ok, result } = await tagPost({ action: "restore", word });
-      dropSay(ok ? result.saved : fill(dropEl("dropDlg").dataset.given, { error: result.error }), ok);
-      if (ok) dropListed(result.dropped);
+function dropRestoreRow(word, label) {
+  const row = element("li", "", label);
+  const back = element("button", "plain", dropEl("dropDlg").dataset.restore);
+  back.type = "button";
+  back.addEventListener("click", async () => {
+    const { ok, result } = await tagPost({ action: "restore", word });
+    dropSay(ok ? result.saved : fill(dropEl("dropDlg").dataset.given, { error: result.error }), ok);
+    if (ok) dropListed(result);
+  });
+  row.append(back);
+  return row;
+}
+
+// The words dropped and merged, as the disk holds them.
+function dropListed(listed) {
+  const merged = listed.merged || [];
+  dropEl("dropNone").hidden = listed.dropped.length + merged.length > 0;
+  dropEl("dropWords").replaceChildren(
+    ...listed.dropped.map((word) => dropRestoreRow(word, word)),
+    ...merged.map(([word, target]) => dropRestoreRow(word, `${word} → ${target}`)),
+  );
+}
+
+// The most frequent tags (0622): tick some to drop them together, or merge one.
+function dropFrequent(tags) {
+  dropEl("dropTicked").disabled = true;
+  dropEl("dropFrequent").replaceChildren(...tags.map(([word, count]) => {
+    const row = element("li", "", "");
+    const label = element("label", "", "");
+    const tick = element("input", "", "");
+    tick.type = "checkbox";
+    tick.value = word;
+    tick.addEventListener("change", () => {
+      dropEl("dropTicked").disabled = !dropEl("dropFrequent").querySelector("input:checked");
     });
-    row.append(back);
+    label.append(tick, ` ${word} (${count})`);
+    const merge = element("button", "plain", dropEl("dropDlg").dataset.merge);
+    merge.type = "button";
+    merge.addEventListener("click", () => dropLook([word], true));
+    row.append(label, merge);
     return row;
   }));
 }
@@ -88,20 +128,34 @@ dropEl("dropDlg").addEventListener("keydown", (event) => event.stopPropagation()
 dropEl("dropForm").addEventListener("submit", async (event) => {
   event.preventDefault();
   dropEl("dropGo").disabled = true;
-  const { ok, result } = await tagPost({ action: "drop", word: dropWord });
+  const target = dropEl("dropTarget").value.trim();
+  if (dropMerging && !target) return;
+  const asked = dropMerging ? { action: "merge", words: dropWords, target } : { action: "drop", words: dropWords };
+  const { ok, result } = await tagPost(asked);
   dropEl("dropGo").disabled = false;
   if (!ok) {
     dropEl("dropSaid").textContent = fill(dropEl("dropDlg").dataset.given, { error: result.error });
     dropEl("dropSaid").className = "error";
     return;
   }
-  dropFromCards(dropWord);
-  dropListed(result.dropped);
+  for (const word of dropWords) dropFromCards(word, dropMerging ? target : "");
+  dropListed(result);
+  dropFrequentLoad();
   dropSay(result.saved, true);
   dropEl("dropDlg").close();
 });
 dropEl("dropList").addEventListener("toggle", async () => {
   if (!dropEl("dropList").open) return;
   const { ok, result } = await tagPost({ action: "dropped" });
-  if (ok) dropListed(result.dropped);
+  if (ok) dropListed(result);
+  dropFrequentLoad();
 });
+dropEl("dropTicked").addEventListener("click", () => {
+  const ticked = [...dropEl("dropFrequent").querySelectorAll("input:checked")].map((tick) => tick.value);
+  if (ticked.length) dropLook(ticked, false);
+});
+
+async function dropFrequentLoad() {
+  const { ok, result } = await tagPost({ action: "frequent" });
+  if (ok) dropFrequent(result.frequent);
+}

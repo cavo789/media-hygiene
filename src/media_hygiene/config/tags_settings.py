@@ -46,6 +46,8 @@ class TagSettings(BaseModel):
 
     language: Literal["", "en", "fr"] = ""  # empty: the language of the interface
     stop_words: tuple[str, ...] = STOP_WORDS
+    # A word and the tag it means (0622): `panneau` is named `panneau de signalisation`.
+    synonyms: dict[str, str] = Field(default_factory=dict)
     # A GPS position names its GeoNames town only that close (km): not at sea.
     town_km: float = Field(default=_TOWN_KM, gt=0)
     # The sources whose words `xmp` writes into `dc:subject` (the sentence of the

@@ -2610,6 +2610,9 @@ msgstr ""
 msgid "Drop it from these photos ({n})"
 msgstr ""
 
+msgid "Drop the ticked tags…"
+msgstr ""
+
 msgid "Dropped tags"
 msgstr ""
 
@@ -4718,6 +4721,17 @@ msgstr ""
 msgid "Menu of Media Hygiene"
 msgstr ""
 
+msgid "Merge into…"
+msgstr ""
+
+#, python-brace-format
+msgid "Merge on these photos ({n})"
+msgstr ""
+
+#, python-brace-format
+msgid "Merge the tag {word} into another tag"
+msgstr ""
+
 #, python-brace-format
 msgid "Merged ({n})"
 msgstr ""
@@ -6177,6 +6191,12 @@ msgid ""
 msgstr ""
 
 msgid "On another disk or mount"
+msgstr ""
+
+msgid ""
+"On every photo and its .xmp sidecar the word becomes this tag, and 'tags'"
+" names it so from now on. You can restore it from Dropped tags, in the "
+"left column."
 msgstr ""
 
 msgid "On the PC:"
@@ -9674,6 +9694,11 @@ msgstr ""
 msgid "The model {name} downloaded is not the expected file."
 msgstr ""
 
+msgid ""
+"The most frequent tags: tick the useless ones, or merge a synonym into "
+"another tag."
+msgstr ""
+
 msgid "The most recent backup, the index in place backed up first."
 msgstr ""
 
@@ -10187,6 +10212,9 @@ msgid ""
 msgstr ""
 
 msgid "The sure groups still undecided, many a screen: Enter decides what you see"
+msgstr ""
+
+msgid "The tag it means:"
 msgstr ""
 
 #, python-brace-format
@@ -10919,6 +10947,9 @@ msgstr ""
 msgid "Type the event's name first."
 msgstr ""
 
+msgid "Type the tag it means."
+msgstr ""
+
 #, python-brace-format
 msgid "Type {command}: your browser shows every report."
 msgstr ""
@@ -11406,6 +11437,9 @@ msgid ""
 "Words left out because they describe nearly every photo. Written here, "
 "the list replaces the built-in one (French and English): this is the "
 "whole built-in list, edit it rather than starting from a few words."
+msgstr ""
+
+msgid "Words named as another tag, written by Merge into… on the search page."
 msgstr ""
 
 msgid "Words of folders, names, dates and places"
@@ -16806,6 +16840,12 @@ msgid "“{word}” given to {n} photo, read back from the disk."
 msgid_plural "“{word}” given to {n} photos, read back from the disk."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"“{word}” merged into “{target}”, read back from the disk: in the "
+"synonyms, still on {left} photos."
+msgstr ""
 
 #, python-brace-format
 msgid ""

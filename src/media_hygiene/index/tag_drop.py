@@ -1,4 +1,4 @@
-"""The rows of a word dropped from every photo (0546): who carries it, and removing it.
+"""The rows of words dropped from every photo (0546): who carries it, and removing it.
 
 Only the sources `[tags] stop_words` governs: a word left in another source would come
 back or was never ours to judge (the model's sentence, Google Photos' description, a
@@ -36,21 +36,21 @@ _DELETE: Final = (
 )
 
 
-def _spellings(connection: sqlite3.Connection, word: str) -> list[str]:
-    """Every spelling of a word in the droppable rows.
+def spellings(connection: sqlite3.Connection, words: tuple[str, ...]) -> list[str]:
+    """Every spelling of some words in the droppable rows.
 
     Args:
         connection: The open index.
-        word: The word, any case.
+        words: The words, any case.
 
     Returns:
         The values stored.
     """
-    folded = word.casefold()
+    folded = {word.casefold() for word in words}
     return [
         str(value)
         for (value,) in connection.execute(_VALUES)
-        if str(value).casefold() == folded
+        if str(value).casefold() in folded
     ]
 
 
@@ -66,47 +66,47 @@ def _marks(values: list[str]) -> str:
     return ", ".join("?" * len(values))
 
 
-def keys_of(connection: sqlite3.Connection, word: str) -> list[int]:
-    """The files carrying a word, in their current version.
+def keys_of(connection: sqlite3.Connection, words: tuple[str, ...]) -> list[int]:
+    """The files carrying any of some words, in their current version.
 
     Args:
         connection: The open index.
-        word: The word.
+        words: The words.
 
     Returns:
         Their keys (the search's).
     """
-    values = _spellings(connection, word)
+    values = spellings(connection, words)
     found = connection.execute(_KEYS.format(marks=_marks(values)), values)
     return [int(key) for (key,) in found]
 
 
-def paths_of(connection: sqlite3.Connection, word: str) -> list[str]:
-    """The paths with a row of a word, any version: their sidecars may hold it.
+def paths_of(connection: sqlite3.Connection, words: tuple[str, ...]) -> list[str]:
+    """The paths with a row of some words, any version: their sidecars may hold them.
 
     Args:
         connection: The open index.
-        word: The word.
+        words: The words.
 
     Returns:
         The container paths.
     """
-    values = _spellings(connection, word)
+    values = spellings(connection, words)
     found = connection.execute(_PATHS.format(marks=_marks(values)), values)
     return [str(path) for (path,) in found]
 
 
-def delete_word(connection: sqlite3.Connection, word: str) -> int:
-    """Remove a word from every file, committed.
+def delete_word(connection: sqlite3.Connection, words: tuple[str, ...]) -> int:
+    """Remove some words from every file, committed.
 
     Args:
         connection: The index, writable.
-        word: The word.
+        words: The words.
 
     Returns:
         The rows removed.
     """
-    values = _spellings(connection, word)
+    values = spellings(connection, words)
     removed = connection.execute(_DELETE.format(marks=_marks(values)), values).rowcount
     connection.commit()
     return removed

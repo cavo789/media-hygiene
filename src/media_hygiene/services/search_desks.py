@@ -22,7 +22,7 @@ from media_hygiene.services.rule_trial import event_gap_hours, try_rule, written
 from media_hygiene.services.selection_move import SelectionMover
 from media_hygiene.services.sort_event import sorter_of
 from media_hygiene.services.sort_reviewing import open_sort_review
-from media_hygiene.services.tag_drop import drop_word
+from media_hygiene.services.tag_drop import drop_words, merge_word
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -30,6 +30,7 @@ if TYPE_CHECKING:
     from media_hygiene.search.chosen_api import ChosenDesk
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.services.runtime import Runtime
+    from media_hygiene.services.tag_drop import Dropped, Merge
 
 
 def rule_desk(runtime: Runtime, search: SearchIndex, chosen: ChosenDesk) -> RuleDesk:
@@ -125,8 +126,23 @@ def tag_desk(runtime: Runtime, search: SearchIndex) -> TagDesk | None:
     if not isinstance(search, HandIndex):
         return None
     config = names_file(runtime)
-    drop = DropDesk(search, config, partial(drop_word, runtime))
+    drop = DropDesk(search, config, partial(_dropping, runtime))
     return TagDesk(search, runtime.mapper, config, drop)
+
+
+def _dropping(runtime: Runtime, merge: Merge) -> Dropped:
+    """Drop the words, or merge the word into its target (0622).
+
+    Args:
+        runtime: Settings, mount points and output.
+        merge: The words and the tag they mean.
+
+    Returns:
+        What was done.
+    """
+    if merge.target:
+        return merge_word(runtime, merge)
+    return drop_words(runtime, merge.words)
 
 
 def shown_roots(runtime: Runtime) -> tuple[Path, ...]:
