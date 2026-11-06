@@ -5,7 +5,8 @@ id the index holds elsewhere (a folder renamed in Explorer) gets the new path; o
 whose id is found nowhere while its path now holds another content (an edited photo,
 another photo) loses its name; one not found at all (not mounted) stays. A face still
 in the form before 0570 (`<path>#<n>`) gets its id: the index's digest, else its
-photo read once. A file changed is replaced atomically and read back.
+photo read once (0635, `face_ids_read`). A file changed is replaced atomically and
+read back.
 """
 
 from __future__ import annotations
@@ -15,7 +16,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.classify.hand_placed import Candidate, digest_of
 from media_hygiene.config.face_refs import (
     FACE,
     FaceRef,
@@ -24,7 +24,8 @@ from media_hygiene.config.face_refs import (
     split_key,
 )
 from media_hygiene.config.people_files import ENCODING, FACES, FOLDER, REJECTED
-from media_hygiene.config.photo_ref import content_id, relocate, write_refs
+from media_hygiene.config.photo_ref import relocate, write_refs
+from media_hygiene.services.face_ids_read import FaceIdReader
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -37,10 +38,11 @@ _COMMENT: Final = "#"
 
 @dataclass(frozen=True, slots=True)
 class FaceSources:
-    """What the audit knows: the paths of each id, and the mapping."""
+    """What the audit knows: the paths of each id, the mapping, the index's digests."""
 
     found: Mapping[str, Sequence[str]]  # host paths by id
     mapper: HostPathMapper
+    reader: FaceIdReader = field(default_factory=FaceIdReader)
 
 
 @dataclass(slots=True)
@@ -86,21 +88,23 @@ def wanted_ids(files: Sequence[Path]) -> frozenset[str]:
     return frozenset(ids)
 
 
-def current_id(path: Path) -> str | None:
-    """The id of what a container path holds now.
+def checked_path(entry: object, sources: FaceSources) -> Path | None:
+    """The photo whose content decides what becomes of a face.
 
     Args:
-        path: The photo.
+        entry: As loaded.
+        sources: The ids found, the mapping.
 
     Returns:
-        Its id; None when it cannot be read.
+        Its container path; None when the ids found already decide.
     """
-    try:
-        size = path.stat().st_size
-    except OSError:
-        return None
-    sha = digest_of(Candidate(path, size, None))
-    return None if sha is None else content_id(sha, size)
+    if isinstance(entry, dict) and FACE in entry:
+        ref = FaceRef.model_validate(entry)
+        if ref.id in sources.found:
+            return None
+        return container_of(ref.path, sources.mapper)
+    parts = split_key(str(entry))
+    return None if parts is None else Path(parts[0])
 
 
 def _entry(entry: object, sources: FaceSources, tally: FaceTally) -> str | None:
@@ -120,8 +124,8 @@ def _entry(entry: object, sources: FaceSources, tally: FaceTally) -> str | None:
         placed = relocate([ref], sources.found)[0]
         if placed.path != ref.path:
             tally.moved += 1
-        elif ref.id not in sources.found:
-            now = current_id(container_of(ref.path, mapper))
+        elif (checked := checked_path(entry, sources)) is not None:
+            now = sources.reader.current_id(checked)
             if now is not None and now != ref.id:
                 tally.dropped += 1
                 return None
@@ -131,7 +135,7 @@ def _entry(entry: object, sources: FaceSources, tally: FaceTally) -> str | None:
         )
     key = str(entry)
     parts = split_key(key)
-    photo_id = None if parts is None else current_id(Path(parts[0]))
+    photo_id = None if parts is None else sources.reader.current_id(Path(parts[0]))
     if parts is None or photo_id is None:
         return face_line(key, {}, mapper)
     tally.identified += 1

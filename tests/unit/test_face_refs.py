@@ -9,18 +9,22 @@ names of an edited one, and gives an id to the old form.
 from __future__ import annotations
 
 import hashlib
+import os
 import sqlite3
 import tomllib
 from typing import TYPE_CHECKING, Final
 
 import pytest
 
+from media_hygiene.classify import hand_placed
 from media_hygiene.config.face_refs import FaceRef, face_keys, face_line, split_key
 from media_hygiene.config.people_settings import PeopleSettings
 from media_hygiene.config.photo_ref import content_id
+from media_hygiene.index.repository import FactsRepository
 from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.people.config_file import read_people, save_people
 from media_hygiene.people.followed import follow_people
+from media_hygiene.services.face_ids_read import FaceIdReader
 from media_hygiene.services.face_refs_audit import (
     FaceSources,
     FaceTally,
@@ -30,9 +34,10 @@ from media_hygiene.services.face_refs_audit import (
 )
 from media_hygiene.services.face_refs_said import (
     READ_ONCE_SAID,
+    photos_to_read,
     say_reading,
-    unread_named,
 )
+from media_hygiene.services.photo_refs_audit import relocate_after_audit
 from tests.support.runtime import make_locations, make_runtime, output_of
 
 if TYPE_CHECKING:
@@ -211,22 +216,176 @@ def test_the_ignored_faces_follow_too(tmp_path: Path, data: Path) -> None:
     assert read_people(config).ignored == (f"{path}#0",)
 
 
-def test_many_named_photos_to_read_once_are_said_before(tmp_path: Path) -> None:
-    """0570: old-form photos without a digest counted; a line over the threshold."""
-    known, unknown = tmp_path / "known.jpg", tmp_path / "unknown.jpg"
-    faces = tmp_path / "c.toml"
-    faces.write_text(
-        f'faces = ["{known}#0", "{unknown}#0", "{unknown}#1"]\n'
-        'rejected = [{ path = "x", id = "y", face = 0 }]\n',
-        "utf-8",
-    )
+def index_with(rows: list[tuple[Path, str | None]]) -> sqlite3.Connection:
+    """An index whose rows match the files as they are now."""
     connection = sqlite3.connect(":memory:")
-    connection.execute("CREATE TABLE files (path TEXT, full_digest TEXT)")
-    connection.execute("INSERT INTO files VALUES (?, 'ab')", (str(known),))
-    assert unread_named([faces], connection) == 1
+    connection.execute(
+        "CREATE TABLE files (path TEXT, size INT, mtime_ns INT, full_digest TEXT)"
+    )
+    for path, digest in rows:
+        facts = path.stat()
+        connection.execute(
+            "INSERT INTO files VALUES (?, ?, ?, ?)",
+            (str(path), facts.st_size, facts.st_mtime_ns, digest),
+        )
+    return connection
+
+
+@pytest.fixture
+def reads(monkeypatch: pytest.MonkeyPatch) -> list[Path]:
+    """Every photo read whole, in order."""
+    seen: list[Path] = []
+
+    def counted(path: Path) -> str:
+        seen.append(path)
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+
+    monkeypatch.setattr(hand_placed, "full_digest", counted)
+    return seen
+
+
+def run_reader(
+    config: Path, data: Path, connection: sqlite3.Connection
+) -> tuple[int, FaceTally]:
+    """The count the audit says, then what it does."""
+    sources = FaceSources({}, HostPathMapper(data), FaceIdReader(connection))
+    files = face_files(config.parent)
+    count = photos_to_read(files, sources)
+    tally = FaceTally()
+    for file in files:
+        rewrite_file(file, sources, tally)
     connection.close()
+    return count, tally
+
+
+def test_a_photo_with_a_digest_is_not_read(
+    tmp_path: Path, data: Path, reads: list[Path]
+) -> None:
+    """0635: the row of its (path, size, mtime) gives the id; nothing is read."""
+    path, photo_id = photo(data, "Photos/a.jpg", b"pixels")
+    config = tmp_path / "config.toml"
+    file = people_file(config, f'  "{path}#0",\n  "{path}#1",')
+    digest = hashlib.sha256(b"pixels").hexdigest()
+    count, tally = run_reader(config, data, index_with([(path, digest)]))
+    assert (count, reads, tally.identified) == (0, [], 2)
+    assert photo_id in file.read_text()
+
+
+def test_the_count_is_exactly_the_photos_read(
+    tmp_path: Path, data: Path, reads: list[Path]
+) -> None:
+    """Known, unknown with 2 faces, table form, gone: 2 said, 2 read, once each."""
+    known, _known_id = photo(data, "Photos/known.jpg", b"known")
+    unknown, _unknown_id = photo(data, "Photos/unknown.jpg", b"unknown")
+    photo(data, "Photos/edited.jpg", b"edited")
+    config = tmp_path / "config.toml"
+    people_file(
+        config,
+        f'  "{known}#0",\n  "{unknown}#0",\n  "{unknown}#1",\n'
+        f"  {{path = 'C:\\Photos\\edited.jpg', id = \"{ID}\", face = 0}},\n"
+        f'  "{data}/c/gone.jpg#0",\n  "no number",',
+    )
+    digest = hashlib.sha256(b"known").hexdigest()
+    count, tally = run_reader(config, data, index_with([(known, digest)]))
+    assert count == len(reads) == 2
+    assert unknown in reads
+    assert tally.dropped == 1
+
+
+@pytest.mark.parametrize("event", ["same_size", "other_size", "touch", "replace"])
+def test_a_row_older_than_the_file_is_not_trusted(
+    data: Path, reads: list[Path], event: str
+) -> None:
+    """In-place write, atomic save, `touch`: the file is read, its true id written."""
+    path, _old_id = photo(data, "Photos/a.jpg", b"before")
+    connection = index_with([(path, hashlib.sha256(b"before").hexdigest())])
+    content = {"same_size": b"after!", "other_size": b"longer now"}.get(
+        event, b"before"
+    )
+    if event == "replace":
+        fresh = path.with_suffix(".tmp")
+        fresh.write_bytes(content)
+        fresh.replace(path)
+    else:
+        path.write_bytes(content)
+    facts = path.stat()
+    os.utime(path, ns=(facts.st_atime_ns, facts.st_mtime_ns + 10**9))
+    config = data.parent / "config.toml"
+    file = people_file(config, f'  "{path}#0",')
+    count, _tally = run_reader(config, data, connection)
+    assert (count, reads) == (1, [path])
+    expected = content_id(hashlib.sha256(content).hexdigest(), len(content))
+    assert expected in file.read_text()
+
+
+def test_a_copy_keeping_the_mtime_keeps_the_index_answer(
+    tmp_path: Path, data: Path, reads: list[Path]
+) -> None:
+    """Same size and time: the index's contract, as for every reader of a row."""
+    path, photo_id = photo(data, "Photos/a.jpg", b"before")
+    connection = index_with([(path, hashlib.sha256(b"before").hexdigest())])
+    facts = path.stat()
+    path.write_bytes(b"after!")
+    os.utime(path, ns=(facts.st_atime_ns, facts.st_mtime_ns))
+    config = tmp_path / "config.toml"
+    file = people_file(config, f'  "{path}#0",')
+    assert run_reader(config, data, connection)[0] == 0
+    assert (reads, photo_id in file.read_text()) == ([], True)
+
+
+def test_the_audit_end_reads_nothing_the_index_knows(
+    tmp_path: Path, reads: list[Path]
+) -> None:
+    """`relocate_after_audit` itself: no read, no line, the ids written."""
+    locations = make_locations(tmp_path)
+    runtime = make_runtime(locations)
+    data = locations.data_dir
+    paths = [data / "c" / f"{i}.jpg" for i in range(READ_ONCE_SAID + 1)]
+    paths[0].parent.mkdir(parents=True, exist_ok=True)
+    lines = []
+    with FactsRepository.open(runtime.index_file) as repository:
+        for path in paths:
+            path.write_bytes(path.name.encode())
+            facts = path.stat()
+            repository.connection.execute(
+                "INSERT INTO files (path, size, mtime_ns, full_digest) "
+                "VALUES (?, ?, ?, ?)",
+                (
+                    str(path),
+                    facts.st_size,
+                    facts.st_mtime_ns,
+                    hashlib.sha256(path.read_bytes()).hexdigest(),
+                ),
+            )
+            lines.append(f'  "{path}#0",')
+        repository.connection.commit()
+    file = people_file(locations.config_file, "\n".join(lines))
+    relocate_after_audit(runtime)
+    assert reads == []
+    assert "read once" not in output_of(runtime)
+    assert tomllib.loads(file.read_text())["faces"][0]["id"]
+
+
+def test_many_photos_to_read_are_said_before(tmp_path: Path) -> None:
+    """0570: a line over the threshold, none up to it."""
     runtime = make_runtime(make_locations(tmp_path))
     say_reading(runtime, READ_ONCE_SAID)
     assert "read once" not in output_of(runtime)
     say_reading(runtime, READ_ONCE_SAID + 1)
     assert f"{READ_ONCE_SAID + 1} named photos read once" in output_of(runtime)
+
+
+def test_the_line_is_said_when_the_index_has_no_digest(
+    tmp_path: Path, reads: list[Path]
+) -> None:
+    """No row at all: every photo is read, and said."""
+    locations = make_locations(tmp_path)
+    runtime = make_runtime(locations)
+    paths = [locations.data_dir / "c" / f"{i}.jpg" for i in range(READ_ONCE_SAID + 1)]
+    paths[0].parent.mkdir(parents=True, exist_ok=True)
+    for path in paths:
+        path.write_bytes(path.name.encode())
+    people_file(locations.config_file, "\n".join(f'  "{p}#0",' for p in paths))
+    relocate_after_audit(runtime)
+    assert len(reads) == len(paths)
+    assert f"{len(paths)} named photos read once" in output_of(runtime)
