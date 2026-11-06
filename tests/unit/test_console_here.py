@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Final
 
 import pytest
 
-from media_hygiene.cli.page_capture import captured_step
+from media_hygiene.cli.page_capture import captured_html, captured_step
 from media_hygiene.cli.safety import PAGE_CAPTURED
 from media_hygiene.review.http import Request
 from media_hygiene.review.step_watch import served_here
@@ -41,6 +41,16 @@ def test_status_page_shows_what_the_console_prints(tmp_path: Path) -> None:
     first = next(line for line in text.splitlines() if line.strip() and "─" not in line)
     assert first.strip().split()[0] in page
     assert "Traceback" not in page
+
+
+def test_page_styles_what_the_console_styles(tmp_path: Path) -> None:
+    """0610: bold and colours of the recording become inline styles, text escaped."""
+    runtime = make_runtime(make_locations(tmp_path))
+    styled = captured_html(runtime, "status")
+    assert "style=" in styled
+    assert "<script" not in styled
+    assert "\x1b" not in styled
+    assert styled.replace("&lt;", "<").count("<span") >= 1
 
 
 def test_config_page_names_the_settings(tmp_path: Path) -> None:

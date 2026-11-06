@@ -11,7 +11,7 @@ import asyncio
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.cli.page_capture import captured_step
+from media_hygiene.cli.page_capture import captured_html
 from media_hygiene.cli.safety import PAGE_CAPTURED
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n.templates import translated_environment
@@ -53,10 +53,10 @@ def console_page(runtime: Runtime, name: str) -> bytes:
     environment = translated_environment(_TEMPLATES, escaped=("html", "j2"))
     error, text = "", ""
     try:
-        text = captured_step(runtime, name)
+        text = captured_html(runtime, name)
     except MediaHygieneError as exc:
         error = exc.message
-    values = {"text": text, "error": error}
+    values = {"html": text, "error": error}
     return headed_page(environment, f"console_{name}.html.j2", values)
 
 
