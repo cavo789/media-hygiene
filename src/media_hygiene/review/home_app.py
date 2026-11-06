@@ -38,7 +38,7 @@ from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.inline_step import InlineRunner, inline_response
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH, LocalApp
 from media_hygiene.review.presence import PRESENCE_PATH, presence_response
-from media_hygiene.review.report_files import report_response
+from media_hygiene.review.report_shell import shelled_report
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.step_watch import STEP_PATH, step_state
 
@@ -158,7 +158,7 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
         if path == PAGE_PATH:
             return Response(HTTPStatus.OK, page_of(self.page), ContentType.HTML)
         if path.startswith(REPORTS_PREFIX):
-            return await report_response(self.reports_dir, path)
+            return await shelled_report(self.reports_dir, path)
         if path in self.runs:
             return tags_state(self.runs[path])
         if path == STEP_PATH:
