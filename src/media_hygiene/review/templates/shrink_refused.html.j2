@@ -1,0 +1,9 @@
+{% extends "page_frame.html.j2" %}
+{# The try that cannot open (no video worth lightening, no audit, a step running): what it says, in the frame of every page, the way back home with it. #}
+{% set page_name = _("Lighten videos: try") %}
+{% block bar %}
+  <strong>{{ page_name }}</strong>
+{% endblock %}
+{% block content %}
+<main id="shrinkRefused"><p>{{ said }}</p></main>
+{% endblock %}

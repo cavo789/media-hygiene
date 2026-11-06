@@ -56,6 +56,7 @@ PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
         "person.html.j2": "people",
         "slideshow.html.j2": "slideshow",
         "shrink.html.j2": "shrink",
+        "shrink_refused.html.j2": "shrink",
         "history.html.j2": "history",
         "quarantine.html.j2": "undo-pick",
         "import_pick.html.j2": "import-pick",
@@ -90,6 +91,7 @@ SHELL_PAGES: Final[Mapping[str, bool]] = MappingProxyType(
         "history.html.j2": False,
         **dict.fromkeys((f"console_{name}.html.j2" for name in PAGE_CAPTURED), False),
         "shrink.html.j2": False,
+        "shrink_refused.html.j2": False,
     }
 )
 # The pages in the frame's phone layout at every width (0497): the top bar and ☰ only.

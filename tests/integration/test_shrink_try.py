@@ -399,3 +399,16 @@ def _trial_of(here: ShrinkHere) -> Trial:
     opened = here._open  # noqa: SLF001  # pylint: disable=protected-access
     assert opened is not None
     return opened.trial
+
+
+def test_a_try_that_cannot_open_says_why_on_a_page_with_the_way_home(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """No audit: the sentence in the frame of every page, not plain text."""
+    monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, "steps")
+    answer = asyncio.run(_here(locations).handle(Request("GET", "/shrink/", _LOCAL)))
+    assert answer.status == HTTPStatus.CONFLICT
+    page = answer.body.decode()
+    assert 'id="shrinkRefused"' in page
+    assert "<!DOCTYPE html>" in page
+    assert 'id="homeLink"' in page

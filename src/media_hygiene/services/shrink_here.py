@@ -17,9 +17,11 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.constants import ExitCode
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
+from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.ending import Ending
-from media_hygiene.review.http import Response, is_local
+from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.local_app import PAGE_PATH
+from media_hygiene.review.page_header import headed_page
 from media_hygiene.review.presence import PRESENCE_PATH, Presence, presence_response
 from media_hygiene.review.served_more import SHRINK_PAGE
 from media_hygiene.review.serving import json_response, refused_post
@@ -41,6 +43,20 @@ if TYPE_CHECKING:
     from media_hygiene.services.shrink_try import Trial
 
 _PREFIX: Final = SHRINK_PAGE.removesuffix("/")
+_TEMPLATES: Final = "media_hygiene.review"
+
+
+def _refused_page(said: str) -> bytes:
+    """The page of a try that cannot open: the sentence, the way back home with it.
+
+    Args:
+        said: Why it cannot open.
+
+    Returns:
+        The page, in the language in use.
+    """
+    environment = translated_environment(_TEMPLATES, escaped=("html", "j2"))
+    return headed_page(environment, "shrink_refused.html.j2", {"said": said})
 
 
 @dataclass(frozen=True, slots=True)
@@ -107,7 +123,9 @@ class ShrinkHere:
             try:
                 await self._ensure_open()
             except MediaHygieneError as exc:
-                return Response(HTTPStatus.CONFLICT, str(exc).encode())
+                return Response(
+                    HTTPStatus.CONFLICT, _refused_page(str(exc)), ContentType.HTML
+                )
         if self._open is None:
             return Response(HTTPStatus.NOT_FOUND)
         return await self._open.app.handle(dataclasses.replace(request, path=path))
