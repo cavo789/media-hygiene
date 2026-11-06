@@ -15,7 +15,7 @@ import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.errors import MediaHygieneError, MountError
+from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.review.step_watch import WATCH
 from media_hygiene.scan.progress import NullProgress
@@ -26,9 +26,10 @@ from media_hygiene.services.shrink_try import (
     ensure_cache,
     opened_try,
     sweep_drafts,
+    try_lock,
 )
 from media_hygiene.shrink.draft_bench import draft_file
-from media_hygiene.shrink.drafts import TryLock, drafts_root
+from media_hygiene.shrink.drafts import drafts_root
 from media_hygiene.shrink.try_choices import CHOICES_FILE, read_choices
 
 if TYPE_CHECKING:
@@ -147,15 +148,8 @@ def handed_try(runtime: Runtime) -> Iterator[Chosen]:
     """
     root = drafts_root(runtime.locations.cache_dir)
     target = root / _HANDED
-    try:
-        lock = TryLock(root).__enter__()  # pylint: disable=unnecessary-dunder-call
-    except FileExistsError:
-        raise MountError(
-            _("Another 'shrink --try' is running: one at a time."),
-            _("Close its page first, then try again."),
-        ) from None
-    try:
-        yield _matched(runtime, target)
-    finally:
-        shutil.rmtree(target, ignore_errors=True)
-        lock.__exit__(None, None, None)
+    with try_lock(root):
+        try:
+            yield _matched(runtime, target)
+        finally:
+            shutil.rmtree(target, ignore_errors=True)
