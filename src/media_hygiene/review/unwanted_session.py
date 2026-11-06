@@ -1,14 +1,13 @@
 """A `review --junk` in progress: the photos decided, saved after every choice.
 
-The decisions file is shared with the other reviews and `library`: this one keeps what
-it finds there and writes the `unwanted` key, every photo decided (set aside or kept).
-Reopened, it resumes; a decision about a photo no longer listed, or changed since
-(size, date), is dropped.
+The decisions file is shared with the other reviews and `library`: this one writes the
+`unwanted` key. Reopened, it resumes; a decision about a photo no longer listed, or
+changed since (size, date), is dropped.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.errors import DecisionsError
@@ -20,6 +19,7 @@ from media_hygiene.review.unwanted_file import (
     photo_key,
     read_unwanted_back,
     unwanted_proven,
+    with_decided,
 )
 from media_hygiene.review.unwanted_views import (
     UnwantedReviewState,
@@ -32,30 +32,31 @@ if TYPE_CHECKING:
     from collections.abc import Mapping
     from pathlib import Path
 
-    from media_hygiene.plan.unwanted import UnwantedPhoto
+    from media_hygiene.config.review_settings import UnwantedSettings
     from media_hygiene.report.decisions import DecisionsFile
     from media_hygiene.review.place import DecisionsPlace
-    from media_hygiene.review.unwanted_file import UnwantedProof
-    from media_hygiene.review.unwanted_views import UnwantedStateBuilder
+    from media_hygiene.review.strictness import Strictness
+    from media_hygiene.review.unwanted_file import UnwantedPages, UnwantedProof
 
 _ASIDE, _KEPT = "aside", "kept"
 
 
-@dataclass(frozen=True, slots=True)
-class UnwantedPages:
-    """What the review is about: the photos, how to show them, the file to write."""
-
-    photos: tuple[UnwantedPhoto, ...]
-    builder: UnwantedStateBuilder
-    target: Path
-    place: DecisionsPlace
-
-
-class UnwantedSession:
+class UnwantedSession:  # pylint: disable=too-many-instance-attributes
     """The photos under review and the decisions, in memory and on disk."""
 
     def __init__(self, source: UnwantedPages, base: DecisionsFile) -> None:
         """Resume the decisions of `base` that still match a photo of the review.
+
+        Args:
+            source: The photos and the decisions file.
+            base: What the decisions file holds already.
+        """
+        self.strictness: Strictness[UnwantedSettings] | None = None  # by the service
+        self.dropped = 0
+        self._load(source, base)
+
+    def _load(self, source: UnwantedPages, base: DecisionsFile) -> None:
+        """Index the photos and resume the decisions of `base` on them.
 
         Args:
             source: The photos and the decisions file.
@@ -68,7 +69,6 @@ class UnwantedSession:
         self._keys = {photo_key(mapper, p): r for r, p in enumerate(source.photos)}
         self._previews = {preview_key(p.file): p.file.path for p in source.photos}
         self._aside: dict[int, bool] = {}
-        self.dropped = 0
         for entry in base.unwanted:
             rank = self._keys.get(entry_key(entry))
             if rank is None:
@@ -101,8 +101,7 @@ class UnwantedSession:
         Returns:
             `decided`, `aside` and `total`.
         """
-        decided, aside, total = self.decided
-        return {"decided": decided, "aside": aside, "total": total}
+        return dict(zip(("decided", "aside", "total"), self.decided, strict=True))
 
     def state(self) -> UnwantedReviewState:
         """Describe every photo and the decisions so far, for the page.
@@ -123,6 +122,21 @@ class UnwantedSession:
             groups=photo_groups(self._source.photos),
             reasons=reason_texts(),
         )
+
+    def retune(self, settings: UnwantedSettings) -> dict[str, str]:
+        """List the photos again; a photo already decided stays listed, as decided.
+
+        Args:
+            settings: The thresholds.
+
+        Returns:
+            The file name of each photo the thresholds list, by path.
+        """
+        lister = self._source.lister
+        photos = () if lister is None else lister(settings)
+        every = with_decided(photos, self._source.photos, self._aside)
+        self._load(replace(self._source, photos=every), self.decisions())
+        return {str(photo.file.path): photo.file.path.name for photo in photos}
 
     def preview_source(self, key: str) -> Path | None:
         """Find the photo a preview or an original shows.

@@ -25,6 +25,13 @@ rafale (l'[étape 10](10-review-bursts.md) s'en charge), un quasi-doublon
 ([étape 11](11-near-duplicates.md)) ou l'autre copie d'un doublon exact. Les vidéos ne sont pas
 listées.
 
+Chaque groupe a son panneau *trop strict ?* dans la colonne de gauche de la page. Relâchez un
+curseur : les photos sont listées à nouveau aussitôt et une ligne nomme celles qui entrent ou
+sortent ; rien n'est écrit, et une photo déjà décidée reste, telle que décidée. *Garder ces valeurs*
+les écrit dans `config.toml` (vos commentaires restent) et les affiche telles que relues dans le
+fichier. *Revenir aux valeurs enregistrées* annule l'essai. Une valeur fixée par une option ou une
+variable d'environnement reste prioritaire au lancement suivant.
+
 Chaque seuil est un réglage de `config.toml` ([étape 7](07-configuration-file.md)) ; `0` (ou
 `false`) désactive sa raison :
 

@@ -52,7 +52,7 @@ def document_of(config_file: Path) -> TOMLDocument:
     return tomlkit.parse(text)
 
 
-def table_of(document: TOMLDocument, name: str) -> AnyTable:
+def table_of(document: TOMLDocument | AnyTable, name: str) -> AnyTable:
     """A top-level table of the document, added at its end when missing.
 
     Whatever way the user wrote it, the table found is edited in place and every key
@@ -60,7 +60,7 @@ def table_of(document: TOMLDocument, name: str) -> AnyTable:
     inline table, a parent of `[name.child]` only (0584).
 
     Args:
-        document: The document.
+        document: The document, or the table holding this one.
         name: The table's name.
 
     Returns:

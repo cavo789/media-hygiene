@@ -110,6 +110,7 @@
 {% include "pick_grid.css.j2" %}
   main#grid { display: block; }
 {% include "review_tree.css.j2" %}
+{% include "strictness.css.j2" %}
 {% include "review_compare.css.j2" %}
 {% include "review_board.css.j2" %}
 {% include "contact_sheet.css.j2" %}
@@ -159,6 +160,11 @@
     <button type="button" id="obvious" class="plain" title="{{ _('Validate at once, without seeing them, every series still to see whose proposal leaves nothing to judge (V)') }}"></button>
     <div id="tree"></div>
   </section>
+  {% set strict_groups = [{"id": "bursts", "title": _("Too strict? Not enough?"), "rows": [
+    {"name": "propose_aside_below", "label": _("Proposed when less sharp than (share of the sharpest)"), "max": 0.95, "step": 0.05},
+    {"name": "identical_below", "label": _("Same frame under this difference (bits out of 64)"), "max": 24, "step": 1},
+  ]}] %}
+  {% include "strictness.html.j2" %}
 {% endblock %}
 {% block keys %}
       <dt><kbd>→</kbd></dt><dd>{{ _("accept the proposal, next") }}</dd>
@@ -468,6 +474,12 @@ pickMoves = false;      // ←/→/Space change the series, ↑/↓ move the fra
       byId("onlyLook").addEventListener("change", (event) => byId("tree").classList.toggle("only-look", event.target.checked));
       byId("obvious").addEventListener("click", validateObvious);
       byId("keepAll").addEventListener("click", () => decide(current, []));
+      window.mhStrictApplied = async () => {
+        const fresh = await fetch(statePath).then((r) => r.json());
+        series = fresh.series; // same series, same ranks: the choices stay
+        buildTree();
+        render();
+      };
       welcome();
       arrange(savedOrder());
       setBoard(savedBoard());
@@ -479,5 +491,8 @@ pickMoves = false;      // ←/→/Space change the series, ↑/↓ move the fra
     })
     .catch(() => setStatus(T.offline, "error"));
 })();
+</script>
+<script>
+{% include "strictness.js.j2" %}
 </script>
 {% endblock %}

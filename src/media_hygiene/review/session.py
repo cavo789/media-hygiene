@@ -7,11 +7,10 @@ start (`todo` until seen). Reopened on the same folders, it resumes where it sto
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
 from media_hygiene.errors import DecisionsError
-from media_hygiene.report.burst_decisions import BurstStatus
 from media_hygiene.report.decisions import write_decisions
 from media_hygiene.review.session_file import (
     choice_problem,
@@ -19,18 +18,22 @@ from media_hygiene.review.session_file import (
     read_back,
     series_decision,
 )
-from media_hygiene.review.shots import match_burst, shot_places
+from media_hygiene.review.session_series import proposed_shots, resumed, with_choice
+from media_hygiene.review.shots import shot_places
 from media_hygiene.review.views import ReviewState, preview_key
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
     from pathlib import Path
 
+    from media_hygiene.config.review_settings import ReviewSettings
+    from media_hygiene.plan.burst_proposals import ProposalLimits
     from media_hygiene.plan.similar_models import BurstSeries
     from media_hygiene.report.decisions import DecisionsFile
     from media_hygiene.review.place import DecisionsPlace
     from media_hygiene.review.session_file import FileProof
-    from media_hygiene.review.views import SeriesState, StateBuilder
+    from media_hygiene.review.strictness import Strictness
+    from media_hygiene.review.views import StateBuilder
 
 
 @dataclass(frozen=True, slots=True)
@@ -43,7 +46,7 @@ class ReviewSource:
     place: DecisionsPlace
 
 
-class ReviewSession:
+class ReviewSession:  # pylint: disable=too-many-instance-attributes
     """The series under review and the shots set aside, in memory and on disk."""
 
     def __init__(self, source: ReviewSource, base: DecisionsFile) -> None:
@@ -58,17 +61,9 @@ class ReviewSession:
         self._states = tuple(source.builder.series(burst) for burst in source.bursts)
         shots = (file for burst in source.bursts for file in burst.shots)
         self._previews = {preview_key(file): file.path for file in shots}
-        self._discarded: dict[int, frozenset[int]] = {}
         self._places = shot_places(source.bursts, source.builder.mapper)
-        self.dropped = 0
-        for decision in base.bursts:
-            match = match_burst(decision, self._places)
-            if decision.status is BurstStatus.TODO:
-                continue  # listed again below, from the audit
-            if match is None or choice_problem(source, match.series, match.discarded):
-                self.dropped += 1
-                continue
-            self._discarded[match.series] = match.discarded
+        self._discarded, self.dropped = resumed(source, base, self._places)
+        self.strictness: Strictness[ReviewSettings] | None = None  # set by the service
 
     @property
     def place(self) -> DecisionsPlace:
@@ -108,9 +103,24 @@ class ReviewSession:
             decisions_file=self.place.argument,
             decisions_place=self.place.host,
             series=tuple(
-                self._with_choice(number) for number in range(len(self._states))
+                with_choice(state, self._discarded.get(number))
+                for number, state in enumerate(self._states)
             ),
         )
+
+    def retune(self, limits: ProposalLimits) -> dict[str, str]:
+        """Propose again with other thresholds; the choices made stay.
+
+        Args:
+            limits: The thresholds.
+
+        Returns:
+            The file name of each shot proposed in a series still to see, by path.
+        """
+        builder = replace(self._source.builder, limits=limits)
+        self._source = replace(self._source, builder=builder)
+        self._states = tuple(builder.series(burst) for burst in self._source.bursts)
+        return proposed_shots(self._states, self._discarded)
 
     def preview_source(self, key: str) -> Path | None:
         """Find the shot a preview shows.
@@ -178,20 +188,3 @@ class ReviewSession:
             for number, burst in enumerate(bursts)
         )
         return self._base.model_copy(update={"bursts": listed})
-
-    def _with_choice(self, number: int) -> SeriesState:
-        """Describe a series with the shots set aside, and whether it was seen.
-
-        Args:
-            number: Rank of the series.
-
-        Returns:
-            Its state.
-        """
-        choice = self._discarded.get(number)
-        return self._states[number].model_copy(
-            update={
-                "discarded": tuple(sorted(choice or ())),
-                "reviewed": choice is not None,
-            }
-        )

@@ -21,6 +21,7 @@ from media_hygiene.review.apply_api import ApplyOffer, applying_door
 from media_hygiene.review.ending import serve_until_ended
 from media_hygiene.review.place import decisions_place
 from media_hygiene.review.session import ReviewSession, ReviewSource
+from media_hygiene.review.strictness import Strictness, ThresholdPlace
 from media_hygiene.review.views import StateBuilder
 from media_hygiene.services.albums import album_desk
 from media_hygiene.services.aside_paths import review_picker
@@ -42,6 +43,8 @@ if TYPE_CHECKING:
 
 HOST_LOOPBACK: Final = "127.0.0.1"
 PAGE_TEMPLATE: Final = "review.html.j2"
+BURST_SECTION: Final = ("review",)
+BURST_KEYS: Final = ("propose_aside_below", "identical_below")
 
 
 def review_target(runtime: Runtime, decisions: Path, port: int) -> Path:
@@ -99,6 +102,11 @@ def open_review(
     place = decisions_place(mapper, runtime.locations.reports_dir, target)
     source = ReviewSource(findings.similar.bursts, builder, target, place)
     session = ReviewSession(source, resume_bursts(runtime, findings, target))
+    session.strictness = Strictness(
+        ThresholdPlace(runtime.locations.config_file, BURST_SECTION, BURST_KEYS),
+        runtime.settings.review,
+        lambda review: session.retune(proposal_limits(review)),
+    )
     first_save(session.save)
     return session
 

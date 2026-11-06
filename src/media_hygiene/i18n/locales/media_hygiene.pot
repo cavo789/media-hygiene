@@ -852,6 +852,9 @@ msgstr ""
 msgid "A step to type yourself takes words only you know: {url}"
 msgstr ""
 
+msgid "A trial: nothing is written, your choices stay."
+msgstr ""
+
 msgid ""
 "A word of yours (anniversaire Léa): kept in your settings, found by the "
 "search at once, written into the .xmp sidecars by 'xmp'."
@@ -1409,6 +1412,9 @@ msgid "Back to the photos"
 msgstr ""
 
 msgid "Back to the report"
+msgstr ""
+
+msgid "Back to the saved values"
 msgstr ""
 
 msgid "Back to the start of this event"
@@ -4167,6 +4173,9 @@ msgstr ""
 msgid "Keep the source folders the sort leaves empty."
 msgstr ""
 
+msgid "Keep these values"
+msgstr ""
+
 msgid "Keep this window open (minimised is fine): closing it stops Media Hygiene."
 msgstr ""
 
@@ -4426,6 +4435,9 @@ msgstr ""
 msgid "Links updated, read back from the disk: {parts}."
 msgstr ""
 
+msgid "List screenshots and documents"
+msgstr ""
+
 msgid "List the HTML reports of previous audits and cleans."
 msgstr ""
 
@@ -4559,6 +4571,12 @@ msgid "Match"
 msgstr ""
 
 msgid "May"
+msgstr ""
+
+msgid "Mean brightness over (0 to 255; 0: never)"
+msgstr ""
+
+msgid "Mean brightness under (0 to 255)"
 msgstr ""
 
 msgid "Media Hygiene"
@@ -4964,12 +4982,18 @@ msgid ""
 "nearly white, over white_mean. 0 disables either reason."
 msgstr ""
 
+msgid "Nearly black: too strict?"
+msgstr ""
+
+msgid "Nearly white: too strict?"
+msgstr ""
+
 msgid "Never"
 msgstr ""
 
 msgid ""
 "Never a photo of a protected folder, a burst shot, a near or exact "
-"duplicate. The thresholds are in [review.unwanted] of config.toml."
+"duplicate."
 msgstr ""
 
 msgid "Never analysed, not even read."
@@ -6830,6 +6854,9 @@ msgstr ""
 msgid "Proposed tree"
 msgstr ""
 
+msgid "Proposed when less sharp than (share of the sharpest)"
+msgstr ""
+
 #, python-brace-format
 msgid "Proposed {when}"
 msgstr ""
@@ -7585,10 +7612,16 @@ msgstr ""
 msgid "Same day and folder"
 msgstr ""
 
+msgid "Same frame under this difference (bits out of 64)"
+msgstr ""
+
 msgid "Same moment"
 msgstr ""
 
 msgid "Same moment as a named folder"
+msgstr ""
+
+msgid "Same photos as the saved values."
 msgstr ""
 
 msgid "Same picture and sound as the kept video: only the metadata differ."
@@ -7668,6 +7701,10 @@ msgid "Saved in config.toml, read back: {name}, {count} confirmed face."
 msgid_plural "Saved in config.toml, read back: {name}, {count} confirmed faces."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "Saved in config.toml, then read back: {values}."
+msgstr ""
 
 msgid "Saved in config.toml."
 msgstr ""
@@ -7755,6 +7792,9 @@ msgid ""
 msgstr ""
 
 msgid "Screenshots and documents"
+msgstr ""
+
+msgid "Screenshots: too strict?"
 msgstr ""
 
 msgid "Search"
@@ -8798,9 +8838,15 @@ msgstr ""
 msgid "The backups are written to /backups, which is not mounted."
 msgstr ""
 
+msgid "The blurriest percent of your photos"
+msgstr ""
+
 msgid ""
 "The blurriest: sharpness under this percentile (0 to 100) of your own "
 "photos, so the threshold follows your cameras. 0 disables the reason."
+msgstr ""
+
+msgid "The blurriest: too strict?"
 msgstr ""
 
 msgid ""
@@ -10324,6 +10370,9 @@ msgstr ""
 msgid "Three things to know before you start"
 msgstr ""
 
+msgid "Thresholds"
+msgstr ""
+
 msgid "Thumbnail size"
 msgstr ""
 
@@ -10366,6 +10415,9 @@ msgid "Time per step: {steps}"
 msgstr ""
 
 msgid "Time zone"
+msgstr ""
+
+msgid "Tiny images: too strict?"
 msgstr ""
 
 msgid ""
@@ -10483,6 +10535,9 @@ msgstr ""
 msgid ""
 "Too many wrong codes: pairing is closed. On the PC, quit Media Hygiene, "
 "then type mh --lan again for a new code."
+msgstr ""
+
+msgid "Too strict? Not enough?"
 msgstr ""
 
 msgid "Tools"
@@ -10614,6 +10669,9 @@ msgstr ""
 msgid ""
 "Undecided: nothing moves. → sets aside the photos marked, Space keeps or "
 "sets aside the photo under the cursor."
+msgstr ""
+
+msgid "Under this many megapixels"
 msgstr ""
 
 msgid "Undo"
@@ -11027,6 +11085,12 @@ msgid ""
 msgstr ""
 
 msgid "With Léa"
+msgstr ""
+
+msgid "With at least this share of black pixels"
+msgstr ""
+
+msgid "With at least this share of white pixels"
 msgstr ""
 
 msgid "With tidy: remove the ticked entries, after a copy of config.toml."
@@ -11807,6 +11871,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "config.toml could not be updated: {reason}"
+msgstr ""
+
+msgid "config.toml does not hold the values written"
 msgstr ""
 
 msgid "config.toml holds no [[classify.rules]]: write one first."
@@ -14040,6 +14107,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} enter: {names}"
+msgstr ""
+
+#, python-brace-format
 msgid "{count} entries at its top"
 msgstr ""
 
@@ -14445,6 +14516,10 @@ msgid "{count} layout written to {path}, read back from the disk:"
 msgid_plural "{count} layouts written to {path}, read back from the disk:"
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} leave: {names}"
+msgstr ""
 
 #, python-brace-format
 msgid "{count} left"

@@ -1,0 +1,76 @@
+{# The script of strictness.html.j2. A value let go is tried at once (nothing written): the
+   page's `mhStrictApplied` shows the photos again, this line says who enters or leaves next
+   to the saved values. "Keep" writes `config.toml`; what it then shows is the file read back. #}
+(() => {
+  const path = "/api/strictness";
+  const S = {{ {
+    "same": _("Same photos as the saved values."),
+    "entered": _("{count} enter: {names}"),
+    "left": _("{count} leave: {names}"),
+    "trial": _("A trial: nothing is written, your choices stay."),
+    "saved": _("Saved in config.toml, then read back: {values}."),
+    "failed": _("Not saved (error {status})."),
+    "offline": _("The review is not running any more: start it again."),
+  } | tojson }};
+  const said = document.getElementById("strictSaid");
+  const acts = document.getElementById("strictActs");
+  const inputs = [...document.querySelectorAll("#strict [data-name]")];
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => String(values[name]));
+  const read = (input) => (input.type === "checkbox" ? input.checked : Number(input.value));
+  let saved = {};
+
+  const label = (input) => {
+    const out = document.querySelector(`#strict output[data-for="${input.dataset.name}"]`);
+    if (out) out.textContent = input.value;
+  };
+  const show = (reply) => {
+    saved = reply.saved;
+    for (const input of inputs) {
+      const value = reply.values[input.dataset.name];
+      if (input.type === "checkbox") input.checked = value;
+      else {
+        input.max = String(Math.max(Number(input.max), value)); // a value above the slider's end stays
+        input.value = value;
+      }
+      label(input);
+    }
+    acts.hidden = inputs.every((input) => read(input) === saved[input.dataset.name]);
+  };
+  const part = (text, moved) => (moved.count ? fill(text, { count: moved.count, names: moved.names.join(", ") + (moved.count > moved.names.length ? "…" : "") }) : "");
+  const tell = (reply) => {
+    if (reply.proof) {
+      said.className = "saved";
+      said.textContent = fill(S.saved, { values: Object.entries(reply.proof).map(([key, value]) => key + " = " + value).join(", ") || "—" });
+      return;
+    }
+    said.className = "";
+    const parts = [part(S.entered, reply.entered), part(S.left, reply.left)].filter(Boolean);
+    said.textContent = (parts.length ? parts.join(" · ") : S.same) + " " + S.trial;
+  };
+  const post = async (values, save) => {
+    try {
+      const response = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ values: values, save: save }) });
+      const reply = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        said.className = "error";
+        said.textContent = reply.error || fill(S.failed, { status: response.status });
+        return;
+      }
+      show(reply);
+      tell(reply);
+      if (window.mhStrictApplied) await window.mhStrictApplied();
+    } catch (error) {
+      said.className = "error";
+      said.textContent = S.offline;
+    }
+  };
+  const values = () => Object.fromEntries(inputs.map((input) => [input.dataset.name, read(input)]));
+
+  for (const input of inputs) {
+    input.addEventListener("input", () => label(input));
+    input.addEventListener("change", () => post(values(), false)); // once let go, not while dragging
+  }
+  document.getElementById("strictSave").addEventListener("click", () => post(values(), true));
+  document.getElementById("strictBack").addEventListener("click", () => post(saved, false));
+  fetch(path).then((r) => r.json()).then(show).catch(() => undefined);
+})();

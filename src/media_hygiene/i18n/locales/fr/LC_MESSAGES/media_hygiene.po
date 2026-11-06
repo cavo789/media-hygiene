@@ -1100,6 +1100,9 @@ msgstr ""
 "Une étape à taper vous-même demande des mots que vous seul connaissez : "
 "{url}"
 
+msgid "A trial: nothing is written, your choices stay."
+msgstr "Un essai : rien n'est écrit, vos choix restent."
+
 msgid ""
 "A word of yours (anniversaire Léa): kept in your settings, found by the "
 "search at once, written into the .xmp sidecars by 'xmp'."
@@ -1772,6 +1775,9 @@ msgstr "Retour aux photos"
 
 msgid "Back to the report"
 msgstr "Retour au rapport"
+
+msgid "Back to the saved values"
+msgstr "Revenir aux valeurs enregistrées"
 
 msgid "Back to the start of this event"
 msgstr "Retour au début de cet événement"
@@ -5066,6 +5072,9 @@ msgstr "Garder les photos choisies"
 msgid "Keep the source folders the sort leaves empty."
 msgstr "Garder les dossiers sources que le tri laisse vides."
 
+msgid "Keep these values"
+msgstr "Garder ces valeurs"
+
 msgid "Keep this window open (minimised is fine): closing it stops Media Hygiene."
 msgstr ""
 "Gardez cette fenêtre ouverte (réduite, c'est bien) : la fermer arrête "
@@ -5358,6 +5367,9 @@ msgstr "Liens à retirer"
 msgid "Links updated, read back from the disk: {parts}."
 msgstr "Liens mis à jour, relus sur le disque : {parts}."
 
+msgid "List screenshots and documents"
+msgstr "Lister les captures d'écran et les documents"
+
 msgid "List the HTML reports of previous audits and cleans."
 msgstr "Liste les rapports HTML des audits et nettoyages précédents."
 
@@ -5509,6 +5521,12 @@ msgstr "Reconnaît"
 
 msgid "May"
 msgstr "mai"
+
+msgid "Mean brightness over (0 to 255; 0: never)"
+msgstr "Luminosité moyenne au-dessus de (0 à 255 ; 0 : jamais)"
+
+msgid "Mean brightness under (0 to 255)"
+msgstr "Luminosité moyenne sous (0 à 255)"
 
 msgid "Media Hygiene"
 msgstr "Média Hygiène"
@@ -5999,16 +6017,21 @@ msgstr ""
 "presque blanche, au-dessus de white_mean. 0 désactive l'une ou l'autre "
 "raison."
 
+msgid "Nearly black: too strict?"
+msgstr "Presque noires : trop strict ?"
+
+msgid "Nearly white: too strict?"
+msgstr "Presque blanches : trop strict ?"
+
 msgid "Never"
 msgstr "Jamais"
 
 msgid ""
 "Never a photo of a protected folder, a burst shot, a near or exact "
-"duplicate. The thresholds are in [review.unwanted] of config.toml."
+"duplicate."
 msgstr ""
-"Jamais une photo d'un dossier protégé, une photo de rafale, un quasi-"
-"doublon ni un doublon exact. Les seuils sont dans [review.unwanted] de "
-"config.toml."
+"Jamais une photo d'un dossier protégé, d'une rafale, un quasi-doublon ou "
+"un doublon exact."
 
 msgid "Never analysed, not even read."
 msgstr "Jamais analysés, même pas lus."
@@ -8238,6 +8261,9 @@ msgstr "Nom proposé :"
 msgid "Proposed tree"
 msgstr "Arborescence proposée"
 
+msgid "Proposed when less sharp than (share of the sharpest)"
+msgstr "Proposée si moins nette que (part de la plus nette)"
+
 #, python-brace-format
 msgid "Proposed {when}"
 msgstr "Proposé {when}"
@@ -9140,11 +9166,17 @@ msgstr "Même Wi-Fi, ouvrez :"
 msgid "Same day and folder"
 msgstr "Même jour, même dossier"
 
+msgid "Same frame under this difference (bits out of 64)"
+msgstr "Même image sous cet écart (bits sur 64)"
+
 msgid "Same moment"
 msgstr "Même moment"
 
 msgid "Same moment as a named folder"
 msgstr "Même moment qu'un dossier nommé"
+
+msgid "Same photos as the saved values."
+msgstr "Mêmes photos qu'avec les valeurs enregistrées."
 
 msgid "Same picture and sound as the kept video: only the metadata differ."
 msgstr ""
@@ -9241,6 +9273,10 @@ msgid "Saved in config.toml, read back: {name}, {count} confirmed face."
 msgid_plural "Saved in config.toml, read back: {name}, {count} confirmed faces."
 msgstr[0] "Enregistré dans config.toml, relu : {name}, {count} visage confirmé."
 msgstr[1] "Enregistré dans config.toml, relu : {name}, {count} visages confirmés."
+
+#, python-brace-format
+msgid "Saved in config.toml, then read back: {values}."
+msgstr "Enregistré dans config.toml, puis relu : {values}."
 
 msgid "Saved in config.toml."
 msgstr "Enregistré dans config.toml."
@@ -9348,6 +9384,9 @@ msgstr ""
 
 msgid "Screenshots and documents"
 msgstr "Captures d'écran et documents"
+
+msgid "Screenshots: too strict?"
+msgstr "Captures d'écran : trop strict ?"
 
 msgid "Search"
 msgstr "Chercher"
@@ -10559,12 +10598,18 @@ msgstr ""
 msgid "The backups are written to /backups, which is not mounted."
 msgstr "Les sauvegardes sont écrites dans /backups, qui n'est pas monté."
 
+msgid "The blurriest percent of your photos"
+msgstr "Le pourcentage le plus flou de vos photos"
+
 msgid ""
 "The blurriest: sharpness under this percentile (0 to 100) of your own "
 "photos, so the threshold follows your cameras. 0 disables the reason."
 msgstr ""
 "Les plus floues : netteté sous ce centile (0 à 100) de vos propres "
 "photos, pour que le seuil suive vos appareils. 0 désactive la raison."
+
+msgid "The blurriest: too strict?"
+msgstr "Les plus floues : trop strict ?"
 
 msgid ""
 "The burst review proposes to set aside a shot whose sharpness is below "
@@ -12472,6 +12517,9 @@ msgstr ""
 msgid "Three things to know before you start"
 msgstr "Trois choses à savoir avant de commencer"
 
+msgid "Thresholds"
+msgstr "Seuils"
+
 msgid "Thumbnail size"
 msgstr "Taille des vignettes"
 
@@ -12518,6 +12566,9 @@ msgstr "Temps par étape : {steps}"
 
 msgid "Time zone"
 msgstr "Fuseau horaire"
+
+msgid "Tiny images: too strict?"
+msgstr "Images minuscules : trop strict ?"
 
 msgid ""
 "Tiny: below this many megapixels (width times height divided by a "
@@ -12659,6 +12710,9 @@ msgid ""
 msgstr ""
 "Trop de codes erronés : l'appairage est fermé. Sur le PC, quittez Media "
 "Hygiene, puis tapez à nouveau mh --lan pour un nouveau code."
+
+msgid "Too strict? Not enough?"
+msgstr "Trop strict ? Pas assez ?"
 
 msgid "Tools"
 msgstr "Outils"
@@ -12821,6 +12875,9 @@ msgid ""
 msgstr ""
 "Non décidé : rien ne bouge. → met de côté les photos marquées, Espace "
 "garde ou met de côté la photo sous le curseur."
+
+msgid "Under this many megapixels"
+msgstr "Sous ce nombre de mégapixels"
 
 msgid "Undo"
 msgstr "Annuler"
@@ -13307,6 +13364,12 @@ msgstr ""
 
 msgid "With Léa"
 msgstr "Avec Léa"
+
+msgid "With at least this share of black pixels"
+msgstr "Avec au moins cette part de pixels noirs"
+
+msgid "With at least this share of white pixels"
+msgstr "Avec au moins cette part de pixels blancs"
 
 msgid "With tidy: remove the ticked entries, after a copy of config.toml."
 msgstr "Avec tidy : retirer les entrées cochées, après une copie de config.toml."
@@ -14221,6 +14284,9 @@ msgstr ""
 #, python-brace-format
 msgid "config.toml could not be updated: {reason}"
 msgstr "config.toml n'a pas pu être mis à jour : {reason}"
+
+msgid "config.toml does not hold the values written"
+msgstr "config.toml ne contient pas les valeurs écrites"
 
 msgid "config.toml holds no [[classify.rules]]: write one first."
 msgstr ""
@@ -16719,6 +16785,10 @@ msgstr[1] ""
 "à {time}."
 
 #, python-brace-format
+msgid "{count} enter: {names}"
+msgstr "{count} entrent : {names}"
+
+#, python-brace-format
 msgid "{count} entries at its top"
 msgstr "{count} éléments à sa racine"
 
@@ -17244,6 +17314,10 @@ msgid "{count} layout written to {path}, read back from the disk:"
 msgid_plural "{count} layouts written to {path}, read back from the disk:"
 msgstr[0] "{count} rangement écrit dans {path}, relu sur le disque :"
 msgstr[1] "{count} rangements écrits dans {path}, relus sur le disque :"
+
+#, python-brace-format
+msgid "{count} leave: {names}"
+msgstr "{count} sortent : {names}"
 
 #, python-brace-format
 msgid "{count} left"
