@@ -2657,6 +2657,11 @@ msgid "Each file is checked again just before it moves; none is overwritten."
 msgstr ""
 
 msgid ""
+"Each file read here is kept in the cache: tagging or placing it later is "
+"immediate. You can stop at any time: what is read is kept."
+msgstr ""
+
+msgid ""
 "Each group holds faces that look alike: probably one person. Type a name "
 "to save it in config.toml; the photos are never changed and the faces "
 "stay on this computer."
@@ -3986,6 +3991,9 @@ msgid "ISO"
 msgstr ""
 
 msgid "Id"
+msgstr ""
+
+msgid "Identifying the remaining files (full SHA-256), once"
 msgstr ""
 
 msgid "If Windows asks about Docker Desktop: tick Private networks, then Allow."

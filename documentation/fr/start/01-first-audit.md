@@ -117,6 +117,7 @@ Chaque étape affiche une ligne de progression et, en dessous en gris, ce qu'ell
 | Empreinte des vidéos | Une fois par vidéo, gardé dans le cache : décode quelques images et en calcule les empreintes, pour trouver les [copies réencodées](../clean/11-near-duplicates.md#les-vidéos-aussi--les-copies-réencodées). |
 | Comparaison des fichiers de même taille | Deux fichiers ne peuvent être identiques que s'ils ont la même taille. Pour ceux-là, lit leurs premiers et derniers 64 Ko : rapide, et cela en écarte la plupart. |
 | Preuve d'identité (SHA-256 complet) | Lit entièrement les candidats restants et calcule leur empreinte SHA-256 : même empreinte, même contenu, octet par octet. L'étape la plus longue avec de grosses vidéos. |
+| Identification des fichiers restants (SHA-256 complet), une fois | Lit entièrement les photos et vidéos pas encore lues, et garde leur empreinte dans le cache : les étiqueter ou les placer ensuite est immédiat. Une fois par fichier : arrêtez quand vous voulez, ce qui est lu est gardé. Lire les vidéos d'une bibliothèque prend des minutes sur un disque local, bien plus sur un NAS (environ 15 Mo/s à travers Docker Desktop). |
 
 ### Combien de temps dure le premier audit
 

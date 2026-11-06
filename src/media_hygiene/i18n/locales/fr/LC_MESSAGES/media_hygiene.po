@@ -3178,7 +3178,6 @@ msgstr "Drone"
 msgid "Drop it from these photos ({n})"
 msgstr "Le retirer de ces photos ({n})"
 
-
 msgid "Drop the ticked tags…"
 msgstr "Retirer les tags cochés…"
 
@@ -3230,6 +3229,14 @@ msgid "Each file is checked again just before it moves; none is overwritten."
 msgstr ""
 "Chaque fichier est revérifié juste avant d'être déplacé ; aucun n'est "
 "écrasé."
+
+msgid ""
+"Each file read here is kept in the cache: tagging or placing it later is "
+"immediate. You can stop at any time: what is read is kept."
+msgstr ""
+"Chaque fichier lu ici est gardé dans le cache : l'étiqueter ou le placer "
+"ensuite est immédiat. Vous pouvez arrêter à tout moment : ce qui est lu "
+"est gardé."
 
 msgid ""
 "Each group holds faces that look alike: probably one person. Type a name "
@@ -4859,6 +4866,9 @@ msgstr "ISO"
 msgid "Id"
 msgstr "Identifiant"
 
+msgid "Identifying the remaining files (full SHA-256), once"
+msgstr "Identification des fichiers restants (SHA-256 complet), une fois"
+
 msgid "If Windows asks about Docker Desktop: tick Private networks, then Allow."
 msgstr ""
 "Si Windows pose la question pour Docker Desktop : cochez Réseaux privés, "
@@ -5702,7 +5712,6 @@ msgstr "Moyenne"
 msgid "Menu of Media Hygiene"
 msgstr "Menu de Media Hygiene"
 
-#, python-brace-format
 msgid "Merge into…"
 msgstr "Fusionner dans…"
 
@@ -7438,12 +7447,14 @@ msgstr ""
 msgid "On another disk or mount"
 msgstr "Sur un autre disque ou montage"
 
-
 msgid ""
 "On every photo and its .xmp sidecar the word becomes this tag, and 'tags'"
 " names it so from now on. You can restore it from Dropped tags, in the "
 "left column."
-msgstr "Sur chaque photo et son sidecar .xmp, le mot devient ce tag, et 'tags' le nomme ainsi désormais. Vous pouvez le rétablir depuis Tags retirés, dans la colonne de gauche."
+msgstr ""
+"Sur chaque photo et son sidecar .xmp, le mot devient ce tag, et 'tags' le"
+" nomme ainsi désormais. Vous pouvez le rétablir depuis Tags retirés, dans"
+" la colonne de gauche."
 
 msgid "On the PC:"
 msgstr "Sur le PC :"
@@ -11643,11 +11654,12 @@ msgstr "Le modèle {model} n'est pas installé sur {url}."
 msgid "The model {name} downloaded is not the expected file."
 msgstr "Le modèle {name} téléchargé n'est pas le fichier attendu."
 
-
 msgid ""
 "The most frequent tags: tick the useless ones, or merge a synonym into "
 "another tag."
-msgstr "Les tags les plus fréquents : cochez les inutiles, ou fusionnez un synonyme dans un autre tag."
+msgstr ""
+"Les tags les plus fréquents : cochez les inutiles, ou fusionnez un "
+"synonyme dans un autre tag."
 
 msgid "The most recent backup, the index in place backed up first."
 msgstr "La sauvegarde la plus récente, l'index en place sauvegardé d'abord."
@@ -12298,7 +12310,6 @@ msgid "The sure groups still undecided, many a screen: Enter decides what you se
 msgstr ""
 "Les groupes sûrs encore à décider, nombreux par écran : Entrée décide ce "
 "que vous voyez"
-
 
 msgid "The tag it means:"
 msgstr "Le tag qu'il désigne :"
@@ -13198,7 +13209,6 @@ msgstr ""
 msgid "Type the event's name first."
 msgstr "Tapez d'abord le nom de l'événement."
 
-
 msgid "Type the tag it means."
 msgstr "Tapez le tag qu'il désigne."
 
@@ -13783,9 +13793,10 @@ msgstr ""
 "liste intégrée complète, modifiez-la plutôt que de partir de quelques "
 "mots."
 
-
 msgid "Words named as another tag, written by Merge into… on the search page."
-msgstr "Mots nommés comme un autre tag, écrits par Fusionner dans… sur la page de recherche."
+msgstr ""
+"Mots nommés comme un autre tag, écrits par Fusionner dans… sur la page de"
+" recherche."
 
 msgid "Words of folders, names, dates and places"
 msgstr "Mots des dossiers, des noms, des dates et des lieux"
@@ -20047,7 +20058,9 @@ msgstr[1] "« {word} » donné à {n} photos, relu sur le disque."
 msgid ""
 "“{word}” merged into “{target}”, read back from the disk: in the "
 "synonyms, still on {left} photos."
-msgstr "« {word} » fusionné dans « {target} », relu sur le disque : dans les synonymes, encore sur {left} photos."
+msgstr ""
+"« {word} » fusionné dans « {target} », relu sur le disque : dans les "
+"synonymes, encore sur {left} photos."
 
 #, python-brace-format
 msgid ""

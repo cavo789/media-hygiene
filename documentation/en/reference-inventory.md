@@ -57,8 +57,8 @@ are dates, so sorting and filtering work whatever the language of Excel.
 - **Videos**: duration, codec, frames per second, bit rate.
 - **State**: healthy, not checked, or why it cannot be read, with the decoder's message.
 - **Duplicates**: the SHA-256, the number of its group of identical files and how many copies
-  that group holds. Only files that looked like another one (same size, same first bytes) have a
-  SHA-256: the others cannot have an identical copy. Which copy `clean` would keep depends on your
+  that group holds. Every photo and video an audit found healthy has a SHA-256; the copies in a
+  backup folder are never read whole. Which copy `clean` would keep depends on your
   settings: that is the job of the report's `plan.csv` ([cleaning, step 4](clean/04-html-report.md)).
 - **Tags**: the words `tags` gave the file (folders, file name, date, place, vision model), separated by
   `;`; empty before the first `tags` run ([tags](reference-tags.md)).

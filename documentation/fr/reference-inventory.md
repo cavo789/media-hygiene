@@ -60,8 +60,8 @@ d'Excel.
 - **Vidéos** : durée, codec, images par seconde, débit binaire.
 - **État** : sain, non vérifié, ou pourquoi il ne peut pas être lu, avec le message du décodeur.
 - **Doublons** : le SHA-256, le numéro de son groupe de fichiers identiques et le nombre de copies
-  de ce groupe. Seuls les fichiers qui ressemblaient à un autre (même taille, mêmes premiers
-  octets) ont un SHA-256 : les autres ne peuvent pas avoir de copie identique. Quelle copie
+  de ce groupe. Chaque photo et vidéo qu'un audit a trouvée saine a un SHA-256 ; les copies d'un
+  dossier de sauvegarde ne sont jamais lues entièrement. Quelle copie
   `clean` garderait dépend de vos réglages : c'est le rôle du `plan.csv` du rapport
   ([étape 4 du nettoyage](clean/04-html-report.md)).
 - **Tags** : les mots que `tags` a donnés au fichier (dossiers, nom du fichier, date, lieu,
