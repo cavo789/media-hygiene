@@ -12,7 +12,14 @@ from media_hygiene.review.home_fields import STEP_FILE_NAME
 from media_hygiene.review.home_step import StepDoor, step_response
 from media_hygiene.review.home_views import FIELDS_STEP, STEP_EXIT_BASE
 from media_hygiene.review.http import Request
-from media_hygiene.review.step_watch import WATCH, StepState, served_here, step_state
+from media_hygiene.review.step_watch import (
+    WATCH,
+    StepState,
+    keep_step,
+    served_here,
+    step_state,
+)
+from media_hygiene.services.step_progress import PROGRESS_FILE
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -140,3 +147,13 @@ def test_the_try_of_shrink_is_served_here_without_ending() -> None:
     """0599: its plain form is a page of this server, the server stays up."""
     assert served_here(("shrink", "--try")) == "/shrink/"
     assert served_here(("shrink", "--try", "--lighter")) is None
+
+
+def test_a_new_step_forgets_the_progress_of_the_last(tmp_path: Path) -> None:
+    """A closed window's old pulse never condemns the step handed next (0632)."""
+    (tmp_path / PROGRESS_FILE).write_text('{"done": 1, "at": 1}', "utf-8")
+    assert (
+        asyncio.run(keep_step(tmp_path, ("status",), "mh status")).status
+        == HTTPStatus.OK
+    )
+    assert not (tmp_path / PROGRESS_FILE).exists()

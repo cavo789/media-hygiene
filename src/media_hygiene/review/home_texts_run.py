@@ -33,6 +33,10 @@ def _dialogs() -> dict[str, str]:
         "stillRuns": _("A step still runs"),
         "theStep": _("The step"),
         "perSecond": _("{rate} files/s"),
+        "stepLost": _(
+            "This step no longer answers: the window of mh was probably closed. "
+            "Open mh again."
+        ),
         "pendingChoices": _("Choices waiting to be applied: {count}"),
         "applyAll": _("Apply all"),
         "formNote": _(

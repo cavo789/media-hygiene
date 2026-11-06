@@ -16,8 +16,10 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.page_header import headed_page
+from media_hygiene.review.served_more import purge_page
 from media_hygiene.review.step_watch import HISTORY_PAGE
 from media_hygiene.services.history_rows import HistoryTable, history_table, load_runs
+from media_hygiene.services.status import read_status
 
 if TYPE_CHECKING:
     from media_hygiene.review.http import Request
@@ -41,11 +43,14 @@ def history_page(runtime: Runtime) -> bytes:
     environment = translated_environment(_TEMPLATES, escaped=("html", "j2"))
     error, hint = "", ""
     table = HistoryTable((), (), ())
+    purges: dict[str, str] = {}
     try:
         table = history_table(load_runs(runtime))
+        runs = read_status(runtime).quarantine.runs
+        purges = {run.run_id: purge_page(run.run_id) for run in runs}  # 0631
     except MountError as exc:
         error, hint = str(exc), exc.tip or ""
-    values = {"table": table, "error": error, "hint": hint}
+    values = {"table": table, "purges": purges, "error": error, "hint": hint}
     return headed_page(environment, PAGE_TEMPLATE, values)
 
 

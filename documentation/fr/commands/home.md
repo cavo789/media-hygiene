@@ -228,8 +228,9 @@ qui a ouvert la page :
   lien vers elle, et **Tout appliquer** lance un seul `clean --decisions` pour tous : une seule
   exécution, donc un seul `mh undo` les reprend tous. Le nombre est relu dans le fichier des
   décisions à chaque fois ; une fois appliqués, il disparaît.
-- **⚠️ Définitif** (`purge`, `clean --delete`, `import --phone --free`) : la page demande d'abord ; `mh`
-  redemande dans sa fenêtre avant de toucher quoi que ce soit.
+- **⚠️ Définitif** (`clean --delete`, `import --phone --free`) : la page demande d'abord ; `mh`
+  redemande dans sa fenêtre avant de toucher quoi que ce soit. `purge` ouvre d'abord les fichiers de
+  l'exécution, et sa page demande une fois : rien n'est demandé dans la fenêtre.
 - **Sinon** (`mh home` tapé, un `mh` plus ancien, ou `docker run` seul) : le bouton copie la
   commande (*Commande copiée*) et la page continue ; arrêtez-la avec Ctrl+C dans la fenêtre où
   `mh` tourne, collez-y la commande (clic droit) et appuyez sur Entrée. Quand le navigateur

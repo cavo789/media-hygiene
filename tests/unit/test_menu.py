@@ -319,5 +319,6 @@ def test_phone_free_says_launching_erases_nothing(tmp_path: Path) -> None:
     assert phone.confirm_title == "Make room on the phone: launching erases nothing"
     assert phone.confirm_text.startswith("A page opens with the files the PC")
     assert "compared with the PC's copy once more" in phone.confirm_text
-    assert not actions["purge"].confirm_title
+    assert actions["purge"].confirm_title.endswith("launching erases nothing")
+    assert not actions["purge"].twin_text  # its own page shows the files first (0631)
     assert not actions["clean-delete"].confirm_title

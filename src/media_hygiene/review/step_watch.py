@@ -16,7 +16,6 @@ import asyncio
 import json
 import os
 import secrets
-from dataclasses import dataclass
 from http import HTTPStatus
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
@@ -24,11 +23,12 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.cli.safety import PAGE_CAPTURED, PAGE_COMMANDS
 from media_hygiene.i18n import _
 from media_hygiene.review.home_fields import write_whole
-from media_hygiene.review.served_more import SERVED_MORE
+from media_hygiene.review.served_more import SERVED_MORE, purge_step_page
 from media_hygiene.review.serving import json_response
+from media_hygiene.review.step_files import WATCH, StepState, WatchFiles, read_state
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
-from media_hygiene.services.step_progress import read_progress
+from media_hygiene.services.step_progress import forget_progress
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -36,21 +36,6 @@ if TYPE_CHECKING:
     from media_hygiene.review.http import Response
 
 
-@dataclass(frozen=True, slots=True)
-class WatchFiles:
-    """The value of the variable, and the files `mh` and the server share."""
-
-    # `MEDIA_HYGIENE_LAUNCHER_STEPS` of an `mh` that keeps the server up
-    kept: str = "3"
-    now: str = ".mh-step-now.json"  # a step to run now, the server still up
-    # written by `mh`: the id of the step it runs
-    running: str = ".mh-step-running.json"
-    done: str = ".mh-step-done.json"  # written by `mh`: the id and the exit code
-    cid: str = ".mh-home.cid"  # the home server's container id (`docker run --cidfile`)
-    code: str = ".mh-home.code"  # its exit code, written by `docker wait`
-
-
-WATCH: Final = WatchFiles()
 NEAR_REVIEW_PAGE: Final = "/review/near/"  # `services/review_here`
 DISK_PAGE: Final = "/disk-space/"  # `services/disk_here` (0539)
 HISTORY_PAGE: Final = "/history/"  # `services/history_here` (0350)
@@ -77,15 +62,7 @@ SERVED_HERE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
     }
 )
 _ID_BYTES: Final = 6
-
-
-class StepState:
-    """What `GET /api/step` says, the values the page compares."""
-
-    IDLE: Final = "idle"
-    WAITING: Final = "waiting"  # written, not yet taken by `mh`
-    RUNNING: Final = "running"
-    DONE: Final = "done"
+__all__ = ("WATCH", "StepState", "WatchFiles", "busy", "keep_step", "keeps_server")
 
 
 def keeps_server() -> bool:
@@ -106,7 +83,7 @@ def served_here(words: tuple[str, ...]) -> str | None:
     Returns:
         Its path; None for any other step (with options, too).
     """
-    return SERVED_HERE.get(words)
+    return SERVED_HERE.get(words) or purge_step_page(words)
 
 
 def runs_beside(words: tuple[str, ...]) -> bool:
@@ -151,6 +128,7 @@ async def keep_step(folder: Path, words: tuple[str, ...], command: str) -> Respo
     refused = busy(folder)
     if refused is not None:
         return refused
+    await asyncio.to_thread(forget_progress, folder)
     step = secrets.token_hex(_ID_BYTES)
     text = json.dumps({"id": step, "words": list(words)}, ensure_ascii=False, indent=0)
     try:
@@ -171,30 +149,4 @@ async def step_state(folder: Path) -> Response:
     Returns:
         `{"state": …, "id": …, "code": …}`.
     """
-    return json_response(HTTPStatus.OK, await asyncio.to_thread(_state, folder))
-
-
-def _state(folder: Path) -> dict[str, object]:
-    """Read the files of the steps, the most advanced first.
-
-    Args:
-        folder: The reports folder.
-
-    Returns:
-        The state, its id and, once done, its exit code.
-    """
-    for name, state in (
-        (WATCH.now, StepState.WAITING),
-        (WATCH.running, StepState.RUNNING),
-        (WATCH.done, StepState.DONE),
-    ):
-        try:
-            # `-sig`: Windows PowerShell 5.1 may write a byte order mark.
-            said = json.loads((folder / name).read_text("utf-8-sig"))
-        except OSError, ValueError:
-            continue
-        if isinstance(said, dict):
-            found = {"state": state, "id": said.get("id"), "code": said.get("code")}
-            progress = read_progress(folder)  # a step that writes says how far (0361)
-            return found if progress is None else found | {"progress": progress}
-    return {"state": StepState.IDLE, "id": None, "code": None}
+    return json_response(HTTPStatus.OK, await asyncio.to_thread(read_state, folder))

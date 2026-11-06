@@ -62,8 +62,8 @@ def twins() -> Mapping[str, Twin]:
         ),
         "purge": Twin(
             _(
-                "Erases without showing the files: the quarantine's page shows the "
-                "photos first."
+                "In the terminal, this erases without showing the files: the "
+                "quarantine's page shows the photos first."
             ),
             step="undo-pick",
         ),
@@ -100,4 +100,20 @@ def with_twin_lines(steps: tuple[Step, ...]) -> tuple[Step, ...]:
         if step.name in known
         else step
         for step in steps
+    )
+
+
+def purge_confirm() -> tuple[str, str]:
+    """What the home page says before `purge`: only the page's button erases (0631).
+
+    Returns:
+        The title and the text of its confirmation.
+    """
+    return (
+        _("Free the room: launching erases nothing"),
+        _(
+            "A page opens with the files of this run. Nothing is erased "
+            "before its button, which states how many files go and the room "
+            "they free, and asks once more."
+        ),
     )

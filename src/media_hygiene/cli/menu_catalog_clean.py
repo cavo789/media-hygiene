@@ -7,6 +7,7 @@ guide lists them too, where they come.
 from __future__ import annotations
 
 from media_hygiene.cli.menu_entry import Area, Doc, Group, Kind, Risk, Space, Step
+from media_hygiene.cli.menu_twins import purge_confirm
 from media_hygiene.cli.status_step import Slot
 from media_hygiene.i18n import _
 
@@ -150,6 +151,7 @@ def clean_steps() -> tuple[Step, ...]:
             keywords=_("purge free room quarantine erase empty for good"),
             doc=Doc("commands/purge/"),
             slot=Slot.PURGE,
+            confirm=purge_confirm(),
         ),
     )
 

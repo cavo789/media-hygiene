@@ -211,8 +211,9 @@ opened the page:
   applied: 3*), each page named with its count and a link to it, and **Apply all** runs one
   `clean --decisions` for all of them: one run, so one `mh undo` takes them all back. The count
   is read from the decisions file each time; once applied, it is gone.
-- **⚠️ For good** (`purge`, `clean --delete`, `import --phone --free`): the page asks first; `mh` asks
-  again in its window before touching anything.
+- **⚠️ For good** (`clean --delete`, `import --phone --free`): the page asks first; `mh` asks
+  again in its window before touching anything. `purge` opens the run's files first, and its
+  page asks once: nothing is asked in the window.
 - **Otherwise** (`mh home` typed, an older `mh`, or `docker run` alone): the button copies the
   command (*Command copied*) and the page keeps running; stop it with Ctrl+C in the window where
   `mh` runs, paste the command there (right click) and press Enter. When the browser refuses to

@@ -64,7 +64,8 @@ def _action(line: MenuStep) -> HomeAction:
     """
     step = line.step
     shown = line.command or step.typed or step.command
-    twin = twins().get(step.name)
+    # A step whose own page shows the files first needs no other way to see them (0631).
+    twin = None if step.confirm else twins().get(step.name)
     return HomeAction(
         name=step.name,
         space=step.space.value,

@@ -701,6 +701,12 @@ msgid "A newer version wrote this journal: update media-hygiene to undo it."
 msgstr ""
 
 msgid ""
+"A page opens with the files of this run. Nothing is erased before its "
+"button, which states how many files go and the room they free, and asks "
+"once more."
+msgstr ""
+
+msgid ""
 "A page opens with the files the PC already holds, all ticked: untick "
 "those you keep. Nothing leaves the phone before that page's “Delete … "
 "from the phone” button, and each file is compared with the PC's copy once"
@@ -2484,6 +2490,18 @@ msgstr ""
 msgid "Done: {command}."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Done: {done} of {total} videos, in the window of mh. You may close this "
+"page."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Done: {done} of {total} videos, now {current}, in the window of mh. You "
+"may close this page."
+msgstr ""
+
 msgid ""
 "Done? Ctrl+C in the terminal stops the map. Then add a 'place' rule (and "
 "a 'trip' rule) to [[classify.rules]] and run 'classify'."
@@ -2756,6 +2774,9 @@ msgstr ""
 msgid "Entry"
 msgstr ""
 
+msgid "Erase for good"
+msgstr ""
+
 #, python-brace-format
 msgid "Erase run {run} for good? This cannot be undone, not even by 'undo'."
 msgstr ""
@@ -2784,11 +2805,6 @@ msgid "Erased from .removed (older than {days} days): {count} runs"
 msgstr ""
 
 msgid "Erases the copies without showing them: the report shows them first."
-msgstr ""
-
-msgid ""
-"Erases without showing the files: the quarantine's page shows the photos "
-"first."
 msgstr ""
 
 #, python-brace-format
@@ -3517,6 +3533,9 @@ msgstr ""
 msgid "Free the room of the quarantine"
 msgstr ""
 
+msgid "Free the room: launching erases nothing"
+msgstr ""
+
 msgid ""
 "Free the space at once: delete the exact copies for good, after a byte "
 "comparison with the kept copy, instead of moving them to the quarantine; "
@@ -3921,6 +3940,11 @@ msgid ""
 msgstr ""
 
 msgid "In the menu on the left and in the palette."
+msgstr ""
+
+msgid ""
+"In the terminal, this erases without showing the files: the quarantine's "
+"page shows the photos first."
 msgstr ""
 
 #, python-brace-format
@@ -10197,6 +10221,16 @@ msgid "This step already runs: wait for its end, or stop it."
 msgstr ""
 
 msgid "This step does not run in the page."
+msgstr ""
+
+msgid ""
+"This step no longer answers: the window of mh was probably closed. Open "
+"mh again."
+msgstr ""
+
+msgid ""
+"This step no longer answers: the window of mh was probably closed. Open "
+"mh again; History and undo says what was done."
 msgstr ""
 
 msgid "This step takes no words."

@@ -201,7 +201,12 @@ function followStep(id, command) {
   const poll = () => fetch(P.step, { cache: "no-store" })
     .then((response) => response.json())
     .then((step) => {
-      if (step.state !== "done" || step.id !== id) { showProgress(step.progress); window.setTimeout(poll, POLL_MS); return; }
+      if (step.state !== "done" || step.id !== id) {
+        showProgress(step.progress);
+        if (step.lost && $("#runProgress")) $("#runProgress").textContent = T.stepLost; // 0632
+        window.setTimeout(poll, POLL_MS);
+        return;
+      }
       $("#runDlg").close();
       const ok = step.code === 0;
       toast(fill(ok ? T.stepDone : T.stepFailed, { command: command, code: step.code }), ok ? "ok" : "info");
