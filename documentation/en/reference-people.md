@@ -65,11 +65,22 @@ file = "people/Chloé.toml"
 ```toml
 # people/Chloé.toml
 faces = [
-    "/data/c/Photos/2019/IMG_0412.jpg#0",
-    "/data/c/Photos/2023/IMG_7781.jpg#1",
+    {path = 'C:\Photos\2019\IMG_0412.jpg', id = "3f9a0c41d2e8b7a5:2841337", face = 0},
+    {path = 'C:\Photos\2023\IMG_7781.jpg', id = "a07be3349c1f0d62:3120554", face = 1},
 ]
-rejected = ["/data/c/Photos/2008/IMG_0042.jpg#1"]  # taken out with ×
+rejected = [
+    {path = 'C:\Photos\2008\IMG_0042.jpg', id = "d41c88e07a9b3f10:1904210", face = 1},  # taken out with ×
+]
 ```
+
+Each face names its photo three ways: `path`, where it is on your PC; `id`, the start of its
+SHA-256 and its size, what media-hygiene trusts; `face`, its number in the photo. `sort`, `undo`
+and the quarantine rewrite `path` at once; a folder renamed in Explorer is found again by its
+`id` at the end of the next audit (`audit`, `import`, or the home page's), between identical
+copies the one of the same file name. A photo edited since is another photo: its faces lose
+their name. Faces still written `"/data/c/…#0"` (before this version) load as they are and get
+their `id` at the next audit; over 50 photos the cache has not read, that audit says first
+*N named photos read once…*.
 
 The faces of strangers go to `people/ignored.toml`. Keep the `people` folder with
 `config.toml` when you copy or back it up: a missing file stops the next run, with the line to

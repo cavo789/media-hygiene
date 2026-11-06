@@ -11,13 +11,16 @@ from __future__ import annotations
 import asyncio
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
+from urllib.parse import parse_qs
 
 from media_hygiene.errors import MountError
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.page_header import headed_page
+from media_hygiene.review.served_more import BACK_TO_HISTORY, purge_page
 from media_hygiene.review.step_watch import HISTORY_PAGE
 from media_hygiene.services.history_rows import HistoryTable, history_table, load_runs
+from media_hygiene.services.status import read_status
 
 if TYPE_CHECKING:
     from media_hygiene.review.http import Request
@@ -29,11 +32,13 @@ PAGE_TEMPLATE: Final = "history.html.j2"
 _TEMPLATES: Final = "media_hygiene.review"
 
 
-def history_page(runtime: Runtime) -> bytes:
+def history_page(runtime: Runtime, purged: str = "") -> bytes:
     """Render the page: the table, or the message and hint of `mh history`.
 
     Args:
         runtime: Settings, mount points and output.
+        purged: The run a purge started here was asked for (`?purged=`), read back
+            from the disk (0631); empty: none.
 
     Returns:
         The page, in the language in use.
@@ -41,11 +46,23 @@ def history_page(runtime: Runtime) -> bytes:
     environment = translated_environment(_TEMPLATES, escaped=("html", "j2"))
     error, hint = "", ""
     table = HistoryTable((), (), ())
+    purges: dict[str, str] = {}
+    gone: bool | None = None
     try:
         table = history_table(load_runs(runtime))
+        runs = read_status(runtime).quarantine.runs
+        purges = {run.run_id: purge_page(run.run_id, BACK_TO_HISTORY) for run in runs}
+        gone = (purged not in purges) if purged else None  # read back from the disk
     except MountError as exc:
         error, hint = str(exc), exc.tip or ""
-    values = {"table": table, "error": error, "hint": hint}
+    values = {
+        "table": table,
+        "purges": purges,
+        "purged": purged,
+        "gone": gone,
+        "error": error,
+        "hint": hint,
+    }
     return headed_page(environment, PAGE_TEMPLATE, values)
 
 
@@ -77,5 +94,6 @@ class HistoryHere:
             )
         if request.path != HISTORY_PAGE:
             return Response(HTTPStatus.NOT_FOUND)
-        page = await asyncio.to_thread(history_page, self._fresh.runtime())
+        purged = parse_qs(request.query).get("purged", [""])[0]
+        page = await asyncio.to_thread(history_page, self._fresh.runtime(), purged)
         return Response(HTTPStatus.OK, page, ContentType.HTML)

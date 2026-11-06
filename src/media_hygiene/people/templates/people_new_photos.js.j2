@@ -1,0 +1,83 @@
+// The photos not analysed yet (0588), included when there are some: the page is already
+// open on the groups known, and analyses them through the home page's `/api/people`.
+(function () {
+  const SCAN_PATH = {{ scan_path | tojson }};
+  const NEW_PHOTOS = {{ new_photos | tojson }};
+  const WORDS = {
+    start: {{ _("New photos to analyse: {count}. The groups below stay usable meanwhile…") | tojson }},
+    running: {{ _("New photos: {done} of {total} analysed; nothing is sent.") | tojson }},
+    done: {{ _("New photos analysed, kept in the cache.") | tojson }},
+    stopped: {{ _("Stopped: the photos left will be analysed the next time this page opens.") | tojson }},
+    failed: {{ _("The new photos could not be analysed: {error}") | tojson }},
+  };
+  const panel = document.getElementById("newPhotos");
+  const line = document.getElementById("newPhotosLine");
+  const stop = document.getElementById("newPhotosStop");
+  const showNew = document.getElementById("newPhotosShow");
+  const BEAT = 1000;
+
+  function post(action) {
+    return fetch(SCAN_PATH, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: action }),
+    });
+  }
+
+  function running(state) {
+    const steps = state.steps.filter((step) => step.total);
+    const step = steps[steps.length - 1];
+    stop.hidden = false;
+    if (step) line.textContent = fill(WORDS.running, { done: step.done, total: step.total });
+  }
+
+  function ended(state) {
+    stop.hidden = true;
+    if (state.phase === "done") {
+      line.textContent = WORDS.done;
+      showNew.hidden = false;
+    } else if (state.phase === "stopped") {
+      line.textContent = WORDS.stopped;
+      showNew.hidden = false;
+    } else {
+      line.textContent = fill(WORDS.failed, { error: state.error || "" });
+    }
+  }
+
+  async function follow() {
+    const answer = await fetch(SCAN_PATH);
+    if (!answer.ok) throw new Error(String(answer.status));
+    const state = await answer.json();
+    if (state.phase === "asking") {
+      await post("describe");
+    } else if (state.phase === "running") {
+      running(state);
+    } else if (state.phase !== "preparing") {
+      ended(state);
+      return;
+    }
+    setTimeout(guarded, BEAT);
+  }
+
+  // Off the PC the step is refused: the groups known stay, without this line.
+  function guarded() {
+    follow().catch(() => { panel.hidden = true; });
+  }
+
+  async function start() {
+    panel.hidden = false;
+    line.textContent = fill(WORDS.start, { count: NEW_PHOTOS });
+    const answer = await fetch(SCAN_PATH);
+    if (!answer.ok) throw new Error(String(answer.status));
+    const state = await answer.json();
+    if (state.phase !== "preparing" && state.phase !== "running" && state.phase !== "asking") {
+      const asked = await post("prepare");
+      if (!asked.ok) throw new Error(String(asked.status));
+    }
+    guarded();
+  }
+
+  stop.addEventListener("click", () => { post("stop"); });
+  showNew.addEventListener("click", () => { location.reload(); });
+  start().catch(() => { panel.hidden = true; });
+}());

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 from media_hygiene.cli.home_state import home_state
@@ -35,19 +36,22 @@ def test_search_is_a_plain_link_served_here(
             ("POST /api/step", step),
             ("POST /api/search", asked),
             ("GET /browse", None),
+            ("GET /library", None),
             ("GET /search", None),
         ],
     )
     assert answers[0].status == 200
     assert b"home" in answers[0].body
     assert json.loads(answers[1].body) == {
-        "page": "/search",
+        "page": "/library",
         "command": search.command,
     }
     assert json.loads(answers[2].body)["total"] == 3
     assert answers[3].status == 200
     shown = answers[4].body.decode()
     assert 'id="homeLink" href="/" data-shared="1"' in shown
+    assert answers[5].status == HTTPStatus.MOVED_PERMANENTLY  # 0617: a saved link
+    assert answers[5].headers == ("Location: /library",)
     assert not (locations.reports_dir / ".mh-step.json").exists()
 
 

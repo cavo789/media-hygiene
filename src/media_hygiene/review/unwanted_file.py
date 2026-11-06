@@ -6,6 +6,7 @@ disk, and the page shows what it found there.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, ConfigDict
@@ -16,15 +17,49 @@ from media_hygiene.report.unwanted_decisions import UnwantedEntry
 from media_hygiene.review.session_file import stamped_decisions
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Callable, Mapping
     from pathlib import Path
 
+    from media_hygiene.config.review_settings import UnwantedSettings
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.plan.unwanted import UnwantedPhoto
+    from media_hygiene.review.place import DecisionsPlace
+    from media_hygiene.review.unwanted_views import UnwantedStateBuilder
 
 _FROZEN = ConfigDict(frozen=True, extra="forbid")
 
 type PhotoKey = tuple[str, int, int]
+
+
+@dataclass(frozen=True, slots=True)
+class UnwantedPages:
+    """What the review is about: the photos, how to show them, the file to write."""
+
+    photos: tuple[UnwantedPhoto, ...]
+    builder: UnwantedStateBuilder
+    target: Path
+    place: DecisionsPlace
+    lister: Callable[[UnwantedSettings], tuple[UnwantedPhoto, ...]] | None = None
+
+
+def with_decided(
+    photos: tuple[UnwantedPhoto, ...],
+    before: tuple[UnwantedPhoto, ...],
+    decided: Mapping[int, bool],
+) -> tuple[UnwantedPhoto, ...]:
+    """Add to a new listing the photos already decided that it left out.
+
+    Args:
+        photos: The new listing.
+        before: The listing the decisions were made on.
+        decided: The decisions, by rank in `before`.
+
+    Returns:
+        The photos to show; a decision is never lost to a threshold.
+    """
+    listed = {photo.file.path for photo in photos}
+    kept = (before[rank] for rank in sorted(decided))
+    return (*photos, *(photo for photo in kept if photo.file.path not in listed))
 
 
 class UnwantedDiskEntry(BaseModel):

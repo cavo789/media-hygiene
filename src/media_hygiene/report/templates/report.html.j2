@@ -4,6 +4,7 @@
 {% set report_kind = "clean" if is_clean else "audit" %}
 {% set report_name = _("Clean report") if is_clean else _("Audit report") %}
 {% set report_when = s.created_at %}
+{% set has_near = report.similar.near or report.similar.videos.groups %}
 {% set reasons = {
   "empty": _("Empty file (0 bytes)"),
   "unreadable-image": _("Image cannot be decoded"),

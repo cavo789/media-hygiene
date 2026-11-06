@@ -31,7 +31,7 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class PageStart:
-    """The port, the page `/` serves (`/search` or `/browse`), and how it is said."""
+    """The port, the page `/` serves (`/library` or `/browse`), and how it is said."""
 
     port: int
     path: str

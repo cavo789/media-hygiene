@@ -175,7 +175,9 @@ class LanApp:
         headers = {**request.headers, "host": local, albums.PHONE_HEADER: "1"}
         if origin is not None:
             headers["origin"] = f"http://{local}"
-        passed = Request(request.method, path, headers, request.body)
+        passed = Request(
+            request.method, path, headers, request.body, query=request.query
+        )
         same_site = origin in {None, self.lan.origin}
         if same_site and request.method == _POST and path == STEP_PATH:
             return await phone_step(self.home, passed)  # an album on the TV (0444)

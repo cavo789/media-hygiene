@@ -150,7 +150,7 @@ def test_a_curl_from_the_home_network_gets_403_on_every_write(
 def test_the_phones_pages_hide_what_writes() -> None:
     """0429: a page of photos sent to a phone is marked; its CSS hides the writes."""
     app, _ = _app()
-    for path in ("/search", "/browse"):
+    for path in ("/library", "/browse"):
         body = _ask(app, path).body
         assert body.startswith(b'<!doctype html>\n<html data-phone lang="en">'), path
     pick = _read_template("pick_grid.css.j2")
@@ -202,3 +202,49 @@ def test_a_phones_spaces_list_only_the_pages_it_opens() -> None:
     assert (
         "S.actions.filter((action) => !REMOTE || PHONE_PAGES[action.command])" in phone
     )
+
+
+@pytest.mark.parametrize(
+    "path",
+    ["/places/", "/places/api/state", "/places/api/cluster/1", "/places/leaflet.js"],
+)
+def test_a_phone_looks_at_the_map(path: str) -> None:
+    """0613: the map's page, its state and photos are reads a phone may ask."""
+    app, fake = _app()
+    assert _ask(app, path).status == HTTPStatus.OK
+    assert fake.seen == [path]
+
+
+@pytest.mark.parametrize(
+    "path",
+    [
+        "/places/api/save",
+        "/places/api/folder",
+        "/places/api/aside",
+        "/places/api/search",
+        "/places/api/osm",
+    ],
+)
+def test_a_phone_saves_nothing_on_the_map(path: str) -> None:
+    """0613: every `POST` of the map (places, folders, set aside) stays the PC's."""
+    app, fake = _app(originals=True)
+    assert _ask(app, path, ("POST", True)).status == HTTPStatus.FORBIDDEN
+    assert not fake.seen
+
+
+def test_the_map_page_hides_what_saves_on_a_phone() -> None:
+    """0613: the family home offers the map, and the map's page hides its writes."""
+    page = (files("media_hygiene.places") / "templates" / "places.html.j2").read_text(
+        "utf-8"
+    )
+    for selector in (
+        "#editor",
+        "#clusterName",
+        "#clusterAside",
+        "#folderSave",
+        "#foldersFold",
+    ):
+        assert f"html[data-phone] {selector}" in page, selector
+    assert "if (PHONE) return;" in page
+    phone = home.home_page(remote=True).decode()
+    assert "mh places" in phone

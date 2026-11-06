@@ -25,6 +25,8 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.review.http import Response
+    from media_hygiene.review.lan_phones import PhoneBook
+    from media_hygiene.slideshow.screens import Screens
 
 
 @dataclass(slots=True)
@@ -32,6 +34,15 @@ class TvSlot:
     """Where a page sends its files to the TV; empty until a slideshow listens."""
 
     start: Callable[[tuple[Path, ...]], Response] | None = None
+    known: Callable[[], bool] | None = None  # a TV to show on: the cards' 📺 (0523)
+
+    def paired(self) -> bool:
+        """Tell whether a TV is paired, for the pages' 📺.
+
+        Returns:
+            False while no slideshow listens.
+        """
+        return self.known is not None and self.known()
 
     def __call__(self, files: tuple[Path, ...]) -> Response:
         """Show the files on the TV, in place of the show running.
@@ -46,6 +57,21 @@ class TvSlot:
             message = _("Open this page from the home page to show it on the TV.")
             return json_response(HTTPStatus.NOT_FOUND, {"error": message})
         return self.start(files)
+
+
+def any_tv(screens: Screens, phones: PhoneBook | None) -> bool:
+    """Tell whether a TV is paired: in this run, or kept for good (0456).
+
+    A TV kept for good joins `screens` only at its next visit: its file says it first.
+
+    Args:
+        screens: The TVs of this run.
+        phones: The phones' book, whose `tvs.json` keeps them; None: in memory only.
+
+    Returns:
+        True when the page may offer "on the TV".
+    """
+    return screens.paired > 0 or (phones is not None and bool(phones.tvs().listed()))
 
 
 def selected(

@@ -345,6 +345,11 @@ archive applies the same choices again: `clean --decisions decisions.applied-<ru
   `--exclude` (or keep them in `config.toml`). If a series changed between the review and the
   clean (a file added, moved or edited), `clean` refuses the file rather than guessing: review
   again.
+- **Too many proposals, or too few?** The *Too strict? Not enough?* panel of the left column moves
+  `propose_aside_below` and `identical_below`: let go of a slider, the proposals change at once and
+  a line names the shots that enter or leave; nothing is written, and the series you already saw
+  keep your choices. *Keep these values* writes them to `config.toml` (your comments stay) and shows
+  them as read back from the file.
 - **The proposals** come from `[review]` in `config.toml`. Within a burst, every shot shows
   the same scene, so comparing the shots is meaningful; `0` disables each rule:
   - `propose_aside_below` (default `0.35`): a shot below that share of the sharpest shot's

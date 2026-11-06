@@ -44,6 +44,7 @@
 {% set keys_safe = _("Every choice is saved at once in %(place)s. Done? Ctrl+C in the terminal stops the review; then run the same 'clean' command with %(option)s: the photos set aside go to the quarantine, and 'undo' brings them back.", place=place, option=clean_option) %}
 {% block style %}
 {% include "pick_grid.css.j2" %}
+{% include "strictness.css.j2" %}
   main#grid { display: block; }
   /* Where you are on its own line, then the picking: the grid never moves when a pick starts. */
   main h2 { font-size: 1rem; margin: 0 0 8px; }
@@ -65,8 +66,20 @@
 {% endblock %}
 {% block side %}
   <section id="toc" aria-label="{{ page_name }}">
-    <p class="muted">{{ _("Never a photo of a protected folder, a burst shot, a near or exact duplicate. The thresholds are in [review.unwanted] of config.toml.") }}</p>
+    <p class="muted">{{ _("Never a photo of a protected folder, a burst shot, a near or exact duplicate.") }}</p>
   </section>
+  {% set strict_groups = [
+    {"id": "screenshot", "title": _("Screenshots: too strict?"), "rows": [{"name": "screenshots", "label": _("List screenshots and documents"), "check": true}]},
+    {"id": "tiny", "title": _("Tiny images: too strict?"), "rows": [{"name": "tiny_megapixels", "label": _("Under this many megapixels"), "max": 2, "step": 0.01}]},
+    {"id": "dark", "title": _("Nearly black: too strict?"), "rows": [
+      {"name": "dark_mean", "label": _("Mean brightness under (0 to 255)"), "max": 255, "step": 1},
+      {"name": "dark_share", "label": _("With at least this share of black pixels"), "max": 1, "step": 0.05}]},
+    {"id": "white", "title": _("Nearly white: too strict?"), "rows": [
+      {"name": "white_mean", "label": _("Mean brightness over (0 to 255; 0: never)"), "max": 255, "step": 1},
+      {"name": "white_share", "label": _("With at least this share of white pixels"), "max": 1, "step": 0.05}]},
+    {"id": "blurry", "title": _("The blurriest: too strict?"), "rows": [{"name": "blur_percentile", "label": _("The blurriest percent of your photos"), "max": 20, "step": 0.5}]},
+  ] %}
+  {% include "strictness.html.j2" %}
 {% endblock %}
 {% block keys %}
       <dt><kbd>→</kbd></dt><dd>{{ _("the group as marked, then next") }}</dd>
@@ -117,5 +130,8 @@ function placeCards(nodes) { // the grid of photos under the group's title and s
 pickMoves = false;      // ←/→ change the group, Space keeps or sets aside the framed photo
 delete VIEWER_KEYS.a;   // no album here
 {% include "unwanted_review.js.j2" %}
+</script>
+<script>
+{% include "strictness.js.j2" %}
 </script>
 {% endblock %}

@@ -8,6 +8,7 @@
    out, how it got the name, its reference and the score, then *Yes, it is …* or *Not …*
    for that face (0318); Esc closes it, the picking untouched. #}
 const TEXTS = {{ texts | tojson }};
+const DROPPABLE_SOURCES = ["vision", "folder", "name", "former"];  // index/tag_drop.py (0546)
 const SOURCES = {{ sources | tojson }};
 const SEARCH_PATH = {{ search_path | tojson }};
 const CHOSEN_PATH = {{ chosen_path | tojson }};
@@ -32,6 +33,7 @@ function card(hit, index) {
   folder.append(linked(hit.folder, TEXTS.folderTip, () => searchFolder(hit.folder)));
   meta.append(titled(element("div", "name", hit.name)), folder);
   meta.append(takenLine(hit));  // which date it is (0433)
+  if (hit.spot) meta.append(titled(element("div", "muted", "📍 " + hit.spot)));  // its landmark and town (0545)
   if (hit.facts) meta.append(element("div", "muted", hit.facts));  // a video (0408)
   if (hit.to !== undefined) { // a rule tried (0396): where the file would go
     const goes = hit.left ? TEXTS.leftHere : hit.taken ? fill(TEXTS.goesTo, { folder: hit.to || TEXTS.stays })
@@ -96,6 +98,7 @@ function chipsOf(hit) {
       chip.addEventListener("click", (event) => { event.stopPropagation(); (event.ctrlKey || event.metaKey ? addWord : lookFor)(word); });
       if (source === "person") chip.append(unnameButton(hit, word));
       if (source === "hand") chip.append(untagButton(hit, word));  // 0555
+      if (DROPPABLE_SOURCES.includes(source)) chip.append(dropButton(word));  // 0546
       chips.append(chip);
     }
   }
@@ -340,9 +343,9 @@ async function search(event, again) {
   showChips(body);  // the active filters, removable (0565)
   if (!again && !near) keepInHistory();
   offerRule();
-  // An album kept or left out (0501) narrows the files shown, not *Pick all N found*'s
-  // search: that one is not offered then, every action stays on the tiles shown.
-  const narrowed = (body.album && body.album.inside !== null) || body.place || body.missing === "place" || near;
+  // The album kept or left out (0501) is sent with *Pick all N found* too (0602): the
+  // server narrows its search the same way. A place is not: not offered then.
+  const narrowed = body.place || body.missing === "place" || near;
   total = narrowed ? found.hits.length : found.total;
   showFiles(found.hits, again);
   $("more").hidden = found.total <= found.hits.length;
@@ -351,6 +354,7 @@ async function search(event, again) {
   if (!found.total) text = TEXTS.none + (body.text.trim() && hardlyDescribed(found.coverage) ? " " + TEXTS.noneWhy : "");
   else if (found.total > found.hits.length) text = fill(TEXTS.shown, { total: found.total, shown: found.hits.length });
   told(found.note ? found.note + " " + text : text, false);
+  offerAlbum(body, narrowed ? 0 : found.total);  // 0523
   // Sent from the field: the keys go to the grid (Ctrl+A, the arrows); "/" comes back.
   if (event && cards.length) document.activeElement.blur();
 }

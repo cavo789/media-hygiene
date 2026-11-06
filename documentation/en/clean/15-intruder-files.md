@@ -20,6 +20,10 @@ command to copy, or its button when the home page serves the report), and the **
 files** tile of *Where you are* on the home page, which shows their weight at the last audit:
 a click opens the page (with none, it opens the Clean space).
 
+From the home page, the page has *Back to the home page* and its sidebar. Typed in the console,
+there is no home page behind it: its top bar says so (`Ctrl+C` in the console ends the page, then
+`mh` opens the home page) and no sidebar entry is drawn.
+
 ## Step 1: tick them
 
 ```powershell
@@ -38,6 +42,10 @@ and size, and its red button carries that count (**Set these 12 files aside**):
 While an extension is ticked, the folder table lists only the folders that hold some, each with
 the count and size of that extension: you see where they are. A folder ticked works the same way
 on the extension table. Untick everything to see every row again.
+
+Many types, only a few to keep? Above the extension table, switch from **Set these aside** to
+**Set everything aside but these** and tick the extensions to keep. The bar then names every
+extension that will leave, with the count and size of its files, before you click.
 
 Next to some extensions, a muted hint: *a cache, rebuilt by the device or the app* (`.ithmb`,
 the thumbnails an iPod or iPhone sync writes: iTunes writes them again at the next sync), or

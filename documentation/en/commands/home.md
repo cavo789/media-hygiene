@@ -55,6 +55,7 @@ docker run --rm -it `
 
 ## What the page shows
 
+- **The language**: a *Language* list in the sidebar of the home page and in the top bar of every other page (PC only) writes `[general] locale` of `config.toml` and says what the file holds, read back from the disk; it applies the next time `mh` starts.
 - **The sidebar**: the five stages of the cycle, **Share** (a goal, not a stage: no number) and the tools, each with its count (*9* extra
   copies to set aside, *214* files only the NAS keeps), *Your folders* (each found or not), the
   version (*0.5.0 available* when a newer one is published, [`mh update`](launcher.md#a-new-version-mh-update)),
@@ -205,14 +206,16 @@ opened the page:
 - **A long step** (`audit`, `clean`, `import`…) runs in the window of `mh` while the page stays
   open: its dialog shows the stage, a bar, how many files are done and how many a second. Close
   or reload the tab meanwhile: the step goes on, and the page, opened again, shows it again
-  (*A step still runs*) until its end.
+  (*A step still runs*) until its end. Your browser asks once whether to notify you: say yes, and
+  the end of the step is told by a notification while you are on another tab.
 - **Choices waiting on several pages** (burst series, near duplicates, folder pairs, unwanted
   photos, files gone, intruder files, the faces of `people`, `library`): the home page says how many wait (*Choices waiting to be
   applied: 3*), each page named with its count and a link to it, and **Apply all** runs one
   `clean --decisions` for all of them: one run, so one `mh undo` takes them all back. The count
   is read from the decisions file each time; once applied, it is gone.
-- **⚠️ For good** (`purge`, `clean --delete`, `import --phone --free`): the page asks first; `mh` asks
-  again in its window before touching anything.
+- **⚠️ For good** (`clean --delete`, `import --phone --free`): the page asks first; `mh` asks
+  again in its window before touching anything. `purge` opens the run's files first, and its
+  page asks once: nothing is asked in the window.
 - **Otherwise** (`mh home` typed, an older `mh`, or `docker run` alone): the button copies the
   command (*Command copied*) and the page keeps running; stop it with Ctrl+C in the window where
   `mh` runs, paste the command there (right click) and press Enter. When the browser refuses to
@@ -249,13 +252,13 @@ PC only? See [Keep the page on this PC only](#keep-the-page-on-this-pc-only) bel
    opens on it without a code. Without HTTPS, until `mh` stops only.
 
 On the phone, the home page is the family's door, **Our photos**: *Find a photo* (search and
-your folders), the albums and where you are; the stages that change photos (import, clean, sort, back
+your folders), the albums, *See the places on a map* (read-only: look at the places and their photos, nothing is saved) and where you are; the stages that change photos (import, clean, sort, back
 up) and the tools are not shown there, the PC keeps the whole cycle. Its title is yours with
 `[home] family_title = "The Smiths"` in `config.toml` (empty: *Our photos*).
 
 🔒 **The phone is read-only: every change is made on the PC.** From the phone: the page, where you are, the reports, the progress of an audit started on the PC,
 [your albums](#your-albums-on-the-phone), and **search** (its photos opened at
-the phone's size, and their videos; the originals only with `lan_phone_originals = true` under `[review]` of `config.toml`, off by default: full size, GPS position included; *set aside*, *Apply now* and a move stay the PC's). Only a paired
+the phone's size, and their videos; the originals only when the *Phones may download the originals* switch of the home page's sidebar is on (`lan_phone_originals` under `[review]` of `config.toml`), off by default: full size, GPS position included; *set aside*, *Apply now* and a move stay the PC's). Only a paired
 phone reaches them: any other device of the Wi-Fi (a guest, a TV) gets the pairing page, or
 nothing, on every address. While the phone shows a page, `mh` keeps running even with the
 PC's tab closed; once `mh` stops, the phone's page says so.
@@ -332,7 +335,7 @@ Windows may ask about Docker Desktop once: tick **Private networks**, then **All
 
 ### Keep the page on this PC only
 
-No phone at home, or you do not want one? Turn it off once, in `config.toml`:
+No phone at home, or you do not want one? Turn it off once with the **Open this page to phones** switch in the home page's sidebar (it writes `config.toml`, reads it back, and applies the next time `mh` starts), or by hand in `config.toml`:
 
 1. In Windows PowerShell, open the file (`mh config` creates it the first time):
 

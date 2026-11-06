@@ -53,9 +53,11 @@ copies it, itself, to another folder once it is read back:
 
 That folder keeps the same 3 archives as the PC; a copy is written whole or not at all, then
 listed again: `Read back: 3 archive(s) in …`. A NAS that does not answer is said, and the archive
-stays on the PC; a folder typed with `--to` that cannot be opened stops the command. `backup` and
-[`restore`](restore.md) are refused while another `mh` command runs (a page, an audit), the home
-page that started them excepted.
+stays on the PC; a folder typed with `--to` that cannot be opened stops the command. So there are
+two copies: a [`restore`](restore.md) works with the NAS off, from the PC's.
+
+`backup` runs **while a page is open** or an audit runs: it only reads, and a setting saved
+meanwhile goes in whole, old or new. Only `restore` is refused then.
 
 With `docker run`, mount the folder of the archives yourself:
 

@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.docs.served import served_url
 from media_hygiene.i18n.templates import translated_environment
+from media_hygiene.review.album_show import ALBUM_SHOW, SLIDESHOW_PAGE
 from media_hygiene.review.home_assets import ASSETS_PREFIX
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.page_header import ALBUMS_DOC, page_header
@@ -35,6 +36,7 @@ from media_hygiene.share.album_page import (
     ALBUM_PREFIX,
     ALBUMS_PAGE,
     PHONE_HEADER,
+    TV_PAIRED_PATH,
     AlbumPages,
     AlbumParts,
 )
@@ -75,6 +77,7 @@ def album_pages(runtime: Runtime, home: Handling, server: HomeServer) -> AlbumPa
         album_edit_page(),
         door,
         _folder_door(runtime),
+        server.tv.paired,
     )
     return AlbumPages(home, parts)
 
@@ -126,12 +129,15 @@ def album_page(template: str = _TEMPLATE, *, link: bool = False) -> bytes:
                 "list_page": ALBUMS_PAGE,
                 "edit_page": ALBUM_EDIT_PAGE,
                 "search_page": SEARCH_PAGE_PATH,  # *Add photos* (0501)
+                "tv_paired": TV_PAIRED_PATH,  # 📺 on a card, with a TV paired (0523)
+                "tv_album": f"{SLIDESHOW_PAGE}{ALBUM_SHOW}",
                 "link": ALBUM_LINK_PATH,  # 🔗 Share by link (0462)
                 "album_root": ALBUM_ROOT_PATH,  # 📁 Albums folder (0625)
                 "album_make": ALBUM_MAKE_PATH,
             },
             albums_path=ALBUM_CHANGE_PATH,  # 📺 On the TV posts its files there
             tv_here=True,
+            tv_paired_path=TV_PAIRED_PATH,  # the bar's 📺, with a TV paired (0523)
             album_link=link,
         )
         .encode()

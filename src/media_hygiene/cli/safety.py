@@ -31,7 +31,7 @@ READ_ONLY_COMMANDS: Final = frozenset(
     {"audit", "crosscheck", "classify", "places", "review"}
     | {"inventory", "history", "reports", "config", "status", "launcher", "tags"}
     | {"people", "menu", PHONE_PLAN, "slideshow"}
-    | {"share", "backup"}
+    | {"share", "backup", "spots"}
 )
 # The read-only commands that read the photos themselves: they say so when they start.
 PHOTO_READERS: Final = frozenset(

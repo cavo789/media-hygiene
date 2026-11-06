@@ -93,3 +93,26 @@ def test_a_group_is_saved_in_one_write_then_forgotten_comments_kept(
         FolderPosition(folder="C:\\Other", latitude=1.0, longitude=2.0),
     )
     assert config.read_text("utf-8").startswith("# my notes")
+
+
+def test_a_merged_town_shows_photos_of_each_of_its_folders() -> None:
+    """TODO 0566: folders of 50, 5 and 2 photos all reach the drawer, within its cap."""
+    sizes = {"2019/Turin": 50, "2023/Turin": 5, "2024/Turin": 2}
+    rows = tuple(
+        _row(
+            folder,
+            photos=tuple(Path(f"/data/c/{folder}/{n:03}.jpg") for n in range(size)),
+        )
+        for folder, size in sizes.items()
+    )
+    group = folder_groups(rows)[0]
+
+    shown = group_photos(rows, group)
+
+    folders = [path.parent.as_posix().removeprefix("/data/c/") for path in shown]
+    assert {folder: folders.count(folder) for folder in sizes} == {
+        "2019/Turin": 8,
+        "2023/Turin": 5,
+        "2024/Turin": 2,
+    }
+    assert len(shown) <= 24  # MEMBERS_KEPT, as before

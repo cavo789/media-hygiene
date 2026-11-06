@@ -62,6 +62,12 @@ l'interrompt, et le passage suivant reprend là où il s'était arrêté (chaque
 aussitôt dans le cache). Rouvrir la page pendant un passage le montre. Seul le cache est écrit :
 vos photos ne sont pas modifiées. Si Ollama est injoignable, la page le dit en une ligne.
 
+🤖 La même fenêtre montre l'état de l'IA locale : trouvée ou non à `[classify.ai] url`, les
+modèles installés sur le serveur, et une liste pour choisir celui qui regarde vos photos
+(*Aucun* la désactive : aucune photo n'est jamais envoyée). Le choix est écrit dans `config.toml`
+et montré tel que relu sur le disque ; il s'applique au prochain démarrage de `mh`. Seulement sur
+le PC.
+
 Avec la recherche par le sens activée (`[tags] meaning = true`), la fin de cette fenêtre propose
 **Préparer la recherche par le sens** : les mêmes chiffres, **Regarder maintenant** / **Regarder
 pendant 1 h** / **Pas maintenant**, la progression et **Arrêter après cette photo**. Le modèle
@@ -105,7 +111,7 @@ chaque photo est gardée aussitôt dans le cache, le passage suivant continue.
   (les noms viennent de `people`, les lieux du GPS) ; les copies identiques sont regardées une
   fois, les vidéos jamais.
 - **Arrêtez quand vous voulez** : Ctrl+C laisse finir les photos en cours de description ; la
-  fois suivante reprend où celle-ci s'est arrêtée.
+  fois suivante reprend où celle-ci s'est arrêtée. Un Ctrl+C arrête toute la commande, `--meaning` compris : aucune étape ne suit.
 - **Pourquoi pas dans les photos ?** Écrire dans un JPEG change ses octets, son empreinte, et deux
   copies identiques cesseraient de l'être. [`xmp`](xmp.md) écrit des fichiers compagnons à la place.
 

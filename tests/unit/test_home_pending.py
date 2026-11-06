@@ -67,6 +67,6 @@ def test_intruders_and_people_are_named_apart_from_the_library(tmp_path: Path) -
     assert pending.total == len(chosen)
     assert [(page.label, page.count, bool(page.url)) for page in pending.pages] == [
         ("Intruder files", 1, True),
-        ("People", 1, False),  # its own server: named, no dead link
+        ("People", 1, True),  # /people/ of the home server (0620)
         ("Library", 1, True),
     ]

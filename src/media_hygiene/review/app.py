@@ -6,7 +6,7 @@
 the decisions file as read from the disk, and `POST /api/decide` sets shots of one
 series aside (or several series: a folder at once), saved in one write, then answers
 with those series as read back from the disk. `GET`/`POST /api/albums` the albums,
-apart from the shots set aside (`share.album_api`).
+apart from the shots set aside (`share.album_api`). `/api/strictness`: thresholds.
 A decision needs a JSON body: a page of another site cannot send one without the
 browser asking first.
 """
@@ -31,6 +31,7 @@ from media_hygiene.review.local_app import (
     page_or_state,
 )
 from media_hygiene.review.serving import json_response, refused_post
+from media_hygiene.review.strictness import STRICTNESS_PATH, strictness_route
 from media_hygiene.share.album_api import ALBUMS_PATH
 
 if TYPE_CHECKING:
@@ -89,6 +90,9 @@ class ReviewApp(LocalApp):
                 return self.albums.state()
             refused = refused_post(request)
             return refused or await self.albums.answer(request.body)
+        tuning = self.session.strictness
+        if request.path == STRICTNESS_PATH and tuning is not None:
+            return strictness_route(request, tuning)
         if request.method == _GET:
             return await self._get(request.path)
         if request.path == DECIDE_PATH and request.method == _POST:

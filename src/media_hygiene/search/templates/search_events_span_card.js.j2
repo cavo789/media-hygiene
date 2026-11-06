@@ -4,6 +4,7 @@
    journaled, then the next event to decide), *Another folder…* (the bar's *Move to an
    event…* on the picked photos, else the whole event), *Do not sort this event* (kept in
    `events/left.toml`, read back) and *Undo my choice* when one is saved. #}
+  let spanName = "";  // the name an album of this event takes (0523)
   let spanView = null;  // where the event shown goes: the move view's answer
   const spanTicked = () => (spanView ? spanView.sources.filter((source) => source.ticked).flatMap((source) => source.keys) : []);
   const spanSay = (text) => { byId("spanGoes").textContent = text; };
@@ -79,6 +80,17 @@
     const card = events[current];
     if (card) openRuleFor(card.first.slice(0, 10), card.last.slice(0, 10));
   };
+  // One click (0523): an album of the event's files, read back, opened; the TV, picked or all.
+  const spanAlbum = () => {
+    if (files.length > MOST_IN_ALBUM) { setStatus(fill(TEXTS.tooManyAtOnce, { count: files.length, most: MOST_IN_ALBUM }), "error"); return; }
+    if (files.length) makeAlbum(spanName, { keys: files.map((file) => String(file.key)) });
+  };
+  const spanTv = () => {
+    if (!picked.size && files.length > MOST_IN_ALBUM) { setStatus(fill(TEXTS.tooManyAtOnce, { count: files.length, most: MOST_IN_ALBUM }), "error"); return; }
+    if (picked.size || files.length) toTv(byId("spanTv"));
+  };
+  byId("spanAlbum").addEventListener("click", spanAlbum);
+  if (byId("spanTv")) { byId("spanTv").addEventListener("click", spanTv); tvPaired.then((paired) => { byId("spanTv").hidden = !paired; }); }
   // Moved with *Another folder…*: the list read again, the same place (0574).
   window.mhSpan = { moved: () => {
     if (byId("events").hidden || current < 0 || !events[current] || !events[current].span) return false;

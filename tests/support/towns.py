@@ -13,6 +13,7 @@ from tests.support.geonames.snapshot import (
     CITIES_TXT,
     CITIES_ZIP,
     COUNTRIES_TXT,
+    DISTRICTS_TXT,
     REGIONS_TXT,
     build,
 )
@@ -81,6 +82,7 @@ def write_towns(folder: Path) -> Path:
     (dumps / REGIONS_TXT).write_text(
         "".join(f"{code}\t{name}\t{name}\t0\n" for code, name in REGIONS), "utf-8"
     )
+    (dumps / DISTRICTS_TXT).write_text("", "utf-8")
     (dumps / COUNTRIES_TXT).write_text(
         "#ISO\tISO3\tnumber\tfips\tCountry\n"
         + "".join(f"{code}\t\t\t\t{name}\n" for code, name in COUNTRIES),

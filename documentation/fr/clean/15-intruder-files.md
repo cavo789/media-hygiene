@@ -21,6 +21,10 @@ Trois chemins mènent à la page : la commande ci-dessous, la section *Fichiers 
 **Fichiers intrus** de *Où vous en êtes* sur la page d'accueil, qui montre leur poids au dernier
 audit : un clic ouvre la page (sans intrus, il ouvre l'espace Nettoyer).
 
+Depuis la page d'accueil, la page a *Retour à l'accueil* et sa barre latérale. Tapée dans la
+console, aucune page d'accueil n'attend derrière : sa barre du haut le dit (`Ctrl+C` dans la console
+ferme la page, puis `mh` ouvre la page d'accueil) et aucune entrée de barre latérale n'est dessinée.
+
 ## Étape 1 : les cocher
 
 ```powershell
@@ -40,6 +44,11 @@ côté**) :
 Tant qu'une extension est cochée, le tableau des dossiers ne liste que ceux qui en contiennent,
 chacun avec le nombre et la taille de cette extension : vous voyez où ils sont. Un dossier coché
 fait de même sur le tableau des extensions. Décochez tout pour revoir toutes les lignes.
+
+Beaucoup de types, et seulement quelques-uns à garder ? Au-dessus du tableau des extensions,
+passez de **Mettre ceux-ci de côté** à **Tout mettre de côté sauf ceux-ci** et cochez les
+extensions à garder. La barre nomme alors chaque extension qui part, avec le nombre et la taille
+de ses fichiers, avant que vous cliquiez.
 
 À côté de certaines extensions, un indice discret : *un cache, recréé par l'appareil ou
 l'application* (`.ithmb`, les miniatures qu'écrit la synchronisation d'un iPod ou d'un iPhone :

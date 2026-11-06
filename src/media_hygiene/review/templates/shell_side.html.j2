@@ -1,16 +1,16 @@
-{# The sidebar of the frame (shell.html.j2): an entry opens that space of the home page; a link when a
-   home page is there to go back to (served by it, or `mh` opened this page from it), else shown only.
-   On a paired phone (`data-phone`, read-only, 0435) only the spaces a phone opens stay. #}
+{# The sidebar of the frame (shell.html.j2): an entry opens that space of the home page. No home page to
+   go back to (a page typed in the console, 0585): no entry at all, never items drawn as links that do
+   nothing. On a paired phone (`data-phone`, read-only, 0435) only the spaces a phone opens stay. #}
 {% set phone_spaces = ("home", "find", "share") %}
 {% macro entry(link) -%}
 <li{% if link.space not in phone_spaces %} class="pc-only"{% endif %}>
-{%- if header.shared or header.home %}<a class="mh-shell-link" href="/#{{ link.space }}" data-space="{{ link.space }}"{% if link.current %} aria-current="page"{% endif %} title="{{ link.title }}">
-{%- else %}<span class="mh-shell-link" aria-disabled="true"{% if link.current %} aria-current="page"{% endif %} title="{{ link.title }}">{% endif -%}
+<a class="mh-shell-link" href="/#{{ link.space }}" data-space="{{ link.space }}"{% if link.current %} aria-current="page"{% endif %} title="{{ link.title }}">
 <svg class="mh-i" aria-hidden="true"><use href="#i-{{ link.icon }}"></use></svg><span class="mh-shell-label">{{ link.title }}</span>
-{%- if header.shared or header.home %}</a>{% else %}</span>{% endif %}</li>
+</a></li>
 {%- endmacro %}
 <aside class="mh-shell-side" id="mhShellSide" aria-label="{{ _('Menu of Media Hygiene') }}">
   <p class="mh-shell-brand"><img src="{{ header.assets }}images/avatar.webp" alt="" width="30" height="40"><span class="mh-shell-label">Media Hygiene</span></p>
+  {% if header.shared or header.home %}
   <nav aria-label="{{ _('Spaces') }}">
     <ul class="mh-shell-list">{{ entry(shell.home) }}</ul>
     <p class="mh-shell-group mh-shell-label">{{ _("The cycle of your photos") }}</p>
@@ -20,6 +20,7 @@
     <p class="mh-shell-group mh-shell-label">{{ _("Tools") }}</p>
     <ul class="mh-shell-list">{% for link in shell.tools %}{{ entry(link) }}{% endfor %}</ul>
   </nav>
+  {% endif %}
   {% if header.folders %}{# Your folders (0579): the home page's list, its order, its badges; on a paired phone too, a read-only list (review 2026-11-05). #}
   <details class="mh-shell-folders mh-shell-label">
     <summary><svg class="mh-i" aria-hidden="true"><use href="#i-folder"></use></svg><span>{{ _("Your folders ({count})").format(count=header.folders.folders | length) }}</span>

@@ -13,6 +13,7 @@ from media_hygiene.search.exif_facts import exif_lines, taken_text
 from media_hygiene.search.folder_order import kind_of_path
 from media_hygiene.search.heaviest import video_facts
 from media_hygiene.search.models import Hit
+from media_hygiene.search.spot_label import spot_labels
 from media_hygiene.tags.models import TagSource
 
 if TYPE_CHECKING:
@@ -108,7 +109,13 @@ def with_facts(index: SearchIndex, found: Found) -> Found:
     except sqlite3.OperationalError:  # no `metadata` column: an older index
         return found
     known = {key: (json.loads(text) if text else {}, day) for key, text, day in rows}
-    hits = tuple(_described(hit, known.get(hit.key)) for hit in found.hits)
+    labels = spot_labels(
+        index.connection, [hit.key for hit in found.hits], index.spot_names
+    )
+    hits = tuple(
+        replace(_described(hit, known.get(hit.key)), spot=labels.get(hit.key, ""))
+        for hit in found.hits
+    )
     return replace(found, hits=hits)
 
 

@@ -30,12 +30,15 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 
-def run_meaning(runtime: Runtime, files: Sequence[MediaInput]) -> None:
+def run_meaning(runtime: Runtime, files: Sequence[MediaInput]) -> bool:
     """Give the photos of a `tags` run their vectors, the missing ones only.
 
     Args:
         runtime: Settings, cache and output.
         files: The files of the run.
+
+    Returns:
+        True when Ctrl+C stopped it: the whole `tags` run ends there (0627).
     """
     output = runtime.output
     cache = runtime.locations.cache_dir
@@ -43,7 +46,7 @@ def run_meaning(runtime: Runtime, files: Sequence[MediaInput]) -> None:
         work = meaning_work(repository.connection, files)
         show_meaning_work(output, work)
         if not work.missing:
-            return
+            return False
         if not clip_present(cache):
             show_meaning_download(output)
         model = ClipImages(clip_files(cache), runtime.settings.tags.meaning_threads)
@@ -57,3 +60,4 @@ def run_meaning(runtime: Runtime, files: Sequence[MediaInput]) -> None:
             outcome = see_photos(repository.connection, (work, model), answering)
             progress.stop()
     show_meaning_done(output, outcome, runtime.mapper)
+    return outcome.stopped

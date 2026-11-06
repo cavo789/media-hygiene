@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import sqlite3
 from contextlib import closing
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
@@ -14,6 +14,7 @@ from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.search.exif_facts import exif_lines, modified_day, taken_text
 from media_hygiene.search.hits import with_facts
 from media_hygiene.search.models import Found, Hit
+from media_hygiene.search.spot_label import SpotNames
 from media_hygiene.search.views import found_view
 
 if TYPE_CHECKING:
@@ -41,6 +42,7 @@ class _Index:
     """The part of the search index `with_facts` reads."""
 
     connection: sqlite3.Connection
+    spot_names: SpotNames = field(default_factory=SpotNames)
 
 
 def _index(

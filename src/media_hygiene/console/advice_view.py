@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from rich.markup import escape
 
 from media_hygiene.console.advice import Advice, TipKind, select
+from media_hygiene.console.one_line import say
 from media_hygiene.i18n import _, ngettext
 
 if TYPE_CHECKING:
@@ -37,7 +38,7 @@ def print_advice(
     for advice in selection.safety:
         _print_tip(output, advice)
     if step is not None:
-        output.console.print(f"👉 [bold]{_('What next:')}[/] {step.text}")
+        say(output.console, f"👉 [bold]{_('What next:')}[/] {step.text}")
         if step.command is not None:
             output.command(step.command)
     for advice in selection.shown:
@@ -48,7 +49,7 @@ def print_advice(
             "({count} more tips: add --verbosity verbose to see them.)",
             selection.hidden,
         )
-        output.console.print(f"[dim]{hidden.format(count=selection.hidden)}[/]")
+        say(output.console, f"[dim]{hidden.format(count=selection.hidden)}[/]")
 
 
 def _print_tip(output: Output, advice: Advice) -> None:
@@ -59,7 +60,7 @@ def _print_tip(output: Output, advice: Advice) -> None:
         advice: The tip.
     """
     if advice.kind is TipKind.SETUP:
-        output.console.print(f"⚙️  [cyan]{advice.text}[/]")
+        say(output.console, f"⚙️  [cyan]{advice.text}[/]")
     else:
         output.tip(advice.text)
     if advice.command is not None:

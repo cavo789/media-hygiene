@@ -17,6 +17,7 @@ from tests.support.geonames.landmarks import ALL_ZIP, build_landmarks
 from tests.support.geonames.snapshot import (
     CITIES_ZIP,
     COUNTRIES_TXT,
+    DISTRICTS_TXT,
     REGIONS_TXT,
     build,
 )
@@ -28,10 +29,10 @@ _DATE_LINE: Final = "Snapshot of "
 
 
 def main() -> None:
-    """Download the four dumps and rebuild the snapshot (towns, then landmarks)."""
+    """Download the five dumps and rebuild the snapshot (towns, then landmarks)."""
     with tempfile.TemporaryDirectory(prefix="geonames-") as folder:
         work = Path(folder)
-        for name in (CITIES_ZIP, REGIONS_TXT, COUNTRIES_TXT, ALL_ZIP):
+        for name in (CITIES_ZIP, REGIONS_TXT, DISTRICTS_TXT, COUNTRIES_TXT, ALL_ZIP):
             print(f"Downloading {DUMPS}{name}…")  # noqa: T201 - a developer tool
             urllib.request.urlretrieve(f"{DUMPS}{name}", work / name)  # noqa: S310
         count = build(work, DATA)

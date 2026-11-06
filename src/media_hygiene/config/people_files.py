@@ -13,6 +13,7 @@ from __future__ import annotations
 import tomllib
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.config.face_refs import face_keys
 from media_hygiene.errors import ConfigError
 from media_hygiene.i18n import _
 
@@ -138,7 +139,7 @@ def read_lists(config_dir: Path, relative: str) -> dict[str, list[object]]:
         relative: The path written in it.
 
     Returns:
-        Its `faces` and `rejected` (empty when absent).
+        Its `faces` and `rejected` (empty when absent), the tables of 0570 as keys.
 
     Raises:
         ValueError: The file is missing, outside the folder, or not valid TOML.
@@ -151,7 +152,7 @@ def read_lists(config_dir: Path, relative: str) -> dict[str, list[object]]:
     lists: dict[str, list[object]] = {}
     for key in (FACES, REJECTED):
         value = loaded.get(key, [])
-        lists[key] = value if isinstance(value, list) else [value]
+        lists[key] = face_keys(value, None) if isinstance(value, list) else [value]
     return lists
 
 

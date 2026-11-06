@@ -19,12 +19,14 @@ from media_hygiene.plan.unwanted import (
 )
 from media_hygiene.review.apply_api import ApplyOffer
 from media_hygiene.review.place import decisions_place
+from media_hygiene.review.strictness import Strictness, ThresholdPlace
 from media_hygiene.review.unwanted_app import (
     JUNK_DECIDE_PATH,
     JUNK_FILE_PATH,
     UnwantedApp,
 )
-from media_hygiene.review.unwanted_session import UnwantedPages, UnwantedSession
+from media_hygiene.review.unwanted_file import UnwantedPages
+from media_hygiene.review.unwanted_session import UnwantedSession
 from media_hygiene.review.unwanted_views import UnwantedStateBuilder
 from media_hygiene.services.policy import keep_policy
 from media_hygiene.services.review_file import first_save, resume_decisions
@@ -41,6 +43,16 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 PAGE_TEMPLATE: Final = "unwanted_review.html.j2"
+UNWANTED_SECTION: Final = ("review", "unwanted")
+UNWANTED_KEYS: Final = (
+    "screenshots",
+    "tiny_megapixels",
+    "dark_mean",
+    "dark_share",
+    "white_mean",
+    "white_share",
+    "blur_percentile",
+)
 
 
 def unwanted_limits(settings: UnwantedSettings) -> UnwantedLimits:
@@ -62,7 +74,9 @@ def unwanted_limits(settings: UnwantedSettings) -> UnwantedLimits:
 
 
 def audit_unwanted(
-    runtime: Runtime, findings: AuditFindings
+    runtime: Runtime,
+    findings: AuditFindings,
+    settings: UnwantedSettings | None = None,
 ) -> tuple[UnwantedPhoto, ...]:
     """The photos of an audit most likely unwanted, by the settings of the run.
 
@@ -71,6 +85,7 @@ def audit_unwanted(
     Args:
         runtime: Settings, mount points and output.
         findings: The audit just run.
+        settings: The thresholds to try; None: those of the run.
 
     Returns:
         The photos, the reason with the most photos first.
@@ -108,7 +123,7 @@ def audit_unwanted(
         )
         return is_screenshot(known)
 
-    limits = unwanted_limits(runtime.settings.review.unwanted)
+    limits = unwanted_limits(settings or runtime.settings.review.unwanted)
     return unwanted_photos(source, limits, screenshot)
 
 
@@ -133,8 +148,19 @@ def open_unwanted_review(
     builder = UnwantedStateBuilder(mapper, findings.similar.visuals)
     place = decisions_place(mapper, runtime.locations.reports_dir, target)
     base = resume_decisions(runtime, findings, target)
-    pages = UnwantedPages(audit_unwanted(runtime, findings), builder, target, place)
+    pages = UnwantedPages(
+        audit_unwanted(runtime, findings),
+        builder,
+        target,
+        place,
+        partial(audit_unwanted, runtime, findings),
+    )
     session = UnwantedSession(pages, base)
+    session.strictness = Strictness(
+        ThresholdPlace(runtime.locations.config_file, UNWANTED_SECTION, UNWANTED_KEYS),
+        runtime.settings.review.unwanted,
+        session.retune,
+    )
     first_save(session.save)
     return session
 

@@ -9,6 +9,8 @@
 - 📂 [Walk through your folders](#walk-through-your-folders)
 - 💻 [I'm on the PC and start from zero](#run-it)
 
+Photos with a GPS position are also found by their landmark, town and regions, shown as `📍` under the date: see [`spots`](spots.md).
+
 ## In short
 
 **Find a photo by what you remember of it: a word, a place, a year, a person.** This page is the
@@ -56,7 +58,7 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene library
 ```
 
-Open <http://127.0.0.1:8088/>. The page shows the search
+Open <http://127.0.0.1:8088/>; on the home server, the page's own address is `/library` (`/search`, its former one, leads to it: your favourites keep working). The page shows the search
 field and its filters (a period, a part of the path, the words of one source only) in the left
 column, the ⌨ keys under them, one bar above the grid, then the photos found. **🔎 Words** comes
 first, **📁 Folders** second: it opens [your folders](#walk-through-your-folders). Ctrl+C, or closing its tab,
@@ -107,7 +109,7 @@ helps: `*.mp4` or a regular expression are still searched as typed.
 - **The bar** has two lines that never move, whatever is picked or found: on top, where you are
   (the count, then each active filter as a chip — a word, the period, the path, the folder,
   *not yet*, 📷 — whose **✕** removes it and searches again; those that do not fit fold into
-  **+N**, a click lists them under the bar), **📺 On the TV**, **Sort by** and the thumbnail size **S** (photos only), **M**,
+  **+N**, a click lists them under the bar), **📺 On the TV** (with a TV paired), **Sort by** and the thumbnail size **S** (photos only), **M**,
   **L** (every word), kept for this browser; below, what to do with the files picked — greyed
   while none is: first **📂 Move to an event…** (filled: the main action), **🗓 Move to their month…**, **🔀 Invert**, two small panels, **🏷 Describe** (tag, date, place)
   and **📚 Album**, then, at the far right as on every page of tiles, **🗑 Put aside** in red and
@@ -169,6 +171,8 @@ Without a browser (WSL, a script), give the words: `search durbuy ours` prints t
 as a table.
 
 ## The events of the latest classify
+
+The **Group the photos into more or fewer events** section of that tab (PC only) sets `merge_gap_hours`, `min_event_size` and `trip_min_km` of `[classify]`: saved in `config.toml`, shown as read back from the disk, applied by the next [`classify`](classify.md) (the list does not change before).
 
 The **🗂 Events** tab, on top of the left column next to **🔎 Photos**, needs no
 [`classify`](classify.md) run: it groups **the files not sorted yet** of the period of the
@@ -262,7 +266,8 @@ member's folder, a phone's `DCIM` are ticked. **Move these N files now** moves e
 ones, journaled, checked at their new place, said as read back (*'mh undo …' puts them back*).
 Nothing else is written: no rule in `config.toml`, no event in `events/`, the next `classify`
 finds them in place. Only when you tick **Also remember it as an event (events/)**, unticked
-at each opening (a filing is not an event), is the event remembered too: its name, its days and
+at each opening (a filing is not an event; ticked for *new photos during an event*, which widen
+it), is the event remembered too: its name, its days and
 its cameras, read back and shown after the move. `undo` puts the files back but keeps that event:
 remove it from `events/` by hand. Photos added since the
 latest `classify` (a phone imported, then audited) move too: no new `classify` is needed.
@@ -382,6 +387,10 @@ content. The file is read back and the bar says what it holds now (*“anniversa
 12 photos, read back from the disk.*); the cards show the word at once, and the search finds it
 (`hand:anniversaire`).
 
+The photos an audit has not analysed yet are read from the disk while the page waits, so at most
+200 of them at a time: above that nothing is saved, and the dialog says how many, and what to do
+(an audit first, or fewer photos). **📍 Place…** given by hand follows the same cap.
+
 A word typed by hand under a photo has a **×**, on its card and in the large view's facts (`I`):
 click it to take the word off that photo, saved and read back the same way. A word left on no
 photo goes, with its file.
@@ -391,6 +400,28 @@ once; a folder renamed in Explorer is found again by the content id at the end o
 `audit`. [`xmp`](xmp.md) writes these words into the `.xmp` sidecars with the others (`hand` in
 `[tags] xmp_sources`, on by default). Without a writable `/config`, nothing is saved and the bar
 says why.
+
+## Drop a tag you do not need
+
+Hover a word the model, a folder or a file name gave a photo, on its card or in the large view's
+facts (`I`): a **⊘** appears. Click it (it never picks the photo): a dialog shows how many photos
+carry the word and the first ones. Nothing has changed yet. **Drop it from these photos (100)**
+then takes it off every photo and off its `.xmp` sidecar, and adds it to `[tags] stop_words` in
+`config.toml` (your comments kept), so the next [`tags`](tags.md) does not bring it back. The bar
+says what the disk holds afterwards (*“panneau de signalisation” dropped, read back from the disk:
+in the stop words, still on 0 photos.*) and the cards lose the word where they are.
+
+- **Sidecars**: written like those of [`xmp`](xmp.md), journaled; the bar gives the `mh undo` line.
+  Only what this tool wrote is taken out: the same word written by another application stays, and
+  a protected folder is never touched. Without a journal or on read-only folders, the next
+  `xmp --apply` takes it out.
+- **What stays**: the model's sentence (a search in quotes can still find the photo through it),
+  a word you typed by hand, a name, a date, a place.
+- **Restore**: **🚫 Dropped tags**, at the bottom of the left column, lists them; **Restore** takes
+  the word out of the stop words. Its photos get it again at the next `tags`, without asking the
+  model again (the answers are kept), and in their sidecars at the next `xmp --apply`.
+
+One tag at a time.
 
 ## Photos without a date or a place
 
@@ -433,13 +464,19 @@ click; the panel also offers **📺 Share on the TV** and **📨 Prepare for sen
   files, saved in …. Only this file changed: no photo was copied or moved.*
 - It is **not** the set aside: *Set aside* prepares a removal, *Add to the album* a share. Neither
   ever touches the other's list.
+- **In one click**: on a card of the 🗂 *Events* tab, **📚 Make an album** makes an album of the
+  event's files, under the name proposed from its place and day, read back and opened in a new
+  tab. After a search, **📚 Make an album of these N results** does the same with every file
+  found, under the words typed (files set aside stay out; at most 3 000 at once, else narrow the
+  search; not offered when a filter narrows the tiles shown). A name already used adds to that
+  album. With a [paired TV](slideshow.md), the card also has **📺 On the TV**.
 - **Where the album folders go** is on [the albums page](album.md#from-the-albums-page).
 - **Take out of the album** takes the picked photos out of the album typed; an album left empty
   is removed.
 - **Album** in the left column, once an album is typed: *In the album* shows only its files, *Not
   in the album* the others; either way, a file already in it says **✓ in the album** on its tile,
-  so adding twice shows (adding twice changes nothing anyway). *Pick all N found* is not offered
-  with either filter: the buttons act on the tiles shown.
+  so adding twice shows (adding twice changes nothing anyway). *Pick all N found* counts and
+  takes the files the filter shows, never those it hides.
 - **➕ Add photos** of an album opened on the [albums page](../reference-albums.md) opens this
   page with the album typed, the period around its dates and **← the album** to go back to it.
 - A photo moved since, by [`sort`](sort.md), by [`undo`](undo.md), or in a folder renamed in the

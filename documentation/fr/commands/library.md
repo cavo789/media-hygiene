@@ -9,6 +9,8 @@
 - 📂 [Parcourir vos dossiers](#parcourir-vos-dossiers)
 - 💻 [Je suis sur le PC et je pars de zéro](#lancer)
 
+Les photos avec une position GPS se trouvent aussi par leur lieu remarquable, leur ville et leurs régions, affichés en `📍` sous la date : voir [`spots`](spots.md).
+
 ## En bref
 
 **Retrouver une photo par ce dont vous vous souvenez : un mot, un lieu, une année, une
@@ -57,7 +59,7 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene --locale fr search
 ```
 
-Ouvrez <http://127.0.0.1:8088/>. La page montre le champ de recherche et ses filtres (une période, une partie du chemin, les mots
+Ouvrez <http://127.0.0.1:8088/> ; sur le serveur de la page d'accueil, l'adresse propre de la page est `/library` (`/search`, l'ancienne, y mène : vos favoris continuent de marcher). La page montre le champ de recherche et ses filtres (une période, une partie du chemin, les mots
 d'une seule source) dans la colonne de gauche, les touches ⌨ en dessous, une seule barre au-dessus
 de la grille, puis les photos trouvées. **🔎 Mots** vient d'abord, **📁 Dossiers** ensuite : il
 ouvre [vos dossiers](#parcourir-vos-dossiers). Ctrl+C, ou fermer son onglet, arrête la page.
@@ -111,7 +113,7 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
 - **La barre** a deux lignes qui ne bougent jamais, quoi qu'on choisisse ou trouve : en haut, où
   vous en êtes (le nombre, puis chaque filtre actif en pastille — un mot, la période, le chemin,
   le dossier, *pas encore*, 📷 — dont la **✕** le retire et relance la recherche ; celles qui
-  ne tiennent pas se replient en **+N**, un clic les liste sous la barre), **📺 Sur la télé**, **Trier par** et la taille des vignettes **S**
+  ne tiennent pas se replient en **+N**, un clic les liste sous la barre), **📺 Sur la télé** (avec une télé appairée), **Trier par** et la taille des vignettes **S**
   (les photos seules), **M**, **L** (tous les mots), gardée pour ce navigateur ; en dessous, que
   faire des fichiers choisis — grisé tant qu'aucun ne l'est : d'abord
   **📂 Déplacer vers un événement…** (plein : l'action principale), **🗓 Déplacer vers leur mois…**, **🔀 Inverser**, deux petits panneaux, **🏷 Décrire** (étiquette,
@@ -179,6 +181,8 @@ Sans navigateur (WSL, un script), donnez les mots : `search durbuy ours` affiche
 fichiers en tableau.
 
 ## Les événements du dernier classify
+
+La section **Regrouper les photos en plus ou moins d'événements** de cet onglet (PC seulement) règle `merge_gap_hours`, `min_event_size` et `trip_min_km` de `[classify]` : enregistrés dans `config.toml`, montrés tels que relus sur le disque, appliqués par le prochain [`classify`](classify.md) (la liste ne change pas avant).
 
 L'onglet **🗂 Événements**, en haut de la colonne de gauche à côté de **🔎 Photos**, n'a besoin
 d'aucun [`classify`](classify.md) : il regroupe **les fichiers pas encore triés** de la période
@@ -278,7 +282,8 @@ dossier de dates, le dossier d'un membre de la famille, le `DCIM` d'un télépho
 leur nouvelle place, dit tel que relu (*'mh undo …' les remet*). Rien d'autre n'est écrit : aucune
 règle dans `config.toml`, aucun événement dans `events/`, le prochain `classify` les trouve à leur
 place. Seulement si vous cochez **Aussi le retenir comme événement (events/)**, décochée à chaque
-ouverture (un rangement n'est pas un événement), l'événement est retenu aussi : son nom, ses jours
+ouverture (un rangement n'est pas un événement ; cochée pour les *nouvelles photos pendant un
+événement*, qui l'élargissent), l'événement est retenu aussi : son nom, ses jours
 et ses appareils, relus et montrés après le déplacement. `undo` remet les fichiers mais garde cet
 événement : retirez-le de `events/` à la main. Les photos ajoutées depuis le dernier `classify`
 (un téléphone importé, puis audité) sont déplacées aussi : pas besoin d'un nouveau `classify`.
@@ -410,6 +415,10 @@ contenu. Le fichier est relu et la barre dit ce qu'il contient (*« anniversaire
 12 photos, relu sur le disque.*) ; les cartes montrent le mot tout de suite, et la recherche le
 trouve (`hand:anniversaire`).
 
+Les photos qu'un audit n'a pas encore analysées sont lues sur le disque pendant que la page attend :
+donc 200 au plus à la fois. Au-delà, rien n'est enregistré, et la boîte de dialogue dit combien, et
+quoi faire (un audit d'abord, ou moins de photos). **📍 Lieu…** donné à la main suit la même limite.
+
 Un mot tapé à la main sous une photo a une **×**, sur sa carte et dans les détails de la grande
 vue (`I`) : cliquez-la pour retirer le mot de cette photo, enregistré et relu de la même façon. Un
 mot qui ne reste sur aucune photo s'en va, avec son fichier.
@@ -419,6 +428,29 @@ réécrivent aussitôt ; un dossier renommé dans l'Explorateur est retrouvé pa
 contenu à la fin du prochain `audit`. [`xmp`](xmp.md) écrit ces mots dans les fichiers `.xmp` avec
 les autres (`hand` dans `[tags] xmp_sources`, actif par défaut). Sans `/config` accessible en
 écriture, rien n'est enregistré et la barre dit pourquoi.
+
+## Retirer un tag inutile
+
+Survolez un mot donné à une photo par le modèle, un dossier ou un nom de fichier, sur sa carte ou
+dans les informations de la grande vue (`I`) : un **⊘** apparaît. Cliquez dessus (il ne choisit
+jamais la photo) : une fenêtre montre combien de photos portent ce mot, et les premières. Rien n'a
+encore changé. **Le retirer de ces photos (100)** l'enlève alors de toutes les photos et de leur
+sidecar `.xmp`, et l'ajoute à `[tags] stop_words` dans `config.toml` (vos commentaires conservés) :
+le prochain [`tags`](tags.md) ne le ramène pas. La barre dit ce que le disque contient ensuite
+(*« panneau de signalisation » retiré, relu sur le disque : dans les mots écartés, encore sur 0 photo.*)
+et les cartes perdent le mot sans bouger.
+
+- **Sidecars** : écrits comme ceux de [`xmp`](xmp.md), journalisés ; la barre donne la ligne
+  `mh undo`. Seul ce que cet outil a écrit est retiré : le même mot écrit par une autre application
+  reste, et un dossier protégé n'est jamais touché. Sans journal ou sur des dossiers en lecture
+  seule, le prochain `xmp --apply` le retire.
+- **Ce qui reste** : la phrase du modèle (une recherche entre guillemets peut encore trouver la photo
+  par elle), un mot tapé à la main, un nom, une date, un lieu.
+- **Rétablir** : **🚫 Tags retirés**, en bas de la colonne de gauche, les liste ; **Rétablir** sort
+  le mot des mots écartés. Ses photos le retrouvent au prochain `tags`, sans redemander au modèle
+  (les réponses sont gardées), et dans leurs sidecars au prochain `xmp --apply`.
+
+Un tag à la fois.
 
 ## Les photos sans date ou sans lieu
 
@@ -465,14 +497,21 @@ aussi **📺 Partager sur la télé** et **📨 Préparer l'envoi**.
   n'a été copiée ni déplacée.*
 - Ce n'est **pas** la mise de côté : *Mettre de côté* prépare un retrait, *Ajouter à l'album* un
   partage. Aucun des deux ne touche jamais la liste de l'autre.
+- **En un clic** : sur une carte de l'onglet 🗂 *Événements*, **📚 Faire un album** crée un album
+  des fichiers de l'événement, au nom proposé d'après son lieu et son jour, relu puis ouvert dans
+  un nouvel onglet. Après une recherche, **📚 Faire un album de ces N résultats** fait de même avec
+  chaque fichier trouvé, au nom des mots tapés (les fichiers mis de côté restent hors de l'album ;
+  3 000 au plus d'un coup, sinon affinez la recherche ; pas proposé quand un filtre réduit les
+  vignettes affichées). Un nom déjà pris ajoute à cet album. Avec une [télé appairée](slideshow.md),
+  la carte offre aussi **📺 Sur la télé**.
 - **Où vont les dossiers d'album** se règle sur [la page des albums](album.md#depuis-la-page-des-albums).
 - **Retirer de l'album** retire les photos choisies de l'album tapé ; un album laissé vide est
   supprimé.
 - **Album** dans la colonne de gauche, une fois un album tapé : *Dans l'album* ne montre que ses
   fichiers, *Pas dans l'album* les autres ; dans les deux cas, un fichier déjà dedans affiche
   **✓ dans l'album** sur sa vignette, l'ajout en double se voit (ajouter deux fois ne change rien de
-  toute façon). *Choisir les N trouvés* n'est pas proposé avec ces filtres : les boutons agissent
-  sur les vignettes affichées.
+  toute façon). *Choisir les N trouvés* compte et prend les fichiers que le filtre
+  montre, jamais ceux qu'il cache.
 - **➕ Ajouter des photos** d'un album ouvert sur la [page des albums](../reference-albums.md)
   ouvre cette page avec l'album tapé, la période autour de ses dates et **← l'album** pour y
   revenir.

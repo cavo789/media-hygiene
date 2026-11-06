@@ -28,7 +28,7 @@ _SHARED = (
 def _pages(cli: CliRunner, monkeypatch: pytest.MonkeyPatch) -> tuple[str, str]:
     """The search page and the folder view, as served."""
     answers = serve_search(
-        cli, monkeypatch, [("GET /search", None), ("GET /browse", None)]
+        cli, monkeypatch, [("GET /library", None), ("GET /browse", None)]
     )
     return answers[0].body.decode(), answers[1].body.decode()
 

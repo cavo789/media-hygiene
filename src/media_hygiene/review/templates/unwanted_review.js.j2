@@ -65,8 +65,15 @@
   }));
 
   const render = () => {
-    if (groups.length === 0) return;
+    if (groups.length === 0) {
+      showFiles([], false);
+      byId("title").textContent = "";
+      return;
+    }
     const group = groups[at];
+    for (const part of document.querySelectorAll("#strict details")) {
+      if (part.dataset.group === group.reason) part.open = true;
+    }
     const aside = photos.filter((photo) => photo.decision === "aside").length;
     const done = photos.filter((photo) => photo.decision !== "").length;
     byId("position").textContent = fill(T.position, { number: at + 1, total: groups.length });
@@ -170,6 +177,19 @@
     else return;
     event.preventDefault();
   });
+
+  // New thresholds tried: ranks changed, the photos decided kept; same reason shown.
+  window.mhStrictApplied = async () => {
+    const reason = groups[at] ? groups[at].reason : "";
+    const state = await fetch(statePath).then((r) => r.json());
+    const proof = await fetch(filePath).then((r) => r.json());
+    photos = state.photos;
+    groups = state.groups;
+    disk.clear();
+    if (!proof.error) for (const entry of proof.entries) disk.set(entry.photo, entry.aside);
+    at = Math.max(0, groups.findIndex((group) => group.reason === reason));
+    render();
+  };
 
   Promise.all([fetch(statePath).then((r) => r.json()), fetch(filePath).then((r) => r.json())])
     .then(([state, file]) => {

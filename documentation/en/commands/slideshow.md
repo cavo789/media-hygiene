@@ -20,7 +20,7 @@ The TV shows a code? Type it on the phone.
 
 - **▶** and **◀**: next and previous photo. A tap on a thumbnail shows that one.
 - **❚❚ Pause** stops on the photo; **▶ Play** goes on.
-- To end: choose another show here; the PC alone stops the slideshow.
+- **■ Stop** ends the show: the TV says the slideshow is over. Then **Choose another show** brings you back here. Stop changes no photo and no setting.
 
 [Everything about the slideshow (PC)](#run-it).
 
@@ -146,6 +146,8 @@ the steps are the [home page's](home.md#once-per-phone-install-the-certificate).
 
 - **◀** and **▶**: the previous and next photos; **▶ Play** / **❚❚ Pause**, and **Each photo**: how
   long a photo stays while playing.
+  **Keep as the default** (PC only) writes that pace to `[slideshow] interval_seconds`, shows what
+  `config.toml` holds as read back, and applies to the next shows.
 - A tap on a thumbnail shows that photo on the TV.
 - **Do not show** sets the photo on the TV out of the show (the TV moves on); a thumbnail's own
   button does the same for any photo, and **Show again** sets it back.

@@ -29,6 +29,7 @@
   "delete": _("Delete"),
   "deleteAsk": [ngettext("Delete {n} album? Your photos stay where they are: only the albums file changes.", "Delete {n} albums? Your photos stay where they are: only the albums file changes.", 1), ngettext("Delete {n} album? Your photos stay where they are: only the albums file changes.", "Delete {n} albums? Your photos stay where they are: only the albums file changes.", 2)],
   "rename": _("Rename"),
+  "onTv": _("Show this album on the TV"),
   "renameAsk": _("The new name of {name}:"),
   "tick": _("Pick {name}"),
   "undo": _("Undo"),
@@ -63,6 +64,7 @@
   #albumFilter { flex: 1; min-width: 0; }
   .shelf .tick { position: absolute; top: 6px; left: 6px; z-index: 1; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 8px; background: var(--card); }
   .shelf .tick input { width: 22px; height: 22px; }
+  .shelf .totv { position: absolute; top: 6px; right: 52px; z-index: 1; min-height: 36px; padding: 4px 8px; border-radius: 8px; text-decoration: none; background: var(--card); }
   .shelf .rename { position: absolute; top: 6px; right: 6px; z-index: 1; min-height: 36px; padding: 4px 8px; background: var(--card); }
   .shelf .renaming { display: flex; gap: 6px; padding: 6px; }
   .shelf .renaming input { flex: 1; min-width: 0; min-height: 44px; padding: 6px 10px; font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; }

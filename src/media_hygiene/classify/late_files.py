@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.event_files import read_refused
 from media_hygiene.classify.found_folders import event_folder_of, moment
+from media_hygiene.classify.hand_days import SIDECAR_DAY, known, ready
 from media_hygiene.classify.rules.calendar import parse_one_off
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.errors import ConfigError
@@ -29,8 +30,7 @@ if TYPE_CHECKING:
     from media_hygiene.config.classify_rules import ClassifyRule
 
 _ROWS: Final = (
-    "SELECT rowid, path, media_date, camera, full_digest FROM files"
-    " WHERE media_date IS NOT NULL"
+    f"SELECT rowid, path, media_date, camera, full_digest, {SIDECAR_DAY} FROM files"  # noqa: S608
 )
 
 
@@ -126,7 +126,7 @@ def late_files(
 
 
 def _loose_rows(connection: sqlite3.Connection) -> list[_Row]:
-    """The dated files of the index outside any event folder.
+    """The dated files of the index outside any event folder (a day set by hand too).
 
     Args:
         connection: The index.
@@ -135,10 +135,10 @@ def _loose_rows(connection: sqlite3.Connection) -> list[_Row]:
         Them.
     """
     rows: list[_Row] = []
-    for key, path, written, camera, digest in connection.execute(_ROWS):
+    for key, path, written, camera, digest, hand in ready(connection).execute(_ROWS):
         if event_folder_of(str(path)) is not None:
             continue
-        when = moment(written)
+        when = known(moment(written) if written else None, hand and moment(hand))
         if when is None:
             continue
         name = str(camera or "").strip().casefold()

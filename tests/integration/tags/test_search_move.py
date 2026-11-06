@@ -64,7 +64,7 @@ def test_the_page_opens_on_a_folder_given(
     pages: list[str] = []
 
     async def page(app: SearchApp) -> None:
-        pages.append((await _call(app, "GET /search")).body.decode())
+        pages.append((await _call(app, "GET /library")).body.decode())
 
     monkeypatch.setattr(search_service, "serve_until_ended", fake_server(page))
     result = run(cli, "search", "--folder", "Prints jan10")
@@ -134,7 +134,7 @@ def test_a_folder_of_the_tree_narrows_the_search_with_or_without_words(
     calls: list[tuple[str, object]] = [
         ("GET /api/folders", None),
         ("POST /api/search", {"text": ""}),
-        ("GET /search", None),
+        ("GET /library", None),
     ]
     answers = serve_search(cli, monkeypatch, calls)
     folders = json.loads(answers[0].body)["folders"]
@@ -178,7 +178,7 @@ def test_the_month_move_is_offered_shown_then_done_on_the_page(
     assert run(cli, "tags", "--no-describe").exit_code == 0
     assert run(cli, "classify").exit_code == 0
     answers = serve_search(
-        cli, monkeypatch, [("GET /search", None), ("POST /api/search", _DAY)]
+        cli, monkeypatch, [("GET /library", None), ("POST /api/search", _DAY)]
     )
     page, found = answers[0], answers[1]
     for part in ('id="monthOpen"', 'id="monthDlg"', "/api/move/month/view"):

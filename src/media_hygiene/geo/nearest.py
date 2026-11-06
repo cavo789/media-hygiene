@@ -72,7 +72,7 @@ class NearestIndex:
             radius_km: How far around it.
 
         Returns:
-            Their indexes.
+            Their indexes, nearest first.
         """
         reach = _ring_width_km(point.latitude)
         candidates = (
@@ -81,7 +81,9 @@ class NearestIndex:
         distances = distances_km(
             point, self._latitudes[candidates], self._longitudes[candidates]
         )
-        return candidates[distances <= radius_km]
+        inside = distances <= radius_km
+        order = np.argsort(distances[inside], kind="stable")
+        return candidates[inside][order]
 
     def _ring(self, point: Point) -> npt.NDArray[np.int_]:
         """The points of a position's cell and of the eight around it.

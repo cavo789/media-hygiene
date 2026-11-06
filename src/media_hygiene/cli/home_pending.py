@@ -2,6 +2,7 @@
 
 Intruder files and the people page's photos lie in its `chosen` key too (0587): their
 `found_by` tells them from `library`'s, so each page is named with its own count.
+The home server serves `/people/` (0600), so the banner links there too (0620).
 
 Every review page and `library` write their choices into the one decisions file of the
 reports folder, each under its own key; one `clean --decisions` (the home page's
@@ -33,6 +34,7 @@ from media_hygiene.review.step_watch import (
 )
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.services.intruder_pick import FOUND_BY as INTRUDER
+from media_hygiene.services.people_here import PEOPLE_PAGE
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -100,7 +102,7 @@ def _pages(file: DecisionsFile) -> tuple[PendingPage, ...]:
             url=GONE_PAGE,
         ),
         PendingPage(label=_("Intruder files"), count=intruders, url=INTRUDERS_PAGE),
-        PendingPage(label=_("People"), count=people),  # its own server: no link here
+        PendingPage(label=_("People"), count=people, url=PEOPLE_PAGE),
         PendingPage(
             label=_("Library"),
             count=len(file.chosen) - intruders - people,

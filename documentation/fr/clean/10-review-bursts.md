@@ -360,6 +360,11 @@ et lancé `undo` ? L'archive applique à nouveau les mêmes choix :
   et `--exclude` (ou gardez-les dans `config.toml`). Si une série a changé entre le tri et le
   nettoyage (un fichier ajouté, déplacé ou modifié), `clean` refuse le fichier plutôt que de
   deviner : refaites le tri.
+- **Trop de propositions, ou trop peu ?** Le panneau *Trop strict ? Pas assez ?* de la colonne de
+  gauche règle `propose_aside_below` et `identical_below` : relâchez un curseur, les propositions
+  changent aussitôt et une ligne nomme les photos qui entrent ou sortent ; rien n'est écrit, et les
+  séries déjà vues gardent vos choix. *Garder ces valeurs* les écrit dans `config.toml` (vos
+  commentaires restent) et les affiche telles que relues dans le fichier.
 - **Les propositions** viennent de `[review]` dans `config.toml`. Dans une rafale, toutes les
   photos montrent la même scène : les comparer a du sens ; `0` désactive chaque règle :
   - `propose_aside_below` (par défaut `0.35`) : une photo sous cette part de la netteté de la

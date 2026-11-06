@@ -34,7 +34,12 @@ Ensuite l'index en place est **sauvegardé d'abord**, et la fenêtre finit sur l
 
 ### Après la perte du disque
 
-`mh restore` copie d'abord sur le PC les archives qui lui manquent depuis le dossier `.mh-backups`
+`mh restore` liste d'abord les archives du PC et de cet autre dossier, de la plus récente à la plus
+ancienne, chacune avec l'endroit où elle se trouve ; NAS éteint, celles du PC. Il est refusé pendant
+qu'une autre commande `mh` tourne (une page, un audit), sauf la page d'accueil qui l'a lancé : il
+écrase l'index.
+
+Il copie ensuite sur le PC les archives qui lui manquent depuis le dossier `.mh-backups`
 de la cible de [`push`](push.md), ou depuis le dossier de `--from` :
 `mh restore --from \\NAS\backup_photos\.mh-backups` (après une panne, le fichier de `push` a
 disparu aussi : `--from` est alors nécessaire). La copie est dite en une ligne, puis l'archive la

@@ -23,6 +23,7 @@ from media_hygiene.classify.event_left import read_left
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
 from media_hygiene.search.days import NAME as DAY
+from media_hygiene.search.event_suggest import suggested
 from media_hygiene.search.hits import hit_of, with_facts
 from media_hygiene.search.models import Found
 from media_hygiene.search.span_cards import BETWEEN, Row, card_of, when_taken
@@ -129,9 +130,9 @@ class SpanEvents:
         rows = self.event_rows(start, datetime.fromisoformat(last))
         hits = tuple(hit_of((None, {}), row[:5]) for row in rows)
         found = with_facts(self.index, Found(len(hits), hits))
-        return json_response(
-            HTTPStatus.OK, found_view(found, self.mapper, self.chosen())
-        )
+        view = found_view(found, self.mapper, self.chosen())
+        name = suggested(self.index.connection, found)  # its album's name (0523)
+        return json_response(HTTPStatus.OK, {**view, "suggested": name})
 
     def event_rows(self, start: datetime, end: datetime) -> list[Row]:
         """The files not sorted yet of one event, in the order taken.

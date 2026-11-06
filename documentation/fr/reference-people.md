@@ -67,11 +67,23 @@ file = "people/Chloé.toml"
 ```toml
 # people/Chloé.toml
 faces = [
-    "/data/c/Photos/2019/IMG_0412.jpg#0",
-    "/data/c/Photos/2023/IMG_7781.jpg#1",
+    {path = 'C:\Photos\2019\IMG_0412.jpg', id = "3f9a0c41d2e8b7a5:2841337", face = 0},
+    {path = 'C:\Photos\2023\IMG_7781.jpg', id = "a07be3349c1f0d62:3120554", face = 1},
 ]
-rejected = ["/data/c/Photos/2008/IMG_0042.jpg#1"]  # retirés avec ×
+rejected = [
+    {path = 'C:\Photos\2008\IMG_0042.jpg', id = "d41c88e07a9b3f10:1904210", face = 1},  # retirés avec ×
+]
 ```
+
+Chaque visage désigne sa photo de trois façons : `path`, où elle est sur votre PC ; `id`, le
+début de son SHA-256 et sa taille, ce à quoi media-hygiene se fie ; `face`, son numéro dans la
+photo. `sort`, `undo` et la quarantaine réécrivent `path` aussitôt ; un dossier renommé dans
+l'Explorateur est retrouvé par son `id` à la fin de l'audit suivant (`audit`, `import`, ou celui
+de la page d'accueil), entre copies identiques celle du même nom de fichier. Une photo modifiée
+depuis est une autre photo : ses visages perdent leur nom. Les visages encore écrits
+`"/data/c/…#0"` (avant cette version) se chargent tels quels et reçoivent leur `id` à l'audit
+suivant ; au-delà de 50 photos que le cache n'a pas lues, cet audit le dit d'abord
+(*N photos nommées lues une fois…*).
 
 Les visages des inconnus vont dans `people/ignored.toml`. Gardez le dossier `people` avec
 `config.toml` quand vous le copiez ou le sauvegardez : un fichier manquant arrête l'exécution

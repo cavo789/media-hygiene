@@ -49,8 +49,32 @@ function drawRun(kind, state) {
   dialog.innerHTML = `<div class="dlg">
     <div class="dlg-head"><div><p class="eyebrow">${icon("tag")} ${esc(T.tagsEyebrow)}</p><h2 id="${kind}Title">${esc(said(kind, "Title"))}</h2></div>${closeButton()}</div>
     <p class="muted">${esc(said(kind, "Text"))}</p>${runBody(kind, state)}</div>`;
+  if (kind === "tags" && ["asking", "done", "stopped"].includes(state.phase)) drawAi(dialog);  // not while polling
   if (!dialog.open) showDialog(dialog);
   return state.phase === "preparing" || state.phase === "running";
+}
+// 🤖 The local model's state (0608): found or absent, the model chosen, the switch (none = off).
+// Read from config.toml and the server's own listing; a choice is saved and drawn as read back.
+function drawAi(dialog) {
+  if (!P.aiState || REMOTE) return;
+  const box = document.createElement("div");
+  box.className = "callout callout-info";
+  dialog.querySelector(".dlg").insertBefore(box, dialog.querySelector(".dlg-head").nextSibling);
+  const draw = (state, saved) => {
+    const names = state.models.includes(state.model) || !state.model ? state.models : [state.model, ...state.models];
+    const options = [`<option value="">${esc(T.aiNoneChosen)}</option>`, ...names.map((name) => `<option value="${esc(name)}"${name === state.model ? " selected" : ""}>${esc(name)}</option>`)].join("");
+    const line = state.found ? fillIn(T.aiFound, { url: state.url, n: state.models.length }) : fillIn(T.aiAbsent, { url: state.url });
+    box.innerHTML = `<span><strong>${esc(T.aiTitle)}</strong> ${esc(line)} ${esc(state.model ? "" : T.aiOff)}<br><label>${esc(T.aiModel)} <select id="aiModel">${options}</select></label> <span id="aiSaid" role="status">${esc(saved || "")}</span></span>`;
+    $("#aiModel").addEventListener("change", (event) => {
+      post(P.aiState, { model: event.target.value })
+        .then((reply) => {
+          if (!reply.ok) { toast(reply.body.error || T.aiFailed); return; }
+          fetch(P.aiState, { cache: "no-store" }).then((r) => r.json()).then((now) => draw(now, now.model ? fillIn(T.aiSaved, { model: now.model }) : T.aiSavedOff));
+        })
+        .catch(() => stopped());
+    });
+  };
+  fetch(P.aiState, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).then((state) => { if (state) draw(state); }).catch(() => {});
 }
 const pollRun = (kind) => fetch(P[kind], { cache: "no-store" })
   .then((response) => response.json())

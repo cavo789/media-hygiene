@@ -313,8 +313,9 @@ dialog never changes it.
   and the list is read back from the disk;
 - a folder-name rule (`path`) serves once: after `sort` moved its files into
   `Holidays and outings/Turin 2018`, the old folder name it looks for is gone. **Turn into
-  dates** replaces it, in its place in the list, by a `date_range` rule with the days of that
-  event and `keep_folders = true`; the dialog says what changes first ("450 files: 92 of this
+  dates** replaces it by a `date_range` rule with the days of that event and `keep_folders =
+  true`, kept with the other events in `events/<year>.toml` (removed from `config.toml`, your
+  comments kept); the dialog says what changes first ("450 files: 92 of this
   event, 358 of other folders on the same days. Elsewhere: Photos Chloé (358)", and the files
   the old rule decided that the new one would not take). One rule at a time: the days are those
   of the event holding most of its files, never its extreme dates (a pattern also catches

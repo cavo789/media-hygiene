@@ -32,6 +32,7 @@ from media_hygiene.i18n import ngettext
 from media_hygiene.review.serving import json_response
 from media_hygiene.search.event_match import Moved, events_named, joined_event
 from media_hygiene.search.move_event import remember_event
+from media_hygiene.search.sidecar_days import read_days_again
 from media_hygiene.search.views import JPEG, THUMB_PREFIX
 
 if TYPE_CHECKING:
@@ -140,6 +141,7 @@ class FoundDesk:
         Returns:
             Them.
         """
+        read_days_again(self.connection)  # a day set by hand counts (0618)
         return found_folders(self.connection, *self.reading)
 
     def _line(self, found: FoundFolder) -> dict[str, object]:

@@ -5,11 +5,14 @@ or a new WSL erases it, and with it the index (digests, visual facts, tags,
 descriptions, meanings, faces: hours to compute again). The archive goes to
 `/backups`, which `mh` mounts from `$HOME\media-hygiene\backups` for `backup` and
 `restore` only. It is proven by reading it back from the disk (`backup_archive`), and
-the `KEPT` most recent archives are kept, older ones removed.
+the `KEPT` most recent archives are kept, older ones removed. A page may run meanwhile
+(0569): the index is copied by SQLite, and each settings file is read once, so a save
+during the backup gives the old or the new file whole, its digest always matching.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import tempfile
 import zipfile
@@ -168,9 +171,13 @@ def _write(runtime: Runtime, index: Path, draft: Path) -> None:
     with zipfile.ZipFile(draft, "w", zipfile.ZIP_DEFLATED) as archive:
         archive.write(index, INDEX_MEMBER)
         for file in files:
+            try:
+                content = file.read_bytes()
+            except FileNotFoundError:  # a page's save just replaced its draft
+                continue
             member = CONFIG_PREFIX + file.relative_to(config).as_posix()
-            archive.write(file, member)
-            members[member] = digest(file)
+            archive.writestr(member, content)
+            members[member] = hashlib.sha256(content).hexdigest()
         manifest = Manifest(version(_PACKAGE), schema, members, counts)
         raw = {"format": FORMAT, **asdict(manifest)}
         archive.writestr(MANIFEST, json.dumps(raw, indent=2, sort_keys=True))

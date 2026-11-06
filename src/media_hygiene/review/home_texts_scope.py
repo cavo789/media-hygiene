@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from media_hygiene.i18n import _
+from media_hygiene.review.home_texts_lan import lan_switch_texts
 
 
 def scope_texts() -> dict[str, str]:
@@ -30,6 +31,7 @@ def scope_texts() -> dict[str, str]:
         "scopeFailed": _("The settings could not be saved in config.toml."),
         "scopeAuditAgain": _("Run the audit again"),
         **imports_texts(),
+        **lan_switch_texts(),
     }
 
 
@@ -55,4 +57,5 @@ def imports_texts() -> dict[str, str]:
         "chainFailed": _("it said why in the window of mh"),
         "chainResume": _("▶ Run again from: {step}"),
         "chainType": _("In the window of mh: {command}"),
+        "chainBursts": _("📸 Its burst series"),
     }

@@ -1,0 +1,5 @@
+This photo was taken near the places listed below, numbered.
+Which one does the photo clearly show? A building or monument seen in the picture, not merely nearby.
+If it shows none of them (an indoor scene, people, food, a street without one of them, the photo facing away), answer 0.
+Never guess a place that is not in the list.
+Answer in JSON on one line: {"choice": the number}.

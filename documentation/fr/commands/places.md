@@ -35,6 +35,7 @@ docker run --rm -it `
 | Vos photos | 🔒 Jamais modifiées : les positions viennent du cache. Les dossiers de photos, en lecture seule (`:ro`), montrent les photos d'un groupe ; sans eux, la carte marche mais ne montre aucune photo. |
 | Il faut | `/cache` (les positions notées par les audits, et les aperçus), `/config` (où les lieux sont enregistrés), vos dossiers de photos en lecture seule, et `-p 127.0.0.1:8088:8088`. |
 | Écrit | Des entrées `[[classify.places]]` dans `config.toml`, en gardant vos commentaires et le reste du fichier ; aussi les positions des dossiers (`[[places.folders]]`), les noms qui ne sont pas des villes (`folder_town_ignore`), les groupes écartés (`[[places.ignored]]`) et les photos données à la main à un lieu (`[[classify.place_photos]]`, leur liste dans `/config/places/<lieu>.toml`). Chaque changement est relu dans le fichier avant que la page ne le montre. |
+| Sur un téléphone | Un téléphone jumelé avec `mh --lan` voit la carte en lecture seule (*Voir les lieux sur une carte* sur sa page d'accueil) : les lieux, les groupes et leurs photos ; tout contrôle qui enregistre est masqué et sa requête refusée. |
 | Annuler | Supprimez un lieu sur la carte, ou ses lignes dans `config.toml` ; **Rétablir** ce que vous avez écarté ; ✕ sur une photo donnée à la main, dans l'éditeur de son lieu. |
 | Avec `mh` | `mh places` : vos dossiers de photos sont montés en lecture seule et le port est publié pour vous. |
 

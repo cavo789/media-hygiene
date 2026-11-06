@@ -62,22 +62,12 @@
                    border-radius: 6px; padding: 2px 6px; }
   button { cursor: pointer; border-color: var(--accent); color: var(--accent); padding: 4px 12px; }
   button:disabled { cursor: default; opacity: .5; }
+{% include "_frame.css.j2" %}
 </style>
 </head>
 <body>
-{% set header = report_header(report_kind) %}
-<nav class="mh-bar" aria-label="Media Hygiene">
-  <span class="mh-brand"><img src="{{ avatar_data_uri() }}" alt="" width="24" height="32">Media Hygiene</span>
-  <span class="mh-page" aria-hidden="true">›</span>
-  <span class="mh-page">{{ report_name }}</span>
-{% if report_when is defined %}
-  <span class="mh-page">· {{ report_when | when }}</span>
-{% endif %}
-  <span class="mh-links">
-    <a class="mh-doc" href="{{ header.doc }}" target="_blank" rel="noopener">{{ _("Documentation") }}</a>
-    <a class="mh-doc" href="{{ header.twin }}" target="_blank" rel="noopener" hreflang="{{ header.twin_lang }}" lang="{{ header.twin_lang }}">{{ header.twin_label }}</a>
-  </span>
-</nav>
+{% set header = report_header(report_kind, near=has_near | default(false)) %}
+{% include "_frame.html.j2" %}
 <main>
 {% block content %}{% endblock %}
 </main>

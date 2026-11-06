@@ -53,7 +53,7 @@ html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
 <div id="card" class="hidden"><img id="cardPhoto" alt=""><div><h1 id="cardName"></h1><p id="cardPeriod"></p><p id="cardPlace"></p></div></div>
 <div id="banner" class="hidden"></div>
 <div id="where" class="quiet"></div>
-<div id="idle"><p>{{ _("No slideshow yet: on the phone, open Media Hygiene and choose an album under Show an album on the TV. It appears here by itself.") }}</p></div>
+<div id="idle"><p id="idleWait">{{ _("No slideshow yet: on the phone, open Media Hygiene and choose an album under Show an album on the TV. It appears here by itself.") }}</p><p id="idleOver" class="hidden">{{ _("The slideshow is over. Choose another show on the phone: it appears here by itself.") }}</p></div>
 <div id="pairing" class="hidden">
   <p>{{ _("On the phone's remote, type the code of this TV:") }}</p>
   <strong id="code"></strong>

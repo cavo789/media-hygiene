@@ -41,6 +41,7 @@ class IntrudersPick(BaseModel):
     extensions: tuple[str, ...] = ()
     folders: tuple[str, ...] = ()  # as the page shows them: host paths
     back: bool = False  # put every intruder file set aside back
+    but: bool = False  # every extension but those ticked (0568)
 
 
 class IntrudersDesk(Protocol):

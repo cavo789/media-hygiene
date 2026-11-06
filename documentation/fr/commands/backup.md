@@ -55,9 +55,12 @@ copie donc lui-même dans un autre dossier, une fois relue :
 
 Ce dossier garde les 3 mêmes archives que le PC ; une copie est écrite entière ou pas du tout,
 puis relistée : `Relu : 3 archive(s) dans …`. Un NAS qui ne répond pas est signalé, et l'archive
-reste sur le PC ; un dossier donné avec `--to` qui ne s'ouvre pas arrête la commande. `backup` et
-[`restore`](restore.md) sont refusés pendant qu'une autre commande `mh` tourne (une page, un
-audit), sauf la page d'accueil qui les a lancés.
+reste sur le PC ; un dossier donné avec `--to` qui ne s'ouvre pas arrête la commande. Il y a donc
+deux copies : un [`restore`](restore.md) fonctionne NAS éteint, depuis celle du PC.
+
+`backup` fonctionne **pendant qu'une page est ouverte** ou qu'un audit tourne : il ne fait que lire,
+et un réglage enregistré pendant ce temps part entier, ancien ou nouveau. Seul `restore` est alors
+refusé.
 
 Avec `docker run`, montez vous-même le dossier des archives :
 

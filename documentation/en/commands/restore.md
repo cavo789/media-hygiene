@@ -34,7 +34,11 @@ index in place is **backed up first**, and the window ends on the line that puts
 
 ### After a lost disk
 
-`mh restore` first copies to the PC the archives it lacks from the folder `.mh-backups` of the
+`mh restore` first lists the archives of the PC and of that other folder, newest first, each with
+where it is; with the NAS off, those of the PC. It is refused while another `mh` command runs (a
+page, an audit), the home page that started it excepted: it overwrites the index.
+
+It then copies to the PC the archives it lacks from the folder `.mh-backups` of the
 [`push`](push.md) target, or from the folder of `--from`:
 `mh restore --from \\NAS\backup_photos\.mh-backups` (after a crash, `push`'s own file is gone
 too: `--from` is then needed). The copy is said in one line, then the most recent archive is put

@@ -22,6 +22,8 @@ from media_hygiene.config.photo_ref import PhotoRef, content_id
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.serving import json_response
+from media_hygiene.search.tag_cap import too_many_unread
+from media_hygiene.search.tag_drop_desk import DROP_ACTIONS
 from media_hygiene.tags.hand_edit import give_word, take_word
 from media_hygiene.tags.hand_files import hand_words, read_hand_tags
 
@@ -32,6 +34,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.http import Response
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.search.hand_index import HandIndex
+    from media_hygiene.search.tag_drop_desk import DropDesk
 
 HAND_TAG_PATH: Final = "/api/hand-tag"
 _MOST: Final = 20_000  # photos picked at once, as *Move to an event…*
@@ -44,7 +47,9 @@ class TagAsked(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    action: Literal["list", "add", "remove"] = "list"
+    action: Literal[
+        "list", "add", "remove", "drop_look", "drop", "dropped", "restore"
+    ] = "list"
     keys: tuple[int, ...] = Field(default=(), max_length=_MOST)
     word: str = Field(default="", max_length=LONGEST)
 
@@ -56,6 +61,7 @@ class TagDesk:
     index: HandIndex
     mapper: HostPathMapper
     config_file: Path | None
+    drop: DropDesk | None = None  # a useless word dropped everywhere (0546)
 
     def answer(self, body: bytes) -> Response:
         """List the words, give one to the photos picked, or take it off.
@@ -66,7 +72,7 @@ class TagDesk:
         Returns:
             Every word, each photo's words read back from the disk, and the line
             said; 400 for a body that cannot be read, 409 when `/config` cannot be
-            written, 422 or 500 when the save fails.
+            written, 422 or 500 when the save fails or too many photos must be read.
         """
         try:
             asked = TagAsked.model_validate_json(body)
@@ -74,6 +80,26 @@ class TagDesk:
             said = exc.errors()[0]["msg"] if exc.errors() else str(exc)
             return json_response(HTTPStatus.BAD_REQUEST, {"error": said})
         word = " ".join(_CONTROL.sub(" ", asked.word).split())
+        if asked.action in DROP_ACTIONS and self.drop is not None:
+            return self.drop.answer(asked.action, word)
+        if (refused := self._refused(asked, word)) is not None:
+            return refused
+        try:
+            said = self._save(asked, word) if asked.action != "list" else ""
+            return json_response(HTTPStatus.OK, self._read_back(asked.keys, said))
+        except (ValueError, OSError) as exc:
+            return save_refused(exc)
+
+    def _refused(self, asked: TagAsked, word: str) -> Response | None:
+        """Say why a change cannot be done.
+
+        Args:
+            asked: The keys and the action.
+            word: The word, cleaned.
+
+        Returns:
+            The refusal; None for what can be done.
+        """
         if asked.action != "list" and self.config_file is None:
             said = _("Words cannot be saved: /config is not mounted, or read-only.")
             return json_response(HTTPStatus.CONFLICT, {"error": said})
@@ -81,11 +107,9 @@ class TagDesk:
             return json_response(
                 HTTPStatus.BAD_REQUEST, {"error": _("Type a word, pick a photo.")}
             )
-        try:
-            said = self._save(asked, word) if asked.action != "list" else ""
-            return json_response(HTTPStatus.OK, self._read_back(asked.keys, said))
-        except (ValueError, OSError) as exc:
-            return save_refused(exc)
+        if asked.action == "add" and (over := too_many_unread(self.index, asked.keys)):
+            return json_response(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": over})
+        return None
 
     def _save(self, asked: TagAsked, word: str) -> str:
         """Write the word given or taken off.
@@ -110,7 +134,11 @@ class TagDesk:
             }
             take_word(config, word, ids)
             return _("“{word}” taken off, read back from the disk.").format(word=word)
-        refs = tuple(ref for key in asked.keys if (ref := self._ref(key)) is not None)
+        refs = tuple(
+            ref
+            for key in asked.keys
+            if (ref := ref_of(self.index, self.mapper, key)) is not None
+        )
         give_word(config, HandTag(word=word, photos=refs))
         return ngettext(
             "“{word}” given to {n} photo, read back from the disk.",
@@ -147,17 +175,6 @@ class TagDesk:
         """
         photo = self.index.source_of(key)
         return None if photo is None else photo.path
-
-    def _ref(self, key: int) -> PhotoRef | None:
-        """A photo as `{path, id}`: its digest the index's, else read once.
-
-        Args:
-            key: A key of the search.
-
-        Returns:
-            The reference, or None.
-        """
-        return ref_of(self.index, self.mapper, key)
 
 
 def ref_of(index: SearchIndex, mapper: HostPathMapper, key: int) -> PhotoRef | None:

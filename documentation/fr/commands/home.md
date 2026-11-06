@@ -57,6 +57,7 @@ docker run --rm -it `
 
 ## Ce que montre la page
 
+- **La langue** : une liste *Langue* dans la colonne de gauche de la page d'accueil et dans la barre du haut de chaque autre page (PC seulement) écrit `[general] locale` de `config.toml` et dit ce que le fichier contient, relu sur le disque ; elle s'applique au prochain démarrage de `mh`.
 - **Le menu de gauche** : les cinq étapes du cycle, **Partager** (un but, pas une étape : sans numéro) et les outils, chacun avec son compte (*9*
   copies à mettre de côté, *214* fichiers que seul le NAS garde), *Vos dossiers* (chacun trouvé
   ou non), la version (*0.5.0 disponible* quand une plus récente est publiée,
@@ -221,15 +222,18 @@ qui a ouvert la page :
 - **Une étape longue** (`audit`, `clean`, `import`…) tourne dans la fenêtre de `mh` pendant que
   la page reste ouverte : sa fenêtre montre l'étape en cours, une barre, combien de fichiers sont
   faits et combien par seconde. Fermez ou rechargez l'onglet entre-temps : l'étape continue, et
-  la page, rouverte, la montre à nouveau (*Une étape tourne encore*) jusqu'à sa fin.
+  la page, rouverte, la montre à nouveau (*Une étape tourne encore*) jusqu'à sa fin. Le navigateur demande une
+  fois s'il peut vous prévenir : dites oui, et la fin de l'étape s'annonce par une notification
+  pendant que vous êtes sur un autre onglet.
 - **Des choix en attente sur plusieurs pages** (séries en rafale, quasi-doublons, paires de
   dossiers, photos indésirables, fichiers disparus, fichiers intrus, les visages de `people`, `library`) : la page d'accueil dit combien
   attendent (*Choix en attente d'application : 3*), chaque page nommée avec son nombre et un
   lien vers elle, et **Tout appliquer** lance un seul `clean --decisions` pour tous : une seule
   exécution, donc un seul `mh undo` les reprend tous. Le nombre est relu dans le fichier des
   décisions à chaque fois ; une fois appliqués, il disparaît.
-- **⚠️ Définitif** (`purge`, `clean --delete`, `import --phone --free`) : la page demande d'abord ; `mh`
-  redemande dans sa fenêtre avant de toucher quoi que ce soit.
+- **⚠️ Définitif** (`clean --delete`, `import --phone --free`) : la page demande d'abord ; `mh`
+  redemande dans sa fenêtre avant de toucher quoi que ce soit. `purge` ouvre d'abord les fichiers de
+  l'exécution, et sa page demande une fois : rien n'est demandé dans la fenêtre.
 - **Sinon** (`mh home` tapé, un `mh` plus ancien, ou `docker run` seul) : le bouton copie la
   commande (*Commande copiée*) et la page continue ; arrêtez-la avec Ctrl+C dans la fenêtre où
   `mh` tourne, collez-y la commande (clic droit) et appuyez sur Entrée. Quand le navigateur
@@ -271,14 +275,14 @@ plus bas.
    `mh --lan` suivant s'y ouvre sans code. Sans HTTPS, jusqu'à l'arrêt de `mh` seulement.
 
 Sur le téléphone, la page d'accueil est la porte de la famille, **Nos photos** : *Retrouver une
-photo* (la recherche et le parcours), les albums et où vous en êtes ; les étapes qui changent les
+photo* (la recherche et le parcours), les albums, *Voir les lieux sur une carte* (en lecture seule : regarder les lieux et leurs photos, rien n'est enregistré) et où vous en êtes ; les étapes qui changent les
 photos (importer, nettoyer, trier, sauvegarder) et les outils n'y sont pas montrés, le PC garde
 tout le cycle. Son titre est le vôtre avec `[home] family_title = "Les Dupont"` dans
 `config.toml` (vide : *Nos photos*).
 
 🔒 **Le téléphone ne fait que lire : tout changement se fait sur le PC.** Depuis le téléphone : la page, où vous en êtes, les rapports, l'avancement d'un audit lancé sur le PC,
 [vos albums](#vos-albums-sur-le-téléphone), ainsi que **la recherche** et **le parcours** (leurs
-photos ouvertes à la taille du téléphone, et leurs vidéos ; les originaux seulement avec `lan_phone_originals = true` sous `[review]` de `config.toml`, désactivé par défaut : pleine taille, position GPS comprise ; *mettre de côté*, *Appliquer maintenant* et un
+photos ouvertes à la taille du téléphone, et leurs vidéos ; les originaux seulement quand l'interrupteur *Les téléphones peuvent télécharger les originaux* de la barre latérale de la page d'accueil est activé (`lan_phone_originals` sous `[review]` de `config.toml`), désactivé par défaut : pleine taille, position GPS comprise ; *mettre de côté*, *Appliquer maintenant* et un
 déplacement restent au PC). Seul un téléphone appairé les atteint : tout autre appareil du Wi-Fi
 (un invité, une télé) reçoit la page d'appairage, ou rien, à toute adresse. Tant que le téléphone montre une page, `mh` continue même onglet du
 PC fermé ; une fois `mh` arrêté, la page du téléphone le dit.
@@ -358,7 +362,7 @@ cochez **Réseaux privés**, puis **Autoriser**.
 
 ### Garder la page sur ce PC seulement
 
-Pas de téléphone à la maison, ou vous n'en voulez pas ? Coupez-le une fois, dans `config.toml` :
+Pas de téléphone à la maison, ou vous n'en voulez pas ? Coupez-le une fois avec l'interrupteur **Ouvrir cette page aux téléphones** de la barre latérale de la page d'accueil (il écrit `config.toml`, le relit, et s'applique au prochain démarrage de `mh`), ou à la main dans `config.toml` :
 
 1. Dans Windows PowerShell, ouvrez le fichier (`mh config` le crée la première fois) :
 

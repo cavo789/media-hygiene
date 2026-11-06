@@ -68,6 +68,28 @@ def test_the_page_says_what_mh_history_says(tmp_path: Path) -> None:
     assert [undo_line(run) for run in _runs(locations.journal_dir)].count("") == 2
 
 
+def test_a_run_still_in_the_quarantine_has_its_purge_link(tmp_path: Path) -> None:
+    """Its files first, by the route of Disk space; no link for the others (0631)."""
+    locations = make_locations(tmp_path)
+    _journal(locations.journal_dir)
+    run_id = _RUNS[0][0]
+    aside = locations.quarantine_dir / run_id
+    aside.mkdir(parents=True)
+    (aside / "a.jpg").write_bytes(b"x")
+    page = history_page(make_runtime(locations)).decode()
+    assert f'href="/quarantine/?run={run_id}&amp;purge=1&amp;back=history"' in page
+    assert page.count("purge=1") == 1
+
+
+def test_purge_chosen_on_a_page_opens_the_files_of_its_run() -> None:
+    """Never a question in the window; `--yes` (the page asked) still runs (0631)."""
+    assert served_here(("purge", "20261011-100000")) == (
+        "/quarantine/?run=20261011-100000&purge=1"
+    )
+    assert served_here(("purge", "20261011-100000", "--yes")) is None
+    assert served_here(("purge", "--to")) is None
+
+
 def test_without_a_journal_the_page_gives_the_message_and_the_hint(
     tmp_path: Path,
 ) -> None:
@@ -106,3 +128,17 @@ def test_the_route(tmp_path: Path, call: str, status: int) -> None:
 def test_the_step_is_served_here() -> None:
     """`history` is a page of the home server: the click does not leave it."""
     assert served_here(("history",)) == HISTORY_PAGE
+
+
+def test_a_purge_started_here_lands_back_with_its_read_back(tmp_path: Path) -> None:
+    """`?purged=` says what the disk says: gone, or still there (0631)."""
+    locations = make_locations(tmp_path)
+    _journal(locations.journal_dir)
+    run_id = _RUNS[0][0]
+    runtime = make_runtime(locations)
+    assert "is gone from the quarantine" in history_page(runtime, run_id).decode()
+    aside = locations.quarantine_dir / run_id
+    aside.mkdir(parents=True)
+    (aside / "a.jpg").write_bytes(b"x")
+    assert "is still in the quarantine" in history_page(runtime, run_id).decode()
+    assert "Read back" not in history_page(runtime).decode()

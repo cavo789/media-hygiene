@@ -137,13 +137,34 @@
       })
       .catch((status) => setStatus(fill(T.failedSave, { status: status }), "error"));
   };
+  // What the step wrote, read from the disk by `GET /api/step` (0632). The polling goes on
+  // once the step seems lost: a slow end, or a server back, still gets its true word.
+  const LOST_POLLS = 8;  // polls without mh taking the step, or without any answer
+  const followed = { unanswered: 0, untaken: 0 };
+  const saidFollowing = (now) => {
+    const progress = now.progress;
+    if (now.lost || followed.untaken >= LOST_POLLS) return setStatus(T.lost, "error");
+    if (!progress || !progress.total) return setStatus(T.handedHere, "saved");
+    const values = { done: progress.done, total: progress.total, current: progress.current };
+    setStatus(fill(progress.current ? T.videosNow : T.videos, values), "saved");
+  };
   const followStep = (step) => fetch(step.follow, { cache: "no-store" })
     .then((answer) => answer.json())
     .then((now) => {
-      if (now.state !== "done" || now.id !== step.id) { window.setTimeout(() => followStep(step), POLL_MS); return; }
-      setStatus(fill(now.code === 0 ? T.lightened : T.stopped, { code: now.code }), now.code === 0 ? "saved" : "error");
+      followed.unanswered = 0;
+      if (now.state === "done" && now.id === step.id) {
+        setStatus(fill(now.code === 0 ? T.lightened : T.stopped, { code: now.code }), now.code === 0 ? "saved" : "error");
+        return;
+      }
+      followed.untaken = now.state === "running" && now.id === step.id ? 0 : followed.untaken + 1;
+      saidFollowing(now);
+      window.setTimeout(() => followStep(step), POLL_MS);
     })
-    .catch(() => window.setTimeout(() => followStep(step), POLL_MS));
+    .catch(() => {
+      followed.unanswered += 1;
+      if (followed.unanswered >= LOST_POLLS) setStatus(T.lost, "error");
+      window.setTimeout(() => followStep(step), POLL_MS);
+    });
   const swap = () => { side = side === "a" ? "b" : "a"; render(); };
   const move = (step) => {
     if (state.drafts.length === 0) return;

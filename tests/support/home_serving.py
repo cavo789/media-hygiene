@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import json
 from typing import TYPE_CHECKING, Final
 
@@ -35,9 +36,11 @@ def serve_home(
     async def serve(door: EndingDoor, _port: int, ready: Callable[[int], None]) -> int:
         ready(8088)
         for route, body in calls:
-            method, path = route.split()
+            method, target = route.split()
+            path, _, query = target.partition("?")
             data = json.dumps(body).encode() if body is not None else b""
             request = Request(method, path, JSON if body is not None else LOCAL, data)
+            request = dataclasses.replace(request, query=query)
             answers.append(await door.handle(request))
         raise KeyboardInterrupt
 

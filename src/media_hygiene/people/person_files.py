@@ -10,19 +10,20 @@ never share a file.
 
 from __future__ import annotations
 
-import json
 import re
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.config.face_refs import face_line, face_mapper
 from media_hygiene.config.people_files import (
-    ENCODING,
     FACES,
     FOLDER,
     REJECTED,
     linked_path,
 )
+from media_hygiene.config.photo_ref import write_refs
 from media_hygiene.i18n import _
+from media_hygiene.people.face_ids import known_ids
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping
@@ -90,12 +91,16 @@ def file_names(people: tuple[Person, ...]) -> tuple[str, ...]:
     return tuple(names)
 
 
-def write_files(config_dir: Path, wanted: PeopleSettings) -> Links:
+def write_files(
+    config_dir: Path, wanted: PeopleSettings, moves: Mapping[str, str] | None = None
+) -> Links:
     """Write the lists of every person, and the ignored faces, into their files.
 
     Args:
         config_dir: The folder of `config.toml`.
         wanted: `[people]` to write.
+        moves: New container path by old one, when a run just moved photos: their
+            ids follow them.
 
     Returns:
         The files to link from `config.toml`.
@@ -104,58 +109,53 @@ def write_files(config_dir: Path, wanted: PeopleSettings) -> Links:
         ValueError: A file written by hand leads out of the folder.
         OSError: A file cannot be written.
     """
-    files = file_names(wanted.person)
+    files, mapper = file_names(wanted.person), face_mapper()
+    every = (
+        *wanted.ignored,
+        *(k for p in wanted.person for k in (*p.faces, *p.rejected)),
+    )
+    ids = known_ids(config_dir, every, moves)
+
+    def lines(keys: tuple[str, ...]) -> list[str]:
+        """The faces as written.
+
+        Args:
+            keys: `<container path>#<n>`.
+
+        Returns:
+            Their lines.
+        """
+        return [face_line(key, ids, mapper) for key in keys]
+
     for person, file in zip(wanted.person, files, strict=True):
         header = _(
             "The faces of {name}, saved by the people page; "
             "config.toml links this file."
         )
-        lists = {FACES: person.faces, REJECTED: person.rejected}
+        lists = {FACES: lines(person.faces), REJECTED: lines(person.rejected)}
         _write(linked_path(config_dir, file), header.format(name=person.name), lists)
     if not wanted.ignored:
         return Links(files)
     header = _("The faces ignored on the people page; config.toml links this file.")
-    _write(linked_path(config_dir, IGNORED_PATH), header, {FACES: wanted.ignored})
+    _write(
+        linked_path(config_dir, IGNORED_PATH), header, {FACES: lines(wanted.ignored)}
+    )
     return Links(files, IGNORED_PATH)
 
 
-def _write(path: Path, header: str, lists: Mapping[str, tuple[str, ...]]) -> None:
+def _write(path: Path, header: str, lists: Mapping[str, list[str]]) -> None:
     """Replace a file with its lists, atomically; left as it is when unchanged.
 
     The text is built here, not by `tomlkit`: these files hold no comment of the
     user's to keep, and building 40 000 ids with `tomlkit` takes seconds (measured,
-    TODO 0300).
+    TODO 0300). Each face is `{path, id, face}` once its id is known (0570).
 
     Args:
         path: The file.
         header: The comment on its first line.
-        lists: Its arrays, by key; an empty one is left out, but `faces`.
+        lists: Its arrays' lines, by key; an empty one is left out, but `faces`.
     """
-    lines = [f"# {' '.join(header.split())}"]
-    for key, values in lists.items():
-        if values or key == FACES:
-            lines.append(f"{key} = [")
-            lines.extend(f"    {_quoted(value)}," for value in values)
-            lines.append("]")
-    text = "\n".join(lines) + "\n"
-    if path.is_file() and path.read_text(ENCODING) == text:
-        return
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(f".{path.name}.tmp")
-    temporary.write_text(text, ENCODING)
-    temporary.replace(path)
-
-
-def _quoted(value: str) -> str:
-    """A TOML basic string: JSON's escapes are TOML's, DEL escaped as TOML wants.
-
-    Args:
-        value: The text.
-
-    Returns:
-        It, quoted.
-    """
-    return json.dumps(value, ensure_ascii=False).replace("\x7f", "\\u007f")
+    write_refs(path, header, {k: v for k, v in lists.items() if v or k == FACES})
 
 
 def remove_unlinked(config_dir: Path, before: Iterable[str], links: Links) -> None:

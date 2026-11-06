@@ -17,7 +17,9 @@ followed went (`index.moves`); version 12 the rows of the files a clean set asid
 (`index.former_names`); version 15 what each journal says of the files set aside by
 a choice (`index.journal_words`) and the files gone (`index.gone_rows`); version 16
 the vector of each photo for search by meaning (`index.meaning_rows`); version 17
-the faces of the people set aside (`index.aside_faces`). An older
+the faces of the people set aside (`index.aside_faces`); version 18 the group of each
+face (`index.face_groups`); version 19 where each located photo lies
+(`index.spot_rows`). An older
 index keeps its digests and integrity results: the new columns are filled once,
 without decoding images again.
 """
@@ -26,23 +28,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.index.aside_faces import CREATE_ASIDE_FACES
-from media_hygiene.index.face_schema import CREATE_FACE_SCANS, CREATE_FACES
 from media_hygiene.index.folder_listings import CREATE_FOLDER_LISTINGS
 from media_hygiene.index.former_names import CREATE_FORMER_NAMES
-from media_hygiene.index.gone_rows import CREATE_GONE
-from media_hygiene.index.journal_words import JOURNAL_TABLES
-from media_hygiene.index.meaning_rows import CREATE_MEANINGS
 from media_hygiene.index.measures import CREATE_MEASURES
 from media_hygiene.index.moves import CREATE_MOVES
 from media_hygiene.index.parked import CREATE_PARKED
-from media_hygiene.index.schema_tables import PATH_TABLES
+from media_hygiene.index.schema_tables import LATER_TABLES, PATH_TABLES
 from media_hygiene.index.takeout_rows import CREATE_TAKEOUT
 
 if TYPE_CHECKING:
     import sqlite3
 
-SCHEMA_VERSION: Final = 17
+SCHEMA_VERSION: Final = 19
 _CREATE: Final = """
 CREATE TABLE IF NOT EXISTS files (
     path TEXT PRIMARY KEY,
@@ -185,14 +182,12 @@ def prepare(connection: sqlite3.Connection) -> None:
     if "kind" not in {row[1] for row in connection.execute("PRAGMA table_info(tags)")}:
         connection.execute(_TAG_KIND)
     connection.execute(_CREATE_TAG_VALUES)
-    connection.execute(CREATE_FACE_SCANS)
-    connection.execute(CREATE_FACES)
     connection.execute(CREATE_FOLDER_LISTINGS)
     connection.execute(CREATE_MEASURES)
     connection.execute(CREATE_MOVES)
     connection.execute(CREATE_PARKED)
     connection.execute(CREATE_TAKEOUT)
     connection.execute(CREATE_FORMER_NAMES)
-    for table in (*JOURNAL_TABLES, CREATE_GONE, CREATE_MEANINGS, CREATE_ASIDE_FACES):
+    for table in LATER_TABLES:
         connection.execute(table)
     connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")

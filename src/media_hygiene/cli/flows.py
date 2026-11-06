@@ -22,7 +22,6 @@ from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.crosscheck import cross_check, czkawka_refresh
 from media_hygiene.services.data_checks import refuse_empty_data
-from media_hygiene.services.photo_refs_audit import relocate_after_audit
 from media_hygiene.services.reporting import write_report
 from media_hygiene.services.writable import ensure_writable
 
@@ -69,7 +68,6 @@ def audit_and_show(runtime: Runtime) -> AuditFindings:
         output.show(inventory)
         output.blank()
     show_pairs(runtime, findings)
-    relocate_after_audit(runtime)  # 0551: renamed in Explorer
     return findings
 
 

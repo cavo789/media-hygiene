@@ -100,7 +100,7 @@ def follow_people(config_file: Path, moves: Mapping[str, str]) -> int:
     after = follow_ids(before, moves, frozenset())
     if after == before:
         return 0
-    save_people(config_file, after)
+    save_people(config_file, after, moves)
     back = read_people(config_file)
     targets = set(moves.values())
     keys = (

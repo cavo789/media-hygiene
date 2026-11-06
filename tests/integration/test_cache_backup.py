@@ -8,7 +8,9 @@ from __future__ import annotations
 
 import json
 import sqlite3
+import threading
 import zipfile
+from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 import pytest
@@ -16,15 +18,17 @@ import pytest
 from media_hygiene.errors import MountError
 from media_hygiene.index.schema import SCHEMA_VERSION, prepare
 from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.services.backup_archive import MANIFEST, BackupError
+from media_hygiene.services.backup_archive import (
+    INDEX_MEMBER,
+    MANIFEST,
+    BackupError,
+)
 from media_hygiene.services.cache_backup import KEPT, archives, make_backup
 from media_hygiene.services.cache_restore import RestoreRequest, restore_backup
 from tests.support.cli import point_mounts, run
 from tests.support.runtime import make_locations, make_runtime
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from typer.testing import CliRunner
 
     from media_hygiene.paths.locations import Locations
@@ -239,3 +243,68 @@ def test_the_commands_say_what_was_read_back(
     restored = run(cli, "restore")
     assert restored.exit_code == 0, restored.output
     assert "mh restore mh-backup-" in " ".join(restored.output.split())
+
+
+def test_a_backup_beside_a_running_page_is_consistent(tmp_path: Path) -> None:
+    """A page writing the index and the settings: each archive proves whole (0569)."""
+    runtime = make_runtime(make_locations(tmp_path))
+    _index(runtime)
+    settings = runtime.locations.config_dir / "config.toml"
+    settings.write_text(_SETTINGS, encoding="utf-8")
+    stop = threading.Event()
+
+    def page() -> None:
+        """Commit two rows at a time, and save the settings atomically."""
+        connection = sqlite3.connect(runtime.locations.index_file)
+        draft = settings.with_name(".config.toml.draft")
+        turn = 0
+        while not stop.is_set():
+            turn += 1
+            for word in ("one", "two"):
+                connection.execute(
+                    "INSERT INTO tags (path, size, mtime_ns, source, value)"
+                    " VALUES ('/data/c/pair.jpg', 1, 1, 'ai', ?)",
+                    (f"{word}{turn}",),
+                )
+            connection.commit()
+            draft.write_text(f"# {turn}\n{_SETTINGS}", encoding="utf-8")
+            draft.replace(settings)
+        connection.close()
+
+    writer = threading.Thread(target=page)
+    writer.start()
+    try:
+        backups = [make_backup(runtime) for _ in range(5)]
+    finally:
+        stop.set()
+        writer.join()
+    for backup in backups[-KEPT:]:
+        with zipfile.ZipFile(backup.path) as archive:
+            archive.extract(INDEX_MEMBER, tmp_path)
+        copy = sqlite3.connect(tmp_path / INDEX_MEMBER)
+        (rows,) = copy.execute(
+            "SELECT COUNT(*) FROM tags WHERE path = '/data/c/pair.jpg'"
+        ).fetchone()
+        copy.close()
+        assert rows % 2 == 0  # never half of a transaction
+    assert len(archives(runtime.locations.backups_dir)) == KEPT
+
+
+def test_a_settings_file_gone_while_listed_is_left_out(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A page's draft renamed between the listing and the read: no failure (0569)."""
+    runtime = make_runtime(make_locations(tmp_path))
+    _index(runtime)
+    gone = runtime.locations.config_dir / ".draft"
+    gone.write_text("x", encoding="utf-8")
+    real = Path.read_bytes
+
+    def read(path: Path) -> bytes:
+        """Read a file, the draft being gone by now."""
+        if path == gone:
+            raise FileNotFoundError(path)
+        return real(path)
+
+    monkeypatch.setattr(Path, "read_bytes", read)
+    assert "config/.draft" not in make_backup(runtime).manifest.members

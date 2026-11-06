@@ -6,9 +6,12 @@ import json
 from typing import TYPE_CHECKING
 
 from media_hygiene.review.step_watch import served_here
+from media_hygiene.services import import_bursts
 from tests.support.home_serving import serve_home
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     import pytest
     from typer.testing import CliRunner
 
@@ -79,3 +82,33 @@ def test_the_other_reviews_are_served_under_their_prefixes(
             continue
         assert '"api/state"' in shown.body.decode(), page
         assert '"/preview/' not in state.body.decode(), page  # relative to the page
+
+
+def _chain(locations: Locations) -> None:
+    said = {"steps": ["bursts"], "at": "bursts", "state": "done"}
+    chain = {**said, "folder": "C:\\Phone", "since": "all"}
+    (locations.cache_dir / "import-chain.json").write_text(json.dumps(chain), "utf-8")
+
+
+def test_the_chain_opens_the_imports_series_only(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0630: `?imported` shows the import's series and says so; none: nothing."""
+    _chain(locations)
+    files = tuple(path for path in locations.data_dir.rglob("*") if path.is_file())
+    found: list[tuple[Path, ...]] = [files, ()]
+    monkeypatch.setattr(import_bursts, "imported", lambda *_: found.pop(0))
+    page = "/review/bursts/"
+    asked: list[tuple[str, object]] = [(f"GET {page}?imported", None)]
+    asked.append((f"GET {page}api/state", None))
+    asked += [(f"GET {page}?imported", None), (f"GET {page}", None)]
+    answers = serve_home(cli, monkeypatch, asked)
+    every, state, none, whole = (*answers,)  # pylint: disable=unbalanced-tuple-unpacking
+    assert every.status == 200
+    assert 'id="importedOnly"' in every.body.decode()
+    assert 'href="./"' in every.body.decode()  # every series, one click away
+    assert 'id="applyNow"' in every.body.decode()
+    assert json.loads(state.body)
+    assert b"nothing to review" in none.body
+    assert 'id="everySeries" href="./"' in none.body.decode()  # 0630
+    assert 'id="importedOnly"' not in whole.body.decode()

@@ -100,6 +100,7 @@ def test_events_of_the_files_not_sorted_yet(tmp_path: Path) -> None:
         assert tiles is not None
         names = [hit["name"] for hit in json.loads(tiles.body)["hits"]]
         assert names == ["a.jpg", "b.jpg", "v.mp4"]
+        assert json.loads(tiles.body)["suggested"]  # the name of its album (0523)
         narrowed = events_get(desk, f"{SPAN_PATH}2024-04-01..2024-04-30")
         assert narrowed is not None
         assert [card["files"] for card in json.loads(narrowed.body)["events"]] == [1]

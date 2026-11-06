@@ -14,6 +14,7 @@ from media_hygiene.person.routes import is_person
 from media_hygiene.review.docs_app import docs_response
 from media_hygiene.review.home_assets import ASSETS_PREFIX, FAVICON_PATH, asset_response
 from media_hygiene.review.http import is_local
+from media_hygiene.review.page_settings import SETTING_PATHS, setting_response
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
@@ -43,6 +44,8 @@ async def asset_or_page(
         return await asset_response(f"{ASSETS_PREFIX}images/favicon.png")
     if request.path.startswith(ASSETS_PREFIX):
         return await asset_response(request.path)
+    if request.path in SETTING_PATHS:
+        return await setting_response(request)
     if request.path.startswith(DOCS_PREFIX):
         return await docs_response(request)
     return await (person if person and is_person(request.path) else page)(request)

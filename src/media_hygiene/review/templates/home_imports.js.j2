@@ -13,6 +13,7 @@ function redrawImports() { const box = $("#importSteps"); if (box) box.outerHTML
 // again from its step: by `mh` when it runs beside this server, else the line to type.
 const CHAIN_MARK = { done: "✅", at: "⏳", next: "▫", failed: "⚠" };
 const CHAIN_EVERY_MS = 3000;
+const CHAIN_BURSTS = "/review/bursts/?imported";
 let chainSaid = "";
 function chainHtml(follow) {
   const chain = follow.chain;
@@ -29,7 +30,10 @@ function chainHtml(follow) {
     ? ` <button type="button" data-chain-from="${esc(chain.at)}">${esc(fill(T.chainResume, { step: T["imports_" + chain.at] }))}</button>`
     : ` · ${esc(fill(T.chainType, { command: follow.command }))}`;
   const failed = chain.failed.length ? ` · ${CHAIN_MARK.failed} ${esc(T.chainFailed)}` : "";
-  return `<strong>${esc(T.chainTitle)}</strong> ${marks} · ${esc(state)}${failed}${resume}`;
+  // Its burst step reached: the page of the import's new series only (0630).
+  const series = chain.steps.indexOf("bursts");
+  const bursts = series >= 0 && (ended || series <= at) ? ` · <a href="${CHAIN_BURSTS}">${esc(T.chainBursts)}</a>` : "";
+  return `<strong>${esc(T.chainTitle)}</strong> ${marks} · ${esc(state)}${failed}${bursts}${resume}`;
 }
 function loadChain() {
   if (REMOTE || !P.importChain || document.hidden) return;

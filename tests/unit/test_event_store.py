@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Final
 import pytest
 
 from media_hygiene.classify.event_store import add_event, remove_events, replace_event
+from media_hygiene.classify.remember_rule import remember_rule
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.classify.rules_edit import remove_rules, replace_rule
 from media_hygiene.classify.rules_file import read_rules, read_written
@@ -159,3 +160,20 @@ def test_config_tidy_moves_the_events_once(locations: Locations) -> None:
     assert [copy.read_text("utf-8") for copy in copies] == [before]
     show_tidy(runtime, apply=True, dates=False)
     assert output_of(runtime).count("event moved") == 1
+
+
+def test_a_folder_rule_turned_into_dates_moves_to_events(tmp_path: Path) -> None:
+    """0611: out of config.toml byte for byte, comments kept; put back on error."""
+    config = tmp_path / "config.toml"
+    party = '[[classify.rules]]\nname = "Turin"\nmatch = "path"\npattern = "turin"\n\n'
+    config.write_text(_CONFIG.replace("# mine\n", f"# mine\n{party}"), encoding="utf-8")
+    assert remember_rule(config, "Turin", _TURIN) == _TURIN
+    assert config.read_text(encoding="utf-8") == _CONFIG
+    assert "Turin" in (tmp_path / "events" / "2019.toml").read_text("utf-8")
+    remove_events(tmp_path, ["Turin"])
+    config.write_text(_CONFIG.replace("# mine\n", f"# mine\n{party}"), encoding="utf-8")
+    before = config.read_bytes()
+    taken = _TURIN.model_copy(update={"name": "Films"})
+    with pytest.raises(ConfigError):
+        remember_rule(config, "Turin", taken)
+    assert config.read_bytes() == before

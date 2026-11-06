@@ -13,6 +13,7 @@ from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.place import decisions_place
+from media_hygiene.search.album_filter import AlbumNarrow
 from media_hygiene.services.writable import ensure_writable
 from media_hygiene.share.album_api import AlbumDesk
 from media_hygiene.share.album_follow import Lookup
@@ -43,6 +44,18 @@ def album_store(runtime: Runtime) -> AlbumStore:
     host = decisions_place(runtime.mapper, reports, target).host
     lookup = Lookup(runtime.locations.index_file, runtime.mapper)
     return AlbumStore(AlbumsPlace(target, host), lookup)
+
+
+def album_narrow(runtime: Runtime) -> AlbumNarrow:
+    """What narrows a "pick all" to the album filter of the page (0602).
+
+    Args:
+        runtime: Settings, mount points and output.
+
+    Returns:
+        It, reading the albums file at each request.
+    """
+    return AlbumNarrow(album_store(runtime), runtime.mapper)
 
 
 def album_desk(

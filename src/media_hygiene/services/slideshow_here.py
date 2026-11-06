@@ -30,7 +30,7 @@ from media_hygiene.services.slideshow import shown_slides
 from media_hygiene.services.slideshow_build import Serving, show_app
 from media_hygiene.services.slideshow_choices import Chooser
 from media_hygiene.services.slideshow_pick import Pick
-from media_hygiene.services.slideshow_selection import selected, why
+from media_hygiene.services.slideshow_selection import any_tv, selected, why
 from media_hygiene.slideshow.desk import Changes, Desk
 from media_hygiene.slideshow.door import Door, Visitor
 from media_hygiene.slideshow.films import show_films
@@ -75,8 +75,8 @@ class SlideshowHere:
         self._stack = ExitStack()  # the index, opened at the first show
         self._search: tuple[SearchIndex, Runtime] | None = None
         self.app: SlideshowApp | None = None
-        # 📺 On the TV of `library` and `browse` (0454)
-        server.tv.start = partial(selected, self._begin)
+        server.tv.start = partial(selected, self._begin)  # 📺 of the pages (0454)
+        server.tv.known = partial(any_tv, self.door.screens, phones)
 
     async def handle(self, request: Request) -> Response:
         """Answer a path under `/slideshow`, the prefix taken off.

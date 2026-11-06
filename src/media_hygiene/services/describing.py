@@ -7,6 +7,7 @@ the same progress bar, and the first model error raised once the run is over.
 from __future__ import annotations
 
 import asyncio
+from concurrent.futures.process import BrokenProcessPool
 from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import TYPE_CHECKING
@@ -18,6 +19,7 @@ from media_hygiene.classify.ai.describe import (
 )
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import Step
+from media_hygiene.services.interrupt import broken_by_stop
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -60,6 +62,9 @@ def describe_checked(
 
     Raises:
         AiError: The model cannot be reached, or cannot see images.
+        KeyboardInterrupt: The pool broke after Ctrl+C: the command stops.
+        BrokenProcessPool: The pool broke without a stop request.
+        ExceptionGroup: A task of the run failed.
     """
     model = runtime.settings.classify.ai.model
     asyncio.run(job.client.require_vision(model))
@@ -77,6 +82,10 @@ def describe_checked(
         progress.start(Step(_("Describing photos"), model), len(photos))
         try:
             outcome = asyncio.run(describe_all(photos, deps))
+        except (BrokenProcessPool, ExceptionGroup) as error:
+            if broken_by_stop(error, job.answering.stopped):
+                raise KeyboardInterrupt from error  # a stop: one calm line
+            raise
         finally:
             progress.stop()
     if outcome.errors:

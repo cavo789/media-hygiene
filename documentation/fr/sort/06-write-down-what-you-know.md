@@ -330,8 +330,9 @@ jamais.
   commentaires conservés, et la liste est relue sur le disque ;
 - une règle sur un nom de dossier (`path`) ne sert qu'une fois : une fois que `sort` a rangé ses
   fichiers dans `Vacances et sorties/Turin 2018`, l'ancien nom de dossier qu'elle cherche a
-  disparu. **Convertir en dates** la remplace, à sa place dans la liste, par une règle
-  `date_range` avec les jours de cet événement et `keep_folders = true` ; la boîte dit d'abord ce
+  disparu. **Convertir en dates** la remplace par une règle `date_range` avec les jours de cet
+  événement et `keep_folders = true`, rangée avec les autres événements dans
+  `events/<année>.toml` (retirée de `config.toml`, vos commentaires conservés) ; la boîte dit d'abord ce
   qui change (« 450 fichiers : 92 de cet événement, 358 d'autres dossiers les mêmes jours.
   Ailleurs : Photos Chloé (358) », et les fichiers que décidait l'ancienne règle et que la
   nouvelle ne prendrait pas). Une règle à la fois : les jours sont ceux de l'événement qui

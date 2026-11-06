@@ -39,6 +39,7 @@ from media_hygiene.search.heaviest import (
     listed_total,
     video_facts,
 )
+from media_hygiene.search.spot_label import with_spots
 
 if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
@@ -47,7 +48,7 @@ if TYPE_CHECKING:
     from media_hygiene.search.fts import SearchIndex
 
 BROWSE_PATH: Final = "/browse"
-FOLDER_QUERY: Final = "folder"  # `/search?folder=…`: the page opens on it (0405)
+FOLDER_QUERY: Final = "folder"  # `/library?folder=…`: the page opens on it (0405)
 FOLDERS_PATH: Final = "/api/folders"
 FOLDER_PATH: Final = "/api/folder"
 FOLDER_POSTS: Final = frozenset({FOLDER_PATH, HEAVIEST_PATH, ROLE_PATH})
@@ -145,6 +146,7 @@ class FolderDesk:
             }
             for row in found.rows
         ]
+        with_spots(self.index, files)
         answer = {"files": files, "total": listed_total(found), "more": asked.limit}
         return json_response(HTTPStatus.OK, answer)
 
@@ -174,6 +176,7 @@ class FolderDesk:
         files = [
             file_card(row, self.mapper, chosen) for row in ordered(shown, asked.order)
         ]
+        with_spots(self.index, files)
         held = {
             "photos": sum(kind in PHOTOS for kind in kinds),
             "videos": sum(kind is MediaKind.VIDEO for kind in kinds),

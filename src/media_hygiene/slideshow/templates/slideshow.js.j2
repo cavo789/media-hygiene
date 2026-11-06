@@ -63,9 +63,17 @@
     seconds.value = paceValue;
     tellEvent(show);
     placePairing(show.tvWaiting);
+    ended(show.ended);
     window.dispatchEvent(new CustomEvent("mh-show", { detail: show }));
     const tile = tiles.get(current);
     if (tile) tile.scrollIntoView({ block: "nearest" });
+  }
+
+  // Stopped from a phone (0633): every control off, the way to another show instead.
+  function ended(over) {
+    document.getElementById("over").hidden = !over;
+    for (const button of document.querySelectorAll(".controls button, .telling button")) button.disabled = over || (button === out && current === null);
+    seconds.disabled = over;
   }
 
   // A TV shows its code (0456): the field goes on top of the controls, then back to the side.
@@ -86,7 +94,7 @@
       button.setAttribute("aria-pressed", String(button.dataset.where === show.telling));
     }
     const chapter = show.chapter;
-    const parts = chapter ? [chapter.name, chapter.period, chapter.place].filter(Boolean) : [];
+    const parts = chapter ? [chapter.name, chapter.period, chapter.place, show.where].filter(Boolean) : [];
     const event = document.getElementById("event");
     event.textContent = parts.join(" · ");
     event.hidden = show.telling === "none" || parts.length === 0;
@@ -189,6 +197,7 @@
   for (const button of document.querySelectorAll("[data-where]")) {
     button.addEventListener("click", () => ask({ action: "tell", where: button.dataset.where }));
   }
+  document.getElementById("stop").addEventListener("click", () => ask({ action: "stop" }));
   seconds.addEventListener("change", () => ask({ action: "pace", seconds: Number(seconds.value) }));
   document.getElementById("pair").addEventListener("submit", (event) => {
     event.preventDefault();

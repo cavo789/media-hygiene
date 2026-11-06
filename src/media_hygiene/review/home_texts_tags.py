@@ -38,4 +38,15 @@ def tags_texts() -> dict[str, str]:
         "tagsBusy": _("Tags already run: wait for the end, or stop them."),
         "tagsHours": _("{h} h {min} min"),
         "tagsMinutes": _("{min} min"),
+        "aiTitle": _("🤖 Local AI"),
+        "aiFound": _("Found at {url}: {n} models installed."),
+        "aiAbsent": _(
+            "Nothing answers at {url}. Start Ollama there, or change [classify.ai] url."
+        ),
+        "aiOff": _("Off: no photo is ever sent to a model."),
+        "aiModel": _("Model that looks at the photos"),
+        "aiNoneChosen": _("None (off)"),
+        "aiSaved": _("Saved in config.toml, read back from the disk: {model}."),
+        "aiSavedOff": _("Saved in config.toml, read back from the disk: off."),
+        "aiFailed": _("The settings could not be saved in config.toml."),
     }

@@ -46,6 +46,7 @@ RUNS: tuple[tuple[str, ...], ...] = (
     ("review",),
     ("places",),
     ("tags",),
+    ("spots",),  # landmark and town into the index only (0545)
     ("slideshow", "--folder", "."),  # `.`: the whole data folder
     ("share", "--album", "Demo"),  # its copies go to /shares, never next to the photos
     ("people",),

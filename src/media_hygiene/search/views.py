@@ -174,6 +174,7 @@ def _hit_view(hit: Hit, mapper: HostPathMapper) -> dict[str, object]:
         "size": human_size(hit.photo.size),  # shown as the folder view does (0347)
         "bytes": hit.photo.size,
         "facts": hit.facts,  # a video's length, bit rate, codec (0408)
+        "spot": hit.spot,  # its landmark and town (0545)
         "taken": hit.taken
         or hit.date,  # the date and time taken, for the tile's tooltip (0433)
         "modified": modified_day(hit.photo.mtime_ns),  # as Explorer shows it

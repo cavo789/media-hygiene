@@ -9,6 +9,9 @@ from __future__ import annotations
 
 from typing import Final
 
+from media_hygiene.index.aside_faces import CREATE_ASIDE_FACES
+from media_hygiene.index.face_groups import CREATE_FACE_GROUPS
+
 CREATE_FACE_SCANS: Final = """
 CREATE TABLE IF NOT EXISTS face_scans (
     path TEXT NOT NULL,
@@ -40,3 +43,9 @@ CREATE TABLE IF NOT EXISTS faces (
     PRIMARY KEY (path, model, number)
 )
 """
+FACE_TABLES: Final = (
+    CREATE_FACE_SCANS,
+    CREATE_FACES,
+    CREATE_ASIDE_FACES,
+    CREATE_FACE_GROUPS,
+)

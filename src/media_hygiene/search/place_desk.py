@@ -20,6 +20,7 @@ from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.serving import json_response
 from media_hygiene.search.aside_filter import AsideFilter
 from media_hygiene.search.place_neighbours import neighbours
+from media_hygiene.search.tag_cap import too_many_unread
 from media_hygiene.search.tag_desk import ref_of
 
 if TYPE_CHECKING:
@@ -92,8 +93,8 @@ class PlaceDesk:
 
         Returns:
             Every place and its count, read back, and the line said; 400 for a body
-            that cannot be read, 409 without a writable `/config`, 422 or 500 when
-            the save fails.
+            that cannot be read, 409 without a writable `/config`, 422 over
+            `MOST_UNREAD` unread photos or when the save fails, 500.
         """
         try:
             asked = PlaceAsked.model_validate_json(body)
@@ -108,6 +109,10 @@ class PlaceDesk:
                         "Places cannot be saved: /config is not mounted, or read-only."
                     )
                     return json_response(HTTPStatus.CONFLICT, {"error": message})
+                if over := too_many_unread(self.index, asked.keys):  # 0571, as Tag
+                    return json_response(
+                        HTTPStatus.UNPROCESSABLE_ENTITY, {"error": over}
+                    )
                 said, near = self._give(asked)
             members = self.book.members()
         except (ValueError, OSError) as exc:

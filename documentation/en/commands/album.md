@@ -76,6 +76,9 @@ on its button; nothing happens before that click. The answer gives the `mh undo 
 It needs your photos without `:ro` and a persistent `/journal`: otherwise it says so in one line.
 A retouch of a photo in the folder changes the original too: it is the same file.
 
+With a paired TV, each card of the albums page has a **📺**: one click starts that album on the TV
+and opens its remote in a new tab; no TV paired, no button.
+
 The **📁 Albums folder** line of the albums page says the folder as read back from
 `config.toml`; **Change** sets it. It asks where the albums go only when no folder is known. The
 folder must be on the same disk and in the same `-v` as the photos, outside the protected folders;

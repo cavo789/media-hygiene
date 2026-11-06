@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
 
+    from media_hygiene.search.album_filter import AlbumNarrow
     from media_hygiene.search.aside_filter import AsideFilter
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.share.album_api import AlbumAsked
@@ -23,6 +24,7 @@ class SearchPicker:
 
     index: SearchIndex
     aside: AsideFilter | None = None  # drops the files set aside (0518)
+    albums: AlbumNarrow | None = None  # the album filter of the page (0602)
 
     def files(self, asked: AlbumAsked) -> Kept:
         """The files a request names, those set aside left out but to take out.
@@ -34,12 +36,10 @@ class SearchPicker:
             Them, in the container; unknown keys left out.
         """
         if asked.all:
-            picked = tuple(
-                photo.path
-                for photo in self.index.versions(
-                    read_query(self.index, asked.search.query())
-                )
-            )
+            query = read_query(self.index, asked.search.query())
+            if self.albums is not None:
+                query = self.albums.query(query, asked.search.album)
+            picked = tuple(photo.path for photo in self.index.versions(query))
         else:
             found = (
                 self.index.source_of(int(key)) for key in asked.keys if key.isdigit()

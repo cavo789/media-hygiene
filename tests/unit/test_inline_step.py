@@ -21,7 +21,7 @@ from media_hygiene.review.write_routes import CHANGES
 from media_hygiene.services.home import home_page
 
 _JSON: Final = {"host": "127.0.0.1", "content-type": "application/json"}
-_INLINE: Final = frozenset({"config", "backup", "history", "reports-prune"})
+_INLINE: Final = frozenset({"config", "backup", "history", "reports-prune", "spots"})
 # Writes its words in colour, so that the test sees what the page receives.
 _ECHO: Final = "import sys; print('\\x1b[1mran\\x1b[0m', *sys.argv[1:])"
 _CRASH: Final = "raise ValueError('index locked')"

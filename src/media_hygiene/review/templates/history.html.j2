@@ -1,7 +1,8 @@
 {% extends "page_frame.html.j2" %}
 {# What each run did (0350): the table of `mh history`, shown in the page the home page's
    *History and undo* space opened. Read-only: it reads /journal each time it is opened and
-   changes nothing; each run's undo is the line to copy. #}
+   changes nothing; each run's undo is the line to copy, and a run still in the quarantine has its
+   *Purge* link: its files first, the route of Disk space (0616, 0631). #}
 {% set page_name = _("What each run did") %}
 {% set keys_safe = _("Read-only: this page only reads the journal and changes nothing. A run is put back with 'undo', in the terminal.") %}
 {% block style %}
@@ -10,6 +11,7 @@
   main td.num, main th.num { text-align: right; }
   main code { overflow-wrap: anywhere; user-select: all; }
   main .table-wrap { overflow-x: auto; }
+  main .said { font-weight: 600; }
   main .error { color: var(--bad); font-weight: 600; }
 {% endblock %}
 {% block bar %}
@@ -17,6 +19,9 @@
 {% endblock %}
 {% block content %}
 <main>
+{% if gone is not none %}
+  <p class="said" role="status">{% if gone %}{{ _("Read back from the disk: run {run} is gone from the quarantine.").format(run=purged) }}{% else %}{{ _("Read back from the disk: run {run} is still in the quarantine. The window of mh says why.").format(run=purged) }}{% endif %}</p>
+{% endif %}
 {% if error %}
   <p class="error" role="alert">{{ error }}</p>
 {% if hint %}
@@ -35,6 +40,7 @@
         <th class="num">{{ figure }}</th>
 {% endfor %}
         <th>{{ _("Put back") }}</th>
+        <th>{{ _("Erase for good") }}</th>
       </tr>
     </thead>
     <tbody>
@@ -46,6 +52,7 @@
         <td class="num">{{ cell }}</td>
 {% endfor %}
         <td>{% if row.undo %}<code>{{ row.undo }}</code>{% else %}—{% endif %}</td>
+        <td>{% if row.run_id in purges %}<a href="{{ purges[row.run_id] }}">{{ _("Purge") }}</a>{% else %}—{% endif %}</td>
       </tr>
 {% endfor %}
     </tbody>

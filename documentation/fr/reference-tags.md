@@ -271,7 +271,7 @@ meaning_threads = 4    # fils d'exécution du processeur pour le modèle
 meaning_results = 200  # combien de photos une recherche par le sens trouve au plus
 ```
 
-Une liste `stop_words` écrite ici remplace celle intégrée ; la ligne commentée ci-dessus est toute la liste intégrée, partez d'elle. `adulte` en fait partie : il est sur quatre photos sur dix, il ne trie donc rien ; `enfant` et `bébé` restent. Le modèle lui-même se règle dans
+Vous pouvez aussi retirer un tag depuis [la page de recherche](commands/library.md#retirer-un-tag-inutile), qui modifie cette liste. Une liste `stop_words` écrite ici remplace celle intégrée ; la ligne commentée ci-dessus est toute la liste intégrée, partez d'elle. `adulte` en fait partie : il est sur quatre photos sur dix, il ne trie donc rien ; `enfant` et `bébé` restent. Le modèle lui-même se règle dans
 `[classify.ai]` (model, url, `min_edge`, `confirm_above`).
 
 ## Pourquoi pas dans les photos

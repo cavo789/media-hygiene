@@ -127,7 +127,7 @@ def test_the_pages_carry_the_album_bar(
 ) -> None:
     """Search and browse: *Add to the album* and *Share on the TV*, apart."""
     answers = serve_search(
-        cli, monkeypatch, [("GET /search", None), ("GET /browse", None)]
+        cli, monkeypatch, [("GET /library", None), ("GET /browse", None)]
     )
     for answer in answers:
         assert b'id="albumAdd"' in answer.body
@@ -174,3 +174,31 @@ def test_a_search_aimed_at_an_album_marks_keeps_or_leaves_out_its_files(
             serve_search(cli, monkeypatch, [("POST /api/search", _DURBUY)])[0].body
         )["hits"][0]
     )
+
+
+def test_pick_all_found_follows_the_album_filter(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0602: with the album filter on, "all" acts on the files shown, not the hidden."""
+    assert run(cli, "tags", "--no-describe").exit_code == 0
+    found = _keys(serve_search(cli, monkeypatch, [("POST /api/search", _DURBUY)])[0])
+    inside, *others = found
+    out = {**_DURBUY, "album": {"name": _ALBUM, "inside": False}}
+    answers = serve_search(
+        cli,
+        monkeypatch,
+        [
+            _add(keys=[str(inside)], search=_DURBUY),
+            (
+                "POST /api/albums",
+                {"action": "add", "album": "Other", "all": True, "search": out},
+            ),
+            ("POST /api/chosen", {"action": "add", "all": True, "search": out}),
+        ],
+    )
+    chosen = json.loads(answers[2].body)
+    assert chosen["count"] == len(others)
+    other = next(a for a in _albums(answers[1]) if a["name"] == "Other")
+    assert other["count"] == len(others)
+    assert len(found) == len(others) + 1
+    assert (locations.reports_dir / "decisions.json").exists()

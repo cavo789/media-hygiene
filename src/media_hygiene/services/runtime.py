@@ -26,8 +26,10 @@ if TYPE_CHECKING:
     from media_hygiene.paths.mounts import MountTable
 
 
-# Imported once by the fork server, inherited by every worker it forks.
+# Imported once by the fork server, inherited by every worker it forks. The first one
+# makes the server ignore Ctrl+C before the long imports (0627).
 _WORKER_MODULES: Final = (
+    "media_hygiene.scan.calm_server",
     "media_hygiene.scan.image_check",
     "media_hygiene.scan.raw_check",
     "pillow_heif",

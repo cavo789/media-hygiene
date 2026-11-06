@@ -13,6 +13,7 @@ from rich.text import Text
 
 from media_hygiene.console.advice import Advice, AdviceBoard, TipKind
 from media_hygiene.console.advice_view import print_advice
+from media_hygiene.console.one_line import say, width_without_terminal
 from media_hygiene.constants import ColorMode
 from media_hygiene.i18n import _
 
@@ -35,16 +36,14 @@ def make_console(color: ColorMode, *, stderr: bool = False) -> Console:
     Returns:
         The console.
     """
-    quiet = stderr and data_on_terminal()
-    match color:
-        case ColorMode.ALWAYS:
-            return Console(
-                force_terminal=True, highlight=False, stderr=stderr, quiet=quiet
-            )
-        case ColorMode.NEVER:
-            return Console(no_color=True, highlight=False, stderr=stderr, quiet=quiet)
-        case ColorMode.AUTO:
-            return Console(highlight=False, stderr=stderr, quiet=quiet)
+    return Console(
+        force_terminal=True if color is ColorMode.ALWAYS else None,
+        no_color=True if color is ColorMode.NEVER else None,
+        highlight=False,
+        stderr=stderr,
+        quiet=stderr and data_on_terminal(),
+        width=width_without_terminal(),
+    )
 
 
 def data_on_terminal() -> bool:
@@ -83,7 +82,7 @@ class Output:
         Args:
             text: Translated message.
         """
-        self.console.print(text)
+        say(self.console, text)
 
     def success(self, text: str) -> None:
         """Print a success line.
@@ -91,7 +90,7 @@ class Output:
         Args:
             text: Translated message.
         """
-        self.console.print(f"✅ [green]{text}[/]")
+        say(self.console, f"✅ [green]{text}[/]")
 
     def warning(self, text: str) -> None:
         """Print a warning line.
@@ -99,7 +98,7 @@ class Output:
         Args:
             text: Translated message.
         """
-        self.console.print(f"⚠️  [yellow]{text}[/]")
+        say(self.console, f"⚠️  [yellow]{text}[/]")
 
     def error(self, text: str) -> None:
         """Print an error line.
@@ -107,7 +106,7 @@ class Output:
         Args:
             text: Translated message.
         """
-        self.console.print(f"❌ [bold red]{text}[/]")
+        say(self.console, f"❌ [bold red]{text}[/]")
 
     def tip(self, text: str) -> None:
         """Print a 💡 tip — shown as soon as there is something useful to suggest.
@@ -115,7 +114,7 @@ class Output:
         Args:
             text: Translated tip.
         """
-        self.console.print(f"💡 [cyan]{text}[/]")
+        say(self.console, f"💡 [cyan]{text}[/]")
 
     def advise(self, advice: Advice) -> None:
         """Collect a tip for the end of the command, where it is ranked by kind.
@@ -176,7 +175,7 @@ class Output:
         Args:
             renderable: What to print.
         """
-        self.console.print(renderable)
+        say(self.console, renderable)
 
     def blank(self) -> None:
         """Print an empty line, to let the sections breathe."""

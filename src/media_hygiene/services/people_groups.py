@@ -7,11 +7,13 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from media_hygiene.faces.cluster import Linkage, group_faces
+from media_hygiene.faces.cluster import Linkage, group_faces, groups_of
 from media_hygiene.faces.models import EMBEDDING_SIZE, vector_of
 from media_hygiene.people.recognisable import Thresholds
+from media_hygiene.services.people_labels import kept_labels, linkage_key
 
 if TYPE_CHECKING:
+    import sqlite3
     from collections.abc import Sequence
 
     from media_hygiene.config.people_settings import PeopleSettings
@@ -45,12 +47,17 @@ class PeopleGroups:
         return sum(1 for group in self.groups if len(group) == 1)
 
 
-def group_people(faces: Sequence[StoredFace], settings: PeopleSettings) -> PeopleGroups:
+def group_people(
+    faces: Sequence[StoredFace],
+    settings: PeopleSettings,
+    connection: sqlite3.Connection | None = None,
+) -> PeopleGroups:
     """Leave out the faces too small or too blurry, then group the others.
 
     Args:
         faces: Every face of the index.
         settings: `[people]`.
+        connection: The index the groups are kept in (0588); None: computed here.
 
     Returns:
         The groups and what was left out.
@@ -63,7 +70,12 @@ def group_people(faces: Sequence[StoredFace], settings: PeopleSettings) -> Peopl
         if kept
         else np.empty((0, EMBEDDING_SIZE), dtype=np.float32)
     )
-    rows = group_faces(vectors, Linkage(settings.similarity))
+    linkage = Linkage(settings.similarity)
+    if connection is None:
+        rows = group_faces(vectors, linkage)
+    else:
+        key = linkage_key((linkage, thresholds))
+        rows = groups_of(kept_labels(connection, vectors, (linkage, key)))
     return PeopleGroups(
         groups=tuple(tuple(kept[row] for row in group) for group in rows),
         too_small=small,

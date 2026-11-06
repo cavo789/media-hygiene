@@ -14,6 +14,6 @@
 {% if error %}
   <p class="error" role="alert">{{ error }}</p>
 {% endif %}
-  <pre>{{ text }}</pre>
+  <pre>{{ html | safe }}</pre>
 </main>
 {% endblock %}

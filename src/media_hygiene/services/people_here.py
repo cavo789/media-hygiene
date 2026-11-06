@@ -1,9 +1,10 @@
-"""`people` served by the home server once every face is found (0600).
+"""`people` served by the home server once its faces are found (0600, 0588).
 
 `people` first looks for the faces the cache lacks, with a progress bar in the window of
-`mh`: hours on a first run. With none left to find, nothing keeps its page apart: the
-step *people* then opens `/people/` in the home server, which goes on. With faces
-missing, the step runs as before (`mh` ends the page, finds them, serves the groups).
+`mh`: hours on a first run. Past that first run nothing keeps its page apart: the step
+*people* opens `/people/` in the home server, which goes on, and the page analyses the
+few new photos itself, with their progress (`/api/people`). A first run, or too many new
+photos, runs as before (`mh` ends the page, finds them, serves the groups).
 """
 
 from __future__ import annotations
@@ -24,7 +25,7 @@ from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.step_watch import STEP_PATH
 from media_hygiene.services.next_command import LAUNCHER_FUNCTION
 from media_hygiene.services.page_undo import PageUndo
-from media_hygiene.services.people import PeopleStep
+from media_hygiene.services.people import PeopleStep, PeopleWork
 from media_hygiene.services.people_app_build import PeopleBuild, people_app
 from media_hygiene.services.people_files import require_people_index
 from media_hygiene.services.people_page import names_file
@@ -39,17 +40,20 @@ if TYPE_CHECKING:
 
 PEOPLE_PAGE: Final = "/people/"
 _WORDS: Final = ("people",)  # the step as `mh menu` gives it, options none
+# Followed in the page up to this many: about 3 min at the 0.16 s per photo measured on
+# Windows (0583). Beyond, the terminal's progress bar, and its Ctrl+C, as a first run.
+MOST_NEW: Final = 1000
 
 
 def faces_found(runtime: Runtime) -> bool:
-    """Tell whether every photo of the index had its faces looked for.
+    """Tell whether the page can open now: its faces found but for a few new photos.
 
     Args:
         runtime: Settings, index, cache.
 
     Returns:
-        True with photos and none left to analyse; False otherwise, or when
-        `people` could not run here (no index, a read-only cache).
+        True with photos analysed and at most `MOST_NEW` left; False otherwise,
+        or when `people` could not run here (no index, a read-only cache).
     """
     try:
         require_people_index(runtime)
@@ -59,11 +63,23 @@ def faces_found(runtime: Runtime) -> bool:
             work = step.plan(())
     except MediaHygieneError:
         return False
-    return bool(work.photos) and not work.missing
+    return _ready(work)
+
+
+def _ready(work: PeopleWork) -> bool:
+    """Tell whether a run is past its first analysis, with few new photos left.
+
+    Args:
+        work: The photos of the run.
+
+    Returns:
+        True when the page can show groups and analyse the rest itself.
+    """
+    return len(work.missing) < len(work.photos) and len(work.missing) <= MOST_NEW
 
 
 def _built(runtime: Runtime, server: HomeServer) -> ApplyingApp:
-    """The page's app on the faces of the index, none left to find, with *Apply now*.
+    """The page's app on the faces of the index, with *Apply now*.
 
     Args:
         runtime: The server's settings now.
@@ -73,17 +89,23 @@ def _built(runtime: Runtime, server: HomeServer) -> ApplyingApp:
         The app.
 
     Raises:
-        MediaHygieneError: Faces are missing: `people` must run in the terminal.
+        MediaHygieneError: Too many faces missing: `people` must run in the terminal.
     """
     with PeopleStep(runtime) as step:
         work = step.plan(())
-        if not work.photos or work.missing:
+        if not _ready(work):
             raise MediaHygieneError(
                 _("Faces are still to be found: run 'mh people' in the terminal.")
             )
         result = step.result(work)
     offered = server.apply is not None
-    build = PeopleBuild(server.executor, names_file(runtime), offered, relative=True)
+    build = PeopleBuild(
+        server.executor,
+        names_file(runtime),
+        offered,
+        relative=True,
+        new=len(work.missing),
+    )
     app, aside = people_app(runtime, result, build)
     offer = ApplyOffer(server.apply, lambda: bool(aside.paths()), PageUndo(runtime))
     relay = home_relay(runtime.locations.reports_dir)
@@ -92,7 +114,7 @@ def _built(runtime: Runtime, server: HomeServer) -> ApplyingApp:
 
 @dataclass(frozen=True, slots=True)
 class PeopleStepDoor:
-    """The home page, but its step *people* opens `/people/` when no face is missing."""
+    """The home page, but its step *people* opens `/people/` past the first run."""
 
     home: Handling
     fresh: FreshRuntime

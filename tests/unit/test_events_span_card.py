@@ -15,7 +15,8 @@ def test_three_buttons_in_order_and_undo_hidden() -> None:
     """Sort here now, Another folder…, Do not sort this event; Undo hidden at first."""
     card = _card(render_page("search.html.j2"))
     ids = re.findall(r'<button type="button" id="(span\w+)"', card)
-    assert ids == ["spanSort", "spanOther", "spanLeave", "spanUndo"]
+    assert ids[:4] == ["spanSort", "spanOther", "spanLeave", "spanUndo"]
+    assert ids[4:] == ["spanAlbum", "spanTv"]  # the shortcuts, after them (0523)
     assert 'id="spanUndo" class="plain" hidden' in card
     assert "<kbd>" not in card  # the letters are in the keys panel
     assert 'id="spanRule"' in card  # a plain link, not a sort action

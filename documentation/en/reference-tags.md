@@ -260,7 +260,7 @@ meaning_threads = 4    # processor threads of the model
 meaning_results = 200  # how many photos a search by meaning finds at most
 ```
 
-A list of `stop_words` written here replaces the built-in one; the commented line above is the whole built-in list, so start from it. `adult` is in it: it is on four photos out of ten, so it sorts nothing; `child` and `baby` stay. The model itself is set in
+You can also drop a tag from [the search page](commands/library.md#drop-a-tag-you-do-not-need), which edits this list. A list of `stop_words` written here replaces the built-in one; the commented line above is the whole built-in list, so start from it. `adult` is in it: it is on four photos out of ten, so it sorts nothing; `child` and `baby` stay. The model itself is set in
 `[classify.ai]` (model, url, `min_edge`, `confirm_above`).
 
 ## Why not inside the photos

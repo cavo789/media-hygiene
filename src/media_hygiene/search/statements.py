@@ -46,8 +46,8 @@ CLEAR_SOURCE: Final = "DELETE FROM temp.person_words WHERE source = ?"
 CLEAR_PEOPLE: Final = (  # named again: one name less
     f"DELETE FROM temp.person_words WHERE source = '{TagSource.PERSON.value}'"  # noqa: S608
 )
-_TAG_ROWS: Final = "SELECT path, size, mtime_ns, source, value FROM tags"
-_PERSON_ROWS: Final = (
+TAG_ROWS: Final = "SELECT path, size, mtime_ns, source, value FROM tags"
+PERSON_ROWS: Final = (
     "SELECT p.path AS path, w.size AS size, w.mtime_ns AS mtime_ns,"  # noqa: S608
     " p.source AS source, p.value AS value"
     f" FROM temp.{PEOPLE} AS p JOIN files AS w ON w.path = p.path"
@@ -59,8 +59,7 @@ _FILL: Final = (
     " ON f.path = t.path AND f.size = t.size AND f.mtime_ns = t.mtime_ns"
     " GROUP BY f.rowid"
 )
-FILL: Final = _FILL.format(rows=f"{_TAG_ROWS} UNION ALL {_PERSON_ROWS}")
-FILL_PEOPLE: Final = _FILL.format(rows=_PERSON_ROWS)  # an index without tags yet
+FILL_ROWS: Final = _FILL  # `{rows}`: see `spot_words.rebuild`
 DATA_VERSION: Final = "PRAGMA data_version"
 HAS_TAGS: Final = "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'tags'"
 ANY_TAG: Final = "SELECT 1 FROM tags LIMIT 1"  # at least one file has a word

@@ -185,6 +185,14 @@
   #viewer img { flex: 1; min-height: 0; width: 100%; object-fit: contain; }
   #viewer figcaption { margin-top: 6px; font-size: .85rem; overflow-wrap: anywhere; }
   @media (max-width: 700px) { #drawer { width: 100%; min-width: 0; } }
+  /* A paired phone only looks (0613, `lan_paths.phone_marked`): the map, the places, the
+     clusters and their photos; every control that saves is hidden, and its POST refused. */
+  html[data-phone] #search, html[data-phone] #towns, html[data-phone] #osm, html[data-phone] #lookup,
+  html[data-phone] #editor, html[data-phone] #foldersFold, html[data-phone] #treeFold,
+  html[data-phone] #asideFold, html[data-phone] #clusterName, html[data-phone] #giveTo,
+  html[data-phone] #clusterAside, html[data-phone] #folderSave, html[data-phone] #folderForget,
+  html[data-phone] #folderIgnore, html[data-phone] .drop, html[data-phone] .pick,
+  html[data-phone] #keys { display: none !important; }
   li.cluster button.drop, li.folder button.drop, li.aside button.restore {
     padding: 2px 8px; font: inherit; font-size: .85rem; color: var(--muted); background: none;
     border: 1px solid transparent; border-radius: 6px; cursor: pointer; }
@@ -1024,7 +1032,9 @@
   const blank = { key: null, name: "", radius_m: DEFAULT_RADIUS, home: false, osm: "", area: null };
   const startNew = (lat, lon) => edit({ ...blank, latitude: lat, longitude: lon });
   // A folder's drawer open: a click moves its pin (0242); else it names a new place.
+  const PHONE = document.documentElement.hasAttribute("data-phone");  // read-only (0613)
   map.on("click", (event) => {
+    if (PHONE) return;
     if (folderPin) folderPin.setLatLng(event.latlng); else startNew(event.latlng.lat, event.latlng.lng);
   });
 

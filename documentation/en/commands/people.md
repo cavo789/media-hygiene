@@ -13,7 +13,9 @@ per group), and shows the groups in your browser, largest first, where you **nam
 them. The faces stay in the [cache](../reference-glossary.md#cache), never sent anywhere; the names go into your `config.toml`.
 
 **When**: after an audit run with the cache, or right after it with `audit --people`; again
-after new photos: only those are analysed.
+after new photos: only those are analysed. From the home page, past the first run, the page
+opens at once on the groups already known and analyses up to 1 000 new photos itself, with
+their progress and a Stop button; the groups are kept in the cache and not recomputed.
 
 **Try it**:
 

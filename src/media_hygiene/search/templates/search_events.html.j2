@@ -15,12 +15,13 @@
   <p id="eventsSaid" class="muted" role="status"></p>
   <p id="eventsProgress" class="muted"></p>
   <details id="runs" hidden><summary>{{ _("The sort runs of this plan") }}</summary><ol id="runList"></ol></details>
+  {% include "search_events_grouping.html.j2" %}
   <p id="eventsTotals" class="muted"></p>
   <label class="filter" title="{{ _('N, P and U skip the events already chosen and those whose proposal is sure') }}"><input type="checkbox" id="onlyDecide"> {{ _("Only the events to decide") }}</label>
   <label class="filter" title="{{ _('N and P walk only the events to decide whose proposal is sure, one by one, before accepting them') }}"><input type="checkbox" id="onlySure"> {{ _("Only the sure proposals") }}</label>
   <label class="filter" title="{{ _('N, P and U walk only the events with files still to move: neither sorted nor in place') }}"><input type="checkbox" id="onlyUnsorted"> {{ _("Only the events not sorted yet") }}</label>
   <p class="eventButtons">
-    <button type="button" id="sure" title="{{ _('Accept at once every event still to decide whose proposal is sure (V)') }}"></button>
+    <button type="button" id="sure" hidden title="{{ _('Accept at once every event still to decide whose proposal is sure (V)') }}"></button>
     <button type="button" id="sureUndo" class="plain" title="{{ _('Take back the last batch of sure proposals (Shift+Z)') }}" hidden></button>
     <button type="button" id="rulesOpen" class="plain">📌 {{ _("Your rules") }}</button>
     <button type="button" id="setupOpen" class="plain writes" title="{{ _('The folder receiving the sorted tree and its shape, with a preview on your photos') }}">📐 {{ _("Where and how to sort") }}</button>
@@ -40,6 +41,8 @@
         <button type="button" id="spanOther" class="plain writes" title="{{ _('Choose another folder for the photos picked, or for the whole event when none is picked') }}">{{ _("Another folder…") }}</button>
         <button type="button" id="spanLeave" class="plain" title="{{ _('Its files stay where they are, the event counted as decided. Skipping it with → is not this: a skipped event stays to decide.') }}">{{ _("Do not sort this event") }}</button>
         <button type="button" id="spanUndo" class="plain" hidden title="{{ _('The event is to decide again') }}">{{ _("Undo my choice") }}</button>
+        <button type="button" id="spanAlbum" class="plain writes" title="{{ _('An album named after this event, with its files shown, then opened. No photo is copied or moved.') }}">📚 {{ _("Make an album") }}</button>
+        {% if tv_here | default(false) %}<button type="button" id="spanTv" class="plain" hidden data-path="{{ albums_path }}" data-replaced="{{ _('A show was running on the TV: replaced by this one.') }}" data-sending="{{ _('Starting the show on the TV…') }}" title="{{ _('Show the files picked on the TV; nothing picked: every file of this event') }}">📺 {{ _("On the TV") }}</button>{% endif %}
       </p>
       <p><a href="#" id="spanRule" title="{{ _('Write this event down as a rule: its days, its folder; the next classify runs apply it') }}">📌 {{ _("Remember as a rule") }}</a></p>
     </div>

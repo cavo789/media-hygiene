@@ -2,7 +2,8 @@
 
 Nothing is sent without a model in `[classify.ai]`. Above `confirm_above` photos to
 describe, the user is asked first; a refusal (or no terminal) keeps the cache only.
-Ctrl+C stops between two photos: what is described stays in the cache.
+Ctrl+C stops between two photos: what is described stays in the cache. A stop during
+`--meaning` ends the whole run: no description step follows.
 """
 
 from __future__ import annotations
@@ -64,8 +65,8 @@ def run_tags(runtime: Runtime, request: TagRequest) -> bool:
             output.warning(_("No photo nor video of the index below these folders."))
             return False
         show_cheap(output, work, step.cheap(work))
-        if request.meaning and not request.sample:
-            run_meaning(runtime, work.files)
+        if request.meaning and not request.sample and run_meaning(runtime, work.files):
+            return True  # one Ctrl+C stops the whole run, its resume line said
         if not step.vision_on:
             output.tip(
                 escape(

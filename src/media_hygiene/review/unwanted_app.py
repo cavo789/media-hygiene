@@ -4,20 +4,25 @@
 far, `GET /preview/<key>.jpg` a large preview, `GET /original/<key>.<ext>` the file
 itself, untouched, `GET /api/file` the decisions file as read from the disk, and
 `POST /api/junk` decides one photo or a whole group, saved in one write, then answers
-with those photos as read back from the disk. A decision needs a JSON body: a page of
-another site cannot send one without the browser asking first.
+with those photos as read back from the disk. `/api/strictness`: its thresholds. A
+decision needs a JSON body: a page of another site cannot send one without the browser
+asking first.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar, Final, override
+from typing import TYPE_CHECKING, ClassVar, Final, override
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from media_hygiene.review.decide_route import DecidingApp
 from media_hygiene.review.files import FILE_PATH
+from media_hygiene.review.strictness import STRICTNESS_PATH, strictness_route
 from media_hygiene.review.unwanted_session import UnwantedSession
+
+if TYPE_CHECKING:
+    from media_hygiene.review.http import Request, Response
 
 JUNK_DECIDE_PATH: Final = "/api/junk"
 JUNK_FILE_PATH: Final = FILE_PATH
@@ -45,6 +50,21 @@ class UnwantedApp(DecidingApp[UnwantedSession]):
     """Answers the browser; the session holds the decisions and saves them."""
 
     decide_path: ClassVar[str] = JUNK_DECIDE_PATH
+
+    @override
+    async def answer(self, request: Request) -> Response:
+        """Route a request: the thresholds here, the rest as every review.
+
+        Args:
+            request: The request.
+
+        Returns:
+            The response.
+        """
+        tuning = self.session.strictness
+        if request.path == STRICTNESS_PATH and tuning is not None:
+            return strictness_route(request, tuning)
+        return await DecidingApp.answer(self, request)
 
     @override
     def decide(self, body: bytes) -> dict[str, object]:

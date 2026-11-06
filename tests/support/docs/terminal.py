@@ -101,5 +101,5 @@ def draw_terminal(ansi: str, window: Window) -> str:
         record=True, width=_IMAGE_WIDTH, file=io.StringIO(), color_system="truecolor"
     )
     for line in [lines[0], *lines[first : last + 1]]:
-        console.print(line, no_wrap=True, crop=True)
+        console.print(line)  # a message arrives whole, without a terminal: 0541
     return console.export_svg(title=window.title)

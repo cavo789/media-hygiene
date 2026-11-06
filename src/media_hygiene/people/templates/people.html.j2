@@ -183,6 +183,7 @@
     <input id="who" type="search" placeholder="{{ _('Go to a person (/)') }}" aria-label="{{ _('Go to a person (/)') }}">
   </div>
   <p id="status" role="status"></p>
+  <p id="newPhotos" role="status" hidden><span id="newPhotosLine"></span> <button id="newPhotosStop" type="button" hidden>{{ _("Stop") }}</button> <button id="newPhotosShow" type="button" hidden>{{ _("Show the new groups") }}</button></p>
   {% include "apply_now.html.j2" %}
 </header>
 <div id="alike"></div>
@@ -726,6 +727,7 @@ $("viewerAside").addEventListener("click", (event) => {
 });
 {% include "combo_list.js.j2" %}
 {% include "people_guide.js.j2" %}
+{% if new_photos %}{% include "people_new_photos.js.j2" %}{% endif %}
 load();
 </script>
 {% include "undo_toast.html.j2" %}

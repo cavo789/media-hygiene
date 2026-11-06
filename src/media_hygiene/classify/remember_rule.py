@@ -1,7 +1,8 @@
 """*Remember as a rule*: its `date_range` rule goes to `events/<year>.toml` (0578).
 
-One place for what the tool remembers (0576); `config.toml` stays the user's: only a
-folder rule turned into dates (0393) is still replaced where the user wrote it.
+One place for what the tool remembers (0576); `config.toml` stays the user's: a folder
+rule turned into dates (0393) leaves it for `events/` too (0611), removed with tomlkit,
+the comments of the file kept.
 """
 
 from __future__ import annotations
@@ -9,7 +10,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.classify.event_store import add_event, holder, replace_event
-from media_hygiene.classify.rules_edit import replace_rule
+from media_hygiene.classify.rules_edit import remove_rules
+from media_hygiene.errors import ConfigError
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -27,9 +29,18 @@ def remember_rule(config: Path, replaces: str, rule: ClassifyRule) -> ClassifyRu
 
     Returns:
         It, as the files hold it now.
+
+    Raises:
+        ConfigError: The event cannot be written; `config.toml` is then put back.
     """
     if not replaces:
         return add_event(config, rule)
     if holder(config.parent, replaces) is not None:
         return replace_event(config, replaces, rule)
-    return replace_rule(config, replaces, rule)  # a folder rule of the user's file
+    before = config.read_bytes()  # a folder rule of the user's file moves (0611)
+    remove_rules(config, [replaces])
+    try:
+        return add_event(config, rule)
+    except ConfigError:
+        config.write_bytes(before)
+        raise

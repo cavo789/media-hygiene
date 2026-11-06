@@ -1,0 +1,21 @@
+{# The thresholds of a review, on the page where they act (0537; `strictness.js.j2`). The
+   page sets `strict_groups`: id, title, rows (name, label, then max and step, or check). #}
+  <section id="strict" aria-label="{{ _('Thresholds') }}">
+    {% for group in strict_groups %}
+    <details data-group="{{ group.id }}">
+      <summary>{{ group.title }}</summary>
+      {% for row in group.rows %}
+      <label class="strictRow">
+        <span>{{ row.label }}{% if not row.check %} : <output data-for="{{ row.name }}"></output>{% endif %}</span>
+        {% if row.check %}<input type="checkbox" data-name="{{ row.name }}">
+        {% else %}<input type="range" data-name="{{ row.name }}" min="0" max="{{ row.max }}" step="{{ row.step }}">{% endif %}
+      </label>
+      {% endfor %}
+    </details>
+    {% endfor %}
+    <p id="strictSaid" class="muted" role="status"></p>
+    <div id="strictActs" hidden>
+      <button type="button" id="strictSave">{{ _("Keep these values") }}</button>
+      <button type="button" id="strictBack" class="plain">{{ _("Back to the saved values") }}</button>
+    </div>
+  </section>

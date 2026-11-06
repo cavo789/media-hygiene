@@ -84,10 +84,16 @@ function narrow() { // the filter box: the cards whose name holds what is typed
 }
 const said = (parts) => parts.filter(Boolean).map(esc).join(" · ");
 
+// 📺 on a card (0523): the PC, with a TV paired; the album's show, its remote in a new tab.
+async function tvPaired() {
+  if (document.documentElement.hasAttribute("data-phone")) return false;
+  const answer = await fetch(P.tv_paired, { cache: "no-store" }).catch(() => null);
+  return Boolean(answer && answer.ok && (await answer.json().catch(() => ({}))).paired);
+}
 async function showList() {
   $("title").textContent = T.albums;
   $("back").hidden = true;
-  const view = await ask(P.list);
+  const [view, paired] = await Promise.all([ask(P.list), tvPaired()]);
   if (!view) return;
   if (!view.albums.length) {
     $("main").innerHTML = `<p class="note">${esc(T.none)} <a href="${esc(P.doc)}" target="_blank" rel="noopener">${esc(T.learn)}</a></p>`;
@@ -98,6 +104,7 @@ async function showList() {
     <div class="shelf">${ordered(view.albums).map((each) => `<div class="card" data-name="${esc(each.name)}">
       <label class="tick pc-only"><input type="checkbox" data-tick="${esc(each.name)}" aria-label="${esc(fill(T.tick, { name: each.name }))}"></label>
       <button type="button" class="rename pc-only" data-rename="${esc(each.name)}" title="${esc(T.rename)}" aria-label="${esc(T.rename)}">✏️</button>
+      ${paired ? `<a class="totv pc-only" href="${esc(P.tv_album + encodeURIComponent(each.name))}" target="_blank" rel="noopener" title="${esc(T.onTv)}" aria-label="${esc(T.onTv)}">📺</a>` : ""}
       <a href="${opened(each.name)}">
       ${each.cover ? `<img src="${esc(each.cover.thumb)}" alt="" loading="lazy">` : `<span class="blank" aria-hidden="true">🖼</span>`}
       <p class="name">${esc(each.name)}</p>

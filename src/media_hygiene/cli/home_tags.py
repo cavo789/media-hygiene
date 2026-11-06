@@ -17,6 +17,7 @@ from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.scan.progress import Step
 from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.home_tags_models import TagFigures, TagsRunner
+from media_hygiene.services.spot_scan import scan_spots
 from media_hygiene.services.subject_answers import Answering
 from media_hygiene.services.tag_describe import describe_photos
 from media_hygiene.services.tags import TagStep
@@ -69,6 +70,8 @@ def _prepare(source: Runtime | FreshRuntime, progress: PageProgress) -> TagFigur
         MediaHygieneError: The index holds no photo nor video.
     """
     runtime = _runtime(source)
+    if runtime.index_file is not None and runtime.index_file.is_file():
+        scan_spots(runtime, progress)  # with its progress line, for the indexed (0545)
     with TagStep(runtime) as step:
         progress.start(Step(_("Reading the index"), ""), None)
         work = step.plan(())

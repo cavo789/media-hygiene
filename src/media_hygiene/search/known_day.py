@@ -9,13 +9,11 @@ from __future__ import annotations
 
 from typing import Final
 
+from media_hygiene.classify.hand_days import CREATE as CREATE_DAYS
+from media_hygiene.classify.hand_days import TABLE as SIDECAR_DAYS
 from media_hygiene.search.days import NAME as DAY
 
-SIDECAR_DAYS: Final = "sidecar_days"
-CREATE_DAYS: Final = (
-    f"CREATE TEMP TABLE IF NOT EXISTS {SIDECAR_DAYS}"
-    " (path TEXT PRIMARY KEY, day TEXT NOT NULL)"
-)
+__all__ = ["CREATE_DAYS", "SIDECAR_DAYS"]
 CLEAR_DAYS: Final = f"DELETE FROM temp.{SIDECAR_DAYS}"  # noqa: S608
 PUT_DAY: Final = f"INSERT INTO temp.{SIDECAR_DAYS} (path, day) VALUES (?, ?)"  # noqa: S608
 KNOWN_DAY: Final = (

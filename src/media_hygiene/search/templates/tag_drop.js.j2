@@ -1,0 +1,107 @@
+{# A useless tag dropped everywhere (0546), after `hand_tag.js.j2`: the ⊘ of a chip shows
+   the photos carrying it, then drops it; *Dropped tags* lists them and restores one.
+   Every line said comes from what the server read back from the disk. #}
+const dropEl = (id) => document.getElementById(id);
+let dropWord = "";
+
+// The ⊘ of a chip: never a pick, a rectangle, the large view nor a search.
+function dropButton(word) {
+  const button = element("button", "unname dropTag", "⊘");
+  button.type = "button";
+  button.title = fill(dropEl("dropDlg").dataset.title, { word });
+  button.setAttribute("aria-label", button.title);
+  for (const kind of ["pointerdown", "mousedown", "dblclick"]) button.addEventListener(kind, (event) => event.stopPropagation());
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    dropLook(word);
+  });
+  return button;
+}
+
+function dropSay(said, ok) {
+  for (const line of [$("chosen"), $("viewerSaid")]) {
+    line.className = ok ? "" : "error";
+    line.textContent = said;
+    line.title = said;
+  }
+}
+
+async function dropLook(word) {
+  const { ok, result } = await tagPost({ action: "drop_look", word });
+  if (!ok) { dropSay(fill(dropEl("dropDlg").dataset.given, { error: result.error }), false); return; }
+  dropWord = word;
+  const box = dropEl("dropDlg").dataset;
+  dropEl("dropTitle").textContent = fill(box.title, { word });
+  dropEl("dropCount").textContent = fill(box.count, { n: result.count });
+  dropEl("dropGo").textContent = fill(box.go, { n: result.count });
+  dropEl("dropSaid").textContent = "";
+  dropEl("dropThumbs").replaceChildren(...result.thumbs.map((src) => {
+    const picture = element("img", "", "");
+    picture.src = src;
+    picture.alt = "";
+    picture.loading = "lazy";
+    return picture;
+  }));
+  dropEl("dropDlg").showModal();
+}
+
+// The word leaves the cards shown (they stay in place), its other sources kept.
+function dropFromCards(word) {
+  const folded = word.toLocaleLowerCase();
+  files.forEach((file, index) => {
+    const tags = { ...file.tags };
+    let changed = false;
+    for (const source of DROPPABLE_SOURCES) {
+      const kept = (tags[source] || []).filter((each) => each.toLocaleLowerCase() !== folded);
+      if (tags[source] && kept.length !== tags[source].length) {
+        changed = true;
+        if (kept.length) tags[source] = kept; else delete tags[source];
+      }
+    }
+    if (!changed) return;
+    file.tags = tags;
+    const chips = cards[index] && cards[index].querySelector(".chips");
+    if (chips) chips.replaceWith(chipsOf(file));
+    if ($("viewer").classList.contains("open") && index === current) open();
+  });
+}
+
+function dropListed(words) {
+  dropEl("dropNone").hidden = words.length > 0;
+  dropEl("dropWords").replaceChildren(...words.map((word) => {
+    const row = element("li", "", word);
+    const back = element("button", "plain", dropEl("dropDlg").dataset.restore);
+    back.type = "button";
+    back.addEventListener("click", async () => {
+      const { ok, result } = await tagPost({ action: "restore", word });
+      dropSay(ok ? result.saved : fill(dropEl("dropDlg").dataset.given, { error: result.error }), ok);
+      if (ok) dropListed(result.dropped);
+    });
+    row.append(back);
+    return row;
+  }));
+}
+
+dropEl("dropNo").addEventListener("click", () => dropEl("dropDlg").close());
+dropEl("dropDlg").addEventListener("keydown", (event) => event.stopPropagation());
+dropEl("dropForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  dropEl("dropGo").disabled = true;
+  const { ok, result } = await tagPost({ action: "drop", word: dropWord });
+  dropEl("dropGo").disabled = false;
+  if (!ok) {
+    dropEl("dropSaid").textContent = fill(dropEl("dropDlg").dataset.given, { error: result.error });
+    dropEl("dropSaid").className = "error";
+    return;
+  }
+  dropFromCards(dropWord);
+  dropListed(result.dropped);
+  dropSay(result.saved, true);
+  dropEl("dropDlg").close();
+});
+dropEl("dropList").addEventListener("toggle", async () => {
+  if (!dropEl("dropList").open) return;
+  const { ok, result } = await tagPost({ action: "dropped" });
+  if (ok) dropListed(result.dropped);
+});

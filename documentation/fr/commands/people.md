@@ -14,7 +14,10 @@ de [`classify`](classify.md) les range. Les visages restent dans le [cache](../r
 part ; les noms vont dans votre `config.toml`.
 
 **Quand** : après un audit lancé avec le cache, ou dans la foulée avec `audit --people` ; à
-nouveau après de nouvelles photos : seules celles-là sont analysées.
+nouveau après de nouvelles photos : seules celles-là sont analysées. Depuis la page d'accueil, après la première
+analyse, la page s'ouvre aussitôt sur les groupes déjà connus et analyse elle-même jusqu'à
+1 000 nouvelles photos, avec leur progression et un bouton Arrêter ; les groupes sont gardés
+dans le cache, sans être recalculés.
 
 **Essayer** :
 

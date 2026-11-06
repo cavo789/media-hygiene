@@ -288,7 +288,7 @@ def test_a_paired_phone_searches_and_browses_as_from_the_loopback() -> None:
     """0360: search, browse, a thumbnail, a photo, a video; a search and a folder."""
     app, fake = _app()
     reads = (
-        "/search", "/browse", "/api/folders", "/api/chosen", "/thumb/1",
+        "/library", "/search", "/browse", "/api/folders", "/api/chosen", "/thumb/1",
         "/preview/1", "/video/1",
     )  # fmt: skip
     for path in reads:
@@ -331,7 +331,7 @@ def test_a_paired_phone_keeps_the_server_alive() -> None:
 def test_the_phones_page_opens_search() -> None:
     """The phone's home page goes to search (its folders too); the PC's runs it."""
     phone = home.home_page(remote=True).decode()
-    assert '"mh library": "/search"' in phone
+    assert '"mh library": "/library"' in phone
     assert "mh browse" not in phone  # 0465: the verb is gone
     assert "const PHONE_PAGES = {};" in home.home_page().decode()
 
@@ -557,7 +557,8 @@ def test_a_forged_host_by_the_lan_door_never_passes_for_the_pc(
     app, fake = _app()
     paths = (
         "/", "/api/state", LAN_PATH, STOP_PATH, "/api/alive", "/api/audit",
-        "/api/step", "/search", "/browse", "/thumb/x", "/file/x", "/albums",
+        "/api/step", "/library", "/search", "/browse", "/thumb/x", "/file/x",
+        "/albums",
         "/reports/x", "/preview/x", "/assets/x", "/person", "/api/search",
         "/api/folder", "/api/folders", "/api/chosen", "/original/x", "/video/x",
         "/api/heaviest", "/api/apply", "/api/move", "/docs/x",

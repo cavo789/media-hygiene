@@ -61,6 +61,16 @@ answer is kept in the cache at once). Reopening the page during a run shows the 
 cache is written: your photos are not changed. If Ollama cannot be reached, the page says so in
 one line.
 
+🤖 The same dialog shows the local AI's state: found or not at `[classify.ai] url`, the models the
+server has installed, and a list to pick the one that looks at your photos (*None* turns it off:
+no photo is ever sent). The choice is written to `config.toml` and shown as read back from the
+disk; it applies the next time `mh` starts. Only on the PC.
+
+🤖 The same dialog shows the local AI's state: found or not at `[classify.ai] url`, the models
+the server has installed, and a list to choose the one that looks at your photos (*None* turns it
+off: no photo is ever sent). The choice is written to `config.toml` and shown as read back from
+the disk; it applies the next time `mh` starts. Only on the PC.
+
 With search by meaning on (`[tags] meaning = true`), the end of this dialog offers **Build
 search by meaning**: the same figures, **Look now** / **Look for 1 h** / **Not now**, the
 progress and **Stop after this photo**. The model runs on your computer's processor (hours on a
@@ -101,7 +111,7 @@ whole collection, estimated); each photo is kept in the cache at once, so the ne
 - **Search by meaning** (`--meaning`, opt-in): what a photo shows, never who nor where (names
   come from `people`, places from the GPS); identical copies are looked at once, videos never.
 - **Stop whenever you want**: Ctrl+C lets the photos being described finish; the next run goes on
-  where this one stopped.
+  where this one stopped. One Ctrl+C stops the whole run, `--meaning` included: no step follows.
 - **Why not inside the photos?** Writing into a JPEG changes its bytes, its fingerprint, and two
   identical copies would stop being identical. [`xmp`](xmp.md) writes sidecars instead.
 

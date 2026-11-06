@@ -19,6 +19,11 @@
   "noTaken": _("no date taken"),
   "progressLine": _("Sorted: {events} events, {files} files ({share}) · already in place: {inPlace} files · left: {leftEvents} events, {leftFiles} files to move"),
   "eventFiles": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
+  "albumMaking": _("Making the album…"),
+  "albumResults": [ngettext("📚 Make an album of this result", "📚 Make an album of these {n} results", 1), ngettext("📚 Make an album of this result", "📚 Make an album of these {n} results", 2)],
+  "albumEmpty": _("No file to put in an album: they are set aside."),
+  "albumPeriod": _("Search"),
+  "tooManyAtOnce": _("{count} files: at most {most} at once. Pick some of them first."),
   "eventMissing": _("{n} of its files are not in the index: run audit on their folder."),
   "eventsNone": _("No event matches these filters."),
   "eventsLoading": _("Reading the latest classify plan…"),
@@ -29,6 +34,7 @@
   "spanNothing": _("No file of this event can move: they are set aside, or gone."),
   "spanLeftSaid": _("Not to sort: its files stay where they are."),
   "spanAllDecided": _("Every event of the list is decided."),
+  "spanListFailed": _("The events could not be read (error {status}). Run the search again."),
   "spanFailed": _("This event's photos could not be read (error {status}): its files may have moved. Run the search again."),
   "spanEmpty": _("This event has no file left to sort: sorted or moved since the list was made."),
   "noTakenTip": _("The file does not say when it was taken (a scan, a screenshot): a search by date does not find it."),
@@ -165,6 +171,8 @@
   .chip .unname { margin-left: 4px; padding: 0 4px; border: 0; border-radius: 50%; font: inherit;
                   line-height: 1.2; background: transparent; color: var(--muted); cursor: pointer; }
   .chip .unname:hover { background: var(--bad); color: #fff; }
+  .chip .dropTag { display: none; }
+  .chip:hover .dropTag, .chip .dropTag:focus-visible { display: inline; }
   .putBack { margin-left: 6px; }
   #viewerInfo .chips { justify-content: center; }
   #why { position: fixed; inset: 0; z-index: 5; display: flex; align-items: center;
@@ -196,8 +204,10 @@
   #folders summary { cursor: pointer; margin: 8px 0 4px; }
   /* Folded to one line (0471): opened, the tree floats over the page like *More keys*,
      the line keeps its place, nothing below it moves; Esc or a folder picked closes it. */
-  #folders[open] > #tree { position: fixed; z-index: 4; left: 16px; top: 16px; width: min(28rem, calc(100vw - 32px));
-                           max-height: calc(100vh - 32px); padding: 10px 12px; background: var(--card);
+  #folders[open] > #tree { position: fixed; z-index: 4; left: calc(var(--mh-shell-left, 0px) + 16px);
+                           width: min(28rem, calc(100vw - var(--mh-shell-left, 0px) - 32px));
+                           /* below the shell's header (0595): its ⋯ reachable, never under it */
+                           top: calc(var(--mh-shell-top-h, 0px) + 16px); max-height: calc(100vh - var(--mh-shell-top-h, 0px) - 32px); padding: 10px 12px; background: var(--card);
                            border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 4px 18px rgba(0, 0, 0, .3); }
 {% include "combo_list.css.j2" %}
   #withinLine { display: flex; gap: 6px; align-items: baseline; overflow-wrap: anywhere; }
@@ -344,7 +354,9 @@
         {% endfor %}
       </dl>
     </details>
+    {% include "tag_drop_list.html.j2" %}
     </section>
+    <p id="albumResultsLine"><button id="albumResults" class="plain writes" type="button" hidden title="{{ _('A new album named after this search, with every file found; the files set aside stay out. No photo is copied or moved.') }}"></button></p>
     {% include "search_events.html.j2" %}
     {% include "undo_toast.html.j2" %}
 {% endblock %}
@@ -388,6 +400,7 @@
 {% include "month_dialog.html.j2" %}
 {% include "folder_role_dialog.html.j2" %}
 {% include "hand_tag_dialog.html.j2" %}
+{% include "tag_drop_dialog.html.j2" %}
 {% include "gap_dialogs.html.j2" %}
 {% include "search_events_dialogs.html.j2" %}
 {% include "search_sort_setup.html.j2" %}
@@ -414,8 +427,10 @@
 {% include "move_dialog.js.j2" %}
 {% include "month_dialog.js.j2" %}
 {% include "hand_tag.js.j2" %}
+{% include "tag_drop.js.j2" %}
 {% include "search_gaps.js.j2" %}
 {% include "search_rule.js.j2" %}
+{% include "search_shortcuts.js.j2" %}
 {% include "search_events.js.j2" %}
 {% include "search_events_found.js.j2" %}
 {% include "search_events_late.js.j2" %}

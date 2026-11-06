@@ -94,7 +94,7 @@ def test_no_index_yet_is_tried_again(
 def test_search_without_index_says_why(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """`/search` without an index: the reason and its tip, never a bare 404."""
+    """`/library` without an index: the reason and its tip, never a bare 404."""
     here, _builds = _here(tmp_path, monkeypatch, index=[False])
     pages = home_pages.HomeWithPages(
         cast("Handling", None),
@@ -106,7 +106,7 @@ def test_search_without_index_says_why(
         DiskHere(cast("FreshRuntime", None)),
         (),
     )
-    request = Request("GET", "/search", {"host": "127.0.0.1"})
+    request = Request("GET", "/library", {"host": "127.0.0.1"})
     answer = asyncio.run(pages.handle(request))
     assert answer.status == HTTPStatus.SERVICE_UNAVAILABLE
     assert _NO_INDEX in answer.body.decode()

@@ -22,6 +22,7 @@ from media_hygiene.config.tags_settings import TagSettings
 from media_hygiene.index.descriptions import PhotoVersion
 from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.search.hits import given_too
+from media_hygiene.search.tag_cap import MOST_UNREAD
 from media_hygiene.search.tag_desk import TagDesk
 from media_hygiene.tags.hand_edit import (
     follow_hand_tags,
@@ -167,4 +168,70 @@ def test_the_desk_refuses_without_config_or_word(tmp_path: Path) -> None:
     assert desk.answer(b"{").status is HTTPStatus.BAD_REQUEST
     listed = json.loads(desk.answer(b"{}").body)
     assert listed == {"words": [], "tags": {}, "saved": ""}
+    index.connection.close()
+
+
+def _desk_of(tmp_path: Path, count: int) -> tuple[TagDesk, _Index, Path]:
+    """A desk on `count` real photos the index has no digest for."""
+    data = tmp_path / "data"
+    data.mkdir()
+    files = {}
+    for key in range(1, count + 1):
+        photo = data / f"{key}.jpg"
+        photo.write_bytes(b"0123456789")
+        files[key] = PhotoVersion(photo, 10, 1)
+    index = _Index(files)
+    config = _config(tmp_path)
+    return (
+        TagDesk(cast("HandIndex", index), HostPathMapper(data), config),
+        index,
+        config,
+    )
+
+
+def _given(keys: list[int]) -> bytes:
+    """The body of a word given to these keys."""
+    return json.dumps({"action": "add", "keys": keys, "word": "plage"}).encode()
+
+
+def test_tagging_up_to_the_cap_of_unread_photos_saves(tmp_path: Path) -> None:
+    """0571: exactly the cap is read and saved, a key unknown not counted."""
+    desk, index, config = _desk_of(tmp_path, MOST_UNREAD)
+    answer = desk.answer(_given([*index.files, 999_999]))
+    assert answer.status is HTTPStatus.OK
+    assert read_hand_tags(config)[0].word == "plage"
+    index.connection.close()
+
+
+def test_over_the_cap_nothing_is_written_and_the_line_says_how_many(
+    tmp_path: Path,
+) -> None:
+    """0571: one more photo to read is refused before any read or write."""
+    desk, index, config = _desk_of(tmp_path, MOST_UNREAD + 1)
+    answer = desk.answer(_given(list(index.files)))
+    assert answer.status is HTTPStatus.UNPROCESSABLE_ENTITY
+    said = json.loads(answer.body)["error"]
+    assert f"{MOST_UNREAD + 1} photos not analysed yet" in said
+    assert config.read_text("utf-8") == COMMENTED
+    assert not read_hand_tags(config)
+    assert not index.given
+    index.connection.close()
+
+
+def test_photos_the_index_knows_do_not_count_towards_the_cap(tmp_path: Path) -> None:
+    """0571: with their digest known, many photos are not read and are saved."""
+    desk, index, config = _desk_of(tmp_path, MOST_UNREAD + 1)
+    index.connection.execute("UPDATE files SET full_digest = printf('%016x', rowid)")
+    assert desk.answer(_given(list(index.files))).status is HTTPStatus.OK
+    assert len(read_hand_tags(config)[0].photos) == MOST_UNREAD + 1
+    index.connection.close()
+
+
+def test_taking_a_word_off_is_never_capped(tmp_path: Path) -> None:
+    """0571: a word taken off reads no file: the cap does not apply."""
+    desk, index, _config_file = _desk_of(tmp_path, MOST_UNREAD + 1)
+    body = json.dumps(
+        {"action": "remove", "keys": list(index.files), "word": "plage"}
+    ).encode()
+    assert desk.answer(body).status is HTTPStatus.OK
     index.connection.close()

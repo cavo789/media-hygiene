@@ -18,6 +18,7 @@ from media_hygiene.geo.point import Point
 from media_hygiene.index.schema import prepare
 from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.places.config_file import PlaceEdit, save_places
+from media_hygiene.search import tag_cap
 from media_hygiene.search.date_desk import DateDesk
 from media_hygiene.search.date_propose import folder_day, proposals
 from media_hygiene.search.hand_index import HandIndex
@@ -31,6 +32,8 @@ from media_hygiene.services.date_sidecars import DateJobs, DatesWritten
 from media_hygiene.tags.xmp_date import sidecar_day, with_day
 
 if TYPE_CHECKING:
+    import pytest
+
     from media_hygiene.services.date_sidecars import DateWriter
 
 _TOOL = "media-hygiene 9.9"
@@ -302,4 +305,22 @@ def test_a_search_among_the_keys_lists_them_alone(tmp_path: Path) -> None:
         folder / "a1.jpg",
         folder / "a3.jpg",
     ]
+    index.connection.close()
+
+
+def test_a_place_over_the_cap_of_unread_photos_is_refused_at_once(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0571: the place given by hand refuses as Tag does, saying how many."""
+    index, folder = _index(tmp_path)
+    desk = _places(tmp_path, index, folder)
+    monkeypatch.setattr(tag_cap, "MOST_UNREAD", 0)
+    with closing(sqlite3.connect(tmp_path / "index.sqlite")) as writer:
+        writer.execute("UPDATE files SET full_digest = '' WHERE rowid = 1")
+        writer.commit()
+    body = json.dumps({"action": "give", "keys": [1], "place": "Durbuy"}).encode()
+    answer = desk.answer(body)
+    assert answer.status is HTTPStatus.UNPROCESSABLE_ENTITY
+    assert "1 photo not analysed yet" in json.loads(answer.body)["error"]
+    assert not (tmp_path / "places" / "Durbuy.toml").exists()
     index.connection.close()
