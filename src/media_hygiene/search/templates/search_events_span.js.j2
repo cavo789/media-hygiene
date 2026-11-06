@@ -16,7 +16,7 @@
     byId("eventsSaid").textContent = TEXTS.spanLoading;
     const period = encodeURIComponent(($("from").value || "") + ".." + ($("to").value || ""));
     const answer = await ask(SPAN_PATHS.list + period);
-    if (!answer || !answer.ok) { byId("eventsSaid").textContent = answer ? fill(T.failed, { status: answer.status }) : TEXTS.offline; events = []; listEvents(); return; }
+    if (!answer || !answer.ok) { byId("eventsSaid").textContent = answer ? fill(TEXTS.spanListFailed, { status: answer.status }) : TEXTS.offline; events = []; listEvents(); return; }
     const view = await answer.json();
     events = view.events.map((card) => ({ ...card, span: true, title: spanTitle(card), span_text: card.folders.join(" · ") + (card.more_folders ? " …" : "") }));
     current = -1;

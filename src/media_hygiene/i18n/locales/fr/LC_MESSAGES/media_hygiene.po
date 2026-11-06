@@ -10909,6 +10909,12 @@ msgid "The event's name:"
 msgstr "Le nom de l'événement :"
 
 #, python-brace-format
+msgid "The events could not be read (error {status}). Run the search again."
+msgstr ""
+"Les événements n'ont pas pu être lus (erreur {status}). Relancez la "
+"recherche."
+
+#, python-brace-format
 msgid "The events file {file} cannot be read: {error}."
 msgstr "Le fichier d'événements {file} est illisible : {error}."
 
@@ -17466,8 +17472,8 @@ msgid_plural ""
 "{count} named faces are on photos renamed outside: their path is updated,"
 " read back from the disk."
 msgstr[0] ""
-"{count} visage nommé est sur une photo renommée en dehors : son chemin est "
-"mis à jour, relu sur le disque."
+"{count} visage nommé est sur une photo renommée en dehors : son chemin "
+"est mis à jour, relu sur le disque."
 msgstr[1] ""
 "{count} visages nommés sont sur des photos renommées en dehors : leur "
 "chemin est mis à jour, relu sur le disque."
@@ -17483,8 +17489,8 @@ msgstr[0] ""
 "{count} visage nommé était sur une photo modifiée depuis : une autre "
 "photo, son nom est oublié."
 msgstr[1] ""
-"{count} visages nommés étaient sur des photos modifiées depuis : d'autres "
-"photos, leurs noms sont oubliés."
+"{count} visages nommés étaient sur des photos modifiées depuis : d'autres"
+" photos, leurs noms sont oubliés."
 
 #, python-brace-format
 msgid ""

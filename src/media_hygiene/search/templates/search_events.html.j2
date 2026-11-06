@@ -20,7 +20,7 @@
   <label class="filter" title="{{ _('N and P walk only the events to decide whose proposal is sure, one by one, before accepting them') }}"><input type="checkbox" id="onlySure"> {{ _("Only the sure proposals") }}</label>
   <label class="filter" title="{{ _('N, P and U walk only the events with files still to move: neither sorted nor in place') }}"><input type="checkbox" id="onlyUnsorted"> {{ _("Only the events not sorted yet") }}</label>
   <p class="eventButtons">
-    <button type="button" id="sure" title="{{ _('Accept at once every event still to decide whose proposal is sure (V)') }}"></button>
+    <button type="button" id="sure" hidden title="{{ _('Accept at once every event still to decide whose proposal is sure (V)') }}"></button>
     <button type="button" id="sureUndo" class="plain" title="{{ _('Take back the last batch of sure proposals (Shift+Z)') }}" hidden></button>
     <button type="button" id="rulesOpen" class="plain">📌 {{ _("Your rules") }}</button>
     <button type="button" id="setupOpen" class="plain writes" title="{{ _('The folder receiving the sorted tree and its shape, with a preview on your photos') }}">📐 {{ _("Where and how to sort") }}</button>

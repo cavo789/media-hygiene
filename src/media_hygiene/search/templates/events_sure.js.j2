@@ -15,6 +15,7 @@
   const showSure = () => {
     const todo = sureTodo();
     const button = byId("sure");
+    button.hidden = false;  // hidden until it has a text (0595)
     button.disabled = todo.length === 0;
     button.textContent = todo.length === 0 ? T.sureNone : fill(T.sure, { sure: counted(T.nSure, todo.length), files: counted(T.nFiles, filesIn(todo)) });
     const undo = byId("sureUndo");

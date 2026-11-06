@@ -9096,6 +9096,10 @@ msgid "The event's name:"
 msgstr ""
 
 #, python-brace-format
+msgid "The events could not be read (error {status}). Run the search again."
+msgstr ""
+
+#, python-brace-format
 msgid "The events file {file} cannot be read: {error}."
 msgstr ""
 
