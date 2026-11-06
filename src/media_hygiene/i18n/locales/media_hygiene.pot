@@ -2958,6 +2958,14 @@ msgstr ""
 msgid "Every event of the list is decided."
 msgstr ""
 
+#, python-brace-format
+msgid "Every extension but {kept}: {files} ({count}, {size}), in every folder."
+msgstr ""
+
+#, python-brace-format
+msgid "Every extension but {kept}: {files} of {folders} only ({count}, {size})."
+msgstr ""
+
 msgid "Every file of this event is already in its folder: nothing to move."
 msgstr ""
 
@@ -8113,6 +8121,9 @@ msgid ""
 "browser; 'clean --decisions' then moves them."
 msgstr ""
 
+msgid "Set everything aside but these"
+msgstr ""
+
 msgid "Set from the ⋯ of a folder, under 📁 My folders."
 msgstr ""
 
@@ -8126,6 +8137,9 @@ msgid "Set the files ticked aside"
 msgstr ""
 
 msgid "Set the intruder files aside"
+msgstr ""
+
+msgid "Set these aside"
 msgstr ""
 
 msgid "Set this cluster aside"
@@ -9133,6 +9147,9 @@ msgid ""
 msgstr ""
 
 msgid "The events of the latest classify, one by one"
+msgstr ""
+
+msgid "The extensions ticked are"
 msgstr ""
 
 msgid "The face models are not in the cache yet: run 'audit --people' once."
@@ -10490,6 +10507,9 @@ msgid "Tick at least one photo."
 msgstr ""
 
 msgid "Tick or untick every file of this folder"
+msgstr ""
+
+msgid "Tick the extensions to keep."
 msgstr ""
 
 msgid "Tick: leaves the phone"

@@ -73,6 +73,17 @@ def test_a_pick_by_extension_folder_or_both() -> None:
     assert not any(IntruderPick().takes(f) for f in files)
 
 
+def test_everything_but_the_extensions_kept() -> None:
+    """4 extensions, 1 kept: the 3 others are set aside (0568)."""
+    docx = Intruder(ROOT / "c.docx", 10, 0)
+    files = (ZIP, PDF, BARE, docx)
+    but_pdf = IntruderPick(frozenset({".pdf"}), but=True)
+    assert [f for f in files if but_pdf.takes(f)] == [ZIP, BARE, docx]
+    assert not any(IntruderPick(but=True).takes(f) for f in files)
+    in_trip = IntruderPick(frozenset({".pdf"}), (ROOT / "Trip",), but=True)
+    assert not any(in_trip.takes(f) for f in files)
+
+
 def test_companions_setting_is_normalised() -> None:
     """Trimmed, lowercase, comma-separated values split, duplicates dropped."""
     scan = ScanSettings(companions=(" .LRV, Thumbs.db", ".lrv"))

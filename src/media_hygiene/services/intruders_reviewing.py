@@ -84,7 +84,9 @@ class IntrudersDeskOnDisk:
         else:
             folders = tuple(runtime.mapper.to_container(f) for f in pick.folders)
             extensions = frozenset(ext.casefold() for ext in pick.extensions)
-            set_intruders_aside(runtime, IntruderPick(extensions, folders))
+            set_intruders_aside(
+                runtime, IntruderPick(extensions, folders, but=pick.but)
+            )
         return intruders_set_aside(runtime)
 
 

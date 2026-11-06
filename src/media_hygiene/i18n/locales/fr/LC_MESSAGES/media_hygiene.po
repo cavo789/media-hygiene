@@ -3622,6 +3622,14 @@ msgstr "Chaque entrée de config.toml pointe sur quelque chose."
 msgid "Every event of the list is decided."
 msgstr "Chaque événement de la liste est décidé."
 
+#, python-brace-format
+msgid "Every extension but {kept}: {files} ({count}, {size}), in every folder."
+msgstr "Toutes les extensions sauf {kept} : {files} ({count}, {size}), dans tous les dossiers."
+
+#, python-brace-format
+msgid "Every extension but {kept}: {files} of {folders} only ({count}, {size})."
+msgstr "Toutes les extensions sauf {kept} : {files} de {folders} seulement ({count}, {size})."
+
 msgid "Every file of this event is already in its folder: nothing to move."
 msgstr ""
 "Chaque fichier de cet événement est déjà dans son dossier : rien à "
@@ -9759,6 +9767,9 @@ msgstr ""
 "Écarter des photos de rafale, une série à la fois, au clavier dans votre "
 "navigateur ; 'clean --decisions' les déplace ensuite."
 
+msgid "Set everything aside but these"
+msgstr "Tout mettre de côté sauf ceux-ci"
+
 msgid "Set from the ⋯ of a folder, under 📁 My folders."
 msgstr "À régler depuis le ⋯ d'un dossier, sous 📁 Mes dossiers."
 
@@ -9773,6 +9784,9 @@ msgstr "Mettre de côté les fichiers cochés"
 
 msgid "Set the intruder files aside"
 msgstr "Mettre de côté les fichiers intrus"
+
+msgid "Set these aside"
+msgstr "Mettre ceux-ci de côté"
 
 msgid "Set this cluster aside"
 msgstr "Écarter ce groupe"
@@ -10056,8 +10070,9 @@ msgid ""
 "Sort a sample first: 'latest' (the latest month with photos), a month "
 "such as 2024-05, or a folder; the same sort then does the rest."
 msgstr ""
-"Trier d'abord un échantillon : 'latest' (le dernier mois avec des photos), "
-"un mois comme 2024-05, ou un dossier ; le même tri fait ensuite le reste."
+"Trier d'abord un échantillon : 'latest' (le dernier mois avec des "
+"photos), un mois comme 2024-05, ou un dossier ; le même tri fait ensuite "
+"le reste."
 
 msgid "Sort by"
 msgstr "Trier par"
@@ -10955,6 +10970,9 @@ msgstr ""
 
 msgid "The events of the latest classify, one by one"
 msgstr "Les événements du dernier classify, un par un"
+
+msgid "The extensions ticked are"
+msgstr "Les extensions cochées sont"
 
 msgid "The face models are not in the cache yet: run 'audit --people' once."
 msgstr ""
@@ -12658,6 +12676,9 @@ msgstr "Cochez au moins une photo."
 
 msgid "Tick or untick every file of this folder"
 msgstr "Cocher ou décocher tous les fichiers de ce dossier"
+
+msgid "Tick the extensions to keep."
+msgstr "Cochez les extensions à garder."
 
 msgid "Tick: leaves the phone"
 msgstr "Cocher : quitte le téléphone"

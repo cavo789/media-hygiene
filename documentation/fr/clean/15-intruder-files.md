@@ -45,6 +45,11 @@ Tant qu'une extension est cochée, le tableau des dossiers ne liste que ceux qui
 chacun avec le nombre et la taille de cette extension : vous voyez où ils sont. Un dossier coché
 fait de même sur le tableau des extensions. Décochez tout pour revoir toutes les lignes.
 
+Beaucoup de types, et seulement quelques-uns à garder ? Au-dessus du tableau des extensions,
+passez de **Mettre ceux-ci de côté** à **Tout mettre de côté sauf ceux-ci** et cochez les
+extensions à garder. La barre nomme alors chaque extension qui part, avec le nombre et la taille
+de ses fichiers, avant que vous cliquiez.
+
 À côté de certaines extensions, un indice discret : *un cache, recréé par l'appareil ou
 l'application* (`.ithmb`, les miniatures qu'écrit la synchronisation d'un iPod ou d'un iPhone :
 iTunes les réécrit à la synchronisation suivante), ou *à garder, sauf si vous l'avez ailleurs*

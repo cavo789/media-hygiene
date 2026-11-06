@@ -74,25 +74,29 @@
   const refresh = () => {
     const extensions = ticked("extensions");
     const folders = ticked("folders");
-    const byExtension = (file) => extensions.length === 0 || extensions.includes(file.extension);
+    const but = byId("mode").querySelector("input:checked").value === "but"; // 0568
+    const byExtension = (file) => extensions.length === 0 || extensions.includes(file.extension) !== but;
     const byFolder = (file) => folders.length === 0 || folders.some((top) => within(file.folder, top));
     narrow("folders", (file, key) => file.folder === key && byExtension(file));
     narrow("extensions", (file, key) => file.extension === key && byFolder(file));
-    const taken = files.filter((file) => byExtension(file) && byFolder(file));
+    const taken = but && extensions.length === 0 ? [] : files.filter((file) => byExtension(file) && byFolder(file));
     const values = {
-      files: extensions.join(", "),
+      files: but ? [...new Set(taken.map((file) => file.extension))].join(", ") : extensions.join(", "),
+      kept: extensions.join(", "),
       folders: folders.join(", "),
       count: plural(T.count, taken.length),
       size: size(taken.reduce((sum, file) => sum + file.bytes, 0)),
     };
     const none = extensions.length === 0 && folders.length === 0;
     let sentence = T.tickFirst;
-    if (!none && folders.length === 0) sentence = fill(plural(T.everywhere, taken.length), values);
+    if (but && extensions.length === 0) sentence = T.tickKept;
+    else if (but) sentence = fill(folders.length === 0 ? T.butEverywhere : T.butFolders, values);
+    else if (!none && folders.length === 0) sentence = fill(plural(T.everywhere, taken.length), values);
     else if (!none && extensions.length === 0) sentence = fill(T.ofFolders, values);
     else if (!none) sentence = fill(T.both, values);
     byId("sentence").textContent = sentence;
     byId("pick").disabled = none || taken.length === 0;
-    byId("pick").textContent = none ? T.buttonNone : plural(T.button, taken.length);
+    byId("pick").textContent = none || taken.length === 0 ? T.buttonNone : plural(T.button, taken.length);
   };
   const showAside = (aside) => {
     byId("asideTitle").textContent = T.setAsideTitle;
@@ -116,7 +120,8 @@
       .catch(() => setStatus(T.offline, "error"));
   };
 
-  byId("pick").addEventListener("click", () => send({ extensions: ticked("extensions"), folders: ticked("folders") }));
+  byId("pick").addEventListener("click", () => send({ extensions: ticked("extensions"), folders: ticked("folders"), but: byId("mode").querySelector("input:checked").value === "but" }));
+  byId("mode").addEventListener("change", refresh);
   byId("back").addEventListener("click", () => send({ back: true }));
 
   fetch(statePath)

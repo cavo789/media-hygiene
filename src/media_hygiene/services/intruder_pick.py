@@ -36,10 +36,12 @@ class IntruderPick:
     """What the user picked: extensions (`.zip`), folders (container paths), or both.
 
     Both given: a file must match one of each. None given: nothing is picked.
+    `but` (0568): every extension except those given (at least one must be given).
     """
 
     extensions: frozenset[str] = frozenset()
     folders: tuple[Path, ...] = ()
+    but: bool = False
 
     def takes(self, item: Intruder) -> bool:
         """Tell whether a file is picked.
@@ -52,7 +54,11 @@ class IntruderPick:
         """
         if not self.extensions and not self.folders:
             return False
-        by_extension = not self.extensions or item.extension in self.extensions
+        if self.but and not self.extensions:
+            return False
+        by_extension = (
+            not self.extensions or (item.extension in self.extensions) != self.but
+        )
         in_folder = not self.folders or any(
             is_within(item.path, folder) for folder in self.folders
         )

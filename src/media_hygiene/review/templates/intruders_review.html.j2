@@ -16,6 +16,9 @@
   "tickFirst": _("Tick an extension or a folder."),
   "everywhere": [ngettext("{n} {files} file ({size}), in every folder.", "{n} {files} files ({size}), in every folder.", 1), ngettext("{n} {files} file ({size}), in every folder.", "{n} {files} files ({size}), in every folder.", 2)],
   "ofFolders": _("Every intruder file of {folders} ({count}, {size})."),
+  "butEverywhere": _("Every extension but {kept}: {files} ({count}, {size}), in every folder."),
+  "butFolders": _("Every extension but {kept}: {files} of {folders} only ({count}, {size})."),
+  "tickKept": _("Tick the extensions to keep."),
   "both": _("The {files} files of {folders} only ({count}, {size})."),
   "count": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
   "button": [ngettext("Set this {n} file aside", "Set these {n} files aside", 1), ngettext("Set this {n} file aside", "Set these {n} files aside", 2)],
@@ -38,6 +41,7 @@
   #bar button:disabled { opacity: .5; cursor: not-allowed; }
   tr.ticked-off td { color: var(--muted); font-style: italic; }
   td .hint { color: var(--muted); font-style: italic; margin-left: 8px; }
+  #mode { border: 0; padding: 0; margin: 0 0 8px; display: flex; flex-wrap: wrap; gap: 12px; }
   #aside li { overflow-wrap: anywhere; }
 {% endblock %}
 {% block side %}
@@ -58,6 +62,10 @@
 {% block content %}
 <main>
   <h2>{{ _("Per extension") }}</h2>
+  <fieldset id="mode"><legend>{{ _("The extensions ticked are") }}</legend>
+    <label><input type="radio" name="mode" value="these" checked> {{ _("Set these aside") }}</label>
+    <label><input type="radio" name="mode" value="but"> {{ _("Set everything aside but these") }}</label>
+  </fieldset>
   <p class="muted">{{ _("A hint, never a verdict: only you know whether a zip was extracted or a document is the only copy. What you pick goes to the quarantine, and 'undo' brings it back.") }}</p>
   <table><thead><tr><th></th><th>{{ _("Extension") }}</th><th class="num">{{ _("Files") }}</th><th class="num">{{ _("Size") }}</th></tr></thead><tbody id="extensions"></tbody></table>
   <h2>{{ _("Per folder") }}</h2>
