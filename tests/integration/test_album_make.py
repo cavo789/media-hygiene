@@ -19,7 +19,7 @@ from media_hygiene.services.album_pages import album_edit_page, album_page
 from media_hygiene.services.albums import album_store
 from media_hygiene.share.album_folder_door import AlbumFolderDoor
 from media_hygiene.share.album_store import AlbumChange
-from tests.support.albums import ALBUMS, saved_album
+from tests.support.albums import ALBUMS, SAVED_ALBUM, saved_album
 from tests.support.cli import run
 from tests.support.runtime import make_runtime
 from tests.support.sorting import PHOTOS
@@ -32,7 +32,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.paths.locations import Locations
 
-_NAME = "Crete 2023"
+_NAME = SAVED_ALBUM
 _README = ALBUM_README_NAMES[0]
 _OTHER = "C:\\Photos\\Other"
 _NEW = f"{PHOTOS}/Other"
@@ -51,8 +51,7 @@ def _saved(
     Returns:
         The folder of the photos.
     """
-    photos = saved_album(cli, locations, monkeypatch, _NAME)
-    return photos
+    return saved_album(cli, locations, monkeypatch)
 
 
 def _make(locations: Locations, **asked: object) -> tuple[int, dict[str, object]]:

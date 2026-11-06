@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from media_hygiene.paths.locations import Locations
 
 ALBUMS: Final = f"{PHOTOS}/Albums"
+SAVED_ALBUM: Final = "Crete 2023"
 WEDDING_CATEGORY: Final = "Mariage"
 _RATING_TAG: Final = 0x4746
 
@@ -82,7 +83,7 @@ def album_files(locations: Locations, name: str) -> dict[str, Path]:
 
 
 def saved_album(
-    cli: CliRunner, locations: Locations, setenv: pytest.MonkeyPatch, name: str
+    cli: CliRunner, locations: Locations, setenv: pytest.MonkeyPatch
 ) -> Path:
     """A classified library and a saved album of two of its photos, no folder made.
 
@@ -90,7 +91,6 @@ def saved_album(
         cli: The runner.
         locations: The test mount points.
         setenv: Sets `[album] root`.
-        name: The album.
 
     Returns:
         The folder of the photos.
@@ -100,5 +100,5 @@ def saved_album(
         photos / WEDDING_CATEGORY / "DSC_0000.jpg",
         photos / "Divers" / "IMG_9000.jpg",
     )
-    album_store(make_runtime(locations)).add(AlbumChange(name, picked))
+    album_store(make_runtime(locations)).add(AlbumChange(SAVED_ALBUM, picked))
     return photos
