@@ -13,36 +13,29 @@ from __future__ import annotations
 import asyncio
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from rich.markup import escape
 
 from media_hygiene.classify.ai.client import OllamaClient
 from media_hygiene.classify.ai.landmark_prompt import landmark_request, read_landmark
-from media_hygiene.errors import AiError, GeoDataError
-from media_hygiene.geo.distance import Point
-from media_hygiene.geo.landmarks import near_cells, shared_landmarks
+from media_hygiene.errors import AiError
 from media_hygiene.i18n import _
 from media_hygiene.index.repository import FactsRepository
-from media_hygiene.index.spot_picks import Unpicked, save_pick, unpicked
+from media_hygiene.index.spot_picks import save_pick
 from media_hygiene.report.thumbnails import jpeg_preview
 from media_hygiene.scan.progress import Step
 from media_hygiene.services.spot_scan import spot_index
+from media_hygiene.services.spot_vision_work import landmark_work
 
 if TYPE_CHECKING:
     import sqlite3
-    from collections.abc import Sequence
+    from collections.abc import Callable, Sequence
     from concurrent.futures import Executor
 
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.services.runtime import Runtime
-
-# How far a landmark a photo shows may lie: a cathedral seen from across a town.
-PICK_M: Final = 1000.0
-# The nearest ones only: a long list slows the model and invites a wrong pick.
-MAX_CANDIDATES: Final = 10
-
-type Work = tuple[Unpicked, tuple[str, ...]]
+    from media_hygiene.services.spot_vision_work import Work
 
 
 @dataclass(slots=True)
@@ -54,23 +47,46 @@ class VisionPicks:
     none: int = 0
     unclear: int = 0  # undecodable, or an answer outside the list
 
+    def said(self) -> str:
+        """Say how the run went.
+
+        Returns:
+            One line, in the language in use.
+        """
+        return _(
+            "🤖 {asked} photos shown to the model: {picked} landmarks picked, "
+            "{none} showing none, {unclear} unclear (left as they were)."
+        ).format(
+            asked=self.asked,
+            picked=self.picked,
+            none=self.none,
+            unclear=self.unclear,
+        )
+
 
 @dataclass(frozen=True, slots=True)
 class _Asking:
-    """What asking needs: the model, the index, the pool, the progress."""
+    """What asking needs: the model, the index, the pool, the progress, Stop."""
 
     client: OllamaClient
     connection: sqlite3.Connection
     executor: Executor
     progress: ProgressSink
+    stopped: Callable[[], bool]
+    to_host: Callable[[Path], str]
 
 
-def pick_landmarks(runtime: Runtime, progress: ProgressSink) -> VisionPicks:
+def pick_landmarks(
+    runtime: Runtime,
+    progress: ProgressSink,
+    stopped: Callable[[], bool] = lambda: False,
+) -> VisionPicks:
     """Ask the model about each located photo not yet picked nor typed by hand.
 
     Args:
         runtime: Settings (`[classify.ai]`), the index, the process pool.
         progress: Where the progress line goes.
+        stopped: Asked before each photo: the picks made so far stay (0641).
 
     Returns:
         What was asked and answered; each pick is already in the index.
@@ -87,13 +103,20 @@ def pick_landmarks(runtime: Runtime, progress: ProgressSink) -> VisionPicks:
         )
     index = spot_index(runtime)
     with FactsRepository.open(index) as repository:
-        work = _work(unpicked(repository.connection))
+        work = landmark_work(runtime, repository.connection)
         if not work:
             return VisionPicks()
         client = OllamaClient(settings)
         asyncio.run(client.require_vision(settings.model))
         with runtime.executor_factory() as executor:
-            asking = _Asking(client, repository.connection, executor, progress)
+            asking = _Asking(
+                client,
+                repository.connection,
+                executor,
+                progress,
+                stopped,
+                runtime.mapper.to_host,
+            )
             progress.start(
                 Step(_("Picking the landmark each photo shows"), settings.model),
                 len(work),
@@ -102,29 +125,6 @@ def pick_landmarks(runtime: Runtime, progress: ProgressSink) -> VisionPicks:
                 return asyncio.run(_ask_all(work, asking))
             finally:
                 progress.stop()
-
-
-def _work(photos: Sequence[Unpicked]) -> list[Work]:
-    """The photos with at least one landmark around, and those landmarks.
-
-    Args:
-        photos: The photos not picked yet.
-
-    Returns:
-        Each photo and its candidates, nearest first.
-    """
-    if not photos:
-        return []
-    points = [Point(photo.latitude, photo.longitude) for photo in photos]
-    try:
-        landmarks = shared_landmarks(near_cells(points))
-    except GeoDataError:
-        return []
-    found = (
-        (photo, landmarks.around(point, PICK_M)[:MAX_CANDIDATES])
-        for photo, point in zip(photos, points, strict=True)
-    )
-    return [(photo, names) for photo, names in found if names]
 
 
 async def _ask_all(work: Sequence[Work], asking: _Asking) -> VisionPicks:
@@ -142,7 +142,9 @@ async def _ask_all(work: Sequence[Work], asking: _Asking) -> VisionPicks:
     model = asking.client.settings.model
     edge = asking.client.settings.image_edge
     for photo, names in work:
-        asking.progress.current(photo.path)
+        if asking.stopped():
+            break
+        asking.progress.current(asking.to_host(Path(photo.path)))
         image = await loop.run_in_executor(
             asking.executor, jpeg_preview, Path(photo.path), edge
         )

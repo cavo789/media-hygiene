@@ -1680,6 +1680,9 @@ msgstr "Comme prévu"
 msgid "Ask each time"
 msgstr "Demander à chaque fois"
 
+msgid "Ask for 1 h"
+msgstr "Interroger pendant 1 h"
+
 msgid "Ask for a second opinion"
 msgstr "Demander un second avis"
 
@@ -5591,6 +5594,9 @@ msgstr ""
 "Recherche des fichiers de {folder} présents uniquement dans le cloud "
 "OneDrive…"
 
+msgid "Looking for the photos with a landmark around…"
+msgstr "Recherche des photos ayant un monument autour…"
+
 msgid "MB"
 msgstr "Mo"
 
@@ -6199,6 +6205,16 @@ msgstr "Presque noires : trop strict ?"
 msgid "Nearly white: too strict?"
 msgstr "Presque blanches : trop strict ?"
 
+msgid ""
+"Needs a local AI model. It sees each located photo and picks one of the "
+"landmarks within 1 km, or none. The photos go to your own model only; "
+"only the cache is written; a name you typed is never replaced."
+msgstr ""
+"Demande un modèle d'IA local. Il voit chaque photo localisée et choisit "
+"un des monuments à moins de 1 km, ou aucun. Les photos ne vont qu'à votre"
+" propre modèle ; seul le cache est écrit ; un nom que vous avez saisi "
+"n'est jamais remplacé."
+
 msgid "Never"
 msgstr "Jamais"
 
@@ -6785,6 +6801,9 @@ msgstr ""
 
 msgid "No photo or video was taken in this period."
 msgstr "Aucune photo ni vidéo prise pendant cette période."
+
+msgid "No photo to ask about: none has a landmark left to pick."
+msgstr "Aucune photo à soumettre : il ne reste aucun monument à choisir."
 
 msgid "No photo to give: none ticked, or none reachable."
 msgstr "Aucune photo à donner : aucune cochée, ou aucune accessible."
@@ -10631,6 +10650,9 @@ msgstr ""
 "Arrêté : les photos restantes seront analysées à la prochaine ouverture "
 "de cette page."
 
+msgid "Stopped: what was picked is kept, the next run goes on."
+msgstr "Arrêté : ce qui a été choisi est gardé, le passage suivant continue."
+
 #, python-brace-format
 msgid "Stopping: the file under way ends first, so that nothing is left halfway…"
 msgid_plural ""
@@ -11705,6 +11727,9 @@ msgstr ""
 "Le menu lance ses étapes par mh : écrivez-le une fois avec 'launcher' "
 "(étape 0 des guides), puis tapez mh menu."
 
+msgid "The model looks at the photos…"
+msgstr "Le modèle regarde les photos…"
+
 msgid "The model sent an answer without a message."
 msgstr "Le modèle a envoyé une réponse sans message."
 
@@ -12687,6 +12712,13 @@ msgstr "Ces dossiers sont montés en lecture seule : {folders}."
 
 msgid "These photos are left as they are: no choice applies to them."
 msgstr "Ces photos sont laissées telles quelles : aucun choix ne s'y applique."
+
+msgid ""
+"These photos would be shown to a local vision model: choose one below "
+"(Ollama), no photo is sent until you ask."
+msgstr ""
+"Ces photos seraient montrées à un modèle de vision local : choisissez-en "
+"un ci-dessous (Ollama), aucune photo n'est envoyée avant votre demande."
 
 msgid "They are not copied; the folder keeps them"
 msgstr "Ils ne sont pas copiés ; le dossier les garde"
@@ -18284,6 +18316,14 @@ msgstr ""
 "exécution continue."
 
 #, python-brace-format
+msgid ""
+"{count} photos to show to {model}, about {time}. Each pick is kept at "
+"once: a stop loses nothing, the next run goes on."
+msgstr ""
+"{count} photos à montrer à {model}, environ {time}. Chaque choix est "
+"gardé aussitôt : un arrêt ne perd rien, le passage suivant continue."
+
+#, python-brace-format
 msgid "{count} report deleted."
 msgid_plural "{count} reports deleted."
 msgstr[0] "{count} rapport supprimé."
@@ -19972,6 +20012,10 @@ msgid "{shift}: rule {camera}"
 msgstr "{shift} : règle {camera}"
 
 #, python-brace-format
+msgid "{shown} of the {count} photos it will ask about:"
+msgstr "{shown} des {count} photos qui seront soumises :"
+
+#, python-brace-format
 msgid "{size} in the quarantine, to check"
 msgstr "{size} en quarantaine, à vérifier"
 
@@ -20620,12 +20664,19 @@ msgstr ""
 "🛟 Le dossier est seulement lu : chaque fichier est copié, comparé à sa "
 "source, journalisé ; « undo » retire les copies."
 
+#, python-brace-format
+msgid "🤖 Ask about these {count} photos"
+msgstr "🤖 Interroger sur ces {count} photos"
+
 msgid ""
 "🤖 Describing the new photos with the local AI model (mh tags); skipped if"
 " it is not running:"
 msgstr ""
 "🤖 Description des nouvelles photos par le modèle d'IA local (mh tags) ; "
 "sautée s'il ne tourne pas :"
+
+msgid "🤖 Let the local AI name the landmark"
+msgstr "🤖 Laisser l'IA locale nommer le monument"
 
 msgid "🤖 Local AI"
 msgstr "🤖 IA locale"
@@ -20642,6 +20693,9 @@ msgstr ""
 "les monuments à moins de 1 km, celui que montre chaque photo (les photos "
 "ne sont envoyées qu'à ce modèle ; un nom saisi à la main l'emporte "
 "toujours)."
+
+msgid "🤖 Which landmark does each photo show?"
+msgstr "🤖 Quel monument montre chaque photo ?"
 
 msgid "🤖 Your photos are shown to your local model only: nothing is moved."
 msgstr ""

@@ -3,7 +3,7 @@
    include it when they get a page). `GET /api/ai-state`: `[classify.ai] url` and `model` read
    from config.toml, and whether the server at `url` answers, with its models; a model chosen
    (none = off: no photo ever leaves) is saved, then drawn as read back from the disk.
-   PC only: nothing is drawn off the loopback. `window.mhAiCard(box)` fills `box`. #}
+   PC only: nothing is drawn off the loopback. `window.mhAiCard(box)` fills `box`; `mh-ai-saved` fires on it once a choice is read back. #}
 <script>
 window.mhAiCard = (box) => {
   if (!["127.0.0.1", "localhost", "[::1]"].includes(location.hostname)) return;
@@ -46,7 +46,8 @@ window.mhAiCard = (box) => {
         .then((response) => response.json().then((reply) => ({ ok: response.ok, reply })))
         .then((result) => {
           if (!result.ok) { status.textContent = result.reply.error || AI.failed; select.disabled = false; return; }
-          read((now) => (now.model ? fill(AI.saved, { model: now.model }) : AI.savedOff));  // read back from the disk
+          read((now) => (now.model ? fill(AI.saved, { model: now.model }) : AI.savedOff))  // read back from the disk
+            .then(() => box.dispatchEvent(new CustomEvent("mh-ai-saved")));
         })
         .catch(() => { status.textContent = AI.failed; select.disabled = false; });
     });

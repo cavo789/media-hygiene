@@ -4,8 +4,9 @@
 `POST {"action": "prepare"}` writes the cheap words and counts the photos to describe,
 `{"action": "describe", "minutes": 60}` sends them (no `minutes`: until done or Stop),
 `{"action": "stop"}` stops after the photo in flight. One half at a time: 409 else.
-`/api/people` (the face scan, 0424) and `/api/meaning` (search by meaning, 0425) answer
-the same way, each with its own `HomeTags`.
+`/api/people` (the face scan, 0424), `/api/meaning` (search by meaning, 0425) and
+`/api/spot-picks` (🤖 the landmark a photo shows, 0641) answer the same way,
+each with its own `HomeTags`.
 """
 
 from __future__ import annotations
@@ -28,9 +29,17 @@ if TYPE_CHECKING:
 TAGS_PATH: Final = "/api/tags"
 PEOPLE_PATH: Final = "/api/people"  # the face scan of `people` (0424)
 MEANING_PATH: Final = "/api/meaning"  # search by meaning, `[tags] meaning` (0425)
+SPOTS_PATH: Final = "/api/spot-picks"  # 🤖 `spots --vision` (0641)
 INLINE_PATH: Final = "/api/inline"  # a short step run by the server (0505)
-RUN_PATHS: Final = frozenset({TAGS_PATH, PEOPLE_PATH, MEANING_PATH, INLINE_PATH})
-RUN_NAMES: Final = {"tags": TAGS_PATH, "people": PEOPLE_PATH, "meaning": MEANING_PATH}
+RUN_PATHS: Final = frozenset(
+    {TAGS_PATH, PEOPLE_PATH, MEANING_PATH, SPOTS_PATH, INLINE_PATH}
+)
+RUN_NAMES: Final = {
+    "tags": TAGS_PATH,
+    "people": PEOPLE_PATH,
+    "meaning": MEANING_PATH,
+    "spots": SPOTS_PATH,
+}
 TAGS_RUN: Final = frozenset({TAGS_PATH})  # the page without faces nor meaning
 _MAX_MINUTES: Final = 24 * 60
 

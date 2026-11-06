@@ -68,6 +68,13 @@ gardé aussitôt dans l'index, cherchable, et demandé une seule fois. Un nom sa
 l'emporte toujours : une telle photo n'est jamais envoyée. Sans modèle, ou si le serveur ne
 répond pas, rien ne change. Les photos ne vont qu'à votre modèle local.
 
+Sur la page d'accueil, *Retrouver*, à côté de cette étape : **🤖 Laisser l'IA locale nommer le
+monument**. Elle montre d'abord une partie des photos sur lesquelles elle interrogera le modèle
+(60 au plus, réparties sur la liste ; survolez-en une pour son chemin et ses monuments), la carte de
+l'IA locale pour choisir le modèle, et le nombre sur le bouton. La progression se suit ensuite dans
+la page ; *Arrêter après cette photo* garde chaque choix déjà fait, et le passage suivant continue.
+Les vidéos et les fichiers mis de côté ne sont pas soumis.
+
 ## L'aide intégrée
 
 <details>

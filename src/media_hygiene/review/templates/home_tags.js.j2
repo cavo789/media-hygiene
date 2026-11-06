@@ -1,9 +1,10 @@
 {# The read-only steps run by the page: `tags` (0343), the face scan of `people` (0424),
-   search by meaning (0425, offered at the end of `tags` when `[tags] meaning` is on). One
+   search by meaning (0425, offered at the end of `tags` when `[tags] meaning` is on), 🤖 the
+   landmark each photo shows (0641: the photos it will ask about shown first). One
    shape: figures and a question, then the progress (done / total, rate, time left) and
    Stop. Each path holds its run: reopening the page during a run shows it again. #}
 const TAGS_HOUR = 60;
-const RUN_KINDS = ["tags", "people", "meaning"].filter((kind) => P[kind]);
+const RUN_KINDS = ["tags", "people", "meaning", "spots"].filter((kind) => P[kind]);
 const fillIn = (text, values) => text.replace(/\{(\w+)\}/g, (all, key) => (key in values ? values[key] : all));
 const said = (kind, key) => T[kind + key] || T["tags" + key];
 function duration(seconds) {
@@ -11,12 +12,19 @@ function duration(seconds) {
   const hours = Math.floor(minutes / 60);
   return hours ? fillIn(T.tagsHours, { h: hours, min: minutes % 60 }) : fillIn(T.tagsMinutes, { min: minutes });
 }
+function askedPhotos(figures) {
+  if (!figures.photos.length) return "";
+  const tiles = figures.photos.map((photo) => `<li><a class="sample" href="${esc(photo.url)}" target="_blank" rel="noopener" title="${esc(photo.title)}"><img src="${esc(photo.thumb)}" alt="" loading="lazy" decoding="async"></a></li>`).join("");
+  return `<p class="muted">${esc(fillIn(T.spotsShown, { shown: count(figures.photos.length), count: count(figures.to_describe) }))}</p><ul class="samples samples-few">${tiles}</ul>`;
+}
 function askingParts(kind, figures) {
-  if (!figures.model) return [`<p>${esc(T.tagsNoModel)}</p>`];
+  if (!figures.model && kind !== "spots") return [`<p>${esc(T.tagsNoModel)}</p>`];
+  if (!figures.model && figures.to_describe) return [`<p>${esc(T.spotsNoModel)}</p>`, askedPhotos(figures)];
   if (!figures.to_describe) return [`<p>${esc(said(kind, "Nothing"))}</p>`];
   return [
+    askedPhotos(figures),
     `<p>${esc(fillIn(said(kind, "Ask"), { count: count(figures.to_describe), model: figures.model, time: duration(figures.to_describe * figures.seconds_per_photo) }))}</p>`,
-    `<div class="audit-controls"><button class="btn btn-primary" type="button" data-act="${kind}-all">${icon("play")} ${esc(said(kind, "Now"))}</button><button class="btn" type="button" data-act="${kind}-hour">${esc(said(kind, "Hour"))}</button><button class="btn btn-ghost" type="button" data-close>${esc(T.tagsNotNow)}</button></div>`,
+    `<div class="audit-controls"><button class="btn btn-primary" type="button" data-act="${kind}-all">${icon("play")} ${esc(fillIn(said(kind, "Now"), { count: count(figures.to_describe) }))}</button><button class="btn" type="button" data-act="${kind}-hour">${esc(said(kind, "Hour"))}</button><button class="btn btn-ghost" type="button" data-close>${esc(T.tagsNotNow)}</button></div>`,
   ];
 }
 function runBody(kind, state) {
@@ -50,14 +58,16 @@ function drawRun(kind, state) {
     <div class="dlg-head"><div><p class="eyebrow">${icon("tag")} ${esc(T.tagsEyebrow)}</p><h2 id="${kind}Title">${esc(said(kind, "Title"))}</h2></div>${closeButton()}</div>
     <p class="muted">${esc(said(kind, "Text"))}</p>${runBody(kind, state)}</div>`;
   if (kind === "tags" && ["asking", "done", "stopped"].includes(state.phase)) drawAi(dialog);  // not while polling
+  if (kind === "spots" && ["asking", "done", "stopped", "failed"].includes(state.phase)) drawAi(dialog, () => askRun(kind, { action: "prepare" }));
   if (!dialog.open) showDialog(dialog);
   return state.phase === "preparing" || state.phase === "running";
 }
 // 🤖 The local model's card (0608, 0645): the shared `ai_card.html.j2`, as on every AI page.
-function drawAi(dialog) {
+function drawAi(dialog, saved) {
   if (REMOTE || !window.mhAiCard) return;
   const box = document.createElement("div");
   dialog.querySelector(".dlg").insertBefore(box, dialog.querySelector(".dlg-head").nextSibling);
+  if (saved) box.addEventListener("mh-ai-saved", saved);  // the figures name the model
   window.mhAiCard(box);
 }
 const pollRun = (kind) => fetch(P[kind], { cache: "no-store" })

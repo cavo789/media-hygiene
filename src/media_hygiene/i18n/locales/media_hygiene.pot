@@ -1329,6 +1329,9 @@ msgstr ""
 msgid "Ask each time"
 msgstr ""
 
+msgid "Ask for 1 h"
+msgstr ""
+
 msgid "Ask for a second opinion"
 msgstr ""
 
@@ -4624,6 +4627,9 @@ msgstr ""
 msgid "Looking for the files of {folder} in OneDrive's cloud only…"
 msgstr ""
 
+msgid "Looking for the photos with a landmark around…"
+msgstr ""
+
 msgid "MB"
 msgstr ""
 
@@ -5134,6 +5140,12 @@ msgstr ""
 msgid "Nearly white: too strict?"
 msgstr ""
 
+msgid ""
+"Needs a local AI model. It sees each located photo and picks one of the "
+"landmarks within 1 km, or none. The photos go to your own model only; "
+"only the cache is written; a name you typed is never replaced."
+msgstr ""
+
 msgid "Never"
 msgstr ""
 
@@ -5626,6 +5638,9 @@ msgid "No photo or video to show: nothing the last audit saw matches."
 msgstr ""
 
 msgid "No photo or video was taken in this period."
+msgstr ""
+
+msgid "No photo to ask about: none has a landmark left to pick."
 msgstr ""
 
 msgid "No photo to give: none ticked, or none reachable."
@@ -8856,6 +8871,9 @@ msgstr ""
 msgid "Stopped: the photos left will be analysed the next time this page opens."
 msgstr ""
 
+msgid "Stopped: what was picked is kept, the next run goes on."
+msgstr ""
+
 #, python-brace-format
 msgid "Stopping: the file under way ends first, so that nothing is left halfway…"
 msgid_plural ""
@@ -9739,6 +9757,9 @@ msgid ""
 " of the guides), then type mh menu."
 msgstr ""
 
+msgid "The model looks at the photos…"
+msgstr ""
+
 msgid "The model sent an answer without a message."
 msgstr ""
 
@@ -10515,6 +10536,11 @@ msgid "These folders are mounted read-only: {folders}."
 msgstr ""
 
 msgid "These photos are left as they are: no choice applies to them."
+msgstr ""
+
+msgid ""
+"These photos would be shown to a local vision model: choose one below "
+"(Ollama), no photo is sent until you ask."
 msgstr ""
 
 msgid "They are not copied; the folder keeps them"
@@ -15298,6 +15324,12 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{count} photos to show to {model}, about {time}. Each pick is kept at "
+"once: a stop loses nothing, the next run goes on."
+msgstr ""
+
+#, python-brace-format
 msgid "{count} report deleted."
 msgid_plural "{count} reports deleted."
 msgstr[0] ""
@@ -16775,6 +16807,10 @@ msgid "{shift}: rule {camera}"
 msgstr ""
 
 #, python-brace-format
+msgid "{shown} of the {count} photos it will ask about:"
+msgstr ""
+
+#, python-brace-format
 msgid "{size} in the quarantine, to check"
 msgstr ""
 
@@ -17289,9 +17325,16 @@ msgid ""
 " journaled; 'undo' removes the copies."
 msgstr ""
 
+#, python-brace-format
+msgid "🤖 Ask about these {count} photos"
+msgstr ""
+
 msgid ""
 "🤖 Describing the new photos with the local AI model (mh tags); skipped if"
 " it is not running:"
+msgstr ""
+
+msgid "🤖 Let the local AI name the landmark"
 msgstr ""
 
 msgid "🤖 Local AI"
@@ -17304,6 +17347,9 @@ msgid ""
 "🤖 Then let the local vision model of [classify.ai] pick, among the "
 "landmarks within 1 km, the one each photo shows (sends the photos to that"
 " model only; a name typed by hand always wins)."
+msgstr ""
+
+msgid "🤖 Which landmark does each photo show?"
 msgstr ""
 
 msgid "🤖 Your photos are shown to your local model only: nothing is moved."

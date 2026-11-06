@@ -65,6 +65,12 @@ leaves the photo as it was. Each pick is kept in the index at once, searchable, 
 A name you typed by hand always wins: such a photo is never sent. Without a model, or with the
 server not answering, nothing changes. The photos go to your local model only.
 
+On the home page, *Find*, next to this step: **🤖 Let the local AI name the landmark**. It shows
+some of the photos it will ask about first (60 at most, spread over the list; hover one for its
+path and landmarks), the local AI card to choose the model, and the count on the button. Then the
+progress follows in the page; *Stop after this photo* keeps every pick made, and the next run goes
+on. Videos and files set aside are not asked about.
+
 ## The built-in help
 
 <details>
