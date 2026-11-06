@@ -26,6 +26,7 @@ from media_hygiene.people.remembered import AsideMemory
 from media_hygiene.people.roster import NamesFile, Roster
 from media_hygiene.people.views import STRIP
 from media_hygiene.review.apply_api import APPLY_PATH
+from media_hygiene.review.home_tags_api import PEOPLE_PATH
 from media_hygiene.review.home_views import UNDO_PATH
 from media_hygiene.review.page_header import page_header
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
@@ -49,6 +50,7 @@ class PeopleBuild:
     names: Path | None  # `config.toml`, None when it cannot be written
     apply_offered: bool = False  # *Apply now*: opened from the home page
     relative: bool = False  # under a prefix of the home server (0600)
+    new: int = 0  # photos not analysed yet, which the page analyses itself (0588)
 
 
 def people_page(build: PeopleBuild) -> bytes:
@@ -80,6 +82,8 @@ def people_page(build: PeopleBuild) -> bytes:
             header=page_header(_PAGE_TEMPLATE),
             strip=STRIP,
             apply_offered=build.apply_offered,
+            new_photos=build.new,
+            scan_path=PEOPLE_PATH,
             **paths,
         )
         .encode()

@@ -5,7 +5,8 @@ threshold (a nearest-neighbour graph, both directions). The groups come from Chi
 whispers on that graph (Biemann, 2006; dlib's face clustering): each face takes, in
 turn, the group its links weigh most for, until nothing changes. Unlike plain
 connected faces, one face that looks a bit like two people does not merge them.
-Computed from the index in blocks, never stored: a later threshold regroups in
+Computed from the index in blocks; `services.people_labels` keeps the result, and new
+faces join it without moving the others (`join_labels`): a later threshold regroups in
 seconds. The order is drawn from a fixed seed: the same faces give the same groups.
 """
 
@@ -57,7 +58,56 @@ def group_faces(vectors: NDArray[np.float32], linkage: Linkage) -> Groups:
         The groups, as row numbers, largest first (then by first row); a face
         linked to no other is a group of its own.
     """
-    labels = _whispers(_graph(vectors, linkage))
+    return groups_of(face_labels(vectors, linkage))
+
+
+def face_labels(vectors: NDArray[np.float32], linkage: Linkage) -> NDArray[np.int64]:
+    """Tell the group of each face, from all of them.
+
+    Args:
+        vectors: One unit vector per face, one row each.
+        linkage: The threshold and the number of neighbours.
+
+    Returns:
+        The group of each face (the number of one of its members).
+    """
+    count = len(vectors)
+    every = np.arange(count, dtype=np.int64)
+    return _whispers(_graph(vectors, linkage, every), every.copy(), every)
+
+
+def join_labels(
+    vectors: NDArray[np.float32], labels: NDArray[np.int64], linkage: Linkage
+) -> NDArray[np.int64]:
+    """Give the new faces a group; the groups of the others do not move.
+
+    Each new face takes the group its closest neighbours weigh most for: a known
+    one, or a new one with the other new faces it looks like.
+
+    Args:
+        vectors: One unit vector per face, one row each.
+        labels: The group of each face; negative for a new face.
+        linkage: The threshold and the number of neighbours.
+
+    Returns:
+        The group of each face.
+    """
+    fresh = np.flatnonzero(labels < 0)
+    start = int(labels.max(initial=-1)) + 1
+    joined = labels.astype(np.int64)
+    joined[fresh] = start + fresh
+    return _whispers(_graph(vectors, linkage, fresh), joined, fresh)
+
+
+def groups_of(labels: NDArray[np.int64]) -> Groups:
+    """Gather the faces of each group.
+
+    Args:
+        labels: The group of each face.
+
+    Returns:
+        The groups, as row numbers, largest first (then by first row).
+    """
     members: dict[int, list[int]] = {}
     for index, label in enumerate(labels.tolist()):
         members.setdefault(label, []).append(index)
@@ -65,18 +115,21 @@ def group_faces(vectors: NDArray[np.float32], linkage: Linkage) -> Groups:
     return tuple(tuple(group) for group in ordered)
 
 
-def _graph(vectors: NDArray[np.float32], linkage: Linkage) -> _Graph:
-    """Link each face to its close neighbours, in both directions.
+def _graph(
+    vectors: NDArray[np.float32], linkage: Linkage, rows: NDArray[np.int64]
+) -> _Graph:
+    """Link some faces to their close neighbours, in both directions.
 
     Args:
         vectors: The unit vectors.
         linkage: The threshold and the number of neighbours.
+        rows: The faces whose neighbours are looked for.
 
     Returns:
         The links, each pair once per direction, grouped by face.
     """
     count = len(vectors)
-    links = _neighbours(vectors, linkage)
+    links = _neighbours(vectors, linkage, rows)
     both = np.concatenate((links, links[:, (1, 0, 2)]))
     codes = both[:, 0].astype(np.int64) * count + both[:, 1].astype(np.int64)
     _, first = np.unique(codes, return_index=True)  # sorted by source, then target
@@ -86,46 +139,50 @@ def _graph(vectors: NDArray[np.float32], linkage: Linkage) -> _Graph:
     return _Graph(starts, kept[:, 1].astype(np.int64), kept[:, 2])
 
 
-def _neighbours(vectors: NDArray[np.float32], linkage: Linkage) -> NDArray[np.float64]:
-    """Find each face's close neighbours, block by block.
+def _neighbours(
+    vectors: NDArray[np.float32], linkage: Linkage, wanted: NDArray[np.int64]
+) -> NDArray[np.float64]:
+    """Find the close neighbours of some faces, block by block.
 
     Args:
         vectors: The unit vectors.
         linkage: The threshold and the number of neighbours.
+        wanted: The faces whose neighbours are looked for.
 
     Returns:
         One row per link: face, neighbour, similarity.
     """
-    count = len(vectors)
-    keep = min(linkage.neighbours, count - 1)
+    keep = min(linkage.neighbours, len(vectors) - 1)
     pairs: list[NDArray[np.float64]] = [np.empty((0, 3))]
-    for start in range(0, count if keep > 0 else 0, _BLOCK):
-        block = vectors[start : start + _BLOCK] @ vectors.T
-        rows = np.arange(len(block))
-        block[rows, rows + start] = -np.inf  # a face is not its own neighbour
+    for start in range(0, len(wanted) if keep > 0 else 0, _BLOCK):
+        faces = wanted[start : start + _BLOCK]
+        block = vectors[faces] @ vectors.T
+        block[np.arange(len(faces)), faces] = -np.inf  # not its own neighbour
         nearest = np.argpartition(-block, keep - 1, axis=1)[:, :keep]
         similar = np.take_along_axis(block, nearest, axis=1)
         line, rank = np.nonzero(similar >= linkage.similarity)
-        found = (line + start, nearest[line, rank], similar[line, rank])
+        found = (faces[line], nearest[line, rank], similar[line, rank])
         pairs.append(np.column_stack(found).astype(np.float64))
     return np.concatenate(pairs)
 
 
-def _whispers(graph: _Graph) -> NDArray[np.int64]:
+def _whispers(
+    graph: _Graph, labels: NDArray[np.int64], moving: NDArray[np.int64]
+) -> NDArray[np.int64]:
     """Spread the groups along the links until they settle.
 
     Args:
         graph: The links.
+        labels: The group each face starts in; changed in place.
+        moving: The faces that may change group.
 
     Returns:
-        The group of each face (the number of one of its members).
+        The group of each face.
     """
-    count = len(graph.starts) - 1
-    labels = np.arange(count, dtype=np.int64)
     order = np.random.default_rng(_SEED)
     for _ in range(ROUNDS):
         changed = False
-        for node in order.permutation(count).tolist():
+        for node in order.permutation(moving).tolist():
             begin, end = graph.starts[node], graph.starts[node + 1]
             if begin == end:
                 continue

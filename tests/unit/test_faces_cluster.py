@@ -4,7 +4,13 @@ from __future__ import annotations
 
 import numpy as np
 
-from media_hygiene.faces.cluster import Linkage, group_faces
+from media_hygiene.faces.cluster import (
+    Linkage,
+    face_labels,
+    group_faces,
+    groups_of,
+    join_labels,
+)
 
 
 def people(sizes: tuple[int, ...], spread: float = 0.05) -> np.ndarray:
@@ -55,3 +61,52 @@ def test_the_same_faces_give_the_same_groups() -> None:
     """The order is drawn from a fixed seed."""
     vectors = people((8, 8, 8), spread=0.3)
     assert group_faces(vectors, Linkage()) == group_faces(vectors, Linkage())
+
+
+def _partition(groups: tuple[tuple[int, ...], ...]) -> set[tuple[int, ...]]:
+    """The groups, whatever their order.
+
+    Args:
+        groups: The groups.
+
+    Returns:
+        The same as a set.
+    """
+    return set(groups)
+
+
+def test_the_labels_give_the_same_groups_as_group_faces() -> None:
+    """`face_labels` then `groups_of` is `group_faces`."""
+    vectors = people((5, 12, 3))
+    assert groups_of(face_labels(vectors, Linkage())) == group_faces(vectors, Linkage())
+
+
+def test_a_new_face_joins_its_person_and_the_others_do_not_move() -> None:
+    """One more face of the second person: only that face gets a group."""
+    vectors = people((6, 6))
+    known = face_labels(vectors[:-1], Linkage())
+    labels = join_labels(vectors, np.append(known, -1), Linkage())
+    assert (labels[:-1] == known).all()
+    assert labels[-1] == labels[6]
+    assert _partition(groups_of(labels)) == _partition(group_faces(vectors, Linkage()))
+
+
+def test_new_faces_of_someone_new_make_a_group_of_their_own() -> None:
+    """A person seen for the first time, and nobody merged."""
+    vectors = people((6, 4))
+    labels = np.full(10, -1, dtype=np.int64)
+    labels[:6] = 3
+    joined = join_labels(vectors, labels, Linkage())
+    assert (joined[:6] == 3).all()
+    assert len({int(label) for label in joined[6:]}) == 1
+    assert joined[6] != 3
+
+
+def test_a_new_face_like_nobody_stays_alone() -> None:
+    """Above every similarity, the new face links to nothing, and the input is kept."""
+    vectors = people((3,), spread=0.5)
+    labels = np.array([0, 1, -1], dtype=np.int64)
+    joined = join_labels(vectors, labels, Linkage(similarity=0.9999))
+    assert joined.tolist()[:2] == [0, 1]
+    assert joined[2] not in {0, 1}
+    assert labels[2] == -1

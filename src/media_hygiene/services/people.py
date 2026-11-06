@@ -166,7 +166,7 @@ class PeopleStep:
         analysed = sum(store.scanned(photo) for photo in work.photos)
         moves = load_moves(store.connection)
         return PeopleResult(
-            group_people(faces, settings),
+            group_people(faces, settings, store.connection),
             FaceTally(analysed, len(faces), store.tally().seconds_per_photo),
             every,
             named_photos(faces, Known.of(every, settings, moves)),

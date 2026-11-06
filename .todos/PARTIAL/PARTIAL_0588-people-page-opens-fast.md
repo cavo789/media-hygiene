@@ -23,3 +23,14 @@ library (≈ 20 000) redone at every opening; the rest ≈ 15 s (*estimated* by 
 
 - [ ] With no new photo: the page in under 3 s (measured on Windows)
 - [ ] New photos: the page opens at once, their analysis followed in it
+
+## Status — PARTIAL (2026-11-06)
+
+### Done
+- Measured here: synthetic index, 20 000 faces and photos, `nice`, 4 CPUs: listing 0.25 s, grouping 4.7–5.5 s (`_graph` 5.1 s, whispers 0.6 s), the rest of the page 0.1 s.
+- Groups kept in the index (`index/face_groups`, version 18), by a digest of each vector: nothing to regroup when no face is new; a few new faces join (`join_labels`); past a tenth joined, all regrouped.
+- The step *people* of the home page opens `/people/` at once past the first run, up to 1 000 new photos; the page analyses them through `/api/people`, with its count and Stop.
+
+### Not done
+- Item 4 and both acceptance lines: timing on Windows, and the page's script driven in a real browser.
+  **Reason:** needs the maintainer's machine; container start and the 15 s "rest" cannot be measured here.

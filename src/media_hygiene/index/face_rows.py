@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.faces.models import FaceBox
 from media_hygiene.index.aside_faces import FORGET_ALL
+from media_hygiene.index.face_groups import FORGET_GROUPS
 
 if TYPE_CHECKING:
     import sqlite3
@@ -51,6 +52,7 @@ _FORGET: Final = (
     "DELETE FROM faces",
     "DELETE FROM face_scans",
     FORGET_ALL,  # the faces of the people set aside (0328)
+    FORGET_GROUPS,  # which group each face fell in (0588)
 )
 _COUNT_FACES: Final = "SELECT COUNT(*) FROM faces"
 _SEPARATOR: Final = ","

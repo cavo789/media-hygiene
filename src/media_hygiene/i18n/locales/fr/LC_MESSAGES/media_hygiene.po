@@ -6027,6 +6027,9 @@ msgstr "Nouvel album…"
 msgid "New name"
 msgstr "Nouveau nom"
 
+msgid "New photos analysed, kept in the cache."
+msgstr "Nouvelles photos analysées, gardées dans le cache."
+
 #, python-brace-format
 msgid ""
 "New photos and videos copied: {count} ({size} GB, {speed} MB/s), read "
@@ -6045,6 +6048,16 @@ msgstr ""
 
 msgid "New photos during your events"
 msgstr "Nouvelles photos pendant vos événements"
+
+#, python-brace-format
+msgid "New photos to analyse: {count}. The groups below stay usable meanwhile…"
+msgstr ""
+"Nouvelles photos à analyser : {count}. Les groupes ci-dessous restent "
+"utilisables pendant ce temps…"
+
+#, python-brace-format
+msgid "New photos: {done} of {total} analysed; nothing is sent."
+msgstr "Nouvelles photos : {done} sur {total} analysées ; rien n'est envoyé."
 
 #, python-brace-format
 msgid "New photos? The cycle starts again at {stage}."
@@ -9767,6 +9780,9 @@ msgstr ""
 "Montrer sur la télé les fichiers choisis ; rien de choisi : tous ceux de "
 "la page"
 
+msgid "Show the new groups"
+msgstr "Afficher les nouveaux groupes"
+
 msgid "Show the photos a search finds, as typed in search: \"noel 2025\"."
 msgstr ""
 "Montrer les photos que trouve une recherche, tapée comme dans search : "
@@ -10149,6 +10165,11 @@ msgid "Stopped: the next tags run goes on where this one stopped."
 msgstr ""
 "Arrêté : la prochaine exécution de tags reprend là où celle-ci s'est "
 "arrêtée."
+
+msgid "Stopped: the photos left will be analysed the next time this page opens."
+msgstr ""
+"Arrêté : les photos restantes seront analysées à la prochaine ouverture "
+"de cette page."
 
 #, python-brace-format
 msgid "Stopping: the file under way ends first, so that nothing is left halfway…"
@@ -11278,6 +11299,10 @@ msgstr "Les quasi-doublons et les vidéos réencodées seuls, sur une page"
 #, python-brace-format
 msgid "The new name of {name}:"
 msgstr "Le nouveau nom de {name} :"
+
+#, python-brace-format
+msgid "The new photos could not be analysed: {error}"
+msgstr "Les nouvelles photos n'ont pas pu être analysées : {error}"
 
 msgid "The other active filters"
 msgstr "Les autres filtres actifs"

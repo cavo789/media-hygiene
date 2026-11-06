@@ -4987,6 +4987,9 @@ msgstr ""
 msgid "New name"
 msgstr ""
 
+msgid "New photos analysed, kept in the cache."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "New photos and videos copied: {count} ({size} GB, {speed} MB/s), read "
@@ -5000,6 +5003,14 @@ msgid ""
 msgstr ""
 
 msgid "New photos during your events"
+msgstr ""
+
+#, python-brace-format
+msgid "New photos to analyse: {count}. The groups below stay usable meanwhile…"
+msgstr ""
+
+#, python-brace-format
+msgid "New photos: {done} of {total} analysed; nothing is sent."
 msgstr ""
 
 #, python-brace-format
@@ -8118,6 +8129,9 @@ msgstr ""
 msgid "Show the files picked on the TV; nothing picked: every file of the page"
 msgstr ""
 
+msgid "Show the new groups"
+msgstr ""
+
 msgid "Show the photos a search finds, as typed in search: \"noel 2025\"."
 msgstr ""
 
@@ -8444,6 +8458,9 @@ msgid "Stopped: the next scan goes on where this one stopped."
 msgstr ""
 
 msgid "Stopped: the next tags run goes on where this one stopped."
+msgstr ""
+
+msgid "Stopped: the photos left will be analysed the next time this page opens."
 msgstr ""
 
 #, python-brace-format
@@ -9372,6 +9389,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "The new name of {name}:"
+msgstr ""
+
+#, python-brace-format
+msgid "The new photos could not be analysed: {error}"
 msgstr ""
 
 msgid "The other active filters"
