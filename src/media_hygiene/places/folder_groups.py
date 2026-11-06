@@ -12,8 +12,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from media_hygiene.constants import MediaKind
 from media_hygiene.geo.folding import town_key
+from media_hygiene.places.clusters import MEMBERS_KEPT
 from media_hygiene.places.toml_edit import DECIMALS
+from media_hygiene.scan.filters import media_kind
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -98,13 +101,29 @@ def groups_json(groups: Sequence[FolderGroup]) -> list[dict[str, object]]:
 
 
 def group_photos(rows: Sequence[FolderRow], group: FolderGroup) -> list[Path]:
-    """The photos without a position of every folder of a group.
+    """The first photos without a position of each folder of a group (0566).
+
+    Each folder gets an equal share of the drawer (`MEMBERS_KEPT` split between
+    them, pictures and videos apart), so a small outing to the same town stays
+    seen next to the big trip; the drawer keeps its total cap.
 
     Args:
         rows: The list.
         group: One of its groups.
 
     Returns:
-        Their files, folder after folder.
+        Their files, folder after folder, the most photos first.
     """
-    return [path for rank in group.ranks for path in rows[rank].photos]
+    share = max(1, MEMBERS_KEPT // len(group.ranks))
+    kept: list[Path] = []
+    for rank in group.ranks:
+        pictures = videos = 0
+        for path in rows[rank].photos:
+            video = media_kind(path) is MediaKind.VIDEO
+            if (videos if video else pictures) >= share:
+                continue
+            kept.append(path)
+            videos, pictures = (
+                (videos + 1, pictures) if video else (videos, pictures + 1)
+            )
+    return kept

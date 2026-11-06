@@ -17,7 +17,6 @@ One `/todo:run NNNN` each, highest priority first.
 | ID | Priority | Title | Batch |
 |---|---|---|---|
 | 0630 | Medium | Import chain from the page: the burst review shows the import's new series only | import |
-| 0566 | Low | Places map: a merged town shows a few photos of each folder | places |
 | 0568 | Low | Intruder files page: "everything but these extensions" | clean |
 | 0589 | Low | 🤖 The building a photo shows, picked by a local vision model | places |
 | 0602 | Low | Pick all N found works with the album filter | library |
