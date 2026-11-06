@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Any, Final, Protocol
 import numpy as np
 
 from media_hygiene.errors import FaceModelError
+from media_hygiene.faces.onnx_module import no_telemetry
 from media_hygiene.i18n import _
 from media_hygiene.meaning.clip import IMAGE_OUTPUT, MAX_TOKENS, PIXELS, TEXT_OUTPUT
 from media_hygiene.meaning.pixels import pixels_of, read_projection, unit
@@ -90,6 +91,7 @@ def _session(model: Path, threads: int) -> Any:  # noqa: ANN401 - onnxruntime's
     Returns:
         The runtime's session.
     """
+    no_telemetry()
     runtime = _module(_RUNTIME)
     options = runtime.SessionOptions()
     options.log_severity_level = _ERRORS_ONLY

@@ -174,6 +174,9 @@ personnelles le plus sensible (RGPD, article 9). L'outil les traite comme telles
 - rien n'est envoyé nulle part : les modèles tournent sur votre ordinateur, la page n'est servie
   que sur `127.0.0.1`, et les visages qu'elle montre sont découpés dans les photos à la demande,
   jamais enregistrés ;
+- la télémétrie de la bibliothèque ONNX Runtime, qui fait tourner les modèles, est active par
+  défaut dans ses versions officielles (elle le dit dans son `Privacy.md`) : nous la coupons
+  (`ORT_DISABLE_TELEMETRY`) depuis novembre 2026, pour que cette promesse tienne ;
 - le seul accès au réseau est le **téléchargement, une seule fois, des deux modèles** depuis
   OpenCV Zoo sur GitHub, vérifiés par leur SHA-256. Il n'envoie rien de vos photos. Sans réseau,
   l'erreur nomme les deux fichiers à enregistrer à la main dans le dossier `models` du cache ;

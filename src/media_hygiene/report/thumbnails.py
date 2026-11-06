@@ -15,6 +15,7 @@ from media_hygiene.report.video_preview import video_preview
 from media_hygiene.scan.filters import media_kind
 from media_hygiene.scan.image_check import prepare_image_worker
 from media_hygiene.scan.raw_check import raw_errors, raw_preview
+from media_hygiene.scan.rgb import rgb_of
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -154,4 +155,4 @@ def upright_picture(source: Path, edge: int | None = None) -> Image.Image:
             scale = edge / max(width, height, 1)
             if scale < 1:
                 image.draft(None, (math.ceil(width * scale), math.ceil(height * scale)))
-        return ImageOps.exif_transpose(image).convert("RGB")
+        return rgb_of(ImageOps.exif_transpose(image))

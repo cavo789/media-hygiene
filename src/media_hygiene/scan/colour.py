@@ -20,6 +20,7 @@ from PIL import Image, UnidentifiedImageError
 
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import Step
+from media_hygiene.scan.rgb import rgb_of
 from media_hygiene.scan.tool_run import run_tool
 
 if TYPE_CHECKING:
@@ -76,7 +77,7 @@ def image_colour(path: Path) -> float | None:
     try:
         with Image.open(path) as image:
             image.draft("RGB", (_EDGE, _EDGE))
-            small = image.convert("RGB").resize((_EDGE, _EDGE))
+            small = rgb_of(image).resize((_EDGE, _EDGE))
     except OSError, UnidentifiedImageError, Image.DecompressionBombError:
         return None
     return colourfulness(np.asarray(small, dtype=np.uint8))

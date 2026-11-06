@@ -14,6 +14,8 @@ from typing import TYPE_CHECKING, Final
 
 import numpy as np
 
+from media_hygiene.scan.rgb import rgb_of
+
 if TYPE_CHECKING:
     from pathlib import Path
 
@@ -60,7 +62,7 @@ def pixels_of(picture: Image.Image, pixels: Pixels) -> NDArray[np.float32]:
     Returns:
         A `3 x side x side` tensor.
     """
-    rgb = picture.convert("RGB")
+    rgb = rgb_of(picture)
     side = pixels.side
     if pixels.shortest:
         scale = pixels.shortest / min(rgb.size)

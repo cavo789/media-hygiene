@@ -11,6 +11,7 @@ import importlib
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.errors import FaceModelError
+from media_hygiene.faces.onnx_module import no_telemetry
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -38,6 +39,7 @@ def onnx_runner(model: Path) -> Runner:
     Raises:
         FaceModelError: The ONNX runtime is not installed in this build.
     """
+    no_telemetry()
     try:
         runtime = importlib.import_module(RUNTIME_MODULE)
     except ModuleNotFoundError as exc:
