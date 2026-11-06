@@ -1,0 +1,59 @@
+{# 📁 Albums folder (0534, moved here by 0625): the PC's alone, hidden on a phone (no fetch, the
+   server refuses it too). The folder as read back from `config.toml`; *Change*; the folders made
+   in the former one moved on demand, their count stated (0582, 0626). #}
+<p id="albumRoot" class="pc-only" hidden><span id="albumRootSaid"></span>
+  <button id="albumRootChange" type="button">{{ _("Change") }}</button>
+  <button id="albumRootMove" type="button" hidden></button></p>
+<form id="albumRootForm" class="pc-only" hidden>
+  <input id="albumRootField" aria-label="{{ _('Where should your albums go?') }}" title="{{ _('On the disk of your photos, in the same mounted folder (-v). exFAT refuses hard links.') }}" maxlength="4096" autocomplete="off" placeholder="{{ _('e.g. C:\\Photos\\_Albums') }}">
+  <button type="submit">{{ _("Save") }}</button>
+</form>
+<script>
+(() => {
+  if (document.documentElement.hasAttribute("data-phone")) return;
+  const PATH = {{ paths.album_root | tojson }};
+  const TEXTS = {{ {
+    "at": _("📁 Albums folder: {folder}"),
+    "none": _("📁 Where should your albums go? Pick a folder on the disk of your photos."),
+    "notSaved": _("Nothing was saved: {error}"),
+    "move": [ngettext("Move the {n} album folder made in {folder}", "Move the {n} album folders made in {folder}", 1), ngettext("Move the {n} album folder made in {folder}", "Move the {n} album folders made in {folder}", 2)],
+    "moving": _("Moving…"),
+  } | tojson }};
+  const $ = (id) => document.getElementById(id);
+  let moveFrom = "";
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  const show = (state, said) => {
+    $("albumRoot").hidden = false;
+    $("albumRootSaid").textContent = said || (state.used ? fill(TEXTS.at, { folder: state.used }) : TEXTS.none);
+    $("albumRootField").value = state.root || state.used || "";
+    $("albumRootForm").hidden = Boolean(said || state.used);
+    moveFrom = state.movable ? state.old : "";
+    const many = new Intl.PluralRules(document.documentElement.lang).select(state.movable || 0) === "one" ? 0 : 1;
+    $("albumRootMove").textContent = moveFrom ? fill(TEXTS.move[many], { n: state.movable, folder: state.old }) : "";
+    $("albumRootMove").hidden = !moveFrom;
+  };
+  const post = async (url, body) => {
+    const answer = await fetch(url, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+    }).catch(() => null);
+    const state = answer ? await answer.json().catch(() => ({})) : {};
+    return { ok: Boolean(answer && answer.ok), state };
+  };
+  $("albumRootMove").addEventListener("click", async () => {
+    $("albumRootMove").disabled = true;
+    $("albumRootSaid").textContent = TEXTS.moving;
+    const { ok, state } = await post(PATH + "/move", { old: moveFrom });
+    $("albumRootMove").disabled = false;
+    if (ok) { $("albumRootMove").hidden = true; moveFrom = ""; $("albumRootSaid").textContent = state.said; }
+    else $("albumRootSaid").textContent = fill(TEXTS.notSaved, { error: state.error || "" });
+  });
+  $("albumRootChange").addEventListener("click", () => { $("albumRootForm").hidden = !$("albumRootForm").hidden; });
+  $("albumRootForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const { ok, state } = await post(PATH, { root: $("albumRootField").value });
+    if (ok) show(state, state.said);
+    else $("albumRootSaid").textContent = fill(TEXTS.notSaved, { error: state.error || "" });
+  });
+  fetch(PATH).then((answer) => answer.json()).then((state) => show(state)).catch(() => { /* the page says it */ });
+})();
+</script>

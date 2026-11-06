@@ -84,7 +84,7 @@ Without `mh --lan`, the button says to start it: a link works on the home Wi-Fi 
 
 [Step 12 of the sorting guide](sort/12-albums.md) and [`album`](commands/album.md) turn an album
 into a **folder of hard links** on the disk, to open in the Explorer. The list is the same: the
-folder is one more way to use it, and `undo` removes it. The albums page never makes that folder.
+folder is one more way to use it, and `undo` removes it. On the PC, an album's page makes it too: **📁 Make the folder in Explorer**, shown first.
 
 ## Go further
 

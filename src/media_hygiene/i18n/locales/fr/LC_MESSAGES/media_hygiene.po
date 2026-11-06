@@ -482,6 +482,24 @@ msgid_plural "+ {n} photos placed by hand"
 msgstr[0] "+ {n} photo placée à la main"
 msgstr[1] "+ {n} photos placées à la main"
 
+msgid "- A file you put here yourself is never touched."
+msgstr "- Un fichier que vous mettez ici vous-même n'est jamais touché."
+
+msgid ""
+"- A retouch of a photo here changes the original too: it is the same file."
+msgstr ""
+"- Retoucher une photo ici modifie aussi l'original : c'est le même fichier."
+
+msgid "- Deleting a photo here leaves the original where it is."
+msgstr "- Supprimer une photo ici laisse l'original à sa place."
+
+msgid ""
+"- No extra space: each photo of an album is a second name of the same file "
+"(a hard link), not a copy."
+msgstr ""
+"- Aucun espace en plus : chaque photo d'un album est un second nom du même "
+"fichier (un lien physique), pas une copie."
+
 msgid ""
 "--chosen is gone (it showed the files set aside for the bin): add the photos"
 " to an album in search, then --album \"Crete 2023\"."
@@ -964,6 +982,15 @@ msgid ""
 msgstr ""
 "Un résultat moins de min_gain_percent pour cent plus léger est jeté : "
 "l'original reste, et la vidéo n'est plus essayée."
+
+msgid ""
+"A retouch of a photo in the folder changes the original too: it is the same "
+"file. The folder must be on the same disk and in the same mounted folder "
+"(-v) as the photos; exFAT refuses hard links."
+msgstr ""
+"Retoucher une photo du dossier modifie aussi l'original : c'est le même "
+"fichier. Le dossier doit être sur le même disque et dans le même dossier "
+"monté (-v) que les photos ; exFAT refuse les liens physiques."
 
 #, python-brace-format
 msgid "A rule is already named '{name}' in config.toml."
@@ -4089,6 +4116,10 @@ msgstr ""
 "Dossier dont les copies sont conservées en priorité. Répétable ; l'ordre "
 "compte."
 
+#, python-brace-format
+msgid "Folder: {folder}"
+msgstr "Dossier : {folder}"
+
 msgid "Folders"
 msgstr "Dossiers"
 
@@ -4550,13 +4581,13 @@ msgstr "Maison : les voyages se mesurent à partir d'ici"
 
 msgid ""
 "Host folder holding the albums of 'album': folders of hard links, a second "
-"name for each photo, which take no space. Empty: 'Albums' in the [classify] "
-"target folder. It must be on the disk of the photos, in the same mounted "
+"name for each photo, which take no space. Empty: '_Albums' in the [classify]"
+" target folder. It must be on the disk of the photos, in the same mounted "
 "folder."
 msgstr ""
 "Dossier de l'hôte qui reçoit les albums de 'album' : des dossiers de liens "
 "physiques, un second nom pour chaque photo, qui ne prennent pas de place. "
-"Vide : 'Albums' dans le dossier target de [classify]. Il doit être sur le "
+"Vide : '_Albums' dans le dossier target de [classify]. Il doit être sur le "
 "disque des photos, dans le même dossier monté."
 
 msgid "Host folder never sorted (analysed and cleaned as usual)."
@@ -5211,7 +5242,6 @@ msgstr "Alléger les vidéos : essai"
 msgid "Lighten without asking first."
 msgstr "Alléger sans demander d'abord."
 
-#, python-brace-format
 msgid ""
 "Lightened. Changed your mind? History and undo, on the home page, brings the"
 " originals back."
@@ -5380,6 +5410,9 @@ msgstr "Faire de la place sur le téléphone"
 
 msgid "Make room on the phone: launching erases nothing"
 msgstr "Faire de la place sur le téléphone : rien n'est effacé en lançant"
+
+msgid "Make the folder in Explorer"
+msgstr "Créer le dossier dans l'Explorateur"
 
 msgid "Make the links; without it, only show what the album gathers."
 msgstr ""
@@ -6387,6 +6420,17 @@ msgstr "Aucun dossier de photos : tapez mh import --phone --to <dossier>."
 msgid "No photo in the cache: run the audit first."
 msgstr "Aucune photo dans le cache : lancez d'abord l'audit."
 
+msgid "No photo is copied, no extra space, no duplicate"
+msgstr "Aucune photo copiée, aucun espace en plus, aucun doublon"
+
+msgid ""
+"No photo is copied, no extra space, no duplicate: each one gets a second "
+"name in the folder, ready to upload to a print service in full quality."
+msgstr ""
+"Aucune photo copiée, aucun espace en plus, aucun doublon : chacune reçoit un"
+" second nom dans le dossier, prête à envoyer à un service d'impression en "
+"pleine qualité."
+
 msgid "No photo left to analyse: every one is in the cache."
 msgstr "Plus aucune photo à analyser : toutes sont dans le cache."
 
@@ -7128,6 +7172,13 @@ msgstr ""
 
 msgid "On the dates of your photos: the events are named by classify."
 msgstr "D'après les dates de vos photos : classify nommera les événements."
+
+msgid ""
+"On the disk of your photos, in the same mounted folder (-v). exFAT refuses "
+"hard links."
+msgstr ""
+"Sur le disque de vos photos, dans le même dossier monté (-v). exFAT refuse "
+"les liens physiques."
 
 msgid ""
 "On the home Wi-Fi only, while mh runs on the PC. Your photos are only read: "
@@ -8242,6 +8293,9 @@ msgstr "RAW"
 
 msgid "RAW file cannot be decoded"
 msgstr "Fichier RAW impossible à décoder"
+
+msgid "READ-ME - managed by Media Hygiene.txt"
+msgstr "LISEZ-MOI - géré par Media Hygiene.txt"
 
 msgid "Radius, in metres"
 msgstr "Rayon, en mètres"
@@ -9445,10 +9499,10 @@ msgstr ""
 
 msgid ""
 "Set album.root in config.toml, a folder on the disk of your photos, e.g. "
-"root = 'C:\\Photos\\Albums'."
+"root = 'C:\\Photos\\_Albums'."
 msgstr ""
 "Réglez album.root dans config.toml, un dossier sur le disque de vos photos, "
-"par exemple root = 'C:\\Photos\\Albums'."
+"par exemple root = 'C:\\Photos\\_Albums'."
 
 msgid "Set aside"
 msgstr "Écartées"
@@ -10276,6 +10330,9 @@ msgstr ""
 "Les actions favorites de la page d'accueil, dans leur ordre : la page écrit "
 "cette liste quand vous cliquez sur une étoile ou déplacez une carte. Vide : "
 "trois sont suggérées (search, import, audit)."
+
+msgid "The album changed since: look again."
+msgstr "L'album a changé entre-temps : regardez à nouveau."
 
 msgid "The album stopped at the first link refused by the disk."
 msgstr "L'album s'est arrêté au premier lien refusé par le disque."
@@ -12108,6 +12165,9 @@ msgid "This file will go to {folder}."
 msgid_plural "These {n} files will go to {folder}."
 msgstr[0] "Ce fichier ira dans {folder}."
 msgstr[1] "Ces {n} fichiers iront dans {folder}."
+
+msgid "This folder holds your albums. It is managed by Media Hygiene."
+msgstr "Ce dossier contient vos albums. Il est géré par Media Hygiene."
 
 msgid ""
 "This folder is an album of media-hygiene: hard links, second names of photos"
@@ -14193,11 +14253,11 @@ msgstr "doublons copies analyser scanner vérifier abîmés cassés illisibles"
 msgid "e.g. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/"
 msgstr "p. ex. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/"
 
-msgid "e.g. C:\\Photos\\Albums"
-msgstr "p. ex. C:\\Photos\\Albums"
-
 msgid "e.g. C:\\Photos\\Sorted"
 msgstr "p. ex. C:\\Photos\\Tri"
+
+msgid "e.g. C:\\Photos\\_Albums"
+msgstr "p. ex. C:\\Photos\\_Albums"
 
 msgid "e.g. Crete 2023"
 msgstr "p. ex. Crète 2023"
@@ -15173,6 +15233,9 @@ msgstr "facultatif"
 
 msgid "original"
 msgstr "original"
+
+msgid "other albums or files remain in its folder: kept"
+msgstr "d'autres albums ou fichiers restent dans son dossier : conservé"
 
 msgid "other file types"
 msgstr "autres types de fichiers"
@@ -18274,6 +18337,10 @@ msgstr[0] "{n} déjà là par son GPS : non écrite."
 msgstr[1] "{n} déjà là par leur GPS : non écrites."
 
 #, python-brace-format
+msgid "{n} already there."
+msgstr "{n} déjà en place."
+
+#, python-brace-format
 msgid "{n} attributed face ({people})"
 msgid_plural "{n} attributed faces ({people})"
 msgstr[0] "{n} visage attribué ({people})"
@@ -18378,6 +18445,10 @@ msgstr[1] ""
 "{n} fichiers manquants : déplacés hors des dossiers analysés, ou supprimés."
 
 #, python-brace-format
+msgid "{n} file not found."
+msgstr "{n} fichier introuvable."
+
+#, python-brace-format
 msgid ""
 "{n} file of the album is missing (moved out of the folders analysed, or "
 "deleted): not included."
@@ -18416,6 +18487,10 @@ msgstr[0] ""
 msgstr[1] ""
 "{n} fichiers de {folder} n'ont pas été créés par media-hygiene : ils restent"
 " ({files})."
+
+#, python-brace-format
+msgid "{n} file on another disk or mount: no link possible."
+msgstr "{n} fichier sur un autre disque ou montage : aucun lien possible."
 
 #, python-brace-format
 msgid "{n} file picked"
@@ -18467,10 +18542,18 @@ msgid "{n} files moved: {folders}."
 msgstr "{n} fichiers déplacés : {folders}."
 
 #, python-brace-format
+msgid "{n} files not found."
+msgstr "{n} fichiers introuvables."
+
+#, python-brace-format
 msgid "{n} files of these days stay with another rule: shown after, marked."
 msgstr ""
 "{n} fichiers de ces jours restent à une autre règle : montrés après, "
 "marqués."
+
+#, python-brace-format
+msgid "{n} files on another disk or mount: no link possible."
+msgstr "{n} fichiers sur un autre disque ou montage : aucun lien possible."
 
 #, python-brace-format
 msgid "{n} files the old rule decided are not taken any more."
@@ -18531,6 +18614,26 @@ msgid "{n} in a protected folder: left."
 msgid_plural "{n} in a protected folder: left."
 msgstr[0] "{n} dans un dossier protégé : laissée."
 msgstr[1] "{n} dans un dossier protégé : laissées."
+
+#, python-brace-format
+msgid "{n} link failed."
+msgid_plural "{n} links failed."
+msgstr[0] "{n} lien a échoué."
+msgstr[1] "{n} liens ont échoué."
+
+#, python-brace-format
+msgid "{n} link to make."
+msgid_plural "{n} links to make."
+msgstr[0] "{n} lien à créer."
+msgstr[1] "{n} liens à créer."
+
+#, python-brace-format
+msgid "{n} link to remove."
+msgstr "{n} lien à retirer."
+
+#, python-brace-format
+msgid "{n} links to remove."
+msgstr "{n} liens à retirer."
 
 #, python-brace-format
 msgid "{n} min"
@@ -18625,6 +18728,20 @@ msgid "{n} photo or video"
 msgid_plural "{n} photos and videos"
 msgstr[0] "{n} photo ou vidéo"
 msgstr[1] "{n} photos et vidéos"
+
+#, python-brace-format
+msgid ""
+"{n} photo or video in {folder}, read back from the disk: nothing copied, no "
+"extra space."
+msgid_plural ""
+"{n} photos and videos in {folder}, read back from the disk: nothing copied, "
+"no extra space."
+msgstr[0] ""
+"{n} photo ou vidéo dans {folder}, relue depuis le disque : rien de copié, "
+"aucun espace en plus."
+msgstr[1] ""
+"{n} photos et vidéos dans {folder}, relues depuis le disque : rien de copié,"
+" aucun espace en plus."
 
 #, python-brace-format
 msgid "{n} photo picked"
@@ -19503,14 +19620,20 @@ msgstr ""
 "Paramètres > À propos du téléphone > Modifier ; Pixel : Paramètres > À "
 "propos du téléphone > Nom de l'appareil), puis rebranchez-le."
 
+#, python-brace-format
+msgid "📁 Albums folder: {folder}"
+msgstr "📁 Dossier des albums : {folder}"
+
+#, python-brace-format
+msgid "📁 Make the folder: {n} change"
+msgid_plural "📁 Make the folder: {n} changes"
+msgstr[0] "📁 Créer le dossier : {n} changement"
+msgstr[1] "📁 Créer le dossier : {n} changements"
+
 msgid ""
 "📁 Where should your albums go? Pick a folder on the disk of your photos."
 msgstr ""
 "📁 Où mettre vos albums ? Choisissez un dossier sur le disque de vos photos."
-
-#, python-brace-format
-msgid "📁 Your albums go to {folder}."
-msgstr "📁 Vos albums vont dans {folder}."
 
 msgid "📍 The GPS positions were kept, as asked."
 msgstr "📍 Les positions GPS ont été gardées, comme demandé."

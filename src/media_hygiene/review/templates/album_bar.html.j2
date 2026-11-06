@@ -39,66 +39,6 @@
     <button id="albumSend" class="plain" type="button" disabled>📨 {{ _("Prepare for sending") }}</button>
   </span>
   <a id="albumBack" href="#" hidden title="{{ _('Back to the album') }}"></a>
-{% if album_root_path | default("") %}
-{# Where the albums go (0534): `[album] root` read back from `config.toml`; empty, asked. #}
-<p id="albumRoot"><span id="albumRootSaid"></span>
-  <button id="albumRootChange" class="plain" type="button">📁 {{ _("Change") }}</button>
-  <button id="albumRootMove" type="button" hidden></button></p>
-<form id="albumRootForm" hidden>
-  <label for="albumRootField">{{ _("Where should your albums go?") }}</label>
-  <input id="albumRootField" aria-label="{{ _('Where should your albums go?') }}" maxlength="4096" autocomplete="off" placeholder="{{ _('e.g. C:\\Photos\\Albums') }}">
-  <button type="submit">{{ _("Save") }}</button>
-</form>
-<script>
-(() => {
-  const PATH = {{ album_root_path | tojson }};
-  const TEXTS = {{ {
-    "at": _("📁 Your albums go to {folder}."),
-    "none": _("📁 Where should your albums go? Pick a folder on the disk of your photos."),
-    "notSaved": _("Nothing was saved: {error}"),
-    "move": [ngettext("Move the {n} album folder made in {folder}", "Move the {n} album folders made in {folder}", 1), ngettext("Move the {n} album folder made in {folder}", "Move the {n} album folders made in {folder}", 2)],
-    "moving": _("Moving…"),
-  } | tojson }};
-  const $ = (id) => document.getElementById(id);
-  let moveFrom = "";
-  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
-  const show = (state, said) => {
-    $("albumRootSaid").textContent = said || (state.used ? fill(TEXTS.at, { folder: state.used }) : TEXTS.none);
-    $("albumRootField").value = state.root || state.used || "";
-    $("albumRootForm").hidden = Boolean(said || state.used);
-    {# 0582: the folders made in the old one, moved on demand (their count stated). #}
-    moveFrom = state.movable ? state.old : "";
-    const many = new Intl.PluralRules(document.documentElement.lang).select(state.movable || 0) === "one" ? 0 : 1;
-    $("albumRootMove").textContent = moveFrom ? fill(TEXTS.move[many], { n: state.movable, folder: state.old }) : "";
-    $("albumRootMove").hidden = !moveFrom;
-  };
-  $("albumRootMove").addEventListener("click", async () => {
-    $("albumRootMove").disabled = true;
-    $("albumRootSaid").textContent = TEXTS.moving;
-    const answer = await fetch(PATH + "/move", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ old: moveFrom }),
-    }).catch(() => null);
-    const state = answer ? await answer.json().catch(() => ({})) : {};
-    $("albumRootMove").disabled = false;
-    if (answer && answer.ok) { $("albumRootMove").hidden = true; moveFrom = ""; $("albumRootSaid").textContent = state.said; }
-    else $("albumRootSaid").textContent = fill(TEXTS.notSaved, { error: state.error || "" });
-  });
-  $("albumRootChange").addEventListener("click", () => { $("albumRootForm").hidden = !$("albumRootForm").hidden; });
-  $("albumRootForm").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const answer = await fetch(PATH, {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ root: $("albumRootField").value }),
-    }).catch(() => null);
-    const state = answer ? await answer.json().catch(() => ({})) : {};
-    if (answer && answer.ok) show(state, state.said);
-    else $("albumRootSaid").textContent = fill(TEXTS.notSaved, { error: state.error || "" });
-  });
-  fetch(PATH).then((answer) => answer.json()).then((state) => show(state)).catch(() => { /* the bar says it */ });
-})();
-</script>
-{% endif %}
   </div>
 </details>
 <button id="albumQuick" class="plain" type="button" hidden title="{{ _('Add to the album') }}" aria-label="{{ _('Add to the album') }}">➕</button>

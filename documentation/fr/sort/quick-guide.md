@@ -323,7 +323,7 @@ un tri ne propose pas ailleurs ce qui est déjà rangé. Plus : [changer d'avis]
 
 Une photo de Noël qui est aussi parmi vos plus belles ? Un album la met dans un second dossier
 sans la copier : un lien physique, aucune place prise. La première ligne montre ce qu'il ferait,
-la seconde crée l'album dans `C:\Photos\Albums\Noël` :
+la seconde crée l'album dans `C:\Photos\_Albums\Noël` :
 
 ```powershell
 mh album "Noël" --category Noël

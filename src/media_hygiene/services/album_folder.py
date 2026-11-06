@@ -1,4 +1,4 @@
-r"""Where an album goes: `[album] root`, else `Albums` in the `[classify] target`.
+r"""Where an album goes: `[album] root`, else `_Albums` in the `[classify] target`.
 
 The folder must be mounted (links made in the container alone vanish with it), outside
 the protected folders, writable, and its name a valid Windows folder name.
@@ -9,6 +9,7 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.constants import ALBUMS_DEFAULT_DIR
 from media_hygiene.errors import AlbumError, MountError
 from media_hygiene.i18n import _
 from media_hygiene.paths.host_paths import is_within
@@ -50,7 +51,9 @@ def album_folder(runtime: Runtime, name: str) -> Path:
     if settings.album.root:
         root = runtime.mapper.to_container(settings.album.root)
     elif settings.classify.target:
-        root = runtime.mapper.to_container(settings.classify.target) / _("Albums")
+        root = runtime.mapper.to_container(settings.classify.target) / (
+            ALBUMS_DEFAULT_DIR
+        )
     else:
         raise AlbumError(
             _(
@@ -59,7 +62,7 @@ def album_folder(runtime: Runtime, name: str) -> Path:
             ),
             _(
                 "Set album.root in config.toml, a folder on the disk of your photos, "
-                "e.g. root = 'C:\\Photos\\Albums'."
+                "e.g. root = 'C:\\Photos\\_Albums'."
             ),
         )
     folder = root / clean

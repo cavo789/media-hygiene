@@ -12,7 +12,6 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.apply_api import APPLY_PATH, ApplyDesk, ApplyOffer
 from media_hygiene.review.page_header import headed_page
-from media_hygiene.search.album_root_desk import album_root_desk
 from media_hygiene.search.app import (
     SEARCH_PAGE_PATH,
     SEARCH_PATH,
@@ -24,7 +23,7 @@ from media_hygiene.search.chosen_api import CHOSEN_PATH, ChosenDesk
 from media_hygiene.search.date_desk import DATE_PATH
 from media_hygiene.search.events_choose import SORT_PATHS
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH, EVENTS_PATH
-from media_hygiene.search.folder_role_desk import ALBUM_ROOT_PATH, ROLE_PATH, RoleDesk
+from media_hygiene.search.folder_role_desk import ROLE_PATH, RoleDesk
 from media_hygiene.search.folders import (
     BROWSE_PATH,
     FOLDER_PATH,
@@ -117,7 +116,6 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "folders_path": FOLDERS_PATH,
         "role_path": ROLE_PATH,
         "setup_paths": {"setup": SETUP_PATH, "folder": SORT_FOLDER_PATH},
-        "album_root_path": ALBUM_ROOT_PATH,
         "folder_path": FOLDER_PATH,
         "heaviest_path": HEAVIEST_PATH,
         "heaviest_first": FIRST_SHOWN,
@@ -156,8 +154,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
     roles = RoleDesk(
         runtime.locations.config_file, runtime.mapper, roots, search.connection
     )
-    albums_at = album_root_desk(roles, runtime)
-    folders = FolderDesk(search, runtime.mapper, roots, chosen, roles, albums_at)
+    folders = FolderDesk(search, runtime.mapper, roots, chosen, roles)
     place = SearchPlace(
         search,
         runtime.mapper,

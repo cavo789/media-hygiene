@@ -85,7 +85,7 @@ Chaque option a sa ligne dans la section `[classify]` de `config.toml` ; les rè
 cavo789/media-hygiene --locale fr classify --year 2016 --layout "{year}/{month}"
 
 # Construire l'arborescence dans un autre dossier (monté), laisser les albums tranquilles
-cavo789/media-hygiene --locale fr classify --target "D:\Photos triées" --leave "C:\Photos\Albums"
+cavo789/media-hygiene --locale fr classify --target "D:\Photos triées" --leave "C:\Photos\_Albums"
 
 # Combien de temps prendrait le modèle local ?
 cavo789/media-hygiene --locale fr classify --sample 20

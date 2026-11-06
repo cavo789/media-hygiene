@@ -1,0 +1,42 @@
+{# The dialog of `album_make.html.j2` (0625): every sentence comes from the server. #}
+(() => {
+  let counts = {};
+  const fail = (text) => { $("makeError").textContent = text; $("makeError").hidden = !text; };
+  async function post(url, body) {
+    const answer = await fetch(url, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+    }).catch(() => null);
+    const state = answer ? await answer.json().catch(() => ({})) : {};
+    if (!answer) fail(TEXTS.offline);
+    else if (!answer.ok) fail(state.error || TEXTS.failed.replace("{status}", answer.status));
+    return answer && answer.ok ? state : null;
+  }
+  function show(state) {
+    $("makeFolderForm").hidden = !state.ask_folder;
+    const lines = state.said || [];
+    $("makeLines").replaceChildren(...lines.map((line) => element("li", "", line)));
+    counts = { links: state.links, remove: state.remove };
+    $("makeGo").textContent = state.button || "";
+    $("makeGo").hidden = Boolean(state.done) || !(state.links || state.remove);
+  }
+  async function look() {
+    fail("");
+    $("makeGo").hidden = true;
+    const state = await post(ROUTES.album_make, { album: NAME });
+    show(state || {});
+  }
+  $("folderMake").addEventListener("click", () => { $("makeDialog").showModal(); look(); });
+  $("makeClose").addEventListener("click", () => $("makeDialog").close());
+  $("makeGo").addEventListener("click", async () => {
+    fail("");
+    $("makeGo").disabled = true;
+    const state = await post(ROUTES.album_make, { album: NAME, apply: true, ...counts });
+    $("makeGo").disabled = false;
+    if (state) show(state);
+  });
+  $("makeFolderForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    fail("");
+    if (await post(ROUTES.album_root, { root: $("makeFolder").value })) look();
+  });
+})();

@@ -34,6 +34,15 @@ FFPROBE_BINARY: Final = "ffprobe"
 FFMPEG_BINARY: Final = "ffmpeg"
 # A folder holding this file is an album of `album`: hard links that every scan skips.
 ALBUM_MARKER: Final = ".media-hygiene-album"
+# The albums' folder when `[album] root` is empty, in the `[classify] target` (0626);
+# the one before: its folders are offered the move.
+ALBUMS_DEFAULT_DIR: Final = "_Albums"
+ALBUMS_FORMER_DIR: Final = "Albums"
+# The read-me at the albums' root, in each language: one kept, never two (0626).
+ALBUM_README_NAMES: Final = (
+    "READ-ME - managed by Media Hygiene.txt",
+    "LISEZ-MOI - géré par Media Hygiene.txt",
+)
 
 
 class Locale(StrEnum):

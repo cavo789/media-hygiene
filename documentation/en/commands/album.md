@@ -66,6 +66,25 @@ disk or mount*), then *💡 Nothing was changed: add --apply to make the links*.
 make them. The name is the album's, whatever its case: `album "crete 2023"` makes the folder
 `Crete 2023`.
 
+## From the albums page
+
+On the PC, open an album and click **📁 Make the folder in Explorer**, for instance to upload
+its photos to a print service in full quality. No photo is copied, no extra space, no duplicate.
+It first shows what it will do (links to make, to remove, files not found) and states the count
+on its button; nothing happens before that click. The answer gives the `mh undo <run>` line.
+
+It needs your photos without `:ro` and a persistent `/journal`: otherwise it says so in one line.
+A retouch of a photo in the folder changes the original too: it is the same file.
+
+The **📁 Albums folder** line of the albums page says the folder as read back from
+`config.toml`; **Change** sets it. It asks where the albums go only when no folder is known. The
+folder must be on the same disk and in the same `-v` as the photos, outside the protected folders;
+exFAT refuses hard links. Folders made in the old folder (or in `Albums`, the default before
+`_Albums`) are offered **Move the N album folders made in …**: each album is made again in the
+new folder (one run per album, `mh undo <run>`), the old one emptied of what media-hygiene made. A
+file you put there yourself stays, said, and so does its folder. These controls are on the PC
+only, never on a phone nor a 24 h link.
+
 ## Without an album: a selection of the classify plan
 
 After [`classify`](classify.md), `album` can also gather a selection of its plan, without an
@@ -88,10 +107,13 @@ plan **instead of** `albums.json`; given together, every option must match: `--c
 
 ## Good to know
 
-- **Where the albums go**: `root` in the `[album]` section of `config.toml`; empty, an `Albums`
+- **Where the albums go**: `root` in the `[album]` section of `config.toml`; empty, an `_Albums`
   folder in the `target` of `[classify]`.
+- **A read-me at the root of the albums' folder**, `READ-ME - managed by Media Hygiene.txt`, says
+  what the folder is; never in an album, so it never lands in a selection you send. Written once,
+  in the language of that run; `undo` removes it unless other albums remain.
 - **A hard link never leaves its disk, nor its `-v`**: mount the folder holding both the photos
-  and the albums (`C:\Photos` for `C:\Photos\Albums`).
+  and the albums (`C:\Photos` for `C:\Photos\_Albums`).
 - **Run it again** later, after adding photos to the album: only the new photos are added; a
   photo is never linked twice. The link of a photo taken out of the album is removed (listed
   first under *Links to remove*; the photo stays where it is, `undo` links it again). A file

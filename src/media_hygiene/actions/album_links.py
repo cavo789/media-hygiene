@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.outcome import why
-from media_hygiene.constants import ALBUM_MARKER
+from media_hygiene.constants import ALBUM_MARKER, ALBUM_README_NAMES
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -87,6 +87,13 @@ def marker_blocker(marker: Path) -> str | None:
     Returns:
         The reason, or None when it is the album's own marker, still there.
     """
+    if marker.name in ALBUM_README_NAMES:  # the read-me of the albums' folder (0626)
+        others = marker.is_file() and any(
+            other.name != marker.name for other in marker.parent.iterdir()
+        )
+        if others:
+            return _("other albums or files remain in its folder: kept")
+        return None if marker.is_file() else _("it is gone already")
     if marker.name != ALBUM_MARKER:  # only the album's own marker is ever removed
         return _("it is not the marker file of an album: kept")
     return None if marker.is_file() else _("it is gone already")

@@ -90,8 +90,7 @@ lien ne marche que sur le Wi-Fi de la maison.
 
 [L'étape 12 du guide du tri](sort/12-albums.md) et [`album`](commands/album.md) transforment un
 album en **dossier de liens physiques** sur le disque, à ouvrir dans l'Explorateur. La liste est la
-même : le dossier est une façon de plus de s'en servir, et `undo` le supprime. La page des albums
-ne fabrique jamais ce dossier.
+même : le dossier est une façon de plus de s'en servir, et `undo` le supprime. Sur le PC, la page d'un album le crée aussi : **📁 Créer le dossier dans l'Explorateur**, montré d'abord.
 
 ## Pour aller plus loin
 

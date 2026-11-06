@@ -67,6 +67,26 @@ dossier, et ceux qu'il ne peut pas lier (*Introuvables* : déplacés ou supprim�
 liens*. Ajoutez `--apply` pour les créer. Le nom est celui de l'album, quelle que soit sa casse :
 `album "crète 2023"` crée le dossier `Crète 2023`.
 
+## Depuis la page des albums
+
+Sur le PC, ouvrez un album et cliquez sur **📁 Créer le dossier dans l'Explorateur**, par exemple
+pour envoyer ses photos à un service d'impression en pleine qualité. Aucune photo copiée, aucun
+espace en plus, aucun doublon. Il montre d'abord ce qu'il va faire (liens à créer, à retirer,
+fichiers introuvables) et annonce le nombre sur son bouton ; rien ne se passe avant ce clic. La
+réponse donne la ligne `mh undo <run>`.
+
+Il lui faut vos photos sans `:ro` et un `/journal` persistant : sinon il le dit en une ligne.
+Retoucher une photo du dossier modifie aussi l'original : c'est le même fichier.
+
+La ligne **📁 Dossier des albums** de la page des albums dit le dossier relu dans `config.toml` ;
+**Changer** le règle. La question n'est posée que si aucun dossier n'est connu. Le dossier doit
+être sur le même disque et dans le même `-v` que les photos, hors des dossiers protégés ; exFAT
+refuse les liens physiques. Les dossiers créés dans l'ancien dossier (ou dans `Albums`, le défaut
+avant `_Albums`) reçoivent **Déplacer les N dossiers d'album créés dans …** : chaque album est
+refait dans le nouveau dossier (un run par album, `mh undo <run>`), l'ancien vidé de ce que
+media-hygiene a créé. Un fichier que vous y avez mis vous-même reste, signalé, son dossier aussi.
+Ces commandes sont sur le PC seulement, jamais sur un téléphone ni un lien de 24 h.
+
 ## Sans album : une sélection du plan de classify
 
 Après [`classify`](classify.md), `album` peut aussi rassembler une sélection de son plan, sans
@@ -90,9 +110,12 @@ Plus : [Trier, étape 12](../sort/12-albums.md#choisir-ce-que-lalbum-rassemble).
 ## Bon à savoir
 
 - **Où vont les albums** : `root` dans la section `[album]` de `config.toml` ; vide, un dossier
-  `Albums` dans la `target` de `[classify]`.
+  `_Albums` dans la `target` de `[classify]`.
+- **Un fichier à la racine du dossier des albums**, `LISEZ-MOI - géré par Media Hygiene.txt`, dit
+  ce qu'est ce dossier ; jamais dans un album, il n'arrive donc pas dans une sélection envoyée.
+  Écrit une fois, dans la langue de ce run ; `undo` le retire sauf s'il reste d'autres albums.
 - **Un lien physique ne quitte jamais son disque, ni son `-v`** : montez le dossier qui contient à
-  la fois les photos et les albums (`C:\Photos` pour `C:\Photos\Albums`).
+  la fois les photos et les albums (`C:\Photos` pour `C:\Photos\_Albums`).
 - **Relancez-le** plus tard, après avoir ajouté des photos à l'album : seules les nouvelles photos
   sont ajoutées ; une photo n'est jamais liée deux fois. Le lien d'une photo retirée de
   l'album est supprimé (listé d'abord sous *Liens à retirer* ; la photo reste où elle est, `undo`

@@ -313,7 +313,7 @@ mind](07-sort.md#change-your-mind).
 
 A Christmas photo that is also among your best? An album puts it in a second folder without
 copying it: a hard link, no space taken. The first line shows what it would do, the second creates
-the album in `C:\Photos\Albums\Christmas`:
+the album in `C:\Photos\_Albums\Christmas`:
 
 ```powershell
 mh album "Christmas" --category Christmas

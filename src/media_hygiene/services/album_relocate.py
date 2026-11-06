@@ -9,7 +9,7 @@ puts the old links back and removes the new ones.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -30,6 +30,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from media_hygiene.scan.progress import ProgressSink
+    from media_hygiene.services.album import AlbumPrepared
     from media_hygiene.services.runtime import Runtime
 
 
@@ -90,6 +91,39 @@ class AlbumMove:
     stop: Callable[[], bool]
 
 
+def _moved(
+    move: AlbumMove, prepared: AlbumPrepared, leaving: tuple[Path, bool]
+) -> Relocated:
+    """Make one album again in the new root, then empty its old folder.
+
+    Args:
+        move: The runtime, progress, Ctrl+C.
+        prepared: The album, in the new root.
+        leaving: Its old folder; whether it is the last of the old root, which is
+            left then (0626).
+
+    Returns:
+        What became of it.
+    """
+    old, last = leaving
+    made = made_in(move.runtime.locations.journal_dir, old)
+    folder = prepared.plan.folder
+    tally = Tally()
+    with new_run(move.runtime, move.progress, Phase.ALBUM) as context:
+        executor = AlbumExecutor(context, tally)
+        ended = executor.run(prepared.plan, move.stop)
+        vacated = None
+        if not (ended.interrupted or ended.unsupported):
+            vacate = AlbumVacate(executor.changes, tally)
+            vacated = vacate.run(old, made, folder / ALBUM_MARKER)
+            if last and vacated.folder_removed:
+                strays = vacate.leave_root(old.parent, folder.parent)
+                vacated = replace(vacated, kept=strays)
+    run_id = context.quarantine_run_dir.name
+    forget_run_listings(move.runtime, run_id, Phase.ALBUM)
+    return Relocated(folder.name, run_id, tally.done, vacated)
+
+
 def relocate(move: AlbumMove, old_root: Path) -> tuple[Relocated, ...]:
     """Make each album of the old root again in the new one, then empty the old.
 
@@ -103,23 +137,12 @@ def relocate(move: AlbumMove, old_root: Path) -> tuple[Relocated, ...]:
     service = AlbumService(move.runtime, move.progress)
     service.ensure_ready()
     done: list[Relocated] = []
-    for name in albums_in(move.runtime, old_root):
+    names = albums_in(move.runtime, old_root)
+    for name in names:
         if move.stop():
             break
         prepared = service.prepare(AlbumRequest(name, Criteria()))
         old = old_root / name
-        if prepared.plan.folder == old:
-            continue
-        made = made_in(move.runtime.locations.journal_dir, old)
-        tally = Tally()
-        with new_run(move.runtime, move.progress, Phase.ALBUM) as context:
-            executor = AlbumExecutor(context, tally)
-            ended = executor.run(prepared.plan, move.stop)
-            vacated = None
-            if not (ended.interrupted or ended.unsupported):
-                marker = prepared.plan.folder / ALBUM_MARKER
-                vacated = AlbumVacate(executor.changes, tally).run(old, made, marker)
-        run_id = context.quarantine_run_dir.name
-        forget_run_listings(move.runtime, run_id, Phase.ALBUM)
-        done.append(Relocated(name, run_id, tally.done, vacated))
+        if prepared.plan.folder != old:
+            done.append(_moved(move, prepared, (old, name == names[-1])))
     return tuple(done)

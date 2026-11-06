@@ -12,10 +12,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from media_hygiene.actions.album_readme import readme_of
 from media_hygiene.actions.kinds import ActionKind
 from media_hygiene.actions.outcome import Incident, why
 from media_hygiene.actions.sort_moves import file_of
-from media_hygiene.constants import ALBUM_MARKER
+from media_hygiene.constants import ALBUM_MARKER, ALBUM_README_NAMES
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -77,18 +78,45 @@ class AlbumVacate:
                 removed += 1
             else:
                 kept.append(name)
-        if kept or not self._unlink_marker(old / ALBUM_MARKER, marker):
+        if kept or not self.unlink_copy(old / ALBUM_MARKER, marker):
             return Vacated(removed, tuple(kept), folder_removed=False)
         entry = self.changes.entry(file_of(old, (0, 0)), ActionKind.REMOVE_FOLDER)
         self.changes.record(entry, old.rmdir)
         return Vacated(removed, (), folder_removed=True)
 
-    def _unlink_marker(self, old: Path, new: Path) -> bool:
-        """Remove the old marker, made again by `undo` from the new one.
+    def leave_root(self, root: Path, new_root: Path) -> tuple[Path, ...]:
+        """Once its last album left: the old root loses its read-me, then itself (0626).
 
         Args:
-            old: The old folder's marker.
-            new: The new album's marker.
+            root: The old folder of the albums.
+            new_root: The new one, holding the read-me `undo` makes the old again from.
+
+        Returns:
+            The files found there that are not the tool's: they stay, the folder too.
+        """
+        entries = sorted(root.iterdir())
+        strays = tuple(
+            p for p in entries if p.is_file() and p.name not in ALBUM_README_NAMES
+        )
+        if strays or any(p.is_dir() for p in entries):
+            return strays
+        carried = readme_of(new_root)
+        for name in entries:
+            if carried is None or not self.unlink_copy(name, carried):
+                return ()
+        entry = self.changes.entry(file_of(root, (0, 0)), ActionKind.REMOVE_FOLDER)
+        try:
+            self.changes.record(entry, root.rmdir)
+        except OSError as exc:
+            self.tally.failed.append(Incident(root, why(exc)))
+        return ()
+
+    def unlink_copy(self, old: Path, new: Path) -> bool:
+        """Remove a file of the tool in the old place, `undo` makes it from the new.
+
+        Args:
+            old: The old marker or read-me.
+            new: The new one.
 
         Returns:
             True when the old folder holds nothing more.
