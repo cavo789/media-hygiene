@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 {# The TV's welcome page (0614): the plain door's bare address. The home page's look
    (assets/theme/tokens.css: warm paper, the meerkat's indigo, apricot for "here"), its
-   fonts and its lookout meerkat, all served by the plain door. Always light: a dark
-   theme on a TV read as a black screen. Two tiles a TV remote drives (arrows, OK); the
-   first one has the focus on load. ES5 script: TV browsers are old. No clock, no
+   fonts and its lookout meerkat, all served by the plain door. Always light, `only
+   light` so a TV's automatic dark mode leaves it alone (it darkened it, 2026-11-06).
+   Two tiles of one size a TV remote drives (arrows, OK); the first one has the focus
+   on load. ES5 script: TV browsers are old. No clock, no
    animation. #}
 <html lang="{{ _('en') }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="only light">
 <title>{{ title }}</title>
 <style>
   @font-face { font-family: "Bricolage Grotesque"; font-weight: 200 800; font-display: swap;
                src: url("{{ display_font }}") format("woff2"); }
   @font-face { font-family: "Source Sans 3"; font-weight: 200 900; font-display: swap;
                src: url("{{ text_font }}") format("woff2"); }
+  :root { color-scheme: only light; }  /* a TV's automatic dark mode darkened it all */
   html, body { height: 100%; }
   body { margin: 0; background: #f7f0e2; color: #2b2118;
          font: 30px/1.4 "Source Sans 3", "Segoe UI", sans-serif; font-size: 3.6vh;
@@ -27,7 +30,8 @@
   header p { margin: 1.5vh 0 0; color: #cbbfe0; font-size: 1.1em; }
   nav { flex: 1; display: flex; gap: 5vw; justify-content: center; align-items: center;
         padding: 4vh 6vw; }
-  a { display: block; width: 34vw; padding: 6vh 2vw; border: 0.6vh solid #d5c7a9;
+  a { display: flex; flex-direction: column; justify-content: center; align-items: center;
+      box-sizing: border-box; width: 34vw; height: 42vh; padding: 2vh 2vw; border: 0.6vh solid #d5c7a9;
       border-radius: 3vh; background: #ffffff; color: #2b2118; text-decoration: none; text-align: center;
       font: 700 5vh/1.2 "Bricolage Grotesque", "Segoe UI", sans-serif;
       box-shadow: 0 1vh 2.5vh #3b2c1e40; }
