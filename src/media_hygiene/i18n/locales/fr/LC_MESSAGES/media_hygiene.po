@@ -18734,6 +18734,12 @@ msgstr[0] "{n} photo n'a pas pu être lue : non incluse."
 msgstr[1] "{n} photos n'ont pas pu être lues : non incluses."
 
 #, python-brace-format
+msgid "{n} photo not analysed yet: run an audit first, or pick at most {most}"
+msgid_plural "{n} photos not analysed yet: run an audit first, or pick at most {most}"
+msgstr[0] "{n} photo pas encore analysée : lancez d'abord un audit, ou choisissez-en {most} au plus"
+msgstr[1] "{n} photos pas encore analysées : lancez d'abord un audit, ou choisissez-en {most} au plus"
+
+#, python-brace-format
 msgid "{n} photo of this person"
 msgid_plural "{n} photos of this person"
 msgstr[0] "{n} photo de cette personne"

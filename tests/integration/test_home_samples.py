@@ -63,7 +63,7 @@ def test_at_most_ten_each_leading_to_its_folder(locations: Locations) -> None:
     drawn = home_samples(runtime)
     assert len(drawn) == SAMPLES
     assert all(sample.thumb.startswith("/thumb/") for sample in drawn)
-    assert all(sample.url.startswith("/search?folder=") for sample in drawn)
+    assert all(sample.url.startswith("/library?folder=") for sample in drawn)
     assert {sample.folder for sample in drawn} == {runtime.mapper.to_host(folder)}
 
 

@@ -127,7 +127,7 @@ def test_the_pages_carry_the_album_bar(
 ) -> None:
     """Search and browse: *Add to the album* and *Share on the TV*, apart."""
     answers = serve_search(
-        cli, monkeypatch, [("GET /search", None), ("GET /browse", None)]
+        cli, monkeypatch, [("GET /library", None), ("GET /browse", None)]
     )
     for answer in answers:
         assert b'id="albumAdd"' in answer.body

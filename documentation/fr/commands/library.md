@@ -57,7 +57,7 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene --locale fr search
 ```
 
-Ouvrez <http://127.0.0.1:8088/>. La page montre le champ de recherche et ses filtres (une période, une partie du chemin, les mots
+Ouvrez <http://127.0.0.1:8088/> ; sur le serveur de la page d'accueil, l'adresse propre de la page est `/library` (`/search`, l'ancienne, y mène : vos favoris continuent de marcher). La page montre le champ de recherche et ses filtres (une période, une partie du chemin, les mots
 d'une seule source) dans la colonne de gauche, les touches ⌨ en dessous, une seule barre au-dessus
 de la grille, puis les photos trouvées. **🔎 Mots** vient d'abord, **📁 Dossiers** ensuite : il
 ouvre [vos dossiers](#parcourir-vos-dossiers). Ctrl+C, ou fermer son onglet, arrête la page.
@@ -409,6 +409,10 @@ entrée `[[tags.hand]]` ; chaque photo y est écrite par son chemin et un identi
 contenu. Le fichier est relu et la barre dit ce qu'il contient (*« anniversaire Léa » donné à
 12 photos, relu sur le disque.*) ; les cartes montrent le mot tout de suite, et la recherche le
 trouve (`hand:anniversaire`).
+
+Les photos qu'un audit n'a pas encore analysées sont lues sur le disque pendant que la page attend :
+donc 200 au plus à la fois. Au-delà, rien n'est enregistré, et la boîte de dialogue dit combien, et
+quoi faire (un audit d'abord, ou moins de photos).
 
 Un mot tapé à la main sous une photo a une **×**, sur sa carte et dans les détails de la grande
 vue (`I`) : cliquez-la pour retirer le mot de cette photo, enregistré et relu de la même façon. Un

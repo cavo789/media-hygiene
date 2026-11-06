@@ -1,8 +1,8 @@
 """The routes of the search page, one server.
 
-`GET /` serves the page opened (`/search`, `/browse`, `/events`); `POST /api/search` the
-files found; `/thumb/`, `/preview/`, `/original/` the pictures; `/api/chosen`, albums,
-*Apply now*, folders, period rules, Events, words typed by hand (0555). Loopback only.
+`GET /` serves the page opened (`/library`, `/browse`, `/events`); `POST /api/search`
+the files found; `/thumb/`, `/preview/`, `/original/` the pictures; `/api/chosen`,
+albums, *Apply now*, folders, period rules, Events, hand words (0555). Loopback only.
 """
 
 from __future__ import annotations
@@ -23,6 +23,7 @@ from media_hygiene.search.date_desk import DATE_PATH
 from media_hygiene.search.events_choose import SORT_POSTS, events_get, sort_post
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
 from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS, FOLDERS_PATH
+from media_hygiene.search.former_page import LIBRARY_PAGE, moved_page
 from media_hygiene.search.found_answer import awaited_answer, found_answer
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH
 from media_hygiene.search.people_why import (
@@ -50,7 +51,7 @@ if TYPE_CHECKING:
     from media_hygiene.search.place import SearchPlace
 
 PAGE_PATH: Final = "/"
-SEARCH_PAGE_PATH: Final = "/search"
+SEARCH_PAGE_PATH: Final = LIBRARY_PAGE
 SEARCH_PATH: Final = "/api/search"
 _GET, _POST = "GET", "POST"
 _POSTED: Final = frozenset(
@@ -108,6 +109,8 @@ class SearchApp:
         if not is_local(request):
             message = _("Open the search at 127.0.0.1 or localhost.")
             return Response(HTTPStatus.FORBIDDEN, message.encode())
+        if (moved := moved_page(request)) is not None:
+            return moved
         if request.method == _GET:
             return await self._get(request)
         if (

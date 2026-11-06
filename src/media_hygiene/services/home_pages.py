@@ -15,6 +15,7 @@ from media_hygiene.review.http import ContentType, Response
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
 from media_hygiene.search.folders import BROWSE_PATH
+from media_hygiene.search.former_page import moved_page
 from media_hygiene.services.console_here import ReadOnlyHere
 from media_hygiene.services.disk_here import DiskHere
 from media_hygiene.services.fresh_runtime import FreshRuntime
@@ -110,6 +111,8 @@ class SearchHere:
         Returns:
             The response.
         """
+        if (moved := moved_page(request)) is not None:
+            return moved  # with or without an index
         app = self.app()
         if app is not None:
             return await app.handle(request)

@@ -137,7 +137,7 @@ def test_a_page_served_here_is_a_plain_link(tmp_path: Path) -> None:
     door, ending = _door(tmp_path)
     status, body = _post(door, {"number": 5, "command": "mh library"})
     assert status == HTTPStatus.OK
-    assert body == {"page": "/search", "command": "mh library"}
+    assert body == {"page": "/library", "command": "mh library"}
     assert ending.asked is None
     assert not (tmp_path / STEP_FILE_NAME).exists()
     assert not (tmp_path / WATCH.now).exists()

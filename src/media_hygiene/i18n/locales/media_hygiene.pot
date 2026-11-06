@@ -15700,6 +15700,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} photo not analysed yet: run an audit first, or pick at most {most}"
+msgid_plural "{n} photos not analysed yet: run an audit first, or pick at most {most}"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} photo of this person"
 msgid_plural "{n} photos of this person"
 msgstr[0] ""

@@ -27,6 +27,7 @@ from media_hygiene.review.videos import VIDEO_PREFIX
 from media_hygiene.search.app import SEARCH_PAGE_PATH, SEARCH_PATH
 from media_hygiene.search.chosen_api import CHOSEN_PATH
 from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS, FOLDERS_PATH
+from media_hygiene.search.former_page import FORMER_PAGE, FORMER_PREFIX
 from media_hygiene.search.views import ORIGINAL_PREFIX, PREVIEW_PREFIX, THUMB_PREFIX
 from media_hygiene.share import album_page as albums
 from media_hygiene.slideshow.routes import SCREENS_PATH, SHOW_PATH
@@ -36,11 +37,13 @@ if TYPE_CHECKING:
 
 LAN_PATH: Final = "/api/lan"  # the PC's card: the code, its QR code (`lan_app`)
 _HOME_READS: Final = frozenset({PAGE_PATH, STATE_PATH, AUDIT_PATH, FAVICON_PATH})
-_SEARCH_READS: Final = frozenset({SEARCH_PAGE_PATH, BROWSE_PATH, FOLDERS_PATH})
+_SEARCH_READS: Final = frozenset(
+    {SEARCH_PAGE_PATH, FORMER_PAGE, BROWSE_PATH, FOLDERS_PATH}
+)
 READ_PATHS: Final = _HOME_READS | _SEARCH_READS | {CHOSEN_PATH} | albums.PHONE_READS
 _HOME_PREFIXES: Final = (REPORTS_PREFIX, ASSETS_PREFIX, DOCS_PREFIX)
 # A photo opens at its preview size: never an original over the Wi-Fi.
-_SEARCH_PREFIXES: Final = (THUMB_PREFIX, PREVIEW_PREFIX, VIDEO_PREFIX)
+_SEARCH_PREFIXES: Final = (THUMB_PREFIX, PREVIEW_PREFIX, VIDEO_PREFIX, FORMER_PREFIX)
 # The slideshow in the home server (0417): its remote, its show, its pictures, an album
 # started (`album_show`); never its card of the code (`/api/lan`, the PC's).
 _SHOW: Final = SLIDESHOW_PAGE.removesuffix("/")

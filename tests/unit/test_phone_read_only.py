@@ -150,7 +150,7 @@ def test_a_curl_from_the_home_network_gets_403_on_every_write(
 def test_the_phones_pages_hide_what_writes() -> None:
     """0429: a page of photos sent to a phone is marked; its CSS hides the writes."""
     app, _ = _app()
-    for path in ("/search", "/browse"):
+    for path in ("/library", "/browse"):
         body = _ask(app, path).body
         assert body.startswith(b'<!doctype html>\n<html data-phone lang="en">'), path
     pick = _read_template("pick_grid.css.j2")

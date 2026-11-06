@@ -22,7 +22,6 @@ _MAX_BODY: Final = 64 * 1024
 _MAX_HEADERS: Final = 64
 _TIMEOUT_SECONDS: Final = 30.0
 HEADER_ENCODING: Final = "latin-1"
-_LOCALHOST: Final = "localhost"
 _HTTP_1: Final = "HTTP/1."
 _REQUEST_LINE_PARTS: Final = 3  # method, target, version
 NO_REFERRER: Final = "no-referrer"
@@ -77,6 +76,7 @@ class Request:
     headers: Mapping[str, str]
     body: bytes = b""
     door: Door = Door.PC  # the socket it came in by, never a header (0384)
+    query: str = ""  # what follows the `?`, for a redirect that keeps it (0617)
 
 
 @dataclass(frozen=True, slots=True)
@@ -130,8 +130,8 @@ async def read_request(reader: asyncio.StreamReader) -> Request:
         except ValueError as exc:  # a line longer than the reader's limit
             raise BadRequestError(HTTPStatus.REQUEST_HEADER_FIELDS_TOO_LARGE) from exc
         body = await _read_body(reader, headers)
-    method, target = parts[0], parts[1]
-    return Request(method, target.split("?", 1)[0], headers, body)
+    path, _mark, query = parts[1].partition("?")
+    return Request(parts[0], path, headers, body, query=query)
 
 
 def is_local(request: Request) -> bool:
@@ -145,7 +145,7 @@ def is_local(request: Request) -> bool:
     """
     host = request.headers.get("host", "")
     name = host[1:].partition("]")[0] if host.startswith("[") else host.split(":")[0]
-    if request.door is not Door.PC or name == _LOCALHOST:
+    if request.door is not Door.PC or name == "localhost":
         return request.door is Door.PC
     try:
         return ipaddress.ip_address(name).is_loopback

@@ -22,6 +22,7 @@ from media_hygiene.config.photo_ref import PhotoRef, content_id
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.serving import json_response
+from media_hygiene.search.tag_cap import too_many_unread
 from media_hygiene.tags.hand_edit import give_word, take_word
 from media_hygiene.tags.hand_files import hand_words, read_hand_tags
 
@@ -66,7 +67,7 @@ class TagDesk:
         Returns:
             Every word, each photo's words read back from the disk, and the line
             said; 400 for a body that cannot be read, 409 when `/config` cannot be
-            written, 422 or 500 when the save fails.
+            written, 422 or 500 when the save fails or too many photos must be read.
         """
         try:
             asked = TagAsked.model_validate_json(body)
@@ -81,6 +82,8 @@ class TagDesk:
             return json_response(
                 HTTPStatus.BAD_REQUEST, {"error": _("Type a word, pick a photo.")}
             )
+        if asked.action == "add" and (over := too_many_unread(self.index, asked.keys)):
+            return json_response(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": over})
         try:
             said = self._save(asked, word) if asked.action != "list" else ""
             return json_response(HTTPStatus.OK, self._read_back(asked.keys, said))

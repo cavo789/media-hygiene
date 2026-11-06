@@ -56,7 +56,7 @@ docker run --rm -it -p 127.0.0.1:8088:8088 `
   cavo789/media-hygiene library
 ```
 
-Open <http://127.0.0.1:8088/>. The page shows the search
+Open <http://127.0.0.1:8088/>; on the home server, the page's own address is `/library` (`/search`, its former one, leads to it: your favourites keep working). The page shows the search
 field and its filters (a period, a part of the path, the words of one source only) in the left
 column, the ⌨ keys under them, one bar above the grid, then the photos found. **🔎 Words** comes
 first, **📁 Folders** second: it opens [your folders](#walk-through-your-folders). Ctrl+C, or closing its tab,
@@ -381,6 +381,10 @@ from `config.toml` by a `[[tags.hand]]` entry; each photo is written as its path
 content. The file is read back and the bar says what it holds now (*“anniversaire Léa” given to
 12 photos, read back from the disk.*); the cards show the word at once, and the search finds it
 (`hand:anniversaire`).
+
+The photos an audit has not analysed yet are read from the disk while the page waits, so at most
+200 of them at a time: above that nothing is saved, and the dialog says how many, and what to do
+(an audit first, or fewer photos).
 
 A word typed by hand under a photo has a **×**, on its card and in the large view's facts (`I`):
 click it to take the word off that photo, saved and read back the same way. A word left on no

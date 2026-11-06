@@ -88,7 +88,7 @@ _SEARCH_TEMPLATE: Final = "search.html.j2"
 class SearchBuild:
     """What the app needs from its server: `/` and *Apply now*, its end, its pool."""
 
-    first: str  # the page `/` serves: `/search` or `/browse`
+    first: str  # the page `/` serves: `/library` or `/browse`
     apply: Callable[[], ApplyStep | None] | None  # None: no *Apply now*
     ending: Ending
     executor: Executor

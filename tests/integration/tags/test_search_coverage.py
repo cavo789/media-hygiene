@@ -26,7 +26,7 @@ def _answers(
 
     async def act(app: SearchApp) -> None:
         seen["found"] = await _call(app, "POST /api/search", {"text": words})
-        seen["page"] = await _call(app, "GET /search")
+        seen["page"] = await _call(app, "GET /library")
 
     monkeypatch.setattr(search_pages, "serve_until_ended", fake_server(act))
     assert run(cli, "search").exit_code == 0
