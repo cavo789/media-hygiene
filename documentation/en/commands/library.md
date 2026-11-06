@@ -398,6 +398,28 @@ once; a folder renamed in Explorer is found again by the content id at the end o
 `[tags] xmp_sources`, on by default). Without a writable `/config`, nothing is saved and the bar
 says why.
 
+## Drop a tag you do not need
+
+Hover a word the model, a folder or a file name gave a photo, on its card or in the large view's
+facts (`I`): a **⊘** appears. Click it (it never picks the photo): a dialog shows how many photos
+carry the word and the first ones. Nothing has changed yet. **Drop it from these photos (100)**
+then takes it off every photo and off its `.xmp` sidecar, and adds it to `[tags] stop_words` in
+`config.toml` (your comments kept), so the next [`tags`](tags.md) does not bring it back. The bar
+says what the disk holds afterwards (*“panneau de signalisation” dropped, read back from the disk:
+in the stop words, still on 0 photos.*) and the cards lose the word where they are.
+
+- **Sidecars**: written like those of [`xmp`](xmp.md), journaled; the bar gives the `mh undo` line.
+  Only what this tool wrote is taken out: the same word written by another application stays, and
+  a protected folder is never touched. Without a journal or on read-only folders, the next
+  `xmp --apply` takes it out.
+- **What stays**: the model's sentence (a search in quotes can still find the photo through it),
+  a word you typed by hand, a name, a date, a place.
+- **Restore**: **🚫 Dropped tags**, at the bottom of the left column, lists them; **Restore** takes
+  the word out of the stop words. Its photos get it again at the next `tags`, without asking the
+  model again (the answers are kept), and in their sidecars at the next `xmp --apply`.
+
+One tag at a time.
+
 ## Photos without a date or a place
 
 **Without** in the left column keeps the files the index knows no date (📅) or no position (📍)

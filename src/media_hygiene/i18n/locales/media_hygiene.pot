@@ -2580,6 +2580,13 @@ msgstr ""
 msgid "Drone"
 msgstr ""
 
+#, python-brace-format
+msgid "Drop it from these photos ({n})"
+msgstr ""
+
+msgid "Dropped tags"
+msgstr ""
+
 msgid "Duplicate group"
 msgstr ""
 
@@ -3912,6 +3919,10 @@ msgid_plural "I checked: sort these {n} files"
 msgstr[0] ""
 msgstr[1] ""
 
+#, python-brace-format
+msgid "I do not need the tag {word}"
+msgstr ""
+
 msgid "ISO"
 msgstr ""
 
@@ -4048,6 +4059,13 @@ msgstr ""
 
 #, python-brace-format
 msgid "It is {name}? ({score})"
+msgstr ""
+
+msgid ""
+"It leaves every photo and its .xmp sidecar, and goes into the stop words,"
+" so 'tags' does not bring it back. The model's sentences, and what you "
+"typed by hand, stay. You can restore it from Dropped tags, in the left "
+"column."
 msgstr ""
 
 #, python-brace-format
@@ -5576,6 +5594,9 @@ msgstr ""
 msgid "No sure proposal left to accept."
 msgstr ""
 
+msgid "No tag dropped."
+msgstr ""
+
 msgid ""
 "No terminal to answer in: the audit ends without faces. Add --yes to look"
 " for them without a question."
@@ -6640,6 +6661,10 @@ msgid ""
 "come back, whatever their name (a phone backup): the audit recognises "
 "them from the journal and 'clean' sets them aside again. false never "
 "looks for them."
+msgstr ""
+
+#, python-brace-format
+msgid "Photos carrying this tag: {n}. The first ones:"
 msgstr ""
 
 msgid ""
@@ -8264,6 +8289,9 @@ msgid ""
 "photo is never touched."
 msgstr ""
 
+msgid "Sidecars not written from here: the next 'xmp --apply' takes it out."
+msgstr ""
+
 msgid "Since"
 msgstr ""
 
@@ -8696,6 +8724,12 @@ msgstr ""
 
 msgid "Taken out of config.toml: its GPS decides again."
 msgstr ""
+
+#, python-brace-format
+msgid "Taken out of {n} sidecar: 'mh undo {run}' puts it back."
+msgid_plural "Taken out of {n} sidecars: 'mh undo {run}' puts them back."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "Taken: {when}"
@@ -10642,6 +10676,9 @@ msgid "Type a name to filter the folders"
 msgstr ""
 
 msgid "Type a word, pick a photo."
+msgstr ""
+
+msgid "Type a word."
 msgstr ""
 
 msgid "Type an album's name in the bar first."
@@ -13559,6 +13596,9 @@ msgstr ""
 msgid "the whole group deleted on purpose, then next"
 msgstr ""
 
+msgid "the word does not read back from config.toml"
+msgstr ""
+
 msgid "the words of a name someone chose (none for IMG_1234)."
 msgstr ""
 
@@ -15979,6 +16019,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} sidecar left as it was."
+msgid_plural "{n} sidecars left as they were."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{n} sidecar of another application: left."
 msgid_plural "{n} sidecars of another application: left."
 msgstr[0] ""
@@ -16497,10 +16543,22 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"“{word}” dropped, read back from the disk: in the stop words, still on "
+"{left} photos."
+msgstr ""
+
+#, python-brace-format
 msgid "“{word}” given to {n} photo, read back from the disk."
 msgid_plural "“{word}” given to {n} photos, read back from the disk."
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"“{word}” restored, read back from the disk: its photos get it again at "
+"the next 'tags'."
+msgstr ""
 
 #, python-brace-format
 msgid "“{word}” taken off, read back from the disk."

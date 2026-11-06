@@ -426,6 +426,29 @@ contenu à la fin du prochain `audit`. [`xmp`](xmp.md) écrit ces mots dans les 
 les autres (`hand` dans `[tags] xmp_sources`, actif par défaut). Sans `/config` accessible en
 écriture, rien n'est enregistré et la barre dit pourquoi.
 
+## Retirer un tag inutile
+
+Survolez un mot donné à une photo par le modèle, un dossier ou un nom de fichier, sur sa carte ou
+dans les informations de la grande vue (`I`) : un **⊘** apparaît. Cliquez dessus (il ne choisit
+jamais la photo) : une fenêtre montre combien de photos portent ce mot, et les premières. Rien n'a
+encore changé. **Le retirer de ces photos (100)** l'enlève alors de toutes les photos et de leur
+sidecar `.xmp`, et l'ajoute à `[tags] stop_words` dans `config.toml` (vos commentaires conservés) :
+le prochain [`tags`](tags.md) ne le ramène pas. La barre dit ce que le disque contient ensuite
+(*« panneau de signalisation » retiré, relu sur le disque : dans les mots écartés, encore sur 0 photo.*)
+et les cartes perdent le mot sans bouger.
+
+- **Sidecars** : écrits comme ceux de [`xmp`](xmp.md), journalisés ; la barre donne la ligne
+  `mh undo`. Seul ce que cet outil a écrit est retiré : le même mot écrit par une autre application
+  reste, et un dossier protégé n'est jamais touché. Sans journal ou sur des dossiers en lecture
+  seule, le prochain `xmp --apply` le retire.
+- **Ce qui reste** : la phrase du modèle (une recherche entre guillemets peut encore trouver la photo
+  par elle), un mot tapé à la main, un nom, une date, un lieu.
+- **Rétablir** : **🚫 Tags retirés**, en bas de la colonne de gauche, les liste ; **Rétablir** sort
+  le mot des mots écartés. Ses photos le retrouvent au prochain `tags`, sans redemander au modèle
+  (les réponses sont gardées), et dans leurs sidecars au prochain `xmp --apply`.
+
+Un tag à la fois.
+
 ## Les photos sans date ou sans lieu
 
 **Sans** dans la colonne de gauche garde les fichiers dont l'index ne connaît ni la date (📅) ni la

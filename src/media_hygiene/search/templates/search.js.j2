@@ -8,6 +8,7 @@
    out, how it got the name, its reference and the score, then *Yes, it is …* or *Not …*
    for that face (0318); Esc closes it, the picking untouched. #}
 const TEXTS = {{ texts | tojson }};
+const DROPPABLE_SOURCES = ["vision", "folder", "name", "former"];  // index/tag_drop.py (0546)
 const SOURCES = {{ sources | tojson }};
 const SEARCH_PATH = {{ search_path | tojson }};
 const CHOSEN_PATH = {{ chosen_path | tojson }};
@@ -97,6 +98,7 @@ function chipsOf(hit) {
       chip.addEventListener("click", (event) => { event.stopPropagation(); (event.ctrlKey || event.metaKey ? addWord : lookFor)(word); });
       if (source === "person") chip.append(unnameButton(hit, word));
       if (source === "hand") chip.append(untagButton(hit, word));  // 0555
+      if (DROPPABLE_SOURCES.includes(source)) chip.append(dropButton(word));  // 0546
       chips.append(chip);
     }
   }

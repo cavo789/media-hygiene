@@ -169,3 +169,21 @@ def _set_caption(doc: XmpDoc, sentence: str) -> None:
     alt = ET.SubElement(ET.SubElement(home, CAPTION), ALT)
     ET.SubElement(alt, LI, {LANG: DEFAULT_LANG}).text = sentence
     ET.SubElement(home, _MH_CAPTION).text = sentence
+
+
+def take_back_subject(doc: XmpDoc, word: str) -> bool:
+    """Take a word we wrote out of a sidecar (0546); another application's stays.
+
+    Args:
+        doc: The sidecar, changed in place.
+        word: The word, any case.
+
+    Returns:
+        True when the sidecar held it as ours.
+    """
+    ours = items(doc.find(_MH_SUBJECTS))
+    kept = [value for value in ours if value.casefold() != word.casefold()]
+    if len(kept) == len(ours):
+        return False
+    merge_tracked(doc, _SUBJECTS, kept)
+    return True

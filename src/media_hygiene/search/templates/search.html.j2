@@ -170,6 +170,8 @@
   .chip .unname { margin-left: 4px; padding: 0 4px; border: 0; border-radius: 50%; font: inherit;
                   line-height: 1.2; background: transparent; color: var(--muted); cursor: pointer; }
   .chip .unname:hover { background: var(--bad); color: #fff; }
+  .chip .dropTag { display: none; }
+  .chip:hover .dropTag, .chip .dropTag:focus-visible { display: inline; }
   .putBack { margin-left: 6px; }
   #viewerInfo .chips { justify-content: center; }
   #why { position: fixed; inset: 0; z-index: 5; display: flex; align-items: center;
@@ -349,6 +351,7 @@
         {% endfor %}
       </dl>
     </details>
+    {% include "tag_drop_list.html.j2" %}
     </section>
     <p id="albumResultsLine"><button id="albumResults" class="plain writes" type="button" hidden title="{{ _('A new album named after this search, with every file found; the files set aside stay out. No photo is copied or moved.') }}"></button></p>
     {% include "search_events.html.j2" %}
@@ -394,6 +397,7 @@
 {% include "month_dialog.html.j2" %}
 {% include "folder_role_dialog.html.j2" %}
 {% include "hand_tag_dialog.html.j2" %}
+{% include "tag_drop_dialog.html.j2" %}
 {% include "gap_dialogs.html.j2" %}
 {% include "search_events_dialogs.html.j2" %}
 {% include "search_sort_setup.html.j2" %}
@@ -420,6 +424,7 @@
 {% include "move_dialog.js.j2" %}
 {% include "month_dialog.js.j2" %}
 {% include "hand_tag.js.j2" %}
+{% include "tag_drop.js.j2" %}
 {% include "search_gaps.js.j2" %}
 {% include "search_rule.js.j2" %}
 {% include "search_shortcuts.js.j2" %}

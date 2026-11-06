@@ -1,0 +1,28 @@
+{# *I do not need this tag* (0546): the count and a few photos carrying it, shown before
+   anything changes; the button states the count. Script: `tag_drop.js.j2`. #}
+<style>
+  #dropDlg { max-width: min(36rem, 94vw); color: var(--text); background: var(--card);
+             border: 1px solid var(--line); border-radius: 10px; }
+  #dropDlg::backdrop { background: rgb(0 0 0 / 50%); }
+  #dropDlg h2 { margin: 0 0 6px; } #dropDlg menu { display: flex; gap: 8px; justify-content: end; padding: 0; }
+  #dropThumbs { display: flex; flex-wrap: wrap; gap: 4px; }
+  #dropThumbs img { width: 80px; height: 80px; object-fit: cover; border-radius: 4px; }
+  #dropSaid.error { color: var(--bad); }
+  #dropWords { margin: 4px 0; padding: 0; list-style: none; }
+  #dropWords li { display: flex; justify-content: space-between; gap: 6px; margin: 2px 0; }
+</style>
+<dialog id="dropDlg" aria-labelledby="dropTitle"
+        data-count="{{ _('Photos carrying this tag: {n}. The first ones:') }}"
+        data-go="{{ _('Drop it from these photos ({n})') }}"
+        data-title="{{ _('I do not need the tag {word}') }}"
+        data-given="{{ _('Not saved: {error}') }}"
+        data-restore="{{ _('Restore') }}">
+  <form id="dropForm" method="dialog">
+    <h2 id="dropTitle"></h2>
+    <p id="dropCount" class="muted"></p>
+    <div id="dropThumbs"></div>
+    <p class="muted">{{ _("It leaves every photo and its .xmp sidecar, and goes into the stop words, so 'tags' does not bring it back. The model's sentences, and what you typed by hand, stay. You can restore it from Dropped tags, in the left column.") }}</p>
+    <p id="dropSaid" class="muted" role="status"></p>
+    <menu><button type="button" id="dropNo" class="plain">{{ _("Cancel") }}</button><button type="submit" id="dropGo" class="danger"></button></menu>
+  </form>
+</dialog>
