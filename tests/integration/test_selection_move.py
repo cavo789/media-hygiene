@@ -146,6 +146,36 @@ def test_the_move_honours_the_target_chosen_while_the_page_runs(
     }
 
 
+def test_a_file_below_the_old_target_joins_the_new_one(locations: Locations) -> None:
+    """Same event: below a new target it moves, below the same one it stays."""
+    runtime, picked = _ready(locations)
+    party = {key: path for key, path in picked.items() if PARTY in str(path)}
+    mover = SelectionMover(runtime)
+    layout = "{year}/{year_month}/{category}"
+    _chose(locations, str(locations.data_dir / "c/Old"), layout)
+    assert mover.move(Picked(party), "Kermesse")["moved"] == len(party)
+    old = locations.data_dir / "c/Old/2016/2016-07/Kermesse"
+    there = dict(enumerate(old.glob("*.jpg")))
+    assert len(there) == len(party)
+    days = dict.fromkeys(
+        there.values(), datetime(2016, 7, 2)
+    )  # as the page's index says
+    chosen = Picked(there, days)
+
+    done_again = mover.move(chosen, "Kermesse")
+    assert done_again["moved"] == 0, done_again
+    assert done_again["already"] == len(party), done_again
+
+    config = locations.config_file
+    config.write_text(config.read_text("utf-8").replace("c/Old", "c/New"), "utf-8")
+    new = locations.data_dir / "c/New"
+    done = mover.move(chosen, "Kermesse")
+    assert done["moved"] == len(party), done
+    assert done["intact"]
+    assert len(list((new / "2016/2016-07/Kermesse").glob("*.jpg"))) == len(party)
+    assert not list(old.glob("*.jpg"))
+
+
 def test_year_month_only_keeps_the_folder_the_user_named(
     locations: Locations,
 ) -> None:

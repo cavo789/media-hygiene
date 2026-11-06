@@ -77,7 +77,7 @@ def _sorted(runtime: Runtime, group: GroupMove) -> GroupSorted:
     service.ensure_ready()  # refused before anything is written: no `/journal`, `:ro`
     workbook = find_workbook(runtime, None)
     plan_file, plan = plan_of(runtime, workbook)
-    whole, found = match_group(runtime, plan, group.folders)
+    whole, found = match_group(runtime, plan, group)
     counted: Counted = {
         "unknown": found.unknown,
         "fixed": found.fixed,
