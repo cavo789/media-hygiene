@@ -10,6 +10,7 @@ from __future__ import annotations
 from functools import partial
 from typing import TYPE_CHECKING
 
+from media_hygiene.console.meaning_view import left_aside_lines
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _, ngettext
 from media_hygiene.index.repository import FactsRepository
@@ -131,11 +132,13 @@ def _look(
         answering = Answering(True, progress, stopped)  # noqa: FBT003
         outcome = see_photos(repository.connection, (work, model), answering)
         progress.stop()
-    left = len(work.missing) - outcome.seen - outcome.unreadable
+    aside = len(outcome.unreadable) + outcome.absent
+    left = len(work.missing) - outcome.seen - aside
     return (
         ngettext(
             "{count} photo can now be found by what it shows; {left} left.",
             "{count} photos can now be found by what they show; {left} left.",
             outcome.seen,
         ).format(count=outcome.seen, left=max(left, 0)),
+        *left_aside_lines(outcome, runtime.mapper),
     )

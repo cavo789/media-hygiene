@@ -25,6 +25,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "  … and {count} more."
+msgstr ""
+
+#, python-brace-format
 msgid "  … and {count} more: the HTML report lists them all."
 msgstr ""
 
@@ -14634,6 +14638,16 @@ msgstr[1] ""
 #, python-brace-format
 msgid "{count} photo scanned, {faces} faces found; kept in the cache."
 msgid_plural "{count} photos scanned, {faces} faces found; kept in the cache."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} photo the audit listed is not there: deleted since, or its drive "
+"is not mounted."
+msgid_plural ""
+"{count} photos the audit listed are not there: deleted since, or their "
+"drive is not mounted."
 msgstr[0] ""
 msgstr[1] ""
 

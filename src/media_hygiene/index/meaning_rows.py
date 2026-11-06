@@ -10,12 +10,12 @@ Version 16 of the index.
 
 from __future__ import annotations
 
-import statistics
 from typing import TYPE_CHECKING, Final
 
 import numpy as np
 
 from media_hygiene.faces.models import embedding_bytes, vector_of
+from media_hygiene.meaning.pace import PhotoPace, fitted_pace
 
 if TYPE_CHECKING:
     import sqlite3
@@ -41,7 +41,8 @@ _UPSERT: Final = (
     "INSERT OR REPLACE INTO meanings (path, size, mtime_ns, model, vector, seconds)"
     " VALUES (?, ?, ?, ?, ?, ?)"
 )
-_SECONDS: Final = "SELECT seconds FROM meanings WHERE model = ? AND seconds > 0"
+# A copy took no time of its own (0.0): it says nothing of the pace.
+_TIMED: Final = "SELECT size, seconds FROM meanings WHERE model = ? AND seconds > 0"
 HAS_MEANINGS: Final = (
     "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'meanings'"
 )
@@ -93,14 +94,13 @@ class MeaningStore:
         self._connection.execute(_UPSERT, version + stored)
         self._connection.commit()
 
-    def seconds_per_photo(self) -> float | None:
+    def pace(self) -> PhotoPace | None:
         """How long a photo takes on this machine.
 
         Returns:
-            The median of the times recorded, or None before the first one.
+            The pace from the times recorded, or None before the first one.
         """
-        rows = self._connection.execute(_SECONDS, (self._model,)).fetchall()
-        return statistics.median(row[0] for row in rows) if rows else None
+        return fitted_pace(self._connection.execute(_TIMED, (self._model,)).fetchall())
 
     def _known(self, photo: PhotoVersion) -> bool:
         """Tell whether a photo has a vector of its present version.

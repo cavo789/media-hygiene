@@ -171,9 +171,14 @@ docker run --rm -it ... cavo789/media-hygiene tags --meaning   # 🤖 a model ru
   kitchens first; `Durbuy plage` keeps the photos of Durbuy and puts the beaches first.
 - **Once**: the model (894 MB) is downloaded into the cache (`/cache/models`) the first time,
   after saying so; then each photo is looked at once, about 0.06 s on 4 threads (measured on the
-  maintainer's PC): about 1 minute per 1,000 photos, 10 minutes per 10,000 (estimated from it).
+  maintainer's PC): about 1 minute per 1,000 photos, 10 minutes per 10,000 (estimated from it; 34 minutes for
+  33,660 photos of 3.3 MB on average, measured there; small files take half as long). The time
+  announced follows the size of your files, once some have been timed.
   Identical copies are looked at once; a photo edited since is looked at again; videos are not.
   Ctrl+C stops between two photos, and the next run goes on.
+- **Photos left aside**: the end of the run names the photos it could not decode (the first 20)
+  and counts those the audit listed that are not there any more (deleted, or their drive not
+  mounted). Both are tried again at the next run.
 - **The search**: `library` uses the vectors as soon as the cache holds them, whatever
   `[tags] meaning` says; the words still count, merged with the meaning (reciprocal rank
   fusion). It finds at most `meaning_results` photos (200), the closest first. A search among

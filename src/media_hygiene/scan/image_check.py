@@ -66,6 +66,14 @@ def prepare_image_worker() -> None:
         signal.signal(signal.SIGINT, signal.SIG_IGN)
     if multiprocessing.parent_process() is not None:
         _discard_stderr()
+    open_every_picture()
+
+
+def open_every_picture() -> None:
+    """Let Pillow open what the audit opens, in this process: HEIC, huge panoramas.
+
+    Without it, a process decoding by itself takes every HEIC for an unknown format.
+    """
     import pillow_heif
 
     pillow_heif.register_heif_opener()
