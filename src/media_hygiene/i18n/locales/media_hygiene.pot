@@ -5594,6 +5594,16 @@ msgstr ""
 msgid "No photo left to describe: every one is in the cache."
 msgstr ""
 
+msgid ""
+"No photo looks unwanted with these thresholds. Loosen one on the left: "
+"what enters is listed here at once."
+msgstr ""
+
+msgid ""
+"No photo looks unwanted with these thresholds: loosen them on the page to"
+" widen the search."
+msgstr ""
+
 msgid "No photo looks unwanted: nothing to review."
 msgstr ""
 
@@ -5940,6 +5950,9 @@ msgstr ""
 msgid ""
 "Nothing described: the cache only. Measure first with --sample 50, or "
 "describe without being asked with --yes."
+msgstr ""
+
+msgid "Nothing found"
 msgstr ""
 
 msgid "Nothing found."

@@ -25,6 +25,15 @@ def tell_unwanted_opened(runtime: Runtime, session: UnwantedSession) -> None:
     """
     output = runtime.output
     state = session.state()
+    if not state.photos:
+        output.info(
+            _(
+                "No photo looks unwanted with these thresholds: loosen them on the "
+                "page to widen the search."
+            )
+        )
+        tell_dropped(runtime, session)
+        return
     counts = Counter(photo.reason for photo in state.photos)
     reasons = ", ".join(
         f"{state.reasons[reason]}: {human_number(count)}"
@@ -36,6 +45,16 @@ def tell_unwanted_opened(runtime: Runtime, session: UnwantedSession) -> None:
         len(state.photos),
     )
     output.info(message.format(count=human_number(len(state.photos)), reasons=reasons))
+    tell_dropped(runtime, session)
+
+
+def tell_dropped(runtime: Runtime, session: UnwantedSession) -> None:
+    """Warn about the decisions the opening dropped, if any.
+
+    Args:
+        runtime: Settings, mount points and output.
+        session: The review, opened.
+    """
     if session.dropped:
         dropped = ngettext(
             "{count} photo decided earlier is no longer listed or changed since: "
@@ -44,7 +63,7 @@ def tell_unwanted_opened(runtime: Runtime, session: UnwantedSession) -> None:
             "their decisions are dropped.",
             session.dropped,
         )
-        output.warning(dropped.format(count=human_number(session.dropped)))
+        runtime.output.warning(dropped.format(count=human_number(session.dropped)))
 
 
 def tell_unwanted_stopped(

@@ -25,6 +25,9 @@ rafale (l'[étape 10](10-review-bursts.md) s'en charge), un quasi-doublon
 ([étape 11](11-near-duplicates.md)) ou l'autre copie d'un doublon exact. Les vidéos ne sont pas
 listées.
 
+Quand aucune photo n'est listée, la page s'ouvre quand même et affiche *Rien trouvé*, tous les
+panneaux ouverts : assouplissez un seuil pour élargir la recherche.
+
 Chaque groupe a son panneau *trop strict ?* dans la colonne de gauche de la page. Relâchez un
 curseur : les photos sont listées à nouveau aussitôt et une ligne nomme celles qui entrent ou
 sortent ; rien n'est écrit, et une photo déjà décidée reste, telle que décidée, y compris quand vous

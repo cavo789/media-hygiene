@@ -6746,6 +6746,20 @@ msgstr "Plus aucune photo à décrire : chaque candidate est dans le cache."
 msgid "No photo left to describe: every one is in the cache."
 msgstr "Plus aucune photo à décrire : toutes sont dans le cache."
 
+msgid ""
+"No photo looks unwanted with these thresholds. Loosen one on the left: "
+"what enters is listed here at once."
+msgstr ""
+"Aucune photo ne semble indésirable avec ces seuils. Assouplissez-en un à "
+"gauche : ce qui entre est listé ici aussitôt."
+
+msgid ""
+"No photo looks unwanted with these thresholds: loosen them on the page to"
+" widen the search."
+msgstr ""
+"Aucune photo ne semble indésirable avec ces seuils : assouplissez-les sur"
+" la page pour élargir la recherche."
+
 msgid "No photo looks unwanted: nothing to review."
 msgstr "Aucune photo ne semble indésirable : rien à passer en revue."
 
@@ -7140,6 +7154,9 @@ msgid ""
 msgstr ""
 "Rien de décrit : le cache seulement. Mesurez d'abord avec --sample 50, ou"
 " décrivez sans qu'on vous demande avec --yes."
+
+msgid "Nothing found"
+msgstr "Rien trouvé"
 
 msgid "Nothing found."
 msgstr "Rien trouvé."

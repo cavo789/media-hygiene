@@ -10,11 +10,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_hygiene.errors import DecisionsError
 from media_hygiene.plan.unwanted import UnwantedPhoto
 from media_hygiene.review.unwanted_file import entry_key
 from media_hygiene.services.policy import keep_policy
-from media_hygiene.services.review_file import resume_decisions
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -72,21 +70,3 @@ def decided_earlier(
         for entry in base.unwanted
         if (key := entry_key(entry)) in files
     )
-
-
-def any_decided(runtime: Runtime, findings: AuditFindings, target: Path) -> bool:
-    """Tell whether a decisions file holds a photo the review would show.
-
-    Args:
-        runtime: Settings, mount points and output.
-        findings: The audit just run.
-        target: The decisions file, in the container.
-
-    Returns:
-        True when it does; False without a usable file, nothing to resume there.
-    """
-    try:
-        base = resume_decisions(runtime, findings, target)
-    except DecisionsError:
-        return False
-    return bool(decided_earlier(runtime, findings, base))
