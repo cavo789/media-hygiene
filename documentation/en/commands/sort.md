@@ -72,6 +72,7 @@ the source folders it will remove, then asks.
 | `--yes`, `-y` | Do not ask (or `confirm = false` in `[sort]`). |
 | `--keep-empty-folders` | Keep the source folders the sort leaves empty. |
 | `--event ID` | Sort only the files of this event (its id: the first column of the Events sheet); the rest of the workbook is left for later. |
+| `--trial SAMPLE` | Sort a sample first: `latest` (the latest month with photos), a month such as `2024-05`, or a folder; the same sort then does the rest. |
 
 ## Good to know
 
@@ -86,6 +87,10 @@ the source folders it will remove, then asks.
 - **One event at a time**: `--event` (or *Sort this event now* in
   [the 🗂 Events tab of `library`](library.md#the-events-of-the-latest-classify)) sorts one event; a later `sort` of the whole workbook skips
   its files, already moved. Each run has its own `undo`.
+- **A trial first**: `--trial latest` sorts only the latest month with photos (or
+  `--trial 2024-05` one month, `--trial "C:\Photos\2019"` one folder). Look at the result;
+  if it looks right, the same `sort` without `--trial` moves the rest with the same plan,
+  otherwise `undo` puts the trial back: it is one run.
 - **Everything stays linked**: right after moving, `sort` rewrites every file of yours that names
   photos by path — the names given to faces (`people\*.toml`), `albums.json`, `decisions.json`
   (burst series, files chosen in `library`; a folder pair whose folder is gone is dropped) and the

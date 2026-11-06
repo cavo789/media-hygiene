@@ -4436,6 +4436,9 @@ msgstr "Récupérer ce que seul le NAS ou le disque contient"
 msgid "Ghent"
 msgstr "Gand"
 
+msgid "Give 'latest', a month such as 2024-05, or a folder of the plan."
+msgstr "Donnez 'latest', un mois comme 2024-05, ou un dossier du plan."
+
 msgid ""
 "Give a folder below one of your -v, written as the audit shows it, e.g. "
 "--path \"C:\\Photos\\2015\"."
@@ -6399,6 +6402,10 @@ msgstr ""
 
 msgid "No file has words yet: nothing can be found."
 msgstr "Aucun fichier n'a encore de mots : rien ne peut être trouvé."
+
+#, python-brace-format
+msgid "No file of the plan in the sample {sample}."
+msgstr "Aucun fichier du plan dans l'échantillon {sample}."
 
 msgid "No file of this event can move: they are set aside, or gone."
 msgstr ""
@@ -10044,6 +10051,13 @@ msgstr "Bientôt"
 
 msgid "Sort"
 msgstr "Tri"
+
+msgid ""
+"Sort a sample first: 'latest' (the latest month with photos), a month "
+"such as 2024-05, or a folder; the same sort then does the rest."
+msgstr ""
+"Trier d'abord un échantillon : 'latest' (le dernier mois avec des photos), "
+"un mois comme 2024-05, ou un dossier ; le même tri fait ensuite le reste."
 
 msgid "Sort by"
 msgstr "Trier par"
@@ -14983,6 +14997,9 @@ msgstr "lien vers le fichier gardé"
 
 msgid "listing"
 msgstr "liste"
+
+msgid "looks right? Sort the rest with the same plan:"
+msgstr "c'est bon ? Triez le reste avec le même plan :"
 
 msgid "loses its copies"
 msgstr "perd ses copies"

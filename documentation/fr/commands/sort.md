@@ -73,6 +73,7 @@ fichiers déjà à leur place et les dossiers sources qu'il va supprimer, puis d
 | `--yes`, `-y` | Ne pas demander (ou `confirm = false` dans `[sort]`). |
 | `--keep-empty-folders` | Garder les dossiers sources que le tri laisse vides. |
 | `--event ID` | Trier seulement les fichiers de cet événement (son identifiant : la première colonne de la feuille Événements) ; le reste du classeur attend. |
+| `--trial ÉCHANTILLON` | Trier d'abord un échantillon : `latest` (le dernier mois avec des photos), un mois comme `2024-05`, ou un dossier ; le même tri fait ensuite le reste. |
 
 ## Bon à savoir
 
@@ -88,6 +89,10 @@ fichiers déjà à leur place et les dossiers sources qu'il va supprimer, puis d
 - **Un événement à la fois** : `--event` (ou *Trier cet événement maintenant* dans
   [l'onglet 🗂 Événements de `library`](library.md#les-événements-du-dernier-classify)) trie un seul événement ; un `sort` ultérieur de tout le classeur
   saute ses fichiers, déjà déplacés. Chaque exécution a son propre `undo`.
+- **Un essai d'abord** : `--trial latest` trie seulement le dernier mois avec des photos (ou
+  `--trial 2024-05` un mois, `--trial "C:\Photos\2019"` un dossier). Regardez le résultat ;
+  s'il convient, le même `sort` sans `--trial` déplace le reste avec le même plan, sinon
+  `undo` remet l'essai en place : c'est une seule exécution.
 - **Tout reste lié** : juste après les déplacements, `sort` réécrit chacun de vos fichiers qui
   nomment des photos par leur chemin — les noms donnés aux visages (`people\*.toml`),
   `albums.json`, `decisions.json` (rafales, fichiers choisis dans `library` ; une paire de dossiers

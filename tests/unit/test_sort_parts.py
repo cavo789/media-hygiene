@@ -17,7 +17,7 @@ from media_hygiene.actions.outcome import Incident, Outcome
 from media_hygiene.actions.sort import MoveOutcome
 from media_hygiene.actions.sort_folders import Fate, FolderReport, Verdict
 from media_hygiene.actions.sort_names import numbered
-from media_hygiene.cli.cmd_sort import _show_result
+from media_hygiene.cli.sort_result import show_result
 from media_hygiene.console.advice import TipKind
 from media_hygiene.errors import MountError
 from media_hygiene.scan.stopwatch import Stage, StageTime
@@ -140,7 +140,7 @@ def test_the_closing_summary_tells_what_went_wrong(locations: Locations) -> None
         manifest("C:\\b.jpg: its size changed"),
         MountError("The manifest could not be written."),
     )
-    _show_result(runtime, result)
+    show_result(runtime, result, trial=False)
     text = " ".join(output_of(runtime).split())
     assert "Time per step" not in text  # only with --verbosity verbose
     for expected in (
@@ -246,6 +246,24 @@ def test_a_verbose_sort_says_where_its_time_went(locations: Locations) -> None:
         None,
         (StageTime(Stage.COUNTS, 0.25), StageTime(Stage.MOVES, 70.0)),
     )
-    _show_result(runtime, result)
+    show_result(runtime, result, trial=False)
     text = " ".join(output_of(runtime).split())
     assert "Time per step: counts 0.2 s · moves 1 min 10 s" in text
+
+
+def test_a_trial_ends_on_sorting_the_rest(locations: Locations) -> None:
+    """`--trial`: the next step is the same sort, for the rest (0526)."""
+    runtime = make_runtime(locations)
+    result = SortResult(
+        "20260930-100000",
+        MoveOutcome(Outcome(2, 8, 0, (), ()), (), interrupted=False),
+        FolderReport(),
+        manifest(),
+        None,
+        (),
+    )
+    show_result(runtime, result, trial=True)
+    step, tips, _settings = runtime.output.board.drain()
+    assert step is not None
+    assert "Sort the rest with the same plan" in str(step)
+    assert any((tip.command or "").endswith("undo 20260930-100000") for tip in tips)

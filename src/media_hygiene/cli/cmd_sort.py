@@ -11,13 +11,13 @@ from typing import TYPE_CHECKING, Annotated
 import typer
 
 from media_hygiene.cli import folder_options
-from media_hygiene.cli.context import runtime_of, user_errors, warn
+from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.constants import ExitCode
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
-    from media_hygiene.services.sort_models import Prepared, SortResult
+    from media_hygiene.services.sort_models import Prepared
 
 
 # The options are parameters: the documented exception for Typer commands.
@@ -57,6 +57,16 @@ def sort_command(  # pylint: disable=too-many-arguments
             ),
         ),
     ] = "",
+    trial: Annotated[
+        str,
+        typer.Option(
+            "--trial",
+            help=_(
+                "Sort a sample first: 'latest' (the latest month with photos), a "
+                "month such as 2024-05, or a folder; the same sort then does the rest."
+            ),
+        ),
+    ] = "",
     backup: Annotated[list[str] | None, folder_options.kept_backup()] = None,
 ) -> None:
     """Check the workbook, confirm, then move the files into their folders.
@@ -68,10 +78,12 @@ def sort_command(  # pylint: disable=too-many-arguments
         yes: `--yes`, skip the confirmation.
         keep_empty_folders: `--keep-empty-folders`, no folder is removed.
         event: `--event`, only the files of this event.
+        trial: `--trial`, only a sample: a month or a folder (0526).
 
     Raises:
         typer.Exit: The user declined.
     """
+    from media_hygiene.cli.sort_result import show_result
     from media_hygiene.console.progress import RichProgress
     from media_hygiene.console.sort_view import (
         show_follows,
@@ -84,6 +96,7 @@ def sort_command(  # pylint: disable=too-many-arguments
     from media_hygiene.services.sort import SortService
     from media_hygiene.services.sort_event import only_event
     from media_hygiene.services.sort_inputs import find_workbook, load_inputs
+    from media_hygiene.services.sort_trial import only_trial
 
     runtime = runtime_of(ctx).with_overrides(folder_options.backup_layer(backup))
     output = runtime.output
@@ -93,6 +106,8 @@ def sort_command(  # pylint: disable=too-many-arguments
         inputs = load_inputs(runtime, find_workbook(runtime, workbook))
         if event:
             inputs = only_event(inputs, event)
+        if trial:
+            inputs = only_trial(inputs, trial, runtime.mapper)
         output.title(_("Sort"))
         show_inputs(runtime, inputs)
         prepared = service.prepare(inputs, keep_empty=keep_empty_folders)
@@ -113,7 +128,7 @@ def sort_command(  # pylint: disable=too-many-arguments
             raise typer.Exit(ExitCode.OK)
         with RichProgress(output.console) as progress, StopRequest() as stop:
             result = SortService(runtime, progress).execute(prepared, stop.requested)
-    _show_result(runtime, result)
+    show_result(runtime, result, trial=bool(trial))
 
 
 def _confirm(runtime: Runtime, prepared: Prepared, *, yes: bool) -> bool:
@@ -140,56 +155,4 @@ def _confirm(runtime: Runtime, prepared: Prepared, *, yes: bool) -> bool:
         _("Move {count} files into {folders} folders?").format(
             count=len(plan.moves), folders=len(plan.folders)
         )
-    )
-
-
-def _show_result(runtime: Runtime, result: SortResult) -> None:
-    """Show what the run did, the proof, and how to undo or go on.
-
-    Args:
-        runtime: Settings, mount points and output.
-        result: The run.
-    """
-    from media_hygiene.cli.config_tidy_flow import tidy_tip
-    from media_hygiene.cli.next_steps import carried, safety
-    from media_hygiene.console.incidents_view import show_failed, show_skipped
-    from media_hygiene.console.links_view import show_links
-    from media_hygiene.console.sort_view import show_kept_folders, show_manifest
-    from media_hygiene.console.stage_times import stages_line
-    from media_hygiene.console.tables import outcome_table
-    from media_hygiene.errors import MediaHygieneError
-    from media_hygiene.services.next_command import CHANGING, NextVerb
-
-    output, host = runtime.output, runtime.mapper.to_host
-    outcome = result.moves.outcome
-    title = _("Sort {run_id}").format(run_id=result.run_id)
-    output.show(outcome_table(outcome, title))
-    show_skipped(runtime, outcome.skipped)
-    show_failed(runtime, outcome.failed)
-    if result.folders.removed:
-        output.info(
-            _("Source folders removed: {count}.").format(count=result.folders.removed)
-        )
-    show_kept_folders(runtime, result.folders, done=True)
-    show_links(output, result.links)
-    show_manifest(output, result.manifest)
-    timed = stages_line(result.stages)
-    if timed is not None and output.verbose:  # where the time goes, to paste
-        output.info(f"[dim]{timed}[/]")
-    if isinstance(result.manifest_file, MediaHygieneError):
-        warn(output, result.manifest_file)
-    elif result.manifest_file is not None:
-        output.info(_("Manifest: {path}").format(path=host(result.manifest_file)))
-    if result.moves.interrupted:
-        output.warning(_("Stopped before the end, as asked."))
-        output.tip(
-            _("Run the same command again to continue: the files moved are skipped.")
-        )
-    tidy_tip(runtime)
-    safety(
-        runtime,
-        _(
-            "Changed your mind? 'media-hygiene undo {run_id}' moves everything back:"
-        ).format(run_id=result.run_id),
-        NextVerb(carried(runtime, f"undo {result.run_id}"), CHANGING),
     )

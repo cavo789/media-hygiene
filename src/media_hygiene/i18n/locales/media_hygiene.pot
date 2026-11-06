@@ -3629,6 +3629,9 @@ msgstr ""
 msgid "Ghent"
 msgstr ""
 
+msgid "Give 'latest', a month such as 2024-05, or a folder of the plan."
+msgstr ""
+
 msgid ""
 "Give a folder below one of your -v, written as the audit shows it, e.g. "
 "--path \"C:\\Photos\\2015\"."
@@ -5302,6 +5305,10 @@ msgid ""
 msgstr ""
 
 msgid "No file has words yet: nothing can be found."
+msgstr ""
+
+#, python-brace-format
+msgid "No file of the plan in the sample {sample}."
 msgstr ""
 
 msgid "No file of this event can move: they are set aside, or gone."
@@ -8358,6 +8365,11 @@ msgid "Soon"
 msgstr ""
 
 msgid "Sort"
+msgstr ""
+
+msgid ""
+"Sort a sample first: 'latest' (the latest month with photos), a month "
+"such as 2024-05, or a folder; the same sort then does the rest."
 msgstr ""
 
 msgid "Sort by"
@@ -12514,6 +12526,9 @@ msgid "link to the kept file"
 msgstr ""
 
 msgid "listing"
+msgstr ""
+
+msgid "looks right? Sort the rest with the same plan:"
 msgstr ""
 
 msgid "loses its copies"
