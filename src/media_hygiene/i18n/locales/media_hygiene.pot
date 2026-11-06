@@ -2732,6 +2732,10 @@ msgstr ""
 msgid "Entry"
 msgstr ""
 
+#, python-brace-format
+msgid "Erase run {run} for good? This cannot be undone, not even by 'undo'."
+msgstr ""
+
 msgid ""
 "Erase the quarantine of a run for good: with 'clean --delete', the only "
 "way the tool removes content."
@@ -2739,6 +2743,16 @@ msgstr ""
 
 #, python-brace-format
 msgid "Erase the quarantine of {runs} ({count} files, {size})?"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Erase these {count} files and {others} other files not shown for good: "
+"frees {size}"
+msgstr ""
+
+#, python-brace-format
+msgid "Erase these {count} files for good: frees {size}"
 msgstr ""
 
 #, python-brace-format
@@ -2751,6 +2765,10 @@ msgstr ""
 msgid ""
 "Erases without showing the files: the quarantine's page shows the photos "
 "first."
+msgstr ""
+
+#, python-brace-format
+msgid "Erasing in the window of mh: {command}"
 msgstr ""
 
 msgid "Error"
@@ -4268,6 +4286,11 @@ msgstr ""
 msgid "Lighten the heavy videos"
 msgstr ""
 
+msgid ""
+"Lighten the videos chosen on the home page's Lighten page, reusing their "
+"drafts. The page starts it for you."
+msgstr ""
+
 #, python-brace-format
 msgid "Lighten the {count} chosen now"
 msgstr ""
@@ -4276,6 +4299,12 @@ msgid "Lighten them; without it, only list them with the gain expected."
 msgstr ""
 
 msgid "Lighten them?"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Lighten these {count} videos? Each original goes to the quarantine; "
+"'undo' brings it back."
 msgstr ""
 
 msgid "Lighten this one"
@@ -4287,7 +4316,15 @@ msgstr ""
 msgid "Lighten without asking first."
 msgstr ""
 
+msgid ""
+"Lightened. Changed your mind? History and undo, on the home page, brings "
+"the originals back."
+msgstr ""
+
 msgid "Lightening"
+msgstr ""
+
+msgid "Lightening in the window of mh; this page follows it. You may close it."
 msgstr ""
 
 msgid ""
@@ -6705,7 +6742,7 @@ msgstr ""
 msgid "Proving identity (full SHA-256)"
 msgstr ""
 
-msgid "Purge: History and undo"
+msgid "Purge"
 msgstr ""
 
 #, python-brace-format
@@ -6876,6 +6913,18 @@ msgstr ""
 
 #, python-brace-format
 msgid "Read back from the disk at {time}: {count} files left out."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Read back from the disk: run {run} is gone, {freed} freed ({stated} "
+"stated)."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Read back from the disk: run {run} is still in the quarantine. The window"
+" of mh says why."
 msgstr ""
 
 #, python-brace-format
@@ -9677,6 +9726,10 @@ msgid "The step"
 msgstr ""
 
 #, python-brace-format
+msgid "The step ended early (code {code}): the window of mh says why."
+msgstr ""
+
+#, python-brace-format
 msgid "The step you choose also analyses: {folder}"
 msgstr ""
 
@@ -10073,6 +10126,9 @@ msgstr ""
 msgid ""
 "This rule would take {files}: {mine} of this event, {others} of other "
 "events or folders on the same days."
+msgstr ""
+
+msgid "This run changed since its files were shown: look at them again."
 msgstr ""
 
 msgid "This series is not in the file yet."
@@ -12142,7 +12198,7 @@ msgstr ""
 msgid "library search look for find photo"
 msgstr ""
 
-msgid "lighten the chosen now (the terminal asks first)"
+msgid "lighten the chosen now (asked first)"
 msgstr ""
 
 msgid "lighten this one, or not"

@@ -2,7 +2,7 @@
 
 Always read from the disk: the sizes each time, the limits from `config.toml` after
 they are written with `toml_edit` (comments kept, atomic). Emptying the previews loses
-nothing (they are made again when shown); `purge`'s own step purges the quarantine.
+nothing (they are made again when shown); *Purge*: `disk_purge`.
 """
 
 from __future__ import annotations
@@ -22,6 +22,7 @@ from media_hygiene.places.toml_edit import (
     write_document,
 )
 from media_hygiene.report.preview_cache import trim_previews
+from media_hygiene.services.disk_purge import PurgeReadBack
 from media_hygiene.services.status import read_status
 
 if TYPE_CHECKING:
@@ -51,6 +52,7 @@ class DiskRun(BaseModel):
 
     run_id: str
     files: str
+    count: int  # the same, to compare with the tiles shown (0616)
     size: str
     since: str
     old: bool
@@ -66,6 +68,7 @@ class DiskState(BaseModel):
     quarantine_size: str
     runs: tuple[DiskRun, ...]
     limits: Limits
+    purged: PurgeReadBack | None = None  # the last purge asked here, read back (0616)
 
 
 def previews_bytes(folder: Path | None) -> int:
@@ -141,6 +144,7 @@ def disk_state(runtime: Runtime) -> DiskState:
         DiskRun(
             run_id=run.run_id,
             files=human_number(run.files),
+            count=run.files,
             size=human_size(run.size),
             since=ago(run.started),
             old=days_since(run.started) >= limits.purge_hint_days,

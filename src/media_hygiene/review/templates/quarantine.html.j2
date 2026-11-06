@@ -46,6 +46,7 @@
       <h2>🗂 {{ _("Runs") }}</h2>
       <ul id="runs"></ul>
       <p id="everyRun" hidden><a href="./">{{ _("Show every run") }}</a></p>
+      <p id="purgeBar" hidden><button id="purge" class="plain" type="button"></button></p>
     </section>
 {% endblock %}
 {% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
@@ -63,5 +64,6 @@
 {% include "pick_viewer.js.j2" %}
 {% include "pick_band.js.j2" %}
 {% include "quarantine.js.j2" %}
+{% include "quarantine_purge.js.j2" %}
 </script>
 {% endblock %}

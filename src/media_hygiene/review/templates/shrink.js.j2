@@ -14,6 +14,16 @@
   let side = "b";  // the frames shown: a, the original; b, the draft
   let shown = "";  // the draft the player holds
   let handed = false;  // the page asked the terminal to lighten
+  // Under the home server (0599): this page asks, `mh` runs the step, the page follows it;
+  // its presence is the try's, not the server's.
+  const HERE = window.location.pathname !== "/";
+  const ALIVE_MS = 10000;
+  const alive = (leaving) => fetch("api/alive", { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ leaving: leaving }) }).catch(() => {});
+  if (HERE) {
+    window.setInterval(() => { if (!handed) alive(false); }, ALIVE_MS);
+    window.addEventListener("pageshow", () => alive(false));
+    window.addEventListener("pagehide", () => { if (!handed) alive(true); });
+  }
 
   const setStatus = (text, kind) => {
     byId("status").textContent = text;
@@ -116,11 +126,24 @@
   };
   const lighten = () => {
     if (handed || !state.file || state.file.chosen.length === 0) return;
+    if (HERE && !window.confirm(fill(T.sure, { count: state.file.chosen.length }))) return;
     post(lightenPath, {})
       .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
-      .then(() => { handed = true; render(); setStatus(T.handed, "saved"); })
+      .then((step) => {
+        handed = true;
+        render();
+        setStatus(step.kept ? T.handedHere : T.handed, "saved");
+        if (step.kept) followStep(step);
+      })
       .catch((status) => setStatus(fill(T.failedSave, { status: status }), "error"));
   };
+  const followStep = (step) => fetch(step.follow, { cache: "no-store" })
+    .then((answer) => answer.json())
+    .then((now) => {
+      if (now.state !== "done" || now.id !== step.id) { window.setTimeout(() => followStep(step), POLL_MS); return; }
+      setStatus(fill(now.code === 0 ? T.lightened : T.stopped, { code: now.code }), now.code === 0 ? "saved" : "error");
+    })
+    .catch(() => window.setTimeout(() => followStep(step), POLL_MS));
   const swap = () => { side = side === "a" ? "b" : "a"; render(); };
   const move = (step) => {
     if (state.drafts.length === 0) return;

@@ -25,6 +25,10 @@
   "proof": "✔ " ~ _("Saved, then read back from the disk at {time}: {file} holds {count} chosen."),
   "noFile": _("Nothing chosen yet."),
   "handed": "👉 " ~ _("The terminal takes over: answer its question there. This page closes."),
+  "sure": _("Lighten these {count} videos? Each original goes to the quarantine; 'undo' brings it back."),
+  "handedHere": "👉 " ~ _("Lightening in the window of mh; this page follows it. You may close it."),
+  "lightened": _("Lightened. Changed your mind? History and undo, on the home page, brings the originals back."),
+  "stopped": _("The step ended early (code {code}): the window of mh says why."),
   "nothingReady": _("No draft ready yet."),
   "failedSave": _("Not saved (error {status})."),
   "offline": _("The page is not running any more: start 'shrink --try' again."),
@@ -66,7 +70,7 @@
 {% endblock %}
 {% block more_keys %}
       <dt><kbd>A</kbd></dt><dd>{{ _("choose every draft shown") }}</dd>
-      <dt><kbd>Enter</kbd></dt><dd>{{ _("lighten the chosen now (the terminal asks first)") }}</dd>
+      <dt><kbd>Enter</kbd></dt><dd>{{ _("lighten the chosen now (asked first)") }}</dd>
 {% endblock %}
 {% block bar %}
   <strong id="position"></strong>

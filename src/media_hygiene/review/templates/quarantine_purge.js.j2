@@ -1,0 +1,47 @@
+{# *Purge* of the run shown (0616): only under the home server, reached from Disk space
+   (`?run=…&purge=1`), once its files are on the page. The button states what goes, from the
+   disk; the page asks once, `mh` runs the step, then Disk space says what the disk says. #}
+const PURGE_TEXTS = {{ {
+  "button": _("Erase these {count} files for good: frees {size}"),
+  "unshown": _("Erase these {count} files and {others} other files not shown for good: frees {size}"),
+  "sure": _("Erase run {run} for good? This cannot be undone, not even by 'undo'."),
+  "running": _("Erasing in the window of mh: {command}"),
+} | tojson }};
+const DISK_STATE = "/disk-space/api/state";
+const PURGE_PATH = {{ purge_path | tojson }};
+const STEP_POLL_MS = 1000;
+const WANTS_PURGE = Boolean(ONLY_RUN) && new URLSearchParams(window.location.search).get("purge") === "1";
+
+drawPurge = async () => {
+  if (!WANTS_PURGE) return;
+  const answer = await fetch(DISK_STATE, { cache: "no-store" }).catch(() => null);
+  const state = answer && answer.ok ? await answer.json() : null;
+  const run = state && state.runs.find((each) => each.run_id === ONLY_RUN);
+  $("purgeBar").hidden = !run || tiles.length === 0;
+  if ($("purgeBar").hidden) return;
+  const others = run.count - tiles.length;
+  const values = { count: number(tiles.length), others: number(others), size: run.size };
+  $("purge").textContent = fill(others > 0 ? PURGE_TEXTS.unshown : PURGE_TEXTS.button, values);
+};
+
+const followPurge = (step) => fetch(step.follow, { cache: "no-store" })
+  .then((answer) => answer.json())
+  .then((now) => {
+    if (now.state !== "done" || now.id !== step.id) { window.setTimeout(() => followPurge(step), STEP_POLL_MS); return; }
+    window.location.assign(`/disk-space/?purged=${encodeURIComponent(ONLY_RUN)}`);
+  })
+  .catch(() => window.setTimeout(() => followPurge(step), STEP_POLL_MS));
+
+$("purge").addEventListener("click", async () => {
+  if (!window.confirm(fill(PURGE_TEXTS.sure, { run: ONLY_RUN }))) return;
+  $("purge").disabled = true;
+  const answer = await ask(PURGE_PATH, { run_id: ONLY_RUN, files: tiles.length });
+  const step = answer ? await answer.json().catch(() => ({})) : {};
+  if (!answer || !answer.ok) {
+    $("purge").disabled = false;
+    say(step.error || TEXTS.offline, "error");
+    return;
+  }
+  say(fill(PURGE_TEXTS.running, { command: step.command }), "");
+  followPurge(step);
+});
