@@ -1,0 +1,40 @@
+{# The home page's look for a report (0498): the indigo sidebar with the meerkat, the top bar. A report is a
+   file opened from disk, so the sidebar lists the report's own pages; the home page's spaces are in it too
+   but hidden until the page is served over http (by the home page's server, `/reports/…`). #}
+body { padding-left: 232px; }
+.mh-rside { position: fixed; inset: 0 auto 0 0; z-index: 30; width: 232px; overflow-y: auto; display: flex;
+  flex-direction: column; gap: 10px; padding: 14px 10px; background: var(--mh-frame); color: var(--mh-frame-ink); }
+.mh-rside .mh-brand { display: flex; align-items: center; gap: 10px; margin: 0 0 6px; padding: 0 6px;
+  font: 800 1.1rem/1.1 var(--mk-font-display); }
+.mh-rside .mh-group { margin: 8px 0 4px; padding: 0 10px; font: 700 .68rem/1.2 var(--mk-font-text); letter-spacing: .09em;
+  text-transform: uppercase; color: var(--mh-frame-soft); }
+.mh-rside ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.mh-rside a { display: flex; align-items: center; min-height: 40px; padding: 6px 12px; border-radius: 10px;
+  color: var(--mh-frame-ink); text-decoration: none; font-weight: 600; }
+.mh-rside a:hover { background: var(--mh-frame-raise); }
+.mh-rside a[aria-current="page"] { background: var(--mh-frame-raise); box-shadow: inset 0 0 0 1px var(--mh-frame-line); }
+.mh-rside a:focus-visible { outline: 2px solid var(--mh-apricot); outline-offset: 2px; }
+.mh-rside .mh-served[hidden] { display: none; }
+.mh-rside .mh-sign { margin-top: auto; padding: 12px 6px 0; border-top: 1px solid var(--mh-frame-line); font-size: .84rem;
+  color: var(--mh-frame-soft); }
+.mh-rside .mh-sign p { margin: 0 0 8px; }
+.mh-rtheme { display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: var(--mh-frame-raise); }
+.mh-rtheme button { flex: 1; min-height: 32px; border: 0; border-radius: 8px; background: transparent;
+  color: var(--mh-frame-soft); font: 600 .8rem/1 var(--mk-font-text); padding: 0; }
+.mh-rtheme button[aria-pressed="true"] { background: var(--mh-frame); color: var(--mh-frame-ink);
+  box-shadow: inset 0 0 0 1px var(--mh-frame-line); }
+.mh-rtop { position: sticky; top: 0; z-index: 20; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px;
+  padding: 8px 16px; background: var(--mh-glass); border-bottom: 1px solid var(--mk-border); color: var(--mk-ink);
+  font: 400 .92rem/1.4 var(--mk-font-text); backdrop-filter: blur(10px); }
+.mh-rtop .mh-page { margin: 0; font: 700 1.05rem/1.2 var(--mk-font-display); color: var(--mk-ink); }
+.mh-rtop .mh-crumb { color: var(--mk-ink-soft); }
+.mh-rtop .mh-links { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-left: auto; }
+.mh-rtop a { color: var(--mk-ink); text-underline-offset: 3px; }
+.mh-rtop a.mh-home { padding: 2px 12px; border-radius: 999px; background: var(--mh-apricot); color: var(--mh-on-apricot);
+  font-weight: 600; text-decoration: none; }
+.mh-rtop a.mh-home[hidden] { display: none; }
+@media (max-width: 860px) {
+  body { padding-left: 0; }
+  .mh-rside { position: static; width: auto; flex-direction: column; }
+  .mh-rtop { position: static; }
+}

@@ -33,7 +33,9 @@ _LOADED: Final = re.compile(
 
 def _assert_look(html: str, kind: str) -> None:
     """The bar, both themes' tokens, the inlined avatar, the chapter links."""
-    assert 'class="mh-bar"' in html
+    assert 'class="mh-rtop"' in html  # the home page's frame (0498)
+    assert 'class="mh-rside"' in html
+    assert 'aria-current="page"' in html
     assert "--mk-bg:" in html
     assert 'data-theme="dark"' in html
     assert "prefers-color-scheme: dark" in html
@@ -93,3 +95,19 @@ def test_each_kind_links_its_chapter_in_both_languages(
     assert header.twin.startswith(DOC_PAGES)
     assert ("/fr/" in header.doc) is (locale is Locale.FR)
     assert ("/fr/" in header.twin) is (locale is Locale.EN)
+
+
+def test_the_sidebar_lists_the_reports_own_pages_and_the_home_spaces_hidden(
+    locations: Locations, media: MediaFactory
+) -> None:
+    """A file from disk lists its own pages; the home spaces wait for a server."""
+    report = _reports(locations, media)
+    html = report.read_text()
+    assert '<a href="../index.html">' in html
+    assert 'class="mh-served" hidden' in html
+    assert '<a href="/#home">' in html
+    pair = (report.parent / "pairs/pair-0001.html").read_text()
+    assert '<a href="../../index.html">' in pair
+    assert '<a href="../report.html">' in pair
+    index = write_index(locations.reports_dir).read_text()
+    assert '<a href="index.html" aria-current="page">' in index

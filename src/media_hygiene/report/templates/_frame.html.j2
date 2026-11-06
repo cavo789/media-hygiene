@@ -1,0 +1,59 @@
+{# The sidebar and the top bar of a report (0498, _frame.css.j2): the report's own pages always; the home
+   page's spaces and the way back only when the page is served by the home page's server (the script below
+   shows them on http, `/reports/…`), as plain links to its spaces. #}
+{% macro space(link) -%}
+<li><a href="/#{{ link.space }}">{{ link.title }}</a></li>
+{%- endmacro %}
+<aside class="mh-rside" aria-label="{{ _('Menu of Media Hygiene') }}">
+  <p class="mh-brand"><img src="{{ avatar_data_uri() }}" alt="" width="30" height="40">Media Hygiene</p>
+  <nav aria-label="{{ _('Spaces') }}">
+    <p class="mh-group">{{ _("This report") }}</p>
+    <ul>{% for page in header.pages %}<li><a href="{{ page.href }}"{% if page.current %} aria-current="page"{% endif %}>{{ page.label }}</a></li>{% endfor %}</ul>
+    <div class="mh-served" hidden>
+      <p class="mh-group">{{ _("Media Hygiene") }}</p>
+      <ul>{{ space(header.shell.home) }}{% for link in header.shell.stages %}{{ space(link) }}{% endfor %}{% for link in header.shell.share %}{{ space(link) }}{% endfor %}{% for link in header.shell.tools %}{{ space(link) }}{% endfor %}</ul>
+    </div>
+  </nav>
+  <div class="mh-sign">
+    <p>Media Hygiene {{ header.version }}</p>
+    <div class="mh-rtheme" role="group" aria-label="{{ _('Display') }}">
+      <button type="button" data-theme-choice="auto" aria-pressed="true">{{ _("Auto") }}</button>
+      <button type="button" data-theme-choice="light" aria-pressed="false">{{ _("Light") }}</button>
+      <button type="button" data-theme-choice="dark" aria-pressed="false">{{ _("Dark") }}</button>
+    </div>
+  </div>
+</aside>
+<header class="mh-rtop" aria-label="Media Hygiene">
+  <span class="mh-crumb" aria-hidden="true">Media Hygiene ›</span>
+  <h1 class="mh-page">{{ report_name }}</h1>
+{% if report_when is defined %}
+  <span class="mh-crumb">· {{ report_when | when }}</span>
+{% endif %}
+  <span class="mh-links">
+    <a class="mh-doc" href="{{ header.doc }}" target="_blank" rel="noopener">{{ _("Documentation") }}</a>
+    <a class="mh-doc" href="{{ header.twin }}" target="_blank" rel="noopener" hreflang="{{ header.twin_lang }}" lang="{{ header.twin_lang }}">{{ header.twin_label }}</a>
+    <a class="mh-home" href="/" hidden>⌂ {{ _("Back to the home page") }}</a>
+  </span>
+</header>
+<script>
+  // The theme the home page's switch chose (same key), the switch itself, and, served over http by the
+  // home page's server, its spaces and the way back.
+  (() => {
+    const KEY = "mh-home-theme";
+    const root = document.documentElement;
+    const buttons = document.querySelectorAll(".mh-rtheme button");
+    const show = (choice) => buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.themeChoice === choice)));
+    const apply = (choice) => { if (choice === "light" || choice === "dark") root.setAttribute("data-theme", choice); else root.removeAttribute("data-theme"); };
+    let saved = "auto";
+    try { saved = JSON.parse(window.localStorage.getItem(KEY)) || "auto"; } catch { /* private mode: auto */ }
+    apply(saved); show(saved);
+    buttons.forEach((button) => button.addEventListener("click", () => {
+      const choice = button.dataset.themeChoice;
+      apply(choice); show(choice);
+      try { window.localStorage.setItem(KEY, JSON.stringify(choice)); } catch { /* this page only */ }
+    }));
+    if (window.location.protocol.startsWith("http")) {
+      document.querySelectorAll(".mh-served, a.mh-home").forEach((element) => { element.hidden = false; });
+    }
+  })();
+</script>

@@ -8757,6 +8757,9 @@ msgstr ""
 "Remplacement d'une copie en double par un lien vers le fichier gardé : "
 "{path}"
 
+msgid "Report"
+msgstr "Rapport"
+
 #, python-brace-format
 msgid "Report with the photos: {path}"
 msgstr "Rapport avec les photos : {path}"
@@ -12521,6 +12524,9 @@ msgstr ""
 #, python-brace-format
 msgid "This photo is now the cover of {name}."
 msgstr "Cette photo est désormais la couverture de {name}."
+
+msgid "This report"
+msgstr "Ce rapport"
 
 #, python-brace-format
 msgid ""

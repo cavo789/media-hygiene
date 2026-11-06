@@ -7279,6 +7279,9 @@ msgstr ""
 msgid "Replacing a duplicate copy by a link to the kept file: {path}"
 msgstr ""
 
+msgid "Report"
+msgstr ""
+
 #, python-brace-format
 msgid "Report with the photos: {path}"
 msgstr ""
@@ -10375,6 +10378,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "This photo is now the cover of {name}."
+msgstr ""
+
+msgid "This report"
 msgstr ""
 
 #, python-brace-format

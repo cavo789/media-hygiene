@@ -22,3 +22,14 @@ look (colours, meerkat, top bar) with a sidebar of the report's own pages only, 
 ## Decided (2026-11-03)
 
 By the maintainer: the priority is to **stay inside the web page** (the server). When the reports list is opened from mh's page, a report opens inside the home page's frame (served by the server, the shell's sidebar and bar), not as an external .html file. The static .html files, opened without a server, get the shell's look (colours, meerkat, top bar) with a sidebar of the report's own pages only, as a fallback.
+
+## Status — PARTIAL (2026-11-06)
+
+### Done
+- Static fallback: every report page (audit, clean, pair, near, classify and its years, the reports index) wears the shell's look: indigo sidebar with the meerkat, glass top bar, apricot back link, theme switch (same `mh-home-theme` key); the sidebar lists the report's own pages (reports index, the report, near duplicates when the run has them). `report_header.report_pages`, `_frame.html.j2`, `_frame.css.j2`.
+- Served over http (the home server's `/reports/…`): a script reveals the home page's spaces in the sidebar and *Back to the home page* (plain links to `/#space`).
+
+### Not done
+- The reports opened inside the home page's own frame (server-rendered with `shell*.j2` and the current-space highlight): the report files are static and served as-is by `review/report_files.py`; the http reveal is a client-side stand-in.
+  **Reason:** needs the server to wrap the file (or an iframe in `/` with a `view`), a design choice for the maintainer.
+- Documentation captures of the reports are stale: `docs_screenshots` should run.
