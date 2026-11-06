@@ -172,7 +172,7 @@ as a table.
 
 ## The events of the latest classify
 
-The **Group the photos into more or fewer events** section of that tab (PC only) sets `merge_gap_hours`, `min_event_size` and `trip_min_km` of `[classify]`: saved in `config.toml`, shown as read back from the disk, applied by the next [`classify`](classify.md) (the list does not change before).
+The **Group the photos into more or fewer events** section of that tab (PC only) sets `merge_gap_hours`, `min_event_size` and `trip_min_km` of `[classify]`: saved in `config.toml`, shown as read back from the disk, applied by the next [`classify`](classify.md) (the list does not change before). **See the events first** shows, before anything is saved, how the dated photos of the index would group with the values typed: the number of events now and then, and the events that merge, split, appear or stop being events (the trip distance is not previewed).
 
 The **🗂 Events** tab, on top of the left column next to **🔎 Photos**, needs no
 [`classify`](classify.md) run: it groups **the files not sorted yet** of the period of the

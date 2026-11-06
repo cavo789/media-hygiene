@@ -73,7 +73,7 @@ _POSTED_TOO: Final = (
 class SearchPages:
     """The page (`/browse` opens it on its folders), and the path `/` serves."""
 
-    search: bytes
+    search: Callable[[], bytes]  # `PerLocale`: follows the language (0644)
     first: str = SEARCH_PAGE_PATH
 
 
@@ -171,7 +171,7 @@ class SearchApp:
         # One page (0408): `/browse` is the search, folders open; videos: `media-src`.
         if path in {SEARCH_PAGE_PATH, BROWSE_PATH, EVENTS_PAGE_PATH}:
             return Response(
-                HTTPStatus.OK, self.pages.search, ContentType.HTML, policy=NEAR_POLICY
+                HTTPStatus.OK, self.pages.search(), ContentType.HTML, policy=NEAR_POLICY
             )
         states: dict[str, Callable[[], Response]] = {
             CHOSEN_PATH: self.place.chosen.state,

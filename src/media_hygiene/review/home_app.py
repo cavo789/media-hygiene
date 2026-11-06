@@ -28,6 +28,7 @@ from typing import TYPE_CHECKING, Final, override
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 from media_hygiene.i18n import _
+from media_hygiene.i18n.live import page_of
 from media_hygiene.review.home_favourites_api import favourites_response
 from media_hygiene.review.home_more_api import HomeMore, more_response
 from media_hygiene.review.home_step import StepDoor, step_response
@@ -78,7 +79,7 @@ class _AuditAsked(BaseModel):
 class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
     """Answers the browser; the state is read again from the tool folders each time."""
 
-    page: bytes
+    page: bytes | Callable[[], bytes]  # `PerLocale`: follows the language (0644)
     state: Callable[[], HomeState]
     reports_dir: Path
     ending: Ending
@@ -155,7 +156,7 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
             The response; 404 for any other path.
         """
         if path == PAGE_PATH:
-            return Response(HTTPStatus.OK, self.page, ContentType.HTML)
+            return Response(HTTPStatus.OK, page_of(self.page), ContentType.HTML)
         if path.startswith(REPORTS_PREFIX):
             return await report_response(self.reports_dir, path)
         if path in self.runs:

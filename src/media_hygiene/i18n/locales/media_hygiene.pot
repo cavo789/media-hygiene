@@ -1260,6 +1260,13 @@ msgstr ""
 msgid "Any folder"
 msgstr ""
 
+msgid ""
+"Applied now: this page reloads in this language, the other open pages and"
+" the console's messages follow at their next load. A slideshow, the phone"
+" pages and the review pages already open keep theirs until mh starts "
+"again."
+msgstr ""
+
 msgid "Applies the next time mh starts: the open page keeps its door."
 msgstr ""
 
@@ -4711,6 +4718,10 @@ msgstr ""
 msgid "Menu of Media Hygiene"
 msgstr ""
 
+#, python-brace-format
+msgid "Merged ({n})"
+msgstr ""
+
 msgid "Missing argument"
 msgstr ""
 
@@ -5116,6 +5127,10 @@ msgstr ""
 msgid "New album…"
 msgstr ""
 
+#, python-brace-format
+msgid "New events ({n})"
+msgstr ""
+
 msgid "New name"
 msgstr ""
 
@@ -5467,6 +5482,10 @@ msgid "No journal mount: without a journal, 'undo' would be impossible."
 msgstr ""
 
 msgid "No local vision model is set: no photo was sent, nothing changed."
+msgstr ""
+
+#, python-brace-format
+msgid "No longer events ({n})"
 msgstr ""
 
 #, python-brace-format
@@ -6099,6 +6118,12 @@ msgid "Nothing written: your layouts stay as they are."
 msgstr ""
 
 msgid "November"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Now: {before} events ({beforeFiles} photos). With these values: {after} "
+"events ({afterFiles} photos). Nothing saved yet."
 msgstr ""
 
 msgid "Nowhere"
@@ -8069,6 +8094,9 @@ msgstr ""
 msgid "See every series"
 msgstr ""
 
+msgid "See the events first"
+msgstr ""
+
 msgid "See the files"
 msgstr ""
 
@@ -8595,6 +8623,10 @@ msgid "Space that can be freed"
 msgstr ""
 
 msgid "Spaces"
+msgstr ""
+
+#, python-brace-format
+msgid "Split ({n})"
 msgstr ""
 
 msgid "Sport and leisure"
@@ -10184,6 +10216,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "The towns used to name places cannot be read: {error}."
+msgstr ""
+
+msgid "The trip distance is not previewed: it applies at the next classify."
 msgstr ""
 
 #, python-brace-format
@@ -15479,6 +15514,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{first} → {last} · {n} files"
+msgstr ""
+
+#, python-brace-format
+msgid "{first} → {last}: {files} photos, {parts} events now"
 msgstr ""
 
 #, python-brace-format

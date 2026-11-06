@@ -26,10 +26,12 @@ from media_hygiene.review.local_app import choice_failed
 from media_hygiene.review.serving import json_response
 from media_hygiene.search.events_aside import rows_kept
 from media_hygiene.search.events_desk import EVENTS_PATH
+from media_hygiene.search.events_no_plan import no_plan_post
 from media_hygiene.search.found_desk import FOUND_PATH
+from media_hygiene.search.grouping_desk import GROUPING_PATH
 from media_hygiene.search.late_desk import LATE_PATH, LATE_REFUSE_PATH
 from media_hygiene.search.span_events import SPAN_FILES_PATH, SPAN_PATH
-from media_hygiene.search.span_left import LEFT_PATH, left_answer
+from media_hygiene.search.span_left import LEFT_PATH
 
 if TYPE_CHECKING:
     from media_hygiene.review.events_batch import SortBatchSession
@@ -60,6 +62,7 @@ SORT_POSTS: Final = frozenset(
         FOUND_PATH,
         LATE_REFUSE_PATH,
         LEFT_PATH,
+        GROUPING_PATH,
     }
 )
 SORT_GETS: Final = frozenset(sort_path(path) for path in (RULES_PATH, PROGRESS_PATH))
@@ -113,22 +116,8 @@ async def sort_post(desk: EventsDesk | None, request: Request) -> Response:
     Returns:
         The answer; 404 without a plan.
     """
-    if request.path == LATE_REFUSE_PATH:  # 0558: needs no plan
-        late = desk.late if desk is not None else None
-        return (
-            Response(HTTPStatus.NOT_FOUND)
-            if late is None
-            else late.refuse(request.body)
-        )
-    if request.path == LEFT_PATH:  # 0574: needs no plan
-        return left_answer(desk.span if desk is not None else None, request.body)
-    if request.path == FOUND_PATH:  # 0557: needs no plan
-        found = desk.found if desk is not None else None
-        return (
-            Response(HTTPStatus.NOT_FOUND)
-            if found is None
-            else found.confirm(request.body)
-        )
+    if (answer := no_plan_post(desk, request)) is not None:
+        return answer
     try:
         session = desk.session() if desk is not None else None
     except MediaHygieneError:

@@ -1592,6 +1592,13 @@ msgstr "Toutes les dates"
 msgid "Any folder"
 msgstr "N'importe quel dossier"
 
+msgid ""
+"Applied now: this page reloads in this language, the other open pages and"
+" the console's messages follow at their next load. A slideshow, the phone"
+" pages and the review pages already open keep theirs until mh starts "
+"again."
+msgstr "Appliqué tout de suite : cette page se recharge dans cette langue, les autres pages ouvertes et les messages de la console suivent à leur prochain chargement. Un diaporama, les pages du téléphone et les pages de revue déjà ouvertes gardent la leur jusqu'au prochain démarrage de mh."
+
 msgid "Applies the next time mh starts: the open page keeps its door."
 msgstr "S'applique au prochain démarrage de mh : la page ouverte garde sa porte."
 
@@ -5687,6 +5694,10 @@ msgstr "Moyenne"
 msgid "Menu of Media Hygiene"
 msgstr "Menu de Media Hygiene"
 
+#, python-brace-format
+msgid "Merged ({n})"
+msgstr "Fusionnés ({n})"
+
 msgid "Missing argument"
 msgstr "Argument manquant"
 
@@ -6177,6 +6188,10 @@ msgstr "Nouvel An"
 msgid "New album…"
 msgstr "Nouvel album…"
 
+#, python-brace-format
+msgid "New events ({n})"
+msgstr "Nouveaux événements ({n})"
+
 msgid "New name"
 msgstr "Nouveau nom"
 
@@ -6593,6 +6608,10 @@ msgid "No local vision model is set: no photo was sent, nothing changed."
 msgstr ""
 "Aucun modèle de vision local n'est réglé : aucune photo envoyée, rien n'a"
 " changé."
+
+#, python-brace-format
+msgid "No longer events ({n})"
+msgstr "Plus des événements ({n})"
 
 #, python-brace-format
 msgid "No name any more: resemblance {score}, below {threshold}."
@@ -7325,6 +7344,12 @@ msgstr "Rien n'a été écrit : vos rangements restent tels quels."
 
 msgid "November"
 msgstr "novembre"
+
+#, python-brace-format
+msgid ""
+"Now: {before} events ({beforeFiles} photos). With these values: {after} "
+"events ({afterFiles} photos). Nothing saved yet."
+msgstr "Maintenant : {before} événements ({beforeFiles} photos). Avec ces valeurs : {after} événements ({afterFiles} photos). Rien n'est encore enregistré."
 
 msgid "Nowhere"
 msgstr "Nulle part"
@@ -9717,6 +9742,9 @@ msgstr "Voir toutes les photos de la quarantaine, en remettre"
 msgid "See every series"
 msgstr "Voir toutes les rafales"
 
+msgid "See the events first"
+msgstr "Voir d'abord les événements"
+
 msgid "See the files"
 msgstr "Voir les fichiers"
 
@@ -10322,6 +10350,10 @@ msgstr "Espace libérable"
 
 msgid "Spaces"
 msgstr "Espaces"
+
+#, python-brace-format
+msgid "Split ({n})"
+msgstr "Coupés ({n})"
 
 msgid "Sport and leisure"
 msgstr "Sport et loisirs"
@@ -12271,6 +12303,9 @@ msgid "The towns used to name places cannot be read: {error}."
 msgstr ""
 "Les villes qui servent à nommer les lieux ne peuvent pas être lues : "
 "{error}."
+
+msgid "The trip distance is not previewed: it applies at the next classify."
+msgstr "La distance d'un voyage n'est pas prévisualisée : elle s'applique au prochain classify."
 
 #, python-brace-format
 msgid "The variable {name}"
@@ -18495,6 +18530,10 @@ msgstr "{file}, dans le dossier monté sur {mount}"
 #, python-brace-format
 msgid "{first} → {last} · {n} files"
 msgstr "{first} → {last} · {n} fichiers"
+
+#, python-brace-format
+msgid "{first} → {last}: {files} photos, {parts} events now"
+msgstr "{first} → {last} : {files} photos, {parts} événements maintenant"
 
 #, python-brace-format
 msgid "{folder} (seen as {first} and as {second})"

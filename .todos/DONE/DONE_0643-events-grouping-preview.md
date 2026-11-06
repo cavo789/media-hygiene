@@ -16,5 +16,10 @@ A dry-run preview: the events as they would be, before saving (rule *Seeing firs
 
 ## Acceptance
 
-- [ ] Moving a value shows the events that merge or split, without writing anything
-- [ ] Measured: preview time on a synthetic library of 50 000 photos (*measured*)
+- [x] Moving a value shows the events that merge or split, without writing anything
+  (*See the events first* in the grouping section: `POST /api/events/grouping`,
+  `classify/grouping_preview.py`, `search/grouping_desk.py`; counts before/after, merged,
+  split, new, gone, 12 listed per kind). The trip distance is checked, not previewed (trips
+  need the home place and the towns of a classify run): said on the page.
+- [x] Measured: 178 ms per preview (best of 5) on a synthetic in-memory index of 50 000
+  dated photos, devcontainer, `nice -n 19` (SQL read + parse + both cuts + compare).

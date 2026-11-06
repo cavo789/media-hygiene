@@ -10,6 +10,9 @@ from typing import TYPE_CHECKING, Final
 
 import pytest
 
+from media_hygiene.constants import Locale
+from media_hygiene.i18n import _, active_locale, install
+from media_hygiene.i18n.live import PerLocale, page_of
 from media_hygiene.places.toml_edit import loaded
 from media_hygiene.review import ai_state_api
 from media_hygiene.review.ai_state_api import AI_STATE_PATH
@@ -18,6 +21,7 @@ from media_hygiene.review.lan_paths import READ_PATHS
 from media_hygiene.review.page_settings import SETTING_PATHS, setting_response
 from media_hygiene.review.setting_groups import EVENTS_PATH, LOCALE_PATH, SLIDESHOW_PATH
 from media_hygiene.review.write_routes import CHANGES
+from media_hygiene.services.home import home_page
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -147,3 +151,41 @@ def test_routes_are_the_pcs_alone() -> None:
     for path in SETTING_PATHS:
         assert path in CHANGES
         assert path not in READ_PATHS
+
+
+def test_the_language_applies_at_once(tmp_path: Path) -> None:
+    """0644: saved, the server speaks it and the page is told to reload."""
+    config = tmp_path / "config.toml"
+    status, answer = _post(config, LOCALE_PATH, {"locale": "fr"})
+    assert status == HTTPStatus.OK
+    assert answer["reload"] is True
+    assert active_locale() is Locale.FR
+    assert str(answer["later"]).startswith("Appliqu")  # said in French
+    _status, other = _post(config, SLIDESHOW_PATH, {"interval_seconds": 9})
+    assert "reload" not in other
+
+
+def test_a_page_drawn_per_language_follows_it() -> None:
+    """0644: the page is drawn again in the new language, once per language."""
+    drawn: list[Locale] = []
+
+    def draw() -> bytes:
+        drawn.append(active_locale())
+        return _("Language").encode()
+
+    page = PerLocale(draw)
+    english = page()
+    install(Locale.FR)
+    assert page() != english
+    assert page() == page()
+    assert drawn == [Locale.EN, Locale.FR]
+    assert page_of(b"x") == b"x"
+    assert page_of(page) == page()
+
+
+def test_the_ai_card_is_one_shared_template() -> None:
+    """0645: the home page draws the 🤖 card from `ai_card.html.j2`."""
+    page = home_page().decode()
+    assert "window.mhAiCard = " in page
+    assert "window.mhAiCard(box)" in page
+    assert AI_STATE_PATH in page

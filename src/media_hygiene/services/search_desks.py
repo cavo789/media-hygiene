@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.classify.own_events import folder_rules
 from media_hygiene.search.events_desk import EventsDesk
 from media_hygiene.search.found_desk import FoundDesk
+from media_hygiene.search.grouping_desk import GroupingPreview
 from media_hygiene.search.hand_index import HandIndex
 from media_hygiene.search.late_desk import LateDesk
 from media_hygiene.search.people_desk import NamesPlace
@@ -102,6 +103,11 @@ def events_desk(
             chosen.paths,
             event_gap_hours(runtime),
             runtime.locations.config_file.parent,
+        ),
+        GroupingPreview(
+            search.connection,
+            runtime.locations.config_file,
+            settings.classify.session_gap_hours,
         ),
     )
 

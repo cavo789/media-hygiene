@@ -4,6 +4,7 @@
 - **Batch**: places
 - **Depends**: —
 - **Files**: `src/media_hygiene/services/`, `src/media_hygiene/review/templates/`
+- **Note (0645)**: include the shared 🤖 card `review/templates/ai_card.html.j2` (`window.mhAiCard(box)`) on the page.
 
 ## Problem
 
