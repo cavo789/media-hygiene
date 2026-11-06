@@ -13,7 +13,7 @@
 | 1 | one-interface | Medium | 4 | `/todo:run 0596 0616 0621 0599` |
 | 2 | import | Medium | 3 | `/todo:run 0604 0619 0564` |
 | 3 | phone | Medium | 2 | `/todo:run 0615 0603` |
-| 4 | search | Low | 3 | `/todo:run 0001 0571 0617` |
+| 4 | search | Low | 3 | `/todo:run 0571 0617 0622` |
 
 ### 1. one-interface
 
@@ -51,9 +51,9 @@
 
 | Order | ID | Priority | Title | Depends |
 |---|---|---|---|---|
-| 1 | 0001 | Low | Tags: drop several at once, merge a synonym into another tag | 0546 |
-| 2 | 0571 | Low | 🏷 Tag…: a fixed cap on photos not hashed yet | — |
-| 3 | 0617 | Low | Library page: the `/library` address, `/search` redirects | 0486 (DONE) |
+| 1 | 0571 | Low | 🏷 Tag…: a fixed cap on photos not hashed yet | — |
+| 2 | 0617 | Low | Library page: the `/library` address, `/search` redirects | 0486 (DONE) |
+| 3 | 0622 | Low | Tags: drop several at once, merge a synonym into another tag | 0546 |
 
 ## Standalone
 

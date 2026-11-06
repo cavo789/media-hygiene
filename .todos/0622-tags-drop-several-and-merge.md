@@ -1,4 +1,4 @@
-# 0001 — Tags: drop several at once, merge a synonym into another tag
+# 0622 — Tags: drop several at once, merge a synonym into another tag
 
 - **Priority**: Low
 - **Batch**: search
