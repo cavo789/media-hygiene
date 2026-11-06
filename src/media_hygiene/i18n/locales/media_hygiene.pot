@@ -5425,6 +5425,9 @@ msgstr ""
 msgid "No journal mount: without a journal, 'undo' would be impossible."
 msgstr ""
 
+msgid "No local vision model is set: no photo was sent, nothing changed."
+msgstr ""
+
 #, python-brace-format
 msgid "No name any more: resemblance {score}, below {threshold}."
 msgstr ""
@@ -6761,6 +6764,9 @@ msgstr ""
 msgid "Pick {name}"
 msgstr ""
 
+msgid "Picking the landmark each photo shows"
+msgstr ""
+
 msgid "Picnic"
 msgstr ""
 
@@ -8057,6 +8063,9 @@ msgstr ""
 msgid ""
 "Set [classify.ai] model to a local vision model (Ollama) to add what the "
 "photos show: they are sent to its url, and only there."
+msgstr ""
+
+msgid "Set [classify.ai] model to a local vision model (Ollama)."
 msgstr ""
 
 msgid "Set a person aside"
@@ -16992,11 +17001,26 @@ msgid "🤖 Local AI (Ollama), optional: a model set in config.toml"
 msgstr ""
 
 msgid ""
+"🤖 Then let the local vision model of [classify.ai] pick, among the "
+"landmarks within 1 km, the one each photo shows (sends the photos to that"
+" model only; a name typed by hand always wins)."
+msgstr ""
+
+msgid "🤖 Your photos are shown to your local model only: nothing is moved."
+msgstr ""
+
+msgid ""
 "🤖 classify and tags can also ask a local AI model: set [classify.ai] "
 "model in config.toml (mh config)."
 msgstr ""
 
 msgid "🤖 describe the photos"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"🤖 {asked} photos shown to the model: {picked} landmarks picked, {none} "
+"showing none, {unclear} unclear (left as they were)."
 msgstr ""
 
 #, python-brace-format

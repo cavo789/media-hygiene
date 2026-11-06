@@ -12,6 +12,8 @@ from media_hygiene.index.spot_rows import spot_figures
 from media_hygiene.services.spot_fill import fill_spots
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from media_hygiene.index.spot_rows import SpotFigures
     from media_hygiene.scan.progress import ProgressSink
     from media_hygiene.services.runtime import Runtime
@@ -23,6 +25,27 @@ class SpotScan:
 
     written: int
     figures: SpotFigures
+
+
+def spot_index(runtime: Runtime) -> Path:
+    """The index the rows live in.
+
+    Args:
+        runtime: Mount points.
+
+    Returns:
+        Its file.
+
+    Raises:
+        MountError: The cache holds no index yet.
+    """
+    index = runtime.index_file
+    if index is None or not index.is_file():
+        raise MountError(
+            _("No index yet: nothing to name."),
+            _("Run 'audit' with the same /cache mount first."),
+        )
+    return index
 
 
 def scan_spots(runtime: Runtime, progress: ProgressSink) -> SpotScan:
@@ -38,12 +61,6 @@ def scan_spots(runtime: Runtime, progress: ProgressSink) -> SpotScan:
     Raises:
         MountError: The cache holds no index yet.
     """
-    index = runtime.index_file
-    if index is None or not index.is_file():
-        raise MountError(
-            _("No index yet: nothing to name."),
-            _("Run 'audit' with the same /cache mount first."),
-        )
-    with FactsRepository.open(index) as repository:
+    with FactsRepository.open(spot_index(runtime)) as repository:
         written = fill_spots(runtime, repository.connection, progress)
         return SpotScan(written, spot_figures(repository.connection))

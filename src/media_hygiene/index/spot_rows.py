@@ -69,6 +69,7 @@ class SpotSource(StrEnum):
 
     NONE = ""
     USER = "user"  # typed by hand (0489)
+    VISION = "vision"  # picked among the landmarks around by a local model (0589)
     OSM = "osm"  # the online name the user said Yes to (0474)
     GEONAMES = "geonames"  # the offline snapshot
 

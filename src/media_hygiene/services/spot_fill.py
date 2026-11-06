@@ -88,7 +88,7 @@ def _stale(known: Known, stamp: str, online: Mapping[str, str]) -> bool:
     """
     if known.stored_at != (known.latitude, known.longitude) or known.stamp != stamp:
         return True
-    if known.source == SpotSource.USER:
+    if known.source in {SpotSource.USER, SpotSource.VISION}:
         return False
     key = spot_key(rounded(Point(known.latitude, known.longitude)))
     name = online.get(key, "")

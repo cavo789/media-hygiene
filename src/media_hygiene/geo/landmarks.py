@@ -111,6 +111,19 @@ class Landmarks:
             return ""
         return self._names[found[0]]
 
+    def around(self, point: Point, radius_m: float) -> tuple[str, ...]:
+        """The landmarks around a photo, nearest first (0589: a model picks one).
+
+        Args:
+            point: The photo's position.
+            radius_m: How far around it.
+
+        Returns:
+            Their names, each once.
+        """
+        found = self._index.within(point, radius_m / _M_PER_KM)
+        return tuple(dict.fromkeys(self._names[row] for row in found.tolist()))
+
 
 def near_cells(points: Iterable[Point]) -> Cells:
     """The cells a landmark of these photos may lie in: theirs and the eight around.

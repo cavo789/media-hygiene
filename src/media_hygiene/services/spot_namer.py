@@ -18,6 +18,8 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 _SEPARATOR: Final = " ; "
+# Sources a refill keeps at the same position: the user's name, the model's pick.
+_KEPT: Final = frozenset({SpotSource.USER.value, SpotSource.VISION.value})
 
 
 class SpotNamer:
@@ -83,8 +85,8 @@ class SpotNamer:
             The name typed by hand, else OpenStreetMap's, else GeoNames', else none.
         """
         same = known.stored_at == (known.latitude, known.longitude)
-        if same and known.source == SpotSource.USER:
-            return known.landmark or "", SpotSource.USER.value
+        if same and known.source in _KEPT:
+            return known.landmark or "", str(known.source)
         online = self._online.get(spot_key(rounded(point)), "")
         if online:
             return online, SpotSource.OSM.value

@@ -20,10 +20,10 @@ photos words*, on the same page, does it first, with its progress line.
 
 | | |
 |---|---|
-| Your photos | 🔒 Not read, never changed: only the positions the index already holds. |
+| Your photos | 🔒 Not read, never changed: only the positions the index already holds (`--vision` 🤖 reads them, never changes them). |
 | Needs | `/cache` (the index): run [`audit`](audit.md) once before. |
 | Writes | In the index only. |
-| Sends | Nothing. The towns and landmarks come from the GeoNames copy inside the image. |
+| Sends | Nothing. The towns and landmarks come from the GeoNames copy inside the image. With `--vision` 🤖, the photos go to your local model only. |
 
 ## Run it
 
@@ -48,6 +48,22 @@ goes on where it stopped.
 
 A photo moved by [`sort`](sort.md) or [`undo`](undo.md) keeps its row. A folder renamed in
 Explorer is named again at the next audit.
+
+## 🤖 The building the photo shows: `--vision`
+
+The GPS alone names the nearest monument within 200 m: a cathedral photographed from across
+the square gets nothing, a photo taken next to a castle, facing away, gets the castle. With
+your own local vision model (Ollama, set in `[classify.ai] model`, like [`tags`](tags.md)):
+
+```powershell
+mh spots --vision   # 🤖 needs a local AI model
+```
+
+The model sees each located photo and picks, among the landmarks within 1 km (the 10 nearest),
+the one it shows, or none. A short list to pick from, never a free guess: an answer outside it
+leaves the photo as it was. Each pick is kept in the index at once, searchable, and asked once.
+A name you typed by hand always wins: such a photo is never sent. Without a model, or with the
+server not answering, nothing changes. The photos go to your local model only.
 
 ## The built-in help
 

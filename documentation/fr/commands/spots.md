@@ -21,10 +21,10 @@ avec sa ligne de progression.
 
 | | |
 |---|---|
-| Vos photos | 🔒 Ni lues, ni modifiées : seulement les positions que l'index connaît déjà. |
+| Vos photos | 🔒 Ni lues, ni modifiées : seulement les positions que l'index connaît déjà (`--vision` 🤖 les lit, sans jamais les modifier). |
 | Il faut | `/cache` (l'index) : lancez [`audit`](audit.md) une fois avant. |
 | Écrit | Dans l'index seulement. |
-| Envoie | Rien. Les villes et les lieux viennent de la copie de GeoNames dans l'image. |
+| Envoie | Rien. Les villes et les lieux viennent de la copie de GeoNames dans l'image. Avec `--vision` 🤖, les photos ne vont qu'à votre modèle local. |
 
 ## Lancer
 
@@ -49,6 +49,24 @@ Arrêté en route, il reprend où il s'était arrêté.
 
 Une photo déplacée par [`sort`](sort.md) ou [`undo`](undo.md) garde sa ligne. Un dossier renommé
 dans l'Explorateur est nommé à nouveau au prochain audit.
+
+## 🤖 Le bâtiment que montre la photo : `--vision`
+
+Le GPS seul nomme le monument le plus proche à moins de 200 m : une cathédrale photographiée
+depuis l'autre côté de la place n'a rien, une photo prise à côté d'un château, dos à lui, a le
+château. Avec votre propre modèle de vision local (Ollama, réglé dans `[classify.ai] model`,
+comme pour [`tags`](tags.md)) :
+
+```powershell
+mh spots --vision   # 🤖 demande un modèle d'IA local
+```
+
+Le modèle voit chaque photo localisée et choisit, parmi les monuments à moins de 1 km (les 10
+plus proches), celui qu'elle montre, ou aucun. Une courte liste où choisir, jamais une
+devinette libre : une réponse hors de la liste laisse la photo telle quelle. Chaque choix est
+gardé aussitôt dans l'index, cherchable, et demandé une seule fois. Un nom saisi à la main
+l'emporte toujours : une telle photo n'est jamais envoyée. Sans modèle, ou si le serveur ne
+répond pas, rien ne change. Les photos ne vont qu'à votre modèle local.
 
 ## L'aide intégrée
 
