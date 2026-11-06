@@ -108,6 +108,10 @@ def test_the_events_view_is_part_of_the_search_page(
     assert "set the picked files aside" in keys  # Delete sets aside here too
     assert "next event to decide" in keys  # U (0574 dropped T)
     assert "/api/sort/forget" in search
+    for wanted in ('id="trialTry"', 'id="trialUndo"', 'id="trialRest"'):  # 0640
+        assert wanted in side
+    # Declared before the page's first search reads it.
+    assert search.index("let trialAgain") < search.index("function reopen(")
     assert "deleteKeySets = false" not in search
     # 0457: two tabs on top of the left column, the events' one hidden at first.
     assert (

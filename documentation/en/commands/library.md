@@ -228,6 +228,14 @@ The **⋯** of a folder (📁 My folders) adds, beside its role, *Never sorted* 
 the name of the person whose photos it holds (`person_folders`): the folder's name must hold it.
 A folder left out, then renamed in Explorer, is listed as gone with *Remove*, in the dialog above.
 
+**🧪 Try on one month** (on top of the tab, when a [`classify`](classify.md) plan has files to
+move in several months and no run moved any yet): it says the latest month, how many files and
+to which folders, asks, then sorts only those, journaled. The grid then shows these photos in
+their new folders, each tile naming its folder. **↶ Undo** puts them back; **Sort the rest (N
+files)** moves the rest of the plan after one question: a fast path, those files are not shown
+first (the classify report shows them). The files set aside stay in place. Both buttons last as
+long as the page; later, `mh sort` does the rest and `undo` takes the trial back.
+
 ## Move photos to their month, without an event
 
 Some photos have no event worth naming. Pick them, on the 🔎 Photos or 🗂 Events tab, then

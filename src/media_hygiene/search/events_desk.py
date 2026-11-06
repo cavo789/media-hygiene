@@ -35,6 +35,7 @@ if TYPE_CHECKING:
     from media_hygiene.search.grouping_desk import GroupingPreview
     from media_hygiene.search.late_desk import LateDesk
     from media_hygiene.search.span_events import SpanEvents
+    from media_hygiene.services.sort_trial_page import SortTrial
 
 EVENTS_PAGE_PATH: Final = "/events"
 EVENTS_PATH: Final = "/api/events"
@@ -62,6 +63,7 @@ class EventsDesk:  # pylint: disable=too-many-instance-attributes  # one per vie
     late: LateDesk | None = None  # *New photos during an event* (0558)
     span: SpanEvents | None = None  # the events made from the index (0572)
     grouping: GroupingPreview | None = None  # other grouping values tried (0643)
+    trial: SortTrial | None = None  # *Try on one month* (0640)
     held: list[SortBatchSession] = field(default_factory=list)  # opened once
 
     def state(self) -> Response:

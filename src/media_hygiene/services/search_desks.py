@@ -22,6 +22,7 @@ from media_hygiene.services.rule_trial import event_gap_hours, try_rule, written
 from media_hygiene.services.selection_move import SelectionMover
 from media_hygiene.services.sort_event import sorter_of
 from media_hygiene.services.sort_reviewing import open_sort_review
+from media_hygiene.services.sort_trial_page import SortTrial
 from media_hygiene.services.tag_drop import drop_words, merge_word
 
 if TYPE_CHECKING:
@@ -110,6 +111,7 @@ def events_desk(
             runtime.locations.config_file,
             settings.classify.session_gap_hours,
         ),
+        SortTrial(runtime),
     )
 
 

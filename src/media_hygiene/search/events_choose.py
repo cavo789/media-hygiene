@@ -32,6 +32,13 @@ from media_hygiene.search.grouping_desk import GROUPING_PATH
 from media_hygiene.search.late_desk import LATE_PATH, LATE_REFUSE_PATH
 from media_hygiene.search.span_events import SPAN_FILES_PATH, SPAN_PATH
 from media_hygiene.search.span_left import LEFT_PATH
+from media_hygiene.search.trial_api import (
+    TRIAL_PATH,
+    TRIAL_POSTS,
+    TRIAL_SCRIPT_PATHS,
+    trial_offer,
+    trial_post,
+)
 
 if TYPE_CHECKING:
     from media_hygiene.review.events_batch import SortBatchSession
@@ -63,6 +70,7 @@ SORT_POSTS: Final = frozenset(
         LATE_REFUSE_PATH,
         LEFT_PATH,
         GROUPING_PATH,
+        *TRIAL_POSTS,
     }
 )
 SORT_GETS: Final = frozenset(sort_path(path) for path in (RULES_PATH, PROGRESS_PATH))
@@ -78,6 +86,7 @@ SORT_PATHS: Final = {  # what the page's script calls them
     "rule": sort_path("/api/rule"),
     "rules": sort_path(RULES_PATH),
     "rulesRemove": sort_path("/api/rules/remove"),
+    **TRIAL_SCRIPT_PATHS,
 }
 
 
@@ -116,6 +125,8 @@ async def sort_post(desk: EventsDesk | None, request: Request) -> Response:
     Returns:
         The answer; 404 without a plan.
     """
+    if request.path in TRIAL_POSTS:  # 0640
+        return await trial_post(desk, request)
     if (answer := no_plan_post(desk, request)) is not None:
         return answer
     try:
@@ -145,7 +156,9 @@ def events_get(desk: EventsDesk | None, path: str) -> Response | None:
     """
     if desk is None:
         return None
-    if path == FOUND_PATH or path.startswith(_NO_PLAN):  # 0557, 0558, 0572
+    if path in {FOUND_PATH, TRIAL_PATH} or path.startswith(
+        _NO_PLAN
+    ):  # 0557, 0572, 0640
         return _without_plan(desk, path)
     if path.startswith(EVENTS_PATH):  # 0437
         return desk.state() if path == EVENTS_PATH else desk.event(path)
@@ -173,6 +186,8 @@ def _without_plan(desk: EventsDesk, path: str) -> Response:
     Returns:
         The view; 404 when the page has none.
     """
+    if path == TRIAL_PATH:
+        return trial_offer(desk)
     if path.startswith((SPAN_PATH, SPAN_FILES_PATH)):
         span = desk.span
         return Response(HTTPStatus.NOT_FOUND) if span is None else span.answer(path)

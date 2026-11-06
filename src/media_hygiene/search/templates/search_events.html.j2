@@ -13,6 +13,7 @@
 <section id="events" role="tabpanel" aria-labelledby="tabEvents" hidden>
   <h2 class="tabTitle">🗂 {{ _("Events not sorted yet") }}</h2>
   <p id="eventsSaid" class="muted" role="status"></p>
+  {% include "search_events_trial.html.j2" %}
   <p id="eventsProgress" class="muted"></p>
   <details id="runs" hidden><summary>{{ _("The sort runs of this plan") }}</summary><ol id="runList"></ol></details>
   {% include "search_events_grouping.html.j2" %}

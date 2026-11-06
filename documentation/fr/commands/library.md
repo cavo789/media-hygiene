@@ -242,6 +242,15 @@ le nom de la personne dont il contient les photos (`person_folders`) : le nom du
 Un dossier laissé de côté puis renommé dans l'Explorateur est listé comme disparu, avec *Supprimer*, dans
 la boîte ci-dessus.
 
+**🧪 Essayer sur un mois** (en haut de l'onglet, quand un plan de [`classify`](classify.md) a des
+fichiers à déplacer sur plusieurs mois et qu'aucun passage n'en a encore déplacé) : il dit le
+dernier mois, combien de fichiers et vers quels dossiers, demande, puis trie seulement ceux-là,
+journalisés. La grille montre alors ces photos dans leurs nouveaux dossiers, chaque vignette
+nommant le sien. **↶ Annuler** les remet en place ; **Trier le reste (N fichiers)** déplace le
+reste du plan après une question : un chemin rapide, ces fichiers ne sont pas montrés d'abord (le
+rapport de classify les montre). Les fichiers mis de côté restent en place. Les deux boutons
+durent le temps de la page ; ensuite, `mh sort` fait le reste et `undo` reprend l'essai.
+
 ## Déplacer des photos vers leur mois, sans événement
 
 Certaines photos n'ont pas d'événement qui vaille un nom. Choisissez-les, sur l'onglet 🔎 Photos
