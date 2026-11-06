@@ -162,6 +162,10 @@ running, ⚠ a step that failed, without you asking. A chain stopped (Ctrl+C, th
 said stopped after 24 hours without news) is offered again: **▶ Run again from: …** on the home page,
 or in the console `mh import --chain` (from where it stopped) or `mh import --chain --from-step tags`
 (`audit`, `copies`, `bursts`, `tags`, `places`). The questions stay in the window of `mh`.
+When a page of `mh` already holds the PC, the **bursts** step leaves its series to that page: once it
+is reached, the line shows **📸 Its burst series**, the [burst review](review.md) of the new photos
+only (*Only the series holding a new photo of the last import*, **See every series** one click
+away); what you set aside there goes through `clean --decisions`, *Apply now* in the bar.
 
 - **Run `mh audit` once first**: the library is what the cache knows. Without an audit, every
   photo of the phone is new (it says so).

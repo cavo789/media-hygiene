@@ -179,6 +179,11 @@ fenêtre fermée : dite arrêtée après 24 heures sans nouvelles) est proposée
 sur la page d'accueil, ou en console `mh import --chain` (là où elle s'est arrêtée) ou
 `mh import --chain --from-step tags` (`audit`, `copies`, `bursts`, `tags`, `places`). Les questions
 restent dans la fenêtre de `mh`.
+Quand une page de `mh` occupe déjà le PC, l'étape **bursts** laisse ses rafales à cette page : une
+fois atteinte, la ligne montre **📸 Ses rafales**, la [revue des rafales](review.md) des seules
+nouvelles photos (*Seulement les rafales qui contiennent une nouvelle photo du dernier import*,
+**Voir toutes les rafales** à un clic) ; ce que vous y mettez de côté passe par
+`clean --decisions`, *Appliquer maintenant* dans la barre.
 
 - **Lancez d'abord une fois `mh audit`** : la photothèque est ce que le cache connaît. Sans audit,
   chaque photo du téléphone est nouvelle (il le dit).

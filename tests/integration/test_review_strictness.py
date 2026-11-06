@@ -13,8 +13,8 @@ from media_hygiene.review.strictness import STRICTNESS_PATH
 from media_hygiene.review.unwanted_app import UnwantedApp
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
+from media_hygiene.services.burst_opening import BURST_KEYS
 from media_hygiene.services.review_file import review_page
-from media_hygiene.services.reviewing import BURST_KEYS
 from media_hygiene.services.unwanted_reviewing import (
     UNWANTED_KEYS,
     open_unwanted_review,

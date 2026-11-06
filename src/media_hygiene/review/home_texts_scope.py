@@ -55,4 +55,5 @@ def imports_texts() -> dict[str, str]:
         "chainFailed": _("it said why in the window of mh"),
         "chainResume": _("▶ Run again from: {step}"),
         "chainType": _("In the window of mh: {command}"),
+        "chainBursts": _("📸 Its burst series"),
     }

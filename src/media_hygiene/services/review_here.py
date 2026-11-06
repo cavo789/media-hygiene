@@ -31,9 +31,11 @@ from media_hygiene.review.step_watch import BURSTS_PAGE, NEAR_REVIEW_PAGE
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.data_checks import refuse_empty_data
+from media_hygiene.services.import_note import IMPORTED, imported_note
 from media_hygiene.services.page_undo import PageUndo
 from media_hygiene.services.review import decisions_path
 from media_hygiene.services.review_file import review_page
+from media_hygiene.services.review_kinds_more import imported_bursts
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
@@ -92,7 +94,8 @@ class ReviewHere:
             return Response(HTTPStatus.SEE_OTHER, headers=(location,))
         if path == PAGE_PATH and request.method == "GET":
             try:
-                self._app = await asyncio.to_thread(self._build)
+                only_new = self.kind.page == BURSTS_PAGE and request.query == IMPORTED
+                self._app = await asyncio.to_thread(self._build, only_new)
             except (MountError, DecisionsError) as exc:
                 return Response(HTTPStatus.CONFLICT, str(exc).encode())
             if self._app is None:
@@ -112,8 +115,11 @@ class ReviewHere:
         values = {"said": self.kind.empty(), "tidy_next": following}
         return headed_page(environment, "tidy_empty.html.j2", values)
 
-    def _build(self) -> Handling | None:
+    def _build(self, only_new: bool) -> Handling | None:  # noqa: FBT001
         """Audit from the index, open the session, resume the decisions file.
+
+        Args:
+            only_new: The burst series of the last import's new files only (0630).
 
         Returns:
             The review's app; None when there is nothing to review.
@@ -125,11 +131,14 @@ class ReviewHere:
         findings = service.run()
         service.guide.close()
         target = decisions_path(runtime, Path(DEFAULT_DECISIONS))
-        page = self.kind.opened(runtime, findings, target)
+        opened = imported_bursts if only_new else self.kind.opened
+        page = opened(runtime, findings, target)
         if page is None:
             return None
         server = self._server
         body = review_page(page.template, page.place, page.api)
+        if only_new:
+            body = imported_note(body)
         app = page.app(body, server.executor, runtime.previews_dir)
         if page.apply is None:
             return app

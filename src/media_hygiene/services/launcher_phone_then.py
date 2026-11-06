@@ -103,8 +103,8 @@ def phone_then() -> PhoneThen:
         ),
         bursts_home=say(
             _(
-                "📸 A page of mh is open on this PC: the burst series of the new "
-                "photos wait on its burst review (mh review)."
+                "📸 A page of mh is open on this PC: on its home page, the last "
+                "import's line opens the burst series of the new photos only."
             )
         ),
         no_chain=say(_("No import has steps left to run.")),

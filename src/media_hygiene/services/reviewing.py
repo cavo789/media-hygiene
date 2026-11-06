@@ -19,18 +19,13 @@ from media_hygiene.person.door import with_person
 from media_hygiene.review.app import DECIDE_PATH, FILE_PATH, ReviewApp
 from media_hygiene.review.apply_api import ApplyOffer, applying_door
 from media_hygiene.review.ending import serve_until_ended
-from media_hygiene.review.place import decisions_place
-from media_hygiene.review.session import ReviewSession, ReviewSource
-from media_hygiene.review.strictness import Strictness, ThresholdPlace
-from media_hygiene.review.views import StateBuilder
 from media_hygiene.services.albums import album_desk
 from media_hygiene.services.aside_paths import review_picker
-from media_hygiene.services.burst_carry import resume_bursts
+from media_hygiene.services.burst_opening import BurstOpening, open_bursts
 from media_hygiene.services.missing_mount import missing_mount, typed_again
 from media_hygiene.services.next_command import LAUNCHER_VARIABLE, NextVerb
-from media_hygiene.services.policy import keep_policy, proposal_limits
 from media_hygiene.services.review import decisions_path
-from media_hygiene.services.review_file import first_save, review_page
+from media_hygiene.services.review_file import review_page
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
@@ -39,12 +34,11 @@ if TYPE_CHECKING:
     from media_hygiene.console.output import Output
     from media_hygiene.plan.models import AuditFindings
     from media_hygiene.review.apply_api import ReviewStart
+    from media_hygiene.review.session import ReviewSession
     from media_hygiene.services.runtime import Runtime
 
 HOST_LOOPBACK: Final = "127.0.0.1"
 PAGE_TEMPLATE: Final = "review.html.j2"
-BURST_SECTION: Final = ("review",)
-BURST_KEYS: Final = ("propose_aside_below", "identical_below")
 
 
 def review_target(runtime: Runtime, decisions: Path, port: int) -> Path:
@@ -78,37 +72,15 @@ def open_review(
 ) -> ReviewSession:
     """Start the review of the audit's burst series, resuming the decisions file.
 
-    The file is written at once, every series listed: `todo` until seen.
-
     Args:
         runtime: Settings, mount points and output.
         findings: The audit just run.
         target: The decisions file, in the container.
 
     Returns:
-        The session.
-
-    Raises:
-        DecisionsError: The file is not a decisions file, was made on other
-            folders, or cannot be written.
+        The session (`burst_opening.open_bursts`).
     """
-    mapper = runtime.mapper
-    builder = StateBuilder(
-        mapper,
-        keep_policy(runtime.settings, mapper),
-        findings.similar,
-        proposal_limits(runtime.settings.review),
-    )
-    place = decisions_place(mapper, runtime.locations.reports_dir, target)
-    source = ReviewSource(findings.similar.bursts, builder, target, place)
-    session = ReviewSession(source, resume_bursts(runtime, findings, target))
-    session.strictness = Strictness(
-        ThresholdPlace(runtime.locations.config_file, BURST_SECTION, BURST_KEYS),
-        runtime.settings.review,
-        lambda review: session.retune(proposal_limits(review)),
-    )
-    first_save(session.save)
-    return session
+    return open_bursts(runtime, BurstOpening(findings, target))
 
 
 def serve_review(runtime: Runtime, session: ReviewSession, start: ReviewStart) -> int:

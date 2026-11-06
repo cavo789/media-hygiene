@@ -44,6 +44,7 @@ class ReviewSource:
     builder: StateBuilder
     target: Path
     place: DecisionsPlace
+    hidden: frozenset[str] = frozenset()  # host shots of series not shown, kept (0630)
 
 
 class ReviewSession:  # pylint: disable=too-many-instance-attributes
@@ -187,4 +188,10 @@ class ReviewSession:  # pylint: disable=too-many-instance-attributes
             series_decision(mapper, burst.shots, self._discarded.get(number))
             for number, burst in enumerate(bursts)
         )
-        return self._base.model_copy(update={"bursts": listed})
+        hidden = self._source.hidden
+        kept = tuple(
+            old
+            for old in self._base.bursts
+            if not hidden.isdisjoint((*old.kept, *old.discarded))
+        )
+        return self._base.model_copy(update={"bursts": listed + kept})

@@ -7626,6 +7626,9 @@ msgstr ""
 "l'avez monté) ; à répéter pour plusieurs. Par défaut : toutes les photos "
 "de l'index."
 
+msgid "Only the series holding a new photo of the last import."
+msgstr "Seulement les rafales qui contiennent une nouvelle photo du dernier import."
+
 msgid "Only the series still to see"
 msgstr "Seulement les séries à voir"
 
@@ -9561,6 +9564,9 @@ msgstr "Voir chaque réglage et d'où il vient"
 
 msgid "See every photo of the quarantine, put some back"
 msgstr "Voir toutes les photos de la quarantaine, en remettre"
+
+msgid "See every series"
+msgstr "Voir toutes les rafales"
 
 msgid "See the files"
 msgstr "Voir les fichiers"
@@ -19983,11 +19989,14 @@ msgstr ""
 " contenu."
 
 msgid ""
-"📸 A page of mh is open on this PC: the burst series of the new photos "
-"wait on its burst review (mh review)."
+"📸 A page of mh is open on this PC: on its home page, the last import's "
+"line opens the burst series of the new photos only."
 msgstr ""
-"📸 Une page de mh est ouverte sur ce PC : les rafales des nouvelles photos"
-" attendent dans sa revue des rafales (mh review)."
+"📸 Une page de mh est ouverte sur ce PC : sur sa page d'accueil, la ligne"
+" du dernier import ouvre les rafales des seules nouvelles photos."
+
+msgid "📸 Its burst series"
+msgstr "📸 Ses rafales"
 
 msgid ""
 "📸 The burst series of the new photos open in your browser: keep the best "

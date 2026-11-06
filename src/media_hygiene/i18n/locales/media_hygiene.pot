@@ -6310,6 +6310,9 @@ msgid ""
 "it for several. Default: every photo of the index."
 msgstr ""
 
+msgid "Only the series holding a new photo of the last import."
+msgstr ""
+
 msgid "Only the series still to see"
 msgstr ""
 
@@ -7935,6 +7938,9 @@ msgid "See each setting and where it comes from"
 msgstr ""
 
 msgid "See every photo of the quarantine, put some back"
+msgstr ""
+
+msgid "See every series"
 msgstr ""
 
 msgid "See the files"
@@ -16779,8 +16785,11 @@ msgid ""
 msgstr ""
 
 msgid ""
-"📸 A page of mh is open on this PC: the burst series of the new photos "
-"wait on its burst review (mh review)."
+"📸 A page of mh is open on this PC: on its home page, the last import's "
+"line opens the burst series of the new photos only."
+msgstr ""
+
+msgid "📸 Its burst series"
 msgstr ""
 
 msgid ""

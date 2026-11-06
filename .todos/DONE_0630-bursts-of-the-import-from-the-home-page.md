@@ -17,7 +17,7 @@ Filter on the last import's new files, as `review --imported` does in the consol
 
 ## Acceptance
 
-- [ ] Coming from the chain, the page shows only the series of the import's new files, and says so
-- [ ] A way to see every series stays, one click away
-- [ ] Set-aside choices still go through `clean --decisions`, *Apply now* offered
-- [ ] Both languages of the docs updated; `docs_screenshots` flagged as stale
+- [x] Coming from the chain, the page shows only the series of the import's new files, and says so
+- [x] A way to see every series stays, one click away
+- [x] Set-aside choices still go through `clean --decisions`, *Apply now* offered
+- [x] Both languages of the docs updated; `docs_screenshots` flagged as stale
