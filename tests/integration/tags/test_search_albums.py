@@ -9,6 +9,8 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.config.classify_places import PersonalPlace
+from media_hygiene.places.config_file import PlaceEdit, save_places
 from media_hygiene.share.albums import ALBUMS_FILE, read_albums
 from tests.support.cli import run
 from tests.support.search_page import serve_search
@@ -202,3 +204,47 @@ def test_pick_all_found_follows_the_album_filter(
     assert other["count"] == len(others)
     assert len(found) == len(others) + 1
     assert (locations.reports_dir / "decisions.json").exists()
+
+
+def test_pick_all_found_follows_the_place_filter(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0642: Place on, "all" takes the files shown; without a place, the others."""
+    assert run(cli, "tags", "--no-describe").exit_code == 0
+    far_away = PersonalPlace(name="Nowhere", latitude=-80.0, longitude=1.0, radius_m=5)
+    save_places(locations.config_file, [PlaceEdit(None, far_away)])
+    found = _keys(serve_search(cli, monkeypatch, [("POST /api/search", _DURBUY)])[0])
+    placed, *others = found
+    assert others
+    give = {"action": "give", "keys": [placed], "place": "Nowhere"}
+    inside = {**_DURBUY, "place": "Nowhere"}
+    outside = {**_DURBUY, "missing": "place"}
+    answers = serve_search(
+        cli,
+        monkeypatch,
+        [
+            ("POST /api/place", give),
+            ("POST /api/search", inside),
+            (
+                "POST /api/albums",
+                {"action": "add", "album": "Inside", "all": True, "search": inside},
+            ),
+            ("POST /api/search", outside),
+            ("POST /api/chosen", {"action": "add", "all": True, "search": inside}),
+        ],
+    )
+    assert _keys(answers[1]) == [placed]
+    inside_album = next(a for a in _albums(answers[2]) if a["name"] == "Inside")
+    assert inside_album["count"] == 1
+    assert json.loads(answers[4].body)["count"] == 1
+    assert sorted(_keys(answers[3])) == sorted(others)
+    left = serve_search(
+        cli,
+        monkeypatch,
+        [
+            ("POST /api/chosen", {"action": "remove", "all": True, "search": inside}),
+            ("POST /api/chosen", {"action": "add", "all": True, "search": outside}),
+        ],
+    )
+    assert json.loads(left[0].body)["count"] == 0
+    assert json.loads(left[1].body)["count"] == len(others)

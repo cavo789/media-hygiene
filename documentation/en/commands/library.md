@@ -460,6 +460,7 @@ by its GPS (the circle or area drawn on [`places`](places.md)) or because you pu
 back and says how many it holds. A photo already there by its GPS is not written; a photo of another
 place leaves it; identical copies count as one photo, by their content. A new place is
 drawn on [`places`](places.md). A word like `place:Durbuy` follows at the next [`tags`](tags.md).
+With a place chosen, *Pick all N found* counts and takes the files the filter shows, never the others.
 
 Once the place is given, the dialog offers the other photos of the same day and folder, when
 some have no position and no place yet. **See them** shows them as tiles, all picked: take out the
@@ -483,8 +484,8 @@ click; the panel also offers **📺 Share on the TV** and **📨 Prepare for sen
 - **In one click**: on a card of the 🗂 *Events* tab, **📚 Make an album** makes an album of the
   event's files, under the name proposed from its place and day, read back and opened in a new
   tab. After a search, **📚 Make an album of these N results** does the same with every file
-  found, under the words typed (files set aside stay out; at most 3 000 at once, else narrow the
-  search; not offered when a filter narrows the tiles shown). A name already used adds to that
+  found, under the words typed, within the album and Place filters (files set aside stay out; at
+  most 3 000 at once, else narrow the search). A name already used adds to that
   album. With a [paired TV](slideshow.md), the card also has **📺 On the TV**.
 - **Where the album folders go** is on [the albums page](album.md#from-the-albums-page).
 - **Take out of the album** takes the picked photos out of the album typed; an album left empty

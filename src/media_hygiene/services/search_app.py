@@ -55,10 +55,9 @@ from media_hygiene.search.tag_desk import HAND_TAG_PATH
 from media_hygiene.search.undo_api import UNDO_PATH
 from media_hygiene.search.views import FIRST_HITS
 from media_hygiene.services.albums import album_desk
-from media_hygiene.services.chosen_place import chosen_desk
 from media_hygiene.services.page_undo import PageUndo
 from media_hygiene.services.rule_trial import event_gap_hours
-from media_hygiene.services.search_dates import date_desk, place_desk
+from media_hygiene.services.search_dates import chosen_desk, date_desk, place_desk
 from media_hygiene.services.search_desks import (
     events_desk,
     names_place,
@@ -176,7 +175,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         album_desk(
             runtime,
             SearchPicker(
-                search, AsideFilter(chosen.paths, runtime.mapper), chosen.albums
+                search, AsideFilter(chosen.paths, runtime.mapper), chosen.narrowing
             ).files,
             build.tv,
         ),

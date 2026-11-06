@@ -6,7 +6,6 @@ The reports folder is checked writable before each save, never trusted from the 
 
 from __future__ import annotations
 
-from functools import partial
 from typing import TYPE_CHECKING
 
 from media_hygiene.errors import MountError
@@ -14,12 +13,9 @@ from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.place import DEFAULT_DECISIONS, decisions_place
 from media_hygiene.search.chosen import ChosenPlace, ChosenStore
-from media_hygiene.search.chosen_api import ChosenDesk
-from media_hygiene.services.albums import album_narrow
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
-    from media_hygiene.search.fts import SearchIndex
     from media_hygiene.services.runtime import Runtime
 
 
@@ -57,17 +53,3 @@ def reports_ready(runtime: Runtime) -> None:
             _("The files set aside are saved in /reports: mount it, or they are lost.")
         )
     ensure_writable(runtime, MountKind.REPORTS)
-
-
-def chosen_desk(runtime: Runtime, search: SearchIndex) -> ChosenDesk:
-    """The files set aside from the pages: `decisions.json` in the reports folder.
-
-    Args:
-        runtime: Settings, mount points and output.
-        search: The open index.
-
-    Returns:
-        The desk answering the pages about them; its "all" follows the album filter.
-    """
-    ready = partial(reports_ready, runtime)
-    return ChosenDesk(chosen_store(runtime), search, ready, album_narrow(runtime))
