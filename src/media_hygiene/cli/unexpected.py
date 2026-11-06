@@ -55,6 +55,7 @@ def stop_on_error(ctx: Context, error: Exception) -> NoReturn:
     command = ctx.invoked_subcommand or APP_NAME
     output.blank()
     line = _("Unexpected error during {command}: {kind}: {message}")
+    error = named_error(error)
     kind, message = type(error).__name__, str(error)
     output.error(escape(line.format(command=command, kind=kind, message=message)))
     if command in READ_ONLY_COMMANDS:
@@ -71,3 +72,17 @@ def stop_on_error(ctx: Context, error: Exception) -> NoReturn:
     # The home server runs the whole session: `mh` starts it again once (0365).
     code = ExitCode.CRASHED if command == "home" else ExitCode.FAILURE
     raise typer.Exit(code) from error
+
+
+def named_error(error: Exception) -> Exception:
+    """The error to name: the one inside a group holding a single exception.
+
+    Args:
+        error: The unexpected exception.
+
+    Returns:
+        The innermost error of nested one-exception groups, else `error` itself.
+    """
+    while isinstance(error, ExceptionGroup) and len(error.exceptions) == 1:
+        error = error.exceptions[0]
+    return error

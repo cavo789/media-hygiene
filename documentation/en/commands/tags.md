@@ -101,7 +101,7 @@ whole collection, estimated); each photo is kept in the cache at once, so the ne
 - **Search by meaning** (`--meaning`, opt-in): what a photo shows, never who nor where (names
   come from `people`, places from the GPS); identical copies are looked at once, videos never.
 - **Stop whenever you want**: Ctrl+C lets the photos being described finish; the next run goes on
-  where this one stopped.
+  where this one stopped. One Ctrl+C stops the whole run, `--meaning` included: no step follows.
 - **Why not inside the photos?** Writing into a JPEG changes its bytes, its fingerprint, and two
   identical copies would stop being identical. [`xmp`](xmp.md) writes sidecars instead.
 

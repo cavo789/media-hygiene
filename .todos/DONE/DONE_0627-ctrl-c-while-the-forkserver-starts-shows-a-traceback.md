@@ -43,3 +43,11 @@ The promises broken: Ctrl+C ends a command with one calm line, and the shipped i
 - `tags --meaning`: a stop during the meaning step ends the command: no description step, no model called.
 
 A change of console output: say whether `docs_screenshots` should run.
+
+## Done (2026-11-06)
+
+- Reproduced (`tests/unit/test_pool_interrupt.py`): SIGINT during a slow preload kills a fork server; with `scan/calm_server` first in the preload list (ignores SIGINT before Pillow/numpy), it lives on, no traceback. Covers `warm_pool` and a first `process_pool` alike (same preload), hence every image pool: audit, report, review, classify, people.
+- `services/interrupt.broken_by_stop`: a broken pool after a stop request ends `describe_checked` as Ctrl+C (`INTERRUPTED`).
+- `LocalizedGroup`: a `KeyboardInterrupt` inside a task group ends as a stop; `stop_on_error` names the exception of a one-exception group (`named_error`).
+- `tags`: a stop during `--meaning` ends the run (maintainer's decision); docs en/fr.
+- Left: the window before the server's first import (interpreter start, a few ms) stays open.

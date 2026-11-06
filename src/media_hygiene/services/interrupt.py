@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import signal
 import threading
+from concurrent.futures.process import BrokenProcessPool
 from typing import TYPE_CHECKING, Self
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from types import FrameType
 
 
@@ -53,3 +55,23 @@ class StopRequest:
             True once it was.
         """
         return self._requested
+
+
+def broken_by_stop(error: BaseException, stopped: Callable[[], bool]) -> bool:
+    """Tell whether a broken process pool is the doing of a Ctrl+C.
+
+    Ctrl+C reaches every process of the terminal: when a stop was asked, a pool that
+    lost a process (alone or inside a task group) is a stop, not a bug (0627).
+
+    Args:
+        error: What ended the run.
+        stopped: Whether the user asked to stop.
+
+    Returns:
+        True when the pool broke after a stop request.
+    """
+    if not stopped():
+        return False
+    if isinstance(error, BaseExceptionGroup):
+        return error.subgroup(BrokenProcessPool) is not None
+    return isinstance(error, BrokenProcessPool)

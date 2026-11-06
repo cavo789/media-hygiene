@@ -18,7 +18,7 @@ from media_hygiene.meaning.files import clip_known
 from media_hygiene.services import search_meaning
 from tests.support.cli import run
 from tests.support.meaning import ColourImages, ColourWords
-from tests.support.tagging import BURST
+from tests.support.tagging import BURST, write_tags_config
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -107,3 +107,18 @@ def test_the_setting_turns_it_on_and_search_says_a_missing_model(
     assert found.exit_code == 0, found.output
     assert "the words alone answer" in found.output
     assert "tags --meaning" in found.output
+
+
+def test_a_stop_during_meaning_ends_the_whole_run(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """One Ctrl+C stops `tags` (0627): no description step, no model asked."""
+    from media_hygiene.cli import tags_flow  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+
+    asked: list[object] = []
+    write_tags_config(locations.config_dir, "http://127.0.0.1:9")
+    monkeypatch.setattr(tags_flow, "run_meaning", lambda *_: True)
+    monkeypatch.setattr(tags_flow, "may_describe", lambda *args: asked.append(args))
+    result = run(cli, "tags", "--meaning", "--yes")
+    assert result.exit_code == 0, result.output
+    assert not asked

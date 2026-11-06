@@ -154,6 +154,7 @@ class LocalizedGroup(TyperGroup):
 
         Raises:
             Exception: An unexpected error, when `MEDIA_HYGIENE_DEBUG` is set.
+            BaseExceptionGroup: A group holding no Ctrl+C, nor any `Exception`.
         """
         try:
             return super().invoke(ctx)
@@ -165,6 +166,10 @@ class LocalizedGroup(TyperGroup):
             if debugging():
                 raise
             stop_on_error(ctx, error)
+        except BaseExceptionGroup as group:  # Ctrl+C inside a task group
+            if group.subgroup(KeyboardInterrupt) is None:
+                raise
+            stop_on_interrupt(ctx)
 
     @override
     def format_usage(self, ctx: Context, formatter: HelpFormatter) -> None:

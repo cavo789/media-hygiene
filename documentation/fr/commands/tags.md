@@ -105,7 +105,7 @@ chaque photo est gardée aussitôt dans le cache, le passage suivant continue.
   (les noms viennent de `people`, les lieux du GPS) ; les copies identiques sont regardées une
   fois, les vidéos jamais.
 - **Arrêtez quand vous voulez** : Ctrl+C laisse finir les photos en cours de description ; la
-  fois suivante reprend où celle-ci s'est arrêtée.
+  fois suivante reprend où celle-ci s'est arrêtée. Un Ctrl+C arrête toute la commande, `--meaning` compris : aucune étape ne suit.
 - **Pourquoi pas dans les photos ?** Écrire dans un JPEG change ses octets, son empreinte, et deux
   copies identiques cesseraient de l'être. [`xmp`](xmp.md) écrit des fichiers compagnons à la place.
 
