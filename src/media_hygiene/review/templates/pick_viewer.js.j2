@@ -99,7 +99,7 @@ function open() {
   $("viewerName").textContent = file.name;
   $("viewerAside").hidden = !file.chosen;
   // A page may turn the day or the folder into a link (`infoLink`, the search page's).
-  const facts = [["date", file.date], ["size", file.size], ["facts", file.facts], ["folder", file.where || file.folder || scope().folder]];
+  const facts = [["date", file.date], ["spot", file.spot], ["size", file.size], ["facts", file.facts], ["folder", file.where || file.folder || scope().folder]];
   $("viewerInfo").replaceChildren();
   for (const [at, [kind, text]] of facts.filter(([, text]) => text).entries()) {
     if (at) $("viewerInfo").append(" · ");

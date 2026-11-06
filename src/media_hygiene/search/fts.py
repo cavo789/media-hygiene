@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import sqlite3
 import time
-from contextlib import closing
 from pathlib import Path
 from typing import TYPE_CHECKING, Final, Self
 
@@ -22,6 +21,8 @@ from media_hygiene.search.hits import Given, given_too, hit_of
 from media_hygiene.search.known_day import CREATE_DAYS
 from media_hygiene.search.models import Found
 from media_hygiene.search.query import match_expression
+from media_hygiene.search.spot_label import SpotNames
+from media_hygiene.search.spot_words import rebuild
 from media_hygiene.tags.models import TagSource
 
 if TYPE_CHECKING:
@@ -47,6 +48,7 @@ class SearchIndex:
         self._built_at = 0.0  # when (monotonic seconds)
         self._people: Given = {}  # the names, the words typed by hand (0555)
         self.stop_words: frozenset[str] = frozenset()  # `[tags]`, folded (0345)
+        self.spot_names = SpotNames()  # the user's places, for the tiles (0545)
         register(connection)
         connection.execute(sql.CREATE_PEOPLE)
         connection.execute(CREATE_DAYS)
@@ -192,9 +194,5 @@ class SearchIndex:
         recent = time.monotonic() - self._built_at < REBUILD_EVERY
         if version == self.built or (self.built is not None and recent):
             return
-        with closing(self._connection.cursor()) as cursor:
-            cursor.execute(sql.DROP)
-            cursor.execute(sql.CREATE)
-            cursor.execute(sql.FILL if self.has_tags else sql.FILL_PEOPLE)
-        self._connection.commit()
+        rebuild(self._connection, tagged=self.has_tags)
         self.built, self._built_at = version, time.monotonic()

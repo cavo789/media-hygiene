@@ -135,6 +135,7 @@ class Desk:
             "films": show.films,  # False: every TV shows photos only (0292)
             "telling": self.screens.telling.value,
             "chapter": None if chapter is None else chapter.view(),
+            "where": "" if current is None else current.place,  # the TV's corner (0545)
             "story": story_view(show),
         }
 

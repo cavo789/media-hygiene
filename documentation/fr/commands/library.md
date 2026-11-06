@@ -9,6 +9,8 @@
 - 📂 [Parcourir vos dossiers](#parcourir-vos-dossiers)
 - 💻 [Je suis sur le PC et je pars de zéro](#lancer)
 
+Les photos avec une position GPS se trouvent aussi par leur lieu remarquable, leur ville et leurs régions, affichés en `📍` sous la date : voir [`spots`](spots.md).
+
 ## En bref
 
 **Retrouver une photo par ce dont vous vous souvenez : un mot, un lieu, une année, une

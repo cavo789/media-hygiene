@@ -30,6 +30,7 @@ them one at a time; this page gathers them. The commands whose help starts with 
 | find the photos of someone by name, sort them by who is on them | [`people`](commands/people.md), then `library` or `classify` |
 | give my photos and videos words to search for | [`tags`](commands/tags.md) |
 | find a photo by a word, a place, a year, a person | [`library`](commands/library.md) |
+| find a photo by the monument or town where it was taken | [`spots`](commands/spots.md) |
 | look through my folders and remove photos, without Explorer, undoably | [the folders of `library`](commands/library.md#walk-through-your-folders), then `clean --decisions` |
 | show the holiday photos on the TV, choosing the next one from my phone | [`slideshow`](commands/slideshow.md) |
 | send an album by mail or to a social network, resized and without the GPS position | [`share`](commands/share.md) |
@@ -81,6 +82,7 @@ use it and the command to try; then the folders it needs, its options, examples 
 | [`shrink`](commands/shrink.md) | List the heavy videos worth lightening (old cameras, MJPEG), with the space each would free; `--apply` re-encodes them in H.264, each one checked (length, sound, date, place), the original in the quarantine. | [Commands](commands/shrink.md) |
 | [`push`](commands/push.md) | Windows only (`mh push`): copy your photo folders into a folder of their own on the NAS, only what it lacks; a photo moved is renamed there, a deletion by mistake never carried over; undo with `--undo`. | [Commands](commands/push.md) |
 | [`backup`](commands/backup.md) | Write the index (what the audits, `tags` and `people` learnt) and the settings into one zip in `media-hygiene\backups`, read back; the 3 most recent kept. Never reads your photos. | [Commands](commands/backup.md) |
+| [`spots`](commands/spots.md) | Keep in the index the landmark, town and regions of each photo with a GPS position, offline, so that `library` finds and shows them; every `audit` does it too. Never reads your photos. | [Commands](commands/spots.md) |
 | [`restore`](commands/restore.md) | Put back a backup of the index (the settings too with `--config`), after checking it whole and backing up the index replaced. Never reads your photos. | [Commands](commands/restore.md) |
 
 **Pages: opened from the home page** (not listed by `mh --help`: they only open a page; typed, `mh places`, `mh home` and `mh slideshow` still work, for a script or without the home page)

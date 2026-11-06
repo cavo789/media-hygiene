@@ -1,7 +1,7 @@
 Towns, regions, countries and landmarks used to name places offline (media_hygiene.geo).
 
-Source: GeoNames (https://www.geonames.org/), dumps cities1000.zip, admin1CodesASCII.txt
-countryInfo.txt and allCountries.zip from https://download.geonames.org/export/dump/.
+Source: GeoNames (https://www.geonames.org/), dumps cities1000.zip, admin1CodesASCII.txt,
+admin2Codes.txt, countryInfo.txt and allCountries.zip from https://download.geonames.org/export/dump/.
 Licence: Creative Commons Attribution 4.0 (https://creativecommons.org/licenses/by/4.0/).
 Changes: populated places of more than 1,000 inhabitants only, without sections of towns
 and abandoned, destroyed or historical places; positions rounded to 3 decimals;
@@ -9,7 +9,7 @@ population in thousands; other columns dropped. Landmarks (landmarks.tsv.xz,
 snapshot of 2026-10-29): features of classes S and L with a monument-like code
 (tests/support/geonames/landmarks.py), name and position (4 decimals) only. Made by `python -m tests.support.geonames`
 (the `geonames_update` helper of the devcontainer).
-Snapshot of 2026-10-03.
+Snapshot of 2026-11-06.
 
 Country names in English and French: Unicode CLDR, through Babel
 (https://cldr.unicode.org/), Unicode License v3 (https://www.unicode.org/license.txt).

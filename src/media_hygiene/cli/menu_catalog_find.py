@@ -42,6 +42,21 @@ def find_steps() -> tuple[Step, ...]:
             ai=True,
         ),
         Step(
+            "spots",
+            space,
+            _("Name where your photos were taken"),
+            _(
+                "Landmark, town and regions, for the photos with a GPS position: "
+                "offline, nothing leaves this PC. Then a search finds them."
+            ),
+            "spots",
+            Risk.SAFE,
+            icon="map",
+            keywords=_("place landmark town region gps monument"),
+            doc=Doc("commands/spots/"),
+            inline=True,
+        ),
+        Step(
             "search",
             space,
             _("Library: find a photo"),
@@ -136,7 +151,7 @@ def find_areas() -> tuple[Area, ...]:
         ),
         "search",
         (
-            Group(_("The guide"), ("tags", "search"), numbered=True),
+            Group(_("The guide"), ("tags", "spots", "search"), numbered=True),
             Group(_("Go further"), ("xmp", "inventory")),
         ),
         Doc("find/quick-guide/"),

@@ -32,6 +32,7 @@ function card(hit, index) {
   folder.append(linked(hit.folder, TEXTS.folderTip, () => searchFolder(hit.folder)));
   meta.append(titled(element("div", "name", hit.name)), folder);
   meta.append(takenLine(hit));  // which date it is (0433)
+  if (hit.spot) meta.append(titled(element("div", "muted", "📍 " + hit.spot)));  // its landmark and town (0545)
   if (hit.facts) meta.append(element("div", "muted", hit.facts));  // a video (0408)
   if (hit.to !== undefined) { // a rule tried (0396): where the file would go
     const goes = hit.left ? TEXTS.leftHere : hit.taken ? fill(TEXTS.goesTo, { folder: hit.to || TEXTS.stays })

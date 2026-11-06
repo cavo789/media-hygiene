@@ -387,16 +387,23 @@ BS.22	Harbour Island
 BS.23	New Providence
 BS.24	Acklins
 BS.25	Freeport
+BS.32	Berry Islands
 BS.35	San Salvador
 BS.36	Black Point
 BS.37	Central Abaco
 BS.39	Central Eleuthera
 BS.40	Crooked Island and Long Cay
 BS.41	East Grand Bahama
+BS.42	Grand Cay
+BS.43	Hope Town
+BS.44	Mangrove Cay
 BS.45	Moore’s Island
 BS.46	North Abaco
 BS.47	North Andros
+BS.48	North Eleuthera
 BS.49	Rum Cay
+BS.50	South Abaco
+BS.51	South Andros
 BS.52	South Eleuthera
 BS.53	Spanish Wells
 BS.54	West Grand Bahama
@@ -447,7 +454,7 @@ BZ.01	Belize District
 BZ.02	Cayo District
 BZ.03	Corozal District
 BZ.04	Orange Walk District
-BZ.05	Southern District
+BZ.05	Stann Creek
 BZ.06	Toledo District
 CA.01	Alberta
 CA.02	British Columbia
@@ -2757,7 +2764,7 @@ RU.62	Ryazan Oblast
 RU.63	Sakha
 RU.64	Sakhalin Oblast
 RU.65	Samara Oblast
-RU.66	St.-Petersburg
+RU.66	St. Petersburg
 RU.67	Saratov Oblast
 RU.68	North Ossetia–Alania
 RU.69	Smolensk Oblast
@@ -3454,7 +3461,7 @@ TV.NKF	Nukufetau
 TV.NMG	Nanumanga
 TV.NUI	Nui
 TV.VAI	Vaitupu
-TW.01	Fukien
+TW.01	Fujian
 TW.02	Takao
 TW.03	Taipei
 TW.04	Taiwan

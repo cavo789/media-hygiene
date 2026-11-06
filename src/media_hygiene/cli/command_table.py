@@ -157,6 +157,14 @@ def command_table(analyse: str, act: str) -> tuple[tuple[str, str, str], ...]:
             ),
         ),
         (
+            "spots",
+            analyse,
+            _(
+                "Name where the photos already indexed were taken (landmark, town, "
+                "regions), offline; the audit does it for new ones."
+            ),
+        ),
+        (
             "config",
             analyse,
             _("Show every setting, where it comes from, and the mount points."),

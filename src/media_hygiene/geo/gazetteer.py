@@ -1,47 +1,37 @@
 """The towns of GeoNames, read offline: the nearest one, and a search by name.
 
 The snapshot lies in `data/` (see `ATTRIBUTION.txt`): towns of more than 1,000
-inhabitants, their region, and the country names in each language of the interface.
+inhabitants, their regions (admin1, admin2), and the country names in each language of
+the interface.
 No position ever leaves the machine.
 """
 
 from __future__ import annotations
 
 import lzma
-from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 import numpy as np
 
-from media_hygiene.constants import Locale
 from media_hygiene.errors import GeoDataError
 from media_hygiene.geo.distance import Point
 from media_hygiene.geo.folding import town_key
 from media_hygiene.geo.nearest import NearestIndex
-from media_hygiene.geo.towns_file import TownRows, read_table, read_towns
+from media_hygiene.geo.town import Town
+from media_hygiene.geo.towns_file import TOWNS_FILE, TownRows, read_names, read_towns
 from media_hygiene.i18n import _, active_locale
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
+    from media_hygiene.constants import Locale
+
+
+__all__ = ["GEO_DATA", "TOWNS_FILE", "Gazetteer", "Names", "Town"]
 
 type Names = Mapping[str, str]  # GeoNames name → the user's name
 GEO_DATA: Final = Path(__file__).parent / "data"
-TOWNS_FILE: Final = "towns.tsv.xz"
-COUNTRIES_FILE: Final = "countries.tsv"
-REGIONS_FILE: Final = "regions.tsv"
-
-
-@dataclass(frozen=True, slots=True)
-class Town:
-    """A town, its region and its country, named in the language in use."""
-
-    name: str
-    point: Point
-    country: str
-    region: str
-    population_k: int  # thousands of inhabitants
 
 
 class Gazetteer:
@@ -81,11 +71,7 @@ class Gazetteer:
         """
         try:
             rows = read_towns(folder / TOWNS_FILE)
-            countries = {
-                row[0]: {Locale.EN: row[1], Locale.FR: row[2]}
-                for row in read_table(folder / COUNTRIES_FILE)
-            }
-            regions = {row[0]: row[1] for row in read_table(folder / REGIONS_FILE)}
+            countries, regions = read_names(folder)
         except (OSError, ValueError, IndexError, lzma.LZMAError) as exc:
             message = _("The towns used to name places cannot be read: {error}.")
             raise GeoDataError(message.format(error=exc)) from exc
@@ -169,14 +155,27 @@ class Gazetteer:
         """
         rows = self._rows
         code = rows.countries[index]
-        country = self._countries.get(code, {}).get(active_locale()) or code
+        country = self.countries_of(code).get(active_locale()) or code
         return Town(
             self._renames.get(rows.names[index], rows.names[index]),
             Point(float(rows.latitudes[index]), float(rows.longitudes[index])),
             country,
             self._regions.get(rows.regions[index], ""),
             int(rows.population_k[index]),
+            self._regions.get(rows.districts[index], ""),
+            code,
         )
+
+    def countries_of(self, code: str) -> Mapping[Locale, str]:
+        """A country's name in each language of the interface.
+
+        Args:
+            code: Its ISO code.
+
+        Returns:
+            Its names; none for an unknown code.
+        """
+        return self._countries.get(code, {})
 
     @property
     def geonames(self) -> tuple[str, ...]:

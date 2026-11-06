@@ -4233,6 +4233,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Landmark, town and regions, for the photos with a GPS position: offline, "
+"nothing leaves this PC. Then a search finds them."
+msgstr ""
+
+msgid ""
 "Language of the words: \"en\", \"fr\", or empty for the language of the "
 "interface."
 msgstr ""
@@ -4909,6 +4914,14 @@ msgstr ""
 msgid "Name this place"
 msgstr ""
 
+msgid ""
+"Name where the photos already indexed were taken (landmark, town, "
+"regions), offline; the audit does it for new ones."
+msgstr ""
+
+msgid "Name where your photos were taken"
+msgstr ""
+
 msgid "Name with others"
 msgstr ""
 
@@ -4946,6 +4959,9 @@ msgid ""
 "Naming confirms the faces shown: they become verified ✓. The other faces "
 "that look like them are attributed to the person, in a section of their "
 "own, until you confirm them, a page at a time."
+msgstr ""
+
+msgid "Naming where the photos were taken"
 msgstr ""
 
 msgid "Nature and landscapes"
@@ -5327,6 +5343,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "No index in {folder}: nothing to tag yet."
+msgstr ""
+
+msgid "No index yet: nothing to name."
 msgstr ""
 
 msgid "No index yet: the albums show the photos an audit has seen."
@@ -7442,6 +7461,9 @@ msgid "Run 'audit' first, then 'shrink' again."
 msgstr ""
 
 msgid "Run 'audit' on your folders: the inventory then says how fresh it is."
+msgstr ""
+
+msgid "Run 'audit' with the same /cache mount first."
 msgstr ""
 
 msgid ""
@@ -10071,6 +10093,9 @@ msgid ""
 "sees in them if you have one."
 msgstr ""
 
+msgid "Their landmark, town and regions, offline: nothing leaves this PC."
+msgstr ""
+
 msgid ""
 "Their photos are far apart in time: a batch, not one event. Never "
 "proposed."
@@ -12103,6 +12128,9 @@ msgstr ""
 msgid "files with an identical copy"
 msgstr ""
 
+msgid "find them by a monument or a town: mh library."
+msgstr ""
+
 msgid ""
 "find your photos by these words in your browser; 'inventory' lists them "
 "in its last column."
@@ -12956,6 +12984,9 @@ msgid "pick or unpick the framed file"
 msgstr ""
 
 msgid "place"
+msgstr ""
+
+msgid "place landmark town region gps monument"
 msgstr ""
 
 #, python-brace-format
@@ -16326,6 +16357,12 @@ msgid "{source}: click to search every photo with “{word}”"
 msgstr ""
 
 #, python-brace-format
+msgid ""
+"{stored} photos located, {landmarks} at a landmark, {towns} near a town "
+"({written} just named). Read back from the index."
+msgstr ""
+
+#, python-brace-format
 msgid "{subject}: page '{page}', workbook '{workbook}'"
 msgstr ""
 
@@ -16723,6 +16760,9 @@ msgstr ""
 msgid ""
 "🔒 The sentence of the vision model sometimes describes intimate scenes; "
 "the names of people are never written."
+msgstr ""
+
+msgid "🔒 Your photos are not read: only the index, offline."
 msgstr ""
 
 msgid ""

@@ -24,6 +24,7 @@ class Hit:  # pylint: disable=too-many-instance-attributes
     taken: str = ""  # `2023-07-14 10:32`: when it was taken, from its metadata (0433)
     exif: tuple[str, ...] = ()  # what its metadata says, one fact per line (0433)
     seconds: float | None = None  # a video's length, for its badge (0434)
+    spot: str = ""  # `Montagne de Bueren · Liège`, stored in the index (0545)
 
 
 @dataclass(frozen=True, slots=True)

@@ -86,7 +86,7 @@
       button.setAttribute("aria-pressed", String(button.dataset.where === show.telling));
     }
     const chapter = show.chapter;
-    const parts = chapter ? [chapter.name, chapter.period, chapter.place].filter(Boolean) : [];
+    const parts = chapter ? [chapter.name, chapter.period, chapter.place, show.where].filter(Boolean) : [];
     const event = document.getElementById("event");
     event.textContent = parts.join(" · ");
     event.hidden = show.telling === "none" || parts.length === 0;

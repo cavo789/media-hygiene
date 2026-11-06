@@ -12,6 +12,8 @@ its town; empty when it is the event's place already.
 
 from __future__ import annotations
 
+import json
+import sqlite3
 from dataclasses import replace
 from itertools import groupby
 from typing import TYPE_CHECKING
@@ -20,17 +22,18 @@ from pydantic import ValidationError
 
 from media_hygiene.classify.whereabouts import located_point
 from media_hygiene.geo.towns_once import shared_towns
+from media_hygiene.index.spot_rows import spots_by_key
 from media_hygiene.scan.metadata import MediaMetadata
 from media_hygiene.services.slideshow_places import Places
 from media_hygiene.slideshow.chapters import Chapter, event_name, event_period
 from media_hygiene.slideshow.event_map import event_map
 
 if TYPE_CHECKING:
-    import sqlite3
     from collections.abc import Sequence
     from pathlib import Path
 
     from media_hygiene.geo.distance import Point
+    from media_hygiene.index.spot_rows import StoredSpot
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.slideshow.slides import Slide
 
@@ -53,11 +56,13 @@ def told_slides(
         The slides, in the same order.
     """
     points = {slide.key: _point(connection, slide.key) for slide, _path in shown}
-    towns = shared_towns() if any(points.values()) else None
-    places = Places(runtime, towns, [point for point in points.values() if point])
+    located_points = [point for point in points.values() if point]
+    places = Places(runtime, shared_towns() if located_points else None, located_points)
+    stored = _stored(connection, list(points))
     told: list[Slide] = []
-    runs = groupby(shown, key=lambda pair: pair[1].parent)
-    for number, (folder, run) in enumerate(runs, start=1):
+    for number, (folder, run) in enumerate(
+        groupby(shown, key=lambda pair: pair[1].parent), start=1
+    ):
         slides = [slide for slide, _path in run]
         located = [point for slide in slides if (point := points[slide.key])]
         chapter = Chapter(
@@ -69,11 +74,42 @@ def told_slides(
         )
         told.extend(
             replace(
-                slide, chapter=chapter, place=places.spot(points[slide.key], chapter)
+                slide,
+                chapter=chapter,
+                place=places.spot(points[slide.key], chapter, stored.get(slide.key)),
             )
             for slide in slides
         )
     return tuple(told)
+
+
+def _places(runtime: Runtime, located: list[Point]) -> Places:
+    """The namer of the show's places; the towns are read only if a photo has GPS.
+
+    Args:
+        runtime: Settings and mount points.
+        located: The positions of the whole show.
+
+    Returns:
+        It.
+    """
+    return Places(runtime, shared_towns() if located else None, located)
+
+
+def _stored(connection: sqlite3.Connection, keys: list[int]) -> dict[int, StoredSpot]:
+    """The rows of the slides (0545); none for an index older than them.
+
+    Args:
+        connection: The open index.
+        keys: The files' keys.
+
+    Returns:
+        Each located file's row, by key.
+    """
+    try:
+        return spots_by_key(connection, json.dumps(keys))
+    except sqlite3.OperationalError:
+        return {}
 
 
 def _point(connection: sqlite3.Connection, key: int) -> Point | None:

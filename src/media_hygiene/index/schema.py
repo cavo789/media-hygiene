@@ -18,7 +18,8 @@ followed went (`index.moves`); version 12 the rows of the files a clean set asid
 a choice (`index.journal_words`) and the files gone (`index.gone_rows`); version 16
 the vector of each photo for search by meaning (`index.meaning_rows`); version 17
 the faces of the people set aside (`index.aside_faces`); version 18 the group of each
-face (`index.face_groups`). An older
+face (`index.face_groups`); version 19 where each located photo lies
+(`index.spot_rows`). An older
 index keeps its digests and integrity results: the new columns are filled once,
 without decoding images again.
 """
@@ -27,22 +28,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.index.face_schema import FACE_TABLES
 from media_hygiene.index.folder_listings import CREATE_FOLDER_LISTINGS
 from media_hygiene.index.former_names import CREATE_FORMER_NAMES
-from media_hygiene.index.gone_rows import CREATE_GONE
-from media_hygiene.index.journal_words import JOURNAL_TABLES
-from media_hygiene.index.meaning_rows import CREATE_MEANINGS
 from media_hygiene.index.measures import CREATE_MEASURES
 from media_hygiene.index.moves import CREATE_MOVES
 from media_hygiene.index.parked import CREATE_PARKED
-from media_hygiene.index.schema_tables import PATH_TABLES
+from media_hygiene.index.schema_tables import LATER_TABLES, PATH_TABLES
 from media_hygiene.index.takeout_rows import CREATE_TAKEOUT
 
 if TYPE_CHECKING:
     import sqlite3
 
-SCHEMA_VERSION: Final = 18
+SCHEMA_VERSION: Final = 19
 _CREATE: Final = """
 CREATE TABLE IF NOT EXISTS files (
     path TEXT PRIMARY KEY,
@@ -191,6 +188,6 @@ def prepare(connection: sqlite3.Connection) -> None:
     connection.execute(CREATE_PARKED)
     connection.execute(CREATE_TAKEOUT)
     connection.execute(CREATE_FORMER_NAMES)
-    for table in (*JOURNAL_TABLES, CREATE_GONE, CREATE_MEANINGS, *FACE_TABLES):
+    for table in LATER_TABLES:
         connection.execute(table)
     connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")

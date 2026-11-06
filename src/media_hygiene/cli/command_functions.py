@@ -28,6 +28,7 @@ from media_hygiene.cli.cmd_share import share_command
 from media_hygiene.cli.cmd_shrink import shrink_command
 from media_hygiene.cli.cmd_slideshow import slideshow_command
 from media_hygiene.cli.cmd_sort import sort_command
+from media_hygiene.cli.cmd_spots import spots_command
 from media_hygiene.cli.cmd_status import status_command
 from media_hygiene.cli.cmd_tags import tags_command
 from media_hygiene.cli.cmd_undo import undo_command
@@ -72,6 +73,7 @@ def command_functions() -> dict[str, Callable[..., None]]:
         "slideshow": slideshow_command,
         "sort": sort_command,
         "status": status_command,
+        "spots": spots_command,
         "tags": tags_command,
         "undo": undo_command,
         "xmp": xmp_command,

@@ -30,6 +30,7 @@ cette page les rassemble. Les commandes dont l'aide commence par *Lecture seule*
 | retrouver les photos de quelqu'un par son nom, les ranger selon qui y figure | [`people`](commands/people.md), puis `library` ou `classify` |
 | donner à mes photos et vidéos des mots pour les retrouver | [`tags`](commands/tags.md) |
 | retrouver une photo par un mot, un lieu, une année, une personne | [`library`](commands/library.md) |
+| retrouver une photo par le monument ou la ville où elle a été prise | [`spots`](commands/spots.md) |
 | parcourir mes dossiers et retirer des photos, sans l'Explorateur, de façon annulable | [les dossiers de `library`](commands/library.md#parcourir-vos-dossiers), puis `clean --decisions` |
 | montrer les photos des vacances sur la télé, en choisissant la suivante depuis mon téléphone | [`slideshow`](commands/slideshow.md) |
 | envoyer un album par mail ou sur un réseau social, réduit et sans la position GPS | [`share`](commands/share.md) |
@@ -82,6 +83,7 @@ exemples et son `--help`.
 | [`shrink`](commands/shrink.md) | Liste les vidéos lourdes qui gagnent à être allégées (anciens appareils, MJPEG), avec la place que chacune libérerait ; `--apply` les réencode en H.264, chacune vérifiée (durée, son, date, lieu), l'original en quarantaine. | [Commandes](commands/shrink.md) |
 | [`push`](commands/push.md) | Windows seulement (`mh push`) : copier vos dossiers de photos dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; une photo déplacée y est renommée, une suppression par erreur n'y est jamais reportée ; annuler avec `--undo`. | [Commandes](commands/push.md) |
 | [`backup`](commands/backup.md) | Écrit l'index (ce que les audits, `tags` et `people` ont appris) et les réglages dans un zip de `media-hygiene\backups`, relu ; les 3 plus récents gardés. Ne lit jamais vos photos. | [Commandes](commands/backup.md) |
+| [`spots`](commands/spots.md) | Garde dans l'index le lieu remarquable, la ville et les régions de chaque photo avec une position GPS, hors ligne, pour que `library` les trouve et les affiche ; chaque `audit` le fait aussi. Ne lit jamais vos photos. | [Commandes](commands/spots.md) |
 | [`restore`](commands/restore.md) | Remet une sauvegarde de l'index (les réglages aussi avec `--config`), après l'avoir vérifiée en entier et avoir sauvegardé l'index remplacé. Ne lit jamais vos photos. | [Commandes](commands/restore.md) |
 
 **Pages : ouvertes depuis la page d'accueil** (absentes de `mh --help` : elles ne font qu'ouvrir une page ; tapées, `mh places`, `mh home` et `mh slideshow` marchent toujours, pour un script ou sans la page d'accueil)

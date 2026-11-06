@@ -23,19 +23,21 @@ if TYPE_CHECKING:
 CITIES_ZIP: Final = "cities1000.zip"
 CITIES_TXT: Final = "cities1000.txt"
 REGIONS_TXT: Final = "admin1CodesASCII.txt"
+DISTRICTS_TXT: Final = "admin2Codes.txt"
 COUNTRIES_TXT: Final = "countryInfo.txt"
 SKIPPED_CODES: Final = frozenset({"PPLX", "PPLH", "PPLQ", "PPLW", "PPLCH"})
 _ENCODING: Final = "utf-8"
 _TAB: Final = "\t"
 _COMMENT: Final = "#"
 # Columns of the GeoNames `geoname` table.
-_NAME, _LATITUDE, _LONGITUDE, _CODE, _COUNTRY, _REGION, _POPULATION = (
+_NAME, _LATITUDE, _LONGITUDE, _CODE, _COUNTRY, _REGION, _DISTRICT, _POPULATION = (
     1,
     4,
     5,
     7,
     8,
     10,
+    11,
     14,
 )
 _COUNTRY_NAME: Final = 4  # column of countryInfo.txt
@@ -52,12 +54,13 @@ class _Town:
     name: str
     latitude: float
     longitude: float
+    district: str = ""
 
     def line(self) -> str:
         """The row as written.
 
         Returns:
-            Name, position, country, region, population in thousands.
+            Name, position, country, region, population in thousands, district.
         """
         thousands = -self.minus_population // _THOUSAND
         fields = (
@@ -67,15 +70,16 @@ class _Town:
             self.country,
             self.region,
             str(thousands),
+            self.district,
         )
         return _TAB.join(fields) + "\n"
 
 
 def build(dumps: Path, target: Path) -> int:
-    """Write `towns.tsv.xz`, `regions.tsv` and `countries.tsv`.
+    """Write `towns.tsv.xz`, `regions.tsv`, `districts.tsv.xz` and `countries.tsv`.
 
     Args:
-        dumps: The folder holding the three GeoNames files.
+        dumps: The folder holding the four GeoNames files.
         target: The data folder of `media_hygiene.geo`.
 
     Returns:
@@ -88,6 +92,18 @@ def build(dumps: Path, target: Path) -> int:
     used_regions = {f"{town.country}.{town.region}" for town in towns}
     regions = [row for row in _rows(dumps / REGIONS_TXT) if row[0] in used_regions]
     _write(target / "regions.tsv", sorted((row[0], row[1]) for row in regions))
+    used_districts = {
+        f"{town.country}.{town.region}.{town.district}"
+        for town in towns
+        if town.district
+    }
+    districts = [
+        row for row in _rows(dumps / DISTRICTS_TXT) if row[0] in used_districts
+    ]
+    lines = sorted(f"{row[0]}{_TAB}{row[1]}\n" for row in districts)
+    (target / "districts.tsv.xz").write_bytes(
+        lzma.compress("".join(lines).encode(_ENCODING), preset=9 | lzma.PRESET_EXTREME)
+    )
     names = {row[0]: row[_COUNTRY_NAME] for row in _rows(dumps / COUNTRIES_TXT)}
     english, french = Locale("en").territories, Locale("fr").territories
     countries = sorted(
@@ -121,6 +137,7 @@ def _towns(archive: Path) -> list[_Town]:
             row[_NAME],
             float(row[_LATITUDE]),
             float(row[_LONGITUDE]),
+            row[_DISTRICT],
         )
         for row in rows
         if row[_CODE] not in SKIPPED_CODES

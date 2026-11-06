@@ -9,6 +9,8 @@
 - 📂 [Walk through your folders](#walk-through-your-folders)
 - 💻 [I'm on the PC and start from zero](#run-it)
 
+Photos with a GPS position are also found by their landmark, town and regions, shown as `📍` under the date: see [`spots`](spots.md).
+
 ## In short
 
 **Find a photo by what you remember of it: a word, a place, a year, a person.** This page is the

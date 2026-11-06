@@ -24,6 +24,7 @@ from media_hygiene.search.names_soon import NamesKept
 from media_hygiene.search.people_words import unknown_people
 from media_hygiene.search.query import SearchQuery, parse_terms
 from media_hygiene.search.reading import read_query
+from media_hygiene.search.spot_label import SpotNames
 from media_hygiene.services.data_checks import unreadable_index
 from media_hygiene.services.search_meaning import with_meaning
 from media_hygiene.services.search_pages import PageStart, serve_pages
@@ -72,6 +73,7 @@ def open_search(runtime: Runtime, *, words: bool = True) -> SearchIndex:
         search.name_people_soon(NamesKept(index, runtime.settings.people))
         stop = runtime.settings.tags.stop_words
         search.stop_words = frozenset(word.casefold() for word in stop)
+        search.spot_names = SpotNames.of(runtime.settings.classify)
         # A file with a tag is a file with words: no need to wait for the names then.
         empty = words and not search.tagged and not _worded(search)
         with_meaning(runtime, search)

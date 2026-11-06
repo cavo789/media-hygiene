@@ -85,3 +85,21 @@ Bueren will never find the photo".
 - The building shown (item 7) is not in this TODO: see 0589 (🤖 local vision); 0489 stays the
   manual way.
 - The 200 m radius stays a constant.
+
+## Status — PARTIAL (2026-11-06)
+
+### Done
+- Index table `spots` (schema 19, a row of `PATH_TABLES`: follows `sort`/`undo`/`clean`): landmark and source (`user`/`osm`/`geonames`), town, admin1, admin2, country, searched words. Trusted only while the file records that position; refilled when the snapshot, `[tags] town_km` or the names of towns change; a `user` name is never replaced (0489 writes it).
+- Snapshot: admin2 added (`districts.tsv.xz`, 7th column of `towns.tsv.xz`, `admin2Codes.txt` in `geonames_update`).
+- Filled by every `audit`, by the verb `spots` (home page, inline), and first by the *tags* run of the home page, with its progress line.
+- Search finds by landmark, town, regions and country, without `tags`. Tiles of `library` (search, folders, heaviest), large view and the PC slideshow's status line show it. The slideshow reads the row; it works the landmark out only for a photo without a row.
+
+### Not done
+- `classify` still computes its towns: a trip's town is the largest town around a group's centre, and `folder_town` comes from the folder's name; neither is a fact of one photo, and reading the stored town would change the folders of existing sorts.
+  **Reason:** the maintainer decides whether to change these rules; no per-photo town is computed by `classify` today, so nothing is computed twice.
+- The GPS line of the large view (`search/gps_town.py`), `album_reader`, `tags/place_words` still use the gazetteer.
+  **Reason:** left out to keep the change reviewable: move them to the stored row in a follow-up.
+- The other tile pages (import, quarantine, phone, reviews) show no place.
+  **Reason:** their files are mostly not in the index; only `library` reads it.
+- The `{region}` placeholder of `[classify] layout` is kept although the regions are "never in folder names".
+  **Reason:** only a layout the user wrote uses it; removing it would break their configuration. Question to the maintainer.
