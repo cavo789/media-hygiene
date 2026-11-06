@@ -193,7 +193,7 @@ def home_with_pages(
             slideshow,
             PlacesHere(fresh, server),
             DiskHere(fresh),
-            pages_here(fresh, server.executor),
+            pages_here(fresh, server),
         )
     finally:
         slideshow.close()

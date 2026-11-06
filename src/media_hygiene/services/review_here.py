@@ -31,6 +31,7 @@ from media_hygiene.review.step_watch import BURSTS_PAGE, NEAR_REVIEW_PAGE
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.data_checks import refuse_empty_data
+from media_hygiene.services.page_undo import PageUndo
 from media_hygiene.services.review import decisions_path
 from media_hygiene.services.review_file import review_page
 from media_hygiene.services.writable import ensure_writable
@@ -132,6 +133,6 @@ class ReviewHere:
         app = page.app(body, server.executor, runtime.previews_dir)
         if page.apply is None:
             return app
-        offer = ApplyOffer(server.apply, page.apply.pending)
+        offer = ApplyOffer(server.apply, page.apply.pending, PageUndo(runtime))
         relay = home_relay(runtime.locations.reports_dir)
         return ApplyingApp(app, ApplyDesk(offer, server.ending, relay))

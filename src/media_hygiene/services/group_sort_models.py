@@ -6,7 +6,17 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, TypedDict
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
     from pathlib import Path
+
+
+@dataclass(frozen=True, slots=True)
+class GroupMove:
+    """A group to sort: each file's folder, the category, the root if one is imposed."""
+
+    folders: Mapping[Path, str]  # container path → its folder below its root
+    category: str
+    root: Path | None = None  # the target chosen (0596); None: each row's own root
 
 
 class Counted(TypedDict):

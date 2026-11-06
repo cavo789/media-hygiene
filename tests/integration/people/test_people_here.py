@@ -8,10 +8,13 @@ from concurrent.futures import ThreadPoolExecutor
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.review.apply_api import ApplyStep
+from media_hygiene.review.ending import Ending
 from media_hygiene.review.http import Request, Response
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services import people as people_service
 from media_hygiene.services.fresh_runtime import FreshRuntime
+from media_hygiene.services.home_pages import HomeServer
 from media_hygiene.services.people import PeopleStep
 from media_hygiene.services.people_here import PeopleStepDoor, people_door, people_here
 from media_hygiene.services.subject_answers import Answering
@@ -69,14 +72,25 @@ def test_people_opens_in_the_home_server_once_every_face_is_found(
     answer = asyncio.run(door.handle(step))
     assert json.loads(answer.body) == {"page": "/people/", "command": "mh people"}
     assert home.asked == 1  # the home server goes on: nothing handed to `mh`
-    other = Request("POST", "/api/step", _PC, b'{"number": 2, "command": "mh audit"}')
-    assert asyncio.run(door.handle(other)).status is HTTPStatus.IM_A_TEAPOT
+    audit = b'{"number": 2, "command": "mh audit"}'
+    assert (
+        asyncio.run(door.handle(Request("POST", "/api/step", _PC, audit))).status
+        is HTTPStatus.IM_A_TEAPOT
+    )
     with ThreadPoolExecutor(1) as executor:
-        page = people_here(FreshRuntime(runtime), executor)
+        page = people_here(
+            FreshRuntime(runtime),
+            HomeServer(lambda: ApplyStep(7, "mh clean"), Ending(), executor),
+        )
         assert page.serves("/people/api/groups")
         opened = asyncio.run(page.handle(Request("GET", "/people/", _PC)))
         assert opened.status is HTTPStatus.OK
         assert b'"api/groups"' in opened.body  # relative to `/people/`
+        assert b'id="applyNow"' in opened.body  # 0621: the home page's way to apply
+        assert b'id="mhUndoToast"' in opened.body
+        assert b'"api/undo-run"' in opened.body
+        undo = Request("GET", "/people/api/undo-run", _PC)
+        assert json.loads(asyncio.run(page.handle(undo)).body) == {"run_id": None}
         groups = asyncio.run(page.handle(Request("GET", "/people/api/groups", _PC)))
         assert groups.status is HTTPStatus.OK
 

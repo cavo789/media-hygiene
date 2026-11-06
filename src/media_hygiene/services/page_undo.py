@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import journal_file, read_journal
 from media_hygiene.actions.kinds import ActionKind
@@ -25,8 +25,6 @@ from media_hygiene.services.undo_guard import ensure_undo_ready
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
-
-UNDO_PATH: Final = "/api/undo-run"  # `search.undo_api` answers it
 
 
 @dataclass(frozen=True, slots=True)

@@ -7,9 +7,11 @@ from concurrent.futures import ThreadPoolExecutor
 from http import HTTPStatus
 from typing import TYPE_CHECKING
 
+from media_hygiene.review.ending import Ending
 from media_hygiene.review.http import Request
 from media_hygiene.review.step_watch import runs_beside, served_here
 from media_hygiene.services.fresh_runtime import FreshRuntime
+from media_hygiene.services.home_pages import HomeServer
 from media_hygiene.services.pages_here import pages_here
 from tests.support.cleaning import clean
 from tests.support.demo import build_demo
@@ -33,7 +35,9 @@ def test_the_quarantine_answers_under_its_prefix(locations: Locations) -> None:
     runtime = make_runtime(locations)
     clean(runtime)
     with ThreadPoolExecutor(1) as executor:
-        page = pages_here(FreshRuntime(runtime), executor)[0]
+        page = pages_here(FreshRuntime(runtime), HomeServer(None, Ending(), executor))[
+            0
+        ]
         assert page.serves("/quarantine/api/state")
         assert not page.serves("/quarantined")
         assert _get(page, "/quarantine").status is HTTPStatus.SEE_OTHER  # type: ignore[attr-defined]
@@ -49,7 +53,9 @@ def test_the_import_page_says_why_it_cannot_open(locations: Locations) -> None:
     build_demo(locations.data_dir)
     runtime = make_runtime(locations)
     with ThreadPoolExecutor(1) as executor:
-        page = pages_here(FreshRuntime(runtime), executor)[1]
+        page = pages_here(FreshRuntime(runtime), HomeServer(None, Ending(), executor))[
+            1
+        ]
         answer = _get(page, "/import/")
     assert answer.status is HTTPStatus.CONFLICT  # type: ignore[attr-defined]
     assert b"import" in answer.body  # type: ignore[attr-defined]

@@ -167,9 +167,10 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
   download) and the unwanted photos (`unwanted`); each review keeps the others.
 - **Opened from the [home page](home.md)**, the reviews of bursts, near duplicates, folder
   pairs and unwanted photos show an **Apply now** button once something is set aside or
-  decided (`--gone` has none: its answers move no file): the page closes and `mh` runs
-  the home page's step that applies your choices (its usual question first), then the home
-  page comes back. Opened by `mh review` alone: no button, type the `clean` command.
+  decided (`--gone` has none: its answers move no file): `mh` runs the home page's step that
+  applies your choices (its usual question first). Served by the home page, the page stays open
+  and offers **↶ Undo** of that run once it ended, the files then looked for where they were and
+  counted; served apart, it closes and the home page comes back. Opened by `mh review` alone: no button, type the `clean` command.
 - A shot of a **protected folder** is never proposed nor set aside.
 - **👤 this person**, under each shot, opens in a new tab every photo of someone on that shot,
   to set them all aside: see [`people`](people.md#from-any-page-set-a-person-aside).

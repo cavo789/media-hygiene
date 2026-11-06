@@ -8,9 +8,14 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING
 
+import pytest
+
 from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.own_events import named_event, one_moment
 from media_hygiene.classify.rules_file import read_rules
+from media_hygiene.errors import MountError
+from media_hygiene.services import classify_scope
+from media_hygiene.services.event_place import event_folder
 from media_hygiene.services.selection_models import Picked, event_path, sole_label
 from media_hygiene.services.selection_move import SelectionMover
 from tests.support.scenes import Shot, write_shot
@@ -111,6 +116,65 @@ def test_an_event_name_may_hold_sub_folders(locations: Locations) -> None:
     assert len(list(moved_to.glob("*.jpg"))) == len(party)
 
 
+def _chose(locations: Locations, target: str, layout: str) -> None:
+    """What `📐 Where and how to sort` saves, the page's server running."""
+    with locations.config_file.open("a", encoding="utf-8") as config:
+        config.write(f"\n[classify]\ntarget = '{target}'\nlayout = '{layout}'\n")
+
+
+def test_the_move_honours_the_target_chosen_while_the_page_runs(
+    locations: Locations,
+) -> None:
+    """Saved after the mover was built: view and move use it; undo puts them back."""
+    runtime, picked = _ready(locations)
+    before = snapshot(locations.data_dir)
+    party = {key: path for key, path in picked.items() if PARTY in str(path)}
+    mover = SelectionMover(runtime)
+    target = locations.data_dir / "c/Sorted"
+    _chose(locations, str(target), "{year}/{year_month}/{category}")
+    view = mover.view(Picked(party), "Kermesse")
+    assert view.target.replace("\\", "/").endswith("Sorted/2016/2016-07/Kermesse")
+    done = mover.move(Picked(party), "Kermesse")
+    assert done["moved"] == len(party), done
+    assert done["intact"]
+    moved_to = target / "2016/2016-07/Kermesse"
+    assert len(list(moved_to.glob("*.jpg"))) == len(party)
+    undo(runtime, str(done["run_id"]))
+    after = snapshot(locations.data_dir)
+    assert {p: f for p, f in after.items() if p.endswith(".jpg")} == {
+        p: f for p, f in before.items() if p.endswith(".jpg")
+    }
+
+
+def test_year_month_only_keeps_the_folder_the_user_named(
+    locations: Locations,
+) -> None:
+    """A layout without the event: its folder is added, the user typed it."""
+    runtime, picked = _ready(locations)
+    party = {key: path for key, path in picked.items() if PARTY in str(path)}
+    _chose(locations, "", "{year}/{year_month}")
+    done = SelectionMover(runtime).move(Picked(party), "Kermesse")
+    assert done["moved"] == len(party), done
+    moved_to = locations.data_dir / "c/2016/2016-07/Kermesse"
+    assert len(list(moved_to.glob("*.jpg"))) == len(party)
+
+
+@pytest.mark.parametrize(
+    ("layout", "expected"),
+    [
+        ("{year}/{year_month}/{category}", "2016/2016-07/France/Morzine"),
+        ("{year}/{year_month}", "2016/2016-07/France/Morzine"),
+        ("{category}/{year}", "France/Morzine/2016"),
+        ("{year}/{event}", "2016/France/Morzine"),
+        ("{event_start}", "2016-07-02/France/Morzine"),
+        ("", "2016/2016-07/France/Morzine"),  # "stay where it is" cannot hold a move
+    ],
+)
+def test_the_event_folder_follows_the_layout(layout: str, expected: str) -> None:
+    """The name is always in it, once."""
+    assert event_folder(layout, datetime(2016, 7, 2, 18), "France/Morzine") == expected
+
+
 def test_the_only_source_folder_names_the_event() -> None:
     """All from `Anniversaire Chloé`: its name, even a person's; never a generic one."""
     rules = FolderRules.build((), ((), ())).with_people(("Chloé",))
@@ -148,3 +212,16 @@ def test_a_photo_the_plan_leaves_moves_when_picked(locations: Locations) -> None
     done = SelectionMover(runtime).move(Picked({0: seen}), "Danse")
     assert done["moved"] == 1, done
     assert (locations.data_dir / "c/2019/2019-03/Danse/IMG_9100.jpg").is_file()
+
+
+def test_a_target_not_mounted_is_refused_before_anything_moves(
+    locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The mount missing: said by the move, the photos stay."""
+    runtime, picked = _ready(locations)
+    party = {key: path for key, path in picked.items() if PARTY in str(path)}
+    _chose(locations, str(locations.data_dir / "c/Sorted"), "{year}/{category}")
+    monkeypatch.setattr(classify_scope, "mounted", lambda *_args: False)
+    with pytest.raises(MountError):
+        SelectionMover(runtime).move(Picked(party), "Kermesse")
+    assert all(path.is_file() for path in party.values())

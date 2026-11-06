@@ -21,7 +21,7 @@ from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.scan.models import VisualFacts
 from media_hygiene.search import move_go
 from media_hygiene.services.classify_inputs import with_sidecar_days
-from media_hygiene.services.selection_move import SelectionMover
+from media_hygiene.services.event_place import EventPlace
 from media_hygiene.tags.xmp_date import with_day
 
 if TYPE_CHECKING:
@@ -173,10 +173,9 @@ def _picked(photo: Path) -> Picked:
 def _month(photo: Path, rows: dict[str, Any]) -> str:
     """The month the move files it in, or that there is none."""
     runtime = SimpleNamespace(mapper=SimpleNamespace(to_host=str))
-    mover = SelectionMover(cast("Any", runtime))
     plan = cast("Any", SimpleNamespace(by_path=rows))
     try:
-        return mover._month(plan, _picked(photo))  # noqa: SLF001  # pylint: disable=protected-access
+        return EventPlace(cast("Any", runtime), plan, _picked(photo)).month()
     except ValueError:
         return _NO_MONTH
 

@@ -8055,6 +8055,11 @@ msgstr ""
 msgid "Sort here now"
 msgstr ""
 
+msgid ""
+"Sort here now and Move to an event use these choices at once, and keep "
+"the folder named after the event, even with Year / Month only."
+msgstr ""
+
 msgid "Sort here now: move its files to the folder said, then the next event"
 msgstr ""
 

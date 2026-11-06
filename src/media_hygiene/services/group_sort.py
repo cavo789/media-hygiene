@@ -10,7 +10,8 @@ moved is recognised at its new place and counted as sorted; one the run does not
 (added since), or in a protected or `leave` folder, is left and counted; one the plan
 leaves for another reason (a folder the user named) moves: the user picked it. Nothing
 to move: no run at all. A file the plan does not know (imported since) gets a row of its
-own for this move (`plan_newcomers`, 0452): the engine's root, the page's folder.
+own for this move (`plan_newcomers`, 0452): the engine's root, the page's folder. A move
+to an event names its root (the target chosen, 0596): its rows go below it, in memory.
 """
 
 from __future__ import annotations
@@ -31,7 +32,7 @@ from media_hygiene.errors import DecisionsError
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.group_match import match_group
-from media_hygiene.services.group_sort_models import Counted, GroupSorted
+from media_hygiene.services.group_sort_models import Counted, GroupMove, GroupSorted
 from media_hygiene.services.page_choices import page_decisions, page_file
 from media_hygiene.services.sort import SortService
 from media_hygiene.services.sort_event import only_rows
@@ -59,11 +60,24 @@ def sort_group(
     Returns:
         The run, read back.
     """
+    return _sorted(runtime, GroupMove(folders, category))
+
+
+def _sorted(runtime: Runtime, group: GroupMove) -> GroupSorted:
+    """Sort exactly the files of a group, each to its folder.
+
+    Args:
+        runtime: Settings, mount points and output.
+        group: The files, the category, the root when one is imposed.
+
+    Returns:
+        The run, read back.
+    """
     service = SortService(runtime, NullProgress())
     service.ensure_ready()  # refused before anything is written: no `/journal`, `:ro`
     workbook = find_workbook(runtime, None)
     plan_file, plan = plan_of(runtime, workbook)
-    whole, found = match_group(runtime, plan, folders)
+    whole, found = match_group(runtime, plan, group.folders)
     counted: Counted = {
         "unknown": found.unknown,
         "fixed": found.fixed,
@@ -72,7 +86,9 @@ def sort_group(
     if not found.rows:
         return GroupSorted("", 0, 0, intact=True, **counted)
     edits = read_edits(workbook, plan)
-    chosen = _choose((plan_file, plan, edits), found.rows, category)
+    chosen = _choose((plan_file, plan, edits), found.rows, group.category)
+    root = runtime.mapper.to_host(group.root) if group.root else None
+    whole = _below(whole, found.rows, root)
     inputs = inputs_of(workbook, whole, overlay(edits, chosen))
     prepared = service.prepare(only_rows(inputs, frozenset(found.rows)))
     if not prepared.plan.groups:
@@ -86,6 +102,41 @@ def sort_group(
         **counted,
         links=(*result.links.lines, *result.links.problems),
     )
+
+
+def moved_group(runtime: Runtime, group: GroupMove) -> dict[str, object]:
+    """A move to an event, for the page: the run read back, as JSON.
+
+    Args:
+        runtime: Settings, mount points and output.
+        group: The files, the event, the target chosen.
+
+    Returns:
+        The run's fields.
+    """
+    return asdict(_sorted(runtime, group))
+
+
+def _below(
+    plan: ClassifyPlan, rows: Mapping[str, str], root: str | None
+) -> ClassifyPlan:
+    """The plan with the rows of this move below the root imposed, in memory only.
+
+    Args:
+        plan: The plan and this move's own rows.
+        rows: The rows moving, by id.
+        root: Its host path; None: each row keeps its root.
+
+    Returns:
+        The plan to apply.
+    """
+    if root is None:
+        return plan
+    moved = tuple(
+        row.model_copy(update={"root": root}) if row.id in rows else row
+        for row in plan.rows
+    )
+    return plan.model_copy(update={"rows": moved})
 
 
 def sorted_group(

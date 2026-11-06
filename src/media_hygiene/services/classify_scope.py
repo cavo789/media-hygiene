@@ -12,7 +12,33 @@ from media_hygiene.i18n import _
 from media_hygiene.services.classify_inputs import mounted
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from media_hygiene.services.runtime import Runtime
+
+
+def mounted_target(runtime: Runtime) -> Path | None:
+    """`[classify] target`, in the container.
+
+    Args:
+        runtime: Settings, mount points.
+
+    Returns:
+        Its path; None without a target.
+
+    Raises:
+        MountError: The target is outside the mounted folders.
+    """
+    typed = runtime.settings.classify.target
+    if not typed:
+        return None
+    target = runtime.mapper.to_container(typed)
+    if not mounted(target, runtime.locations.data_dir):
+        raise MountError(
+            _("The target {path} is not mounted.").format(path=typed),
+            _('Mount it under /data, e.g. -v "C:\\Photos triées:/data/c/Tri".'),
+        )
+    return target
 
 
 def run_scope(runtime: Runtime, years: tuple[int, int] | None) -> Scope:
@@ -24,21 +50,9 @@ def run_scope(runtime: Runtime, years: tuple[int, int] | None) -> Scope:
 
     Returns:
         The scope, in container paths.
-
-    Raises:
-        MountError: The target is outside the mounted folders.
     """
     settings, mapper = runtime.settings, runtime.mapper
-    target = None
-    if settings.classify.target:
-        target = mapper.to_container(settings.classify.target)
-        if not mounted(target, runtime.locations.data_dir):
-            raise MountError(
-                _("The target {path} is not mounted.").format(
-                    path=settings.classify.target
-                ),
-                _('Mount it under /data, e.g. -v "C:\\Photos triées:/data/c/Tri".'),
-            )
+    target = mounted_target(runtime)
     kept = (*settings.folders.untouched, *settings.classify.leave)
     return Scope(
         target,

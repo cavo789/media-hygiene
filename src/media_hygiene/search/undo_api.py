@@ -14,14 +14,15 @@ from typing import TYPE_CHECKING
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 from media_hygiene.errors import MediaHygieneError
-from media_hygiene.review.serving import json_response
-from media_hygiene.services.page_undo import UNDO_PATH
+from media_hygiene.review.home_views import UNDO_PATH
+from media_hygiene.review.http import Response, is_local
+from media_hygiene.review.serving import json_response, refused_post
 
 if TYPE_CHECKING:
-    from media_hygiene.review.http import Response
+    from media_hygiene.review.http import Request
     from media_hygiene.services.page_undo import PageUndo
 
-__all__ = ["UNDO_PATH", "UndoIn", "latest_answer", "undo_answer"]
+__all__ = ["UNDO_PATH", "UndoIn", "latest_answer", "undo_answer", "undo_route"]
 
 
 class UndoIn(BaseModel):
@@ -42,6 +43,23 @@ def latest_answer(undo: PageUndo) -> Response:
         `{"run_id": id or null}`.
     """
     return json_response(HTTPStatus.OK, {"run_id": undo.latest()})
+
+
+async def undo_route(undo: PageUndo, request: Request) -> Response:
+    """Answer `/api/undo-run` for a page that serves it beside its own routes (0621).
+
+    Args:
+        undo: The page's Undo.
+        request: The request; its path is the route's.
+
+    Returns:
+        The latest run, or the run reversed; 403 away from the PC.
+    """
+    if not is_local(request):
+        return Response(HTTPStatus.FORBIDDEN)
+    if request.method != "POST":
+        return latest_answer(undo)
+    return refused_post(request) or await undo_answer(undo, request.body)
 
 
 async def undo_answer(undo: PageUndo, body: bytes) -> Response:

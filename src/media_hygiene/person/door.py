@@ -102,6 +102,7 @@ def person_app(
         paths=_PATHS,
         apply_offered=apply is not None,
         apply_path=routes.APPLY_PATH,
+        undo_path=routes.UNDO_PATH if apply and apply.offer.undo else None,
     )
     place = PhotoPlace(runtime.mapper, runtime.locations.data_dir)
     finder = PersonFinder(place, FaceIndex(runtime.index_file), FaceShelf())

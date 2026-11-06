@@ -221,8 +221,9 @@ qui reçoit l'arborescence (`[classify] target` ; vide : chaque dossier est tri�
 (d'après votre dernier `classify`, sinon d'après les dates de vos photos, sans le nom des événements).
 Les fichiers dont le tri est moins sûr restent où ils sont, sauf si vous choisissez aussi une forme pour
 eux. Enregistré dans `config.toml` (vos commentaires gardés), relu et affiché ; rien ne bouge. Une forme
-à vous reste proposée. *Trier ici maintenant* et *Déplacer vers un événement…* continuent de classer
-dans `AAAA/AAAA-MM/<nom>` à côté des photos.
+à vous reste proposée. *Trier ici maintenant* et *Déplacer vers un événement…* appliquent ces deux choix
+tout de suite : les fichiers vont sous ce dossier (vide : sous le leur), dans cette forme, et toujours
+dans un dossier au nom de l'événement, même avec *Année / Mois seul* : vous l'avez nommé.
 
 Le **⋯** d'un dossier (📁 Mes dossiers) ajoute, à côté de son rôle, *Jamais trié* (`[classify] leave`) et
 le nom de la personne dont il contient les photos (`person_folders`) : le nom du dossier doit le contenir.
