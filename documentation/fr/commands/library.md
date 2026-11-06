@@ -282,7 +282,8 @@ dossier de dates, le dossier d'un membre de la famille, le `DCIM` d'un télépho
 leur nouvelle place, dit tel que relu (*'mh undo …' les remet*). Rien d'autre n'est écrit : aucune
 règle dans `config.toml`, aucun événement dans `events/`, le prochain `classify` les trouve à leur
 place. Seulement si vous cochez **Aussi le retenir comme événement (events/)**, décochée à chaque
-ouverture (un rangement n'est pas un événement), l'événement est retenu aussi : son nom, ses jours
+ouverture (un rangement n'est pas un événement ; cochée pour les *nouvelles photos pendant un
+événement*, qui l'élargissent), l'événement est retenu aussi : son nom, ses jours
 et ses appareils, relus et montrés après le déplacement. `undo` remet les fichiers mais garde cet
 événement : retirez-le de `events/` à la main. Les photos ajoutées depuis le dernier `classify`
 (un téléphone importé, puis audité) sont déplacées aussi : pas besoin d'un nouveau `classify`.

@@ -95,12 +95,13 @@ def test_ticked_the_event_is_written_and_read_back(tmp_path: Path) -> None:
 
 
 def test_the_dialog_box_is_there_unticked() -> None:
-    """The box is there, unticked; the intro no longer says 'No rule is written'."""
+    """The box, unticked but for late photos (0612); no 'No rule is written'."""
     page = (_TEMPLATES / "move_dialog.html.j2").read_text(encoding="utf-8")
     assert '<input id="moveRemember" type="checkbox">' in page
     assert "No rule is written" not in page
     script = (_TEMPLATES / "move_dialog.js.j2").read_text(encoding="utf-8")
-    assert 'moveEl("moveRemember").checked = false;' in script
+    ticked = "checked = Boolean(window.mhLate && window.mhLate.shown());"
+    assert ticked in script
 
 
 def _view(

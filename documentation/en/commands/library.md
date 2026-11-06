@@ -266,7 +266,8 @@ member's folder, a phone's `DCIM` are ticked. **Move these N files now** moves e
 ones, journaled, checked at their new place, said as read back (*'mh undo …' puts them back*).
 Nothing else is written: no rule in `config.toml`, no event in `events/`, the next `classify`
 finds them in place. Only when you tick **Also remember it as an event (events/)**, unticked
-at each opening (a filing is not an event), is the event remembered too: its name, its days and
+at each opening (a filing is not an event; ticked for *new photos during an event*, which widen
+it), is the event remembered too: its name, its days and
 its cameras, read back and shown after the move. `undo` puts the files back but keeps that event:
 remove it from `events/` by hand. Photos added since the
 latest `classify` (a phone imported, then audited) move too: no new `classify` is needed.

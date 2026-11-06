@@ -100,15 +100,14 @@ def test_dead_rules_are_removed_their_neighbours_comments_kept(
     assert again.status is HTTPStatus.UNPROCESSABLE_ENTITY
 
 
-def test_a_folder_name_rule_is_turned_into_dates_in_its_place(
+def test_a_folder_name_rule_is_turned_into_dates_in_events(
     locations: Locations,
 ) -> None:
-    """Same place in the list; nothing it decided lost; no event chosen."""
+    """Moved to events/ (0611); nothing it decided lost; no event chosen."""
     with_rules(locations)
     runtime, _workbook = classified(locations)
     app = reopened(runtime)
     party = lines(asyncio.run(call(app, "GET /api/rules")))["Kermesse"]
-    place = [rule.name for rule in read_rules(locations.config_file)].index("Kermesse")
     body = {
         "event": party["event"],
         "name": "Kermesse",
@@ -127,8 +126,11 @@ def test_a_folder_name_rule_is_turned_into_dates_in_its_place(
     assert not json.loads(preview.body)["taken"]
     assert saved.status is HTTPStatus.OK
     assert json.loads(saved.body)["view"]["card"]["page"] is None
-    rules = read_rules(locations.config_file)
-    assert rules[place].name == "Kermesse"
-    assert rules[place].match is RuleMatch.DATE_RANGE
-    assert rules[place].dates == "2016-07-14..2016-07-14"
-    assert rules[place].keep_folders
+    held = {rule.name: rule for rule in read_rules(locations.config_file)}["Kermesse"]
+    assert held.match is RuleMatch.DATE_RANGE
+    assert held.dates == "2016-07-14..2016-07-14"
+    assert held.keep_folders
+    assert "Kermesse" not in locations.config_file.read_text("utf-8")
+    assert "Kermesse" in (locations.config_dir / "events" / "2016.toml").read_text(
+        "utf-8"
+    )

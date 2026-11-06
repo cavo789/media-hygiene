@@ -17,8 +17,6 @@ One `/todo:run NNNN` each, highest priority first.
 | ID | Priority | Title | Batch |
 |---|---|---|---|
 | 0630 | Medium | Import chain from the page: the burst review shows the import's new series only | import |
-| 0611 | Low | A folder rule turned into dates moves to events/ | events |
-| 0612 | Low | Late photos: "remember as an event" ticked by default there only | events |
 | 0613 | Low | Family home page: a read-only Map entrance on the phone | phone |
 | 0622 | Low | Tags: drop several at once, merge a synonym into another tag | search |
 

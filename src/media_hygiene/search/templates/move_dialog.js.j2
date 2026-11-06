@@ -109,7 +109,8 @@ moveEl("moveOpen").addEventListener("click", () => {
   moveView = null;
   moveEl("moveName").value = window.mhMoveName ? window.mhMoveName() : "";  // late photos: their event (0558)
   moveEl("moveWhere").textContent = "";
-  moveEl("moveRemember").checked = false;  // a filing is not an event (0573)
+  // A filing is not an event (0573); late photos widen theirs: ticked there only (0612).
+  moveEl("moveRemember").checked = Boolean(window.mhLate && window.mhLate.shown());
   moveRuleSay("");
   moveEl("moveSources").replaceChildren();
   moveEl("moveDlg").showModal();
