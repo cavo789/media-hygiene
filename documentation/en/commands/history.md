@@ -26,7 +26,7 @@ docker run --rm -it -v "$HOME\media-hygiene\journal:/journal" cavo789/media-hygi
 | Needs | `/journal`, the folder `clean` writes to. |
 | Writes | Nothing. |
 | Undo | Nothing to undo. |
-| With `mh` | `mh history`; from the home page, *History and undo* › **See what each run did** shows the same table in the page itself (nothing is printed in the terminal), with the `mh undo <run>` line to copy for each run and, for a run still in the quarantine, a *Purge* link: its files first, then a button stating how many go and the room freed. The page asks once; nothing is asked in the window. |
+| With `mh` | `mh history`; from the home page, *History and undo* › **See what each run did** shows the same table in the page itself (nothing is printed in the terminal), with the `mh undo <run>` line to copy for each run and, for a run still in the quarantine, a *Purge* link: its files first, then a button stating how many go and the room freed. The page asks once; nothing is asked in the window; then History comes back and says what the disk says. |
 
 ## Run it
 

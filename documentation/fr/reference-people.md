@@ -82,7 +82,8 @@ l'Explorateur est retrouvé par son `id` à la fin de l'audit suivant (`audit`, 
 de la page d'accueil), entre copies identiques celle du même nom de fichier. Une photo modifiée
 depuis est une autre photo : ses visages perdent leur nom. Les visages encore écrits
 `"/data/c/…#0"` (avant cette version) se chargent tels quels et reçoivent leur `id` à l'audit
-suivant.
+suivant ; au-delà de 50 photos que le cache n'a pas lues, cet audit le dit d'abord
+(*N photos nommées lues une fois…*).
 
 Les visages des inconnus vont dans `people/ignored.toml`. Gardez le dossier `people` avec
 `config.toml` quand vous le copiez ou le sauvegardez : un fichier manquant arrête l'exécution

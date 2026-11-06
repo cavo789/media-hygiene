@@ -109,7 +109,7 @@ helps: `*.mp4` or a regular expression are still searched as typed.
 - **The bar** has two lines that never move, whatever is picked or found: on top, where you are
   (the count, then each active filter as a chip — a word, the period, the path, the folder,
   *not yet*, 📷 — whose **✕** removes it and searches again; those that do not fit fold into
-  **+N**, a click lists them under the bar), **📺 On the TV**, **Sort by** and the thumbnail size **S** (photos only), **M**,
+  **+N**, a click lists them under the bar), **📺 On the TV** (with a TV paired), **Sort by** and the thumbnail size **S** (photos only), **M**,
   **L** (every word), kept for this browser; below, what to do with the files picked — greyed
   while none is: first **📂 Move to an event…** (filled: the main action), **🗓 Move to their month…**, **🔀 Invert**, two small panels, **🏷 Describe** (tag, date, place)
   and **📚 Album**, then, at the far right as on every page of tiles, **🗑 Put aside** in red and
@@ -389,7 +389,7 @@ content. The file is read back and the bar says what it holds now (*“anniversa
 
 The photos an audit has not analysed yet are read from the disk while the page waits, so at most
 200 of them at a time: above that nothing is saved, and the dialog says how many, and what to do
-(an audit first, or fewer photos).
+(an audit first, or fewer photos). **📍 Place…** given by hand follows the same cap.
 
 A word typed by hand under a photo has a **×**, on its card and in the large view's facts (`I`):
 click it to take the word off that photo, saved and read back the same way. A word left on no

@@ -28,7 +28,7 @@ from media_hygiene.services.face_refs_audit import (
     rewrite_file,
     wanted_ids,
 )
-from media_hygiene.services.face_refs_said import say_faces
+from media_hygiene.services.face_refs_said import say_faces, say_reading, unread_named
 from media_hygiene.tags.hand_edit import hand_ids, relocate_hand_tags
 
 if TYPE_CHECKING:
@@ -52,6 +52,7 @@ def relocate_after_audit(runtime: Runtime) -> None:
         if not wanted and not faces:
             return
         with FactsRepository.open(runtime.index_file) as repository:
+            say_reading(runtime, unread_named(faces, repository.connection))
             found = located(repository.connection, wanted)
         hosts = {
             key: [runtime.mapper.to_host(Path(path)) for path in paths]

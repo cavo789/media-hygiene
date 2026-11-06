@@ -7197,6 +7197,10 @@ msgid "Read back from the disk at {time}: {count} files left out."
 msgstr ""
 
 #, python-brace-format
+msgid "Read back from the disk: run {run} is gone from the quarantine."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "Read back from the disk: run {run} is gone, {freed} freed ({stated} "
 "stated)."
@@ -9555,6 +9559,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "The last import has no step {from}; its steps: {list}."
+msgstr ""
+
+msgid "The last import made no burst series."
 msgstr ""
 
 msgid "The last import's steps:"
@@ -14832,6 +14839,12 @@ msgid ""
 msgid_plural ""
 "{count} named faces were on photos edited since: other photos, their "
 "names are forgotten."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} named photo read once, to follow its faces from now on…"
+msgid_plural "{count} named photos read once, to follow their faces from now on…"
 msgstr[0] ""
 msgstr[1] ""
 

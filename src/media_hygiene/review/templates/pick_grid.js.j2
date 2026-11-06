@@ -331,4 +331,12 @@ async function toTv(button) {
   if (remote) remote.location = state.page; else window.location = state.page;
 }
 if ($("tvSend")) $("tvSend").addEventListener("click", () => toTv($("tvSend")));
+// Shown only with a TV paired (0523), as the 📺 of the cards: `GET /api/tv-paired`.
+if ($("tvSend")) {
+  const pairedPath = $("tvSend").dataset.paired;
+  const paired = pairedPath
+    ? fetch(pairedPath, { cache: "no-store" }).then((answer) => (answer.ok ? answer.json() : {})).then((said) => Boolean(said.paired)).catch(() => false)
+    : Promise.resolve(false);
+  paired.then((yes) => { $("tvSend").hidden = !yes; });
+}
 {% include "pick_bar_panel.js.j2" %}

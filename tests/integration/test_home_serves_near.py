@@ -110,4 +110,5 @@ def test_the_chain_opens_the_imports_series_only(
     assert 'id="applyNow"' in every.body.decode()
     assert json.loads(state.body)
     assert b"nothing to review" in none.body
+    assert 'id="everySeries" href="./"' in none.body.decode()  # 0630
     assert 'id="importedOnly"' not in whole.body.decode()

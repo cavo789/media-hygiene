@@ -9,6 +9,7 @@ names of an edited one, and gives an id to the old form.
 from __future__ import annotations
 
 import hashlib
+import sqlite3
 import tomllib
 from typing import TYPE_CHECKING, Final
 
@@ -27,6 +28,12 @@ from media_hygiene.services.face_refs_audit import (
     rewrite_file,
     wanted_ids,
 )
+from media_hygiene.services.face_refs_said import (
+    READ_ONCE_SAID,
+    say_reading,
+    unread_named,
+)
+from tests.support.runtime import make_locations, make_runtime, output_of
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -202,3 +209,24 @@ def test_the_ignored_faces_follow_too(tmp_path: Path, data: Path) -> None:
     audit(config, data, {})
     assert "C:\\Photos\\b.jpg" in (tmp_path / "people" / "ignored.toml").read_text()
     assert read_people(config).ignored == (f"{path}#0",)
+
+
+def test_many_named_photos_to_read_once_are_said_before(tmp_path: Path) -> None:
+    """0570: old-form photos without a digest counted; a line over the threshold."""
+    known, unknown = tmp_path / "known.jpg", tmp_path / "unknown.jpg"
+    faces = tmp_path / "c.toml"
+    faces.write_text(
+        f'faces = ["{known}#0", "{unknown}#0", "{unknown}#1"]\n'
+        'rejected = [{ path = "x", id = "y", face = 0 }]\n',
+        "utf-8",
+    )
+    connection = sqlite3.connect(":memory:")
+    connection.execute("CREATE TABLE files (path TEXT, full_digest TEXT)")
+    connection.execute("INSERT INTO files VALUES (?, 'ab')", (str(known),))
+    assert unread_named([faces], connection) == 1
+    connection.close()
+    runtime = make_runtime(make_locations(tmp_path))
+    say_reading(runtime, READ_ONCE_SAID)
+    assert "read once" not in output_of(runtime)
+    say_reading(runtime, READ_ONCE_SAID + 1)
+    assert f"{READ_ONCE_SAID + 1} named photos read once" in output_of(runtime)

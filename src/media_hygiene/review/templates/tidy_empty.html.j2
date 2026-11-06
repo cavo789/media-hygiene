@@ -6,5 +6,10 @@
   {% include "tidy_bar.html.j2" %}
 {% endblock %}
 {% block content %}
-<main id="tidyNothing"><p>{{ said }}</p></main>
+<main id="tidyNothing">
+  <p>{{ said }}</p>
+{% if every_series | default(false) %}
+  <p>📥 {{ _("The last import made no burst series.") }} <a id="everySeries" href="./">{{ _("See every series") }}</a></p>
+{% endif %}
+</main>
 {% endblock %}

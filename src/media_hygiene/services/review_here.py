@@ -99,20 +99,28 @@ class ReviewHere:
             except (MountError, DecisionsError) as exc:
                 return Response(HTTPStatus.CONFLICT, str(exc).encode())
             if self._app is None:
-                return Response(HTTPStatus.OK, self._nothing(), ContentType.HTML)
+                page = self._nothing(only_new)
+                return Response(HTTPStatus.OK, page, ContentType.HTML)
         if self._app is None:
             return Response(HTTPStatus.NOT_FOUND)
         return await self._app.handle(dataclasses.replace(request, path=path))
 
-    def _nothing(self) -> bytes:
+    def _nothing(self, only_new: bool) -> bytes:  # noqa: FBT001
         """The page of a review with nothing to review; a tidying session goes on.
+
+        Args:
+            only_new: The last import's series were asked: *See every series* (0630).
 
         Returns:
             It, in the language in use.
         """
         environment = translated_environment(_TEMPLATES, escaped=("html", "j2"))
         following = _TIDY_NEXT.get(self.kind.page, "")
-        values = {"said": self.kind.empty(), "tidy_next": following}
+        values = {
+            "said": self.kind.empty(),
+            "tidy_next": following,
+            "every_series": only_new,
+        }
         return headed_page(environment, "tidy_empty.html.j2", values)
 
     def _build(self, only_new: bool) -> Handling | None:  # noqa: FBT001

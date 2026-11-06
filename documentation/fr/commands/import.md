@@ -182,7 +182,7 @@ restent dans la fenêtre de `mh`.
 Quand une page de `mh` occupe déjà le PC, l'étape **bursts** laisse ses rafales à cette page : une
 fois atteinte, la ligne montre **📸 Ses rafales**, la [revue des rafales](review.md) des seules
 nouvelles photos (*Seulement les rafales qui contiennent une nouvelle photo du dernier import*,
-**Voir toutes les rafales** à un clic) ; ce que vous y mettez de côté passe par
+**Voir toutes les rafales** à un clic, offert aussi quand l'import n'a fait aucune série) ; ce que vous y mettez de côté passe par
 `clean --decisions`, *Appliquer maintenant* dans la barre.
 
 - **Lancez d'abord une fois `mh audit`** : la photothèque est ce que le cache connaît. Sans audit,

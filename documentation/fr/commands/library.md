@@ -113,7 +113,7 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
 - **La barre** a deux lignes qui ne bougent jamais, quoi qu'on choisisse ou trouve : en haut, où
   vous en êtes (le nombre, puis chaque filtre actif en pastille — un mot, la période, le chemin,
   le dossier, *pas encore*, 📷 — dont la **✕** le retire et relance la recherche ; celles qui
-  ne tiennent pas se replient en **+N**, un clic les liste sous la barre), **📺 Sur la télé**, **Trier par** et la taille des vignettes **S**
+  ne tiennent pas se replient en **+N**, un clic les liste sous la barre), **📺 Sur la télé** (avec une télé appairée), **Trier par** et la taille des vignettes **S**
   (les photos seules), **M**, **L** (tous les mots), gardée pour ce navigateur ; en dessous, que
   faire des fichiers choisis — grisé tant qu'aucun ne l'est : d'abord
   **📂 Déplacer vers un événement…** (plein : l'action principale), **🗓 Déplacer vers leur mois…**, **🔀 Inverser**, deux petits panneaux, **🏷 Décrire** (étiquette,
@@ -417,7 +417,7 @@ trouve (`hand:anniversaire`).
 
 Les photos qu'un audit n'a pas encore analysées sont lues sur le disque pendant que la page attend :
 donc 200 au plus à la fois. Au-delà, rien n'est enregistré, et la boîte de dialogue dit combien, et
-quoi faire (un audit d'abord, ou moins de photos).
+quoi faire (un audit d'abord, ou moins de photos). **📍 Lieu…** donné à la main suit la même limite.
 
 Un mot tapé à la main sous une photo a une **×**, sur sa carte et dans les détails de la grande
 vue (`I`) : cliquez-la pour retirer le mot de cette photo, enregistré et relu de la même façon. Un

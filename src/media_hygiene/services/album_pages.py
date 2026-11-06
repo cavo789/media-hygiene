@@ -137,6 +137,7 @@ def album_page(template: str = _TEMPLATE, *, link: bool = False) -> bytes:
             },
             albums_path=ALBUM_CHANGE_PATH,  # 📺 On the TV posts its files there
             tv_here=True,
+            tv_paired_path=TV_PAIRED_PATH,  # the bar's 📺, with a TV paired (0523)
             album_link=link,
         )
         .encode()

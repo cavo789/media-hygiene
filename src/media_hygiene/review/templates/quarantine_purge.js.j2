@@ -10,6 +10,7 @@ const PURGE_TEXTS = {{ {
 const DISK_STATE = "/disk-space/api/state";
 const PURGE_PATH = {{ purge_path | tojson }};
 const STEP_POLL_MS = 1000;
+const LANDS_ON = new URLSearchParams(window.location.search).get("back") === "history" ? "/history/" : "/disk-space/"; // 0631
 const WANTS_PURGE = Boolean(ONLY_RUN) && new URLSearchParams(window.location.search).get("purge") === "1";
 
 drawPurge = async () => {
@@ -28,7 +29,7 @@ const followPurge = (step) => fetch(step.follow, { cache: "no-store" })
   .then((answer) => answer.json())
   .then((now) => {
     if (now.state !== "done" || now.id !== step.id) { window.setTimeout(() => followPurge(step), STEP_POLL_MS); return; }
-    window.location.assign(`/disk-space/?purged=${encodeURIComponent(ONLY_RUN)}`);
+    window.location.assign(`${LANDS_ON}?purged=${encodeURIComponent(ONLY_RUN)}`);
   })
   .catch(() => window.setTimeout(() => followPurge(step), STEP_POLL_MS));
 

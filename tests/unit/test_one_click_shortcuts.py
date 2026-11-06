@@ -147,6 +147,14 @@ def test_the_event_card_offers_the_album_and_hides_the_tv() -> None:
     assert "offerAlbum(body, narrowed ? 0 : found.total)" in page  # never over a filter
 
 
+def test_the_bar_s_tv_is_hidden_until_a_tv_is_paired() -> None:
+    """The 📺 of the top bar, as the cards': hidden, then shown on `paired` (0523)."""
+    page = render_page("search.html.j2")  # every route named: "/x"
+    assert 'id="tvSend" class="plain" type="button" hidden' in page
+    assert 'data-paired="/x"' in page
+    assert '$("tvSend").hidden = !yes;' in page
+
+
 def test_without_the_home_server_no_tv_and_no_album_tab() -> None:
     """`mh library` alone: no 📺 (`tv_here`), and the album is only said, not opened."""
     card = (_ROOT / "search/templates/search_events.html.j2").read_text("utf-8")

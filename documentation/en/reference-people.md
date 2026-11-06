@@ -79,7 +79,8 @@ and the quarantine rewrite `path` at once; a folder renamed in Explorer is found
 `id` at the end of the next audit (`audit`, `import`, or the home page's), between identical
 copies the one of the same file name. A photo edited since is another photo: its faces lose
 their name. Faces still written `"/data/c/…#0"` (before this version) load as they are and get
-their `id` at the next audit.
+their `id` at the next audit; over 50 photos the cache has not read, that audit says first
+*N named photos read once…*.
 
 The faces of strangers go to `people/ignored.toml`. Keep the `people` folder with
 `config.toml` when you copy or back it up: a missing file stops the next run, with the line to

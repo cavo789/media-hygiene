@@ -24,16 +24,21 @@ SERVED_MORE: Final[MappingProxyType[tuple[str, ...], str]] = MappingProxyType(
 )
 
 
-def purge_page(run_id: str) -> str:
+BACK_TO_HISTORY: Final = "history"  # `?back=`: the purge lands back on History (0631)
+
+
+def purge_page(run_id: str, back: str = "") -> str:
     """Where a run's *Purge* starts: its files, then the button (0616, 0631).
 
     Args:
         run_id: The run.
+        back: The page the purge lands back on (`BACK_TO_HISTORY`); empty: Disk space.
 
     Returns:
         The quarantine's page on that run.
     """
-    return f"{QUARANTINE_PAGE}?run={quote(run_id, safe='')}&purge=1"
+    page = f"{QUARANTINE_PAGE}?run={quote(run_id, safe='')}&purge=1"
+    return f"{page}&back={back}" if back else page
 
 
 def purge_step_page(words: tuple[str, ...]) -> str | None:
