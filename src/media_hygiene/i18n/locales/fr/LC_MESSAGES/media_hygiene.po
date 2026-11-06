@@ -12729,6 +12729,13 @@ msgid "Type {command}: your browser shows every report."
 msgstr "Tapez {command} : votre navigateur montre tous les rapports."
 
 msgid ""
+"Typed in the console: Ctrl+C there ends this page, then mh opens the home"
+" page."
+msgstr ""
+"Tapée dans la console : Ctrl+C y ferme cette page, puis mh ouvre la page "
+"d'accueil."
+
+msgid ""
 "Unanswered: nothing is remembered. D: deleted on purpose, M: moved "
 "elsewhere, G: the whole group deleted on purpose."
 msgstr ""
@@ -18736,8 +18743,12 @@ msgstr[1] "{n} photos n'ont pas pu être lues : non incluses."
 #, python-brace-format
 msgid "{n} photo not analysed yet: run an audit first, or pick at most {most}"
 msgid_plural "{n} photos not analysed yet: run an audit first, or pick at most {most}"
-msgstr[0] "{n} photo pas encore analysée : lancez d'abord un audit, ou choisissez-en {most} au plus"
-msgstr[1] "{n} photos pas encore analysées : lancez d'abord un audit, ou choisissez-en {most} au plus"
+msgstr[0] ""
+"{n} photo pas encore analysée : lancez d'abord un audit, ou choisissez-en"
+" {most} au plus"
+msgstr[1] ""
+"{n} photos pas encore analysées : lancez d'abord un audit, ou choisissez-"
+"en {most} au plus"
 
 #, python-brace-format
 msgid "{n} photo of this person"

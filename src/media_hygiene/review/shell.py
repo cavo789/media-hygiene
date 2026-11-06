@@ -6,10 +6,10 @@ highlighted (apricot: you are here). Each entry opens that space of the home pag
 a plain link when the home server serves the page (`/albums`, 0356); from a page
 `mh` opened from the home page, the click ends this page as *Back to the home page*
 does and the home page comes back on that space (`shell.js.j2`); from a page typed
-in the console, there is no home page to go back to: the entries are shown, not
-links. A tile page (`page_frame.html.j2`) gets the sidebar folded to its icons, so
-its grid keeps its columns (estimated: a 64 px rail loses none at 1366 and 1920 px,
-the full 248 px sidebar one of 5 and of 8).
+in the console, there is no home page to go back to: no entry is drawn (0585), the
+top bar says how to reach it. A tile page (`page_frame.html.j2`) gets the sidebar
+folded to its icons, so its grid keeps its columns (estimated: a 64 px rail loses
+none at 1366 and 1920 px, the full 248 px sidebar one of 5 and of 8).
 """
 
 from __future__ import annotations

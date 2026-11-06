@@ -23,7 +23,6 @@ html.mh-shelled body { padding-left: var(--mh-shell-w); }
 .mh-shell-link { display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 6px 12px; border-radius: 10px;
   color: var(--mh-frame-ink); text-decoration: none; font-weight: 600; }
 a.mh-shell-link:hover { background: var(--mh-frame-raise); }
-.mh-shell-link[aria-disabled="true"] { opacity: .7; }
 .mh-shell-link[aria-current="page"] { background: var(--mh-frame-raise); box-shadow: inset 0 0 0 1px var(--mh-frame-line); }
 .mh-i { width: 20px; height: 20px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round;
   stroke-linejoin: round; color: var(--mh-frame-soft); }
@@ -60,6 +59,7 @@ a.mh-shell-link:hover { background: var(--mh-frame-raise); }
 .mh-shell-top a { color: var(--mk-ink); text-underline-offset: 3px; }
 .mh-shell-top a.mh-home { padding: 2px 12px; border-radius: 999px; background: var(--mh-apricot); color: var(--mh-on-apricot);
   font-weight: 600; text-decoration: none; }
+.mh-shell-typed { color: var(--mk-ink-soft); font-size: .84rem; }
 .mh-shell-menu { display: none; min-width: 40px; min-height: 40px; border: 0; border-radius: 10px; background: transparent;
   color: var(--mk-ink); cursor: pointer; }
 .mh-shell-menu .mh-i { color: inherit; }

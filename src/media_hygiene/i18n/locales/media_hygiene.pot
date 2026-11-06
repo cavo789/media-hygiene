@@ -10544,6 +10544,11 @@ msgid "Type {command}: your browser shows every report."
 msgstr ""
 
 msgid ""
+"Typed in the console: Ctrl+C there ends this page, then mh opens the home"
+" page."
+msgstr ""
+
+msgid ""
 "Unanswered: nothing is remembered. D: deleted on purpose, M: moved "
 "elsewhere, G: the whole group deleted on purpose."
 msgstr ""

@@ -11,6 +11,8 @@
     <a class="mh-home" id="homeLink" href="/" data-shared="1">⌂ {{ _("Back to the home page") }}</a>
 {% elif header.home %}
     <a class="mh-home" id="homeLink" href="#" title="{{ home_title | default(_('Close this page and go back to the home page: mh opens it again.')) }}">⌂ {{ _("Back to the home page") }}</a>
+{% else %}
+    <span class="mh-shell-typed">{{ _("Typed in the console: Ctrl+C there ends this page, then mh opens the home page.") }}</span>
 {% endif %}
   </span>
 </header>

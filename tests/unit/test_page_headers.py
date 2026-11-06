@@ -245,15 +245,33 @@ def test_the_shell_of_a_review_page_highlights_clean_and_folds(
     assert re.findall(r'data-space="([a-z]+)" aria-current="page"', page) == ["clean"]
 
 
-def test_typed_in_the_console_the_shell_shows_spaces_but_links_nowhere(
-    monkeypatch: pytest.MonkeyPatch,
+@pytest.mark.parametrize("template", sorted(SHELL_PAGES))
+def test_typed_in_the_console_no_shell_entry_looks_clickable(
+    template: str, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """No home page to go back to: the entries are shown, not links."""
+    """0585: no home page to go back to: no entry drawn, the bar says what to type."""
     monkeypatch.delenv(LAUNCHER_STEPS_VARIABLE, raising=False)
-    page = _in_shell(monkeypatch, "search.html.j2", tiles=True)
-    assert _SHELL_LINK.findall(page) == []
-    assert 'class="mh-shell-link" aria-disabled="true"' in page
+    page = render_page(template)
+    assert (
+        "mh-shell-link"
+        not in page.partition('id="mhShellSide"')[2].partition("</aside>")[0]
+    )
+    assert 'aria-disabled="true"' not in page.partition("</aside>")[0]
     assert 'id="homeLink"' not in page
+    assert 'class="mh-shell-typed"' in page
+
+
+@pytest.mark.parametrize("template", sorted(SHELL_PAGES))
+def test_opened_from_home_every_shell_entry_is_a_link_and_the_way_back_is_there(
+    template: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0585: every entry of the sidebar an `<a href>`, the home link, no typed hint."""
+    monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, "1")
+    page = render_page(template)
+    side = page.partition('id="mhShellSide"')[2].partition("</aside>")[0]
+    assert side.count("mh-shell-link") == len(_SHELL_LINK.findall(side)) > 0
+    assert 'id="homeLink"' in page
+    assert 'class="mh-shell-typed"' not in page
 
 
 def test_served_by_the_home_server_the_shell_is_plain_links(
@@ -266,18 +284,19 @@ def test_served_by_the_home_server_the_shell_is_plain_links(
     assert 'data-shared="1"' in page
 
 
-def test_the_albums_page_is_in_the_shell_and_a_phone_keeps_what_it_opens() -> None:
+def test_the_albums_page_is_in_the_shell_and_a_phone_keeps_what_it_opens(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """0492: `/albums` in the frame; a phone sees home, find and share only."""
+    monkeypatch.setenv(LAUNCHER_STEPS_VARIABLE, "1")
     assert SHELL_PAGES["album.html.j2"] is False  # not a tile page: the full sidebar
     page = render_page("album.html.j2")
     assert 'id="mhShellSide"' in page
     assert 'class="mh-bar"' not in page
     assert "html[data-phone] .mh-shell-side .pc-only { display: none; }" in page
     kept = re.findall(
-        r'<li>\s*<(?:a|span) class="mh-shell-link"[^>]*data-space="([a-z]+)"', page
+        r'<li>\s*<a class="mh-shell-link"[^>]*data-space="([a-z]+)"', page
     )
-    hidden = re.findall(
-        r'<li class="pc-only">\s*<(?:a|span) class="mh-shell-link"', page
-    )
+    hidden = re.findall(r'<li class="pc-only">\s*<a class="mh-shell-link"', page)
     assert hidden
     assert set(kept) <= {"home", "find", "share"}

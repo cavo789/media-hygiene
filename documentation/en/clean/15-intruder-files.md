@@ -20,6 +20,10 @@ command to copy, or its button when the home page serves the report), and the **
 files** tile of *Where you are* on the home page, which shows their weight at the last audit:
 a click opens the page (with none, it opens the Clean space).
 
+From the home page, the page has *Back to the home page* and its sidebar. Typed in the console,
+there is no home page behind it: its top bar says so (`Ctrl+C` in the console ends the page, then
+`mh` opens the home page) and no sidebar entry is drawn.
+
 ## Step 1: tick them
 
 ```powershell
