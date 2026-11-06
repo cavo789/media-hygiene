@@ -1645,6 +1645,9 @@ msgstr "À la maison"
 msgid "Audit"
 msgstr "Audit"
 
+msgid "Audit again so that they join your library."
+msgstr "Refaites un audit pour qu'elles rejoignent votre photothèque."
+
 msgid "Audit in this page"
 msgstr "Auditer dans cette page"
 
@@ -4713,6 +4716,10 @@ msgstr ""
 msgid "In the menu on the left and in the palette."
 msgstr "Dans le menu de gauche et dans la palette."
 
+#, python-brace-format
+msgid "In the window of mh: {command}"
+msgstr "Dans la fenêtre de mh : {command}"
+
 msgid "In this page"
 msgstr "Dans cette page"
 
@@ -5974,6 +5981,14 @@ msgstr ""
 "Ensuite, 'purge' efface {count} fichiers pour de bon : 'mh undo --pick' "
 "les montre en photos d'abord ; sa question vient juste après."
 
+#, python-brace-format
+msgid ""
+"Next, in the window of mh, each with its own question: {steps}. The home "
+"page follows them."
+msgstr ""
+"Ensuite, dans la fenêtre de mh, chacune avec sa propre question : "
+"{steps}. La page d'accueil les suit."
+
 msgid "No"
 msgstr "Non"
 
@@ -6215,6 +6230,9 @@ msgstr ""
 
 msgid "No identical copy"
 msgstr "Aucune copie identique"
+
+msgid "No import has steps left to run."
+msgstr "Aucun import n'a d'étape restant à exécuter."
 
 #, python-brace-format
 msgid "No index in {folder}: no photo to look at yet."
@@ -8260,11 +8278,10 @@ msgstr "Relu sur le disque à {time} : {count} fichiers écartés."
 #, python-brace-format
 msgid ""
 "Read back from the disk: {count} copies made, {failed} failed. mh undo "
-"{run} removes them. Audit again so that they join your library."
+"{run} removes them."
 msgstr ""
 "Relu sur le disque : {count} copies faites, {failed} en échec. mh undo "
-"{run} les retire. Refaites un audit pour qu'elles rejoignent votre "
-"photothèque."
+"{run} les retire."
 
 #, python-brace-format
 msgid "Read back from the index: {faces} faces left."
@@ -10957,6 +10974,13 @@ msgstr ""
 " relancez l'audit avant de nettoyer."
 
 #, python-brace-format
+msgid "The last import has no step {from}; its steps: {list}."
+msgstr "Le dernier import n'a pas d'étape {from} ; ses étapes : {list}."
+
+msgid "The last import's steps:"
+msgstr "Les étapes du dernier import :"
+
+#, python-brace-format
 msgid "The layouts of {path} follow the sort convention."
 msgstr "Les rangements de {path} suivent la convention de tri."
 
@@ -11636,8 +11660,14 @@ msgstr "L'étape"
 msgid "The step you choose also analyses: {folder}"
 msgstr "L'étape choisie analyse aussi : {folder}"
 
+msgid "The steps after an import, again: Windows only, run by mh."
+msgstr "Relancer les étapes après un import : Windows seulement, exécuté par mh."
+
 msgid "The steps changed since the page was shown: here they are."
 msgstr "Les étapes ont changé depuis l'affichage de la page : les voici."
+
+msgid "The steps of this import are running: wait for their end."
+msgstr "Les étapes de cet import sont en cours : attendez leur fin."
 
 msgid "The storyteller's notes"
 msgstr "Les notes du conteur"
@@ -11966,6 +11996,9 @@ msgid "This build cannot search by meaning: {module} is not installed."
 msgstr ""
 "Cette version ne sait pas chercher par le sens : {module} n'est pas "
 "installé."
+
+msgid "This chain cannot be run from here: type the command in mh."
+msgstr "Cette chaîne ne peut pas être lancée d'ici : tapez la commande dans mh."
 
 msgid ""
 "This clean moved these copies to the quarantine: 'undo' puts them back. "
@@ -14065,6 +14098,9 @@ msgstr "docker pull a échoué : mh n'a pas changé."
 msgid "does not answer (powered off?)"
 msgstr "ne répond pas (éteint ?)"
 
+msgid "done"
+msgstr "terminé"
+
 msgid "double click"
 msgstr "double clic"
 
@@ -14339,6 +14375,9 @@ msgstr "c'est la copie gardée elle-même, vue par un autre chemin"
 
 msgid "it reads back different from what was written"
 msgstr "relu, il diffère de ce qui a été écrit"
+
+msgid "it said why in the window of mh"
+msgstr "elle a dit pourquoi dans la fenêtre de mh"
 
 msgid "its content changed"
 msgstr "son contenu a changé"
@@ -15278,6 +15317,9 @@ msgstr "exécution"
 msgid "run 'clean' to set {size} of copies aside."
 msgstr "lancez 'clean' pour mettre {size} de copies de côté."
 
+msgid "running in the window of mh"
+msgstr "en cours dans la fenêtre de mh"
+
 #, python-brace-format
 msgid "same event, another day ({date}): {rule}"
 msgstr "même événement, autre jour ({date}) : {rule}"
@@ -15393,6 +15435,9 @@ msgstr "encore en quarantaine"
 
 msgid "still to see first"
 msgstr "à voir d'abord"
+
+msgid "stopped"
+msgstr "arrêté"
 
 msgid "suggestion"
 msgstr "suggestion"
@@ -16014,6 +16059,9 @@ msgstr "vidéos datées par leurs balises :"
 
 msgid "videos:"
 msgstr "vidéos :"
+
+msgid "waiting"
+msgstr "en attente"
 
 msgid "what each photo shows, for search by meaning"
 msgstr "ce que montre chaque photo, pour la recherche par le sens"
@@ -19209,6 +19257,10 @@ msgstr[1] ""
 msgid "▶ Play"
 msgstr "▶ Lecture"
 
+#, python-brace-format
+msgid "▶ Run again from: {step}"
+msgstr "▶ Relancer depuis : {step}"
+
 msgid "✓ in the album"
 msgstr "✓ dans l'album"
 
@@ -19350,6 +19402,13 @@ msgstr ""
 "📱 Un passage du téléphone a supprimé des fichiers d'un téléphone : undo "
 "ne peut pas les y remettre. Chacun a d'abord été prouvé sur le PC par son"
 " contenu."
+
+msgid ""
+"📸 A page of mh is open on this PC: the burst series of the new photos "
+"wait on its burst review (mh review)."
+msgstr ""
+"📸 Une page de mh est ouverte sur ce PC : les rafales des nouvelles photos"
+" attendent dans sa revue des rafales (mh review)."
 
 msgid ""
 "📸 The burst series of the new photos open in your browser: keep the best "

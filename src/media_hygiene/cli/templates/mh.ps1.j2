@@ -71,6 +71,11 @@ function global:{{ function }} {
         _{{ function }}_phone @words
         return
     }
+    if ($rest[0] -eq 'import' -and $more -contains '{{ phone.end.then.chain_flag }}') {
+        # `{{ function }} import {{ phone.end.then.chain_flag }}`: the steps after an import, again, here (0604).
+        _{{ function }}_phone_chain @more
+        return
+    }
     switch ($rest[0]) {
 {% for name in host.names %}
         '{{ name }}' { _{{ function }}_{{ name }} @more; return }
@@ -261,6 +266,7 @@ function global:{{ function }} {
         $global:LASTEXITCODE = $status
     }
     if ($follow) { {{ function }} review --gone @typed }
+    if ($command -eq 'import' -and $rest -contains '--pick' -and -not $detach) { _{{ function }}_phone_chain_waiting }
 }
 
 # `{{ function }} open`: the catalogue of every report in the default browser (0175).

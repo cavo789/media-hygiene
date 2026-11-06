@@ -50,6 +50,7 @@ class ImportDone(BaseModel):
     run_id: str
     copied: int
     failed: int
+    then: tuple[str, ...] = ()  # the chain `mh` runs next (0619); none: audit again
 
 
 class ImportPickState(BaseModel):

@@ -47,4 +47,12 @@ def imports_texts() -> dict[str, str]:
         "imports_bursts": _("the burst series page"),
         "imports_tags": _("🤖 describe the photos"),
         "imports_places": _("🌐 name the places"),
+        "chainTitle": _("The last import's steps:"),
+        "chainRunning": _("running in the window of mh"),
+        "chainWaiting": _("waiting"),
+        "chainStopped": _("stopped"),
+        "chainDone": _("done"),
+        "chainFailed": _("it said why in the window of mh"),
+        "chainResume": _("▶ Run again from: {step}"),
+        "chainType": _("In the window of mh: {command}"),
     }

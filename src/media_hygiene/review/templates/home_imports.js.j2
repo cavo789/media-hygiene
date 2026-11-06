@@ -6,14 +6,56 @@ const IMPORT_STEPS = ["audit", "copies", "bursts", "tags", "places"];
 function importsHtml() {
   if (REMOTE || !P.importSteps || !imports.steps) return `<div id="importSteps"></div>`;
   const boxes = IMPORT_STEPS.map((step) => `<label><input type="checkbox" data-import-step="${step}"${imports.steps.includes(step) ? " checked" : ""}${imports.busy ? " disabled" : ""}> ${esc(T["imports_" + step])}</label>`).join(" ");
-  return `<div id="importSteps"><p class="muted"><strong>${esc(T.importsThen)}</strong> ${boxes}${imports.steps.length ? "" : ` · ${esc(T.importsNone)}`}</p></div>`;
+  return `<div id="importSteps"><p class="muted"><strong>${esc(T.importsThen)}</strong> ${boxes}${imports.steps.length ? "" : ` · ${esc(T.importsNone)}`}</p><p class="muted" id="importChain"></p></div>`;
 }
 function redrawImports() { const box = $("#importSteps"); if (box) box.outerHTML = importsHtml(); }
+// Where the last chain is (0604), read from the disk every few seconds; stopped, it is offered
+// again from its step: by `mh` when it runs beside this server, else the line to type.
+const CHAIN_MARK = { done: "✅", at: "⏳", next: "▫", failed: "⚠" };
+const CHAIN_EVERY_MS = 3000;
+let chainSaid = "";
+function chainHtml(follow) {
+  const chain = follow.chain;
+  if (!chain) return "";
+  const at = chain.steps.indexOf(chain.at);
+  const ended = chain.state === "done";
+  const marks = chain.steps.map((step, i) => {
+    const mark = chain.failed.includes(step) ? CHAIN_MARK.failed : ended || i < at ? CHAIN_MARK.done : i === at ? CHAIN_MARK.at : CHAIN_MARK.next;
+    return `${mark} ${esc(T["imports_" + step])}`;
+  }).join(" · ");
+  const state = T["chain" + chain.state[0].toUpperCase() + chain.state.slice(1)];
+  const again = chain.state === "stopped" || chain.state === "waiting";
+  const resume = !again ? "" : follow.runs
+    ? ` <button type="button" data-chain-from="${esc(chain.at)}">${esc(fill(T.chainResume, { step: T["imports_" + chain.at] }))}</button>`
+    : ` · ${esc(fill(T.chainType, { command: follow.command }))}`;
+  const failed = chain.failed.length ? ` · ${CHAIN_MARK.failed} ${esc(T.chainFailed)}` : "";
+  return `<strong>${esc(T.chainTitle)}</strong> ${marks} · ${esc(state)}${failed}${resume}`;
+}
+function loadChain() {
+  if (REMOTE || !P.importChain || document.hidden) return;
+  fetch(P.importChain, { cache: "no-store" })
+    .then((r) => (r.ok ? r.text() : ""))
+    .then((text) => {
+      const box = $("#importChain");
+      if (!text || !box || text === chainSaid) return;
+      chainSaid = text;
+      box.innerHTML = chainHtml(JSON.parse(text));
+    })
+    .catch(() => {});
+}
+document.addEventListener("click", (event) => {
+  const from = event.target.closest("[data-chain-from]");
+  if (!from) return;
+  from.disabled = true;
+  post(P.importChain, { from: from.dataset.chainFrom })
+    .then((reply) => { if (!reply.ok) { toast(reply.body.error || T.scopeFailed); chainSaid = ""; } loadChain(); })
+    .catch(() => stopped());
+});
 function loadImports() {
   if (REMOTE || !P.importSteps) return;
   fetch(P.importSteps, { cache: "no-store" })
     .then((r) => (r.ok ? r.json() : null))
-    .then((answer) => { if (answer) { imports.steps = answer.steps; redrawImports(); } })
+    .then((answer) => { if (answer) { imports.steps = answer.steps; redrawImports(); chainSaid = ""; loadChain(); } })
     .catch(() => {});
 }
 document.addEventListener("change", (event) => {
@@ -27,6 +69,7 @@ document.addEventListener("change", (event) => {
       toast(T.scopeSaved);
     })
     .catch(() => stopped())
-    .finally(() => { imports.busy = false; redrawImports(); });
+    .finally(() => { imports.busy = false; redrawImports(); chainSaid = ""; loadChain(); });
 });
 loadImports();
+if (!REMOTE && P.importChain) window.setInterval(loadChain, CHAIN_EVERY_MS);

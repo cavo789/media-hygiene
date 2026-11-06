@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.review.home_fields import write_whole
 from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.import_chain_start import start_chain
 from media_hygiene.services.import_pick_tiles import (
     LEFT_OUT_FILE,
     Copying,
@@ -159,10 +160,12 @@ class ImportDesk:
         except (MediaHygieneError, OSError) as exc:
             self._failure = str(exc)
         else:
+            chain = start_chain(self.runtime, result.copied)
             self._result = ImportDone(
                 run_id=result.run_id,
                 copied=len(result.copied),
                 failed=len(jobs) - len(result.copied),
+                then=tuple(str(step) for step in chain.steps) if chain else (),
             )
         finally:
             self._copying = None

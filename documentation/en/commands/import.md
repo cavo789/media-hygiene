@@ -43,7 +43,10 @@ Pick photos as on every page of tiles: a click picks one, Ctrl+click adds or tak
 Shift+click every file from the last one clicked, a drag draws a rectangle, Ctrl+A picks every
 file shown, I inverts the picking, Enter or a double click shows a photo large. **⊘ Leave out** keeps them out of the copy (saved, read back from the disk, in
 `import-left-out.json` of the reports folder: still left out next time, until **↩ Bring back**). **📥 Copy these N files** states its count and copies those: each one checked, journaled,
-`mh undo <run>` removes them. The folder is only read.
+`mh undo <run>` removes them. The folder is only read. Then the steps of `[imports] then` run, as
+after a phone: in the window of `mh`, each with its own question, followed on the home page
+([below](#from-a-phone-mh-import---phone)), when the page was opened from the home page or once a page typed in a
+console ends (Windows; with the `mh` of WSL, the page says to audit again).
 
 ```powershell
 mh import --pick            # your backup folders; on the home page: See what only the NAS holds
@@ -144,13 +147,21 @@ another, the same photo twice or one your library already holds, go to the quara
 them back); **bursts** (the [burst review](review.md) opens in the browser on the **new photos'
 series only** while the next steps run; no series, no page); **tags** 🤖 (the local AI model
 describes the new photos; when it is not running, `tags` says so and the chain goes on);
-**places** 🌐 (the new spots named online, after their own question). When the burst page was
+**places** 🌐 (the new spots named online, after their own question). With `tags` switched off, nothing runs beside the burst page: it stays in front, and the chain goes on
+when it closes, with no question to answer first. With `tags` on, when the burst page was
 open: *Done on the burst page? Press Enter*, then the shots you set aside go to the quarantine
 (`clean --decisions import-bursts.json`, its own question). Last, *✨ All done: 42 new photos and
 videos in your library*, the name proposed for the new photos and the slideshow of **this import
 only**: *📺 Your slideshow "Walk in Liège" is ready: mh slideshow --folder "…" --since today*, then *Show it on the TV now? (y/N)*.
 Remove a step from `then` to switch it off (`then = []`: nothing runs). 🔒 Without `--free`, the phone is only read: nothing on
 it is deleted, moved or renamed.
+
+**The steps stay followed.** Each step writes where it is in `import-chain.json` (your cache
+folder): under *Copy the new photos of the phone*, the home page shows ✅ what ran, ⏳ the step
+running, ⚠ a step that failed, without you asking. A chain stopped (Ctrl+C, the window closed:
+said stopped after 24 hours without news) is offered again: **▶ Run again from: …** on the home page,
+or in the console `mh import --chain` (from where it stopped) or `mh import --chain --from-step tags`
+(`audit`, `copies`, `bursts`, `tags`, `places`). The questions stay in the window of `mh`.
 
 - **Run `mh audit` once first**: the library is what the cache knows. Without an audit, every
   photo of the phone is new (it says so).

@@ -1306,6 +1306,9 @@ msgstr ""
 msgid "Audit"
 msgstr ""
 
+msgid "Audit again so that they join your library."
+msgstr ""
+
 msgid "Audit in this page"
 msgstr ""
 
@@ -3871,6 +3874,10 @@ msgstr ""
 msgid "In the menu on the left and in the palette."
 msgstr ""
 
+#, python-brace-format
+msgid "In the window of mh: {command}"
+msgstr ""
+
 msgid "In this page"
 msgstr ""
 
@@ -4950,6 +4957,12 @@ msgid ""
 "as photos first; its question comes next."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Next, in the window of mh, each with its own question: {steps}. The home "
+"page follows them."
+msgstr ""
+
 msgid "No"
 msgstr ""
 
@@ -5146,6 +5159,9 @@ msgid "No home network found: the phone cannot open this page."
 msgstr ""
 
 msgid "No identical copy"
+msgstr ""
+
+msgid "No import has steps left to run."
 msgstr ""
 
 #, python-brace-format
@@ -6865,7 +6881,7 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Read back from the disk: {count} copies made, {failed} failed. mh undo "
-"{run} removes them. Audit again so that they join your library."
+"{run} removes them."
 msgstr ""
 
 #, python-brace-format
@@ -9110,6 +9126,13 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "The last import has no step {from}; its steps: {list}."
+msgstr ""
+
+msgid "The last import's steps:"
+msgstr ""
+
+#, python-brace-format
 msgid "The layouts of {path} follow the sort convention."
 msgstr ""
 
@@ -9657,7 +9680,13 @@ msgstr ""
 msgid "The step you choose also analyses: {folder}"
 msgstr ""
 
+msgid "The steps after an import, again: Windows only, run by mh."
+msgstr ""
+
 msgid "The steps changed since the page was shown: here they are."
+msgstr ""
+
+msgid "The steps of this import are running: wait for their end."
 msgstr ""
 
 msgid "The storyteller's notes"
@@ -9911,6 +9940,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "This build cannot search by meaning: {module} is not installed."
+msgstr ""
+
+msgid "This chain cannot be run from here: type the command in mh."
 msgstr ""
 
 msgid ""
@@ -11695,6 +11727,9 @@ msgstr ""
 msgid "does not answer (powered off?)"
 msgstr ""
 
+msgid "done"
+msgstr ""
+
 msgid "double click"
 msgstr ""
 
@@ -11958,6 +11993,9 @@ msgid "it is the kept copy itself, seen through another path"
 msgstr ""
 
 msgid "it reads back different from what was written"
+msgstr ""
+
+msgid "it said why in the window of mh"
 msgstr ""
 
 msgid "its content changed"
@@ -12808,6 +12846,9 @@ msgstr ""
 msgid "run 'clean' to set {size} of copies aside."
 msgstr ""
 
+msgid "running in the window of mh"
+msgstr ""
+
 #, python-brace-format
 msgid "same event, another day ({date}): {rule}"
 msgstr ""
@@ -12918,6 +12959,9 @@ msgid "still in the quarantine"
 msgstr ""
 
 msgid "still to see first"
+msgstr ""
+
+msgid "stopped"
 msgstr ""
 
 msgid "suggestion"
@@ -13459,6 +13503,9 @@ msgid "videos with a date in their tags:"
 msgstr ""
 
 msgid "videos:"
+msgstr ""
+
+msgid "waiting"
 msgstr ""
 
 msgid "what each photo shows, for search by meaning"
@@ -16134,6 +16181,10 @@ msgstr[1] ""
 msgid "▶ Play"
 msgstr ""
 
+#, python-brace-format
+msgid "▶ Run again from: {step}"
+msgstr ""
+
 msgid "✓ in the album"
 msgstr ""
 
@@ -16243,6 +16294,11 @@ msgstr ""
 msgid ""
 "📱 A phone run deleted files from a phone: undo cannot put them back on "
 "it. Each one was first proven on the PC by its content."
+msgstr ""
+
+msgid ""
+"📸 A page of mh is open on this PC: the burst series of the new photos "
+"wait on its burst review (mh review)."
 msgstr ""
 
 msgid ""

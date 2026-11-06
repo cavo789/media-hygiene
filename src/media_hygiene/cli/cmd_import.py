@@ -53,6 +53,14 @@ def import_command(  # pylint: disable=too-many-arguments
             ),
         ),
     ] = False,
+    chain: Annotated[
+        bool,
+        typer.Option(
+            "--chain",
+            help=_("The steps after an import, again: Windows only, run by mh."),
+            hidden=True,
+        ),
+    ] = False,
     since: Annotated[
         str | None,
         typer.Option(
@@ -86,6 +94,7 @@ def import_command(  # pylint: disable=too-many-arguments
         yes: `--yes`, no question.
         backup: `--backup` folders, compared and never changed.
         phone: `--phone`, handled by `mh.ps1` before Docker (0379): refused here.
+        chain: `--chain`, likewise (0604).
         since: `--since`, only the files of a period (0476).
         pick: `--pick`, the files as tiles first, copied from the page (0590).
         page_port: `--port`, the port of that page.
@@ -107,7 +116,7 @@ def import_command(  # pylint: disable=too-many-arguments
     sources = [folder] if folder else backup
     runtime = runtime_of(ctx).with_overrides(folder_options.backup_layer(sources))
     output = runtime.output
-    if phone:
+    if phone or chain:
         output.error(
             _(
                 "mh import --phone is for Windows only: type it in Windows "

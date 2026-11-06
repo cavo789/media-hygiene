@@ -117,35 +117,108 @@ function global:_{{ f }}_phone {
 # The steps of [imports] then after the copies (0475): the list said, each step run in turn,
 # a step that fails said by itself and the chain going on; phone-end last (places, slideshow).
 # Order (0480): audit, copies (before the tags), bursts (a page beside the next steps), tags.
-function global:_{{ f }}_phone_then($chain, [string]$destination, [string]$period) {
+# Where it is goes to import-chain.json before each step (0604); from a step: those before skipped.
+function global:_{{ f }}_phone_then($chain, [string]$destination, [string]$period, [string]$start = '') {
     $steps = @($chain)
     if ($steps.Count -eq 0) { Write-Host "{{ n.off }}"; return }
     $list = $steps -join ' > '
     Write-Host "{{ n.listed }}"
+    $said = @{ steps = $steps; at = $steps[0]; state = '{{ n.running }}'; folder = $destination; since = $period; failed = @() }
     $bursts = $null
-    foreach ($step in $steps) {
-        if ($step -eq '{{ n.audit }}') {
-            # Alone, the audit may run on the home page; followed by other steps, here.
-            if ($steps.Count -eq 1) { _{{ f }}_phone_audit } else { Write-Host "{{ e.in_console }}"; {{ f }} audit }
+    $ended = $false
+    # A former import's choices are not this one's; a chain resumed at the page keeps its own.
+    if ($start -ne '{{ n.bursts_step }}') { Remove-Item -LiteralPath (Join-Path '{{ script.tools[n.reports].host }}' '{{ n.decisions }}') -Force -ErrorAction SilentlyContinue }
+    try {
+        $skipping = [bool]$start
+        foreach ($step in $steps) {
+            if ($skipping -and $step -ne $start) { continue }
+            $skipping = $false
+            $said.at = $step
+            _{{ f }}_phone_chain_write $said
+            $global:LASTEXITCODE = 0
+            if ($step -eq '{{ n.audit }}') {
+                # Alone, the audit may run on the home page; followed by other steps, here.
+                if ($steps.Count -eq 1) { _{{ f }}_phone_audit } else { Write-Host "{{ e.in_console }}"; {{ f }} audit }
+            }
+            elseif ($step -eq '{{ n.copies_step }}') { {{ f }} {{ n.end }} --folder $destination --since $period --copies }
+            elseif ($step -eq '{{ n.bursts_step }}') {
+                # Nothing beside the page without the tags: it stays here until it closes (0564).
+                if (_{{ f }}_phone_port_busy) { Write-Host "{{ n.bursts_home }}" }
+                elseif ($steps -contains '{{ n.tags_step }}') { $bursts = _{{ f }}_phone_bursts $destination $period }
+                else { _{{ f }}_phone_bursts_here $destination $period }
+                continue
+            }
+            elseif ($step -eq '{{ n.tags_step }}') { Write-Host "{{ n.tags }}"; {{ f }} tags --path $destination --yes }
+            if ($LASTEXITCODE -ne 0) { $said.failed = @($said.failed) + $step }
         }
-        elseif ($step -eq '{{ n.copies_step }}') { {{ f }} {{ n.end }} --folder $destination --since $period --copies }
-        elseif ($step -eq '{{ n.bursts_step }}') { $bursts = _{{ f }}_phone_bursts $destination $period }
-        elseif ($step -eq '{{ n.tags_step }}') { Write-Host "{{ n.tags }}"; {{ f }} tags --path $destination --yes }
+        if ($steps.Count -eq 1) { $ended = $true; return }
+        if ($bursts) { _{{ f }}_phone_bursts_end $bursts }
+        {{ f }} {{ n.end }} --folder $destination --since $period
+        $ended = $true
+    } finally {
+        # Ctrl+C included: the chain is offered again from its step.
+        $said.state = if ($ended) { '{{ n.done }}' } else { '{{ n.stopped }}' }
+        _{{ f }}_phone_chain_write $said
     }
-    if ($steps.Count -eq 1) { return }
-    if ($bursts) { _{{ f }}_phone_bursts_end $bursts }
-    {{ f }} {{ n.end }} --folder $destination --since $period
     $answer = "$(Read-Host "{{ n.tv }}")".Trim()
     # The new event only: the folder holds the earlier imports too (0480).
     if ($answer -match '^[yYoOjJ]') { {{ f }} slideshow --folder $destination --since $period }
+}
+
+# The chain's file, written beside then renamed: the home page never reads half of it (0604).
+function global:_{{ f }}_phone_chain_write($said) {
+    $said.updated = (Get-Date).ToUniversalTime().ToString('o')
+    $file = Join-Path '{{ script.tools[n.cache].host }}' '{{ n.chain_file }}'
+    try {
+        $said | ConvertTo-Json -Compress | Set-Content -LiteralPath "$file.tmp" -Encoding UTF8 -ErrorAction Stop
+        Move-Item -LiteralPath "$file.tmp" -Destination $file -Force -ErrorAction Stop
+    } catch { }  # the follow in the page is lost, never the chain
+}
+
+# `{{ f }} import {{ n.chain_flag }} [{{ n.from_flag }} <step>]`: the last chain again, from a step, else from where it stopped (0604).
+function global:_{{ f }}_phone_chain {
+    $at = [array]::IndexOf($args, '{{ n.from_flag }}')
+    $from = if ($at -ge 0 -and $at + 1 -lt $args.Count) { "$($args[$at + 1])" } else { '' }
+    $found = _{{ f }}_phone_chain_read
+    if (-not $found -or (-not $from -and $found.state -eq '{{ n.done }}')) { Write-Host "{{ n.no_chain }}"; return }
+    $steps = @($found.steps)
+    if (-not $from) { $from = "$($found.at)" }
+    if ($steps -notcontains $from) { $list = $steps -join ' > '; Write-Host "{{ n.bad_step }}"; $global:LASTEXITCODE = 2; return }
+    _{{ f }}_phone_then $steps "$($found.folder)" "$($found.since)" $from
+}
+
+# The chain's file read; nothing when missing or damaged.
+function global:_{{ f }}_phone_chain_read {
+    $file = Join-Path '{{ script.tools[n.cache].host }}' '{{ n.chain_file }}'
+    try { return (Get-Content -LiteralPath $file -Raw -Encoding UTF8 -ErrorAction Stop | ConvertFrom-Json) } catch { return $null }
+}
+
+# After `{{ f }} import --pick <folder>`: the copy of its page left the chain waiting (0619).
+function global:_{{ f }}_phone_chain_waiting {
+    $found = _{{ f }}_phone_chain_read
+    if ($found -and $found.state -eq '{{ n.waiting }}') { _{{ f }}_phone_chain }
+}
+
+# A page of mh answers on the port: another could not open there.
+function global:_{{ f }}_phone_port_busy {
+    try {
+        $null = Invoke-WebRequest -Uri 'http://127.0.0.1:{{ script.commands.port }}/' -UseBasicParsing -TimeoutSec 2 -ErrorAction Stop
+        return $true
+    } catch { return $false }
+}
+
+# The page of the import's burst series, here until it closes, then its shots through clean.
+function global:_{{ f }}_phone_bursts_here([string]$destination, [string]$period) {
+    {{ f }} review --imported $destination --since $period
+    $decided = Join-Path '{{ script.tools[n.reports].host }}' '{{ n.decisions }}'
+    if (Test-Path -LiteralPath $decided) { {{ f }} clean --decisions '{{ n.decisions }}' }
 }
 
 # The page of the import's burst series, in the background like the home page (0480): its
 # container's id, and what it holds (tab, stick, NAS); none when no series (nothing served).
 function global:_{{ f }}_phone_bursts([string]$destination, [string]$period) {
     $cid = Join-Path $env:TEMP '{{ f }}-import-bursts.cid'
-    # A former import's choices are not this one's: applied then, never twice.
-    Remove-Item -LiteralPath $cid, (Join-Path '{{ script.tools[n.reports].host }}' '{{ n.decisions }}') -Force -ErrorAction SilentlyContinue
+    Remove-Item -LiteralPath $cid -Force -ErrorAction SilentlyContinue
     $global:MediaHygieneHeld = $null
     $global:MediaHygieneDetach = $cid
     try { $null = {{ f }} review --imported $destination --since $period } finally { $global:MediaHygieneDetach = $null }
