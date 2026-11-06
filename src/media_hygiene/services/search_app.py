@@ -6,7 +6,6 @@ Both read the index; what is set aside goes to `decisions.json` (checked writabl
 from __future__ import annotations
 
 from dataclasses import dataclass
-from functools import partial
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n.templates import translated_environment
@@ -19,7 +18,7 @@ from media_hygiene.search.app import (
     SearchPages,
 )
 from media_hygiene.search.aside_filter import AsideFilter
-from media_hygiene.search.chosen_api import CHOSEN_PATH, ChosenDesk
+from media_hygiene.search.chosen_api import CHOSEN_PATH
 from media_hygiene.search.date_desk import DATE_PATH
 from media_hygiene.search.events_choose import SORT_PATHS
 from media_hygiene.search.events_desk import EVENTS_PAGE_PATH, EVENTS_PATH
@@ -53,7 +52,7 @@ from media_hygiene.search.tag_desk import HAND_TAG_PATH
 from media_hygiene.search.undo_api import UNDO_PATH
 from media_hygiene.search.views import FIRST_HITS
 from media_hygiene.services.albums import album_desk
-from media_hygiene.services.chosen_place import chosen_store, reports_ready
+from media_hygiene.services.chosen_place import chosen_desk
 from media_hygiene.services.page_undo import PageUndo
 from media_hygiene.services.rule_trial import event_gap_hours
 from media_hygiene.services.search_dates import date_desk, place_desk
@@ -172,7 +171,9 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         ),
         album_desk(
             runtime,
-            SearchPicker(search, AsideFilter(chosen.paths, runtime.mapper)).files,
+            SearchPicker(
+                search, AsideFilter(chosen.paths, runtime.mapper), chosen.albums
+            ).files,
             build.tv,
         ),
         PeopleDesk(search, names_place(runtime)),
@@ -185,16 +186,3 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         PageUndo(runtime),
     )
     return SearchApp(place, pages, build.executor)
-
-
-def chosen_desk(runtime: Runtime, search: SearchIndex) -> ChosenDesk:
-    """The files set aside from the pages: `decisions.json` in the reports folder.
-
-    Args:
-        runtime: Settings, mount points and output.
-        search: The open index.
-
-    Returns:
-        The desk answering the pages about them.
-    """
-    return ChosenDesk(chosen_store(runtime), search, partial(reports_ready, runtime))

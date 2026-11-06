@@ -507,8 +507,8 @@ aussi **📺 Partager sur la télé** et **📨 Préparer l'envoi**.
 - **Album** dans la colonne de gauche, une fois un album tapé : *Dans l'album* ne montre que ses
   fichiers, *Pas dans l'album* les autres ; dans les deux cas, un fichier déjà dedans affiche
   **✓ dans l'album** sur sa vignette, l'ajout en double se voit (ajouter deux fois ne change rien de
-  toute façon). *Choisir les N trouvés* n'est pas proposé avec ces filtres : les boutons agissent
-  sur les vignettes affichées.
+  toute façon). *Choisir les N trouvés* compte et prend les fichiers que le filtre
+  montre, jamais ceux qu'il cache.
 - **➕ Ajouter des photos** d'un album ouvert sur la [page des albums](../reference-albums.md)
   ouvre cette page avec l'album tapé, la période autour de ses dates et **← l'album** pour y
   revenir.

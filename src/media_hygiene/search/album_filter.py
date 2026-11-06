@@ -8,7 +8,7 @@ the albums file never changes here.
 
 from __future__ import annotations
 
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -73,6 +73,33 @@ def aimed_query(
         )
     kept = container if filters.only is None else container & set(filters.only)
     return replace(query, filters=replace(filters, only=tuple(sorted(kept))))
+
+
+@dataclass(frozen=True, slots=True)
+class AlbumNarrow:
+    """Narrows a search to the album filter, read from the disk at each request (0602).
+
+    The "all" re-runs of `/api/chosen` and `/api/albums` use it, so *Pick all N found*
+    acts on the files the filter shows, never on those it hides.
+    """
+
+    store: AlbumStore
+    mapper: HostPathMapper
+
+    def query(self, query: SearchQuery, aimed: AlbumAimed | None) -> SearchQuery:
+        """Keep a search to the album filter of the page, when it has one.
+
+        Args:
+            query: The search.
+            aimed: The album and the filter the page sent; None for none.
+
+        Returns:
+            The search, narrowed as the page's list was.
+        """
+        if aimed is None or aimed.inside is None:
+            return query
+        paths = album_paths(self.store, aimed.name)
+        return aimed_query(query, aimed, (paths, self.mapper))
 
 
 def marked(view: dict[str, object], paths: frozenset[str]) -> dict[str, object]:

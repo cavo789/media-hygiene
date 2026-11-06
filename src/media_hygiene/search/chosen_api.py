@@ -1,8 +1,7 @@
 """`GET`/`POST /api/chosen`: what is set aside, and the page's choices, saved at once.
 
 `POST` adds the files picked (their keys), or every file the search finds (`all`), or
-takes them out (`remove`); the answer is read back from the disk. Nothing is saved
-when the reports folder cannot keep it: the page says why.
+takes them out (`remove`); the answer is read back from the disk.
 """
 
 from __future__ import annotations
@@ -26,6 +25,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from media_hygiene.report.chosen_decisions import ChosenFile
+    from media_hygiene.search.album_filter import AlbumNarrow
     from media_hygiene.search.chosen import ChosenStore
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.search.query import SearchQuery
@@ -52,6 +52,7 @@ class ChosenDesk:
     store: ChosenStore
     index: SearchIndex
     ready: Callable[[], None]  # raises when the reports folder cannot keep them
+    albums: AlbumNarrow | None = None  # the album filter of the page (0602)
 
     def paths(self) -> frozenset[str]:
         """The host paths of the files set aside, to mark them on the page.
@@ -106,8 +107,7 @@ class ChosenDesk:
         except ValidationError:
             return Response(HTTPStatus.BAD_REQUEST)
         if asked.all:
-            query = read_query(self.index, asked.search.query())
-            photos = self.index.versions(self.narrow(query, asked.search.aside))
+            photos = self.index.versions(self._found(asked.search))
         else:
             found = (self.index.source_of(key) for key in asked.keys)
             photos = tuple(photo for photo in found if photo is not None)
@@ -122,6 +122,18 @@ class ChosenDesk:
             return chosen_refused(exc)
         except OSError as exc:
             return chosen_unsaved(exc)
+
+    def _found(self, search: SearchAsked) -> SearchQuery:
+        """The search "all" re-runs: the page's filters, the album's included (0602).
+
+        Args:
+            search: The search the page sent.
+
+        Returns:
+            It, narrowed.
+        """
+        query = self.narrow(read_query(self.index, search.query()), search.aside)
+        return query if self.albums is None else self.albums.query(query, search.album)
 
     def _said(self, files: tuple[ChosenFile, ...]) -> Response:
         """Say how many files are set aside, where, and what moves them.

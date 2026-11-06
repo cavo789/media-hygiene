@@ -343,9 +343,9 @@ async function search(event, again) {
   showChips(body);  // the active filters, removable (0565)
   if (!again && !near) keepInHistory();
   offerRule();
-  // An album kept or left out (0501) narrows the files shown, not *Pick all N found*'s
-  // search: that one is not offered then, every action stays on the tiles shown.
-  const narrowed = (body.album && body.album.inside !== null) || body.place || body.missing === "place" || near;
+  // The album kept or left out (0501) is sent with *Pick all N found* too (0602): the
+  // server narrows its search the same way. A place is not: not offered then.
+  const narrowed = body.place || body.missing === "place" || near;
   total = narrowed ? found.hits.length : found.total;
   showFiles(found.hits, again);
   $("more").hidden = found.total <= found.hits.length;

@@ -472,8 +472,8 @@ click; the panel also offers **📺 Share on the TV** and **📨 Prepare for sen
   is removed.
 - **Album** in the left column, once an album is typed: *In the album* shows only its files, *Not
   in the album* the others; either way, a file already in it says **✓ in the album** on its tile,
-  so adding twice shows (adding twice changes nothing anyway). *Pick all N found* is not offered
-  with either filter: the buttons act on the tiles shown.
+  so adding twice shows (adding twice changes nothing anyway). *Pick all N found* counts and
+  takes the files the filter shows, never those it hides.
 - **➕ Add photos** of an album opened on the [albums page](../reference-albums.md) opens this
   page with the album typed, the period around its dates and **← the album** to go back to it.
 - A photo moved since, by [`sort`](sort.md), by [`undo`](undo.md), or in a folder renamed in the
