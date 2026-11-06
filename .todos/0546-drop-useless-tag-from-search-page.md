@@ -5,6 +5,11 @@
 - **Depends**: —
 - **Files**: src/media_hygiene/config/tags_settings.py, src/media_hygiene/tags/normalize.py, src/media_hygiene/review/templates/pick_*, search page and its routes, tags index rows, XMP writers (`xmp_*`)
 
+## Decided (2026-11-06, maintainer, start of /todo:iterate)
+
+- The tag is also removed from the XMP sidecars already written.
+- One tag at a time; several tags at once and merging into another tag go to a TODO of their own.
+
 ## Context
 
 2026-10-31: searching `"panneau de signalisation"` finds 100 photos; the maintainer finds this

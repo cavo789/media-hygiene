@@ -5,6 +5,13 @@
 - **Depends**: —
 - **Files**: src/media_hygiene/services/slideshow_places.py, src/media_hygiene/geo/landmarks.py, src/media_hygiene/index/, src/media_hygiene/review/templates/pick_*, search, src/media_hygiene/classify/folder_towns.py, src/media_hygiene/geo/gazetteer.py
 
+## Decided (2026-11-06, maintainer, start of /todo:iterate)
+
+- Filled automatically and offline by every `audit`/`import`; a scan with a progress line, visible on a page, for the photos already indexed.
+- Label and folder names: the user's own place, else the town. The GeoNames regions (admin1, admin2) are stored and searchable, never in folder names.
+
+Left by the run to the existing rules, not asked: the 200 m radius stays a named constant (few settings); the building shown (item 7) stays with 0589 and 0489, out of this TODO; the measured share of landmarks stays with 0489.
+
 ## Context
 
 The maintainer saw "Montagne de Bueren" in the slideshow's place corner for
