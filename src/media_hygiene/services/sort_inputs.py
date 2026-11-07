@@ -49,6 +49,7 @@ class SortInputs:
     saved_at: datetime
     open_elsewhere: bool  # Excel or LibreOffice still has it open
     cut: bool = False  # some rows only (an event, a group): only their folders counted
+    trial: bool = False  # a sample of `sort --trial` (0648)
 
     @property
     def edits(self) -> Edits:

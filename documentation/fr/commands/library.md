@@ -248,8 +248,9 @@ dernier mois, combien de fichiers et vers quels dossiers, demande, puis trie seu
 journalisés. La grille montre alors ces photos dans leurs nouveaux dossiers, chaque vignette
 nommant le sien. **↶ Annuler** les remet en place ; **Trier le reste (N fichiers)** déplace le
 reste du plan après une question : un chemin rapide, ces fichiers ne sont pas montrés d'abord (le
-rapport de classify les montre). Les fichiers mis de côté restent en place. Les deux boutons
-durent le temps de la page ; ensuite, `mh sort` fait le reste et `undo` reprend l'essai.
+rapport de classify les montre). Les fichiers mis de côté restent en place. Recharger la page, ou revenir
+plus tard, retrouve les photos et les deux boutons, depuis le journal, jusqu'à ce que l'essai soit
+annulé ou que le tri continue ; `mh sort` fait aussi le reste et `undo` reprend l'essai.
 
 ## Déplacer des photos vers leur mois, sans événement
 

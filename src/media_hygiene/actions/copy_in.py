@@ -17,8 +17,9 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.actions.job_loop import JobLoop
 from media_hygiene.actions.journaled import JournaledChanges
 from media_hygiene.actions.kinds import ActionKind
+from media_hygiene.actions.link_move import target_exists
 from media_hygiene.actions.no_overwrite import copy_exclusive, rename_no_replace
-from media_hygiene.actions.sort_moves import file_of, make_folders, target_exists
+from media_hygiene.actions.sort_moves import file_of, make_folders
 from media_hygiene.i18n import _
 from media_hygiene.scan.hashing import full_digest
 from media_hygiene.scan.progress import Step

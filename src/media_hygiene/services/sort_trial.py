@@ -8,6 +8,7 @@ moves only the rest.
 from __future__ import annotations
 
 import re
+from dataclasses import replace
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.sort_resume import moved_rows
@@ -100,4 +101,4 @@ def only_trial(inputs: SortInputs, sample: str, mapper: HostPathMapper) -> SortI
         message = _("No file of the plan in the sample {sample}.").format(sample=sample)
         tip = _("Give 'latest', a month such as 2024-05, or a folder of the plan.")
         raise WorkbookError(message, tip)
-    return only_rows(inputs, ids)
+    return replace(only_rows(inputs, ids), trial=True)

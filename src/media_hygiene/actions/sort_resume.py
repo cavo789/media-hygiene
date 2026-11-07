@@ -95,6 +95,42 @@ def plan_runs(journal_dir: Path, plan_id: str) -> tuple[PlanRun, ...]:
     return tuple(found)
 
 
+@dataclass(frozen=True, slots=True)
+class OpenTrial:
+    """A trial nothing followed yet: its run, its moves not undone."""
+
+    run_id: str
+    moves: tuple[JournalEntry, ...]
+
+
+def open_trial(journal_dir: Path, plan_id: str) -> OpenTrial | None:
+    """The trial still waiting for *Undo* or *Sort the rest* (0648).
+
+    The latest run of the plan that still holds moves decides: a trial is open; any
+    other run means the sort went on. A journal without the marker is not a trial.
+
+    Args:
+        journal_dir: Journal mount point.
+        plan_id: The classify plan.
+
+    Returns:
+        The trial, or None.
+    """
+    for run_id in sorted(list_run_ids(journal_dir), reverse=True):
+        entries = read_journal(journal_file(journal_dir, run_id))
+        if run_phase(entries) is not Phase.SORT:
+            continue
+        undone = {entry.seq for entry in done_states(entries, Phase.UNDO)}
+        moves = tuple(
+            entry
+            for seq, entry in latest_states(entries, Phase.SORT).items()
+            if entry.row and seq not in undone and _moved(entry, plan_id)
+        )
+        if moves:
+            return OpenTrial(run_id, moves) if moves[0].trial else None
+    return None
+
+
 def _moved(entry: JournalEntry, plan_id: str) -> bool:
     """Tell whether an entry is a move of this plan that happened.
 

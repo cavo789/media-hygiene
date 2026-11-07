@@ -233,8 +233,9 @@ move in several months and no run moved any yet): it says the latest month, how 
 to which folders, asks, then sorts only those, journaled. The grid then shows these photos in
 their new folders, each tile naming its folder. **↶ Undo** puts them back; **Sort the rest (N
 files)** moves the rest of the plan after one question: a fast path, those files are not shown
-first (the classify report shows them). The files set aside stay in place. Both buttons last as
-long as the page; later, `mh sort` does the rest and `undo` takes the trial back.
+first (the classify report shows them). The files set aside stay in place. A reload, or coming back
+later, finds the photos and both buttons again, from the journal, until the trial is undone or the
+sort goes on; `mh sort` also does the rest and `undo` takes the trial back.
 
 ## Move photos to their month, without an event
 

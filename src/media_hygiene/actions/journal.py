@@ -39,6 +39,7 @@ class JournalEntry(BaseModel):
     # `sort` only: the classify plan applied, and its row (resumed runs skip it).
     plan: str | None = None
     row: str | None = None
+    trial: bool | None = None  # a sort of a sample (0648); absent before
     partial: str | None = None  # a gone file's partial digest (0224), a match's
     at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 

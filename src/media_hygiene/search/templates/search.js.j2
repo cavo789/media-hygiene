@@ -21,6 +21,7 @@ const CHIPS_SHOWN = 6;  // the words on a card at sizes S and M; the rest behind
 let more = 0;          // the files asked past the first ones (*Show more*, 0408)
 
 let trialAgain = null;  // (again): the grid shows the photos of a trial (0640)
+let trialShows = 0;     // how many times they were shown (0648)
 
 function card(hit, index) {
   const node = element("article");
@@ -334,8 +335,10 @@ async function search(event, again) {
     more: more, album: albumAimed(),
   };
   const lateBefore = window.mhLate ? window.mhLate.opened : 0;
+  const trialBefore = trialShows;
   const answer = await ask(SEARCH_PATH, body);
   if (window.mhLate && window.mhLate.opened !== lateBefore) return;  // late photos shown meanwhile (0558)
+  if (trialShows !== trialBefore) return;  // a trial found back meanwhile (0648)
   if (!answer) { told(TEXTS.offline, true); return; }
   if (!answer.ok) {
     const refused = answer.status === 400 ? await answer.json().catch(() => ({})) : {};  // a bad regex (0426)

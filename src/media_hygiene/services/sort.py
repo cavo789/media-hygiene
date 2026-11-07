@@ -171,7 +171,8 @@ class SortService:
                 workers=self._runtime.settings.clean.workers,
                 route=quarantine_route(self._runtime),
             )
-            executor = SortExecutor(SortContext(changes, plan.plan_id, stop), tally)
+            context = SortContext(changes, plan.plan_id, stop, prepared.inputs.trial)
+            executor = SortExecutor(context, tally)
             moves = executor.run(plan)
             folders = FolderReport()
             if not moves.interrupted and prepared.candidates:
