@@ -98,13 +98,20 @@ relit au prochain audit. Un nom posé par une autre application est gardé.
 
 <!-- capture: help-spots.txt -->
 ```text
- Usage: media-hygiene spots [OPTIONS]
+ Utilisation : media-hygiene spots [OPTIONS]
 
- 🔒 Read-only: never changes your photos. Name where the photos already indexed
- were taken (landmark, town, regions), offline; the audit does it for new ones.
+ 🔒 Lecture seule : ne modifie jamais vos photos. Nomme où les photos déjà dans
+ l'index ont été prises (lieu remarquable, ville, régions), hors ligne ;
+ l'audit le fait pour les nouvelles.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Show this message and exit.                                │
+│ --help  -h        Affiche ce message et quitte.                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ 🤖 IA locale (Ollama), facultative : un modèle indiqué dans config.toml ────╮
+│ --vision          🤖 Puis laisser le modèle de vision local de [classify.ai… │
+│                   choisir, parmi les monuments à moins de 1 km, celui que    │
+│                   montre chaque photo (les photos ne sont envoyées qu'à ce   │
+│                   modèle ; un nom saisi à la main l'emporte toujours).       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

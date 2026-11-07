@@ -126,9 +126,19 @@ mh undo --pick
 │                      For a sort, every run of the same workbook.             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --yes   -y        Do not ask for confirmation before undoing several runs of │
-│                   a sort (overrides sort.confirm).                           │
-│ --help  -h        Show this message and exit.                                │
+│ --yes   -y                          Do not ask for confirmation before       │
+│                                     undoing several runs of a sort           │
+│                                     (overrides sort.confirm).                │
+│ --pick                              Open the quarantine in the browser, as   │
+│                                     tiles, and put back only the photos you  │
+│                                     pick; 'undo' of their run still brings   │
+│                                     back the rest.                           │
+│ --port          <int range> [x>=1]  Port of the page. docker run publishes   │
+│                                     it under the same number on your         │
+│                                     computer: -p 127.0.0.1:9000:9000 for     │
+│                                     --port 9000. Default:  port in           │
+│                                     config.toml, 8088.                       │
+│ --help  -h                          Show this message and exit.              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
 │ --backup        <str>  A backup or an old disk, mounted read-only: never     │

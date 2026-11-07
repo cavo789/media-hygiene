@@ -71,21 +71,24 @@ still there. The reports folder receives the workbook where you correct the prop
 💡 A photo changed in place by another program? 'audit --full' reads every
 folder (done anyway for those listed 7 days ago).
 
-Already in place: 43 of 86 (50%).
+Already in place: 13 of 86 (15%).
 Proposal
-┏━━━━━━━━━┳━━━━━━━┳━━━━━━━━━┓
-┃ Band    ┃ Files ┃ To move ┃
-┡━━━━━━━━━╇━━━━━━━╇━━━━━━━━━┩
-│ Sure    │    77 │      34 │
-│ To sort │     5 │       5 │
-│ Undated │     4 │       4 │
-└─────────┴───────┴─────────┘
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━┓
+┃ Band             ┃ Files ┃ To move ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━┩
+│ Sure             │    73 │      73 │
+│ To check         │     6 │       0 │
+│ To sort          │     2 │       0 │
+│ Undated          │     4 │       0 │
+│ Left as they are │     1 │       0 │
+└──────────────────┴───────┴─────────┘
 
 Why
 ┌───────────────────────────┬────┐
 │ Existing folders          │ 76 │
-│ No signal                 │  5 │
 │ Undated                   │  4 │
+│ Same moment               │  3 │
+│ No signal                 │  2 │
 │ Screenshots and documents │  1 │
 └───────────────────────────┴────┘
 
@@ -93,9 +96,9 @@ Largest categories
 ┌──────────────────┬────┐
 │ Seaside holidays │ 13 │
 │ Photos 2019      │ 12 │
+│ Old phone        │ 11 │
 │ Mountain hike    │ 10 │
 │ Birthday         │  8 │
-│ Old phone        │  8 │
 │ Christmas        │  6 │
 │ Lake             │  6 │
 │ Phone            │  6 │
@@ -105,13 +108,15 @@ Largest categories
 
 ⚠️  Rules that decided nothing: Films and series, Event neighbours, Christmas,
 New Year.
-💡 Check their dates, their patterns and their order in config.toml.
-To check or to sort: 5 files in 1 event.
+💡 Check their dates, their patterns and their order in config.toml; the 🗂
+Events tab of 'library' lists them under Your rules, with a button to remove
+those that match nothing any more.
+To check or to sort: 8 files in 2 events.
 💡 Nothing was changed: 'classify' only proposes.
 ✅ Workbook to edit:
-C:\Users\you\media-hygiene\reports\20261025-084657-classify\classify.xlsx
+C:\Users\you\media-hygiene\reports\20261107-101410-classify\classify.xlsx
 ✅ Report with the photos:
-C:\Users\you\media-hygiene\reports\20261025-084657-classify\report.html
+C:\Users\you\media-hygiene\reports\20261107-101410-classify\report.html
 👉 What next: edit the yellow cells and save; nothing moves until 'sort'.
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `

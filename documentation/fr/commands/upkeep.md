@@ -62,8 +62,11 @@ Répondre *non* à une question ne saute que cette étape.
  Utilisation : media-hygiene upkeep [OPTIONS]
 
  Lance l'entretien régulier d'un coup, comme listé dans config.toml : audit,
- copies mises de côté, vieille quarantaine purgée, rapports ; chacun demande
- comme d'habitude.
+ copies mises de côté, rapports ; chacun demande comme d'habitude.
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --help  -h        Affiche ce message et quitte.                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>

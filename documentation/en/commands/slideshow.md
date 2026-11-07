@@ -262,13 +262,17 @@ The port is `[review] port`, the one of every page.
 │                                       "C:\Photos\2026 Holidays".             │
 │ --search          <str>               Show the photos a search finds, as     │
 │                                       typed in search: "noel 2025".          │
-│ --album           <str>               Show an album, made in search, browse  │
-│                                       or the burst review: "Crete 2023".     │
+│ --album           <str>               Show an album, made in search or the   │
+│                                       burst review: "Crete 2023".            │
 │ --port            <int range> [x>=1]  Port of the page. docker run publishes │
 │                                       it under the same number on your       │
 │                                       computer: -p 127.0.0.1:9000:9000 for   │
 │                                       --port 9000. Default:  port in         │
 │                                       config.toml, 8088.                     │
+│ --since           <str>               Only the files of a period, by the day │
+│                                       in their name, else their modified     │
+│                                       time: today, week, month, all or a day │
+│                                       such as 2026-10-29.                    │
 │ --help    -h                          Show this message and exit.            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```

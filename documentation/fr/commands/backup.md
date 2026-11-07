@@ -91,13 +91,13 @@ docker run --rm -it `
 
 <!-- capture: help-backup.txt -->
 ```text
- Usage: media-hygiene backup [OPTIONS]
+ Utilisation : media-hygiene backup [OPTIONS]
 
- 🔒 Read-only: never changes your photos. Back up the index and the settings
- into one archive outside Docker's cache volume, read back.
+ 🔒 Lecture seule : ne modifie jamais vos photos. Sauvegarde l'index et les
+ réglages dans une archive hors du volume de cache de Docker, relue.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Show this message and exit.                                │
+│ --help  -h        Affiche ce message et quitte.                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

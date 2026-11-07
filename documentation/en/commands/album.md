@@ -147,8 +147,8 @@ plan **instead of** `albums.json`; given together, every option must match: `--c
  (journaled, undoable).
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│ *    name      <str>  The album's name, as search saved it: the   │
-│                       folder holding its links.                              │
+│ *    name      <str>  The album's name, as search saved it: the folder       │
+│                       holding its links.                                     │
 │                       [required]                                             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮

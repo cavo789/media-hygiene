@@ -101,6 +101,12 @@ back at the next audit. A name set by another application is kept.
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --help  -h        Show this message and exit.                                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ 🤖 Local AI (Ollama), optional: a model set in config.toml ─────────────────╮
+│ --vision          🤖 Then let the local vision model of [classify.ai] pick,  │
+│                   among the landmarks within 1 km, the one each photo shows  │
+│                   (sends the photos to that model only; a name typed by hand │
+│                   always wins).                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </details>

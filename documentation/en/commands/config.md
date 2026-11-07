@@ -152,18 +152,30 @@ the option of the command line.
 
 <!-- capture: help-config.txt -->
 ```text
- Usage: media-hygiene config [OPTIONS]
+ Usage: media-hygiene config [OPTIONS] [action]:<tidy>
 
  🔒 Read-only: never changes your photos. Show every setting, where it comes
  from, and the mount points.
 
+╭─ Arguments ──────────────────────────────────────────────────────────────────╮
+│   action      <tidy>  tidy: list the entries of config.toml that point at    │
+│                       nothing any more (folders gone, rules matching no      │
+│                       photo).                                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --upgrade            Add the settings of this version to your config.toml,   │
-│                      with their explanation; your values and comments are    │
-│                      kept.                                                   │
-│ --dry-run            With --upgrade: list the settings it would add, write   │
-│                      nothing.                                                │
-│ --help     -h        Show this message and exit.                             │
+│ --apply                 With tidy: remove the ticked entries, after a copy   │
+│                         of config.toml.                                      │
+│ --dates                 With tidy: tick the date_range rules with no photo   │
+│                         too.                                                 │
+│ --upgrade               Add the settings of this version to your             │
+│                         config.toml, with their explanation; your values and │
+│                         comments are kept.                                   │
+│ --convention            Move the  layouts of your config.toml to the sort    │
+│                         convention year/year-month/event: shows each change, │
+│                         asks, writes.                                        │
+│ --dry-run               With --upgrade or --convention: list what would      │
+│                         change, write nothing.                               │
+│ --help        -h        Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

@@ -122,10 +122,9 @@ The same folder and scan options as [`audit`](audit.md#options): `--prefer`, `--
 │                              e.g. --ext photo,video or --ext png,webp        │
 │                              (repeatable). Categories: photo, raw, video,    │
 │                              media and those of scan.categories in           │
-│                              config.toml. Other types too, such as --ext     │
-│                              pdf,docx: their copies are moved to the         │
-│                              quarantine. Default: media (every photo, RAW    │
-│                              and video).                                     │
+│                              config.toml. Photo, RAW and video extensions    │
+│                              only. Default: media (every photo, RAW and      │
+│                              video).                                         │
 │ --exclude-name        <str>  Folder name never analysed, wherever it is,     │
 │                              case ignored; * and ? allowed, e.g.             │
 │                              --exclude-name Thumbnails,.Trash-*              │

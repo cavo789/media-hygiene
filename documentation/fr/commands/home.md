@@ -482,9 +482,8 @@ aucun autre site.
 ```text
  Utilisation : media-hygiene home [OPTIONS]
 
- 🔒 Lecture seule : ne modifie jamais vos photos. La page d'accueil dans votre
- navigateur : où vous en êtes, l'étape suivante en un bouton, toutes les étapes
- des guides, les rapports.
+ La page d'accueil dans votre navigateur : où vous en êtes, l'étape suivante en
+ un bouton, toutes les étapes des guides, les rapports.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --port          <int range> [x>=1]  Port de la page. docker run le publie    │

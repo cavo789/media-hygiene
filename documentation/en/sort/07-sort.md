@@ -42,22 +42,34 @@ Before anything moves, `sort` says what it read and what it will do, then asks:
 ```text
 ───────────────────────────────────── Sort ─────────────────────────────────────
 Workbook:
-C:\Users\you\media-hygiene\reports\20261025-084822-classify\classify.xlsx
-0 edits read; workbook saved on 25 October 2026 at 08:48.
+C:\Users\you\media-hygiene\reports\20261107-101537-classify\classify.xlsx
+0 edits read; workbook saved on 7 November 2026 at 10:15.
 Sort
-┌──────────────────────────────┬────────┐
-│ Files to move                │      8 │
-│ Into folders                 │      4 │
-│ Size                         │ 6.6 MB │
-│ Already in place             │     40 │
-│ Staying where they are       │      0 │
-│ Going to a 'to check' folder │      0 │
-│ Going to a 'to sort' folder  │      4 │
-│ Source folders removed       │      3 │
-└──────────────────────────────┴────────┘
+┌──────────────────────────────┬─────────┐
+│ Files to move                │      43 │
+│ Into folders                 │       6 │
+│ Size                         │ 14.8 MB │
+│ Already in place             │       0 │
+│ Staying where they are       │       5 │
+│ Going to a 'to check' folder │       0 │
+│ Going to a 'to sort' folder  │       0 │
+│ Source folders removed       │      11 │
+└──────────────────────────────┴─────────┘
 🛟 Each file is moved, never over another one nor deleted; the run is journaled:
 'undo' puts everything back.
-❓ Move 8 files into 4 folders? [y/N] y
+Sort
+┌──────────────────────────────┬────────┐
+│ Files to move                │      3 │
+│ Into folders                 │      1 │
+│ Size                         │ 3.0 MB │
+│ Already in place             │      0 │
+│ Staying where they are       │      0 │
+│ Going to a 'to check' folder │      0 │
+│ Going to a 'to sort' folder  │      0 │
+│ Source folders removed       │      1 │
+└──────────────────────────────┴────────┘
+❓ First sort: try on the latest month, 2024-04, 3 of 43 files? Then look, and
+sort the rest or undo. [y/N] y
 ```
 
 - *edits read* counts the cells you filled; check the date: a workbook edited but **not saved**
@@ -128,18 +140,18 @@ SHA-256 when it crossed disks):
 
 <!-- capture: sort.txt|re:^Sort \d| -->
 ```text
-Sort 20261025-084823
+Sort 20261107-101538
 ┌──────────────────────────┬────────┐
-│ Files processed          │      8 │
-│ Size                     │ 6.6 MB │
+│ Files processed          │      3 │
+│ Size                     │ 3.0 MB │
 │ Skipped (left untouched) │      0 │
 │ Failed                   │      0 │
 │ Duration                 │    0 s │
 └──────────────────────────┴────────┘
-Source folders removed: 3.
-✅ Nothing lost: 50 files (18.3 MB) before and after; 8 of 8 moves verified.
-Manifest: C:\Users\you\media-hygiene\reports\20261025-084823-sort\manifest.json
-💡 Changed your mind? 'media-hygiene undo 20261025-084823' moves everything
+Source folders removed: 1.
+✅ Nothing lost: 3 files (3.0 MB) before and after; 3 of 3 moves verified.
+Manifest: C:\Users\you\media-hygiene\reports\20261107-101538-sort\manifest.json
+💡 Changed your mind? 'media-hygiene undo 20261107-101538' moves everything
 back:
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
@@ -149,7 +161,17 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene undo 20261025-084823
+  cavo789/media-hygiene undo 20261107-101538
+👉 What next: looks right? Sort the rest with the same plan:
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Old disk:/data/d/Old disk" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "media-hygiene-cache:/cache" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene sort
 ```
 
 The proof is written to `/reports/<run>-sort/manifest.json`.
@@ -183,14 +205,15 @@ back, the removed folders come back, the folders the sort created go.
 
 <!-- capture: undo-sort.txt -->
 ```text
-────────────────────── Undo the sort run 20261025-084823 ───────────────────────
+👁 A whole run: 'undo --pick' shows the photos and puts back only a few.
+────────────────────── Undo the sort run 20261107-101538 ───────────────────────
 🛟 Each file comes back where it was, never over another one; what cannot come
 back whole is left as it is, and said.
 
-Undo the sort run 20261025-084823
+Undo the sort run 20261107-101538
 ┌──────────────────────────┬────────┐
-│ Files processed          │      8 │
-│ Size                     │ 6.6 MB │
+│ Files processed          │      3 │
+│ Size                     │ 3.0 MB │
 │ Skipped (left untouched) │      0 │
 │ Failed                   │      0 │
 │ Duration                 │    0 s │

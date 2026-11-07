@@ -166,7 +166,7 @@ cavo789/media-hygiene clean --yes
 │                                             pairs) or written by 'review'    │
 │                                             (burst shots set aside, near     │
 │                                             duplicates decided) or by        │
-│                                             'library' (photos set aside). A   │
+│                                             'library' (photos set aside). A  │
 │                                             relative path is read from the   │
 │                                             folder mounted on /reports. The  │
 │                                             file is refused if the folders,  │
@@ -198,10 +198,9 @@ cavo789/media-hygiene clean --yes
 │                              e.g. --ext photo,video or --ext png,webp        │
 │                              (repeatable). Categories: photo, raw, video,    │
 │                              media and those of scan.categories in           │
-│                              config.toml. Other types too, such as --ext     │
-│                              pdf,docx: their copies are moved to the         │
-│                              quarantine. Default: media (every photo, RAW    │
-│                              and video).                                     │
+│                              config.toml. Photo, RAW and video extensions    │
+│                              only. Default: media (every photo, RAW and      │
+│                              video).                                         │
 │ --exclude-name        <str>  Folder name never analysed, wherever it is,     │
 │                              case ignored; * and ? allowed, e.g.             │
 │                              --exclude-name Thumbnails,.Trash-*              │

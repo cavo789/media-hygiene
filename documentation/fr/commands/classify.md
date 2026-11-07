@@ -139,7 +139,7 @@ cavo789/media-hygiene --locale fr classify --sample 20
 │                          seuls les fichiers sous ces dossiers reçoivent une  │
 │                          proposition. Avec --year : les fichiers des deux.   │
 │ --layout          <str>  Où vont les fichiers sûrs, par exemple              │
-│                          '{year}/{month} - {month_name}'.                    │
+│                          '{year}/{year_month}/{category}'.                   │
 │ --target          <str>  Dossier de l'hôte qui reçoit l'arborescence ; sur   │
 │                          place par défaut.                                   │
 │ --help    -h             Affiche ce message et quitte.                       │

@@ -613,8 +613,8 @@ search by meaning. The page keeps these tips short, in *How to write a search*.
 ```text
  Usage: media-hygiene library [OPTIONS] [words]...
 
- 🔒 Read-only: never changes your photos. Find photos by their words in your
- browser (or as a table): the words 'tags' gave them.
+ Find photos by their words in your browser (or as a table): the words 'tags'
+ gave them.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
 │   words      <str>  Words to find, printed as a table instead of opening the │
@@ -623,14 +623,18 @@ search by meaning. The page keeps these tips short, in *How to write a search*.
 │                     caption, folder, name, date, person).                    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --limit          <int range> [x>=1]  How many files the table lists at most. │
-│                                      Default: 20.                            │
-│ --port           <int range> [x>=1]  Port of the page. docker run publishes  │
-│                                      it under the same number on your        │
-│                                      computer: -p 127.0.0.1:9000:9000 for    │
-│                                      --port 9000. Default:  port in          │
-│                                      config.toml, 8088.                      │
-│ --help   -h                          Show this message and exit.             │
+│ --limit           <int range> [x>=1]  How many files the table lists at      │
+│                                       most. Default: 20.                     │
+│ --folder          <str>               Open the page on this folder (a part   │
+│                                       of its path, as 'Path contains' takes  │
+│                                       it), e.g. a folder 'status' lists as   │
+│                                       left to sort.                          │
+│ --port            <int range> [x>=1]  Port of the page. docker run publishes │
+│                                       it under the same number on your       │
+│                                       computer: -p 127.0.0.1:9000:9000 for   │
+│                                       --port 9000. Default:  port in         │
+│                                       config.toml, 8088.                     │
+│ --help    -h                          Show this message and exit.            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

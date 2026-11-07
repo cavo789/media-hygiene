@@ -213,6 +213,9 @@ est dit après chaque vidéo.
 │                           avant et après dans le navigateur ; alléger depuis │
 │                           la page. Les brouillons sont supprimés quand la    │
 │                           page se ferme.                                     │
+│ --chosen                  Alléger les vidéos choisies sur la page            │
+│                           d'allègement de la page d'accueil, en réutilisant  │
+│                           leurs brouillons. La page le lance pour vous.      │
 │ --yes      -y             Alléger sans demander d'abord.                     │
 │ --help     -h             Affiche ce message et quitte.                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯

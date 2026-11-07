@@ -141,7 +141,7 @@ whole collection, estimated); each photo is kept in the cache at once, so the ne
 │                           every file of the index.                           │
 │ --meaning                 Also let a model look at each photo on this        │
 │                           computer's processor (CLIP, once, about 1 minute   │
-│                           per 1,000 photos), so that 'library' finds what a   │
+│                           per 1,000 photos), so that 'library' finds what a  │
 │                           photo shows. Default:  meaning.                    │
 │ --help     -h             Show this message and exit.                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯

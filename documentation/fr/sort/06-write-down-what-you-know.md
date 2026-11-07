@@ -287,8 +287,9 @@ Le tableau *Pourquoi* de `classify` compte les fichiers que chaque règle a déc
 Pourquoi
 ┌───────────────────────────────┬────┐
 │ Dossiers existants            │ 76 │
-│ Aucun indice                  │  5 │
 │ Sans date                     │  4 │
+│ Même moment                   │  3 │
+│ Aucun indice                  │  2 │
 │ Captures d'écran et documents │  1 │
 └───────────────────────────────┴────┘
 
@@ -296,9 +297,9 @@ Catégories les plus remplies
 ┌─────────────────────┬────┐
 │ Vacances à la mer   │ 13 │
 │ Photos 2019         │ 12 │
+│ Ancien téléphone    │ 11 │
 │ Randonnée           │ 10 │
 │ Anniversaire        │  8 │
-│ Ancien téléphone    │  8 │
 │ Noël                │  6 │
 │ Lac                 │  6 │
 │ Téléphone           │  6 │
@@ -308,7 +309,9 @@ Catégories les plus remplies
 
 ⚠️  Règles qui n'ont rien décidé : Films et séries, Voisins d'événement, Noël,
 Nouvel An, Saint-Nicolas.
-💡 Vérifiez leurs dates, leurs expressions et leur ordre dans config.toml.
+💡 Vérifiez leurs dates, leurs motifs et leur ordre dans config.toml ; l'onglet
+🗂 Événements de 'library' les liste sous Vos règles, avec un bouton pour retirer
+celles qui ne correspondent plus à rien.
 ```
 
 Les règles qui n'ont rien décidé sont nommées après le tableau : une faute de frappe dans une

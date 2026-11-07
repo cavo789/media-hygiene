@@ -61,7 +61,7 @@ Answering *no* to a question skips that step only.
  Usage: media-hygiene upkeep [OPTIONS]
 
  Run the regular chores in one go, as listed in config.toml: audit, copies set
- aside, old quarantine purged, reports; each asks as usual.
+ aside, reports; each asks as usual.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --help  -h        Show this message and exit.                                │

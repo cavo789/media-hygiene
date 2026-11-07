@@ -70,19 +70,19 @@ plus récente est remise.
 
 <!-- capture: help-restore.txt -->
 ```text
- Usage: media-hygiene restore [OPTIONS] [archive]
+ Utilisation : media-hygiene restore [OPTIONS] [archive]
 
- Put back a backup of the index (and the settings with --config), after backing
- up the current one.
+ Remet une sauvegarde de l'index (et les réglages avec --config), après avoir
+ sauvegardé l'index actuel.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│   archive      <str>  The backup to restore, by its name; the most recent by │
-│                       default.                                               │
+│   archive      <str>  La sauvegarde à remettre, par son nom ; la plus        │
+│                       récente par défaut.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --config            Restore the settings (config.toml, people) too; the      │
-│                     index alone by default.                                  │
-│ --help    -h        Show this message and exit.                              │
+│ --config            Remettre aussi les réglages (config.toml, people) ;      │
+│                     l'index seul par défaut.                                 │
+│ --help    -h        Affiche ce message et quitte.                            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

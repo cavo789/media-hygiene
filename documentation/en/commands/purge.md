@@ -100,8 +100,11 @@ docker run --rm -it `
 │   run_id      <str>  Run whose quarantine is erased; every run by default.   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --yes   -y        Do not ask for confirmation (overrides clean.confirm).     │
-│ --help  -h        Show this message and exit.                                │
+│ --yes   -y              Do not ask for confirmation (overrides               │
+│                         clean.confirm).                                      │
+│ --to            <path>  Copy the quarantine to this folder first, check      │
+│                         every byte of the copy, and only then erase it.      │
+│ --help  -h              Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

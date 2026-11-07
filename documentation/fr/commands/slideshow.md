@@ -284,15 +284,19 @@ Le port est `[review] port`, celui de toutes les pages.
 │ --search          <str>               Montrer les photos que trouve une      │
 │                                       recherche, tapée comme dans search :   │
 │                                       "noel 2025".                           │
-│ --album           <str>               Montrer un album, fait dans search,    │
-│                                       browse ou le tri des rafales : "Crète  │
-│                                       2023".                                 │
+│ --album           <str>               Montrer un album, fait dans search ou  │
+│                                       le tri des rafales : "Crète 2023".     │
 │ --port            <int range> [x>=1]  Port de la page. docker run le publie  │
 │                                       sous le même numéro sur votre          │
 │                                       ordinateur, par exemple -p             │
 │                                       127.0.0.1:9000:9000 pour --port 9000.  │
 │                                       Par défaut :  port dans config.toml,   │
 │                                       8088.                                  │
+│ --since           <str>               Seulement les fichiers d'une période,  │
+│                                       selon la date de leur nom, sinon leur  │
+│                                       date de modification : today, week,    │
+│                                       month, all ou un jour comme            │
+│                                       2026-10-29.                            │
 │ --help    -h                          Affiche ce message et quitte.          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```

@@ -203,24 +203,29 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
  them.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --near             Review the near duplicates and re-encoded videos group by │
-│                    group instead of the burst series: as planned, keep the   │
-│                    other version, or leave alone; 'clean --tier near         │
-│                    --decisions' applies it.                                  │
-│ --pairs            Review the folder pairs of the exact duplicates one by    │
-│                    one instead of the burst series: as planned, swap the     │
-│                    folders, or leave alone; 'clean --decisions' applies it.  │
-│ --junk             Review the photos most likely unwanted (tiny,             │
-│                    screenshots, nearly black or white, the blurriest)        │
-│                    instead of the burst series: nothing is set aside without │
-│                    you; 'clean --decisions' moves what you set aside to the  │
-│                    quarantine. Thresholds:  of config.toml.                  │
-│ --gone             Review the photos and videos gone since an audit (deleted │
-│                    in the Explorer?) instead of the burst series: say which  │
-│                    ones you deleted on purpose, and 'clean --decisions'      │
-│                    remembers them, so that they are set aside if they come   │
-│                    back.                                                     │
-│ --help   -h        Show this message and exit.                               │
+│ --near                 Review the near duplicates and re-encoded videos      │
+│                        group by group instead of the burst series: as        │
+│                        planned, keep the other version, or leave alone;      │
+│                        'clean --tier near --decisions' applies it.           │
+│ --pairs                Review the folder pairs of the exact duplicates one   │
+│                        by one instead of the burst series: as planned, swap  │
+│                        the folders, or leave alone; 'clean --decisions'      │
+│                        applies it.                                           │
+│ --junk                 Review the photos most likely unwanted (tiny,         │
+│                        screenshots, nearly black or white, the blurriest)    │
+│                        instead of the burst series: nothing is set aside     │
+│                        without you; 'clean --decisions' moves what you set   │
+│                        aside to the quarantine. Thresholds:  of config.toml. │
+│ --gone                 Review the photos and videos gone since an audit      │
+│                        (deleted in the Explorer?) instead of the burst       │
+│                        series: say which ones you deleted on purpose, and    │
+│                        'clean --decisions' remembers them, so that they are  │
+│                        set aside if they come back.                          │
+│ --intruders            Pick the intruder files (zip, docx, pdf… in your      │
+│                        photo folders) to set aside, per extension and per    │
+│                        folder, instead of the burst series; 'clean           │
+│                        --decisions' moves them to the quarantine.            │
+│ --help       -h        Show this message and exit.                           │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced options ───────────────────────────────────────────────────────────╮
 │ --decisions        <path>              File the decisions are saved in, and  │
@@ -232,6 +237,10 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
 │                                        your computer: -p 127.0.0.1:9000:9000 │
 │                                        for --port 9000. Default:  port in    │
 │                                        config.toml, 8088.                    │
+│ --since            <str>               Only the files of a period, by the    │
+│                                        day in their name, else their         │
+│                                        modified time: today, week, month,    │
+│                                        all or a day such as 2026-10-29.      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced: folders (override folders.* of config.toml) ──────────────────────╮
 │ --prefer         <str>  Folder whose copies are kept first. Repeat it; the   │
@@ -248,10 +257,9 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
 │                              e.g. --ext photo,video or --ext png,webp        │
 │                              (repeatable). Categories: photo, raw, video,    │
 │                              media and those of scan.categories in           │
-│                              config.toml. Other types too, such as --ext     │
-│                              pdf,docx: their copies are moved to the         │
-│                              quarantine. Default: media (every photo, RAW    │
-│                              and video).                                     │
+│                              config.toml. Photo, RAW and video extensions    │
+│                              only. Default: media (every photo, RAW and      │
+│                              video).                                         │
 │ --exclude-name        <str>  Folder name never analysed, wherever it is,     │
 │                              case ignored; * and ? allowed, e.g.             │
 │                              --exclude-name Thumbnails,.Trash-*              │

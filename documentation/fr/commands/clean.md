@@ -172,12 +172,12 @@ cavo789/media-hygiene --locale fr clean --yes
 │                                             quelles), écrit par 'review'     │
 │                                             (photos de rafale écartées,      │
 │                                             quasi-doublons décidés) ou par   │
-│                                             'library' (photos mises de côté). │
-│                                             Un chemin relatif est lu dans le │
-│                                             dossier monté sur /reports. Le   │
-│                                             fichier est refusé si les        │
-│                                             dossiers, les paires ou les      │
-│                                             séries ont changé. Seul,         │
+│                                             'library' (photos mises de       │
+│                                             côté). Un chemin relatif est lu  │
+│                                             dans le dossier monté sur        │
+│                                             /reports. Le fichier est refusé  │
+│                                             si les dossiers, les paires ou   │
+│                                             les séries ont changé. Seul,     │
 │                                             --decisions lit decisions.json.  │
 │ --yes        -y                             Ne pas demander de confirmation  │
 │                                             (remplace clean.confirm).        │
@@ -200,14 +200,13 @@ cavo789/media-hygiene --locale fr clean --yes
 │                         contient. Répétable.                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : analyse (remplace scan.* de config.toml) ──────────────────────────╮
-│ --ext                 <str>  N'analyse que ces catégories ou extensions, p.  │
-│                              ex. --ext photo,video ou --ext png,webp         │
+│ --ext                 <str>  N'analyser que ces catégories ou extensions,    │
+│                              par exemple --ext photo,video ou --ext png,webp │
 │                              (répétable). Catégories : photo, raw, video,    │
 │                              media et celles de scan.categories dans         │
-│                              config.toml. D'autres types aussi, comme --ext  │
-│                              pdf,docx : leurs copies sont déplacées en       │
-│                              quarantaine. Par défaut : media (toutes les     │
-│                              photos, RAW et vidéos).                         │
+│                              config.toml. Extensions de photos, RAW et       │
+│                              vidéos seulement. Par défaut : media (toutes    │
+│                              les photos, RAW et vidéos).                     │
 │ --exclude-name        <str>  Nom de dossier jamais analysé, où qu'il soit,   │
 │                              sans tenir compte de la casse ; * et ? permis,  │
 │                              p. ex. --exclude-name Thumbnails,.Trash-*       │

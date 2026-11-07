@@ -144,7 +144,7 @@ chaque photo est gardée aussitôt dans le cache, le passage suivant continue.
 │ --meaning                 Laisser aussi un modèle regarder chaque photo sur  │
 │                           le processeur de cet ordinateur (CLIP, une seule   │
 │                           fois, environ 1 minute pour 1 000 photos), pour    │
-│                           que 'library' trouve ce qu'une photo montre. Par    │
+│                           que 'library' trouve ce qu'une photo montre. Par   │
 │                           défaut :  meaning.                                 │
 │ --help     -h             Affiche ce message et quitte.                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
