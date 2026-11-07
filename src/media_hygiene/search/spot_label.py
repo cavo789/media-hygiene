@@ -75,7 +75,7 @@ class SpotNames:
 
 def spot_labels(
     connection: sqlite3.Connection, keys: Iterable[int], names: SpotNames
-) -> dict[int, str]:
+) -> dict[int, tuple[str, str]]:
     """The labels of some files; none for an index older than the rows.
 
     Args:
@@ -84,13 +84,14 @@ def spot_labels(
         names: The user's places and names.
 
     Returns:
-        Each located file's label by key.
+        Each located file's label and landmark (empty when none) by key: the
+        landmark is the tile's 📍 chip (0651).
     """
     try:
         found = spots_by_key(connection, json.dumps(list(keys)))
     except sqlite3.OperationalError:
         return {}
-    return {key: names.label(spot) for key, spot in found.items()}
+    return {key: (names.label(spot), spot.landmark) for key, spot in found.items()}
 
 
 def with_spots(index: SearchIndex, cards: list[dict[str, object]]) -> None:
@@ -103,4 +104,4 @@ def with_spots(index: SearchIndex, cards: list[dict[str, object]]) -> None:
     keys = [int(str(card["key"])) for card in cards]
     labels = spot_labels(index.connection, keys, index.spot_names)
     for key, card in zip(keys, cards, strict=True):
-        card["spot"] = labels.get(key, "")
+        card["spot"], card["landmark"] = labels.get(key, ("", ""))

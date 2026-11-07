@@ -190,6 +190,11 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         date_desk(runtime, search, chosen),
         place_desk(runtime, search, chosen),
         PageUndo(runtime),
-        LandmarkDesk(search, LandmarkWriter(runtime), runtime.locations.cache_dir),
+        LandmarkDesk(
+            search,
+            LandmarkWriter(runtime),
+            runtime.locations.cache_dir,
+            runtime.locations.config_file,
+        ),
     )
     return SearchApp(place, pages, build.executor)

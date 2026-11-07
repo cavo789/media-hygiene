@@ -91,6 +91,14 @@ photo est le compagnon relu sur le disque. Le compagnon suit la photo (`sort`, `
 renommé dans l'Explorateur) : le nom et les noms refusés la suivent ; un index reconstruit les
 relit au prochain audit. Un nom posé par une autre application est gardé.
 
+Une fois le nom écrit, la fenêtre demande *Un de vos lieux ?* : **L'ajouter comme lieu** écrit un
+cercle de 200 m autour de la photo dans `[[classify.places]]` de `config.toml` (la ligne affichée
+est le fichier relu ; un lieu du même nom déjà présent est gardé), *Non, le nom seulement* ne
+touche pas aux lieux. Rien n'est ajouté sans ce clic.
+
+Le monument est aussi une **pastille 📍**, la première parmi les mots de la vignette et de la
+grande vue : un clic montre toutes les photos de ce monument (Ctrl+clic l'ajoute à la recherche).
+
 ## L'aide intégrée
 
 <details>

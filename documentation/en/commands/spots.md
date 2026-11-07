@@ -86,6 +86,14 @@ the sidecar read back from the disk. The sidecar moves with the photo (`sort`, `
 renamed in Explorer), so the name and the names rejected follow it; an index rebuilt reads them
 back at the next audit. A name set by another application is kept.
 
+Once a name is written, the dialog asks *A place of yours?*: **Add it as a place** writes a
+circle of 200 m around the photo into `[[classify.places]]` of `config.toml` (the line shown is
+the file read back; a place of that name already there is kept), *No, the name only* leaves the
+places alone. Nothing is added without that click.
+
+The landmark is also a **📍 chip** first among the words of the tile and of the large view: a
+click shows every photo of that landmark (Ctrl+click adds it to the search).
+
 ## The built-in help
 
 <details>

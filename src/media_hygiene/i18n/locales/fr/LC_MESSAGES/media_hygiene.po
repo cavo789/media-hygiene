@@ -981,6 +981,9 @@ msgstr ""
 "maison, chez les grands-parents, le bureau. Les villes sont nommées d"
 "'elles-mêmes."
 
+msgid "A place of yours?"
+msgstr "Un de vos lieux ?"
+
 msgid ""
 "A place you name like a town within this distance, in km, gets a hint: "
 "'classify' already names that town's photos, so the place may be "
@@ -1190,6 +1193,9 @@ msgstr "Ajouter un dossier"
 msgid "Add a photo folder"
 msgstr "Ajouter un dossier de photos"
 
+msgid "Add it as a place"
+msgstr "L'ajouter comme lieu"
+
 msgid ""
 "Add or remove a photo folder: mh folders add (a window to choose it) or "
 "mh folders add <folder>, mh folders remove <folder>. A backup, compared, "
@@ -1273,6 +1279,14 @@ msgstr "Ajouter aux favoris"
 
 msgid "Add your photo folder: mh folders add <folder>."
 msgstr "Ajoutez votre dossier de photos : mh folders add <dossier>."
+
+#, python-brace-format
+msgid ""
+"Add {name} to your places too: a circle of 200 m around this photo, for "
+"classify and the search?"
+msgstr ""
+"Ajouter aussi {name} à vos lieux : un cercle de 200 m autour de cette photo, "
+"pour classify et la recherche ?"
 
 msgid "Advanced"
 msgstr "Avancé"
@@ -5123,7 +5137,9 @@ msgstr "Sa part de la netteté de la plus nette ; son score : {score}"
 
 #, python-brace-format
 msgid "Its sidecar names {name}, set by another application: kept."
-msgstr "Son fichier compagnon nomme {name}, posé par une autre application : gardé."
+msgstr ""
+"Son fichier compagnon nomme {name}, posé par une autre application : "
+"gardé."
 
 #, python-brace-format
 msgid "Its sidecar names: {name}"
@@ -6866,6 +6882,9 @@ msgstr "Aucun lieu pour l'instant : nommez vos lieux sur la page des lieux."
 msgid "No position for this event."
 msgstr "Aucune position pour cet événement."
 
+msgid "No position."
+msgstr "Aucune position."
+
 msgid "No preview"
 msgstr "Pas d'aperçu"
 
@@ -6985,6 +7004,9 @@ msgstr "Plus aucune vidéo à alléger : rien n'a changé."
 
 msgid "No video worth lightening."
 msgstr "Aucune vidéo à alléger."
+
+msgid "No, the name only"
+msgstr "Non, le nom seulement"
 
 msgid "Nobody is named yet."
 msgstr "Personne n'est encore nommé."
@@ -10084,7 +10106,6 @@ msgstr ""
 "Écarter des photos de rafale, une série à la fois, au clavier dans votre "
 "navigateur ; 'clean --decisions' les déplace ensuite."
 
-#, python-brace-format
 msgid "Set by another application: kept."
 msgstr "Posé par une autre application : gardé."
 
@@ -14098,7 +14119,9 @@ msgstr ""
 msgid ""
 "Written into its .xmp sidecar, never into the photo; journaled: 'mh undo'"
 " takes it back. A wrong name is never proposed again."
-msgstr "Écrit dans son fichier compagnon .xmp, jamais dans la photo ; journalisé : « mh undo » le reprend. Un nom faux n'est plus jamais proposé."
+msgstr ""
+"Écrit dans son fichier compagnon .xmp, jamais dans la photo ; journalisé "
+": « mh undo » le reprend. Un nom faux n'est plus jamais proposé."
 
 msgid ""
 "Written into their .xmp sidecars, never into the photos; journaled: 'mh "
@@ -19063,6 +19086,10 @@ msgid "{name} comes close too: resemblance {score}."
 msgstr "{name} est proche aussi : ressemblance {score}."
 
 #, python-brace-format
+msgid "{name} could not be added to your places."
+msgstr "{name} n'a pas pu être ajouté à vos lieux."
+
+#, python-brace-format
 msgid ""
 "{name} is a built-in category, it cannot be redefined: choose another "
 "name, e.g. my_{name}"
@@ -19071,8 +19098,20 @@ msgstr ""
 "choisissez un autre nom, par exemple my_{name}"
 
 #, python-brace-format
+msgid "{name} is already one of your places: kept."
+msgstr "{name} est déjà un de vos lieux : gardé."
+
+#, python-brace-format
 msgid "{name} is an extension: choose another name for the category"
 msgstr "{name} est une extension : choisissez un autre nom pour la catégorie"
+
+#, python-brace-format
+msgid ""
+"{name} is now one of your places ({radius} m around this photo), read "
+"back from config.toml."
+msgstr ""
+"{name} est maintenant un de vos lieux ({radius} m autour de cette photo), "
+"relu dans config.toml."
 
 #, python-brace-format
 msgid "{name} must be a JSON array, e.g. [\"C:\\\\Photos\"]"

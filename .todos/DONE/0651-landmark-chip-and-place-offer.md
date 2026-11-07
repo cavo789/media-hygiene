@@ -18,6 +18,16 @@ photo's sidecar; the 500 m radius stays a constant.
 
 ## Acceptance
 
-- [ ] 📍 chip among the tags (tile, large view); a click shows every photo of that landmark
-- [ ] A confirmed name offered as a place (circle around it), asked, never silent
-- [ ] Headless Chromium check of the landmark dialog and the chip (skill `photo-picking-pages`)
+- [x] 📍 chip among the tags (tile, large view); a click shows every photo of that landmark
+- [x] A confirmed name offered as a place (circle around it), asked, never silent
+- [x] Headless Chromium check of the landmark dialog and the chip (skill `photo-picking-pages`)
+
+## Status — DONE (2026-11-07)
+
+- 📍 chip first among the words (tile and large view, `search.js.j2` `landmarkChip`): click
+  searches the landmark, Ctrl+click adds it; the hit carries `landmark` (`spot_label`).
+- After *Write this name*, the dialog asks *A place of yours?*; *Add it as a place* posts
+  `action: place` (`search/landmark_place.py`): a 200 m circle around the photo in
+  `[[classify.places]]`, read back; a place of that name is kept.
+- Headless Chromium (mocked API): chip click searches "Tour Eiffel", nothing picked; L, write,
+  offer shown, Yes posts `place`, dialog closes, line shown; no page error of this change.

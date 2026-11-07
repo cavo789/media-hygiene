@@ -57,6 +57,7 @@ export -f reports_stop
 export -f i18n_extract
 export -f i18n_update
 export -f i18n_todo
+export -f i18n_translate
 export -f todos
 export -f ci
 export -f ci_logs

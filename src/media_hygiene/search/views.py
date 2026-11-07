@@ -175,6 +175,7 @@ def _hit_view(hit: Hit, mapper: HostPathMapper) -> dict[str, object]:
         "bytes": hit.photo.size,
         "facts": hit.facts,  # a video's length, bit rate, codec (0408)
         "spot": hit.spot,  # its landmark and town (0545)
+        "landmark": hit.landmark,  # its 📍 chip (0651)
         "taken": hit.taken
         or hit.date,  # the date and time taken, for the tile's tooltip (0433)
         "modified": modified_day(hit.photo.mtime_ns),  # as Explorer shows it

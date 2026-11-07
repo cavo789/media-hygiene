@@ -113,10 +113,23 @@ def with_facts(index: SearchIndex, found: Found) -> Found:
         index.connection, [hit.key for hit in found.hits], index.spot_names
     )
     hits = tuple(
-        replace(_described(hit, known.get(hit.key)), spot=labels.get(hit.key, ""))
+        _located(_described(hit, known.get(hit.key)), labels.get(hit.key, ("", "")))
         for hit in found.hits
     )
     return replace(found, hits=hits)
+
+
+def _located(hit: Hit, spot: tuple[str, str]) -> Hit:
+    """One file with its 📍 label and landmark (0545, 0651).
+
+    Args:
+        hit: The file.
+        spot: Its label and its landmark.
+
+    Returns:
+        The same file, located.
+    """
+    return replace(hit, spot=spot[0], landmark=spot[1])
 
 
 def _described(hit: Hit, known: tuple[dict[str, object], str | None] | None) -> Hit:

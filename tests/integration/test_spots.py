@@ -257,16 +257,17 @@ def test_the_label_is_the_user_s_place_else_the_town(runtime: Runtime) -> None:
             for row in connection.execute("SELECT rowid FROM files ORDER BY path DESC")
         ]
         plain = spot_labels(connection, keys, SpotNames())
-        assert plain[keys[1]] == "Colmar"
-        assert plain[keys[0]].startswith("Tour Eiffel · ")
+        assert plain[keys[1]] == ("Colmar", "")
+        assert plain[keys[0]][0].startswith("Tour Eiffel · ")
+        assert plain[keys[0]][1] == "Tour Eiffel"  # the tile's 📍 chip (0651)
         renamed = spot_labels(connection, keys, SpotNames(renames={"Colmar": "Kolmar"}))
-        assert renamed[keys[1]] == "Kolmar"
+        assert renamed[keys[1]][0] == "Kolmar"
         with_home = make_runtime(
             make_locations(runtime.locations.cache_dir.parent),
             {"classify": {"places": [_HOME]}},
         )
         names = SpotNames.of(with_home.settings.classify)
-        assert spot_labels(connection, keys, names)[keys[1]] == "Home"
+        assert spot_labels(connection, keys, names)[keys[1]][0] == "Home"
 
 
 def test_the_slideshow_reads_the_row_without_the_landmarks(

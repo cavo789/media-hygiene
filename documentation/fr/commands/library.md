@@ -195,7 +195,10 @@ de la recherche : ni dans un dossier `AAAA\AAAA-MM\<nom>`, ni directement dans
 vous triez quitte la liste à la recherche suivante. Cliquez un événement : ses photos remplissent
 la grille (jamais celles de l'onglet Photos : en cas d'erreur la grille reste vide et la barre dit
 pourquoi) ; choisissez-les, puis **📂 Déplacer vers un événement…** ou **🗓 Déplacer vers leur mois…** les déplace. L'adresse `/events` ouvre la page
-sur cet onglet ; ← et → passent d'un onglet à l'autre quand l'un d'eux a le focus.
+sur cet onglet ; ← et → passent d'un onglet à l'autre quand l'un d'eux a le focus. Pendant que
+vous regardez un événement, la page va déjà chercher les vignettes du suivant : passer à lui les
+montre sans attente. Rouvert dans le même onglet du navigateur, l'onglet Événements revient au
+dernier événement montré (gardé par cet onglet seulement).
 
 **La fiche d'un événement** dit d'abord, en une phrase, où vont ses fichiers : *Ces 10
 fichiers iront dans C:\Photos\2019\2019-07\Juillet* (celui de vos dossiers qui en contient le

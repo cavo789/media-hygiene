@@ -13,6 +13,7 @@
         data-now="{{ _('Its sidecar names: {name}') }}"
         data-none="{{ _('No landmark named yet.') }}"
         data-theirs="{{ _('Set by another application: kept.') }}"
+        data-offer="{{ _('Add {name} to your places too: a circle of 200 m around this photo, for classify and the search?') }}"
         data-empty="{{ _('No landmark within 500 m: type its name.') }}">
   <form id="landmarkForm" method="dialog" autocomplete="off">
     <h2 id="landmarkTitle">📍 {{ _("The landmark this photo shows") }}</h2>
@@ -23,4 +24,11 @@
     <p id="landmarkSaid" class="muted" role="status"></p>
     <menu><button type="button" id="landmarkWrong" class="danger" hidden>{{ _("Wrong name") }}</button><button type="button" id="landmarkNo" class="plain">{{ _("Cancel") }}</button><button type="submit" id="landmarkGo">{{ _("Write this name") }}</button></menu>
   </form>
+  <div id="landmarkPlace" hidden>
+    <h2>📍 {{ _("A place of yours?") }}</h2>
+    <p id="landmarkWritten" class="muted"></p>
+    <p id="landmarkPlaceAsk"></p>
+    <p id="landmarkPlaceSaid" class="muted" role="status"></p>
+    <menu><button type="button" id="landmarkPlaceNo" class="plain">{{ _("No, the name only") }}</button><button type="button" id="landmarkPlaceYes">{{ _("Add it as a place") }}</button></menu>
+  </div>
 </dialog>
