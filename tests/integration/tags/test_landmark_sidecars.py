@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Final, cast
 
 from media_hygiene.index.schema import MOVE, prepare
 from media_hygiene.index.spot_rows import SpotSource
+from media_hygiene.places.config_file import read_places
 from media_hygiene.search.landmark_desk import LandmarkDesk
 from media_hygiene.services.landmark_sidecars import (
     LandmarkWriter,
@@ -120,6 +121,7 @@ def test_written_journaled_read_back_then_undone(
             cast("SearchIndex", _Index(connection, photo)),
             LandmarkWriter(runtime),
             locations.cache_dir,
+            locations.config_file,
         )
         body = {"action": "set", "key": 1, "name": "  Champ   de Mars "}
         answer = asyncio.run(desk.answer(json.dumps(body).encode()))
@@ -131,6 +133,13 @@ def test_written_journaled_read_back_then_undone(
         proposed = desk.proposals(photo)
         assert proposed["name"] == "Champ de Mars"
         assert any(each["name"] == "Tour Eiffel" for each in proposed["near"])  # type: ignore[attr-defined]
+        place = {"action": "place", "key": 1, "name": "Champ de Mars"}
+        offered = json.loads(asyncio.run(desk.answer(json.dumps(place).encode())).body)
+        assert "Champ de Mars" in offered["saved"]  # 0651: asked, then read back
+        assert [p.name for p in read_places(locations.config_file)] == ["Champ de Mars"]
+        again = json.loads(asyncio.run(desk.answer(json.dumps(place).encode())).body)
+        assert "already" in again["saved"]
+        assert len(read_places(locations.config_file)) == 1
         undone = run(cli, "undo", said["run"])
         assert undone.exit_code == 0, undone.output
         assert _spot(connection, photo) == ("", "")  # 0650: the row follows the undo
@@ -155,6 +164,7 @@ def test_a_rejected_name_is_never_proposed_nor_filled(
             cast("SearchIndex", _Index(connection, photo)),
             LandmarkWriter(runtime),
             locations.cache_dir,
+            locations.config_file,
         )
         names = [each["name"] for each in desk.proposals(photo)["near"]]  # type: ignore[attr-defined]
     assert "Tour Eiffel" not in names

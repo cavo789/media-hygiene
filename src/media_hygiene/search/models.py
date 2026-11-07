@@ -25,6 +25,7 @@ class Hit:  # pylint: disable=too-many-instance-attributes
     exif: tuple[str, ...] = ()  # what its metadata says, one fact per line (0433)
     seconds: float | None = None  # a video's length, for its badge (0434)
     spot: str = ""  # `Montagne de Bueren · Liège`, stored in the index (0545)
+    landmark: str = ""  # `Montagne de Bueren`: the tile's 📍 chip (0651)
 
 
 @dataclass(frozen=True, slots=True)

@@ -13,6 +13,9 @@ async function landmarkShown() {
   $("landmarkSeen").replaceChildren();
   $("landmarkNow").textContent = "";
   $("landmarkWrong").hidden = true;
+  $("landmarkForm").hidden = false;
+  $("landmarkPlace").hidden = true;
+  $("landmarkPlaceSaid").textContent = "";
   LANDMARK.showModal();
   const { ok, result } = await gapPost(LANDMARK.dataset.path, { action: "propose", key: file.key });
   if (!ok) { gapSaid($("landmarkSaid"), LANDMARK, result); return; }
@@ -39,13 +42,35 @@ async function landmarkSave(action, name) {
   const { ok, result } = await gapPost(LANDMARK.dataset.path, { action, key: file.key, name });
   $("landmarkGo").disabled = false;
   if (!ok) { gapSaid($("landmarkSaid"), LANDMARK, result); return; }
-  LANDMARK.close();
   $("viewerSaid").textContent = result.saved;  // read back from the sidecar, never from memory
+  file.landmark = result.name;  // its 📍 chip (0651), the card kept in place
+  const chips = cards[current] && cards[current].querySelector(".chips");
+  if (chips) chips.replaceWith(chipsOf(file));
+  if (action !== "set" || !result.name) { LANDMARK.close(); return; }
+  // A name written: asked whether it becomes a place too, never silently (0651).
+  landmarkOffered = result.name;
+  $("landmarkWritten").textContent = result.saved;
+  $("landmarkPlaceAsk").textContent = fill(LANDMARK.dataset.offer, { name: result.name });
+  $("landmarkForm").hidden = true;
+  $("landmarkPlace").hidden = false;
+  $("landmarkPlaceYes").focus();
+}
+
+let landmarkOffered = "";
+
+async function landmarkPlace() {
+  const file = files[current];
+  const { ok, result } = await gapPost(LANDMARK.dataset.path, { action: "place", key: file.key, name: landmarkOffered });
+  if (!ok) { gapSaid($("landmarkPlaceSaid"), LANDMARK, result); return; }
+  LANDMARK.close();
+  $("viewerSaid").textContent = result.saved;  // read back from config.toml
 }
 
 // Its keys stay in the dialog: Esc closes it, not the large view under it.
 LANDMARK.addEventListener("keydown", (event) => event.stopPropagation());
 $("landmarkNo").addEventListener("click", () => LANDMARK.close());
+$("landmarkPlaceNo").addEventListener("click", () => LANDMARK.close());
+$("landmarkPlaceYes").addEventListener("click", landmarkPlace);
 $("landmarkWrong").addEventListener("click", () => landmarkSave("wrong", landmarkNow));
 $("landmarkForm").addEventListener("submit", (event) => {
   event.preventDefault();

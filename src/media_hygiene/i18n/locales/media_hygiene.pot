@@ -767,6 +767,9 @@ msgid ""
 "grandparents', the office. Towns are named on their own."
 msgstr ""
 
+msgid "A place of yours?"
+msgstr ""
+
 msgid ""
 "A place you name like a town within this distance, in km, gets a hint: "
 "'classify' already names that town's photos, so the place may be "
@@ -927,6 +930,9 @@ msgstr ""
 msgid "Add a photo folder"
 msgstr ""
 
+msgid "Add it as a place"
+msgstr ""
+
 msgid ""
 "Add or remove a photo folder: mh folders add (a window to choose it) or "
 "mh folders add <folder>, mh folders remove <folder>. A backup, compared, "
@@ -992,6 +998,12 @@ msgid "Add to the favourites"
 msgstr ""
 
 msgid "Add your photo folder: mh folders add <folder>."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Add {name} to your places too: a circle of 200 m around this photo, for "
+"classify and the search?"
 msgstr ""
 
 msgid "Advanced"
@@ -5699,6 +5711,9 @@ msgstr ""
 msgid "No position for this event."
 msgstr ""
 
+msgid "No position."
+msgstr ""
+
 msgid "No preview"
 msgstr ""
 
@@ -5799,6 +5814,9 @@ msgid "No video left to lighten: nothing was changed."
 msgstr ""
 
 msgid "No video worth lightening."
+msgstr ""
+
+msgid "No, the name only"
 msgstr ""
 
 msgid "Nobody is named yet."
@@ -15960,13 +15978,27 @@ msgid "{name} comes close too: resemblance {score}."
 msgstr ""
 
 #, python-brace-format
+msgid "{name} could not be added to your places."
+msgstr ""
+
+#, python-brace-format
 msgid ""
 "{name} is a built-in category, it cannot be redefined: choose another "
 "name, e.g. my_{name}"
 msgstr ""
 
 #, python-brace-format
+msgid "{name} is already one of your places: kept."
+msgstr ""
+
+#, python-brace-format
 msgid "{name} is an extension: choose another name for the category"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{name} is now one of your places ({radius} m around this photo), read "
+"back from config.toml."
 msgstr ""
 
 #, python-brace-format

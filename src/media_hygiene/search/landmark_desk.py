@@ -3,7 +3,8 @@
 *📍 Landmark…* (key L) proposes the GeoNames landmarks within `NEAR_M` (nearest first,
 with their distance), the OpenStreetMap name if one was fetched, and a free field;
 *Wrong name* rejects one. The name goes into the photo's sidecar (the truth), then into
-`spots` (source `user`); the answer is what the sidecar says once read back.
+`spots` (source `user`); the answer is what the sidecar says once read back. A name
+written is then offered as a place (`place`, 0651), asked in the dialog.
 """
 
 from __future__ import annotations
@@ -22,6 +23,7 @@ from media_hygiene.geo.reverse import rounded
 from media_hygiene.i18n import _
 from media_hygiene.index.spot_user import give_landmark
 from media_hygiene.review.serving import json_response
+from media_hygiene.search.landmark_place import add_place
 from media_hygiene.services.landmark_sidecars import LandmarkAsked, sidecar_landmark
 from media_hygiene.services.place_names import read_names, spot_key
 
@@ -43,18 +45,19 @@ class LandmarkPost(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    action: Literal["propose", "set", "wrong"] = "propose"
+    action: Literal["propose", "set", "wrong", "place"] = "propose"
     key: int
     name: str = Field(default="", max_length=_NAME_MAX)
 
 
 @dataclass(frozen=True, slots=True)
 class LandmarkDesk:
-    """The index, the sidecars' writer, the cache of online names."""
+    """The index, the sidecars' writer, the cache of online names, `config.toml`."""
 
     index: SearchIndex
     writer: LandmarkWriter
     cache_dir: Path
+    config_file: Path
 
     async def answer(self, body: bytes) -> Response:
         """Propose names, or write one (or its rejection) into the sidecar.
@@ -78,13 +81,27 @@ class LandmarkDesk:
         name = " ".join(asked.name.split())
         if not name:
             return json_response(HTTPStatus.BAD_REQUEST, {"error": "name"})
-        wanted = LandmarkAsked(found.path, name, wrong=asked.action == "wrong")
+        if asked.action == "place":
+            return self._place(found.path, name)
+        return await self._write(
+            LandmarkAsked(found.path, name, wrong=asked.action == "wrong")
+        )
+
+    async def _write(self, wanted: LandmarkAsked) -> Response:
+        """Write a name, or its rejection, into the sidecar, then read it back.
+
+        Args:
+            wanted: The photo and the name.
+
+        Returns:
+            The name read back; 409 when nothing can be written.
+        """
         try:
             run = await asyncio.to_thread(self.writer.write, wanted)
         except MediaHygieneError as exc:
             said = " ".join(filter(None, (exc.message, exc.tip)))
             return json_response(HTTPStatus.CONFLICT, {"error": said})
-        return json_response(HTTPStatus.OK, self._read_back(found.path, run))
+        return json_response(HTTPStatus.OK, self._read_back(wanted.photo, run))
 
     def proposals(self, photo: Path) -> dict[str, object]:
         """The names to offer for a photo, those rejected left out.
@@ -97,11 +114,10 @@ class LandmarkDesk:
         """
         known = sidecar_landmark(photo)
         refused = {each.casefold() for each in known.rejected}
-        row = self.index.connection.execute(_POSITION, (str(photo),)).fetchone()
+        point = self._position(photo)
         near: list[dict[str, object]] = []
         osm = ""
-        if row is not None and row[0] is not None and row[1] is not None:
-            point = Point(row[0], row[1])
+        if point is not None:
             landmarks = shared_landmarks(near_cells((point,)))
             near = [
                 {"name": name, "m": metres}
@@ -115,6 +131,39 @@ class LandmarkDesk:
             "near": near,
             "osm": "" if osm.casefold() in refused else osm,
         }
+
+    def _position(self, photo: Path) -> Point | None:
+        """Where a photo was taken, from the index.
+
+        Args:
+            photo: The photo.
+
+        Returns:
+            Its position; None when it has none.
+        """
+        row = self.index.connection.execute(_POSITION, (str(photo),)).fetchone()
+        if row is None or row[0] is None or row[1] is None:
+            return None
+        return Point(row[0], row[1])
+
+    def _place(self, photo: Path, name: str) -> Response:
+        """Add the landmark as a place around the photo, the user having said yes.
+
+        Args:
+            photo: The photo.
+            name: The landmark's name.
+
+        Returns:
+            `saved`, the line read back; 409 without a position or a writable file.
+        """
+        point = self._position(photo)
+        if point is None:
+            return json_response(HTTPStatus.CONFLICT, {"error": _("No position.")})
+        try:
+            said = add_place(self.config_file, name, point)
+        except (OSError, ValueError) as exc:
+            return json_response(HTTPStatus.CONFLICT, {"error": str(exc)})
+        return json_response(HTTPStatus.OK, {"saved": said})
 
     def _read_back(self, photo: Path, run: str) -> dict[str, object]:
         """Read the sidecar back, cache its name, say what it holds.

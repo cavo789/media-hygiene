@@ -91,6 +91,7 @@ function infoLink(kind, text) {
 // The words of a file as chips: a click searches the word; a person's has a × too.
 function chipsOf(hit) {
   const chips = element("div", "chips");
+  if (hit.landmark) chips.append(landmarkChip(hit.landmark));  // first among the words (0651)
   for (const [source, words] of Object.entries(hit.tags)) {
     for (const word of words) {
       const chip = element("span", "chip", word);
@@ -116,6 +117,15 @@ function chipsOf(hit) {
   return chips;
 }
 
+// The 📍 chip of a typed or found landmark (0651): a click searches every photo of it.
+function landmarkChip(name) {
+  const chip = element("span", "chip landmark", "📍 " + name);
+  chip.title = fill(TEXTS.lookFor, { word: name, source: TEXTS.landmark });
+  for (const kind of ["pointerdown", "mousedown", "dblclick"]) chip.addEventListener(kind, (event) => event.stopPropagation());
+  chip.addEventListener("click", (event) => { event.stopPropagation(); (event.ctrlKey || event.metaKey ? addWord : lookFor)(name); });
+  return chip;
+}
+
 // A chip's word as the new search: the phrase in every source, the filters emptied.
 function lookFor(word) {
   $("text").value = '"' + word.replaceAll('"', "") + '"';
@@ -135,7 +145,7 @@ function addWord(word) {
 // The large view's facts (I): the same chips, the same × (names, words typed by hand).
 function infoExtra(file) {
   const tags = Object.fromEntries(["person", "hand"].filter((s) => file.tags && file.tags[s]).map((s) => [s, file.tags[s]]));
-  return Object.keys(tags).length ? [chipsOf({ tags, key: file.key })] : [];
+  return Object.keys(tags).length || file.landmark ? [chipsOf({ tags, key: file.key, landmark: file.landmark })] : [];
 }
 
 function unnameButton(hit, name) {
