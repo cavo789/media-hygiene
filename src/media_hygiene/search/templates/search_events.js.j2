@@ -78,9 +78,11 @@ let eventCategories = [];  // the event folders offered under the folder fields 
     byId("eventSuggestName").textContent = view.suggested || "";
     byId("eventSuggest").hidden = !view.suggested || byId("eventNameIn").value === view.suggested;
     showFiles(view.hits, again);
+    ahead(index);
     $("more").hidden = true;
     if (view.missing) told(fill(TEXTS.eventMissing, { n: view.missing }), false);
   };
+{% include "search_events_ahead.js.j2" %}
 {% include "search_events_span.js.j2" %}
 {% include "search_events_span_card.js.j2" %}
 {% include "search_events_trial.js.j2" %}
@@ -88,6 +90,7 @@ let eventCategories = [];  // the event folders offered under the folder fields 
     if (events[index].span) { loadSpan(index); return; }
     current = index;
     eventShown = events[index].id;
+    remember(events[index]);
     drawEvent(events[index]);
     showTotals();
     await refresh(false);
@@ -226,6 +229,7 @@ let eventCategories = [];  // the event folders offered under the folder fields 
     eventCategories = view.categories || [];
     showTotals();
     showProgress();
+    resume();
   };
   showEvent = (wanted, again) => {
     const index = events.findIndex((card) => card.id === wanted);

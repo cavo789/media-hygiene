@@ -16,7 +16,6 @@ One `/todo:run NNNN` each, highest priority first.
 
 | ID | Priority | Title | Batch |
 |---|---|---|---|
-| 0652 | Low | Events tab: next event's thumbnails ready, reopened on the last event shown | events |
 | 0653 | Low | Copy names: a year in brackets is not a copy, a macOS Finder duplicate is | keep-policy |
 
 ## Waiting for the maintainer

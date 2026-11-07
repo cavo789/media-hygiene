@@ -1,0 +1,34 @@
+{# The Events tab's two comforts of the former events review (0652, from 0438):
+   - the next event's thumbnails asked for while the user looks at this one, so going on
+     shows them without a wait (the server makes the previews once; the browser keeps them);
+   - the last event shown kept per browser tab (`sessionStorage`), so reopening the tab
+     returns to it. Its tiles are still asked again from the disk: only the place is kept. #}
+  const LAST_EVENT = "mh-events-last";
+  const AHEAD_TILES = 60;  // the tiles a grid shows first: the rest load on scrolling
+  const aheadDone = new Set();
+  let aheadImages = [];  // held until loaded: an image nobody holds may never be fetched
+  const remember = (card) => { try { sessionStorage.setItem(LAST_EVENT, card.id); } catch (error) { /* not kept */ } };
+  const eventUrl = (card) => card.span ? SPAN_PATHS.files + encodeURIComponent(card.id) : EVENTS_PATH + "/" + encodeURIComponent(card.id);
+  const ahead = async (index) => {
+    let next = index + 1;
+    while (next < events.length && !SPAN && !visible(events[next])) next += 1;
+    const card = events[next];
+    if (!card || aheadDone.has(card.id)) return;
+    aheadDone.add(card.id);
+    const answer = await ask(eventUrl(card));
+    if (!answer || !answer.ok) { aheadDone.delete(card.id); return; }
+    const view = await answer.json().catch(() => ({ hits: [] }));
+    aheadImages = (view.hits || []).slice(0, AHEAD_TILES).filter((hit) => hit.preview).map((hit) => {
+      const image = new Image();
+      image.src = hit.preview;
+      return image;
+    });
+  };
+  // Once the events are listed: the one shown last in this browser tab, if still there.
+  const resume = () => {
+    if (current >= 0) return;
+    let wanted = null;
+    try { wanted = sessionStorage.getItem(LAST_EVENT); } catch (error) { /* not kept */ }
+    const index = events.findIndex((card) => card.id === wanted);
+    if (index >= 0) load(index);
+  };

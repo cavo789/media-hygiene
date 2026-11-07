@@ -22,6 +22,7 @@
     current = -1;
     byId("eventsSaid").textContent = fill(TEXTS.spanSaid, { n: events.length, hours: {{ event_gap_hours | tojson }} });
     listEvents();
+    resume();
   };
   const loadSpan = async (index) => {
     current = index;
@@ -29,6 +30,7 @@
     $("albumResults").hidden = true;  // the grid is the event's now, not the search's
     const card = events[index];
     eventShown = card.id;
+    remember(card);
     hideOutsideSpan();
     byId("eventCard").hidden = false;
     byId("position").textContent = fill(T.position, { number: index + 1, total: events.length });
@@ -47,6 +49,7 @@
     spanName = view.suggested || card.title;  // its album's name (0523)
     total = view.total;
     showFiles(view.hits, false);
+    ahead(index);
     setStatus(view.hits.length ? "" : TEXTS.spanEmpty, view.hits.length ? "" : "error");
     spanPropose(index);
   };

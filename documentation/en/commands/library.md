@@ -182,7 +182,9 @@ no photo was taken for `classify`'s longest gap (18 hours by default), without r
 `YYYY\YYYY-MM`, whoever put it there; a file you sort leaves the list at the next search. Click an event: its
 photos fill the grid (never the Photos tab's: on an error the grid stays empty and the bar says
 why); pick them, then **📂 Move to an event…** or **🗓 Move to their month…** moves them. The address `/events` opens the page on this
-tab; ← and → move between the two tabs once one has the focus.
+tab; ← and → move between the two tabs once one has the focus. While you look at an event,
+the page already fetches the next one's thumbnails: going on shows them without a wait. Reopened
+in the same browser tab, the Events tab returns to the last event shown (kept by that tab only).
 
 **The card of an event** says first, in one sentence, where its files go: *These 10 files will
 go to C:\Photos\2019\2019-07\Juillet* (the folder of yours holding most of them, under the
