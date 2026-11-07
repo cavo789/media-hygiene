@@ -40,7 +40,9 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 _HEADERS: Final = {"host": "127.0.0.1:8080", "content-type": "application/json"}
-_NOW: Final = datetime(2026, 11, 6, 12, tzinfo=UTC)
+_NOW: Final = datetime.now(UTC).replace(
+    microsecond=0
+)  # the door reads the clock: a fixed date ages out
 
 
 def _chain(state: ChainState, updated: datetime = _NOW) -> ImportChain:
