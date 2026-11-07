@@ -16,7 +16,7 @@ One `/todo:run NNNN` each, highest priority first.
 
 | ID | Priority | Title | Batch |
 |---|---|---|---|
-| 0650 | Medium | Typed landmark: its 📍 chip, offered as a place, refreshed by undo | places |
+| 0650 | Medium | Typed landmark: its 📍 chip, offered as a place, refreshed by undo | places (PARTIAL: undo refresh done; chip, place offer, Chromium check left) |
 
 ## Waiting for the maintainer
 

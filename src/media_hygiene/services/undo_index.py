@@ -10,6 +10,7 @@ from media_hygiene.index.former_names import forget_former
 from media_hygiene.index.parked import unpark
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.index.touched_folders import forget_listings
+from media_hygiene.services.undo_landmarks import refresh_landmarks
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -53,6 +54,7 @@ def follow_moves_back(
         unpark(repository.connection, restored)  # set aside by a clean (0156)
         forget_former(repository.connection, run[1], copies)
         forget_listings(repository.connection, done)  # the folders read again
+        refresh_landmarks(repository.connection, done)  # a landmark typed (0650)
     return back
 
 

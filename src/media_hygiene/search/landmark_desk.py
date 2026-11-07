@@ -129,6 +129,9 @@ class LandmarkDesk:
         known = sidecar_landmark(photo)
         if known.ours:
             give_landmark(self.index.connection, str(photo), known.name)
+            self.index.built = (
+                None  # searchable at once (0650): own writes keep the version
+            )
         if not known.ours:
             said = _("Its sidecar names {name}, set by another application: kept.")
         elif known.name:

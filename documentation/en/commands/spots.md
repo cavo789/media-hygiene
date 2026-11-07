@@ -81,7 +81,7 @@ distance, and the OpenStreetMap name if one was fetched; pick one or type the na
 proposed again for this photo.
 
 The name goes into the photo's `.xmp` sidecar (`Iptc4xmpExt:LocationShown`, read by digiKam and
-Lightroom), never into the photo; journaled: `mh undo` takes it back. The line under the photo is
+Lightroom), never into the photo; journaled: `mh undo` takes it back, and the tiles follow at once (the previous name, or the town). The line under the photo is
 the sidecar read back from the disk. The sidecar moves with the photo (`sort`, `undo`, a folder
 renamed in Explorer), so the name and the names rejected follow it; an index rebuilt reads them
 back at the next audit. A name set by another application is kept.

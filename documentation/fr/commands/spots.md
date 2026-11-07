@@ -86,7 +86,7 @@ OpenStreetMap s'il a été demandé ; choisissez-en un ou tapez le nom, puis *É
 photo.
 
 Le nom va dans le fichier compagnon `.xmp` de la photo (`Iptc4xmpExt:LocationShown`, lu par
-digiKam et Lightroom), jamais dans la photo ; journalisé : `mh undo` le reprend. La ligne sous la
+digiKam et Lightroom), jamais dans la photo ; journalisé : `mh undo` le reprend, et les vignettes suivent aussitôt (le nom précédent, ou la ville). La ligne sous la
 photo est le compagnon relu sur le disque. Le compagnon suit la photo (`sort`, `undo`, un dossier
 renommé dans l'Explorateur) : le nom et les noms refusés la suivent ; un index reconstruit les
 relit au prochain audit. Un nom posé par une autre application est gardé.

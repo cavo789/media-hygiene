@@ -132,7 +132,8 @@ def test_written_journaled_read_back_then_undone(
         assert proposed["name"] == "Champ de Mars"
         assert any(each["name"] == "Tour Eiffel" for each in proposed["near"])  # type: ignore[attr-defined]
         undone = run(cli, "undo", said["run"])
-    assert undone.exit_code == 0, undone.output
+        assert undone.exit_code == 0, undone.output
+        assert _spot(connection, photo) == ("", "")  # 0650: the row follows the undo
     assert not photo.with_name(photo.name + ".xmp").exists()
     assert photo.read_bytes() == before
 
