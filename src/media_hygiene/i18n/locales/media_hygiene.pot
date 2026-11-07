@@ -16968,6 +16968,12 @@ msgstr ""
 
 #, python-brace-format
 msgid ""
+"“{target}” is a stop word: every tag named so would vanish. Nothing was "
+"changed; type another tag, or restore this word first."
+msgstr ""
+
+#, python-brace-format
+msgid ""
 "“{word}” dropped, read back from the disk: in the stop words, still on "
 "{left} photos."
 msgstr ""

@@ -3,7 +3,8 @@
 The audit has just given a digest to every healthy photo (0634): those are not read
 again. A row counts only for the size and time the file has now: a photo edited, saved
 over or touched since is read, whatever the index says. A photo with several faces is
-read once a run.
+read once a run. A backup folder's file is never read whole (0274): without a digest,
+its id stays unknown and its faces stay as they are.
 """
 
 from __future__ import annotations
@@ -13,6 +14,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.hand_placed import Candidate, digest_of
 from media_hygiene.config.photo_ref import content_id
+from media_hygiene.plan.backups import BackupFolders
 
 if TYPE_CHECKING:
     import os
@@ -28,10 +30,12 @@ _ROW: Final = (
 class FaceIdReader:
     """Finds the ids of a run: the index first, each file read at most once.
 
-    `connection` is the index, None when there is none: every file is then read.
+    `connection` is the index, None when there is none: every file is then read, but
+    those of `backups`.
     """
 
     connection: sqlite3.Connection | None = None
+    backups: BackupFolders = field(default_factory=BackupFolders)
     _read: dict[Path, str | None] = field(default_factory=dict)
 
     def _indexed(self, path: Path, facts: os.stat_result) -> str | None:
@@ -58,8 +62,11 @@ class FaceIdReader:
             path: The photo.
 
         Returns:
-            True when it exists and the index has no digest for it as it is.
+            True when it exists outside the backups and the index has no digest for it
+            as it is.
         """
+        if self.backups.holding(path) is not None:
+            return False
         try:
             return self._indexed(path, path.stat()) is None
         except OSError:
@@ -72,7 +79,7 @@ class FaceIdReader:
             path: The photo.
 
         Returns:
-            Its id; None when it cannot be read.
+            Its id; None when it cannot be read, or is a backup's without a digest.
         """
         if path in self._read:
             return self._read[path]
@@ -81,6 +88,8 @@ class FaceIdReader:
         except OSError:
             return None
         known = self._indexed(path, facts)
+        if known is None and self.backups.holding(path) is not None:
+            return None
         sha = digest_of(Candidate(path, facts.st_size, known))
         found = None if sha is None else content_id(sha, facts.st_size)
         if known is None:

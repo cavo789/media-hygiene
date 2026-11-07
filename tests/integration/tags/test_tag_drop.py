@@ -215,6 +215,28 @@ def test_a_merge_into_itself_or_nothing_is_refused(
     assert [each.status for each in answers] == [400, 400]
 
 
+def test_a_merge_into_a_stop_word_is_refused_and_nothing_written(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A built-in or a dropped word: 400, why, no synonym, the rows untouched."""
+    assert run(cli, "tags", "--no-describe").exit_code == 0
+    add_stop_word(locations.config_file, "inutile")
+    before = locations.config_file.read_text(encoding="utf-8")
+    answers = serve_search(
+        cli,
+        monkeypatch,
+        [
+            (_HAND, {"action": "merge", "word": "Durbuy", "target": STOP_WORDS[0]}),
+            (_HAND, {"action": "merge", "word": "Durbuy", "target": "INUTILE"}),
+            (_HAND, {"action": "drop_look", "word": "Durbuy"}),
+        ],
+    )
+    assert [each.status for each in answers[:2]] == [400, 400]
+    assert all("stop word" in json.loads(a.body)["error"] for a in answers[:2])
+    assert locations.config_file.read_text(encoding="utf-8") == before
+    assert json.loads(answers[2].body)["count"] == 3
+
+
 def test_merging_rows_keeps_one_on_a_photo_with_both() -> None:
     """A photo with both tags keeps one row; only droppable sources change."""
     connection = sqlite3.connect(":memory:")

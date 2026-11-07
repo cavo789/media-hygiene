@@ -24,6 +24,7 @@ from media_hygiene.index.repository import FactsRepository
 from media_hygiene.paths.host_paths import HostPathMapper
 from media_hygiene.people.config_file import read_people, save_people
 from media_hygiene.people.followed import follow_people
+from media_hygiene.plan.backups import BackupFolders
 from media_hygiene.services.face_ids_read import FaceIdReader
 from media_hygiene.services.face_refs_audit import (
     FaceSources,
@@ -37,11 +38,13 @@ from media_hygiene.services.face_refs_said import (
     photos_to_read,
     say_reading,
 )
-from media_hygiene.services.photo_refs_audit import relocate_after_audit
+from media_hygiene.services.photo_refs_audit import located, relocate_after_audit
 from tests.support.runtime import make_locations, make_runtime, output_of
 
 if TYPE_CHECKING:
     from pathlib import Path
+
+    from media_hygiene.services.runtime import Runtime
 
 ID: Final = "fc7749d8b88880b3:2484373"
 HOST: Final = "C:\\Photos\\2024\\IMG_0096.JPG"
@@ -389,3 +392,63 @@ def test_the_line_is_said_when_the_index_has_no_digest(
     relocate_after_audit(runtime)
     assert len(reads) == len(paths)
     assert f"{len(paths)} named photos read once" in output_of(runtime)
+
+
+def _backup_index(runtime: Runtime, photos: list[Path]) -> None:
+    """Index the photos without a digest, as an audit leaves a backup's files."""
+    with FactsRepository.open(runtime.index_file) as repository:
+        for path in photos:
+            facts = path.stat()
+            repository.connection.execute(
+                "INSERT INTO files (path, size, mtime_ns, full_digest) "
+                "VALUES (?, ?, ?, NULL)",
+                (str(path), facts.st_size, facts.st_mtime_ns),
+            )
+        repository.connection.commit()
+
+
+def test_a_copy_only_in_a_backup_is_not_read_and_its_names_stay(
+    tmp_path: Path, data: Path, reads: list[Path]
+) -> None:
+    """Renamed into a backup folder: not read, not found, the face as it was (0274)."""
+    copy, photo_id = photo(data, "Backup/IMG_0096.JPG", b"in the backup")
+    locations = make_locations(tmp_path)
+    file = people_file(
+        locations.config_file, f"  {{path = '{HOST}', id = \"{photo_id}\", face = 1}},"
+    )
+    before = file.read_text()
+    runtime = make_runtime(locations, {"folders": {"backups": ["C:\\Backup"]}})
+    _backup_index(runtime, [copy])
+    relocate_after_audit(runtime)
+    assert reads == []
+    assert file.read_text() == before
+
+
+def test_a_backup_row_with_a_digest_is_skipped_too(data: Path) -> None:
+    """A digest in hand changes nothing: a backup's row never answers."""
+    copy, photo_id = photo(data, "Backup/a.jpg", b"known")
+    connection = sqlite3.connect(":memory:")
+    connection.execute("CREATE TABLE files (path TEXT, size INT, full_digest TEXT)")
+    digest = hashlib.sha256(b"known").hexdigest()
+    connection.execute("INSERT INTO files VALUES (?, 5, ?)", (str(copy), digest))
+    backups = BackupFolders((copy.parent,))
+    assert not located(connection, [photo_id], backups)
+    assert located(connection, [photo_id], BackupFolders()) == {photo_id: [str(copy)]}
+    connection.close()
+
+
+def test_a_named_photo_in_a_backup_is_not_read_for_its_id(
+    tmp_path: Path, data: Path, reads: list[Path]
+) -> None:
+    """Old form, in a backup, no digest: not counted, not read, the line stays."""
+    path, _ = photo(data, "Backup/a.jpg", b"pixels")
+    config = tmp_path / "config.toml"
+    file = people_file(config, f'  "{path}#0",')
+    before = file.read_text()
+    reader = FaceIdReader(backups=BackupFolders((path.parent,)))
+    tally = FaceTally()
+    sources = FaceSources({}, HostPathMapper(data), reader)
+    assert photos_to_read([file], sources) == 0
+    rewrite_file(file, sources, tally)
+    assert reads == []
+    assert (tally.identified, tally.dropped, file.read_text()) == (0, 0, before)

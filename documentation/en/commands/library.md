@@ -437,7 +437,9 @@ with their number of photos.
 - **Merge into…** next to a tag (`panneau` → `panneau de signalisation`): the dialog shows its
   photos, you type the tag it means, and the word becomes that tag in the index and in the `.xmp`
   sidecars. `[tags] synonyms` in `config.toml` keeps it so at the next `tags`; a merge is listed in
-  **🚫 Dropped tags**, and **Restore** takes it out.
+  **🚫 Dropped tags**, and **Restore** takes it out. A word
+  cannot be merged into a stop word (a dropped or built-in tag): the page says so and nothing
+  changes.
 
 ## Photos without a date or a place
 

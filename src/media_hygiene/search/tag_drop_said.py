@@ -5,13 +5,35 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _, ngettext
-from media_hygiene.tags.stop_edit import dropped_words
+from media_hygiene.tags.stop_edit import dropped_words, saved_stop_words
 from media_hygiene.tags.synonym_edit import saved_synonyms
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.services.tag_drop import Dropped
+
+
+def stop_word_target(config: Path, target: str) -> str | None:
+    """Say why a word cannot be merged into a stop word: the tag would vanish (0622).
+
+    Args:
+        config: `config.toml`.
+        target: The tag asked.
+
+    Returns:
+        The refusal; None for a tag that stays.
+
+    Raises:
+        ValueError: The file is not TOML.
+    """
+    folded = target.casefold()
+    if all(word.casefold() != folded for word in saved_stop_words(config)):
+        return None
+    return _(
+        "“{target}” is a stop word: every tag named so would vanish. Nothing was "
+        "changed; type another tag, or restore this word first."
+    ).format(target=target)
 
 
 def sidecar_lines(done: Dropped) -> list[str]:

@@ -467,7 +467,9 @@ les plus fréquents, avec leur nombre de photos.
 - **Fusionner dans…** à côté d'un tag (`panneau` → `panneau de signalisation`) : la fenêtre montre
   ses photos, vous tapez le tag qu'il désigne, et le mot devient ce tag dans l'index et dans les
   sidecars `.xmp`. `[tags] synonyms` dans `config.toml` le garde ainsi au prochain `tags` ; une
-  fusion est listée dans **🚫 Tags retirés**, et **Rétablir** la défait.
+  fusion est listée dans **🚫 Tags retirés**, et **Rétablir** la défait. Un mot ne
+  peut pas être fusionné dans un mot écarté (un tag retiré ou de la liste intégrée) : la page le dit
+  et rien ne change.
 
 ## Les photos sans date ou sans lieu
 

@@ -26,6 +26,7 @@ from media_hygiene.search.tag_drop_said import (
     listed,
     merged_line,
     sidecar_lines,
+    stop_word_target,
 )
 from media_hygiene.search.views import JPEG, THUMB_PREFIX
 from media_hygiene.services.tag_drop import Merge
@@ -63,8 +64,8 @@ class DropDesk:
             asked: What the page asks.
 
         Returns:
-            The answer read back; 400 without a word, 409 when `/config` cannot be
-            written, 422 or 500 when the save fails.
+            The answer read back; 400 without a word or into a stop word, 409 when
+            `/config` cannot be written, 422 or 500 when the save fails.
         """
         config = self.config_file
         words = tuple(
@@ -77,6 +78,8 @@ class DropDesk:
         try:
             if asked.action in {"drop_look", "frequent"}:
                 return json_response(HTTPStatus.OK, self._look(words))
+            if asked.action == "merge" and (no := stop_word_target(config, target)):
+                return json_response(HTTPStatus.BAD_REQUEST, {"error": no})
             if asked.action in {"drop", "merge"}:
                 merge = Merge(words[:1] if target else words, target)
                 saved = self._drop(config, merge)
