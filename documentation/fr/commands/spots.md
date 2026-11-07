@@ -9,7 +9,7 @@
 Pour chaque photo avec une position GPS, l'index garde le lieu remarquable où elle a été prise
 (à moins de 200 m), sa ville, ses deux niveaux de région et son pays. [`library`](library.md) la
 trouve alors par chacun d'eux (« Montagne de Bueren », « Colmar », « Haut-Rhin »), affiche
-`📍 Montagne de Bueren · Liège` sous la date, et le [diaporama](slideshow.md) le lit au lieu de le
+`📍 Liège` (la ville) sous la date, le lieu remarquable étant une pastille `📍 Montagne de Bueren` cliquable parmi les mots, et le [diaporama](slideshow.md) le lit au lieu de le
 recalculer à chaque séance.
 
 **Chaque `audit` le fait pour vous**, nouvelles photos comprises. Lancez `spots` une fois après

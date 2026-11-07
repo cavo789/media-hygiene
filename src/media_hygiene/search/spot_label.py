@@ -1,8 +1,9 @@
 """What a tile says of where its photo was taken, read from the index (0545).
 
-The landmark and the town are stored (`index.spot_rows`); the user's own places and
-names of towns are read from the settings at each show: a place drawn on the `places`
-page applies at once. The regions (admin1, admin2) are searched, never shown here.
+The landmark (the tile's chip) and the town (this line) are stored
+(`index.spot_rows`); the user's own places and names of towns are read from the
+settings at each show: a place drawn on the `places` page applies at once.
+The regions (admin1, admin2) are searched, never shown here.
 """
 
 from __future__ import annotations
@@ -10,7 +11,7 @@ from __future__ import annotations
 import json
 import sqlite3
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.classify.place_match import place_at, zones_of
 from media_hygiene.geo.distance import Point
@@ -23,8 +24,6 @@ if TYPE_CHECKING:
     from media_hygiene.config.classify_settings import ClassifySettings
     from media_hygiene.index.spot_rows import StoredSpot
     from media_hygiene.search.fts import SearchIndex
-
-_BETWEEN: Final = " · "
 
 
 @dataclass(frozen=True, slots=True)
@@ -59,18 +58,15 @@ class SpotNames:
         return own.name if own else self.renames.get(spot.town, spot.town)
 
     def label(self, spot: StoredSpot) -> str:
-        """The landmark, then the place.
+        """The place only: the landmark is the tile's 📍 chip (0651).
 
         Args:
             spot: The stored row.
 
         Returns:
-            E.g. `Montagne de Bueren · Liège`.
+            E.g. `Liège`; empty when no place or town is known.
         """
-        words = dict.fromkeys(
-            word for word in (spot.landmark, self.place(spot)) if word
-        )
-        return _BETWEEN.join(words)
+        return self.place(spot)
 
 
 def spot_labels(

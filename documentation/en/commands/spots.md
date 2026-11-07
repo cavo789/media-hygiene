@@ -9,7 +9,7 @@
 For each photo with a GPS position, the index keeps the landmark it was taken at (within
 200 m), its town, its two levels of region and its country. [`library`](library.md) then
 finds it by any of them ("Montagne de Bueren", "Colmar", "Haut-Rhin"), shows
-`📍 Montagne de Bueren · Liège` under the date, and the [slideshow](slideshow.md) reads it
+`📍 Liège` (the town) under the date, the landmark being a clickable `📍 Montagne de Bueren` chip among the words, and the [slideshow](slideshow.md) reads it
 instead of working it out at each show.
 
 **Every `audit` does it for you**, new photos included. Run `spots` once after an upgrade if
