@@ -35,6 +35,10 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   measured or estimated — not only what changed.
 - ✅ DO: a new limit or threshold a user with another machine or collection might want to
   change (sizes, counts, workers, days): say in the report whether it should be a setting.
+- ✅ DO: proofreading a page or article, or translating a batch of strings or a page into
+  French: load the `delegate-to-ollama` skill (a local model drafts, you check).
+  ❌ DON'T: delegate code, type fixes, tests, edge-case ideas or log summaries to it
+  (measured 2026-11-07: no gain, or confidently wrong).
 - ✅ DO: before changing a design the user chose (mounts, data layout, a dependency), list
   what the change loses, and ask.
 

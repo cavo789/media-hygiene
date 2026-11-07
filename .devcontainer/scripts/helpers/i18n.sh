@@ -48,3 +48,14 @@ print(f"✅ Nothing left to translate ({catalog.percent_translated()} %)" if not
 PY
     )
 }
+
+# @cat i18n
+# @cmd i18n_translate [--model NAME]
+# @desc Draft the empty French entries with local Ollama (marked fuzzy: review them)
+function i18n_translate() {
+    (
+        cd "$(_repo_root)" || return 1
+        uv run --frozen --quiet python .claude/scripts/ollama_translate_po.py "$@"
+        i18n_todo
+    )
+}
