@@ -33,6 +33,7 @@ if TYPE_CHECKING:
     from concurrent.futures import Executor
     from pathlib import Path
 
+    from media_hygiene.i18n.live import Page
     from media_hygiene.review.http import Request
     from media_hygiene.services.runtime import Runtime
 
@@ -78,7 +79,7 @@ class QuarantineApp(LocalApp):
     """Answers the browser: the quarantine is read again for every request."""
 
     runtime: Runtime
-    page: bytes
+    page: Page
     executor: Executor
 
     @override

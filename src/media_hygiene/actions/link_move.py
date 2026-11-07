@@ -11,6 +11,8 @@ import errno
 import os
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.i18n import _
+
 if TYPE_CHECKING:
     from pathlib import Path
 
@@ -58,3 +60,35 @@ def same_file(source: Path, target: Path) -> bool:
         return source.samefile(target)
     except OSError:
         return False
+
+
+def linked_move(source: Path, target: Path) -> bool:
+    """Move a file by a hard link then the removal of its old name, where possible.
+
+    Args:
+        source: The file.
+        target: Where it goes; never overwritten.
+
+    Returns:
+        False when no link can be made (another disk, a filesystem without links):
+        nothing changed, the file is to be copied.
+
+    Raises:
+        FileExistsError: Something is at the target already (nothing changed).
+    """
+    try:
+        return moved_by_link(source, target)
+    except FileExistsError:
+        raise target_exists(target) from None
+
+
+def target_exists(target: Path) -> FileExistsError:
+    """The refusal of a move whose target exists: nothing is replaced, nothing moves.
+
+    Args:
+        target: Where the file was to go.
+
+    Returns:
+        The error to raise.
+    """
+    return FileExistsError(errno.EEXIST, _("the target exists"), str(target))

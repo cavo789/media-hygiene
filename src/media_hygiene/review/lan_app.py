@@ -24,6 +24,7 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
+from media_hygiene.i18n.live import Page, page_of
 from media_hygiene.review.app_shell import shell_response
 from media_hygiene.review.doors import Door
 from media_hygiene.review.http import ContentType, Request, Response, is_local
@@ -56,7 +57,7 @@ class LanApp:
 
     home: Handling
     lan: LanAccess
-    phone_page: bytes  # the home page drawn for a phone: steps said to run on the PC
+    phone_page: Page  # the home page drawn for a phone: steps said to run on the PC
     pairing: Pairing = field(default_factory=Pairing)
     phones: PhoneBook | None = None  # under HTTPS: phones paired for good (0431)
     originals: bool = False  # `[review] lan_phone_originals` (0427)
@@ -188,5 +189,5 @@ class LanApp:
             )
             return json_response(HTTPStatus.FORBIDDEN, {"error": message})
         if request.method == _GET and path == PAGE_PATH:
-            return Response(HTTPStatus.OK, self.phone_page, ContentType.HTML)
+            return Response(HTTPStatus.OK, page_of(self.phone_page), ContentType.HTML)
         return phone_marked(await asset_or_page(passed, self.home.handle))

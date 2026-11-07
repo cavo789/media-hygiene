@@ -18,6 +18,7 @@ from typing import TYPE_CHECKING, ClassVar, Final, override
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from media_hygiene.i18n.live import page_of
 from media_hygiene.plan.near_review import NearAction
 from media_hygiene.review.decide_route import DecidingApp
 from media_hygiene.review.files import FILE_PATH
@@ -72,7 +73,7 @@ class NearApp(DecidingApp[NearSession]):
         if request.method == _GET and request.path == PAGE_PATH:
             # It plays the videos: `media-src` too.
             return Response(
-                HTTPStatus.OK, self.page, ContentType.HTML, policy=NEAR_POLICY
+                HTTPStatus.OK, page_of(self.page), ContentType.HTML, policy=NEAR_POLICY
             )
         return await DecidingApp.answer(self, request)
 

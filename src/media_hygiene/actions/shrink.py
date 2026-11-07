@@ -21,10 +21,11 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.actions.job_loop import JobLoop
 from media_hygiene.actions.journaled import JournaledChanges, Origin
 from media_hygiene.actions.kinds import ActionKind
+from media_hygiene.actions.link_move import target_exists
 from media_hygiene.actions.no_overwrite import move_no_replace
 from media_hygiene.actions.shrink_draft import lighter_video
 from media_hygiene.actions.shrink_sidecars import follow_sidecars
-from media_hygiene.actions.sort_moves import file_of, target_exists
+from media_hygiene.actions.sort_moves import file_of
 from media_hygiene.i18n import _
 from media_hygiene.scan.hashing import full_digest
 from media_hygiene.scan.progress import Step

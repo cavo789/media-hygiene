@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
+from media_hygiene.i18n.live import PerLocale
 from media_hygiene.review.quarantine_app import RESTORE_PATH, QuarantineApp
 from media_hygiene.review.served_more import DISK_PURGE_PATH
 from media_hygiene.services.pick_page_serving import pick_page, serve_pick_page
@@ -52,6 +53,6 @@ def serve_quarantine(runtime: Runtime, port: int) -> int:
         Returns:
             The app.
         """
-        return QuarantineApp(runtime, quarantine_page(), executor)
+        return QuarantineApp(runtime, PerLocale(quarantine_page), executor)
 
     return serve_pick_page(runtime, app_of, (port, said))

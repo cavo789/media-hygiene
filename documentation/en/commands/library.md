@@ -172,7 +172,7 @@ as a table.
 
 ## The events of the latest classify
 
-The **Group the photos into more or fewer events** section of that tab (PC only) sets `merge_gap_hours`, `min_event_size` and `trip_min_km` of `[classify]`: saved in `config.toml`, shown as read back from the disk, applied by the next [`classify`](classify.md) (the list does not change before). **See the events first** shows, before anything is saved, how the dated photos of the index would group with the values typed: the number of events now and then, and the events that merge, split, appear or stop being events (the trip distance is not previewed).
+The **Group the photos into more or fewer events** section of that tab (PC only) sets `merge_gap_hours`, `min_event_size` and `trip_min_km` of `[classify]`: saved in `config.toml`, shown as read back from the disk, applied by the next [`classify`](classify.md) (the list does not change before). **See the events first** shows, before anything is saved, how the photos `classify` works on would group with the values typed: the number of events now and then, the events that merge, split, appear or stop being events, and the trips that appear, change or go (trips need a home place and a `trip` rule). It reads what the latest audit saw, and can take a few seconds; the page says so while it works.
 
 The **🗂 Events** tab, on top of the left column next to **🔎 Photos**, needs no
 [`classify`](classify.md) run: it groups **the files not sorted yet** of the period of the
@@ -233,8 +233,9 @@ move in several months and no run moved any yet): it says the latest month, how 
 to which folders, asks, then sorts only those, journaled. The grid then shows these photos in
 their new folders, each tile naming its folder. **↶ Undo** puts them back; **Sort the rest (N
 files)** moves the rest of the plan after one question: a fast path, those files are not shown
-first (the classify report shows them). The files set aside stay in place. Both buttons last as
-long as the page; later, `mh sort` does the rest and `undo` takes the trial back.
+first (the classify report shows them). The files set aside stay in place. A reload, or coming back
+later, finds the photos and both buttons again, from the journal, until the trial is undone or the
+sort goes on; `mh sort` also does the rest and `undo` takes the trial back.
 
 ## Move photos to their month, without an event
 

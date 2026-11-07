@@ -182,7 +182,7 @@ fichiers en tableau.
 
 ## Les événements du dernier classify
 
-La section **Regrouper les photos en plus ou moins d'événements** de cet onglet (PC seulement) règle `merge_gap_hours`, `min_event_size` et `trip_min_km` de `[classify]` : enregistrés dans `config.toml`, montrés tels que relus sur le disque, appliqués par le prochain [`classify`](classify.md) (la liste ne change pas avant). **Voir d'abord les événements** montre, avant tout enregistrement, comment les photos datées de l'index se regrouperaient avec les valeurs tapées : le nombre d'événements maintenant et ensuite, et les événements qui fusionnent, se coupent, apparaissent ou n'en sont plus (la distance d'un voyage n'est pas prévisualisée).
+La section **Regrouper les photos en plus ou moins d'événements** de cet onglet (PC seulement) règle `merge_gap_hours`, `min_event_size` et `trip_min_km` de `[classify]` : enregistrés dans `config.toml`, montrés tels que relus sur le disque, appliqués par le prochain [`classify`](classify.md) (la liste ne change pas avant). **Voir d'abord les événements** montre, avant tout enregistrement, comment les photos sur lesquelles travaille `classify` se regrouperaient avec les valeurs tapées : le nombre d'événements maintenant et ensuite, les événements qui fusionnent, se coupent, apparaissent ou n'en sont plus, et les voyages qui apparaissent, changent ou disparaissent (un voyage demande un lieu « maison » et une règle `trip`). Elle lit ce que le dernier audit a vu et peut prendre quelques secondes ; la page le dit pendant qu'elle travaille.
 
 L'onglet **🗂 Événements**, en haut de la colonne de gauche à côté de **🔎 Photos**, n'a besoin
 d'aucun [`classify`](classify.md) : il regroupe **les fichiers pas encore triés** de la période
@@ -248,8 +248,9 @@ dernier mois, combien de fichiers et vers quels dossiers, demande, puis trie seu
 journalisés. La grille montre alors ces photos dans leurs nouveaux dossiers, chaque vignette
 nommant le sien. **↶ Annuler** les remet en place ; **Trier le reste (N fichiers)** déplace le
 reste du plan après une question : un chemin rapide, ces fichiers ne sont pas montrés d'abord (le
-rapport de classify les montre). Les fichiers mis de côté restent en place. Les deux boutons
-durent le temps de la page ; ensuite, `mh sort` fait le reste et `undo` reprend l'essai.
+rapport de classify les montre). Les fichiers mis de côté restent en place. Recharger la page, ou revenir
+plus tard, retrouve les photos et les deux boutons, depuis le journal, jusqu'à ce que l'essai soit
+annulé ou que le tri continue ; `mh sort` fait aussi le reste et `undo` reprend l'essai.
 
 ## Déplacer des photos vers leur mois, sans événement
 

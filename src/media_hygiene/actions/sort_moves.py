@@ -15,14 +15,13 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journaled import JournaledChanges
 from media_hygiene.actions.kinds import ActionKind
-from media_hygiene.actions.link_move import moved_by_link
+from media_hygiene.actions.link_move import linked_move, target_exists
 from media_hygiene.actions.no_overwrite import (
     COPY_INSTEAD,
     copy_then_remove,
     rename_no_replace,
 )
 from media_hygiene.constants import MediaKind
-from media_hygiene.i18n import _
 from media_hygiene.scan.filters import media_kind
 from media_hygiene.scan.hashing import full_digest
 from media_hygiene.scan.models import MediaFile
@@ -43,6 +42,7 @@ class SortContext:
     changes: CleanContext
     plan_id: str
     stop: Callable[[], bool]  # True once Ctrl+C was pressed
+    trial: bool = False  # the journal marks the run a trial (0648)
 
 
 def file_of(path: Path, stat: tuple[int, int] | None = None) -> MediaFile:
@@ -97,7 +97,12 @@ class Relocator:
             raise target_exists(target)
         self.make_folder(target.parent)
         entry = self.changes.entry(file, ActionKind.MOVE).model_copy(
-            update={"target": str(target), "plan": self._context.plan_id, "row": row}
+            update={
+                "target": str(target),
+                "plan": self._context.plan_id,
+                "row": row,
+                "trial": self._context.trial or None,
+            }
         )
         journal = self._context.changes.journal
         journal.record(entry)
@@ -108,7 +113,7 @@ class Relocator:
         except OSError as exc:
             if exc.errno not in COPY_INSTEAD:
                 raise
-            if exc.errno == errno.EXDEV or not _linked(file.path, target):
+            if exc.errno == errno.EXDEV or not linked_move(file.path, target):
                 entry = self._copied(file, target, entry)
         journal.record(entry.as_done())
         self.changes.count(file.size)
@@ -148,38 +153,6 @@ class Relocator:
             if folder not in self._made:
                 make_folders(self.changes, folder)
                 self._made.add(folder)
-
-
-def _linked(source: Path, target: Path) -> bool:
-    """Move a file by a hard link then the removal of its old name, where possible.
-
-    Args:
-        source: The file.
-        target: Where it goes; never overwritten.
-
-    Returns:
-        False when no link can be made (another disk, a filesystem without links):
-        nothing changed, the file is to be copied.
-
-    Raises:
-        FileExistsError: Something is at the target already (nothing changed).
-    """
-    try:
-        return moved_by_link(source, target)
-    except FileExistsError:
-        raise target_exists(target) from None
-
-
-def target_exists(target: Path) -> FileExistsError:
-    """The refusal of a move whose target exists: nothing is replaced, nothing moves.
-
-    Args:
-        target: Where the file was to go.
-
-    Returns:
-        The error to raise.
-    """
-    return FileExistsError(errno.EEXIST, _("the target exists"), str(target))
 
 
 def make_folders(changes: JournaledChanges, folder: Path) -> None:

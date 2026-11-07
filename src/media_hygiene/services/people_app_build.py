@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from functools import partial
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.i18n.live import PerLocale
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.people.alike import AlikeFinder
 from media_hygiene.people.app import (
@@ -112,7 +113,7 @@ def people_app(
     app = PeopleApp(
         roster,
         runtime.mapper,
-        people_page(build),
+        PerLocale(partial(people_page, build)),
         build.executor,
         runtime.previews_dir,
         aside,

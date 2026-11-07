@@ -38,6 +38,7 @@ if TYPE_CHECKING:
     from concurrent.futures import Executor
     from pathlib import Path
 
+    from media_hygiene.i18n.live import Page
     from media_hygiene.review.http import Request
     from media_hygiene.review.session import ReviewSession
     from media_hygiene.share.album_api import AlbumDesk
@@ -70,7 +71,7 @@ class ReviewApp(LocalApp):
     """Answers the browser; the session holds the state and saves it."""
 
     session: ReviewSession
-    page: bytes
+    page: Page
     executor: Executor
     previews: Path | None = None  # the cache folder of previews, if any
     albums: AlbumDesk | None = None  # the albums, never the shots set aside

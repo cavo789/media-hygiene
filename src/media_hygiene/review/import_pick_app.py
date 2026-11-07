@@ -26,6 +26,7 @@ from media_hygiene.review.serving import json_response, refused_post
 if TYPE_CHECKING:
     from concurrent.futures import Executor
 
+    from media_hygiene.i18n.live import Page
     from media_hygiene.review.http import Request
     from media_hygiene.services.import_pick import ImportDesk
     from media_hygiene.services.runtime import Runtime
@@ -57,7 +58,7 @@ class ImportPickApp(LocalApp):
 
     runtime: Runtime
     desk: ImportDesk
-    page: bytes
+    page: Page
     executor: Executor
 
     @override

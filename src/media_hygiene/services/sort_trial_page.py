@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from media_hygiene.actions.sort_resume import open_trial
 from media_hygiene.errors import MediaHygieneError, WorkbookError
 from media_hygiene.i18n import _
 from media_hygiene.scan.progress import NullProgress
@@ -19,23 +20,12 @@ from media_hygiene.services.sort import SortService
 from media_hygiene.services.sort_event import not_aside
 from media_hygiene.services.sort_inputs import find_workbook, load_inputs
 from media_hygiene.services.sort_trial import first_sample, latest_month
+from media_hygiene.services.sort_trial_run import TrialRun, read_back
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
     from media_hygiene.services.sort_inputs import SortInputs
     from media_hygiene.services.sort_models import Prepared, SortResult
-
-
-@dataclass(frozen=True, slots=True)
-class TrialRun:
-    """A run of the page, read back from its journal entries."""
-
-    run_id: str
-    moved: int
-    verified: int
-    intact: bool
-    targets: tuple[Path, ...]  # where the files went, by folder
-    rest: int  # files still to move afterwards
 
 
 @dataclass(frozen=True, slots=True)
@@ -71,6 +61,23 @@ class SortTrial:
                 {"folder": path, "files": n} for path, n in sorted(goes.items())
             ],
         }
+
+    def running(self) -> TrialRun | None:
+        """The trial still open, read from the journal: a reload finds it back (0648).
+
+        Returns:
+            The run as it stands, or None: no trial, undone, or the sort went on.
+        """
+        try:
+            inputs = self._inputs()
+            journal = self.runtime.locations.journal_dir
+            trial = open_trial(journal, inputs.plan.plan_id)
+            if trial is None:
+                return None
+            rest = len(self._whole().plan.moves)
+        except MediaHygieneError:
+            return None
+        return read_back(trial, rest)
 
     def run(self) -> TrialRun:
         """Sort the latest month.

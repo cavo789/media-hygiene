@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 import pytest
 from typer.testing import CliRunner
 
+from media_hygiene.i18n.live import page_of
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.app import ReviewApp
 from media_hygiene.review.apply_api import ApplyingApp
@@ -134,7 +135,7 @@ def test_the_review_command_serves_until_ctrl_c(
     pages: list[bytes] = []
 
     def choose(app: ReviewApp) -> None:
-        pages.append(app.page)
+        pages.append(page_of(app.page))
         app.session.decide({0: frozenset({2})})
 
     monkeypatch.setattr(reviewing, "serve_until_ended", fake_server(choose))

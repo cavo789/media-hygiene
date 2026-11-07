@@ -11,19 +11,17 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.classify.bands import band_folders, layout_of, verdict
 from media_hygiene.classify.convention import looked_at
-from media_hygiene.classify.dating import datings_of, has_camera_trace
+from media_hygiene.classify.dating import has_camera_trace
+from media_hygiene.classify.event_cut import dated_files, events_of
 from media_hygiene.classify.event_folders import without_event_folders
-from media_hygiene.classify.events import trusted_events
 from media_hygiene.classify.folders import FolderRules
 from media_hygiene.classify.guesses import keep_guess
 from media_hygiene.classify.layout import Values, render
 from media_hygiene.classify.models import Band, Proposal, SortReason, Verdict
 from media_hygiene.classify.moments import Moments, joined_signals
-from media_hygiene.classify.received import join_received, received_guesses
 from media_hygiene.classify.rules.building import RuleFacts, Seen
 from media_hygiene.classify.rules.kept import Kept
 from media_hygiene.classify.rules.order import decide, unused
-from media_hygiene.classify.signals import folder_signal
 from media_hygiene.classify.trips import find_whereabouts
 from media_hygiene.classify.whereabouts import with_place
 from media_hygiene.classify.years import below, in_years, year_folders
@@ -68,6 +66,21 @@ class Classification:
     years: tuple[tuple[int, int] | None, int] = (None, 0)
 
 
+def run_rules(settings: ClassifySettings, scope: Scope) -> FolderRules:
+    """What folder names say in a run.
+
+    Args:
+        settings: `[classify]`.
+        scope: The generic folders, the people.
+
+    Returns:
+        The rules.
+    """
+    return FolderRules.build(
+        (*scope.generic, *settings.generic_folders), band_folders(settings)
+    ).with_people((*scope.people, *settings.person_folders))
+
+
 def classify(
     files: Sequence[MediaInput], settings: ClassifySettings, scope: Scope
 ) -> Classification:
@@ -81,19 +94,10 @@ def classify(
     Returns:
         The proposals (only the years in scope) and the events.
     """
-    rules = FolderRules.build(
-        (*scope.generic, *settings.generic_folders), band_folders(settings)
-    ).with_people((*scope.people, *settings.person_folders))
-    datings, received = received_guesses(
-        files, datings_of(files, settings, rules), settings
-    )
-    signals = {file.path: folder_signal(file, rules) for file in files}
-    events = trusted_events(
-        {path: dating for path, dating in datings.items() if path not in received},
-        {path: s.category for path, s in signals.items() if s.category},
-        settings,
-    )
-    events = join_received(received, datings, (events, settings.merge_gap_hours))
+    rules = run_rules(settings, scope)
+    dated = dated_files(files, settings, rules)
+    datings, signals = dated.datings, dated.signals
+    events = events_of(dated, settings)
     event_of = {path: event for event in events for path in event.paths}
     signals = without_event_folders(files, (signals, event_of), rules)
     where = find_whereabouts(files, (events, datings), (settings, scope.towns))

@@ -76,7 +76,7 @@ def _open_map(
     seen: dict[str, Response] = {}
 
     async def act(app: PlacesApp) -> None:
-        seen["page"] = app.page
+        seen["page"] = app.page()
         seen["found"] = await call(app, "POST /api/osm", {"text": "Fictiville"})
         if seen["found"].status != 200:
             return

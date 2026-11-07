@@ -11,13 +11,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import timedelta
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 from media_hygiene.classify.folder_towns import folder_town_spots
 from media_hygiene.classify.hand_placed import placed_by_hand
 from media_hygiene.classify.layout import GeoValues
 from media_hygiene.classify.models import DateSource
-from media_hygiene.classify.trip_walk import Group, TripWalk
+from media_hygiene.classify.trip_walk import Group, TripWalk, home_of, trip_town
 from media_hygiene.classify.whereabouts import (
     Spot,
     Whereabouts,
@@ -34,8 +34,6 @@ if TYPE_CHECKING:
     from media_hygiene.config.classify_settings import ClassifySettings
     from media_hygiene.geo.distance import Point
     from media_hygiene.geo.gazetteer import Gazetteer
-
-TOWN_RADIUS_KM: Final = 10.0  # a larger town this close names the trip
 
 
 @dataclass(frozen=True, slots=True)
@@ -91,23 +89,12 @@ def trip_spots(
     Returns:
         The trip of each file on one.
     """
-    home = next((place for place in settings.places if place.home), None)
+    home = home_of(settings)
     if towns is None or home is None:
         return {}
-    walk = TripWalk(
-        home.point,
-        (
-            timedelta(hours=settings.trip_merge_gap_hours),
-            settings.trip_min_km,
-            settings.trip_merge_max_km,
-        ),
-    )
-    for group in sorted(_groups(facts), key=lambda group: group.start):
-        walk.add(group)
     spots: dict[Path, Spot] = {}
-    for trip in walk.finish():
-        largest = max(trip, key=lambda group: group.located)
-        town = towns.main_town(largest.centre or home.point, TOWN_RADIUS_KM)
+    for trip in walked_trips(facts, settings, home.point):
+        town = trip_town(trip, home.point, towns)
         values = (
             GeoValues(country=town.country, region=town.region, city=town.name)
             if town
@@ -117,6 +104,32 @@ def trip_spots(
             for path in group.paths:
                 spots[path] = Spot(values, inherited=path not in facts.points)
     return spots
+
+
+def walked_trips(
+    facts: TripFacts, settings: ClassifySettings, home: Point
+) -> list[list[Group]]:
+    """The trips, before they are named.
+
+    Args:
+        facts: Positions, events and dates.
+        settings: `[classify]`: the trip thresholds.
+        home: Where home is.
+
+    Returns:
+        The groups of each trip, oldest trip first.
+    """
+    walk = TripWalk(
+        home,
+        (
+            timedelta(hours=settings.trip_merge_gap_hours),
+            settings.trip_min_km,
+            settings.trip_merge_max_km,
+        ),
+    )
+    for group in sorted(_groups(facts), key=lambda group: group.start):
+        walk.add(group)
+    return walk.finish()
 
 
 def _groups(facts: TripFacts) -> list[Group]:

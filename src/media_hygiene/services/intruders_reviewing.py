@@ -28,6 +28,7 @@ if TYPE_CHECKING:
     from concurrent.futures import Executor
     from pathlib import Path
 
+    from media_hygiene.i18n.live import Page
     from media_hygiene.report.chosen_decisions import ChosenFile
     from media_hygiene.review.apply_api import ReviewStart
     from media_hygiene.review.intruders_app import IntrudersPick
@@ -102,7 +103,7 @@ def intruders_page(runtime: Runtime, offer: ApplyOffer) -> ReviewPage:
     """
     desk = IntrudersDeskOnDisk(runtime)
 
-    def app(page: bytes, _executor: Executor, _previews: Path | None) -> LocalApp:
+    def app(page: Page, _executor: Executor, _previews: Path | None) -> LocalApp:
         """Build the app answering the browser.
 
         Args:

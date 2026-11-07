@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING, Final, override
 from pydantic import ValidationError
 
 from media_hygiene.i18n import _
+from media_hygiene.i18n.live import Page, page_of
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH, LocalApp
 from media_hygiene.review.serving import json_response, refused_post
@@ -60,7 +61,7 @@ class ShrinkDesk:
 class ShrinkTryApp(LocalApp):
     """Answers the page of `shrink --try`."""
 
-    page: bytes
+    page: Page
     desk: ShrinkDesk
 
     @override
@@ -85,20 +86,15 @@ class ShrinkTryApp(LocalApp):
         return await self._page(path)
 
     async def _page(self, path: str) -> Response:
-        """Serve the page, which plays the drafts, or its state.
-
-        Args:
-            path: The path asked for.
-
-        Returns:
-            The response; 404 for any other path.
-        """
+        """Serve the page, which plays the drafts, or its state; else 404."""
         if path == STATE_PATH:
             state = await asyncio.to_thread(self._state)
             return Response(HTTPStatus.OK, state, ContentType.JSON)
         if path != PAGE_PATH:
             return Response(HTTPStatus.NOT_FOUND)
-        return Response(HTTPStatus.OK, self.page, ContentType.HTML, policy=NEAR_POLICY)
+        return Response(
+            HTTPStatus.OK, page_of(self.page), ContentType.HTML, policy=NEAR_POLICY
+        )
 
     def _state(self) -> bytes:
         """Describe the try, the file read from the disk.

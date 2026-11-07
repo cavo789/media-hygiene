@@ -180,7 +180,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
                         lan_door(  # `/albums` (0297), a phone's door (0431, 0462)
                             runtime,
                             album_pages(runtime, both, server),
-                            None if lan is None else (lan, home_page(remote=True)),
+                            (lan, PerLocale(lambda: home_page(remote=True))),
                         )
                     ),
                     ending,

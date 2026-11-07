@@ -23,6 +23,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.review.http import Request
     from media_hygiene.search.events_desk import EventsDesk
+    from media_hygiene.services.sort_trial_run import TrialRun
 
 TRIAL_PATH: Final = "/api/sort/trial"
 TRIAL_RUN_PATH: Final = "/api/sort/trial/run"
@@ -47,10 +48,13 @@ def trial_offer(desk: EventsDesk) -> Response:
         desk: The Events view.
 
     Returns:
-        `{"offer": … or null}`.
+        `{"offer": … or null, "running": the trial still open or null}` (0648).
     """
-    offer = desk.trial.offer() if desk.trial is not None else None
-    return json_response(HTTPStatus.OK, {"offer": offer})
+    trial = desk.trial
+    running = trial.running() if trial is not None else None
+    offer = trial.offer() if trial is not None and running is None else None
+    view = _run_view(desk, running) if running is not None else None
+    return json_response(HTTPStatus.OK, {"offer": offer, "running": view})
 
 
 async def trial_post(desk: EventsDesk | None, request: Request) -> Response:
@@ -75,17 +79,27 @@ async def trial_post(desk: EventsDesk | None, request: Request) -> Response:
     except MediaHygieneError as exc:
         said = " ".join(filter(None, (exc.message, exc.tip)))
         return json_response(HTTPStatus.CONFLICT, {"error": said})
-    return json_response(
-        HTTPStatus.OK,
-        {
-            "run_id": done.run_id,
-            "moved": done.moved,
-            "verified": done.verified,
-            "intact": done.intact,
-            "rest": done.rest,
-            "hits": _tiles(desk, done.targets),
-        },
-    )
+    return json_response(HTTPStatus.OK, _run_view(desk, done))
+
+
+def _run_view(desk: EventsDesk, done: TrialRun) -> dict[str, object]:
+    """A run as the page shows it.
+
+    Args:
+        desk: The Events view.
+        done: The run, read back.
+
+    Returns:
+        Its figures and its photos.
+    """
+    return {
+        "run_id": done.run_id,
+        "moved": done.moved,
+        "verified": done.verified,
+        "intact": done.intact,
+        "rest": done.rest,
+        "hits": _tiles(desk, done.targets),
+    }
 
 
 def _tiles(desk: EventsDesk, targets: tuple[Path, ...]) -> object:

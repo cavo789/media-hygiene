@@ -30,6 +30,7 @@ if TYPE_CHECKING:
 
     from pydantic import BaseModel
 
+    from media_hygiene.i18n.live import Page
     from media_hygiene.review.http import Request
 
 _GET, _POST = "GET", "POST"
@@ -47,7 +48,7 @@ class ReviewPages(ReviewFiles, Protocol):
 
 
 async def read_route(
-    request: Request, session: ReviewPages, pages: tuple[bytes, PreviewPool]
+    request: Request, session: ReviewPages, pages: tuple[Page, PreviewPool]
 ) -> Response:
     """Answer a `GET`: a file of the review, else the page or its state.
 
@@ -99,7 +100,7 @@ class DecidingApp[S: ReviewPages](LocalApp):
 
     decide_path: ClassVar[str]  # where the page posts its choices
     session: S
-    page: bytes
+    page: Page
     executor: Executor
     previews: Path | None = None  # the cache folder of previews, if any
 

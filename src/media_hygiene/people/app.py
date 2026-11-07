@@ -15,6 +15,7 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
+from media_hygiene.i18n.live import Page, page_of
 from media_hygiene.people.aside import ASIDE_PATH
 from media_hygiene.people.changes import NamesAsked, Naming
 from media_hygiene.people.hidden import not_aside
@@ -50,7 +51,7 @@ class PeopleApp:
 
     roster: Roster
     mapper: HostPathMapper
-    page: bytes
+    page: Page
     executor: Executor
     previews: Path | None = None  # the cache folder of previews, if any
     aside: AsideDesk | None = None  # None: no reports folder to set photos aside in
@@ -98,7 +99,7 @@ class PeopleApp:
             The response; 404 for anything else.
         """
         if path == PAGE_PATH:
-            return Response(HTTPStatus.OK, self.page, ContentType.HTML)
+            return Response(HTTPStatus.OK, page_of(self.page), ContentType.HTML)
         if path == GROUPS_PATH:
             return json_response(HTTPStatus.OK, self._state())
         for prefix, key in ((SECTION_PREFIX, "faces"), (SAMPLE_PREFIX, "shown")):

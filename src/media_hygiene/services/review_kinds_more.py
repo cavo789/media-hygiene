@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     from concurrent.futures import Executor
     from pathlib import Path
 
+    from media_hygiene.i18n.live import Page
     from media_hygiene.plan.models import AuditFindings
     from media_hygiene.review.local_app import LocalApp
     from media_hygiene.review.session import ReviewSession
@@ -80,7 +81,7 @@ def _page(runtime: Runtime, session: ReviewSession, offer: ApplyOffer) -> Review
     """
     albums = album_desk(runtime, review_picker(runtime, session))
 
-    def app(page: bytes, executor: Executor, previews: Path | None) -> LocalApp:
+    def app(page: Page, executor: Executor, previews: Path | None) -> LocalApp:
         """The burst review's app, with its albums.
 
         Args:

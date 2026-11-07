@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.i18n.live import page_of
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.lan_card import TV_SCREEN
 from media_hygiene.review.videos import NEAR_POLICY
@@ -49,7 +50,7 @@ def screen_page(app: SlideshowApp, request: Request, visitor: Visitor) -> Respon
             app.desk.changes.notify()
     return Response(
         HTTPStatus.OK,
-        app.pages.screen,
+        page_of(app.pages.screen),
         ContentType.HTML,
         policy=NEAR_POLICY,  # it plays the videos
         headers=headers,

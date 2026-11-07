@@ -6,6 +6,7 @@ import asyncio
 import json
 from dataclasses import replace
 from http import HTTPStatus
+from pathlib import Path
 from types import SimpleNamespace
 from typing import TYPE_CHECKING
 
@@ -29,8 +30,6 @@ from tests.support.cli import run
 from tests.support.sorting import PARTY
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     import pytest
     from typer.testing import CliRunner
 
@@ -210,3 +209,105 @@ def test_a_page_without_a_trial_says_so(locations: Locations) -> None:
         _post(desk, TRIAL_REST_PATH)
         late = asyncio.run(sort_post(desk, request))
         assert late.status == HTTPStatus.CONFLICT
+
+
+def _running(desk: EventsDesk) -> dict[str, object] | None:
+    """Ask, as a reload does, the trial still open.
+
+    Returns:
+        It, or None.
+    """
+    answer = events_get(desk, TRIAL_PATH)
+    assert answer is not None
+    said: dict[str, dict[str, object] | None] = json.loads(answer.body)
+    return said["running"]
+
+
+def _journal(locations: Locations, run_id: object) -> Path:
+    """Where a run is journaled.
+
+    Returns:
+        Its file.
+    """
+    return locations.journal_dir / f"{run_id}.jsonl"
+
+
+def test_a_reload_finds_the_trial_back_from_the_journal(locations: Locations) -> None:
+    """Photos, run, rest read back; once undone, or the rest sorted: nothing (0648)."""
+    runtime, _workbook, _sizes = two_events(locations)
+    with SearchIndex.open(locations.index_file) as search:
+        desk = _desk(runtime, search)
+        assert _running(desk) is None
+        done = _post(desk, TRIAL_RUN_PATH)
+        back = _running(_desk(runtime, search))  # a new page, nothing in memory
+        assert back is not None
+        assert {key: back[key] for key in done if key != "hits"} == {
+            key: done[key] for key in done if key != "hits"
+        }
+        hits, shown = back["hits"], done["hits"]
+        assert isinstance(hits, list)
+        assert isinstance(shown, list)
+        assert {hit["key"] for hit in hits} == {hit["key"] for hit in shown}
+        assert _offered(desk) is None
+        run_id = done["run_id"]
+        assert isinstance(run_id, str)
+        PageUndo(runtime).undo(run_id)
+        assert _running(desk) is None  # undone
+        assert _offered(desk) is not None
+        _post(desk, TRIAL_RUN_PATH)
+        assert _running(desk) is not None
+        _post(desk, TRIAL_REST_PATH)
+        assert _running(desk) is None  # finished
+
+
+def test_a_journal_without_the_marker_is_no_trial(locations: Locations) -> None:
+    """A run journaled before 0648 still loads: no trial back, nothing breaks."""
+    runtime, _workbook, _sizes = two_events(locations)
+    with SearchIndex.open(locations.index_file) as search:
+        desk = _desk(runtime, search)
+        run_id = _post(desk, TRIAL_RUN_PATH)["run_id"]
+        file = _journal(locations, run_id)
+        lines = [json.loads(line) for line in file.read_text("utf-8").splitlines()]
+        assert any(line["trial"] for line in lines)
+        for line in lines:
+            del line["trial"]
+        file.write_text("".join(json.dumps(one) + "\n" for one in lines), "utf-8")
+        assert _running(desk) is None
+        assert _offered(desk) is None
+
+
+def test_the_cut_marks_a_trial_and_the_whole_sort_is_none(
+    locations: Locations,
+) -> None:
+    """The cut marks the run, wherever it started; the whole sort leaves no marker."""
+    runtime, workbook, _sizes = two_events(locations)
+    whole, trial = _whole(runtime, workbook)
+    assert not whole.inputs.trial
+    assert only_trial(whole.inputs, LATEST, runtime.mapper).trial
+    with SearchIndex.open(locations.index_file) as search:
+        desk = _desk(runtime, search)
+        run_id = trial.rest().run_id
+        assert _running(desk) is None
+        lines = _journal(locations, run_id).read_text("utf-8").splitlines()
+        assert not any(json.loads(line)["trial"] for line in lines)
+
+
+def test_a_file_moved_since_is_said_not_hidden(locations: Locations) -> None:
+    """Moved in Explorer after the trial: fewer tiles, the run says it is not intact."""
+    runtime, _workbook, _sizes = two_events(locations)
+    with SearchIndex.open(locations.index_file) as search:
+        desk = _desk(runtime, search)
+        done = _post(desk, TRIAL_RUN_PATH)
+        hits = done["hits"]
+        assert isinstance(hits, list)
+        lines = _journal(locations, done["run_id"]).read_text("utf-8").splitlines()
+        target = next(json.loads(line)["target"] for line in lines if '"move"' in line)
+        moved = Path(target)
+        moved.rename(locations.data_dir / "elsewhere.jpg")
+        back = _running(desk)
+        assert back is not None
+        assert not back["intact"]
+        assert back["verified"] == len(hits) - 1
+        tiles = back["hits"]
+        assert isinstance(tiles, list)
+        assert len(tiles) == len(hits) - 1

@@ -42,7 +42,8 @@
     if (trialRun) return;
     const answer = await ask(P.trial);
     if (!answer || !answer.ok) return;
-    const { offer } = await answer.json();
+    const { offer, running } = await answer.json();
+    if (running) { byId("trialBox").hidden = false; trialShow(running); return; }  // back from the journal (0648)
     byId("trialBox").hidden = !offer;
     if (!offer) return;
     const figures = { month: offer.month, files: offer.files.toLocaleString(), total: offer.total.toLocaleString() };
@@ -61,7 +62,10 @@
   };
   const trialGo = async () => {
     const done = await trialPost(P.trialRun, {});
-    if (!done) return;
+    if (done) trialShow(done);
+  };
+  const trialShow = (done) => {
+    trialShows++;  // a search still on its way does not replace these photos
     trialRun = done.run_id;
     trialRest = done.rest;
     trialHits = done.hits;

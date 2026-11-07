@@ -30,7 +30,7 @@ from media_hygiene.review.serving import json_response, refused_post, serve_conn
 
 if TYPE_CHECKING:
     import asyncio
-    from collections.abc import Mapping
+    from collections.abc import Callable, Mapping
 
     from media_hygiene.geo.nominatim import Nominatim
     from media_hygiene.places.board import PlacesBoard
@@ -67,7 +67,7 @@ class PlacesApp:
     """
 
     board: PlacesBoard
-    page: Response
+    page: Callable[[], Response]  # `PerLocale`: follows the language
     assets: Mapping[str, Response]
     osm: Nominatim | None = None
     pool: PreviewPool | None = None
@@ -123,7 +123,7 @@ class PlacesApp:
             The response; 404 for anything else.
         """
         if path == PAGE_PATH:
-            return self.page
+            return self.page()
         if path == STATE_PATH:
             return json_response(HTTPStatus.OK, self.board.state())
         sources = PhotoSources(self.board, self.folders)

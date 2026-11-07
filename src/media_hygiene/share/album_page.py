@@ -25,6 +25,7 @@ from typing import TYPE_CHECKING, Final
 from urllib.parse import unquote
 
 from media_hygiene.errors import MediaHygieneError
+from media_hygiene.i18n.live import Page, page_of
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.videos import NEAR_POLICY
@@ -64,11 +65,11 @@ _GET, _POST = "GET", "POST"
 class AlbumParts:  # pylint: disable=too-many-instance-attributes  # one per door
     """The page, the albums, and the desk saving their changes."""
 
-    page: bytes
+    page: Page
     shelf: AlbumShelf
     desk: AlbumDesk
     shown: Shown  # shared with the desk: a change names an album's files only
-    edit: bytes = b""  # one album as tiles to pick (0500)
+    edit: Page = b""  # one album as tiles to pick (0500)
     links: AlbumLinkDoor | None = None  # its 24 h links, under `mh --lan` (0462)
     folder: AlbumFolderDoor | None = None  # the albums' folder, the PC's (0625)
     tv_paired: Callable[[], bool] = field(default=lambda: False)  # 0523
@@ -118,7 +119,9 @@ class AlbumPages:
         if path in {ALBUMS_PAGE, ALBUM_EDIT_PAGE}:
             parts = self.parts
             page = parts.page if path == ALBUMS_PAGE else parts.edit
-            return Response(HTTPStatus.OK, page, ContentType.HTML, policy=NEAR_POLICY)
+            return Response(
+                HTTPStatus.OK, page_of(page), ContentType.HTML, policy=NEAR_POLICY
+            )
         if path == TV_PAIRED_PATH:
             return json_response(HTTPStatus.OK, {"paired": self.parts.tv_paired()})
         if path == ALBUM_LIST_PATH:

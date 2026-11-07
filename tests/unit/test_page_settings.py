@@ -5,8 +5,10 @@ from __future__ import annotations
 import asyncio
 import json
 import tomllib
+from functools import partial
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -18,13 +20,22 @@ from media_hygiene.review import ai_state_api
 from media_hygiene.review.ai_state_api import AI_STATE_PATH
 from media_hygiene.review.http import Request
 from media_hygiene.review.lan_paths import READ_PATHS
+from media_hygiene.review.local_app import PAGE_PATH, page_or_state
 from media_hygiene.review.page_settings import SETTING_PATHS, setting_response
+from media_hygiene.review.place import DecisionsPlace
 from media_hygiene.review.setting_groups import EVENTS_PATH, LOCALE_PATH, SLIDESHOW_PATH
 from media_hygiene.review.write_routes import CHANGES
 from media_hygiene.services.home import home_page
+from media_hygiene.services.phone_review import phone_page
+from media_hygiene.services.review_file import review_page
+from media_hygiene.services.slideshow_build import show_app
+from tests.support.runtime import make_runtime
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from pathlib import Path
+
+    from media_hygiene.paths.locations import Locations
 
 _JSON: Final = {"host": "127.0.0.1", "content-type": "application/json"}
 
@@ -189,3 +200,61 @@ def test_the_ai_card_is_one_shared_template() -> None:
     assert "window.mhAiCard = " in page
     assert "window.mhAiCard(box)" in page
     assert AI_STATE_PATH in page
+
+
+def _follows(draw: Callable[[], bytes], french: str) -> None:
+    """0647: drawn in English, then, the language changed, in French: same object."""
+    page = PerLocale(draw)
+    assert french not in page().decode()
+    install(Locale.FR)
+    assert french in page().decode()
+
+
+_LANGUAGE_FR: Final = "Langue"  # in the bar of every page
+
+
+def test_the_review_page_follows_the_language() -> None:
+    """0647: a review page reloaded after a change is in the new language."""
+    place = DecisionsPlace("decisions.json", "C:\\decisions.json")
+    _follows(partial(review_page, "review.html.j2", place, ("/d", "/f")), _LANGUAGE_FR)
+
+
+def test_the_phone_page_follows_the_language() -> None:
+    """0647: the page freeing a phone, drawn per language, reloads in the new one."""
+    place = DecisionsPlace("decisions.json", "C:\\decisions.json")
+    page = phone_page(place)
+    english = page()
+    install(Locale.FR)
+    assert page() != english
+    assert _LANGUAGE_FR.encode() in page()
+
+
+def test_the_home_page_of_a_phone_follows_the_language() -> None:
+    """0647: the home page drawn for a phone (`mh --lan`)."""
+    page = PerLocale(lambda: home_page(remote=True))
+    english = page()
+    install(Locale.FR)
+    assert page() != english
+
+
+def test_the_slideshow_follows_the_language(locations: Locations) -> None:
+    """0647: the remote and the TV's screen of a show."""
+    app = show_app(make_runtime(locations), MagicMock(), MagicMock())
+    remote, screen = page_of(app.pages.remote), page_of(app.pages.screen)
+    install(Locale.FR)
+    assert page_of(app.pages.remote) != remote
+    assert page_of(app.pages.screen) != screen
+
+
+def test_a_served_page_uses_the_language_of_the_moment() -> None:
+    """0647: `page_or_state` draws at each load, whichever the server holds."""
+    page = PerLocale(lambda: _("Language").encode())
+    english = page_or_state(PAGE_PATH, page, MagicMock())
+    install(Locale.FR)
+    assert page_or_state(PAGE_PATH, page, MagicMock()).body != english.body
+
+
+def test_no_page_is_said_to_keep_its_language(tmp_path: Path) -> None:
+    """0647: the sentence of exceptions is gone from what the save says."""
+    _status, answer = _post(tmp_path / "config.toml", LOCALE_PATH, {"locale": "en"})
+    assert "mh starts again" not in str(answer["later"])
