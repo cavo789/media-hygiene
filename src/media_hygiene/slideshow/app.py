@@ -23,6 +23,7 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
+from media_hygiene.i18n.live import Page, page_of
 from media_hygiene.review.http import NO_REFERRER, ContentType, Response
 from media_hygiene.review.lan import PAIR_PREFIX
 from media_hygiene.review.lan_card import lan_response
@@ -51,8 +52,8 @@ _GET, _POST = "GET", "POST"
 class ShowPages:
     """The two pages: the remote (phone, PC) and the screen (TV)."""
 
-    remote: bytes
-    screen: bytes
+    remote: Page
+    screen: Page
     policy: str = NEAR_POLICY  # the remote's: allows `[places] tiles` when set (0449)
     referrer: str = NO_REFERRER
 
@@ -161,7 +162,7 @@ class SlideshowApp:
             pages = self.pages
             return Response(
                 HTTPStatus.OK,
-                pages.remote,
+                page_of(pages.remote),
                 ContentType.HTML,
                 policy=pages.policy,
                 referrer=pages.referrer,

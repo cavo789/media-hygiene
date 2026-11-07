@@ -12,6 +12,7 @@ from functools import partial
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.docs.served import served_url
+from media_hygiene.i18n.live import PerLocale
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.album_show import ALBUM_SHOW, SLIDESHOW_PAGE
 from media_hygiene.review.home_assets import ASSETS_PREFIX
@@ -68,13 +69,15 @@ def album_pages(runtime: Runtime, home: Handling, server: HomeServer) -> AlbumPa
     shown = Shown()
     aside = AsideFilter(partial(set_aside, runtime), runtime.mapper)
     desk = album_desk(runtime, partial(_picked, (reader, shown, aside)), server.tv)
-    door = AlbumLinkDoor(reader, album_page(link=True))  # used under `mh --lan` (0462)
+    door = AlbumLinkDoor(
+        reader, PerLocale(partial(album_page, link=True))
+    )  # used under `mh --lan` (0462)
     parts = AlbumParts(
-        album_page(),
+        PerLocale(album_page),
         reader,
         desk,
         shown,
-        album_edit_page(),
+        PerLocale(album_edit_page),
         door,
         _folder_door(runtime),
         server.tv.paired,

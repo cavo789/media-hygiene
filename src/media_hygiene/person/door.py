@@ -12,6 +12,7 @@ from functools import partial
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.faces.worker import OnnxRecipe
+from media_hygiene.i18n.live import PerLocale
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.people.aside import AsideDesk
 from media_hygiene.people.remembered import AsideMemory
@@ -42,6 +43,26 @@ _PATHS: Final = {
     "like": routes.LIKE_PATH,
     "aside": routes.ASIDE_PATH,
 }
+
+
+def _page(apply: ApplyDesk | None) -> bytes:
+    """The page, in the language in use.
+
+    Args:
+        apply: Its *Apply now*, when opened from home.
+
+    Returns:
+        Its bytes.
+    """
+    environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
+    page = environment.get_template(_PAGE_TEMPLATE).render(
+        header=page_header(_PAGE_TEMPLATE),
+        paths=_PATHS,
+        apply_offered=apply is not None,
+        apply_path=routes.APPLY_PATH,
+        undo_path=routes.UNDO_PATH if apply and apply.offer.undo else None,
+    )
+    return page.encode()
 
 
 def with_person(door: EndingDoor, runtime: Runtime, executor: Executor) -> EndingDoor:
@@ -96,19 +117,17 @@ def person_app(
     if host is not None and host.offered:
         offer = dataclasses.replace(host.offer, pending=lambda: bool(aside.paths()))
         apply = dataclasses.replace(host, offer=offer)
-    environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
-    page = environment.get_template(_PAGE_TEMPLATE).render(
-        header=page_header(_PAGE_TEMPLATE),
-        paths=_PATHS,
-        apply_offered=apply is not None,
-        apply_path=routes.APPLY_PATH,
-        undo_path=routes.UNDO_PATH if apply and apply.offer.undo else None,
-    )
     place = PhotoPlace(runtime.mapper, runtime.locations.data_dir)
     finder = PersonFinder(place, FaceIndex(runtime.index_file), FaceShelf())
     recipe = partial(loose_recipe, runtime)
     return PersonApp(
-        page.encode(), finder, executor, recipe, aside, runtime.previews_dir, apply
+        PerLocale(partial(_page, apply)),
+        finder,
+        executor,
+        recipe,
+        aside,
+        runtime.previews_dir,
+        apply,
     )
 
 

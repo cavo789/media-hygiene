@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
+from media_hygiene.i18n.live import PerLocale
 from media_hygiene.review.import_pick_app import COPY_PATH, LEAVE_PATH, ImportPickApp
 from media_hygiene.scan.progress import NullProgress
 from media_hygiene.services.import_pick import ImportDesk
@@ -43,7 +44,7 @@ def planned_app(runtime: Runtime, executor: Executor) -> ImportPickApp:
     service = ImportService(runtime, NullProgress())
     service.ensure_ready()
     desk = ImportDesk(runtime, service.prepare())
-    return ImportPickApp(runtime, desk, import_page(), executor)
+    return ImportPickApp(runtime, desk, PerLocale(import_page), executor)
 
 
 def serve_import_pick(runtime: Runtime, plan: ImportPlan, port: int) -> int:
@@ -72,6 +73,6 @@ def serve_import_pick(runtime: Runtime, plan: ImportPlan, port: int) -> int:
             The app.
         """
         desk = ImportDesk(runtime, plan)
-        return ImportPickApp(runtime, desk, import_page(), executor)
+        return ImportPickApp(runtime, desk, PerLocale(import_page), executor)
 
     return serve_pick_page(runtime, app_of, (port, said))

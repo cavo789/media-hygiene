@@ -17,6 +17,7 @@ from media_hygiene.search.span_events import SpanEvents
 from media_hygiene.search.tag_desk import TagDesk
 from media_hygiene.search.tag_drop_desk import DropDesk
 from media_hygiene.services.group_sort import sorted_group
+from media_hygiene.services.grouping_look import GroupingLook
 from media_hygiene.services.people_page import names_file
 from media_hygiene.services.rule_trial import event_gap_hours, try_rule, written_rules
 from media_hygiene.services.selection_move import SelectionMover
@@ -107,9 +108,8 @@ def events_desk(
             runtime.locations.config_file.parent,
         ),
         GroupingPreview(
-            search.connection,
             runtime.locations.config_file,
-            settings.classify.session_gap_hours,
+            GroupingLook(runtime, search.connection),
         ),
         SortTrial(runtime),
     )

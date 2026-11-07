@@ -40,8 +40,7 @@ def _speak(values: Held) -> str:
     install(Locale(str(values["locale"])))
     return _(
         "Applied now: this page reloads in this language, the other open pages and "
-        "the console's messages follow at their next load. A slideshow, the phone "
-        "pages and the review pages already open keep theirs until mh starts again."
+        "the console's messages follow at their next load."
     )
 
 

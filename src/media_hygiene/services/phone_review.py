@@ -13,11 +13,13 @@ from __future__ import annotations
 import asyncio
 import contextlib
 from dataclasses import dataclass
+from functools import partial
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import ExitCode
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
+from media_hygiene.i18n.live import PerLocale
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.person.door import with_person
@@ -44,7 +46,6 @@ from media_hygiene.services.writable import ensure_writable
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from media_hygiene.review.page_header import PageHeader
     from media_hygiene.review.place import DecisionsPlace
     from media_hygiene.services.phone_proof import Ticked
     from media_hygiene.services.runtime import Runtime
@@ -113,19 +114,30 @@ def serve_phone_review(runtime: Runtime, review: PhoneReview) -> tuple[str, ...]
     # the home page, the loop of mh ends instead, as after any page's tab (0332).
     closed = ExitCode.PAGE_CLOSED if header.home else STOPPED
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
-        app = PhoneApp(session, _page(place, header), executor, runtime.previews_dir)
+        app = PhoneApp(session, phone_page(place), executor, runtime.previews_dir)
         door = EndingDoor(app, app.ending, Presence(app.ending, closed))
         door = with_person(door, runtime, executor)
         asyncio.run(serve_until_ended(door, review.port, ready))
     return session.ticked_lines() if session.freeing else ()
 
 
-def _page(place: DecisionsPlace, header: PageHeader) -> bytes:
+def phone_page(place: DecisionsPlace) -> PerLocale[bytes]:
+    """The page, drawn in the language in use.
+
+    Args:
+        place: The decisions file it writes.
+
+    Returns:
+        How to draw it.
+    """
+    return PerLocale(partial(_page, place))
+
+
+def _page(place: DecisionsPlace) -> bytes:
     """Render the page.
 
     Args:
         place: The decisions file it writes.
-        header: Its bar.
 
     Returns:
         The page.
@@ -134,7 +146,7 @@ def _page(place: DecisionsPlace, header: PageHeader) -> bytes:
     return (
         environment.get_template(_TEMPLATE)
         .render(
-            header=header,
+            header=page_header(_TEMPLATE),
             state_path=STATE_PATH,
             decide_path=PHONE_DECIDE_PATH,
             file_path=FILE_PATH,

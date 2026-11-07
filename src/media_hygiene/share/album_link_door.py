@@ -20,6 +20,7 @@ import segno
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from media_hygiene.errors import MediaHygieneError
+from media_hygiene.i18n.live import Page, page_of
 from media_hygiene.review.http import ContentType, Request, Response
 from media_hygiene.review.serving import json_response
 from media_hygiene.review.videos import NEAR_POLICY
@@ -54,7 +55,7 @@ class AlbumLinkDoor:
     """Answers an album's link from the home network, and the PC making one."""
 
     shelf: AlbumShelf
-    page: bytes  # the albums' page in its read-only link mode
+    page: Page  # the albums' page in its read-only link mode
     links: AlbumLinks = field(default_factory=AlbumLinks)
 
     async def answer(self, request: Request) -> Response:
@@ -72,7 +73,7 @@ class AlbumLinkDoor:
             return Response(HTTPStatus.NOT_FOUND)
         if not rest:
             return Response(
-                HTTPStatus.OK, self.page, ContentType.HTML, policy=NEAR_POLICY
+                HTTPStatus.OK, page_of(self.page), ContentType.HTML, policy=NEAR_POLICY
             )
         keyed = await asyncio.to_thread(self.shelf.album, name)
         if keyed is None:

@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
+from media_hygiene.i18n.live import Page, page_of
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, serve_connection
 
@@ -70,7 +71,7 @@ class LocalApp(ABC):
         """
 
 
-def page_or_state(path: str, page: bytes, state: Callable[[], BaseModel]) -> Response:
+def page_or_state(path: str, page: Page, state: Callable[[], BaseModel]) -> Response:
     """Serve the page itself, or its state.
 
     Args:
@@ -82,7 +83,7 @@ def page_or_state(path: str, page: bytes, state: Callable[[], BaseModel]) -> Res
         The response; 404 for any other path.
     """
     if path == PAGE_PATH:
-        return Response(HTTPStatus.OK, page, ContentType.HTML)
+        return Response(HTTPStatus.OK, page_of(page), ContentType.HTML)
     if path == STATE_PATH:
         return Response(
             HTTPStatus.OK, state().model_dump_json().encode(), ContentType.JSON

@@ -18,6 +18,7 @@ from typing import TYPE_CHECKING, Final
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from media_hygiene.i18n import _
+from media_hygiene.i18n.live import Page, page_of
 from media_hygiene.person.finding import face_view
 from media_hygiene.person.pictures import PersonPictures
 from media_hygiene.person.routes import (
@@ -71,7 +72,7 @@ class LikeAsked(BaseModel):
 class PersonApp:
     """Answers `/person` from the index, the worker pool and the decisions file."""
 
-    page: bytes
+    page: Page
     finder: PersonFinder
     executor: Executor
     recipe: Callable[[], FinderRecipe | None]  # None: the face models are not there
@@ -97,7 +98,7 @@ class PersonApp:
         if request.method == _POST:
             return refused_post(request) or await self._post(path, request.body)
         if path == PAGE_PATH:
-            return Response(HTTPStatus.OK, self.page, ContentType.HTML)
+            return Response(HTTPStatus.OK, page_of(self.page), ContentType.HTML)
         if path.endswith(JPEG):
             pictures = PersonPictures(self.finder.shelf, self.executor, self.previews)
             return await pictures.answer(path)

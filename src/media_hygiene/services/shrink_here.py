@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.constants import ExitCode
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
+from media_hygiene.i18n.live import PerLocale
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.ending import Ending
 from media_hygiene.review.http import ContentType, Response, is_local
@@ -154,7 +155,7 @@ class ShrinkHere:
                 self._open = _Open(
                     trial,
                     stack,
-                    ShrinkTryApp(try_page(), desk),
+                    ShrinkTryApp(PerLocale(try_page), desk),
                     ending,
                     Presence(ending, ExitCode.PAGE_CLOSED),
                 )

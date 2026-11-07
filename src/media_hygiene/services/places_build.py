@@ -10,6 +10,7 @@ from http import HTTPStatus
 from importlib.resources import files
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.i18n.live import PerLocale
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.places.app import (
     FOLDER_PATH,
@@ -91,13 +92,28 @@ def places_app(runtime: Runtime, opened: OpenedMap, executor: Executor) -> Place
         "lookup_path": LOOKUP_PATH,
         "osm_path": OSM_PATH if osm else "",
     }
-    page = environment.get_template(_PAGE_TEMPLATE).render(
-        header=page_header(_PAGE_TEMPLATE),
-        **{name: _here(path) for name, path in routes.items()},
-        osm_host=osm.host if osm else "",
-        tiles=settings.tiles,
-        attribution=settings.attribution,
-    )
+
+    def shown() -> Response:
+        """The page, in the language in use.
+
+        Returns:
+            Its response.
+        """
+        page = environment.get_template(_PAGE_TEMPLATE).render(
+            header=page_header(_PAGE_TEMPLATE),
+            **{name: _here(path) for name, path in routes.items()},
+            osm_host=osm.host if osm else "",
+            tiles=settings.tiles,
+            attribution=settings.attribution,
+        )
+        return Response(
+            HTTPStatus.OK,
+            page.encode(),
+            ContentType.HTML,
+            policy=PAGE_POLICY.format(tiles=settings.tile_host),
+            referrer=PAGE_REFERRER,
+        )
+
     static = files(_PACKAGE).joinpath(_STATIC)
     assets = {
         path: Response(
@@ -105,12 +121,5 @@ def places_app(runtime: Runtime, opened: OpenedMap, executor: Executor) -> Place
         )
         for path, (name, kind) in _ASSETS.items()
     }
-    shown = Response(
-        HTTPStatus.OK,
-        page.encode(),
-        ContentType.HTML,
-        policy=PAGE_POLICY.format(tiles=settings.tile_host),
-        referrer=PAGE_REFERRER,
-    )
     pool = PreviewPool(executor, runtime.previews_dir)
-    return PlacesApp(opened.board, shown, assets, osm, pool, opened.folders)
+    return PlacesApp(opened.board, PerLocale(shown), assets, osm, pool, opened.folders)

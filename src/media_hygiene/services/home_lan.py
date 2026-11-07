@@ -17,6 +17,7 @@ from media_hygiene.review.local_app import PAGE_PATH
 
 if TYPE_CHECKING:
     from media_hygiene.console.output import Output
+    from media_hygiene.i18n.live import Page
     from media_hygiene.review.ending import Handling
     from media_hygiene.review.lan import LanAccess
     from media_hygiene.services.runtime import Runtime
@@ -50,21 +51,21 @@ def say_lan(output: Output, lan: LanAccess | None) -> None:
 
 
 def lan_door(
-    runtime: Runtime, pages: AlbumPages, phone: tuple[LanAccess, bytes] | None
+    runtime: Runtime, pages: AlbumPages, phone: tuple[LanAccess | None, Page]
 ) -> Handling:
     """The albums' pages, behind the door of the home network under `mh --lan`.
 
     Args:
         runtime: Settings, mount points and output.
         pages: The albums' pages in front of the home page (their links too, 0462).
-        phone: The run's access and the home page drawn for a phone; None without.
+        phone: The run's access (None without) and the home page drawn for a phone.
 
     Returns:
         What answers the requests.
     """
-    if phone is None:
-        return pages
     lan, page = phone
+    if lan is None:
+        return pages
     return LanApp(  # phones paired for good under HTTPS (0431)
         pages,
         lan,

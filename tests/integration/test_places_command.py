@@ -42,7 +42,7 @@ def test_the_map_shows_the_clusters_and_saves_a_place(
         place = {"key": None, "name": "Garden", "latitude": GARDEN[0]}
         place |= {"longitude": GARDEN[1], "radius_m": 100, "home": True}
         seen["saved"] = await call(app, "POST /api/places", {"places": [place]})
-        seen["page"] = app.page
+        seen["page"] = app.page()
         seen["leaflet"] = await call(app, "GET /leaflet.js")
 
     monkeypatch.setattr(places_service, "run_server", fake_server(name_it))

@@ -1262,9 +1262,7 @@ msgstr ""
 
 msgid ""
 "Applied now: this page reloads in this language, the other open pages and"
-" the console's messages follow at their next load. A slideshow, the phone"
-" pages and the review pages already open keep theirs until mh starts "
-"again."
+" the console's messages follow at their next load."
 msgstr ""
 
 msgid "Applies the next time mh starts: the open page keeps its door."
@@ -2130,6 +2128,9 @@ msgstr ""
 msgid ""
 "Ctrl+C stops between two photos: the faces found are kept, and the next "
 "run goes on."
+msgstr ""
+
+msgid "Cutting the photos into events and trips, this can take a few seconds…"
 msgstr ""
 
 msgid "Czkawka agrees: no exact duplicate."
@@ -5222,6 +5223,10 @@ msgstr ""
 msgid "New place"
 msgstr ""
 
+#, python-brace-format
+msgid "New trips ({n})"
+msgstr ""
+
 msgid "Next"
 msgstr ""
 
@@ -5543,6 +5548,10 @@ msgstr ""
 msgid "No longer events ({n})"
 msgstr ""
 
+#, python-brace-format
+msgid "No longer trips ({n})"
+msgstr ""
+
 msgid "No month left to try: files of this plan moved."
 msgstr ""
 
@@ -5758,6 +5767,9 @@ msgid ""
 msgstr ""
 
 msgid "No town of more than 1,000 inhabitants starts so."
+msgstr ""
+
+msgid "No trips to preview: they need a home place and a trip rule."
 msgstr ""
 
 msgid "No video left to lighten: nothing was changed."
@@ -10338,9 +10350,6 @@ msgstr ""
 msgid "The towns used to name places cannot be read: {error}."
 msgstr ""
 
-msgid "The trip distance is not previewed: it applies at the next classify."
-msgstr ""
-
 #, python-brace-format
 msgid "The variable {name}"
 msgstr ""
@@ -10973,6 +10982,14 @@ msgid "Trip"
 msgstr ""
 
 msgid "Trips"
+msgstr ""
+
+#, python-brace-format
+msgid "Trips now: {before}. With these values: {after}."
+msgstr ""
+
+#, python-brace-format
+msgid "Trips that change ({n})"
 msgstr ""
 
 msgid ""
@@ -15669,6 +15686,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{first} → {last}: {files} photos, {parts} events now"
+msgstr ""
+
+#, python-brace-format
+msgid "{first} → {last}: {files} photos, {town}"
 msgstr ""
 
 #, python-brace-format

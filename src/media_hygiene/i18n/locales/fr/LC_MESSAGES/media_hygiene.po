@@ -1594,14 +1594,11 @@ msgstr "N'importe quel dossier"
 
 msgid ""
 "Applied now: this page reloads in this language, the other open pages and"
-" the console's messages follow at their next load. A slideshow, the phone"
-" pages and the review pages already open keep theirs until mh starts "
-"again."
+" the console's messages follow at their next load."
 msgstr ""
 "Appliqué tout de suite : cette page se recharge dans cette langue, les "
 "autres pages ouvertes et les messages de la console suivent à leur "
-"prochain chargement. Un diaporama, les pages du téléphone et les pages de"
-" revue déjà ouvertes gardent la leur jusqu'au prochain démarrage de mh."
+"prochain chargement."
 
 msgid "Applies the next time mh starts: the open page keeps its door."
 msgstr "S'applique au prochain démarrage de mh : la page ouverte garde sa porte."
@@ -2602,6 +2599,11 @@ msgid ""
 msgstr ""
 "Ctrl+C arrête entre deux photos : les visages trouvés sont gardés, et "
 "l'exécution suivante continue."
+
+msgid "Cutting the photos into events and trips, this can take a few seconds…"
+msgstr ""
+"Découpage des photos en événements et voyages, cela peut prendre quelques"
+" secondes…"
 
 msgid "Czkawka agrees: no exact duplicate."
 msgstr "Czkawka est d'accord : aucun doublon exact."
@@ -6306,6 +6308,10 @@ msgstr "De nouvelles photos ? Le cycle recommence à {stage}."
 msgid "New place"
 msgstr "Nouveau lieu"
 
+#, python-brace-format
+msgid "New trips ({n})"
+msgstr "Nouveaux voyages ({n})"
+
 msgid "Next"
 msgstr "Suivante"
 
@@ -6685,6 +6691,10 @@ msgstr ""
 msgid "No longer events ({n})"
 msgstr "Plus des événements ({n})"
 
+#, python-brace-format
+msgid "No longer trips ({n})"
+msgstr "Ne sont plus des voyages ({n})"
+
 msgid "No month left to try: files of this plan moved."
 msgstr "Plus de mois à essayer : des fichiers de ce plan ont été déplacés."
 
@@ -6941,6 +6951,11 @@ msgstr ""
 
 msgid "No town of more than 1,000 inhabitants starts so."
 msgstr "Aucune ville de plus de 1 000 habitants ne commence ainsi."
+
+msgid "No trips to preview: they need a home place and a trip rule."
+msgstr ""
+"Aucun voyage à prévisualiser : il faut un lieu « maison » et une règle de"
+" voyage."
 
 msgid "No video left to lighten: nothing was changed."
 msgstr "Plus aucune vidéo à alléger : rien n'a changé."
@@ -12457,11 +12472,6 @@ msgstr ""
 "Les villes qui servent à nommer les lieux ne peuvent pas être lues : "
 "{error}."
 
-msgid "The trip distance is not previewed: it applies at the next classify."
-msgstr ""
-"La distance d'un voyage n'est pas prévisualisée : elle s'applique au "
-"prochain classify."
-
 #, python-brace-format
 msgid "The variable {name}"
 msgstr "La variable {name}"
@@ -13232,6 +13242,14 @@ msgstr "Voyage"
 
 msgid "Trips"
 msgstr "Voyages"
+
+#, python-brace-format
+msgid "Trips now: {before}. With these values: {after}."
+msgstr "Voyages maintenant : {before}. Avec ces valeurs : {after}."
+
+#, python-brace-format
+msgid "Trips that change ({n})"
+msgstr "Voyages qui changent ({n})"
 
 msgid ""
 "Trips, for a 'trip' rule: an event whose photos lie farther than "
@@ -18732,6 +18750,10 @@ msgid "{first} → {last}: {files} photos, {parts} events now"
 msgstr "{first} → {last} : {files} photos, {parts} événements maintenant"
 
 #, python-brace-format
+msgid "{first} → {last}: {files} photos, {town}"
+msgstr "{first} → {last} : {files} photos, {town}"
+
+#, python-brace-format
 msgid "{folder} (seen as {first} and as {second})"
 msgstr "{folder} (vu comme {first} et comme {second})"
 
@@ -20204,8 +20226,8 @@ msgid ""
 "“{target}” is a stop word: every tag named so would vanish. Nothing was "
 "changed; type another tag, or restore this word first."
 msgstr ""
-"« {target} » est un mot écarté : tout tag nommé ainsi disparaîtrait. Rien "
-"n'a changé ; tapez un autre tag, ou rétablissez d'abord ce mot."
+"« {target} » est un mot écarté : tout tag nommé ainsi disparaîtrait. Rien"
+" n'a changé ; tapez un autre tag, ou rétablissez d'abord ce mot."
 
 #, python-brace-format
 msgid ""

@@ -14,6 +14,7 @@ from functools import partial
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
+from media_hygiene.i18n.live import PerLocale
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.person.door import with_person
 from media_hygiene.review.app import DECIDE_PATH, FILE_PATH, ReviewApp
@@ -95,7 +96,9 @@ def serve_review(runtime: Runtime, session: ReviewSession, start: ReviewStart) -
     Returns:
         `STEP_EXIT_BASE + n` when *Apply now* chose step `n`; 0 otherwise.
     """
-    page = review_page(PAGE_TEMPLATE, session.place, (DECIDE_PATH, FILE_PATH))
+    page = PerLocale(
+        partial(review_page, PAGE_TEMPLATE, session.place, (DECIDE_PATH, FILE_PATH))
+    )
     offer = ApplyOffer(start.apply, lambda: session.progress[1] > 0)
     albums = album_desk(runtime, review_picker(runtime, session))
     code = 0

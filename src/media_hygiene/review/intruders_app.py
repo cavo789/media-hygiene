@@ -25,6 +25,7 @@ from media_hygiene.review.local_app import (
 )
 
 if TYPE_CHECKING:
+    from media_hygiene.i18n.live import Page
     from media_hygiene.report.chosen_decisions import ChosenFile
     from media_hygiene.review.http import Request
     from media_hygiene.review.intruders_views import IntrudersState
@@ -70,7 +71,7 @@ class IntrudersApp(LocalApp):
     """Answers the browser; the desk walks the folders and saves the picks."""
 
     desk: IntrudersDesk
-    page: bytes
+    page: Page
 
     @override
     async def answer(self, request: Request) -> Response:

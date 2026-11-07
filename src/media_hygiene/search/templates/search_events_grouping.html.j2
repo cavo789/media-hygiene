@@ -2,8 +2,8 @@
    `trip_min_km`, set where the events are listed, saved in config.toml and shown as read back.
    PC only (hidden off the loopback). The events listed stay as they are until the next
    `classify` (said on the page). *See the events first* (0643) asks the server how the
-   index's dated photos would group with the values typed, nothing written: the counts
-   before and after, the events that merge or split. The trip distance is not previewed. #}
+   photos classify works on would group with the values typed, nothing written: the counts
+   before and after, the events that merge or split, the trips that appear or go (0646). #}
 <details id="grouping" hidden class="grouping">
   <summary>{{ _("Group the photos into more or fewer events") }}</summary>
   <p class="muted">{{ _("Fewer events: a longer gap, a larger minimum, a longer distance for a trip. More events: the opposite. The list below changes at the next classify.") }}</p>
@@ -46,10 +46,34 @@
     new: {{ _("New events ({n})") | tojson }},
     gone: {{ _("No longer events ({n})") | tojson }},
     line: {{ _("{first} → {last}: {files} photos, {parts} events now") | tojson }},
-    trip: {{ _("The trip distance is not previewed: it applies at the next classify.") | tojson }},
+    working: {{ _("Cutting the photos into events and trips, this can take a few seconds…") | tojson }},
+    trips: {{ _("Trips now: {before}. With these values: {after}.") | tojson }},
+    noTrips: {{ _("No trips to preview: they need a home place and a trip rule.") | tojson }},
+    tripNew: {{ _("New trips ({n})") | tojson }},
+    tripGone: {{ _("No longer trips ({n})") | tojson }},
+    tripChanged: {{ _("Trips that change ({n})") | tojson }},
+    tripLine: {{ _("{first} → {last}: {files} photos, {town}") | tojson }},
   };
   const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
   const day = (iso) => iso.slice(0, 16).replace("T", " ");
+  const drawTrips = (trips) => {
+    const line = document.createElement("p");
+    line.textContent = trips.known ? fill(TEXTS.trips, trips) : TEXTS.noTrips;
+    shown.append(line);
+    if (!trips.known) return;
+    for (const [kind, text] of [["new", TEXTS.tripNew], ["gone", TEXTS.tripGone], ["changed", TEXTS.tripChanged]]) {
+      if (!trips[kind].count) continue;
+      const title = document.createElement("strong");
+      title.textContent = fill(text, { n: trips[kind].count });
+      const list = document.createElement("ul");
+      for (const one of trips[kind].listed) {
+        const item = document.createElement("li");
+        item.textContent = fill(TEXTS.tripLine, { first: day(one.first), last: day(one.last), files: one.files, town: one.town }).replace(/, $/, "");
+        list.append(item);
+      }
+      shown.append(title, list);
+    }
+  };
   const drawPreview = (answer) => {
     shown.replaceChildren();
     const head = document.createElement("p");
@@ -67,16 +91,17 @@
       }
       shown.append(title, list);
     }
-    const trip = document.createElement("p");
-    trip.className = "muted";
-    trip.textContent = TEXTS.trip;
-    shown.append(trip);
+    drawTrips(answer.trips);
   };
-  document.getElementById("groupingTry").addEventListener("click", () => {
+  const tryButton = document.getElementById("groupingTry");
+  tryButton.addEventListener("click", () => {
+    tryButton.disabled = true;
+    shown.textContent = TEXTS.working;
     fetch({{ grouping_path | tojson }}, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(typed()) })
       .then((response) => response.json().then((reply) => ({ ok: response.ok, reply })))
-      .then((result) => { if (result.ok) drawPreview(result.reply); else said.textContent = result.reply.error || ""; })
-      .catch(() => {});
+      .then((result) => { if (result.ok) drawPreview(result.reply); else { shown.replaceChildren(); said.textContent = result.reply.error || ""; } })
+      .catch(() => { shown.replaceChildren(); })
+      .finally(() => { tryButton.disabled = false; });
   });
   document.getElementById("groupingForm").addEventListener("submit", (event) => {
     event.preventDefault();

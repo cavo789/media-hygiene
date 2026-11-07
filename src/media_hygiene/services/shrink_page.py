@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import ExitCode
 from media_hygiene.i18n import _
+from media_hygiene.i18n.live import PerLocale
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.ending import Ending, EndingDoor, serve_until_ended
 from media_hygiene.review.local_app import STATE_PATH
@@ -63,7 +64,7 @@ def serve_try(runtime: Runtime, trial: Trial) -> int:
         PageClosed: The page's tab was closed and none came back.
     """
     ending = Ending()
-    app = ShrinkTryApp(try_page(), ShrinkDesk(trial, runtime.mapper, ending))
+    app = ShrinkTryApp(PerLocale(try_page), ShrinkDesk(trial, runtime.mapper, ending))
     door = EndingDoor(app, ending, Presence(ending, ExitCode.PAGE_CLOSED))
     code = 0
     with contextlib.suppress(KeyboardInterrupt):
