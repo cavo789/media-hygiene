@@ -125,8 +125,8 @@ helps: `*.mp4` or a regular expression are still searched as typed.
 - **⌨ Keyboard**: the panel lists the main gestures; **More keys** opens over the page (Esc
   closes it), so the form above never leaves the screen.
 - **Look**: Enter or a double click shows the photo large (with a link to the original); ← → (on a
-  phone, a swipe) the previous or next one not set aside, Delete sets it aside then shows the previous one (the next one at the start), F full screen, ? every key,
-  Escape closes it. **👤 Set a person aside** finds every photo of someone on the one shown
+  phone, a swipe) the previous or next one not set aside, Delete sets it aside then shows the previous one (the next one at the start), F full screen, L the landmark it
+  shows ([`spots`](spots.md#-type-the-landmark-yourself-key-l)), ? every key, Escape closes it. **👤 Set a person aside** finds every photo of someone on the one shown
   ([`people`](people.md#from-any-page-set-a-person-aside)).
 
 - **A period**: *From* and *To* are calendars, a day each, both included; one alone is a period

@@ -5121,6 +5121,14 @@ msgstr ""
 msgid "Its share of the sharpest shot's sharpness; its own score: {score}"
 msgstr "Sa part de la netteté de la plus nette ; son score : {score}"
 
+#, python-brace-format
+msgid "Its sidecar names {name}, set by another application: kept."
+msgstr "Son fichier compagnon nomme {name}, posé par une autre application : gardé."
+
+#, python-brace-format
+msgid "Its sidecar names: {name}"
+msgstr "Son fichier compagnon nomme : {name}"
+
 msgid ""
 "Its window was closed (or Ctrl+C was pressed in it). You can close this "
 "tab. To open it again: type mh in PowerShell, or double-click the Desktop"
@@ -5272,12 +5280,18 @@ msgstr ""
 "blurry_below (netteté), petite sous small_below pixels sur son petit "
 "côté."
 
+msgid "Landmark"
+msgstr "Monument"
+
 msgid ""
 "Landmark, town and regions, for the photos with a GPS position: offline, "
 "nothing leaves this PC. Then a search finds them."
 msgstr ""
 "Lieu remarquable, ville et régions, pour les photos avec une position GPS"
 " : hors ligne, rien ne quitte ce PC. Une recherche les trouve ensuite."
+
+msgid "Landmarks within 500 m, nearest first"
+msgstr "Monuments à moins de 500 m, du plus proche au plus lointain"
 
 msgid "Language"
 msgstr "Langue"
@@ -6681,6 +6695,15 @@ msgstr "Pas de montage /journal : rien à annuler."
 
 msgid "No journal mount: without a journal, 'undo' would be impossible."
 msgstr "Pas de montage /journal : sans journal, 'undo' serait impossible."
+
+msgid "No landmark in its sidecar now."
+msgstr "Plus aucun monument dans son fichier compagnon."
+
+msgid "No landmark named yet."
+msgstr "Aucun monument nommé pour l'instant."
+
+msgid "No landmark within 500 m: type its name."
+msgstr "Aucun monument à moins de 500 m : tapez son nom."
 
 msgid "No local vision model is set: no photo was sent, nothing changed."
 msgstr ""
@@ -10061,6 +10084,10 @@ msgstr ""
 "Écarter des photos de rafale, une série à la fois, au clavier dans votre "
 "navigateur ; 'clean --decisions' les déplace ensuite."
 
+#, python-brace-format
+msgid "Set by another application: kept."
+msgstr "Posé par une autre application : gardé."
+
 msgid "Set everything aside but these"
 msgstr "Tout mettre de côté sauf ceux-ci"
 
@@ -11652,6 +11679,9 @@ msgid ""
 msgstr ""
 "La version gardée est dans un dossier protégé : elle n'est jamais "
 "déplacée, X est impossible."
+
+msgid "The landmark this photo shows"
+msgstr "Le monument que montre cette photo"
 
 msgid "The largest clusters without a name"
 msgstr "Les plus grands groupes sans nom"
@@ -14039,6 +14069,9 @@ msgstr ""
 "Noter cet événement comme règle : ses jours, son dossier ; les prochains "
 "classify l'appliquent"
 
+msgid "Write this name"
+msgstr "Écrire ce nom"
+
 msgid ""
 "Write this period down as a date rule of config.toml, after seeing the "
 "photos it would take and where each one would go"
@@ -14063,11 +14096,19 @@ msgstr ""
 "classify l'applique, aux photos ajoutées plus tard aussi."
 
 msgid ""
+"Written into its .xmp sidecar, never into the photo; journaled: 'mh undo'"
+" takes it back. A wrong name is never proposed again."
+msgstr "Écrit dans son fichier compagnon .xmp, jamais dans la photo ; journalisé : « mh undo » le reprend. Un nom faux n'est plus jamais proposé."
+
+msgid ""
 "Written into their .xmp sidecars, never into the photos; journaled: 'mh "
 "undo' takes it back. A photo with its own date stays as it is."
 msgstr ""
 "Écrit dans leurs fichiers .xmp, jamais dans les photos ; journalisé : « "
 "mh undo » l'annule. Une photo qui a sa propre date reste telle quelle."
+
+msgid "Wrong name"
+msgstr "Mauvais nom"
 
 msgid "Year"
 msgstr "Année"
@@ -15689,6 +15730,9 @@ msgstr "nom d'une copie retirée"
 
 msgid "name the groups of faces in your browser, with 'people'."
 msgstr "nommez les groupes de visages dans votre navigateur, avec 'people'."
+
+msgid "name the landmark it shows, or say the name is wrong"
+msgstr "nommer le monument qu'elle montre, ou dire que le nom est faux"
 
 msgid "names are kept in config.toml: mount a folder of yours on /config"
 msgstr ""
@@ -20471,6 +20515,10 @@ msgstr "📍 Les positions GPS ont été gardées, comme demandé."
 
 msgid "📍 The GPS positions were removed: --keep-gps keeps them."
 msgstr "📍 Les positions GPS ont été retirées : --keep-gps les garde."
+
+#, python-brace-format
+msgid "📍 {name}, read back from its sidecar."
+msgstr "📍 {name}, relu dans son fichier compagnon."
 
 #, python-brace-format
 msgid "📚 Make an album of this result"

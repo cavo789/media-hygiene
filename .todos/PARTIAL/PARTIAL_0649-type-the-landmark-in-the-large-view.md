@@ -33,3 +33,14 @@ within 500 m, 22.4 % within 1 km): the name is typed by hand far more often than
 - [ ] Typed, suggested, rejected names work from the large view, saved in XMP and index
 - [ ] Rejected names never proposed again; tests for a moved photo (sort, undo, Explorer rename)
 - [ ] Docs EN/FR, captures listed for `docs_screenshots`
+
+## Done (2026-11-07)
+
+Key L in the large view of `library`, `POST /api/landmark` (`search/landmark_desk.py`): proposals within 500 m with distances, OSM name, free field, *Wrong name*; sidecar `LocationShown/Sublocation` + `mh:landmarksRejected` (`tags/xmp_landmark.py`), journaled via `XmpService`, read back; `spots` source `user` (`index/spot_user.py`); rows rebuilt from the sidecar, rejected names dropped (`services/spot_sidecars.py`). Tests: `tests/integration/tags/test_landmark_sidecars.py`. Docs `commands/spots.md`, `commands/library.md` EN/FR.
+
+## Left
+
+- [ ] Confirmed → offered as a place (`[[classify.places]]`, circle around the landmark, 0551), offered, never silent
+- [ ] 📍 chip beside the tags (tile, large view), searchable; slideshow corner
+- [ ] `mh undo` of a landmark run refreshes the `spots` row (today stays `user` until the next change of stamp/position)
+- [ ] Headless Chromium check of the dialog (skill `photo-picking-pages`); `docs_screenshots`

@@ -133,7 +133,8 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   la page (Échap le ferme), le formulaire au-dessus ne quitte donc jamais l'écran.
 - **Regarder** : Entrée ou un double clic montre la photo en grand (avec un lien vers
   l'original) ; ← → (sur un téléphone, un glissement) la précédente ou la suivante pas mise de côté, Suppr la met de côté puis montre la précédente (la suivante au début), F
-  plein écran, ? toutes les touches, Échap la ferme. **👤 Mettre une personne de côté** trouve
+  plein écran, L le monument qu'elle montre
+  ([`spots`](spots.md#-taper-soi-même-le-monument--touche-l)), ? toutes les touches, Échap la ferme. **👤 Mettre une personne de côté** trouve
   toutes les photos de quelqu'un depuis celle qui est montrée
   ([`people`](people.md#depuis-nimporte-quelle-page--mettre-une-personne-de-côté)).
 

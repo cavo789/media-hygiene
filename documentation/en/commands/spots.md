@@ -71,6 +71,21 @@ path and landmarks), the local AI card to choose the model, and the count on the
 progress follows in the page; *Stop after this photo* keeps every pick made, and the next run goes
 on. Videos and files set aside are not asked about.
 
+## 📍 Type the landmark yourself: key L
+
+GeoNames names a monument within 200 m for only one located photo in ten (measured on a real
+collection of 281 located photos). In the large view of [`library`](library.md), press **L**:
+*📍 The landmark this photo shows* proposes the landmarks within 500 m, nearest first with their
+distance, and the OpenStreetMap name if one was fetched; pick one or type the name, then
+*Write this name*. *Wrong name* says the current name is wrong: it is taken off and never
+proposed again for this photo.
+
+The name goes into the photo's `.xmp` sidecar (`Iptc4xmpExt:LocationShown`, read by digiKam and
+Lightroom), never into the photo; journaled: `mh undo` takes it back. The line under the photo is
+the sidecar read back from the disk. The sidecar moves with the photo (`sort`, `undo`, a folder
+renamed in Explorer), so the name and the names rejected follow it; an index rebuilt reads them
+back at the next audit. A name set by another application is kept.
+
 ## The built-in help
 
 <details>

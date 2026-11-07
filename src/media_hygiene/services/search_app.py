@@ -35,6 +35,7 @@ from media_hygiene.search.folders import (
 from media_hygiene.search.found_desk import FOUND_PATH
 from media_hygiene.search.grouping_desk import GROUPING_PATH
 from media_hygiene.search.heaviest import FIRST_SHOWN, HEAVIEST_PATH
+from media_hygiene.search.landmark_desk import LANDMARK_PATH, LandmarkDesk
 from media_hygiene.search.late_desk import LATE_PATH, LATE_REFUSE_PATH
 from media_hygiene.search.move_go import MOVE_PATHS
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH, PeopleDesk
@@ -55,6 +56,7 @@ from media_hygiene.search.tag_desk import HAND_TAG_PATH
 from media_hygiene.search.undo_api import UNDO_PATH
 from media_hygiene.search.views import FIRST_HITS
 from media_hygiene.services.albums import album_desk
+from media_hygiene.services.landmark_sidecars import LandmarkWriter
 from media_hygiene.services.page_undo import PageUndo
 from media_hygiene.services.rule_trial import event_gap_hours
 from media_hygiene.services.search_dates import chosen_desk, date_desk, place_desk
@@ -134,6 +136,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "hand_tag_path": HAND_TAG_PATH,
         "date_path": DATE_PATH,
         "place_path": PLACE_PATH,
+        "landmark_path": LANDMARK_PATH,
         "folder_query": FOLDER_QUERY,
         "events_path": EVENTS_PATH,
         "span_paths": {"list": SPAN_PATH, "files": SPAN_FILES_PATH, "left": LEFT_PATH},
@@ -187,5 +190,6 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         date_desk(runtime, search, chosen),
         place_desk(runtime, search, chosen),
         PageUndo(runtime),
+        LandmarkDesk(search, LandmarkWriter(runtime), runtime.locations.cache_dir),
     )
     return SearchApp(place, pages, build.executor)

@@ -1,0 +1,54 @@
+{# *📍 Landmark…* of the large view (0649): L proposes the landmarks within 500 m, the
+   online name, a free field; *Wrong name* rejects today's. Every answer is the sidecar
+   read back by the server, shown under the photo. #}
+const LANDMARK = $("landmarkDlg");
+let landmarkNow = "";
+
+async function landmarkShown() {
+  const file = files[current];
+  if (!file) return;
+  $("landmarkSaid").className = "muted";
+  $("landmarkSaid").textContent = "";
+  $("landmarkName").value = "";
+  $("landmarkSeen").replaceChildren();
+  $("landmarkNow").textContent = "";
+  $("landmarkWrong").hidden = true;
+  LANDMARK.showModal();
+  const { ok, result } = await gapPost(LANDMARK.dataset.path, { action: "propose", key: file.key });
+  if (!ok) { gapSaid($("landmarkSaid"), LANDMARK, result); return; }
+  landmarkNow = result.name;
+  $("landmarkNow").textContent = result.name
+    ? fill(LANDMARK.dataset.now, { name: result.name }) + (result.ours ? "" : " " + LANDMARK.dataset.theirs)
+    : LANDMARK.dataset.none;
+  $("landmarkWrong").hidden = !result.name || !result.ours;
+  const offers = result.near.map((each) => [each.name, each.name + " · " + each.m + " m"]);
+  if (result.osm) offers.push([result.osm, result.osm + " · OpenStreetMap"]);
+  for (const [name, label] of offers) {
+    const button = element("button", "plain", label);
+    button.type = "button";
+    button.addEventListener("click", () => { $("landmarkName").value = name; });
+    $("landmarkSeen").append(button);
+  }
+  if (!offers.length) $("landmarkSeen").append(element("span", "muted", LANDMARK.dataset.empty));
+  $("landmarkName").value = result.name || (offers[0] || [""])[0];
+}
+
+async function landmarkSave(action, name) {
+  const file = files[current];
+  $("landmarkGo").disabled = true;
+  const { ok, result } = await gapPost(LANDMARK.dataset.path, { action, key: file.key, name });
+  $("landmarkGo").disabled = false;
+  if (!ok) { gapSaid($("landmarkSaid"), LANDMARK, result); return; }
+  LANDMARK.close();
+  $("viewerSaid").textContent = result.saved;  // read back from the sidecar, never from memory
+}
+
+// Its keys stay in the dialog: Esc closes it, not the large view under it.
+LANDMARK.addEventListener("keydown", (event) => event.stopPropagation());
+$("landmarkNo").addEventListener("click", () => LANDMARK.close());
+$("landmarkWrong").addEventListener("click", () => landmarkSave("wrong", landmarkNow));
+$("landmarkForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  landmarkSave("set", $("landmarkName").value);
+});
+VIEWER_KEYS.l = landmarkShown;

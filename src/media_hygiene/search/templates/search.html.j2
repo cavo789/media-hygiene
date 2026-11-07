@@ -394,7 +394,9 @@
   <p id="moreLine"><button id="more" class="plain" type="button" hidden>{{ _("Show more") }}</button></p>
 {% endblock %}
 {% block after %}
+{% set pick_landmark = true %}
 {% include "pick_viewer.html.j2" %}
+{% include "landmark_dialog.html.j2" %}
 {% include "rule_dialog.html.j2" %}
 {% include "move_dialog.html.j2" %}
 {% include "month_dialog.html.j2" %}
@@ -429,6 +431,7 @@
 {% include "hand_tag.js.j2" %}
 {% include "tag_drop.js.j2" %}
 {% include "search_gaps.js.j2" %}
+{% include "landmark.js.j2" %}
 {% include "search_rule.js.j2" %}
 {% include "search_shortcuts.js.j2" %}
 {% include "search_events.js.j2" %}

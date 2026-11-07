@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from media_hygiene.search.events_desk import EventsDesk
     from media_hygiene.search.folders import FolderDesk
     from media_hygiene.search.fts import SearchIndex
+    from media_hygiene.search.landmark_desk import LandmarkDesk
     from media_hygiene.search.people_desk import PeopleDesk
     from media_hygiene.search.place_desk import PlaceDesk
     from media_hygiene.search.rule_desk import RuleDesk
@@ -45,3 +46,4 @@ class SearchPlace:  # pylint: disable=too-many-instance-attributes
     dates: DateDesk | None = None  # *📅 Date…*, into the sidecars (0531)
     places: PlaceDesk | None = None  # the Place filter, *📍 Place…* (0553)
     undo: PageUndo | None = None  # the Undo of a move or of *Apply now* (0601)
+    landmark: LandmarkDesk | None = None  # *📍 Landmark…* of the large view (0649)

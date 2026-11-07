@@ -31,6 +31,7 @@ from media_hygiene.index.spot_rows import (
 from media_hygiene.scan.progress import Step
 from media_hygiene.services.place_names import read_names, spot_key
 from media_hygiene.services.spot_namer import SpotNamer
+from media_hygiene.services.spot_sidecars import as_named, sidecar_names, unrejected
 
 if TYPE_CHECKING:
     import sqlite3
@@ -130,9 +131,10 @@ def fill_spots(
     except GeoDataError:
         progress.stop()
         return 0
+    said = sidecar_names(stale)  # the truth, before the cache (0649)
     rows: list[tuple[object, ...]] = []
     for known in stale:
-        rows.append(namer.row(known))
+        rows.append(unrejected(namer.row(as_named(known, said)), said))
         progress.advance()
         if len(rows) >= _BATCH:
             save_spots(connection, rows)

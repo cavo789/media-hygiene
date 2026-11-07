@@ -24,6 +24,9 @@
 {% if marks and pick_album | default(true) %}
     <dt class="pc-only"><kbd>A</kbd></dt><dd class="pc-only">{{ _("add it to the album named in the bar") }}</dd>
 {% endif %}
+{% if pick_landmark | default(false) %}
+    <dt class="pc-only"><kbd>L</kbd></dt><dd class="pc-only">{{ _("name the landmark it shows, or say the name is wrong") }}</dd>
+{% endif %}
     <dt><kbd>?</kbd></dt><dd>{{ _("this list, or not") }}</dd>
     <dt><kbd>Esc</kbd></dt><dd>{{ _("close") }}</dd>
   </dl>
