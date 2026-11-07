@@ -85,6 +85,20 @@ class NearestIndex:
         order = np.argsort(distances[inside], kind="stable")
         return candidates[inside][order]
 
+    def within_far(self, point: Point, radius_km: float) -> list[tuple[int, float]]:
+        """The points around a position, with their distance (0649).
+
+        Args:
+            point: A position.
+            radius_km: How far around it.
+
+        Returns:
+            Their indexes and distances in kilometres, nearest first.
+        """
+        rows = self.within(point, radius_km)
+        km = distances_km(point, self._latitudes[rows], self._longitudes[rows])
+        return list(zip(rows.tolist(), km.tolist(), strict=True))
+
     def _ring(self, point: Point) -> npt.NDArray[np.int_]:
         """The points of a position's cell and of the eight around it.
 

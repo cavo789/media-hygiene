@@ -3,8 +3,7 @@
 - **Priority**: medium
 - **Batch**: unassigned
 - **Depends**: 0545, 0553
-- **Files**: TBD
-- **Needs maintainer**: the measured share of their GPS photos for which `geo/landmarks` already finds a monument (storage decided 2026-11-02)
+- **Files**: none (thinking TODO; implementation in 0649)
 
 ## Context
 
@@ -67,8 +66,8 @@ correction). Ask the questions below when running it.
 
 ## Acceptance
 
-- [ ] The options above answered by the maintainer, and a follow-up implementation TODO filed
-- [ ] The measured share of the maintainer's GPS photos for which `geo/landmarks` already
+- [x] The options above answered by the maintainer, and a follow-up implementation TODO filed (0649)
+- [x] The measured share of the maintainer's GPS photos for which `geo/landmarks` already
       finds a monument (tells whether typing is the exception or the rule)
 
 ## Decided (2026-11-02)
@@ -76,3 +75,18 @@ correction). Ask the questions below when running it.
 By the maintainer, in `/todo:iterate`: the name is written into the XMP sidecar (the truth,
 read by other tools, survives moves) and cached in the index; it is typed in the large view of
 search/browse (skill `photo-picking-pages`).
+
+## Measured (2026-11-07)
+
+*Measured* on a copy of the maintainer's real index (cache volume, 2026-11-06, copied to a
+scratchpad and opened read-only; no `spots` table yet, so recomputed with today's
+`geo/landmarks` snapshot): 281 photos with a GPS position (81 distinct spots at ~100 m).
+`Landmarks.at` (within `NEAR_M` = 200 m) names a monument for **27 (9.6 %)**; one lies
+within 500 m for 56 (19.9 %), within 1 km (the vision pick's `PICK_M`) for 63 (22.4 %).
+So the offline suggestion covers about one located photo in ten: **typing is the rule**,
+the suggestion the exception; 0589's vision pick can at best reach the 22 % with a
+candidate. Not moot: implementation filed as 0649.
+
+## Status
+
+Closed 2026-11-07: options answered (above), measurement taken, implementation in 0649.

@@ -150,8 +150,8 @@ Plus : [Trier, étape 12](../sort/12-albums.md#choisir-ce-que-lalbum-rassemble).
  copié ni déplacé (journalisé, annulable).
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
-│ *    name      <str>  Le nom de l'album, tel que search l'ont      │
-│                       enregistré : le dossier qui contient ses liens.        │
+│ *    name      <str>  Le nom de l'album, tel que search l'a enregistré : le  │
+│                       dossier qui contient ses liens.                        │
 │                       [required]                                             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮

@@ -127,10 +127,10 @@ plan.
 ```text
  Utilisation : media-hygiene push [OPTIONS]
 
- Windows seulement, en mh push : copier vos dossiers de photos dans un
- dossier rien qu'à eux sur le NAS, seulement ce qui lui manque ; une photo
- déplacée y est renommée, une suppression par erreur n'y est jamais reportée.
- Lancée ici, elle montre le plan.
+ Windows seulement, en mh push : copier vos dossiers de photos dans un dossier
+ rien qu'à eux sur le NAS, seulement ce qui lui manque ; une photo déplacée y
+ est renommée, une suppression par erreur n'y est jamais reportée. Lancée ici,
+ elle montre le plan.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ *  --to              <str>  The backup folder, as Windows writes it          │

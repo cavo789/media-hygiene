@@ -141,14 +141,13 @@ cavo789/media-hygiene --locale fr audit --people
 │                         contient. Répétable.                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : analyse (remplace scan.* de config.toml) ──────────────────────────╮
-│ --ext                 <str>  N'analyse que ces catégories ou extensions, p.  │
-│                              ex. --ext photo,video ou --ext png,webp         │
+│ --ext                 <str>  N'analyser que ces catégories ou extensions,    │
+│                              par exemple --ext photo,video ou --ext png,webp │
 │                              (répétable). Catégories : photo, raw, video,    │
 │                              media et celles de scan.categories dans         │
-│                              config.toml. D'autres types aussi, comme --ext  │
-│                              pdf,docx : leurs copies sont déplacées en       │
-│                              quarantaine. Par défaut : media (toutes les     │
-│                              photos, RAW et vidéos).                         │
+│                              config.toml. Extensions de photos, RAW et       │
+│                              vidéos seulement. Par défaut : media (toutes    │
+│                              les photos, RAW et vidéos).                     │
 │ --exclude-name        <str>  Nom de dossier jamais analysé, où qu'il soit,   │
 │                              sans tenir compte de la casse ; * et ? permis,  │
 │                              p. ex. --exclude-name Thumbnails,.Trash-*       │

@@ -316,19 +316,47 @@ suppression est écrite au journal avant et après (un passage de type `phone` d
 
 <!-- capture: help-import.txt -->
 ```text
- Utilisation : media-hygiene import [OPTIONS]
+ Utilisation : media-hygiene import [OPTIONS] [folder]
 
- Copie dans vos photos ce qu'une sauvegarde (un NAS) est seule à contenir,
- jamais ce que vous avez mis de côté ou supprimé avant ; chaque copie prouvée
- (journalisé, annulable).
+ Copie dans vos photos ce qu'un dossier est seul à contenir (votre NAS, un
+ disque USB, une carte SD), jamais ce que vous avez mis de côté ou supprimé
+ avant ; chaque copie prouvée (journalisée, annulable).
 
+╭─ Arguments ──────────────────────────────────────────────────────────────────╮
+│   folder      <str>  Dossier d'où importer (chemin de l'hôte) : votre NAS,   │
+│                      un disque USB, une carte SD, un ancien disque ;         │
+│                      seulement lu. Par défaut : vos dossiers de sauvegarde.  │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --to            <str>  Dossier qui reçoit les copies (chemin de l'hôte) ;    │
-│                        par défaut : « From NAS » dans votre premier dossier  │
-│                        de photos, les dossiers de la sauvegarde gardés en    │
-│                        dessous.                                              │
-│ --yes   -y             Copier sans demander d'abord.                         │
-│ --help  -h             Affiche ce message et quitte.                         │
+│ --to             <str>               Dossier qui reçoit les copies (chemin   │
+│                                      de l'hôte) ; par défaut : « From        │
+│                                      <source> » dans votre premier dossier   │
+│                                      de photos (From NAS, From E), ses       │
+│                                      dossiers gardés en dessous.             │
+│ --yes    -y                          Copier sans demander d'abord.           │
+│ --phone                              Un téléphone en USB au lieu d'un        │
+│                                      dossier : Windows seulement, le mh de   │
+│                                      PowerShell copie lui-même ses nouvelles │
+│                                      photos ; --free fait ensuite de la      │
+│                                      place dessus.                           │
+│ --since          <str>               Seulement les fichiers d'une période :  │
+│                                      today, week, month, all ou un jour      │
+│                                      (2026-10-29), selon la date de leur     │
+│                                      nom, sinon leur date de modification.   │
+│                                      Par défaut : tous les fichiers d'un     │
+│                                      dossier ; avec --phone, depuis le       │
+│                                      dernier import.                         │
+│ --pick                               Voir d'abord les fichiers en photos     │
+│                                      dans le navigateur : écartez ceux que   │
+│                                      vous ne voulez pas, puis copiez depuis  │
+│                                      la page.                                │
+│ --port           <int range> [x>=1]  Port de la page. docker run le publie   │
+│                                      sous le même numéro sur votre           │
+│                                      ordinateur, par exemple -p              │
+│                                      127.0.0.1:9000:9000 pour --port 9000.   │
+│                                      Par défaut :  port dans config.toml,    │
+│                                      8088.                                   │
+│ --help   -h                          Affiche ce message et quitte.           │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
 │ --backup        <str>  Une sauvegarde ou un ancien disque : comparé, jamais  │

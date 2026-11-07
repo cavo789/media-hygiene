@@ -203,6 +203,9 @@ figures; the list says its estimate, and the real gain is said after each video.
 │                           as drafts, in /cache only, and compare before and  │
 │                           after in the browser; lighten from the page. The   │
 │                           drafts are removed when the page closes.           │
+│ --chosen                  Lighten the videos chosen on the home page's       │
+│                           Lighten page, reusing their drafts. The page       │
+│                           starts it for you.                                 │
 │ --yes      -y             Lighten without asking first.                      │
 │ --help     -h             Show this message and exit.                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯

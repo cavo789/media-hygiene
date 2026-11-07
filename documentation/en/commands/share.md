@@ -160,13 +160,19 @@ In `config.toml`, `[share]`:
  network.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ *  --album             <str>  The album to send, made in search or   │
-│                               the burst review: "Crete 2023".                │
-│                               [required]                                     │
-│    --keep-gps                 Keep the GPS position in the copies; removed   │
-│                               by default, a photo sent must not say where    │
-│                               the house is.                                  │
-│    --help      -h             Show this message and exit.                    │
+│ *  --album                          <str>  The album to send, made in search │
+│                                            or the burst review: "Crete       │
+│                                            2023".                            │
+│                                            [required]                        │
+│    --keep-gps                              Keep the GPS position in the      │
+│                                            copies; removed by default, a     │
+│                                            photo sent must not say where the │
+│                                            house is.                         │
+│    --describe      --no-describe           Add the description and the       │
+│                                            keywords found by tags to the     │
+│                                            copies (names never); asked when  │
+│                                            omitted, Yes by default.          │
+│    --help      -h                          Show this message and exit.       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

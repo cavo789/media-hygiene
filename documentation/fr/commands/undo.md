@@ -133,9 +133,20 @@ mh undo --pick
 │                      classeur.                                               │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --yes   -y        Ne pas demander de confirmation avant d'annuler plusieurs  │
-│                   passages d'un tri (remplace sort.confirm).                 │
-│ --help  -h        Affiche ce message et quitte.                              │
+│ --yes   -y                          Ne pas demander de confirmation avant    │
+│                                     d'annuler plusieurs passages d'un tri    │
+│                                     (remplace sort.confirm).                 │
+│ --pick                              Ouvrir la quarantaine dans le            │
+│                                     navigateur, en vignettes, et ne remettre │
+│                                     que les photos choisies ; 'undo' de leur │
+│                                     exécution remet encore le reste.         │
+│ --port          <int range> [x>=1]  Port de la page. docker run le publie    │
+│                                     sous le même numéro sur votre            │
+│                                     ordinateur, par exemple -p               │
+│                                     127.0.0.1:9000:9000 pour --port 9000.    │
+│                                     Par défaut :  port dans config.toml,     │
+│                                     8088.                                    │
+│ --help  -h                          Affiche ce message et quitte.            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Avancé : dossiers (remplacent folders.* de config.toml) ────────────────────╮
 │ --backup        <str>  Une sauvegarde ou un ancien disque, monté en lecture  │

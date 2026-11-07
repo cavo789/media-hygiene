@@ -165,13 +165,19 @@ Dans `config.toml`, `[share]` :
  pour un mail ou un réseau social.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ *  --album             <str>  L'album à envoyer, fait dans search ou │
-│                               la revue des rafales : "Crète 2023".           │
-│                               [required]                                     │
-│    --keep-gps                 Garder la position GPS dans les copies ;       │
-│                               retirée par défaut, une photo envoyée ne doit  │
-│                               pas dire où est la maison.                     │
-│    --help      -h             Affiche ce message et quitte.                  │
+│ *  --album                          <str>  L'album à envoyer, fait dans      │
+│                                            search ou la revue des rafales :  │
+│                                            "Crète 2023".                     │
+│                                            [required]                        │
+│    --keep-gps                              Garder la position GPS dans les   │
+│                                            copies ; retirée par défaut, une  │
+│                                            photo envoyée ne doit pas dire où │
+│                                            est la maison.                    │
+│    --describe      --no-describe           Ajouter aux copies la description │
+│                                            et les mots-clés trouvés par tags │
+│                                            (jamais les noms) ; demandé sans  │
+│                                            l'option, Oui par défaut.         │
+│    --help      -h                          Affiche ce message et quitte.     │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

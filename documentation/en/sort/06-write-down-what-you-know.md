@@ -271,8 +271,9 @@ The *Why* table of `classify` counts the files each rule decided, by its name:
 Why
 ┌───────────────────────────┬────┐
 │ Existing folders          │ 76 │
-│ No signal                 │  5 │
 │ Undated                   │  4 │
+│ Same moment               │  3 │
+│ No signal                 │  2 │
 │ Screenshots and documents │  1 │
 └───────────────────────────┴────┘
 
@@ -280,9 +281,9 @@ Largest categories
 ┌──────────────────┬────┐
 │ Seaside holidays │ 13 │
 │ Photos 2019      │ 12 │
+│ Old phone        │ 11 │
 │ Mountain hike    │ 10 │
 │ Birthday         │  8 │
-│ Old phone        │  8 │
 │ Christmas        │  6 │
 │ Lake             │  6 │
 │ Phone            │  6 │
@@ -292,7 +293,9 @@ Largest categories
 
 ⚠️  Rules that decided nothing: Films and series, Event neighbours, Christmas,
 New Year.
-💡 Check their dates, their patterns and their order in config.toml.
+💡 Check their dates, their patterns and their order in config.toml; the 🗂
+Events tab of 'library' lists them under Your rules, with a button to remove
+those that match nothing any more.
 ```
 
 The rules that decided nothing are named after the table: a typo in a regular expression, a

@@ -124,6 +124,21 @@ class Landmarks:
         found = self._index.within(point, radius_m / _M_PER_KM)
         return tuple(dict.fromkeys(self._names[row] for row in found.tolist()))
 
+    def around_far(self, point: Point, radius_m: float) -> tuple[tuple[str, int], ...]:
+        """The landmarks around a photo and how far, nearest first (0649).
+
+        Args:
+            point: The photo's position.
+            radius_m: How far around it.
+
+        Returns:
+            Each name once, with its distance in whole metres.
+        """
+        found: dict[str, int] = {}
+        for row, km in self._index.within_far(point, radius_m / _M_PER_KM):
+            found.setdefault(self._names[row], round(km * _M_PER_KM))
+        return tuple(found.items())
+
 
 def near_cells(points: Iterable[Point]) -> Cells:
     """The cells a landmark of these photos may lie in: theirs and the eight around.

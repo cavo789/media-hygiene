@@ -68,27 +68,46 @@ A command that has no place in the menu yet still shows, last, under *Other comm
 <!-- capture: menu.txt -->
 ```text
 ──────────────────────── media-hygiene — where you are ─────────────────────────
-Last audit: 2026-10-25 08:46 (today) — 10 files, 4 extra copies (5.9 MB), 1
+Last audit: 2026-11-07 10:14 (today) — 10 files, 4 extra copies (5.9 MB), 1
 broken.
 Quarantine: empty.
 
       Import photos
       From a phone
-    1 mh import --phone                                        Copy the new   🔒
+    1 mh import --phone                               Copy the new   🔒
                                                       photos of the
                                                       phone
-    2 mh import --phone --free                                 Make room on   ⚠️ optional
+    2 mh import --phone --free                        Make room on   ⚠️ optional
                                                       the phone
       From your NAS or an old disk
       mh folders add --backup "\\NAS\Photos"          Plug in your   🔒
                                                       NAS or an old
                                                       disk (type it
                                                       yourself)
-      mh import                                       Get back what  ↩️
+      mh import --pick                                See what only  ↩️
+                                                      the NAS or the
+                                                      disk holds,
+                                                      then copy it
+                                                      (nothing to do
+                                                      yet)
+      mh import                                       Get back what  ↩️ optional
                                                       only the NAS
+                                                      or the disk
                                                       holds (nothing
                                                       to do yet)
       Go further
+      mh import --pick "E:\DCIM"                      See what a USB ↩️
+                                                      disk, an SD
+                                                      card or a
+                                                      folder holds,
+                                                      then copy it
+                                                      (type it
+                                                      yourself)
+      mh import "E:\DCIM"                             Import a USB   ↩️
+                                                      disk, an SD
+                                                      card or any
+                                                      folder (type
+                                                      it yourself)
     3 mh folders add                                  Add a photo    🔒
                                                       folder
       Clean the duplicates
@@ -120,60 +139,76 @@ Quarantine: empty.
                                                       (nothing to do
                                                       yet)
       Go further
-   10 mh review --near                                Settle the     🔒 optional
+   10 mh upkeep                                       Run the        ⚠️ optional
+                                                      regular upkeep
+   11 mh undo --pick                                  Put back a few ↩️ optional
+                                                      photos of the
+                                                      quarantine
+   12 mh review --near                                Settle the     🔒 optional
                                                       near
                                                       duplicates
-   11 mh review --pairs                               Decide folder  🔒 optional
+   13 mh review --pairs                               Decide folder  🔒 optional
                                                       by folder
-   12 mh review --junk                                Set the failed 🔒 optional
+   14 mh review --junk                                Set the failed 🔒 optional
                                                       photos aside
-   13 mh review --gone                                Look again at  🔒 optional
+   15 mh review --gone                                Look again at  🔒 optional
                                                       the photos
                                                       gone
-   14 mh crosscheck                                   Ask for a      🔒 optional
+   16 mh review --intruders                           Set the        🔒 optional
+                                                      intruder files
+                                                      aside
+   17 mh crosscheck                                   Ask for a      🔒 optional
                                                       second opinion
-   15 mh shrink --try                                 Lighten the    ↩️ optional
+   18 mh shrink --try                                 Lighten the    ↩️ optional
                                                       heavy videos
-   16 mh clean --delete                               Delete the     ⚠️ optional
+   19 mh clean --delete                               Delete the     ⚠️ optional
                                                       copies at once
       Sort the photos
-✅ 17 mh classify                                     Propose a tidy 🔒
+✅ 20 mh classify                                     Propose a tidy 🔒
                                                       tree
-   19 mh places                                       Name your      🔒 optional
+   21 mh places                                       Name your      🔒 optional
                                                       places on a
                                                       map
-   20 mh people                                       Name the faces 🔒 optional
-   21 mh sort                                         Move the       ↩️
-                                                      photos as the
-                                                      workbook says
+   22 mh people                                       Name the faces 🔒 optional
+   23 mh sort                                         Move the       ↩️
+                                                      photos into
+                                                      the proposed
+                                                      folders
       Find a photo
       The guide
-   22 mh tags                                         Give your      🔒
+   24 mh tags                                         Give your      🔒
                                                       photos words
-   23 mh library                                       Find a photo   🔒
-                                                      by its words
+   25 mh spots                                        Name where     🔒
+                                                      your photos
+                                                      were taken
+   26 mh library                                      Library: find  🔒
+                                                      a photo
       Go further
-   25 mh xmp                                          Carry the      ↩️ optional
+   27 mh xmp                                          Carry the      ↩️ optional
                                                       words into
                                                       other photo
                                                       software
-   26 mh inventory                                    All your       🔒 optional
+   28 mh inventory                                    All your       🔒 optional
                                                       photos in
                                                       Excel
       Back up to the NAS
       The guide
-      mh push --to "\\NAS\backup_photos"            Choose the     🔒
+      mh push --to "\\NAS\backup_photos"              Choose the     🔒
                                                       backup folder
                                                       on the NAS
                                                       (type it
                                                       yourself)
-   27 mh push                                       Back up what   ↩️
+   29 mh push                                         Back up what   ↩️
                                                       the NAS lacks
       Share your photos
       The commands
       mh slideshow --folder "C:\Photos\2026 Holidays" Show your      🔒 optional
                                                       photos on the
                                                       TV (type it
+                                                      yourself)
+      mh slideshow --album "Crete 2023" --lan         Show an album  🔒 optional
+                                                      on the TV
+                                                      (type it
                                                       yourself)
       mh share --album "Crete 2023"                   Prepare an     🔒 optional
                                                       album for
@@ -184,7 +219,7 @@ Quarantine: empty.
                                                       disk (type it
                                                       yourself)
       Reports
-   28 mh reports                                      List the       🔒
+   30 mh reports                                      List the       🔒
                                                       reports
       mh reports --prune 10                           Keep only the  🔒 optional
                                                       recent reports
@@ -192,40 +227,48 @@ Quarantine: empty.
                                                       yourself)
       Settings
       Your folders
-   29 mh folders                                      See your       🔒
+   31 mh folders                                      See your       🔒
                                                       folders
       mh folders remove "E:\Archives"                 Remove a       🔒 optional
                                                       folder (type
                                                       it yourself)
       Update
-   30 mh update                                       Install the    🔒
+   32 mh update                                       Install the    🔒
                                                       new version
+      Backup
+   33 mh backup                                       Back up the    🔒
+                                                      index and the
+                                                      settings
+   34 mh restore                                      Restore the    ↩️
+                                                      index
       Windows
-   31 mh shortcut                                     An icon on the 🔒 optional
+   35 mh shortcut                                     An icon on the 🔒 optional
                                                       Desktop and in
                                                       the Start menu
-   32 mh explorer                                     Media Hygiene  🔒 optional
+   36 mh explorer                                     Media Hygiene  🔒 optional
                                                       in the
                                                       Explorer's
                                                       right-click
-   33 mh explorer --remove                            Remove Media   🔒 optional
+   37 mh explorer --remove                            Remove Media   🔒 optional
                                                       Hygiene from
                                                       the
                                                       right-click
       Privacy
-   34 mh people --forget                              Forget every   🔒 optional
+   38 mh people --forget                              Forget every   🔒 optional
                                                       face
       Advanced
-   35 mh config                                       See each       🔒
+   39 mh config                                       See each       🔒
                                                       setting and
                                                       where it comes
                                                       from
-   36 mh status                                       Where am I, in 🔒 optional
+   40 mh config tidy                                  Tidy           🔒 optional
+                                                      config.toml
+   41 mh status                                       Where am I, in 🔒 optional
                                                       the console
-   37 mh menu                                         The menu in    🔒 optional
+   42 mh menu                                         The menu in    🔒 optional
                                                       the console
-   38 mh launcher                                     Write mh again 🔒 optional
-   39 mh home                                         The home page  🔒 optional
+   43 mh launcher                                     Write mh again 🔒 optional
+   44 mh home                                         The home page  🔒 optional
 
 🔒 your photos are not touched · ↩️ can be undone · ⚠️ for good
 🤖 classify and tags can also ask a local AI model: set [classify.ai] model in

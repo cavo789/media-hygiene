@@ -25,6 +25,7 @@ from media_hygiene.search.events_desk import EVENTS_PAGE_PATH
 from media_hygiene.search.folders import BROWSE_PATH, FOLDER_POSTS, FOLDERS_PATH
 from media_hygiene.search.former_page import LIBRARY_PAGE, moved_page
 from media_hygiene.search.found_answer import awaited_answer, found_answer
+from media_hygiene.search.landmark_desk import LANDMARK_PATH
 from media_hygiene.search.people_desk import PEOPLE_REJECT_PATH
 from media_hygiene.search.people_why import (
     FACE_CROP_PREFIX,
@@ -60,12 +61,8 @@ _POSTED: Final = frozenset(
 _POSTED_TOO: Final = (
     SORT_POSTS
     | {ALBUMS_PATH, PEOPLE_REJECT_PATH, PEOPLE_WHY_PATH}
-    | {
-        SETUP_PATH,
-        SORT_FOLDER_PATH,
-        DATE_PATH,
-        PLACE_PATH,
-    }
+    | {SETUP_PATH, SORT_FOLDER_PATH, DATE_PATH}
+    | {PLACE_PATH, LANDMARK_PATH}
 )
 
 

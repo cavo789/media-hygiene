@@ -1,0 +1,26 @@
+{# *📍 Landmark…* of the large view (0649, key L): its script is `landmark.js.j2`; its look the date dialog's. #}
+<style>
+  #landmarkDlg { max-width: min(28rem, 94vw); color: var(--text); background: var(--card);
+                 border: 1px solid var(--line); border-radius: 10px; }
+  #landmarkDlg::backdrop { background: rgb(0 0 0 / 50%); }
+  #landmarkDlg h2 { margin: 0 0 6px; }
+  #landmarkDlg menu { display: flex; gap: 8px; justify-content: end; padding: 0; }
+  #landmarkSeen { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+  #landmarkSaid.error { color: var(--bad); }
+</style>
+<dialog id="landmarkDlg" aria-labelledby="landmarkTitle" data-path="{{ landmark_path }}"
+        data-failed="{{ _('Not saved: {error}') }}"
+        data-now="{{ _('Its sidecar names: {name}') }}"
+        data-none="{{ _('No landmark named yet.') }}"
+        data-theirs="{{ _('Set by another application: kept.') }}"
+        data-empty="{{ _('No landmark within 500 m: type its name.') }}">
+  <form id="landmarkForm" method="dialog" autocomplete="off">
+    <h2 id="landmarkTitle">📍 {{ _("The landmark this photo shows") }}</h2>
+    <p class="muted">{{ _("Written into its .xmp sidecar, never into the photo; journaled: 'mh undo' takes it back. A wrong name is never proposed again.") }}</p>
+    <p id="landmarkNow"></p>
+    <div id="landmarkSeen" role="group" aria-label="{{ _('Landmarks within 500 m, nearest first') }}"></div>
+    <label>{{ _("Landmark") }} <input id="landmarkName" type="text" maxlength="200" required></label>
+    <p id="landmarkSaid" class="muted" role="status"></p>
+    <menu><button type="button" id="landmarkWrong" class="danger" hidden>{{ _("Wrong name") }}</button><button type="button" id="landmarkNo" class="plain">{{ _("Cancel") }}</button><button type="submit" id="landmarkGo">{{ _("Write this name") }}</button></menu>
+  </form>
+</dialog>

@@ -72,14 +72,21 @@ def review(page: Page) -> None:
     _fit(page)
     shots_shown(page)
     page.screenshot(path=SHOTS / "review.png")
-    for done in ("#status.saved", "#shots figure.aside"):  # proposed: taken back, aside
-        page.keyboard.press("Digit5")
+    for button, done in (
+        ("#takeBack", "#status.saved"),
+        ("#setAside", "#shots figure.aside"),
+    ):
+        page.locator("#shots figure").nth(
+            4
+        ).click()  # the shaken shot: proposed, then aside
+        page.click(button)
         page.wait_for_selector(done)
     shots_shown(page)
     page.screenshot(path=SHOTS / "review-aside.png")
     page.keyboard.press("ArrowRight")
     page.wait_for_timeout(PAUSE_MS)
-    page.keyboard.press("Digit4")
+    page.locator("#shots figure").nth(3).click()
+    page.click("#setAside")
     page.wait_for_selector("#status.saved")
 
 
@@ -126,11 +133,12 @@ def junk(page: Page) -> None:
 
 def home(page: Page) -> None:
     """The home page after its own audit: the steps with their times, the next step."""
-    page.goto(SERVED)
+    page.goto(f"{SERVED}#clean")  # the audit is started from the Clean stage
     page.wait_for_selector("#auditStart")
     page.click("#auditStart")
     page.wait_for_selector("#auditEnd a", timeout=AUDIT_MS)  # link to the new report
-    page.wait_for_selector(".thumbs img", timeout=AUDIT_MS)
+    page.evaluate("location.hash = 'home'")
+    page.wait_for_selector("#auditHere", state="detached")  # the home page drawn again
     page.evaluate(EAGER_JS)  # lazy thumbnails: a full-page shot shows them all
     page.wait_for_function(PREVIEWS_SHOWN_JS)
     # The fixed sidebar and top bar drawn once, at the top: no scroll, no skip link.

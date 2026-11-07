@@ -64,6 +64,13 @@ Réglages effectifs
 │                             │ '.trashes', '.thumbnails'] │                   │
 │ scan.full_check_days        │ 7                          │ défaut            │
 │ scan.read_whole_mb          │ 128                        │ défaut            │
+│ scan.companions             │ ['.xmp', '.aae', '.thm',   │ défaut            │
+│                             │ '.json', 'thumbs.db',      │                   │
+│                             │ 'desktop.ini',             │                   │
+│                             │ '.ds_store',               │                   │
+│                             │ '.picasa.ini',             │                   │
+│                             │ 'picasa.ini', '.nomedia',  │                   │
+│                             │ '.lrv', '.srt']            │                   │
 │ keep.generated_names        │ ['_?(IMG|VID|MVI|MOV|SAM|D │ défaut            │
 │                             │ SC[NF]?|_DSC|PICT|CIMG)[_- │                   │
 │                             │ ]?\\d+',                   │                   │
@@ -165,6 +172,8 @@ Réglages effectifs
 │ review.brightness_gap       │ 60.0                       │ défaut            │
 │ review.clipped_gap          │ 0.25                       │ défaut            │
 │ review.port                 │ 8088                       │ défaut            │
+│ review.lan                  │ True                       │ défaut            │
+│ review.lan_phone_originals  │ False                      │ défaut            │
 │ review.unwanted             │ {'tiny_megapixels': 0.16,  │ défaut            │
 │                             │ 'screenshots': True,       │                   │
 │                             │ 'dark_mean': 25.0,         │                   │
@@ -175,12 +184,12 @@ Réglages effectifs
 │ classify.target             │                            │ défaut            │
 │ classify.leave              │ []                         │ défaut            │
 │ classify.timezone           │                            │ défaut            │
-│ classify.layout             │ {year}/{category}          │ défaut            │
-│ classify.unsure_layout      │ {year}/To check/{category} │ défaut            │
-│ classify.manual_layout      │ {year}/To sort/{event}     │ défaut            │
-│ classify.undated_layout     │ To sort/Undated            │ défaut            │
-│ classify.received_layout    │ To sort/Received and       │ défaut            │
-│                             │ downloaded                 │                   │
+│ classify.layout             │ {year}/{year_month}/{categ │ défaut            │
+│                             │ ory}                       │                   │
+│ classify.unsure_layout      │                            │ défaut            │
+│ classify.manual_layout      │                            │ défaut            │
+│ classify.undated_layout     │                            │ défaut            │
+│ classify.received_layout    │                            │ défaut            │
 │ classify.session_gap_hours  │ 6.0                        │ défaut            │
 │ classify.merge_gap_hours    │ 18.0                       │ défaut            │
 │ classify.min_event_size     │ 5                          │ défaut            │
@@ -190,6 +199,7 @@ Réglages effectifs
 │ classify.scores             │ {'existing-folder': 90,    │ défaut            │
 │                             │ 'person-folder': 85,       │                   │
 │                             │ 'event-neighbour': 70,     │                   │
+│                             │ 'same-moment': 70,         │                   │
 │                             │ 'calendar': 85,            │                   │
 │                             │ 'date-range': 95, 'kind':  │                   │
 │                             │ 85, 'path': 90, 'camera':  │                   │
@@ -231,7 +241,10 @@ Réglages effectifs
 │                             │ [], 'per_photo': False,    │                   │
 │                             │ 'names': [], 'all': False, │                   │
 │                             │ 'min_share': None,         │                   │
-│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'devices': [], 'file': '', │                   │
+│                             │ 'score': None,             │                   │
+│                             │ 'keep_folders': False,     │                   │
+│                             │ 'layout': ''}, {'name':    │                   │
 │                             │ 'Existing folders',        │                   │
 │                             │ 'match':                   │                   │
 │                             │ 'existing_folder',         │                   │
@@ -241,19 +254,23 @@ Réglages effectifs
 │                             │ 'per_photo': False,        │                   │
 │                             │ 'names': [], 'all': False, │                   │
 │                             │ 'min_share': None,         │                   │
-│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'devices': [], 'file': '', │                   │
+│                             │ 'score': None,             │                   │
+│                             │ 'keep_folders': False,     │                   │
+│                             │ 'layout': ''}, {'name':    │                   │
 │                             │ 'Screenshots and           │                   │
 │                             │ documents', 'match':       │                   │
-│                             │ 'kind', 'category':        │                   │
-│                             │ 'Documents and             │                   │
-│                             │ screenshots', 'dates': '', │                   │
-│                             │ 'pattern': '', 'kind':     │                   │
-│                             │ 'screenshot',              │                   │
+│                             │ 'kind', 'category': '',    │                   │
+│                             │ 'dates': '', 'pattern':    │                   │
+│                             │ '', 'kind': 'screenshot',  │                   │
 │                             │ 'categories': [],          │                   │
 │                             │ 'per_photo': False,        │                   │
 │                             │ 'names': [], 'all': False, │                   │
 │                             │ 'min_share': None,         │                   │
-│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'devices': [], 'file': '', │                   │
+│                             │ 'score': None,             │                   │
+│                             │ 'keep_folders': False,     │                   │
+│                             │ 'layout': ''}, {'name':    │                   │
 │                             │ 'Event neighbours',        │                   │
 │                             │ 'match':                   │                   │
 │                             │ 'event_neighbour',         │                   │
@@ -263,27 +280,48 @@ Réglages effectifs
 │                             │ 'per_photo': False,        │                   │
 │                             │ 'names': [], 'all': False, │                   │
 │                             │ 'min_share': None,         │                   │
-│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'devices': [], 'file': '', │                   │
+│                             │ 'score': None,             │                   │
+│                             │ 'keep_folders': False,     │                   │
+│                             │ 'layout': ''}, {'name':    │                   │
+│                             │ 'Same moment', 'match':    │                   │
+│                             │ 'same_moment', 'category': │                   │
+│                             │ '', 'dates': '',           │                   │
+│                             │ 'pattern': '', 'kind':     │                   │
+│                             │ None, 'categories': [],    │                   │
+│                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
+│                             │ 'devices': [], 'file': '', │                   │
+│                             │ 'score': None,             │                   │
+│                             │ 'keep_folders': False,     │                   │
+│                             │ 'layout': ''}, {'name':    │                   │
 │                             │ 'Christmas', 'match':      │                   │
 │                             │ 'calendar', 'category':    │                   │
-│                             │ 'Parties/Christmas',       │                   │
-│                             │ 'dates': '12-24..12-26',   │                   │
-│                             │ 'pattern': '', 'kind':     │                   │
-│                             │ None, 'categories': [],    │                   │
+│                             │ 'Christmas', 'dates':      │                   │
+│                             │ '12-24..12-26', 'pattern': │                   │
+│                             │ '', 'kind': None,          │                   │
+│                             │ 'categories': [],          │                   │
 │                             │ 'per_photo': False,        │                   │
 │                             │ 'names': [], 'all': False, │                   │
 │                             │ 'min_share': None,         │                   │
-│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'devices': [], 'file': '', │                   │
+│                             │ 'score': None,             │                   │
+│                             │ 'keep_folders': False,     │                   │
+│                             │ 'layout': ''}, {'name':    │                   │
 │                             │ 'New Year', 'match':       │                   │
 │                             │ 'calendar', 'category':    │                   │
-│                             │ 'Parties/New Year',        │                   │
-│                             │ 'dates': '12-31..01-01',   │                   │
-│                             │ 'pattern': '', 'kind':     │                   │
-│                             │ None, 'categories': [],    │                   │
+│                             │ 'New Year', 'dates':       │                   │
+│                             │ '12-31..01-01', 'pattern': │                   │
+│                             │ '', 'kind': None,          │                   │
+│                             │ 'categories': [],          │                   │
 │                             │ 'per_photo': False,        │                   │
 │                             │ 'names': [], 'all': False, │                   │
 │                             │ 'min_share': None,         │                   │
-│                             │ 'score': None}]            │                   │
+│                             │ 'devices': [], 'file': '', │                   │
+│                             │ 'score': None,             │                   │
+│                             │ 'keep_folders': False,     │                   │
+│                             │ 'layout': ''}]             │                   │
 │ classify.ai                 │ {'url':                    │ défaut            │
 │                             │ 'http://host.docker.intern │                   │
 │                             │ al:11434', 'model': '',    │                   │
@@ -308,6 +346,7 @@ Réglages effectifs
 │ classify.folder_town_min_po │ 5000                       │ défaut            │
 │ pulation                    │                            │                   │
 │ classify.folder_town_ignore │ []                         │ défaut            │
+│ classify.person_folders     │ []                         │ défaut            │
 │ sort.confirm                │ True                       │ défaut            │
 │ sort.junk_files             │ ['Thumbs.db',              │ défaut            │
 │                             │ 'desktop.ini',             │                   │
@@ -327,6 +366,7 @@ Réglages effectifs
 │ places.folders              │ []                         │ défaut            │
 │ places.ignored              │ []                         │ défaut            │
 │ places.town_hint_km         │ 10.0                       │ défaut            │
+│ places.reverse_lookup       │ ask                        │ défaut            │
 │ album.root                  │                            │ défaut            │
 │ tags.language               │                            │ défaut            │
 │ tags.stop_words             │ ['sol', 'mur', 'murs',     │ défaut            │
@@ -342,11 +382,19 @@ Réglages effectifs
 │                             │ 'person', 'people',        │                   │
 │                             │ 'thing', 'object',         │                   │
 │                             │ 'background', 'scene',     │                   │
-│                             │ 'view']                    │                   │
+│                             │ 'view', 'photo floue',     │                   │
+│                             │ 'flou', 'photographie',    │                   │
+│                             │ 'ambiance', 'adulte',      │                   │
+│                             │ 'blurry photo',            │                   │
+│                             │ 'photograph', 'blur',      │                   │
+│                             │ 'adult']                   │                   │
+│ tags.synonyms               │ {}                         │ défaut            │
 │ tags.town_km                │ 20.0                       │ défaut            │
-│ tags.xmp_sources            │ ['vision', 'place']        │ défaut            │
+│ tags.xmp_sources            │ ['vision', 'place',        │ défaut            │
+│                             │ 'hand']                    │                   │
 │ tags.xmp_folder_gps         │ False                      │ défaut            │
 │ tags.meaning                │ False                      │ défaut            │
+│ tags.hand                   │ []                         │ défaut            │
 │ tags.meaning_threads        │ 4                          │ défaut            │
 │ tags.meaning_results        │ 200                        │ défaut            │
 │ people.similarity           │ 0.363                      │ défaut            │
@@ -356,9 +404,9 @@ Réglages effectifs
 │ people.ignored              │ 0 visages                  │ défaut            │
 │ people.ignored_file         │                            │ défaut            │
 │ people.person               │                            │ défaut            │
-│ backup.keep_removed_days    │ 90                         │ défaut            │
-│ backup.stop_above_percent   │ 20                         │ défaut            │
-│ backup.threads              │ 8                          │ défaut            │
+│ push.keep_removed_days      │ 90                         │ défaut            │
+│ push.stop_above_percent     │ 20                         │ défaut            │
+│ push.threads                │ 8                          │ défaut            │
 │ slideshow.screen_px         │ 1920                       │ défaut            │
 │ slideshow.interval_seconds  │ 8                          │ défaut            │
 │ share.long_side_px          │ 2048                       │ défaut            │
@@ -378,21 +426,29 @@ Réglages effectifs
 │ shrink.preset               │ medium                     │ défaut            │
 │ shrink.threads              │ 0                          │ défaut            │
 │ shrink.try_count            │ 10                         │ défaut            │
+│ imports.then                │ ['audit', 'copies',        │ défaut            │
+│                             │ 'bursts', 'tags',          │                   │
+│                             │ 'places']                  │                   │
+│ routine.steps               │ ['audit', 'copies',        │ défaut            │
+│                             │ 'reports']                 │                   │
+│ home.favorites              │ []                         │ défaut            │
+│ home.tiles                  │ []                         │ défaut            │
+│ home.family_title           │                            │ défaut            │
 └─────────────────────────────┴────────────────────────────┴───────────────────┘
 
 Catégories d'extensions (--ext)
 ┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┓
 ┃ Catégorie ┃ Extensions                                            ┃ Origine  ┃
 ┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━┩
-│ photo     │ avif, bmp, gif, heic, heif, jpe, jpeg, jpg, png, tif, │ intégrée │
-│           │ tiff, webp                                            │          │
+│ photo     │ avif, bmp, gif, heic, heif, jpe, jpeg, jpg, mpo, png, │ intégrée │
+│           │ tif, tiff, webp                                       │          │
 │ raw       │ arw, cr2, cr3, dng, nef, orf, pef, raf, rw2, srw      │ intégrée │
 │ video     │ 3g2, 3gp, avi, flv, m2ts, m4v, mkv, mov, mp4, mpeg,   │ intégrée │
 │           │ mpg, mts, ts, webm, wmv                               │          │
 │ media     │ 3g2, 3gp, arw, avi, avif, bmp, cr2, cr3, dng, flv,    │ intégrée │
 │           │ gif, heic, heif, jpe, jpeg, jpg, m2ts, m4v, mkv, mov, │          │
-│           │ mp4, mpeg, mpg, mts, nef, orf, pef, png, raf, rw2,    │          │
-│           │ srw, tif, tiff, ts, webm, webp, wmv                   │          │
+│           │ mp4, mpeg, mpg, mpo, mts, nef, orf, pef, png, raf,    │          │
+│           │ rw2, srw, tif, tiff, ts, webm, webp, wmv              │          │
 └───────────┴───────────────────────────────────────────────────────┴──────────┘
 
 Points de montage
@@ -616,6 +672,13 @@ Réglages effectifs
 │                             │ '.trashes', '.thumbnails'] │                   │
 │ scan.full_check_days        │ 7                          │ config.toml       │
 │ scan.read_whole_mb          │ 128                        │ config.toml       │
+│ scan.companions             │ ['.xmp', '.aae', '.thm',   │ config.toml       │
+│                             │ '.json', 'thumbs.db',      │                   │
+│                             │ 'desktop.ini',             │                   │
+│                             │ '.ds_store',               │                   │
+│                             │ '.picasa.ini',             │                   │
+│                             │ 'picasa.ini', '.nomedia',  │                   │
+│                             │ '.lrv', '.srt']            │                   │
 │ keep.generated_names        │ ['_?(IMG|VID|MVI|MOV|SAM|D │ défaut            │
 │                             │ SC[NF]?|_DSC|PICT|CIMG)[_- │                   │
 │                             │ ]?\\d+',                   │                   │
@@ -717,6 +780,8 @@ Réglages effectifs
 │ review.brightness_gap       │ 60.0                       │ config.toml       │
 │ review.clipped_gap          │ 0.25                       │ config.toml       │
 │ review.port                 │ 8088                       │ config.toml       │
+│ review.lan                  │ True                       │ config.toml       │
+│ review.lan_phone_originals  │ False                      │ config.toml       │
 │ review.unwanted             │ {'tiny_megapixels': 0.16,  │ config.toml       │
 │                             │ 'screenshots': True,       │                   │
 │                             │ 'dark_mean': 25.0,         │                   │
@@ -727,13 +792,12 @@ Réglages effectifs
 │ classify.target             │                            │ config.toml       │
 │ classify.leave              │ []                         │ config.toml       │
 │ classify.timezone           │                            │ config.toml       │
-│ classify.layout             │ {year}/{category}          │ config.toml       │
-│ classify.unsure_layout      │ {year}/À                   │ config.toml       │
-│                             │ vérifier/{category}        │                   │
-│ classify.manual_layout      │ {year}/À trier/{event}     │ config.toml       │
-│ classify.undated_layout     │ À trier/Sans date          │ config.toml       │
-│ classify.received_layout    │ À trier/Reçues et          │ config.toml       │
-│                             │ téléchargées               │                   │
+│ classify.layout             │ {year}/{year_month}/{categ │ config.toml       │
+│                             │ ory}                       │                   │
+│ classify.unsure_layout      │                            │ config.toml       │
+│ classify.manual_layout      │                            │ config.toml       │
+│ classify.undated_layout     │                            │ config.toml       │
+│ classify.received_layout    │                            │ config.toml       │
 │ classify.session_gap_hours  │ 6.0                        │ défaut            │
 │ classify.merge_gap_hours    │ 18.0                       │ config.toml       │
 │ classify.min_event_size     │ 5                          │ config.toml       │
@@ -743,6 +807,7 @@ Réglages effectifs
 │ classify.scores             │ {'existing-folder': 90,    │ défaut            │
 │                             │ 'person-folder': 85,       │                   │
 │                             │ 'event-neighbour': 70,     │                   │
+│                             │ 'same-moment': 70,         │                   │
 │                             │ 'calendar': 85,            │                   │
 │                             │ 'date-range': 95, 'kind':  │                   │
 │                             │ 85, 'path': 90, 'camera':  │                   │
@@ -784,7 +849,10 @@ Réglages effectifs
 │                             │ [], 'per_photo': False,    │                   │
 │                             │ 'names': [], 'all': False, │                   │
 │                             │ 'min_share': None,         │                   │
-│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'devices': [], 'file': '', │                   │
+│                             │ 'score': None,             │                   │
+│                             │ 'keep_folders': False,     │                   │
+│                             │ 'layout': ''}, {'name':    │                   │
 │                             │ 'Dossiers existants',      │                   │
 │                             │ 'match':                   │                   │
 │                             │ 'existing_folder',         │                   │
@@ -794,19 +862,23 @@ Réglages effectifs
 │                             │ 'per_photo': False,        │                   │
 │                             │ 'names': [], 'all': False, │                   │
 │                             │ 'min_share': None,         │                   │
-│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'devices': [], 'file': '', │                   │
+│                             │ 'score': None,             │                   │
+│                             │ 'keep_folders': False,     │                   │
+│                             │ 'layout': ''}, {'name':    │                   │
 │                             │ "Captures d'écran et       │                   │
 │                             │ documents", 'match':       │                   │
-│                             │ 'kind', 'category':        │                   │
-│                             │ "Documents et captures     │                   │
-│                             │ d'écran", 'dates': '',     │                   │
-│                             │ 'pattern': '', 'kind':     │                   │
-│                             │ 'screenshot',              │                   │
+│                             │ 'kind', 'category': '',    │                   │
+│                             │ 'dates': '', 'pattern':    │                   │
+│                             │ '', 'kind': 'screenshot',  │                   │
 │                             │ 'categories': [],          │                   │
 │                             │ 'per_photo': False,        │                   │
 │                             │ 'names': [], 'all': False, │                   │
 │                             │ 'min_share': None,         │                   │
-│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'devices': [], 'file': '', │                   │
+│                             │ 'score': None,             │                   │
+│                             │ 'keep_folders': False,     │                   │
+│                             │ 'layout': ''}, {'name':    │                   │
 │                             │ "Voisins d'événement",     │                   │
 │                             │ 'match':                   │                   │
 │                             │ 'event_neighbour',         │                   │
@@ -816,37 +888,61 @@ Réglages effectifs
 │                             │ 'per_photo': False,        │                   │
 │                             │ 'names': [], 'all': False, │                   │
 │                             │ 'min_share': None,         │                   │
-│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'devices': [], 'file': '', │                   │
+│                             │ 'score': None,             │                   │
+│                             │ 'keep_folders': False,     │                   │
+│                             │ 'layout': ''}, {'name':    │                   │
+│                             │ 'Même moment', 'match':    │                   │
+│                             │ 'same_moment', 'category': │                   │
+│                             │ '', 'dates': '',           │                   │
+│                             │ 'pattern': '', 'kind':     │                   │
+│                             │ None, 'categories': [],    │                   │
+│                             │ 'per_photo': False,        │                   │
+│                             │ 'names': [], 'all': False, │                   │
+│                             │ 'min_share': None,         │                   │
+│                             │ 'devices': [], 'file': '', │                   │
+│                             │ 'score': None,             │                   │
+│                             │ 'keep_folders': False,     │                   │
+│                             │ 'layout': ''}, {'name':    │                   │
 │                             │ 'Noël', 'match':           │                   │
 │                             │ 'calendar', 'category':    │                   │
-│                             │ 'Fêtes/Noël', 'dates':     │                   │
+│                             │ 'Noël', 'dates':           │                   │
 │                             │ '12-24..12-26', 'pattern': │                   │
 │                             │ '', 'kind': None,          │                   │
 │                             │ 'categories': [],          │                   │
 │                             │ 'per_photo': False,        │                   │
 │                             │ 'names': [], 'all': False, │                   │
 │                             │ 'min_share': None,         │                   │
-│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'devices': [], 'file': '', │                   │
+│                             │ 'score': None,             │                   │
+│                             │ 'keep_folders': False,     │                   │
+│                             │ 'layout': ''}, {'name':    │                   │
 │                             │ 'Nouvel An', 'match':      │                   │
 │                             │ 'calendar', 'category':    │                   │
-│                             │ 'Fêtes/Nouvel An',         │                   │
-│                             │ 'dates': '12-31..01-01',   │                   │
-│                             │ 'pattern': '', 'kind':     │                   │
-│                             │ None, 'categories': [],    │                   │
+│                             │ 'Nouvel An', 'dates':      │                   │
+│                             │ '12-31..01-01', 'pattern': │                   │
+│                             │ '', 'kind': None,          │                   │
+│                             │ 'categories': [],          │                   │
 │                             │ 'per_photo': False,        │                   │
 │                             │ 'names': [], 'all': False, │                   │
 │                             │ 'min_share': None,         │                   │
-│                             │ 'score': None}, {'name':   │                   │
+│                             │ 'devices': [], 'file': '', │                   │
+│                             │ 'score': None,             │                   │
+│                             │ 'keep_folders': False,     │                   │
+│                             │ 'layout': ''}, {'name':    │                   │
 │                             │ 'Saint-Nicolas', 'match':  │                   │
 │                             │ 'calendar', 'category':    │                   │
-│                             │ 'Fêtes/Saint-Nicolas',     │                   │
-│                             │ 'dates': '12-05..12-06',   │                   │
-│                             │ 'pattern': '', 'kind':     │                   │
-│                             │ None, 'categories': [],    │                   │
+│                             │ 'Saint-Nicolas', 'dates':  │                   │
+│                             │ '12-05..12-06', 'pattern': │                   │
+│                             │ '', 'kind': None,          │                   │
+│                             │ 'categories': [],          │                   │
 │                             │ 'per_photo': False,        │                   │
 │                             │ 'names': [], 'all': False, │                   │
 │                             │ 'min_share': None,         │                   │
-│                             │ 'score': None}]            │                   │
+│                             │ 'devices': [], 'file': '', │                   │
+│                             │ 'score': None,             │                   │
+│                             │ 'keep_folders': False,     │                   │
+│                             │ 'layout': ''}]             │                   │
 │ classify.ai                 │ {'url':                    │ config.toml       │
 │                             │ 'http://host.docker.intern │                   │
 │                             │ al:11434', 'model': '',    │                   │
@@ -871,6 +967,7 @@ Réglages effectifs
 │ classify.folder_town_min_po │ 5000                       │ config.toml       │
 │ pulation                    │                            │                   │
 │ classify.folder_town_ignore │ []                         │ config.toml       │
+│ classify.person_folders     │ []                         │ config.toml       │
 │ sort.confirm                │ True                       │ config.toml       │
 │ sort.junk_files             │ ['Thumbs.db',              │ config.toml       │
 │                             │ 'desktop.ini',             │                   │
@@ -890,6 +987,7 @@ Réglages effectifs
 │ places.folders              │ []                         │ défaut            │
 │ places.ignored              │ []                         │ défaut            │
 │ places.town_hint_km         │ 10.0                       │ config.toml       │
+│ places.reverse_lookup       │ ask                        │ config.toml       │
 │ album.root                  │                            │ config.toml       │
 │ tags.language               │                            │ config.toml       │
 │ tags.stop_words             │ ['sol', 'mur', 'murs',     │ défaut            │
@@ -905,11 +1003,19 @@ Réglages effectifs
 │                             │ 'person', 'people',        │                   │
 │                             │ 'thing', 'object',         │                   │
 │                             │ 'background', 'scene',     │                   │
-│                             │ 'view']                    │                   │
+│                             │ 'view', 'photo floue',     │                   │
+│                             │ 'flou', 'photographie',    │                   │
+│                             │ 'ambiance', 'adulte',      │                   │
+│                             │ 'blurry photo',            │                   │
+│                             │ 'photograph', 'blur',      │                   │
+│                             │ 'adult']                   │                   │
+│ tags.synonyms               │ {}                         │ défaut            │
 │ tags.town_km                │ 20.0                       │ config.toml       │
-│ tags.xmp_sources            │ ['vision', 'place']        │ config.toml       │
+│ tags.xmp_sources            │ ['vision', 'place',        │ config.toml       │
+│                             │ 'hand']                    │                   │
 │ tags.xmp_folder_gps         │ False                      │ config.toml       │
 │ tags.meaning                │ False                      │ config.toml       │
+│ tags.hand                   │ []                         │ défaut            │
 │ tags.meaning_threads        │ 4                          │ config.toml       │
 │ tags.meaning_results        │ 200                        │ config.toml       │
 │ people.similarity           │ 0.363                      │ config.toml       │
@@ -919,9 +1025,9 @@ Réglages effectifs
 │ people.ignored              │ 0 visages                  │ défaut            │
 │ people.ignored_file         │                            │ défaut            │
 │ people.person               │                            │ défaut            │
-│ backup.keep_removed_days    │ 90                         │ config.toml       │
-│ backup.stop_above_percent   │ 20                         │ config.toml       │
-│ backup.threads              │ 8                          │ config.toml       │
+│ push.keep_removed_days      │ 90                         │ config.toml       │
+│ push.stop_above_percent     │ 20                         │ config.toml       │
+│ push.threads                │ 8                          │ config.toml       │
 │ slideshow.screen_px         │ 1920                       │ config.toml       │
 │ slideshow.interval_seconds  │ 8                          │ config.toml       │
 │ share.long_side_px          │ 2048                       │ config.toml       │
@@ -941,21 +1047,29 @@ Réglages effectifs
 │ shrink.preset               │ medium                     │ config.toml       │
 │ shrink.threads              │ 0                          │ config.toml       │
 │ shrink.try_count            │ 10                         │ config.toml       │
+│ imports.then                │ ['audit', 'copies',        │ config.toml       │
+│                             │ 'bursts', 'tags',          │                   │
+│                             │ 'places']                  │                   │
+│ routine.steps               │ ['audit', 'copies',        │ config.toml       │
+│                             │ 'reports']                 │                   │
+│ home.favorites              │ []                         │ config.toml       │
+│ home.tiles                  │ []                         │ config.toml       │
+│ home.family_title           │                            │ config.toml       │
 └─────────────────────────────┴────────────────────────────┴───────────────────┘
 
 Catégories d'extensions (--ext)
 ┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┓
 ┃ Catégorie ┃ Extensions                                            ┃ Origine  ┃
 ┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━┩
-│ photo     │ avif, bmp, gif, heic, heif, jpe, jpeg, jpg, png, tif, │ intégrée │
-│           │ tiff, webp                                            │          │
+│ photo     │ avif, bmp, gif, heic, heif, jpe, jpeg, jpg, mpo, png, │ intégrée │
+│           │ tif, tiff, webp                                       │          │
 │ raw       │ arw, cr2, cr3, dng, nef, orf, pef, raf, rw2, srw      │ intégrée │
 │ video     │ 3g2, 3gp, avi, flv, m2ts, m4v, mkv, mov, mp4, mpeg,   │ intégrée │
 │           │ mpg, mts, ts, webm, wmv                               │          │
 │ media     │ 3g2, 3gp, arw, avi, avif, bmp, cr2, cr3, dng, flv,    │ intégrée │
 │           │ gif, heic, heif, jpe, jpeg, jpg, m2ts, m4v, mkv, mov, │          │
-│           │ mp4, mpeg, mpg, mts, nef, orf, pef, png, raf, rw2,    │          │
-│           │ srw, tif, tiff, ts, webm, webp, wmv                   │          │
+│           │ mp4, mpeg, mpg, mpo, mts, nef, orf, pef, png, raf,    │          │
+│           │ rw2, srw, tif, tiff, ts, webm, webp, wmv              │          │
 └───────────┴───────────────────────────────────────────────────────┴──────────┘
 
 Points de montage

@@ -179,68 +179,67 @@ command shows its own `--help`; here is the list of the commands:
 │                                                 (NO_COLOR is honoured too).  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ 🔒 Analyse: read-only, never changes your photos ───────────────────────────╮
-│ audit        Find exact duplicates and broken files.                         │
-│ browse       Walk through your folders in your browser, as in Explorer, and  │
-│              set photos aside; 'clean --decisions' then moves them.          │
-│ classify     Propose where every photo and video should go: year, event,     │
-│              category, and what lone photos show with an optional local AI   │
-│              🤖                                                              │
-│ config       Show every setting, where it comes from, and the mount points.  │
-│ crosscheck   Run Czkawka, an independent duplicate finder, then compare its  │
-│              groups with a fresh audit: a second opinion.                    │
-│ history      List the runs and what they did.                                │
-│ home         The home page in your browser: where you are, the next step as  │
-│              a button, every step of the guides, the reports.                │
-│ inventory    Export every photo and video with what the audits learnt to     │
-│              Excel, from the cache alone: no file is read.                   │
-│ launcher     Write 'mh', a short command holding your folders: mh audit, mh  │
-│              clean.                                                          │
-│ menu         Every step of the guides with its command, the next one first:  │
-│              what 'mh' alone shows, Enter runs it.                           │
-│ people       Find the faces in the photos, group those alike and name them   │
-│              in your browser. Faces kept in the cache, never sent anywhere.  │
-│ places       Name your places on a map of where the photos were taken; saved │
-│              into config.toml for the 'place' and 'trip' rules.              │
-│ reports      List the HTML reports of previous audits and cleans.            │
-│ review       Set burst shots aside, one series at a time, with the keyboard  │
-│              in your browser; 'clean --decisions' then moves them.           │
-│ search       Find photos by their words in your browser (or as a table): the │
-│              words 'tags' gave them.                                         │
-│ share        Prepare an album for sending: resized copies without the GPS    │
-│              position, a folder and a zip, for a mail or a social network.   │
-│ slideshow    Show photos on the TV, the phone choosing the next one: a       │
-│              folder, a search or an album.                                   │
-│ status       Where am I? The last audit, the quarantine, what is left: no    │
-│              scan.                                                           │
-│ tags         Give every photo words to find it by, kept in the cache, never  │
-│              in the photos: its folders, name, date and place, and what it   │
-│              shows with an optional local AI 🤖                              │
+│ audit       Find exact duplicates and broken files.                          │
+│ backup      Back up the index and the settings into one archive outside      │
+│             Docker's cache volume, read back.                                │
+│ classify    Propose where every photo and video should go: year, event,      │
+│             category, and what lone photos show with an optional local AI 🤖 │
+│ config      Show every setting, where it comes from, and the mount points.   │
+│ crosscheck  Run Czkawka, an independent duplicate finder, then compare its   │
+│             groups with a fresh audit: a second opinion.                     │
+│ history     List the runs and what they did.                                 │
+│ inventory   Export every photo and video with what the audits learnt to      │
+│             Excel, from the cache alone: no file is read.                    │
+│ launcher    Write 'mh', a short command holding your folders: mh audit, mh   │
+│             clean.                                                           │
+│ menu        Every step of the guides with its command, the next one first:   │
+│             what 'mh' alone shows, Enter runs it.                            │
+│ people      Find the faces in the photos, group those alike and name them in │
+│             your browser. Faces kept in the cache, never sent anywhere.      │
+│ reports     List the HTML reports of previous audits and cleans.             │
+│ review      Set burst shots aside, one series at a time, with the keyboard   │
+│             in your browser; 'clean --decisions' then moves them.            │
+│ share       Prepare an album for sending: resized copies without the GPS     │
+│             position, a folder and a zip, for a mail or a social network.    │
+│ spots       Name where the photos already indexed were taken (landmark,      │
+│             town, regions), offline; the audit does it for new ones.         │
+│ status      Where am I? The last audit, the quarantine, what is left: no     │
+│             scan.                                                            │
+│ tags        Give every photo words to find it by, kept in the cache, never   │
+│             in the photos: its folders, name, date and place, and what it    │
+│             shows with an optional local AI 🤖                               │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Act: moves, writes or deletes files ────────────────────────────────────────╮
-│ album        Make an album's folder on the disk, as hard links: nothing is   │
-│              copied nor moved (journaled, undoable).                         │
-│ backup       Windows only, as mh push: copy your photo folders into a      │
-│              folder of their own on the NAS, only what it lacks; a photo     │
-│              moved is renamed there, a deletion by mistake never carried     │
-│              over. Run here, it shows the plan.                              │
-│ clean        Audit, confirm, then move the duplicate copies to the           │
-│              quarantine, after a byte comparison (journaled, undoable);      │
-│              --delete deletes them for good.                                 │
-│ import       Copy into your photos what only a folder holds (your NAS, a USB disk, an SD card), never   │
-│              what you set aside or deleted before; each copy proven          │
-│              (journaled, undoable).                                          │
-│ purge        Erase the quarantine of a run for good: with 'clean --delete',  │
-│              the only way the tool removes content.                          │
-│ shrink       List the heavy videos worth lightening (old cameras, MJPEG);    │
-│              with --apply, re-encode them in H.264, each one checked, the    │
-│              original in the quarantine (journaled, undoable).               │
-│ sort         Move the photos and videos as the edited classify workbook says │
-│              (journaled, undoable).                                          │
-│ undo         Restore every file of a run, from the kept copy, the quarantine │
-│              or where it was moved; remove the links of an album.            │
-│ xmp          Write the words of 'tags' into .xmp sidecars next to the        │
-│              photos, for digiKam, darktable, Lightroom or Immich; never into │
-│              a photo (journaled, undoable).                                  │
+│ album       Make an album's folder on the disk, as hard links: nothing is    │
+│             copied nor moved (journaled, undoable).                          │
+│ clean       Audit, confirm, then move the duplicate copies to the            │
+│             quarantine, after a byte comparison (journaled, undoable);       │
+│             --delete deletes them for good.                                  │
+│ import      Copy into your photos what only a folder holds (your NAS, a USB  │
+│             disk, an SD card), never what you set aside or deleted before;   │
+│             each copy proven (journaled, undoable).                          │
+│ library     Find photos by their words in your browser (or as a table): the  │
+│             words 'tags' gave them.                                          │
+│ purge       Erase the quarantine of a run for good: with 'clean --delete',   │
+│             the only way the tool removes content.                           │
+│ push        Windows only, as mh push: copy your photo folders into a folder  │
+│             of their own on the NAS, only what it lacks; a photo moved is    │
+│             renamed there, a deletion by mistake never carried over. Run     │
+│             here, it shows the plan.                                         │
+│ restore     Put back a backup of the index (and the settings with --config), │
+│             after backing up the current one.                                │
+│ shrink      List the heavy videos worth lightening (old cameras, MJPEG);     │
+│             with --apply, re-encode them in H.264, each one checked, the     │
+│             original in the quarantine (journaled, undoable).                │
+│ sort        Move the photos and videos as the edited classify workbook says  │
+│             (journaled, undoable).                                           │
+│ undo        Restore every file of a run, from the kept copy, the quarantine  │
+│             or where it was moved; remove the links of an album.             │
+│ upkeep      Run the regular chores in one go, as listed in config.toml:      │
+│             audit, copies set aside, reports; each asks as usual.            │
+│ xmp         Write the words of 'tags' into .xmp sidecars next to the photos, │
+│             for digiKam, darktable, Lightroom or Immich; never into a photo  │
+│             (journaled, undoable).                                           │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 

@@ -181,77 +181,75 @@ commande montre son propre `--help` ; voici la liste des commandes :
 │                                                 respecté).                   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ 🔒 Analyser : lecture seule, ne modifie jamais vos photos ──────────────────╮
-│ audit        Trouver les doublons exacts et les fichiers cassés.             │
-│ classify     Propose où ranger chaque photo et vidéo : année, événement,     │
-│              catégorie, et ce que montrent les photos isolées avec une IA    │
-│              locale facultative 🤖                                           │
-│ config       Affiche chaque réglage, son origine, et les points de montage.  │
-│ crosscheck   Lance Czkawka, un détecteur de doublons indépendant, puis       │
-│              compare ses groupes à un nouvel audit : un second avis.         │
-│ history      Liste les exécutions et ce qu'elles ont fait.                   │
-│ home         La page d'accueil dans votre navigateur : où vous en êtes,      │
-│              l'étape suivante en un bouton, toutes les étapes des guides,    │
-│              les rapports.                                                   │
-│ inventory    Exporter vers Excel chaque photo et vidéo avec ce que les       │
-│              audits en ont appris, depuis le cache seul : aucun fichier      │
-│              n'est lu.                                                       │
-│ launcher     Écrit 'mh', une commande courte qui retient vos dossiers : mh   │
-│              audit, mh clean.                                                │
-│ menu         Chaque étape des guides avec sa commande, la prochaine en       │
-│              premier : ce que montre 'mh' seul, Entrée la lance.             │
-│ people       Trouver les visages des photos, regrouper ceux qui se           │
-│              ressemblent et les nommer dans votre navigateur. Visages gardés │
-│              dans le cache, jamais envoyés nulle part.                       │
-│ places       Nommer vos lieux sur une carte des endroits où les photos ont   │
-│              été prises ; enregistrés dans config.toml pour les règles       │
-│              'place' et 'trip'.                                              │
-│ reports      Liste les rapports HTML des audits et nettoyages précédents.    │
-│ review       Écarter des photos de rafale, une série à la fois, au clavier   │
-│              dans votre navigateur ; 'clean --decisions' les déplace         │
-│              ensuite.                                                        │
-│ search       Retrouver des photos par leurs mots dans votre navigateur (ou   │
-│              en tableau) : les mots que 'tags' leur a donnés.                │
-│ share        Préparer un album pour l'envoyer : des copies réduites sans la  │
-│              position GPS, un dossier et un zip, pour un mail ou un réseau   │
-│              social.                                                         │
-│ slideshow    Montrer des photos sur la télé, le téléphone choisissant la     │
-│              suivante : un dossier, une recherche ou un album.               │
-│ status       Où en suis-je ? Le dernier audit, la quarantaine, ce qu'il      │
-│              reste : sans analyse.                                           │
-│ tags         Donner à chaque photo des mots pour la retrouver, gardés dans   │
-│              le cache, jamais dans les photos : ses dossiers, son nom, sa    │
-│              date, son lieu, et ce qu'elle montre avec une IA locale         │
-│              facultative 🤖                                                  │
+│ audit       Trouver les doublons exacts et les fichiers cassés.              │
+│ backup      Sauvegarde l'index et les réglages dans une archive hors du      │
+│             volume de cache de Docker, relue.                                │
+│ classify    Propose où ranger chaque photo et vidéo : année, événement,      │
+│             catégorie, et ce que montrent les photos isolées avec une IA     │
+│             locale facultative 🤖                                            │
+│ config      Affiche chaque réglage, son origine, et les points de montage.   │
+│ crosscheck  Lance Czkawka, un détecteur de doublons indépendant, puis        │
+│             compare ses groupes à un nouvel audit : un second avis.          │
+│ history     Liste les exécutions et ce qu'elles ont fait.                    │
+│ inventory   Exporter vers Excel chaque photo et vidéo avec ce que les audits │
+│             en ont appris, depuis le cache seul : aucun fichier n'est lu.    │
+│ launcher    Écrit 'mh', une commande courte qui retient vos dossiers : mh    │
+│             audit, mh clean.                                                 │
+│ menu        Chaque étape des guides avec sa commande, la prochaine en        │
+│             premier : ce que montre 'mh' seul, Entrée la lance.              │
+│ people      Trouver les visages des photos, regrouper ceux qui se            │
+│             ressemblent et les nommer dans votre navigateur. Visages gardés  │
+│             dans le cache, jamais envoyés nulle part.                        │
+│ reports     Liste les rapports HTML des audits et nettoyages précédents.     │
+│ review      Écarter des photos de rafale, une série à la fois, au clavier    │
+│             dans votre navigateur ; 'clean --decisions' les déplace ensuite. │
+│ share       Préparer un album pour l'envoyer : des copies réduites sans la   │
+│             position GPS, un dossier et un zip, pour un mail ou un réseau    │
+│             social.                                                          │
+│ spots       Nomme où les photos déjà dans l'index ont été prises (lieu       │
+│             remarquable, ville, régions), hors ligne ; l'audit le fait pour  │
+│             les nouvelles.                                                   │
+│ status      Où en suis-je ? Le dernier audit, la quarantaine, ce qu'il reste │
+│             : sans analyse.                                                  │
+│ tags        Donner à chaque photo des mots pour la retrouver, gardés dans le │
+│             cache, jamais dans les photos : ses dossiers, son nom, sa date,  │
+│             son lieu, et ce qu'elle montre avec une IA locale facultative 🤖 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Agir : déplace, écrit ou supprime des fichiers ─────────────────────────────╮
-│ album        Crée le dossier d'un album sur le disque, en liens physiques :  │
-│              rien n'est copié ni déplacé (journalisé, annulable).            │
-│ backup       Windows seulement, en mh push : copier vos dossiers de photos │
-│              dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui  │
-│              manque ; une photo déplacée y est renommée, une suppression par │
-│              erreur n'y est jamais reportée. Lancée ici, elle montre le      │
-│              plan.                                                           │
-│ clean        Analyser, confirmer, puis déplacer les copies en double en      │
-│              quarantaine, après une comparaison octet par octet (journalisé, │
-│              annulable) ; --delete les supprime pour de bon.                 │
-│ import       Copie dans vos photos ce qu'une sauvegarde (un NAS) est seule à │
-│              contenir, jamais ce que vous avez mis de côté ou supprimé avant │
-│              ; chaque copie prouvée (journalisé, annulable).                 │
-│ purge        Effacer pour de bon la quarantaine d'une exécution : avec       │
-│              'clean --delete', la seule façon dont l'outil supprime du       │
-│              contenu.                                                        │
-│ shrink       Lister les vidéos lourdes qui gagnent à être allégées (anciens  │
-│              appareils, MJPEG) ; avec --apply, les réencoder en H.264,       │
-│              chacune vérifiée, l'original en quarantaine (journalisé,        │
-│              annulable).                                                     │
-│ sort         Déplacer les photos et vidéos comme le dit le classeur de       │
-│              classify modifié (journalisé, annulable).                       │
-│ undo         Restaure chaque fichier d'une exécution, depuis la copie        │
-│              conservée, la quarantaine ou là où il a été déplacé ; supprime  │
-│              les liens d'un album.                                           │
-│ xmp          Écrire les mots de 'tags' dans des fichiers compagnons .xmp à   │
-│              côté des photos, pour digiKam, darktable, Lightroom ou Immich ; │
-│              jamais dans une photo (journalisé, annulable).                  │
+│ album       Crée le dossier d'un album sur le disque, en liens physiques :   │
+│             rien n'est copié ni déplacé (journalisé, annulable).             │
+│ clean       Analyser, confirmer, puis déplacer les copies en double en       │
+│             quarantaine, après une comparaison octet par octet (journalisé,  │
+│             annulable) ; --delete les supprime pour de bon.                  │
+│ import      Copie dans vos photos ce qu'un dossier est seul à contenir       │
+│             (votre NAS, un disque USB, une carte SD), jamais ce que vous     │
+│             avez mis de côté ou supprimé avant ; chaque copie prouvée        │
+│             (journalisée, annulable).                                        │
+│ library     Retrouver des photos par leurs mots dans votre navigateur (ou en │
+│             tableau) : les mots que 'tags' leur a donnés.                    │
+│ purge       Effacer pour de bon la quarantaine d'une exécution : avec 'clean │
+│             --delete', la seule façon dont l'outil supprime du contenu.      │
+│ push        Windows seulement, en mh push : copier vos dossiers de photos    │
+│             dans un dossier rien qu'à eux sur le NAS, seulement ce qui lui   │
+│             manque ; une photo déplacée y est renommée, une suppression par  │
+│             erreur n'y est jamais reportée. Lancée ici, elle montre le plan. │
+│ restore     Remet une sauvegarde de l'index (et les réglages avec --config), │
+│             après avoir sauvegardé l'index actuel.                           │
+│ shrink      Lister les vidéos lourdes qui gagnent à être allégées (anciens   │
+│             appareils, MJPEG) ; avec --apply, les réencoder en H.264,        │
+│             chacune vérifiée, l'original en quarantaine (journalisé,         │
+│             annulable).                                                      │
+│ sort        Déplacer les photos et vidéos comme le dit le classeur de        │
+│             classify modifié (journalisé, annulable).                        │
+│ undo        Restaure chaque fichier d'une exécution, depuis la copie         │
+│             conservée, la quarantaine ou là où il a été déplacé ; supprime   │
+│             les liens d'un album.                                            │
+│ upkeep      Lance l'entretien régulier d'un coup, comme listé dans           │
+│             config.toml : audit, copies mises de côté, rapports ; chacun     │
+│             demande comme d'habitude.                                        │
+│ xmp         Écrire les mots de 'tags' dans des fichiers compagnons .xmp à    │
+│             côté des photos, pour digiKam, darktable, Lightroom ou Immich ;  │
+│             jamais dans une photo (journalisé, annulable).                   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 

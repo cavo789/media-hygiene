@@ -72,21 +72,24 @@ encore là. Le dossier de rapports reçoit le classeur où vous corrigez la prop
 💡 Une photo modifiée sur place par un autre programme ? 'audit --full' relit
 tous les dossiers (c'est fait de toute façon pour ceux listés il y a 7 jours).
 
-Déjà à leur place : 43 sur 86 (50 %).
+Déjà à leur place : 13 sur 86 (15 %).
 Proposition
-┏━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━┓
-┃ Bande     ┃ Fichiers ┃ À déplacer ┃
-┡━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━┩
-│ Sûrs      │       77 │         34 │
-│ À trier   │        5 │          5 │
-│ Sans date │        4 │          4 │
-└───────────┴──────────┴────────────┘
+┏━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━┓
+┃ Bande              ┃ Fichiers ┃ À déplacer ┃
+┡━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━┩
+│ Sûrs               │       73 │         73 │
+│ À vérifier         │        6 │          0 │
+│ À trier            │        2 │          0 │
+│ Sans date          │        4 │          0 │
+│ Laissés tels quels │        1 │          0 │
+└────────────────────┴──────────┴────────────┘
 
 Pourquoi
 ┌───────────────────────────────┬────┐
 │ Dossiers existants            │ 76 │
-│ Aucun indice                  │  5 │
 │ Sans date                     │  4 │
+│ Même moment                   │  3 │
+│ Aucun indice                  │  2 │
 │ Captures d'écran et documents │  1 │
 └───────────────────────────────┴────┘
 
@@ -94,9 +97,9 @@ Catégories les plus remplies
 ┌─────────────────────┬────┐
 │ Vacances à la mer   │ 13 │
 │ Photos 2019         │ 12 │
+│ Ancien téléphone    │ 11 │
 │ Randonnée           │ 10 │
 │ Anniversaire        │  8 │
-│ Ancien téléphone    │  8 │
 │ Noël                │  6 │
 │ Lac                 │  6 │
 │ Téléphone           │  6 │
@@ -106,13 +109,15 @@ Catégories les plus remplies
 
 ⚠️  Règles qui n'ont rien décidé : Films et séries, Voisins d'événement, Noël,
 Nouvel An, Saint-Nicolas.
-💡 Vérifiez leurs dates, leurs expressions et leur ordre dans config.toml.
-À vérifier ou à trier : 5 fichiers dans 1 événement.
+💡 Vérifiez leurs dates, leurs motifs et leur ordre dans config.toml ; l'onglet
+🗂 Événements de 'library' les liste sous Vos règles, avec un bouton pour retirer
+celles qui ne correspondent plus à rien.
+À vérifier ou à trier : 8 fichiers dans 2 événements.
 💡 Rien n'a été modifié : 'classify' ne fait que proposer.
 ✅ Classeur à modifier :
-C:\Users\you\media-hygiene\reports\20261025-084855-classify\classify.xlsx
+C:\Users\you\media-hygiene\reports\20261107-101818-classify\classify.xlsx
 ✅ Rapport avec les photos :
-C:\Users\you\media-hygiene\reports\20261025-084855-classify\report.html
+C:\Users\you\media-hygiene\reports\20261107-101818-classify\report.html
 👉 Et maintenant : modifiez les cellules jaunes et enregistrez ; rien ne bouge
 avant 'sort'.
 docker run --rm -it `

@@ -133,7 +133,8 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   la page (Échap le ferme), le formulaire au-dessus ne quitte donc jamais l'écran.
 - **Regarder** : Entrée ou un double clic montre la photo en grand (avec un lien vers
   l'original) ; ← → (sur un téléphone, un glissement) la précédente ou la suivante pas mise de côté, Suppr la met de côté puis montre la précédente (la suivante au début), F
-  plein écran, ? toutes les touches, Échap la ferme. **👤 Mettre une personne de côté** trouve
+  plein écran, L le monument qu'elle montre
+  ([`spots`](spots.md#-taper-soi-même-le-monument--touche-l)), ? toutes les touches, Échap la ferme. **👤 Mettre une personne de côté** trouve
   toutes les photos de quelqu'un depuis celle qui est montrée
   ([`people`](people.md#depuis-nimporte-quelle-page--mettre-une-personne-de-côté)).
 
@@ -655,9 +656,8 @@ recherche*.
 ```text
  Utilisation : media-hygiene library [OPTIONS] [words]...
 
- 🔒 Lecture seule : ne modifie jamais vos photos. Retrouver des photos par
- leurs mots dans votre navigateur (ou en tableau) : les mots que 'tags' leur a
- donnés.
+ Retrouver des photos par leurs mots dans votre navigateur (ou en tableau) :
+ les mots que 'tags' leur a donnés.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────╮
 │   words      <str>  Mots à trouver, affichés en tableau au lieu d'ouvrir la  │
@@ -666,15 +666,20 @@ recherche*.
 │                     vision, caption, folder, name, date, person).            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --limit          <int range> [x>=1]  Nombre maximal de fichiers listés dans  │
-│                                      le tableau. Par défaut : 20.            │
-│ --port           <int range> [x>=1]  Port de la page. docker run le publie   │
-│                                      sous le même numéro sur votre           │
-│                                      ordinateur, par exemple -p              │
-│                                      127.0.0.1:9000:9000 pour --port 9000.   │
-│                                      Par défaut :  port dans config.toml,    │
-│                                      8088.                                   │
-│ --help   -h                          Affiche ce message et quitte.           │
+│ --limit           <int range> [x>=1]  Nombre maximal de fichiers listés dans │
+│                                       le tableau. Par défaut : 20.           │
+│ --folder          <str>               Ouvrir la page sur ce dossier (une     │
+│                                       partie de son chemin, comme 'Chemin    │
+│                                       contient' le prend), par exemple un    │
+│                                       dossier que 'status' liste comme       │
+│                                       restant à trier.                       │
+│ --port            <int range> [x>=1]  Port de la page. docker run le publie  │
+│                                       sous le même numéro sur votre          │
+│                                       ordinateur, par exemple -p             │
+│                                       127.0.0.1:9000:9000 pour --port 9000.  │
+│                                       Par défaut :  port dans config.toml,   │
+│                                       8088.                                  │
+│ --help    -h                          Affiche ce message et quitte.          │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

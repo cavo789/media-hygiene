@@ -75,6 +75,22 @@ l'IA locale pour choisir le modèle, et le nombre sur le bouton. La progression 
 la page ; *Arrêter après cette photo* garde chaque choix déjà fait, et le passage suivant continue.
 Les vidéos et les fichiers mis de côté ne sont pas soumis.
 
+## 📍 Taper soi-même le monument : touche L
+
+GeoNames nomme un monument à moins de 200 m pour une photo localisée sur dix seulement (mesuré
+sur une vraie collection de 281 photos localisées). Dans la grande vue de
+[`library`](library.md), appuyez sur **L** : *📍 Le monument que montre cette photo* propose les
+monuments à moins de 500 m, du plus proche au plus lointain avec leur distance, et le nom
+OpenStreetMap s'il a été demandé ; choisissez-en un ou tapez le nom, puis *Écrire ce nom*.
+*Mauvais nom* dit que le nom actuel est faux : il est retiré et plus jamais proposé pour cette
+photo.
+
+Le nom va dans le fichier compagnon `.xmp` de la photo (`Iptc4xmpExt:LocationShown`, lu par
+digiKam et Lightroom), jamais dans la photo ; journalisé : `mh undo` le reprend, et les vignettes suivent aussitôt (le nom précédent, ou la ville). La ligne sous la
+photo est le compagnon relu sur le disque. Le compagnon suit la photo (`sort`, `undo`, un dossier
+renommé dans l'Explorateur) : le nom et les noms refusés la suivent ; un index reconstruit les
+relit au prochain audit. Un nom posé par une autre application est gardé.
+
 ## L'aide intégrée
 
 <details>
@@ -82,13 +98,20 @@ Les vidéos et les fichiers mis de côté ne sont pas soumis.
 
 <!-- capture: help-spots.txt -->
 ```text
- Usage: media-hygiene spots [OPTIONS]
+ Utilisation : media-hygiene spots [OPTIONS]
 
- 🔒 Read-only: never changes your photos. Name where the photos already indexed
- were taken (landmark, town, regions), offline; the audit does it for new ones.
+ 🔒 Lecture seule : ne modifie jamais vos photos. Nomme où les photos déjà dans
+ l'index ont été prises (lieu remarquable, ville, régions), hors ligne ;
+ l'audit le fait pour les nouvelles.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help  -h        Show this message and exit.                                │
+│ --help  -h        Affiche ce message et quitte.                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ 🤖 IA locale (Ollama), facultative : un modèle indiqué dans config.toml ────╮
+│ --vision          🤖 Puis laisser le modèle de vision local de [classify.ai… │
+│                   choisir, parmi les monuments à moins de 1 km, celui que    │
+│                   montre chaque photo (les photos ne sont envoyées qu'à ce   │
+│                   modèle ; un nom saisi à la main l'emporte toujours).       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

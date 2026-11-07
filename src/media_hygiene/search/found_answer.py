@@ -15,6 +15,7 @@ from media_hygiene.search.album_filter import aimed_query, album_paths, marked
 from media_hygiene.search.asked import read_asked
 from media_hygiene.search.date_desk import DATE_PATH
 from media_hygiene.search.hits import with_facts
+from media_hygiene.search.landmark_desk import LANDMARK_PATH
 from media_hygiene.search.place_neighbours import among
 from media_hygiene.search.reading import read_query, search_note
 from media_hygiene.search.views import found_view
@@ -92,4 +93,6 @@ def awaited_answer(
         return place.albums.answer(request.body)
     if request.path == DATE_PATH and place.dates is not None:
         return place.dates.answer(request.body)
+    if request.path == LANDMARK_PATH and place.landmark is not None:
+        return place.landmark.answer(request.body)
     return None

@@ -157,18 +157,30 @@ d'environnement (`-e MEDIA_HYGIENE_<SECTION>__<CLÉ>=…`, comme
 
 <!-- capture: help-config.txt -->
 ```text
- Utilisation : media-hygiene config [OPTIONS]
+ Utilisation : media-hygiene config [OPTIONS] [action]:<tidy>
 
  🔒 Lecture seule : ne modifie jamais vos photos. Affiche chaque réglage, son
  origine, et les points de montage.
 
+╭─ Arguments ──────────────────────────────────────────────────────────────────╮
+│   action      <tidy>  tidy : lister les entrées de config.toml qui ne        │
+│                       pointent plus sur rien (dossiers disparus, règles sans │
+│                       photo).                                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --upgrade            Ajouter à votre config.toml les réglages de cette       │
-│                      version, avec leur explication ; vos valeurs et         │
-│                      commentaires sont gardés.                               │
-│ --dry-run            Avec --upgrade : lister les réglages qu'il ajouterait,  │
-│                      sans rien écrire.                                       │
-│ --help     -h        Affiche ce message et quitte.                           │
+│ --apply                 Avec tidy : retirer les entrées cochées, après une   │
+│                         copie de config.toml.                                │
+│ --dates                 Avec tidy : cocher aussi les règles date_range sans  │
+│                         photo.                                               │
+│ --upgrade               Ajouter à votre config.toml les réglages de cette    │
+│                         version, avec leur explication ; vos valeurs et      │
+│                         commentaires sont gardés.                            │
+│ --convention            Passer les rangements  de votre config.toml à la     │
+│                         convention de tri année/année-mois/événement :       │
+│                         montre chaque changement, demande, écrit.            │
+│ --dry-run               Avec --upgrade ou --convention : lister ce qui       │
+│                         changerait, sans rien écrire.                        │
+│ --help        -h        Affiche ce message et quitte.                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 

@@ -446,8 +446,8 @@ fonts and pictures come from the image itself: the page asks nothing of any othe
 ```text
  Usage: media-hygiene home [OPTIONS]
 
- 🔒 Read-only: never changes your photos. The home page in your browser: where
- you are, the next step as a button, every step of the guides, the reports.
+ The home page in your browser: where you are, the next step as a button, every
+ step of the guides, the reports.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --port          <int range> [x>=1]  Port of the page. docker run publishes   │

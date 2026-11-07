@@ -135,8 +135,8 @@ cavo789/media-hygiene classify --sample 20
 │                          whole: they are built from every file, and only the │
 │                          files below the folders get a proposal. With        │
 │                          --year: the files of both.                          │
-│ --layout          <str>  Where sure files go, e.g. '{year}/{month} -         │
-│                          {month_name}'.                                      │
+│ --layout          <str>  Where sure files go, e.g.                           │
+│                          '{year}/{year_month}/{category}'.                   │
 │ --target          <str>  Host folder receiving the tree; in place by         │
 │                          default.                                            │
 │ --help    -h             Show this message and exit.                         │

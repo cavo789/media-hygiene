@@ -43,22 +43,33 @@ Avant de déplacer quoi que ce soit, `sort` dit ce qu'il a lu et ce qu'il va fai
 ```text
 ───────────────────────────────────── Tri ──────────────────────────────────────
 Classeur :
-C:\Users\you\media-hygiene\reports\20261025-085021-classify\classify.xlsx
-0 modification lue ; classeur enregistré le 25 octobre 2026 à 08:50.
+C:\Users\you\media-hygiene\reports\20261107-101948-classify\classify.xlsx
+0 modification lue ; classeur enregistré le 7 novembre 2026 à 10:19.
 Tri
-┌────────────────────────────────┬────────┐
-│ Fichiers à déplacer            │      8 │
-│ Dans des dossiers              │      4 │
-│ Taille                         │ 6,6 Mo │
-│ Déjà à leur place              │     40 │
-│ Restent où ils sont            │      0 │
-│ Vers un dossier « à vérifier » │      0 │
-│ Vers un dossier « à trier »    │      4 │
-│ Dossiers sources supprimés     │      3 │
-└────────────────────────────────┴────────┘
+┌────────────────────────────────┬─────────┐
+│ Fichiers à déplacer            │      43 │
+│ Dans des dossiers              │       6 │
+│ Taille                         │ 14,8 Mo │
+│ Déjà à leur place              │       0 │
+│ Restent où ils sont            │       5 │
+│ Vers un dossier « à vérifier » │       0 │
+│ Vers un dossier « à trier »    │       0 │
+│ Dossiers sources supprimés     │      11 │
+└────────────────────────────────┴─────────┘
 🛟 Chaque fichier est déplacé, jamais par-dessus un autre ni supprimé ;
 l'exécution est journalisée : 'undo' remet tout en place.
-❓ Déplacer 8 fichiers dans 4 dossiers ? [o/N] o
+Tri
+┌────────────────────────────────┬────────┐
+│ Fichiers à déplacer            │      3 │
+│ Dans des dossiers              │      1 │
+│ Taille                         │ 3,0 Mo │
+│ Déjà à leur place              │      0 │
+│ Restent où ils sont            │      0 │
+│ Vers un dossier « à vérifier » │      0 │
+│ Vers un dossier « à trier »    │      0 │
+│ Dossiers sources supprimés     │      1 │
+└────────────────────────────────┴────────┘
+❓ Premier tri : essayer sur le dernier mois, 2024-04, 3 fichiers sur 43 ?
 ```
 
 - *modifications lues* compte les cellules que vous avez remplies ; vérifiez la date : un classeur
@@ -137,20 +148,20 @@ cible, même taille, même SHA-256 quand il a changé de disque) :
 
 <!-- capture: sort.txt|re:^Tri \d| -->
 ```text
-Tri 20261025-085022
+Tri 20261107-101950
 ┌───────────────────────────┬────────┐
-│ Fichiers traités          │      8 │
-│ Taille                    │ 6,6 Mo │
+│ Fichiers traités          │      3 │
+│ Taille                    │ 3,0 Mo │
 │ Ignorés (laissés intacts) │      0 │
 │ En échec                  │      0 │
 │ Durée                     │    0 s │
 └───────────────────────────┴────────┘
-Dossiers sources supprimés : 3.
-✅ Rien de perdu : 50 fichiers (18,3 Mo) avant et après ; 8 déplacements
-vérifiés sur 8.
+Dossiers sources supprimés : 1.
+✅ Rien de perdu : 3 fichiers (3,0 Mo) avant et après ; 3 déplacements vérifiés
+sur 3.
 Manifeste :
-C:\Users\you\media-hygiene\reports\20261025-085022-sort\manifest.json
-💡 Vous changez d'avis ? 'media-hygiene undo 20261025-085022' remet tout en
+C:\Users\you\media-hygiene\reports\20261107-101950-sort\manifest.json
+💡 Vous changez d'avis ? 'media-hygiene undo 20261107-101950' remet tout en
 place :
 docker run --rm -it `
   -v "C:\Photos:/data/c/Photos" `
@@ -160,7 +171,17 @@ docker run --rm -it `
   -v "$HOME\media-hygiene\reports:/reports" `
   -v "$HOME\media-hygiene\journal:/journal" `
   -v "$HOME\media-hygiene\quarantine:/quarantine" `
-  cavo789/media-hygiene --locale fr undo 20261025-085022
+  cavo789/media-hygiene --locale fr undo 20261107-101950
+👉 Et maintenant : c'est bon ? Triez le reste avec le même plan :
+docker run --rm -it `
+  -v "C:\Photos:/data/c/Photos" `
+  -v "D:\Ancien disque:/data/d/Ancien disque" `
+  -v "$HOME\media-hygiene\config:/config" `
+  -v "media-hygiene-cache:/cache" `
+  -v "$HOME\media-hygiene\reports:/reports" `
+  -v "$HOME\media-hygiene\journal:/journal" `
+  -v "$HOME\media-hygiene\quarantine:/quarantine" `
+  cavo789/media-hygiene --locale fr sort
 ```
 
 La preuve est écrite dans `/reports/<passage>-sort/manifest.json`.
@@ -196,15 +217,17 @@ reviennent, les dossiers supprimés reviennent, les dossiers créés par le tri 
 
 <!-- capture: undo-sort.txt -->
 ```text
-──────────────── Annulation de l'exécution sort 20261025-085022 ────────────────
+👁 Toute une exécution : 'undo --pick' montre les photos et n'en remet que
+quelques-unes.
+──────────────── Annulation de l'exécution sort 20261107-101950 ────────────────
 🛟 Chaque fichier revient où il était, jamais par-dessus un autre ; ce qui ne
 peut pas revenir intact est laissé tel quel, et signalé.
 
 Annulation de l'exécution sort
-20261025-085022
+20261107-101950
 ┌───────────────────────────┬────────┐
-│ Fichiers traités          │      8 │
-│ Taille                    │ 6,6 Mo │
+│ Fichiers traités          │      3 │
+│ Taille                    │ 3,0 Mo │
 │ Ignorés (laissés intacts) │      0 │
 │ En échec                  │      0 │
 │ Durée                     │    0 s │

@@ -4208,6 +4208,14 @@ msgstr ""
 msgid "Its share of the sharpest shot's sharpness; its own score: {score}"
 msgstr ""
 
+#, python-brace-format
+msgid "Its sidecar names {name}, set by another application: kept."
+msgstr ""
+
+#, python-brace-format
+msgid "Its sidecar names: {name}"
+msgstr ""
+
 msgid ""
 "Its window was closed (or Ctrl+C was pressed in it). You can close this "
 "tab. To open it again: type mh in PowerShell, or double-click the Desktop"
@@ -4336,9 +4344,15 @@ msgid ""
 "side."
 msgstr ""
 
+msgid "Landmark"
+msgstr ""
+
 msgid ""
 "Landmark, town and regions, for the photos with a GPS position: offline, "
 "nothing leaves this PC. Then a search finds them."
+msgstr ""
+
+msgid "Landmarks within 500 m, nearest first"
 msgstr ""
 
 msgid "Language"
@@ -5539,6 +5553,15 @@ msgid "No journal mount: there is nothing to undo."
 msgstr ""
 
 msgid "No journal mount: without a journal, 'undo' would be impossible."
+msgstr ""
+
+msgid "No landmark in its sidecar now."
+msgstr ""
+
+msgid "No landmark named yet."
+msgstr ""
+
+msgid "No landmark within 500 m: type its name."
 msgstr ""
 
 msgid "No local vision model is set: no photo was sent, nothing changed."
@@ -8362,6 +8385,9 @@ msgid ""
 "browser; 'clean --decisions' then moves them."
 msgstr ""
 
+msgid "Set by another application: kept."
+msgstr ""
+
 msgid "Set everything aside but these"
 msgstr ""
 
@@ -9692,6 +9718,9 @@ msgstr ""
 msgid ""
 "The kept version lies in a protected folder: it is never moved, X is not "
 "possible."
+msgstr ""
+
+msgid "The landmark this photo shows"
 msgstr ""
 
 msgid "The largest clusters without a name"
@@ -11644,6 +11673,9 @@ msgid ""
 "runs apply it"
 msgstr ""
 
+msgid "Write this name"
+msgstr ""
+
 msgid ""
 "Write this period down as a date rule of config.toml, after seeing the "
 "photos it would take and where each one would go"
@@ -11664,8 +11696,16 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Written into its .xmp sidecar, never into the photo; journaled: 'mh undo'"
+" takes it back. A wrong name is never proposed again."
+msgstr ""
+
+msgid ""
 "Written into their .xmp sidecars, never into the photos; journaled: 'mh "
 "undo' takes it back. A photo with its own date stays as it is."
+msgstr ""
+
+msgid "Wrong name"
 msgstr ""
 
 msgid "Year"
@@ -13104,6 +13144,9 @@ msgid "name of a removed copy"
 msgstr ""
 
 msgid "name the groups of faces in your browser, with 'people'."
+msgstr ""
+
+msgid "name the landmark it shows, or say the name is wrong"
 msgstr ""
 
 msgid "names are kept in config.toml: mount a folder of yours on /config"
@@ -17189,6 +17232,10 @@ msgid "📍 The GPS positions were kept, as asked."
 msgstr ""
 
 msgid "📍 The GPS positions were removed: --keep-gps keeps them."
+msgstr ""
+
+#, python-brace-format
+msgid "📍 {name}, read back from its sidecar."
 msgstr ""
 
 #, python-brace-format
