@@ -258,7 +258,8 @@ def test_the_label_is_the_user_s_place_else_the_town(runtime: Runtime) -> None:
         ]
         plain = spot_labels(connection, keys, SpotNames())
         assert plain[keys[1]] == ("Colmar", "")
-        assert plain[keys[0]][0].startswith("Tour Eiffel · ")
+        assert "Tour Eiffel" not in plain[keys[0]][0]  # the chip shows it, not the line
+        assert plain[keys[0]][0]  # the town stays
         assert plain[keys[0]][1] == "Tour Eiffel"  # the tile's 📍 chip (0651)
         renamed = spot_labels(connection, keys, SpotNames(renames={"Colmar": "Kolmar"}))
         assert renamed[keys[1]][0] == "Kolmar"
