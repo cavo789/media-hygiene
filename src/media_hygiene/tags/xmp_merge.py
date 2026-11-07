@@ -171,19 +171,23 @@ def _set_caption(doc: XmpDoc, sentence: str) -> None:
     ET.SubElement(home, _MH_CAPTION).text = sentence
 
 
-def take_back_subject(doc: XmpDoc, word: str) -> bool:
-    """Take a word we wrote out of a sidecar (0546); another application's stays.
+def take_back_subject(doc: XmpDoc, words: tuple[str, ...], instead: str = "") -> bool:
+    """Take words we wrote out of a sidecar (0546); another application's stay.
 
     Args:
         doc: The sidecar, changed in place.
-        word: The word, any case.
+        words: The words, any case.
+        instead: The tag they mean, written in their place (a merge, 0622).
 
     Returns:
-        True when the sidecar held it as ours.
+        True when the sidecar held one of them as ours.
     """
+    folded = {word.casefold() for word in words}
     ours = items(doc.find(_MH_SUBJECTS))
-    kept = [value for value in ours if value.casefold() != word.casefold()]
+    kept = [value for value in ours if value.casefold() not in folded]
     if len(kept) == len(ours):
         return False
+    if instead and instead.casefold() not in {value.casefold() for value in kept}:
+        kept.append(instead)
     merge_tracked(doc, _SUBJECTS, kept)
     return True

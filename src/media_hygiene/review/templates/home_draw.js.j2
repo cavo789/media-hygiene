@@ -27,8 +27,8 @@ function actionButton(action, st) {
   const glyph = st.planned ? "info" : action.fields.length ? "edit" : action.kind === "page" ? "external" : "play";
   const final = action.risk === "final" && !off;
   const cls = st.proposed ? (final ? "btn btn-danger" : "btn btn-primary") : final ? "btn btn-danger-ghost" : "btn";
-  const inPage = { audit: "audit-here", tags: "tags-here", people: "people-here" }[action.name];
-  const here = inPage && P[action.name] !== "" && !off && !REMOTE ? `<button class="btn btn-ghost btn-sm" type="button" data-act="${inPage}">${esc(T.inThisPage)}</button>` : "";
+  const inPage = { audit: "audit-here", tags: "tags-here", people: "people-here", spots: "spots-here" }[action.name];
+  const here = inPage && P[action.name] !== "" && !off && !REMOTE ? `<button class="btn btn-ghost btn-sm" type="button" data-act="${inPage}">${esc(action.name === "spots" ? T.spotsHere : T.inThisPage)}</button>` : "";
   return `<button class="${cls}" type="button" data-run="${esc(action.name)}"${off ? ' aria-disabled="true"' : ""}>${icon(glyph)} ${esc(verbOf(action, st))}</button>${here}`;
 }
 

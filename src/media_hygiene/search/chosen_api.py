@@ -25,8 +25,8 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from media_hygiene.report.chosen_decisions import ChosenFile
-    from media_hygiene.search.album_filter import AlbumNarrow
     from media_hygiene.search.chosen import ChosenStore
+    from media_hygiene.search.found_narrow import FoundNarrow
     from media_hygiene.search.fts import SearchIndex
     from media_hygiene.search.query import SearchQuery
 
@@ -52,7 +52,7 @@ class ChosenDesk:
     store: ChosenStore
     index: SearchIndex
     ready: Callable[[], None]  # raises when the reports folder cannot keep them
-    albums: AlbumNarrow | None = None  # the album filter of the page (0602)
+    narrowing: FoundNarrow  # the album and place filters of the page (0602, 0642)
 
     def paths(self) -> frozenset[str]:
         """The host paths of the files set aside, to mark them on the page.
@@ -124,7 +124,7 @@ class ChosenDesk:
             return chosen_unsaved(exc)
 
     def _found(self, search: SearchAsked) -> SearchQuery:
-        """The search "all" re-runs: the page's filters, the album's included (0602).
+        """The search "all" re-runs: the page's filters, album and place too (0642).
 
         Args:
             search: The search the page sent.
@@ -133,7 +133,7 @@ class ChosenDesk:
             It, narrowed.
         """
         query = self.narrow(read_query(self.index, search.query()), search.aside)
-        return query if self.albums is None else self.albums.query(query, search.album)
+        return self.narrowing.query(query, search)
 
     def _said(self, files: tuple[ChosenFile, ...]) -> Response:
         """Say how many files are set aside, where, and what moves them.

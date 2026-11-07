@@ -1,0 +1,13 @@
+{# What replaces a report's own frame when the home page's server serves it (review/report_shell.py,
+   0639): the real frame, the report's own pages and its date in a line under the top bar, the way back. #}
+{% include "shell.html.j2" %}
+{% if own or when %}
+<style>
+  .mh-rown { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; padding: 6px 16px; border-bottom: 1px solid var(--mk-border); }
+  .mh-rown ul { display: flex; flex-wrap: wrap; gap: 4px 14px; list-style: none; margin: 0; padding: 0; }
+  .mh-rown a[aria-current="page"] { font-weight: 700; color: var(--mk-ink); text-decoration: none; }
+  .mh-rown .mh-crumb { color: var(--mk-ink-soft); }
+</style>
+<nav class="mh-rown" aria-label="{{ _('This report') }}">{{ own }}{{ when }}</nav>
+{% endif %}
+{% include "home_link.html.j2" %}

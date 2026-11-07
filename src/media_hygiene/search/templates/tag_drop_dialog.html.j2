@@ -8,20 +8,25 @@
   #dropThumbs { display: flex; flex-wrap: wrap; gap: 4px; }
   #dropThumbs img { width: 80px; height: 80px; object-fit: cover; border-radius: 4px; }
   #dropSaid.error { color: var(--bad); }
-  #dropWords { margin: 4px 0; padding: 0; list-style: none; }
-  #dropWords li { display: flex; justify-content: space-between; gap: 6px; margin: 2px 0; }
+  #dropWords, #dropFrequent { margin: 4px 0; padding: 0; list-style: none; }
+  #dropWords li, #dropFrequent li { display: flex; justify-content: space-between; gap: 6px; margin: 2px 0; }
 </style>
 <dialog id="dropDlg" aria-labelledby="dropTitle"
         data-count="{{ _('Photos carrying this tag: {n}. The first ones:') }}"
         data-go="{{ _('Drop it from these photos ({n})') }}"
         data-title="{{ _('I do not need the tag {word}') }}"
         data-given="{{ _('Not saved: {error}') }}"
-        data-restore="{{ _('Restore') }}">
+        data-restore="{{ _('Restore') }}"
+        data-merge="{{ _('Merge into…') }}"
+        data-merge-title="{{ _('Merge the tag {word} into another tag') }}"
+        data-merge-go="{{ _('Merge on these photos ({n})') }}">
   <form id="dropForm" method="dialog">
     <h2 id="dropTitle"></h2>
     <p id="dropCount" class="muted"></p>
     <div id="dropThumbs"></div>
-    <p class="muted">{{ _("It leaves every photo and its .xmp sidecar, and goes into the stop words, so 'tags' does not bring it back. The model's sentences, and what you typed by hand, stay. You can restore it from Dropped tags, in the left column.") }}</p>
+    <p id="dropInto" hidden><label>{{ _("The tag it means:") }} <input id="dropTarget" type="text" maxlength="80" autocomplete="off"></label><br>
+      <span class="muted">{{ _("On every photo and its .xmp sidecar the word becomes this tag, and 'tags' names it so from now on. You can restore it from Dropped tags, in the left column.") }}</span></p>
+    <p id="dropWhat" class="muted">{{ _("It leaves every photo and its .xmp sidecar, and goes into the stop words, so 'tags' does not bring it back. The model's sentences, and what you typed by hand, stay. You can restore it from Dropped tags, in the left column.") }}</p>
     <p id="dropSaid" class="muted" role="status"></p>
     <menu><button type="button" id="dropNo" class="plain">{{ _("Cancel") }}</button><button type="submit" id="dropGo" class="danger"></button></menu>
   </form>

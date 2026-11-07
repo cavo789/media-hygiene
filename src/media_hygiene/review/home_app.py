@@ -28,6 +28,7 @@ from typing import TYPE_CHECKING, Final, override
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 from media_hygiene.i18n import _
+from media_hygiene.i18n.live import page_of
 from media_hygiene.review.home_favourites_api import favourites_response
 from media_hygiene.review.home_more_api import HomeMore, more_response
 from media_hygiene.review.home_step import StepDoor, step_response
@@ -37,7 +38,7 @@ from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.inline_step import InlineRunner, inline_response
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH, LocalApp
 from media_hygiene.review.presence import PRESENCE_PATH, presence_response
-from media_hygiene.review.report_files import report_response
+from media_hygiene.review.report_shell import shelled_report
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.step_watch import STEP_PATH, step_state
 
@@ -78,7 +79,7 @@ class _AuditAsked(BaseModel):
 class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
     """Answers the browser; the state is read again from the tool folders each time."""
 
-    page: bytes
+    page: bytes | Callable[[], bytes]  # `PerLocale`: follows the language (0644)
     state: Callable[[], HomeState]
     reports_dir: Path
     ending: Ending
@@ -155,9 +156,9 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
             The response; 404 for any other path.
         """
         if path == PAGE_PATH:
-            return Response(HTTPStatus.OK, self.page, ContentType.HTML)
+            return Response(HTTPStatus.OK, page_of(self.page), ContentType.HTML)
         if path.startswith(REPORTS_PREFIX):
-            return await report_response(self.reports_dir, path)
+            return await shelled_report(self.reports_dir, path)
         if path in self.runs:
             return tags_state(self.runs[path])
         if path == STEP_PATH:

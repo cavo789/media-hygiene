@@ -12,6 +12,12 @@
   <p class="muted">{{ _("Moved at once, journaled: 'undo' puts them back. The other events are left for later.") }}</p>
   <menu><button type="button" id="goNo" class="plain">{{ _("Cancel") }}</button><button type="button" id="goYes"></button></menu>
 </dialog>
+<dialog id="trialDlg" aria-labelledby="trialAsk">
+  <p id="trialAsk"></p>
+  <ul id="trialGoes"></ul>
+  <p id="trialNote" class="muted"></p>
+  <menu><button type="button" id="trialNo" class="plain">{{ _("Cancel") }}</button><button type="button" id="trialYes"></button></menu>
+</dialog>
 <dialog id="rulesDlg" aria-labelledby="rulesTitle">
   <h2 id="rulesTitle">📌 {{ _("Your rules") }}</h2>
   <p id="rulesRun" class="muted"></p>

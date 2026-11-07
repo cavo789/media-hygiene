@@ -161,7 +161,7 @@ def _meaningful(labels: Iterable[str], context: TagContext) -> tuple[str, ...]:
     """
     words = (word.strip("-") for label in labels for word in _SEPARATORS.split(label))
     return tuple(
-        word
+        context.words.named(word)
         for word in words
         if context.words.keeps(word)
         and word.casefold() not in _MONTH_WORDS

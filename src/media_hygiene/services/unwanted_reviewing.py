@@ -25,12 +25,12 @@ from media_hygiene.review.unwanted_app import (
     JUNK_FILE_PATH,
     UnwantedApp,
 )
-from media_hygiene.review.unwanted_file import UnwantedPages
+from media_hygiene.review.unwanted_file import UnwantedPages, with_decided
 from media_hygiene.review.unwanted_session import UnwantedSession
 from media_hygiene.review.unwanted_views import UnwantedStateBuilder
-from media_hygiene.services.policy import keep_policy
 from media_hygiene.services.review_file import first_save, resume_decisions
 from media_hygiene.services.review_serving import ReviewPage, serve_review_page
+from media_hygiene.services.unwanted_resume import decided_earlier, never_listed
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -91,17 +91,11 @@ def audit_unwanted(
         The photos, the reason with the most photos first.
     """
     similar = findings.similar
-    policy = keep_policy(runtime.settings, runtime.mapper)
-    groups = (*similar.near, *similar.videos)
-    excluded = {file.path for series in similar.bursts for file in series.shots}
-    excluded |= {
-        file.path
-        for group in groups
-        for file in (group.keeper, *group.removable, *group.protected)
-    }
-    excluded |= {file.path for file in similar.images if policy.is_protected(file)}
     source = UnwantedSource(
-        similar.images, similar.visuals, similar.metadata, frozenset(excluded)
+        similar.images,
+        similar.visuals,
+        similar.metadata,
+        never_listed(runtime, findings),
     )
 
     def screenshot(file: MediaFile) -> bool:
@@ -138,7 +132,8 @@ def open_unwanted_review(
         target: The decisions file, in the container.
 
     Returns:
-        The session, saved once: decisions about photos no longer listed are dropped.
+        The session, saved once: a photo decided stays listed even when its reason
+        was turned off; decisions about photos changed or gone are dropped.
 
     Raises:
         DecisionsError: The file is not a decisions file, was made on other
@@ -148,8 +143,10 @@ def open_unwanted_review(
     builder = UnwantedStateBuilder(mapper, findings.similar.visuals)
     place = decisions_place(mapper, runtime.locations.reports_dir, target)
     base = resume_decisions(runtime, findings, target)
+    earlier = decided_earlier(runtime, findings, base)
+    every_earlier = dict.fromkeys(range(len(earlier)), True)
     pages = UnwantedPages(
-        audit_unwanted(runtime, findings),
+        with_decided(audit_unwanted(runtime, findings), earlier, every_earlier),
         builder,
         target,
         place,

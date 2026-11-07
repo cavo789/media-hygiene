@@ -5,45 +5,42 @@ from __future__ import annotations
 import tomllib
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.config.face_refs import split_key
 from media_hygiene.config.people_files import ENCODING, FACES, REJECTED
 from media_hygiene.i18n import ngettext
+from media_hygiene.services.face_refs_audit import checked_path
 
 if TYPE_CHECKING:
-    import sqlite3
     from collections.abc import Sequence
     from pathlib import Path
 
-    from media_hygiene.services.face_refs_audit import FaceTally
+    from media_hygiene.services.face_refs_audit import FaceSources, FaceTally
     from media_hygiene.services.runtime import Runtime
 
-# Named photos to read whole before the first audit after 0570 says so: about 50 photos
-# of 5 MB on a USB disk read in a few seconds (estimated); more is a wait worth a line.
+# Named photos to read whole before the audit says so: about 50 photos of 5 MB on a USB
+# disk read in a few seconds (estimated); more is a wait worth a line.
 READ_ONCE_SAID: Final = 50
-_DIGEST: Final = "SELECT full_digest FROM files WHERE path = ?"
 
 
-def unread_named(files: Sequence[Path], connection: sqlite3.Connection) -> int:
-    """Count the photos of old-form faces (before 0570) the index has no digest of.
+def photos_to_read(files: Sequence[Path], sources: FaceSources) -> int:
+    """Count the named photos the audit will really read whole (0635).
 
     Args:
         files: The people's files.
-        connection: The index.
+        sources: The ids found, the mapping, the index's digests.
 
     Returns:
-        How many distinct photos the audit will read whole once.
+        How many distinct photos `rewrite_file` will read.
     """
-    paths: set[str] = set()
+    paths: set[Path] = set()
     for file in files:
         loaded = tomllib.loads(file.read_text(ENCODING))
         for key in (FACES, REJECTED):
             value = loaded.get(key, [])
             for entry in value if isinstance(value, list) else []:
-                parts = None if isinstance(entry, dict) else split_key(str(entry))
-                if parts is not None:
-                    paths.add(parts[0])
-    rows = (connection.execute(_DIGEST, (path,)).fetchone() for path in paths)
-    return sum(1 for row in rows if not (row and row[0]))
+                path = checked_path(entry, sources)
+                if path is not None:
+                    paths.add(path)
+    return sum(1 for path in paths if sources.reader.needs_reading(path))
 
 
 def say_reading(runtime: Runtime, count: int) -> None:
@@ -51,7 +48,7 @@ def say_reading(runtime: Runtime, count: int) -> None:
 
     Args:
         runtime: Settings, mount points and output.
-        count: From `unread_named`; nothing said up to `READ_ONCE_SAID`.
+        count: From `photos_to_read`; nothing said up to `READ_ONCE_SAID`.
     """
     if count <= READ_ONCE_SAID:
         return

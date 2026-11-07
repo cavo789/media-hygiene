@@ -84,14 +84,4 @@ def _vision(runtime: Runtime) -> None:
     )
     with user_errors(output), RichProgress(output.console) as progress:
         picks = pick_landmarks(runtime, progress)
-    output.success(
-        _(
-            "🤖 {asked} photos shown to the model: {picked} landmarks picked, "
-            "{none} showing none, {unclear} unclear (left as they were)."
-        ).format(
-            asked=picks.asked,
-            picked=picks.picked,
-            none=picks.none,
-            unclear=picks.unclear,
-        )
-    )
+    output.success(picks.said())

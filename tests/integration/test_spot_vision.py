@@ -3,29 +3,38 @@
 from __future__ import annotations
 
 import sqlite3
+import time
 from contextlib import closing
+from pathlib import Path
 from typing import TYPE_CHECKING, Final
 
 import pytest
 from PIL import Image
 
 from media_hygiene.classify.ai.landmark_prompt import read_landmark
+from media_hygiene.cli.home_spots import page_spots
 from media_hygiene.errors import AiError
 from media_hygiene.geo.distance import Point
 from media_hygiene.geo.landmarks import shared_landmarks
+from media_hygiene.index.descriptions import PhotoVersion
 from media_hygiene.index.schema import prepare
+from media_hygiene.review.home_tags_api import SPOTS_PATH
+from media_hygiene.search.chosen import Selection
 from media_hygiene.search.fts import SearchIndex
 from media_hygiene.search.query import SearchQuery, parse_terms
 from media_hygiene.services import spot_fill
+from media_hygiene.services.chosen_place import chosen_store
+from media_hygiene.services.home import home_page
+from media_hygiene.services.home_tags import HomeTags
+from media_hygiene.services.home_tags_models import TagFigures, TagsPhase
 from media_hygiene.services.spot_fill import fill_spots
 from media_hygiene.services.spot_vision import pick_landmarks
+from media_hygiene.services.spot_vision_work import landmark_work
 from tests.support.cli import run
 from tests.support.runtime import make_locations, make_runtime
 from tests.support.tagging import write_tags_config
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from typer.testing import CliRunner
 
     from media_hygiene.paths.locations import Locations
@@ -205,3 +214,100 @@ def test_the_command_says_how_it_went(
     result = run(cli, "spots", "--vision")
     assert result.exit_code == 0, result.output
     assert "shown to the model" in result.output
+
+
+def _wait(run: HomeTags) -> None:
+    """Wait for the half running to end, as the page polls."""
+    while run.state().phase in {TagsPhase.PREPARING, TagsPhase.RUNNING}:
+        time.sleep(0.01)
+
+
+def _prepared(run: HomeTags) -> TagFigures:
+    """Prepare, and give the figures the page asks with."""
+    assert run.prepare()
+    _wait(run)
+    figures = run.state().figures
+    assert figures is not None, run.state().error
+    return figures
+
+
+def test_the_home_page_shows_the_photos_before_any_is_sent(
+    tmp_path: Path, fake: FakeOllama
+) -> None:
+    """0641: figures and thumbnails first, no request; a video is not listed."""
+    runtime = _runtime(tmp_path, fake.url)
+    _photos(runtime, tmp_path, tower=_EIFFEL, sea=_SEA)
+    figures = _prepared(HomeTags(page_spots(runtime)))
+    assert figures.to_describe == 1
+    assert figures.model == "vision-model"
+    assert figures.photos[0].thumb.endswith(".jpg")
+    assert "tower.jpg" in figures.photos[0].title
+    assert _second() in figures.photos[0].title
+    assert fake.described() == 0
+
+
+def test_the_page_says_what_lacks_without_a_model(tmp_path: Path) -> None:
+    """No model: the photos are still shown; asking fails in one line, nothing sent."""
+    runtime = _runtime(tmp_path, "http://127.0.0.1:9", model="")
+    _photos(runtime, tmp_path, tower=_EIFFEL)
+    run = HomeTags(page_spots(runtime))
+    assert _prepared(run).model == ""
+    assert len(_prepared(run).photos) == 1
+    assert run.describe(None)
+    _wait(run)
+    assert run.state().phase is TagsPhase.FAILED
+    assert "vision model" in (run.state().error or "")
+
+
+def test_a_stop_keeps_what_was_picked_and_the_next_run_goes_on(
+    tmp_path: Path, fake: FakeOllama
+) -> None:
+    """0641: stopped after one photo: its pick is in the index, the other is left."""
+    fake.answer = lambda _body: {"choice": 2}
+    runtime = _runtime(tmp_path, fake.url)
+    _photos(runtime, tmp_path, one=_EIFFEL, two=_EIFFEL)
+    asked: list[int] = []
+
+    def after_one() -> bool:
+        asked.append(1)
+        return len(asked) > 1
+
+    first = pick_landmarks(runtime, _Sink(), after_one)
+    assert first.asked == 1
+    assert _row(runtime, tmp_path, "one") == (_second(), "vision")
+    assert _row(runtime, tmp_path, "two")[1] != "vision"
+    run = HomeTags(page_spots(runtime))
+    assert _prepared(run).to_describe == 1
+    assert run.describe(None)
+    _wait(run)
+    assert run.state().phase is TagsPhase.DONE, run.state().error
+    assert "1 photos shown" in run.state().lines[0]
+    assert _row(runtime, tmp_path, "two") == (_second(), "vision")
+
+
+def test_a_file_set_aside_or_a_video_is_never_asked_about(
+    tmp_path: Path, fake: FakeOllama
+) -> None:
+    """A video has no picture to send; a file set aside counts as gone."""
+    runtime = _runtime(tmp_path, fake.url)
+    _photos(runtime, tmp_path, kept=_EIFFEL, aside=_EIFFEL)
+    assert runtime.index_file is not None
+    with closing(sqlite3.connect(runtime.index_file)) as connection:
+        connection.execute(_INSERT, (str(tmp_path / "clip.mp4"), *_EIFFEL))
+        connection.commit()
+        fill_spots(runtime, connection, _Sink())
+        aside = PhotoVersion(tmp_path / "aside.jpg", 1, 1)
+        chosen_store(runtime).add(Selection((aside,)))
+        work = landmark_work(runtime, connection)
+    assert [Path(photo.path).name for photo, _names in work] == ["kept.jpg"]
+
+
+def test_the_home_page_offers_it_flagged_on_the_pc_only() -> None:
+    """The dialog, the 🤖 button and the card; a phone gets no path to run it."""
+    page = home_page(runs=frozenset({SPOTS_PATH})).decode()
+    assert 'id="spotsDlg"' in page
+    assert SPOTS_PATH in page
+    assert "🤖" in page
+    assert "spots-here" in page
+    assert "window.mhAiCard" in page
+    assert SPOTS_PATH not in home_page(remote=True).decode()

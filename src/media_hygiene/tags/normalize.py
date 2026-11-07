@@ -32,6 +32,7 @@ class WordRules:
 
     language: Locale
     stop_words: frozenset[str]
+    synonyms: tuple[tuple[str, str], ...] = ()  # folded word, the tag it means (0622)
 
     @classmethod
     def of(cls, settings: TagSettings, interface: Locale) -> WordRules:
@@ -47,7 +48,20 @@ class WordRules:
         return cls(
             settings.language_of(interface),
             frozenset(word.casefold() for word in settings.stop_words),
+            tuple((k.casefold(), v) for k, v in settings.synonyms.items()),
         )
+
+    def named(self, word: str) -> str:
+        """The tag a word means: itself, or the tag a synonym was merged into.
+
+        Args:
+            word: A tag or a word of a folder name.
+
+        Returns:
+            The tag.
+        """
+        folded = word.casefold()
+        return next((tag for each, tag in self.synonyms if each == folded), word)
 
     def keeps(self, word: str) -> bool:
         """Tell whether a word says something.
@@ -75,7 +89,7 @@ def normalize(words: Iterable[str], rules: WordRules) -> tuple[str, ...]:
     """
     found: dict[str, None] = {}
     for word in words:
-        tag = clean(word, rules)
+        tag = rules.named(clean(word, rules))
         if rules.keeps(tag):
             found.setdefault(tag)
     return tuple(found)

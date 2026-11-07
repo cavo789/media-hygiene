@@ -41,6 +41,7 @@ class Term:
     source: TagSource | None = None
     prefix: bool = False
     phrase: bool = False
+    captionless: bool = False  # a dropped tag: never found through the model's sentence
 
 
 class Order(StrEnum):
@@ -165,4 +166,6 @@ def term_expression(term: Term) -> str:
         for form in dict.fromkeys(forms)
     ]
     inner = quoted[0] if len(quoted) == 1 else f"({_OR.join(quoted)})"
+    if term.captionless and term.source is None:
+        return f"- {TagSource.CAPTION.value} : {inner}"
     return inner if term.source is None else f"{term.source.value} : {inner}"

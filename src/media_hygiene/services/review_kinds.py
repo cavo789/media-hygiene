@@ -109,9 +109,10 @@ def _junk(runtime: Runtime, findings: AuditFindings, target: Path) -> ReviewPage
         target: The decisions file.
 
     Returns:
-        Its page; None when no photo looks unwanted.
+        Its page, even with nothing listed: its sliders widen the search (0637);
+        None without a photo to judge.
     """
-    if not unwanted_reviewing.audit_unwanted(runtime, findings):
+    if not findings.similar.images:
         return None
     session = unwanted_reviewing.open_unwanted_review(runtime, findings, target)
     offer = ApplyOffer(None, lambda: session.decided[1] > 0)  # set aside only

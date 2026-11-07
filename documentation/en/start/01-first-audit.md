@@ -111,6 +111,7 @@ Each step shows one line of progress and, below it in grey, what it really does:
 | Fingerprinting videos | Once per video, kept in the cache: decodes a few frames and fingerprints them, to find [re-encoded copies](../clean/11-near-duplicates.md#videos-too-re-encoded-copies). |
 | Comparing files of equal size | Two files can only be identical if they have the same size. For those, reads their first and last 64 KB: quick, and it rules most of them out. |
 | Proving identity (full SHA-256) | Reads the remaining candidates in full and computes their SHA-256 fingerprint: same fingerprint, same content, byte for byte. The longest step with large videos. |
+| Identifying the remaining files (full SHA-256), once | Reads in full the photos and videos not read yet, and keeps their fingerprint in the cache: tagging or placing them later is immediate. Once per file: stop when you like, what is read is kept. Reading a library's videos takes minutes on a local disk, far longer on a NAS (about 15 MB/s through Docker Desktop). |
 
 ### How long the first audit takes
 

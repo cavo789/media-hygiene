@@ -1,0 +1,61 @@
+{# The 🤖 local AI card (0608, 0645): one template for every page that uses the local vision
+   model (the tags dialog of the home page; the vision pick of landmarks and the subject rules
+   include it when they get a page). `GET /api/ai-state`: `[classify.ai] url` and `model` read
+   from config.toml, and whether the server at `url` answers, with its models; a model chosen
+   (none = off: no photo ever leaves) is saved, then drawn as read back from the disk.
+   PC only: nothing is drawn off the loopback. `window.mhAiCard(box)` fills `box`; `mh-ai-saved` fires on it once a choice is read back. #}
+<script>
+window.mhAiCard = (box) => {
+  if (!["127.0.0.1", "localhost", "[::1]"].includes(location.hostname)) return;
+  const PATH = "/api/ai-state";
+  const AI = {
+    title: {{ _("🤖 Local AI") | tojson }},
+    found: {{ _("Found at {url}: {n} models installed.") | tojson }},
+    absent: {{ _("Nothing answers at {url}. Start Ollama there, or change [classify.ai] url.") | tojson }},
+    off: {{ _("Off: no photo is ever sent to a model.") | tojson }},
+    model: {{ _("Model that looks at the photos") | tojson }},
+    none: {{ _("None (off)") | tojson }},
+    saved: {{ _("Saved in config.toml, read back from the disk: {model}.") | tojson }},
+    savedOff: {{ _("Saved in config.toml, read back from the disk: off.") | tojson }},
+    failed: {{ _("The settings could not be saved in config.toml.") | tojson }},
+  };
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, key) => (key in values ? String(values[key]) : all));
+  const element = (tag, text) => { const one = document.createElement(tag); if (text) one.textContent = text; return one; };
+  box.className = "callout callout-info mh-ai-card";
+  const draw = (state, said) => {
+    const names = state.models.includes(state.model) || !state.model ? state.models : [state.model, ...state.models];
+    const select = element("select");
+    select.id = "aiModel";
+    for (const [value, text] of [["", AI.none], ...names.map((name) => [name, name])]) {
+      const option = element("option", text);
+      option.value = value;
+      option.selected = value === state.model;
+      select.append(option);
+    }
+    const line = state.found ? fill(AI.found, { url: state.url, n: state.models.length }) : fill(AI.absent, { url: state.url });
+    const label = element("label", AI.model + " ");
+    label.append(select);
+    const status = element("span", said || "");
+    status.setAttribute("role", "status");
+    const body = element("span");
+    body.append(element("strong", AI.title), " " + line + (state.model ? "" : " " + AI.off), element("br"), label, " ", status);
+    box.replaceChildren(body);
+    select.addEventListener("change", () => {
+      select.disabled = true;
+      fetch(PATH, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ model: select.value }) })
+        .then((response) => response.json().then((reply) => ({ ok: response.ok, reply })))
+        .then((result) => {
+          if (!result.ok) { status.textContent = result.reply.error || AI.failed; select.disabled = false; return; }
+          read((now) => (now.model ? fill(AI.saved, { model: now.model }) : AI.savedOff))  // read back from the disk
+            .then(() => box.dispatchEvent(new CustomEvent("mh-ai-saved")));
+        })
+        .catch(() => { status.textContent = AI.failed; select.disabled = false; });
+    });
+  };
+  const read = (said) => fetch(PATH, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : null))
+    .then((state) => { if (state) draw(state, said ? said(state) : ""); })
+    .catch(() => {});
+  read(null);
+};
+</script>

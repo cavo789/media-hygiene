@@ -172,7 +172,7 @@ as a table.
 
 ## The events of the latest classify
 
-The **Group the photos into more or fewer events** section of that tab (PC only) sets `merge_gap_hours`, `min_event_size` and `trip_min_km` of `[classify]`: saved in `config.toml`, shown as read back from the disk, applied by the next [`classify`](classify.md) (the list does not change before).
+The **Group the photos into more or fewer events** section of that tab (PC only) sets `merge_gap_hours`, `min_event_size` and `trip_min_km` of `[classify]`: saved in `config.toml`, shown as read back from the disk, applied by the next [`classify`](classify.md) (the list does not change before). **See the events first** shows, before anything is saved, how the dated photos of the index would group with the values typed: the number of events now and then, and the events that merge, split, appear or stop being events (the trip distance is not previewed).
 
 The **🗂 Events** tab, on top of the left column next to **🔎 Photos**, needs no
 [`classify`](classify.md) run: it groups **the files not sorted yet** of the period of the
@@ -227,6 +227,14 @@ is less sure of stay where they are unless you choose a shape for them too. Save
 The **⋯** of a folder (📁 My folders) adds, beside its role, *Never sorted* (`[classify] leave`) and
 the name of the person whose photos it holds (`person_folders`): the folder's name must hold it.
 A folder left out, then renamed in Explorer, is listed as gone with *Remove*, in the dialog above.
+
+**🧪 Try on one month** (on top of the tab, when a [`classify`](classify.md) plan has files to
+move in several months and no run moved any yet): it says the latest month, how many files and
+to which folders, asks, then sorts only those, journaled. The grid then shows these photos in
+their new folders, each tile naming its folder. **↶ Undo** puts them back; **Sort the rest (N
+files)** moves the rest of the plan after one question: a fast path, those files are not shown
+first (the classify report shows them). The files set aside stay in place. Both buttons last as
+long as the page; later, `mh sort` does the rest and `undo` takes the trial back.
 
 ## Move photos to their month, without an event
 
@@ -415,13 +423,23 @@ in the stop words, still on 0 photos.*) and the cards lose the word where they a
   Only what this tool wrote is taken out: the same word written by another application stays, and
   a protected folder is never touched. Without a journal or on read-only folders, the next
   `xmp --apply` takes it out.
-- **What stays**: the model's sentence (a search in quotes can still find the photo through it),
-  a word you typed by hand, a name, a date, a place.
+- **What stays**: the model's sentence, shown under the photo (a search no longer finds the photo
+  through a dropped tag, not even in quotes), a word you typed by hand, a name, a date, a place.
 - **Restore**: **🚫 Dropped tags**, at the bottom of the left column, lists them; **Restore** takes
   the word out of the stop words. Its photos get it again at the next `tags`, without asking the
   model again (the answers are kept), and in their sidecars at the next `xmp --apply`.
 
-One tag at a time.
+**Several at once, or a synonym.** Open **🚫 Dropped tags**: it also lists the most frequent tags
+with their number of photos.
+
+- Tick the useless ones, then **Drop the ticked tags…**: the same dialog shows the photos and the
+  button states their count.
+- **Merge into…** next to a tag (`panneau` → `panneau de signalisation`): the dialog shows its
+  photos, you type the tag it means, and the word becomes that tag in the index and in the `.xmp`
+  sidecars. `[tags] synonyms` in `config.toml` keeps it so at the next `tags`; a merge is listed in
+  **🚫 Dropped tags**, and **Restore** takes it out. A word
+  cannot be merged into a stop word (a dropped or built-in tag): the page says so and nothing
+  changes.
 
 ## Photos without a date or a place
 
@@ -444,6 +462,7 @@ by its GPS (the circle or area drawn on [`places`](places.md)) or because you pu
 back and says how many it holds. A photo already there by its GPS is not written; a photo of another
 place leaves it; identical copies count as one photo, by their content. A new place is
 drawn on [`places`](places.md). A word like `place:Durbuy` follows at the next [`tags`](tags.md).
+With a place chosen, *Pick all N found* counts and takes the files the filter shows, never the others.
 
 Once the place is given, the dialog offers the other photos of the same day and folder, when
 some have no position and no place yet. **See them** shows them as tiles, all picked: take out the
@@ -467,8 +486,8 @@ click; the panel also offers **📺 Share on the TV** and **📨 Prepare for sen
 - **In one click**: on a card of the 🗂 *Events* tab, **📚 Make an album** makes an album of the
   event's files, under the name proposed from its place and day, read back and opened in a new
   tab. After a search, **📚 Make an album of these N results** does the same with every file
-  found, under the words typed (files set aside stay out; at most 3 000 at once, else narrow the
-  search; not offered when a filter narrows the tiles shown). A name already used adds to that
+  found, under the words typed, within the album and Place filters (files set aside stay out; at
+  most 3 000 at once, else narrow the search). A name already used adds to that
   album. With a [paired TV](slideshow.md), the card also has **📺 On the TV**.
 - **Where the album folders go** is on [the albums page](album.md#from-the-albums-page).
 - **Take out of the album** takes the picked photos out of the album typed; an album left empty

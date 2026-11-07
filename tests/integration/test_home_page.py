@@ -290,6 +290,7 @@ def test_the_page_its_state_and_the_reports_are_served(
     assert b"/api/step" in page.body
     assert served.json() == json.loads(state.model_dump_json())
     assert report.status == 200
+    assert b"mh-shell-side" in report.body  # in the home page's frame (0639)
     assert report.headers["content-type"].startswith("text/html")
     assert index.status == 200
     assert (outside.status, missing.status, nowhere.status) == (404, 404, 404)

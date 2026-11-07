@@ -6,7 +6,7 @@ from typing import Final
 
 from jinja2 import ChoiceLoader, Environment, PackageLoader, select_autoescape
 
-from media_hygiene.i18n import active
+from media_hygiene.i18n import _, ngettext
 from media_hygiene.theme import avatar_data_uri, theme_tokens
 
 # The fragments every local page includes (the "⌂ Home" link): found from any package.
@@ -40,9 +40,10 @@ def translated_environment(package: str, escaped: tuple[str, ...]) -> Environmen
     )
     environment.globals["theme_tokens"] = theme_tokens
     environment.globals["avatar_data_uri"] = avatar_data_uri
+    # The language of each render, not of the creation: a page drawn again after the
+    # language picked on a page (0644) follows it.
     # pylint: disable-next=no-member
-    environment.install_gettext_translations(  # type: ignore[attr-defined]
-        active(),
-        newstyle=True,
+    environment.install_gettext_callables(  # type: ignore[attr-defined]
+        _, ngettext, newstyle=True
     )
     return environment

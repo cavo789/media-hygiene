@@ -87,6 +87,11 @@ the source folders it will remove, then asks.
 - **One event at a time**: `--event` (or *Sort this event now* in
   [the 🗂 Events tab of `library`](library.md#the-events-of-the-latest-classify)) sorts one event; a later `sort` of the whole workbook skips
   its files, already moved. Each run has its own `undo`.
+- **A trial first**: the first `sort` of a plan, asked in a terminal, offers the latest month
+  with files to move first (*First sort: try on the latest month…?*); answer no and it asks for
+  the whole sort. `--yes`, `--event` and `--trial` do not ask. On the page, the **🗂 Events** tab of
+  [`library`](library.md#the-events-of-the-latest-classify) has **🧪 Try on one month**: the same
+  trial, then the photos in their new folders.
 - **A trial first**: `--trial latest` sorts only the latest month with photos (or
   `--trial 2024-05` one month, `--trial "C:\Photos\2019"` one folder). Look at the result;
   if it looks right, the same `sort` without `--trial` moves the rest with the same plan,

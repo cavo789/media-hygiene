@@ -107,6 +107,7 @@
       <p class="lan-note" id="lanLater" role="status"></p>
     </section>
     <div class="lan-switch">{% include "locale_picker.html.j2" %}</div>
+    {% include "ai_card.html.j2" %}
     <div class="signature">
       <img src="{{ paths.assets }}images/avatar.webp" alt="{{ texts.avatarAlt }}" width="236" height="320">
       <p class="sig-version" id="sigVersion"></p>
@@ -157,6 +158,7 @@
 <dialog id="tagsDlg" aria-labelledby="tagsTitle"></dialog>
 <dialog id="peopleDlg" aria-labelledby="peopleTitle"></dialog>
 <dialog id="meaningDlg" aria-labelledby="meaningTitle"></dialog>
+<dialog id="spotsDlg" aria-labelledby="spotsTitle"></dialog>
 <dialog id="stoppedDlg" class="stopped-dlg" aria-labelledby="stoppedTitle">
   <div class="dlg">
     <img src="{{ paths.assets }}images/meerkat-asleep.webp" alt="" width="400" height="387">

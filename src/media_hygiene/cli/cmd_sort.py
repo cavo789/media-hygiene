@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import sys
+from functools import partial
 from typing import TYPE_CHECKING, Annotated
 
 import typer
@@ -78,11 +79,13 @@ def sort_command(  # pylint: disable=too-many-arguments
         yes: `--yes`, skip the confirmation.
         keep_empty_folders: `--keep-empty-folders`, no folder is removed.
         event: `--event`, only the files of this event.
-        trial: `--trial`, only a sample: a month or a folder (0526).
+        trial: `--trial`, only a sample: a month or a folder (0526); without it, a
+            first sort offers the latest month first (0640).
 
     Raises:
         typer.Exit: The user declined.
     """
+    from media_hygiene.cli.sort_offer import offer_trial
     from media_hygiene.cli.sort_result import show_result
     from media_hygiene.console.progress import RichProgress
     from media_hygiene.console.sort_view import (
@@ -96,7 +99,7 @@ def sort_command(  # pylint: disable=too-many-arguments
     from media_hygiene.services.sort import SortService
     from media_hygiene.services.sort_event import only_event
     from media_hygiene.services.sort_inputs import find_workbook, load_inputs
-    from media_hygiene.services.sort_trial import only_trial
+    from media_hygiene.services.sort_trial import LATEST, only_trial
 
     runtime = runtime_of(ctx).with_overrides(folder_options.backup_layer(backup))
     output = runtime.output
@@ -123,7 +126,18 @@ def sort_command(  # pylint: disable=too-many-arguments
                 "is journaled: 'undo' puts everything back."
             )
         )
-        if not _confirm(runtime, prepared, yes=yes):
+        sample = (
+            None
+            if yes or trial or event
+            else offer_trial(
+                runtime,
+                prepared,
+                partial(service.prepare, keep_empty=keep_empty_folders),
+            )
+        )
+        if sample is not None:
+            prepared, trial = sample, LATEST
+        elif not _confirm(runtime, prepared, yes=yes):
             output.info(_("Nothing was changed."))
             raise typer.Exit(ExitCode.OK)
         with RichProgress(output.console) as progress, StopRequest() as stop:

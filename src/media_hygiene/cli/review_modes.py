@@ -150,7 +150,8 @@ def _run_junk(run: ReviewRun, findings: AuditFindings) -> None:
         findings: The audit just run.
     """
     runtime = run.runtime
-    if not unwanted_reviewing.audit_unwanted(runtime, findings):
+    # Nothing listed still opens: its sliders widen the search (0637).
+    if not findings.similar.images:
         runtime.output.success(_("No photo looks unwanted: nothing to review."))
         return
     session = unwanted_reviewing.open_unwanted_review(runtime, findings, run.target)

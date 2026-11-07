@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.console.formatting import separators
 from media_hygiene.i18n import _
+from media_hygiene.i18n.live import PerLocale
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.person.door import with_person
 from media_hygiene.review.ai_state_api import AI_STATE_PATH
@@ -123,7 +124,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
     presence = Presence(ending, STOPPED)
     relays = launcher_relays_steps()
     app = HomeApp(
-        home_page(relays_steps=relays, runs=frozenset(sources.runs)),
+        PerLocale(lambda: home_page(relays_steps=relays, runs=frozenset(sources.runs))),
         sources.state,
         runtime.locations.reports_dir,
         ending,

@@ -14,7 +14,6 @@ from typing import Final
 from media_hygiene.cli.menu_catalog import catalog
 from media_hygiene.constants import APP_NAME, Locale
 from media_hygiene.i18n import _, active_locale
-from media_hygiene.review.shell import Shell, ShellAsk, page_shell
 
 # Each kind of report, and the action of the catalog whose chapter explains it.
 REPORT_STEPS: Final = MappingProxyType(
@@ -65,7 +64,6 @@ class ReportHeader:
     twin_lang: str
     twin_label: str
     pages: tuple[ReportPage, ...] = ()
-    shell: Shell | None = None  # the home page's spaces, shown only when served (http)
     version: str = ""
 
 
@@ -113,6 +111,5 @@ def report_header(kind: str, *, near: bool = False) -> ReportHeader:
         twin_lang=twin.value,
         twin_label=_TWIN_LABELS[twin],
         pages=report_pages(kind, near=near),
-        shell=page_shell(ShellAsk(None), _("Home page")),
         version=version(APP_NAME),
     )

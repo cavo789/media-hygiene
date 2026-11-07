@@ -55,7 +55,7 @@ docker run --rm -it `
 
 ## What the page shows
 
-- **The language**: a *Language* list in the sidebar of the home page and in the top bar of every other page (PC only) writes `[general] locale` of `config.toml` and says what the file holds, read back from the disk; it applies the next time `mh` starts.
+- **The language**: a *Language* list in the sidebar of the home page and in the top bar of every other page (PC only) writes `[general] locale` of `config.toml` and says what the file holds, read back from the disk; it applies at once: the page reloads in that language, and so do the home page, the library and the console's messages at their next load (a slideshow, the phone pages and the review pages already open keep theirs until `mh` starts again).
 - **The sidebar**: the five stages of the cycle, **Share** (a goal, not a stage: no number) and the tools, each with its count (*9* extra
   copies to set aside, *214* files only the NAS keeps), *Your folders* (each found or not), the
   version (*0.5.0 available* when a newer one is published, [`mh update`](launcher.md#a-new-version-mh-update)),

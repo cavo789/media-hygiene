@@ -7,7 +7,7 @@ and said. A photo given another place leaves it: a photo has one place.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final, Literal
 
@@ -19,6 +19,7 @@ from media_hygiene.places.config_photos import give_photos, read_place_photos
 from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.serving import json_response
 from media_hygiene.search.aside_filter import AsideFilter
+from media_hygiene.search.found_narrow import PlaceNarrow
 from media_hygiene.search.place_neighbours import neighbours
 from media_hygiene.search.tag_cap import too_many_unread
 from media_hygiene.search.tag_desk import ref_of
@@ -68,22 +69,7 @@ class PlaceDesk:
         Returns:
             The search, narrowed; as it is when the settings cannot be read.
         """
-        if not place and not unplaced:
-            return query
-        try:
-            members = self.book.members()
-        except ValueError:
-            return query
-        filters = query.filters
-        if unplaced:
-            out = {str(path) for path in members.placed()} | set(filters.without)
-            filters = replace(filters, without=tuple(sorted(out)))
-        if place:
-            inside = {str(path) for path in members.of(place)}
-            if filters.only is not None:
-                inside &= set(filters.only)
-            filters = replace(filters, only=tuple(sorted(inside)))
-        return replace(query, filters=filters)
+        return PlaceNarrow(self.book).query(query, place, unplaced=unplaced)
 
     def answer(self, body: bytes) -> Response:
         """List my places, or give one to the photos picked.

@@ -83,6 +83,7 @@ let eventCategories = [];  // the event folders offered under the folder fields 
   };
 {% include "search_events_span.js.j2" %}
 {% include "search_events_span_card.js.j2" %}
+{% include "search_events_trial.js.j2" %}
   const load = async (index) => {
     if (events[index].span) { loadSpan(index); return; }
     current = index;
@@ -241,6 +242,7 @@ let eventCategories = [];  // the event folders offered under the folder fields 
     }
     try { localStorage.setItem("mh-search-tab", wanted); } catch (error) { /* not kept */ }
     if (onEvents && (SPAN || !events.length)) loadEvents();
+    if (onEvents) trialOffer();
   };
   byId("tabPhotos").addEventListener("click", () => showTab("photos"));
   byId("tabEvents").addEventListener("click", () => showTab("events"));

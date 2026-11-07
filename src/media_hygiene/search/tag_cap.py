@@ -1,7 +1,8 @@
 """*🏷 Tag…*: how many picked photos may be read while the page waits (0571).
 
-A word is kept with an id of each photo's content. The index usually knows it; a file
-it does not know is read whole, on the spot: 2 000 would hold the page for minutes.
+A word is kept with an id of each photo's content. The index knows it once an audit
+has seen the file (0634); a file it does not know is read whole, on the spot: 2 000
+would hold the page for minutes.
 """
 
 from __future__ import annotations

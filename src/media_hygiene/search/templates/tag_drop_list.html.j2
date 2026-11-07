@@ -1,6 +1,9 @@
-{# The words dropped (0546), in the left column: each with *Restore*. Listed from the disk when opened. #}
+{# The words dropped and merged (0546, 0622), the frequent tags to tick, in the left column: each with *Restore*. Listed from the disk when opened. #}
 <details id="dropList" class="writes">
   <summary>🚫 {{ _("Dropped tags") }}</summary>
   <p id="dropNone" class="muted" hidden>{{ _("No tag dropped.") }}</p>
   <ul id="dropWords"></ul>
+  <p class="muted">{{ _("The most frequent tags: tick the useless ones, or merge a synonym into another tag.") }}</p>
+  <ul id="dropFrequent"></ul>
+  <button type="button" id="dropTicked" class="danger" disabled>{{ _("Drop the ticked tags…") }}</button>
 </details>

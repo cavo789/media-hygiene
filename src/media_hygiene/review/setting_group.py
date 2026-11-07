@@ -2,7 +2,8 @@
 
 `GET` reads the group from the disk; `POST` validates, writes it with `toml_edit`
 (comments kept, atomic), then reads it back: the page shows what the file holds, never
-what it sent. A change applies at the next start of `mh`.
+what it sent. A change applies at the next start of `mh`, but a group that applies
+itself (`applied`: the language, 0644).
 """
 
 from __future__ import annotations
@@ -25,6 +26,7 @@ from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.serving import json_response, refused_write
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from pathlib import Path
 
     from media_hygiene.review.http import Request
@@ -68,6 +70,9 @@ class SettingGroup:
     path: str
     tables: tuple[str, ...]
     fields: tuple[Field, ...]
+    # Applies the values read back at once and says so (the language, 0644); None:
+    # at the next start of `mh`.
+    applied: Callable[[Held], str] | None = None
 
 
 def _values(config_file: Path, group: SettingGroup) -> dict[str, object]:
@@ -156,5 +161,10 @@ async def setting_route(
         return json_response(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": message})
     except ValueError:
         return json_response(HTTPStatus.BAD_REQUEST, {"error": _("Bad request.")})
+    if group.applied is not None:
+        later = group.applied(values)
+        return json_response(
+            HTTPStatus.OK, {"values": values, "later": later, "reload": True}
+        )
     later = _("Applies the next time mh starts: the open page keeps its settings.")
     return json_response(HTTPStatus.OK, {"values": values, "later": later})

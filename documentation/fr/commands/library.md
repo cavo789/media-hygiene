@@ -182,7 +182,7 @@ fichiers en tableau.
 
 ## Les événements du dernier classify
 
-La section **Regrouper les photos en plus ou moins d'événements** de cet onglet (PC seulement) règle `merge_gap_hours`, `min_event_size` et `trip_min_km` de `[classify]` : enregistrés dans `config.toml`, montrés tels que relus sur le disque, appliqués par le prochain [`classify`](classify.md) (la liste ne change pas avant).
+La section **Regrouper les photos en plus ou moins d'événements** de cet onglet (PC seulement) règle `merge_gap_hours`, `min_event_size` et `trip_min_km` de `[classify]` : enregistrés dans `config.toml`, montrés tels que relus sur le disque, appliqués par le prochain [`classify`](classify.md) (la liste ne change pas avant). **Voir d'abord les événements** montre, avant tout enregistrement, comment les photos datées de l'index se regrouperaient avec les valeurs tapées : le nombre d'événements maintenant et ensuite, et les événements qui fusionnent, se coupent, apparaissent ou n'en sont plus (la distance d'un voyage n'est pas prévisualisée).
 
 L'onglet **🗂 Événements**, en haut de la colonne de gauche à côté de **🔎 Photos**, n'a besoin
 d'aucun [`classify`](classify.md) : il regroupe **les fichiers pas encore triés** de la période
@@ -241,6 +241,15 @@ Le **⋯** d'un dossier (📁 Mes dossiers) ajoute, à côté de son rôle, *Jam
 le nom de la personne dont il contient les photos (`person_folders`) : le nom du dossier doit le contenir.
 Un dossier laissé de côté puis renommé dans l'Explorateur est listé comme disparu, avec *Supprimer*, dans
 la boîte ci-dessus.
+
+**🧪 Essayer sur un mois** (en haut de l'onglet, quand un plan de [`classify`](classify.md) a des
+fichiers à déplacer sur plusieurs mois et qu'aucun passage n'en a encore déplacé) : il dit le
+dernier mois, combien de fichiers et vers quels dossiers, demande, puis trie seulement ceux-là,
+journalisés. La grille montre alors ces photos dans leurs nouveaux dossiers, chaque vignette
+nommant le sien. **↶ Annuler** les remet en place ; **Trier le reste (N fichiers)** déplace le
+reste du plan après une question : un chemin rapide, ces fichiers ne sont pas montrés d'abord (le
+rapport de classify les montre). Les fichiers mis de côté restent en place. Les deux boutons
+durent le temps de la page ; ensuite, `mh sort` fait le reste et `undo` reprend l'essai.
 
 ## Déplacer des photos vers leur mois, sans événement
 
@@ -444,13 +453,23 @@ et les cartes perdent le mot sans bouger.
   `mh undo`. Seul ce que cet outil a écrit est retiré : le même mot écrit par une autre application
   reste, et un dossier protégé n'est jamais touché. Sans journal ou sur des dossiers en lecture
   seule, le prochain `xmp --apply` le retire.
-- **Ce qui reste** : la phrase du modèle (une recherche entre guillemets peut encore trouver la photo
-  par elle), un mot tapé à la main, un nom, une date, un lieu.
+- **Ce qui reste** : la phrase du modèle, affichée sous la photo (une recherche ne retrouve plus la
+  photo par un tag retiré, même entre guillemets), un mot tapé à la main, un nom, une date, un lieu.
 - **Rétablir** : **🚫 Tags retirés**, en bas de la colonne de gauche, les liste ; **Rétablir** sort
   le mot des mots écartés. Ses photos le retrouvent au prochain `tags`, sans redemander au modèle
   (les réponses sont gardées), et dans leurs sidecars au prochain `xmp --apply`.
 
-Un tag à la fois.
+**Plusieurs d'un coup, ou un synonyme.** Ouvrez **🚫 Tags retirés** : la liste montre aussi les tags
+les plus fréquents, avec leur nombre de photos.
+
+- Cochez les inutiles, puis **Retirer les tags cochés…** : la même fenêtre montre les photos et le
+  bouton annonce leur nombre.
+- **Fusionner dans…** à côté d'un tag (`panneau` → `panneau de signalisation`) : la fenêtre montre
+  ses photos, vous tapez le tag qu'il désigne, et le mot devient ce tag dans l'index et dans les
+  sidecars `.xmp`. `[tags] synonyms` dans `config.toml` le garde ainsi au prochain `tags` ; une
+  fusion est listée dans **🚫 Tags retirés**, et **Rétablir** la défait. Un mot ne
+  peut pas être fusionné dans un mot écarté (un tag retiré ou de la liste intégrée) : la page le dit
+  et rien ne change.
 
 ## Les photos sans date ou sans lieu
 
@@ -474,7 +493,8 @@ avez mise. **📍 Lieu…** dans la barre écrit les photos choisies dans `/conf
 relit le fichier et dit combien il en contient. Une photo déjà là par son GPS n'est pas écrite ; une
 photo d'un autre lieu le quitte ; des copies identiques comptent pour une seule photo, par leur
 contenu. Un nouveau lieu se dessine sur [`places`](places.md). Un mot comme `place:Durbuy` suit au
-prochain [`tags`](tags.md).
+prochain [`tags`](tags.md). Avec un lieu choisi, *Choisir les N trouvés* compte et prend les
+fichiers que le filtre montre, jamais les autres.
 
 Une fois le lieu donné, la boîte propose les autres photos du même jour et du même dossier, quand
 certaines n'ont ni position ni lieu. **Les voir** les montre en vignettes, toutes choisies : retirez
@@ -500,9 +520,8 @@ aussi **📺 Partager sur la télé** et **📨 Préparer l'envoi**.
 - **En un clic** : sur une carte de l'onglet 🗂 *Événements*, **📚 Faire un album** crée un album
   des fichiers de l'événement, au nom proposé d'après son lieu et son jour, relu puis ouvert dans
   un nouvel onglet. Après une recherche, **📚 Faire un album de ces N résultats** fait de même avec
-  chaque fichier trouvé, au nom des mots tapés (les fichiers mis de côté restent hors de l'album ;
-  3 000 au plus d'un coup, sinon affinez la recherche ; pas proposé quand un filtre réduit les
-  vignettes affichées). Un nom déjà pris ajoute à cet album. Avec une [télé appairée](slideshow.md),
+  chaque fichier trouvé, au nom des mots tapés, dans les limites des filtres Album et Lieu (les
+  fichiers mis de côté restent hors de l'album ; 3 000 au plus d'un coup, sinon affinez la recherche). Un nom déjà pris ajoute à cet album. Avec une [télé appairée](slideshow.md),
   la carte offre aussi **📺 Sur la télé**.
 - **Où vont les dossiers d'album** se règle sur [la page des albums](album.md#depuis-la-page-des-albums).
 - **Retirer de l'album** retire les photos choisies de l'album tapé ; un album laissé vide est

@@ -6,8 +6,10 @@ Both read the index; what is set aside goes to `decisions.json` (checked writabl
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import partial
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.i18n.live import PerLocale
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.apply_api import APPLY_PATH, ApplyDesk, ApplyOffer
 from media_hygiene.review.page_header import headed_page
@@ -31,6 +33,7 @@ from media_hygiene.search.folders import (
     FolderDesk,
 )
 from media_hygiene.search.found_desk import FOUND_PATH
+from media_hygiene.search.grouping_desk import GROUPING_PATH
 from media_hygiene.search.heaviest import FIRST_SHOWN, HEAVIEST_PATH
 from media_hygiene.search.late_desk import LATE_PATH, LATE_REFUSE_PATH
 from media_hygiene.search.move_go import MOVE_PATHS
@@ -52,10 +55,9 @@ from media_hygiene.search.tag_desk import HAND_TAG_PATH
 from media_hygiene.search.undo_api import UNDO_PATH
 from media_hygiene.search.views import FIRST_HITS
 from media_hygiene.services.albums import album_desk
-from media_hygiene.services.chosen_place import chosen_desk
 from media_hygiene.services.page_undo import PageUndo
 from media_hygiene.services.rule_trial import event_gap_hours
-from media_hygiene.services.search_dates import date_desk, place_desk
+from media_hygiene.services.search_dates import chosen_desk, date_desk, place_desk
 from media_hygiene.services.search_desks import (
     events_desk,
     names_place,
@@ -136,6 +138,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "events_path": EVENTS_PATH,
         "span_paths": {"list": SPAN_PATH, "files": SPAN_FILES_PATH, "left": LEFT_PATH},
         "found_path": FOUND_PATH,
+        "grouping_path": GROUPING_PATH,  # the events before saving (0643)
         "late_path": LATE_PATH,
         "late_refuse_path": LATE_REFUSE_PATH,
         "sort_paths": SORT_PATHS,
@@ -148,7 +151,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         "most_in_album": MAX_ADDED,
     }
     pages = SearchPages(
-        headed_page(environment, _SEARCH_TEMPLATE, paths),
+        PerLocale(partial(headed_page, environment, _SEARCH_TEMPLATE, paths)),
         build.first,
     )
     chosen = chosen_desk(runtime, search)
@@ -172,7 +175,7 @@ def search_app(runtime: Runtime, search: SearchIndex, build: SearchBuild) -> Sea
         album_desk(
             runtime,
             SearchPicker(
-                search, AsideFilter(chosen.paths, runtime.mapper), chosen.albums
+                search, AsideFilter(chosen.paths, runtime.mapper), chosen.narrowing
             ).files,
             build.tv,
         ),

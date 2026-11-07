@@ -66,10 +66,19 @@
 
   const render = () => {
     if (groups.length === 0) {
+      // Nothing listed: the thresholds, all open, widen the search (0637).
       showFiles([], false);
-      byId("title").textContent = "";
+      for (const part of document.querySelectorAll("#strict details")) part.open = true;
+      byId("position").textContent = "";
+      byId("totals").textContent = "";
+      byId("title").textContent = T.nothing;
+      byId("state").textContent = T.widen;
+      byId("state").className = "";
+      byId("disk").hidden = true;
+      if (window.mhApplyNow) window.mhApplyNow(false);
       return;
     }
+    byId("disk").hidden = false;
     const group = groups[at];
     for (const part of document.querySelectorAll("#strict details")) {
       if (part.dataset.group === group.reason) part.open = true;

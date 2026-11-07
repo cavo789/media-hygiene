@@ -1,0 +1,101 @@
+{# *Try on one month* (0640), inside `search_events.js.j2`'s scope. The offer is asked when
+   the tab opens; the trial's photos then fill the grid, sorted by folder, each tile saying
+   its new folder; ↶ Undo reverses that run, *Sort the rest* states its count and asks. #}
+  const TT = {{ {
+    "offer": _("Before the whole sort, see it on one month: {month}, {files} of the {total} files of the classify plan."),
+    "button": _("🧪 Try on one month ({files} files)"),
+    "ask": _("Sort {files} files of {month} now? They go to:"),
+    "note": _("Moved at once, journaled: Undo puts them back. The rest of the plan stays where it is."),
+    "yes": _("Try"),
+    "done": _("{moved} moved, {verified} checked at their new place (run {run}). The photos below are where they went."),
+    "broken": _("Run {run}: some files could not be checked at their new place. Undo, then read the manifest."),
+    "rest": _("Sort the rest ({n} files)"),
+    "restAsk": _("Move the {n} other files of the plan now?"),
+    "restNote": _("They move without being shown: the classify report shows them first ('mh reports' lists it). Journaled: 'undo' puts them back."),
+    "restYes": _("Sort the rest"),
+    "restDone": _("{moved} moved, {verified} checked at their new place (run {run}): 'mh undo {run}' puts them back."),
+    "undone": _("Put back: {back} of {meant} files found where they were."),
+    "undoFailed": _("Undo incomplete: {back} of {meant} files found where they were. 'mh history' says more."),
+    "folderFiles": _("{folder}: {files}"),
+  } | tojson }};
+  const TRIAL_UNDO = {{ undo_path | tojson }};
+  let trialHits = [];
+  let trialRun = "";
+  let trialRest = 0;
+  let trialAsked = null;  // what the dialog's yes runs
+  const trialFolderLines = (folders) => folders.map((one) => element("li", "", fill(TT.folderFiles, { folder: one.folder, files: one.files })));
+  const trialAsk = (texts, folders, then) => {
+    byId("trialAsk").textContent = texts.ask;
+    byId("trialNote").textContent = texts.note;
+    byId("trialYes").textContent = texts.yes;
+    byId("trialGoes").replaceChildren(...trialFolderLines(folders));
+    trialAsked = then;
+    byId("trialDlg").showModal();
+  };
+  const trialButtons = (running) => {
+    byId("trialTry").hidden = running;
+    byId("trialUndo").hidden = !running || !trialRun;
+    byId("trialRest").hidden = !running || !trialRest;
+    byId("trialRest").textContent = fill(TT.rest, { n: trialRest.toLocaleString() });
+  };
+  const trialOffer = async () => {
+    if (trialRun) return;
+    const answer = await ask(P.trial);
+    if (!answer || !answer.ok) return;
+    const { offer } = await answer.json();
+    byId("trialBox").hidden = !offer;
+    if (!offer) return;
+    const figures = { month: offer.month, files: offer.files.toLocaleString(), total: offer.total.toLocaleString() };
+    byId("trialSaid").textContent = fill(TT.offer, figures);
+    byId("trialFolders").replaceChildren(...trialFolderLines(offer.folders));
+    byId("trialTry").textContent = fill(TT.button, figures);
+    trialButtons(false);
+    byId("trialTry").onclick = () => trialAsk({ ask: fill(TT.ask, figures), note: TT.note, yes: TT.yes }, offer.folders, trialGo);
+  };
+  const trialPost = async (path, body) => {
+    told(TEXTS.goRunning, false);
+    const sent = await rulePost(path, body);
+    if (!sent) { told(T.offline, true); return null; }
+    if (!sent.response.ok) { told(sent.answer.error || fill(T.failed, { status: sent.response.status }), true); return null; }
+    return sent.answer;
+  };
+  const trialGo = async () => {
+    const done = await trialPost(P.trialRun, {});
+    if (!done) return;
+    trialRun = done.run_id;
+    trialRest = done.rest;
+    trialHits = done.hits;
+    told(fill(done.intact ? TT.done : TT.broken, { moved: done.moved, verified: done.verified, run: done.run_id }), !done.intact);
+    byId("trialFolders").replaceChildren();
+    byId("trialSaid").textContent = $("status").textContent;
+    trialButtons(true);
+    eventShown = null;
+    current = -1;
+    byId("eventCard").hidden = true;
+    $("albumResults").hidden = true;
+    trialAgain = (again) => { total = trialHits.length; showFiles(trialHits, again); $("more").hidden = true; };
+    trialAgain(false);
+  };
+  const trialEnd = (said, broken) => {
+    trialRun = "";
+    trialAgain = null;
+    byId("trialBox").hidden = true;
+    showFiles([], false);
+    total = 0;
+    loadSpans();
+    trialOffer();
+    told(said, broken);
+  };
+  byId("trialYes").addEventListener("click", () => { byId("trialDlg").close(); if (trialAsked) trialAsked(); });
+  byId("trialNo").addEventListener("click", () => byId("trialDlg").close());
+  byId("trialUndo").addEventListener("click", async () => {
+    const done = await trialPost(TRIAL_UNDO, { run: trialRun });
+    if (done) trialEnd(fill(done.intact ? TT.undone : TT.undoFailed, { back: done.back, meant: done.meant }), !done.intact);
+  });
+  byId("trialRest").addEventListener("click", () => {
+    const count = trialRest.toLocaleString();
+    trialAsk({ ask: fill(TT.restAsk, { n: count }), note: TT.restNote, yes: TT.restYes }, [], async () => {
+      const done = await trialPost(P.trialRest, {});
+      if (done) trialEnd(fill(TT.restDone, { moved: done.moved, verified: done.verified, run: done.run_id }), !done.intact);
+    });
+  });

@@ -16,7 +16,8 @@ from media_hygiene.config.slideshow_settings import (
     SHORTEST_INTERVAL,
 )
 from media_hygiene.constants import Locale
-from media_hygiene.review.setting_group import Field, SettingGroup
+from media_hygiene.i18n import _, install
+from media_hygiene.review.setting_group import Field, Held, SettingGroup
 
 LOCALE_PATH: Final = "/api/setting-locale"
 SLIDESHOW_PATH: Final = "/api/setting-slideshow"
@@ -26,10 +27,29 @@ _MOST_HOURS: Final = 24 * 30
 _MOST_EVENT_SIZE: Final = 10_000
 _MOST_KM: Final = 20_000
 
+
+def _speak(values: Held) -> str:
+    """Switch the server to the language read back (0644), and say what follows it.
+
+    Args:
+        values: `locale`, as `config.toml` now holds it (checked).
+
+    Returns:
+        The line the page shows, in that language.
+    """
+    install(Locale(str(values["locale"])))
+    return _(
+        "Applied now: this page reloads in this language, the other open pages and "
+        "the console's messages follow at their next load. A slideshow, the phone "
+        "pages and the review pages already open keep theirs until mh starts again."
+    )
+
+
 LOCALE: Final = SettingGroup(
     LOCALE_PATH,
     ("general",),
     (Field("locale", GeneralSettings().locale.value, choices=tuple(Locale)),),
+    _speak,
 )
 SLIDESHOW: Final = SettingGroup(
     SLIDESHOW_PATH,

@@ -24,9 +24,13 @@ Never listed: a photo of a [protected folder](05-choose-the-kept-copy.md), a bur
 ([step 10](10-review-bursts.md) handles them), a near duplicate ([step 11](11-near-duplicates.md))
 or an exact duplicate's other copy. Videos are not listed.
 
+When no photo is listed, the page still opens and says *Nothing found*, every panel open: loosen a
+threshold to widen the search.
+
 Each group has its *too strict?* panel in the left column of the page. Let go of a slider: the
 photos are listed again at once and a line names those that enter or leave; nothing is written and
-a photo you already decided stays, as decided. *Keep these values* writes them to `config.toml`
+a photo you already decided stays, as decided, also when you come back later: to take it off the
+list, undo your choice. *Keep these values* writes them to `config.toml`
 (your comments stay) and shows them as read back from the file. *Back to the saved values* cancels
 the trial. A value set by an option or an environment variable still wins at the next run.
 

@@ -25,6 +25,7 @@
   };
   const loadSpan = async (index) => {
     current = index;
+    trialAgain = null;
     $("albumResults").hidden = true;  // the grid is the event's now, not the search's
     const card = events[index];
     eventShown = card.id;

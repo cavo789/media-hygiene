@@ -3,20 +3,28 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import tomllib
 from typing import TYPE_CHECKING, Final, cast
 
+import pytest
+
+from media_hygiene.i18n import _
 from media_hygiene.report.decisions import read_decisions
 from media_hygiene.review.app import ReviewApp
+from media_hygiene.review.step_watch import JUNK_PAGE
 from media_hygiene.review.strictness import STRICTNESS_PATH
 from media_hygiene.review.unwanted_app import UnwantedApp
 from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services import unwanted_reviewing
 from media_hygiene.services.audit import AuditService
 from media_hygiene.services.burst_opening import BURST_KEYS
 from media_hygiene.services.review_file import review_page
+from media_hygiene.services.review_kinds import REVIEWS
 from media_hygiene.services.unwanted_reviewing import (
     UNWANTED_KEYS,
+    audit_unwanted,
     open_unwanted_review,
 )
 from tests.integration.test_unwanted_review import NIGHT, add_unwanted
@@ -32,6 +40,7 @@ from tests.support.review import (
 from tests.support.runtime import make_runtime
 
 if TYPE_CHECKING:
+    from media_hygiene.config.layers import Layer
     from media_hygiene.paths.locations import Locations
     from media_hygiene.review.session import ReviewSession
     from media_hygiene.review.unwanted_session import UnwantedSession
@@ -185,6 +194,129 @@ def test_a_photo_decided_stays_listed_when_its_reason_goes(
     target = locations.reports_dir / "decisions.json"
     assert [entry.aside for entry in read_decisions(target).unwanted] == [True]
     assert session.decided[1] == 1
+
+
+def reopen_with_dark_off(locations: Locations) -> UnwantedSession:
+    """`review --junk` opened again, the nearly black photo's reasons turned off."""
+    limits: Layer = {
+        "review": {"unwanted": {"dark_mean": 0, "blur_percentile": 0}},
+        "scan": {"full_check_days": 0},  # every folder read: a change is seen
+    }
+    runtime = make_runtime(locations, limits)
+    findings = AuditService(runtime, NullProgress()).run()
+    return open_unwanted_review(
+        runtime, findings, locations.reports_dir / "decisions.json"
+    )
+
+
+def night_rank(session: UnwantedSession) -> int:
+    """The rank of the nearly black photo on the page."""
+    night = NIGHT.rsplit("/", 1)[1]
+    photos = session.state().photos
+    return next(rank for rank, photo in enumerate(photos) if photo.name == night)
+
+
+@pytest.mark.parametrize(("aside", "shown"), [(True, "aside"), (False, "kept")])
+def test_a_decision_survives_the_reopening_with_its_reason_off(
+    locations: Locations, *, aside: bool, shown: str
+) -> None:
+    """0636: reopened on the saved value, the photo is listed with its decision."""
+    first = junk_session(locations)
+    first.decide({night_rank(first): aside})
+    again = reopen_with_dark_off(locations)
+    assert again.dropped == 0
+    assert again.state().photos[night_rank(again)].decision == shown
+    target = locations.reports_dir / "decisions.json"
+    assert [entry.aside for entry in read_decisions(target).unwanted] == [aside]
+    assert sum(len(group.photos) for group in again.state().groups) == len(
+        again.state().photos
+    )
+
+
+def test_undoing_a_survivor_removes_it_for_good(locations: Locations) -> None:
+    """0636: undone on the page, it leaves the file; next opening, the page too."""
+    first = junk_session(locations)
+    first.decide({night_rank(first): True})
+    again = reopen_with_dark_off(locations)
+    assert again.decided[1] == 1
+    again.decide({night_rank(again): None})
+    target = locations.reports_dir / "decisions.json"
+    assert not read_decisions(target).unwanted
+    third = reopen_with_dark_off(locations)
+    assert NIGHT.rsplit("/", 1)[1] not in names(third)
+
+
+ALL_OFF: Final[Layer] = {
+    "review": {
+        "unwanted": {
+            "dark_mean": 0,
+            "white_mean": 0,
+            "blur_percentile": 0,
+            "tiny_megapixels": 0,
+            "screenshots": False,
+        }
+    }
+}
+
+
+def test_a_survivor_alone_is_listed_with_every_reason_off(locations: Locations) -> None:
+    """0636: nothing listed but a photo decided: it is on the page."""
+    first = junk_session(locations)
+    first.decide({night_rank(first): True})
+    target = locations.reports_dir / "decisions.json"
+    runtime = make_runtime(locations, ALL_OFF)
+    findings = AuditService(runtime, NullProgress()).run()
+    assert not audit_unwanted(runtime, findings)
+    assert NIGHT.rsplit("/", 1)[1] in names(
+        open_unwanted_review(runtime, findings, target)
+    )
+
+
+def test_an_empty_review_opens_and_a_slider_lists_what_enters(
+    locations: Locations,
+) -> None:
+    """0637: nothing listed, the page is served; loosening a value lists the photo."""
+    add_unwanted(locations.data_dir)
+    runtime = make_runtime(locations, ALL_OFF)
+    findings = AuditService(runtime, NullProgress()).run()
+    target = locations.reports_dir / "decisions.json"
+    page = next(kind for kind in REVIEWS if kind.page == JUNK_PAGE).opened(
+        runtime, findings, target
+    )
+    assert page is not None
+    session = open_unwanted_review(runtime, findings, target)
+    assert not session.state().photos
+    html = review_page(
+        unwanted_reviewing.PAGE_TEMPLATE, session.place, ("/api/junk", "/api/file")
+    ).decode()
+    assert 'data-name="dark_mean"' in html
+    assert _("Nothing found") in html
+    reply = serve_junk(session, tune({"dark_mean": 30, "dark_share": 0.5}))[0]
+    night = NIGHT.rsplit("/", 1)[1]
+    assert night in names(session)
+    assert night in cast("dict[str, list[str]]", reply["entered"])["names"]
+    assert session.state().groups
+
+
+def test_a_library_without_a_photo_has_no_page(locations: Locations) -> None:
+    """0637: no slider could list anything: the home page says so instead."""
+    (locations.data_dir / "c").mkdir(parents=True, exist_ok=True)
+    runtime = make_runtime(locations)
+    findings = AuditService(runtime, NullProgress()).run()
+    kind = next(kind for kind in REVIEWS if kind.page == JUNK_PAGE)
+    assert kind.opened(runtime, findings, locations.reports_dir / "d.json") is None
+
+
+def test_a_photo_changed_since_loses_its_decision(locations: Locations) -> None:
+    """0636: the survivor is that very file; another version is not decided."""
+    first = junk_session(locations)
+    first.decide({night_rank(first): True})
+    night = locations.data_dir / NIGHT
+    stat = night.stat()
+    os.utime(night, ns=(stat.st_atime_ns, stat.st_mtime_ns + 5_000_000_000))
+    again = reopen_with_dark_off(locations)
+    assert again.dropped == 1
+    assert NIGHT.rsplit("/", 1)[1] not in names(again)
 
 
 def test_both_pages_offer_the_sliders_on_the_keys_their_server_changes(

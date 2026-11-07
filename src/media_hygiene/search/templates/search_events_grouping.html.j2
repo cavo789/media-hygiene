@@ -1,7 +1,9 @@
 {# How photos are grouped into events (0606): `[classify] merge_gap_hours`, `min_event_size`,
    `trip_min_km`, set where the events are listed, saved in config.toml and shown as read back.
    PC only (hidden off the loopback). The events listed stay as they are until the next
-   `classify` (said on the page): no preview here, the grouping is computed by that run. #}
+   `classify` (said on the page). *See the events first* (0643) asks the server how the
+   index's dated photos would group with the values typed, nothing written: the counts
+   before and after, the events that merge or split. The trip distance is not previewed. #}
 <details id="grouping" hidden class="grouping">
   <summary>{{ _("Group the photos into more or fewer events") }}</summary>
   <p class="muted">{{ _("Fewer events: a longer gap, a larger minimum, a longer distance for a trip. More events: the opposite. The list below changes at the next classify.") }}</p>
@@ -9,8 +11,10 @@
     <label>{{ _("Gap that merges two days into one event (hours)") }} <input type="number" id="gMerge" name="merge_gap_hours" min="0" max="720" step="any" required></label>
     <label>{{ _("Fewest photos in an event") }} <input type="number" id="gMin" name="min_event_size" min="1" max="10000" step="1" required></label>
     <label>{{ _("Shortest trip (km from home)") }} <input type="number" id="gTrip" name="trip_min_km" min="1" max="20000" step="any" required></label>
+    <button type="button" class="plain" id="groupingTry">{{ _("See the events first") }}</button>
     <button type="submit" class="plain writes">{{ _("Save these three") }}</button>
   </form>
+  <div id="groupingPreview" aria-live="polite"></div>
   <p id="groupingSaid" role="status" aria-live="polite"></p>
 </details>
 <script>
@@ -29,10 +33,54 @@
     .then((response) => (response.ok ? response.json() : null))
     .then((answer) => { if (answer) draw(answer.values); })
     .catch(() => {});
-  document.getElementById("groupingForm").addEventListener("submit", (event) => {
-    event.preventDefault();
+  const typed = () => {
     const body = {};
     for (const [key, id] of Object.entries(fields)) body[key] = Number(document.getElementById(id).value);
+    return body;
+  };
+  const shown = document.getElementById("groupingPreview");
+  const TEXTS = {
+    totals: {{ _("Now: {before} events ({beforeFiles} photos). With these values: {after} events ({afterFiles} photos). Nothing saved yet.") | tojson }},
+    merged: {{ _("Merged ({n})") | tojson }},
+    split: {{ _("Split ({n})") | tojson }},
+    new: {{ _("New events ({n})") | tojson }},
+    gone: {{ _("No longer events ({n})") | tojson }},
+    line: {{ _("{first} → {last}: {files} photos, {parts} events now") | tojson }},
+    trip: {{ _("The trip distance is not previewed: it applies at the next classify.") | tojson }},
+  };
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  const day = (iso) => iso.slice(0, 16).replace("T", " ");
+  const drawPreview = (answer) => {
+    shown.replaceChildren();
+    const head = document.createElement("p");
+    head.textContent = fill(TEXTS.totals, { before: answer.before.events, beforeFiles: answer.before.files, after: answer.after.events, afterFiles: answer.after.files });
+    shown.append(head);
+    for (const kind of ["merged", "split", "new", "gone"]) {
+      if (!answer[kind].count) continue;
+      const title = document.createElement("strong");
+      title.textContent = fill(TEXTS[kind], { n: answer[kind].count });
+      const list = document.createElement("ul");
+      for (const one of answer[kind].listed) {
+        const item = document.createElement("li");
+        item.textContent = fill(TEXTS.line, { first: day(one.first), last: day(one.last), files: one.files, parts: one.parts });
+        list.append(item);
+      }
+      shown.append(title, list);
+    }
+    const trip = document.createElement("p");
+    trip.className = "muted";
+    trip.textContent = TEXTS.trip;
+    shown.append(trip);
+  };
+  document.getElementById("groupingTry").addEventListener("click", () => {
+    fetch({{ grouping_path | tojson }}, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(typed()) })
+      .then((response) => response.json().then((reply) => ({ ok: response.ok, reply })))
+      .then((result) => { if (result.ok) drawPreview(result.reply); else said.textContent = result.reply.error || ""; })
+      .catch(() => {});
+  });
+  document.getElementById("groupingForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const body = typed();
     fetch(PATH, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
       .then((response) => response.json().then((reply) => ({ ok: response.ok, reply })))
       .then((result) => {

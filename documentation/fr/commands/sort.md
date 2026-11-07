@@ -89,6 +89,12 @@ fichiers déjà à leur place et les dossiers sources qu'il va supprimer, puis d
 - **Un événement à la fois** : `--event` (ou *Trier cet événement maintenant* dans
   [l'onglet 🗂 Événements de `library`](library.md#les-événements-du-dernier-classify)) trie un seul événement ; un `sort` ultérieur de tout le classeur
   saute ses fichiers, déjà déplacés. Chaque exécution a son propre `undo`.
+- **Un essai proposé d'abord** : le premier `sort` d'un plan, posé dans un terminal, propose
+  d'abord le dernier mois ayant des fichiers à déplacer (*Premier tri : essayer sur le dernier
+  mois… ?*) ; répondez non et il demande pour le tri entier. `--yes`, `--event` et `--trial` ne
+  posent pas la question. Sur la page, l'onglet **🗂 Événements** de
+  [`library`](library.md#les-événements-du-dernier-classify) a **🧪 Essayer sur un mois** : le même
+  essai, puis les photos dans leurs nouveaux dossiers.
 - **Un essai d'abord** : `--trial latest` trie seulement le dernier mois avec des photos (ou
   `--trial 2024-05` un mois, `--trial "C:\Photos\2019"` un dossier). Regardez le résultat ;
   s'il convient, le même `sort` sans `--trial` déplace le reste avec le même plan, sinon

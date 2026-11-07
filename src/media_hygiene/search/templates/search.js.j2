@@ -20,6 +20,8 @@ let within = null;     // the folder of the tree the search is narrowed to (0348
 const CHIPS_SHOWN = 6;  // the words on a card at sizes S and M; the rest behind +N
 let more = 0;          // the files asked past the first ones (*Show more*, 0408)
 
+let trialAgain = null;  // (again): the grid shows the photos of a trial (0640)
+
 function card(hit, index) {
   const node = element("article");
   const picture = element("img");
@@ -283,6 +285,7 @@ function scope() {
 
 function reopen(again) {
   if (window.mhLate && window.mhLate.shown()) return window.mhLate.reopen(again);  // late photos (0558)
+  if (trialAgain) return trialAgain(again);  // the photos of a trial, where they went (0640)
   return eventShown ? showEvent(eventShown, again) : search(null, again);  // an event (0437)
 }
 
@@ -319,6 +322,7 @@ function told(text, error) {
 
 async function search(event, again) {
   if (event) event.preventDefault();
+  if (!again) trialAgain = null;
   steppable();  // ◀ ▶ follow every way the dates change (cards, 📅, Back, a word)
   if (!again) more = 0;
   const near = window.mhNear;  // 0554: those photos alone, whatever the filters of the form
@@ -343,9 +347,9 @@ async function search(event, again) {
   showChips(body);  // the active filters, removable (0565)
   if (!again && !near) keepInHistory();
   offerRule();
-  // The album kept or left out (0501) is sent with *Pick all N found* too (0602): the
-  // server narrows its search the same way. A place is not: not offered then.
-  const narrowed = body.place || body.missing === "place" || near;
+  // The album filter and the place are sent with *Pick all N found* too (0602, 0642): the
+  // server narrows its search the same way. The photos of `near` are not: not offered then.
+  const narrowed = near;
   total = narrowed ? found.hits.length : found.total;
   showFiles(found.hits, again);
   $("more").hidden = found.total <= found.hits.length;

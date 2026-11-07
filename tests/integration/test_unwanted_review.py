@@ -189,6 +189,30 @@ def test_the_command_tells_what_to_decide(
     assert "photos decided: 0 of" in said
 
 
+def test_the_command_opens_an_empty_review_and_says_how_to_widen_it(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0637: nothing listed, the page is still served, and the console says why."""
+    add_unwanted(locations.data_dir)
+    served: list[object] = []
+    monkeypatch.setattr(
+        "media_hygiene.services.unwanted_reviewing.serve_unwanted_review",
+        lambda *args: served.append(args),
+    )
+    locations.config_file.parent.mkdir(parents=True, exist_ok=True)
+    locations.config_file.write_text(
+        "[review.unwanted]\ndark_mean = 0\nwhite_mean = 0\nblur_percentile = 0\n"
+        "tiny_megapixels = 0\nscreenshots = false\n",
+        encoding="utf-8",
+    )
+    result = run(cli, "review", "--junk")
+    assert result.exit_code == 0, result.output
+    assert served
+    said = " ".join(result.output.split())
+    assert "loosen them on the page" in said
+    assert "look unwanted (" not in said
+
+
 def test_the_page_renders_with_its_route() -> None:
     """The page names its route; the texts carry no "(s)"."""
     place = DecisionsPlace(argument="decisions.json", host="decisions.json")

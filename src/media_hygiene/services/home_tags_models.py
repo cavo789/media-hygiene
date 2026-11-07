@@ -28,6 +28,16 @@ class TagsPhase(StrEnum):
     FAILED = "failed"
 
 
+class AskedPhoto(BaseModel):
+    """A photo the run will ask about, shown before it starts (0641)."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    thumb: str
+    title: str
+    url: str
+
+
 class TagFigures(BaseModel):
     """What the page asks with: the console's figures before `Describe them now?`."""
 
@@ -37,6 +47,7 @@ class TagFigures(BaseModel):
     to_describe: int
     seconds_per_photo: float
     model: str = ""  # empty: no vision model in `[classify.ai]`
+    photos: tuple[AskedPhoto, ...] = ()  # some of `to_describe`, spread over them
 
 
 class PageTags(BaseModel):

@@ -94,10 +94,20 @@ def _page_runs(runtime: Runtime, fresh: FreshRuntime) -> dict[str, TagsRunner]:
     """
     from media_hygiene.cli.home_meaning import page_meaning
     from media_hygiene.cli.home_people import page_people
+    from media_hygiene.cli.home_spots import page_spots
     from media_hygiene.cli.home_tags import page_tags
-    from media_hygiene.review.home_tags_api import MEANING_PATH, PEOPLE_PATH, TAGS_PATH
+    from media_hygiene.review.home_tags_api import (
+        MEANING_PATH,
+        PEOPLE_PATH,
+        SPOTS_PATH,
+        TAGS_PATH,
+    )
 
-    runs = {TAGS_PATH: page_tags(fresh), PEOPLE_PATH: page_people(fresh)}
+    runs = {
+        TAGS_PATH: page_tags(fresh),
+        PEOPLE_PATH: page_people(fresh),
+        SPOTS_PATH: page_spots(fresh),
+    }
     if runtime.settings.tags.meaning:
         runs[MEANING_PATH] = page_meaning(fresh)
     return runs

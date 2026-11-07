@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 _SEPARATOR: Final = " ; "
 _UNPICKED: Final = (
-    "SELECT f.path, f.latitude, f.longitude, s.landmark, s.words"  # noqa: S608
+    "SELECT f.path, f.latitude, f.longitude, s.landmark, s.words, f.rowid"  # noqa: S608
     f" FROM files AS f {CURRENT} WHERE s.source NOT IN (?, ?) ORDER BY f.path"
 )
 _PICK: Final = (
@@ -35,6 +35,7 @@ class Unpicked:
     longitude: float
     landmark: str
     words: str
+    key: int  # its rowid in `files`: the thumbnail's address
 
 
 def unpicked(connection: sqlite3.Connection) -> list[Unpicked]:

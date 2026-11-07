@@ -11,6 +11,7 @@ from media_hygiene.plan.backups import BackupFolders, ComparedFiles
 from media_hygiene.scan.exact import partial_pass
 from media_hygiene.scan.progress import Step
 from media_hygiene.scan.stopwatch import Stage
+from media_hygiene.scan.whole_digests import fill_whole_digests
 from media_hygiene.services.backup_dealt import dealt_with
 
 if TYPE_CHECKING:
@@ -88,6 +89,7 @@ async def analyse(
     backup = [file for file in finders.backups.files_in(listed) if file.size > 0]
     with finders.stopwatch.timing(Stage.DIGESTS):
         groups = await finders.exact.find(healthy)
+        await fill_whole_digests(finders.exact, healthy)  # 0634
         returned = await finders.returned.find(healthy) if finders.returned else ()
         both = await with_partials(finders.exact, ComparedFiles(healthy, backup))
         compared = finders.backups.compare(groups, both)

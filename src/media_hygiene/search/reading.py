@@ -5,8 +5,10 @@ words of one or two letters, `tags/normalize.py`), so a search keeping them find
 nothing. The query drops them the same way (a number stays: `snow 2008`), and a word
 that is the name of someone on a photo is looked for among the people: the sentence
 means `person:papy jardin`. A phrase in quotes, a `source:` word and a prefix (`anniv*`)
-are kept as typed. Every reader of a search reads it so (the page, *Pick all N found*,
-the albums, the table of the command line): the same words, the same files.
+are kept as typed; a quoted stop word (a dropped tag) is no longer found through
+the model's sentence (0638). Every reader of a search reads it so (the page, *Pick
+all N found*, the albums, the table of the command line): the same words, the same
+files.
 """
 
 from __future__ import annotations
@@ -65,7 +67,7 @@ def read_line(typed: SearchQuery, read: SearchQuery) -> str | None:
     Returns:
         E.g. `Read as: Papy (person) + jardin`; None when read as typed.
     """
-    if read.terms == typed.terms:
+    if _said(read) == _said(typed):
         return None
     person = _("person")
     words = [
@@ -73,6 +75,18 @@ def read_line(typed: SearchQuery, read: SearchQuery) -> str | None:
         for term in read.terms
     ]
     return _("Read as: {words}.").format(words=" + ".join(words))
+
+
+def _said(query: SearchQuery) -> list[tuple[str, TagSource | None]]:
+    """The words of a search as a line says them.
+
+    Args:
+        query: The search.
+
+    Returns:
+        Each word and its source.
+    """
+    return [(term.text, term.source) for term in query.terms]
 
 
 def _read(term: Term, known: tuple[frozenset[str], frozenset[str]]) -> Term | None:
@@ -85,9 +99,11 @@ def _read(term: Term, known: tuple[frozenset[str], frozenset[str]]) -> Term | No
     Returns:
         The word, among the people when it is a name; None for a little word.
     """
+    stop, names = known
+    if term.phrase and term.text.casefold() in stop:
+        return replace(term, captionless=True)  # a dropped tag (0638)
     if term.phrase or term.source is not None or term.prefix:
         return term
-    stop, names = known
     text = term.text
     if not text.isdigit() and (len(text) < _SHORTEST or text.casefold() in stop):
         return None

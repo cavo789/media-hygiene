@@ -25,6 +25,7 @@ docker run --rm -it -v "$HOME\media-hygiene\reports:/reports" cavo789/media-hygi
 | Your photos | 🔒 Never changed: only the reports folder is read (and, with `--prune`, tidied). |
 | Needs | `/reports`, the folder of your reports. |
 | Writes | `index.html`; `--prune` deletes old report folders. |
+| Opened from | The home page: the report inside its frame (sidebar, *Reports* highlighted, the way back). The file opened from the disk stays readable alone, with its own pages in the sidebar and nothing of the home page. |
 | Undo | A pruned report is gone; run the audit again to get a new one. |
 | With `mh` | `mh reports`, `mh reports --prune 10`. From the home page, this step shows what it prints in the page itself (nothing in the terminal); typed, it prints as before. |
 

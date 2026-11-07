@@ -1,6 +1,7 @@
 {# The language picker of the frame (0609): `[general] locale` on the disk, shown as read back.
    PC only (the phone is read-only: hidden off the loopback). Self-contained: a select, one line
-   that says what the file holds and when it applies, and a script. Included by the top bars and
+   that says what the file holds and when it applies, and a script. Saved, the server
+   speaks the new language at once and the page reloads in it (0644). Included by the top bars and
    the home page. The language names are written in their own language: never translated. #}
 <span class="mh-locale" id="mhLocale" hidden>
   <label>{{ _("Language") }}
@@ -17,6 +18,7 @@
   const select = document.getElementById("mhLocaleSelect");
   const said = document.getElementById("mhLocaleSaid");
   const PATH = "/api/setting-locale";
+  const RELOAD_MS = 1500;  // the line read first
   const draw = (values) => { select.value = values.locale; box.hidden = false; };
   fetch(PATH, { cache: "no-store" })
     .then((response) => (response.ok ? response.json() : null))
@@ -30,6 +32,7 @@
         if (!reply.ok) { said.textContent = reply.body.error || {{ _("The settings could not be saved in config.toml.") | tojson }}; return; }
         draw(reply.body.values);  // what config.toml holds now, read back
         said.textContent = {{ _("Saved in config.toml, read back from the disk.") | tojson }} + " " + reply.body.later;
+        if (reply.body.reload) window.setTimeout(() => location.reload(), RELOAD_MS);  // the server speaks it now (0644)
       })
       .catch(() => { said.textContent = {{ _("The settings could not be saved in config.toml.") | tojson }}; })
       .finally(() => { select.disabled = false; });
