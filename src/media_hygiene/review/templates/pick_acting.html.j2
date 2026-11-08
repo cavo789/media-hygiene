@@ -18,7 +18,7 @@
 </span>
 {% if tv_here | default(false) %}
 <button id="tvSend" class="plain" type="button" hidden data-path="{{ albums_path }}" data-paired="{{ tv_paired_path | default('') }}"
-        data-replaced="{{ _('A show was running on the TV: replaced by this one.') }}"
+        data-sent="{{ _('Sent to the TV: its remote opens.') }}"
         data-sending="{{ _('Starting the show on the TV…') }}"
         title="{{ _('Show the files picked on the TV; nothing picked: every file of the page') }}">📺 {{ _("On the TV") }}</button>
 {% endif %}

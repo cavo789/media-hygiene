@@ -21,6 +21,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.errors import DecisionsError, MountError
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.paths.mount_kind import MountKind
+from media_hygiene.review.app import ReviewApp
 from media_hygiene.review.apply_api import ApplyDesk, ApplyingApp, ApplyOffer
 from media_hygiene.review.apply_relay import home_relay
 from media_hygiene.review.http import ContentType, Request, Response
@@ -40,9 +41,11 @@ from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
     from media_hygiene.review.ending import Handling
+    from media_hygiene.review.local_app import LocalApp
     from media_hygiene.services.fresh_runtime import FreshRuntime
     from media_hygiene.services.home_pages import HomeServer
     from media_hygiene.services.review_kinds import ReviewKind
+    from media_hygiene.services.slideshow_selection import TvSlot
 
 
 _TEMPLATES: Final = "media_hygiene.review"
@@ -147,9 +150,24 @@ class ReviewHere:
         body = review_page(page.template, page.place, page.api)
         if only_new:
             body = imported_note(body)
-        app = page.app(body, server.executor, runtime.previews_dir)
+        app = on_tv(page.app(body, server.executor, runtime.previews_dir), server.tv)
         if page.apply is None:
             return app
         offer = ApplyOffer(server.apply, page.apply.pending, PageUndo(runtime))
         relay = home_relay(runtime.locations.reports_dir)
         return ApplyingApp(app, ApplyDesk(offer, server.ending, relay))
+
+
+def on_tv(app: LocalApp, tv: TvSlot) -> LocalApp:
+    """The review's app, its albums API showing files on the home server's TV (0655).
+
+    Args:
+        app: The review's app.
+        tv: The home server's slideshow slot.
+
+    Returns:
+        The same app; a burst review's albums answer `action: "tv"`.
+    """
+    if not isinstance(app, ReviewApp) or app.albums is None:
+        return app
+    return dataclasses.replace(app, albums=dataclasses.replace(app.albums, tv=tv))

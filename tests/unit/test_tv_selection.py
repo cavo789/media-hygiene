@@ -14,18 +14,22 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from http import HTTPStatus
 from pathlib import Path
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, Final, cast
 
 import pytest
 
+from media_hygiene.review.app import ReviewApp
 from media_hygiene.review.ending import Ending
 from media_hygiene.review.http import Request, Response
+from media_hygiene.review.place import DecisionsPlace
 from media_hygiene.search.aside_filter import Kept
 from media_hygiene.search.fts import SearchIndex
 from media_hygiene.services import slideshow_here
 from media_hygiene.services.albums import album_desk
 from media_hygiene.services.fresh_runtime import FreshRuntime
 from media_hygiene.services.home_pages import HomeServer
+from media_hygiene.services.review_file import review_page
+from media_hygiene.services.review_here import on_tv
 from media_hygiene.services.slideshow_here import SlideshowHere
 from media_hygiene.services.slideshow_selection import TvSlot
 from media_hygiene.share.album_api import MAX_ADDED, AlbumAsked
@@ -36,6 +40,8 @@ from tests.support.runtime import make_locations, make_runtime
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+    from media_hygiene.i18n.live import Page
+    from media_hygiene.review.session import ReviewSession
     from media_hygiene.services.runtime import Runtime
 
 _PHOTOS: Final = 4
@@ -134,3 +140,55 @@ def test_a_page_without_a_slideshow_says_where_to_open_it() -> None:
     answer = TvSlot()(())
     assert answer.status is HTTPStatus.NOT_FOUND
     assert json.loads(answer.body)["error"]
+
+
+def test_the_remote_says_once_a_selection_replaced_a_show(
+    here: Served, tmp_path: Path
+) -> None:
+    """The first show replaced nothing; the second one tells its 2 files (0655)."""
+    _send(here, tmp_path, ["1"])
+    app = here.slideshow.app
+    assert app is not None
+    assert app.desk.state()["replaced"] == {"files": 0, "show": 0}
+    _send(here, tmp_path, ["2", "4"])
+    app = here.slideshow.app
+    assert app is not None
+    state = app.desk.state()
+    assert state["replaced"] == {"files": 2, "show": state["version"]}
+
+
+def test_an_album_started_from_the_home_page_tells_no_selection(
+    here: Served, tmp_path: Path
+) -> None:
+    """Only a selection sent from a page is told: a show replaced by a pick of files."""
+    _send(here, tmp_path, ["1"])
+    app = here.slideshow.app
+    assert app is not None
+    assert app.desk.replaced == (0, 0)
+
+
+def test_the_burst_review_offers_the_tv_and_its_albums_show_there() -> None:
+    """📺 in the burst review's bar (hidden until a TV is paired), not in the others."""
+    place = DecisionsPlace(argument="decisions.json", host="decisions.json")
+    page = review_page("review.html.j2", place, ("/decide", "/file")).decode()
+    assert 'id="tvSend"' in page
+    assert 'data-paired="/api/tv-paired"' in page
+    other = review_page("unwanted_review.html.j2", place, ("/decide", "/file"))
+    assert b'id="tvSend"' not in other
+
+
+def test_on_tv_gives_the_slot_to_a_review_with_albums(tmp_path: Path) -> None:
+    """The home server's slot reaches the review's albums; others are left as is."""
+    runtime = make_runtime(make_locations(tmp_path))
+    albums = album_desk(runtime, lambda _asked: Kept(()))
+    session = cast("ReviewSession", object())
+    page = cast("Page", object())
+    with ThreadPoolExecutor(1) as executor:
+        app = ReviewApp(session, page, executor, None, albums)
+        slot = TvSlot()
+        given = on_tv(app, slot)
+        assert isinstance(given, ReviewApp)
+        assert given.albums is not None
+        assert given.albums.tv is slot
+        bare = ReviewApp(session, page, executor)
+        assert on_tv(bare, slot) is bare

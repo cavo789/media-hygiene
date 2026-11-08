@@ -1088,8 +1088,15 @@ msgstr ""
 "moins de bits que cette valeur (0 à 64). Une petite valeur ne repère que "
 "les répétitions de la même image. 0 désactive la règle."
 
-msgid "A show was running on the TV: replaced by this one."
-msgstr "Un diaporama passait sur la télé : remplacé par celui-ci."
+#, python-brace-format
+msgid "A show was running on the TV: replaced by a selection of {n} file."
+msgid_plural "A show was running on the TV: replaced by a selection of {n} files."
+msgstr[0] ""
+"Un diaporama passait sur la télé : remplacé par une sélection de {n} "
+"fichier."
+msgstr[1] ""
+"Un diaporama passait sur la télé : remplacé par une sélection de {n} "
+"fichiers."
 
 msgid "A step is running in the window of mh: wait for its end."
 msgstr "Une étape tourne dans la fenêtre de mh : attendez sa fin."
@@ -1285,8 +1292,8 @@ msgid ""
 "Add {name} to your places too: a circle of 200 m around this photo, for "
 "classify and the search?"
 msgstr ""
-"Ajouter aussi {name} à vos lieux : un cercle de 200 m autour de cette photo, "
-"pour classify et la recherche ?"
+"Ajouter aussi {name} à vos lieux : un cercle de 200 m autour de cette "
+"photo, pour classify et la recherche ?"
 
 msgid "Advanced"
 msgstr "Avancé"
@@ -9979,6 +9986,9 @@ msgstr "Envoyer les photos ({count}) dans le dossier, sous l'année :"
 
 msgid "Send to another folder (O)"
 msgstr "Envoyer dans un autre dossier (O)"
+
+msgid "Sent to the TV: its remote opens."
+msgstr "Envoyé à la télé : sa télécommande s'ouvre."
 
 #, python-brace-format
 msgid "Sent: the step starts in {window}…"
@@ -19110,8 +19120,8 @@ msgid ""
 "{name} is now one of your places ({radius} m around this photo), read "
 "back from config.toml."
 msgstr ""
-"{name} est maintenant un de vos lieux ({radius} m autour de cette photo), "
-"relu dans config.toml."
+"{name} est maintenant un de vos lieux ({radius} m autour de cette photo),"
+" relu dans config.toml."
 
 #, python-brace-format
 msgid "{name} must be a JSON array, e.g. [\"C:\\\\Photos\"]"

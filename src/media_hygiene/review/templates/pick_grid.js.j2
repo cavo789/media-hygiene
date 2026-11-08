@@ -327,7 +327,7 @@ async function toTv(button) {
     $("chosen").textContent = state.error || (answer ? fill(TEXTS.failed, { status: answer.status }) : TEXTS.offline);
     return;
   }
-  $("chosen").textContent = state.replaced ? button.dataset.replaced : "";
+  $("chosen").textContent = button.dataset.sent;  // "replaced": told on the remote (0655)
   if (remote) remote.location = state.page; else window.location = state.page;
 }
 if ($("tvSend")) $("tvSend").addEventListener("click", () => toTv($("tvSend")));

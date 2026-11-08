@@ -111,11 +111,11 @@ seulement : ni vidéo, ni photo sans date, ni capture d'écran ou document, rien
 deux choix : la **durée** (30 min, 1 h, 2 h : 1 h à 8 s par photo fait environ 450 photos) et les
 **années** (tout, les 5 dernières années ou une période). Chaque appui est un nouveau diaporama.
 
-**Depuis toute page de vignettes, sans album** : dans [`library`](library.md) ouvert depuis la page d'accueil, **📺 Sur la télé** dans la barre montre
+**Depuis toute page de vignettes, sans album** : dans [`library`](library.md) et la revue des rafales ouverts depuis la page d'accueil, **📺 Sur la télé** dans la barre montre
 les photos et vidéos choisies ou, rien de choisi, tous les fichiers que montre la page (le
 résultat de la recherche, les fichiers du dossier), 3000 au plus (au-delà : affinez la
 recherche). La télécommande s'ouvre aussitôt dans un nouvel onglet ; un diaporama en cours est
-remplacé (la page le dit) et la télé appairée le reste. La sélection dure autant que le
+remplacé (la télécommande le dit une fois : « remplacé par une sélection de N fichiers ») et la télé appairée le reste. La sélection dure autant que le
 diaporama : une télé rechargée ne perd rien, arrêter `mh` y met fin.
 
 ### Sur la télé, une fois

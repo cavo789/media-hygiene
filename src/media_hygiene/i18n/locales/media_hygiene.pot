@@ -842,8 +842,11 @@ msgid ""
 " Low values only catch repeats of the same frame. 0 disables the rule."
 msgstr ""
 
-msgid "A show was running on the TV: replaced by this one."
-msgstr ""
+#, python-brace-format
+msgid "A show was running on the TV: replaced by a selection of {n} file."
+msgid_plural "A show was running on the TV: replaced by a selection of {n} files."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "A step is running in the window of mh: wait for its end."
 msgstr ""
@@ -8290,6 +8293,9 @@ msgid "Send the photos ({count}) to the folder, under the year:"
 msgstr ""
 
 msgid "Send to another folder (O)"
+msgstr ""
+
+msgid "Sent to the TV: its remote opens."
 msgstr ""
 
 #, python-brace-format

@@ -104,11 +104,11 @@ every other one was shown. Photos only: no video, no undated photo, no screensho
 nothing set aside. Its two choices: the **length** (30 min, 1 h, 2 h: 1 h at 8 s a photo is about
 450 photos) and the **years** (everything, the last 5 years, or a period). Each tap is a new show.
 
-**From any page of tiles, no album needed**: in [`library`](library.md)
-opened from the home page, **📺 On the TV** in the bar shows the photos and videos picked, or,
+**From any page of tiles, no album needed**: in [`library`](library.md) and the burst
+series review opened from the home page, **📺 On the TV** in the bar shows the photos and videos picked, or,
 nothing picked, every file the page shows (the search's result, the folder's files), at most
 3000 (more: narrow the search). The remote opens at once in a new tab; a show already running is
-replaced (the page says so) and the TV paired stays paired. The selection lasts as long as the
+replaced (the remote says so once: "replaced by a selection of N files") and the TV paired stays paired. The selection lasts as long as the
 show: a TV reloaded loses nothing, stopping `mh` ends it.
 
 ### On the TV, once

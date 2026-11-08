@@ -92,6 +92,7 @@ class Desk:
     show: Show
     screens: Screens
     changes: Changes
+    replaced: tuple[int, int] = (0, 0)  # a selection's files (0: none), its show (0655)
 
     async def settle(self, since: int, limit: float = WAIT_SECONDS) -> None:
         """Wait until the show is no longer at a version, or a while passed.
@@ -139,6 +140,7 @@ class Desk:
             "where": "" if current is None else current.place,  # the TV's corner (0545)
             "story": story_view(show),
             "ended": show.ended,  # stopped by a phone (0633)
+            "replaced": dict(zip(("files", "show"), self.replaced, strict=True)),
         }
 
     def ask(self, body: bytes) -> Response:

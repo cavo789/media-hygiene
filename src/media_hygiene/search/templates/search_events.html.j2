@@ -43,7 +43,7 @@
         <button type="button" id="spanLeave" class="plain" title="{{ _('Its files stay where they are, the event counted as decided. Skipping it with → is not this: a skipped event stays to decide.') }}">{{ _("Do not sort this event") }}</button>
         <button type="button" id="spanUndo" class="plain" hidden title="{{ _('The event is to decide again') }}">{{ _("Undo my choice") }}</button>
         <button type="button" id="spanAlbum" class="plain writes" title="{{ _('An album named after this event, with its files shown, then opened. No photo is copied or moved.') }}">📚 {{ _("Make an album") }}</button>
-        {% if tv_here | default(false) %}<button type="button" id="spanTv" class="plain" hidden data-path="{{ albums_path }}" data-replaced="{{ _('A show was running on the TV: replaced by this one.') }}" data-sending="{{ _('Starting the show on the TV…') }}" title="{{ _('Show the files picked on the TV; nothing picked: every file of this event') }}">📺 {{ _("On the TV") }}</button>{% endif %}
+        {% if tv_here | default(false) %}<button type="button" id="spanTv" class="plain" hidden data-path="{{ albums_path }}" data-sent="{{ _('Sent to the TV: its remote opens.') }}" data-sending="{{ _('Starting the show on the TV…') }}" title="{{ _('Show the files picked on the TV; nothing picked: every file of this event') }}">📺 {{ _("On the TV") }}</button>{% endif %}
       </p>
       <p><a href="#" id="spanRule" title="{{ _('Write this event down as a rule: its days, its folder; the next classify runs apply it') }}">📌 {{ _("Remember as a rule") }}</a></p>
     </div>

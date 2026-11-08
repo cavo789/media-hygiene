@@ -31,6 +31,7 @@
   "unplayable": _("Not on the TV: its format ({format}) does not play there."),
   "storyAt": _("at {time}"),
   "storyNoMap": _("No position for this event."),
+  "replaced": [ngettext("A show was running on the TV: replaced by a selection of {n} file.", "A show was running on the TV: replaced by a selection of {n} files.", 1), ngettext("A show was running on the TV: replaced by a selection of {n} file.", "A show was running on the TV: replaced by a selection of {n} files.", 2)],
   "photosOnly": _("videos skipped: this TV's own browser shows photos only, open the show in the Chromecast's browser for them"),
 } %}
 {% set page_name = _("Slideshow") %}
@@ -115,6 +116,7 @@
     <button id="stop" class="plain" type="button">{{ _("■ Stop") }}</button>
   </div>
   <p id="paceSaved" role="status"></p>
+  <p id="replaced" class="card" role="status" hidden></p>
   <p id="over" class="card" role="status" hidden>{{ _("The slideshow is over: the TV says so.") }}{% if presence_kept | default(false) %} <a href="/">{{ _("Choose another show") }}</a>{% endif %}</p>
   <div class="telling" role="group" aria-label="{{ _('Where the event is told') }}">
     <span>{{ _("The event's name:") }}</span>

@@ -168,7 +168,8 @@ class SlideshowHere:
             show.version = self.app.desk.show.version + 1
         if not screens.films:
             show_films(show, films=False)
-        desk = Desk(show, screens, self._changes)
+        told = (len(show.slides), show.version) if replaced and pick.files else (0, 0)
+        desk = Desk(show, screens, self._changes, told)  # the remote says it (0655)
         serving = Serving(
             search, self._server.executor, self.door, SLIDESHOW_PAGE, kept=True
         )
@@ -178,8 +179,7 @@ class SlideshowHere:
 
     def _opened(self) -> tuple[Runtime, SearchIndex]:
         """The settings now, and the index opened for them."""
-        runtime = self._fresh.runtime()
-        return runtime, self._index(runtime)
+        return (runtime := self._fresh.runtime()), self._index(runtime)
 
     def _index(self, runtime: Runtime) -> SearchIndex:
         """The index, opened once per settings.
