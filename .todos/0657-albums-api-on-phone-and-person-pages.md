@@ -2,7 +2,7 @@
 
 - **Priority**: Medium
 - **Batch**: tv-slideshow
-- **Depends**: —
+- **Depends**: 0660
 - **Files**: `src/media_hygiene/review/`, `src/media_hygiene/people/`, `src/media_hygiene/services/slideshow_selection.py`, `src/media_hygiene/review/templates/pick_acting.html.j2`
 
 ## Problem
@@ -20,9 +20,9 @@ stay without 📺 (decided the same day: nothing to show on a TV there).
 
 1. Serve the albums routes on the phone page's and `/person`'s servers (shared module, as
    search/browse), with their own key→index-file picker; carry the TV slot to their server.
-2. The shared `pick_*` bar shows ➕ and 📺 there (skill `photo-picking-pages`).
-3. Off the PC (a paired phone) the pages stay read-only: ➕ hidden there, 📺 allowed (it writes
-   nothing on the library).
+2. The shared `pick_*` bar shows 📚 *Album* ▾ and ▶ *Slideshow* ▾ (0660) there (skill `photo-picking-pages`).
+3. Off the PC (a paired phone) the pages stay read-only: ➕ hidden there, the slideshow menu hidden too
+   (0660: the phone keeps its own *Show on the TV* buttons).
 
 ## Acceptance
 
