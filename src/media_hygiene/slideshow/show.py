@@ -3,9 +3,9 @@
 Every change raises `version`: the pages wait for a version they have not seen yet
 (`desk`). Next and previous go round the selection, passing over the photos set out
 of the show ("do not show") and the videos the TV cannot play (0292); a photo chosen
-on the phone is shown even when it was set out (the choice is explicit). The timer is
-read, never run: `tick` moves on once the interval is over (a video: once the TV says
-it ended, `ended`), called by whoever waits (the TV, the phone).
+on the phone is shown even when it was set out. The timer is read, never run: `tick`
+moves on once the interval is over (a video: once the TV says it ended, `ended`),
+called by whoever waits. An event's title card holds the interval back (0654).
 """
 
 from __future__ import annotations
@@ -27,6 +27,7 @@ class Show:  # pylint: disable=too-many-instance-attributes
     """
 
     __slots__ = (
+        "_card_end",
         "_deadline",
         "ended",
         "films",
@@ -45,14 +46,12 @@ class Show:  # pylint: disable=too-many-instance-attributes
             slides: The selection, in the order shown.
             timing: The interval and the clock.
         """
-        self.slides = slides
-        self.timing = timing
-        self.playing = False
+        self.slides, self.timing = slides, timing
         self.skipped: set[int] = set()
-        self.films, self.ended = True, False
+        self.playing, self.films, self.ended = False, True, False
         self.version = 1
         self.position: int | None = self._order.step(None, 1)  # the first shown
-        self._deadline = 0.0
+        self._deadline = self._card_end = 0.0
 
     @property
     def current(self) -> Slide | None:
@@ -132,7 +131,7 @@ class Show:  # pylint: disable=too-many-instance-attributes
             playing: True to play.
         """
         self.playing = playing
-        self._deadline = self.timing.clock() + self.timing.stay(self.current)
+        self._deadline = self.timing.deadline(self._card_end, self.current)
         self.version += 1
 
     def plays(self, slide: Slide) -> bool:
@@ -175,8 +174,9 @@ class Show:  # pylint: disable=too-many-instance-attributes
         Args:
             position: The place; None for nothing.
         """
-        self.position = position
-        self._deadline = self.timing.clock() + self.timing.stay(self.current)
+        before, self.position = self.current, position
+        self._card_end = self.timing.card_end(before, self.current)
+        self._deadline = self.timing.deadline(self._card_end, self.current)
         self.version += 1
 
     @property

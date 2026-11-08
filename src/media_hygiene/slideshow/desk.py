@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import StrEnum
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
@@ -20,9 +20,8 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from media_hygiene.config.slideshow_settings import LONGEST_INTERVAL, SHORTEST_INTERVAL
 from media_hygiene.review.http import Response
 from media_hygiene.review.serving import json_response
-from media_hygiene.slideshow.chapters import Telling
+from media_hygiene.slideshow.chapters import TITLE_SECONDS, Telling
 from media_hygiene.slideshow.notes import event_start, story_view
-from media_hygiene.slideshow.slides import Timing
 
 if TYPE_CHECKING:
     from media_hygiene.slideshow.screens import Screens
@@ -183,10 +182,12 @@ class Desk:
                 show.play(playing=asked.action is Action.PLAY)
             case Action.PACE:
                 seconds = asked.seconds or show.timing.interval
-                show.timing = Timing(seconds, show.timing.clock)
+                show.timing = replace(show.timing, interval=seconds)
                 show.play(playing=show.playing)
             case Action.TELL:
                 self.screens.telling = asked.where or Telling.TV
+                card = TITLE_SECONDS if self.screens.telling is Telling.TV else 0
+                show.timing = replace(show.timing, card=card)
                 show.version += 1
             case Action.JUMP:
                 return show.jump(key)

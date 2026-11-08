@@ -48,6 +48,15 @@ class Chapter:
     place: str = ""
     map: EventMap | None = None  # the phone's small map (0449), not sent to the TV
 
+    @property
+    def has_card(self) -> bool:
+        """Tell whether the TV has something to say of it (else it shows no card).
+
+        Returns:
+            True when its name, its period or its told place is not empty.
+        """
+        return bool(self.name or self.period or told_place(self.name, self.place))
+
     def view(self) -> dict[str, object]:
         """The event, for the pages.
 

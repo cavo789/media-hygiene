@@ -13,6 +13,8 @@ import time
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.slideshow.chapters import TITLE_SECONDS
+
 if TYPE_CHECKING:
     from collections.abc import Callable
 
@@ -80,6 +82,55 @@ class Timing:
 
     interval: float
     clock: Callable[[], float] = field(default=time.monotonic)
+    card: float = (
+        TITLE_SECONDS  # the title card's seconds, 0 when the TV does not tell (0654)
+    )
+
+    def card_end(self, before: Slide | None, slide: Slide | None) -> float:
+        """When the title card of a slide that comes hides (0654).
+
+        Args:
+            before: The slide shown until now.
+            slide: The slide that comes.
+
+        Returns:
+            A time of the clock: now when there is no card.
+        """
+        return self.clock() + self.card_for(before, slide)
+
+    def deadline(self, card_end: float, slide: Slide | None) -> float:
+        """When the timer moves on: the slide's stay, counted from the card's end.
+
+        Args:
+            card_end: When the card hides.
+            slide: The slide shown.
+
+        Returns:
+            A time of the clock.
+        """
+        return max(self.clock(), card_end) + self.stay(slide)
+
+    def card_for(self, before: Slide | None, slide: Slide | None) -> float:
+        """How long the TV's title card hides the photo, the timer waiting (0654).
+
+        Args:
+            before: The slide shown until now; None for none.
+            slide: The slide that comes.
+
+        Returns:
+            Seconds: the card's, when `slide` starts an event with something to say;
+            else 0.
+        """
+        chapter = None if slide is None else slide.chapter
+        if chapter is None or not chapter.has_card:
+            return 0.0
+        if (
+            before is not None
+            and before.chapter is not None
+            and before.chapter.number == chapter.number
+        ):
+            return 0.0
+        return self.card
 
     def stay(self, slide: Slide | None) -> float:
         """How long a photo or a video stays while the show plays.

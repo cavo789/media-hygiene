@@ -172,7 +172,9 @@ connexion n'est pas privée installe d'abord le certificat du PC, une fois : la 
 - **Le nom de l'événement** : à chaque nouvel événement (un nouveau dossier, dans l'ordre du
   diaporama), la télé montre un carton titre pendant 3 secondes (une de ses photos floutée, le
   nom en grand, le mois et le lieu dessous), puis un bandeau sur sa première photo quelques
-  secondes. Le nom est celui du dossier (`2026\2026-10\Promenade à Valkenburg` → *Promenade à
+  secondes. Le carton ne compte pas dans le temps de la photo (elle reste son intervalle
+  entier après lui) ; une pause tient pendant le carton, et *Suivant* le saute. Le nom est celui du dossier
+  (`2026\2026-10\Promenade à Valkenburg` → *Promenade à
   Valkenburg* : années, mois, dates et dossiers d'appareil sont sautés) ; le mois vient de la
   date de prise de vue ; le lieu est l'un des vôtres (`places`), sinon la ville la plus proche
   de leur GPS, trouvée hors ligne (avec son pays s'il n'est pas le vôtre, p. ex. *Valkenburg,

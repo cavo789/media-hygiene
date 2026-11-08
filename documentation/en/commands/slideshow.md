@@ -156,7 +156,9 @@ the steps are the [home page's](home.md#once-per-phone-install-the-certificate).
   (*Not on the TV: its format (hevc) does not play there.*) and passed over.
 - **The event's name**: at each new event (a new folder, in the show's order), the TV shows a
   title card for 3 seconds (one of its photos blurred, the name large, the month and the place
-  under it), then a banner on its first photo for a few seconds. The name is the folder's
+  under it), then a banner on its first photo for a few seconds. The card does not count in the
+  photo's time (it stays its full interval after it); a pause holds through the card, and
+  *Next* skips it. The name is the folder's
   (`2026\2026-10\Walk in Valkenburg` → *Walk in Valkenburg*: years, months, dates and camera
   folders are passed over); the month is the photos' date taken; the place is one of yours
   (`places`), else the nearest town of their GPS, found offline (with its country when it is not your
