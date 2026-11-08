@@ -29,3 +29,18 @@ stay without 📺 (decided the same day: nothing to show on a TV there).
 - [ ] ➕ and 📺 in the bar of the phone page and `/person` (tests), picked or the page's files
 - [ ] Keys resolved from the index only (a test with a forged path refused)
 - [ ] Docs en/fr; `docs_screenshots` flagged stale
+
+## Partial (2026-11-08)
+
+- Done: `/person` serves `/person/api/albums` (`share/album_route.WithAlbums`, `person/albums.py`);
+  its bar has 📚 Album ▾ (and the A key of the large view); under the home server
+  (`door.person_on_tv`) the TV slot reaches it and its bar shows ▶ Slideshow ▾. The phone page
+  serves `/api/albums` (`PhoneApp.albums`) and shows 📚 Album ▾. Keys: the page's own table (a
+  tile's rank → the PC's copy; a face number → its photo), kept only when the index holds the file
+  (`services/keyed_albums.py`); a forged path, an unknown key, a file outside the index name
+  nothing (tests).
+- Not done: ▶ Slideshow on the phone page. Its server is `phone-review`'s own process (`mh import
+  --phone`), not the home server: no slideshow slot to carry. Needs a decision: serve the phone
+  page inside the home server (as the reviews, `review_here`), or post to the home server's
+  slideshow over HTTP.
+- Docs en/fr (people, import); `docs_screenshots` should run.

@@ -172,13 +172,14 @@ def test_an_album_started_from_the_home_page_tells_no_selection(
 
 
 def test_the_burst_review_offers_the_tv_and_its_albums_show_there() -> None:
-    """📺 in the burst review's bar (hidden until a TV is paired), not in the others."""
+    """▶ Slideshow ▾ in the burst review's bar (0660), not in the others."""
     place = DecisionsPlace(argument="decisions.json", host="decisions.json")
     page = review_page("review.html.j2", place, ("/decide", "/file")).decode()
-    assert 'id="tvSend"' in page
+    assert 'id="showBar"' in page
     assert 'data-paired="/api/tv-paired"' in page
+    assert 'id="tvSend"' not in page
     other = review_page("unwanted_review.html.j2", place, ("/decide", "/file"))
-    assert b'id="tvSend"' not in other
+    assert b'id="showBar"' not in other
 
 
 def test_on_tv_gives_the_slot_to_a_review_with_albums(tmp_path: Path) -> None:

@@ -5329,6 +5329,9 @@ msgstr ""
 msgid "No Events tab here."
 msgstr ""
 
+msgid "No TV paired:"
+msgstr ""
+
 msgid "No TV shows this code: type the code the TV shows now."
 msgstr ""
 
@@ -6367,6 +6370,9 @@ msgid "On the phone's remote, type the code of this TV:"
 msgstr ""
 
 msgid "On the phone, everything is read-only: albums change on the PC."
+msgstr ""
+
+msgid "On this PC"
 msgstr ""
 
 msgid "On this page"
@@ -8582,7 +8588,9 @@ msgid ""
 "search or an album."
 msgstr ""
 
-msgid "Show the files picked on the TV; nothing picked: every file of the page"
+msgid ""
+"Show the files picked as a slideshow, on this PC or on the TV; nothing "
+"picked: every file of the page"
 msgstr ""
 
 msgid "Show the files picked on the TV; nothing picked: every file of this event"
@@ -8844,6 +8852,9 @@ msgid "Started"
 msgstr ""
 
 msgid "Starting the show on the TV…"
+msgstr ""
+
+msgid "Starting the show on this PC…"
 msgstr ""
 
 msgid "State"
@@ -10339,6 +10350,9 @@ msgstr ""
 msgid "The show did not start: look at the window of mh on the PC."
 msgstr ""
 
+msgid "The show starts in the new tab: click the photo there for full screen."
+msgstr ""
+
 msgid "The show starts on the PC…"
 msgstr ""
 
@@ -10347,6 +10361,11 @@ msgid "The slideshow failed (error {status})."
 msgstr ""
 
 msgid "The slideshow is not running any more: start it again on the PC."
+msgstr ""
+
+msgid ""
+"The slideshow is over. Choose another one on the PC: ▶ Slideshow in the "
+"bar of a page of photos, or the home page."
 msgstr ""
 
 msgid ""
@@ -12697,6 +12716,9 @@ msgstr ""
 msgid "home page start"
 msgstr ""
 
+msgid "how"
+msgstr ""
+
 msgid "iPhone, iPad"
 msgstr ""
 
@@ -13669,6 +13691,9 @@ msgid ""
 msgstr ""
 
 msgid "screenshot or document"
+msgstr ""
+
+msgid "see the slideshow chapter."
 msgstr ""
 
 msgid "seen by the model"
@@ -17329,6 +17354,9 @@ msgid ""
 "shots there while the next steps run."
 msgstr ""
 
+msgid "📺 On the TV"
+msgstr ""
+
 #, python-brace-format
 msgid "📺 Your slideshow \"{title}\" is ready: {command}"
 msgstr ""
@@ -17399,6 +17427,9 @@ msgid ""
 " both names, deleting one name frees nothing while the other remains, and"
 " a backup tool may count it twice. 'undo' makes each name an independent "
 "file again."
+msgstr ""
+
+msgid "🖥 On this PC"
 msgstr ""
 
 #, python-brace-format

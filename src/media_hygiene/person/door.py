@@ -17,6 +17,7 @@ from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.people.aside import AsideDesk
 from media_hygiene.people.remembered import AsideMemory
 from media_hygiene.person import routes
+from media_hygiene.person.albums import with_albums
 from media_hygiene.person.app import PersonApp
 from media_hygiene.person.finding import PersonFinder, PhotoPlace
 from media_hygiene.person.lookup import FaceIndex
@@ -27,12 +28,17 @@ from media_hygiene.review.page_header import page_header
 from media_hygiene.search.app import SearchApp
 from media_hygiene.services import people_models
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
+from media_hygiene.share.album_page import TV_PAIRED_PATH
+from media_hygiene.share.album_route import WithAlbums
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from concurrent.futures import Executor
+    from pathlib import Path
 
     from media_hygiene.faces.worker import FinderRecipe
     from media_hygiene.review.ending import EndingDoor
+    from media_hygiene.review.http import Response
     from media_hygiene.services.runtime import Runtime
 
 _PACKAGE: Final = "media_hygiene.person"
@@ -45,11 +51,12 @@ _PATHS: Final = {
 }
 
 
-def _page(apply: ApplyDesk | None) -> bytes:
+def person_page(apply: ApplyDesk | None, *, tv: bool = False) -> bytes:
     """The page, in the language in use.
 
     Args:
         apply: Its *Apply now*, when opened from home.
+        tv: Served by the home server: ▶ *Slideshow* ▾ in its bar (0657).
 
     Returns:
         Its bytes.
@@ -61,6 +68,9 @@ def _page(apply: ApplyDesk | None) -> bytes:
         apply_offered=apply is not None,
         apply_path=routes.APPLY_PATH,
         undo_path=routes.UNDO_PATH if apply and apply.offer.undo else None,
+        albums_path=routes.ALBUMS_PATH,  # Add to an album (0657)
+        tv_here=tv,
+        tv_paired_path=TV_PAIRED_PATH,
     )
     return page.encode()
 
@@ -77,7 +87,28 @@ def with_person(door: EndingDoor, runtime: Runtime, executor: Executor) -> Endin
         The door with its person page.
     """
     person = person_app(runtime, executor, host_apply(door))
-    return dataclasses.replace(door, person=person)
+    return dataclasses.replace(door, person=with_albums(person, runtime))
+
+
+def person_on_tv(
+    door: EndingDoor, tv: Callable[[tuple[Path, ...]], Response]
+) -> EndingDoor:
+    """The door's `/person`, its albums showing files on the home server's slideshow.
+
+    Args:
+        door: A door given `/person` by `with_person`.
+        tv: The home server's slideshow slot (0657).
+
+    Returns:
+        The same door, its person page offering ▶ *Slideshow* ▾; unchanged without one.
+    """
+    person = door.person
+    if not isinstance(person, WithAlbums) or not isinstance(person.app, PersonApp):
+        return door
+    page = PerLocale(partial(person_page, person.app.apply, tv=True))
+    app = dataclasses.replace(person.app, page=page)
+    desk = dataclasses.replace(person.desk, tv=tv)
+    return dataclasses.replace(door, person=WithAlbums(app, desk, person.path))
 
 
 def host_apply(door: EndingDoor) -> ApplyDesk | None:
@@ -121,7 +152,7 @@ def person_app(
     finder = PersonFinder(place, FaceIndex(runtime.index_file), FaceShelf())
     recipe = partial(loose_recipe, runtime)
     return PersonApp(
-        PerLocale(partial(_page, apply)),
+        PerLocale(partial(person_page, apply)),
         finder,
         executor,
         recipe,

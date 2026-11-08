@@ -176,7 +176,9 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
   to set them all aside: see [`people`](people.md#from-any-page-set-a-person-aside).
 - The burst review has an **Album** field too: **➕ Add to the album** puts the picked shots in
   that album, as in `library`, apart from your decisions. See
-  [Put photos in an album](library.md#put-photos-in-an-album).
+  [Put photos in an album](library.md#put-photos-in-an-album). Opened from the home page, its
+  **▶ Slideshow ▾** shows the shots picked (or every shot shown) on this PC or on the TV
+  ([`slideshow`](slideshow.md)).
 - *port is already allocated*? Another program uses 8088: `-p 127.0.0.1:9000:9000` and
   `review --port 9000`.
 

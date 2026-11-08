@@ -13,6 +13,8 @@ var hereAnswer = null;
   if (!/[?&]here=1(&|$)/.test(window.location.search)) {
     return;
   }
+  // The end of a show on this PC: its own wording, never the TV's "on the phone" (0660).
+  document.getElementById("idleOver").textContent = bar.getAttribute("data-over");
 
   function act(action) {
     var request = new XMLHttpRequest();

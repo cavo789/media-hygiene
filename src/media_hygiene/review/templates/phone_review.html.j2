@@ -88,6 +88,7 @@
     {% set pick_add = "🗑️ " ~ _("Tick: leaves the phone") %}
     {% set pick_remove = _("Untick: stays on the phone") %}
     {% include "pick_acting.html.j2" %}
+    {% include "album_bar.html.j2" %}
     <p id="ending">
       <button id="free" class="danger" type="button" disabled></button>
       <button id="leave" class="plain" type="button">{{ _("Leave everything on the phone") }}</button>

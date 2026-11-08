@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from functools import partial
 from typing import TYPE_CHECKING, Final
 
@@ -38,10 +38,12 @@ from media_hygiene.review.phone_session import PhonePages, PhoneSession
 from media_hygiene.review.phone_tiles import TileSource
 from media_hygiene.review.place import decisions_place
 from media_hygiene.review.presence import Presence
+from media_hygiene.services.keyed_albums import keyed_albums
 from media_hygiene.services.launcher_phone_free import PHONE_MB_PER_SECOND
 from media_hygiene.services.quarantines import mounted_quarantines
 from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.services.writable import ensure_writable
+from media_hygiene.share.album_api import ALBUMS_PATH
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -109,12 +111,18 @@ def serve_phone_review(runtime: Runtime, review: PhoneReview) -> tuple[str, ...]
         )
         address_tip(runtime.output, port)
 
+    copies = {
+        str(rank): copy
+        for rank, ticked in enumerate(review.files)
+        if (copy := tiles.preview(ticked)) is not None
+    }
     header = page_header(_TEMPLATE)
     # Its tab closed: as Stop, nothing deleted; mh reads the page's lines (0262). From
     # the home page, the loop of mh ends instead, as after any page's tab (0332).
     closed = ExitCode.PAGE_CLOSED if header.home else STOPPED
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         app = PhoneApp(session, phone_page(place), executor, runtime.previews_dir)
+        app = replace(app, albums=keyed_albums(runtime, copies.get))  # (0657)
         door = EndingDoor(app, app.ending, Presence(app.ending, closed))
         door = with_person(door, runtime, executor)
         asyncio.run(serve_until_ended(door, review.port, ready))
@@ -154,6 +162,7 @@ def _page(place: DecisionsPlace) -> bytes:
             stop_path=STOP_PATH,
             place=place.host,
             phone_speed=PHONE_MB_PER_SECOND,
+            albums_path=ALBUMS_PATH,  # Add to an album (0657)
         )
         .encode()
     )

@@ -186,7 +186,9 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
   [`people`](people.md#depuis-nimporte-quelle-page--mettre-une-personne-de-côté).
 - Le tri des rafales a aussi un champ **Album** : **➕ Ajouter à l'album** met dans cet album les
   photos choisies, comme dans `library`, à part de vos décisions. Voir
-  [Mettre des photos dans un album](library.md#mettre-des-photos-dans-un-album).
+  [Mettre des photos dans un album](library.md#mettre-des-photos-dans-un-album). Ouvert depuis la
+  page d'accueil, son **▶ Diaporama ▾** montre les photos choisies (ou toutes celles montrées) sur
+  ce PC ou sur la télé ([`slideshow`](slideshow.md)).
 - *port is already allocated* ? Un autre programme utilise 8088 : `-p 127.0.0.1:9000:9000` et
   `review --port 9000`.
 

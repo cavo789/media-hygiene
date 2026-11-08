@@ -61,7 +61,7 @@ Depuis la page, sur le PC (un téléphone regarde seulement : les albums changen
     plus nette du premier jour) ;
   - **✉️ Envoyer** : la commande qui prépare les copies à envoyer (`mh share --album`) ; une
     partie de l'album choisie est d'abord enregistrée dans un album à elle, au nom du jour ;
-  - **📺 Sur la télé** : les fichiers choisis, ou tout l'album, sur la télé jumelée ;
+  - **▶ Diaporama ▾** : les fichiers choisis, ou tout l'album, sur ce PC ou sur la télé jumelée ;
 - **➕ Ajouter des photos** à un album ouvert : la [recherche](commands/library.md) s'ouvre dans le
   même onglet, l'album tapé dans son champ **Album**, la période autour des dates de l'album (un
   jour de part et d'autre) ; les fichiers déjà dans l'album sont marqués, **← l'album** revient

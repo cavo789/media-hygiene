@@ -10,7 +10,7 @@ a photo: no extra space used.**
 An **album** is the named list of photos you make in [`library`](library.md#put-photos-in-an-album),
 [the folders of `library`](library.md#walk-through-your-folders) or the burst review, saved in `albums.json`. It has several uses, all under
 *Share* in the home page and `mh menu`. An album is **a selection to keep** and show again: to
-show photos on the TV once, no album is needed (**📺 On the TV** in the bar of `library`, see [`slideshow`](slideshow.md)).
+show photos on the TV once, no album is needed (**▶ Slideshow ▾** in the bar of `library`, see [`slideshow`](slideshow.md)).
 
 | Use | Command |
 |---|---|

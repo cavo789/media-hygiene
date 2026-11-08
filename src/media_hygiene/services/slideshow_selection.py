@@ -33,6 +33,18 @@ if TYPE_CHECKING:
 HERE_SCREEN: Final = f"{SLIDESHOW_PAGE}{SCREEN_PATH.removeprefix('/')}?here=1"
 
 
+def started_at(query: str) -> str:
+    """Where a show started from the home page leads (0660).
+
+    Args:
+        query: The request's query; `here=1`: 🖥 *On this PC*.
+
+    Returns:
+        The screen in this PC's tab, or the remote.
+    """
+    return HERE_SCREEN if "here=1" in query.split("&") else SLIDESHOW_PAGE
+
+
 @dataclass(slots=True)
 class TvSlot:
     """Where a page sends its files to the TV; empty until a slideshow listens."""

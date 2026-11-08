@@ -401,9 +401,11 @@ def test_the_pc_opens_an_album_as_tiles_to_pick(
     assert page.count('"use strict";') == 1  # pick_grid.js.j2, once
     for part in ('id="setAside"', "Take out of the album", 'id="toOther"'):
         assert part in page, part
-    for part in ('id="makeCover"', 'id="sendAlbum"', 'id="tvSend"', 'id="viewer"'):
+    for part in ('id="makeCover"', 'id="sendAlbum"', 'id="showBar"', 'id="viewer"'):
         assert part in page, part
-    assert 'data-path="/api/album-change"' in page  # 📺 posts the album's own files
+    assert (
+        'data-path="/api/album-change"' in page
+    )  # ▶ Slideshow posts the album's own files
     listing = album_page().decode()
     assert "/albums/edit" in listing  # the PC's list opens it
 

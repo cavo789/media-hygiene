@@ -10,7 +10,7 @@ from media_hygiene.console.formatting import separators
 from media_hygiene.i18n import _
 from media_hygiene.i18n.live import PerLocale
 from media_hygiene.i18n.templates import translated_environment
-from media_hygiene.person.door import with_person
+from media_hygiene.person.door import person_on_tv, with_person
 from media_hygiene.review.ai_state_api import AI_STATE_PATH
 from media_hygiene.review.album_show import TV_CHOICES, TV_CHOOSE
 from media_hygiene.review.ending import (
@@ -189,6 +189,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
                 runtime,
                 pool,
             )
+            door = person_on_tv(door, server.tv)  # ▶ Slideshow on /person (0657)
             code = asyncio.run(serve_until_ended(door, port, ready))
     finally:
         app.audit.stop()  # between two files: the index keeps what it committed

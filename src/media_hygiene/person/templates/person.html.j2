@@ -32,7 +32,6 @@
 } %}
 {% set page_name = _("Set a person aside") %}
 {% set pick_all = _("every file shown") %}
-{% set pick_album = false %}
 {% set keys_safe = _("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") %}
 {% block style %}
 {% include "pick_grid.css.j2" %}
@@ -61,6 +60,7 @@
 {% block more_keys %}{% include "pick_keys_more.html.j2" %}{% endblock %}
 {% block bar %}
     {% include "pick_acting.html.j2" %}
+    {% include "album_bar.html.j2" %}
 {% endblock %}
 {% block content %}
   <main id="grid"></main>

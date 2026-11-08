@@ -309,11 +309,10 @@ if ($("acting")) { // a page answering per group has no picking bar (0321)
   $("pickAll").addEventListener("click", () => { everything = true; showPicked(); });
 }
 
-// 📺 *On the TV* (0454): the files picked, else every file the page shows, to the home
-// server's slideshow; its remote opens in a new tab at once (opened before the answer:
-// a browser lets a click open a tab, not a script after it). `here` (0659, the entry
-// point of 0660's *On this PC*): the screen itself opens in that tab, full screen on a
-// click, the keyboard as remote.
+// ▶ Slideshow ▾ (0454, 0660): the files picked, else every file the page shows, to the
+// home server's slideshow; a new tab opens at once (opened before the answer: a browser
+// lets a click open a tab, not a script after it): the TV's remote, or with `here` (🖥 On
+// this PC, 0659) the screen itself, full screen on a click, the keyboard as remote.
 async function toTv(button, here = false) {
   const some = picked.size > 0 || everything;
   const sent = some ? picking() : { keys: files.map((file) => file.key), all: total > files.length, search: scope() };
@@ -333,13 +332,5 @@ async function toTv(button, here = false) {
   const page = here ? state.screen : state.page;
   if (remote) remote.location = page; else window.location = page;
 }
-if ($("tvSend")) $("tvSend").addEventListener("click", () => toTv($("tvSend")));
-// Shown only with a TV paired (0523), as the 📺 of the cards: `GET /api/tv-paired`.
-if ($("tvSend")) {
-  const pairedPath = $("tvSend").dataset.paired;
-  const paired = pairedPath
-    ? fetch(pairedPath, { cache: "no-store" }).then((answer) => (answer.ok ? answer.json() : {})).then((said) => Boolean(said.paired)).catch(() => false)
-    : Promise.resolve(false);
-  paired.then((yes) => { $("tvSend").hidden = !yes; });
-}
+{% include "pick_slideshow.js.j2" %}
 {% include "pick_bar_panel.js.j2" %}

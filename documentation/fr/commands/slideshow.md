@@ -111,10 +111,14 @@ seulement : ni vidéo, ni photo sans date, ni capture d'écran ou document, rien
 deux choix : la **durée** (30 min, 1 h, 2 h : 1 h à 8 s par photo fait environ 450 photos) et les
 **années** (tout, les 5 dernières années ou une période). Chaque appui est un nouveau diaporama.
 
-**Depuis toute page de vignettes, sans album** : dans [`library`](library.md) et la revue des rafales ouverts depuis la page d'accueil, **📺 Sur la télé** dans la barre montre
+**Depuis toute page de vignettes, sans album** : dans [`library`](library.md) et la revue des rafales ouverts depuis la page d'accueil, (et `/person`, les vignettes des albums), **▶ Diaporama ▾** dans la barre montre
 les photos et vidéos choisies ou, rien de choisi, tous les fichiers que montre la page (le
 résultat de la recherche, les fichiers du dossier), 3000 au plus (au-delà : affinez la
-recherche). La télécommande s'ouvre aussitôt dans un nouvel onglet ; un diaporama en cours est
+recherche). Ses deux entrées disent combien : **🖥 Sur ce PC · 120 photos** ouvre
+[l'écran dans un nouvel onglet](#pas-de-télé--sur-ce-pc), **📺 Sur la télé** (grisé, avec une
+ligne *Aucune télé appairée : comment faire*, tant qu'aucune télé n'est appairée) ouvre la
+télécommande dans un nouvel onglet. La dernière utilisée vient en premier. Sur un téléphone
+associé, le menu n'est pas montré : le téléphone garde ses grands boutons. Avec la télé, un diaporama en cours est
 remplacé (la télécommande le dit une fois : « remplacé par une sélection de N fichiers ») et la télé appairée le reste. La sélection dure autant que le
 diaporama : une télé rechargée ne perd rien, arrêter `mh` y met fin.
 
@@ -216,7 +220,10 @@ dans la page de la box, **réservez** l'adresse du PC (souvent *DHCP › Bail st
 
 ## Pas de télé : sur ce PC
 
-Pas de télé sous la main (au bureau, en voyage, un portable) ? L'écran est une page web : ouvrez
+Pas de télé sous la main (au bureau, en voyage, un portable) ? **▶ Diaporama ▾ → 🖥 Sur ce PC**
+dans la barre d'une page de vignettes, ou **🖥 Sur ce PC** dans le formulaire de *Montrer un album
+sur la télé* (ou *Montrer vos photos sur la télé*) de la page d'accueil, lance le diaporama et
+l'ouvre ici. À la main : l'écran est une page web, ouvrez
 `http://127.0.0.1:8088/screen?here=1` dans un nouvel onglet du navigateur du PC. Ouvert depuis le
 PC lui-même, il montre le diaporama tout de suite, **sans code** (un écran du réseau de la maison
 demande toujours son code). Cliquez la photo pour le plein écran (un navigateur exige ce clic),

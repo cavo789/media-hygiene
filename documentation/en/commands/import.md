@@ -212,6 +212,9 @@ as [the folders of `library`](library.md#walk-through-your-folders):
 - **Large view**: a double click or Enter, ← → the previous or next one, **Space ticks or
   unticks the file shown**, F full screen, Esc closes. It shows the PC's copy; *Open the
   original* opens it untouched.
+- **📚 Album ▾** in the bar adds the PC's copies of the files picked to an album (a file the
+  index does not know yet is left out: run an audit first). No slideshow from this page: it has
+  its own server; show the album afterwards from the home page.
 - There is no Delete key here: the only deletion is the red button. The keys are listed at the
   bottom left (⌨ **Keyboard**, then *More keys*).
 

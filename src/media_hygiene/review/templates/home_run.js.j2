@@ -110,13 +110,15 @@ function openForm(action) {
     <p class="dlg-text">${esc(action.text)} ${esc(T.formNote)}</p>
     ${fields}
     <p class="field-error" id="formError" role="alert" hidden></p>
-    <div class="dlg-foot"><button class="btn" type="button" data-close>${esc(T.cancel)}</button><button class="btn btn-primary" type="submit">${icon("play")} ${esc(T.verbRun)}</button></div>
+    <div class="dlg-foot"><button class="btn" type="button" data-close>${esc(T.cancel)}</button>${runButtons(action)}</div>
   </form>`;
   const form = $("#formEl", dialog);
   albumChoices(form);
   const values = () => Object.fromEntries(action.fields.map((field) => [field.name, form.elements[field.name].value.trim()]));
   form.addEventListener("submit", (event) => {
     event.preventDefault();
+    const here = Boolean(event.submitter && event.submitter.dataset.target === "here");
+    if (event.submitter && event.submitter.dataset.target) rememberTarget(event.submitter.dataset.target);
     const given = values();
     const error = $("#formError", dialog);
     if (Object.values(given).some((value) => !value)) { error.textContent = T.fillEach; error.hidden = false; return; }
@@ -129,6 +131,7 @@ function openForm(action) {
       .then((reply) => {
         if (reply.status === 422) { error.textContent = reply.body.error; error.hidden = false; return; }
         dialog.close();
+        if (reply.ok && reply.body.page) { goTo(here ? `${reply.body.page}?here=1` : reply.body.page); return; }  // in this server (0417)
         if (reply.ok) { openRun(action, reply.body.command, reply.run, reply.body.kept ? reply.body.id : null); return; }
         if (reply.body.command) copyBox(reply.body.command);
         toast(reply.body.error || fill(T.failed, { status: reply.status }));
@@ -136,6 +139,21 @@ function openForm(action) {
       .catch(() => stopped());
   });
   showDialog(dialog);
+}
+// The slideshow steps (0660): 🖥 On this PC and 📺 On the TV, as ▶ Slideshow ▾ of the pages
+// (pick_slideshow.js.j2, the same localStorage key): the target used last comes first.
+const SHOW_STEPS = ["slideshow", "slideshow-album"];
+const SHOW_TARGET = "mh-slideshow-target";
+function rememberTarget(target) {
+  try { window.localStorage.setItem(SHOW_TARGET, target); } catch { /* private mode */ }
+}
+function runButtons(action) {
+  if (!SHOW_STEPS.includes(action.name)) return `<button class="btn btn-primary" type="submit">${icon("play")} ${esc(T.verbRun)}</button>`;
+  let last = null;
+  try { last = window.localStorage.getItem(SHOW_TARGET); } catch { /* private mode */ }
+  const here = `<button class="btn${last === "tv" ? "" : " btn-primary"}" type="submit" data-target="here">${esc(T.showHere)}</button>`;
+  const tv = `<button class="btn${last === "tv" ? " btn-primary" : ""}" type="submit" data-target="tv">${esc(T.showTv)}</button>`;
+  return last === "tv" ? tv + here : here + tv;
 }
 function openConfirm(action, body, command) {
   const dialog = $("#confirmDlg");

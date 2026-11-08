@@ -105,9 +105,13 @@ nothing set aside. Its two choices: the **length** (30 min, 1 h, 2 h: 1 h at 8 s
 450 photos) and the **years** (everything, the last 5 years, or a period). Each tap is a new show.
 
 **From any page of tiles, no album needed**: in [`library`](library.md) and the burst
-series review opened from the home page, **📺 On the TV** in the bar shows the photos and videos picked, or,
-nothing picked, every file the page shows (the search's result, the folder's files), at most
-3000 (more: narrow the search). The remote opens at once in a new tab; a show already running is
+series review opened from the home page (and `/person`, the albums' tiles), **▶ Slideshow ▾** in the
+bar shows the photos and videos picked, or, nothing picked, every file the page shows (the search's
+result, the folder's files), at most 3000 (more: narrow the search). Its two entries say how many:
+**🖥 On this PC · 120 photos** opens the [screen in a new tab](#no-tv-on-this-pc), **📺 On the
+TV** (greyed, with a *No TV paired: how* line, until a TV is paired) opens the remote in a new
+tab. The one used last comes first. On a paired phone the menu is not shown: the phone keeps its
+big buttons. With the TV, a show already running is
 replaced (the remote says so once: "replaced by a selection of N files") and the TV paired stays paired. The selection lasts as long as the
 show: a TV reloaded loses nothing, stopping `mh` ends it.
 
@@ -198,7 +202,9 @@ reservation*, by the PC's MAC address). The tool does not do it for you.
 
 ## No TV: on this PC
 
-No TV at hand (the office, a trip, a laptop)? The screen is a web page: open
+No TV at hand (the office, a trip, a laptop)? **▶ Slideshow ▾ → 🖥 On this PC** in the bar of a
+page of tiles, or **🖥 On this PC** in the form of *Show an album on the TV* (or *Show your photos
+on the TV*) on the home page, starts the show and opens it here. By hand: the screen is a web page, open
 `http://127.0.0.1:8088/screen?here=1` in a new tab of the PC's browser. Opened from the PC itself,
 it shows the show at once, **without a code** (a screen from the home network still asks its
 code). Click the photo for full screen (a browser asks for that click), then the keyboard is the

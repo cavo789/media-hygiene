@@ -1,0 +1,29 @@
+// ▶ Slideshow ▾ (0660, slideshow_menu.html.j2): on this PC (0659) or on the TV. Shown on
+// the PC only; the entries say how many files they show; the target used last first.
+if ($("showBar")) {
+  const menu = $("showBar");
+  const LAST_TARGET = "mh-slideshow-target";
+  menu.hidden = !["127.0.0.1", "localhost", "[::1]"].includes(window.location.hostname);
+  const lastTarget = () => { try { return window.localStorage.getItem(LAST_TARGET); } catch { return null; } };
+  const remember = (target) => { try { window.localStorage.setItem(LAST_TARGET, target); } catch { /* private mode */ } };
+  const shown = () => {
+    if (picked.size > 0 || everything) return everything ? total : picked.size;
+    return Math.max(total || 0, files.length);
+  };
+  const tvPaired = () => (menu.dataset.paired
+    ? fetch(menu.dataset.paired, { cache: "no-store" }).then((answer) => (answer.ok ? answer.json() : {})).then((said) => Boolean(said.paired)).catch(() => false)
+    : Promise.resolve(false));
+  menu.addEventListener("toggle", () => {
+    if (!menu.open) return;
+    const first = lastTarget() === "tv" ? $("showTv") : $("showHere");
+    $("showTargets").prepend(first);
+    const n = shown();
+    for (const count of menu.querySelectorAll(".showCount")) count.textContent = fill(n === 1 ? menu.dataset.one : menu.dataset.many, { n: n });
+    $("showHere").disabled = n === 0;
+    $("showTv").disabled = true;
+    tvPaired().then((yes) => { $("showTv").disabled = !yes || n === 0; $("showHow").hidden = yes; });
+  });
+  for (const button of [$("showHere"), $("showTv")]) {
+    button.addEventListener("click", () => { remember(button.dataset.target); toTv(button, button.dataset.target === "here"); });
+  }
+}

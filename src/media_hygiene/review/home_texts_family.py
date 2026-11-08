@@ -35,6 +35,8 @@ def family_texts() -> dict[str, str]:
         "tvFolder": _("A folder"),
         "tvMonth": _("A month"),
         "tvShow": _("Show"),
+        "showHere": _("🖥 On this PC"),  # the slideshow steps' two targets (0660)
+        "showTv": _("📺 On the TV"),
         "tvRandom": _("🎲 At random"),
         "tvRandomNote": _(
             "A few photos of each event, chapter by chapter, from one era to the next."

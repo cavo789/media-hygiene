@@ -184,7 +184,10 @@ photo (`C:\Photos\…\IMG_1234.jpg`).
    and shown, and remembers the face, as [above](#remove-every-photo-of-someone): the people
    page will show the photos that look like it. Opened from a page `mh` opened from the home
    page, **Apply now** in the bar runs `clean --decisions` like on that page.
-4. A photo of the grid shows the person from another angle? Its **👤** (next to its name, or in
+4. **📚 Album ▾** in the bar adds the photos picked to an album, and, the page served by the home
+   page, **▶ Slideshow ▾** shows them on this PC or on the TV (nothing picked: every photo of the
+   grid), as in [`library`](library.md).
+5. A photo of the grid shows the person from another angle? Its **👤** (next to its name, or in
    its large view) opens the page again on that photo, in a new tab.
 
 **No face on the photo?** A face tilted, lying on its side or blurred is often missed by the
