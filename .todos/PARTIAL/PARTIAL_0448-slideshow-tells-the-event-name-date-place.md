@@ -59,3 +59,4 @@ event, the phone's choice reaches the TV's state. Docs en+fr; `docs_screenshots`
   **Reason:** needs the maintainer's TV.
 - The title card does not pause the show's timer (it eats up to 3 s of the first photo).
   **Reason:** kept simple for a first TV test; decide after seeing it.
+  → Pause the timer during the card: TODO 0654 (2026-11-08).

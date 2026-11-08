@@ -91,6 +91,7 @@ after the implementation: an unattended run closes PARTIAL on it.
   **Reason:** decided later (decision 3, 2026-10-21): read-only steps first; a TODO of its own.
 - `mh --lan` from bash (WSL, Linux, macOS).
   **Reason:** Docker under WSL publishes on Windows' loopback; Windows-first; no request yet.
+  → Inbox 2026-11-08: keep the default (already dropped 2026-10-27/29; stays listed, no work).
 
 ## Inbox (2026-10-27)
 
