@@ -3,16 +3,27 @@
 Go through the feedback file of an unattended run (`/todo:iterate`, or any run that kept one) with the
 user: question by question, apply each decision, file the follow-ups, and close the file.
 
-**Usage:** `/todo:review-feedback` — the most recent `.claude/plans/feedback-*.md`, and the open
-pull request of its `/todo:iterate` branch when there is one. `/todo:review-feedback <file>` — that file.
+**Usage:** `/todo:review-feedback` — **every** `.claude/plans/feedback-*.md` not reviewed yet,
+oldest first, and the open pull request of each `/todo:iterate` branch when there is one.
+`/todo:review-feedback <file>` — that file only.
+
+Why all of them: the user cannot know which files are left. Taking only the newest once hid a
+file for two weeks (a manual run's feedback, overtaken by later runs before any review).
 
 The user may be on a small screen: one decision at a time, short options, the recommended one
 first. Speak the user's language.
 
 ## Phase 0 — Read
 
-1. Open the feedback file (the newest by modification time when none is given). If it carries a
-   `## Reviewed (<date>)` section, say so and ask whether to review it again.
+1. Take the inventory: `python3 .claude/scripts/feedback_pending.py` lists every feedback file
+   without a `## Reviewed (<date>)` heading, oldest first, with its count of questions and
+   deviations (the heading Phase 3 writes is the record: no list to keep by hand). Say in one
+   line how many are pending; none → say so and stop. A file given as argument is reviewed even
+   when it carries the heading (ask first whether to review it again).
+   Then go through the pending files one after the other, oldest first: Phases 0–3 for each
+   (its own `## Reviewed` heading at its close, so an interrupted session resumes at the next).
+   An old file: check each item against today's code and backlog first; an item done or
+   superseded since is closed as *stale* in one line, never asked.
 2. List what needs the user, from every TODO section and the closing sections:
    - **Questions** (`**Question**:` bullets, the *Questions* section);
    - **Deviations** from a TODO (`**Deviation**:`): the user accepts or asks to change them;
