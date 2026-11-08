@@ -2307,6 +2307,14 @@ msgstr ""
 ".xmp des photos sans GPS de ce dossier et de ses sous-dossiers ([tags] "
 "xmp_folder_gps = true)."
 
+msgid ""
+"Click the photo for full screen. Keys: ← → previous and next, Space pause"
+" and play, Esc leaves full screen, S stops the show."
+msgstr ""
+"Cliquez la photo pour le plein écran. Touches : ← → précédente et "
+"suivante, Espace pause et lecture, Échap quitte le plein écran, S arrête "
+"le diaporama."
+
 msgid "Click: the files of this folder"
 msgstr "Clic : les fichiers de ce dossier"
 
@@ -4514,6 +4522,9 @@ msgstr "Depuis votre NAS ou un ancien disque"
 msgid "From:"
 msgstr "Depuis :"
 
+msgid "Full screen (Esc leaves it)"
+msgstr "Plein écran (Échap le quitte)"
+
 msgid "GB"
 msgstr "Go"
 
@@ -6351,6 +6362,9 @@ msgstr "Nouveaux voyages ({n})"
 
 msgid "Next"
 msgstr "Suivante"
+
+msgid "Next (→)"
+msgstr "Suivante (→)"
 
 msgid "Next audit: a few seconds, the files checked are taken from the cache."
 msgstr ""
@@ -8247,6 +8261,9 @@ msgstr "Le chemin contient"
 msgid "Path contains: invalid regular expression ({error})."
 msgstr "Chemin contient : expression régulière invalide ({error})."
 
+msgid "Pause (Space)"
+msgstr "Pause (Espace)"
+
 msgid "Pause while I talk"
 msgstr "Pause, je raconte"
 
@@ -8503,6 +8520,9 @@ msgstr "Prévu avec mh push : pas encore dans l'outil."
 msgid "Planned: mh push is coming."
 msgstr "Prévu : mh push arrive."
 
+msgid "Play (Space)"
+msgstr "Lecture (Espace)"
+
 #, python-brace-format
 msgid ""
 "Please report it at {url}, with the version ({version}), the command "
@@ -8597,6 +8617,9 @@ msgstr "Aperçus maintenant : {size}."
 
 msgid "Previous"
 msgstr "Précédente"
+
+msgid "Previous (←)"
+msgstr "Précédente (←)"
 
 msgid "Previous and next pages"
 msgstr "Pages précédente et suivante"
@@ -10662,6 +10685,9 @@ msgstr "Arrêter le partage"
 
 msgid "Stop the audit"
 msgstr "Arrêter l'audit"
+
+msgid "Stop the show (S)"
+msgstr "Arrêter le diaporama (S)"
 
 msgid ""
 "Stop this page with Ctrl+C in the window where mh runs, paste the command"

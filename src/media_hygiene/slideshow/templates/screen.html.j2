@@ -60,7 +60,9 @@ html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
   <p>{{ _("Then press OK on the TV's remote for full screen.") }}</p>
   {% if phone_url %}<p class="phone">{{ _("The phone's remote: on a phone on the same Wi-Fi, open") }} <code>{{ phone_url }}</code></p>{% endif %}
 </div>
+{% include "screen_here.html.j2" %}
 <script>
+{% include "screen_here.js.j2" %}
 {% include "screen.js.j2" %}
 </script>
 {% set presence_es5 = true %}{% include "presence.html.j2" %}

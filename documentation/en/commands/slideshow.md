@@ -78,7 +78,7 @@ mh slideshow --folder "C:\Photos\2026 Holidays" --lan
 [`mh --lan`](home.md#from-a-phone-on-the-home-wi-fi-mh---lan) does for the home page: the window says the address of the screen and the
 phone's address and code; the PC's browser opens the remote with the same lines and a QR code.
 Windows may ask whether Docker Desktop may accept connections: allow it on **private** networks
-only. Without `--lan`, only the PC can open the show (useful to try it, or for plan B below).
+only. Without `--lan`, only the PC can open the show (useful to try it, or [on this PC](#no-tv-on-this-pc) below).
 
 Instead of a folder: `--search "noel 2025"` (the photos a [`library`](library.md) finds) or
 `--album "Crete 2023"` (an [album](library.md#put-photos-in-an-album) made in `library`,
@@ -196,12 +196,26 @@ The TV's bookmark names the PC's address on your home network and the port. The 
 the router's page, **reserve** the PC's address (often *DHCP › Static lease* or *Address
 reservation*, by the PC's MAC address). The tool does not do it for you.
 
-## Plan B: casting a tab
+## No TV: on this PC
 
-If neither the Chromecast's browser nor the TV's opens the screen: start without `--lan`, open
-`http://127.0.0.1:8088/screen` in Chrome or Edge on the PC, then **Cast** that tab to the
-Chromecast from the browser's menu. The remote then works on the PC itself, at
-`http://127.0.0.1:8088/`.
+No TV at hand (the office, a trip, a laptop)? The screen is a web page: open
+`http://127.0.0.1:8088/screen?here=1` in a new tab of the PC's browser. Opened from the PC itself,
+it shows the show at once, **without a code** (a screen from the home network still asks its
+code). Click the photo for full screen (a browser asks for that click), then the keyboard is the
+remote:
+
+| Key | What it does |
+|---|---|
+| ← / → | Previous / next photo |
+| Space | Pause / play |
+| Esc | Leaves full screen |
+| S | Stops the show (and closes the tab) |
+
+Move the mouse: a small bar shows the same buttons (◀ ⏯ ▶ ⛶ ✕), and hides after 3 seconds still.
+Same show, title cards and videos as on a TV; a paired phone still drives it.
+
+To watch it on a TV after all, **Cast** that tab to the Chromecast from Chrome's or Edge's menu
+(when neither the Chromecast's browser nor the TV's opens the screen).
 
 ## Settings
 

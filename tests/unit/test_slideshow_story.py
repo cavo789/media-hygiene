@@ -246,3 +246,27 @@ def test_telling_on_the_phone_only_leaves_no_card_to_wait_for() -> None:
     desk.show.move(1)
     desk.show.move(-1)
     assert desk.show.wait_seconds() == pytest.approx(10)
+
+
+def test_the_very_first_photo_also_waits_for_its_card() -> None:
+    """A show just joined, played later: its first card counts, then the full 10 s."""
+    clock = _Clock()
+    show = _two_events(clock)
+    clock.now = 100.0  # the TV joined, the show paused until now
+    show.play(playing=True)
+    assert show.wait_seconds() == pytest.approx(13)
+    clock.now = 112.9
+    assert show.wait_seconds() == pytest.approx(0.1)
+
+
+def test_pause_and_next_during_the_first_card_behave_as_for_the_others() -> None:
+    """Pause through the first card resumes after it; next shows its own interval."""
+    clock = _Clock()
+    show = _two_events(clock)
+    show.play(playing=True)
+    show.play(playing=False)
+    clock.now = 1.0
+    show.play(playing=True)
+    assert show.wait_seconds() == pytest.approx(12)
+    show.move(1)  # next during the card: same event, no card
+    assert show.wait_seconds() == pytest.approx(10)

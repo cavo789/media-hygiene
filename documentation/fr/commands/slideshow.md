@@ -80,7 +80,7 @@ mh slideshow --folder "C:\Photos\Vacances 2026" --lan
 l'adresse et le code du téléphone ; le navigateur du PC ouvre la télécommande avec les mêmes
 lignes et un QR code. Windows peut demander si Docker Desktop peut accepter des connexions :
 autorisez-le sur les réseaux **privés** seulement. Sans `--lan`, seul le PC peut ouvrir le
-diaporama (utile pour l'essayer, ou pour le plan B ci-dessous).
+diaporama (utile pour l'essayer, ou [sur ce PC](#pas-de-télé--sur-ce-pc) ci-dessous).
 
 Au lieu d'un dossier : `--search "noel 2025"` (les photos que trouve une [`library`](library.md)) ou
 `--album "Crète 2023"` (un [album](library.md#mettre-des-photos-dans-un-album) fait dans `library`,
@@ -214,12 +214,27 @@ fixe (`[review] port`, 8088 ; celui de la télé, 8089). L'adresse est donnée p
 dans la page de la box, **réservez** l'adresse du PC (souvent *DHCP › Bail statique* ou
 *Réservation d'adresse*, par l'adresse MAC du PC). L'outil ne le fait pas pour vous.
 
-## Plan B : caster un onglet
+## Pas de télé : sur ce PC
 
-Si ni le navigateur du Chromecast ni celui de la télé n'ouvrent l'écran : lancez sans `--lan`,
-ouvrez `http://127.0.0.1:8088/screen` dans Chrome ou Edge sur le PC, puis **Caster** cet onglet
-vers le Chromecast depuis le menu du navigateur. La télécommande fonctionne alors sur le PC
-lui-même, à `http://127.0.0.1:8088/`.
+Pas de télé sous la main (au bureau, en voyage, un portable) ? L'écran est une page web : ouvrez
+`http://127.0.0.1:8088/screen?here=1` dans un nouvel onglet du navigateur du PC. Ouvert depuis le
+PC lui-même, il montre le diaporama tout de suite, **sans code** (un écran du réseau de la maison
+demande toujours son code). Cliquez la photo pour le plein écran (un navigateur exige ce clic),
+puis le clavier sert de télécommande :
+
+| Touche | Ce qu'elle fait |
+|---|---|
+| ← / → | Photo précédente / suivante |
+| Espace | Pause / lecture |
+| Échap | Quitte le plein écran |
+| S | Arrête le diaporama (et ferme l'onglet) |
+
+Bougez la souris : une petite barre montre les mêmes boutons (◀ ⏯ ▶ ⛶ ✕), et se cache après
+3 secondes sans mouvement. Même diaporama, mêmes cartons de titre et vidéos que sur une télé ; un
+téléphone associé le pilote toujours.
+
+Pour le regarder malgré tout sur une télé, **Castez** cet onglet vers le Chromecast depuis le menu
+de Chrome ou d'Edge (quand ni le navigateur du Chromecast ni celui de la télé n'ouvrent l'écran).
 
 ## Réglages
 

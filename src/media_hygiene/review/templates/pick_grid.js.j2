@@ -311,8 +311,10 @@ if ($("acting")) { // a page answering per group has no picking bar (0321)
 
 // 📺 *On the TV* (0454): the files picked, else every file the page shows, to the home
 // server's slideshow; its remote opens in a new tab at once (opened before the answer:
-// a browser lets a click open a tab, not a script after it).
-async function toTv(button) {
+// a browser lets a click open a tab, not a script after it). `here` (0659, the entry
+// point of 0660's *On this PC*): the screen itself opens in that tab, full screen on a
+// click, the keyboard as remote.
+async function toTv(button, here = false) {
   const some = picked.size > 0 || everything;
   const sent = some ? picking() : { keys: files.map((file) => file.key), all: total > files.length, search: scope() };
   sent.keys = sent.keys.map(String);
@@ -328,7 +330,8 @@ async function toTv(button) {
     return;
   }
   $("chosen").textContent = button.dataset.sent;  // "replaced": told on the remote (0655)
-  if (remote) remote.location = state.page; else window.location = state.page;
+  const page = here ? state.screen : state.page;
+  if (remote) remote.location = page; else window.location = page;
 }
 if ($("tvSend")) $("tvSend").addEventListener("click", () => toTv($("tvSend")));
 // Shown only with a TV paired (0523), as the 📺 of the cards: `GET /api/tv-paired`.

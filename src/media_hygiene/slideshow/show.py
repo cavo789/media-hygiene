@@ -5,7 +5,7 @@ Every change raises `version`: the pages wait for a version they have not seen y
 of the show ("do not show") and the videos the TV cannot play (0292); a photo chosen
 on the phone is shown even when it was set out. The timer is read, never run: `tick`
 moves on once the interval is over (a video: once the TV says it ended, `ended`),
-called by whoever waits. An event's title card holds the interval back (0654).
+called by whoever waits. An event's title card holds the interval back (0654, 0658).
 """
 
 from __future__ import annotations
@@ -40,7 +40,7 @@ class Show:  # pylint: disable=too-many-instance-attributes
     )
 
     def __init__(self, slides: tuple[Slide, ...], timing: Timing) -> None:
-        """Start paused on the first photo.
+        """Start paused on the first photo, its card timed when play starts.
 
         Args:
             slides: The selection, in the order shown.
@@ -51,7 +51,8 @@ class Show:  # pylint: disable=too-many-instance-attributes
         self.playing, self.films, self.ended = False, True, False
         self.version = 1
         self.position: int | None = self._order.step(None, 1)  # the first shown
-        self._deadline = self._card_end = 0.0
+        self._deadline = 0.0
+        self._card_end: float | None = None  # the first card, untimed until play
 
     @property
     def current(self) -> Slide | None:
@@ -131,6 +132,8 @@ class Show:  # pylint: disable=too-many-instance-attributes
             playing: True to play.
         """
         self.playing = playing
+        if self._card_end is None:  # no move yet: the first card counts (0658)
+            self._card_end = self.timing.card_end(None, self.current)
         self._deadline = self.timing.deadline(self._card_end, self.current)
         self.version += 1
 
@@ -184,17 +187,10 @@ class Show:  # pylint: disable=too-many-instance-attributes
         """The selection, stopping at the slides still shown.
 
         Returns:
-            It.
+            It: next and previous pass over the slides set out of the show and the
+            videos the TV cannot play.
         """
-        return Order(self.slides, self._shown)
-
-    def _shown(self, slide: Slide) -> bool:
-        """Tell whether next and previous stop at a slide.
-
-        Args:
-            slide: The slide.
-
-        Returns:
-            False for one set out of the show, or a video the TV cannot play.
-        """
-        return slide.key not in self.skipped and self.plays(slide)
+        return Order(
+            self.slides,
+            lambda slide: slide.key not in self.skipped and self.plays(slide),
+        )

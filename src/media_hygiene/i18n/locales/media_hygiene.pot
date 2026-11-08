@@ -1876,6 +1876,11 @@ msgid ""
 " this folder and of its subfolders ([tags] xmp_folder_gps = true)."
 msgstr ""
 
+msgid ""
+"Click the photo for full screen. Keys: ← → previous and next, Space pause"
+" and play, Esc leaves full screen, S stops the show."
+msgstr ""
+
 msgid "Click: the files of this folder"
 msgstr ""
 
@@ -3685,6 +3690,9 @@ msgstr ""
 msgid "From:"
 msgstr ""
 
+msgid "Full screen (Esc leaves it)"
+msgstr ""
+
 msgid "GB"
 msgstr ""
 
@@ -5257,6 +5265,9 @@ msgid "New trips ({n})"
 msgstr ""
 
 msgid "Next"
+msgstr ""
+
+msgid "Next (→)"
 msgstr ""
 
 msgid "Next audit: a few seconds, the files checked are taken from the cache."
@@ -6836,6 +6847,9 @@ msgstr ""
 msgid "Path contains: invalid regular expression ({error})."
 msgstr ""
 
+msgid "Pause (Space)"
+msgstr ""
+
 msgid "Pause while I talk"
 msgstr ""
 
@@ -7048,6 +7062,9 @@ msgstr ""
 msgid "Planned: mh push is coming."
 msgstr ""
 
+msgid "Play (Space)"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Please report it at {url}, with the version ({version}), the command "
@@ -7124,6 +7141,9 @@ msgid "Previews now: {size}."
 msgstr ""
 
 msgid "Previous"
+msgstr ""
+
+msgid "Previous (←)"
 msgstr ""
 
 msgid "Previous and next pages"
@@ -8884,6 +8904,9 @@ msgid "Stop sharing"
 msgstr ""
 
 msgid "Stop the audit"
+msgstr ""
+
+msgid "Stop the show (S)"
 msgstr ""
 
 msgid ""

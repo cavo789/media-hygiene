@@ -226,6 +226,9 @@
   }
 
   function showAnswer(answer) {
+    if (hereAnswer) {
+      hereAnswer(answer);  // the PC's own tab (0659): its bar follows the show
+    }
     if (answer.ended) {
       over();
       return;

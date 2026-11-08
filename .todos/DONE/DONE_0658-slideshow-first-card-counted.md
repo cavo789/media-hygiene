@@ -19,5 +19,5 @@ new event (`Timing.card_for`), then the interval.
 
 ## Acceptance
 
-- [ ] The first photo of a show just joined stays its full interval after its card (test, fake clock)
-- [ ] Pause/next during that first card behave as for the others (test)
+- [x] The first photo of a show just joined stays its full interval after its card (test, fake clock)
+- [x] Pause/next during that first card behave as for the others (test)

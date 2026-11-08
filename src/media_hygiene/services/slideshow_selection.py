@@ -12,13 +12,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from http import HTTPStatus
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.review.album_show import SLIDESHOW_PAGE
 from media_hygiene.review.serving import json_response
 from media_hygiene.services.slideshow_pick import Pick
+from media_hygiene.slideshow.tv_door import SCREEN_PATH
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -27,6 +28,9 @@ if TYPE_CHECKING:
     from media_hygiene.review.http import Response
     from media_hygiene.review.lan_phones import PhoneBook
     from media_hygiene.slideshow.screens import Screens
+
+# The screen in a tab of this PC (0659): paired at once, the keyboard as its remote.
+HERE_SCREEN: Final = f"{SLIDESHOW_PAGE}{SCREEN_PATH.removeprefix('/')}?here=1"
 
 
 @dataclass(slots=True)
@@ -85,13 +89,17 @@ def selected(
         ordered: True to keep the files' order (a random show), else oldest first.
 
     Returns:
-        The remote's page and whether a show was replaced; 409 with the reason.
+        The remote's page, the screen's on this PC (0659: full screen, the keyboard
+        as remote) and whether a show was replaced; 409 with the reason.
     """
     try:
         replaced = begin(Pick(files=files, ordered=ordered))
     except MediaHygieneError as exc:
         return json_response(HTTPStatus.CONFLICT, {"error": why(exc)})
-    return json_response(HTTPStatus.OK, {"page": SLIDESHOW_PAGE, "replaced": replaced})
+    return json_response(
+        HTTPStatus.OK,
+        {"page": SLIDESHOW_PAGE, "screen": HERE_SCREEN, "replaced": replaced},
+    )
 
 
 def why(error: MediaHygieneError) -> str:

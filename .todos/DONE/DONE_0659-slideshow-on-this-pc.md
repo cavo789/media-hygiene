@@ -34,7 +34,17 @@ maintainer on 2026-11-08.
 
 ## Acceptance
 
-- [ ] A screen opened from the PC shows the show without a code; from the LAN, the code (tests)
-- [ ] ← → Space Esc S do what they say; the bar hides after the mouse stops (headless Chromium)
-- [ ] The TV's screen behaves as before (its tests unchanged)
-- [ ] Docs en/fr; `docs_screenshots` flagged stale
+- [x] A screen opened from the PC shows the show without a code; from the LAN, the code (tests)
+- [x] ← → Space Esc S do what they say; the bar hides after the mouse stops (headless Chromium)
+- [x] The TV's screen behaves as before (its tests unchanged)
+- [x] Docs en/fr; `docs_screenshots` flagged stale (the slideshow page has no capture of this section)
+
+## Done (2026-11-08)
+
+- The server already treated the PC's door with a loopback `Host` (Docker Desktop's published
+  port) as `Visitor.PC`: no code; now tested beside a LAN screen that still gets its code and
+  cannot post an action.
+- `screen_here.html.j2` / `screen_here.js.j2` (ES5, active only with `here=1`); `hereAnswer`
+  hook in `screen.js.j2`. Driven in headless Chromium (playwright 1.57, API mocked).
+- Entry point for 0660: `toTv(button, true)` in `pick_grid.js.j2`; the albums API's `tv`
+  answer now carries `screen: "/slideshow/screen?here=1"` (`HERE_SCREEN`).

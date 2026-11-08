@@ -96,7 +96,11 @@ def test_the_keys_picked_start_a_show_of_exactly_them(
     """Keys 3 and 1: a show of those two, in name order (undated); the remote."""
     answer = _send(here, tmp_path, ["3", "1"])
     assert answer.status is HTTPStatus.OK
-    assert json.loads(answer.body) == {"page": "/slideshow/", "replaced": False}
+    assert json.loads(answer.body) == {
+        "page": "/slideshow/",
+        "screen": "/slideshow/screen?here=1",
+        "replaced": False,
+    }
     assert _shown(here) == [1, 3]
 
 

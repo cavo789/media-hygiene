@@ -26,6 +26,7 @@ _PATHS: Final = {
     "code_shown": "code",
     "ended_prefix": "/api/ended/",
     "photos_only": "/photos",
+    "show_path": "api/show",
     "title_seconds": 3,
     "banner_seconds": 5,
 }
@@ -146,3 +147,15 @@ def test_a_photo_that_cannot_be_decoded_is_not_shown(tmp_path: Path) -> None:
     assert [kept.stat().st_size for kept in cache.iterdir()] == [0]
     assert kept_screen_jpeg(job, broken) is None
     assert kept_screen_jpeg(job, tmp_path / "gone.jpg") is None
+
+
+def test_the_screen_on_this_pc_has_its_keys_and_its_bar() -> None:
+    """0659: arrows, Space, Esc, S and a bar, behind `here=1`: a TV runs none."""
+    page = _screen_page()
+    assert '<div id="here" class="hidden"' in page
+    script = _screen_script()
+    assert "here=1" in script
+    for key in ("37", "39", "32", "27", "83"):
+        assert f"key === {key}" in script
+    assert '"api/show"' in script
+    assert script.index("var hereAnswer") < script.index("function showAnswer")
