@@ -124,9 +124,9 @@
     if (numbers.length === 0) return setStatus(T.nothingReady, "");
     choose(numbers, true);
   };
-  const lighten = () => {
+  const lighten = async () => {
     if (handed || !state.file || state.file.chosen.length === 0) return;
-    if (HERE && !window.confirm(fill(T.sure, { count: state.file.chosen.length }))) return;
+    if (HERE && !await window.mhAsk({ lines: [fill(T.sure, { count: state.file.chosen.length })], yes: T.sureYes })) return;
     post(lightenPath, {})
       .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
       .then((step) => {

@@ -87,7 +87,11 @@ page with a search field sends the keys to the grid after Enter (the field loses
 lists `/` to come back (`pick_search_key`).
 
 **Saving**: each choice saved at once, read back from the disk and shown (never "Saved" from
-memory); the cards stay in place after a save (`relabel`). *Apply now* in the bar when the page was
+memory); the cards stay in place after a save (`relabel`).
+A choice taken back in one click asks nothing (the Undo toast, `undo_toast.html.j2`); what
+nothing takes back asks through the one in-page dialog (`ask_dialog.html.j2`, `window.mhAsk`:
+the verb on the button, the safe one focused, Esc cancels) — never a native `confirm`/`alert`/`prompt`
+(`tests/unit/test_undo_toast.py`). *Apply now* in the bar when the page was
 opened from the home page.
 
 ## When a page needs something else

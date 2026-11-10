@@ -22,6 +22,7 @@ _SHARED = (
     *PICK_PARTS,
     '#bar::before { content: ""; order: 2',  # pick_bar.css.j2: the same two lines
     '<select id="order">',  # pick_order.html.j2: Sort by (0347)
+    '<dialog id="mhAsk"',  # ask_dialog.html.j2: the one question (0663)
 )
 
 

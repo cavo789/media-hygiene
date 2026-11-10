@@ -207,7 +207,7 @@ saveChoice = async (action, keys) => {
   let left = 0;
   const warned = ranks.filter((rank) => aside(rank) && !tiles[rank].ticked);
   if (on && warned.length === 1 && ranks.length === 1) {
-    if (!window.confirm(fill(TEXTS.confirmAside, { warning: tiles[warned[0]].warning }))) { say("", ""); return false; }
+    if (!await window.mhAsk({ lines: [fill(TEXTS.confirmAside, { warning: tiles[warned[0]].warning })], yes: TEXTS.confirmAsideYes })) { say("", ""); return false; }
   } else if (on && warned.length) {
     ranks = ranks.filter((rank) => !warned.includes(rank));
     left = warned.length;
@@ -280,11 +280,11 @@ function follow(run, text, minutes) {
   again();
 }
 
-$("free").addEventListener("click", () => {
+$("free").addEventListener("click", async () => {
   const ranks = [...disk];
   if (!synced || !ranks.length) return; // the ticks shown are not those on the disk
   const minutes = Math.max(1, Math.ceil((2 * sum(ranks)) / MB / PHONE_MB_PER_SECOND / 60));
-  if (window.confirm(fill(TEXTS.confirm, { ticked: number(ranks.length), size: size(sum(ranks)) }))) end(FREE_PATH, TEXTS.freed, minutes);
+  if (await window.mhAsk({ lines: [fill(TEXTS.confirm, { ticked: number(ranks.length), size: size(sum(ranks)) })], yes: TEXTS.confirmYes, danger: true })) end(FREE_PATH, TEXTS.freed, minutes);
 });
 $("leave").addEventListener("click", () => end(STOP_PATH, TEXTS.left, 0));
 

@@ -103,13 +103,15 @@
   };
   const dropChoice = () => { fillChoice(events[current]); };
 
-  // Typed and not saved: moving to another event asks first; OK saves, then moves.
+  // Typed and not saved: moving to another event asks first (0663); yes saves, then moves.
   const mayLeave = (then) => {
     if (!events.length || !choiceDirty()) return true;
-    if (!window.confirm(T.leave)) return false;
-    const body = choiceBody();
-    markSaved();
-    send(P.event, body, then);
+    window.mhAsk({ lines: [T.leave], yes: T.leaveYes, no: T.leaveNo }).then((save) => {
+      if (!save) return;
+      const body = choiceBody();
+      markSaved();
+      send(P.event, body, then);
+    });
     return false;
   };
 

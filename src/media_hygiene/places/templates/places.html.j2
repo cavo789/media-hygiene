@@ -18,6 +18,8 @@
   "failed": _("Not saved (error {status})."),
   "offline": _("The map is not running any more: start it again."),
   "needName": _("Give the place a name."),
+  "giveYes": _("Give the photos"),
+  "deleteYes": _("Delete the place"),
   "confirmDelete": _("Delete the place {name}? The photos stay where they are."),
   "osmSearching": _("Searching OpenStreetMap…"),
   "osmNone": _("OpenStreetMap knows no area of that name."),
@@ -570,7 +572,7 @@
     const pictures = source.pictures - unticked.filter((file) => !file.video).length;
     const filmed = source.videos - unticked.filter((file) => file.video).length;
     if (pictures + filmed <= 0) { status(T.noneTicked, "error"); return; }
-    if (!window.confirm(fill(T.giveConfirm, { files: holds(pictures, filmed), place }))) return;
+    if (!await window.mhAsk({ lines: [fill(T.giveConfirm, { files: holds(pictures, filmed), place })], yes: T.giveYes })) return;
     const before = (state.places.find((known) => known.name === place) || { hand: [] }).hand.length;
     const answer = await post(paths.photos, { action: "give", cluster: source.rank, place,
                                               left_out: unticked.map((file) => [file.folder, file.name]) });
@@ -1075,10 +1077,10 @@
       : state.places.map((place) => (place.key === editing.key ? editing : others.find((other) => other.key === place.key)));
     send(ordered);
   });
-  byId("delete").addEventListener("click", () => {
+  byId("delete").addEventListener("click", async () => {
     const hand = (editing.hand || []).length;
     const question = hand ? fill(counted(T.confirmDeleteHand, hand), { name: editing.name }) : fill(T.confirmDelete, { name: editing.name });
-    if (!window.confirm(question)) return;
+    if (!await window.mhAsk({ lines: [question], yes: T.deleteYes, danger: true })) return;
     send(state.places.filter((place) => place.key !== editing.key));
   });
 

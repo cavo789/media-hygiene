@@ -105,11 +105,6 @@
           <p class="lan-note" id="lanExpired" hidden></p>
           <ul class="lan-devices" id="lanPhoneList" data-forget="{{ texts.lanForget }}"></ul>
           <button type="button" id="lanForgetAll">{{ texts.lanForgetAll }}</button>
-          <div class="lan-alert" id="lanForgetAsk" role="alertdialog" hidden>
-            <p class="lan-problem" id="lanForgetSure"></p>
-            <button type="button" id="lanForgetYes">{{ texts.lanForgetYes }}</button>
-            <button type="button" id="lanForgetNo">{{ texts.cancel }}</button>
-          </div>
         </div>
         <p class="lan-note">{{ texts.lanNote }}</p>
         <p class="lan-note">{{ texts.lanFirewall }}</p>
@@ -210,5 +205,6 @@
   start();
 })();
 </script>
+{% include "ask_dialog.html.j2" %}
 </body>
 </html>

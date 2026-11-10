@@ -1,0 +1,59 @@
+{# The one in-page question (0663), included once by every page that asks before an action
+   nothing takes back: `window.mhAsk({title, lines, yes, no, danger})` resolves true only on its
+   yes button. The buttons carry the verb (never OK), the safe one has the focus, Esc and a click
+   outside cancel, danger paints yes red (the roles of 0542). Every value goes in as text, never
+   HTML. A choice taken back in one click asks nothing: it gets the Undo toast instead. #}
+<dialog id="mhAsk" aria-labelledby="mhAskTitle">
+  <form method="dialog">
+    <h2 id="mhAskTitle"></h2>
+    <div id="mhAskLines"></div>
+    <p class="mhAskButtons">
+      <button id="mhAskNo" type="submit" value="no" class="plain">{{ _("Cancel") }}</button>
+      <button id="mhAskYes" type="submit" value="yes"></button>
+    </p>
+  </form>
+</dialog>
+<style>
+  #mhAsk { max-width: min(34rem, calc(100vw - 32px)); padding: 18px 20px; border: 1px solid var(--line, #888);
+           border-radius: 12px; color: var(--ink, inherit); background: var(--card, Canvas); }
+  #mhAsk::backdrop { background: rgb(0 0 0 / 45%); }
+  #mhAskTitle { margin: 0 0 8px; font-size: 1.1rem; }
+  #mhAskTitle:empty { display: none; }
+  #mhAskLines p { margin: 0 0 8px; overflow-wrap: anywhere; }
+  #mhAsk .mhAskButtons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin: 14px 0 0; }
+  #mhAsk button { min-height: 40px; padding: 6px 14px; border-radius: 8px; font: inherit; cursor: pointer;
+                  color: #fff; background: var(--accent, #2563eb); border: 1px solid transparent; }
+  #mhAsk button.plain { color: inherit; background: transparent; border-color: var(--line, #888); }
+  #mhAsk button.danger { color: #fff; background: var(--bad, #c62828); }
+</style>
+<script nonce="{{ page_nonce }}">
+(() => {
+  const dialog = document.getElementById("mhAsk");
+  const yesButton = document.getElementById("mhAskYes");
+  const noButton = document.getElementById("mhAskNo");
+  const NO = {{ _("Cancel") | tojson }};
+  let settle = null;
+  const close = (answer) => { const done = settle; settle = null; if (dialog.open) dialog.close(); if (done) done(answer); };
+  dialog.addEventListener("close", () => close(dialog.returnValue === "yes"));
+  dialog.addEventListener("cancel", () => { dialog.returnValue = "no"; });  // Esc: the safe answer
+  dialog.addEventListener("click", (event) => { if (event.target === dialog) close(false); });
+  window.mhAsk = ({ title = "", lines = [], yes, no = NO, danger = false }) => {
+    close(false);
+    document.getElementById("mhAskTitle").textContent = title;
+    document.getElementById("mhAskLines").replaceChildren(...[].concat(lines).map((line) => {
+      const paragraph = document.createElement("p");
+      paragraph.textContent = line;
+      return paragraph;
+    }));
+    yesButton.textContent = yes;
+    yesButton.className = danger ? "danger" : "";
+    noButton.textContent = no;
+    dialog.returnValue = "no";
+    return new Promise((resolve) => {
+      settle = resolve;
+      dialog.showModal();
+      noButton.focus();
+    });
+  };
+})();
+</script>

@@ -21,6 +21,8 @@
   "offline": _("Media Hygiene does not answer: the albums show while mh runs on the PC, on the home Wi-Fi."),
   "failed": _("The albums cannot be read (error {status})."),
   "out": _("Take out of the album"),
+  "outYes": _("Take it out"),
+  "deleteYes": _("Delete"),
   "outAsk": _("Take this photo out of {name}? The photo itself stays where it is."),
   "addTo": _("Add to an album"),
   "cover": _("Use as cover"),
@@ -156,5 +158,6 @@
 {# Served by the home server in the home page's tab: its pings keep that server running (0341);
    the bar's way back, a plain link (home_link.html.j2 includes presence.html.j2). #}
 {% if not link %}{% include "home_link.html.j2" %}{% endif %}
+{% include "ask_dialog.html.j2" %}
 </body>
 </html>

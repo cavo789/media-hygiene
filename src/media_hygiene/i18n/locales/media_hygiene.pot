@@ -2359,7 +2359,13 @@ msgid ""
 "before deleting the names of config.toml too."
 msgstr ""
 
+msgid "Delete from the phone"
+msgstr ""
+
 msgid "Delete the copies at once"
+msgstr ""
+
+msgid "Delete the place"
 msgstr ""
 
 #, python-brace-format
@@ -3794,6 +3800,9 @@ msgstr ""
 msgid "Give the album a plain name, e.g. \"Christmas\" or \"Best of 2016\"."
 msgstr ""
 
+msgid "Give the photos"
+msgstr ""
+
 msgid "Give the photos picked a day"
 msgstr ""
 
@@ -4594,6 +4603,9 @@ msgid "Light"
 msgstr ""
 
 msgid "Lighten the heavy videos"
+msgstr ""
+
+msgid "Lighten the videos"
 msgstr ""
 
 msgid ""
@@ -7699,6 +7711,9 @@ msgstr ""
 msgid "Remove from the favourites"
 msgstr ""
 
+msgid "Remove the rules"
+msgstr ""
+
 msgid "Remove the ticked entries (a copy is kept first):"
 msgstr ""
 
@@ -8185,6 +8200,9 @@ msgid ""
 msgstr ""
 
 msgid "Save"
+msgstr ""
+
+msgid "Save and move on"
 msgstr ""
 
 msgid ""
@@ -9044,6 +9062,9 @@ msgstr ""
 msgid "Status:"
 msgstr ""
 
+msgid "Stay on this event"
+msgstr ""
+
 msgid "Staying where they are"
 msgstr ""
 
@@ -9265,6 +9286,9 @@ msgstr ""
 msgid "Take it back: its GPS decides again"
 msgstr ""
 
+msgid "Take it out"
+msgstr ""
+
 msgid "Take out"
 msgstr ""
 
@@ -9290,6 +9314,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Take the word {word} off this photo"
+msgstr ""
+
+msgid "Take them all out"
 msgstr ""
 
 msgid "Take this photo back (Backspace)"
@@ -9849,9 +9876,7 @@ msgstr ""
 msgid "The folder to show, as the Explorer shows it"
 msgstr ""
 
-msgid ""
-"The folder typed for this event is not saved. Save it before leaving? "
-"(Cancel: stay on this event)"
+msgid "The folder typed for this event is not saved. Save it before leaving?"
 msgstr ""
 
 #, python-brace-format
@@ -11105,6 +11130,9 @@ msgid "Tick at least one kind of file to analyse."
 msgstr ""
 
 msgid "Tick at least one photo."
+msgstr ""
+
+msgid "Tick it anyway"
 msgstr ""
 
 msgid "Tick or untick every file of this folder"

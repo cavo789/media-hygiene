@@ -326,11 +326,11 @@ function showPhones(answer, paths, force) {
   $("#lanPhones").hidden = answer.phones.length === 0 && expired.length === 0;
   if (lanDevices.wired) return;
   lanDevices.wired = true;
-  // Forget every device (0683): asked in the card itself, then the list read back.
-  const asked = (open) => { $("#lanForgetAsk").hidden = !open; $("#lanForgetAll").disabled = open; };
-  $("#lanForgetAll").addEventListener("click", () => { $("#lanForgetSure").textContent = fill(T.lanForgetSure, { count: lanDevices.count }); asked(true); $("#lanForgetNo").focus(); });
-  $("#lanForgetNo").addEventListener("click", () => asked(false));
-  $("#lanForgetYes").addEventListener("click", () => devicePost(lanDevices.paths.forgetAll, {}, T.lanForgotAll).then(() => asked(false)));
+  // Forget every device (0683): the shared question (0663), then the list read back.
+  $("#lanForgetAll").addEventListener("click", async () => {
+    if (!await window.mhAsk({ lines: [fill(T.lanForgetSure, { count: lanDevices.count })], yes: T.lanForgetYes, danger: true })) return;
+    devicePost(lanDevices.paths.forgetAll, {}, T.lanForgotAll);
+  });
 }
 // The phone's app (0432): the worker keeps the offline page; iOS never invites to install, a line says how.
 function asApp() {

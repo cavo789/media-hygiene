@@ -121,9 +121,9 @@ async function edit(body) {
   toast(answer.message, body.action === "delete");
   showList();
 }
-function deleteTicked() {
+async function deleteTicked() {
   const names = ticked();
-  if (names.length && window.confirm(plural(T.deleteAsk, names.length))) edit({ action: "delete", names });
+  if (names.length && await window.mhAsk({ lines: [plural(T.deleteAsk, names.length)], yes: T.deleteYes, danger: true })) edit({ action: "delete", names });
 }
 function rename(button) { // the name becomes a field in its card, never a browser prompt
   const name = button.dataset.rename;
@@ -203,7 +203,7 @@ function move(step) {
 async function change(action, name) {
   const item = items[at];
   if (!item || !album || document.documentElement.hasAttribute("data-phone")) return; // read-only (0429)
-  if (action === "remove" && !window.confirm(fill(T.outAsk, { name: album.name }))) return;
+  if (action === "remove" && !await window.mhAsk({ lines: [fill(T.outAsk, { name: album.name })], yes: T.outYes })) return;
   const body = JSON.stringify({ action, album: name || album.name, keys: [String(item.key)] });
   const answer = await ask(P.change, { method: "POST", headers: { "Content-Type": "application/json" }, body });
   if (!answer) return;

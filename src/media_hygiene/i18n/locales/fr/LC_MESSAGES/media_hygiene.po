@@ -2869,8 +2869,14 @@ msgstr ""
 "Supprimer tous les visages du cache, puis montrer qu'il n'en reste aucun "
 "; demande aussi avant d'effacer les noms de config.toml."
 
+msgid "Delete from the phone"
+msgstr "Supprimer du téléphone"
+
 msgid "Delete the copies at once"
 msgstr "Supprimer les copies tout de suite"
+
+msgid "Delete the place"
+msgstr "Supprimer le lieu"
 
 #, python-brace-format
 msgid ""
@@ -4642,6 +4648,9 @@ msgstr ""
 "Donnez à l'album un nom simple, par exemple « Noël » ou « Le meilleur de "
 "2016 »."
 
+msgid "Give the photos"
+msgstr "Donner les photos"
+
 msgid "Give the photos picked a day"
 msgstr "Donner un jour aux photos choisies"
 
@@ -5557,6 +5566,9 @@ msgstr "Clair"
 
 msgid "Lighten the heavy videos"
 msgstr "Alléger les vidéos lourdes"
+
+msgid "Lighten the videos"
+msgstr "Alléger les vidéos"
 
 msgid ""
 "Lighten the videos chosen on the home page's Lighten page, reusing their "
@@ -9248,6 +9260,9 @@ msgstr "Retirer un dossier"
 msgid "Remove from the favourites"
 msgstr "Retirer des favoris"
 
+msgid "Remove the rules"
+msgstr "Retirer les règles"
+
 msgid "Remove the ticked entries (a copy is kept first):"
 msgstr "Retirer les entrées cochées (une copie est gardée d'abord) :"
 
@@ -9842,6 +9857,9 @@ msgstr ""
 
 msgid "Save"
 msgstr "Enregistrer"
+
+msgid "Save and move on"
+msgstr "Enregistrer et passer"
 
 msgid ""
 "Save it in the folder mounted on /reports, then run the same 'clean' "
@@ -10843,6 +10861,9 @@ msgstr "État"
 msgid "Status:"
 msgstr "État :"
 
+msgid "Stay on this event"
+msgstr "Rester sur cet événement"
+
 msgid "Staying where they are"
 msgstr "Restent où ils sont"
 
@@ -11100,6 +11121,9 @@ msgstr ""
 msgid "Take it back: its GPS decides again"
 msgstr "La reprendre : son GPS décide à nouveau"
 
+msgid "Take it out"
+msgstr "La retirer"
+
 msgid "Take out"
 msgstr "Retirer"
 
@@ -11126,6 +11150,9 @@ msgstr "Prendre tout l'événement : du {first} au {last}"
 #, python-brace-format
 msgid "Take the word {word} off this photo"
 msgstr "Retirer le mot {word} de cette photo"
+
+msgid "Take them all out"
+msgstr "Toutes les retirer"
 
 msgid "Take this photo back (Backspace)"
 msgstr "Reprendre cette photo (Retour arrière)"
@@ -11811,12 +11838,8 @@ msgstr "Dossier à retirer"
 msgid "The folder to show, as the Explorer shows it"
 msgstr "Le dossier à montrer, tel que l'Explorateur le montre"
 
-msgid ""
-"The folder typed for this event is not saved. Save it before leaving? "
-"(Cancel: stay on this event)"
-msgstr ""
-"Le dossier tapé pour cet événement n'est pas enregistré. L'enregistrer "
-"avant de partir ? (Annuler : rester sur cet événement)"
+msgid "The folder typed for this event is not saved. Save it before leaving?"
+msgstr "Le dossier tapé pour cet événement n'est pas enregistré. L'enregistrer avant de partir ?"
 
 #, python-brace-format
 msgid "The folder {path} is not mounted."
@@ -13376,6 +13399,9 @@ msgstr "Cochez au moins une sorte de fichiers à analyser."
 
 msgid "Tick at least one photo."
 msgstr "Cochez au moins une photo."
+
+msgid "Tick it anyway"
+msgstr "La cocher quand même"
 
 msgid "Tick or untick every file of this folder"
 msgstr "Cocher ou décocher tous les fichiers de ce dossier"
