@@ -74,7 +74,9 @@ quarantine, a deletion not confirmed yet, or one the tool knows nothing of (a de
 mistake?) **stays**, counted by reason. The previous copy of an edited file goes to `.removed`
 too. `.removed` is emptied after `keep_removed_days` (90 days).
 
-A file the [audit](audit.md) found broken never replaces its copy in the backup.
+A file the [audit](audit.md) found broken, or `audit --reread` found changed while its size and
+date did not ([damaged by the disk](../reference-safety.md#a-file-damaged-by-the-disk)), never
+replaces its copy in the backup.
 
 **The safety stop**: when the files set aside and replaced exceed `stop_above_percent` (20 %)
 of the backup, nothing is applied: a drive missing? many files changed at once? Look, then

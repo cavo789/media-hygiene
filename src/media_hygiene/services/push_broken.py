@@ -3,7 +3,7 @@
 A move on the target is proven by the first and last 64 KiB of both files (128 KiB
 read on each side, the target's over the network), each file read once a run. A PC
 file the audit found broken, unchanged since (same size and time), never replaces its
-copy in the backup.
+copy in the backup; nor does a file the re-read found damaged (0690).
 """
 
 from __future__ import annotations
@@ -22,8 +22,10 @@ if TYPE_CHECKING:
     from media_hygiene.services.push_sources import Source
     from media_hygiene.services.runtime import Runtime
 
+# Broken by the audit, or found damaged by the re-read (0690): never pushed.
 _BROKEN: Final = (
     "SELECT path, size, mtime_ns FROM files WHERE broken_reason IS NOT NULL"
+    " UNION SELECT path, size, mtime_ns FROM verified WHERE damaged_since IS NOT NULL"
 )
 
 

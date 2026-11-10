@@ -80,6 +80,26 @@ sont supprimés aussi : ils ne contiennent rien.
   de cache ou de rapports placé dans un dossier de photos (ou autour) est refusé, avec la façon
   de le monter autrement.
 
+## Un fichier abîmé par le disque
+
+Un disque peut abîmer un fichier sans changer sa taille ni sa date (un secteur défaillant, un
+mauvais câble USB) : l'audit, qui fait confiance à ce qui n'a pas changé, continue de dire
+*correct*. L'étape `reread` d'[`upkeep`](commands/upkeep.md) (`mh audit --reread`) relit en entier
+les fichiers lus il y a le plus longtemps, `reread_gb` par passage (20 Go par défaut, dans
+`[routine]` de `config.toml`) : réglez-le à peu près sur la taille de votre photothèque divisée
+par le nombre de passages dans l'année, pour que chaque fichier soit relu environ une fois par
+an. Un fichier dont le contenu a changé sans que sa taille ni sa date changent n'est jamais pris
+pour une modification : il est listé comme *changé*, avec le jour où il a été trouvé, le dernier
+jour où il a été lu correct, et où se trouve une bonne copie — un doublon, un dossier de
+sauvegarde, la quarantaine (chacune relue en entier d'abord). Un programme qui réécrit une photo
+et remet sa date ressemble à cela : regardez avant de restaurer. `mh clean --repair` les liste à
+nouveau, demande, copie la bonne copie à côté du fichier, la relit, déplace le fichier abîmé en
+quarantaine et donne à la copie son nom et sa date ; `mh undo` remet le fichier abîmé.
+[`push`](commands/push.md) ne remplace jamais une copie de la sauvegarde par un fichier trouvé
+abîmé. Un fichier lu pour la première fois est comparé à ce que l'audit en a gardé (tout le
+contenu pour un fichier qui a une copie, sinon ses 64 premiers et derniers Ko) : un changement
+ailleurs est trouvé à partir de sa deuxième lecture.
+
 ## Les bonnes habitudes
 
 - **Commencez petit.** Analysez un sous-dossier, regardez le rapport, puis élargissez.

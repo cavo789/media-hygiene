@@ -67,6 +67,7 @@ Il affiche, dans cet ordre :
 | `--full` | Relire tous les dossiers, même ceux inchangés depuis le dernier audit (repris du cache sinon) : pour une photo modifiée sur place par un autre programme. [Étape 2](../start/02-keep-the-cache.md#ce-qui-change) |
 | `--ext EXT` | Seulement ces catégories ou extensions (`--ext photo,video`, `--ext heic`) ; extensions de photos, RAW et vidéos seulement. [Étape 6 du nettoyage](../clean/06-file-types.md) |
 | `--people` | Chercher ensuite les visages des photos pas encore examinées, après avoir dit combien de temps cela prend et demandé ([Les personnes](../reference-people.md#pendant-laudit--audit---people)) ; `with_audit = true` dans `[people]` le fait à chaque audit. |
+| `--reread` | Seulement relire en entier les fichiers lus il y a le plus longtemps, jusqu'à `reread_gb` de `[routine]` (20 Go par défaut), pour trouver un fichier qu'un disque a abîmé sans changer sa taille ni sa date ; puis lister les fichiers abîmés et où se trouve une bonne copie (un doublon, une sauvegarde, la quarantaine). Ne change rien 🔒 ; `clean --repair` les restaure. [Sécurité](../reference-safety.md#un-fichier-abîmé-par-le-disque) |
 | `--yes`, `-y` | Avec `--people` : ne pas demander. Sans terminal (pas de `-it`), `--people` en a besoin : rien n'attend de réponse. |
 
 Les chemins s'écrivent à la façon de Windows (`C:\Photos\Famille`), comme dans l'Explorateur.

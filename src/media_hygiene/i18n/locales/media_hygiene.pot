@@ -2039,6 +2039,9 @@ msgstr ""
 msgid "Copies not found when read back: {count}. Type mh import --phone again."
 msgstr ""
 
+msgid "Copies the good copy, checks it, then sets the damaged file aside."
+msgstr ""
+
 msgid "Copies without showing the files: the page shows them first."
 msgstr ""
 
@@ -3985,6 +3988,12 @@ msgid "How long robocopy ran."
 msgstr ""
 
 msgid ""
+"How many GB 'audit --reread' reads per run: about your library's size "
+"divided by the runs in a year (20 GB a month covers 240 GB a year). 0: "
+"nothing is read again."
+msgstr ""
+
+msgid ""
 "How many files 'clean', 'undo' and 'sort' handle at once (1 or more): "
 "four readers read a Windows folder about 4 times faster than one. Lower "
 "it to 1 for a slow USB hard disk, whose head seeks back and forth between"
@@ -5448,6 +5457,9 @@ msgstr ""
 msgid "No config.toml created: the container cannot write to {folder}."
 msgstr ""
 
+msgid "No damaged file known. 🔒 Nothing was changed."
+msgstr ""
+
 msgid "No date taken"
 msgstr ""
 
@@ -6210,6 +6222,9 @@ msgstr ""
 msgid "Nothing to put back."
 msgstr ""
 
+msgid "Nothing to restore: no damaged file with a good copy ('audit --reread')."
+msgstr ""
+
 msgid "Nothing to review"
 msgstr ""
 
@@ -6529,6 +6544,13 @@ msgid "Only on the NAS"
 msgstr ""
 
 msgid "Only photos and videos"
+msgstr ""
+
+msgid ""
+"Only read again in full the files read longest ago, up to [routine] "
+"reread_gb, to find a file a disk damaged without changing its size or "
+"date; then list the damaged files and where a good copy is. Changes "
+"nothing."
 msgstr ""
 
 msgid "Only set aside the new files that are exact copies."
@@ -7472,6 +7494,10 @@ msgstr ""
 msgid "Reading 128 KB of each file already in the cache, once"
 msgstr ""
 
+#, python-brace-format
+msgid "Reading again up to {gb} GB, the files read longest ago first…"
+msgstr ""
+
 msgid "Reading the albums…"
 msgstr ""
 
@@ -7642,6 +7668,12 @@ msgid ""
 "alone then decides."
 msgstr ""
 
+msgid ""
+"Restore the files 'audit --reread' found damaged from their good copy (a "
+"duplicate, a backup, the quarantine): listed first, then asked; the "
+"damaged file goes to the quarantine, 'undo' puts it back."
+msgstr ""
+
 msgid "Restore the index"
 msgstr ""
 
@@ -7653,7 +7685,17 @@ msgid ""
 "default."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Restore these {count} files from their good copy? The damaged ones go to "
+"the quarantine."
+msgstr ""
+
 msgid "Restored"
+msgstr ""
+
+#, python-brace-format
+msgid "Restored, read back: {path}"
 msgstr ""
 
 msgid "Restoring"
@@ -11297,6 +11339,10 @@ msgid_plural "Undo these {count} runs and move {moved} files back?"
 msgstr[0] ""
 msgstr[1] ""
 
+#, python-brace-format
+msgid "Undo: mh undo {run} (the damaged files come back)."
+msgstr ""
+
 msgid "Undoable"
 msgstr ""
 
@@ -11434,7 +11480,8 @@ msgid ""
 " the library read again. copies: the exact copies go to the quarantine, "
 "after clean's question (mh undo puts them back). purge: the quarantine "
 "runs older than purge_hint_days, after purge's question. reports: the "
-"list refreshed."
+"list refreshed. reread: the files read in full longest ago are read "
+"again, to find a file a disk damaged silently ('audit --reread')."
 msgstr ""
 
 msgid "What an album is, and what this page does"
@@ -12755,6 +12802,14 @@ msgstr ""
 msgid "gone deleted lost explorer"
 msgstr ""
 
+#, python-brace-format
+msgid "good copy in the quarantine: {path}"
+msgstr ""
+
+#, python-brace-format
+msgid "good copy: {path}"
+msgstr ""
+
 msgid "groups of identical files"
 msgstr ""
 
@@ -12832,6 +12887,9 @@ msgid "it already exists"
 msgstr ""
 
 msgid "it cannot start with '-'"
+msgstr ""
+
+msgid "it changed since it was found damaged: kept"
 msgstr ""
 
 msgid "it changed since the audit: audit again"
@@ -13365,6 +13423,9 @@ msgstr ""
 msgid "no frame: {error}"
 msgstr ""
 
+msgid "no good copy found here: look on your backup (NAS, disk)."
+msgstr ""
+
 #, python-brace-format
 msgid "no indexed camera matches '{pattern}'"
 msgstr ""
@@ -13704,6 +13765,9 @@ msgstr ""
 msgid "restore backup index cache lost"
 msgstr ""
 
+msgid "restore them from their good copy (listed again, then asked):"
+msgstr ""
+
 msgid "review page"
 msgstr ""
 
@@ -13976,6 +14040,9 @@ msgstr ""
 msgid ""
 "the folders and name a duplicate had before clean removed it, kept on the"
 " copy that stayed."
+msgstr ""
+
+msgid "the good copy changed: nothing restored"
 msgstr ""
 
 msgid "the group as marked, then next"
@@ -14834,6 +14901,16 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid ""
+"{count} file changed while its size and date did not: damaged, or "
+"rewritten by a program that kept its date — look."
+msgid_plural ""
+"{count} files changed while their size and date did not: damaged, or "
+"rewritten by a program that kept their date — look."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
 "{count} file copied into your photos ({size}), each one compared with its"
 " source, read back where it was written."
 msgid_plural ""
@@ -15033,6 +15110,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{count} files only this folder holds, {out} left out"
+msgstr ""
+
+#, python-brace-format
+msgid "{count} files read again ({size})."
 msgstr ""
 
 #, python-brace-format
@@ -16851,6 +16932,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{path} was written but is still incomplete."
+msgstr ""
+
+#, python-brace-format
+msgid "{path}: found changed on {since}, read fine on {good}."
 msgstr ""
 
 #, python-brace-format

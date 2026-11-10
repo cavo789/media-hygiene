@@ -93,6 +93,7 @@ removes no folder.
 | `--decisions [FILE]` | Apply the choices made in the browser: folder pairs of a report ([cleaning, step 12](../clean/12-decide-pair-by-pair.md)), burst shots set aside and near duplicates decided with [`review`](review.md), photos set aside in [`library`](library.md#set-photos-aside). Alone, it reads `decisions.json` from `/reports`. |
 | `--yes`, `-y` | Do not ask (needed without `-it`). |
 | `--delete` | Delete the exact copies for good instead of moving them; `undo` rebuilds them from the kept copy. [Cleaning, step 8](../clean/08-clean.md#need-the-space-at-once---delete) |
+| `--repair` | Only restore the files `audit --reread` found damaged, from their good copy: listed first (each file, since when, its copy), then asked; the damaged file goes to the quarantine, each restored file is read back; `undo` puts the damaged one back. [Safety](../reference-safety.md#a-file-damaged-by-the-disk) |
 | `--prefer`, `--protect`, `--exclude`, `--exclude-name`, `--ext` | As for [`audit`](audit.md#options): give `clean` the same ones as the audit you read. |
 
 ## Examples

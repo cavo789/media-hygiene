@@ -10,7 +10,9 @@
 library again, only what changed), `copies` (`clean`: the exact copies to the quarantine, after its
 question; `mh undo` puts them back), `reports` (the list refreshed); `purge` (the quarantine runs
 older than `purge_hint_days`, after the question of `purge` for each) runs only if you add it to
-`steps`, otherwise run [`purge`](purge.md) on its own. It ends on one 👉 line:
+`steps`, otherwise run [`purge`](purge.md) on its own. Last, `reread` (`audit --reread`) reads
+again in full the files read longest ago, `reread_gb` per run, to find a file the disk damaged;
+it changes nothing ([Safety](../reference-safety.md#a-file-damaged-by-the-disk)). It ends on one 👉 line:
 what still waits for you. On the [home page](home.md): *Run the regular upkeep*, in Clean up.
 
 ## At a glance
@@ -33,7 +35,8 @@ To switch a step off, remove it from the list:
 
 ```toml
 [routine]
-steps = ["audit", "copies", "reports"]
+steps = ["audit", "copies", "reports", "reread"]
+reread_gb = 20
 ```
 
 A step that fails stops the chain; what came before stays done.

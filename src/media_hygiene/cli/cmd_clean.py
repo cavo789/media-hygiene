@@ -13,6 +13,7 @@ import typer
 from media_hygiene.cli import clean_options, folder_options, options, scan_options
 from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.cli.folder_options import FolderOptions
+from media_hygiene.cli.reread_flow import repair_if_asked
 from media_hygiene.cli.scan_options import scan_layer
 from media_hygiene.constants import CleanTier, ExitCode, RunKind
 from media_hygiene.i18n import _
@@ -37,6 +38,7 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
     backup: Annotated[list[str] | None, folder_options.backup()] = None,
     ext: Annotated[list[str] | None, scan_options.extensions()] = None,
     exclude_name: Annotated[list[str] | None, scan_options.exclude_name()] = None,
+    repair: Annotated[bool, clean_options.repair()] = False,
 ) -> None:
     """Audit, confirm, then set duplicate copies aside and handle broken files.
 
@@ -54,6 +56,7 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         decisions: `--decisions`, the review downloaded from a report or written by
             `review`.
         delete: `--delete`, exact copies are deleted for good, not moved.
+        repair: `--repair`, only restore the damaged files from their good copy.
 
     Raises:
         typer.Exit: The user declined.
@@ -78,7 +81,9 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
 
     runtime = runtime_of(ctx)
     output = runtime.output
-    if decisions is not None and _already_applied(runtime, decisions, tier):
+    if repair_if_asked(runtime, repair, yes) or _already_applied(
+        runtime, decisions, tier
+    ):
         return
     with user_errors(output), RichProgress(output.console) as progress:
         runtime = runtime.with_overrides(
@@ -133,12 +138,12 @@ def clean_command(  # pylint: disable=too-many-arguments,too-many-locals
         archive_decisions(runtime, decisions, run_id)
 
 
-def _already_applied(runtime: Runtime, decisions: Path, tier: CleanTier) -> bool:
+def _already_applied(runtime: Runtime, decisions: Path | None, tier: CleanTier) -> bool:
     """Say the decisions were applied already, and that a review makes new ones.
 
     Args:
         runtime: Settings, mount points and output.
-        decisions: `--decisions` value.
+        decisions: `--decisions` value, maybe none.
         tier: `--tier`: near duplicates are decided with `review --near`.
 
     Returns:
@@ -148,7 +153,7 @@ def _already_applied(runtime: Runtime, decisions: Path, tier: CleanTier) -> bool
     from media_hygiene.services.decisions_archive import applied_before, tell_applied
     from media_hygiene.services.next_command import NextVerb
 
-    archive = applied_before(runtime, decisions)
+    archive = None if decisions is None else applied_before(runtime, decisions)
     if archive is None:
         return False
     tell_applied(runtime, archive)

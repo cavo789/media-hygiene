@@ -79,8 +79,9 @@ rien (une suppression par erreur ?) **reste**, compté par raison. La copie pré
 fichier modifié va aussi dans `.removed`. `.removed` est vidé après `keep_removed_days` (90
 jours).
 
-Un fichier que l'[audit](audit.md) a trouvé abîmé ne remplace jamais sa copie dans la
-sauvegarde.
+Un fichier que l'[audit](audit.md) a trouvé abîmé, ou que `audit --reread` a trouvé changé sans
+que sa taille ni sa date changent ([abîmé par le disque](../reference-safety.md#un-fichier-abîmé-par-le-disque)),
+ne remplace jamais sa copie dans la sauvegarde.
 
 **L'arrêt de sécurité** : quand les fichiers mis de côté et remplacés dépassent
 `stop_above_percent` (20 %) de la sauvegarde, rien n'est appliqué : un disque absent ? beaucoup

@@ -74,6 +74,24 @@ copy from it. Empty files (0 bytes) are deleted too: they hold nothing.
 - **The tool's folders stay out of your photos.** A quarantine, journal, cache or reports
   folder placed inside a photo folder (or around one) is refused, with how to mount it instead.
 
+## A file damaged by the disk
+
+A disk can damage a file without changing its size or date (a failing sector, a bad USB cable):
+the audit, which trusts what did not change, keeps saying *fine*. The `reread` step of
+[`upkeep`](commands/upkeep.md) (`mh audit --reread`) reads again in full the files read longest
+ago, `reread_gb` per run (20 GB by default, in `[routine]` of `config.toml`): set it to about your
+library's size divided by the runs in a year, so that each file is read about once a year. A
+file whose content changed while its size and date did not is never taken for an edit: it is
+listed as *changed* with the day it was found, the last day it read fine, and where a good copy
+is — a duplicate, a backup folder, the quarantine (each read in full first). A program that
+rewrites a photo and puts its date back looks the same: look before restoring.
+`mh clean --repair` lists them again, asks, copies the good copy beside the file, reads it back,
+moves the damaged file to the quarantine and gives the copy its name and date; `mh undo` puts
+the damaged one back. [`push`](commands/push.md) never replaces a backup copy by a file found
+damaged. A file read for the first time is compared with what the audit kept of it (the whole
+content for a file with a copy, else its first and last 64 KB): a change elsewhere is found from
+its second reading on.
+
 ## Good habits
 
 - **Start small.** Audit one subfolder, look at the report, then widen.

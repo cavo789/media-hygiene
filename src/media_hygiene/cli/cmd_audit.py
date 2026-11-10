@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Annotated
 
 import typer
 
-from media_hygiene.cli import folder_options, options, scan_options
+from media_hygiene.cli import clean_options, folder_options, options, scan_options
 from media_hygiene.cli.context import runtime_of, user_errors
 from media_hygiene.cli.folder_options import FolderOptions
 from media_hygiene.cli.scan_options import scan_layer
@@ -61,6 +61,7 @@ def audit_command(  # pylint: disable=too-many-arguments
             help=_("With --people: do not ask, go on."),
         ),
     ] = False,
+    reread: Annotated[bool, clean_options.reread()] = False,
 ) -> None:
     """Find exact duplicates and broken files; never writes to `/data`.
 
@@ -75,6 +76,7 @@ def audit_command(  # pylint: disable=too-many-arguments
         full: `--full`, no folder taken from the index.
         people: `--people`, faces after the audit.
         yes: `--yes`, no question before the faces.
+        reread: `--reread`, only the slow re-read of the oldest files read.
     """
     from media_hygiene.cli.audit_actions import second_opinion, show_actions
     from media_hygiene.cli.audit_people import audit_people
@@ -84,12 +86,19 @@ def audit_command(  # pylint: disable=too-many-arguments
     from media_hygiene.report.views import ReportRecord
 
     runtime = runtime_of(ctx)
+    if reread:
+        from media_hygiene.cli.reread_flow import reread_and_list
+
+        with user_errors(runtime.output):
+            reread_and_list(runtime)
+        return
     with user_errors(runtime.output):
         runtime = runtime.with_overrides(
             FolderOptions(prefer, protect, exclude, backup).layer()
         ).with_overrides(scan_layer(ext, exclude_name))
-        if full:
-            runtime = runtime.with_overrides({"scan": {"full_check_days": 0}})
+        runtime = runtime.with_overrides(
+            {"scan": {"full_check_days": 0}} if full else {}
+        )
         findings = audit_and_show(runtime)
         actions = show_actions(ctx, runtime, findings)
         report_and_announce(

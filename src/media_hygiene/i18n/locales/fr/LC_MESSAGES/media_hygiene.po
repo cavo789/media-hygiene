@@ -2498,6 +2498,9 @@ msgstr ""
 "Copies introuvables à la relecture : {count}. Tapez de nouveau mh import "
 "--phone."
 
+msgid "Copies the good copy, checks it, then sets the damaged file aside."
+msgstr "Copie la bonne copie, la vérifie, puis met le fichier abîmé de côté."
+
 msgid "Copies without showing the files: the page shows them first."
 msgstr "Copie sans montrer les fichiers : la page les montre d'abord."
 
@@ -4861,6 +4864,15 @@ msgid "How long robocopy ran."
 msgstr "Durée de robocopy."
 
 msgid ""
+"How many GB 'audit --reread' reads per run: about your library's size "
+"divided by the runs in a year (20 GB a month covers 240 GB a year). 0: "
+"nothing is read again."
+msgstr ""
+"Combien de Go 'audit --reread' relit par passage : à peu près la taille "
+"de votre photothèque divisée par le nombre de passages dans l'année (20 "
+"Go par mois couvrent 240 Go par an). 0 : rien n'est relu."
+
+msgid ""
 "How many files 'clean', 'undo' and 'sort' handle at once (1 or more): "
 "four readers read a Windows folder about 4 times faster than one. Lower "
 "it to 1 for a slow USB hard disk, whose head seeks back and forth between"
@@ -6576,6 +6588,9 @@ msgstr "Aucun classeur de classify dans /reports."
 msgid "No config.toml created: the container cannot write to {folder}."
 msgstr "Aucun config.toml créé : le conteneur ne peut pas écrire dans {folder}."
 
+msgid "No damaged file known. 🔒 Nothing was changed."
+msgstr "Aucun fichier abîmé connu. 🔒 Rien n'a été modifié."
+
 msgid "No date taken"
 msgstr "Pas de date de prise"
 
@@ -7460,6 +7475,11 @@ msgstr "Rien à déplacer : chaque fichier est là où le plan le met."
 msgid "Nothing to put back."
 msgstr "Rien à remettre."
 
+msgid "Nothing to restore: no damaged file with a good copy ('audit --reread')."
+msgstr ""
+"Rien à restaurer : aucun fichier abîmé avec une bonne copie ('audit "
+"--reread')."
+
 msgid "Nothing to review"
 msgstr "Rien à examiner"
 
@@ -7869,6 +7889,17 @@ msgstr "Seulement sur le NAS"
 
 msgid "Only photos and videos"
 msgstr "Rien que des photos et des vidéos"
+
+msgid ""
+"Only read again in full the files read longest ago, up to [routine] "
+"reread_gb, to find a file a disk damaged without changing its size or "
+"date; then list the damaged files and where a good copy is. Changes "
+"nothing."
+msgstr ""
+"Seulement relire en entier les fichiers lus il y a le plus longtemps, "
+"jusqu'à [routine] reread_gb, pour trouver un fichier qu'un disque a abîmé"
+" sans changer sa taille ni sa date ; puis lister les fichiers abîmés et "
+"où se trouve une bonne copie. Ne change rien."
 
 msgid "Only set aside the new files that are exact copies."
 msgstr "Seulement mettre de côté les nouveaux fichiers identiques à un autre."
@@ -8990,6 +9021,12 @@ msgstr ""
 msgid "Reading 128 KB of each file already in the cache, once"
 msgstr "Lecture de 128 Ko de chaque fichier déjà en cache, une seule fois"
 
+#, python-brace-format
+msgid "Reading again up to {gb} GB, the files read longest ago first…"
+msgstr ""
+"Relecture de {gb} Go au plus, les fichiers lus il y a le plus longtemps "
+"d'abord…"
+
 msgid "Reading the albums…"
 msgstr "Lecture des albums…"
 
@@ -9186,6 +9223,16 @@ msgstr ""
 "Restaurez-le, ou supprimez-le pour recommencer la revue : le classeur "
 "décide alors seul."
 
+msgid ""
+"Restore the files 'audit --reread' found damaged from their good copy (a "
+"duplicate, a backup, the quarantine): listed first, then asked; the "
+"damaged file goes to the quarantine, 'undo' puts it back."
+msgstr ""
+"Restaurer les fichiers que 'audit --reread' a trouvés abîmés depuis leur "
+"bonne copie (un doublon, une sauvegarde, la quarantaine) : listés "
+"d'abord, puis demandé ; le fichier abîmé va en quarantaine, 'undo' le "
+"remet."
+
 msgid "Restore the index"
 msgstr "Remettre l'index"
 
@@ -9199,8 +9246,20 @@ msgstr ""
 "Remettre aussi les réglages (config.toml, people) ; l'index seul par "
 "défaut."
 
+#, python-brace-format
+msgid ""
+"Restore these {count} files from their good copy? The damaged ones go to "
+"the quarantine."
+msgstr ""
+"Restaurer ces {count} fichiers depuis leur bonne copie ? Les fichiers "
+"abîmés vont en quarantaine."
+
 msgid "Restored"
 msgstr "Restaurés"
+
+#, python-brace-format
+msgid "Restored, read back: {path}"
+msgstr "Restauré, relu : {path}"
 
 msgid "Restoring"
 msgstr "Restauration"
@@ -12379,7 +12438,10 @@ msgstr ""
 msgid ""
 "The run's journal is lost: bring its files back from the layout of its "
 "quarantine, shown first, never over a file."
-msgstr "Le journal de l'exécution est perdu : remettre ses fichiers d'après la disposition de sa quarantaine, montrés d'abord, jamais par-dessus un fichier."
+msgstr ""
+"Le journal de l'exécution est perdu : remettre ses fichiers d'après la "
+"disposition de sa quarantaine, montrés d'abord, jamais par-dessus un "
+"fichier."
 
 msgid "The run, for undo and undone."
 msgstr "Le passage, pour undo et undone."
@@ -13604,6 +13666,10 @@ msgid_plural "Undo these {count} runs and move {moved} files back?"
 msgstr[0] "Annuler ce passage et remettre {moved} fichiers en place ?"
 msgstr[1] "Annuler ces {count} passages et remettre {moved} fichiers en place ?"
 
+#, python-brace-format
+msgid "Undo: mh undo {run} (the damaged files come back)."
+msgstr "Annuler : mh undo {run} (les fichiers abîmés reviennent)."
+
 msgid "Undoable"
 msgstr "Annulable"
 
@@ -13752,13 +13818,16 @@ msgid ""
 " the library read again. copies: the exact copies go to the quarantine, "
 "after clean's question (mh undo puts them back). purge: the quarantine "
 "runs older than purge_hint_days, after purge's question. reports: the "
-"list refreshed."
+"list refreshed. reread: the files read in full longest ago are read "
+"again, to find a file a disk damaged silently ('audit --reread')."
 msgstr ""
-"Ce que lance 'upkeep', dans cet ordre ; retirez une étape pour la couper."
-" audit : la bibliothèque relue. copies : les copies exactes vont en "
-"quarantaine, après la question de clean (mh undo les remet). purge : les "
-"exécutions en quarantaine plus vieilles que purge_hint_days, après la "
-"question de purge. reports : la liste rafraîchie."
+"Ce que lance 'upkeep', dans cet ordre ; retirez une étape pour la "
+"désactiver. audit : la photothèque relue. copies : les copies exactes "
+"vont en quarantaine, après la question de clean (mh undo les remet). "
+"purge : les passages en quarantaine plus vieux que purge_hint_days, après"
+" la question de purge. reports : la liste rafraîchie. reread : les "
+"fichiers lus en entier il y a le plus longtemps sont relus, pour trouver "
+"un fichier qu'un disque a abîmé en silence ('audit --reread')."
 
 msgid "What an album is, and what this page does"
 msgstr "Ce qu'est un album, et ce que fait cette page"
@@ -15288,6 +15357,14 @@ msgstr "disparu (renommé ou supprimé ?)"
 msgid "gone deleted lost explorer"
 msgstr "disparues effacées perdues explorateur"
 
+#, python-brace-format
+msgid "good copy in the quarantine: {path}"
+msgstr "bonne copie dans la quarantaine : {path}"
+
+#, python-brace-format
+msgid "good copy: {path}"
+msgstr "bonne copie : {path}"
+
 msgid "groups of identical files"
 msgstr "groupes de fichiers identiques"
 
@@ -15373,6 +15450,9 @@ msgstr "il existe déjà"
 msgid "it cannot start with '-'"
 msgstr "elle ne peut pas commencer par '-'"
 
+msgid "it changed since it was found damaged: kept"
+msgstr "il a changé depuis qu'il a été trouvé abîmé : gardé"
+
 msgid "it changed since the audit: audit again"
 msgstr "elle a changé depuis l'audit : relancez l'audit"
 
@@ -15424,7 +15504,6 @@ msgstr "sa copie {path} a disparu"
 msgid "its date, size, folder"
 msgstr "sa date, sa taille, son dossier"
 
-#, python-brace-format
 msgid "its drive is not mounted (or changed letter)"
 msgstr "son disque n'est pas monté (ou a changé de lettre)"
 
@@ -15973,6 +16052,11 @@ msgstr "pas de guillemet double"
 msgid "no frame: {error}"
 msgstr "pas d'image : {error}"
 
+msgid "no good copy found here: look on your backup (NAS, disk)."
+msgstr ""
+"aucune bonne copie trouvée ici : cherchez sur votre sauvegarde (NAS, "
+"disque)."
+
 #, python-brace-format
 msgid "no indexed camera matches '{pattern}'"
 msgstr "aucun appareil de l'index ne correspond à '{pattern}'"
@@ -16330,6 +16414,9 @@ msgstr "rapports anciens supprimer ranger prune"
 msgid "restore backup index cache lost"
 msgstr "remettre restaurer sauvegarde index cache perdu restore"
 
+msgid "restore them from their good copy (listed again, then asked):"
+msgstr "restaurez-les depuis leur bonne copie (listés à nouveau, puis demandé) :"
+
 msgid "review page"
 msgstr "page de revue"
 
@@ -16619,6 +16706,9 @@ msgid ""
 msgstr ""
 "les dossiers et le nom qu'avait un doublon avant que clean ne le retire, "
 "gardés sur la copie restée."
+
+msgid "the good copy changed: nothing restored"
+msgstr "la bonne copie a changé : rien n'est restauré"
 
 msgid "the group as marked, then next"
 msgstr "le groupe tel que marqué, puis suivant"
@@ -17638,6 +17728,20 @@ msgstr[1] "{count} fichiers remis à leur place, relus."
 
 #, python-brace-format
 msgid ""
+"{count} file changed while its size and date did not: damaged, or "
+"rewritten by a program that kept its date — look."
+msgid_plural ""
+"{count} files changed while their size and date did not: damaged, or "
+"rewritten by a program that kept their date — look."
+msgstr[0] ""
+"{count} fichier a changé sans que sa taille ni sa date changent : abîmé, "
+"ou réécrit par un programme qui a gardé sa date — regardez."
+msgstr[1] ""
+"{count} fichiers ont changé sans que leur taille ni leur date changent : "
+"abîmés, ou réécrits par un programme qui a gardé leur date — regardez."
+
+#, python-brace-format
+msgid ""
 "{count} file copied into your photos ({size}), each one compared with its"
 " source, read back where it was written."
 msgid_plural ""
@@ -17827,8 +17931,14 @@ msgid ""
 msgid_plural ""
 "{count} files set aside exist nowhere else ({size}): near duplicates, "
 "burst shots, junk or unreadable, not exact copies."
-msgstr[0] "{count} fichier mis de côté n'existe nulle part ailleurs ({size}) : un quasi-doublon, une photo de rafale, un déchet ou un illisible, pas une copie exacte."
-msgstr[1] "{count} fichiers mis de côté n'existent nulle part ailleurs ({size}) : quasi-doublons, photos de rafale, déchets ou illisibles, pas des copies exactes."
+msgstr[0] ""
+"{count} fichier mis de côté n'existe nulle part ailleurs ({size}) : un "
+"quasi-doublon, une photo de rafale, un déchet ou un illisible, pas une "
+"copie exacte."
+msgstr[1] ""
+"{count} fichiers mis de côté n'existent nulle part ailleurs ({size}) : "
+"quasi-doublons, photos de rafale, déchets ou illisibles, pas des copies "
+"exactes."
 
 #, python-brace-format
 msgid "{count} file set aside ignored."
@@ -17902,6 +18012,10 @@ msgstr "{count} fichiers seulement sur le NAS"
 #, python-brace-format
 msgid "{count} files only this folder holds, {out} left out"
 msgstr "{count} fichiers que seul ce dossier contient, {out} écartés"
+
+#, python-brace-format
+msgid "{count} files read again ({size})."
+msgstr "{count} fichiers relus ({size})."
 
 #, python-brace-format
 msgid "{count} files to get back from the NAS"
@@ -20052,6 +20166,10 @@ msgstr "{path} porte sur d'autres dossiers ({theirs}) ; ce tri analyse {ours}."
 #, python-brace-format
 msgid "{path} was written but is still incomplete."
 msgstr "{path} a été écrit mais reste incomplet."
+
+#, python-brace-format
+msgid "{path}: found changed on {since}, read fine on {good}."
+msgstr "{path} : trouvé changé le {since}, lu correct le {good}."
 
 #, python-brace-format
 msgid "{path}: left where it was: {reason}"

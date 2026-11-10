@@ -28,6 +28,7 @@ _SIMPLE: Final = {
     RoutineStep.AUDIT: ("audit",),
     RoutineStep.COPIES: ("clean",),
     RoutineStep.REPORTS: ("reports",),
+    RoutineStep.REREAD: ("audit", "--reread"),
 }
 
 
