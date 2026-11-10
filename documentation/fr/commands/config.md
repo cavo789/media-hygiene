@@ -112,6 +112,7 @@ mh config tidy --apply   # retirer les entrées cochées
 | `[[places.folders]]` | son dossier n'existe pas, ou est cité deux fois |
 | `[[classify.rules]]` `match = "path"` / `"camera"` | aucun chemin / aucun appareil de l'index ne correspond à son `pattern` |
 | `[[classify.rules]]` `match = "date_range"` | aucune photo indexée n'a été prise à ces dates : montrée **non cochée** (une règle écrite avant un import) ; `--dates` la coche aussi |
+| `[[classify.rules]]` `match = "path"` (dépassée) | tous les fichiers qu'elle trouve sont déjà dans un dossier que vous avez nommé (`2017\2017-04\Bruges`) : `sort` les en sortirait. Montrée **non cochée** (une règle peut renommer un dossier exprès) ; `--superseded` la coche aussi |
 | `[[classify.clocks]]` | aucune photo de cet appareil à ces dates |
 
 Un dossier sur un lecteur non monté (une clé USB) n'est **pas jugé**, et c'est dit. Un index
@@ -138,7 +139,7 @@ d'environnement (`-e MEDIA_HYGIENE_<SECTION>__<CLÉ>=…`, comme
 ## Bon à savoir
 
 - `config` a l'action `tidy` et les options `--upgrade`, `--convention`, `--dry-run`, `--apply`
-  et `--dates` ; les options globales s'appliquent aussi (`--locale`, `--verbosity`).
+  `--dates` et `--superseded` ; les options globales s'appliquent aussi (`--locale`, `--verbosity`).
 - `/config` contient `config.toml` **seulement** : n'y mettez jamais rien d'autre.
 - Un réglage inconnu de cette version est signalé, avec sa ligne : voir le
   [dépannage](../reference-troubleshooting.md#un-réglage-de-configtoml-est-inconnu-de-cette-version).

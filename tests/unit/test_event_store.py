@@ -141,11 +141,11 @@ def test_config_tidy_moves_the_events_once(locations: Locations) -> None:
     runtime = dataclasses.replace(
         make_runtime(locations), mounts=MountTable(frozenset())
     )
-    show_tidy(runtime, apply=False, dates=False)
+    show_tidy(runtime, apply=False, opt_in=frozenset())
     assert "1 event of config.toml moves" in output_of(runtime)
     assert "Turin" in config.read_text("utf-8")
     before = config.read_text("utf-8")
-    show_tidy(runtime, apply=True, dates=False)
+    show_tidy(runtime, apply=True, opt_in=frozenset())
     assert "1 event moved" in output_of(runtime)
     assert [rule.name for rule in read_written(config)] == [
         "Summer",
@@ -158,7 +158,7 @@ def test_config_tidy_moves_the_events_once(locations: Locations) -> None:
     assert held["rules"][0]["name"] == "Turin (July 2019)"
     copies = list((locations.cache_dir / "config-backups").iterdir())
     assert [copy.read_text("utf-8") for copy in copies] == [before]
-    show_tidy(runtime, apply=True, dates=False)
+    show_tidy(runtime, apply=True, opt_in=frozenset())
     assert output_of(runtime).count("event moved") == 1
 
 

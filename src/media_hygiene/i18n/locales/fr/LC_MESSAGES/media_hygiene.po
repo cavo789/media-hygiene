@@ -4078,7 +4078,6 @@ msgstr "Fichiers déplacés"
 msgid "Files processed"
 msgstr "Fichiers traités"
 
-#, python-brace-format
 msgid "Files read again in full"
 msgstr "Fichiers relus en entier"
 
@@ -6368,7 +6367,9 @@ msgid "Never sorted: analysed and cleaned as usual, left where it is."
 msgstr "Jamais trié : analysé et nettoyé comme d'habitude, laissé où il est."
 
 msgid "Never tried: a restore test from the NAS comes with mh pull."
-msgstr "Jamais essayée : un test de restauration depuis le NAS viendra avec mh pull."
+msgstr ""
+"Jamais essayée : un test de restauration depuis le NAS viendra avec mh "
+"pull."
 
 msgid "Never what you set aside or deleted on purpose; each copy is checked."
 msgstr ""
@@ -9053,7 +9054,6 @@ msgstr ""
 "Relire tous les dossiers, même ceux qui n'ont pas changé depuis le "
 "dernier audit : pour une photo modifiée sur place par un autre programme."
 
-#, python-brace-format
 msgid "Read from the disk now."
 msgstr "Lu sur le disque à l'instant."
 
@@ -11892,7 +11892,6 @@ msgstr "L'inventaire"
 msgid "The inventory could not be written to {folder}: {reason}."
 msgstr "L'inventaire n'a pas pu être écrit dans {folder} : {reason}."
 
-#, python-brace-format
 msgid "The journal is not mounted."
 msgstr "Le journal n'est pas monté."
 
@@ -14213,6 +14212,13 @@ msgstr "Avec tidy : retirer les entrées cochées, après une copie de config.to
 msgid "With tidy: tick the date_range rules with no photo too."
 msgstr "Avec tidy : cocher aussi les règles date_range sans photo."
 
+msgid ""
+"With tidy: tick the path rules whose files already sit in folders you "
+"named too."
+msgstr ""
+"Avec tidy : cocher aussi les règles path dont les fichiers sont déjà dans "
+"des dossiers que vous avez nommés."
+
 msgid "Without"
 msgstr "Sans"
 
@@ -15615,6 +15621,14 @@ msgstr ""
 
 msgid "its size changed"
 msgstr "sa taille a changé"
+
+#, python-brace-format
+msgid ""
+"its {count} files already sit in folders you named: sort would move them "
+"out"
+msgstr ""
+"ses {count} fichiers sont déjà dans des dossiers que vous avez nommés : "
+"sort les en sortirait"
 
 #, python-brace-format
 msgid ""

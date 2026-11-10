@@ -11811,6 +11811,11 @@ msgstr ""
 msgid "With tidy: tick the date_range rules with no photo too."
 msgstr ""
 
+msgid ""
+"With tidy: tick the path rules whose files already sit in folders you "
+"named too."
+msgstr ""
+
 msgid "Without"
 msgstr ""
 
@@ -13046,6 +13051,12 @@ msgid "its sidecar (.xmp, .aae, .thm) holding its edits (the other one has none)
 msgstr ""
 
 msgid "its size changed"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"its {count} files already sit in folders you named: sort would move them "
+"out"
 msgstr ""
 
 #, python-brace-format

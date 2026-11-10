@@ -17,17 +17,17 @@ from media_hygiene.services.events_move import events_to_move, move_events
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from media_hygiene.config.tidy_find import StaleEntry
+    from media_hygiene.config.tidy_rules import OptIn, StaleEntry
     from media_hygiene.services.runtime import Runtime
 
 
-def show_tidy(runtime: Runtime, *, apply: bool, dates: bool) -> None:
+def show_tidy(runtime: Runtime, *, apply: bool, opt_in: frozenset[OptIn]) -> None:
     """List what points at nothing; with `apply`, remove the ticked entries.
 
     Args:
         runtime: Settings, mount points and output.
         apply: Remove the ticked entries (a copy kept first).
-        dates: Tick the `date_range` rules with no photo too.
+        opt_in: The entries shown unticked to tick too (`--dates`, `--superseded`).
     """
     output = runtime.output
     _move_events(runtime, apply=apply)
@@ -41,7 +41,7 @@ def show_tidy(runtime: Runtime, *, apply: bool, dates: bool) -> None:
     if not findings.stale:
         output.success(_("Every entry of config.toml points at something."))
         return
-    chosen = [entry for entry in findings.stale if entry.ticked or dates]
+    chosen = [e for e in findings.stale if e.ticked or e.opt_in in opt_in]
     output.show(_table(findings.stale, chosen))
     if not apply:
         output.info(_("🔒 Nothing was written."))
