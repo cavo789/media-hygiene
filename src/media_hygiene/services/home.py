@@ -37,6 +37,7 @@ from media_hygiene.review.scan_scope_api import SCOPE_PATH
 from media_hygiene.review.step_watch import STEP_PATH, keeps_server
 from media_hygiene.search.late_desk import LATE_PATH
 from media_hygiene.services.album_pages import album_pages
+from media_hygiene.services.first_warm import warmed
 from media_hygiene.services.home_audit import HomeAudit
 from media_hygiene.services.home_lan import lan_door, say_lan
 from media_hygiene.services.home_launch import (
@@ -120,8 +121,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
     Returns:
         `STEP_EXIT_BASE + n` for step `n` chosen; 0 on Ctrl+C or the page closed.
     """
-    ending = Ending()
-    presence = Presence(ending, STOPPED)
+    presence = Presence(ending := Ending(), STOPPED)
     relays = launcher_relays_steps()
     app = HomeApp(
         PerLocale(lambda: home_page(relays_steps=relays, runs=frozenset(sources.runs))),
@@ -164,8 +164,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         address_tip(runtime.output, port)
         say_lan(runtime.output, lan)
 
-    lan = lan_access(port) if port else None  # a phone may open it (0269, 0367)
-    code = STOPPED
+    lan, code = lan_access(port) if port else None, STOPPED  # a phone's (0269, 0367)
     try:
         with (
             contextlib.suppress(KeyboardInterrupt),
@@ -190,7 +189,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
                 pool,
             )
             door = person_on_tv(door, server.tv)  # ▶ Slideshow on /person (0657)
-            code = asyncio.run(serve_until_ended(door, port, ready))
+            code = asyncio.run(serve_until_ended(door, port, warmed(ready, both, pool)))
     finally:
         app.audit.stop()  # between two files: the index keeps what it committed
         for run in app.runs.values():
