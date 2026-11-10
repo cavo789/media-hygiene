@@ -703,6 +703,10 @@ msgid ""
 msgstr ""
 
 #, python-brace-format
+msgid "A new device is paired: {name} at {time}."
+msgstr ""
+
+#, python-brace-format
 msgid "A new version, {version}: {command}"
 msgstr ""
 
@@ -4226,6 +4230,9 @@ msgstr ""
 msgid "It stopped on an error. What it wrote:"
 msgstr ""
 
+msgid "It was me"
+msgstr ""
+
 msgid "It was then:"
 msgstr ""
 
@@ -5291,6 +5298,9 @@ msgid "New Year"
 msgstr ""
 
 msgid "New album…"
+msgstr ""
+
+msgid "New code: the previous one opens nothing any more."
 msgstr ""
 
 #, python-brace-format
@@ -6725,6 +6735,9 @@ msgstr ""
 msgid "Open index.html in the folder mounted on /reports: it lists every report."
 msgstr ""
 
+msgid "Open pairing again"
+msgstr ""
+
 msgid "Open the Download folder and tap media-hygiene-ca.crt."
 msgstr ""
 
@@ -6919,6 +6932,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Pair {number} of {total}"
+msgstr ""
+
+msgid "Paired during this run"
 msgstr ""
 
 msgid "Pairing code"
@@ -11198,13 +11214,23 @@ msgid "Today"
 msgstr ""
 
 msgid ""
+"Too many wrong codes from this device: wait a minute, then type the code "
+"shown on the PC."
+msgstr ""
+
+msgid ""
 "Too many wrong codes: pairing a TV is closed. Stop the slideshow (Ctrl+C "
 "on the PC), then start it again."
 msgstr ""
 
 msgid ""
-"Too many wrong codes: pairing is closed. On the PC, quit Media Hygiene, "
-"then type mh --lan again for a new code."
+"Too many wrong codes: pairing is closed, the phones already paired stay "
+"paired."
+msgstr ""
+
+msgid ""
+"Too many wrong codes: pairing is closed. On the PC, choose Open pairing "
+"again on the home page for a new code."
 msgstr ""
 
 msgid "Too strict? Not enough?"
@@ -17507,6 +17533,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "▶ Run again from: {step}"
+msgstr ""
+
+#, python-brace-format
+msgid "⚠ {count} wrong codes from {address} at {time}"
 msgstr ""
 
 msgid "✓ in the album"

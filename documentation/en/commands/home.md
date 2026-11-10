@@ -283,7 +283,7 @@ the home network too: the phone already paired reloads its page and gets the sli
 
 | | |
 |---|---|
-| Who | A device on the same Wi-Fi **with the code**; 5 wrong codes close the pairing until `mh` stops. |
+| Who | A device on the same Wi-Fi **with the code**. After 3 wrong codes, **that device** waits 30 s (doubling at each new wrong code, 10 min at most): the others still pair. 20 wrong codes in a run close the pairing for all. The PC's card shows each attempt (*⚠ 5 wrong codes from 192.168.1.37 at 14:02*) with **Open pairing again** (a new code, the old one opens nothing; phones already paired stay paired; no restart of `mh`) and **It was me** (the line put away). Each device paired during the run is listed there with its time, and a message says so on the PC. |
 | Where | The PC's private address only (`10.x`, `172.16–31.x`, `192.168.x`): never every interface, never the internet; `mh` opens no port on your router. |
 | How | HTTPS (`https://192.168.1.20:8088`), signed by a certificate authority `mh` makes on your PC: the phone installs it once (below); the code and the cookie never travel in clear. |
 | Kept | `C:\Users\<you>\media-hygiene\lan\` holds that authority and the page's certificate (`ca.key` never leaves it). Deleted, `mh` makes a new one: install it again on each phone. |

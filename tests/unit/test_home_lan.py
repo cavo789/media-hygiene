@@ -36,7 +36,7 @@ from media_hygiene.review.lan import (
 )
 from media_hygiene.review.lan_address import LAN_ADDRESS_VARIABLE, private_address
 from media_hygiene.review.lan_app import LanApp
-from media_hygiene.review.lan_pairing import MAX_FAILURES
+from media_hygiene.review.lan_attempts import MAX_FAILURES
 from media_hygiene.review.lan_paths import LAN_PATH
 from media_hygiene.review.lan_problem import (
     LAN_PROBLEM_VARIABLE,
@@ -232,11 +232,19 @@ def test_the_right_code_sets_the_cookie_and_opens_the_page() -> None:
 
 
 def test_wrong_codes_close_the_pairing() -> None:
-    """Each wrong code says so; from `MAX_FAILURES` on, the right one is refused."""
+    """From `MAX_FAILURES` wrong codes of the run on, the right one is refused.
+
+    Even when they come from many devices, each within its free tries.
+    """
     app, _fake = _app()
     replies = [
-        _ask(app, _phone("/pair/00000000x", paired=False))
-        for _attempt in range(MAX_FAILURES)
+        _ask(
+            app,
+            replace(
+                _phone("/pair/00000000x", paired=False), peer=f"192.168.1.{100 + n}"
+            ),
+        )
+        for n in range(MAX_FAILURES)
     ]
     assert {reply.status for reply in replies} == {HTTPStatus.FORBIDDEN}
     assert b'id="code"' in replies[0].body

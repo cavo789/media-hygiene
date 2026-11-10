@@ -72,6 +72,7 @@ class Request:
     body: bytes = b""
     door: Door = Door.PC  # the socket it came in by, never a header (0384)
     query: str = ""  # what follows the `?`, for a redirect that keeps it (0617)
+    peer: str = ""  # the device's address, from the socket, never a header (0681)
 
 
 @dataclass(frozen=True, slots=True)

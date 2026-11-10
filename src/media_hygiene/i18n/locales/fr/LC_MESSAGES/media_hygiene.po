@@ -888,6 +888,10 @@ msgstr ""
 "déplacée."
 
 #, python-brace-format
+msgid "A new device is paired: {name} at {time}."
+msgstr "Un nouvel appareil est appairé : {name} à {time}."
+
+#, python-brace-format
 msgid "A new version, {version}: {command}"
 msgstr "Une nouvelle version, {version} : {command}"
 
@@ -5139,6 +5143,10 @@ msgstr "Elle reste sur ce PC : copiez-la sur une clé USB ou le NAS."
 msgid "It stopped on an error. What it wrote:"
 msgstr "Arrêtée sur une erreur. Ce qu'elle a écrit :"
 
+#
+msgid "It was me"
+msgstr "C'était moi"
+
 msgid "It was then:"
 msgstr "Il était alors :"
 
@@ -6387,6 +6395,10 @@ msgstr "Nouvel An"
 
 msgid "New album…"
 msgstr "Nouvel album…"
+
+#
+msgid "New code: the previous one opens nothing any more."
+msgstr "Nouveau code : le précédent n'ouvre plus rien."
 
 #, python-brace-format
 msgid "New events ({n})"
@@ -8129,6 +8141,9 @@ msgstr ""
 "Ouvrez index.html dans le dossier monté sur /reports : il liste tous les "
 "rapports."
 
+msgid "Open pairing again"
+msgstr "Rouvrir l'appairage"
+
 msgid "Open the Download folder and tap media-hygiene-ca.crt."
 msgstr "Ouvrez le dossier Download et touchez media-hygiene-ca.crt."
 
@@ -8343,6 +8358,10 @@ msgstr "Appairer ce téléphone"
 #, python-brace-format
 msgid "Pair {number} of {total}"
 msgstr "Paire {number} sur {total}"
+
+#
+msgid "Paired during this run"
+msgstr "Appairés pendant ce lancement"
 
 msgid "Pairing code"
 msgstr "Code d'appairage"
@@ -13487,18 +13506,28 @@ msgid "Today"
 msgstr "Aujourd'hui"
 
 msgid ""
+"Too many wrong codes from this device: wait a minute, then type the code "
+"shown on the PC."
+msgstr "Trop de codes erronés depuis cet appareil : attendez une minute, puis tapez le code affiché sur le PC."
+
+msgid ""
 "Too many wrong codes: pairing a TV is closed. Stop the slideshow (Ctrl+C "
 "on the PC), then start it again."
 msgstr ""
 "Trop de codes erronés : l'appairage d'une télé est fermé. Arrêtez le "
 "diaporama (Ctrl+C sur le PC), puis relancez-le."
 
+#
 msgid ""
-"Too many wrong codes: pairing is closed. On the PC, quit Media Hygiene, "
-"then type mh --lan again for a new code."
-msgstr ""
-"Trop de codes erronés : l'appairage est fermé. Sur le PC, quittez Media "
-"Hygiene, puis tapez à nouveau mh --lan pour un nouveau code."
+"Too many wrong codes: pairing is closed, the phones already paired stay "
+"paired."
+msgstr "Trop de codes erronés : l'appairage est fermé, les téléphones déjà appairés le restent."
+
+#
+msgid ""
+"Too many wrong codes: pairing is closed. On the PC, choose Open pairing "
+"again on the home page for a new code."
+msgstr "Trop de codes erronés : l'appairage est fermé. Sur le PC, choisissez Rouvrir l'appairage sur la page d'accueil pour un nouveau code."
 
 msgid "Too strict? Not enough?"
 msgstr "Trop strict ? Pas assez ?"
@@ -14216,8 +14245,8 @@ msgid ""
 "With tidy: tick the path rules whose files already sit in folders you "
 "named too."
 msgstr ""
-"Avec tidy : cocher aussi les règles path dont les fichiers sont déjà dans "
-"des dossiers que vous avez nommés."
+"Avec tidy : cocher aussi les règles path dont les fichiers sont déjà dans"
+" des dossiers que vous avez nommés."
 
 msgid "Without"
 msgstr "Sans"
@@ -20822,6 +20851,10 @@ msgstr "▶ Lecture"
 #, python-brace-format
 msgid "▶ Run again from: {step}"
 msgstr "▶ Relancer depuis : {step}"
+
+#, python-brace-format
+msgid "⚠ {count} wrong codes from {address} at {time}"
+msgstr "⚠ {count} codes erronés depuis {address} à {time}"
 
 msgid "✓ in the album"
 msgstr "✓ dans l'album"

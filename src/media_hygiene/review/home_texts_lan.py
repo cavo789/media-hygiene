@@ -30,3 +30,23 @@ def lan_switch_texts() -> dict[str, str]:
         "lanSwitchFailed": _("The settings could not be saved in config.toml."),
         "lanSwitchSaved": _("Saved in config.toml, read back from the disk."),
     }
+
+
+def lan_pairing_texts() -> dict[str, str]:
+    """The texts of the pairing's report on the PC's card (0681).
+
+    Returns:
+        By key, in the language in use.
+    """
+    return {
+        "lanAttempt": _("⚠ {count} wrong codes from {address} at {time}"),
+        "lanClosed": _(
+            "Too many wrong codes: pairing is closed, the phones already paired "
+            "stay paired."
+        ),
+        "lanReopen": _("Open pairing again"),
+        "lanReopened": _("New code: the previous one opens nothing any more."),
+        "lanSeen": _("It was me"),
+        "lanNewTitle": _("Paired during this run"),
+        "lanNewPaired": _("A new device is paired: {name} at {time}."),
+    }

@@ -208,7 +208,7 @@ function wire() {
 // and drawn again only if the answer differs (0442). The tab says it is there from the start (0261).
 function start() {
   wirePresence();  // a paired phone keeps the PC's server alive too (0416)
-  if (!REMOTE) showLan();
+  if (!REMOTE) { showLan(); window.setInterval(showLan, LAN_EVERY_MS); }
   const kept = keptState();
   let drawn = false;
   if (kept) {
@@ -248,6 +248,7 @@ function showLan() {
       $("#lanQr").innerHTML = lan.qr;
       $("#lanUrl").textContent = lan.url;
       $("#lanCode").textContent = lan.code;
+      showPairing(lan);
       // HTTPS (0430): a phone installs the PC's certificate first, once.
       $("#lanCaLine").hidden = !lan.ca;
       $("#lanCa").textContent = lan.ca || "";
@@ -257,6 +258,27 @@ function showLan() {
       $("#lanCard").hidden = false;
     })
     .catch(() => undefined);
+}
+// The pairing's report (0681): wrong codes per address, the devices paired this run (a toast for a new one).
+const LAN_EVERY_MS = 15000;
+const lanSeen = { paired: -1, wired: false };
+const clock = (at) => new Date(at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+function showPairing(lan) {
+  const attempts = lan.attempts || [];
+  const list = $("#lanAttempts");
+  list.replaceChildren(...attempts.map((a) => { const item = document.createElement("li"); item.textContent = fill(T.lanAttempt, { count: a.failures, address: a.address, time: clock(a.at) }); return item; }));
+  $("#lanClosed").hidden = !lan.closed;
+  $("#lanAlert").hidden = attempts.length === 0 && !lan.closed;
+  const paired = lan.paired || [];
+  $("#lanNewList").replaceChildren(...paired.map((p) => { const item = document.createElement("li"); item.textContent = `${p.name} · ${clock(p.at)}`; return item; }));
+  $("#lanNew").hidden = paired.length === 0;
+  if (lanSeen.paired >= 0) for (const p of paired.slice(lanSeen.paired)) toast(fill(T.lanNewPaired, { name: p.name, time: clock(p.at) }), "ok");
+  lanSeen.paired = paired.length;
+  if (lanSeen.wired || !lan.reopen) return;
+  lanSeen.wired = true;
+  const ask = (path, said) => post(path, {}).then((r) => (r.ok ? r.json() : null)).then((again) => { if (!again) return; $("#lanQr").innerHTML = again.qr; $("#lanCode").textContent = again.code; showPairing(again); if (said) toast(said, "ok"); }).catch(() => undefined);
+  $("#lanReopen").addEventListener("click", () => ask(lan.reopen, T.lanReopened));
+  $("#lanSeen").addEventListener("click", () => ask(lan.seen, ""));
 }
 // The list answered by the server, read back from its file after each forget (0431).
 function showPhones(answer, forgetPath) {

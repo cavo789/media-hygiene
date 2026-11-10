@@ -307,7 +307,7 @@ diaporama.
 
 | | |
 |---|---|
-| Qui | Un appareil du même Wi-Fi **avec le code** ; 5 codes erronés ferment l'appairage jusqu'à l'arrêt de `mh`. |
+| Qui | Un appareil du même Wi-Fi **avec le code**. Après 3 codes erronés, **cet appareil** attend 30 s (le double à chaque nouveau code erroné, 10 min au plus) : les autres s'appairent toujours. 20 codes erronés sur un lancement ferment l'appairage pour tous. La carte du PC montre chaque tentative (*⚠ 5 codes erronés depuis 192.168.1.37 à 14:02*) avec **Rouvrir l'appairage** (un nouveau code, l'ancien n'ouvre plus rien ; les téléphones déjà appairés le restent ; sans relancer `mh`) et **C'était moi** (la ligne rangée). Chaque appareil appairé pendant le lancement y est listé avec son heure, et un message le dit sur le PC. |
 | Où | L'adresse privée du PC seulement (`10.x`, `172.16–31.x`, `192.168.x`) : jamais toutes les interfaces, jamais Internet ; `mh` n'ouvre aucun port sur votre box. |
 | Comment | HTTPS (`https://192.168.1.20:8088`), signé par une autorité de certification que `mh` crée sur votre PC : le téléphone l'installe une fois (ci-dessous) ; le code et le cookie ne circulent jamais en clair. |
 | Gardé | `C:\Users\<vous>\media-hygiene\lan\` contient cette autorité et le certificat de la page (`ca.key` n'en sort jamais). Supprimé, `mh` en crée une nouvelle : réinstallez-la sur chaque téléphone. |

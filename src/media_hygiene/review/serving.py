@@ -9,6 +9,7 @@ import asyncio
 import contextlib
 import json
 import logging
+from dataclasses import replace
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
@@ -48,7 +49,7 @@ async def serve_connection(
     """
     try:
         try:
-            request = await read_request(reader)
+            request = replace(await read_request(reader), peer=peer_of(writer))
         except BadRequestError as exc:
             response = Response(exc.status)
         else:
@@ -60,6 +61,19 @@ async def serve_connection(
         writer.close()
         with contextlib.suppress(ConnectionError):
             await writer.wait_closed()
+
+
+def peer_of(writer: asyncio.StreamWriter) -> str:
+    """The address of the device at the other end, from the socket itself (0681).
+
+    Args:
+        writer: The connection.
+
+    Returns:
+        E.g. `192.168.1.37`; empty when the socket does not say.
+    """
+    peer = writer.get_extra_info("peername")
+    return str(peer[0]) if isinstance(peer, tuple) and peer else ""
 
 
 async def _answered(
