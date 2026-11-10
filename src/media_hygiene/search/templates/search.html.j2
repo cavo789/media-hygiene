@@ -415,7 +415,7 @@
     <button id="whyClose" type="button">{{ _("Close") }} (Esc)</button>
   </div>
 </div>
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "pick_grid.js.j2" %}
 {% include "pick_viewer.js.j2" %}
 {% include "pick_band.js.j2" %}

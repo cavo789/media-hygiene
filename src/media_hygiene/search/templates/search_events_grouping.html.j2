@@ -17,7 +17,7 @@
   <div id="groupingPreview" aria-live="polite"></div>
   <p id="groupingSaid" role="status" aria-live="polite"></p>
 </details>
-<script>
+<script nonce="{{ page_nonce }}">
 (() => {
   if (!["127.0.0.1", "localhost", "[::1]"].includes(location.hostname)) return;
   const PATH = "/api/setting-events";

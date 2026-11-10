@@ -51,11 +51,12 @@ def _names(environment: Environment, template: str, seen: set[str]) -> set[str]:
     return found
 
 
-def render_page(template: str) -> str:
+def render_page(template: str, filler: str = "/x") -> str:
     """A page, every route it names given a placeholder.
 
     Args:
         template: Its template, a key of `PAGE_STEPS`.
+        filler: The value of every name (a hostile one in `test_hostile_names.py`).
 
     Returns:
         The page, as served.
@@ -63,7 +64,7 @@ def render_page(template: str) -> str:
     package = _PACKAGES.get(template, "media_hygiene.review")
     environment = translated_environment(package, escaped=("html", "j2"))
     values: dict[str, object] = dict.fromkeys(
-        _names(environment, template, set()), "/x"
+        _names(environment, template, set()), filler
     )
     values["paths"] = _AnyPath()
     values["header"] = page_header(template)

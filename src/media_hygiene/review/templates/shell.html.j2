@@ -5,7 +5,7 @@
    page's space is highlighted. Its ids (`homeLink`) and classes (`mh-doc`, `mh-page`) are the thin bar's:
    home_link.html.j2 handles the way back the same. #}
 {% set shell = header.shell %}
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "theme_choice.js.j2" %}
 document.documentElement.classList.add("mh-shelled"{% if shell.compact %}, "mh-shell-compact"{% endif %}{% if shell.drawer %}, "mh-shell-drawer"{% endif %});
 </script>
@@ -15,6 +15,6 @@ document.documentElement.classList.add("mh-shelled"{% if shell.compact %}, "mh-s
 {% include "home_icons.svg.j2" %}
 {% include "shell_side.html.j2" %}
 {% include "shell_top.html.j2" %}
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "shell.js.j2" %}
 </script>

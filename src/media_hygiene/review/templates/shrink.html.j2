@@ -95,7 +95,7 @@
 </main>
 {% endblock %}
 {% block after %}
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "shrink.js.j2" %}
 </script>
 {% endblock %}

@@ -189,3 +189,4 @@ def test_pages_of_mh_alone_in_a_real_browser(
     assert len(rounds["rounds_ms"]) == _ROUNDS
     assert max(rounds["rounds_ms"]) < _ROUND_MS, rounds
     assert walk["stopped"]["shown"], walk["stopped"]  # 0416
+    assert walk["csp_refused"] == [], walk["csp_refused"]  # 0671

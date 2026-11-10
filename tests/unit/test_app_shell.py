@@ -28,9 +28,10 @@ from media_hygiene.review.app_shell import (
     shell_response,
 )
 from media_hygiene.review.doors import Door
-from media_hygiene.review.http import REVIEW_POLICY, ContentType, Request, Response
+from media_hygiene.review.http import ContentType, Request, Response
 from media_hygiene.review.lan import LanAccess
 from media_hygiene.review.lan_app import LanApp
+from media_hygiene.review.nonce import REVIEW_POLICY
 from media_hygiene.services.home import home_page
 
 _ADDRESS: Final = "192.168.1.20"

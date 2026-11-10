@@ -6,7 +6,7 @@
 {% if header.shell %}
 {% include "shell.html.j2" %}
 {% else %}
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "theme_choice.js.j2" %}
 </script>
 <nav class="mh-bar" aria-label="Media Hygiene">

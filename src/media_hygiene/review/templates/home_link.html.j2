@@ -12,7 +12,7 @@
   <p style="max-width: 520px; padding: 20px 24px; border-radius: 12px; background: var(--mk-surface); color: var(--mk-ink);">
     {{ _("This page is closed. The home page comes back here when mh opens it.") }}</p>
 </div>
-<script>
+<script nonce="{{ page_nonce }}">
 (() => {
   const POLL_MS = 250;
   // A poll answered by nobody (Docker Desktop's port proxy may hold a connection made in the

@@ -23,7 +23,7 @@
 <meta name="apple-mobile-web-app-title" content="{{ _('Media Hygiene') }}">
 <meta name="theme-color" content="#f3f6fa">
 {% endif %}
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "theme_choice.js.j2" %}
 </script>
 <style>
@@ -176,7 +176,7 @@
 </section>
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
-<script>
+<script nonce="{{ page_nonce }}">
 (() => {
 {% include "home.js.j2" %}
 {% include "home_draw.js.j2" %}

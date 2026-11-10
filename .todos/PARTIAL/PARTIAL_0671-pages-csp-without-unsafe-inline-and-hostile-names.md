@@ -50,3 +50,37 @@ templates), so a strict policy is within reach.
 
 Before: 44 hand-escaped sites and a policy that runs any injected script (measured). After:
 two independent locks (escaping tested, policy refusing), checked in CI.
+
+## Status — PARTIAL (2026-11-10)
+
+### Done
+- Policy: `script-src 'nonce-…'` on every page of every server (review pages, home, library/
+  search, people, places with `'self'` for the vendored Leaflet, albums, slideshow and TV,
+  LAN pairing and CA pages, docs, console pages). One mechanism: `review/nonce.py` — the
+  Jinja global `page_nonce` writes a per-run mark, `write_response` replaces it in the HTML
+  body and the header by a nonce drawn per answer (`cacheable` answers: the run's nonce, as
+  long-lived as the ETag; no HTML answer is cacheable today, measured by grep). Reports
+  served under `/reports/` (as files and in the home shell) get their inline scripts allowed
+  by SHA-256 (`hashed_policy`); opened from disk they have no policy, as before.
+- `style-src 'unsafe-inline'` kept, on purpose: 12 `style="…"` attributes in templates,
+  more built by scripts, and Rich's console export (inline styles); a style runs no script.
+- Tests (`tests/unit/test_hostile_names.py`): every page rendered with every value set to
+  `<img src=x onerror=…>"'`${…}</script><script>…` shows it escaped and keeps one
+  `</script>` per `<script>`; every `<script` of every template carries the nonce; no inline
+  handler, no `javascript:`; per-answer nonce, body and header equal on the wire; reports
+  hashed.
+- Lint (`tests/support/html_sinks.py`): every `${…}` of a markup template literal is proven
+  (esc/icon/number/said/opened, markup builders, `T.…`, counts, variables assigned safe
+  values) or named in `EXCEPTIONS` with its reason (21). 23 bare values wrapped in `esc()`
+  (ids, classes, widths, counts, `data-*`, album cover key). No exploitable hole found:
+  every data-carrying value (names, paths, EXIF, tags, places, albums) was already escaped.
+- Browser walk (CI): records Chromium's CSP refusals; the e2e test asserts none.
+
+### Not done
+- The hostile fixture in the demo tree (folder/file/EXIF/XMP/album/person/tag/place names)
+  walked in the browser on every page, PC and phone doors, asserting `window.__pwned`.
+  **Reason:** the demo tree's counts are asserted by many tests and the walk needs Docker +
+  Playwright (CI only): not provable here; the server-side rendering test covers the
+  templates, the lint covers the scripts.
+- JSON answers are not checked with hostile data (served `application/json` + `nosniff`,
+  inserted through the linted escaping).

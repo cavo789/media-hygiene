@@ -45,7 +45,7 @@
 <p id="albumSaid" role="status"></p>
 <p id="albumTvLine" hidden></p>
 <details id="albumMissing" hidden><summary></summary><ul></ul></details>
-<script>
+<script nonce="{{ page_nonce }}">
 (() => {
 {% include "combo_list.js.j2" %}
   const ALBUMS_PATH = {{ albums_path | tojson }};

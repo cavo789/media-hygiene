@@ -71,7 +71,7 @@
 <main>
 {% block content %}{% endblock %}
 </main>
-<script>
+<script nonce="{{ page_nonce }}">
   // The report is written in UTC: show its dates in the reader's time zone.
   for (const time of document.querySelectorAll("time[datetime]")) {
     const moment = new Date(time.dateTime);

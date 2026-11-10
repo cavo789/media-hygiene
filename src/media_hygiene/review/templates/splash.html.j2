@@ -9,4 +9,4 @@
   <p class="muted" id="loadingSlow" hidden>{{ texts.loadingSlow }}</p>
 </div>
 {# Back on the page (0442): this tab holds the last state, the splash stays away (home.js.j2 shows it again if it cannot be drawn). #}
-<script>try { if (sessionStorage.getItem("mh-home-state-" + document.documentElement.lang)) document.getElementById("loading").hidden = true; } catch (error) { /* no storage: the splash */ }</script>
+<script nonce="{{ page_nonce }}">try { if (sessionStorage.getItem("mh-home-state-" + document.documentElement.lang)) document.getElementById("loading").hidden = true; } catch (error) { /* no storage: the splash */ }</script>

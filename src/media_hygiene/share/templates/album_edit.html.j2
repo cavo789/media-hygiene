@@ -85,7 +85,7 @@
 </dialog>
 {% include "album_make.html.j2" %}
 {% include "pick_viewer.html.j2" %}
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "pick_grid.js.j2" %}
 {% include "pick_viewer.js.j2" %}
 {% include "pick_band.js.j2" %}

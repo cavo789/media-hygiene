@@ -84,7 +84,7 @@
 {% block after %}
 {% include "undo_toast.html.j2" %}
 {% include "pick_large.html.j2" %}
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "gone_review.js.j2" %}
 </script>
 {% endblock %}

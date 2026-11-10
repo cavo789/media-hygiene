@@ -7,7 +7,7 @@
 {% set pick_album = false %}
 {% set pick_space = _("play or pause a video") %}
 {% include "pick_viewer.html.j2" %}
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "pick_grid.js.j2" %}
 {% include "pick_viewer.js.j2" %}
 const TEXTS = {};       // nothing picked, nothing saved by the shared scripts here

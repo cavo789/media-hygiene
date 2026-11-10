@@ -13,6 +13,7 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.doors import Door
+from media_hygiene.review.nonce import REVIEW_POLICY
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -25,12 +26,6 @@ HEADER_ENCODING: Final = "latin-1"
 _HTTP_1: Final = "HTTP/1."
 _REQUEST_LINE_PARTS: Final = 3  # method, target, version
 NO_REFERRER: Final = "no-referrer"
-# Itself only (+ manifest, worker: the phone's app, 0432); `places` adds scripts, tiles.
-REVIEW_POLICY: Final = (
-    "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
-    "img-src 'self'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; "
-    "manifest-src 'self'; worker-src 'self'"
-)
 
 
 class ContentType(StrEnum):

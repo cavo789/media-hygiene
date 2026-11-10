@@ -220,7 +220,7 @@
 <div id="zoom" hidden></div>
 <div id="compare" role="dialog" aria-label="{{ _('Compare at 100 %%') }}" hidden></div>
 {% include "pick_viewer.html.j2" %}
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "pick_grid.js.j2" %}
 {% include "pick_viewer.js.j2" %}
 {% include "pick_band.js.j2" %}
@@ -493,7 +493,7 @@ pickMoves = false;      // ←/→/Space change the series, ↑/↓ move the fra
     .catch(() => setStatus(T.offline, "error"));
 })();
 </script>
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "strictness.js.j2" %}
 </script>
 {% endblock %}

@@ -152,7 +152,9 @@ def test_a_place_named_like_a_town_gets_a_hint_and_the_page_says_what_places_are
 
 def test_no_name_is_declared_twice_in_the_script() -> None:
     """A second `const plain` was a SyntaxError: the whole map page stopped (0242)."""
-    [script] = [part for part in _page().split("<script>") if "const T = " in part]
+    [script] = [
+        part for part in re.split(r"<script[^>]*>", _page()) if "const T = " in part
+    ]
     names = _DECLARED.findall(script)
     assert len(names) > 20
     assert sorted({name for name in names if names.count(name) > 1}) == []

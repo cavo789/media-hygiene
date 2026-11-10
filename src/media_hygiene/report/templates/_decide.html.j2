@@ -20,7 +20,7 @@
 {% if csv and report.header.summary.plan_file %} · <a href="{{ report.header.summary.plan_file }}">{{ _("the spreadsheet (CSV)") }}</a>{% endif %}</p>
 {% endmacro %}
 {% macro decide_script() %}
-<script>
+<script nonce="{{ page_nonce }}">
 (() => {
   const TEXTS = {{ {"running": _("Opening in the window where mh runs: {command}."), "failed": _("The page failed (error {status}): copy the command.")} | tojson }};
   const rows = document.querySelectorAll("p.decide");

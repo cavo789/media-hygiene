@@ -43,7 +43,7 @@
 {% block more_keys %}{% endblock %}
     </dl>
     </details>
-    <script>
+    <script nonce="{{ page_nonce }}">
     document.addEventListener("keydown", (event) => {
       const more = document.getElementById("moreKeys");
       if (event.key === "Escape" && more.open) { more.open = false; event.stopImmediatePropagation(); }

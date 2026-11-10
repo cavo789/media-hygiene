@@ -24,14 +24,14 @@ function askingParts(kind, figures) {
   return [
     askedPhotos(figures),
     `<p>${esc(fillIn(said(kind, "Ask"), { count: count(figures.to_describe), model: figures.model, time: duration(figures.to_describe * figures.seconds_per_photo) }))}</p>`,
-    `<div class="audit-controls"><button class="btn btn-primary" type="button" data-act="${kind}-all">${icon("play")} ${esc(fillIn(said(kind, "Now"), { count: count(figures.to_describe) }))}</button><button class="btn" type="button" data-act="${kind}-hour">${esc(said(kind, "Hour"))}</button><button class="btn btn-ghost" type="button" data-close>${esc(T.tagsNotNow)}</button></div>`,
+    `<div class="audit-controls"><button class="btn btn-primary" type="button" data-act="${esc(kind)}-all">${icon("play")} ${esc(fillIn(said(kind, "Now"), { count: count(figures.to_describe) }))}</button><button class="btn" type="button" data-act="${esc(kind)}-hour">${esc(said(kind, "Hour"))}</button><button class="btn btn-ghost" type="button" data-close>${esc(T.tagsNotNow)}</button></div>`,
   ];
 }
 function runBody(kind, state) {
   const steps = state.steps.map((step) => {
     const counts = step.total === null ? count(step.done) : `${count(step.done)} / ${count(step.total)}`;
     const pct = step.total ? Math.round((100 * step.done) / step.total) : 0;
-    return `<li class="pstep${step.finished ? " is-done" : ""}">${icon(step.finished ? "check" : "history")}<span>${esc(step.title)}</span><span class="pstep-count">${esc(counts)}</span><span class="pbar" aria-hidden="true"><span style="width:${pct}%"></span></span></li>`;
+    return `<li class="pstep${step.finished ? " is-done" : ""}">${icon(step.finished ? "check" : "history")}<span>${esc(step.title)}</span><span class="pstep-count">${esc(counts)}</span><span class="pbar" aria-hidden="true"><span style="width:${esc(pct)}%"></span></span></li>`;
   }).join("");
   const parts = [`<ol class="progress-steps"${steps ? "" : " hidden"}>${steps}</ol>`];
   if (state.phase === "preparing") parts.push(`<p class="pcurrent">${esc(said(kind, "Preparing"))}</p>`);
@@ -43,7 +43,7 @@ function runBody(kind, state) {
       parts.push(`<p class="pcurrent" aria-live="polite">${esc(fillIn(T.tagsRate, { rate: (rate * 60).toFixed(1), time: duration((step.total - step.done) / rate) }))}</p>`);
     } else parts.push(`<p class="pcurrent">${esc(said(kind, "Running"))}</p>`);
     if (state.current) parts.push(`<p class="pcurrent muted">${esc(state.current)}</p>`);
-    parts.push(`<div class="audit-controls"><button class="btn btn-ghost" type="button" data-act="${kind}-stop">${esc(T.tagsStop)}</button></div>`);
+    parts.push(`<div class="audit-controls"><button class="btn btn-ghost" type="button" data-act="${esc(kind)}-stop">${esc(T.tagsStop)}</button></div>`);
   }
   if (state.phase === "stopped") parts.push(`<p>${esc(said(kind, "Stopped"))}</p>`);
   parts.push(...state.lines.map((line) => `<p>${esc(line)}</p>`));
@@ -55,7 +55,7 @@ function runBody(kind, state) {
 function drawRun(kind, state) {
   const dialog = $(`#${kind}Dlg`);
   dialog.innerHTML = `<div class="dlg">
-    <div class="dlg-head"><div><p class="eyebrow">${icon("tag")} ${esc(T.tagsEyebrow)}</p><h2 id="${kind}Title">${esc(said(kind, "Title"))}</h2></div>${closeButton()}</div>
+    <div class="dlg-head"><div><p class="eyebrow">${icon("tag")} ${esc(T.tagsEyebrow)}</p><h2 id="${esc(kind)}Title">${esc(said(kind, "Title"))}</h2></div>${closeButton()}</div>
     <p class="muted">${esc(said(kind, "Text"))}</p>${runBody(kind, state)}</div>`;
   if (kind === "tags" && ["asking", "done", "stopped"].includes(state.phase)) drawAi(dialog);  // not while polling
   if (kind === "spots" && ["asking", "done", "stopped", "failed"].includes(state.phase)) drawAi(dialog, () => askRun(kind, { action: "prepare" }));

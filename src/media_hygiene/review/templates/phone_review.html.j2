@@ -103,7 +103,7 @@
 {% include "pick_viewer.html.j2" %}
 <div id="closed" role="alertdialog" aria-live="assertive"><p><span id="closedText"></span>
   <a id="closedHome" href="/" hidden>⌂ {{ _("Back to the home page") }}</a></p></div>
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "pick_grid.js.j2" %}
 {% include "pick_viewer.js.j2" %}
 {% include "pick_band.js.j2" %}

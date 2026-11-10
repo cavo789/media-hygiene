@@ -28,7 +28,7 @@
     <a class="mh-doc" href="{{ header.twin }}" target="_blank" rel="noopener" hreflang="{{ header.twin_lang }}" lang="{{ header.twin_lang }}">{{ header.twin_label }}</a>
   </span>
 </header>
-<script>
+<script nonce="{{ page_nonce }}">
   // The theme the home page's switch chose (same key), and the switch itself.
   (() => {
     const KEY = "mh-home-theme";

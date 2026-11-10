@@ -205,7 +205,7 @@ function showProgress(progress) {
   if (progress.done !== pace.done) { pace.done = progress.done; pace.at = now; } else if (!pace.at) pace.at = now;
   const count = progress.total ? `${progress.done} / ${progress.total}` : `${progress.done}`;
   const speed = rate ? ` · ${fill(T.perSecond, { rate: rate.toFixed(1) })}` : "";
-  const bar = progress.total ? `<progress max="${progress.total}" value="${progress.done}"></progress> ` : "";
+  const bar = progress.total ? `<progress max="${esc(progress.total)}" value="${esc(progress.done)}"></progress> ` : "";
   const stage = progress.title ? `<strong>${esc(progress.title)}</strong><br>` : "";
   line.innerHTML = `${stage}${bar}${esc(count)}${esc(speed)}${progress.current ? ` · ${esc(progress.current)}` : ""}`;
 }
@@ -305,7 +305,7 @@ function drawAudit(state) {
   list.innerHTML = state.steps.map((step) => {
     const counts = step.total === null ? count(step.done) : `${count(step.done)} / ${count(step.total)}`;
     const pct = step.total ? Math.round((100 * step.done) / step.total) : 0;
-    return `<li class="pstep${step.finished ? " is-done" : ""}"${step.hint && !step.finished ? ` title="${esc(step.hint)}"` : ""}>${icon(step.finished ? "check" : "history")}<span>${esc(step.title)}</span><span class="pstep-count">${esc(counts)}</span><span class="pbar" aria-hidden="true"><span style="width:${pct}%"></span></span></li>`;
+    return `<li class="pstep${step.finished ? " is-done" : ""}"${step.hint && !step.finished ? ` title="${esc(step.hint)}"` : ""}>${icon(step.finished ? "check" : "history")}<span>${esc(step.title)}</span><span class="pstep-count">${esc(counts)}</span><span class="pbar" aria-hidden="true"><span style="width:${esc(pct)}%"></span></span></li>`;
   }).join("");
   $("#auditCurrent").textContent = running ? state.current || T.auditRunning : "";
   const end = [...state.lines, ...state.actions].map((line) => `<p>${esc(line)}</p>`);
@@ -413,7 +413,7 @@ function fillPalette() {
     ? entries.map((entry) => {
       if (entry.header) return `<li class="palette-group" role="presentation">${esc(entry.header)}</li>`;
       at += 1;
-      return `<li class="palette-opt" role="option" id="po-${at}" data-k="${at}" aria-selected="false">${icon(entry.icon)}<span class="po-title">${esc(entry.title)}</span>${entry.risk ? riskPill(entry.risk) : ""}<span class="po-sub">${esc(entry.sub)}</span>${entry.type === "run" ? starButton(entry.id) : ""}</li>`;
+      return `<li class="palette-opt" role="option" id="po-${esc(at)}" data-k="${esc(at)}" aria-selected="false">${icon(entry.icon)}<span class="po-title">${esc(entry.title)}</span>${entry.risk ? riskPill(entry.risk) : ""}<span class="po-sub">${esc(entry.sub)}</span>${entry.type === "run" ? starButton(entry.id) : ""}</li>`;
     }).join("")
     : `<li class="palette-empty" role="presentation">${esc(T.nothingMatches)}</li>`;
   markActive();
@@ -536,7 +536,7 @@ function tvChoices() {
       const options = (values) => values.map((each) => (typeof each === "string" ? { value: each, label: each } : each))
         .map((each) => `<option value="${esc(each.value)}" title="${esc(each.value)}">${esc(each.label)}</option>`).join("");
       const pick = (id, label, values) => (values.length
-        ? `<div class="tv-choice"><label class="muted" for="${id}">${esc(label)}</label><select id="${id}">${options(values)}</select><button class="btn btn-primary" type="button" data-choose="${id}">${icon("play")} ${esc(T.tvShow)}</button></div>`
+        ? `<div class="tv-choice"><label class="muted" for="${esc(id)}">${esc(label)}</label><select id="${esc(id)}">${options(values)}</select><button class="btn btn-primary" type="button" data-choose="${esc(id)}">${icon("play")} ${esc(T.tvShow)}</button></div>`
         : "");
       box.innerHTML = tvRandomBox() + pick("tvFolder", T.tvFolder, lists.folders || []) + pick("tvMonth", T.tvMonth, lists.months || []);
       $$("[data-choose]", box).forEach((button) => button.addEventListener("click", () => tvChoose(button.dataset.choose)));
@@ -546,8 +546,8 @@ function tvChoices() {
 }
 // 🎲 At random (0508): a length and, optionally, the years; the PC chooses the photos.
 function tvRandomBox() {
-  const option = (value, label, chosen) => `<option value="${value}"${chosen ? " selected" : ""}>${esc(label)}</option>`;
-  const year = (id, label) => `<label class="muted" for="${id}">${esc(label)}</label><input id="${id}" type="number" inputmode="numeric" min="1800" max="2200" value="${new Date().getFullYear()}">`;
+  const option = (value, label, chosen) => `<option value="${esc(value)}"${chosen ? " selected" : ""}>${esc(label)}</option>`;
+  const year = (id, label) => `<label class="muted" for="${esc(id)}">${esc(label)}</label><input id="${esc(id)}" type="number" inputmode="numeric" min="1800" max="2200" value="${esc(new Date().getFullYear())}">`;
   return `<div class="tv-choice"><p class="muted">${esc(T.tvRandomNote)}</p>`
     + `<label class="muted" for="tvLength">${esc(T.tvLength)}</label><select id="tvLength">${option(30, T.tvMinutes30)}${option(60, T.tvMinutes60, true)}${option(120, T.tvMinutes120)}</select>`
     + `<label class="muted" for="tvEra">${esc(T.tvEra)}</label><select id="tvEra">${option("all", T.tvEraAll, true)}${option("five", T.tvEraFive)}${option("period", T.tvEraPeriod)}</select>`

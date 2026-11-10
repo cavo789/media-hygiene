@@ -340,8 +340,8 @@
 </main>
 {% endblock %}
 {% block after %}
-<script src="leaflet.js"></script>
-<script>
+<script nonce="{{ page_nonce }}" src="leaflet.js"></script>
+<script nonce="{{ page_nonce }}">
 (() => {
   const T = {{ texts | tojson }};
   const paths = { state: {{ state_path | tojson }}, save: {{ save_path | tojson }},

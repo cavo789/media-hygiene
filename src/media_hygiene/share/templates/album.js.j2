@@ -141,7 +141,7 @@ async function showAlbum(name) {
   album = view;
   items = view.days.flatMap((day) => day.items);
   $("title").textContent = view.name;
-  const cover = view.cover ? `<img src="${esc(view.cover.photo)}" alt="" data-key="${view.cover.key}">` : "";
+  const cover = view.cover ? `<img src="${esc(view.cover.photo)}" alt="" data-key="${esc(view.cover.key)}">` : "";
   const missing = view.missing ? `<p class="note">${esc(plural(T.missing, view.missing))}</p>` : "";
   let number = 0;
   const days = view.days.map((day) => `<section class="day">

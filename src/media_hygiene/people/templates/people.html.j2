@@ -200,7 +200,7 @@
   <button id="viewerAside" type="button" hidden></button>
   <div id="viewerSaid" role="status"></div>
 </div>
-<script>
+<script nonce="{{ page_nonce }}">
 "use strict";
 const TEXTS = {{ texts | tojson }};
 const GROUPS_PATH = {{ groups_path | tojson }};

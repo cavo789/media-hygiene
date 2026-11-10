@@ -45,7 +45,7 @@ def _screen_page(phone_url: str = "") -> str:
 
 def _screen_script() -> str:
     page = _screen_page()
-    scripts = re.findall(r"<script>(.*?)</script>", page, re.DOTALL)
+    scripts = re.findall(r"<script[^>]*>(.*?)</script>", page, re.DOTALL)
     assert len(scripts) == 1
     return str(scripts[0])
 

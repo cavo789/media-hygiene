@@ -17,6 +17,7 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.http import HEADER_ENCODING
+from media_hygiene.review.nonce import sealed
 
 if TYPE_CHECKING:
     from media_hygiene.review.http import FilePart, Response
@@ -46,7 +47,8 @@ async def write_response(writer: asyncio.StreamWriter, response: Response) -> No
         else ("no-store",)
     )
     part = response.part
-    length = len(response.body) if part is None else part.length
+    body, policy = sealed(response)
+    length = len(body) if part is None else part.length
     head = (
         f"HTTP/1.1 {status.value} {status.phrase}",
         f"Content-Type: {response.content_type}",
@@ -57,12 +59,12 @@ async def write_response(writer: asyncio.StreamWriter, response: Response) -> No
         f"{RUN_HEADER}: {_RUN}",
         "X-Content-Type-Options: nosniff",
         f"Referrer-Policy: {response.referrer}",
-        f"Content-Security-Policy: {response.policy}",
+        f"Content-Security-Policy: {policy}",
         *_range_head(status, part),
         *response.headers,
     )
     writer.write(("\r\n".join(head) + "\r\n\r\n").encode(HEADER_ENCODING))
-    writer.write(response.body)
+    writer.write(body)
     await writer.drain()
     if part is not None and part.length:
         await _send_part(writer, part)
