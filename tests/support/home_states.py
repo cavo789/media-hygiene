@@ -8,11 +8,13 @@ quarantine freed, a proposal waiting, everything sorted.
 from __future__ import annotations
 
 import json
+from datetime import datetime
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.journal import journal_file
 from media_hygiene.actions.kinds import ActionKind, Phase
 from media_hygiene.constants import CLASSIFY_PLAN_FILE_NAME, RunKind
+from media_hygiene.services.safety_records import note_backup
 from tests.support.journaled import done_line
 
 if TYPE_CHECKING:
@@ -24,6 +26,7 @@ CLEAN_RUN: Final = "20261020-143210"
 IMPORT_RUN: Final = "20261020-151144"
 # After every proposal written by a test, whenever it runs.
 SORT_RUN: Final = "20991231-235959"
+OLD_PUSH_RUN: Final = "20200101-120000"
 _STAMPS: Final = {
     RunKind.AUDIT: ("20261020-110300", "11:03"),
     RunKind.CLEAN: ("20261020-143210", "14:32"),
@@ -115,6 +118,32 @@ def all_sorted(runtime: Runtime) -> None:
     """The proposal applied by a sort since."""
     proposal_waiting(runtime)
     journal(runtime, SORT_RUN, (Phase.SORT, ActionKind.MOVE))
+
+
+def pushed(runtime: Runtime, run_id: str, host: str) -> None:
+    """A complete `mh push` run, of one copy into a target on `host` (0689)."""
+    line = done_line(ActionKind.PUSH_COPY, "C/Photos", phase=Phase.PUSH, host_path=host)
+    path = journal_file(runtime.locations.journal_dir, run_id)
+    path.write_text(line.model_dump_json() + "\n", "utf-8")
+
+
+def backed_up(runtime: Runtime, host: str) -> None:
+    """The note `mh backup` leaves, the archive on `host` (0689)."""
+    note_backup(runtime, host)
+
+
+def old_push(runtime: Runtime) -> None:
+    """A push to the NAS long ago, never a backup."""
+    audit_done(runtime)
+    pushed(runtime, OLD_PUSH_RUN, r"\\NAS\backup_photos\C\Photos")
+
+
+def all_safe(runtime: Runtime) -> None:
+    """A push to the NAS and a backup on a USB stick, both today."""
+    quarantine_freed(runtime)
+    now = datetime.now().astimezone().strftime("%Y%m%d-%H%M%S")
+    pushed(runtime, now, r"\\NAS\backup_photos\C\Photos")
+    backed_up(runtime, r"E:\mh-backups\mh-backup-1.zip")
 
 
 SITUATIONS: Final[dict[str, Callable[[Runtime], None]]] = {

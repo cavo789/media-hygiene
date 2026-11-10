@@ -1000,6 +1000,9 @@ msgstr ""
 msgid "A proposal to apply"
 msgstr "Une proposition à appliquer"
 
+msgid "A restore tried"
+msgstr "Une restauration essayée"
+
 msgid ""
 "A result less than min_gain_percent percent smaller is thrown away: the "
 "original stays, and the video is not tried again."
@@ -1037,6 +1040,9 @@ msgstr ""
 "Une capture d'écran ou un document, comme 'classify' les reconnaît : un "
 "nom de capture d'écran, ou une image PNG ou minuscule sans aucune trace "
 "d'appareil photo."
+
+msgid "A second copy of the photos"
+msgstr "Une deuxième copie des photos"
 
 msgid ""
 "A sentence (an old man in a garden) needs search by meaning: 🤖 mh tags "
@@ -1677,6 +1683,9 @@ msgstr "Archivé : {count} fichiers, {size} dans {folder}."
 
 msgid "Archives, newest first:"
 msgstr "Archives, de la plus récente à la plus ancienne :"
+
+msgid "Are my photos safe?"
+msgstr "Mes photos sont-elles en sécurité ?"
 
 #, python-brace-format
 msgid ""
@@ -2699,6 +2708,9 @@ msgstr ""
 msgid "Czkawka, an independent finder, compares its duplicates with ours."
 msgstr "Czkawka, un détecteur indépendant, compare ses doublons aux nôtres."
 
+msgid "Damaged files"
+msgstr "Fichiers abîmés"
+
 msgid "Damaged or incomplete: the report says which."
 msgstr "Abîmés ou incomplets : le rapport dit lesquels."
 
@@ -3461,6 +3473,9 @@ msgstr "Vider les aperçus ({size})"
 msgid "Empty, or a disk unplugged"
 msgstr "Vide, ou un disque débranché"
 
+msgid "Empty."
+msgstr "Vide."
+
 msgid ""
 "Encode the first ones (try_count in config.toml) as drafts, in /cache "
 "only, and compare before and after in the browser; lighten from the page."
@@ -3772,6 +3787,9 @@ msgstr "Chaque groupe à vérifier a été décidé."
 msgid "Every intruder file of {folders} ({count}, {size})."
 msgstr "Tous les fichiers intrus de {folders} ({count}, {size})."
 
+msgid "Every journal is there, every quarantine mounted."
+msgstr "Chaque journal est là, chaque quarantaine montée."
+
 #, python-brace-format
 msgid ""
 "Every obvious series has been seen. Left to look at one by one: {series};"
@@ -4059,6 +4077,10 @@ msgstr "Fichiers déplacés"
 
 msgid "Files processed"
 msgstr "Fichiers traités"
+
+#, python-brace-format
+msgid "Files read again in full"
+msgstr "Fichiers relus en entier"
 
 msgid "Files selected"
 msgstr "Fichiers choisis"
@@ -5112,6 +5134,9 @@ msgstr ""
 "Elle partage des jours avec {rules} : la première listée dans config.toml"
 " l'emporte ces jours-là."
 
+msgid "It stays on this PC: copy it to a USB stick or the NAS."
+msgstr "Elle reste sur ce PC : copiez-la sur une clé USB ou le NAS."
+
 msgid "It stopped on an error. What it wrote:"
 msgstr "Arrêtée sur une erreur. Ce qu'elle a écrit :"
 
@@ -5382,6 +5407,10 @@ msgid "Last audit: {when} (mount /reports to see its figures)."
 msgstr "Dernier audit : {when} (montez /reports pour voir ses chiffres)."
 
 #, python-brace-format
+msgid "Last backup: {ago}."
+msgstr "Dernière sauvegarde : {ago}."
+
+#, python-brace-format
 msgid "Last backup: {when}"
 msgstr "Dernière sauvegarde : {when}"
 
@@ -5403,6 +5432,10 @@ msgid "Last photo: {count} face"
 msgid_plural "Last photo: {count} faces"
 msgstr[0] "Dernière photo : {count} visage"
 msgstr[1] "Dernière photo : {count} visages"
+
+#, python-brace-format
+msgid "Last push: {ago}."
+msgstr "Dernier push : {ago}."
 
 msgid "Last sent"
 msgstr "Dernier envoi"
@@ -6334,10 +6367,16 @@ msgstr ""
 msgid "Never sorted: analysed and cleaned as usual, left where it is."
 msgstr "Jamais trié : analysé et nettoyé comme d'habitude, laissé où il est."
 
+msgid "Never tried: a restore test from the NAS comes with mh pull."
+msgstr "Jamais essayée : un test de restauration depuis le NAS viendra avec mh pull."
+
 msgid "Never what you set aside or deleted on purpose; each copy is checked."
 msgstr ""
 "Jamais ce que vous avez écarté ou supprimé exprès ; chaque copie est "
 "vérifiée."
+
+msgid "Never: mh upkeep does it."
+msgstr "Jamais : mh upkeep s'en charge."
 
 msgid "Never: no position leaves this PC"
 msgstr "Jamais : aucune position ne quitte ce PC"
@@ -6735,6 +6774,9 @@ msgstr "Aucun index dans {folder} : rien à étiqueter pour l'instant."
 msgid "No index yet: nothing to name."
 msgstr "Pas encore d'index : rien à nommer."
 
+msgid "No index yet: run an audit."
+msgstr "Pas encore d'index : lancez un audit."
+
 msgid "No index yet: the albums show the photos an audit has seen."
 msgstr "Pas encore d'index : les albums montrent les photos qu'un audit a vues."
 
@@ -7092,6 +7134,9 @@ msgstr "Aucun"
 msgid "None (off)"
 msgstr "Aucun (désactivé)"
 
+msgid "None found."
+msgstr "Aucun trouvé."
+
 msgid "None of these files is taken by the rule: nothing to sort."
 msgstr "Aucun de ces fichiers n'est pris par la règle : rien à trier."
 
@@ -7190,6 +7235,9 @@ msgstr ""
 #, python-brace-format
 msgid "Not judged, its drive is not mounted: {folder}"
 msgstr "Pas jugé, son lecteur n'est pas monté : {folder}"
+
+msgid "Not known before a re-read."
+msgstr "Inconnu avant une relecture."
 
 #, python-brace-format
 msgid "Not looked at (not mounted): {points}."
@@ -7655,6 +7703,9 @@ msgstr ""
 "Sur chaque photo et son sidecar .xmp, le mot devient ce tag, et 'tags' le"
 " nomme ainsi désormais. Vous pouvez le rétablir depuis Tags retirés, dans"
 " la colonne de gauche."
+
+msgid "On the NAS or another disk."
+msgstr "Sur le NAS ou un autre disque."
 
 msgid "On the PC:"
 msgstr "Sur le PC :"
@@ -8852,6 +8903,10 @@ msgid "Quarantine and previews, their limits"
 msgstr "Quarantaine et aperçus, leurs limites"
 
 #, python-brace-format
+msgid "Quarantine not mounted: {drives}."
+msgstr "Quarantaine non montée : {drives}."
+
+#, python-brace-format
 msgid "Quarantine of {drive}"
 msgstr "Quarantaine de {drive}"
 
@@ -8997,6 +9052,10 @@ msgid ""
 msgstr ""
 "Relire tous les dossiers, même ceux qui n'ont pas changé depuis le "
 "dernier audit : pour une photo modifiée sur place par un autre programme."
+
+#, python-brace-format
+msgid "Read from the disk now."
+msgstr "Lu sur le disque à l'instant."
 
 msgid "Read just now in the tool folders: nothing was analysed to show this page."
 msgstr ""
@@ -11356,6 +11415,9 @@ msgstr ""
 "La copie depuis le téléphone manque ou est incomplète : gardé sur le "
 "téléphone."
 
+msgid "The copy is off this PC"
+msgstr "La copie est hors de ce PC"
+
 msgid "The copy of the import has the same name and size."
 msgstr "La copie de l'import a le même nom et la même taille."
 
@@ -11830,6 +11892,10 @@ msgstr "L'inventaire"
 msgid "The inventory could not be written to {folder}: {reason}."
 msgstr "L'inventaire n'a pas pu être écrit dans {folder} : {reason}."
 
+#, python-brace-format
+msgid "The journal is not mounted."
+msgstr "Le journal n'est pas monté."
+
 msgid ""
 "The kept version lies in a protected folder: it is never moved, W is not "
 "possible."
@@ -12282,6 +12348,9 @@ msgstr ""
 msgid "The proposal is already made: → is enough when it suits you."
 msgstr "La proposition est déjà faite : → suffit quand elle vous convient."
 
+msgid "The push target is on C:, the disk of the photos."
+msgstr "La cible de push est sur C:, le disque des photos."
+
 msgid "The quarantine"
 msgstr "La quarantaine"
 
@@ -12684,6 +12753,9 @@ msgstr ""
 msgid "The tool only sees the folders you give it with -v."
 msgstr "L'outil ne voit que les dossiers que vous lui donnez avec -v."
 
+msgid "The tool's memory (index, settings, journals)"
+msgstr "La mémoire de l'outil (index, réglages, journaux)"
+
 #, python-brace-format
 msgid "The towns used to name places cannot be read: {error}."
 msgstr ""
@@ -12706,6 +12778,9 @@ msgid "The videos worst compressed for their length first: the best to lighten"
 msgstr ""
 "Les vidéos les moins bien compressées pour leur durée d'abord : les "
 "meilleures à alléger"
+
+msgid "The way back (undo)"
+msgstr "Le retour arrière (undo)"
 
 msgid "The whole plan as a spreadsheet (CSV): every group, every file"
 msgstr "Le plan complet en tableur (CSV) : chaque groupe, chaque fichier"
@@ -13697,6 +13772,9 @@ msgstr "Rôle inconnu."
 msgid "Unknown run {run_id}."
 msgstr "Exécution inconnue : {run_id}."
 
+msgid "Unknown until a push copies a file."
+msgstr "Inconnu tant qu'un push n'a copié aucun fichier."
+
 #, python-brace-format
 msgid "Unnamed groups ({n})"
 msgstr "Groupes sans nom ({n})"
@@ -13796,6 +13874,9 @@ msgstr "Vidéos"
 
 msgid "Videos with a date in their tags"
 msgstr "Vidéos datées par leurs balises"
+
+msgid "Waiting in the quarantine"
+msgstr "En attente dans la quarantaine"
 
 msgid "Waiting: the drafts are encoded one at a time."
 msgstr "En attente : les brouillons sont encodés un à la fois."
@@ -15736,6 +15817,9 @@ msgstr ""
 "mh backup [--to <dossier>] ou mh restore [--from <dossier>] : par défaut "
 "le dossier .mh-backups de la cible de mh push."
 
+msgid "mh backup never ran."
+msgstr "mh backup n'a jamais tourné."
+
 msgid "mh forgets it; its photos do not move."
 msgstr "mh l'oublie ; ses photos ne bougent pas."
 
@@ -15833,6 +15917,9 @@ msgstr ""
 "mh push est pour Windows seulement : Windows écrit sur le NAS environ 7 "
 "fois plus vite qu'une copie par Docker (mesuré : 86 à 105,8 Mo/s contre "
 "15,1 Mo/s). Rien n'a été lancé."
+
+msgid "mh push never ran."
+msgstr "mh push n'a jamais tourné."
 
 #, python-brace-format
 msgid "mh remembers: {folders}, language {locale}, time zone {zone}."
@@ -17727,6 +17814,12 @@ msgstr[0] "{count} fichier remis à sa place, relu."
 msgstr[1] "{count} fichiers remis à leur place, relus."
 
 #, python-brace-format
+msgid "{count} file changed since."
+msgid_plural "{count} files changed since."
+msgstr[0] "{count} fichier modifié depuis."
+msgstr[1] "{count} fichiers modifiés depuis."
+
+#, python-brace-format
 msgid ""
 "{count} file changed while its size and date did not: damaged, or "
 "rewritten by a program that kept its date — look."
@@ -17781,6 +17874,18 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} fichiers datés seulement par le disque mis de côté : un classify "
 "sans --year les propose."
+
+#, python-brace-format
+msgid "{count} file exists nowhere else."
+msgid_plural "{count} files exist nowhere else."
+msgstr[0] "{count} fichier n'existe nulle part ailleurs."
+msgstr[1] "{count} fichiers n'existent nulle part ailleurs."
+
+#, python-brace-format
+msgid "{count} file found damaged: mh clean --repair puts its copy back."
+msgid_plural "{count} files found damaged: mh clean --repair puts their copy back."
+msgstr[0] "{count} fichier trouvé abîmé : mh clean --repair remet sa copie."
+msgstr[1] "{count} fichiers trouvés abîmés : mh clean --repair remet leur copie."
 
 #, python-brace-format
 msgid "{count} file found."
@@ -18698,6 +18803,12 @@ msgstr[0] ""
 msgstr[1] ""
 "{count} règles n'ont rien décidé en {years} : normal pour celles écrites "
 "pour d'autres années."
+
+#, python-brace-format
+msgid "{count} run of the quarantine has lost its journal."
+msgid_plural "{count} runs of the quarantine have lost their journal."
+msgstr[0] "{count} exécution de la quarantaine a perdu son journal."
+msgstr[1] "{count} exécutions de la quarantaine ont perdu leur journal."
 
 #, python-brace-format
 msgid ""
@@ -20276,6 +20387,10 @@ msgid "{rate} photos a minute, about {time} left."
 msgstr "{rate} photos par minute, environ {time} restant."
 
 #, python-brace-format
+msgid "{read} of {files} files ({percent} %)."
+msgstr "{read} fichiers sur {files} ({percent} %)."
+
+#, python-brace-format
 msgid "{reason}: {first} to {last} of {total}"
 msgstr "{reason} : {first} à {last} sur {total}"
 
@@ -20394,6 +20509,10 @@ msgstr "{size} à libérer"
 #, python-brace-format
 msgid "{size} · no risk: one command, undoable."
 msgstr "{size} · sans risque : une commande, annulable."
+
+#, python-brace-format
+msgid "{size}, the oldest set aside {ago}."
+msgstr "{size}, le plus ancien mis de côté {ago}."
 
 #, python-brace-format
 msgid "{source}: click to search every photo with “{word}”"
@@ -20535,6 +20654,10 @@ msgstr "{version} (construction {build})"
 #, python-brace-format
 msgid "{version} available"
 msgstr "{version} disponible"
+
+#, python-brace-format
+msgid "{when} It did not finish: run it again."
+msgstr "{when} Il ne s'est pas terminé : relancez-le."
 
 #, python-brace-format
 msgid "{when} · {events} · {files} files · undo {run}"

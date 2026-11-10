@@ -63,6 +63,12 @@ Under the title *Where you are*:
   protected folders and backups are counted apart. Then **the ten largest folders left**, with
   `mh library --folder "<folder>"` to open one in the search page, pick, and *📂 Move to an event…*;
 
+then, under *Are my photos safe?*, one line per safety net, 🟢 fine, 🟠 to look at, 🔴 missing,
+⚪ not known from here ([the card](../reference-safety.md#are-my-photos-safe)): the last
+[`push`](push.md) and what changed since, whether its copy is off this PC, the last
+[`backup`](backup.md), the way back of [`undo`](undo.md), the quarantine, the damaged files and
+how far the re-read went;
+
 then **one** next step, as a full command ready to paste. A quarantine older than 30 days is the
 first thing it suggests to [`purge`](purge.md).
 

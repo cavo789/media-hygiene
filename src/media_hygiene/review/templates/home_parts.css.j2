@@ -261,6 +261,8 @@ kbd {
 .finding + .finding { border-top: 1px solid var(--mk-border); }
 .finding-icon { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: var(--mk-sunken); color: var(--mk-ink-soft); }
 .finding.is-ok .finding-icon { background: var(--mk-tip-bg); color: var(--mk-tip-fg); }
+.finding.is-warn .finding-icon { background: var(--mk-warn-bg); color: var(--mk-warn-fg); }
+.finding.is-bad .finding-icon { background: var(--mk-danger-bg); color: var(--mk-danger-fg); }
 .finding-title { font-weight: 700; }
 .finding-sub { font-size: .88rem; color: var(--mk-ink-soft); }
 .samples { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; list-style: none; margin: 0; padding: 0; }

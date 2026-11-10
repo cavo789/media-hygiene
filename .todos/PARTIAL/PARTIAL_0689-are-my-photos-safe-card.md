@@ -47,3 +47,35 @@ proposed no).
 
 Before: the answer to "am I backed up?" takes 4 commands and some reading. After: one card,
 and a backup that was actually tried.
+
+## Status — PARTIAL (2026-11-10)
+
+### Done
+
+- `services/safety.py` (+ `safety_records.py`, `index/safety_counts.py`) reads every fact
+  from disk at each call: the newest push run of the journal (finished, its Windows target
+  path), the files of the index changed since, the note `mh backup` now leaves in
+  `/cache/backup-made.json` (its Windows path), the journals and quarantines (`held_back`),
+  the quarantine with 0688's `only_copies`, 0690's `verified` table (damaged, progress).
+- `cli/safety_lines.py` + `cli/safety_more.py`: one source of the 8 lines (green / amber /
+  red / unknown, the catalog step that fixes it: `push-to`, `push`, `backup`, `history`,
+  `purge`, `upkeep`); `mh status` prints them, the home page draws them in the findings'
+  look (`HomeState.safety`, `is-warn` / `is-bad`), the phone without buttons.
+- Thresholds: `PUSH_FRESH_DAYS`, `BACKUP_FRESH_DAYS` = 30, constants; the quarantine reuses
+  `[clean] purge_hint_days`.
+- Tests `tests/unit/test_safety_card.py` over three states of `home_states` (no target, old
+  push, everything green); docs EN + FR (`reference-safety.md`, `commands/status.md`).
+
+### Not done
+
+- **The restore drill (*Try now*)**: shown as "never tried", unknown, no button.
+  **Reason:** it needs `mh pull` (0436, open) and the maintainer's Windows + NAS.
+- **The NAS's own listing**: "files newer than the push" counts the index's files whose
+  mtime is after the push start (a file copied in with an older mtime is missed).
+  **Reason:** the container keeps no listing of the push target.
+- **The backup's off-PC check** reads the archive's Windows path: `mh` mounts `/backups`
+  from `$HOME`, so the line stays amber until a copy elsewhere is proven — nothing on the
+  container side can see a copy made by hand. A push run that copied nothing leaves an
+  empty journal: it is not seen as a push.
+- **Browser check of the page** (`pageerror`): no Playwright in the devcontainer; the e2e
+  page walk in CI covers it. `docs_screenshots` should run.

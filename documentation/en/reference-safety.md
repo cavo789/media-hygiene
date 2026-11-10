@@ -92,6 +92,22 @@ damaged. A file read for the first time is compared with what the audit kept of 
 content for a file with a copy, else its first and last 64 KB): a change elsewhere is found from
 its second reading on.
 
+## Are my photos safe?
+
+The home page and [`status`](commands/status.md) answer it in one card, read from the disk each
+time, one line per safety net: 🟢 fine, 🟠 to look at, 🔴 missing, ⚪ not known from here. A
+line with a fix has its button on the page (the phone shows the card without buttons).
+
+| Line | Green when |
+|---|---|
+| A second copy of the photos | the last [`push`](commands/push.md) finished less than 30 days ago (the files changed since are counted) |
+| The copy is off this PC | its target is a NAS or another drive than `C:` (unknown until a push copied a file) |
+| The tool's memory | the last [`backup`](commands/backup.md) is less than 30 days old and was written off this PC; the archives of `mh backup` stay in `C:`, so this line stays amber until you copy them |
+| The way back | every run in the quarantine still has its journal, and every quarantine is mounted |
+| Waiting in the quarantine | it is empty, or younger than `[clean] purge_hint_days`; the files that exist nowhere else are counted |
+| Damaged files / Files read again in full | the re-read of [`upkeep`](commands/upkeep.md) found nothing ([above](#a-file-damaged-by-the-disk)) |
+| A restore tried | not offered yet: a restore test from the NAS comes with `mh pull` |
+
 ## Good habits
 
 - **Start small.** Audit one subfolder, look at the report, then widen.

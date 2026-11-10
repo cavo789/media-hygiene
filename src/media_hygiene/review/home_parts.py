@@ -63,6 +63,7 @@ class HomeFinding(Frozen):
     sub: str
     action: str | None = None  # the action's name
     ok: bool = False
+    level: str = ""  # good, warn, bad, unknown: a line of the safety card (0689)
 
 
 class HomeFindings(Frozen):

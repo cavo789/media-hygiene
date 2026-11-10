@@ -131,16 +131,17 @@ const spaceTile = (t) => `<button class="tile" type="button" ${tileTarget(t)}><s
 function findingRow(row) {
   const action = row.action ? BY_ID[row.action] : null;
   const report = row.action === "open" && S.index ? `<a class="btn btn-sm" href="${esc(S.index)}" target="_blank" rel="noopener">${esc(T.openReport)}</a>` : "";
-  const button = action ? `<button class="btn btn-sm" type="button" data-run="${esc(action.name)}">${esc(action.title)}</button>` : report;
-  return `<li class="finding${row.ok ? " is-ok" : ""}"><span class="finding-icon" aria-hidden="true">${icon(row.ok ? "check" : row.icon)}</span><div><p class="finding-title">${esc(row.title)}</p><p class="finding-sub">${esc(row.sub)}</p></div>${button}</li>`;
+  const button = REMOTE ? "" : action ? `<button class="btn btn-sm" type="button" data-run="${esc(action.name)}">${esc(action.title)}</button>` : report;
+  return `<li class="finding${row.ok ? " is-ok" : ""}${row.level ? ` is-${esc(row.level)}` : ""}"><span class="finding-icon" aria-hidden="true">${icon(row.ok ? "check" : row.icon)}</span><div><p class="finding-title">${esc(row.title)}</p><p class="finding-sub">${esc(row.sub)}</p></div>${button}</li>`;
 }
-function findings() {
-  const found = S.findings;
-  return `<section class="block" aria-labelledby="foundTitle">
-    <div class="section-head"><h2 id="foundTitle">${esc(found.title)}</h2><p class="section-note">${esc(found.note)}</p></div>
+function findings(found = S.findings, id = "foundTitle") {
+  return `<section class="block" aria-labelledby="${id}">
+    <div class="section-head"><h2 id="${id}">${esc(found.title)}</h2><p class="section-note">${esc(found.note)}</p></div>
     <div class="findings"><ul class="finding-list">${found.rows.map(findingRow).join("")}</ul></div>
   </section>`;
 }
+// *Are my photos safe?* (0689): the findings' look, one line per fact read from disk.
+const safetyCard = () => (S.safety ? `<div id="safetyCard">${findings(S.safety, "safetyTitle")}</div>` : "");
 function welcome() {
   return `<section class="block" aria-labelledby="safeTitle">
     <div class="section-head"><h2 id="safeTitle">${esc(T.threeThings)}</h2></div>
@@ -179,6 +180,7 @@ function familyHome() {
       <div class="audit-controls">${buttons}</div>
     </section>
     ${EXTRAS.albums()}
+    ${safetyCard()}
     <section class="block" aria-labelledby="tvTitle">
       <div class="section-head"><h2 id="tvTitle">${esc(T.tvTitle)}</h2><p class="section-note">${esc(T.tvNote)} <a href="${esc(S.tv_help)}" target="_blank" rel="noopener">${esc(T.tvHelp)}</a></p></div>
       <div class="audit-controls" id="tvAlbums" aria-live="polite"></div>
@@ -206,6 +208,7 @@ function viewHome() {
       ${tilesBlock()}
     </section>
     ${S.findings ? findings() : welcome()}
+    ${safetyCard()}
     <div id="randomPhotos">${samplesBlock()}</div>
     ${recentReports()}`;
 }

@@ -100,6 +100,23 @@ abîmé. Un fichier lu pour la première fois est comparé à ce que l'audit en 
 contenu pour un fichier qui a une copie, sinon ses 64 premiers et derniers Ko) : un changement
 ailleurs est trouvé à partir de sa deuxième lecture.
 
+## Mes photos sont-elles en sécurité ?
+
+La page d'accueil et [`status`](commands/status.md) y répondent en une carte, lue sur le disque à
+chaque fois, une ligne par filet de sécurité : 🟢 en ordre, 🟠 à regarder, 🔴 manquant, ⚪ inconnu
+d'ici. Une ligne qui a un remède a son bouton sur la page (le téléphone montre la carte sans
+boutons).
+
+| Ligne | Verte quand |
+|---|---|
+| Une deuxième copie des photos | le dernier [`push`](commands/push.md) s'est terminé il y a moins de 30 jours (les fichiers modifiés depuis sont comptés) |
+| La copie est hors de ce PC | sa cible est un NAS ou un autre disque que `C:` (inconnu tant qu'un push n'a copié aucun fichier) |
+| La mémoire de l'outil | la dernière [`backup`](commands/backup.md) a moins de 30 jours et a été écrite hors de ce PC ; les archives de `mh backup` restent sur `C:`, la ligne reste donc orange tant que vous ne les copiez pas |
+| Le retour arrière | chaque exécution de la quarantaine a encore son journal, et chaque quarantaine est montée |
+| En attente dans la quarantaine | elle est vide, ou plus récente que `[clean] purge_hint_days` ; les fichiers qui n'existent nulle part ailleurs sont comptés |
+| Fichiers abîmés / Fichiers relus en entier | la relecture d'[`upkeep`](commands/upkeep.md) n'a rien trouvé ([plus haut](#un-fichier-abîmé-par-le-disque)) |
+| Une restauration essayée | pas encore proposée : un test de restauration depuis le NAS viendra avec `mh pull` |
+
 ## Les bonnes habitudes
 
 - **Commencez petit.** Analysez un sous-dossier, regardez le rapport, puis élargissez.

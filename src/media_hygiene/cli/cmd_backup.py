@@ -24,10 +24,12 @@ def backup_command(ctx: typer.Context) -> None:
     from media_hygiene.console.formatting import human_size
     from media_hygiene.services.backup_extra import JOURNAL_PREFIX
     from media_hygiene.services.cache_backup import KEPT, make_backup
+    from media_hygiene.services.safety_records import note_backup
 
     runtime = runtime_of(ctx)
     with user_errors(runtime.output):
         backup = make_backup(runtime)
+    note_backup(runtime, runtime.mapper.to_host(backup.path))
     output = runtime.output
     output.success(
         _("Backup written and read back: {path} ({size}).").format(

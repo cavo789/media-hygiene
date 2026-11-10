@@ -783,6 +783,9 @@ msgstr ""
 msgid "A proposal to apply"
 msgstr ""
 
+msgid "A restore tried"
+msgstr ""
+
 msgid ""
 "A result less than min_gain_percent percent smaller is thrown away: the "
 "original stays, and the video is not tried again."
@@ -809,6 +812,9 @@ msgstr ""
 msgid ""
 "A screenshot or a document, as 'classify' tells them: a screenshot name, "
 "or a PNG or tiny image without any camera trace."
+msgstr ""
+
+msgid "A second copy of the photos"
 msgstr ""
 
 msgid ""
@@ -1326,6 +1332,9 @@ msgid "Archived: {count} files, {size} in {folder}."
 msgstr ""
 
 msgid "Archives, newest first:"
+msgstr ""
+
+msgid "Are my photos safe?"
 msgstr ""
 
 #, python-brace-format
@@ -2209,6 +2218,9 @@ msgstr ""
 msgid "Czkawka, an independent finder, compares its duplicates with ours."
 msgstr ""
 
+msgid "Damaged files"
+msgstr ""
+
 msgid "Damaged or incomplete: the report says which."
 msgstr ""
 
@@ -2829,6 +2841,9 @@ msgstr ""
 msgid "Empty, or a disk unplugged"
 msgstr ""
 
+msgid "Empty."
+msgstr ""
+
 msgid ""
 "Encode the first ones (try_count in config.toml) as drafts, in /cache "
 "only, and compare before and after in the browser; lighten from the page."
@@ -3076,6 +3091,9 @@ msgstr ""
 msgid "Every intruder file of {folders} ({count}, {size})."
 msgstr ""
 
+msgid "Every journal is there, every quarantine mounted."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Every obvious series has been seen. Left to look at one by one: {series};"
@@ -3310,6 +3328,9 @@ msgid "Files moved"
 msgstr ""
 
 msgid "Files processed"
+msgstr ""
+
+msgid "Files read again in full"
 msgstr ""
 
 msgid "Files selected"
@@ -4199,6 +4220,9 @@ msgid ""
 "those days."
 msgstr ""
 
+msgid "It stays on this PC: copy it to a USB stick or the NAS."
+msgstr ""
+
 msgid "It stopped on an error. What it wrote:"
 msgstr ""
 
@@ -4428,6 +4452,10 @@ msgid "Last audit: {when} (mount /reports to see its figures)."
 msgstr ""
 
 #, python-brace-format
+msgid "Last backup: {ago}."
+msgstr ""
+
+#, python-brace-format
 msgid "Last backup: {when}"
 msgstr ""
 
@@ -4449,6 +4477,10 @@ msgid "Last photo: {count} face"
 msgid_plural "Last photo: {count} faces"
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid "Last push: {ago}."
+msgstr ""
 
 msgid "Last sent"
 msgstr ""
@@ -5243,7 +5275,13 @@ msgstr ""
 msgid "Never sorted: analysed and cleaned as usual, left where it is."
 msgstr ""
 
+msgid "Never tried: a restore test from the NAS comes with mh pull."
+msgstr ""
+
 msgid "Never what you set aside or deleted on purpose; each copy is checked."
+msgstr ""
+
+msgid "Never: mh upkeep does it."
 msgstr ""
 
 msgid "Never: no position leaves this PC"
@@ -5584,6 +5622,9 @@ msgstr ""
 msgid "No index yet: nothing to name."
 msgstr ""
 
+msgid "No index yet: run an audit."
+msgstr ""
+
 msgid "No index yet: the albums show the photos an audit has seen."
 msgstr ""
 
@@ -5891,6 +5932,9 @@ msgstr ""
 msgid "None (off)"
 msgstr ""
 
+msgid "None found."
+msgstr ""
+
 msgid "None of these files is taken by the rule: nothing to sort."
 msgstr ""
 
@@ -5971,6 +6015,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Not judged, its drive is not mounted: {folder}"
+msgstr ""
+
+msgid "Not known before a re-read."
 msgstr ""
 
 #, python-brace-format
@@ -6372,6 +6419,9 @@ msgid ""
 "On every photo and its .xmp sidecar the word becomes this tag, and 'tags'"
 " names it so from now on. You can restore it from Dropped tags, in the "
 "left column."
+msgstr ""
+
+msgid "On the NAS or another disk."
 msgstr ""
 
 msgid "On the PC:"
@@ -7349,6 +7399,10 @@ msgid "Quarantine and previews, their limits"
 msgstr ""
 
 #, python-brace-format
+msgid "Quarantine not mounted: {drives}."
+msgstr ""
+
+#, python-brace-format
 msgid "Quarantine of {drive}"
 msgstr ""
 
@@ -7475,6 +7529,9 @@ msgstr ""
 msgid ""
 "Read every folder again, even those that did not change since the last "
 "audit: for a photo changed in place by another program."
+msgstr ""
+
+msgid "Read from the disk now."
 msgstr ""
 
 msgid "Read just now in the tool folders: nothing was analysed to show this page."
@@ -9471,6 +9528,9 @@ msgstr ""
 msgid "The copy from the phone is missing or incomplete: kept on the phone."
 msgstr ""
 
+msgid "The copy is off this PC"
+msgstr ""
+
 msgid "The copy of the import has the same name and size."
 msgstr ""
 
@@ -9847,6 +9907,9 @@ msgstr ""
 msgid "The inventory could not be written to {folder}: {reason}."
 msgstr ""
 
+msgid "The journal is not mounted."
+msgstr ""
+
 msgid ""
 "The kept version lies in a protected folder: it is never moved, W is not "
 "possible."
@@ -10219,6 +10282,9 @@ msgstr ""
 msgid "The proposal is already made: → is enough when it suits you."
 msgstr ""
 
+msgid "The push target is on C:, the disk of the photos."
+msgstr ""
+
 msgid "The quarantine"
 msgstr ""
 
@@ -10529,6 +10595,9 @@ msgstr ""
 msgid "The tool only sees the folders you give it with -v."
 msgstr ""
 
+msgid "The tool's memory (index, settings, journals)"
+msgstr ""
+
 #, python-brace-format
 msgid "The towns used to name places cannot be read: {error}."
 msgstr ""
@@ -10544,6 +10613,9 @@ msgid ""
 msgstr ""
 
 msgid "The videos worst compressed for their length first: the best to lighten"
+msgstr ""
+
+msgid "The way back (undo)"
 msgstr ""
 
 msgid "The whole plan as a spreadsheet (CSV): every group, every file"
@@ -11368,6 +11440,9 @@ msgstr ""
 msgid "Unknown run {run_id}."
 msgstr ""
 
+msgid "Unknown until a push copies a file."
+msgstr ""
+
 #, python-brace-format
 msgid "Unnamed groups ({n})"
 msgstr ""
@@ -11459,6 +11534,9 @@ msgid "Videos"
 msgstr ""
 
 msgid "Videos with a date in their tags"
+msgstr ""
+
+msgid "Waiting in the quarantine"
 msgstr ""
 
 msgid "Waiting: the drafts are encoded one at a time."
@@ -13155,6 +13233,9 @@ msgid ""
 " folder .mh-backups of the mh push target."
 msgstr ""
 
+msgid "mh backup never ran."
+msgstr ""
+
 msgid "mh forgets it; its photos do not move."
 msgstr ""
 
@@ -13225,6 +13306,9 @@ msgid ""
 "mh push is for Windows only: Windows writes to the NAS about 7 times "
 "faster than a copy through Docker (measured: 86 to 105.8 MB/s against "
 "15.1 MB/s). Nothing was started."
+msgstr ""
+
+msgid "mh push never ran."
 msgstr ""
 
 #, python-brace-format
@@ -14900,6 +14984,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} file changed since."
+msgid_plural "{count} files changed since."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid ""
 "{count} file changed while its size and date did not: damaged, or "
 "rewritten by a program that kept its date — look."
@@ -14936,6 +15026,18 @@ msgid ""
 msgid_plural ""
 "{count} files dated only by the disk left out: a classify without --year "
 "proposes them."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} file exists nowhere else."
+msgid_plural "{count} files exist nowhere else."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} file found damaged: mh clean --repair puts its copy back."
+msgid_plural "{count} files found damaged: mh clean --repair puts their copy back."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -15644,6 +15746,12 @@ msgid ""
 msgid_plural ""
 "{count} rules decided nothing in {years}: normal for those written for "
 "other years."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{count} run of the quarantine has lost its journal."
+msgid_plural "{count} runs of the quarantine have lost their journal."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -17032,6 +17140,10 @@ msgid "{rate} photos a minute, about {time} left."
 msgstr ""
 
 #, python-brace-format
+msgid "{read} of {files} files ({percent} %)."
+msgstr ""
+
+#, python-brace-format
 msgid "{reason}: {first} to {last} of {total}"
 msgstr ""
 
@@ -17134,6 +17246,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{size} · no risk: one command, undoable."
+msgstr ""
+
+#, python-brace-format
+msgid "{size}, the oldest set aside {ago}."
 msgstr ""
 
 #, python-brace-format
@@ -17254,6 +17370,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{version} available"
+msgstr ""
+
+#, python-brace-format
+msgid "{when} It did not finish: run it again."
 msgstr ""
 
 #, python-brace-format

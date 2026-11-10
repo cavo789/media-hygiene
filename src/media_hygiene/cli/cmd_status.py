@@ -20,6 +20,7 @@ def status_command(ctx: typer.Context) -> None:
         ctx: Typer context holding the runtime.
     """
     from media_hygiene.cli.status_next import advise_status
+    from media_hygiene.cli.status_safety import show_safety
     from media_hygiene.cli.status_sorting import show_sorting
     from media_hygiene.cli.status_view import status_lines
     from media_hygiene.services.status import read_status
@@ -30,4 +31,5 @@ def status_command(ctx: typer.Context) -> None:
     for line in status_lines(status):
         runtime.output.info(line)
     show_sorting(runtime)
+    show_safety(runtime, status)
     advise_status(runtime, status)
