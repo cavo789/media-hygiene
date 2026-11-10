@@ -53,3 +53,34 @@ another, an album emptied — is final unless a `mh backup` is recent.
 
 Before: the photos' moves can be undone, the user's hours of naming and rules cannot.
 After: the last 20 saves of each file can be brought back from the page.
+
+## Status — PARTIAL (2026-11-10)
+
+### Done
+
+- `media_hygiene.file_history`: `replace_text` (draft, current file copied into
+  `.history/`, then renamed), `versions_of`, `restore_version` (read back, itself undoable),
+  trimmed at save time to the 20 newest versions and none older than 30 days but the newest
+  (constants `KEEP_VERSIONS`, `KEEP_DAYS`). A save that changes nothing writes no version.
+- Versions of `/config` files in `/config/.history/<relative path>.<stamp>`; of `albums.json`
+  (it lives in `/reports`, not `/config` — the TODO's list implied otherwise) in
+  `/reports/.history/`. The name ends with its stamp, so no reader (`people/*.toml`,
+  `events/*.toml`, `/reports/*/*.json` globs) mistakes it for a live file; `mh backup` archives
+  `/config/.history/` with the rest (its `rglob`); `config tidy` keeps its own `/cache` copy too.
+- Every writer goes through it: `places/toml_edit.write_document` (every page saving
+  `config.toml` and the events files), `places/config_file`, `people/config_file`,
+  `config/photo_ref.write_refs` (people files), `cli/home_favourites`, `services/config_tidy`,
+  `config_convention`, `config_upgrade`, `share/albums`. `tests/unit/test_file_history.py`:
+  the writers list, save → undo byte-identical per file kind (config.toml, person, events,
+  albums), the bound, the 30 days, moved folder, stray names, readers ignoring `.history`.
+- Docs EN + FR: `reference-mount-points.md`, `reference-safety.md`; CLAUDE.md exception.
+
+### Not done
+
+- The Undo toast after a settings save, Ctrl+Z, and the *Versions* page (date, short diff of
+  keys, *Restore this one*): `restore_version` is ready for them; each settings page needs its
+  route and the shared toast — a page-by-page change (≈ 10 pages) for its own run.
+- `classify/remember_rule.py` rolls `config.toml` back with `write_bytes(before)` after a
+  failed event write: left as is (the failed save already kept a version).
+- Index-only data (hand-typed tags, landmarks): covered by `mh backup` and the tag pages' own
+  undo (0622, 0650); nothing more listed.

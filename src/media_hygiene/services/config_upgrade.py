@@ -18,6 +18,7 @@ from media_hygiene.config.settings import Settings
 from media_hygiene.config.upgrade import Upgrade, plan_upgrade
 from media_hygiene.constants import APP_NAME, Locale
 from media_hygiene.errors import ConfigError, MountError
+from media_hygiene.file_history import replace_text
 from media_hygiene.i18n import _, active_locale, using
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.paths.mounts import is_read_only
@@ -56,9 +57,7 @@ def config_upgrade(runtime: Runtime, *, dry_run: bool) -> Upgrade:
                 path=runtime.mapper.to_host(config_file)
             )
         )
-    temporary = config_file.with_name(f".{config_file.name}.tmp")
-    temporary.write_text(upgrade.text, _ENCODING)
-    temporary.replace(config_file)
+    replace_text(config_file, upgrade.text)
     read_back = read_user_text(config_file)  # proof, not promise
     if pending_upgrade(read_back).added:
         raise ConfigError(

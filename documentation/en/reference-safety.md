@@ -66,6 +66,11 @@ copy from it. Empty files (0 bytes) are deleted too: they hold nothing.
 - **The journal.** Every action is written down *before* and *after* it happens: an
   interruption never loses track, and `undo` reverses any run.
 - **The quarantine.** What `clean` sets aside waits there, whole, until you `purge` it.
+- **Your settings keep their previous versions.** Each save of `config.toml`, of a person's or
+  an event file, or of `albums.json` first copies the file it replaces into `.history/`
+  (`C:\Users\<you>\media-hygiene\config\.history\`, and beside `albums.json`): the last 20
+  of each, 30 days at most. To bring one back, copy it over the file and remove the date
+  that ends its name.
 - **The tool's folders stay out of your photos.** A quarantine, journal, cache or reports
   folder placed inside a photo folder (or around one) is refused, with how to mount it instead.
 

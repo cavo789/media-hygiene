@@ -14,7 +14,8 @@ from typing import TYPE_CHECKING, Final
 import tomlkit
 from tomlkit.items import Array
 
-from media_hygiene.places.toml_edit import ENCODING, document_of, loaded, table_of
+from media_hygiene.file_history import replace_text
+from media_hygiene.places.toml_edit import document_of, loaded, table_of
 
 if TYPE_CHECKING:
     from collections.abc import Collection, Sequence
@@ -89,9 +90,7 @@ def save_home_list(
     table_of(document, SECTION)[key] = _array(names)
     text = tomlkit.dumps(document)
     tomllib.loads(text)  # never write a file the next run cannot read
-    temporary = config_file.with_name(f"{config_file.name}.tmp")
-    temporary.write_text(text, ENCODING)
-    temporary.replace(config_file)
+    replace_text(config_file, text)
     return read_home_list(config_file, key)
 
 

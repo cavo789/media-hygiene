@@ -15,6 +15,7 @@ import tomlkit
 from tomlkit.items import AoT, Array, Table
 
 from media_hygiene.config.classify_places import PersonalPlace, check_places
+from media_hygiene.file_history import replace_text
 from media_hygiene.places.config_photos import follow_places
 
 if TYPE_CHECKING:
@@ -89,9 +90,7 @@ def save_places(
     follow_places(document, renamed or {})
     result = _append(document, new)
     tomllib.loads(result)  # never write a file the next run cannot read
-    temporary = config_file.with_name(f".{config_file.name}.tmp")
-    temporary.write_text(result, _ENCODING)
-    temporary.replace(config_file)
+    replace_text(config_file, result)
 
 
 def _written(document: TOMLDocument) -> dict[int, Table]:

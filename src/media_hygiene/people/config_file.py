@@ -26,6 +26,7 @@ from media_hygiene.config.people_files import (
     linked_section,
 )
 from media_hygiene.config.people_settings import PeopleSettings, Person
+from media_hygiene.file_history import replace_text
 from media_hygiene.people.person_files import Links, remove_unlinked, write_files
 
 if TYPE_CHECKING:
@@ -88,9 +89,7 @@ def save_people(
     result = tomlkit.dumps(document)
     written = tomllib.loads(result).get(SECTION, {})
     PeopleSettings.model_validate(linked_section(written, config_file.parent))
-    temporary = config_file.with_name(f".{config_file.name}.tmp")
-    temporary.write_text(result, _ENCODING)
-    temporary.replace(config_file)
+    replace_text(config_file, result)
     remove_unlinked(config_file.parent, before, links)
 
 

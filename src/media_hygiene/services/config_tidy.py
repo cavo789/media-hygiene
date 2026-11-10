@@ -18,6 +18,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.config.tidy_find import LibraryFacts, TidyFindings, find_stale
 from media_hygiene.config.tidy_write import check_removed, without_entries
 from media_hygiene.errors import MountError
+from media_hygiene.file_history import replace_text
 from media_hygiene.i18n import _
 from media_hygiene.index.listing import indexed_files
 from media_hygiene.index.read_only import connect_read_only
@@ -151,9 +152,7 @@ def tidy(runtime: Runtime, entries: Sequence[StaleEntry]) -> Tidied:
     stamp = datetime.now(tz=UTC).strftime(_STAMP)
     backup = backups / f"{config_file.name}.bak-{stamp}"
     shutil.copy2(config_file, backup)
-    temporary = config_file.with_name(f".{config_file.name}.tmp")
-    temporary.write_text(result, _ENCODING)
-    temporary.replace(config_file)
+    replace_text(config_file, result)
     check_removed(text, read_user_text(config_file), entries)  # proof, not promise
     return Tidied(tuple(entries), backup)
 

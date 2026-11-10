@@ -71,6 +71,11 @@ sont supprimés aussi : ils ne contiennent rien.
 - **Le journal.** Chaque action est notée *avant* et *après* : une interruption ne fait jamais
   perdre le fil, et `undo` annule n'importe quelle exécution.
 - **La quarantaine.** Ce que `clean` met de côté y attend, intact, jusqu'à votre `purge`.
+- **Vos réglages gardent leurs versions précédentes.** Chaque enregistrement de `config.toml`,
+  du fichier d'une personne ou d'un événement, ou d'`albums.json` copie d'abord le fichier qu'il
+  remplace dans `.history/` (`C:\Users\<vous>\media-hygiene\config\.history\`, et à côté
+  d'`albums.json`) : les 20 dernières de chacun, 30 jours au plus. Pour en reprendre une,
+  copiez-la par-dessus le fichier et retirez la date qui termine son nom.
 - **Les dossiers de l'outil restent hors de vos photos.** Un dossier de quarantaine, de journal,
   de cache ou de rapports placé dans un dossier de photos (ou autour) est refusé, avec la façon
   de le monter autrement.

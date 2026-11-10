@@ -14,6 +14,8 @@ import tomlkit
 from tomlkit.container import OutOfOrderTableProxy
 from tomlkit.items import InlineTable, String, Table
 
+from media_hygiene.file_history import replace_text
+
 if TYPE_CHECKING:
     from pathlib import Path
 
@@ -102,6 +104,4 @@ def write_document(config_file: Path, document: TOMLDocument) -> None:
     """
     text = tomlkit.dumps(document)
     tomllib.loads(text)  # never write a file the next run cannot read
-    temporary = config_file.with_name(f".{config_file.name}.tmp")
-    temporary.write_text(text, ENCODING)
-    temporary.replace(config_file)
+    replace_text(config_file, text)
