@@ -9,7 +9,7 @@ import asyncio
 import contextlib
 import json
 import logging
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
@@ -27,6 +27,8 @@ if TYPE_CHECKING:
 
     from media_hygiene.review.http import Request
 
+    type Handle = Callable[[Request], Awaitable[Response]]
+
 _DROPPED_CONNECTION: Final = (
     TimeoutError,
     asyncio.IncompleteReadError,
@@ -35,10 +37,16 @@ _DROPPED_CONNECTION: Final = (
 _LOGGER: Final = logging.getLogger(__name__)
 
 
+@dataclass(frozen=True, slots=True)
+class Served:
+    """How a door answers, and the time its head may take (None: the usual 30 s)."""
+
+    handle: Handle
+    head_seconds: float | None = None  # shorter on the home network's doors (0682)
+
+
 async def serve_connection(
-    reader: asyncio.StreamReader,
-    writer: asyncio.StreamWriter,
-    handle: Callable[[Request], Awaitable[Response]],
+    reader: asyncio.StreamReader, writer: asyncio.StreamWriter, handle: Handle
 ) -> None:
     """Serve one connection: one request, one response.
 
@@ -47,9 +55,28 @@ async def serve_connection(
         writer: Where to answer.
         handle: Answers a well-formed request.
     """
+    await serve_within(reader, writer, Served(handle))
+
+
+async def serve_within(
+    reader: asyncio.StreamReader, writer: asyncio.StreamWriter, served: Served
+) -> None:
+    """Serve one connection as `served` says.
+
+    Args:
+        reader: What the browser sends.
+        writer: Where to answer.
+        served: Answers a well-formed request, within its time.
+    """
+    handle = served.handle
     try:
         try:
-            request = replace(await read_request(reader), peer=peer_of(writer))
+            read = (
+                read_request(reader)
+                if served.head_seconds is None
+                else read_request(reader, served.head_seconds)
+            )
+            request = replace(await read, peer=peer_of(writer))
         except BadRequestError as exc:
             response = Response(exc.status)
         else:

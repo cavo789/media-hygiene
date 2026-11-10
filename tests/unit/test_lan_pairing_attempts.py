@@ -21,6 +21,7 @@ from media_hygiene.review.lan_attempts import (
     MAX_FAILURES,
     wait_after,
 )
+from media_hygiene.review.lan_gate import PER_ADDRESS, lan_gate
 from media_hygiene.review.lan_pc import REOPEN_PATH, SEEN_PATH
 from media_hygiene.review.local_app import LocalApp
 from media_hygiene.review.serving import peer_of
@@ -167,3 +168,22 @@ class _Writer:
 def test_the_address_comes_from_the_socket(peer: object, address: str) -> None:
     """The peer's address from the socket; nothing when it does not say."""
     assert peer_of(_Writer(peer)) == address  # type: ignore[arg-type]
+
+
+def test_the_card_reports_the_refused_connections() -> None:
+    """0682: the connections the doors refused, by address; It was me puts them away."""
+    gate = lan_gate()
+    gate.seen()
+    for _held in range(PER_ADDRESS):
+        assert gate.enter(_STRANGER)
+    assert not gate.enter(_STRANGER)
+    app = _app()
+    try:
+        refused = _pc(app, "/api/lan")["refused"]
+        assert isinstance(refused, list)
+        assert [(r["address"], r["count"]) for r in refused] == [(_STRANGER, 1)]
+        assert _pc(app, SEEN_PATH, "POST")["refused"] == []
+    finally:
+        for _held in range(PER_ADDRESS):
+            gate.leave(_STRANGER)
+    assert gate.open == 0

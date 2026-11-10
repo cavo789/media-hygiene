@@ -103,11 +103,14 @@ class BadRequestError(Exception):
         self.status = status
 
 
-async def read_request(reader: asyncio.StreamReader) -> Request:
-    """Read one request.
+async def read_request(
+    reader: asyncio.StreamReader, head_seconds: float = _TIMEOUT_SECONDS
+) -> Request:
+    """Read one request: its head within `head_seconds`, its body within 30 s.
 
     Args:
         reader: The connection.
+        head_seconds: To send the request line and headers (shorter on the LAN, 0682).
 
     Returns:
         The request.
@@ -117,7 +120,7 @@ async def read_request(reader: asyncio.StreamReader) -> Request:
         TimeoutError: The browser sent nothing for too long.
         IncompleteReadError: The connection closed in the middle of the request.
     """
-    async with asyncio.timeout(_TIMEOUT_SECONDS):
+    async with asyncio.timeout(head_seconds):
         try:
             parts = (await reader.readline()).decode(HEADER_ENCODING).split()
             if len(parts) != _REQUEST_LINE_PARTS or not parts[2].startswith(_HTTP_1):
@@ -125,6 +128,7 @@ async def read_request(reader: asyncio.StreamReader) -> Request:
             headers = await _read_headers(reader)
         except ValueError as exc:  # a line longer than the reader's limit
             raise BadRequestError(HTTPStatus.REQUEST_HEADER_FIELDS_TOO_LARGE) from exc
+    async with asyncio.timeout(_TIMEOUT_SECONDS):
         body = await _read_body(reader, headers)
     path, _mark, query = parts[1].partition("?")
     return Request(parts[0], path, headers, body, query=query)

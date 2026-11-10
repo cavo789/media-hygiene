@@ -5143,7 +5143,6 @@ msgstr "Elle reste sur ce PC : copiez-la sur une clé USB ou le NAS."
 msgid "It stopped on an error. What it wrote:"
 msgstr "Arrêtée sur une erreur. Ce qu'elle a écrit :"
 
-#
 msgid "It was me"
 msgstr "C'était moi"
 
@@ -6396,7 +6395,6 @@ msgstr "Nouvel An"
 msgid "New album…"
 msgstr "Nouvel album…"
 
-#
 msgid "New code: the previous one opens nothing any more."
 msgstr "Nouveau code : le précédent n'ouvre plus rien."
 
@@ -8359,7 +8357,6 @@ msgstr "Appairer ce téléphone"
 msgid "Pair {number} of {total}"
 msgstr "Paire {number} sur {total}"
 
-#
 msgid "Paired during this run"
 msgstr "Appairés pendant ce lancement"
 
@@ -13508,7 +13505,9 @@ msgstr "Aujourd'hui"
 msgid ""
 "Too many wrong codes from this device: wait a minute, then type the code "
 "shown on the PC."
-msgstr "Trop de codes erronés depuis cet appareil : attendez une minute, puis tapez le code affiché sur le PC."
+msgstr ""
+"Trop de codes erronés depuis cet appareil : attendez une minute, puis "
+"tapez le code affiché sur le PC."
 
 msgid ""
 "Too many wrong codes: pairing a TV is closed. Stop the slideshow (Ctrl+C "
@@ -13517,17 +13516,19 @@ msgstr ""
 "Trop de codes erronés : l'appairage d'une télé est fermé. Arrêtez le "
 "diaporama (Ctrl+C sur le PC), puis relancez-le."
 
-#
 msgid ""
 "Too many wrong codes: pairing is closed, the phones already paired stay "
 "paired."
-msgstr "Trop de codes erronés : l'appairage est fermé, les téléphones déjà appairés le restent."
+msgstr ""
+"Trop de codes erronés : l'appairage est fermé, les téléphones déjà "
+"appairés le restent."
 
-#
 msgid ""
 "Too many wrong codes: pairing is closed. On the PC, choose Open pairing "
 "again on the home page for a new code."
-msgstr "Trop de codes erronés : l'appairage est fermé. Sur le PC, choisissez Rouvrir l'appairage sur la page d'accueil pour un nouveau code."
+msgstr ""
+"Trop de codes erronés : l'appairage est fermé. Sur le PC, choisissez "
+"Rouvrir l'appairage sur la page d'accueil pour un nouveau code."
 
 msgid "Too strict? Not enough?"
 msgstr "Trop strict ? Pas assez ?"
@@ -20855,6 +20856,14 @@ msgstr "▶ Relancer depuis : {step}"
 #, python-brace-format
 msgid "⚠ {count} wrong codes from {address} at {time}"
 msgstr "⚠ {count} codes erronés depuis {address} à {time}"
+
+#, python-brace-format
+msgid ""
+"⛔ {count} connections refused from {address} at {time}: too many at once "
+"from that device."
+msgstr ""
+"⛔ {count} connexions refusées de {address} à {time} : trop à la fois depuis "
+"cet appareil."
 
 msgid "✓ in the album"
 msgstr "✓ dans l'album"

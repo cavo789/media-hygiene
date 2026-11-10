@@ -266,9 +266,11 @@ const clock = (at) => new Date(at).toLocaleTimeString([], { hour: "2-digit", min
 function showPairing(lan) {
   const attempts = lan.attempts || [];
   const list = $("#lanAttempts");
-  list.replaceChildren(...attempts.map((a) => { const item = document.createElement("li"); item.textContent = fill(T.lanAttempt, { count: a.failures, address: a.address, time: clock(a.at) }); return item; }));
+  const line = (text) => { const item = document.createElement("li"); item.textContent = text; return item; };
+  const refused = lan.refused || [];  // connections beyond the doors' caps (0682)
+  list.replaceChildren(...attempts.map((a) => line(fill(T.lanAttempt, { count: a.failures, address: a.address, time: clock(a.at) }))), ...refused.map((r) => line(fill(T.lanRefused, { count: r.count, address: r.address, time: clock(r.at) }))));
   $("#lanClosed").hidden = !lan.closed;
-  $("#lanAlert").hidden = attempts.length === 0 && !lan.closed;
+  $("#lanAlert").hidden = attempts.length === 0 && refused.length === 0 && !lan.closed;
   const paired = lan.paired || [];
   $("#lanNewList").replaceChildren(...paired.map((p) => { const item = document.createElement("li"); item.textContent = `${p.name} · ${clock(p.at)}`; return item; }));
   $("#lanNew").hidden = paired.length === 0;

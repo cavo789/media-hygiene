@@ -8,10 +8,11 @@ from __future__ import annotations
 
 import time
 from dataclasses import replace
+from functools import cache
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.i18n import _
+from media_hygiene.i18n import _, active_locale
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.lan import CODE_DIGITS, COOKIE_NAME, PAIR_PREFIX
@@ -116,10 +117,28 @@ def pair_page(status: HTTPStatus, *, closed: bool) -> Response:
         )
     elif status is HTTPStatus.FORBIDDEN:
         problem = _("This is not the code shown on the PC: type it again.")
+    return Response(
+        status, _drawn(problem, closed, str(active_locale())), ContentType.HTML
+    )
+
+
+@cache
+def _drawn(problem: str, closed: bool, locale: str) -> bytes:  # noqa: FBT001
+    """The pairing page, drawn once per text and language: never the disk again (0682).
+
+    Args:
+        problem: Why the last code was refused; empty before any code.
+        closed: Too many wrong codes: no form any more.
+        locale: The language in use (its texts are drawn in it).
+
+    Returns:
+        The page.
+    """
+    del locale  # in the key only: the template's texts follow the language in use
     template = translated_environment(_PACKAGE, escaped=("html", "j2")).get_template(
         _PAIR_TEMPLATE
     )
     page = template.render(
         problem=problem, closed=closed, digits=CODE_DIGITS, prefix=PAIR_PREFIX
     )
-    return Response(status, page.encode(), ContentType.HTML)
+    return page.encode()

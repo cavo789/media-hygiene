@@ -17539,6 +17539,12 @@ msgstr ""
 msgid "⚠ {count} wrong codes from {address} at {time}"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"⛔ {count} connections refused from {address} at {time}: too many at once "
+"from that device."
+msgstr ""
+
 msgid "✓ in the album"
 msgstr ""
 

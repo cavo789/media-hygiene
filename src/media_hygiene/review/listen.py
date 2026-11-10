@@ -4,7 +4,8 @@ The PC's door listens on the page's port, the home network's on `LAN_DOOR_PORT` 
 when `mh --lan` asked for it: every request of the second one is marked `Door.LAN`,
 so that no header can make it pass for the PC. With the certificates of `/lan` (0430)
 that door is HTTPS, and a plain HTTP one beside it hands out the authority to install,
-and serves the TV's pages under the slideshow (a TV cannot install it).
+and serves the TV's pages under the slideshow (a TV cannot install it). The home
+network's doors cap their connections and give less time to a request's head (0682).
 """
 
 from __future__ import annotations
@@ -17,8 +18,14 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.review.doors import LAN_CA_DOOR_PORT, Door, lan_door_port
 from media_hygiene.review.lan_address import lan_address
 from media_hygiene.review.lan_ca_page import CaDoor
+from media_hygiene.review.lan_gate import (
+    HANDSHAKE_SECONDS,
+    HEAD_SECONDS,
+    gated,
+    lan_gate,
+)
 from media_hygiene.review.lan_tls import lan_folder, secure_door
-from media_hygiene.review.serving import serve_connection
+from media_hygiene.review.serving import Served, serve_connection, serve_within
 
 if TYPE_CHECKING:
     from collections.abc import AsyncIterator, Awaitable, Callable
@@ -82,10 +89,11 @@ async def listening(
             secure = None if address is None else secure_door(address)
             marked = lan_handle(handle)
             lan = await asyncio.start_server(
-                lambda reader, writer: serve_connection(reader, writer, marked),
+                lan_connection(marked),
                 LISTEN_HOST,
                 lan_port,
                 ssl=secure,
+                ssl_handshake_timeout=None if secure is None else HANDSHAKE_SECONDS,
             )
             await stack.enter_async_context(lan)
             folder = lan_folder()
@@ -107,7 +115,22 @@ async def _ca_door(door: CaDoor) -> asyncio.Server:
         The server, on `LAN_CA_DOOR_PORT`.
     """
     return await asyncio.start_server(
-        lambda reader, writer: serve_connection(reader, writer, door.handle),
-        LISTEN_HOST,
-        LAN_CA_DOOR_PORT,
+        lan_connection(door.handle), LISTEN_HOST, LAN_CA_DOOR_PORT
+    )
+
+
+def lan_connection(
+    handle: Handle,
+) -> Callable[[asyncio.StreamReader, asyncio.StreamWriter], Awaitable[None]]:
+    """A home network door's connection handler: gated, its head given less time.
+
+    Args:
+        handle: Answers a request.
+
+    Returns:
+        The handler for `asyncio.start_server`.
+    """
+    served = Served(handle, HEAD_SECONDS)
+    return gated(
+        lan_gate(), lambda reader, writer: serve_within(reader, writer, served)
     )

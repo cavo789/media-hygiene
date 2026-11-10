@@ -20,7 +20,7 @@ from typing import Final
 
 from PIL import Image
 
-from media_hygiene.i18n import _
+from media_hygiene.i18n import _, active_locale
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.http import ContentType, Response
 
@@ -42,6 +42,7 @@ _IMAGES: Final = "media_hygiene.assets.images"
 _PACKAGE: Final = "media_hygiene.review"
 
 
+@cache
 def _image(name: str) -> bytes:
     """A picture of the package's assets.
 
@@ -96,15 +97,18 @@ def manifest() -> bytes:
     return json.dumps(content, ensure_ascii=False).encode()
 
 
-def _render(template: str) -> bytes:
-    """Draw a template of the app's shell.
+@cache
+def _render(template: str, locale: str) -> bytes:
+    """Draw a template of the app's shell, once per language: from memory after (0682).
 
     Args:
         template: Its file name.
+        locale: The language in use (in the key only: the texts follow it).
 
     Returns:
         The text, encoded.
     """
+    del locale
     environment = translated_environment(_PACKAGE, escaped=("html", "j2"))
     page = environment.get_template(template).render(
         offline=OFFLINE_PATH, image=OFFLINE_IMAGE, retry=RETRY_SECONDS * 1000
@@ -125,10 +129,16 @@ def shell_response(path: str) -> Response | None:
         return Response(HTTPStatus.OK, manifest(), ContentType.MANIFEST)
     if path == WORKER_PATH:
         return Response(
-            HTTPStatus.OK, _render("app_worker.js.j2"), ContentType.JAVASCRIPT
+            HTTPStatus.OK,
+            _render("app_worker.js.j2", str(active_locale())),
+            ContentType.JAVASCRIPT,
         )
     if path == OFFLINE_PATH:
-        return Response(HTTPStatus.OK, _render("app_offline.html.j2"), ContentType.HTML)
+        return Response(
+            HTTPStatus.OK,
+            _render("app_offline.html.j2", str(active_locale())),
+            ContentType.HTML,
+        )
     if path == OFFLINE_IMAGE:
         return Response(HTTPStatus.OK, _image(ASLEEP_IMAGE), ContentType.WEBP)
     size = _ICONS.get(path)

@@ -1,7 +1,8 @@
 """What the PC's door of `mh --lan` answers besides the home page (0269, 0681).
 
 The card (`GET /api/lan`: the code, its QR code, the wrong codes per address and the
-devices paired this run), *Open pairing again* (a new code, no restart) and *It was me*
+devices paired this run, the connections the home network's doors refused, 0682),
+*Open pairing again* (a new code, no restart) and *It was me*
 (the report put away), the paired phones (0431), an album's link (0462). The loopback
 only: a phone never asks them. Each `POST` answers the card read back from the server.
 """
@@ -13,6 +14,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.http import Response, is_local
 from media_hygiene.review.lan_card import lan_response
+from media_hygiene.review.lan_gate import lan_gate
 from media_hygiene.review.lan_paths import LAN_PATH
 from media_hygiene.review.lan_phones_api import PHONE_PATHS, phones_answer
 from media_hygiene.review.serving import refused_post
@@ -34,7 +36,8 @@ def card(app: LanApp) -> Response:
         app: The home network's door.
 
     Returns:
-        JSON: what `lan_response` says, plus `attempts`, `closed`, `paired` and the
+        JSON: what `lan_response` says, plus `attempts`, `closed`, `paired`,
+        `refused` (connections beyond the doors' caps, per address) and the
         paths `reopen` and `seen`.
     """
     pairing = app.pairing
@@ -43,6 +46,7 @@ def card(app: LanApp) -> Response:
         "attempts": pairing.attempts.reported(),
         "closed": pairing.closed,
         "paired": pairing.paired,
+        "refused": lan_gate().reported(),
         "reopen": REOPEN_PATH,
         "seen": SEEN_PATH,
     }
@@ -80,6 +84,7 @@ def _pairing_post(app: LanApp, request: Request) -> Response:
         app.pairing.reopen()
     else:
         app.pairing.attempts.seen()
+        lan_gate().seen()
     return card(app)
 
 

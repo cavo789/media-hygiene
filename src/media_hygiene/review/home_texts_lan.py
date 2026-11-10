@@ -40,6 +40,10 @@ def lan_pairing_texts() -> dict[str, str]:
     """
     return {
         "lanAttempt": _("⚠ {count} wrong codes from {address} at {time}"),
+        "lanRefused": _(
+            "⛔ {count} connections refused from {address} at {time}: too many at "
+            "once from that device."
+        ),
         "lanClosed": _(
             "Too many wrong codes: pairing is closed, the phones already paired "
             "stay paired."
