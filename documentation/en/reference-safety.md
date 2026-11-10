@@ -75,7 +75,11 @@ copy from it. Empty files (0 bytes) are deleted too: they hold nothing.
 - **Read the report before `clean`**: the folder pairs first, then a few groups.
 - **Pause cloud synchronisation** (OneDrive, Google Drive, Dropbox, iCloud) while cleaning or
   sorting: otherwise every change is copied to the cloud and to your other devices.
-- **Keep the journal folder**: `undo` needs it. Run `purge` only once you have checked.
+- **The journal is saved by `mh backup`**: `undo` needs it, and the archive keeps a copy off the
+  volume (on the NAS too when `mh push` has a target). Lost anyway, `mh undo <run>
+  --from-quarantine` brings the files of the quarantine back from its layout (the copies a
+  `clean --delete` erased cannot come back without it). Run `purge` only once you have checked: it lists first the files set aside that exist nowhere
+  else, and asks for them apart.
 
 If you can, a **backup on an external disk** is the extra net against what no software can
 prevent: a failing disk, a mistake made outside the tool. It is welcome, not required.

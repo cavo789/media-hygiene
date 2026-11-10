@@ -89,6 +89,7 @@ mh undo --pick
 | `--yes`, `-y` | Ne pas demander avant d'annuler plusieurs exécutions d'un tri. |
 | `--pick` | Ouvrir la quarantaine en vignettes et ne remettre que les photos choisies ([plus haut](#remettre-quelques-photos)). |
 | `--port` | Le port de cette page (par défaut : `[review] port`). |
+| `--from-quarantine` | Le journal de l'exécution est perdu : refaire ses déplacements d'après la disposition de sa quarantaine, les lister, demander, puis remettre chaque fichier, jamais par-dessus un fichier. Les copies effacées par un `clean --delete` ne peuvent pas revenir ainsi. |
 
 ## Bon à savoir
 

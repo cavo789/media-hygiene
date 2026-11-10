@@ -56,3 +56,39 @@ What helps already: a run's quarantine mirrors the photo folders (`<run>/c/Photo
 
 Before: the way back of every clean and sort has 1 copy, on `C:`. After: 3 (the PC, with
 the quarantine, off the PC with the backup), and a clean can be undone even without it.
+
+## Status — PARTIAL (2026-11-10)
+
+### Done
+
+- `mh backup` archives every journal (`journal/<run>.jsonl`) and the choice files of `/reports`
+  (`decisions.json`, `sort-decisions.json`, `phone-decisions.json`, `import-bursts.json`,
+  `albums.json`, at its top or one folder down) with their SHA-256 in the manifest
+  (`services/backup_extra.py`); `backup_check` accepts the `journal/` and `reports/` members.
+- `restore` always puts back the journals and choice files that are missing, never over one
+  there (`move_no_replace`), each read back against its digest; the console lists them.
+- `undo <run> --from-quarantine` (`services/undo_orphan.py`, `cli/undo_orphan_flow.py`): the
+  moves rebuilt from the quarantine's mirror layout, listed first, asked, never over a file,
+  only into a mounted drive folder, each proven by its size read back; emptied folders removed.
+  Refused while the journal exists.
+- Tests (`tests/integration/test_journal_backup.py`): backup → wipe `/journal` → restore →
+  undo of a clean (quarantine and `--delete`), disk identical; a newer journal never
+  overwritten; from-quarantine back whole (but the empty file a clean deletes); a file at the
+  place kept; the photos' drive under another letter: those files stay, said; the quarantine
+  moved to another folder: still read.
+- Docs EN + FR: `backup.md`, `undo.md`, `reference-safety.md`.
+
+### Not done
+
+- Point 2, a copy of the journal next to the quarantine (`<quarantine>/<run>/journal.jsonl`)
+  and the sort's journal pushed to the target.
+  **Reason:** every reader of a run's folder (purge census, the quarantine tiles, undo's
+  emptied-folder removal, `--from-quarantine` itself) would take it for a file set aside: it
+  needs its own place (e.g. a sibling `<run>.jsonl` beside the run folders, skipped by
+  `_is_run_folder`) and a decision on it.
+- The undo of a **sort** after backup → wipe → restore is not tested (only clean): the same
+  journal file is restored, but no test runs a sort here.
+- The archive's growth on the maintainer's real journal folder.
+  **Reason:** needs his files (read-only measurement): a `mh-measure.ps1` step summing
+  `$HOME\media-hygiene\journal\*.jsonl`.
+- `docs_screenshots` should run (the `--help` capture of `undo.md`, the `backup` output).

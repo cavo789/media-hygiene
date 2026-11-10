@@ -10,7 +10,9 @@ Le [cache](../reference-glossary.md#cache) (`/cache`) est un volume Docker, `med
 un `docker volume prune`, une réinitialisation de Docker Desktop ou un nouveau WSL l'effacent. Il
 contient l'index : l'empreinte de chaque fichier, ce que les audits ont lu, les mots de `tags`, les
 descriptions, les visages — des heures de travail à refaire. `backup` écrit l'index et vos réglages
-(`config.toml`, `people\*.toml`) dans un seul zip, `mh-backup-AAAAMMJJ-HHMMSS.zip`, dans
+(`config.toml`, `people\*.toml`), chaque [journal](../reference-glossary.md#journal) (le
+chemin du retour de chaque nettoyage et tri) et les choix pas encore appliqués (`decisions.json`,
+`sort-decisions.json`, la liste des albums) dans un seul zip, `mh-backup-AAAAMMJJ-HHMMSS.zip`, dans
 `$HOME\media-hygiene\backups` ; [`restore`](restore.md) le remet en place.
 
 À ne pas confondre avec `--backup` (un dossier
@@ -75,8 +77,10 @@ docker run --rm -it `
 ## Bon à savoir
 
 - Pas dans l'archive : les aperçus (refaits par les rapports), les modèles (téléchargés à nouveau),
-  le journal (déjà hors du volume, dans `$HOME\media-hygiene\journal`), les mots de passe du NAS
-  (lisibles par votre compte Windows sur ce PC seulement).
+  les mots de passe du NAS (lisibles par votre compte Windows sur ce PC seulement).
+- Les journaux y sont bien qu'ils vivent hors du volume : un `C:` réinstallé les perd, et `undo`
+  avec eux. `restore` ne remet que les journaux et fichiers de choix absents, jamais par-dessus
+  un fichier présent.
 - Les 3 archives les plus récentes sont gardées dans `$HOME\media-hygiene\backups` ; une quatrième
   supprime la plus ancienne, dit en une ligne.
 

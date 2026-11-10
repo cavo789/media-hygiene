@@ -25,6 +25,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "  journals (the way back of each run): {count}"
+msgstr ""
+
+#, python-brace-format
 msgid "  … and {count} more."
 msgstr ""
 
@@ -2888,6 +2892,12 @@ msgid "Erase these {count} files for good: frees {size}"
 msgstr ""
 
 #, python-brace-format
+msgid "Erase this only copy too?"
+msgid_plural "Erase these {count} only copies too?"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "Erased from .removed (older than {days} days): {count} runs"
 msgstr ""
 
@@ -4223,6 +4233,9 @@ msgid ""
 "command' to run Czkawka yourself."
 msgstr ""
 
+msgid "Its name is the folder's in the quarantine."
+msgstr ""
+
 #, python-brace-format
 msgid "Its share of the sharpest faces' sharpness; its faces' score: {score}"
 msgstr ""
@@ -4803,6 +4816,10 @@ msgstr ""
 msgid "Missing argument"
 msgstr ""
 
+#, python-brace-format
+msgid "Missing file put back, read back: {name}"
+msgstr ""
+
 msgid "Missing option"
 msgstr ""
 
@@ -4927,6 +4944,12 @@ msgstr ""
 
 msgid "Move them now"
 msgstr ""
+
+#, python-brace-format
+msgid "Move this file back to its place?"
+msgid_plural "Move these {count} files back to their places?"
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "Move this file now"
@@ -5078,6 +5101,9 @@ msgid "Name the event so and save it; change it in the field above at any time"
 msgstr ""
 
 msgid "Name the faces"
+msgstr ""
+
+msgid "Name the run: mh undo <run> --from-quarantine."
 msgstr ""
 
 msgid ""
@@ -5742,6 +5768,10 @@ msgid "No program here opens a page: open {index} yourself."
 msgstr ""
 
 msgid "No proposal to apply: ask classify for one first."
+msgstr ""
+
+#, python-brace-format
+msgid "No quarantine holds the run {run_id}."
 msgstr ""
 
 msgid ""
@@ -7075,6 +7105,9 @@ msgstr ""
 msgid ""
 "Please report it at {url}, with the version ({version}), the command "
 "typed ({typed}) and this message. -e {variable}=1 shows the details."
+msgstr ""
+
+msgid "Plug in the drive of its quarantine."
 msgstr ""
 
 msgid "Plug in your NAS or an old disk"
@@ -8866,6 +8899,10 @@ msgstr ""
 msgid "Staying where they are"
 msgstr ""
 
+#, python-brace-format
+msgid "Stays in the quarantine: {file} ({why})"
+msgstr ""
+
 msgid "Step 1 of the guide:"
 msgstr ""
 
@@ -10250,6 +10287,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "The run {run_id} still has its journal."
+msgstr ""
+
+#, python-brace-format
 msgid "The run {run_id} was started already."
 msgstr ""
 
@@ -10257,6 +10298,11 @@ msgstr ""
 msgid ""
 "The run {run} ended, but its manifest does not check out: look at it "
 "before going on."
+msgstr ""
+
+msgid ""
+"The run's journal is lost: bring its files back from the layout of its "
+"quarantine, shown first, never over a file."
 msgstr ""
 
 msgid "The run, for undo and undone."
@@ -11153,6 +11199,10 @@ msgstr ""
 msgid "Type mh push in Windows PowerShell: it mounts it."
 msgstr ""
 
+#, python-brace-format
+msgid "Type mh undo {run_id}: it is exact."
+msgstr ""
+
 msgid "Type the album's name in the bar first: then A adds the file shown."
 msgstr ""
 
@@ -11222,6 +11272,10 @@ msgid ""
 msgstr ""
 
 msgid "Undo the last run"
+msgstr ""
+
+#, python-brace-format
+msgid "Undo the run {run_id} from its quarantine"
 msgstr ""
 
 #, python-brace-format
@@ -12052,6 +12106,9 @@ msgstr ""
 msgid "a file changed since the audit"
 msgstr ""
 
+msgid "a file is already at its place"
+msgstr ""
+
 #, python-brace-format
 msgid "a file named {name} is in the way"
 msgstr ""
@@ -12783,6 +12840,9 @@ msgstr ""
 msgid "it changed while the words were written: left as is"
 msgstr ""
 
+msgid "it did not read back whole"
+msgstr ""
+
 msgid "it is an independent file already"
 msgstr ""
 
@@ -12823,6 +12883,9 @@ msgid "its copy {path} is gone"
 msgstr ""
 
 msgid "its date, size, folder"
+msgstr ""
+
+msgid "its drive is not mounted (or changed letter)"
 msgstr ""
 
 msgid "its files are gone"
@@ -14764,6 +14827,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{count} file back at its place, read back."
+msgid_plural "{count} files back at their places, read back."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid ""
 "{count} file copied into your photos ({size}), each one compared with its"
 " source, read back where it was written."
@@ -14888,6 +14957,16 @@ msgid_plural ""
 "{count} files set aside ({size}), saved in {place}: 'clean --decisions' "
 "moves them to the quarantine, and remembers them: if one comes back (a "
 "new copy from the phone), the audit proposes it again."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} file set aside exists nowhere else ({size}): a near duplicate, a "
+"burst shot, junk or unreadable, not an exact copy."
+msgid_plural ""
+"{count} files set aside exist nowhere else ({size}): near duplicates, "
+"burst shots, junk or unreadable, not exact copies."
 msgstr[0] ""
 msgstr[1] ""
 

@@ -73,6 +73,10 @@ docker run --rm -it `
 
 ## Good to know
 
+- **The only copies, asked apart**: a file set aside as an exact copy still has its kept twin;
+  a near duplicate, a burst shot, junk or an unreadable file has none. After your yes, `purge`
+  lists those (*37 files set aside exist nowhere else*) and asks for them again: no, and
+  nothing is erased. A copy on the NAS is not counted (the container keeps no list of it).
 - An empty quarantine says *The quarantine is empty* and does nothing.
 - A run name without a quarantine is refused: *Run … has no quarantine*.
 - The quarantine holds what `clean` moved (extra copies, unreadable files, orphan sidecars, near

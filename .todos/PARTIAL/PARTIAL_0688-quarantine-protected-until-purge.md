@@ -60,3 +60,28 @@ its NAS copy while it waits in the quarantine (it leaves the NAS only once purge
 Before: near duplicates and junk set aside wait with 1 copy, and `purge` erases them without
 saying so. After: the user sees "37 files here exist nowhere else" before erasing — or they
 are on the NAS too.
+
+## Status — PARTIAL (2026-11-10)
+
+### Done
+
+- `services/only_copies.py`: a file of the quarantine is covered only when set aside as an
+  exact copy (`quarantine-duplicate`, byte-compared with its `keeper` first) and that keeper is
+  still on the disk with the same size. Deviation from the TODO: a near duplicate's journal
+  entry names a `keeper` too (of other content, `clean_aside.py`): it is not a cover. A run
+  whose journal is lost counts every file of its folder (safe side).
+- `purge` (`cli/purge_only.py`): after the yes, lists the only copies (count, size, first 20
+  paths) and asks for them apart; a no changes nothing.
+- Tests on the demo tree (`tests/integration/test_only_copies.py`): exact copies covered,
+  near duplicates counted, a keeper deleted uncovers its copy, a run without journal, purge's
+  second question.
+- Docs EN + FR: `purge.md`, `push.md`, `reference-safety.md`.
+
+### Not done
+
+- The figure on the quarantine page, the disk-space page and in `mh push`'s lines.
+  **Reason:** page work (template, the `apply_now`/bar contract) left for a lot of its own.
+- A NAS copy counted as cover.
+  **Reason:** the container keeps no listing of the push target after a push (`push_listing`
+  is built during the run only); counting it needs push to save its listing.
+- The only copies are asked after the general purge question, not shown before it.

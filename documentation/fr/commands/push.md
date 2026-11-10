@@ -53,7 +53,9 @@ passage, retirée ensuite.
 
 1. **Liste** vos dossiers de photos et la sauvegarde (taille, date) : tous les fichiers, pas
    seulement les photos (un PDF dans `C:\Photos` est sauvegardé aussi), sauf les dossiers
-   système (`#recycle`, `@eaDir`…), les dossiers exclus et la quarantaine.
+   système (`#recycle`, `@eaDir`…), les dossiers exclus et la quarantaine (un fichier mis de
+   côté avant tout push n'a pas de copie sur le NAS : [`purge`](purge.md#bon-à-savoir) les liste
+   avant de les effacer).
 2. **Planifie**, et le dit : ce qui est déjà là, ce qui est nouveau, ce qui a été déplacé (même
    taille, date, premiers et derniers 64 Ko : renommé sur le NAS, rien n'est envoyé), ce qui a
    été modifié (la copie du NAS mise de côté d'abord), ce qui a disparu du PC.

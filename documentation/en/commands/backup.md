@@ -10,7 +10,9 @@ The [cache](../reference-glossary.md#cache) (`/cache`) is a Docker volume, `medi
 a `docker volume prune`, a reset of Docker Desktop or a new WSL erases it. It holds the index:
 the fingerprints of every file, what the audits read, and the words of `tags`, the descriptions,
 the faces — hours of work to redo. `backup` writes the index and your settings (`config.toml`,
-`people\*.toml`) into one zip, `mh-backup-YYYYMMDD-HHMMSS.zip`, in
+`people\*.toml`), every [journal](../reference-glossary.md#journal) (the way back of each
+clean and sort) and the choices not applied yet (`decisions.json`, `sort-decisions.json`, the
+albums' list) into one zip, `mh-backup-YYYYMMDD-HHMMSS.zip`, in
 `$HOME\media-hygiene\backups`; [`restore`](restore.md) puts it back.
 
 Not to confuse with `--backup` (a folder [compared](../clean/05-choose-the-kept-copy.md#compare-a-backup-or-an-old-disk)) nor with
@@ -72,8 +74,10 @@ docker run --rm -it `
 ## Good to know
 
 - Not in the archive: the previews (rebuilt by the reports), the models (downloaded again), the
-  journal (it is already outside the volume, in `$HOME\media-hygiene\journal`), the NAS
-  passwords (readable by your Windows account on this PC only).
+  NAS passwords (readable by your Windows account on this PC only).
+- The journals are in it although they live outside the volume: a reinstalled `C:` loses them,
+  and `undo` with them. `restore` puts back only the journals and choice files that are missing,
+  never over one that is there.
 - The 3 most recent archives are kept in `$HOME\media-hygiene\backups`; a fourth removes the
   oldest, said in one line.
 

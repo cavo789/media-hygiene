@@ -47,6 +47,10 @@ msgstr[0] "   … et {count} autre."
 msgstr[1] "   … et {count} autres."
 
 #, python-brace-format
+msgid "  journals (the way back of each run): {count}"
+msgstr "  journaux (le chemin du retour de chaque exécution) : {count}"
+
+#, python-brace-format
 msgid "  … and {count} more."
 msgstr "  … et {count} de plus."
 
@@ -3535,6 +3539,12 @@ msgid "Erase these {count} files for good: frees {size}"
 msgstr "Effacer ces {count} fichiers pour de bon : libère {size}"
 
 #, python-brace-format
+msgid "Erase this only copy too?"
+msgid_plural "Erase these {count} only copies too?"
+msgstr[0] "Effacer aussi cette copie unique ?"
+msgstr[1] "Effacer aussi ces {count} copies uniques ?"
+
+#, python-brace-format
 msgid "Erased from .removed (older than {days} days): {count} runs"
 msgstr "Effacés de .removed (plus de {days} jours) : {count} passages"
 
@@ -5143,6 +5153,9 @@ msgstr ""
 "Ses messages sont juste au-dessus. Relancez 'crosscheck', ou 'crosscheck "
 "--print-command' pour lancer Czkawka vous-même."
 
+msgid "Its name is the folder's in the quarantine."
+msgstr "Son nom est celui de son dossier dans la quarantaine."
+
 #, python-brace-format
 msgid "Its share of the sharpest faces' sharpness; its faces' score: {score}"
 msgstr ""
@@ -5802,6 +5815,10 @@ msgstr "Fusionnés ({n})"
 msgid "Missing argument"
 msgstr "Argument manquant"
 
+#, python-brace-format
+msgid "Missing file put back, read back: {name}"
+msgstr "Fichier manquant remis, relu : {name}"
+
 msgid "Missing option"
 msgstr "Option manquante"
 
@@ -5957,6 +5974,12 @@ msgstr "Déplacer maintenant les {n} autres fichiers du plan ?"
 
 msgid "Move them now"
 msgstr "Les déplacer maintenant"
+
+#, python-brace-format
+msgid "Move this file back to its place?"
+msgid_plural "Move these {count} files back to their places?"
+msgstr[0] "Remettre ce fichier à sa place ?"
+msgstr[1] "Remettre ces {count} fichiers à leur place ?"
 
 #, python-brace-format
 msgid "Move this file now"
@@ -6131,6 +6154,9 @@ msgstr ""
 
 msgid "Name the faces"
 msgstr "Nommer les visages"
+
+msgid "Name the run: mh undo <run> --from-quarantine."
+msgstr "Nommez l'exécution : mh undo <exécution> --from-quarantine."
 
 msgid ""
 "Name their group on the 'people' page first, or correct the names of the "
@@ -6921,6 +6947,10 @@ msgstr "Aucun programme ici n'ouvre une page : ouvrez {index} vous-même."
 
 msgid "No proposal to apply: ask classify for one first."
 msgstr "Aucune proposition à appliquer : demandez-en d'abord une à classify."
+
+#, python-brace-format
+msgid "No quarantine holds the run {run_id}."
+msgstr "Aucune quarantaine ne contient l'exécution {run_id}."
 
 msgid ""
 "No quarantine mount: unreadable files and orphan sidecars are left in "
@@ -8536,6 +8566,9 @@ msgid ""
 msgstr ""
 "Merci de le signaler sur {url}, avec la version ({version}), la commande "
 "tapée ({typed}) et ce message. -e {variable}=1 montre les détails."
+
+msgid "Plug in the drive of its quarantine."
+msgstr "Branchez le disque de sa quarantaine."
 
 msgid "Plug in your NAS or an old disk"
 msgstr "Brancher votre NAS ou un ancien disque"
@@ -10642,6 +10675,10 @@ msgstr "État :"
 msgid "Staying where they are"
 msgstr "Restent où ils sont"
 
+#, python-brace-format
+msgid "Stays in the quarantine: {file} ({why})"
+msgstr "Reste en quarantaine : {file} ({why})"
+
 msgid "Step 1 of the guide:"
 msgstr "Étape 1 du guide :"
 
@@ -12324,6 +12361,10 @@ msgstr[1] ""
 "modifié."
 
 #, python-brace-format
+msgid "The run {run_id} still has its journal."
+msgstr "L'exécution {run_id} a toujours son journal."
+
+#, python-brace-format
 msgid "The run {run_id} was started already."
 msgstr "Le passage {run_id} a déjà été commencé."
 
@@ -12334,6 +12375,11 @@ msgid ""
 msgstr ""
 "L'exécution {run} est terminée, mais son manifeste ne se vérifie pas : "
 "regardez-le avant de continuer."
+
+msgid ""
+"The run's journal is lost: bring its files back from the layout of its "
+"quarantine, shown first, never over a file."
+msgstr "Le journal de l'exécution est perdu : remettre ses fichiers d'après la disposition de sa quarantaine, montrés d'abord, jamais par-dessus un fichier."
 
 msgid "The run, for undo and undone."
 msgstr "Le passage, pour undo et undone."
@@ -13440,6 +13486,10 @@ msgstr "Tapez mh push --undo {run_id} dans Windows PowerShell."
 msgid "Type mh push in Windows PowerShell: it mounts it."
 msgstr "Tapez mh push dans Windows PowerShell : il le monte."
 
+#, python-brace-format
+msgid "Type mh undo {run_id}: it is exact."
+msgstr "Tapez mh undo {run_id} : il est exact."
+
 msgid "Type the album's name in the bar first: then A adds the file shown."
 msgstr ""
 "Tapez d'abord le nom de l'album dans la barre : A y ajoute ensuite le "
@@ -13530,6 +13580,10 @@ msgstr ""
 
 msgid "Undo the last run"
 msgstr "Annuler la dernière exécution"
+
+#, python-brace-format
+msgid "Undo the run {run_id} from its quarantine"
+msgstr "Annulation de l'exécution {run_id} depuis sa quarantaine"
 
 #, python-brace-format
 msgid "Undo the {command} run {run_id}"
@@ -14542,6 +14596,9 @@ msgstr "un cercle qui ne contient plus aucun groupe"
 msgid "a file changed since the audit"
 msgstr "un fichier a changé depuis l'audit"
 
+msgid "a file is already at its place"
+msgstr "un fichier est déjà à sa place"
+
 #, python-brace-format
 msgid "a file named {name} is in the way"
 msgstr "un fichier nommé {name} est dans le chemin"
@@ -15322,6 +15379,9 @@ msgstr "elle a changé depuis l'audit : relancez l'audit"
 msgid "it changed while the words were written: left as is"
 msgstr "il a changé pendant l'écriture des mots : laissé tel quel"
 
+msgid "it did not read back whole"
+msgstr "il ne s'est pas relu entier"
+
 msgid "it is an independent file already"
 msgstr "c'est déjà un fichier indépendant"
 
@@ -15363,6 +15423,10 @@ msgstr "sa copie {path} a disparu"
 
 msgid "its date, size, folder"
 msgstr "sa date, sa taille, son dossier"
+
+#, python-brace-format
+msgid "its drive is not mounted (or changed letter)"
+msgstr "son disque n'est pas monté (ou a changé de lettre)"
 
 msgid "its files are gone"
 msgstr "ses fichiers ont disparu"
@@ -17567,6 +17631,12 @@ msgstr[0] "{count} fichier au dernier audit, à mettre de côté ?"
 msgstr[1] "{count} fichiers au dernier audit, à mettre de côté ?"
 
 #, python-brace-format
+msgid "{count} file back at its place, read back."
+msgid_plural "{count} files back at their places, read back."
+msgstr[0] "{count} fichier remis à sa place, relu."
+msgstr[1] "{count} fichiers remis à leur place, relus."
+
+#, python-brace-format
 msgid ""
 "{count} file copied into your photos ({size}), each one compared with its"
 " source, read back where it was written."
@@ -17749,6 +17819,16 @@ msgstr[1] ""
 "--decisions' les déplace en quarantaine, et s'en souvient : si l'un d'eux"
 " revient (une nouvelle copie depuis le téléphone), l'audit le propose à "
 "nouveau."
+
+#, python-brace-format
+msgid ""
+"{count} file set aside exists nowhere else ({size}): a near duplicate, a "
+"burst shot, junk or unreadable, not an exact copy."
+msgid_plural ""
+"{count} files set aside exist nowhere else ({size}): near duplicates, "
+"burst shots, junk or unreadable, not exact copies."
+msgstr[0] "{count} fichier mis de côté n'existe nulle part ailleurs ({size}) : un quasi-doublon, une photo de rafale, un déchet ou un illisible, pas une copie exacte."
+msgstr[1] "{count} fichiers mis de côté n'existent nulle part ailleurs ({size}) : quasi-doublons, photos de rafale, déchets ou illisibles, pas des copies exactes."
 
 #, python-brace-format
 msgid "{count} file set aside ignored."

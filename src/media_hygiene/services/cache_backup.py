@@ -1,4 +1,4 @@
-r"""`media-hygiene backup` (0352): the index and the settings in one archive.
+r"""`media-hygiene backup` (0352): the index, the settings, the journals in one archive.
 
 `/cache` is a named Docker volume: a `docker volume prune`, a reset of Docker Desktop
 or a new WSL erases it, and with it the index (digests, visual facts, tags,
@@ -37,6 +37,7 @@ from media_hygiene.services.backup_archive import (
     index_facts,
 )
 from media_hygiene.services.backup_check import checked
+from media_hygiene.services.backup_extra import extra_files
 from media_hygiene.services.writable import ensure_writable
 
 if TYPE_CHECKING:
@@ -170,12 +171,12 @@ def _write(runtime: Runtime, index: Path, draft: Path) -> None:
     )
     with zipfile.ZipFile(draft, "w", zipfile.ZIP_DEFLATED) as archive:
         archive.write(index, INDEX_MEMBER)
-        for file in files:
+        named = [(CONFIG_PREFIX + f.relative_to(config).as_posix(), f) for f in files]
+        for member, file in (*named, *extra_files(runtime)):  # journals: 0687
             try:
                 content = file.read_bytes()
             except FileNotFoundError:  # a page's save just replaced its draft
                 continue
-            member = CONFIG_PREFIX + file.relative_to(config).as_posix()
             archive.writestr(member, content)
             members[member] = hashlib.sha256(content).hexdigest()
         manifest = Manifest(version(_PACKAGE), schema, members, counts)
