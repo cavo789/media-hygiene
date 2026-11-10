@@ -48,3 +48,35 @@ disk cache in 1.0–1.2 ms, each on a new connection.
 Second visit of a 200-tile page: 200 requests → 0; after a restart of the server about
 1.3 MB re-sent → 0 (estimated from 6.4 KB a tile, measured). The phone gains most (each
 request is a TLS connection today).
+
+## Status — PARTIAL (2026-11-11)
+
+### Done
+
+- `search/stable_pictures.py`: the hits of the search/library/browse page carry
+  `/thumb/<key>.<tag>.jpg` and `/preview/<key>.<tag>.jpg`, `<tag>` = `preview_key()` of the
+  index row (path, size, mtime, edge, preview version). `search/pictures.py` answers
+  `private, max-age=31536000, immutable` (`review/respond.IMMUTABLE_S`) when the file on disk
+  still matches the row; a file changed since the audit is shown under today's `no-cache`
+  rule; a tag that is not the row's: 404. Names without a tag keep today's rule.
+- No index table or memory map needed: the key is the row, the tag checks it (survives a
+  restart). Phone allow-list (`lan_paths`, prefix-based) and 0682's caps unchanged: fewer
+  connections only.
+- One test per event (`tests/unit/test_stable_pictures.py`): edit in place, replace keeping
+  the mtime, move/rename (Explorer, `sort`/`undo`/`clean --repair`, quarantine), preview
+  version bump, a row reused by another file, unknown/odd names, legacy names, the header.
+- Measured (devcontainer, 200 synthetic 12 MP JPEGs, `Pictures.answer`, scratchpad script):
+  200 thumbnails = 4.08 MB served; old names 0/200 kept for good, new names 200/200.
+
+### Not done
+
+- The other tile servers keep the per-run `ETag`: person, people, places, reviews, events
+  (`review/events_views.py`), the slideshow/TV, albums and the album link door (`share/`,
+  which parses integer keys in `review/doors.py`), the found/tag-drop desks' sample thumbs.
+  Each needs its own key → version lookup; follow-up per server.
+- The headless-Chromium request count (Playwright, CI only): not written; the header is
+  tested instead.
+- Accepted limits (reviewer): a file replaced with the same size and mtime keeps its tag
+  (as the disk cache); a file moved by the user stays shown from the browser's copy until
+  the next audit rewrites its row (same photo, not stale content); a change of rendering
+  without a `_VERSION` bump keeps old pictures for a year — bump `_VERSION`.

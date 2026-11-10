@@ -10,8 +10,13 @@ from typing import TYPE_CHECKING
 from media_hygiene.report.preview_cache import PreviewPool
 from media_hygiene.report.thumbnails import REVIEW_EDGE
 from media_hygiene.review.http import ContentType, Response
-from media_hygiene.review.local_app import jpeg_response
 from media_hygiene.review.originals import original_response
+from media_hygiene.review.respond import IMMUTABLE_S
+from media_hygiene.search.stable_pictures import (
+    parsed_name,
+    picture_tag,
+    still_this_version,
+)
 from media_hygiene.search.thumbs import GRID_EDGE
 from media_hygiene.search.views import (
     JPEG,
@@ -55,6 +60,9 @@ class Pictures:
     async def _picture(self, prefix: str, path: str) -> Response:
         """Render a small or a large preview in the worker pool.
 
+        A name with the file's version (`12.<tag>`) is kept by the browser for good
+        while the file is still that version; an older version's: 404.
+
         Args:
             prefix: `/thumb/` or `/preview/`.
             path: The path asked for.
@@ -62,19 +70,23 @@ class Pictures:
         Returns:
             The JPEG, or 404.
         """
-        key = path.removeprefix(prefix).removesuffix(JPEG)
-        photo = self.index.source_of(int(key)) if key.isdigit() else None
-        if photo is None:
+        named = parsed_name(path.removeprefix(prefix).removesuffix(JPEG))
+        photo = None if named is None else self.index.source_of(named[0])
+        if named is None or photo is None:
             return Response(HTTPStatus.NOT_FOUND)
-        pool = PreviewPool(self.executor, self.previews)
-        if prefix == PREVIEW_PREFIX:
-            render = pool.renderer(REVIEW_EDGE)
-            return await jpeg_response(self.executor, render, photo.path)
+        edge = REVIEW_EDGE if prefix == PREVIEW_PREFIX else GRID_EDGE
+        tag = named[1]
+        if tag and tag != picture_tag(photo, edge):
+            return Response(
+                HTTPStatus.NOT_FOUND
+            )  # another version: the page lists again
+        render = PreviewPool(self.executor, self.previews).renderer(edge)
         loop = asyncio.get_running_loop()
-        render = pool.renderer(GRID_EDGE)
         image = await loop.run_in_executor(self.executor, render, photo.path)
         if image is None:
             return Response(HTTPStatus.NOT_FOUND)
+        if tag and (await asyncio.to_thread(still_this_version, photo)) is True:
+            return Response(HTTPStatus.OK, image, ContentType.JPEG, max_age=IMMUTABLE_S)
         return Response(HTTPStatus.OK, image, ContentType.JPEG, cacheable=True)
 
     def source(self, key: str) -> Path | None:

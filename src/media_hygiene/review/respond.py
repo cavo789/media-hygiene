@@ -6,7 +6,9 @@ each piece is read and sent a chunk at a time, waiting for the browser to take i
 A picture is named by a number valid in this run only: `/face/3.jpg` is another face
 once the command runs again, on the same port. So the browser keeps it but asks again
 each time (`no-cache`), and `RUN_TAG`, drawn anew at each run, says whether its copy is
-still this run's (304, nothing rendered) or an older run's (rendered again).
+still this run's (304, nothing rendered) or an older run's (rendered again). A picture
+named after its file's version (`search/stable_pictures`, 0673) is kept for good: a
+year (`IMMUTABLE_S`) and `immutable`, never asked again.
 """
 
 from __future__ import annotations
@@ -29,6 +31,8 @@ RUN_TAG: Final = f'"{_RUN}"'  # the ETag of every cacheable answer
 # next server may answer 0.5 s after this one ended (measured on Windows), before any
 # poll saw it gone. Read by `home_link.html.j2`, `home_run.js.j2`, `apply_now.html.j2`.
 RUN_HEADER: Final = "X-Media-Hygiene-Run"
+# A `max_age` this long: the answer never changes under its name (0673).
+IMMUTABLE_S: Final = 365 * 24 * 60 * 60
 
 
 async def write_response(writer: asyncio.StreamWriter, response: Response) -> None:
@@ -40,7 +44,7 @@ async def write_response(writer: asyncio.StreamWriter, response: Response) -> No
     """
     status = response.status
     cache = (
-        (f"private, max-age={response.max_age}",)
+        (f"private, max-age={response.max_age}{_immutable(response.max_age)}",)
         if response.max_age
         else ("private, no-cache", f"ETag: {RUN_TAG}")
         if response.cacheable
@@ -68,6 +72,18 @@ async def write_response(writer: asyncio.StreamWriter, response: Response) -> No
     await writer.drain()
     if part is not None and part.length:
         await _send_part(writer, part)
+
+
+def _immutable(max_age: int) -> str:
+    """The `immutable` of an answer kept for good.
+
+    Args:
+        max_age: Its `max_age`, in seconds.
+
+    Returns:
+        `, immutable`, or nothing for an answer kept a while only.
+    """
+    return ", immutable" if max_age >= IMMUTABLE_S else ""
 
 
 def _range_head(status: HTTPStatus, part: FilePart | None) -> tuple[str, ...]:
