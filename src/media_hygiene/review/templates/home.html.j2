@@ -102,7 +102,14 @@
         <p class="lan-line" id="lanCaLine" hidden>{{ texts.lanCa }} <strong class="lan-url" id="lanCa"></strong> <a id="lanCaHow" href="#" target="_blank" rel="noopener">{{ texts.lanCaHow }}</a></p>
         <div id="lanPhones" hidden>
           <p class="lan-line">{{ texts.lanPhones }}</p>
-          <ul class="lan-phones" id="lanPhoneList" data-forget="{{ texts.lanForget }}"></ul>
+          <p class="lan-note" id="lanExpired" hidden></p>
+          <ul class="lan-devices" id="lanPhoneList" data-forget="{{ texts.lanForget }}"></ul>
+          <button type="button" id="lanForgetAll">{{ texts.lanForgetAll }}</button>
+          <div class="lan-alert" id="lanForgetAsk" role="alertdialog" hidden>
+            <p class="lan-problem" id="lanForgetSure"></p>
+            <button type="button" id="lanForgetYes">{{ texts.lanForgetYes }}</button>
+            <button type="button" id="lanForgetNo">{{ texts.cancel }}</button>
+          </div>
         </div>
         <p class="lan-note">{{ texts.lanNote }}</p>
         <p class="lan-note">{{ texts.lanFirewall }}</p>

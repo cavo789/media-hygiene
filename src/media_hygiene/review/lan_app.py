@@ -148,7 +148,10 @@ class LanApp:
         if self.lan.is_paired(request):
             return True
         token = cookies(request.headers).get(COOKIE_NAME, "")
-        return self.phones is not None and self.phones.knows(token)
+        phone = None if self.phones is None else self.phones.holder(token)
+        if phone is not None and self.phones is not None and self.phones.activity:
+            self.phones.activity.saw(phone, request)  # last seen, counts (0683)
+        return phone is not None
 
     async def _paired(self, request: Request) -> Response:
         """Answer a paired phone: the reads, the audit, the albums, as from the PC.

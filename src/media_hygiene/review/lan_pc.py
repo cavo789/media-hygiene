@@ -108,5 +108,5 @@ async def pc_answer(app: LanApp, request: Request) -> Response:
         refused = refused_post(request)  # the PC's page alone makes a link
         return refused or await app.links.make(request, app.lan)
     if request.path in PHONE_PATHS and app.phones is not None:
-        return phones_answer(app.phones, request)
+        return phones_answer(app.phones, app.phones.activity, request)
     return await app.home.handle(request)

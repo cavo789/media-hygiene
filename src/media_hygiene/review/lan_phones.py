@@ -9,18 +9,21 @@ A missing or unreadable file means pairing again, never a failure.
 
 from __future__ import annotations
 
-import hashlib
 import hmac
 import secrets
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Final
 
-from pydantic import BaseModel, ConfigDict, ValidationError
+from pydantic import ValidationError
 
+from media_hygiene.review.lan_phone_care import expire, now_utc
+from media_hygiene.review.lan_phone_model import Phone, Phones, digest_of
 from media_hygiene.review.lan_tls import lan_folder
 
 if TYPE_CHECKING:
     from pathlib import Path
+
+    from media_hygiene.review.lan_activity import Activity
 
 PHONES_FILE: Final = "phones.json"
 TVS_FILE: Final = "tvs.json"  # the TVs of the slideshow paired for good (0456)
@@ -30,37 +33,6 @@ _ID_BYTES: Final = 6
 # The device named after the browser's own words, else a plain "phone".
 _DEVICES: Final = (("iPhone", "iPhone"), ("iPad", "iPad"), ("Android", "Android"))
 DEFAULT_DEVICE: Final = "Phone"
-
-
-class Phone(BaseModel):
-    """A paired phone: never its token, only the token's hash."""
-
-    model_config = ConfigDict(frozen=True, extra="ignore")
-
-    id: str
-    name: str
-    paired: datetime
-    digest: str
-
-
-class Phones(BaseModel):
-    """The content of `phones.json`."""
-
-    model_config = ConfigDict(frozen=True, extra="ignore")
-
-    phones: tuple[Phone, ...] = ()
-
-
-def digest_of(token: str) -> str:
-    """The hash kept for a token.
-
-    Args:
-        token: A phone's cookie.
-
-    Returns:
-        Its SHA-256, in hexadecimal.
-    """
-    return hashlib.sha256(token.encode()).hexdigest()
 
 
 def device_name(user_agent: str) -> str:
@@ -78,7 +50,7 @@ def device_name(user_agent: str) -> str:
 class PhoneBook:
     """`phones.json` in the `/lan` folder: read on each question, saved atomically."""
 
-    __slots__ = ("path",)
+    __slots__ = ("activity", "expired", "path")
 
     def __init__(self, folder: Path, file: str = PHONES_FILE) -> None:
         """Keep the file's place.
@@ -88,6 +60,8 @@ class PhoneBook:
             file: `phones.json`, or `tvs.json` for the slideshow's TVs.
         """
         self.path = folder / file
+        self.expired: tuple[str, ...] = ()  # forgotten at this start, unseen (0683)
+        self.activity: Activity | None = None  # what each phone did (0683)
 
     def tvs(self) -> PhoneBook:
         """The TVs' file beside this one: the same rules, another cookie.
@@ -108,7 +82,7 @@ class PhoneBook:
         except OSError, ValidationError:
             return ()
 
-    def _save(self, phones: tuple[Phone, ...]) -> None:
+    def save(self, phones: tuple[Phone, ...]) -> None:
         """Write the list in full, through a draft renamed over the file.
 
         Args:
@@ -148,7 +122,7 @@ class PhoneBook:
             digest=digest_of(token),
         )
         try:
-            self._save((*self.listed(), phone))
+            self.save((*self.listed(), phone))
         except OSError:
             return False
         return self.knows(token)
@@ -160,13 +134,24 @@ class PhoneBook:
             token: The cookie's value.
 
         Returns:
-            True for a phone listed (compared in constant time).
+            True for a phone listed.
         """
-        if not token:
-            return False
+        return self.holder(token) is not None
+
+    def holder(self, token: str) -> Phone | None:
+        """The paired phone holding this cookie, read from the file now.
+
+        Args:
+            token: The cookie's value.
+
+        Returns:
+            It (compared in constant time); None when unknown or forgotten.
+        """
         digest = digest_of(token).encode()
-        found = [hmac.compare_digest(digest, p.digest.encode()) for p in self.listed()]
-        return any(found)
+        found = [
+            p for p in self.listed() if hmac.compare_digest(digest, p.digest.encode())
+        ]
+        return found[0] if token and found else None
 
     def forget(self, phone_id: str) -> bool:
         """Forget a phone: its cookie opens nothing any more.
@@ -179,7 +164,7 @@ class PhoneBook:
         """
         kept = tuple(phone for phone in self.listed() if phone.id != phone_id)
         try:
-            self._save(kept)
+            self.save(kept)
         except OSError:
             return False
         return all(phone.id != phone_id for phone in self.listed())
@@ -192,7 +177,12 @@ def phone_book(*, secure: bool) -> PhoneBook | None:
         secure: The home network's door is HTTPS (0430).
 
     Returns:
-        The file in `/lan`; None in plain HTTP or without the folder.
+        The file in `/lan`, the phones unseen for long forgotten (0683); None in
+        plain HTTP or without the folder.
     """
     folder = lan_folder() if secure else None
-    return None if folder is None else PhoneBook(folder)
+    if folder is None:
+        return None
+    book = PhoneBook(folder)
+    book.expired = expire(book, now_utc())
+    return book

@@ -3042,6 +3042,9 @@ msgstr ""
 msgid "Every copy"
 msgstr ""
 
+msgid "Every device is forgotten, read back from the disk."
+msgstr ""
+
 msgid "Every entry of config.toml points at something."
 msgstr ""
 
@@ -3643,6 +3646,15 @@ msgstr ""
 msgid "For your information, nothing to do"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Forget all {count} devices? Each one must type a code again to open this "
+"page."
+msgstr ""
+
+msgid "Forget every device"
+msgstr ""
+
 msgid "Forget every face"
 msgstr ""
 
@@ -3650,6 +3662,10 @@ msgid "Forget its position"
 msgstr ""
 
 msgid "Forget this phone"
+msgstr ""
+
+#, python-brace-format
+msgid "Forgotten at this start, unseen for {days} days: {names}"
 msgstr ""
 
 msgid "Format"
@@ -4492,6 +4508,16 @@ msgstr ""
 msgid "Last sent"
 msgstr ""
 
+#, python-brace-format
+msgid "Last {days} days: nothing opened"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Last {days} days: {pages} pages opened, {pictures} pictures viewed (last "
+"on {day})"
+msgstr ""
+
 msgid "Later"
 msgstr ""
 
@@ -5143,6 +5169,9 @@ msgstr ""
 msgid ""
 "Name one: mh import <folder> (a USB disk, an SD card), or add your NAS "
 "once: mh folders add --backup <folder>."
+msgstr ""
+
+msgid "Name saved, read back from the disk."
 msgstr ""
 
 msgid "Name the event so and save it; change it in the field above at any time"
@@ -6935,6 +6964,10 @@ msgid "Pair {number} of {total}"
 msgstr ""
 
 msgid "Paired during this run"
+msgstr ""
+
+#, python-brace-format
+msgid "Paired on {paired} · last seen {seen} · {address}"
 msgstr ""
 
 msgid "Pairing code"
@@ -9185,6 +9218,9 @@ msgid ""
 msgstr ""
 
 msgid "TB"
+msgstr ""
+
+msgid "TV"
 msgstr ""
 
 msgid "TV and phone"
@@ -11994,6 +12030,9 @@ msgid "Year / Year-month / Event"
 msgstr ""
 
 msgid "Years"
+msgstr ""
+
+msgid "Yes, forget them all"
 msgstr ""
 
 #, python-brace-format

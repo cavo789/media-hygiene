@@ -48,3 +48,29 @@ lan_phone_originals` is on.
 Before: a lost or lent phone keeps access up to 400 days unless the user remembers to
 forget it, and nothing tells devices apart. After: unused access ends by itself (90 days),
 and the PC shows who came and when.
+
+## Status — PARTIAL (2026-11-10)
+
+### Done
+
+- `phones.json`/`tvs.json`: `last_seen` (at most once an hour, or on an address change) and
+  `address` (from the socket); older files load (`lan_phone_model.py`, defaults).
+- Rename, *Forget every device* (in-card confirmation, no `window.confirm`), both read back
+  from disk (`lan_phone_care.py`, `lan_phones_api.py`, `home.js.j2`).
+- Expiry: `EXPIRY_DAYS = 90` at start (`phone_book`), said on the card; a phone without
+  `last_seen` (old or restored file) is dated, never forgotten; TVs never expire.
+- `lan/activity.json` (`lan_activity.py`): pages opened and pictures viewed (previews,
+  originals, videos; thumbnails not counted), per day, 30 days, in memory, written every
+  5 minutes at most, merged with the file, forgotten phones dropped.
+- Tests `tests/unit/test_lan_devices.py` (clock injected, restore, moved folder, forgotten
+  while connected); docs EN + FR (`commands/home.md`).
+
+### Not done
+
+- Flush of the activity counts at stop.
+  **Reason:** `LanApp` has no stop hook; a stop loses at most the last 5 minutes of counts.
+- TVs' `last_seen`: not written (`slideshow/screens.py` at 199 lines caches tokens in memory).
+  A TV forgotten on the PC keeps the show until mh restarts (cached in `Screens._paired`),
+  contrary to the TODO's "already so" claim — to fix in a follow-up.
+  **Reason:** file at the size cap; needs a split first.
+- Documentation screenshots: `docs_screenshots` should run (the card changed).

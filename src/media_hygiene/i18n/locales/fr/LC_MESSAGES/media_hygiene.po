@@ -3727,6 +3727,9 @@ msgstr "Chaque groupe est dans un de vos lieux."
 msgid "Every copy"
 msgstr "Toutes les copies"
 
+msgid "Every device is forgotten, read back from the disk."
+msgstr "Tous les appareils sont oubliés, relu sur le disque."
+
 msgid "Every entry of config.toml points at something."
 msgstr "Chaque entrée de config.toml pointe sur quelque chose."
 
@@ -4461,6 +4464,17 @@ msgstr ""
 msgid "For your information, nothing to do"
 msgstr "Pour information, rien à faire"
 
+#, python-brace-format
+msgid ""
+"Forget all {count} devices? Each one must type a code again to open this "
+"page."
+msgstr ""
+"Oublier les {count} appareils ? Chacun devra retaper un code pour ouvrir "
+"cette page."
+
+msgid "Forget every device"
+msgstr "Oublier tous les appareils"
+
 msgid "Forget every face"
 msgstr "Oublier tous les visages"
 
@@ -4469,6 +4483,10 @@ msgstr "Oublier sa position"
 
 msgid "Forget this phone"
 msgstr "Oublier ce téléphone"
+
+#, python-brace-format
+msgid "Forgotten at this start, unseen for {days} days: {names}"
+msgstr "Oubliés à ce démarrage, pas vus depuis {days} jours : {names}"
 
 msgid "Format"
 msgstr "Format"
@@ -5446,6 +5464,18 @@ msgstr "Dernier push : {ago}."
 msgid "Last sent"
 msgstr "Dernier envoi"
 
+#, python-brace-format
+msgid "Last {days} days: nothing opened"
+msgstr "{days} derniers jours : rien d'ouvert"
+
+#, python-brace-format
+msgid ""
+"Last {days} days: {pages} pages opened, {pictures} pictures viewed (last "
+"on {day})"
+msgstr ""
+"{days} derniers jours : {pages} pages ouvertes, {pictures} images vues "
+"(dernière fois le {day})"
+
 msgid "Later"
 msgstr "Plus tard"
 
@@ -6197,6 +6227,9 @@ msgid ""
 msgstr ""
 "Nommez-en un : mh import <dossier> (un disque USB, une carte SD), ou "
 "ajoutez votre NAS une fois : mh folders add --backup <dossier>."
+
+msgid "Name saved, read back from the disk."
+msgstr "Nom enregistré, relu sur le disque."
 
 msgid "Name the event so and save it; change it in the field above at any time"
 msgstr ""
@@ -8359,6 +8392,10 @@ msgstr "Paire {number} sur {total}"
 
 msgid "Paired during this run"
 msgstr "Appairés pendant ce lancement"
+
+#, python-brace-format
+msgid "Paired on {paired} · last seen {seen} · {address}"
+msgstr "Appairé le {paired} · vu pour la dernière fois {seen} · {address}"
 
 msgid "Pairing code"
 msgstr "Code d'appairage"
@@ -11013,6 +11050,9 @@ msgstr ""
 
 msgid "TB"
 msgstr "To"
+
+msgid "TV"
+msgstr "TV"
 
 msgid "TV and phone"
 msgstr "TV et téléphone"
@@ -14443,6 +14483,9 @@ msgstr "Année / Année-mois / Événement"
 
 msgid "Years"
 msgstr "Années"
+
+msgid "Yes, forget them all"
+msgstr "Oui, tous les oublier"
 
 #, python-brace-format
 msgid "Yes, it is {name}"
@@ -20862,8 +20905,8 @@ msgid ""
 "⛔ {count} connections refused from {address} at {time}: too many at once "
 "from that device."
 msgstr ""
-"⛔ {count} connexions refusées de {address} à {time} : trop à la fois depuis "
-"cet appareil."
+"⛔ {count} connexions refusées de {address} à {time} : trop à la fois "
+"depuis cet appareil."
 
 msgid "✓ in the album"
 msgstr "✓ dans l'album"
