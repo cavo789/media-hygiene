@@ -158,6 +158,7 @@ def _every_route() -> list[str]:
     known |= {f"{REPORTS_PREFIX}.mh-step.json", f"{REPORTS_PREFIX}index.html"}
     known |= {"/api/step", "/api/audit", "/api/stop", "/docs/", "/api/album/Private"}
     known |= {"/thumb/2.jpg", "/tv/2.jpg", "/film/2.mp4", "/a/token"}
+    known |= {"/phone/", "/phone/api/state", "/phone/api/free", "/phone/api/stop"}
     return sorted(known - set(_ALLOWED))
 
 

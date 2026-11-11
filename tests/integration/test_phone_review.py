@@ -210,7 +210,7 @@ def test_delete_from_the_phone_ends_the_page_with_the_files_ticked(
     """On Delete the page ends, `mh` gets the lines the file on the disk holds."""
     thread, port, results = _serve(locations, monkeypatch)
     page = asyncio.run(send_call(port, Call("GET", "/")))
-    assert b"/api/free" in page.body
+    assert b'"api/free"' in page.body  # relative: the same under /phone/ (0694)
     freed = asyncio.run(send_call(port, _free()))
     thread.join(timeout=10)
     assert freed.status == 200

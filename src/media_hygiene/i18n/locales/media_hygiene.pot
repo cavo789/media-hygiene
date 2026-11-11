@@ -5810,6 +5810,11 @@ msgid ""
 " this computer), then type mh import --phone again."
 msgstr ""
 
+msgid ""
+"No phone waits here: choose Make room on the phone on the home page, or "
+"type mh import --phone --free."
+msgstr ""
+
 msgid "No photo folder to copy into: only backup folders are mounted."
 msgstr ""
 
@@ -10226,6 +10231,9 @@ msgid "The other active filters"
 msgstr ""
 
 msgid "The page cannot reach mh: is it still running?"
+msgstr ""
+
+msgid "The page could not tell mh what to delete: try again."
 msgstr ""
 
 #, python-brace-format

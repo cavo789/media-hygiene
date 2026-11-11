@@ -125,6 +125,11 @@ function global:_{{ f }}_phone_clear($shell, [string]$name, $items, $plan, $resu
 # From the home page (0332): its way back offered, and no second tab, the home page's tab
 # follows the page as for any step (0280).
 function global:_{{ f }}_phone_page($lines, [string]$destination, [string]$name) {
+    if ($global:MediaHygieneKept) {
+        $out = _{{ f }}_phone_kept $lines $destination $name $global:MediaHygieneKept
+        if ($null -eq $out) { return $null }
+        return ,@($out)
+    }
     if (-not (_{{ f }}_page_free)) { return $null }
     $page = @('-p', '127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}', '--label', "{{ guards.label }}=powershell-$PID")
     if ($global:MediaHygieneRelay) { $page += '-e', '{{ relay }}=1' }
@@ -141,6 +146,31 @@ function global:_{{ f }}_phone_page($lines, [string]$destination, [string]$name)
         return ,$out
     } finally {
         if ($browser) { Remove-Job -Job $browser -Force }
+    }
+}
+
+# Started from the home page, the home server kept up (0694): the page is its own {{ c.page }}, no
+# second server. The files to tick go in {{ c.asked }}, the home page's tab follows the step there;
+# the page writes {{ c.ended }} when it ends (the lines ticked, read back from the decisions file
+# by the server; none: nothing leaves). $null when the home server ended first: nothing deleted.
+function global:_{{ f }}_phone_kept($lines, [string]$destination, [string]$name, $kept) {
+    $asked = Join-Path $kept.folder '{{ c.asked }}'
+    $ended = Join-Path $kept.folder '{{ c.ended }}'
+    Remove-Item -LiteralPath $ended -Force -ErrorAction SilentlyContinue
+    $request = [pscustomobject]@{ phone = $name; destination = $destination; lines = @($lines) } | ConvertTo-Json -Compress
+    # Without a byte order mark: the server reads it as JSON.
+    [IO.File]::WriteAllText($asked, $request)
+    try {
+        while (-not (Test-Path -LiteralPath $ended)) {
+            if ("$(Get-Content -LiteralPath $kept.code -TotalCount 1 -ErrorAction SilentlyContinue)".Trim()) { $global:LASTEXITCODE = {{ page_closed }}; return $null }
+            Start-Sleep -Milliseconds {{ p.poll }}
+        }
+        $said = $null
+        try { $said = Get-Content -LiteralPath $ended -Raw -Encoding UTF8 -ErrorAction Stop | ConvertFrom-Json } catch { }
+        if (-not $said) { return $null }
+        return ,@($said.lines | Where-Object { $_ })
+    } finally {
+        Remove-Item -LiteralPath $asked, $ended -Force -ErrorAction SilentlyContinue
     }
 }
 

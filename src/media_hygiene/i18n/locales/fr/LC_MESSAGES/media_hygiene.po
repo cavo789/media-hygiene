@@ -6626,8 +6626,8 @@ msgid ""
 "No album is shown to guests yet. On the PC, open an album and tick Show "
 "to guests."
 msgstr ""
-"Aucun album n'est encore montré aux invités. Sur le PC, ouvrez un album et "
-"cochez Montrer aux invités."
+"Aucun album n'est encore montré aux invités. Sur le PC, ouvrez un album "
+"et cochez Montrer aux invités."
 
 #, python-brace-format
 msgid "No album named {name}."
@@ -6989,6 +6989,13 @@ msgstr ""
 "Aucun téléphone vu : branchez-le, déverrouillez-le, choisissez Transfert "
 "de fichiers (iPhone : Faire confiance à cet ordinateur), puis tapez de "
 "nouveau mh import --phone."
+
+msgid ""
+"No phone waits here: choose Make room on the phone on the home page, or "
+"type mh import --phone --free."
+msgstr ""
+"Aucun téléphone n'attend ici : choisissez Faire de la place sur le téléphone "
+"sur l'accueil, ou tapez mh import --phone --free."
 
 msgid "No photo folder to copy into: only backup folders are mounted."
 msgstr ""
@@ -12260,6 +12267,9 @@ msgstr "Les autres filtres actifs"
 
 msgid "The page cannot reach mh: is it still running?"
 msgstr "La page ne joint plus mh : tourne-t-il encore ?"
+
+msgid "The page could not tell mh what to delete: try again."
+msgstr "La page n'a pas pu dire à mh quoi supprimer : réessayez."
 
 #, python-brace-format
 msgid ""
