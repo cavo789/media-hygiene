@@ -130,7 +130,8 @@ opened from the home page.
   to pick. On the frame, with the shared large view's markup and look (`pick_viewer.html.j2`,
   `pick_album = false`) driven by its own `people_viewer.js.j2`: ← → Home End go through the
   faces of the section clicked; Delete / Backspace set aside or take back the one photo shown
-  and the view **stays on it** (no grid to step back to); no Space, no A, no 👤 (this is the
+  (Delete then steps to the next face not set aside, else the previous, none left closes the
+  view; Backspace stays on the photo); no Space, no A, no 👤 (this is the
   page of people). A click opens the large view (no picking: × marks a face as someone
   else's, saved by the section's next button); ↑ ↓ / j k move between sections, x picks a
   group to name with others — not the grid's gestures, on purpose.

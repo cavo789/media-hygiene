@@ -163,7 +163,7 @@ forgets them with every other face.
 
 **One photo at a time.** A face the tool cannot see (in profile, blurred, a tilted photo) leaves
 its photo in someone else's section. Click the face: the large view shows the photo with **Set
-this photo aside** (or the Delete key); Backspace takes it back. It is the same large view as
+this photo aside** (or the Delete key); the view then shows the next face (the previous one at the end). Backspace takes it back. It is the same large view as
 in `library`: ← → go through the faces of the section, F full screen, I the photo's path, ? every
 key; Esc, a click beside the photo or the browser's Back closes it.
 

@@ -176,8 +176,8 @@ oublie avec tous les autres visages.
 
 **Une photo à la fois.** Un visage que l'outil ne voit pas (de profil, flou, une photo penchée)
 laisse sa photo dans la section de quelqu'un d'autre. Cliquez sur le visage : la grande vue
-montre la photo avec **Mettre cette photo de côté** (ou la touche Suppr) ; Retour arrière la
-reprend. C'est la même grande vue que dans `library` : ← → parcourent les visages de la
+montre la photo avec **Mettre cette photo de côté** (ou la touche Suppr) ; la vue passe alors au visage
+suivant (au précédent en fin de liste). Retour arrière la reprend. C'est la même grande vue que dans `library` : ← → parcourent les visages de la
 section, F plein écran, I le chemin de la photo, ? toutes les touches ; Échap, un clic à côté de
 la photo ou le bouton Précédent du navigateur la ferme.
 
