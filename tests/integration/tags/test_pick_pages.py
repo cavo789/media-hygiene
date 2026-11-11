@@ -226,7 +226,9 @@ def test_the_bar_buttons_wear_their_role(
         assert acting.rindex("<button") == acting.index('id="setAside"') - len(
             "<button "
         )
-    assert "button.danger { color: #fff; background: var(--bad)" in search
+    assert (
+        "button.danger { color: var(--mk-on-danger); background: var(--bad)" in search
+    )
     move = _bar_tag(search, "moveOpen")
     assert "primary" in move
     assert "plain" not in move
