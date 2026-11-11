@@ -166,8 +166,6 @@
 {# Served by the home server in the home page's tab: its pings keep that server running (0341);
    the bar's way back, a plain link (home_link.html.j2 includes presence.html.j2). #}
 {% if not link and not guest %}{% include "home_link.html.j2" %}{% endif %}
-{% include "ask_dialog.html.j2" %}
-{% include "busy_say.html.j2" %}
 {% if not link and not guest %}{% include "step_chip.html.j2" %}{% endif %}
 </body>
 </html>
