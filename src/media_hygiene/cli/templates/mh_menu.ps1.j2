@@ -24,7 +24,12 @@ function global:_{{ function }}_home {
     if (-not ($global:MediaHygieneLan -and $global:MediaHygieneLan.address)) { Write-Host "{{ lan.texts.tip }}" }
 {% endif %}
     while ($true) {
-        if ($status -eq {{ page_closed }}) { $global:LASTEXITCODE = 0; return }
+        if ($status -eq {{ page_closed }}) {
+            # Started by the icon: its window closes with the tab, the next icon opens a new one.
+            if ($global:MediaHygieneShortcut) { exit 0 }
+            $global:LASTEXITCODE = 0
+            return
+        }
         if ($status -ge {{ signal_base }}) { $global:LASTEXITCODE = $status; return }
         if ($status -le {{ step_base }}) {
             $after = $false

@@ -267,7 +267,8 @@ chapitre de cette page, à côté de son jumeau anglais (*In English*). Quand la
 ouverte, la page s'affiche dans **le même onglet** (pas de nouvel onglet), et **⌂ Retour à
 l'accueil** la ferme (ce que vous y avez décidé est déjà enregistré) et ramène cet onglet à la
 page d'accueil, sur l'espace que vous aviez quitté (*Nettoyage*, *Tri*…). Fermer l'onglet, au
-contraire, arrête la page et `mh` avec elle : l'invite revient.
+contraire, arrête la page et `mh` avec elle : l'invite revient ou, lancé depuis l'icône du
+bureau, sa fenêtre PowerShell se ferme aussi.
 
 La documentation elle-même est dans l'image : chaque lien **Doc** et **Documentation** de ces
 pages ouvre son chapitre servi par l'outil, avec la même allure, hors ligne, et écrit pour la

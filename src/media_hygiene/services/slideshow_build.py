@@ -17,6 +17,7 @@ from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.lan_paths import LAN_PATH
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.page_header import headed_page
+from media_hygiene.review.presence import PRESENCE_PATH
 from media_hygiene.search.pictures import Pictures
 from media_hygiene.services.slideshow_map import map_tiles
 from media_hygiene.slideshow.app import ShowPages, SlideshowApp
@@ -94,6 +95,7 @@ def show_app(runtime: Runtime, desk: Desk, serving: Serving) -> SlideshowApp:
         "code_shown": CODE_SHOWN,
         "ended_prefix": _relative(ENDED_PREFIX),
         "photos_only": PHOTOS_ONLY,
+        "alive_path": PRESENCE_PATH,
     }
     lan = serving.door.lan
     phone_url = "" if lan is None else f"{lan.origin}{serving.remote}"  # on the TV
@@ -112,7 +114,12 @@ def show_app(runtime: Runtime, desk: Desk, serving: Serving) -> SlideshowApp:
         PerLocale(
             lambda: (
                 environment.get_template(_SCREEN_TEMPLATE)
-                .render(**paths, phone_url=phone_url, **_TELLING)
+                .render(
+                    **paths,
+                    phone_url=phone_url,
+                    presence_kept=serving.kept,
+                    **_TELLING,
+                )
                 .encode()
             )
         ),

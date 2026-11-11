@@ -4908,8 +4908,9 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Media Hygiene has stopped: this page no longer answers. Open it again "
-"from the desktop shortcut, or with mh."
+"Media Hygiene has stopped: this page no longer answers. To start it "
+"again, double-click the Media Hygiene icon on the PC's desktop (or type "
+"mh in PowerShell)."
 msgstr ""
 
 msgid "Media Hygiene in the Explorer's right-click"

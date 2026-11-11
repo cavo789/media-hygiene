@@ -236,7 +236,7 @@ puis le clavier sert de télécommande :
 | ← / → | Photo précédente / suivante |
 | Espace | Pause / lecture |
 | Échap | Quitte le plein écran |
-| S | Arrête le diaporama (et ferme l'onglet) |
+| S | Arrête le diaporama et revient à la page d'accueil (ouvert à la main : ferme l'onglet) |
 
 Bougez la souris : une petite barre montre les mêmes boutons (◀ ⏯ ▶ ⛶ ✕), et se cache après
 3 secondes sans mouvement. Même diaporama, mêmes cartons de titre et vidéos que sur une télé ; un

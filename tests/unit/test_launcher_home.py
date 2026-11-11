@@ -376,7 +376,7 @@ def test_the_powershell_loop_ends_on_a_closed_page(tmp_path: Path) -> None:
     )
     text = render_script(launcher_script(runtime, Shell.POWERSHELL, _COMMANDS))
     code = int(ExitCode.PAGE_CLOSED)
-    closed = f"if ($status -eq {code}) {{ $global:LASTEXITCODE = 0; return }}"
+    closed = f"if ($status -eq {code}) {{"
     assert text.index(closed) < text.index(f"if ($status -le {STEP_EXIT_BASE}) {{")
 
 

@@ -159,3 +159,22 @@ def test_the_screen_on_this_pc_has_its_keys_and_its_bar() -> None:
         assert f"key === {key}" in script
     assert '"api/show"' in script
     assert script.index("var hereAnswer") < script.index("function showAnswer")
+
+
+def test_the_screen_on_this_pc_keeps_the_home_server_up() -> None:
+    """In the home server the PC's tab says it is alive, and ✕ leads back home.
+
+    The home page this tab replaced said it left: without the pings the server ended
+    in the middle of the show, and the end said "Media Hygiene has stopped".
+    """
+    page = str(
+        translated_environment("media_hygiene.slideshow", escaped=("html", "j2"))
+        .get_template("screen.html.j2")
+        .render(**_PATHS, phone_url="", presence_kept=True, alive_path="/api/alive")
+    )
+    script = re.findall(r"<script[^>]*>(.*?)</script>", page, re.DOTALL)[0]
+    assert "var KEPT = true;" in script
+    assert 'var ALIVE = "/api/alive";' in script
+    assert "window.location.assign(HOME)" in script
+    assert not post_es5(script)
+    assert "var KEPT = false;" in _screen_script()  # a TV, or `mh slideshow` alone

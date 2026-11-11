@@ -202,7 +202,10 @@ def test_powershell_shortcut_writes_then_reads_back_both_links() -> None:
     assert "foreach ($place in 'Desktop', 'Programs') {" in text
     assert "[Environment]::GetFolderPath($place)) 'Media Hygiene.lnk'" in text
     assert "System32\\WindowsPowerShell\\v1.0\\powershell.exe" in text
-    assert "'-NoExit -Command \"' + $load + '; ' + $words + '\"'" in text
+    assert (
+        "'-NoExit -Command \"$global:MediaHygieneShortcut = 1; ' + $load + '; '"
+        " + $words + '\"'" in text
+    )
     assert '$load = "try { . \'" + $file.Replace("\'", "\'\'") + "\' }' in text
     assert "$file = $MyInvocation.MyCommand.ScriptBlock.File" in text
     save = text.index("try { $link.Save() } catch { $reason, $refused = _mh_why $_;")
@@ -324,7 +327,8 @@ def test_any_folder_name_comes_back_whole(folder: str) -> None:
     assert "$folder = $line.Substring($line.LastIndexOf('#\" \"') + 4)" in text
     command = (
         '"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -NoExit '
-        "-Command \"try { . 'C:\\Users\\O''Neil\\mh.ps1' } catch { function "
+        '-Command "$global:MediaHygieneShortcut = 1; '
+        "try { . 'C:\\Users\\O''Neil\\mh.ps1' } catch { function "
         "global:mh { Write-Host 'PowerShell refused' } }; "
         f'mh {FROM_EXPLORER} #" "%V"'
     )

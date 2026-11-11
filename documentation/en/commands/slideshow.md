@@ -216,7 +216,7 @@ remote:
 | ← / → | Previous / next photo |
 | Space | Pause / play |
 | Esc | Leaves full screen |
-| S | Stops the show (and closes the tab) |
+| S | Stops the show and goes back to the home page (opened by hand: closes the tab) |
 
 Move the mouse: a small bar shows the same buttons (◀ ⏯ ▶ ⛶ ✕), and hides after 3 seconds still.
 Same show, title cards and videos as on a TV; a paired phone still drives it.

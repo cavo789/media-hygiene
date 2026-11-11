@@ -15,7 +15,7 @@ from typing import Final
 
 import pytest
 
-from media_hygiene.constants import Locale
+from media_hygiene.constants import ExitCode, Locale
 from media_hygiene.i18n import using
 from media_hygiene.paths.docker_run import Shell
 from media_hygiene.services.launcher import (
@@ -76,7 +76,10 @@ def test_no_rendered_launcher_holds_what_antivirus_heuristics_flag(
 def test_the_start_loads_the_file_under_the_users_own_policy() -> None:
     """`-NoExit -Command`, the file loaded in a try, the words last (Explorer's `#`)."""
     start = _body(_script(Locale.EN), "start(")
-    assert "'-NoExit -Command \"' + $load + '; ' + $words + '\"'" in start
+    assert (
+        "'-NoExit -Command \"$global:MediaHygieneShortcut = 1; ' + $load + '; '"
+        " + $words + '\"'" in start
+    )
     assert (
         '$load = "try { . \'" + $file.Replace("\'", "\'\'") + "\' } catch { '
         "function global:mh { Write-Host 'PowerShell refused to load mh.ps1. Type "
@@ -102,7 +105,13 @@ def _started(file: str, words: str) -> str:
         "try { . '" + file.replace("'", "''") + "' } catch { function global:mh "
         "{ Write-Host 'PowerShell refused' } }"
     )
-    return '-NoExit -Command "' + load + "; " + words + '"'
+    return (
+        '-NoExit -Command "$global:MediaHygieneShortcut = 1; '
+        + load
+        + "; "
+        + words
+        + '"'
+    )
 
 
 def test_explorer_folder_still_comes_after_the_comment() -> None:
@@ -163,3 +172,18 @@ def test_the_refresh_line_is_translated() -> None:
     said = expanded(_body(_script(Locale.FR), "said("))
     assert "${path}" in said
     assert "Brought up to date" not in said
+
+
+def test_the_icons_window_closes_with_the_home_page_tab() -> None:
+    """The icon marks its window; a tab closed then ends it, never left behind.
+
+    Before, each start from the icon left one more console once its tab was gone.
+    Typed in a console of one's own, `mh` gives the prompt back instead.
+    """
+    text = _script(Locale.EN)
+    assert "'-NoExit -Command \"$global:MediaHygieneShortcut = 1; ' + $load" in text
+    home = _body(text, "home {")
+    closed = home[home.index(f"if ($status -eq {int(ExitCode.PAGE_CLOSED)})") :]
+    assert closed.index("if ($global:MediaHygieneShortcut) { exit 0 }") < closed.index(
+        "return"
+    )

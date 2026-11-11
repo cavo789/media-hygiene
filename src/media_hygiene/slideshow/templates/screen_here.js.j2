@@ -2,7 +2,9 @@
    Only with `here=1` in the address (the PC's own tab, paired at once as the PC): on a TV
    nothing here runs, its remote's OK and arrows keep their part. ES5, as screen.js.j2 (the
    same <script>, parsed by tests/unit/test_slideshow_screen.py). The actions are the
-   remote's `POST` (JSON): the server takes them from the PC alone. #}
+   remote's `POST` (JSON): the server takes them from the PC alone. In the home server
+   (`presence_kept`), the tab says it is alive, as every page of mh: the home page it
+   replaced said it left, and the server would end mid-show; ✕ leads back home. #}
 var hereAnswer = null;
 (function () {
   var SHOW = {{ show_path | tojson }};
@@ -10,6 +12,9 @@ var hereAnswer = null;
   var bar = document.getElementById("here");
   var playing = false;
   var hideTimer = null;
+  var KEPT = {{ 'true' if presence_kept | default(false) else 'false' }};
+  var ALIVE = {{ (alive_path | default("")) | tojson }};
+  var HOME = "/";
   if (!/[?&]here=1(&|$)/.test(window.location.search)) {
     return;
   }
@@ -21,6 +26,14 @@ var hereAnswer = null;
     request.open("POST", SHOW, true);
     request.setRequestHeader("Content-Type", "application/json");
     request.send(JSON.stringify({ action: action }));
+  }
+
+  // The home server ends once no tab says it is alive (review/presence.py, 10 s).
+  function alive() {
+    var request = new XMLHttpRequest();
+    request.open("POST", ALIVE, true);
+    request.setRequestHeader("Content-Type", "application/json");
+    request.send(JSON.stringify({ leaving: false }));
   }
 
   function hide() {
@@ -44,7 +57,13 @@ var hereAnswer = null;
 
   function stop() {
     act("stop");
-    window.setTimeout(function () { window.close(); }, 300);
+    window.setTimeout(function () {
+      if (KEPT) {
+        window.location.assign(HOME);  // the home page this tab showed before the show
+      } else {
+        window.close();
+      }
+    }, 300);
   }
 
   function leaveFullScreen() {
@@ -108,5 +127,9 @@ var hereAnswer = null;
     }
     event.preventDefault();
   }, false);
+  if (KEPT && ALIVE) {
+    alive();
+    window.setInterval(alive, 10000);
+  }
   reveal();
 }());

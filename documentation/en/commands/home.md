@@ -245,7 +245,8 @@ wears the home page's look and theme, under a bar: **Documentation** opens that 
 next to its French twin (*En français*). When the home page opened it, the page shows in the
 **same tab** (no new tab), and **⌂ Back to the home page** closes it (what you decided there is
 already saved) and brings that tab back to the home page, on the space you left (*Clean*,
-*Sort*…). Closing the tab instead ends the page and `mh` with it: the prompt comes back.
+*Sort*…). Closing the tab instead ends the page and `mh` with it: the prompt comes back, or, started
+from the desktop icon, its PowerShell window closes too.
 
 The documentation itself is inside the image: every **Doc** and **Documentation** link of these
 pages opens its chapter served by the tool, in the same look, offline, and written for the version

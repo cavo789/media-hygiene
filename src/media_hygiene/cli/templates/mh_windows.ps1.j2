@@ -4,14 +4,15 @@
 # The user's own execution policy loads it (RemoteSigned, step 1 of the guides): an
 # antivirus stopped a start that overrode it (0257). When it is refused, `{{ function }}`
 # says the line to type instead of PowerShell's error. The words stay last: Explorer's
-# folder follows them after a comment (`#`).
+# folder follows them after a comment (`#`). `$global:MediaHygieneShortcut` first: the home
+# page's window then closes once its tab is closed, never left behind at each start.
 # Returns the program, then its arguments; nothing when this file is unknown.
 function global:_{{ function }}_start($words) {
     $file = $MyInvocation.MyCommand.ScriptBlock.File
     if (-not $file -or -not (Test-Path -LiteralPath $file)) { Write-Host "{{ host.texts.no_file }}"; return }
     Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
     $load = "try { . '" + $file.Replace("'", "''") + "' } catch { function global:{{ function }} { Write-Host '{{ launch.policy }}' } }"
-    '-NoExit -Command "' + $load + '; ' + $words + '"'
+    '-NoExit -Command "$global:MediaHygieneShortcut = 1; ' + $load + '; ' + $words + '"'
 }
 
 # A shortcut or a right-click entry made by an older mh starts this very file with another
