@@ -24,10 +24,10 @@ pytestmark = [
 _SUPPORT: Final = Path(__file__).parents[1] / "support"
 
 
-def _walk(tmp_path: Path, walk: str) -> str:
-    """Run `tests/support/<walk>` on the purge page in the browser; its errors."""
-    page = tmp_path / "quarantine.html"
-    page.write_text(render_page("quarantine.html.j2"), "utf-8")
+def _walk(tmp_path: Path, walk: str, template: str = "quarantine.html.j2") -> str:
+    """Run `tests/support/<walk>` on a page (purge by default) in Chromium."""
+    page = tmp_path / "quarantine.html"  # the name the browser's container reads
+    page.write_text(render_page(template), "utf-8")
     shots = tmp_path / "shots"
     shots.mkdir()
     build_browser()
@@ -55,3 +55,10 @@ def test_the_view_survives_a_reload_and_back_closes_the_large_view(
 ) -> None:
     """A group kept by the URL; Back closes the large view, the grid stays (0666)."""
     assert _walk(tmp_path, "view_walk.py") == ""
+
+
+def test_the_people_page_keeps_the_view_like_the_other_frame_pages(
+    tmp_path: Path,
+) -> None:
+    """People on the frame (0667): the URL kept, Back closes its large view."""
+    assert _walk(tmp_path, "view_walk.py", "people.html.j2") == ""

@@ -1,0 +1,64 @@
+{# The look of the people page (`people.html.j2`), on top of the frame's (`page_frame.css.j2`) and
+   the shared large view's (`pick_viewer.css.j2`): the sections of faces, their tools, the
+   people list of the left column, the line of the guide in the bar. #}
+  #status.error { color: var(--bad); font-weight: 600; }
+  #status.saved { color: var(--good); font-weight: 600; }
+  #groups section, #alike section { margin: 12px 0; padding: 10px 12px; background: var(--card);
+            border: 1px solid var(--line); border-radius: 10px; }
+  #groups section.current { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  #groups section.picked { background: var(--chip); }
+  main h2 { font-size: 1rem; margin: 0 0 8px; }
+  h2 .fold { padding: 0 6px 0 0; font: inherit; border: 0; background: transparent;
+             color: var(--text); cursor: pointer; }
+  section.folded h2 { margin: 0 0 4px; }
+  .strip .face img { width: 48px; height: 48px; }
+  .face.hidden img { opacity: .35; filter: grayscale(1); }
+  h2 small { color: var(--muted); font-weight: normal; }
+  .hint { color: var(--muted); font-size: .85rem; margin: 4px 0 0; }
+  .badge { display: inline-block; margin: 0 6px 0 0; padding: 0 8px; border-radius: 999px;
+           font-size: .75rem; font-weight: 600; vertical-align: middle; }
+  .badge.verified { background: var(--good); color: #fff; }
+  .badge.attributed { border: 1px dashed var(--muted); color: var(--muted); }
+  .face .check { position: absolute; left: 2px; bottom: 2px; width: 20px; height: 20px;
+                 border-radius: 50%; background: var(--good); color: #fff; font-size: 13px;
+                 line-height: 20px; text-align: center; pointer-events: none; }
+  .tools { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
+  .tools input { flex: 1 1 14rem; min-width: 0; padding: 4px 8px; font: inherit;
+                 border: 1px solid var(--line); border-radius: 6px; background: var(--bg);
+                 color: var(--text); }
+  .tools button, #bar button, #toc button.plain { padding: 4px 10px; font: inherit; border: 1px solid var(--line);
+                  border-radius: 6px; background: var(--chip); color: var(--text); cursor: pointer; }
+  .tools button.main, #bar button.main { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tools button:disabled, #bar button:disabled { cursor: not-allowed; opacity: .6; }
+  .tools button.suggest { border-color: var(--good); }
+  .faces { display: flex; flex-wrap: wrap; gap: 6px; }
+  .face { position: relative; }
+  .face img { width: 96px; height: 96px; object-fit: cover; border-radius: 8px;
+              background: var(--chip); cursor: pointer; display: block; }
+  .face.out img { opacity: .3; outline: 3px solid var(--bad); outline-offset: -3px; }
+  .face button { position: absolute; top: 2px; right: 2px; width: 22px; height: 22px;
+                 padding: 0; border: 0; border-radius: 50%; background: rgba(0, 0, 0, .6);
+                 color: #fff; cursor: pointer; line-height: 22px; }
+  .more { align-self: center; color: var(--muted); font-size: .85rem; }
+  button.more { padding: 4px 8px; font: inherit; font-size: .85rem; border: 1px dashed var(--line);
+                border-radius: 6px; background: transparent; color: var(--accent); cursor: pointer; }
+  .aside { margin: 0 0 8px; color: var(--bad); font-size: .85rem; font-weight: 600; }
+  .aside button { margin-left: 6px; padding: 2px 8px; font: inherit; font-weight: normal;
+                  border: 1px solid var(--line); border-radius: 6px; background: var(--chip);
+                  color: var(--text); cursor: pointer; }
+  #alike section { border-color: var(--bad); }
+  #todo { font-weight: 600; font-size: .9rem; }
+  #who { padding: 4px 10px; font: inherit; border: 1px solid var(--line); border-radius: 6px;
+         background: var(--bg); color: var(--text); min-width: 0; flex: 0 1 14rem; }
+  #newPhotos button { margin-left: 6px; }
+  #people ul { list-style: none; margin: 0; padding: 0; }
+  #people li button { width: 100%; text-align: left; padding: 3px 8px; font: inherit; border: 0;
+                      border-radius: 6px; background: transparent; color: var(--text); cursor: pointer; }
+  #people li button small { color: var(--muted); }
+  #people li.work button { font-weight: 600; }
+  #people li button.chosen { background: var(--chip); outline: 1px solid var(--accent); }
+  #people label { display: block; margin: 8px 0 0; color: var(--muted); }
+  #toc details { margin: 10px 0 0; }
+  #toc details p { margin: 4px 0; }
+  #viewerToggle { padding: 4px 12px; font: inherit; border: 1px solid var(--line);
+                  border-radius: 6px; background: var(--chip); color: var(--text); cursor: pointer; }

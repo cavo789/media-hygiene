@@ -4912,6 +4912,9 @@ msgstr ""
 " les quasi-doublons ; vérifiez-les d'abord dans le rapport. Les quasi-"
 "doublons partent en quarantaine, jamais supprimés."
 
+msgid "How it works"
+msgstr "Comment ça marche"
+
 msgid "How long robocopy ran."
 msgstr "Durée de robocopy."
 
@@ -6316,6 +6319,16 @@ msgid "Names cannot be saved: mount a writable folder on /config."
 msgstr ""
 "Les noms ne peuvent pas être enregistrés : montez un dossier accessible "
 "en écriture sur /config."
+
+msgid ""
+"Names go to config.toml; the photos are never changed and the faces stay "
+"on this computer. Nothing is deleted here: 'clean --decisions' moves the "
+"photos set aside to the quarantine, 'undo' brings them back."
+msgstr ""
+"Les noms vont dans config.toml ; les photos ne sont jamais modifiées et "
+"les visages restent sur cet ordinateur. Rien n'est supprimé ici : 'clean "
+"--decisions' déplace les photos mises de côté en quarantaine, 'undo' les "
+"ramène."
 
 msgid ""
 "Naming confirms the faces shown: they become verified ✓. The other faces "
@@ -14855,6 +14868,11 @@ msgstr "un cache, recréé par l'appareil ou l'application"
 msgid "a circle holding no cluster now"
 msgstr "un cercle qui ne contient plus aucun groupe"
 
+msgid "a face of someone else: the next button of the section saves it"
+msgstr ""
+"un visage de quelqu'un d'autre : le bouton suivant de la section "
+"l'enregistre"
+
 msgid "a file changed since the audit"
 msgstr "un fichier a changé depuis l'audit"
 
@@ -15303,6 +15321,13 @@ msgstr[1] ""
 msgid "configuration settings config toml ai model"
 msgstr "configuration réglages config toml ia modèle"
 
+msgid ""
+"confirm the attributed faces shown, or name the group as the person it "
+"looks like"
+msgstr ""
+"confirmer les visages attribués affichés, ou nommer le groupe comme la "
+"personne à qui il ressemble"
+
 msgid "contact sheet: flip the shot, kept or aside"
 msgstr "planche contact : inverser la photo, gardée ou à l'écart"
 
@@ -15453,6 +15478,9 @@ msgstr "tous les fichiers affichés"
 msgid "every key"
 msgstr "toutes les touches"
 
+msgid "every person again, after Show only this person"
+msgstr "de nouveau tout le monde, après Afficher seulement cette personne"
+
 msgid "every photo"
 msgstr "toutes les photos"
 
@@ -15516,6 +15544,9 @@ msgstr "empreintes"
 msgid "finish the burst review where you stopped."
 msgstr "terminez le tri des rafales là où vous vous êtes arrêté."
 
+msgid "fold or open the section"
+msgstr "replier ou ouvrir la section"
+
 msgid "folder"
 msgstr "dossier"
 
@@ -15543,6 +15574,9 @@ msgstr "plein écran, ou retour"
 #, python-brace-format, python-format
 msgid "gap {gap} %%"
 msgstr "écart {gap} %%"
+
+msgid "go to a person"
+msgstr "aller à une personne"
 
 msgid "gone (renamed or deleted?)"
 msgstr "disparu (renommé ou supprimé ?)"
@@ -15584,6 +15618,9 @@ msgstr "iPhone, iPad"
 
 msgid "if the cache is ever lost: mh restore."
 msgstr "si le cache est un jour perdu : mh restore."
+
+msgid "ignore the group"
+msgstr "ignorer le groupe"
 
 msgid "ignored folders:"
 msgstr "dossiers ignorés :"
@@ -15716,6 +15753,9 @@ msgstr ""
 
 msgid "its own folder"
 msgstr "son propre dossier"
+
+msgid "its photo large; Delete sets it aside, Esc closes"
+msgstr "sa photo en grand ; Suppr la met de côté, Échap ferme"
 
 msgid "its previous content is no longer in the quarantine: kept"
 msgstr "son contenu précédent n'est plus dans la quarantaine : gardé"
@@ -16488,6 +16528,9 @@ msgstr "photos avec une date de prise de vue :"
 msgid "pick or unpick the framed file"
 msgstr "choisir ou non le fichier encadré"
 
+msgid "pick the group, to name several at once"
+msgstr "choisir le groupe, pour en nommer plusieurs à la fois"
+
 msgid "place"
 msgstr "lieu"
 
@@ -16987,6 +17030,12 @@ msgstr "la phrase entière du modèle : pour une expression entre guillemets."
 msgid "the names given to the faces on the people page."
 msgstr "les noms donnés aux visages sur la page people."
 
+msgid "the next or previous section"
+msgstr "la section suivante ou précédente"
+
+msgid "the next section to do"
+msgstr "la section suivante à faire"
+
 msgid "the oldest date"
 msgstr "la date la plus ancienne"
 
@@ -16999,6 +17048,9 @@ msgstr "la personne mise de côté le {date}"
 
 msgid "the previous or next one not set aside"
 msgstr "la précédente ou la suivante pas mise de côté"
+
+msgid "the previous or next section"
+msgstr "la section précédente ou suivante"
 
 #, python-brace-format
 msgid ""
@@ -17313,6 +17365,9 @@ msgstr "deux petits modèles locaux : rien n'est envoyé"
 
 msgid "type a name first"
 msgstr "tapez d'abord un nom"
+
+msgid "type a name for the section"
+msgstr "taper un nom pour la section"
 
 msgid "type a name, e.g. Crete 2023"
 msgstr "tapez un nom, p. ex. Crète 2023"
@@ -20873,18 +20928,6 @@ msgstr "… et encore : {folders}"
 #, python-brace-format
 msgid "… and {count} more."
 msgstr "… et {count} de plus."
-
-msgid ""
-"↑ ↓ move, o folds or opens, Enter names, y confirms the attributed faces "
-"shown (or names a group as the person it looks like), x names several "
-"groups at once, i ignores a group; × marks a face that is someone else's,"
-" the next button saves it."
-msgstr ""
-"↑ ↓ se déplacent, o replie ou ouvre, Entrée nomme, y confirme les visages"
-" attribués montrés (ou nomme un groupe comme la personne à qui il "
-"ressemble), x nomme plusieurs groupes à la fois, i ignore un groupe ; × "
-"marque un visage qui est celui de quelqu'un d'autre, le bouton suivant "
-"l'enregistre."
 
 #, python-brace-format
 msgid ""

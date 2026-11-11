@@ -37,7 +37,6 @@ EXEMPT: Final = {
         "served in front of the home page by its own server: its ⌂ link goes back "
         "without ending a server; laid out for a phone (a tap, a swipe)"
     ),
-    "people.html.j2": "temporary: until 0323-0329 are done (they reshape this page)",
 }
 
 
@@ -117,6 +116,7 @@ _MAIN_KEY: Final = {
     "phone_review.html.j2": "every file from the last one clicked",
     "person.html.j2": "every file from the last one clicked",
     "album_edit.html.j2": "every file from the last one clicked",
+    "people.html.j2": "the next section to do",
 }
 
 

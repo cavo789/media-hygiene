@@ -115,7 +115,10 @@ screen, a column lists the people with their counts (✓ verified, attributed st
 in bold while some are left), and last **Unnamed groups (n)**; on a phone, the field **Go to a
 person** of the top bar holds the same list. Type a few letters (`/` reaches the field), pick a
 name: the page goes to their sections and opens them; **Show only this person** hides the
-others until Esc.
+others until Esc. The page has the layout of every page of the tool: the
+list on the left with the ⌨ keys under it, one bar on top of the sections (what is left, **Next
+to do**, the field, the line read back from the disk, **✅ Apply**). The person chosen stays in
+the address: a reload or a bookmark comes back to them.
 
 The top bar says what is left, read back from the server after each change: *To do: 312
 attributed faces (7 people) · 41 unnamed groups (980 faces)*. **Next to do** (`g`) goes to the
@@ -160,7 +163,9 @@ forgets them with every other face.
 
 **One photo at a time.** A face the tool cannot see (in profile, blurred, a tilted photo) leaves
 its photo in someone else's section. Click the face: the large view shows the photo with **Set
-this photo aside** (or the Delete key); Backspace takes it back.
+this photo aside** (or the Delete key); Backspace takes it back. It is the same large view as
+in `library`: ← → go through the faces of the section, F full screen, I the photo's path, ? every
+key; Esc, a click beside the photo or the browser's Back closes it.
 
 The same `decisions.json` keeps what [`library`](library.md#set-photos-aside) and
 [`review`](review.md) set aside: one `clean --decisions` applies everything. A photo changed

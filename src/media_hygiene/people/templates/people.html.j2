@@ -1,24 +1,22 @@
-<!DOCTYPE html>
-{# The page of `media-hygiene people`: the people by name first, then the groups of
-   faces alike, largest first, a few dozen faces each. Names are typed here and saved
-   by the server into config.toml, read back and shown. Keyboard: arrows (or j/k) move
-   between groups, Enter types a name, y confirms the attributed faces shown, x picks a
-   group to name with others, i ignores a group; each person shows twice at most: the
-   faces the user confirmed (verified ✓) and those the tool gives them (attributed). A
-   click on a face opens its photo; its × marks it as someone else's (greyed, kept in
-   place: nothing moves) until the next button of its section saves the marks. *and N more faces* shows every face of a group: then, and only
-   then, its photos can be set aside (in the decisions file, for `clean --decisions`;
-   opened from the home page, *Apply now* runs it). The faces of photos set aside (any page)
-   are not shown: a line says how many, *Show* draws them dimmed to take one back (0327). Each
-   title folds or unfolds its section (o); verified ones come folded, as a strip of a few
-   faces, their sample asked for on opening (0323); what is folded is remembered in this
-   browser, by person and kind. A group set aside is remembered (0328): the faces that look
-   like it come first, in a section of their own, to check and set aside too. The large view
-   sets its one photo aside (Delete) or takes it back (Backspace) (0329). The people come
-   alphabetically, listed in a column (a filter of the top bar on a phone, / reaches it) to
-   jump to someone (0324); the top bar says what is left, g goes to the next section to do
-   (0325); a group nobody is given says who it looks like, y names it so (0326):
-   people_guide.js.j2. #}
+{% extends "page_frame.html.j2" %}
+{# The page of `media-hygiene people`, on the frame of every page (0667): the people by name
+   first, then the groups of faces alike, largest first, a few dozen faces each. Names are
+   typed here and saved by the server into config.toml, read back and shown in the bar. Each
+   person shows twice at most: the faces the user confirmed (verified ✓) and those the tool
+   gives them (attributed). A click on a face opens its photo in the shared large view
+   (`pick_viewer.html.j2`, `people_viewer.js.j2`); its × marks it as someone else's (greyed,
+   kept in place: nothing moves) until the next button of its section saves the marks.
+   *and N more faces* shows every face of a group: then, and only then, its photos can be set
+   aside (in the decisions file, for `clean --decisions`; opened from the home page, *Apply
+   now* in the bar runs it). The faces of photos set aside (any page) are not shown: a line
+   says how many, *Show* draws them dimmed to take one back (0327). Each title folds or
+   unfolds its section; verified ones come folded, as a strip, their sample asked for on
+   opening (0323); what is folded is remembered in this browser. A group set aside is
+   remembered (0328): the faces that look like it come first, to check and set aside too.
+   The left column lists the people (0324); the bar says what is left, g goes to the next
+   section to do (0325); a group nobody is given says who it looks like (0326):
+   `people_guide.js.j2`. The person chosen is kept in the URL (`?who=`, `view_state`).
+   Scripts: `people.js.j2`, `people_sections.js.j2`, `people_viewer.js.j2`. #}
 {% set texts = {
   "group": _("Group {number}"),
   "size": _("{faces} in {photos}"),
@@ -76,661 +74,74 @@
   "suggestHint": _("This group looks like the faces you confirmed as this person's: a click names it so (y)."),
 } %}
 {% set page_name = _("People") %}
-<html lang="{{ _('en') }}">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ page_name }} — media-hygiene</title>
-<link rel="icon" type="image/png" href="/assets/images/favicon.png">
-<style>
-{% include "theme.css.j2" %}
+{% set keys_safe = _("Names go to config.toml; the photos are never changed and the faces stay on this computer. Nothing is deleted here: 'clean --decisions' moves the photos set aside to the quarantine, 'undo' brings them back.") %}
+{% set pick_album = false %}
+{% block style %}
 {% include "combo_list.css.j2" %}
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text);
-         font: 400 15px/1.5 var(--mk-font-text); }
-  header { position: sticky; top: var(--mh-shell-top-h, 0px); z-index: 1; padding: 12px 16px; background: var(--card);
-           border-bottom: 1px solid var(--line); }
-  .hint, #status { color: var(--muted); font-size: .85rem; margin: 4px 0 0; }
-  #status.error { color: var(--bad); font-weight: 600; }
-  #status.saved { color: var(--good); font-weight: 600; }
-  main { padding: 8px 16px 16px; }
-  section { margin: 12px 0; padding: 10px 12px; background: var(--card);
-            border: 1px solid var(--line); border-radius: 10px; }
-  section.current { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-  section.picked { background: var(--chip); }
-  h2 { font-size: 1rem; margin: 0 0 8px; }
-  h2 .fold { padding: 0 6px 0 0; font: inherit; border: 0; background: transparent;
-             color: var(--text); cursor: pointer; }
-  section.folded h2 { margin: 0 0 4px; }
-  .strip .face img { width: 48px; height: 48px; }
-  .face.hidden img { opacity: .35; filter: grayscale(1); }
-  h2 small { color: var(--muted); font-weight: normal; }
-  .badge { display: inline-block; margin: 0 6px 0 0; padding: 0 8px; border-radius: 999px;
-           font-size: .75rem; font-weight: 600; vertical-align: middle; }
-  .badge.verified { background: var(--good); color: #fff; }
-  .badge.attributed { border: 1px dashed var(--muted); color: var(--muted); }
-  .face .check { position: absolute; left: 2px; bottom: 2px; width: 20px; height: 20px;
-                 border-radius: 50%; background: var(--good); color: #fff; font-size: 13px;
-                 line-height: 20px; text-align: center; pointer-events: none; }
-  .tools { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
-  .tools input { flex: 1 1 14rem; min-width: 0; padding: 4px 8px; font: inherit;
-                 border: 1px solid var(--line); border-radius: 6px; background: var(--bg);
-                 color: var(--text); }
-  .tools button { padding: 4px 10px; font: inherit; border: 1px solid var(--line);
-                  border-radius: 6px; background: var(--chip); color: var(--text);
-                  cursor: pointer; }
-  .tools button.main { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .faces { display: flex; flex-wrap: wrap; gap: 6px; }
-  .face { position: relative; }
-  .face img { width: 96px; height: 96px; object-fit: cover; border-radius: 8px;
-              background: var(--chip); cursor: pointer; display: block; }
-  .face.out img { opacity: .3; outline: 3px solid var(--bad); outline-offset: -3px; }
-  .face button { position: absolute; top: 2px; right: 2px; width: 22px; height: 22px;
-                 padding: 0; border: 0; border-radius: 50%; background: rgba(0, 0, 0, .6);
-                 color: #fff; cursor: pointer; line-height: 22px; }
-  .more { align-self: center; color: var(--muted); font-size: .85rem; }
-  button.more { padding: 4px 8px; font: inherit; font-size: .85rem; border: 1px dashed var(--line);
-                border-radius: 6px; background: transparent; color: var(--accent); cursor: pointer; }
-  .aside { margin: 0 0 8px; color: var(--bad); font-size: .85rem; font-weight: 600; }
-  .aside button { margin-left: 6px; padding: 2px 8px; font: inherit; font-weight: normal;
-                  border: 1px solid var(--line); border-radius: 6px; background: var(--chip);
-                  color: var(--text); cursor: pointer; }
-  .tools button:disabled { cursor: not-allowed; opacity: .6; }
-  #viewer { position: fixed; inset: 0; z-index: 2; display: none; flex-direction: column;
-            align-items: center; justify-content: center; gap: 8px; padding: 16px;
-            background: rgba(0, 0, 0, .88); color: #fff; }
-  #viewer.open { display: flex; }
-  #viewer img { max-width: 100%; max-height: calc(100vh - 130px); object-fit: contain; }
-  #viewer button { padding: 4px 12px; font: inherit; border: 1px solid var(--line);
-                   border-radius: 6px; background: var(--chip); color: var(--text); cursor: pointer; }
-  #viewerSaid { min-height: 1.5em; font-size: .85rem; }
-  section.alike { border-color: var(--bad); }
-  #todo { margin: 4px 0 0; font-weight: 600; font-size: .9rem; }
-  .guide { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 6px 0 0; }
-  .guide input, .guide button { padding: 4px 10px; font: inherit; border: 1px solid var(--line);
-                                border-radius: 6px; background: var(--chip); color: var(--text); }
-  .guide input { background: var(--bg); min-width: 0; flex: 0 1 14rem; }
-  .guide button { cursor: pointer; }
-  .guide button.main { background: var(--accent); border-color: var(--accent); color: #fff; }
-  #layout { display: block; }
-  #people { display: none; }
-  #people ul { list-style: none; margin: 0; padding: 0; }
-  #people li button { width: 100%; text-align: left; padding: 3px 8px; font: inherit; border: 0;
-                      border-radius: 6px; background: transparent; color: var(--text); cursor: pointer; }
-  #people li button small { color: var(--muted); }
-  #people li.work button { font-weight: 600; }
-  #people li button.chosen { background: var(--chip); outline: 1px solid var(--accent); }
-  #people label { display: block; margin: 8px 0 0; color: var(--muted); font-size: .85rem; }
-  .tools button.suggest { border-color: var(--good); }
-  @media (min-width: 900px) {
-    #layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); }
-    #people { display: block; position: sticky; top: var(--mh-shell-top-h, 0px); align-self: start; max-height: 100vh;
-              overflow-y: auto; padding: 8px 0 16px 16px; }
-  }
-</style>
-</head>
-<body>
-{% include "page_header.html.j2" %}
-<header>
-  <p class="hint">{{ _("Each group holds faces that look alike: probably one person. Type a name to save it in config.toml; the photos are never changed and the faces stay on this computer.") }}</p>
-  <p class="hint">{{ _("Naming confirms the faces shown: they become verified ✓. The other faces that look like them are attributed to the person, in a section of their own, until you confirm them, a page at a time.") }}</p>
-  <p class="hint">{{ _("↑ ↓ move, o folds or opens, Enter names, y confirms the attributed faces shown (or names a group as the person it looks like), x names several groups at once, i ignores a group; × marks a face that is someone else's, the next button saves it.") }}</p>
-  <p class="hint">{{ _("People come in alphabetical order, then the unnamed groups, largest first: each name given there names the most faces. g goes to the next section to do, / to the people list.") }}</p>
-  <p id="todo" role="status"></p>
-  <div class="guide">
-    <button id="next" class="main" type="button">{{ _("Next to do (g)") }}</button>
-    <button id="onlyLeft" type="button"></button>
-    <input id="who" type="search" placeholder="{{ _('Go to a person (/)') }}" aria-label="{{ _('Go to a person (/)') }}">
-  </div>
-  <p id="status" role="status"></p>
-  <p id="newPhotos" role="status" hidden><span id="newPhotosLine"></span> <button id="newPhotosStop" type="button" hidden>{{ _("Stop") }}</button> <button id="newPhotosShow" type="button" hidden>{{ _("Show the new groups") }}</button></p>
+{% include "pick_viewer.css.j2" %}
+{% include "people.css.j2" %}
+{% endblock %}
+{% block side %}
+  <section id="toc" aria-label="{{ _('People') }}">
+    <nav id="people" aria-label="{{ _('People') }}">
+      <ul id="peopleList"></ul>
+      <label><input id="onlyPerson" type="checkbox"> {{ _("Show only this person (Esc)") }}</label>
+    </nav>
+    <details>
+      <summary>{{ _("How it works") }}</summary>
+      <p class="muted">{{ _("Each group holds faces that look alike: probably one person. Type a name to save it in config.toml; the photos are never changed and the faces stay on this computer.") }}</p>
+      <p class="muted">{{ _("Naming confirms the faces shown: they become verified ✓. The other faces that look like them are attributed to the person, in a section of their own, until you confirm them, a page at a time.") }}</p>
+      <p class="muted">{{ _("People come in alphabetical order, then the unnamed groups, largest first: each name given there names the most faces. g goes to the next section to do, / to the people list.") }}</p>
+    </details>
+  </section>
+{% endblock %}
+{% block keys %}
+      <dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>{{ _("the previous or next section") }}</dd>
+      <dt><kbd>g</kbd></dt><dd>{{ _("the next section to do") }}</dd>
+      <dt><kbd>Enter</kbd></dt><dd>{{ _("type a name for the section") }}</dd>
+      <dt><kbd>y</kbd></dt><dd>{{ _("confirm the attributed faces shown, or name the group as the person it looks like") }}</dd>
+      <dt>×</dt><dd>{{ _("a face of someone else: the next button of the section saves it") }}</dd>
+      <dt>{{ _("click") }}</dt><dd>{{ _("its photo large; Delete sets it aside, Esc closes") }}</dd>
+{% endblock %}
+{% block more_keys %}
+      <dt><kbd>j</kbd> <kbd>k</kbd></dt><dd>{{ _("the next or previous section") }}</dd>
+      <dt><kbd>n</kbd></dt><dd>{{ _("type a name for the section") }}</dd>
+      <dt><kbd>o</kbd></dt><dd>{{ _("fold or open the section") }}</dd>
+      <dt><kbd>x</kbd></dt><dd>{{ _("pick the group, to name several at once") }}</dd>
+      <dt><kbd>i</kbd></dt><dd>{{ _("ignore the group") }}</dd>
+      <dt><kbd>/</kbd></dt><dd>{{ _("go to a person") }}</dd>
+      <dt><kbd>Esc</kbd></dt><dd>{{ _("every person again, after Show only this person") }}</dd>
+{% endblock %}
+{% block bar %}
+  <p id="todo" aria-live="polite"></p>
+  <button id="next" class="main" type="button">{{ _("Next to do (g)") }}</button>
+  <button id="onlyLeft" type="button"></button>
+  <input id="who" type="search" placeholder="{{ _('Go to a person (/)') }}" aria-label="{{ _('Go to a person (/)') }}">
   {% include "apply_now.html.j2" %}
-</header>
-<div id="alike"></div>
-<div id="layout">
-  <nav id="people" aria-label="{{ _('People') }}">
-    <ul id="peopleList"></ul>
-    <label><input id="onlyPerson" type="checkbox"> {{ _("Show only this person (Esc)") }}</label>
-  </nav>
-  <main id="groups"></main>
-</div>
-<div id="viewer" role="dialog" aria-modal="true">
-  <img id="large" alt="">
-  <div id="viewerName"></div>
-  <button id="viewerAside" type="button" hidden></button>
-  <div id="viewerSaid" role="status"></div>
-</div>
+  <span id="status" role="status" aria-live="polite"></span>
+  <p id="newPhotos" role="status" hidden><span id="newPhotosLine"></span> <button id="newPhotosStop" type="button" hidden>{{ _("Stop") }}</button> <button id="newPhotosShow" type="button" hidden>{{ _("Show the new groups") }}</button></p>
+{% endblock %}
+{% block content %}
+<main>
+  <div id="alike"></div>
+  <div id="groups"></div>
+</main>
+{% endblock %}
+{% block after %}
+{% include "pick_viewer.html.j2" %}
 <script nonce="{{ page_nonce }}">
 "use strict";
 const TEXTS = {{ texts | tojson }};
 const GROUPS_PATH = {{ groups_path | tojson }};
 const SECTION = {{ section_prefix | tojson }};
 const SAMPLE = {{ sample_prefix | tojson }};
-const FOLDED_KEY = "mh-people-folded";
-const STRIP = {{ strip | tojson }};
-const CHANGE_PATH = {{ change_path | tojson }};
-const ASIDE_PATH = {{ aside_path | tojson }};
-const FACE = {{ face_prefix | tojson }};
-const PHOTO = {{ photo_prefix | tojson }};
-const $ = (id) => document.getElementById(id);
-let state = { sections: [], people: [], writable: false };
-let current = 0;
-const picked = new Set();
-const removed = new Set();
-const whole = new Map(); // face number → every face of its group, once shown in full
-const showing = new Set(); // sections whose hidden faces are drawn, by `sectionKey`
-const outAlike = new Set(); // faces taken out of the look-alike sections by ×
-let viewing = null; // the face whose photo the large view shows, and whether it is set aside
-let foldedSaved = {}; // `sectionKey` → folded, for the named sections (this browser only)
-try { foldedSaved = JSON.parse(localStorage.getItem(FOLDED_KEY) || "{}") || {}; } catch (error) { foldedSaved = {}; }
-
-// A section's key across changes: a person and a kind, or a group by one of its faces.
-function sectionKey(item) {
-  if (item.name) return item.name + (item.verified ? "|verified" : "|attributed");
-  const first = item.shown[0] || item.hidden[0];
-  return "#" + (first ? first.key : "");
-}
-
-function isFolded(item) {
-  const key = sectionKey(item);
-  return key in foldedSaved ? foldedSaved[key] : item.verified;
-}
-
-function fold(index) {
-  const item = state.sections[index];
-  foldedSaved[sectionKey(item)] = !isFolded(item);
-  try { localStorage.setItem(FOLDED_KEY, JSON.stringify(foldedSaved)); } catch (error) { /* kept for this visit */ }
-  if (!isFolded(item) && item.strip) return sample(index);
-  redraw(index);
-  return Promise.resolve();
-}
-
-// A folded section came as a strip: its sample is asked for when it opens.
-async function sample(index) {
-  const item = state.sections[index];
-  if (!item.shown.length) { item.strip = false; redraw(index); return; }
-  let answer;
-  try {
-    answer = await fetch(SAMPLE + item.shown[0].key);
-  } catch (error) {
-    say(TEXTS.offline, "error");
-    return;
-  }
-  if (!answer.ok) {
-    say(fill(TEXTS.failed, { status: answer.status }), "error");
-    return;
-  }
-  if (state.sections[index] !== item) return; // a change came meanwhile
-  item.shown = (await answer.json()).shown;
-  item.strip = false;
-  redraw(index);
-}
-
-// Draw one section again, keeping the name typed in it.
-function redraw(index) {
-  const before = $("groups").children[index];
-  const after = group(state.sections[index], index);
-  const typed = before && before.querySelector("input");
-  const field = after.querySelector("input");
-  if (typed && field) field.value = typed.value; // typed, not saved yet
-  if (before) before.replaceWith(after);
-}
-
-function fill(template, values) {
-  return template.replace(/\{(\w+)\}/g, (all, name) => (name in values ? values[name] : all));
-}
-
-const PLURAL = new Intl.PluralRules(document.documentElement.lang);
-
-// A counted fragment: its singular and plural forms, the one the language uses for n.
-function counted(forms, n) {
-  return fill(forms[PLURAL.select(n) === "one" ? 0 : 1], { n: n });
-}
-
-function element(tag, className, text) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
-  return node;
-}
-
-function say(text, kind) {
-  $("status").className = kind || "";
-  $("status").textContent = text;
-}
-
-// The faces a section shows: every one once asked for, else its sample.
-function displayed(item) {
-  const full = item.shown.map((face) => whole.get(face.key)).find(Boolean);
-  return full || item.shown;
-}
-
-function complete(item) {
-  return displayed(item).length >= item.faces;
-}
-
-function kept(index) {
-  return displayed(state.sections[index]).map((item) => item.key).filter((key) => !removed.has(key));
-}
-
-async function expand(index) {
-  const item = state.sections[index];
-  let answer;
-  try {
-    answer = await fetch(SECTION + item.shown[0].key);
-  } catch (error) {
-    say(TEXTS.offline, "error");
-    return;
-  }
-  if (!answer.ok) {
-    say(fill(TEXTS.failed, { status: answer.status }), "error");
-    return;
-  }
-  const faces = (await answer.json()).faces;
-  for (const face of faces) whole.set(face.key, faces);
-  render(true);
-}
-
-// After a change the groups are new: show again in full those that were.
-function expandAgain() {
-  const before = new Set(whole.keys());
-  whole.clear();
-  state.sections.forEach((item, index) => {
-    if (item.faces > item.shown.length && item.shown.some((face) => before.has(face.key))) expand(index);
-  });
-}
-
-function takeBack(keys) {
-  if (keys.length) send({ action: "remove", faces: keys }, ASIDE_PATH);
-}
-
-async function setAside(index, action) {
-  const item = state.sections[index];
-  if (!complete(item)) await expand(index); // every photo of the group, not only the sample
-  const label = item.name || fill(TEXTS.group, { number: index + 1 });
-  const faces = kept(index);
-  if (faces.length) send({ action, faces, label }, ASIDE_PATH);
-}
-
-async function send(body, path) {
-  say(TEXTS.saving);
-  let answer;
-  try {
-    answer = await fetch(path || CHANGE_PATH, {
-      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
-    });
-  } catch (error) {
-    say(TEXTS.offline, "error");
-    return;
-  }
-  const result = await answer.json().catch(() => ({ error: fill(TEXTS.failed, { status: answer.status }) }));
-  if (!answer.ok) {
-    say(result.error, "error");
-    return;
-  }
-  picked.clear();
-  for (const key of [...(body.faces || []), ...(body.removed || [])]) { removed.delete(key); outAlike.delete(key); }
-  show(result);
-  const remembered = result.aside && result.aside.remembered ? " " + TEXTS.remembered : "";
-  say((result.saved || result.aside.message) + remembered, "saved");
-  return result;
-}
-
-function nameGroups(index, name) {
-  const chosen = new Set([index, ...picked]);
-  const faces = [...chosen].flatMap(kept);
-  const out = [...chosen].flatMap((at) => displayed(state.sections[at]).map((item) => item.key))
-    .filter((key) => removed.has(key));
-  return faces.length ? send({ action: "name", name, faces, removed: out }) : Promise.resolve(undefined);
-}
-
-// × marks a face as someone else's, or puts it back: nothing is sent, nothing moves;
-// the next button of the section saves the marks with what it does.
-function takeOut(index, key) {
-  if (removed.has(key)) removed.delete(key); else removed.add(key);
-  redraw(index);
-}
-
-function marked(index) {
-  return displayed(state.sections[index]).map((item) => item.key).filter((key) => removed.has(key));
-}
-
-// A face: `kind` is "strip" (a folded section: no ×), "hidden" (its photo set aside:
-// dimmed, ↺ takes it back) or empty.
-function face(item, index, verified, kind) {
-  const box = element("div", "face" + (kind ? " " + kind : ""));
-  const picture = element("img");
-  picture.loading = "lazy";
-  picture.src = FACE + item.key + ".jpg";
-  picture.alt = item.photo;
-  picture.title = item.photo;
-  picture.addEventListener("click", () => openViewer(item, kind === "hidden"));
-  if (kind === "strip") { box.append(picture); return box; }
-  if (kind === "hidden") {
-    const back = element("button", "", "↺");
-    back.title = TEXTS.takeBackOne;
-    back.setAttribute("aria-label", back.title);
-    back.addEventListener("click", (event) => { event.stopPropagation(); takeBack([item.key]); });
-    box.append(picture, back);
-    return box;
-  }
-  const isOut = removed.has(item.key);
-  box.classList.toggle("out", isOut);
-  const out = element("button", "", isOut ? "↺" : "×");
-  out.title = isOut ? TEXTS.putBack : TEXTS.remove;
-  out.setAttribute("aria-label", out.title);
-  out.addEventListener("click", (event) => { event.stopPropagation(); takeOut(index, item.key); });
-  box.append(picture, out);
-  if (verified) box.append(element("span", "check", "✓"));
-  return box;
-}
-
-// The large view: the photo of a face, its path, and its one photo set aside or back.
-function openViewer(item, isAside) {
-  viewing = { item: item, aside: isAside };
-  $("large").src = PHOTO + item.key + ".jpg";
-  $("viewerName").textContent = item.photo;
-  $("viewerSaid").textContent = "";
-  viewerButton();
-  $("viewer").classList.add("open");
-}
-
-function viewerButton() {
-  const button = $("viewerAside");
-  button.hidden = !state.can_aside || !viewing;
-  if (viewing) button.textContent = viewing.aside ? TEXTS.photoBack : TEXTS.photoAside;
-}
-
-// One photo, its faces not someone's to remember: set aside, or taken back.
-async function viewerChoice(action) {
-  if (!viewing || !state.can_aside || viewing.aside === (action === "add")) return;
-  const body = { action: action, faces: [viewing.item.key], remember: false };
-  const result = await send(body, ASIDE_PATH);
-  if (!result) return;
-  viewing.aside = action === "add";
-  viewerButton();
-  $("viewerSaid").textContent = result.aside.message;
-}
-
-// A face that looks like someone set aside: × leaves it out of what is set aside.
-function alikeFace(item) {
-  const box = element("div", "face");
-  const picture = element("img");
-  picture.loading = "lazy";
-  picture.src = FACE + item.key + ".jpg";
-  picture.alt = picture.title = item.photo;
-  picture.addEventListener("click", () => openViewer(item, false));
-  const isOut = outAlike.has(item.key);
-  box.classList.toggle("out", isOut);
-  const out = element("button", "", isOut ? "↺" : "×");
-  out.title = isOut ? TEXTS.putBack : TEXTS.remove;
-  out.setAttribute("aria-label", out.title);
-  out.addEventListener("click", (event) => {
-    event.stopPropagation();
-    if (outAlike.has(item.key)) outAlike.delete(item.key); else outAlike.add(item.key);
-    drawAlike();
-  });
-  box.append(picture, out);
-  return box;
-}
-
-// "n other photos look like the person you set aside on <date>": checked, then set aside.
-function alikeSection(person) {
-  const node = element("section", "alike");
-  const title = element("h2", "", fill(counted(TEXTS.alikeTitle, person.photos), { date: person.date }));
-  if (person.label) title.append(" ", element("small", "", person.label));
-  const kept = person.faces.filter((item) => !outAlike.has(item.key));
-  const bar = element("div", "tools");
-  if (state.can_aside) {
-    const button = element("button", "main", counted(TEXTS.alikeAside, new Set(kept.map((item) => item.photo)).size));
-    button.disabled = !kept.length;
-    button.addEventListener("click", () => send({ action: "add", faces: kept.map((item) => item.key), label: person.label, into: person.aside }, ASIDE_PATH));
-    bar.append(button);
-  }
-  const faces = element("div", "faces");
-  faces.append(...person.faces.map(alikeFace));
-  node.append(title, element("p", "hint", TEXTS.alikeHint), bar, faces);
-  return node;
-}
-
-function drawAlike() {
-  $("alike").replaceChildren(...(state.alike || []).map(alikeSection));
-}
-
-function tools(item, index) {
-  const bar = element("div", "tools");
-  const input = element("input");
-  const box = comboAttach(input, () => state.people, (row) => nameGroups(index, row.value));
-  input.placeholder = TEXTS.placeholder;
-  input.value = item.verified ? item.name : "";
-  input.disabled = !state.writable;
-  input.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" && input.value.trim()) nameGroups(index, input.value.trim());
-    if (event.key === "Escape") input.blur();
-    event.stopPropagation();
-  });
-  const attributed = item.name && !item.verified;
-  const save = element("button", attributed ? "" : "main", TEXTS.save);
-  save.addEventListener("click", () => input.value.trim() && nameGroups(index, input.value.trim()));
-  if (attributed) {
-    const yes = element("button", "main", fill(counted(TEXTS.confirm, kept(index).length), { name: item.name }));
-    yes.addEventListener("click", () => nameThenNext(index, item.name));
-    bar.append(yes);
-  }
-  bar.append(box, save);
-  const out = marked(index);
-  if (item.name && out.length) {
-    const reject = element("button", "", fill(counted(TEXTS.rejectMarked, out.length), { name: item.name }));
-    reject.addEventListener("click", () => send({ action: "reject", name: item.name, faces: out }));
-    bar.append(reject);
-  }
-  const pick = element("button", "", TEXTS.pick);
-  pick.addEventListener("click", () => toggle(index));
-  const ignore = element("button", "", TEXTS.ignore);
-  ignore.addEventListener("click", () => ignoreGroup(index));
-  bar.append(pick, ignore);
-  for (const button of bar.querySelectorAll("button")) button.disabled = !state.writable;
-  if (state.can_aside) bar.append(asideButton(item, index));
-  suggestButtons(item, index, bar);
-  return bar;
-}
-
-// The faces and photos a section still holds once those taken out here are left out;
-// photos are exact with every face shown, close to it with the sample.
-function left(item) {
-  const shown = displayed(item);
-  const faces = shown.filter((face) => !removed.has(face.key));
-  const count = item.faces - (shown.length - faces.length);
-  if (complete(item)) return { faces: count, photos: new Set(faces.map((face) => face.photo)).size };
-  // Sample only: a photo of a face taken out goes when no face shown is left on it.
-  const kept = new Set(faces.map((face) => face.photo));
-  const gone = new Set(shown.filter((face) => removed.has(face.key) && !kept.has(face.photo)).map((face) => face.photo));
-  return { faces: count, photos: Math.min(item.photos - gone.size, count) };
-}
-
-function asideButton(item, index) {
-  const { faces, photos } = left(item);
-  const button = element("button", "", counted(TEXTS.aside, photos));
-  button.disabled = !complete(item) || !faces;
-  button.title = complete(item) ? TEXTS.asideHint : TEXTS.allFirst;
-  button.addEventListener("click", () => setAside(index, "add"));
-  return button;
-}
-
-function group(item, index) {
-  const node = element("section");
-  const closed = isFolded(item);
-  node.classList.toggle("current", index === current);
-  node.classList.toggle("picked", picked.has(index));
-  node.classList.toggle("folded", closed);
-  decorate(node, item);
-  const title = element("h2");
-  const toggler = element("button", "fold", (closed ? "▸ " : "▾ ") + (item.name || fill(TEXTS.group, { number: index + 1 })));
-  toggler.title = closed ? TEXTS.unfold : TEXTS.fold;
-  toggler.setAttribute("aria-expanded", String(!closed));
-  toggler.addEventListener("click", (event) => { event.stopPropagation(); current = index; mark(); fold(index); });
-  title.append(toggler, " ");
-  if (item.name) {
-    const kind = item.verified ? "verified" : "attributed";
-    const badge = element("span", "badge " + kind, (item.verified ? "✓ " : "") + TEXTS[kind]);
-    badge.title = TEXTS[kind + "Hint"];
-    title.append(badge);
-  }
-  const size = left(item);
-  title.append(element("small", "", fill(TEXTS.size, { faces: counted(TEXTS.faces, size.faces), photos: counted(TEXTS.photos, size.photos) })));
-  node.addEventListener("click", () => { current = index; mark(); });
-  if (closed) { // one line: the title and a strip of faces, no tiles to load
-    const strip = element("div", "faces strip");
-    strip.append(...item.shown.slice(0, STRIP).map((one) => face(one, index, item.verified, "strip")));
-    node.append(title, strip);
-    return node;
-  }
-  const faces = element("div", "faces");
-  const shown = item.strip ? [] : displayed(item);
-  faces.append(...shown.map((one) => face(one, index, item.verified)));
-  if (showing.has(sectionKey(item))) faces.append(...item.hidden.map((one) => face(one, index, item.verified, "hidden")));
-  if (!item.strip && !complete(item)) {
-    const more = element("button", "more", counted(TEXTS.more, item.faces - shown.length));
-    more.title = TEXTS.showAll;
-    more.addEventListener("click", (event) => { event.stopPropagation(); expand(index); });
-    faces.append(more);
-  }
-  node.append(title, tools(item, index));
-  if (item.aside) node.append(hiddenLine(item, index));
-  node.append(faces);
-  return node;
-}
-
-// "n photos set aside, hidden — Show / Take back": they wait for 'clean --decisions'.
-function hiddenLine(item, index) {
-  const line = element("p", "aside", counted(TEXTS.hiddenSome, item.aside) + " — ");
-  const key = sectionKey(item);
-  const show = element("button", "", showing.has(key) ? TEXTS.hideHidden : TEXTS.showHidden);
-  show.addEventListener("click", (event) => {
-    event.stopPropagation();
-    if (showing.has(key)) showing.delete(key); else showing.add(key);
-    redraw(index);
-  });
-  const back = element("button", "", TEXTS.takeBack);
-  back.addEventListener("click", (event) => { event.stopPropagation(); takeBack(item.hidden.map((one) => one.key)); });
-  line.append(show, back);
-  return line;
-}
-
-function mark() {
-  [...$("groups").children].forEach((node, index) => {
-    node.classList.toggle("current", index === current);
-    node.classList.toggle("picked", picked.has(index));
-  });
-}
-
-function toggle(index) {
-  if (picked.has(index)) picked.delete(index); else picked.add(index);
-  mark();
-  if (picked.size) say(counted(TEXTS.picked, picked.size));
-}
-
-function ignoreGroup(index) {
-  const faces = kept(index);
-  if (faces.length) send({ action: "ignore", faces });
-}
-
-// Draw the sections again; the same ones (no new state) keep the names typed in them.
-function render(sameSections) {
-  const typed = sameSections ? [...$("groups").children].map((node) => { const field = node.querySelector("input"); return field ? field.value : ""; }) : [];
-  $("groups").replaceChildren(...state.sections.map(group));
-  typed.forEach((value, index) => {
-    const field = $("groups").children[index] && $("groups").children[index].querySelector("input");
-    if (field && value) field.value = value;
-  });
-}
-
-function show(next) {
-  state = next;
-  for (const item of state.sections) item.strip = item.folded; // its sample comes on opening
-  current = Math.min(current, Math.max(0, state.sections.length - 1));
-  render();
-  drawGuide();
-  drawAlike();
-  const notes = [];
-  if (!state.sections.length) notes.push(TEXTS.none);
-  if (state.alone) notes.push(counted(TEXTS.alone, state.alone));
-  if (state.ignored) notes.push(counted(TEXTS.ignoredGroups, state.ignored));
-  if (!state.writable) notes.push(TEXTS.readOnly);
-  say(notes.join(" "));
-  if (window.mhApplyNow) window.mhApplyNow(state.chosen > 0); // apply_now.html.j2, opened from home
-  state.sections.forEach((item, index) => { if (item.strip && !isFolded(item)) sample(index); });
-  expandAgain();
-}
-
-async function load() {
-  let answer;
-  try {
-    answer = await fetch(GROUPS_PATH);
-  } catch (error) {
-    say(TEXTS.offline, "error");
-    return;
-  }
-  if (!answer.ok) {
-    say(fill(TEXTS.failed, { status: answer.status }), "error");
-    return;
-  }
-  show(await answer.json());
-}
-
-// Enter opens a folded section first, then goes to its name field.
-async function typeName(index) {
-  const item = state.sections[index];
-  if (isFolded(item)) await fold(index);
-  const field = $("groups").children[index].querySelector("input");
-  if (field) field.focus();
-}
-
-function move(step) {
-  if (!state.sections.length) return;
-  let next = current + step;
-  while (next >= 0 && next < state.sections.length && !visible(state.sections[next])) next += step;
-  if (next < 0 || next >= state.sections.length) return;
-  current = next;
-  mark();
-  $("groups").children[current].scrollIntoView({ block: "nearest" });
-}
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") { if (!$("viewer").classList.contains("open")) clearPerson(); $("viewer").classList.remove("open"); return; }
-  if ($("viewer").classList.contains("open")) {
-    if (event.key === "Delete") viewerChoice("add");
-    else if (event.key === "Backspace") viewerChoice("remove");
-    else return;
-    event.preventDefault();
-    return;
-  }
-  if (!state.sections.length || event.ctrlKey || event.metaKey || event.altKey) return;
-  const item = state.sections[current];
-  if (event.key === "ArrowDown" || event.key === "j") move(1);
-  else if (event.key === "ArrowUp" || event.key === "k") move(-1);
-  else if (event.key === "o") fold(current);
-  else if (event.key === "Enter" || event.key === "n") typeName(current);
-  else if (event.key === "y" && item.name && !item.verified && state.writable) nameThenNext(current, item.name);
-  else if (event.key === "y" && !item.name && item.suggest && item.suggest.length && state.writable) nameThenNext(current, item.suggest[0].name);
-  else if (event.key === "g") nextToDo();
-  else if (event.key === "/") $("who").focus();
-  else if (event.key === "x" && state.writable) toggle(current);
-  else if (event.key === "i" && state.writable) ignoreGroup(current);
-  else return;
-  event.preventDefault();
-});
-$("viewer").addEventListener("click", () => $("viewer").classList.remove("open"));
-$("viewerAside").addEventListener("click", (event) => {
-  event.stopPropagation();
-  viewerChoice(viewing && viewing.aside ? "remove" : "add");
-});
+{% include "people.js.j2" %}
+{% include "people_sections.js.j2" %}
+{% include "people_viewer.js.j2" %}
 {% include "combo_list.js.j2" %}
 {% include "people_guide.js.j2" %}
 {% if new_photos %}{% include "people_new_photos.js.j2" %}{% endif %}
 load();
 </script>
 {% include "undo_toast.html.j2" %}
-{% include "home_link.html.j2" %}
-</body>
-</html>
+{% endblock %}

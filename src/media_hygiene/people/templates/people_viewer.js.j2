@@ -1,0 +1,110 @@
+{# The large view of the people page: the shared one (`pick_viewer.html.j2`, its look and its
+   `?` list) driven by this page's faces instead of a grid of files. A click on a face opens its
+   photo; ← → Home End go through the faces of the same section, Delete sets the one photo
+   shown aside (its faces not remembered as someone's), Backspace takes it back — the view
+   stays on it (no grid to step back to); F full screen, I the photo's path, ? every key, Esc,
+   a click beside it or Back closes it (0666). A button under it does what Delete or Backspace
+   does, for a mouse. #}
+let viewing = null; // { list: [{ item, aside }], at }: the faces the view goes through
+const viewerToggle = element("button", "stay");
+viewerToggle.id = "viewerToggle";
+viewerToggle.type = "button";
+viewerToggle.hidden = true;
+$("viewerSaid").before(viewerToggle);
+$("personLink").remove(); // the people page is the place for a person; no `/person` here
+$("movie").remove(); // a face is on a photo, never on a video
+
+function viewerOpen() {
+  return $("viewer").classList.contains("open");
+}
+
+function shownFace() {
+  return viewing ? viewing.list[viewing.at] : null;
+}
+
+function drawViewer() {
+  const face = shownFace();
+  if (!face) return;
+  $("large").src = PHOTO + face.item.key + ".jpg";
+  $("large").alt = face.item.photo;
+  $("viewerName").textContent = face.item.photo;
+  $("originalLink").href = PHOTO + face.item.key + ".jpg";
+  $("viewerInfo").textContent = face.item.photo;
+  $("viewerAside").hidden = !face.aside;
+  viewerToggle.hidden = !state.can_aside;
+  viewerToggle.textContent = face.aside ? TEXTS.photoBack : TEXTS.photoAside;
+}
+
+// Opening pushes a step of the history: Back closes the view, as Esc (0666).
+function openViewer(item, list) {
+  const at = list.findIndex((one) => one.item.key === item.key);
+  viewing = { list: at < 0 ? [{ item: item, aside: false }] : list, at: Math.max(at, 0) };
+  $("viewerSaid").textContent = "";
+  drawViewer();
+  if (!viewerOpen()) window.mhView.set({}, { push: true, state: { mhViewer: true } });
+  $("viewer").classList.add("open");
+}
+
+function closeViewer() {
+  if (window.history.state && window.history.state.mhViewer) { window.history.back(); return; }
+  closeShown();
+}
+
+function closeShown() {
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
+  $("viewer").classList.remove("open");
+}
+window.addEventListener("popstate", () => { if (viewerOpen()) closeShown(); });
+
+function viewerAt(at) {
+  if (!viewing || at < 0 || at >= viewing.list.length) return;
+  viewing.at = at;
+  $("viewerSaid").textContent = "";
+  drawViewer();
+}
+
+// One photo, its faces not someone's to remember: set aside, or taken back; the view stays.
+async function viewerChoice(action) {
+  const face = shownFace();
+  if (!face || !state.can_aside || face.aside === (action === "add")) return;
+  const body = { action: action, faces: [face.item.key], remember: false };
+  const result = await send(body, ASIDE_PATH);
+  if (!result) return;
+  face.aside = action === "add";
+  drawViewer();
+  $("viewerSaid").textContent = result.aside.message;
+}
+
+function viewerFull() {
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
+  else $("viewer").requestFullscreen().catch(() => undefined);
+}
+
+const VIEWER_KEYS = {
+  Escape: closeViewer,
+  ArrowRight: () => viewerAt(viewing.at + 1),
+  ArrowLeft: () => viewerAt(viewing.at - 1),
+  Home: () => viewerAt(0),
+  End: () => viewerAt(viewing.list.length - 1),
+  Delete: () => viewerChoice("add"),
+  Backspace: () => viewerChoice("remove"),
+  f: viewerFull,
+  i: () => { $("viewerInfo").hidden = !$("viewerInfo").hidden; },
+  "?": () => { $("viewerHelp").hidden = !$("viewerHelp").hidden; },
+};
+
+function viewerKey(event) {
+  if (event.ctrlKey || event.metaKey || event.altKey) return;
+  const action = VIEWER_KEYS[event.key.length === 1 ? event.key.toLowerCase() : event.key] || VIEWER_KEYS[event.key];
+  if (!action) return;
+  event.preventDefault();
+  action();
+}
+
+$("viewer").addEventListener("click", (event) => {
+  if (!event.target.closest("a, .stay")) closeViewer(); // the lists under it stay open
+});
+viewerToggle.addEventListener("click", () => {
+  const face = shownFace();
+  viewerChoice(face && face.aside ? "remove" : "add");
+});

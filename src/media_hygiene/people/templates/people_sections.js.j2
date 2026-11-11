@@ -1,0 +1,268 @@
+{# The script of the people page (`people.html.j2`), second part: the sections that look like
+   someone set aside (0328), the tools of a section, a section drawn, the state shown, the
+   page's keys (the large view's are `people_viewer.js.j2`'s). #}
+// A face that looks like someone set aside: × leaves it out of what is set aside.
+function alikeFace(item, at, all) {
+  const box = element("div", "face");
+  const picture = element("img");
+  picture.loading = "lazy";
+  picture.src = FACE + item.key + ".jpg";
+  picture.alt = picture.title = item.photo;
+  picture.addEventListener("click", () => openViewer(item, all.map((one) => ({ item: one, aside: false }))));
+  const isOut = outAlike.has(item.key);
+  box.classList.toggle("out", isOut);
+  const out = element("button", "", isOut ? "↺" : "×");
+  out.title = isOut ? TEXTS.putBack : TEXTS.remove;
+  out.setAttribute("aria-label", out.title);
+  out.addEventListener("click", (event) => {
+    event.stopPropagation();
+    if (outAlike.has(item.key)) outAlike.delete(item.key); else outAlike.add(item.key);
+    drawAlike();
+  });
+  box.append(picture, out);
+  return box;
+}
+
+// "n other photos look like the person you set aside on <date>": checked, then set aside.
+function alikeSection(person) {
+  const node = element("section", "alike");
+  const title = element("h2", "", fill(counted(TEXTS.alikeTitle, person.photos), { date: person.date }));
+  if (person.label) title.append(" ", element("small", "", person.label));
+  const kept = person.faces.filter((item) => !outAlike.has(item.key));
+  const bar = element("div", "tools");
+  if (state.can_aside) {
+    const button = element("button", "main", counted(TEXTS.alikeAside, new Set(kept.map((item) => item.photo)).size));
+    button.disabled = !kept.length;
+    button.addEventListener("click", () => send({ action: "add", faces: kept.map((item) => item.key), label: person.label, into: person.aside }, ASIDE_PATH));
+    bar.append(button);
+  }
+  const faces = element("div", "faces");
+  faces.append(...person.faces.map(alikeFace));
+  node.append(title, element("p", "hint", TEXTS.alikeHint), bar, faces);
+  return node;
+}
+
+function drawAlike() {
+  $("alike").replaceChildren(...(state.alike || []).map(alikeSection));
+}
+
+function tools(item, index) {
+  const bar = element("div", "tools");
+  const input = element("input");
+  const box = comboAttach(input, () => state.people, (row) => nameGroups(index, row.value));
+  input.placeholder = TEXTS.placeholder;
+  input.value = item.verified ? item.name : "";
+  input.disabled = !state.writable;
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && input.value.trim()) nameGroups(index, input.value.trim());
+    if (event.key === "Escape") input.blur();
+    event.stopPropagation();
+  });
+  const attributed = item.name && !item.verified;
+  const save = element("button", attributed ? "" : "main", TEXTS.save);
+  save.addEventListener("click", () => input.value.trim() && nameGroups(index, input.value.trim()));
+  if (attributed) {
+    const yes = element("button", "main", fill(counted(TEXTS.confirm, kept(index).length), { name: item.name }));
+    yes.addEventListener("click", () => nameThenNext(index, item.name));
+    bar.append(yes);
+  }
+  bar.append(box, save);
+  const out = marked(index);
+  if (item.name && out.length) {
+    const reject = element("button", "", fill(counted(TEXTS.rejectMarked, out.length), { name: item.name }));
+    reject.addEventListener("click", () => send({ action: "reject", name: item.name, faces: out }));
+    bar.append(reject);
+  }
+  const pick = element("button", "", TEXTS.pick);
+  pick.addEventListener("click", () => toggle(index));
+  const ignore = element("button", "", TEXTS.ignore);
+  ignore.addEventListener("click", () => ignoreGroup(index));
+  bar.append(pick, ignore);
+  for (const button of bar.querySelectorAll("button")) button.disabled = !state.writable;
+  if (state.can_aside) bar.append(asideButton(item, index));
+  suggestButtons(item, index, bar);
+  return bar;
+}
+
+// The faces and photos a section still holds once those taken out here are left out;
+// photos are exact with every face shown, close to it with the sample.
+function left(item) {
+  const shown = displayed(item);
+  const faces = shown.filter((face) => !removed.has(face.key));
+  const count = item.faces - (shown.length - faces.length);
+  if (complete(item)) return { faces: count, photos: new Set(faces.map((face) => face.photo)).size };
+  // Sample only: a photo of a face taken out goes when no face shown is left on it.
+  const kept = new Set(faces.map((face) => face.photo));
+  const gone = new Set(shown.filter((face) => removed.has(face.key) && !kept.has(face.photo)).map((face) => face.photo));
+  return { faces: count, photos: Math.min(item.photos - gone.size, count) };
+}
+
+function asideButton(item, index) {
+  const { faces, photos } = left(item);
+  const button = element("button", "", counted(TEXTS.aside, photos));
+  button.disabled = !complete(item) || !faces;
+  button.title = complete(item) ? TEXTS.asideHint : TEXTS.allFirst;
+  button.addEventListener("click", () => setAside(index, "add"));
+  return button;
+}
+
+function group(item, index) {
+  const node = element("section");
+  const closed = isFolded(item);
+  node.classList.toggle("current", index === current);
+  node.classList.toggle("picked", picked.has(index));
+  node.classList.toggle("folded", closed);
+  decorate(node, item);
+  const title = element("h2");
+  const toggler = element("button", "fold", (closed ? "▸ " : "▾ ") + (item.name || fill(TEXTS.group, { number: index + 1 })));
+  toggler.title = closed ? TEXTS.unfold : TEXTS.fold;
+  toggler.setAttribute("aria-expanded", String(!closed));
+  toggler.addEventListener("click", (event) => { event.stopPropagation(); current = index; mark(); fold(index); });
+  title.append(toggler, " ");
+  if (item.name) {
+    const kind = item.verified ? "verified" : "attributed";
+    const badge = element("span", "badge " + kind, (item.verified ? "✓ " : "") + TEXTS[kind]);
+    badge.title = TEXTS[kind + "Hint"];
+    title.append(badge);
+  }
+  const size = left(item);
+  title.append(element("small", "", fill(TEXTS.size, { faces: counted(TEXTS.faces, size.faces), photos: counted(TEXTS.photos, size.photos) })));
+  node.addEventListener("click", () => { current = index; mark(); });
+  if (closed) { // one line: the title and a strip of faces, no tiles to load
+    const strip = element("div", "faces strip");
+    strip.append(...item.shown.slice(0, STRIP).map((one) => face(one, index, item.verified, "strip")));
+    node.append(title, strip);
+    return node;
+  }
+  const faces = element("div", "faces");
+  const shown = item.strip ? [] : displayed(item);
+  faces.append(...shown.map((one) => face(one, index, item.verified)));
+  if (showing.has(sectionKey(item))) faces.append(...item.hidden.map((one) => face(one, index, item.verified, "hidden")));
+  if (!item.strip && !complete(item)) {
+    const more = element("button", "more", counted(TEXTS.more, item.faces - shown.length));
+    more.title = TEXTS.showAll;
+    more.addEventListener("click", (event) => { event.stopPropagation(); expand(index); });
+    faces.append(more);
+  }
+  node.append(title, tools(item, index));
+  if (item.aside) node.append(hiddenLine(item, index));
+  node.append(faces);
+  return node;
+}
+
+// "n photos set aside, hidden — Show / Take back": they wait for 'clean --decisions'.
+function hiddenLine(item, index) {
+  const line = element("p", "aside", counted(TEXTS.hiddenSome, item.aside) + " — ");
+  const key = sectionKey(item);
+  const show = element("button", "", showing.has(key) ? TEXTS.hideHidden : TEXTS.showHidden);
+  show.addEventListener("click", (event) => {
+    event.stopPropagation();
+    if (showing.has(key)) showing.delete(key); else showing.add(key);
+    redraw(index);
+  });
+  const back = element("button", "", TEXTS.takeBack);
+  back.addEventListener("click", (event) => { event.stopPropagation(); takeBack(item.hidden.map((one) => one.key)); });
+  line.append(show, back);
+  return line;
+}
+
+function mark() {
+  [...$("groups").children].forEach((node, index) => {
+    node.classList.toggle("current", index === current);
+    node.classList.toggle("picked", picked.has(index));
+  });
+}
+
+function toggle(index) {
+  if (picked.has(index)) picked.delete(index); else picked.add(index);
+  mark();
+  if (picked.size) say(counted(TEXTS.picked, picked.size));
+}
+
+function ignoreGroup(index) {
+  const faces = kept(index);
+  if (faces.length) send({ action: "ignore", faces });
+}
+
+// Draw the sections again; the same ones (no new state) keep the names typed in them.
+function render(sameSections) {
+  const typed = sameSections ? [...$("groups").children].map((node) => { const field = node.querySelector("input"); return field ? field.value : ""; }) : [];
+  $("groups").replaceChildren(...state.sections.map(group));
+  typed.forEach((value, index) => {
+    const field = $("groups").children[index] && $("groups").children[index].querySelector("input");
+    if (field && value) field.value = value;
+  });
+}
+
+function show(next) {
+  state = next;
+  for (const item of state.sections) item.strip = item.folded; // its sample comes on opening
+  current = Math.min(current, Math.max(0, state.sections.length - 1));
+  render();
+  drawGuide();
+  drawAlike();
+  const notes = [];
+  if (!state.sections.length) notes.push(TEXTS.none);
+  if (state.alone) notes.push(counted(TEXTS.alone, state.alone));
+  if (state.ignored) notes.push(counted(TEXTS.ignoredGroups, state.ignored));
+  if (!state.writable) notes.push(TEXTS.readOnly);
+  say(notes.join(" "));
+  if (window.mhApplyNow) window.mhApplyNow(state.chosen > 0); // apply_now.html.j2, opened from home
+  state.sections.forEach((item, index) => { if (item.strip && !isFolded(item)) sample(index); });
+  expandAgain();
+}
+
+async function load() {
+  let answer;
+  try {
+    answer = await fetch(GROUPS_PATH);
+  } catch (error) {
+    say(TEXTS.offline, "error");
+    return;
+  }
+  if (!answer.ok) {
+    say(fill(TEXTS.failed, { status: answer.status }), "error");
+    return;
+  }
+  show(await answer.json());
+  // The person chosen, kept in the URL (0666): a reload or a bookmark comes back to them.
+  const asked = window.mhView.get({ who: "text" }).who;
+  if (asked && (state.roster || []).some((person) => person.name === asked)) choose(asked);
+}
+
+// Enter opens a folded section first, then goes to its name field.
+async function typeName(index) {
+  const item = state.sections[index];
+  if (isFolded(item)) await fold(index);
+  const field = $("groups").children[index].querySelector("input");
+  if (field) field.focus();
+}
+
+function move(step) {
+  if (!state.sections.length) return;
+  let next = current + step;
+  while (next >= 0 && next < state.sections.length && !visible(state.sections[next])) next += step;
+  if (next < 0 || next >= state.sections.length) return;
+  current = next;
+  mark();
+  $("groups").children[current].scrollIntoView({ block: "nearest" });
+}
+
+document.addEventListener("keydown", (event) => {
+  if (viewerOpen()) { viewerKey(event); return; }
+  if (event.key === "Escape") { clearPerson(); return; }
+  if (!state.sections.length || event.ctrlKey || event.metaKey || event.altKey) return;
+  const item = state.sections[current];
+  if (event.key === "ArrowDown" || event.key === "j") move(1);
+  else if (event.key === "ArrowUp" || event.key === "k") move(-1);
+  else if (event.key === "o") fold(current);
+  else if (event.key === "Enter" || event.key === "n") typeName(current);
+  else if (event.key === "y" && item.name && !item.verified && state.writable) nameThenNext(current, item.name);
+  else if (event.key === "y" && !item.name && item.suggest && item.suggest.length && state.writable) nameThenNext(current, item.suggest[0].name);
+  else if (event.key === "g") nextToDo();
+  else if (event.key === "/") $("who").focus();
+  else if (event.key === "x" && state.writable) toggle(current);
+  else if (event.key === "i" && state.writable) ignoreGroup(current);
+  else return;
+  event.preventDefault();
+});

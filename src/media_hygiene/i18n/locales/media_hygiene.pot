@@ -4034,6 +4034,9 @@ msgid ""
 "report first. Near duplicates go to the quarantine, never deleted."
 msgstr ""
 
+msgid "How it works"
+msgstr ""
+
 msgid "How long robocopy ran."
 msgstr ""
 
@@ -5242,6 +5245,12 @@ msgid ""
 msgstr ""
 
 msgid "Names cannot be saved: mount a writable folder on /config."
+msgstr ""
+
+msgid ""
+"Names go to config.toml; the photos are never changed and the faces stay "
+"on this computer. Nothing is deleted here: 'clean --decisions' moves the "
+"photos set aside to the quarantine, 'undo' brings them back."
 msgstr ""
 
 msgid ""
@@ -12329,6 +12338,9 @@ msgstr ""
 msgid "a circle holding no cluster now"
 msgstr ""
 
+msgid "a face of someone else: the next button of the section saves it"
+msgstr ""
+
 msgid "a file changed since the audit"
 msgstr ""
 
@@ -12742,6 +12754,11 @@ msgstr[1] ""
 msgid "configuration settings config toml ai model"
 msgstr ""
 
+msgid ""
+"confirm the attributed faces shown, or name the group as the person it "
+"looks like"
+msgstr ""
+
 msgid "contact sheet: flip the shot, kept or aside"
 msgstr ""
 
@@ -12888,6 +12905,9 @@ msgstr ""
 msgid "every key"
 msgstr ""
 
+msgid "every person again, after Show only this person"
+msgstr ""
+
 msgid "every photo"
 msgstr ""
 
@@ -12947,6 +12967,9 @@ msgstr ""
 msgid "finish the burst review where you stopped."
 msgstr ""
 
+msgid "fold or open the section"
+msgstr ""
+
 msgid "folder"
 msgstr ""
 
@@ -12973,6 +12996,9 @@ msgstr ""
 
 #, python-brace-format, python-format
 msgid "gap {gap} %%"
+msgstr ""
+
+msgid "go to a person"
 msgstr ""
 
 msgid "gone (renamed or deleted?)"
@@ -13014,6 +13040,9 @@ msgid "iPhone, iPad"
 msgstr ""
 
 msgid "if the cache is ever lost: mh restore."
+msgstr ""
+
+msgid "ignore the group"
 msgstr ""
 
 msgid "ignored folders:"
@@ -13138,6 +13167,9 @@ msgid ""
 msgstr ""
 
 msgid "its own folder"
+msgstr ""
+
+msgid "its photo large; Delete sets it aside, Esc closes"
 msgstr ""
 
 msgid "its previous content is no longer in the quarantine: kept"
@@ -13829,6 +13861,9 @@ msgstr ""
 msgid "pick or unpick the framed file"
 msgstr ""
 
+msgid "pick the group, to name several at once"
+msgstr ""
+
 msgid "place"
 msgstr ""
 
@@ -14302,6 +14337,12 @@ msgstr ""
 msgid "the names given to the faces on the people page."
 msgstr ""
 
+msgid "the next or previous section"
+msgstr ""
+
+msgid "the next section to do"
+msgstr ""
+
 msgid "the oldest date"
 msgstr ""
 
@@ -14313,6 +14354,9 @@ msgid "the person set aside on {date}"
 msgstr ""
 
 msgid "the previous or next one not set aside"
+msgstr ""
+
+msgid "the previous or next section"
 msgstr ""
 
 #, python-brace-format
@@ -14565,6 +14609,9 @@ msgid "two small local models: nothing is sent"
 msgstr ""
 
 msgid "type a name first"
+msgstr ""
+
+msgid "type a name for the section"
 msgstr ""
 
 msgid "type a name, e.g. Crete 2023"
@@ -17559,13 +17606,6 @@ msgstr ""
 
 #, python-brace-format
 msgid "… and {count} more."
-msgstr ""
-
-msgid ""
-"↑ ↓ move, o folds or opens, Enter names, y confirms the attributed faces "
-"shown (or names a group as the person it looks like), x names several "
-"groups at once, i ignores a group; × marks a face that is someone else's,"
-" the next button saves it."
 msgstr ""
 
 #, python-brace-format

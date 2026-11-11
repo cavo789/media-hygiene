@@ -108,6 +108,14 @@ opened from the home page.
 - The phone page's exceptions, decided in 0314: no Delete key (its only deletion, for real, is
   the red button: "Delete" must not mean anything else there); in its large view Space ticks or
   unticks the file shown (it shows the PC's copy as a picture, never a video to play).
+- The people page (`people/templates/people*`, 0667): faces in sections, not a grid of files
+  to pick. On the frame, with the shared large view's markup and look (`pick_viewer.html.j2`,
+  `pick_album = false`) driven by its own `people_viewer.js.j2`: ← → Home End go through the
+  faces of the section clicked; Delete / Backspace set aside or take back the one photo shown
+  and the view **stays on it** (no grid to step back to); no Space, no A, no 👤 (this is the
+  page of people). A click opens the large view (no picking: × marks a face as someone
+  else's, saved by the section's next button); ↑ ↓ / j k move between sections, x picks a
+  group to name with others — not the grid's gestures, on purpose.
 - A key that does not apply (no album on a page): leave it out of the panel and of `?`, never give
   it another meaning.
 - A new gesture or key: add it to the shared templates, so every page gets it, and to this table.
