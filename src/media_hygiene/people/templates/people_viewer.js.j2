@@ -1,8 +1,9 @@
 {# The large view of the people page: the shared one (`pick_viewer.html.j2`, its look and its
    `?` list) driven by this page's faces instead of a grid of files. A click on a face opens its
    photo; ← → Home End go through the faces of the same section, Delete sets the one photo
-   shown aside (its faces not remembered as someone's), Backspace takes it back — the view
-   stays on it (no grid to step back to); F full screen, I the photo's path, ? every key, Esc,
+   shown aside (its faces not remembered as someone's) then shows the next face not set aside,
+   at the end the previous one, none left closes the view (as the shared large view);
+   Backspace takes it back and the view stays on it; F full screen, I the photo's path, ? every key, Esc,
    a click beside it or Back closes it (0666). A button under it does what Delete or Backspace
    does, for a mouse. #}
 let viewing = null; // { list: [{ item, aside }], at }: the faces the view goes through
@@ -63,7 +64,16 @@ function viewerAt(at) {
   drawViewer();
 }
 
-// One photo, its faces not someone's to remember: set aside, or taken back; the view stays.
+// The nearest face from `from` not set aside, going `step` ways; -1 when there is none.
+function viewerNotAside(from, step) {
+  for (let at = from + step; at >= 0 && at < viewing.list.length; at += step) {
+    if (!viewing.list[at].aside) return at;
+  }
+  return -1;
+}
+
+// One photo, its faces not someone's to remember: set aside, or taken back. Taken back, the
+// view stays; set aside, it steps to the next face, else the previous one, else closes.
 async function viewerChoice(action) {
   const face = shownFace();
   if (!face || !state.can_aside || face.aside === (action === "add")) return;
@@ -71,7 +81,14 @@ async function viewerChoice(action) {
   const result = await send(body, ASIDE_PATH);
   if (!result) return;
   face.aside = action === "add";
-  drawViewer();
+  if (action === "add") {
+    const before = viewerNotAside(viewing.at, -1);  // as the shared large view (0517)
+    const shown = before >= 0 ? before : viewerNotAside(viewing.at, 1);
+    if (shown < 0) { closeViewer(); return; }
+    viewerAt(shown);
+  } else {
+    drawViewer();
+  }
   $("viewerSaid").textContent = result.aside.message;
 }
 

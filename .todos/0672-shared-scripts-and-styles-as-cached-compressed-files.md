@@ -49,3 +49,9 @@ connection per request (see the keep-alive TODO of the same review).
 Estimated from the measures above: second and later page loads send about 325 KB → under
 25 KB compressed for `/library` (the data only), and the 217 KB of script is compiled once
 per session instead of once per page.
+
+## Decided (2026-11-11, maintainer, review of the iterate of 2026-11-10)
+
+- Once the scripts and styles are files (this TODO), drop `'unsafe-inline'` from `style-src`
+  too (0671, commit c17741ae, kept it for 12 `style="…"` attributes and the styles scripts
+  set): move those attributes into classes, and say how many are left if any.

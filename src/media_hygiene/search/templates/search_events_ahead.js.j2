@@ -10,6 +10,7 @@
   const remember = (card) => { try { sessionStorage.setItem(LAST_EVENT, card.id); } catch (error) { /* not kept */ } };
   const eventUrl = (card) => card.span ? SPAN_PATHS.files + encodeURIComponent(card.id) : EVENTS_PATH + "/" + encodeURIComponent(card.id);
   const ahead = async (index) => {
+    if (navigator.connection && navigator.connection.saveData) return;  // data saver: nothing ahead
     let next = index + 1;
     while (next < events.length && !SPAN && !visible(events[next])) next += 1;
     const card = events[next];
