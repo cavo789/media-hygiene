@@ -4837,6 +4837,9 @@ msgstr "Groupes"
 msgid "Groups of identical files"
 msgstr "Groupes de fichiers identiques"
 
+msgid "Guest: the albums chosen for guests only"
+msgstr "Invité : seulement les albums choisis pour les invités"
+
 #, python-brace-format
 msgid "HTML report: {path}"
 msgstr "Rapport HTML : {path}"
@@ -6668,6 +6671,13 @@ msgstr ""
 msgid "No album is named {name}."
 msgstr "Aucun album ne s'appelle {name}."
 
+msgid ""
+"No album is shown to guests yet. On the PC, open an album and tick Show "
+"to guests."
+msgstr ""
+"Aucun album n'est encore montré aux invités. Sur le PC, ouvrez un album "
+"et cochez Montrer aux invités."
+
 #, python-brace-format
 msgid "No album named {name}."
 msgstr "Aucun album nommé {name}."
@@ -7031,6 +7041,13 @@ msgstr ""
 "Aucun téléphone vu : branchez-le, déverrouillez-le, choisissez Transfert "
 "de fichiers (iPhone : Faire confiance à cet ordinateur), puis tapez de "
 "nouveau mh import --phone."
+
+msgid ""
+"No phone waits here: choose Make room on the phone on the home page, or "
+"type mh import --phone --free."
+msgstr ""
+"Aucun téléphone n'attend ici : choisissez Faire de la place sur le téléphone "
+"sur l'accueil, ou tapez mh import --phone --free."
 
 msgid "No photo folder to copy into: only backup folders are mounted."
 msgstr ""
@@ -9265,6 +9282,9 @@ msgstr "Lecture des albums…"
 msgid "Reading the index"
 msgstr "Lecture de l’index"
 
+msgid "Reading the journals and the quarantine…"
+msgstr "Lecture des journaux et de la quarantaine…"
+
 msgid "Reading the latest classify plan…"
 msgstr "Lecture du dernier plan de classify…"
 
@@ -10686,6 +10706,9 @@ msgstr "Montrer cet album sur la télé"
 msgid "Show this message and exit."
 msgstr "Affiche ce message et quitte."
 
+msgid "Show to guests"
+msgstr "Montrer aux invités"
+
 msgid "Show your photos on the TV"
 msgstr "Montrer vos photos sur la télé"
 
@@ -11399,6 +11422,9 @@ msgstr ""
 msgid "The albums cannot be read (error {status})."
 msgstr "Les albums n'ont pas pu être lus (erreur {status})."
 
+msgid "The albums chosen for you: look, nothing here can be changed."
+msgstr "Les albums choisis pour vous : regardez, rien ici ne peut être modifié."
+
 #, python-brace-format
 msgid "The archive folder {target} and {folder} are one inside the other."
 msgstr "Le dossier d'archive {target} et {folder} sont l'un dans l'autre."
@@ -12008,6 +12034,14 @@ msgstr ""
 "que vous décidiez dans 'library' (son onglet 🗂 Événements), pour que "
 "l'outil n'écrive jamais un nom de dossier de lui-même."
 
+#, python-brace-format
+msgid "The guests' devices no longer show {name}."
+msgstr "Les appareils des invités ne montrent plus {name}."
+
+#, python-brace-format
+msgid "The guests' devices now show {name}."
+msgstr "Les appareils des invités montrent maintenant {name}."
+
 msgid "The guide"
 msgstr "Le parcours"
 
@@ -12321,6 +12355,9 @@ msgstr "Les autres filtres actifs"
 msgid "The page cannot reach mh: is it still running?"
 msgstr "La page ne joint plus mh : tourne-t-il encore ?"
 
+msgid "The page could not tell mh what to delete: try again."
+msgstr "La page n'a pas pu dire à mh quoi supprimer : réessayez."
+
 #, python-brace-format
 msgid ""
 "The page does not open? docker run must publish the same port on both "
@@ -12437,6 +12474,13 @@ msgstr "Le nom du téléphone, tel que Windows l'affiche."
 
 msgid "The phone's remote: on a phone on the same Wi-Fi, open"
 msgstr "La télécommande : sur un téléphone du même Wi-Fi, ouvrez"
+
+msgid ""
+"The phones and tablets paired with the guests code see the albums ticked "
+"here, nothing else of the library"
+msgstr ""
+"Les téléphones et tablettes appairés avec le code des invités voient les "
+"albums cochés ici, rien d'autre de la photothèque"
 
 msgid "The photo, full screen"
 msgstr "La photo, en plein écran"
@@ -13283,6 +13327,11 @@ msgid "This build cannot search by meaning: {module} is not installed."
 msgstr ""
 "Cette version ne sait pas chercher par le sens : {module} n'est pas "
 "installé."
+
+msgid "This card could not be read now: reload the page to try again."
+msgstr ""
+"Cette carte n'a pas pu être lue maintenant : rechargez la page pour "
+"réessayer."
 
 msgid "This chain cannot be run from here: type the command in mh."
 msgstr "Cette chaîne ne peut pas être lancée d'ici : tapez la commande dans mh."
@@ -21286,6 +21335,9 @@ msgstr ""
 msgid "👉 What next: open Windows PowerShell and type:"
 msgstr "👉 Et ensuite : ouvrez Windows PowerShell et tapez :"
 
+msgid "👪 Family: the whole library"
+msgstr "👪 Famille : toute la photothèque"
+
 #, python-brace-format
 msgid "💡 On a phone of the home Wi-Fi too: {command}"
 msgstr "💡 Sur un téléphone du Wi-Fi de la maison aussi : {command}"
@@ -21620,6 +21672,9 @@ msgstr ""
 #, python-brace-format
 msgid "🧪 Try on one month ({files} files)"
 msgstr "🧪 Essayer sur un mois ({files} fichiers)"
+
+msgid "🧳 Guest: the albums ticked Show to guests, nothing else"
+msgstr "🧳 Invité : les albums cochés Montrer aux invités, rien d'autre"
 
 #, python-brace-format
 msgid "🧹 {count} copy among the new files set aside."

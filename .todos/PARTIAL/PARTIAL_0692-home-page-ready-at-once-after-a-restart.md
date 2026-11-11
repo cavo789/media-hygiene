@@ -58,3 +58,30 @@ Why, from reading the code (not measured):
 - [ ] No traceback, no endless spinner if the card's route fails (message in the card)
 - [ ] New strings through `_()` + French; both documentation languages if a capture changes
       (`docs_screenshots` to run afterwards)
+
+## Status — PARTIAL (2026-11-11)
+
+### Done
+- Step 46 of `tests/measure/mh-measure.ps1`: inside the running home page, each part of
+  `home_state` and of the safety card timed (first then second call), `GET /api/state` and
+  `GET /api/safety` from Windows, then the stopwatch of a second start.
+- Devcontainer, *measured* (synthetic quarantine of 5,000 files in 5 runs with their journals,
+  `time.perf_counter`, warm second call): `home_state` 274 ms, of which the safety card 215 ms
+  (`held_back` 114, `only_copies` 51) → `/api/state` without the card 108 ms (-61 %); the card on
+  its route, cached, 55 ms (-75 %; first call 217 ms). Nothing else above 200 ms (`read_status` 81).
+- The page drawn at once from the last state in `localStorage` (was `sessionStorage`), marked
+  *updating…*; the first start ever keeps the meerkat.
+- The card on its own route `GET /api/safety` (phone included), drawn when it arrives, its last
+  answer kept in `localStorage` meanwhile, else a line of the same height; an error says so in
+  the card.
+- The slow facts (`only_copies`, `held_back`) cached in `/cache/home-safety.json`
+  (`services/safety_cache.py`), one test per event in `tests/unit/test_safety_cache.py`.
+  Known lag: a kept twin removed by hand counts as covered until the next audit (`purge`
+  counts again, uncached).
+- The 200 ms threshold: a constant of the review, not a setting (nothing reads it at run time).
+
+### Not done
+- The before/after figures on the maintainer's PC (Windows + Docker Desktop, real folders).
+  **Reason:** only the maintainer's machine can give them: build the image from the branch
+  `iterate/2026-11-11`, then run step 46 (`.\mh-measure.ps1 -Only 46 -Count 1`, the script
+  fetched by the commit SHA of this lot).

@@ -136,6 +136,7 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         runs={path: HomeTags(run) for path, run in sources.runs.items()},
         config_file=runtime.locations.config_file,
         samples=sources.samples,
+        safety=sources.safety,
         chain=ChainDoor(
             chain_file(runtime),
             runtime.locations.reports_dir,

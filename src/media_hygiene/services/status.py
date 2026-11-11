@@ -21,7 +21,6 @@ from media_hygiene.report.index_page import load_summaries
 from media_hygiene.services.quarantines import mounted_quarantines
 from media_hygiene.services.run_book import Runs, book_of, read_runs
 from media_hygiene.services.run_facts import acted_on
-from media_hygiene.services.safety_records import LastPush, last_push
 from media_hygiene.services.sort_disk import DiskProgress, disk_progress
 from media_hygiene.services.status_parts import (
     QuarantineState,
@@ -82,7 +81,6 @@ class Status:  # pylint: disable=too-many-instance-attributes
     faces: tuple[int, int] | None = None
     imported: str | None = None  # the newest `import` run (0265)
     backed_up: datetime | None = None  # when the newest `mh push` ran (0264)
-    push: LastPush | None = None  # that run: complete, and where (0689)
     disk: DiskProgress | None = None  # what the tree says of the sorting (0405)
 
     @property
@@ -150,7 +148,6 @@ def read_status(runtime: Runtime) -> Status:
         imported=next((r.run_id for r in runs if r.kind is Phase.IMPORT), None),
         backed_up=_started(next((r.run_id for r in runs if r.kind is Phase.PUSH), "")),
         disk=disk_progress(runtime),
-        push=last_push(book.facts),
     )
 
 

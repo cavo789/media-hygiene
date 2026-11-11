@@ -14,11 +14,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from media_hygiene.actions.journal import done_states, journal_file, read_journal
-from media_hygiene.actions.kinds import Phase
-from media_hygiene.actions.quarantine import QUARANTINED
-from media_hygiene.actions.runs import run_phase
+from media_hygiene.actions.journal import journal_file
+from media_hygiene.actions.journal_cache import read_journal_once
 from media_hygiene.errors import JournalError
+from media_hygiene.services.run_facts import held_of
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -36,13 +35,7 @@ def journal_census(journal_dir: Path, run_id: str) -> tuple[int, int] | None:
         or unreadable (the caller then walks the folder).
     """
     try:
-        entries = read_journal(journal_file(journal_dir, run_id))
+        entries = read_journal_once(journal_file(journal_dir, run_id))
     except JournalError, OSError:
         return None
-    put_back = {entry.seq for entry in done_states(entries, Phase.UNDO)}
-    held = [
-        entry
-        for entry in done_states(entries, run_phase(entries))
-        if entry.action in QUARANTINED and entry.seq not in put_back
-    ]
-    return len(held), sum(entry.size for entry in held)
+    return held_of(entries)

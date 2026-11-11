@@ -437,6 +437,30 @@ n'appairent rien.
 | Ce que le téléphone atteint | Les albums et **leurs** fichiers ; le reste de votre bibliothèque par *Rechercher* et *Parcourir* seulement (en lecture). |
 | Où | Le Wi-Fi de la maison seulement, tant que `mh` tourne sur le PC (dit sur la page). |
 
+## Montrer des photos à des visiteurs
+
+Une tablette chez les beaux-parents, le téléphone d'un ami à la maison : appairez-le comme
+**invité**, il ne voit que les albums choisis pour les invités, jamais le reste de votre
+photothèque.
+
+1. Sur le PC, ouvrez un album (*Partager › Vos albums*, puis l'album) et cochez
+   **🧳 Montrer aux invités**. Cochez autant d'albums que vous voulez ; la coche est enregistrée
+   dans `albums.json` et relue.
+2. Sur la carte *Sur votre téléphone* de la page d'accueil, choisissez **🧳 Invité** : la carte
+   affiche le code des invités et son QR code (celui de la **👪 Famille** reste pour vos
+   propres téléphones).
+3. Sur l'appareil du visiteur, scannez le QR code ou tapez le code, comme pour un téléphone.
+
+| | 👪 Famille | 🧳 Invité |
+|---|---|---|
+| Voit | Toute la photothèque (*Rechercher*, *Parcourir*), les albums, les rapports | Les albums cochés **Montrer aux invités**, leurs photos et vidéos |
+| Le reste | Lecture seule | Rien : toute autre adresse répond *introuvable* |
+| Appairé | 400 jours (HTTPS) ou ce lancement | Pareil ; *Oubliez*-le sur la carte du PC à la fin de la visite |
+
+Décochez un album : il disparaît des appareils des invités à leur prochain geste. La carte du
+PC liste chaque appareil, *Invité* à côté de son nom. Pour une seule fois, le lien 🔗 d'un
+album (24 heures, sans appairage) reste là.
+
 ## Le clavier, la palette, le thème
 
 | Touche | Ce qu'elle fait |

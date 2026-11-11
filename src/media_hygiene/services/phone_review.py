@@ -5,7 +5,8 @@ r"""`phone-review`: the page where the user ticks what leaves the phone (0248).
 file is saved in `/reports` at once and after every choice. The page ends on "Delete
 from the phone" (the files ticked, read back from the disk, are then printed for `mh`)
 or on "Leave everything", "Back to the home page" and Ctrl+C (nothing printed:
-nothing deleted, 0332).
+nothing deleted, 0332). Started from the home page, the home server serves the same
+page instead (`phone_here`, 0694); its paths are relative to it for that.
 """
 
 from __future__ import annotations
@@ -17,12 +18,11 @@ from functools import partial
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.constants import ExitCode
-from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
 from media_hygiene.i18n.live import PerLocale
 from media_hygiene.i18n.templates import translated_environment
-from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.person.door import with_person
+from media_hygiene.review.apply_api import APPLY_PATH
 from media_hygiene.review.ending import (
     STOP_PATH,
     STOPPED,
@@ -33,17 +33,13 @@ from media_hygiene.review.files import FILE_PATH
 from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.page_header import page_header
 from media_hygiene.review.phone_app import FREE_PATH, PHONE_DECIDE_PATH, PhoneApp
-from media_hygiene.review.phone_file import PHONE_DECISIONS
-from media_hygiene.review.phone_session import PhonePages, PhoneSession
-from media_hygiene.review.phone_tiles import TileSource
-from media_hygiene.review.place import decisions_place
 from media_hygiene.review.presence import Presence
 from media_hygiene.services.keyed_albums import keyed_albums
 from media_hygiene.services.launcher_phone_free import PHONE_MB_PER_SECOND
-from media_hygiene.services.quarantines import mounted_quarantines
+from media_hygiene.services.phone_opening import open_phone_session
 from media_hygiene.services.reviewing import address_tip, page_url
-from media_hygiene.services.writable import ensure_writable
 from media_hygiene.share.album_api import ALBUMS_PATH
+from media_hygiene.share.album_page import TV_PAIRED_PATH
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -66,6 +62,14 @@ class PhoneReview:
     port: int = 0
 
 
+@dataclass(frozen=True, slots=True)
+class PhoneServed:
+    """The page in the home server (0694): its slideshow, its *Apply now*."""
+
+    apply_offered: bool = False
+    apply_pending: bool = False  # something waits in the decisions file
+
+
 def serve_phone_review(runtime: Runtime, review: PhoneReview) -> tuple[str, ...]:
     """Serve the page until it ends; every choice is saved as it is made.
 
@@ -78,24 +82,14 @@ def serve_phone_review(runtime: Runtime, review: PhoneReview) -> tuple[str, ...]
         pressed "Delete from the phone"; none otherwise.
 
     Raises:
-        MountError: The reports folder is not mounted: the choices would be lost.
         PageClosed: Opened from the home page, its tab was closed (0332): the loop of
             `mh` ends, as after any page; from the console, nothing is printed.
     """
-    if not runtime.persistent(MountKind.REPORTS):
-        raise MountError(
-            _("The decisions are saved in /reports: mount it, or they are lost.")
-        )
-    ensure_writable(runtime, MountKind.REPORTS)
-    target = runtime.locations.reports_dir / PHONE_DECISIONS
-    place = decisions_place(runtime.mapper, runtime.locations.reports_dir, target)
-    quarantines = mounted_quarantines(runtime).folders
-    tiles = TileSource(runtime.mapper, review.destination, quarantines)
-    session = PhoneSession(
-        PhonePages(review.phone, review.files, tiles, (target, place))
+    opened = open_phone_session(
+        runtime, review.phone, (review.files, review.destination)
     )
-    session.save()
-    session.on_disk()  # proven readable before the page opens
+    session = opened.session
+    place = session.place
 
     def ready(port: int) -> None:
         """Tell where the page is.
@@ -111,58 +105,76 @@ def serve_phone_review(runtime: Runtime, review: PhoneReview) -> tuple[str, ...]
         )
         address_tip(runtime.output, port)
 
-    copies = {
-        str(rank): copy
-        for rank, ticked in enumerate(review.files)
-        if (copy := tiles.preview(ticked)) is not None
-    }
     header = page_header(_TEMPLATE)
     # Its tab closed: as Stop, nothing deleted; mh reads the page's lines (0262). From
     # the home page, the loop of mh ends instead, as after any page's tab (0332).
     closed = ExitCode.PAGE_CLOSED if header.home else STOPPED
     with runtime.executor_factory() as executor, contextlib.suppress(KeyboardInterrupt):
         app = PhoneApp(session, phone_page(place), executor, runtime.previews_dir)
-        app = replace(app, albums=keyed_albums(runtime, copies.get))  # (0657)
+        app = replace(app, albums=keyed_albums(runtime, opened.copies.get))  # (0657)
         door = EndingDoor(app, app.ending, Presence(app.ending, closed))
         door = with_person(door, runtime, executor)
         asyncio.run(serve_until_ended(door, review.port, ready))
     return session.ticked_lines() if session.freeing else ()
 
 
-def phone_page(place: DecisionsPlace) -> PerLocale[bytes]:
+def phone_page(
+    place: DecisionsPlace, served: PhoneServed | None = None
+) -> PerLocale[bytes]:
     """The page, drawn in the language in use.
 
     Args:
         place: The decisions file it writes.
+        served: Served by the home server (0694); None: by its own server.
 
     Returns:
         How to draw it.
     """
-    return PerLocale(partial(_page, place))
+    return PerLocale(partial(_page, place, served))
 
 
-def _page(place: DecisionsPlace) -> bytes:
+def _relative(path: str) -> str:
+    """A path of the page, relative to it: the same at `/` or under `/phone/`.
+
+    Args:
+        path: The route, from `/`.
+
+    Returns:
+        It without its first slash.
+    """
+    return path.removeprefix("/")
+
+
+def _page(place: DecisionsPlace, served: PhoneServed | None) -> bytes:
     """Render the page.
 
     Args:
         place: The decisions file it writes.
+        served: Served by the home server; None: by its own server.
 
     Returns:
         The page.
     """
     environment = translated_environment(_TEMPLATES, escaped=("html", "j2"))
+    here = served or PhoneServed()
     return (
         environment.get_template(_TEMPLATE)
         .render(
             header=page_header(_TEMPLATE),
-            state_path=STATE_PATH,
-            decide_path=PHONE_DECIDE_PATH,
-            file_path=FILE_PATH,
-            free_path=FREE_PATH,
-            stop_path=STOP_PATH,
+            state_path=_relative(STATE_PATH),
+            decide_path=_relative(PHONE_DECIDE_PATH),
+            file_path=_relative(FILE_PATH),
+            free_path=_relative(FREE_PATH),
+            stop_path=_relative(STOP_PATH),
             place=place.host,
             phone_speed=PHONE_MB_PER_SECOND,
-            albums_path=ALBUMS_PATH,  # Add to an album (0657)
+            albums_path=_relative(ALBUMS_PATH),  # Add to an album (0657)
+            served=served is not None,  # the tab goes home after Delete or Leave
+            tv_here=served is not None,  # ▶ Slideshow ▾ (0694)
+            tv_paired_path=TV_PAIRED_PATH,
+            apply_offered=here.apply_offered,
+            apply_path=_relative(APPLY_PATH),
+            apply_pending=here.apply_pending,
         )
         .encode()
     )

@@ -236,9 +236,11 @@ la page fonctionne comme [les dossiers de `library`](library.md#parcourir-vos-do
   décoche le fichier affiché**, F plein écran, Échap ferme. Elle montre la copie du PC ; *Ouvrir
   l'original* l'ouvre tel quel.
 - **📚 Album ▾** dans la barre ajoute à un album les copies sur le PC des fichiers choisis (un
-  fichier que l'index ne connaît pas encore est laissé de côté : lancez d'abord un audit). Pas de
-  diaporama depuis cette page : elle a son propre serveur ; montrez l'album ensuite depuis la page
-  d'accueil.
+  fichier que l'index ne connaît pas encore est laissé de côté : lancez d'abord un audit). Lancée
+  depuis l'accueil, la page est servie par l'accueil lui-même : **▶ Diaporama ▾** montre les
+  fichiers choisis *Sur ce PC* ou *Sur la télé*, et **✅ Appliquer** apparaît quand d'autres pages
+  ont mis des fichiers de côté. Tapée dans une console, la page a son propre serveur : pas de
+  diaporama.
 - Pas de touche Suppr ici : la seule suppression est le bouton rouge. Les touches sont listées en
   bas à gauche (⌨ **Clavier**, puis *Plus de touches*).
 
@@ -251,7 +253,9 @@ façon, sans rien supprimer, et l'accueil revient dans le même onglet ; après 
 l'onglet dit de passer à la fenêtre PowerShell et compte les minutes écoulées face à
 l'estimation (*2 min écoulées, sur environ 4*), puis montre l'accueil tout seul quand `mh` le
 rouvre, même si `mh.ps1` a été écrit par une image plus ancienne ; tapé dans une console, il dit
-que la fenêtre PowerShell indique quand c'est fini. Si la page s'est arrêtée entre-temps (terminée dans un autre onglet, la
+que la fenêtre PowerShell indique quand c'est fini. Lancée depuis l'accueil qui reste ouvert
+(pas de second serveur), l'onglet ouvre la page tout seul, puis revient à l'accueil après
+*Supprimer* ou *Tout laisser* : sa pastille ⏳ suit la suppression dans la fenêtre de `mh`. Si la page s'est arrêtée entre-temps (terminée dans un autre onglet, la
 fenêtre de `mh` fermée), une coche le dit clairement — *La page ne tourne plus* — et le bouton
 rouge est refusé : plus rien n'y est enregistré. Ensuite, pour chaque fichier coché :
 

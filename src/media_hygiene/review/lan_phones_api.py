@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.review.http import Response
 from media_hygiene.review.lan import COOKIE_NAME
 from media_hygiene.review.lan_phone_care import forget_all, rename
-from media_hygiene.review.lan_phones import device_name
+from media_hygiene.review.lan_phone_model import GUEST, device_name
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.serving import json_response, refused_post
 
@@ -94,6 +94,7 @@ def _device(phone: Phone, activity: Activity | None, *, tv: bool) -> dict[str, o
         "seen": seen,
         "address": phone.address,
         "tv": tv,
+        "guest": phone.role == GUEST,  # 0684
         "days": days,
     }
 

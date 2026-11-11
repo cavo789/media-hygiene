@@ -156,7 +156,9 @@ function global:_{{ function }}_watch {
             Write-Host "{{ texts.direct }}"
             _{{ function }}_forward "$($words[0])"
             $global:LASTEXITCODE = 0
-            {{ function }} @words @args
+            # The step may hand a page to this server (the phone's, 0694): its folder, its end.
+            $global:MediaHygieneKept = @{ folder = $folder; code = $code }
+            try { {{ function }} @words @args } finally { $global:MediaHygieneKept = $null }
             $result = [int]$LASTEXITCODE
             [IO.File]::WriteAllText($done, '{"id": "' + $step.id + '", "code": ' + $result + '}')
             Remove-Item -LiteralPath $running -Force -ErrorAction SilentlyContinue

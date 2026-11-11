@@ -122,20 +122,40 @@ function render() {
 // The state, read again from the tool folders (after the audit of the page, a step's end).
 const reload = () => fetch(P.state, { cache: "no-store" })
   .then((response) => response.text())
-  .then((text) => { S = JSON.parse(text); keepState(text); index(); render(); })
+  .then((text) => { S = JSON.parse(text); keepState(text); index(); render(); askSafety(); })
   .catch(() => stopped());
-// The last state of this tab (0442): back on the page it is drawn at once, then refreshed
-// behind. A per-tab convenience: without storage, the splash as before. Choosing a step reads
+// *Are my photos safe?* (0689) on its own route (0692): it reads every journal and the
+// quarantine, the slow part of the state. Its last answer is drawn meanwhile; an error says so
+// in the card, never an endless wait.
+const SAFETY_KEY = `mh-home-safety-${document.documentElement.lang}`;
+let SAFETY = (() => { try { return JSON.parse(localStorage.getItem(SAFETY_KEY) || "null"); } catch (error) { return null; } })();
+let safetyFailed = false;
+function redrawSafety() {
+  document.querySelectorAll("[data-safety]").forEach((card) => { card.outerHTML = safetyCard(); });
+}
+function askSafety() {
+  fetch(P.safety, { cache: "no-store" })
+    .then((response) => { if (!response.ok) throw new Error(String(response.status)); return response.text(); })
+    .then((text) => {
+      SAFETY = JSON.parse(text); safetyFailed = false;
+      try { localStorage.setItem(SAFETY_KEY, text); } catch (error) { /* refused: read again next time */ }
+      redrawSafety();
+    })
+    .catch(() => { safetyFailed = true; redrawSafety(); });
+}
+// The last state (0442), kept in localStorage (0692: it outlives the tab and a restart of mh):
+// the page is drawn at once from it, then refreshed behind. A per-browser convenience: without
+// storage, the splash as before. Choosing a step reads
 // the state again on the server, so what is drawn for this moment can never run a stale step.
 const STATE_KEY = `mh-home-state-${document.documentElement.lang}`;
 function keepState(text) {
-  try { sessionStorage.setItem(STATE_KEY, text); } catch (error) { /* refused or full: the splash next time */ }
+  try { localStorage.setItem(STATE_KEY, text); } catch (error) { /* refused or full: the splash next time */ }
 }
 function keptState() {
-  try { return sessionStorage.getItem(STATE_KEY); } catch (error) { return null; }
+  try { return localStorage.getItem(STATE_KEY); } catch (error) { return null; }
 }
 function forgetState() {
-  try { sessionStorage.removeItem(STATE_KEY); } catch (error) { /* nothing kept */ }
+  try { localStorage.removeItem(STATE_KEY); } catch (error) { /* nothing kept */ }
 }
 
 // ---- Events -----------------------------------------------------------------------------
@@ -221,13 +241,14 @@ function start() {
     .then((response) => { if (!response.ok) throw new Error(String(response.status)); return response.text(); })
     .then((text) => {
       keepState(text);
-      if (drawn && text === kept) { shown(); askLate(); askSamples(); return; }
+      if (drawn && text === kept) { shown(); askLate(); askSamples(); askSafety(); return; }
       const focused = document.activeElement && document.activeElement.id;
       S = JSON.parse(text);
       shown();
       if (drawn) { index(); render(); if (focused) { const again = document.getElementById(focused); if (again) again.focus({ preventScroll: true }); } } else begin();
       askLate();
       askSamples();
+      askSafety();
     })
     .catch(() => { forgetState(); shown(); stopped(); });
 }
@@ -244,9 +265,8 @@ function showLan() {
       $("#lanPair").hidden = !lan.qr;
       $("#lanCard").hidden = false;
       if (!lan.qr) return;
-      $("#lanQr").innerHTML = lan.qr;
       $("#lanUrl").textContent = lan.url;
-      $("#lanCode").textContent = lan.code;
+      showCode(lan);
       showPairing(lan);
       // HTTPS (0430): a phone installs the PC's certificate first, once.
       $("#lanCaLine").hidden = !lan.ca;
@@ -257,6 +277,22 @@ function showLan() {
       $("#lanCard").hidden = false;
     })
     .catch(() => undefined);
+}
+// Family or guest (0684): the code shown is the role the device gets; the guests' sees
+// the albums ticked Show to guests only.
+const lanRole = { guest: false, lan: null, wired: false };
+function showCode(lan) {
+  lanRole.lan = lan;
+  const shown = lanRole.guest && lan.guest ? lan.guest : lan;
+  $("#lanQr").innerHTML = shown.qr;  // an SVG drawn by the server (segno)
+  $("#lanCode").textContent = shown.code;
+  $("#lanRoles").hidden = !lan.guest;
+  $("#lanFamily").setAttribute("aria-pressed", String(!lanRole.guest));
+  $("#lanGuests").setAttribute("aria-pressed", String(lanRole.guest));
+  if (lanRole.wired) return;
+  lanRole.wired = true;
+  $("#lanFamily").addEventListener("click", () => { lanRole.guest = false; showCode(lanRole.lan); });
+  $("#lanGuests").addEventListener("click", () => { lanRole.guest = true; showCode(lanRole.lan); });
 }
 // The pairing's report (0681): wrong codes per address, the devices paired this run (a toast for a new one).
 const LAN_EVERY_MS = 15000;
@@ -277,7 +313,7 @@ function showPairing(lan) {
   lanSeen.paired = paired.length;
   if (lanSeen.wired || !lan.reopen) return;
   lanSeen.wired = true;
-  const ask = (path, said) => post(path, {}).then((r) => (r.ok ? r.json() : null)).then((again) => { if (!again) return; $("#lanQr").innerHTML = again.qr; $("#lanCode").textContent = again.code; showPairing(again); if (said) toast(said, "ok"); }).catch(() => undefined);
+  const ask = (path, said) => post(path, {}).then((r) => (r.ok ? r.json() : null)).then((again) => { if (!again) return; showCode(again); showPairing(again); if (said) toast(said, "ok"); }).catch(() => undefined);
   $("#lanReopen").addEventListener("click", () => ask(lan.reopen, T.lanReopened));
   $("#lanSeen").addEventListener("click", () => ask(lan.seen, ""));
 }
@@ -304,7 +340,7 @@ function deviceLine(phone, list) {
   forget.addEventListener("click", () => { forget.disabled = true; devicePost(paths.forget, { id: phone.id }, "").then((ok) => { forget.disabled = ok; }); });
   const facts = document.createElement("small");
   const seen = phone.seen ? `${new Date(phone.seen).toLocaleDateString()} ${clock(phone.seen)}` : T.lanNeverSeen;
-  facts.textContent = `${phone.tv ? T.lanTv + " · " : ""}${fill(T.lanDevice, { paired: phone.paired, seen, address: phone.address || "?" })}`;
+  facts.textContent = `${phone.tv ? T.lanTv + " · " : ""}${phone.guest ? T.lanGuest + " · " : ""}${fill(T.lanDevice, { paired: phone.paired, seen, address: phone.address || "?" })}`;
   const did = document.createElement("small");
   const sum = (key) => phone.days.reduce((total, day) => total + (day[key] || 0), 0);
   did.textContent = phone.days.length ? fill(T.lanActivity, { pages: sum("pages"), pictures: sum("pictures"), day: phone.days[0].day }) : T.lanNoActivity;

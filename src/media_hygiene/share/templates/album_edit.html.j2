@@ -63,6 +63,7 @@
       <button id="linkStop" class="plain" type="button">⏹ {{ _("Stop sharing") }}</button>
     </div>
     <p id="linkSaid" role="status"></p>
+    <p><label title="{{ _('The phones and tablets paired with the guests code see the albums ticked here, nothing else of the library') }}"><input id="guestsShown" type="checkbox"> 🧳 {{ _("Show to guests") }}</label></p>
     <p><button id="folderMake" class="plain" type="button" title="{{ _('No photo is copied, no extra space, no duplicate') }}">📁 {{ _("Make the folder in Explorer") }}</button></p>
     <p><a id="addPhotos" class="button" href="{{ paths.search_page }}" title="{{ _('Search your photos, aimed at this album: its dates, its name in the album field') }}">➕ {{ _("Add photos") }}</a></p>
 {% endblock %}

@@ -19,6 +19,7 @@ from media_hygiene.docs.pages import DOCS_PREFIX
 from media_hygiene.review.album_show import ALBUM_STEP, SLIDESHOW_PAGE, TV_CHOOSE
 from media_hygiene.review.home_app import AUDIT_PATH
 from media_hygiene.review.home_assets import ASSETS_PREFIX, FAVICON_PATH
+from media_hygiene.review.home_more_api import SAFETY_PATH
 from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.review.http import ContentType
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH
@@ -39,7 +40,7 @@ if TYPE_CHECKING:
 LAN_PATH: Final = "/api/lan"  # the PC's card: the code, its QR code (`lan_app`)
 # `GET /api/step`: the chip of every page, read-only (0661); its `POST` stays the PC's.
 _HOME_READS: Final = frozenset(
-    {PAGE_PATH, STATE_PATH, AUDIT_PATH, FAVICON_PATH, STEP_PATH}
+    {PAGE_PATH, STATE_PATH, AUDIT_PATH, FAVICON_PATH, STEP_PATH, SAFETY_PATH}
 )
 _SEARCH_READS: Final = frozenset(
     {SEARCH_PAGE_PATH, FORMER_PAGE, BROWSE_PATH, FOLDERS_PATH}

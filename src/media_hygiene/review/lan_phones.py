@@ -17,40 +17,26 @@ from typing import TYPE_CHECKING, Final
 from pydantic import ValidationError
 
 from media_hygiene.review.lan_phone_care import expire, now_utc
-from media_hygiene.review.lan_phone_model import Phone, Phones, digest_of
+from media_hygiene.review.lan_phone_model import FAMILY, GUEST, Phone, Phones, digest_of
 from media_hygiene.review.lan_tls import lan_folder
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.review.lan_activity import Activity
+    from media_hygiene.review.lan_phone_model import Role
 
 PHONES_FILE: Final = "phones.json"
 TVS_FILE: Final = "tvs.json"  # the TVs of the slideshow paired for good (0456)
 TV_NAME: Final = "TV"
 _TOKEN_BYTES: Final = 32
 _ID_BYTES: Final = 6
-# The device named after the browser's own words, else a plain "phone".
-_DEVICES: Final = (("iPhone", "iPhone"), ("iPad", "iPad"), ("Android", "Android"))
-DEFAULT_DEVICE: Final = "Phone"
-
-
-def device_name(user_agent: str) -> str:
-    """Name a phone after its browser's `User-Agent`.
-
-    Args:
-        user_agent: The header.
-
-    Returns:
-        E.g. `Android`, `iPhone`; `DEFAULT_DEVICE` otherwise.
-    """
-    return next((name for word, name in _DEVICES if word in user_agent), DEFAULT_DEVICE)
 
 
 class PhoneBook:
     """`phones.json` in the `/lan` folder: read on each question, saved atomically."""
 
-    __slots__ = ("activity", "expired", "path")
+    __slots__ = ("activity", "expired", "path", "role")
 
     def __init__(self, folder: Path, file: str = PHONES_FILE) -> None:
         """Keep the file's place.
@@ -62,6 +48,17 @@ class PhoneBook:
         self.path = folder / file
         self.expired: tuple[str, ...] = ()  # forgotten at this start, unseen (0683)
         self.activity: Activity | None = None  # what each phone did (0683)
+        self.role: Role = FAMILY  # what `add` pairs (0684)
+
+    def guests(self) -> PhoneBook:
+        """The same file, pairing guests (0684).
+
+        Returns:
+            A book whose `add` writes `role = "guest"`.
+        """
+        book = PhoneBook(self.path.parent, self.path.name)
+        book.activity, book.expired, book.role = self.activity, self.expired, GUEST
+        return book
 
     def tvs(self) -> PhoneBook:
         """The TVs' file beside this one: the same rules, another cookie.
@@ -120,6 +117,7 @@ class PhoneBook:
             name=name,
             paired=datetime.now(UTC),
             digest=digest_of(token),
+            role=self.role,
         )
         try:
             self.save((*self.listed(), phone))

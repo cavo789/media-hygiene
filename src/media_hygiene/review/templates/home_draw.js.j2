@@ -140,8 +140,13 @@ function findings(found = S.findings, id = "foundTitle") {
     <div class="findings"><ul class="finding-list">${found.rows.map(findingRow).join("")}</ul></div>
   </section>`;
 }
-// *Are my photos safe?* (0689): the findings' look, one line per fact read from disk.
-const safetyCard = () => (S.safety ? `<div id="safetyCard">${findings(S.safety, "safetyTitle")}</div>` : "");
+// *Are my photos safe?* (0689): the findings' look, one line per fact read from disk; its own
+// route (0692, home.js askSafety): until it answers, its last answer, else a line of the same place.
+function safetyCard() {
+  const note = safetyFailed ? `<p class="callout callout-warn" role="alert">${esc(T.safetyFailed)}</p>` : "";
+  if (SAFETY) return `<div id="safetyCard" data-safety>${note}${findings(SAFETY, "safetyTitle")}</div>`;
+  return `<div id="safetyCard" data-safety class="safety-wait" role="status">${note || `<p>${esc(T.safetyReading)}</p>`}</div>`;
+}
 function welcome() {
   return `<section class="block" aria-labelledby="safeTitle">
     <div class="section-head"><h2 id="safeTitle">${esc(T.threeThings)}</h2></div>
