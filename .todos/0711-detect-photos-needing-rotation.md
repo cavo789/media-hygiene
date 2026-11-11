@@ -3,7 +3,7 @@
 - **Priority**: Medium
 - **Batch**: slideshow
 - **Depends**: —
-- **Files**: `src/media_hygiene/scan/visual.py`, `src/media_hygiene/people/`, `src/media_hygiene/index/schema.py`, `src/media_hygiene/slideshow/screen_jpeg.py`
+- **Files**: `src/media_hygiene/scan/visual.py`, `src/media_hygiene/scan/exif.py`, `src/media_hygiene/faces/`, `src/media_hygiene/index/schema.py`, `src/media_hygiene/review/` (new page), `src/media_hygiene/actions/`, `documentation/en|fr/`
 
 Reported by the maintainer on 2026-11-11 after a one-hour random show on the TV.
 
@@ -15,21 +15,43 @@ app or an editor that dropped it. Only the pixels can tell.
 
 ## Proposal
 
-- At audit time (cached in the index, keyed like the other visual facts), guess the upright
-  rotation (0/90/180/270) of a photo without an orientation tag:
-  1. faces: run the existing face detector on the 4 rotations; the one with confident,
-     upright faces wins (reliable for people, silent on landscapes);
-  2. optionally, flagged 🤖, a local Ollama vision model for the rest (slow: estimate first).
-- Never rewrite a file blindly (seeing first, 0524): a page showing the photos the tool would
-  turn, as tiles (skill `photo-picking-pages`), with Apply now; the turn is lossless when
-  possible (set the EXIF orientation tag rather than re-encode), and undoable.
-- Meanwhile the slideshow may apply a confident guess at display time only (no write).
+1. **Which files** — only camera photos, never screenshots, game captures, drawings,
+   scans of documents or collages (two of the three wrong turns measured below were not
+   photos: a video-game dog, a collage):
+   - the EXIF says a camera took it (`camera` of `VisualFacts`: make or model present);
+   - and its make is not a games console or a screenshot tool (a short list of makes, e.g.
+     `Nintendo`: `HNI_0012 (6).JPG`, A15, is likely a Nintendo 3DS capture — *not checked*:
+     read its EXIF before writing the list); names of screenshots (`name_patterns`) left out;
+   - photos without any camera EXIF (WhatsApp, scans) are left out of the first version;
+     a later TODO may add them once measured.
+2. **The guess** (at audit time, in the worker that already decodes the photo; cached in
+   the index with the other visual facts, schema bump; only for photos whose tag is none,
+   `0` or `1`):
+   - faces found in the 4 turns (existing YuNet), the turn with the best total score;
+   - proposed only when it beats the stored turn by a clear margin (A18: a girl lying down
+     on an upright photo) — margin chosen from the measure, a named constant;
+   - **180 deg only when two faces or more agree** (2 of the 3 errors were 180 deg; cameras
+     seldom store a photo upside down without a tag).
+   - Also read the tags `90` / `180` written in degrees by some software (12 photos):
+     treated as the EXIF codes 6 / 3 everywhere pictures are shown upright.
+3. **Seeing first** (0524): a page "Photos to straighten", tiles from the shared `pick_*`
+   templates (skill `photo-picking-pages`), each tile shown as it would be after the turn;
+   untick to refuse (refusals remembered, not proposed again); *Apply now* (`ApplyOffer`).
+4. **The turn**: lossless — write the EXIF orientation tag (the pixels are not touched),
+   journaled like the other writes, undone by `undo`; protected folders never written.
+   The index, previews and thumbnails follow (new mtime: new preview key).
+5. Entry points: a line of the audit's "What next" when some are found, the home page's
+   card, the docs (`commands/` page or a section of an existing one, both languages).
+6. The slideshow does not guess at display time (a wrong turn on the TV is worse than a
+   photo shown sideways): it shows the photos once turned.
 
-## To measure before implementing
+## Acceptance
 
-- Share of photos without orientation tag in the maintainer's collection, and how many of
-  them are actually sideways (sample).
-- Precision of the face-based guess on that sample; time per photo (4 detections).
+- Step 48 of `mh-measure.ps1` run again with the rules: at most 1 wrong turn in 30 proposed
+  (*measured* before: 3 in 33), the time per photo given.
+- A screenshot, a console capture, a collage and a person lying down in the tests (synthetic
+  pictures with a fake face finder): none proposed.
+- Turn, then `undo`: the file is byte-identical to before; the thumbnail follows.
 
 ## Measured (maintainer's PC, `mh-measure.ps1` step 48, 2026-11-11)
 
