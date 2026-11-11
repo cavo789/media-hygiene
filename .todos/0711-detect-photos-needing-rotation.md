@@ -38,12 +38,18 @@ app or an editor that dropped it. Only the pixels can tell.
   software instead of the EXIF codes: not applied today, worth reading too); unreadable 436.
 - Untagged (none or `1`; `0` was left out of that run): 2,237 guessed in 300 s, **0.13 s per
   photo** (4 detections, decode at 1280 px). 33 would be turned (1.5 %).
-- By eye: of those 33, **30 turned right, 1 already upright** (would have been spoiled);
-  20 photos with faces left as they are: **0 missed**.
+- By eye: of those 33, **30 turned right, 3 wrong** (A15 a cartoon dog turned 180 deg: an
+  animal's head taken for a face; A16 a collage of photos in several directions, 180 deg;
+  A18 a girl lying down on an upright photo, 270 deg); 20 photos with faces left as they
+  are: **0 missed**.
 - *Estimated* for the whole collection: ~29,350 untagged + 2,413 tagged `0` → about 470
   sideways photos with faces (1.5 %); 31,800 × 0.13 s = ~69 min on one core, once (the
   index keeps the answer), ~17 min on 4 workers. Photos without faces: not measured (the
   guess says nothing on them).
 
-So: faces are reliable enough to **propose** (≈97 % right among those flagged), never to
-apply blindly — the page that shows them before Apply stays mandatory (1 in 31 wrong).
+So: faces are reliable enough to **propose** (91 % right among those flagged), never to
+apply blindly — the page that shows them before Apply stays mandatory (3 in 33 wrong).
+Rules for the guess, from the three errors: propose 180 deg only when two faces or more
+agree (2 of the 3 errors were 180 deg; cameras seldom store upside down untagged), and only
+when the best turn beats the stored one by a clear margin (a person lying down).
+Also read the tags `90`/`180` (degrees) some software wrote: 12 photos.
