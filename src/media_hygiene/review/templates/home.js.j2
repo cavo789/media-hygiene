@@ -20,7 +20,6 @@ const COMEBACK_MS = 250;
 const ANSWER_MS = 2000; // a poll nobody answers in this time is asked again
 const RUN_HEADER = "X-Media-Hygiene-Run";
 const HINT_MS = 30000;
-const TOAST_MS = 6500;
 const LOADING_SLOW_MS = 5000;
 const HOME = "home";
 const FAMILY_STAGE = "find";  // the one stage a paired phone sees (0293)
@@ -107,7 +106,7 @@ function setNav(open, focus = true) {
 }
 function go(id, focusMain = true) {
   view.id = SPACE[id] ? id : HOME;
-  try { history.replaceState(null, "", "#" + view.id); } catch (error) { /* a sandboxed frame may refuse it */ }
+  window.mhView.set({}, { state: null, hash: "#" + view.id }); // view_state.html.j2 (0666)
   setNav(false, false);
   render();
   window.scrollTo(0, 0);
@@ -208,7 +207,7 @@ function wire() {
 // and drawn again only if the answer differs (0442). The tab says it is there from the start (0261).
 function start() {
   wirePresence();  // a paired phone keeps the PC's server alive too (0416)
-  if (!REMOTE) showLan();
+  if (!REMOTE) { showLan(); window.setInterval(showLan, LAN_EVERY_MS); }
   const kept = keptState();
   let drawn = false;
   if (kept) {
@@ -248,38 +247,89 @@ function showLan() {
       $("#lanQr").innerHTML = lan.qr;
       $("#lanUrl").textContent = lan.url;
       $("#lanCode").textContent = lan.code;
+      showPairing(lan);
       // HTTPS (0430): a phone installs the PC's certificate first, once.
       $("#lanCaLine").hidden = !lan.ca;
       $("#lanCa").textContent = lan.ca || "";
       if (lan.caHelp) $("#lanCaHow").href = lan.caHelp;  // the steps per phone, in the docs
       // Phones paired for good (0431): listed, each forgotten on demand.
-      if (lan.phones) fetch(lan.phones, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).then((answer) => answer && showPhones(answer, lan.forget));
+      if (lan.phones) fetch(lan.phones, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).then((answer) => answer && showPhones(answer, { forget: lan.forget, rename: lan.rename, forgetAll: lan.forgetAll }, false));
       $("#lanCard").hidden = false;
     })
     .catch(() => undefined);
 }
-// The list answered by the server, read back from its file after each forget (0431).
-function showPhones(answer, forgetPath) {
+// The pairing's report (0681): wrong codes per address, the devices paired this run (a toast for a new one).
+const LAN_EVERY_MS = 15000;
+const lanSeen = { paired: -1, wired: false };
+const clock = (at) => new Date(at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+function showPairing(lan) {
+  const attempts = lan.attempts || [];
+  const list = $("#lanAttempts");
+  const line = (text) => { const item = document.createElement("li"); item.textContent = text; return item; };
+  const refused = lan.refused || [];  // connections beyond the doors' caps (0682)
+  list.replaceChildren(...attempts.map((a) => line(fill(T.lanAttempt, { count: a.failures, address: a.address, time: clock(a.at) }))), ...refused.map((r) => line(fill(T.lanRefused, { count: r.count, address: r.address, time: clock(r.at) }))));
+  $("#lanClosed").hidden = !lan.closed;
+  $("#lanAlert").hidden = attempts.length === 0 && refused.length === 0 && !lan.closed;
+  const paired = lan.paired || [];
+  $("#lanNewList").replaceChildren(...paired.map((p) => { const item = document.createElement("li"); item.textContent = `${p.name} · ${clock(p.at)}`; return item; }));
+  $("#lanNew").hidden = paired.length === 0;
+  if (lanSeen.paired >= 0) for (const p of paired.slice(lanSeen.paired)) toast(fill(T.lanNewPaired, { name: p.name, time: clock(p.at) }), "ok");
+  lanSeen.paired = paired.length;
+  if (lanSeen.wired || !lan.reopen) return;
+  lanSeen.wired = true;
+  const ask = (path, said) => post(path, {}).then((r) => (r.ok ? r.json() : null)).then((again) => { if (!again) return; $("#lanQr").innerHTML = again.qr; $("#lanCode").textContent = again.code; showPairing(again); if (said) toast(said, "ok"); }).catch(() => undefined);
+  $("#lanReopen").addEventListener("click", () => ask(lan.reopen, T.lanReopened));
+  $("#lanSeen").addEventListener("click", () => ask(lan.seen, ""));
+}
+// The list answered by the server, read back from its file after each change (0431, 0683):
+// each device's name (typed here), paired on, last seen, address, its 30 days of counts.
+const lanDevices = { paths: null, count: 0, wired: false };
+function devicePost(path, body, said) {
+  return post(path, body).then((r) => (r.ok ? r.json() : null)).then((again) => { if (!again) return false; showPhones(again, lanDevices.paths, true); if (said) toast(said, "ok"); return true; }).catch(() => false);
+}
+function deviceLine(phone, list) {
+  const paths = lanDevices.paths;
+  const item = document.createElement("li");
+  const name = document.createElement("input");
+  name.value = phone.name;
+  name.maxLength = 40;
+  name.setAttribute("aria-label", T.lanRename);
+  const rename = document.createElement("button");
+  rename.type = "button";
+  rename.textContent = T.lanRename;
+  rename.addEventListener("click", () => { rename.disabled = true; devicePost(paths.rename, { id: phone.id, name: name.value }, T.lanRenamed).then((ok) => { rename.disabled = ok; }); });
+  const forget = document.createElement("button");
+  forget.type = "button";
+  forget.textContent = list.dataset.forget;
+  forget.addEventListener("click", () => { forget.disabled = true; devicePost(paths.forget, { id: phone.id }, "").then((ok) => { forget.disabled = ok; }); });
+  const facts = document.createElement("small");
+  const seen = phone.seen ? `${new Date(phone.seen).toLocaleDateString()} ${clock(phone.seen)}` : T.lanNeverSeen;
+  facts.textContent = `${phone.tv ? T.lanTv + " · " : ""}${fill(T.lanDevice, { paired: phone.paired, seen, address: phone.address || "?" })}`;
+  const did = document.createElement("small");
+  const sum = (key) => phone.days.reduce((total, day) => total + (day[key] || 0), 0);
+  did.textContent = phone.days.length ? fill(T.lanActivity, { pages: sum("pages"), pictures: sum("pictures"), day: phone.days[0].day }) : T.lanNoActivity;
+  did.title = phone.days.map((d) => `${d.day}: ${d.pages || 0} / ${d.pictures || 0}`).join("\n");
+  item.append(name, rename, forget, facts, did);
+  return item;
+}
+function showPhones(answer, paths, force) {
   const list = $("#lanPhoneList");
-  list.replaceChildren();
-  for (const phone of answer.phones) {
-    const item = document.createElement("li");
-    const name = document.createElement("span");
-    name.textContent = `${phone.name} · ${phone.paired}`;
-    const forget = document.createElement("button");
-    forget.type = "button";
-    forget.textContent = list.dataset.forget;
-    forget.addEventListener("click", () => {
-      forget.disabled = true;
-      post(forgetPath, { id: phone.id })
-        .then((r) => (r.ok ? r.json() : null))
-        .then((again) => { if (again) showPhones(again, forgetPath); else forget.disabled = false; })
-        .catch(() => { forget.disabled = false; });
-    });
-    item.append(name, forget);
-    list.append(item);
-  }
-  $("#lanPhones").hidden = answer.phones.length === 0;
+  if (!force && list.contains(document.activeElement)) return;  // a name being typed: kept until the next poll
+  lanDevices.paths = paths;
+  lanDevices.count = answer.phones.length;
+  list.replaceChildren(...answer.phones.map((phone) => deviceLine(phone, list)));
+  const expired = answer.expired || [];
+  $("#lanExpired").textContent = expired.length ? fill(T.lanExpired, { names: expired.join(", ") }) : "";
+  $("#lanExpired").hidden = expired.length === 0;
+  $("#lanForgetAll").hidden = answer.phones.length === 0;
+  $("#lanPhones").hidden = answer.phones.length === 0 && expired.length === 0;
+  if (lanDevices.wired) return;
+  lanDevices.wired = true;
+  // Forget every device (0683): the shared question (0663), then the list read back.
+  $("#lanForgetAll").addEventListener("click", async () => {
+    if (!await window.mhAsk({ lines: [fill(T.lanForgetSure, { count: lanDevices.count })], yes: T.lanForgetYes, danger: true })) return;
+    devicePost(lanDevices.paths.forgetAll, {}, T.lanForgotAll);
+  });
 }
 // The phone's app (0432): the worker keeps the offline page; iOS never invites to install, a line says how.
 function asApp() {

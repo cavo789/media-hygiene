@@ -5,7 +5,7 @@
    `html[data-phone]`: set by the home network's door (`lan_paths.phone_marked`): a phone
    is read-only (0429), so no control that writes is shown there (`PHONE_HIDDEN`). #}
   html[data-phone] #setAside, html[data-phone] #takeBack, html[data-phone] #chosen,
-  html[data-phone] #applyBar, html[data-phone] #ruleOpen, html[data-phone] #moveBar,
+  html[data-phone] #applyBar, html[data-phone] #ruleOpen, html[data-phone] #moveBar, html[data-phone] #moveMenu,
   html[data-phone] .unname, html[data-phone] .writes, html[data-phone] #albumBar,
   html[data-phone] #keys, html[data-phone] .tick { display: none !important; }
   label { font-size: .85rem; color: var(--muted); }
@@ -16,7 +16,7 @@
   /* Three roles (0542): primary filled (the page's main action: Apply now, Move to an event),
      secondary outline (`plain`), danger red, never the accent, apart at the end of the bar. */
   button.plain { color: var(--accent); background: transparent; }
-  button.danger { color: #fff; background: var(--bad); border-color: var(--bad); font-weight: 600; }
+  button.danger { color: var(--mk-on-danger); background: var(--bad); border-color: var(--bad); font-weight: 600; }
   button:disabled { opacity: .45; cursor: default; }
   /* As tall as a button: the line says where you are, then what to do, at the same height. */
   #lead, #acting { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center;
@@ -43,6 +43,7 @@
           accent-color: var(--accent); cursor: pointer; }
   .band { position: absolute; z-index: 1; pointer-events: none; border: 1px solid var(--accent);
           background: color-mix(in srgb, var(--accent) 18%, transparent); }
+  .file:focus-visible { outline: 3px solid var(--mh-focus); outline-offset: 2px; }
   .file:focus, .file.current { border-color: var(--accent); }
   .file.picked { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent); }
   .file img, .file video, .file .empty { display: block; width: 100%; aspect-ratio: 4 / 3;
@@ -52,7 +53,7 @@
   .meta { padding: 4px 8px; font-size: .8rem; }
   .name { font-weight: 600; overflow-wrap: anywhere; }
   .badge { position: absolute; top: 6px; left: 6px; padding: 0 8px; border-radius: 10px;
-           color: #fff; background: var(--bad); font-size: .75rem; font-weight: 600; }
+           color: var(--mk-on-danger); background: var(--bad); font-size: .75rem; font-weight: 600; }
   .shot { position: relative; }
   .length { position: absolute; right: 6px; bottom: 6px; padding: 0 6px; border-radius: 4px;
             color: #fff; background: rgba(0, 0, 0, .75); font-size: .75rem; font-weight: 600; }

@@ -26,7 +26,7 @@ button { width: 100%; margin-top: 8px; padding: 12px; border: 0; border-radius: 
   <p>{{ _("It is not running on the PC. On the PC, start Media Hygiene (type mh in Windows PowerShell): this page opens again by itself.") }}</p>
   <button type="button" id="retry">{{ _("Retry") }}</button>
 </main>
-<script>
+<script nonce="{{ page_nonce }}">
 const home = () => window.location.replace("/");
 document.getElementById("retry").addEventListener("click", home);
 // Back as soon as the PC answers: a light request every few seconds, the page only then.

@@ -20,6 +20,8 @@ from typing import TYPE_CHECKING, Any, Final
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from media_hygiene.file_history import replace_text
+
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping, Sequence
     from pathlib import Path
@@ -182,9 +184,7 @@ def write_refs(path: Path, header: str, lines: Mapping[str, Sequence[str]]) -> N
     if path.is_file() and path.read_text(ENCODING) == content:
         return
     path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(f".{path.name}.tmp")
-    temporary.write_text(content, ENCODING)
-    temporary.replace(path)
+    replace_text(path, content)
     if tomllib.loads(path.read_text(ENCODING)).keys() != lines.keys():
         message = f"{path} did not read back"
         raise ValueError(message)

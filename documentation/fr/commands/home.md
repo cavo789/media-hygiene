@@ -53,6 +53,7 @@ docker run --rm -it `
 | Il faut | Les dossiers de l'outil (`/reports`, `/journal`, `/quarantine`, `/cache`), comme pour `status` ; vos dossiers pour l'audit ; `-p 127.0.0.1:8088:8088` pour la page. |
 | Écrit | Rien par elle-même ; l'audit lancé depuis la page écrit son cache et son rapport, comme `audit` ; la [page des albums](#vos-albums-sur-le-téléphone) ne change que `albums.json`. |
 | Annuler | Rien à annuler ; chaque étape garde sa propre annulation. |
+| Pendant le travail | Sur chaque page, un bouton qui enregistre devient gris avec une roue jusqu'à la réponse (un second clic ne fait rien de plus) ; une grille en chargement montre d'abord des tuiles grises, elle ne saute donc jamais. Après 10 s, une ligne dit que le travail continue. Résultats et erreurs s'affichent en bas de la page : un résultat s'efface, une erreur reste jusqu'à ce que vous la fermiez. |
 | Avec `mh` | `mh home`. |
 
 ## Ce que montre la page
@@ -142,6 +143,19 @@ bouton qui annonce combien de fichiers il efface et la place qu'il libère. Il d
 lance [`purge`](purge.md) dans sa fenêtre, et la page revient dire ce que dit le disque : l'exécution
 partie, la place libérée. Avec un autre `mh`, tapez la commande.
 
+## Tous les réglages
+
+*⚙ Réglages*, dans le menu à gauche de chaque page, liste les réglages que les pages changent : la
+langue, le rythme du diaporama, le regroupement en événements, l'IA locale, les limites de place
+sur le disque, ce que l'audit analyse, les téléphones, les étapes après un import, les rôles des
+dossiers, le tri, la sévérité des revues, les lieux, les règles d'événements et les tags. Chaque
+ligne montre la valeur que `config.toml` contient maintenant (relue sur le disque à chaque
+ouverture, *par défaut* quand le fichier ne la contient pas), une ligne sur ce qu'il fait, et un
+lien qui ouvre le réglage **sur sa propre page** : rien ne se change dans cette liste. Le champ de
+recherche réduit les lignes pendant la frappe (le texte reste dans l'adresse : un rechargement le
+garde). En bas, *Dans config.toml seulement* liste et compte les réglages qu'aucune page ne change
+encore : modifiez `config.toml`, puis relancez `mh`. Sur le PC seulement : un téléphone ne l'ouvre pas.
+
 ## Chemins rapides et ce qui montre les fichiers d'abord
 
 Ces commandes agissent sur des fichiers sans les montrer ; elles restent, pour les grandes collections.
@@ -225,6 +239,12 @@ qui a ouvert la page :
   la page, rouverte, la montre à nouveau (*Une étape tourne encore*) jusqu'à sa fin. Le navigateur demande une
   fois s'il peut vous prévenir : dites oui, et la fin de l'étape s'annonce par une notification
   pendant que vous êtes sur un autre onglet.
+  **Chaque page** du serveur de l'accueil la montre aussi, pas seulement l'accueil : une pastille
+  dans sa barre du haut (*⏳ Audit · 45 % · 3 min restantes* ; rien quand aucune étape ne tourne)
+  ouvre la même fenêtre de suivi, le titre de l'onglet commence par l'avancement
+  (*45 % · Audit — …*), si bien que la barre des onglets sert de jauge pendant que vous travaillez
+  ailleurs, et sa fin s'annonce sur la page affichée (*Terminé : Audit.*), ou par la notification
+  quand l'onglet est caché. Un téléphone du Wi-Fi de la maison voit la pastille aussi, en lecture seule.
 - **Des choix en attente sur plusieurs pages** (séries en rafale, quasi-doublons, paires de
   dossiers, photos indésirables, fichiers disparus, fichiers intrus, les visages de `people`, `library`) : la page d'accueil dit combien
   attendent (*Choix en attente d'application : 3*), chaque page nommée avec son nombre et un
@@ -307,11 +327,13 @@ diaporama.
 
 | | |
 |---|---|
-| Qui | Un appareil du même Wi-Fi **avec le code** ; 5 codes erronés ferment l'appairage jusqu'à l'arrêt de `mh`. |
+| Qui | Un appareil du même Wi-Fi **avec le code**. Après 3 codes erronés, **cet appareil** attend 30 s (le double à chaque nouveau code erroné, 10 min au plus) : les autres s'appairent toujours. 20 codes erronés sur un lancement ferment l'appairage pour tous. La carte du PC montre chaque tentative (*⚠ 5 codes erronés depuis 192.168.1.37 à 14:02*) avec **Rouvrir l'appairage** (un nouveau code, l'ancien n'ouvre plus rien ; les téléphones déjà appairés le restent ; sans relancer `mh`) et **C'était moi** (la ligne rangée). Chaque appareil appairé pendant le lancement y est listé avec son heure, et un message le dit sur le PC. |
+| Charge | Un appareil garde au plus 48 connexions ouvertes, et les portes du réseau domestique 128 en tout ; au-delà, la connexion est fermée aussitôt et la carte du PC le dit (*⛔ 52 connexions refusées de 192.168.1.37 à 14:02*). Un téléphone qui charge une page de vignettes en utilise 6, une télé autant : ils n'atteignent jamais ces plafonds. Une requête y a 5 s pour envoyer ses premières lignes (30 s pour un contenu), un téléphone 10 s pour établir le HTTPS. La page du PC lui-même n'est jamais plafonnée. Sous Docker Desktop, tous les appareils peuvent apparaître sous une seule adresse (celle de la passerelle) : les 48 sont alors partagées entre eux, assez pour plusieurs téléphones et une télé à la fois. |
 | Où | L'adresse privée du PC seulement (`10.x`, `172.16–31.x`, `192.168.x`) : jamais toutes les interfaces, jamais Internet ; `mh` n'ouvre aucun port sur votre box. |
 | Comment | HTTPS (`https://192.168.1.20:8088`), signé par une autorité de certification que `mh` crée sur votre PC : le téléphone l'installe une fois (ci-dessous) ; le code et le cookie ne circulent jamais en clair. |
 | Gardé | `C:\Users\<vous>\media-hygiene\lan\` contient cette autorité et le certificat de la page (`ca.key` n'en sort jamais). Supprimé, `mh` en crée une nouvelle : réinstallez-la sur chaque téléphone. |
 | La fois suivante | Un téléphone appairé ouvre la page directement. La carte du PC liste les **téléphones appairés pour de bon** (Android, iPhone… et la date) avec **Oublier ce téléphone** : son cookie n'ouvre plus rien. `phones.json` (dans le dossier `lan`) ne garde qu'un hash du jeton de chaque téléphone. |
+| Qui est venu, et quand | Chaque appareil de la carte montre sa date de **dernière visite** et son adresse, et ses 30 derniers jours : **pages ouvertes** et **images vues** (des nombres seulement, jamais quelles photos ; `activity.json`, écrit toutes les quelques minutes). Tapez un nom (*Téléphone de Léa*) puis **Renommer**. Un téléphone **pas vu depuis 90 jours** est oublié au démarrage suivant, et la carte dit lequel (les TV restent appairées pour de bon). **Oublier tous les appareils** demande d'abord dans une fenêtre de la page (Échap ou **Annuler** les gardent tous), puis oublie d'un coup téléphones et TV : chacun devra retaper un code. Un appareil oublié pendant qu'il est connecté est refusé à sa requête suivante. Si le dossier `lan` est restauré depuis une copie plus ancienne, sa liste s'applique dès lors ; un dossier neuf et vide veut dire appairer à nouveau. |
 
 ### Une fois par téléphone : installer le certificat
 

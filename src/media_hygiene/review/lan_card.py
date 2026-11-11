@@ -15,7 +15,12 @@ from media_hygiene.cli.menu_entry import Doc
 from media_hygiene.docs.served import served_url
 from media_hygiene.review.doors import LAN_CA_PORT
 from media_hygiene.review.lan_ca_page import PHONE_STEPS
-from media_hygiene.review.lan_phones_api import FORGET_PATH, PHONES_PATH
+from media_hygiene.review.lan_phones_api import (
+    FORGET_ALL_PATH,
+    FORGET_PATH,
+    PHONES_PATH,
+    RENAME_PATH,
+)
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.review.serving import json_response
 
@@ -45,7 +50,8 @@ def lan_response(lan: LanAccess, *, phones: bool = False, tv: bool = False) -> R
     Returns:
         JSON: `url`, `code`, `qr` (an SVG drawing of the pairing address), under
         HTTPS `ca`: where a phone installs the PC's authority first (0430), and with
-        `phones`, the paths `phones` and `forget` (0431); with `tv` under HTTPS, `tv`.
+        `phones`, the paths `phones`, `forget`, `rename` and `forgetAll` (0431,
+        0683); with `tv` under HTTPS, `tv`.
     """
     qr = segno.make(lan.pair_url, error="m").svg_inline(
         scale=_QR_SCALE, border=_QR_BORDER, dark="#000", light="#fff"
@@ -60,4 +66,5 @@ def lan_response(lan: LanAccess, *, phones: bool = False, tv: bool = False) -> R
         card["caHelp"] = served_url(CA_DOC)
     if phones:
         card |= {"phones": PHONES_PATH, "forget": FORGET_PATH}
+        card |= {"rename": RENAME_PATH, "forgetAll": FORGET_ALL_PATH}  # 0683
     return json_response(HTTPStatus.OK, card)

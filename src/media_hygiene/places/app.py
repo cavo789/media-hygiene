@@ -26,6 +26,7 @@ from media_hygiene.places.posts import BOARD_POSTS, board_post
 from media_hygiene.places.town_hint import HintAsk
 from media_hygiene.review.config_saving import save_refused
 from media_hygiene.review.http import ContentType, Response, is_local
+from media_hygiene.review.nonce import NONCED
 from media_hygiene.review.serving import json_response, refused_post, serve_connection
 
 if TYPE_CHECKING:
@@ -49,7 +50,7 @@ FOLDER_PATH: Final = "/api/folder"  # POST: save, forget or ignore a folder (023
 PAGE_REFERRER: Final = "strict-origin"
 # Leaflet and the theme's fonts from the page's origin; the tiles from their server.
 PAGE_POLICY: Final = (
-    "default-src 'none'; script-src 'self' 'unsafe-inline'; "
+    "default-src 'none'; script-src 'self' " + NONCED + "; "
     "style-src 'self' 'unsafe-inline'; img-src 'self' {tiles}; font-src 'self'; "
     "connect-src 'self'; frame-ancestors 'none'"
 )

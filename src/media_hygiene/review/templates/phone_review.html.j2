@@ -16,6 +16,8 @@
   "asideLeft": [ngettext("{n} file set aside before was left unticked: tick it in the large view or with its own ☑, after reading its warning.", "{n} files set aside before were left unticked: tick each one in the large view or with its own ☑, after reading its warning.", 1), ngettext("{n} file set aside before was left unticked: tick it in the large view or with its own ☑, after reading its warning.", "{n} files set aside before were left unticked: tick each one in the large view or with its own ☑, after reading its warning.", 2)],
   "delete": "🗑️ " ~ _("Delete {ticked} files ({size}) from the phone"),
   "confirm": _("Delete {ticked} files ({size}) from the phone? Each one is first copied again and compared with the PC's copy: one that differs stays on the phone. Deleted over USB, a file is gone for good from the phone: it has no trash."),
+  "confirmYes": _("Delete from the phone"),
+  "confirmAsideYes": _("Tick it anyway"),
   "confirmAside": _("This photo is not in your library: {warning} Tick it anyway?"),
   "saving": _("Saving…"),
   "proofOk": "✔ " ~ _("Saved, then read back from the disk at {time}: {ticked} files ticked in {file}.").replace("{file}", place),
@@ -103,7 +105,7 @@
 {% include "pick_viewer.html.j2" %}
 <div id="closed" role="alertdialog" aria-live="assertive"><p><span id="closedText"></span>
   <a id="closedHome" href="/" hidden>⌂ {{ _("Back to the home page") }}</a></p></div>
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "pick_grid.js.j2" %}
 {% include "pick_viewer.js.j2" %}
 {% include "pick_band.js.j2" %}

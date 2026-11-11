@@ -174,9 +174,9 @@ def test_the_albums_card_starts_the_albums_show_only_with_a_tv() -> None:
 
 def test_the_end_of_a_step_notifies_only_a_tab_away_and_asks_once() -> None:
     """Asked in the click, the answer kept; the toast is enough for a tab in front."""
-    notify = (_ROOT / "review/templates/home_notify.js.j2").read_text("utf-8")
+    notify = (_ROOT / "review/templates/step_chip.html.j2").read_text("utf-8")
     run = (_ROOT / "review/templates/home_run.js.j2").read_text("utf-8")
-    assert "|| notifyKept()) return;" in notify
+    assert "|| kept()) return;" in notify
     assert "Notification.requestPermission().then(keep)" in notify
     assert "if (!document.hidden" in notify
     assert 'if (action.kind !== "page") notifyAsk();' in run

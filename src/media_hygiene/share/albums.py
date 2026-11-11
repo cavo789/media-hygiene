@@ -18,6 +18,7 @@ from typing import TYPE_CHECKING, Final, Literal
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 from media_hygiene.errors import MediaHygieneError
+from media_hygiene.file_history import replace_text
 from media_hygiene.i18n import _
 from media_hygiene.text_files import decode_user_text
 
@@ -175,6 +176,4 @@ def write_albums(path: Path, albums: AlbumsFile) -> None:
         path: The file, in the container.
         albums: What to save.
     """
-    draft = path.with_name(f".{path.name}.partial")
-    draft.write_text(albums.model_dump_json(indent=2) + "\n", encoding="utf-8")
-    draft.replace(path)
+    replace_text(path, albums.model_dump_json(indent=2) + "\n")

@@ -25,7 +25,8 @@ from media_hygiene.docs.render import RenderJob, main, render_all
 from media_hygiene.docs.rewrite import rewrite_html
 from media_hygiene.docs.served import served_index, served_url
 from media_hygiene.review.docs_app import docs_response
-from media_hygiene.review.http import REVIEW_POLICY, Request, Response
+from media_hygiene.review.http import Request, Response
+from media_hygiene.review.nonce import REVIEW_POLICY
 from media_hygiene.review.shared_routes import asset_or_page
 from tests.unit.test_docs_site import nav_pages
 

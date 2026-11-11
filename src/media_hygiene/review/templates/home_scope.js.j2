@@ -13,7 +13,7 @@ function scopeLine() {
 }
 function scopeForm() {
   const d = scope.data;
-  const boxes = SCOPE_KINDS.map((kind) => `<label><input type="checkbox" name="scopeKind" value="${kind}"${d.kinds.includes(kind) ? " checked" : ""}> ${esc(T["scope_" + kind])}</label>`).join(" ");
+  const boxes = SCOPE_KINDS.map((kind) => `<label><input type="checkbox" name="scopeKind" value="${esc(kind)}"${d.kinds.includes(kind) ? " checked" : ""}> ${esc(T["scope_" + kind])}</label>`).join(" ");
   const others = d.others.length ? `<p class="muted">${esc(fill(T.scopeOthers, { list: d.others.join(", ") }))}</p>` : "";
   return `<form id="scopeForm"><fieldset><legend>${esc(T.scopeKinds)}</legend>${boxes}</fieldset>${others}
     <label for="scopeNames">${esc(T.scopeNames)}</label><textarea id="scopeNames" rows="4">${esc(d.names.join("\n"))}</textarea>

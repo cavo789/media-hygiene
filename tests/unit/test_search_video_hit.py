@@ -31,5 +31,5 @@ def test_a_video_carries_its_address_and_a_frame() -> None:
     """A `.MOV` gets `/video/…`, and its thumbnail (one frame); a photo no video."""
     movie, photo = _hits("IMG_1775.MOV", "IMG_1.jpg")
     assert movie["video"] == "/video/0.mov"
-    assert movie["thumb"] == "/thumb/0.jpg"
+    assert str(movie["thumb"]).startswith("/thumb/0.")  # with the file's version (0673)
     assert photo["video"] == ""

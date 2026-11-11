@@ -14,5 +14,6 @@ PICK_PARTS: Final = (
     'id="viewerHelp"',  # pick_viewer.html.j2
     "function wireCard(node, index)",  # pick_grid.js.j2
     "const VIEWER_KEYS = {",  # pick_viewer.js.j2
+    "function preloadAround() {",  # pick_preload.js.j2 (0675)
     '$("grid").addEventListener("pointerdown"',  # pick_band.js.j2
 )

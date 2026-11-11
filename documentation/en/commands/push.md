@@ -52,7 +52,8 @@ run, removed after.
 
 1. **Lists** your photo folders and the backup (size, date): every file, not only photos (a PDF
    in `C:\Photos` is backed up too), but the system folders (`#recycle`, `@eaDir`…), the
-   excluded ones and the quarantine.
+   excluded ones and the quarantine (a file set aside before any push has no copy on the NAS:
+   [`purge`](purge.md#good-to-know) lists those before erasing them).
 2. **Plans**, and says it: what is already there, what is new, what moved (same size, date and
    first and last 64 KB: renamed on the NAS, nothing sent), what was edited (the NAS's copy set
    aside first), what is gone from the PC.
@@ -73,7 +74,9 @@ quarantine, a deletion not confirmed yet, or one the tool knows nothing of (a de
 mistake?) **stays**, counted by reason. The previous copy of an edited file goes to `.removed`
 too. `.removed` is emptied after `keep_removed_days` (90 days).
 
-A file the [audit](audit.md) found broken never replaces its copy in the backup.
+A file the [audit](audit.md) found broken, or `audit --reread` found changed while its size and
+date did not ([damaged by the disk](../reference-safety.md#a-file-damaged-by-the-disk)), never
+replaces its copy in the backup.
 
 **The safety stop**: when the files set aside and replaced exceed `stop_above_percent` (20 %)
 of the backup, nothing is applied: a drive missing? many files changed at once? Look, then

@@ -65,7 +65,7 @@
 
   // *Your rules* (0393): one line per rule of config.toml, in its order.
   const removeRules = async (names) => {
-    if (!window.confirm(fill(T.rulesRemoveAsk, { names: names.join(", ") }))) return;
+    if (!await window.mhAsk({ lines: [fill(T.rulesRemoveAsk, { names: names.join(", ") })], yes: T.rulesRemoveYes, danger: true })) return;
     const said = byId("rulesSaid");
     let response;
     try {

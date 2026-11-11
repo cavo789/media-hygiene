@@ -165,7 +165,7 @@ def test_the_access_is_https_with_the_certificates(
 def test_the_cookie_and_the_card_follow_https(*, secure: bool) -> None:
     """The cookie is `Secure` and the card names the certificate under HTTPS."""
     lan = LanAccess(_ADDRESS, _PORT, b"x" * 32, secure=secure)
-    answer = Pairing().check(lan, lan.code)
+    answer = Pairing().check(lan, Request("GET", f"/pair/{lan.code}", {}))
     cookie = next(h for h in answer.headers if h.startswith("Set-Cookie:"))
     assert cookie.endswith("; Secure") is secure
     card = json.loads(lan_response(lan).body)

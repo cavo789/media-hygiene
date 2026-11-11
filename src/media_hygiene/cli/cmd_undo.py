@@ -55,6 +55,16 @@ def undo_command(  # pylint: disable=too-many-arguments
         ),
     ] = False,
     page_port: Annotated[int | None, review_options.port()] = None,
+    from_quarantine: Annotated[
+        bool,
+        typer.Option(
+            "--from-quarantine",
+            help=_(
+                "The run's journal is lost: bring its files back from the layout of "
+                "its quarantine, shown first, never over a file."
+            ),
+        ),
+    ] = False,
 ) -> None:
     """Restore every file a run deleted, quarantined or moved.
 
@@ -65,6 +75,7 @@ def undo_command(  # pylint: disable=too-many-arguments
         yes: `--yes`, skip the confirmation.
         pick: `--pick`, the quarantine as tiles, the photos picked put back (0525).
         page_port: `--port`, the port of that page.
+        from_quarantine: `--from-quarantine`, without a journal (0687).
 
     Raises:
         typer.Exit: The user declined.
@@ -88,6 +99,10 @@ def undo_command(  # pylint: disable=too-many-arguments
                 runtime, review_options.page_port(runtime, page_port)
             )
         raise typer.Exit(code)
+    if from_quarantine:
+        from media_hygiene.cli.undo_orphan_flow import undo_from_quarantine
+
+        raise typer.Exit(undo_from_quarantine(runtime, run_id, yes=yes))
     if not yes:
         tell_undo_twin(runtime)
     with user_errors(output):

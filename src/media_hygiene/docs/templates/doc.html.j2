@@ -11,7 +11,7 @@
 <meta name="color-scheme" content="light dark">
 <title>{{ page.title if page else _("Page not found") }} — Media Hygiene</title>
 <link rel="icon" type="image/png" href="/assets/images/favicon.png">
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "theme_choice.js.j2" %}
 </script>
 <style>
@@ -97,7 +97,7 @@
     </main>
   </div>
 </div>
-<script>
+<script nonce="{{ page_nonce }}">
 (() => {
 {% include "doc.js.j2" %}
 })();

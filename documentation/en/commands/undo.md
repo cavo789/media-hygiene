@@ -85,6 +85,7 @@ mh undo --pick
 | `--yes`, `-y` | Do not ask before undoing several runs of a sort. |
 | `--pick` | Open the quarantine as tiles and put back only the photos picked ([above](#put-back-a-few-photos)). |
 | `--port` | The port of that page (default: `[review] port`). |
+| `--from-quarantine` | The run's journal is lost: rebuild its moves from the layout of its quarantine, list them, ask, then bring each file back, never over a file. The copies a `clean --delete` erased cannot come back this way. |
 
 ## Good to know
 

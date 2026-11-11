@@ -65,20 +65,22 @@ function clock(seconds) {
 }
 
 // Said in the line the bar always shows, whether files are picked or not.
+// A failure is a toast that stays (0664): the line keeps the *saved, read back* sentence.
 function failed(answer) {
-  $("chosen").className = "error";
-  $("chosen").textContent = answer ? fill(TEXTS.failed, { status: answer.status }) : TEXTS.offline;
+  $("chosen").className = "";
+  $("chosen").textContent = "";
+  window.mhSay(answer ? fill(TEXTS.failed, { status: answer.status }) : TEXTS.offline, "error");
 }
 
+// A post from a button keeps it disabled, with a spinner, until the answer (0664).
 async function ask(path, body) {
   const options = body === undefined ? {} : {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
   };
-  try {
-    return await fetch(path, options);
-  } catch (error) {
-    return null;
-  }
+  const send = () => fetch(path, options).catch(() => null);
+  const button = document.activeElement;
+  if (body === undefined || !(button instanceof HTMLButtonElement)) return send();
+  return window.mhBusy(button, send);
 }
 
 // The end of every card: its ☑ box (one file without Ctrl, and on a touch screen), its
@@ -324,8 +326,8 @@ async function toTv(button, here = false) {
   const state = answer ? await answer.json().catch(() => ({})) : {};
   if (!answer || !answer.ok) {
     if (remote) remote.close();
-    $("chosen").className = "error";
-    $("chosen").textContent = state.error || (answer ? fill(TEXTS.failed, { status: answer.status }) : TEXTS.offline);
+    $("chosen").textContent = "";
+    window.mhSay(state.error || (answer ? fill(TEXTS.failed, { status: answer.status }) : TEXTS.offline), "error");
     return;
   }
   $("chosen").textContent = button.dataset.sent;  // "replaced": told on the remote (0655)

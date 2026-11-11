@@ -1,0 +1,100 @@
+{# One way to say *working*, *done* and *failed* (0664), included once by the frame, the home page
+   and the album page, like the ask dialog:
+   - `window.mhSay(text, tone)`: a toast in the one stack (bottom centre, above the Undo toast);
+     `ok` and `info` fade after SAY_FADE_MS, `error` stays until closed. Text only, never HTML.
+     Returns a function that takes the toast away. The bar's status line keeps the *saved, read
+     back* sentence only.
+   - `window.mhBusy(button, work, waiting)`: the button is disabled with a spinner until `work()`
+     settles (a second click joins the same request); after BUSY_LATE_MS one line says what is
+     waited for (`waiting`, or the general sentence).
+   - `window.mhPlaceholders(grid, count)`: placeholder tiles while a grid loads, so the grid
+     never moves; `mhPlaceholders.clear(grid)` takes them away when the answer is an error. #}
+<div id="mhSay" aria-live="polite"></div>
+<style>
+  #mhSay { position: fixed; z-index: 70; left: 50%; bottom: 72px; transform: translateX(-50%);
+           width: min(560px, calc(100vw - 32px)); display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+  #mhSay .mhSayItem { pointer-events: auto; display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px 10px 14px;
+                      border-radius: 10px; color: #fff; background: rgba(0, 0, 0, .85); box-shadow: 0 4px 18px rgb(0 0 0 / 30%);
+                      transition: opacity .4s; }
+  #mhSay .mhSayItem.error { color: var(--mk-on-danger, #fff); background: var(--bad, #c62828); }
+  #mhSay .mhSayItem.fading { opacity: 0; }
+  #mhSay .mhSayItem p { flex: 1; margin: 0; overflow-wrap: anywhere; }
+  #mhSay .mhSayItem button { min-width: 28px; min-height: 28px; padding: 0 6px; color: inherit; background: transparent;
+                             border: 1px solid currentColor; border-radius: 8px; font: inherit; cursor: pointer; }
+  button.mhBusy { position: relative; cursor: progress; }
+  button.mhBusy::after { content: ""; display: inline-block; width: .9em; height: .9em; margin-left: 8px; vertical-align: -2px;
+                         border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%;
+                         animation: mhSpin .8s linear infinite; }
+  .mhPlaceholder { min-height: 200px; border-radius: 8px; background: var(--line, rgba(128, 128, 128, .25));
+                   opacity: .45; animation: mhPulse 1.4s ease-in-out infinite; }
+  @keyframes mhSpin { to { transform: rotate(360deg); } }
+  @keyframes mhPulse { 50% { opacity: .2; } }
+  @media (prefers-reduced-motion: reduce) { button.mhBusy::after, .mhPlaceholder { animation: none; } }
+</style>
+<script nonce="{{ page_nonce }}">
+(() => {
+  const SAY_FADE_MS = 6000;  // long enough to read two lines
+  const BUSY_LATE_MS = 10000;  // after it, one line says what is waited for
+  const SAY_TEXTS = {{ {
+    "close": _("Close"),
+    "waiting": _("Still working: the answer of mh is awaited (a slow disk can take a while)."),
+  } | tojson }};
+  const stack = document.getElementById("mhSay");
+  window.mhSay = (text, tone = "info") => {
+    const item = document.createElement("div");
+    item.className = "mhSayItem " + (tone === "error" ? "error" : tone === "ok" ? "ok" : "info");
+    if (tone === "error") item.setAttribute("role", "alert");
+    const line = document.createElement("p");
+    line.textContent = String(text);
+    const close = document.createElement("button");
+    close.type = "button";
+    close.textContent = "✕";
+    close.setAttribute("aria-label", SAY_TEXTS.close);
+    item.append(line, close);
+    stack.append(item);
+    let timer = 0;
+    const remove = () => { window.clearTimeout(timer); item.remove(); };
+    close.addEventListener("click", remove);
+    if (tone !== "error") {
+      timer = window.setTimeout(() => { item.classList.add("fading"); timer = window.setTimeout(remove, 400); }, SAY_FADE_MS);
+    }
+    return remove;
+  };
+  const running = new WeakMap();
+  window.mhBusy = (button, work, waiting = "") => {
+    const target = button instanceof HTMLButtonElement ? button : null;
+    if (target && running.has(target)) return running.get(target);  // a second click joins the first
+    if (target) { target.disabled = true; target.classList.add("mhBusy"); target.setAttribute("aria-busy", "true"); }
+    let late = null;
+    const timer = window.setTimeout(() => { late = window.mhSay(waiting || SAY_TEXTS.waiting, "info"); }, BUSY_LATE_MS);
+    const done = Promise.resolve().then(work).finally(() => {
+      window.clearTimeout(timer);
+      if (late) late();
+      if (!target) return;
+      running.delete(target);
+      target.disabled = false;
+      target.classList.remove("mhBusy");
+      target.removeAttribute("aria-busy");
+    });
+    if (target) running.set(target, done);
+    return done;
+  };
+  window.mhPlaceholders = (grid, count) => {
+    if (!grid) return;
+    const height = grid.firstElementChild ? grid.firstElementChild.getBoundingClientRect().height : 0;
+    grid.replaceChildren(...Array.from({ length: count }, () => {
+      const tile = document.createElement("div");
+      tile.className = "mhPlaceholder";
+      tile.setAttribute("aria-hidden", "true");
+      if (height) tile.style.minHeight = height + "px";
+      return tile;
+    }));
+    grid.setAttribute("aria-busy", "true");
+  };
+  window.mhPlaceholders.clear = (grid) => {
+    if (!grid) return;
+    grid.querySelectorAll(".mhPlaceholder").forEach((tile) => tile.remove());
+    grid.removeAttribute("aria-busy");
+  };
+})();
+</script>

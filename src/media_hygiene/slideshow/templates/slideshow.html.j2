@@ -149,7 +149,7 @@
 <main id="grid" aria-label="{{ _('The photos of the show: tap one to show it on the TV') }}"></main>
 {% endblock %}
 {% block after %}
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "slideshow.js.j2" %}
 {% include "slideshow_story.js.j2" %}
 {% include "slideshow_pace.js.j2" %}

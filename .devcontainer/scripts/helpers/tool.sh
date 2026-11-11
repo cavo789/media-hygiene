@@ -20,6 +20,39 @@ function hygiene() {
 }
 
 # @cat Tool
+# @cmd home_dev
+# @desc Home server from sources, restarted when src/ changes (templates are re-read live) — e.g. 'home_dev --port 8765'
+function home_dev() {
+    local root stamp pid changed
+    root="$(_repo_root)" || return 1
+    stamp="$(mktemp)"
+    # Each round: one server in its own session (so the kill reaches uv's child); a changed
+    # module ends it and the loop starts another, which draws a new RUN_TAG: the open tab
+    # reloads itself (X-Media-Hygiene-Run). Templates need no restart (Jinja's auto_reload).
+    # shellcheck disable=SC2064
+    trap "kill -- -\${pid:-0} 2>/dev/null; rm -f '${stamp}'; trap - INT TERM" INT TERM
+    while :; do
+        touch "${stamp}"
+        setsid bash -c 'hygiene home "$@"' _ "$@" &
+        pid=$!
+        changed=0
+        while kill -0 "${pid}" 2>/dev/null; do
+            sleep 0.5
+            if [[ -n "$(find "${root}/src/media_hygiene" -name '*.py' -newer "${stamp}" -print -quit)" ]]; then
+                echo "home_dev: source changed, restarting"
+                kill -- "-${pid}" 2>/dev/null || true
+                wait "${pid}" 2>/dev/null || true
+                changed=1
+                break
+            fi
+        done
+        # The server ended by itself (Ctrl+C, a step chosen, a crash): stop here.
+        ((changed)) || break
+    done
+    rm -f "${stamp}"
+}
+
+# @cat Tool
 # @cmd demo
 # @desc Generate sample media in /tmp/media-hygiene, then audit
 function demo() {

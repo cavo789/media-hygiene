@@ -5,7 +5,7 @@ const imports = { steps: null, busy: false };
 const IMPORT_STEPS = ["audit", "copies", "bursts", "tags", "places"];
 function importsHtml() {
   if (REMOTE || !P.importSteps || !imports.steps) return `<div id="importSteps"></div>`;
-  const boxes = IMPORT_STEPS.map((step) => `<label><input type="checkbox" data-import-step="${step}"${imports.steps.includes(step) ? " checked" : ""}${imports.busy ? " disabled" : ""}> ${esc(T["imports_" + step])}</label>`).join(" ");
+  const boxes = IMPORT_STEPS.map((step) => `<label><input type="checkbox" data-import-step="${esc(step)}"${imports.steps.includes(step) ? " checked" : ""}${imports.busy ? " disabled" : ""}> ${esc(T["imports_" + step])}</label>`).join(" ");
   return `<div id="importSteps"><p class="muted"><strong>${esc(T.importsThen)}</strong> ${boxes}${imports.steps.length ? "" : ` · ${esc(T.importsNone)}`}</p><p class="muted" id="importChain"></p></div>`;
 }
 function redrawImports() { const box = $("#importSteps"); if (box) box.outerHTML = importsHtml(); }

@@ -91,6 +91,7 @@ function goTo(index) {
 // nobody is given.
 async function choose(name) {
   chosen = name;
+  window.mhView.set({ who: name || null }); // the person chosen, in the URL (0666)
   if (!name) onlyPerson = false;
   render(true);
   drawPeople();

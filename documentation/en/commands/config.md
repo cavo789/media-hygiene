@@ -107,6 +107,7 @@ mh config tidy --apply   # remove the ticked entries
 | `[[places.folders]]` | its folder does not exist, or is listed twice |
 | `[[classify.rules]]` `match = "path"` / `"camera"` | no path / no camera of the index matches its `pattern` |
 | `[[classify.rules]]` `match = "date_range"` | no indexed photo was taken on its dates: shown **unticked** (a rule written before an import); `--dates` ticks it too |
+| `[[classify.rules]]` `match = "path"` (superseded) | every file it matches already sits in a folder you named (`2017\2017-04\Bruges`): `sort` would move them out of it. Shown **unticked** (a rule may rename a folder on purpose); `--superseded` ticks it too |
 | `[[classify.clocks]]` | no photo of that camera on its dates |
 
 A folder on a drive that is not mounted (a USB stick) is **not judged**, and said so. An
@@ -132,7 +133,7 @@ the option of the command line.
 ## Good to know
 
 - `config` has the action `tidy` and the options `--upgrade`, `--convention`, `--dry-run`, `--apply`
-  and `--dates`; the global ones apply too
+  `--dates` and `--superseded`; the global ones apply too
   (`--locale`, `--verbosity`).
 - `/config` holds `config.toml` **only**: never put anything else there.
 - A setting unknown to this version is said, with its line: see

@@ -25,8 +25,9 @@ Each place in the container has one role.
   administrator, and the tool cannot write there
   ([troubleshooting](reference-troubleshooting.md#folders-the-tool-cannot-write-to)).
 - **`/config` holds `config.toml`**, plus two folders linked to it: `people/` (the faces of each
-  person named) and `events/` (the events remembered, one file per year). Nothing else is ever
-  written there.
+  person named) and `events/` (the events remembered, one file per year). One exception:
+  `.history/`, the previous versions of these files, kept at each save (the last 20 of each,
+  30 days at most; `mh backup` saves them with the rest). Nothing else is ever written there.
 - **Only the quarantine goes per drive**: config, journal, reports and cache stay single (one
   index finds duplicates across drives; one journal records where each file went, so `undo`
   follows it). Keep a drive's quarantine mounted until its runs are purged or undone: otherwise

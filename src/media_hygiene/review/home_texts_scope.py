@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from media_hygiene.i18n import _
-from media_hygiene.review.home_texts_lan import lan_switch_texts
+from media_hygiene.review.home_texts_lan import lan_pairing_texts, lan_switch_texts
 
 
 def scope_texts() -> dict[str, str]:
@@ -32,6 +32,7 @@ def scope_texts() -> dict[str, str]:
         "scopeAuditAgain": _("Run the audit again"),
         **imports_texts(),
         **lan_switch_texts(),
+        **lan_pairing_texts(),
     }
 
 

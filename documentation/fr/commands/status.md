@@ -67,6 +67,12 @@ Sous le titre *Où vous en êtes* :
   `mh library --folder "<dossier>"` pour en ouvrir un dans la page de recherche, choisir, puis
   *📂 Déplacer vers un événement…* ;
 
+puis, sous *Mes photos sont-elles en sécurité ?*, une ligne par filet de sécurité, 🟢 en ordre,
+🟠 à regarder, 🔴 manquant, ⚪ inconnu d'ici ([la carte](../reference-safety.md#mes-photos-sont-elles-en-sécurité-)) :
+le dernier [`push`](push.md) et ce qui a changé depuis, si sa copie est hors de ce PC, la dernière
+[`backup`](backup.md), le retour arrière de [`undo`](undo.md), la quarantaine, les fichiers abîmés
+et où en est la relecture ;
+
 puis **une** étape suivante, en commande complète prête à coller. Une quarantaine de plus de
 30 jours est la première chose qu'il propose de vider avec [`purge`](purge.md).
 

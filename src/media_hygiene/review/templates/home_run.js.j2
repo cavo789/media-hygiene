@@ -63,13 +63,14 @@ function launch(action, body, command) {
       if (reply.ok && reply.body.page) { goTo(reply.body.page); return; }
       if (reply.ok) { openRun(action, reply.body.command, reply.run, reply.body.kept ? reply.body.id : null); return; }
       if (reply.body.command) copyBox(reply.body.command);
-      toast(reply.body.error || fill(T.failed, { status: reply.status }));
+      toast(reply.body.error || fill(T.failed, { status: reply.status }), "error");
       if (reply.status === 409 && !reply.body.command) reload();
     })
     .catch(() => stopped());
 }
-const post = (path, body) => fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
-  .then((response) => response.json().catch(() => ({})).then((answer) => ({ ok: response.ok, status: response.status, body: answer, run: response.headers.get(RUN_HEADER) })));
+// The button clicked stays disabled, with a spinner, until the answer (busy_say.html.j2, 0664).
+const post = (path, body) => window.mhBusy(document.activeElement, () => fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+  .then((response) => response.json().catch(() => ({})).then((answer) => ({ ok: response.ok, status: response.status, body: answer, run: response.headers.get(RUN_HEADER) }))));
 // The albums saved, read from albums.json by the server; none: the form says how to make one.
 function albumChoices(form) {
   const selects = $$("[data-album]", form);
@@ -134,7 +135,7 @@ function openForm(action) {
         if (reply.ok && reply.body.page) { goTo(here ? `${reply.body.page}?here=1` : reply.body.page); return; }  // in this server (0417)
         if (reply.ok) { openRun(action, reply.body.command, reply.run, reply.body.kept ? reply.body.id : null); return; }
         if (reply.body.command) copyBox(reply.body.command);
-        toast(reply.body.error || fill(T.failed, { status: reply.status }));
+        toast(reply.body.error || fill(T.failed, { status: reply.status }), "error");
       })
       .catch(() => stopped());
   });
@@ -205,7 +206,7 @@ function showProgress(progress) {
   if (progress.done !== pace.done) { pace.done = progress.done; pace.at = now; } else if (!pace.at) pace.at = now;
   const count = progress.total ? `${progress.done} / ${progress.total}` : `${progress.done}`;
   const speed = rate ? ` · ${fill(T.perSecond, { rate: rate.toFixed(1) })}` : "";
-  const bar = progress.total ? `<progress max="${progress.total}" value="${progress.done}"></progress> ` : "";
+  const bar = progress.total ? `<progress max="${esc(progress.total)}" value="${esc(progress.done)}"></progress> ` : "";
   const stage = progress.title ? `<strong>${esc(progress.title)}</strong><br>` : "";
   line.innerHTML = `${stage}${bar}${esc(count)}${esc(speed)}${progress.current ? ` · ${esc(progress.current)}` : ""}`;
 }
@@ -216,25 +217,27 @@ function goTo(page) {
 }
 // The step's files, as mh writes them (`GET /api/step`): its end closes the dialog. The
 // server gone meanwhile (an older mh, a crash): wait for the next one, as before.
+let followed = null; // the id this page's dialog follows: the chip's click shows it again
 function followStep(id, command) {
-  const poll = () => fetch(P.step, { cache: "no-store" })
-    .then((response) => response.json())
-    .then((step) => {
-      if (step.state !== "done" || step.id !== id) {
-        showProgress(step.progress);
-        if (step.lost && $("#runProgress")) $("#runProgress").textContent = T.stepLost; // 0632
-        window.setTimeout(poll, POLL_MS);
-        return;
-      }
-      $("#runDlg").close();
-      const ok = step.code === 0;
-      const ended = fill(ok ? T.stepDone : T.stepFailed, { command: command, code: step.code });
-      toast(ended, ok ? "ok" : "info");
-      notifyEnd(ended);
-      reload();
-    })
-    .catch(() => { presence.away = true; waitForComeBack(false, null); });
-  window.setTimeout(poll, POLL_MS);
+  window.mhStep.claim(id); // its end said here, not by the chip (step_chip.html.j2, 0661)
+  if (followed === id) return;
+  followed = id;
+  const stop = window.mhStep.watch((step) => {
+    if (step === null) { stop(); followed = null; presence.away = true; waitForComeBack(false, null); return; }
+    if (step.state !== "done" || step.id !== id) {
+      showProgress(step.progress);
+      if (step.lost && $("#runProgress")) $("#runProgress").textContent = T.stepLost; // 0632
+      return;
+    }
+    stop();
+    followed = null;
+    $("#runDlg").close();
+    const ok = step.code === 0;
+    const ended = fill(ok ? T.stepDone : T.stepFailed, { command: command, code: step.code });
+    toast(ended, ok ? "ok" : "info");
+    notifyEnd(ended);
+    reload();
+  });
 }
 // "/" and not the state: any page answers it, the step's page as well as the home page.
 function waitForComeBack(page, run) {
@@ -278,14 +281,9 @@ function copyText(text) {
   if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, refused);
   else refused();
 }
+// The one toast stack of every page (busy_say.html.j2, 0664).
 function toast(message, tone = "info") {
-  const item = document.createElement("div");
-  item.className = "toast";
-  item.innerHTML = `${icon(tone === "ok" ? "check" : "info")}<p>${esc(message)}</p><button class="toast-x" type="button" aria-label="${esc(T.close)}">${icon("x")}</button>`;
-  $("#toasts").append(item);
-  const remove = () => item.remove();
-  item.querySelector(".toast-x").addEventListener("click", remove);
-  window.setTimeout(remove, TOAST_MS);
+  window.mhSay(message, tone);
 }
 function stopped() {
   const dialog = $("#stoppedDlg");
@@ -305,7 +303,7 @@ function drawAudit(state) {
   list.innerHTML = state.steps.map((step) => {
     const counts = step.total === null ? count(step.done) : `${count(step.done)} / ${count(step.total)}`;
     const pct = step.total ? Math.round((100 * step.done) / step.total) : 0;
-    return `<li class="pstep${step.finished ? " is-done" : ""}"${step.hint && !step.finished ? ` title="${esc(step.hint)}"` : ""}>${icon(step.finished ? "check" : "history")}<span>${esc(step.title)}</span><span class="pstep-count">${esc(counts)}</span><span class="pbar" aria-hidden="true"><span style="width:${pct}%"></span></span></li>`;
+    return `<li class="pstep${step.finished ? " is-done" : ""}"${step.hint && !step.finished ? ` title="${esc(step.hint)}"` : ""}>${icon(step.finished ? "check" : "history")}<span>${esc(step.title)}</span><span class="pstep-count">${esc(counts)}</span><span class="pbar" aria-hidden="true"><span style="width:${esc(pct)}%"></span></span></li>`;
   }).join("");
   $("#auditCurrent").textContent = running ? state.current || T.auditRunning : "";
   const end = [...state.lines, ...state.actions].map((line) => `<p>${esc(line)}</p>`);
@@ -413,7 +411,7 @@ function fillPalette() {
     ? entries.map((entry) => {
       if (entry.header) return `<li class="palette-group" role="presentation">${esc(entry.header)}</li>`;
       at += 1;
-      return `<li class="palette-opt" role="option" id="po-${at}" data-k="${at}" aria-selected="false">${icon(entry.icon)}<span class="po-title">${esc(entry.title)}</span>${entry.risk ? riskPill(entry.risk) : ""}<span class="po-sub">${esc(entry.sub)}</span>${entry.type === "run" ? starButton(entry.id) : ""}</li>`;
+      return `<li class="palette-opt" role="option" id="po-${esc(at)}" data-k="${esc(at)}" aria-selected="false">${icon(entry.icon)}<span class="po-title">${esc(entry.title)}</span>${entry.risk ? riskPill(entry.risk) : ""}<span class="po-sub">${esc(entry.sub)}</span>${entry.type === "run" ? starButton(entry.id) : ""}</li>`;
     }).join("")
     : `<li class="palette-empty" role="presentation">${esc(T.nothingMatches)}</li>`;
   markActive();
@@ -503,10 +501,10 @@ let tvAsked = false;
 function tvAlbums() {
   const box = $("#tvAlbums");
   if (!box) return;
-  const asked = new URLSearchParams(window.location.search).get("tv"); // the albums page's tap
+  const asked = window.mhView.get({ tv: "text" }).tv; // the albums page's tap
   if (asked && !tvAsked) {
     tvAsked = true;
-    window.history.replaceState(null, "", window.location.pathname);
+    window.mhView.set({ tv: null }, { state: null });
     tvStart(asked);
   }
   tvList = tvList || fetch(P.albumList, { cache: "no-store" })
@@ -536,7 +534,7 @@ function tvChoices() {
       const options = (values) => values.map((each) => (typeof each === "string" ? { value: each, label: each } : each))
         .map((each) => `<option value="${esc(each.value)}" title="${esc(each.value)}">${esc(each.label)}</option>`).join("");
       const pick = (id, label, values) => (values.length
-        ? `<div class="tv-choice"><label class="muted" for="${id}">${esc(label)}</label><select id="${id}">${options(values)}</select><button class="btn btn-primary" type="button" data-choose="${id}">${icon("play")} ${esc(T.tvShow)}</button></div>`
+        ? `<div class="tv-choice"><label class="muted" for="${esc(id)}">${esc(label)}</label><select id="${esc(id)}">${options(values)}</select><button class="btn btn-primary" type="button" data-choose="${esc(id)}">${icon("play")} ${esc(T.tvShow)}</button></div>`
         : "");
       box.innerHTML = tvRandomBox() + pick("tvFolder", T.tvFolder, lists.folders || []) + pick("tvMonth", T.tvMonth, lists.months || []);
       $$("[data-choose]", box).forEach((button) => button.addEventListener("click", () => tvChoose(button.dataset.choose)));
@@ -546,8 +544,8 @@ function tvChoices() {
 }
 // 🎲 At random (0508): a length and, optionally, the years; the PC chooses the photos.
 function tvRandomBox() {
-  const option = (value, label, chosen) => `<option value="${value}"${chosen ? " selected" : ""}>${esc(label)}</option>`;
-  const year = (id, label) => `<label class="muted" for="${id}">${esc(label)}</label><input id="${id}" type="number" inputmode="numeric" min="1800" max="2200" value="${new Date().getFullYear()}">`;
+  const option = (value, label, chosen) => `<option value="${esc(value)}"${chosen ? " selected" : ""}>${esc(label)}</option>`;
+  const year = (id, label) => `<label class="muted" for="${esc(id)}">${esc(label)}</label><input id="${esc(id)}" type="number" inputmode="numeric" min="1800" max="2200" value="${esc(new Date().getFullYear())}">`;
   return `<div class="tv-choice"><p class="muted">${esc(T.tvRandomNote)}</p>`
     + `<label class="muted" for="tvLength">${esc(T.tvLength)}</label><select id="tvLength">${option(30, T.tvMinutes30)}${option(60, T.tvMinutes60, true)}${option(120, T.tvMinutes120)}</select>`
     + `<label class="muted" for="tvEra">${esc(T.tvEra)}</label><select id="tvEra">${option("all", T.tvEraAll, true)}${option("five", T.tvEraFive)}${option("period", T.tvEraPeriod)}</select>`
@@ -580,7 +578,7 @@ function tvSend(body) {
     .then((reply) => {
       if (reply.ok && reply.body.page) { window.location.assign(reply.body.page); return; }
       $$("[data-choose]").forEach((button) => { button.disabled = false; });
-      toast(reply.body.error || fill(T.failed, { status: reply.status }));
+      toast(reply.body.error || fill(T.failed, { status: reply.status }), "error");
     })
     .catch(() => { $$("[data-choose]").forEach((button) => { button.disabled = false; }); toast(T.tvLate); });
 }
@@ -592,7 +590,7 @@ function tvStart(album) {
       if (reply.ok && reply.body.page) { window.location.assign(reply.body.page); return; }  // in this server (0417)
       if (reply.ok) { tvFollow(Date.now()); return; }
       $$("[data-tv]").forEach((button) => { button.disabled = false; });
-      toast(reply.body.error || fill(T.failed, { status: reply.status }));
+      toast(reply.body.error || fill(T.failed, { status: reply.status }), "error");
     })
     .catch(() => tvFollow(Date.now()));
 }

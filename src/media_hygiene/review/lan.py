@@ -45,6 +45,7 @@ class LanAccess:
     port: int
     secret: bytes
     secure: bool = False  # HTTPS, the certificates of `/lan` made (0430)
+    generation: int = 0  # each *Open pairing again* derives a new code (0681)
 
     @property
     def host(self) -> str:
@@ -66,12 +67,17 @@ class LanAccess:
 
     @property
     def code(self) -> str:
-        """The pairing code, derived from the secret: the same for the whole run.
+        """The pairing code, derived from the secret and the generation.
+
+        The same for the whole run until the PC opens the pairing again (0681).
 
         Returns:
             `CODE_DIGITS` digits.
         """
-        digest = hmac.new(self.secret, _CODE_LABEL, hashlib.sha256).digest()
+        label = _CODE_LABEL + (
+            f" {self.generation}".encode() if self.generation else b""
+        )
+        digest = hmac.new(self.secret, label, hashlib.sha256).digest()
         return str(int.from_bytes(digest) % 10**CODE_DIGITS).zfill(CODE_DIGITS)
 
     @property
@@ -86,6 +92,8 @@ class LanAccess:
     @property
     def token(self) -> str:
         """The cookie of a paired phone, derived from the secret, never from the code.
+
+        A new code (0681) keeps it: the phones paired this run stay paired.
 
         Returns:
             64 hexadecimal digits.

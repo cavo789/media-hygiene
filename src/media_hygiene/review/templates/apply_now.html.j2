@@ -7,14 +7,14 @@
    seen gone, then answering again, on the section the home page was left from (0280, kept
    for this tab in sessionStorage by home_run.js.j2). Served by the home server that mh keeps
    up (0363), the answer is `kept`: the step runs in the window of mh, this page stays open,
-   follows it on `follow` (`GET /api/step`), then loads again with its end said. A page may
+   follows it on the page's one poll of `GET /api/step` (`mhStep`, 0661), then loads again with its end said. A page may
    set `apply_more` (the 🔒 line, in the tooltip). #}
 {% if apply_offered %}
 <span id="applyBar">
   <button id="applyNow" type="button" hidden title="{{ _('mh moves the files set aside to the quarantine in its window (it asks first).') }}{% if apply_more is defined %} {{ apply_more }}{% endif %}">✅ {{ _("Apply") }}</button>
   <span id="applySaid" role="status"></span>
 </span>
-<script>
+<script nonce="{{ page_nonce }}">
 (() => {
   const APPLY_PATH = {{ apply_path | tojson }};
   // The next server may answer 0.5 s after this one ended (0354): asked often, and known by
@@ -63,18 +63,18 @@
 
   // The step's files, as mh writes them: its end said, then the page read again (the files
   // set aside are gone from the decisions). The server gone meanwhile: wait for the next one.
+  // One poll for the page (step_chip.html.j2, 0661): its end said here, not by the chip.
   const followStep = (state) => {
-    const poll = () => fetch(state.follow, { cache: "no-store" })
-      .then((response) => response.json())
-      .then((step) => {
-        if (step.state !== "done" || step.id !== state.id) { window.setTimeout(poll, APPLY_POLL_MS); return; }
-        const text = fill(step.code === 0 ? TEXTS.done : TEXTS.stopped, { command: state.command, code: step.code });
-        try { window.sessionStorage.setItem(ENDED_KEY, text); } catch { /* private mode */ }
-        said.textContent = text;
-        window.location.reload();
-      })
-      .catch(() => waitForHome(null));
-    window.setTimeout(poll, APPLY_POLL_MS);
+    window.mhStep.claim(state.id);
+    const stop = window.mhStep.watch((step) => {
+      if (step === null) { stop(); waitForHome(null); return; }
+      if (step.state !== "done" || step.id !== state.id) return;
+      stop();
+      const text = fill(step.code === 0 ? TEXTS.done : TEXTS.stopped, { command: state.command, code: step.code });
+      try { window.sessionStorage.setItem(ENDED_KEY, text); } catch { /* private mode */ }
+      said.textContent = text;
+      window.location.reload();
+    });
   };
 
   const waitForHome = (run) => {

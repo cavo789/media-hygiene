@@ -39,6 +39,7 @@ export -f lint
 export -f format
 export -f tests
 export -f tests_quick
+export -f bench_pages
 export -f build
 export -f release
 export -f _dive_archive
@@ -46,6 +47,7 @@ export -f dive
 export -f dive_ci
 export -f e2e
 export -f hygiene
+export -f home_dev
 export -f demo
 export -f demo_clean
 export -f docs_screenshots

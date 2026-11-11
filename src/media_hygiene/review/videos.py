@@ -13,7 +13,8 @@ from http import HTTPStatus
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.review.http import REVIEW_POLICY, ContentType, FilePart, Response
+from media_hygiene.review.http import ContentType, FilePart, Response
+from media_hygiene.review.nonce import REVIEW_POLICY
 
 if TYPE_CHECKING:
     from collections.abc import Callable

@@ -8,7 +8,8 @@
      saved where, what nothing here deletes); no panel for a page without keys;
    - on the right, `#content`: one sticky bar (`#bar`, the `bar` block: where you are, the line
      read back from the disk, *Apply now*), then the `content` block (the page's `main`);
-   - after them, the `after` block (dialogs, the page's script), then `home_link.html.j2`.
+   - after them, the ask dialog and the toasts (`busy_say.html.j2`, defined before any page script
+     can call them at load), the `after` block (dialogs, the page's script), then `home_link.html.j2`.
    Nothing else above the content: no second header, no footer; hints go in the keys panel or
    a `<details>`. The page sets `page_name` (and its `texts`) before its blocks; the look is
    `page_frame.css.j2`, the page's own rules go in the `style` block. #}
@@ -24,6 +25,7 @@
 {% include "page_frame.css.j2" %}
 {% block style %}{% endblock %}
 </style>
+{% include "view_state.html.j2" %}
 </head>
 <body>
 {% include "page_header.html.j2" %}
@@ -43,7 +45,7 @@
 {% block more_keys %}{% endblock %}
     </dl>
     </details>
-    <script>
+    <script nonce="{{ page_nonce }}">
     document.addEventListener("keydown", (event) => {
       const more = document.getElementById("moreKeys");
       if (event.key === "Escape" && more.open) { more.open = false; event.stopImmediatePropagation(); }
@@ -63,7 +65,10 @@
 {% block content %}{% endblock %}
   </div>
 </div>
+{% include "ask_dialog.html.j2" %}
+{% include "busy_say.html.j2" %}
 {% block after %}{% endblock %}
+{% include "step_chip.html.j2" %}
 {% include "home_link.html.j2" %}
 </body>
 </html>

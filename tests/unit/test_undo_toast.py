@@ -1,7 +1,7 @@
 """A reversible choice asks nothing (0521): the toast's Undo replaces `confirm`.
 
-Every `window.confirm` left in the served templates is listed here with why nothing
-takes its action back (or why it stays for now); a new one fails until it is named.
+What nothing takes back asks through the one in-page dialog (0663): no native box is
+left, and each question is listed here with why it is not a toast.
 """
 
 from __future__ import annotations
@@ -16,28 +16,62 @@ from media_hygiene.services.next_command import LAUNCHER_STEPS_VARIABLE
 from tests.support.page_render import render_page
 
 _SOURCES: Final = Path(__file__).parents[2] / "src" / "media_hygiene"
-_CONFIRM: Final = re.compile(r"window\.confirm\(")
-# File → confirmations kept: nothing takes them back, or their Undo needs a route
-# (0521 PARTIAL).
-_KEPT: Final = {
-    "places/templates/places.html.j2": 2,  # a place given photos / deleted
-    "review/templates/phone_review.js.j2": 2,  # the phone page (phone rule)
+_NATIVE: Final = re.compile(r"\b(?:window\.)?(?:confirm|alert|prompt)\(")
+# Every former native box (0663): the shared ask dialog, and why nothing takes it back.
+_ASKED: Final = {
+    "places/templates/places_map.js.j2": 1,  # photos given to a place
+    "places/templates/places_edit.js.j2": 1,  # a place deleted
+    "review/templates/phone_review.js.j2": 2,  # phone files deleted; one not kept
     "search/templates/events_rule.js.j2": 1,  # rules removed from config.toml
-    "search/templates/events_choice.js.j2": 1,  # leaving with unsaved choices
+    "search/templates/events_choice.js.j2": 1,  # leaving with an unsaved folder: save?
     "review/templates/quarantine_purge.js.j2": 1,  # a purge: nothing brings it back
     "review/templates/shrink.js.j2": 1,  # hours of encoding start (0586's one question)
-    "share/templates/album.js.j2": 2,  # an album deleted, a photo taken out
-    "share/templates/album_edit.js.j2": 1,  # all taken out: album removed
+    "share/templates/album.js.j2": 2,  # albums deleted; a photo out (no Undo route)
+    "share/templates/album_edit.js.j2": 1,  # all taken out: the album removed
+    "review/templates/home.js.j2": 1,  # every paired device forgotten (0683)
 }
 
 
-def test_only_the_listed_confirmations_remain() -> None:
-    """The batch choices of the reviews ask nothing any more."""
-    found = {
-        str(path.relative_to(_SOURCES)): len(_CONFIRM.findall(path.read_text("utf-8")))
+def _templates() -> dict[str, str]:
+    return {
+        str(path.relative_to(_SOURCES)): path.read_text("utf-8")
         for path in _SOURCES.rglob("*.j2")
     }
-    assert {name: n for name, n in found.items() if n} == _KEPT
+
+
+def test_no_native_box_is_left() -> None:
+    """No `window.confirm`, `alert` nor `prompt` in any template (0663)."""
+    found = {name: _NATIVE.findall(text) for name, text in _templates().items()}
+    assert {name: hits for name, hits in found.items() if hits} == {}
+
+
+def test_every_question_is_the_shared_dialog() -> None:
+    """Each former confirmation asks through `window.mhAsk`, listed with its reason."""
+    found = {
+        name: text.count("window.mhAsk(")
+        for name, text in _templates().items()
+        if "ask_dialog" not in name
+    }
+    assert {name: n for name, n in found.items() if n} == _ASKED
+
+
+@pytest.mark.parametrize(
+    "template",
+    ["quarantine.html.j2", "phone_review.html.j2", "album.html.j2",
+     "places.html.j2", "search.html.j2", "shrink.html.j2", "album_edit.html.j2"],
+)  # fmt: skip
+def test_the_pages_that_ask_carry_the_dialog_once(template: str) -> None:
+    """One dialog, the safe button first and focused, every line set as text."""
+    page = render_page(template)
+    assert page.count('<dialog id="mhAsk"') == 1
+    assert "noButton.focus();" in page
+    assert "paragraph.textContent = line;" in page
+
+
+def test_the_home_page_carries_the_dialog_once() -> None:
+    """The home page is not on the frame: it includes the dialog itself."""
+    home = (_SOURCES / "review" / "templates" / "home.html.j2").read_text("utf-8")
+    assert home.count('{% include "ask_dialog.html.j2" %}') == 1
 
 
 @pytest.mark.parametrize("template", ["review.html.j2", "near_review.html.j2"])

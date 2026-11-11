@@ -1,0 +1,81 @@
+  <section id="toc" aria-label="{{ page_name }}">
+    <p class="hint">{{ _("The circles are your photos with a GPS position, larger where there are more. Click a circle or the map to name a place; drag its marker to move it. Each place is saved at once in config.toml.") }}
+      {{ _("A place is for a spot the towns list does not know: home, the grandparents', the office. Towns are named on their own.") }}</p>
+    <input id="search" type="search" autocomplete="off"
+           placeholder="{{ _('Find a town (offline)…') }}" aria-label="{{ _('Find a town') }}">
+    <ul id="towns"></ul>
+    {% if osm_path %}
+    <div id="osm">
+      <button type="button" id="osmButton">{{ _("Search OpenStreetMap") }}</button>
+      <p class="hint">{{ _("For a village, a district or a park drawn as an area: click or press Enter. Only the text you typed is sent, to {host}; never a photo nor a position.").format(host=osm_host) }}
+        {{ _("Results") }} © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">{{ _("OpenStreetMap contributors") }}</a>, ODbL ·
+        <a href="https://operations.osmfoundation.org/policies/nominatim/" target="_blank" rel="noopener">{{ _("usage policy") }}</a></p>
+      <ul id="areas"></ul>
+    </div>
+    {% endif %}
+    {# [places] reverse_lookup (0536): the switch where its effect is, read back from config.toml #}
+    <label for="lookup">{{ _("After an import, name the new photos' places online") }}</label>
+    <select id="lookup">
+      <option value="ask">{{ _("Ask each time") }}</option>
+      <option value="always">{{ _("Always: their rounded positions are sent to OpenStreetMap") }}</option>
+      <option value="never">{{ _("Never: no position leaves this PC") }}</option>
+    </select>
+    <form id="editor" hidden>
+      <strong id="editorTitle"></strong>
+      <label for="name">{{ _("Name (it becomes a folder name)") }}</label>
+      <input id="name" type="text" maxlength="120" required>
+      <p id="townHint" class="hint" role="note" hidden></p>
+      <div id="circleOnly">
+      <label for="radius">{{ _("Radius, in metres") }}</label>
+      <input id="radius" type="range" min="20" max="3000" step="10">
+      <input id="radiusValue" type="number" min="1" max="50000" step="1" aria-label="{{ _('Radius, in metres') }}">
+      </div>
+      <div id="hand" hidden>
+        <label>{{ _("Photos placed by hand") }} <span id="handCount" class="muted"></span></label>
+        <p class="hint">{{ _("Their GPS is ignored for this place: they belong to it, wherever they are now (found by their content).") }}</p>
+        <ul id="handList"></ul>
+      </div>
+      <p id="areaNote" class="hint" hidden>{{ _("An area from OpenStreetMap: the photos taken inside its outline belong to this place.") }}</p>
+      <label class="check"><input id="home" type="checkbox"> {{ _("Home: trips are measured from it") }}</label>
+      <div class="buttons">
+        <button type="submit" class="primary">{{ _("Save") }}</button>
+        <button type="button" id="cancel">{{ _("Cancel") }}</button>
+        <button type="button" id="delete" class="danger">{{ _("Delete") }}</button>
+      </div>
+    </form>
+    <details id="placesFold" class="fold" open>
+      <summary>{{ _("Your places") }} <span id="placesCount" class="count"></span></summary>
+      <ul id="places"></ul>
+    </details>
+    <details id="clustersFold" class="fold" open>
+      <summary>{{ _("The largest clusters without a name") }} <span id="clustersCount" class="count"></span></summary>
+      <ul id="clusters"></ul>
+    </details>
+    <details id="foldersFold" class="fold" open>
+      <summary>{{ _("Folders named after a town, or placed") }} <span id="foldersCount" class="count"></span></summary>
+      <input id="folderFilter" type="search" autocomplete="off"
+             placeholder="{{ _('Type a name to filter the folders') }}" aria-label="{{ _('Filter the folders') }}"
+             title="{{ _('The name shown and the folder\'s path; Esc empties the box.') }}">
+      <details id="todoFold" class="fold sub" open>
+        <summary>{{ _("To place") }} <span id="todoCount" class="count"></span></summary>
+        <ul id="foldersTodo"></ul>
+      </details>
+      <details id="placedFold" class="fold sub">
+        <summary>{{ _("Placed") }} <span id="placedCount" class="count"></span></summary>
+        <ul id="foldersPlaced"></ul>
+      </details>
+    </details>
+    <details id="treeFold" class="fold">
+      <summary>{{ _("Any folder") }} <span id="treeCount" class="count"></span></summary>
+      <p class="hint">{{ _("Every folder of the index, as 'browse' shows them: place one named after no town (a wedding, a holiday). Its subfolders get its position, unless they have their own.") }}</p>
+      <input id="treeFilter" type="search" autocomplete="off"
+             placeholder="{{ _('Type a name to filter the folders') }}" aria-label="{{ _('Filter the folders') }}"
+             title="{{ _('The name shown and the folder\'s path; Esc empties the box.') }}">
+      <ul id="tree"></ul>
+    </details>
+    <details id="asideFold" class="fold">
+      <summary>{{ _("Set aside from the map") }} <span id="asideCount" class="count"></span></summary>
+      <p class="hint">{{ _("Hidden from the map and from the lists; 'classify' reads them as before (a cluster stays unnamed).") }}</p>
+      <ul id="aside"></ul>
+    </details>
+  </section>

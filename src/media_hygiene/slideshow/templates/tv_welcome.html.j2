@@ -52,7 +52,7 @@
   <a href="{{ screen }}" autofocus><span>📺</span>{{ _("Slideshow") }}</a>
   <a href="{{ phone }}"><span>📱</span>{{ _("Install on my phone") }}</a>
 </nav>
-<script>
+<script nonce="{{ page_nonce }}">
   (function () {
     var tiles = document.querySelectorAll("nav a");
     var steps = {37: -1, 38: -1, 39: 1, 40: 1};

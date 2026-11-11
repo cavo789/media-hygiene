@@ -71,9 +71,51 @@ sont supprimés aussi : ils ne contiennent rien.
 - **Le journal.** Chaque action est notée *avant* et *après* : une interruption ne fait jamais
   perdre le fil, et `undo` annule n'importe quelle exécution.
 - **La quarantaine.** Ce que `clean` met de côté y attend, intact, jusqu'à votre `purge`.
+- **Vos réglages gardent leurs versions précédentes.** Chaque enregistrement de `config.toml`,
+  du fichier d'une personne ou d'un événement, ou d'`albums.json` copie d'abord le fichier qu'il
+  remplace dans `.history/` (`C:\Users\<vous>\media-hygiene\config\.history\`, et à côté
+  d'`albums.json`) : les 20 dernières de chacun, 30 jours au plus. Pour en reprendre une,
+  copiez-la par-dessus le fichier et retirez la date qui termine son nom.
 - **Les dossiers de l'outil restent hors de vos photos.** Un dossier de quarantaine, de journal,
   de cache ou de rapports placé dans un dossier de photos (ou autour) est refusé, avec la façon
   de le monter autrement.
+
+## Un fichier abîmé par le disque
+
+Un disque peut abîmer un fichier sans changer sa taille ni sa date (un secteur défaillant, un
+mauvais câble USB) : l'audit, qui fait confiance à ce qui n'a pas changé, continue de dire
+*correct*. L'étape `reread` d'[`upkeep`](commands/upkeep.md) (`mh audit --reread`) relit en entier
+les fichiers lus il y a le plus longtemps, `reread_gb` par passage (20 Go par défaut, dans
+`[routine]` de `config.toml`) : réglez-le à peu près sur la taille de votre photothèque divisée
+par le nombre de passages dans l'année, pour que chaque fichier soit relu environ une fois par
+an. Un fichier dont le contenu a changé sans que sa taille ni sa date changent n'est jamais pris
+pour une modification : il est listé comme *changé*, avec le jour où il a été trouvé, le dernier
+jour où il a été lu correct, et où se trouve une bonne copie — un doublon, un dossier de
+sauvegarde, la quarantaine (chacune relue en entier d'abord). Un programme qui réécrit une photo
+et remet sa date ressemble à cela : regardez avant de restaurer. `mh clean --repair` les liste à
+nouveau, demande, copie la bonne copie à côté du fichier, la relit, déplace le fichier abîmé en
+quarantaine et donne à la copie son nom et sa date ; `mh undo` remet le fichier abîmé.
+[`push`](commands/push.md) ne remplace jamais une copie de la sauvegarde par un fichier trouvé
+abîmé. Un fichier lu pour la première fois est comparé à ce que l'audit en a gardé (tout le
+contenu pour un fichier qui a une copie, sinon ses 64 premiers et derniers Ko) : un changement
+ailleurs est trouvé à partir de sa deuxième lecture.
+
+## Mes photos sont-elles en sécurité ?
+
+La page d'accueil et [`status`](commands/status.md) y répondent en une carte, lue sur le disque à
+chaque fois, une ligne par filet de sécurité : 🟢 en ordre, 🟠 à regarder, 🔴 manquant, ⚪ inconnu
+d'ici. Une ligne qui a un remède a son bouton sur la page (le téléphone montre la carte sans
+boutons).
+
+| Ligne | Verte quand |
+|---|---|
+| Une deuxième copie des photos | le dernier [`push`](commands/push.md) s'est terminé il y a moins de 30 jours (les fichiers modifiés depuis sont comptés) |
+| La copie est hors de ce PC | sa cible est un NAS ou un autre disque que `C:` (inconnu tant qu'un push n'a copié aucun fichier) |
+| La mémoire de l'outil | la dernière [`backup`](commands/backup.md) a moins de 30 jours et a été écrite hors de ce PC ; les archives de `mh backup` restent sur `C:`, la ligne reste donc orange tant que vous ne les copiez pas |
+| Le retour arrière | chaque exécution de la quarantaine a encore son journal, et chaque quarantaine est montée |
+| En attente dans la quarantaine | elle est vide, ou plus récente que `[clean] purge_hint_days` ; les fichiers qui n'existent nulle part ailleurs sont comptés |
+| Fichiers abîmés / Fichiers relus en entier | la relecture d'[`upkeep`](commands/upkeep.md) n'a rien trouvé ([plus haut](#un-fichier-abîmé-par-le-disque)) |
+| Une restauration essayée | pas encore proposée : un test de restauration depuis le NAS viendra avec `mh pull` |
 
 ## Les bonnes habitudes
 
@@ -82,7 +124,12 @@ sont supprimés aussi : ils ne contiennent rien.
 - **Mettez en pause la synchronisation cloud** (OneDrive, Google Drive, Dropbox, iCloud) pendant
   un nettoyage ou un tri : sinon chaque changement est recopié dans le cloud et sur vos autres
   appareils.
-- **Gardez le dossier du journal** : `undo` en a besoin. Ne lancez `purge` qu'après avoir vérifié.
+- **Le journal est sauvé par `mh backup`** : `undo` en a besoin, et l'archive en garde une copie
+  hors du volume (sur le NAS aussi quand `mh push` a une cible). Perdu malgré tout, `mh undo
+  <exécution> --from-quarantine` remet les fichiers de la quarantaine d'après sa disposition (les
+  copies effacées par un `clean --delete` ne peuvent pas revenir sans lui). Ne lancez `purge`
+  qu'après avoir vérifié : il liste d'abord les fichiers mis de côté qui n'existent nulle part
+  ailleurs, et demande pour eux à part.
 
 Si vous le pouvez, une **sauvegarde sur un disque externe** est le filet de plus contre ce
 qu'aucun logiciel ne peut empêcher : un disque qui lâche, une erreur faite en dehors de l'outil.
@@ -128,6 +175,7 @@ probable qu'une erreur de disque.
 | Fichiers compagnons XMP | [`xmp`](reference-tags.md#emporter-les-mots-avec-les-photos--xmp) n'écrit jamais dans une photo ni dans un dossier protégé. Chaque fichier compagnon est journalisé, écrit dans un fichier temporaire puis renommé (jamais par-dessus un fichier apparu), relu et analysé ; celui d'une autre application est complété (ses retouches gardées), ses octets précédents gardés en quarantaine. `undo` ne supprime ou ne remet un fichier compagnon que tant qu'il contient ce que l'exécution a écrit. |
 | Fichiers inutiles de `sort` | Seuls les noms de `[sort] junk_files` (`Thumbs.db`, …) vont en quarantaine avec un dossier vidé ; un nom de photo, de vidéo ou de fichier compagnon y est refusé. |
 | Libérer un téléphone | [`mh import --phone --free`](commands/import.md#libérer-le-téléphone--mh-import---phone---free) : seulement les fichiers cochés sur sa page, un fichier mis de côté jamais coché pour vous. Chacun copié à nouveau depuis le téléphone, son SHA-256 prouvé égal à un fichier de la photothèque encore là, à la copie de l'import ou à un contenu mis de côté avant (sinon gardé sur le téléphone) ; écrit au journal avant d'être déplacé hors du téléphone (sans fenêtre), le téléphone relu, la copie déplacée supprimée une fois égale. `undo` ne peut pas remettre un fichier sur un téléphone. |
+| Les pages | Un nom de fichier, de dossier, d'album, de personne, de mot-clé ou de lieu, ou un champ EXIF, est toujours affiché comme du texte : un nom comme `<img onerror=…>` reçu avec une photo n'exécute rien. Chaque page n'exécute que les scripts envoyés avec elle (un code tiré pour chaque page, vérifié par le navigateur) : même un nom mal affiché ne pourrait pas agir à votre place. |
 | Dossiers protégés | Jamais modifiés, quoi qu'il arrive. |
 | Chaque groupe | Garde toujours au moins une copie. |
 

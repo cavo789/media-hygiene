@@ -13,24 +13,30 @@
   #acting > * { order: 3; }
   #bar #takeBack[hidden], #bar #pickAll[hidden] { display: none; }
   #picked { display: inline-block; min-width: 9ch; white-space: nowrap; }
-  #bar > #moveBar { order: 4; }
-  #bar > #albumBar, #bar > #albumQuick { order: 5; }
-  /* ▶ Slideshow ▾ (0660) on line 1: its word only where line 1 has room for it. */
-  @media (max-width: 1600px) { #showOpen .showWord { display: none; } }
-  #acting > #setAside { order: 6; margin-left: auto; }
-  #bar > #applyBar { order: 7; position: relative; }
+  /* Line 2's menus (0665), in this one order on every page: Move, Album, Slideshow, Describe,
+     then Invert; a gap; Set aside, Apply. To reorder them, reorder this list. */
+{% set bar_menus = ["#acting > #moveMenu", "#bar > #albumBar, #bar > #albumQuick", "#bar > #showBar", "#bar > #moveBar", "#acting > #invert"] %}
+{% for menu in bar_menus %}  {{ menu | safe }} { order: {{ loop.index + 3 }}; }
+{% endfor %}  @media (max-width: 1600px) { #showOpen .showWord { display: none; } }
+  #acting > #setAside { order: {{ bar_menus | length + 4 }}; margin-left: auto; }
+  #bar > #applyBar { order: {{ bar_menus | length + 5 }}; position: relative; }
   #bar #applyNow[hidden] { display: inline-block; opacity: .45; pointer-events: none; }
   #bar #applySaid { position: absolute; top: 100%; right: 0; width: max-content; max-width: 60vw;
                     padding: 2px 8px; background: var(--card); }
   #bar #applySaid:empty { display: none; }
-  #bar > p { order: 8; }
+  #bar > p { order: {{ bar_menus | length + 6 }}; }
   #bar button { padding: 4px 8px; white-space: nowrap; }
   #bar > #chosen { flex: 0 1 34ch; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
   /* A small panel gathers what is not needed all the time; it floats: the grid stays put. */
-  #bar > .barPanel { position: relative; flex-basis: auto; margin: 0; }
+  #bar > .barPanel, #acting > .barPanel { position: relative; flex-basis: auto; margin: 0; }
   .barPanel > summary { list-style: none; padding: 4px 8px; color: var(--accent); white-space: nowrap;
                         cursor: pointer; border: 1px solid var(--accent); border-radius: 6px; }
   .barPanel > summary::-webkit-details-marker { display: none; }
+  .barPanel > summary.primary { color: var(--on-accent); background: var(--accent); }
+  /* An entry's letter at its right (0665): typed while the menu is open, it runs the entry. */
+  .panelBody [data-key]::after { content: attr(data-key); margin-left: 1em; padding: 0 4px; font-size: .8em;
+                                 border: 1px solid var(--line); border-radius: 4px; color: var(--muted); }
+  .panelBody [role="menu"], .panelBody[role="menu"] { display: flex; flex-direction: column; align-items: stretch; gap: 6px; }
   .barPanel > .panelBody { position: absolute; top: calc(100% + 4px); left: 0; z-index: 6;
                            display: flex; flex-direction: column; align-items: stretch; gap: 8px;
                            width: max-content; max-width: min(34em, 90vw); padding: 12px;

@@ -66,8 +66,47 @@ copy from it. Empty files (0 bytes) are deleted too: they hold nothing.
 - **The journal.** Every action is written down *before* and *after* it happens: an
   interruption never loses track, and `undo` reverses any run.
 - **The quarantine.** What `clean` sets aside waits there, whole, until you `purge` it.
+- **Your settings keep their previous versions.** Each save of `config.toml`, of a person's or
+  an event file, or of `albums.json` first copies the file it replaces into `.history/`
+  (`C:\Users\<you>\media-hygiene\config\.history\`, and beside `albums.json`): the last 20
+  of each, 30 days at most. To bring one back, copy it over the file and remove the date
+  that ends its name.
 - **The tool's folders stay out of your photos.** A quarantine, journal, cache or reports
   folder placed inside a photo folder (or around one) is refused, with how to mount it instead.
+
+## A file damaged by the disk
+
+A disk can damage a file without changing its size or date (a failing sector, a bad USB cable):
+the audit, which trusts what did not change, keeps saying *fine*. The `reread` step of
+[`upkeep`](commands/upkeep.md) (`mh audit --reread`) reads again in full the files read longest
+ago, `reread_gb` per run (20 GB by default, in `[routine]` of `config.toml`): set it to about your
+library's size divided by the runs in a year, so that each file is read about once a year. A
+file whose content changed while its size and date did not is never taken for an edit: it is
+listed as *changed* with the day it was found, the last day it read fine, and where a good copy
+is — a duplicate, a backup folder, the quarantine (each read in full first). A program that
+rewrites a photo and puts its date back looks the same: look before restoring.
+`mh clean --repair` lists them again, asks, copies the good copy beside the file, reads it back,
+moves the damaged file to the quarantine and gives the copy its name and date; `mh undo` puts
+the damaged one back. [`push`](commands/push.md) never replaces a backup copy by a file found
+damaged. A file read for the first time is compared with what the audit kept of it (the whole
+content for a file with a copy, else its first and last 64 KB): a change elsewhere is found from
+its second reading on.
+
+## Are my photos safe?
+
+The home page and [`status`](commands/status.md) answer it in one card, read from the disk each
+time, one line per safety net: 🟢 fine, 🟠 to look at, 🔴 missing, ⚪ not known from here. A
+line with a fix has its button on the page (the phone shows the card without buttons).
+
+| Line | Green when |
+|---|---|
+| A second copy of the photos | the last [`push`](commands/push.md) finished less than 30 days ago (the files changed since are counted) |
+| The copy is off this PC | its target is a NAS or another drive than `C:` (unknown until a push copied a file) |
+| The tool's memory | the last [`backup`](commands/backup.md) is less than 30 days old and was written off this PC; the archives of `mh backup` stay in `C:`, so this line stays amber until you copy them |
+| The way back | every run in the quarantine still has its journal, and every quarantine is mounted |
+| Waiting in the quarantine | it is empty, or younger than `[clean] purge_hint_days`; the files that exist nowhere else are counted |
+| Damaged files / Files read again in full | the re-read of [`upkeep`](commands/upkeep.md) found nothing ([above](#a-file-damaged-by-the-disk)) |
+| A restore tried | not offered yet: a restore test from the NAS comes with `mh pull` |
 
 ## Good habits
 
@@ -75,7 +114,11 @@ copy from it. Empty files (0 bytes) are deleted too: they hold nothing.
 - **Read the report before `clean`**: the folder pairs first, then a few groups.
 - **Pause cloud synchronisation** (OneDrive, Google Drive, Dropbox, iCloud) while cleaning or
   sorting: otherwise every change is copied to the cloud and to your other devices.
-- **Keep the journal folder**: `undo` needs it. Run `purge` only once you have checked.
+- **The journal is saved by `mh backup`**: `undo` needs it, and the archive keeps a copy off the
+  volume (on the NAS too when `mh push` has a target). Lost anyway, `mh undo <run>
+  --from-quarantine` brings the files of the quarantine back from its layout (the copies a
+  `clean --delete` erased cannot come back without it). Run `purge` only once you have checked: it lists first the files set aside that exist nowhere
+  else, and asks for them apart.
 
 If you can, a **backup on an external disk** is the extra net against what no software can
 prevent: a failing disk, a mistake made outside the tool. It is welcome, not required.
@@ -119,6 +162,7 @@ error.
 | XMP sidecars | [`xmp`](reference-tags.md#carry-the-words-with-the-photos-xmp) never writes into a photo nor into a protected folder. Each sidecar is journaled, written to a temporary file then renamed (never over a file that appeared), read back and parsed; one of another application is completed (its edits kept), its previous bytes kept in the quarantine. `undo` removes or restores a sidecar only while it holds what the run wrote. |
 | `sort` junk files | Only the names of `[sort] junk_files` (`Thumbs.db`, …) go to the quarantine with an emptied folder; a photo, video or sidecar name there is refused. |
 | Freeing a phone | [`mh import --phone --free`](commands/import.md#free-the-phone-mh-import---phone---free): only the files ticked on its page, a set-aside one never ticked for you. Each one copied again from the phone, its SHA-256 proven equal to a library file still there, the import's copy or a content set aside before (else kept on the phone); journaled before it is moved off the phone (no dialog), the phone listed again, the moved copy dropped once equal. `undo` cannot put a file back on a phone. |
+| The pages | A file, folder, album, person, tag or place name, or an EXIF field, is always shown as text: a name such as `<img onerror=…>` received with a photo runs nothing. Each page runs only the scripts it was sent with (a code drawn for each page, checked by the browser), so even a name shown by mistake could not act for you. |
 | Protected folders | Never modified, whatever happens. |
 | Every group | Always keeps at least one copy. |
 

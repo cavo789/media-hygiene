@@ -6,6 +6,7 @@ let saving = false;    // Delete in the viewer: one save at a time (a key held r
 const SWIPE_PX = 50;   // a touch moved less than this is a tap (as the albums' page)
 let pointer = null;    // where a touch began on the large view
 let swiped = false;    // the click that ends a swipe does not close the view
+{% include "pick_preload.js.j2" %}
 
 // Opened large: the file shown alone is set aside (Delete) or taken back (Backspace), the
 // save read back from the server (its label too). One save at a time: a key held repeats.
@@ -111,14 +112,25 @@ function open() {
   $("originalLink").href = file.original;
   $("personLink").hidden = !file.path; // `/person`, served by every page (0351)
   if (file.path) $("personLink").href = "/person?path=" + encodeURIComponent(file.path);
+  // Opening pushes a step of the history: Back closes the view, as Esc (0666); ← → replace nothing.
+  if (!$("viewer").classList.contains("open")) window.mhView.set({}, { push: true, state: { mhViewer: true } });
   $("viewer").classList.add("open");
+  preloadAround();
 }
 
 function close() {
+  if (window.history.state && window.history.state.mhViewer) { window.history.back(); return; } // popstate closes it
+  closeShown();
+}
+
+function closeShown() {
+  preloadStop();
+  preload.seen = -1;
   $("movie").pause();
   if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
   $("viewer").classList.remove("open");
 }
+window.addEventListener("popstate", () => { if ($("viewer").classList.contains("open")) closeShown(); });
 
 // The keys of the large view: listed under it with `?` (`pick_viewer.html.j2`, `viewerHelp`).
 const VIEWER_KEYS = {

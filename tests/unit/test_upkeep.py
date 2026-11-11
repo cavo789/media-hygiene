@@ -60,6 +60,7 @@ def test_the_default_list_leaves_purge_out() -> None:
         ("audit",),
         ("clean",),
         ("reports",),
+        ("audit", "--reread"),
     ]
 
 
@@ -70,6 +71,7 @@ def test_every_step_in_order_and_only_the_old_run_purged() -> None:
         ("clean",),
         ("purge", "old"),
         ("reports",),
+        ("audit", "--reread"),
     ]
 
 

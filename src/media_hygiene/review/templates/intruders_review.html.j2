@@ -78,7 +78,7 @@
 {% endblock %}
 {% block after %}
 {% include "undo_toast.html.j2" %}
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "intruders_review.js.j2" %}
 </script>
 {% endblock %}

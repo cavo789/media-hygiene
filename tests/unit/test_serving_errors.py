@@ -34,6 +34,14 @@ class _Writer:
     async def drain(self) -> None:
         """Nothing to flush."""
 
+    def get_extra_info(self, name: str) -> None:
+        """No socket behind it: no peer.
+
+        Args:
+            name: The information asked.
+        """
+        del name
+
     def close(self) -> None:
         """Remember the connection was closed."""
         self.closed = True

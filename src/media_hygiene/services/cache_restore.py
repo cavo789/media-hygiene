@@ -5,7 +5,8 @@ index, a schema this image knows); then the current state is backed up (the undo
 `restore <that archive>`); only then is the index overwritten, through SQLite's
 `backup` into the live file (consistent with its journal files), and read back: its
 row counts must be those of the manifest. `/config` is restored only when asked:
-files written since the backup and absent from it are left in place.
+files written since the backup and absent from it are left in place. The journals
+and choice files missing are always put back, never over one there (0687).
 """
 
 from __future__ import annotations
@@ -26,6 +27,7 @@ from media_hygiene.services.backup_archive import (
     index_facts,
 )
 from media_hygiene.services.backup_check import checked
+from media_hygiene.services.backup_extra import put_back_missing
 from media_hygiene.services.cache_backup import (
     Backup,
     archives,
@@ -54,6 +56,7 @@ class Restored:
     counts: dict[str, int]  # read back from the restored index
     before: Backup | None  # None: there was no index yet
     config: tuple[str, ...] = ()  # the files of `/config` written
+    missing: tuple[str, ...] = ()  # journals and choices put back (0687)
 
 
 def restore_backup(runtime: Runtime, request: RestoreRequest) -> Restored:
@@ -86,6 +89,7 @@ def restore_backup(runtime: Runtime, request: RestoreRequest) -> Restored:
         index.parent.mkdir(parents=True, exist_ok=True)
         copy_index(extracted / INDEX_MEMBER, index)
         written = _config(runtime, extracted, manifest) if request.config else ()
+        missing = put_back_missing(runtime, extracted, manifest)
     _schema, counts = index_facts(index)
     if counts != manifest.counts:
         raise BackupError(
@@ -93,7 +97,7 @@ def restore_backup(runtime: Runtime, request: RestoreRequest) -> Restored:
                 name=archive.name
             )
         )
-    return Restored(archive, manifest, counts, before, written)
+    return Restored(archive, manifest, counts, before, written, missing)
 
 
 def _chosen(folder: Path, name: str | None) -> Path:

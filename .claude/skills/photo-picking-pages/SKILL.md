@@ -51,6 +51,24 @@ at least `key`, `name`, `preview`, `original`, `chosen`, optionally `video`, `da
 Order: the page's most used action first, right after the count (`{% set pick_first = "<template>" %}`
 before including `pick_acting.html.j2`), *Set aside* last.
 
+**Line 2's menus** (0665): one component (`.barPanel`, `pick_bar_panel.js.j2`) for every group,
+in this order on every page — the one list `bar_menus` of `pick_bar.css.j2` sets it:
+
+| # | Menu | Entries (letter) |
+|---|---|---|
+| 1 | *📂 Move ▾* (search: primary, it is `pick_first`) | to an event (E) · to their month (M) |
+| 2 | *📚 Album ▾* (+ ➕ once named) | add · take out · share on the TV · prepare for sending |
+| 3 | *▶ Slideshow ▾* (0660) | on this PC (H) · on the TV (T) |
+| 4 | *🏷 Describe ▾* | tag (T) · date (D) · place (P) |
+| 5 | *🔀 Invert* | — |
+| — | a gap, then *🗑 Set aside*, *Apply now* | |
+
+Keyboard: ↓ on a menu opens it, ↑ ↓ move inside, the letter (`data-key`, drawn at the entry's
+right) runs it, Esc closes and gives the focus back to the menu; a page lists them in ⌨.
+A menu a page lacks is left out, never replaced. Filters (search): words, dates, *Path
+contains* shown; the others under *More filters ▾* (open state in the URL), every active one a
+chip on line 1. Visible controls at load are capped by a test (`tests/support/visible_controls.py`).
+
 - Never act on what is not shown: Ctrl+A and every bar button act on the tiles shown; the only
   wider action (*Pick all N found*) states its count, and that count is what is posted
   (set-aside files left out).
@@ -87,7 +105,11 @@ page with a search field sends the keys to the grid after Enter (the field loses
 lists `/` to come back (`pick_search_key`).
 
 **Saving**: each choice saved at once, read back from the disk and shown (never "Saved" from
-memory); the cards stay in place after a save (`relabel`). *Apply now* in the bar when the page was
+memory); the cards stay in place after a save (`relabel`).
+A choice taken back in one click asks nothing (the Undo toast, `undo_toast.html.j2`); what
+nothing takes back asks through the one in-page dialog (`ask_dialog.html.j2`, `window.mhAsk`:
+the verb on the button, the safe one focused, Esc cancels) — never a native `confirm`/`alert`/`prompt`
+(`tests/unit/test_undo_toast.py`). *Apply now* in the bar when the page was
 opened from the home page.
 
 ## When a page needs something else
@@ -104,6 +126,14 @@ opened from the home page.
 - The phone page's exceptions, decided in 0314: no Delete key (its only deletion, for real, is
   the red button: "Delete" must not mean anything else there); in its large view Space ticks or
   unticks the file shown (it shows the PC's copy as a picture, never a video to play).
+- The people page (`people/templates/people*`, 0667): faces in sections, not a grid of files
+  to pick. On the frame, with the shared large view's markup and look (`pick_viewer.html.j2`,
+  `pick_album = false`) driven by its own `people_viewer.js.j2`: ← → Home End go through the
+  faces of the section clicked; Delete / Backspace set aside or take back the one photo shown
+  and the view **stays on it** (no grid to step back to); no Space, no A, no 👤 (this is the
+  page of people). A click opens the large view (no picking: × marks a face as someone
+  else's, saved by the section's next button); ↑ ↓ / j k move between sections, x picks a
+  group to name with others — not the grid's gestures, on purpose.
 - A key that does not apply (no album on a page): leave it out of the panel and of `?`, never give
   it another meaning.
 - A new gesture or key: add it to the shared templates, so every page gets it, and to this table.

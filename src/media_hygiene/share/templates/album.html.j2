@@ -21,6 +21,8 @@
   "offline": _("Media Hygiene does not answer: the albums show while mh runs on the PC, on the home Wi-Fi."),
   "failed": _("The albums cannot be read (error {status})."),
   "out": _("Take out of the album"),
+  "outYes": _("Take it out"),
+  "deleteYes": _("Delete"),
   "outAsk": _("Take this photo out of {name}? The photo itself stays where it is."),
   "addTo": _("Add to an album"),
   "cover": _("Use as cover"),
@@ -112,6 +114,7 @@
   #albumRootForm input { flex: 1; min-width: 12em; padding: 4px 10px; font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; }
   html[data-phone] .pc-only, html:not([data-phone]) .phone-only { display: none !important; }
 </style>
+{% include "view_state.html.j2" %}
 </head>
 <body>
 {% if not link %}{% include "page_header.html.j2" %}{% endif %}
@@ -147,8 +150,10 @@
     <button type="button" id="sheetClose" aria-label="{{ _('Close') }}">✕</button>
   </form>
 </div>
+{% include "ask_dialog.html.j2" %}
+{% include "busy_say.html.j2" %}
 <p class="toast" id="toast" role="status" hidden></p>
-<script>
+<script nonce="{{ page_nonce }}">
 (() => {
 {% include "album.js.j2" %}
 })();
@@ -156,5 +161,6 @@
 {# Served by the home server in the home page's tab: its pings keep that server running (0341);
    the bar's way back, a plain link (home_link.html.j2 includes presence.html.j2). #}
 {% if not link %}{% include "home_link.html.j2" %}{% endif %}
+{% if not link %}{% include "step_chip.html.j2" %}{% endif %}
 </body>
 </html>

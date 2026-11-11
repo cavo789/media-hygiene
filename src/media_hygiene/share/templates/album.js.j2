@@ -67,7 +67,7 @@ function dayLabel(day) {
 // The PC opens an album as tiles to pick and take out (0500); a phone, the swipe view.
 // Opened from the home page's "Albums (N)" on a phone (`?tv=1`, 0548): a tap shows it on the TV,
 // through the home page (read-only: the PC starts the show).
-const TV = document.documentElement.hasAttribute("data-phone") && new URLSearchParams(location.search).has("tv");
+const TV = document.documentElement.hasAttribute("data-phone") && "tv" in window.mhView.get({ tv: "text" });
 const opened = (name) => (TV ? `${P.home}?tv=${encodeURIComponent(name)}`
   : document.documentElement.hasAttribute("data-phone")
     ? `#a/${encodeURIComponent(name)}` : `${P.edit_page}?album=${encodeURIComponent(name)}`);
@@ -121,9 +121,9 @@ async function edit(body) {
   toast(answer.message, body.action === "delete");
   showList();
 }
-function deleteTicked() {
+async function deleteTicked() {
   const names = ticked();
-  if (names.length && window.confirm(plural(T.deleteAsk, names.length))) edit({ action: "delete", names });
+  if (names.length && await window.mhAsk({ lines: [plural(T.deleteAsk, names.length)], yes: T.deleteYes, danger: true })) edit({ action: "delete", names });
 }
 function rename(button) { // the name becomes a field in its card, never a browser prompt
   const name = button.dataset.rename;
@@ -141,7 +141,7 @@ async function showAlbum(name) {
   album = view;
   items = view.days.flatMap((day) => day.items);
   $("title").textContent = view.name;
-  const cover = view.cover ? `<img src="${esc(view.cover.photo)}" alt="" data-key="${view.cover.key}">` : "";
+  const cover = view.cover ? `<img src="${esc(view.cover.photo)}" alt="" data-key="${esc(view.cover.key)}">` : "";
   const missing = view.missing ? `<p class="note">${esc(plural(T.missing, view.missing))}</p>` : "";
   let number = 0;
   const days = view.days.map((day) => `<section class="day">
@@ -170,7 +170,7 @@ function route() {
 function openViewer(number) {
   at = number;
   $("viewer").hidden = false;
-  history.pushState({ viewer: true }, "");
+  window.mhView.set({}, { push: true, state: { viewer: true } }); // Back closes it (0666)
   draw();
 }
 function closeViewer(fromHistory) {
@@ -203,7 +203,7 @@ function move(step) {
 async function change(action, name) {
   const item = items[at];
   if (!item || !album || document.documentElement.hasAttribute("data-phone")) return; // read-only (0429)
-  if (action === "remove" && !window.confirm(fill(T.outAsk, { name: album.name }))) return;
+  if (action === "remove" && !await window.mhAsk({ lines: [fill(T.outAsk, { name: album.name })], yes: T.outYes })) return;
   const body = JSON.stringify({ action, album: name || album.name, keys: [String(item.key)] });
   const answer = await ask(P.change, { method: "POST", headers: { "Content-Type": "application/json" }, body });
   if (!answer) return;

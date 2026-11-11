@@ -22,6 +22,7 @@ from media_hygiene.services.backup_archive import (
     digest,
     index_facts,
 )
+from media_hygiene.services.backup_extra import is_extra
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -71,12 +72,12 @@ def _safe(name: str) -> bool:
         name: A member of the manifest.
 
     Returns:
-        True for the index, or a file below `config/` without `..`.
+        True for the index, or a file below `config/`, `journal/` or `reports/`
+        without `..`.
     """
     parts = name.split("/")
-    return name == INDEX_MEMBER or (
-        name.startswith(CONFIG_PREFIX) and ".." not in parts and "" not in parts[1:]
-    )
+    below = name.startswith(CONFIG_PREFIX) or is_extra(name)
+    return name == INDEX_MEMBER or (below and ".." not in parts and "" not in parts[1:])
 
 
 def checked(path: Path, scratch: Path) -> Manifest:

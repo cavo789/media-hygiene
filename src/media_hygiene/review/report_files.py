@@ -16,6 +16,7 @@ from urllib.parse import unquote
 from media_hygiene.constants import REPORT_INDEX_FILE_NAME
 from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.review.http import ContentType, Response
+from media_hygiene.review.nonce import REVIEW_POLICY, hashed_policy
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -67,7 +68,9 @@ async def report_response(reports_dir: Path, path: str) -> Response:
     if target is None or body is None:
         return Response(HTTPStatus.NOT_FOUND)
     kind = _SERVED.get(target.suffix.lower(), ContentType.BINARY)
-    return Response(HTTPStatus.OK, body, kind)
+    return Response(
+        HTTPStatus.OK, body, kind, policy=hashed_policy(REVIEW_POLICY, body)
+    )
 
 
 async def read_found(target: Path | None) -> bytes | None:

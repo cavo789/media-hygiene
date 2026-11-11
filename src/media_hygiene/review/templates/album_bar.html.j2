@@ -24,7 +24,7 @@
 </style>
 <details id="albumBar" class="barPanel">
   <summary id="albumOpen" class="plain" title="{{ _('Add to an album, show it on the TV, prepare it for sending') }}">📚 <span id="albumShown">{{ _("Album") }}</span> ▾</summary>
-  <div class="panelBody">
+  <div class="panelBody" role="menu">
   <span class="panelRow panelHead">
     <label for="albumName">{{ _("Album") }}</label>
     {% if header is defined and header.albums %}<a href="{{ header.albums }}" target="_blank" rel="noopener">{{ _("Help") }}</a>{% endif %}
@@ -45,7 +45,7 @@
 <p id="albumSaid" role="status"></p>
 <p id="albumTvLine" hidden></p>
 <details id="albumMissing" hidden><summary></summary><ul></ul></details>
-<script>
+<script nonce="{{ page_nonce }}">
 (() => {
 {% include "combo_list.js.j2" %}
   const ALBUMS_PATH = {{ albums_path | tojson }};

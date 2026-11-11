@@ -17,7 +17,7 @@
   #mhUndoToast button { min-height: 36px; padding: 4px 12px; color: #fff; background: transparent;
                         border: 1px solid rgba(255, 255, 255, .5); border-radius: 8px; font: inherit; cursor: pointer; }
 </style>
-<script>
+<script nonce="{{ page_nonce }}">
 (() => {
   const UNDO_TOAST_MS = 8000;  // long enough to read the line and reach the button
   const toast = document.getElementById("mhUndoToast");

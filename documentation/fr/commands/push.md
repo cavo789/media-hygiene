@@ -53,7 +53,9 @@ passage, retirée ensuite.
 
 1. **Liste** vos dossiers de photos et la sauvegarde (taille, date) : tous les fichiers, pas
    seulement les photos (un PDF dans `C:\Photos` est sauvegardé aussi), sauf les dossiers
-   système (`#recycle`, `@eaDir`…), les dossiers exclus et la quarantaine.
+   système (`#recycle`, `@eaDir`…), les dossiers exclus et la quarantaine (un fichier mis de
+   côté avant tout push n'a pas de copie sur le NAS : [`purge`](purge.md#bon-à-savoir) les liste
+   avant de les effacer).
 2. **Planifie**, et le dit : ce qui est déjà là, ce qui est nouveau, ce qui a été déplacé (même
    taille, date, premiers et derniers 64 Ko : renommé sur le NAS, rien n'est envoyé), ce qui a
    été modifié (la copie du NAS mise de côté d'abord), ce qui a disparu du PC.
@@ -77,8 +79,9 @@ rien (une suppression par erreur ?) **reste**, compté par raison. La copie pré
 fichier modifié va aussi dans `.removed`. `.removed` est vidé après `keep_removed_days` (90
 jours).
 
-Un fichier que l'[audit](audit.md) a trouvé abîmé ne remplace jamais sa copie dans la
-sauvegarde.
+Un fichier que l'[audit](audit.md) a trouvé abîmé, ou que `audit --reread` a trouvé changé sans
+que sa taille ni sa date changent ([abîmé par le disque](../reference-safety.md#un-fichier-abîmé-par-le-disque)),
+ne remplace jamais sa copie dans la sauvegarde.
 
 **L'arrêt de sécurité** : quand les fichiers mis de côté et remplacés dépassent
 `stop_above_percent` (20 %) de la sauvegarde, rien n'est appliqué : un disque absent ? beaucoup

@@ -24,6 +24,7 @@ from media_hygiene.i18n import _, active_locale
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.report.report_header import REPORT_STEPS
 from media_hygiene.review.http import ContentType, Response
+from media_hygiene.review.nonce import REVIEW_POLICY, hashed_policy
 from media_hygiene.review.page_header import PageHeader, page_header
 from media_hygiene.review.report_files import report_response
 
@@ -71,7 +72,9 @@ async def shelled_report(reports_dir: Path, path: str) -> Response:
     response = await report_response(reports_dir, path)
     if response.status != HTTPStatus.OK or response.content_type != ContentType.HTML:
         return response
-    return replace(response, body=await asyncio.to_thread(in_shell, response.body))
+    body = await asyncio.to_thread(in_shell, response.body)
+    # The report's scripts by their hash, the shell's by the answer's nonce (0671).
+    return replace(response, body=body, policy=hashed_policy(REVIEW_POLICY, body))
 
 
 def in_shell(report: bytes) -> bytes:

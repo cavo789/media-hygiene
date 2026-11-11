@@ -1,6 +1,8 @@
-{# The bar's small panels (`.barPanel`, `pick_bar.css.j2`): one open at a time, closed by Esc
-   (before any page key), a click elsewhere, or a choice in a `closesOnChoice` panel; kept on
-   screen on a narrow window. #}
+{# The bar's menus (`.barPanel`, `pick_bar.css.j2`), one component for each (0665): one open
+   at a time, closed by Esc (before any page key, the focus back on its summary), a click
+   elsewhere, or a choice in a `closesOnChoice` panel; kept on screen on a narrow window.
+   Keyboard: ↓ on a summary opens it, ↑ ↓ move between its entries, the letter shown at an
+   entry's right (`data-key`) runs it — never while typing in a field. #}
 (() => {
   const panels = () => [...document.querySelectorAll(".barPanel")];
   const closeAll = (except) => { for (const panel of panels()) if (panel !== except) panel.open = false; };
@@ -19,10 +21,39 @@
     const panel = event.target.closest?.(".closesOnChoice");
     if (panel && event.target.closest("button")) panel.open = false;
   });
+  const entries = (panel) => [...panel.querySelectorAll(".panelBody button, .panelBody input, .panelBody a[href]")]
+    .filter((entry) => !entry.disabled && !entry.closest("[hidden]"));
+  const typing = (target) => ["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName);
   document.addEventListener("keydown", (event) => {
+    const summary = event.target.closest?.(".barPanel > summary");
+    if (summary && event.key === "ArrowDown") {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      summary.parentElement.open = true;
+      entries(summary.parentElement)[0]?.focus();
+      return;
+    }
     const open = panels().find((panel) => panel.open);
-    if (event.key !== "Escape" || !open) return;
+    if (!open) return;
+    if (event.key === "Escape") {
+      event.stopImmediatePropagation();
+      open.open = false;
+      open.querySelector("summary").focus();
+      return;
+    }
+    const list = entries(open);
+    const at = list.indexOf(event.target);
+    if ((event.key === "ArrowDown" || event.key === "ArrowUp") && at >= 0) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      list[(at + (event.key === "ArrowDown" ? 1 : list.length - 1)) % list.length].focus();
+      return;
+    }
+    if (typing(event.target) || event.ctrlKey || event.metaKey || event.altKey || event.key.length !== 1) return;
+    const entry = list.find((item) => item.dataset.key === event.key.toUpperCase());
+    if (!entry) return;
+    event.preventDefault();
     event.stopImmediatePropagation();
-    open.open = false;
+    entry.click();
   }, true);
 })();

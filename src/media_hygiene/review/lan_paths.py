@@ -23,7 +23,7 @@ from media_hygiene.review.home_views import REPORTS_PREFIX
 from media_hygiene.review.http import ContentType
 from media_hygiene.review.local_app import PAGE_PATH, STATE_PATH
 from media_hygiene.review.presence import PRESENCE_PATH
-from media_hygiene.review.step_watch import PLACES_PAGE
+from media_hygiene.review.step_watch import PLACES_PAGE, STEP_PATH
 from media_hygiene.review.videos import VIDEO_PREFIX
 from media_hygiene.search.app import SEARCH_PAGE_PATH, SEARCH_PATH
 from media_hygiene.search.chosen_api import CHOSEN_PATH
@@ -37,7 +37,10 @@ if TYPE_CHECKING:
     from media_hygiene.review.http import Request, Response
 
 LAN_PATH: Final = "/api/lan"  # the PC's card: the code, its QR code (`lan_app`)
-_HOME_READS: Final = frozenset({PAGE_PATH, STATE_PATH, AUDIT_PATH, FAVICON_PATH})
+# `GET /api/step`: the chip of every page, read-only (0661); its `POST` stays the PC's.
+_HOME_READS: Final = frozenset(
+    {PAGE_PATH, STATE_PATH, AUDIT_PATH, FAVICON_PATH, STEP_PATH}
+)
 _SEARCH_READS: Final = frozenset(
     {SEARCH_PAGE_PATH, FORMER_PAGE, BROWSE_PATH, FOLDERS_PATH}
 )
@@ -73,6 +76,7 @@ _GET, _POST = "GET", "POST"
 # The controls of a page of photos to pick that write, hidden on a phone (0429).
 PHONE_HIDDEN: Final = (
     "#setAside", "#takeBack", "#chosen", "#applyBar", "#ruleOpen", "#moveBar",
+    "#moveMenu",
     ".unname", ".writes",
     # Nothing to pick on a phone, no keyboard, albums made on the PC (2026-10-27).
     "#albumBar", "#keys", ".tick",

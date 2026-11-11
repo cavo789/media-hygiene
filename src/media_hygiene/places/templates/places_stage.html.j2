@@ -1,0 +1,28 @@
+  <div id="map"></div>
+  <section id="drawer" hidden aria-labelledby="drawerTitle">
+    <div class="drawerHead">
+      <div class="top"><strong id="drawerTitle"></strong>
+        <button type="button" id="drawerClose" aria-label="{{ _('Close') }}" title="{{ _('Close') }} (Esc)">✕</button></div>
+      <div class="buttons">
+        <button type="button" id="clusterName" class="primary">{{ _("Name this place") }}</button>
+        <select id="giveTo" aria-label="{{ _('Give these photos to…') }}"></select>
+        <button type="button" id="clusterAside" title="{{ _('Not a place worth a name: hide it from the map') }}">✕ {{ _("Set this cluster aside") }}</button>
+        <button type="button" id="folderSave" class="primary">{{ _("Save this position") }}</button>
+        <button type="button" id="folderForget">{{ _("Forget its position") }}</button>
+        <button type="button" id="folderIgnore">{{ _("Not a town") }}</button>
+      </div>
+      <p id="drawerNote" class="hint"></p>
+      <p id="drawerNotes" class="hint" hidden aria-live="polite"></p>
+    </div>
+    <div id="drawerBody"></div>
+    <figure id="viewer" hidden>
+      <img id="viewerImg" alt="">
+      <figcaption id="viewerPath"></figcaption>
+      <div class="buttons">
+        <button type="button" id="viewerPrev" aria-label="{{ _('Previous photo') }}">←</button>
+        <button type="button" id="viewerBack">{{ _("Back to the photos") }} (Esc)</button>
+        <button type="button" id="viewerNext" aria-label="{{ _('Next photo') }}">→</button>
+        <span id="viewerCount" class="muted"></span>
+      </div>
+    </figure>
+  </section>

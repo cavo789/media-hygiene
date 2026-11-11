@@ -1,0 +1,191 @@
+
+  function showEditor() {
+    if (editCircle) editCircle.remove();
+    if (editMarker) editMarker.remove();
+    if (!editing) { byId("editor").hidden = true; return; }
+    const at = [editing.latitude, editing.longitude];
+    const dashed = { radius: editing.radius_m, color: colour("--accent"), dashArray: "6 6" };
+    editCircle = (editing.area ? L.polygon(editing.area, dashed) : L.circle(at, dashed)).addTo(map);
+    byId("circleOnly").hidden = Boolean(editing.area);
+    byId("areaNote").hidden = !editing.area;
+    if (!editing.area) {
+      editMarker = L.marker(at, { draggable: true, icon: L.divIcon({ className: "pin" }) }).addTo(map);
+      editMarker.on("drag", (event) => {
+        const where = event.target.getLatLng();
+        editing.latitude = where.lat; editing.longitude = where.lng; editCircle.setLatLng(where);
+      });
+    } else { editMarker = null; }
+    byId("editorTitle").textContent = editing.key === null ? T.newPlace : editing.name;
+    byId("name").value = editing.name; showTownHint();
+    byId("radius").value = editing.radius_m; byId("radiusValue").value = editing.radius_m;
+    byId("home").checked = editing.home;
+    byId("delete").hidden = editing.key === null;
+    fillHand(editing.hand || []);
+    byId("editor").hidden = false;
+    byId("name").focus();
+  }
+
+  // The photos given this place by hand (0237), each one taken back with ✕.
+  function fillHand(hand) {
+    const list = byId("handList"); list.replaceChildren();
+    byId("hand").hidden = !hand.length; byId("handCount").textContent = `(${hand.length})`;
+    for (const photo of hand) {
+      const li = document.createElement("li"), where = document.createElement("span");
+      if (photo.preview) { const img = document.createElement("img"); img.src = photo.preview; img.alt = ""; img.loading = "lazy"; li.append(img); }
+      where.textContent = photo.now || `${photo.path} — ${T.handGone}`;
+      li.append(where); list.append(li);
+      const button = tail(li, "✕", T.takeBack, () => takeBack(photo.id));
+      button.className = "";
+    }
+  }
+  async function takeBack(id) {
+    const key = editing ? editing.key : null;
+    const answer = await post(paths.photos, { action: "remove", id });
+    if (!answer) return;
+    state = answer; draw();
+    const place = state.places.find((known) => known.key === key);
+    if (place && editing) { editing.hand = place.hand; fillHand(place.hand); }
+    const still = state.places.some((known) => (known.hand || []).some((photo) => photo.id === id));
+    status(still ? T.notSaved : T.takenBack, still ? "error" : "saved");
+  }
+  // A name like a town's, near: a hint under the name, never a refusal (0239).
+  let hintAsked = 0;
+  async function showTownHint() {
+    const note = byId("townHint"), asked = ++hintAsked, name = byId("name").value.trim();
+    note.hidden = true;
+    if (!editing || !name) return;
+    const response = await fetch(paths.hint, { method: "POST", headers: { "Content-Type": "application/json" },
+                                               body: JSON.stringify({ name, latitude: editing.latitude, longitude: editing.longitude }) }).catch(() => null);
+    if (!response || !response.ok || asked !== hintAsked) return;
+    const { town } = await response.json();
+    if (asked !== hintAsked || !town) return;
+    note.textContent = fill(T.townHint, { town }); note.hidden = false;
+  }
+  let hintTimer = null;
+  byId("name").addEventListener("input", () => { clearTimeout(hintTimer); hintTimer = setTimeout(showTownHint, 300); });
+  function edit(place) {
+    editing = { ...place };
+    if (place.area) map.fitBounds(L.polygon(place.area).getBounds().pad(0.1), { paddingBottomRight: [hidden(), 0] });
+    else focus([place.latitude, place.longitude], Math.max(map.getZoom(), NAMED_ZOOM));
+    showEditor();
+  }
+  const blank = { key: null, name: "", radius_m: DEFAULT_RADIUS, home: false, osm: "", area: null };
+  const startNew = (lat, lon) => edit({ ...blank, latitude: lat, longitude: lon });
+  // A folder's drawer open: a click moves its pin (0242); else it names a new place.
+  const PHONE = document.documentElement.hasAttribute("data-phone");  // read-only (0613)
+  map.on("click", (event) => {
+    if (PHONE) return;
+    if (folderPin) folderPin.setLatLng(event.latlng); else startNew(event.latlng.lat, event.latlng.lng);
+  });
+
+  const setRadius = (value) => {
+    const radius = Math.max(1, Math.min(50000, Number(value) || DEFAULT_RADIUS));
+    editing.radius_m = radius; editCircle.setRadius(radius);
+    byId("radius").value = radius; byId("radiusValue").value = radius;
+  };
+  byId("radius").addEventListener("input", (event) => setRadius(event.target.value));
+  byId("radiusValue").addEventListener("change", (event) => setRadius(event.target.value));
+  byId("cancel").addEventListener("click", () => { editing = null; showEditor(); });
+
+  const row = (place) => ({ key: place.key, name: place.name, latitude: place.latitude,
+                            longitude: place.longitude, radius_m: place.radius_m, home: place.home,
+                            osm: place.osm || "", area: place.area || null });
+
+  async function send(places) {
+    status(T.saving);
+    let response;
+    try {
+      response = await fetch(paths.save, { method: "POST", headers: { "Content-Type": "application/json" },
+                                           body: JSON.stringify({ places: places.map(row) }) });
+    } catch (error) { status(T.offline, "error"); return; }
+    const answer = await response.json().catch(() => ({}));
+    if (!response.ok) { status(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
+    flashName = editing ? editing.name : null;
+    state = answer; editing = null; closeDrawer(); showEditor(); draw(); status(T.saved, "saved");
+  }
+
+  byId("editor").addEventListener("submit", (event) => {
+    event.preventDefault();
+    editing.name = byId("name").value.trim();
+    editing.home = byId("home").checked;
+    if (!editing.name) { status(T.needName, "error"); return; }
+    const others = state.places.filter((place) => place.key !== editing.key)
+      .map((place) => (editing.home ? { ...place, home: false } : place));
+    const ordered = editing.key === null ? [...others, editing]
+      : state.places.map((place) => (place.key === editing.key ? editing : others.find((other) => other.key === place.key)));
+    send(ordered);
+  });
+  byId("delete").addEventListener("click", async () => {
+    const hand = (editing.hand || []).length;
+    const question = hand ? fill(counted(T.confirmDeleteHand, hand), { name: editing.name }) : fill(T.confirmDelete, { name: editing.name });
+    if (!await window.mhAsk({ lines: [question], yes: T.deleteYes, danger: true })) return;
+    send(state.places.filter((place) => place.key !== editing.key));
+  });
+
+  let searching = null;
+  byId("search").addEventListener("input", (event) => {
+    clearTimeout(searching);
+    searching = setTimeout(async () => {
+      const list = byId("towns"); list.replaceChildren();
+      const text = event.target.value.trim();
+      if (!text) return;
+      const response = await fetch(paths.search, { method: "POST", headers: { "Content-Type": "application/json" },
+                                                  body: JSON.stringify({ text }) }).catch(() => null);
+      if (!response || !response.ok) { status(T.offline, "error"); return; }
+      const towns = await response.json();
+      if (!towns.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = T.noTown; list.append(li); }
+      for (const town of towns) {
+        item(list, `${town.name} — ${[town.region, town.country].filter(Boolean).join(", ")}`,
+             () => map.setView([town.latitude, town.longitude], TOWN_ZOOM));
+      }
+    }, 250);
+  });
+
+  async function searchOsm() {
+    const text = byId("search").value.trim();
+    const list = byId("areas"), button = byId("osmButton");
+    list.replaceChildren();
+    if (!text) { status(T.osmType, "error"); return; }
+    button.disabled = true; status(T.osmSearching);
+    try {
+      const response = await fetch(paths.osm, { method: "POST", headers: { "Content-Type": "application/json" },
+                                                body: JSON.stringify({ text }) }).catch(() => null);
+      if (!response) { status(T.offline, "error"); return; }
+      const answer = await response.json().catch(() => ({}));
+      if (!response.ok) { status(answer.error || fill(T.failed, { status: response.status }), "error"); return; }
+      status("");
+      if (!answer.areas.length) { const li = document.createElement("li"); li.className = "muted"; li.textContent = T.osmNone; list.append(li); }
+      for (const found of answer.areas) {
+        item(list, `${found.name} (${found.kind}) — ${found.label}`,
+             () => edit({ ...blank, name: found.name, latitude: found.latitude, longitude: found.longitude,
+                          osm: found.osm, area: found.area }));
+      }
+      if (answer.too_large) { const li = document.createElement("li"); li.className = "muted"; li.textContent = fill(T.osmTooLarge, { count: answer.too_large }); list.append(li); }
+    } finally { button.disabled = false; }
+  }
+  if (paths.osm) {
+    byId("osmButton").addEventListener("click", searchOsm);
+    byId("search").addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); searchOsm(); } });
+  }
+
+  byId("lookup").addEventListener("change", async (event) => {
+    const answer = await post(paths.lookup, { lookup: event.target.value });
+    if (!answer) return;
+    state = answer;
+    byId("lookup").value = answer.lookup;  // what config.toml holds, read back
+    status(T.saved);
+  });
+  fetch(paths.state).then((response) => response.json()).then((answer) => {
+    state = answer;
+    byId("lookup").value = answer.lookup;
+    // Open while there are few places; the reader's own choice wins.
+    byId("placesFold").open = folds.placesFold ?? state.places.length < FOLDED_FROM;
+    byId("clustersFold").open = folds.clustersFold ?? true;
+    byId("foldersFold").open = folds.foldersFold ?? true;
+    byId("todoFold").open = folds.todoFold ?? true;
+    byId("placedFold").open = folds.placedFold ?? false;
+    byId("treeFold").open = folds.treeFold ?? false;
+    byId("asideFold").open = folds.asideFold ?? false;
+    draw(); frame();
+    loadFolders().then(frame);  // the folders placed by hand (📌) count too
+  }).catch(() => status(T.offline, "error"));

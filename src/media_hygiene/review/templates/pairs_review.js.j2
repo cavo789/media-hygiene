@@ -74,6 +74,7 @@
 
   const render = () => {
     if (pairs.length === 0) return;
+    window.mhView.set({ g: rank() }); // a reload or a bookmark opens this pair (0666)
     const pair = pairs[rank()];
     const decided = pairs.filter((item) => item.action !== "").length;
     const seen = seenShare(pairs.map((item) => item.size), (index) => pairs[index].action !== "");
@@ -183,7 +184,8 @@
       });
       arrange(saved);
       const first = order.findIndex((index) => pairs[index].action === "");
-      at = first >= 0 ? first : 0;
+      const kept = order.indexOf(window.mhView.get({ g: "int" }).g);
+      at = kept >= 0 ? kept : Math.max(first, 0);
       render();
     })
     .catch(() => setStatus(T.offline, "error"));

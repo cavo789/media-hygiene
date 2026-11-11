@@ -23,7 +23,7 @@
 <meta name="apple-mobile-web-app-title" content="{{ _('Media Hygiene') }}">
 <meta name="theme-color" content="#f3f6fa">
 {% endif %}
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "theme_choice.js.j2" %}
 </script>
 <style>
@@ -31,6 +31,7 @@
 {% include "home_base.css.j2" %}
 {% include "home_parts.css.j2" %}
 </style>
+{% include "view_state.html.j2" %}
 </head>
 <body>
 {% include "home_icons.svg.j2" %}
@@ -89,10 +90,22 @@
         <div class="lan-qr" id="lanQr"></div>
         <p class="lan-line">{{ texts.lanOpen }} <strong class="lan-url" id="lanUrl"></strong></p>
         <p class="lan-line">{{ texts.lanCode }} <strong class="lan-code" id="lanCode"></strong></p>
+        <div class="lan-alert" id="lanAlert" role="status" hidden>
+          <ul class="lan-phones" id="lanAttempts"></ul>
+          <p class="lan-problem" id="lanClosed" hidden>{{ texts.lanClosed }}</p>
+          <button type="button" id="lanReopen">{{ texts.lanReopen }}</button>
+          <button type="button" id="lanSeen">{{ texts.lanSeen }}</button>
+        </div>
+        <div id="lanNew" hidden>
+          <p class="lan-line">{{ texts.lanNewTitle }}</p>
+          <ul class="lan-phones" id="lanNewList"></ul>
+        </div>
         <p class="lan-line" id="lanCaLine" hidden>{{ texts.lanCa }} <strong class="lan-url" id="lanCa"></strong> <a id="lanCaHow" href="#" target="_blank" rel="noopener">{{ texts.lanCaHow }}</a></p>
         <div id="lanPhones" hidden>
           <p class="lan-line">{{ texts.lanPhones }}</p>
-          <ul class="lan-phones" id="lanPhoneList" data-forget="{{ texts.lanForget }}"></ul>
+          <p class="lan-note" id="lanExpired" hidden></p>
+          <ul class="lan-devices" id="lanPhoneList" data-forget="{{ texts.lanForget }}"></ul>
+          <button type="button" id="lanForgetAll">{{ texts.lanForgetAll }}</button>
         </div>
         <p class="lan-note">{{ texts.lanNote }}</p>
         <p class="lan-note">{{ texts.lanFirewall }}</p>
@@ -131,6 +144,7 @@
         <span class="keys" aria-hidden="true"><kbd>Ctrl</kbd><kbd>K</kbd></span>
       </button>
       <div class="top-links" id="topLinks"></div>
+      <span data-step-slot></span>
     </header>
     <main id="main" tabindex="-1"></main>
   </div>
@@ -174,9 +188,11 @@
   <p class="muted">{{ texts.copyHow }}</p>
   <div class="copybox-foot"><button class="btn" type="button" id="copyClose">{{ texts.close }}</button></div>
 </section>
-<div class="toasts" id="toasts" aria-live="polite"></div>
 
-<script>
+{% include "ask_dialog.html.j2" %}
+{% include "busy_say.html.j2" %}
+{% include "step_chip.html.j2" %}
+<script nonce="{{ page_nonce }}">
 (() => {
 {% include "home.js.j2" %}
 {% include "home_draw.js.j2" %}

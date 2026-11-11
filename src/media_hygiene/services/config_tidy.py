@@ -15,9 +15,12 @@ from dataclasses import dataclass
 from datetime import UTC, date, datetime
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.config.tidy_find import LibraryFacts, TidyFindings, find_stale
+from media_hygiene.classify.own_events import folder_rules
+from media_hygiene.config.tidy_find import TidyFindings, find_stale
+from media_hygiene.config.tidy_rules import LibraryFacts
 from media_hygiene.config.tidy_write import check_removed, without_entries
 from media_hygiene.errors import MountError
+from media_hygiene.file_history import replace_text
 from media_hygiene.i18n import _
 from media_hygiene.index.listing import indexed_files
 from media_hygiene.index.read_only import connect_read_only
@@ -29,7 +32,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
 
-    from media_hygiene.config.tidy_find import StaleEntry
+    from media_hygiene.config.tidy_rules import StaleEntry
     from media_hygiene.services.runtime import Runtime
 
 BACKUP_DIR: Final = "config-backups"
@@ -63,7 +66,7 @@ def stale_entries(runtime: Runtime) -> TidyFindings:
 
 
 def library_facts(runtime: Runtime) -> LibraryFacts:
-    """Read the host paths, cameras and days of the index.
+    """Read the host paths, cameras, days and named folders of the index.
 
     Args:
         runtime: Settings, mount points and output.
@@ -76,14 +79,20 @@ def library_facts(runtime: Runtime) -> LibraryFacts:
         return LibraryFacts()
     paths: list[str] = []
     shots: list[tuple[str, date | None]] = []
+    named: set[str] = set()
+    rules = folder_rules(runtime.settings.classify, ())
     try:
         with closing(connect_read_only(index_file)) as connection:
             for file in indexed_files(connection):
-                paths.append(runtime.mapper.to_host(file.path))
+                host = runtime.mapper.to_host(file.path)
+                paths.append(host)
                 shots.append(_shot(file.facts.visual, file.facts.metadata))
+                root = runtime.mounts.owner(file.path)
+                if root is not None and rules.meaning(file.path.parent, root):
+                    named.add(host)  # a folder `existing_folder` keeps
     except sqlite3.Error:
         return LibraryFacts()
-    return LibraryFacts(tuple(paths), tuple(shots))
+    return LibraryFacts(tuple(paths), tuple(shots), frozenset(named))
 
 
 def _shot(visual: object, metadata: object) -> tuple[str, date | None]:
@@ -151,9 +160,7 @@ def tidy(runtime: Runtime, entries: Sequence[StaleEntry]) -> Tidied:
     stamp = datetime.now(tz=UTC).strftime(_STAMP)
     backup = backups / f"{config_file.name}.bak-{stamp}"
     shutil.copy2(config_file, backup)
-    temporary = config_file.with_name(f".{config_file.name}.tmp")
-    temporary.write_text(result, _ENCODING)
-    temporary.replace(config_file)
+    replace_text(config_file, result)
     check_removed(text, read_user_text(config_file), entries)  # proof, not promise
     return Tidied(tuple(entries), backup)
 

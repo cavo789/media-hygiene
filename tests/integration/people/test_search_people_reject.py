@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 from media_hygiene.config.people_files import linked_section
+from media_hygiene.file_history import HISTORY_DIR
 from media_hygiene.review.http import Request
 from media_hygiene.services import search_pages as search_service
 from tests.integration.people.test_people_names import keys, post, state
@@ -33,11 +34,15 @@ CHLOE = {"text": "person:chloe"}
 
 
 def files_of(folder: Path) -> dict[str, bytes]:
-    """Every file of the config folder, by name, as bytes."""
+    """Every live file of the config folder, by name, as bytes.
+
+    The previous versions each save keeps in `.history/` (0691) are left out: they
+    grow by design, the settings themselves must come back exactly.
+    """
     return {
         str(path.relative_to(folder)): path.read_bytes()
         for path in sorted(folder.rglob("*"))
-        if path.is_file()
+        if path.is_file() and HISTORY_DIR not in path.relative_to(folder).parts
     }
 
 

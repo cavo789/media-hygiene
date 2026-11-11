@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     from playwright.sync_api import Page
 
 OUTPUT: Final = Path("/shots/walk.json")
+CSP_REFUSED: Final = "Content Security Policy"  # Chromium's console line for a refusal
 SEARCH_API: Final = "/api/search"
 HOME_READY: Final = "#runDlg"  # the home page's own dialog: no other page has it
 HOME_DRAWN: Final = "#loading"  # hidden once /api/state answered and the page is drawn
@@ -196,6 +197,14 @@ def main() -> None:
         page = browser.new_page()
         # What the page throws lands in the log the test prints when the walk fails.
         page.on("pageerror", lambda error: sys.stderr.write(f"page error: {error}\n"))
+        # A script the policy refused (0671): its nonce missing, the page half drawn.
+        refused: list[str] = []
+        page.on(
+            "console",
+            lambda message: (
+                refused.append(message.text) if CSP_REFUSED in message.text else None
+            ),
+        )
         page.goto(home)
         home_shown(page, STEP_MS)
         walk["clicks_from"] = time.time()
@@ -203,6 +212,7 @@ def main() -> None:
         walk["clicks_until"] = time.time()
         walk["console"] = console_step(page)
         walk["own_server"] = own_server_rounds(page)
+        walk["csp_refused"] = refused
         walk["stopped"] = stopped_overlay(page, home)  # last: it ends mh
         browser.close()
     OUTPUT.write_text(json.dumps(walk, indent=2), encoding="utf-8")

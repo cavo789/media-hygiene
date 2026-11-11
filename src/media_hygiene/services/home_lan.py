@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
+from media_hygiene.review.lan_activity import Activity
 from media_hygiene.review.lan_address import lan_refused
 from media_hygiene.review.lan_app import LanApp
 from media_hygiene.review.lan_phones import phone_book
@@ -66,11 +67,14 @@ def lan_door(
     lan, page = phone
     if lan is None:
         return pages
+    phones = phone_book(secure=lan.secure)
+    if phones is not None:
+        phones.activity = Activity(phones)  # what each phone did (0683)
     return LanApp(  # phones paired for good under HTTPS (0431)
         pages,
         lan,
         page,
-        phones=phone_book(secure=lan.secure),
+        phones=phones,
         originals=runtime.settings.review.lan_phone_originals,
         links=pages.parts.links,  # one album by a 24 h link (0462)
     )

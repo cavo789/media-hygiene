@@ -8,7 +8,7 @@
   <input id="albumRootField" aria-label="{{ _('Where should your albums go?') }}" title="{{ _('On the disk of your photos, in the same mounted folder (-v). exFAT refuses hard links.') }}" maxlength="4096" autocomplete="off" placeholder="{{ _('e.g. C:\\Photos\\_Albums') }}">
   <button type="submit">{{ _("Save") }}</button>
 </form>
-<script>
+<script nonce="{{ page_nonce }}">
 (() => {
   if (document.documentElement.hasAttribute("data-phone")) return;
   const PATH = {{ paths.album_root | tojson }};

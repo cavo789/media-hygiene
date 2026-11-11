@@ -2,7 +2,7 @@
    Everything comes from S, the state of cli/home_state.py; nothing is decided here. #}
 // ---- Small builders ---------------------------------------------------------------------
 const cmdChip = (command, id = "") => `<span class="cmd"${id ? ` id="${id}"` : ""}><code><span class="ps" aria-hidden="true">PS&gt;</span>${esc(command)}</code><button class="copy" type="button" data-copy="${esc(command)}" aria-label="${esc(fill(T.copyThe, { command: command }))}">${icon("copy")}</button></span>`;
-const riskPill = (risk) => { const r = RISK[risk]; return `<span class="pill ${r.cls}">${icon(r.icon)} ${esc(r.label)}</span>`; };
+const riskPill = (risk) => { const r = RISK[risk]; return `<span class="pill ${esc(r.cls)}">${icon(r.icon)} ${esc(r.label)}</span>`; };
 function pillsOf(action) {
   const out = [riskPill(action.risk)];
   if (action.ai) out.push(`<span class="pill pill-ai" title="${esc(S.ai ? T.aiOnTitle : T.aiOffTitle)}">${icon("sparkles")} ${esc(S.ai ? T.aiOn : T.aiOff)}</span>`);
@@ -28,8 +28,8 @@ function actionButton(action, st) {
   const final = action.risk === "final" && !off;
   const cls = st.proposed ? (final ? "btn btn-danger" : "btn btn-primary") : final ? "btn btn-danger-ghost" : "btn";
   const inPage = { audit: "audit-here", tags: "tags-here", people: "people-here", spots: "spots-here" }[action.name];
-  const here = inPage && P[action.name] !== "" && !off && !REMOTE ? `<button class="btn btn-ghost btn-sm" type="button" data-act="${inPage}">${esc(action.name === "spots" ? T.spotsHere : T.inThisPage)}</button>` : "";
-  return `<button class="${cls}" type="button" data-run="${esc(action.name)}"${off ? ' aria-disabled="true"' : ""}>${icon(glyph)} ${esc(verbOf(action, st))}</button>${here}`;
+  const here = inPage && P[action.name] !== "" && !off && !REMOTE ? `<button class="btn btn-ghost btn-sm" type="button" data-act="${esc(inPage)}">${esc(action.name === "spots" ? T.spotsHere : T.inThisPage)}</button>` : "";
+  return `<button class="${esc(cls)}" type="button" data-run="${esc(action.name)}"${off ? ' aria-disabled="true"' : ""}>${icon(glyph)} ${esc(verbOf(action, st))}</button>${here}`;
 }
 
 // ---- Sidebar and top bar ----------------------------------------------------------------
@@ -83,7 +83,7 @@ function hero() {
   const art = `<div class="hero-art" aria-hidden="true"><img src="${image(`meerkat-${pose}.webp`)}" alt="" width="400" height="400"></div>`;
   if (!action) {
     const firsts = ["phone", "search"].filter((name) => BY_ID[name]);
-    const buttons = firsts.map((name, at) => `<button class="btn ${at ? "" : "btn-primary "}btn-lg"${at ? "" : ' id="heroRun"'} type="button" data-run="${name}">${icon(BY_ID[name].icon)} ${esc(BY_ID[name].title)}</button>`).join("");
+    const buttons = firsts.map((name, at) => `<button class="btn ${at ? "" : "btn-primary "}btn-lg"${at ? "" : ' id="heroRun"'} type="button" data-run="${esc(name)}">${icon(BY_ID[name].icon)} ${esc(BY_ID[name].title)}</button>`).join("");
     return `<section class="hero is-calm is-compact" aria-labelledby="heroTitle"><div class="hero-body"><span class="hero-tag is-ok">${icon("check")} ${esc(T.allApplied)}</span><h2 id="heroTitle">${esc(T.allInOrder)}</h2><p class="hero-why">${esc(T.allInOrderWhy)}</p><div class="hero-actions">${buttons}</div></div>${art}</section>`;
   }
   return `<section class="hero is-compact" aria-labelledby="heroTitle">
@@ -106,11 +106,11 @@ function hero() {
 function station(space) {
   const cls = { here: "is-here", done: "is-done", todo: "is-todo", planned: "is-planned" }[space.mark] || "";
   const pct = space.total ? Math.round((100 * space.done) / space.total) : 0;
-  const meter = space.planned ? "" : `<span class="station-meter" aria-hidden="true"><span style="width:${pct}%"></span></span><span class="visually-hidden">${esc(fill(T.stepsDone, { done: space.done, total: space.total }))}</span>`;
-  return `<li><a class="station ${cls}" href="#${esc(space.id)}" data-go="${esc(space.id)}">
+  const meter = space.planned ? "" : `<span class="station-meter" aria-hidden="true"><span style="width:${esc(pct)}%"></span></span><span class="visually-hidden">${esc(fill(T.stepsDone, { done: space.done, total: space.total }))}</span>`;
+  return `<li><a class="station ${esc(cls)}" href="#${esc(space.id)}" data-go="${esc(space.id)}">
     <span class="station-dot" aria-hidden="true">${icon(space.icon)}${space.mark === "done" ? `<span class="station-check">${icon("check")}</span>` : ""}</span>
     <span class="station-text">
-      <span><span class="station-num" aria-hidden="true">${space.stage}</span><span class="station-name">${esc(space.title)}</span></span>
+      <span><span class="station-num" aria-hidden="true">${esc(space.stage)}</span><span class="station-name">${esc(space.title)}</span></span>
       ${space.mark === "here" ? `<span class="pill pill-here">${esc(T.youAreHere)}</span>` : ""}
       <span class="station-state">${esc(space.line)}</span>
       ${meter}
@@ -131,16 +131,17 @@ const spaceTile = (t) => `<button class="tile" type="button" ${tileTarget(t)}><s
 function findingRow(row) {
   const action = row.action ? BY_ID[row.action] : null;
   const report = row.action === "open" && S.index ? `<a class="btn btn-sm" href="${esc(S.index)}" target="_blank" rel="noopener">${esc(T.openReport)}</a>` : "";
-  const button = action ? `<button class="btn btn-sm" type="button" data-run="${esc(action.name)}">${esc(action.title)}</button>` : report;
-  return `<li class="finding${row.ok ? " is-ok" : ""}"><span class="finding-icon" aria-hidden="true">${icon(row.ok ? "check" : row.icon)}</span><div><p class="finding-title">${esc(row.title)}</p><p class="finding-sub">${esc(row.sub)}</p></div>${button}</li>`;
+  const button = REMOTE ? "" : action ? `<button class="btn btn-sm" type="button" data-run="${esc(action.name)}">${esc(action.title)}</button>` : report;
+  return `<li class="finding${row.ok ? " is-ok" : ""}${row.level ? ` is-${esc(row.level)}` : ""}"><span class="finding-icon" aria-hidden="true">${icon(row.ok ? "check" : row.icon)}</span><div><p class="finding-title">${esc(row.title)}</p><p class="finding-sub">${esc(row.sub)}</p></div>${button}</li>`;
 }
-function findings() {
-  const found = S.findings;
-  return `<section class="block" aria-labelledby="foundTitle">
-    <div class="section-head"><h2 id="foundTitle">${esc(found.title)}</h2><p class="section-note">${esc(found.note)}</p></div>
+function findings(found = S.findings, id = "foundTitle") {
+  return `<section class="block" aria-labelledby="${esc(id)}">
+    <div class="section-head"><h2 id="${esc(id)}">${esc(found.title)}</h2><p class="section-note">${esc(found.note)}</p></div>
     <div class="findings"><ul class="finding-list">${found.rows.map(findingRow).join("")}</ul></div>
   </section>`;
 }
+// *Are my photos safe?* (0689): the findings' look, one line per fact read from disk.
+const safetyCard = () => (S.safety ? `<div id="safetyCard">${findings(S.safety, "safetyTitle")}</div>` : "");
 function welcome() {
   return `<section class="block" aria-labelledby="safeTitle">
     <div class="section-head"><h2 id="safeTitle">${esc(T.threeThings)}</h2></div>
@@ -179,6 +180,7 @@ function familyHome() {
       <div class="audit-controls">${buttons}</div>
     </section>
     ${EXTRAS.albums()}
+    ${safetyCard()}
     <section class="block" aria-labelledby="tvTitle">
       <div class="section-head"><h2 id="tvTitle">${esc(T.tvTitle)}</h2><p class="section-note">${esc(T.tvNote)} <a href="${esc(S.tv_help)}" target="_blank" rel="noopener">${esc(T.tvHelp)}</a></p></div>
       <div class="audit-controls" id="tvAlbums" aria-live="polite"></div>
@@ -206,6 +208,7 @@ function viewHome() {
       ${tilesBlock()}
     </section>
     ${S.findings ? findings() : welcome()}
+    ${safetyCard()}
     <div id="randomPhotos">${samplesBlock()}</div>
     ${recentReports()}`;
 }
@@ -216,7 +219,7 @@ function stepRow(action, number, numbered) {
   const cls = ["step", st.done && "is-done", st.proposed && "is-proposed", !st.available && "is-unavailable"].filter(Boolean).join(" ");
   const marker = st.done ? icon("check") : numbered ? String(number) : icon(action.icon);
   const tags = `${st.proposed ? `<span class="pill pill-here">${esc(T.nextStep)}</span>` : ""}${st.done ? `<span class="pill pill-done">${icon("check")} ${esc(T.done)}</span>` : ""}`;
-  return `<li class="${cls}">
+  return `<li class="${esc(cls)}">
     <span class="step-marker" aria-hidden="true">${marker}</span>
     <div class="step-body">
       <h3 class="step-title">${numbered ? `<span class="visually-hidden">${esc(fill(T.stepN, { number: number }))} </span>` : ""}${esc(action.title)}${tags}</h3>
@@ -253,7 +256,7 @@ function viewSpace(space) {
   const pct = space.total ? Math.round((100 * space.done) / space.total) : 0;
   const twin = space.guide && space.guide.url_en !== space.guide.url ? `<a class="btn btn-sm btn-ghost" href="${esc(space.guide.url_en)}" target="_blank" rel="noopener" hreflang="en" lang="en">EN</a>` : "";
   const guide = space.guide ? `<a class="btn btn-sm" href="${esc(space.guide.url)}" target="_blank" rel="noopener">${icon("book")} ${esc(space.guide_title)}</a>${twin}` : "";
-  const progress = space.stage && !space.planned ? `<p class="space-progress"><span class="meter" aria-hidden="true"><span style="width:${pct}%"></span></span>${esc(fill(T.stepsDone, { done: space.done, total: space.total }))}</p>` : "";
+  const progress = space.stage && !space.planned ? `<p class="space-progress"><span class="meter" aria-hidden="true"><span style="width:${esc(pct)}%"></span></span>${esc(fill(T.stepsDone, { done: space.done, total: space.total }))}</p>` : "";
   const planned = space.planned ? `<div class="callout callout-warn">${icon("info")}<div><p><strong>${esc(T.backupPlanned)}</strong></p><p>${esc(T.backupPlannedText)}</p></div></div>` : "";
   const top = (TOPS[space.id] || []).map((name) => EXTRAS[name]()).join("");
   const art = POSE[space.id] ? `<span aria-hidden="true"><img class="space-art" src="${image(`meerkat-${POSE[space.id]}.webp`)}" alt="" width="400" height="400" loading="lazy" decoding="async"></span>` : "";

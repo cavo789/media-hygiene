@@ -33,7 +33,7 @@ button { width: 100%; margin-top: 16px; padding: 12px; border: 0; border-radius:
     <input id="code" name="code" inputmode="numeric" pattern="[0-9 ]*" maxlength="{{ digits + 2 }}" required autofocus>
     <button type="submit">{{ _("Pair this phone") }}</button>
   </form>
-  <script>
+  <script nonce="{{ page_nonce }}">
   document.getElementById("pair").addEventListener("submit", (event) => {
     event.preventDefault();
     const digits = document.getElementById("code").value.replace(/\D/g, "");

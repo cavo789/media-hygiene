@@ -1,3 +1,10 @@
-{# The search's most used action, first in the bar once files are picked (0542, `pick_first`). #}
-<button type="button" id="moveOpen" class="primary writes" disabled title="{{ _('Move the photos picked to an event folder, year then year-month, without writing a rule') }}">📂 {{ _("Move to an event…") }}</button>
-<button type="button" id="monthOpen" class="plain writes" disabled title="{{ _('Move each photo picked to its own month, year then year-month, with no event folder') }}">🗓 {{ _("Move to their month…") }}</button>
+{# The search's most used action, first in the bar once files are picked (0542, `pick_first`):
+   📂 *Move* ▾ (0665), the bar's first menu, the only one filled (primary). E: to an event,
+   M: to their month (letters of the shared menu, `pick_bar_panel.js.j2`). #}
+<details id="moveMenu" class="barPanel closesOnChoice primary">
+  <summary class="primary" title="{{ _('Move the photos picked: to an event folder, or each one to its month') }}">📂 {{ _("Move") }} ▾</summary>
+  <div class="panelBody" role="menu">
+    <button type="button" id="moveOpen" class="plain writes" role="menuitem" data-key="E" disabled title="{{ _('Move the photos picked to an event folder, year then year-month, without writing a rule') }}">📂 {{ _("Move to an event…") }}</button>
+    <button type="button" id="monthOpen" class="plain writes" role="menuitem" data-key="M" disabled title="{{ _('Move each photo picked to its own month, year then year-month, with no event folder') }}">🗓 {{ _("Move to their month…") }}</button>
+  </div>
+</details>

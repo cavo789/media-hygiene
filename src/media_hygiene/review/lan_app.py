@@ -6,7 +6,8 @@ the home network's door (`doors`, 0384: never passed on as the PC's, whatever it
 `Host`) must name the PC's address on the home network, then:
 
 - `GET /pair/<code>`: the right code sets the phone's cookie and opens the home page;
-  `MAX_FAILURES` wrong ones close the pairing until the server stops;
+  wrong ones make that device wait, and `MAX_FAILURES` of the run close the
+  pairing until the PC's card opens it again with a new code (0681);
 - without the cookie, every `GET` gets the pairing page, anything else 403;
 - with it, only what `lan_paths` lists: the reads (the page, its state, the reports,
   the theme, the docs, the albums, search and browse and their files, 0297, 0360), the
@@ -27,20 +28,20 @@ from media_hygiene.i18n import _
 from media_hygiene.i18n.live import Page, page_of
 from media_hygiene.review.app_shell import shell_response
 from media_hygiene.review.doors import Door
-from media_hygiene.review.http import ContentType, Request, Response, is_local
+from media_hygiene.review.http import ContentType, Request, Response
 from media_hygiene.review.lan import COOKIE_NAME, PAIR_PREFIX, cookies
-from media_hygiene.review.lan_card import lan_response
 from media_hygiene.review.lan_pairing import Pairing, pair_page
-from media_hygiene.review.lan_paths import LAN_PATH, phone_marked, phone_may
-from media_hygiene.review.lan_phones_api import PHONE_PATHS, for_good, phones_answer
+from media_hygiene.review.lan_paths import phone_marked, phone_may
+from media_hygiene.review.lan_pc import pc_answer
+from media_hygiene.review.lan_phones_api import for_good
 from media_hygiene.review.lan_show import phone_step
 from media_hygiene.review.local_app import PAGE_PATH
-from media_hygiene.review.serving import json_response, refused_post
+from media_hygiene.review.serving import json_response
 from media_hygiene.review.shared_routes import asset_or_page
 from media_hygiene.review.step_watch import STEP_PATH
 from media_hygiene.services.reviewing import HOST_LOOPBACK
 from media_hygiene.share import album_page as albums
-from media_hygiene.share.album_link_door import ALBUM_LINK_PATH, LINK_PREFIX
+from media_hygiene.share.album_link_door import LINK_PREFIX
 
 if TYPE_CHECKING:
     from media_hygiene.review.ending import Handling
@@ -106,19 +107,7 @@ class LanApp:
         Returns:
             The response.
         """
-        if is_local(request) and request.path == LAN_PATH:
-            return lan_response(self.lan, phones=self.phones is not None)
-        link = request.method == _POST and request.path == ALBUM_LINK_PATH
-        if is_local(request) and link and self.links is not None:
-            refused = refused_post(request)  # the PC's page alone makes a link
-            return refused or await self.links.make(request, self.lan)
-        if (
-            is_local(request)
-            and request.path in PHONE_PATHS
-            and self.phones is not None
-        ):
-            return phones_answer(self.phones, request)
-        return await self.home.handle(request)
+        return await pc_answer(self, request)
 
     def _public(self, request: Request) -> Response | None:
         """Answer what needs no pairing: the code, the app's manifest, icons, worker.
@@ -144,7 +133,7 @@ class LanApp:
         Returns:
             303 to the page with the cookie; the pairing page otherwise.
         """
-        answer = self.pairing.check(self.lan, request.path.removeprefix(PAIR_PREFIX))
+        answer = self.pairing.check(self.lan, request)
         return for_good(answer, self.phones, request)
 
     def _is_paired(self, request: Request) -> bool:
@@ -159,7 +148,10 @@ class LanApp:
         if self.lan.is_paired(request):
             return True
         token = cookies(request.headers).get(COOKIE_NAME, "")
-        return self.phones is not None and self.phones.knows(token)
+        phone = None if self.phones is None else self.phones.holder(token)
+        if phone is not None and self.phones is not None and self.phones.activity:
+            self.phones.activity.saw(phone, request)  # last seen, counts (0683)
+        return phone is not None
 
     async def _paired(self, request: Request) -> Response:
         """Answer a paired phone: the reads, the audit, the albums, as from the PC.

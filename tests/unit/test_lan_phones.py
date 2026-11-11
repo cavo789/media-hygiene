@@ -151,7 +151,7 @@ def test_a_forgotten_phone_gets_the_pairing_page(tmp_path: Path) -> None:
     assert [phone["name"] for phone in listed] == ["Android"]
     answer = _ask(app, _pc(FORGET_PATH, {"id": listed[0]["id"]}))
     assert answer.status is HTTPStatus.OK
-    assert json.loads(answer.body) == {"phones": []}
+    assert json.loads(answer.body)["phones"] == []
     assert _ask(app, _phone("/", token)).status is HTTPStatus.UNAUTHORIZED
 
 

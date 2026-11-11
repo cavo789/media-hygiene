@@ -56,7 +56,8 @@ Mount points: `/data/<drive>/<path>` (folders to scan), `/config` (config.toml *
 `/journal`, `/quarantine`, `/reports`, `/cache`. Never store other data under `/config`, but
 `/config/people/<name>.toml`: the face lists of each person named, linked from `config.toml`
 (0300), and `/config/events/`: the events remembered, `<year>.toml` (`[[rules]]`, merged into
-`[[classify.rules]]` above *Existing folders*, 0576), plus their refusals and `not-events.toml`. Only
+`[[classify.rules]]` above *Existing folders*, 0576), plus their refusals and `not-events.toml`, and `/config/.history/`: the previous versions of
+these files, kept at each save by `file_history.replace_text` (0691; `albums.json`'s beside it). Only
 the quarantine goes per drive: `/quarantine/<x>` (`X:\media-hygiene\quarantine`, mounted by
 `mh` for each photo drive but `C:`) receives the files of drive `X:` (`paths/quarantines.py`,
 `QuarantineRoute`); `/quarantine` is `C:`'s and the default; readers list every quarantine and

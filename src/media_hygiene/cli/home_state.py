@@ -29,6 +29,7 @@ from media_hygiene.cli.home_tiles import home_tiles
 from media_hygiene.cli.menu_catalog_share import TV_HELP
 from media_hygiene.cli.menu_entry import Doc
 from media_hygiene.cli.menu_steps import build_menu, full_catalog
+from media_hygiene.cli.status_safety import home_safety
 from media_hygiene.cli.status_step import next_step
 from media_hygiene.cli.status_view import status_lines
 from media_hygiene.constants import APP_NAME, REPORT_INDEX_FILE_NAME, Locale
@@ -93,6 +94,7 @@ def home_state(runtime: Runtime) -> HomeState:
         findings=home_findings(status, backups=bool(runtime.settings.folders.backups)),
         folders=home_folders(runtime),
         quarantine=home_quarantine(status),
+        safety=home_safety(runtime, status),
         undo=home_undo(status, menu),
         reports=latest_reports(reports) if reports else (),
         index=f"{REPORTS_PREFIX}{REPORT_INDEX_FILE_NAME}"

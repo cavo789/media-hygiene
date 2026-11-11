@@ -10,7 +10,10 @@
 bibliothèque, seulement ce qui a changé), `copies` (`clean` : les copies exactes en quarantaine,
 après sa question ; `mh undo` les remet), `reports` (la liste rafraîchie) ; `purge` (les exécutions
 en quarantaine plus vieilles que `purge_hint_days`, après la question de `purge` pour chacune) ne
-tourne que si vous l'ajoutez à `steps`, sinon lancez [`purge`](purge.md) à part. Elle
+tourne que si vous l'ajoutez à `steps`, sinon lancez [`purge`](purge.md) à part. En dernier,
+`reread` (`audit --reread`) relit en entier les fichiers lus il y a le plus longtemps,
+`reread_gb` par passage, pour trouver un fichier que le disque a abîmé ; elle ne change rien
+([Sécurité](../reference-safety.md#un-fichier-abîmé-par-le-disque)). Elle
 finit sur une ligne 👉 : ce qui vous attend encore. Sur la [page d'accueil](home.md) : *Lancer
 l'entretien régulier*, dans Nettoyer.
 
@@ -34,7 +37,8 @@ Pour couper une étape, retirez-la de la liste :
 
 ```toml
 [routine]
-steps = ["audit", "copies", "reports"]
+steps = ["audit", "copies", "reports", "reread"]
+reread_gb = 20
 ```
 
 Une étape qui échoue arrête la chaîne ; ce qui précède reste fait.

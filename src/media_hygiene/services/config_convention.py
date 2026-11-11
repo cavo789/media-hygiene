@@ -17,6 +17,7 @@ import tomlkit
 from tomlkit.items import Table
 
 from media_hygiene.config.classify_settings import ClassifySettings
+from media_hygiene.file_history import replace_text
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -98,9 +99,7 @@ def write_convention(config_file: Path) -> tuple[LayoutChange, ...]:
         raise TypeError(message)
     for change in changes:
         table[change.key] = change.new
-    temporary = config_file.with_name(f".{config_file.name}.tmp")
-    temporary.write_text(tomlkit.dumps(document), _ENCODING)
-    temporary.replace(config_file)
+    replace_text(config_file, tomlkit.dumps(document))
     back = tomllib.loads(config_file.read_text(_ENCODING)).get(SECTION, {})
     if any(back.get(change.key) != change.new for change in changes):
         message = f"{config_file} does not hold the layouts just written"

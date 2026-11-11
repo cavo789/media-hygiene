@@ -1,0 +1,186 @@
+{# A step running in the window of mh, shown on every page of the home server (0661), included
+   once by the frame, the home page and the album page, like the ask dialog:
+   - the chip in the header's slot (`[data-step-slot]`): *⏳ Audit · 45 % · 3 min left*, hidden
+     while no step runs; its click opens the follow dialog (the home page's own, `mhStepOpen`, or
+     the small one below). No Stop here: a phone sees it read-only (`/api/step` is a read).
+   - the tab's title carries the progress while the step runs;
+   - its end: one line in the toast stack (`mhSay`) and, the tab hidden, the browser's
+     notification (asked once, on the click that starts a step, `mhNotify.ask`);
+   - one poll per page (`GET /api/step`, slowed while the tab is hidden): the home page's
+     dialog and *Apply now* follow it with `mhStep.watch(fn)` (`fn(null)`: no answer) and
+     `mhStep.claim(id)` (they say the end themselves). A server without the route (404): no poll.
+   Text only, never HTML: a stage or a file name is shown with `textContent` (0671). #}
+<button type="button" id="mhStepChip" class="mhStepChip" hidden aria-haspopup="dialog"></button>
+<dialog id="mhStepDlg" class="mhStepDlg" aria-labelledby="mhStepTitle">
+  <h2 id="mhStepTitle"></h2>
+  <progress id="mhStepBar" max="1" value="0" hidden></progress>
+  <p id="mhStepCount"></p>
+  <p id="mhStepFile" class="mhStepFile"></p>
+  <p class="mhStepSafe">🔒 {{ _("The step runs in the window of mh: this page only shows how far it is.") }}</p>
+  <form method="dialog"><button type="submit">{{ _("Close") }}</button></form>
+</dialog>
+<style>
+  .mhStepChip { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 2px 12px; margin: 0 6px;
+                font: inherit; font-size: .9rem; color: var(--text, inherit); background: var(--panel, transparent);
+                border: 1px solid var(--accent, currentColor); border-radius: 999px; cursor: pointer; white-space: nowrap;
+                max-width: min(28em, 60vw); overflow: hidden; text-overflow: ellipsis; }
+  .mhStepChip[hidden] { display: none; }
+  .mhStepChip.mhStepFloat { position: fixed; z-index: 60; top: 8px; right: 16px; }
+  .mhStepDlg { width: min(520px, calc(100vw - 32px)); color: var(--text, inherit); background: var(--bg, Canvas);
+               border: 1px solid var(--line, currentColor); border-radius: 12px; }
+  .mhStepDlg progress { width: 100%; }
+  .mhStepDlg .mhStepFile { overflow-wrap: anywhere; opacity: .8; }
+  .mhStepDlg .mhStepSafe { font-size: .9rem; opacity: .8; }
+</style>
+<script nonce="{{ page_nonce }}">
+(() => {
+  const STEP_PATH = "/api/step";  // review/step_watch.py STEP_PATH
+  const RUNNING_MS = 1000;  // a step running, the tab in front
+  const IDLE_MS = 5000;  // nothing runs: a step started from another tab shows within seconds
+  const HIDDEN_MS = 15000;  // the tab hidden: its title and the notification only
+  const GIVE_UP = 3;  // failures with no answer ever (a report opened as a file): no more polls
+  const NOTIFY_KEY = "mh-step-notify";
+  const STEP_TEXTS = {{ {
+    "step": _("A step"),
+    "minutesLeft": _("{minutes} min left"),
+    "underMinute": _("under 1 min left"),
+    "waiting": _("waiting for mh"),
+    "lost": _("No news from the window of mh: it may have been closed."),
+    "done": _("Done: {step}."),
+    "failed": _("Stopped (code {code}): {step}."),
+    "follow": _("Follow the step"),
+  } | tojson }};
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  const chip = document.getElementById("mhStepChip");
+  const dialog = document.getElementById("mhStepDlg");
+  const slot = document.querySelector("[data-step-slot]");
+  if (slot) slot.prepend(chip); else chip.classList.add("mhStepFloat");
+  const baseTitle = document.title;
+  const watchers = new Set();
+  const claimed = new Set();
+  const pace = { done: 0, at: 0, rate: 0 };
+  let following = null;  // the id of the step seen waiting or running, and its stage
+  let stage = "";
+  let answered = false;
+  let failures = 0;
+  let timer = 0;
+  let last = null;
+
+  function kept() { try { return window.localStorage.getItem(NOTIFY_KEY); } catch { return "denied"; } }
+  window.mhNotify = Object.freeze({
+    ask() {
+      if (!("Notification" in window) || kept()) return;
+      const keep = (answer) => { try { window.localStorage.setItem(NOTIFY_KEY, answer); } catch { /* asked again */ } };
+      if (Notification.permission !== "default") { keep(Notification.permission); return; }
+      Notification.requestPermission().then(keep).catch(() => { /* asked again */ });
+    },
+    end(text) {
+      if (!document.hidden || !("Notification" in window)) return;
+      if (kept() !== "granted" || Notification.permission !== "granted") return;
+      try { new Notification("Media Hygiene", { body: text }); } catch { /* a phone: the toast says it */ }
+    },
+  });
+
+  function minutesLeft(progress) {
+    const now = Date.now();
+    if (progress.done !== pace.done) {
+      if (pace.at && progress.done > pace.done) {
+        const rate = ((progress.done - pace.done) * 1000) / (now - pace.at);
+        pace.rate = pace.rate ? pace.rate * 0.7 + rate * 0.3 : rate;
+      }
+      pace.done = progress.done;
+      pace.at = now;
+    } else if (!pace.at) pace.at = now;
+    if (!progress.total || !pace.rate) return "";
+    const minutes = Math.ceil((progress.total - progress.done) / pace.rate / 60);
+    return minutes <= 1 ? STEP_TEXTS.underMinute : fill(STEP_TEXTS.minutesLeft, { minutes: minutes });
+  }
+  function percentOf(progress) {
+    if (!progress || !progress.total) return null;
+    return Math.min(100, Math.floor((progress.done * 100) / progress.total));
+  }
+  function drawRunning(step) {
+    const progress = step.progress || null;
+    stage = (progress && progress.title) || stage || STEP_TEXTS.step;
+    const percent = percentOf(progress);
+    const parts = [stage];
+    if (step.state === "waiting") parts.push(STEP_TEXTS.waiting);
+    if (percent !== null) parts.push(`${percent} %`);
+    const left = progress ? minutesLeft(progress) : "";
+    if (left) parts.push(left);
+    chip.textContent = "⏳ " + parts.join(" · ");
+    chip.title = STEP_TEXTS.follow;
+    chip.hidden = false;
+    document.title = (percent === null ? "⏳ " : `${percent} %` + " · ") + stage + " — " + baseTitle;
+    document.getElementById("mhStepTitle").textContent = stage;
+    const bar = document.getElementById("mhStepBar");
+    bar.hidden = !(progress && progress.total);
+    if (!bar.hidden) { bar.max = progress.total; bar.value = progress.done; }
+    const count = progress ? (progress.total ? `${progress.done} / ${progress.total}` : String(progress.done)) : "";
+    document.getElementById("mhStepCount").textContent = [count, left].filter(Boolean).join(" · ");
+    document.getElementById("mhStepFile").textContent = step.lost ? STEP_TEXTS.lost : (progress && progress.current) || "";
+  }
+  function drawIdle() {
+    chip.hidden = true;
+    document.title = baseTitle;
+    if (dialog.open) dialog.close();
+  }
+  function ended(step) {
+    const id = following;
+    following = null;
+    pace.done = 0; pace.at = 0; pace.rate = 0;
+    drawIdle();
+    if (step.state !== "done" || step.id !== id || claimed.has(id)) return;
+    const ok = step.code === 0;
+    const text = fill(ok ? STEP_TEXTS.done : STEP_TEXTS.failed, { step: stage || STEP_TEXTS.step, code: step.code });
+    if (window.mhSay) window.mhSay(text, ok ? "ok" : "error");
+    window.mhNotify.end(text);
+  }
+  function seen(step) {
+    last = step;
+    if (step.state === "waiting" || step.state === "running") {
+      if (following !== step.id) { following = step.id; stage = ""; }
+      drawRunning(step);
+    } else if (following !== null) ended(step);
+    else drawIdle();
+    for (const watcher of [...watchers]) watcher(step);
+  }
+  function lost() {
+    failures += 1;
+    for (const watcher of [...watchers]) watcher(null);
+  }
+  function delay() {
+    if (document.hidden) return HIDDEN_MS;
+    return following !== null || watchers.size ? RUNNING_MS : IDLE_MS;
+  }
+  function poll() {
+    window.clearTimeout(timer);
+    fetch(STEP_PATH, { cache: "no-store" })
+      .then((response) => {
+        if (response.status === 404) return "none";
+        return response.ok ? response.json() : Promise.reject(new Error(String(response.status)));
+      })
+      .then((step) => {
+        if (step === "none") { failures = GIVE_UP; return; }  // a server without steps: no more polls
+        answered = true; failures = 0;
+        seen(step);
+        timer = window.setTimeout(poll, delay());
+      })
+      .catch(() => {
+        lost();
+        if (answered || failures < GIVE_UP) timer = window.setTimeout(poll, delay());
+      });
+  }
+  window.mhStep = Object.freeze({
+    watch(fn) { watchers.add(fn); window.clearTimeout(timer); timer = window.setTimeout(poll, RUNNING_MS); return () => watchers.delete(fn); },
+    claim(id) { if (id) claimed.add(id); },
+    last() { return last; },
+  });
+  chip.addEventListener("click", () => {
+    if (typeof window.mhStepOpen === "function" && following) { window.mhStepOpen(following); return; }
+    if (!dialog.open) dialog.showModal();
+  });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && (answered || failures < GIVE_UP)) poll(); });
+  poll();
+})();
+</script>

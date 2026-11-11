@@ -122,7 +122,10 @@ de visages. Sur un grand écran, une colonne liste les personnes avec leurs nomb
 attribués encore à confirmer, en gras tant qu'il en reste), et en dernier **Groupes sans nom
 (n)** ; sur un téléphone, le champ **Aller à une personne** de la barre du haut tient la même
 liste. Tapez quelques lettres (`/` atteint le champ), choisissez un nom : la page va à ses
-sections et les ouvre ; **Montrer seulement cette personne** cache les autres jusqu'à Échap.
+sections et les ouvre ; **Montrer seulement cette personne** cache les autres jusqu'à Échap. La page a la disposition de toutes les pages de l'outil :
+la liste à gauche avec les touches ⌨ dessous, une barre au-dessus des sections (ce qui reste,
+**Prochain à faire**, le champ, la ligne relue du disque, **✅ Appliquer**). La personne choisie
+reste dans l'adresse : un rechargement ou un favori y revient.
 
 La barre du haut dit ce qui reste, relu du serveur après chaque changement : *À faire : 312
 visages attribués (7 personnes) · 41 groupes sans nom (980 visages)*. **Prochain à faire** (`g`)
@@ -174,7 +177,9 @@ oublie avec tous les autres visages.
 **Une photo à la fois.** Un visage que l'outil ne voit pas (de profil, flou, une photo penchée)
 laisse sa photo dans la section de quelqu'un d'autre. Cliquez sur le visage : la grande vue
 montre la photo avec **Mettre cette photo de côté** (ou la touche Suppr) ; Retour arrière la
-reprend.
+reprend. C'est la même grande vue que dans `library` : ← → parcourent les visages de la
+section, F plein écran, I le chemin de la photo, ? toutes les touches ; Échap, un clic à côté de
+la photo ou le bouton Précédent du navigateur la ferme.
 
 Le même `decisions.json` garde ce que [`library`](library.md#mettre-des-photos-de-côté) et
 [`review`](review.md) ont mis de côté : un seul `clean --decisions` applique tout. Une photo

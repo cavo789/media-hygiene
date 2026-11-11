@@ -20,8 +20,9 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.doors import LAN_CA_PORT
 from media_hygiene.review.http import Request, Response, is_local
-from media_hygiene.review.lan import COOKIE_NAME, PAIR_PREFIX, cookies
+from media_hygiene.review.lan import COOKIE_NAME, cookies
 from media_hygiene.review.lan_pairing import Pairing, pair_page
+from media_hygiene.review.lan_phone_care import now_utc, touch
 from media_hygiene.review.lan_phones_api import for_good
 from media_hygiene.services.reviewing import HOST_LOOPBACK
 from media_hygiene.slideshow.screens import SCREEN_COOKIE
@@ -110,7 +111,10 @@ class Door:
         if self.lan is not None and self.lan.is_paired(request):
             return True
         token = cookies(request.headers).get(COOKIE_NAME, "")
-        return self.phones is not None and self.phones.knows(token)
+        phone = None if self.phones is None else self.phones.holder(token)
+        if phone is not None and self.phones is not None:  # its last seen (0683)
+            touch(self.phones, phone, (request.peer, now_utc()))
+        return phone is not None
 
     def pair_phone(self, request: Request) -> Response:
         """Check the run's code typed on a phone; the right one opens the remote.
@@ -124,8 +128,7 @@ class Door:
         """
         if self.lan is None:
             return Response(HTTPStatus.FORBIDDEN)
-        typed = request.path.removeprefix(PAIR_PREFIX)
-        return for_good(self.pairing.check(self.lan, typed), self.phones, request)
+        return for_good(self.pairing.check(self.lan, request), self.phones, request)
 
     def stranger_page(self, request: Request) -> Response:
         """What a stranger gets: the pairing page for a `GET`, 403 otherwise.

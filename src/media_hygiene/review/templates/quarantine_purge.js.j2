@@ -4,6 +4,7 @@
 const PURGE_TEXTS = {{ {
   "button": _("Erase these {count} files for good: frees {size}"),
   "unshown": _("Erase these {count} files and {others} other files not shown for good: frees {size}"),
+  "sureYes": _("Erase for good"),
   "sure": _("Erase run {run} for good? This cannot be undone, not even by 'undo'."),
   "running": _("Erasing in the window of mh: {command}"),
 } | tojson }};
@@ -34,7 +35,7 @@ const followPurge = (step) => fetch(step.follow, { cache: "no-store" })
   .catch(() => window.setTimeout(() => followPurge(step), STEP_POLL_MS));
 
 $("purge").addEventListener("click", async () => {
-  if (!window.confirm(fill(PURGE_TEXTS.sure, { run: ONLY_RUN }))) return;
+  if (!await window.mhAsk({ lines: [fill(PURGE_TEXTS.sure, { run: ONLY_RUN })], yes: PURGE_TEXTS.sureYes, danger: true })) return;
   $("purge").disabled = true;
   const answer = await ask(PURGE_PATH, { run_id: ONLY_RUN, files: tiles.length });
   const step = answer ? await answer.json().catch(() => ({})) : {};
@@ -44,5 +45,6 @@ $("purge").addEventListener("click", async () => {
     return;
   }
   say(fill(PURGE_TEXTS.running, { command: step.command }), "");
+  if (window.mhStep) window.mhStep.claim(step.id); // its end said here, not by the chip (0661)
   followPurge(step);
 });

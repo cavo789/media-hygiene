@@ -16,7 +16,7 @@
     {{ _("Media Hygiene has stopped: this page no longer answers. Open it again from the desktop shortcut, or with mh.") }}</p>
 </div>
 {% if not presence_es5 | default(false) %}
-<script>
+<script nonce="{{ page_nonce }}">
 (() => {
   const ALIVE_MS = 10000;
   const FAILURES = 2;

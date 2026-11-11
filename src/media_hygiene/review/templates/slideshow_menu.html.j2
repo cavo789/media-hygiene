@@ -10,11 +10,11 @@
          data-one="{{ ngettext('{n} photo', '{n} photos', 1) }}" data-many="{{ ngettext('{n} photo', '{n} photos', 2) }}">
   <summary id="showOpen" class="plain" title="{{ _('Show the files picked as a slideshow, on this PC or on the TV; nothing picked: every file of the page') }}" aria-label="{{ _('Slideshow') }}">▶ <span class="showWord">{{ _("Slideshow") }}</span> ▾</summary>
   <div class="panelBody">
-  <span class="panelRow" id="showTargets">
-    <button id="showHere" class="plain" type="button" data-target="here" data-path="{{ albums_path }}"
+  <span class="panelRow" id="showTargets" role="menu">
+    <button id="showHere" class="plain" type="button" role="menuitem" data-key="H" data-target="here" data-path="{{ albums_path }}"
             data-sent="{{ _('The show starts in the new tab: click the photo there for full screen.') }}"
             data-sending="{{ _('Starting the show on this PC…') }}">🖥 {{ _("On this PC") }} · <span class="showCount"></span></button>
-    <button id="showTv" class="plain" type="button" data-target="tv" data-path="{{ albums_path }}"
+    <button id="showTv" class="plain" type="button" role="menuitem" data-key="T" data-target="tv" data-path="{{ albums_path }}"
             data-sent="{{ _('Sent to the TV: its remote opens.') }}"
             data-sending="{{ _('Starting the show on the TV…') }}">📺 {{ _("On the TV") }} · <span class="showCount"></span></button>
   </span>

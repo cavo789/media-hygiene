@@ -10,7 +10,7 @@
   <button id="tidyOn" class="plain" type="button">{{ _("Go on for 10 minutes") }}</button>
   <button id="tidyEnd" type="button">{{ _("Stop here") }}</button>
 </dialog>
-<script>
+<script nonce="{{ page_nonce }}">
 document.addEventListener("DOMContentLoaded", () => {
   let timer = 0;
   const KEY = "mh-tidy";

@@ -11,6 +11,7 @@ from media_hygiene.console.formatting import human_size
 from media_hygiene.constants import MediaKind
 from media_hygiene.review.videos import video_path
 from media_hygiene.scan.filters import media_kind
+from media_hygiene.search import stable_pictures
 from media_hygiene.search.album_filter import AlbumAimed
 from media_hygiene.search.days import days_named
 from media_hygiene.search.exif_facts import modified_day
@@ -22,10 +23,10 @@ if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.search.models import Found, Hit
 
-THUMB_PREFIX: Final = "/thumb/"
-PREVIEW_PREFIX: Final = "/preview/"
+THUMB_PREFIX: Final = stable_pictures.THUMB_PREFIX
+PREVIEW_PREFIX: Final = stable_pictures.PREVIEW_PREFIX
 ORIGINAL_PREFIX: Final = "/original/"
-JPEG: Final = ".jpg"
+JPEG: Final = stable_pictures.JPEG
 _MAX_TEXT: Final = 500
 FIRST_HITS: Final = 240  # the files a search shows first
 _MOST: Final = 20_000  # files shown at most, *Show more* after *Show more*
@@ -187,8 +188,9 @@ def _hit_view(hit: Hit, mapper: HostPathMapper) -> dict[str, object]:
             for source in _SHOWN
             if source in hit.tags
         },
-        "thumb": f"{THUMB_PREFIX}{hit.key}{JPEG}",
-        "preview": f"{PREVIEW_PREFIX}{hit.key}{JPEG}",
+        **stable_pictures.tile_pictures(
+            hit.key, hit.photo
+        ),  # kept by the browser for good (0673)
         "video": video_path(str(hit.key), path) if video else "",  # played (0373)
         "original": f"{ORIGINAL_PREFIX}{hit.key}{path.suffix.lower()}",
         "path": mapper.to_host(path),

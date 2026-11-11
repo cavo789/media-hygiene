@@ -38,7 +38,7 @@
 </main>
 {% endblock %}
 {% block after %}
-<script>
+<script nonce="{{ page_nonce }}">
 (() => {
   "use strict";
   const TEXTS = {{ {

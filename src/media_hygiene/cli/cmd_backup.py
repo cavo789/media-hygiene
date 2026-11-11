@@ -22,11 +22,14 @@ def backup_command(ctx: typer.Context) -> None:
         ctx: Typer context holding the runtime.
     """
     from media_hygiene.console.formatting import human_size
+    from media_hygiene.services.backup_extra import JOURNAL_PREFIX
     from media_hygiene.services.cache_backup import KEPT, make_backup
+    from media_hygiene.services.safety_records import note_backup
 
     runtime = runtime_of(ctx)
     with user_errors(runtime.output):
         backup = make_backup(runtime)
+    note_backup(runtime, runtime.mapper.to_host(backup.path))
     output = runtime.output
     output.success(
         _("Backup written and read back: {path} ({size}).").format(
@@ -34,6 +37,10 @@ def backup_command(ctx: typer.Context) -> None:
         )
     )
     _counts(runtime, backup.manifest.counts)
+    journals = sum(m.startswith(JOURNAL_PREFIX) for m in backup.manifest.members)
+    output.info(
+        _("  journals (the way back of each run): {count}").format(count=journals)
+    )
     for old in backup.removed:
         output.info(
             _("Older backup removed ({kept} kept): {name}").format(
@@ -89,6 +96,8 @@ def restore_command(
     _counts(runtime, restored.counts)
     for name in restored.config:
         output.info(_("Setting restored: {name}").format(name=name))
+    for name in restored.missing:
+        output.info(_("Missing file put back, read back: {name}").format(name=name))
     if restored.before is None:
         output.next_step(_("mh audit: it reads again only what changed."))
         return

@@ -1,5 +1,6 @@
 {# The active filters as chips (0565), on line 1 of the bar right after the count: words,
-   period, path, folder of the tree, sorted, kind. ✕ removes that filter and searches again.
+   period, path, folder of the tree, sorted, kind, without, place, album (the folded ones
+   of *More filters*, 0665, always shown here). ✕ removes that filter and searches again.
    The bar never grows: the chips that do not fit fold into `+N`, whose click lists them
    under the bar (a floating panel, the grid never moves). Drawn from the search sent
    (`asked`), so a chip is always what was searched. #}
@@ -37,6 +38,10 @@ function activeFilters(body) {
   if (body.kind !== "all" && !body.aside) filters.push({ text: pressedLabel("kind"), off: () => { segmented("kind", "all"); remember("kind"); } });
   if (body.missing !== "all") filters.push({ text: pressedLabel("missing"), off: () => segmented("missing", "all") });
   if (body.near) filters.push({ text: "📍 " + $("placeDlg").dataset.nearChip, off: () => { window.mhNear = null; } });
+  if (body.album && body.album.inside !== null) {
+    const how = $("albumIn").selectedOptions[0];
+    filters.push({ text: "📚 " + (how ? how.textContent.trim() : "") + " · " + body.album.name, off: () => { $("albumIn").value = ""; } });
+  }
   if (body.place) filters.push({ text: "📍 " + body.place, off: () => { $("placeIn").value = ""; } });
   return filters;
 }
@@ -79,3 +84,11 @@ function foldChips() {
 }
 new ResizeObserver(foldChips).observe($("lead"));
 chipsMore.addEventListener("click", () => { chipsFolded.hidden = !chipsFolded.hidden; });
+
+// *More filters* open or folded, kept in the URL (0666, 0665): Back and a reload keep it.
+if (window.mhView) {
+  $("moreFilters").open = window.mhView.get({ filters: ["more"] }).filters === "more";
+  $("moreFilters").addEventListener("toggle", () => {
+    window.mhView.set({ filters: $("moreFilters").open ? "more" : null });
+  });
+}

@@ -11,13 +11,17 @@ import pytest
 
 from media_hygiene.cli.config_tidy_flow import show_tidy, tidy_tip
 from media_hygiene.config.loader import default_config
-from media_hygiene.config.tidy_find import LibraryFacts, StaleEntry, find_stale
+from media_hygiene.config.tidy_find import find_stale
+from media_hygiene.config.tidy_rules import LibraryFacts, OptIn, StaleEntry
 from media_hygiene.config.tidy_write import check_removed, without_entries
 from media_hygiene.constants import Locale
 from media_hygiene.errors import ConfigError
 from media_hygiene.paths.mounts import MountTable
+from media_hygiene.scan.progress import NullProgress
+from media_hygiene.services.audit import AuditService
 from media_hygiene.services.config_tidy import _shot, library_facts, stale_entries
 from tests.support.runtime import make_runtime, output_of
+from tests.support.scenes import Shot, write_shot
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -187,17 +191,17 @@ def test_list_then_apply_with_a_copy_and_the_undo_line(locations: Locations) -> 
     assert [(entry.section, entry.rank) for entry in stale] == [
         ("folders.protected", 1),
     ]
-    show_tidy(runtime, apply=False, dates=False)
+    show_tidy(runtime, apply=False, opt_in=frozenset())
     assert "Nothing was written" in output_of(runtime)
     before = locations.config_file.read_text("utf-8")
-    show_tidy(runtime, apply=True, dates=False)
+    show_tidy(runtime, apply=True, opt_in=frozenset())
     after = tomllib.loads(locations.config_file.read_text("utf-8"))
     assert after["folders"]["protected"] == ["C:\\Photos\\kept"]
     copies = list((locations.cache_dir / "config-backups").iterdir())
     assert [copy.read_text("utf-8") for copy in copies] == [before]
     assert "Changed your mind?" in output_of(runtime)
     tidy_tip(runtime)
-    show_tidy(runtime, apply=False, dates=False)
+    show_tidy(runtime, apply=False, opt_in=frozenset())
     assert "points at something" in output_of(runtime)
 
 
@@ -209,3 +213,56 @@ def test_the_tip_after_sort(locations: Locations, tmp_path: Path) -> None:
     locations.config_file.write_text("[broken", "utf-8")
     tidy_tip(runtime)
     assert tmp_path.exists()
+
+
+SUPERSEDED: Final = """
+[[classify.rules]]
+name = "Dinant"
+match = "path"
+pattern = '(?i)dinant'
+category = "Trips/Dinant"
+
+[[classify.rules]]
+name = "Bruges"
+match = "path"
+pattern = '(?i)bruges'
+category = "Trips/Bruges"
+"""
+
+
+def test_a_path_rule_whose_files_sit_in_named_folders_is_superseded() -> None:
+    """Every match in a folder the user named: shown, ticked only on request (0693)."""
+    dinant = r"C:\Photos\2020\2020-08\Dinant\a.jpg"
+    bruges = (r"C:\Photos\2017\2017-04\Bruges\b.jpg", r"C:\Photos\2017\bruges.jpg")
+    facts = LibraryFacts(paths=(dinant, *bruges), named=frozenset({dinant, bruges[0]}))
+    found = reasons(SUPERSEDED, facts)
+    assert set(found) == {"classify.rules:Dinant"}  # one Bruges file is still loose
+    entry = found["classify.rules:Dinant"]
+    assert not entry.ticked
+    assert entry.opt_in is OptIn.SUPERSEDED
+    assert "1 files" in entry.reason
+
+
+def test_library_facts_names_the_folders_existing_folder_keeps(
+    locations: Locations,
+) -> None:
+    """A named folder counts, a date-only folder does not."""
+    runtime = mounted(locations)
+    root = locations.data_dir / "c"
+    named, dated = root / "2017" / "2017-04" / "Bruges", root / "2017" / "2017-05"
+    for folder in (named, dated):
+        write_shot(folder / "a.jpg", Shot(len(folder.name)))
+    AuditService(runtime, NullProgress()).run()
+    facts = library_facts(runtime)
+    hosts = {path.rsplit("\\", 2)[-2]: path for path in facts.paths}
+    assert hosts["Bruges"] in facts.named
+    assert hosts["2017-05"] not in facts.named
+
+
+def test_superseded_rules_removed_with_the_option(locations: Locations) -> None:
+    """`--superseded` ticks them; without it, nothing is written."""
+    runtime = mounted(locations)
+    entry = StaleEntry("classify.rules", 0, "x", "why", OptIn.SUPERSEDED)
+    assert not entry.ticked
+    show_tidy(runtime, apply=False, opt_in=frozenset({OptIn.SUPERSEDED}))
+    assert "Nothing was written" in output_of(runtime)

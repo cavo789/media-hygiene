@@ -104,7 +104,7 @@ async function change(body) {
 saveChoice = async (action, keys) => {
   if (action !== "add" || !keys.length) return false;
   const emptied = keys.length >= files.length;
-  if (emptied && !window.confirm(fill(TEXTS.emptyAsk, { name: NAME }))) { sayLine("", false); return false; }
+  if (emptied && !await window.mhAsk({ lines: [fill(TEXTS.emptyAsk, { name: NAME })], yes: TEXTS.emptyYes, danger: true })) { sayLine("", false); return false; }
   const state = await change({ action: "remove", album: NAME, keys: keys });
   if (!state) return false;
   if (!state.albums.some((each) => each.name === NAME)) {

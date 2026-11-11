@@ -11,7 +11,7 @@
     </select></label>
   <span id="mhLocaleSaid" role="status" aria-live="polite"></span>
 </span>
-<script>
+<script nonce="{{ page_nonce }}">
 (() => {
   const box = document.getElementById("mhLocale");
   if (!["127.0.0.1", "localhost", "[::1]"].includes(location.hostname)) return;

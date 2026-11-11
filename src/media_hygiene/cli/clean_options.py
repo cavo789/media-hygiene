@@ -92,3 +92,44 @@ def decisions_option(help_text: str, panel: str | None = None) -> OptionInfo:
             "--decisions", help=help_text, rich_help_panel=panel, show_default=False
         ),
     )
+
+
+def repair() -> OptionInfo:
+    """`--repair`: restore the files found damaged from their good copy (0690).
+
+    Returns:
+        The option definition.
+    """
+    return cast(
+        "OptionInfo",
+        typer.Option(
+            "--repair",
+            help=_(
+                "Restore the files 'audit --reread' found damaged from their good "
+                "copy (a duplicate, a backup, the quarantine): listed first, then "
+                "asked; the damaged file goes to the quarantine, 'undo' puts it back."
+            ),
+            rich_help_panel=panel_advanced(),
+        ),
+    )
+
+
+def reread() -> OptionInfo:
+    """`audit --reread`: read again the files read in full longest ago (0690).
+
+    Returns:
+        The option definition.
+    """
+    return cast(
+        "OptionInfo",
+        typer.Option(
+            "--reread",
+            help=_(
+                "Only read again in full the files read longest ago, up to "
+                "[routine] reread_gb, to find a file a disk damaged without "
+                "changing its size or date; then list the damaged files and where "
+                "a good copy is. Changes nothing."
+            ),
+            rich_help_panel=panel_advanced(),
+        ),
+    )

@@ -20,7 +20,7 @@
   </ul>
   <span class="muted">{{ _("Paste it in the terminal where you ran the audit (PowerShell or bash, as written).") }}</span>
 </div>
-<script>
+<script nonce="{{ page_nonce }}">
   // Copy the command next to the button; on failure, open it to select by hand.
   for (const button of document.querySelectorAll(".actions button.copy")) {
     button.addEventListener("click", async () => {

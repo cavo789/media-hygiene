@@ -13,6 +13,7 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.doors import Door
+from media_hygiene.review.nonce import REVIEW_POLICY
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -25,12 +26,6 @@ HEADER_ENCODING: Final = "latin-1"
 _HTTP_1: Final = "HTTP/1."
 _REQUEST_LINE_PARTS: Final = 3  # method, target, version
 NO_REFERRER: Final = "no-referrer"
-# Itself only (+ manifest, worker: the phone's app, 0432); `places` adds scripts, tiles.
-REVIEW_POLICY: Final = (
-    "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
-    "img-src 'self'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; "
-    "manifest-src 'self'; worker-src 'self'"
-)
 
 
 class ContentType(StrEnum):
@@ -77,6 +72,7 @@ class Request:
     body: bytes = b""
     door: Door = Door.PC  # the socket it came in by, never a header (0384)
     query: str = ""  # what follows the `?`, for a redirect that keeps it (0617)
+    peer: str = ""  # the device's address, from the socket, never a header (0681)
 
 
 @dataclass(frozen=True, slots=True)
@@ -107,11 +103,14 @@ class BadRequestError(Exception):
         self.status = status
 
 
-async def read_request(reader: asyncio.StreamReader) -> Request:
-    """Read one request.
+async def read_request(
+    reader: asyncio.StreamReader, head_seconds: float = _TIMEOUT_SECONDS
+) -> Request:
+    """Read one request: its head within `head_seconds`, its body within 30 s.
 
     Args:
         reader: The connection.
+        head_seconds: To send the request line and headers (shorter on the LAN, 0682).
 
     Returns:
         The request.
@@ -121,7 +120,7 @@ async def read_request(reader: asyncio.StreamReader) -> Request:
         TimeoutError: The browser sent nothing for too long.
         IncompleteReadError: The connection closed in the middle of the request.
     """
-    async with asyncio.timeout(_TIMEOUT_SECONDS):
+    async with asyncio.timeout(head_seconds):
         try:
             parts = (await reader.readline()).decode(HEADER_ENCODING).split()
             if len(parts) != _REQUEST_LINE_PARTS or not parts[2].startswith(_HTTP_1):
@@ -129,6 +128,7 @@ async def read_request(reader: asyncio.StreamReader) -> Request:
             headers = await _read_headers(reader)
         except ValueError as exc:  # a line longer than the reader's limit
             raise BadRequestError(HTTPStatus.REQUEST_HEADER_FIELDS_TOO_LARGE) from exc
+    async with asyncio.timeout(_TIMEOUT_SECONDS):
         body = await _read_body(reader, headers)
     path, _mark, query = parts[1].partition("?")
     return Request(parts[0], path, headers, body, query=query)

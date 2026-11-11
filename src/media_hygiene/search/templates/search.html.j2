@@ -286,45 +286,51 @@
           </div>
         </details>
       </div>
-      <label id="albumInLabel">{{ _("Album") }}
-        <select id="albumIn" disabled title="{{ _('Name an album under 📚 Album: its files are marked, kept or left out') }}">
-          <option value="">{{ _("In the album or not") }}</option>
-          <option value="in">{{ _("In the album") }}</option>
-          <option value="out">{{ _("Not in the album") }}</option>
-        </select></label>
       <label id="folderLabel" class="comboBox">{{ _("Path contains") }}<input id="folder" type="text" autocomplete="off"
                role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="folderList"
                title="{{ _('A part of the path. * is any characters, ? one character, /regex/ a regular expression: *.mov, /\\.(mov|mp4)$/') }}"
                placeholder="{{ _('e.g. 2019/Durbuy, *.mov, /\\.(mov|mp4)$/') }}">
         <button type="button" id="folderClear" class="plain comboClear" disabled title="{{ _('Empty the path, then the list of your folders again') }}" aria-label="{{ _('Empty the path') }}">✕</button>
         <ul id="folderList" class="comboList" role="listbox" aria-label="{{ _('Your folders, the latest first') }}" hidden></ul></label>
-      <span class="segLabel">{{ _("Show") }}</span>
-      <div class="seg" role="group" aria-label="{{ _('Show') }}">
-        <input type="hidden" id="kind" value="all">
-        <button type="button" data-for="kind" data-value="all" aria-pressed="true">{{ _("All") }}</button>
-        <button type="button" data-for="kind" data-value="photos" aria-pressed="false" title="{{ _('Photos') }}">📷</button>
-        <button type="button" data-for="kind" data-value="videos" aria-pressed="false" title="{{ _('Videos') }}">🎬</button>
-        <button type="button" data-for="kind" data-value="aside" aria-pressed="false" title="{{ _('Only the files set aside, to see them or put some back before the quarantine') }}">🗑</button>
-        <button type="button" id="asideLeave" class="plain" disabled title="{{ _('Leave the set aside: every file again') }}" aria-label="{{ _('Leave the set aside: every file again') }}">✕</button>
-      </div>
-      <span class="segLabel" title="{{ _('Sorted: in a year-month folder (2009/2009-11/…), as the sort convention puts them') }}">{{ _("Sorted") }}</span>
-      <div class="seg" role="group" aria-label="{{ _('Sorted') }}">
-        <input type="hidden" id="sorting" value="all">
-        <button type="button" data-for="sorting" data-value="all" aria-pressed="true" title="{{ _('every photo') }}">{{ _("All") }}</button>
-        <button type="button" data-for="sorting" data-value="sorted" aria-pressed="false" title="{{ _('sorted (year, then year-month)') }}">{{ _("sorted") }}</button>
-        <button type="button" data-for="sorting" data-value="left" aria-pressed="false" title="{{ _('not sorted yet') }}">{{ _("not yet") }}</button>
-      </div>
-      <span class="segLabel" title="{{ _('The files the index knows no date or no position for: pick a group, then give it one') }}">{{ _("Without") }}</span>
-      <div class="seg" role="group" aria-label="{{ _('Without') }}">
-        <input type="hidden" id="missing" value="all">
-        <button type="button" data-for="missing" data-value="all" aria-pressed="true" title="{{ _('every file') }}">{{ _("All") }}</button>
-        <button type="button" data-for="missing" data-value="date" aria-pressed="false" title="{{ _('Without a date') }}">📅</button>
-        <button type="button" data-for="missing" data-value="place" aria-pressed="false" title="{{ _('Without a place') }}">📍</button>
-      </div>
-      <label id="placeInLabel">{{ _("Place") }}
-        <select id="placeIn" title="{{ _('The photos of one of your places: by their GPS, or given by hand') }}">
-          <option value="">{{ _("Every place") }}</option>
-        </select></label>
+      {# The less used filters, folded (0665): an active one is a chip on line 1 of the bar
+         (search_chips.js.j2), so nothing hidden narrows the results silently; open or folded
+         is kept in the URL (`?filters=more`, view_state.html.j2). #}
+      <details id="moreFilters">
+        <summary title="{{ _('Album, kind, sorted, without a date or a place, place: an active one shows as a chip above the photos') }}">{{ _("More filters") }} ▾</summary>
+        <label id="albumInLabel">{{ _("Album") }}
+          <select id="albumIn" disabled title="{{ _('Name an album under 📚 Album: its files are marked, kept or left out') }}">
+            <option value="">{{ _("In the album or not") }}</option>
+            <option value="in">{{ _("In the album") }}</option>
+            <option value="out">{{ _("Not in the album") }}</option>
+          </select></label>
+        <span class="segLabel">{{ _("Show") }}</span>
+        <div class="seg" role="group" aria-label="{{ _('Show') }}">
+          <input type="hidden" id="kind" value="all">
+          <button type="button" data-for="kind" data-value="all" aria-pressed="true">{{ _("All") }}</button>
+          <button type="button" data-for="kind" data-value="photos" aria-pressed="false" title="{{ _('Photos') }}">📷</button>
+          <button type="button" data-for="kind" data-value="videos" aria-pressed="false" title="{{ _('Videos') }}">🎬</button>
+          <button type="button" data-for="kind" data-value="aside" aria-pressed="false" title="{{ _('Only the files set aside, to see them or put some back before the quarantine') }}">🗑</button>
+          <button type="button" id="asideLeave" class="plain" disabled title="{{ _('Leave the set aside: every file again') }}" aria-label="{{ _('Leave the set aside: every file again') }}">✕</button>
+        </div>
+        <span class="segLabel" title="{{ _('Sorted: in a year-month folder (2009/2009-11/…), as the sort convention puts them') }}">{{ _("Sorted") }}</span>
+        <div class="seg" role="group" aria-label="{{ _('Sorted') }}">
+          <input type="hidden" id="sorting" value="all">
+          <button type="button" data-for="sorting" data-value="all" aria-pressed="true" title="{{ _('every photo') }}">{{ _("All") }}</button>
+          <button type="button" data-for="sorting" data-value="sorted" aria-pressed="false" title="{{ _('sorted (year, then year-month)') }}">{{ _("sorted") }}</button>
+          <button type="button" data-for="sorting" data-value="left" aria-pressed="false" title="{{ _('not sorted yet') }}">{{ _("not yet") }}</button>
+        </div>
+        <span class="segLabel" title="{{ _('The files the index knows no date or no position for: pick a group, then give it one') }}">{{ _("Without") }}</span>
+        <div class="seg" role="group" aria-label="{{ _('Without') }}">
+          <input type="hidden" id="missing" value="all">
+          <button type="button" data-for="missing" data-value="all" aria-pressed="true" title="{{ _('every file') }}">{{ _("All") }}</button>
+          <button type="button" data-for="missing" data-value="date" aria-pressed="false" title="{{ _('Without a date') }}">📅</button>
+          <button type="button" data-for="missing" data-value="place" aria-pressed="false" title="{{ _('Without a place') }}">📍</button>
+        </div>
+        <label id="placeInLabel">{{ _("Place") }}
+          <select id="placeIn" title="{{ _('The photos of one of your places: by their GPS, or given by hand') }}">
+            <option value="">{{ _("Every place") }}</option>
+          </select></label>
+      </details>
       <p id="withinLine" hidden>📁 <span id="withinName"></span>
         <button type="button" id="withinClear" class="plain" title="{{ _('Search every folder again') }}">✕</button></p>
       <button type="submit" id="go" title="{{ _('Search (Enter; / comes back to Words)') }}">🔍 {{ _("Search") }}</button>
@@ -382,10 +388,10 @@
     {% include "album_bar.html.j2" %}
     <details id="moveBar" class="barPanel closesOnChoice">
       <summary class="plain" title="{{ _('Give the photos picked a tag, a day or a place') }}">🏷 {{ _("Describe") }} ▾</summary>
-      <div class="panelBody">
-        <button type="button" id="tagOpen" class="plain" disabled title="{{ _('Give the photos picked a word of yours, kept in your settings') }}">🏷 {{ _("Tag…") }}</button>
-        <button type="button" id="dateOpen" class="plain" disabled title="{{ _('Give the photos picked a day, in their .xmp sidecars') }}">📅 {{ _("Date…") }}</button>
-        <button type="button" id="placeOpen" class="plain" disabled title="{{ _('Put the photos picked in one of your places') }}">📍 {{ _("Place…") }}</button>
+      <div class="panelBody" role="menu">
+        <button type="button" id="tagOpen" class="plain" role="menuitem" data-key="T" disabled title="{{ _('Give the photos picked a word of yours, kept in your settings') }}">🏷 {{ _("Tag…") }}</button>
+        <button type="button" id="dateOpen" class="plain" role="menuitem" data-key="D" disabled title="{{ _('Give the photos picked a day, in their .xmp sidecars') }}">📅 {{ _("Date…") }}</button>
+        <button type="button" id="placeOpen" class="plain" role="menuitem" data-key="P" disabled title="{{ _('Put the photos picked in one of your places') }}">📍 {{ _("Place…") }}</button>
       </div>
     </details>
 {% endblock %}
@@ -415,7 +421,7 @@
     <button id="whyClose" type="button">{{ _("Close") }} (Esc)</button>
   </div>
 </div>
-<script>
+<script nonce="{{ page_nonce }}">
 {% include "pick_grid.js.j2" %}
 {% include "pick_viewer.js.j2" %}
 {% include "pick_band.js.j2" %}

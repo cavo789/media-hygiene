@@ -65,6 +65,7 @@ It prints, in this order:
 | `--full` | Read every folder again, even those unchanged since the last audit (taken from the cache otherwise): for a photo changed in place by another program. [Step 2](../start/02-keep-the-cache.md#what-changes) |
 | `--ext EXT` | Only these categories or extensions (`--ext photo,video`, `--ext heic`); photo, RAW and video extensions only. [Cleaning, step 6](../clean/06-file-types.md) |
 | `--people` | Then look for faces in the photos not looked at yet, after saying how long it takes and asking ([People](../reference-people.md#during-the-audit-audit---people)); `with_audit = true` in `[people]` does it at every audit. |
+| `--reread` | Only read again in full the files read longest ago, up to `reread_gb` of `[routine]` (20 GB by default), to find a file a disk damaged without changing its size or date; then list the damaged files and where a good copy is (a duplicate, a backup, the quarantine). Changes nothing 🔒; `clean --repair` restores them. [Safety](../reference-safety.md#a-file-damaged-by-the-disk) |
 | `--yes`, `-y` | With `--people`: do not ask. Without a terminal (no `-it`), `--people` needs it: nothing waits for an answer. |
 
 Paths are written the Windows way (`C:\Photos\Family`), as you see them in the Explorer. Every

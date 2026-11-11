@@ -51,6 +51,7 @@ docker run --rm -it `
 | Needs | The tool's folders (`/reports`, `/journal`, `/quarantine`, `/cache`), as `status` does; your folders for the audit; `-p 127.0.0.1:8088:8088` for the page. |
 | Writes | Nothing by itself; the audit run from the page writes its cache and its report, as `audit` does; the [albums' page](#your-albums-on-the-phone) changes `albums.json` alone. |
 | Undo | Nothing to undo; each step keeps its own undo. |
+| While it works | On every page, a button that saves turns grey with a spinner until the answer (a second click does nothing more); a grid being loaded shows grey tiles first, so it never jumps. After 10 s, a line says it is still working. Results and errors show at the bottom of the page: a result fades away, an error stays until you close it. |
 | With `mh` | `mh home`. |
 
 ## What the page shows
@@ -132,6 +133,18 @@ and its *Purge* link: the same tiles first, then a button stating how many files
 room it frees. It asks once there, `mh` runs [`purge`](purge.md) in its window, and the page comes
 back to say what the disk now says: the run gone, the room freed. With another `mh`, type the command.
 
+## Every setting
+
+*⚙ Settings*, in the menu on the left of every page, lists the settings the pages change: the
+language, the slideshow pace, the events grouping, the local AI, the disk space limits, what the
+audit analyses, the phones, the steps after an import, the folder roles, the sorting, the
+strictness of the reviews, the places, the event rules and the tags. Each row shows the value
+`config.toml` holds now (read from the disk at each opening, *default* when the file does not hold
+it), one line of what it does, and a link that opens the setting **on its own page**: nothing is
+changed on this list. The search field narrows the rows as you type (the text stays in the
+address: a reload keeps it). At the bottom, *In config.toml only* lists and counts the settings no
+page changes yet: edit `config.toml`, then start `mh` again. PC only: a phone does not open it.
+
 ## Fast paths and what shows the files first
 
 These verbs act on files they do not show; they stay, for large collections. Each says so in one line
@@ -208,6 +221,11 @@ opened the page:
   or reload the tab meanwhile: the step goes on, and the page, opened again, shows it again
   (*A step still runs*) until its end. Your browser asks once whether to notify you: say yes, and
   the end of the step is told by a notification while you are on another tab.
+  **Every page** of the home server shows it too, not only the home page: a chip in its top bar
+  (*⏳ Audit · 45 % · 3 min left*; nothing while no step runs) opens the same follow dialog,
+  the tab's title starts with the progress (*45 % · Audit — …*), so the tab bar is the loader
+  while you work elsewhere, and its end is said on the page shown (*Done: Audit.*), or by the
+  notification when the tab is hidden. A phone on the home Wi-Fi sees the chip too, read-only.
 - **Choices waiting on several pages** (burst series, near duplicates, folder pairs, unwanted
   photos, files gone, intruder files, the faces of `people`, `library`): the home page says how many wait (*Choices waiting to be
   applied: 3*), each page named with its count and a link to it, and **Apply all** runs one
@@ -283,11 +301,13 @@ the home network too: the phone already paired reloads its page and gets the sli
 
 | | |
 |---|---|
-| Who | A device on the same Wi-Fi **with the code**; 5 wrong codes close the pairing until `mh` stops. |
+| Who | A device on the same Wi-Fi **with the code**. After 3 wrong codes, **that device** waits 30 s (doubling at each new wrong code, 10 min at most): the others still pair. 20 wrong codes in a run close the pairing for all. The PC's card shows each attempt (*⚠ 5 wrong codes from 192.168.1.37 at 14:02*) with **Open pairing again** (a new code, the old one opens nothing; phones already paired stay paired; no restart of `mh`) and **It was me** (the line put away). Each device paired during the run is listed there with its time, and a message says so on the PC. |
+| Load | One device keeps 48 connections open at most and the home network's doors 128 together; beyond, the connection is closed at once and the PC's card says it (*⛔ 52 connections refused from 192.168.1.37 at 14:02*). A phone loading a page of tiles uses 6, a TV as many: they never meet these caps. A request has 5 s to send its first lines there (30 s for a body), a phone 10 s to set up HTTPS. The PC's own page is never capped. Under Docker Desktop every device may show one address (the gateway's): the 48 are then shared by all of them, enough for several phones and a TV at once. |
 | Where | The PC's private address only (`10.x`, `172.16–31.x`, `192.168.x`): never every interface, never the internet; `mh` opens no port on your router. |
 | How | HTTPS (`https://192.168.1.20:8088`), signed by a certificate authority `mh` makes on your PC: the phone installs it once (below); the code and the cookie never travel in clear. |
 | Kept | `C:\Users\<you>\media-hygiene\lan\` holds that authority and the page's certificate (`ca.key` never leaves it). Deleted, `mh` makes a new one: install it again on each phone. |
 | Next time | A paired phone opens the page directly. The PC's card lists the **phones paired for good** (Android, iPhone… and the date) with **Forget this phone**: its cookie opens nothing any more. `phones.json` (in the `lan` folder) keeps only a hash of each phone's token. |
+| Who came, and when | Each device on the card shows its **last seen** date and address, and its last 30 days: **pages opened** and **pictures viewed** (counts only, never which photos; `activity.json`, written every few minutes). Type a name (*Léa's phone*) then **Rename**. A phone **unseen for 90 days** is forgotten at the next start, and the card says which (TVs stay paired for good). **Forget every device** asks first in a window of the page (Esc or **Cancel** keep them all), then forgets all phones and TVs at once: each must type a code again. A device forgotten while it is connected is refused at its next request. If the `lan` folder is restored from an older copy, its list applies from then on; a new, empty folder means pairing again. |
 
 ### Once per phone: install the certificate
 

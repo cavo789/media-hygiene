@@ -19,7 +19,7 @@ from media_hygiene.i18n import _
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
-    from media_hygiene.config.tidy_find import StaleEntry
+    from media_hygiene.config.tidy_rules import StaleEntry
 
 
 def without_entries(text: str, entries: Sequence[StaleEntry]) -> str:

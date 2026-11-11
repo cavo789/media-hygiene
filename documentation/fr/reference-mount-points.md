@@ -27,7 +27,9 @@ L'outil tourne dans un conteneur : il ne voit que les dossiers que vous lui donn
   ([dépannage](reference-troubleshooting.md#dossiers-où-loutil-ne-peut-pas-écrire)).
 - **`/config` contient `config.toml`**, plus deux dossiers qui lui sont liés : `people/` (les
   visages de chaque personne nommée) et `events/` (les événements retenus, un fichier par année).
-  Rien d'autre n'y est jamais écrit.
+  Une exception : `.history/`, les versions précédentes de ces fichiers, gardées à chaque
+  enregistrement (les 20 dernières de chacun, 30 jours au plus ; `mh backup` les sauvegarde avec
+  le reste). Rien d'autre n'y est jamais écrit.
 - **Seule la quarantaine va par disque** : configuration, journal, rapports et cache restent
   uniques (un seul index trouve les doublons d'un disque à l'autre ; un seul journal note où est
   allé chaque fichier, et `undo` le suit). Gardez la quarantaine d'un disque montée jusqu'à ce que

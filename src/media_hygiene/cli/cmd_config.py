@@ -67,6 +67,16 @@ def config_command(  # pylint: disable=too-many-arguments  # one per option
             help=_("With tidy: tick the date_range rules with no photo too."),
         ),
     ] = False,
+    superseded: Annotated[
+        bool,
+        typer.Option(
+            "--superseded",
+            help=_(
+                "With tidy: tick the path rules whose files already sit in folders "
+                "you named too."
+            ),
+        ),
+    ] = False,
     upgrade: Annotated[
         bool,
         typer.Option(
@@ -104,6 +114,7 @@ def config_command(  # pylint: disable=too-many-arguments  # one per option
         action: `tidy`, or nothing.
         apply: `--apply`.
         dates: `--dates`.
+        superseded: `--superseded`.
         upgrade: `--upgrade`.
         convention: `--convention`.
         dry_run: `--dry-run`.
@@ -122,8 +133,12 @@ def config_command(  # pylint: disable=too-many-arguments  # one per option
     runtime = runtime_of(ctx)
     if action is ConfigAction.TIDY:
         from media_hygiene.cli.config_tidy_flow import show_tidy
+        from media_hygiene.config.tidy_rules import OptIn
 
-        show_tidy(runtime, apply=apply, dates=dates)
+        asked = {OptIn.DATES: dates, OptIn.SUPERSEDED: superseded}
+        show_tidy(
+            runtime, apply=apply, opt_in=frozenset(k for k, v in asked.items() if v)
+        )
         return
     if convention:
         from media_hygiene.cli.config_convention_flow import show_convention

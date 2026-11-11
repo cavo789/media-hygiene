@@ -40,6 +40,6 @@ def test_nothing_running_nothing_to_resume(tmp_path: Path) -> None:
 def test_the_page_resumes_and_shows_the_pace() -> None:
     """The home page follows a running step on load, with its stage, bar and rate."""
     page = home_page().decode()
-    assert "resumeStep();" in page
+    assert ".includes(step.state)) resumeStep(step.id);" in page
     assert "<progress max=" in page
     assert '"perSecond"' in page
