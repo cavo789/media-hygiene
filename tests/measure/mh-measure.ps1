@@ -3670,6 +3670,8 @@ print(f'46c. quarantines mounted: {len(folders)}; cache file present: {(runtime.
     Log "   46e. second start, page drawn, stopwatch, seconds (before: about 30): $drawn"
     Log "   46f. second start, safety card filled, stopwatch, seconds: $card"
     $ErrorActionPreference = $saved
+}
+
 # Read-only: times what runs between the double-click and the page (12 s by stopwatch, 2026-11-11).
 if (Wanted 47) {
     Log ""
