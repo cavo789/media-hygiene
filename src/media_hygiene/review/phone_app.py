@@ -4,8 +4,9 @@ r"""The routes of the page freeing a phone (0248): its state, previews, ticks, t
 the PC's file a tile shows, `GET /api/file` the decisions file as read from the disk;
 `POST /api/phone` ticks or unticks files, saved in one write, then read back;
 `POST /api/free` ("Delete from the phone") ends the page once the file read back holds
-files ticked, and `POST /api/stop` ends it with nothing deleted. A choice needs a JSON
-body: a page of another site cannot send one without the browser asking first.
+files ticked, and `POST /api/stop` ends it with nothing deleted; `/api/albums` the
+albums (0657). A choice needs a JSON body: a page of another site cannot send one
+without the browser asking first.
 """
 
 from __future__ import annotations
@@ -18,9 +19,12 @@ from pydantic import BaseModel, ConfigDict, Field
 from media_hygiene.review.decide_route import DecidingApp, decide_route
 from media_hygiene.review.ending import STOPPED, Ending
 from media_hygiene.review.phone_session import PhoneSession
+from media_hygiene.share.album_api import ALBUMS_PATH
+from media_hygiene.share.album_route import album_route
 
 if TYPE_CHECKING:
     from media_hygiene.review.http import Request, Response
+    from media_hygiene.share.album_api import AlbumDesk
 
 PHONE_DECIDE_PATH: Final = "/api/phone"
 FREE_PATH: Final = "/api/free"
@@ -56,10 +60,11 @@ class PhoneApp(DecidingApp[PhoneSession]):
 
     decide_path: ClassVar[str] = PHONE_DECIDE_PATH
     ending: Ending = field(default_factory=Ending)
+    albums: AlbumDesk | None = None  # Add to an album (0657)
 
     @override
     async def answer(self, request: Request) -> Response:
-        """Route a request from the loopback: "Delete from the phone", else the rest.
+        """Route a request from the loopback: "Delete from the phone", the albums...
 
         Args:
             request: The request.
@@ -69,6 +74,8 @@ class PhoneApp(DecidingApp[PhoneSession]):
         """
         if request.path == FREE_PATH and request.method == _POST:
             return decide_route(request, self.free)
+        if request.path == ALBUMS_PATH and self.albums is not None:
+            return await album_route(self.albums, request)
         return await DecidingApp.answer(self, request)
 
     @override

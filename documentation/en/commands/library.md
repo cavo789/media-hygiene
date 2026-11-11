@@ -109,7 +109,7 @@ helps: `*.mp4` or a regular expression are still searched as typed.
 - **The bar** has two lines that never move, whatever is picked or found: on top, where you are
   (the count, then each active filter as a chip — a word, the period, the path, the folder,
   *not yet*, 📷 — whose **✕** removes it and searches again; those that do not fit fold into
-  **+N**, a click lists them under the bar), **📺 On the TV** (with a TV paired), **Sort by** and the thumbnail size **S** (photos only), **M**,
+  **+N**, a click lists them under the bar), **▶ Slideshow ▾** (on this PC or on the TV), **Sort by** and the thumbnail size **S** (photos only), **M**,
   **L** (every word), kept for this browser; below, what to do with the files picked — greyed
   while none is: first **📂 Move to an event…** (filled: the main action), **🗓 Move to their month…**, **🔀 Invert**, two small panels, **🏷 Describe** (tag, date, place)
   and **📚 Album**, then, at the far right as on every page of tiles, **🗑 Put aside** in red and
@@ -507,9 +507,9 @@ click; the panel also offers **📺 Share on the TV** and **📨 Prepare for sen
   comes back.
 - **📺 Share on the TV** gives the command that shows the album typed, copied for you: stop the
   page, then `mh slideshow --album "Crete 2023" --lan` ([`slideshow`](slideshow.md)). To show
-  photos once, no album is needed: **📺 On the TV** in the bar (search opened from the home page)
-  shows the picked files, or every file found when nothing is picked (at most 3000), and opens
-  the remote.
+  photos once, no album is needed: **▶ Slideshow ▾** in the bar (search opened from the home page)
+  shows the picked files, or every file found when nothing is picked (at most 3000), **🖥 On this
+  PC** in a new tab or **📺 On the TV**, its remote opened.
 - **📨 Prepare for sending** gives the command that makes the album ready to send by mail:
   resized copies without the GPS position, a folder and a zip, `mh share --album "Crete 2023"`
   ([`share`](share.md)). With photos picked, no album to make first: they are added to the album

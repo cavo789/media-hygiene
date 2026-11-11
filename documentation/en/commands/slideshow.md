@@ -78,7 +78,7 @@ mh slideshow --folder "C:\Photos\2026 Holidays" --lan
 [`mh --lan`](home.md#from-a-phone-on-the-home-wi-fi-mh---lan) does for the home page: the window says the address of the screen and the
 phone's address and code; the PC's browser opens the remote with the same lines and a QR code.
 Windows may ask whether Docker Desktop may accept connections: allow it on **private** networks
-only. Without `--lan`, only the PC can open the show (useful to try it, or for plan B below).
+only. Without `--lan`, only the PC can open the show (useful to try it, or [on this PC](#no-tv-on-this-pc) below).
 
 Instead of a folder: `--search "noel 2025"` (the photos a [`library`](library.md) finds) or
 `--album "Crete 2023"` (an [album](library.md#put-photos-in-an-album) made in `library`,
@@ -104,11 +104,15 @@ every other one was shown. Photos only: no video, no undated photo, no screensho
 nothing set aside. Its two choices: the **length** (30 min, 1 h, 2 h: 1 h at 8 s a photo is about
 450 photos) and the **years** (everything, the last 5 years, or a period). Each tap is a new show.
 
-**From any page of tiles, no album needed**: in [`library`](library.md)
-opened from the home page, **📺 On the TV** in the bar shows the photos and videos picked, or,
-nothing picked, every file the page shows (the search's result, the folder's files), at most
-3000 (more: narrow the search). The remote opens at once in a new tab; a show already running is
-replaced (the page says so) and the TV paired stays paired. The selection lasts as long as the
+**From any page of tiles, no album needed**: in [`library`](library.md) and the burst
+series review opened from the home page (and `/person`, the albums' tiles), **▶ Slideshow ▾** in the
+bar shows the photos and videos picked, or, nothing picked, every file the page shows (the search's
+result, the folder's files), at most 3000 (more: narrow the search). Its two entries say how many:
+**🖥 On this PC · 120 photos** opens the [screen in a new tab](#no-tv-on-this-pc), **📺 On the
+TV** (greyed, with a *No TV paired: how* line, until a TV is paired) opens the remote in a new
+tab. The one used last comes first. On a paired phone the menu is not shown: the phone keeps its
+big buttons. With the TV, a show already running is
+replaced (the remote says so once: "replaced by a selection of N files") and the TV paired stays paired. The selection lasts as long as the
 show: a TV reloaded loses nothing, stopping `mh` ends it.
 
 ### On the TV, once
@@ -156,7 +160,9 @@ the steps are the [home page's](home.md#once-per-phone-install-the-certificate).
   (*Not on the TV: its format (hevc) does not play there.*) and passed over.
 - **The event's name**: at each new event (a new folder, in the show's order), the TV shows a
   title card for 3 seconds (one of its photos blurred, the name large, the month and the place
-  under it), then a banner on its first photo for a few seconds. The name is the folder's
+  under it), then a banner on its first photo for a few seconds. The card does not count in the
+  photo's time (it stays its full interval after it); a pause holds through the card, and
+  *Next* skips it. The name is the folder's
   (`2026\2026-10\Walk in Valkenburg` → *Walk in Valkenburg*: years, months, dates and camera
   folders are passed over); the month is the photos' date taken; the place is one of yours
   (`places`), else the nearest town of their GPS, found offline (with its country when it is not your
@@ -194,12 +200,28 @@ The TV's bookmark names the PC's address on your home network and the port. The 
 the router's page, **reserve** the PC's address (often *DHCP › Static lease* or *Address
 reservation*, by the PC's MAC address). The tool does not do it for you.
 
-## Plan B: casting a tab
+## No TV: on this PC
 
-If neither the Chromecast's browser nor the TV's opens the screen: start without `--lan`, open
-`http://127.0.0.1:8088/screen` in Chrome or Edge on the PC, then **Cast** that tab to the
-Chromecast from the browser's menu. The remote then works on the PC itself, at
-`http://127.0.0.1:8088/`.
+No TV at hand (the office, a trip, a laptop)? **▶ Slideshow ▾ → 🖥 On this PC** in the bar of a
+page of tiles, or **🖥 On this PC** in the form of *Show an album on the TV* (or *Show your photos
+on the TV*) on the home page, starts the show and opens it here. By hand: the screen is a web page, open
+`http://127.0.0.1:8088/screen?here=1` in a new tab of the PC's browser. Opened from the PC itself,
+it shows the show at once, **without a code** (a screen from the home network still asks its
+code). Click the photo for full screen (a browser asks for that click), then the keyboard is the
+remote:
+
+| Key | What it does |
+|---|---|
+| ← / → | Previous / next photo |
+| Space | Pause / play |
+| Esc | Leaves full screen |
+| S | Stops the show (and closes the tab) |
+
+Move the mouse: a small bar shows the same buttons (◀ ⏯ ▶ ⛶ ✕), and hides after 3 seconds still.
+Same show, title cards and videos as on a TV; a paired phone still drives it.
+
+To watch it on a TV after all, **Cast** that tab to the Chromecast from Chrome's or Edge's menu
+(when neither the Chromecast's browser nor the TV's opens the screen).
 
 ## Settings
 

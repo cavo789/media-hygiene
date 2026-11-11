@@ -34,6 +34,7 @@
   var card = document.getElementById("card");
   var banner = document.getElementById("banner");
   var told = 0;
+  var cardKey = null;
   var tellTimer = null;
 
   front.photo.className = "hidden";
@@ -193,8 +194,14 @@
       return;
     }
     if (chapter.number === told) {
+      // Next on the remote skips the card (0654); the server's timer waited for it only once.
+      if (cardKey !== answer.key && card.className === "") {
+        card.className = "hidden";
+        banner.className = "";
+      }
       return;
     }
+    cardKey = answer.key;
     told = chapter.number;
     hideTelling();
     tell(chapter, answer.photo || answer.next);
@@ -219,6 +226,9 @@
   }
 
   function showAnswer(answer) {
+    if (hereAnswer) {
+      hereAnswer(answer);  // the PC's own tab (0659): its bar follows the show
+    }
     if (answer.ended) {
       over();
       return;

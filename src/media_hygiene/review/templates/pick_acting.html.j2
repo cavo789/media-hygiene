@@ -4,8 +4,8 @@
    only) picks every file found. The page adds its own fields after it, in the bar; a
    page where a pick means something else names its two actions (`pick_add`,
    `pick_remove`). Order (0542): the page's most used action first (`pick_first`, a template
-   holding a `primary` button), *Set aside* last, red (`danger`), apart. 📺 *On the TV* (0454, `tv_here`: a page served by the home server)
-   sends the files picked, or every file the page shows, to its slideshow. #}
+   holding a `primary` button), *Set aside* last, red (`danger`), apart. ▶ *Slideshow* ▾ (0660, `tv_here`: a page served by the home server)
+   shows the files picked, or every file the page shows, on this PC or on the TV. #}
 <span id="lead"><span id="status" role="status"></span></span>
 <span id="acting" hidden>
   <button id="unpick" class="plain" type="button" title="{{ _('Pick none') }}" aria-label="{{ _('Pick none') }}">✕</button>
@@ -16,11 +16,6 @@
   <button id="invert" class="plain" type="button" title="{{ _('Pick the others: the ones picked are left (I)') }}">🔀 {{ _("Invert the picking") }}</button>
   <button id="setAside" class="danger" type="button" title="{{ pick_add_title | default(_('Set aside the picked files (Delete)')) }}">{{ pick_add | default("🗑 " + _("Put aside")) }}</button>
 </span>
-{% if tv_here | default(false) %}
-<button id="tvSend" class="plain" type="button" hidden data-path="{{ albums_path }}" data-paired="{{ tv_paired_path | default('') }}"
-        data-replaced="{{ _('A show was running on the TV: replaced by this one.') }}"
-        data-sending="{{ _('Starting the show on the TV…') }}"
-        title="{{ _('Show the files picked on the TV; nothing picked: every file of the page') }}">📺 {{ _("On the TV") }}</button>
-{% endif %}
+{% if tv_here | default(false) %}{% include "slideshow_menu.html.j2" %}{% endif %}
 <span id="chosen" role="status"></span>
 {% include "apply_now.html.j2" %}

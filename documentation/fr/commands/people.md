@@ -201,7 +201,10 @@ personne de côté* dans un nouvel onglet, sur cette photo. Vous pouvez aussi l'
    [plus haut](#retirer-toutes-les-photos-de-quelquun) : la page people montrera les photos qui
    lui ressemblent. Si la page qui la sert a été ouverte par `mh` depuis l'accueil,
    **Appliquer maintenant** dans la barre lance `clean --decisions` comme sur cette page.
-4. Une photo de la grille montre la personne sous un autre angle ? Son **👤** (à côté de son nom,
+4. **📚 Album ▾** dans la barre ajoute les photos choisies à un album et, la page servie par la
+   page d'accueil, **▶ Diaporama ▾** les montre sur ce PC ou sur la télé (rien de choisi : toutes
+   les photos de la grille), comme dans [`library`](library.md).
+5. Une photo de la grille montre la personne sous un autre angle ? Son **👤** (à côté de son nom,
    ou dans sa grande vue) rouvre la page sur cette photo, dans un nouvel onglet.
 
 **Pas de visage sur la photo ?** Un visage penché, couché ou flou échappe souvent à l'audit, qui

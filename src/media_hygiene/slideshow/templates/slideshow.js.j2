@@ -64,9 +64,22 @@
     tellEvent(show);
     placePairing(show.tvWaiting);
     ended(show.ended);
+    toldReplaced(show);
     window.dispatchEvent(new CustomEvent("mh-show", { detail: show }));
     const tile = tiles.get(current);
     if (tile) tile.scrollIntoView({ block: "nearest" });
+  }
+
+  // A selection sent from a page replaced a running show (0655): said once per show, here.
+  function toldReplaced(show) {
+    const line = document.getElementById("replaced");
+    let seen = null;
+    try { seen = window.sessionStorage.getItem("mh-replaced"); } catch { seen = null; }
+    const mark = show.replaced && show.replaced.files ? String(show.replaced.show) : "";
+    if (!mark || seen === mark) { if (seen !== mark) line.hidden = true; return; }
+    line.textContent = plural(TEXTS.replaced, show.replaced.files);
+    line.hidden = false;
+    try { window.sessionStorage.setItem("mh-replaced", mark); } catch { /* shown, not remembered */ }
   }
 
   // Stopped from a phone (0633): every control off, the way to another show instead.

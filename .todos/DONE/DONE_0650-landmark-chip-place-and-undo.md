@@ -34,3 +34,7 @@ not offered as a place, and `mh undo` of it leaves the `spots` row stale.
 - [ ] A 📍 *chip* (clickable, beside the tags) instead of the 📍 line — or decide the line is enough
 - [ ] Confirmed name offered as a place (`[[classify.places]]`, circle), never silent
 - [ ] Headless Chromium check of the dialog; `docs_screenshots`
+
+## Inbox (2026-11-08)
+
+Stale: the rest (chip, place offer, headless Chromium check) was done by 0651; only `docs_screenshots` remains, a general run. Closed.

@@ -15,6 +15,8 @@
   #picked { display: inline-block; min-width: 9ch; white-space: nowrap; }
   #bar > #moveBar { order: 4; }
   #bar > #albumBar, #bar > #albumQuick { order: 5; }
+  /* ▶ Slideshow ▾ (0660) on line 1: its word only where line 1 has room for it. */
+  @media (max-width: 1600px) { #showOpen .showWord { display: none; } }
   #acting > #setAside { order: 6; margin-left: auto; }
   #bar > #applyBar { order: 7; position: relative; }
   #bar #applyNow[hidden] { display: inline-block; opacity: .45; pointer-events: none; }

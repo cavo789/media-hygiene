@@ -1,13 +1,10 @@
 """The slideshow served by the home server itself, under `/slideshow/` (0417).
 
-*Show an album on the TV*, from the PC's home page or a paired phone (0444), used to end
-the home server so that `mh` ran `slideshow --album <name> --lan`: the phone waited for
-the new server, the TV paired again at every show. Now `GET /slideshow/album/<name>`
-starts the album's show here and leads to its remote at once; the TVs (`Screens`) and
+`GET /slideshow/album/<name>` (`/folder/<path>`: 0598) starts the show here and leads to
+its remote at once (`?here=1`: this PC's screen, 0660); the TVs (`Screens`) and
 the pages waiting (`Changes`) belong to the home server, so a TV paired once stays
-paired while it runs, and a new show reaches it by itself (its version is above the
-last one's). The TV's plain door: `/screen`, `/` its welcome page (0614). One show at a
-time; `/slideshow/folder/<path>`: 0598.
+paired while it runs, and a new show reaches it by itself (its version above the last
+one's). One show at a time. The TV's plain door: `/screen`, `/` its welcome page (0614).
 """
 
 from __future__ import annotations
@@ -30,7 +27,7 @@ from media_hygiene.services.slideshow import shown_slides
 from media_hygiene.services.slideshow_build import Serving, show_app
 from media_hygiene.services.slideshow_choices import Chooser
 from media_hygiene.services.slideshow_pick import Pick
-from media_hygiene.services.slideshow_selection import any_tv, selected, why
+from media_hygiene.services.slideshow_selection import any_tv, selected, started_at, why
 from media_hygiene.slideshow.desk import Changes, Desk
 from media_hygiene.slideshow.door import Door, Visitor
 from media_hygiene.slideshow.films import show_films
@@ -93,9 +90,11 @@ class SlideshowHere:
                 HTTPStatus.SEE_OTHER, headers=(f"Location: {SLIDESHOW_PAGE}",)
             )
         if request.method == "GET" and path.startswith(_ALBUM_PATH):
-            return self._start(Pick(album=unquote(path.removeprefix(_ALBUM_PATH))))
+            named = unquote(path.removeprefix(_ALBUM_PATH))
+            return self._start(Pick(album=named), request.query)
         if request.method == "GET" and path.startswith(_FOLDER_PATH):
-            return self._start(Pick(folder=unquote(path.removeprefix(_FOLDER_PATH))))
+            named = unquote(path.removeprefix(_FOLDER_PATH))
+            return self._start(Pick(folder=named), request.query)
         chosen = Chooser(self._opened, self._begin).answer(  # a folder, a month: 0455
             dataclasses.replace(request, path=path)
         )
@@ -116,8 +115,7 @@ class SlideshowHere:
             request: A request of the plain door.
 
         Returns:
-            The TV's page (one that waits while nothing is shown), its show, its
-            pictures; the welcome page at `/`.
+            The TV's page (waiting while nothing is shown), its show; `/` welcome.
         """
         title = self._fresh.runtime().settings.home.family_title
         if self.app is not None:
@@ -132,20 +130,22 @@ class SlideshowHere:
         )
         return Response(HTTPStatus.OK, page.encode(), ContentType.HTML)
 
-    def _start(self, pick: Pick) -> Response:
+    def _start(self, pick: Pick, query: str) -> Response:
         """Start an album's or a folder's show, in place of the one shown; its remote.
 
         Args:
             pick: The album's name, as saved, or the folder as the Explorer shows it.
+            query: The request's; `here=1`: to this PC's screen (0660).
 
         Returns:
-            303 to the remote; 409 with the reason when there is nothing to show.
+            303 to the remote or the screen; 409 with the reason when nothing to show.
         """
         try:
             self._begin(pick)
         except MediaHygieneError as exc:
             return Response(HTTPStatus.CONFLICT, why(exc).encode())
-        return Response(HTTPStatus.SEE_OTHER, headers=(f"Location: {SLIDESHOW_PAGE}",))
+        location = f"Location: {started_at(query)}"
+        return Response(HTTPStatus.SEE_OTHER, headers=(location,))
 
     def _begin(self, pick: Pick) -> bool:
         """Start a show, in place of the one shown, on the server's own thread.
@@ -168,7 +168,8 @@ class SlideshowHere:
             show.version = self.app.desk.show.version + 1
         if not screens.films:
             show_films(show, films=False)
-        desk = Desk(show, screens, self._changes)
+        told = (len(show.slides), show.version) if replaced and pick.files else (0, 0)
+        desk = Desk(show, screens, self._changes, told)  # the remote says it (0655)
         serving = Serving(
             search, self._server.executor, self.door, SLIDESHOW_PAGE, kept=True
         )
@@ -178,8 +179,7 @@ class SlideshowHere:
 
     def _opened(self) -> tuple[Runtime, SearchIndex]:
         """The settings now, and the index opened for them."""
-        runtime = self._fresh.runtime()
-        return runtime, self._index(runtime)
+        return (runtime := self._fresh.runtime()), self._index(runtime)
 
     def _index(self, runtime: Runtime) -> SearchIndex:
         """The index, opened once per settings.

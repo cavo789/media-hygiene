@@ -44,3 +44,7 @@ Key L in the large view of `library`, `POST /api/landmark` (`search/landmark_des
 - [ ] 📍 chip beside the tags (tile, large view), searchable; slideshow corner
 - [ ] `mh undo` of a landmark run refreshes the `spots` row (today stays `user` until the next change of stamp/position)
 - [ ] Headless Chromium check of the dialog (skill `photo-picking-pages`); `docs_screenshots`
+
+## Inbox (2026-11-08)
+
+Stale: the rest (chip, place offer, headless Chromium check) was done by 0651; only `docs_screenshots` remains, a general run. Closed.

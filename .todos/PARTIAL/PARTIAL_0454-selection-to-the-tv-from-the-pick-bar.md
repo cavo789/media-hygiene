@@ -52,7 +52,9 @@ the index is refused (never a path from the request).
 ### Not done
 - The button on the review pages, `/person` and the phone page (`review_kinds.py`, `reviewing.py`, person).
   **Reason:** not wired in this run; the server side (`action: "tv"`) is ready for them.
+  → Wire it everywhere: TODO 0655 (2026-11-08).
 - The "replaced" line is shown in the page's bar, not on the remote (deviation).
   **Reason:** simpler; move it to the remote if the maintainer prefers.
+  → Move it to the remote: TODO 0655 (2026-11-08).
 - "Nothing picked → the page's files" not tested in a browser; `docs_screenshots` to run (bar captures stale).
   **Reason:** no Chromium run here; captures are never regenerated unasked.

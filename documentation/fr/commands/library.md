@@ -113,7 +113,7 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
 - **La barre** a deux lignes qui ne bougent jamais, quoi qu'on choisisse ou trouve : en haut, où
   vous en êtes (le nombre, puis chaque filtre actif en pastille — un mot, la période, le chemin,
   le dossier, *pas encore*, 📷 — dont la **✕** le retire et relance la recherche ; celles qui
-  ne tiennent pas se replient en **+N**, un clic les liste sous la barre), **📺 Sur la télé** (avec une télé appairée), **Trier par** et la taille des vignettes **S**
+  ne tiennent pas se replient en **+N**, un clic les liste sous la barre), **▶ Diaporama ▾** (sur ce PC ou sur la télé), **Trier par** et la taille des vignettes **S**
   (les photos seules), **M**, **L** (tous les mots), gardée pour ce navigateur ; en dessous, que
   faire des fichiers choisis — grisé tant qu'aucun ne l'est : d'abord
   **📂 Déplacer vers un événement…** (plein : l'action principale), **🗓 Déplacer vers leur mois…**, **🔀 Inverser**, deux petits panneaux, **🏷 Décrire** (étiquette,
@@ -545,9 +545,10 @@ aussi **📺 Partager sur la télé** et **📨 Préparer l'envoi**.
   comme manquante, jusqu'à ce qu'elle revienne.
 - **📺 Partager sur la télé** donne la commande qui montre l'album tapé, copiée pour vous :
   arrêtez la page, puis `mh slideshow --album "Crète 2023" --lan` ([`slideshow`](slideshow.md)).
-  Pour montrer des photos une fois, pas besoin d'album : **📺 Sur la télé** dans la barre (search
+  Pour montrer des photos une fois, pas besoin d'album : **▶ Diaporama ▾** dans la barre (search
   ouvert depuis la page d'accueil) montre les fichiers choisis, ou tous ceux trouvés quand rien
-  n'est choisi (3000 au plus), et ouvre la télécommande.
+  n'est choisi (3000 au plus), **🖥 Sur ce PC** dans un nouvel onglet ou **📺 Sur la télé**,
+  télécommande ouverte.
 - **📨 Préparer pour l'envoi** donne la commande qui prépare l'album pour un mail : des copies
   réduites sans la position GPS, un dossier et un zip, `mh share --album "Crète 2023"`
   ([`share`](share.md)). Avec des photos choisies, pas d'album à créer avant : elles sont

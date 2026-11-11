@@ -461,3 +461,28 @@ def test_the_slideshow_s_phone_door_is_tls_when_lan_is_mounted(
     assert access.secure
     assert access.pair_url.startswith(f"https://{_LAN_HOST}/pair/")
     assert secure_door(_PC_ADDRESS) is not None
+
+
+@pytest.mark.parametrize("host", [f"127.0.0.1:{_TV_PORT}", f"localhost:{_TV_PORT}"])
+def test_the_screen_on_this_pc_shows_the_show_without_a_code(
+    app: SlideshowApp, host: str
+) -> None:
+    """0659: by the PC's door (Docker Desktop's gateway naming the loopback), no code.
+
+    The same screen from the home network gets its token and its code, as before.
+    """
+    pc = Request("GET", "/screen", {"host": host}, door=SocketDoor.PC, query="here=1")
+    page = _ask(app, pc)
+    assert page.body == _SCREEN
+    assert not any("Set-Cookie" in line for line in page.headers)
+    wait = Request("GET", "/api/wait/0", {"host": host}, door=SocketDoor.PC)
+    assert json.loads(_ask(app, wait).body)["code"] == ""
+    played = _ask(app, _request("/api/show", sender=_PC, body={"action": "play"}))
+    assert json.loads(played.body)["playing"] is True
+    stopped = _ask(app, _request("/api/show", sender=_PC, body={"action": "stop"}))
+    assert json.loads(stopped.body)["ended"] is True
+    lan = _ask(app, _request("/screen"))
+    tv = _Sender(_LAN_HOST, f"{SCREEN_COOKIE}={_screen_token(lan)}")
+    assert json.loads(_ask(app, _request("/api/wait/0", sender=tv)).body)["code"]
+    refused = _ask(app, _request("/api/show", sender=tv, body={"action": "next"}))
+    assert refused.status is HTTPStatus.FORBIDDEN  # only the PC's keys drive it

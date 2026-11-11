@@ -842,8 +842,11 @@ msgid ""
 " Low values only catch repeats of the same frame. 0 disables the rule."
 msgstr ""
 
-msgid "A show was running on the TV: replaced by this one."
-msgstr ""
+#, python-brace-format
+msgid "A show was running on the TV: replaced by a selection of {n} file."
+msgid_plural "A show was running on the TV: replaced by a selection of {n} files."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "A step is running in the window of mh: wait for its end."
 msgstr ""
@@ -1871,6 +1874,11 @@ msgid ""
 "Click the map or drag the pin where these photos were taken, then save: "
 "'xmp' writes that position into the sidecars of the photos without GPS of"
 " this folder and of its subfolders ([tags] xmp_folder_gps = true)."
+msgstr ""
+
+msgid ""
+"Click the photo for full screen. Keys: ← → previous and next, Space pause"
+" and play, Esc leaves full screen, S stops the show."
 msgstr ""
 
 msgid "Click: the files of this folder"
@@ -3682,6 +3690,9 @@ msgstr ""
 msgid "From:"
 msgstr ""
 
+msgid "Full screen (Esc leaves it)"
+msgstr ""
+
 msgid "GB"
 msgstr ""
 
@@ -5256,6 +5267,9 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
+msgid "Next (→)"
+msgstr ""
+
 msgid "Next audit: a few seconds, the files checked are taken from the cache."
 msgstr ""
 
@@ -5313,6 +5327,9 @@ msgid "No DCIM folder on {name}: no photo to copy."
 msgstr ""
 
 msgid "No Events tab here."
+msgstr ""
+
+msgid "No TV paired:"
 msgstr ""
 
 msgid "No TV shows this code: type the code the TV shows now."
@@ -6355,6 +6372,9 @@ msgstr ""
 msgid "On the phone, everything is read-only: albums change on the PC."
 msgstr ""
 
+msgid "On this PC"
+msgstr ""
+
 msgid "On this page"
 msgstr ""
 
@@ -6833,6 +6853,9 @@ msgstr ""
 msgid "Path contains: invalid regular expression ({error})."
 msgstr ""
 
+msgid "Pause (Space)"
+msgstr ""
+
 msgid "Pause while I talk"
 msgstr ""
 
@@ -7045,6 +7068,9 @@ msgstr ""
 msgid "Planned: mh push is coming."
 msgstr ""
 
+msgid "Play (Space)"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "Please report it at {url}, with the version ({version}), the command "
@@ -7121,6 +7147,9 @@ msgid "Previews now: {size}."
 msgstr ""
 
 msgid "Previous"
+msgstr ""
+
+msgid "Previous (←)"
 msgstr ""
 
 msgid "Previous and next pages"
@@ -8292,6 +8321,9 @@ msgstr ""
 msgid "Send to another folder (O)"
 msgstr ""
 
+msgid "Sent to the TV: its remote opens."
+msgstr ""
+
 #, python-brace-format
 msgid "Sent: the step starts in {window}…"
 msgstr ""
@@ -8556,7 +8588,9 @@ msgid ""
 "search or an album."
 msgstr ""
 
-msgid "Show the files picked on the TV; nothing picked: every file of the page"
+msgid ""
+"Show the files picked as a slideshow, on this PC or on the TV; nothing "
+"picked: every file of the page"
 msgstr ""
 
 msgid "Show the files picked on the TV; nothing picked: every file of this event"
@@ -8820,6 +8854,9 @@ msgstr ""
 msgid "Starting the show on the TV…"
 msgstr ""
 
+msgid "Starting the show on this PC…"
+msgstr ""
+
 msgid "State"
 msgstr ""
 
@@ -8878,6 +8915,9 @@ msgid "Stop sharing"
 msgstr ""
 
 msgid "Stop the audit"
+msgstr ""
+
+msgid "Stop the show (S)"
 msgstr ""
 
 msgid ""
@@ -10310,6 +10350,9 @@ msgstr ""
 msgid "The show did not start: look at the window of mh on the PC."
 msgstr ""
 
+msgid "The show starts in the new tab: click the photo there for full screen."
+msgstr ""
+
 msgid "The show starts on the PC…"
 msgstr ""
 
@@ -10318,6 +10361,11 @@ msgid "The slideshow failed (error {status})."
 msgstr ""
 
 msgid "The slideshow is not running any more: start it again on the PC."
+msgstr ""
+
+msgid ""
+"The slideshow is over. Choose another one on the PC: ▶ Slideshow in the "
+"bar of a page of photos, or the home page."
 msgstr ""
 
 msgid ""
@@ -12668,6 +12716,9 @@ msgstr ""
 msgid "home page start"
 msgstr ""
 
+msgid "how"
+msgstr ""
+
 msgid "iPhone, iPad"
 msgstr ""
 
@@ -13640,6 +13691,9 @@ msgid ""
 msgstr ""
 
 msgid "screenshot or document"
+msgstr ""
+
+msgid "see the slideshow chapter."
 msgstr ""
 
 msgid "seen by the model"
@@ -17300,6 +17354,9 @@ msgid ""
 "shots there while the next steps run."
 msgstr ""
 
+msgid "📺 On the TV"
+msgstr ""
+
 #, python-brace-format
 msgid "📺 Your slideshow \"{title}\" is ready: {command}"
 msgstr ""
@@ -17370,6 +17427,9 @@ msgid ""
 " both names, deleting one name frees nothing while the other remains, and"
 " a backup tool may count it twice. 'undo' makes each name an independent "
 "file again."
+msgstr ""
+
+msgid "🖥 On this PC"
 msgstr ""
 
 #, python-brace-format

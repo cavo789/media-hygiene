@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import sqlite3
 from contextlib import closing
+from dataclasses import replace
 from pathlib import Path, PurePath
 from typing import TYPE_CHECKING, Final
 
@@ -161,3 +162,111 @@ def test_without_places_home_is_the_country_most_photos_lie_in(tmp_path: Path) -
     places = [slide.chapter.place for slide in slides if slide.chapter]
     assert places[0] == "Valkenburg, Netherlands"
     assert places[2] == "Brussels"
+
+
+class _Clock:
+    """A clock the test moves by hand."""
+
+    def __init__(self) -> None:
+        self.now = 0.0
+
+    def __call__(self) -> float:
+        return self.now
+
+
+def _two_events(clock: _Clock) -> Show:
+    first, second = Chapter(1, "Walk"), Chapter(2, "Beach")
+    slides = (
+        Slide(1, chapter=first),
+        Slide(2, chapter=first),
+        Slide(3, chapter=second),
+        Slide(4, chapter=second),
+    )
+    return Show(slides, Timing(10, clock))
+
+
+def test_the_first_photo_of_an_event_waits_for_its_card() -> None:
+    """The interval starts when the card hides: 3 s of card, then the full 10 s."""
+    clock = _Clock()
+    show = _two_events(clock)
+    show.play(playing=True)
+    show.move(1)  # same event: no card
+    assert show.wait_seconds() == pytest.approx(10)
+    show.move(1)  # the second event: a card of 3 s
+    assert show.wait_seconds() == pytest.approx(13)
+    clock.now = 12.9
+    assert show.wait_seconds() == pytest.approx(0.1)
+    show.move(1)  # same event again
+    assert show.wait_seconds() == pytest.approx(10)
+
+
+def test_a_pause_through_the_card_resumes_after_it() -> None:
+    """Pause then play during the card: the interval still starts at the card's end."""
+    clock = _Clock()
+    show = _two_events(clock)
+    show.play(playing=True)
+    show.move(1)
+    show.move(1)
+    show.play(playing=False)
+    assert show.wait_seconds() is None
+    clock.now = 1.0
+    show.play(playing=True)
+    assert show.wait_seconds() == pytest.approx(12)
+    show.play(playing=False)
+    clock.now = 50.0
+    show.play(playing=True)
+    assert show.wait_seconds() == pytest.approx(10)
+
+
+def test_next_skips_the_card_and_what_is_not_told_has_none() -> None:
+    """Next during the card shows the next photo for its own interval."""
+    clock = _Clock()
+    show = _two_events(clock)
+    show.play(playing=True)
+    show.move(1)
+    show.move(1)
+    show.move(1)  # next during the card: the second photo of the event
+    assert show.wait_seconds() == pytest.approx(10)
+    show.timing = replace(show.timing, card=0)
+    show.move(-1)
+    assert show.wait_seconds() == pytest.approx(10)
+    assert Timing(5).card_for(None, Slide(1, chapter=Chapter(3))) == 0
+
+
+def test_telling_on_the_phone_only_leaves_no_card_to_wait_for() -> None:
+    """The phone's choice reaches the timer: no card on the TV, no seconds held back."""
+    clock = _Clock()
+    desk = Desk(_two_events(clock), Screens(), Changes())
+    desk.ask(json.dumps({"action": "tell", "where": "phone"}).encode())
+    desk.show.play(playing=True)
+    desk.show.move(1)
+    desk.show.move(1)
+    assert desk.show.wait_seconds() == pytest.approx(10)
+    desk.ask(json.dumps({"action": "tell", "where": "tv"}).encode())
+    desk.show.move(1)
+    desk.show.move(-1)
+    assert desk.show.wait_seconds() == pytest.approx(10)
+
+
+def test_the_very_first_photo_also_waits_for_its_card() -> None:
+    """A show just joined, played later: its first card counts, then the full 10 s."""
+    clock = _Clock()
+    show = _two_events(clock)
+    clock.now = 100.0  # the TV joined, the show paused until now
+    show.play(playing=True)
+    assert show.wait_seconds() == pytest.approx(13)
+    clock.now = 112.9
+    assert show.wait_seconds() == pytest.approx(0.1)
+
+
+def test_pause_and_next_during_the_first_card_behave_as_for_the_others() -> None:
+    """Pause through the first card resumes after it; next shows its own interval."""
+    clock = _Clock()
+    show = _two_events(clock)
+    show.play(playing=True)
+    show.play(playing=False)
+    clock.now = 1.0
+    show.play(playing=True)
+    assert show.wait_seconds() == pytest.approx(12)
+    show.move(1)  # next during the card: same event, no card
+    assert show.wait_seconds() == pytest.approx(10)

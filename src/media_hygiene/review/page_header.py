@@ -1,10 +1,8 @@
 """The bar on top of every page served but the home page (`page_header.html.j2`, 0268).
 
-"Media Hygiene", the avatar and the page's name; its chapter of the documentation in the
-page's language and in the other one (the catalog's `doc` of the action that opens the
-page); "Back to the home page" only when `mh` opened the page from the home page (it
-sets `MEDIA_HYGIENE_LAUNCHER_STEPS` for those runs alone, the phone's page too, 0332):
-elsewhere, ending the page would bring nothing back.
+"Media Hygiene", the avatar, the page's name; its chapter in both languages (the
+catalog's `doc` of the action opening it); "Back to the home page" only when `mh` opened
+the page from there (`MEDIA_HYGIENE_LAUNCHER_STEPS`, the phone's page too, 0332).
 """
 
 from __future__ import annotations
@@ -33,6 +31,7 @@ if TYPE_CHECKING:
 
 # What an album is, what the albums' page does (0349): the chapter of its bar (0342).
 ALBUMS_DOC: Final = Doc("reference-albums/")
+SLIDESHOW_DOC: Final = Doc("commands/slideshow/")  # ▶ Slideshow's *how* (0660)
 # Each page's template, and the action of the catalog that opens it: its chapter; or
 # the chapter itself, for a page no action opens (the albums, a home page group, 0342).
 PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
@@ -126,6 +125,7 @@ class PageHeader:  # pylint: disable=too-many-instance-attributes  # one per lin
     shell: Shell | None = None  # in the home page's frame (0491)
     folders: ShellFolders | None = None  # its *Your folders* (0579)
     albums: str = ""  # the chapter of the album panel's *Help*
+    slideshow: str = ""  # ▶ Slideshow's *No TV paired: how* (0660)
 
     @property
     def twin_lang(self) -> str:
@@ -161,6 +161,7 @@ def page_header(template: str) -> PageHeader:
     return PageHeader(
         doc=served_url(doc, here),
         albums=served_url(ALBUMS_DOC, here),
+        slideshow=served_url(SLIDESHOW_DOC, here),
         twin=served_url(doc, twin),
         twin_locale=twin,
         twin_label=_TWIN_LABELS[twin],

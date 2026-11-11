@@ -19,6 +19,7 @@ from media_hygiene.review.apply_api import ApplyOffer, ApplyStep, applying_door
 from media_hygiene.review.http import Request, Response
 from media_hygiene.services import people_models
 from media_hygiene.services.page_undo import PageUndo
+from media_hygiene.share.album_route import WithAlbums
 from tests.support.cli import run
 from tests.support.faces import face_of
 from tests.support.json_calls import JSON, answer, call
@@ -86,10 +87,15 @@ def person(
     """The `/person` of the people page, with a worker pool of its own."""
     assert run(cli, "people").exit_code == 0
     assert apps
-    found = doors[-1].person
+    found = _unwrapped(doors[-1].person)
     assert isinstance(found, PersonApp)
     with ThreadPoolExecutor(2) as executor:
         yield dataclasses.replace(found, executor=executor)
+
+
+def _unwrapped(person: object) -> object:
+    """The person page inside its albums route (0657)."""
+    return person.app if isinstance(person, WithAlbums) else person
 
 
 def photo(app: PersonApp, typed: str) -> dict[str, object]:
@@ -213,7 +219,7 @@ def test_apply_now_shows_when_the_page_serving_it_was_opened_from_home(
     door = with_person(
         applying_door(Nothing(), offer), make_runtime(locations), thread_pool()
     )
-    person = door.person
+    person = _unwrapped(door.person)
     assert isinstance(person, PersonApp)
     assert b'id="applyNow"' in call(person, "GET /person").body
     refused = call(person, "POST /person/api/apply", {})
@@ -225,11 +231,10 @@ def test_apply_now_shows_when_the_page_serving_it_was_opened_from_home(
         make_runtime(locations),
         thread_pool(),
     )
-    assert isinstance(alone.person, PersonApp)
-    assert b'id="applyNow"' not in call(alone.person, "GET /person").body
-    assert (
-        call(alone.person, "POST /person/api/apply", {}).status is HTTPStatus.NOT_FOUND
-    )
+    bare = _unwrapped(alone.person)
+    assert isinstance(bare, PersonApp)
+    assert b'id="applyNow"' not in call(bare, "GET /person").body
+    assert call(bare, "POST /person/api/apply", {}).status is HTTPStatus.NOT_FOUND
 
 
 def test_the_person_page_undoes_the_run_of_its_host(locations: Locations) -> None:
@@ -239,7 +244,7 @@ def test_the_person_page_undoes_the_run_of_its_host(locations: Locations) -> Non
         lambda: ApplyStep(7, "mh clean"), lambda: True, PageUndo(runtime)
     )
     door = with_person(applying_door(Nothing(), offer), runtime, thread_pool())
-    person = door.person
+    person = _unwrapped(door.person)
     assert isinstance(person, PersonApp)
     page = call(person, "GET /person").body
     assert b'id="mhUndoToast"' in page

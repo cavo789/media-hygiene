@@ -11,7 +11,7 @@ Un **album** est la liste nommée de photos que vous faites dans
 [`library`](library.md#mettre-des-photos-dans-un-album), [les dossiers de `library`](library.md#parcourir-vos-dossiers) ou la revue des
 rafales, enregistrée dans `albums.json`. Il a plusieurs usages, tous sous *Partager* dans la page
 d'accueil et `mh menu`. Un album est **une sélection à garder** et à remontrer : pour montrer des
-photos une fois sur la télé, pas besoin d'album (**📺 Sur la télé** dans la barre de `library`, voir [`slideshow`](slideshow.md)).
+photos une fois sur la télé, pas besoin d'album (**▶ Diaporama ▾** dans la barre de `library`, voir [`slideshow`](slideshow.md)).
 
 | Usage | Commande |
 |---|---|

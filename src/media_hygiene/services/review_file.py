@@ -18,6 +18,7 @@ from media_hygiene.review.local_app import STATE_PATH
 from media_hygiene.review.page_header import page_header
 from media_hygiene.review.place import decisions_flag
 from media_hygiene.share.album_api import ALBUMS_PATH
+from media_hygiene.share.album_page import TV_PAIRED_PATH
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -28,6 +29,8 @@ if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
 
 _TEMPLATES_PACKAGE: Final = "media_hygiene.review"
+# The pages whose albums API shows files on the TV (0655): 📺 once a TV is paired.
+_TV_PAGES: Final = frozenset({"review.html.j2"})
 
 
 def review_page(template: str, place: DecisionsPlace, api: tuple[str, str]) -> bytes:
@@ -59,6 +62,8 @@ def review_page(template: str, place: DecisionsPlace, api: tuple[str, str]) -> b
             albums_path=ALBUMS_PATH.removeprefix(
                 "/"
             ),  # the pages that add to an album include it
+            tv_here=template in _TV_PAGES,  # hidden until `/api/tv-paired` says yes
+            tv_paired_path=TV_PAIRED_PATH,
             file=place.argument,
             clean_option=decisions_flag(place.argument),
             place=place.host,

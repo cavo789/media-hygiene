@@ -1,0 +1,112 @@
+{# The screen on this PC (0659): the keyboard as its remote, the bar of screen_here.html.j2.
+   Only with `here=1` in the address (the PC's own tab, paired at once as the PC): on a TV
+   nothing here runs, its remote's OK and arrows keep their part. ES5, as screen.js.j2 (the
+   same <script>, parsed by tests/unit/test_slideshow_screen.py). The actions are the
+   remote's `POST` (JSON): the server takes them from the PC alone. #}
+var hereAnswer = null;
+(function () {
+  var SHOW = {{ show_path | tojson }};
+  var STILL_MS = 3000;
+  var bar = document.getElementById("here");
+  var playing = false;
+  var hideTimer = null;
+  if (!/[?&]here=1(&|$)/.test(window.location.search)) {
+    return;
+  }
+  // The end of a show on this PC: its own wording, never the TV's "on the phone" (0660).
+  document.getElementById("idleOver").textContent = bar.getAttribute("data-over");
+
+  function act(action) {
+    var request = new XMLHttpRequest();
+    request.open("POST", SHOW, true);
+    request.setRequestHeader("Content-Type", "application/json");
+    request.send(JSON.stringify({ action: action }));
+  }
+
+  function hide() {
+    hideTimer = null;
+    bar.className = "hidden";
+    document.body.className = "";
+  }
+
+  function reveal() {
+    if (hideTimer !== null) {
+      window.clearTimeout(hideTimer);
+    }
+    bar.className = "";
+    document.body.className = "pointing";
+    hideTimer = window.setTimeout(hide, STILL_MS);
+  }
+
+  function toggle() {
+    act(playing ? "pause" : "play");
+  }
+
+  function stop() {
+    act("stop");
+    window.setTimeout(function () { window.close(); }, 300);
+  }
+
+  function leaveFullScreen() {
+    var leave = document.exitFullscreen || document.webkitExitFullscreen;
+    if (leave && (document.fullscreenElement || document.webkitFullscreenElement)) {
+      leave.call(document);
+    }
+  }
+
+  function enterFullScreen() {
+    var page = document.documentElement;
+    var asks = page.requestFullscreen || page.webkitRequestFullscreen;
+    if (asks) {
+      asks.call(page);
+    }
+  }
+
+  function button(id, does) {
+    document.getElementById(id).addEventListener("click", function (event) {
+      event.stopPropagation();
+      event.currentTarget.blur();  // Space then plays or pauses once, never clicks it too
+      does();
+      reveal();
+    }, false);
+  }
+
+  hereAnswer = function (answer) {
+    var label;
+    playing = Boolean(answer.playing);
+    label = playing ? bar.getAttribute("data-playing") : bar.getAttribute("data-paused");
+    document.getElementById("herePlay").title = label;
+    document.getElementById("herePlay").setAttribute("aria-label", label);
+  };
+
+  button("herePrevious", function () { act("previous"); });
+  button("hereNext", function () { act("next"); });
+  button("herePlay", toggle);
+  button("hereStop", stop);
+  button("hereFull", function () {
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+      leaveFullScreen();
+    } else {
+      enterFullScreen();
+    }
+  });
+  document.addEventListener("mousemove", reveal, false);
+  document.addEventListener("keydown", function (event) {
+    var key = event.keyCode;
+    if (key === 37) {
+      act("previous");
+    } else if (key === 39) {
+      act("next");
+    } else if (key === 32) {
+      toggle();
+    } else if (key === 27) {
+      leaveFullScreen();
+    } else if (key === 83) {
+      stop();
+    } else {
+      return;
+    }
+    event.preventDefault();
+  }, false);
+  reveal();
+}());

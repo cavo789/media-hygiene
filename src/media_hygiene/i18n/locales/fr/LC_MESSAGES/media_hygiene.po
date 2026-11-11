@@ -1088,8 +1088,15 @@ msgstr ""
 "moins de bits que cette valeur (0 à 64). Une petite valeur ne repère que "
 "les répétitions de la même image. 0 désactive la règle."
 
-msgid "A show was running on the TV: replaced by this one."
-msgstr "Un diaporama passait sur la télé : remplacé par celui-ci."
+#, python-brace-format
+msgid "A show was running on the TV: replaced by a selection of {n} file."
+msgid_plural "A show was running on the TV: replaced by a selection of {n} files."
+msgstr[0] ""
+"Un diaporama passait sur la télé : remplacé par une sélection de {n} "
+"fichier."
+msgstr[1] ""
+"Un diaporama passait sur la télé : remplacé par une sélection de {n} "
+"fichiers."
 
 msgid "A step is running in the window of mh: wait for its end."
 msgstr "Une étape tourne dans la fenêtre de mh : attendez sa fin."
@@ -1285,8 +1292,8 @@ msgid ""
 "Add {name} to your places too: a circle of 200 m around this photo, for "
 "classify and the search?"
 msgstr ""
-"Ajouter aussi {name} à vos lieux : un cercle de 200 m autour de cette photo, "
-"pour classify et la recherche ?"
+"Ajouter aussi {name} à vos lieux : un cercle de 200 m autour de cette "
+"photo, pour classify et la recherche ?"
 
 msgid "Advanced"
 msgstr "Avancé"
@@ -2299,6 +2306,14 @@ msgstr ""
 " prises, puis enregistrez : 'xmp' écrit cette position dans les fichiers "
 ".xmp des photos sans GPS de ce dossier et de ses sous-dossiers ([tags] "
 "xmp_folder_gps = true)."
+
+msgid ""
+"Click the photo for full screen. Keys: ← → previous and next, Space pause"
+" and play, Esc leaves full screen, S stops the show."
+msgstr ""
+"Cliquez la photo pour le plein écran. Touches : ← → précédente et "
+"suivante, Espace pause et lecture, Échap quitte le plein écran, S arrête "
+"le diaporama."
 
 msgid "Click: the files of this folder"
 msgstr "Clic : les fichiers de ce dossier"
@@ -4507,6 +4522,9 @@ msgstr "Depuis votre NAS ou un ancien disque"
 msgid "From:"
 msgstr "Depuis :"
 
+msgid "Full screen (Esc leaves it)"
+msgstr "Plein écran (Échap le quitte)"
+
 msgid "GB"
 msgstr "Go"
 
@@ -6345,6 +6363,9 @@ msgstr "Nouveaux voyages ({n})"
 msgid "Next"
 msgstr "Suivante"
 
+msgid "Next (→)"
+msgstr "Suivante (→)"
+
 msgid "Next audit: a few seconds, the files checked are taken from the cache."
 msgstr ""
 "Prochain audit : quelques secondes, les fichiers vérifiés sont repris du "
@@ -6411,6 +6432,9 @@ msgstr "Aucun dossier DCIM sur {name} : aucune photo à copier."
 
 msgid "No Events tab here."
 msgstr "Pas d'onglet Événements ici."
+
+msgid "No TV paired:"
+msgstr "Aucune télé appairée :"
 
 msgid "No TV shows this code: type the code the TV shows now."
 msgstr ""
@@ -7639,6 +7663,9 @@ msgstr ""
 "Sur le téléphone, tout est en lecture seule : les albums changent sur le "
 "PC."
 
+msgid "On this PC"
+msgstr "Sur ce PC"
+
 msgid "On this page"
 msgstr "Dans cette page"
 
@@ -8240,6 +8267,9 @@ msgstr "Le chemin contient"
 msgid "Path contains: invalid regular expression ({error})."
 msgstr "Chemin contient : expression régulière invalide ({error})."
 
+msgid "Pause (Space)"
+msgstr "Pause (Espace)"
+
 msgid "Pause while I talk"
 msgstr "Pause, je raconte"
 
@@ -8496,6 +8526,9 @@ msgstr "Prévu avec mh push : pas encore dans l'outil."
 msgid "Planned: mh push is coming."
 msgstr "Prévu : mh push arrive."
 
+msgid "Play (Space)"
+msgstr "Lecture (Espace)"
+
 #, python-brace-format
 msgid ""
 "Please report it at {url}, with the version ({version}), the command "
@@ -8590,6 +8623,9 @@ msgstr "Aperçus maintenant : {size}."
 
 msgid "Previous"
 msgstr "Précédente"
+
+msgid "Previous (←)"
+msgstr "Précédente (←)"
 
 msgid "Previous and next pages"
 msgstr "Pages précédente et suivante"
@@ -9980,6 +10016,9 @@ msgstr "Envoyer les photos ({count}) dans le dossier, sous l'année :"
 msgid "Send to another folder (O)"
 msgstr "Envoyer dans un autre dossier (O)"
 
+msgid "Sent to the TV: its remote opens."
+msgstr "Envoyé à la télé : sa télécommande s'ouvre."
+
 #, python-brace-format
 msgid "Sent: the step starts in {window}…"
 msgstr "Envoyé : l'étape démarre dans {window}…"
@@ -10276,10 +10315,12 @@ msgstr ""
 "Montrer des photos sur la télé, le téléphone choisissant la suivante : un"
 " dossier, une recherche ou un album."
 
-msgid "Show the files picked on the TV; nothing picked: every file of the page"
+msgid ""
+"Show the files picked as a slideshow, on this PC or on the TV; nothing "
+"picked: every file of the page"
 msgstr ""
-"Montrer sur la télé les fichiers choisis ; rien de choisi : tous ceux de "
-"la page"
+"Montrer les fichiers choisis en diaporama, sur ce PC ou sur la télé ; "
+"rien de choisi : tous les fichiers de la page"
 
 msgid "Show the files picked on the TV; nothing picked: every file of this event"
 msgstr ""
@@ -10589,6 +10630,9 @@ msgstr "Lancé le"
 msgid "Starting the show on the TV…"
 msgstr "Lancement du diaporama sur la télé…"
 
+msgid "Starting the show on this PC…"
+msgstr "Le diaporama démarre sur ce PC…"
+
 msgid "State"
 msgstr "État"
 
@@ -10652,6 +10696,9 @@ msgstr "Arrêter le partage"
 
 msgid "Stop the audit"
 msgstr "Arrêter l'audit"
+
+msgid "Stop the show (S)"
+msgstr "Arrêter le diaporama (S)"
 
 msgid ""
 "Stop this page with Ctrl+C in the window where mh runs, paste the command"
@@ -12413,6 +12460,11 @@ msgstr ""
 msgid "The show did not start: look at the window of mh on the PC."
 msgstr "Le diaporama n'a pas démarré : regardez la fenêtre de mh sur le PC."
 
+msgid "The show starts in the new tab: click the photo there for full screen."
+msgstr ""
+"Le diaporama démarre dans le nouvel onglet : cliquez-y sur la photo pour "
+"le plein écran."
+
 msgid "The show starts on the PC…"
 msgstr "Le diaporama démarre sur le PC…"
 
@@ -12422,6 +12474,13 @@ msgstr "Le diaporama a échoué (erreur {status})."
 
 msgid "The slideshow is not running any more: start it again on the PC."
 msgstr "Le diaporama ne tourne plus : relancez-le sur le PC."
+
+msgid ""
+"The slideshow is over. Choose another one on the PC: ▶ Slideshow in the "
+"bar of a page of photos, or the home page."
+msgstr ""
+"Le diaporama est terminé. Choisissez-en un autre sur le PC : ▶ Diaporama "
+"dans la barre d'une page de photos, ou la page d'accueil."
 
 msgid ""
 "The slideshow is over. Choose another show on the phone: it appears here "
@@ -15190,6 +15249,9 @@ msgstr "historique journal exécutions"
 msgid "home page start"
 msgstr "accueil page home"
 
+msgid "how"
+msgstr "comment faire"
+
 msgid "iPhone, iPad"
 msgstr "iPhone, iPad"
 
@@ -16261,6 +16323,9 @@ msgstr ""
 
 msgid "screenshot or document"
 msgstr "capture d'écran ou document"
+
+msgid "see the slideshow chapter."
+msgstr "voir le chapitre du diaporama."
 
 msgid "seen by the model"
 msgstr "vu par le modèle"
@@ -19110,8 +19175,8 @@ msgid ""
 "{name} is now one of your places ({radius} m around this photo), read "
 "back from config.toml."
 msgstr ""
-"{name} est maintenant un de vos lieux ({radius} m autour de cette photo), "
-"relu dans config.toml."
+"{name} est maintenant un de vos lieux ({radius} m autour de cette photo),"
+" relu dans config.toml."
 
 #, python-brace-format
 msgid "{name} must be a JSON array, e.g. [\"C:\\\\Photos\"]"
@@ -20598,6 +20663,9 @@ msgstr ""
 "📸 Les rafales des nouvelles photos s'ouvrent dans votre navigateur : "
 "gardez-y les meilleures prises pendant que les étapes suivantes tournent."
 
+msgid "📺 On the TV"
+msgstr "📺 Sur la télé"
+
 #, python-brace-format
 msgid "📺 Your slideshow \"{title}\" is ready: {command}"
 msgstr "📺 Votre diaporama « {title} » est prêt : {command}"
@@ -20695,6 +20763,9 @@ msgstr ""
 "place se voit sous les deux noms, supprimer un nom ne libère rien tant "
 "que l'autre reste, et un outil de sauvegarde peut la compter deux fois. "
 "'undo' refait de chaque nom un fichier indépendant."
+
+msgid "🖥 On this PC"
+msgstr "🖥 Sur ce PC"
 
 #, python-brace-format
 msgid ""

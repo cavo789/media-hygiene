@@ -3,9 +3,9 @@
 Every change raises `version`: the pages wait for a version they have not seen yet
 (`desk`). Next and previous go round the selection, passing over the photos set out
 of the show ("do not show") and the videos the TV cannot play (0292); a photo chosen
-on the phone is shown even when it was set out (the choice is explicit). The timer is
-read, never run: `tick` moves on once the interval is over (a video: once the TV says
-it ended, `ended`), called by whoever waits (the TV, the phone).
+on the phone is shown even when it was set out. The timer is read, never run: `tick`
+moves on once the interval is over (a video: once the TV says it ended, `ended`),
+called by whoever waits. An event's title card holds the interval back (0654, 0658).
 """
 
 from __future__ import annotations
@@ -27,6 +27,7 @@ class Show:  # pylint: disable=too-many-instance-attributes
     """
 
     __slots__ = (
+        "_card_end",
         "_deadline",
         "ended",
         "films",
@@ -39,20 +40,19 @@ class Show:  # pylint: disable=too-many-instance-attributes
     )
 
     def __init__(self, slides: tuple[Slide, ...], timing: Timing) -> None:
-        """Start paused on the first photo.
+        """Start paused on the first photo, its card timed when play starts.
 
         Args:
             slides: The selection, in the order shown.
             timing: The interval and the clock.
         """
-        self.slides = slides
-        self.timing = timing
-        self.playing = False
+        self.slides, self.timing = slides, timing
         self.skipped: set[int] = set()
-        self.films, self.ended = True, False
+        self.playing, self.films, self.ended = False, True, False
         self.version = 1
         self.position: int | None = self._order.step(None, 1)  # the first shown
         self._deadline = 0.0
+        self._card_end: float | None = None  # the first card, untimed until play
 
     @property
     def current(self) -> Slide | None:
@@ -132,7 +132,9 @@ class Show:  # pylint: disable=too-many-instance-attributes
             playing: True to play.
         """
         self.playing = playing
-        self._deadline = self.timing.clock() + self.timing.stay(self.current)
+        if self._card_end is None:  # no move yet: the first card counts (0658)
+            self._card_end = self.timing.card_end(None, self.current)
+        self._deadline = self.timing.deadline(self._card_end, self.current)
         self.version += 1
 
     def plays(self, slide: Slide) -> bool:
@@ -175,8 +177,9 @@ class Show:  # pylint: disable=too-many-instance-attributes
         Args:
             position: The place; None for nothing.
         """
-        self.position = position
-        self._deadline = self.timing.clock() + self.timing.stay(self.current)
+        before, self.position = self.current, position
+        self._card_end = self.timing.card_end(before, self.current)
+        self._deadline = self.timing.deadline(self._card_end, self.current)
         self.version += 1
 
     @property
@@ -184,17 +187,10 @@ class Show:  # pylint: disable=too-many-instance-attributes
         """The selection, stopping at the slides still shown.
 
         Returns:
-            It.
+            It: next and previous pass over the slides set out of the show and the
+            videos the TV cannot play.
         """
-        return Order(self.slides, self._shown)
-
-    def _shown(self, slide: Slide) -> bool:
-        """Tell whether next and previous stop at a slide.
-
-        Args:
-            slide: The slide.
-
-        Returns:
-            False for one set out of the show, or a video the TV cannot play.
-        """
-        return slide.key not in self.skipped and self.plays(slide)
+        return Order(
+            self.slides,
+            lambda slide: slide.key not in self.skipped and self.plays(slide),
+        )

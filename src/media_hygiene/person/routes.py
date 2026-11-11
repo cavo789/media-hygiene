@@ -12,6 +12,7 @@ LIKE_PATH: Final = f"{PERSON_PREFIX}/api/like"
 ASIDE_PATH: Final = f"{PERSON_PREFIX}/api/aside"
 APPLY_PATH: Final = f"{PERSON_PREFIX}/api/apply"
 UNDO_PATH: Final = f"{PERSON_PREFIX}/api/undo-run"
+ALBUMS_PATH: Final = f"{PERSON_PREFIX}/api/albums"  # and ▶ Slideshow (0657)
 FACE_PREFIX: Final = f"{PERSON_PREFIX}/face/"
 THUMB_PREFIX: Final = f"{PERSON_PREFIX}/thumb/"
 PREVIEW_PREFIX: Final = f"{PERSON_PREFIX}/preview/"

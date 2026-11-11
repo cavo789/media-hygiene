@@ -235,6 +235,10 @@ la page fonctionne comme [les dossiers de `library`](library.md#parcourir-vos-do
 - **Vue en grand** : un double clic ou Entrée, ← → le précédent ou le suivant, **Espace coche ou
   décoche le fichier affiché**, F plein écran, Échap ferme. Elle montre la copie du PC ; *Ouvrir
   l'original* l'ouvre tel quel.
+- **📚 Album ▾** dans la barre ajoute à un album les copies sur le PC des fichiers choisis (un
+  fichier que l'index ne connaît pas encore est laissé de côté : lancez d'abord un audit). Pas de
+  diaporama depuis cette page : elle a son propre serveur ; montrez l'album ensuite depuis la page
+  d'accueil.
 - Pas de touche Suppr ici : la seule suppression est le bouton rouge. Les touches sont listées en
   bas à gauche (⌨ **Clavier**, puis *Plus de touches*).
 

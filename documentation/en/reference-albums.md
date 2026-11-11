@@ -58,7 +58,7 @@ From the page, on the PC (a phone only looks: albums change on the PC), you can:
     cover goes back to the one `mh` picks (the sharpest photo of the first day);
   - **✉️ Send**: the command that prepares the copies to send (`mh share --album`); a part of the
     album picked is saved first in an album of its own, named after the day;
-  - **📺 On the TV**: the files picked, or the whole album, on the paired TV;
+  - **▶ Slideshow ▾**: the files picked, or the whole album, on this PC or on the paired TV;
 - **➕ Add photos** to an album opened: the [search](commands/library.md) opens in the same tab,
   the album typed in its **Album** field, the period around the album's dates (a day either
   side); the files already in the album are marked, **← the album** comes back here.
