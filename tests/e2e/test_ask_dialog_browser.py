@@ -62,3 +62,9 @@ def test_the_people_page_keeps_the_view_like_the_other_frame_pages(
 ) -> None:
     """People on the frame (0667): the URL kept, Back closes its large view."""
     assert _walk(tmp_path, "view_walk.py", "people.html.j2") == ""
+
+
+@pytest.mark.parametrize("template", ["quarantine.html.j2", "people.html.j2"])
+def test_a_page_is_comfortable_in_both_themes(tmp_path: Path, template: str) -> None:
+    """Tab, contrast, no scroll at 1366 px and 200 % zoom, reduced motion (0669)."""
+    assert _walk(tmp_path, "comfort_walk.py", template) == ""
