@@ -29,6 +29,7 @@ from media_hygiene.services.albums import album_desk
 from media_hygiene.services.aside_paths import set_aside
 from media_hygiene.services.search_desks import shown_roots
 from media_hygiene.share.album_folder_door import AlbumFolderDoor
+from media_hygiene.share.album_guest_door import AlbumGuestDoor
 from media_hygiene.share.album_link_door import ALBUM_LINK_PATH, AlbumLinkDoor
 from media_hygiene.share.album_page import (
     ALBUM_CHANGE_PATH,
@@ -81,6 +82,7 @@ def album_pages(runtime: Runtime, home: Handling, server: HomeServer) -> AlbumPa
         door,
         _folder_door(runtime),
         server.tv.paired,
+        AlbumGuestDoor(reader, PerLocale(partial(album_page, guest=True))),
     )
     return AlbumPages(home, parts)
 
@@ -106,12 +108,15 @@ def _folder_door(runtime: Runtime) -> AlbumFolderDoor:
     return AlbumFolderDoor({ALBUM_ROOT_PATH: root.state}, posts, PHONE_HEADER)
 
 
-def album_page(template: str = _TEMPLATE, *, link: bool = False) -> bytes:
+def album_page(
+    template: str = _TEMPLATE, *, link: bool = False, guest: bool = False
+) -> bytes:
     """Render the albums' page; its content comes from the list and each album.
 
     Args:
         template: The list and the phone's view, or one album to edit (0500).
         link: The read-only page of an album's 24 h link (0462).
+        guest: The read-only page of a guest's device: its albums only (0684).
 
     Returns:
         The page.
@@ -142,6 +147,7 @@ def album_page(template: str = _TEMPLATE, *, link: bool = False) -> bytes:
             tv_here=True,
             tv_paired_path=TV_PAIRED_PATH,  # the bar's 📺, with a TV paired (0523)
             album_link=link,
+            album_guest=guest,
         )
         .encode()
     )

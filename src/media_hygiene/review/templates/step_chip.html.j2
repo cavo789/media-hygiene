@@ -136,8 +136,17 @@
     if (window.mhSay) window.mhSay(text, ok ? "ok" : "error");
     window.mhNotify.end(text);
   }
+  // A step waiting on a page of the home server (the phone's, 0694): this tab opens it once.
+  function opened(step) {
+    if (!step.page || window.location.pathname === step.page) return;
+    if (!["127.0.0.1", "localhost", "[::1]"].includes(window.location.hostname)) return;
+    let done = null;
+    try { done = window.sessionStorage.getItem("mh-step-page"); window.sessionStorage.setItem("mh-step-page", step.id); } catch { /* private mode */ }
+    if (done !== step.id) window.location.assign(step.page);
+  }
   function seen(step) {
     last = step;
+    if (step.state === "running") opened(step);
     if (step.state === "waiting" || step.state === "running") {
       if (following !== step.id) { following = step.id; stage = ""; }
       drawRunning(step);

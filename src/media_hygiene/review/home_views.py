@@ -135,7 +135,6 @@ class HomeState(Frozen):  # one field per part of the page
     tiles: tuple[HomeTile, ...] = ()
     hidden_tiles: tuple[HomeTile, ...] = ()  # `[home] tiles`, to bring back (0516)
     findings: HomeFindings | None = None
-    safety: HomeFindings | None = None  # *Are my photos safe?* (0689)
     folders: tuple[HomeFolder, ...] = ()
     quarantine: tuple[HomeQuarantine, ...] = ()
     undo: HomeUndo | None = None

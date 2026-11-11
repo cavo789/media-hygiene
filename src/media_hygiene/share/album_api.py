@@ -1,8 +1,7 @@
 """`GET`/`POST /api/albums`: the albums, and a page's files added or taken out (0295).
 
-Never the decisions file; the files set aside enter no album, share nor TV (0518).
-`POST` names the album and the files (keys, or a whole search: `all`), or deletes,
-renames, puts back albums (0499); the answer is read back from the disk.
+No file set aside enters an album (0518). `POST`: files (keys, or a search: `all`),
+or an album's delete, rename, restore (0499), guests (0684); read back from the disk.
 """
 
 from __future__ import annotations
@@ -36,6 +35,10 @@ ALBUMS_PATH: Final = "/api/albums"
 # Files added at once: a search finding more is narrowed first (the TV shows 3000).
 MAX_ADDED: Final = 3000
 _MAX_TEXT: Final = 200
+# cover: 0371; tv: 0454; delete, rename, restore: 0499; guests: 0684
+type Action = Literal[
+    "add", "remove", "cover", "tv", "delete", "rename", "restore", "guests"
+]
 
 
 class AlbumAsked(BaseModel):
@@ -43,13 +46,13 @@ class AlbumAsked(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    # cover: one file (0371); tv: 0454; delete, rename, restore: the albums (0499)
-    action: Literal["add", "remove", "cover", "tv", "delete", "rename", "restore"]
+    action: Action
     album: str = Field(default="", max_length=_MAX_TEXT)
     names: tuple[str, ...] = Field(default=(), max_length=_MAX_TEXT)  # to delete
     to: str = Field(default="", max_length=_MAX_TEXT)  # a new name
     keys: tuple[str, ...] = Field(default=(), max_length=MAX_ADDED)
     all: bool = False  # every file the search finds, not only those shown
+    guests: bool = False  # shown to the guests' devices, or not
     search: SearchAsked = SearchAsked()
 
 
@@ -108,10 +111,8 @@ class AlbumDesk:
                 return _not_saved(exc)
         said = shelf_view(shelf, asked.album, self._host)
         message = edit_message(shelf, asked, self._host)  # cover, delete, rename
-        said["message"] = said["message"] if message is None else message
-        said["message"] = " ".join(
-            filter(None, (str(said.get("message", "")), kept.said))
-        )
+        first = said.get("message", "") if message is None else message
+        said["message"] = " ".join(filter(None, (str(first), kept.said)))
         return json_response(HTTPStatus.OK, said)
 
     def _early(self, asked: AlbumAsked, files: tuple[Path, ...]) -> Response | None:

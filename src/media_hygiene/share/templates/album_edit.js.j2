@@ -66,6 +66,7 @@ async function reopen(again) {
   album = await answer.json();
   showFiles(listed(album), again);
   $("albumTitle").textContent = album.name;
+  $("guestsShown").checked = Boolean(album.guests); // as read back from albums.json (0684)
   const facts = [counted(TEXTS.photos, album.count), album.place];
   if (album.missing) facts.push(counted(TEXTS.missing, album.missing));
   $("albumFacts").textContent = facts.filter(Boolean).join(" · ");
@@ -176,6 +177,11 @@ async function copyLink() {
 $("linkMake").addEventListener("click", () => shareByLink("make"));
 $("linkStop").addEventListener("click", () => shareByLink("stop"));
 $("linkCopy").addEventListener("click", copyLink);
+// 🧳 Show to guests (0684): saved, then the album read back from the disk shows the tick.
+$("guestsShown").addEventListener("change", async () => {
+  await change({ action: "guests", album: NAME, guests: $("guestsShown").checked });
+  await reopen(true);
+});
 $("toOther").addEventListener("click", openOther);
 $("otherForm").addEventListener("submit", addToOther);
 $("otherClose").addEventListener("click", () => $("otherAlbum").close());

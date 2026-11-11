@@ -1,5 +1,7 @@
 """*Are my photos safe?* (0689): every fact of the card, read from disk each call.
 
+The slow ones are kept in `/cache` while nothing they depend on changes (0692).
+
 The second copy and where it is (the push journal), the tool's memory (the note of
 `mh backup`), the way back (the journals, the quarantines mounted), what waits in the
 quarantine and how much of it exists nowhere else (0688), the damaged files and how
@@ -15,17 +17,18 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.actions.journal import journal_file
 from media_hygiene.index.safety_counts import RereadCounts, newer_than, reread_counts
 from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.services.only_count import only_count
-from media_hygiene.services.quarantines import held_back
+from media_hygiene.services.quarantines import mounted_quarantines
+from media_hygiene.services.run_book import book_of, read_runs
+from media_hygiene.services.safety_cache import SlowAsk, slow_facts
 from media_hygiene.services.safety_records import (
     LastBackup,
     LastPush,
     last_backup,
+    last_push,
 )
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
-    from media_hygiene.services.status import Status
     from media_hygiene.services.status_parts import QuarantineState
 
 # A push or a backup older than this is said amber. Constants, not settings: a month
@@ -58,26 +61,28 @@ class SafetyFacts:  # pylint: disable=too-many-instance-attributes
     reread: RereadCounts | None
 
 
-def read_safety(runtime: Runtime, status: Status) -> SafetyFacts:
+def read_safety(runtime: Runtime, quarantine: QuarantineState) -> SafetyFacts:
     """Read every fact of the card.
 
     Args:
         runtime: Settings and mount points.
-        status: What `status` read: its quarantine and newest push are reused.
+        quarantine: The quarantine as `status` measured it.
 
     Returns:
         The facts.
     """
     journal_dir = runtime.locations.journal_dir
     journal = runtime.persistent(MountKind.JOURNAL)
-    push = status.push if journal else None
-    quarantine = status.quarantine
+    now = datetime.now().astimezone()
+    push = last_push(read_runs(book_of(runtime), now).facts) if journal else None
     index = (
         runtime.locations.index_file if runtime.persistent(MountKind.CACHE) else None
     )
-    runs = [run.run_id for run in quarantine.runs]
+    runs = tuple(run.run_id for run in quarantine.runs)
+    folders = mounted_quarantines(runtime).folders
+    slow = slow_facts(SlowAsk(runtime, runs, folders)) if journal else None
     return SafetyFacts(
-        now=datetime.now().astimezone(),
+        now=now,
         push=push,
         newer=None
         if push is None
@@ -86,9 +91,9 @@ def read_safety(runtime: Runtime, status: Status) -> SafetyFacts:
         way_back=WayBack(
             journal,
             sum(not journal_file(journal_dir, run).is_file() for run in runs),
-            tuple(sorted(set(held_back(runtime, runs).values()))) if journal else (),
+            slow.unplugged if slow is not None else (),
         ),
         quarantine=quarantine,
-        only=only_count(index, journal_dir, runs) if journal else None,
+        only=slow.only if slow is not None else None,
         reread=reread_counts(index),
     )

@@ -17,7 +17,8 @@ from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.lan import CODE_DIGITS, COOKIE_NAME, PAIR_PREFIX
 from media_hygiene.review.lan_attempts import Attempts
-from media_hygiene.review.lan_phones import device_name
+from media_hygiene.review.lan_guest import code_role, guest_token
+from media_hygiene.review.lan_phone_model import GUEST, device_name
 from media_hygiene.review.local_app import PAGE_PATH
 
 if TYPE_CHECKING:
@@ -32,13 +33,18 @@ _MAX_PAIRED: Final = 20  # new devices of the run listed on the PC's card
 class Pairing:
     """The run's pairing: wrong codes by address, the code's version, new devices."""
 
-    __slots__ = ("attempts", "generation", "paired")
+    __slots__ = ("attempts", "generation", "guests", "paired")
 
-    def __init__(self) -> None:
-        """Start without any wrong code, on the code `mh --lan` derived first."""
+    def __init__(self, *, guests: bool = False) -> None:
+        """Start without any wrong code, on the code `mh --lan` derived first.
+
+        Args:
+            guests: The guests' code pairs too (the home page's door, 0684).
+        """
         self.attempts = Attempts()
         self.generation = 0
         self.paired: list[dict[str, object]] = []
+        self.guests = guests
 
     @property
     def closed(self) -> bool:
@@ -81,14 +87,17 @@ class Pairing:
         if self.attempts.waiting(request.peer):
             return pair_page(HTTPStatus.TOO_MANY_REQUESTS, closed=False)
         typed = request.path.removeprefix(PAIR_PREFIX)
-        if not self.access(lan).code_matches(typed):
+        role = code_role(self.access(lan), typed)
+        if role is None or (role == GUEST and not self.guests):
             self.attempts.failed(request.peer)
             return pair_page(HTTPStatus.FORBIDDEN, closed=self.closed)
         name = device_name(request.headers.get("user-agent", ""))
-        self.paired = [*self.paired, {"name": name, "at": int(time.time() * 1000)}]
+        seen = {"name": name, "at": int(time.time() * 1000), "role": role}
+        self.paired = [*self.paired, seen]
         self.paired = self.paired[-_MAX_PAIRED:]
         secure = "; Secure" if lan.secure else ""  # HTTPS (0430)
-        cookie = f"{COOKIE_NAME}={lan.token}; Path=/; HttpOnly; SameSite=Lax{secure}"
+        token = guest_token(lan) if role == GUEST else lan.token  # 0684
+        cookie = f"{COOKIE_NAME}={token}; Path=/; HttpOnly; SameSite=Lax{secure}"
         headers = (f"Location: {PAGE_PATH}", f"Set-Cookie: {cookie}")
         return Response(HTTPStatus.SEE_OTHER, headers=headers)
 

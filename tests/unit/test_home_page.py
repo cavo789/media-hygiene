@@ -373,9 +373,9 @@ def test_a_named_step_with_fields_still_needs_them(tmp_path: Path) -> None:
 
 
 def test_back_on_the_page_the_last_state_is_drawn_without_the_splash() -> None:
-    """0442: the state kept per tab, no early splash, the mark while refreshing."""
+    """0442: the state kept (localStorage, 0692), no early splash, the mark."""
     page = home.home_page().decode()
-    assert "sessionStorage.setItem(STATE_KEY" in page
-    early = page.index('sessionStorage.getItem("mh-home-state-')
+    assert "localStorage.setItem(STATE_KEY" in page
+    early = page.index('localStorage.getItem("mh-home-state-')
     assert page.index('id="loading"') < early < page.index('id="updating"')
     assert page.index('id="updating"') < page.index("function keptState()")

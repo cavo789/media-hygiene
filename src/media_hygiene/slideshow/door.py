@@ -23,6 +23,7 @@ from media_hygiene.review.http import Request, Response, is_local
 from media_hygiene.review.lan import COOKIE_NAME, cookies
 from media_hygiene.review.lan_pairing import Pairing, pair_page
 from media_hygiene.review.lan_phone_care import now_utc, touch
+from media_hygiene.review.lan_phone_model import FAMILY
 from media_hygiene.review.lan_phones_api import for_good
 from media_hygiene.services.reviewing import HOST_LOOPBACK
 from media_hygiene.slideshow.screens import SCREEN_COOKIE
@@ -106,7 +107,8 @@ class Door:
             request: The request.
 
         Returns:
-            True for a paired phone; a phone forgotten on the PC's page is not.
+            True for a paired phone; a phone forgotten on the PC's page is not,
+            nor a guest's device (0684: its albums only, on the home page's door).
         """
         if self.lan is not None and self.lan.is_paired(request):
             return True
@@ -114,7 +116,7 @@ class Door:
         phone = None if self.phones is None else self.phones.holder(token)
         if phone is not None and self.phones is not None:  # its last seen (0683)
             touch(self.phones, phone, (request.peer, now_utc()))
-        return phone is not None
+        return phone is not None and phone.role == FAMILY
 
     def pair_phone(self, request: Request) -> Response:
         """Check the run's code typed on a phone; the right one opens the remote.
