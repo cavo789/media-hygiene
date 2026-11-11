@@ -507,9 +507,9 @@ $("text").focus();
 // bookmark gives the search back (0666): the words, the period, the folder, read as values.
 const FOLDER_KEY = {{ folder_query | tojson }};
 const VIEW_KEYS = { text: "text", from: "text", to: "text", [FOLDER_KEY]: "text" };
-const asked = window.mhView.get(VIEW_KEYS);
-for (const id of ["text", "from", "to"]) if (asked[id]) $(id).value = asked[id];
-if (asked[FOLDER_KEY]) $("folder").value = asked[FOLDER_KEY];
+const opened = window.mhView.get(VIEW_KEYS);
+for (const id of ["text", "from", "to"]) if (opened[id]) $(id).value = opened[id];
+if (opened[FOLDER_KEY]) $("folder").value = opened[FOLDER_KEY];
 $("albumIn").addEventListener("change", () => search(null));
 if ($("albumName")) $("albumName").addEventListener("change", () => search(null));
 search();

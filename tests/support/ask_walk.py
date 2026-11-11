@@ -18,8 +18,10 @@ if TYPE_CHECKING:
 
 # A hostile line: it must show as text, never as HTML.
 LINE: Final = "<b>x</b>"
+# `void`: `page.evaluate` waits for a promise its expression returns, and this one only
+# settles once the dialog is answered: the walk hung there (2026-11-11, CI and here).
 ASK: Final = (
-    "window.__answer = null; window.mhAsk({lines: ['" + LINE + "'], "
+    "window.__answer = null; void window.mhAsk({lines: ['" + LINE + "'], "
     "yes: 'Erase for good', danger: true}).then((a) => { window.__answer = a; });"
 )
 

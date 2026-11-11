@@ -16,11 +16,11 @@
   #mhSay .mhSayItem { pointer-events: auto; display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px 10px 14px;
                       border-radius: 10px; color: #fff; background: rgba(0, 0, 0, .85); box-shadow: 0 4px 18px rgb(0 0 0 / 30%);
                       transition: opacity .4s; }
-  #mhSay .mhSayItem.error { background: var(--bad, #c62828); }
+  #mhSay .mhSayItem.error { color: var(--mk-on-danger, #fff); background: var(--bad, #c62828); }
   #mhSay .mhSayItem.fading { opacity: 0; }
   #mhSay .mhSayItem p { flex: 1; margin: 0; overflow-wrap: anywhere; }
-  #mhSay .mhSayItem button { min-width: 28px; min-height: 28px; padding: 0 6px; color: #fff; background: transparent;
-                             border: 1px solid rgba(255, 255, 255, .5); border-radius: 8px; font: inherit; cursor: pointer; }
+  #mhSay .mhSayItem button { min-width: 28px; min-height: 28px; padding: 0 6px; color: inherit; background: transparent;
+                             border: 1px solid currentColor; border-radius: 8px; font: inherit; cursor: pointer; }
   button.mhBusy { position: relative; cursor: progress; }
   button.mhBusy::after { content: ""; display: inline-block; width: .9em; height: .9em; margin-left: 8px; vertical-align: -2px;
                          border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%;
