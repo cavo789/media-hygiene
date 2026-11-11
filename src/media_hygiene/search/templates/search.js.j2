@@ -503,13 +503,13 @@ if (window.IntersectionObserver) {
 }
 $("text").focus();
 // `mh library --folder <folder>` (0405): the page opens on a folder left to sort.
-const openedOn = new URLSearchParams(window.location.search).get({{ folder_query | tojson }});
-if (openedOn) $("folder").value = openedOn;
-// *Add photos* of the albums page (0501): the period around the album's dates.
-for (const id of ["from", "to"]) {
-  const day = new URLSearchParams(window.location.search).get(id);
-  if (day) $(id).value = day;
-}
+// *Add photos* of the albums page (0501): the period around the album's dates. A reload or a
+// bookmark gives the search back (0666): the words, the period, the folder, read as values.
+const FOLDER_KEY = {{ folder_query | tojson }};
+const VIEW_KEYS = { text: "text", from: "text", to: "text", [FOLDER_KEY]: "text" };
+const asked = window.mhView.get(VIEW_KEYS);
+for (const id of ["text", "from", "to"]) if (asked[id]) $(id).value = asked[id];
+if (asked[FOLDER_KEY]) $("folder").value = asked[FOLDER_KEY];
 $("albumIn").addEventListener("change", () => search(null));
 if ($("albumName")) $("albumName").addEventListener("change", () => search(null));
 search();
@@ -520,14 +520,18 @@ loadChosen();
 let restoring = false;
 function keepInHistory() {
   if (restoring) return;
-  const state = { text: $("text").value, from: $("from").value, to: $("to").value, folder: $("folder").value };
+  const state = shownSearch();
   if (history.state && JSON.stringify(history.state) === JSON.stringify(state)) return;
-  try {
-    if (history.state) history.pushState(state, ""); else history.replaceState(state, "");
-  } catch (error) { /* a sandboxed frame may refuse it */ }
+  const values = { text: state.text, from: state.from, to: state.to, [FOLDER_KEY]: state.folder };
+  window.mhView.set(values, { push: Boolean(history.state), state });
+}
+function shownSearch() {
+  return { text: $("text").value, from: $("from").value, to: $("to").value, folder: $("folder").value };
 }
 window.addEventListener("popstate", async (event) => {
   if (!event.state || !("folder" in event.state)) return;
+  // Back from the large view lands on the search shown: the grid stays as it is (0666).
+  if (JSON.stringify(event.state) === JSON.stringify(shownSearch())) return;
   window.mhNear = null;
   for (const id of ["text", "from", "to", "folder"]) $(id).value = event.state[id];
   pathClearable();

@@ -70,7 +70,7 @@ def test_the_page_opens_on_a_folder_given(
     result = run(cli, "search", "--folder", "Prints jan10")
     assert result.exit_code == 0, result.output
     assert "/?folder=Prints+jan10" in "".join(result.output.split())
-    assert 'URLSearchParams(window.location.search).get("folder")' in pages[0]
+    assert 'const FOLDER_KEY = "folder";' in pages[0]
 
 
 def test_the_photos_not_sorted_yet_or_the_sorted_ones(

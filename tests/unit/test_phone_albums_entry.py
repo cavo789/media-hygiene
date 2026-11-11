@@ -29,9 +29,11 @@ def test_the_home_page_shows_one_entry_and_three_shortcuts_at_most() -> None:
 def test_a_tap_on_the_albums_page_shows_the_album_on_the_tv() -> None:
     """Opened with `?tv=1` on a phone, a card leads to the home page's TV start."""
     script = _template("share", "album.js.j2")
-    assert 'has("tv")' in script
+    assert '"tv" in window.mhView.get({ tv: "text" })' in script
     assert "`${P.home}?tv=${encodeURIComponent(name)}`" in script
-    assert 'get("tv")' in _template("review", "home_run.js.j2")
+    assert 'window.mhView.get({ tv: "text" }).tv' in _template(
+        "review", "home_run.js.j2"
+    )
 
 
 def test_the_albums_page_filters_by_name_and_sorts_by_last_used() -> None:

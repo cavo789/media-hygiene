@@ -1,4 +1,4 @@
-"""The shared page pieces in Chromium: the ask dialog (0663), the busy pieces (0664).
+"""The shared page pieces in Chromium: ask (0663), busy (0664), view in the URL (0666).
 
 Heavy (the Playwright image): CI only, where `MEDIA_HYGIENE_E2E_BROWSER` is set.
 """
@@ -48,3 +48,10 @@ def test_esc_and_the_safe_button_answer_no(tmp_path: Path) -> None:
 def test_a_slow_answer_keeps_the_button_busy(tmp_path: Path) -> None:
     """An answer after 2 s: button disabled, placeholders shown, the grid stays."""
     assert _walk(tmp_path, "busy_walk.py") == ""
+
+
+def test_the_view_survives_a_reload_and_back_closes_the_large_view(
+    tmp_path: Path,
+) -> None:
+    """A group kept by the URL; Back closes the large view, the grid stays (0666)."""
+    assert _walk(tmp_path, "view_walk.py") == ""

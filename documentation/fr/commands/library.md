@@ -104,6 +104,10 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   (*Le chemin contient*). Le bouton **Précédent** du navigateur (Alt+←) rend la recherche d'avant
   chacun de ces clics. **Maj+clic** sur un second jour cherche du jour
   cliqué avant à celui-ci (remis dans l'ordre) : un week-end, un voyage, une fête après minuit.
+- **La vue reste dans l'adresse** : les mots, la période et le dossier cherchés sont dans
+  l'adresse de la page : recharger la page ou un favori rend la même recherche. Dans la grande
+  vue, **Précédent** la ferme (comme Échap) et laisse la grille où elle était ; sur les revues
+  (rafales, quasi-doublons, paires), recharger rouvre le même groupe.
 - **Choisir**, comme sur toute page de photos : un clic choisit un fichier ; la case ☑ (ou Ctrl+clic) en
   ajoute ou en retire un ; Maj+clic choisit tous les fichiers depuis le dernier cliqué ; un
   rectangle tracé à la souris choisit ce qu'il touche (avec Ctrl, il ajoute) ; Ctrl+A tous les

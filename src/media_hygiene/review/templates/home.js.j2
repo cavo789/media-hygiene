@@ -106,7 +106,7 @@ function setNav(open, focus = true) {
 }
 function go(id, focusMain = true) {
   view.id = SPACE[id] ? id : HOME;
-  try { history.replaceState(null, "", "#" + view.id); } catch (error) { /* a sandboxed frame may refuse it */ }
+  window.mhView.set({}, { state: null, hash: "#" + view.id }); // view_state.html.j2 (0666)
   setNav(false, false);
   render();
   window.scrollTo(0, 0);

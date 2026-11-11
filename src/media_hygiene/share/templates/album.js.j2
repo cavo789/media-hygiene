@@ -67,7 +67,7 @@ function dayLabel(day) {
 // The PC opens an album as tiles to pick and take out (0500); a phone, the swipe view.
 // Opened from the home page's "Albums (N)" on a phone (`?tv=1`, 0548): a tap shows it on the TV,
 // through the home page (read-only: the PC starts the show).
-const TV = document.documentElement.hasAttribute("data-phone") && new URLSearchParams(location.search).has("tv");
+const TV = document.documentElement.hasAttribute("data-phone") && "tv" in window.mhView.get({ tv: "text" });
 const opened = (name) => (TV ? `${P.home}?tv=${encodeURIComponent(name)}`
   : document.documentElement.hasAttribute("data-phone")
     ? `#a/${encodeURIComponent(name)}` : `${P.edit_page}?album=${encodeURIComponent(name)}`);
@@ -170,7 +170,7 @@ function route() {
 function openViewer(number) {
   at = number;
   $("viewer").hidden = false;
-  history.pushState({ viewer: true }, "");
+  window.mhView.set({}, { push: true, state: { viewer: true } }); // Back closes it (0666)
   draw();
 }
 function closeViewer(fromHistory) {

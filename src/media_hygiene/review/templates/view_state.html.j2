@@ -1,0 +1,48 @@
+{# The view a page shows, kept in its URL (0666): Back, a reload and a bookmark bring it back.
+   Included once by the frame, the home page and the album page, like the ask dialog.
+   - `window.mhView.get(keys)`: the page's own keys read from the query string, each checked
+     against its kind (`"int"`, `"word"`, `"text"` or a list of the values allowed); anything
+     else is dropped. What it returns is untrusted text: set it as a value, never as HTML.
+   - `window.mhView.set(values, {push, state, hash})`: writes these keys (`null` or `""`
+     removes one) and keeps the others. `push` adds a step of the history (the large view, a new
+     search); without it the step is replaced (moving inside a list). Never a photo's path:
+     only the keys the page already uses (a group's rank, a tab, a filter, a folder). #}
+<script nonce="{{ page_nonce }}">
+(() => {
+  const TEXT_MAX = 200;  // longer than any search typed, short enough for every browser
+  const KINDS = { int: /^\d{1,7}$/, word: /^[A-Za-z][A-Za-z0-9_-]{0,31}$/ };
+  const allowed = (kind, value) => {
+    if (Array.isArray(kind)) return kind.includes(value);
+    if (kind === "text") return value.length <= TEXT_MAX;
+    return Boolean(KINDS[kind]) && KINDS[kind].test(value);
+  };
+  const get = (keys) => {
+    const asked = new URLSearchParams(window.location.search);
+    const found = {};
+    for (const [key, kind] of Object.entries(keys)) {
+      const value = asked.get(key);
+      if (value !== null && allowed(kind, value)) found[key] = kind === "int" ? Number(value) : value;
+    }
+    return found;
+  };
+  const set = (values, options) => {
+    const how = options || {};
+    const asked = new URLSearchParams(window.location.search);
+    for (const [key, value] of Object.entries(values)) {
+      if (value === null || value === undefined || value === "") asked.delete(key);
+      else asked.set(key, String(value));
+    }
+    const query = asked.toString();
+    const hash = how.hash === undefined ? window.location.hash : how.hash;
+    const url = window.location.pathname + (query ? "?" + query : "") + hash;
+    const state = how.state === undefined ? window.history.state : how.state;
+    if (!how.push && url === window.location.pathname + window.location.search + window.location.hash
+        && state === window.history.state) return;
+    try {
+      if (how.push) window.history.pushState(state, "", url);
+      else window.history.replaceState(state, "", url);
+    } catch (error) { /* a sandboxed frame may refuse it */ }
+  };
+  window.mhView = Object.freeze({ get, set });
+})();
+</script>

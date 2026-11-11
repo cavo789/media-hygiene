@@ -141,6 +141,7 @@
 
   const render = () => {
     if (groups.length === 0) return;
+    window.mhView.set({ g: current() }); // a reload or a bookmark opens this group (0666)
     const group = groups[current()];
     const role = roles(group);
     showTotals();
@@ -271,7 +272,7 @@
         render();
       });
       arrange(saved);
-      at = 0;
+      at = Math.max(0, order.indexOf(window.mhView.get({ g: "int" }).g));
       render();
       showSheetButton();
     })

@@ -499,10 +499,10 @@ let tvAsked = false;
 function tvAlbums() {
   const box = $("#tvAlbums");
   if (!box) return;
-  const asked = new URLSearchParams(window.location.search).get("tv"); // the albums page's tap
+  const asked = window.mhView.get({ tv: "text" }).tv; // the albums page's tap
   if (asked && !tvAsked) {
     tvAsked = true;
-    window.history.replaceState(null, "", window.location.pathname);
+    window.mhView.set({ tv: null }, { state: null });
     tvStart(asked);
   }
   tvList = tvList || fetch(P.albumList, { cache: "no-store" })

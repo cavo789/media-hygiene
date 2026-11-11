@@ -114,6 +114,7 @@
   #albumRootForm input { flex: 1; min-width: 12em; padding: 4px 10px; font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; }
   html[data-phone] .pc-only, html:not([data-phone]) .phone-only { display: none !important; }
 </style>
+{% include "view_state.html.j2" %}
 </head>
 <body>
 {% if not link %}{% include "page_header.html.j2" %}{% endif %}

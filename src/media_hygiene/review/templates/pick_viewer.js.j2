@@ -111,14 +111,22 @@ function open() {
   $("originalLink").href = file.original;
   $("personLink").hidden = !file.path; // `/person`, served by every page (0351)
   if (file.path) $("personLink").href = "/person?path=" + encodeURIComponent(file.path);
+  // Opening pushes a step of the history: Back closes the view, as Esc (0666); ← → replace nothing.
+  if (!$("viewer").classList.contains("open")) window.mhView.set({}, { push: true, state: { mhViewer: true } });
   $("viewer").classList.add("open");
 }
 
 function close() {
+  if (window.history.state && window.history.state.mhViewer) { window.history.back(); return; } // popstate closes it
+  closeShown();
+}
+
+function closeShown() {
   $("movie").pause();
   if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
   $("viewer").classList.remove("open");
 }
+window.addEventListener("popstate", () => { if ($("viewer").classList.contains("open")) closeShown(); });
 
 // The keys of the large view: listed under it with `?` (`pick_viewer.html.j2`, `viewerHelp`).
 const VIEWER_KEYS = {

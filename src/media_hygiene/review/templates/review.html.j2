@@ -408,6 +408,7 @@ pickMoves = false;      // ←/→/Space change the series, ↑/↓ move the fra
   };
 
   const render = () => {
+    window.mhView.set({ g: current }); // a reload or a bookmark opens this series (0666)
     showTotals();
     showObvious();
     showSheetButton();
@@ -485,7 +486,8 @@ pickMoves = false;      // ←/→/Space change the series, ↑/↓ move the fra
       arrange(savedOrder());
       setBoard(savedBoard());
       buildTree();
-      current = startAt();
+      const kept = window.mhView.get({ g: "int" }).g;
+      current = kept !== undefined && kept < series.length ? kept : startAt();
       // Obvious series still to see: the page opens on their contact sheet (0581).
       if (obviousTodo().length > 0) openSheet();
       else render();

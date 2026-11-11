@@ -36,3 +36,32 @@ filter, the large view opened.
 
 Before: 4 templates of about 20 pages keep their view (measured). After: all; Back never
 throws the user out of a review they were in the middle of.
+
+## Status — PARTIAL (2026-11-11)
+
+### Done
+
+- `review/templates/view_state.html.j2`: `window.mhView.get(keys)` (only the page's keys, each
+  checked: `int`, `word`, `text` ≤ 200 characters, or a list) and `mhView.set(values, {push,
+  state, hash})`; included once, in the head, by the frame, the home page and the album page
+  (`test_pick_pages`, `tests/unit/test_view_state.py`). No other template calls
+  `pushState`/`replaceState` (tested).
+- The large view (`pick_viewer.js.j2`, every page of tiles): opening pushes a step; Back closes it
+  as Esc, the grid untouched; ← → replace nothing. The album page's own viewer goes through the
+  helper too.
+- The library: words, period and folder (the existing `folder_query` key) in the URL, so a reload
+  or a bookmark gives the same search; Back from the large view no longer reruns the search.
+- Reviews of bursts, near duplicates and pairs: the group shown is the `g` key (its rank,
+  replaced at each move), read back on load.
+- `home.js.j2`, `home_run.js.j2`, `album.js.j2`, `search.js.j2` moved onto the helper.
+- CI browser check: `tests/support/view_walk.py` (reload → same group; large view, Back → closed,
+  same scroll; hostile query string dropped), run by `tests/e2e/test_ask_dialog_browser.py`.
+
+### Not done
+
+- View keys of junk, gone, intruders, people, places, quarantine, shrink (their tab/filter):
+  the large view's Back works there already (shared viewer), not the reload of a filter.
+- A walk per page of `pages_walk.py` in Chromium: the CI check covers the shared helper and
+  viewer on one page only.
+- Other templates still read `URLSearchParams(location.search)` directly (person, quarantine,
+  album_edit, disk space…): reading only, left as is.
