@@ -1,4 +1,4 @@
-# 0708 — Detect photos shown sideways (no EXIF orientation) and offer to turn them
+# 0711 — Detect photos shown sideways (no EXIF orientation) and offer to turn them
 
 - **Priority**: Medium
 - **Batch**: slideshow
