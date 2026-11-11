@@ -166,16 +166,26 @@ def test_powershell_keeps_awake_and_titles_long_commands_only() -> None:
 
 
 def test_powershell_opens_the_browser_for_pages_only() -> None:
-    """0178: a job waits for the page, then `Start-Process`; removed at the end."""
+    """0178: a runspace waits for the page, then `Start-Process`; stopped at the end.
+
+    Not a job (a second powershell.exe), nor Invoke-WebRequest (its proxy lookup took a
+    second a try), nor a second's sleep: the page opened ~7 s after it answered.
+    """
     text = _powershell()
     assert "$page = if ($command -in @('review') -or" in text
     assert "$command -eq 'import' -and $rest -contains '--pick'" in text
     job = text.index("if ($page) {")
-    start = text.index("Start-Job -ArgumentList 'http://127.0.0.1:8088/', 5")
-    assert job < start < text.index("Start-Process $url") < text.index("docker run")
-    assert "Invoke-WebRequest -Uri $url -UseBasicParsing" in text
-    assert "if ($i -lt $wait) { Start-Process $url }" in text
-    assert "if ($browser) { Remove-Job -Job $browser -Force }" in text
+    start = text.index("$browser = _mh_browse 'http://127.0.0.1:8088/'")
+    assert job < start < text.index("docker run")
+    head = text.index("function global:_mh_browse(")
+    browse = text[head : text.index("\n}\n", head)]
+    assert "[PowerShell]::Create()" in browse
+    assert "$request.Proxy = $null" in browse
+    assert "Start-Process $url" in browse
+    assert "Start-Sleep -Milliseconds $poll" in browse
+    assert ".AddArgument(5).AddArgument(200).AddArgument(1000)" in browse
+    assert "= Start-Job" not in text
+    assert "_mh_browse_stop $browser" in text
 
 
 def test_bash_wraps_a_long_command_with_systemd_inhibit(

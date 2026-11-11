@@ -129,18 +129,12 @@ function global:_{{ f }}_phone_page($lines, [string]$destination, [string]$name)
     $page = @('-p', '127.0.0.1:{{ script.commands.port }}:{{ script.commands.port }}', '--label', "{{ guards.label }}=powershell-$PID")
     if ($global:MediaHygieneRelay) { $page += '-e', '{{ relay }}=1' }
     $browser = $null
-    if (-not $global:MediaHygieneTab) { $browser = Start-Job -ArgumentList 'http://127.0.0.1:{{ script.commands.port }}/', {{ script.commands.browse_wait }} -ScriptBlock {
-        param($url, $wait)
-        for ($i = 0; $i -lt $wait; $i++) {
-            try { $null = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 1 -ErrorAction Stop; break } catch { Start-Sleep -Seconds 1 }
-        }
-        if ($i -lt $wait) { Start-Process $url }
-    } }
+    if (-not $global:MediaHygieneTab) { $browser = _{{ f }}_browse 'http://127.0.0.1:{{ script.commands.port }}/' }
     try {
         $out = _{{ f }}_phone_docker $lines $destination $page @('{{ c.review }}', '--phone', $name, '--destination', $destination, '--port', '{{ script.commands.port }}')
         return ,$out
     } finally {
-        if ($browser) { Remove-Job -Job $browser -Force }
+        _{{ f }}_browse_stop $browser
     }
 }
 

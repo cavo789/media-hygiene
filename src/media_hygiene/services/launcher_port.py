@@ -34,6 +34,11 @@ DOCKER_LISTENERS: Final = (
 PORT_RELEASE_SECONDS: Final = 10
 # `docker run` tried again every second while the port is being released (0543).
 PORT_POLL_MILLISECONDS: Final = 1000
+# The page awaited before the browser opens on it: between two tries, and the most one
+# try waits. `Start-Job` + `Invoke-WebRequest` + a second's sleep opened it ~7 s after
+# it answered (the container's log against a stopwatch, maintainer's PC, 2026-11-11).
+BROWSE_POLL_MILLISECONDS: Final = 200
+BROWSE_TRY_MILLISECONDS: Final = 1000
 # What Docker says when it cannot bind a published port (Linux engine; Docker Desktop on
 # Windows, its "ports are not available" and the Winsock line): only then is the port
 # diagnosed (0543). Every other failure is shown as Docker said it.
@@ -44,7 +49,7 @@ BIND_REFUSED: Final = (
 
 
 @dataclass(frozen=True, slots=True)
-class PortGuard:
+class PortGuard:  # pylint: disable=too-many-instance-attributes  # one per setting
     """The lines of the port check, `${port}` in place, and Docker's names."""
 
     busy: str  # another program; holds `${name}` and `${process}`
@@ -54,6 +59,8 @@ class PortGuard:
     bind: str = BIND_REFUSED
     wait: int = PORT_RELEASE_SECONDS
     poll: int = PORT_POLL_MILLISECONDS
+    browse_poll: int = BROWSE_POLL_MILLISECONDS  # the page awaited, between tries
+    browse_try: int = BROWSE_TRY_MILLISECONDS  # the most one try waits
 
 
 def port_guard() -> PortGuard:

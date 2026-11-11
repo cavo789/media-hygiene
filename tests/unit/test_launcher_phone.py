@@ -468,8 +468,8 @@ def test_from_home_the_page_offers_its_way_back_in_the_home_tab() -> None:
         "if ($global:MediaHygieneRelay) "
         "{ $page += '-e', 'MEDIA_HYGIENE_LAUNCHER_STEPS=1' }"
     ) in page
-    assert "if (-not $global:MediaHygieneTab) { $browser = Start-Job" in page
-    assert "if ($browser) { Remove-Job -Job $browser -Force }" in page
+    assert "if (-not $global:MediaHygieneTab) { $browser = _mh_browse '" in page
+    assert "_mh_browse_stop $browser" in page
 
 
 def test_from_home_a_closed_tab_deletes_nothing_and_ends_the_loop() -> None:

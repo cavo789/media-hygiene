@@ -164,7 +164,7 @@ function global:_{{ function }}_watch {
         $ended = $true
     } finally {
         if (-not $ended) { $null = docker stop $id 2>$null; $global:LASTEXITCODE = {{ signal_base + 2 }} }
-        if ($held -and $held.browser) { Remove-Job -Job $held.browser -Force }
+        if ($held) { _{{ function }}_browse_stop $held.browser }
         if ($held -and $held.shared -and $held.shared.mounted) { _{{ function }}_unmount $held.shared.mounted }
         if ($held -and $held.nas -and $held.nas.volumes) { _{{ function }}_nas_release $held.nas.volumes }
     }

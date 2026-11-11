@@ -183,13 +183,7 @@ function global:{{ function }} {
         if ($page -and -not $global:MediaHygieneTab) {
             # The browser opens on the page as soon as it answers (0178); not from the loop of
             # `{{ function }}` alone once its tab is open: that tab follows each page (0280).
-            $browser = Start-Job -ArgumentList 'http://127.0.0.1:{{ script.commands.port }}/', {{ script.commands.browse_wait }} -ScriptBlock {
-                param($url, $wait)
-                for ($i = 0; $i -lt $wait; $i++) {
-                    try { $null = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 1 -ErrorAction Stop; break } catch { Start-Sleep -Seconds 1 }
-                }
-                if ($i -lt $wait) { Start-Process $url }
-            }
+            $browser = _{{ function }}_browse 'http://127.0.0.1:{{ script.commands.port }}/'
         }
         $run = {
             $ErrorActionPreference = 'Continue'  # Docker's error lines are data, never a stop
@@ -239,7 +233,7 @@ function global:{{ function }} {
             # The server runs on: its tab, its stick and its NAS are released once it ended.
             $global:MediaHygieneHeld = @{ browser = $browser; shared = $shared; nas = $nas }
         } else {
-            if ($browser) { Remove-Job -Job $browser -Force }
+            _{{ function }}_browse_stop $browser
             if ($shared.mounted) { _{{ function }}_unmount $shared.mounted }
             if ($nas.volumes) { _{{ function }}_nas_release $nas.volumes }
         }
@@ -268,6 +262,38 @@ function global:{{ function }} {
     }
     if ($follow) { {{ function }} review --gone @typed }
     if ($command -eq 'import' -and $rest -contains '--pick' -and -not $detach) { _{{ function }}_phone_chain_waiting }
+}
+
+# The browser opened on a page as soon as it answers (0178), from a runspace of this
+# PowerShell: Start-Job started a second powershell.exe, and Invoke-WebRequest looked for
+# a proxy (1 s per try even on a closed port) then slept a second: the page opened ~7 s
+# after it answered (maintainer's PC, 2026-11-11). Docker Desktop accepts the port before
+# the server listens: a try fails fast then, and the next comes {{ guards.port.browse_poll }} ms later.
+function global:_{{ function }}_browse([string]$url) {
+    $browser = [PowerShell]::Create()
+    $null = $browser.AddScript({
+        param($url, $wait, $poll, $try)
+        $until = [DateTime]::UtcNow.AddSeconds($wait)
+        while ([DateTime]::UtcNow -lt $until) {
+            try {
+                $request = [Net.WebRequest]::Create($url)
+                $request.Proxy = $null
+                $request.Timeout = $try
+                $request.GetResponse().Close()
+                Start-Process $url
+                return
+            } catch { Start-Sleep -Milliseconds $poll }
+        }
+    }).AddArgument($url).AddArgument({{ script.commands.browse_wait }}).AddArgument({{ guards.port.browse_poll }}).AddArgument({{ guards.port.browse_try }})
+    $null = $browser.BeginInvoke()
+    return $browser
+}
+
+# The wait for the page ended with the command (its window closed, Ctrl+C).
+function global:_{{ function }}_browse_stop($browser) {
+    if (-not $browser) { return }
+    try { $browser.Stop() } catch { }
+    $browser.Dispose()
 }
 
 # `{{ function }} open`: the catalogue of every report in the default browser (0175).
