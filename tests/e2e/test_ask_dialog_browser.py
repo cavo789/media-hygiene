@@ -1,6 +1,7 @@
 """The shared page pieces in Chromium: ask, busy, view in the URL, a step running.
 
-Ask (0663), busy (0664), the view in the URL (0666), a step on every page (0661).
+Ask (0663), busy (0664), the view in the URL (0666), a step on every page (0661),
+the controls visible at load and the bar menus (0665).
 
 Heavy (the Playwright image): CI only, where `MEDIA_HYGIENE_E2E_BROWSER` is set.
 """
@@ -78,3 +79,10 @@ def test_a_running_step_shows_on_the_page_then_its_end(
 ) -> None:
     """A mocked step, running then done: chip, tab title, end said, no error (0661)."""
     assert _walk(tmp_path, "step_walk.py", template) == ""
+
+
+def test_the_library_shows_few_controls_and_its_menus_open_by_the_keyboard(
+    tmp_path: Path,
+) -> None:
+    """Visible controls at load under the cap; ↓ opens Move ▾, Esc closes it (0665)."""
+    assert _walk(tmp_path, "menu_walk.py", "search.html.j2") == ""

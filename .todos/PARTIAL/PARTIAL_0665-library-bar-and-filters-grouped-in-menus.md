@@ -51,3 +51,45 @@ Load the `photo-picking-pages` skill first: the bar is shared, so the change goe
 
 Before: 243 controls in the page (measured), 10 entries on the bar's line 2. After: 4 menus
 and 3 buttons at the same place on every page (estimated 60 → 25 visible controls).
+
+## Status — PARTIAL (2026-11-11)
+
+### Done
+- One menu component (`pick_bar_panel.js.j2`): ↓ on a summary opens, ↑ ↓ move, Esc closes and
+  gives the focus back, the letter drawn at an entry's right (`data-key`) runs it; focus ring
+  of 0669 kept (native summaries and buttons). Listed in the ⌨ panel.
+- Line 2's fixed order from one list (`bar_menus`, `pick_bar.css.j2`): 📂 Move ▾ (search's
+  `pick_first`, primary), 📚 Album ▾, ▶ Slideshow ▾ (moved from line 1 to line 2),
+  🏷 Describe ▾, 🔀 Invert; gap; 🗑 Set aside, Apply now.
+- Filters: words, dates, *Path contains* shown; album, Show, Sorted, Without, place under
+  *More filters ▾* (open state in the URL, `?filters=more`); the album filter got its chip
+  (the others had one, 0565).
+- Old → new (no action lost, every key kept: the buttons keep their ids, keys call `.click()`):
+
+  | Before (line 2) | After |
+  |---|---|
+  | 📂 Move to an event… (primary button) | 📂 Move ▾ → to an event… (E) |
+  | 🗓 Move to their month… | 📂 Move ▾ → to their month… (M) |
+  | ↩ Take out of the set aside | same place |
+  | 🔀 Invert (I) | after the menus |
+  | 🗑 Put aside (Delete) | same, right end |
+  | ▶ Slideshow ▾ (line 1) | line 2, 3rd menu (H, T) |
+  | 📚 Album ▾, ➕ | 2nd menu |
+  | 🏷 Describe ▾ (tag, date, place) | 4th menu (T, D, P) |
+  | Sort by, S M L | line 1 (view controls), unchanged |
+
+- Visible controls at load on `/library`, *measured* from the served HTML
+  (`tests/support/visible_controls.py`: not inside a closed `<details>`, `hidden`,
+  `<dialog>`, `<template>`): **46 → 33**; cap 33 in `test_pick_pages.py`. Present in the
+  page: 187 → 189; 17 `<dialog>` (the TODO's 243 / 14 came from another count).
+- CI browser walk `tests/support/menu_walk.py` (Chromium `checkVisibility`, cap 40 estimated).
+- Docs EN + FR `commands/library.md`; skill table with the menu order.
+
+### Not done
+- *to a folder* in Move ▾. **Reason:** no move-to-a-folder action exists on the page.
+- *make from the results* / *link* in Album ▾: *📚 album of the results* stays in the left
+  column. **Reason:** it acts on every file found, not the picking; moving it into the
+  picking's menu needs the maintainer's choice.
+- The grouping itself awaits the maintainer's review (the TODO's question, mock-up = the PR).
+- The browser cap (40) is an estimate until the first CI run prints the real count.
+- `docs_screenshots` should run (bar and left column changed).

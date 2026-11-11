@@ -1380,6 +1380,13 @@ msgstr "Dossier de l'album"
 msgid "Album {name}"
 msgstr "Album {name}"
 
+msgid ""
+"Album, kind, sorted, without a date or a place, place: an active one "
+"shows as a chip above the photos"
+msgstr ""
+"Album, type, rangé, sans date ou sans lieu, lieu : un filtre actif se "
+"montre en pastille au-dessus des photos"
+
 msgid "Albums"
 msgstr "Albums"
 
@@ -5940,6 +5947,9 @@ msgstr "Modifié (UTC)"
 msgid "Month"
 msgstr "Mois"
 
+msgid "More filters"
+msgstr "Plus de filtres"
+
 msgid "More keys"
 msgstr "Plus de touches"
 
@@ -6022,6 +6032,9 @@ msgstr ""
 "Montez votre dossier, par exemple -v \"$HOME\\media-"
 "hygiene\\config:/config\"."
 
+msgid "Move"
+msgstr "Déplacer"
+
 msgid ""
 "Move each photo picked to its own month, year then year-month, with no "
 "event folder"
@@ -6060,6 +6073,11 @@ msgid ""
 msgstr ""
 "Déplacer les photos choisies dans le dossier d'un événement, année puis "
 "année-mois, sans écrire de règle"
+
+msgid "Move the photos picked: to an event folder, or each one to its month"
+msgstr ""
+"Déplacer les photos choisies : dans le dossier d'un événement, ou chacune"
+" dans son mois"
 
 msgid ""
 "Move the picked photos into the event folder, journaled: undo puts them "
@@ -16410,6 +16428,15 @@ msgstr "rien : tapez mh push à nouveau après votre prochain import ou tri."
 
 msgid "ok"
 msgstr "ok"
+
+msgid ""
+"on a menu ▾ of the bar: open it; ↑ ↓ move, the letter at the right of an "
+"entry runs it (Move: E event, M month; Slideshow: H this PC, T TV; "
+"Describe: T tag, D date, P place)"
+msgstr ""
+"sur un menu ▾ de la barre : l'ouvre ; ↑ ↓ s'y déplacent, la lettre à droite "
+"d'une entrée la lance (Déplacer : E événement, M mois ; Diaporama : H ce PC, "
+"T télé ; Décrire : T étiquette, D date, P lieu)"
 
 msgid "on a video you clicked: play, seek; Esc gives the keys back"
 msgstr "sur une vidéo cliquée : lecture, avance ; Échap rend les touches"

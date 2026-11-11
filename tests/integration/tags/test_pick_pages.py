@@ -12,6 +12,7 @@ from media_hygiene.review.place import DecisionsPlace
 from media_hygiene.services.review_file import review_page
 from tests.support.pick_pages import PICK_PARTS
 from tests.support.search_page import serve_search
+from tests.support.visible_controls import visible_controls
 
 if TYPE_CHECKING:
     from typer.testing import CliRunner
@@ -56,8 +57,8 @@ def test_set_aside_and_apply_end_the_second_line_of_every_page(
 ) -> None:
     """The shared rules fix their place; the album and the rest are panels."""
     page = _pages(cli, monkeypatch)[0]
-    assert "#acting > #setAside { order: 6; margin-left: auto; }" in page
-    assert "#bar > #applyBar { order: 7;" in page
+    assert "#acting > #setAside { order: 9; margin-left: auto; }" in page
+    assert "#bar > #applyBar { order: 10;" in page
     assert '<details id="albumBar" class="barPanel">' in page
     assert "reference-albums/" in page.split('id="albumBar"')[1].split("albumName")[1]
     assert '<details id="moveBar" class="barPanel closesOnChoice">' in page
@@ -229,11 +230,61 @@ def test_the_bar_buttons_wear_their_role(
     assert (
         "button.danger { color: var(--mk-on-danger); background: var(--bad)" in search
     )
-    move = _bar_tag(search, "moveOpen")
-    assert "primary" in move
-    assert "plain" not in move
+    move = search.split('<details id="moveMenu"')[1].split("</summary>")[0]
+    assert '<summary class="primary"' in move
     assert "Move to an event…" in search
     acting = search.split('<span id="acting" hidden>')[1].split("</span>")[0]
-    assert acting.index('id="moveOpen"') < acting.index('id="invert"')
+    assert acting.index('id="moveMenu"') < acting.index('id="invert"')
     apply_now = Path(templates.__file__).with_name("templates") / "apply_now.html.j2"
     assert "plain" not in _bar_tag(apply_now.read_text(encoding="utf-8"), "applyNow")
+
+
+# The menus of line 2 (0665), in this order on every page of tiles (one list, CSS).
+_MENU_ORDER = (
+    "#acting > #moveMenu { order: 4; }",
+    "#bar > #albumBar, #bar > #albumQuick { order: 5; }",
+    "#bar > #showBar { order: 6; }",
+    "#bar > #moveBar { order: 7; }",
+    "#acting > #invert { order: 8; }",
+)
+# Controls visible at load on /library, counted from the HTML (visible_controls):
+# 46 before 0665 (2026-11-11), 33 after; a new one must find its place in a menu.
+_MOST_VISIBLE = 33
+
+
+def test_the_bar_menus_come_in_one_order_and_open_by_the_keyboard(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Move, Album, Slideshow, Describe, Invert; entries carry their letter (0665)."""
+    search = _pages(cli, monkeypatch)[0]
+    places = [search.index(rule) for rule in _MENU_ORDER]
+    assert places == sorted(places)
+    for ident, letters in (("moveMenu", "EM"), ("moveBar", "TDP")):
+        menu = search.split(f'<details id="{ident}"')[1].split("</details>")[0]
+        assert [f'data-key="{letter}"' in menu for letter in letters] == [True] * len(
+            letters
+        )
+    assert 'event.key === "ArrowDown"' in search
+    assert "[data-key]::after { content: attr(data-key);" in search
+
+
+def test_the_less_used_filters_fold_and_an_active_one_stays_a_chip(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Words, dates, path shown; the rest under More filters; their chips (0565)."""
+    search = _pages(cli, monkeypatch)[0]
+    side = search.split('<aside id="side">')[1].split("</aside>")[0]
+    folded = side.split('<details id="moreFilters">')[1].split("</details>\n")[0]
+    for ident in (
+        'id="albumIn"',
+        'id="kind"',
+        'id="sorting"',
+        'id="missing"',
+        'id="placeIn"',
+    ):
+        assert ident in folded
+    for ident in ('id="text"', 'id="from"', 'id="folder"'):
+        assert ident not in folded
+    for chip in ("body.album.inside !== null", 'body.sorting !== "all"', "body.place"):
+        assert chip in search
+    assert visible_controls(search) <= _MOST_VISIBLE

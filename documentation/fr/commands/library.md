@@ -64,6 +64,11 @@ d'une seule source) dans la colonne de gauche, les touches ⌨ en dessous, une s
 de la grille, puis les photos trouvées. **🔎 Mots** vient d'abord, **📁 Dossiers** ensuite : il
 ouvre [vos dossiers](#parcourir-vos-dossiers). Ctrl+C, ou fermer son onglet, arrête la page.
 
+La colonne de gauche montre les mots, les dates et *Chemin contient* ; **Plus de filtres ▾**
+range les autres (album, *Afficher*, *Rangé*, *Sans*, lieu). Un filtre actif est toujours une
+pastille sur la première ligne de la barre, replié ou non, et la page retient dans son adresse
+si le menu est ouvert.
+
 **Chemin contient** prend une partie du chemin, sans tenir compte des majuscules. `*` remplace
 n'importe quels caractères et `?` un seul : `*.mov` trouve tous les fichiers `.mov` (`.MOV`
 aussi). Entre deux barres obliques, c'est une expression régulière : `/\.(mov|mp4)$/`. Tout le
@@ -117,12 +122,15 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
 - **La barre** a deux lignes qui ne bougent jamais, quoi qu'on choisisse ou trouve : en haut, où
   vous en êtes (le nombre, puis chaque filtre actif en pastille — un mot, la période, le chemin,
   le dossier, *pas encore*, 📷 — dont la **✕** le retire et relance la recherche ; celles qui
-  ne tiennent pas se replient en **+N**, un clic les liste sous la barre), **▶ Diaporama ▾** (sur ce PC ou sur la télé), **Trier par** et la taille des vignettes **S**
+  ne tiennent pas se replient en **+N**, un clic les liste sous la barre), **Trier par** et la taille des vignettes **S**
   (les photos seules), **M**, **L** (tous les mots), gardée pour ce navigateur ; en dessous, que
   faire des fichiers choisis — grisé tant qu'aucun ne l'est : d'abord
-  **📂 Déplacer vers un événement…** (plein : l'action principale), **🗓 Déplacer vers leur mois…**, **🔀 Inverser**, deux petits panneaux, **🏷 Décrire** (étiquette,
-  date, lieu) et **📚 Album**, puis, tout à droite comme sur chaque page de vignettes,
-  **🗑 Mettre de côté** en rouge et **✅ Appliquer**. Pointez un bouton pour son
+  quatre menus dans le même ordre sur chaque page de vignettes, **📂 Déplacer ▾** (plein :
+  l'action principale ; *vers un événement…* E, *vers leur mois…* M), **📚 Album ▾**,
+  **▶ Diaporama ▾** (sur ce PC H ou sur la télé T), **🏷 Décrire ▾** (étiquette T, date D, lieu P),
+  puis **🔀 Inverser**, et tout à droite **🗑 Mettre de côté** en rouge et **✅ Appliquer**. Un
+  menu s'ouvre d'un clic ou de ↓ ; ↑ ↓ s'y déplacent, la lettre à droite d'une entrée la lance,
+  Échap le ferme. Pointez un bouton pour son
   nom complet et sa touche. **✅ Appliquer** le rappelle aussi : 🔒 rien ne bouge sans votre GO ;
   chaque déplacement est journalisé, `undo` le défait. Un fichier mis de côté compte comme
   disparu pour toute action sauf *Reprendre* : choisi avec les autres (Ctrl+A, Maj, le

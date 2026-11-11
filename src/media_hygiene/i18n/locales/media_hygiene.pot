@@ -1083,6 +1083,11 @@ msgstr ""
 msgid "Album {name}"
 msgstr ""
 
+msgid ""
+"Album, kind, sorted, without a date or a place, place: an active one "
+"shows as a chip above the photos"
+msgstr ""
+
 msgid "Albums"
 msgstr ""
 
@@ -4934,6 +4939,9 @@ msgstr ""
 msgid "Month"
 msgstr ""
 
+msgid "More filters"
+msgstr ""
+
 msgid "More keys"
 msgstr ""
 
@@ -4998,6 +5006,9 @@ msgstr ""
 msgid "Mount your folder, e.g. -v \"$HOME\\media-hygiene\\config:/config\"."
 msgstr ""
 
+msgid "Move"
+msgstr ""
+
 msgid ""
 "Move each photo picked to its own month, year then year-month, with no "
 "event folder"
@@ -5024,6 +5035,9 @@ msgstr ""
 msgid ""
 "Move the photos picked to an event folder, year then year-month, without "
 "writing a rule"
+msgstr ""
+
+msgid "Move the photos picked: to an event folder, or each one to its month"
 msgstr ""
 
 msgid ""
@@ -13752,6 +13766,12 @@ msgid "nothing: type mh push again after your next import or sort."
 msgstr ""
 
 msgid "ok"
+msgstr ""
+
+msgid ""
+"on a menu ▾ of the bar: open it; ↑ ↓ move, the letter at the right of an "
+"entry runs it (Move: E event, M month; Slideshow: H this PC, T TV; "
+"Describe: T tag, D date, P place)"
 msgstr ""
 
 msgid "on a video you clicked: play, seek; Esc gives the keys back"

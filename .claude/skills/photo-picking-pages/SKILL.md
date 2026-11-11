@@ -51,6 +51,24 @@ at least `key`, `name`, `preview`, `original`, `chosen`, optionally `video`, `da
 Order: the page's most used action first, right after the count (`{% set pick_first = "<template>" %}`
 before including `pick_acting.html.j2`), *Set aside* last.
 
+**Line 2's menus** (0665): one component (`.barPanel`, `pick_bar_panel.js.j2`) for every group,
+in this order on every page — the one list `bar_menus` of `pick_bar.css.j2` sets it:
+
+| # | Menu | Entries (letter) |
+|---|---|---|
+| 1 | *📂 Move ▾* (search: primary, it is `pick_first`) | to an event (E) · to their month (M) |
+| 2 | *📚 Album ▾* (+ ➕ once named) | add · take out · share on the TV · prepare for sending |
+| 3 | *▶ Slideshow ▾* (0660) | on this PC (H) · on the TV (T) |
+| 4 | *🏷 Describe ▾* | tag (T) · date (D) · place (P) |
+| 5 | *🔀 Invert* | — |
+| — | a gap, then *🗑 Set aside*, *Apply now* | |
+
+Keyboard: ↓ on a menu opens it, ↑ ↓ move inside, the letter (`data-key`, drawn at the entry's
+right) runs it, Esc closes and gives the focus back to the menu; a page lists them in ⌨.
+A menu a page lacks is left out, never replaced. Filters (search): words, dates, *Path
+contains* shown; the others under *More filters ▾* (open state in the URL), every active one a
+chip on line 1. Visible controls at load are capped by a test (`tests/support/visible_controls.py`).
+
 - Never act on what is not shown: Ctrl+A and every bar button act on the tiles shown; the only
   wider action (*Pick all N found*) states its count, and that count is what is posted
   (set-aside files left out).

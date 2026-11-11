@@ -64,6 +64,10 @@ column, the ⌨ keys under them, one bar above the grid, then the photos found. 
 first, **📁 Folders** second: it opens [your folders](#walk-through-your-folders). Ctrl+C, or closing its tab,
 stops the page.
 
+The left column shows the words, the dates and *Path contains*; **More filters ▾** holds the
+others (album, *Show*, *Sorted*, *Without*, place). An active one is always a chip on the bar's
+first line, folded or not, and the page remembers in its address whether the menu is open.
+
 **Path contains** takes a part of the path, case-insensitive. `*` stands for any characters and
 `?` for one: `*.mov` finds every `.mov` file (`.MOV` too). Between two slashes it is a regular
 expression: `/\.(mov|mp4)$/`. Anything else is read as typed, so `Vacances (2019)` or `a+b` need
@@ -113,11 +117,13 @@ helps: `*.mp4` or a regular expression are still searched as typed.
 - **The bar** has two lines that never move, whatever is picked or found: on top, where you are
   (the count, then each active filter as a chip — a word, the period, the path, the folder,
   *not yet*, 📷 — whose **✕** removes it and searches again; those that do not fit fold into
-  **+N**, a click lists them under the bar), **▶ Slideshow ▾** (on this PC or on the TV), **Sort by** and the thumbnail size **S** (photos only), **M**,
+  **+N**, a click lists them under the bar), **Sort by** and the thumbnail size **S** (photos only), **M**,
   **L** (every word), kept for this browser; below, what to do with the files picked — greyed
-  while none is: first **📂 Move to an event…** (filled: the main action), **🗓 Move to their month…**, **🔀 Invert**, two small panels, **🏷 Describe** (tag, date, place)
-  and **📚 Album**, then, at the far right as on every page of tiles, **🗑 Put aside** in red and
-  **✅ Apply**. Point at a button for its
+  while none is: four menus in the same order on every page of tiles, **📂 Move ▾** (filled: the
+  main action; *to an event…* E, *to their month…* M), **📚 Album ▾**, **▶ Slideshow ▾** (on this
+  PC H or on the TV T), **🏷 Describe ▾** (tag T, date D, place P), then **🔀 Invert**, and at the
+  far right **🗑 Put aside** in red and **✅ Apply**. A menu opens with a click or ↓ on it; ↑ ↓
+  move inside, the letter at the right of an entry runs it, Esc closes it. Point at a button for its
   whole name and its key. **✅ Apply** says it too: 🔒 nothing moves without your GO; every move
   is journaled, `undo` puts it back. A file set aside counts as gone for every action but
   *Take back*: picked with the others (Ctrl+A, Shift, the rectangle), it stays out of the

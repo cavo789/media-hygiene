@@ -76,6 +76,7 @@ _GET, _POST = "GET", "POST"
 # The controls of a page of photos to pick that write, hidden on a phone (0429).
 PHONE_HIDDEN: Final = (
     "#setAside", "#takeBack", "#chosen", "#applyBar", "#ruleOpen", "#moveBar",
+    "#moveMenu",
     ".unname", ".writes",
     # Nothing to pick on a phone, no keyboard, albums made on the PC (2026-10-27).
     "#albumBar", "#keys", ".tick",
