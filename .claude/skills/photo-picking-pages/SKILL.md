@@ -97,7 +97,7 @@ keep their height whether something is picked or not: **the grid never moves** w
 | Delete | sets the picked files aside |
 | Enter · double click | the large view |
 
-**Large view**: ← → previous/next, Home/End, Delete sets aside then the next one, Backspace takes
+**Large view**: ← → previous/next, Home/End, Delete sets aside then the previous one (else the next, 0517), Backspace takes
 back, Space plays a video, F full screen, I its facts, A to the album typed, ? every key, Esc closes.
 
 **Keys never fire while typing** in a field (`INPUT`, `SELECT`): Ctrl+A selects the text there. A
@@ -130,7 +130,7 @@ opened from the home page.
   to pick. On the frame, with the shared large view's markup and look (`pick_viewer.html.j2`,
   `pick_album = false`) driven by its own `people_viewer.js.j2`: ← → Home End go through the
   faces of the section clicked; Delete / Backspace set aside or take back the one photo shown
-  (Delete then steps to the next face not set aside, else the previous, none left closes the
+  (Delete then steps to the previous face not set aside, else the next, as everywhere; none left closes the
   view; Backspace stays on the photo); no Space, no A, no 👤 (this is the
   page of people). A click opens the large view (no picking: × marks a face as someone
   else's, saved by the section's next button); ↑ ↓ / j k move between sections, x picks a

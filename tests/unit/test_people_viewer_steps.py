@@ -9,11 +9,11 @@ import media_hygiene
 _ROOT = Path(media_hygiene.__file__).parent
 
 
-def test_delete_steps_to_the_next_face_then_the_previous() -> None:
-    """Set aside: next face, else the previous, else the view closes (0667)."""
+def test_delete_steps_to_the_previous_face_then_the_next() -> None:
+    """Set aside: previous face, else the next, else the view closes (0667, 0517)."""
     script = (_ROOT / "people/templates/people_viewer.js.j2").read_text("utf-8")
-    assert "viewerNotAside(viewing.at, 1)" in script
-    assert "viewerNotAside(viewing.at, -1)" in script
+    assert "const before = viewerNotAside(viewing.at, -1);" in script
+    assert "before >= 0 ? before : viewerNotAside(viewing.at, 1)" in script
     assert "closeViewer()" in script.split("async function viewerChoice")[1]
 
 

@@ -82,8 +82,8 @@ async function viewerChoice(action) {
   if (!result) return;
   face.aside = action === "add";
   if (action === "add") {
-    const next = viewerNotAside(viewing.at, 1);
-    const shown = next >= 0 ? next : viewerNotAside(viewing.at, -1);
+    const before = viewerNotAside(viewing.at, -1);  // as the shared large view (0517)
+    const shown = before >= 0 ? before : viewerNotAside(viewing.at, 1);
     if (shown < 0) { closeViewer(); return; }
     viewerAt(shown);
   } else {
