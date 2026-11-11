@@ -71,3 +71,26 @@ function tests_quick() {
         _gentle pytest "${selected[@]}" "$@"
     )
 }
+
+# @cat Quality
+# @cmd bench_pages [sizes]
+# @desc Time the pages' routes on synthetic libraries (10000 100000 by default), fail on +30 %
+function bench_pages() {
+    local -a sizes=("$@")
+    ((${#sizes[@]} == 0)) && sizes=(10000 100000)
+    local -r work="/tmp/media-hygiene/bench-pages"
+    local -a results=()
+    local size
+    mkdir -p "${work}"
+    (
+        cd "$(_repo_root)" || return 1
+        for size in "${sizes[@]}"; do
+            printf "⏱️  %s files (the index is built once into %s)...\n" "${size}" "${work}"
+            # One size at a time, at the lowest priority, 4 processors at most.
+            nice -n 19 env PYTHON_CPU_COUNT=4 uv run --frozen --quiet python -m tests.measure.pages.bench \
+                "${size}" "${work}" --out "${work}/${size}.json" >/dev/null || return 1
+            results+=("${work}/${size}.json")
+        done
+        uv run --frozen --quiet python -m tests.measure.pages.budget "${results[@]}"
+    )
+}

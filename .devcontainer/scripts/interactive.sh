@@ -39,6 +39,7 @@ export -f lint
 export -f format
 export -f tests
 export -f tests_quick
+export -f bench_pages
 export -f build
 export -f release
 export -f _dive_archive

@@ -16,7 +16,7 @@ One `/todo:run NNNN` each, highest priority first.
 
 | ID | Priority | Title | Batch |
 |---|---|---|---|
-| 0678 | Medium | A speed budget for the pages: every route timed on a synthetic 100,000-file index | tests |
+| 0693 | Medium | The people page's first grouping compares every face with every face | page-speed |
 | 0668 | Low | Places page: its 1,154-line template split, dialogs and keys from the shared parts | places |
 | 0670 | Low | One *Settings* entry listing every setting, each opening on its page | settings-on-pages |
 | 0675 | Low | Large view preloads the next and previous photo | page-speed |
@@ -139,6 +139,7 @@ One `/todo:run NNNN` each, highest priority first.
 | 0669 | Accessibility and comfort checked on every page: motion, focus, contrast, zoom | [PARTIAL_0669-pages-accessibility-and-comfort-checks.md](PARTIAL/PARTIAL_0669-pages-accessibility-and-comfort-checks.md) |
 | 0671 | Pages resist hostile names: a test with poisoned file names and EXIF, CSP without `unsafe-inline` | [PARTIAL_0671-pages-csp-without-unsafe-inline-and-hostile-names.md](PARTIAL/PARTIAL_0671-pages-csp-without-unsafe-inline-and-hostile-names.md) |
 | 0673 | Thumbnails kept by the browser across runs: content-named URLs, never asked again | [PARTIAL_0673-thumbnails-cached-by-the-browser-across-runs.md](PARTIAL/PARTIAL_0673-thumbnails-cached-by-the-browser-across-runs.md) |
+| 0678 | A speed budget for the pages: every route timed on a synthetic 100,000-file index | [PARTIAL_0678-page-speed-budget-on-a-synthetic-library.md](PARTIAL/PARTIAL_0678-page-speed-budget-on-a-synthetic-library.md) |
 | 0683 | Paired phones and TVs: last seen, expiry when unused, *Forget all*, and what each one did | [PARTIAL_0683-paired-devices-last-seen-expiry-and-activity.md](PARTIAL/PARTIAL_0683-paired-devices-last-seen-expiry-and-activity.md) |
 | 0687 | The journals and the user's choices are saved with `mh backup`, and undo survives a lost journal | [PARTIAL_0687-journals-and-choices-saved-off-the-pc.md](PARTIAL/PARTIAL_0687-journals-and-choices-saved-off-the-pc.md) |
 | 0688 | The quarantine is covered by the NAS copy, or `purge` says what has no other copy | [PARTIAL_0688-quarantine-protected-until-purge.md](PARTIAL/PARTIAL_0688-quarantine-protected-until-purge.md) |
