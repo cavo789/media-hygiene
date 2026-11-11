@@ -4,9 +4,15 @@
 - **Batch**: lan-security
 - **Depends**: —
 - **Files**: `src/media_hygiene/review/lan_paths.py`, `src/media_hygiene/review/lan_app.py`, `src/media_hygiene/review/lan_phones.py`, `src/media_hygiene/review/report_files.py`, `src/media_hygiene/share/album_link_door.py`, `src/media_hygiene/share/album_links.py`, `tests/unit/`
-- **Needs maintainer**: a decision on the roles (family = everything, guest = chosen albums) and on what a guest may see of the reports
 
 Filed by the UX / speed / security review of 2026-11-10 (asked by the maintainer; analysis only, no code changed).
+
+
+## Decided (2026-11-11)
+
+By the maintainer: the proposed roles. **Family** = the whole library and the
+reports (as the phone today); **guest** = the chosen albums only, never the reports, 404
+everywhere else.
 
 ## Context
 

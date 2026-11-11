@@ -4,9 +4,22 @@
 - **Batch**: lan-security
 - **Depends**: —
 - **Files**: `src/media_hygiene/review/lan_address.py`, `src/media_hygiene/review/lan_problem.py`, `src/media_hygiene/cli/templates/mh_lan.ps1.j2`, `src/media_hygiene/services/launcher_lan.py`, `documentation/en/commands/home.md`, `documentation/fr/commands/home.md`, `documentation/en/reference-safety.md`, `documentation/fr/reference-safety.md`
-- **Needs maintainer**: the decision between the options below; for the VPN option, a try with Tailscale on the PC and one phone
+- **Needs maintainer**: a try with Tailscale (or WireGuard) on the PC and one phone, away from home (4G), once the VPN acceptance is built
 
 Filed by the UX / speed / security review of 2026-11-10 (asked by the maintainer; analysis only, no code changed).
+
+
+## Decided (2026-11-11)
+
+By the maintainer: the need is **reaching the PC at home from anywhere over the
+Internet** (the PC left on; the photos shown at a brother-in-law's, in a restaurant, at the
+office in another town). The in-laws have no Internet, so options A and C do not answer it.
+
+- **B (a private VPN, Tailscale or WireGuard) is the path to investigate first**: the same
+  result as exposing `mh` on the Internet, without opening it to the whole Internet.
+- **D (port forwarding / reverse proxy) stays refused**, said in the docs and by `mh`: the
+  pages were built for a home network, not for the open Internet.
+- A and C are not wanted now.
 
 ## Context
 
