@@ -10911,6 +10911,11 @@ msgstr ""
 msgid "Still undoable: {what}"
 msgstr "Encore annulable : {what}"
 
+msgid "Still working: the answer of mh is awaited (a slow disk can take a while)."
+msgstr ""
+"Toujours en cours : la réponse de mh est attendue (un disque lent peut "
+"prendre un moment)."
+
 msgid "Stop"
 msgstr "Arrêter"
 
@@ -11839,7 +11844,9 @@ msgid "The folder to show, as the Explorer shows it"
 msgstr "Le dossier à montrer, tel que l'Explorateur le montre"
 
 msgid "The folder typed for this event is not saved. Save it before leaving?"
-msgstr "Le dossier tapé pour cet événement n'est pas enregistré. L'enregistrer avant de partir ?"
+msgstr ""
+"Le dossier tapé pour cet événement n'est pas enregistré. L'enregistrer "
+"avant de partir ?"
 
 #, python-brace-format
 msgid "The folder {path} is not mounted."

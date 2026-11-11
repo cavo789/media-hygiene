@@ -462,11 +462,6 @@ dialog::backdrop { background: rgba(20, 8, 32, .58); backdrop-filter: blur(2px);
 .keys-list { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 10px 18px; margin: 0; }
 .keys-list dt { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
 .keys-list dd { margin: 0; color: var(--mk-ink-soft); }
-.toasts { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 22px); z-index: 70; transform: translateX(-50%); width: min(560px, calc(100vw - 32px)); display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
-.toast { pointer-events: auto; display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: start; gap: 10px; padding: 12px 12px 12px 14px; border-radius: 12px; background: var(--mk-ink); color: var(--mk-bg); box-shadow: var(--mk-shadow-3); }
-.toast > .i { margin-top: 2px; }
-.toast-x { display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 8px; background: transparent; color: inherit; cursor: pointer; }
-.toast-x:hover { background: var(--mk-ink-soft); }
 .copybox { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 22px); z-index: 65; transform: translateX(-50%); width: min(640px, calc(100vw - 32px)); display: flex; flex-direction: column; gap: 10px; padding: 16px; border: 2px solid var(--mk-primary); border-radius: 14px; background: var(--mk-surface); box-shadow: var(--mk-shadow-3); }
 .copybox-cmd { display: block; padding: 10px 12px; border-radius: 8px; background: var(--mk-code-bg); color: var(--mk-code-fg); font: 500 .9rem/1.4 var(--mk-font-mono); overflow-wrap: anywhere; user-select: all; }
 .copybox-foot { display: flex; justify-content: flex-end; gap: 8px; }

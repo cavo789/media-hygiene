@@ -53,6 +53,7 @@ docker run --rm -it `
 | Il faut | Les dossiers de l'outil (`/reports`, `/journal`, `/quarantine`, `/cache`), comme pour `status` ; vos dossiers pour l'audit ; `-p 127.0.0.1:8088:8088` pour la page. |
 | Écrit | Rien par elle-même ; l'audit lancé depuis la page écrit son cache et son rapport, comme `audit` ; la [page des albums](#vos-albums-sur-le-téléphone) ne change que `albums.json`. |
 | Annuler | Rien à annuler ; chaque étape garde sa propre annulation. |
+| Pendant le travail | Sur chaque page, un bouton qui enregistre devient gris avec une roue jusqu'à la réponse (un second clic ne fait rien de plus) ; une grille en chargement montre d'abord des tuiles grises, elle ne saute donc jamais. Après 10 s, une ligne dit que le travail continue. Résultats et erreurs s'affichent en bas de la page : un résultat s'efface, une erreur reste jusqu'à ce que vous la fermiez. |
 | Avec `mh` | `mh home`. |
 
 ## Ce que montre la page

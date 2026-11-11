@@ -326,11 +326,14 @@ function albumAimed() {
   return { name: name, inside: wanted === "in" ? true : wanted === "out" ? false : null };
 }
 
+// What was found stays in the line; a failure is a toast that stays (0664).
 function told(text, error) {
-  $("status").className = error ? "error" : "";
-  $("status").textContent = text;
+  $("status").className = "";
+  $("status").textContent = error ? "" : text;
+  if (error) { window.mhPlaceholders.clear($("grid")); window.mhSay(text, "error"); }
 }
 
+const PLACEHOLDER_TILES = 12;  // about two rows on a PC screen while the first answer comes
 async function search(event, again) {
   if (event) event.preventDefault();
   if (!again) trialAgain = null;
@@ -346,6 +349,7 @@ async function search(event, again) {
   };
   const lateBefore = window.mhLate ? window.mhLate.opened : 0;
   const trialBefore = trialShows;
+  if (!again && !cards.length) window.mhPlaceholders($("grid"), PLACEHOLDER_TILES);  // the grid never moves (0664)
   const answer = await ask(SEARCH_PATH, body);
   if (window.mhLate && window.mhLate.opened !== lateBefore) return;  // late photos shown meanwhile (0558)
   if (trialShows !== trialBefore) return;  // a trial found back meanwhile (0648)
@@ -365,6 +369,7 @@ async function search(event, again) {
   const narrowed = near;
   total = narrowed ? found.hits.length : found.total;
   showFiles(found.hits, again);
+  $("grid").removeAttribute("aria-busy");
   $("more").hidden = found.total <= found.hits.length;
   covered(found.coverage);
   let text = counted(TEXTS.found, found.total);

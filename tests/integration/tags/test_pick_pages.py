@@ -23,6 +23,7 @@ _SHARED = (
     '#bar::before { content: ""; order: 2',  # pick_bar.css.j2: the same two lines
     '<select id="order">',  # pick_order.html.j2: Sort by (0347)
     '<dialog id="mhAsk"',  # ask_dialog.html.j2: the one question (0663)
+    '<div id="mhSay"',  # busy_say.html.j2: working, done, failed (0664)
 )
 
 

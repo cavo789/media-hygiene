@@ -63,13 +63,14 @@ function launch(action, body, command) {
       if (reply.ok && reply.body.page) { goTo(reply.body.page); return; }
       if (reply.ok) { openRun(action, reply.body.command, reply.run, reply.body.kept ? reply.body.id : null); return; }
       if (reply.body.command) copyBox(reply.body.command);
-      toast(reply.body.error || fill(T.failed, { status: reply.status }));
+      toast(reply.body.error || fill(T.failed, { status: reply.status }), "error");
       if (reply.status === 409 && !reply.body.command) reload();
     })
     .catch(() => stopped());
 }
-const post = (path, body) => fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
-  .then((response) => response.json().catch(() => ({})).then((answer) => ({ ok: response.ok, status: response.status, body: answer, run: response.headers.get(RUN_HEADER) })));
+// The button clicked stays disabled, with a spinner, until the answer (busy_say.html.j2, 0664).
+const post = (path, body) => window.mhBusy(document.activeElement, () => fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+  .then((response) => response.json().catch(() => ({})).then((answer) => ({ ok: response.ok, status: response.status, body: answer, run: response.headers.get(RUN_HEADER) }))));
 // The albums saved, read from albums.json by the server; none: the form says how to make one.
 function albumChoices(form) {
   const selects = $$("[data-album]", form);
@@ -134,7 +135,7 @@ function openForm(action) {
         if (reply.ok && reply.body.page) { goTo(here ? `${reply.body.page}?here=1` : reply.body.page); return; }  // in this server (0417)
         if (reply.ok) { openRun(action, reply.body.command, reply.run, reply.body.kept ? reply.body.id : null); return; }
         if (reply.body.command) copyBox(reply.body.command);
-        toast(reply.body.error || fill(T.failed, { status: reply.status }));
+        toast(reply.body.error || fill(T.failed, { status: reply.status }), "error");
       })
       .catch(() => stopped());
   });
@@ -278,14 +279,9 @@ function copyText(text) {
   if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, refused);
   else refused();
 }
+// The one toast stack of every page (busy_say.html.j2, 0664).
 function toast(message, tone = "info") {
-  const item = document.createElement("div");
-  item.className = "toast";
-  item.innerHTML = `${icon(tone === "ok" ? "check" : "info")}<p>${esc(message)}</p><button class="toast-x" type="button" aria-label="${esc(T.close)}">${icon("x")}</button>`;
-  $("#toasts").append(item);
-  const remove = () => item.remove();
-  item.querySelector(".toast-x").addEventListener("click", remove);
-  window.setTimeout(remove, TOAST_MS);
+  window.mhSay(message, tone);
 }
 function stopped() {
   const dialog = $("#stoppedDlg");
@@ -580,7 +576,7 @@ function tvSend(body) {
     .then((reply) => {
       if (reply.ok && reply.body.page) { window.location.assign(reply.body.page); return; }
       $$("[data-choose]").forEach((button) => { button.disabled = false; });
-      toast(reply.body.error || fill(T.failed, { status: reply.status }));
+      toast(reply.body.error || fill(T.failed, { status: reply.status }), "error");
     })
     .catch(() => { $$("[data-choose]").forEach((button) => { button.disabled = false; }); toast(T.tvLate); });
 }
@@ -592,7 +588,7 @@ function tvStart(album) {
       if (reply.ok && reply.body.page) { window.location.assign(reply.body.page); return; }  // in this server (0417)
       if (reply.ok) { tvFollow(Date.now()); return; }
       $$("[data-tv]").forEach((button) => { button.disabled = false; });
-      toast(reply.body.error || fill(T.failed, { status: reply.status }));
+      toast(reply.body.error || fill(T.failed, { status: reply.status }), "error");
     })
     .catch(() => tvFollow(Date.now()));
 }

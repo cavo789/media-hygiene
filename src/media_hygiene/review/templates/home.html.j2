@@ -186,7 +186,6 @@
   <p class="muted">{{ texts.copyHow }}</p>
   <div class="copybox-foot"><button class="btn" type="button" id="copyClose">{{ texts.close }}</button></div>
 </section>
-<div class="toasts" id="toasts" aria-live="polite"></div>
 
 <script nonce="{{ page_nonce }}">
 (() => {
@@ -206,5 +205,6 @@
 })();
 </script>
 {% include "ask_dialog.html.j2" %}
+{% include "busy_say.html.j2" %}
 </body>
 </html>

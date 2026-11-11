@@ -9108,6 +9108,9 @@ msgstr ""
 msgid "Still undoable: {what}"
 msgstr ""
 
+msgid "Still working: the answer of mh is awaited (a slow disk can take a while)."
+msgstr ""
+
 msgid "Stop"
 msgstr ""
 
