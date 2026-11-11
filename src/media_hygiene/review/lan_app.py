@@ -15,7 +15,7 @@ the home network's door (`doors`, 0384: never passed on as the PC's, whatever it
   changes a photo; never an audit started (0427). A step or a stop stay the PC's: 403,
   said on each step's button (decided 2026-10-21), but an album saved on the PC
   shown on the TV (`lan_show`, 0444). What passes goes on as the PC's,
-  `Origin` checked.
+  `Origin` checked. A device paired by the guests' code gets `album_guest_door` (0684).
 """
 
 from __future__ import annotations
@@ -30,9 +30,11 @@ from media_hygiene.review.app_shell import shell_response
 from media_hygiene.review.doors import Door
 from media_hygiene.review.http import ContentType, Request, Response
 from media_hygiene.review.lan import COOKIE_NAME, PAIR_PREFIX, cookies
+from media_hygiene.review.lan_guest import code_role, run_role
 from media_hygiene.review.lan_pairing import Pairing, pair_page
 from media_hygiene.review.lan_paths import phone_marked, phone_may
 from media_hygiene.review.lan_pc import pc_answer
+from media_hygiene.review.lan_phone_model import GUEST
 from media_hygiene.review.lan_phones_api import for_good
 from media_hygiene.review.lan_show import phone_step
 from media_hygiene.review.local_app import PAGE_PATH
@@ -46,23 +48,26 @@ from media_hygiene.share.album_link_door import LINK_PREFIX
 if TYPE_CHECKING:
     from media_hygiene.review.ending import Handling
     from media_hygiene.review.lan import LanAccess
+    from media_hygiene.review.lan_phone_model import Role
     from media_hygiene.review.lan_phones import PhoneBook
+    from media_hygiene.share.album_guest_door import AlbumGuestDoor
     from media_hygiene.share.album_link_door import AlbumLinkDoor
 
 _GET, _POST = "GET", "POST"
 
 
 @dataclass(frozen=True, slots=True)
-class LanApp:
+class LanApp:  # pylint: disable=too-many-instance-attributes  # one per door
     """The home page, and what a phone paired on the home network may ask of it."""
 
     home: Handling
     lan: LanAccess
     phone_page: Page  # the home page drawn for a phone: steps said to run on the PC
-    pairing: Pairing = field(default_factory=Pairing)
+    pairing: Pairing = field(default_factory=lambda: Pairing(guests=True))
     phones: PhoneBook | None = None  # under HTTPS: phones paired for good (0431)
     originals: bool = False  # `[review] lan_phone_originals` (0427)
     links: AlbumLinkDoor | None = None  # one album by a 24 h link, unpaired (0462)
+    guests: AlbumGuestDoor | None = None  # a guest's device: its albums only (0684)
 
     async def handle(self, request: Request) -> Response:
         """Let the loopback through; pair, filter and pass on a phone's requests.
@@ -79,21 +84,24 @@ class LanApp:
             return Response(HTTPStatus.FORBIDDEN)
         if self.links is not None and request.path.startswith(LINK_PREFIX):
             return await self.links.answer(request)  # before pairing: the token is all
-        # the pairing, the app's shell (0432); else the pairing page if unpaired
-        answer = self._public(request) or self._unpaired(request)
-        return answer if answer is not None else await self._paired(request)
+        answer = self._public(request)  # the pairing, the app's shell (0432)
+        if answer is not None:
+            return answer
+        role = self._role(request)
+        if role == GUEST:  # the guests' albums, 404 anywhere else (0684)
+            no_door = Response(HTTPStatus.NOT_FOUND)
+            return await self.guests.answer(request) if self.guests else no_door
+        return await self._paired(request) if role else self._unpaired(request)
 
-    def _unpaired(self, request: Request) -> Response | None:
+    def _unpaired(self, request: Request) -> Response:
         """Refuse a phone not paired: the pairing page for a `GET`, 403 otherwise.
 
         Args:
             request: A request of the home network's door.
 
         Returns:
-            The refusal; None for a paired phone.
+            The refusal.
         """
-        if self._is_paired(request):
-            return None
         if request.method == _GET:
             return pair_page(HTTPStatus.UNAUTHORIZED, closed=self.pairing.closed)
         return Response(HTTPStatus.FORBIDDEN)
@@ -133,25 +141,30 @@ class LanApp:
         Returns:
             303 to the page with the cookie; the pairing page otherwise.
         """
-        answer = self.pairing.check(self.lan, request)
-        return for_good(answer, self.phones, request)
+        typed = request.path.removeprefix(PAIR_PREFIX)
+        role = code_role(self.pairing.access(self.lan), typed)
+        book = self.phones
+        if book is not None and role == GUEST:
+            book = book.guests()  # kept with `role = "guest"` (0684)
+        return for_good(self.pairing.check(self.lan, request), book, request)
 
-    def _is_paired(self, request: Request) -> bool:
-        """Tell whether the phone holds this run's cookie, or one paired for good.
+    def _role(self, request: Request) -> Role | None:
+        """The role of the device's cookie: this run's, or one paired for good.
 
         Args:
             request: The request.
 
         Returns:
-            True for a paired phone; a forgotten one is not.
+            `family` or `guest`; None for a device not paired, or forgotten.
         """
-        if self.lan.is_paired(request):
-            return True
+        role = run_role(self.lan, request)
+        if role is not None:
+            return role
         token = cookies(request.headers).get(COOKIE_NAME, "")
         phone = None if self.phones is None else self.phones.holder(token)
         if phone is not None and self.phones is not None and self.phones.activity:
             self.phones.activity.saw(phone, request)  # last seen, counts (0683)
-        return phone is not None
+        return None if phone is None else phone.role
 
     async def _paired(self, request: Request) -> Response:
         """Answer a paired phone: the reads, the audit, the albums, as from the PC.

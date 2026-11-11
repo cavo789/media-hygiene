@@ -13,7 +13,7 @@
 {% set texts = {
   "albums": _("Albums"),
   "learn": _("What an album is, and what this page does"),
-  "none": _("No album yet. On the PC, in search or browse, pick photos, then Add to the album."),
+  "none": _("No album is shown to guests yet. On the PC, open an album and tick Show to guests.") if album_guest is sameas true else _("No album yet. On the PC, in search or browse, pick photos, then Add to the album."),
   "photos": [ngettext("{n} photo or video", "{n} photos and videos", 1), ngettext("{n} photo or video", "{n} photos and videos", 2)],
   "missing": [ngettext("{n} file missing: moved out of the folders analysed, or deleted.", "{n} files missing: moved out of the folders analysed, or deleted.", 1), ngettext("{n} file missing: moved out of the folders analysed, or deleted.", "{n} files missing: moved out of the folders analysed, or deleted.", 2)],
   "undated": _("Without a date"),
@@ -41,7 +41,10 @@
 {# `link` (0462): one album opened by a 24 h link on someone else's phone: read-only (as a
    phone), that album alone, no way to the home page nor to the list. #}
 {% set link = album_link is sameas true %}
-<html lang="{{ _('en') }}"{% if link %} data-phone data-link{% endif %}>
+{# `guest` (0684): a device paired by the guests' code: the albums ticked for guests, read-only;
+   this list is its home page (`/` leads here), nothing else of the library is served to it. #}
+{% set guest = album_guest is sameas true %}
+<html lang="{{ _('en') }}"{% if link %} data-phone data-link{% elif guest %} data-phone data-guest{% endif %}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -117,19 +120,21 @@
 {% include "view_state.html.j2" %}
 </head>
 <body>
-{% if not link %}{% include "page_header.html.j2" %}{% endif %}
+{% if not link and not guest %}{% include "page_header.html.j2" %}{% endif %}
 <div class="heading">
   <a class="back" id="back" href="#" hidden>← {{ texts.albums }}</a>
   <h2 id="title">{{ texts.albums }}</h2>
 </div>
 {% if link %}
 <p class="note">🔒 {{ _("Shared with you for 24 hours: look, nothing here can be changed.") }}</p>
+{% elif guest %}
+<p class="note">🔒 {{ _("The albums chosen for you: look, nothing here can be changed.") }}</p>
 {% else %}
 <p class="note phone-only">🔒 {{ _("On the phone, everything is read-only: albums change on the PC.") }}</p>
 {% endif %}
 <p class="note pc-only">🔒 {{ _("On the home Wi-Fi only, while mh runs on the PC. Your photos are only read: taking a photo out of an album, or adding it to another one, changes the albums file alone.") }}</p>
 <p class="note error" id="problem" role="alert" hidden></p>
-{% if not link %}{% include "album_root_line.html.j2" %}{% endif %}
+{% if not link and not guest %}{% include "album_root_line.html.j2" %}{% endif %}
 <main id="main"></main>
 <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="{{ _('The photo, full screen') }}" hidden>
   <div class="stage" id="stage"></div>
@@ -158,9 +163,9 @@
 </script>
 {# Served by the home server in the home page's tab: its pings keep that server running (0341);
    the bar's way back, a plain link (home_link.html.j2 includes presence.html.j2). #}
-{% if not link %}{% include "home_link.html.j2" %}{% endif %}
+{% if not link and not guest %}{% include "home_link.html.j2" %}{% endif %}
 {% include "ask_dialog.html.j2" %}
 {% include "busy_say.html.j2" %}
-{% if not link %}{% include "step_chip.html.j2" %}{% endif %}
+{% if not link and not guest %}{% include "step_chip.html.j2" %}{% endif %}
 </body>
 </html>

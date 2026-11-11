@@ -19,13 +19,8 @@ from media_hygiene.review.http import Request, Response
 from media_hygiene.review.lan import COOKIE_NAME, LanAccess
 from media_hygiene.review.lan_app import LanApp
 from media_hygiene.review.lan_paths import LAN_PATH
-from media_hygiene.review.lan_phones import (
-    DEFAULT_DEVICE,
-    PHONES_FILE,
-    PhoneBook,
-    device_name,
-    phone_book,
-)
+from media_hygiene.review.lan_phone_model import DEFAULT_DEVICE, device_name
+from media_hygiene.review.lan_phones import PHONES_FILE, PhoneBook, phone_book
 from media_hygiene.review.lan_phones_api import FORGET_PATH, PHONES_PATH
 
 if TYPE_CHECKING:

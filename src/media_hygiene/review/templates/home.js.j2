@@ -265,9 +265,8 @@ function showLan() {
       $("#lanPair").hidden = !lan.qr;
       $("#lanCard").hidden = false;
       if (!lan.qr) return;
-      $("#lanQr").innerHTML = lan.qr;
       $("#lanUrl").textContent = lan.url;
-      $("#lanCode").textContent = lan.code;
+      showCode(lan);
       showPairing(lan);
       // HTTPS (0430): a phone installs the PC's certificate first, once.
       $("#lanCaLine").hidden = !lan.ca;
@@ -278,6 +277,22 @@ function showLan() {
       $("#lanCard").hidden = false;
     })
     .catch(() => undefined);
+}
+// Family or guest (0684): the code shown is the role the device gets; the guests' sees
+// the albums ticked Show to guests only.
+const lanRole = { guest: false, lan: null, wired: false };
+function showCode(lan) {
+  lanRole.lan = lan;
+  const shown = lanRole.guest && lan.guest ? lan.guest : lan;
+  $("#lanQr").innerHTML = shown.qr;  // an SVG drawn by the server (segno)
+  $("#lanCode").textContent = shown.code;
+  $("#lanRoles").hidden = !lan.guest;
+  $("#lanFamily").setAttribute("aria-pressed", String(!lanRole.guest));
+  $("#lanGuests").setAttribute("aria-pressed", String(lanRole.guest));
+  if (lanRole.wired) return;
+  lanRole.wired = true;
+  $("#lanFamily").addEventListener("click", () => { lanRole.guest = false; showCode(lanRole.lan); });
+  $("#lanGuests").addEventListener("click", () => { lanRole.guest = true; showCode(lanRole.lan); });
 }
 // The pairing's report (0681): wrong codes per address, the devices paired this run (a toast for a new one).
 const LAN_EVERY_MS = 15000;
@@ -298,7 +313,7 @@ function showPairing(lan) {
   lanSeen.paired = paired.length;
   if (lanSeen.wired || !lan.reopen) return;
   lanSeen.wired = true;
-  const ask = (path, said) => post(path, {}).then((r) => (r.ok ? r.json() : null)).then((again) => { if (!again) return; $("#lanQr").innerHTML = again.qr; $("#lanCode").textContent = again.code; showPairing(again); if (said) toast(said, "ok"); }).catch(() => undefined);
+  const ask = (path, said) => post(path, {}).then((r) => (r.ok ? r.json() : null)).then((again) => { if (!again) return; showCode(again); showPairing(again); if (said) toast(said, "ok"); }).catch(() => undefined);
   $("#lanReopen").addEventListener("click", () => ask(lan.reopen, T.lanReopened));
   $("#lanSeen").addEventListener("click", () => ask(lan.seen, ""));
 }
@@ -325,7 +340,7 @@ function deviceLine(phone, list) {
   forget.addEventListener("click", () => { forget.disabled = true; devicePost(paths.forget, { id: phone.id }, "").then((ok) => { forget.disabled = ok; }); });
   const facts = document.createElement("small");
   const seen = phone.seen ? `${new Date(phone.seen).toLocaleDateString()} ${clock(phone.seen)}` : T.lanNeverSeen;
-  facts.textContent = `${phone.tv ? T.lanTv + " · " : ""}${fill(T.lanDevice, { paired: phone.paired, seen, address: phone.address || "?" })}`;
+  facts.textContent = `${phone.tv ? T.lanTv + " · " : ""}${phone.guest ? T.lanGuest + " · " : ""}${fill(T.lanDevice, { paired: phone.paired, seen, address: phone.address || "?" })}`;
   const did = document.createElement("small");
   const sum = (key) => phone.days.reduce((total, day) => total + (day[key] || 0), 0);
   did.textContent = phone.days.length ? fill(T.lanActivity, { pages: sum("pages"), pictures: sum("pictures"), day: phone.days[0].day }) : T.lanNoActivity;

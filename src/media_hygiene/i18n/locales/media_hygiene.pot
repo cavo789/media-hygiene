@@ -3945,6 +3945,9 @@ msgstr ""
 msgid "Groups of identical files"
 msgstr ""
 
+msgid "Guest: the albums chosen for guests only"
+msgstr ""
+
 #, python-brace-format
 msgid "HTML report: {path}"
 msgstr ""
@@ -5494,6 +5497,11 @@ msgstr ""
 
 #, python-brace-format
 msgid "No album is named {name}."
+msgstr ""
+
+msgid ""
+"No album is shown to guests yet. On the PC, open an album and tick Show "
+"to guests."
 msgstr ""
 
 #, python-brace-format
@@ -8854,6 +8862,9 @@ msgstr ""
 msgid "Show this message and exit."
 msgstr ""
 
+msgid "Show to guests"
+msgstr ""
+
 msgid "Show your photos on the TV"
 msgstr ""
 
@@ -9465,6 +9476,9 @@ msgstr ""
 msgid "The albums cannot be read (error {status})."
 msgstr ""
 
+msgid "The albums chosen for you: look, nothing here can be changed."
+msgstr ""
+
 #, python-brace-format
 msgid "The archive folder {target} and {folder} are one inside the other."
 msgstr ""
@@ -9955,6 +9969,14 @@ msgid ""
 "its own."
 msgstr ""
 
+#, python-brace-format
+msgid "The guests' devices no longer show {name}."
+msgstr ""
+
+#, python-brace-format
+msgid "The guests' devices now show {name}."
+msgstr ""
+
 msgid "The guide"
 msgstr ""
 
@@ -10304,6 +10326,11 @@ msgid "The phone's name, as Windows shows it."
 msgstr ""
 
 msgid "The phone's remote: on a phone on the same Wi-Fi, open"
+msgstr ""
+
+msgid ""
+"The phones and tablets paired with the guests code see the albums ticked "
+"here, nothing else of the library"
 msgstr ""
 
 msgid "The photo, full screen"
@@ -17786,6 +17813,9 @@ msgstr ""
 msgid "👉 What next: open Windows PowerShell and type:"
 msgstr ""
 
+msgid "👪 Family: the whole library"
+msgstr ""
+
 #, python-brace-format
 msgid "💡 On a phone of the home Wi-Fi too: {command}"
 msgstr ""
@@ -18034,6 +18064,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "🧪 Try on one month ({files} files)"
+msgstr ""
+
+msgid "🧳 Guest: the albums ticked Show to guests, nothing else"
 msgstr ""
 
 #, python-brace-format

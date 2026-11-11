@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _, ngettext
+from media_hygiene.share.album_guests import guests_message, set_guests
 from media_hygiene.share.album_said import cover_message
 from media_hygiene.share.album_store import new_album
 from media_hygiene.share.album_trash import deleted_path, recent_deleted
@@ -24,7 +25,8 @@ if TYPE_CHECKING:
     from media_hygiene.share.album_api import AlbumAsked
     from media_hygiene.share.album_store import AlbumStore, Shelf
 
-EDITS: Final = frozenset({"delete", "rename", "restore"})  # the albums, not files
+# the albums, not files; `guests`: 0684
+EDITS: Final = frozenset({"delete", "rename", "restore", "guests"})
 
 
 def delete_albums(store: AlbumStore, names: tuple[str, ...]) -> Shelf:
@@ -149,6 +151,8 @@ def edit(store: AlbumStore, asked: AlbumAsked) -> Shelf:
         return delete_albums(store, asked.names)
     if asked.action == "rename":
         return rename_album(store, (asked.album, asked.to))
+    if asked.action == "guests":
+        return set_guests(store, (asked.album, asked.guests))
     return restore_albums(store)
 
 
@@ -172,4 +176,6 @@ def edit_message(shelf: Shelf, asked: AlbumAsked, place: str) -> str | None:
         return renamed_message(new_album(asked.to).name)
     if asked.action == "restore":
         return _("The deleted albums are back in {place}.").format(place=place)
+    if asked.action == "guests":
+        return guests_message(shelf, asked.album)
     return None
