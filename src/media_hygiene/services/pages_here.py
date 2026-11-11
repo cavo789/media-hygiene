@@ -10,14 +10,16 @@ from media_hygiene.services.import_pick_serving import planned_app
 from media_hygiene.services.people_here import people_here
 from media_hygiene.services.prefixed_page import PrefixedPage
 from media_hygiene.services.quarantine_serving import quarantine_page
+from media_hygiene.services.settings_here import SettingsHere
 
 if TYPE_CHECKING:
     from media_hygiene.services.fresh_runtime import FreshRuntime
     from media_hygiene.services.home_pages import HomeServer
+    from media_hygiene.services.prefixed_page import ServedPage
 
 
-def pages_here(fresh: FreshRuntime, server: HomeServer) -> tuple[PrefixedPage, ...]:
-    """The quarantine's page, the import's, the people's.
+def pages_here(fresh: FreshRuntime, server: HomeServer) -> tuple[ServedPage, ...]:
+    """The quarantine's page, the import's, the people's, the settings' (0670).
 
     Args:
         fresh: The server's settings, read again when their files change.
@@ -37,4 +39,5 @@ def pages_here(fresh: FreshRuntime, server: HomeServer) -> tuple[PrefixedPage, .
             IMPORT_PAGE, fresh, lambda runtime: planned_app(runtime, executor)
         ),
         people_here(fresh, server),
+        SettingsHere(fresh),
     )

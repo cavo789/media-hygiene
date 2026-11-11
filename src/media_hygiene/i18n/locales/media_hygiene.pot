@@ -1049,6 +1049,9 @@ msgid ""
 " each asked once."
 msgstr ""
 
+msgid "After an import"
+msgstr ""
+
 msgid "After an import, name the new photos' places online"
 msgstr ""
 
@@ -1093,6 +1096,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Albums ({n})"
+msgstr ""
+
+msgid "Albums folder"
 msgstr ""
 
 msgid "All"
@@ -1610,6 +1616,9 @@ msgstr ""
 msgid "Burst series review"
 msgstr ""
 
+msgid "Burst series strictness"
+msgstr ""
+
 msgid "Bursts then near duplicates, biggest gain first"
 msgstr ""
 
@@ -1692,6 +1701,9 @@ msgid ""
 msgstr ""
 
 msgid "Change"
+msgstr ""
+
+msgid "Changed on their page"
 msgstr ""
 
 #, python-brace-format
@@ -2975,6 +2987,9 @@ msgstr ""
 msgid "Event of a trip"
 msgstr ""
 
+msgid "Event rules"
+msgstr ""
+
 #, python-brace-format
 msgid "Event {name} ({id})"
 msgstr ""
@@ -2989,6 +3004,9 @@ msgstr ""
 msgid ""
 "Events first, in the order of the Events sheet (same ids), then the files"
 " outside any event, by proposed folder."
+msgstr ""
+
+msgid "Events grouping"
 msgstr ""
 
 msgid "Events not sorted yet"
@@ -3160,6 +3178,9 @@ msgid "Every series here has been seen already."
 msgstr ""
 
 msgid "Every series of this page has been seen: → opens the next page."
+msgstr ""
+
+msgid "Every setting"
 msgstr ""
 
 msgid "Every shot of this series lies in a protected folder: none is ever moved."
@@ -3407,6 +3428,9 @@ msgstr ""
 msgid "Find a photo"
 msgstr ""
 
+msgid "Find a setting"
+msgstr ""
+
 msgid "Find a town"
 msgstr ""
 
@@ -3552,6 +3576,9 @@ msgid ""
 msgstr ""
 
 msgid "Folder receiving the tree (empty: each of your folders is sorted in place)"
+msgstr ""
+
+msgid "Folder roles"
 msgstr ""
 
 msgid ""
@@ -4052,6 +4079,9 @@ msgstr ""
 msgid "How it works"
 msgstr ""
 
+msgid "How large the previews may grow, when to suggest a purge."
+msgstr ""
+
 msgid "How long robocopy ran."
 msgstr ""
 
@@ -4097,6 +4127,9 @@ msgid ""
 "every tip, not only the best two) or \"debug\"."
 msgstr ""
 
+msgid "How the photos are grouped into events and trips."
+msgstr ""
+
 msgid "How to write a search"
 msgstr ""
 
@@ -4138,6 +4171,10 @@ msgid "Import a USB disk, an SD card or any folder"
 msgstr ""
 
 msgid "Import photos"
+msgstr ""
+
+#, python-brace-format
+msgid "In config.toml only ({n})"
 msgstr ""
 
 msgid "In the album"
@@ -4351,6 +4388,9 @@ msgid "July"
 msgstr ""
 
 msgid "June"
+msgstr ""
+
+msgid "Junk strictness"
 msgstr ""
 
 msgid "KB"
@@ -5797,6 +5837,9 @@ msgstr ""
 msgid "No obvious series left to validate."
 msgstr ""
 
+msgid "No page changes these yet: edit config.toml, then start mh again."
+msgstr ""
+
 msgid ""
 "No phone seen: plug it in, unlock it, choose File transfer (iPhone: Trust"
 " this computer), then type mh import --phone again."
@@ -5950,6 +5993,9 @@ msgid "No run to undo for now."
 msgstr ""
 
 msgid "No run yet."
+msgstr ""
+
+msgid "No setting matches."
 msgstr ""
 
 msgid "No signal"
@@ -6226,6 +6272,9 @@ msgid ""
 "Nothing is applied when the files set aside and replaced exceed this "
 "share of the backup, in percent: a drive missing? many files changed at "
 "once? 'mh push --anyway' goes on."
+msgstr ""
+
+msgid "Nothing is changed here: each setting opens on the page where it acts."
 msgstr ""
 
 msgid ""
@@ -7113,6 +7162,9 @@ msgstr ""
 msgid "Phones on the home Wi-Fi"
 msgstr ""
 
+msgid "Phones on the network"
+msgstr ""
+
 msgid "Phones paired for good"
 msgstr ""
 
@@ -7250,6 +7302,9 @@ msgid "Place of {folder} written back in config.toml."
 msgstr ""
 
 msgid "Placed"
+msgstr ""
+
+msgid "Places"
 msgstr ""
 
 msgid "Places cannot be saved: /config is not mounted, or read-only."
@@ -8492,6 +8547,9 @@ msgstr ""
 msgid "Seconds"
 msgstr ""
 
+msgid "Seconds each photo stays on the TV: on the remote, once a show starts."
+msgstr ""
+
 msgid "See each setting and where it comes from"
 msgstr ""
 
@@ -8911,6 +8969,9 @@ msgid "Slideshow over ({n} photo); your photos were not changed."
 msgid_plural "Slideshow over ({n} photos); your photos were not changed."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Slideshow pace"
+msgstr ""
 
 #, python-brace-format
 msgid ""
@@ -9419,6 +9480,9 @@ msgid ""
 msgstr ""
 
 msgid "The TV is paired: it shows the photo now."
+msgstr ""
+
+msgid "The actions starred and the order of the tiles."
 msgstr ""
 
 msgid ""
@@ -9932,6 +9996,9 @@ msgstr ""
 msgid "The folders mh knows"
 msgstr ""
 
+msgid "The folders protected, preferred, backups or not analysed."
+msgstr ""
+
 msgid "The former name of 'library'."
 msgstr ""
 
@@ -10040,7 +10107,13 @@ msgid ""
 "possible."
 msgstr ""
 
+msgid "The kinds of files analysed and the folder names ignored."
+msgstr ""
+
 msgid "The landmark this photo shows"
+msgstr ""
+
+msgid "The language of the pages and of the console's messages."
 msgstr ""
 
 msgid "The largest clusters without a name"
@@ -10086,6 +10159,9 @@ msgid "The link opens nothing any more."
 msgstr ""
 
 msgid "The local model of [classify.ai] also describes the photos"
+msgstr ""
+
+msgid "The local vision model that describes the photos; none: off."
 msgstr ""
 
 #, python-brace-format
@@ -10473,6 +10549,9 @@ msgstr ""
 msgid "The rule would take {files}, shown first: {folders}."
 msgstr ""
 
+msgid "The rules that name the events and choose their folders."
+msgstr ""
+
 msgid "The run to go on with, for the next files; none: a new run."
 msgstr ""
 
@@ -10676,6 +10755,9 @@ msgstr ""
 msgid "The steps of this import are running: wait for their end."
 msgstr ""
 
+msgid "The steps run once the photos of a phone are copied."
+msgstr ""
+
 msgid "The storyteller's notes"
 msgstr ""
 
@@ -10688,6 +10770,9 @@ msgid ""
 msgstr ""
 
 msgid "The sure groups still undecided, many a screen: Enter decides what you see"
+msgstr ""
+
+msgid "The synonyms and the words never used as a tag."
 msgstr ""
 
 msgid "The tag it means:"
@@ -11659,6 +11744,10 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
+#, python-brace-format
+msgid "Values read from {file} now; “default”: the file does not hold it."
+msgstr ""
+
 msgid "Video cannot be opened"
 msgstr ""
 
@@ -11729,6 +11818,12 @@ msgid ""
 "new spots named online, after its own question."
 msgstr ""
 
+msgid "What the audit analyses"
+msgstr ""
+
+msgid "What the junk review counts as a screenshot, too small, too dark…"
+msgstr ""
+
 msgid "What the last audit found"
 msgstr ""
 
@@ -11782,6 +11877,9 @@ msgstr ""
 msgid "What {file} holds for this series"
 msgstr ""
 
+msgid "When a shot of a series is offered to set aside."
+msgstr ""
+
 msgid "When the page opens, runs the next step, as in the console's menu."
 msgstr ""
 
@@ -11816,8 +11914,14 @@ msgstr ""
 msgid "Where should your albums go?"
 msgstr ""
 
+msgid "Where sort moves the photos, and the folders it makes."
+msgstr ""
+
 #, python-brace-format
 msgid "Where sure files go, e.g. '{year}/{year_month}/{category}'."
+msgstr ""
+
+msgid "Where the albums are made."
 msgstr ""
 
 msgid ""
@@ -11841,6 +11945,9 @@ msgid "Where you are"
 msgstr ""
 
 msgid "Where your photos stand"
+msgstr ""
+
+msgid "Whether a phone may open the pages, and see the originals."
 msgstr ""
 
 msgid "White pixels"
@@ -12302,6 +12409,9 @@ msgid "Your photos, in order"
 msgstr ""
 
 msgid "Your places"
+msgstr ""
+
+msgid "Your places, the spots ignored, naming places online."
 msgstr ""
 
 msgid "Your rules"
@@ -13708,6 +13818,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "nobody named {name} on this photo"
+msgstr ""
+
+msgid "none"
 msgstr ""
 
 msgid "none but the system ones"
@@ -16847,6 +16960,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid "{n} items"
+msgstr ""
+
+#, python-brace-format
 msgid "{n} link failed."
 msgid_plural "{n} links failed."
 msgstr[0] ""
@@ -17693,6 +17810,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "▶ Run again from: {step}"
+msgstr ""
+
+msgid "⚙ Settings"
 msgstr ""
 
 #, python-brace-format

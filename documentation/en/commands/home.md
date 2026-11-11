@@ -133,6 +133,18 @@ and its *Purge* link: the same tiles first, then a button stating how many files
 room it frees. It asks once there, `mh` runs [`purge`](purge.md) in its window, and the page comes
 back to say what the disk now says: the run gone, the room freed. With another `mh`, type the command.
 
+## Every setting
+
+*⚙ Settings*, in the menu on the left of every page, lists the settings the pages change: the
+language, the slideshow pace, the events grouping, the local AI, the disk space limits, what the
+audit analyses, the phones, the steps after an import, the folder roles, the sorting, the
+strictness of the reviews, the places, the event rules and the tags. Each row shows the value
+`config.toml` holds now (read from the disk at each opening, *default* when the file does not hold
+it), one line of what it does, and a link that opens the setting **on its own page**: nothing is
+changed on this list. The search field narrows the rows as you type (the text stays in the
+address: a reload keeps it). At the bottom, *In config.toml only* lists and counts the settings no
+page changes yet: edit `config.toml`, then start `mh` again. PC only: a phone does not open it.
+
 ## Fast paths and what shows the files first
 
 These verbs act on files they do not show; they stay, for large collections. Each says so in one line

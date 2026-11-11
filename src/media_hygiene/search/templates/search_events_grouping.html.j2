@@ -27,6 +27,7 @@
   const draw = (values) => {
     for (const [key, id] of Object.entries(fields)) document.getElementById(id).value = values[key];
     box.hidden = false;
+    if (location.hash === "#grouping") { box.open = true; box.scrollIntoView({ block: "start" }); }  // from ⚙ Settings (0670)
   };
   const fail = () => { said.textContent = {{ _("The settings could not be saved in config.toml.") | tojson }}; };
   fetch(PATH, { cache: "no-store" })

@@ -41,3 +41,23 @@ only adds a way to find them. It loses nothing; it adds one entry in the shell's
 
 Before: a setting is found by knowing its page, or by reading `config.toml`. After: one
 searchable list, values read from disk.
+
+## Status — DONE (2026-11-11)
+
+- `/settings/` on the home server (`services/settings_here.py`, PC only, `GET` only: it writes
+  nothing), *⚙ Settings* in the shell's side (`shell_side.html.j2`, pages of the home server).
+- 17 rows (`services/settings_rows.py`): the 3 groups of `setting_groups.py` first (language,
+  slideshow pace, events grouping), then the other values pages write (local AI, disk space,
+  scan scope, phones, import steps, home page, folder roles, albums folder, sorting, burst and
+  junk strictness, places, event rules, tags). Each value read from `config.toml` at each
+  request (`services/settings_index.py`), *default* when the file does not hold it.
+- Search field, its text in the URL (`?q=`, `mhView`); the events page unfolds *Group the
+  photos…* on `#grouping`; the language row points at the bar's picker of the page itself.
+- *In config.toml only*: every key of `Settings` no row names, listed and counted: 89 keys
+  (measured, `config_only(setting_rows())`, 2026-11-11).
+- Tests: `tests/unit/test_settings_index.py` (every group has its row with its keys, every row
+  key is a setting, rows + rest = the model, value/default from disk, hostile value as text,
+  route GET/redirect/405/no write); the page added to `PAGE_STEPS` (headers, frame, hostile
+  names via `tests/support/page_render.py`).
+- Docs EN + FR: `commands/home.md` *Every setting* / *Tous les réglages*. `docs_screenshots`
+  should run.

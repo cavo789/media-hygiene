@@ -1341,6 +1341,9 @@ msgstr ""
 " : arrondie à environ 100 m, une par groupe de photos, demandée une seule"
 " fois."
 
+msgid "After an import"
+msgstr "Après un import"
+
 msgid "After an import, name the new photos' places online"
 msgstr "Après un import, nommer en ligne les lieux des nouvelles photos"
 
@@ -1393,6 +1396,9 @@ msgstr "Albums"
 #, python-brace-format
 msgid "Albums ({n})"
 msgstr "Albums ({n})"
+
+msgid "Albums folder"
+msgstr "Dossier des albums"
 
 msgid "All"
 msgstr "Tout"
@@ -1999,6 +2005,9 @@ msgstr "Rafales (déplacées seulement si écartées avec 'review')"
 msgid "Burst series review"
 msgstr "Tri des rafales"
 
+msgid "Burst series strictness"
+msgstr "Sévérité des rafales"
+
 msgid "Bursts then near duplicates, biggest gain first"
 msgstr "Rafales puis quasi-doublons, le plus gros gain d'abord"
 
@@ -2088,6 +2097,9 @@ msgstr ""
 
 msgid "Change"
 msgstr "Changer"
+
+msgid "Changed on their page"
+msgstr "Changés sur leur page"
 
 #, python-brace-format
 msgid "Changed your mind? 'media-hygiene undo {run_id}' moves everything back:"
@@ -3627,6 +3639,9 @@ msgstr "Événement d'un dossier nommé"
 msgid "Event of a trip"
 msgstr "Événement d'un voyage"
 
+msgid "Event rules"
+msgstr "Règles d'événements"
+
 #, python-brace-format
 msgid "Event {name} ({id})"
 msgstr "Événement {name} ({id})"
@@ -3645,6 +3660,9 @@ msgstr ""
 "Les événements d'abord, dans l'ordre de la feuille Événements (mêmes "
 "identifiants), puis les fichiers hors de tout événement, par dossier "
 "proposé."
+
+msgid "Events grouping"
+msgstr "Regroupement en événements"
 
 msgid "Events not sorted yet"
 msgstr "Événements pas encore triés"
@@ -3866,6 +3884,9 @@ msgstr "Toutes les séries d'ici ont déjà été vues."
 
 msgid "Every series of this page has been seen: → opens the next page."
 msgstr "Toutes les séries de cette page ont été vues : → ouvre la page suivante."
+
+msgid "Every setting"
+msgstr "Tous les réglages"
 
 msgid "Every shot of this series lies in a protected folder: none is ever moved."
 msgstr ""
@@ -4161,6 +4182,9 @@ msgstr "Retrouver"
 msgid "Find a photo"
 msgstr "Retrouver une photo"
 
+msgid "Find a setting"
+msgstr "Trouver un réglage"
+
 msgid "Find a town"
 msgstr "Chercher une ville"
 
@@ -4347,6 +4371,9 @@ msgid "Folder receiving the tree (empty: each of your folders is sorted in place
 msgstr ""
 "Dossier qui reçoit l'arborescence (vide : chacun de vos dossiers est trié"
 " sur place)"
+
+msgid "Folder roles"
+msgstr "Rôles des dossiers"
 
 msgid ""
 "Folder to import from (host path): your NAS, a USB disk, an SD card, an "
@@ -4932,6 +4959,9 @@ msgstr ""
 msgid "How it works"
 msgstr "Comment ça marche"
 
+msgid "How large the previews may grow, when to suggest a purge."
+msgstr "Jusqu'où les aperçus peuvent grossir, quand proposer une purge."
+
 msgid "How long robocopy ran."
 msgstr "Durée de robocopy."
 
@@ -4991,6 +5021,9 @@ msgstr ""
 "(info et tous les conseils, pas seulement les deux meilleurs) ou "
 "\"debug\"."
 
+msgid "How the photos are grouped into events and trips."
+msgstr "Comment les photos sont regroupées en événements et en voyages."
+
 msgid "How to write a search"
 msgstr "Comment écrire une recherche"
 
@@ -5035,6 +5068,10 @@ msgstr "Importer un disque USB, une carte SD ou n'importe quel dossier"
 
 msgid "Import photos"
 msgstr "Importer des photos"
+
+#, python-brace-format
+msgid "In config.toml only ({n})"
+msgstr "Dans config.toml seulement ({n})"
 
 msgid "In the album"
 msgstr "Dans l'album"
@@ -5286,6 +5323,9 @@ msgstr "juillet"
 
 msgid "June"
 msgstr "juin"
+
+msgid "Junk strictness"
+msgstr "Sévérité des indésirables"
 
 msgid "KB"
 msgstr "Ko"
@@ -6972,6 +7012,9 @@ msgstr "Aucune nouvelle de la fenêtre de mh : elle a peut-être été fermée."
 msgid "No obvious series left to validate."
 msgstr "Plus aucune série évidente à valider."
 
+msgid "No page changes these yet: edit config.toml, then start mh again."
+msgstr "Aucune page ne les change encore : modifiez config.toml, puis relancez mh."
+
 msgid ""
 "No phone seen: plug it in, unlock it, choose File transfer (iPhone: Trust"
 " this computer), then type mh import --phone again."
@@ -7153,6 +7196,9 @@ msgstr "Aucune exécution à annuler pour l'instant."
 
 msgid "No run yet."
 msgstr "Aucune exécution pour l'instant."
+
+msgid "No setting matches."
+msgstr "Aucun réglage ne correspond."
 
 msgid "No signal"
 msgstr "Aucun indice"
@@ -7470,6 +7516,9 @@ msgstr ""
 "Rien n'est appliqué quand les fichiers mis de côté et remplacés dépassent"
 " cette part de la sauvegarde, en pour cent : un disque absent ? beaucoup "
 "de fichiers changés d'un coup ? 'mh push --anyway' continue."
+
+msgid "Nothing is changed here: each setting opens on the page where it acts."
+msgstr "Rien ne se change ici : chaque réglage s'ouvre sur la page où il agit."
 
 msgid ""
 "Nothing is deleted from this page: the files set aside go to the "
@@ -8563,6 +8612,9 @@ msgstr "Les téléphones peuvent télécharger les originaux"
 msgid "Phones on the home Wi-Fi"
 msgstr "Téléphones du Wi-Fi de la maison"
 
+msgid "Phones on the network"
+msgstr "Téléphones du réseau"
+
 msgid "Phones paired for good"
 msgstr "Téléphones appairés pour de bon"
 
@@ -8730,6 +8782,9 @@ msgstr "Position de {folder} réécrite dans config.toml."
 
 msgid "Placed"
 msgstr "Placés"
+
+msgid "Places"
+msgstr "Lieux"
 
 msgid "Places cannot be saved: /config is not mounted, or read-only."
 msgstr ""
@@ -10214,6 +10269,11 @@ msgstr ""
 msgid "Seconds"
 msgstr "Secondes"
 
+msgid "Seconds each photo stays on the TV: on the remote, once a show starts."
+msgstr ""
+"Secondes que chaque photo reste à la télé : sur la télécommande, une fois"
+" un diaporama lancé."
+
 msgid "See each setting and where it comes from"
 msgstr "Voir chaque réglage et d'où il vient"
 
@@ -10687,6 +10747,9 @@ msgid "Slideshow over ({n} photo); your photos were not changed."
 msgid_plural "Slideshow over ({n} photos); your photos were not changed."
 msgstr[0] "Diaporama terminé ({n} photo) ; vos photos n'ont pas été modifiées."
 msgstr[1] "Diaporama terminé ({n} photos) ; vos photos n'ont pas été modifiées."
+
+msgid "Slideshow pace"
+msgstr "Rythme du diaporama"
 
 #, python-brace-format
 msgid ""
@@ -11271,6 +11334,9 @@ msgstr ""
 
 msgid "The TV is paired: it shows the photo now."
 msgstr "La télé est appairée : elle montre la photo maintenant."
+
+msgid "The actions starred and the order of the tiles."
+msgstr "Les actions en favori et l'ordre des tuiles."
 
 msgid ""
 "The actions starred on the home page, in their order: the page writes "
@@ -11906,6 +11972,9 @@ msgstr "Le dossier, tel que l'Explorateur le montre"
 msgid "The folders mh knows"
 msgstr "Les dossiers que mh connaît"
 
+msgid "The folders protected, preferred, backups or not analysed."
+msgstr "Les dossiers protégés, préférés, de sauvegarde ou non analysés."
+
 msgid "The former name of 'library'."
 msgstr "L'ancien nom de 'library'."
 
@@ -12043,8 +12112,14 @@ msgstr ""
 "La version gardée est dans un dossier protégé : elle n'est jamais "
 "déplacée, X est impossible."
 
+msgid "The kinds of files analysed and the folder names ignored."
+msgstr "Les sortes de fichiers analysés et les noms de dossiers ignorés."
+
 msgid "The landmark this photo shows"
 msgstr "Le monument que montre cette photo"
+
+msgid "The language of the pages and of the console's messages."
+msgstr "La langue des pages et des messages de la console."
 
 msgid "The largest clusters without a name"
 msgstr "Les plus grands groupes sans nom"
@@ -12096,6 +12171,9 @@ msgstr "Le lien n'ouvre plus rien."
 
 msgid "The local model of [classify.ai] also describes the photos"
 msgstr "Le modèle local de [classify.ai] décrit aussi les photos"
+
+msgid "The local vision model that describes the photos; none: off."
+msgstr "Le modèle de vision local qui décrit les photos ; aucun : désactivé."
 
 #, python-brace-format
 msgid "The manifest could not be written to {folder}: {reason}."
@@ -12561,6 +12639,9 @@ msgstr "Le tri ne tourne plus : relancez-le."
 msgid "The rule would take {files}, shown first: {folders}."
 msgstr "La règle prendrait {files}, montrés en premier : {folders}."
 
+msgid "The rules that name the events and choose their folders."
+msgstr "Les règles qui nomment les événements et choisissent leurs dossiers."
+
 msgid "The run to go on with, for the next files; none: a new run."
 msgstr ""
 "Le passage à poursuivre, pour les fichiers suivants ; aucun : un nouveau "
@@ -12832,6 +12913,9 @@ msgstr "Les étapes ont changé depuis l'affichage de la page : les voici."
 msgid "The steps of this import are running: wait for their end."
 msgstr "Les étapes de cet import sont en cours : attendez leur fin."
 
+msgid "The steps run once the photos of a phone are copied."
+msgstr "Les étapes lancées une fois les photos d'un téléphone copiées."
+
 msgid "The storyteller's notes"
 msgstr "Les notes du conteur"
 
@@ -12852,6 +12936,9 @@ msgid "The sure groups still undecided, many a screen: Enter decides what you se
 msgstr ""
 "Les groupes sûrs encore à décider, nombreux par écran : Entrée décide ce "
 "que vous voyez"
+
+msgid "The synonyms and the words never used as a tag."
+msgstr "Les synonymes et les mots jamais utilisés comme tag."
 
 msgid "The tag it means:"
 msgstr "Le tag qu'il désigne :"
@@ -14017,6 +14104,12 @@ msgstr "Valider les {series} sans les voir ({aside})"
 msgid "Value"
 msgstr "Valeur"
 
+#, python-brace-format
+msgid "Values read from {file} now; “default”: the file does not hold it."
+msgstr ""
+"Valeurs lues dans {file} à l'instant ; « par défaut » : le fichier ne la "
+"contient pas."
+
 msgid "Video cannot be opened"
 msgstr "Vidéo impossible à ouvrir"
 
@@ -14106,6 +14199,14 @@ msgstr ""
 "photos (sauté s'il ne tourne pas). places : les nouveaux lieux nommés en "
 "ligne, après sa propre question."
 
+msgid "What the audit analyses"
+msgstr "Ce que l'audit analyse"
+
+msgid "What the junk review counts as a screenshot, too small, too dark…"
+msgstr ""
+"Ce que la revue des indésirables compte comme capture d'écran, trop "
+"petite, trop sombre…"
+
 msgid "What the last audit found"
 msgstr "Ce que le dernier audit a trouvé"
 
@@ -14168,6 +14269,9 @@ msgstr "Ce que {file} contient pour cette paire"
 msgid "What {file} holds for this series"
 msgstr "Ce que contient {file} pour cette série"
 
+msgid "When a shot of a series is offered to set aside."
+msgstr "Quand une photo d'une rafale est proposée à mettre de côté."
+
 msgid "When the page opens, runs the next step, as in the console's menu."
 msgstr "À l'ouverture, lance la prochaine étape, comme dans le menu de la console."
 
@@ -14211,9 +14315,15 @@ msgstr ""
 msgid "Where should your albums go?"
 msgstr "Où mettre vos albums ?"
 
+msgid "Where sort moves the photos, and the folders it makes."
+msgstr "Où sort déplace les photos, et les dossiers qu'il crée."
+
 #, python-brace-format
 msgid "Where sure files go, e.g. '{year}/{year_month}/{category}'."
 msgstr "Où vont les fichiers sûrs, par exemple '{year}/{year_month}/{category}'."
+
+msgid "Where the albums are made."
+msgstr "Où les albums sont créés."
 
 msgid ""
 "Where the copies set aside go, once: best on the photos' disk (a move, "
@@ -14240,6 +14350,9 @@ msgstr "Où vous en êtes"
 
 msgid "Where your photos stand"
 msgstr "Où en sont vos photos"
+
+msgid "Whether a phone may open the pages, and see the originals."
+msgstr "Si un téléphone peut ouvrir les pages, et voir les originaux."
 
 msgid "White pixels"
 msgstr "Pixels blancs"
@@ -14825,6 +14938,9 @@ msgstr "Vos photos, en ordre"
 
 msgid "Your places"
 msgstr "Vos lieux"
+
+msgid "Your places, the spots ignored, naming places online."
+msgstr "Vos lieux, les endroits ignorés, nommer les lieux en ligne."
 
 msgid "Your rules"
 msgstr "Vos règles"
@@ -16371,6 +16487,9 @@ msgstr "il ne reste aucune photo gardée de sa série"
 msgid "nobody named {name} on this photo"
 msgstr "personne ne s'appelle {name} sur cette photo"
 
+msgid "none"
+msgstr "aucun"
+
 msgid "none but the system ones"
 msgstr "aucun, sauf ceux du système"
 
@@ -16434,9 +16553,9 @@ msgid ""
 "entry runs it (Move: E event, M month; Slideshow: H this PC, T TV; "
 "Describe: T tag, D date, P place)"
 msgstr ""
-"sur un menu ▾ de la barre : l'ouvre ; ↑ ↓ s'y déplacent, la lettre à droite "
-"d'une entrée la lance (Déplacer : E événement, M mois ; Diaporama : H ce PC, "
-"T télé ; Décrire : T étiquette, D date, P lieu)"
+"sur un menu ▾ de la barre : l'ouvre ; ↑ ↓ s'y déplacent, la lettre à "
+"droite d'une entrée la lance (Déplacer : E événement, M mois ; Diaporama "
+": H ce PC, T télé ; Décrire : T étiquette, D date, P lieu)"
 
 msgid "on a video you clicked: play, seek; Esc gives the keys back"
 msgstr "sur une vidéo cliquée : lecture, avance ; Échap rend les touches"
@@ -20075,6 +20194,10 @@ msgstr[0] "{n} dans un dossier protégé : laissée."
 msgstr[1] "{n} dans un dossier protégé : laissées."
 
 #, python-brace-format
+msgid "{n} items"
+msgstr "{n} éléments"
+
+#, python-brace-format
 msgid "{n} link failed."
 msgid_plural "{n} links failed."
 msgstr[0] "{n} lien a échoué."
@@ -21030,6 +21153,9 @@ msgstr "▶ Lecture"
 #, python-brace-format
 msgid "▶ Run again from: {step}"
 msgstr "▶ Relancer depuis : {step}"
+
+msgid "⚙ Settings"
+msgstr "⚙ Réglages"
 
 #, python-brace-format
 msgid "⚠ {count} wrong codes from {address} at {time}"
