@@ -3744,11 +3744,11 @@ for path in paths:
     except Exception:
         tag = 'unreadable'
     counts[tag] = counts.get(tag, 0) + 1
-    if tag in (None, 1):
+    if tag in (None, 0, 1):
         untagged.append(path)
 spent = time.perf_counter() - start
 print(f'48a. {read} of {len(paths)} pictures read (headers, random order) in {spent:.0f} s')
-print('48b. orientation tag: ' + ', '.join(f'{k}: {v}' for k, v in sorted(counts.items(), key=lambda kv: -kv[1])) + ' (None or 1 = no turn asked)')
+print('48b. orientation tag: ' + ', '.join(f'{k}: {v}' for k, v in sorted(counts.items(), key=lambda kv: -kv[1])) + ' (None, 0 or 1 = no turn asked)')
 def score(picture):
     return sum(face.score for face in finder.find(picture))
 turned, kept, start, tried, seconds = [], [], time.perf_counter(), 0, []
@@ -3791,7 +3791,7 @@ html.append('<p>Count the RIGHT pictures that are upright (the guess is right).<
 for number, (path, angle, picture) in enumerate(turned, 1):
     html.append(tile(path, angle, picture, f'A{number}: {angle} deg'))
 html.append(f'<h1>B. {len(kept)} photos with faces the guess leaves as they are</h1>')
-html.append('<p>Count the pictures that are in fact sideways (missed by the guess).</p>')
+html.append('<p>Left and right are the same: the guess does not turn them. Count those shown sideways (missed).</p>')
 for number, (path, angle, picture) in enumerate(kept, 1):
     html.append(tile(path, angle, picture, f'B{number}'))
 Path('/out/' + sys.argv[1]).write_text(''.join(html), encoding='utf-8')
@@ -3807,7 +3807,7 @@ print(f'48d. page written: {sys.argv[1]}')
         Write-Host "48 : la page s'ouvre dans le navigateur. Comptez, puis repondez."
         $right = Read-Host "48e. Partie A : combien de photos de DROITE sont bien droites"
         $wrong = Read-Host "48f. Partie A : combien de photos de GAUCHE etaient deja droites (mh les aurait abimees)"
-        $missed = Read-Host "48g. Partie B : combien sont en fait couchees (ratees)"
+        $missed = Read-Host "48g. Partie B (gauche = droite : mh ne les tourne pas) : combien sont couchees, donc ratees"
         Log "   48e. part A, turned upright by the guess (right): $right"
         Log "   48f. part A, already upright, the guess would spoil them: $wrong"
         Log "   48g. part B, sideways but missed: $missed"

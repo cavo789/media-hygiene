@@ -4,7 +4,6 @@
 - **Batch**: slideshow
 - **Depends**: —
 - **Files**: `src/media_hygiene/scan/visual.py`, `src/media_hygiene/people/`, `src/media_hygiene/index/schema.py`, `src/media_hygiene/slideshow/screen_jpeg.py`
-- **Needs maintainer**: a reliability measurement on the real collection (`tests/measure/mh-measure.ps1`)
 
 Reported by the maintainer on 2026-11-11 after a one-hour random show on the TV.
 
@@ -31,3 +30,20 @@ app or an editor that dropped it. Only the pixels can tell.
 - Share of photos without orientation tag in the maintainer's collection, and how many of
   them are actually sideways (sample).
 - Precision of the face-based guess on that sample; time per photo (4 detections).
+
+## Measured (maintainer's PC, `mh-measure.ps1` step 48, 2026-11-11)
+
+- Orientation tags of 38,438 pictures (headers read in 88 s): `1` 25,147; `6` 5,522; none
+  4,203; `0` 2,413; `8` 496; `3` 209; **`90` 10 and `180` 2** (degrees written by some
+  software instead of the EXIF codes: not applied today, worth reading too); unreadable 436.
+- Untagged (none or `1`; `0` was left out of that run): 2,237 guessed in 300 s, **0.13 s per
+  photo** (4 detections, decode at 1280 px). 33 would be turned (1.5 %).
+- By eye: of those 33, **30 turned right, 1 already upright** (would have been spoiled);
+  20 photos with faces left as they are: **0 missed**.
+- *Estimated* for the whole collection: ~29,350 untagged + 2,413 tagged `0` → about 470
+  sideways photos with faces (1.5 %); 31,800 × 0.13 s = ~69 min on one core, once (the
+  index keeps the answer), ~17 min on 4 workers. Photos without faces: not measured (the
+  guess says nothing on them).
+
+So: faces are reliable enough to **propose** (≈97 % right among those flagged), never to
+apply blindly — the page that shows them before Apply stays mandatory (1 in 31 wrong).
