@@ -46,6 +46,11 @@ def here(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[SlideshowH
             connection.execute(
                 "UPDATE files SET media_date = ? WHERE rowid = ?", (when, number)
             )
+        # The third one has no camera trace: a picture saved from an app.
+        connection.execute(
+            "UPDATE files SET metadata = ? WHERE rowid IN (1, 2)",
+            ('{"make": "Canon"}',),
+        )
         for name in ("a.jpg", "b.jpg"):
             path = data / "c" / "Home" / name
             connection.execute(
@@ -212,11 +217,11 @@ def test_two_folders_with_the_same_last_part_show_their_parent(tmp_path: Path) -
     assert labels == ["2025\\Holidays", "2024\\Holidays", "Home"]
 
 
-def test_a_random_show_takes_dated_photos_only(here: SlideshowHere) -> None:
-    """At random (0508): the three dated photos of Trip, never the undated ones."""
+def test_a_random_show_takes_camera_photos_only(here: SlideshowHere) -> None:
+    """At random (0508): Trip's dated photos a camera took, never the undated ones."""
     answer = _choose(here, {"random": {"minutes": 30}})
     assert answer.status is HTTPStatus.OK
-    assert sorted(_shown(here)) == [1, 2, 3]
+    assert sorted(_shown(here)) == [1, 2]
 
 
 def test_a_random_show_outside_the_years_is_refused(here: SlideshowHere) -> None:

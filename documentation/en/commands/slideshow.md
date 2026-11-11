@@ -97,10 +97,11 @@ is paired once (its code typed on the remote) and **stays paired while `mh` runs
 reaches it without a new code. No album saved: a folder or a month is always there.
 
 **🎲 At random**, at the top of the phone's TV choices, shows the whole collection for a long meal without
-looping: the PC cuts the dated photos into events (the gaps of `[classify]`), takes one year,
-4 to 6 of its events oldest first and about 10 photos of each, spread over the event; then a
-neighbouring year (1 to 3 years away), now and then a larger jump, a year coming back only once
-every other one was shown. Photos only: no video, no undated photo, no screenshot nor document,
+looping: the PC cuts the dated photos into events (the gaps of `[classify]`), draws events at
+random until the length is filled, about 10 photos of each spread over the event, and shows them
+oldest first: the years only move forward. An event of fewer than 5 photos is drawn only when the
+larger ones do not fill the show. Photos only, taken by a camera (a make, a model or a position in
+their EXIF): no video, no undated photo, no screenshot, document or picture saved from an app,
 nothing set aside. Its two choices: the **length** (30 min, 1 h, 2 h: 1 h at 8 s a photo is about
 450 photos) and the **years** (everything, the last 5 years, or a period). Each tap is a new show.
 

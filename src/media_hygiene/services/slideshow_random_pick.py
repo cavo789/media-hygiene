@@ -2,7 +2,9 @@
 
 Photos only (no video), dated (an undated photo cannot be placed in time), under the
 folders analysed, neither set aside nor a screenshot or a document (`classify`'s
-`is_screenshot`, on what the index knows of the file). Read-only.
+`is_screenshot`, on what the index knows of the file), and taken by a camera: a make,
+a model or a position in its EXIF (`has_camera_trace`), so that a picture received or
+saved from an app without them is left out too. Read-only.
 """
 
 from __future__ import annotations
@@ -14,6 +16,7 @@ from typing import TYPE_CHECKING, Final
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from media_hygiene.classify.dates import exif_datetime
+from media_hygiene.classify.dating import has_camera_trace
 from media_hygiene.classify.events import EventRules
 from media_hygiene.classify.models import MediaInput
 from media_hygiene.classify.rules.matchers import is_screenshot
@@ -96,7 +99,7 @@ def dated_photos(runtime: Runtime, search: SearchIndex) -> list[tuple[Path, date
         if not path.is_relative_to(data) or runtime.mapper.to_host(path) in aside:
             continue
         known = MediaInput(path, path.parent, size, mtime or 0, metadata=_facts(facts))
-        if not is_screenshot(known):
+        if has_camera_trace(known) and not is_screenshot(known):
             found.append((path, when))
     return found
 

@@ -1,11 +1,11 @@
-"""A random show that travels through time, chapter by chapter (0508).
+"""A random show that travels through time, from the oldest to the newest (0508).
 
-The dated photos are cut into events by `classify`'s gaps (`find_events`); a chapter is
-one year: a few of its events, oldest first, a handful of photos each, spread over the
-event's duration. The next chapter is a neighbouring year (a random walk), with now and
-then a larger jump so that the show does not stay in one era; a year comes back only
-once every other one was shown. A pure function of the photos and the seed: a new tap
-on the phone is a new seed.
+The dated photos are cut into events by `classify`'s gaps (`find_events`); the show
+draws events at random until its length is filled, a handful of photos each, spread
+over the event's duration, then shows them oldest first: the years only move forward.
+An event of fewer than `FEWEST_PHOTOS` photos (one shot of a day) is drawn only when
+the larger ones do not fill the show. A pure function of the photos and the seed: a
+new tap on the phone is a new seed.
 """
 
 from __future__ import annotations
@@ -24,9 +24,7 @@ if TYPE_CHECKING:
     from media_hygiene.classify.models import Event
 
 PHOTOS_PER_EVENT: Final = 10
-EVENTS_PER_CHAPTER: Final = (4, 6)  # fewest, most
-NEIGHBOUR_YEARS: Final = 3  # the walk's step: 1 to 3 years away
-JUMP_CHANCE: Final = 0.15  # now and then, any year left
+FEWEST_PHOTOS: Final = 5  # an event shown has at least these, when it has them
 
 
 @dataclass(frozen=True, slots=True)
@@ -47,80 +45,44 @@ def journey(dated: Sequence[tuple[Path, datetime]], asked: Journey) -> list[Path
         asked: The number of slides, the years, the seed.
 
     Returns:
-        At most `asked.slides` photos, each once: chapter by chapter, each oldest first.
+        At most `asked.slides` photos, each once, oldest first.
     """
     rules = EventRules(asked.rules.session_gap, asked.rules.merge_gap, 1)
-    by_year: dict[int, list[Event]] = {}
-    for event in find_events(dated, rules, {}):
-        year = event.start.year
-        if asked.years is None or asked.years[0] <= year <= asked.years[1]:
-            by_year.setdefault(year, []).append(event)
+    events = [
+        event
+        for event in find_events(dated, rules, {})
+        if asked.years is None or asked.years[0] <= event.start.year <= asked.years[1]
+    ]
     chance = random.Random(asked.seed)  # noqa: S311 - a show, not a secret
     # Few events for the length asked (a long trip): more photos of each.
-    events = sum(len(each) for each in by_year.values())
-    per = max(PHOTOS_PER_EVENT, -(-asked.slides // max(events, 1)))
-    shown: list[Path] = []
-    seen: set[int] = set()
-    chapter = chance.choice(sorted(by_year)) if by_year else None
-    while chapter is not None and len(shown) < asked.slides:
-        shown.extend(_chapter(by_year, (chapter, per), chance))
-        seen.add(chapter)
-        chapter = _next_year(by_year, (chapter, seen), chance)
+    per = max(PHOTOS_PER_EVENT, -(-asked.slides // max(len(events), 1)))
+    drawn: list[Event] = []
+    count = 0
+    for event in _draw(events, chance):
+        if count >= asked.slides:
+            break
+        drawn.append(event)
+        count += min(len(event.paths), per)
+    drawn.sort(key=lambda event: event.start)
+    shown = [path for event in drawn for path in spread(event.paths, per)]
     return shown[: asked.slides]
 
 
-def _chapter(
-    by_year: dict[int, list[Event]], slot: tuple[int, int], chance: random.Random
-) -> list[Path]:
-    """A few events of the year not shown yet, oldest first; they leave the pool.
+def _draw(events: list[Event], chance: random.Random) -> list[Event]:
+    """Every event in a random order, the small ones last.
 
     Args:
-        by_year: The events still to show, by year.
-        slot: The chapter's year, and the photos taken of each event.
+        events: The events of the years asked.
         chance: The show's random source.
 
     Returns:
-        Their photos.
+        The events of `FEWEST_PHOTOS` photos or more shuffled, then the others.
     """
-    year, per = slot
-    left = by_year[year]
-    count = min(len(left), chance.randint(*EVENTS_PER_CHAPTER))
-    taken = sorted(chance.sample(left, count), key=lambda event: event.start)
-    for event in taken:
-        left.remove(event)
-    if not left:
-        del by_year[year]
-    return [path for event in taken for path in spread(event.paths, per)]
-
-
-def _next_year(
-    by_year: dict[int, list[Event]], walk: tuple[int, set[int]], chance: random.Random
-) -> int | None:
-    """A neighbouring year not shown in this round; now and then any year left.
-
-    Args:
-        by_year: The events still to show, by year.
-        walk: The year just shown, and the years shown in this round (emptied when
-            every year left was shown).
-        chance: The show's random source.
-
-    Returns:
-        The next chapter's year; None when every event was shown.
-    """
-    here, seen = walk
-    if not by_year:
-        return None
-    if seen >= by_year.keys():
-        seen.clear()
-        seen.add(here)  # a new round, not the same year twice in a row
-    fresh = sorted(year for year in by_year if year not in seen) or sorted(by_year)
-    if chance.random() < JUMP_CHANCE:
-        return chance.choice(fresh)
-    near = [year for year in fresh if abs(year - here) <= NEIGHBOUR_YEARS]
-    closest = min(abs(year - here) for year in fresh)
-    return chance.choice(
-        near or [year for year in fresh if abs(year - here) == closest]
-    )
+    large = [event for event in events if len(event.paths) >= FEWEST_PHOTOS]
+    small = [event for event in events if len(event.paths) < FEWEST_PHOTOS]
+    chance.shuffle(large)
+    chance.shuffle(small)
+    return large + small
 
 
 def spread(paths: Sequence[Path], per: int = PHOTOS_PER_EVENT) -> list[Path]:

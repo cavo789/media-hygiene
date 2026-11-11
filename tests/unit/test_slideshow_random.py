@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import itertools
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Final
@@ -38,23 +37,32 @@ def _when(dated: list[tuple[Path, datetime]]) -> dict[Path, datetime]:
 
 
 @pytest.mark.parametrize("seed", range(5))
-def test_a_chapter_is_in_date_order_and_the_walk_stays_near(seed: int) -> None:
-    """Inside a year, oldest first; between chapters, mostly 1 to 3 years away."""
-    dated = _collection(20, 5, 3)
+def test_the_show_only_moves_forward_in_time(seed: int) -> None:
+    """Events drawn at random, shown oldest first: never back to an earlier date."""
+    dated = _collection(20, 5, 12)
     when = _when(dated)
-    shown = journey(dated, Journey(10_000, _RULES, seed=seed))
-    years = [when[path].year for path in shown]
-    chapters = [
-        year
-        for index, year in enumerate(years)
-        if index == 0 or year != years[index - 1]
+    shown = journey(dated, Journey(200, _RULES, seed=seed))
+    assert len(shown) == 200
+    dates = [when[path] for path in shown]
+    assert dates == sorted(dates)
+    assert len({date.year for date in dates}) > 1
+
+
+def test_small_events_only_when_the_large_ones_do_not_fill_the_show() -> None:
+    """One-shot days are left out while events of five photos or more remain."""
+    large = _collection(10, 5, 8)
+    single = [
+        (
+            Path(f"/data/c/single/{day}.jpg"),
+            _START.replace(year=1980) + timedelta(days=30 * day),
+        )
+        for day in range(40)
     ]
-    for index in range(1, len(shown)):
-        if years[index] == years[index - 1]:
-            assert when[shown[index]] > when[shown[index - 1]]
-    steps = [abs(after - before) for before, after in itertools.pairwise(chapters)]
-    near = sum(step <= slideshow_random.NEIGHBOUR_YEARS for step in steps)
-    assert near >= len(steps) * 0.6
+    dated = large + single
+    shown = journey(dated, Journey(100, _RULES, seed=3))
+    assert not set(shown) & {path for path, _when in single}
+    everything = journey(dated, Journey(10_000, _RULES, seed=3))
+    assert set(everything) == {path for path, _when in dated}
 
 
 def test_every_photo_once_when_fewer_than_asked() -> None:

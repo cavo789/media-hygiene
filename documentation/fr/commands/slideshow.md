@@ -104,10 +104,12 @@ lui arrive sans nouveau code. Aucun album enregistré : un dossier ou un mois re
 
 **🎲 Au hasard**, en haut des choix télé du téléphone, montre toute la collection pendant un long repas
 sans tourner en boucle : le PC découpe les photos datées en événements (les écarts de `[classify]`),
-prend une année, 4 à 6 de ses événements du plus ancien au plus récent et une dizaine de photos de
-chacun, réparties sur l'événement ; puis une année voisine (1 à 3 ans plus loin), de temps en temps
-un saut plus grand, une année ne revenant qu'une fois toutes les autres montrées. Des photos
-seulement : ni vidéo, ni photo sans date, ni capture d'écran ou document, rien de mis de côté. Ses
+tire des événements au hasard jusqu'à remplir la durée, une dizaine de photos de chacun réparties
+sur l'événement, et les montre du plus ancien au plus récent : les années ne font qu'avancer. Un
+événement de moins de 5 photos n'est tiré que si les plus grands ne remplissent pas la durée. Des
+photos seulement, prises par un appareil (une marque, un modèle ou une position dans leur EXIF) :
+ni vidéo, ni photo sans date, ni capture d'écran, document ou image enregistrée depuis une appli,
+rien de mis de côté. Ses
 deux choix : la **durée** (30 min, 1 h, 2 h : 1 h à 8 s par photo fait environ 450 photos) et les
 **années** (tout, les 5 dernières années ou une période). Chaque appui est un nouveau diaporama.
 
