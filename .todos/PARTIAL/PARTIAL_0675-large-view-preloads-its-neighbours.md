@@ -32,3 +32,22 @@ ahead (`search_events_ahead.js.j2`, 0652).
 
 Each → in a review: about 75 ms + the read (measured / to measure on Windows) → instant
 from the second photo on.
+
+## Status — PARTIAL (2026-11-11)
+
+### Done
+
+- `pick_preload.js.j2` (included by `pick_viewer.js.j2`, so every page with the large view):
+  the next photo in the direction of travel, then the previous one, `new Image().src`, one
+  at a time; dropped and stopped on a jump or on close; never a video; none when
+  `navigator.connection.saveData`.
+- Rendered-page test (`test_pick_pages`) and the CI browser walk `tests/support/preload_walk.py`
+  (300 ms previews, second -> without waiting, at most 2 previews in flight) called from
+  `tests/e2e/test_ask_dialog_browser.py`.
+
+### Not done
+
+- The browser walk has not run (no Playwright here): CI to confirm.
+- The Events review's own code (`search_events_ahead.js.j2`) is kept: it preloads the next
+  *event's* 60 thumbnails (a different job from the viewer's neighbours); the Events tab
+  already uses the shared large view, so it gets the new preload.

@@ -189,6 +189,20 @@ def test_the_group_reviews_share_the_large_view_without_picking(template: str) -
     )  # no Delete in the large view
 
 
+def test_the_large_view_preloads_its_neighbours_once_and_gently(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0675: one preload at a time, none for a video or save-data, dropped on a jump."""
+    search, _browse = _pages(cli, monkeypatch)
+    preload = search.split("function preloadAround() {")[1].split("\n}\n")[0]
+    assert "navigator.connection.saveData" in preload
+    assert "!file.video" in preload
+    assert "preloadStop();" in preload  # a jump drops what waits
+    assert search.count("new Image()") >= 1
+    shown = search.split("function open() {\n  const file = files[current];")[1]
+    assert "preloadAround();" in shown.split("\n}\n")[0]
+
+
 def test_the_large_view_arrows_step_over_the_files_set_aside() -> None:
     """0517: ← → Home End: the nearest file not set aside; Delete: the previous."""
     page = _review("near_review.html.j2")
