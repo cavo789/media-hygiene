@@ -24,8 +24,9 @@ SEARCH_API: Final = "/api/search"
 HOME_READY: Final = "#runDlg"  # the home page's own dialog: no other page has it
 HOME_DRAWN: Final = "#loading"  # hidden once /api/state answered and the page is drawn
 PAGE_READY: Final = "#homeLink"  # *Back to the home page*, on every page mh opened
+# 0692 keeps the last state in localStorage (it outlives the tab and a restart of mh).
 _STATE_KEPT: Final = (
-    "Object.keys(sessionStorage).some((key) => key.startsWith('mh-home-state-'))"
+    "Object.keys(localStorage).some((key) => key.startsWith('mh-home-state-'))"
     " && document.getElementById('loading').hidden"
 )
 SHOWN_MS: Final = 30_000  # a page served by the home server (search, browse)
