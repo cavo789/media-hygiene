@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 from PIL import Image
 
 from media_hygiene.report.preview_cache import (
+    FAILED_RETRY_S,
     PreviewJob,
     cached_preview,
     trim_previews,
@@ -74,6 +75,21 @@ def test_nothing_for_what_is_no_picture(tmp_path: Path) -> None:
     (marker,) = folder.iterdir()
     assert not marker.read_bytes()
     assert cached_preview(PreviewJob(video, _EDGE, folder)) is None
+
+
+def test_a_failure_is_tried_again_a_day_later(tmp_path: Path) -> None:
+    """An empty marker holds for a day, then the picture is decoded again."""
+    folder = tmp_path / "previews"
+    job = PreviewJob(photo(tmp_path), _EDGE, folder)
+    cached_preview(job)
+    (kept,) = folder.iterdir()
+    kept.write_bytes(b"")
+    assert cached_preview(job) is None
+    old = kept.stat().st_mtime - FAILED_RETRY_S - 1
+    os.utime(kept, (old, old))
+    image = cached_preview(job)
+    assert image is not None
+    assert kept.read_bytes() == image
 
 
 def test_trimmed_least_recently_used_first(tmp_path: Path) -> None:

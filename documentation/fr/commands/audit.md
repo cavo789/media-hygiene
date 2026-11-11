@@ -102,6 +102,9 @@ cavo789/media-hygiene --locale fr audit --people
 - **Le premier audit** d'une grande photothèque peut être long ; avec
   [le cache](../start/02-keep-the-cache.md), les suivants ne lisent que les fichiers nouveaux ou
   modifiés.
+- **Les vignettes, en dernier** : avec le cache, l'audit prépare ensuite les vignettes que montre
+  la photothèque, qui s'ouvre alors aussitôt. Le rapport est déjà écrit : **Ctrl+C** passe cette
+  étape, et les photos restantes reçoivent leur vignette quand une page les affiche.
 - **Montez chaque dossier une seule fois** : `C:\Photos` contient déjà `C:\Photos\2019`. Un
   dossier monté deux fois est refusé, plutôt que de prendre une photo pour une copie d'elle-même.
 - **Une sauvegarde ou un ancien disque** : `--backup` le compare sans le modifier, et dit ce qui

@@ -2665,6 +2665,13 @@ msgid "Crete 2023"
 msgstr "Crète 2023"
 
 msgid ""
+"Ctrl+C skips this step at any time: the audit is saved, the rest is made "
+"when a page shows it."
+msgstr ""
+"Ctrl+C passe cette étape à tout moment : l'audit est enregistré, le reste "
+"se fait quand une page l'affiche."
+
+msgid ""
 "Ctrl+C stops between two photos: the faces found are kept, and the next "
 "run goes on."
 msgstr ""
@@ -13535,6 +13542,15 @@ msgstr "Seuils"
 msgid "Thumbnail size"
 msgstr "Taille des vignettes"
 
+msgid "Thumbnails of the library"
+msgstr "Vignettes de la photothèque"
+
+#, python-brace-format
+msgid "Thumbnails stopped: {left} photo left, made when a page shows it."
+msgid_plural "Thumbnails stopped: {left} photos left, made when a page shows them."
+msgstr[0] "Vignettes interrompues : {left} photo restante, faite quand une page l'affichera."
+msgstr[1] "Vignettes interrompues : {left} photos restantes, faites quand une page les affichera."
+
 msgid "Tick all"
 msgstr "Tout cocher"
 
@@ -21447,6 +21463,12 @@ msgstr ""
 
 msgid "🖥 On this PC"
 msgstr "🖥 Sur ce PC"
+
+#, python-brace-format
+msgid "🖼 {made} new thumbnail ready: the library opens at once."
+msgid_plural "🖼 {made} new thumbnails ready: the library opens at once."
+msgstr[0] "🖼 {made} nouvelle vignette prête : la photothèque s'ouvre aussitôt."
+msgstr[1] "🖼 {made} nouvelles vignettes prêtes : la photothèque s'ouvre aussitôt."
 
 #, python-brace-format
 msgid ""

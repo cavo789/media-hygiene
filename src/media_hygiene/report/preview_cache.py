@@ -3,9 +3,11 @@
 A preview is named after the file's path, size and modification time, its size in
 pixels and the way previews are made (`_VERSION`): a file changed since gets a new
 one. Written under a temporary name, then renamed, so a crash never leaves half a
-JPEG. A picture that cannot be decoded is kept as an empty file: that version of it
-is not decoded again either. A cache folder that cannot be written only means the
-preview is rendered again next time. Without a persistent `/cache`, nothing is kept.
+JPEG. A picture that cannot be decoded is kept as an empty file for a day: a read that
+failed for a moment (a share busy, a file still being copied) raises what a damaged
+picture raises, so the marker is not trusted for good. A cache folder that cannot be
+written only means the preview is rendered again next time. Without a persistent
+`/cache`, nothing is kept.
 """
 
 from __future__ import annotations
@@ -13,6 +15,7 @@ from __future__ import annotations
 import contextlib
 import hashlib
 import os
+import time
 from dataclasses import dataclass
 from functools import partial
 from typing import TYPE_CHECKING, Final
@@ -36,6 +39,8 @@ _PARTIAL: Final = ".part"
 # Beyond the bound (`[cache] previews_max_gb`), the previews used least recently go,
 # down to this share of it (so that the next report does not trim again).
 _TRIMMED_SHARE: Final = 0.8
+# An empty preview (no picture) is believed this long, then the picture is tried again.
+FAILED_RETRY_S: Final = 24 * 3600
 
 
 @dataclass(frozen=True, slots=True)
@@ -100,8 +105,11 @@ def cached_preview(job: PreviewJob) -> bytes | None:
     target = job.folder / preview_key(job, version.st_size, version.st_mtime_ns)
     with contextlib.suppress(OSError):
         kept = target.read_bytes()
-        os.utime(target)  # used now: trimmed last
-        return kept or None  # empty: this version cannot be shown
+        if kept:
+            os.utime(target)  # used now: trimmed last
+            return kept
+        if time.time() - target.stat().st_mtime < FAILED_RETRY_S:
+            return None  # empty: this version could not be shown lately
     image = jpeg_preview(job.source, job.edge)
     keep_preview(target, image or b"")
     return image

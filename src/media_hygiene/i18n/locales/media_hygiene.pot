@@ -2186,6 +2186,11 @@ msgid "Crete 2023"
 msgstr ""
 
 msgid ""
+"Ctrl+C skips this step at any time: the audit is saved, the rest is made "
+"when a page shows it."
+msgstr ""
+
+msgid ""
 "Ctrl+C stops between two photos: the faces found are kept, and the next "
 "run goes on."
 msgstr ""
@@ -11251,6 +11256,15 @@ msgstr ""
 msgid "Thumbnail size"
 msgstr ""
 
+msgid "Thumbnails of the library"
+msgstr ""
+
+#, python-brace-format
+msgid "Thumbnails stopped: {left} photo left, made when a page shows it."
+msgid_plural "Thumbnails stopped: {left} photos left, made when a page shows them."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Tick all"
 msgstr ""
 
@@ -18042,6 +18056,12 @@ msgstr ""
 
 msgid "🖥 On this PC"
 msgstr ""
+
+#, python-brace-format
+msgid "🖼 {made} new thumbnail ready: the library opens at once."
+msgid_plural "🖼 {made} new thumbnails ready: the library opens at once."
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid ""

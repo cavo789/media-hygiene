@@ -99,6 +99,9 @@ cavo789/media-hygiene audit --people
 - **Ctrl+C** stops at any moment, without an error message: nothing has changed.
 - **The first audit** of a large library can take a long while; with
   [the cache](../start/02-keep-the-cache.md), the next ones only read the new or changed files.
+- **Thumbnails, last step**: with the cache, the audit then makes the thumbnails the library
+  shows, so it opens at once. The report is already written: **Ctrl+C** skips this step, and
+  the photos left get their thumbnail when a page first shows them.
 - **Mount each folder once**: `C:\Photos` already includes `C:\Photos\2019`. A folder mounted
   twice is refused, rather than taking a photo for a copy of itself.
 - **A backup or an old disk**: `--backup` compares it without changing it, and says what it

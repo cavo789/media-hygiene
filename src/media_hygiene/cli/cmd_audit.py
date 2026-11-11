@@ -80,6 +80,7 @@ def audit_command(  # pylint: disable=too-many-arguments
     """
     from media_hygiene.cli.audit_actions import second_opinion, show_actions
     from media_hygiene.cli.audit_people import audit_people
+    from media_hygiene.cli.audit_thumbs import thumbs_after_audit
     from media_hygiene.cli.audit_tips import setup_tips
     from media_hygiene.cli.flows import audit_and_show, report_and_announce
     from media_hygiene.console.advice import Advice, TipKind
@@ -104,6 +105,7 @@ def audit_command(  # pylint: disable=too-many-arguments
         report_and_announce(
             runtime, ReportRecord(RunKind.AUDIT, findings, actions=actions)
         )
+        thumbs_after_audit(runtime, findings)  # written first: Ctrl+C loses nothing
     output, plan = runtime.output, findings.plan
     if plan.is_empty:
         output.success(_("Nothing to clean: no duplicate and no broken file."))
