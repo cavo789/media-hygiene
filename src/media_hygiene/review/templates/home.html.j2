@@ -144,6 +144,7 @@
         <span class="keys" aria-hidden="true"><kbd>Ctrl</kbd><kbd>K</kbd></span>
       </button>
       <div class="top-links" id="topLinks"></div>
+      <span data-step-slot></span>
     </header>
     <main id="main" tabindex="-1"></main>
   </div>
@@ -188,6 +189,7 @@
   <div class="copybox-foot"><button class="btn" type="button" id="copyClose">{{ texts.close }}</button></div>
 </section>
 
+{% include "step_chip.html.j2" %}
 <script nonce="{{ page_nonce }}">
 (() => {
 {% include "home.js.j2" %}

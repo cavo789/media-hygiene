@@ -43,3 +43,28 @@ audit and went to the library sees nothing of it until they come back home.
 Before: the state of a long step is visible on 1 page (home) or in the console. After: on
 every page, in the tab title and by a notification — no need to look at PowerShell to know
 whether the audit ended.
+
+## Status — PARTIAL (2026-11-11)
+
+### Done
+
+- `review/templates/step_chip.html.j2`, included once by the frame, the home page and the album
+  page (not a shared link): the chip in the header's slot (`data-step-slot`), *⏳ Audit · 45 % ·
+  3 min left*, hidden while idle; its click opens the home page's follow dialog
+  (`mhStepOpen`) or a small read-only dialog elsewhere; the tab title carries the progress; the
+  end said through `mhSay` and, tab hidden, the notification (`mhNotify`, the code moved from
+  `home_notify.js.j2`).
+- One poll per page (`mhStep.watch` / `claim`): the home page's dialog, its resume on load and
+  *Apply now* follow it; 1 s while running, 5 s idle, 15 s hidden, none on a server without
+  `/api/step` (404). Purge and shrink keep their own follow but claim the step (no double toast).
+- A paired phone may `GET /api/step` (`lan_paths._HOME_READS`); its `POST` stays the PC's; no Stop.
+- Tests: `tests/unit/test_step_chip.py`, `test_pick_pages` counts the chip, CI browser walk
+  `tests/support/step_walk.py` (mocked running → done, no `pageerror`). Docs EN + FR (`home.md`).
+
+### Not done
+
+- The end message is *Done: <stage>.* / *Stopped (code n): <stage>.*: `/api/step` does not carry
+  the step's summary first line nor its 👉 line. Needs the step to write them beside its
+  progress (`services/step_progress.py`) and `read_state` to return them.
+- The browser walk runs in CI only (no Playwright here): not run locally.
+- `docs_screenshots` should run (header changed while a step runs; idle captures unchanged).

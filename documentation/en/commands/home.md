@@ -209,6 +209,11 @@ opened the page:
   or reload the tab meanwhile: the step goes on, and the page, opened again, shows it again
   (*A step still runs*) until its end. Your browser asks once whether to notify you: say yes, and
   the end of the step is told by a notification while you are on another tab.
+  **Every page** of the home server shows it too, not only the home page: a chip in its top bar
+  (*⏳ Audit · 45 % · 3 min left*; nothing while no step runs) opens the same follow dialog,
+  the tab's title starts with the progress (*45 % · Audit — …*), so the tab bar is the loader
+  while you work elsewhere, and its end is said on the page shown (*Done: Audit.*), or by the
+  notification when the tab is hidden. A phone on the home Wi-Fi sees the chip too, read-only.
 - **Choices waiting on several pages** (burst series, near duplicates, folder pairs, unwanted
   photos, files gone, intruder files, the faces of `people`, `library`): the home page says how many wait (*Choices waiting to be
   applied: 3*), each page named with its count and a link to it, and **Apply all** runs one

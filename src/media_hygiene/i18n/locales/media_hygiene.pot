@@ -862,6 +862,9 @@ msgid_plural "A show was running on the TV: replaced by a selection of {n} files
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "A step"
+msgstr ""
+
 msgid "A step is running in the window of mh: wait for its end."
 msgstr ""
 
@@ -2603,6 +2606,10 @@ msgid ""
 "may close this page."
 msgstr ""
 
+#, python-brace-format
+msgid "Done: {step}."
+msgstr ""
+
 msgid ""
 "Done? Ctrl+C in the terminal stops the map. Then add a 'place' rule (and "
 "a 'trip' rule) to [[classify.rules]] and run 'classify'."
@@ -3583,6 +3590,9 @@ msgid "Folders skipped by name, wherever they are: {names}."
 msgstr ""
 
 msgid "Folders with a role that are gone"
+msgstr ""
+
+msgid "Follow the step"
 msgstr ""
 
 msgid "For a second opinion, run 'crosscheck' (same -v options)."
@@ -5765,6 +5775,9 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid "No new photo during '{name}': all added or refused."
+msgstr ""
+
+msgid "No news from the window of mh: it may have been closed."
 msgstr ""
 
 msgid "No obvious series left to validate."
@@ -9151,6 +9164,10 @@ msgid "Stopped (code {code}): {command}."
 msgstr ""
 
 #, python-brace-format
+msgid "Stopped (code {code}): {step}."
+msgstr ""
+
+#, python-brace-format
 msgid "Stopped after {seconds} s: run it from the console instead."
 msgstr ""
 
@@ -10627,6 +10644,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "The step ended early (code {code}): the window of mh says why."
+msgstr ""
+
+msgid "The step runs in the window of mh: this page only shows how far it is."
 msgstr ""
 
 #, python-brace-format
@@ -14626,6 +14646,9 @@ msgstr ""
 msgid "unanswered"
 msgstr ""
 
+msgid "under 1 min left"
+msgstr ""
+
 msgid ""
 "undo puts the files back but keeps the event: remove it from events/ by "
 "hand."
@@ -14712,6 +14735,9 @@ msgid "videos:"
 msgstr ""
 
 msgid "waiting"
+msgstr ""
+
+msgid "waiting for mh"
 msgstr ""
 
 msgid "what each photo shows, for search by meaning"
@@ -16408,6 +16434,10 @@ msgstr ""
 
 #, python-brace-format
 msgid "{limit} or more is expected, not {value}"
+msgstr ""
+
+#, python-brace-format
+msgid "{minutes} min left"
 msgstr ""
 
 #, python-brace-format

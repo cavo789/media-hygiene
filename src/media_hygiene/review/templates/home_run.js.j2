@@ -217,25 +217,27 @@ function goTo(page) {
 }
 // The step's files, as mh writes them (`GET /api/step`): its end closes the dialog. The
 // server gone meanwhile (an older mh, a crash): wait for the next one, as before.
+let followed = null; // the id this page's dialog follows: the chip's click shows it again
 function followStep(id, command) {
-  const poll = () => fetch(P.step, { cache: "no-store" })
-    .then((response) => response.json())
-    .then((step) => {
-      if (step.state !== "done" || step.id !== id) {
-        showProgress(step.progress);
-        if (step.lost && $("#runProgress")) $("#runProgress").textContent = T.stepLost; // 0632
-        window.setTimeout(poll, POLL_MS);
-        return;
-      }
-      $("#runDlg").close();
-      const ok = step.code === 0;
-      const ended = fill(ok ? T.stepDone : T.stepFailed, { command: command, code: step.code });
-      toast(ended, ok ? "ok" : "info");
-      notifyEnd(ended);
-      reload();
-    })
-    .catch(() => { presence.away = true; waitForComeBack(false, null); });
-  window.setTimeout(poll, POLL_MS);
+  window.mhStep.claim(id); // its end said here, not by the chip (step_chip.html.j2, 0661)
+  if (followed === id) return;
+  followed = id;
+  const stop = window.mhStep.watch((step) => {
+    if (step === null) { stop(); followed = null; presence.away = true; waitForComeBack(false, null); return; }
+    if (step.state !== "done" || step.id !== id) {
+      showProgress(step.progress);
+      if (step.lost && $("#runProgress")) $("#runProgress").textContent = T.stepLost; // 0632
+      return;
+    }
+    stop();
+    followed = null;
+    $("#runDlg").close();
+    const ok = step.code === 0;
+    const ended = fill(ok ? T.stepDone : T.stepFailed, { command: command, code: step.code });
+    toast(ended, ok ? "ok" : "info");
+    notifyEnd(ended);
+    reload();
+  });
 }
 // "/" and not the state: any page answers it, the step's page as well as the home page.
 function waitForComeBack(page, run) {

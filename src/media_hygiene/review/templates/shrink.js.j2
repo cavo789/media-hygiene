@@ -133,6 +133,7 @@
         handed = true;
         render();
         setStatus(step.kept ? T.handedHere : T.handed, "saved");
+        if (step.kept && window.mhStep) window.mhStep.claim(step.id); // its end said here (0661)
         if (step.kept) followStep(step);
       })
       .catch((status) => setStatus(fill(T.failedSave, { status: status }), "error"));

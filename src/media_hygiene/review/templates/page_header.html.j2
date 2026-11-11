@@ -13,7 +13,7 @@
   <span class="mh-brand"><img src="{{ header.assets }}images/avatar.webp" alt="" width="24" height="32">Media Hygiene</span>
   <span class="mh-page" aria-hidden="true">›</span>
   <h1 class="mh-page">{{ page_name }}</h1>
-  <span class="mh-links">
+  <span class="mh-links" data-step-slot>
 {% include "locale_picker.html.j2" %}
     <a class="mh-doc" href="{{ header.doc }}" target="_blank" rel="noopener">{{ _("Documentation") }}</a>
     <a class="mh-doc" href="{{ header.twin }}" target="_blank" rel="noopener" hreflang="{{ header.twin_lang }}" lang="{{ header.twin_lang }}">{{ header.twin_label }}</a>

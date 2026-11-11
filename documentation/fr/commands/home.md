@@ -226,6 +226,12 @@ qui a ouvert la page :
   la page, rouverte, la montre à nouveau (*Une étape tourne encore*) jusqu'à sa fin. Le navigateur demande une
   fois s'il peut vous prévenir : dites oui, et la fin de l'étape s'annonce par une notification
   pendant que vous êtes sur un autre onglet.
+  **Chaque page** du serveur de l'accueil la montre aussi, pas seulement l'accueil : une pastille
+  dans sa barre du haut (*⏳ Audit · 45 % · 3 min restantes* ; rien quand aucune étape ne tourne)
+  ouvre la même fenêtre de suivi, le titre de l'onglet commence par l'avancement
+  (*45 % · Audit — …*), si bien que la barre des onglets sert de jauge pendant que vous travaillez
+  ailleurs, et sa fin s'annonce sur la page affichée (*Terminé : Audit.*), ou par la notification
+  quand l'onglet est caché. Un téléphone du Wi-Fi de la maison voit la pastille aussi, en lecture seule.
 - **Des choix en attente sur plusieurs pages** (séries en rafale, quasi-doublons, paires de
   dossiers, photos indésirables, fichiers disparus, fichiers intrus, les visages de `people`, `library`) : la page d'accueil dit combien
   attendent (*Choix en attente d'application : 3*), chaque page nommée avec son nombre et un

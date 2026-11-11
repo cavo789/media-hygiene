@@ -1112,6 +1112,9 @@ msgstr[1] ""
 "Un diaporama passait sur la télé : remplacé par une sélection de {n} "
 "fichiers."
 
+msgid "A step"
+msgstr "Une étape"
+
 msgid "A step is running in the window of mh: wait for its end."
 msgstr "Une étape tourne dans la fenêtre de mh : attendez sa fin."
 
@@ -3163,6 +3166,10 @@ msgstr ""
 "Faites : {done} vidéos sur {total}, maintenant {current}, dans la fenêtre"
 " de mh. Vous pouvez fermer cette page."
 
+#, python-brace-format
+msgid "Done: {step}."
+msgstr "Terminé : {step}."
+
 msgid ""
 "Done? Ctrl+C in the terminal stops the map. Then add a 'place' rule (and "
 "a 'trip' rule) to [[classify.rules]] and run 'classify'."
@@ -4381,6 +4388,9 @@ msgstr "Dossiers ignorés par leur nom, où qu'ils soient : {names}."
 
 msgid "Folders with a role that are gone"
 msgstr "Dossiers avec un rôle qui n'existent plus"
+
+msgid "Follow the step"
+msgstr "Suivre l'étape"
 
 msgid "For a second opinion, run 'crosscheck' (same -v options)."
 msgstr "Si vous souhaitez un second avis, lancez 'crosscheck' (mêmes options -v)."
@@ -6937,6 +6947,9 @@ msgstr[1] ""
 #, python-brace-format
 msgid "No new photo during '{name}': all added or refused."
 msgstr "Plus de nouvelle photo pendant « {name} » : toutes ajoutées ou refusées."
+
+msgid "No news from the window of mh: it may have been closed."
+msgstr "Aucune nouvelle de la fenêtre de mh : elle a peut-être été fermée."
 
 msgid "No obvious series left to validate."
 msgstr "Plus aucune série évidente à valider."
@@ -10962,6 +10975,10 @@ msgid "Stopped (code {code}): {command}."
 msgstr "Arrêté (code {code}) : {command}."
 
 #, python-brace-format
+msgid "Stopped (code {code}): {step}."
+msgstr "Arrêtée (code {code}) : {step}."
+
+#, python-brace-format
 msgid "Stopped after {seconds} s: run it from the console instead."
 msgstr "Arrêtée après {seconds} s : lancez-la plutôt depuis la console."
 
@@ -12778,6 +12795,11 @@ msgid "The step ended early (code {code}): the window of mh says why."
 msgstr ""
 "L'étape s'est arrêtée avant la fin (code {code}) : la fenêtre de mh dit "
 "pourquoi."
+
+msgid "The step runs in the window of mh: this page only shows how far it is."
+msgstr ""
+"L'étape tourne dans la fenêtre de mh : cette page montre seulement où "
+"elle en est."
 
 #, python-brace-format
 msgid "The step you choose also analyses: {folder}"
@@ -17381,6 +17403,9 @@ msgstr "tapé à la main"
 msgid "unanswered"
 msgstr "sans réponse"
 
+msgid "under 1 min left"
+msgstr "moins d'1 min restante"
+
 msgid ""
 "undo puts the files back but keeps the event: remove it from events/ by "
 "hand."
@@ -17474,6 +17499,9 @@ msgstr "vidéos :"
 
 msgid "waiting"
 msgstr "en attente"
+
+msgid "waiting for mh"
+msgstr "en attente de mh"
 
 msgid "what each photo shows, for search by meaning"
 msgstr "ce que montre chaque photo, pour la recherche par le sens"
@@ -19575,6 +19603,10 @@ msgstr "au plus {limit} est attendu, pas {value}"
 #, python-brace-format
 msgid "{limit} or more is expected, not {value}"
 msgstr "au moins {limit} est attendu, pas {value}"
+
+#, python-brace-format
+msgid "{minutes} min left"
+msgstr "{minutes} min restantes"
 
 #, python-brace-format
 msgid "{min} min"

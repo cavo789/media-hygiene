@@ -27,17 +27,19 @@ function runInline(action, fields) {
 }
 // ---- A step still running in the window of mh, the page reopened (0514) ----------------------
 // The tab closed or reloaded: the step goes on in mh's window; the page shows it again, followed.
-function resumeStep() {
-  if (!RELAYS || REMOTE || !P.step) return;
-  fetch(P.step, { cache: "no-store" })
-    .then((response) => (response.ok ? response.json() : null))
-    .then((step) => {
-      if (!step || !step.id || !["waiting", "running"].includes(step.state)) return;
-      openRun({ title: T.stillRuns, kind: "console" }, T.theStep, null, step.id);
-    })
-    .catch(() => { /* no state: nothing to show */ });
+// The chip of every page (step_chip.html.j2, 0661) polls `GET /api/step`: its first answer
+// reopens the dialog, its click too.
+function resumeStep(id) {
+  if (followed === id) { if (!$("#runDlg").open) showDialog($("#runDlg")); return; }
+  openRun({ title: T.stillRuns, kind: "console" }, T.theStep, null, id);
 }
-resumeStep();
+if (RELAYS && !REMOTE && P.step) {
+  window.mhStepOpen = resumeStep;
+  const stopFirst = window.mhStep.watch((step) => {
+    stopFirst();
+    if (step && step.id && ["waiting", "running"].includes(step.state)) resumeStep(step.id);
+  });
+}
 // ---- Choices waiting on the pages, one Apply all (0522) -----------------------------------
 // Read from decisions.json by the server at each state: once applied, the file is archived and
 // the banner goes. One `clean --decisions` run for every page, so one `mh undo` takes it back.

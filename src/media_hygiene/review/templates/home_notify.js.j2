@@ -1,18 +1,6 @@
 {# The end of a long step, told when the tab is away (0523): the browser's question is asked
    once, on the click starting a console step (a browser refuses it outside a click); its
-   answer is remembered in `localStorage`. The tab in front has the toast: no notification. #}
-const NOTIFY_KEY = "mh-step-notify";
-function notifyKept() {
-  try { return window.localStorage.getItem(NOTIFY_KEY); } catch { return "denied"; }
-}
-function notifyAsk() {
-  if (!("Notification" in window) || notifyKept()) return;
-  const keep = (answer) => { try { window.localStorage.setItem(NOTIFY_KEY, answer); } catch { /* asked again */ } };
-  if (Notification.permission !== "default") { keep(Notification.permission); return; }
-  Notification.requestPermission().then(keep).catch(() => { /* asked again */ });
-}
-function notifyEnd(text) {
-  if (!document.hidden || !("Notification" in window)) return;
-  if (notifyKept() !== "granted" || Notification.permission !== "granted") return;
-  try { new Notification("Media Hygiene", { body: text }); } catch { /* a phone: the toast says it */ }
-}
+   answer is remembered in `localStorage`. The tab in front has the toast: no notification.
+   The code is the one of every page (`window.mhNotify`, step_chip.html.j2, 0661). #}
+function notifyAsk() { window.mhNotify.ask(); }
+function notifyEnd(text) { window.mhNotify.end(text); }

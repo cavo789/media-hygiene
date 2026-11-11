@@ -1,4 +1,6 @@
-"""The shared page pieces in Chromium: ask (0663), busy (0664), view in the URL (0666).
+"""The shared page pieces in Chromium: ask, busy, view in the URL, a step running.
+
+Ask (0663), busy (0664), the view in the URL (0666), a step on every page (0661).
 
 Heavy (the Playwright image): CI only, where `MEDIA_HYGIENE_E2E_BROWSER` is set.
 """
@@ -68,3 +70,11 @@ def test_the_people_page_keeps_the_view_like_the_other_frame_pages(
 def test_a_page_is_comfortable_in_both_themes(tmp_path: Path, template: str) -> None:
     """Tab, contrast, no scroll at 1366 px and 200 % zoom, reduced motion (0669)."""
     assert _walk(tmp_path, "comfort_walk.py", template) == ""
+
+
+@pytest.mark.parametrize("template", ["quarantine.html.j2", "search.html.j2"])
+def test_a_running_step_shows_on_the_page_then_its_end(
+    tmp_path: Path, template: str
+) -> None:
+    """A mocked step, running then done: chip, tab title, end said, no error (0661)."""
+    assert _walk(tmp_path, "step_walk.py", template) == ""

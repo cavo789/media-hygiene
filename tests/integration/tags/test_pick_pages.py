@@ -25,6 +25,7 @@ _SHARED = (
     '<dialog id="mhAsk"',  # ask_dialog.html.j2: the one question (0663)
     '<div id="mhSay"',  # busy_say.html.j2: working, done, failed (0664)
     "window.mhView = Object.freeze(",  # view_state.html.j2: the view in the URL (0666)
+    '<button type="button" id="mhStepChip"',  # step_chip.html.j2: a step running (0661)
 )
 
 

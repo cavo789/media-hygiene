@@ -45,5 +45,6 @@ $("purge").addEventListener("click", async () => {
     return;
   }
   say(fill(PURGE_TEXTS.running, { command: step.command }), "");
+  if (window.mhStep) window.mhStep.claim(step.id); // its end said here, not by the chip (0661)
   followPurge(step);
 });
