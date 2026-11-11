@@ -196,6 +196,7 @@
 #   .\mh-measure.ps1 -Only 35 -Count 1   (the pages opened from the home page, each phase timed: 0354)
 #   .\mh-measure.ps1 -Only 36 -Count 1   (the home page by hand, three yes/no questions: 0355, 0366)
 #   .\mh-measure.ps1 -Only 46 -Count 1   (the home page after a restart, the safety card apart: 0692)
+#   .\mh-measure.ps1 -Only 48 -Count 1   (photos shown sideways, guessed by their faces: 0711)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -3702,6 +3703,118 @@ if (Wanted 47) {
     }
     $null = docker stop $name 2>$null
     Log ("   47i. docker run -d of home returned after {0:N2}; its port answered after {1}" -f $started, $(if ($answered) { "{0:N2}" -f $answered } else { "(never in 30 s)" }))
+}
+
+# --- 48: photos shown sideways, guessed by their faces (0711) --------------------------------
+# Read-only: C:\Photos and your cache are mounted :ro. Counts the EXIF orientation tags (headers
+# only), then guesses the upright turn of photos WITHOUT a tag by finding faces in the 4 turns.
+# Writes a page of thumbnails next to the results: you count by eye what the guess got right.
+if (Wanted 48) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 48. photos shown sideways, guessed by their faces (0711)"
+    $sheet = "rotation-$stamp.html"
+    $code = @'
+import base64, io, random, sys, time
+from pathlib import Path
+from PIL import Image
+from media_hygiene.faces.weights import DETECTOR, EMBEDDER, ensure_model
+from media_hygiene.faces.worker import OnnxRecipe
+EXT = {'.jpg', '.jpeg', '.png', '.heic', '.webp', '.tif', '.tiff'}
+TAG = 0x0112
+HEADER_S, GUESS_S, SHOWN_KEPT = 300, 300, 20
+root = Path('/data/c/Photos')
+models = Path('/cache/models')
+if not (models / DETECTOR.name).is_file():
+    models = Path('/tmp/models')
+    models.mkdir(exist_ok=True)
+finder = OnnxRecipe(ensure_model(models, DETECTOR), ensure_model(models, EMBEDDER)).build()
+paths = sorted(p for p in root.rglob('*') if p.suffix.lower() in EXT)
+random.Random(711).shuffle(paths)
+counts, untagged, start = {}, [], time.perf_counter()
+read = 0
+for path in paths:
+    if time.perf_counter() - start > HEADER_S:
+        break
+    read += 1
+    try:
+        with Image.open(path) as im:
+            tag = im.getexif().get(TAG)
+    except Exception:
+        tag = 'unreadable'
+    counts[tag] = counts.get(tag, 0) + 1
+    if tag in (None, 1):
+        untagged.append(path)
+spent = time.perf_counter() - start
+print(f'48a. {read} of {len(paths)} pictures read (headers, random order) in {spent:.0f} s')
+print('48b. orientation tag: ' + ', '.join(f'{k}: {v}' for k, v in sorted(counts.items(), key=lambda kv: -kv[1])) + ' (None or 1 = no turn asked)')
+def score(picture):
+    return sum(face.score for face in finder.find(picture))
+turned, kept, start, tried, seconds = [], [], time.perf_counter(), 0, []
+for path in untagged:
+    if time.perf_counter() - start > GUESS_S:
+        break
+    began = time.perf_counter()
+    try:
+        with Image.open(path) as im:
+            im.draft('RGB', (1280, 1280))
+            picture = im.convert('RGB')
+    except Exception:
+        continue
+    tried += 1
+    scores = {angle: score(picture.rotate(angle, expand=True)) for angle in (0, 90, 180, 270)}
+    seconds.append(time.perf_counter() - began)
+    best = max(scores, key=scores.get)
+    if scores[best] == 0:
+        continue
+    if best != 0 and scores[best] > scores[0]:
+        turned.append((path, best, picture))
+    elif len(kept) < SHOWN_KEPT:
+        kept.append((path, 0, picture))
+mean = sum(seconds) / len(seconds) if seconds else 0
+print(f'48c. {tried} untagged photos guessed in {time.perf_counter() - start:.0f} s ({mean:.2f} s each, 4 detections); {len(turned)} would be turned')
+def tile(path, angle, picture, title):
+    small = picture.copy()
+    small.thumbnail((220, 220))
+    after = picture.rotate(angle, expand=True)
+    after.thumbnail((220, 220))
+    cells = ''
+    for shot in (small, after):
+        buffer = io.BytesIO()
+        shot.save(buffer, 'JPEG', quality=70)
+        cells += '<img src="data:image/jpeg;base64,' + base64.b64encode(buffer.getvalue()).decode() + '">'
+    return f'<figure><div>{cells}</div><figcaption>{title} - {path.name}</figcaption></figure>'
+html = ['<!doctype html><meta charset="utf-8"><title>0711 rotation</title><style>body{font-family:sans-serif}figure{display:inline-block;margin:6px;border:1px solid #ccc;padding:4px}img{height:160px;margin:2px}figcaption{font-size:12px;max-width:450px}</style>']
+html.append(f'<h1>A. {len(turned)} photos the guess would turn (left: as stored, right: turned)</h1>')
+html.append('<p>Count the RIGHT pictures that are upright (the guess is right).</p>')
+for number, (path, angle, picture) in enumerate(turned, 1):
+    html.append(tile(path, angle, picture, f'A{number}: {angle} deg'))
+html.append(f'<h1>B. {len(kept)} photos with faces the guess leaves as they are</h1>')
+html.append('<p>Count the pictures that are in fact sideways (missed by the guess).</p>')
+for number, (path, angle, picture) in enumerate(kept, 1):
+    html.append(tile(path, angle, picture, f'B{number}'))
+Path('/out/' + sys.argv[1]).write_text(''.join(html), encoding='utf-8')
+print(f'48d. page written: {sys.argv[1]}')
+'@
+    $encoded = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($code))
+    $mounts = @("-v", "${Photos}:/data/c/Photos:ro", "-v", "${Cache}:/cache:ro", "-v", "${outDir}:/out")
+    $lines = & docker run --rm @mounts --entrypoint python $Image -c "import base64, sys; sys.argv = ['x', '$sheet']; exec(base64.b64decode('$encoded'))" 2>&1
+    foreach ($line in $lines) { Log ("   " + "$line".Trim()) }
+    $page = Join-Path $outDir $sheet
+    if (Test-Path -LiteralPath $page) {
+        Start-Process $page
+        Write-Host "48 : la page s'ouvre dans le navigateur. Comptez, puis repondez."
+        $right = Read-Host "48e. Partie A : combien de photos de DROITE sont bien droites"
+        $wrong = Read-Host "48f. Partie A : combien de photos de GAUCHE etaient deja droites (mh les aurait abimees)"
+        $missed = Read-Host "48g. Partie B : combien sont en fait couchees (ratees)"
+        Log "   48e. part A, turned upright by the guess (right): $right"
+        Log "   48f. part A, already upright, the guess would spoil them: $wrong"
+        Log "   48g. part B, sideways but missed: $missed"
+    } else {
+        Log "   48d. no page written: step failed (see the lines above)"
+    }
+    $ErrorActionPreference = $saved
 }
 
 # --- clean up -------------------------------------------------------------------------------
