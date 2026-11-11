@@ -128,6 +128,13 @@ entre dans l'image (`/usr/share/media-hygiene/docs`, environ 7 Mo). Depuis les s
 une page a changé (`MEDIA_HYGIENE_DOCS_DIR`) ; `tests/unit/test_docs_render.py` vérifie chaque
 page, chaque lien et chaque ancre.
 
+`home_dev` (mêmes options que `hygiene home`, par exemple `home_dev --port 8765`) sert la page
+d'accueil depuis les sources et la tient à jour pendant que vous éditez : un modèle modifié est relu
+à la requête suivante (`auto_reload` de Jinja, rien à faire), et un `.py` modifié sous
+`src/media_hygiene/` relance le serveur en environ une seconde. Le nouveau processus tire un nouveau
+`RUN_TAG` : l'onglet ouvert se recharge seul (`X-Media-Hygiene-Run`). La surveillance est une boucle
+de l'assistant : rien n'en atteint l'image. Ctrl+C l'arrête.
+
 ## Intégration continue et versions
 
 Chaque push et chaque pull request lancent la barrière qualité et les tests de bout en bout sur
