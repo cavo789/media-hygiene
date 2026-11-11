@@ -11,10 +11,12 @@ from media_hygiene.services.people_here import people_here
 from media_hygiene.services.phone_here import PhoneHere
 from media_hygiene.services.prefixed_page import PrefixedPage, ServedPage
 from media_hygiene.services.quarantine_serving import quarantine_page
+from media_hygiene.services.settings_here import SettingsHere
 
 if TYPE_CHECKING:
     from media_hygiene.services.fresh_runtime import FreshRuntime
     from media_hygiene.services.home_pages import HomeServer
+    from media_hygiene.services.prefixed_page import ServedPage
 
 
 def pages_here(fresh: FreshRuntime, server: HomeServer) -> tuple[ServedPage, ...]:

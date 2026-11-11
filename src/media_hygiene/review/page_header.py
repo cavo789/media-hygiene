@@ -31,6 +31,7 @@ if TYPE_CHECKING:
 
 # What an album is, what the albums' page does (0349): the chapter of its bar (0342).
 ALBUMS_DOC: Final = Doc("reference-albums/")
+SETTINGS_DOC: Final = Doc("commands/home/", "#every-setting", "#tous-les-réglages")
 SLIDESHOW_DOC: Final = Doc("commands/slideshow/")  # ▶ Slideshow's *how* (0660)
 # Each page's template, and the action of the catalog that opens it: its chapter; or
 # the chapter itself, for a page no action opens (the albums, a home page group, 0342).
@@ -40,6 +41,7 @@ PAGE_STEPS: Final[Mapping[str, str | Doc]] = MappingProxyType(
         "disk_space.html.j2": Doc(
             "commands/home/", "#disk-space", "#place-sur-le-disque"
         ),
+        "settings_index.html.j2": SETTINGS_DOC,
         "tidy_empty.html.j2": Doc(
             "commands/home/", "#10-minutes-of-tidying", "#10-minutes-de-rangement"
         ),
@@ -72,6 +74,7 @@ SHELL_PAGES: Final[Mapping[str, bool]] = MappingProxyType(
     {
         "album.html.j2": False,
         "disk_space.html.j2": False,
+        "settings_index.html.j2": False,
         "tidy_empty.html.j2": False,
         "album_edit.html.j2": True,
         "search.html.j2": True,
@@ -158,6 +161,8 @@ def page_header(template: str) -> PageHeader:
     )
     here = active_locale()
     twin = Locale.EN if here is Locale.FR else Locale.FR
+    framed = template in SHELL_PAGES
+    ask = ShellAsk(space, SHELL_PAGES.get(template, False), template in _DRAWER_PAGES)
     return PageHeader(
         doc=served_url(doc, here),
         albums=served_url(ALBUMS_DOC, here),
@@ -167,19 +172,8 @@ def page_header(template: str) -> PageHeader:
         twin_label=_TWIN_LABELS[twin],
         home=bool(os.environ.get(LAUNCHER_STEPS_VARIABLE)),
         shared=keeps_server(),
-        shell=(
-            page_shell(
-                ShellAsk(
-                    space,
-                    compact=SHELL_PAGES[template],
-                    drawer=template in _DRAWER_PAGES,
-                ),
-                _("Home page"),
-            )
-            if template in SHELL_PAGES
-            else None
-        ),
-        folders=shell_folders() if template in SHELL_PAGES else None,
+        shell=page_shell(ask, _("Home page")) if framed else None,
+        folders=shell_folders() if framed else None,
     )
 
 

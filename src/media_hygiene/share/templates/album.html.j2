@@ -155,6 +155,8 @@
     <button type="button" id="sheetClose" aria-label="{{ _('Close') }}">✕</button>
   </form>
 </div>
+{% include "ask_dialog.html.j2" %}
+{% include "busy_say.html.j2" %}
 <p class="toast" id="toast" role="status" hidden></p>
 <script nonce="{{ page_nonce }}">
 (() => {

@@ -143,6 +143,19 @@ bouton qui annonce combien de fichiers il efface et la place qu'il libère. Il d
 lance [`purge`](purge.md) dans sa fenêtre, et la page revient dire ce que dit le disque : l'exécution
 partie, la place libérée. Avec un autre `mh`, tapez la commande.
 
+## Tous les réglages
+
+*⚙ Réglages*, dans le menu à gauche de chaque page, liste les réglages que les pages changent : la
+langue, le rythme du diaporama, le regroupement en événements, l'IA locale, les limites de place
+sur le disque, ce que l'audit analyse, les téléphones, les étapes après un import, les rôles des
+dossiers, le tri, la sévérité des revues, les lieux, les règles d'événements et les tags. Chaque
+ligne montre la valeur que `config.toml` contient maintenant (relue sur le disque à chaque
+ouverture, *par défaut* quand le fichier ne la contient pas), une ligne sur ce qu'il fait, et un
+lien qui ouvre le réglage **sur sa propre page** : rien ne se change dans cette liste. Le champ de
+recherche réduit les lignes pendant la frappe (le texte reste dans l'adresse : un rechargement le
+garde). En bas, *Dans config.toml seulement* liste et compte les réglages qu'aucune page ne change
+encore : modifiez `config.toml`, puis relancez `mh`. Sur le PC seulement : un téléphone ne l'ouvre pas.
+
 ## Chemins rapides et ce qui montre les fichiers d'abord
 
 Ces commandes agissent sur des fichiers sans les montrer ; elles restent, pour les grandes collections.

@@ -121,6 +121,13 @@ the site's Markdown extensions and anchors; where a link leads is decided by
 `/tmp/media-hygiene/docs` on first use, and again when a page changed (`MEDIA_HYGIENE_DOCS_DIR`);
 `tests/unit/test_docs_render.py` checks every page, link and anchor.
 
+`home_dev` (same options as `hygiene home`, e.g. `home_dev --port 8765`) serves the home page from
+the sources and keeps it current while you edit: a changed template is read again by the next
+request (Jinja's `auto_reload`, nothing to do), and a changed `.py` under `src/media_hygiene/`
+restarts the server within about a second. The new process draws a new `RUN_TAG`, so the open tab
+reloads itself (`X-Media-Hygiene-Run`). The watcher is a loop of the helper: nothing of it reaches
+the image. Ctrl+C stops it.
+
 ## Continuous integration and releases
 
 Every push and pull request runs the quality gate and the end-to-end tests on GitHub Actions

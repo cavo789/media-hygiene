@@ -39,3 +39,17 @@ on every iteration of every UX TODO. (To check first: whether the Jinja environm
 ## Where the user gains
 
 The developer: about 10–15 s per iteration (stop, start, reload — *estimated*) → about 2 s.
+
+## Status
+
+PARTIAL — `home_dev` is in the cheatsheet (`tool.sh`, exported in `interactive.sh`), documented in
+`development.md` EN + FR. Nothing under `src/` changed: Jinja's `auto_reload` is on by default, so a
+changed template is served by the next request (*measured*: 9-34 ms from the edit to the new answer,
+`curl` loop); a `.py` change under `src/media_hygiene/` restarts the server and `X-Media-Hygiene-Run`
+changes (*measured*: 1.1 s from `touch` to the new tag).
+
+### Not done
+
+- An open tab does not reload by itself after a template-only edit (no restart, so no new
+  `RUN_TAG`); F5 is still needed. A `.py` edit does reload it.
+- `dive_ci` not run (no file of the image changed, so the size is unchanged by construction).

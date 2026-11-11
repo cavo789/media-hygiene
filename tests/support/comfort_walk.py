@@ -63,10 +63,23 @@ CONTRAST_JS: Final = """(min) => {
   return bad;
 }"""
 SCROLL_JS: Final = "() => document.documentElement.scrollWidth - window.innerWidth"
+# A row is a band of the bar: a part starting above the bottom of the band before
+# it is on that band (a short text centred beside a taller button starts lower).
 BAR_ROWS_JS: Final = """() => {
   const bar = document.getElementById('bar'); if (!bar) return 0;
-  return new Set([...bar.children].filter((e) => e.offsetHeight)
-    .map((e) => Math.round(e.getBoundingClientRect().top))).size; }"""
+  const boxes = [...bar.children].filter((e) => e.offsetHeight)
+    .map((e) => e.getBoundingClientRect()).sort((a, b) => a.top - b.top);
+  let rows = 0; let bottom = -Infinity;
+  for (const box of boxes) {
+    if (box.top >= bottom) rows += 1;
+    bottom = Math.max(bottom, box.bottom); }
+  return rows; }"""
+# Two frames: with reduced motion every property still transitions for .01 ms, so
+# the ring read in the frame of the key press is its start (0 px), not what is seen.
+SETTLE_JS: Final = (
+    "() => new Promise((done) =>"
+    " requestAnimationFrame(() => requestAnimationFrame(done)))"
+)
 MOTION_JS: Final = """(max) => [...document.querySelectorAll('*')].filter((e) => {
   const s = getComputedStyle(e);
   return [s.transitionDuration, s.animationDuration].some((list) =>
@@ -81,6 +94,7 @@ def _tab(page: Page) -> list[str]:
     reached: set[str] = set()
     for _ in range(len(wanted) + 5):
         page.keyboard.press("Tab")
+        page.evaluate(SETTLE_JS)
         ring = page.evaluate(RING_JS)
         if ring["target"]:
             continue

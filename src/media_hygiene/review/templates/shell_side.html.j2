@@ -18,7 +18,10 @@
     <p class="mh-shell-group mh-shell-label">{{ _("Share") }}</p>
     <ul class="mh-shell-list">{% for link in shell.share %}{{ entry(link) }}{% endfor %}</ul>
     <p class="mh-shell-group mh-shell-label">{{ _("Tools") }}</p>
-    <ul class="mh-shell-list">{% for link in shell.tools %}{{ entry(link) }}{% endfor %}</ul>
+    <ul class="mh-shell-list">{% for link in shell.tools %}{{ entry(link) }}{% endfor %}
+    {%- if header.shared %}{# Every setting (0670): a page of the home server, PC only #}
+    <li class="pc-only"><a class="mh-shell-link mh-shell-settings" href="/settings/"{% if page_name | default("") == _("Every setting") %} aria-current="page"{% endif %} title="{{ _('⚙ Settings') }}">
+<svg class="mh-i" aria-hidden="true"><use href="#i-sliders"></use></svg><span class="mh-shell-label">{{ _("⚙ Settings") }}</span></a></li>{% endif %}</ul>
   </nav>
   {% endif %}
   {% if header.folders %}{# Your folders (0579): the home page's list, its order, its badges; on a paired phone too, a read-only list (review 2026-11-05). #}

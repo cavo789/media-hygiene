@@ -26,7 +26,7 @@ def test_the_search_sends_the_album_and_marks_its_tiles() -> None:
     assert "album: albumAimed()" in script
     assert "hit.inAlbum" in script
     assert (
-        'for (const id of ["text", "from", "to"]) if (asked[id])' in script
+        'for (const id of ["text", "from", "to"]) if (opened[id])' in script
     )  # the period of *Add photos*
     page = _template("search", "search.html.j2")
     for value in ('value="in"', 'value="out"'):

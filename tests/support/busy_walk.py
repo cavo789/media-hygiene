@@ -22,7 +22,8 @@ START: Final = (
     "document.body.insertAdjacentHTML('beforeend', '<button id=\"go\">Go</button>"
     '<main id="probe" style="display:grid"></main>\');'
     "window.mhPlaceholders(document.getElementById('probe'), 6);"
-    "window.__top = document.getElementById('probe').getBoundingClientRect().top;"
+    "window.__top = document.getElementById('probe').getBoundingClientRect().top"
+    " + window.scrollY;"
     "document.getElementById('go').addEventListener('click', (e) => { window.mhBusy("
     "e.currentTarget, () => fetch('/slow', {method: 'POST'})).then(() => {"
     " window.__done = true; window.mhSay('<b>x</b>', 'error'); }); });"
@@ -41,7 +42,10 @@ def _check(page: Page) -> list[str]:
     page.wait_for_function("window.__done === true")
     if page.is_disabled("#go"):
         errors.append("the button stays disabled after the answer")
-    top = page.evaluate("document.getElementById('probe').getBoundingClientRect().top")
+    # In the document, not the viewport: the click scrolls the button into view.
+    top = page.evaluate(
+        "document.getElementById('probe').getBoundingClientRect().top + window.scrollY"
+    )
     if top != page.evaluate("window.__top"):
         errors.append(f"the grid moved: {top}")
     if page.inner_text("#mhSay .error p") != "<b>x</b>":

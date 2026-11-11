@@ -12,6 +12,8 @@ from jinja2 import meta
 
 from media_hygiene.i18n.templates import translated_environment
 from media_hygiene.review.page_header import page_header
+from media_hygiene.services.settings_index import Listed, ShownValue
+from media_hygiene.services.settings_rows import SettingRow
 
 if TYPE_CHECKING:
     from jinja2 import Environment
@@ -66,6 +68,18 @@ def render_page(template: str, filler: str = "/x") -> str:
     values: dict[str, object] = dict.fromkeys(
         _names(environment, template, set()), filler
     )
+    values.update(_samples(template, filler))
     values["paths"] = _AnyPath()
     values["header"] = page_header(template)
     return environment.get_template(template).render(**values)
+
+
+def _samples(template: str, filler: str) -> dict[str, object]:
+    """The lists a page loops over, each value the filler (the settings index, 0670)."""
+    if template != "settings_index.html.j2":
+        return {}
+    row = SettingRow(filler, filler, filler, (filler,))
+    return {
+        "rows": (Listed(row, (ShownValue(filler, filler, default=True),)),),
+        "only": (filler,),
+    }

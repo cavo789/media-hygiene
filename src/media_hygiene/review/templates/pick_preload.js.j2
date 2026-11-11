@@ -1,0 +1,34 @@
+{# The large view's preload (0675): when a photo is shown, the next one in the direction of
+   travel then the previous one are asked for (`new Image().src`), one at a time, so a fast
+   run of → never queues more than one render beside the photo shown. A jump (a new photo
+   shown) drops what is waiting and stops the load in progress; never a video; nothing on
+   a connection set to save data. Included by `pick_viewer.js.j2`; `notAside` is its. #}
+const preload = { image: null, queue: [], seen: -1 };  // the image held until loaded: an image nobody holds may never be fetched
+
+function preloadStop() {
+  preload.queue = [];
+  if (preload.image) { preload.image.onload = null; preload.image.onerror = null; preload.image.src = ""; }
+  preload.image = null;
+}
+
+function preloadNext() {
+  const src = preload.queue.shift();
+  if (!src) { preload.image = null; return; }
+  const image = new Image();
+  image.onload = preloadNext;
+  image.onerror = preloadNext;
+  image.src = src;
+  preload.image = image;
+}
+
+// Called when `files[current]` is shown: the direction is where the user came from.
+function preloadAround() {
+  const step = preload.seen >= 0 && current < preload.seen ? -1 : 1;
+  preload.seen = current;
+  preloadStop();
+  if (navigator.connection && navigator.connection.saveData) return;
+  const wanted = [notAside(current, step), notAside(current, -step)];
+  preload.queue = wanted.filter((at) => at >= 0).map((at) => files[at])
+    .filter((file) => !file.video && file.preview).map((file) => file.preview);
+  preloadNext();
+}

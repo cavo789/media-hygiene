@@ -16,10 +16,9 @@ One `/todo:run NNNN` each, highest priority first.
 
 | ID | Priority | Title | Batch |
 |---|---|---|---|
+| 0684 | Medium | Guest devices: a tablet or TV at relatives' sees the chosen albums only, never the whole library | lan-security |
 | 0693 | Medium | The people page's first grouping compares every face with every face | page-speed |
-| 0670 | Low | One *Settings* entry listing every setting, each opening on its page | settings-on-pages |
-| 0675 | Low | Large view preloads the next and previous photo | page-speed |
-| 0679 | Low | Developer helper: pages reload by themselves when a template or module changes | dev-tools |
+| 0694 | Medium | The phone page served by the home server, so it gains ▶ Slideshow to the TV | phone |
 
 ## Waiting for the maintainer
 
@@ -136,7 +135,9 @@ One `/todo:run NNNN` each, highest priority first.
 | 0669 | Accessibility and comfort checked on every page: motion, focus, contrast, zoom | [PARTIAL_0669-pages-accessibility-and-comfort-checks.md](PARTIAL/PARTIAL_0669-pages-accessibility-and-comfort-checks.md) |
 | 0671 | Pages resist hostile names: a test with poisoned file names and EXIF, CSP without `unsafe-inline` | [PARTIAL_0671-pages-csp-without-unsafe-inline-and-hostile-names.md](PARTIAL/PARTIAL_0671-pages-csp-without-unsafe-inline-and-hostile-names.md) |
 | 0673 | Thumbnails kept by the browser across runs: content-named URLs, never asked again | [PARTIAL_0673-thumbnails-cached-by-the-browser-across-runs.md](PARTIAL/PARTIAL_0673-thumbnails-cached-by-the-browser-across-runs.md) |
+| 0675 | Large view preloads the next and previous photo | [PARTIAL_0675-large-view-preloads-its-neighbours.md](PARTIAL/PARTIAL_0675-large-view-preloads-its-neighbours.md) |
 | 0678 | A speed budget for the pages: every route timed on a synthetic 100,000-file index | [PARTIAL_0678-page-speed-budget-on-a-synthetic-library.md](PARTIAL/PARTIAL_0678-page-speed-budget-on-a-synthetic-library.md) |
+| 0679 | Developer helper: pages reload by themselves when a template or module changes | [PARTIAL_0679-dev-pages-reload-on-template-change.md](PARTIAL/PARTIAL_0679-dev-pages-reload-on-template-change.md) |
 | 0683 | Paired phones and TVs: last seen, expiry when unused, *Forget all*, and what each one did | [PARTIAL_0683-paired-devices-last-seen-expiry-and-activity.md](PARTIAL/PARTIAL_0683-paired-devices-last-seen-expiry-and-activity.md) |
 | 0684 | Guest devices: a tablet or TV at relatives' sees the chosen albums only, never the whole library | [PARTIAL_0684-guest-devices-see-chosen-albums-only.md](PARTIAL/PARTIAL_0684-guest-devices-see-chosen-albums-only.md) |
 | 0687 | The journals and the user's choices are saved with `mh backup`, and undo survives a lost journal | [PARTIAL_0687-journals-and-choices-saved-off-the-pc.md](PARTIAL/PARTIAL_0687-journals-and-choices-saved-off-the-pc.md) |

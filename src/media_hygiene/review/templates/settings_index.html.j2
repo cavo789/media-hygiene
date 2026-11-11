@@ -1,0 +1,69 @@
+{% extends "page_frame.html.j2" %}
+{# Every setting (0670): each row names a setting the pages change, its value as config.toml holds
+   it now (read at this request), one line of what it does, and a link opening it on its own page:
+   nothing is changed here. At the bottom, the keys no page changes yet, counted. The search text
+   lives in the URL (`?q=`, 0666): Back and a reload keep it. Every value is text (0671). #}
+{% set page_name = _("Every setting") %}
+{% set keys_safe = _("Nothing is changed here: each setting opens on the page where it acts.") %}
+{% block style %}
+  main section { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 14px; margin-bottom: 14px; }
+  main .setting { padding: 8px 0; border-bottom: 1px solid var(--line); }
+  main .setting:last-child { border-bottom: 0; }
+  main .setting h3 { margin: 0 0 4px; font-size: 1em; }
+  main .setting p { margin: 2px 0; }
+  main code { overflow-wrap: anywhere; }
+  main .only { columns: 16em; padding-left: 1.2em; }
+  #settingsFind { width: min(28em, 100%); }
+{% endblock %}
+{% block bar %}
+  <strong>{{ page_name }}</strong>
+  <label>{{ _("Find a setting") }} <input id="settingsFind" type="search" autocomplete="off"></label>
+  <span id="settingsSaid" role="status" aria-live="polite"></span>
+{% endblock %}
+{% block content %}
+<main>
+  <section aria-labelledby="pagesTitle">
+    <h2 id="pagesTitle">{{ _("Changed on their page") }}</h2>
+    <p class="muted">{{ _("Values read from {file} now; “default”: the file does not hold it.").format(file=config) }}</p>
+    {% for item in rows %}{% set row = item.row %}
+    <div class="setting" data-find>
+      <h3><a href="{{ row.href }}">{{ row.title }}</a></h3>
+      <p class="muted">{{ row.what }}</p>
+      {% for one in item.values %}
+      <p><code>{{ one.key }}</code> = <span>{{ one.value }}</span>{% if one.default %} <span class="muted">({{ _("default") }})</span>{% endif %}</p>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </section>
+  <section aria-labelledby="onlyTitle">
+    <h2 id="onlyTitle">{{ _("In config.toml only ({n})").format(n=only | length) }}</h2>
+    <p class="muted">{{ _("No page changes these yet: edit config.toml, then start mh again.") }}</p>
+    <ul class="only">{% for key in only %}<li data-find><code>{{ key }}</code></li>{% endfor %}</ul>
+  </section>
+</main>
+{% endblock %}
+{% block after %}
+<script nonce="{{ page_nonce }}">
+(() => {
+  "use strict";
+  const NONE = {{ _("No setting matches.") | tojson }};
+  const find = document.getElementById("settingsFind");
+  const said = document.getElementById("settingsSaid");
+  const items = Array.from(document.querySelectorAll("[data-find]"));
+  const filter = () => {
+    const words = find.value.trim().toLowerCase();
+    let shown = 0;
+    for (const item of items) {
+      const hit = !words || item.textContent.toLowerCase().includes(words);
+      item.hidden = !hit;
+      if (hit) shown += 1;
+    }
+    said.textContent = shown ? "" : NONE;
+    window.mhView.set({ q: words });
+  };
+  find.value = window.mhView.get({ q: "text" }).q || "";
+  find.addEventListener("input", filter);
+  filter();
+})();
+</script>
+{% endblock %}

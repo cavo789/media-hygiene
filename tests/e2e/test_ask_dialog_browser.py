@@ -86,3 +86,8 @@ def test_the_library_shows_few_controls_and_its_menus_open_by_the_keyboard(
 ) -> None:
     """Visible controls at load under the cap; ↓ opens Move ▾, Esc closes it (0665)."""
     assert _walk(tmp_path, "menu_walk.py", "search.html.j2") == ""
+
+
+def test_the_large_view_preloads_the_next_photo(tmp_path: Path) -> None:
+    """300 ms previews: the second → shows at once, 2 requests at most (0675)."""
+    assert _walk(tmp_path, "preload_walk.py", "search.html.j2") == ""

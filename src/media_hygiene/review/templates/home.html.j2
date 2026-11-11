@@ -190,6 +190,8 @@
   <div class="copybox-foot"><button class="btn" type="button" id="copyClose">{{ texts.close }}</button></div>
 </section>
 
+{% include "ask_dialog.html.j2" %}
+{% include "busy_say.html.j2" %}
 {% include "step_chip.html.j2" %}
 <script nonce="{{ page_nonce }}">
 (() => {
@@ -208,7 +210,5 @@
   start();
 })();
 </script>
-{% include "ask_dialog.html.j2" %}
-{% include "busy_say.html.j2" %}
 </body>
 </html>

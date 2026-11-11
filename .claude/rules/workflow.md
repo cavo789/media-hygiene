@@ -63,6 +63,10 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   (the container itself is capped by `runArgs --cpus`, `MH_DEV_CPUS` on the host). Measuring:
   `/usr/bin/time -f '%e s %M KB'` (peak memory), `hyperfine` (repeated runs, spread),
   `py-spy record -o /tmp/x.svg -- <command>` (where the time goes); `jq`, `bc`, `file`, `unzip`.
+- A git worktree (a subagent with `isolation: worktree`) gets its own venv:
+  `UV_PROJECT_ENVIRONMENT=/tmp/<name>/.venv` before any `uv`/`pytest`/`pre-commit`. A `uv run`
+  in a worktree re-points the shared `/home/vscode/.venv` editable install to that tree, and
+  the main tree's tests then run the worktree's code (2026-11-11).
 - Measurements only the maintainer can run (Windows + Docker Desktop): add a step to
   `tests/measure/mh-measure.ps1` (PowerShell 5.1, ASCII) instead of a list of commands to type;
   its results file is read back from the devcontainer through a read-only mount of `C:\`.

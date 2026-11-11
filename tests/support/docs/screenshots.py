@@ -16,6 +16,8 @@ from tests.support.pages_browser import BrowserRun, run_browser
 if TYPE_CHECKING:
     from tests.support.docs.container import Demo
 
+# Every page of both languages in one run: far longer than one test's walk.
+_SHOTS_SECONDS: Final = 3600
 _SCRIPT: Final = Path(__file__).with_name("browser.py")
 _SERVED: Final = _SCRIPT.with_name("served.py")  # imported by browser.py
 _READY: Final = "127.0.0.1:8088"  # the review and the search print their address
@@ -116,5 +118,6 @@ def _browse(demo: Demo, job: Job, shots: Path) -> str:
         args=job.args,
         network=job.network,
         options=("-v", f"{demo.volume('reports')}:/reports:ro"),
+        seconds=_SHOTS_SECONDS,
     )
     return run_browser(run, shots)
