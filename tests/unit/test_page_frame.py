@@ -151,3 +151,35 @@ def test_the_search_tree_of_folders_scrolls_on_its_own() -> None:
     assert rule is not None
     assert "max-height" in rule[1]
     assert "overflow-y: auto" in rule[1]
+
+
+# Templates over `TEMPLATE_SOFT_CAP` lines, with their size at 0668: a soft check
+# (the 200-line cap is for Python), so that the next monolith is seen; sizes shrink.
+TEMPLATE_SOFT_CAP: Final = 400
+OVERSIZED_TEMPLATES: Final = {
+    "review/templates/home_run.js.j2": 603,
+    "review/templates/home_parts.css.j2": 547,
+    "search/templates/search.js.j2": 540,
+    "review/templates/review.html.j2": 501,
+    "config/templates/config.toml.j2": 501,
+    "cli/templates/mh_phone.ps1.j2": 475,
+    "search/templates/search.html.j2": 448,
+}
+
+
+def test_templates_over_the_soft_cap_are_listed_and_only_shrink() -> None:
+    """A template over 400 lines is in the list above; a listed one does not grow."""
+    found = {
+        str(path.relative_to(_SRC)): len(path.read_text("utf-8").splitlines())
+        for path in _SRC.glob("*/templates/*.j2")
+    }
+    over = {name: size for name, size in found.items() if size > TEMPLATE_SOFT_CAP}
+    assert set(over) <= set(OVERSIZED_TEMPLATES), "split it, or list it with its size"
+    grown = {n: s for n, s in over.items() if s > OVERSIZED_TEMPLATES[n]}
+    assert not grown, grown
+
+
+def test_the_places_templates_stay_under_the_soft_cap() -> None:
+    """0668: the map page is split into parts, none of them a monolith."""
+    for path in (_SRC / "places" / "templates").glob("*.j2"):
+        assert len(path.read_text("utf-8").splitlines()) <= TEMPLATE_SOFT_CAP, path

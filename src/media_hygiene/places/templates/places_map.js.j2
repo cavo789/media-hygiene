@@ -1,0 +1,272 @@
+(() => {
+  const T = {{ texts | tojson }};
+  const paths = { state: {{ state_path | tojson }}, save: {{ save_path | tojson }},
+                  search: {{ search_path | tojson }}, osm: {{ osm_path | tojson }},
+                  cluster: {{ cluster_path | tojson }}, folders: {{ folders_path | tojson }},
+                  folderPhotos: {{ folder_photos | tojson }}, groupPhotos: {{ group_photos | tojson }}, folder: {{ folder_path | tojson }},
+                  tree: {{ tree_photos | tojson }},
+                  aside: {{ aside_path | tojson }}, hint: {{ hint_path | tojson }}, photos: {{ photos_path | tojson }},
+                  lookup: {{ lookup_path | tojson }} };
+  const tiles = {{ tiles | tojson }};
+  const attribution = {{ attribution | tojson }};
+  const byId = (id) => document.getElementById(id);
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (all, name) => (name in values ? String(values[name]) : all));
+  // Text as a node: Leaflet writes a string tooltip with innerHTML, a node as it is.
+  const label = (text) => { const span = document.createElement("span"); span.textContent = text; return span; };
+  const plain = (text) => label(text).innerHTML;
+  const plural = new Intl.PluralRules(document.documentElement.lang);
+  // A counted fragment: its singular and plural forms, the one the language uses for n.
+  const counted = (forms, n) => fill(forms[plural.select(n) === "one" ? 0 : 1], { n: n });
+  const photos = (count) => counted(T.photos, count);
+  const colour = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const SHOWN_CLUSTERS = 15, NAMED_ZOOM = 16, TOWN_ZOOM = 13, DEFAULT_RADIUS = 200;
+  // From this many places on, "Your places" starts folded, unless the reader chose.
+  const FOLDED_FROM = 8, FOLD_KEY = "places-folds";
+
+  const map = L.map("map", { worldCopyJump: true }).setView([30, 0], 2);
+  L.tileLayer(tiles, { maxZoom: 19, attribution: plain(attribution) }).addTo(map);
+  const clusterLayer = L.layerGroup().addTo(map);
+  const placeLayer = L.layerGroup().addTo(map);
+  let state = { places: [], clusters: [], aside: [] };
+  let editing = null, editCircle = null, editMarker = null;
+
+  const status = (text, kind) => { const node = byId("status"); node.textContent = text; node.className = kind || ""; };
+  // Post a change; the answer is config.toml read back, or null (the error said).
+  async function post(path, body) {
+    status(T.saving);
+    let response;
+    try {
+      response = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    } catch (error) { status(T.offline, "error"); return null; }
+    const answer = await response.json().catch(() => ({}));
+    if (!response.ok) { status(answer.error || fill(T.failed, { status: response.status }), "error"); return null; }
+    return answer;
+  }
+  // A small button at the end of a line: ✕ (set aside, not a town) or Restore.
+  function tail(li, text, title, action) {
+    const button = document.createElement("button");
+    button.type = "button"; button.className = text === "✕" ? "drop" : "restore";
+    button.textContent = text; button.title = title; button.setAttribute("aria-label", title);
+    button.addEventListener("click", (event) => { event.stopPropagation(); action(); });
+    li.append(button);
+    return button;
+  }
+
+  function item(list, text, action) {
+    const li = document.createElement("li");
+    const button = document.createElement("button");
+    button.type = "button"; button.className = "link"; button.textContent = text;
+    button.addEventListener("click", action);
+    li.append(button); list.append(li);
+    return li;
+  }
+
+  // The reader's folds, kept in this browser only; a private window keeps none.
+  const folds = (() => { try { return JSON.parse(localStorage.getItem(FOLD_KEY)) || {}; } catch (error) { return {}; } })();
+  // Only a click of the reader is remembered, not a list the page opens itself.
+  for (const id of ["placesFold", "clustersFold", "foldersFold", "todoFold", "placedFold", "treeFold", "asideFold"]) {
+    byId(id).querySelector("summary").addEventListener("click", () => {
+      folds[id] = !byId(id).open;
+      try { localStorage.setItem(FOLD_KEY, JSON.stringify(folds)); } catch (error) { /* private window */ }
+    });
+  }
+  const unfold = (id) => { if (!byId(id).open) byId(id).open = true; };
+  // The line of a place just saved flashes in its list, opened: the save shows where the eye is.
+  const flash = (li) => { li.classList.add("flash"); li.scrollIntoView({ block: "nearest" }); };
+  let flashName = null;
+
+  // What a cluster or a folder holds: "3 photos, 1 video"; never "0 photos" beside videos.
+  const videos = (count) => counted(T.videos, count);
+  const holds = (pictures, filmed) =>
+    [pictures || !filmed ? photos(pictures) : "", filmed ? videos(filmed) : ""].filter(Boolean).join(", ");
+  // Sorted by the name shown, case and accents ignored ("Écluse" among the E); the file's order is kept.
+  const collator = new Intl.Collator(document.documentElement.lang, { sensitivity: "base" });
+  const folded = (text) => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const lastName = (folder) => folder.split(/[\\/]/).filter(Boolean).pop() || folder;
+
+  // The drawer, over the right of the map: the photos of a cluster or of a folder, grouped
+  // by folder, its actions on top; a click on a photo opens it larger (←/→, Esc back).
+  let opened = null, photoPin = null, folderPin = null, viewing = [], viewed = -1;
+  const unpin = () => { if (photoPin) { photoPin.remove(); photoPin = null; } };
+  const pinAt = (file) => {
+    unpin();
+    if ("latitude" in file) photoPin = L.marker([file.latitude, file.longitude], { icon: L.divIcon({ className: "photo-pin" }) }).addTo(map);
+  };
+  // The width the drawer hides on the map's right; none when it covers the whole map.
+  const hidden = () => {
+    const drawer = byId("drawer"), width = drawer.hidden ? 0 : drawer.offsetWidth;
+    return width < byId("map").offsetWidth ? width : 0;
+  };
+  // A point at the middle of what the drawer leaves visible.
+  const focus = (at, zoom) => map.setView(map.unproject(map.project(at, zoom).add([hidden() / 2, 0]), zoom), zoom);
+  // The clicked line stays highlighted in its list while the drawer shows it.
+  function highlight() {
+    const key = opened ? opened.key : null;
+    for (const li of document.querySelectorAll("li[data-drawer]")) {
+      const on = li.dataset.drawer === key;
+      li.classList.toggle("shown", on);
+      const count = li.querySelector("button.count");
+      if (count) count.setAttribute("aria-pressed", String(on));
+    }
+  }
+  function closeViewer() {
+    viewed = -1; byId("viewer").hidden = true; byId("drawerBody").hidden = false;
+    byId("viewerImg").removeAttribute("src"); unpin();
+  }
+  function closeDrawer() {
+    if (folderPin) { folderPin.remove(); folderPin = null; }
+    opened = null; viewing = []; closeViewer();
+    byId("drawer").hidden = true; byId("drawerBody").replaceChildren();
+    highlight();
+  }
+  function openViewer(index) {
+    if (!viewing.length) return;
+    viewed = (index + viewing.length) % viewing.length;
+    const file = viewing[viewed], cut = /[\\/]$/.test(file.folder) ? "" : (file.folder.includes("\\") ? "\\" : "/");
+    byId("viewerImg").src = file.large; byId("viewerImg").alt = file.name;
+    byId("viewerPath").textContent = `${file.folder}${cut}${file.name}`;
+    byId("viewerCount").textContent = `${viewed + 1} / ${viewing.length}`;
+    byId("drawerBody").hidden = true; byId("viewer").hidden = false;
+    pinAt(file);
+  }
+  function cell(file) {
+    let node;
+    if (file.video || !file.found) {
+      node = document.createElement("span");
+      node.className = file.video ? "video" : "gone";
+      const name = document.createElement("small"); name.textContent = file.name;
+      node.append(file.video ? "🎞" : "∅", name);
+    } else {
+      node = document.createElement("img");
+      node.src = file.preview; node.alt = file.name; node.loading = "lazy";
+      node.addEventListener("click", () => openViewer(viewing.indexOf(file)));
+    }
+    node.title = file.name;
+    node.addEventListener("mouseenter", () => pinAt(file));
+    node.addEventListener("mouseleave", unpin);
+    if (!opened || !opened.give) return node;
+    // Giving a cluster's photos to a place (0237): untick a photo really taken here.
+    const box = document.createElement("div"), check = document.createElement("input");
+    box.className = "pick"; check.type = "checkbox"; check.checked = !file.unticked; check.title = T.ticked;
+    check.setAttribute("aria-label", `${T.ticked}: ${file.name}`);
+    check.addEventListener("change", () => { file.unticked = !check.checked; });
+    box.append(node, check);
+    return box;
+  }
+  // The files, one heading per folder (its host path, its own name in bold).
+  function fillDrawer(files, source) {
+    const body = byId("drawerBody"); body.replaceChildren();
+    const pictures = files.filter((file) => !file.video).length, filmed = files.length - pictures;
+    const notes = [];
+    if (pictures < source.pictures) notes.push(fill(counted(T.firstPhotos, pictures), { count: source.pictures }));
+    if (filmed < source.videos) notes.push(fill(counted(T.firstVideos, filmed), { count: source.videos }));
+    if (files.some((file) => !file.found)) notes.push(T.photosMissing);
+    byId("drawerNotes").textContent = notes.join(" · "); byId("drawerNotes").hidden = !notes.length;
+    viewing = files.filter((file) => !file.video && file.found);
+    source.files = files;
+    let folder = null, grid = null;
+    for (const file of files) {
+      if (file.folder !== folder) {
+        folder = file.folder;
+        const heading = document.createElement("h3"), own = document.createElement("b"), name = lastName(folder);
+        own.textContent = name;
+        heading.append(folder.slice(0, folder.lastIndexOf(name)), own);
+        heading.title = folder;
+        grid = document.createElement("div"); grid.className = "grid";
+        body.append(heading, grid);
+      }
+      grid.append(cell(file));
+    }
+  }
+  async function openDrawer(source) {
+    closeDrawer(); opened = source;
+    byId("drawerTitle").textContent = source.title;
+    byId("drawerNote").textContent = source.note; byId("drawerNote").hidden = !source.note;
+    for (const [id, shown] of Object.entries(source.actions)) byId(id).hidden = !shown;
+    byId("drawerNotes").hidden = true;
+    byId("drawer").hidden = false;
+    focus(source.at, Math.max(map.getZoom(), source.zoom));
+    if (source.folder) {
+      folderPin = L.marker(source.at, { draggable: true, icon: L.divIcon({ className: "folder-pin" }) }).addTo(map);
+      folderPin.bindTooltip(label(source.folder.town || source.folder.folder));
+    }
+    highlight();
+    const response = await fetch(source.url).catch(() => null);
+    if (opened !== source) return;
+    if (!response || !response.ok) { status(T.offline, "error"); return; }
+    fillDrawer((await response.json()).photos, source);
+  }
+  function showCluster(rank) {
+    const key = `cluster:${rank}`;
+    if (opened && opened.key === key) { closeDrawer(); return; }
+    const [lat, lon, pictures, filmed, , aside] = state.clusters[rank];
+    const give = state.places.length > 0;
+    const actions = { clusterName: true, clusterAside: aside < 0, giveTo: give,
+                      folderSave: false, folderForget: false, folderIgnore: false };
+    if (give) fillGive([lat, lon]);
+    openDrawer({ key, rank, url: paths.cluster + rank, at: [lat, lon], zoom: NAMED_ZOOM, pictures, videos: filmed, give,
+                 title: fill(T.clusterTitle, { files: holds(pictures, filmed) }), note: "", actions, folder: null });
+  }
+  // The places, the nearest first, with their distance: "Geer — 1.4 km".
+  function fillGive(at) {
+    const select = byId("giveTo"), first = document.createElement("option");
+    first.value = ""; first.textContent = T.giveTo; select.replaceChildren(first);
+    const here = L.latLng(at), lang = document.documentElement.lang;
+    const near = state.places.map((place) => [here.distanceTo([place.latitude, place.longitude]), place.name]).sort((a, b) => a[0] - b[0]);
+    for (const [metres, name] of near) {
+      const option = document.createElement("option"); option.value = name;
+      option.textContent = fill(T.giveDistance, { place: name, km: (metres / 1000).toLocaleString(lang, { maximumFractionDigits: 1 }) });
+      select.append(option);
+    }
+  }
+  async function give(place) {
+    const source = opened;
+    if (!source || !source.give) return;
+    const unticked = (source.files || []).filter((file) => file.unticked);
+    const pictures = source.pictures - unticked.filter((file) => !file.video).length;
+    const filmed = source.videos - unticked.filter((file) => file.video).length;
+    if (pictures + filmed <= 0) { status(T.noneTicked, "error"); return; }
+    if (!await window.mhAsk({ lines: [fill(T.giveConfirm, { files: holds(pictures, filmed), place })], yes: T.giveYes })) return;
+    const before = (state.places.find((known) => known.name === place) || { hand: [] }).hand.length;
+    const answer = await post(paths.photos, { action: "give", cluster: source.rank, place,
+                                              left_out: unticked.map((file) => [file.folder, file.name]) });
+    if (!answer) return;
+    const after = answer.places.find((known) => known.name === place);
+    state = answer; flashName = place; closeDrawer(); draw();
+    if (!after || after.hand.length <= before) { status(T.notSaved, "error"); return; }
+    status(fill(T.given, { place }), "saved");
+  }
+  byId("giveTo").addEventListener("change", (event) => {
+    const place = event.target.value; event.target.value = "";
+    if (place) give(place);
+  });
+  // A cluster not worth a name: a circle in config.toml, hidden from the map (0234).
+  async function setAside(lat, lon) {
+    const answer = await post(paths.aside, { latitude: lat, longitude: lon });
+    if (!answer) return;
+    state = answer; closeDrawer(); draw();
+    const near = (spot) => Math.abs(spot.latitude - lat) < 1e-6 && Math.abs(spot.longitude - lon) < 1e-6;
+    status(state.aside.some(near) ? T.asideSaved : T.notSaved, state.aside.some(near) ? "saved" : "error");
+  }
+  async function restoreSpot(spot) {
+    const answer = await post(paths.aside, { latitude: spot.latitude, longitude: spot.longitude, restore: true });
+    if (!answer) return;
+    state = answer; closeDrawer(); draw();
+    const still = state.aside.some((known) => known.latitude === spot.latitude && known.longitude === spot.longitude);
+    status(still ? T.notSaved : T.asideRestored, still ? "error" : "saved");
+  }
+  byId("clusterAside").addEventListener("click", () => { if (opened) setAside(...opened.at); });
+  byId("drawerClose").addEventListener("click", closeDrawer);
+  byId("viewerBack").addEventListener("click", closeViewer);
+  byId("viewerPrev").addEventListener("click", () => openViewer(viewed - 1));
+  byId("viewerNext").addEventListener("click", () => openViewer(viewed + 1));
+  byId("clusterName").addEventListener("click", () => { if (opened) startNew(...opened.at); });
+  document.addEventListener("keydown", (event) => {
+    if (byId("drawer").hidden || event.target.closest?.("input, textarea, select")) return;
+    if (event.key === "Escape") { if (viewed >= 0) closeViewer(); else closeDrawer(); }
+    else if (viewed >= 0 && event.key === "ArrowLeft") openViewer(viewed - 1);
+    else if (viewed >= 0 && event.key === "ArrowRight") openViewer(viewed + 1);
+    else if (viewed < 0 && opened && opened.folder && folderKey(event)) { /* done */ }
+    else return;
+    event.preventDefault();
+  });

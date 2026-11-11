@@ -234,8 +234,10 @@ def test_a_phone_saves_nothing_on_the_map(path: str) -> None:
 
 def test_the_map_page_hides_what_saves_on_a_phone() -> None:
     """0613: the family home offers the map, and the map's page hides its writes."""
-    page = (files("media_hygiene.places") / "templates" / "places.html.j2").read_text(
-        "utf-8"
+    templates = files("media_hygiene.places") / "templates"
+    page = "".join(
+        (templates / name).read_text("utf-8")
+        for name in ("places.css.j2", "places_edit.js.j2")
     )
     for selector in (
         "#editor",

@@ -19,7 +19,8 @@ _SOURCES: Final = Path(__file__).parents[2] / "src" / "media_hygiene"
 _NATIVE: Final = re.compile(r"\b(?:window\.)?(?:confirm|alert|prompt)\(")
 # Every former native box (0663): the shared ask dialog, and why nothing takes it back.
 _ASKED: Final = {
-    "places/templates/places.html.j2": 2,  # photos given to a place; a place deleted
+    "places/templates/places_map.js.j2": 1,  # photos given to a place
+    "places/templates/places_edit.js.j2": 1,  # a place deleted
     "review/templates/phone_review.js.j2": 2,  # phone files deleted; one not kept
     "search/templates/events_rule.js.j2": 1,  # rules removed from config.toml
     "search/templates/events_choice.js.j2": 1,  # leaving with an unsaved folder: save?

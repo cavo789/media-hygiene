@@ -1,0 +1,128 @@
+  /* The map fills the window under the header: the columns take the height left, the lists
+     scroll on their own in the left one, the map takes the right one under the bar. */
+  html, body { height: 100%; }
+  body { display: flex; flex-direction: column; }
+  .layout { flex: 1; min-height: 0; align-items: stretch; }
+  #side { position: static; height: auto; min-height: 0; margin: 8px 0 8px 16px; }
+  #content { display: flex; flex-direction: column; min-height: 0; }
+  #bar { min-height: calc(1.5em + 16px); }
+  #stage { flex: 1; position: relative; min-width: 0; padding: 0; }
+  #map { position: absolute; inset: 0; }
+  @media (max-width: 900px) { #stage { min-height: 70vh; } }
+  h1 { font-size: 1.1rem; margin: 0 0 8px; }
+  h2 { font-size: .95rem; margin: 16px 0 6px; }
+  .muted, .hint { color: var(--muted); font-size: .85rem; }
+  input[type=text], input[type=search], input[type=number] {
+    width: 100%; padding: 6px 8px; font: inherit; color: var(--text); background: var(--bg);
+    border: 1px solid var(--line); border-radius: 6px; }
+  input[type=range] { width: 100%; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li button.link { width: 100%; padding: 4px 6px; text-align: left; font: inherit;
+                   color: var(--text); background: none; border: 0; border-radius: 6px;
+                   cursor: pointer; }
+  li button.link:hover { background: var(--bg); }
+  #editor { margin-top: 12px; padding: 10px; border: 2px solid var(--accent); border-radius: 10px; }
+  #editor label { display: block; margin: 8px 0 2px; font-weight: 600; }
+  #editor label.check { font-weight: normal; }
+  .buttons { display: flex; gap: 8px; margin-top: 10px; }
+  .buttons button { padding: 6px 12px; font: inherit; border: 1px solid var(--line);
+                    border-radius: 6px; background: var(--bg); color: var(--text); cursor: pointer; }
+  .buttons button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .buttons button.danger { color: var(--bad); }
+  #status.error { color: var(--bad); font-weight: 600; } #status.saved { color: var(--ok); }
+  .pin { width: 18px !important; height: 18px !important; margin: -9px 0 0 -9px !important;
+         background: var(--accent); border: 3px solid #fff; border-radius: 50%;
+         box-shadow: 0 0 0 1px var(--accent); }
+  /* Leaflet's controls take the theme's colours; the map and its tiles do not change. */
+  .leaflet-container { font-family: var(--mk-font-text); }
+  .leaflet-bar a, .leaflet-control-attribution, .leaflet-control-layers { color: var(--text); background: var(--card); border-color: var(--line); }
+  .leaflet-bar a:hover, .leaflet-bar a:focus { background: var(--chip); }
+  .leaflet-control-attribution a { color: var(--accent); }
+  .leaflet-bar button.show-all { width: 34px; height: 34px; border: 0; font-size: 1.1rem; cursor: pointer;
+                                 color: var(--text); background: var(--card); }
+  .leaflet-bar button.show-all:hover, .leaflet-bar button.show-all:focus { background: var(--chip); }
+  .leaflet-popup-content-wrapper, .leaflet-popup-tip, .leaflet-tooltip { color: var(--text); background: var(--card); }
+  .leaflet-tooltip.place-name { font-weight: 600; }
+  #osm { margin-top: 8px; }
+  #osm button { padding: 4px 10px; font: inherit; border: 1px solid var(--line); border-radius: 6px;
+                background: var(--bg); color: var(--text); cursor: pointer; }
+  #osm button:disabled { opacity: .6; cursor: progress; }
+  #osm a { color: var(--accent); }
+  details.fold { margin-top: 16px; }
+  details.fold > summary { font-size: .95rem; font-weight: 600; color: var(--muted); cursor: pointer;
+                           margin-bottom: 6px; }
+  details.fold .count { font-weight: normal; }
+  details.fold.sub { margin: 8px 0 0 8px; }
+  #folderFilter, #treeFilter { margin-top: 4px; }
+  #tree ul { margin-left: 14px; }
+  .tree-line { display: flex; gap: 2px; align-items: center; }
+  .tree-line button.toggle, li.folder button.toggle { width: 20px; padding: 0; font: inherit; color: var(--muted);
+                             background: none; border: 0; cursor: pointer; }
+  .tree-line button.link { flex: 1; width: auto; }
+  li.town-folders > ul { padding-left: 20px; }
+  li.none > .tree-line button.link { color: var(--muted); cursor: default; }
+  li.shown > .tree-line button.link { background: var(--bg); font-weight: 600; }
+  li.cluster { display: flex; gap: 4px; align-items: center; }
+  li.cluster button.link { flex: 1; width: auto; }
+  li.cluster button.count { padding: 2px 8px; font: inherit; font-size: .85rem; white-space: nowrap;
+                            color: var(--accent); background: none; border: 1px solid var(--line);
+                            border-radius: 6px; cursor: pointer; }
+  li.cluster.shown button.count { background: var(--accent); border-color: var(--accent); color: #fff; }
+  @keyframes flash { from { background: var(--accent); color: #fff; } to { background: none; } }
+  li.flash button.link { animation: flash 1.6s ease-out; }
+  li.shown > button.link { background: var(--bg); font-weight: 600; }
+  li.missing button.link { color: var(--bad); }
+  .folder-pin { width: 18px !important; height: 18px !important; margin: -9px 0 0 -9px !important;
+                background: var(--ok); border: 3px solid #fff; border-radius: 50%;
+                box-shadow: 0 0 0 1px var(--ok); }
+  /* The drawer: over the right of the map, at a fixed place whatever the lists' length. */
+  #drawer { position: absolute; top: 0; right: 0; bottom: 0; width: 40%; min-width: 320px; z-index: 1100;
+            display: flex; flex-direction: column; background: var(--card); color: var(--text);
+            border-left: 1px solid var(--line); box-shadow: -4px 0 16px rgba(0, 0, 0, .2); }
+  #drawer[hidden], #viewer[hidden], #drawerBody[hidden] { display: none; }
+  #drawer > .drawerHead { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  #drawer .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  #drawer .top strong { overflow-wrap: anywhere; }
+  #drawer .buttons { flex-wrap: wrap; margin-top: 8px; }
+  #drawerClose { font: inherit; font-size: 1.1rem; color: var(--muted); background: none; border: 0; cursor: pointer; }
+  #drawerBody { flex: 1; overflow-y: auto; padding: 0 14px 14px; }
+  #drawerBody h3 { margin: 12px 0 4px; font-size: .85rem; font-weight: normal; color: var(--muted);
+                   overflow-wrap: anywhere; }
+  #drawerBody h3 b { color: var(--text); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 4px; }
+  .grid img, .grid .gone, .grid .video { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px;
+                                         background: var(--bg); }
+  .grid img { cursor: zoom-in; }
+  .grid .gone, .grid .video { display: flex; flex-direction: column; align-items: center; justify-content: center;
+                              padding: 4px; overflow: hidden; text-align: center; color: var(--muted);
+                              font-size: 1.4rem; border: 1px dashed var(--line); }
+  .grid .video small { font-size: .7rem; overflow-wrap: anywhere; }
+  #viewer { flex: 1; display: flex; flex-direction: column; min-height: 0; margin: 0; padding: 8px 14px 14px; }
+  #viewer img { flex: 1; min-height: 0; width: 100%; object-fit: contain; }
+  #viewer figcaption { margin-top: 6px; font-size: .85rem; overflow-wrap: anywhere; }
+  @media (max-width: 700px) { #drawer { width: 100%; min-width: 0; } }
+  /* A paired phone only looks (0613, `lan_paths.phone_marked`): the map, the places, the
+     clusters and their photos; every control that saves is hidden, and its POST refused. */
+  html[data-phone] #search, html[data-phone] #towns, html[data-phone] #osm, html[data-phone] #lookup,
+  html[data-phone] #editor, html[data-phone] #foldersFold, html[data-phone] #treeFold,
+  html[data-phone] #asideFold, html[data-phone] #clusterName, html[data-phone] #giveTo,
+  html[data-phone] #clusterAside, html[data-phone] #folderSave, html[data-phone] #folderForget,
+  html[data-phone] #folderIgnore, html[data-phone] .drop, html[data-phone] .pick,
+  html[data-phone] #keys { display: none !important; }
+  li.cluster button.drop, li.folder button.drop, li.aside button.restore {
+    padding: 2px 8px; font: inherit; font-size: .85rem; color: var(--muted); background: none;
+    border: 1px solid transparent; border-radius: 6px; cursor: pointer; }
+  li.cluster button.drop:hover, li.folder button.drop:hover { color: var(--bad); border-color: var(--line); }
+  li.folder, li.aside { display: flex; gap: 4px; align-items: center; }
+  li.folder button.link, li.aside button.link, li.aside span { flex: 1; width: auto; }
+  li.aside button.restore { color: var(--accent); border-color: var(--line); }
+  .pick { position: relative; }
+  .pick input { position: absolute; top: 4px; left: 4px; width: 18px; height: 18px; cursor: pointer; }
+  #giveTo { padding: 6px 8px; font: inherit; color: var(--text); background: var(--bg);
+            border: 1px solid var(--line); border-radius: 6px; max-width: 100%; }
+  #hand ul li { display: flex; gap: 6px; align-items: center; font-size: .85rem; overflow-wrap: anywhere; }
+  #hand img { width: 48px; height: 48px; object-fit: cover; border-radius: 4px; }
+  #hand li span { flex: 1; }
+  #hand li button { font: inherit; color: var(--muted); background: none; border: 0; cursor: pointer; }
+  .photo-pin { width: 12px !important; height: 12px !important; margin: -6px 0 0 -6px !important;
+               background: var(--bad); border: 2px solid #fff; border-radius: 50%; }
