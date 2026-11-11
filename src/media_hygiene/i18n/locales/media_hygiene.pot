@@ -7658,6 +7658,9 @@ msgstr ""
 msgid "Reading the index"
 msgstr ""
 
+msgid "Reading the journals and the quarantine…"
+msgstr ""
+
 msgid "Reading the latest classify plan…"
 msgstr ""
 
@@ -10949,6 +10952,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "This build cannot search by meaning: {module} is not installed."
+msgstr ""
+
+msgid "This card could not be read now: reload the page to try again."
 msgstr ""
 
 msgid "This chain cannot be run from here: type the command in mh."

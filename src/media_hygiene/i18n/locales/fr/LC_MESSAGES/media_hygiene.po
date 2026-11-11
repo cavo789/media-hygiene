@@ -9201,6 +9201,9 @@ msgstr "Lecture des albums…"
 msgid "Reading the index"
 msgstr "Lecture de l’index"
 
+msgid "Reading the journals and the quarantine…"
+msgstr "Lecture des journaux et de la quarantaine…"
+
 msgid "Reading the latest classify plan…"
 msgstr "Lecture du dernier plan de classify…"
 
@@ -13188,6 +13191,11 @@ msgstr ""
 "Cette version ne sait pas chercher par le sens : {module} n'est pas "
 "installé."
 
+msgid "This card could not be read now: reload the page to try again."
+msgstr ""
+"Cette carte n'a pas pu être lue maintenant : rechargez la page pour "
+"réessayer."
+
 msgid "This chain cannot be run from here: type the command in mh."
 msgstr "Cette chaîne ne peut pas être lancée d'ici : tapez la commande dans mh."
 
@@ -16434,9 +16442,9 @@ msgid ""
 "entry runs it (Move: E event, M month; Slideshow: H this PC, T TV; "
 "Describe: T tag, D date, P place)"
 msgstr ""
-"sur un menu ▾ de la barre : l'ouvre ; ↑ ↓ s'y déplacent, la lettre à droite "
-"d'une entrée la lance (Déplacer : E événement, M mois ; Diaporama : H ce PC, "
-"T télé ; Décrire : T étiquette, D date, P lieu)"
+"sur un menu ▾ de la barre : l'ouvre ; ↑ ↓ s'y déplacent, la lettre à "
+"droite d'une entrée la lance (Déplacer : E événement, M mois ; Diaporama "
+": H ce PC, T télé ; Décrire : T étiquette, D date, P lieu)"
 
 msgid "on a video you clicked: play, seek; Esc gives the keys back"
 msgstr "sur une vidéo cliquée : lecture, avance ; Échap rend les touches"
