@@ -24,6 +24,7 @@ from media_hygiene.i18n import _
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from media_hygiene.review.home_parts import HomeFindings
     from media_hygiene.review.home_views import HomeState
     from media_hygiene.services.fresh_runtime import FreshRuntime
     from media_hygiene.services.home_tags_models import TagsRunner
@@ -66,6 +67,7 @@ def home_command(
             page_apply(runtime),
             _page_runs(runtime, fresh),
             partial(home_samples, runtime),
+            partial(_safety_now, fresh),
         ),
         port,
     )
@@ -127,3 +129,17 @@ def _state_now(read: Callable[[Runtime], HomeState], fresh: FreshRuntime) -> Hom
     if not fresh.error:
         return state
     return state.model_copy(update={"settings_error": fresh.error})
+
+
+def _safety_now(fresh: FreshRuntime) -> HomeFindings:
+    """The *Are my photos safe?* card, on its own route (0692).
+
+    Args:
+        fresh: The runtime, its settings read again when changed.
+
+    Returns:
+        The card.
+    """
+    from media_hygiene.cli.status_safety import page_safety
+
+    return page_safety(fresh.runtime())

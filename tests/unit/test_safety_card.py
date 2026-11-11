@@ -9,7 +9,7 @@ import pytest
 
 from media_hygiene.cli.home_state import home_state
 from media_hygiene.cli.safety_lines import Level
-from media_hygiene.cli.status_safety import safety_of, show_safety
+from media_hygiene.cli.status_safety import page_safety, safety_of, show_safety
 from media_hygiene.index.safety_counts import RereadCounts, newer_than, reread_counts
 from media_hygiene.index.verified_rows import CREATE_VERIFIED
 from media_hygiene.services.safety_records import last_backup, off_pc
@@ -63,12 +63,12 @@ def test_quarantine_counts_only_copies(tmp_path: Path) -> None:
     assert line.step == "purge"
 
 
-def test_home_state_carries_the_card(tmp_path: Path) -> None:
-    """The page's state holds the card, the steps that fix it named."""
+def test_card_has_its_own_route(tmp_path: Path) -> None:
+    """The card leaves the page's state (0692), the steps that fix it named."""
     runtime = _runtime(tmp_path)
     old_push(runtime)
-    safety = home_state(runtime).safety
-    assert safety is not None
+    assert "safety" not in home_state(runtime).model_dump()
+    safety = page_safety(runtime)
     assert [row.level for row in safety.rows][:3] == ["warn", "good", "bad"]
     assert safety.rows[2].action == "backup"
 

@@ -25,6 +25,10 @@ def _dialogs() -> dict[str, str]:
     return {
         "toFill": _("To fill in"),
         "updating": _("Updating…"),
+        "safetyReading": _("Reading the journals and the quarantine…"),
+        "safetyFailed": _(
+            "This card could not be read now: reload the page to try again."
+        ),
         "inlineRuns": _("Runs in the page"),
         "inlineWait": _("Running, a few seconds…"),
         "inlineDone": _("Done. What it wrote:"),

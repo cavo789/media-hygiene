@@ -148,6 +148,7 @@
 #  43. the hand-over of a page step (0583): a page on 8088 ends, the next page started at once
 #  44. back to the home page (0442): /api/state of your real mh timed from the PC, then the phone by stopwatch
 #  45. the pages of 0590-0594 on Windows: import --pick on a folder, then the quarantine in one click, by hand
+#  46. the home page after a restart (0692): each part of /api/state and /api/safety timed twice, then by stopwatch
 #      (as before) or once Docker removed the first container (after): seconds to bind
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
@@ -191,6 +192,7 @@
 #   .\mh-measure.ps1 -Only 34 -Count 1   (shrink: two of your videos re-encoded, timed, played: 0303)
 #   .\mh-measure.ps1 -Only 35 -Count 1   (the pages opened from the home page, each phase timed: 0354)
 #   .\mh-measure.ps1 -Only 36 -Count 1   (the home page by hand, three yes/no questions: 0355, 0366)
+#   .\mh-measure.ps1 -Only 46 -Count 1   (the home page after a restart, the safety card apart: 0692)
 
 param(
     [string]$Photos = "C:\Photos",
@@ -3584,6 +3586,85 @@ if (Wanted 45) {
     Write-Host "45 : puis mh, page d'accueil, Historique, Liberer la place : cliquez Les voir d'abord."
     $oneClick = Read-Host "La quarantaine s'ouvre sans redemarrage ni fenetre de console ? (o/n)"
     Log "   45b. purge, See them first, served without a restart: $oneClick"
+}
+
+# --- 46: the home page ready at once after a restart (0692) ------------------------------------
+# Read-only: inside your running home page, each part of the state and of the safety card timed,
+# a first call then a second one; then the two routes from Windows; then your stopwatch.
+if (Wanted 46) {
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    Log ""
+    Log "== 46. the home page ready at once after a restart (0692)"
+    Write-Host "46 : dans une AUTRE fenetre (image de la branche) : mh, attendez la page d'accueil, puis revenez ici."
+    $null = Read-Host "46. Entree quand la page d'accueil est affichee"
+    $page = @(& docker ps --quiet --filter "label=media-hygiene.page")
+    if ($page.Count -eq 0) {
+        Log "   46a. no home page container running (label media-hygiene.page): step skipped"
+    } else {
+        $id = $page[0]
+        $port = "8088"
+        $mapped = "$(& docker port $id 2>$null)"
+        if ($mapped -match ':(\d+)\s*$') { $port = $Matches[1] }
+        $code = @'
+import time
+from media_hygiene.i18n import install
+from media_hygiene.i18n.bootstrap import resolve_locale
+install(resolve_locale([]))
+from media_hygiene.cli.context import build_runtime
+import media_hygiene.cli.home_state as hs
+import media_hygiene.cli.status_safety as ss
+import media_hygiene.services.safety as sf
+import media_hygiene.services.safety_cache as sc
+from media_hygiene.services.quarantines import mounted_quarantines
+runtime = build_runtime({})
+spent = {}
+def wrap(module, name, label):
+    real = getattr(module, name)
+    def timed(*args, **kwargs):
+        start = time.perf_counter()
+        result = real(*args, **kwargs)
+        spent[label] = spent.get(label, 0.0) + time.perf_counter() - start
+        return result
+    setattr(module, name, timed)
+for name in ('read_status', 'home_update', 'home_folders', 'latest_reports', 'home_pending'):
+    wrap(hs, name, name)
+wrap(sc, 'only_copies', 'only_copies')
+wrap(sc, 'held_back', 'held_back')
+wrap(sc, 'safety_key', 'safety_key')
+wrap(sf, 'reread_counts', 'reread_counts')
+wrap(sf, 'last_push', 'last_push')
+for run in (1, 2):
+    for route, call in (('state', lambda: hs.home_state(runtime)), ('safety', lambda: ss.page_safety(runtime))):
+        spent.clear()
+        start = time.perf_counter()
+        call()
+        total = (time.perf_counter() - start) * 1000
+        parts = ', '.join(f'{n} {s * 1000:.0f}' for n, s in sorted(spent.items(), key=lambda x: -x[1]))
+        print(f'46b. {route} call {run}: {total:.0f} ms ({parts})')
+folders = mounted_quarantines(runtime).folders
+print(f'46c. quarantines mounted: {len(folders)}; cache file present: {(runtime.locations.cache_dir / sc.SAFETY_CACHE_NAME).is_file()}')
+'@
+        $encoded = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($code))
+        $lines = & docker exec $id python -c "import base64; exec(base64.b64decode('$encoded'))" 2>&1
+        foreach ($line in $lines) { Log ("   " + "$line".Trim()) }
+        foreach ($path in "/api/state", "/api/safety") {
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            try {
+                $answer = Invoke-WebRequest -Uri "http://127.0.0.1:$port$path" -UseBasicParsing -TimeoutSec 300
+                $watch.Stop()
+                Log ("   46d. GET {0}: {1:N2} s, {2} bytes" -f $path, $watch.Elapsed.TotalSeconds, $answer.RawContentLength)
+            } catch {
+                Log ("   46d. GET {0}: failed after {1:N2} s: {2}" -f $path, $watch.Elapsed.TotalSeconds, $_.Exception.Message)
+            }
+        }
+    }
+    Write-Host "46 : fermez mh (Ctrl+C), puis relancez mh, photos inchangees. Chronometrez jusqu'a la page dessinee."
+    $drawn = Read-Host "46e. Secondes entre Entree et la page dessinee (avant : environ 30)"
+    $card = Read-Host "46f. Secondes jusqu'a la carte 'Mes photos sont-elles en securite ?' remplie"
+    Log "   46e. second start, page drawn, stopwatch, seconds (before: about 30): $drawn"
+    Log "   46f. second start, safety card filled, stopwatch, seconds: $card"
+    $ErrorActionPreference = $saved
 }
 
 # --- clean up -------------------------------------------------------------------------------

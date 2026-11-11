@@ -19,13 +19,13 @@ from typing import TYPE_CHECKING, Final, Literal
 import segno
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n.live import Page, page_of
 from media_hygiene.review.http import ContentType, Request, Response
 from media_hygiene.review.serving import json_response
 from media_hygiene.review.videos import NEAR_POLICY
 from media_hygiene.search.views import THUMB_PREFIX
 from media_hygiene.share.album_links import LINK_HOURS, AlbumLinks
+from media_hygiene.share.album_shelf import shelf_picture
 from media_hygiene.slideshow.films import FILM_PREFIX
 from media_hygiene.slideshow.pictures import TV_PREFIX
 
@@ -88,12 +88,7 @@ class AlbumLinkDoor:
         if not inner.startswith(_PICTURES):
             return Response(HTTPStatus.NOT_FOUND)
         asked = Request("GET", inner, request.headers, door=request.door)
-        try:
-            with self.shelf.pictures(keys) as pictures:
-                shown = await pictures.answer(asked)
-        except MediaHygieneError:
-            shown = None
-        return Response(HTTPStatus.NOT_FOUND) if shown is None else shown
+        return await shelf_picture(self.shelf, keys, asked)
 
     async def make(self, request: Request, lan: LanAccess) -> Response:
         """`POST /api/album-link` of the PC: the link, its QR code, or stopped.

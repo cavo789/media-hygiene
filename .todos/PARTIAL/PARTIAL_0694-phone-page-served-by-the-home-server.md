@@ -40,3 +40,31 @@ HTTP (two servers to keep in step).
 
 The phone page is the only tile page without the slideshow: after it, the same bar
 everywhere (estimated from the pages listed by `photo-picking-pages`).
+
+## Status — PARTIAL (2026-11-11)
+
+### Done
+- `/phone/` served by the home server (`services/phone_here.py`, `phone_here_parts.py`,
+  listed in `pages_here`): `mh` (its watch loop, `$global:MediaHygieneKept`) writes the
+  plan's lines in `.mh-phone-page.json` of the reports folder instead of starting a second
+  container; the page writes `.mh-phone-ended.json` (the lines ticked, read back from the
+  decisions file, on Delete; none on Leave), itself read back before answering; `mh` waits
+  for it, or for the home server's end (nothing deleted then).
+- The home page's tab opens the page itself: `GET /api/step` says `page: "/phone/"` while
+  `mh` waits; `step_chip.html.j2` goes there once per step id (PC only).
+- ▶ Slideshow ▾ (On this PC / On the TV) through the home server's `TvSlot`, ⌂ a plain link
+  home, *Apply now* (pending = the decisions file's choices, `home_pending`); after Delete or
+  Leave the tab goes back home, the step chip follows the deletion.
+- The page's paths are relative (same page at `/` and under `/phone/`); the typed
+  `mh import --phone --free` keeps its own server, unchanged (`phone_review`).
+- Guests: `/phone/…` added to the route table of `test_lan_guests` (404); a phone of the
+  family is refused too (`/phone/` is in no `lan_paths` list).
+- Tests: `tests/unit/test_phone_here.py` (7); docs en + fr (`commands/import.md`).
+
+### Not done
+- A real try on the maintainer's PC with a phone (`mh`, *Make room on the phone* from the
+  home page, Delete then Leave) — the PowerShell side (`_phone_kept`) is untested on Windows.
+  **Reason:** needs Windows + a phone (maintainer).
+- `docs_screenshots` to run (the bar gained ▶ Slideshow ▾). **Reason:** heavy, never run unasked.
+- Headless browser check of the tab following to `/phone/` and back. **Reason:** time; the
+  routes are covered by unit tests, the JS by review only.

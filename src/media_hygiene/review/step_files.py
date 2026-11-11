@@ -11,9 +11,11 @@ from media_hygiene.services.step_progress import read_progress, step_lost
 if TYPE_CHECKING:
     from pathlib import Path
 
+PHONE_PAGE: Final = "/phone/"  # the page freeing a phone, served beside a step (0694)
+
 
 @dataclass(frozen=True, slots=True)
-class WatchFiles:
+class WatchFiles:  # pylint: disable=too-many-instance-attributes  # one per file
     """The value of the variable, and the files `mh` and the server share."""
 
     # `MEDIA_HYGIENE_LAUNCHER_STEPS` of an `mh` that keeps the server up
@@ -24,6 +26,10 @@ class WatchFiles:
     done: str = ".mh-step-done.json"  # written by `mh`: the id and the exit code
     cid: str = ".mh-home.cid"  # the home server's container id (`docker run --cidfile`)
     code: str = ".mh-home.code"  # its exit code, written by `docker wait`
+    # `import --phone --free` beside the server (0694): the files to tick, by `mh`,
+    # then what the page ended on, by the server (`services/phone_here`)
+    phone_asked: str = ".mh-phone-page.json"
+    phone_ended: str = ".mh-phone-ended.json"
 
 
 WATCH: Final = WatchFiles()
@@ -58,8 +64,23 @@ def read_state(folder: Path) -> dict[str, object]:
             progress = read_progress(folder)  # a step that writes says how far (0361)
             if state == StepState.RUNNING and step_lost(folder):
                 found["lost"] = True  # its window closed: no more pulse (0632)
+            if state == StepState.RUNNING and _phone_waits(folder):
+                found["page"] = PHONE_PAGE  # the tab opens the page to tick (0694)
             return found if progress is None else found | {"progress": progress}
     return {"state": StepState.IDLE, "id": None, "code": None}
+
+
+def _phone_waits(folder: Path) -> bool:
+    """Tell whether `mh` waits for the phone's files to be ticked on the page.
+
+    Args:
+        folder: The reports folder.
+
+    Returns:
+        True while it asked and the page has not ended.
+    """
+    asked = (folder / WATCH.phone_asked).is_file()
+    return asked and not (folder / WATCH.phone_ended).exists()
 
 
 def _said(file: Path) -> dict[str, object] | None:

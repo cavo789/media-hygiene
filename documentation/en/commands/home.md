@@ -403,6 +403,28 @@ Your albums*). The relatives look at your screen and pair nothing.
 | What the phone reaches | The albums and **their** files; the rest of your library through *Search* and *Browse* only (read only). |
 | Where | The home Wi-Fi only, while `mh` runs on the PC (said on the page). |
 
+## Showing photos to visitors
+
+A tablet at the in-laws', a friend's phone at home: pair it as a **guest**, and it sees only
+the albums you chose for guests, never the rest of your library.
+
+1. On the PC, open an album (*Share › Your albums*, then the album) and tick
+   **🧳 Show to guests**. Tick as many albums as you like; the tick is saved in `albums.json`
+   and read back.
+2. On the home page's card *On your phone*, choose **🧳 Guest**: the card shows the guests'
+   code and its QR code (the **👪 Family** one stays for your own phones).
+3. On the visitor's device, scan the QR code or type the code, as for a phone.
+
+| | 👪 Family | 🧳 Guest |
+|---|---|---|
+| Sees | The whole library (*Search*, *Browse*), the albums, the reports | The albums ticked **Show to guests**, their photos and videos |
+| Anything else | Read only | Nothing: every other address answers *not found* |
+| Paired | 400 days (HTTPS) or this run | The same; *Forget* it on the PC's card when the visit ends |
+
+Untick an album and it disappears from the guests' devices at their next tap. The card on the
+PC lists each device with *Guest* next to its name. For a one-off, an album's 🔗 link (24
+hours, no pairing) is still there.
+
 ## The keyboard, the palette, the theme
 
 | Key | What it does |

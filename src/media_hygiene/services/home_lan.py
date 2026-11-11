@@ -77,4 +77,5 @@ def lan_door(
         phones=phones,
         originals=runtime.settings.review.lan_phone_originals,
         links=pages.parts.links,  # one album by a 24 h link (0462)
+        guests=pages.parts.guests,  # a guest's device: its albums only (0684)
     )

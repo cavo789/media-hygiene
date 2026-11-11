@@ -52,6 +52,7 @@ class AlbumSeen:
     picked: Picked
     cover: int | None = None  # the key of the cover the user chose (0371)
     last_shown: dt.datetime | None = None  # on the TV (0603)
+    guests: bool = False  # shown to the devices paired as guests (0684)
 
 
 def facts_of(connection: sqlite3.Connection, key: int) -> Facts:
@@ -88,9 +89,9 @@ def album_view(
         town_of: Names the town of a position, or None.
 
     Returns:
-        The JSON object: `name`, `count`, `last_shown`, `missing`, `first`, `last`,
-        `place`, `cover` (`thumb`, `photo`, or None) and `days` (`day`, `place`,
-        `items`).
+        The JSON object: `name`, `count`, `guests`, `last_shown`, `missing`,
+        `first`, `last`, `place`, `cover` (`thumb`, `photo`, or None) and `days`
+        (`day`, `place`, `items`).
     """
     slides = seen.picked.slides
     facts = {slide.key: facts_of(connection, slide.key) for slide in slides}
@@ -107,6 +108,7 @@ def album_view(
     return {
         "name": seen.name,
         "count": len(slides),
+        "guests": seen.guests,
         "last_shown": seen.last_shown.isoformat() if seen.last_shown else "",
         "missing": seen.picked.missing,
         "first": dated[0] if dated else "",

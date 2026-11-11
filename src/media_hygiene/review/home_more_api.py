@@ -1,4 +1,6 @@
-"""Routes of the home page: samples (0485), tiles (0516), scan scope, import steps.
+"""Routes of the home page: samples, tiles, scan scope, import steps, the safety card.
+
+Samples 0485, tiles 0516; the *Are my photos safe?* card apart from the state (0692).
 
 The first two are not in `lan_paths`: a phone sees the PC's arrangement, never edits
 it, and has no random photos.
@@ -30,12 +32,17 @@ if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
 
-    from media_hygiene.review.home_parts import HomeSample
+    from media_hygiene.review.home_parts import HomeFindings, HomeSample
     from media_hygiene.review.http import Request
 
 SAMPLES_PATH: Final = "/api/samples"
 TILES_PATH: Final = "/api/home-tiles"
-MORE_PATHS: Final = {"samples": SAMPLES_PATH, "tiles": TILES_PATH}
+SAFETY_PATH: Final = "/api/safety"
+MORE_PATHS: Final = {
+    "samples": SAMPLES_PATH,
+    "tiles": TILES_PATH,
+    "safety": SAFETY_PATH,
+}
 _POST: Final = "POST"
 
 
@@ -46,6 +53,7 @@ class HomeMore:
     config_file: Path | None = None
     samples: Callable[[], tuple[HomeSample, ...]] | None = None
     chain: ChainDoor | None = None  # 0604
+    safety: Callable[[], HomeFindings] | None = None  # the card, slow (0692)
 
 
 async def more_response(more: HomeMore, request: Request) -> Response | None:
@@ -64,6 +72,11 @@ async def more_response(more: HomeMore, request: Request) -> Response | None:
         saved = await _saved_route(more.config_file, request)
         if saved is not None:
             return saved
+    if request.path == SAFETY_PATH and more.safety is not None:
+        card = await asyncio.to_thread(more.safety)
+        return Response(
+            HTTPStatus.OK, card.model_dump_json().encode(), ContentType.JSON
+        )
     if request.path == SAMPLES_PATH and more.samples is not None:
         drawn = await asyncio.to_thread(more.samples)
         said = {"samples": [sample.model_dump() for sample in drawn]}

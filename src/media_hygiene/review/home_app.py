@@ -47,7 +47,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.review.ending import Ending
-    from media_hygiene.review.home_parts import HomeSample
+    from media_hygiene.review.home_parts import HomeFindings, HomeSample
     from media_hygiene.review.home_views import HomeState
     from media_hygiene.review.http import Request
     from media_hygiene.review.import_chain_api import ChainDoor
@@ -94,6 +94,7 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
     inline: InlineRunner = field(default_factory=InlineRunner)  # 0505
     samples: Callable[[], tuple[HomeSample, ...]] | None = None  # random photos, 0485
     chain: ChainDoor | None = None  # the chain after an import, followed (0604)
+    safety: Callable[[], HomeFindings] | None = None  # its own route (0692)
 
     @override
     async def answer(self, request: Request) -> Response:
@@ -105,7 +106,7 @@ class HomeApp(LocalApp):  # pylint: disable=too-many-instance-attributes
         Returns:
             The response.
         """
-        more = HomeMore(self.config_file, self.samples, self.chain)
+        more = HomeMore(self.config_file, self.samples, self.chain, self.safety)
         if (answer := await more_response(more, request)) is not None:
             return answer
         if request.path == INLINE_PATH:  # a short step run here (0505)

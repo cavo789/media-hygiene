@@ -3972,6 +3972,9 @@ msgstr ""
 msgid "Groups of identical files"
 msgstr ""
 
+msgid "Guest: the albums chosen for guests only"
+msgstr ""
+
 #, python-brace-format
 msgid "HTML report: {path}"
 msgstr ""
@@ -5536,6 +5539,11 @@ msgstr ""
 msgid "No album is named {name}."
 msgstr ""
 
+msgid ""
+"No album is shown to guests yet. On the PC, open an album and tick Show "
+"to guests."
+msgstr ""
+
 #, python-brace-format
 msgid "No album named {name}."
 msgstr ""
@@ -5843,6 +5851,11 @@ msgstr ""
 msgid ""
 "No phone seen: plug it in, unlock it, choose File transfer (iPhone: Trust"
 " this computer), then type mh import --phone again."
+msgstr ""
+
+msgid ""
+"No phone waits here: choose Make room on the phone on the home page, or "
+"type mh import --phone --free."
 msgstr ""
 
 msgid "No photo folder to copy into: only backup folders are mounted."
@@ -7713,6 +7726,9 @@ msgstr ""
 msgid "Reading the index"
 msgstr ""
 
+msgid "Reading the journals and the quarantine…"
+msgstr ""
+
 msgid "Reading the latest classify plan…"
 msgstr ""
 
@@ -8909,6 +8925,9 @@ msgstr ""
 msgid "Show this message and exit."
 msgstr ""
 
+msgid "Show to guests"
+msgstr ""
+
 msgid "Show your photos on the TV"
 msgstr ""
 
@@ -9526,6 +9545,9 @@ msgstr ""
 msgid "The albums cannot be read (error {status})."
 msgstr ""
 
+msgid "The albums chosen for you: look, nothing here can be changed."
+msgstr ""
+
 #, python-brace-format
 msgid "The archive folder {target} and {folder} are one inside the other."
 msgstr ""
@@ -10019,6 +10041,14 @@ msgid ""
 "its own."
 msgstr ""
 
+#, python-brace-format
+msgid "The guests' devices no longer show {name}."
+msgstr ""
+
+#, python-brace-format
+msgid "The guests' devices now show {name}."
+msgstr ""
+
 msgid "The guide"
 msgstr ""
 
@@ -10279,6 +10309,9 @@ msgstr ""
 msgid "The page cannot reach mh: is it still running?"
 msgstr ""
 
+msgid "The page could not tell mh what to delete: try again."
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "The page does not open? docker run must publish the same port on both "
@@ -10377,6 +10410,11 @@ msgid "The phone's name, as Windows shows it."
 msgstr ""
 
 msgid "The phone's remote: on a phone on the same Wi-Fi, open"
+msgstr ""
+
+msgid ""
+"The phones and tablets paired with the guests code see the albums ticked "
+"here, nothing else of the library"
 msgstr ""
 
 msgid "The photo, full screen"
@@ -11034,6 +11072,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "This build cannot search by meaning: {module} is not installed."
+msgstr ""
+
+msgid "This card could not be read now: reload the page to try again."
 msgstr ""
 
 msgid "This chain cannot be run from here: type the command in mh."
@@ -17900,6 +17941,9 @@ msgstr ""
 msgid "👉 What next: open Windows PowerShell and type:"
 msgstr ""
 
+msgid "👪 Family: the whole library"
+msgstr ""
+
 #, python-brace-format
 msgid "💡 On a phone of the home Wi-Fi too: {command}"
 msgstr ""
@@ -18148,6 +18192,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "🧪 Try on one month ({files} files)"
+msgstr ""
+
+msgid "🧳 Guest: the albums ticked Show to guests, nothing else"
 msgstr ""
 
 #, python-brace-format

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
     from media_hygiene.console.page_progress import PageProgress
     from media_hygiene.review.apply_api import ApplyStep
-    from media_hygiene.review.home_parts import HomeSample
+    from media_hygiene.review.home_parts import HomeFindings, HomeSample
     from media_hygiene.review.home_views import HomeState
     from media_hygiene.services.home_audit import AuditResult
     from media_hygiene.services.home_tags_models import TagsRunner
@@ -25,3 +25,4 @@ class HomeSources:
     apply: Callable[[], ApplyStep | None] | None = None  # browse's *Apply now* (0356)
     runs: Mapping[str, TagsRunner] = field(default_factory=dict)  # by path (0343)
     samples: Callable[[], tuple[HomeSample, ...]] | None = None  # random photos (0485)
+    safety: Callable[[], HomeFindings] | None = None  # the card, on its route (0692)

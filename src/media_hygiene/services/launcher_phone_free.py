@@ -15,6 +15,7 @@ from dataclasses import dataclass
 from typing import Final
 
 from media_hygiene.i18n import _
+from media_hygiene.review.step_files import PHONE_PAGE, WATCH
 from media_hygiene.services.launcher_phone_say import say
 from media_hygiene.services.phone_free import PROVEN
 from media_hygiene.services.phone_plan import PHONE_DONE, PHONE_PROVE, PHONE_REVIEW
@@ -68,6 +69,9 @@ class PhoneFreeCommand:  # pylint: disable=too-many-instance-attributes  # one p
     batch: int = BATCH_FILES
     speed: int = PHONE_MB_PER_SECOND
     gone: int = GONE_SECONDS
+    page: str = PHONE_PAGE  # served by the home server kept up (0694)
+    asked: str = WATCH.phone_asked
+    ended: str = WATCH.phone_ended
 
 
 def phone_free_command() -> PhoneFreeCommand:

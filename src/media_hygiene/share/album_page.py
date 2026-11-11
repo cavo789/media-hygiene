@@ -40,6 +40,7 @@ if TYPE_CHECKING:
     from media_hygiene.review.http import Request
     from media_hygiene.share.album_api import AlbumDesk
     from media_hygiene.share.album_folder_door import AlbumFolderDoor
+    from media_hygiene.share.album_guest_door import AlbumGuestDoor
     from media_hygiene.share.album_link_door import AlbumLinkDoor
     from media_hygiene.share.album_shelf import AlbumShelf, Keyed, Shown
 
@@ -73,6 +74,7 @@ class AlbumParts:  # pylint: disable=too-many-instance-attributes  # one per doo
     links: AlbumLinkDoor | None = None  # its 24 h links, under `mh --lan` (0462)
     folder: AlbumFolderDoor | None = None  # the albums' folder, the PC's (0625)
     tv_paired: Callable[[], bool] = field(default=lambda: False)  # 0523
+    guests: AlbumGuestDoor | None = None  # a guest device's door (0684)
 
 
 @dataclass(frozen=True, slots=True)

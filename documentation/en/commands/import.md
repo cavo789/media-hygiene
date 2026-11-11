@@ -213,8 +213,10 @@ as [the folders of `library`](library.md#walk-through-your-folders):
   unticks the file shown**, F full screen, Esc closes. It shows the PC's copy; *Open the
   original* opens it untouched.
 - **📚 Album ▾** in the bar adds the PC's copies of the files picked to an album (a file the
-  index does not know yet is left out: run an audit first). No slideshow from this page: it has
-  its own server; show the album afterwards from the home page.
+  index does not know yet is left out: run an audit first). Started from the home page, the page
+  is served by the home page itself: **▶ Slideshow ▾** shows the files picked *On this PC* or *On
+  the TV*, and **✅ Apply** appears when other pages set files aside. Typed in a console, the page
+  has its own server: no slideshow there.
 - There is no Delete key here: the only deletion is the red button. The keys are listed at the
   bottom left (⌨ **Keyboard**, then *More keys*).
 
@@ -226,7 +228,9 @@ it ends the page in the same way, nothing deleted, and the home page comes back 
 after *Delete*, the tab says to switch to the PowerShell window and counts the minutes gone by
 against the estimate (*2 min gone by, of about 4*), then shows the home page by itself once `mh`
 brings it back, even when `mh.ps1` was written by an older image; typed in a console, it says that
-the PowerShell window tells when it is done. If the page stopped meanwhile (ended in another tab,
+the PowerShell window tells when it is done. Started from the home page while it stays open (no
+second server), the tab opens the page by itself, and goes back to the home page after *Delete*
+or *Leave*: its ⏳ chip follows the deletion in the window of `mh`. If the page stopped meanwhile (ended in another tab,
 the window of `mh` closed), a tick says so plainly — *The page is not running any more* — and the red
 button is refused: nothing more is saved there. Then, for each file ticked:
 

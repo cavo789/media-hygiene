@@ -15,6 +15,7 @@ from media_hygiene.cli.menu_entry import Doc
 from media_hygiene.docs.served import served_url
 from media_hygiene.review.doors import LAN_CA_PORT
 from media_hygiene.review.lan_ca_page import PHONE_STEPS
+from media_hygiene.review.lan_guest import guest_pair_url, guest_shown
 from media_hygiene.review.lan_phones_api import (
     FORGET_ALL_PATH,
     FORGET_PATH,
@@ -48,16 +49,17 @@ def lan_response(lan: LanAccess, *, phones: bool = False, tv: bool = False) -> R
         tv: The slideshow's: under HTTPS, the TV's address on the plain door.
 
     Returns:
-        JSON: `url`, `code`, `qr` (an SVG drawing of the pairing address), under
+        JSON: `url`, `code`, `qr` (an SVG drawing of the pairing address), but
+        for the TV `guest` (its `code` and `qr`, 0684), under
         HTTPS `ca`: where a phone installs the PC's authority first (0430), and with
         `phones`, the paths `phones`, `forget`, `rename` and `forgetAll` (0431,
         0683); with `tv` under HTTPS, `tv`.
     """
-    qr = segno.make(lan.pair_url, error="m").svg_inline(
-        scale=_QR_SCALE, border=_QR_BORDER, dark="#000", light="#fff"
-    )
     url = f"{lan.origin}{PAGE_PATH}"
-    card: dict[str, object] = {"url": url, "code": lan.shown_code, "qr": qr}
+    card: dict[str, object] = {"url": url, "code": lan.shown_code}
+    card["qr"] = _qr(lan.pair_url)
+    if not tv:  # the guests' code: the albums chosen for guests only (0684)
+        card["guest"] = {"code": guest_shown(lan), "qr": _qr(guest_pair_url(lan))}
     if lan.secure:
         plain = f"http://{lan.address}:{LAN_CA_PORT}"
         card["ca"] = f"{plain}{PHONE_STEPS if tv else '/'}"
@@ -68,3 +70,17 @@ def lan_response(lan: LanAccess, *, phones: bool = False, tv: bool = False) -> R
         card |= {"phones": PHONES_PATH, "forget": FORGET_PATH}
         card |= {"rename": RENAME_PATH, "forgetAll": FORGET_ALL_PATH}  # 0683
     return json_response(HTTPStatus.OK, card)
+
+
+def _qr(url: str) -> str:
+    """Draw an address as a QR code.
+
+    Args:
+        url: The pairing address.
+
+    Returns:
+        An inline SVG.
+    """
+    return segno.make(url, error="m").svg_inline(
+        scale=_QR_SCALE, border=_QR_BORDER, dark="#000", light="#fff"
+    )
