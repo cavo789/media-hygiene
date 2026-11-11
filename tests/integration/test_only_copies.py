@@ -13,6 +13,7 @@ from media_hygiene.actions.journal import journal_file
 from media_hygiene.actions.runs import list_run_ids
 from media_hygiene.console.output import Output
 from media_hygiene.services.only_copies import only_copies
+from media_hygiene.services.only_count import only_count
 from tests.support.cli import run
 
 if TYPE_CHECKING:
@@ -40,6 +41,19 @@ def _only(locations: Locations) -> list[str]:
     return sorted(file.name for file in found.files)
 
 
+def _counted(locations: Locations) -> int | None:
+    """The home page's count of the only copies, from the index.
+
+    Args:
+        locations: The mount points.
+
+    Returns:
+        It.
+    """
+    runs = list_run_ids(locations.journal_dir)
+    return only_count(locations.index_file, locations.journal_dir, runs)
+
+
 def test_exact_copies_are_covered(cli: CliRunner, locations: Locations) -> None:
     """A plain clean sets aside exact copies only: none is an only copy."""
     assert run(cli, "clean", "--yes").exit_code == 0
@@ -47,6 +61,7 @@ def test_exact_copies_are_covered(cli: CliRunner, locations: Locations) -> None:
     only = _only(locations)
     assert "IMG_0001_interrupted.jpg" in only  # unreadable: set aside, no twin
     assert len(only) < len(set_aside)  # the exact copies are covered
+    assert _counted(locations) == len(only)  # the home page's count agrees
 
 
 def test_near_duplicates_are_only_copies(cli: CliRunner, locations: Locations) -> None:
@@ -55,6 +70,7 @@ def test_near_duplicates_are_only_copies(cli: CliRunner, locations: Locations) -
     only = _only(locations)
     assert WHATSAPP in only
     assert EMAIL in only
+    assert _counted(locations) == len(only)
 
 
 def test_a_keeper_gone_uncovers_its_copy(cli: CliRunner, locations: Locations) -> None:
@@ -66,8 +82,13 @@ def test_a_keeper_gone_uncovers_its_copy(cli: CliRunner, locations: Locations) -
         for line in journal_file(locations.journal_dir, run_id).read_text().splitlines()
         if '"keeper":"' in line
     )
+    before = _counted(locations)
     Path(keeper).unlink()
     assert len(_only(locations)) >= 1
+    # The home page trusts the index until the next audit; `purge` asks the disk.
+    assert _counted(locations) == before
+    assert run(cli, "audit").exit_code == 0
+    assert _counted(locations) == len(_only(locations))
 
 
 def test_a_run_without_journal_counts_every_file(

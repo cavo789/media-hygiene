@@ -15,17 +15,17 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.actions.journal import journal_file
 from media_hygiene.index.safety_counts import RereadCounts, newer_than, reread_counts
 from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.services.only_copies import only_copies
-from media_hygiene.services.quarantines import held_back, mounted_quarantines
+from media_hygiene.services.only_count import only_count
+from media_hygiene.services.quarantines import held_back
 from media_hygiene.services.safety_records import (
     LastBackup,
     LastPush,
     last_backup,
-    last_push,
 )
 
 if TYPE_CHECKING:
     from media_hygiene.services.runtime import Runtime
+    from media_hygiene.services.status import Status
     from media_hygiene.services.status_parts import QuarantineState
 
 # A push or a backup older than this is said amber. Constants, not settings: a month
@@ -58,24 +58,24 @@ class SafetyFacts:  # pylint: disable=too-many-instance-attributes
     reread: RereadCounts | None
 
 
-def read_safety(runtime: Runtime, quarantine: QuarantineState) -> SafetyFacts:
+def read_safety(runtime: Runtime, status: Status) -> SafetyFacts:
     """Read every fact of the card.
 
     Args:
         runtime: Settings and mount points.
-        quarantine: The quarantine as `status` measured it.
+        status: What `status` read: its quarantine and newest push are reused.
 
     Returns:
         The facts.
     """
     journal_dir = runtime.locations.journal_dir
     journal = runtime.persistent(MountKind.JOURNAL)
-    push = last_push(journal_dir) if journal else None
+    push = status.push if journal else None
+    quarantine = status.quarantine
     index = (
         runtime.locations.index_file if runtime.persistent(MountKind.CACHE) else None
     )
     runs = [run.run_id for run in quarantine.runs]
-    folders = mounted_quarantines(runtime).folders
     return SafetyFacts(
         now=datetime.now().astimezone(),
         push=push,
@@ -89,6 +89,6 @@ def read_safety(runtime: Runtime, quarantine: QuarantineState) -> SafetyFacts:
             tuple(sorted(set(held_back(runtime, runs).values()))) if journal else (),
         ),
         quarantine=quarantine,
-        only=len(only_copies(folders, journal_dir, runs).files) if journal else None,
+        only=only_count(index, journal_dir, runs) if journal else None,
         reread=reread_counts(index),
     )

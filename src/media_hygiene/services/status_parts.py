@@ -16,7 +16,7 @@ from media_hygiene.review.place import DEFAULT_DECISIONS
 from media_hygiene.services.quarantine_ledger import journal_census
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Mapping, Sequence
     from pathlib import Path
 
     from media_hygiene.actions.runs import RunSummary
@@ -57,34 +57,47 @@ class QuarantineState:
         return sum(run.size for run in self.runs)
 
 
-def quarantine_state(quarantines: Sequence[Path], journal_dir: Path) -> QuarantineState:
+def quarantine_state(
+    quarantines: Sequence[Path],
+    journal_dir: Path,
+    held: Mapping[str, tuple[int, int]] | None = None,
+) -> QuarantineState:
     """Measure the quarantine of every run, in every quarantine.
 
     Args:
         quarantines: The default quarantine and the per-drive ones.
         journal_dir: Journal mount point: each run's files counted from it (0277).
+        held: The counts the facts kept already hold (`run_book`), by run: those
+            journals are not read again.
 
     Returns:
         The runs that still hold files.
     """
-    runs = (_measure(quarantines, journal_dir, run) for run in runs_in(quarantines))
+    kept = held or {}
+    runs = (
+        _measure(
+            quarantines,
+            run,
+            kept[run] if run in kept else journal_census(journal_dir, run),
+        )
+        for run in runs_in(quarantines)
+    )
     return QuarantineState(tuple(run for run in runs if run.files))
 
 
 def _measure(
-    quarantines: Sequence[Path], journal_dir: Path, run_id: str
+    quarantines: Sequence[Path], run_id: str, known: tuple[int, int] | None
 ) -> QuarantinedRun:
     """Count and measure the quarantine of one run: from its journal, else on disk.
 
     Args:
         quarantines: The default quarantine and the per-drive ones.
-        journal_dir: Journal mount point.
         run_id: The run.
+        known: Its files and bytes from its journal; None: walk its folders.
 
     Returns:
         Its files, size and start.
     """
-    known = journal_census(journal_dir, run_id)
     census = (
         [known]
         if known is not None

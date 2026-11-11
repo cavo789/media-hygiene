@@ -54,7 +54,9 @@ Sous le titre *Où vous en êtes* :
 
 - **le dernier audit ou nettoyage** : quand, et ce qu'il a trouvé ;
 - **la quarantaine** : combien de fichiers, quelle place, depuis quand ;
-- **les exécutions que `undo` peut encore restaurer**, avec la commande `undo` complète ;
+- **les exécutions que `undo` peut encore restaurer**, avec la commande `undo` complète : celles
+  des 7 derniers jours, et toujours la plus récente ([`history`](history.md) liste les plus
+  anciennes) ;
 - **les rafales encore à voir** et les décisions de `review` pas encore appliquées ;
 - **la dernière proposition de `classify`**, et si `sort` l'a appliquée ;
 - **où en est le tri, lu dans l'arborescence elle-même**

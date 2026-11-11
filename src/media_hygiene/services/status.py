@@ -13,14 +13,15 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.kinds import Phase
-from media_hygiene.actions.runs import RunSummary, list_run_ids, summarize
-from media_hygiene.actions.undoable import can_undo
 from media_hygiene.index.face_coverage import face_coverage
 from media_hygiene.index.tag_rows import tag_coverage
 from media_hygiene.index.walks import last_walk
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.report.index_page import load_summaries
 from media_hygiene.services.quarantines import mounted_quarantines
+from media_hygiene.services.run_book import Runs, book_of, read_runs
+from media_hygiene.services.run_facts import acted_on
+from media_hygiene.services.safety_records import LastPush, last_push
 from media_hygiene.services.sort_disk import DiskProgress, disk_progress
 from media_hygiene.services.status_parts import (
     QuarantineState,
@@ -32,6 +33,7 @@ from media_hygiene.services.status_parts import (
 )
 
 if TYPE_CHECKING:
+    from media_hygiene.actions.runs import RunSummary
     from media_hygiene.report.summary import ReportSummary
     from media_hygiene.services.runtime import Runtime
 
@@ -80,6 +82,7 @@ class Status:  # pylint: disable=too-many-instance-attributes
     faces: tuple[int, int] | None = None
     imported: str | None = None  # the newest `import` run (0265)
     backed_up: datetime | None = None  # when the newest `mh push` ran (0264)
+    push: LastPush | None = None  # that run: complete, and where (0689)
     disk: DiskProgress | None = None  # what the tree says of the sorting (0405)
 
     @property
@@ -114,27 +117,23 @@ def read_status(runtime: Runtime) -> Status:
         if MountKind.REPORTS in mounted and locations.reports_dir.is_dir()
         else []
     )
-    runs = (
-        tuple(
-            summarize(locations.journal_dir, run)
-            for run in list_run_ids(locations.journal_dir)
-        )
+    book = (
+        read_runs(book_of(runtime), datetime.now().astimezone())
         if MountKind.JOURNAL in mounted
-        else ()
+        else Runs((), ())
     )
+    runs = tuple(facts.summary for facts in book.facts)
     reports = MountKind.REPORTS in mounted
     return Status(
         analysis=LastAnalysis(
             summaries[0] if summaries else None,
             last_walk(runtime.index_file),
         ),
-        undoable=tuple(
-            run
-            for run in runs
-            if _undoable(run) and can_undo(locations.journal_dir, run.run_id)
-        ),
+        undoable=book.undoable,
         quarantine=quarantine_state(
-            mounted_quarantines(runtime).folders, locations.journal_dir
+            mounted_quarantines(runtime).folders,
+            locations.journal_dir,
+            {facts.run_id: facts.held for facts in book.facts},
         )
         if MountKind.QUARANTINE in mounted
         else QuarantineState(()),
@@ -151,6 +150,7 @@ def read_status(runtime: Runtime) -> Status:
         imported=next((r.run_id for r in runs if r.kind is Phase.IMPORT), None),
         backed_up=_started(next((r.run_id for r in runs if r.kind is Phase.PUSH), "")),
         disk=disk_progress(runtime),
+        push=last_push(book.facts),
     )
 
 
@@ -168,20 +168,6 @@ def _started(run_id: str) -> datetime | None:
     return datetime.strptime(run_id[:_STAMP_LENGTH], _STAMP).astimezone()
 
 
-def _undoable(run: RunSummary) -> bool:
-    """Tell whether a run changed files that `undo` did not put back yet.
-
-    Args:
-        run: A run of the journal.
-
-    Returns:
-        True when more files were acted on than restored.
-    """
-    acted = run.deleted + run.quarantined + run.moved + run.linked
-    acted += run.kept.written
-    return acted > run.restored
-
-
 def _last_sort(runs: tuple[RunSummary, ...]) -> RunSummary | None:
     """The newest sort run, not undone.
 
@@ -192,6 +178,6 @@ def _last_sort(runs: tuple[RunSummary, ...]) -> RunSummary | None:
         It, or None.
     """
     return next(
-        (run for run in runs if run.kind is Phase.SORT and _undoable(run)),
+        (run for run in runs if run.kind is Phase.SORT and acted_on(run)),
         None,
     )

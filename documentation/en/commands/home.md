@@ -103,7 +103,7 @@ docker run --rm -it `
   it risks (🔒 *Photos untouched*, ↩️ *Undoable*, ⚠️ *For good*), *Optional*, *Windows*, *Local
   AI* (🤖), *Planned*; **Done** when the tool's folders prove it; when it cannot run yet, why
   instead of its text (*Nothing to undo yet.*). *History and undo* shows the run still undoable
-  and the quarantine run by run; *Settings* your folders, the update, Windows, the local AI,
+  (of the last 7 days, or the newest one) and the quarantine run by run; *Settings* your folders, the update, Windows, the local AI,
   privacy, the advanced actions and *About*.
 - **What the page already shows stays in the console**: your folders (each found or not, the
   quarantine of each drive) are in *Your folders* of the sidebar, on every page that wears it,

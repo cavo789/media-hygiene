@@ -110,8 +110,8 @@ docker run --rm -it `
   Chaque action dit ce qu'elle risque (🔒 *Photos intactes*, ↩️ *Annulable*, ⚠️ *Définitif*),
   *Facultatif*, *Windows*, *IA locale* (🤖), *Prévu* ; **Fait** quand les dossiers de l'outil le
   prouvent ; quand elle ne peut pas encore tourner, pourquoi à la place de son texte (*Rien à
-  annuler pour l'instant.*). *Historique et annulation* montre l'exécution encore annulable et
-  la quarantaine par exécution ; *Réglages* vos dossiers, la mise à jour, Windows, l'IA locale,
+  annuler pour l'instant.*). *Historique et annulation* montre l'exécution encore annulable (des
+  7 derniers jours, ou la plus récente) et la quarantaine par exécution ; *Réglages* vos dossiers, la mise à jour, Windows, l'IA locale,
   la vie privée, les actions avancées et *À propos*.
 - **Ce que la page montre déjà reste dans la console** : vos dossiers (chacun trouvé ou non, la
   quarantaine de chaque disque) sont dans *Vos dossiers* de la barre latérale, sur chaque page

@@ -17,7 +17,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from media_hygiene.actions.journal import done_states, journal_file, read_journal
+from media_hygiene.actions.journal import done_states, journal_file
+from media_hygiene.actions.journal_cache import read_journal_once
 from media_hygiene.actions.kinds import ActionKind, Phase
 from media_hygiene.actions.purge import run_folders
 from media_hygiene.actions.quarantine import QUARANTINED
@@ -76,18 +77,33 @@ def _of_run(quarantines: Sequence[Path], journal_dir: Path, run: str) -> list[Pa
         The files of its quarantine with no kept twin on the disk.
     """
     try:
-        entries = read_journal(journal_file(journal_dir, run))
+        entries = read_journal_once(journal_file(journal_dir, run))
     except JournalError, OSError:
         folders = run_folders(quarantines, run)
         return sorted(p for f in folders for p in f.rglob("*") if p.is_file())
-    put_back = {entry.seq for entry in done_states(entries, Phase.UNDO)}
     return [
         Path(entry.quarantine)
+        for entry in set_aside(entries)
+        if entry.quarantine is not None and not _covered(entry)
+    ]
+
+
+def set_aside(entries: list[JournalEntry]) -> list[JournalEntry]:
+    """The files a run set aside that undo did not put back.
+
+    Args:
+        entries: The run's journal entries.
+
+    Returns:
+        Their entries, with where each one is in the quarantine.
+    """
+    put_back = {entry.seq for entry in done_states(entries, Phase.UNDO)}
+    return [
+        entry
         for entry in done_states(entries, run_phase(entries))
         if entry.action in QUARANTINED
         and entry.seq not in put_back
         and entry.quarantine is not None
-        and not _covered(entry)
     ]
 
 

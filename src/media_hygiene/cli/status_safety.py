@@ -37,7 +37,7 @@ def safety_of(runtime: Runtime, status: Status) -> tuple[SafetyLine, ...]:
     Returns:
         The lines.
     """
-    facts = read_safety(runtime, status.quarantine)
+    facts = read_safety(runtime, status)
     return safety_card(facts, runtime.settings.clean.purge_hint_days)
 
 

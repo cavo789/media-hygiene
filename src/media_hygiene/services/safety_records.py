@@ -2,9 +2,10 @@ r"""Where the last push and the last backup are read from (0689).
 
 `mh push` journals its renames and copies in `/journal` (`push_journal`): the newest
 push run, whether it ended (nothing left `pending`) and the Windows path of its target
-are read from there. `mh backup` writes to `/backups`, mounted for that command only:
-it leaves a note in `/cache` (`BACKUP_NOTE`) with the archive's Windows path, so the
-home page can tell when it ran and whether the archive is off this PC.
+are read from there, through the facts `run_book` keeps. `mh backup` writes to
+`/backups`, mounted for that command only: it leaves a note in `/cache`
+(`BACKUP_NOTE`) with the archive's Windows path, so the home page can tell when it
+ran and whether the archive is off this PC.
 """
 
 from __future__ import annotations
@@ -15,16 +16,14 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING, Final
 
-from media_hygiene.actions.journal import journal_file, latest_states, read_journal
-from media_hygiene.actions.kinds import Phase, Status
 from media_hygiene.actions.run_stamps import run_started
-from media_hygiene.actions.runs import list_run_ids
-from media_hygiene.errors import JournalError
 from media_hygiene.paths.mount_kind import MountKind
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from pathlib import Path
 
+    from media_hygiene.services.run_facts import RunFacts
     from media_hygiene.services.runtime import Runtime
 
 BACKUP_NOTE: Final = "backup-made.json"
@@ -70,29 +69,20 @@ def off_pc(host: str | None) -> bool | None:
     return drive.group(1).lower() != _SYSTEM_DRIVE
 
 
-def last_push(journal_dir: Path) -> LastPush | None:
+def last_push(runs: Sequence[RunFacts]) -> LastPush | None:
     """Find the newest push run of the journal.
 
     Args:
-        journal_dir: Journal mount point.
+        runs: Every run's facts, newest first (`run_book`).
 
     Returns:
         It; None when `mh push` never left a journal.
     """
-    for run_id in list_run_ids(journal_dir):
-        try:
-            entries = read_journal(journal_file(journal_dir, run_id))
-        except JournalError, OSError:
-            continue
-        pushed = [entry for entry in entries if entry.phase is Phase.PUSH]
-        if not pushed:
-            continue
-        latest = latest_states(entries, Phase.PUSH).values()
-        return LastPush(
-            run_started(run_id),
-            all(entry.status is Status.DONE for entry in latest),
-            next((entry.host_path for entry in pushed if entry.host_path), None),
-        )
+    for facts in runs:
+        if facts.push is not None:
+            return LastPush(
+                run_started(facts.run_id), facts.push.complete, facts.push.host
+            )
     return None
 
 

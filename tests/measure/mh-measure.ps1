@@ -148,6 +148,9 @@
 #  43. the hand-over of a page step (0583): a page on 8088 ends, the next page started at once
 #  44. back to the home page (0442): /api/state of your real mh timed from the PC, then the phone by stopwatch
 #  45. the pages of 0590-0594 on Windows: import --pick on a folder, then the quarantine in one click, by hand
+#  46. the start of mh from its Desktop icon, piece by piece: PowerShell with and without your profile,
+#      mh.ps1 loaded, one docker call, Start-Job, Invoke-WebRequest on a closed port, docker run --help,
+#      then a home page container until its port answers (polled every 100 ms)
 #      (as before) or once Docker removed the first container (after): seconds to bind
 #
 # The test folder is a copy of a few photos of C:\Photos, made under -Work and removed at the
@@ -3584,6 +3587,38 @@ if (Wanted 45) {
     Write-Host "45 : puis mh, page d'accueil, Historique, Liberer la place : cliquez Les voir d'abord."
     $oneClick = Read-Host "La quarantaine s'ouvre sans redemarrage ni fenetre de console ? (o/n)"
     Log "   45b. purge, See them first, served without a restart: $oneClick"
+}
+
+# Read-only: times what runs between the double-click and the page (12 s by stopwatch, 2026-11-11).
+if (Wanted 46) {
+    Log ""
+    Log "== 46. the start of mh, piece by piece (seconds; best of 3 where repeated)"
+    $ps = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+    $best = { param($block) (@(1..3 | ForEach-Object { (Measure-Command $block).TotalSeconds }) | Measure-Object -Minimum).Minimum }
+    Log ("   46a. powershell.exe -NoProfile, empty: {0:N2}" -f (& $best { & $ps -NoProfile -Command 'exit' }))
+    Log ("   46b. powershell.exe with your profile, empty: {0:N2}" -f (& $best { & $ps -Command 'exit' }))
+    $real = Join-Path $mhHome "mh.ps1"
+    if (Test-Path -LiteralPath $real) {
+        Log ("   46c. your mh.ps1 dot-sourced: {0:N2}" -f (Measure-Command { . $real }).TotalSeconds)
+        MhRestore
+    } else { Log "   46c. no mh.ps1 in $mhHome" }
+    Log ("   46d. docker version: {0:N2}" -f (& $best { $null = docker version 2>$null }))
+    Log ("   46e. docker ps: {0:N2}" -f (& $best { $null = docker ps -q 2>$null }))
+    Log ("   46f. Start-Job, empty, until done: {0:N2}" -f (& $best { Start-Job -ScriptBlock { 1 } | Wait-Job | Remove-Job }))
+    Log ("   46g. Invoke-WebRequest, port closed, first call: {0:N2}" -f (Measure-Command { try { $null = Invoke-WebRequest -Uri 'http://127.0.0.1:9/' -UseBasicParsing -TimeoutSec 1 } catch { } }).TotalSeconds)
+    Log ("   46h. docker run --rm $Image --help: {0:N2}" -f (& $best { $null = docker run --rm $Image --help 2>$null }))
+    # A home page with no folder: the time until its port answers, as mh's browser job waits.
+    $name = "mh-measure-46"
+    $watch = [Diagnostics.Stopwatch]::StartNew()
+    $null = docker run -d --rm --name $name -p 127.0.0.1:8099:8088 $Image home 2>&1
+    $started = $watch.Elapsed.TotalSeconds
+    $answered = $null
+    while ($watch.Elapsed.TotalSeconds -lt 30) {
+        $tcp = New-Object Net.Sockets.TcpClient
+        try { $tcp.Connect('127.0.0.1', 8099); $answered = $watch.Elapsed.TotalSeconds; break } catch { Start-Sleep -Milliseconds 100 } finally { $tcp.Close() }
+    }
+    $null = docker stop $name 2>$null
+    Log ("   46i. docker run -d of home returned after {0:N2}; its port answered after {1}" -f $started, $(if ($answered) { "{0:N2}" -f $answered } else { "(never in 30 s)" }))
 }
 
 # --- clean up -------------------------------------------------------------------------------

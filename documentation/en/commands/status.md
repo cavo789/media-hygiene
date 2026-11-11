@@ -52,7 +52,8 @@ Under the title *Where you are*:
 
 - **the last audit or clean**: when, and what it found;
 - **the quarantine**: how many files, how much space, since when;
-- **the runs `undo` can still restore**, with the full `undo` command;
+- **the runs `undo` can still restore**, with the full `undo` command: those of the last 7
+  days, and the newest run always ([`history`](history.md) lists the older ones);
 - **the burst series still to see** and the decisions of `review` not applied yet;
 - **the last `classify` proposal**, and whether `sort` applied it;
 - **how far the sorting is, read from the tree itself**

@@ -20,6 +20,7 @@ from tests.support.home_states import (
     first_run,
     old_push,
 )
+from tests.support.indexed_photos import indexed_photos
 from tests.support.runtime import make_locations, make_runtime
 
 if TYPE_CHECKING:
@@ -58,6 +59,9 @@ def test_quarantine_counts_only_copies(tmp_path: Path) -> None:
     """A file set aside with no journal entry naming a twin is an only copy."""
     runtime = _runtime(tmp_path)
     after_clean(runtime)
+    index = runtime.index_file
+    assert index is not None
+    indexed_photos(index, tmp_path / "none", 0)  # the count reads the index
     line = safety_of(runtime, read_status(runtime))[4]
     assert "1 file exists nowhere else" in line.sub
     assert line.step == "purge"

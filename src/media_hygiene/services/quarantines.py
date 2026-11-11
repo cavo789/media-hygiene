@@ -11,10 +11,12 @@ another letter (0186, `drive_letter.py`).
 
 from __future__ import annotations
 
+import posixpath
 from collections import Counter
 from typing import TYPE_CHECKING
 
-from media_hygiene.actions.journal import journal_file, read_journal
+from media_hygiene.actions.journal import journal_file
+from media_hygiene.actions.journal_cache import read_journal_once
 from media_hygiene.actions.kinds import Status
 from media_hygiene.actions.quarantine import QUARANTINED
 from media_hygiene.actions.runs import RUN_ID_PATTERN
@@ -169,11 +171,18 @@ def _away(runtime: Runtime, quarantines: Quarantines, run_id: str) -> Counter[st
     path = journal_file(runtime.locations.journal_dir, run_id)
     if RUN_ID_PATTERN.fullmatch(run_id) is None or not path.is_file():
         return Counter()
-    drives = (  # a `pending` move may never have happened: it holds nothing back
-        quarantines.unplugged(entry.quarantine)
-        for entry in actions_to_undo(read_journal(path))
-        if entry.action in QUARANTINED
-        and entry.status is Status.DONE
-        and entry.quarantine
-    )
-    return Counter(drive for drive in drives if drive is not None)
+    # The drive depends on the folder only: asked once per folder, not per file.
+    by_folder: dict[str, str | None] = {}
+    drives = Counter[str]()
+    for entry in actions_to_undo(read_journal_once(path)):
+        # A `pending` move may never have happened: it holds nothing back.
+        if entry.action not in QUARANTINED or entry.status is not Status.DONE:
+            continue
+        if not entry.quarantine:
+            continue
+        folder = posixpath.dirname(entry.quarantine)
+        if folder not in by_folder:
+            by_folder[folder] = quarantines.unplugged(entry.quarantine)
+        if (drive := by_folder[folder]) is not None:
+            drives[drive] += 1
+    return drives
