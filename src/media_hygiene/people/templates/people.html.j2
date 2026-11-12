@@ -55,8 +55,12 @@
   "saving": _("Saving…"),
   "readOnly": _("Names cannot be saved: mount a writable folder on /config."),
   "alikeTitle": [ngettext("{n} other photo looks like the person you set aside on {date}", "{n} other photos look like the person you set aside on {date}", 1), ngettext("{n} other photo looks like the person you set aside on {date}", "{n} other photos look like the person you set aside on {date}", 2)],
-  "alikeHint": _("Shown for you to check, never set aside on their own: take out with × the faces of someone else, then set the others aside too."),
-  "alikeAside": [ngettext("Set this photo aside too", "Set these {n} photos aside too", 1), ngettext("Set this photo aside too", "Set these {n} photos aside too", 2)],
+  "alikeHint": _("Shown for you to check, never removed on their own. × : not this person, remembered. Removed means moved to the quarantine at the next clean; undo brings the photos back."),
+  "alikeAside": [ngettext("Remove this photo too (quarantine, undo possible)", "Remove these {n} photos too (quarantine, undo possible)", 1), ngettext("Remove this photo too (quarantine, undo possible)", "Remove these {n} photos too (quarantine, undo possible)", 2)],
+  "alikeNot": [ngettext("Not them: ignore this face", "Not them: ignore these {n} faces", 1), ngettext("Not them: ignore this face", "Not them: ignore these {n} faces", 2)],
+  "alikeNotOne": _("Not this person: never shown for them again"),
+  "alikeAgain": _("Show this face for this person again"),
+  "alikeIgnored": [ngettext("{n} face ignored for the person set aside on {date}", "{n} faces ignored for the person set aside on {date}", 1), ngettext("{n} face ignored for the person set aside on {date}", "{n} faces ignored for the person set aside on {date}", 2)],
   "remembered": _("Their face is remembered: the photos that look like them will be shown at the top of this page, to check."),
   "photoAside": _("Set this photo aside (Delete)"),
   "photoBack": _("Take this photo back (Backspace)"),
@@ -71,6 +75,20 @@
   "toConfirm": _("{n} to confirm"),
   "unnamedEntry": _("Unnamed groups ({n})"),
   "itIs": _("It is {name}? ({score})"),
+  "sideHide": _("◀ Hide the panel"),
+  "sideShow": _("▶ Show the panel"),
+  "pathHint": _("A person's name is in this photo's folder or file name: a hint only, nothing is named from it"),
+  "pathPickOwn": [ngettext("📁 Show the face whose folder or file names {name}", "📁 Show the {n} faces whose folder or file names {name}", 1), ngettext("📁 Show the face whose folder or file names {name}", "📁 Show the {n} faces whose folder or file names {name}", 2)],
+  "pathPickOwnHint": _("Shows only these faces, among those shown, picked: check them, then confirm them as this person"),
+  "pathAll": _("✕ Show all the faces"),
+  "pathPickOwnAll": _("📁 Show the faces of this group whose folder or file names {name}"),
+  "pathPickAll": _("📁 Show the faces of this group whose folder or file names {name}: not {section}?"),
+  "pathConfirm": [ngettext("✓ Yes, this face is {name}", "✓ Yes, these {n} faces are {name}", 1), ngettext("✓ Yes, this face is {name}", "✓ Yes, these {n} faces are {name}", 2)],
+  "pathPick": [ngettext("📁 Show the face whose folder or file names {name}: not {section}?", "📁 Show the {n} faces whose folder or file names {name}: not {section}?", 1), ngettext("📁 Show the face whose folder or file names {name}: not {section}?", "📁 Show the {n} faces whose folder or file names {name}: not {section}?", 2)],
+  "pathPickHint": _("Shows only these faces, among those shown, picked, and types the name: check them, then Enter to save"),
+  "namerNot": [ngettext("Not {name}, this face is…", "Not {name}, these {n} faces are…", 1), ngettext("Not {name}, this face is…", "Not {name}, these {n} faces are…", 2)],
+  "namerIs": [ngettext("This face is…", "These {n} faces are…", 1), ngettext("This face is…", "These {n} faces are…", 2)],
+  "nameOne": _("Name this face only (Ctrl+click picks several, Shift+click a range)"),
   "suggestHint": _("This group looks like the faces you confirmed as this person's: a click names it so (y)."),
 } %}
 {% set page_name = _("People") %}
@@ -80,6 +98,7 @@
 {% include "combo_list.css.j2" %}
 {% include "pick_viewer.css.j2" %}
 {% include "people.css.j2" %}
+{% include "tile_view.css.j2" %}
 {% endblock %}
 {% block side %}
   <section id="toc" aria-label="{{ _('People') }}">
@@ -87,6 +106,8 @@
       <ul id="peopleList"></ul>
       <label><input id="onlyPerson" type="checkbox"> {{ _("Show only this person (Esc)") }}</label>
     </nav>
+    {# Someone in no group, or in someone else's (0714): from one photo, its faces. #}
+    <p><a id="personPage" href="/person" target="_blank" rel="noopener" title="{{ _("Paste the path of a photo: name each of its faces, then confirm that person's other photos") }}">👤 {{ _("Name someone from a photo") }}</a></p>
     <details>
       <summary>{{ _("How it works") }}</summary>
       <p class="muted">{{ _("Each group holds faces that look alike: probably one person. Type a name to save it in config.toml; the photos are never changed and the faces stay on this computer.") }}</p>
@@ -101,6 +122,7 @@
       <dt><kbd>Enter</kbd></dt><dd>{{ _("type a name for the section") }}</dd>
       <dt><kbd>y</kbd></dt><dd>{{ _("confirm the attributed faces shown, or name the group as the person it looks like") }}</dd>
       <dt>×</dt><dd>{{ _("a face of someone else: the next button of the section saves it") }}</dd>
+      <dt>{{ _("Ctrl+click") }}</dt><dd>{{ _("pick faces of the section to name them, Shift+click a range, drag a rectangle, Ctrl+A every face of the current section; ✎ this face only") }}</dd>
       <dt>{{ _("click") }}</dt><dd>{{ _("its photo large; Delete sets it aside, Esc closes") }}</dd>
 {% endblock %}
 {% block more_keys %}
@@ -119,6 +141,7 @@
   <input id="who" type="search" placeholder="{{ _('Go to a person (/)') }}" aria-label="{{ _('Go to a person (/)') }}">
   {% include "apply_now.html.j2" %}
   <span id="status" role="status" aria-live="polite"></span>
+  {% include "tile_view.html.j2" %}
   <p id="newPhotos" role="status" hidden><span id="newPhotosLine"></span> <button id="newPhotosStop" type="button" hidden>{{ _("Stop") }}</button> <button id="newPhotosShow" type="button" hidden>{{ _("Show the new groups") }}</button></p>
 {% endblock %}
 {% block content %}
@@ -137,9 +160,15 @@ const SECTION = {{ section_prefix | tojson }};
 const SAMPLE = {{ sample_prefix | tojson }};
 {% include "people.js.j2" %}
 {% include "people_sections.js.j2" %}
+{% include "people_name_face.js.j2" %}
+{% include "people_face_band.js.j2" %}
 {% include "people_viewer.js.j2" %}
 {% include "combo_list.js.j2" %}
 {% include "people_guide.js.j2" %}
+{% include "path_names.js.j2" %}
+{% include "people_path_names.js.j2" %}
+const TILE_VIEW_KEY = "mh-people-view";
+{% include "tile_view.js.j2" %}
 {% if new_photos %}{% include "people_new_photos.js.j2" %}{% endif %}
 load();
 </script>

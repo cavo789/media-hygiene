@@ -26,6 +26,7 @@ from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.acting import ensure_can_act
 from media_hygiene.services.emptied_folders import emptied_by
 from media_hygiene.services.former_copies import removed_copies
+from media_hygiene.services.journal_beside import copy_beside
 from media_hygiene.services.missing_mount import missing_mount, typed_again
 from media_hygiene.services.next_command import CHANGING, NextVerb
 from media_hygiene.services.quarantine_space import quarantine_route
@@ -129,18 +130,21 @@ class CleanService:
         locations.journal_dir.mkdir(parents=True, exist_ok=True)
         run_id = new_run_id(locations.journal_dir)
         journal_path = journal_file(locations.journal_dir, run_id)
-        with JournalWriter.open(journal_path) as journal:
-            context = CleanContext(
-                journal=journal,
-                mapper=self._runtime.mapper,
-                quarantine_run_dir=locations.quarantine_dir / run_id,
-                progress=self._progress,
-                delete_copies=plan.delete_copies,
-                workers=self._runtime.settings.clean.workers,
-                route=quarantine_route(self._runtime),
-            )
-            folders = emptied_by(self._runtime, plan)  # removed last (0202)
-            outcome = CleanExecutor(context, folders).run(plan)
+        try:
+            with JournalWriter.open(journal_path) as journal:
+                context = CleanContext(
+                    journal=journal,
+                    mapper=self._runtime.mapper,
+                    quarantine_run_dir=locations.quarantine_dir / run_id,
+                    progress=self._progress,
+                    delete_copies=plan.delete_copies,
+                    workers=self._runtime.settings.clean.workers,
+                    route=quarantine_route(self._runtime),
+                )
+                folders = emptied_by(self._runtime, plan)  # removed last (0202)
+                outcome = CleanExecutor(context, folders).run(plan)
+        finally:  # stopped half-way too: what it set aside is in the copy (0697)
+            copy_beside(self._runtime, run_id)
         self._forget_removed(journal_path, run_id)
         forget_answered(self._runtime.index_file, plan)
         return run_id, outcome

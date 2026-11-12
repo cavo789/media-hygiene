@@ -1,0 +1,13 @@
+{# The view of a page of tiles (0714 follow-up, shared by `/person` and the people page: the
+   same features on pages of the same kind): the left panel hidden or shown, the size of the
+   tiles S/M/L/XL. `tile_view.js.j2` drives it; each page sizes its tiles from
+   `body[data-tile-size]` in its own CSS. #}
+<span id="view">
+  <button id="sideToggle" class="plain" type="button"></button>
+  <span id="sizes" role="group" aria-label="{{ _('Thumbnail size') }}">
+    <button class="plain" type="button" data-size="s" title="{{ _('Small') }}">S</button>
+    <button class="plain" type="button" data-size="m" title="{{ _('Medium') }}">M</button>
+    <button class="plain" type="button" data-size="l" title="{{ _('Large') }}">L</button>
+    <button class="plain" type="button" data-size="xl" title="{{ _('Very large: to tell small children apart') }}">XL</button>
+  </span>
+</span>

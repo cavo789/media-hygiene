@@ -57,7 +57,7 @@ in this order on every page — the one list `bar_menus` of `pick_bar.css.j2` se
 | # | Menu | Entries (letter) |
 |---|---|---|
 | 1 | *📂 Move ▾* (search: primary, it is `pick_first`) | to an event (E) · to their month (M) |
-| 2 | *📚 Album ▾* (+ ➕ once named) | add · take out · share on the TV · prepare for sending |
+| 2 | *📚 Album ▾* (+ ➕ once named) | add · take out · share on the TV · prepare for sending · search: *Album of the N found* (every file found, its count stated, 0695) |
 | 3 | *▶ Slideshow ▾* (0660) | on this PC (H) · on the TV (T) |
 | 4 | *🏷 Describe ▾* | tag (T) · date (D) · place (P) |
 | 5 | *🔀 Invert* | — |
@@ -134,7 +134,12 @@ opened from the home page.
   view; Backspace stays on the photo); no Space, no A, no 👤 (this is the
   page of people). A click opens the large view (no picking: × marks a face as someone
   else's, saved by the section's next button); ↑ ↓ / j k move between sections, x picks a
-  group to name with others — not the grid's gestures, on purpose.
+  group to name with others — not the grid's gestures, on purpose. Since 0712 Ctrl+click / Shift+click / ✎ pick faces of one section to
+  name them (`review/templates/people_name_face.js.j2`: `faceNamer`, `moveFaces`; a plain click still opens the view).
+- `/person` (0714): its 👤 is *Identify someone*; each face of the photo shows its name (✓ confirmed,
+  ≈ guessed, ? nobody) and opens the same `faceNamer`; *These are <name>: N* confirms the tiles
+  picked (count stated, faces confirmed as someone else left out); each tile shows the face that
+  matched and a × "not <name>" (`person_names.js.j2`). The grid's gestures are unchanged.
 - A key that does not apply (no album on a page): leave it out of the panel and of `?`, never give
   it another meaning.
 - A new gesture or key: add it to the shared templates, so every page gets it, and to this table.
@@ -157,3 +162,10 @@ opened from the home page.
    pages without tiles that record a choice `clean --decisions` applies (`review --intruders`,
    `review --gone`); `tests/unit/test_apply_on_every_review.py` checks every review (0511).
 5. When filing a TODO for a page of tiles, name this skill and the gestures it must offer.
+
+## The view of a page of tiles
+
+S/M/L/XL and *◀ Hide the panel* are `review/templates/tile_view.{html,css,js}.j2`: one
+markup, one script, a `TILE_VIEW_KEY` per page; the page sizes its tiles from
+`body[data-tile-size]` in its own CSS. `/person` and the people page use it; a tile page
+without it is a bug (same features on pages of the same kind).

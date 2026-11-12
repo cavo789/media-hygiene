@@ -19,6 +19,7 @@ from typing import TYPE_CHECKING, Final, Literal, Protocol
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from media_hygiene.errors import MediaHygieneError
+from media_hygiene.i18n import _, ngettext
 from media_hygiene.index.aside_faces import AsideFaces
 from media_hygiene.index.descriptions import PhotoVersion
 from media_hygiene.people.remembered import new_aside
@@ -68,7 +69,7 @@ class AsideAsked(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    action: Literal["add", "remove"]
+    action: Literal["add", "remove", "not", "again"]  # not: not that person (0713)
     faces: tuple[int, ...] = Field(min_length=1, max_length=_MAX_FACES)
     label: str = Field(default="", max_length=_LABEL_LENGTH)  # the group, as shown
     remember: bool = True  # False: one photo, its faces not someone's (TODO 0329)
@@ -127,6 +128,8 @@ class AsideDesk:
             OSError: It cannot be written.
         """
         faces = [face for key in asked.faces if (face := board.face(str(key)))]
+        if asked.action in {"not", "again"}:
+            return self._not_them(asked, tuple(face.embedding for face in faces))
         paths = {face.path for face in faces}
         self.ready()
         if asked.action == "remove":
@@ -145,6 +148,33 @@ class AsideDesk:
         person = AsideFaces(asked.into or new_aside(), asked.label.strip(), vectors)
         remembered = self.memory.remember(person)
         return {**said, "remembered": remembered, "person": person.aside}
+
+    def _not_them(
+        self, asked: AsideAsked, vectors: tuple[bytes, ...]
+    ) -> dict[str, object]:
+        """Keep faces as not the person `into`, or take that back, read back.
+
+        Args:
+            asked: What the page asks (`not` or `again`, `into` the person).
+            vectors: The faces' vectors.
+
+        Returns:
+            The sentence and how many faces that person has ignored now.
+
+        Raises:
+            MediaHygieneError: No persistent cache, no person, or the index refused.
+        """
+        if self.memory is None or not asked.into:
+            raise MediaHygieneError(_("no cache to remember this in"))
+        count = self.memory.not_them(asked.into, vectors, back=asked.action == "again")
+        if count < 0:
+            raise MediaHygieneError(_("the cache could not be written"))
+        message = ngettext(
+            "{n} face kept as not this person.",
+            "{n} faces kept as not this person.",
+            count,
+        ).format(n=count)
+        return {"message": message, "ignored": count}
 
 
 def _version(path: Path) -> PhotoVersion | None:

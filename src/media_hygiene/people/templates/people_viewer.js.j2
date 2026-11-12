@@ -12,7 +12,9 @@ viewerToggle.id = "viewerToggle";
 viewerToggle.type = "button";
 viewerToggle.hidden = true;
 $("viewerSaid").before(viewerToggle);
-$("personLink").remove(); // the people page is the place for a person; no `/person` here
+const viewerNamer = element("div", "stay");
+viewerNamer.id = "viewerNamer";
+viewerToggle.after(viewerNamer);
 $("movie").remove(); // a face is on a photo, never on a video
 
 function viewerOpen() {
@@ -31,9 +33,22 @@ function drawViewer() {
   $("viewerName").textContent = face.item.photo;
   $("originalLink").href = PHOTO + face.item.key + ".jpg";
   $("viewerInfo").textContent = face.item.photo;
+  $("personLink").hidden = !face.item.photo; // 👤 `/person` on this photo: every face of it, named or not
+  if (face.item.photo) $("personLink").href = "/person?path=" + encodeURIComponent(face.item.photo);
   $("viewerAside").hidden = !face.aside;
   viewerToggle.hidden = !state.can_aside;
   viewerToggle.textContent = face.aside ? TEXTS.photoBack : TEXTS.photoAside;
+  // "Not <name>, this face is… [combo]" (0712): saved, the view goes on with the next face.
+  const named = state.writable && !face.aside && face.source !== undefined;
+  viewerNamer.replaceChildren(...(named ? [faceNamer([face.item.key], face.source, () => viewerNamed(face))] : []));
+}
+
+// A face named from the large view leaves the faces it goes through.
+function viewerNamed(face) {
+  const at = viewing.list.indexOf(face);
+  if (at >= 0) viewing.list.splice(at, 1);
+  if (!viewing.list.length) { closeViewer(); return; }
+  viewerAt(Math.min(at, viewing.list.length - 1));
 }
 
 // Opening pushes a step of the history: Back closes the view, as Esc (0666).

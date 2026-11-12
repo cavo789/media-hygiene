@@ -21,7 +21,7 @@ from media_hygiene.services import people_models
 from media_hygiene.services.page_undo import PageUndo
 from media_hygiene.share.album_route import WithAlbums
 from tests.support.cli import run
-from tests.support.faces import face_of
+from tests.support.faces import FakeRecipe, face_of
 from tests.support.json_calls import JSON, answer, call
 from tests.support.pick_pages import PICK_PARTS
 from tests.support.runtime import make_runtime, thread_pool
@@ -199,6 +199,13 @@ def test_the_page_answers_on_the_loopback_only_and_from_any_page(
     for path in ("/person", "/person?path=C%3A%5Cx.jpg"):
         page = call(person, f"GET {path}")
         assert page.status is HTTPStatus.OK
+        # The naming combo reaches the page's script, not only the album bar's.
+        assert page.body.decode().count("function comboAttach(") == 2
+        assert 'id="confirmGuesses"' in page.body.decode()  # one click: the ≈ names
+        assert "function guessedName(" in page.body.decode()  # unnamed seed: its ≈ name
+        assert '<option value="todo" selected>' in page.body.decode()
+        assert 'data-size="xl"' in page.body.decode()  # tiles big enough for children
+        assert "function pathNames(" in page.body.decode()  # 📁 the names of the path
         for part in PICK_PARTS:  # the shared parts of a page of photos to pick
             assert page.body.decode().count(part) == 1, part
     far = Request("GET", "/person", {"host": "example.com"}, b"")
@@ -263,3 +270,140 @@ def test_each_photo_found_opens_the_page_again_on_itself(person: PersonApp) -> N
     assert "C:\\Family\\IMG_1.png" in {file["path"] for file in files}
     page = call(person, "GET /person").body.decode()
     assert '"/person?path=" + encodeURIComponent(file.path)' in page
+
+
+def _named(item: object) -> object:
+    """The name tag of a face or a tile."""
+    assert isinstance(item, dict)
+    return item["named"]
+
+
+def test_a_face_named_on_person_is_saved_read_back_and_shown_named(
+    person: PersonApp, locations: Locations
+) -> None:
+    """0714: "This is Juliette" → config.toml; the face then says ✓ Juliette."""
+    found = photo(person, "C:\\Holidays\\IMG_0.png")
+    assert found["writable"] is True
+    face = found["faces"][0]  # type: ignore[index]
+    assert _named(face) is None
+    body = {"action": "name", "name": "Juliette", "faces": [face["key"]]}
+    saved = answer(person, "POST /person/api/names", body)
+    assert "Juliette, 1 confirmed face" in str(saved["saved"])
+    assert saved["people"] == ["Juliette"]
+    assert "Juliette" in locations.config_file.read_text(encoding="utf-8") or any(
+        (locations.config_file.parent / "people").glob("*.toml")
+    )
+    again = photo(person, "C:\\Holidays\\IMG_0.png")["faces"][0]  # type: ignore[index]
+    assert _named(again) == {"name": "Juliette", "how": "confirmed", "not": []}
+
+
+def test_confirming_n_tiles_records_exactly_those_and_not_someone_elses(
+    person: PersonApp,
+) -> None:
+    """Two tiles confirmed: 3 faces; "not Ann" then drops a tile."""
+    key = photo(person, "C:\\Holidays\\IMG_0.png")["faces"][0]["key"]  # type: ignore[index]
+    answer(
+        person,
+        "POST /person/api/names",
+        {"action": "name", "name": "Ann", "faces": [key]},
+    )
+    files = answer(person, "POST /person/api/like", {"key": key})["files"]
+    assert isinstance(files, list)
+    two = [file["key"] for file in files[1:3]]
+    body = {"action": "name", "name": "Ann", "faces": two}
+    assert "Ann, 3 confirmed faces" in str(
+        answer(person, "POST /person/api/names", body)["saved"]
+    )
+    last = files[3]["key"]
+    body = {"action": "reject", "name": "Ann", "faces": [last]}
+    assert "is not Ann" in str(answer(person, "POST /person/api/names", body)["saved"])
+    after = answer(person, "POST /person/api/like", {"key": key})["files"]
+    assert isinstance(after, list)
+    assert last not in [file["key"] for file in after]
+    assert [_named(file)["how"] for file in after] == ["confirmed"] * 3  # type: ignore[index]
+
+
+def test_a_face_of_a_second_look_or_without_config_cannot_be_named(
+    person: PersonApp,
+) -> None:
+    """An unknown shelf number names no face: said, nothing written."""
+    body = {"action": "name", "name": "Ann", "faces": [999]}
+    assert "error" in answer(person, "POST /person/api/names", body)
+    assert call(person, "POST /person/api/names", {"action": "x"}).status is (
+        HTTPStatus.BAD_REQUEST
+    )
+
+
+def test_a_face_said_not_to_be_the_name_leaves_the_likeness_too(
+    person: PersonApp,
+) -> None:
+    """0714 step 6: the cross "not Ann" takes that face out of the mean too."""
+    key = photo(person, "C:\\Holidays\\IMG_0.png")["faces"][0]["key"]  # type: ignore[index]
+    every = len(person.finder.kept(str(key)))
+    answer(
+        person,
+        "POST /person/api/names",
+        {"action": "name", "name": "Ann", "faces": [key]},
+    )
+    files = answer(person, "POST /person/api/like", {"key": key})["files"]
+    assert isinstance(files, list)
+    body = {"action": "reject", "name": "Ann", "faces": [files[-1]["key"]]}
+    answer(person, "POST /person/api/names", body)
+    assert len(person.finder.kept(str(key))) == every - 1
+
+
+def test_the_large_view_and_the_people_page_lead_to_person(
+    person: PersonApp, doors: list[EndingDoor]
+) -> None:
+    """Who is on the photo (`#viewerWho`, asked when opened), the people page's link."""
+    page = call(person, "GET /person").body.decode()
+    assert 'id="viewerWho"' in page
+    assert "/person/api/photo" in page  # pick_who.js.j2: one request per photo opened
+    assert "&face=" in page
+    home = asyncio.run(doors[-1].handle(Request("GET", "/", JSON, b"")))
+    assert b'id="personPage" href="/person"' in home.body
+    assert b"function pathPickLine(" in home.body  # 📁 pick the faces a path names
+    assert b"TILE_VIEW_KEY" in home.body  # S M L XL and the panel, as on /person
+    assert b'personLink").remove()' not in home.body  # 👤 in its large view too
+
+
+def test_the_person_verb_refuses_a_path_that_is_not_a_photo(cli: CliRunner) -> None:
+    """`mh person` on a path outside the photo folders: said, exit 2, nothing served."""
+    result = run(cli, "person", "C:\\nowhere\\x.jpg")
+    assert result.exit_code == 2
+    assert "is not a photo" in result.output
+
+
+def test_a_face_drawn_by_hand_is_kept_searched_and_a_blank_box_writes_nothing(
+    person: PersonApp, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """0715: the photo to draw on; a box on a face → that person's photos."""
+    monkeypatch.setattr(people_models, "models_present", lambda _runtime: True)
+    monkeypatch.setattr(people_models, "face_recipe", lambda _runtime: FakeRecipe())
+    draw = "POST /person/api/draw"
+    picture = answer(person, draw, {"path": "C:\\Family\\IMG_9.png"})["picture"]
+    assert call(person, f"GET {picture}").status is HTTPStatus.OK
+    shown = int(
+        str(picture).partition("?")[0].rsplit("/", maxsplit=1)[-1].removesuffix(".jpg")
+    )
+    assert answer(person, "POST /person/api/like", {"key": shown})["files"] == []
+    blank = {"path": "C:\\Family\\IMG_9.png", "box": [0.1, 0.1, 0.8, 0.8]}
+    said = answer(person, draw, blank)
+    assert (said["faces"], "Too small or blurred" in str(said["said"])) == ([], True)
+    assert photo(person, "C:\\Family\\IMG_9.png")["faces"] == []  # nothing written
+    empty = {"path": "C:\\Family\\IMG_9.png", "box": [0.5, 0.5, 0.0, 0.0]}
+    assert answer(person, draw, empty)["faces"] == []
+    before = len(photo(person, "C:\\Holidays\\IMG_2.png")["faces"])  # type: ignore[arg-type]
+    box = {"path": "C:\\Holidays\\IMG_2.png", "box": [0.2, 0.2, 0.6, 0.6]}
+    kept = answer(person, draw, box)
+    assert kept.get("drawn") is True, kept
+    key = kept["faces"][0]["key"]  # type: ignore[index]
+    assert len(photo(person, "C:\\Holidays\\IMG_2.png")["faces"]) == before + 1  # type: ignore[arg-type]
+    liked = answer(person, "POST /person/api/like", {"key": key})
+    assert names(liked["files"])[0] == "IMG_2.png"
+    assert sorted(names(liked["files"])) == [
+        "IMG_0.png",
+        "IMG_1.png",
+        "IMG_2.png",
+        "IMG_3.png",
+    ]

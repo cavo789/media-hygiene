@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict
 
 from media_hygiene.console.formatting import human_duration, human_size
 from media_hygiene.report.near_reasons import level_text, near_why
+from media_hygiene.review.versioned import versioned
 from media_hygiene.review.videos import video_path
 from media_hygiene.review.views import ORIGINAL_PREFIX, PREVIEW_PREFIX, preview_key
 
@@ -132,7 +133,7 @@ class NearStateBuilder:
             name=name,
             folder=folder,
             details=" · ".join(details),
-            preview=page_relative(f"{PREVIEW_PREFIX}{key}.jpg")
+            preview=versioned(page_relative(f"{PREVIEW_PREFIX}{key}.jpg"), file)
             if visual is not None
             else "",
             video=page_relative(video_path(key, file.path)) if look is not None else "",

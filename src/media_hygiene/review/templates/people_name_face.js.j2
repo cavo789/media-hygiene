@@ -1,0 +1,89 @@
+{# Name one face, or a few picked, instead of a whole group (0712): "Not Chloé, these 3 faces
+   are… [combo]". One POST `move` confirms them as the person typed (existing or new) and rules
+   them out of the one they were shown under, saved in config.toml and read back (`moving.py`).
+   Picking: Ctrl+click adds or takes out one face, Shift+click a range of its section, ✎ this
+   face only; a plain click still opens the large view. The picking stays in one section.
+   Reusable by `/person` (0714): it needs `send`, `element`, `fill`, `counted`, `comboAttach`,
+   `state.people`, `state.writable` and the `namer*` texts; `faceNamer(keys, source, done)`
+   builds the line, `moveFaces(keys, name, source)` saves. #}
+const facePick = { index: -1, keys: [], last: "" }; // the faces picked, in one section
+
+function facePicked(index, key) {
+  return facePick.index === index && facePick.keys.includes(key);
+}
+
+function clearFacePick() {
+  const was = facePick.index;
+  facePick.index = -1;
+  facePick.keys = [];
+  facePick.last = "";
+  return was;
+}
+
+// Ctrl+click or Shift+click on a face picks it; true when the click was a pick.
+function pickFace(event, index, key, order) {
+  if (!state.writable || !(event.ctrlKey || event.metaKey || event.shiftKey)) return false;
+  event.preventDefault();
+  event.stopPropagation();
+  const before = facePick.index;
+  if (before !== index) { clearFacePick(); facePick.index = index; }
+  if (event.shiftKey && facePick.last && order.includes(facePick.last)) {
+    const [from, to] = [order.indexOf(facePick.last), order.indexOf(key)].sort((a, b) => a - b);
+    const range = order.slice(from, to + 1);
+    facePick.keys = [...new Set([...(event.ctrlKey || event.metaKey ? facePick.keys : []), ...range])];
+  } else if (facePick.keys.includes(key)) {
+    facePick.keys = facePick.keys.filter((one) => one !== key);
+  } else {
+    facePick.keys = [...facePick.keys, key];
+  }
+  facePick.last = key;
+  if (!facePick.keys.length) facePick.index = -1;
+  if (before >= 0 && before !== index) redraw(before);
+  redraw(index);
+  return true;
+}
+
+// ✎ on a face: this face only, the name field ready.
+function pickOneFace(index, key) {
+  const before = clearFacePick();
+  facePick.index = index;
+  facePick.keys = [key];
+  facePick.last = key;
+  if (before >= 0 && before !== index) redraw(before);
+  redraw(index);
+  const field = $("groups").children[index].querySelector(".namer input");
+  if (field) field.focus();
+}
+
+// "Not <source>, these n faces are… [name] [Name]"; `done(saved)` after a save.
+function faceNamer(keys, source, done) {
+  const line = element("div", "tools namer stay");
+  const said = source ? fill(counted(TEXTS.namerNot, keys.length), { name: source }) : counted(TEXTS.namerIs, keys.length);
+  const input = element("input");
+  input.placeholder = TEXTS.placeholder;
+  input.disabled = !state.writable;
+  input.setAttribute("aria-label", said);
+  const go = async (name) => {
+    if (!name) return;
+    const saved = await moveFaces(keys, name, source);
+    if (saved && done) done(saved);
+  };
+  const box = comboAttach(input, () => state.people, (row) => go(row.value));
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") go(input.value.trim());
+    if (event.key === "Escape") input.blur();
+    event.stopPropagation();
+  });
+  const button = element("button", "main", TEXTS.save);
+  button.disabled = !state.writable;
+  button.addEventListener("click", (event) => { event.stopPropagation(); go(input.value.trim()); });
+  line.append(element("span", "", said), box, button);
+  return line;
+}
+
+// One change: the faces are the person named, and not the one they were shown under.
+async function moveFaces(keys, name, source) {
+  const saved = await send({ action: "move", name: name, faces: keys, source: source || "" });
+  if (saved) { clearFacePick(); render(true); }
+  return saved;
+}

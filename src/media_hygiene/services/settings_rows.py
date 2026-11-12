@@ -78,7 +78,7 @@ def _elsewhere() -> tuple[SettingRow, ...]:
         SettingRow(
             _("Local AI"),
             _("The local vision model that describes the photos; none: off."),
-            "/#sort",
+            "/#settings/aiCard",
             ("classify.ai.model", "classify.ai.url"),
         ),
         SettingRow(
@@ -90,25 +90,25 @@ def _elsewhere() -> tuple[SettingRow, ...]:
         SettingRow(
             _("What the audit analyses"),
             _("The kinds of files analysed and the folder names ignored."),
-            "/#home",
+            "/#clean/auditHere",
             ("scan.extensions", "scan.excluded_names"),
         ),
         SettingRow(
             _("Phones on the network"),
             _("Whether a phone may open the pages, and see the originals."),
-            "/#share",
+            "/#share/lanSwitch",
             ("review.lan", "review.lan_phone_originals"),
         ),
         SettingRow(
             _("After an import"),
             _("The steps run once the photos of a phone are copied."),
-            "/#import",
+            "/#import/importSteps",
             ("imports.then",),
         ),
         SettingRow(
             _("Home page"),
             _("The actions starred and the order of the tiles."),
-            "/#home",
+            "/#home/tilesCard",
             ("home.favorites", "home.tiles"),
         ),
         SettingRow(

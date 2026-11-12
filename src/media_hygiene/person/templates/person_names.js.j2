@@ -1,0 +1,183 @@
+{# Naming on `/person` (0714), after `person.js.j2` and `people_name_face.js.j2`: each face of the
+   photo shows who it is (✓ confirmed, ≈ guessed by the tool, ? nobody); a click on a face (or
+   its "?") chooses it and opens "This face is… [combo]" (`faceNamer`, shared with the people
+   page). Once named, *These are <name>: N* confirms the photos picked in the grid, the count
+   stated; a photo whose face is confirmed as someone else is left out (moving it is the people
+   page's ✎). Each tile shows the face that matched and its name; its × says "not <name>"
+   (saved in config.toml, read back, the tile goes) or, the face not named yet, drops the tile
+   from this search only. Every save is read back from the disk and its line shown. #}
+const state = { people: [], writable: false };
+let seedName = ""; // the name of the face chosen, as the file says
+
+function sayNames(text, error) {
+  sideSay(text);
+  $("chosen").className = error ? "error" : "";
+  $("chosen").textContent = text;
+}
+
+// The people page's `send`, for `faceNamer`/`moveFaces`: POST, read back, said.
+async function send(body) {
+  sayNames(TEXTS.saving);
+  const result = await post(ROUTES.names, body);
+  if (!result) return null;
+  if (result.error) { sayNames(fill(TEXTS.notSaved, { error: result.error }), true); return null; }
+  state.people = result.people;
+  sayNames(result.saved);
+  return result;
+}
+
+// After a save: the faces and the grid again, as the file says now; the line stays.
+async function render() {
+  const line = $("sideSaid").textContent;
+  await refreshFaces();
+  await reopen(true);
+  sideSay(line);
+}
+
+function learn(result) {
+  if (result.people) state.people = result.people;
+  if (result.writable !== undefined) state.writable = result.writable;
+}
+
+function tagText(named) {
+  if (!named || !named.name) return TEXTS.nobody;
+  return named.how === "confirmed" ? "✓ " + named.name : "≈ " + named.name;
+}
+
+function faceTag(named) {
+  const tag = element("span", "who" + (named && named.name ? "" : " nobody"), tagText(named));
+  tag.title = named && named.name ? (named.how === "confirmed" ? TEXTS.confirmed : TEXTS.guessed) : TEXTS.nobodyHint;
+  return tag;
+}
+
+// The name line under the faces: "This face is… [combo] [Name]".
+function showNamer(key, named) {
+  const source = named && named.name ? named.name : "";
+  const line = faceNamer([key], source, () => reopen(true)); // the steps then say that name
+  $("namer").replaceChildren(line);
+  const field = line.querySelector("input");
+  if (field && !source) field.focus();
+}
+
+// The face chosen has no name yet: the name guessed most among its closest photos (≈ Diego),
+// so that the picked photos can be confirmed as on /people; "" when none is guessed. Only the
+// closest: far down the list come other children, whose names would outnumber its own.
+const GUESS_FROM = 12;
+function guessedName(listed) {
+  const counts = new Map();
+  for (const file of listed.slice(0, GUESS_FROM)) {
+    const named = file.named;
+    if (named && named.name) counts.set(named.name, (counts.get(named.name) || 0) + 1);
+  }
+  let best = "";
+  for (const [name, count] of counts) if (!best || count > counts.get(best)) best = name;
+  return best;
+}
+
+// *These are <name>: N* — the photos picked, those confirmed as someone else left out.
+function confirmable() {
+  return files.filter((file) => picked.has(file.key)
+    && !(file.named && file.named.how === "confirmed" && file.named.name && file.named.name !== seedName));
+}
+
+// *Show* (to confirm by default): the photos by the name of the face that matched — ✓ this
+// person, ≈ this person, ? nobody, someone else; the face chosen stays first. Nothing hidden is
+// ever confirmed: Ctrl+A and the buttons act on the photos shown.
+let hiddenShown = 0;
+function statusOf(named) {
+  if (!named || !named.name) return "nobody";
+  if (named.name !== seedName) return "other";
+  return named.how === "confirmed" ? "mine" : "guessed";
+}
+
+function toConfirm(listed) {
+  const which = seedName ? $("showWhich").value : "all";
+  const wanted = (file) => {
+    if (which === "all") return true;
+    if (which === "todo") return ["guessed", "nobody"].includes(statusOf(file.named));
+    if (which === "pathMine" || which === "pathOther") return pathStatus(file) === (which === "pathMine" ? "mine" : "other");
+    return statusOf(file.named) === which;
+  };
+  const shown = listed.filter((file) => file.key === seed || wanted(file));
+  hiddenShown = listed.length - shown.length;
+  return shown;
+}
+
+function showSteps() {
+  $("steps").hidden = !seedName || !state.writable;
+  $("stepsSaid").textContent = fill(TEXTS.steps, { name: seedName });
+  $("showWhich").parentElement.title = TEXTS.showHint;
+}
+
+$("showWhich").addEventListener("change", () => reopen(false));
+
+function showConfirm() {
+  showSteps();
+  const button = $("confirmNames");
+  const ready = confirmable();
+  button.disabled = !ready.length;
+  button.textContent = ready.length ? fill(counted(TEXTS.confirm, ready.length), { name: seedName }) : TEXTS.pickToConfirm;
+  const others = picked.size - ready.length;
+  button.title = others > 0 ? counted(TEXTS.othersLeft, others) : fill(TEXTS.pickToConfirmHint, { name: seedName });
+}
+
+// *✓ Confirm the names guessed: N* — every ≈ face of the photo, as the tool named it.
+let guesses = [];
+function showGuesses(faces) {
+  guesses = faces.filter((face) => face.named && face.named.name && face.named.how !== "confirmed");
+  const button = $("confirmGuesses");
+  button.hidden = !guesses.length || !state.writable;
+  button.textContent = counted(TEXTS.confirmGuesses, guesses.length);
+  button.title = fill(TEXTS.confirmGuessesHint, { names: guesses.map((face) => face.named.name).join(", ") });
+}
+
+$("confirmGuesses").addEventListener("click", async () => {
+  const byName = new Map();
+  for (const face of guesses) byName.set(face.named.name, [...(byName.get(face.named.name) || []), Number(face.key)]);
+  for (const [name, keys] of byName) if (!(await send({ action: "move", name: name, faces: keys, source: "" }))) return;
+  await render();
+});
+
+$("confirmNames").addEventListener("click", async () => {
+  const keys = confirmable().map((file) => Number(file.key));
+  if (keys.length && seedName) await moveFaces(keys, seedName, "");
+});
+
+const albumPicked = window.mhAlbumPicked;
+window.mhAlbumPicked = (count) => { if (albumPicked) albumPicked(count); showConfirm(); };
+
+// After a save, the same tiles: their names as the file says now (✓ once confirmed).
+function relabelCard(node, file) {
+  const tag = node.querySelector(".named .who");
+  if (tag) tag.replaceWith(faceTag(file.named));
+  const out = node.querySelector(".notThem");
+  if (out) out.title = seedName ? fill(TEXTS.notName, { name: seedName }) : TEXTS.dropTile;
+  showPathTag(node, file); // person_paths.js.j2
+}
+
+// The tile's face that matched, its name, its ×.
+function nameCard(node, file) {
+  if (file.face) {
+    const face = element("img", "matched");
+    face.src = file.face;
+    face.alt = "";
+    node.prepend(face);
+  }
+  const line = element("div", "named");
+  line.append(faceTag(file.named));
+  const out = element("button", "plain notThem", "×");
+  out.type = "button";
+  out.title = seedName ? fill(TEXTS.notName, { name: seedName }) : TEXTS.dropTile;
+  out.addEventListener("click", async (event) => {
+    event.stopPropagation(); // never picks
+    if (seedName) {
+      if (await send({ action: "reject", name: seedName, faces: [Number(file.key)] })) await reopen(true);
+      return;
+    }
+    showFiles(files.filter((one) => one.key !== file.key), true);
+  });
+  if (file.key !== seed) line.append(out);
+  node.querySelector(".meta").prepend(line);
+  showPathTag(node, file); // person_paths.js.j2
+  return node;
+}

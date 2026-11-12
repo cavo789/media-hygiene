@@ -181,9 +181,9 @@ Les listes complètes : [étape 10 du nettoyage](../clean/10-review-bursts.md#é
   ferme et l'accueil revient. Ouvertes par `mh review` seul : pas de bouton, tapez la
   commande `clean`.
 - Une photo d'un **dossier protégé** n'est jamais proposée ni écartée.
-- **👤 cette personne**, sous chaque photo, ouvre dans un nouvel onglet toutes les photos de
-  quelqu'un présent sur cette photo, pour les mettre toutes de côté : voir
-  [`people`](people.md#depuis-nimporte-quelle-page--mettre-une-personne-de-côté).
+- **👤 Identifier quelqu'un**, sous chaque photo, ouvre dans un nouvel onglet toutes les photos
+  de quelqu'un présent sur cette photo, pour le nommer ou les mettre toutes de côté : voir
+  [`people`](people.md#depuis-nimporte-quelle-photo--nommer-ou-mettre-de-côté-quelquun).
 - Le tri des rafales a aussi un champ **Album** : **➕ Ajouter à l'album** met dans cet album les
   photos choisies, comme dans `library`, à part de vos décisions. Voir
   [Mettre des photos dans un album](library.md#mettre-des-photos-dans-un-album). Ouvert depuis la

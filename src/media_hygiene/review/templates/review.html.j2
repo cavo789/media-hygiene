@@ -45,8 +45,8 @@
   "pendingProposed": "⏳ " ~ _("No choice yet: moving on (→, ← or N) accepts the proposal, the shots in red dashes set aside and the others kept. *Keep every shot* keeps them all; Backspace in the large view takes a shot back."),
   "original": "↗ " ~ _("original"),
   "originalTitle": _("Open the original in a new tab: the file as it lies on the disk"),
-  "person": "👤 " ~ _("this person"),
-  "personTitle": _("Find every photo of a person on this one, to set them aside"),
+  "person": "👤 " ~ _("Identify someone"),
+  "personTitle": _("Identify someone on this photo: name them, or set them aside"),
   "saving": _("Saving…"),
   "proofOk": "✔ " ~ _("Saved, then read back from the disk at {time}: {file} holds your choice.").replace("{file}", file),
   "loaded": "📄 " ~ _("{file} read from the disk at {time}.").replace("{file}", file),
@@ -369,8 +369,8 @@ pickMoves = false;      // ←/→/Space change the series, ↑/↓ move the fra
   };
   card = (file, index) => shotCard(series[current], file.rank, index);
 
-  // The preview's name is the key the albums know (album_bar.html.j2).
-  const keyOf = (shot) => shot.preview.replace(/^\/preview\/|\.jpg$/g, "");
+  // The preview's name is the key the albums know (album_bar.html.j2); `?v=` its version (0701).
+  const keyOf = (shot) => shot.preview.replace(/\?.*$/, "").replace(/^\/preview\/|\.jpg$/g, "");
 
   // The shots of the series shown, as the shared grid lists them (the large view reads them).
   const listed = (item) => shown(item).map((rank) => {

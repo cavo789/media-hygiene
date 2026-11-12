@@ -16,6 +16,8 @@ from media_hygiene.services.settings_index import Listed, ShownValue
 from media_hygiene.services.settings_rows import SettingRow
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
+
     from jinja2 import Environment
 
 # How a page built on the frame (`review/templates/page_frame.html.j2`, 0333) starts.
@@ -53,12 +55,15 @@ def _names(environment: Environment, template: str, seen: set[str]) -> set[str]:
     return found
 
 
-def render_page(template: str, filler: str = "/x") -> str:
+def render_page(
+    template: str, filler: str = "/x", given: Mapping[str, object] | None = None
+) -> str:
     """A page, every route it names given a placeholder.
 
     Args:
         template: Its template, a key of `PAGE_STEPS`.
         filler: The value of every name (a hostile one in `test_hostile_names.py`).
+        given: Values set as they are (the routes a browser walk answers).
 
     Returns:
         The page, as served.
@@ -71,6 +76,7 @@ def render_page(template: str, filler: str = "/x") -> str:
     values.update(_samples(template, filler))
     values["paths"] = _AnyPath()
     values["header"] = page_header(template)
+    values.update(given or {})
     return environment.get_template(template).render(**values)
 
 

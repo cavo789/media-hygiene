@@ -17,11 +17,10 @@ from functools import partial
 from typing import TYPE_CHECKING
 
 from media_hygiene.i18n import _
-from media_hygiene.paths.mount_kind import MountKind
-from media_hygiene.paths.mounts import is_writable
 from media_hygiene.person.door import with_person
 from media_hygiene.review.apply_api import ApplyOffer, applying_door
 from media_hygiene.review.ending import serve_until_ended
+from media_hygiene.services.names_file import names_file
 from media_hygiene.services.people_app_build import PeopleBuild, people_app
 from media_hygiene.services.reviewing import address_tip, page_url
 
@@ -78,21 +77,6 @@ def serve_people(
                 serve_until_ended(door, start.port, partial(_announce, runtime, roster))
             )
     return PeopleServed(len(aside.paths()), code)
-
-
-def names_file(runtime: Runtime) -> Path | None:
-    """The `config.toml` the names go to; None when it cannot be written.
-
-    Args:
-        runtime: Mount points.
-
-    Returns:
-        The file, or None.
-    """
-    config = runtime.locations.config_file
-    if runtime.persistent(MountKind.CONFIG) and is_writable(config.parent):
-        return config
-    return None
 
 
 def _names_file(runtime: Runtime) -> Path | None:

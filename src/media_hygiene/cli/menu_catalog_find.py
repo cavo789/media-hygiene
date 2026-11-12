@@ -69,6 +69,25 @@ def find_steps() -> tuple[Step, ...]:
             doc=Doc("commands/library/"),
         ),
         Step(
+            "person",
+            space,
+            _("Name someone from a photo"),
+            _("Its faces, then that person's photos to confirm, in the browser."),
+            "person {photo}",
+            Risk.SAFE,
+            Kind.PAGE,
+            icon="user",
+            keywords=_("person face name who identify"),
+            doc=Doc("commands/person/"),
+            fields=(
+                Field(
+                    "photo",
+                    _("The photo, as the Explorer shows its path"),
+                    r"C:\Photos\IMG_0001.jpg",
+                ),
+            ),
+        ),
+        Step(
             "xmp",
             space,
             _("Carry the words into other photo software"),
@@ -152,7 +171,7 @@ def find_areas() -> tuple[Area, ...]:
         "search",
         (
             Group(_("The guide"), ("tags", "spots", "search"), numbered=True),
-            Group(_("Go further"), ("xmp", "inventory")),
+            Group(_("Go further"), ("person", "xmp", "inventory")),
         ),
         Doc("find/quick-guide/"),
         _("Find in short"),

@@ -94,7 +94,11 @@ runs in the window of `mh` as before (its progress bar, then the page).
 
 On the page, type a name on a group and press Enter: the name is saved into `config.toml`, read
 back and shown. `x` picks several groups to name at once, × takes a wrong face out, `i` ignores
-a group of strangers. Each person then shows twice at most: **Chloé ✓ verified**, the faces you
+a group of strangers. To name only some faces of a section, pick them as in
+[the folders of `library`](library.md#walk-through-your-folders), inside that section: Ctrl+click
+adds or takes out one, Shift+click a range, a rectangle dragged over the faces picks those it
+touches (Ctrl keeps those picked), Ctrl+A every face the current section shows, ✎ this face
+only; then *These N faces are…* and the name. A plain click still shows the photo large. Each person then shows twice at most: **Chloé ✓ verified**, the faces you
 confirmed, and **Chloé attributed**, the faces given to her because they look like those; `y`
 confirms the attributed faces shown, which move to verified. The next runs keep every name, and
 [`library`](library.md) finds the people by name: `search Chloé montagne`, `search person:chloe`.
@@ -155,11 +159,16 @@ To forget someone (a former partner, say), remove the photos they are on from th
 cache, without a name and without the photos (nothing goes into `config.toml`). Each time the
 page opens, the photos that look like that person come first, in a section of their own: *N
 other photos look like the person you set aside on <date>*, the faces of no group included (too
-small, too blurry, seen once). They are shown for you to check, never set aside on their own:
-take out with × the faces of someone else, then **Set these N photos aside too**. A photo added
+small, too blurry, seen once). They are shown for you to check, never removed on their own:
+× on a face says *not this person*, remembered in the cache, so it never comes back for them
+(another person set aside can still show it); **Not them: ignore these N faces** does it for
+every face the section shows, and the section goes. **Remove these N photos too (quarantine,
+undo possible)** sets the others aside: the next `clean --decisions` moves them to the
+quarantine, `undo` brings them back. The faces ignored stay listed, folded, under *N faces
+ignored for the person set aside on <date>*: ↺ shows one for that person again. A photo added
 later shows there at the next opening. The faces are kept after `clean` and `purge`; taking the
-photos back (↺, **Take out of the set aside**, or `undo`) forgets them, and `people --forget`
-forgets them with every other face.
+photos back (↺, **Take out of the set aside**, or `undo`) forgets them and the faces ignored
+for that person, and `people --forget` forgets them with every other face.
 
 **One photo at a time.** A face the tool cannot see (in profile, blurred, a tilted photo) leaves
 its photo in someone else's section. Click the face: the large view shows the photo with **Set
@@ -171,20 +180,56 @@ The same `decisions.json` keeps what [`library`](library.md#set-photos-aside) an
 [`review`](review.md) set aside: one `clean --decisions` applies everything. A photo changed
 since you chose it is left in place.
 
-## From any page: set a person aside
+## From any photo: name or set aside someone
 
-A photo shows someone you never want to see again, on any page (`review`, `library`):
-**👤 this person** under a shot of `review`, or **👤 Set a person aside** in the large view of
-`library`, opens the page *Set a person aside* in a new tab, on that photo. You can
-also open it yourself at `/person` on the address of any of these pages and paste the path of a
-photo (`C:\Photos\…\IMG_1234.jpg`).
+A photo shows someone the people page never asked you about ("this is Aunt Juliette"), or
+someone you never want to see again, on any page (`review`, `library`): **👤 Identify someone**
+under a shot of `review` or in the large view of `library` opens the page *Identify someone* in
+a new tab, on that photo. You can
+also open it from the people page (**👤 Name someone from a photo**, under the list of people),
+from the home page (*Find*, *Name someone from a photo*), or from the console:
+[`mh person C:\Photos\…\IMG_1234.jpg`](person.md); on the page, paste the path of a photo.
 
-1. The page shows the faces found on that photo by `audit --people`; click the right one (one
-   face alone is taken at once).
+**Who is on this photo, at a glance**: in the large view of every page (`library`, `review`…),
+a line under the photo says who is on it, from the index: **👤 ✓ Chloé · ≈ Paul · ? not named**
+(asked only when you open a photo large). A click on **? not named** opens the page on that
+photo, its naming line on that face. No line: no face found there by `audit --people`.
+
+1. The page shows the faces found on that photo by `audit --people`, each with its name:
+   **✓ Chloé** (confirmed by you), **≈ Chloé** (given by the tool because it looks like her
+   confirmed faces) or **? not named**. Click the right one (one face alone is taken at once).
+   Under the faces, **This face is… [name]** (or *Not Chloé, this face is…*): type a name or
+   pick one in the list, Enter. It is saved in `config.toml` as a confirmed face, read back and
+   shown (*Saved in config.toml, read back: Juliette, 1 confirmed face*); a new name creates the
+   person, an existing one adds to them. When the tool guessed names (≈), **✓ Confirm the names
+   guessed: N** confirms them all in one click, as they are shown.
 2. On the right, the photos of that person, the closest first, as a grid to pick like in
    [the folders of `library`](library.md#walk-through-your-folders): click, Ctrl, Shift, rectangle, Ctrl+A, I, Delete, the large view and
    its keys. If they look like someone you set aside before, the bar says so (*the person set
-   aside on <date>*): what you set aside now joins that person.
+   aside on <date>*): what you set aside now joins that person. Each photo shows, in its corner,
+   the face that matched, and under it its name (✓, ≈ or ?).
+   Once the face is named (or, while it has none, by the name its photos are guessed most: ≈ Diego), a line above the grid says what to do: *① Tick the photos where it
+   really is Juliette (Ctrl+A ticks them all; × when it is not them) ② then:* **These are
+   Juliette: N**, which confirms the photos you ticked, N stated (until one is ticked, it reads
+   *Tick their photos in the grid, then confirm them here*). **Show** picks the photos
+   by the name of the face that matched: *To confirm (≈ and ?)* (the default: only the work
+   left), *All the photos*, *✓ Confirmed as this person*, *≈ Guessed as this person*, *? Not
+   named*, *Someone else* (a face that looks like them but is named another person). The
+   status line counts the photos hidden; Ctrl+A and the buttons act on the photos shown only.
+   **S M L XL** in the bar sets the size of the photos (XL to tell small children apart: the
+   face that matched grows too), and **◀ Hide the panel** gives the whole width to the grid;
+   both are kept in this browser. When a photo's folder or file name holds the name of a
+   person you named (*Avril 2004 - Manon 5 mois*, *Petite Manon.png*; whole words, without case
+   or accents), its tile says **📁 Manon**, in red when it names someone else than the face's
+   name. A hint only: nothing is named from it. **Show** keeps *📁 The folder or file name
+   names this person* (open the page from a photo of Manon, then Ctrl+A and **These are
+   Manon: N**) or *… names someone else* (the look-alikes to check first).
+   Only the ticked photos are confirmed; the photos not ticked, or not shown, stay undecided. A photo whose face you
+   confirmed as someone else is left out (the button's tooltip counts them): move it on the people
+   page. The **×** of a photo says *not Juliette*: saved in `config.toml`, read back, the photo
+   leaves the search for good, and the photos found again leave that face out of their likeness. Before the face is named, × only drops the photo from this search.
+   The confirmed faces make the person show on the people page, which then gives her other
+   groups that look like her, as for any name.
 3. Delete (or **🗑 Put aside**) saves them at once in `decisions.json`, read back
    and shown, and remembers the face, as [above](#remove-every-photo-of-someone): the people
    page will show the photos that look like it. Opened from a page `mh` opened from the home
@@ -199,8 +244,16 @@ photo (`C:\Photos\…\IMG_1234.jpg`).
 audit, which looks at each photo upright. **Look again, slower** looks at that one photo turned
 (up to 90° each way) and less strictly; what it finds is shown to choose from, never stored.
 Measured on 9 real photos of one person missed by the audit: 6 found, 1 just at the limit, 2
-not (very blurred). When nothing is found, set the photo aside on its own (Delete in its large
-view).
+not (very blurred). Still nothing, though you see the face? **✏ Draw a face the tool missed**
+shows the photo: drag a box around the face. The tool looks for it in that box, enlarged, or
+takes the box itself; the face is then kept in the index like a face found (flagged *drawn*, so
+a new audit keeps it), named and searched like the others. A face even smaller or more blurred
+than the people page shows can be drawn: it is kept for the search, not shown on the people
+page. Too blurred to find anyone (a baby's smooth face has little detail), it is kept all the
+same to be named on that photo: the page opens *This face is… [name]* and says *it counts for
+this photo only*; no other photo is searched from it. Under 20 pixels, the page says the box is
+too small and writes nothing; a box on an empty area writes nothing either. When nothing is
+found, set the photo aside on its own (Delete in its large view).
 
 ## Options
 

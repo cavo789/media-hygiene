@@ -57,6 +57,7 @@ function global:_{{ function }}_home {
                 $tab = $true
                 continue
             }
+            if ($status -eq {{ page_closed }}) { continue }  # its tab closed: the test above ends it
             if ($status -le {{ step_base }} -or $status -ge {{ signal_base }}) { return }
             $tab = $true
         }

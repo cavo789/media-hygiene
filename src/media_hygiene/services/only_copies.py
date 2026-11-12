@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.journal import done_states, journal_file
 from media_hygiene.actions.journal_cache import read_journal_once
@@ -29,6 +29,8 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from media_hygiene.actions.journal import JournalEntry
+
+SHOWN: Final = 20  # the only copies listed by name before a purge; the rest counted
 
 
 @dataclass(frozen=True, slots=True)

@@ -94,6 +94,14 @@ def command_table(analyse: str, act: str) -> tuple[tuple[str, str, str], ...]:
             ),
         ),
         (
+            "person",
+            act,
+            _(
+                "Who is on this photo: name each face, then confirm that person's "
+                "other photos, in your browser."
+            ),
+        ),
+        (
             "slideshow",
             analyse,
             _(

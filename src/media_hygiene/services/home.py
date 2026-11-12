@@ -7,6 +7,7 @@ import contextlib
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.console.formatting import separators
+from media_hygiene.constants import ExitCode
 from media_hygiene.i18n import _
 from media_hygiene.i18n.live import PerLocale
 from media_hygiene.i18n.templates import translated_environment
@@ -119,9 +120,10 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         port: The port to listen on, inside the container (0: any free one).
 
     Returns:
-        `STEP_EXIT_BASE + n` for step `n` chosen; 0 on Ctrl+C or the page closed.
+        `STEP_EXIT_BASE + n` for step `n` chosen; 0 on Ctrl+C; `ExitCode.PAGE_CLOSED`
+        once its tab was closed (`mh` started by the icon then closes its window).
     """
-    presence = Presence(ending := Ending(), STOPPED)
+    presence = Presence(ending := Ending(), ExitCode.PAGE_CLOSED)
     relays = launcher_relays_steps()
     app = HomeApp(
         PerLocale(lambda: home_page(relays_steps=relays, runs=frozenset(sources.runs))),
@@ -195,6 +197,4 @@ def serve_home(runtime: Runtime, sources: HomeSources, port: int) -> int:
         app.audit.stop()  # between two files: the index keeps what it committed
         for run in app.runs.values():
             run.stop()  # after the photo in flight: the cache keeps each answer
-    if presence.closed:
-        runtime.output.info(_("The home page's tab was closed: the home page stopped."))
     return code

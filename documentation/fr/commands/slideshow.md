@@ -146,7 +146,8 @@ diaporama : une télé rechargée ne perd rien, arrêter `mh` y met fin.
    qu'une télé attend son code, ce champ s'affiche **en haut de la télécommande**, au-dessus des
    boutons et des photos, sur le téléphone comme sur le PC. Sous `mh --lan` (HTTPS), la télé reste
    appairée **pour de bon**, même après un redémarrage de `mh` : oubliez-la sur la page du PC
-   comme un téléphone (elle y figure sous **TV**). Sinon elle reste appairée jusqu'à l'arrêt du
+   comme un téléphone (elle y figure sous **TV**) : à sa requête suivante elle affiche de nouveau un
+   code, sans attendre un redémarrage de `mh`. Sinon elle reste appairée jusqu'à l'arrêt du
    diaporama ; quand le diaporama tourne dans la page d'accueil, jusqu'à l'arrêt de `mh`.
 5. Appuyez sur **OK** sur la télécommande de la télé (ou cliquez) pour le plein écran.
 

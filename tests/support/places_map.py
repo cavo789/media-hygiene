@@ -35,10 +35,11 @@ JSON: Final = {"host": "127.0.0.1:4243", "content-type": "application/json"}
 
 async def call(app: PlacesApp, route: str, body: object = None) -> Response:
     """Send one request to the app, as the page does; `route`: `GET /api/state`."""
-    method, path = route.split()
+    method, address = route.split()
+    path, _mark, query = address.partition("?")  # as `read_request` splits it
     headers = JSON if body is not None else {"host": "127.0.0.1"}
     data = json.dumps(body).encode() if body is not None else b""
-    return await app.handle(Request(method, path, headers, data))
+    return await app.handle(Request(method, path, headers, data, query=query))
 
 
 def fake_server(action: Callable[[PlacesApp], Awaitable[None]]) -> object:

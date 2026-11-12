@@ -8,13 +8,15 @@ groups: a face like someone set aside may be one of them (TODO 0328).
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from collections import Counter
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from media_hygiene.people.naming import id_of
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
+    from pathlib import Path
 
     from media_hygiene.index.face_rows import StoredFace
     from media_hygiene.services.people_groups import PeopleGroups
@@ -27,6 +29,7 @@ class PeopleBoard:
     faces: tuple[StoredFace, ...]
     groups: tuple[tuple[int, ...], ...]
     alone: int
+    crowd: Counter[Path] = field(default_factory=Counter)  # faces per photo
 
     @classmethod
     def of(cls, grouped: PeopleGroups, every: Iterable[StoredFace] = ()) -> PeopleBoard:
@@ -47,7 +50,12 @@ class PeopleBoard:
             groups.append(tuple(range(start, len(faces))))
         numbered = {(face.path, face.number) for face in faces}
         faces.extend(face for face in every if (face.path, face.number) not in numbered)
-        return cls(tuple(faces), tuple(groups), grouped.alone)
+        return cls(
+            tuple(faces),
+            tuple(groups),
+            grouped.alone,
+            Counter(face.path for face in faces),
+        )
 
     def face(self, key: str) -> StoredFace | None:
         """The face a number names.

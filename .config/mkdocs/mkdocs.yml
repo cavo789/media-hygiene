@@ -137,6 +137,7 @@ nav:
       - commands/launcher.md
       - commands/menu.md
       - commands/people.md
+      - commands/person.md
       - commands/places.md
       - commands/purge.md
       - commands/reports.md

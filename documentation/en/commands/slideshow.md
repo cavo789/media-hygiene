@@ -133,7 +133,8 @@ show: a TV reloaded loses nothing, stopping `mh` ends it.
    then **Pair the TV**: the first photo appears. While a TV waits for its code, that field shows
    **at the top of the remote**, above the buttons and the photos, on the phone as on the PC.
    Under `mh --lan` (HTTPS) the TV stays paired **for good**, even after `mh` restarts: forget it
-   on the PC's page as a phone is forgotten (it is listed as **TV**). Otherwise it is paired until
+   on the PC's page as a phone is forgotten (it is listed as **TV**): at its next request it shows
+   a code again, without waiting for `mh` to restart. Otherwise it is paired until
    the slideshow stops; when the show runs in the home page, until `mh` stops.
 5. Press **OK** on the TV's remote (or click) for full screen.
 

@@ -8,6 +8,7 @@ listed: the others cannot be shown.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import cache
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -36,6 +37,9 @@ def folder_counts(
 ) -> dict[str, FolderCount]:
     """Count the files of each folder under the mounted ones.
 
+    Text only (0704): each file is added to its own folder, then each folder once to
+    those above it; a `Path` per file and per parent took 3 s at 100,000 files.
+
     Args:
         rows: The path and size of every file of the index.
         roots: The mounted folders, in the container.
@@ -45,20 +49,56 @@ def folder_counts(
         listed even when empty.
     """
     counts = {str(root): FolderCount() for root in roots}
-    tops = tuple(root for root in roots)
+    tops = tuple((str(root), str(root).rstrip("/") + "/") for root in roots)
+    direct: dict[tuple[str, str], FolderCount] = {}
     for path, size in rows:
-        file = Path(path)
-        top = next((root for root in tops if file.is_relative_to(root)), None)
-        if top is None or file == top:
+        top = next((top for top, inside in tops if path.startswith(inside)), None)
+        if top is None:
             continue
-        kind = media_kind(file)
-        folder = file.parent
-        counts.setdefault(str(folder), FolderCount()).files += 1
-        for above in (folder, *folder.parents):
-            count = counts.setdefault(str(above), FolderCount())
-            count.size += size
-            count.photos += kind in PHOTOS
-            count.videos += kind is MediaKind.VIDEO
+        cut = path.rfind("/")
+        folder, name = path[:cut], path[cut + 1 :]
+        kind = _kind(_suffix(name))
+        count = direct.setdefault((top, folder or "/"), FolderCount())
+        count.files += 1
+        count.size += size
+        count.photos += kind in PHOTOS
+        count.videos += kind is MediaKind.VIDEO
+    for (top, folder), alone in direct.items():
+        counts.setdefault(folder, FolderCount()).files += alone.files
+        above = folder
+        while True:
+            count = counts.setdefault(above, FolderCount())
+            count.size += alone.size
+            count.photos += alone.photos
+            count.videos += alone.videos
             if above == top:
                 break
+            above = above.rpartition("/")[0] or "/"
     return counts
+
+
+def _suffix(name: str) -> str:
+    """A file name's extension, as `Path.suffix` says it.
+
+    Args:
+        name: The file name.
+
+    Returns:
+        From its last dot past the leading ones, or empty.
+    """
+    bare = name.lstrip(".")
+    dot = bare.rfind(".")
+    return bare[dot:] if dot >= 0 else ""
+
+
+@cache
+def _kind(suffix: str) -> MediaKind | None:
+    """The media kind of an extension, once per extension.
+
+    Args:
+        suffix: The extension.
+
+    Returns:
+        What `media_kind` says of it.
+    """
+    return media_kind(Path(f"file{suffix}"))

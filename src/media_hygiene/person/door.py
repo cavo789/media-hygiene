@@ -21,6 +21,7 @@ from media_hygiene.person.albums import with_albums
 from media_hygiene.person.app import PersonApp
 from media_hygiene.person.finding import PersonFinder, PhotoPlace
 from media_hygiene.person.lookup import FaceIndex
+from media_hygiene.person.names import FaceNames
 from media_hygiene.person.second_look import LOOSE_SCORE
 from media_hygiene.person.shelf import FaceShelf
 from media_hygiene.review.apply_api import ApplyDesk, ApplyingApp
@@ -28,6 +29,7 @@ from media_hygiene.review.page_header import page_header
 from media_hygiene.search.app import SearchApp
 from media_hygiene.services import people_models
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
+from media_hygiene.services.names_file import names_file
 from media_hygiene.share.album_page import TV_PAIRED_PATH
 from media_hygiene.share.album_route import WithAlbums
 
@@ -46,8 +48,10 @@ _PAGE_TEMPLATE: Final = "person.html.j2"
 _PATHS: Final = {
     "photo": routes.PHOTO_PATH,
     "look": routes.LOOK_PATH,
+    "draw": routes.DRAW_PATH,
     "like": routes.LIKE_PATH,
     "aside": routes.ASIDE_PATH,
+    "names": routes.NAMES_PATH,
 }
 
 
@@ -149,7 +153,9 @@ def person_app(
         offer = dataclasses.replace(host.offer, pending=lambda: bool(aside.paths()))
         apply = dataclasses.replace(host, offer=offer)
     place = PhotoPlace(runtime.mapper, runtime.locations.data_dir)
-    finder = PersonFinder(place, FaceIndex(runtime.index_file), FaceShelf())
+    faces, shelf = FaceIndex(runtime.index_file), FaceShelf()
+    names = FaceNames(names_file(runtime), runtime.settings.people, faces, shelf)
+    finder = PersonFinder(place, faces, shelf, names)
     recipe = partial(loose_recipe, runtime)
     return PersonApp(
         PerLocale(partial(person_page, apply)),

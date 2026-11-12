@@ -21,6 +21,7 @@ from media_hygiene.errors import JournalError, MountError
 from media_hygiene.i18n import _
 from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.services.drive_letter import found_line, relocate, tidy
+from media_hygiene.services.journal_beside import copy_beside, take_back_journals
 from media_hygiene.services.quarantines import letter_changes
 from media_hygiene.services.shrink_links import renamed
 from media_hygiene.services.sort_links import follow_links
@@ -54,6 +55,7 @@ def resolve_run_id(runtime: Runtime, run_id: str | None) -> str:
             _("No journal mount: there is nothing to undo."),
             _('Mount the same journal folder as for clean: -v "<folder>:/journal".'),
         )
+    take_back_journals(runtime)  # `/journal` wiped: the copies beside the quarantine
     runs = list_run_ids(runtime.locations.journal_dir)
     if not runs:
         raise JournalError(_("No run found in the journal."))
@@ -152,6 +154,7 @@ def undo_pick(runtime: Runtime, pick: RunPick, progress: ProgressSink) -> Outcom
         outcome = executor.run(picked_entries(entries, pick.seqs))
     for change in changes:
         tidy(change, run_id)
+    copy_beside(runtime, run_id)  # what is left aside; none once all came back (0697)
     back = follow_moves_back(runtime, (file, run_id), changes)
     back += renamed(file, Phase.UNDO)  # a video `shrink` renamed (0418)
     show_links(runtime.output, follow_links(runtime, back))

@@ -420,10 +420,10 @@ the albums you chose for guests, never the rest of your library.
 |---|---|---|
 | Sees | The whole library (*Search*, *Browse*), the albums, the reports | The albums ticked **Show to guests**, their photos and videos |
 | Anything else | Read only | Nothing: every other address answers *not found* |
-| Paired | 400 days (HTTPS) or this run | The same; *Forget* it on the PC's card when the visit ends |
+| Paired | 400 days (HTTPS) or this run | Until midnight of the day it paired: the next day it gets the pairing page and types the guests' code again (*Forget* it sooner on the PC's card) |
 
 Untick an album and it disappears from the guests' devices at their next tap. The card on the
-PC lists each device with *Guest* next to its name. For a one-off, an album's 🔗 link (24
+PC lists each device with *Guest* and the time its pairing ends next to its name. For a one-off, an album's 🔗 link (24
 hours, no pairing) is still there.
 
 ## The keyboard, the palette, the theme

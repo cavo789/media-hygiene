@@ -97,7 +97,8 @@ async function choose(name) {
   drawPeople();
   const indexes = state.sections.map((item, index) => index).filter((index) => state.sections[index].name === name && (name || state.sections[index].faces));
   if (!indexes.length) return;
-  for (const index of indexes) if (name && isFolded(state.sections[index])) await fold(index);
+  // Opened: the sections to work on; a ✓ verified one stays on its one line (open it by ▸).
+  for (const index of indexes) if (name && !state.sections[index].verified && isFolded(state.sections[index])) await fold(index);
   goTo(indexes[0]);
 }
 

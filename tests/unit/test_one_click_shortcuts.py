@@ -143,7 +143,10 @@ def test_the_event_card_offers_the_album_and_hides_the_tv() -> None:
     page = render_page("search.html.j2")
     assert 'id="spanAlbum"' in page
     assert 'id="spanTv" class="plain" hidden' in page
-    assert 'id="albumResults" class="plain writes" type="button" hidden' in page
+    assert (
+        'id="albumResults" class="plain writes" role="menuitem" type="button" hidden'
+        in page
+    )
     assert "offerAlbum(body, narrowed ? 0 : found.total)" in page  # never over a filter
 
 
@@ -181,3 +184,19 @@ def test_the_end_of_a_step_notifies_only_a_tab_away_and_asks_once() -> None:
     assert "if (!document.hidden" in notify
     assert 'if (action.kind !== "page") notifyAsk();' in run
     assert "notifyEnd(ended);" in run
+
+
+def test_the_album_of_the_found_sits_in_the_album_menu() -> None:
+    """0695: *Album of the N found* is in 📚 Album ▾, stating its count."""
+    page = render_page("search.html.j2")
+    menu = page[
+        page.index('id="albumBar"') : page.index(
+            "</details>", page.index('id="albumBar"')
+        )
+    ]
+    assert 'id="albumResults"' in menu
+    assert page.count('id="albumResults"') == 1
+    assert "albumResultsLine" not in page
+    assert "Album of the {n} found" in page
+    # the count stated: the same total as *Pick all N found*
+    assert "button.textContent = counted(TEXTS.albumResults, found);" in page

@@ -25,6 +25,7 @@ class ShelfFace:
     embedding: bytes
     box: FaceBox | None = None  # in the upright photo
     crop: bytes | None = None  # JPEG, found turned by a second look
+    number: int | None = None  # its number in the photo, in the index: it can be named
 
 
 class FaceShelf:

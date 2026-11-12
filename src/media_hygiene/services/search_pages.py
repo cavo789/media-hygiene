@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import dataclasses
 from dataclasses import dataclass
 from functools import partial
 from typing import TYPE_CHECKING
@@ -18,6 +19,7 @@ from media_hygiene.person.door import with_person
 from media_hygiene.review.apply_relay import ApplyRelay
 from media_hygiene.review.ending import Ending, EndingDoor, serve_until_ended
 from media_hygiene.review.presence import Presence
+from media_hygiene.services.first_visit import first_visit
 from media_hygiene.services.reviewing import address_tip, page_url
 from media_hygiene.services.search_app import SearchBuild, search_app
 
@@ -70,6 +72,7 @@ def serve_pages(runtime: Runtime, search: SearchIndex, start: PageStart) -> Serv
         closing = Presence(ending, ExitCode.PAGE_CLOSED)  # its tab closed (0262)
         door = EndingDoor(app, ending, closing)
         door = with_person(door, runtime, executor)
+        door = dataclasses.replace(door, app=first_visit(app, start.query))
         ready = partial(_announce, runtime, start)
         code = asyncio.run(serve_until_ended(door, start.port, ready))
     return Served(len(app.place.chosen.paths()), code)

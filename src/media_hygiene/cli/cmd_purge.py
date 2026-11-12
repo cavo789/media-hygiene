@@ -65,7 +65,7 @@ def purge_command(  # pylint: disable=too-many-arguments  # one per option
         refuse_target,
         report_archived,
     )
-    from media_hygiene.cli.purge_only import confirm_only_copies
+    from media_hygiene.cli.purge_only import ask_once
     from media_hygiene.console.formatting import human_number, human_size
     from media_hygiene.errors import MediaHygieneError
     from media_hygiene.paths.mount_kind import MountKind
@@ -111,9 +111,8 @@ def purge_command(  # pylint: disable=too-many-arguments  # one per option
     asked = purge_question(
         runtime, PurgeQuestion(tuple(runs), human_number(count), size, target, yes=yes)
     )
-    if not yes and not (
-        output.confirm(asked) and confirm_only_copies(runtime, quarantines, runs)
-    ):
+    # The only copies shown first, then one question naming them (0699).
+    if not yes and not ask_once(runtime, asked, (quarantines, runs)):
         output.info(_("Nothing was changed."))
         raise typer.Exit(ExitCode.OK)
     with user_errors(output):

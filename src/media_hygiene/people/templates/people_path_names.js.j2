@@ -1,0 +1,128 @@
+{# The names of the photos' paths on the people page (0714 follow-up): each face whose folder or
+   file name names a known person shows 📁 <name> (red when it is not the section's name). A
+   section offers, among its faces shown only: first "📁 Show the N faces whose folder or file
+   names Manon" for its own name (they are picked, then "✓ Yes, these N faces are Manon"), then
+   "📁 N faces whose folder or file names Chloé: not Manon?" for the others (picked, the naming
+   line opened with the name typed, Enter to save). The section then shows those faces only, until
+   ✕ *Show all the faces*. Nothing is named from a path without a click. #}
+// A photo of several faces in a "Chloé" folder holds Chloé, but which face is her is not
+// said: only a face alone on its photo takes the names of its path.
+function facePathNames(item) {
+  return item.shared ? [] : pathNames(item.photo);
+}
+
+function pathBadge(box, item, section) {
+  const named = facePathNames(item);
+  if (!named.length) return;
+  const clash = Boolean(section.name) && !named.includes(section.name);
+  const tag = element("span", "pathName" + (clash ? " clash" : ""), "📁 " + named.join(", "));
+  tag.title = TEXTS.pathHint;
+  box.append(tag);
+}
+
+// The faces shown (not taken out) whose path names a person, by name; the section's own first.
+function facesByPathName(item) {
+  const byName = new Map();
+  for (const one of displayed(item)) {
+    if (removed.has(one.key)) continue;
+    for (const name of facePathNames(one)) byName.set(name, [...(byName.get(name) || []), one.key]);
+  }
+  const own = byName.get(item.name);
+  if (!own) return byName;
+  byName.delete(item.name);
+  return new Map([[item.name, own], ...byName]);
+}
+
+// The pick a 📁 button of the section's own name made: its line is "Yes, these N are <name>".
+const pathConfirm = { keys: null, name: "" };
+// A 📁 button shows only its faces in the section, while they stay picked there; ✕ shows all.
+const pathView = { index: -1, keys: [], loaded: [] };
+
+// Back from a 📁 view: the faces that click loaded only to search are not shown (the sample stays).
+function pathUnload() {
+  for (const key of pathView.loaded) whole.delete(key);
+  pathView.loaded = [];
+}
+
+function pathShown(index, shown) {
+  if (pathView.index !== index || facePick.index !== index) return shown;
+  return shown.filter((one) => pathView.keys.includes(one.key));
+}
+
+function pathViewing(index) {
+  return pathView.index === index && facePick.index === index;
+}
+
+function pathAllButton(index) {
+  const all = element("button", "plain", TEXTS.pathAll);
+  all.addEventListener("click", (event) => { event.stopPropagation(); pathView.index = -1; pathUnload(); clearFacePick(); redraw(index); });
+  return all;
+}
+
+function pickByPath(index, keys) {
+  clearFacePick();
+  facePick.index = index;
+  facePick.keys = keys;
+  facePick.last = keys[keys.length - 1];
+  redraw(index);
+}
+
+// In a 📁 view: the way back to every face of the section.
+function pathBackLine(index) {
+  const line = element("div", "tools pathPick");
+  line.append(pathAllButton(index));
+  return line;
+}
+
+function pathPickLine(item, index) {
+  if (!state.writable || isFolded(item) || item.strip) return null;
+  const byName = facesByPathName(item);
+  if (!byName.size) return null;
+  const line = element("div", "tools pathPick");
+  const whole = complete(item); // the sample only: the count is the whole group's, once loaded
+  for (const [name, shownKeys] of byName) {
+    const own = name === item.name;
+    const ask = own || !item.name ? "pathPickOwn" : "pathPick"; // a group without a name: no "not …?"
+    const said = whole ? counted(TEXTS[ask], shownKeys.length) : TEXTS[ask + "All"];
+    const button = element("button", own ? "pathOwn" : "plain", fill(said, { name: name, section: item.name || "" }));
+    button.title = own ? TEXTS.pathPickOwnHint : TEXTS.pathPickHint;
+    button.addEventListener("click", async (event) => {
+      event.stopPropagation();
+      pathUnload();
+      if (!complete(state.sections[index])) { // every face of the group, once, to search them
+        await expand(index);
+        pathView.loaded = displayed(state.sections[index]).map((one) => one.key);
+      }
+      const keys = facesByPathName(state.sections[index]).get(name) || [];
+      pathConfirm.keys = own ? keys : null;
+      pathConfirm.name = name;
+      pathView.index = index;
+      pathView.keys = keys;
+      pickByPath(index, keys);
+      if (own) return;
+      const field = $("groups").children[index].querySelector(".namer input");
+      if (field) { field.value = name; field.focus(); }
+    });
+    line.append(button);
+  }
+  return line;
+}
+
+// After a 📁 pick of the section's own name: those faces shown and not marked × are that
+// person; the faces marked × are not (saved with it). The count follows the marks.
+function pathConfirmLine(item, index) {
+  if (facePick.index !== index || pathConfirm.keys !== facePick.keys || pathConfirm.name !== item.name) return null;
+  const faces = facePick.keys.filter((key) => !removed.has(key));
+  const out = facePick.keys.filter((key) => removed.has(key));
+  const line = element("div", "tools namer stay");
+  const yes = element("button", "main", fill(counted(TEXTS.pathConfirm, faces.length), { name: item.name }));
+  yes.disabled = !faces.length;
+  yes.addEventListener("click", (event) => {
+    event.stopPropagation();
+    pathView.index = -1;
+    clearFacePick();
+    send({ action: "name", name: item.name, faces: faces, removed: out });
+  });
+  line.append(yes);
+  return line;
+}

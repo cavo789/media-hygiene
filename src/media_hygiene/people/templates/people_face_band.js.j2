@@ -1,0 +1,95 @@
+{# The rectangle and Ctrl+A of the people page (0716), the gestures of `pick_band.js.j2` and
+   `pick_grid.js.j2` on faces: pressed on a section and dragged, the rectangle picks every face
+   of that section it touches (Ctrl keeps those picked); Ctrl+A picks every face the current
+   section shows. Both stay in one section, as `people_name_face.js.j2` picks, and only touch
+   faces drawn (a folded section's strip and the faces of photos set aside are left out). #}
+const FACE_BAND_START = 6; // pixels before a press becomes a rectangle
+let faceBand = null; // where it started (page), its section, the picking kept, its node
+let faceBandDrawn = false; // the click ending a rectangle opens nothing
+
+function faceBandSection(target) {
+  const section = target.closest("#groups > section");
+  return section ? [...$("groups").children].indexOf(section) : -1;
+}
+
+function pickableFaces(index) {
+  const section = $("groups").children[index];
+  return section ? [...section.querySelectorAll(".face[data-key]")] : [];
+}
+
+function setFacePick(index, keys) {
+  const before = facePick.index;
+  const same = before === index && keys.length === facePick.keys.length && keys.every((key) => facePick.keys.includes(key));
+  if (same) return;
+  facePick.index = keys.length ? index : -1;
+  facePick.keys = keys;
+  facePick.last = keys.length ? keys[keys.length - 1] : "";
+  if (before >= 0 && before !== index) redraw(before);
+  redraw(index);
+}
+
+function drawFaceBand(event) {
+  const x = event.clientX + window.scrollX;
+  const y = event.clientY + window.scrollY;
+  const box = {
+    left: Math.min(x, faceBand.x), top: Math.min(y, faceBand.y),
+    right: Math.max(x, faceBand.x), bottom: Math.max(y, faceBand.y),
+  };
+  Object.assign(faceBand.node.style, {
+    left: box.left + "px", top: box.top + "px",
+    width: box.right - box.left + "px", height: box.bottom - box.top + "px",
+  });
+  const touched = pickableFaces(faceBand.index).filter((node) => {
+    const card = node.getBoundingClientRect();
+    const left = card.left + window.scrollX;
+    const top = card.top + window.scrollY;
+    return left < box.right && left + card.width > box.left && top < box.bottom && top + card.height > box.top;
+  }).map((node) => Number(node.dataset.key));
+  setFacePick(faceBand.index, [...new Set([...faceBand.kept, ...touched])]);
+}
+
+function endFaceBand() {
+  if (faceBand && faceBand.node) {
+    faceBand.node.remove();
+    faceBandDrawn = true;
+  }
+  faceBand = null;
+}
+
+$("groups").addEventListener("pointerdown", (event) => {
+  faceBandDrawn = false;
+  if (!state.writable || event.pointerType !== "mouse" || event.button !== 0) return;
+  if (event.target.closest("button, input, select, summary, a")) return;
+  const index = faceBandSection(event.target);
+  if (index < 0) return;
+  const adding = event.ctrlKey || event.metaKey;
+  const kept = adding && facePick.index === index ? facePick.keys : [];
+  faceBand = { x: event.pageX, y: event.pageY, index, kept: [...kept], node: null };
+});
+document.addEventListener("pointermove", (event) => {
+  if (!faceBand) return;
+  if (!faceBand.node) {
+    if (Math.hypot(event.pageX - faceBand.x, event.pageY - faceBand.y) < FACE_BAND_START) return;
+    faceBand.node = element("div", "band");
+    document.body.append(faceBand.node);
+  }
+  drawFaceBand(event);
+});
+document.addEventListener("pointerup", endFaceBand);
+document.addEventListener("pointercancel", endFaceBand);
+document.addEventListener("click", (event) => {
+  if (!faceBandDrawn) return;
+  faceBandDrawn = false;
+  event.stopPropagation(); // the face under the mouse at the end: no large view
+  event.preventDefault();
+}, true);
+$("groups").addEventListener("dragstart", (event) => event.preventDefault());
+
+// Ctrl+A: every face the current section shows (never typing in a field).
+document.addEventListener("keydown", (event) => {
+  if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "a" || event.shiftKey) return;
+  if (viewerOpen() || ["INPUT", "SELECT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
+  if (!state.writable || !state.sections.length) return;
+  event.preventDefault();
+  setFacePick(current, pickableFaces(current).map((node) => Number(node.dataset.key)));
+});

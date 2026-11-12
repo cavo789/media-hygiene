@@ -369,6 +369,12 @@ def test_a_page_whose_tab_was_closed_ends_the_loop(tmp_path: Path) -> None:
     assert _lines(done) == ["home:relayed", "browse:relayed", "status=0"]
 
 
+def test_home_whose_tab_was_closed_ends_the_loop_with_0(tmp_path: Path) -> None:
+    """0262: the home page's own tab closed: prompt back with 0, nothing run."""
+    done = _bash(tmp_path, "mh", str(int(ExitCode.PAGE_CLOSED)))
+    assert _lines(done) == ["home:relayed", "status=0"]
+
+
 def test_the_powershell_loop_ends_on_a_closed_page(tmp_path: Path) -> None:
     """0262: the same rule in mh.ps1, before home would open again."""
     runtime = replace(
@@ -378,6 +384,12 @@ def test_the_powershell_loop_ends_on_a_closed_page(tmp_path: Path) -> None:
     code = int(ExitCode.PAGE_CLOSED)
     closed = f"if ($status -eq {code}) {{"
     assert text.index(closed) < text.index(f"if ($status -le {STEP_EXIT_BASE}) {{")
+    # Home itself closed (not a page it opened): back to that test, never `return`.
+    again = f"if ($status -eq {code}) {{ continue }}"
+    assert text.index(again) < text.index(
+        f"if ($status -le {STEP_EXIT_BASE} -or $status -ge {SIGNAL_EXIT_BASE})"
+    )
+    assert "if ($global:MediaHygieneShortcut) { exit 0 }" in text
 
 
 def _step_path(script: Path) -> str:

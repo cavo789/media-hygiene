@@ -140,9 +140,11 @@ def is_within(path: Path, folder: Path) -> bool:
     Returns:
         True when `path` is inside `folder`.
     """
-    folder_parts = [part.casefold() for part in folder.parts]
-    path_parts = [part.casefold() for part in path.parts]
-    return path_parts[: len(folder_parts)] == folder_parts
+    # Compared as text: pathlib's parts cost 70 % of the places page (0703, py-spy).
+    if not folder.parts:
+        return True
+    inside, text = str(folder).casefold(), str(path).casefold()
+    return text == inside or text.startswith(inside.rstrip("/") + "/")
 
 
 def _below(path: str, folder: str) -> tuple[str, ...] | None:

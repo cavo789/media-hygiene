@@ -37,6 +37,28 @@ class FaceIndex:
         self._file = index_file
         self._model = model
 
+    @property
+    def file(self) -> Path | None:
+        """The index file, to keep a face drawn by hand in it (0715).
+
+        Returns:
+            It; None without a persistent cache.
+        """
+        return self._file
+
+    @property
+    def model(self) -> str:
+        """The pair of models whose faces are read.
+
+        Returns:
+            Its name.
+        """
+        return self._model
+
+    def refresh(self) -> None:
+        """Read the faces again at the next question: one was added."""
+        self.__dict__.pop("every", None)
+
     @cached_property
     def every(self) -> tuple[StoredFace, ...]:
         """Every face of the current version of the indexed photos.

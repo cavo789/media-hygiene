@@ -96,7 +96,7 @@ class Door:
         Returns:
             The visitor.
         """
-        if self.screens.is_paired(screen_token(request)):
+        if self.screens.is_paired(screen_token(request), request.peer):
             return Visitor.SCREEN
         return Visitor.STRANGER
 

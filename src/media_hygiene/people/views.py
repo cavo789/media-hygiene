@@ -101,6 +101,14 @@ def faces_view(
         host: Container path → host path.
 
     Returns:
-        One entry per face.
+        One entry per face; ``shared`` when its photo holds other faces too (a folder
+        name then says who is in the photo, not which face is them).
     """
-    return [{"key": key, "photo": host(board.faces[key].path)} for key in keys]
+    return [
+        {
+            "key": key,
+            "photo": host(board.faces[key].path),
+            "shared": board.crowd[board.faces[key].path] > 1,
+        }
+        for key in keys
+    ]

@@ -28,10 +28,11 @@ class NamesAsked(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    action: Literal["name", "ignore", "reject"]
+    action: Literal["name", "ignore", "reject", "move"]
     name: str = Field(default="", max_length=_NAME_LENGTH)
     faces: tuple[int, ...] = Field(min_length=1)
     removed: tuple[int, ...] = ()
+    source: str = Field(default="", max_length=_NAME_LENGTH)  # "move": shown under
 
 
 @dataclass(frozen=True, slots=True)

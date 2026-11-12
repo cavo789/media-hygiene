@@ -18,6 +18,7 @@ from media_hygiene.cli.cmd_inventory import inventory_command
 from media_hygiene.cli.cmd_launcher import launcher_command
 from media_hygiene.cli.cmd_menu import menu_command
 from media_hygiene.cli.cmd_people import people_command
+from media_hygiene.cli.cmd_person import person_command
 from media_hygiene.cli.cmd_places import places_command
 from media_hygiene.cli.cmd_purge import purge_command
 from media_hygiene.cli.cmd_push import push_command
@@ -61,6 +62,7 @@ def command_functions() -> dict[str, Callable[..., None]]:
         "launcher": launcher_command,
         "menu": menu_command,
         "people": people_command,
+        "person": person_command,
         "places": places_command,
         "purge": purge_command,
         "upkeep": upkeep_command,

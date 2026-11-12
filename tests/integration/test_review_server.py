@@ -9,7 +9,7 @@ import pytest
 
 from media_hygiene.errors import DecisionsError
 from media_hygiene.report.decisions import read_decisions
-from media_hygiene.review.respond import RUN_TAG
+from media_hygiene.review.respond import IMMUTABLE_S
 from tests.support.review import (
     BURST_HOST,
     PAGE,
@@ -61,8 +61,9 @@ def test_the_page_the_state_and_the_previews(locations: Locations) -> None:
     assert all("sharpness" not in shot.details for shot in series.shots)  # not twice
     assert (image.status, image.headers["content-type"]) == (200, "image/jpeg")
     assert image.body.startswith(b"\xff\xd8")
-    assert image.headers["cache-control"] == "private, no-cache"
-    assert image.headers["etag"] == RUN_TAG
+    assert (
+        image.headers["cache-control"] == f"private, max-age={IMMUTABLE_S}, immutable"
+    )
     assert unknown.status == 404
     assert (icon.status, icon.headers["content-type"]) == (200, "image/png")
 

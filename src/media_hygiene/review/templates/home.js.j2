@@ -216,8 +216,10 @@ function wire() {
     else if (event.key === "?") { event.preventDefault(); openKeys(); }
   });
   window.addEventListener("hashchange", () => {
-    const wanted = decodeURIComponent(location.hash.slice(1));
-    if (SPACE[wanted] && wanted !== view.id) go(wanted);
+    const wanted = hashParts(location.hash);
+    if (!SPACE[wanted.space]) return;
+    if (wanted.space !== view.id) go(wanted.space, !wanted.card);
+    revealCard(wanted.card);
   });
   wirePalette();
 }
@@ -287,6 +289,7 @@ function showCode(lan) {
   $("#lanQr").innerHTML = shown.qr;  // an SVG drawn by the server (segno)
   $("#lanCode").textContent = shown.code;
   $("#lanRoles").hidden = !lan.guest;
+  $("#lanGuestUntil").hidden = !(lanRole.guest && lan.guest);  // 0709: ends tonight
   $("#lanFamily").setAttribute("aria-pressed", String(!lanRole.guest));
   $("#lanGuests").setAttribute("aria-pressed", String(lanRole.guest));
   if (lanRole.wired) return;
@@ -340,7 +343,7 @@ function deviceLine(phone, list) {
   forget.addEventListener("click", () => { forget.disabled = true; devicePost(paths.forget, { id: phone.id }, "").then((ok) => { forget.disabled = ok; }); });
   const facts = document.createElement("small");
   const seen = phone.seen ? `${new Date(phone.seen).toLocaleDateString()} ${clock(phone.seen)}` : T.lanNeverSeen;
-  facts.textContent = `${phone.tv ? T.lanTv + " · " : ""}${phone.guest ? T.lanGuest + " · " : ""}${fill(T.lanDevice, { paired: phone.paired, seen, address: phone.address || "?" })}`;
+  facts.textContent = `${phone.tv ? T.lanTv + " · " : ""}${phone.guest ? fill(T.lanGuest, { until: new Date(phone.until).toLocaleString([], { dateStyle: "short", timeStyle: "short" }) }) + " · " : ""}${fill(T.lanDevice, { paired: phone.paired, seen, address: phone.address || "?" })}`;
   const did = document.createElement("small");
   const sum = (key) => phone.days.reduce((total, day) => total + (day[key] || 0), 0);
   did.textContent = phone.days.length ? fill(T.lanActivity, { pages: sum("pages"), pictures: sum("pictures"), day: phone.days[0].day }) : T.lanNoActivity;
@@ -379,11 +382,12 @@ function begin() {
   index();
   asApp();
   applyTheme(store.get("theme", "auto"), false);
-  const wanted = decodeURIComponent((location.hash || "").slice(1));
-  view.id = SPACE[wanted] ? wanted : HOME;
+  const wanted = hashParts(location.hash);
+  view.id = SPACE[wanted.space] ? wanted.space : HOME;
   if (!wired) { wired = true; wire(); }
   render();
   setNav(false, false);
+  revealCard(wanted.card);
   // Enter runs the next step, as in `mh menu`: its button has the focus.
   const first = $("#heroRun");
   if (view.id === HOME && first) first.focus({ preventScroll: true });

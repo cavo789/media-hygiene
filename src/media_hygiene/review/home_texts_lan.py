@@ -71,7 +71,7 @@ def lan_device_texts() -> dict[str, str]:
         "lanDevice": _("Paired on {paired} · last seen {seen} · {address}"),
         "lanNeverSeen": _("not yet"),
         "lanTv": _("TV"),
-        "lanGuest": _("Guest: the albums chosen for guests only"),
+        "lanGuest": _("Guest until {until}: the albums chosen for guests only"),
         "lanActivity": _(
             "Last {days} days: {pages} pages opened, {pictures} pictures viewed "
             "(last on {day})"
@@ -86,6 +86,10 @@ def lan_device_texts() -> dict[str, str]:
         # 0684: which code the card shows, family or guests
         "lanFamilyCode": _("👪 Family: the whole library"),
         "lanGuestCode": _("🧳 Guest: the albums ticked Show to guests, nothing else"),
+        "lanGuestUntil": _(  # 0709
+            "🌙 A guest sees them until midnight tonight; tomorrow it types the "
+            "guests' code again."
+        ),
         "lanForgetSure": _(
             "Forget all {count} devices? Each one must type a code again to open "
             "this page."

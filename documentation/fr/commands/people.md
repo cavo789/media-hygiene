@@ -100,7 +100,12 @@ progression, puis la page).
 
 Dans la page, tapez un nom sur un groupe et appuyez sur Entrée : le nom est enregistré dans
 `config.toml`, relu et affiché. `x` choisit plusieurs groupes à nommer d'un coup, × retire un
-visage erroné, `i` ignore un groupe d'inconnus, Chaque personne s'affiche ensuite deux fois au plus : **Chloé ✓ vérifié**, les visages que
+visage erroné, `i` ignore un groupe d'inconnus. Pour ne nommer que certains visages d'une section, choisissez-les
+comme dans [les dossiers de `library`](library.md#parcourir-vos-dossiers), dans cette section :
+Ctrl+clic en ajoute ou en retire un, Maj+clic une suite, un rectangle tiré sur les visages
+prend ceux qu'il touche (Ctrl garde ceux déjà choisis), Ctrl+A tous les visages que montre la
+section courante, ✎ ce visage seul ; puis *Ces N visages sont…* et le nom. Un simple clic
+montre toujours la photo en grand. Chaque personne s'affiche ensuite deux fois au plus : **Chloé ✓ vérifié**, les visages que
 vous avez confirmés, et **Chloé attribué**, les visages qui lui sont donnés parce qu'ils leur
 ressemblent ; `y` confirme les visages attribués affichés, qui passent dans vérifié. Les
 exécutions suivantes gardent tous les noms, et [`library`](library.md) retrouve les personnes par
@@ -168,11 +173,16 @@ visages dans le cache, sans nom et sans les photos (rien ne va dans `config.toml
 ouverture de la page, les photos qui ressemblent à cette personne viennent en premier, dans une
 section à part : *N autres photos ressemblent à la personne mise de côté le <date>*, y compris
 les visages d'aucun groupe (trop petits, trop flous, vus une seule fois). Elles sont montrées
-pour que vous vérifiiez, jamais mises de côté toutes seules : retirez avec × les visages de
-quelqu'un d'autre, puis **Mettre aussi ces N photos de côté**. Une photo ajoutée plus tard y
+pour que vous vérifiiez, jamais retirées toutes seules : × sur un visage dit *pas cette
+personne*, retenu dans le cache, pour qu'il ne revienne plus pour elle (une autre personne mise
+de côté peut encore le montrer) ; **Pas elle : ignorer ces N visages** le fait pour tous les
+visages que la section montre, et la section disparaît. **Retirer aussi ces N photos
+(quarantaine, annulable)** met les autres de côté : le prochain `clean --decisions` les déplace
+en quarantaine, `undo` les ramène. Les visages ignorés restent listés, repliés, sous *N visages
+ignorés pour la personne mise de côté le <date>* : ↺ en propose un de nouveau pour elle. Une photo ajoutée plus tard y
 apparaît à l'ouverture suivante. Les visages restent après `clean` et `purge` ; reprendre les
-photos (↺, **Retirer de la mise de côté**, ou `undo`) les oublie, et `people --forget` les
-oublie avec tous les autres visages.
+photos (↺, **Retirer de la mise de côté**, ou `undo`) les oublie, avec les visages ignorés
+pour cette personne, et `people --forget` les oublie avec tous les autres visages.
 
 **Une photo à la fois.** Un visage que l'outil ne voit pas (de profil, flou, une photo penchée)
 laisse sa photo dans la section de quelqu'un d'autre. Cliquez sur le visage : la grande vue
@@ -185,22 +195,62 @@ Le même `decisions.json` garde ce que [`library`](library.md#mettre-des-photos-
 [`review`](review.md) ont mis de côté : un seul `clean --decisions` applique tout. Une photo
 modifiée depuis votre choix reste en place.
 
-## Depuis n'importe quelle page : mettre une personne de côté
+## Depuis n'importe quelle photo : nommer ou mettre de côté quelqu'un
 
-Une photo montre quelqu'un que vous ne voulez plus voir, sur n'importe quelle page (`review`,
-`library`) : **👤 cette personne** sous une photo de `review`, ou **👤 Mettre une
-personne de côté** dans la grande vue de `library`, ouvre la page *Mettre une
-personne de côté* dans un nouvel onglet, sur cette photo. Vous pouvez aussi l'ouvrir vous-même à
-`/person` sur l'adresse de l'une de ces pages et y coller le chemin d'une photo
-(`C:\Photos\…\IMG_1234.jpg`).
+Une photo montre quelqu'un que la page people ne vous a jamais demandé (« c'est tante
+Juliette »), ou quelqu'un que vous ne voulez plus voir, sur n'importe quelle page (`review`,
+`library`) : **👤 Identifier quelqu'un** sous une photo de `review` ou dans la grande vue de
+`library` ouvre la page *Identifier quelqu'un* dans un nouvel onglet, sur cette photo. Vous pouvez aussi l'ouvrir vous-même à
+`/person` sur l'adresse de l'une de ces pages, depuis la page people (**👤 Nommer quelqu'un
+depuis une photo**, sous la liste des personnes), depuis la page d'accueil (*Retrouver*, *Nommer
+quelqu'un depuis une photo*) ou depuis la console :
+[`mh person C:\Photos\…\IMG_1234.jpg`](person.md) ; sur la page, collez le chemin d'une photo.
 
-1. La page montre les visages trouvés sur cette photo par `audit --people` ; cliquez sur le bon
-   (un visage seul est pris d'office).
+**Qui est sur cette photo, d'un coup d'œil** : dans la grande vue de chaque page (`library`,
+`review`…), une ligne sous la photo dit qui s'y trouve, d'après l'index : **👤 ✓ Chloé · ≈ Paul ·
+? sans nom** (demandée seulement quand vous ouvrez une photo en grand). Un clic sur **? sans nom**
+ouvre la page sur cette photo, sa ligne de nom sur ce visage. Pas de ligne : aucun visage trouvé là
+par `audit --people`.
+
+1. La page montre les visages trouvés sur cette photo par `audit --people`, chacun avec son
+   nom : **✓ Chloé** (confirmé par vous), **≈ Chloé** (donné par l'outil parce qu'il ressemble à
+   ses visages confirmés) ou **? sans nom**. Cliquez sur le bon (un visage seul est pris
+   d'office). Sous les visages, **Ce visage est… [nom]** (ou *Pas Chloé, ce visage est…*) :
+   tapez un nom ou choisissez-le dans la liste, Entrée. Il est enregistré dans `config.toml`
+   comme visage confirmé, relu et affiché (*Enregistré dans config.toml, relu : Juliette, 1
+   visage confirmé*) ; un nouveau nom crée la personne, un nom existant s'y ajoute. Quand l'outil a
+   deviné des noms (≈), **✓ Confirmer les noms devinés : N** les confirme tous en un clic, tels
+   qu'affichés.
 2. À droite, les photos de cette personne, les plus ressemblantes d'abord, en grille à choisir
    comme dans [les dossiers de `library`](library.md#parcourir-vos-dossiers) : clic, Ctrl, Maj, rectangle, Ctrl+A, I, Suppr, la grande vue
    et ses touches. Si elles ressemblent à quelqu'un mis de côté avant, la barre le dit (*la
    personne mise de côté le <date>*) : ce que vous mettez de côté maintenant rejoint cette
-   personne.
+   personne. Chaque photo montre, dans son coin, le visage qui a correspondu, et dessous son nom
+   (✓, ≈ ou ?). Une fois le visage nommé (ou, tant qu'il n'en a pas, au nom le plus deviné sur ses photos : ≈ Diego), une ligne au-dessus de la grille dit quoi faire :
+   *① Cochez les photos où c'est bien Juliette (Ctrl+A les coche toutes ; × quand ce n'est pas
+   elle ou lui) ② puis :* **C'est Juliette : N**, qui confirme les photos cochées, N annoncé
+   (tant qu'aucune n'est cochée, il dit *Cochez ses photos dans la grille, puis confirmez-les
+   ici*). **Afficher** choisit les photos d'après le
+   nom du visage reconnu : *À confirmer (≈ et ?)* (par défaut : seul le travail restant),
+   *Toutes les photos*, *✓ Confirmée comme cette personne*, *≈ Devinée comme cette personne*,
+   *? Sans nom*, *Quelqu'un d'autre* (un visage qui lui ressemble mais nommé comme une autre
+   personne). La ligne d'état compte les photos masquées ; Ctrl+A et les boutons n'agissent que
+   sur les photos affichées. **S M L XL** dans la barre règle la taille des photos (XL pour
+   reconnaître les jeunes enfants : le visage reconnu grandit aussi), et **◀ Masquer le
+   panneau** donne toute la largeur à la grille ; les deux sont retenus dans ce navigateur.
+   Quand le dossier ou le nom d'une photo contient le nom d'une personne nommée (*Avril 2004 -
+   Manon 5 mois*, *Petite Manon.png* ; mots entiers, sans tenir compte des majuscules ni des
+   accents), sa vignette affiche **📁 Manon**, en rouge quand il nomme quelqu'un d'autre que le
+   nom du visage. Un indice seulement : rien n'est nommé d'après lui. **Afficher** garde
+   *📁 Le dossier ou le nom du fichier nomme cette personne* (ouvrez la page depuis une photo de
+   Manon, puis Ctrl+A et **C'est Manon : N**) ou *… nomme quelqu'un d'autre* (les
+   ressemblances à vérifier d'abord). Seules les photos cochées sont confirmées ; les photos non cochées, ou non affichées, restent à
+   décider. Une photo dont vous avez confirmé le visage comme quelqu'un d'autre est laissée de
+   côté (l'infobulle du bouton les compte) : déplacez-la sur la page people. Le **×** d'une photo
+   dit *pas Juliette* : enregistré dans `config.toml`, relu, la photo quitte la recherche pour de
+   bon, et les photos retrouvées ne tiennent plus compte de ce visage. Avant que le visage soit nommé, × retire seulement la photo de cette recherche. Les
+   visages confirmés font apparaître la personne sur la page people, qui lui donne ensuite ses
+   autres groupes ressemblants, comme pour tout nom.
 3. Suppr (ou **🗑 Mettre de côté**) les enregistre aussitôt dans
    `decisions.json`, relu et affiché, et retient le visage, comme
    [plus haut](#retirer-toutes-les-photos-de-quelquun) : la page people montrera les photos qui
@@ -216,8 +266,18 @@ personne de côté* dans un nouvel onglet, sur cette photo. Vous pouvez aussi l'
 regarde chaque photo droite. **Regarder encore, plus lentement** regarde cette seule photo
 tournée (jusqu'à 90° de chaque côté) et moins exigeante ; ce qu'elle trouve est montré pour
 choisir, jamais enregistré. Mesuré sur 9 vraies photos d'une même personne manquées par
-l'audit : 6 retrouvées, 1 tout juste à la limite, 2 non (très floues). Quand rien n'est trouvé,
-mettez la photo de côté toute seule (Suppr dans sa grande vue).
+l'audit : 6 retrouvées, 1 tout juste à la limite, 2 non (très floues). Toujours rien, alors que
+vous voyez le visage ? **✏ Tracer un visage manqué par l'outil** montre la photo : tracez un
+cadre autour du visage. L'outil le cherche dans ce cadre, agrandi, ou prend le cadre lui-même ;
+le visage est alors gardé dans l'index comme un visage trouvé (marqué *tracé*, un nouvel audit
+le garde), nommé et cherché comme les autres. Un visage plus petit ou plus flou que ce que la
+page des personnes montre peut être tracé : il sert à la recherche, sans apparaître sur la page
+des personnes. Trop flou pour retrouver qui que ce soit (le visage lisse d'un bébé a peu de
+détails), il est gardé quand même pour être nommé sur cette photo : la page ouvre *Ce visage
+est… [nom]* et dit *il compte pour cette photo seulement* ; aucune autre photo n'est cherchée à
+partir de lui. Sous 20 pixels, la page dit que le cadre est trop petit et n'écrit rien ; un cadre
+sur une zone vide n'écrit rien non plus. Quand rien n'est trouvé, mettez la photo de côté toute seule (Suppr dans sa grande
+vue).
 
 ## Options
 

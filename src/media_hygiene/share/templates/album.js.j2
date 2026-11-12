@@ -24,14 +24,16 @@ function problem(text) {
   $("problem").textContent = text || "";
   $("problem").hidden = !text;
 }
+// `undo`: what takes the change back (a delete: the copy the server kept, 0499; a photo taken
+// out: added again, 0696), its answer read back from the disk.
 function toast(text, undo) {
   const box = $("toast");
   box.textContent = text;
-  if (undo) { // the albums of a delete, put back from the copy the server kept (0499)
+  if (undo) {
     const button = document.createElement("button");
     button.type = "button";
     button.textContent = `↩ ${T.undo}`;
-    button.addEventListener("click", () => { box.hidden = true; edit({ action: "restore" }); });
+    button.addEventListener("click", () => { box.hidden = true; undo(); });
     box.append(button);
   }
   box.hidden = false;
@@ -118,7 +120,7 @@ async function edit(body) {
   if (document.documentElement.hasAttribute("data-phone")) return; // read-only (0429)
   const answer = await ask(P.change, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
   if (!answer) return;
-  toast(answer.message, body.action === "delete");
+  toast(answer.message, body.action === "delete" ? () => edit({ action: "restore" }) : null);
   showList();
 }
 async function deleteTicked() {
@@ -203,17 +205,27 @@ function move(step) {
 async function change(action, name) {
   const item = items[at];
   if (!item || !album || document.documentElement.hasAttribute("data-phone")) return; // read-only (0429)
-  if (action === "remove" && !await window.mhAsk({ lines: [fill(T.outAsk, { name: album.name })], yes: T.outYes })) return;
   const body = JSON.stringify({ action, album: name || album.name, keys: [String(item.key)] });
   const answer = await ask(P.change, { method: "POST", headers: { "Content-Type": "application/json" }, body });
   if (!answer) return;
-  toast(answer.message);
+  toast(answer.message, action === "remove" ? () => putBack(album.name, item.key) : null);
   if (action === "cover") showAlbum(album.name); // the cover, as read back from the disk
   if (action === "remove") {
     closeViewer(false);
     if (answer.albums.some((each) => each.name === album.name)) showAlbum(album.name);
     else location.hash = "";
   }
+}
+// The toast's Undo of a photo taken out (0696): the same add as *Add to an album*; the album
+// shown is then the one read back from albums.json (made again if it was its last photo).
+async function putBack(name, key) {
+  const body = JSON.stringify({ action: "add", album: name, keys: [String(key)] });
+  const answer = await ask(P.change, { method: "POST", headers: { "Content-Type": "application/json" }, body });
+  if (!answer) return;
+  toast(answer.message);
+  const hash = "#a/" + encodeURIComponent(name);
+  if (LINK || location.hash === hash) showAlbum(name);  // else the hash change shows it
+  else location.hash = hash;
 }
 // Add to an album (0372): the saved albums, the most recent first, then a new name.
 async function openSheet() {

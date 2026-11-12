@@ -377,6 +377,12 @@ def test_the_command_exits_with_the_step_chosen(
     closed = run(cli, "home")
     assert closed.exit_code == 0
     assert "Home page closed" in closed.output
+    # Its tab closed: the code `mh` reads to close the icon's window (0262).
+    code = int(ExitCode.PAGE_CLOSED)
+    monkeypatch.setattr(home, "serve_home", lambda _runtime, _state, _port: code)
+    gone = run(cli, "home")
+    assert gone.exit_code == code
+    assert "tab was closed" in gone.output
 
 
 _KEEP_OPEN = (

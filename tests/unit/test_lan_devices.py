@@ -26,6 +26,7 @@ from media_hygiene.review.lan_phones_api import (
 )
 from media_hygiene.review.local_app import PAGE_PATH
 from media_hygiene.search.views import PREVIEW_PREFIX, THUMB_PREFIX
+from tests.support.tv_pairing import tv_paired
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -215,3 +216,39 @@ def test_a_moved_lan_folder_means_pairing_again(tmp_path: Path) -> None:
     moved = PhoneBook(tmp_path / "new")
     assert not moved.knows(token)
     assert Activity(moved, _Clock()).of(book.listed()[0].id) == []
+
+
+def test_a_tv_forgotten_while_connected_is_refused_at_once(tmp_path: Path) -> None:
+    """0702: forgotten on the PC, the same run's TV gets the pairing page next."""
+    book = PhoneBook(tmp_path)
+    screens, token = tv_paired(book.tvs())
+    assert screens.is_paired(token, _PEER)
+    assert screens.paired == 1
+    assert book.tvs().forget(book.tvs().listed()[0].id)
+    assert not screens.is_paired(token, _PEER)
+    assert screens.paired == 0
+    assert screens.arrive(token) is not None  # a new token: its code shown again
+    assert not screens.is_paired("", _PEER)
+
+
+def test_a_tv_unwritten_stays_paired_in_memory(tmp_path: Path) -> None:
+    """`tvs.json` unwritable at pairing: the TV keeps the show for this run."""
+    book = PhoneBook(tmp_path / "gone")
+    screens, token = tv_paired(book.tvs())
+    assert screens.is_paired(token, _PEER)
+    assert not screens.is_paired("0" * 64, _PEER)
+
+
+def test_a_tv_s_last_seen_is_written_at_most_once_an_hour(tmp_path: Path) -> None:
+    """Its first request dates it; later ones within the hour write nothing."""
+    book = PhoneBook(tmp_path)
+    screens, token = tv_paired(book.tvs())
+    assert screens.is_paired(token, _PEER)
+    tv = book.tvs().listed()[0]
+    assert tv.last_seen is not None
+    assert tv.address == _PEER
+    written = (tmp_path / TVS_FILE).stat().st_mtime_ns
+    assert screens.is_paired(token, _PEER)
+    assert screens.is_paired(token)  # no address: the one written is kept
+    assert (tmp_path / TVS_FILE).stat().st_mtime_ns == written
+    assert book.tvs().listed()[0].address == _PEER

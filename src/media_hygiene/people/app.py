@@ -125,10 +125,14 @@ class PeopleApp:
                 raise ValueError(_("type a name first"))  # noqa: TRY301
             board = self.roster.board
             faces = asked.faces
-            if asked.action == "name":  # never confirm a face of a photo set aside
+            if asked.action in {
+                "name",
+                "move",
+            }:  # never confirm a face of a photo set aside
                 faces = not_aside(board, faces, self._view())
             naming = Naming(asked.name, board.ids(faces), board.ids(asked.removed))
-            saved = self.roster.change(Change(asked.action, naming))
+            change = Change(asked.action, naming, asked.source)
+            saved = self.roster.change(change)
         except (ValueError, TypeError, OSError) as exc:  # ValidationError included
             return save_refused(exc)
         return json_response(HTTPStatus.OK, {**self._state(), "saved": saved})

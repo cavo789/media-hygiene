@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import asyncio
 from http import HTTPStatus
+from pathlib import Path
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, cast
 
+from media_hygiene.cli.menu_entry import Space
 from media_hygiene.review.http import Request
 from media_hygiene.review.setting_groups import EVENTS_PATH, GROUPS
 from media_hygiene.services.settings_here import (
@@ -18,8 +20,6 @@ from media_hygiene.services.settings_index import config_only, leaf_keys, shown_
 from media_hygiene.services.settings_rows import setting_rows
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from media_hygiene.services.fresh_runtime import FreshRuntime
 
 _HOSTILE = "<img src=x onerror=alert(1)>"
@@ -95,3 +95,18 @@ def test_the_route_serves_the_page_and_writes_nothing(tmp_path: Path) -> None:
     posted = asyncio.run(here.handle(_request(SETTINGS_PAGE, "POST")))
     assert posted.status is HTTPStatus.METHOD_NOT_ALLOWED
     assert not (tmp_path / "c.toml").exists()
+
+
+def test_a_home_row_opens_a_card_that_the_home_page_draws() -> None:
+    """`/#<space>/<card>` (0707): the space exists, the card is drawn by the page."""
+    templates = Path(__file__).parents[2] / "src/media_hygiene/review/templates"
+    code = "".join(path.read_text("utf-8") for path in templates.glob("home*.j2"))
+    spaces = {space.value for space in Space}
+    cards = [row.href for row in setting_rows() if row.href.startswith("/#")]
+    assert cards
+    for href in cards:
+        space, _slash, card = href.removeprefix("/#").partition("/")
+        assert space == "home" or space in spaces, href
+        assert not card or f'id="{card}"' in code, href
+    assert any("/" in href.removeprefix("/#") for href in cards)
+    assert "function revealCard" in code

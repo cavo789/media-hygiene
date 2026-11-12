@@ -6,7 +6,8 @@ face of the board comes close to it or not, the faces left out of the groups inc
 only, 22,000 faces): a face kept by such a group lies at 0.48 or more from the mean of
 the others, the closest face left in the index at 0.44, and comparing with the
 nearest face of the group instead flags 10,000 faces and more. The faces of photos
-already set aside, or no longer on the disk, are left out.
+already set aside, or no longer on the disk, are left out; those the user said are not
+that person (`aside_not`, 0713) are listed apart, to take back.
 """
 
 from __future__ import annotations
@@ -83,12 +84,16 @@ class AlikeFinder:
             faces (the closest first).
         """
         found: list[dict[str, object]] = []
+        ignored = self._memory.ignored()
+        board = self._board
         for person in self._memory.people():
-            keys = self._alike(person, view)
-            if not keys:
+            every = self._alike(person, view)
+            out = ignored.get(person.aside, frozenset())
+            keys = tuple(key for key in every if board.faces[key].embedding not in out)
+            gone = tuple(key for key in every if board.faces[key].embedding in out)
+            if not every:
                 continue
-            board = self._board
-            photos = {board.faces[key].path for key in keys}
+            photos = {board.faces[key].path for key in keys}  # the ignored left out
             found.append(
                 {
                     "aside": person.aside,
@@ -96,6 +101,7 @@ class AlikeFinder:
                     "label": person.label,
                     "photos": len(photos),
                     "faces": faces_view(board, keys[:MOST], view.host),
+                    "ignored": faces_view(board, gone[:MOST], view.host),
                 }
             )
         return found

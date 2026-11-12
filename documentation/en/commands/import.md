@@ -230,7 +230,7 @@ against the estimate (*2 min gone by, of about 4*), then shows the home page by 
 brings it back, even when `mh.ps1` was written by an older image; typed in a console, it says that
 the PowerShell window tells when it is done. Started from the home page while it stays open (no
 second server), the tab opens the page by itself, and goes back to the home page after *Delete*
-or *Leave*: its ⏳ chip follows the deletion in the window of `mh`. If the page stopped meanwhile (ended in another tab,
+or *Leave*: its ⏳ chip follows the deletion in the window of `mh`; back home before *Delete* or *Leave all*, a click on that chip reopens the page. If the page stopped meanwhile (ended in another tab,
 the window of `mh` closed), a tick says so plainly — *The page is not running any more* — and the red
 button is refused: nothing more is saved there. Then, for each file ticked:
 

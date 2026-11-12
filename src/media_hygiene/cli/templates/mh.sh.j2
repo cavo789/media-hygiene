@@ -247,6 +247,7 @@ _{{ function }}_home() {
                 crashed=$SECONDS status=0 _{{ function }}_tab=1
                 continue
             fi
+            if [[ "$status" -eq {{ page_closed }} ]]; then continue; fi  # home's tab closed: 0 above
             if [[ "$status" -le {{ step_base }} || "$status" -ge {{ signal_base }} ]]; then return "$status"; fi
             _{{ function }}_tab=1
         fi

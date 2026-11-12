@@ -159,8 +159,12 @@ def root_of(path: Path, roots: tuple[Path, ...], runtime: Runtime) -> Path:
     """
     data_dir = runtime.locations.data_dir
     root = next((r for r in roots if is_within(path, r)), data_dir)
-    if root == data_dir and path.is_relative_to(data_dir):
-        return data_dir / path.relative_to(data_dir).parts[0]
+    if root != data_dir:
+        return root
+    # As text: `relative_to` walks every parent of every file (0703).
+    before, below, rest = str(path).partition(str(data_dir).rstrip("/") + "/")
+    if below and not before and rest:
+        return data_dir / rest.split("/", 1)[0]
     return root
 
 

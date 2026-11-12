@@ -1,7 +1,7 @@
 """The shared page pieces in Chromium: ask, busy, view in the URL, a step running.
 
 Ask (0663), busy (0664), the view in the URL (0666), a step on every page (0661),
-the controls visible at load and the bar menus (0665).
+the controls visible at load and the bar menus (0665), the places map framing (0339).
 
 Heavy (the Playwright image): CI only, where `MEDIA_HYGIENE_E2E_BROWSER` is set.
 """
@@ -14,6 +14,9 @@ from typing import Final
 
 import pytest
 
+from media_hygiene import places as places_static
+from media_hygiene.places.app import STATE_PATH
+from media_hygiene.places.photos import FOLDERS_PATH
 from tests.support.page_render import render_page
 from tests.support.pages_browser import BrowserRun, build_browser, run_browser
 
@@ -91,3 +94,32 @@ def test_the_library_shows_few_controls_and_its_menus_open_by_the_keyboard(
 def test_the_large_view_preloads_the_next_photo(tmp_path: Path) -> None:
     """300 ms previews: the second → shows at once, 2 requests at most (0675)."""
     assert _walk(tmp_path, "preload_walk.py", "search.html.j2") == ""
+
+
+def test_the_places_map_opens_on_every_country_and_ignores_zero_zero(
+    tmp_path: Path,
+) -> None:
+    """France, Belgium, Italy on screen at arrival; a 0, 0 cluster left out (0339)."""
+    given = {
+        "state_path": STATE_PATH.removeprefix("/"),
+        "folders_path": FOLDERS_PATH.removeprefix("/"),
+        "tiles": "http://tiles.test/{z}/{x}/{y}.png",
+        "osm_path": "",
+    }
+    page = tmp_path / "places.html"
+    page.write_text(render_page("places.html.j2", "api/other", given), "utf-8")
+    static = Path(places_static.__file__).parent / "static"
+    shots = tmp_path / "shots"
+    shots.mkdir()
+    build_browser()
+    walk = _SUPPORT / "places_frame_walk.py"
+    run = BrowserRun(
+        name="media-hygiene-places-frame-walk",
+        scripts=(walk, page, static / "leaflet.js", static / "leaflet.css"),
+        args=tuple(
+            f"/tmp/{name}"  # noqa: S108  # inside the browser's container
+            for name in ("places.html", "leaflet.js", "leaflet.css")
+        ),
+        network="bridge",  # the script installs playwright first
+    )
+    assert run_browser(run, shots) == ""

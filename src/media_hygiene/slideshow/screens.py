@@ -5,7 +5,8 @@ screen page gets a token of its own in a cookie and a short code to show; a phon
 already paired (`mh --lan`'s code) types that code on its remote, and from then on the
 TV's token opens the show. Under HTTPS `mh --lan` a TV paired is kept for good (0456):
 its token's hash in `/lan/tvs.json` (`PhoneBook`, the phones' rules), forgotten on the
-PC's card; otherwise tokens live in memory and the next run pairs the TV again. At
+PC's card and refused at its next request (0702, `booked`); otherwise tokens
+live in memory and the next run pairs the TV again. At
 most `MAX_WAITING` TVs wait at once (the oldest forgotten) and `MAX_FAILURES` wrong
 codes close the pairing of TVs until the server stops.
 """
@@ -17,6 +18,7 @@ import secrets
 import time
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.review.lan_phone_care import booked
 from media_hygiene.review.lan_phones import TV_NAME
 from media_hygiene.slideshow.chapters import Telling
 from media_hygiene.slideshow.screen_codes import draw_code
@@ -53,7 +55,8 @@ class Screens:
         self._book = book
         self._asked = -WAITING_SECONDS  # when a TV last asked for its code
         self._waiting: dict[str, str] = {}  # token -> code, oldest first
-        self._paired: set[str] = set()
+        # token -> trusted without the file (none, or unwritten); else read each time
+        self._paired: dict[str, bool] = {}
         self._photos_only: set[str] = set()  # TVs whose browser plays no video
         self.failures = 0
         self.telling = Telling.TV  # where the events are told, chosen on the phone
@@ -65,7 +68,7 @@ class Screens:
         Returns:
             False once every TV paired shows photos only; True without any TV.
         """
-        return not self._paired or not self._paired <= self._photos_only
+        return not self._paired or not self._paired.keys() <= self._photos_only
 
     def tell(self, token: str, *, films: bool) -> None:
         """Record whether a TV paired plays videos, as its page found out.
@@ -99,23 +102,28 @@ class Screens:
         """
         return self.failures >= MAX_FAILURES
 
-    def is_paired(self, token: str) -> bool:
-        """Tell whether a TV's token opens the show.
+    def is_paired(self, token: str, peer: str = "") -> bool:
+        """Tell whether a TV's token opens the show, `tvs.json` read now.
 
         Args:
             token: The TV's cookie, empty without one.
+            peer: Its address, for its last seen in `tvs.json`.
 
         Returns:
-            True for a TV paired by this server, or kept in `tvs.json`.
+            True for a TV paired in memory, or listed in `tvs.json` now; a TV
+            forgotten on the PC is refused at once (0702).
         """
-        if any(
+        if token and any(
             hmac.compare_digest(token.encode(), known.encode())
-            for known in self._paired
+            for known, memory in self._paired.items()
+            if memory
         ):
             return True
-        if self._book is None or not self._book.knows(token):
+        if self._book is None or not booked(self._book, token, peer):
+            self._paired.pop(token, None)  # forgotten on the PC: no longer counted
+            self._photos_only.discard(token)
             return False
-        self._paired.add(token)  # paired before a restart: counted from now on
+        self._paired[token] = False  # paired before a restart: counted from now on
         return True
 
     @property
@@ -179,21 +187,9 @@ class Screens:
         for token, code in self._waiting.items():
             if hmac.compare_digest(cleaned.encode(), code.encode()):
                 del self._waiting[token]
-                self._paired.add(token)
-                if self._book is not None:
-                    self._book.keep(token, TV_NAME)  # unwritten: in memory still
+                book = self._book
+                # unwritten: in memory still
+                self._paired[token] = book is None or not book.keep(token, TV_NAME)
                 return True
         self.failures += 1
         return False
-
-
-def screens_of(phones: PhoneBook | None) -> Screens:
-    """The TVs of a run: kept beside the phones paired for good (0456), else in memory.
-
-    Args:
-        phones: `phones.json` under HTTPS; None otherwise.
-
-    Returns:
-        The TVs, none paired in memory yet.
-    """
-    return Screens(None if phones is None else phones.tvs())

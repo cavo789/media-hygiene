@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Final
 
 from pydantic import ValidationError
 
+from media_hygiene.review.lan_guest_day import guest_over
 from media_hygiene.review.lan_phone_care import expire, now_utc
 from media_hygiene.review.lan_phone_model import FAMILY, GUEST, Phone, Phones, digest_of
 from media_hygiene.review.lan_tls import lan_folder
@@ -143,13 +144,16 @@ class PhoneBook:
             token: The cookie's value.
 
         Returns:
-            It (compared in constant time); None when unknown or forgotten.
+            It (compared in constant time); None when unknown, forgotten, or a
+            guest whose day is over (0709).
         """
         digest = digest_of(token).encode()
         found = [
             p for p in self.listed() if hmac.compare_digest(digest, p.digest.encode())
         ]
-        return found[0] if token and found else None
+        if not token or not found or guest_over(found[0], now_utc()):
+            return None
+        return found[0]
 
     def forget(self, phone_id: str) -> bool:
         """Forget a phone: its cookie opens nothing any more.

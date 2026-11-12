@@ -136,8 +136,8 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   closes it), so the form above never leaves the screen.
 - **Look**: Enter or a double click shows the photo large (with a link to the original); ← → (on a
   phone, a swipe) the previous or next one not set aside, Delete sets it aside then shows the previous one (the next one at the start), F full screen, L the landmark it
-  shows ([`spots`](spots.md#-type-the-landmark-yourself-key-l)), ? every key, Escape closes it. **👤 Set a person aside** finds every photo of someone on the one shown
-  ([`people`](people.md#from-any-page-set-a-person-aside)).
+  shows ([`spots`](spots.md#-type-the-landmark-yourself-key-l)), ? every key, Escape closes it. **👤 Identify someone** names someone on the photo shown, or finds every photo of them
+  ([`people`](people.md#from-any-photo-name-or-set-aside-someone)).
 
 - **A period**: *From* and *To* are calendars, a day each, both included; one alone is a period
   of one day. The day is the one the photo was taken, as `classify` dates it. *From* chosen,
@@ -498,7 +498,7 @@ click; the panel also offers **📺 Share on the TV** and **📨 Prepare for sen
   ever touches the other's list.
 - **In one click**: on a card of the 🗂 *Events* tab, **📚 Make an album** makes an album of the
   event's files, under the name proposed from its place and day, read back and opened in a new
-  tab. After a search, **📚 Make an album of these N results** does the same with every file
+  tab. After a search, **📚 Album ▾ → Album of the N found** does the same with every file
   found, under the words typed, within the album and Place filters (files set aside stay out; at
   most 3 000 at once, else narrow the search). A name already used adds to that
   album. With a [paired TV](slideshow.md), the card also has **📺 On the TV**.

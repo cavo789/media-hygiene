@@ -19,7 +19,7 @@
   "saving": _("Saving…"),
   "notSaved": _("Nothing was saved: {error}"),
   "noAlbum": _("Type the album's name in the bar first: then A adds the file shown."),
-  "chooseFace": _("Click the face of the person to set aside."),
+  "chooseFace": _("Click the face of the person to name or set aside."),
   "noFace": _("No face was found on this photo when its faces were analysed: look again, slower."),
   "notScanned": _("The faces of this photo were never looked for: run 'audit --people', or look again, slower."),
   "looking": _("Looking at the photo turned, one angle after the other…"),
@@ -28,9 +28,34 @@
   "label": _("Person of {name}"),
   "remembered": _("Their face is remembered: the people page shows the photos that look like them, to check."),
   "start": _("Paste the path of a photo of this person on the left."),
-  "again": _("Find every photo of a person on this one, to set them aside"),
+  "again": _("Identify someone on this photo: name them, or set them aside"),
+  "namerNot": [ngettext("Not {name}, this face is…", "Not {name}, these {n} faces are…", 1), ngettext("Not {name}, this face is…", "Not {name}, these {n} faces are…", 2)],
+  "namerIs": [ngettext("This face is…", "These {n} faces are…", 1), ngettext("This face is…", "These {n} faces are…", 2)],
+  "placeholder": _("Who is it? Type a name, then Enter"),
+  "save": _("Name"),
+  "nobody": _("? not named"),
+  "nobodyHint": _("Nobody was given this face yet: click it to name it."),
+  "confirmed": _("Named on purpose: confirmed"),
+  "guessed": _("Given by the tool, close to a confirmed face: not confirmed yet"),
+  "confirm": [ngettext("These are {name}: {n}", "These are {name}: {n}", 1), ngettext("These are {name}: {n}", "These are {name}: {n}", 2)],
+  "othersLeft": [ngettext("{n} photo picked is confirmed as someone else: left out (move it on the people page)", "{n} photos picked are confirmed as someone else: left out (move them on the people page)", 1), ngettext("{n} photo picked is confirmed as someone else: left out (move it on the people page)", "{n} photos picked are confirmed as someone else: left out (move them on the people page)", 2)],
+  "steps": _("① Tick the photos where it really is {name} (Ctrl+A ticks them all; × when it is not them) ② then:"),
+  "hiddenShown": [ngettext("{n} other hidden by the filter", "{n} others hidden by the filter", 1), ngettext("{n} other hidden by the filter", "{n} others hidden by the filter", 2)],
+  "showHint": _("Which photos the grid shows, by the name of the face that matched; Ctrl+A and the buttons act on the photos shown only"),
+  "pickToConfirm": _("Tick their photos in the grid, then confirm them here"),
+  "pickToConfirmHint": _("Confirms as {name} the face that matched on each photo ticked in the grid; the photos not ticked stay to decide"),
+  "confirmGuesses": [ngettext("✓ Confirm the name guessed: {n}", "✓ Confirm the names guessed: {n}", 1), ngettext("✓ Confirm the name guessed: {n}", "✓ Confirm the names guessed: {n}", 2)],
+  "confirmGuessesHint": _("Confirms every ≈ name the tool gave to the faces of this photo ({names})"),
+  "notName": _("Not {name}: saved, this photo leaves the search"),
+  "pathHint": _("A person's name is in this photo's folder or file name: a hint only, nothing is named from it"),
+  "sideHide": _("◀ Hide the panel"),
+  "sideShow": _("▶ Show the panel"),
+  "drawHint": _("Drag a box around the face the tool did not find."),
+  "drawLooking": _("Looking for the face in the box…"),
+  "drawn": _("Face drawn and kept: name it, then check its photos."),
+  "dropTile": _("Not this person: leaves this search (nothing saved)"),
 } %}
-{% set page_name = _("Set a person aside") %}
+{% set page_name = _("Identify someone") %}
 {% set pick_all = _("every file shown") %}
 {% set keys_safe = _("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") %}
 {% block style %}
@@ -39,12 +64,38 @@
   #find input { width: 100%; padding: 4px 8px; font: inherit; border: 1px solid var(--line);
                 border-radius: 6px; background: var(--bg); color: var(--text); }
   #faces { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
-  #faces img { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; cursor: pointer;
+  #faces .face { margin: 0; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+  #faces img { width: 72px; height: 72px; object-fit: cover; border-radius: 8px;
                border: 3px solid transparent; }
-  #faces img.chosen { border-color: var(--accent); }
+  #faces .face.chosen img { border-color: var(--accent); }
+  .who { font-size: .75rem; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .who.nobody { color: var(--muted); }
+  #namer { margin: 6px 0; } #namer input { width: 100%; }
+  #confirmGuesses { margin: 6px 0; width: 100%; }
+  #steps { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 8px 12px; margin: 4px 0 0;
+           border: 1px solid var(--accent); border-radius: 8px; }
+  #steps[hidden] { display: none; }
+  .pathName { font-size: .75rem; color: var(--muted); overflow-wrap: anywhere; }
+  .pathName.clash { color: var(--bad, #b3261e); font-weight: 600; }
+{% include "tile_view.css.j2" %}
+  body[data-tile-size="s"] #grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+  body[data-tile-size="l"] #grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  body[data-tile-size="xl"] #grid { grid-template-columns: repeat(auto-fill, minmax(460px, 1fr)); }
+  body[data-tile-size="l"] #grid .file img.matched { width: 80px; height: 80px; }
+  body[data-tile-size="xl"] #grid .file img.matched { width: 120px; height: 120px; }
+  article { position: relative; isolation: isolate; } /* the face crop stays under the bar */
+  .file img.matched { position: absolute; top: 4px; left: 4px; width: 48px; height: 48px; aspect-ratio: 1;
+             object-fit: cover; z-index: 1;
+             border-radius: 6px; border: 2px solid var(--bg); pointer-events: none; }
+  .named { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; justify-content: space-between; }
+  .notThem { padding: 0 6px; }
   #sideSaid { color: var(--muted); font-size: .85rem; overflow-wrap: anywhere; }
   .where { overflow-wrap: anywhere; font-size: .75rem; }
   .again { text-decoration: none; }
+  #drawFace { max-width: 92vw; }
+  #drawFrame { position: relative; display: inline-block; cursor: crosshair; touch-action: none; user-select: none; }
+  #drawPicture { display: block; max-width: 86vw; max-height: 70vh; }
+  #drawBox { position: absolute; border: 2px solid var(--accent); pointer-events: none; }
 {% endblock %}
 {% block side %}
     <form id="find">
@@ -54,13 +105,31 @@
     </form>
     <p id="sideSaid">{{ _("Their photos are found by their face; you check them before setting them aside.") }}</p>
     <div id="faces"></div>
+    <button id="confirmGuesses" type="button" hidden></button>
+    <div id="namer"></div>
     <button id="lookAgain" class="plain" type="button" hidden>{{ _("Look again, slower: the photo turned, less strict") }}</button>
+    <button id="drawOpen" class="plain" type="button" hidden>{{ _("✏ Draw a face the tool missed") }}</button>
 {% endblock %}
 {% block keys %}{% include "pick_keys.html.j2" %}{% endblock %}
 {% block more_keys %}{% include "pick_keys_more.html.j2" %}{% endblock %}
 {% block bar %}
     {% include "pick_acting.html.j2" %}
     {% include "album_bar.html.j2" %}
+    {% include "tile_view.html.j2" %}
+    <div id="steps" hidden>
+    <span id="stepsSaid"></span>
+    <button id="confirmNames" type="button"></button>
+    <label>{{ _("Show") }} <select id="showWhich">
+      <option value="todo" selected>{{ _("To confirm (≈ and ?)") }}</option>
+      <option value="all">{{ _("All the photos") }}</option>
+      <option value="mine">{{ _("✓ Confirmed as this person") }}</option>
+      <option value="guessed">{{ _("≈ Guessed as this person") }}</option>
+      <option value="nobody">{{ _("? Not named") }}</option>
+      <option value="other">{{ _("Someone else (✓ or ≈ another name)") }}</option>
+      <option value="pathMine">{{ _("📁 The folder or file name names this person") }}</option>
+      <option value="pathOther">{{ _("📁 The folder or file name names someone else") }}</option>
+    </select></label>
+  </div>
 {% endblock %}
 {% block content %}
   <main id="grid"></main>
@@ -68,10 +137,24 @@
 {% block after %}
 {% include "undo_toast.html.j2" %}
 {% include "pick_viewer.html.j2" %}
+<dialog id="drawFace" aria-labelledby="drawTitle">
+  <p id="drawTitle"><strong>{{ _("✏ Draw a face the tool missed") }}</strong></p>
+  <div id="drawFrame"><img id="drawPicture" alt=""><div id="drawBox" hidden></div></div>
+  <p id="drawSaid" aria-live="polite"></p>
+  <button id="drawCancel" class="plain" type="button">{{ _("Close") }}</button>
+</dialog>
 <script nonce="{{ page_nonce }}">
 {% include "pick_grid.js.j2" %}
 {% include "pick_viewer.js.j2" %}
 {% include "pick_band.js.j2" %}
 {% include "person.js.j2" %}
+{% include "combo_list.js.j2" %}
+{% include "people_name_face.js.j2" %}
+{% include "person_names.js.j2" %}
+{% include "path_names.js.j2" %}
+{% include "person_paths.js.j2" %}
+{% include "person_draw.js.j2" %}
+const TILE_VIEW_KEY = "mh-person-view";
+{% include "tile_view.js.j2" %}
 </script>
 {% endblock %}

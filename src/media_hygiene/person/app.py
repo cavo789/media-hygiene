@@ -19,14 +19,18 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from media_hygiene.i18n import _
 from media_hygiene.i18n.live import Page, page_of
+from media_hygiene.person.draw_route import drawn
 from media_hygiene.person.finding import face_view
+from media_hygiene.person.names import tagged
 from media_hygiene.person.pictures import PersonPictures
 from media_hygiene.person.routes import (
     APPLY_PATH,
     ASIDE_PATH,
+    DRAW_PATH,
     JPEG,
     LIKE_PATH,
     LOOK_PATH,
+    NAMES_PATH,
     PAGE_PATH,
     PHOTO_PATH,
     UNDO_PATH,
@@ -146,14 +150,18 @@ class PersonApp:
         """
         if path == LIKE_PATH:
             key = str(LikeAsked.model_validate_json(body).key)
-            return self.finder.like(key, self.aside)
+            return tagged(self.finder.names, self.finder.like(key, self.aside))
+        if path == NAMES_PATH and self.finder.names is not None:
+            return self.finder.names.answer(body)
+        if path == DRAW_PATH:
+            return await drawn(self, body)
         if path not in {PHOTO_PATH, LOOK_PATH}:
             return None
         typed = PhotoAsked.model_validate_json(body).path
         if path == LOOK_PATH:
             return await self._look(typed)
         chosen = 0 if self.aside is None else len(self.aside.paths())
-        return {**self.finder.photo(typed), "chosen": chosen}
+        return tagged(self.finder.names, {**self.finder.photo(typed), "chosen": chosen})
 
     async def _look(self, typed: str) -> dict[str, object]:
         """Look again at a photo, turned and less strict, in the worker pool.

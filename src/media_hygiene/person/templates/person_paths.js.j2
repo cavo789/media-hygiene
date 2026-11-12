@@ -1,0 +1,26 @@
+{# The names a photo's path gives (0714 follow-up): a folder "Avril 2004 - Manon 5 mois" or a
+   file "Petite Manon.png" names a person known on the people page. Shown on the tile as a hint
+   (📁 Manon), marked when it names someone else than the face's name; the grid's *Show* can
+   keep the photos whose path names this person, or someone else. A hint only: nothing is named
+   from a path without a click (`pathNames`: `path_names.js.j2`). #}
+// "mine": the path names the person chosen; "other": it names only other people; "" otherwise.
+function pathStatus(file) {
+  const named = pathNames(file.where);
+  if (!named.length || !seedName) return "";
+  return named.includes(seedName) ? "mine" : "other";
+}
+
+function pathTag(file) {
+  const named = pathNames(file.where);
+  if (!named.length) return null;
+  const tag = element("span", "pathName" + (pathStatus(file) === "other" ? " clash" : ""), "📁 " + named.join(", "));
+  tag.title = TEXTS.pathHint;
+  return tag;
+}
+
+function showPathTag(node, file) {
+  const old = node.querySelector(".pathName");
+  if (old) old.remove();
+  const tag = pathTag(file);
+  if (tag) node.querySelector(".named .who").after(tag);
+}

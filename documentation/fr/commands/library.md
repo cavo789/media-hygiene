@@ -146,9 +146,9 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
 - **Regarder** : Entrée ou un double clic montre la photo en grand (avec un lien vers
   l'original) ; ← → (sur un téléphone, un glissement) la précédente ou la suivante pas mise de côté, Suppr la met de côté puis montre la précédente (la suivante au début), F
   plein écran, L le monument qu'elle montre
-  ([`spots`](spots.md#-taper-soi-même-le-monument--touche-l)), ? toutes les touches, Échap la ferme. **👤 Mettre une personne de côté** trouve
-  toutes les photos de quelqu'un depuis celle qui est montrée
-  ([`people`](people.md#depuis-nimporte-quelle-page--mettre-une-personne-de-côté)).
+  ([`spots`](spots.md#-taper-soi-même-le-monument--touche-l)), ? toutes les touches, Échap la ferme. **👤 Identifier quelqu'un** nomme quelqu'un de la photo affichée, ou trouve
+  toutes ses photos
+  ([`people`](people.md#depuis-nimporte-quelle-photo--nommer-ou-mettre-de-côté-quelquun)).
 
 - **Une période** : *Du* et *Au* sont des calendriers, un jour chacun, inclus ; un seul est une
   période d'un jour. Le jour est celui de la prise de vue, tel que `classify` le date. *Du*
@@ -536,7 +536,7 @@ aussi **📺 Partager sur la télé** et **📨 Préparer l'envoi**.
   partage. Aucun des deux ne touche jamais la liste de l'autre.
 - **En un clic** : sur une carte de l'onglet 🗂 *Événements*, **📚 Faire un album** crée un album
   des fichiers de l'événement, au nom proposé d'après son lieu et son jour, relu puis ouvert dans
-  un nouvel onglet. Après une recherche, **📚 Faire un album de ces N résultats** fait de même avec
+  un nouvel onglet. Après une recherche, **📚 Album ▾ → Album des N trouvés** fait de même avec
   chaque fichier trouvé, au nom des mots tapés, dans les limites des filtres Album et Lieu (les
   fichiers mis de côté restent hors de l'album ; 3 000 au plus d'un coup, sinon affinez la recherche). Un nom déjà pris ajoute à cet album. Avec une [télé appairée](slideshow.md),
   la carte offre aussi **📺 Sur la télé**.

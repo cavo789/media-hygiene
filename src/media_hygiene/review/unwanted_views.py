@@ -11,6 +11,7 @@ from media_hygiene.console.formatting import human_number, human_size
 from media_hygiene.i18n import _
 from media_hygiene.plan.unwanted import UnwantedReason
 from media_hygiene.review.near_views import folder_and_name
+from media_hygiene.review.versioned import versioned
 from media_hygiene.review.views import (
     ORIGINAL_LINK,
     PREVIEW_LINK,
@@ -133,7 +134,7 @@ class UnwantedStateBuilder:
             name=name,
             folder=folder,
             details=" · ".join((size, human_size(file.size))),
-            preview=f"{PREVIEW_LINK}{key}.jpg",
+            preview=versioned(f"{PREVIEW_LINK}{key}.jpg", file),
             original=f"{ORIGINAL_LINK}{key}{file.path.suffix.lower()}",
             reason=photo.reason,
         )

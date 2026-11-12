@@ -34,10 +34,10 @@ first, likely candidates:
 
 ## Acceptance
 
-- [ ] Clusters in three countries: on arrival, the three are on screen, none hidden by the column.
-  → code work, not the maintainer's: listed in 0718 (2026-11-12)
-- [ ] A `0, 0` cluster does not zoom the map out to the world.
-  → code work, not the maintainer's: listed in 0718 (2026-11-12)
+- [x] Clusters in three countries: on arrival, the three are on screen, none hidden by the column.
+  → checked in Chromium by `tests/support/places_frame_walk.py` (0718, 2026-11-12)
+- [x] A `0, 0` cluster does not zoom the map out to the world.
+  → checked in Chromium by `tests/support/places_frame_walk.py` (0718, 2026-11-12)
 - [ ] Docs `commands/places.md` (en + fr) say it; `docs_screenshots` to run (the capture changes).
   → captures: one run of `docs_screenshots`, tracked in 0717 (2026-11-12)
 

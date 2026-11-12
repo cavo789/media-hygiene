@@ -1,0 +1,72 @@
+{# ✏ Draw a face (0715): the photo of `/person` in a dialog, a box dragged on it where the
+   detector found no face. The server looks for the face in the box (or takes the box
+   itself), keeps it in the index flagged drawn, and the page then names and searches it
+   like any face of the photo; too small or blurred, it says so and writes nothing. #}
+const drawing = { start: null, box: null };
+
+function drawSay(text) {
+  $("drawSaid").textContent = text;
+}
+
+async function openDrawing() {
+  if (!photo) return;
+  const result = await post(ROUTES.draw, { path: photo });
+  if (!result) return;
+  if (!result.picture) { sideSay(result.said || ""); return; }
+  $("drawPicture").src = result.picture;
+  $("drawBox").hidden = true;
+  drawSay(TEXTS.drawHint);
+  $("drawFace").showModal();
+}
+
+function drawPoint(event) {
+  const frame = $("drawPicture").getBoundingClientRect();
+  const x = Math.min(Math.max(event.clientX - frame.left, 0), frame.width);
+  const y = Math.min(Math.max(event.clientY - frame.top, 0), frame.height);
+  return { x: x, y: y, width: frame.width, height: frame.height };
+}
+
+function drawShow(from, to) {
+  const left = Math.min(from.x, to.x), top = Math.min(from.y, to.y);
+  const box = $("drawBox");
+  Object.assign(box.style, {
+    left: left + "px", top: top + "px",
+    width: Math.abs(to.x - from.x) + "px", height: Math.abs(to.y - from.y) + "px",
+  });
+  box.hidden = false;
+  drawing.box = [left / from.width, top / from.height,
+    Math.abs(to.x - from.x) / from.width, Math.abs(to.y - from.y) / from.height];
+}
+
+async function drawSend() {
+  const box = drawing.box;
+  drawing.box = null;
+  if (!box || box[2] <= 0 || box[3] <= 0) return;
+  drawSay(TEXTS.drawLooking);
+  const result = await post(ROUTES.draw, { path: photo, box: box });
+  if (!result) return;
+  if (!result.faces.length) { drawSay(result.said || ""); return; }
+  $("drawFace").close();
+  const key = result.faces[0].key;
+  await refreshFaces();
+  if (![...$("faces").children].some((face) => Number(face.dataset.key) === key)) showFaces(result.faces, true);
+  sideSay(TEXTS.drawn);
+  await chooseFace(key, null);
+  if (result.namedOnly) sideSay(result.said); // too blurred to search: named on this photo only
+}
+
+$("drawPicture").draggable = false;
+$("drawFrame").addEventListener("pointerdown", (event) => {
+  event.preventDefault();
+  drawing.start = drawPoint(event);
+  $("drawFrame").setPointerCapture(event.pointerId);
+});
+$("drawFrame").addEventListener("pointermove", (event) => {
+  if (drawing.start) drawShow(drawing.start, drawPoint(event));
+});
+$("drawFrame").addEventListener("pointerup", () => {
+  drawing.start = null;
+  drawSend();
+});
+$("drawCancel").addEventListener("click", () => $("drawFace").close());
+$("drawOpen").addEventListener("click", openDrawing);

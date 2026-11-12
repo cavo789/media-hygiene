@@ -2,13 +2,15 @@
 
 A browser does not open a `file://` link from a page served over HTTP: the reports and
 their previews are served by the page's own server instead, read-only, never outside
-the reports folder.
+the reports folder. The tool's own hidden files there (`.mh-*`: steps, pairing, the
+phone page's hand-over) are never served, to any device (0710).
 """
 
 from __future__ import annotations
 
 import asyncio
 from http import HTTPStatus
+from pathlib import PurePosixPath
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 from urllib.parse import unquote
@@ -33,6 +35,7 @@ _SERVED: Final = MappingProxyType(
         ".txt": ContentType.TEXT,
     }
 )
+_HIDDEN: Final = ".mh-"  # the tool's own files in the reports folder
 
 
 def report_file(reports_dir: Path, path: str) -> Path | None:
@@ -43,9 +46,12 @@ def report_file(reports_dir: Path, path: str) -> Path | None:
         path: The path asked for; `/reports/` alone is `index.html`.
 
     Returns:
-        The file, or None when it is outside the folder or missing.
+        The file, or None when it is outside the folder, missing or one of the
+        tool's hidden `.mh-*` files.
     """
     relative = unquote(path.removeprefix(REPORTS_PREFIX)) or REPORT_INDEX_FILE_NAME
+    if any(part.startswith(_HIDDEN) for part in PurePosixPath(relative).parts):
+        return None
     root = reports_dir.resolve()
     target = (root / relative).resolve()
     if not target.is_relative_to(root) or not target.is_file():
