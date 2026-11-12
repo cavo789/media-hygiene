@@ -54,7 +54,7 @@
   .folderBar input { width: 20px; height: 20px; margin: 0; accent-color: var(--bad); cursor: pointer; }
   .fold { padding: 0 6px; }
   .folder.folded .tiles { display: none; }
-  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(170px * var(--tile-scale))), 1fr)); gap: 10px; }
   .file .empty { font-size: 2rem; }
   /* Ticked: leaves the phone once Delete is pressed. */
   .file:has(.badge) { border-style: dashed; border-color: var(--bad); }

@@ -51,7 +51,7 @@
   .folder.lose { border: 3px dashed var(--bad); }
   .folder.linked { border: 3px dotted var(--accent); }
   .tag { font-weight: 600; }
-  .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(200px * var(--tile-scale))), 1fr)); gap: 12px; }
   .shot { margin: 0; padding: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
   .shot img { display: block; width: 100%; height: auto; max-height: 40vh; object-fit: contain;
               border-radius: 6px; background: var(--bg); }
@@ -89,6 +89,7 @@
   <span id="eta" class="muted"></span>
   <span id="status" role="status" aria-live="polite"></span>
   {% include "apply_now.html.j2" %}
+  {% include "tile_view.html.j2" %}
 {% endblock %}
 {% block content %}
 <main>

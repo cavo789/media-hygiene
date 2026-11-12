@@ -585,6 +585,9 @@ msgstr ""
 msgid "A click on a file moves the cursor to it."
 msgstr ""
 
+msgid "A click: name it here."
+msgstr ""
+
 #, python-brace-format
 msgid "A commented configuration file was created: {path}."
 msgstr ""
@@ -4407,6 +4410,9 @@ msgstr ""
 msgid "Its name is the folder's in the quarantine."
 msgstr ""
 
+msgid "Its other photos"
+msgstr ""
+
 #, python-brace-format
 msgid "Its share of the sharpest faces' sharpness; its faces' score: {score}"
 msgstr ""
@@ -4575,9 +4581,6 @@ msgstr ""
 msgid ""
 "Language of the words: \"en\", \"fr\", or empty for the language of the "
 "interface."
-msgstr ""
-
-msgid "Large"
 msgstr ""
 
 msgid "Large: the whole caption and every word"
@@ -9117,9 +9120,6 @@ msgstr ""
 msgid ""
 "Slideshow ready: the remote at {url} on this PC. Ctrl+C stops it; your "
 "photos are not changed."
-msgstr ""
-
-msgid "Small"
 msgstr ""
 
 msgid "Small: the photos only"

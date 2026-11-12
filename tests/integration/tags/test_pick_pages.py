@@ -297,7 +297,8 @@ _MENU_ORDER = (
 )
 # Controls visible at load on /library, counted from the HTML (visible_controls):
 # 46 before 0665 (2026-11-11), 33 after; a new one must find its place in a menu.
-_MOST_VISIBLE = 33
+# 35 on 2026-11-12: XL and ◀ Hide the panel, the view shared by every page of tiles.
+_MOST_VISIBLE = 35
 
 
 def test_the_bar_menus_come_in_one_order_and_open_by_the_keyboard(

@@ -1,38 +1,102 @@
-{# Who is on the photo opened large (0714): "👤 ✓ Chloé · ≈ Paul · ? not named", asked of
-   `/person/api/photo` (the index) only when a photo is opened, one small request each, never
-   shipped with the tiles. A "?" opens `/person` on that photo, its naming line on that face.
-   Included by `pick_viewer.js.j2`; `#viewerWho` (`pick_viewer.html.j2`) holds the words. #}
-let whoAsked = 0; // the latest photo asked: an answer for an earlier one is dropped
+{# Who is on the photo opened large (0714), and naming them right there, in every large view
+   (2026-11-12: the people page's view named the face shown, the others sent to /person): "👤
+   ✓ Chloé · ≈ Paul · ? not named", each face with its picture, asked of `/person/api/photo`
+   (the index) only when a photo is opened, one small request each, never shipped with the
+   tiles. A click on a face opens under the line "This face is… [name] [Name]" ("Not Paul, this
+   face is…"), saved by `/person/api/names` as /person and the people page save it (`move`):
+   the line the server read back from config.toml is said, then the faces are asked again.
+   "👤 Its other photos" opens /person on that face. Read-only (a phone, no config.toml): the
+   names only. Included by `pick_viewer.js.j2` and `people_viewer.js.j2` (needs `$`, `element`,
+   `fill`); `#viewerWho` (`pick_viewer.html.j2`) holds the words; a page that shows names
+   listens to the `mh-named` event of `document`. #}
+{% include "combo_list.js.j2" %}
+let whoAsked = 0;   // the latest photo asked: an answer for an earlier one is dropped
+let whoFile = null; // the file whose faces are shown
+
+async function whoAsk(url, body) {
+  const options = { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
+  const answer = await fetch(url, options).catch(() => null);
+  if (!answer || !answer.ok) return null;
+  return answer.json().catch(() => null);
+}
 
 async function showWho(file) {
   const who = $("viewerWho");
   const asked = ++whoAsked;
+  whoFile = file;
   who.hidden = true;
   who.replaceChildren();
+  $("viewerWhoName").replaceChildren();
   if (!file.path || file.video) return;
-  const options = { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ path: file.path }) };
-  const answer = await fetch("/person/api/photo", options).catch(() => null);
-  if (!answer || !answer.ok || asked !== whoAsked) return;
-  const result = await answer.json().catch(() => ({}));
-  const faces = result.faces || [];
-  if (!faces.length || asked !== whoAsked) return;
+  const result = await whoAsk("/person/api/photo", { path: file.path });
+  const faces = result && asked === whoAsked ? result.faces || [] : [];
+  if (!faces.length) return;
+  const writable = Boolean(result.writable) && !document.documentElement.hasAttribute("data-phone");
   who.append("👤 ");
   faces.forEach((face, at) => {
     if (at) who.append(" · ");
-    const named = face.named;
-    if (named && named.name) {
-      const sure = named.how === "confirmed";
-      const tag = element("span", sure ? "" : "guessed", (sure ? "✓ " : "≈ ") + named.name);
-      tag.title = sure ? who.dataset.confirmed : who.dataset.guessed;
-      who.append(tag);
-      return;
-    }
-    const link = element("a", "", who.dataset.nobody);
-    link.href = "/person?path=" + encodeURIComponent(file.path) + "&face=" + at;
-    link.target = "_blank";
-    link.rel = "noopener";
-    link.title = who.dataset.hint;
-    who.append(link);
+    who.append(whoFace(face, writable ? () => whoNamer(face, at, result.people || []) : null));
   });
   who.hidden = false;
+}
+
+// One face: its picture and its name (✓ confirmed, ≈ guessed, ? nobody); a button to name it.
+function whoFace(face, name) {
+  const who = $("viewerWho");
+  const named = face.named && face.named.name ? face.named : null;
+  const sure = Boolean(named) && named.how === "confirmed";
+  const tag = element(name ? "button" : "span", "whoFace" + (named && !sure ? " guessed" : ""));
+  if (face.face) {
+    const crop = element("img");
+    crop.src = face.face;
+    crop.alt = "";
+    tag.append(crop);
+  }
+  tag.append(named ? (sure ? "✓ " : "≈ ") + named.name : who.dataset.nobody);
+  tag.title = named ? (sure ? who.dataset.confirmed : who.dataset.guessed) : who.dataset.hint;
+  if (name) {
+    tag.type = "button";
+    tag.title += " " + who.dataset.click;
+    tag.addEventListener("click", name);
+  }
+  return tag;
+}
+
+// "This face is… [name] [Name]" under the line; Enter or a name picked saves it.
+function whoNamer(face, at, people) {
+  const who = $("viewerWho");
+  const file = whoFile;
+  const source = face.named && face.named.name ? face.named.name : "";
+  const said = source ? fill(who.dataset.not, { name: source }) : who.dataset.is;
+  const input = element("input");
+  input.placeholder = who.dataset.placeholder;
+  input.setAttribute("aria-label", said);
+  const go = async (name) => {
+    if (!name) return;
+    const line = $("viewerSaid");
+    line.className = "";
+    line.textContent = who.dataset.saving;
+    const body = { action: "move", name: name, faces: [Number(face.key)], source: source };
+    const saved = await whoAsk("/person/api/names", body);
+    line.className = saved && !saved.error ? "" : "error";
+    line.textContent = saved ? saved.error || saved.saved : who.dataset.offline; // read back
+    if (!saved || saved.error) return;
+    document.dispatchEvent(new CustomEvent("mh-named"));
+    if (whoFile === file) showWho(file); // the names as the file says now
+  };
+  const box = comboAttach(input, () => people, (row) => go(row.value));
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") go(input.value.trim());
+    if (event.key === "Escape") input.blur();
+    event.stopPropagation(); // typed here, never a key of the large view
+  });
+  const button = element("button", "", who.dataset.save);
+  button.type = "button";
+  button.addEventListener("click", () => go(input.value.trim()));
+  const others = element("a", "", who.dataset.others);
+  others.href = "/person?path=" + encodeURIComponent(file.path) + "&face=" + at;
+  others.target = "_blank";
+  others.rel = "noopener";
+  $("viewerWhoName").replaceChildren(element("span", "", said), box, button, others);
+  input.focus();
 }

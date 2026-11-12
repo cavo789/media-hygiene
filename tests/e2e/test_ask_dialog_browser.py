@@ -1,7 +1,8 @@
 """The shared page pieces in Chromium: ask, busy, view in the URL, a step running.
 
 Ask (0663), busy (0664), the view in the URL (0666), a step on every page (0661),
-the controls visible at load and the bar menus (0665), the places map framing (0339).
+the controls visible at load and the bar menus (0665), the places map framing (0339),
+the tile view and naming a face in the large view (2026-11-12).
 
 Heavy (the Playwright image): CI only, where `MEDIA_HYGIENE_E2E_BROWSER` is set.
 """
@@ -130,3 +131,14 @@ def test_the_places_map_opens_on_every_country_and_ignores_zero_zero(
         network="bridge",  # the script installs playwright first
     )
     assert run_browser(run, shots) == ""
+
+
+@pytest.mark.parametrize(
+    "template",
+    ["search.html.j2", "person.html.j2", "quarantine.html.j2", "review.html.j2"],
+)
+def test_the_tile_view_and_naming_in_the_large_view(
+    tmp_path: Path, template: str
+) -> None:
+    """S/M/L/XL kept, the panel hidden; a face named in the large view (2026-11-12)."""
+    assert _walk(tmp_path, "who_walk.py", template) == ""

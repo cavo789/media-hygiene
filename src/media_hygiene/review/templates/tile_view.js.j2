@@ -1,24 +1,27 @@
 {# The view of a page of tiles (`tile_view.html.j2`): the size of the tiles and the left panel
    hidden, kept per page and per viewer in this browser only (a convenience: the page works the
-   same without it). `TILE_VIEW_KEY` names the page; `TEXTS.sideHide`/`sideShow` the button. #}
+   same without it). Included by `pick_grid.js.j2`: a page without `#view` is left as it is. #}
 (() => {
-  const read = () => { try { return JSON.parse(localStorage.getItem(TILE_VIEW_KEY) || "{}"); } catch (error) { return {}; } };
+  const view = document.getElementById("view");
+  if (!view) return;
+  const key = view.dataset.key || "mh-view:" + location.pathname;
+  const read = () => { try { return JSON.parse(localStorage.getItem(key) || "{}"); } catch (error) { return {}; } };
   const sizes = document.getElementById("sizes");
   const toggle = document.getElementById("sideToggle");
-  const show = (view) => {
-    document.body.dataset.tileSize = view.size || "m";
+  const show = (kept) => {
+    document.body.dataset.tileSize = kept.size || "m";
     for (const button of sizes.querySelectorAll("button")) {
       button.setAttribute("aria-pressed", String(button.dataset.size === document.body.dataset.tileSize));
     }
-    const hidden = Boolean(view.sideHidden);
+    const hidden = Boolean(kept.sideHidden);
     document.querySelector(".layout").classList.toggle("sideHidden", hidden);
-    toggle.textContent = hidden ? TEXTS.sideShow : TEXTS.sideHide;
+    toggle.textContent = hidden ? view.dataset.show : view.dataset.hide;
     toggle.setAttribute("aria-pressed", String(hidden));
   };
   const change = (part) => {
-    const view = { ...read(), ...part };
-    try { localStorage.setItem(TILE_VIEW_KEY, JSON.stringify(view)); } catch (error) { /* not kept */ }
-    show(view);
+    const kept = { ...read(), ...part };
+    try { localStorage.setItem(key, JSON.stringify(kept)); } catch (error) { /* not kept */ }
+    show(kept);
   };
   sizes.addEventListener("click", (event) => {
     const button = event.target.closest("button[data-size]");

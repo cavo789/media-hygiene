@@ -131,6 +131,7 @@
   "hand": _("the words you gave the photos with 🏷 Tag…, kept in your settings."),
 } %}
 {% set page_name = _("Library") %}
+{% set tile_view_key = "mh-library-view" %}
 {% set rule_title = _("Make it a rule") %}
 {% set rule_update = true %}
 {% set rule_go = true %}
@@ -176,7 +177,6 @@
                            /* below the shell's header (0595): its ⋯ reachable, never under it */
                            top: calc(var(--mh-shell-top-h, 0px) + 16px); max-height: calc(100vh - var(--mh-shell-top-h, 0px) - 32px); padding: 10px 12px; background: var(--card);
                            border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 4px 18px rgba(0, 0, 0, .3); }
-{% include "combo_list.css.j2" %}
 {% include "search_bar.css.j2" %}
 {% endblock %}
 {% block side %}
@@ -297,12 +297,6 @@
     {% set order_rate = true %}
     {% set order_short = true %}
     {% include "pick_order.html.j2" %}
-    <div class="seg" id="sizes" role="group" aria-label="{{ _('Thumbnail size') }}">
-      <input type="hidden" id="size" value="m">
-      <button type="button" data-for="size" data-value="s" aria-pressed="false" title="{{ _('Small: the photos only') }}">S</button>
-      <button type="button" data-for="size" data-value="m" aria-pressed="true" title="{{ _('Medium') }}">M</button>
-      <button type="button" data-for="size" data-value="l" aria-pressed="false" title="{{ _('Large: the whole caption and every word') }}">L</button>
-    </div>
     {% set album_found = true %}
     {% include "album_bar.html.j2" %}
     <details id="moveBar" class="barPanel closesOnChoice">
@@ -349,7 +343,6 @@
 {% include "search_chips.js.j2" %}
 {% include "search_folders.js.j2" %}
 {% include "search_sort_setup.js.j2" %}
-{% include "combo_list.js.j2" %}
 {% include "search_path_list.js.j2" %}
 {% include "rule_dialog.js.j2" %}
 {% include "move_dialog.js.j2" %}

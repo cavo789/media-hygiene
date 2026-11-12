@@ -75,8 +75,6 @@
   "toConfirm": _("{n} to confirm"),
   "unnamedEntry": _("Unnamed groups ({n})"),
   "itIs": _("It is {name}? ({score})"),
-  "sideHide": _("◀ Hide the panel"),
-  "sideShow": _("▶ Show the panel"),
   "pathHint": _("A person's name is in this photo's folder or file name: a hint only, nothing is named from it"),
   "pathPickOwn": [ngettext("📁 Show the face whose folder or file names {name}", "📁 Show the {n} faces whose folder or file names {name}", 1), ngettext("📁 Show the face whose folder or file names {name}", "📁 Show the {n} faces whose folder or file names {name}", 2)],
   "pathPickOwnHint": _("Shows only these faces, among those shown, picked: check them, then confirm them as this person"),
@@ -92,13 +90,12 @@
   "suggestHint": _("This group looks like the faces you confirmed as this person's: a click names it so (y)."),
 } %}
 {% set page_name = _("People") %}
+{% set tile_view_key = "mh-people-view" %}
 {% set keys_safe = _("Names go to config.toml; the photos are never changed and the faces stay on this computer. Nothing is deleted here: 'clean --decisions' moves the photos set aside to the quarantine, 'undo' brings them back.") %}
 {% set pick_album = false %}
 {% block style %}
-{% include "combo_list.css.j2" %}
 {% include "pick_viewer.css.j2" %}
 {% include "people.css.j2" %}
-{% include "tile_view.css.j2" %}
 {% endblock %}
 {% block side %}
   <section id="toc" aria-label="{{ _('People') }}">
@@ -163,11 +160,9 @@ const SAMPLE = {{ sample_prefix | tojson }};
 {% include "people_name_face.js.j2" %}
 {% include "people_face_band.js.j2" %}
 {% include "people_viewer.js.j2" %}
-{% include "combo_list.js.j2" %}
 {% include "people_guide.js.j2" %}
 {% include "path_names.js.j2" %}
 {% include "people_path_names.js.j2" %}
-const TILE_VIEW_KEY = "mh-people-view";
 {% include "tile_view.js.j2" %}
 {% if new_photos %}{% include "people_new_photos.js.j2" %}{% endif %}
 load();

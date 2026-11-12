@@ -35,11 +35,13 @@ def test_show_and_sorted_are_segmented_in_the_left_column() -> None:
 
 
 def test_the_thumbnail_sizes_are_in_the_bar() -> None:
-    """S, M, L: kept per viewer, the photo only at S."""
+    """S, M, L, XL: the shared view, kept per viewer, the photo only at S."""
     page = render_page("search.html.j2")
-    sizes = re.findall(r'data-for="size" data-value="(\w)"', _bar(page))
-    assert sizes == ["s", "m", "l"]
-    assert 'main[data-size="s"] .meta { display: none; }' in page
+    sizes = re.findall(r'data-size="(\w+)" title=', _bar(page))
+    assert sizes == ["s", "m", "l", "xl"]
+    assert 'data-key="mh-library-view"' in _bar(page)
+    assert 'body[data-tile-size="s"] .file .meta > :not(.named)' in page
+    assert 'data-for="size"' not in page  # its own S/M/L, gone (2026-11-12)
 
 
 def test_the_panel_lists_invert_under_more_keys_and_floats_it() -> None:

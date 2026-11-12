@@ -1,5 +1,5 @@
 {# The library page's bar (chips of the active filters, +N), its segmented controls,
-   dates and thumbnail sizes; cut out of `search.html.j2`. #}
+   dates and the tiles' captions; cut out of `search.html.j2`. #}
   #withinLine { display: flex; gap: 6px; align-items: baseline; overflow-wrap: anywhere; }
   #withinLine[hidden] { display: none; }
   #heaviest { width: 100%; margin-top: 6px; }
@@ -41,10 +41,7 @@
                            padding: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
   /* 🔍 Search stays in sight at the bottom of the form, however long the column. */
   #go { position: sticky; bottom: 0; z-index: 1; }
-  /* Thumbnail sizes (S/M/L, kept per viewer): S the photo only, M one line each, L everything. */
-  main[data-size="s"] { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-  main[data-size="s"] .meta { display: none; }
-  main[data-size="l"] { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
-  main:not([data-size="l"]) .meta > div:not(.chips) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  main:not([data-size="l"]) .chips { max-height: 3em; overflow: hidden; }
-  main:not([data-size="l"]) .chip.extra, main[data-size="l"] .chip.rest { display: none; }
+  /* The tiles' size is the shared view's (`tile_view.html.j2`): M one line each, L and XL everything. */
+  body:not([data-tile-size="l"], [data-tile-size="xl"]) main .meta > div:not(.chips) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  body:not([data-tile-size="l"], [data-tile-size="xl"]) main .chips { max-height: 3em; overflow: hidden; }
+  body:not([data-tile-size="l"], [data-tile-size="xl"]) main .chip.extra, body:is([data-tile-size="l"], [data-tile-size="xl"]) main .chip.rest { display: none; }

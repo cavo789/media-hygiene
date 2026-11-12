@@ -6,6 +6,12 @@ disable-model-invocation: false
 
 # Pages of photos to pick — one model for every page
 
+**Reuse first, always** (the maintainer, 2026-11-12): a feature of a page of tiles or of a
+large view lives in a shared template, never in one page. Before writing, find the shared part
+(the tables below); a page that needs more adds it there, so every page of the same kind gets
+it in the same change. `tests/unit/test_same_features_on_pages.py` fails when one page lacks
+what its kind offers.
+
 The maintainer's rule (2026-10-23): every HTML page of the tool where photos can be picked
 **must** look and work the same — same layout, same keyboard shortcuts where they apply, same
 navigation, same way to pick photos. A user who learnt `browse` must not have to learn another
@@ -166,6 +172,23 @@ opened from the home page.
 ## The view of a page of tiles
 
 S/M/L/XL and *◀ Hide the panel* are `review/templates/tile_view.{html,css,js}.j2`: one
-markup, one script, a `TILE_VIEW_KEY` per page; the page sizes its tiles from
-`body[data-tile-size]` in its own CSS. `/person` and the people page use it; a tile page
-without it is a bug (same features on pages of the same kind).
+markup (included by `pick_acting.html.j2`, so every page of tiles to pick has it; the people
+page and the group reviews include it in their bar), one script (included by
+`pick_grid.js.j2`), its look in the frame's CSS. Kept per page (`tile_view_key`, else the
+page's address). A grid of tiles scales with it: `minmax(min(100%, calc(<width> *
+var(--tile-scale))), 1fr)`; S hides the captions (a `.named` line stays), L and XL show all of
+them. No page keeps a size switch of its own (the library's S/M/L was one, removed 2026-11-12).
+
+## Who is on the photo, in every large view
+
+`pick_who.js.j2` (included by `pick_viewer.js.j2` and the people page's `people_viewer.js.j2`):
+under the photo, each face with its picture and its name (✓ ≈ ?), asked of
+`/person/api/photo`; a click opens `#viewerWhoName`, *This face is… [name] [Name]*, saved by
+`/person/api/names` (`move`, as /person and the people page), the line read back said, the
+faces asked again; *👤 Its other photos* opens /person on that face. It sends the `mh-named`
+event: the shared view lists the files again on closing, /person redraws its faces, the people
+page reloads its groups on closing. Read-only (phone, no config.toml): names only.
+
+`tests/unit/test_same_features_on_pages.py` renders every framed page: each large view must be
+the shared one (keys, 👤, who line, namer) and carry the tile view; an exception names its reason
+there (`_OWN_VIEW`: places' drawer, waiting for a decision).

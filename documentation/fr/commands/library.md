@@ -127,8 +127,10 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
 - **La barre** a deux lignes qui ne bougent jamais, quoi qu'on choisisse ou trouve : en haut, où
   vous en êtes (le nombre, puis chaque filtre actif en pastille — un mot, la période, le chemin,
   le dossier, *pas encore*, 📷 — dont la **✕** le retire et relance la recherche ; celles qui
-  ne tiennent pas se replient en **+N**, un clic les liste sous la barre), **Trier par** et la taille des vignettes **S**
-  (les photos seules), **M**, **L** (tous les mots), gardée pour ce navigateur ; en dessous, que
+  ne tiennent pas se replient en **+N**, un clic les liste sous la barre), **Trier par**, la taille des vignettes **S**
+  (les photos seules), **M**, **L** (tous les mots), **XL**, et **◀ Masquer le panneau** (toute
+  la largeur pour les photos), gardés pour ce navigateur — le même réglage sur chaque page de
+  photos (`person`, `people`, les revues, le téléphone, la quarantaine) ; en dessous, que
   faire des fichiers choisis — grisé tant qu'aucun ne l'est : d'abord
   quatre menus dans le même ordre sur chaque page de vignettes, **📂 Déplacer ▾** (plein :
   l'action principale ; *vers un événement…* E, *vers leur mois…* M), **📚 Album ▾**,

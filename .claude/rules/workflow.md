@@ -42,6 +42,11 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   French: load the `delegate-to-ollama` skill (a local model drafts, you check).
   ❌ DON'T: delegate code, type fixes, tests, edge-case ideas or log summaries to it
   (measured 2026-11-07: no gain, or confidently wrong).
+- ✅ DO: reuse the existing component, always: before writing a UI piece (a size switch, a large
+  view, a naming line, a list, a dialog), find the shared one and use it; a page that needs more
+  adds it **to the shared part**, so every page of the same kind gets it in the same change.
+  ❌ DON'T: a page-local copy or a second version "for this page only": two versions drift apart
+  (2026-11-12: S/M/L/XL on /person, S/M/L on /library; 👤 in one large view, not in another).
 - ✅ DO: before changing a design the user chose (mounts, data layout, a dependency), list
   what the change loses, and ask.
 

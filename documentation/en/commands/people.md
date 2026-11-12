@@ -190,10 +190,14 @@ also open it from the people page (**👤 Name someone from a photo**, under the
 from the home page (*Find*, *Name someone from a photo*), or from the console:
 [`mh person C:\Photos\…\IMG_1234.jpg`](person.md); on the page, paste the path of a photo.
 
-**Who is on this photo, at a glance**: in the large view of every page (`library`, `review`…),
-a line under the photo says who is on it, from the index: **👤 ✓ Chloé · ≈ Paul · ? not named**
-(asked only when you open a photo large). A click on **? not named** opens the page on that
-photo, its naming line on that face. No line: no face found there by `audit --people`.
+**Who is on this photo, at a glance, and naming them there**: in the large view of every page
+(`library`, `person`, `people`, `review`…), a line under the photo says who is on it, from the
+index, each face with its picture: **👤 ✓ Chloé · ≈ Paul · ? not named** (asked only when you
+open a photo large). A click on a face opens under it **This face is… [name]** (*Not Paul, this
+face is…*): type or pick a name, Enter; it is saved in `config.toml`, read back and said, and the
+line shows the names as the file says now. **👤 Its other photos** opens this page on that face,
+to confirm its other photos. No line: no face found there by `audit --people`; on the phone, or
+without a `config.toml` of yours, the names only.
 
 1. The page shows the faces found on that photo by `audit --people`, each with its name:
    **✓ Chloé** (confirmed by you), **≈ Chloé** (given by the tool because it looks like her

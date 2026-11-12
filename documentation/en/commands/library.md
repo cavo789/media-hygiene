@@ -121,8 +121,10 @@ helps: `*.mp4` or a regular expression are still searched as typed.
 - **The bar** has two lines that never move, whatever is picked or found: on top, where you are
   (the count, then each active filter as a chip — a word, the period, the path, the folder,
   *not yet*, 📷 — whose **✕** removes it and searches again; those that do not fit fold into
-  **+N**, a click lists them under the bar), **Sort by** and the thumbnail size **S** (photos only), **M**,
-  **L** (every word), kept for this browser; below, what to do with the files picked — greyed
+  **+N**, a click lists them under the bar), **Sort by**, the thumbnail size **S** (photos only), **M**,
+  **L** (every word), **XL**, and **◀ Hide the panel** (the whole width for the photos), kept for
+  this browser — the same switch on every page of photos (`person`, `people`, the reviews, the
+  phone, the quarantine); below, what to do with the files picked — greyed
   while none is: four menus in the same order on every page of tiles, **📂 Move ▾** (filled: the
   main action; *to an event…* E, *to their month…* M), **📚 Album ▾**, **▶ Slideshow ▾** (on this
   PC H or on the TV T), **🏷 Describe ▾** (tag T, date D, place P), then **🔀 Invert**, and at the

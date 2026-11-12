@@ -5,7 +5,9 @@
    at the end the previous one, none left closes the view (as the shared large view);
    Backspace takes it back and the view stays on it; F full screen, I the photo's path, ? every key, Esc,
    a click beside it or Back closes it (0666). A button under it does what Delete or Backspace
-   does, for a mouse. #}
+   does, for a mouse. Who is on the photo, each face named right there: the shared line
+   (`pick_who.js.j2`); a naming there reloads the groups once the view is closed. #}
+{% include "pick_who.js.j2" %}
 let viewing = null; // { list: [{ item, aside }], at }: the faces the view goes through
 const viewerToggle = element("button", "stay");
 viewerToggle.id = "viewerToggle";
@@ -35,6 +37,7 @@ function drawViewer() {
   $("viewerInfo").textContent = face.item.photo;
   $("personLink").hidden = !face.item.photo; // 👤 `/person` on this photo: every face of it, named or not
   if (face.item.photo) $("personLink").href = "/person?path=" + encodeURIComponent(face.item.photo);
+  showWho({ path: face.item.photo }); // every face of the photo, as in every large view
   $("viewerAside").hidden = !face.aside;
   viewerToggle.hidden = !state.can_aside;
   viewerToggle.textContent = face.aside ? TEXTS.photoBack : TEXTS.photoAside;
@@ -66,9 +69,13 @@ function closeViewer() {
   closeShown();
 }
 
+let namedInView = false; // a face named in the who line: the groups are read again on closing
+document.addEventListener("mh-named", () => { namedInView = true; });
+
 function closeShown() {
   if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
   $("viewer").classList.remove("open");
+  if (namedInView) { namedInView = false; load(); }
 }
 window.addEventListener("popstate", () => { if (viewerOpen()) closeShown(); });
 

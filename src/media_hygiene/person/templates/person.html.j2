@@ -48,14 +48,13 @@
   "confirmGuessesHint": _("Confirms every ≈ name the tool gave to the faces of this photo ({names})"),
   "notName": _("Not {name}: saved, this photo leaves the search"),
   "pathHint": _("A person's name is in this photo's folder or file name: a hint only, nothing is named from it"),
-  "sideHide": _("◀ Hide the panel"),
-  "sideShow": _("▶ Show the panel"),
   "drawHint": _("Drag a box around the face the tool did not find."),
   "drawLooking": _("Looking for the face in the box…"),
   "drawn": _("Face drawn and kept: name it, then check its photos."),
   "dropTile": _("Not this person: leaves this search (nothing saved)"),
 } %}
 {% set page_name = _("Identify someone") %}
+{% set tile_view_key = "mh-person-view" %}
 {% set pick_all = _("every file shown") %}
 {% set keys_safe = _("Nothing is deleted from this page: the files set aside go to the quarantine at the next 'clean --decisions', journaled; 'undo' brings them back, 'purge' frees the space.") %}
 {% block style %}
@@ -82,10 +81,6 @@
   #steps[hidden] { display: none; }
   .pathName { font-size: .75rem; color: var(--muted); overflow-wrap: anywhere; }
   .pathName.clash { color: var(--bad, #b3261e); font-weight: 600; }
-{% include "tile_view.css.j2" %}
-  body[data-tile-size="s"] #grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
-  body[data-tile-size="l"] #grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
-  body[data-tile-size="xl"] #grid { grid-template-columns: repeat(auto-fill, minmax(460px, 1fr)); }
   body[data-tile-size="l"] #grid .file img.matched { width: 80px; height: 80px; }
   body[data-tile-size="xl"] #grid .file img.matched { width: 120px; height: 120px; }
   article { position: relative; isolation: isolate; } /* the face crop stays under the bar */
@@ -120,7 +115,6 @@
 {% block bar %}
     {% include "pick_acting.html.j2" %}
     {% include "album_bar.html.j2" %}
-    {% include "tile_view.html.j2" %}
     <div id="steps" hidden>
     <span id="stepsSaid"></span>
     <button id="confirmNames" type="button"></button>
@@ -153,13 +147,10 @@
 {% include "pick_viewer.js.j2" %}
 {% include "pick_band.js.j2" %}
 {% include "person.js.j2" %}
-{% include "combo_list.js.j2" %}
 {% include "people_name_face.js.j2" %}
 {% include "person_names.js.j2" %}
 {% include "path_names.js.j2" %}
 {% include "person_paths.js.j2" %}
 {% include "person_draw.js.j2" %}
-const TILE_VIEW_KEY = "mh-person-view";
-{% include "tile_view.js.j2" %}
 </script>
 {% endblock %}

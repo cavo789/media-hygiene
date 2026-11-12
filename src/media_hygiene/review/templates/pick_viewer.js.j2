@@ -134,7 +134,14 @@ function close() {
   closeShown();
 }
 
+// A face named in the who line (`pick_who.js.j2`): the files are listed again on closing,
+// their names as the file says now.
+let namedInView = false;
+document.addEventListener("mh-named", () => { namedInView = true; });
+
 function closeShown() {
+  if (namedInView && typeof reopen === "function") reopen(true);
+  namedInView = false;
   preloadStop();
   sharpWanted = null;
   preload.seen = -1;

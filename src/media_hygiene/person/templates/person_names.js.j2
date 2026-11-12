@@ -110,6 +110,7 @@ function showSteps() {
 }
 
 $("showWhich").addEventListener("change", () => reopen(false));
+document.addEventListener("mh-named", () => refreshFaces()); // named in the large view: its faces now
 
 function showConfirm() {
   showSteps();

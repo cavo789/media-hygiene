@@ -250,8 +250,8 @@ for (const button of document.querySelectorAll(".spans button")) {
     search(null);
   });
 }
-// The segmented controls (0463): Show, Sorted, S/M/L; each sets its hidden field, then says
-// it changed. Show and the size are kept for this viewer, as Sort by.
+// The segmented controls (0463): Show, Sorted; each sets its hidden field, then says
+// it changed. Show is kept for this viewer, as Sort by.
 function segmented(id, value) {
   $(id).value = value;
   for (const button of document.querySelectorAll(`[data-for="${id}"]`)) {
@@ -270,13 +270,8 @@ for (const button of document.querySelectorAll(".seg button[data-for]")) {
     $(button.dataset.for).dispatchEvent(new Event("change"));
   });
 }
-const showSize = () => { $("grid").dataset.size = $("size").value; };
-for (const id of ["kind", "size"]) {
-  const kept = remembered(id);
-  if (kept && kept !== "aside" && document.querySelector(`[data-for="${id}"][data-value="${kept}"]`)) segmented(id, kept);
-}
-showSize();
-$("size").addEventListener("change", () => { remember("size"); showSize(); });  // no new search
+const keptKind = remembered("kind"); // the tiles' size: the shared view's (tile_view.js.j2)
+if (keptKind && keptKind !== "aside" && document.querySelector(`[data-for="kind"][data-value="${keptKind}"]`)) segmented("kind", keptKind);
 for (const id of ["sorting", "missing", "placeIn"]) $(id).addEventListener("change", () => search(null));  // 0407, 0531, 0553
 // 🗑 (0464): the files set aside only; the counter opens it, ✕ leaves it. Never kept.
 const asideListed = () => $("kind").value === "aside";
