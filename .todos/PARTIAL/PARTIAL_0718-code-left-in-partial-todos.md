@@ -11,6 +11,8 @@ work (or a check Claude can make against the code), none the maintainer's. Each 
 `→ code work, not the maintainer's: listed in 0718`; the PARTIAL TODOs left with nothing for
 the maintainer were moved to `DONE/` (their remaining work is here).
 
+**Split on 2026-11-12** (review of feedback-2026-11-12-iterate) into 0728-0780: one TODO per section, 53 filed; sections 0339, 0463 and 0675 skipped as stale (done in code); the ones needing the maintainer carry a `Needs maintainer` bullet.
+
 ## How to use it
 
 Not one job: an index. When planning, take one section (one source TODO), read the source
