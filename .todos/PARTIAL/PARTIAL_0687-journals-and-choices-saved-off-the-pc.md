@@ -46,11 +46,15 @@ What helps already: a run's quarantine mirrors the photo folders (`<run>/c/Photo
 ## Acceptance
 
 - [ ] A backup → wipe of `/journal` → restore → `undo` of a clean and of a sort works
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
       (integration test on the demo tree, disk identical afterwards)
 - [ ] `undo --from-quarantine` on a run whose journal is gone: every file back, proven
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 - [ ] The archive's growth measured on a real journal folder (maintainer's sizes, read-only)
 - [ ] What happens when the quarantine moves to another drive letter: tested
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 - [ ] Docs EN + FR
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 
 ## Where the user gains
 
@@ -81,14 +85,17 @@ the quarantine, off the PC with the backup), and a clean can be undone even with
 ### Not done
 
 - Point 2, a copy of the journal next to the quarantine (`<quarantine>/<run>/journal.jsonl`)
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   and the sort's journal pushed to the target.
   **Reason:** every reader of a run's folder (purge census, the quarantine tiles, undo's
   emptied-folder removal, `--from-quarantine` itself) would take it for a file set aside: it
   needs its own place (e.g. a sibling `<run>.jsonl` beside the run folders, skipped by
   `_is_run_folder`) and a decision on it.
 - The undo of a **sort** after backup → wipe → restore is not tested (only clean): the same
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   journal file is restored, but no test runs a sort here.
 - The archive's growth on the maintainer's real journal folder.
   **Reason:** needs his files (read-only measurement): a `mh-measure.ps1` step summing
   `$HOME\media-hygiene\journal\*.jsonl`.
 - `docs_screenshots` should run (the `--help` capture of `undo.md`, the `backup` output).
+  → captures: one run of `docs_screenshots`, tracked in 0717 (2026-11-12)

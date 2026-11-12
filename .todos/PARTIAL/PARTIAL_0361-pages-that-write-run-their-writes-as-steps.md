@@ -52,9 +52,12 @@ page that changes photos.
 
 ### Not done
 - Items 1, 4: shrink's page (`--try`, its own container) moved to the home server under a prefix
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   and its apply sent as `shrink --apply --only <ids>` through `.mh-step.json` — needs an
   `--only` option and the page's views made relative. **Reason:** scope of one run.
 - Item 3 (confirmation stays in mh's window): unchanged today (`lighten` asks), to keep.
+  → nothing left to do: a decision already taken, kept as is (2026-11-12)
 - Item 5 (a write from the server fails on its read-only mounts): needs the server's mounts in
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   `mh.ps1`/`mh.sh` checked by an e2e test. **Reason:** scope; image tests run in CI.
 - Acceptance on Windows (the maintainer's PC).

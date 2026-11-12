@@ -123,8 +123,11 @@ languages (the CA install steps per phone), `docs_screenshots` to run.
   **Reason:** needs the maintainer's PC and phones (a step of `tests/measure/mh-measure.ps1`
   to add with that test).
 - iOS `.mobileconfig` download (Safari installs the `.crt` as a profile already).
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   **Reason:** to add only if the iPhone test shows the `.crt` is not enough.
 - `<pc>.local` (mDNS) as an alternative to the DHCP reservation.
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   **Reason:** Android/iOS support to check on the devices first.
 - `docs_screenshots` (the PC's card gained a line).
+  → captures: one run of `docs_screenshots`, tracked in 0717 (2026-11-12)
   **Reason:** heavy (image build + browser): run by the maintainer.

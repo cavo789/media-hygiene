@@ -41,10 +41,12 @@ or damaged — look*; one test per event.
 ## Acceptance
 
 - [ ] A test flipping one byte of a demo photo keeping its mtime: found by the re-read,
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
       listed, restored from its copy, disk identical to before the flip
 - [ ] The pace measured: GB re-read per run within the budget; said whether the budget
       should be a setting (proposed: yes — it depends on the library and the disk)
 - [ ] Docs EN + FR
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 
 ## Where the user gains
 
@@ -86,8 +88,10 @@ still exists, and repaired in one click.
 - `push --verify` (sampled re-read of the NAS copies, run by Windows on the real NAS) and the
   NAS as a good-copy source outside a mounted backup folder: cannot be done or tested here.
 - Web side: the safety card offer and a *Restore this one* page (the console path shows the
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   files before acting; no page yet).
 - Pace measured on the maintainer's machine: here hashing runs at ~2 GB/s warm (measured,
   1 GB file, devcontainer); a cold Windows/Docker Desktop read is the real limit — a
   `mh-measure.ps1` step is left to add.
 - `docs_screenshots` should run (help captures of audit/clean/upkeep, config captures).
+  → captures: one run of `docs_screenshots`, tracked in 0717 (2026-11-12)

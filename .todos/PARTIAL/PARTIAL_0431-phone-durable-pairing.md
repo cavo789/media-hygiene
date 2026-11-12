@@ -45,4 +45,5 @@ corrupt file means pairing again, never a crash.
   code; forget it from the PC.
   **Reason:** needs the maintainer's PC and phone.
 - `docs_screenshots` (the card gained the phones list).
+  → captures: one run of `docs_screenshots`, tracked in 0717 (2026-11-12)
   **Reason:** heavy (image build + browser): run by the maintainer.

@@ -54,6 +54,7 @@ event, the phone's choice reaches the TV's state. Docs en+fr; `docs_screenshots`
 
 ### Not done
 - Documentation captures not regenerated.
+  → captures: one run of `docs_screenshots`, tracked in 0717 (2026-11-12)
   **Reason:** `docs_screenshots` is heavy, run it unasked never: the maintainer runs it.
 - Checked on a real TV/Chromecast (card timing, blur on the 2012 TV's browser).
   **Reason:** needs the maintainer's TV.

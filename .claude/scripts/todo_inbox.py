@@ -53,7 +53,7 @@ def todo_files(todos: Path) -> list[tuple[str, Path]]:
 def not_done(text: str) -> list[tuple[str, str]]:
     """Give the items of the `### Not done` section, and unticked boxes, with reasons.
 
-    An item answered already (a `→ <answer>` line under it) is left out.
+    An item or a box answered already (a `→ <answer>` line under it) is left out.
 
     Returns:
         (item, reason) pairs; an item is its first line, a reason its first line too.
@@ -68,7 +68,7 @@ def not_done(text: str) -> list[tuple[str, str]]:
         items.append((block.splitlines()[0].strip(), reason[1] if reason else ""))
     items.extend(
         (box.strip(), "")
-        for box in re.findall(r"^\s*- \[ \] (.+)$", text, re.MULTILINE)
+        for box in re.findall(r"^\s*- \[ \] (.+)$(?!\n\s+→)", text, re.MULTILINE)
     )
     return items
 

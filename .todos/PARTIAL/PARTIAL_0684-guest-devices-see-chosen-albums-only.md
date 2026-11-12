@@ -71,8 +71,10 @@ albums chosen for them, the rest of the library stays private.
 - A try on a real tablet at the maintainer's (the guests' QR code, the guest page).
   **Reason:** needs the maintainer's devices.
 - *Until tonight* (a guest pairing ending with the visit): guests last like a family phone and are
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   forgotten on the PC's card. **Reason:** kept out of this lot; a follow-up if wanted.
 - The slideshow of the guests' albums on the TV from a guest device. **Reason:** the TV's remote
   is the family's (slideshow door); a guest looks on its own screen.
 - The reports' hidden files (`.mh-*`) are still served to a family phone. **Reason:** decided
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   family = as the phone today; that filter is left for a follow-up.

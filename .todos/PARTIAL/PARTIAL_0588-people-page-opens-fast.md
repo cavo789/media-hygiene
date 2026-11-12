@@ -23,6 +23,7 @@ library (≈ 20 000) redone at every opening; the rest ≈ 15 s (*estimated* by 
 
 - [ ] With no new photo: the page in under 3 s (measured on Windows)
 - [ ] New photos: the page opens at once, their analysis followed in it
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 
 ## Status — PARTIAL (2026-11-06)
 

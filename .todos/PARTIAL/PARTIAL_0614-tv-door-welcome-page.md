@@ -36,7 +36,9 @@ server, the plain door's `/` redirects to the **phone's** install steps
 
 ### Not done
 - The line of index facts (photos, years covered).
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   **Reason:** needs a new index query; left out to keep the change small.
 - The *On this day* background.
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   **Reason:** waits for 0461.
 - Arrow keys and focus not tried on a real TV browser; `docs_screenshots` to run.

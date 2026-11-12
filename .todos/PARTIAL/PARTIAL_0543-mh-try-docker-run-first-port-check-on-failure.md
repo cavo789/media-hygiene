@@ -73,6 +73,8 @@ clear refusal of 0253 stays for a real program on the port.
   (Ctrl+C, colours) and that the replay of a non-port Docker error reads well; run step 42.
   **Reason:** Windows + Docker Desktop only (mh-measure step 42).
 - `mh --lan`: its "opening" / firewall lines are still said before the container starts
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   (`_mh_lan_open` is shared with `mh slideshow --lan`, a foreground page).
   **Reason:** needs the lines carried to `_mh_watch` and to the slideshow path; small follow-up.
 - `docs_screenshots` should run (console lines order changed). **Reason:** never run unasked.
+  → captures: one run of `docs_screenshots`, tracked in 0717 (2026-11-12)

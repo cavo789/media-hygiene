@@ -87,6 +87,7 @@ after the implementation: an unattended run closes PARTIAL on it.
   the page unreachable from mobile data.
   **Reason:** needs the maintainer's PC and phone: `mh-measure.ps1 -Only 29 -Count 20`.
 - Moving the questions of the acting commands (`clean`, `undo`, `purge`, `sort`, `import`)
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   into the page, so that a phone may run them.
   **Reason:** decided later (decision 3, 2026-10-21): read-only steps first; a TODO of its own.
 - `mh --lan` from bash (WSL, Linux, macOS).

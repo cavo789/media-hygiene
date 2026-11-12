@@ -72,11 +72,16 @@ to close one (the port guard of 0250).
 
 ### Not done
 - The NAS checked every minute (asynchronous port 445), item 2's NAS half, and item 4 (a NAS
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   asleep: time limit on reads, a *NAS not reachable* tile). **Reason:** scope of one run.
 - Item 3: *Remove the USB stick* button and `mh eject E:`. **Reason:** scope.
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 - Item 5: files of a missing folder opened from search/browse say *not plugged in*. **Reason:** scope.
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 - *Also*: `mh search` in another window opening the tab on the running home server. **Reason:** scope.
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 - That the open tab reloads by itself after the restart (0354's `X-Media-Hygiene-Run`) is not
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   re-tested here; and on WSL a stick plugged in later is not mounted at /mnt/<x> by WSL itself
   (`mh_drives.sh.j2`), so the bash follow-up works on native Linux only.
 - The Windows run: `.\mh-measure.ps1 -Only 37 -Count 1 -Image media-hygiene` after

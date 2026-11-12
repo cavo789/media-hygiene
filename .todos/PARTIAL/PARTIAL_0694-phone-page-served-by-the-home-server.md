@@ -32,9 +32,13 @@ HTTP (two servers to keep in step).
 ## Acceptance
 
 - [ ] The phone page is answered by the home server; no second server is started
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 - [ ] ▶ Slideshow ▾ › On the TV starts the chosen tiles on `/screen` (test)
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 - [ ] The way back home and *Apply now* are there, as on every set-aside page
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 - [ ] Docs en + fr updated where they say how the page is opened; `docs_screenshots` to run
+  → captures: one run of `docs_screenshots`, tracked in 0717 (2026-11-12)
 
 ## Where the user gains
 
@@ -66,5 +70,7 @@ everywhere (estimated from the pages listed by `photo-picking-pages`).
   home page, Delete then Leave) — the PowerShell side (`_phone_kept`) is untested on Windows.
   **Reason:** needs Windows + a phone (maintainer).
 - `docs_screenshots` to run (the bar gained ▶ Slideshow ▾). **Reason:** heavy, never run unasked.
+  → captures: one run of `docs_screenshots`, tracked in 0717 (2026-11-12)
 - Headless browser check of the tab following to `/phone/` and back. **Reason:** time; the
+  → browser check: CI's job (headless Chromium), not the maintainer's (2026-11-12)
   routes are covered by unit tests, the JS by review only.

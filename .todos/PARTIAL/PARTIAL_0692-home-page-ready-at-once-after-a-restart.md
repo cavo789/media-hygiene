@@ -52,11 +52,15 @@ Why, from reading the code (not measured):
 
 - [ ] Step 1's figures before / after, on the maintainer's PC (measured, each part)
 - [ ] Second start of `mh` (container removed, nothing changed): the home page is drawn
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
       under 1 s, then updated
 - [ ] The safety card shows the same facts as before (equivalence test), and follows each
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
       invalidation event above
 - [ ] No traceback, no endless spinner if the card's route fails (message in the card)
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 - [ ] New strings through `_()` + French; both documentation languages if a capture changes
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
       (`docs_screenshots` to run afterwards)
 
 ## Status — PARTIAL (2026-11-11)

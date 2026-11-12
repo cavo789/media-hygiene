@@ -60,7 +60,9 @@ picture; the splash template is the same on both pages.
   splash, offline page with the PC's `mh` stopped.
   **Reason:** needs the maintainer's phones.
 - iOS startup images per screen size (`apple-touch-startup-image` with `media` queries):
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   one 512 px image is given for now.
   **Reason:** to add only if the iPhone test shows a blank launch.
 - `docs_screenshots` (the splash changed on the PC's home page).
+  → captures: one run of `docs_screenshots`, tracked in 0717 (2026-11-12)
   **Reason:** heavy (image build + browser): run by the maintainer.

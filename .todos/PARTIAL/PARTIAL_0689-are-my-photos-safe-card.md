@@ -38,10 +38,12 @@ proposed no).
 ## Acceptance
 
 - [ ] The card with real values on the demo tree in each state (no target, old push,
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
       everything green), tests over `home_states`
 - [ ] The drill run on the maintainer's NAS once (a step of `mh-measure.ps1`), its line
       turning green, read back
 - [ ] Docs EN + FR; `docs_screenshots` should run
+  → captures: one run of `docs_screenshots`, tracked in 0717 (2026-11-12)
 
 ## Where the user gains
 
@@ -69,13 +71,17 @@ and a backup that was actually tried.
 ### Not done
 
 - **The restore drill (*Try now*)**: shown as "never tried", unknown, no button.
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   **Reason:** it needs `mh pull` (0436, open) and the maintainer's Windows + NAS.
 - **The NAS's own listing**: "files newer than the push" counts the index's files whose
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   mtime is after the push start (a file copied in with an older mtime is missed).
   **Reason:** the container keeps no listing of the push target.
 - **The backup's off-PC check** reads the archive's Windows path: `mh` mounts `/backups`
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   from `$HOME`, so the line stays amber until a copy elsewhere is proven — nothing on the
   container side can see a copy made by hand. A push run that copied nothing leaves an
   empty journal: it is not seen as a push.
 - **Browser check of the page** (`pageerror`): no Playwright in the devcontainer; the e2e
+  → browser check: CI's job (headless Chromium), not the maintainer's (2026-11-12)
   page walk in CI covers it. `docs_screenshots` should run.

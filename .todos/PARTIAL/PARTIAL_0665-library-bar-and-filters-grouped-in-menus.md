@@ -39,9 +39,13 @@ Load the `photo-picking-pages` skill first: the bar is shared, so the change goe
 ## Acceptance
 
 - [ ] The same menus, same order, on every tile page (the shared-parts test)
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 - [ ] Every action still reachable by its key; no action lost (a table old → new in the PR)
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 - [ ] The count of visible controls at load measured before / after, the cap in a test
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 - [ ] Docs EN + FR (`commands/library.md`); `docs_screenshots` should run
+  → captures: one run of `docs_screenshots`, tracked in 0717 (2026-11-12)
 
 ## Questions for the maintainer
 
@@ -87,9 +91,13 @@ and 3 buttons at the same place on every page (estimated 60 → 25 visible contr
 
 ### Not done
 - *to a folder* in Move ▾. **Reason:** no move-to-a-folder action exists on the page.
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 - *make from the results* / *link* in Album ▾: *📚 album of the results* stays in the left
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
   column. **Reason:** it acts on every file found, not the picking; moving it into the
   picking's menu needs the maintainer's choice.
 - The grouping itself awaits the maintainer's review (the TODO's question, mock-up = the PR).
 - The browser cap (40) is an estimate until the first CI run prints the real count.
+  → code work, not the maintainer's: listed in 0718 (2026-11-12)
 - `docs_screenshots` should run (bar and left column changed).
+  → captures: one run of `docs_screenshots`, tracked in 0717 (2026-11-12)
