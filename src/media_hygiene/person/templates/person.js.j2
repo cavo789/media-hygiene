@@ -118,7 +118,7 @@ async function reopen(again) {
   known = result.known;
   learn(result);
   const first = result.files[0];
-  seedName = first && first.key === seed && first.named ? first.named.name : "";
+  seedName = (first && first.key === seed && first.named && first.named.name) || guessedName(result.files);
   showFiles(toConfirm(result.files), again); // person_names.js.j2
   showConfirm();
   const shown = counted(TEXTS.photos, files.length);

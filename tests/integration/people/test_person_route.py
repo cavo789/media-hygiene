@@ -202,6 +202,7 @@ def test_the_page_answers_on_the_loopback_only_and_from_any_page(
         # The naming combo reaches the page's script, not only the album bar's.
         assert page.body.decode().count("function comboAttach(") == 2
         assert 'id="confirmGuesses"' in page.body.decode()  # one click: the ≈ names
+        assert "function guessedName(" in page.body.decode()  # unnamed seed: its ≈ name
         assert '<option value="todo" selected>' in page.body.decode()
         assert 'data-size="xl"' in page.body.decode()  # tiles big enough for children
         assert "function pathNames(" in page.body.decode()  # 📁 the names of the path

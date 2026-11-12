@@ -208,7 +208,7 @@ photo, its naming line on that face. No line: no face found there by `audit --pe
    its keys. If they look like someone you set aside before, the bar says so (*the person set
    aside on <date>*): what you set aside now joins that person. Each photo shows, in its corner,
    the face that matched, and under it its name (✓, ≈ or ?).
-   Once the face is named, a line above the grid says what to do: *① Tick the photos where it
+   Once the face is named (or, while it has none, by the name its photos are guessed most: ≈ Diego), a line above the grid says what to do: *① Tick the photos where it
    really is Juliette (Ctrl+A ticks them all; × when it is not them) ② then:* **These are
    Juliette: N**, which confirms the photos you ticked, N stated (until one is ticked, it reads
    *Tick their photos in the grid, then confirm them here*). **Show** picks the photos

@@ -226,7 +226,7 @@ par `audit --people`.
    et ses touches. Si elles ressemblent à quelqu'un mis de côté avant, la barre le dit (*la
    personne mise de côté le <date>*) : ce que vous mettez de côté maintenant rejoint cette
    personne. Chaque photo montre, dans son coin, le visage qui a correspondu, et dessous son nom
-   (✓, ≈ ou ?). Une fois le visage nommé, une ligne au-dessus de la grille dit quoi faire :
+   (✓, ≈ ou ?). Une fois le visage nommé (ou, tant qu'il n'en a pas, au nom le plus deviné sur ses photos : ≈ Diego), une ligne au-dessus de la grille dit quoi faire :
    *① Cochez les photos où c'est bien Juliette (Ctrl+A les coche toutes ; × quand ce n'est pas
    elle ou lui) ② puis :* **C'est Juliette : N**, qui confirme les photos cochées, N annoncé
    (tant qu'aucune n'est cochée, il dit *Cochez ses photos dans la grille, puis confirmez-les

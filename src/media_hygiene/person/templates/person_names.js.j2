@@ -59,6 +59,19 @@ function showNamer(key, named) {
   if (field && !source) field.focus();
 }
 
+// The face chosen has no name yet: the name the tool guesses most among its photos (≈ Diego),
+// so that the picked photos can be confirmed as on /people; "" when none is guessed.
+function guessedName(listed) {
+  const counts = new Map();
+  for (const file of listed) {
+    const named = file.named;
+    if (named && named.name) counts.set(named.name, (counts.get(named.name) || 0) + 1);
+  }
+  let best = "";
+  for (const [name, count] of counts) if (!best || count > counts.get(best)) best = name;
+  return best;
+}
+
 // *These are <name>: N* — the photos picked, those confirmed as someone else left out.
 function confirmable() {
   return files.filter((file) => picked.has(file.key)
