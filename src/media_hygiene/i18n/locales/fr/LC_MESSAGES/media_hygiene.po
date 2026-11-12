@@ -21625,6 +21625,18 @@ msgstr[1] ""
 "📁 Afficher les {n} visages dont le dossier ou le fichier nomme {name} : "
 "pas {section} ?"
 
+#, python-brace-format
+msgid "📁 Show the faces of this group whose folder or file names {name}"
+msgstr "📁 Afficher les visages du groupe dont le dossier ou le fichier nomme {name}"
+
+#, python-brace-format
+msgid ""
+"📁 Show the faces of this group whose folder or file names {name}: not "
+"{section}?"
+msgstr ""
+"📁 Afficher les visages du groupe dont le dossier ou le fichier nomme {name} "
+": pas {section} ?"
+
 msgid "📁 The folder or file name names someone else"
 msgstr "📁 Le dossier ou le nom du fichier nomme quelqu'un d'autre"
 

@@ -55,19 +55,29 @@ function pickByPath(index, keys) {
   redraw(index);
 }
 
+// In a 📁 view: the way back to every face of the section.
+function pathBackLine(index) {
+  const line = element("div", "tools pathPick");
+  line.append(pathAllButton(index));
+  return line;
+}
+
 function pathPickLine(item, index) {
   if (!state.writable || isFolded(item) || item.strip) return null;
   const byName = facesByPathName(item);
   if (!byName.size) return null;
   const line = element("div", "tools pathPick");
-  if (pathViewing(index)) line.append(pathAllButton(index));
-  for (const [name, keys] of byName) {
+  const whole = complete(item); // the sample only: the count is the whole group's, once loaded
+  for (const [name, shownKeys] of byName) {
     const own = name === item.name;
-    const text = own || !item.name ? TEXTS.pathPickOwn : TEXTS.pathPick; // a group without a name: no "not …?"
-    const button = element("button", own ? "pathOwn" : "plain", fill(counted(text, keys.length), { name: name, section: item.name || "" }));
+    const ask = own || !item.name ? "pathPickOwn" : "pathPick"; // a group without a name: no "not …?"
+    const said = whole ? counted(TEXTS[ask], shownKeys.length) : TEXTS[ask + "All"];
+    const button = element("button", own ? "pathOwn" : "plain", fill(said, { name: name, section: item.name || "" }));
     button.title = own ? TEXTS.pathPickOwnHint : TEXTS.pathPickHint;
-    button.addEventListener("click", (event) => {
+    button.addEventListener("click", async (event) => {
       event.stopPropagation();
+      if (!complete(state.sections[index])) await expand(index); // every face of the group, once
+      const keys = facesByPathName(state.sections[index]).get(name) || [];
       pathConfirm.keys = own ? keys : null;
       pathConfirm.name = name;
       pathView.index = index;
@@ -82,12 +92,21 @@ function pathPickLine(item, index) {
   return line;
 }
 
-// After a 📁 pick of the section's own name: confirm those faces as that person, one click.
+// After a 📁 pick of the section's own name: those faces shown and not marked × are that
+// person; the faces marked × are not (saved with it). The count follows the marks.
 function pathConfirmLine(item, index) {
   if (facePick.index !== index || pathConfirm.keys !== facePick.keys || pathConfirm.name !== item.name) return null;
+  const faces = facePick.keys.filter((key) => !removed.has(key));
+  const out = facePick.keys.filter((key) => removed.has(key));
   const line = element("div", "tools namer stay");
-  const yes = element("button", "main", fill(counted(TEXTS.pathConfirm, facePick.keys.length), { name: item.name }));
-  yes.addEventListener("click", (event) => { event.stopPropagation(); moveFaces(facePick.keys, item.name, ""); });
+  const yes = element("button", "main", fill(counted(TEXTS.pathConfirm, faces.length), { name: item.name }));
+  yes.disabled = !faces.length;
+  yes.addEventListener("click", (event) => {
+    event.stopPropagation();
+    pathView.index = -1;
+    clearFacePick();
+    send({ action: "name", name: item.name, faces: faces, removed: out });
+  });
   line.append(yes);
   return line;
 }

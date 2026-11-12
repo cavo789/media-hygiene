@@ -144,10 +144,13 @@ function group(item, index) {
     more.addEventListener("click", (event) => { event.stopPropagation(); expand(index); });
     faces.append(more);
   }
-  node.append(title, tools(item, index));
-  const byPath = pathPickLine(item, index); // people_path_names.js.j2
+  node.append(title);
+  // 📁 view: the faces of a path only; the section's buttons (which act on all its faces) wait.
+  if (!pathViewing(index)) node.append(tools(item, index));
+  const byPath = pathViewing(index) ? pathBackLine(index) : pathPickLine(item, index); // people_path_names.js.j2
   if (byPath) node.append(byPath);
-  if (facePick.index === index && facePick.keys.length) node.append(pathConfirmLine(item, index) || faceNamer(facePick.keys, item.name || ""));
+  const namable = facePick.index === index ? facePick.keys.filter((key) => !removed.has(key)) : []; // × marked: not named
+  if (namable.length) node.append(pathConfirmLine(item, index) || faceNamer(namable, item.name || ""));
   if (item.aside) node.append(hiddenLine(item, index));
   node.append(faces);
   return node;

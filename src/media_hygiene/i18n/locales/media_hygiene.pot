@@ -18203,6 +18203,16 @@ msgid_plural "📁 Show the {n} faces whose folder or file names {name}: not {se
 msgstr[0] ""
 msgstr[1] ""
 
+#, python-brace-format
+msgid "📁 Show the faces of this group whose folder or file names {name}"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"📁 Show the faces of this group whose folder or file names {name}: not "
+"{section}?"
+msgstr ""
+
 msgid "📁 The folder or file name names someone else"
 msgstr ""
 
