@@ -3,7 +3,7 @@
    `pick_viewer.js.j2`'s; the saving is this page's (`saveChoice`): it sends the faces, so
    that the server remembers the person (`into`: the same person at each save). #}
 const TEXTS = {{ texts | tojson }};
-const ROUTES = {{ paths | tojson }}; // photo, look, like, aside
+const ROUTES = {{ paths | tojson }}; // photo, look, draw, like, aside
 let photo = "";        // the photo of the person, as the user knows it
 let seed = null;       // the number of the face chosen
 let known = null;      // the person set aside before that face looks like, if any
@@ -32,7 +32,7 @@ function card(file, index) {
   name.append(again);
   meta.append(name, element("div", "muted where", file.where));
   node.append(picture, meta);
-  return wireCard(node, index);
+  return wireCard(nameCard(node, file), index); // person_names.js.j2
 }
 
 function scope() {
@@ -45,17 +45,21 @@ async function post(path, body) {
   return answer.json();
 }
 
-// The faces of the photo, to choose the person's: one alone is chosen at once.
-function showFaces(faces) {
+// The faces of the photo, each with its name (or ?), to choose one: one alone is chosen at once.
+function showFaces(faces, again) {
+  showGuesses(faces); // person_names.js.j2
   $("faces").replaceChildren(...faces.map((face) => {
+    const box = element("figure", "face");
     const picture = element("img");
     picture.src = face.face;
     picture.alt = TEXTS.chooseFace;
-    picture.dataset.key = face.key;
-    picture.addEventListener("click", () => chooseFace(face.key));
-    return picture;
+    box.dataset.key = face.key;
+    box.append(picture, faceTag(face.named)); // person_names.js.j2
+    box.addEventListener("click", () => chooseFace(face.key, face.named));
+    return box;
   }));
-  if (faces.length === 1) chooseFace(faces[0].key);
+  if (again) { for (const face of faces) if (face.key === seed) markFace(face.key); return; }
+  if (faces.length === 1) chooseFace(faces[0].key, faces[0].named);
   else if (faces.length) sideSay(TEXTS.chooseFace);
 }
 
@@ -65,12 +69,17 @@ async function find(typed) {
   seed = null;
   showFiles([]);
   $("status").textContent = TEXTS.start;
-  if (result.said) { sideSay(result.said); $("faces").replaceChildren(); $("lookAgain").hidden = true; return; }
+  if (result.said) { sideSay(result.said); $("faces").replaceChildren(); $("lookAgain").hidden = true; $("drawOpen").hidden = true; return; }
   photo = result.photo;
+  learn(result);
+  $("namer").replaceChildren();
   if (window.mhApplyNow) window.mhApplyNow(result.chosen > 0); // apply_now.html.j2, opened from home
   $("lookAgain").hidden = false;
+  $("drawOpen").hidden = false;
   sideSay(result.faces.length ? "" : (result.scanned ? TEXTS.noFace : TEXTS.notScanned));
   showFaces(result.faces);
+  const face = $("faces").children[Number(wanted.get("face"))]; // a "?" of the large view (0714)
+  if (wanted.has("face") && face) { wanted.delete("face"); face.click(); }
 }
 
 async function lookAgain() {
@@ -83,9 +92,21 @@ async function lookAgain() {
   showFaces(result.faces);
 }
 
-async function chooseFace(key) {
+// The faces again, their names as the file says now (after a save).
+async function refreshFaces() {
+  if (!photo) return;
+  const result = await post(ROUTES.photo, { path: photo });
+  if (result && !result.said) { learn(result); showFaces(result.faces, true); }
+}
+
+function markFace(key) {
+  for (const box of $("faces").children) box.classList.toggle("chosen", Number(box.dataset.key) === key);
+}
+
+async function chooseFace(key, named) {
   seed = key;
-  for (const picture of $("faces").children) picture.classList.toggle("chosen", Number(picture.dataset.key) === key);
+  markFace(key);
+  showNamer(key, named); // person_names.js.j2
   await reopen(false);
 }
 
@@ -95,8 +116,13 @@ async function reopen(again) {
   const result = await post(ROUTES.like, { key: seed });
   if (!result) return;
   known = result.known;
-  showFiles(result.files, again);
-  const line = counted(TEXTS.photos, files.length);
+  learn(result);
+  const first = result.files[0];
+  seedName = first && first.key === seed && first.named ? first.named.name : "";
+  showFiles(toConfirm(result.files), again); // person_names.js.j2
+  showConfirm();
+  const shown = counted(TEXTS.photos, files.length);
+  const line = hiddenShown ? shown + " — " + counted(TEXTS.hiddenShown, hiddenShown) : shown;
   $("status").textContent = known ? line + " — " + fill(TEXTS.known, { date: known.date }) : line;
 }
 
@@ -122,6 +148,7 @@ $("find").addEventListener("submit", (event) => {
   if ($("path").value.trim()) find($("path").value.trim());
 });
 $("lookAgain").addEventListener("click", lookAgain);
-const asked = new URLSearchParams(window.location.search).get("path");
+const wanted = new URLSearchParams(window.location.search); // `path`, and `face` once
+const asked = wanted.get("path");
 $("status").textContent = TEXTS.start;
 if (asked) { $("path").value = asked; find(asked); }

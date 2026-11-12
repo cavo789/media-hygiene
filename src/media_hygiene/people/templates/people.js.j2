@@ -198,7 +198,7 @@ function marked(index) {
 function sectionFaces(index) {
   const item = state.sections[index];
   const shown = isFolded(item) ? item.shown.slice(0, STRIP) : displayed(item);
-  const faces = shown.map((one) => ({ item: one, aside: false }));
+  const faces = shown.map((one) => ({ item: one, aside: false, source: item.name || "" }));
   if (!isFolded(item) && showing.has(sectionKey(item))) faces.push(...item.hidden.map((one) => ({ item: one, aside: true })));
   return faces;
 }
@@ -212,7 +212,10 @@ function face(item, index, verified, kind) {
   picture.src = FACE + item.key + ".jpg";
   picture.alt = item.photo;
   picture.title = item.photo;
-  picture.addEventListener("click", () => openViewer(item, sectionFaces(index)));
+  picture.addEventListener("click", (event) => {
+    if (kind !== "strip" && kind !== "hidden" && pickFace(event, index, item.key, displayed(state.sections[index]).map((one) => one.key))) return;
+    openViewer(item, sectionFaces(index));
+  });
   if (kind === "strip") { box.append(picture); return box; }
   if (kind === "hidden") {
     const back = element("button", "", "↺");
@@ -228,7 +231,13 @@ function face(item, index, verified, kind) {
   out.title = isOut ? TEXTS.putBack : TEXTS.remove;
   out.setAttribute("aria-label", out.title);
   out.addEventListener("click", (event) => { event.stopPropagation(); takeOut(index, item.key); });
-  box.append(picture, out);
+  box.classList.toggle("chosen", facePicked(index, item.key));
+  const one = element("button", "nameOne", "✎");
+  one.title = TEXTS.nameOne;
+  one.setAttribute("aria-label", one.title);
+  one.disabled = !state.writable;
+  one.addEventListener("click", (event) => { event.stopPropagation(); pickOneFace(index, item.key); });
+  box.append(picture, out, one);
   if (verified) box.append(element("span", "check", "✓"));
   return box;
 }

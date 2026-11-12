@@ -134,7 +134,12 @@ opened from the home page.
   view; Backspace stays on the photo); no Space, no A, no 👤 (this is the
   page of people). A click opens the large view (no picking: × marks a face as someone
   else's, saved by the section's next button); ↑ ↓ / j k move between sections, x picks a
-  group to name with others — not the grid's gestures, on purpose.
+  group to name with others — not the grid's gestures, on purpose. Since 0712 Ctrl+click / Shift+click / ✎ pick faces of one section to
+  name them (`review/templates/people_name_face.js.j2`: `faceNamer`, `moveFaces`; a plain click still opens the view).
+- `/person` (0714): its 👤 is *Identify someone*; each face of the photo shows its name (✓ confirmed,
+  ≈ guessed, ? nobody) and opens the same `faceNamer`; *These are <name>: N* confirms the tiles
+  picked (count stated, faces confirmed as someone else left out); each tile shows the face that
+  matched and a × "not <name>" (`person_names.js.j2`). The grid's gestures are unchanged.
 - A key that does not apply (no album on a page): leave it out of the panel and of `?`, never give
   it another meaning.
 - A new gesture or key: add it to the shared templates, so every page gets it, and to this table.

@@ -10,8 +10,9 @@
   #viewer .asideMark { padding: 0 8px; border-radius: 10px; background: var(--bad); font-size: .8rem;
                        font-weight: 600; }
   #viewer .asideMark[hidden] { display: none; }
-  #viewer .viewerKeys, #viewerInfo { color: #ccc; }
-  #viewerSaid:empty, #viewerInfo[hidden], #viewerHelp[hidden] { display: none; }
+  #viewer .viewerKeys, #viewerInfo, #viewerWho { color: #ccc; }
+  #viewerWho a { color: #ffd479; } #viewerWho .guessed { font-style: italic; }
+  #viewerSaid:empty, #viewerInfo[hidden], #viewerWho[hidden], #viewerHelp[hidden] { display: none; }
   #viewerSaid.error { color: #ff9b9b; font-weight: 600; }
   #viewerHelp { display: grid; grid-template-columns: auto auto; gap: 4px 12px; margin: 0;
                 padding: 10px 14px; background: rgba(40, 40, 40, .95); border-radius: 8px; }

@@ -130,6 +130,7 @@ function relabel() {
     const badge = node.querySelector(".badge");
     if (files[index].chosen && !badge) node.append(element("span", "badge", TEXTS.aside));
     if (!files[index].chosen && badge) badge.remove();
+    if (typeof relabelCard === "function") relabelCard(node, files[index]); // a page's own labels
   });
 }
 
@@ -266,6 +267,7 @@ document.addEventListener("keydown", (event) => {
     return;
   }
   if (["SELECT", "INPUT"].includes(document.activeElement.tagName)) return; // a field typed in
+  if (document.querySelector("dialog[open]")) return; // a dialog's own keys (Esc closes it)
   if (!pickKeys) {
     if (event.key === "Enter" && current >= 0 && document.activeElement.classList.contains("file")) {
       event.preventDefault();

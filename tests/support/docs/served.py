@@ -101,7 +101,7 @@ def near(page: Page) -> None:
     page.screenshot(path=SHOTS / "review-near.png")
     # The video frees the most: first by space freed, the order the page remembers.
     page.evaluate("localStorage.setItem('near-order', 'gain')")
-    page.reload()
+    page.goto(SERVED)  # not reload(): the URL keeps the group shown (?g=, 0666)
     page.wait_for_selector("#shots video")
     page.evaluate(VIDEO_SEEK_JS)
     page.wait_for_function(VIDEO_SHOWN_JS)

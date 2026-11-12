@@ -16,6 +16,7 @@ from urllib.parse import urlencode
 from media_hygiene.console.search_view import show_found
 from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
+from media_hygiene.person.routes import PERSON_PREFIX
 from media_hygiene.search import statements as sql
 from media_hygiene.search.app import SEARCH_PAGE_PATH
 from media_hygiene.search.folders import FOLDER_QUERY
@@ -140,6 +141,26 @@ def serve_search(runtime: Runtime, search: SearchIndex, opened: SearchOpen) -> i
         "are not changed."
     )
     query = "?" + urlencode({FOLDER_QUERY: opened.folder}) if opened.folder else ""
+    start = PageStart(opened.port, SEARCH_PAGE_PATH, ready, query=query)
+    return serve_pages(runtime, search, start).chosen
+
+
+def serve_person(runtime: Runtime, search: SearchIndex, opened: SearchOpen) -> int:
+    """Serve the library, announced on `/person` for one photo (`mh person`, 0714).
+
+    Args:
+        runtime: Settings, mount points and output.
+        search: The open index.
+        opened: The port, and the photo (`folder` holds its path, as typed).
+
+    Returns:
+        How many files are set aside when the page stops, read from the disk.
+    """
+    ready = _(
+        "Open {url} in your browser to name or set aside someone on this photo. "
+        "Ctrl+C stops it; your photos are not changed."
+    )
+    query = PERSON_PREFIX.lstrip("/") + "?" + urlencode({"path": opened.folder})
     start = PageStart(opened.port, SEARCH_PAGE_PATH, ready, query=query)
     return serve_pages(runtime, search, start).chosen
 

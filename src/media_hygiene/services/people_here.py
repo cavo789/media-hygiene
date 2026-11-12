@@ -23,12 +23,12 @@ from media_hygiene.review.apply_relay import home_relay
 from media_hygiene.review.home_app import HomeApp
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.step_watch import STEP_PATH
+from media_hygiene.services.names_file import names_file
 from media_hygiene.services.next_command import LAUNCHER_FUNCTION
 from media_hygiene.services.page_undo import PageUndo
 from media_hygiene.services.people import PeopleStep, PeopleWork
 from media_hygiene.services.people_app_build import PeopleBuild, people_app
 from media_hygiene.services.people_files import require_people_index
-from media_hygiene.services.people_page import names_file
 from media_hygiene.services.prefixed_page import PrefixedPage
 
 if TYPE_CHECKING:

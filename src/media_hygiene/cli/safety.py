@@ -40,10 +40,10 @@ PHOTO_READERS: Final = frozenset(
 )
 # The pages that sort the files of a group checked on them (0397): mounted writable,
 # with `/journal`; nothing moves without the user's GO, every move is journaled.
-GO_PAGES: Final = frozenset({"library", "search", "home"})
+GO_PAGES: Final = frozenset({"library", "search", "person", "home"})
 # The commands serving a page in the browser, on the port published by `-p`.
 PAGE_COMMANDS: Final = frozenset(
-    {"review", "places", "library", "search", "people", "home"}
+    {"review", "places", "library", "search", "people", "person", "home"}
     | {"slideshow", "shrink", "undo"}
 )
 # The read-only steps a page of the home server shows (0567): no question, no page.

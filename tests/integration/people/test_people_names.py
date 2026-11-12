@@ -233,3 +233,29 @@ def name_largest_again(app: object, before: dict[str, object]) -> dict[str, obje
     sections = before["sections"]
     assert isinstance(sections, list)
     return post(app, {"action": "name", "name": "Chloé", "faces": keys(sections[0])})
+
+
+def test_one_face_moves_to_another_person_and_stays_there(
+    cli: CliRunner, apps: list[object], locations: Locations
+) -> None:
+    """A face of Chloé named Manon leaves her group for Manon's; a reload keeps it."""
+    named = name_largest(cli, apps)
+    sections = named["sections"]
+    assert isinstance(sections, list)
+    face = keys(sections[0])[0]
+    moved = post(
+        apps[-1],
+        {"action": "move", "name": "Manon", "faces": [face], "source": "Chloé"},
+    )
+    assert moved["saved"] == (
+        "Saved in config.toml, read back: Manon, 1 confirmed face."
+    )
+    assert moved["people"] == ["Chloé", "Manon"]
+    text = (locations.config_dir / "config.toml").read_text()
+    assert "Manon" in text
+    assert run(cli, "people").exit_code == 0
+    again = state(apps[-1])["sections"]
+    assert isinstance(again, list)
+    by_name = {section["name"]: keys(section) for section in again}
+    assert face in by_name["Manon"]
+    assert face not in by_name["Chloé"]

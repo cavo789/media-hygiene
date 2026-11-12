@@ -616,6 +616,12 @@ msgstr[1] " ; {groups} groupes sans sujet → vos autres règles, sinon {band}."
 msgid "<the folder you mount on /reports>"
 msgstr "<le dossier que vous montez sur /reports>"
 
+msgid "? Not named"
+msgstr "? Sans nom"
+
+msgid "? not named"
+msgstr "? sans nom"
+
 msgid "A 'subject' rule or --sample needs a vision model."
 msgstr "Une règle 'subject' ou --sample demande un modèle de vision."
 
@@ -933,6 +939,13 @@ msgstr "Une période"
 #, python-brace-format
 msgid "A person's folders: {name}"
 msgstr "Dossiers d'une personne : {name}"
+
+msgid ""
+"A person's name is in this photo's folder or file name: a hint only, "
+"nothing is named from it"
+msgstr ""
+"Le nom d'une personne figure dans le dossier ou le nom de cette photo : un "
+"indice seulement, rien n'est nommé d'après lui"
 
 msgid ""
 "A phone over USB instead of a folder: Windows only, the mh of PowerShell "
@@ -1414,6 +1427,9 @@ msgstr "Tous les rapports"
 
 msgid "All the files"
 msgstr "Tous les fichiers"
+
+msgid "All the photos"
+msgstr "Toutes les photos"
 
 msgid "All your photos in Excel"
 msgstr "Toutes vos photos dans Excel"
@@ -2333,8 +2349,8 @@ msgstr "Nettoyage"
 msgid "Clear"
 msgstr "Effacer"
 
-msgid "Click the face of the person to set aside."
-msgstr "Cliquez sur le visage de la personne à mettre de côté."
+msgid "Click the face of the person to name or set aside."
+msgstr "Cliquez sur le visage de la personne à nommer ou à mettre de côté."
 
 msgid ""
 "Click the map or drag the pin where these photos were taken, then save: "
@@ -2483,6 +2499,20 @@ msgid "Confirmed by you on the people page: it is a face of reference."
 msgstr ""
 "Confirmé par vous dans la page des personnes : c'est un visage de "
 "référence."
+
+#, python-brace-format
+msgid ""
+"Confirms as {name} the face that matched on each photo ticked in the "
+"grid; the photos not ticked stay to decide"
+msgstr ""
+"Confirme comme {name} le visage reconnu sur chaque photo cochée dans la "
+"grille ; les photos non cochées restent à décider"
+
+#, python-brace-format
+msgid "Confirms every ≈ name the tool gave to the faces of this photo ({names})"
+msgstr ""
+"Confirme chaque nom ≈ donné par l'outil aux visages de cette photo "
+"({names})"
 
 msgid "Contact sheet"
 msgstr "Planche contact"
@@ -2677,6 +2707,9 @@ msgid ""
 msgstr ""
 "Ctrl+C arrête entre deux photos : les visages trouvés sont gardés, et "
 "l'exécution suivante continue."
+
+msgid "Ctrl+click"
+msgstr "Ctrl+clic"
 
 msgid "Cutting the photos into events and trips, this can take a few seconds…"
 msgstr ""
@@ -3253,6 +3286,9 @@ msgid ""
 msgstr ""
 "Brouillon prêt : {before} → {after}, {gain} %% plus léger, encodé en "
 "{seconds} s."
+
+msgid "Drag a box around the face the tool did not find."
+msgstr "Tracez un cadre autour du visage que l'outil n'a pas trouvé."
 
 msgid ""
 "Drag a card to move it, or Alt+← and Alt+→ on it; the ☆ of an action adds"
@@ -4008,6 +4044,9 @@ msgstr "Copies en trop, à mettre de côté"
 msgid "F-number"
 msgstr "Ouverture (f/)"
 
+msgid "Face drawn and kept: name it, then check its photos."
+msgstr "Visage tracé et gardé : nommez-le, puis vérifiez ses photos."
+
 msgid "Faces"
 msgstr "Visages"
 
@@ -4208,11 +4247,6 @@ msgstr ""
 "Trouve et nettoie en toute sécurité les photos et vidéos en double, entre"
 " dossiers et disques. Commencez par 'audit' (lecture seule), puis "
 "'clean'."
-
-msgid "Find every photo of a person on this one, to set them aside"
-msgstr ""
-"Trouver toutes les photos d'une personne de celle-ci, pour les mettre de "
-"côté"
 
 msgid "Find exact duplicates and broken files."
 msgstr "Trouver les doublons exacts et les fichiers cassés."
@@ -4745,6 +4779,9 @@ msgstr ""
 "Donner {files} à {place} ? Leur GPS est alors ignoré pour ce lieu ; les "
 "photos restent où elles sont."
 
+msgid "Given by the tool, close to a confirmed face: not confirmed yet"
+msgstr "Donné par l'outil, proche d'un visage confirmé : pas encore confirmé"
+
 #, python-brace-format
 msgid "Given to {place} in config.toml."
 msgstr "Données à {place} dans config.toml."
@@ -5056,6 +5093,12 @@ msgstr "ISO"
 msgid "Id"
 msgstr "Identifiant"
 
+msgid "Identify someone"
+msgstr "Identifier quelqu'un"
+
+msgid "Identify someone on this photo: name them, or set them aside"
+msgstr "Identifier quelqu'un sur cette photo : le nommer, ou le mettre de côté"
+
 msgid "Identifying the remaining files (full SHA-256), once"
 msgstr "Identification des fichiers restants (SHA-256 complet), une fois"
 
@@ -5267,6 +5310,11 @@ msgid ""
 msgstr ""
 "Ses modifications ne seraient pas reprises : réparez {path}, désignez-en "
 "un autre avec --carry-over, ou repartez de zéro avec --no-carry-over."
+
+msgid "Its faces, then that person's photos to confirm, in the browser."
+msgstr ""
+"Ses visages, puis les photos de cette personne à confirmer, dans le "
+"navigateur."
 
 msgid "Its files are not hashed yet: run an audit, then choose again."
 msgstr ""
@@ -5487,6 +5535,9 @@ msgid ""
 "Language of the words: \"en\", \"fr\", or empty for the language of the "
 "interface."
 msgstr "Langue des mots : \"en\", \"fr\", ou vide pour la langue de l'interface."
+
+msgid "Large"
+msgstr "Grande"
 
 msgid "Large: the whole caption and every word"
 msgstr "Grande : toute la légende et tous les mots"
@@ -5813,6 +5864,9 @@ msgstr "Regard sur les photos"
 
 msgid "Looking at the photos…"
 msgstr "Les photos sont regardées…"
+
+msgid "Looking for the face in the box…"
+msgstr "Recherche du visage dans le cadre…"
 
 #, python-brace-format
 msgid "Looking for the files of {folder} in OneDrive's cloud only…"
@@ -6326,6 +6380,9 @@ msgstr ""
 msgid "Name saved, read back from the disk."
 msgstr "Nom enregistré, relu sur le disque."
 
+msgid "Name someone from a photo"
+msgstr "Nommer quelqu'un depuis une photo"
+
 msgid "Name the event so and save it; change it in the field above at any time"
 msgstr ""
 "Nommer l'événement ainsi et l'enregistrer ; modifiable à tout moment dans"
@@ -6343,6 +6400,9 @@ msgid ""
 msgstr ""
 "Nommez d'abord son groupe sur la page 'people', ou corrigez les noms de "
 "la règle dans config.toml."
+
+msgid "Name this face only (Ctrl+click picks several, Shift+click a range)"
+msgstr "Nommer ce visage seul (Ctrl+clic en choisit plusieurs, Maj+clic une série)"
 
 msgid "Name this place"
 msgstr "Nommer ce lieu"
@@ -6369,6 +6429,9 @@ msgid ""
 msgstr ""
 "Nommer vos lieux sur une carte des endroits où les photos ont été prises "
 "; enregistrés dans config.toml pour les règles 'place' et 'trip'."
+
+msgid "Named on purpose: confirmed"
+msgstr "Nommé par vous : confirmé"
 
 #, python-brace-format
 msgid "Named: {names}."
@@ -7046,8 +7109,8 @@ msgid ""
 "No phone waits here: choose Make room on the phone on the home page, or "
 "type mh import --phone --free."
 msgstr ""
-"Aucun téléphone n'attend ici : choisissez Faire de la place sur le téléphone "
-"sur l'accueil, ou tapez mh import --phone --free."
+"Aucun téléphone n'attend ici : choisissez Faire de la place sur le "
+"téléphone sur l'accueil, ou tapez mh import --phone --free."
 
 msgid "No photo folder to copy into: only backup folders are mounted."
 msgstr ""
@@ -7300,6 +7363,9 @@ msgstr ""
 "Personne ne s'appelle encore {names} : nommez d'abord son groupe sur la "
 "page de 'people'."
 
+msgid "Nobody was given this face yet: click it to name it."
+msgstr "Ce visage n'est encore à personne : cliquez dessus pour le nommer."
+
 msgid "None"
 msgstr "Aucun"
 
@@ -7465,6 +7531,9 @@ msgstr "Ce n'est pas le dossier que vous voulez garder ?"
 msgid "Not the same content as {path}: kept on the phone."
 msgstr "Pas le même contenu que {path} : gardé sur le téléphone."
 
+msgid "Not this person: leaves this search (nothing saved)"
+msgstr "Pas cette personne : quitte cette recherche (rien n'est enregistré)"
+
 msgid "Not this person: mark this face; the next button of the group saves it"
 msgstr ""
 "Pas cette personne : marquer ce visage ; le prochain bouton du groupe "
@@ -7486,6 +7555,16 @@ msgstr "Pas annulé : {error}"
 #, python-brace-format
 msgid "Not {name}"
 msgstr "Pas {name}"
+
+#, python-brace-format
+msgid "Not {name}, this face is…"
+msgid_plural "Not {name}, these {n} faces are…"
+msgstr[0] "Pas {name}, ce visage est…"
+msgstr[1] "Pas {name}, ces {n} visages sont…"
+
+#, python-brace-format
+msgid "Not {name}: saved, this photo leaves the search"
+msgstr "Pas {name} : enregistré, cette photo quitte la recherche"
 
 #, python-brace-format
 msgid "Not {name}: take out this face"
@@ -8383,6 +8462,15 @@ msgstr "Ouvrir cette page aux téléphones"
 msgid "Open this section (o)"
 msgstr "Ouvrir cette section (o)"
 
+#, python-brace-format
+msgid ""
+"Open {url} in your browser to name or set aside someone on this photo. "
+"Ctrl+C stops it; your photos are not changed."
+msgstr ""
+"Ouvrez {url} dans votre navigateur pour nommer ou mettre de côté "
+"quelqu'un sur cette photo. Ctrl+C l'arrête ; vos photos ne sont pas "
+"modifiées."
+
 msgid "Open 📚 Album and type its name first: then A adds the file shown."
 msgstr ""
 "Ouvrez d'abord 📚 Album et tapez son nom : A ajoute alors le fichier "
@@ -8507,6 +8595,9 @@ msgstr[1] "Page arrêtée — {count} fichiers intrus mis de côté."
 msgid "Page stopped; nothing was changed."
 msgstr "Page arrêtée ; rien n'a été modifié."
 
+msgid "Page stopped; your photos were not changed."
+msgstr "Page arrêtée ; vos photos n'ont pas été modifiées."
+
 #, python-brace-format
 msgid "Page {page} of {pages}"
 msgstr "Page {page} sur {pages}"
@@ -8553,6 +8644,13 @@ msgstr ""
 
 msgid "Paste the path of a photo of this person on the left."
 msgstr "Collez à gauche le chemin d'une photo de cette personne."
+
+msgid ""
+"Paste the path of a photo: name each of its faces, then confirm that "
+"person's other photos"
+msgstr ""
+"Collez le chemin d'une photo : nommez chacun de ses visages, puis "
+"confirmez les autres photos de cette personne"
 
 msgid "Path"
 msgstr "Chemin"
@@ -10430,9 +10528,6 @@ msgstr ""
 msgid "Set [classify.ai] model to a local vision model (Ollama)."
 msgstr "Réglez [classify.ai] model sur un modèle de vision local (Ollama)."
 
-msgid "Set a person aside"
-msgstr "Mettre une personne de côté"
-
 msgid "Set album.root in config.toml to a folder outside it."
 msgstr "Réglez album.root dans config.toml sur un dossier en dehors de celui-ci."
 
@@ -10791,6 +10886,9 @@ msgstr ""
 "Diaporama prêt : la télécommande sur {url} sur ce PC. Ctrl+C l'arrête ; "
 "vos photos ne sont pas modifiées."
 
+msgid "Small"
+msgstr "Petite"
+
 msgid "Small: the photos only"
 msgstr "Petite : les photos seules"
 
@@ -10806,6 +10904,9 @@ msgid ""
 msgstr ""
 "Certaines photos sont introuvables : déplacées depuis l'audit, ou leur "
 "dossier n'est pas monté (en lecture seule suffit)."
+
+msgid "Someone else (✓ or ≈ another name)"
+msgstr "Quelqu'un d'autre (✓ ou ≈ un autre nom)"
 
 msgid "Soon"
 msgstr "Bientôt"
@@ -12482,6 +12583,16 @@ msgstr ""
 "Les téléphones et tablettes appairés avec le code des invités voient les "
 "albums cochés ici, rien d'autre de la photothèque"
 
+msgid "The photo, as the Explorer shows its path"
+msgstr "La photo, telle que l'Explorateur montre son chemin"
+
+msgid ""
+"The photo, as the Explorer shows its path (C:\\Photos\\x.jpg), below the "
+"folders mounted."
+msgstr ""
+"La photo, telle que l'Explorateur montre son chemin (C:\\Photos\\x.jpg), "
+"sous les dossiers montés."
+
 msgid "The photo, full screen"
 msgstr "La photo, en plein écran"
 
@@ -13273,6 +13384,12 @@ msgid "These are a person's photos, the name as the folder says it:"
 msgstr "Ce sont les photos d'une personne, son nom tel que le dossier le dit :"
 
 #, python-brace-format
+msgid "These are {name}: {n}"
+msgid_plural "These are {name}: {n}"
+msgstr[0] "C'est {name} : {n}"
+msgstr[1] "C'est {name} : {n}"
+
+#, python-brace-format
 msgid ""
 "These decisions were made on other folders ({theirs}); this run analyses "
 "{ours}."
@@ -13365,6 +13482,15 @@ msgid ""
 msgstr ""
 "Les photos de cet événement n'ont pas pu être lues (erreur {status}) : "
 "ses fichiers ont peut-être été déplacés. Relancez la recherche."
+
+#, python-brace-format
+msgid "This face is…"
+msgid_plural "These {n} faces are…"
+msgstr[0] "Ce visage est…"
+msgstr[1] "Ces {n} visages sont…"
+
+msgid "This face was found by a second look: it cannot be named."
+msgstr "Ce visage a été trouvé par un second regard : il ne peut pas être nommé."
 
 msgid "This ffmpeg cannot encode H.264: nothing was changed."
 msgstr "Ce ffmpeg ne sait pas encoder en H.264 : rien n'a été modifié."
@@ -13477,6 +13603,11 @@ msgstr "Cette page est fermée. L'accueil revient ici quand mh l'ouvre."
 
 msgid "This page is not in the documentation of this version."
 msgstr "Cette page n'est pas dans la documentation de cette version."
+
+msgid "This photo is not in the index yet: run 'audit --people' first."
+msgstr ""
+"Cette photo n'est pas encore dans l'index : lancez d'abord 'audit "
+"--people'."
 
 #, python-brace-format
 msgid "This photo is not in your library: {warning} Tick it anyway?"
@@ -13627,6 +13758,9 @@ msgstr "Cocher ou décocher tous les fichiers de ce dossier"
 msgid "Tick the extensions to keep."
 msgstr "Cochez les extensions à garder."
 
+msgid "Tick their photos in the grid, then confirm them here"
+msgstr "Cochez ses photos dans la grille, puis confirmez-les ici"
+
 msgid "Tick: leaves the phone"
 msgstr "Cocher : quitte le téléphone"
 
@@ -13695,6 +13829,9 @@ msgstr ""
 
 msgid "To check: compare the copies with the kept version."
 msgstr "À vérifier : comparez les copies avec la version gardée."
+
+msgid "To confirm (≈ and ?)"
+msgstr "À confirmer (≈ et ?)"
 
 msgid "To copy"
 msgstr "À copier"
@@ -13813,6 +13950,11 @@ msgid ""
 msgstr ""
 "Trop de codes erronés : l'appairage est fermé. Sur le PC, choisissez "
 "Rouvrir l'appairage sur la page d'accueil pour un nouveau code."
+
+msgid "Too small or blurred to find others: draw the box closer around the face."
+msgstr ""
+"Trop petit ou flou pour en trouver d'autres : tracez le cadre plus près "
+"du visage."
 
 msgid "Too strict? Not enough?"
 msgstr "Trop strict ? Pas assez ?"
@@ -14181,6 +14323,9 @@ msgstr ""
 "Valeurs lues dans {file} à l'instant ; « par défaut » : le fichier ne la "
 "contient pas."
 
+msgid "Very large: to tell small children apart"
+msgstr "Très grande : pour reconnaître les jeunes enfants"
+
 msgid "Video cannot be opened"
 msgstr "Vidéo impossible à ouvrir"
 
@@ -14425,11 +14570,25 @@ msgstr "Où en sont vos photos"
 msgid "Whether a phone may open the pages, and see the originals."
 msgstr "Si un téléphone peut ouvrir les pages, et voir les originaux."
 
+msgid ""
+"Which photos the grid shows, by the name of the face that matched; Ctrl+A"
+" and the buttons act on the photos shown only"
+msgstr ""
+"Les photos que la grille montre, d'après le nom du visage reconnu ; "
+"Ctrl+A et les boutons n'agissent que sur les photos affichées"
+
 msgid "White pixels"
 msgstr "Pixels blancs"
 
 msgid "Who is it? Type a name, then Enter"
 msgstr "Qui est-ce ? Tapez un nom, puis Entrée"
+
+msgid ""
+"Who is on this photo: name each face, then confirm that person's other "
+"photos, in your browser."
+msgstr ""
+"Qui est sur cette photo : nommez chaque visage, puis confirmez les autres"
+" photos de cette personne, dans votre navigateur."
 
 msgid ""
 "Whole series set aside: its shots go to the quarantine at 'clean "
@@ -16726,6 +16885,9 @@ msgstr "en pause"
 msgid "person"
 msgstr "personne"
 
+msgid "person face name who identify"
+msgstr "personne visage nom qui identifier"
+
 msgid ""
 "person writes the names of the people on each photo (PersonInImage): "
 "never by default, as the names then travel with every copy of the photos."
@@ -16763,6 +16925,13 @@ msgstr "photos ont des mots"
 
 msgid "photos with a shooting date:"
 msgstr "photos avec une date de prise de vue :"
+
+msgid ""
+"pick faces of the section to name them, Shift+click a range; ✎ this face "
+"only"
+msgstr ""
+"choisir des visages de la section pour les nommer, Maj+clic une série ; ✎"
+" ce visage seul"
 
 msgid "pick or unpick the framed file"
 msgstr "choisir ou non le fichier encadré"
@@ -17455,9 +17624,6 @@ msgstr "cette liste, ou plus"
 
 msgid "this page stays open meanwhile"
 msgstr "cette page reste ouverte pendant ce temps"
-
-msgid "this person"
-msgstr "cette personne"
 
 msgid "this setting is required"
 msgstr "ce réglage est obligatoire"
@@ -20343,6 +20509,12 @@ msgstr[0] "{n} écartée sur {count}"
 msgstr[1] "{n} écartées sur {count}"
 
 #, python-brace-format
+msgid "{n} other hidden by the filter"
+msgid_plural "{n} others hidden by the filter"
+msgstr[0] "{n} autre masquée par le filtre"
+msgstr[1] "{n} autres masquées par le filtre"
+
+#, python-brace-format
 msgid "{n} other photo looks like the person you set aside on {date}"
 msgid_plural "{n} other photos look like the person you set aside on {date}"
 msgstr[0] "{n} autre photo ressemble à la personne mise de côté le {date}"
@@ -20411,6 +20583,20 @@ msgid "{n} photo picked"
 msgid_plural "{n} photos picked"
 msgstr[0] "{n} photo choisie"
 msgstr[1] "{n} photos choisies"
+
+#, python-brace-format
+msgid ""
+"{n} photo picked is confirmed as someone else: left out (move it on the "
+"people page)"
+msgid_plural ""
+"{n} photos picked are confirmed as someone else: left out (move them on "
+"the people page)"
+msgstr[0] ""
+"{n} photo choisie est confirmée comme quelqu'un d'autre : laissée de côté"
+" (déplacez-la sur la page people)"
+msgstr[1] ""
+"{n} photos choisies sont confirmées comme quelqu'un d'autre : laissées de"
+" côté (déplacez-les sur la page people)"
 
 #, python-brace-format
 msgid "{n} photo ready to send ({size}), read back from {folder}."
@@ -21215,6 +21401,17 @@ msgstr[1] ""
 "↩️ {count} photos et vidéos que vous aviez déjà mises de côté sont "
 "revenues ({size}) : retour en quarantaine."
 
+msgid "≈ Guessed as this person"
+msgstr "≈ Devinée comme cette personne"
+
+#, python-brace-format
+msgid ""
+"① Tick the photos where it really is {name} (Ctrl+A ticks them all; × "
+"when it is not them) ② then:"
+msgstr ""
+"① Cochez les photos où c'est bien {name} (Ctrl+A les coche toutes ; × "
+"quand ce n'est pas elle ou lui) ② puis :"
+
 msgid "■ Stop"
 msgstr "■ Arrêter"
 
@@ -21224,6 +21421,12 @@ msgstr "▶ Lecture"
 #, python-brace-format
 msgid "▶ Run again from: {step}"
 msgstr "▶ Relancer depuis : {step}"
+
+msgid "▶ Show the panel"
+msgstr "▶ Afficher le panneau"
+
+msgid "◀ Hide the panel"
+msgstr "◀ Masquer le panneau"
 
 msgid "⚙ Settings"
 msgstr "⚙ Réglages"
@@ -21239,6 +21442,18 @@ msgid ""
 msgstr ""
 "⛔ {count} connexions refusées de {address} à {time} : trop à la fois "
 "depuis cet appareil."
+
+msgid "✏ Draw a face the tool missed"
+msgstr "✏ Tracer un visage manqué par l'outil"
+
+#, python-brace-format
+msgid "✓ Confirm the name guessed: {n}"
+msgid_plural "✓ Confirm the names guessed: {n}"
+msgstr[0] "✓ Confirmer le nom deviné : {n}"
+msgstr[1] "✓ Confirmer les noms devinés : {n}"
+
+msgid "✓ Confirmed as this person"
+msgstr "✓ Confirmée comme cette personne"
 
 msgid "✓ in the album"
 msgstr "✓ dans l'album"
@@ -21363,6 +21578,12 @@ msgid "📁 Make the folder: {n} change"
 msgid_plural "📁 Make the folder: {n} changes"
 msgstr[0] "📁 Créer le dossier : {n} changement"
 msgstr[1] "📁 Créer le dossier : {n} changements"
+
+msgid "📁 The folder or file name names someone else"
+msgstr "📁 Le dossier ou le nom du fichier nomme quelqu'un d'autre"
+
+msgid "📁 The folder or file name names this person"
+msgstr "📁 Le dossier ou le nom du fichier nomme cette personne"
 
 msgid "📁 Where should your albums go? Pick a folder on the disk of your photos."
 msgstr ""

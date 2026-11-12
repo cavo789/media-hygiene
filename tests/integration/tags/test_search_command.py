@@ -10,6 +10,7 @@ from PIL import Image
 from media_hygiene.review.http import Request
 from media_hygiene.search.app import SearchApp
 from media_hygiene.services import search_pages as search_service
+from media_hygiene.services.first_visit import FirstVisit
 from tests.support.cli import run
 from tests.support.places_map import JSON, PORT
 
@@ -32,8 +33,9 @@ def fake_server(action: Callable[[SearchApp], Awaitable[None]]) -> object:
 
     async def serve(door: EndingDoor, _port: int, ready: Callable[[int], None]) -> int:
         ready(PORT)
-        assert isinstance(door.app, SearchApp)
-        await action(door.app)
+        app = door.app.app if isinstance(door.app, FirstVisit) else door.app  # 0714
+        assert isinstance(app, SearchApp)
+        await action(app)
         if door.ending.asked is None:
             raise KeyboardInterrupt
         return door.ending.asked

@@ -1,0 +1,31 @@
+{# The view of `/person` (0714): the size of the tiles (S/M/L/XL, XL to tell small children
+   apart) and the left column hidden or shown, kept per viewer in this browser only (a
+   convenience: the page works the same without it). #}
+const VIEW_KEY = "mh-person-view";
+function keptView() {
+  try { return JSON.parse(localStorage.getItem(VIEW_KEY) || "{}"); } catch (error) { return {}; }
+}
+
+function showView(view) {
+  $("grid").dataset.size = view.size || "m";
+  for (const button of $("sizes").querySelectorAll("button")) {
+    button.setAttribute("aria-pressed", String(button.dataset.size === $("grid").dataset.size));
+  }
+  const hidden = Boolean(view.sideHidden);
+  document.querySelector(".layout").classList.toggle("sideHidden", hidden);
+  $("sideToggle").textContent = hidden ? TEXTS.sideShow : TEXTS.sideHide;
+  $("sideToggle").setAttribute("aria-pressed", String(hidden));
+}
+
+function changeView(change) {
+  const view = { ...keptView(), ...change };
+  try { localStorage.setItem(VIEW_KEY, JSON.stringify(view)); } catch (error) { /* not kept */ }
+  showView(view);
+}
+
+$("sizes").addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-size]");
+  if (button) changeView({ size: button.dataset.size });
+});
+$("sideToggle").addEventListener("click", () => changeView({ sideHidden: !keptView().sideHidden }));
+showView(keptView());

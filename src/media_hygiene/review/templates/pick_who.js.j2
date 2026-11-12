@@ -1,0 +1,38 @@
+{# Who is on the photo opened large (0714): "👤 ✓ Chloé · ≈ Paul · ? not named", asked of
+   `/person/api/photo` (the index) only when a photo is opened, one small request each, never
+   shipped with the tiles. A "?" opens `/person` on that photo, its naming line on that face.
+   Included by `pick_viewer.js.j2`; `#viewerWho` (`pick_viewer.html.j2`) holds the words. #}
+let whoAsked = 0; // the latest photo asked: an answer for an earlier one is dropped
+
+async function showWho(file) {
+  const who = $("viewerWho");
+  const asked = ++whoAsked;
+  who.hidden = true;
+  who.replaceChildren();
+  if (!file.path || file.video) return;
+  const options = { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ path: file.path }) };
+  const answer = await fetch("/person/api/photo", options).catch(() => null);
+  if (!answer || !answer.ok || asked !== whoAsked) return;
+  const result = await answer.json().catch(() => ({}));
+  const faces = result.faces || [];
+  if (!faces.length || asked !== whoAsked) return;
+  who.append("👤 ");
+  faces.forEach((face, at) => {
+    if (at) who.append(" · ");
+    const named = face.named;
+    if (named && named.name) {
+      const sure = named.how === "confirmed";
+      const tag = element("span", sure ? "" : "guessed", (sure ? "✓ " : "≈ ") + named.name);
+      tag.title = sure ? who.dataset.confirmed : who.dataset.guessed;
+      who.append(tag);
+      return;
+    }
+    const link = element("a", "", who.dataset.nobody);
+    link.href = "/person?path=" + encodeURIComponent(file.path) + "&face=" + at;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.title = who.dataset.hint;
+    who.append(link);
+  });
+  who.hidden = false;
+}

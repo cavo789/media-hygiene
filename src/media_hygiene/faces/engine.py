@@ -83,14 +83,36 @@ class FaceEngine:
             The face.
         """
         landmarks = tuple(float(value) for value in row[LANDMARKS])
-        crop = aligned_face(picture, landmarks)
+        box = FaceBox(*(float(value) for value in row[BOX]))
+        return self.describe(picture, Placed(box, landmarks, float(row[SCORE])))
+
+    def describe(self, picture: Image.Image, placed: Placed) -> Face:
+        """Describe a face whose place is known: detected, or drawn by hand (0715).
+
+        Args:
+            picture: The picture.
+            placed: Its box, landmarks and score.
+
+        Returns:
+            The face, with its sharpness and vector.
+        """
+        crop = aligned_face(picture, placed.landmarks)
         outputs = self.embedder(embedder_input(crop))
         vector = next(iter(outputs.values()))
         gray = np.asarray(crop.convert("L"), dtype=np.float64)
         return Face(
-            box=FaceBox(*(float(value) for value in row[BOX])),
-            landmarks=landmarks,
-            score=float(row[SCORE]),
+            box=placed.box,
+            landmarks=placed.landmarks,
+            score=placed.score,
             sharpness=sharpness_of(gray),
             embedding=embedding_bytes(vector),
         )
+
+
+@dataclass(frozen=True, slots=True)
+class Placed:
+    """Where a face is: its box, its five landmarks, the detector's score."""
+
+    box: FaceBox
+    landmarks: tuple[float, ...]
+    score: float

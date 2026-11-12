@@ -1,0 +1,38 @@
+{# The names a photo's path gives (0714 follow-up): a folder "Avril 2004 - Manon 5 mois" or a
+   file "Petite Manon.png" names a person known on the people page. Shown on the tile as a hint
+   (📁 Manon), marked when it names someone else than the face's name; the grid's *Show* can
+   keep the photos whose path names this person, or someone else. A hint only: nothing is named
+   from a path without a click. Words are compared whole, without case or accents. #}
+function words(text) {
+  return " " + text.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean).join(" ") + " ";
+}
+
+// The people known whose whole name is in the path (folders and file name).
+function pathNames(path) {
+  const said = words(path || "");
+  const found = state.people.filter((name) => words(name).trim() && said.includes(words(name)));
+  // "Tonton Paul" found: "Paul" alone is the same words, not a second person.
+  return found.filter((name) => !found.some((other) => other !== name && words(other).includes(words(name))));
+}
+
+// "mine": the path names the person chosen; "other": it names only other people; "" otherwise.
+function pathStatus(file) {
+  const named = pathNames(file.where);
+  if (!named.length || !seedName) return "";
+  return named.includes(seedName) ? "mine" : "other";
+}
+
+function pathTag(file) {
+  const named = pathNames(file.where);
+  if (!named.length) return null;
+  const tag = element("span", "pathName" + (pathStatus(file) === "other" ? " clash" : ""), "📁 " + named.join(", "));
+  tag.title = TEXTS.pathHint;
+  return tag;
+}
+
+function showPathTag(node, file) {
+  const old = node.querySelector(".pathName");
+  if (old) old.remove();
+  const tag = pathTag(file);
+  if (tag) node.querySelector(".named .who").after(tag);
+}

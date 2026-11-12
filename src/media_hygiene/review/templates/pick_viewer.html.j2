@@ -1,13 +1,15 @@
 {# The large view of a page of photos to pick (`pick_viewer.js.j2`): the file framed in
    the grid, a photo or a video, its keys under it and all of them with `?`. The page's
    `pick_marks`, `pick_space` and `pick_mark` as in `pick_keys.html.j2`; 👤 opens `/person` on
-   the file shown when it carries its host `path` (0351); `pick_album = false`
+   the file shown when it carries its host `path` (0351), and `#viewerWho` says who is on it
+   (`pick_who.js.j2`, 0714); `pick_album = false`
    for a page without albums (no A). #}
 {% set marks = pick_marks | default(true) %}
 <div id="viewer" role="dialog" aria-modal="true">
   <img id="large" alt="">
   <video id="movie" controls hidden></video>
-  <div><span id="viewerName"></span> <span id="viewerAside" class="asideMark" hidden>{{ pick_mark | default(_("marked to set aside")) }}</span> — <a id="originalLink" target="_blank" rel="noopener">{{ _("Open the original") }}</a> <a id="personLink" target="_blank" rel="noopener" hidden title="{{ _('Find every photo of a person on this one, to set them aside') }}">👤 {{ _("Set a person aside") }}</a></div>
+  <div><span id="viewerName"></span> <span id="viewerAside" class="asideMark" hidden>{{ pick_mark | default(_("marked to set aside")) }}</span> — <a id="originalLink" target="_blank" rel="noopener">{{ _("Open the original") }}</a> <a id="personLink" target="_blank" rel="noopener" hidden title="{{ _('Identify someone on this photo: name them, or set them aside') }}">👤 {{ _("Identify someone") }}</a></div>
+  <div id="viewerWho" class="stay" hidden data-nobody="{{ _('? not named') }}" data-hint="{{ _('Nobody was given this face yet: click it to name it.') }}" data-confirmed="{{ _('Named on purpose: confirmed') }}" data-guessed="{{ _('Given by the tool, close to a confirmed face: not confirmed yet') }}"></div>
   <div id="viewerInfo" class="stay" hidden></div>
   <div id="viewerSaid" class="stay" role="status"></div>
   <small class="viewerKeys stay"><kbd>←</kbd> <kbd>→</kbd> {{ _("previous, next (set aside skipped)") }} · {% if marks %}<span class="pc-only"><kbd>Delete</kbd> {{ _("set it aside, then the previous one") }}</span><span class="phone-only"><kbd>Esc</kbd> {{ _("close it") }}</span>{% else %}<kbd>␣</kbd> {{ pick_space }}{% endif %} · <kbd>F</kbd> {{ _("full screen") }} · <kbd>?</kbd> {{ _("every key") }}</small>

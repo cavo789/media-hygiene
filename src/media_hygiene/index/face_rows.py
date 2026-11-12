@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.faces.models import FaceBox
 from media_hygiene.index.aside_faces import FORGET_ALL
+from media_hygiene.index.drawn_faces import DRAWN_FROM
 from media_hygiene.index.face_groups import FORGET_GROUPS
 
 if TYPE_CHECKING:
@@ -29,7 +30,11 @@ _PUT_SCAN: Final = (
     "INSERT OR REPLACE INTO face_scans (path, size, mtime_ns, model, faces, seconds)"
     " VALUES (?, ?, ?, ?, ?, ?)"
 )
-_DROP_FACES: Final = "DELETE FROM faces WHERE path = ? AND model = ?"
+# The faces drawn by hand on this version of the photo stay (0715, `drawn_faces`).
+_DROP_FACES: Final = (
+    "DELETE FROM faces WHERE path = ? AND model = ?"
+    " AND NOT (number >= ? AND size = ? AND mtime_ns = ?)"
+)
 _PUT_FACE: Final = (
     "INSERT INTO faces (path, size, mtime_ns, model, number, x, y, width, height,"
     " landmarks, score, sharpness, embedding)"
@@ -120,7 +125,9 @@ class FaceStore:
             found: The photo and its faces.
         """
         path = str(found.path)
-        self._connection.execute(_DROP_FACES, (path, self._model))
+        self._connection.execute(
+            _DROP_FACES, (path, self._model, DRAWN_FROM, found.size, found.mtime_ns)
+        )
         self._connection.executemany(
             _PUT_FACE,
             [

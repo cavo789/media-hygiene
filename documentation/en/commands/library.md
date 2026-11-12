@@ -136,8 +136,8 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   closes it), so the form above never leaves the screen.
 - **Look**: Enter or a double click shows the photo large (with a link to the original); ← → (on a
   phone, a swipe) the previous or next one not set aside, Delete sets it aside then shows the previous one (the next one at the start), F full screen, L the landmark it
-  shows ([`spots`](spots.md#-type-the-landmark-yourself-key-l)), ? every key, Escape closes it. **👤 Set a person aside** finds every photo of someone on the one shown
-  ([`people`](people.md#from-any-page-set-a-person-aside)).
+  shows ([`spots`](spots.md#-type-the-landmark-yourself-key-l)), ? every key, Escape closes it. **👤 Identify someone** names someone on the photo shown, or finds every photo of them
+  ([`people`](people.md#from-any-photo-name-or-set-aside-someone)).
 
 - **A period**: *From* and *To* are calendars, a day each, both included; one alone is a period
   of one day. The day is the one the photo was taken, as `classify` dates it. *From* chosen,

@@ -14,7 +14,7 @@ from media_hygiene.search.place_desk import PlaceDesk
 from media_hygiene.services.albums import album_narrow
 from media_hygiene.services.chosen_place import chosen_store, reports_ready
 from media_hygiene.services.date_sidecars import DateWriter
-from media_hygiene.services.people_page import names_file
+from media_hygiene.services.names_file import names_file
 from media_hygiene.services.xmp_towns import indexed_inputs
 
 if TYPE_CHECKING:

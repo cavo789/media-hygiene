@@ -172,8 +172,8 @@ The complete lists: [cleaning, step 10](../clean/10-review-bursts.md#step-5-go-f
   and offers **↶ Undo** of that run once it ended, the files then looked for where they were and
   counted; served apart, it closes and the home page comes back. Opened by `mh review` alone: no button, type the `clean` command.
 - A shot of a **protected folder** is never proposed nor set aside.
-- **👤 this person**, under each shot, opens in a new tab every photo of someone on that shot,
-  to set them all aside: see [`people`](people.md#from-any-page-set-a-person-aside).
+- **👤 Identify someone**, under each shot, opens in a new tab every photo of someone on that
+  shot, to name them or set them all aside: see [`people`](people.md#from-any-photo-name-or-set-aside-someone).
 - The burst review has an **Album** field too: **➕ Add to the album** puts the picked shots in
   that album, as in `library`, apart from your decisions. See
   [Put photos in an album](library.md#put-photos-in-an-album). Opened from the home page, its

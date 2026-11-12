@@ -12,6 +12,8 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.i18n import _
+from media_hygiene.people.known import Known
+from media_hygiene.people.naming import id_of
 from media_hygiene.people.remembered import aside_date
 from media_hygiene.person.likeness import likeness
 from media_hygiene.person.routes import FACE_PREFIX, JPEG, PREVIEW_PREFIX, THUMB_PREFIX
@@ -24,6 +26,7 @@ if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
     from media_hygiene.people.aside import AsideDesk
     from media_hygiene.person.lookup import FaceIndex
+    from media_hygiene.person.names import FaceNames
     from media_hygiene.person.shelf import FaceShelf
 
 _QUOTES: Final = "\"' "
@@ -63,6 +66,7 @@ class PersonFinder:
     place: PhotoPlace
     faces: FaceIndex
     shelf: FaceShelf
+    names: FaceNames | None = None  # who each face is, and naming them (0714)
 
     def photo(self, typed: str) -> dict[str, object]:
         """The faces of a photo, as the page reads them.
@@ -79,7 +83,9 @@ class PersonFinder:
             message = _("{path} is not a photo of the folders this page shows.")
             return {"said": message.format(path=typed.strip(_QUOTES)), "faces": []}
         faces = [
-            self.shelf.add(ShelfFace(face.path, face.embedding, face.box))
+            self.shelf.add(
+                ShelfFace(face.path, face.embedding, face.box, number=face.number)
+            )
             for face in self.faces.of(path)
         ]
         return {
@@ -100,11 +106,11 @@ class PersonFinder:
             for an unknown number.
         """
         seed = self.shelf.face(key)
-        if seed is None:
+        if seed is None or not seed.embedding:  # a photo only, to draw on (0715)
             return {"files": [], "known": None}
         memory = None if aside is None else aside.memory
         people = () if memory is None else memory.people()
-        found = likeness(seed.embedding, self.faces.every, people)
+        found = likeness(seed.embedding, self.kept(key), people)
         chosen = frozenset() if aside is None else aside.paths()
         others = (face for face in found.faces if face.path != seed.path)
         files = [self._card(int(key), seed.path, chosen)]
@@ -118,6 +124,27 @@ class PersonFinder:
         said = {"aside": known.aside, "label": known.label, "date": date}
         return {"files": files, "known": said}
 
+    def kept(self, key: str) -> tuple[StoredFace, ...]:
+        """Every face of the index but those said not to be the face's name (0714).
+
+        The cross "not <name>" takes the face out of the mean, not only the page.
+
+        Args:
+            key: The face's number.
+
+        Returns:
+            The faces the likeness starts from.
+        """
+        every = tuple(self.faces.every)
+        tag = None if self.names is None else self.names.tags([int(key)]).get(int(key))
+        name = tag.get("name") if tag else None
+        if self.names is None or not isinstance(name, str) or not name:
+            return every
+        rejected = Known.of(every, self.names.settings()).rejected
+        return tuple(
+            face for face in every if name not in rejected.get(id_of(face), ())
+        )
+
     def _number(self, face: StoredFace) -> int:
         """Put a face of the index on the shelf.
 
@@ -127,7 +154,9 @@ class PersonFinder:
         Returns:
             Its number.
         """
-        return self.shelf.add(ShelfFace(face.path, face.embedding, face.box))
+        return self.shelf.add(
+            ShelfFace(face.path, face.embedding, face.box, number=face.number)
+        )
 
     def _card(self, key: int, path: Path, chosen: frozenset[str]) -> dict[str, object]:
         """One photo of the grid, by the number of its face.
@@ -149,6 +178,7 @@ class PersonFinder:
             "original": f"{PREVIEW_PREFIX}{key}{JPEG}",
             "where": host,
             "path": host,  # 👤: `/person` again, from this photo
+            "face": f"{FACE_PREFIX}{key}{JPEG}",  # the face that matched (0714)
             "chosen": host in chosen,
         }
 

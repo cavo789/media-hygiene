@@ -17,6 +17,7 @@ from media_hygiene.people.followed import follow_ids
 from media_hygiene.people.guide import left_to_do, people_list
 from media_hygiene.people.hidden import Named, page_sections
 from media_hygiene.people.known import Known
+from media_hygiene.people.moving import move_faces
 from media_hygiene.people.naming import id_of, name_all
 from media_hygiene.people.proof import followed_line, proof_line
 from media_hygiene.people.suggest import suggestions
@@ -48,6 +49,7 @@ class Change:
 
     action: str
     naming: Naming
+    source: str = ""  # "move": the name the faces were shown under (TODO 0712)
 
 
 class Roster:
@@ -129,6 +131,8 @@ class Roster:
             wanted = ignore_faces(written, change.naming.faces)
         elif change.action == "reject":
             wanted = reject_faces(written, change.naming)
+        elif change.action == "move":
+            wanted = move_faces(written, change.naming, change.source)
         else:
             wanted = give_name(written, change.naming)
         save_people(self._file, wanted)

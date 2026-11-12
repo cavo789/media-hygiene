@@ -71,6 +71,9 @@
   "toConfirm": _("{n} to confirm"),
   "unnamedEntry": _("Unnamed groups ({n})"),
   "itIs": _("It is {name}? ({score})"),
+  "namerNot": [ngettext("Not {name}, this face is…", "Not {name}, these {n} faces are…", 1), ngettext("Not {name}, this face is…", "Not {name}, these {n} faces are…", 2)],
+  "namerIs": [ngettext("This face is…", "These {n} faces are…", 1), ngettext("This face is…", "These {n} faces are…", 2)],
+  "nameOne": _("Name this face only (Ctrl+click picks several, Shift+click a range)"),
   "suggestHint": _("This group looks like the faces you confirmed as this person's: a click names it so (y)."),
 } %}
 {% set page_name = _("People") %}
@@ -87,6 +90,8 @@
       <ul id="peopleList"></ul>
       <label><input id="onlyPerson" type="checkbox"> {{ _("Show only this person (Esc)") }}</label>
     </nav>
+    {# Someone in no group, or in someone else's (0714): from one photo, its faces. #}
+    <p><a id="personPage" href="/person" target="_blank" rel="noopener" title="{{ _("Paste the path of a photo: name each of its faces, then confirm that person's other photos") }}">👤 {{ _("Name someone from a photo") }}</a></p>
     <details>
       <summary>{{ _("How it works") }}</summary>
       <p class="muted">{{ _("Each group holds faces that look alike: probably one person. Type a name to save it in config.toml; the photos are never changed and the faces stay on this computer.") }}</p>
@@ -101,6 +106,7 @@
       <dt><kbd>Enter</kbd></dt><dd>{{ _("type a name for the section") }}</dd>
       <dt><kbd>y</kbd></dt><dd>{{ _("confirm the attributed faces shown, or name the group as the person it looks like") }}</dd>
       <dt>×</dt><dd>{{ _("a face of someone else: the next button of the section saves it") }}</dd>
+      <dt>{{ _("Ctrl+click") }}</dt><dd>{{ _("pick faces of the section to name them, Shift+click a range; ✎ this face only") }}</dd>
       <dt>{{ _("click") }}</dt><dd>{{ _("its photo large; Delete sets it aside, Esc closes") }}</dd>
 {% endblock %}
 {% block more_keys %}
@@ -137,6 +143,7 @@ const SECTION = {{ section_prefix | tojson }};
 const SAMPLE = {{ sample_prefix | tojson }};
 {% include "people.js.j2" %}
 {% include "people_sections.js.j2" %}
+{% include "people_name_face.js.j2" %}
 {% include "people_viewer.js.j2" %}
 {% include "combo_list.js.j2" %}
 {% include "people_guide.js.j2" %}
