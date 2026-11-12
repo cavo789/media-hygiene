@@ -2979,12 +2979,6 @@ msgid "Erase these {count} files for good: frees {size}"
 msgstr ""
 
 #, python-brace-format
-msgid "Erase this only copy too?"
-msgid_plural "Erase these {count} only copies too?"
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
 msgid "Erased from .removed (older than {days} days): {count} runs"
 msgstr ""
 
@@ -4432,6 +4426,10 @@ msgid "JPEG quality"
 msgstr ""
 
 msgid "January"
+msgstr ""
+
+#, python-brace-format
+msgid "Journal of run {run} taken back from its quarantine: {path}"
 msgstr ""
 
 msgid "July"
@@ -9588,6 +9586,16 @@ msgstr ""
 msgid "That could not be done: {reason}"
 msgstr ""
 
+#, python-brace-format
+msgid "That includes the {count} file listed above, which exists nowhere else."
+msgid_plural "That includes the {count} files listed above, which exist nowhere else."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "That includes the {count} files listed, which exist nowhere else."
+msgstr ""
+
 msgid "The Explorer's menu is as it was."
 msgstr ""
 
@@ -9859,6 +9867,12 @@ msgid "The copy is off this PC"
 msgstr ""
 
 msgid "The copy of the import has the same name and size."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"The copy of the journal of run {run} beside its quarantine could not be "
+"written: {reason}. The journal itself is safe."
 msgstr ""
 
 #, python-brace-format
@@ -15983,6 +15997,12 @@ msgid "{count} obvious"
 msgid_plural "{count} obvious"
 msgstr[0] ""
 msgstr[1] ""
+
+#, python-brace-format
+msgid ""
+"{count} of these files exist nowhere else ({size}): near duplicates, "
+"burst shots, junk or unreadable, not exact copies."
+msgstr ""
 
 #, python-brace-format
 msgid "{count} of {total} ({percent}%)"

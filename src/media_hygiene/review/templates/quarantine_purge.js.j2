@@ -7,8 +7,13 @@ const PURGE_TEXTS = {{ {
   "sureYes": _("Erase for good"),
   "sure": _("Erase run {run} for good? This cannot be undone, not even by 'undo'."),
   "running": _("Erasing in the window of mh: {command}"),
+  "only": _("{count} of these files exist nowhere else ({size}): near duplicates, burst shots, junk or unreadable, not exact copies."),
+  "onlyMore": _("… and {count} more."),
+  "onlySure": _("That includes the {count} files listed, which exist nowhere else."),
 } | tojson }};
 const DISK_STATE = "/disk-space/api/state";
+const DISK_ONLY = "/disk-space/api/only"; // the run's only copies, listed first (0699)
+let onlyCount = 0;
 const PURGE_PATH = {{ purge_path | tojson }};
 const STEP_POLL_MS = 1000;
 const LANDS_ON = new URLSearchParams(window.location.search).get("back") === "history" ? "/history/" : "/disk-space/"; // 0631
@@ -24,6 +29,23 @@ drawPurge = async () => {
   const others = run.count - tiles.length;
   const values = { count: number(tiles.length), others: number(others), size: run.size };
   $("purge").textContent = fill(others > 0 ? PURGE_TEXTS.unshown : PURGE_TEXTS.button, values);
+  await drawOnly();
+};
+
+const drawOnly = async () => {
+  const answer = await fetch(`${DISK_ONLY}?run=${encodeURIComponent(ONLY_RUN)}`, { cache: "no-store" }).catch(() => null);
+  const only = answer && answer.ok ? await answer.json() : null;
+  if (!only) { $("purgeBar").hidden = true; return; } // never a purge without knowing them
+  onlyCount = only.count;
+  $("purgeOnly").hidden = only.count === 0;
+  $("purgeOnlySaid").textContent = fill(PURGE_TEXTS.only, { count: number(only.count), size: only.size });
+  const items = only.files.map((file) => { const item = document.createElement("li"); item.textContent = file; return item; });
+  if (only.count > only.files.length) {
+    const more = document.createElement("li");
+    more.textContent = fill(PURGE_TEXTS.onlyMore, { count: number(only.count - only.files.length) });
+    items.push(more);
+  }
+  $("purgeOnlyFiles").replaceChildren(...items);
 };
 
 const followPurge = (step) => fetch(step.follow, { cache: "no-store" })
@@ -35,7 +57,7 @@ const followPurge = (step) => fetch(step.follow, { cache: "no-store" })
   .catch(() => window.setTimeout(() => followPurge(step), STEP_POLL_MS));
 
 $("purge").addEventListener("click", async () => {
-  if (!await window.mhAsk({ lines: [fill(PURGE_TEXTS.sure, { run: ONLY_RUN })], yes: PURGE_TEXTS.sureYes, danger: true })) return;
+  if (!await window.mhAsk({ lines: [fill(PURGE_TEXTS.sure, { run: ONLY_RUN }), ...(onlyCount > 0 ? [fill(PURGE_TEXTS.onlySure, { count: number(onlyCount) })] : [])], yes: PURGE_TEXTS.sureYes, danger: true })) return;
   $("purge").disabled = true;
   const answer = await ask(PURGE_PATH, { run_id: ONLY_RUN, files: tiles.length });
   const step = answer ? await answer.json().catch(() => ({})) : {};

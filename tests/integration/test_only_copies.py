@@ -6,15 +6,20 @@ names a keeper of other content: 1 only copy each. `purge` lists them and asks a
 
 from __future__ import annotations
 
+import json
+from http import HTTPStatus
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import journal_file
 from media_hygiene.actions.runs import list_run_ids
 from media_hygiene.console.output import Output
+from media_hygiene.review.http import Request
+from media_hygiene.services.disk_only import only_answer
 from media_hygiene.services.only_copies import only_copies
 from media_hygiene.services.only_count import only_count
 from tests.support.cli import run
+from tests.support.runtime import make_runtime
 
 if TYPE_CHECKING:
     import pytest
@@ -103,22 +108,71 @@ def test_a_run_without_journal_counts_every_file(
     assert len(found.files) == len(held)
 
 
-def test_purge_lists_them_and_asks_apart(
+def test_purge_lists_them_before_its_one_question(
     cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Yes to the purge, no to the only copies: nothing is erased."""
+    """The only copies are listed before the one question; no erases nothing."""
     assert run(cli, "clean", "--yes", "--tier", "near-all").exit_code == 0
-    answers = iter((True, False))
     asked: list[str] = []
 
     def answer(_output: Output, question: str) -> bool:
         asked.append(question)
-        return next(answers)
+        return False
 
     monkeypatch.setattr(Output, "confirm", answer)
     text = " ".join(run(cli, "purge").output.split())
-    assert "exist nowhere else" in text
-    assert WHATSAPP in text
-    assert "only copies too?" in asked[1]
+    assert len(asked) == 1  # one informed decision
+    assert "listed above" in asked[0]
+    assert "exist nowhere else" in asked[0]
+    before_question = text.split("Nothing was changed.", maxsplit=1)[0]
+    assert WHATSAPP in before_question
     assert "Nothing was changed." in text
     assert list(locations.quarantine_dir.rglob(WHATSAPP))
+
+
+def test_purge_without_only_copies_asks_plainly(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Every file covered by its kept twin: the question names no only copy."""
+    assert run(cli, "clean", "--yes").exit_code == 0
+    for file in _only_files(locations):
+        file.unlink()  # leave only the covered exact copies
+    asked: list[str] = []
+
+    def answer(_output: Output, question: str) -> bool:
+        asked.append(question)
+        return False
+
+    monkeypatch.setattr(Output, "confirm", answer)
+    text = " ".join(run(cli, "purge").output.split())
+    assert len(asked) == 1
+    assert "listed above" not in asked[0]
+    assert "exist nowhere else" not in text
+
+
+def _only_files(locations: Locations) -> list[Path]:
+    """The only copies of every run in the quarantine.
+
+    Args:
+        locations: The mount points.
+
+    Returns:
+        Their paths.
+    """
+    runs = list_run_ids(locations.journal_dir)
+    return list(
+        only_copies((locations.quarantine_dir,), locations.journal_dir, runs).files
+    )
+
+
+def test_the_purge_page_lists_them(cli: CliRunner, locations: Locations) -> None:
+    """`GET /disk-space/api/only?run=`: the run's only copies, for the page (0699)."""
+    assert run(cli, "clean", "--yes", "--tier", "near-all").exit_code == 0
+    run_id = list_run_ids(locations.journal_dir)[0]
+    runtime = make_runtime(locations)
+    request = Request("GET", "/disk-space/api/only", {}, b"", query=f"run={run_id}")
+    answer = json.loads(only_answer(runtime, request).body)
+    assert answer["count"] == len(_only(locations))
+    assert any(file.endswith(WHATSAPP) for file in answer["files"])
+    bad = Request("GET", "/disk-space/api/only", {}, b"", query="run=../x")
+    assert only_answer(runtime, bad).status == HTTPStatus.BAD_REQUEST

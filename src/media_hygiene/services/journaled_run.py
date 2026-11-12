@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 from media_hygiene.actions.journal import JournalWriter, journal_file
 from media_hygiene.actions.journaled import CleanContext
 from media_hygiene.actions.runs import new_run_id
+from media_hygiene.services.journal_beside import copy_beside
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -38,11 +39,14 @@ def new_run(
     locations = runtime.locations
     locations.journal_dir.mkdir(parents=True, exist_ok=True)
     run_id = new_run_id(locations.journal_dir)
-    with JournalWriter.open(journal_file(locations.journal_dir, run_id)) as journal:
-        yield CleanContext(
-            journal,
-            runtime.mapper,
-            locations.quarantine_dir / run_id,
-            progress,
-            phase,
-        )
+    try:
+        with JournalWriter.open(journal_file(locations.journal_dir, run_id)) as journal:
+            yield CleanContext(
+                journal,
+                runtime.mapper,
+                locations.quarantine_dir / run_id,
+                progress,
+                phase,
+            )
+    finally:  # stopped half-way too: what it set aside is in the copy (0697)
+        copy_beside(runtime, run_id)

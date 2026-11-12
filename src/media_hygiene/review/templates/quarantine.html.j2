@@ -38,6 +38,7 @@
   #chosen.saved { color: var(--ok); } #chosen.error { color: var(--bad); }
   #runs { margin: 6px 0 0; padding: 0; list-style: none; }
   #runs li { display: flex; justify-content: space-between; gap: 8px; }
+  #purgeOnly { color: var(--bad); } #purgeOnly ul { margin: 4px 0; padding-left: 18px; overflow-wrap: anywhere; }
   #runs a { color: var(--accent); text-decoration: none; overflow-wrap: anywhere; }
 {% endblock %}
 {% block side %}
@@ -46,6 +47,7 @@
       <h2>🗂 {{ _("Runs") }}</h2>
       <ul id="runs"></ul>
       <p id="everyRun" hidden><a href="./">{{ _("Show every run") }}</a></p>
+      <div id="purgeOnly" class="error" hidden><p id="purgeOnlySaid"></p><ul id="purgeOnlyFiles"></ul></div>
       <p id="purgeBar" hidden><button id="purge" class="plain" type="button"></button></p>
     </section>
 {% endblock %}

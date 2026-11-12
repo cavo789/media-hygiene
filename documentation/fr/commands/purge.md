@@ -78,10 +78,12 @@ docker run --rm -it `
 
 ## Bon à savoir
 
-- **Les copies uniques, demandées à part** : un fichier mis de côté comme copie exacte a
+- **Les copies uniques, montrées d'abord** : un fichier mis de côté comme copie exacte a
   toujours son jumeau gardé ; un quasi-doublon, une photo de rafale, un déchet ou un fichier
-  illisible n'en a pas. Après votre oui, `purge` les liste (*37 fichiers mis de côté n'existent
-  nulle part ailleurs*) et redemande pour eux : non, et rien n'est effacé. Une copie sur le NAS
+  illisible n'en a pas. Avant sa question, `purge` les liste (*37 fichiers mis de côté
+  n'existent nulle part ailleurs*), puis demande une seule fois en les nommant (*Cela comprend
+  les 37 fichiers listés ci-dessus*) : non, et rien n'est effacé. La page de la quarantaine les
+  liste de même au-dessus de son bouton *Effacer*. Une copie sur le NAS
   n'est pas comptée (le conteneur n'en garde pas la liste).
 - Une quarantaine vide dit *La quarantaine est vide* et ne fait rien.
 - Un nom d'exécution sans quarantaine est refusé : *L'exécution … n'a pas de quarantaine*.

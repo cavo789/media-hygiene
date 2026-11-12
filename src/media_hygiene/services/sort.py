@@ -32,8 +32,8 @@ from media_hygiene.classify.workbook.edits import resolve
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.scan.stopwatch import Stage, Stopwatch
 from media_hygiene.services.acting import ensure_can_act
+from media_hygiene.services.journal_beside import run_ended
 from media_hygiene.services.quarantine_space import quarantine_route
-from media_hygiene.services.run_listings import forget_run_listings
 from media_hygiene.services.sort_guards import check_companions, check_destinations
 from media_hygiene.services.sort_links import follow_links
 from media_hygiene.services.sort_models import Prepared, SortResult
@@ -124,7 +124,7 @@ class SortService:
         with watch.timing(Stage.MOVES):
             moves, folders = self._act(prepared, run_id, stop)
         with watch.timing(Stage.FOLLOW):
-            forget_run_listings(runtime, run_id, Phase.SORT)
+            run_ended(runtime, run_id, Phase.SORT)  # its journal copied (0697)
             links = self._follow(moves.moved)
         with watch.timing(Stage.VERIFY):
             checked = verify_moves(moves.moved, runtime.mapper.to_host)

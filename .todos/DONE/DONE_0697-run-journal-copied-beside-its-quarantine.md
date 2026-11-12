@@ -15,8 +15,21 @@ inside it (every reader of a run folder would take it for a set-aside file).
 
 ## Acceptance
 
-- [ ] Written at the end of each writing run, atomically, read back
-- [ ] Readers of the quarantine (pages, purge, `undo --from-quarantine`) ignore it as a file and
+- [x] Written at the end of each writing run, atomically, read back
+- [x] Readers of the quarantine (pages, purge, `undo --from-quarantine`) ignore it as a file and
       `undo` uses it when `/journal` lacks the run (test: journal wiped → undo works)
-- [ ] `purge <run>` removes it with the run; a drive quarantine (`/quarantine/<x>`) handled
-- [ ] Docs EN + FR (`reference-safety.md`)
+- [x] `purge <run>` removes it with the run; a drive quarantine (`/quarantine/<x>`) handled
+- [x] Docs EN + FR (`reference-safety.md`)
+
+## Result (2026-11-12)
+
+`actions/journal_copy.py` (write: a `.tmp` draft, fsync, rename, read back byte for byte) and
+`services/journal_beside.py`. Written at the end of `clean`, `sort` and every `new_run` run
+(album, xmp, shrink, repair, import…, in a `finally`: an interrupted run too), and after each
+undo (refreshed; erased once the run's folder is gone). Beside the run's folder in each
+quarantine that holds one (`/quarantine`, `/quarantine/<x>`). `undo` first takes back into
+`/journal` the copies of the runs it lacks, never over a journal. `purge_run` erases it.
+Readers list runs as folders and walk run folders only: the copy is never a run nor a file
+set aside. Tests: `tests/integration/test_journal_copy.py` (6: beside + readers, journal
+wiped → undo restores every byte, never over a journal, partial undo refreshes, purge,
+D:'s quarantine).

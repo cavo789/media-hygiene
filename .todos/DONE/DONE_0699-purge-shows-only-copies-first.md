@@ -15,6 +15,15 @@ in the console and on the purge page.
 
 ## Acceptance
 
-- [ ] Console and page: the only copies listed before any question; one question then
-- [ ] Answering no erases nothing (test kept)
-- [ ] Docs EN + FR (`commands/purge.md`); `docs_screenshots` should run
+- [x] Console and page: the only copies listed before any question; one question then
+- [x] Answering no erases nothing (test kept)
+- [x] Docs EN + FR (`commands/purge.md`); `docs_screenshots` should run
+
+## Result (2026-11-12)
+
+Console: `purge` lists the only copies (20 by name, the rest counted) after its warnings and
+before its one question, which names them ("That includes the N files listed above…").
+Page: `GET /disk-space/api/only?run=` (`services/disk_only.py`); the quarantine page lists
+them above its Erase button, the one question names them; no list read → no button.
+Tests: `test_only_copies.py` (one question, list before it, no erases nothing; none → plain
+question; the endpoint). `docs_screenshots` should run (purge console block).

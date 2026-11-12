@@ -24,6 +24,7 @@ from media_hygiene.review.page_header import headed_page
 from media_hygiene.review.served_more import DISK_PURGE_PATH
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.review.step_watch import DISK_PAGE
+from media_hygiene.services.disk_only import only_answer
 from media_hygiene.services.disk_purge import (
     PurgeAsking,
     purge_response,
@@ -45,6 +46,7 @@ DISK_PREFIX: Final = DISK_PAGE.removesuffix("/")
 _STATE: Final = f"{DISK_PAGE}api/state"
 _LIMITS: Final = f"{DISK_PAGE}api/limits"
 _EMPTY: Final = f"{DISK_PAGE}api/empty"
+_ONLY: Final = f"{DISK_PAGE}api/only"  # a run's only copies, before Purge (0699)
 _TEMPLATES: Final = "media_hygiene.review"
 _LOGGER: Final = logging.getLogger(__name__)
 
@@ -120,6 +122,8 @@ def _read(
         return Response(HTTPStatus.OK, _page(), ContentType.HTML)
     if request.method == "GET" and request.path == _STATE:
         return _state_answer(runtime, asking)
+    if request.method == "GET" and request.path == _ONLY:
+        return only_answer(runtime, request)
     return Response(HTTPStatus.NOT_FOUND)
 
 

@@ -3636,12 +3636,6 @@ msgid "Erase these {count} files for good: frees {size}"
 msgstr "Effacer ces {count} fichiers pour de bon : libère {size}"
 
 #, python-brace-format
-msgid "Erase this only copy too?"
-msgid_plural "Erase these {count} only copies too?"
-msgstr[0] "Effacer aussi cette copie unique ?"
-msgstr[1] "Effacer aussi ces {count} copies uniques ?"
-
-#, python-brace-format
 msgid "Erased from .removed (older than {days} days): {count} runs"
 msgstr "Effacés de .removed (plus de {days} jours) : {count} passages"
 
@@ -5375,6 +5369,10 @@ msgstr "Qualité JPEG"
 
 msgid "January"
 msgstr "janvier"
+
+#, python-brace-format
+msgid "Journal of run {run} taken back from its quarantine: {path}"
+msgstr "Journal de l'exécution {run} repris de sa quarantaine : {path}"
 
 msgid "July"
 msgstr "juillet"
@@ -11457,6 +11455,22 @@ msgstr "Prise le : {when}"
 msgid "That could not be done: {reason}"
 msgstr "Impossible : {reason}"
 
+#, python-brace-format
+msgid "That includes the {count} file listed above, which exists nowhere else."
+msgid_plural "That includes the {count} files listed above, which exist nowhere else."
+msgstr[0] ""
+"Cela comprend le {count} fichier listé ci-dessus, qui n'existe nulle part "
+"ailleurs."
+msgstr[1] ""
+"Cela comprend les {count} fichiers listés ci-dessus, qui n'existent nulle "
+"part ailleurs."
+
+#, python-brace-format
+msgid "That includes the {count} files listed, which exist nowhere else."
+msgstr ""
+"Cela comprend les {count} fichiers listés, qui n'existent nulle part "
+"ailleurs."
+
 msgid "The Explorer's menu is as it was."
 msgstr "Le menu de l'Explorateur redevient comme avant."
 
@@ -11785,6 +11799,14 @@ msgstr "La copie est hors de ce PC"
 
 msgid "The copy of the import has the same name and size."
 msgstr "La copie de l'import a le même nom et la même taille."
+
+#, python-brace-format
+msgid ""
+"The copy of the journal of run {run} beside its quarantine could not be "
+"written: {reason}. The journal itself is safe."
+msgstr ""
+"La copie du journal de l'exécution {run} à côté de sa quarantaine n'a pas "
+"pu être écrite : {reason}. Le journal lui-même est intact."
 
 #, python-brace-format
 msgid "The copy stopped: {error}"
@@ -19022,6 +19044,15 @@ msgid "{count} obvious"
 msgid_plural "{count} obvious"
 msgstr[0] "{count} évidente"
 msgstr[1] "{count} évidentes"
+
+#, python-brace-format
+msgid ""
+"{count} of these files exist nowhere else ({size}): near duplicates, "
+"burst shots, junk or unreadable, not exact copies."
+msgstr ""
+"{count} de ces fichiers n'existent nulle part ailleurs ({size}) : "
+"quasi-doublons, photos de rafale, déchets ou illisibles, pas des copies "
+"exactes."
 
 #, python-brace-format
 msgid "{count} of {total} ({percent}%)"

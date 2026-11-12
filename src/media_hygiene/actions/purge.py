@@ -13,6 +13,7 @@ import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from media_hygiene.actions.journal_copy import remove_copy
 from media_hygiene.actions.runs import RUN_ID_PATTERN
 from media_hygiene.i18n import _
 
@@ -141,7 +142,7 @@ def purge_run(quarantine_dir: Path, run_id: str) -> int:
         run_id: Run whose quarantine goes.
 
     Returns:
-        Bytes freed.
+        Bytes freed (the copy of its journal beside the folder goes too).
 
     Raises:
         OSError: The folder is not the quarantine of a run (nothing is deleted).
@@ -151,4 +152,5 @@ def purge_run(quarantine_dir: Path, run_id: str) -> int:
         raise OSError(_("{path} is not the quarantine of a run").format(path=folder))
     freed = folder_size(folder)
     shutil.rmtree(folder)
+    remove_copy(quarantine_dir, run_id)  # its journal's copy beside it (0697)
     return freed

@@ -125,11 +125,14 @@ boutons).
   un nettoyage ou un tri : sinon chaque changement est recopié dans le cloud et sur vos autres
   appareils.
 - **Le journal est sauvé par `mh backup`** : `undo` en a besoin, et l'archive en garde une copie
-  hors du volume (sur le NAS aussi quand `mh push` a une cible). Perdu malgré tout, `mh undo
+  hors du volume (sur le NAS aussi quand `mh push` a une cible). Le journal de chaque exécution
+  est aussi copié à côté de son dossier de quarantaine (`quarantine\<exécution>.jsonl`, dans la
+  quarantaine de chaque disque aussi) : `/journal` vidé, `undo` reprend d'abord cette copie
+  (jamais par-dessus un journal), et `purge` l'efface avec l'exécution. Perdu malgré tout, `mh undo
   <exécution> --from-quarantine` remet les fichiers de la quarantaine d'après sa disposition (les
   copies effacées par un `clean --delete` ne peuvent pas revenir sans lui). Ne lancez `purge`
   qu'après avoir vérifié : il liste d'abord les fichiers mis de côté qui n'existent nulle part
-  ailleurs, et demande pour eux à part.
+  ailleurs, puis demande une seule fois.
 
 Si vous le pouvez, une **sauvegarde sur un disque externe** est le filet de plus contre ce
 qu'aucun logiciel ne peut empêcher : un disque qui lâche, une erreur faite en dehors de l'outil.
