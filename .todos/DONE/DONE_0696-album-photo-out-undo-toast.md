@@ -15,6 +15,6 @@ gets the shared Undo toast (project rule: undoable → toast, final → dialog).
 
 ## Acceptance
 
-- [ ] A route putting the photo back (read back from `albums.json`, shown)
-- [ ] The question removed; the toast's Undo runs the route; `test_undo_toast.py` table updated
-- [ ] Docs EN + FR if the albums chapter describes the question
+- [x] A route putting the photo back (read back from `albums.json`, shown)
+- [x] The question removed; the toast's Undo runs the route; `test_undo_toast.py` table updated
+- [x] Docs EN + FR if the albums chapter describes the question

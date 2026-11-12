@@ -26,7 +26,7 @@ _ASKED: Final = {
     "search/templates/events_choice.js.j2": 1,  # leaving with an unsaved folder: save?
     "review/templates/quarantine_purge.js.j2": 1,  # a purge: nothing brings it back
     "review/templates/shrink.js.j2": 1,  # hours of encoding start (0586's one question)
-    "share/templates/album.js.j2": 2,  # albums deleted; a photo out (no Undo route)
+    "share/templates/album.js.j2": 1,  # albums deleted (a photo out: Undo toast, 0696)
     "share/templates/album_edit.js.j2": 1,  # all taken out: the album removed
     "review/templates/home.js.j2": 1,  # every paired device forgotten (0683)
 }
@@ -97,3 +97,13 @@ def test_validated_series_undo_through_the_pages_own_history() -> None:
     page = render_page("review.html.j2")
     assert "}), undo);" in page
     assert "window.mhUndoToast.hide();" in page
+
+
+def test_a_photo_taken_out_of_an_album_offers_undo() -> None:
+    """0696: no question; the toast's Undo adds the photo back, read back and shown."""
+    script = (_SOURCES / "share" / "templates" / "album.js.j2").read_text("utf-8")
+    assert "T.outAsk" not in script
+    assert 'action === "remove" ? () => putBack(album.name, item.key) : null' in script
+    putting = script[script.index("async function putBack") :]
+    assert '{ action: "add", album: name, keys: [String(key)] }' in putting
+    assert "showAlbum(name);" in putting  # read back from albums.json
