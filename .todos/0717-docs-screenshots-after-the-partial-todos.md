@@ -4,7 +4,6 @@
 - **Batch**: docs
 - **Depends**: —
 - **Files**: `documentation/en/`, `documentation/fr/`, `tests/support/docs/`
-- **Needs maintainer**: a go to run `docs_screenshots` (image build + browser: heavy, never run unasked)
 
 Filed by `/todo:inbox` on 2026-11-12: 35 items of the PARTIAL TODOs only waited for the
 captures to be made again; they now point here, so the inbox asks once instead of 35 times.
@@ -21,3 +20,9 @@ step, the thumbnails, 0674).
 
 - Every capture and console block regenerated; `tests/unit/test_documentation.py` passes
   (no unused screenshot).
+
+## Decided (2026-11-12)
+
+The maintainer gave the go in `/todo:iterate` of 2026-11-12: run `docs_screenshots` then
+`docs_screenshots fr` once, at the **end** of that run (after its last lot, so the captures
+its own lots make stale are refreshed too), committed on its own on the run branch.
