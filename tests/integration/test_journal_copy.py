@@ -121,9 +121,13 @@ def test_a_drive_quarantine_holds_its_own(
 
 
 def test_history_lists_a_run_known_only_from_its_copy(
-    cli: CliRunner, locations: Locations
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """`/journal` emptied: `mh history` still shows the run, marked (0721)."""
+    """`/journal` emptied: `mh history` still shows the run, marked (0721).
+
+    The table is read at a fixed width: at CI's 80 columns the marker wraps in its cell.
+    """
+    monkeypatch.setenv("COLUMNS", "200")
     run_id = clean(cli, locations)
     journal_file(locations.journal_dir, run_id).unlink()
     history = " ".join(run(cli, "history").output.split())
