@@ -455,10 +455,10 @@ photothèque.
 |---|---|---|
 | Voit | Toute la photothèque (*Rechercher*, *Parcourir*), les albums, les rapports | Les albums cochés **Montrer aux invités**, leurs photos et vidéos |
 | Le reste | Lecture seule | Rien : toute autre adresse répond *introuvable* |
-| Appairé | 400 jours (HTTPS) ou ce lancement | Pareil ; *Oubliez*-le sur la carte du PC à la fin de la visite |
+| Appairé | 400 jours (HTTPS) ou ce lancement | Jusqu’à minuit le jour de l’appairage : le lendemain, il reçoit la page d’appairage et tape à nouveau le code des invités (*Oubliez*-le plus tôt sur la carte du PC) |
 
 Décochez un album : il disparaît des appareils des invités à leur prochain geste. La carte du
-PC liste chaque appareil, *Invité* à côté de son nom. Pour une seule fois, le lien 🔗 d'un
+PC liste chaque appareil, *Invité* et l’heure où son appairage prend fin à côté de son nom. Pour une seule fois, le lien 🔗 d'un
 album (24 heures, sans appairage) reste là.
 
 ## Le clavier, la palette, le thème

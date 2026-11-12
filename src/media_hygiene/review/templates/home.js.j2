@@ -287,6 +287,7 @@ function showCode(lan) {
   $("#lanQr").innerHTML = shown.qr;  // an SVG drawn by the server (segno)
   $("#lanCode").textContent = shown.code;
   $("#lanRoles").hidden = !lan.guest;
+  $("#lanGuestUntil").hidden = !(lanRole.guest && lan.guest);  // 0709: ends tonight
   $("#lanFamily").setAttribute("aria-pressed", String(!lanRole.guest));
   $("#lanGuests").setAttribute("aria-pressed", String(lanRole.guest));
   if (lanRole.wired) return;
@@ -340,7 +341,7 @@ function deviceLine(phone, list) {
   forget.addEventListener("click", () => { forget.disabled = true; devicePost(paths.forget, { id: phone.id }, "").then((ok) => { forget.disabled = ok; }); });
   const facts = document.createElement("small");
   const seen = phone.seen ? `${new Date(phone.seen).toLocaleDateString()} ${clock(phone.seen)}` : T.lanNeverSeen;
-  facts.textContent = `${phone.tv ? T.lanTv + " · " : ""}${phone.guest ? T.lanGuest + " · " : ""}${fill(T.lanDevice, { paired: phone.paired, seen, address: phone.address || "?" })}`;
+  facts.textContent = `${phone.tv ? T.lanTv + " · " : ""}${phone.guest ? fill(T.lanGuest, { until: new Date(phone.until).toLocaleString([], { dateStyle: "short", timeStyle: "short" }) }) + " · " : ""}${fill(T.lanDevice, { paired: phone.paired, seen, address: phone.address || "?" })}`;
   const did = document.createElement("small");
   const sum = (key) => phone.days.reduce((total, day) => total + (day[key] || 0), 0);
   did.textContent = phone.days.length ? fill(T.lanActivity, { pages: sum("pages"), pictures: sum("pictures"), day: phone.days[0].day }) : T.lanNoActivity;

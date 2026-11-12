@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.http import Response
 from media_hygiene.review.lan import COOKIE_NAME
+from media_hygiene.review.lan_guest_day import guest_ends
 from media_hygiene.review.lan_phone_care import forget_all, rename
 from media_hygiene.review.lan_phone_model import GUEST, device_name
 from media_hygiene.review.local_app import PAGE_PATH
@@ -83,7 +84,8 @@ def _device(phone: Phone, activity: Activity | None, *, tv: bool) -> dict[str, o
         tv: It is a TV of the slideshow.
 
     Returns:
-        `id`, `name`, `paired`, `seen` (ISO instant or empty), `address`, `tv`, `days`.
+        `id`, `name`, `paired`, `seen` (ISO instant or empty), `address`, `tv`, `guest`,
+        `until` (a guest's end, ISO instant, 0709; empty for family), `days`.
     """
     seen = "" if phone.last_seen is None else phone.last_seen.isoformat()
     days = [] if activity is None else activity.of(phone.id)
@@ -95,6 +97,7 @@ def _device(phone: Phone, activity: Activity | None, *, tv: bool) -> dict[str, o
         "address": phone.address,
         "tv": tv,
         "guest": phone.role == GUEST,  # 0684
+        "until": guest_ends(phone.paired).isoformat() if phone.role == GUEST else "",
         "days": days,
     }
 

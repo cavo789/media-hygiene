@@ -4004,7 +4004,8 @@ msgstr ""
 msgid "Groups of identical files"
 msgstr ""
 
-msgid "Guest: the albums chosen for guests only"
+#, python-brace-format
+msgid "Guest until {until}: the albums chosen for guests only"
 msgstr ""
 
 #, python-brace-format
@@ -18161,6 +18162,11 @@ msgid "❚❚ Pause"
 msgstr ""
 
 msgid "🌐 name the places"
+msgstr ""
+
+msgid ""
+"🌙 A guest sees them until midnight tonight; tomorrow it types the guests'"
+" code again."
 msgstr ""
 
 msgid "🎲 At random"

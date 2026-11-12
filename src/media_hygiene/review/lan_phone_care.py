@@ -13,6 +13,8 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Final
 
+from media_hygiene.review.lan_guest_day import guest_over
+
 if TYPE_CHECKING:
     from media_hygiene.review.lan_phone_model import Phone
     from media_hygiene.review.lan_phones import PhoneBook
@@ -124,7 +126,9 @@ def forget_all(book: PhoneBook) -> bool:
 
 
 def expire(book: PhoneBook, now: datetime) -> tuple[str, ...]:
-    """Forget the phones unseen for `EXPIRY_DAYS`; date those never seen.
+    """Forget the phones unseen for `EXPIRY_DAYS` and the guests of a past day (0709).
+
+    Those never seen are dated.
 
     A phone paired before 0683 has no `last_seen`: it is dated now, and counts from
     here, rather than forgotten after an upgrade or a restore.
@@ -138,7 +142,11 @@ def expire(book: PhoneBook, now: datetime) -> tuple[str, ...]:
     """
     listed = book.listed()
     limit = now - timedelta(days=EXPIRY_DAYS)
-    gone = tuple(p for p in listed if p.last_seen is not None and p.last_seen < limit)
+    gone = tuple(
+        p
+        for p in listed
+        if (p.last_seen is not None and p.last_seen < limit) or guest_over(p, now)
+    )
     dated = tuple(
         p if p.last_seen else p.model_copy(update={"last_seen": now})
         for p in listed

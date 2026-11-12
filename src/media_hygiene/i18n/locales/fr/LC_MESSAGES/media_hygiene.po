@@ -4868,8 +4868,9 @@ msgstr "Groupes"
 msgid "Groups of identical files"
 msgstr "Groupes de fichiers identiques"
 
-msgid "Guest: the albums chosen for guests only"
-msgstr "Invité : seulement les albums choisis pour les invités"
+#, python-brace-format
+msgid "Guest until {until}: the albums chosen for guests only"
+msgstr "Invité jusqu’au {until} : seulement les albums choisis pour les invités"
 
 #, python-brace-format
 msgid "HTML report: {path}"
@@ -11459,11 +11460,11 @@ msgstr "Impossible : {reason}"
 msgid "That includes the {count} file listed above, which exists nowhere else."
 msgid_plural "That includes the {count} files listed above, which exist nowhere else."
 msgstr[0] ""
-"Cela comprend le {count} fichier listé ci-dessus, qui n'existe nulle part "
-"ailleurs."
+"Cela comprend le {count} fichier listé ci-dessus, qui n'existe nulle part"
+" ailleurs."
 msgstr[1] ""
-"Cela comprend les {count} fichiers listés ci-dessus, qui n'existent nulle "
-"part ailleurs."
+"Cela comprend les {count} fichiers listés ci-dessus, qui n'existent nulle"
+" part ailleurs."
 
 #, python-brace-format
 msgid "That includes the {count} files listed, which exist nowhere else."
@@ -11805,8 +11806,8 @@ msgid ""
 "The copy of the journal of run {run} beside its quarantine could not be "
 "written: {reason}. The journal itself is safe."
 msgstr ""
-"La copie du journal de l'exécution {run} à côté de sa quarantaine n'a pas "
-"pu être écrite : {reason}. Le journal lui-même est intact."
+"La copie du journal de l'exécution {run} à côté de sa quarantaine n'a pas"
+" pu être écrite : {reason}. Le journal lui-même est intact."
 
 #, python-brace-format
 msgid "The copy stopped: {error}"
@@ -19050,8 +19051,8 @@ msgid ""
 "{count} of these files exist nowhere else ({size}): near duplicates, "
 "burst shots, junk or unreadable, not exact copies."
 msgstr ""
-"{count} de ces fichiers n'existent nulle part ailleurs ({size}) : "
-"quasi-doublons, photos de rafale, déchets ou illisibles, pas des copies "
+"{count} de ces fichiers n'existent nulle part ailleurs ({size}) : quasi-"
+"doublons, photos de rafale, déchets ou illisibles, pas des copies "
 "exactes."
 
 #, python-brace-format
@@ -21570,6 +21571,13 @@ msgstr "❚❚ Pause"
 
 msgid "🌐 name the places"
 msgstr "🌐 nommer les lieux"
+
+msgid ""
+"🌙 A guest sees them until midnight tonight; tomorrow it types the guests'"
+" code again."
+msgstr ""
+"🌙 Un invité les voit jusqu’à minuit ce soir ; demain, il tape à nouveau le "
+"code des invités."
 
 msgid "🎲 At random"
 msgstr "🎲 Au hasard"

@@ -14,6 +14,8 @@ import hmac
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.review.lan import CODE_DIGITS, COOKIE_NAME, PAIR_PREFIX, cookies
+from media_hygiene.review.lan_guest_day import local_day
+from media_hygiene.review.lan_phone_care import now_utc
 from media_hygiene.review.lan_phone_model import FAMILY, GUEST
 
 if TYPE_CHECKING:
@@ -66,7 +68,10 @@ def guest_pair_url(lan: LanAccess) -> str:
 
 
 def guest_token(lan: LanAccess) -> str:
-    """The cookie of a guest paired this run: never the family's.
+    """The cookie of a guest paired this run: never the family's, today's only.
+
+    Drawn for the local day (0709): past midnight, a guest's cookie of yesterday opens
+    nothing and the device gets the pairing page.
 
     Args:
         lan: The run's access.
@@ -74,7 +79,8 @@ def guest_token(lan: LanAccess) -> str:
     Returns:
         64 hexadecimal digits.
     """
-    return hmac.new(lan.secret, _TOKEN_LABEL, hashlib.sha256).hexdigest()
+    label = _TOKEN_LABEL + f" {local_day(now_utc()).isoformat()}".encode()
+    return hmac.new(lan.secret, label, hashlib.sha256).hexdigest()
 
 
 def code_role(lan: LanAccess, typed: str) -> Role | None:

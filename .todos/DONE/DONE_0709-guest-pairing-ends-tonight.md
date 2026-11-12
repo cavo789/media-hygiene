@@ -13,5 +13,5 @@ Filed 2026-11-11 by the review of `feedback-2026-11-11-iterate.md` (0684 (bb3f90
 
 ## Acceptance
 
-- [ ] A guest token expires at the end of the day (constant, local time) — test with a fixed clock
-- [ ] The card says until when; an expired guest gets the pairing page
+- [x] A guest token expires at the end of the day (constant, local time) — test with a fixed clock
+- [x] The card says until when; an expired guest gets the pairing page
