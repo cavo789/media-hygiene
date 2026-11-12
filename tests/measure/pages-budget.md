@@ -61,8 +61,8 @@ two tenths of them a camera's dump not sorted yet).
 | people page | 100,000 | 27,335.9 | 3,672.0 | 5,510 |
 | people groups | 10,000 | 11.9 | 11.9 | 100 |
 | people groups | 100,000 | 76.8 | 68.5 | 110 |
-| places page (clusters built) | 10,000 | 817.7 | 469.6 | 710 |
-| places page (clusters built) | 100,000 | 5,254.3 | 5,194.3 | 7,800 |
+| places page (clusters built) | 10,000 | 498.8 | 211.0 | 320 |
+| places page (clusters built) | 100,000 | 2,423.6 | 2,421.6 | 3,640 |
 | places page (clusters built) | 300,000 | 14,495.6 | 14,759.8 | 22,140 |
 | places clusters | 10,000 | 1.1 | 1.0 | 100 |
 | places clusters | 100,000 | 7.7 | 1.8 | 100 |
@@ -83,6 +83,11 @@ two tenths of them a camera's dump not sorted yet).
   places page 5.2 s (it reads every row of the index, facts parsed, for the 1.3 % with
   GPS: py-spy at 100,000, 72 % in `places_index.read_index`), found events 1.8 s, the
   people page again 3.7 s (a `stat` and a query per photo).
+- 0703 (measured 2026-11-12, same machine, 100,000): places page 4,476 → 2,422 ms warm
+  (−46 %; 10,000: 470 → 211 ms). Profiled, the cost was not the rows read but
+  `root_of`/`is_within` comparing paths by pathlib parts (`relative_to` walks every parent):
+  now compared as text. Reading the GPS rows only was not done: the page's folder list needs
+  every file. The 300,000 row is from before 0703 (not re-run).
 
 ## Running it again
 

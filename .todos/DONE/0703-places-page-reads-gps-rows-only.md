@@ -15,5 +15,9 @@ files (devcontainer, warm, median of 5): it reads every index row although 1.3 %
 
 ## Acceptance
 
-- [ ] A query reading GPS rows only (an index on them if needed, schema upgrade in place)
-- [ ] `bench_pages` before / after, figures in `tests/measure/pages-budget.md`; same clusters (equivalence test)
+- [x] ~~A query reading GPS rows only~~: not done — profiled, 72 % was path comparison by pathlib parts (`root_of`, `is_within`), now as text; the folder list needs every file anyway
+- [x] `bench_pages` before / after, figures in `tests/measure/pages-budget.md`; same clusters (equivalence test)
+
+## Outcome
+
+DONE 2026-11-12: places page 4,476 → 2,422 ms warm at 100,000 (−46 %, measured, bench_pages, devcontainer); equivalence: `tests/unit/test_paths_as_text.py`.
