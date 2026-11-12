@@ -240,8 +240,10 @@ shows the photo: drag a box around the face. The tool looks for it in that box, 
 takes the box itself; the face is then kept in the index like a face found (flagged *drawn*, so
 a new audit keeps it), named and searched like the others. A face even smaller or more blurred
 than the people page shows can be drawn: it is kept for the search, not shown on the people
-page. Too small or too blurred to find anyone (under 20 pixels, or nearly no detail), the page
-says so and writes nothing; a box on an empty area writes nothing either. When nothing is
+page. Too blurred to find anyone (a baby's smooth face has little detail), it is kept all the
+same to be named on that photo: the page opens *This face is… [name]* and says *it counts for
+this photo only*; no other photo is searched from it. Under 20 pixels, the page says the box is
+too small and writes nothing; a box on an empty area writes nothing either. When nothing is
 found, set the photo aside on its own (Delete in its large view).
 
 ## Options

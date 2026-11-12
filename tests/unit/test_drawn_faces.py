@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import dataclasses
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -15,22 +16,22 @@ from media_hygiene.faces.boxed import boxed_face, template_landmarks
 from media_hygiene.faces.engine import FaceEngine
 from media_hygiene.faces.models import FaceBox, PhotoFaces
 from media_hygiene.index.drawn_faces import DRAWN_FROM, add_drawn, is_drawn
-from media_hygiene.index.face_rows import FaceStore
+from media_hygiene.index.face_rows import FaceStore, StoredFace
 from media_hygiene.index.facts import FileFacts
 from media_hygiene.index.repository import FactsRepository
 from media_hygiene.person.drawing import (
     DRAWN_SHARPNESS,
     DRAWN_SIDE,
+    NAMED_ONLY_SHARPNESS,
     DrawJob,
     draw_face,
+    search_vector,
     usable,
 )
 from media_hygiene.scan.models import MediaFile
 from tests.support.faces import FakeFinder, FakeRecipe, coloured, face_of
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from numpy.typing import NDArray
 
 MODEL = "test-model"
@@ -82,8 +83,10 @@ def test_usable_needs_both_the_side_and_the_sharpness() -> None:
 def test_a_box_on_a_face_finds_it_measured_in_the_photo(tmp_path: Path) -> None:
     """The detector finds the face in the part enlarged: measured in the photo."""
     photo = coloured(tmp_path / "red.png", 0, (200, 100))
-    face = draw_face(DrawJob(photo, (0.25, 0.25, 0.5, 0.5), FakeRecipe()))
-    assert face is not None
+    found = draw_face(DrawJob(photo, (0.25, 0.25, 0.5, 0.5), FakeRecipe()))
+    assert found is not None
+    assert found.searchable
+    face = found.face
     assert face.box.x == pytest.approx(25, abs=1)  # the part: the box and its margin
     assert face.box.width == pytest.approx(150, abs=1)
     assert np.argmax(face.vector()) == 0
@@ -121,3 +124,20 @@ def test_a_drawn_face_is_kept_flagged_and_survives_a_new_analysis(
         repository.put(MediaFile(path, 10, 2, MediaKind.IMAGE), FileFacts())
         store.put(PhotoFaces(path, 10, 2, (), 0.1))  # the photo changed: gone
         assert not store.faces()
+
+
+def test_a_face_drawn_too_blurred_is_named_only_and_a_blank_one_is_no_face() -> None:
+    """A baby's soft face: named, never searched from; a blank box: nothing."""
+    box = FaceBox(0, 0, 60, 60)
+    vector = b"\x01" * 8
+
+    def stored(number: int, sharpness: float) -> StoredFace:
+        return StoredFace(Path("/data/c/a.jpg"), number, box, 0.0, sharpness, vector)
+
+    assert search_vector(stored(DRAWN_FROM, DRAWN_SHARPNESS - 1)) == b""
+    assert search_vector(stored(DRAWN_FROM, DRAWN_SHARPNESS)) == vector
+    assert search_vector(stored(0, 1.0)) == vector  # a face the audit found: as before
+    engine = FaceEngine(no_detector, embedder)
+    blank = boxed_face(engine, Image.new("RGB", (200, 200), (128, 128, 128)), box)
+    assert blank is not None
+    assert blank.sharpness < NAMED_ONLY_SHARPNESS

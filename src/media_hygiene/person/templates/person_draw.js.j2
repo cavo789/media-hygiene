@@ -51,7 +51,8 @@ async function drawSend() {
   await refreshFaces();
   if (![...$("faces").children].some((face) => Number(face.dataset.key) === key)) showFaces(result.faces, true);
   sideSay(TEXTS.drawn);
-  chooseFace(key, null);
+  await chooseFace(key, null);
+  if (result.namedOnly) sideSay(result.said); // too blurred to search: named on this photo only
 }
 
 $("drawPicture").draggable = false;

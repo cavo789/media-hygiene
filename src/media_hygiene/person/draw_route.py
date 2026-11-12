@@ -26,8 +26,8 @@ from media_hygiene.person.shelf import ShelfFace
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from media_hygiene.faces.models import Face
     from media_hygiene.person.app import PersonApp
+    from media_hygiene.person.drawing import Drawn
 
 _PATH_LENGTH: Final = 4096
 _NO_PICTURE: Final = b""  # a photo on the shelf to show only: no face to search
@@ -97,25 +97,29 @@ async def drawn(app: PersonApp, body: bytes) -> dict[str, object]:
     if box is None:
         return _too_small()
     loop = asyncio.get_running_loop()
-    face = await loop.run_in_executor(
+    found = await loop.run_in_executor(
         app.executor, draw_face, DrawJob(path, box, recipe)
     )
-    if face is None:
+    if found is None:
         return _too_small()
-    return _kept(app, path, face)
+    return _kept(app, path, found)
 
 
-def _kept(app: PersonApp, path: Path, face: Face) -> dict[str, object]:
+def _kept(app: PersonApp, path: Path, found: Drawn) -> dict[str, object]:
     """Keep a face drawn in the index, then hand it to the page.
+
+    A face too blurred to find others is kept all the same, to be named on its photo:
+    the page then names it without searching (`namedOnly`).
 
     Args:
         app: The page.
         path: Its photo, in the container.
-        face: The face.
+        found: The face, and whether it can find others.
 
     Returns:
         The face, numbered; a sentence when the index cannot keep it.
     """
+    face = found.face
     index = app.finder.faces
     number = None
     if index.file is not None:
@@ -129,5 +133,12 @@ def _kept(app: PersonApp, path: Path, face: Face) -> dict[str, object]:
         return {"faces": [], "said": said}
     index.refresh()
     shelf = app.finder.shelf
-    key = shelf.add(ShelfFace(path, face.embedding, face.box, number=number))
-    return {"faces": [face_view(key)], "drawn": True}
+    vector = face.embedding if found.searchable else _NO_PICTURE
+    key = shelf.add(ShelfFace(path, vector, face.box, number=number))
+    if found.searchable:
+        return {"faces": [face_view(key)], "drawn": True}
+    said = _(
+        "Too blurred to find their other photos: "
+        "name it, it counts for this photo only."
+    )
+    return {"faces": [face_view(key)], "drawn": True, "namedOnly": True, "said": said}

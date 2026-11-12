@@ -262,9 +262,11 @@ cadre autour du visage. L'outil le cherche dans ce cadre, agrandi, ou prend le c
 le visage est alors gardé dans l'index comme un visage trouvé (marqué *tracé*, un nouvel audit
 le garde), nommé et cherché comme les autres. Un visage plus petit ou plus flou que ce que la
 page des personnes montre peut être tracé : il sert à la recherche, sans apparaître sur la page
-des personnes. Trop petit ou trop flou pour retrouver qui que ce soit (moins de 20 pixels, ou
-presque aucun détail), la page le dit et n'écrit rien ; un cadre sur une zone vide n'écrit rien
-non plus. Quand rien n'est trouvé, mettez la photo de côté toute seule (Suppr dans sa grande
+des personnes. Trop flou pour retrouver qui que ce soit (le visage lisse d'un bébé a peu de
+détails), il est gardé quand même pour être nommé sur cette photo : la page ouvre *Ce visage
+est… [nom]* et dit *il compte pour cette photo seulement* ; aucune autre photo n'est cherchée à
+partir de lui. Sous 20 pixels, la page dit que le cadre est trop petit et n'écrit rien ; un cadre
+sur une zone vide n'écrit rien non plus. Quand rien n'est trouvé, mettez la photo de côté toute seule (Suppr dans sa grande
 vue).
 
 ## Options

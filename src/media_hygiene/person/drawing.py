@@ -19,6 +19,7 @@ from PIL import Image
 from media_hygiene.faces.boxed import boxed_face
 from media_hygiene.faces.models import Face, FaceBox
 from media_hygiene.faces.worker import finder_of
+from media_hygiene.index.drawn_faces import DRAWN_FROM
 from media_hygiene.report.thumbnails import unreadable_errors, upright_picture
 from media_hygiene.scan.image_check import prepare_image_worker
 
@@ -27,12 +28,17 @@ if TYPE_CHECKING:
 
     from media_hygiene.faces.engine import FaceFinder
     from media_hygiene.faces.worker import FinderRecipe
+    from media_hygiene.index.face_rows import StoredFace
 
 # Provisional, not measured yet (0715, `tests/measure/mh-measure.ps1` step 49): half
 # the people page's `min_face` (40 px) and `min_sharpness` (30). A named constant, not
 # a setting, until photos of two collections say otherwise.
 DRAWN_SIDE: Final = 20.0
 DRAWN_SHARPNESS: Final = 15.0
+# Below those, a face drawn is still named on its photo (a baby's smooth skin has little
+# sharpness), never searched from; an empty area (no texture at all) is not a face.
+# Estimated (a blank box measures 0), not measured.
+NAMED_ONLY_SHARPNESS: Final = 3.0
 _MARGIN: Final = 0.5  # of the box's side, around it: the detector needs some context
 _LOOK_SIDE: Final = 320  # the part looked at is enlarged to this side at least
 _MOST_ENLARGED: Final = 8.0
@@ -59,14 +65,35 @@ def usable(face: Face) -> bool:
     return face.box.side >= DRAWN_SIDE and face.sharpness >= DRAWN_SHARPNESS
 
 
-def draw_face(job: DrawJob) -> Face | None:
+@dataclass(frozen=True, slots=True)
+class Drawn:
+    """A face drawn, and whether it can find the person's other photos."""
+
+    face: Face
+    searchable: bool
+
+
+def search_vector(face: StoredFace) -> bytes:
+    """The vector a face of the index is searched from on `/person`.
+
+    Args:
+        face: The face.
+
+    Returns:
+        Its vector; none for a face drawn too blurred to find others (named only).
+    """
+    weak = face.number >= DRAWN_FROM and face.sharpness < DRAWN_SHARPNESS
+    return b"" if weak else face.embedding
+
+
+def draw_face(job: DrawJob) -> Drawn | None:
     """The face of a box drawn on a photo, in the upright photo's pixels.
 
     Args:
         job: The photo, the box and the recipe.
 
     Returns:
-        The face; None when the photo cannot be read or nothing usable is there.
+        The face; None when the photo cannot be read or the box holds no face at all.
     """
     prepare_image_worker()
     finder = finder_of(job.recipe)
@@ -78,7 +105,9 @@ def draw_face(job: DrawJob) -> Face | None:
     x, y, wide, high = job.box
     box = FaceBox(x * width, y * height, wide * width, high * height)
     face = detected(finder, picture, box) or boxed_face(finder, picture, box)
-    return face if face is not None and usable(face) else None
+    if face is None or face.sharpness < NAMED_ONLY_SHARPNESS:
+        return None
+    return Drawn(face, usable(face))
 
 
 def detected(finder: FaceFinder, picture: Image.Image, box: FaceBox) -> Face | None:

@@ -15,6 +15,7 @@ from media_hygiene.i18n import _
 from media_hygiene.people.known import Known
 from media_hygiene.people.naming import id_of
 from media_hygiene.people.remembered import aside_date
+from media_hygiene.person.drawing import search_vector
 from media_hygiene.person.likeness import likeness
 from media_hygiene.person.routes import FACE_PREFIX, JPEG, PREVIEW_PREFIX, THUMB_PREFIX
 from media_hygiene.person.shelf import ShelfFace
@@ -84,7 +85,7 @@ class PersonFinder:
             return {"said": message.format(path=typed.strip(_QUOTES)), "faces": []}
         faces = [
             self.shelf.add(
-                ShelfFace(face.path, face.embedding, face.box, number=face.number)
+                ShelfFace(face.path, search_vector(face), face.box, number=face.number)
             )
             for face in self.faces.of(path)
         ]
@@ -155,7 +156,7 @@ class PersonFinder:
             Its number.
         """
         return self.shelf.add(
-            ShelfFace(face.path, face.embedding, face.box, number=face.number)
+            ShelfFace(face.path, search_vector(face), face.box, number=face.number)
         )
 
     def _card(self, key: int, path: Path, chosen: frozenset[str]) -> dict[str, object]:
