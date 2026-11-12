@@ -91,3 +91,21 @@ Also read the tags `90`/`180` (degrees) some software wrote: 12 photos.
   `SAMSUNG WB700` of several right turns (231 of 6,780): the rule would lose them.
 - So a person lying down stays the guess's blind spot (≈1 in 22): the page that shows each
   turn before *Apply now*, with an untick remembered, is the answer — no extra rule.
+
+## Status — PARTIAL (2026-11-12)
+
+- **Done:** the guess itself, pure and tested — `src/media_hygiene/faces/straighten.py`:
+  `worth_guessing` (camera make present, not `Nintendo*`, not a screenshot, orientation tag
+  none/`0`/`1`), `proposed_turn` (no face as stored, best turn has faces, 180 deg only with
+  2+ faces), `guess_turn` (4 turns through any face counter), `ORIENTATION_OF` (turn → EXIF
+  code 6/3/8). Tests `tests/unit/test_straighten.py` with a fake finder: screenshot, console
+  capture, collage (no camera), person lying down with a face as stored: none proposed.
+- **Not done:**
+  - Call it in the audit worker and cache it (index schema bump, invalidation: new mtime
+    after a turn = new row; a refusal kept by path must follow `sort`/`undo`/renames).
+  - Degree tags `90`/`180` read as 6/3: changing `upright_picture` alone would shift the
+    cached face boxes and visual facts of those 12 photos and leave old previews sideways;
+    it needs a preview `_VERSION` limited to them or an index re-read of those rows.
+  - The "Photos to straighten" page (`pick_*`, Apply now), the journaled lossless tag write
+    + `undo` (byte-identical check), audit What next line, home card, docs EN/FR.
+  - **Reason:** out of one session's scope; each remaining part is independent of the rules.
