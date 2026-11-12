@@ -21,6 +21,9 @@ Lessons of real sessions (each one cost a rerun, a fix-up commit or a PARTIAL TO
   trace to save room (guessing its cause costs more rounds than reading it).
 - ✅ DO: before editing files near a size cap, `.claude/scripts/near_limit.sh <files>`; plan
   the split (a new module) before writing, not after the linter fails.
+- ✅ DO: a TODO that touches a template listed in `OVERSIZED_TEMPLATES` (`tests/unit/test_page_frame.py`:
+  over 400 lines) splits it first, in its own step (rendered output identical, as 0668 proved for
+  the places page), then removes its entry from that list. ❌ DON'T: file one TODO per template.
 - ✅ DO: when a cache or index starts trusting more (reusing a listing, a stat, a digest), list
   every event that used to invalidate it — rename, move, atomic save (new inode), in-place
   write, copy keeping the mtime, `touch` — and keep one test per event.

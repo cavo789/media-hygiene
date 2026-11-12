@@ -13,5 +13,10 @@ Filed 2026-11-11 by the review of `feedback-2026-11-10-iterate.md` (0668), decid
 
 ## Acceptance
 
-- [ ] A rule line in `.claude/rules/` (or the photo-picking skill): a TODO touching one of them splits it first (rendered output identical, as 0668 proved)
+- [x] A rule line in `.claude/rules/` (or the photo-picking skill): a TODO touching one of them splits it first (rendered output identical, as 0668 proved)
 - [ ] Each split removes its entry from `OVERSIZED_TEMPLATES`
+
+## Status (2026-11-12): PARTIAL
+
+- [x] The rule line is in `.claude/rules/workflow.md` (split first, own step, then drop the entry).
+- [ ] Left: the 7 splits themselves, each when a TODO touches its template (none did in this run).
