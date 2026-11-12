@@ -30,10 +30,7 @@ done already and only unticked), then file a focused TODO for what is really lef
 - The two-round integration test and the `test_launcher_phone.py` loop test: they follow the
 - The measure (round trip for 20 files): follows the loop; estimated from 24 MB/s × 2 reads
 
-### 0339 — `.todos/DONE/0339-places-map-opens-on-every-place.md`
-
-- Clusters in three countries: on arrival, the three are on screen, none hidden by the column.
-- A `0, 0` cluster does not zoom the map out to the world.
+### ~~0339~~ — done 2026-11-12: `tests/support/places_frame_walk.py` (Chromium, CI e2e)
 
 ### 0349 — `.todos/DONE/0349-albums-page-links-to-a-chapter-explaining-albums.md`
 
@@ -353,3 +350,19 @@ done already and only unticked), then file a focused TODO for what is really lef
 - The phone page is answered by the home server; no second server is started
 - ▶ Slideshow ▾ › On the TV starts the chosen tiles on `/screen` (test)
 - The way back home and *Apply now* are there, as on every set-aside page
+
+## Status — PARTIAL (2026-11-12)
+
+### Done
+- Section 0339 (places map framing): its two unticked boxes were only a browser check. Now a
+  Chromium walk, `tests/support/places_frame_walk.py`, run by
+  `tests/e2e/test_ask_dialog_browser.py` (CI, `MEDIA_HYGIENE_E2E_BROWSER=1`): clusters in
+  Paris, Brussels, Rome and one at 0, 0; on arrival at 1366 x 768 the three are on the
+  visible map (left of the drawer), the 0, 0 one is not. Proven to fail when the 0, 0 filter
+  of `frame()` is removed (measured: run in the devcontainer, 3 s). No product code changed:
+  the framing of 0339 was right. `render_page` takes `given` values (real routes).
+
+### Not done
+- Every other section above.
+  **Reason:** an index of ~40 sections; one focused session took one. Each section still needs
+  its check against the code and, where work is real, its own focused TODO (see *How to use it*).
