@@ -73,6 +73,24 @@ def event_folder_of(path: str) -> tuple[str, str] | None:
     return None
 
 
+class FolderPlaces(dict[str, tuple[str, str] | None]):
+    """`event_folder_of` once per folder (0705): it read every file's parts."""
+
+    def of(self, path: str) -> tuple[str, str] | None:
+        """The event folder of a file, read once for all the files of its folder.
+
+        Args:
+            path: A file's container path.
+
+        Returns:
+            What `event_folder_of` says of it.
+        """
+        folder = path.rpartition("/")[0]
+        if folder not in self:
+            self[folder] = event_folder_of(path)
+        return self[folder]
+
+
 def moment(written: object) -> datetime | None:
     """The date and time the index holds for a file.
 
@@ -107,8 +125,9 @@ def found_folders(
     gathered: dict[tuple[str, str], _Gathered] = defaultdict(
         lambda: _Gathered([], [], set(), set())
     )
+    places = FolderPlaces()
     for key, path, written, camera, digest, hand in ready(connection).execute(_ROWS):
-        place = event_folder_of(str(path))
+        place = places.of(str(path))
         if place is None:
             continue
         held = gathered[place]

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import random
 import sqlite3
 from datetime import date
 from http import HTTPStatus
@@ -14,7 +15,12 @@ from typing import TYPE_CHECKING, cast
 import pytest
 
 from media_hygiene.classify.event_files import read_not_events
-from media_hygiene.classify.found_folders import event_folder_of, found_folders, moment
+from media_hygiene.classify.found_folders import (
+    FolderPlaces,
+    event_folder_of,
+    found_folders,
+    moment,
+)
 from media_hygiene.classify.own_events import folder_rules
 from media_hygiene.classify.rules.kinds import RuleMatch
 from media_hygiene.classify.rules_file import read_rules
@@ -253,3 +259,14 @@ def test_a_folded_group_is_neither_posted_nor_counted() -> None:
     assert '!box.closest("details:not([open])")' in script
     assert ".filter(unfolded)" in script
     assert 'byId("foundRefused").addEventListener("toggle", filter)' in script
+
+
+def test_event_folder_read_once_per_folder_says_the_same() -> None:
+    """0705: the folder's answer, kept for its next files, is each file's own."""
+    rng = random.Random(705)  # noqa: S311 - test data
+    parts = ("2019", "2019-06", "Plage", "x", "2020-01", "", "2019-6")
+    places = FolderPlaces()
+    for _ in range(2000):
+        folders = "/".join(rng.choice(parts) for _ in range(rng.randrange(5)))
+        path = f"/data/c/{folders}/IMG_{rng.randrange(3)}.jpg"
+        assert places.of(path) == event_folder_of(path)
