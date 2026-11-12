@@ -98,3 +98,13 @@ def test_a_click_on_the_chip_reopens_the_page_a_step_waits_on() -> None:
     assert "window.location.assign(page)" in click
     assert "function pageOf(step)" in chip
     assert "if (!pageOf(step)) return;" in chip
+
+
+@pytest.mark.parametrize("page", ["quarantine.html.j2", "shrink.html.j2"])
+def test_purge_and_shrink_follow_their_step_on_the_one_poll(page: str) -> None:
+    """Purge and shrink watch the chip's poll and claim their end (0706)."""
+    html = render_page(page)
+    assert html.count("fetch(STEP_PATH") == 1
+    assert "fetch(step.follow" not in html
+    assert "window.mhStep.watch(" in html
+    assert "window.mhStep.claim(step.id)" in html
