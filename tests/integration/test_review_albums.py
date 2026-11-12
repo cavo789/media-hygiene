@@ -33,7 +33,7 @@ def test_the_shots_kept_go_to_the_album_the_decisions_stay(
     write_burst(locations.data_dir)
     session = review_session(locations)
     keys = [
-        shot.preview.split("/")[-1].removesuffix(".jpg")
+        shot.preview.partition("?")[0].split("/")[-1].removesuffix(".jpg")
         for shot in session.state().series[0].shots
     ]
     desk = album_desk(make_runtime(locations), KeyPicker(session.preview_source).files)

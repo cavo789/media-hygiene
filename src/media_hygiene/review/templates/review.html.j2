@@ -369,8 +369,8 @@ pickMoves = false;      // ←/→/Space change the series, ↑/↓ move the fra
   };
   card = (file, index) => shotCard(series[current], file.rank, index);
 
-  // The preview's name is the key the albums know (album_bar.html.j2).
-  const keyOf = (shot) => shot.preview.replace(/^\/preview\/|\.jpg$/g, "");
+  // The preview's name is the key the albums know (album_bar.html.j2); `?v=` its version (0701).
+  const keyOf = (shot) => shot.preview.replace(/\?.*$/, "").replace(/^\/preview\/|\.jpg$/g, "");
 
   // The shots of the series shown, as the shared grid lists them (the large view reads them).
   const listed = (item) => shown(item).map((rank) => {

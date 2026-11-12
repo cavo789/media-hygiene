@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Final
 from media_hygiene.actions.purge import run_folders
 from media_hygiene.console.formatting import human_size
 from media_hygiene.review.phone_views import PhoneTile, set_aside_warning
+from media_hygiene.review.versioned import versioned_on_disk
 from media_hygiene.review.views import ORIGINAL_PREFIX, PREVIEW_PREFIX
 from media_hygiene.services.phone_plan import AsideState, PhoneCase
 
@@ -108,7 +109,9 @@ class TileSource:
             taken=file.modified,
             held=ticked.reason[0] if ticked.reason else "",
             warning=set_aside_warning(ticked.reason) if aside else "",
-            preview="" if source is None else f"{PREVIEW_PREFIX}{key}.jpg",
+            preview=""
+            if source is None
+            else versioned_on_disk(f"{PREVIEW_PREFIX}{key}.jpg", source),
             original=""
             if source is None
             else f"{ORIGINAL_PREFIX}{key}{source.suffix.lower()}",

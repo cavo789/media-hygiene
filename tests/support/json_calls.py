@@ -38,9 +38,10 @@ def call(app: object, route: str, body: object = None) -> Response:
         The response.
     """
     assert isinstance(app, Answering)
-    method, path = route.split()
+    method, address = route.split()
+    path, _mark, query = address.partition("?")  # as `read_request` splits it
     data = b"" if body is None else json.dumps(body).encode()
-    return asyncio.run(app.handle(Request(method, path, JSON, data)))
+    return asyncio.run(app.handle(Request(method, path, JSON, data, query=query)))
 
 
 def answer(app: object, route: str, body: object = None) -> dict[str, object]:

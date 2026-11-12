@@ -25,7 +25,10 @@ def test_a_copy_of_this_run_is_kept_one_of_an_older_run_is_not(
     write_burst(locations.data_dir)
     session = review_session(locations)
     # Relative to the page since 0417 (served under a prefix too): asked from `/`.
-    preview = "/" + session.state().series[0].shots[0].preview.removeprefix("/")
+    preview = (
+        "/"
+        + session.state().series[0].shots[0].preview.removeprefix("/").partition("?")[0]
+    )  # the run's rule
     kept, older, video_part = serve_and_call(
         session,
         [

@@ -383,7 +383,9 @@ def test_a_face_drawn_by_hand_is_kept_searched_and_a_blank_box_writes_nothing(
     draw = "POST /person/api/draw"
     picture = answer(person, draw, {"path": "C:\\Family\\IMG_9.png"})["picture"]
     assert call(person, f"GET {picture}").status is HTTPStatus.OK
-    shown = int(str(picture).rsplit("/", maxsplit=1)[-1].removesuffix(".jpg"))
+    shown = int(
+        str(picture).partition("?")[0].rsplit("/", maxsplit=1)[-1].removesuffix(".jpg")
+    )
     assert answer(person, "POST /person/api/like", {"key": shown})["files"] == []
     blank = {"path": "C:\\Family\\IMG_9.png", "box": [0.1, 0.1, 0.8, 0.8]}
     said = answer(person, draw, blank)

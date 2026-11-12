@@ -22,6 +22,7 @@ from media_hygiene.person.drawing import DrawJob, draw_face
 from media_hygiene.person.finding import face_view
 from media_hygiene.person.routes import JPEG, PREVIEW_PREFIX
 from media_hygiene.person.shelf import ShelfFace
+from media_hygiene.review.versioned import versioned_on_disk
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -89,7 +90,7 @@ async def drawn(app: PersonApp, body: bytes) -> dict[str, object]:
     box = asked.fractions()
     if asked.box is None:
         key = finder.shelf.add(ShelfFace(path, _NO_PICTURE))
-        return {"picture": f"{PREVIEW_PREFIX}{key}{JPEG}"}
+        return {"picture": versioned_on_disk(f"{PREVIEW_PREFIX}{key}{JPEG}", path)}
     recipe = app.recipe()
     if recipe is None:
         said = _("The face models are not in the cache yet: run 'audit --people' once.")

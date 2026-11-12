@@ -19,6 +19,7 @@ from media_hygiene.person.drawing import search_vector
 from media_hygiene.person.likeness import likeness
 from media_hygiene.person.routes import FACE_PREFIX, JPEG, PREVIEW_PREFIX, THUMB_PREFIX
 from media_hygiene.person.shelf import ShelfFace
+from media_hygiene.review.versioned import versioned_on_disk
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -174,9 +175,9 @@ class PersonFinder:
         return {
             "key": key,
             "name": path.name,
-            "thumb": f"{THUMB_PREFIX}{key}{JPEG}",
-            "preview": f"{PREVIEW_PREFIX}{key}{JPEG}",
-            "original": f"{PREVIEW_PREFIX}{key}{JPEG}",
+            "thumb": versioned_on_disk(f"{THUMB_PREFIX}{key}{JPEG}", path),
+            "preview": versioned_on_disk(f"{PREVIEW_PREFIX}{key}{JPEG}", path),
+            "original": versioned_on_disk(f"{PREVIEW_PREFIX}{key}{JPEG}", path),
             "where": host,
             "path": host,  # 👤: `/person` again, from this photo
             "face": f"{FACE_PREFIX}{key}{JPEG}",  # the face that matched (0714)

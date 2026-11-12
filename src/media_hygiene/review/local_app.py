@@ -14,7 +14,9 @@ from media_hygiene.errors import MediaHygieneError
 from media_hygiene.i18n import _
 from media_hygiene.i18n.live import Page, page_of
 from media_hygiene.review.http import ContentType, Response, is_local
+from media_hygiene.review.respond import IMMUTABLE_S
 from media_hygiene.review.serving import json_response, serve_connection
+from media_hygiene.review.versioned import kept_for_good
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -102,12 +104,15 @@ async def jpeg_response(
         source: The file, in the container.
 
     Returns:
-        The JPEG, cached by the browser; 404 when it cannot be made.
+        The JPEG, kept for good when the address names the file's version
+        (`versioned`), else cached for this run; 404 when it cannot be made.
     """
     loop = asyncio.get_running_loop()
     image = await loop.run_in_executor(executor, render, source)
     if image is None:
         return Response(HTTPStatus.NOT_FOUND)
+    if await asyncio.to_thread(kept_for_good, source):  # `?v=` its version (0701)
+        return Response(HTTPStatus.OK, image, ContentType.JPEG, max_age=IMMUTABLE_S)
     return Response(HTTPStatus.OK, image, ContentType.JPEG, cacheable=True)
 
 

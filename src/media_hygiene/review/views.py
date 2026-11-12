@@ -17,6 +17,7 @@ from media_hygiene.plan.burst_proposals import (
 )
 from media_hygiene.review.file_card import FileCard
 from media_hygiene.review.shares import compared, shares
+from media_hygiene.review.versioned import versioned
 
 if TYPE_CHECKING:
     from media_hygiene.paths.host_paths import HostPathMapper
@@ -169,7 +170,7 @@ class StateBuilder:
             name=name,
             folder=folder,
             details=" · ".join(details),
-            preview=f"{PREVIEW_LINK}{preview_key(file)}.jpg",
+            preview=versioned(f"{PREVIEW_LINK}{preview_key(file)}.jpg", file),
             original=f"{ORIGINAL_LINK}{preview_key(file)}{file.path.suffix.lower()}",
             protected=self.policy.is_protected(file),
             best=best,

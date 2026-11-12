@@ -12,6 +12,7 @@ from media_hygiene.report.thumbnails import REVIEW_EDGE
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.originals import original_response
 from media_hygiene.review.respond import IMMUTABLE_S
+from media_hygiene.review.versioned import kept_for_good
 from media_hygiene.search.stable_pictures import (
     parsed_name,
     picture_tag,
@@ -86,6 +87,8 @@ class Pictures:
         if image is None:
             return Response(HTTPStatus.NOT_FOUND)
         if tag and (await asyncio.to_thread(still_this_version, photo)) is True:
+            return Response(HTTPStatus.OK, image, ContentType.JPEG, max_age=IMMUTABLE_S)
+        if await asyncio.to_thread(kept_for_good, photo.path):  # `?v=` (0701)
             return Response(HTTPStatus.OK, image, ContentType.JPEG, max_age=IMMUTABLE_S)
         return Response(HTTPStatus.OK, image, ContentType.JPEG, cacheable=True)
 

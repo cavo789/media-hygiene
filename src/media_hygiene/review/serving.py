@@ -21,6 +21,7 @@ from media_hygiene.review.http import (
     read_request,
 )
 from media_hygiene.review.respond import RUN_TAG, write_response
+from media_hygiene.review.versioned import asked_from
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
@@ -77,6 +78,7 @@ async def serve_within(
                 else read_request(reader, served.head_seconds)
             )
             request = replace(await read, peer=peer_of(writer))
+            asked_from(request.query)
         except BadRequestError as exc:
             response = Response(exc.status)
         else:
