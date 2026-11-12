@@ -10,7 +10,7 @@ tool (the nearest confirmed face), or none; and the names it was said not to be.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Final, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -22,6 +22,7 @@ from media_hygiene.people.followed import follow_ids
 from media_hygiene.people.known import Known
 from media_hygiene.people.moving import move_faces
 from media_hygiene.people.naming import How, face_id, id_of, name_all
+from media_hygiene.people.people_memo import PeopleMemo
 from media_hygiene.people.proof import proof_line, rejected_line
 from media_hygiene.people.roster import Change
 
@@ -56,6 +57,7 @@ class FaceNames:
     base: PeopleSettings
     faces: FaceIndex
     shelf: FaceShelf
+    memo: PeopleMemo = field(default_factory=PeopleMemo)  # read again after a change
 
     def settings(self) -> PeopleSettings:
         """`[people]` as the file holds it now, the thresholds of the run.
@@ -65,7 +67,7 @@ class FaceNames:
         """
         if self.config_file is None:
             return self.base
-        back = read_people(self.config_file)
+        back = self.memo.read(self.config_file)
         return self.base.model_copy(
             update={"person": back.person, "ignored": back.ignored}
         )
@@ -179,16 +181,16 @@ def tagged(names: FaceNames | None, answer: dict[str, object]) -> dict[str, obje
     """
     if names is None:
         return answer
-    for field in ("faces", "files"):
-        items = answer.get(field)
+    for listed in ("faces", "files"):
+        items = answer.get(listed)
         if not isinstance(items, list):
             continue
         tags = names.tags([int(item["key"]) for item in items])
         for item in items:
             item["named"] = tags.get(int(item["key"]))
-        if field == "files" and items and items[0]["named"]:
+        if listed == "files" and items and items[0]["named"]:
             seed = items[0]["named"]["name"]
-            answer[field] = [items[0]] + [
+            answer[listed] = [items[0]] + [
                 item
                 for item in items[1:]
                 if not (item["named"] and seed and seed in item["named"]["not"])

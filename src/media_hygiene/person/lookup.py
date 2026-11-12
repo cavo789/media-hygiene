@@ -58,6 +58,7 @@ class FaceIndex:
     def refresh(self) -> None:
         """Read the faces again at the next question: one was added."""
         self.__dict__.pop("every", None)
+        self.__dict__.pop("_by_path", None)
 
     @cached_property
     def every(self) -> tuple[StoredFace, ...]:
@@ -86,7 +87,19 @@ class FaceIndex:
         Returns:
             Its faces, in their order; none for a photo without any.
         """
-        return tuple(face for face in self.every if face.path == path)
+        return self._by_path.get(path, ())
+
+    @cached_property
+    def _by_path(self) -> dict[Path, tuple[StoredFace, ...]]:
+        """The faces of `every`, by photo: a lookup, not a walk of them all (0714).
+
+        Returns:
+            Each photo's faces, in their order.
+        """
+        grouped: dict[Path, list[StoredFace]] = {}
+        for face in self.every:
+            grouped.setdefault(face.path, []).append(face)
+        return {path: tuple(faces) for path, faces in grouped.items()}
 
     def scanned(self, path: Path) -> bool:
         """Tell whether the faces of a photo were looked for.
