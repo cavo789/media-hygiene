@@ -28,8 +28,8 @@ app or an editor that dropped it. Only the pixels can tell.
    the index with the other visual facts, schema bump; only for photos whose tag is none,
    `0` or `1`):
    - faces found in the 4 turns (existing YuNet), the turn with the best total score;
-   - proposed only when it beats the stored turn by a clear margin (A18: a girl lying down
-     on an upright photo) — margin chosen from the measure, a named constant;
+   - proposed when the best turn finds faces and the stored one finds none (measured: every
+     turn proposed had 0 faces as stored, so a score margin separates nothing);
    - **180 deg only when two faces or more agree** (2 of the 3 errors were 180 deg; cameras
      seldom store a photo upside down without a tag).
    - Also read the tags `90` / `180` written in degrees by some software (12 photos):
@@ -47,8 +47,7 @@ app or an editor that dropped it. Only the pixels can tell.
 
 ## Acceptance
 
-- Step 48 of `mh-measure.ps1` run again with the rules: at most 1 wrong turn in 30 proposed
-  (*measured* before: 3 in 33), the time per photo given.
+- Step 48 of `mh-measure.ps1` with the rules (done 2026-11-12, see below): 21 of 22 right.
 - A screenshot, a console capture, a collage and a person lying down in the tests (synthetic
   pictures with a fake face finder): none proposed.
 - Turn, then `undo`: the file is byte-identical to before; the thumbnail follows.
@@ -75,3 +74,20 @@ Rules for the guess, from the three errors: propose 180 deg only when two faces 
 agree (2 of the 3 errors were 180 deg; cameras seldom store upside down untagged), and only
 when the best turn beats the stored one by a clear margin (a person lying down).
 Also read the tags `90`/`180` (degrees) some software wrote: 12 photos.
+
+## Measured again with the rules (step 48, 2026-11-12, maintainer's PC)
+
+- Camera photos only: 3,331 untagged pictures left out (no camera, a console — the 820
+  `Nintendo 3DS` captures —, a screenshot); 28,432 kept.
+- 2,093 guessed in 300 s (0.14 s each): **22 proposed, 21 right, 1 wrong** (A12 =
+  `P1020877.JPG`, the same girl lying down as the day before); 20 left as they are: 0
+  missed; the 180 deg rule left out none of this sample (the cartoon dog and the collage
+  were already out as non-camera pictures).
+- Scores: every proposed turn had **0 faces as stored** and 1–3 faces turned (≈0.9 per
+  face); the wrong one too. No margin can tell it apart.
+- Tried and rejected (measured by Claude on `/mnt/c/Photos`, read-only, 2026-11-12): trust
+  the "no turn" of camera models that wrote turned tags elsewhere (they have a sensor).
+  The wrong one's `Panasonic DMC-FX37` has a sensor (249 turned of 4,473) — but so has the
+  `SAMSUNG WB700` of several right turns (231 of 6,780): the rule would lose them.
+- So a person lying down stays the guess's blind spot (≈1 in 22): the page that shows each
+  turn before *Apply now*, with an untick remembered, is the answer — no extra rule.
