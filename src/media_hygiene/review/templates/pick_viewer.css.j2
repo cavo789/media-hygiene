@@ -12,6 +12,16 @@
   #viewer .asideMark[hidden] { display: none; }
   #viewer .viewerKeys, #viewerInfo, #viewerWho { color: #ccc; }
   #viewerWho a { color: #ffd479; } #viewerWho .guessed { font-style: italic; }
+  /* Each face of the photo, its picture and its name; a click names it in the line under. */
+  #viewerWho .whoFace { display: inline-flex; gap: 4px; align-items: center; padding: 1px 6px 1px 1px;
+                        font: inherit; color: inherit; background: transparent; border: 1px solid #666;
+                        border-radius: 6px; }
+  #viewerWho button.whoFace { cursor: pointer; } #viewerWho button.whoFace:hover { border-color: #ffd479; }
+  #viewerWho .whoFace img { width: 28px; height: 28px; object-fit: cover; border-radius: 4px; }
+  #viewerWhoName { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; }
+  #viewerWhoName:empty { display: none; }
+  #viewerWhoName input { min-width: 16em; }
+{% include "combo_list.css.j2" %}
   #viewerSaid:empty, #viewerInfo[hidden], #viewerWho[hidden], #viewerHelp[hidden] { display: none; }
   #viewerSaid.error { color: #ff9b9b; font-weight: 600; }
   #viewerHelp { display: grid; grid-template-columns: auto auto; gap: 4px 12px; margin: 0;

@@ -63,7 +63,7 @@
   #state.decided { border-style: solid; border-color: var(--ok); color: var(--ok); }
   #state.sure { border-color: var(--ok); color: var(--ok); }
   #state.none { border-color: var(--bad); color: var(--bad); }
-  .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+  .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(260px * var(--tile-scale))), 1fr)); gap: 12px; }
   .shot { margin: 0; padding: 8px; background: var(--card); border: 3px solid var(--line); border-radius: 10px; }
   .shot.keep { border-color: var(--ok); }
   .shot.move { border: 3px dashed var(--bad); } .shot.move img, .shot.move video { opacity: .6; }
@@ -115,6 +115,7 @@
   <span id="status" role="status" aria-live="polite"></span>
   {% include "apply_now.html.j2" %}
   {% set tidy_next = "" %}{% include "tidy_bar.html.j2" %}
+  {% include "tile_view.html.j2" %}
 {% endblock %}
 {% block content %}
 <main>

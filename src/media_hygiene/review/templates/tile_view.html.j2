@@ -1,13 +1,15 @@
-{# The view of a page of tiles (0714 follow-up, shared by `/person` and the people page: the
-   same features on pages of the same kind): the left panel hidden or shown, the size of the
-   tiles S/M/L/XL. `tile_view.js.j2` drives it; each page sizes its tiles from
-   `body[data-tile-size]` in its own CSS. #}
-<span id="view">
+{# The view of every page of tiles (one markup, one script, one look: the same features on
+   pages of the same kind): the left panel hidden or shown, the size of the tiles S/M/L/XL.
+   `tile_view.js.j2` drives it, kept per page (`tile_view_key`, else the page's address) and
+   per viewer in this browser; `tile_view.css.j2` scales every grid by `--tile-scale` (S: the
+   photos only, L and XL: the whole caption). Included by `pick_acting.html.j2` (every page of
+   tiles to pick) and by the pages of tiles without picking (people, group reviews). #}
+<span id="view" data-key="{{ tile_view_key | default('') }}" data-hide="{{ _('◀ Hide the panel') }}" data-show="{{ _('▶ Show the panel') }}">
   <button id="sideToggle" class="plain" type="button"></button>
   <span id="sizes" role="group" aria-label="{{ _('Thumbnail size') }}">
-    <button class="plain" type="button" data-size="s" title="{{ _('Small') }}">S</button>
+    <button class="plain" type="button" data-size="s" title="{{ _('Small: the photos only') }}">S</button>
     <button class="plain" type="button" data-size="m" title="{{ _('Medium') }}">M</button>
-    <button class="plain" type="button" data-size="l" title="{{ _('Large') }}">L</button>
+    <button class="plain" type="button" data-size="l" title="{{ _('Large: the whole caption and every word') }}">L</button>
     <button class="plain" type="button" data-size="xl" title="{{ _('Very large: to tell small children apart') }}">XL</button>
   </span>
 </span>

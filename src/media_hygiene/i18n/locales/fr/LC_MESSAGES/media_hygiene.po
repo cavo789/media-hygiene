@@ -718,6 +718,9 @@ msgstr ""
 msgid "A click on a file moves the cursor to it."
 msgstr "Un clic sur un fichier y place le curseur."
 
+msgid "A click: name it here."
+msgstr "Un clic : le nommer ici."
+
 #, python-brace-format
 msgid "A commented configuration file was created: {path}."
 msgstr "Un fichier de configuration commenté a été créé : {path}."
@@ -5336,6 +5339,9 @@ msgstr ""
 msgid "Its name is the folder's in the quarantine."
 msgstr "Son nom est celui de son dossier dans la quarantaine."
 
+msgid "Its other photos"
+msgstr "Ses autres photos"
+
 #, python-brace-format
 msgid "Its share of the sharpest faces' sharpness; its faces' score: {score}"
 msgstr ""
@@ -5534,9 +5540,6 @@ msgid ""
 "Language of the words: \"en\", \"fr\", or empty for the language of the "
 "interface."
 msgstr "Langue des mots : \"en\", \"fr\", ou vide pour la langue de l'interface."
-
-msgid "Large"
-msgstr "Grande"
 
 msgid "Large: the whole caption and every word"
 msgstr "Grande : toute la légende et tous les mots"
@@ -10911,9 +10914,6 @@ msgid ""
 msgstr ""
 "Diaporama prêt : la télécommande sur {url} sur ce PC. Ctrl+C l'arrête ; "
 "vos photos ne sont pas modifiées."
-
-msgid "Small"
-msgstr "Petite"
 
 msgid "Small: the photos only"
 msgstr "Petite : les photos seules"

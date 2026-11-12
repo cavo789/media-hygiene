@@ -32,7 +32,7 @@
   #state { margin: 0 0 12px; padding: 8px 12px; font-weight: 600; background: var(--card);
            border: 2px dashed var(--warn); border-radius: 10px; color: var(--warn); }
   #state.decided { border-style: solid; border-color: var(--ok); color: var(--ok); }
-  .shots { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .shots { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(180px * var(--tile-scale))), 1fr)); gap: 12px; }
   .shot { margin: 0; padding: 6px; background: var(--card); border: 3px solid var(--line); border-radius: 10px; cursor: pointer; }
   .shot.moved { border-color: var(--ok); }
   .shot.deleted { border: 3px dashed var(--bad); }
@@ -69,6 +69,7 @@
   <span id="totals" class="muted"></span>
   {% include "apply_now.html.j2" %}
   <span id="status" role="status" aria-live="polite"></span>
+  {% include "tile_view.html.j2" %}
 {% endblock %}
 {% block content %}
 <main>

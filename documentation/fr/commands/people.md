@@ -206,11 +206,15 @@ depuis une photo**, sous la liste des personnes), depuis la page d'accueil (*Ret
 quelqu'un depuis une photo*) ou depuis la console :
 [`mh person C:\Photos\…\IMG_1234.jpg`](person.md) ; sur la page, collez le chemin d'une photo.
 
-**Qui est sur cette photo, d'un coup d'œil** : dans la grande vue de chaque page (`library`,
-`review`…), une ligne sous la photo dit qui s'y trouve, d'après l'index : **👤 ✓ Chloé · ≈ Paul ·
-? sans nom** (demandée seulement quand vous ouvrez une photo en grand). Un clic sur **? sans nom**
-ouvre la page sur cette photo, sa ligne de nom sur ce visage. Pas de ligne : aucun visage trouvé là
-par `audit --people`.
+**Qui est sur cette photo, d'un coup d'œil, et les nommer sur place** : dans la grande vue de
+chaque page (`library`, `person`, `people`, `review`…), une ligne sous la photo dit qui s'y
+trouve, d'après l'index, chaque visage avec sa vignette : **👤 ✓ Chloé · ≈ Paul · ? sans nom**
+(demandée seulement quand vous ouvrez une photo en grand). Un clic sur un visage ouvre en dessous
+**Ce visage est… [nom]** (*Pas Paul, ce visage est…*) : tapez ou choisissez un nom, Entrée ; il est
+enregistré dans `config.toml`, relu et affiché, et la ligne montre les noms tels que le fichier
+les dit maintenant. **👤 Ses autres photos** ouvre cette page sur ce visage, pour confirmer ses
+autres photos. Pas de ligne : aucun visage trouvé là par `audit --people` ; sur le téléphone, ou
+sans `config.toml` à vous, les noms seulement.
 
 1. La page montre les visages trouvés sur cette photo par `audit --people`, chacun avec son
    nom : **✓ Chloé** (confirmé par vous), **≈ Chloé** (donné par l'outil parce qu'il ressemble à

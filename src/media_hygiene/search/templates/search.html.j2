@@ -130,6 +130,7 @@
   "hand": _("the words you gave the photos with 🏷 Tag…, kept in your settings."),
 } %}
 {% set page_name = _("Library") %}
+{% set tile_view_key = "mh-library-view" %}
 {% set rule_title = _("Make it a rule") %}
 {% set rule_update = true %}
 {% set rule_go = true %}
@@ -210,7 +211,6 @@
                            /* below the shell's header (0595): its ⋯ reachable, never under it */
                            top: calc(var(--mh-shell-top-h, 0px) + 16px); max-height: calc(100vh - var(--mh-shell-top-h, 0px) - 32px); padding: 10px 12px; background: var(--card);
                            border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 4px 18px rgba(0, 0, 0, .3); }
-{% include "combo_list.css.j2" %}
   #withinLine { display: flex; gap: 6px; align-items: baseline; overflow-wrap: anywhere; }
   #withinLine[hidden] { display: none; }
   #heaviest { width: 100%; margin-top: 6px; }
@@ -252,13 +252,10 @@
                            padding: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
   /* 🔍 Search stays in sight at the bottom of the form, however long the column. */
   #go { position: sticky; bottom: 0; z-index: 1; }
-  /* Thumbnail sizes (S/M/L, kept per viewer): S the photo only, M one line each, L everything. */
-  main[data-size="s"] { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-  main[data-size="s"] .meta { display: none; }
-  main[data-size="l"] { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
-  main:not([data-size="l"]) .meta > div:not(.chips) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  main:not([data-size="l"]) .chips { max-height: 3em; overflow: hidden; }
-  main:not([data-size="l"]) .chip.extra, main[data-size="l"] .chip.rest { display: none; }
+  /* The tiles' size is the shared view's (`tile_view.html.j2`): M one line each, L and XL everything. */
+  body:not([data-tile-size="l"], [data-tile-size="xl"]) main .meta > div:not(.chips) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  body:not([data-tile-size="l"], [data-tile-size="xl"]) main .chips { max-height: 3em; overflow: hidden; }
+  body:not([data-tile-size="l"], [data-tile-size="xl"]) main .chip.extra, body:is([data-tile-size="l"], [data-tile-size="xl"]) main .chip.rest { display: none; }
 {% endblock %}
 {% block side %}
     {# Two tabs (0457): the search, or the events of the latest classify; kept per viewer. #}
@@ -378,12 +375,6 @@
     {% set order_rate = true %}
     {% set order_short = true %}
     {% include "pick_order.html.j2" %}
-    <div class="seg" id="sizes" role="group" aria-label="{{ _('Thumbnail size') }}">
-      <input type="hidden" id="size" value="m">
-      <button type="button" data-for="size" data-value="s" aria-pressed="false" title="{{ _('Small: the photos only') }}">S</button>
-      <button type="button" data-for="size" data-value="m" aria-pressed="true" title="{{ _('Medium') }}">M</button>
-      <button type="button" data-for="size" data-value="l" aria-pressed="false" title="{{ _('Large: the whole caption and every word') }}">L</button>
-    </div>
     {% set album_found = true %}
     {% include "album_bar.html.j2" %}
     <details id="moveBar" class="barPanel closesOnChoice">
@@ -430,7 +421,6 @@
 {% include "search_chips.js.j2" %}
 {% include "search_folders.js.j2" %}
 {% include "search_sort_setup.js.j2" %}
-{% include "combo_list.js.j2" %}
 {% include "search_path_list.js.j2" %}
 {% include "rule_dialog.js.j2" %}
 {% include "move_dialog.js.j2" %}
