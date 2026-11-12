@@ -1,0 +1,15 @@
+// One card of the home page by its address (0707): `#<space>/<card>` shows the space, then
+// scrolls to the element whose id is <card>, unfolds what holds it and gives it the focus.
+// The settings index links its rows this way. An unknown card leaves the space as it is.
+function hashParts(hash) {
+  const [space, card] = decodeURIComponent((hash || "").replace(/^#/, "")).split("/");
+  return { space: space, card: card || "" };
+}
+function revealCard(card) {
+  const target = card && /^[A-Za-z][\w-]*$/.test(card) ? document.getElementById(card) : null;
+  if (!target) return;
+  for (let up = target.parentElement; up; up = up.parentElement) if (up.tagName === "DETAILS") up.open = true;
+  target.scrollIntoView({ block: "start" });
+  if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
+  target.focus({ preventScroll: true });
+}

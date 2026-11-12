@@ -209,7 +209,7 @@ function viewHome() {
       <p class="cycle-loop">${icon("loop")}<span>${T.cycleLoop}</span></p>
     </section>
     ${favouritesRow()}${hero()}
-    <section class="block" aria-labelledby="whereTitle">
+    <section class="block" id="tilesCard" aria-labelledby="whereTitle">
       ${tilesBlock()}
     </section>
     ${S.findings ? findings() : welcome()}
@@ -286,7 +286,7 @@ const EXTRAS = {
   reportsList: () => `<ul class="report-list">${reportItems(true)}</ul>`,
   folders: () => `<div class="table-wrap"><table><caption class="table-caption">${esc(T.foldersKnown)}</caption><thead><tr><th scope="col">${esc(T.folder)}</th><th scope="col">${esc(T.role)}</th><th scope="col">${esc(T.state)}</th></tr></thead><tbody>${S.folders.map((f) => `<tr><td><code>${esc(f.path)}</code></td><td>${esc(f.role)}</td><td>${f.ok ? `<span class="pill pill-done">${icon("check")} ${esc(f.note)}</span>` : `<span class="pill pill-planned">${icon("alert")} ${esc(f.note)}</span>`}</td></tr>`).join("")}</tbody></table></div>`,
   update: () => `<p class="setting-line">${S.update ? `<strong>${esc(fill(T.newVersion, { version: S.update.version }))}</strong> (${esc(fill(T.youHave, { version: S.version }))}).` : `<strong>Media Hygiene ${esc(S.version)}</strong> ${esc(T.isLatest)}`} ${T.updateCheck}</p>`,
-  ai: () => `<div class="callout ${S.ai ? "callout-info" : "callout-note"}">${icon("sparkles")}<p>${S.ai ? T.aiSet : T.aiNotSet}</p></div>`,
+  ai: () => `<div class="callout ${S.ai ? "callout-info" : "callout-note"}" id="aiCard">${icon("sparkles")}<p>${S.ai ? T.aiSet : T.aiNotSet}</p></div>`,
   about: () => `<div class="about"><img src="${image("avatar.webp")}" alt="${esc(T.avatarAlt)}" width="236" height="320"><div><p class="about-title">Media Hygiene ${esc(S.version)}</p><p>${T.aboutText}</p><p class="muted small"><a href="https://github.com/cavo789/media-hygiene" target="_blank" rel="noopener">${esc(T.codeOnGitHub)}</a> · <a href="https://hub.docker.com/r/cavo789/media-hygiene" target="_blank" rel="noopener">${esc(T.imageOnHub)}</a></p></div></div>`,
 };
 function renderMain() {

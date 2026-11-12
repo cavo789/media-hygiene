@@ -216,8 +216,10 @@ function wire() {
     else if (event.key === "?") { event.preventDefault(); openKeys(); }
   });
   window.addEventListener("hashchange", () => {
-    const wanted = decodeURIComponent(location.hash.slice(1));
-    if (SPACE[wanted] && wanted !== view.id) go(wanted);
+    const wanted = hashParts(location.hash);
+    if (!SPACE[wanted.space]) return;
+    if (wanted.space !== view.id) go(wanted.space, !wanted.card);
+    revealCard(wanted.card);
   });
   wirePalette();
 }
@@ -380,11 +382,12 @@ function begin() {
   index();
   asApp();
   applyTheme(store.get("theme", "auto"), false);
-  const wanted = decodeURIComponent((location.hash || "").slice(1));
-  view.id = SPACE[wanted] ? wanted : HOME;
+  const wanted = hashParts(location.hash);
+  view.id = SPACE[wanted.space] ? wanted.space : HOME;
   if (!wired) { wired = true; wire(); }
   render();
   setNav(false, false);
+  revealCard(wanted.card);
   // Enter runs the next step, as in `mh menu`: its button has the focus.
   const first = $("#heroRun");
   if (view.id === HOME && first) first.focus({ preventScroll: true });
