@@ -100,10 +100,15 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
 - **Chercher** : tapez les mots, puis Entrée ; les touches vont alors à la grille, `/` revient au
   champ. *Comment écrire une recherche* rappelle les expressions ("bord de mer"), les débuts de
   mots (anniv\*) et les mots d'une seule source (place:durbuy).
-- **Suivre un mot** : un clic sur un mot sous une photo (*Mechelen*, *2026*, le nom d'une
-  personne) le cherche comme expression dans toutes les sources, les filtres vidés : d'une photo à
-  toutes les autres qui ont ce mot. Il ne choisit jamais la photo. **Ctrl+clic** ajoute plutôt le
-  mot à la recherche, les autres filtres gardés : *Manon*, puis Ctrl+clic sur *2015*.
+- **Suivre un mot** : un clic sur un mot sous une photo (*Mechelen*, *2026*) le cherche comme
+  expression dans toutes les sources, les filtres vidés : d'une photo à toutes les autres qui ont
+  ce mot. Il ne choisit jamais la photo. **Ctrl+clic** ajoute plutôt le mot à la recherche, les
+  autres filtres gardés : *Manon*, puis Ctrl+clic sur *2015*.
+- **Suivre une personne** : les personnes nommées sur une photo (sur la page
+  [`people`](people.md)) viennent en premier parmi ses mots, marquées 👤 : elles se voient à
+  toutes les tailles. Un clic sur *👤 Manon* ne montre plus que les photos de Manon
+  (`person:"Manon"` : un dossier ou un fichier nommé *Manon* ne compte pas) ; la pastille de la
+  barre dit *👤 Manon*. **Ctrl+clic** sur un second nom l'ajoute : les photos où les deux sont.
 - **Suivre un jour ou un dossier** : un clic sur le jour ou le dossier d'une photo, sous elle ou
   dans la grande vue, montre les fichiers de ce jour (*Du* et *Au* le prennent) ou de ce dossier
   (*Le chemin contient*). Le bouton **Précédent** du navigateur (Alt+←) rend la recherche d'avant

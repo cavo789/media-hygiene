@@ -159,11 +159,9 @@ TEMPLATE_SOFT_CAP: Final = 400
 OVERSIZED_TEMPLATES: Final = {
     "review/templates/home_run.js.j2": 603,
     "review/templates/home_parts.css.j2": 547,
-    "search/templates/search.js.j2": 540,
     "review/templates/review.html.j2": 501,
     "config/templates/config.toml.j2": 501,
     "cli/templates/mh_phone.ps1.j2": 475,
-    "search/templates/search.html.j2": 448,
 }
 
 

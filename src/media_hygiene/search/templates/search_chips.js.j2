@@ -15,8 +15,13 @@ chipsFolded.hidden = true;
 $("lead").append(chipsLine, chipsMore);
 $("bar").append(chipsFolded);
 
-// The words typed, one chip each ("quoted words" stay one).
-const chipWords = (text) => text.match(/"[^"]*"|\S+/g) || [];
+// The words typed, one chip each ("quoted words" stay one, `person:"Anne Marie"` too).
+const chipWords = (text) => text.match(/(?:\w+:)?"[^"]*"|\S+/g) || [];
+// A name searched among the people (a card's 👤 chip clicked): 👤 and the name, as there.
+const chipLabel = (word) => {
+  const name = word.match(/^person:"?([^"]*)"?$/i);
+  return name ? "👤 " + name[1] : word;
+};
 const pressedLabel = (id) => {
   const button = document.querySelector(`[data-for="${id}"][aria-pressed="true"]`);
   return button ? (button.title || button.textContent).trim() : "";
@@ -25,7 +30,7 @@ const pressedLabel = (id) => {
 // Each active filter: its text and how to take it off the form.
 function activeFilters(body) {
   const filters = chipWords(body.text).map((word, at) => ({
-    text: word,
+    text: chipLabel(word),
     off: () => { $("text").value = chipWords($("text").value).filter((_, i) => i !== at).join(" "); },
   }));
   if (body.day_from || body.day_to) {

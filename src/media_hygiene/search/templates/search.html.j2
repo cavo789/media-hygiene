@@ -55,6 +55,7 @@
   "unname": _("Not {name}: take this name off the photo (saved in config.toml)"),
   "putBack": _("Put back"),
   "lookFor": _("{source}: click to search every photo with “{word}”"),
+  "lookForPerson": _("Click: only the photos of {name}; Ctrl+click: add {name} to the search (the photos where they are together)"),
   "landmark": _("Landmark"),
   "whyTitle": _("Why {name}?"),
   "reference": _("The face of reference that gave the name:"),
@@ -163,42 +164,7 @@
   #coverage { margin: 6px 0 0; color: var(--muted); }
   #syntax summary { cursor: pointer; }
   #syntax p { margin: 4px 0 0; }
-  .folderLine, .caption { overflow-wrap: anywhere; }
-  .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
-  .chip { padding: 0 6px; border-radius: 10px; background: var(--chip); cursor: pointer; }
-  .chip:hover { background: var(--line); }
-  .day { cursor: pointer; text-decoration: underline dotted; }
-  .day:hover { background: var(--line); border-radius: 4px; }
-  .chip .unname { margin-left: 4px; padding: 0 4px; border: 0; border-radius: 50%; font: inherit;
-                  line-height: 1.2; background: transparent; color: var(--muted); cursor: pointer; }
-  .chip .unname:hover { background: var(--bad); color: #fff; }
-  .chip .dropTag { display: none; }
-  .chip:hover .dropTag, .chip .dropTag:focus-visible { display: inline; }
-  .putBack { margin-left: 6px; }
-  #viewerInfo .chips { justify-content: center; }
-  #why { position: fixed; inset: 0; z-index: 5; display: flex; align-items: center;
-         justify-content: center; padding: 16px; background: rgba(0, 0, 0, .5); }
-  #why[hidden] { display: none; }
-  #why .box { max-width: 40rem; max-height: calc(100vh - 32px); overflow: auto; padding: 12px 16px;
-              border-radius: 10px; background: var(--card); color: var(--text); }
-  #why h2 { margin: 0 0 8px; font-size: 1.05rem; }
-  #why .face { display: flex; gap: 12px; align-items: flex-start; margin: 8px 0;
-               padding: 8px 0; border-top: 1px solid var(--line); }
-  #why img { width: 120px; height: 120px; object-fit: cover; border-radius: 8px;
-             background: var(--chip); }
-  #why .whole { position: relative; width: 240px; max-width: 100%; margin-bottom: 6px; }
-  #why .whole img { width: 100%; height: 100%; object-fit: contain; }
-  #why .outline { position: absolute; border: 2px solid var(--accent); border-radius: 4px;
-                  box-shadow: 0 0 0 1px var(--card); pointer-events: none; }
-  #why .reference img { width: 72px; height: 72px; }
-  #why .reference { display: flex; gap: 8px; align-items: center; overflow-wrap: anywhere; }
-  #why .buttons { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
-  #whySaid { color: var(--muted); }
-  #ruleOpen { margin-top: 6px; width: 100%; }
-  .goes { color: var(--accent); overflow-wrap: anywhere; }
-  article.notTaken img { opacity: .45; }
-  article.notTaken .goes { color: var(--muted); }
-  article.leftHere img { opacity: .45; } article.leftHere .goes { color: var(--muted); text-decoration: line-through; }
+{% include "search_cards.css.j2" %}
 {% include "rule_dialog.css.j2" %}
 {% include "folder_tree.css.j2" %}
 {% include "search_events.css.j2" %}
@@ -211,54 +177,7 @@
                            top: calc(var(--mh-shell-top-h, 0px) + 16px); max-height: calc(100vh - var(--mh-shell-top-h, 0px) - 32px); padding: 10px 12px; background: var(--card);
                            border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 4px 18px rgba(0, 0, 0, .3); }
 {% include "combo_list.css.j2" %}
-  #withinLine { display: flex; gap: 6px; align-items: baseline; overflow-wrap: anywhere; }
-  #withinLine[hidden] { display: none; }
-  #heaviest { width: 100%; margin-top: 6px; }
-  #moreLine { margin: 0 16px 16px; min-height: 2.4em; text-align: center; }
-  /* The bar's two lines are shared (`pick_grid.css.j2`); here line 1 also holds the chips. */
-  #bar > #lead { white-space: nowrap; overflow: hidden; flex-wrap: nowrap; }
-  #status { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 0 1 auto; min-width: 4ch; }
-  /* The active filters (0565): chips after the count, the extra ones folded into +N. */
-  #chips { display: inline-flex; gap: 4px; flex: 0 1 auto; min-width: 0; overflow: hidden; margin-left: 8px; }
-  #chips .chip, #chipsFolded .chip { flex: none; padding: 0 2px 0 8px; border: 1px solid var(--line);
-                                     border-radius: 999px; font-size: .85rem; white-space: nowrap; }
-  #bar .chip button { padding: 0 4px; }
-  #bar .chipsMore { flex: none; margin-left: 4px; }
-  #bar .chipsMore[hidden], #chipsFolded[hidden] { display: none; }
-  #bar > #chipsFolded { position: absolute; top: 100%; left: 0; z-index: 5; display: flex; flex-wrap: wrap;
-                        gap: 4px; padding: 6px 16px; background: var(--card); box-shadow: 0 2px 6px rgba(0, 0, 0, .2); }
-  #picked { display: inline-block; min-width: 9ch; white-space: nowrap; }
-  .groupHead { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; margin: 8px 0 0; font-weight: 600; overflow-wrap: anywhere; }
-  #bar > #chosen { cursor: pointer; }
-  #asideLeave { min-width: 1.6em; }
-  /* Segmented controls: Show, Sorted (left column), S/M/L (the bar). */
-  .seg { display: flex; flex: none; }
-  .seg button { flex: 1 1 auto; padding: 3px 10px; color: var(--accent); background: transparent; border-radius: 0; }
-  .seg button:first-of-type { border-radius: 6px 0 0 6px; }
-  .seg button:last-of-type { border-radius: 0 6px 6px 0; }
-  .seg button[aria-pressed="true"] { color: var(--on-accent); background: var(--accent); }
-  .segLabel { font-size: .85rem; color: var(--muted); }
-  /* Dates on one line, the quick periods in a 📅 menu floating under it. */
-  .years { flex-wrap: nowrap; align-items: end; position: relative; gap: 3px; }
-  /* The two dates share the room the 📅 menu leaves: dd/mm/yyyy and the calendar icon fit. */
-  .years label { flex: 1 1 0; min-width: 0; }
-  .years input { width: 100%; box-sizing: border-box; padding-left: 2px; padding-right: 0; font-size: .9rem; }
-  /* The calendar icon without its own margin and padding: the year keeps its four digits. */
-  .years input::-webkit-calendar-picker-indicator { margin: 0; padding: 0; }
-  .dateMenu, .years .step { flex: none; }
-  .years .step { padding: 4px 2px; }
-  .dateMenu summary { list-style: none; cursor: pointer; padding: 4px 3px; border: 1px solid var(--line); border-radius: 6px; }
-  .dateMenu[open] .spans { position: absolute; z-index: 3; right: 0; top: 100%; flex-direction: column;
-                           padding: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
-  /* 🔍 Search stays in sight at the bottom of the form, however long the column. */
-  #go { position: sticky; bottom: 0; z-index: 1; }
-  /* Thumbnail sizes (S/M/L, kept per viewer): S the photo only, M one line each, L everything. */
-  main[data-size="s"] { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-  main[data-size="s"] .meta { display: none; }
-  main[data-size="l"] { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
-  main:not([data-size="l"]) .meta > div:not(.chips) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  main:not([data-size="l"]) .chips { max-height: 3em; overflow: hidden; }
-  main:not([data-size="l"]) .chip.extra, main[data-size="l"] .chip.rest { display: none; }
+{% include "search_bar.css.j2" %}
 {% endblock %}
 {% block side %}
     {# Two tabs (0457): the search, or the events of the latest classify; kept per viewer. #}

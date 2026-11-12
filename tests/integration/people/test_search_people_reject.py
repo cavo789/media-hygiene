@@ -305,3 +305,21 @@ def test_a_face_is_cut_out_for_the_panel(page: Page) -> None:
     assert crop.startswith("/api/people/face/")
     assert answers[2].status is HTTPStatus.OK
     assert answers[2].body[:2] == b"\xff\xd8"
+
+
+def test_a_name_clicked_finds_her_photos_and_only_hers(page: Page) -> None:
+    """A 👤 chip clicked searches `person:"Chloé"`: the photos `person:chloe` finds."""
+    answers, _app = page(
+        [
+            ("POST /api/search", CHLOE),
+            ("POST /api/search", {"text": 'person:"Chloé"'}),
+            ("POST /api/search", {"text": 'person:"Chloé Nobody"'}),
+        ],
+    )
+    typed, clicked, nobody = (json.loads(answer.body) for answer in answers)
+    assert clicked["total"] == typed["total"] == 4
+    assert {hit["key"] for hit in clicked["hits"]} == {
+        hit["key"] for hit in typed["hits"]
+    }
+    assert all(hit["tags"]["person"] == ["Chloé"] for hit in clicked["hits"])
+    assert nobody["total"] == 0

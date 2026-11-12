@@ -2370,6 +2370,14 @@ msgstr ""
 "suivante, Espace pause et lecture, Échap quitte le plein écran, S arrête "
 "le diaporama."
 
+#, python-brace-format
+msgid ""
+"Click: only the photos of {name}; Ctrl+click: add {name} to the search "
+"(the photos where they are together)"
+msgstr ""
+"Clic : seulement les photos de {name} ; Ctrl+clic : ajouter {name} à la "
+"recherche (les photos où ils sont ensemble)"
+
 msgid "Click: the files of this folder"
 msgstr "Clic : les fichiers de ce dossier"
 

@@ -96,10 +96,14 @@ helps: `*.mp4` or a regular expression are still searched as typed.
 - **Search**: type the words, then Enter; the keys then go to the grid, `/` comes back to the
   field. *How to write a search* recalls the phrases ("bord de mer"), the starts of words
   (anniv\*) and the words of one source (place:durbuy).
-- **Follow a word**: a click on a word under a photo (*Mechelen*, *2026*, a person's name)
-  searches it as a phrase in every source, the filters emptied: from one photo to all the others
-  with that word. It never picks the photo. **Ctrl+click** adds the word to the search instead,
-  the other filters kept: *Manon*, then Ctrl+click on *2015*.
+- **Follow a word**: a click on a word under a photo (*Mechelen*, *2026*) searches it as a phrase
+  in every source, the filters emptied: from one photo to all the others with that word. It never
+  picks the photo. **Ctrl+click** adds the word to the search instead, the other filters kept:
+  *Manon*, then Ctrl+click on *2015*.
+- **Follow a person**: the people named on a photo (on the [`people`](people.md) page) come first
+  among its words, marked 👤, so they show at every size. A click on *👤 Manon* shows only the
+  photos of Manon (`person:"Manon"`: a folder or a file named *Manon* does not count); the bar's
+  chip says *👤 Manon*. **Ctrl+click** on a second name adds it: the photos where both are.
 - **Follow a day or a folder**: a click on a photo's day or folder, under it or in the large view,
   shows the files of that day (*From* and *To* take it) or of that folder (*Path contains*). The
   browser's **Back** (Alt+←) gives the search before each of these clicks. **Shift+click** on a
