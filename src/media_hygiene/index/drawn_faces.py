@@ -4,7 +4,9 @@ A drawn face is a row of `faces` like any other: the people page, the search and
 names read it the same way. Its number, from `DRAWN_FROM` on, says it was drawn: a new
 analysis of the same version of the photo replaces the faces the detector found and
 keeps those (`face_rows.FaceStore.put`); a changed photo, or `people --forget`, drops
-them with the rest. Moves and renames follow them like every row of the path.
+them with the rest. Moves and renames follow them like every row of the path. One
+drawn by mistake, or twice, is forgotten on its own (`forget_drawn`); a face the
+audit found never is: the next audit would find it again.
 """
 
 from __future__ import annotations
@@ -26,6 +28,9 @@ _PUT: Final = (
     "INSERT INTO faces (path, size, mtime_ns, model, number, x, y, width, height,"
     " landmarks, score, sharpness, embedding)"
     " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+)
+_FORGET: Final = (
+    "DELETE FROM faces WHERE path = ? AND model = ? AND number = ? AND number >= ?"
 )
 _SEPARATOR: Final = ","
 
@@ -82,3 +87,22 @@ def add_drawn(
     )
     connection.commit()
     return number
+
+
+def forget_drawn(
+    connection: sqlite3.Connection, model: str, face: tuple[Path, int]
+) -> bool:
+    """Forget a face drawn on a photo, and commit; a face the audit found stays.
+
+    Args:
+        connection: The index, writable.
+        model: The pair of models its vector comes from.
+        face: Its photo, in the container, and its number in it.
+
+    Returns:
+        True when a face drawn was deleted.
+    """
+    path, number = face
+    deleted = connection.execute(_FORGET, (str(path), model, number, DRAWN_FROM))
+    connection.commit()
+    return deleted.rowcount > 0

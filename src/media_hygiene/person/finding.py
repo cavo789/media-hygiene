@@ -18,7 +18,7 @@ from media_hygiene.people.remembered import aside_date
 from media_hygiene.person.drawing import search_vector
 from media_hygiene.person.likeness import likeness
 from media_hygiene.person.routes import FACE_PREFIX, JPEG, PREVIEW_PREFIX, THUMB_PREFIX
-from media_hygiene.person.shelf import ShelfFace
+from media_hygiene.person.shelf import ShelfFace, face_view
 from media_hygiene.review.versioned import versioned_on_disk
 
 if TYPE_CHECKING:
@@ -84,16 +84,13 @@ class PersonFinder:
         if path is None:
             message = _("{path} is not a photo of the folders this page shows.")
             return {"said": message.format(path=typed.strip(_QUOTES)), "faces": []}
-        faces = [
-            self.shelf.add(
-                ShelfFace(face.path, search_vector(face), face.box, number=face.number)
-            )
-            for face in self.faces.of(path)
-        ]
         return {
             "photo": self.place.mapper.to_host(path),
             "scanned": self.faces.scanned(path),
-            "faces": [face_view(key) for key in faces],
+            "faces": [
+                face_view(self._number(face), face.number)
+                for face in self.faces.of(path)
+            ],
         }
 
     def like(self, key: str, aside: AsideDesk | None) -> dict[str, object]:
@@ -183,15 +180,3 @@ class PersonFinder:
             "face": f"{FACE_PREFIX}{key}{JPEG}",  # the face that matched (0714)
             "chosen": host in chosen,
         }
-
-
-def face_view(key: int) -> dict[str, object]:
-    """A face to choose, as the page reads it.
-
-    Args:
-        key: Its number.
-
-    Returns:
-        Its number and its picture.
-    """
-    return {"key": key, "face": f"{FACE_PREFIX}{key}{JPEG}"}

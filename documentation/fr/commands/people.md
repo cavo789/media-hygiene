@@ -270,7 +270,12 @@ l'audit : 6 retrouvées, 1 tout juste à la limite, 2 non (très floues). Toujou
 vous voyez le visage ? **✏ Tracer un visage manqué par l'outil** montre la photo : tracez un
 cadre autour du visage. L'outil le cherche dans ce cadre, agrandi, ou prend le cadre lui-même ;
 le visage est alors gardé dans l'index comme un visage trouvé (marqué *tracé*, un nouvel audit
-le garde), nommé et cherché comme les autres. Un visage plus petit ou plus flou que ce que la
+le garde), nommé et cherché comme les autres. Un cadre tracé sur un visage que la photo a déjà
+n'ajoute rien : la page choisit ce visage (*Ce visage est déjà sur la photo*). Seul un cadre qui
+partage l'essentiel du cadre d'un visage compte comme ce visage : deux personnes joue contre joue
+restent deux visages. Tracé par erreur, ou deux fois ? Le **×** d'un visage tracé l'oublie : il
+quitte l'index, et son nom quitte `config.toml`, relu ; un visage trouvé par l'audit n'a pas de
+×, le prochain audit le retrouverait. Un visage plus petit ou plus flou que ce que la
 page des personnes montre peut être tracé : il sert à la recherche, sans apparaître sur la page
 des personnes. Trop flou pour retrouver qui que ce soit (le visage lisse d'un bébé a peu de
 détails), il est gardé quand même pour être nommé sur cette photo : la page ouvre *Ce visage

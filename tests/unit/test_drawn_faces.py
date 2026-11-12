@@ -10,12 +10,18 @@ import numpy as np
 import pytest
 from PIL import Image
 
+from media_hygiene.config.people_settings import PeopleSettings, Person
 from media_hygiene.constants import MediaKind
 from media_hygiene.faces.align import TEMPLATE
 from media_hygiene.faces.boxed import boxed_face, template_landmarks
 from media_hygiene.faces.engine import FaceEngine
 from media_hygiene.faces.models import FaceBox, PhotoFaces
-from media_hygiene.index.drawn_faces import DRAWN_FROM, add_drawn, is_drawn
+from media_hygiene.index.drawn_faces import (
+    DRAWN_FROM,
+    add_drawn,
+    forget_drawn,
+    is_drawn,
+)
 from media_hygiene.index.face_rows import FaceStore, StoredFace
 from media_hygiene.index.facts import FileFacts
 from media_hygiene.index.repository import FactsRepository
@@ -28,6 +34,7 @@ from media_hygiene.person.drawing import (
     search_vector,
     usable,
 )
+from media_hygiene.person.forget_route import without_ids
 from media_hygiene.scan.models import MediaFile
 from tests.support.faces import FakeFinder, FakeRecipe, coloured, face_of
 
@@ -141,3 +148,45 @@ def test_a_face_drawn_too_blurred_is_named_only_and_a_blank_one_is_no_face() -> 
     blank = boxed_face(engine, Image.new("RGB", (200, 200), (128, 128, 128)), box)
     assert blank is not None
     assert blank.sharpness < NAMED_ONLY_SHARPNESS
+
+
+def test_two_boxes_overlap_by_their_intersection_over_their_union() -> None:
+    """The same box: 1; apart: 0; half of one box shared: a third."""
+    box = FaceBox(0, 0, 10, 10)
+    assert box.overlap(box) == 1.0
+    assert box.overlap(FaceBox(20, 20, 10, 10)) == 0.0
+    assert box.overlap(FaceBox(5, 0, 10, 10)) == pytest.approx(50 / 150)
+    assert FaceBox(0, 0, 0, 0).overlap(FaceBox(0, 0, 0, 0)) == 0.0
+
+
+def test_only_a_face_drawn_is_forgotten_the_audits_stay(tmp_path: Path) -> None:
+    """A face drawn by mistake leaves the index; a face the audit found never does."""
+    path = tmp_path / "a.jpg"
+    with FactsRepository.open(tmp_path / "index.sqlite") as repository:
+        connection = repository.connection
+        repository.put(MediaFile(path, 10, 1, MediaKind.IMAGE), FileFacts())
+        store = FaceStore(connection, MODEL)
+        store.put(PhotoFaces(path, 10, 1, (face_of(0, (60, 60)),), 0.1))
+        number = add_drawn(connection, MODEL, (path, face_of(1, (30, 30))))
+        assert number == DRAWN_FROM
+        assert not forget_drawn(connection, MODEL, (path, 0))  # found by the audit
+        assert not forget_drawn(connection, "other-model", (path, number))
+        assert forget_drawn(connection, MODEL, (path, number))
+        assert [face.number for face in store.faces()] == [0]
+        assert not forget_drawn(connection, MODEL, (path, number))  # gone already
+
+
+def test_a_face_forgotten_leaves_every_name_and_a_person_left_without_any() -> None:
+    """Confirmed, ruled out, ignored: the id leaves them all; the others stay."""
+    gone, kept = "/data/c/a.jpg#1000", "/data/c/a.jpg#0"
+    section = PeopleSettings(
+        person=(
+            Person(name="Ann", faces=(gone,)),
+            Person(name="Bob", faces=(kept,), rejected=(gone, kept)),
+        ),
+        ignored=(gone, "/data/c/b.jpg#0"),
+    )
+    after = without_ids(section, frozenset({gone}))
+    assert [person.name for person in after.person] == ["Bob"]
+    assert (after.person[0].faces, after.person[0].rejected) == ((kept,), (kept,))
+    assert after.ignored == ("/data/c/b.jpg#0",)

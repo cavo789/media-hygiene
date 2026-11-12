@@ -4049,6 +4049,12 @@ msgstr "Ouverture (f/)"
 msgid "Face drawn and kept: name it, then check its photos."
 msgstr "Visage tracé et gardé : nommez-le, puis vérifiez ses photos."
 
+#, python-brace-format
+msgid "Face forgotten, read back from the index: this photo has {n} face now."
+msgid_plural "Face forgotten, read back from the index: this photo has {n} faces now."
+msgstr[0] "Visage oublié, relu dans l'index : cette photo a maintenant {n} visage."
+msgstr[1] "Visage oublié, relu dans l'index : cette photo a maintenant {n} visages."
+
 msgid "Faces"
 msgstr "Visages"
 
@@ -4573,6 +4579,13 @@ msgstr "Oublier tous les visages"
 
 msgid "Forget its position"
 msgstr "Oublier sa position"
+
+msgid ""
+"Forget this face drawn by hand (drawn by mistake, or twice): it leaves "
+"the index and the names; you can draw it again"
+msgstr ""
+"Oublier ce visage tracé à la main (par erreur, ou deux fois) : il quitte "
+"l'index et les noms ; vous pourrez le tracer de nouveau"
 
 msgid "Forget this phone"
 msgstr "Oublier ce téléphone"
@@ -8136,6 +8149,9 @@ msgstr "Une seule chose est définitive :"
 
 msgid "One zip outside Docker's cache: a Docker reset loses nothing."
 msgstr "Un zip hors du cache de Docker : une remise à zéro de Docker ne perd rien."
+
+msgid "Only a face drawn by hand can be forgotten here."
+msgstr "Seul un visage tracé à la main peut être oublié ici."
 
 msgid "Only a filing: nothing is written to config.toml nor events/."
 msgstr "Un simple rangement : rien n'est écrit dans config.toml ni dans events/."
@@ -12282,6 +12298,9 @@ msgstr ""
 msgid "The index of the backup is damaged: {why}."
 msgstr "L'index de la sauvegarde est abîmé : {why}."
 
+msgid "The index still holds this face."
+msgstr "L'index contient toujours ce visage."
+
 #, python-brace-format
 msgid "The index {file} cannot be read: {reason}."
 msgstr "L'index {file} ne peut pas être lu : {reason}."
@@ -13536,6 +13555,9 @@ msgid ""
 msgstr ""
 "Les photos de cet événement n'ont pas pu être lues (erreur {status}) : "
 "ses fichiers ont peut-être été déplacés. Relancez la recherche."
+
+msgid "This face is already on the photo: chosen, nothing added."
+msgstr "Ce visage est déjà sur la photo : il est choisi, rien n'est ajouté."
 
 #, python-brace-format
 msgid "This face is…"
@@ -15744,6 +15766,9 @@ msgstr "config.toml relu contient encore une règle supprimée."
 #, python-brace-format
 msgid "config.toml read back: {count} folder positions."
 msgstr "config.toml relu : {count} positions de dossiers."
+
+msgid "config.toml still names this face."
+msgstr "config.toml nomme toujours ce visage."
 
 #, python-brace-format
 msgid "config.toml was written by an earlier version: {count} new setting since."

@@ -9,6 +9,7 @@ PAGE_PATH: Final = PERSON_PREFIX
 PHOTO_PATH: Final = f"{PERSON_PREFIX}/api/photo"
 LOOK_PATH: Final = f"{PERSON_PREFIX}/api/look"
 DRAW_PATH: Final = f"{PERSON_PREFIX}/api/draw"  # a face drawn by hand (0715)
+FORGET_PATH: Final = f"{PERSON_PREFIX}/api/forget"  # one drawn by mistake, or twice
 LIKE_PATH: Final = f"{PERSON_PREFIX}/api/like"
 ASIDE_PATH: Final = f"{PERSON_PREFIX}/api/aside"
 APPLY_PATH: Final = f"{PERSON_PREFIX}/api/apply"

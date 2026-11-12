@@ -1,11 +1,11 @@
 """`/person` on every page's server: one photo, its faces, then that person's photos.
 
 `POST /person/api/photo` the faces of a photo (its path typed or sent by a page),
-`/api/look` a second look at it (`second_look`, in the worker pool), `/api/like` the
-photos of a face, `/api/aside` sets them aside (or takes them back) and remembers the
-face, like the people page (`AsideDesk`). `GET /person/face/<n>.jpg` a face,
-`/thumb/` and `/preview/` its photo (`pictures`). Loopback hosts only, JSON bodies
-only, from the page's own origin, like every page.
+`/api/look` a second look at it (`second_look`, in the worker pool), `/api/draw` and
+`/api/forget` a face drawn by hand, `/api/like` the photos of a face, `/api/aside` sets
+them aside (or takes them back) and remembers the face, like the people page
+(`AsideDesk`). `GET /person/face/<n>.jpg` a face, `/thumb/` and `/preview/` its photo
+(`pictures`). Loopback hosts only, JSON bodies only, from the page's own origin.
 """
 
 from __future__ import annotations
@@ -20,13 +20,14 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from media_hygiene.i18n import _
 from media_hygiene.i18n.live import Page, page_of
 from media_hygiene.person.draw_route import drawn
-from media_hygiene.person.finding import face_view
+from media_hygiene.person.forget_route import forgotten
 from media_hygiene.person.names import tagged
 from media_hygiene.person.pictures import PersonPictures
 from media_hygiene.person.routes import (
     APPLY_PATH,
     ASIDE_PATH,
     DRAW_PATH,
+    FORGET_PATH,
     JPEG,
     LIKE_PATH,
     LOOK_PATH,
@@ -36,7 +37,7 @@ from media_hygiene.person.routes import (
     UNDO_PATH,
 )
 from media_hygiene.person.second_look import LookJob, second_look
-from media_hygiene.person.shelf import ShelfFace
+from media_hygiene.person.shelf import ShelfFace, face_view
 from media_hygiene.review.http import ContentType, Response, is_local
 from media_hygiene.review.serving import json_response, refused_post
 from media_hygiene.search.undo_api import undo_route
@@ -153,8 +154,12 @@ class PersonApp:
             return tagged(self.finder.names, self.finder.like(key, self.aside))
         if path == NAMES_PATH and self.finder.names is not None:
             return self.finder.names.answer(body)
-        if path == DRAW_PATH:
-            return await drawn(self, body)
+        if path in {DRAW_PATH, FORGET_PATH}:  # a face drawn by hand, or forgotten
+            return (
+                await drawn(self, body)
+                if path == DRAW_PATH
+                else forgotten(self.finder, body)
+            )
         if path not in {PHOTO_PATH, LOOK_PATH}:
             return None
         typed = PhotoAsked.model_validate_json(body).path

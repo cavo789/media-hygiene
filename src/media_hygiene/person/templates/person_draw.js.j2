@@ -1,7 +1,9 @@
 {# ✏ Draw a face (0715): the photo of `/person` in a dialog, a box dragged on it where the
    detector found no face. The server looks for the face in the box (or takes the box
    itself), keeps it in the index flagged drawn, and the page then names and searches it
-   like any face of the photo; too small or blurred, it says so and writes nothing. #}
+   like any face of the photo; too small or blurred, it says so and writes nothing; on a face
+   the photo already has, that face is chosen, nothing written. A face drawn shows a ×: drawn
+   by mistake or twice, it is forgotten (the index and the names, read back). #}
 const drawing = { start: null, box: null };
 
 function drawSay(text) {
@@ -49,10 +51,27 @@ async function drawSend() {
   $("drawFace").close();
   const key = result.faces[0].key;
   await refreshFaces();
-  if (![...$("faces").children].some((face) => Number(face.dataset.key) === key)) showFaces(result.faces, true);
-  sideSay(TEXTS.drawn);
-  await chooseFace(key, null);
-  if (result.namedOnly) sideSay(result.said); // too blurred to search: named on this photo only
+  const figure = [...$("faces").children].find((face) => Number(face.dataset.key) === key);
+  if (figure) figure.click(); // chosen with its name, as a click would
+  else { showFaces(result.faces, true); await chooseFace(key, null); }
+  sideSay(result.said || TEXTS.drawn); // already on the photo, or too blurred to search
+}
+
+// × on a face drawn by hand: forgotten, then the faces as the index holds them now.
+function forgetButton(key) {
+  const out = element("button", "plain forget writes", "×");
+  out.type = "button";
+  out.title = TEXTS.forgetDrawn;
+  out.addEventListener("click", async (event) => {
+    event.stopPropagation(); // never chooses the face
+    const result = await post(ROUTES.forget, { key: key });
+    if (!result) return;
+    if (result.error) { sideSay(fill(TEXTS.notSaved, { error: result.error })); return; }
+    if (seed === key) await find(photo); // the grid was this face's: start again from the photo
+    else await refreshFaces();
+    sideSay(result.saved);
+  });
+  return out;
 }
 
 $("drawPicture").draggable = false;

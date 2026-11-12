@@ -20,7 +20,7 @@ depuis la page people (**👤 Nommer quelqu'un depuis une photo**) et depuis la 
 |---|---|
 | Vos photos | 🔒 Jamais modifiées. Ce que vous mettez de côté va dans `decisions.json`, pour [`clean --decisions`](clean.md). |
 | Il faut | `/cache` (l'index) avec les visages d'[`audit --people`](audit.md). |
-| Écrit | Les noms dans `config.toml` (`[[people.person]]`), relus et affichés ; un visage tracé à la main (**✏ Tracer un visage manqué par l'outil**) dans l'index, comme décrit dans [`people`](people.md#depuis-nimporte-quelle-photo--nommer-ou-mettre-de-côté-quelquun). |
+| Écrit | Les noms dans `config.toml` (`[[people.person]]`), relus et affichés ; un visage tracé à la main (**✏ Tracer un visage manqué par l'outil**) dans l'index, ou oublié par son **×**, comme décrit dans [`people`](people.md#depuis-nimporte-quelle-photo--nommer-ou-mettre-de-côté-quelquun). |
 | Envoie | Rien : les visages restent sur cet ordinateur. |
 
 ## Lancer
