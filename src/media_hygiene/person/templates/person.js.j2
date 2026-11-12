@@ -55,6 +55,7 @@ function showFaces(faces, again) {
     picture.alt = TEXTS.chooseFace;
     box.dataset.key = face.key;
     box.append(picture, faceTag(face.named)); // person_names.js.j2
+    if (face.drawn) box.append(forgetButton(face.key)); // person_draw.js.j2
     box.addEventListener("click", () => chooseFace(face.key, face.named));
     return box;
   }));

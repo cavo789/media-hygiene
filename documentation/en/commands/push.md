@@ -53,7 +53,10 @@ run, removed after.
 1. **Lists** your photo folders and the backup (size, date): every file, not only photos (a PDF
    in `C:\Photos` is backed up too), but the system folders (`#recycle`, `@eaDir`…), the
    excluded ones and the quarantine (a file set aside before any push has no copy on the NAS:
-   [`purge`](purge.md#good-to-know) lists those before erasing them).
+   [`purge`](purge.md#good-to-know) lists those before erasing them). When files set aside exist
+   nowhere else (near duplicates, burst shots, junk: not exact copies), the plan says how many:
+   *12 files set aside in the quarantine exist nowhere else, and the backup does not copy the
+   quarantine*.
 2. **Plans**, and says it: what is already there, what is new, what moved (same size, date and
    first and last 64 KB: renamed on the NAS, nothing sent), what was edited (the NAS's copy set
    aside first), what is gone from the PC.

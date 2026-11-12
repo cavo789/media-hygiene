@@ -23,7 +23,7 @@ docker run --rm -it -v "$HOME\media-hygiene\journal:/journal" cavo789/media-hygi
 | | |
 |---|---|
 | Your photos | 🔒 Never changed: it only reads the journal. |
-| Needs | `/journal`, the folder `clean` writes to. |
+| Needs | `/journal`, the folder `clean` writes to; `/quarantine` too, to list a run whose journal is missing (below). |
 | Writes | Nothing. |
 | Undo | Nothing to undo. |
 | With `mh` | `mh history`; from the home page, *History and undo* › **See what each run did** shows the same table in the page itself (nothing is printed in the terminal), with the `mh undo <run>` line to copy for each run and, for a run still in the quarantine, a *Purge* link: its files first, then a button stating how many go and the room freed. The page asks once; nothing is asked in the window; then History comes back and says what the disk says. |
@@ -63,6 +63,11 @@ Runs (newest first)
 ## Good to know
 
 - `history` has no option.
+- A run whose journal is missing from the journal folder (deleted, a new PC) but whose copy lies
+  beside its quarantine folder is listed too, marked **(from the quarantine)**: the copy says what
+  it did, and `mh undo <run>` takes that copy back into the journal first, then puts the files
+  back. Only the quarantines mounted are read: a drive's quarantine not plugged in lists nothing,
+  and a copy that does not read is left out.
 - The journal is small and makes `undo` possible: never delete it while you might still restore a
   run.
 - [`status`](status.md) gives a shorter view: what is still undoable, and the next step.

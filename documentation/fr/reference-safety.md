@@ -71,6 +71,9 @@ sont supprimés aussi : ils ne contiennent rien.
 - **Le journal.** Chaque action est notée *avant* et *après* : une interruption ne fait jamais
   perdre le fil, et `undo` annule n'importe quelle exécution.
 - **La quarantaine.** Ce que `clean` met de côté y attend, intact, jusqu'à votre `purge`.
+  [`push`](commands/push.md) ne la copie pas : un fichier mis de côté qui n'est pas une copie
+  exacte (un quasi-doublon, une photo de rafale, un fichier inutile) n'existe nulle part ailleurs,
+  et `purge`, `push`, la page *Place sur le disque* et la carte de la page d'accueil disent combien.
 - **Vos réglages gardent leurs versions précédentes.** Chaque enregistrement de `config.toml`,
   du fichier d'une personne ou d'un événement, ou d'`albums.json` copie d'abord le fichier qu'il
   remplace dans `.history/` (`C:\Users\<vous>\media-hygiene\config\.history\`, et à côté

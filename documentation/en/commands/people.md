@@ -251,7 +251,12 @@ Measured on 9 real photos of one person missed by the audit: 6 found, 1 just at 
 not (very blurred). Still nothing, though you see the face? **✏ Draw a face the tool missed**
 shows the photo: drag a box around the face. The tool looks for it in that box, enlarged, or
 takes the box itself; the face is then kept in the index like a face found (flagged *drawn*, so
-a new audit keeps it), named and searched like the others. A face even smaller or more blurred
+a new audit keeps it), named and searched like the others. A box drawn on a face the photo
+already has adds nothing: the page chooses that face (*This face is already on the photo*). Only
+a box sharing most of a face's frame counts as that face: two people cheek to cheek stay two
+faces. Drawn by mistake, or twice? The **×** of a face drawn forgets it: it leaves the index, and
+its name leaves `config.toml`, read back; a face the audit found has no ×, the next audit would
+find it again. A face even smaller or more blurred
 than the people page shows can be drawn: it is kept for the search, not shown on the people
 page. Too blurred to find anyone (a baby's smooth face has little detail), it is kept all the
 same to be named on that photo: the page opens *This face is… [name]* and says *it counts for

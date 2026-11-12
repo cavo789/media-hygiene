@@ -15,6 +15,7 @@ import errno
 import os
 from typing import TYPE_CHECKING
 
+from media_hygiene.actions.runs import RUN_ID_PATTERN
 from media_hygiene.constants import JOURNAL_SUFFIX
 
 if TYPE_CHECKING:
@@ -84,3 +85,26 @@ def found_copy(quarantines: tuple[Path, ...], run_id: str) -> Path | None:
     """
     copies = (journal_copy(folder, run_id) for folder in quarantines)
     return next((copy for copy in copies if copy.is_file()), None)
+
+
+def copied_journals(quarantines: tuple[Path, ...]) -> dict[str, Path]:
+    """Every copy of a run's journal in the quarantines that are there.
+
+    A quarantine missing, or a drive's not mounted (Docker's empty folder for it is
+    no mount, so not in `quarantines`), gives none: no run is invented.
+
+    Args:
+        quarantines: The default quarantine and the per-drive ones.
+
+    Returns:
+        Each run's first copy, the default quarantine first.
+    """
+    copies: dict[str, Path] = {}
+    for folder in quarantines:
+        if not folder.is_dir():
+            continue
+        for copy in sorted(folder.glob(f"*{JOURNAL_SUFFIX}")):
+            run_id = copy.name.removesuffix(JOURNAL_SUFFIX)
+            if RUN_ID_PATTERN.fullmatch(run_id) and copy.is_file():
+                copies.setdefault(run_id, copy)
+    return copies

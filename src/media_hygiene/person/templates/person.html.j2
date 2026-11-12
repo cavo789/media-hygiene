@@ -51,6 +51,7 @@
   "drawHint": _("Drag a box around the face the tool did not find."),
   "drawLooking": _("Looking for the face in the box…"),
   "drawn": _("Face drawn and kept: name it, then check its photos."),
+  "forgetDrawn": _("Forget this face drawn by hand (drawn by mistake, or twice): it leaves the index and the names; you can draw it again"),
   "dropTile": _("Not this person: leaves this search (nothing saved)"),
 } %}
 {% set page_name = _("Identify someone") %}
@@ -63,7 +64,10 @@
   #find input { width: 100%; padding: 4px 8px; font: inherit; border: 1px solid var(--line);
                 border-radius: 6px; background: var(--bg); color: var(--text); }
   #faces { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
-  #faces .face { margin: 0; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+  #faces .face { margin: 0; display: flex; flex-direction: column; align-items: center; cursor: pointer;
+                 position: relative; }
+  #faces .forget { position: absolute; top: 2px; right: 2px; padding: 0 6px; line-height: 1.4;
+                   background: var(--bg); }
   #faces img { width: 72px; height: 72px; object-fit: cover; border-radius: 8px;
                border: 3px solid transparent; }
   #faces .face.chosen img { border-color: var(--accent); }

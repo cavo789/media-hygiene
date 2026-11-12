@@ -19,7 +19,7 @@ from media_hygiene.services.only_copies import only_copies
 from media_hygiene.services.undo import undo_pick
 from media_hygiene.services.undo_orphan import orphan_plan
 from tests.integration.test_clean_undo import manifest
-from tests.integration.test_quarantine_drives import clean, digests, mount
+from tests.integration.test_quarantine_drives import clean, digests, mount, remount
 from tests.support.cli import run
 from tests.support.runtime import make_runtime
 
@@ -118,3 +118,42 @@ def test_a_drive_quarantine_holds_its_own(
     assert run(cli, "undo", "--yes").exit_code == 0
     assert digests(locations.data_dir) == before
     assert not any(copy.exists() for copy in copies)
+
+
+def test_history_lists_a_run_known_only_from_its_copy(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`/journal` emptied: `mh history` still shows the run, marked (0721).
+
+    The table is read at a fixed width: at CI's 80 columns the marker wraps in its cell.
+    """
+    monkeypatch.setenv("COLUMNS", "200")
+    run_id = clean(cli, locations)
+    journal_file(locations.journal_dir, run_id).unlink()
+    history = " ".join(run(cli, "history").output.split())
+    assert run_id in history
+    assert "(from the quarantine)" in history
+    assert "takes that copy back first" in history
+    assert not journal_file(locations.journal_dir, run_id).exists()  # read-only
+    assert run(cli, "undo", run_id, "--yes").exit_code == 0
+    assert "from the quarantine" not in " ".join(run(cli, "history").output.split())
+
+
+def test_journal_lost_and_drive_back_under_another_letter(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """D: back as E:, `/journal` wiped: the copy found, every byte back (0774)."""
+    mount(locations, monkeypatch, d_quarantine=True)
+    before = digests(locations.data_dir / "d")
+    run_id = clean(cli, locations)
+    remount(locations, monkeypatch, ("e",))
+    journal = journal_file(locations.journal_dir, run_id)
+    journal.unlink()
+    assert run_id in run(cli, "history").output  # listed from the quarantine
+    result = run(cli, "undo", run_id, "--yes")
+    assert result.exit_code == 0, result.output
+    text = " ".join(result.output.split())
+    assert "taken back from its quarantine" in text
+    assert f"Run {run_id} found in the quarantine of E:, not of D:." in text
+    assert digests(locations.data_dir / "e") == before
+    assert not (locations.quarantine_dir / "e" / run_id).exists()

@@ -1,8 +1,9 @@
-"""The way back survives a lost journal (0687): saved by `backup`, or rebuilt.
+"""The way back survives a lost journal (0687, 0774): saved by `backup`, or rebuilt.
 
 `backup` archives every journal and the choice files; `restore` puts back those
-missing, never over one there. Without any journal, `undo --from-quarantine` rebuilds
-the moves from the quarantine's mirror layout.
+missing, never over one there: a clean and a sort are undone after it. Without any
+journal, `undo --from-quarantine` rebuilds the moves from the quarantine's mirror
+layout.
 """
 
 from __future__ import annotations
@@ -15,6 +16,8 @@ from typing import TYPE_CHECKING
 import pytest
 
 from media_hygiene.actions.journal import journal_file
+from media_hygiene.actions.journal_copy import journal_copy
+from media_hygiene.actions.runs import list_run_ids
 from media_hygiene.errors import JournalError
 from media_hygiene.index.schema import prepare
 from media_hygiene.scan.progress import NullProgress
@@ -24,12 +27,16 @@ from media_hygiene.services.cache_restore import RestoreRequest, restore_backup
 from media_hygiene.services.undo import undo_run
 from media_hygiene.services.undo_orphan import apply_orphan_plan, orphan_plan
 from tests.integration.test_clean_undo import Manifest, clean, manifest
+from tests.integration.test_sort_command import classified
+from tests.support.cli import run
 from tests.support.demo import build_demo
 from tests.support.runtime import make_runtime
 
 _EMPTY = hashlib.sha256(b"").hexdigest()
 
 if TYPE_CHECKING:
+    from typer.testing import CliRunner
+
     from media_hygiene.paths.locations import Locations
     from media_hygiene.services.runtime import Runtime
 
@@ -173,3 +180,26 @@ def test_undo_from_quarantine_refused_with_a_journal(locations: Locations) -> No
     run_id = clean(runtime)
     with pytest.raises(JournalError):
         orphan_plan(runtime, run_id)
+
+
+def test_backup_wipe_restore_undo_of_a_sort(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """A sort, its journal lost then restored: undo puts every file back (0774)."""
+    classified(cli, locations)
+    before = manifest(locations.data_dir)
+    assert run(cli, "sort", "--yes").exit_code == 0
+    assert manifest(locations.data_dir) != before
+    (run_id,) = list_run_ids(locations.journal_dir)
+    runtime = make_runtime(locations)
+    backup = make_backup(runtime)
+    assert JOURNAL_PREFIX + f"{run_id}.jsonl" in backup.manifest.members
+    shutil.rmtree(locations.journal_dir)
+    locations.journal_dir.mkdir()
+    journal_copy(locations.quarantine_dir, run_id).unlink(missing_ok=True)  # 0697's
+    assert run(cli, "undo", "--yes").exit_code == 1  # nothing to undo without it
+    restored = restore_backup(runtime, RestoreRequest(backup.path.name))
+    assert JOURNAL_PREFIX + f"{run_id}.jsonl" in restored.missing
+    result = run(cli, "undo", "--yes")
+    assert result.exit_code == 0, result.output
+    assert manifest(locations.data_dir) == before

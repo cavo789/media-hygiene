@@ -18,7 +18,7 @@ people page (**👤 Name someone from a photo**) and from the home page (*Find*)
 |---|---|
 | Your photos | 🔒 Never changed. What you set aside goes into `decisions.json`, for [`clean --decisions`](clean.md). |
 | Needs | `/cache` (the index) with the faces of [`audit --people`](audit.md). |
-| Writes | The names in `config.toml` (`[[people.person]]`), read back and shown; a face you draw by hand (**✏ Draw a face the tool missed**) in the index, as described in [`people`](people.md#from-any-photo-name-or-set-aside-someone). |
+| Writes | The names in `config.toml` (`[[people.person]]`), read back and shown; a face you draw by hand (**✏ Draw a face the tool missed**) in the index, or forgotten by its **×**, as described in [`people`](people.md#from-any-photo-name-or-set-aside-someone). |
 | Sends | Nothing: the faces stay on this computer. |
 
 ## Run it

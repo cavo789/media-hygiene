@@ -13,13 +13,17 @@ from typing import TYPE_CHECKING
 
 from media_hygiene.actions.journal import journal_file
 from media_hygiene.actions.runs import list_run_ids
+from media_hygiene.cli.push_only import say_only_copies
 from media_hygiene.console.output import Output
+from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.http import Request
 from media_hygiene.services.disk_only import only_answer
+from media_hygiene.services.disk_space import disk_state
 from media_hygiene.services.only_copies import only_copies
 from media_hygiene.services.only_count import only_count
+from media_hygiene.services.runtime import Runtime
 from tests.support.cli import run
-from tests.support.runtime import make_runtime
+from tests.support.runtime import make_runtime, output_of
 
 if TYPE_CHECKING:
     import pytest
@@ -176,3 +180,40 @@ def test_the_purge_page_lists_them(cli: CliRunner, locations: Locations) -> None
     assert any(file.endswith(WHATSAPP) for file in answer["files"])
     bad = Request("GET", "/disk-space/api/only", {}, b"", query="run=../x")
     assert only_answer(runtime, bad).status == HTTPStatus.BAD_REQUEST
+
+
+def test_the_disk_space_page_counts_them_per_run(
+    cli: CliRunner, locations: Locations, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Each run's count and the total, as `purge` counts them; unknown: empty (0775)."""
+    assert run(cli, "clean", "--yes", "--tier", "near-all").exit_code == 0
+    state = disk_state(make_runtime(locations))
+    (shown,) = state.runs
+    assert shown.only == str(len(_only(locations)))
+    assert state.quarantine_only == shown.only
+    journal_file(locations.journal_dir, shown.run_id).unlink()  # no proof: every file
+    assert disk_state(make_runtime(locations)).runs[0].only == shown.files
+    kept = Runtime.persistent  # `/cache` not kept: no index to count from
+    monkeypatch.setattr(
+        Runtime,
+        "persistent",
+        lambda rt, kind: kind is not MountKind.CACHE and kept(rt, kind),
+    )
+    no_index = disk_state(make_runtime(locations))
+    assert no_index.runs[0].only == ""
+    assert not no_index.quarantine_only
+
+
+def test_push_says_how_many_the_backup_does_not_hold(
+    cli: CliRunner, locations: Locations
+) -> None:
+    """The plan says it, as the home card counts it; an empty quarantine: nothing."""
+    runtime = make_runtime(locations)
+    assert say_only_copies(runtime) == 0
+    assert run(cli, "clean", "--yes", "--tier", "near-all").exit_code == 0
+    runtime = make_runtime(locations)
+    count = say_only_copies(runtime)
+    assert count == len(_only(locations))
+    said = " ".join(output_of(runtime).split())
+    assert f"{count} files set aside in the quarantine exist nowhere else" in said
+    assert "the backup does not copy the quarantine" in said

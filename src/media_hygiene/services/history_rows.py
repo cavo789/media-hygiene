@@ -10,16 +10,13 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.kinds import Phase
-from media_hygiene.actions.runs import RunSummary, list_run_ids, summarize
 from media_hygiene.console.formatting import human_number, human_size
-from media_hygiene.errors import MountError
 from media_hygiene.i18n import _
-from media_hygiene.paths.mount_kind import MountKind
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Sequence
 
-    from media_hygiene.services.runtime import Runtime
+    from media_hygiene.actions.runs import RunSummary
 
 # Runs `undo <run>` cannot reverse: `push` has its own undo, the others none.
 _NO_UNDO: Final = frozenset({Phase.UNDO, Phase.PHONE, Phase.PUSH})
@@ -33,6 +30,7 @@ class HistoryRow:
     command: str
     cells: tuple[str, ...]  # the figures, in the order of `HistoryTable.figures`
     undo: str  # the command to copy; empty when `undo` cannot reverse it
+    source: str = ""  # "from the quarantine": known only from its journal's copy (0721)
 
 
 @dataclass(frozen=True, slots=True)
@@ -42,27 +40,6 @@ class HistoryTable:
     figures: tuple[str, ...]  # the headers after *Run* and *Command*
     rows: tuple[HistoryRow, ...]
     notes: tuple[str, ...]
-
-
-def load_runs(runtime: Runtime) -> list[RunSummary]:
-    """Read every run of the journal.
-
-    Args:
-        runtime: Settings, mount points and output.
-
-    Returns:
-        The runs, newest first.
-
-    Raises:
-        MountError: The journal is not mounted.
-    """
-    if not runtime.persistent(MountKind.JOURNAL):
-        raise MountError(
-            _("No journal mount: no history to show."),
-            _('Mount the journal folder used by clean: -v "<folder>:/journal".'),
-        )
-    journal = runtime.locations.journal_dir
-    return [summarize(journal, run) for run in list_run_ids(journal)]
 
 
 def undo_line(run: RunSummary) -> str:
@@ -77,14 +54,17 @@ def undo_line(run: RunSummary) -> str:
     return "" if run.kind in _NO_UNDO else f"mh undo {run.run_id}"
 
 
-def history_table(summaries: list[RunSummary]) -> HistoryTable:
+def history_table(
+    summaries: Sequence[RunSummary], copied: frozenset[str] = frozenset()
+) -> HistoryTable:
     """Build the rows: the optional columns only when some run has something in them.
 
     Args:
         summaries: The runs, newest first.
+        copied: The runs known only from the copy of their journal in a quarantine.
 
     Returns:
-        The columns, the rows and the 🛟 / 📱 notes.
+        The columns, the rows and the 🛟 / 📱 / 🧾 notes.
     """
     optional: list[tuple[str, Callable[[RunSummary], int]]] = [
         (_("Of which unwanted"), lambda run: run.unwanted),
@@ -114,26 +94,36 @@ def history_table(summaries: list[RunSummary]) -> HistoryTable:
                 human_number(run.restored),
             ),
             undo_line(run),
+            _("from the quarantine") if run.run_id in copied else "",
         )
         for run in summaries
     )
     return HistoryTable(
         (*figures, *(header for header, _count in shown), _("Restored")),
         rows,
-        _notes(summaries),
+        _notes(summaries, copied),
     )
 
 
-def _notes(summaries: list[RunSummary]) -> tuple[str, ...]:
-    """The 🛟 backup and 📱 phone notes, when a run of that kind is listed.
+def _notes(summaries: Sequence[RunSummary], copied: frozenset[str]) -> tuple[str, ...]:
+    """The 🛟 backup, 📱 phone and 🧾 copy notes, when a run of that kind is listed.
 
     Args:
         summaries: The runs.
+        copied: The runs known only from the copy of their journal in a quarantine.
 
     Returns:
         The notes that apply.
     """
     notes: list[str] = []
+    if copied:
+        notes.append(
+            _(
+                "🧾 A run marked 'from the quarantine' has no journal in the journal "
+                "folder: the copy beside its quarantine says what it did, and "
+                "mh undo <run> takes that copy back first."
+            )
+        )
     if any(run.kind is Phase.PUSH for run in summaries):
         notes.append(
             _(

@@ -37,6 +37,21 @@ class FaceBox:
         """
         return min(self.width, self.height)
 
+    def overlap(self, other: FaceBox) -> float:
+        """How much two boxes share: their intersection over their union.
+
+        Args:
+            other: The other box.
+
+        Returns:
+            From 0 (apart) to 1 (the same box).
+        """
+        wide = min(self.x + self.width, other.x + other.width) - max(self.x, other.x)
+        high = min(self.y + self.height, other.y + other.height) - max(self.y, other.y)
+        inter = max(0.0, wide) * max(0.0, high)
+        union = self.width * self.height + other.width * other.height - inter
+        return inter / union if union > 0 else 0.0
+
 
 @dataclass(frozen=True, slots=True)
 class Face:

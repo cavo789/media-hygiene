@@ -3,13 +3,17 @@
 A face of the index keeps its box, cut out of its photo on request; a face found by a
 second look (the photo turned, `second_look`) keeps the small picture cut then, in
 memory only, never written: its box is in a turned picture. The same face (the same
-photo and vector) keeps its number for as long as the page's server runs.
+photo and vector) keeps its number for as long as the page's server runs. The page
+sees a face as `face_view` says: its number, its picture, whether it was drawn by hand.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
+
+from media_hygiene.index.drawn_faces import is_drawn
+from media_hygiene.person.routes import FACE_PREFIX, JPEG
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -63,3 +67,18 @@ class FaceShelf:
         if not key.isdigit() or int(key) >= len(self._faces):
             return None
         return self._faces[int(key)]
+
+
+def face_view(key: int, number: int | None = None) -> dict[str, object]:
+    """A face to choose, as the page reads it.
+
+    Args:
+        key: Its number on the shelf.
+        number: Its number in its photo, in the index; None for a second look's.
+
+    Returns:
+        Its number, its picture, and `drawn` for a face drawn by hand (0715): the
+        page offers to forget it.
+    """
+    drawn = number is not None and is_drawn(number)
+    return {"key": key, "face": f"{FACE_PREFIX}{key}{JPEG}", "drawn": drawn}

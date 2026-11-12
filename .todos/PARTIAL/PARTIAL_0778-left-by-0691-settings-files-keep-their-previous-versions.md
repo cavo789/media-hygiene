@@ -22,3 +22,22 @@ Split from section 0691 of PARTIAL 0718 (`.todos/PARTIAL/PARTIAL_0718-code-left-
 - Check each item against the code first: some may be done already and only unticked (then say so and close them).
 - File follow-ups for what is really left; every figure says *measured* or *estimated*; a new limit: say whether it should be a setting.
 - Documentation EN + FR and French strings when something user-facing changes.
+
+## Status — PARTIAL (2026-11-12)
+
+### Done
+- `classify/remember_rule.py`: its roll-back of `config.toml` after a failed event write goes
+  through `file_history.replace_text` (atomic: draft then rename; the state the failed write left
+  kept as a version) instead of `write_bytes(before)`; listed among the writers of
+  `tests/unit/test_file_history.py`; `test_event_store.py` checks byte identity, the version kept
+  and no draft left.
+- Checked against the code, already done by 0691: every save path through the helper (the
+  writers' test), save → undo byte-identical per file kind (config.toml, person, events, albums),
+  the bound (20 versions, 30 days), a moved folder, `restore_version` itself undoable; index-only
+  data: nothing more to list (covered by `mh backup` and the tag pages' undo, 0622, 0650); docs
+  EN + FR (`reference-mount-points.md`, `reference-safety.md`).
+
+### Not done
+- The Undo toast after a settings save, Ctrl+Z, and the *Versions* page → filed as 0784.
+  **Reason:** page work on ≈ 10 pages and a new page, left for a run of its own (the pages
+  touched by PR #80 after its merge).

@@ -4,7 +4,8 @@ Without a box, the page asks for the photo to draw on: its preview, by a number 
 shelf. With one (fractions of the upright photo), the worker pool looks for the face
 there (`drawing`); a usable face is kept in the index, flagged drawn (`drawn_faces`),
 and handed to the page like a detected one: it is named and searched the same way.
-Nothing usable, nothing is written: the page says so in one sentence.
+Nothing usable, nothing is written: the page says so in one sentence. A box drawn on a
+face the photo already has (`SAME_FACE`) writes nothing either: that face is chosen.
 """
 
 from __future__ import annotations
@@ -18,20 +19,26 @@ from pydantic import BaseModel, ConfigDict, Field
 from media_hygiene.i18n import _
 from media_hygiene.index.drawn_faces import add_drawn
 from media_hygiene.index.repository import FactsRepository
-from media_hygiene.person.drawing import DrawJob, draw_face
-from media_hygiene.person.finding import face_view
+from media_hygiene.person.drawing import DrawJob, draw_face, search_vector
 from media_hygiene.person.routes import JPEG, PREVIEW_PREFIX
-from media_hygiene.person.shelf import ShelfFace
+from media_hygiene.person.shelf import ShelfFace, face_view
 from media_hygiene.review.versioned import versioned_on_disk
 
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from media_hygiene.faces.models import Face
     from media_hygiene.person.app import PersonApp
     from media_hygiene.person.drawing import Drawn
 
 _PATH_LENGTH: Final = 4096
 _NO_PICTURE: Final = b""  # a photo on the shelf to show only: no face to search
+# The share of their boxes (intersection over union) from which a face drawn is a face
+# the photo already has. Estimated, not measured: the detector keeps two faces of a
+# photo apart up to 0.3 (`detect.OVERLAP`), so two people cheek to cheek share less; a
+# box drawn again on the same face shares far more. In doubt, the face drawn is kept
+# (and its cross forgets it, `forget_route`).
+SAME_FACE: Final = 0.5
 
 
 class DrawAsked(BaseModel):
@@ -103,7 +110,28 @@ async def drawn(app: PersonApp, body: bytes) -> dict[str, object]:
     )
     if found is None:
         return _too_small()
-    return _kept(app, path, found)
+    return _twin(app, path, found.face) or _kept(app, path, found)
+
+
+def _twin(app: PersonApp, path: Path, face: Face) -> dict[str, object] | None:
+    """The face of the photo a face drawn falls on: chosen, never a second one.
+
+    Args:
+        app: The page.
+        path: The photo, in the container.
+        face: The face drawn.
+
+    Returns:
+        That face, numbered, and a sentence; None when the box holds a new face.
+    """
+    known = app.finder.faces.of(path)
+    twin = max(known, key=lambda one: one.box.overlap(face.box), default=None)
+    if twin is None or twin.box.overlap(face.box) < SAME_FACE:
+        return None
+    shelved = ShelfFace(path, search_vector(twin), twin.box, number=twin.number)
+    key = app.finder.shelf.add(shelved)
+    said = _("This face is already on the photo: chosen, nothing added.")
+    return {"faces": [face_view(key, twin.number)], "said": said}
 
 
 def _kept(app: PersonApp, path: Path, found: Drawn) -> dict[str, object]:
@@ -137,9 +165,10 @@ def _kept(app: PersonApp, path: Path, found: Drawn) -> dict[str, object]:
     vector = face.embedding if found.searchable else _NO_PICTURE
     key = shelf.add(ShelfFace(path, vector, face.box, number=number))
     if found.searchable:
-        return {"faces": [face_view(key)], "drawn": True}
+        return {"faces": [face_view(key, number)], "drawn": True}
     said = _(
         "Too blurred to find their other photos: "
         "name it, it counts for this photo only."
     )
-    return {"faces": [face_view(key)], "drawn": True, "namedOnly": True, "said": said}
+    view = face_view(key, number)
+    return {"faces": [view], "drawn": True, "namedOnly": True, "said": said}

@@ -49,6 +49,7 @@ _PATHS: Final = {
     "photo": routes.PHOTO_PATH,
     "look": routes.LOOK_PATH,
     "draw": routes.DRAW_PATH,
+    "forget": routes.FORGET_PATH,
     "like": routes.LIKE_PATH,
     "aside": routes.ASIDE_PATH,
     "names": routes.NAMES_PATH,

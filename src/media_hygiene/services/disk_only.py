@@ -1,7 +1,9 @@
 """`GET /disk-space/api/only?run=<run>`: a run's only copies, before *Purge* (0699).
 
 The quarantine's page lists them above its *Purge* button, and its one question names
-how many, before anything is erased: the console's `purge` does the same.
+how many, before anything is erased: the console's `purge` does the same. The disk
+space page counts them per run from the index (`only_by_run`, 0775): one query per run
+instead of a stat per file through Docker Desktop; *Purge* asks the disk itself.
 """
 
 from __future__ import annotations
@@ -12,13 +14,18 @@ from urllib.parse import parse_qs
 
 from pydantic import BaseModel, ConfigDict
 
+from media_hygiene.actions.journal import journal_file
 from media_hygiene.actions.runs import RUN_ID_PATTERN
 from media_hygiene.console.formatting import human_size
+from media_hygiene.paths.mount_kind import MountKind
 from media_hygiene.review.http import ContentType, Response
 from media_hygiene.services.only_copies import SHOWN, only_copies
+from media_hygiene.services.only_count import only_count
 from media_hygiene.services.quarantines import mounted_quarantines
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from media_hygiene.review.http import Request
     from media_hygiene.services.runtime import Runtime
 
@@ -64,3 +71,28 @@ def only_answer(runtime: Runtime, request: Request) -> Response:
         return Response(HTTPStatus.BAD_REQUEST)
     body = only_shown(runtime, run_id).model_dump_json().encode()
     return Response(HTTPStatus.OK, body, ContentType.JSON)
+
+
+def only_by_run(runtime: Runtime, runs: Sequence[str]) -> dict[str, int] | None:
+    """Count, from the index, the files of each run that exist nowhere else.
+
+    Args:
+        runtime: Settings and mount points.
+        runs: The runs in the quarantine.
+
+    Returns:
+        The count by run; a run whose journal is lost is left out (every one of its
+        files counts then, as `purge` counts them). None without a readable index.
+    """
+    if not runs or not runtime.persistent(MountKind.CACHE):
+        return None
+    journal_dir = runtime.locations.journal_dir
+    counts: dict[str, int] = {}
+    for run in runs:
+        if not journal_file(journal_dir, run).is_file():
+            continue
+        count = only_count(runtime.locations.index_file, journal_dir, (run,))
+        if count is None:
+            return None
+        counts[run] = count
+    return counts

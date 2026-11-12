@@ -19,7 +19,8 @@ from media_hygiene.review.http import ContentType, Response
 from media_hygiene.review.page_header import headed_page
 from media_hygiene.review.served_more import BACK_TO_HISTORY, purge_page
 from media_hygiene.review.step_watch import HISTORY_PAGE
-from media_hygiene.services.history_rows import HistoryTable, history_table, load_runs
+from media_hygiene.services.history_rows import HistoryTable, history_table
+from media_hygiene.services.history_runs import load_runs
 from media_hygiene.services.status import read_status
 
 if TYPE_CHECKING:
@@ -49,7 +50,8 @@ def history_page(runtime: Runtime, purged: str = "") -> bytes:
     purges: dict[str, str] = {}
     gone: bool | None = None
     try:
-        table = history_table(load_runs(runtime))
+        runs_read = load_runs(runtime)
+        table = history_table(runs_read.summaries, runs_read.copied)
         runs = read_status(runtime).quarantine.runs
         purges = {run.run_id: purge_page(run.run_id, BACK_TO_HISTORY) for run in runs}
         gone = (purged not in purges) if purged else None  # read back from the disk

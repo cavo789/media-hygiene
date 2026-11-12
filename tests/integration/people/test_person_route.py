@@ -12,6 +12,9 @@ from typing import TYPE_CHECKING
 
 import pytest
 
+from media_hygiene.index.drawn_faces import add_drawn
+from media_hygiene.index.repository import FactsRepository
+from media_hygiene.people.config_file import read_people
 from media_hygiene.person.app import PersonApp
 from media_hygiene.person.door import with_person
 from media_hygiene.report.decisions import read_decisions
@@ -35,6 +38,10 @@ if TYPE_CHECKING:
     from media_hygiene.faces.models import Face
     from media_hygiene.paths.locations import Locations
     from media_hygiene.review.ending import EndingDoor
+
+
+NAMES = "POST /person/api/names"
+FORGET = "POST /person/api/forget"
 
 
 @dataclass(frozen=True, slots=True)
@@ -396,7 +403,12 @@ def test_a_face_drawn_by_hand_is_kept_searched_and_a_blank_box_writes_nothing(
     empty = {"path": "C:\\Family\\IMG_9.png", "box": [0.5, 0.5, 0.0, 0.0]}
     assert answer(person, draw, empty)["faces"] == []
     before = len(photo(person, "C:\\Holidays\\IMG_2.png")["faces"])  # type: ignore[arg-type]
-    box = {"path": "C:\\Holidays\\IMG_2.png", "box": [0.2, 0.2, 0.6, 0.6]}
+    again = {"path": "C:\\Holidays\\IMG_2.png", "box": [0.2, 0.2, 0.6, 0.6]}
+    twin = answer(person, draw, again)  # the face the audit found: chosen, not added
+    assert "already on the photo" in str(twin["said"]), twin
+    assert twin["faces"][0]["drawn"] is False  # type: ignore[index]
+    assert len(photo(person, "C:\\Holidays\\IMG_2.png")["faces"]) == before  # type: ignore[arg-type]
+    box = {"path": "C:\\Holidays\\IMG_2.png", "box": [0.0, 0.0, 0.4, 0.4]}
     kept = answer(person, draw, box)
     assert kept.get("drawn") is True, kept
     key = kept["faces"][0]["key"]  # type: ignore[index]
@@ -409,3 +421,33 @@ def test_a_face_drawn_by_hand_is_kept_searched_and_a_blank_box_writes_nothing(
         "IMG_2.png",
         "IMG_3.png",
     ]
+
+
+def test_a_face_drawn_by_mistake_is_forgotten_with_its_name_read_back(
+    person: PersonApp, locations: Locations
+) -> None:
+    """The cross of a face drawn: its name leaves config.toml, its row the index."""
+    path = person.finder.place.resolve("C:\\Holidays\\IMG_2.png")
+    index = person.finder.faces
+    assert path is not None
+    assert index.file is not None
+    with FactsRepository.open(index.file) as repository:
+        drawn = (path, face_of(1, (40, 40)))
+        assert add_drawn(repository.connection, index.model, drawn) is not None
+    index.refresh()
+    faces = photo(person, "C:\\Holidays\\IMG_2.png")["faces"]
+    assert isinstance(faces, list)
+    assert [face["drawn"] for face in faces] == [False, True]
+    found, mistake = faces[0]["key"], faces[1]["key"]
+    body = {"action": "name", "name": "Ann", "faces": [mistake]}
+    assert "Ann, 1 confirmed face" in str(answer(person, NAMES, body)["saved"])
+    said = answer(person, FORGET, {"key": mistake})
+    assert "this photo has 1 face now" in str(said["saved"]), said
+    assert not read_people(locations.config_file).person  # Ann had that face only
+    left = photo(person, "C:\\Holidays\\IMG_2.png")["faces"]
+    assert isinstance(left, list)
+    assert [face["key"] for face in left] == [found]
+    refused = answer(person, FORGET, {"key": found})  # the audit's: never forgotten
+    assert "Only a face drawn by hand" in str(refused["error"])
+    assert len(photo(person, "C:\\Holidays\\IMG_2.png")["faces"]) == 1  # type: ignore[arg-type]
+    assert call(person, FORGET, {"key": -1}).status is HTTPStatus.BAD_REQUEST

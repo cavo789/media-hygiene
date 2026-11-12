@@ -7,16 +7,19 @@ the comments of the file kept.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from media_hygiene.classify.event_store import add_event, holder, replace_event
 from media_hygiene.classify.rules_edit import remove_rules
 from media_hygiene.errors import ConfigError
+from media_hygiene.file_history import replace_text
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     from media_hygiene.config.classify_rules import ClassifyRule
+
+_ENCODING: Final = "utf-8"  # what tomlkit writes
 
 
 def remember_rule(config: Path, replaces: str, rule: ClassifyRule) -> ClassifyRule:
@@ -42,5 +45,7 @@ def remember_rule(config: Path, replaces: str, rule: ClassifyRule) -> ClassifyRu
     try:
         return add_event(config, rule)
     except ConfigError:
-        config.write_bytes(before)
+        # Put back atomically, as every save of the file (0778): the state the
+        # failed write left is kept as a version, never half written over.
+        replace_text(config, before.decode(_ENCODING))
         raise
