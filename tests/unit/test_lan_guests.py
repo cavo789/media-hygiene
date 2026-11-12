@@ -264,9 +264,9 @@ def test_an_old_phones_file_is_family() -> None:
 class _NoScreens:
     """No TV paired."""
 
-    def is_paired(self, token: str) -> bool:
+    def is_paired(self, token: str, peer: str = "") -> bool:
         """None is."""
-        del token
+        del token, peer
         return False
 
 

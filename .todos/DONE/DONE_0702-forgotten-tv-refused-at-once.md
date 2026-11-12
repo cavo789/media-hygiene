@@ -16,5 +16,5 @@ forgotten on the PC keeps the slideshow until `mh` restarts. Decided: refuse it 
 
 ## Acceptance
 
-- [ ] A forgotten TV gets the pairing page at its next request (test)
-- [ ] TVs' last seen recorded at most once an hour
+- [x] A forgotten TV gets the pairing page at its next request (test)
+- [x] TVs' last seen recorded at most once an hour

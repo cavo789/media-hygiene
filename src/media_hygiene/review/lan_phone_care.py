@@ -65,6 +65,27 @@ def touch(book: PhoneBook, phone: Phone, seen: tuple[str, datetime]) -> None:
     _replaced(book, phone.model_copy(update={"last_seen": at, "address": address}))
 
 
+def booked(book: PhoneBook, token: str, peer: str) -> bool:
+    """Tell whether the file lists this device now, and note that it came (0702).
+
+    Read at every request, as the phones' file: a TV forgotten on the PC's card gets
+    the pairing page at its next request, not at the next start of `mh`.
+
+    Args:
+        book: The file (`tvs.json` for a TV).
+        token: The device's cookie, empty without one.
+        peer: Its address, from the socket; empty keeps the one written.
+
+    Returns:
+        True for a device listed; False once forgotten on the PC.
+    """
+    device = book.holder(token)
+    if device is None:
+        return False
+    touch(book, device, (peer or device.address, now_utc()))
+    return True
+
+
 def rename(book: PhoneBook, phone_id: str, name: str) -> bool:
     """Give a phone the name the user typed on the PC's card.
 

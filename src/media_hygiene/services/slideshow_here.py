@@ -31,7 +31,7 @@ from media_hygiene.services.slideshow_selection import any_tv, selected, started
 from media_hygiene.slideshow.desk import Changes, Desk
 from media_hygiene.slideshow.door import Door, Visitor
 from media_hygiene.slideshow.films import show_films
-from media_hygiene.slideshow.screens import screens_of
+from media_hygiene.slideshow.screen_book import screens_of
 from media_hygiene.slideshow.show import Show
 from media_hygiene.slideshow.slides import Timing
 from media_hygiene.slideshow.tv_door import TvDoor
