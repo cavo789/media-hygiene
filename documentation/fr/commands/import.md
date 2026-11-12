@@ -255,7 +255,7 @@ l'estimation (*2 min écoulées, sur environ 4*), puis montre l'accueil tout seu
 rouvre, même si `mh.ps1` a été écrit par une image plus ancienne ; tapé dans une console, il dit
 que la fenêtre PowerShell indique quand c'est fini. Lancée depuis l'accueil qui reste ouvert
 (pas de second serveur), l'onglet ouvre la page tout seul, puis revient à l'accueil après
-*Supprimer* ou *Tout laisser* : sa pastille ⏳ suit la suppression dans la fenêtre de `mh`. Si la page s'est arrêtée entre-temps (terminée dans un autre onglet, la
+*Supprimer* ou *Tout laisser* : sa pastille ⏳ suit la suppression dans la fenêtre de `mh` ; revenu à l'accueil avant *Supprimer* ou *Tout laisser*, un clic sur cette pastille rouvre la page. Si la page s'est arrêtée entre-temps (terminée dans un autre onglet, la
 fenêtre de `mh` fermée), une coche le dit clairement — *La page ne tourne plus* — et le bouton
 rouge est refusé : plus rien n'y est enregistré. Ensuite, pour chaque fichier coché :
 

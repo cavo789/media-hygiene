@@ -88,3 +88,13 @@ def test_a_phone_reads_the_step_but_never_starts_or_stops_one() -> None:
     assert not phone_may(Request("POST", STEP_PATH, {}, b"", Door.LAN))
     chip = (_TEMPLATES / "step_chip.html.j2").read_text("utf-8")
     assert "method:" not in chip  # no POST from the chip: nothing to stop
+
+
+def test_a_click_on_the_chip_reopens_the_page_a_step_waits_on() -> None:
+    """Back home before the phone's page ended: the chip leads back to it (0710)."""
+    chip = (_TEMPLATES / "step_chip.html.j2").read_text("utf-8")
+    click = chip[chip.index('chip.addEventListener("click"') :]
+    assert click.index("pageOf(last)") < click.index("window.mhStepOpen")
+    assert "window.location.assign(page)" in click
+    assert "function pageOf(step)" in chip
+    assert "if (!pageOf(step)) return;" in chip

@@ -2,7 +2,8 @@
    once by the frame, the home page and the album page, like the ask dialog:
    - the chip in the header's slot (`[data-step-slot]`): *⏳ Audit · 45 % · 3 min left*, hidden
      while no step runs; its click opens the follow dialog (the home page's own, `mhStepOpen`, or
-     the small one below). No Stop here: a phone sees it read-only (`/api/step` is a read).
+     the small one below); a step waiting on a page of this server (the phone's, 0694) reopens
+     that page instead, on the PC (0710). No Stop here: a phone sees it read-only (`/api/step` is a read).
    - the tab's title carries the progress while the step runs;
    - its end: one line in the toast stack (`mhSay`) and, the tab hidden, the browser's
      notification (asked once, on the click that starts a step, `mhNotify.ask`);
@@ -137,9 +138,12 @@
     window.mhNotify.end(text);
   }
   // A step waiting on a page of the home server (the phone's, 0694): this tab opens it once.
+  function pageOf(step) {
+    if (!step || !step.page || window.location.pathname === step.page) return "";
+    return ["127.0.0.1", "localhost", "[::1]"].includes(window.location.hostname) ? step.page : "";
+  }
   function opened(step) {
-    if (!step.page || window.location.pathname === step.page) return;
-    if (!["127.0.0.1", "localhost", "[::1]"].includes(window.location.hostname)) return;
+    if (!pageOf(step)) return;
     let done = null;
     try { done = window.sessionStorage.getItem("mh-step-page"); window.sessionStorage.setItem("mh-step-page", step.id); } catch { /* private mode */ }
     if (done !== step.id) window.location.assign(step.page);
@@ -186,6 +190,8 @@
     last() { return last; },
   });
   chip.addEventListener("click", () => {
+    const page = following ? pageOf(last) : "";  // back home before the phone's page ended (0710)
+    if (page) { window.location.assign(page); return; }
     if (typeof window.mhStepOpen === "function" && following) { window.mhStepOpen(following); return; }
     if (!dialog.open) dialog.showModal();
   });

@@ -13,6 +13,6 @@ Seven small decisions of the review, each a few lines.
 
 ## Acceptance
 
-- [ ] 0684 the reports' hidden `.mh-*` files refused to every role, family included (route test)
-- [ ] 0694 a click on the step chip *waiting for the phone* reopens `/phone/`
-- [ ] Tests per item; docs en + fr where user-facing; `docs_screenshots` to run
+- [x] 0684 the reports' hidden `.mh-*` files refused to every role, family included (route test)
+- [x] 0694 a click on the step chip *waiting for the phone* reopens `/phone/`
+- [x] Tests per item; docs en + fr where user-facing; `docs_screenshots` to run
