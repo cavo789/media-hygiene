@@ -38,6 +38,9 @@
     <button id="albumTv" class="plain" type="button" disabled>📺 {{ _("Share on the TV") }}</button>
     <button id="albumSend" class="plain" type="button" disabled>📨 {{ _("Prepare for sending") }}</button>
   </span>
+  {% if album_found | default(false) %}{# search (0695): every file found, its count on the entry #}
+  <span class="panelRow"><button id="albumResults" class="plain writes" role="menuitem" type="button" hidden title="{{ _('A new album named after this search, with every file found; the files set aside stay out. No photo is copied or moved.') }}"></button></span>
+  {% endif %}
   <a id="albumBack" href="#" hidden title="{{ _('Back to the album') }}"></a>
   </div>
 </details>

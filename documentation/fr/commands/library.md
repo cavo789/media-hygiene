@@ -536,7 +536,7 @@ aussi **📺 Partager sur la télé** et **📨 Préparer l'envoi**.
   partage. Aucun des deux ne touche jamais la liste de l'autre.
 - **En un clic** : sur une carte de l'onglet 🗂 *Événements*, **📚 Faire un album** crée un album
   des fichiers de l'événement, au nom proposé d'après son lieu et son jour, relu puis ouvert dans
-  un nouvel onglet. Après une recherche, **📚 Faire un album de ces N résultats** fait de même avec
+  un nouvel onglet. Après une recherche, **📚 Album ▾ → Album des N trouvés** fait de même avec
   chaque fichier trouvé, au nom des mots tapés, dans les limites des filtres Album et Lieu (les
   fichiers mis de côté restent hors de l'album ; 3 000 au plus d'un coup, sinon affinez la recherche). Un nom déjà pris ajoute à cet album. Avec une [télé appairée](slideshow.md),
   la carte offre aussi **📺 Sur la télé**.

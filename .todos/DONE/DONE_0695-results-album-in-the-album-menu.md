@@ -16,6 +16,6 @@ what is not shown* asks.
 
 ## Acceptance
 
-- [ ] The entry in 📚 Album ▾ with the live count; the old place removed
-- [ ] The count posted is the one shown (set-aside files left out), test
-- [ ] Skill table and docs EN + FR (`commands/library.md`); `docs_screenshots` should run
+- [x] The entry in 📚 Album ▾ with the live count; the old place removed
+- [x] The count posted is the one shown (set-aside files left out), test
+- [x] Skill table and docs EN + FR (`commands/library.md`); `docs_screenshots` should run

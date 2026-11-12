@@ -9527,9 +9527,6 @@ msgstr ""
 msgid "Take it back: its GPS decides again"
 msgstr ""
 
-msgid "Take it out"
-msgstr ""
-
 msgid "Take out"
 msgstr ""
 
@@ -9564,10 +9561,6 @@ msgid "Take this photo back (Backspace)"
 msgstr ""
 
 msgid "Take this photo out of the set aside"
-msgstr ""
-
-#, python-brace-format
-msgid "Take this photo out of {name}? The photo itself stays where it is."
 msgstr ""
 
 msgid "Taken out of config.toml: its GPS decides again."
@@ -18290,8 +18283,8 @@ msgid "📍 {name}, read back from its sidecar."
 msgstr ""
 
 #, python-brace-format
-msgid "📚 Make an album of this result"
-msgid_plural "📚 Make an album of these {n} results"
+msgid "📚 Album of the file found"
+msgid_plural "📚 Album of the {n} found"
 msgstr[0] ""
 msgstr[1] ""
 

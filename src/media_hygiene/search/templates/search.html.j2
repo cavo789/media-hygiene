@@ -20,7 +20,7 @@
   "progressLine": _("Sorted: {events} events, {files} files ({share}) · already in place: {inPlace} files · left: {leftEvents} events, {leftFiles} files to move"),
   "eventFiles": [ngettext("{n} file", "{n} files", 1), ngettext("{n} file", "{n} files", 2)],
   "albumMaking": _("Making the album…"),
-  "albumResults": [ngettext("📚 Make an album of this result", "📚 Make an album of these {n} results", 1), ngettext("📚 Make an album of this result", "📚 Make an album of these {n} results", 2)],
+  "albumResults": [ngettext("📚 Album of the file found", "📚 Album of the {n} found", 1), ngettext("📚 Album of the file found", "📚 Album of the {n} found", 2)],
   "albumEmpty": _("No file to put in an album: they are set aside."),
   "albumPeriod": _("Search"),
   "tooManyAtOnce": _("{count} files: at most {most} at once. Pick some of them first."),
@@ -363,7 +363,6 @@
     </details>
     {% include "tag_drop_list.html.j2" %}
     </section>
-    <p id="albumResultsLine"><button id="albumResults" class="plain writes" type="button" hidden title="{{ _('A new album named after this search, with every file found; the files set aside stay out. No photo is copied or moved.') }}"></button></p>
     {% include "search_events.html.j2" %}
     {% include "undo_toast.html.j2" %}
 {% endblock %}
@@ -385,6 +384,7 @@
       <button type="button" data-for="size" data-value="m" aria-pressed="true" title="{{ _('Medium') }}">M</button>
       <button type="button" data-for="size" data-value="l" aria-pressed="false" title="{{ _('Large: the whole caption and every word') }}">L</button>
     </div>
+    {% set album_found = true %}
     {% include "album_bar.html.j2" %}
     <details id="moveBar" class="barPanel closesOnChoice">
       <summary class="plain" title="{{ _('Give the photos picked a tag, a day or a place') }}">🏷 {{ _("Describe") }} ▾</summary>

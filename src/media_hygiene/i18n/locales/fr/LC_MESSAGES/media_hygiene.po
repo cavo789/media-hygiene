@@ -11396,9 +11396,6 @@ msgstr ""
 msgid "Take it back: its GPS decides again"
 msgstr "La reprendre : son GPS décide à nouveau"
 
-msgid "Take it out"
-msgstr "La retirer"
-
 msgid "Take out"
 msgstr "Retirer"
 
@@ -11434,10 +11431,6 @@ msgstr "Reprendre cette photo (Retour arrière)"
 
 msgid "Take this photo out of the set aside"
 msgstr "Retirer cette photo de la mise de côté"
-
-#, python-brace-format
-msgid "Take this photo out of {name}? The photo itself stays where it is."
-msgstr "Retirer cette photo de {name} ? La photo elle-même reste où elle est."
 
 msgid "Taken out of config.toml: its GPS decides again."
 msgstr "Retirée de config.toml : son GPS décide à nouveau."
@@ -21576,8 +21569,8 @@ msgid ""
 "🌙 A guest sees them until midnight tonight; tomorrow it types the guests'"
 " code again."
 msgstr ""
-"🌙 Un invité les voit jusqu’à minuit ce soir ; demain, il tape à nouveau le "
-"code des invités."
+"🌙 Un invité les voit jusqu’à minuit ce soir ; demain, il tape à nouveau "
+"le code des invités."
 
 msgid "🎲 At random"
 msgstr "🎲 Au hasard"
@@ -21732,10 +21725,10 @@ msgid "📍 {name}, read back from its sidecar."
 msgstr "📍 {name}, relu dans son fichier compagnon."
 
 #, python-brace-format
-msgid "📚 Make an album of this result"
-msgid_plural "📚 Make an album of these {n} results"
-msgstr[0] "📚 Faire un album de ce résultat"
-msgstr[1] "📚 Faire un album de ces {n} résultats"
+msgid "📚 Album of the file found"
+msgid_plural "📚 Album of the {n} found"
+msgstr[0] "📚 Album du fichier trouvé"
+msgstr[1] "📚 Album des {n} trouvés"
 
 #, python-brace-format
 msgid ""

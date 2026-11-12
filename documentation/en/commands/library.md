@@ -498,7 +498,7 @@ click; the panel also offers **📺 Share on the TV** and **📨 Prepare for sen
   ever touches the other's list.
 - **In one click**: on a card of the 🗂 *Events* tab, **📚 Make an album** makes an album of the
   event's files, under the name proposed from its place and day, read back and opened in a new
-  tab. After a search, **📚 Make an album of these N results** does the same with every file
+  tab. After a search, **📚 Album ▾ → Album of the N found** does the same with every file
   found, under the words typed, within the album and Place filters (files set aside stay out; at
   most 3 000 at once, else narrow the search). A name already used adds to that
   album. With a [paired TV](slideshow.md), the card also has **📺 On the TV**.

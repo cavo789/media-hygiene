@@ -57,7 +57,7 @@ in this order on every page — the one list `bar_menus` of `pick_bar.css.j2` se
 | # | Menu | Entries (letter) |
 |---|---|---|
 | 1 | *📂 Move ▾* (search: primary, it is `pick_first`) | to an event (E) · to their month (M) |
-| 2 | *📚 Album ▾* (+ ➕ once named) | add · take out · share on the TV · prepare for sending |
+| 2 | *📚 Album ▾* (+ ➕ once named) | add · take out · share on the TV · prepare for sending · search: *Album of the N found* (every file found, its count stated, 0695) |
 | 3 | *▶ Slideshow ▾* (0660) | on this PC (H) · on the TV (T) |
 | 4 | *🏷 Describe ▾* | tag (T) · date (D) · place (P) |
 | 5 | *🔀 Invert* | — |
