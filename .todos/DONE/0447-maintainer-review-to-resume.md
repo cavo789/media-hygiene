@@ -25,3 +25,9 @@ The session of 2026-10-28 ended here: the inbox was partly answered (0438 Backsp
 ## Acceptance
 
 - Every item above answered, refiled or closed; this TODO moved to `DONE/`.
+
+## Status
+
+Closed by `/todo:inbox` on 2026-11-12: the three feedback files of item 1 all carry
+`## Reviewed`; items 2–4 were done; item 5 is the rest of the inbox, each item tracked in its
+own TODO (`.claude/scripts/todo_inbox.py` lists them).
