@@ -19,6 +19,7 @@ import typer
 
 from media_hygiene.cli import review_options
 from media_hygiene.cli.context import runtime_of
+from media_hygiene.constants import ExitCode
 from media_hygiene.i18n import _
 
 if TYPE_CHECKING:
@@ -72,6 +73,9 @@ def home_command(
         port,
     )
     runtime.output.blank()
+    if code == ExitCode.PAGE_CLOSED:
+        runtime.output.info(_("The home page's tab was closed: the home page stopped."))
+        raise typer.Exit(code)  # `mh` started by the icon closes its window (0262)
     if code < STEP_EXIT_BASE:
         runtime.output.success(_("Home page closed; your photos were not changed."))
         return
