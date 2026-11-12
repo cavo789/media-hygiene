@@ -145,6 +145,8 @@ function group(item, index) {
     faces.append(more);
   }
   node.append(title, tools(item, index));
+  const byPath = pathPickLine(item, index); // people_path_names.js.j2
+  if (byPath) node.append(byPath);
   if (facePick.index === index && facePick.keys.length) node.append(faceNamer(facePick.keys, item.name || ""));
   if (item.aside) node.append(hiddenLine(item, index));
   node.append(faces);

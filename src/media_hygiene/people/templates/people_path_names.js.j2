@@ -1,0 +1,48 @@
+{# The names of the photos' paths on the people page (0714 follow-up): each face whose folder or
+   file name names a known person shows 📁 <name> (red when it is not the section's name), and a
+   section whose faces shown name someone else offers "📁 Pick the N faces whose folder or file
+   names Manon": it picks those faces (the shown ones only) and opens the naming line with the
+   name typed, Enter to save. Nothing is named from a path without that click and Enter. #}
+function pathBadge(box, item, section) {
+  const named = pathNames(item.photo);
+  if (!named.length) return;
+  const clash = Boolean(section.name) && !named.includes(section.name);
+  const tag = element("span", "pathName" + (clash ? " clash" : ""), "📁 " + named.join(", "));
+  tag.title = TEXTS.pathHint;
+  box.append(tag);
+}
+
+// The faces shown (not taken out) whose path names `name`, by name: other than the section's.
+function facesByPathName(item) {
+  const byName = new Map();
+  for (const one of displayed(item)) {
+    if (removed.has(one.key)) continue;
+    for (const name of pathNames(one.photo)) {
+      if (name !== item.name) byName.set(name, [...(byName.get(name) || []), one.key]);
+    }
+  }
+  return byName;
+}
+
+function pathPickLine(item, index) {
+  if (!state.writable || isFolded(item) || item.strip) return null;
+  const byName = facesByPathName(item);
+  if (!byName.size) return null;
+  const line = element("div", "tools pathPick");
+  for (const [name, keys] of byName) {
+    const button = element("button", "plain", fill(counted(TEXTS.pathPick, keys.length), { name: name }));
+    button.title = TEXTS.pathPickHint;
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      clearFacePick();
+      facePick.index = index;
+      facePick.keys = keys;
+      facePick.last = keys[keys.length - 1];
+      redraw(index);
+      const field = $("groups").children[index].querySelector(".namer input");
+      if (field) { field.value = name; field.focus(); }
+    });
+    line.append(button);
+  }
+  return line;
+}

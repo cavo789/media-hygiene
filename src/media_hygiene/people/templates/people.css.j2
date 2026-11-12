@@ -40,6 +40,12 @@
                  padding: 0; border: 0; border-radius: 50%; background: rgba(0, 0, 0, .6);
                  color: #fff; cursor: pointer; line-height: 22px; }
   .face button.nameOne { left: 2px; right: auto; }
+  /* 📁 the name in the photo's folder or file name; red when it is not the section's (0714). */
+  .face .pathName { position: absolute; right: 2px; bottom: 2px; max-width: calc(100% - 26px); padding: 0 4px;
+                    overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: .7rem;
+                    background: var(--card); border-radius: 4px; pointer-events: none; }
+  .face .pathName.clash { color: var(--bad); font-weight: 600; }
+  .pathPick { margin: 4px 0; }
   .face.chosen img { outline: 3px solid var(--accent); outline-offset: -3px; }
   .namer { align-items: center; }
   #viewerNamer .namer { justify-content: center; margin: 6px 0; }

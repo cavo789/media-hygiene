@@ -361,6 +361,7 @@ def test_the_large_view_and_the_people_page_lead_to_person(
     assert "&face=" in page
     home = asyncio.run(doors[-1].handle(Request("GET", "/", JSON, b"")))
     assert b'id="personPage" href="/person"' in home.body
+    assert b"function pathPickLine(" in home.body  # 📁 pick the faces a path names
 
 
 def test_the_person_verb_refuses_a_path_that_is_not_a_photo(cli: CliRunner) -> None:

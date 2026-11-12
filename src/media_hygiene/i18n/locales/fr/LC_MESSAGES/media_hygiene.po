@@ -944,8 +944,8 @@ msgid ""
 "A person's name is in this photo's folder or file name: a hint only, "
 "nothing is named from it"
 msgstr ""
-"Le nom d'une personne figure dans le dossier ou le nom de cette photo : un "
-"indice seulement, rien n'est nommé d'après lui"
+"Le nom d'une personne figure dans le dossier ou le nom de cette photo : "
+"un indice seulement, rien n'est nommé d'après lui"
 
 msgid ""
 "A phone over USB instead of a folder: Windows only, the mh of PowerShell "
@@ -8875,6 +8875,13 @@ msgstr "Cocher {name}"
 
 msgid "Picking the landmark each photo shows"
 msgstr "Choix du monument que montre chaque photo"
+
+msgid ""
+"Picks these faces among those shown and types the name: check them, then "
+"Enter to save"
+msgstr ""
+"Choisit ces visages parmi ceux affichés et tape le nom : vérifiez-les, puis "
+"Entrée pour enregistrer"
 
 msgid "Picnic"
 msgstr "Pique-nique"
@@ -21578,6 +21585,12 @@ msgid "📁 Make the folder: {n} change"
 msgid_plural "📁 Make the folder: {n} changes"
 msgstr[0] "📁 Créer le dossier : {n} changement"
 msgstr[1] "📁 Créer le dossier : {n} changements"
+
+#, python-brace-format
+msgid "📁 Pick the face whose folder or file names {name}"
+msgid_plural "📁 Pick the {n} faces whose folder or file names {name}"
+msgstr[0] "📁 Choisir le visage dont le dossier ou le fichier nomme {name}"
+msgstr[1] "📁 Choisir les {n} visages dont le dossier ou le fichier nomme {name}"
 
 msgid "📁 The folder or file name names someone else"
 msgstr "📁 Le dossier ou le nom du fichier nomme quelqu'un d'autre"

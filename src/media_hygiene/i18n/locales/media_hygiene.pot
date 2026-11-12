@@ -7381,6 +7381,11 @@ msgstr ""
 msgid "Picking the landmark each photo shows"
 msgstr ""
 
+msgid ""
+"Picks these faces among those shown and types the name: check them, then "
+"Enter to save"
+msgstr ""
+
 msgid "Picnic"
 msgstr ""
 
@@ -18164,6 +18169,12 @@ msgstr ""
 #, python-brace-format
 msgid "📁 Make the folder: {n} change"
 msgid_plural "📁 Make the folder: {n} changes"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "📁 Pick the face whose folder or file names {name}"
+msgid_plural "📁 Pick the {n} faces whose folder or file names {name}"
 msgstr[0] ""
 msgstr[1] ""
 

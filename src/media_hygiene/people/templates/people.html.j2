@@ -71,6 +71,9 @@
   "toConfirm": _("{n} to confirm"),
   "unnamedEntry": _("Unnamed groups ({n})"),
   "itIs": _("It is {name}? ({score})"),
+  "pathHint": _("A person's name is in this photo's folder or file name: a hint only, nothing is named from it"),
+  "pathPick": [ngettext("📁 Pick the face whose folder or file names {name}", "📁 Pick the {n} faces whose folder or file names {name}", 1), ngettext("📁 Pick the face whose folder or file names {name}", "📁 Pick the {n} faces whose folder or file names {name}", 2)],
+  "pathPickHint": _("Picks these faces among those shown and types the name: check them, then Enter to save"),
   "namerNot": [ngettext("Not {name}, this face is…", "Not {name}, these {n} faces are…", 1), ngettext("Not {name}, this face is…", "Not {name}, these {n} faces are…", 2)],
   "namerIs": [ngettext("This face is…", "These {n} faces are…", 1), ngettext("This face is…", "These {n} faces are…", 2)],
   "nameOne": _("Name this face only (Ctrl+click picks several, Shift+click a range)"),
@@ -147,6 +150,8 @@ const SAMPLE = {{ sample_prefix | tojson }};
 {% include "people_viewer.js.j2" %}
 {% include "combo_list.js.j2" %}
 {% include "people_guide.js.j2" %}
+{% include "path_names.js.j2" %}
+{% include "people_path_names.js.j2" %}
 {% if new_photos %}{% include "people_new_photos.js.j2" %}{% endif %}
 load();
 </script>

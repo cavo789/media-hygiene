@@ -2,7 +2,7 @@
    the sections (remembered in this browser), what is asked of the server and saved, the
    naming, the faces and their × marks. `people_sections.js.j2` draws the sections and holds
    the keys; `people_viewer.js.j2` drives the shared large view (`pick_viewer.html.j2`). #}
-const FOLDED_KEY = "mh-people-folded";
+const FOLDED_KEY = "mh-people-folded-2"; // -2: choosing a person had unfolded its ✓ sections for good
 const STRIP = {{ strip | tojson }};
 const CHANGE_PATH = {{ change_path | tojson }};
 const ASIDE_PATH = {{ aside_path | tojson }};
@@ -239,5 +239,6 @@ function face(item, index, verified, kind) {
   one.addEventListener("click", (event) => { event.stopPropagation(); pickOneFace(index, item.key); });
   box.append(picture, out, one);
   if (verified) box.append(element("span", "check", "✓"));
+  pathBadge(box, item, state.sections[index]); // people_path_names.js.j2
   return box;
 }

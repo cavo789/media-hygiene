@@ -1,0 +1,13 @@
+{# The names a photo's path gives (0714 follow-up), shared by `/person` and the people page: a
+   folder "Avril 2004 - Manon 5 mois" or a file "Petite Manon.png" names a person known
+   (`state.people`, the names). Words are compared whole, without case or accents; a name inside
+   a longer one found ("Paul" in "Tonton Paul") is not a second person. A hint only. #}
+function words(text) {
+  return " " + text.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean).join(" ") + " ";
+}
+
+function pathNames(path) {
+  const said = words(path || "");
+  const found = state.people.filter((name) => words(name).trim() && said.includes(words(name)));
+  return found.filter((name) => !found.some((other) => other !== name && words(other).includes(words(name))));
+}
