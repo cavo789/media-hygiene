@@ -5,8 +5,14 @@
    "📁 N faces whose folder or file names Chloé: not Manon?" for the others (picked, the naming
    line opened with the name typed, Enter to save). The section then shows those faces only, until
    ✕ *Show all the faces*. Nothing is named from a path without a click. #}
+// A photo of several faces in a "Chloé" folder holds Chloé, but which face is her is not
+// said: only a face alone on its photo takes the names of its path.
+function facePathNames(item) {
+  return item.shared ? [] : pathNames(item.photo);
+}
+
 function pathBadge(box, item, section) {
-  const named = pathNames(item.photo);
+  const named = facePathNames(item);
   if (!named.length) return;
   const clash = Boolean(section.name) && !named.includes(section.name);
   const tag = element("span", "pathName" + (clash ? " clash" : ""), "📁 " + named.join(", "));
@@ -19,7 +25,7 @@ function facesByPathName(item) {
   const byName = new Map();
   for (const one of displayed(item)) {
     if (removed.has(one.key)) continue;
-    for (const name of pathNames(one.photo)) byName.set(name, [...(byName.get(name) || []), one.key]);
+    for (const name of facePathNames(one)) byName.set(name, [...(byName.get(name) || []), one.key]);
   }
   const own = byName.get(item.name);
   if (!own) return byName;
@@ -30,7 +36,13 @@ function facesByPathName(item) {
 // The pick a 📁 button of the section's own name made: its line is "Yes, these N are <name>".
 const pathConfirm = { keys: null, name: "" };
 // A 📁 button shows only its faces in the section, while they stay picked there; ✕ shows all.
-const pathView = { index: -1, keys: [] };
+const pathView = { index: -1, keys: [], loaded: [] };
+
+// Back from a 📁 view: the faces that click loaded only to search are not shown (the sample stays).
+function pathUnload() {
+  for (const key of pathView.loaded) whole.delete(key);
+  pathView.loaded = [];
+}
 
 function pathShown(index, shown) {
   if (pathView.index !== index || facePick.index !== index) return shown;
@@ -43,7 +55,7 @@ function pathViewing(index) {
 
 function pathAllButton(index) {
   const all = element("button", "plain", TEXTS.pathAll);
-  all.addEventListener("click", (event) => { event.stopPropagation(); pathView.index = -1; clearFacePick(); redraw(index); });
+  all.addEventListener("click", (event) => { event.stopPropagation(); pathView.index = -1; pathUnload(); clearFacePick(); redraw(index); });
   return all;
 }
 
@@ -76,7 +88,11 @@ function pathPickLine(item, index) {
     button.title = own ? TEXTS.pathPickOwnHint : TEXTS.pathPickHint;
     button.addEventListener("click", async (event) => {
       event.stopPropagation();
-      if (!complete(state.sections[index])) await expand(index); // every face of the group, once
+      pathUnload();
+      if (!complete(state.sections[index])) { // every face of the group, once, to search them
+        await expand(index);
+        pathView.loaded = displayed(state.sections[index]).map((one) => one.key);
+      }
       const keys = facesByPathName(state.sections[index]).get(name) || [];
       pathConfirm.keys = own ? keys : null;
       pathConfirm.name = name;

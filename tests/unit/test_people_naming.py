@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 
@@ -15,6 +16,7 @@ from media_hygiene.people.known import Known
 from media_hygiene.people.naming import NOBODY, FaceName, How, face_id, name_all
 from media_hygiene.people.sections import sections_of
 from media_hygiene.people.suggest import suggestions
+from media_hygiene.people.views import faces_view
 from media_hygiene.people.why import CLOSE, why_named
 from media_hygiene.services.people_names import named_photos
 
@@ -229,3 +231,12 @@ def test_an_unnamed_group_says_who_it_looks_like() -> None:
     assert found == {1: [{"name": "Chloé", "score": 0.95}]}
     out = frozenset({"Chloé"})
     assert not suggestions(board, sections, {1: out, 2: out})
+
+
+def test_a_face_on_a_group_photo_is_marked_shared() -> None:
+    """Two faces of one photo are shared: a folder name will not name either of them."""
+    every = (face("group", (1.0,), 0), face("group", (1.0,), 1), face("solo", (1.0,)))
+    grouped = SimpleNamespace(people=(every[:2],), alone=0)
+    board = PeopleBoard.of(grouped, every)  # type: ignore[arg-type]
+    shown = faces_view(board, (0, 1, 2), str)
+    assert [one["shared"] for one in shown] == [True, True, False]
