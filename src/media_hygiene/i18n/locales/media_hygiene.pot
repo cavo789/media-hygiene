@@ -8863,6 +8863,9 @@ msgstr ""
 msgid "Set from the ⋯ of a folder, under 📁 My folders."
 msgstr ""
 
+msgid "Set name"
+msgstr ""
+
 msgid "Set the extra copies aside"
 msgstr ""
 

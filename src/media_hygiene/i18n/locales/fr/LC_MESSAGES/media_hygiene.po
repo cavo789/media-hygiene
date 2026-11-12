@@ -10626,6 +10626,9 @@ msgstr "Tout mettre de côté sauf ceux-ci"
 msgid "Set from the ⋯ of a folder, under 📁 My folders."
 msgstr "À régler depuis le ⋯ d'un dossier, sous 📁 Mes dossiers."
 
+msgid "Set name"
+msgstr "Nommer"
+
 msgid "Set the extra copies aside"
 msgstr "Mettre les copies en trop de côté"
 
