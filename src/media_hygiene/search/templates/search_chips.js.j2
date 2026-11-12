@@ -19,7 +19,7 @@ $("bar").append(chipsFolded);
 const chipWords = (text) => text.match(/(?:\w+:)?"[^"]*"|\S+/g) || [];
 // A name searched among the people (a card's 👤 chip clicked): 👤 and the name, as there.
 const chipLabel = (word) => {
-  const name = word.match(/^person:"?([^"]*)"?$/i);
+  const name = word.match(/^person:\x22?([^\x22]*)\x22?$/i); // \x22: a quote the page checks cannot mistake for a string
   return name ? "👤 " + name[1] : word;
 };
 const pressedLabel = (id) => {

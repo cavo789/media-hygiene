@@ -42,7 +42,11 @@ def test_the_bar_chip_keeps_a_name_whole_and_shows_it_as_on_the_card() -> None:
     assert words.group(1) == r'/(?:\w+:)?"[^"]*"|\S+/g'
     label = re.search(r"word\.match\((/.+/i)\)", page)
     assert label is not None
-    assert label.group(1) == r'/^person:"?([^"]*)"?$/i'
+    assert label.group(1) == r"/^person:\x22?([^\x22]*)\x22?$/i"  # \x22: a quote
+    typed = 'person:"Anne Marie"'
+    named = re.fullmatch(r"person:\x22?([^\x22]*)\x22?", typed, re.IGNORECASE)
+    assert named is not None
+    assert named.group(1) == "Anne Marie"
     assert "text: chipLabel(word)," in page
     # The same split in Python: a name of two words stays one chip.
     split = re.findall(r'(?:\w+:)?"[^"]*"|\S+', 'plage person:"Anne Marie" 2015')
