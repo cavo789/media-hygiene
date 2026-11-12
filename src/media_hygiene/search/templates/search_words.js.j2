@@ -1,0 +1,80 @@
+{# The words of a file as chips on its card and in the large view (I), cut out of
+   `search.js.j2`: a click searches the word, Ctrl+click adds it to the search. The people
+   named on the photo come first, after its 📍 landmark, marked 👤: at sizes S and
+   M only the first chips show: the names are never behind +N. A click on one searches
+   `person:"<name>"`, the photos where that person is named and no other word alike (a
+   folder, a file name). #}
+const PERSON_SOURCE = "person";
+// The people first, the other sources in the order the server sends them (a stable sort).
+const shownFirst = ([source]) => (source === PERSON_SOURCE ? 0 : 1);
+
+// The words of a file as chips: a click searches the word; a person's has a × too.
+function chipsOf(hit) {
+  const chips = element("div", "chips");
+  if (hit.landmark) chips.append(landmarkChip(hit.landmark));  // first among the words (0651)
+  for (const [source, words] of Object.entries(hit.tags).sort((one, other) => shownFirst(one) - shownFirst(other))) {
+    for (const word of words) chips.append(wordChip(hit, source, word));
+  }
+  // Two lines of words on a card (0463): the others behind +N (all of them at size L).
+  const extra = [...chips.children].slice(CHIPS_SHOWN);
+  if (extra.length) {
+    for (const chip of extra) chip.classList.add("extra");
+    const rest = element("span", "chip rest", "+" + extra.length);
+    rest.title = extra.map((chip) => chip.firstChild.textContent).join(" · ");
+    chips.append(rest);
+  }
+  return chips;
+}
+
+// One word of one source: a person's searched among the people only.
+function wordChip(hit, source, word) {
+  const person = source === PERSON_SOURCE;
+  const chip = element("span", person ? "chip person" : "chip", person ? "👤 " + word : word);
+  chip.title = person ? fill(TEXTS.lookForPerson, { name: word })
+    : fill(TEXTS.lookFor, { word, source: SOURCES[source] || source });
+  searchesOnClick(chip, person ? PERSON_SOURCE + ":" + quoted(word) : quoted(word));
+  if (person) chip.append(unnameButton(hit, word));
+  if (source === "hand") chip.append(untagButton(hit, word));  // 0555
+  if (DROPPABLE_SOURCES.includes(source)) chip.append(dropButton(word));  // 0546
+  return chip;
+}
+
+// The 📍 chip of a typed or found landmark (0651): a click searches every photo of it.
+function landmarkChip(name) {
+  const chip = element("span", "chip landmark", "📍 " + name);
+  chip.title = fill(TEXTS.lookFor, { word: name, source: TEXTS.landmark });
+  searchesOnClick(chip, quoted(name));
+  return chip;
+}
+
+// A word as the field reads it: one phrase, its own quotes dropped.
+const quoted = (word) => '"' + word.replaceAll('"', "") + '"';
+
+// Never a pick, a rectangle nor the large view: only the search. Ctrl+click: the words
+// are added to the search, the other filters kept.
+function searchesOnClick(chip, typed) {
+  for (const kind of ["pointerdown", "mousedown", "dblclick"]) chip.addEventListener(kind, (event) => event.stopPropagation());
+  chip.addEventListener("click", (event) => { event.stopPropagation(); (event.ctrlKey || event.metaKey ? addWord : lookFor)(typed); });
+}
+
+// A chip's words as the new search (a phrase, `person:` for a name), the filters emptied.
+function lookFor(typed) {
+  $("text").value = typed;
+  for (const id of ["from", "to", "folder"]) $(id).value = "";
+  if ($("viewer").classList.contains("open")) close();
+  window.scrollTo(0, 0);
+  search(null);
+}
+
+function addWord(typed) {
+  $("text").value = ($("text").value.trim() + " " + typed).trim();
+  if ($("viewer").classList.contains("open")) close();
+  window.scrollTo(0, 0);
+  search(null);
+}
+
+// The large view's facts (I): the same chips, the same × (names, words typed by hand).
+function infoExtra(file) {
+  const tags = Object.fromEntries([PERSON_SOURCE, "hand"].filter((s) => file.tags && file.tags[s]).map((s) => [s, file.tags[s]]));
+  return Object.keys(tags).length || file.landmark ? [chipsOf({ tags, key: file.key, landmark: file.landmark })] : [];
+}

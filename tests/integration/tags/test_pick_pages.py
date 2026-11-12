@@ -203,6 +203,40 @@ def test_the_large_view_preloads_its_neighbours_once_and_gently(
     assert "preloadAround();" in shown.split("\n}\n")[0]
 
 
+def test_the_large_view_shows_the_tile_at_once_then_the_sharp_preview(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The tile's loaded picture first, at the view's size; the preview replaces it."""
+    search, _browse = _pages(cli, monkeypatch)
+    shown = search.split("function showPicture(file) {")[1].split("\n}\n")[0]
+    assert "if (sharp.complete && sharp.naturalWidth)" in shown  # preloaded: at once
+    assert "large.src = tile.currentSrc;" in shown
+    assert (
+        "if (sharpWanted !== sharp) return;" in shown
+    )  # an older file never comes back
+    assert (
+        "#viewer img.fitted { width: min(100%, calc((100vh - 90px) * var(--ratio)))"
+        in search
+    )
+    opened = search.split("function open() {\n  const file = files[current];")[1]
+    assert "showPicture(file);" in opened.split("\n}\n")[0]
+    closed = search.split("function closeShown() {")[1].split("\n}\n")[0]
+    assert "sharpWanted = null;" in closed
+
+
+def test_the_large_view_names_the_whole_path_when_known(
+    cli: CliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Its folder dimmed then its name; the name alone without a path ending with it."""
+    search, _browse = _pages(cli, monkeypatch)
+    opened = search.split("function open() {\n  const file = files[current];")[1]
+    assert '$("viewerName").replaceChildren(...named(file));' in opened
+    named = search.split("function named(file) {")[1].split("\n}\n")[0]
+    assert 'path.lastIndexOf("\\\\")' in named  # a Windows path
+    assert "path.slice(cut) !== file.name" in named
+    assert 'element("span", "viewerFolder", path.slice(0, cut))' in named
+
+
 def test_the_large_view_arrows_step_over_the_files_set_aside() -> None:
     """0517: ← → Home End: the nearest file not set aside; Delete: the previous."""
     page = _review("near_review.html.j2")

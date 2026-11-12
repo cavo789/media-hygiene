@@ -6,6 +6,9 @@
             touch-action: pan-y pinch-zoom; }  /* a sideways swipe is ours: next, previous */
   #viewer.open { display: flex; }
   #viewer img, #viewer video { max-width: 100%; max-height: calc(100vh - 90px); object-fit: contain; }
+  /* The tile's picture then the sharp preview, at one size: the view's, their proportions kept */
+  #viewer img.fitted { width: min(100%, calc((100vh - 90px) * var(--ratio))); height: auto; }
+  #viewerName { overflow-wrap: anywhere; } #viewerName .viewerFolder { color: #aaa; }
   #viewer a { color: #9cd0ff; }
   #viewer .asideMark { padding: 0 8px; border-radius: 10px; background: var(--bad); font-size: .8rem;
                        font-weight: 600; }

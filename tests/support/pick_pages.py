@@ -15,5 +15,6 @@ PICK_PARTS: Final = (
     "function wireCard(node, index)",  # pick_grid.js.j2
     "const VIEWER_KEYS = {",  # pick_viewer.js.j2
     "function preloadAround() {",  # pick_preload.js.j2 (0675)
+    "function showPicture(file) {",  # pick_sharp.js.j2: the tile first
     '$("grid").addEventListener("pointerdown"',  # pick_band.js.j2
 )

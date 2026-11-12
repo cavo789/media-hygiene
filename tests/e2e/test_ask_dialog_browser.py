@@ -97,6 +97,13 @@ def test_the_large_view_preloads_the_next_photo(tmp_path: Path) -> None:
     assert _walk(tmp_path, "preload_walk.py", "search.html.j2") == ""
 
 
+def test_the_large_view_shows_the_tile_at_once_then_the_sharp_preview(
+    tmp_path: Path,
+) -> None:
+    """1 s previews: the tile and the whole path at once, a jump never undone."""
+    assert _walk(tmp_path, "sharp_walk.py", "search.html.j2") == ""
+
+
 def test_the_places_map_opens_on_every_country_and_ignores_zero_zero(
     tmp_path: Path,
 ) -> None:

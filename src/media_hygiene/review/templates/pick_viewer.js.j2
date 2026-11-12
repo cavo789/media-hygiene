@@ -7,6 +7,7 @@ const SWIPE_PX = 50;   // a touch moved less than this is a tap (as the albums' 
 let pointer = null;    // where a touch began on the large view
 let swiped = false;    // the click that ends a swipe does not close the view
 {% include "pick_preload.js.j2" %}
+{% include "pick_sharp.js.j2" %}
 {% include "pick_who.js.j2" %}
 
 // Opened large: the file shown alone is set aside (Delete) or taken back (Backspace), the
@@ -96,9 +97,9 @@ function open() {
   const large = $("large");
   movie.hidden = !file.video;
   large.hidden = Boolean(file.video);
-  if (file.video) { movie.src = file.video; } else { movie.removeAttribute("src"); large.src = file.preview; }
+  if (file.video) { sharpWanted = null; movie.src = file.video; } else { movie.removeAttribute("src"); showPicture(file); }
   large.alt = file.name;
-  $("viewerName").textContent = file.name;
+  $("viewerName").replaceChildren(...named(file));
   $("viewerAside").hidden = !file.chosen;
   // A page may turn the day or the folder into a link (`infoLink`, the search page's).
   const facts = [["date", file.date], ["spot", file.spot], ["size", file.size], ["facts", file.facts], ["folder", file.where || file.folder || scope().folder]];
@@ -120,6 +121,14 @@ function open() {
   preloadAround();
 }
 
+// The file's whole path when the page knows it, its folder dimmed; else its name alone.
+function named(file) {
+  const path = file.path || "";
+  const cut = Math.max(path.lastIndexOf("\\"), path.lastIndexOf("/")) + 1;
+  if (!path || path.slice(cut) !== file.name) return [file.name];
+  return [element("span", "viewerFolder", path.slice(0, cut)), file.name];
+}
+
 function close() {
   if (window.history.state && window.history.state.mhViewer) { window.history.back(); return; } // popstate closes it
   closeShown();
@@ -134,6 +143,7 @@ function closeShown() {
   if (namedInView && typeof reopen === "function") reopen(true);
   namedInView = false;
   preloadStop();
+  sharpWanted = null;
   preload.seen = -1;
   $("movie").pause();
   if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);

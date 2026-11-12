@@ -1935,6 +1935,12 @@ msgid ""
 " and play, Esc leaves full screen, S stops the show."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Click: only the photos of {name}; Ctrl+click: add {name} to the search "
+"(the photos where they are together)"
+msgstr ""
+
 msgid "Click: the files of this folder"
 msgstr ""
 
@@ -8858,6 +8864,9 @@ msgid "Set everything aside but these"
 msgstr ""
 
 msgid "Set from the ⋯ of a folder, under 📁 My folders."
+msgstr ""
+
+msgid "Set name"
 msgstr ""
 
 msgid "Set the extra copies aside"

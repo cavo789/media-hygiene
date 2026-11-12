@@ -1,0 +1,47 @@
+{# The library page's bar (chips of the active filters, +N), its segmented controls,
+   dates and the tiles' captions; cut out of `search.html.j2`. #}
+  #withinLine { display: flex; gap: 6px; align-items: baseline; overflow-wrap: anywhere; }
+  #withinLine[hidden] { display: none; }
+  #heaviest { width: 100%; margin-top: 6px; }
+  #moreLine { margin: 0 16px 16px; min-height: 2.4em; text-align: center; }
+  /* The bar's two lines are shared (`pick_grid.css.j2`); here line 1 also holds the chips. */
+  #bar > #lead { white-space: nowrap; overflow: hidden; flex-wrap: nowrap; }
+  #status { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 0 1 auto; min-width: 4ch; }
+  /* The active filters (0565): chips after the count, the extra ones folded into +N. */
+  #chips { display: inline-flex; gap: 4px; flex: 0 1 auto; min-width: 0; overflow: hidden; margin-left: 8px; }
+  #chips .chip, #chipsFolded .chip { flex: none; padding: 0 2px 0 8px; border: 1px solid var(--line);
+                                     border-radius: 999px; font-size: .85rem; white-space: nowrap; }
+  #bar .chip button { padding: 0 4px; }
+  #bar .chipsMore { flex: none; margin-left: 4px; }
+  #bar .chipsMore[hidden], #chipsFolded[hidden] { display: none; }
+  #bar > #chipsFolded { position: absolute; top: 100%; left: 0; z-index: 5; display: flex; flex-wrap: wrap;
+                        gap: 4px; padding: 6px 16px; background: var(--card); box-shadow: 0 2px 6px rgba(0, 0, 0, .2); }
+  #picked { display: inline-block; min-width: 9ch; white-space: nowrap; }
+  .groupHead { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; margin: 8px 0 0; font-weight: 600; overflow-wrap: anywhere; }
+  #bar > #chosen { cursor: pointer; }
+  #asideLeave { min-width: 1.6em; }
+  /* Segmented controls: Show, Sorted (left column), S/M/L (the bar). */
+  .seg { display: flex; flex: none; }
+  .seg button { flex: 1 1 auto; padding: 3px 10px; color: var(--accent); background: transparent; border-radius: 0; }
+  .seg button:first-of-type { border-radius: 6px 0 0 6px; }
+  .seg button:last-of-type { border-radius: 0 6px 6px 0; }
+  .seg button[aria-pressed="true"] { color: var(--on-accent); background: var(--accent); }
+  .segLabel { font-size: .85rem; color: var(--muted); }
+  /* Dates on one line, the quick periods in a 📅 menu floating under it. */
+  .years { flex-wrap: nowrap; align-items: end; position: relative; gap: 3px; }
+  /* The two dates share the room the 📅 menu leaves: dd/mm/yyyy and the calendar icon fit. */
+  .years label { flex: 1 1 0; min-width: 0; }
+  .years input { width: 100%; box-sizing: border-box; padding-left: 2px; padding-right: 0; font-size: .9rem; }
+  /* The calendar icon without its own margin and padding: the year keeps its four digits. */
+  .years input::-webkit-calendar-picker-indicator { margin: 0; padding: 0; }
+  .dateMenu, .years .step { flex: none; }
+  .years .step { padding: 4px 2px; }
+  .dateMenu summary { list-style: none; cursor: pointer; padding: 4px 3px; border: 1px solid var(--line); border-radius: 6px; }
+  .dateMenu[open] .spans { position: absolute; z-index: 3; right: 0; top: 100%; flex-direction: column;
+                           padding: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
+  /* 🔍 Search stays in sight at the bottom of the form, however long the column. */
+  #go { position: sticky; bottom: 0; z-index: 1; }
+  /* The tiles' size is the shared view's (`tile_view.html.j2`): M one line each, L and XL everything. */
+  body:not([data-tile-size="l"], [data-tile-size="xl"]) main .meta > div:not(.chips) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  body:not([data-tile-size="l"], [data-tile-size="xl"]) main .chips { max-height: 3em; overflow: hidden; }
+  body:not([data-tile-size="l"], [data-tile-size="xl"]) main .chip.extra, body:is([data-tile-size="l"], [data-tile-size="xl"]) main .chip.rest { display: none; }
