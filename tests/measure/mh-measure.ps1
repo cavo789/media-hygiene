@@ -3722,7 +3722,8 @@ from PIL import Image
 from media_hygiene.faces.weights import DETECTOR, EMBEDDER, ensure_model
 from media_hygiene.faces.worker import OnnxRecipe
 EXT = {'.jpg', '.jpeg', '.png', '.heic', '.webp', '.tif', '.tiff'}
-TAG = 0x0112
+TAG, MAKE, MODEL = 0x0112, 0x010F, 0x0110
+CONSOLES = ('nintendo', 'sony interactive', 'microsoft xbox')
 HEADER_S, GUESS_S, SHOWN_KEPT = 300, 300, 20
 root = Path('/data/c/Photos')
 models = Path('/cache/models')
@@ -3733,26 +3734,35 @@ finder = OnnxRecipe(ensure_model(models, DETECTOR), ensure_model(models, EMBEDDE
 paths = sorted(p for p in root.rglob('*') if p.suffix.lower() in EXT)
 random.Random(711).shuffle(paths)
 counts, untagged, start = {}, [], time.perf_counter()
-read = 0
+read = skipped = 0
 for path in paths:
     if time.perf_counter() - start > HEADER_S:
         break
     read += 1
     try:
         with Image.open(path) as im:
-            tag = im.getexif().get(TAG)
+            exif = im.getexif()
+            tag = exif.get(TAG)
+            make = str(exif.get(MAKE) or '').strip()
+            model = str(exif.get(MODEL) or '').strip()
     except Exception:
-        tag = 'unreadable'
+        tag, make, model = 'unreadable', '', ''
     counts[tag] = counts.get(tag, 0) + 1
     if tag in (None, 0, 1):
-        untagged.append(path)
+        camera = bool(make or model) and not make.lower().startswith(CONSOLES)
+        if camera and 'screenshot' not in path.name.lower():
+            untagged.append((path, make))
+        else:
+            skipped += 1
 spent = time.perf_counter() - start
 print(f'48a. {read} of {len(paths)} pictures read (headers, random order) in {spent:.0f} s')
+print(f'48b2. untagged left out (no camera in the EXIF, a console, a screenshot): {skipped}; camera photos kept: {len(untagged)}')
 print('48b. orientation tag: ' + ', '.join(f'{k}: {v}' for k, v in sorted(counts.items(), key=lambda kv: -kv[1])) + ' (None, 0 or 1 = no turn asked)')
-def score(picture):
-    return sum(face.score for face in finder.find(picture))
-turned, kept, start, tried, seconds = [], [], time.perf_counter(), 0, []
-for path in untagged:
+def found(picture):
+    faces = finder.find(picture)
+    return sum(face.score for face in faces), len(faces)
+turned, kept, dropped, start, tried, seconds = [], [], [], time.perf_counter(), 0, []
+for path, make in untagged:
     if time.perf_counter() - start > GUESS_S:
         break
     began = time.perf_counter()
@@ -3763,18 +3773,22 @@ for path in untagged:
     except Exception:
         continue
     tried += 1
-    scores = {angle: score(picture.rotate(angle, expand=True)) for angle in (0, 90, 180, 270)}
+    seen = {angle: found(picture.rotate(angle, expand=True)) for angle in (0, 90, 180, 270)}
     seconds.append(time.perf_counter() - began)
-    best = max(scores, key=scores.get)
-    if scores[best] == 0:
+    best = max(seen, key=lambda angle: seen[angle][0])
+    if seen[best][0] == 0:
         continue
-    if best != 0 and scores[best] > scores[0]:
-        turned.append((path, best, picture))
+    note = f'{make}; stored {seen[0][0]:.2f} ({seen[0][1]} faces), turned {seen[best][0]:.2f} ({seen[best][1]} faces)'
+    if best != 0 and seen[best][0] > seen[0][0]:
+        if best == 180 and seen[best][1] < 2:
+            dropped.append((path, best, picture, note))
+        else:
+            turned.append((path, best, picture, note))
     elif len(kept) < SHOWN_KEPT:
-        kept.append((path, 0, picture))
+        kept.append((path, 0, picture, note))
 mean = sum(seconds) / len(seconds) if seconds else 0
-print(f'48c. {tried} untagged photos guessed in {time.perf_counter() - start:.0f} s ({mean:.2f} s each, 4 detections); {len(turned)} would be turned')
-def tile(path, angle, picture, title):
+print(f'48c. {tried} untagged photos guessed in {time.perf_counter() - start:.0f} s ({mean:.2f} s each, 4 detections); {len(turned)} would be turned, {len(dropped)} left out by the 180 deg rule')
+def tile(path, angle, picture, title, note):
     small = picture.copy()
     small.thumbnail((220, 220))
     after = picture.rotate(angle, expand=True)
@@ -3784,16 +3798,20 @@ def tile(path, angle, picture, title):
         buffer = io.BytesIO()
         shot.save(buffer, 'JPEG', quality=70)
         cells += '<img src="data:image/jpeg;base64,' + base64.b64encode(buffer.getvalue()).decode() + '">'
-    return f'<figure><div>{cells}</div><figcaption>{title} - {path.name}</figcaption></figure>'
+    return f'<figure><div>{cells}</div><figcaption>{title} - {path.name}<br>{note}</figcaption></figure>'
 html = ['<!doctype html><meta charset="utf-8"><title>0711 rotation</title><style>body{font-family:sans-serif}figure{display:inline-block;margin:6px;border:1px solid #ccc;padding:4px}img{height:160px;margin:2px}figcaption{font-size:12px;max-width:450px}</style>']
 html.append(f'<h1>A. {len(turned)} photos the guess would turn (left: as stored, right: turned)</h1>')
-html.append('<p>Count the RIGHT pictures that are upright (the guess is right).</p>')
-for number, (path, angle, picture) in enumerate(turned, 1):
-    html.append(tile(path, angle, picture, f'A{number}: {angle} deg'))
+html.append('<p>Note the numbers of those whose RIGHT picture is NOT upright (wrong turns).</p>')
+for number, (path, angle, picture, note) in enumerate(turned, 1):
+    html.append(tile(path, angle, picture, f'A{number}: {angle} deg', note))
 html.append(f'<h1>B. {len(kept)} photos with faces the guess leaves as they are</h1>')
 html.append('<p>Left and right are the same: the guess does not turn them. Count those shown sideways (missed).</p>')
-for number, (path, angle, picture) in enumerate(kept, 1):
-    html.append(tile(path, angle, picture, f'B{number}'))
+for number, (path, angle, picture, note) in enumerate(kept, 1):
+    html.append(tile(path, angle, picture, f'B{number}', note))
+html.append(f'<h1>C. {len(dropped)} photos the old rule turned 180 deg, left out now (one face only)</h1>')
+html.append('<p>Note the numbers of those whose RIGHT picture is upright (right turns the rule loses).</p>')
+for number, (path, angle, picture, note) in enumerate(dropped, 1):
+    html.append(tile(path, angle, picture, f'C{number}: {angle} deg', note))
 Path('/out/' + sys.argv[1]).write_text(''.join(html), encoding='utf-8')
 print(f'48d. page written: {sys.argv[1]}')
 '@
@@ -3805,12 +3823,12 @@ print(f'48d. page written: {sys.argv[1]}')
     if (Test-Path -LiteralPath $page) {
         Start-Process $page
         Write-Host "48 : la page s'ouvre dans le navigateur. Comptez, puis repondez."
-        $right = Read-Host "48e. Partie A : combien de photos de DROITE sont bien droites"
-        $wrong = Read-Host "48f. Partie A : combien de photos de GAUCHE etaient deja droites (mh les aurait abimees)"
-        $missed = Read-Host "48g. Partie B (gauche = droite : mh ne les tourne pas) : combien sont couchees, donc ratees"
-        Log "   48e. part A, turned upright by the guess (right): $right"
-        Log "   48f. part A, already upright, the guess would spoil them: $wrong"
-        Log "   48g. part B, sideways but missed: $missed"
+        $wrong = Read-Host "48e. Partie A : numeros des photos dont l'image de DROITE n'est PAS droite (ex. A3 A7), vide si aucune"
+        $missed = Read-Host "48f. Partie B (gauche = droite : mh ne les tourne pas) : numeros de celles qui sont couchees, vide si aucune"
+        $lost = Read-Host "48g. Partie C : numeros de celles dont l'image de DROITE est droite (perdues par la regle), vide si aucune"
+        Log "   48e. part A, wrong turns: $wrong"
+        Log "   48f. part B, sideways but missed: $missed"
+        Log "   48g. part C, right turns the 180 deg rule loses: $lost"
     } else {
         Log "   48d. no page written: step failed (see the lines above)"
     }
