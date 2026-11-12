@@ -18,6 +18,7 @@ from media_hygiene.cli.config_tidy_flow import show_tidy
 from media_hygiene.config.classify_rules import ClassifyRule
 from media_hygiene.config.loader import load_settings
 from media_hygiene.errors import ConfigError
+from media_hygiene.file_history import versions_of
 from media_hygiene.paths.mounts import MountTable
 from media_hygiene.search.event_match import Moved
 from media_hygiene.search.move_event import remember_event
@@ -177,3 +178,5 @@ def test_a_folder_rule_turned_into_dates_moves_to_events(tmp_path: Path) -> None
     with pytest.raises(ConfigError):
         remember_rule(config, "Turin", taken)
     assert config.read_bytes() == before
+    assert versions_of(config)  # put back atomically, as every save (0778)
+    assert not list(tmp_path.glob(".*.tmp"))

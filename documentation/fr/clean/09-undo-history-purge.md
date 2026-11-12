@@ -220,7 +220,9 @@ supprimer l'une de deux copies ne perd rien.
 
 Le journal est léger, et c'est lui qui rend `undo` possible, et qui permet à l'audit de
 reconnaître les fichiers mis de côté s'ils reviennent. Ne le supprimez jamais tant que vous
-pourriez encore vouloir restaurer un nettoyage.
+pourriez encore vouloir restaurer un nettoyage. Perdu malgré tout ? Le journal de chaque
+exécution est aussi copié à côté de son dossier de quarantaine : `history` liste encore
+l'exécution, marquée *(d'après la quarantaine)*, et `undo` remet d'abord la copie en place.
 
 ---
 

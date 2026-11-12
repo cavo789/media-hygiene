@@ -65,12 +65,14 @@ def _plan(runtime: Runtime, call: StepCall) -> None:
         runtime: Settings, mount points and output.
         call: The target, `--anyway`.
     """
+    from media_hygiene.cli.push_only import say_only_copies
     from media_hygiene.console.push_target_view import show_plan
     from media_hygiene.services.push_lines import plan_lines
     from media_hygiene.services.push_run import prepare_push
 
     prepared = prepare_push(runtime, call.target, anyway=call.anyway)
     show_plan(runtime.output, prepared)
+    say_only_copies(runtime)  # the quarantine is not copied (0775)
     _write(plan_lines(prepared))
 
 

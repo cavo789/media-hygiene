@@ -137,7 +137,11 @@ La tuile *Place sur le disque* ouvre une page avec la place que prennent les ape
 quarantaine. Chaque limite est à côté de son effet, écrite dans `config.toml` et relue avant d'être
 affichée : *Garder au plus (Go)* (`[cache] previews_max_gb`) et *Proposer la purge après (jours)*
 (`[clean] purge_hint_days`). *Vider les aperçus* annonce la place libérée ; ils sont refaits à
-l'affichage. Chaque exécution de la quarantaine a son lien *Voir les photos*, ses fichiers en vignettes
+l'affichage. Chaque exécution de la quarantaine dit combien de ses fichiers n'existent **nulle part
+ailleurs** (quasi-doublons, photos de rafale, fichiers inutiles ou illisibles : pas les copies
+exactes, dont le jumeau gardé reste dans vos photos ; comptés depuis l'index, `?` sans lui), et le
+total est dit sous le titre : la sauvegarde ne les contient pas. Chaque exécution a son lien
+*Voir les photos*, ses fichiers en vignettes
 ([`undo --pick`](undo.md#remettre-quelques-photos)), et son lien *Purger* : les mêmes vignettes d'abord, puis un
 bouton qui annonce combien de fichiers il efface et la place qu'il libère. Il demande une fois là, `mh`
 lance [`purge`](purge.md) dans sa fenêtre, et la page revient dire ce que dit le disque : l'exécution

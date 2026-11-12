@@ -128,7 +128,10 @@ The *Disk space* tile opens a page with the room the previews and the quarantine
 sits next to its effect, saved into `config.toml` and read back before being shown: *Keep at most
 (GB)* (`[cache] previews_max_gb`) and *Suggest purging after (days)* (`[clean] purge_hint_days`).
 *Empty the previews* states the size it frees; they are made again when shown. Each run of the
-quarantine has its *See the photos* link, its files as tiles ([`undo --pick`](undo.md#put-back-a-few-photos)),
+quarantine says how many of its files exist **nowhere else** (near duplicates, burst shots, junk
+or unreadable files: not exact copies, whose kept twin stays in your photos; counted from the
+index, `?` without one), and the total is said under the title: the backup does not hold them.
+Each run has its *See the photos* link, its files as tiles ([`undo --pick`](undo.md#put-back-a-few-photos)),
 and its *Purge* link: the same tiles first, then a button stating how many files it erases and the
 room it frees. It asks once there, `mh` runs [`purge`](purge.md) in its window, and the page comes
 back to say what the disk now says: the run gone, the room freed. With another `mh`, type the command.

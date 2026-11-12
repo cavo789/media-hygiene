@@ -55,7 +55,10 @@ passage, retirée ensuite.
    seulement les photos (un PDF dans `C:\Photos` est sauvegardé aussi), sauf les dossiers
    système (`#recycle`, `@eaDir`…), les dossiers exclus et la quarantaine (un fichier mis de
    côté avant tout push n'a pas de copie sur le NAS : [`purge`](purge.md#bon-à-savoir) les liste
-   avant de les effacer).
+   avant de les effacer). Quand des fichiers mis de côté n'existent nulle part ailleurs
+   (quasi-doublons, photos de rafale, fichiers inutiles : pas des copies exactes), le plan dit
+   combien : *12 fichiers mis de côté dans la quarantaine n'existent nulle part ailleurs, et la
+   sauvegarde ne copie pas la quarantaine*.
 2. **Planifie**, et le dit : ce qui est déjà là, ce qui est nouveau, ce qui a été déplacé (même
    taille, date, premiers et derniers 64 Ko : renommé sur le NAS, rien n'est envoyé), ce qui a
    été modifié (la copie du NAS mise de côté d'abord), ce qui a disparu du PC.

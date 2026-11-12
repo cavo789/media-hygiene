@@ -15,21 +15,18 @@ from typing import TYPE_CHECKING, Final
 
 from media_hygiene.actions.journal import journal_file
 from media_hygiene.actions.journal_copy import (
+    copied_journals,
     found_copy,
     journal_copy,
     remove_copy,
     write_copy,
 )
 from media_hygiene.actions.purge import run_folders
-from media_hygiene.actions.runs import RUN_ID_PATTERN
-from media_hygiene.constants import JOURNAL_SUFFIX
 from media_hygiene.i18n import _
 from media_hygiene.services.quarantines import mounted_quarantines
 from media_hygiene.services.run_listings import forget_run_listings
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from media_hygiene.actions.kinds import Phase
     from media_hygiene.services.runtime import Runtime
 
@@ -79,7 +76,7 @@ def take_back_journals(runtime: Runtime) -> list[str]:
     journal_dir = runtime.locations.journal_dir
     quarantines = mounted_quarantines(runtime).folders
     back: list[str] = []
-    for run_id in sorted(_copied_runs(quarantines)):
+    for run_id in sorted(copied_journals(quarantines)):
         journal = journal_file(journal_dir, run_id)
         copy = found_copy(quarantines, run_id)
         if journal.exists() or copy is None:
@@ -97,26 +94,6 @@ def take_back_journals(runtime: Runtime) -> list[str]:
         )
         back.append(run_id)
     return back
-
-
-def _copied_runs(quarantines: tuple[Path, ...]) -> set[str]:
-    """The runs with a copy of their journal in a quarantine.
-
-    Args:
-        quarantines: The default quarantine and the per-drive ones.
-
-    Returns:
-        Their identifiers.
-    """
-    runs: set[str] = set()
-    for folder in quarantines:
-        if not folder.is_dir():
-            continue
-        for copy in folder.glob(f"*{JOURNAL_SUFFIX}"):
-            run_id = copy.name.removesuffix(JOURNAL_SUFFIX)
-            if RUN_ID_PATTERN.fullmatch(run_id) and copy.is_file():
-                runs.add(run_id)
-    return runs
 
 
 def run_ended(runtime: Runtime, run_id: str, phase: Phase) -> None:

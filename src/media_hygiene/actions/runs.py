@@ -20,12 +20,15 @@ __all__ = [
     "RunSummary",
     "list_run_ids",
     "new_run_id",
+    "newest_first",
+    "run_journals",
     "run_phase",
     "summarize",
     "summary_of",
 ]
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
     from pathlib import Path
 
 _RUN_ID_FORMAT: Final = "%Y%m%d-%H%M%S"
@@ -75,10 +78,34 @@ def list_run_ids(journal_dir: Path) -> list[str]:
     Returns:
         The run identifiers.
     """
+    return newest_first(run_journals(journal_dir))
+
+
+def run_journals(journal_dir: Path) -> dict[str, Path]:
+    """Find every run's journal in the journal folder.
+
+    Args:
+        journal_dir: Journal mount point.
+
+    Returns:
+        Each run's journal, by run identifier (in no order); empty without the folder.
+    """
     if not journal_dir.is_dir():
-        return []
+        return {}
     files = journal_dir.glob(f"*{JOURNAL_SUFFIX}")
-    started = {path.name.removesuffix(JOURNAL_SUFFIX): _started(path) for path in files}
+    return {path.name.removesuffix(JOURNAL_SUFFIX): path for path in files}
+
+
+def newest_first(journals: Mapping[str, Path]) -> list[str]:
+    """Order runs by when each one started, newest first.
+
+    Args:
+        journals: Each run's journal (in `/journal`, or its copy in a quarantine).
+
+    Returns:
+        The run identifiers.
+    """
+    started = {run: _started(path) for run, path in journals.items()}
     return sorted(started, key=lambda run: (started[run], run), reverse=True)
 
 

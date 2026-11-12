@@ -39,6 +39,7 @@ _WRITERS = (
     "config/photo_ref.py",
     "cli/home_favourites.py",
     "share/albums.py",
+    "classify/remember_rule.py",  # its roll-back after a failed event write (0778)
 )
 _OWN_REPLACE = re.compile(r"\w+\.replace\((config_file|path|target|self\.path)\)")
 

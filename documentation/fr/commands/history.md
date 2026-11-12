@@ -24,7 +24,7 @@ docker run --rm -it -v "$HOME\media-hygiene\journal:/journal" cavo789/media-hygi
 | | |
 |---|---|
 | Vos photos | 🔒 Jamais modifiées : il ne lit que le journal. |
-| Il faut | `/journal`, le dossier où `clean` écrit. |
+| Il faut | `/journal`, le dossier où `clean` écrit ; `/quarantine` aussi, pour lister une exécution dont le journal manque (ci-dessous). |
 | Écrit | Rien. |
 | Annuler | Rien à annuler. |
 | Avec `mh` | `mh history` ; depuis la page d'accueil, *Historique et annulation* › **Voir ce qu'a fait chaque exécution** affiche le même tableau dans la page elle-même (rien n'est écrit dans le terminal), avec la ligne `mh undo <run>` à copier pour chaque exécution et, pour une exécution encore en quarantaine, un lien *Purger* : ses fichiers d'abord, puis un bouton qui dit combien partent et la place libérée. La page demande une fois ; rien n'est demandé dans la fenêtre ; puis l'historique revient et dit ce que dit le disque. |
@@ -65,6 +65,11 @@ Exécutions (les plus récentes d'abord)
 ## Bon à savoir
 
 - `history` n'a pas d'option.
+- Une exécution dont le journal manque dans le dossier du journal (supprimé, un nouveau PC) mais
+  dont la copie est à côté de son dossier de quarantaine est listée aussi, marquée **(d'après la
+  quarantaine)** : la copie dit ce qu'elle a fait, et `mh undo <run>` remet d'abord cette copie
+  dans le journal, puis remet les fichiers en place. Seules les quarantaines montées sont lues :
+  la quarantaine d'un disque non branché ne liste rien, et une copie illisible est laissée de côté.
 - Le journal est petit et rend `undo` possible : ne le supprimez jamais tant que vous pourriez
   encore vouloir restaurer une exécution.
 - [`status`](status.md) donne une vue plus courte : ce qui est encore annulable, et l'étape suivante.

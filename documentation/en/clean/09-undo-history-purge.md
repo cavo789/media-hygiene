@@ -206,7 +206,8 @@ plugged in again) is dropped from the list on its own: deleting one of two copie
 
 The journal is small, and it is what makes `undo` possible, and what lets the audit recognise
 the files you set aside if they come back. Never delete it while you might still want to restore
-a clean.
+a clean. Lost anyway? Each run's journal is also copied beside its quarantine folder: `history`
+still lists the run, marked *(from the quarantine)*, and `undo` takes the copy back first.
 
 ---
 

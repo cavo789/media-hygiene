@@ -2,7 +2,8 @@
 {# What each run did (0350): the table of `mh history`, shown in the page the home page's
    *History and undo* space opened. Read-only: it reads /journal each time it is opened and
    changes nothing; each run's undo is the line to copy, and a run still in the quarantine has its
-   *Purge* link: its files first, the route of Disk space (0616, 0631). #}
+   *Purge* link: its files first, the route of Disk space (0616, 0631). A run known only from the
+   copy of its journal beside its quarantine is marked *from the quarantine* (0721). #}
 {% set page_name = _("What each run did") %}
 {% set keys_safe = _("Read-only: this page only reads the journal and changes nothing. A run is put back with 'undo', in the terminal.") %}
 {% block style %}
@@ -12,6 +13,7 @@
   main code { overflow-wrap: anywhere; user-select: all; }
   main .table-wrap { overflow-x: auto; }
   main .said { font-weight: 600; }
+  main .source { color: var(--muted); font-size: .85em; white-space: nowrap; }
   main .error { color: var(--bad); font-weight: 600; }
 {% endblock %}
 {% block bar %}
@@ -46,7 +48,7 @@
     <tbody>
 {% for row in table.rows %}
       <tr>
-        <td><code>{{ row.run_id }}</code></td>
+        <td><code>{{ row.run_id }}</code>{% if row.source %} <span class="source">{{ row.source }}</span>{% endif %}</td>
         <td>{{ row.command }}</td>
 {% for cell in row.cells %}
         <td class="num">{{ cell }}</td>

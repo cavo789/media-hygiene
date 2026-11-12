@@ -23,16 +23,17 @@ def history_command(ctx: typer.Context) -> None:
     Args:
         ctx: Typer context holding the runtime.
     """
-    from media_hygiene.services.history_rows import history_table, load_runs
+    from media_hygiene.services.history_rows import history_table
+    from media_hygiene.services.history_runs import load_runs
 
     runtime = runtime_of(ctx)
     output = runtime.output
     with user_errors(output):
-        summaries = load_runs(runtime)
-    if not summaries:
+        runs = load_runs(runtime)
+    if not runs.summaries:
         output.info(_("No run yet."))
         return
-    table = history_table(summaries)
+    table = history_table(runs.summaries, runs.copied)
     output.show(_runs_table(table))
     for note in table.notes:
         output.info(note)
@@ -58,5 +59,6 @@ def _runs_table(history: HistoryTable) -> Table:
     for header in history.figures:
         table.add_column(header, justify="right")
     for row in history.rows:
-        table.add_row(row.run_id, row.command, *row.cells)
+        command = f"{row.command} ({row.source})" if row.source else row.command
+        table.add_row(row.run_id, command, *row.cells)
     return table

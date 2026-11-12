@@ -5433,6 +5433,11 @@ msgstr ""
 msgid "Near duplicates review"
 msgstr ""
 
+msgid ""
+"Near duplicates, burst shots, junk or unreadable: not exact copies, whose"
+" kept twin stays in your photos."
+msgstr ""
+
 msgid "Near-duplicate level"
 msgstr ""
 
@@ -6616,6 +6621,9 @@ msgid ""
 msgstr ""
 
 msgid "Nowhere"
+msgstr ""
+
+msgid "Nowhere else"
 msgstr ""
 
 #, python-brace-format
@@ -13394,6 +13402,9 @@ msgstr ""
 msgid "freeing the room of the quarantine, once you checked it."
 msgstr ""
 
+msgid "from the quarantine"
+msgstr ""
+
 msgid "full screen"
 msgstr ""
 
@@ -15742,6 +15753,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
+msgid ""
+"{count} file set aside in the quarantine exists nowhere else, and the "
+"backup does not copy the quarantine: look at it before a purge."
+msgid_plural ""
+"{count} files set aside in the quarantine exist nowhere else, and the "
+"backup does not copy the quarantine: look at them before a purge."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "{count} file to copy into your photos ({size}):"
 msgid_plural "{count} files to copy into your photos ({size}):"
 msgstr[0] ""
@@ -16028,6 +16049,13 @@ msgstr[1] ""
 msgid ""
 "{count} of these files exist nowhere else ({size}): near duplicates, "
 "burst shots, junk or unreadable, not exact copies."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"{count} of these files exist nowhere else: near duplicates, burst shots, "
+"junk or unreadable, not exact copies. The backup does not hold them: look"
+" at them before a purge."
 msgstr ""
 
 #, python-brace-format
@@ -18555,4 +18583,10 @@ msgid_plural ""
 "--intruders' picks those to set aside."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid ""
+"🧾 A run marked 'from the quarantine' has no journal in the journal "
+"folder: the copy beside its quarantine says what it did, and mh undo "
+"<run> takes that copy back first."
+msgstr ""
 

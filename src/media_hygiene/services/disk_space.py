@@ -22,6 +22,7 @@ from media_hygiene.places.toml_edit import (
     write_document,
 )
 from media_hygiene.report.preview_cache import trim_previews
+from media_hygiene.services.disk_only import only_by_run
 from media_hygiene.services.disk_purge import PurgeReadBack
 from media_hygiene.services.status import read_status
 
@@ -56,6 +57,7 @@ class DiskRun(BaseModel):
     size: str
     since: str
     old: bool
+    only: str = ""  # its files that exist nowhere else (0775); empty: not known
 
 
 class DiskState(BaseModel):
@@ -66,6 +68,7 @@ class DiskState(BaseModel):
     previews_size: str
     previews_empty: bool
     quarantine_size: str
+    quarantine_only: str = ""  # files that exist nowhere else, in all; empty: not known
     runs: tuple[DiskRun, ...]
     limits: Limits
     purged: PurgeReadBack | None = None  # the last purge asked here, read back (0616)
@@ -140,6 +143,12 @@ def disk_state(runtime: Runtime) -> DiskState:
     limits = limits_of(runtime.locations.config_file)
     quarantine = read_status(runtime).quarantine
     size = previews_bytes(runtime.previews_dir)
+    counted = only_by_run(runtime, [run.run_id for run in quarantine.runs])
+    only = (
+        {}
+        if counted is None
+        else {r.run_id: counted.get(r.run_id, r.files) for r in quarantine.runs}
+    )
     runs = tuple(
         DiskRun(
             run_id=run.run_id,
@@ -148,6 +157,7 @@ def disk_state(runtime: Runtime) -> DiskState:
             size=human_size(run.size),
             since=ago(run.started),
             old=days_since(run.started) >= limits.purge_hint_days,
+            only=human_number(only[run.run_id]) if run.run_id in only else "",
         )
         for run in quarantine.runs
     )
@@ -155,6 +165,7 @@ def disk_state(runtime: Runtime) -> DiskState:
         previews_size=human_size(size),
         previews_empty=size == 0,
         quarantine_size=human_size(quarantine.size),
+        quarantine_only=human_number(sum(only.values())) if only else "",
         runs=runs,
         limits=limits,
     )

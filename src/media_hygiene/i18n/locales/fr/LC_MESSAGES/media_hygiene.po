@@ -6534,6 +6534,13 @@ msgstr "Quasi-doublons et vidéos réencodées"
 msgid "Near duplicates review"
 msgstr "Revue des quasi-doublons"
 
+msgid ""
+"Near duplicates, burst shots, junk or unreadable: not exact copies, whose"
+" kept twin stays in your photos."
+msgstr ""
+"Quasi-doublons, photos de rafale, déchets ou illisibles : pas des copies "
+"exactes, dont le jumeau gardé reste dans vos photos."
+
 msgid "Near-duplicate level"
 msgstr "Niveau du quasi-doublon"
 
@@ -7916,6 +7923,9 @@ msgstr ""
 
 msgid "Nowhere"
 msgstr "Nulle part"
+
+msgid "Nowhere else"
+msgstr "Nulle part ailleurs"
 
 #, python-brace-format
 msgid "Number of the phone (1 to {count})"
@@ -16037,6 +16047,9 @@ msgstr "présent"
 msgid "freeing the room of the quarantine, once you checked it."
 msgstr "libérer la place de la quarantaine, une fois que vous l'avez vérifiée."
 
+msgid "from the quarantine"
+msgstr "d'après la quarantaine"
+
 msgid "full screen"
 msgstr "plein écran"
 
@@ -18731,6 +18744,22 @@ msgstr[0] "{count} fichier mis de côté ignoré."
 msgstr[1] "{count} fichiers mis de côté ignorés."
 
 #, python-brace-format
+msgid ""
+"{count} file set aside in the quarantine exists nowhere else, and the "
+"backup does not copy the quarantine: look at it before a purge."
+msgid_plural ""
+"{count} files set aside in the quarantine exist nowhere else, and the "
+"backup does not copy the quarantine: look at them before a purge."
+msgstr[0] ""
+"{count} fichier mis de côté dans la quarantaine n'existe nulle part "
+"ailleurs, et la sauvegarde ne copie pas la quarantaine : regardez-le avant "
+"une purge."
+msgstr[1] ""
+"{count} fichiers mis de côté dans la quarantaine n'existent nulle part "
+"ailleurs, et la sauvegarde ne copie pas la quarantaine : regardez-les avant "
+"une purge."
+
+#, python-brace-format
 msgid "{count} file to copy into your photos ({size}):"
 msgid_plural "{count} files to copy into your photos ({size}):"
 msgstr[0] "{count} fichier à copier dans vos photos ({size}) :"
@@ -19083,6 +19112,16 @@ msgstr ""
 "{count} de ces fichiers n'existent nulle part ailleurs ({size}) : quasi-"
 "doublons, photos de rafale, déchets ou illisibles, pas des copies "
 "exactes."
+
+#, python-brace-format
+msgid ""
+"{count} of these files exist nowhere else: near duplicates, burst shots, "
+"junk or unreadable, not exact copies. The backup does not hold them: look"
+" at them before a purge."
+msgstr ""
+"{count} de ces fichiers n'existent nulle part ailleurs : quasi-doublons, "
+"photos de rafale, déchets ou illisibles, pas des copies exactes. La "
+"sauvegarde ne les contient pas : regardez-les avant une purge."
 
 #, python-brace-format
 msgid "{count} of {total} ({percent}%)"
@@ -22080,4 +22119,13 @@ msgstr[1] ""
 "🧹 {count} fichiers qui ne sont ni des photos ni des vidéos ({extensions})"
 " occupent {size} dans vos dossiers photos : voir « Fichiers intrus » dans"
 " le rapport ; 'review --intruders' choisit ceux à mettre de côté."
+
+msgid ""
+"🧾 A run marked 'from the quarantine' has no journal in the journal "
+"folder: the copy beside its quarantine says what it did, and mh undo "
+"<run> takes that copy back first."
+msgstr ""
+"🧾 Une exécution marquée « d'après la quarantaine » n'a pas de journal dans "
+"le dossier du journal : la copie à côté de sa quarantaine dit ce qu'elle a "
+"fait, et mh undo <run> remet d'abord cette copie en place."
 
