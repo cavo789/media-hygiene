@@ -8876,13 +8876,6 @@ msgstr "Cocher {name}"
 msgid "Picking the landmark each photo shows"
 msgstr "Choix du monument que montre chaque photo"
 
-msgid ""
-"Picks these faces among those shown and types the name: check them, then "
-"Enter to save"
-msgstr ""
-"Choisit ces visages parmi ceux affichés et tape le nom : vérifiez-les, "
-"puis Entrée pour enregistrer"
-
 msgid "Picnic"
 msgstr "Pique-nique"
 
@@ -10834,6 +10827,20 @@ msgstr ""
 "Montrées pour que vous vérifiiez, jamais mises de côté toutes seules : "
 "retirez avec × les visages de quelqu'un d'autre, puis mettez aussi les "
 "autres de côté."
+
+msgid ""
+"Shows only these faces, among those shown, picked, and types the name: "
+"check them, then Enter to save"
+msgstr ""
+"N'affiche que ces visages, choisis parmi ceux affichés, et tape le nom : "
+"vérifiez-les, puis Entrée pour enregistrer"
+
+msgid ""
+"Shows only these faces, among those shown, picked: check them, then "
+"confirm them as this person"
+msgstr ""
+"N'affiche que ces visages, choisis parmi ceux affichés : vérifiez-les, "
+"puis confirmez-les comme cette personne"
 
 msgid "Sidecar"
 msgstr "Fichier compagnon"
@@ -21469,11 +21476,20 @@ msgstr[1] "✓ Confirmer les noms devinés : {n}"
 msgid "✓ Confirmed as this person"
 msgstr "✓ Confirmée comme cette personne"
 
+#, python-brace-format
+msgid "✓ Yes, this face is {name}"
+msgid_plural "✓ Yes, these {n} faces are {name}"
+msgstr[0] "✓ Oui, ce visage est {name}"
+msgstr[1] "✓ Oui, ces {n} visages sont {name}"
+
 msgid "✓ in the album"
 msgstr "✓ dans l'album"
 
 msgid "✔ Probably: the event's camera"
 msgstr "✔ Probablement : l'appareil de l'événement"
+
+msgid "✕ Show all the faces"
+msgstr "✕ Afficher tous les visages"
 
 msgid "✕ hides a tile, ← and → move it; saved at once."
 msgstr "✕ masque une tuile, ← et → la déplacent ; enregistré aussitôt."
@@ -21594,10 +21610,20 @@ msgstr[0] "📁 Créer le dossier : {n} changement"
 msgstr[1] "📁 Créer le dossier : {n} changements"
 
 #, python-brace-format
-msgid "📁 Pick the face whose folder or file names {name}"
-msgid_plural "📁 Pick the {n} faces whose folder or file names {name}"
-msgstr[0] "📁 Choisir le visage dont le dossier ou le fichier nomme {name}"
-msgstr[1] "📁 Choisir les {n} visages dont le dossier ou le fichier nomme {name}"
+msgid "📁 Show the face whose folder or file names {name}"
+msgid_plural "📁 Show the {n} faces whose folder or file names {name}"
+msgstr[0] "📁 Afficher le visage dont le dossier ou le fichier nomme {name}"
+msgstr[1] "📁 Afficher les {n} visages dont le dossier ou le fichier nomme {name}"
+
+#, python-brace-format
+msgid "📁 Show the face whose folder or file names {name}: not {section}?"
+msgid_plural "📁 Show the {n} faces whose folder or file names {name}: not {section}?"
+msgstr[0] ""
+"📁 Afficher le visage dont le dossier ou le fichier nomme {name} : pas "
+"{section} ?"
+msgstr[1] ""
+"📁 Afficher les {n} visages dont le dossier ou le fichier nomme {name} : "
+"pas {section} ?"
 
 msgid "📁 The folder or file name names someone else"
 msgstr "📁 Le dossier ou le nom du fichier nomme quelqu'un d'autre"

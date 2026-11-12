@@ -162,3 +162,10 @@ opened from the home page.
    pages without tiles that record a choice `clean --decisions` applies (`review --intruders`,
    `review --gone`); `tests/unit/test_apply_on_every_review.py` checks every review (0511).
 5. When filing a TODO for a page of tiles, name this skill and the gestures it must offer.
+
+## The view of a page of tiles
+
+S/M/L/XL and *◀ Hide the panel* are `review/templates/tile_view.{html,css,js}.j2`: one
+markup, one script, a `TILE_VIEW_KEY` per page; the page sizes its tiles from
+`body[data-tile-size]` in its own CSS. `/person` and the people page use it; a tile page
+without it is a bug (same features on pages of the same kind).

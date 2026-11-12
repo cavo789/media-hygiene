@@ -71,9 +71,15 @@
   "toConfirm": _("{n} to confirm"),
   "unnamedEntry": _("Unnamed groups ({n})"),
   "itIs": _("It is {name}? ({score})"),
+  "sideHide": _("◀ Hide the panel"),
+  "sideShow": _("▶ Show the panel"),
   "pathHint": _("A person's name is in this photo's folder or file name: a hint only, nothing is named from it"),
-  "pathPick": [ngettext("📁 Pick the face whose folder or file names {name}", "📁 Pick the {n} faces whose folder or file names {name}", 1), ngettext("📁 Pick the face whose folder or file names {name}", "📁 Pick the {n} faces whose folder or file names {name}", 2)],
-  "pathPickHint": _("Picks these faces among those shown and types the name: check them, then Enter to save"),
+  "pathPickOwn": [ngettext("📁 Show the face whose folder or file names {name}", "📁 Show the {n} faces whose folder or file names {name}", 1), ngettext("📁 Show the face whose folder or file names {name}", "📁 Show the {n} faces whose folder or file names {name}", 2)],
+  "pathPickOwnHint": _("Shows only these faces, among those shown, picked: check them, then confirm them as this person"),
+  "pathAll": _("✕ Show all the faces"),
+  "pathConfirm": [ngettext("✓ Yes, this face is {name}", "✓ Yes, these {n} faces are {name}", 1), ngettext("✓ Yes, this face is {name}", "✓ Yes, these {n} faces are {name}", 2)],
+  "pathPick": [ngettext("📁 Show the face whose folder or file names {name}: not {section}?", "📁 Show the {n} faces whose folder or file names {name}: not {section}?", 1), ngettext("📁 Show the face whose folder or file names {name}: not {section}?", "📁 Show the {n} faces whose folder or file names {name}: not {section}?", 2)],
+  "pathPickHint": _("Shows only these faces, among those shown, picked, and types the name: check them, then Enter to save"),
   "namerNot": [ngettext("Not {name}, this face is…", "Not {name}, these {n} faces are…", 1), ngettext("Not {name}, this face is…", "Not {name}, these {n} faces are…", 2)],
   "namerIs": [ngettext("This face is…", "These {n} faces are…", 1), ngettext("This face is…", "These {n} faces are…", 2)],
   "nameOne": _("Name this face only (Ctrl+click picks several, Shift+click a range)"),
@@ -86,6 +92,7 @@
 {% include "combo_list.css.j2" %}
 {% include "pick_viewer.css.j2" %}
 {% include "people.css.j2" %}
+{% include "tile_view.css.j2" %}
 {% endblock %}
 {% block side %}
   <section id="toc" aria-label="{{ _('People') }}">
@@ -128,6 +135,7 @@
   <input id="who" type="search" placeholder="{{ _('Go to a person (/)') }}" aria-label="{{ _('Go to a person (/)') }}">
   {% include "apply_now.html.j2" %}
   <span id="status" role="status" aria-live="polite"></span>
+  {% include "tile_view.html.j2" %}
   <p id="newPhotos" role="status" hidden><span id="newPhotosLine"></span> <button id="newPhotosStop" type="button" hidden>{{ _("Stop") }}</button> <button id="newPhotosShow" type="button" hidden>{{ _("Show the new groups") }}</button></p>
 {% endblock %}
 {% block content %}
@@ -152,6 +160,8 @@ const SAMPLE = {{ sample_prefix | tojson }};
 {% include "people_guide.js.j2" %}
 {% include "path_names.js.j2" %}
 {% include "people_path_names.js.j2" %}
+const TILE_VIEW_KEY = "mh-people-view";
+{% include "tile_view.js.j2" %}
 {% if new_photos %}{% include "people_new_photos.js.j2" %}{% endif %}
 load();
 </script>

@@ -75,16 +75,14 @@
   #steps { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 8px 12px; margin: 4px 0 0;
            border: 1px solid var(--accent); border-radius: 8px; }
   #steps[hidden] { display: none; }
-  #view { display: inline-flex; gap: 6px; align-items: center; margin-left: auto; }
-  #sizes button { min-width: 2.2em; padding: 2px 6px; } #sizes button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
-  .layout.sideHidden { grid-template-columns: 1fr; } .layout.sideHidden #side { display: none; }
   .pathName { font-size: .75rem; color: var(--muted); overflow-wrap: anywhere; }
   .pathName.clash { color: var(--bad, #b3261e); font-weight: 600; }
-  #grid[data-size="s"] { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
-  #grid[data-size="l"] { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
-  #grid[data-size="xl"] { grid-template-columns: repeat(auto-fill, minmax(460px, 1fr)); }
-  #grid[data-size="l"] .file img.matched { width: 80px; height: 80px; }
-  #grid[data-size="xl"] .file img.matched { width: 120px; height: 120px; }
+{% include "tile_view.css.j2" %}
+  body[data-tile-size="s"] #grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+  body[data-tile-size="l"] #grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  body[data-tile-size="xl"] #grid { grid-template-columns: repeat(auto-fill, minmax(460px, 1fr)); }
+  body[data-tile-size="l"] #grid .file img.matched { width: 80px; height: 80px; }
+  body[data-tile-size="xl"] #grid .file img.matched { width: 120px; height: 120px; }
   article { position: relative; isolation: isolate; } /* the face crop stays under the bar */
   .file img.matched { position: absolute; top: 4px; left: 4px; width: 48px; height: 48px; aspect-ratio: 1;
              object-fit: cover; z-index: 1;
@@ -117,15 +115,7 @@
 {% block bar %}
     {% include "pick_acting.html.j2" %}
     {% include "album_bar.html.j2" %}
-    <span id="view">
-      <button id="sideToggle" class="plain" type="button"></button>
-      <span id="sizes" role="group" aria-label="{{ _('Thumbnail size') }}">
-        <button class="plain" type="button" data-size="s" title="{{ _('Small') }}">S</button>
-        <button class="plain" type="button" data-size="m" title="{{ _('Medium') }}">M</button>
-        <button class="plain" type="button" data-size="l" title="{{ _('Large') }}">L</button>
-        <button class="plain" type="button" data-size="xl" title="{{ _('Very large: to tell small children apart') }}">XL</button>
-      </span>
-    </span>
+    {% include "tile_view.html.j2" %}
     <div id="steps" hidden>
     <span id="stepsSaid"></span>
     <button id="confirmNames" type="button"></button>
@@ -164,6 +154,7 @@
 {% include "path_names.js.j2" %}
 {% include "person_paths.js.j2" %}
 {% include "person_draw.js.j2" %}
-{% include "person_view.js.j2" %}
+const TILE_VIEW_KEY = "mh-person-view";
+{% include "tile_view.js.j2" %}
 </script>
 {% endblock %}

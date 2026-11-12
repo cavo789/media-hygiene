@@ -7381,11 +7381,6 @@ msgstr ""
 msgid "Picking the landmark each photo shows"
 msgstr ""
 
-msgid ""
-"Picks these faces among those shown and types the name: check them, then "
-"Enter to save"
-msgstr ""
-
 msgid "Picnic"
 msgstr ""
 
@@ -9039,6 +9034,16 @@ msgstr ""
 msgid ""
 "Shown for you to check, never set aside on their own: take out with × the"
 " faces of someone else, then set the others aside too."
+msgstr ""
+
+msgid ""
+"Shows only these faces, among those shown, picked, and types the name: "
+"check them, then Enter to save"
+msgstr ""
+
+msgid ""
+"Shows only these faces, among those shown, picked: check them, then "
+"confirm them as this person"
 msgstr ""
 
 msgid "Sidecar"
@@ -18077,10 +18082,19 @@ msgstr[1] ""
 msgid "✓ Confirmed as this person"
 msgstr ""
 
+#, python-brace-format
+msgid "✓ Yes, this face is {name}"
+msgid_plural "✓ Yes, these {n} faces are {name}"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "✓ in the album"
 msgstr ""
 
 msgid "✔ Probably: the event's camera"
+msgstr ""
+
+msgid "✕ Show all the faces"
 msgstr ""
 
 msgid "✕ hides a tile, ← and → move it; saved at once."
@@ -18178,8 +18192,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-brace-format
-msgid "📁 Pick the face whose folder or file names {name}"
-msgid_plural "📁 Pick the {n} faces whose folder or file names {name}"
+msgid "📁 Show the face whose folder or file names {name}"
+msgid_plural "📁 Show the {n} faces whose folder or file names {name}"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "📁 Show the face whose folder or file names {name}: not {section}?"
+msgid_plural "📁 Show the {n} faces whose folder or file names {name}: not {section}?"
 msgstr[0] ""
 msgstr[1] ""
 

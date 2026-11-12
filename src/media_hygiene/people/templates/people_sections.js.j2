@@ -135,10 +135,10 @@ function group(item, index) {
     return node;
   }
   const faces = element("div", "faces");
-  const shown = item.strip ? [] : displayed(item);
+  const shown = item.strip ? [] : pathShown(index, displayed(item)); // 📁: people_path_names.js.j2
   faces.append(...shown.map((one) => face(one, index, item.verified)));
   if (showing.has(sectionKey(item))) faces.append(...item.hidden.map((one) => face(one, index, item.verified, "hidden")));
-  if (!item.strip && !complete(item)) {
+  if (!item.strip && !complete(item) && !pathViewing(index)) {
     const more = element("button", "more", counted(TEXTS.more, item.faces - shown.length));
     more.title = TEXTS.showAll;
     more.addEventListener("click", (event) => { event.stopPropagation(); expand(index); });
@@ -147,7 +147,7 @@ function group(item, index) {
   node.append(title, tools(item, index));
   const byPath = pathPickLine(item, index); // people_path_names.js.j2
   if (byPath) node.append(byPath);
-  if (facePick.index === index && facePick.keys.length) node.append(faceNamer(facePick.keys, item.name || ""));
+  if (facePick.index === index && facePick.keys.length) node.append(pathConfirmLine(item, index) || faceNamer(facePick.keys, item.name || ""));
   if (item.aside) node.append(hiddenLine(item, index));
   node.append(faces);
   return node;

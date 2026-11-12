@@ -46,7 +46,12 @@
                     background: var(--card); border-radius: 4px; pointer-events: none; }
   .face .pathName.clash { color: var(--bad); font-weight: 600; }
   .pathPick { margin: 4px 0; }
+  .pathPick .pathOwn { font-weight: 600; }
   .face.chosen img { outline: 3px solid var(--accent); outline-offset: -3px; }
+  /* S/M/L/XL (`tile_view.html.j2`): the faces' side; XL to tell small children apart. */
+  body[data-tile-size="s"] .face img { width: 64px; height: 64px; }
+  body[data-tile-size="l"] .face img { width: 150px; height: 150px; }
+  body[data-tile-size="xl"] .face img { width: 220px; height: 220px; }
   .namer { align-items: center; }
   #viewerNamer .namer { justify-content: center; margin: 6px 0; }
   .more { align-self: center; color: var(--muted); font-size: .85rem; }

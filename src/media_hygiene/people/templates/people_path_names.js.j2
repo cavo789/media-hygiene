@@ -1,8 +1,10 @@
 {# The names of the photos' paths on the people page (0714 follow-up): each face whose folder or
-   file name names a known person shows 📁 <name> (red when it is not the section's name), and a
-   section whose faces shown name someone else offers "📁 Pick the N faces whose folder or file
-   names Manon": it picks those faces (the shown ones only) and opens the naming line with the
-   name typed, Enter to save. Nothing is named from a path without that click and Enter. #}
+   file name names a known person shows 📁 <name> (red when it is not the section's name). A
+   section offers, among its faces shown only: first "📁 Show the N faces whose folder or file
+   names Manon" for its own name (they are picked, then "✓ Yes, these N faces are Manon"), then
+   "📁 N faces whose folder or file names Chloé: not Manon?" for the others (picked, the naming
+   line opened with the name typed, Enter to save). The section then shows those faces only, until
+   ✕ *Show all the faces*. Nothing is named from a path without a click. #}
 function pathBadge(box, item, section) {
   const named = pathNames(item.photo);
   if (!named.length) return;
@@ -12,16 +14,45 @@ function pathBadge(box, item, section) {
   box.append(tag);
 }
 
-// The faces shown (not taken out) whose path names `name`, by name: other than the section's.
+// The faces shown (not taken out) whose path names a person, by name; the section's own first.
 function facesByPathName(item) {
   const byName = new Map();
   for (const one of displayed(item)) {
     if (removed.has(one.key)) continue;
-    for (const name of pathNames(one.photo)) {
-      if (name !== item.name) byName.set(name, [...(byName.get(name) || []), one.key]);
-    }
+    for (const name of pathNames(one.photo)) byName.set(name, [...(byName.get(name) || []), one.key]);
   }
-  return byName;
+  const own = byName.get(item.name);
+  if (!own) return byName;
+  byName.delete(item.name);
+  return new Map([[item.name, own], ...byName]);
+}
+
+// The pick a 📁 button of the section's own name made: its line is "Yes, these N are <name>".
+const pathConfirm = { keys: null, name: "" };
+// A 📁 button shows only its faces in the section, while they stay picked there; ✕ shows all.
+const pathView = { index: -1, keys: [] };
+
+function pathShown(index, shown) {
+  if (pathView.index !== index || facePick.index !== index) return shown;
+  return shown.filter((one) => pathView.keys.includes(one.key));
+}
+
+function pathViewing(index) {
+  return pathView.index === index && facePick.index === index;
+}
+
+function pathAllButton(index) {
+  const all = element("button", "plain", TEXTS.pathAll);
+  all.addEventListener("click", (event) => { event.stopPropagation(); pathView.index = -1; clearFacePick(); redraw(index); });
+  return all;
+}
+
+function pickByPath(index, keys) {
+  clearFacePick();
+  facePick.index = index;
+  facePick.keys = keys;
+  facePick.last = keys[keys.length - 1];
+  redraw(index);
 }
 
 function pathPickLine(item, index) {
@@ -29,20 +60,34 @@ function pathPickLine(item, index) {
   const byName = facesByPathName(item);
   if (!byName.size) return null;
   const line = element("div", "tools pathPick");
+  if (pathViewing(index)) line.append(pathAllButton(index));
   for (const [name, keys] of byName) {
-    const button = element("button", "plain", fill(counted(TEXTS.pathPick, keys.length), { name: name }));
-    button.title = TEXTS.pathPickHint;
+    const own = name === item.name;
+    const text = own || !item.name ? TEXTS.pathPickOwn : TEXTS.pathPick; // a group without a name: no "not …?"
+    const button = element("button", own ? "pathOwn" : "plain", fill(counted(text, keys.length), { name: name, section: item.name || "" }));
+    button.title = own ? TEXTS.pathPickOwnHint : TEXTS.pathPickHint;
     button.addEventListener("click", (event) => {
       event.stopPropagation();
-      clearFacePick();
-      facePick.index = index;
-      facePick.keys = keys;
-      facePick.last = keys[keys.length - 1];
-      redraw(index);
+      pathConfirm.keys = own ? keys : null;
+      pathConfirm.name = name;
+      pathView.index = index;
+      pathView.keys = keys;
+      pickByPath(index, keys);
+      if (own) return;
       const field = $("groups").children[index].querySelector(".namer input");
       if (field) { field.value = name; field.focus(); }
     });
     line.append(button);
   }
+  return line;
+}
+
+// After a 📁 pick of the section's own name: confirm those faces as that person, one click.
+function pathConfirmLine(item, index) {
+  if (facePick.index !== index || pathConfirm.keys !== facePick.keys || pathConfirm.name !== item.name) return null;
+  const line = element("div", "tools namer stay");
+  const yes = element("button", "main", fill(counted(TEXTS.pathConfirm, facePick.keys.length), { name: item.name }));
+  yes.addEventListener("click", (event) => { event.stopPropagation(); moveFaces(facePick.keys, item.name, ""); });
+  line.append(yes);
   return line;
 }
