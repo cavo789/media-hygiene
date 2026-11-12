@@ -6286,10 +6286,19 @@ msgstr ""
 msgid "Not the same content as {path}: kept on the phone."
 msgstr ""
 
+#, python-brace-format
+msgid "Not them: ignore this face"
+msgid_plural "Not them: ignore these {n} faces"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Not this person: leaves this search (nothing saved)"
 msgstr ""
 
 msgid "Not this person: mark this face; the next button of the group saves it"
+msgstr ""
+
+msgid "Not this person: never shown for them again"
 msgstr ""
 
 msgid "Not to sort: its files stay where they are."
@@ -7929,6 +7938,12 @@ msgid "Remove this filter and search again"
 msgstr ""
 
 #, python-brace-format
+msgid "Remove this photo too (quarantine, undo possible)"
+msgid_plural "Remove these {n} photos too (quarantine, undo possible)"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
 msgid "Removed from config.toml, read back at {time}: {names}."
 msgstr ""
 
@@ -8865,12 +8880,6 @@ msgid "Set this photo aside (Delete)"
 msgstr ""
 
 #, python-brace-format
-msgid "Set this photo aside too"
-msgid_plural "Set these {n} photos aside too"
-msgstr[0] ""
-msgstr[1] ""
-
-#, python-brace-format
 msgid "Set this {n} file aside"
 msgid_plural "Set these {n} files aside"
 msgstr[0] ""
@@ -9012,6 +9021,9 @@ msgstr ""
 msgid "Show this album on the TV"
 msgstr ""
 
+msgid "Show this face for this person again"
+msgstr ""
+
 msgid "Show this message and exit."
 msgstr ""
 
@@ -9032,8 +9044,9 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Shown for you to check, never set aside on their own: take out with × the"
-" faces of someone else, then set the others aside too."
+"Shown for you to check, never removed on their own. × : not this person, "
+"remembered. Removed means moved to the quarantine at the next clean; undo"
+" brings the photos back."
 msgstr ""
 
 msgid ""
@@ -13980,6 +13993,9 @@ msgstr ""
 msgid "no TV yet"
 msgstr ""
 
+msgid "no cache to remember this in"
+msgstr ""
+
 msgid "no control character"
 msgstr ""
 
@@ -14224,8 +14240,8 @@ msgid "photos with a shooting date:"
 msgstr ""
 
 msgid ""
-"pick faces of the section to name them, Shift+click a range; ✎ this face "
-"only"
+"pick faces of the section to name them, Shift+click a range, drag a "
+"rectangle, Ctrl+A every face of the current section; ✎ this face only"
 msgstr ""
 
 msgid "pick or unpick the framed file"
@@ -14559,6 +14575,9 @@ msgid ""
 msgstr ""
 
 msgid "the burst series page"
+msgstr ""
+
+msgid "the cache could not be written"
 msgstr ""
 
 msgid "the classify proposal waits: 'sort' applies the edited workbook."
@@ -16970,6 +16989,18 @@ msgstr ""
 #, python-brace-format
 msgid "{n} face"
 msgid_plural "{n} faces"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} face ignored for the person set aside on {date}"
+msgid_plural "{n} faces ignored for the person set aside on {date}"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "{n} face kept as not this person."
+msgid_plural "{n} faces kept as not this person."
 msgstr[0] ""
 msgstr[1] ""
 

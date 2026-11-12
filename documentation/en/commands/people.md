@@ -94,7 +94,11 @@ runs in the window of `mh` as before (its progress bar, then the page).
 
 On the page, type a name on a group and press Enter: the name is saved into `config.toml`, read
 back and shown. `x` picks several groups to name at once, × takes a wrong face out, `i` ignores
-a group of strangers. Each person then shows twice at most: **Chloé ✓ verified**, the faces you
+a group of strangers. To name only some faces of a section, pick them as in
+[the folders of `library`](library.md#walk-through-your-folders), inside that section: Ctrl+click
+adds or takes out one, Shift+click a range, a rectangle dragged over the faces picks those it
+touches (Ctrl keeps those picked), Ctrl+A every face the current section shows, ✎ this face
+only; then *These N faces are…* and the name. A plain click still shows the photo large. Each person then shows twice at most: **Chloé ✓ verified**, the faces you
 confirmed, and **Chloé attributed**, the faces given to her because they look like those; `y`
 confirms the attributed faces shown, which move to verified. The next runs keep every name, and
 [`library`](library.md) finds the people by name: `search Chloé montagne`, `search person:chloe`.
@@ -155,11 +159,16 @@ To forget someone (a former partner, say), remove the photos they are on from th
 cache, without a name and without the photos (nothing goes into `config.toml`). Each time the
 page opens, the photos that look like that person come first, in a section of their own: *N
 other photos look like the person you set aside on <date>*, the faces of no group included (too
-small, too blurry, seen once). They are shown for you to check, never set aside on their own:
-take out with × the faces of someone else, then **Set these N photos aside too**. A photo added
+small, too blurry, seen once). They are shown for you to check, never removed on their own:
+× on a face says *not this person*, remembered in the cache, so it never comes back for them
+(another person set aside can still show it); **Not them: ignore these N faces** does it for
+every face the section shows, and the section goes. **Remove these N photos too (quarantine,
+undo possible)** sets the others aside: the next `clean --decisions` moves them to the
+quarantine, `undo` brings them back. The faces ignored stay listed, folded, under *N faces
+ignored for the person set aside on <date>*: ↺ shows one for that person again. A photo added
 later shows there at the next opening. The faces are kept after `clean` and `purge`; taking the
-photos back (↺, **Take out of the set aside**, or `undo`) forgets them, and `people --forget`
-forgets them with every other face.
+photos back (↺, **Take out of the set aside**, or `undo`) forgets them and the faces ignored
+for that person, and `people --forget` forgets them with every other face.
 
 **One photo at a time.** A face the tool cannot see (in profile, blurred, a tilted photo) leaves
 its photo in someone else's section. Click the face: the large view shows the photo with **Set

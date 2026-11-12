@@ -15,7 +15,6 @@ const picked = new Set();
 const removed = new Set();
 const whole = new Map(); // face number → every face of its group, once shown in full
 const showing = new Set(); // sections whose hidden faces are drawn, by `sectionKey`
-const outAlike = new Set(); // faces taken out of the look-alike sections by ×
 let foldedSaved = {}; // `sectionKey` → folded, for the named sections (this browser only)
 try { foldedSaved = JSON.parse(localStorage.getItem(FOLDED_KEY) || "{}") || {}; } catch (error) { foldedSaved = {}; }
 
@@ -167,7 +166,7 @@ async function send(body, path) {
     return;
   }
   picked.clear();
-  for (const key of [...(body.faces || []), ...(body.removed || [])]) { removed.delete(key); outAlike.delete(key); }
+  for (const key of [...(body.faces || []), ...(body.removed || [])]) { removed.delete(key); }
   show(result);
   const remembered = result.aside && result.aside.remembered ? " " + TEXTS.remembered : "";
   say((result.saved || result.aside.message) + remembered, "saved");
@@ -232,6 +231,7 @@ function face(item, index, verified, kind) {
   out.setAttribute("aria-label", out.title);
   out.addEventListener("click", (event) => { event.stopPropagation(); takeOut(index, item.key); });
   box.classList.toggle("chosen", facePicked(index, item.key));
+  box.dataset.key = item.key; // a face the rectangle and Ctrl+A can pick (0716)
   const one = element("button", "nameOne", "✎");
   one.title = TEXTS.nameOne;
   one.setAttribute("aria-label", one.title);

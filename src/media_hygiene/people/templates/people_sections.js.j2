@@ -1,44 +1,64 @@
 {# The script of the people page (`people.html.j2`), second part: the sections that look like
    someone set aside (0328), the tools of a section, a section drawn, the state shown, the
    page's keys (the large view's are `people_viewer.js.j2`'s). #}
-// A face that looks like someone set aside: × leaves it out of what is set aside.
-function alikeFace(item, at, all) {
-  const box = element("div", "face");
-  const picture = element("img");
-  picture.loading = "lazy";
-  picture.src = FACE + item.key + ".jpg";
-  picture.alt = picture.title = item.photo;
-  picture.addEventListener("click", () => openViewer(item, all.map((one) => ({ item: one, aside: false }))));
-  const isOut = outAlike.has(item.key);
-  box.classList.toggle("out", isOut);
-  const out = element("button", "", isOut ? "↺" : "×");
-  out.title = isOut ? TEXTS.putBack : TEXTS.remove;
-  out.setAttribute("aria-label", out.title);
-  out.addEventListener("click", (event) => {
-    event.stopPropagation();
-    if (outAlike.has(item.key)) outAlike.delete(item.key); else outAlike.add(item.key);
-    drawAlike();
-  });
-  box.append(picture, out);
-  return box;
+// A face that looks like someone set aside: × saves it as not that person (0713), ↺ on
+// an ignored one takes that back; both are read back from the cache by the next state.
+function alikeFace(person, isOut) {
+  return (item, at, all) => {
+    const box = element("div", "face");
+    const picture = element("img");
+    picture.loading = "lazy";
+    picture.src = FACE + item.key + ".jpg";
+    picture.alt = picture.title = item.photo;
+    picture.addEventListener("click", () => openViewer(item, all.map((one) => ({ item: one, aside: false }))));
+    box.classList.toggle("out", isOut);
+    const out = element("button", "", isOut ? "↺" : "×");
+    out.title = isOut ? TEXTS.alikeAgain : TEXTS.alikeNotOne;
+    out.setAttribute("aria-label", out.title);
+    out.addEventListener("click", (event) => {
+      event.stopPropagation();
+      notThem(person, [item.key], isOut);
+    });
+    box.append(picture, out);
+    return box;
+  };
 }
 
-// "n other photos look like the person you set aside on <date>": checked, then set aside.
+function notThem(person, faces, back) {
+  if (faces.length) send({ action: back ? "again" : "not", faces, into: person.aside }, ASIDE_PATH);
+}
+
+// The faces said not to be that person, folded: each one's ↺ takes it back.
+function alikeIgnored(person) {
+  const fold = element("details", "ignoredAlike");
+  fold.append(element("summary", "", fill(counted(TEXTS.alikeIgnored, person.ignored.length), { date: person.date })));
+  const faces = element("div", "faces");
+  faces.append(...person.ignored.map(alikeFace(person, true)));
+  fold.append(faces);
+  return fold;
+}
+
+// "n other photos look like the person you set aside on <date>": checked, then removed
+// too, or ignored for good ("Not them").
 function alikeSection(person) {
+  const ignored = person.ignored || [];
+  if (!person.faces.length) return alikeIgnored({ ...person, ignored });
   const node = element("section", "alike");
   const title = element("h2", "", fill(counted(TEXTS.alikeTitle, person.photos), { date: person.date }));
   if (person.label) title.append(" ", element("small", "", person.label));
-  const kept = person.faces.filter((item) => !outAlike.has(item.key));
+  const shown = person.faces;
   const bar = element("div", "tools");
   if (state.can_aside) {
-    const button = element("button", "main", counted(TEXTS.alikeAside, new Set(kept.map((item) => item.photo)).size));
-    button.disabled = !kept.length;
-    button.addEventListener("click", () => send({ action: "add", faces: kept.map((item) => item.key), label: person.label, into: person.aside }, ASIDE_PATH));
-    bar.append(button);
+    const button = element("button", "main", counted(TEXTS.alikeAside, new Set(shown.map((item) => item.photo)).size));
+    button.addEventListener("click", () => send({ action: "add", faces: shown.map((item) => item.key), label: person.label, into: person.aside }, ASIDE_PATH));
+    const not = element("button", "plain", counted(TEXTS.alikeNot, shown.length));
+    not.addEventListener("click", () => notThem(person, shown.map((item) => item.key), false));
+    bar.append(button, not);
   }
   const faces = element("div", "faces");
-  faces.append(...person.faces.map(alikeFace));
+  faces.append(...shown.map(alikeFace(person, false)));
   node.append(title, element("p", "hint", TEXTS.alikeHint), bar, faces);
+  if (ignored.length) node.append(alikeIgnored({ ...person, ignored }));
   return node;
 }
 

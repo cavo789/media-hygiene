@@ -7531,6 +7531,12 @@ msgstr "Ce n'est pas le dossier que vous voulez garder ?"
 msgid "Not the same content as {path}: kept on the phone."
 msgstr "Pas le même contenu que {path} : gardé sur le téléphone."
 
+#, python-brace-format
+msgid "Not them: ignore this face"
+msgid_plural "Not them: ignore these {n} faces"
+msgstr[0] "Pas elle : ignorer ce visage"
+msgstr[1] "Pas elle : ignorer ces {n} visages"
+
 msgid "Not this person: leaves this search (nothing saved)"
 msgstr "Pas cette personne : quitte cette recherche (rien n'est enregistré)"
 
@@ -7538,6 +7544,9 @@ msgid "Not this person: mark this face; the next button of the group saves it"
 msgstr ""
 "Pas cette personne : marquer ce visage ; le prochain bouton du groupe "
 "l'enregistre"
+
+msgid "Not this person: never shown for them again"
+msgstr "Pas cette personne : plus jamais proposé pour elle"
 
 msgid "Not to sort: its files stay where they are."
 msgstr "À ne pas trier : ses fichiers restent où ils sont."
@@ -9504,6 +9513,12 @@ msgid "Remove this filter and search again"
 msgstr "Retirer ce filtre et relancer la recherche"
 
 #, python-brace-format
+msgid "Remove this photo too (quarantine, undo possible)"
+msgid_plural "Remove these {n} photos too (quarantine, undo possible)"
+msgstr[0] "Retirer aussi cette photo (quarantaine, annulable)"
+msgstr[1] "Retirer aussi ces {n} photos (quarantaine, annulable)"
+
+#, python-brace-format
 msgid "Removed from config.toml, read back at {time}: {names}."
 msgstr "Supprimées de config.toml, relu à {time} : {names}."
 
@@ -10626,12 +10641,6 @@ msgid "Set this photo aside (Delete)"
 msgstr "Mettre cette photo de côté (Suppr)"
 
 #, python-brace-format
-msgid "Set this photo aside too"
-msgid_plural "Set these {n} photos aside too"
-msgstr[0] "Mettre aussi cette photo de côté"
-msgstr[1] "Mettre aussi ces {n} photos de côté"
-
-#, python-brace-format
 msgid "Set this {n} file aside"
 msgid_plural "Set these {n} files aside"
 msgstr[0] "Mettre ce {n} fichier de côté"
@@ -10798,6 +10807,9 @@ msgstr "Affiche la version et quitte."
 msgid "Show this album on the TV"
 msgstr "Montrer cet album sur la télé"
 
+msgid "Show this face for this person again"
+msgstr "Proposer de nouveau ce visage pour cette personne"
+
 msgid "Show this message and exit."
 msgstr "Affiche ce message et quitte."
 
@@ -10821,12 +10833,13 @@ msgstr ""
 "trier selon cette colonne, encore pour inverser."
 
 msgid ""
-"Shown for you to check, never set aside on their own: take out with × the"
-" faces of someone else, then set the others aside too."
+"Shown for you to check, never removed on their own. × : not this person, "
+"remembered. Removed means moved to the quarantine at the next clean; undo"
+" brings the photos back."
 msgstr ""
-"Montrées pour que vous vérifiiez, jamais mises de côté toutes seules : "
-"retirez avec × les visages de quelqu'un d'autre, puis mettez aussi les "
-"autres de côté."
+"Montrées pour que vous vérifiiez, jamais retirées d’elles-mêmes. × : pas "
+"cette personne, retenu. Retirer veut dire déplacer en quarantaine au "
+"prochain clean ; undo ramène les photos."
 
 msgid ""
 "Shows only these faces, among those shown, picked, and types the name: "
@@ -16687,6 +16700,9 @@ msgstr "non"
 msgid "no TV yet"
 msgstr "pas encore de télé"
 
+msgid "no cache to remember this in"
+msgstr "pas de cache où le retenir"
+
 msgid "no control character"
 msgstr "aucun caractère de contrôle"
 
@@ -16948,11 +16964,12 @@ msgid "photos with a shooting date:"
 msgstr "photos avec une date de prise de vue :"
 
 msgid ""
-"pick faces of the section to name them, Shift+click a range; ✎ this face "
-"only"
+"pick faces of the section to name them, Shift+click a range, drag a "
+"rectangle, Ctrl+A every face of the current section; ✎ this face only"
 msgstr ""
-"choisir des visages de la section pour les nommer, Maj+clic une série ; ✎"
-" ce visage seul"
+"choisir des visages de la section pour les nommer, Maj+clic une suite, "
+"glisser un rectangle, Ctrl+A tous les visages de la section courante ; ✎ "
+"ce visage seul"
 
 msgid "pick or unpick the framed file"
 msgstr "choisir ou non le fichier encadré"
@@ -17304,6 +17321,9 @@ msgstr ""
 
 msgid "the burst series page"
 msgstr "la page des rafales"
+
+msgid "the cache could not be written"
+msgstr "le cache n’a pas pu être écrit"
 
 msgid "the classify proposal waits: 'sort' applies the edited workbook."
 msgstr "la proposition de classify attend : 'sort' applique le classeur modifié."
@@ -20227,6 +20247,18 @@ msgstr[0] "{n} visage"
 msgstr[1] "{n} visages"
 
 #, python-brace-format
+msgid "{n} face ignored for the person set aside on {date}"
+msgid_plural "{n} faces ignored for the person set aside on {date}"
+msgstr[0] "{n} visage ignoré pour la personne mise de côté le {date}"
+msgstr[1] "{n} visages ignorés pour la personne mise de côté le {date}"
+
+#, python-brace-format
+msgid "{n} face kept as not this person."
+msgid_plural "{n} faces kept as not this person."
+msgstr[0] "{n} visage retenu comme n’étant pas cette personne."
+msgstr[1] "{n} visages retenus comme n’étant pas cette personne."
+
+#, python-brace-format
 msgid "{n} face looks like no other: it is not shown."
 msgid_plural "{n} faces look like no other: they are not shown."
 msgstr[0] "{n} visage ne ressemble à aucun autre : il n'est pas affiché."
@@ -21627,15 +21659,17 @@ msgstr[1] ""
 
 #, python-brace-format
 msgid "📁 Show the faces of this group whose folder or file names {name}"
-msgstr "📁 Afficher les visages du groupe dont le dossier ou le fichier nomme {name}"
+msgstr ""
+"📁 Afficher les visages du groupe dont le dossier ou le fichier nomme "
+"{name}"
 
 #, python-brace-format
 msgid ""
 "📁 Show the faces of this group whose folder or file names {name}: not "
 "{section}?"
 msgstr ""
-"📁 Afficher les visages du groupe dont le dossier ou le fichier nomme {name} "
-": pas {section} ?"
+"📁 Afficher les visages du groupe dont le dossier ou le fichier nomme "
+"{name} : pas {section} ?"
 
 msgid "📁 The folder or file name names someone else"
 msgstr "📁 Le dossier ou le nom du fichier nomme quelqu'un d'autre"

@@ -272,3 +272,26 @@ def test_one_photo_set_aside_from_the_large_view_leaves_its_section(
     section = largest(app)
     assert [face["key"] for face in section["hidden"]] == [first]  # type: ignore[attr-defined]
     assert alike(app) == []
+
+
+def test_not_them_survives_a_new_page_and_can_be_taken_back(
+    cli: CliRunner, apps: list[object], locations: Locations
+) -> None:
+    """Cross or *Not them*: saved in the cache; out after a reload; ↺ back (0713)."""
+    assert run(cli, "people").exit_code == 0
+    faces = every_face(apps[-1], largest(apps[-1]))
+    answer(apps[-1], "POST /api/aside", {"action": "add", "faces": faces})
+    new_photo(cli, locations, 0)
+    assert run(cli, "people").exit_code == 0
+    person = alike(apps[-1])[0]
+    keys = [face["key"] for face in person["faces"]]  # type: ignore[attr-defined]
+    body = {"action": "not", "faces": keys, "into": person["aside"]}
+    said = answer(apps[-1], "POST /api/aside", body)["aside"]
+    assert said["ignored"] == 1  # type: ignore[index]
+    assert run(cli, "people").exit_code == 0
+    again = alike(apps[-1])
+    assert again[0]["faces"] == []
+    ignored = [face["key"] for face in again[0]["ignored"]]  # type: ignore[attr-defined]
+    back = {"action": "again", "faces": ignored, "into": person["aside"]}
+    answer(apps[-1], "POST /api/aside", back)
+    assert alike_photos(apps[-1])

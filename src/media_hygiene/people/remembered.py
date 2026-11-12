@@ -15,6 +15,7 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Final
 
 from media_hygiene.index.aside_faces import AsideFaces, forget, remember, remembered
+from media_hygiene.index.aside_not import forget_orphans, ignore, ignored, unignore
 from media_hygiene.index.repository import FactsRepository
 
 if TYPE_CHECKING:
@@ -100,6 +101,8 @@ class AsideMemory:
             FactsRepository.open(self.index_file) as index,
         ):
             forget(index.connection, embeddings)
+            forget_orphans(index.connection)  # a person taken back: their ignores too
+            index.connection.commit()
 
     def people(self) -> tuple[AsideFaces, ...]:
         """Every person set aside.
@@ -112,3 +115,35 @@ class AsideMemory:
                 return remembered(index.connection)
         except sqlite3.Error:
             return ()
+
+    def not_them(self, aside: str, embeddings: tuple[bytes, ...], *, back: bool) -> int:
+        """Say these faces are not the person set aside, or take that back.
+
+        Args:
+            aside: The person's set-aside id.
+            embeddings: The vectors of the faces.
+            back: True to let them look like the person again.
+
+        Returns:
+            How many faces the index holds as not that person now, read back; -1
+            when it cannot be written.
+        """
+        try:
+            with FactsRepository.open(self.index_file) as index:
+                change = unignore if back else ignore
+                change(index.connection, aside, embeddings)
+                return len(ignored(index.connection).get(aside, frozenset()))
+        except sqlite3.Error:
+            return -1
+
+    def ignored(self) -> dict[str, frozenset[bytes]]:
+        """The faces said not to be each person set aside.
+
+        Returns:
+            Their vectors by set-aside id; none when the index cannot be read.
+        """
+        try:
+            with FactsRepository.open(self.index_file) as index:
+                return ignored(index.connection)
+        except sqlite3.Error:
+            return {}

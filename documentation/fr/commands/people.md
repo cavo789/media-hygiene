@@ -100,7 +100,12 @@ progression, puis la page).
 
 Dans la page, tapez un nom sur un groupe et appuyez sur Entrée : le nom est enregistré dans
 `config.toml`, relu et affiché. `x` choisit plusieurs groupes à nommer d'un coup, × retire un
-visage erroné, `i` ignore un groupe d'inconnus, Chaque personne s'affiche ensuite deux fois au plus : **Chloé ✓ vérifié**, les visages que
+visage erroné, `i` ignore un groupe d'inconnus. Pour ne nommer que certains visages d'une section, choisissez-les
+comme dans [les dossiers de `library`](library.md#parcourir-vos-dossiers), dans cette section :
+Ctrl+clic en ajoute ou en retire un, Maj+clic une suite, un rectangle tiré sur les visages
+prend ceux qu'il touche (Ctrl garde ceux déjà choisis), Ctrl+A tous les visages que montre la
+section courante, ✎ ce visage seul ; puis *Ces N visages sont…* et le nom. Un simple clic
+montre toujours la photo en grand. Chaque personne s'affiche ensuite deux fois au plus : **Chloé ✓ vérifié**, les visages que
 vous avez confirmés, et **Chloé attribué**, les visages qui lui sont donnés parce qu'ils leur
 ressemblent ; `y` confirme les visages attribués affichés, qui passent dans vérifié. Les
 exécutions suivantes gardent tous les noms, et [`library`](library.md) retrouve les personnes par
@@ -168,11 +173,16 @@ visages dans le cache, sans nom et sans les photos (rien ne va dans `config.toml
 ouverture de la page, les photos qui ressemblent à cette personne viennent en premier, dans une
 section à part : *N autres photos ressemblent à la personne mise de côté le <date>*, y compris
 les visages d'aucun groupe (trop petits, trop flous, vus une seule fois). Elles sont montrées
-pour que vous vérifiiez, jamais mises de côté toutes seules : retirez avec × les visages de
-quelqu'un d'autre, puis **Mettre aussi ces N photos de côté**. Une photo ajoutée plus tard y
+pour que vous vérifiiez, jamais retirées toutes seules : × sur un visage dit *pas cette
+personne*, retenu dans le cache, pour qu'il ne revienne plus pour elle (une autre personne mise
+de côté peut encore le montrer) ; **Pas elle : ignorer ces N visages** le fait pour tous les
+visages que la section montre, et la section disparaît. **Retirer aussi ces N photos
+(quarantaine, annulable)** met les autres de côté : le prochain `clean --decisions` les déplace
+en quarantaine, `undo` les ramène. Les visages ignorés restent listés, repliés, sous *N visages
+ignorés pour la personne mise de côté le <date>* : ↺ en propose un de nouveau pour elle. Une photo ajoutée plus tard y
 apparaît à l'ouverture suivante. Les visages restent après `clean` et `purge` ; reprendre les
-photos (↺, **Retirer de la mise de côté**, ou `undo`) les oublie, et `people --forget` les
-oublie avec tous les autres visages.
+photos (↺, **Retirer de la mise de côté**, ou `undo`) les oublie, avec les visages ignorés
+pour cette personne, et `people --forget` les oublie avec tous les autres visages.
 
 **Une photo à la fois.** Un visage que l'outil ne voit pas (de profil, flou, une photo penchée)
 laisse sa photo dans la section de quelqu'un d'autre. Cliquez sur le visage : la grande vue
