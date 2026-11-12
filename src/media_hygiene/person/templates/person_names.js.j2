@@ -53,17 +53,19 @@ function faceTag(named) {
 // The name line under the faces: "This face is… [combo] [Name]".
 function showNamer(key, named) {
   const source = named && named.name ? named.name : "";
-  const line = faceNamer([key], source, () => {});
+  const line = faceNamer([key], source, () => reopen(true)); // the steps then say that name
   $("namer").replaceChildren(line);
   const field = line.querySelector("input");
   if (field && !source) field.focus();
 }
 
-// The face chosen has no name yet: the name the tool guesses most among its photos (≈ Diego),
-// so that the picked photos can be confirmed as on /people; "" when none is guessed.
+// The face chosen has no name yet: the name guessed most among its closest photos (≈ Diego),
+// so that the picked photos can be confirmed as on /people; "" when none is guessed. Only the
+// closest: far down the list come other children, whose names would outnumber its own.
+const GUESS_FROM = 12;
 function guessedName(listed) {
   const counts = new Map();
-  for (const file of listed) {
+  for (const file of listed.slice(0, GUESS_FROM)) {
     const named = file.named;
     if (named && named.name) counts.set(named.name, (counts.get(named.name) || 0) + 1);
   }

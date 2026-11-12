@@ -17,25 +17,24 @@ from typing import TYPE_CHECKING, Final
 
 import numpy as np
 
-from media_hygiene.faces.similarity import SFACE_SIMILARITY
+from media_hygiene.faces.neighbours import NEIGHBOURS, Linkage, neighbours
 
 if TYPE_CHECKING:
     from numpy.typing import NDArray
 
+__all__ = [
+    "NEIGHBOURS",
+    "Linkage",
+    "face_labels",
+    "group_faces",
+    "groups_of",
+    "join_labels",
+]
+
 type Groups = tuple[tuple[int, ...], ...]
 
-NEIGHBOURS: Final = 30
 ROUNDS: Final = 20  # at most; it usually settles in a few
-_BLOCK: Final = 256  # rows compared at once: 256 x faces float32 in memory
 _SEED: Final = 0
-
-
-@dataclass(frozen=True, slots=True)
-class Linkage:
-    """How close two faces must be to be linked, and to how many neighbours."""
-
-    similarity: float = SFACE_SIMILARITY
-    neighbours: int = NEIGHBOURS
 
 
 @dataclass(frozen=True, slots=True)
@@ -129,7 +128,7 @@ def _graph(
         The links, each pair once per direction, grouped by face.
     """
     count = len(vectors)
-    links = _neighbours(vectors, linkage, rows)
+    links = neighbours(vectors, linkage, rows)
     both = np.concatenate((links, links[:, (1, 0, 2)]))
     codes = both[:, 0].astype(np.int64) * count + both[:, 1].astype(np.int64)
     _, first = np.unique(codes, return_index=True)  # sorted by source, then target
@@ -137,33 +136,6 @@ def _graph(
     per_face = np.bincount(kept[:, 0].astype(np.int64), minlength=count)
     starts = np.concatenate(([0], np.cumsum(per_face))).astype(np.int64)
     return _Graph(starts, kept[:, 1].astype(np.int64), kept[:, 2])
-
-
-def _neighbours(
-    vectors: NDArray[np.float32], linkage: Linkage, wanted: NDArray[np.int64]
-) -> NDArray[np.float64]:
-    """Find the close neighbours of some faces, block by block.
-
-    Args:
-        vectors: The unit vectors.
-        linkage: The threshold and the number of neighbours.
-        wanted: The faces whose neighbours are looked for.
-
-    Returns:
-        One row per link: face, neighbour, similarity.
-    """
-    keep = min(linkage.neighbours, len(vectors) - 1)
-    pairs: list[NDArray[np.float64]] = [np.empty((0, 3))]
-    for start in range(0, len(wanted) if keep > 0 else 0, _BLOCK):
-        faces = wanted[start : start + _BLOCK]
-        block = vectors[faces] @ vectors.T
-        block[np.arange(len(faces)), faces] = -np.inf  # not its own neighbour
-        nearest = np.argpartition(-block, keep - 1, axis=1)[:, :keep]
-        similar = np.take_along_axis(block, nearest, axis=1)
-        line, rank = np.nonzero(similar >= linkage.similarity)
-        found = (faces[line], nearest[line, rank], similar[line, rank])
-        pairs.append(np.column_stack(found).astype(np.float64))
-    return np.concatenate(pairs)
 
 
 def _whispers(

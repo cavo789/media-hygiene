@@ -74,7 +74,10 @@ two tenths of them a camera's dump not sorted yet).
 ## What grows faster than linearly
 
 - The people page's first opening (face grouping, all pairs: 0.96 s → 27.3 s for ×10
-  files, measured): 0693.
+  files, measured): 0693. After 0693 (only the faces above the threshold are kept, then
+  cut to the closest; buffers reused): 13.5 s cold at 100,000 (measured 2026-11-12, load
+  average 6–9 from other sessions; face grouping alone 24.4 s → 10.3 s). Still all pairs
+  (the matrix product): the ≤ 5 s target needs an approximate search or float16.
 - Everything else grows about linearly (×10 files: ×5 to ×12; ×3 files: ×2.6 to ×3.3,
   measured), but several routes are slow in absolute terms at 100,000: folders 3.0 s,
   places page 5.2 s (it reads every row of the index, facts parsed, for the 1.3 % with
