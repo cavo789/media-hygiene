@@ -1,0 +1,43 @@
+{# The large view shows a photo at once: its tile's picture, already loaded by the grid,
+   fills the view at the size of the sharp preview while that one is rendered, then gives
+   way to it (no broken picture nor file name meanwhile). A preview already loaded (the
+   preload, `pick_preload.js.j2`) shows at once; a tile not loaded (far in the grid, or a
+   page whose tiles have no picture) leaves the browser load the preview as before.
+   Both pictures fill the view the same way (`.fitted`, `--ratio`), so nothing jumps.
+   Included by `pick_viewer.js.j2`; `cards` and `current` are `pick_grid.js.j2`'s. #}
+let sharpWanted = null; // the preview the view waits for: held until loaded, an older one dropped
+
+// The picture of a tile showing the file (its thumbnail or its preview, never another
+// picture of the tile such as a face), when the grid has loaded it.
+function tilePicture(file, index) {
+  const wanted = [file.thumb, file.preview].filter(Boolean).map((src) => new URL(src, document.baseURI).href);
+  const images = cards[index] ? [...cards[index].querySelectorAll("img")] : [];
+  const image = images.find((each) => wanted.includes(each.currentSrc || each.src));
+  return image && image.complete && image.naturalWidth ? image : null;
+}
+
+// The large picture takes the proportions of `image` and fills the view with them.
+function fitTo(image) {
+  $("large").style.setProperty("--ratio", String(image.naturalWidth / image.naturalHeight));
+  $("large").classList.add("fitted");
+}
+
+// Shows `file` large: the tile's picture first, the sharp preview as soon as it is there.
+function showPicture(file) {
+  const large = $("large");
+  const sharp = new Image();
+  sharpWanted = sharp;
+  sharp.src = file.preview;
+  if (sharp.complete && sharp.naturalWidth) { fitTo(sharp); large.src = file.preview; return; }
+  const tile = tilePicture(file, current);
+  if (!tile) { large.classList.remove("fitted"); large.src = file.preview; return; }
+  fitTo(tile);
+  large.src = tile.currentSrc;
+  const done = () => {
+    if (sharpWanted !== sharp) return; // another file is shown now
+    if (sharp.naturalWidth) fitTo(sharp);
+    large.src = file.preview; // from the browser's memory now; a failure shows as before
+  };
+  sharp.onload = done;
+  sharp.onerror = done;
+}

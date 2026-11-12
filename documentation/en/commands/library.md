@@ -138,7 +138,8 @@ helps: `*.mp4` or a regular expression are still searched as typed.
   (point at them for the whole text), the words two lines then *+N*.
 - **⌨ Keyboard**: the panel lists the main gestures; **More keys** opens over the page (Esc
   closes it), so the form above never leaves the screen.
-- **Look**: Enter or a double click shows the photo large (with a link to the original); ← → (on a
+- **Look**: Enter or a double click shows the photo large at once, sharp a moment later (with its
+  whole path and a link to the original); ← → (on a
   phone, a swipe) the previous or next one not set aside, Delete sets it aside then shows the previous one (the next one at the start), F full screen, L the landmark it
   shows ([`spots`](spots.md#-type-the-landmark-yourself-key-l)), ? every key, Escape closes it. **👤 Identify someone** names someone on the photo shown, or finds every photo of them
   ([`people`](people.md#from-any-photo-name-or-set-aside-someone)).

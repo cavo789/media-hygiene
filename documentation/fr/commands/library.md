@@ -148,8 +148,8 @@ n'est qu'une aide : `*.mp4` ou une expression régulière sont toujours cherché
   lignes puis *+N*.
 - **⌨ Clavier** : le panneau liste les gestes principaux ; **Plus de touches** s'ouvre par-dessus
   la page (Échap le ferme), le formulaire au-dessus ne quitte donc jamais l'écran.
-- **Regarder** : Entrée ou un double clic montre la photo en grand (avec un lien vers
-  l'original) ; ← → (sur un téléphone, un glissement) la précédente ou la suivante pas mise de côté, Suppr la met de côté puis montre la précédente (la suivante au début), F
+- **Regarder** : Entrée ou un double clic montre la photo en grand tout de suite, nette un instant
+  après (avec son chemin complet et un lien vers l'original) ; ← → (sur un téléphone, un glissement) la précédente ou la suivante pas mise de côté, Suppr la met de côté puis montre la précédente (la suivante au début), F
   plein écran, L le monument qu'elle montre
   ([`spots`](spots.md#-taper-soi-même-le-monument--touche-l)), ? toutes les touches, Échap la ferme. **👤 Identifier quelqu'un** nomme quelqu'un de la photo affichée, ou trouve
   toutes ses photos
