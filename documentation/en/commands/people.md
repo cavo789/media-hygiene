@@ -97,7 +97,8 @@ back and shown. `x` picks several groups to name at once, × takes a wrong face 
 a group of strangers. To name only some faces of a section, pick them as in
 [the folders of `library`](library.md#walk-through-your-folders), inside that section: Ctrl+click
 adds or takes out one, Shift+click a range, a rectangle dragged over the faces picks those it
-touches (Ctrl keeps those picked), Ctrl+A every face the current section shows, ✎ this face
+touches (Ctrl keeps those picked), Ctrl+A every face the current section shows, Ctrl+I or 🔀 *Invert the picking* the
+other faces it shows (`i` alone still ignores the group), ✎ this face
 only; then *These N faces are…* and the name. A plain click still shows the photo large. Each person then shows twice at most: **Chloé ✓ verified**, the faces you
 confirmed, and **Chloé attributed**, the faces given to her because they look like those; `y`
 confirms the attributed faces shown, which move to verified. The next runs keep every name, and

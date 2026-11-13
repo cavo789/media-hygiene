@@ -7407,6 +7407,11 @@ msgstr ""
 msgid "Pick the ones to set aside"
 msgstr ""
 
+msgid ""
+"Pick the other faces of the current section: the ones picked are left "
+"(Ctrl+I)"
+msgstr ""
+
 msgid "Pick the others: the ones picked are left (I)"
 msgstr ""
 
@@ -13517,6 +13522,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "invalid extension {values}: letters, digits, '-' and '_' only, such as jpg"
+msgstr ""
+
+msgid "invert: the other faces of the current section instead"
 msgstr ""
 
 msgid "invert: the others instead"

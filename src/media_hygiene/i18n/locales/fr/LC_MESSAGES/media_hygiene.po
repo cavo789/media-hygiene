@@ -8910,6 +8910,13 @@ msgstr ""
 msgid "Pick the ones to set aside"
 msgstr "Choisir ceux à mettre de côté"
 
+msgid ""
+"Pick the other faces of the current section: the ones picked are left "
+"(Ctrl+I)"
+msgstr ""
+"Choisir les autres visages de la section courante : ceux choisis sont "
+"laissés (Ctrl+I)"
+
 msgid "Pick the others: the ones picked are left (I)"
 msgstr "Choisir les autres : ceux choisis sont laissés (I)"
 
@@ -13994,8 +14001,8 @@ msgid ""
 "where mh runs), then type (copied):"
 msgstr ""
 "Pour préparer {name} pour l'envoi (des copies réduites, sans la position "
-"GPS sauf si gardée, un dossier et un zip) : fermez cette page (Ctrl+C dans la fenêtre où"
-" tourne mh), puis tapez (copié) :"
+"GPS sauf si gardée, un dossier et un zip) : fermez cette page (Ctrl+C "
+"dans la fenêtre où tourne mh), puis tapez (copié) :"
 
 msgid "To set every shot aside, press X: the whole series goes to the quarantine."
 msgstr ""
@@ -16173,6 +16180,9 @@ msgid "invalid extension {values}: letters, digits, '-' and '_' only, such as jp
 msgstr ""
 "extension {values} invalide : lettres, chiffres, « - » et « _ » "
 "seulement, par exemple jpg"
+
+msgid "invert: the other faces of the current section instead"
+msgstr "inverser : les autres visages de la section courante à la place"
 
 msgid "invert: the others instead"
 msgstr "inverser : les autres à la place"

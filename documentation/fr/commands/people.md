@@ -104,7 +104,8 @@ visage erroné, `i` ignore un groupe d'inconnus. Pour ne nommer que certains vis
 comme dans [les dossiers de `library`](library.md#parcourir-vos-dossiers), dans cette section :
 Ctrl+clic en ajoute ou en retire un, Maj+clic une suite, un rectangle tiré sur les visages
 prend ceux qu'il touche (Ctrl garde ceux déjà choisis), Ctrl+A tous les visages que montre la
-section courante, ✎ ce visage seul ; puis *Ces N visages sont…* et le nom. Un simple clic
+section courante, Ctrl+I ou 🔀 *Inverser la sélection* les autres visages qu'elle montre (`i` seul
+ignore toujours le groupe), ✎ ce visage seul ; puis *Ces N visages sont…* et le nom. Un simple clic
 montre toujours la photo en grand. Chaque personne s'affiche ensuite deux fois au plus : **Chloé ✓ vérifié**, les visages que
 vous avez confirmés, et **Chloé attribué**, les visages qui lui sont donnés parce qu'ils leur
 ressemblent ; `y` confirme les visages attribués affichés, qui passent dans vérifié. Les
