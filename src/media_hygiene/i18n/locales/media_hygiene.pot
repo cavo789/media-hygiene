@@ -3160,6 +3160,13 @@ msgstr ""
 msgid "Every extension but {kept}: {files} of {folders} only ({count}, {size})."
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Every face of the cache, these names ({names}) and {ignored} faces "
+"ignored are deleted from config.toml. The previous file is kept in "
+"/config/.history/; your photos do not change."
+msgstr ""
+
 msgid "Every file of this event is already in its folder: nothing to move."
 msgstr ""
 
@@ -3780,6 +3787,9 @@ msgstr ""
 msgid "Forget every face"
 msgstr ""
 
+msgid "Forget every face and every name"
+msgstr ""
+
 msgid "Forget its position"
 msgstr ""
 
@@ -3790,6 +3800,12 @@ msgstr ""
 
 msgid "Forget this phone"
 msgstr ""
+
+#, python-brace-format
+msgid "Forget {count} name, for good?"
+msgid_plural "Forget {count} names, for good?"
+msgstr[0] ""
+msgstr[1] ""
 
 #, python-brace-format
 msgid "Forgotten at this start, unseen for {days} days: {names}"
@@ -5451,6 +5467,10 @@ msgid ""
 "Names go to config.toml; the photos are never changed and the faces stay "
 "on this computer. Nothing is deleted here: 'clean --decisions' moves the "
 "photos set aside to the quarantine, 'undo' brings them back."
+msgstr ""
+
+#, python-brace-format
+msgid "Names removed: {names}."
 msgstr ""
 
 msgid ""
@@ -10554,6 +10574,11 @@ msgstr ""
 msgid "The name shown and the folder's path; Esc empties the box."
 msgstr ""
 
+msgid ""
+"The names of config.toml and the faces ignored go too, after a "
+"confirmation that lists them; the previous file is kept."
+msgstr ""
+
 #, python-brace-format
 msgid "The names of config.toml cannot be read: {error}."
 msgstr ""
@@ -10565,7 +10590,8 @@ msgstr ""
 
 msgid ""
 "The names stay in config.toml: they name no face until people finds the "
-"faces again. Answer yes in a terminal (docker run -it) to delete them."
+"faces again. Answer yes in a terminal (docker run -it), or add --names, "
+"to delete them."
 msgstr ""
 
 msgid ""
@@ -10794,6 +10820,10 @@ msgid ""
 "The positions you give whole folders on the map of 'places' (Save this "
 "position), written by the map: 'xmp' gives them to the photos of those "
 "folders without GPS, when [tags] xmp_folder_gps is true."
+msgstr ""
+
+#, python-brace-format
+msgid "The previous config.toml is kept in {folder}."
 msgstr ""
 
 #, python-brace-format
@@ -12441,6 +12471,11 @@ msgstr ""
 msgid "Windows paths must use 'single quotes' in TOML, e.g. 'C:\\Photos'."
 msgstr ""
 
+msgid ""
+"With --forget: delete the names of config.toml and the faces ignored too,"
+" without asking (the previous file is kept)."
+msgstr ""
+
 msgid "With --people: do not ask, go on."
 msgstr ""
 
@@ -13283,6 +13318,9 @@ msgid "config.toml holds no rule named '{name}'."
 msgstr ""
 
 msgid "config.toml holds no rule of one of these names."
+msgstr ""
+
+msgid "config.toml names nobody."
 msgstr ""
 
 #, python-brace-format
@@ -14507,6 +14545,9 @@ msgid "previous, next (set aside skipped)"
 msgstr ""
 
 msgid "privacy faces forget delete gdpr"
+msgstr ""
+
+msgid "privacy faces names forget delete gdpr"
 msgstr ""
 
 msgid "proposed aside"

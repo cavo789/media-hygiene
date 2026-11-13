@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from media_hygiene.cli.menu_catalog_settings import FORGET_NAMES
 from media_hygiene.cli.menu_entry import (
     Area,
     Doc,
@@ -182,7 +183,7 @@ def tools_areas() -> tuple[Area, ...]:
             Group(_("Backup"), ("backup", "restore")),
             Group(_("Windows"), ("shortcut", "explorer", "explorer-remove")),
             Group(_("Local AI"), (), extra="ai"),
-            Group(_("Privacy"), ("people-forget",)),
+            Group(_("Privacy"), ("people-forget", FORGET_NAMES)),
             Group(_("Advanced"), advanced),
             Group(_("About"), (), extra="about"),
         ),

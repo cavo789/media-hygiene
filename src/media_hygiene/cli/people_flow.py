@@ -38,11 +38,12 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class PeopleRequest:
-    """`--path`, `--sample N` and `--forget`."""
+    """`--path`, `--sample N`, `--forget` and `--names`."""
 
     within: tuple[Path, ...] = ()
     sample: int = 0
     forget: bool = False
+    names: bool = False  # `--names`: the names go too, without a question (0795)
 
 
 def run_people(runtime: Runtime, request: PeopleRequest) -> PeopleResult | None:
@@ -59,7 +60,7 @@ def run_people(runtime: Runtime, request: PeopleRequest) -> PeopleResult | None:
     output = runtime.output
     with PeopleStep(runtime) as step:
         if request.forget:
-            forget_people(runtime, step.store)
+            forget_people(runtime, step.store, names=request.names)
             return None
         work = step.plan(request.within)
         show_absent(output, work.absent)

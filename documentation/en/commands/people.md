@@ -37,7 +37,7 @@ docker run --rm -it `
 | Your photos | 🔒 Never changed: mount them `:ro`. |
 | Needs | Your folders, `/cache` (writable: the faces are kept there), `/config` (writable, to save the names) and `-p 127.0.0.1:8088:8088`. |
 | Writes | The faces and the two face models (39 MB, once), in the cache; the names, in `config.toml`; the photos you set aside, in `decisions.json` of `/reports`. |
-| Undo | `people --forget` deletes every face from the cache, then asks whether the names go too. |
+| Undo | `people --forget` deletes every face from the cache, then asks whether the names go too (`--names`: they go without a question, the previous file kept in `/config/.history/`). |
 | With `mh` | `mh people`: the port is published for you. |
 
 ## Run it
@@ -274,6 +274,7 @@ found, set the photo aside on its own (Delete in its large view).
 | `--path PATH` | Only the photos below this folder (host path, as you mounted it); repeat it for several. |
 | `--sample N` | Analyse N random photos, print the time per photo and the estimate of a full run, and stop. |
 | `--forget` | Delete every face from the cache, then show that none is left; asks before deleting the names of `config.toml` too. |
+| `--names` | With `--forget`: delete the names of `config.toml` and the faces ignored too, without asking; the previous file is kept in `/config/.history/`. |
 | `--port PORT` | Port of the page, 8088 by default; publish the same one. |
 
 ## Your privacy

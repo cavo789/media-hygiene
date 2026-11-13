@@ -3871,6 +3871,16 @@ msgstr ""
 "Toutes les extensions sauf {kept} : {files} de {folders} seulement "
 "({count}, {size})."
 
+#, python-brace-format
+msgid ""
+"Every face of the cache, these names ({names}) and {ignored} faces "
+"ignored are deleted from config.toml. The previous file is kept in "
+"/config/.history/; your photos do not change."
+msgstr ""
+"Tous les visages du cache, ces noms ({names}) et {ignored} visages "
+"ignorés sont supprimés de config.toml. Le fichier précédent est conservé "
+"dans /config/.history/ ; vos photos ne changent pas."
+
 msgid "Every file of this event is already in its folder: nothing to move."
 msgstr ""
 "Chaque fichier de cet événement est déjà dans son dossier : rien à "
@@ -4622,6 +4632,9 @@ msgstr "Oublier tous les appareils"
 msgid "Forget every face"
 msgstr "Oublier tous les visages"
 
+msgid "Forget every face and every name"
+msgstr "Oublier tous les visages et tous les noms"
+
 msgid "Forget its position"
 msgstr "Oublier sa position"
 
@@ -4634,6 +4647,12 @@ msgstr ""
 
 msgid "Forget this phone"
 msgstr "Oublier ce téléphone"
+
+#, python-brace-format
+msgid "Forget {count} name, for good?"
+msgid_plural "Forget {count} names, for good?"
+msgstr[0] "Oublier {count} nom, définitivement ?"
+msgstr[1] "Oublier {count} noms, définitivement ?"
 
 #, python-brace-format
 msgid "Forgotten at this start, unseen for {days} days: {names}"
@@ -6560,6 +6579,10 @@ msgstr ""
 "les visages restent sur cet ordinateur. Rien n'est supprimé ici : 'clean "
 "--decisions' déplace les photos mises de côté en quarantaine, 'undo' les "
 "ramène."
+
+#, python-brace-format
+msgid "Names removed: {names}."
+msgstr "Noms supprimés : {names}."
 
 msgid ""
 "Naming confirms the faces shown: they become verified ✓. The other faces "
@@ -12640,6 +12663,13 @@ msgstr ""
 msgid "The name shown and the folder's path; Esc empties the box."
 msgstr "Le nom affiché et le chemin du dossier ; Échap vide la zone."
 
+msgid ""
+"The names of config.toml and the faces ignored go too, after a "
+"confirmation that lists them; the previous file is kept."
+msgstr ""
+"Les noms de config.toml et les visages ignorés partent aussi, après une "
+"confirmation qui les liste ; le fichier précédent est conservé."
+
 #, python-brace-format
 msgid "The names of config.toml cannot be read: {error}."
 msgstr "Les noms de config.toml ne peuvent pas être lus : {error}."
@@ -12653,11 +12683,12 @@ msgstr ""
 
 msgid ""
 "The names stay in config.toml: they name no face until people finds the "
-"faces again. Answer yes in a terminal (docker run -it) to delete them."
+"faces again. Answer yes in a terminal (docker run -it), or add --names, "
+"to delete them."
 msgstr ""
 "Les noms restent dans config.toml : ils ne nomment aucun visage tant que "
 "people ne les a pas retrouvés. Répondez oui dans un terminal (docker run "
-"-it) pour les supprimer."
+"-it), ou ajoutez --names, pour les supprimer."
 
 msgid ""
 "The names you give on the 'people' page are saved here as "
@@ -12941,6 +12972,10 @@ msgstr ""
 "'places' (Enregistrer cette position), écrites par la carte : 'xmp' les "
 "donne aux photos sans GPS de ces dossiers, quand [tags] xmp_folder_gps "
 "vaut true."
+
+#, python-brace-format
+msgid "The previous config.toml is kept in {folder}."
+msgstr "Le config.toml précédent est conservé dans {folder}."
 
 #, python-brace-format
 msgid "The previous image still takes {size} MB: docker image prune frees it."
@@ -14949,6 +14984,13 @@ msgstr ""
 "En TOML, les chemins Windows s'écrivent entre 'apostrophes', p. ex. "
 "'C:\\Photos'."
 
+msgid ""
+"With --forget: delete the names of config.toml and the faces ignored too,"
+" without asking (the previous file is kept)."
+msgstr ""
+"Avec --forget : supprimer aussi les noms de config.toml et les visages "
+"ignorés, sans demander (le fichier précédent est conservé)."
+
 msgid "With --people: do not ask, go on."
 msgstr "Avec --people : ne pas demander, continuer."
 
@@ -15940,6 +15982,9 @@ msgstr "config.toml ne contient aucune règle nommée '{name}'."
 
 msgid "config.toml holds no rule of one of these names."
 msgstr "config.toml ne contient aucune règle de l'un de ces noms."
+
+msgid "config.toml names nobody."
+msgstr "config.toml ne nomme personne."
 
 #, python-brace-format
 msgid "config.toml read back does not hold the rule '{name}'."
@@ -17278,6 +17323,9 @@ msgstr "précédente, suivante (mises de côté sautées)"
 
 msgid "privacy faces forget delete gdpr"
 msgstr "vie privée visages oublier supprimer rgpd"
+
+msgid "privacy faces names forget delete gdpr"
+msgstr "vie privée visages noms oublier supprimer rgpd"
 
 msgid "proposed aside"
 msgstr "proposée à l'écart"

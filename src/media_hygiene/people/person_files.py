@@ -22,6 +22,7 @@ from media_hygiene.config.people_files import (
     linked_path,
 )
 from media_hygiene.config.photo_ref import write_refs
+from media_hygiene.file_history import keep_previous
 from media_hygiene.i18n import _
 from media_hygiene.people.face_ids import known_ids
 
@@ -162,7 +163,7 @@ def remove_unlinked(config_dir: Path, before: Iterable[str], links: Links) -> No
     """Remove the files `config.toml` linked before and no longer does.
 
     Only files of the people folder are removed: a file linked by hand elsewhere
-    stays.
+    stays. Each one is copied into `.history/` first.
 
     Args:
         config_dir: The folder of `config.toml`.
@@ -179,4 +180,5 @@ def remove_unlinked(config_dir: Path, before: Iterable[str], links: Links) -> No
         except ValueError:
             continue  # never ours to remove
         if path.parent == folder and path.suffix == SUFFIX:
+            keep_previous(path)  # its faces stay recoverable from `.history/` (0795)
             path.unlink(missing_ok=True)

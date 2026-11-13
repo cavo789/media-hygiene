@@ -12,7 +12,9 @@ from media_hygiene.review.step_watch import served_here
 
 # Change files without being a page, yet are no fast path: no photo to look at first
 # (their own page leads to them, or they write beside the photos).
-_NOT_FAST: Final = frozenset({"apply", "album", "people-forget", "xmp", "restore"})
+_NOT_FAST: Final = frozenset(
+    {"apply", "album", "people-forget", "people-forget-names", "xmp", "restore"}
+)
 
 
 def test_each_writing_console_step_is_a_fast_path_with_a_twin() -> None:

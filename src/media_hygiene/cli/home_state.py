@@ -21,6 +21,7 @@ from media_hygiene.cli.home_favourites import (
 )
 from media_hygiene.cli.home_findings import home_findings
 from media_hygiene.cli.home_folders import home_folders
+from media_hygiene.cli.home_forget import with_forget_names
 from media_hygiene.cli.home_pending import home_pending
 from media_hygiene.cli.home_reports import latest_reports
 from media_hygiene.cli.home_runs import home_quarantine, home_undo, home_update
@@ -67,7 +68,7 @@ def home_state(runtime: Runtime) -> HomeState:
     purge_days = runtime.settings.clean.purge_hint_days
     windows = windows_menu()
     menu = build_menu(status, purge_days, windows=windows)
-    page = _on_page(menu)
+    page = with_forget_names(_on_page(menu), runtime.locations.config_file)
     areas = full_catalog().areas
     update = home_update(runtime, menu)
     reports = _reports_dir(runtime)

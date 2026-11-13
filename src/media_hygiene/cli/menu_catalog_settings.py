@@ -2,9 +2,14 @@
 
 from __future__ import annotations
 
+from typing import Final
+
 from media_hygiene.cli.menu_catalog_clean import LAUNCHER_SELF
 from media_hygiene.cli.menu_entry import Doc, Kind, Risk, Space, Step
 from media_hygiene.i18n import _
+
+# Its confirmation lists the names it deletes, read when the page asks (0795).
+FORGET_NAMES: Final = "people-forget-names"
 
 
 def settings_steps() -> tuple[Step, ...]:
@@ -71,6 +76,22 @@ def settings_steps() -> tuple[Step, ...]:
             keywords=_("privacy faces forget delete gdpr"),
             doc=Doc("commands/people/", "#your-privacy", "#votre-vie-privée"),
             inline=True,  # 0740: seconds; the names' question stays the terminal's
+            optional=True,
+        ),
+        Step(
+            FORGET_NAMES,
+            space,
+            _("Forget every face and every name"),
+            _(
+                "The names of config.toml and the faces ignored go too, after a "
+                "confirmation that lists them; the previous file is kept."
+            ),
+            "people --forget --names",
+            Risk.FINAL,
+            icon="face",
+            keywords=_("privacy faces names forget delete gdpr"),
+            doc=Doc("commands/people/", "#your-privacy", "#votre-vie-privée"),
+            inline=True,  # 0795: its confirmation states the names (`home_forget`)
             optional=True,
         ),
         Step(
